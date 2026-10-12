@@ -170,6 +170,7 @@ Inside `String.raw\`…\`` they must not.
 | `v.toggle(label, value, {onChange})` | switch → `{value}` |
 | `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
+| `ctl.el.hidden = true` | every control exposes its element as `.el` (a button *is* its element): hide controls that do nothing in the current mode. |
 | `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. |
 | `v.legend([[color, label], [color, label, {dash, dot, area}]])` | legend row (call once, or inside render if it changes). |
 | `v.t`, `v.play()`, `v.pause()`, `v.restart()`, `v.playing` | animation clock. |

@@ -364,3 +364,4 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .chip-list > .faint { align-self: center; }
 .ch-graph-card .lineage-svg-wrap { max-height: 600px; overflow: auto; overscroll-behavior: contain; }
 .lineage-card .lineage-svg-wrap { max-height: 640px; overflow: auto; }
+.viz-controls [hidden] { display: none !important; }
