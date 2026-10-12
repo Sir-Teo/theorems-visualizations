@@ -79,7 +79,7 @@ export function richHTML(src, { lists = true } = {}) {
       const line = raw.trim();
       const m = lists && line.match(/^(\((?:[a-z]|[ivx]+|\d+)\)|-)\s+(.*)$/);
       if (m) { flush(); html.push(`<span class="rich-item"><span class="rich-tag">${m[1] === '-' ? '•' : m[1]}</span><span class="rich-body">${m[2]}</span></span>`); }
-      else if (line) { if (buf.length === 0 && html.length && html[html.length - 1].startsWith('<span class="rich-item"')) { /* continuation of item */ html[html.length - 1] = html[html.length - 1].replace(/<\/span><\/span>$/, ` ${line}</span></span>`); } else buf.push(line); }
+      else if (line) { if (buf.length === 0 && html.length && html[html.length - 1].startsWith('<span class="rich-item"') && !/^[A-Z]/.test(line)) { /* continuation of item */ html[html.length - 1] = html[html.length - 1].replace(/<\/span><\/span>$/, ` ${line}</span></span>`); } else buf.push(line); }
     }
     flush();
     return `<p>${html.join('')}</p>`;

@@ -269,10 +269,24 @@ function pageAbout() {
       <li><b>Across the books</b> links connect the same idea in its different incarnations — Baire's theorem in RCA and FA, Hahn–Banach for normed spaces and for locally convex spaces.</li>
     </ul>
     <h2>Caveats</h2>
-    <p>This is an unofficial study aid, not affiliated with the author or publisher. All statements and explanations are written afresh, in our own words; nothing here replaces the books themselves. Theorem numbers and dependency links were reconstructed and may contain mistakes — ${unverified} items are explicitly flagged as “number unverified”. Corrections are very welcome.</p>
+    <p>This is an unofficial study aid, not affiliated with the author or publisher. All statements and explanations are written afresh, in our own words; nothing here replaces the books themselves. Theorem numbers and dependency links were reconstructed and may contain mistakes — ${unverified} items are explicitly flagged as “number unverified”. Corrections are very welcome — the <a href="#/audit">audit list</a> collects every flagged item.</p>
     <h2>How it is built</h2>
     <p>A static site: each chapter is a JavaScript module holding its results and their visualizations, drawn with a small canvas library; KaTeX renders the mathematics. The source is on <a href="https://github.com/Sir-Teo/theorems-visualizations">GitHub</a>.</p>
   </div></div>`));
+}
+
+function pageAudit() {
+  setTitle('Numbering audit'); setNav('about'); curBook = null;
+  const flagged = G.items.filter((it) => it.verify);
+  const groups = new Map();
+  for (const it of flagged) { const k = `${it.b}/${it.c}`; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(it); }
+  app.replaceChildren(h(`<div class="wrap"><div class="page-head">
+    <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/about">About</a><span class="sep">/</span><span>Audit</span></div>
+    <h1>Numbering audit</h1>
+    <p class="sub">${flagged.length} of ${G.items.length} items carry a reconstructed number or kind that has not been checked against the printed book. If you have the books at hand, these are the ones to look at.</p>
+  </div>
+  ${[...groups].map(([k, its]) => { const [b, c] = k.split('/'); const C = chapterOf(b, +c); return `<section data-book="${b}" style="margin-top:22px"><h2 style="font-size:20px;margin-bottom:10px"><span class="book-dot"></span> ${BOOK_SHORT[b]} · ${chapterLabel(b, +c)} · ${escapeHTML(C?.title || '')} <span class="faint" style="font:500 13px var(--font-mono)">${its.length}</span></h2><div class="chip-list">${its.map((it) => link(it)).join('')}</div></section>`; }).join('')}
+  </div>`));
 }
 
 function pageNotFound() {
@@ -295,6 +309,7 @@ async function route() {
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
     else if (parts[0] === 'map') pageMap(params);
     else if (parts[0] === 'about') pageAbout();
+    else if (parts[0] === 'audit') pageAudit();
     else pageNotFound();
   } catch (e) {
     console.error(e);
