@@ -130,11 +130,17 @@ class Stage {
     this._bind();
     this.canvas.style.touchAction = 'pan-y';
   }
-  setTitle(s) { if (this.titleEl) this.titleEl.innerHTML = inlineHTML(s); }
+  setTitle(s) {
+    if (!this.titleEl) { this.titleEl = h('div', 'stage-title'); this.el.prepend(this.titleEl); }
+    if (this.titleEl._src !== s) { this.titleEl.innerHTML = inlineHTML(s); this.titleEl._src = s; }
+  }
+  /** Replace the custom ticks (same format as the xticks/yticks options; null = automatic). */
+  setTicks(xticks, yticks) { if (xticks !== undefined) this.o.xticks = xticks; if (yticks !== undefined) this.o.yticks = yticks; }
   resize() {
     const W = Math.max(120, Math.round(this.box.clientWidth || this.el.clientWidth || 300));
     const o = this.o;
-    let H = o.aspect ? W * o.aspect : o.height * (W < 520 ? Math.max(0.72, W / 520) : 1);
+    const HW = this.rt.stagesEl.clientWidth || W; // scale by the whole viz width so side-by-side panels stay equal
+    let H = o.aspect ? W * o.aspect : o.height * (HW < 560 ? Math.max(0.72, HW / 560) : 1);
     H = Math.round(Math.max(160, Math.min(H, 900)));
     if (W === this.W && H === this.H && this.canvas.width) { return; }
     this.W = W; this.H = H;
@@ -514,7 +520,7 @@ class Stage {
    * st: {color, r, label, constrain: (x,y)=>[x,y] | 'x' | 'y' | {x:[a,b], y:[c,d]}, onDrag(h)}
    */
   handle(x, y, st = {}) {
-    const hd = { x, y, color: st.color || 'accent', r: st.r ?? 7, label: st.label, constrain: st.constrain, onDrag: st.onDrag, visible: true, dragging: false, hover: false };
+    const hd = { x, y, color: st.color || 'accent', r: st.r ?? 7, label: st.label, labelPos: st.labelPos, constrain: st.constrain, onDrag: st.onDrag, visible: true, dragging: false, hover: false };
     hd.set = (nx, ny) => { hd.x = nx; hd.y = ny; this.rt.invalidate(); };
     this.handles.push(hd);
     this.canvas.style.touchAction = 'none';
@@ -609,7 +615,8 @@ class Stage3D {
   }
   resize() {
     const W = Math.max(120, Math.round(this.box.clientWidth || 300));
-    const H = Math.round(Math.max(200, this.o.height * (W < 520 ? Math.max(0.75, W / 520) : 1)));
+    const HW = this.rt.stagesEl.clientWidth || W;
+    const H = Math.round(Math.max(200, this.o.height * (HW < 560 ? Math.max(0.75, HW / 560) : 1)));
     if (W === this.W && H === this.H && this.canvas.width) return;
     this.W = W; this.H = H; const d = DPR();
     this.canvas.width = Math.round(W * d); this.canvas.height = Math.round(H * d);

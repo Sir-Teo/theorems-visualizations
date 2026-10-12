@@ -217,14 +217,16 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `heat((x,y) => number, {range:[lo,hi], cmap:'viridis'|'magma'|'diverging', res, key})` | scalar field. |
 | `domain(z => Cx, {key, res, contours, gridLines})` | phase portrait of a complex function. |
 | `setView([x0,x1], [y0,y1])` | change the window (fine to call inside render). |
-| `setTitle(rich)` | change the stage title. |
+| `setTitle(rich)` | change (or add) the stage title. |
+| `setTicks(xticks, yticks)` | change custom ticks per mode (`null` = automatic). |
+| `axes()`, `grid()` | redraw the axes/grid on top (e.g. after a full-panel `raster`/`domain`). |
 | `X(x)`, `Y(y)`, `inv(px,py)`, `bounds`, `width`, `height`, `ctx`, `textPx`, `texPx` | escape hatches for custom canvas drawing in pixels. |
 
 Interaction (create once, outside `render`):
 
 | call | |
 |---|---|
-| `s.handle(x, y, {color, r, label, constrain})` → `h` | draggable point; read `h.x`, `h.y`. `constrain`: `'x'`, `'y'`, `{x:[a,b], y:[c,d]}` or `(x,y) => [x', y']` (e.g. snap onto a curve). `h.onDrag = fn`, `h.visible = false`, `h.set(x,y)`. |
+| `s.handle(x, y, {color, r, label, labelPos, constrain})` → `h` | draggable point; read `h.x`, `h.y`. `constrain`: `'x'`, `'y'`, `{x:[a,b], y:[c,d]}` or `(x,y) => [x', y']` (e.g. snap onto a curve). `h.onDrag = fn`, `h.visible = false`, `h.set(x,y)`. |
 | `s.onDrag((x, y, phase) => …)` | free drag/draw anywhere (`phase`: start/move/end). |
 | `s.onClick((x, y) => …)` | click to add points etc. |
 

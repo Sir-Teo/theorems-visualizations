@@ -245,7 +245,7 @@ main { flex: 1; }
 .thm-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 22px; }
 .viz-card { padding: 14px; }
 .viz-caption { font-size: 13.5px; color: var(--ink-2); padding: 2px 4px 10px; display: flex; gap: 8px; align-items: flex-start; }
-.viz-caption svg { flex: none; margin-top: 3px; color: var(--bc); }
+.viz-caption > svg { flex: none; margin-top: 3px; color: var(--bc); }
 .viz-caption p { margin: 0; }
 .prose { font-family: var(--font-serif); font-size: 18px; line-height: 1.6; color: var(--ink); }
 .prose .katex { font-size: 1.02em; }
