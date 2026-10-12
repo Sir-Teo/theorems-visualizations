@@ -291,13 +291,13 @@ export class MapView {
     host.querySelector('input[data-defs]').addEventListener('change', (e) => { this.show.defs = e.target.checked; this.draw(); });
     host.querySelector('[data-fit]').addEventListener('click', () => this.fit(true));
     this.k = 1; this.tx = 0; this.ty = 0; this.hover = null; this.sel = null;
-    this.nodes = G.items.map((it) => ({ it, x: it.x, y: it.y, r: 3.2 + Math.sqrt(it.desc || 0) * 0.55 }));
+    this.nodes = G.items.map((it) => ({ it, x: it.x, y: it.y, r: Math.min(8, 2.6 + Math.sqrt(it.desc || 0) * 0.4) }));
     this.byId = new Map(this.nodes.map((n) => [n.it.id, n]));
     this.edges = [];
     for (const n of this.nodes) for (const d of n.it.deps) { const m = this.byId.get(d); if (m) this.edges.push([m, n]); }
     this.top = this.nodes.slice().sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 60);
     this._bind();
-    this.ro = new ResizeObserver(() => { this.resize(); this.draw(); });
+    this.ro = new ResizeObserver(() => { this.resize(); if (!this.userMoved && !this.sel) this.fit(false); else this.draw(); });
     this.ro.observe(host);
     this.resize(); this.fit(false);
     if (focus && this.byId.has(focus)) this.select(this.byId.get(focus), true);
@@ -355,7 +355,7 @@ export class MapView {
     const cv = this.canvas; const ptrs = new Map(); let drag = null, pinch = null, moved = false;
     const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('wheel', (e) => {
-      e.preventDefault(); cancelAnimationFrame(this.anim);
+      e.preventDefault(); cancelAnimationFrame(this.anim); this.userMoved = true;
       const [px, py] = pos(e); const f = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018));
       const k = Math.min(8, Math.max(0.05, this.k * f)); const r = k / this.k;
       this.tx = px - (px - this.tx) * r; this.ty = py - (py - this.ty) * r; this.k = k; this.draw();
@@ -373,7 +373,7 @@ export class MapView {
         const k = Math.min(8, Math.max(0.05, pinch.k * d / pinch.d)); const r = k / pinch.k;
         this.k = k; this.tx = pinch.c[0] - (pinch.c[0] - pinch.tx) * r; this.ty = pinch.c[1] - (pinch.c[1] - pinch.ty) * r; moved = true; this.draw(); return;
       }
-      if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) moved = true; this.tx = drag.tx + dx; this.ty = drag.ty + dy; this.draw(); return; }
+      if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) { moved = true; this.userMoved = true; } this.tx = drag.tx + dx; this.ty = drag.ty + dy; this.draw(); return; }
       const n = this.hit(p[0], p[1]);
       if (n !== this.hover) { this.hover = n; cv.style.cursor = n ? 'pointer' : 'grab'; this.draw(); }
       this._tip(n, p);

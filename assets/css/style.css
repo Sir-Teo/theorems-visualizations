@@ -344,7 +344,8 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .map-legend { position: absolute; left: 16px; bottom: 14px; z-index: 5; padding: 8px 12px; font-size: 12.5px; color: var(--ink-2); display: flex; gap: 14px; flex-wrap: wrap; }
 .map-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .map-help { position: absolute; right: 16px; bottom: 14px; z-index: 5; font-size: 12px; color: var(--ink-3); }
-@media (max-width: 640px) { .map-help { display: none; } .map-legend { display: none; } }
+@media (max-width: 1100px) { .map-help { display: none; } }
+@media (max-width: 640px) { .map-legend { display: none; } }
 @media (max-width: 360px) { .brand b { display: none; } }
 
 /* about */
