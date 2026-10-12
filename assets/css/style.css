@@ -119,8 +119,10 @@ p { margin: 0 0 .8em; }
 .icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); }
 .icon-btn:hover { color: var(--ink); border-color: var(--line-2); }
 @media (max-width: 860px) {
-  .search input { width: 160px; }
+  .search input { width: 150px; }
   .search kbd { display: none; }
+  .brand i { display: none; }
+  .site-header .wrap { gap: 10px; }
 }
 @media (max-width: 640px) {
   .site-header .wrap { gap: 6px; }
@@ -360,3 +362,5 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .flow-svg .gnode:hover .hit { fill: var(--panel-2); }
 .flow-svg .fedge { transition: opacity .15s; }
 .chip-list > .faint { align-self: center; }
+.ch-graph-card .lineage-svg-wrap { max-height: 600px; overflow: auto; overscroll-behavior: contain; }
+.lineage-card .lineage-svg-wrap { max-height: 640px; overflow: auto; }

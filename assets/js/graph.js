@@ -42,7 +42,7 @@ function layered(ids, edges, levelOf, initialOrder) {
     }
   }
   const out = new Map();
-  levels.forEach((l, ci) => cols.get(l).forEach((id) => out.set(id, { col: ci, row: rowOf.get(id), level: l })));
+  levels.forEach((l, ci) => cols.get(l).forEach((id, idx) => out.set(id, { col: ci, row: rowOf.get(id), idx, level: l })));
   return { pos: out, nCols: levels.length, maxRows: Math.max(...levels.map((l) => cols.get(l).length)) };
 }
 
@@ -149,7 +149,7 @@ export function renderLineage(host, G, id, { depth = 2, dependents = true, reduc
   }
   wireHover(root, nodeEls, edgeEls);
   // scroll so the target is visible
-  requestAnimationFrame(() => { const p = pos.get(id); const wrap = host; wrap.scrollLeft = Math.max(0, X(p) - wrap.clientWidth * 0.6); });
+  requestAnimationFrame(() => { const p = pos.get(id); host.scrollLeft = Math.max(0, X(p) - host.clientWidth * 0.6); host.scrollTop = Math.max(0, Y(p) + H / 2 - host.clientHeight / 2); });
   return { count: ids.length, ancestors: anc.length - 1, dependents: down.length };
 }
 
@@ -182,7 +182,7 @@ export function renderChapterGraph(host, G, book, ch, { onOpen, onOpenChapter } 
   const colX = (c) => c === 0 && extNodes.length ? 8 : 8 + (extNodes.length ? EW + CG : 0) + (c - (extNodes.length ? 1 : 0)) * (W + CG);
   const width = colX(nCols - 1) + W + 16, height = maxRows * (H + RG) + 20;
   const root = svg('svg', { class: 'lineage-svg', width, height, viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'Chapter dependency graph' }, host);
-  const Y = (p) => height / 2 + p.row * (H + RG) - H / 2;
+  const Y = (p) => 10 + p.idx * (H + RG);
   const wOf = (x) => x.startsWith('ext:') ? EW : W;
   const eg = svg('g', { fill: 'none' }, root);
   const edgeEls = [];
