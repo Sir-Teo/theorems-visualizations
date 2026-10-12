@@ -157,6 +157,8 @@ viz(v) {
 
 Note: inside a normal (non-raw) JS string, TeX backslashes must be doubled: `'$\\varepsilon$'`.
 Inside `String.raw\`…\`` they must not.
+A single backslash in a normal string or template literal is silently eaten (`\frac` becomes a form
+feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX errors.
 
 ### `v` — runtime
 

@@ -51,6 +51,9 @@ export function katexHTML(tex, display = false) {
   const K = typeof window !== 'undefined' && window.katex;
   if (!K) return `<span class="tex-fallback">${escapeHTML(tex)}</span>`;
   if (window.__texStrict) {
+    // a TeX command inside a non-raw JS string loses its backslash: "\frac" → form feed + "rac", "\theta" → tab + "heta", "\nu" → newline + "u"
+    if (/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(tex) || /\n(?:eq|u|abla|ot|otin|ewline|exists|i\b|e\b)/.test(tex) || /\r(?:ho|ight|angle|m\b)/.test(tex) || /\t(?:ext|heta|au|imes|o\b|ilde|frac|riangle)/.test(tex))
+      (window.__texErrors ||= []).push(`escaped backslash (use String.raw or \\\\) in: ${JSON.stringify(tex)}`);
     try { return K.renderToString(tex, { displayMode: display, throwOnError: true, macros: { ...MACROS }, strict: 'ignore' }); }
     catch (e) { (window.__texErrors ||= []).push(`${e.message} in: ${tex}`); }
   }
