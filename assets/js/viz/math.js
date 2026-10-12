@@ -38,8 +38,9 @@ export function sci(x, digits = 3) {
   if (x === 0) return '0';
   const a = Math.abs(x);
   if (a >= 1e-3 && a < 1e5) return String(Number(x.toPrecision(digits)));
-  const e = Math.floor(Math.log10(a)), m = x / Math.pow(10, e);
-  return `${Number(m.toPrecision(digits))}\\times10^{${e}}`;
+  let e = Math.floor(Math.log10(a)), m = Number((x / Math.pow(10, e)).toPrecision(digits));
+  if (Math.abs(m) >= 10) { m = Number((m / 10).toPrecision(digits)); e++; }
+  return `${m}\\times10^{${e}}`;
 }
 /** Fixed decimals with a real minus sign. */
 export const fix = (x, d = 2) => x.toFixed(d).replace('-', '−');
