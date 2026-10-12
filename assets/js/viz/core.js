@@ -60,7 +60,7 @@ export function katexHTML(tex, display = false) {
  * Render a "rich" string: text with $inline$ and $$display$$ TeX, **bold**, *italic*,
  * blank-line paragraphs, and lines starting with "(a)", "(i)", "- " rendered as list items.
  */
-export function richHTML(src) {
+export function richHTML(src, { lists = true } = {}) {
   if (src == null) return '';
   const maths = [];
   let s = String(src).replace(/\$\$([\s\S]+?)\$\$|\$((?:\\.|[^$\\])+?)\$/g, (_, d, i) => {
@@ -74,7 +74,7 @@ export function richHTML(src) {
     const flush = () => { if (buf.length) { html.push(`<span class="rich-line">${buf.join(' ')}</span>`); buf = []; } };
     for (const raw of lines) {
       const line = raw.trim();
-      const m = line.match(/^(\((?:[a-z]|[ivx]+|\d+)\)|-)\s+(.*)$/);
+      const m = lists && line.match(/^(\((?:[a-z]|[ivx]+|\d+)\)|-)\s+(.*)$/);
       if (m) { flush(); html.push(`<span class="rich-item"><span class="rich-tag">${m[1] === '-' ? '•' : m[1]}</span><span class="rich-body">${m[2]}</span></span>`); }
       else if (line) { if (buf.length === 0 && html.length && html[html.length - 1].startsWith('<span class="rich-item"')) { /* continuation of item */ html[html.length - 1] = html[html.length - 1].replace(/<\/span><\/span>$/, ` ${line}</span></span>`); } else buf.push(line); }
     }
@@ -85,7 +85,7 @@ export function richHTML(src) {
 }
 export function renderRich(el, src) { el.innerHTML = richHTML(src); }
 /** Inline-only variant (no <p> wrapper), for labels. */
-export function inlineHTML(src) { const h = richHTML(src); return h.replace(/^<p>/, '').replace(/<\/p>$/, '').replace(/<\/?span class="rich-line">/g, ''); }
+export function inlineHTML(src) { const h = richHTML(src, { lists: false }); return h.replace(/^<p>/, '').replace(/<\/p>$/, '').replace(/<\/?span class="rich-line">/g, ''); }
 
 // ------------------------------------------------------------------ DOM helper
 function h(tag, cls, ...kids) { const el = document.createElement(tag); if (cls) el.className = cls; for (const k of kids) el.append(k); return el; }
@@ -141,7 +141,7 @@ class Stage {
     const o = this.o;
     const HW = this.rt.stagesEl.clientWidth || W; // scale by the whole viz width so side-by-side panels stay equal
     let H = o.aspect ? W * o.aspect : o.height * (HW < 560 ? Math.max(0.72, HW / 560) : 1);
-    H = Math.round(Math.max(160, Math.min(H, 900)));
+    H = Math.round(Math.max(80, Math.min(H, 900)));
     if (W === this.W && H === this.H && this.canvas.width) { return; }
     this.W = W; this.H = H;
     const d = DPR();
