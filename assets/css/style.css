@@ -365,3 +365,5 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .ch-graph-card .lineage-svg-wrap { max-height: 600px; overflow: auto; overscroll-behavior: contain; }
 .lineage-card .lineage-svg-wrap { max-height: 640px; overflow: auto; }
 .viz-controls [hidden] { display: none !important; }
+.viz-readout { pointer-events: none; }
+.viz-controls { position: relative; z-index: 1; }
