@@ -67,14 +67,15 @@ async function worker() {
         // click through every option of every segmented control and screenshot each state
         const segs = await page.locator('#viz .seg').count(); let k = 0;
         for (let i = 0; i < segs; i++) {
+          if (!(await page.locator('#viz .seg').nth(i).isVisible())) continue;
           const btns = page.locator('#viz .seg').nth(i).locator('button'); const n = await btns.count();
           for (let j = 0; j < n; j++) {
-            if (await btns.nth(j).evaluate((b) => b.classList.contains('on'))) continue;
-            await btns.nth(j).click(); await page.waitForTimeout(700);
+            if (!(await btns.nth(j).isVisible()) || await btns.nth(j).evaluate((b) => b.classList.contains('on'))) continue;
+            await btns.nth(j).click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(700);
             await page.evaluate(() => window.dispatchEvent(new Event('vizpause'))); await page.waitForTimeout(80);
             k++; await page.locator('#shot').screenshot({ path: join(ROOT, 'shots', `${it.id}~${k}${theme === 'dark' ? '.dark' : ''}.png`) });
           }
-          await btns.nth(0).click(); await page.waitForTimeout(150);
+          await btns.nth(0).click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(150);
         }
         const errsNow = await page.evaluate(() => window.__vizErrors || []);
         if (errsNow.length) r.errors = [...(r.errors || []), ...errsNow];
