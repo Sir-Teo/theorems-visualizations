@@ -23,7 +23,7 @@ const matchT = (t, it) => {
   return t === it.id || t === it.book || t === `${it.book}/${it.chapter}` || t === it.file;
 };
 const sel = items.filter((it) => typeof it.viz === 'function').filter((it) => !targets.length || targets.some((t) => matchT(t, it)));
-const relevant = P.filter((p) => !targets.length || items.filter((it) => targets.some((t) => matchT(t, it))).some((it) => p.where.startsWith(`${it.file} ${it.num}`) || p.where === it.file));
+const relevant = P.filter((p) => !targets.length || targets.some((t) => matchT(t, { file: p.where.split(' ')[0], id: null, book: null })) || items.filter((it) => targets.some((t) => matchT(t, it))).some((it) => p.where.startsWith(`${it.file} ${it.num}`) || p.where === it.file));
 console.log(`static check: ${sel.length} item(s)`);
 const st = printProblems(relevant, { quiet: flags.has('--quiet') });
 console.log(`  ${st.errors} error(s), ${st.warnings} warning(s)`);

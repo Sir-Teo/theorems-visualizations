@@ -94,7 +94,7 @@ export default {
           top.tex('\\varepsilon', top.bounds.x[1], fp + e, { align: 'right', baseline: 'bottom', color: 'accent', dx: -6, dy: -2 });
           top.tex('\\delta(p)', p.x + d, top.bounds.y[1], { align: 'left', baseline: 'top', color: 'orange', dx: 5, dy: 6 });
           // bottom: δ(p) profile and its infimum
-          bot.path(xs.map((x, i) => [x, ds[i]]), { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.14 });
+          bot.path(xs.map((x, i) => [x, ds[i]]), { color: 'orange', width: 2 });
           bot.path(xs.map((x, i) => [x, ds[i]]).concat([[F.b, 0], [F.a, 0]]), { fill: 'orange', fillAlpha: 0.12, stroke: false, close: true });
           bot.hline(dmin, { color: F.compact ? 'green' : 'red', dash: true, width: 1.5 });
           bot.dot(p.x, d, { color: 'accent', r: 4.5 });
