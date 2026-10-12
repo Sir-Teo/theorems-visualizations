@@ -3,7 +3,8 @@
 //   node scripts/check.mjs                 # everything
 //   node scripts/check.mjs pma/4           # one chapter
 //   node scripts/check.mjs pma-4.19 rca    # an item and a whole book
-//   flags: --shots (save PNGs to shots/), --dark, --still, --w=860, --static (skip browser), --quiet
+//   flags: --shots (save PNGs to shots/), --modes (also every segmented-control option → shots/<id>~k.png),
+//          --dark, --still, --w=860, --static (skip browser), --quiet, --jobs=N
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
@@ -62,6 +63,22 @@ async function worker() {
       await page.waitForFunction(() => window.__done, null, { timeout: 20000 });
       r = await page.evaluate(() => window.__done);
       if (flags.has('--shots')) await page.locator('#shot').screenshot({ path: join(ROOT, 'shots', `${it.id}${theme === 'dark' ? '.dark' : ''}.png`) });
+      if (flags.has('--modes')) {
+        // click through every option of every segmented control and screenshot each state
+        const segs = await page.locator('#viz .seg').count(); let k = 0;
+        for (let i = 0; i < segs; i++) {
+          const btns = page.locator('#viz .seg').nth(i).locator('button'); const n = await btns.count();
+          for (let j = 0; j < n; j++) {
+            if (await btns.nth(j).evaluate((b) => b.classList.contains('on'))) continue;
+            await btns.nth(j).click(); await page.waitForTimeout(700);
+            await page.evaluate(() => window.dispatchEvent(new Event('vizpause'))); await page.waitForTimeout(80);
+            k++; await page.locator('#shot').screenshot({ path: join(ROOT, 'shots', `${it.id}~${k}${theme === 'dark' ? '.dark' : ''}.png`) });
+          }
+          await btns.nth(0).click(); await page.waitForTimeout(150);
+        }
+        const errsNow = await page.evaluate(() => window.__vizErrors || []);
+        if (errsNow.length) r.errors = [...(r.errors || []), ...errsNow];
+      }
     } catch (e) { r = { ok: false, errors: [String(e.message || e)], texErrors: [] }; }
     const errs = [...new Set([...(r.errors || []), ...consoleErrs.filter((m) => !/favicon|Failed to load resource/.test(m))])];
     results.push({ it, errs, tex: r.texErrors || [], blank: r.blank || [], canvases: r.canvases || 0 });

@@ -263,6 +263,7 @@ closestOnSegment closestOnConvexPoly unitBall(p) blob(cx,cy,r,seed)` · complex:
 node scripts/check.mjs pma/4 --shots          # static checks + run each viz headless, save shots/<id>.png
 node scripts/check.mjs pma-4.19 --shots --dark # one item, dark theme
 node scripts/check.mjs pma/4 --static          # only the static checks (fast)
+node scripts/check.mjs pma-4.19 --shots --modes # also screenshot every option of each segmented control → shots/<id>~k.png
 ```
 
 The checker reports import errors, schema problems, unbalanced `$`, KaTeX errors, runtime
