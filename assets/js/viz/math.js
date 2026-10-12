@@ -32,6 +32,15 @@ export function fmt(x, digits = 3) {
   const s = Number(x.toPrecision(digits)).toString();
   return s.replace('-', '−');
 }
+/** TeX-ready number: sci(0.0000123) -> "1.23\\times10^{-5}" (use inside $…$). */
+export function sci(x, digits = 3) {
+  if (!isFinite(x)) return x > 0 ? '\\infty' : x < 0 ? '-\\infty' : '\\text{NaN}';
+  if (x === 0) return '0';
+  const a = Math.abs(x);
+  if (a >= 1e-3 && a < 1e5) return String(Number(x.toPrecision(digits)));
+  const e = Math.floor(Math.log10(a)), m = x / Math.pow(10, e);
+  return `${Number(m.toPrecision(digits))}\\times10^{${e}}`;
+}
 /** Fixed decimals with a real minus sign. */
 export const fix = (x, d = 2) => x.toFixed(d).replace('-', '−');
 

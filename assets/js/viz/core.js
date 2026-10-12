@@ -935,7 +935,7 @@ class Runtime {
       rgb: (name) => rgbOf(name),
       mix,
       onCleanup: (f) => rt.cleanups.push(f),
-      M, Cx: M.Cx, cx: M.cx, rng: M.rng, fmt: M.fmt, fix: M.fix,
+      M, Cx: M.Cx, cx: M.cx, rng: M.rng, fmt: M.fmt, fix: M.fix, sci: M.sci,
       tex: katexHTML,
     };
     return api;

@@ -177,7 +177,7 @@ Inside `String.raw\`…\`` they must not.
 | `v.invalidate()` | request a redraw (e.g. after mutating state in a button handler — buttons already do this). |
 | `v.color(name, alpha)` | palette colour as CSS string. `v.rgb(name)` → `[r,g,b,a]`; `v.mix(a, b, t)`. |
 | `v.M` | math library (below). `v.Cx`, `v.cx(re, im)` complex numbers. `v.rng(seed)` seeded RNG. |
-| `v.fmt(x, digits)` / `v.fix(x, decimals)` | number formatting with a real minus sign. |
+| `v.fmt(x, digits)` / `v.fix(x, decimals)` | number formatting with a real minus sign (plain text). `v.sci(x, digits)` gives TeX (`1.2\times10^{-5}`) for use inside `$…$`. |
 
 ### Stage options
 
