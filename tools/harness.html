@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Viz harness</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  body { padding: 18px; display: block; }
+  #wrap { width: var(--w, 860px); }
+  .statement { margin: 0 0 14px; font-size: 17px; }
+  h1 { font-size: 22px; margin-bottom: 10px; }
+</style>
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.get('theme')) document.documentElement.dataset.theme = q.get('theme');
+  window.__texStrict = true;
+  window.__vizStill = q.has('still');
+</script>
+</head>
+<body>
+<div id="wrap" data-book="">
+  <h1 id="title"></h1>
+  <div class="statement" id="statement"></div>
+  <div class="card viz-card" id="shot">
+    <div class="viz-caption" id="caption"></div>
+    <div id="viz"></div>
+  </div>
+  <div class="prose" id="idea" style="margin-top:14px"></div>
+</div>
+<script type="module">
+  import { mount, renderRich } from '../assets/js/viz/core.js';
+  const q = new URLSearchParams(location.search);
+  const out = { ok: false, errors: [], texErrors: [] };
+  window.addEventListener('error', (e) => out.errors.push(String(e.error?.stack || e.message)));
+  window.addEventListener('unhandledrejection', (e) => out.errors.push(String(e.reason?.stack || e.reason)));
+  try {
+    if (q.get('w')) document.getElementById('wrap').style.setProperty('--w', q.get('w') + 'px');
+    const mod = await import('../' + q.get('file'));
+    const ch = mod.default;
+    const item = ch.items.find((it) => `${ch.book}-${it.num}` === q.get('id'));
+    if (!item) throw new Error('item not found: ' + q.get('id'));
+    document.getElementById('wrap').dataset.book = ch.book;
+    document.getElementById('title').textContent = `${item.kind} ${item.num} — ${item.name}`;
+    renderRich(document.getElementById('statement'), item.statement);
+    renderRich(document.getElementById('caption'), item.caption || '');
+    renderRich(document.getElementById('idea'), item.idea || '');
+    if (typeof item.viz !== 'function') throw new Error('no viz function');
+    mount(document.getElementById('viz'), item.viz);
+    await new Promise((r) => setTimeout(r, +(q.get('wait') || 1500)));
+    window.dispatchEvent(new Event('vizpause'));
+    await new Promise((r) => setTimeout(r, 120));
+    // blank-canvas check: every canvas should contain some non-transparent pixels
+    const blank = [];
+    document.querySelectorAll('#viz canvas').forEach((cv, i) => {
+      const c = cv.getContext('2d'); const { width: w, height: h } = cv; if (!w || !h) { blank.push(i); return; }
+      const d = c.getImageData(0, 0, w, h).data; let n = 0;
+      for (let k = 3; k < d.length; k += 4 * 37) if (d[k] > 0) n++;
+      if (n < 3) blank.push(i);
+    });
+    out.canvases = document.querySelectorAll('#viz canvas').length;
+    out.blank = blank;
+    out.ok = true;
+  } catch (e) { out.errors.push(String(e.stack || e)); }
+  out.errors.push(...(window.__vizErrors || []));
+  out.texErrors = window.__texErrors || [];
+  window.__done = out;
+</script>
+</body>
+</html>

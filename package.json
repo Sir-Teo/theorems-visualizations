@@ -1,0 +1,14 @@
+{
+  "name": "theorems-visualizations",
+  "private": true,
+  "type": "module",
+  "description": "Interactive visualizations of every theorem in Rudin's three analysis books, with their dependency graph.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "serve": "node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.0"
+  }
+}
