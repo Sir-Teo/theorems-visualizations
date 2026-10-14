@@ -26,8 +26,8 @@ Site sections:
 No build step is needed in the browser. You need Node ≥ 18.
 
 ```bash
+npm run build        # generate data/catalog.json (not committed); rerun after editing content/
 npm run serve        # http://localhost:8173
-npm run build        # regenerate data/catalog.json after editing content/
 npm run check        # validate content and run every visualization headless
 ```
 
