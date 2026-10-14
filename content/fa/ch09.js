@@ -155,17 +155,18 @@ for every $t$ in some neighbourhood of $t_0$.`,
         });
       },
     },
-    // ------------------------------------------------------------------ 9.3
+    // ------------------------------------------------------------------ 9.4
     {
-      num: '9.3',
+      num: '9.4',
       kind: 'Theorem',
       name: "Wiener's theorem on translation-invariant subspaces",
       statement: String.raw`For $Y\subset L^1(\R^n)$ let $Z(Y)$ be the set of all $t\in\R^n$ at which $\hat f(t)=0$ for **every** $f\in Y$. If $Y$ is a closed subspace of $L^1(\R^n)$ that is invariant under all translations ($f\in Y\Rightarrow\tau_xf\in Y$ for every $x\in\R^n$) and $Z(Y)=\emptyset$, then $Y=L^1(\R^n)$.`,
       idea: String.raw`(i) $Y$ is an ideal: if $f\in Y$ and $g\in L^1$ then $f*g\in Y$. Otherwise Hahn–Banach (3.5) gives $\Lambda\in(L^1)^*=L^\infty$ vanishing on $Y$ with $\Lambda(f*g)\ne0$, yet $\Lambda(f*g)=\int g(y)\,\Lambda(\tau_yf)\,dy=0$.
 (ii) Fix $t_0$ and pick $f\in Y$ with $c=\hat f(t_0)\ne0$. Lemma 9.2 gives $h$ with $\|h\|_1<|c|$ and $\hat f=c-\hat h$ near $t_0$, so the Neumann series $u=\sum_k c^{-k-1}h^{*k}*g$ converges for every $g$. If $\hat g$ is supported in that neighbourhood, $\hat u=\hat g/\hat f$ there, and $f*u=g$ lies in $Y$ by (i).
-(iii) A partition of unity over the compact support of $\hat g$ puts every $g$ with compactly supported $\hat g$ into $Y$, and such $g$ are dense in $L^1$.`,
+(iii) A partition of unity over the compact support of $\hat g$ puts every $g$ with compactly supported $\hat g$ into $Y$, and such $g$ are dense in $L^1$.
+A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $Y$, translation invariance turns it into a bounded $\varphi$ with $f*\varphi=0$ for all $f\in Y$. Then $\operatorname{supp}\hat\varphi\subset Z(Y)=\emptyset$, so $\varphi=0$, and Hahn–Banach gives $Y=L^1$.`,
       caption: String.raw`On $\R$, $Y$ is the closed span of the translates of one or two generators. The top panel shows the least-squares combination of $N$ translates of the generator(s), placed at the gold ticks, approximating a fixed target $g$. Bottom left: $|\hat f|$ of each generator, with the common zeros $Z(Y)$ in red. Bottom right: the $L^1$ error against $N$. When $Z(Y)\ne\emptyset$ the error can never fall below $\sup_{t\in Z(Y)}|\hat g(t)|$ (red floor), because $e^{-it_0x}\in L^\infty$ annihilates $Y$. The last option uses two generators, each with zeros, whose zeros do not overlap. Then $Z(Y)=\emptyset$ and the error goes to $0$.`,
-      deps: ['fa-9.2', 'fa-3.5', 'fa-7.2'],
+      deps: ['fa-9.2', 'fa-9.3', 'fa-3.5', 'fa-7.2'],
       see: ['rca-9.16', 'rca-9.21', 'rca-18.21'],
       tags: ['Wiener', 'ideals', 'translation invariance'],
       verify: true,
@@ -253,9 +254,9 @@ for every $t$ in some neighbourhood of $t_0$.`,
         });
       },
     },
-    // ------------------------------------------------------------------ 9.4
+    // ------------------------------------------------------------------ 9.5
     {
-      num: '9.4',
+      num: '9.5',
       kind: 'Theorem',
       name: "Wiener's Tauberian theorem",
       statement: String.raw`Let $K\in L^1(\R^n)$ satisfy $\hat K(t)\ne0$ for every $t\in\R^n$.
@@ -263,9 +264,9 @@ for every $t$ in some neighbourhood of $t_0$.`,
 (b) If $\varphi\in L^\infty(\R^n)$, $a$ is a constant, and $(K*\varphi)(x)\to a\hat K(0)$ as $x\to\infty$, then $(f*\varphi)(x)\to a\hat f(0)$ as $x\to\infty$ for **every** $f\in L^1(\R^n)$.
 
 (Here $x\to\infty$ means $|x|\to\infty$; on $\R$ the same holds with $x\to+\infty$ throughout. Conversely, if $\hat K$ has a zero then the translates of $K$ are not dense, since $\hat h$ vanishes there for every $h$ in their closed span.)`,
-      idea: String.raw`(a) is Theorem 9.3 applied to the closed span of the translates of $K$, whose zero set is empty. For (b), let $Y$ be the set of $f\in L^1$ with $(f*\varphi)(x)-a\hat f(0)\to0$. It is a subspace, closed because $\|(f-g)*\varphi\|_\infty\le\|f-g\|_1\|\varphi\|_\infty$ and $|\hat f(0)-\hat g(0)|\le\|f-g\|_1$, and translation-invariant because $(\tau_sf)*\varphi=\tau_s(f*\varphi)$ while $\widehat{\tau_sf}(0)=\hat f(0)$. Since $K\in Y$, (a) forces $Y=L^1$. The hypothesis $\hat K\ne0$ cannot be dropped: if $\hat K(t_0)=0$ with $t_0\ne0$, then $\varphi(x)=e^{it_0x}$ gives $K*\varphi\equiv0$, while $f*\varphi=\hat f(t_0)\varphi$ does not converge.`,
+      idea: String.raw`(a) is Theorem 9.4 applied to the closed span of the translates of $K$, whose zero set is empty. For (b), let $Y$ be the set of $f\in L^1$ with $(f*\varphi)(x)-a\hat f(0)\to0$. It is a subspace, closed because $\|(f-g)*\varphi\|_\infty\le\|f-g\|_1\|\varphi\|_\infty$ and $|\hat f(0)-\hat g(0)|\le\|f-g\|_1$, and translation-invariant because $(\tau_sf)*\varphi=\tau_s(f*\varphi)$ while $\widehat{\tau_sf}(0)=\hat f(0)$. Since $K\in Y$, (a) forces $Y=L^1$. The hypothesis $\hat K\ne0$ cannot be dropped: if $\hat K(t_0)=0$ with $t_0\ne0$, then $\varphi(x)=e^{it_0x}$ gives $K*\varphi\equiv0$, while $f*\varphi=\hat f(t_0)\varphi$ does not converge.`,
       caption: String.raw`On $\R$ with $a=1$ (plain $dx$, so $\hat K(0)=\int K$). Choose a kernel $K$ and a bounded $\varphi$. Top: $\varphi$ and the normalised averages $(K*\varphi)/\hat K(0)$ and $(f*\varphi)/\hat f(0)$, where $f$ is a narrow Gaussian test function. Bottom: $\hat K$, $\hat f$ and the frequencies present in $\varphi-1$ (gold). An average forgets exactly the frequencies where its kernel's transform vanishes. With a pure tone, $K*\varphi$ converges only when $\omega\in Z(K)$ (use the button), and then $f*\varphi$ keeps oscillating. With the chirp, whose frequency runs off to infinity, every average converges, as (b) predicts.`,
-      deps: ['fa-9.3', 'fa-7.2'],
+      deps: ['fa-9.4', 'fa-7.2'],
       see: ['rca-9.16'],
       tags: ['Wiener', 'Tauberian', 'convolution'],
       verify: true,
@@ -440,11 +441,11 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
       statement: String.raw`Suppose that $\varphi\in L^\infty(\R)$ is slowly oscillating, that $K\in L^1(\R)$ satisfies $\hat K(t)\ne0$ for every real $t$, and that
 $$\lim_{x\to+\infty}(K*\varphi)(x)=a\hat K(0).$$
 Then $\varphi(x)\to a$ as $x\to+\infty$.`,
-      idea: String.raw`By Wiener's theorem 9.4(b), in its one-sided form, $f*\varphi\to a\hat f(0)$ for every $f\in L^1$. Take for $f$ the indicator of $[0,\delta]$, normalised so that $(f*\varphi)(x)/\hat f(0)=A_\delta\varphi(x)=\frac1\delta\int_{x-\delta}^x\varphi$. Then
+      idea: String.raw`By Wiener's theorem 9.5(b), in its one-sided form, $f*\varphi\to a\hat f(0)$ for every $f\in L^1$. Take for $f$ the indicator of $[0,\delta]$, normalised so that $(f*\varphi)(x)/\hat f(0)=A_\delta\varphi(x)=\frac1\delta\int_{x-\delta}^x\varphi$. Then
 $$|\varphi(x)-a|\le|\varphi(x)-A_\delta\varphi(x)|+|A_\delta\varphi(x)-a|.$$
 The first term is at most $\omega(x-\delta,\delta)$, which is below $\eps$ for large $x$ once $\delta$ is chosen by slow oscillation. The second tends to $0$ by Wiener.`,
       caption: String.raw`$a=1$. Top: $\varphi$ (grey), $(K*\varphi)/\hat K(0)$ (blue) and the backward average $A_\delta\varphi$ (green). At the draggable point the bars split $|\varphi(x)-1|$ into the slow-oscillation term $|\varphi-A_\delta\varphi|$ (orange) and the Wiener term $|A_\delta\varphi-1|$ (green). Bottom: the tail suprema $\sup_{y\ge x}|\cdot-1|$ on a log scale. The staircase satisfies every hypothesis and converges, slowly. The chirp is not slowly oscillating, so the orange term never shrinks. The tone at $\pi$ is slowly oscillating, but with the box kernel $\hat K(\pi)=0$, so the green term never shrinks.`,
-      deps: ['fa-9.4', 'fa-9.6'],
+      deps: ['fa-9.5', 'fa-9.6'],
       tags: ['Tauberian', 'Wiener', 'oscillation'],
       verify: true,
       viz(v) {

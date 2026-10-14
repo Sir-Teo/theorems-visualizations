@@ -1,4 +1,4 @@
-// Rudin, Functional Analysis — Chapter 9 (part 3): annihilators of bounded functions
+// Rudin, Functional Analysis — Chapter 9 (part 3): bounded functions annihilated by convolution
 //
 // Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
@@ -14,30 +14,30 @@ export default {
   book: 'fa',
   chapter: 9,
   items: [
-    // ------------------------------------------------------------------ 9.5
+    // ------------------------------------------------------------------ 9.3
     {
-      num: '9.5',
+      num: '9.3',
       kind: 'Theorem',
-      name: 'Annihilators of bounded functions; the spectrum of φ',
-      statement: String.raw`For $\varphi\in L^\infty(\R^n)$ let $Y_\varphi=\{f\in L^1(\R^n):f*\varphi=0\}$. Then $Y_\varphi$ is a closed translation-invariant subspace of $L^1(\R^n)$, and
-$$Z(Y_\varphi)=\emptyset\quad\Longrightarrow\quad\varphi=0 .$$
-In particular, if $K\in L^1(\R^n)$, $\hat K$ has no zero, and $K*\varphi=0$, then $\varphi=0$. Every $\varphi\ne0$ therefore has a nonempty **spectrum** $Z(Y_\varphi)$; for $\varphi(x)=\sum_kc_ke^{i\omega_k\cdot x}$ (finitely many terms, $c_k\ne0$) it is exactly $\{\omega_k\}$.`,
-      idea: String.raw`$Y_\varphi$ is closed because $\|f*\varphi\|_\infty\le\|f\|_1\|\varphi\|_\infty$, and translation-invariant because $(\tau_sf)*\varphi=\tau_s(f*\varphi)$. If $Z(Y_\varphi)=\emptyset$, Wiener's theorem 9.3 gives $Y_\varphi=L^1$, so $h_j*\varphi=0$ for an approximate identity $h_j$. Since $h_j*\varphi\to\varphi$ weak* in $L^\infty$, $\varphi=0$. For a trigonometric sum, $f*\varphi=\sum_kc_k\hat f(\omega_k)e^{i\omega_k\cdot x}$ (7.2), which vanishes iff $\hat f(\omega_k)=0$ for all $k$. So the frequencies are exactly the common zeros of the annihilator. Wiener's Tauberian theorem 9.4(b) is the "asymptotic" version of this uniqueness statement.`,
-      caption: String.raw`$n=1$. Top: the spectrum of $\varphi$ (gold), and $\hat f$ for an even kernel $f$ whose transform vanishes at $\pm z_1,\pm z_2,\pm z_3$ (blue, normalised; drag the red zeros). For **three tones** $\varphi=\sum a_k\cos\omega_kx$ (drag the gold points: position $\omega_k$, height $a_k$), $f*\varphi=\sum a_k\hat f(\omega_k)\cos\omega_kx$ (bottom, blue). It vanishes only when every frequency of $\varphi$ is a zero of $\hat f$ (try the button). For the **wave packet** $\varphi=a\,e^{-x^2/16}\cos\omega x$ (drag $\omega_1$), $\hat\varphi\ne0$ everywhere (it is a sum of two Gaussians), so $Y_\varphi=\{0\}$ and its spectrum is all of $\R$: no kernel can kill it.`,
-      deps: ['fa-9.3', 'fa-9.4', 'fa-7.2'],
+      name: 'Annihilated bounded functions: supp φ̂ ⊂ Z(Y)',
+      statement: String.raw`Suppose $\varphi\in L^\infty(\R^n)$, $Y\subset L^1(\R^n)$, and $f*\varphi=0$ for every $f\in Y$. Then the Fourier transform $\hat\varphi$ of $\varphi$, a tempered distribution, has its support in
+$$Z(Y)=\{t\in\R^n:\hat f(t)=0\text{ for every }f\in Y\}.$$
+In particular, if $Z(Y)=\emptyset$, then $\varphi=0$. For $\varphi(x)=\sum_kc_ke^{i\omega_k\cdot x}$ (finitely many terms, $c_k\ne0$), $\operatorname{supp}\hat\varphi=\{\omega_k\}$, and this is exactly $Z(Y)$ for the largest such $Y$, namely $\{f:f*\varphi=0\}$.`,
+      idea: String.raw`Fix $t_0\notin Z(Y)$ and pick $f\in Y$ with $\hat f(t_0)\ne0$. Lemma 9.2 and a Neumann series let one divide by $\hat f$ near $t_0$: every $\psi\in L^1$ whose transform is a test function supported in a small neighbourhood $V$ of $t_0$ factors as $\psi=f*u$ with $u\in L^1$. Then $\psi*\varphi=u*(f*\varphi)=0$, so $\hat\psi\hat\varphi=(\psi*\varphi)^\wedge=0$ (7.19) for all such $\psi$, which says that $\hat\varphi$ vanishes on $V$. Covering the complement of $Z(Y)$ by such $V$ gives $\operatorname{supp}\hat\varphi\subset Z(Y)$. If $Z(Y)$ is empty, then $\hat\varphi=0$ and $\varphi=0$, which is the step behind Wiener's theorem 9.4.`,
+      caption: String.raw`$n=1$. Top: $\hat\varphi$ (gold) and $\hat f$ for an even kernel $f$ whose transform vanishes at $\pm z_1,\pm z_2,\pm z_3$ (blue, normalised; drag the red zeros). For **three tones** $\varphi=\sum a_k\cos\omega_kx$ (drag the gold points: position $\omega_k$, height $a_k$), $\operatorname{supp}\hat\varphi=\{\pm\omega_k\}$ and $f*\varphi=\sum a_k\hat f(\omega_k)\cos\omega_kx$ (bottom, blue). It vanishes only when $\hat f$ vanishes on all of $\operatorname{supp}\hat\varphi$ (try the button), so the common zeros of the annihilating $f$ contain the support, as the theorem says. For the **wave packet** $\varphi=a\,e^{-x^2/16}\cos\omega x$ (drag $\omega_1$), $\hat\varphi\ne0$ everywhere (it is a sum of two Gaussians): its support is all of $\R$, and no kernel can kill it.`,
+      deps: ['fa-9.2', 'fa-7.15', 'fa-7.19'],
       tags: ['Wiener', 'spectrum', 'convolution'],
       verify: true,
       viz(v) {
         const M = v.M;
         const mode = v.select('$\\varphi=$', [{ value: 'tones', label: 'three tones' }, { value: 'packet', label: 'wave packet' }], 'tones', { onChange: (m) => { W.forEach((h, k) => { h.visible = m === 'tones' || k === 0; }); snap.hidden = m !== 'tones'; } });
-        const T = v.stage({ x: [0, 6], y: [-1.25, 1.35], height: 250, full: true, axes: true, xlabel: 't', title: 'frequency side: spectrum of $\\varphi$ (gold), $\\hat f$ (blue), zeros of $\\hat f$ (red)' });
+        const T = v.stage({ x: [0, 6], y: [-1.25, 1.35], height: 250, full: true, axes: true, xlabel: 't', title: 'frequency side: $\\hat\\varphi$ (gold), $\\hat f$ (blue), zeros of $\\hat f$ (red)' });
         const X = v.stage({ x: [-16, 16], y: [-2, 2], height: 230, full: true, axes: true, xlabel: 'x', title: '$\\varphi$ (gold) and $f*\\varphi$ (blue)' });
         const W = [[1.1, 0.8], [2.6, -0.6], [4.2, 0.5]].map(([w, a], k) => T.handle(w, a, { color: 'gold', r: 6, label: `ω${'₁₂₃'[k]}`, constrain: (x, y) => [M.clamp(x, 0.2, 5.8), M.clamp(y, -1, 1.2)] }));
         const Zs = [[1.1, 0], [3.2, 0], [5.0, 0]].map(([z], k) => T.handle(z, 0, { color: 'red', r: 5.5, label: `z${'₁₂₃'[k]}`, labelPos: 's', constrain: (x) => [M.clamp(x, 0.1, 5.9), 0] }));
         const snap = v.button('put the zeros of $\\hat f$ on $\\omega_1,\\omega_2,\\omega_3$', () => { Zs.forEach((z, k) => z.set(W[k].x, 0)); });
         const fhatRaw = (t) => Zs.reduce((p, z) => p * (t * t - z.x * z.x) / (1 + z.x * z.x), 1) * Math.exp(-t * t / 8);
         let st = {};
-        v.legend([['gold', '$\\varphi$ and its spectrum'], ['blue', '$\\hat f$ (normalised) and $f*\\varphi$'], ['red', 'zeros of $\\hat f$']]);
+        v.legend([['gold', '$\\varphi$ and $\\hat\\varphi$'], ['blue', '$\\hat f$ (normalised) and $f*\\varphi$'], ['red', 'zeros of $\\hat f$']]);
         v.render(() => {
           const packet = mode.value === 'packet';
           const ts = M.linspace(0, 6, 601);

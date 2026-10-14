@@ -161,7 +161,7 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
       statement: String.raw`$$\lim_{x\to\infty}\frac{\pi(x)\log x}{x}=1,\qquad\text{equivalently}\qquad\lim_{x\to\infty}\frac{\psi(x)}{x}=1 .$$`,
       idea: String.raw`Put $\varphi(u)=e^{-u}\psi(e^u)$, a bounded function (Chebyshev). Its Laplace transform is essentially $-\zeta'(s)/(s\zeta(s))$, and $-\zeta'/\zeta-\frac1{s-1}$ is regular on $\operatorname{Re}s=1$ precisely because $\zeta$ has no zeros there (9.9). This produces a kernel $K\in L^1$ with $\hat K$ free of zeros and $K*\varphi\to\int K$ — the hypotheses of Wiener's Tauberian theorem. Since $\psi$ is nondecreasing, $\varphi$ is slowly oscillating, so 9.7 upgrades the convergence of the averages to $\varphi(u)\to1$, i.e. $\psi(x)\sim x$; and $\pi(x)\log x\sim\psi(x)$ by an elementary comparison.`,
       caption: String.raw`Primes up to $10^6$, by a sieve. The three ratios $\pi(x)\log x/x$ (red), $\psi(x)/x$ (green) and $\pi(x)/\mathrm{li}(x)$ (blue) against $\log_{10}x$: all tend to $1$, the first very slowly (it is off by about $1/\log x$). Drag the marker. Bottom: the slowly oscillating function $\varphi(u)=e^{-u}\psi(e^u)$ of the Tauberian argument, with $u=\log x$ — it settles at $1$.`,
-      deps: ['fa-9.9', 'fa-9.7', 'fa-9.4'],
+      deps: ['fa-9.9', 'fa-9.7', 'fa-9.5'],
       tags: ['number theory', 'prime number theorem', 'Tauberian theorems'],
       verify: true,
       viz(v) {
@@ -199,9 +199,9 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
 $$\varphi=f+\mu*\varphi,\qquad\varphi=0\text{ on }(-\infty,0),$$
 has exactly one locally bounded solution, and
 $$\lim_{x\to\infty}\varphi(x)=\frac1m\int_0^\infty f(x)\,dx .$$`,
-      idea: String.raw`The solution is $\varphi=\sum_{k\ge0}\mu^{*k}*f$, a superposition of the renewal measure $U=\sum\mu^{*k}$ with $f$. The Tauberian step is to show that $U$ looks like Lebesgue measure$/m$ at infinity: $(\delta_0-\mu)*U=\delta_0$, and the kernel whose Fourier transform is $(1-\hat\mu(t))/(it)$ — integrable, with value $m$ at $t=0$ — has **no zeros** exactly when $\mu$ is non-lattice. Wiener's Tauberian theorem (9.4) then transfers the trivial average of $U$ to all averages, giving $U*f\to\frac1m\int f$.`,
+      idea: String.raw`The solution is $\varphi=\sum_{k\ge0}\mu^{*k}*f$, a superposition of the renewal measure $U=\sum\mu^{*k}$ with $f$. The Tauberian step is to show that $U$ looks like Lebesgue measure$/m$ at infinity: $(\delta_0-\mu)*U=\delta_0$, and the kernel whose Fourier transform is $(1-\hat\mu(t))/(it)$ — integrable, with value $m$ at $t=0$ — has **no zeros** exactly when $\mu$ is non-lattice. Wiener's Tauberian theorem (9.5) then transfers the trivial average of $U$ to all averages, giving $U*f\to\frac1m\int f$.`,
       caption: String.raw`$f(x)=\sin^2(\pi x)$ on $[0,1]$ (so $\int f=\frac12$), and four choices of the step distribution $\mu$. The renewal equation is solved exactly on a grid of step $0.01$. For the uniform and gamma distributions, and even for the purely atomic but non-lattice $\frac12(\delta_1+\delta_{\sqrt2})$, $\varphi(x)$ settles at $\frac1{2m}$ (green dashed). For the lattice $\frac12(\delta_1+\delta_2)$ it never settles: it keeps the period $1$ of the lattice — exactly the case in which $1-\hat\mu$ has real zeros $t=2\pi k$.`,
-      deps: ['fa-9.4', 'fa-9.3', 'fa-7.2'],
+      deps: ['fa-9.5', 'fa-9.4', 'fa-7.2'],
       tags: ['Tauberian theorems', 'renewal equation', 'probability'],
       verify: true,
       viz(v) {
