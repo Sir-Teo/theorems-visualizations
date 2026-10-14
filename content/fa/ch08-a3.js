@@ -1,7 +1,7 @@
-// Rudin, Functional Analysis — Chapter 8 (part 3): the lemma in several variables, L² solvability,
-// Sobolev spaces and the elliptic estimate
+// Rudin, Functional Analysis — Chapter 8 (part 3): solutions with compact support, Sobolev spaces,
+// distributions that are locally Hˢ
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Numbering checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
 
 // complex arithmetic on [re, im]
 const C = {
@@ -67,31 +67,6 @@ function slope(pts, a, b) {
   let sxy = 0, sxx = 0; for (const [x, y] of q) { sxy += (x - mx) * (y - my); sxx += (x - mx) ** 2; }
   return sxy / sxx;
 }
-/** Smallest eigenpair of a symmetric positive definite pentadiagonal Toeplitz matrix [e, d, c, d, e] of size n (banded Cholesky + inverse iteration). */
-function minEigPenta(c, d, e, n) {
-  const L0 = new Float64Array(n), L1 = new Float64Array(n), L2 = new Float64Array(n); // L[i][i], L[i][i−1], L[i][i−2]
-  for (let i = 0; i < n; i++) {
-    const l2 = i >= 2 ? e / L0[i - 2] : 0;
-    const l1 = i >= 1 ? (d - (i >= 2 ? l2 * L1[i - 1] : 0)) / L0[i - 1] : 0;
-    L2[i] = l2; L1[i] = l1; L0[i] = Math.sqrt(Math.max(c - l1 * l1 - l2 * l2, 1e-300));
-  }
-  const solve = (b) => {
-    const y = new Float64Array(n), x = new Float64Array(n);
-    for (let i = 0; i < n; i++) y[i] = (b[i] - (i >= 1 ? L1[i] * y[i - 1] : 0) - (i >= 2 ? L2[i] * y[i - 2] : 0)) / L0[i];
-    for (let i = n - 1; i >= 0; i--) x[i] = (y[i] - (i + 1 < n ? L1[i + 1] * x[i + 1] : 0) - (i + 2 < n ? L2[i + 2] * x[i + 2] : 0)) / L0[i];
-    return x;
-  };
-  // the matrix commutes with the flip i ↦ n−1−i, so run inverse iteration separately on even and odd vectors
-  const run = (k) => {
-    let x = Float64Array.from({ length: n }, (_, i) => Math.sin(k * Math.PI * (i + 1) / (n + 1)));
-    for (let it = 0; it < 60; it++) { const y = solve(x); let nr = 0; for (const t of y) nr += t * t; nr = Math.sqrt(nr); x = y.map((t) => t / nr); }
-    let num = 0; for (let i = 0; i < n; i++) { let g = c * x[i]; if (i >= 1) g += d * x[i - 1]; if (i + 1 < n) g += d * x[i + 1]; if (i >= 2) g += e * x[i - 2]; if (i + 2 < n) g += e * x[i + 2]; num += x[i] * g; }
-    return { lam: num, vec: x };
-  };
-  const a = run(1), b = run(2);
-  return a.lam <= b.lam ? a : b;
-}
-
 export default {
   book: 'fa',
   chapter: 8,
@@ -99,130 +74,80 @@ export default {
     // ------------------------------------------------------------------ 8.4
     {
       num: '8.4',
-      kind: 'Lemma',
-      name: 'The mean-value bound in several variables',
-      statement: String.raw`Let $P$ be a polynomial in $n$ variables of degree $N$ with principal part $P_N$, and let $\eta\in\R^n$ satisfy $P_N(\eta)\ne0$. If $f$ is an entire function on $\C^n$, then for every $\zeta\in\C^n$
-$$|P_N(\eta)\,f(\zeta)|\le\frac1{2\pi}\int_{-\pi}^{\pi}\big|f(\zeta+e^{i\theta}\eta)\,P(\zeta+e^{i\theta}\eta)\big|\,d\theta .$$`,
-      idea: String.raw`Restrict everything to the complex line through $\zeta$ in the direction $\eta$. There $w\mapsto P(\zeta+w\eta)$ is a polynomial in one variable of degree $N$ whose leading coefficient is $P_N(\eta)$, and $w\mapsto f(\zeta+w\eta)$ is entire, so Lemma 8.3 applies verbatim at $w=0$. The point is that $|f(\zeta)|$ is controlled by $|fP|$ on a small circle around $\zeta$, even when $P(\zeta)=0$: this is what lets the proof of 8.5 divide $\hat\varphi$ by $P$.`,
-      caption: String.raw`$n=2$, $f(\zeta)=e^{-(\zeta_1^2+\zeta_2^2)/4}$ (the Fourier transform of a Gaussian). Left: the real zero set of $P$ (red) and its characteristic directions ($P_N=0$, faint red lines). Drag the point $\xi$ (it may sit right on the zero set) and the direction $\eta$ on the unit circle. The complex circle $\xi+e^{i\theta}\eta$ lies over the dashed segment. Right: $|fP|$ around that circle, its mean (purple) and the bound $|P_N(\eta)f(\xi)|$ (orange). When $\eta$ approaches a characteristic direction, the bound degenerates to $0$.`,
-      deps: ['fa-8.3', 'fa-8.1'],
-      tags: ['polynomials', 'fundamental solutions'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const sq = (z) => C.mul(z, z);
-        const PRE = {
-          hyp: { label: '$\\xi_1^2-\\xi_2^2-\\frac12$', P: (a, b) => C.sub(C.sub(sq(a), sq(b)), [0.5, 0]), PN: (a, b) => a * a - b * b },
-          circ: { label: '$\\xi_1^2+\\xi_2^2-1$', P: (a, b) => C.sub(C.add(sq(a), sq(b)), [1, 0]), PN: (a, b) => a * a + b * b },
-          prod: { label: '$\\xi_1\\xi_2-\\frac12$', P: (a, b) => C.sub(C.mul(a, b), [0.5, 0]), PN: (a, b) => a * b },
-        };
-        const pre = v.select('$P(\\xi)=$', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'hyp');
-        const L = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 340, axes: true, ticks: false, title: 'real $\\xi$-plane: $P=0$ (red), direction $\\eta$' });
-        const R = v.stage({ x: [-Math.PI, Math.PI], y: [0, 1], height: 340, axes: 'box', xticks: [[-Math.PI, '−π'], [0, '0'], [Math.PI, 'π']], xlabel: 'θ', title: '$|f P|$ on the circle $\\xi+e^{i\\theta}\\eta$' });
-        const hx = L.handle(-1.05, 0.72, { color: 'blue', label: 'ξ' });
-        const he = L.handle(Math.cos(0.3), Math.sin(0.3), { color: 'purple', label: 'η', constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [x / r, y / r]; } });
-        const f = (a, b) => C.exp(C.scale(C.add(sq(a), sq(b)), -0.25));
-        let st = {};
-        v.legend([['ink', '$|f(\\xi+e^{i\\theta}\\eta)P(\\xi+e^{i\\theta}\\eta)|$'], ['purple', 'its mean'], ['orange', '$|P_N(\\eta)f(\\xi)|$', { dash: true }]]);
-        v.render(() => {
-          const pr = PRE[pre.value], P = pr.P, ex = he.x, ey = he.y, x = hx.x, y = hx.y;
-          const Pr = (a, b) => P([a, 0], [b, 0])[0];
-          L.raster((a, b) => (Pr(a, b) > 0 ? [60, 110, 220, 30] : [230, 130, 40, 30]), { key: pre.value, res: 3 });
-          const n = 200, h = 5.2 / n, zs = [];
-          for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-            const a = -2.6 + i * h, b = -2.6 + j * h, p00 = Pr(a, b), p10 = Pr(a + h, b), p01 = Pr(a, b + h);
-            if (p00 * p10 < 0) zs.push([a + h * p00 / (p00 - p10), b]);
-            if (p00 * p01 < 0) zs.push([a, b + h * p00 / (p00 - p01)]);
-          }
-          L.dots(zs, { color: 'red', r: 1.5 });
-          // characteristic directions: P_N(cos t, sin t) = 0
-          for (let i = 0; i < 360; i++) { const t0 = Math.PI * i / 360, t1 = Math.PI * (i + 1) / 360, q0 = pr.PN(Math.cos(t0), Math.sin(t0)), q1 = pr.PN(Math.cos(t1), Math.sin(t1)); if (q0 === 0 || q0 * q1 < 0) { const t = t0 + (t1 - t0) * q0 / (q0 - q1 || 1); L.line(-4 * Math.cos(t), -4 * Math.sin(t), 4 * Math.cos(t), 4 * Math.sin(t), { color: 'red', width: 1, alpha: 0.35, dash: [5, 4] }); } }
-          L.circle(0, 0, 1, { color: 'muted', width: 1, dash: [3, 3] });
-          L.arrow(0, 0, ex, ey, { color: 'purple', width: 2 });
-          L.line(x - ex, y - ey, x + ex, y + ey, { color: 'purple', width: 2.4, dash: [6, 4] });
-          L.dot(x - ex, y - ey, { color: 'purple', r: 3 }); L.dot(x + ex, y + ey, { color: 'purple', r: 3 });
-          const ths = M.linspace(-Math.PI, Math.PI, 721);
-          const vals = ths.map((t) => { const w = [Math.cos(t), Math.sin(t)], a = C.add([x, 0], C.scale(w, ex)), b = C.add([y, 0], C.scale(w, ey)); return C.abs(C.mul(f(a, b), P(a, b))); });
-          const mean = vals.slice(0, -1).reduce((s, q) => s + q, 0) / (vals.length - 1);
-          const PNe = pr.PN(ex, ey), fx = C.abs(f([x, 0], [y, 0])), bound = Math.abs(PNe) * fx;
-          R.setView(null, [0, Math.max(...vals, mean, bound) * 1.12 + 1e-9]);
-          R.path(ths.map((t, i) => [t, vals[i]]), { color: 'ink', width: 2.2 });
-          R.hline(mean, { color: 'purple', width: 2.2 });
-          R.hline(bound, { color: 'orange', width: 2, dash: [6, 4] });
-          st = { mean, bound, PNe, Px: Pr(x, y), fx };
-        });
-        v.readout(() => {
-          const s = st;
-          return `$P_N(\\eta)=${v.fix(s.PNe, 3)}$, $P(\\xi)=${v.fix(s.Px, 3)}$. Mean of $|fP|$ on the circle $=${v.fix(s.mean, 4)}\\;\\ge\\;|P_N(\\eta)f(\\xi)|=${v.fix(s.bound, 4)}$` + (Math.abs(s.Px) < 0.05 ? ' — although $P(\\xi)\\approx0$, $|f(\\xi)|$ is still controlled.' : Math.abs(s.PNe) < 0.05 ? ' — $\\eta$ is (nearly) characteristic, so the bound says almost nothing.' : '.');
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 8.6
-    {
-      num: '8.6',
       kind: 'Theorem',
-      name: 'L² estimates and solvability on bounded sets',
-      statement: String.raw`Let $P(D)\ne0$ have order $N$ and let $\Omega\subset\R^n$ be bounded and open. There is a constant $c>0$, depending only on $P$ and on the size of $\Omega$, such that
-$$\norm{P(D)\varphi}_2\ge c\,\norm{\varphi}_2\qquad(\varphi\in\mathscr D(\Omega)).$$
-Consequently, for every $v\in L^2(\Omega)$ there is a $u\in L^2(\Omega)$ with $P(D)u=v$ in $\mathscr D'(\Omega)$.`,
-      idea: String.raw`Translate so that $\Omega$ lies in the ball of radius $r$ about $0$, and pick $\eta$ with $|\eta|=1$, $P_N(\eta)\ne0$. Apply Lemma 8.4 to $\hat\varphi$ (entire, by Paley–Wiener 7.22) on circles of radius $\rho$, square, and integrate over $\xi\in\R^n$. Moving $\hat\psi$ to $\operatorname{Im}\zeta=y$ multiplies $\psi$ by $e^{y\cdot x}$, which costs at most $e^{\rho r}$ in $L^2$ by Plancherel (7.9). Hence $\norm{P(D)\varphi}\ge|P_N(\eta)|\rho^Ne^{-\rho r}\norm\varphi$, which is best at $\rho=N/r$. For the equation, apply the estimate to the transposed operator: $P(-D)\varphi\mapsto\int v\varphi$ is then a bounded functional on a subspace of $L^2(\Omega)$, and the Riesz representation (12.3) of an extension produces $u$.`,
-      caption: String.raw`$n=1$, $\Omega=(-r,r)$. Choose $P(D)\varphi=\varphi'$ or $\varphi''+k^2\varphi$. The black curve is the **best** constant $c(r)=\inf_\varphi\norm{P(D)\varphi}/\norm\varphi$, computed as the smallest singular value of a finite-difference matrix acting on functions that vanish outside $\Omega$. The orange dashed curve is the constant the proof gives, $(N/er)^N$. Both decay as $\Omega$ grows, and the black one always stays above the orange one. For $\varphi''+k^2\varphi$ the near-extremal $\varphi$ (bottom, blue) is a wave $\cos kx$ under a long envelope, which almost solves $P(D)\varphi=0$. Its defect $P(D)\varphi$ (green) shrinks like $k\pi/r$ as $\Omega$ grows, but it is never zero: a compactly supported $\varphi$ cannot solve the equation exactly.`,
-      deps: ['fa-8.4', 'fa-7.22', 'fa-7.9', 'fa-12.3'],
-      tags: ['differential equations', 'a priori estimates', 'L² theory'],
+      name: 'Solutions with compact support',
+      statement: String.raw`Suppose $P$ is a polynomial in $n$ variables, $v\in\mathscr D'(\R^n)$, and $v$ has compact support. Then the equation
+$$P(D)u=v$$
+has a solution $u$ with compact support if and only if there is an entire function $g$ on $\C^n$ such that $Pg=\hat v$, where $\hat v$ is the entire extension of the Fourier transform of $v$ (7.23). Such a solution is unique, and its support lies in the convex hull of the support of $v$.`,
+      idea: String.raw`If $u$ has compact support, then $\hat u$ is entire (Paley–Wiener–Schwartz 7.23) and $P\hat u=\hat v$, so $g=\hat u$ works. Conversely, if $Pg=\hat v$ with $g$ entire, Lemma 8.3 bounds $|g(z)|$ by an average of $|\hat v|=|Pg|$ over a torus around $z$. So $g$ inherits from $\hat v$ the growth estimate $|g(z)|\le\gamma(1+|z|)^Ne^{r|\operatorname{Im}z|}$ of 7.23, and the converse half of 7.23 makes $g$ the transform of a distribution $u$ with support in $rB$; then $P(D)u=v$. Two compactly supported solutions differ by $w$ with $P\hat w=0$, hence $w=0$. In one variable the condition says that $\hat v$ vanishes at every zero of $P$, to at least the same order.`,
+      caption: String.raw`$n=1$. Choose $P(D)$; its zeros are the red rings in the complex $\zeta$-plane (right). $v$ is a sum of three bumps (drag their tops). Left: $v$ (orange) and the solution $u_0$ (purple) that vanishes to the left of $\operatorname{supp}v$, computed by convolution with the forward Green's function. To the right of $\operatorname{supp}v$, $u_0$ is a solution of $P(D)u=0$, and it vanishes there exactly when $\hat v$ vanishes at the zeros of $P$. Right: $\log_{10}|\hat v(\zeta)|$, so the zeros of $\hat v$ are the dark spots. Press the button to adjust the heights so that $\hat v$ vanishes at the zeros of $P$: then $\hat v/P$ is entire and $u_0$ is the compactly supported solution, inside the convex hull of $\operatorname{supp}v$ (shaded).`,
+      deps: ['fa-8.3', 'fa-7.23', 'fa-8.1'],
+      tags: ['differential equations', 'Paley–Wiener', 'compact support'],
       verify: true,
       viz(v) {
         const M = v.M;
-        const op = v.select('$P(D)\\varphi=$', [{ value: 'd1', label: "$\\varphi'$" }, { value: 'helm', label: "$\\varphi''+k^2\\varphi$" }], 'helm', { onChange: (val) => { kS.el.hidden = val !== 'helm'; } });
-        const kS = v.slider('$k$', 0, 4, 2.2, { step: 0.01 });
-        const rS = v.slider('half-length $r$ of $\\Omega=(-r,r)$', 0.3, 6, 2.5, { step: 0.01 });
-        const T = v.stage({ x: [0.3, 6], y: [-2.5, 1.5], height: 250, full: true, axes: 'box', xlabel: 'r', yticks: decTicks(-2, 1), title: 'best constant $c(r)$ (log scale) and the constant from the proof' });
-        const B = v.stage({ x: [-6, 6], y: [-1.2, 1.2], height: 200, full: true, axes: true, title: 'near-extremal $\\varphi\\in\\mathscr D(\\Omega)$ and $P(D)\\varphi$' });
-        const n = 160;
-        const best = (kind, k, r) => {
-          const h = 2 * r / (n + 1);
-          if (kind === 'd1') { const res = minEigPenta(2 / (h * h), -1 / (h * h), 0, n); return { c: Math.sqrt(res.lam), vec: res.vec, h }; }
-          const dd = -2 / (h * h) + k * k;
-          const res = minEigPenta(2 / h ** 4 + dd * dd, 2 * dd / (h * h), 1 / h ** 4, n);
-          return { c: Math.sqrt(res.lam), vec: res.vec, h };
+        const OPS = {
+          d1: { label: "$u'$", zeros: [[0, 0]], G: (x) => (x > 0 ? 1 : 0) },
+          osc: { label: "$u''+u$", zeros: [[1, 0], [-1, 0]], G: (x) => (x > 0 ? Math.sin(x) : 0) },
+          hyp: { label: "$u''-u$", zeros: [[0, 1], [0, -1]], G: (x) => (x > 0 ? Math.sinh(x) : 0) },
         };
-        let curve = { key: '' }, st = {};
-        v.legend([['ink', 'best $c(r)$'], ['orange', 'proof: $(N/er)^N$', { dash: true }], ['blue', '$\\varphi$'], ['green', '$P(D)\\varphi$ (same scale)']]);
+        const op = v.select('$P(D)u=$', Object.entries(OPS).map(([value, o]) => ({ value, label: o.label })), 'osc');
+        const r = 0.55;
+        const L = v.stage({ x: [-3.5, 6.5], y: [-1.6, 1.6], height: 330, axes: true, title: '$v$ (orange) and the solution $u_0$ with $u_0=0$ left of $\\operatorname{supp}v$ (purple)' });
+        const R = v.stage({ x: [-3, 3], y: [-2.2, 2.2], equal: true, height: 330, axes: true, title: '$\\log_{10}|\\hat v(\\zeta)|$, zeros of $P$ (red)' });
+        const H = [[-1.6, 0.9], [-0.2, -0.6], [1.3, 0.7]].map(([x, y]) => L.handle(x, y, { color: 'orange', r: 6, constrain: (a, b) => [M.clamp(a, -2.6, 2.6), M.clamp(b, -1.4, 1.4)] }));
+        const NQ = 120, bq = M.linspace(-r, r, NQ + 1), wq = bq.map((_, j) => (j === 0 || j === NQ ? 1 : j % 2 ? 4 : 2) * (2 * r / NQ) / 3);
+        // ∫ bump(y − c) e^{−iyζ} dy for complex ζ = (a, b): e^{−iyζ} = e^{yb}(cos ya − i sin ya)
+        const bumpHat = (c, z) => { let re = 0, im = 0; for (let j = 0; j <= NQ; j++) { const y = c + bq[j], w = wq[j] * bump(y, c, r), e = Math.exp(y * z[1]); re += w * e * Math.cos(y * z[0]); im -= w * e * Math.sin(y * z[0]); } return [re, im]; };
+        const vhat = (z) => H.reduce((s, h) => C.add(s, C.scale(bumpHat(h.x, z), h.y)), [0, 0]);
+        v.button('make $\\hat v$ vanish at the zeros of $P$', () => {
+          const zs = OPS[op.value].zeros, rows = [];
+          zs.forEach((z) => { const b = H.map((h) => bumpHat(h.x, z)); rows.push(b.map((q) => q[0]), b.map((q) => q[1])); });
+          const Mx = rows.filter((row) => row.some((q) => Math.abs(q) > 1e-12));
+          const a = H.map((h) => h.y), m = Mx.length;
+          if (!m) return;
+          const G = Mx.map((ri) => Mx.map((rj) => ri.reduce((s, q, k) => s + q * rj[k], 0))), rhs = Mx.map((ri) => ri.reduce((s, q, k) => s + q * a[k], 0));
+          const sol = m === 1 ? [rhs[0] / G[0][0]] : (() => { const det = G[0][0] * G[1][1] - G[0][1] * G[1][0]; return [(rhs[0] * G[1][1] - rhs[1] * G[0][1]) / det, (G[0][0] * rhs[1] - G[1][0] * rhs[0]) / det]; })();
+          H.forEach((h, k) => { const na = a[k] - Mx.reduce((s, ri, i) => s + ri[k] * sol[i], 0); h.set(h.x, M.clamp(na, -1.4, 1.4)); });
+        });
+        let st = {};
+        v.legend([['orange', '$v$'], ['purple', '$u_0$'], ['red', 'zeros of $P$']]);
         v.render(() => {
-          const kind = op.value, k = kS.value, r = rS.value, N = kind === 'd1' ? 1 : 2;
-          const key = `${kind}|${kind === 'helm' ? k : ''}`;
-          if (curve.key !== key) { const rs = M.linspace(0.3, 6, 115); curve = { key, pts: rs.map((rr) => [rr, Math.log10(best(kind, k, rr).c)]) }; }
-          T.path(curve.pts, { color: 'ink', width: 2.4 });
-          T.fn((rr) => N * Math.log10(N / (Math.E * rr)), { color: 'orange', width: 2, dash: [6, 4] });
-          const cur = best(kind, k, r), proof = (N / (Math.E * r)) ** N;
-          T.vline(r, { color: 'muted', width: 1, dash: [3, 3] });
-          T.dot(r, Math.log10(cur.c), { color: 'ink', r: 4.5 });
-          // extremal φ and Lφ on the grid x_j = −r + j h
-          const h = cur.h, phi = [0, ...cur.vec, 0], xs = phi.map((_, j) => -r + j * h);
-          const mx = Math.max(...phi.map(Math.abs)), sg = phi[Math.floor(phi.length / 2)] < 0 ? -1 : 1;
-          const ph = phi.map((p) => sg * p / mx);
-          const Lp = ph.map((p, j) => (kind === 'd1' ? (j + 1 < ph.length ? (ph[j + 1] - p) / h : 0) : ((j ? ph[j - 1] : 0) - 2 * p + (j + 1 < ph.length ? ph[j + 1] : 0)) / (h * h) + k * k * p));
-          B.setView([-Math.max(r * 1.08, 1), Math.max(r * 1.08, 1)], span([...ph, ...Lp, -1, 1], 1, 0.1));
-          B.vband(-r, r, { color: 'orange', alpha: 0.07 });
-          B.path(xs.map((x, j) => [x, Lp[j]]), { color: 'green', width: 1.8 });
-          B.path(xs.map((x, j) => [x, ph[j]]), { color: 'blue', width: 2.6 });
-          st = { c: cur.c, proof, r, kind, k };
+          const o = OPS[op.value];
+          const lo = Math.min(...H.map((h) => h.x)) - r, hi = Math.max(...H.map((h) => h.x)) + r;
+          L.vband(lo, hi, { color: 'orange', alpha: 0.08 });
+          const vf = (x) => H.reduce((s, h) => s + h.y * bump(x, h.x, r), 0);
+          const xs = M.linspace(-3.5, 6.5, 501);
+          const u0 = xs.map((x) => H.reduce((s, h) => { let q = 0; for (let j = 0; j <= NQ; j++) { const y = h.x + bq[j]; q += wq[j] * o.G(x - y) * bump(y, h.x, r); } return s + h.y * q; }, 0));
+          const right = xs.map((x, i) => (x > hi + 0.05 ? Math.abs(u0[i]) : 0)), tail = Math.max(...right);
+          const vis = u0.map((y) => M.clamp(y, -3, 3));
+          L.setView(null, span([...vis, 1.5, -1.5], 2, 0.08));
+          L.fn(vf, { color: 'orange', width: 2.4, fill: 'orange', fillAlpha: 0.15, n: 800 });
+          L.path(xs.map((x, i) => [x, vis[i]]), { color: 'purple', width: 2.6 });
+          H.forEach((h) => L.line(h.x, 0, h.x, h.y, { color: 'orange', width: 1, dash: [2, 3] }));
+          const key = H.map((h) => `${h.x.toFixed(3)},${h.y.toFixed(3)}`).join('|');
+          R.heat((a, b) => Math.log10(C.abs(vhat([a, b])) + 1e-12), { range: [-3, 1], cmap: 'viridis', res: 6, key });
+          R.axes();
+          o.zeros.forEach((z) => R.dot(z[0], z[1], { color: 'red', r: 8, hollow: true }));
+          const vals = o.zeros.map((z) => C.abs(vhat(z)));
+          st = { vals, tail, ok: Math.max(...vals) < 2e-4, lo, hi, op: op.value };
         });
         v.readout(() => {
           const s = st;
-          const dir = s.kind === 'd1' ? ` The sharp constant is $\\pi/2r=${v.fix(Math.PI / (2 * s.r), 4)}$ (Wirtinger).` : s.k < 0.3 ? ` For $k=0$ the sharp constant is $(4.730/2r)^2=${v.fix((4.730 / (2 * s.r)) ** 2, 4)}$ (the clamped beam).` : ` For large $r$, $c(r)\\approx k\\pi/r=${v.fix(s.k * Math.PI / s.r, 4)}$ (a wave under an envelope).`;
-          return `$r=${v.fix(s.r, 2)}$: best $c=${v.fix(s.c, 4)}\\;\\ge\\;(N/er)^N=${v.fix(s.proof, 4)}$.` + dir;
+          const vz = s.vals.map((q) => v.sci(q + 1e-17, 1)).join(', ');
+          return `$|\\hat v|$ at the zeros of $P$: $${vz}$. $\\max|u_0|$ to the right of $\\operatorname{supp}v$: $${v.fix(s.tail, 4)}$. ` + (s.ok ? '**$\\hat v/P$ is entire**, and $u_0$ is the solution with compact support, inside the hull $[' + v.fix(s.lo, 2) + ',' + v.fix(s.hi, 2) + ']$.' : 'Here $\\hat v/P$ has a pole, and no solution of $P(D)u=v$ has compact support.');
         });
       },
     },
-    // ------------------------------------------------------------------ 8.9
+    // ------------------------------------------------------------------ 8.8
     {
-      num: '8.9',
+      num: '8.8',
       kind: 'Definition',
-      name: 'Sobolev spaces Hˢ and Hˢ_loc',
-      statement: String.raw`For real $s$, $H^s(\R^n)$ is the space of tempered distributions $u$ whose Fourier transform is a function with
-$$\norm u_{(s)}^2=\int_{\R^n}(1+|\xi|^2)^s\,|\hat u(\xi)|^2\,dm_n(\xi)<\infty .$$
-If $\Omega\subset\R^n$ is open, $u\in\mathscr D'(\Omega)$ belongs to $H^s_{loc}(\Omega)$ if $\psi u\in H^s$ for every $\psi\in\mathscr D(\Omega)$. Thus $H^0=L^2$, $H^t\subset H^s$ for $s<t$, and for an integer $p\ge0$, $H^p$ consists of the $f\in L^2$ with $D^\alpha f\in L^2$ for $|\alpha|\le p$.`,
-      idea: String.raw`The weight $(1+|\xi|^2)^{s/2}$ measures smoothness by the decay of $\hat u$: by Plancherel (7.9) and $(D^\alpha u)^\wedge=\xi^\alpha\hat u$, having $p$ derivatives in $L^2$ means $(1+|\xi|^2)^{p/2}\hat u\in L^2$. Real and negative $s$ interpolate and extend this scale. $\delta\in H^s$ exactly when $s<-n/2$. Sobolev's lemma (7.25) says that $H^s_{loc}\subset C^{(r)}$ when $s>r+\frac n2$.`,
+      name: 'Sobolev spaces Hˢ',
+      statement: String.raw`To each real number $s$ associate the positive measure $d\mu_s(y)=(1+|y|^2)^s\,dm_n(y)$ on $\R^n$. $H^s$ is the space of tempered distributions $u$ whose Fourier transform is a function with
+$$\norm u_s=\Big(\int_{\R^n}|\hat u|^2\,d\mu_s\Big)^{1/2}<\infty ,$$
+that is, $\hat u\in L^2(\mu_s)$. So $H^0=L^2$, $H^t\subset H^s$ when $s<t$, and for an integer $p\ge0$, $H^p$ consists of the $f\in L^2$ with $D^\alpha f\in L^2$ for $|\alpha|\le p$.`,
+      idea: String.raw`The weight $(1+|\xi|^2)^{s/2}$ measures smoothness by the decay of $\hat u$: by Plancherel (7.9) and $(D^\alpha u)^\wedge=\xi^\alpha\hat u$, having $p$ derivatives in $L^2$ means $(1+|\xi|^2)^{p/2}\hat u\in L^2$. Real and negative $s$ interpolate and extend this scale. $\delta\in H^s$ exactly when $s<-n/2$. Sobolev's lemma (7.25) says that elements of $H^s$ are $C^{(r)}$ functions when $s>r+\frac n2$.`,
       caption: String.raw`One variable. Choose $u$ and the order $s$. Middle: $\xi\,(1+\xi^2)^s|\hat u(\xi)|^2$ (locally averaged over the oscillations) against $\log_{10}\xi$. The area under this curve is $\norm u_{(s)}^2$, so $u\in H^s$ exactly when the curve eventually goes down (dashed: the borderline, slope $0$). Right: the truncated norm $\int_{|\xi|<\Xi}(1+\xi^2)^s|\hat u|^2$ against $\Xi$. It levels off for $s<s^*$ and keeps growing for $s\ge s^*$.`,
       deps: ['fa-7.15', 'fa-7.9'],
       see: ['fa-7.25'],
@@ -283,19 +208,21 @@ If $\Omega\subset\R^n$ is open, $u\in\mathscr D'(\Omega)$ belongs to $H^s_{loc}(
         });
       },
     },
-    // ------------------------------------------------------------------ 8.10
+    // ------------------------------------------------------------------ 8.9
     {
-      num: '8.10',
-      kind: 'Lemma',
-      name: 'Basic properties of Sobolev spaces',
-      statement: String.raw`(a) Every distribution with compact support in $\R^n$ belongs to $H^s$ for some $s$.
-(b) If $\psi\in\mathscr S_n$ and $u\in H^s$, then $\psi u\in H^s$, and $\norm{\psi u}_{(s)}\le C\norm u_{(s)}$ with $C$ depending on $\psi$ and $s$.
-(c) $D^\alpha$ maps $H^s$ into $H^{s-|\alpha|}$, and $H^s_{loc}(\Omega)$ into $H^{s-|\alpha|}_{loc}(\Omega)$.`,
-      idea: String.raw`(a) By the Paley–Wiener–Schwartz theorem (7.23), $\hat u$ grows at most like $(1+|\xi|)^N$, so $s<-N-\frac n2$ works. (b) $(\psi u)^\wedge$ is the convolution of $\hat\psi$ with $\hat u$. **Peetre's inequality**
+      num: '8.9',
+      kind: 'Theorem',
+      name: 'Properties of the Sobolev spaces Hˢ',
+      statement: String.raw`(a) Every distribution with compact support lies in some $H^s$.
+(b) If $-\infty<t<\infty$, the mapping $u\mapsto v$ given by $\hat v=(1+|y|^2)^{t/2}\hat u$ is a linear isometry of $H^s$ onto $H^{s-t}$.
+(d) Every $D^\alpha$ maps $H^s$ into $H^{s-|\alpha|}$.
+(e) If $\psi\in\mathscr S_n$ and $u\in H^s$, then $\psi u\in H^s$.
+(Rudin's part (c) is not reproduced here.)`,
+      idea: String.raw`(a) By the Paley–Wiener–Schwartz theorem (7.23), $\hat u$ grows at most like $(1+|\xi|)^N$, so $s<-N-\frac n2$ works. (b) is immediate from the definition, since $|\hat v|^2d\mu_{s-t}=|\hat u|^2d\mu_s$. (d) $|y^\alpha|\le(1+|y|^2)^{|\alpha|/2}$. (e) $(\psi u)^\wedge$ is the convolution of $\hat\psi$ with $\hat u$. **Peetre's inequality**
 $$(1+|\xi|^2)^{s/2}\le2^{|s|/2}(1+|\xi-\eta|^2)^{|s|/2}(1+|\eta|^2)^{s/2}$$
-moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\xi-\eta$, which the rapidly decreasing $\hat\psi(\xi-\eta)$ absorbs. Then Young's inequality bounds the convolution in $L^2$. (c) $|\xi^\alpha|\le(1+|\xi|^2)^{|\alpha|/2}$.`,
+moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\xi-\eta$, which the rapidly decreasing $\hat\psi(\xi-\eta)$ absorbs. Then Young's inequality bounds the convolution in $L^2$. Parts (d) and (e) are what the proof of 8.12 uses to control the commutator terms.`,
       caption: String.raw`Left: Peetre's ratio $(1+\xi^2)^{s/2}/\big[(1+(\xi-\eta)^2)^{|s|/2}(1+\eta^2)^{s/2}\big]$ on the $(\xi,\eta)$-plane, in $\log_2$, coloured from $-6$ (dark) up to the bound $|s|/2$ (bright). Its actual maximum, in the corner, stays below the bound. Drag the point to read off the factors. Right: $u=\chi_{[-1,1]}\in H^s$ for $s<\frac12$ and $\psi u$ for a bump $\psi$ (drag its centre). $|\widehat{\psi u}|$ never decays slower than $|\hat u|\sim\xi^{-1}$. It decays faster when $\psi$ vanishes at both jumps: multiplication by $\psi$ can only improve membership in $H^s$.`,
-      deps: ['fa-8.9', 'fa-7.23', 'fa-7.19'],
+      deps: ['fa-8.8', 'fa-7.23', 'fa-7.19'],
       tags: ['Sobolev spaces', 'Fourier transform'],
       verify: true,
       viz(v) {
@@ -347,70 +274,80 @@ moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\x
         });
       },
     },
+    // ------------------------------------------------------------------ 8.10
+    {
+      num: '8.10',
+      kind: 'Definition',
+      name: 'Distributions that are locally Hˢ',
+      statement: String.raw`Let $\Omega\subset\R^n$ be open. A distribution $u\in\mathscr D'(\Omega)$ is **locally $H^s$** if to each point $x\in\Omega$ there corresponds a distribution $v\in H^s$ such that $u=v$ in some neighbourhood of $x$.`,
+      idea: String.raw`Membership in $H^s$ is a global condition, both on smoothness and on decay at infinity, and it does not even make sense for a distribution on $\Omega$. The local version keeps only the smoothness: near each point $u$ must agree with some element of $H^s$. Theorem 8.11 shows that this is the same as asking $\psi u\in H^s$ for every $\psi\in\mathscr D(\Omega)$.`,
+      deps: ['fa-8.8'],
+      tags: ['Sobolev spaces', 'localization'],
+      verify: true,
+    },
     // ------------------------------------------------------------------ 8.11
     {
       num: '8.11',
       kind: 'Theorem',
-      name: 'Elliptic operators gain N derivatives',
-      statement: String.raw`Suppose $P(D)$ is elliptic of order $N$, $\Omega\subset\R^n$ is open, $s\in\R$, $u\in\mathscr D'(\Omega)$, and $P(D)u\in H^s_{loc}(\Omega)$. Then $u\in H^{s+N}_{loc}(\Omega)$.`,
-      idea: String.raw`For compactly supported $u$ this is division by $P$. By 8.8, $(1+|\xi|^2)^{N/2}\le C|P(\xi)|$ for $|\xi|\ge R$, so $(1+|\xi|^2)^{(s+N)/2}|\hat u|\le C(1+|\xi|^2)^{s/2}|P\hat u|$ there, and the ball $|\xi|<R$ costs nothing because $\hat u$ is continuous. In general, localise: with $\psi\in\mathscr D(\Omega)$, $P(D)(\psi u)=\psi P(D)u+\sum(\text{derivatives of }\psi)\cdot(\text{derivatives of }u\text{ of order}<N)$. If $u\in H^t_{loc}$, the commutator terms lie in $H^{t-N+1}_{loc}$ (8.10), so $\psi u\in H^{\min(s,\,t-N+1)+N}$. Starting from the local order given by 8.10(a) and gaining one derivative per step reaches $s+N$ after finitely many steps.`,
-      caption: String.raw`$P(D)u=-u''+u$ on $\R$ ($N=2$), with $f=-u''+u$ a box on $[-0.6,0.6]$ plus $c\,\delta_{x_0}$, and $u=\frac12e^{-|x|}*f$. Drag the window $\psi$ (green; set its radius with the slider). Right: the decay of $|\widehat{\psi f}|$ (orange) and $|\widehat{\psi u}|$ (purple), computed by an FFT on $2^{16}$ points. The window's own smooth transform dominates at first, and the power laws take over at high frequency, where the slopes are fitted (the grey strip is the rounding floor). Over a jump of $f$ they decay like $\xi^{-1}$ and $\xi^{-3}$. Over the $\delta$ they decay like $\xi^{0}$ and $\xi^{-2}$. Away from both, everything decays rapidly. In each case $u$ is two orders smoother than $f$ — locally, wherever you look.`,
-      deps: ['fa-8.8', 'fa-8.9', 'fa-8.10'],
-      tags: ['elliptic operators', 'regularity', 'Sobolev spaces'],
+      name: 'Locally Hˢ ⇔ ψu ∈ Hˢ for every test function ψ',
+      statement: String.raw`If $u\in\mathscr D'(\Omega)$ and $-\infty<s<\infty$, the following two statements are equivalent:
+(a) $u$ is locally $H^s$;
+(b) $\psi u\in H^s$ for every $\psi\in\mathscr D(\Omega)$.`,
+      idea: String.raw`(a)$\Rightarrow$(b): the support of $\psi$ is compact, so finitely many neighbourhoods $\omega_i$, on which $u=v_i\in H^s$, cover it. Choose a partition of unity $\psi_i\in\mathscr D(\omega_i)$ with $\sum\psi_i=1$ on $\operatorname{supp}\psi$. Then $\psi u=\sum\psi_i\psi v_i$, and each term lies in $H^s$ by 8.9(e). (b)$\Rightarrow$(a): given $x$, take $\psi\in\mathscr D(\Omega)$ equal to $1$ near $x$. Then $v=\psi u\in H^s$ and $u=v$ near $x$.`,
+      caption: String.raw`One variable, and $u$ with three singularities that you can drag: a jump (orange), a kink (purple), and a jump of $u''$ (teal). Drag the window $\psi$ and set its radius. Right: the decay of $|\widehat{\psi u}|$ (FFT, $2^{16}$ points), with the slope fitted at high frequency. If $|\widehat{\psi u}|\sim\xi^{-k}$, then $\psi u\in H^s$ exactly for $s<k-\frac12$. The three singularities give $s<\frac12$, $s<\frac32$ and $s<\frac52$. Bottom: the open set $\Omega$ (drag its ends). $u$ is locally $H^s$ in $\Omega$ exactly when $s$ is below the smallest of these thresholds over the singularities inside $\Omega$. That is also the worst decay over all windows inside $\Omega$, as (b) says.`,
+      deps: ['fa-8.10', 'fa-8.9', 'fa-6.20'],
+      tags: ['Sobolev spaces', 'localization', 'partitions of unity'],
       verify: true,
       viz(v) {
         const M = v.M;
-        const a = 0.6;
-        const cS = v.slider('strength $c$ of $\\delta_{x_0}$', 0, 1, 0.7, { step: 0.01 });
-        const rS = v.slider('radius of the window $\\psi$', 0.3, 1.5, 0.45, { step: 0.01 });
-        const L = v.stage({ x: [-3, 3], y: [-0.25, 1.35], height: 320, axes: true, title: '$f=-u\'\'+u$ (orange), $u$ (purple), window $\\psi$ (green)' });
-        const R = v.stage({ x: [1, 3.9], y: [-15, 0], height: 320, axes: 'box', xticks: decTicks(1, 4), yticks: decTicks(-15, 0), xlabel: 'ξ', title: '$|\\widehat{\\psi f}|$ and $|\\widehat{\\psi u}|$ (envelopes, log–log)' });
-        const hx = L.handle(0.6, 0, { color: 'green', label: 'ψ', labelPos: 's', constrain: (x) => [M.clamp(x, -2.6, 2.6), 0] });
-        const hd = L.handle(1.7, 1.15, { color: 'orange', label: 'x₀', constrain: (x) => [M.clamp(x, -2.6, 2.6), 1.15] });
+        const rS = v.slider('radius of the window $\\psi$', 0.3, 1.5, 0.5, { step: 0.01 });
+        const L = v.stage({ x: [-3, 3], y: [-0.7, 1.9], height: 300, axes: true, title: '$u$ (blue) and the window $\\psi$ (green)' });
+        const R = v.stage({ x: [1, 3.9], y: [-15, 0], height: 300, axes: 'box', xticks: decTicks(1, 3), yticks: decTicks(-15, 0), xlabel: 'ξ', title: '$|\\widehat{\\psi u}|$ (envelope, log–log)' });
+        const B = v.stage({ x: [-3, 3], y: [0, 3.25], height: 160, full: true, axes: 'box', yticks: [[0.5, '½'], [1.5, '3/2'], [2.5, '5/2']], title: 'threshold $s^*$ of each singularity and the set $\\Omega$' });
+        const SG = [{ c: 'orange', k: 1, x: -1.6, name: 'jump' }, { c: 'purple', k: 2, x: 0.3, name: 'kink' }, { c: 'teal', k: 3, x: 1.7, name: "u'' jump" }];
+        const HS = SG.map((g) => L.handle(g.x, -0.45, { color: g.c, r: 6, constrain: (x) => [M.clamp(x, -2.7, 2.7), -0.45] }));
+        const hw = L.handle(-1.4, 0, { color: 'green', label: 'ψ', labelPos: 's', constrain: (x) => [M.clamp(x, -2.6, 2.6), 0] });
+        const ha = B.handle(-2.4, 2.95, { color: 'ink', label: 'Ω', labelPos: 'e', constrain: (x) => [M.clamp(x, -2.9, 2.9), 2.95] });
+        const hb = B.handle(0.9, 2.95, { color: 'ink', constrain: (x) => [M.clamp(x, -2.9, 2.9), 2.95] });
         const NF = 65536, X0 = -4.8, LEN = 9.6, h = LEN / NF, dxi = 2 * Math.PI / LEN;
-        let st = {}, cache = { key: '' };
-        v.legend([['orange', '$\\widehat{\\psi f}$'], ['purple', '$\\widehat{\\psi u}$'], ['muted', 'reference slopes $0,-1,-2,-3$', { dash: true }]]);
+        let cache = { key: '' }, st = {};
         v.render(() => {
-          const c = cS.value, r = rS.value, xc = hx.x, x0 = hd.x;
-          const ub = (x) => (Math.abs(x) <= a ? 1 - Math.exp(-a) * Math.cosh(x) : Math.sinh(a) * Math.exp(-Math.abs(x)));
-          const u = (x) => ub(x) + c * 0.5 * Math.exp(-Math.abs(x - x0));
-          // left panel
+          const r = rS.value, xc = hw.x, X = HS.map((q) => q.x);
+          const u = (x) => 0.8 * (x > X[0] ? 1 : 0) + 0.7 * Math.abs(x - X[1]) * Math.exp(-((x - X[1]) ** 2)) + 1.5 * (x > X[2] ? (x - X[2]) ** 2 * Math.exp(-(x - X[2])) : 0);
           L.vband(xc - r, xc + r, { color: 'green', alpha: 0.08 });
-          L.fn((x) => bump(x, xc, r) * 1.2, { color: 'green', width: 1.6, domain: [xc - r, xc + r] });
-          L.fn((x) => (Math.abs(x) <= a ? 1 : 0), { color: 'orange', width: 2.2, fill: 'orange', fillAlpha: 0.12, n: 1200 });
-          if (c > 0) L.arrow(x0, 0, x0, 0.2 + c, { color: 'orange', width: 2.6 });
-          L.fn(u, { color: 'purple', width: 2.6, n: 900 });
-          // spectra by FFT
-          const key = `${c}|${r}|${xc}|${x0}`;
+          L.fn((x) => bump(x, xc, r) * 1.6, { color: 'green', width: 1.6, domain: [xc - r, xc + r] });
+          L.fn(u, { color: 'blue', width: 2.6, n: 1200 });
+          SG.forEach((g, i) => L.vline(X[i], { color: g.c, width: 1, dash: [3, 3] }));
+          const key = `${r}|${xc}|${X.join(',')}`;
           if (cache.key !== key) {
-            const re1 = new Float64Array(NF), im1 = new Float64Array(NF), re2 = new Float64Array(NF), im2 = new Float64Array(NF);
-            for (let j = 0; j < NF; j++) { const x = X0 + j * h, p = bump(x, xc, r); re1[j] = p * (Math.abs(x) <= a ? (Math.abs(Math.abs(x) - a) < h / 2 ? 0.5 : 1) : 0); re2[j] = p * u(x); }
-            fft(re1, im1); fft(re2, im2);
-            const pd = c * bump(x0, xc, r);
-            const A1 = new Float64Array(NF / 2), A2 = new Float64Array(NF / 2);
-            for (let k = 0; k < NF / 2; k++) {
-              const xi = k * dxi, co = Math.cos(X0 * xi), si = Math.sin(X0 * xi);   // F(ξ) ≈ h e^{−i X0 ξ} Σ_j g_j e^{−2πi jk/n}
-              const fr = h * (re1[k] * co + im1[k] * si), fi = h * (im1[k] * co - re1[k] * si);
-              A1[k] = Math.hypot(fr + pd * Math.cos(x0 * xi), fi - pd * Math.sin(x0 * xi));
-              A2[k] = h * Math.hypot(re2[k], im2[k]);
-            }
-            const e1 = envelope(A1, dxi, 1, 3.9, 0.05), e2 = envelope(A2, dxi, 1, 3.9, 0.05);
-            cache = { key, e1, e2, s1: slope(e1, 3.0, 3.85), s2: slope(e2, 3.0, 3.85) };
+            const re = new Float64Array(NF), im = new Float64Array(NF);
+            for (let j = 0; j < NF; j++) { const x = X0 + j * h; re[j] = bump(x, xc, r) * u(x); }
+            fft(re, im);
+            const A = new Float64Array(NF / 2); for (let k = 0; k < NF / 2; k++) A[k] = h * Math.hypot(re[k], im[k]);
+            const e = envelope(A, dxi, 1, 3.9, 0.05);
+            cache = { key, e, s: slope(e, 3.0, 3.85) };
           }
-          const clip = (e) => e.map(([x, y]) => [x, Math.max(y, -14.5)]);
-          const hi = Math.max(...[...cache.e1, ...cache.e2].map((p) => p[1])) + 0.6;
+          const hi = Math.max(...cache.e.map((p) => p[1])) + 0.6;
           R.setView(null, [-15, hi]); R.setTicks(decTicks(1, 3), decTicks(-15, hi).filter((t) => t[0] % 2 === 0));
           R.hband(-15, -14, { color: 'muted', alpha: 0.12 });
-          for (let m = 0; m <= 3; m++) R.line(1, hi - 0.4, 3.9, hi - 0.4 - m * 2.9, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 });
-          R.path(clip(cache.e1), { color: 'orange', width: 2.4 });
-          R.path(clip(cache.e2), { color: 'purple', width: 2.6 });
-          const covers = (p) => Math.abs(p - xc) < r;
-          st = { s1: cache.s1, s2: cache.s2, edge: covers(-a) || covers(a), del: c > 0 && covers(x0) };
+          for (let m = 1; m <= 3; m++) R.line(1, hi - 0.4, 3.9, hi - 0.4 - m * 2.9, { color: SG[m - 1].c, width: 1, dash: [3, 4], alpha: 0.6 });
+          R.path(cache.e.map(([x, y]) => [x, Math.max(y, -14.5)]), { color: 'green', width: 2.6 });
+          // bottom: thresholds and Ω
+          const a = Math.min(ha.x, hb.x), b = Math.max(ha.x, hb.x);
+          B.vband(a, b, { color: 'ink', alpha: 0.07 });
+          B.line(a, 2.95, b, 2.95, { color: 'ink', width: 3 });
+          SG.forEach((g, i) => { B.line(X[i], 0, X[i], g.k - 0.5, { color: g.c, width: 4 }); B.dot(X[i], g.k - 0.5, { color: g.c, r: 4 }); });
+          const inside = SG.map((g, i) => (X[i] > a && X[i] < b ? g.k - 0.5 : Infinity)), sO = Math.min(...inside);
+          if (isFinite(sO)) B.hline(sO, { color: 'red', width: 1.6, dash: [6, 4] });
+          const covered = SG.map((g, i) => (Math.abs(X[i] - xc) < r ? g.k - 0.5 : Infinity)), sW = Math.min(...covered);
+          st = { sl: cache.s, sW, sO, winIn: xc - r > a && xc + r < b, names: SG.filter((g, i) => Math.abs(X[i] - xc) < r).map((g) => g.name) };
         });
         v.readout(() => {
-          const S = st, smooth = !S.edge && !S.del;
-          if (smooth) return `The window sees neither a jump nor the $\\delta$: both $\\psi f$ and $\\psi u$ are smooth, and their transforms decay faster than any power (fitted slopes $${v.fix(S.s1, 1)}$, $${v.fix(S.s2, 1)}$).`;
-          return `$|\\widehat{\\psi f}|\\sim\\xi^{${v.fix(S.s1, 2)}}$, so $\\psi f\\in H^s$ for $s<${v.fix(-S.s1 - 0.5, 1)}$; $|\\widehat{\\psi u}|\\sim\\xi^{${v.fix(S.s2, 2)}}$, so $\\psi u\\in H^{s}$ for $s<${v.fix(-S.s2 - 0.5, 1)}$. Gain: $${v.fix(S.s1 - S.s2, 2)}\\approx N=2$.`;
+          const s = st;
+          const win = s.names.length ? `The window covers: ${s.names.join(', ')}. ` : 'The window covers no singularity, so $\\psi u$ is smooth. ';
+          const fit = isFinite(s.sW) ? `Fitted decay $\\xi^{${v.fix(s.sl, 2)}}$, so $\\psi u\\in H^s$ for $s<${v.fix(-s.sl - 0.5, 1)}$ (theory: $s<${v.fix(s.sW, 1)}$). ` : `Fitted slope $${v.fix(s.sl, 1)}$: faster than any power. `;
+          const om = isFinite(s.sO) ? `$u$ is locally $H^s$ in $\\Omega$ iff $s<${v.fix(s.sO, 1)}$.` : '$\\Omega$ contains no singularity: $u$ is locally $H^s$ in $\\Omega$ for every $s$.';
+          return win + fit + om + (s.winIn ? ' (This $\\psi$ lies in $\\mathscr D(\\Omega)$.)' : '');
         });
       },
     },

@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 8: Applications to Differential Equations
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Numbering checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
 // In the visualisations, derivatives are written with d/dx; Rudin's D = −i d/dx appears only in 8.5.
 
 const PSI_P = (() => {
@@ -95,13 +95,13 @@ $$P(D)E=\delta .$$`,
       },
     },
     {
-      num: '8.2',
-      kind: 'Theorem',
+      num: '8.1a',
+      kind: 'Corollary',
       name: 'Solving P(D)u = w by convolution with a fundamental solution',
       statement: String.raw`If $E$ is a fundamental solution of $P(D)$ and $w\in\mathscr D'(\R^n)$ has compact support, then $u=E*w$ satisfies
 $$P(D)u=w .$$
 Every other solution of $P(D)u=w$ differs from $E*w$ by a solution of the homogeneous equation $P(D)u=0$.`,
-      idea: String.raw`Derivatives of a convolution can be put on either factor (6.37), so $P(D)(E*w)=(P(D)E)*w=\delta*w=w$. The second sentence is linearity. The point of the theorem is that one distribution $E$, found once, solves the equation for every right-hand side with compact support — the superposition principle of physics.`,
+      idea: String.raw`Derivatives of a convolution can be put on either factor (6.37), so $P(D)(E*w)=(P(D)E)*w=\delta*w=w$. The second sentence is linearity. Rudin makes this observation in the introduction 8.1, right after defining fundamental solutions (8.2 then fixes notation for the torus $T^n$). The point is that one distribution $E$, found once, solves the equation for every right-hand side with compact support — the superposition principle of physics.`,
       caption: String.raw`$P(D)=D^2+m^2=-\frac{d^2}{dx^2}+m^2$ on $\R$, with fundamental solution $E(x)=\frac{e^{-m|x|}}{2m}$ (faint, in the inset scale). Drag the three source bumps (orange) — their heights and positions — to build $w$; the solution $u=E*w$ (purple) is computed by quadrature. Then $-u''+m^2u$ is recomputed by finite differences (green, dashed) and lands on $w$.`,
       deps: ['fa-8.1', 'fa-6.37'],
       tags: ['differential equations', 'fundamental solutions', 'convolution'],
@@ -139,11 +139,13 @@ Every other solution of $P(D)u=w$ differs from $E*w$ by a solution of the homoge
     {
       num: '8.3',
       kind: 'Lemma',
-      name: 'A mean-value bound for polynomials times holomorphic functions',
-      statement: String.raw`Let $P(z)=a z^N+\dots$ be a polynomial of degree $N$ with leading coefficient $a$, and let $f$ be holomorphic in a neighbourhood of the closed unit disc. Then
-$$|a\,f(0)|\le\frac1{2\pi}\int_{-\pi}^{\pi}\big|f(e^{i\theta})\,P(e^{i\theta})\big|\,d\theta .$$`,
-      idea: String.raw`Write $P(z)=a\prod(z-z_k)$ and reflect the roots inside the disc: $Q(z)=a\prod_{|z_k|<1}(1-\bar z_kz)\prod_{|z_k|\ge1}(z-z_k)$. On the circle $|Q|=|P|$, because $|1-\bar z_ke^{i\theta}|=|e^{i\theta}-z_k|$, and $|Q(0)|=|a|\prod_{|z_k|\ge1}|z_k|\ge|a|$. Then $|a f(0)|\le|f(0)Q(0)|\le\frac1{2\pi}\int|fQ|$ by the mean value property of the subharmonic function $|fQ|$.`,
-      caption: String.raw`$P(z)=a\prod_k(z-z_k)$: drag the three roots (red inside the disc, blue outside) and set $a$; $f(z)=e^{bz}$. Hollow dots are the reflected roots $1/\bar z_k$ used in the proof. Right: $|f(e^{i\theta})P(e^{i\theta})|$ around the circle, its mean (purple), and the lower bounds $|f(0)Q(0)|$ (green) and $|af(0)|$ (orange). The order mean $\ge|f(0)Q(0)|\ge|af(0)|$ never breaks, however you move the roots.`,
+      name: 'Malgrange’s lemma: a mean-value bound for P·f',
+      statement: String.raw`Let $P$ be a polynomial in $n$ variables, of degree $N$, with principal part $P_N$, and let $\sigma_n$ be the normalised Haar measure on the torus $T^n\subset\C^n$. There is a constant $A<\infty$, depending only on $P$, such that
+$$|f(z)|\le A\,r^{-N}\int_{T^n}|f(z+rw)\,P(z+rw)|\,d\sigma_n(w)$$
+for every entire function $f$ on $\C^n$, every $z\in\C^n$ and every $r>0$. The heart of it is the case $n=1$: if $Q(\lambda)=a\lambda^N+\dots$ and $F$ is holomorphic near the closed unit disc, then
+$$|a\,F(0)|\le\frac1{2\pi}\int_{-\pi}^{\pi}\big|F(e^{i\theta})\,Q(e^{i\theta})\big|\,d\theta .$$`,
+      idea: String.raw`Write $P(z)=a\prod(z-z_k)$ and reflect the roots inside the disc: $Q(z)=a\prod_{|z_k|<1}(1-\bar z_kz)\prod_{|z_k|\ge1}(z-z_k)$. On the circle $|Q|=|P|$, because $|1-\bar z_ke^{i\theta}|=|e^{i\theta}-z_k|$, and $|Q(0)|=|a|\prod_{|z_k|\ge1}|z_k|\ge|a|$. Then $|a f(0)|\le|f(0)Q(0)|\le\frac1{2\pi}\int|fQ|$ by the mean value property of the subharmonic function $|fQ|$. For $n$ variables fix $w\in T^n$ and apply this to $F(\lambda)=f(z+r\lambda w)$ and $Q(\lambda)=P(z+r\lambda w)$, whose leading coefficient is $r^NP_N(w)$. Integrate over $w\in T^n$, using the rotation invariance of $\sigma_n$; then $A=1/\int_{T^n}|P_N|\,d\sigma_n$.`,
+      caption: String.raw`The one-variable step. $P(z)=a\prod_k(z-z_k)$: drag the three roots (red inside the disc, blue outside) and set $a$; $f(z)=e^{bz}$. Hollow dots are the reflected roots $1/\bar z_k$ used in the proof. Right: $|f(e^{i\theta})P(e^{i\theta})|$ around the circle, its mean (purple), and the lower bounds $|f(0)Q(0)|$ (green) and $|af(0)|$ (orange). The order mean $\ge|f(0)Q(0)|\ge|af(0)|$ never breaks, however you move the roots.`,
       deps: ['rca-15.18', 'rca-17.5'],
       tags: ['polynomials', 'subharmonic functions'],
       verify: true,

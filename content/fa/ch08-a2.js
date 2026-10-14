@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 8 (part 2): elliptic operators
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Numbering checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
 
 const PRESETS = {
   lap: { label: 'Laplace $\\xi_1^2+\\xi_2^2$', a: 1, b: 0, c: 1 },
@@ -17,10 +17,11 @@ export default {
       num: '8.7',
       kind: 'Definition',
       name: 'Elliptic operators',
-      statement: String.raw`Let $P(D)=\sum_{|\alpha|\le N}c_\alpha D^\alpha$ have order $N$, and let $P_N(\xi)=\sum_{|\alpha|=N}c_\alpha\xi^\alpha$ be its **principal part**. $P(D)$ is **elliptic** if
-$$P_N(\xi)\ne0\qquad\text{for every }\xi\in\R^n,\ \xi\ne0 .$$`,
-      idea: String.raw`Ellipticity is a condition on the highest-order terms only. Since $P_N$ is homogeneous of degree $N$, it says $|P_N(\xi)|\ge m|\xi|^N$ with $m=\min_{|\omega|=1}|P_N(\omega)|>0$. The Laplacian ($P_2=-|\xi|^2$) is elliptic; the wave operator ($\xi_1^2-\xi_2^2$) and the heat operator (principal part $\xi_1^2$ in the variables $(x,t)$) are not — their principal symbols vanish along "characteristic" directions.`,
-      caption: String.raw`Second-order operators in the plane: $P_2(\xi)=a\xi_1^2+2b\xi_1\xi_2+c\xi_2^2$ (choose a preset or tune $a,b,c$). Left: $P_2$ coloured by sign and size over the $\xi$-plane, with its zero set in red — the characteristic directions. Right: $P_2$ on the unit circle. The operator is elliptic exactly when the curve never touches $0$, i.e. when $ac-b^2>0$.`,
+      statement: String.raw`Let $\Omega\subset\R^n$ be open, $N$ a positive integer, and $f_\alpha\in C^\infty(\Omega)$ for $|\alpha|\le N$, with some $f_\alpha$, $|\alpha|=N$, not identically $0$. These define the linear differential operator $L=\sum_{|\alpha|\le N}f_\alpha D^\alpha$ of order $N$, whose **characteristic polynomial** (principal symbol) is
+$$p(x,y)=\sum_{|\alpha|=N}f_\alpha(x)\,y^\alpha\qquad(x\in\Omega,\ y\in\R^n).$$
+$L$ is **elliptic** if $p(x,y)\ne0$ for every $x\in\Omega$ and every $y\ne0$. For constant coefficients, $L=P(D)$ and $p=P_N$, the principal part of $P$.`,
+      idea: String.raw`Ellipticity is a condition on the highest-order terms only, pointwise in $x$. For constant coefficients, since $P_N$ is homogeneous of degree $N$, it says $|P_N(\xi)|\ge m|\xi|^N$ with $m=\min_{|\omega|=1}|P_N(\omega)|>0$. The Laplacian ($P_2=-|\xi|^2$) is elliptic; the wave operator ($\xi_1^2-\xi_2^2$) and the heat operator (principal part $\xi_1^2$ in the variables $(x,t)$) are not — their principal symbols vanish along "characteristic" directions.`,
+      caption: String.raw`Constant-coefficient second-order operators in the plane: $P_2(\xi)=a\xi_1^2+2b\xi_1\xi_2+c\xi_2^2$ (choose a preset or tune $a,b,c$). Left: $P_2$ coloured by sign and size over the $\xi$-plane, with its zero set in red — the characteristic directions. Right: $P_2$ on the unit circle. The operator is elliptic exactly when the curve never touches $0$, i.e. when $ac-b^2>0$.`,
       deps: ['fa-8.1'],
       tags: ['differential equations', 'elliptic operators'],
       verify: true,
@@ -53,13 +54,13 @@ $$P_N(\xi)\ne0\qquad\text{for every }\xi\in\R^n,\ \xi\ne0 .$$`,
       },
     },
     {
-      num: '8.8',
-      kind: 'Lemma',
+      num: '8.7a',
+      kind: 'Corollary',
       name: 'Elliptic symbols are large at infinity',
       statement: String.raw`If $P(D)$ is elliptic of order $N$, there are constants $c>0$ and $R<\infty$ such that
 $$|P(\xi)|\ge c\,|\xi|^N\qquad(\xi\in\R^n,\ |\xi|\ge R).$$
 In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O(|\xi|^{-N})$ there.`,
-      idea: String.raw`$|P_N(\xi)|\ge m|\xi|^N$ with $m=\min_{|\omega|=1}|P_N(\omega)|>0$, while the lower-order part satisfies $|P(\xi)-P_N(\xi)|\le C(1+|\xi|)^{N-1}$. For $|\xi|$ large the latter is at most $\frac m2|\xi|^N$, so $c=\frac m2$ works. Without ellipticity $m=0$ and the lower-order terms decide: zeros of $P$ may run off to infinity along characteristic directions.`,
+      idea: String.raw`$|P_N(\xi)|\ge m|\xi|^N$ with $m=\min_{|\omega|=1}|P_N(\omega)|>0$, while the lower-order part satisfies $|P(\xi)-P_N(\xi)|\le C(1+|\xi|)^{N-1}$. For $|\xi|$ large the latter is at most $\frac m2|\xi|^N$, so $c=\frac m2$ works. Rudin uses this inequality in the proof of 8.12 rather than stating it separately. Without ellipticity $m=0$ and the lower-order terms decide: zeros of $P$ may run off to infinity along characteristic directions.`,
       caption: String.raw`The full symbol $P(\xi)=P_2(\xi)+\beta_1\xi_1+\beta_2\xi_2+\beta_0$ (real coefficients, so its zero set is a conic, drawn in red). Left: for an elliptic $P_2$ the zeros stay inside a disc (dashed: the radius $R$ beyond which $|P|\ge\frac m2|\xi|^2$); for the wave or degenerate symbols they escape to infinity. Right: $\min_{|\xi|=\rho}|P(\xi)|/\rho^2$ against $\rho$ (log scale) — it tends to $m>0$ (green dashed) exactly in the elliptic case.`,
       deps: ['fa-8.7'],
       tags: ['elliptic operators', 'symbols'],
@@ -110,10 +111,10 @@ In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O
       num: '8.12',
       kind: 'Theorem',
       name: 'Elliptic regularity',
-      statement: String.raw`Suppose $P(D)$ is elliptic, $\Omega\subset\R^n$ is open, $u\in\mathscr D'(\Omega)$, and $P(D)u\in C^\infty(\Omega)$. Then $u\in C^\infty(\Omega)$. (More precisely: there is a $C^\infty$ function in $\Omega$ that equals $u$ as a distribution.)`,
-      idea: String.raw`The question is local, so fix $\psi\in\mathscr D(\Omega)$ and consider $\psi u$, which has compact support. By 8.8, $1/P$ is smooth and $O(|\xi|^{-N})$ off a compact set, so there is a **parametrix**: a distribution $E$, smooth away from $0$, with $P(D)E=\delta+\omega$, $\omega\in C^\infty$. Then $\psi u=E*P(D)(\psi u)-\omega*(\psi u)$; the second term is smooth, and $P(D)(\psi u)=\psi P(D)u+(\text{terms supported where }\nabla\psi\ne0)$. Near any point where $\psi=1$, the first term is smooth because $E$ is smooth off the origin. Equivalently, in Sobolev language, $P(D)u\in H^s_{loc}$ implies $u\in H^{s+N}_{loc}$, and Sobolev's lemma 7.25 converts this into smoothness.`,
+      statement: String.raw`Suppose $L$ is an elliptic operator of order $N$ in $\Omega$, with $C^\infty$ coefficients (8.7), $u\in\mathscr D'(\Omega)$, and $Lu$ is locally $H^s$ in $\Omega$ for some real $s$. Then $u$ is locally $H^{s+N}$. In particular, if $Lu\in C^\infty(\Omega)$, then $u\in C^\infty(\Omega)$: there is a $C^\infty$ function in $\Omega$ that equals $u$ as a distribution.`,
+      idea: String.raw`The question is local (8.11), so fix $\psi\in\mathscr D(\Omega)$ and consider $\psi u$, which has compact support. For constant coefficients, by 8.7a $1/P$ is smooth and $O(|\xi|^{-N})$ off a compact set, so there is a **parametrix**: a distribution $E$, smooth away from $0$, with $P(D)E=\delta+\omega$, $\omega\in C^\infty$. Then $\psi u=E*P(D)(\psi u)-\omega*(\psi u)$; the second term is smooth, and $P(D)(\psi u)=\psi P(D)u+(\text{terms supported where }\nabla\psi\ne0)$. Near any point where $\psi=1$, the first term is smooth because $E$ is smooth off the origin. Equivalently, in Sobolev language, $P(D)u\in H^s_{loc}$ implies $u\in H^{s+N}_{loc}$, and Sobolev's lemma 7.25 converts this into smoothness.`,
       caption: String.raw`Left: an elliptic case. $u$ is harmonic in the disc ($\Delta u=0\in C^\infty$), with boundary values a square wave on the circle that jumps $2k$ times. However rough the boundary data, $u$ is smooth — even real-analytic — inside: the readout shows $\sup|\nabla u|$ on the disc of radius $0.9$. Right: the wave operator $\partial_t^2-\partial_x^2$ is not elliptic, and $u(x,t)=H(x-t-x_0)$ solves $u_{tt}-u_{xx}=0$ while jumping along a characteristic line; switch to the heat operator to see a non-elliptic operator that nonetheless smooths for $t>0$ (hypoellipticity is weaker than ellipticity).`,
-      deps: ['fa-8.8', 'fa-8.2', 'fa-7.25', 'fa-6.24'],
+      deps: ['fa-8.7', 'fa-8.7a', 'fa-8.9', 'fa-8.11', 'fa-7.25'],
       tags: ['elliptic operators', 'regularity'],
       verify: true,
       viz(v) {
