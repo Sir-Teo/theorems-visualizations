@@ -55,7 +55,8 @@ function pageHome() {
   const deepest = G.items.reduce((a, b) => (b.depth > a.depth ? b : a), G.items[0]);
   const chain = [];
   for (let cur = deepest; cur; ) { chain.unshift(cur); cur = cur.deps.map((d) => G.byId.get(d)).sort((a, b) => b.depth - a.depth)[0]; }
-  const pillars = G.items.filter((it) => it.kind !== 'Definition').sort((a, b) => b.desc - a.desc).slice(0, 12);
+  const cited = (it) => (G.children.get(it.id) || []).length;
+  const pillars = G.items.filter((it) => it.kind !== 'Definition').sort((a, b) => cited(b) - cited(a) || b.desc - a.desc).slice(0, 12);
   const el = h(`<div>
     <section class="wrap hero">
       <div class="eyebrow">Principles · Real &amp; Complex · Functional</div>
@@ -87,7 +88,7 @@ function pageHome() {
       <div class="books" id="books"></div>
     </section>
     <section class="wrap">
-      <div class="section-title"><h2>Load-bearing results</h2><span class="muted">the results the most other results rest on</span></div>
+      <div class="section-title"><h2>Workhorses</h2><span class="muted">the results cited most often by later proofs</span></div>
       <div class="featured" id="pillars"></div>
     </section>
   </div>`);
@@ -107,7 +108,7 @@ function pageHome() {
     </div>`));
   }
   const pil = el.querySelector('#pillars');
-  for (const it of pillars) pil.append(h(`<a class="card feat" data-book="${it.b}" href="#/t/${it.id}"><span class="eyebrow"><span class="book-dot"></span>${BOOK_SHORT[it.b]} · ${escapeHTML(fullLabel(it))}</span><span class="nm">${inlineHTML(it.name)}</span><span class="why">${it.desc} later results depend on it</span></a>`));
+  for (const it of pillars) pil.append(h(`<a class="card feat" data-book="${it.b}" href="#/t/${it.id}"><span class="eyebrow"><span class="book-dot"></span>${BOOK_SHORT[it.b]} · ${escapeHTML(fullLabel(it))}</span><span class="nm">${inlineHTML(it.name)}</span><span class="why">cited directly by ${cited(it)} results · ${it.desc} depend on it</span></a>`));
 }
 
 function pageBook(b) {

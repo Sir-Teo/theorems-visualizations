@@ -44,12 +44,21 @@ for (const it of all) for (const a of ancestors(it.id)) descCount.set(a, descCou
 // ---------- layout for the global map ----------
 // One horizontal row per book; chapters left→right; inside a chapter, columns by
 // intra-chapter dependency level and rows ordered by barycentre of predecessors.
-const COL = 34, CH_GAP = 70, ROW = 19, BOOK_GAP = 170;
+const COL = 32, CH_GAP = 64, ROW = 21, BOOK_GAP = 150;
 const pos = new Map();
 const bands = [];
 let cursor = 0;
-for (const B of BOOKS) {
-  const chs = [...chapters.values()].filter((c) => c.book === B.id).sort((a, b) => a.chapter - b.chapter);
+// map rows: RCA is split into its real-variable and complex-variable halves to keep the map's aspect ratio sane
+const ROWS = [
+  { book: 'pma', from: 0, to: 99, label: 'Principles of Mathematical Analysis' },
+  { book: 'rca', from: 0, to: 9, label: 'Real and Complex Analysis · real variables' },
+  { book: 'rca', from: 10, to: 99, label: 'Real and Complex Analysis · complex variables' },
+  { book: 'fa', from: 0, to: 99, label: 'Functional Analysis' },
+];
+const rowLabels = [];
+for (const [ri, R] of ROWS.entries()) {
+  const B = BOOKS.find((b) => b.id === R.book);
+  const chs = [...chapters.values()].filter((c) => c.book === B.id && c.chapter >= R.from && c.chapter <= R.to).sort((a, b) => a.chapter - b.chapter);
   let x = 0; const rowBands = []; const placed = [];
   for (const C of chs) {
     const its = all.filter((it) => it.book === B.id && it.chapter === C.chapter);
@@ -88,7 +97,8 @@ for (const B of BOOKS) {
   const ys = placed.map((id) => pos.get(id).y); const lo = Math.min(...ys), hi = Math.max(...ys);
   const shift = cursor - lo;
   for (const id of placed) pos.get(id).y += shift;
-  for (const b of rowBands) bands.push({ ...b, y0: cursor - 46, y1: hi + shift + 24 });
+  for (const b of rowBands) bands.push({ ...b, row: ri, y0: cursor - 46, y1: hi + shift + 24 });
+  rowLabels.push({ book: B.id, label: R.label, x: rowBands[0].x0, y: cursor - 46 });
   cursor = hi + shift + BOOK_GAP;
 }
 
@@ -116,6 +126,7 @@ const catalog = {
     file: it.file, viz: typeof it.viz === 'function', x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0),
     anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined,
   })),
+  mapRows: rowLabels,
   chapterEdges: [...chEdges].map(([k, n]) => { const [from, to] = k.split('>'); return { from, to, n }; }),
 };
 await mkdir(join(ROOT, 'data'), { recursive: true });

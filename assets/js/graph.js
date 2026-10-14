@@ -214,7 +214,7 @@ export function renderChapterGraph(host, G, book, ch, { onOpen, onOpenChapter } 
 export function renderFlow(host, G, { books = ['pma', 'rca', 'fa'], onOpenChapter } = {}) {
   host.innerHTML = '';
   const cols = books.map((b) => G.books.find((B) => B.id === b)).filter(Boolean);
-  const ROWH = 25, TOP = 44, colW = books.length === 1 ? 420 : 300, GAP = books.length === 1 ? 0 : 120;
+  const ROWH = 25, TOP = 44, colW = books.length === 1 ? 420 : 310, GAP = books.length === 1 ? 0 : 110;
   const width = cols.length * colW + (cols.length - 1) * GAP + 80;
   const rows = Math.max(...cols.map((B) => B.chapters.length));
   const height = TOP + rows * ROWH + 16;
@@ -251,7 +251,8 @@ export function renderFlow(host, G, { books = ['pma', 'rca', 'fa'], onOpenChapte
     svg('rect', { x: -16, y: -11, width: colW - 4, height: 22, rx: 6, fill: 'transparent', class: 'hit' }, g);
     svg('circle', { cx: -12, cy: 0, r: 3.2 + Math.sqrt(p.C.count || 1) * 0.55, fill: BOOK_VAR[p.B.id] }, g);
     const n = svg('text', { x: 2, y: 4, 'font-size': 11, 'font-family': 'var(--font-mono)', fill: 'var(--ink-3)' }, g); n.textContent = String(p.C.n).padStart(2, ' ');
-    const t = svg('text', { x: 24, y: 4.5, 'font-size': 13, fill: 'var(--ink)' }, g); t.textContent = p.C.title.length > 36 ? p.C.title.slice(0, 35) + '…' : p.C.title;
+    const maxCh = Math.floor((colW - 84) / 6.6); const t = svg('text', { x: 24, y: 4.5, 'font-size': 13, fill: 'var(--ink)' }, g); t.textContent = p.C.title.length > maxCh ? p.C.title.slice(0, maxCh - 1).trimEnd() + '…' : p.C.title;
+    const full = svg('title', {}, g); full.textContent = `${p.B.short} ${p.C.n} · ${p.C.title} — ${p.C.count} results`;
     const c = svg('text', { x: colW - 30, y: 4, 'font-size': 10.5, 'font-family': 'var(--font-mono)', fill: 'var(--ink-3)', 'text-anchor': 'end' }, g); c.textContent = p.C.count || '';
     g.addEventListener('mouseenter', () => { root.classList.add('focus'); for (const e of edgeEls) { const on = e.dataset.a === k || e.dataset.b === k; e.style.opacity = on ? 0.85 : 0.05; } });
     g.addEventListener('mouseleave', () => { root.classList.remove('focus'); for (const e of edgeEls) e.style.opacity = ''; });
@@ -423,10 +424,13 @@ export class MapView {
         const label = wpx > 150 ? `${C.n} · ${C.title}` : wpx > 60 ? `Ch ${C.n}` : `${C.n}`;
         c.save(); c.beginPath(); c.rect(x0, y0, wpx, 30); c.clip(); c.fillText(label, x0 + 6, y0 + 7); c.restore();
       });
-      const rowY = Math.min(...B.chapters.filter((C) => C.band).map((C) => C.band.y0));
-      const rowX = Math.min(...B.chapters.filter((C) => C.band).map((C) => C.band.x0));
-      if (isFinite(rowY)) { c.font = `italic 500 ${Math.max(15, Math.min(30, 26 * k))}px Newsreader, serif`; c.fillStyle = withAlpha(B.id, 1); c.textAlign = 'left'; c.textBaseline = 'bottom'; c.fillText(B.title, this.sx(rowX) + 4, this.sy(rowY) - 6); c.font = '600 11px Inter, system-ui, sans-serif'; }
     }
+    for (const R of this.G.mapRows || []) {
+      if (!this.show[R.book]) continue;
+      c.font = `italic 500 ${Math.max(15, Math.min(30, 26 * k))}px Newsreader, serif`; c.fillStyle = withAlpha(R.book, 1); c.textAlign = 'left'; c.textBaseline = 'bottom';
+      c.fillText(R.label, this.sx(R.x) + 4, this.sy(R.y) - 6);
+    }
+    c.font = '600 11px Inter, system-ui, sans-serif';
     // edges
     const drawEdges = (list, style, width) => {
       c.beginPath();
