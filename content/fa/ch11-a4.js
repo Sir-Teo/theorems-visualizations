@@ -1,5 +1,5 @@
-// Rudin, Functional Analysis — Chapter 11 (part 4): square roots, positive elements, the B*-algebra
-// facts behind Gelfand–Naimark, positive functionals and Herglotz's theorem
+// Rudin, Functional Analysis — Chapter 11 (part 4): positive elements, square roots, the B*-algebra
+// facts behind Gelfand–Naimark, states, and positive functionals as measures (abstract Bochner)
 //
 // Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
@@ -75,56 +75,6 @@ export default {
   book: 'fa',
   chapter: 11,
   items: [
-    // ------------------------------------------------------------------ 11.24
-    {
-      num: '11.24',
-      kind: 'Lemma',
-      name: 'Hermitian square roots of e − x',
-      statement: String.raw`Let $A$ be a Banach algebra with an involution, and let $x\in A$ be hermitian with $\rho(x)<1$. Then there is a hermitian $y\in A$, commuting with $x$, such that
-$$y^2=e-x .$$`,
-      idea: String.raw`Take the binomial series of $\sqrt{1-t}$: $y=\sum_{n\ge0}\binom{1/2}{n}(-x)^n$. Its coefficients are $O(n^{-3/2})$ and $\norm{x^n}^{1/n}\to\rho(x)<1$ (10.13), so the series converges absolutely in $A$. Multiplying two absolutely convergent series of powers of $x$ obeys the same Cauchy-product identity as for numbers, so $y^2=e-x$. Each partial sum is a real polynomial in the hermitian $x$, hence hermitian, and so is the limit (11.15). This lemma is how positivity is propagated without any norm condition on the involution: if $F$ is positive, $F(e-x)=F(yy^*)\ge0$.`,
-      caption: String.raw`$x$ a real symmetric $2\times2$ matrix with eigenvalues $t_1,t_2$ (drag them on the axis) in an eigenbasis turned by $\theta$. Top: $\sqrt{1-t}$ (green) and the partial sum $s_N(t)$ of its binomial series (gold); $y_N=s_N(x)$ acts on each eigenvector by $s_N(t_k)$. Bottom: the matrix error $\norm{y_N^2-(e-x)}$ against $N$, from actual matrix powers. It decays geometrically when $\rho(x)<1$, only like $N^{-1/2}$ at $\rho(x)=1$, and the series diverges once an eigenvalue leaves $[-1,1]$.`,
-      deps: ['fa-11.14', 'fa-10.13', 'fa-11.15'],
-      tags: ['involutions', 'square roots', 'power series'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const thS = v.slider('eigenbasis angle $\\theta$', 0, Math.PI, 0.6, { step: 0.01 });
-        const NS = v.slider('partial sum $N$', 0, 60, 8, { int: true });
-        const T = v.stage({ x: [-1.6, 1.6], y: [-0.6, 2.2], height: 250, full: true, axes: true, xlabel: 't', title: '$\\sqrt{1-t}$ and $s_N(t)=\\sum_{n\\le N}\\binom{1/2}{n}(-t)^n$' });
-        const B = v.stage({ x: [0, 60], y: [-16, 2], height: 210, full: true, axes: 'box', xlabel: 'N', yticks: [[-15, '10⁻¹⁵'], [-10, '10⁻¹⁰'], [-5, '10⁻⁵'], [0, '1']], title: '$\\|y_N^2-(e-x)\\|$ (log scale)' });
-        const h1 = T.handle(-0.55, 0, { color: 'red', label: 't₁', labelPos: 's', constrain: (x) => [M.clamp(x, -1.5, 1.5), 0] });
-        const h2 = T.handle(0.8, 0, { color: 'red', label: 't₂', labelPos: 's', constrain: (x) => [M.clamp(x, -1.5, 1.5), 0] });
-        const bin = [1]; for (let n = 1; n <= 80; n++) bin.push(bin[n - 1] * (0.5 - n + 1) / n);
-        const sN = (t, N) => { let s = 0, p = 1; for (let n = 0; n <= N; n++) { s += bin[n] * p; p *= -t; } return s; };
-        let st = {};
-        v.legend([['green', '$\\sqrt{1-t}$'], ['gold', '$s_N(t)$'], ['red', 'eigenvalues of $x$'], ['ink', 'matrix error']]);
-        v.render(() => {
-          const t1 = h1.x, t2 = h2.x, th = thS.value, N = NS.value, c = Math.cos(th), s = Math.sin(th);
-          const R = [[c, -s], [s, c]], X = mul2(mul2(R, [[t1, 0], [0, t2]]), tr2(R));
-          T.vband(-1, 1, { color: 'green', alpha: 0.06 });
-          T.fn((t) => (t <= 1 ? Math.sqrt(1 - t) : NaN), { color: 'green', width: 2.6 });
-          T.fn((t) => M.clamp(sN(t, N), -5, 5), { color: 'gold', width: 2.2, n: 500 });
-          [t1, t2].forEach((t) => { T.vline(t, { color: 'red', width: 1, dash: [3, 3] }); const y = sN(t, N); if (Math.abs(y) < 2.2) T.dot(t, y, { color: 'gold', r: 4 }); });
-          // matrix partial sums y_N = Σ binom(1/2,n) (−X)^n and their errors
-          const errs = []; let Y = [[0, 0], [0, 0]], P = I2, yN = null;
-          const E = add2(I2, sc2(X, -1));
-          for (let n = 0; n <= 60; n++) {
-            Y = add2(Y, sc2(P, bin[n])); P = mul2(P, sc2(X, -1));
-            const D = add2(mul2(Y, Y), sc2(E, -1)); errs.push(Math.log10(Math.max(1e-16, norm2(D))));
-            if (n === N) yN = Y;
-          }
-          B.path(errs.map((e, n) => [n, M.clamp(e, -16, 2)]), { color: 'ink', width: 2.2 });
-          B.dot(N, M.clamp(errs[N], -16, 2), { color: 'gold', r: 5 });
-          const rho = Math.max(Math.abs(t1), Math.abs(t2));
-          st = { rho, err: 10 ** errs[N], asym: Math.abs(yN[0][1] - yN[1][0]), N };
-        });
-        v.readout(() => {
-          const s = st;
-          return `$\\rho(x)=${v.fix(s.rho, 3)}$. $\\|y_{${s.N}}^2-(e-x)\\|=${v.sci(s.err, 2)}$; $y_N$ is symmetric ($|y_{12}-y_{21}|=${v.fix(s.asym, 3)}$). ` + (s.rho < 1 ? 'The series converges geometrically.' : s.rho < 1.0001 ? 'At $\\rho(x)=1$ it still converges, but slowly.' : 'An eigenvalue lies outside $[-1,1]$: the series diverges.');
-        });
-      },
-    },
     // ------------------------------------------------------------------ 11.25
     {
       num: '11.25',
@@ -137,7 +87,7 @@ $$y^2=e-x .$$`,
 Such $x$ are called **positive**. They form a closed convex cone: sums and nonnegative multiples of positive elements are positive.`,
       idea: String.raw`Work in the closed $*$-subalgebra generated by $x$ and $e$, which is a commutative $B^*$-algebra, hence $C(\sigma(x))$ by 11.18 (the spectrum is real, so it is the same in $A$, by 10.18). There (a)$\Leftrightarrow$(b) says that $|t-\lambda|\le t$ on $\sigma(x)\subset[-t,t]$ exactly when $\lambda\ge0$, and (c) is $h=\sqrt{\hat x}$. Convexity uses (b), which needs no commutativity: $\norm{(s+t)e-(x+y)}\le\norm{se-x}+\norm{te-y}\le s+t$. Closedness is clear from (b).`,
       caption: String.raw`Real symmetric $2\times2$ matrices $\begin{pmatrix}a&b\\b&c\end{pmatrix}$ as points of $\R^3$, with coordinates $\big(\frac{a-c}2,\,b,\,\frac{a+c}2\big)$. The positive ones fill the round cone (drag to rotate). Set $x$ with the sliders; $y$ is a fixed positive matrix. The segment from $x$ to $y$ and the point $x+y$ stay in the cone whenever $x$ does. Right: criterion (b). With $t=\norm x$, $\norm{te-x}\le t$ exactly when $\sigma(x)$ lies in $[0,2t]$ (green).`,
-      deps: ['fa-11.18', 'fa-10.18', 'fa-11.24'],
+      deps: ['fa-11.18', 'fa-10.18', 'fa-11.15'],
       tags: ['B*-algebras', 'positive elements', 'cones'],
       verify: true,
       viz(v) {
@@ -185,6 +135,71 @@ Such $x$ are called **positive**. They form a closed convex cone: sums and nonne
     // ------------------------------------------------------------------ 11.26
     {
       num: '11.26',
+      kind: 'Theorem',
+      name: 'Hermitian square roots',
+      statement: String.raw`Let $A$ be a Banach algebra with an involution, let $x\in A$ be hermitian, and suppose that $\sigma(x)$ contains no real number $\lambda\le0$. Then there is a hermitian $y\in A$ with
+$$y^2=x ,$$
+and $y$ can be taken in the closed subalgebra generated by $e$ and $x$.`,
+      idea: String.raw`$\Omega=\C\setminus(-\infty,0]$ is an open set containing $\sigma(x)$, and the principal square root $f(\lambda)=\lambda^{1/2}$ is holomorphic in $\Omega$. The holomorphic functional calculus (10.26, 10.27) gives $y=\tilde f(x)=\frac1{2\pi i}\int_\Gamma\lambda^{1/2}(\lambda e-x)^{-1}d\lambda$, with $y^2=\widetilde{f^2}(x)=x$. Applying the involution to the Cauchy integral replaces $x$ by $x^*$ and $f$ by $\lambda\mapsto\overline{f(\bar\lambda)}$, which is $f$ again for the principal branch. Since $x^*=x$, this gives $y^*=y$. No norm condition on the involution is needed, and in a $B^*$-algebra this is the square root of a positive element.`,
+      caption: String.raw`$x$ is a $2\times2$ matrix with eigenvalues $\lambda_1,\lambda_2$ (drag them), either hermitian (real eigenvalues, orthogonal eigenvectors) or general. The square root is computed literally as the Cauchy integral $\frac1{2\pi i}\oint\sqrt\zeta\,(\zeta-x)^{-1}d\zeta$ over the purple circles, which have to avoid the cut $(-\infty,0]$ (red). The readout checks $\norm{y^2-x}$ and $\norm{y-y^*}$, and the green dots are $\sigma(y)=\sqrt{\sigma(x)}$, in the right half-plane. Drag an eigenvalue onto the cut: no contour fits. If $x$ has a negative eigenvalue, it has no hermitian square root at all.`,
+      deps: ['fa-10.26', 'fa-10.27', 'fa-10.30', 'fa-11.15'],
+      tags: ['involutions', 'square roots', 'functional calculus'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const mode = v.select('$x$', [{ value: 'herm', label: 'hermitian' }, { value: 'gen', label: 'general (not normal)' }], 'herm', { onChange: (m) => { if (m === 'herm') H.forEach((h) => h.set(h.x, 0)); } });
+        const thS = v.slider('eigenbasis angle', 0, Math.PI, 0.6, { step: 0.01 });
+        const S = v.stage({ x: [-2.2, 3.2], y: [-1.7, 1.7], equal: true, height: 360, axes: true, title: '$\\sigma(x)$ (blue), the cut, the contours, $\\sigma(y)$ (green)' });
+        const H = [[0.6, 0], [2.2, 0]].map(([a, b], k) => S.handle(a, b, { color: 'blue', r: 6, label: `λ${'₁₂'[k]}`, constrain: (x, y) => [x, mode.value === 'herm' ? 0 : y] }));
+        const csq = (z) => { const r = cabs(z), re = Math.sqrt(Math.max(0, (r + z[0]) / 2)), im = Math.sqrt(Math.max(0, (r - z[0]) / 2)); return [re, z[1] < 0 ? -im : im]; };
+        const dcut = (z) => (z[0] >= 0 ? cabs(z) : Math.abs(z[1]));
+        const m2 = (A, B) => [[cadd(cmul(A[0][0], B[0][0]), cmul(A[0][1], B[1][0])), cadd(cmul(A[0][0], B[0][1]), cmul(A[0][1], B[1][1]))], [cadd(cmul(A[1][0], B[0][0]), cmul(A[1][1], B[1][0])), cadd(cmul(A[1][0], B[0][1]), cmul(A[1][1], B[1][1]))]];
+        const star = (A) => [[cconj(A[0][0]), cconj(A[1][0])], [cconj(A[0][1]), cconj(A[1][1])]];
+        const fro2 = (A, B) => Math.sqrt([0, 1].reduce((s, i) => s + [0, 1].reduce((t, j) => t + cabs(csub(A[i][j], B[i][j])) ** 2, 0), 0));
+        let st = {};
+        v.legend([['red', 'the cut $(-\\infty,0]$'], ['purple', 'contour $\\Gamma$'], ['green', '$\\sigma(y)=\\sqrt{\\sigma(x)}$', { dot: true }]]);
+        v.render(() => {
+          const herm = mode.value === 'herm', L = H.map((h) => [h.x, herm ? 0 : h.y]), th = thS.value, c = Math.cos(th), s = Math.sin(th);
+          const Sm = herm ? [[[c, 0], [-s, 0]], [[s, 0], [c, 0]]] : [[[1, 0], [0.9, 0]], [[0.2, 0], [1, 0]]];
+          const det = cmul(Sm[0][0], Sm[1][1]), dS = csub(det, cmul(Sm[0][1], Sm[1][0]));
+          const Si = [[cdiv(Sm[1][1], dS), cdiv(csub([0, 0], Sm[0][1]), dS)], [cdiv(csub([0, 0], Sm[1][0]), dS), cdiv(Sm[0][0], dS)]];
+          const X = m2(m2(Sm, [[L[0], [0, 0]], [[0, 0], L[1]]]), Si);
+          S.line(-2.4, 0, 0, 0, { color: 'red', width: 5, alpha: 0.7 });
+          const d1 = dcut(L[0]), d2 = dcut(L[1]), sep = cabs(csub(L[0], L[1])), mid = [(L[0][0] + L[1][0]) / 2, (L[0][1] + L[1][1]) / 2], dm = dcut(mid);
+          let circles = null;
+          if (Math.min(d1, d2) > 0.04) {
+            if (dm > 0.5 * sep * 1.25 + 0.03) circles = [[mid, 0.5 * sep + 0.55 * (dm - 0.5 * sep)]];
+            else circles = [[L[0], Math.min(0.7 * d1, 0.45 * sep)], [L[1], Math.min(0.7 * d2, 0.45 * sep)]];
+          }
+          let Y = null;
+          if (circles) {
+            Y = [[[0, 0], [0, 0]], [[0, 0], [0, 0]]];
+            const n = 256;
+            for (const [cz, r] of circles) {
+              S.circle(cz[0], cz[1], r, { color: 'purple', width: 2 });
+              for (let k = 0; k < n; k++) {
+                const t = 2 * Math.PI * k / n, e = [Math.cos(t), Math.sin(t)], z = cadd(cz, [r * e[0], r * e[1]]);
+                const a = csub(z, X[0][0]), b = csub([0, 0], X[0][1]), cc = csub([0, 0], X[1][0]), d = csub(z, X[1][1]), dt = csub(cmul(a, d), cmul(b, cc));
+                const w = cmul(csq(z), [r * e[0] / n, r * e[1] / n]);    // √ζ · dζ/(2πi) with the trapezoid weight 2π/n
+                const inv = [[cdiv(d, dt), cdiv(csub([0, 0], b), dt)], [cdiv(csub([0, 0], cc), dt), cdiv(a, dt)]];
+                for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) Y[i][j] = cadd(Y[i][j], cmul(w, inv[i][j]));
+              }
+            }
+            const tr = cadd(Y[0][0], Y[1][1]), dY = csub(cmul(Y[0][0], Y[1][1]), cmul(Y[0][1], Y[1][0])), hh = [tr[0] / 2, tr[1] / 2], rt = csq(csub(cmul(hh, hh), dY));
+            [cadd(hh, rt), csub(hh, rt)].forEach((z) => S.dot(z[0], z[1], { color: 'green', r: 5 }));
+          }
+          st = { ok: !!circles, herm, err: Y ? fro2(m2(Y, Y), X) : NaN, asym: Y ? fro2(Y, star(Y)) : NaN, neg: L.some((z) => Math.abs(z[1]) < 1e-9 && z[0] <= 0) };
+        });
+        v.readout(() => {
+          const s = st;
+          if (!s.ok) return 'An eigenvalue lies on (or next to) the cut $(-\\infty,0]$: no contour in $\\Omega$ surrounds $\\sigma(x)$.' + (s.neg && s.herm ? ' A hermitian matrix with a negative eigenvalue has no hermitian square root: $y^2$ would have nonnegative eigenvalues.' : '');
+          return `$\\|y^2-x\\|=${v.sci(s.err + 1e-17, 1)}$, $\\|y-y^*\\|=${v.sci(s.asym + 1e-17, 1)}$` + (s.herm ? ' — $y$ is hermitian, as the theorem says.' : ' — $x$ is not hermitian here, so neither is $y$; it is still a square root.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 11.27
+    {
+      num: '11.27',
       kind: 'Lemma',
       name: 'σ(xy) and σ(yx) agree off 0; σ(xx*) ≤ 0 forces x = 0',
       statement: String.raw`(a) In every Banach algebra, $\sigma(xy)\cup\{0\}=\sigma(yx)\cup\{0\}$.
@@ -238,9 +253,9 @@ Such $x$ are called **positive**. They form a closed convex cone: sums and nonne
 (d) if $u,v$ are hermitian with $\sigma(u),\sigma(v)\subset[0,\infty)$, then $\sigma(u+v)\subset[0,\infty)$;
 (e) $\sigma(yy^*)\subset[0,\infty)$ for every $y\in A$;
 (f) $e+yy^*$ is invertible for every $y\in A$.`,
-      idea: String.raw`(a) If $x=x^*$, then $e^{itx}$ is unitary, so its spectrum lies on $\T$ and $\sigma(x)\subset\R$ by the spectral mapping theorem. (b) For normal $x$, the $B^*$ identity gives $\norm{x^{2}}^2=\norm{(xx^*)(xx^*)^*}=\norm{xx^*}^2=\norm x^4$, so $\norm{x^{2^k}}=\norm x^{2^k}$ and $\rho(x)=\norm x$. (c) is (b) for the hermitian $yy^*$ combined with $\norm{yy^*}=\norm y^2$. (d) is the cone property 11.25. (e) Let $a=yy^*$, $f=\max(\cdot,0)$ and $g=\max(-\,\cdot,0)$ on $\sigma(a)$, so $a=f(a)-g(a)$ and $f(a)g(a)=0$. Put $z=g(a)^{1/2}y$. Then $zz^*=g(a)^{1/2}a\,g(a)^{1/2}=-g(a)^2$ has spectrum in $(-\infty,0]$, so $z=0$ by 11.26, hence $g(a)=0$. (f) follows from (e).`,
+      idea: String.raw`(a) If $x=x^*$, then $e^{itx}$ is unitary, so its spectrum lies on $\T$ and $\sigma(x)\subset\R$ by the spectral mapping theorem. (b) For normal $x$, the $B^*$ identity gives $\norm{x^{2}}^2=\norm{(xx^*)(xx^*)^*}=\norm{xx^*}^2=\norm x^4$, so $\norm{x^{2^k}}=\norm x^{2^k}$ and $\rho(x)=\norm x$. (c) is (b) for the hermitian $yy^*$ combined with $\norm{yy^*}=\norm y^2$. (d) is the cone property 11.25. (e) Let $a=yy^*$, $f=\max(\cdot,0)$ and $g=\max(-\,\cdot,0)$ on $\sigma(a)$, so $a=f(a)-g(a)$ and $f(a)g(a)=0$. Put $z=g(a)^{1/2}y$. Then $zz^*=g(a)^{1/2}a\,g(a)^{1/2}=-g(a)^2$ has spectrum in $(-\infty,0]$, so $z=0$ by 11.27, hence $g(a)=0$. (f) follows from (e).`,
       caption: String.raw`$A=M_2(\R)$ acting on the plane. Drag the columns $ye_1$, $ye_2$ of $y$. Left: the unit circle and its image under $y$; the semi-axes (grey) are the singular values $s_1\ge s_2$. Right: $\sigma(yy^*)=\{s_1^2,s_2^2\}$ (green) always lies in $[0,\infty)$, and $\sigma(e+yy^*)$ (teal) lies in $[1,\infty)$. The orange tick is $\norm y^2$ and the purple tick is $\norm{yy^*}$. With the operator norm (a $B^*$ norm) both sit on the largest green dot: $\rho(yy^*)=\norm{yy^*}=\norm y^2$. Switch to the max-column-sum norm, a perfectly good Banach-algebra norm that is not a $B^*$ norm, and (c) fails.`,
-      deps: ['fa-11.18', 'fa-11.25', 'fa-11.26', 'fa-10.28'],
+      deps: ['fa-11.18', 'fa-11.25', 'fa-11.27', 'fa-11.26', 'fa-10.28'],
       tags: ['B*-algebras', 'positive elements', 'spectrum'],
       verify: true,
       viz(v) {
@@ -332,68 +347,19 @@ and a positive $F$ with $F(e)=1$ is a **state**. On $C(K)$ the positive function
         });
       },
     },
-    // ------------------------------------------------------------------ 11.32
-    {
-      num: '11.32',
-      kind: 'Theorem',
-      name: 'Positive functionals on commutative B*-algebras are measures',
-      statement: String.raw`Let $A$ be a commutative $B^*$-algebra with maximal ideal space $\Delta$. For every positive linear functional $F$ on $A$ there is a unique positive regular Borel measure $\mu$ on $\Delta$ such that
-$$F(x)=\int_\Delta\hat x\,d\mu\qquad(x\in A),$$
-and $\mu(\Delta)=F(e)=\norm F$.`,
-      idea: String.raw`By Gelfand–Naimark (11.18), $x\mapsto\hat x$ is an isometric $*$-isomorphism onto $C(\Delta)$, so $\Phi=F\circ\Gamma^{-1}$ is a linear functional on $C(\Delta)$. It is positive in the usual sense: every $f\ge0$ is $|g|^2=g\bar g$ with $g=\sqrt f$, and $\Phi(g\bar g)=F(yy^*)\ge0$. The Riesz representation theorem produces $\mu\ge0$, and $\norm F=\mu(\Delta)=F(e)$ agrees with 11.31(d). Uniqueness is the uniqueness part of Riesz.`,
-      caption: String.raw`$A=C[0,1]$, so $\Delta=[0,1]$ and $\hat x=x$. The functional is $F(f)=\int f\,d\mu$ with $\mu=c\,dt+\sum_kw_k\delta_{t_k}$; drag the atoms (position and weight) and set $c$. Test $F$ on $|g|^2$ for the bump $g$ (centre $s$, width $\varepsilon$). The bottom curve recovers $\mu$ from $F$ alone, as $F(\varphi_{s,\varepsilon})/\int\varphi_{s,\varepsilon}$ for narrow bumps $\varphi$. Give an atom negative weight and $F$ stops being positive: a narrow $g$ on that atom has $F(|g|^2)<0$, and the recovered measure dips below zero.`,
-      deps: ['fa-11.31', 'fa-11.18', 'rca-2.14'],
-      tags: ['positive functionals', 'Riesz representation', 'B*-algebras'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const cS = v.slider('density $c$', 0, 2, 0.6, { step: 0.01 });
-        const eS = v.slider('bump width $\\varepsilon$', 0.02, 0.3, 0.08, { step: 0.005 });
-        const T = v.stage({ x: [0, 1], y: [-1.2, 2.1], height: 260, full: true, axes: true, title: 'the measure $\\mu$ (bars: atoms, band: density) and $|g|^2$' });
-        const B = v.stage({ x: [0, 1], y: [-4, 8], height: 200, full: true, axes: true, title: 'recovered from $F$: $F(\\varphi_{s,\\varepsilon})/\\int\\varphi_{s,\\varepsilon}$' });
-        const A = [[0.22, 0.8], [0.55, 0.5], [0.8, 1.1]].map(([t, w], k) => T.handle(t, w, { color: 'blue', r: 6, label: `w${'₁₂₃'[k]}`, constrain: (x, y) => [M.clamp(x, 0.03, 0.97), M.clamp(y, -1, 1.5)] }));
-        const hs = T.handle(0.4, 0, { color: 'gold', label: 's', labelPos: 's', constrain: (x) => [M.clamp(x, 0, 1), 0] });
-        const bump = (x, s, e) => { const u = (x - s) / e; return Math.abs(u) < 1 ? Math.exp(-1 / (1 - u * u)) : 0; };
-        let st = {};
-        v.legend([['blue', '$\\mu$'], ['gold', '$|g|^2$'], ['green', 'recovered density (positive)'], ['red', 'negative part']]);
-        v.render(() => {
-          const c = cS.value, eps = eS.value, s = hs.x, atoms = A.map((h) => [h.x, h.y]);
-          const F = (f) => c * M.integrate(f, 0, 1, 2000) + atoms.reduce((acc, [t, w]) => acc + w * f(t), 0);
-          T.hband(0, c, { color: 'blue', alpha: 0.12 });
-          T.hline(c, { color: 'blue', width: 1.2, dash: [4, 3] });
-          atoms.forEach(([t, w]) => T.line(t, 0, t, w, { color: w >= 0 ? 'blue' : 'red', width: 4 }));
-          const g2 = (x) => bump(x, s, eps) ** 2 / Math.exp(-2);
-          T.fn(g2, { color: 'gold', width: 2.2, fill: 'gold', fillAlpha: 0.2, n: 800 });
-          const val = F(g2);
-          // recovered density, with a fixed narrow recovery width
-          const er = 0.02, xs = M.linspace(0, 1, 401), norm = M.integrate((x) => bump(x, 0.5, er), 0.5 - er, 0.5 + er, 200);
-          const rec = xs.map((x) => F((y) => bump(y, x, er)) / norm);
-          B.setView(null, span([...rec.map((r) => M.clamp(r, -30, 60)), 0, c * 1.5], 2, 0.1));
-          B.hline(c, { color: 'blue', width: 1, dash: [4, 3] });
-          B.path(xs.map((x, i) => [x, rec[i]]), { color: 'green', width: 2.2 });
-          B.path(xs.map((x, i) => [x, rec[i] < 0 ? rec[i] : null]).map((p) => (p[1] === null ? null : p)), { color: 'red', width: 2.6 });
-          const mass = c + atoms.reduce((a2, [, w]) => a2 + w, 0), pos = atoms.every(([, w]) => w >= 0);
-          st = { val, mass, pos };
-        });
-        v.readout(() => {
-          const s = st;
-          return `$F(|g|^2)=${v.fix(s.val, 4)}$, $F(e)=\\mu([0,1])=${v.fix(s.mass, 3)}$. ` + (s.pos ? '$\\mu\\ge0$: $F$ is positive and $\\|F\\|=F(e)$.' : (s.val < 0 ? '**$F$ is not positive**: this $g$ is a witness.' : 'An atom is negative, so $F$ is not positive: move $g$ onto it and narrow it.'));
-        });
-      },
-    },
     // ------------------------------------------------------------------ 11.33
     {
       num: '11.33',
       kind: 'Theorem',
-      name: 'Herglotz–Bochner: positive-definite sequences',
-      statement: String.raw`A function $c:\Z\to\C$ is **positive-definite** if $\sum_{j,k}c_{j-k}\,\alpha_j\bar\alpha_k\ge0$ for all finitely supported $(\alpha_j)$. This holds if and only if there is a positive Borel measure $\mu$ on $\T$ with
-$$c_n=\int_{\T}e^{-in\theta}\,d\mu(\theta)\qquad(n\in\Z).$$
-(The same argument, with $L^1(\R^n)$ in place of $\ell^1(\Z)$, gives Bochner's theorem for continuous positive-definite functions on $\R^n$.)`,
-      idea: String.raw`Define $F$ on $\ell^1(\Z)$ by $F(\alpha)=\sum\alpha_nc_n$. With the involution $\alpha^*_n=\overline{\alpha_{-n}}$, $F(\alpha*\alpha^*)=\sum_{j,k}c_{j-k}\alpha_j\bar\alpha_k$, so $c$ is positive-definite exactly when $F$ is positive on the finitely supported elements. Then $|c_n|\le c_0$ (11.31), $F$ extends to a bounded positive functional, and the abstract Bochner theorem (11.32, applied through the symmetric involution on $\Delta=\T$ of 11.13) writes it as $\int\hat\alpha\,d\mu$. The converse is the computation $\sum c_{j-k}\alpha_j\bar\alpha_k=\int|\sum\alpha_je^{-ij\theta}|^2d\mu\ge0$.`,
-      caption: String.raw`Real sequences with $c_0=1$, $c_{\pm1}$, $c_{\pm2}$ and $c_n=0$ for $|n|>2$. Drag $(c_1,c_2)$. Such a $c$ is positive-definite exactly when $p(\theta)=1+2c_1\cos\theta+2c_2\cos2\theta\ge0$; the green region is where this holds, and then $\mu=p\,\frac{d\theta}{2\pi}$. Right: $p(\theta)$. Bottom: the smallest eigenvalue of the Toeplitz matrices $[c_{j-k}]_{0\le j,k\le N}$ for $N=1,\dots,24$. They decrease to $\min p$ (Szegő), so they stay $\ge0$ inside the region and eventually go negative outside it.`,
-      deps: ['fa-11.32', 'fa-11.13', 'fa-11.31'],
+      name: 'Positive functionals are measures on Δ (abstract Bochner)',
+      statement: String.raw`Let $A$ be a commutative Banach algebra with unit and a **symmetric** involution, meaning $h(x^*)=\overline{h(x)}$ for every $h\in\Delta$ and $x\in A$. Then
+$$F(x)=\int_\Delta\hat x\,d\mu\qquad(x\in A)$$
+sets up a one-to-one correspondence between the positive linear functionals $F$ on $A$ with $F(e)\le1$ and the positive regular Borel measures $\mu$ on $\Delta$ with $\mu(\Delta)\le1$, and it is isometric: $\norm F=F(e)=\mu(\Delta)$.`,
+      idea: String.raw`Symmetry makes $\hat u$ real for hermitian $u$. If $t>\norm{\hat u}_\infty=\rho(u)$, then $\sigma(te-u)\subset(0,2t)$, so $te-u=y^2$ with $y$ hermitian (11.26) and $F(te-u)=F(yy^*)\ge0$. Hence $|F(u)|\le F(e)\norm{\hat u}_\infty$, and with $x=u+iv$ and 11.31 one gets $|F(x)|\le F(e)\norm{\hat x}_\infty$. So $F$ is $\Phi\circ\Gamma$ for a functional $\Phi$ of norm $F(e)$ on $\hat A$, which is dense in $C(\Delta)$ by Stone–Weierstrass, because symmetry makes it closed under conjugation. The Riesz representation theorem turns $\Phi$ into $\mu$. Conversely $\int\widehat{xx^*}d\mu=\int|\hat x|^2d\mu\ge0$. For $\ell^1(\Z)$ this is Herglotz's theorem, and for $L^1(\R^n)$ with a unit adjoined it gives Bochner's theorem on positive-definite functions.`,
+      caption: String.raw`Herglotz's theorem, the case $A=\ell^1(\Z)$ with $\alpha^*_n=\overline{\alpha_{-n}}$. This involution is symmetric, with $\Delta=\T$ (11.13). A positive functional is $F(\alpha)=\sum\alpha_nc_n$, where $c$ is **positive-definite**: $\sum c_{j-k}\alpha_j\bar\alpha_k=F(\alpha*\alpha^*)\ge0$. The theorem says $c_n=\int e^{-in\theta}d\mu$ for a positive $\mu$ on $\T$. Take real sequences with $c_0=1$, $c_{\pm1}$, $c_{\pm2}$ and $c_n=0$ for $|n|>2$, and drag $(c_1,c_2)$. Such a $c$ is positive-definite exactly when $p(\theta)=1+2c_1\cos\theta+2c_2\cos2\theta\ge0$ (green region), and then $\mu=p\,\frac{d\theta}{2\pi}$. Right: $p(\theta)$. Bottom: the smallest eigenvalue of the Toeplitz matrices $[c_{j-k}]_{0\le j,k\le N}$ for $N=1,\dots,24$. They decrease to $\min p$ (Szegő), so they stay $\ge0$ inside the region and eventually go negative outside it.`,
+      deps: ['fa-11.31', 'fa-11.26', 'fa-11.16', 'fa-11.13', 'pma-7.33', 'rca-2.14'],
       see: ['rca-11.30'],
-      tags: ['positive-definite functions', 'Bochner', 'Fourier coefficients'],
+      tags: ['positive functionals', 'Bochner', 'positive-definite functions'],
       verify: true,
       viz(v) {
         const M = v.M;
