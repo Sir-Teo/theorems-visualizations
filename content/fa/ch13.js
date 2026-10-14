@@ -28,11 +28,13 @@ export default {
     {
       num: '13.1',
       kind: 'Definition',
-      name: 'Unbounded operators, graphs, closed operators',
-      statement: String.raw`An **operator in $H$** is a linear map $T:\mathscr D(T)\to H$ defined on a subspace $\mathscr D(T)\subset H$, its **domain**; it is **densely defined** if $\mathscr D(T)$ is dense. Its **graph** is $\mathscr G(T)=\{(x,Tx):x\in\mathscr D(T)\}\subset H\times H$. $T$ is **closed** if $\mathscr G(T)$ is closed, i.e. $x_n\to x$, $Tx_n\to y$ with $x_n\in\mathscr D(T)$ imply $x\in\mathscr D(T)$ and $Tx=y$. $S$ **extends** $T$, $T\subset S$, if $\mathscr G(T)\subset\mathscr G(S)$.`,
-      idea: String.raw`By the closed graph theorem, a closed operator defined on all of $H$ is bounded; so the interesting closed operators live on proper dense domains. Differentiation is the model: on $L^2[0,1]$ the graph of $f\mapsto f'$ on smooth functions is not closed, but its closure is the derivative on absolutely continuous functions with $f'\in L^2$.`,
+      name: 'Unbounded operators: graphs, closedness, adjoints',
+      statement: String.raw`An **operator in $H$** is a linear map $T:\mathscr D(T)\to H$ defined on a subspace $\mathscr D(T)\subset H$, its **domain**; it is **densely defined** if $\mathscr D(T)$ is dense. Its **graph** is $\mathscr G(T)=\{(x,Tx):x\in\mathscr D(T)\}\subset H\times H$. $T$ is **closed** if $\mathscr G(T)$ is closed, i.e. $x_n\to x$, $Tx_n\to y$ with $x_n\in\mathscr D(T)$ imply $x\in\mathscr D(T)$ and $Tx=y$. $S$ **extends** $T$, $T\subset S$, if $\mathscr G(T)\subset\mathscr G(S)$. Sums and products get their natural domains, $\mathscr D(S+T)=\mathscr D(S)\cap\mathscr D(T)$ and $\mathscr D(ST)=\{x\in\mathscr D(T):Tx\in\mathscr D(S)\}$.
+
+If $T$ is densely defined, its **adjoint** $T^*$ has domain $\mathscr D(T^*)=\{y\in H: x\mapsto(Tx,y)$ is bounded on $\mathscr D(T)\}$, and $T^*y$ is the unique vector with $(Tx,y)=(x,T^*y)$ for all $x\in\mathscr D(T)$.`,
+      idea: String.raw`By the closed graph theorem, a closed operator defined on all of $H$ is bounded; so the interesting closed operators live on proper dense domains. Differentiation is the model: on $L^2[0,1]$ the graph of $f\mapsto f'$ on smooth functions is not closed, but its closure is the derivative on absolutely continuous functions with $f'\in L^2$. Density of $\mathscr D(T)$ is what makes $T^*y$ unique (Riesz representation 12.3).`,
       caption: String.raw`$T=d/dx$ on $L^2[0,1]$, defined on $C^1$ functions. The functions $f_n$ (blue) — smooth ramps of width $1/n$ — converge in $L^2$ to the step function $H(x-\frac12)$, which is not in any domain of a derivative; their derivatives $f_n'$ (orange) are spikes whose $L^2$ norms $\norm{f_n'}_2=\sqrt n\cdot c$ blow up. So $(f_n,Tf_n)$ does **not** converge in $H\times H$ and the closedness of $T$'s closure is not violated. Switch to $g_n=\frac1{\sqrt n}\sin(nx)$: $g_n\to0$ but $Tg_n=\sqrt n\cos(nx)$ is unbounded — $T$ is not bounded, yet closable.`,
-      deps: ['fa-2.15', 'fa-12.1'],
+      deps: ['fa-2.15', 'fa-12.1', 'fa-12.3'],
       tags: ['unbounded operators', 'closed operators', 'graphs'],
       verify: true,
       viz(v) {
@@ -69,13 +71,11 @@ export default {
     {
       num: '13.3',
       kind: 'Definition',
-      name: 'The adjoint of a densely defined operator',
-      statement: String.raw`If $T$ is densely defined, $\mathscr D(T^*)$ is the set of $y\in H$ for which $x\mapsto(Tx,y)$ is a bounded functional on $\mathscr D(T)$; for such $y$ there is a unique $T^*y$ with
-$$(Tx,y)=(x,T^*y)\qquad(x\in\mathscr D(T)).$$
-$T$ is **symmetric** if $T\subset T^*$, i.e. $(Tx,y)=(x,Ty)$ for $x,y\in\mathscr D(T)$; **self-adjoint** if $T=T^*$ (same domain); **normal** if $T$ is closed, densely defined and $T^*T=TT^*$.`,
-      idea: String.raw`Density of $\mathscr D(T)$ makes $T^*y$ unique (Riesz representation 12.3 on the closure). The smaller $\mathscr D(T)$, the larger $\mathscr D(T^*)$: shrinking a domain makes the adjoint bigger. Symmetric operators sit below their adjoints; self-adjoint ones are fixed points of this order-reversing operation.`,
-      deps: ['fa-13.1', 'fa-12.3'],
-      tags: ['unbounded operators', 'adjoint'],
+      name: 'Symmetric, self-adjoint and normal operators',
+      statement: String.raw`A densely defined operator $T$ in $H$ is **symmetric** if $T\subset T^*$, i.e. $(Tx,y)=(x,Ty)$ for $x,y\in\mathscr D(T)$; **self-adjoint** if $T=T^*$ (same domain); **normal** if $T$ is closed, densely defined and $T^*T=TT^*$.`,
+      idea: String.raw`The smaller $\mathscr D(T)$, the larger $\mathscr D(T^*)$ (13.2): shrinking a domain makes the adjoint bigger. Symmetric operators sit below their adjoints; self-adjoint ones are fixed points of this order-reversing operation.`,
+      deps: ['fa-13.1', 'fa-13.2'],
+      tags: ['unbounded operators', 'adjoint', 'self-adjoint operators'],
       verify: true,
     },
     {
@@ -113,50 +113,6 @@ Consequently $T^*$ is closed, $T$ is closable iff $T^*$ is densely defined, and 
           st = { t, mx, a: aS.value };
         });
         v.readout(() => `$H=\\R$: $T=$ multiplication by $t = ${isFinite(st.t) ? v.fix(st.t, 3) : '\\infty'}$, and $\\mathscr G(T^*)$ is the same line. $H=\\R^2$: $\\max|\\langle Vg,g^*\\rangle| = ${v.sci(st.mx + 1e-17, 1)}$ over basis graph vectors, with $T^*=T^\\top$ ($T_{12}=${v.fix(st.a, 2)}$ moves to position $21$).`);
-      },
-    },
-    {
-      num: '13.11',
-      kind: 'Theorem',
-      name: 'Self-adjoint vs symmetric: the role of the domain',
-      statement: String.raw`Let $T$ be symmetric and densely defined. (a) If $\mathscr D(T)=H$, then $T$ is bounded and self-adjoint (Hellinger–Toeplitz). (b) If $T$ is self-adjoint and $S$ is a symmetric extension of $T$, then $S=T$: self-adjoint operators are **maximally symmetric**. (c) If $\mathscr R(T)=H$, then $T$ is self-adjoint and $T^{-1}\in B(H)$.`,
-      idea: String.raw`(a) $T=T^*$ on $H$, and $T^*$ is closed (13.8), so the closed graph theorem makes $T$ bounded. (b) $T\subset S\subset S^*\subset T^*=T$. (c) $T$ is one-to-one (if $Tx=0$, then $(x,Ty)=(Tx,y)=0$ for all $y$, and $\mathscr R(T)=H$ gives $x=0$), and $T^{-1}$ is symmetric and everywhere defined, hence bounded and self-adjoint by (a); then so is $T=(T^{-1})^{-1}$.`,
-      caption: String.raw`On $L^2[0,1]$, $T=-i\,d/dx$ is symmetric on functions with $f(0)=f(1)=0$: the boundary term $f(1)\bar g(1)-f(0)\bar g(0)$ in integration by parts vanishes (left panel: $(Tf,g)-(f,Tg)$ for the test pair shown). It is not self-adjoint — $T^*$ needs no boundary condition at all. Choose "no condition" to see symmetry fail on the larger domain. The self-adjoint extensions are $T_\theta$ with $f(1)=e^{i\theta}f(0)$, whose eigenfunctions $e^{i(\theta+2\pi k)x}$ have eigenvalues $\theta+2\pi k$ (right) — a different spectrum for each $\theta$. Slide $\theta$ and watch the spectrum (dots) shift.`,
-      deps: ['fa-13.8', 'fa-2.15'],
-      tags: ['unbounded operators', 'self-adjoint operators', 'boundary conditions'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const thS = v.slider('$\\theta$ in $f(1)=e^{i\\theta}f(0)$', 0, 6.28, 1.2, { step: 0.01 });
-        const bc = v.select('domain of $f$, $g$', [{ value: 'zero', label: '$f(0)=f(1)=0$' }, { value: 'theta', label: '$f(1)=e^{i\\theta}f(0)$' }, { value: 'none', label: 'no condition' }], 'theta');
-        const L = v.stage({ x: [0, 1], y: [-1.6, 1.6], height: 300, axes: true, title: '$\\mathrm{Re}\\,f$ (blue), $\\mathrm{Re}\\,g$ (orange) in the chosen domain' });
-        const R = v.stage({ x: [-14, 14], y: [-1, 1], height: 300, axes: true, title: 'spectrum of $T_\\theta$: $\\{\\theta+2\\pi k\\}$' });
-        let st = {};
-        v.render(() => {
-          const th = thS.value, key = bc.value;
-          // f(x) = a(x) e^{iθx} with a(0)=a(1) ⇒ f(1) = e^{iθ} f(0); g similar with another profile
-          const prof = (key === 'zero') ? [(x) => Math.sin(Math.PI * x) * (1 + 0.5 * x), (x) => Math.sin(2 * Math.PI * x) + 0.3 * Math.sin(Math.PI * x)]
-            : (key === 'theta') ? [(x) => 1 + 0.4 * Math.cos(2 * Math.PI * x), (x) => 0.6 + 0.5 * Math.sin(2 * Math.PI * x)]
-              : [(x) => 1 + 0.6 * x, (x) => 0.4 + x * x];
-          const ph = key === 'none' ? 0 : th;
-          const F = (x) => [prof[0](x) * Math.cos(ph * x), prof[0](x) * Math.sin(ph * x)], G = (x) => [prof[1](x) * Math.cos(ph * x), prof[1](x) * Math.sin(ph * x)];
-          const d = (H, x) => { const h = 1e-5, a = H(x + h), b = H(x - h); return [(a[0] - b[0]) / (2 * h), (a[1] - b[1]) / (2 * h)]; };
-          const Tf = (H, x) => { const q = d(H, x); return [q[1], -q[0]]; };     // −i·H'
-          const ip = (A, B) => { let re = 0, im = 0; const n = 2000; for (let i = 0; i <= n; i++) { const x = Math.min(1 - 1e-5, Math.max(1e-5, i / n)), w = (i === 0 || i === n ? 1 : i % 2 ? 4 : 2) / (3 * n), a = A(x), b = B(x); re += w * (a[0] * b[0] + a[1] * b[1]); im += w * (a[1] * b[0] - a[0] * b[1]); } return [re, im]; };
-          const lhs = ip((x) => Tf(F, x), G), rhs = ip(F, (x) => Tf(G, x));
-          const defect = Math.hypot(lhs[0] - rhs[0], lhs[1] - rhs[1]);
-          L.fn((x) => F(x)[0], { color: 'blue', width: 2.4 });
-          L.fn((x) => G(x)[0], { color: 'orange', width: 2.2 });
-          L.corner(`|(Tf, g) − (f, Tg)| = ${v.fmt(defect, 3)}`, 'bl', { color: defect < 1e-4 ? 'green' : 'red', weight: 600 });
-          for (let k = -3; k <= 2; k++) { const l = th + 2 * Math.PI * k; if (Math.abs(l) < 14) R.dot(l, 0, { color: 'purple', r: 5.5 }); }
-          for (let k = -1; k <= 1; k++) { const l = th + 2 * Math.PI * k; R.text(v.fmt(l, 2), l, 0, { dy: -14, color: 'purple', size: 11, align: 'center' }); }
-          st = { key, defect };
-        });
-        v.readout(() => {
-          const s = st;
-          const tag = { zero: 'symmetric (boundary terms vanish) but not self-adjoint: its adjoint drops the boundary conditions', theta: 'symmetric and in fact self-adjoint: $\\mathscr D(T_\\theta^*)=\\mathscr D(T_\\theta)$', none: 'not symmetric on this domain: the boundary term $-i\\,(f(1)\\bar g(1)-f(0)\\bar g(0))$ survives' }[s.key];
-          return `$|(Tf,g)-(f,Tg)| = ${v.sci(s.defect + 1e-17, 2)}$ — ${tag}.`;
-        });
       },
     },
   ],

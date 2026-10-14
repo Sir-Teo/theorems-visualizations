@@ -1,5 +1,5 @@
-// Rudin, Functional Analysis — Chapter 13 (part 4): maximal symmetric operators, change of measure,
-// the spectral theorem for normal operators, and more on semigroups
+// Rudin, Functional Analysis — Chapter 13 (part 4): maximal symmetric operators, Ψ(f) for unbounded f,
+// change of measure, the spectral theorem for normal operators, and more on semigroups
 //
 // Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
@@ -19,7 +19,7 @@ function span(vals, minSpan = 1, pad = 0.15) {
 }
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const p10 = (k) => (k === 0 ? '1' : k === 1 ? '10' : '10' + (k < 0 ? '⁻' : '') + String(Math.abs(k)).split('').map((d) => SUP[+d]).join(''));
-const decTicks = (lo, hi) => { const t = []; for (let k = Math.ceil(lo); k <= Math.floor(hi); k++) t.push([k, p10(k)]); return t; };
+const decTicks = (lo, hi, step = 1) => { const t = []; for (let k = Math.ceil(lo / step) * step; k <= Math.floor(hi); k += step) t.push([k, p10(k)]); return t; };
 const bump = (x, c, r) => { const t = (x - c) / r, s = 1 - t * t; return s > 0 ? Math.E * Math.exp(-1 / s) : 0; };
 /** In-place radix-2 FFT, forward sign e^{−2πi jk/n}. */
 function fft(re, im) {
@@ -87,6 +87,66 @@ export default {
           st = { t, rt: ratio(t) };
         });
         v.readout(() => `$\\|V_tf\\|/\\|f\\|=${v.fix(st.rt, 4)}$ at $t=${v.fix(st.t, 2)}$. The deficiency spaces: $\\mathscr N(T^*-i)=\\operatorname{span}\\{e^{-x}\\}$ ($n_+=1$), while $e^{x}\\notin L^2(0,\\infty)$ ($n_-=0$). The Cayley transform cannot be extended at all, let alone to a unitary.`);
+      },
+    },
+    // ------------------------------------------------------------------ 13.24
+    {
+      num: '13.24',
+      kind: 'Theorem',
+      name: 'Ψ(f) = ∫ f dE for unbounded f',
+      statement: String.raw`Let $E$ be a resolution of the identity on $(\Omega,\mathfrak M)$ in $H$, $f:\Omega\to\C$ measurable, and
+$$\mathscr D_f=\Big\{x\in H:\int_\Omega|f|^2dE_{x,x}<\infty\Big\}.$$
+Then $\mathscr D_f$ is dense, and there is a unique closed normal operator $\Psi(f)$ with domain $\mathscr D_f$ such that $(\Psi(f)x,y)=\int_\Omega f\,dE_{x,y}$ for $x\in\mathscr D_f$, $y\in H$. Moreover:
+(a) $\norm{\Psi(f)x}^2=\int|f|^2dE_{x,x}$ for $x\in\mathscr D_f$;
+(b) $\Psi(f)^*=\Psi(\bar f)$;
+(c) $\Psi(f)\Psi(g)\subset\Psi(fg)$, with $\mathscr D(\Psi(f)\Psi(g))=\mathscr D_g\cap\mathscr D_{fg}$, so the two are equal when $\mathscr D_{fg}\subset\mathscr D_g$;
+(d) $\Psi(f)+\Psi(g)\subset\Psi(f+g)$.`,
+      idea: String.raw`Truncate: on $\omega_n=\{|f|<n\}$ the function $f_n=f\chi_{\omega_n}$ is bounded, and $\Psi(f_n)$ is the bounded operator of 12.21. For $x\in\mathscr D_f$, $\norm{\Psi(f_n)x-\Psi(f_m)x}^2=\int_{\omega_n\setminus\omega_m}|f|^2dE_{x,x}\to0$, so $\Psi(f)x=\lim\Psi(f_n)x$ exists. $\mathscr D_f$ contains every range $E(\omega_n)H$, and these exhaust a dense set because $E(\omega_n)\to I$ strongly. The identities hold for the $f_n$ and pass to the limit. In (c), $x\in\mathscr D(\Psi(f)\Psi(g))$ means $x\in\mathscr D_g$ and $\Psi(g)x\in\mathscr D_f$, and $\int|f|^2dE_{\Psi(g)x,\Psi(g)x}=\int|fg|^2dE_{x,x}$. Closedness and normality follow from (a) and (b).`,
+      caption: String.raw`Take for $E$ the resolution of the identity of multiplication by $x$ on $L^2(\R)$, where $E(\omega)$ multiplies by $\chi_\omega$. Then $\Psi(f)$ is multiplication by $f(x)$ and $\mathscr D_f=\{h:fh\in L^2\}$. For $h=(1+x^2)^{-\alpha}$, membership is a decay condition: $x^kh\in L^2$ iff $\alpha>\frac k2+\frac14$. Left: $x\,|x^kh(x)|^2$ on log–log axes; $x^kh\in L^2$ exactly when the curve eventually goes down (green). Right: the domains in (c) and (d), as sets of exponents $\alpha$, for $f=x$ and $g=x^2$. $\Psi(g)+\Psi(-g)$ lives only on $\mathscr D_g$, while $\Psi(g-g)=0$ is defined everywhere, so (d) is a strict inclusion. $\Psi(f)\Psi(g)$ lives on $\mathscr D_g\cap\mathscr D_{fg}=\mathscr D_{x^3}$.`,
+      deps: ['fa-12.17', 'fa-12.21', 'fa-12.24', 'fa-13.3'],
+      tags: ['resolution of the identity', 'functional calculus', 'unbounded operators'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const aS = v.slider('decay exponent $\\alpha$ of $h=(1+x^2)^{-\\alpha}$', 0.3, 2.5, 1.1, { step: 0.01 });
+        const A = v.stage({ x: [0, 4], y: [-8, 8], height: 330, axes: 'box', xticks: decTicks(0, 4), xlabel: 'x', title: '$x\\,|x^kh(x)|^2$, $k=0,1,2,3$ (log–log)' });
+        const B = v.stage({ x: [0.3, 2.5], y: [-0.6, 6.6], height: 330, axes: 'box', xlabel: 'α', yticks: [], xticks: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5].map((t) => [t, String(t)]), title: 'domains as sets of exponents $\\alpha$' });
+        const rows = [
+          ['\\mathscr D_f\\;(f=x)', 0.75],
+          ['\\mathscr D_g\\;(g=x^2)', 1.25],
+          ['\\mathscr D(\\Psi(g)+\\Psi(-g))=\\mathscr D_g', 1.25],
+          ['\\mathscr D(\\Psi(g-g))=\\mathscr D(\\Psi(0))=H', 0.25],
+          ['\\mathscr D(\\Psi(f)\\Psi(g))=\\mathscr D_g\\cap\\mathscr D_{fg}', 1.75],
+          ['\\mathscr D_{fg}\\;(fg=x^3)', 1.75],
+        ];
+        let st = {};
+        v.legend([['green', '$x^kh\\in L^2$'], ['red', '$x^kh\\notin L^2$'], ['muted', 'slope $0$ (the borderline)', { dash: true }]]);
+        v.render(() => {
+          const a = aS.value, ts = M.linspace(0, 4, 201);
+          const curves = [0, 1, 2, 3].map((k) => ts.map((t) => [t, t + 2 * k * t - 2 * a * Math.log10(1 + 10 ** (2 * t))]));
+          A.setView(null, span(curves.flat().map((p) => p[1]), 4, 0.06));
+          A.setTicks(decTicks(0, 4), decTicks(...A.bounds.y, 2));
+          A.hline(curves[0][0][1], { color: 'muted', width: 1, dash: [5, 4] });
+          curves.forEach((c, k) => {
+            const ok = 1 + 2 * k - 4 * a < 0;
+            A.path(c, { color: ok ? 'green' : 'red', width: 2.4 });
+            A.text(`k=${k}`, 3.95, c[c.length - 1][1], { color: ok ? 'green' : 'red', size: 12, align: 'right', dy: -10 });
+          });
+          rows.forEach(([lab, th], i) => {
+            const y = 6 - i * 1.15, inn = a > th;
+            B.line(th, y, 2.5, y, { color: inn ? 'green' : 'muted', width: 9, alpha: inn ? 0.75 : 0.35 });
+            B.dot(th, y, { color: inn ? 'green' : 'muted', r: 5, hollow: true });
+            B.tex(lab, 0.33, y + 0.42, { color: 'ink', size: 13, align: 'left' });
+          });
+          B.vline(a, { color: 'blue', width: 2 });
+          st = { a };
+        });
+        v.readout(() => {
+          const a = st.a;
+          const sum = a > 1.25 ? '$h\\in\\mathscr D_g$, and $\\Psi(g)h+\\Psi(-g)h=0=\\Psi(0)h$.' : '**$h\\notin\\mathscr D(\\Psi(g)+\\Psi(-g))$**, although $\\Psi(g-g)=0$ is defined at $h$: the inclusion $\\Psi(f)+\\Psi(g)\\subset\\Psi(f+g)$ is strict.';
+          const prod = a > 1.75 ? ' $h\\in\\mathscr D(\\Psi(f)\\Psi(g))=\\mathscr D_{fg}$, and $\\Psi(f)\\Psi(g)h=\\Psi(fg)h=x^3h$.' : ' $h\\notin\\mathscr D_{fg}$, so neither $\\Psi(f)\\Psi(g)$ nor $\\Psi(fg)$ is defined at $h$; here $\\mathscr D_{fg}\\subset\\mathscr D_g$, so they are equal.';
+          return `$\\alpha=${v.fix(a, 2)}$: ` + sum + prod;
+        });
       },
     },
     // ------------------------------------------------------------------ 13.28

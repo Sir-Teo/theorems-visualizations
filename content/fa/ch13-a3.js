@@ -1,5 +1,5 @@
-// Rudin, Functional Analysis — Chapter 13 (part 3): the algebra of unbounded operators, adjoints of
-// sums, products and inverses, null spaces and ranges, symmetric operators, T*T
+// Rudin, Functional Analysis — Chapter 13 (part 3): adjoints of sums, products and inverses, null spaces
+// and ranges, symmetric operators, closability, T*T, essential self-adjointness, maximal symmetry
 //
 // Numbering note: recalled, not checked against the book; items carry `verify: true`.
 
@@ -37,62 +37,6 @@ export default {
     {
       num: '13.2',
       kind: 'Theorem',
-      name: 'Sums and products of unbounded operators',
-      statement: String.raw`For operators $R,S,T$ in $H$, give sums and products their natural domains:
-$$\mathscr D(S+T)=\mathscr D(S)\cap\mathscr D(T),\qquad\mathscr D(ST)=\{x\in\mathscr D(T):Tx\in\mathscr D(S)\}.$$
-Then $(RS)T=R(ST)$ and $(R+S)T=RT+ST$, but in general only
-$$T(R+S)\supset TR+TS ,$$
-and the inclusion can be strict even when all three operators are self-adjoint.`,
-      idea: String.raw`Unwinding the definitions, both sides of $(RS)T=R(ST)$ are defined at $x$ exactly when $x\in\mathscr D(T)$, $Tx\in\mathscr D(S)$ and $STx\in\mathscr D(R)$; similarly for $(R+S)T$. For $T(R+S)$ one only needs $(R+S)x\in\mathscr D(T)$, which can happen when neither $Rx$ nor $Sx$ lies in $\mathscr D(T)$: cancellation happens *before* $T$ is applied. Even $S-S$ is only the zero operator restricted to $\mathscr D(S)$.`,
-      caption: String.raw`Multiplication operators on $L^2(\R)$: $T=M_x$, $R=M_{x^2}$, $S=M_{-x^2}$ (all self-adjoint). For $h=(1+x^2)^{-\alpha}$ membership in a domain is a decay condition: $x^kh\in L^2$ iff $\alpha>\frac k2+\frac14$. Left: $x\,|x^kh(x)|^2$ on log–log axes. $x^kh\in L^2$ exactly when the curve eventually goes down (green). Right: each domain as a set of exponents $\alpha$. Since $(R+S)h=0$, $h\in\mathscr D(T(R+S))$ as soon as $h\in\mathscr D(M_{x^2})$. But $h\in\mathscr D(TR+TS)$ needs $x^3h\in L^2$. For $\frac54<\alpha\le\frac74$ the two operators differ.`,
-      deps: ['fa-13.1'],
-      tags: ['unbounded operators', 'domains'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const aS = v.slider('decay exponent $\\alpha$ of $h=(1+x^2)^{-\\alpha}$', 0.3, 2.5, 1.5, { step: 0.01 });
-        const A = v.stage({ x: [0, 4], y: [-8, 8], height: 330, axes: 'box', xticks: decTicks(0, 4), xlabel: 'x', title: '$x\\,|x^kh(x)|^2$, $k=0,1,2,3$ (log–log)' });
-        const B = v.stage({ x: [0.3, 2.5], y: [-0.6, 6.6], height: 330, axes: 'box', xlabel: 'α', yticks: [], xticks: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5].map((t) => [t, String(t)]), title: 'domains as sets of exponents $\\alpha$' });
-        const rows = [
-          ['\\mathscr D(T)', 0.75],
-          ['\\mathscr D(R)=\\mathscr D(S)', 1.25],
-          ['\\mathscr D(R+S)', 1.25],
-          ['\\mathscr D(T(R+S))', 1.25],
-          ['\\mathscr D(TR+TS)', 1.75],
-          ['\\mathscr D((R+S)T)=\\mathscr D(RT+ST)', 1.75],
-        ];
-        let st = {};
-        v.legend([['green', '$x^kh\\in L^2$'], ['red', '$x^kh\\notin L^2$'], ['muted', 'slope $0$ (the borderline)', { dash: true }]]);
-        v.render(() => {
-          const a = aS.value, ts = M.linspace(0, 4, 201);
-          const curves = [0, 1, 2, 3].map((k) => ts.map((t) => [t, t + 2 * k * t - 2 * a * Math.log10(1 + 10 ** (2 * t))]));
-          A.setView(null, span(curves.flat().map((p) => p[1]), 4, 0.06));
-          A.setTicks(decTicks(0, 4), decTicks(...A.bounds.y, 2));
-          A.hline(curves[0][0][1], { color: 'muted', width: 1, dash: [5, 4] });
-          curves.forEach((c, k) => {
-            const ok = 1 + 2 * k - 4 * a < 0;
-            A.path(c, { color: ok ? 'green' : 'red', width: 2.4 });
-            A.text(`k=${k}`, 3.95, c[c.length - 1][1], { color: ok ? 'green' : 'red', size: 12, align: 'right', dy: -10 });
-          });
-          rows.forEach(([lab, th], i) => {
-            const y = 6 - i * 1.15, inn = a > th;
-            B.line(th, y, 2.5, y, { color: inn ? 'green' : 'muted', width: 9, alpha: inn ? 0.75 : 0.35 });
-            B.dot(th, y, { color: inn ? 'green' : 'muted', r: 5, hollow: true });
-            B.tex(lab, 0.33, y + 0.42, { color: 'ink', size: 13, align: 'left' });
-          });
-          B.vline(a, { color: 'blue', width: 2 });
-          st = { a };
-        });
-        v.readout(() => {
-          const a = st.a, inA = a > 1.25, inB = a > 1.75;
-          return `$\\alpha=${v.fix(a, 2)}$: ` + (inA && !inB ? '**$h\\in\\mathscr D(T(R+S))$ but $h\\notin\\mathscr D(TR+TS)$** — the inclusion $T(R+S)\\supset TR+TS$ is strict here.' : inB ? '$h$ lies in every domain shown; here $T(R+S)h=(TR+TS)h=0$.' : '$h\\notin\\mathscr D(R)$, so neither side is defined at $h$.') + ' The law $(R+S)T=RT+ST$ holds with equal domains for every $\\alpha$.';
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 13.4
-    {
-      num: '13.4',
-      kind: 'Theorem',
       name: 'Adjoints reverse inclusions; adjoints of sums and products',
       statement: String.raw`Let $S$ and $T$ be densely defined operators in $H$.
 (a) If $S\subset T$, then $T^*\subset S^*$.
@@ -100,7 +44,7 @@ and the inclusion can be strict even when all three operators are self-adjoint.`
 (c) If $S\in B(H)$, then $(S+T)^*=S^*+T^*$ and $(ST)^*=T^*S^*$.`,
       idea: String.raw`(a) If $y\in\mathscr D(T^*)$, then $x\mapsto(Sx,y)=(Tx,y)=(x,T^*y)$ is bounded on the smaller domain $\mathscr D(S)$, so $S^*y=T^*y$: fewer test vectors impose fewer conditions. (b) is the same bookkeeping, keeping track of where each side is defined. (c) For bounded $S$, $(STx,y)=(Tx,S^*y)$, which is bounded in $x$ exactly when $S^*y\in\mathscr D(T^*)$. That is the domain of $T^*S^*$.`,
       caption: String.raw`$T=-i\,d/dx$ on $L^2[0,1]$, with the domain fixed by a condition on the boundary values $(f(0),f(1))$ (real values for simplicity). Integration by parts gives $(Tf,g)-(f,T^*g)=-i\big(f(1)\bar g(1)-f(0)\bar g(0)\big)$. So $g\in\mathscr D(T^*)$ exactly when its boundary values make this vanish for **every** $f\in\mathscr D(T)$. Blue: the allowed boundary values of $f$. Green: those of $g\in\mathscr D(T^*)$. Enlarging $\mathscr D(T)$ (point → line → plane) shrinks $\mathscr D(T^*)$ (plane → line → point). For $f(1)=mf(0)$ the adjoint condition is $g(1)=g(0)/m$, and $T$ is self-adjoint exactly when $m=\pm1$. Drag $g$ and watch the boundary term.`,
-      deps: ['fa-13.3', 'fa-13.2'],
+      deps: ['fa-13.1'],
       tags: ['unbounded operators', 'adjoint', 'boundary conditions'],
       verify: true,
       viz(v) {
@@ -156,7 +100,7 @@ and the inclusion can be strict even when all three operators are self-adjoint.`
 $$(T^{-1})^*=(T^*)^{-1}.$$`,
       idea: String.raw`$T^{-1}$ is densely defined on $\mathscr R(T)$, so it has an adjoint. For $y\in\mathscr D(T^*)$ and $x=Tz$, $(T^{-1}x,T^*y)=(z,T^*y)=(Tz,y)=(x,y)$. So $T^*y\in\mathscr D((T^{-1})^*)$ and $(T^{-1})^*T^*y=y$. The symmetric computation with the roles exchanged gives $T^*(T^{-1})^*w=w$ for $w\in\mathscr D((T^{-1})^*)$. In graph language: inverting flips $(x,y)\mapsto(y,x)$, adjoining rotates and takes complements, and the two operations commute.`,
       caption: String.raw`$Tf=f'+af$ on $L^2[0,1]$ with $f(0)=0$. Then $T^{-1}g(x)=\int_0^xe^{-a(x-y)}g(y)\,dy$, a Volterra operator whose kernel lives below the diagonal (blue). Its adjoint has the mirrored kernel, above the diagonal (orange): $(T^{-1})^*h(x)=\int_x^1e^{-a(y-x)}h(y)\,dy$. Drag the point to compare $K(x,y)$ with the mirrored value. Right: for a bump $g$ (drag it), $u=(T^{-1})^*g$ (purple) satisfies $u(1)=0$ and $-u'+au=g$ (green dashed, by finite differences). That is, it inverts $T^*=-d/dx+a$ on $\{u(1)=0\}$. Faint blue: $T^{-1}g$, which starts at $0$ instead.`,
-      deps: ['fa-13.3', 'fa-13.4'],
+      deps: ['fa-13.1', 'fa-13.2'],
       tags: ['unbounded operators', 'adjoint', 'inverse'],
       verify: true,
       viz(v) {
@@ -245,16 +189,20 @@ so $\mathscr R(T)$ is dense iff $T^*$ is one-to-one. If moreover $T$ is closed, 
         });
       },
     },
-    // ------------------------------------------------------------------ 13.10
+    // ------------------------------------------------------------------ 13.11
     {
-      num: '13.10',
+      num: '13.11',
       kind: 'Theorem',
-      name: 'Inverses of self-adjoint operators are self-adjoint',
-      statement: String.raw`If $T$ is self-adjoint and one-to-one, then $\mathscr R(T)$ is dense and $T^{-1}$ is self-adjoint. In particular, if also $\mathscr R(T)=H$, then $T^{-1}\in B(H)$ is a bounded self-adjoint operator.`,
-      idea: String.raw`$\mathscr R(T)^\perp=\mathscr N(T^*)=\mathscr N(T)=\{0\}$ by 13.9, so $T^{-1}$ is densely defined, and $(T^{-1})^*=(T^*)^{-1}=T^{-1}$ by 13.5. If $\mathscr R(T)=H$, then $T^{-1}$ is closed and everywhere defined, hence bounded by the closed graph theorem. This is how differential operators are studied through their Green's operators, which are bounded and often compact.`,
+      name: 'Symmetric operators: everywhere defined, invertible, onto',
+      statement: String.raw`Let $T$ be densely defined and symmetric.
+(a) If $\mathscr D(T)=H$, then $T$ is self-adjoint and bounded (Hellinger–Toeplitz).
+(b) If $T$ is self-adjoint and one-to-one, then $\mathscr R(T)$ is dense and $T^{-1}$ is self-adjoint.
+(c) If $\mathscr R(T)$ is dense, then $T$ is one-to-one.
+(d) If $\mathscr R(T)=H$, then $T$ is self-adjoint and $T^{-1}\in B(H)$.`,
+      idea: String.raw`(a) $T\subset T^*$ and $T$ is defined everywhere, so $T=T^*$, which is closed (13.8); the closed graph theorem makes $T$ bounded. (c) If $Tx=0$, then $(x,Ty)=(Tx,y)=0$ for every $y\in\mathscr D(T)$, so $x\perp\mathscr R(T)$ and $x=0$. (b) $\mathscr R(T)^\perp=\mathscr N(T^*)=\mathscr N(T)=\{0\}$ (13.9), and $(T^{-1})^*=(T^*)^{-1}=T^{-1}$ (13.5). (d) By (c) $T$ is one-to-one, and $T^{-1}$ is symmetric and everywhere defined, hence bounded and self-adjoint by (a); then $T=(T^{-1})^{-1}$ is self-adjoint by (b). Differential operators are often studied through such bounded inverses, their Green's operators.`,
       caption: String.raw`$Tu=-u''+bu'+cu$ on $L^2[0,\pi]$ with $u(0)=u(\pi)=0$. Left: the kernel $G(x,y)$ of $T^{-1}$ (Green's function), computed by inverting a finite-difference matrix (red $>0$, blue $<0$). With $b=0$, $T$ is self-adjoint and $G(x,y)=G(y,x)$; drag the point to compare it with its mirror. A drift $b\ne0$ breaks self-adjointness and the symmetry of $G$. Right: $\sigma(T^{-1})=\{1/(k^2+c+b^2/4)\}$, accumulating only at $0$. As $c\to-1-b^2/4$, $T$ stops being one-to-one and $\norm{T^{-1}}$ blows up.`,
-      deps: ['fa-13.5', 'fa-13.9', 'fa-2.15'],
-      tags: ['self-adjoint operators', "Green's functions", 'inverse'],
+      deps: ['fa-13.8', 'fa-13.5', 'fa-13.9', 'fa-2.15'],
+      tags: ['symmetric operators', 'self-adjoint operators', "Green's functions"],
       verify: true,
       viz(v) {
         const M = v.M;
@@ -299,49 +247,40 @@ so $\mathscr R(T)$ is dense iff $T^*$ is one-to-one. If moreover $T$ is closed, 
     {
       num: '13.12',
       kind: 'Theorem',
-      name: 'Symmetric operators: ‖(T ± i)x‖² = ‖Tx‖² + ‖x‖²',
-      statement: String.raw`If $T$ is symmetric, then
-$$\norm{(T\pm iI)x}^2=\norm{Tx}^2+\norm x^2\qquad(x\in\mathscr D(T)).$$
-Consequently $T\pm iI$ are one-to-one with $\norm{(T\pm iI)x}\ge\norm x$, and $T$ is closed if and only if $\mathscr R(T+iI)$ is closed, if and only if $\mathscr R(T-iI)$ is closed.`,
-      idea: String.raw`Expand: $\norm{Tx\pm ix}^2=\norm{Tx}^2+\norm x^2\pm2\operatorname{Re}\big(-i(Tx,x)\big)$, and $(Tx,x)$ is real for symmetric $T$. The identity says that $x\mapsto(T+iI)x$ is an isometry of $\mathscr G(T)$ onto $\mathscr R(T+iI)$, if the graph carries the norm $(\norm x^2+\norm{Tx}^2)^{1/2}$. So one is complete exactly when the other is. This is the analytic heart of the Cayley transform 13.19.`,
-      caption: String.raw`$T=-i\,d/dx$ on $L^2[0,1]$ and a real $f$ with prescribed end values $f(0)=p$, $f(1)=q$ (sliders) and interior shape $A$. Bars: $\norm{Tf}^2+\norm f^2$ (stacked), $\norm{(T+i)f}^2$ and $\norm{(T-i)f}^2$. The cross terms are $\mp(q^2-p^2)$, so the identity holds exactly when $|q|=|p|$, which is when $f$ lies in a domain $\{f(1)=e^{i\theta}f(0)\}$ on which $T$ is symmetric. Push $q$ away from $\pm p$: the bars come apart.`,
-      deps: ['fa-13.3', 'fa-13.8'],
-      tags: ['symmetric operators', 'closed operators'],
+      name: 'Closed operators: D(T*) is dense and T** = T',
+      statement: String.raw`If $T$ is a closed, densely defined operator in $H$, then $\mathscr D(T^*)$ is dense and $T^{**}=T$. More generally, a densely defined $T$ has a closed extension (it is **closable**) if and only if $\mathscr D(T^*)$ is dense, and then $T^{**}=\overline T$, the operator whose graph is $\overline{\mathscr G(T)}$.`,
+      idea: String.raw`$V(a,b)=(-b,a)$ is unitary with $V^2=-I$, so 13.8 gives $V\mathscr G(T^*)=(V^2\mathscr G(T))^\perp=\mathscr G(T)^\perp$. If $z\perp\mathscr D(T^*)$, then $(0,z)$ is orthogonal to every $(-T^*y,y)$, that is, to $V\mathscr G(T^*)=\mathscr G(T)^\perp$, so $(0,z)\in\overline{\mathscr G(T)}$. When the closure of the graph is again a graph, as it is for closed or closable $T$, this forces $z=0$. Applying 13.8 once more, $\mathscr G(T^{**})=(V\mathscr G(T^*))^\perp=\mathscr G(T)^{\perp\perp}=\overline{\mathscr G(T)}$.`,
+      caption: String.raw`Two operators on $L^2[0,1]$ and a sequence $f_n\to0$. **Closable**: $Tf=f'$ on $C^1$ functions, $f_n=\frac1n\sin n\pi x$. $Tf_n=\pi\cos n\pi x$ does not converge, and for every $g\in\mathscr D(T^*)$ (a dense set; here $g=\sin^2\pi x$), $(Tf_n,g)=(f_n,T^*g)\to0$. So no limit other than $0$ is possible. **Not closable**: $Tf=f(0)\cdot1$ on $C[0,1]$, $f_n=(1-nx)^+$. Now $(f_n,Tf_n)\to(0,1)$: the closure of the graph contains $(0,1)$ and is not a graph. Correspondingly $\mathscr D(T^*)=\{g:\int_0^1g=0\}$ is not dense, since it misses the constants. Bottom: $\norm{f_n}$ and the Cauchy test $\norm{Tf_n-Tf_{2n}}$ against $n$.`,
+      deps: ['fa-13.8', 'fa-13.1'],
+      tags: ['closed operators', 'adjoint', 'graphs'],
       verify: true,
       viz(v) {
         const M = v.M;
-        const pS = v.slider('$p=f(0)$', -1.5, 1.5, 0.8, { step: 0.01 });
-        const qS = v.slider('$q=f(1)$', -1.5, 1.5, 0.8, { step: 0.01 });
-        const AS = v.slider('interior shape $A$', -2, 2, 1.2, { step: 0.01 });
-        v.button('make $q=p$', () => qS.set(pS.value));
-        const L = v.stage({ x: [0, 1], y: [-3, 3], height: 300, axes: true, title: '$f$ (blue) and $|Tf|=|f\'|$ (orange)' });
-        const R = v.stage({ x: [0.3, 3.7], y: [0, 10], height: 300, axes: false, title: 'the three squared norms' });
+        const mode = v.select('$T$', [{ value: 'cl', label: "closable: $Tf=f'$" }, { value: 'nc', label: 'not closable: $Tf=f(0)\\cdot1$' }], 'nc');
+        const nS = v.slider('$n$', 1, 400, 12, { int: true, log: true });
+        const T = v.stage({ x: [0, 1], y: [-3.4, 3.4], height: 240, full: true, axes: true, title: '$f_n$ (blue) and $Tf_n$ (orange)' });
+        const B = v.stage({ x: [0, Math.log10(400)], y: [-3, 1], height: 190, full: true, axes: 'box', xlabel: 'n', xticks: [[0, '1'], [1, '10'], [2, '100']], yticks: decTicks(-3, 1), title: '$\\|f_n\\|$ (blue) and $\\|Tf_n-Tf_{2n}\\|$ (orange), log scale' });
         let st = {};
-        v.legend([['orange', '$\\|Tf\\|^2$'], ['blue', '$\\|f\\|^2$'], ['purple', '$\\|(T\\pm i)f\\|^2$']]);
+        v.legend([['blue', '$f_n\\to0$'], ['orange', '$Tf_n$']]);
         v.render(() => {
-          const p = pS.value, q = qS.value, A = AS.value;
-          const f = (x) => p * (1 - x) + q * x + A * Math.sin(Math.PI * x) + 0.4 * A * Math.sin(3 * Math.PI * x);
-          const fd = (x) => q - p + A * Math.PI * Math.cos(Math.PI * x) + 1.2 * A * Math.PI * Math.cos(3 * Math.PI * x);
-          const nf = simpson((x) => f(x) ** 2, 0, 1, 2000), nT = simpson((x) => fd(x) ** 2, 0, 1, 2000);
-          const np = simpson((x) => (f(x) - fd(x)) ** 2, 0, 1, 2000), nm = simpson((x) => (f(x) + fd(x)) ** 2, 0, 1, 2000);   // (T+i)f = i(f−f'), (T−i)f = −i(f+f')
-          L.setView(null, span([...M.linspace(0, 1, 101).map(f), ...M.linspace(0, 1, 101).map((x) => Math.abs(fd(x)))], 2, 0.1));
-          L.fn((x) => Math.abs(fd(x)), { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.1 });
-          L.fn(f, { color: 'blue', width: 2.6 });
-          L.dot(0, p, { color: 'blue', r: 5, label: 'p' }); L.dot(1, q, { color: 'blue', r: 5, label: 'q', labelPos: 'nw' });
-          const top = Math.max(nT + nf, np, nm) * 1.12;
-          R.setView(null, [-0.1 * top, top]);
-          R.hline(0, { color: 'muted', width: 1 });
-          R.rect(0.7, 0, 1.3, nT, { color: 'orange', fill: 'orange', fillAlpha: 0.55 });
-          R.rect(0.7, nT, 1.3, nT + nf, { color: 'blue', fill: 'blue', fillAlpha: 0.55 });
-          R.rect(1.7, 0, 2.3, np, { color: 'purple', fill: 'purple', fillAlpha: 0.55 });
-          R.rect(2.7, 0, 3.3, nm, { color: 'purple', fill: 'purple', fillAlpha: 0.35 });
-          R.hline(nT + nf, { color: 'ink', width: 1, dash: [4, 3] });
-          [['‖Tf‖² + ‖f‖²', 1], ['‖(T+i)f‖²', 2], ['‖(T−i)f‖²', 3]].forEach(([t, x]) => R.text(t, x, -0.05 * top, { color: 'muted', size: 12, align: 'center' }));
-          st = { nf, nT, np, nm, bd: q * q - p * p };
+          const cl = mode.value === 'cl', n = nS.value;
+          const f = cl ? (x) => Math.sin(n * Math.PI * x) / n : (x) => Math.max(0, 1 - n * x);
+          const Tf = cl ? (x) => Math.PI * Math.cos(n * Math.PI * x) : () => 1;
+          T.setView(null, cl ? [-3.6, 3.6] : [-0.3, 1.4]);
+          T.fn(Tf, { color: 'orange', width: 2, n: 1600 });
+          T.fn(f, { color: 'blue', width: 2.6, n: 1600 });
+          const ns = M.linspace(0, Math.log10(400), 120).map((l) => 10 ** l);
+          const nf = (m) => (cl ? 1 / (m * Math.SQRT2) : 1 / Math.sqrt(3 * m)), cauchy = () => (cl ? Math.PI : 1e-3);
+          B.path(ns.map((m) => [Math.log10(m), Math.log10(nf(m))]), { color: 'blue', width: 2.4 });
+          B.path(ns.map((m) => [Math.log10(m), Math.log10(cauchy(m))]), { color: 'orange', width: 2.4 });
+          if (!cl) B.text('Tfₙ = 1 for every n: exactly Cauchy', 1.3, -2.75, { color: 'orange', size: 12 });
+          B.vline(Math.log10(n), { color: 'muted', width: 1, dash: [3, 3] });
+          const g = (x) => Math.sin(Math.PI * x) ** 2, ip = simpson((x) => Tf(x) * g(x), 0, 1, 4000);
+          st = { cl, n, nf: nf(n), ip };
         });
         v.readout(() => {
-          const s = st, sym = Math.abs(s.bd) < 1e-3;
-          return `$\\|Tf\\|^2+\\|f\\|^2=${v.fix(s.nT + s.nf, 3)}$, $\\|(T+i)f\\|^2=${v.fix(s.np, 3)}$, $\\|(T-i)f\\|^2=${v.fix(s.nm, 3)}$; boundary term $q^2-p^2=${v.fix(s.bd, 3)}$. ` + (sym ? '**Equal**: on a symmetric domain $(Tf,f)$ is real and the cross terms cancel.' : 'Not equal: $f$ lies in no domain on which $T$ is symmetric.');
+          const s = st;
+          return s.cl ? `$\\|f_n\\|=${v.fix(s.nf, 4)}\\to0$, but $Tf_n$ is not Cauchy ($\\|Tf_n-Tf_{2n}\\|=\\pi$). For $g=\\sin^2\\pi x\\in\\mathscr D(T^*)$, $(Tf_n,g)=${v.sci(Math.abs(s.ip) + 1e-17, 2)}\\to0$: any limit of $Tf_n$ would be orthogonal to the dense set $\\mathscr D(T^*)$, hence $0$. $T$ is closable, and $T^{**}=\\overline T$.` : `$\\|f_n\\|=${v.fix(s.nf, 4)}\\to0$ while $Tf_n=1$: $(f_n,Tf_n)\\to(0,1)$, so $\\overline{\\mathscr G(T)}$ is not the graph of an operator. $\\mathscr D(T^*)=1^\\perp$ is not dense, and $T^{**}$ is not even defined.`;
         });
       },
     },
@@ -353,9 +292,9 @@ Consequently $T\pm iI$ are one-to-one with $\norm{(T\pm iI)x}\ge\norm x$, and $T
       statement: String.raw`Let $T$ be closed and densely defined, and $Q=I+T^*T$ with $\mathscr D(Q)=\mathscr D(T^*T)$. Then $Q$ maps $\mathscr D(Q)$ one-to-one onto $H$, and
 $$B=Q^{-1},\qquad C=TQ^{-1}$$
 are bounded, with $\norm B\le1$, $\norm C\le1$, $B\ge0$. Moreover $T^*T$ is self-adjoint, and $\mathscr D(T^*T)$ is a core for $T$.`,
-      idea: String.raw`By 13.8, $H\times H=V\mathscr G(T)\oplus\mathscr G(T^*)$. Split $(0,h)=(-Tx,x)+(y,T^*y)$. The first components give $y=Tx$, so $x\in\mathscr D(T^*T)$, and the second give $h=x+T^*Tx=Qx$. Orthogonality of the two pieces gives $\norm h^2=\norm x^2+2\norm{Tx}^2+\norm{T^*Tx}^2$, hence $\norm{Bh}=\norm x\le\norm h$ and $\norm{Ch}=\norm{Tx}\le\norm h$. $B$ is bounded, symmetric and everywhere defined, so self-adjoint (13.11), and $T^*T=B^{-1}-I$ is self-adjoint by 13.10.`,
+      idea: String.raw`By 13.8, $H\times H=V\mathscr G(T)\oplus\mathscr G(T^*)$. Split $(0,h)=(-Tx,x)+(y,T^*y)$. The first components give $y=Tx$, so $x\in\mathscr D(T^*T)$, and the second give $h=x+T^*Tx=Qx$. Orthogonality of the two pieces gives $\norm h^2=\norm x^2+2\norm{Tx}^2+\norm{T^*Tx}^2$, hence $\norm{Bh}=\norm x\le\norm h$ and $\norm{Ch}=\norm{Tx}\le\norm h$. $B$ is bounded, symmetric and everywhere defined, so self-adjoint (13.11(a)), and $T^*T=B^{-1}-I$ is self-adjoint by 13.11(b).`,
       caption: String.raw`$T=d/dx$ on $L^2[0,1]$, closed on either domain. The formal expression $T^*T=-d^2/dx^2$ is the same, but its boundary conditions are not. If $\mathscr D(T)$ has no condition, then $T^*=-d/dx$ with $u(0)=u(1)=0$, and $T^*T$ carries the **Neumann** conditions. If $\mathscr D(T)$ has $f(0)=f(1)=0$, then $T^*T$ is the **Dirichlet** Laplacian. Top: for $g$ (choose), $u=Bg$ solves $u-u''=g$ (purple), and $Cg=u'$ (green). Note the boundary behaviour. Bottom: the multipliers of $B$ and $C$ in the eigenbasis of $T^*T$, all $\le1$ and $\le\frac12$.`,
-      deps: ['fa-13.8', 'fa-13.10', 'fa-13.11'],
+      deps: ['fa-13.8', 'fa-13.11', 'fa-13.12'],
       tags: ['closed operators', 'self-adjoint operators', 'boundary conditions'],
       verify: true,
       viz(v) {
@@ -411,9 +350,9 @@ are bounded, with $\norm B\le1$, $\norm C\le1$, $B\ge0$. Moreover $T^*T$ is self
 (b) $\mathscr R(T+iI)$ and $\mathscr R(T-iI)$ are dense;
 (c) $\mathscr N(T^*-iI)=\mathscr N(T^*+iI)=\{0\}$.
 In that case $\overline T$ is the only self-adjoint extension of $T$.`,
-      idea: String.raw`(b)$\Leftrightarrow$(c) is 13.9 applied to $T\pm iI$. If the ranges are dense, then 13.12 applied to the closure (which is symmetric, with closed ranges) shows that $\mathscr R(\overline T\pm iI)=H$. A symmetric operator with this property is self-adjoint: if $y\in\mathscr D(\overline T^*)$, pick $x$ with $(\overline T+i)x=(\overline T^*+i)y$; then $(\overline T^*+i)(y-x)=0$, so $y=x$ by (c). Any self-adjoint extension $S$ satisfies $\overline T\subset S$, hence $S=S^*\subset\overline T^*=\overline T$.`,
+      idea: String.raw`(b)$\Leftrightarrow$(c) is 13.9 applied to $T\pm iI$. For symmetric $T$ the cross terms in $\norm{(T\pm i)x}^2$ are $\pm2\operatorname{Im}(Tx,x)=0$, so $\norm{(T\pm i)x}^2=\norm{Tx}^2+\norm x^2$. The same holds for the closure $\overline T$, so $\overline T\pm iI$ are one-to-one with closed ranges, namely the closures of $\mathscr R(T\pm iI)$. If these are dense, then $\mathscr R(\overline T\pm iI)=H$, and $\overline T$ is self-adjoint: for $y\in\mathscr D(\overline T^*)$ pick $x$ with $(\overline T+i)x=(\overline T^*+i)y$. Then $(\overline T^*+i)(y-x)=0$, and $\mathscr N(\overline T^*+i)=\mathscr R(\overline T-i)^\perp=\{0\}$, so $y=x$. Any self-adjoint extension $S$ satisfies $\overline T\subset S$, hence $S=S^*\subset\overline T^*=\overline T$.`,
       caption: String.raw`Test (c) on $C_c^\infty(I)$ for $T=-i\,d/dx$ or $T=-d^2/dx^2$. The candidates in $\mathscr N(T^*\mp i)$ are exponentials, whose moduli are drawn left: $e^{\mp x}$, or $e^{\pm x/\sqrt2}$ for the second-order operator. They count only if they are square-integrable on $I$; right: $\int|f|^2$ over growing pieces of $I$. On $\R$ nothing survives, so $T$ is essentially self-adjoint. On a half-line or an interval some survive, the deficiency indices $(n_+,n_-)$ are not $(0,0)$, and boundary conditions must be chosen.`,
-      deps: ['fa-13.12', 'fa-13.9', 'fa-13.11'],
+      deps: ['fa-13.9', 'fa-13.11', 'fa-13.12'],
       tags: ['symmetric operators', 'essential self-adjointness', 'deficiency indices'],
       verify: true,
       viz(v) {
@@ -445,6 +384,101 @@ In that case $\overline T$ is the only self-adjoint extension of $T$.`,
         v.readout(() => {
           const s = st, esa = s.np === 0 && s.nm === 0;
           return `Deficiency indices $(n_+,n_-)=(${s.np},${s.nm})$ (solid: $T^*f=if$, dashed: $T^*f=-if$). ` + (esa ? '**Essentially self-adjoint**: $\\overline T$ is the unique self-adjoint extension.' : s.np === s.nm ? 'Not essentially self-adjoint; there are many self-adjoint extensions (choices of boundary condition).' : 'Not essentially self-adjoint, and since $n_+\\ne n_-$ there is no self-adjoint extension at all.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 13.15
+    {
+      num: '13.15',
+      kind: 'Theorem',
+      name: 'Self-adjoint operators are maximally symmetric',
+      statement: String.raw`If $T$ is self-adjoint and $S$ is a symmetric extension of $T$, then $S=T$. So a self-adjoint operator has no proper symmetric extension, and two different self-adjoint extensions of the same symmetric operator never contain one another.`,
+      idea: String.raw`$T\subset S$ gives $S^*\subset T^*$ (13.2), so $T\subset S\subset S^*\subset T^*=T$ and all four coincide. The model case is $-i\,d/dx$ on $[0,1]$. On $\{f(0)=f(1)=0\}$ it is symmetric but not self-adjoint, and its self-adjoint extensions $T_\theta$ form a circle. None of them contains another, and each one is a dead end for further symmetric extension.`,
+      caption: String.raw`On $L^2[0,1]$, $T=-i\,d/dx$ is symmetric on functions with $f(0)=f(1)=0$: the boundary term $f(1)\bar g(1)-f(0)\bar g(0)$ in integration by parts vanishes (left panel: $(Tf,g)-(f,Tg)$ for the test pair shown). It is not self-adjoint — $T^*$ needs no boundary condition at all. Choose "no condition" to see symmetry fail on the larger domain. Its self-adjoint extensions are the $T_\theta$ with $f(1)=e^{i\theta}f(0)$, whose eigenfunctions $e^{i(\theta+2\pi k)x}$ have eigenvalues $\theta+2\pi k$ (right) — a different spectrum for each $\theta$. Slide $\theta$ and watch the spectrum (dots) shift.`,
+      deps: ['fa-13.3', 'fa-13.2'],
+      tags: ['unbounded operators', 'self-adjoint operators', 'boundary conditions'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const thS = v.slider('$\\theta$ in $f(1)=e^{i\\theta}f(0)$', 0, 6.28, 1.2, { step: 0.01 });
+        const bc = v.select('domain of $f$, $g$', [{ value: 'zero', label: '$f(0)=f(1)=0$' }, { value: 'theta', label: '$f(1)=e^{i\\theta}f(0)$' }, { value: 'none', label: 'no condition' }], 'theta');
+        const L = v.stage({ x: [0, 1], y: [-1.6, 1.6], height: 300, axes: true, title: '$\\mathrm{Re}\\,f$ (blue), $\\mathrm{Re}\\,g$ (orange) in the chosen domain' });
+        const R = v.stage({ x: [-14, 14], y: [-1, 1], height: 300, axes: true, title: 'spectrum of $T_\\theta$: $\\{\\theta+2\\pi k\\}$' });
+        let st = {};
+        v.render(() => {
+          const th = thS.value, key = bc.value;
+          // f(x) = a(x) e^{iθx} with a(0)=a(1) ⇒ f(1) = e^{iθ} f(0); g similar with another profile
+          const prof = (key === 'zero') ? [(x) => Math.sin(Math.PI * x) * (1 + 0.5 * x), (x) => Math.sin(2 * Math.PI * x) + 0.3 * Math.sin(Math.PI * x)]
+            : (key === 'theta') ? [(x) => 1 + 0.4 * Math.cos(2 * Math.PI * x), (x) => 0.6 + 0.5 * Math.sin(2 * Math.PI * x)]
+              : [(x) => 1 + 0.6 * x, (x) => 0.4 + x * x];
+          const ph = key === 'none' ? 0 : th;
+          const F = (x) => [prof[0](x) * Math.cos(ph * x), prof[0](x) * Math.sin(ph * x)], G = (x) => [prof[1](x) * Math.cos(ph * x), prof[1](x) * Math.sin(ph * x)];
+          const d = (H, x) => { const h = 1e-5, a = H(x + h), b = H(x - h); return [(a[0] - b[0]) / (2 * h), (a[1] - b[1]) / (2 * h)]; };
+          const Tf = (H, x) => { const q = d(H, x); return [q[1], -q[0]]; };     // −i·H'
+          const ip = (A, B) => { let re = 0, im = 0; const n = 2000; for (let i = 0; i <= n; i++) { const x = Math.min(1 - 1e-5, Math.max(1e-5, i / n)), w = (i === 0 || i === n ? 1 : i % 2 ? 4 : 2) / (3 * n), a = A(x), b = B(x); re += w * (a[0] * b[0] + a[1] * b[1]); im += w * (a[1] * b[0] - a[0] * b[1]); } return [re, im]; };
+          const lhs = ip((x) => Tf(F, x), G), rhs = ip(F, (x) => Tf(G, x));
+          const defect = Math.hypot(lhs[0] - rhs[0], lhs[1] - rhs[1]);
+          L.fn((x) => F(x)[0], { color: 'blue', width: 2.4 });
+          L.fn((x) => G(x)[0], { color: 'orange', width: 2.2 });
+          L.corner(`|(Tf, g) − (f, Tg)| = ${v.fmt(defect, 3)}`, 'bl', { color: defect < 1e-4 ? 'green' : 'red', weight: 600 });
+          for (let k = -3; k <= 2; k++) { const l = th + 2 * Math.PI * k; if (Math.abs(l) < 14) R.dot(l, 0, { color: 'purple', r: 5.5 }); }
+          for (let k = -1; k <= 1; k++) { const l = th + 2 * Math.PI * k; R.text(v.fmt(l, 2), l, 0, { dy: -14, color: 'purple', size: 11, align: 'center' }); }
+          st = { key, defect };
+        });
+        v.readout(() => {
+          const s = st;
+          const tag = { zero: 'symmetric (boundary terms vanish) but not self-adjoint: its adjoint drops the boundary conditions', theta: 'symmetric and in fact self-adjoint: $\\mathscr D(T_\\theta^*)=\\mathscr D(T_\\theta)$', none: 'not symmetric on this domain: the boundary term $-i\\,(f(1)\\bar g(1)-f(0)\\bar g(0))$ survives' }[s.key];
+          return `$|(Tf,g)-(f,Tg)| = ${v.sci(s.defect + 1e-17, 2)}$ — ${tag}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 13.16
+    {
+      num: '13.16',
+      kind: 'Theorem',
+      name: 'Symmetric operators: ‖(T ± i)x‖² = ‖Tx‖² + ‖x‖²',
+      statement: String.raw`If $T$ is symmetric, then
+$$\norm{(T\pm iI)x}^2=\norm{Tx}^2+\norm x^2\qquad(x\in\mathscr D(T)).$$
+Consequently $T\pm iI$ are one-to-one with $\norm{(T\pm iI)x}\ge\norm x$; $T$ is closed if and only if $\mathscr R(T+iI)$ is closed, if and only if $\mathscr R(T-iI)$ is closed; and if $\mathscr R(T+iI)=H$ or $\mathscr R(T-iI)=H$, then $T$ is maximally symmetric.`,
+      idea: String.raw`Expand: $\norm{Tx\pm ix}^2=\norm{Tx}^2+\norm x^2\pm2\operatorname{Re}\big(-i(Tx,x)\big)$, and $(Tx,x)$ is real for symmetric $T$. The identity says that $x\mapsto(T+iI)x$ is an isometry of $\mathscr G(T)$ onto $\mathscr R(T+iI)$, if the graph carries the norm $(\norm x^2+\norm{Tx}^2)^{1/2}$. So one is complete exactly when the other is. If $\mathscr R(T+iI)=H$ and $S\supset T$ is symmetric, then for $x\in\mathscr D(S)$ pick $y\in\mathscr D(T)$ with $(T+i)y=(S+i)x$. Since $S+iI$ is one-to-one by the same identity, $x=y\in\mathscr D(T)$, so $S=T$. This is the analytic heart of the Cayley transform 13.19.`,
+      caption: String.raw`$T=-i\,d/dx$ on $L^2[0,1]$ and a real $f$ with prescribed end values $f(0)=p$, $f(1)=q$ (sliders) and interior shape $A$. Bars: $\norm{Tf}^2+\norm f^2$ (stacked), $\norm{(T+i)f}^2$ and $\norm{(T-i)f}^2$. The cross terms are $\mp(q^2-p^2)$, so the identity holds exactly when $|q|=|p|$, which is when $f$ lies in a domain $\{f(1)=e^{i\theta}f(0)\}$ on which $T$ is symmetric. Push $q$ away from $\pm p$: the bars come apart.`,
+      deps: ['fa-13.3', 'fa-13.8', 'fa-13.15'],
+      tags: ['symmetric operators', 'closed operators'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const pS = v.slider('$p=f(0)$', -1.5, 1.5, 0.8, { step: 0.01 });
+        const qS = v.slider('$q=f(1)$', -1.5, 1.5, 0.8, { step: 0.01 });
+        const AS = v.slider('interior shape $A$', -2, 2, 1.2, { step: 0.01 });
+        v.button('make $q=p$', () => qS.set(pS.value));
+        const L = v.stage({ x: [0, 1], y: [-3, 3], height: 300, axes: true, title: '$f$ (blue) and $|Tf|=|f\'|$ (orange)' });
+        const R = v.stage({ x: [0.3, 3.7], y: [0, 10], height: 300, axes: false, title: 'the three squared norms' });
+        let st = {};
+        v.legend([['orange', '$\\|Tf\\|^2$'], ['blue', '$\\|f\\|^2$'], ['purple', '$\\|(T\\pm i)f\\|^2$']]);
+        v.render(() => {
+          const p = pS.value, q = qS.value, A = AS.value;
+          const f = (x) => p * (1 - x) + q * x + A * Math.sin(Math.PI * x) + 0.4 * A * Math.sin(3 * Math.PI * x);
+          const fd = (x) => q - p + A * Math.PI * Math.cos(Math.PI * x) + 1.2 * A * Math.PI * Math.cos(3 * Math.PI * x);
+          const nf = simpson((x) => f(x) ** 2, 0, 1, 2000), nT = simpson((x) => fd(x) ** 2, 0, 1, 2000);
+          const np = simpson((x) => (f(x) - fd(x)) ** 2, 0, 1, 2000), nm = simpson((x) => (f(x) + fd(x)) ** 2, 0, 1, 2000);   // (T+i)f = i(f−f'), (T−i)f = −i(f+f')
+          L.setView(null, span([...M.linspace(0, 1, 101).map(f), ...M.linspace(0, 1, 101).map((x) => Math.abs(fd(x)))], 2, 0.1));
+          L.fn((x) => Math.abs(fd(x)), { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.1 });
+          L.fn(f, { color: 'blue', width: 2.6 });
+          L.dot(0, p, { color: 'blue', r: 5, label: 'p' }); L.dot(1, q, { color: 'blue', r: 5, label: 'q', labelPos: 'nw' });
+          const top = Math.max(nT + nf, np, nm) * 1.12;
+          R.setView(null, [-0.1 * top, top]);
+          R.hline(0, { color: 'muted', width: 1 });
+          R.rect(0.7, 0, 1.3, nT, { color: 'orange', fill: 'orange', fillAlpha: 0.55 });
+          R.rect(0.7, nT, 1.3, nT + nf, { color: 'blue', fill: 'blue', fillAlpha: 0.55 });
+          R.rect(1.7, 0, 2.3, np, { color: 'purple', fill: 'purple', fillAlpha: 0.55 });
+          R.rect(2.7, 0, 3.3, nm, { color: 'purple', fill: 'purple', fillAlpha: 0.35 });
+          R.hline(nT + nf, { color: 'ink', width: 1, dash: [4, 3] });
+          [['‖Tf‖² + ‖f‖²', 1], ['‖(T+i)f‖²', 2], ['‖(T−i)f‖²', 3]].forEach(([t, x]) => R.text(t, x, -0.05 * top, { color: 'muted', size: 12, align: 'center' }));
+          st = { nf, nT, np, nm, bd: q * q - p * p };
+        });
+        v.readout(() => {
+          const s = st, sym = Math.abs(s.bd) < 1e-3;
+          return `$\\|Tf\\|^2+\\|f\\|^2=${v.fix(s.nT + s.nf, 3)}$, $\\|(T+i)f\\|^2=${v.fix(s.np, 3)}$, $\\|(T-i)f\\|^2=${v.fix(s.nm, 3)}$; boundary term $q^2-p^2=${v.fix(s.bd, 3)}$. ` + (sym ? '**Equal**: on a symmetric domain $(Tf,f)$ is real and the cross terms cancel.' : 'Not equal: $f$ lies in no domain on which $T$ is symmetric.');
         });
       },
     },

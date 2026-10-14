@@ -29,7 +29,7 @@ $$U=(T-iI)(T+iI)^{-1}$$
 is an isometry from $\mathscr R(T+iI)$ onto $\mathscr R(T-iI)$, $I-U$ is one-to-one, and $T=i(I+U)(I-U)^{-1}$. $T$ is closed iff $U$ is closed; $T$ is self-adjoint iff $U$ is **unitary** (defined on all of $H$, onto $H$). Conversely every unitary $U$ with $I-U$ one-to-one is the Cayley transform of a self-adjoint operator.`,
       idea: String.raw`For $x\in\mathscr D(T)$, symmetry kills the cross terms: $\norm{(T\pm iI)x}^2=\norm{Tx}^2+\norm x^2$. So $U$ maps $(T+i)x\mapsto(T-i)x$ isometrically. Self-adjointness is equivalent to $\mathscr R(T\pm iI)=H$, which is exactly unitarity of $U$. On numbers, $\lambda\mapsto\frac{\lambda-i}{\lambda+i}$ maps the real line onto the unit circle minus the point $1$ — the spectral version of the same fact.`,
       caption: String.raw`The scalar Cayley map $\kappa(\lambda)=\frac{\lambda-i}{\lambda+i}$ sends the real axis (left, blue ticks at the integers) onto the unit circle minus $1$ (right). Drag $\lambda$: real $\lambda$ land on the circle ($|\kappa|=1$), $\lambda$ in the upper half-plane inside, lower half-plane outside. A self-adjoint $T$ with spectrum on $\R$ becomes the unitary $U$ with spectrum on $\T$; $\pm\infty$ both go to $1$, which is why $I-U$ must be one-to-one. The $3\times3$ check in the readout: for $T$ symmetric with eigenvalues $\lambda_k$, $U$ has eigenvalues $\kappa(\lambda_k)$ and $\norm{U^*U-I}\approx0$.`,
-      deps: ['fa-13.11', 'fa-13.8'],
+      deps: ['fa-13.11', 'fa-13.8', 'fa-13.16'],
       tags: ['Cayley transform', 'self-adjoint operators', 'unitary operators'],
       verify: true,
       viz(v) {
@@ -66,40 +66,59 @@ is an isometry from $\mathscr R(T+iI)$ onto $\mathscr R(T-iI)$, $I-U$ is one-to-
       kind: 'Definition',
       name: 'Deficiency indices',
       statement: String.raw`For a closed symmetric densely defined $T$, the **deficiency indices** are $n_\pm=\dim\mathscr N(T^*\mp iI)$, the dimensions of the orthogonal complements of $\mathscr R(T\pm iI)$. $T$ is self-adjoint iff $n_+=n_-=0$; $T$ has self-adjoint extensions iff $n_+=n_-$, and they correspond to the unitary maps of $\mathscr N(T^*-iI)$ onto $\mathscr N(T^*+iI)$ (extensions of the Cayley transform to a unitary).`,
-      idea: String.raw`The Cayley transform $U$ of $T$ is an isometry between closed subspaces with orthogonal complements of dimensions $n_+$ and $n_-$; a symmetric extension of $T$ is a partial isometry extending $U$, and it is unitary — the extension self-adjoint — exactly when it maps one complement onto the other. For $-i\,d/dx$ on $[0,1]$ with $f(0)=f(1)=0$, $n_\pm=1$ (spanned by $e^{\pm x}$), giving the circle of extensions $T_\theta$ of 13.11; on $[0,\infty)$, $n_+=1\ne n_-=0$ and no self-adjoint extension exists.`,
+      idea: String.raw`The Cayley transform $U$ of $T$ is an isometry between closed subspaces with orthogonal complements of dimensions $n_+$ and $n_-$; a symmetric extension of $T$ is a partial isometry extending $U$, and it is unitary — the extension self-adjoint — exactly when it maps one complement onto the other. For $-i\,d/dx$ on $[0,1]$ with $f(0)=f(1)=0$, $n_\pm=1$ (spanned by $e^{\pm x}$), giving the circle of extensions $T_\theta$ of 13.15; on $[0,\infty)$, $n_+=1\ne n_-=0$ and no self-adjoint extension exists.`,
       deps: ['fa-13.19'],
       tags: ['deficiency indices', 'self-adjoint extensions'],
       verify: true,
     },
     {
-      num: '13.24',
+      num: '13.27',
       kind: 'Theorem',
-      name: 'Spectrum of an unbounded self-adjoint operator is real',
-      statement: String.raw`If $T$ is self-adjoint, then $\sigma(T)\subset\R$, and for $\lambda=\alpha+i\beta$ with $\beta\ne0$ the resolvent $(T-\lambda I)^{-1}$ is a bounded operator on $H$ with
-$$\norm{(T-\lambda I)^{-1}}\le\frac1{|\beta|}.$$
-$\sigma(T)$ is closed but may be unbounded.`,
-      idea: String.raw`$\norm{(T-\lambda I)x}^2=\norm{(T-\alpha I)x}^2+\beta^2\norm x^2\ge\beta^2\norm x^2$ by symmetry, so $T-\lambda I$ is one-to-one with closed range; the range is dense because its orthogonal complement is $\mathscr N(T^*-\bar\lambda I)=\mathscr N(T-\bar\lambda I)=\{0\}$ by the same estimate.`,
-      caption: String.raw`$T=-d^2/dx^2$ on $L^2[0,\pi]$ with Dirichlet conditions: self-adjoint, unbounded, with eigenvalues $1,4,9,16,\dots$ (red dots). The colour shows $\log_{10}\norm{(T-\lambda)^{-1}}=-\log_{10}\operatorname{dist}(\lambda,\sigma(T))$ (normal operator). Drag $\lambda$: the readout compares $\norm{(T-\lambda)^{-1}}$ with the bound $1/|\operatorname{Im}\lambda|$ (dashed lines at heights $\pm\beta$ mark where they would be equal).`,
-      deps: ['fa-13.19', 'fa-13.11'],
-      tags: ['self-adjoint operators', 'spectrum', 'resolvent'],
+      name: 'The spectrum of Ψ(f) is the essential range of f',
+      statement: String.raw`Let $E$ be a resolution of the identity on $\Omega$ and $f$ a measurable function on $\Omega$, with $\Psi(f)$ as in 13.24. Then $\sigma(\Psi(f))$ is the essential range of $f$ (the set of $\lambda$ with $E(\{|f-\lambda|<\varepsilon\})\ne0$ for every $\varepsilon>0$), and for $\lambda$ outside it
+$$\norm{(\Psi(f)-\lambda I)^{-1}}=\frac1{\operatorname{dist}(\lambda,\operatorname{ess\,range}f)} .$$
+With the spectral theorem 13.30 this shows that a self-adjoint $T$ has $\sigma(T)\subset\R$ and $\norm{(T-\lambda I)^{-1}}\le1/|\operatorname{Im}\lambda|$.`,
+      idea: String.raw`If $\lambda$ is outside the essential range, at distance $d$, then $g=1/(f-\lambda)$ is bounded by $1/d$ almost everywhere $[E]$, and 13.24(c) shows that the bounded operator $\Psi(g)$ is a two-sided inverse of $\Psi(f)-\lambda I$, with norm $1/d$. If $\lambda$ is in the essential range, the projections $E(\{|f-\lambda|<\varepsilon\})$ are nonzero, and unit vectors $x$ in their ranges have $\norm{(\Psi(f)-\lambda)x}\le\varepsilon$ by 13.24(a), so $\Psi(f)-\lambda I$ has no bounded inverse. Values that $f$ takes only on an $E$-null set do not count.`,
+      caption: String.raw`The colour is $\log_{10}\norm{(\Psi(f)-\lambda)^{-1}}=-\log_{10}\operatorname{dist}(\lambda,\operatorname{ess\,range}f)$; drag $\lambda$. **Laplacian**: $T=-d^2/dx^2$ on $L^2[0,\pi]$ with Dirichlet conditions is $\Psi(\lambda)$ for its resolution of the identity, which has atoms at $1,4,9,\dots$ (red). This is the essential range, so the spectrum, all real, and the readout compares the resolvent norm with $1/|\operatorname{Im}\lambda|$. **Multiplication**: $\Psi(f)$ is multiplication by a continuous complex $f$ on $L^2[0,1]$, whose essential range is the curve $f([0,1])$ (green). Changing $f$ at the single point $t=\frac12$ (red ring) changes nothing, since a point is a null set.`,
+      deps: ['fa-13.24', 'fa-12.21'],
+      tags: ['spectrum', 'resolution of the identity', 'resolvent'],
       verify: true,
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-3, 40], y: [-8, 8], height: 340, full: true, axes: true, title: '$\\log_{10}\\|(T-\\lambda)^{-1}\\|$ for $T=-d^2/dx^2$, Dirichlet' });
+        const mode = v.select('', [{ value: 'lap', label: 'Laplacian $-d^2/dx^2$' }, { value: 'mul', label: 'multiplication by $f$' }], 'lap', { onChange: (m) => { if (m === 'lap') hl.set(11.5, 2.2); else hl.set(0.5, 0.35); } });
+        const S = v.stage({ x: [-3, 40], y: [-8, 8], height: 340, full: true, axes: true, title: '' });
         const hl = S.handle(11.5, 2.2, { color: 'purple', label: 'λ' });
         const ev = M.range(7).map((k) => (k + 1) ** 2);
+        const fc = (t) => { const r = 1 + 0.35 * Math.cos(6 * Math.PI * t); return [r * Math.cos(2 * Math.PI * t), r * Math.sin(2 * Math.PI * t)]; };
+        const curve = M.linspace(0, 1, 361).map(fc), spike = [1.9, 1.15];
         let st = {};
         v.render(() => {
-          const z = [hl.x, hl.y];
-          S.heat((x, y) => -Math.log10(Math.min(...ev.map((e) => Math.hypot(x - e, y))) + 1e-9), { range: [-1, 1.5], cmap: 'magma', res: 3, key: 'res' });
-          S.axes();
-          ev.forEach((e) => S.dot(e, 0, { color: 'red', r: 4.5 }));
-          S.text('…', 39, 0.8, { color: 'red', size: 16 });
-          if (Math.abs(z[1]) > 0.05) { S.hline(z[1], { color: 'purple', width: 1, dash: [4, 4] }); S.hline(-z[1], { color: 'purple', width: 1, dash: [4, 4] }); }
-          const dist = Math.min(...ev.map((e) => Math.hypot(z[0] - e, z[1])));
-          st = { res: 1 / dist, bound: Math.abs(z[1]) > 1e-9 ? 1 / Math.abs(z[1]) : Infinity, beta: z[1] };
+          const lap = mode.value === 'lap', z = [hl.x, hl.y];
+          if (lap) {
+            S.setView([-3, 40], [-8, 8]); S.setTitle('$\\log_{10}\\|(T-\\lambda)^{-1}\\|$ for $T=-d^2/dx^2$, Dirichlet');
+            S.heat((x, y) => -Math.log10(Math.min(...ev.map((e) => Math.hypot(x - e, y))) + 1e-9), { range: [-1, 1.5], cmap: 'magma', res: 3, key: 'lap' });
+            S.axes();
+            ev.forEach((e) => S.dot(e, 0, { color: 'red', r: 4.5 }));
+            S.text('…', 39, 0.8, { color: 'red', size: 16 });
+            if (Math.abs(z[1]) > 0.05) { S.hline(z[1], { color: 'purple', width: 1, dash: [4, 4] }); S.hline(-z[1], { color: 'purple', width: 1, dash: [4, 4] }); }
+            const dist = Math.min(...ev.map((e) => Math.hypot(z[0] - e, z[1])));
+            st = { lap, res: 1 / dist, bound: Math.abs(z[1]) > 1e-9 ? 1 / Math.abs(z[1]) : Infinity };
+          } else {
+            S.setView([-4.3, 4.3], [-1.7, 1.7]); S.setTitle('$\\log_{10}\\|(\\Psi(f)-\\lambda)^{-1}\\|$, $f(t)=(1+0.35\\cos6\\pi t)e^{2\\pi it}$');
+            const d = (x, y) => { let m = Infinity; for (const p of curve) m = Math.min(m, Math.hypot(x - p[0], y - p[1])); return m; };
+            S.heat((x, y) => -Math.log10(d(x, y) + 1e-9), { range: [-1, 1.5], cmap: 'magma', res: 4, key: 'mul' });
+            S.axes();
+            S.path(curve, { color: 'green', width: 2.4 });
+            S.dot(spike[0], spike[1], { color: 'red', r: 6, hollow: true });
+            S.text('f(½), changed on a null set', spike[0] + 0.15, spike[1] + 0.22, { color: 'ink', size: 12, align: 'left' });
+            st = { lap, res: 1 / d(z[0], z[1]), spikeDist: Math.hypot(z[0] - spike[0], z[1] - spike[1]) };
+          }
         });
-        v.readout(() => `$\\|(T-\\lambda)^{-1}\\| = 1/\\operatorname{dist}(\\lambda,\\sigma(T)) = ${v.fix(st.res, 4)}$` + (isFinite(st.bound) ? ` $\\le 1/|\\operatorname{Im}\\lambda| = ${v.fix(st.bound, 4)}$.` : ' — $\\lambda$ is real: the bound gives nothing, and $\\lambda$ may be in the spectrum.'));
+        v.readout(() => {
+          const s = st;
+          if (s.lap) return `$\\|(T-\\lambda)^{-1}\\| = 1/\\operatorname{dist}(\\lambda,\\sigma(T)) = ${v.fix(s.res, 4)}$` + (isFinite(s.bound) ? ` $\\le 1/|\\operatorname{Im}\\lambda| = ${v.fix(s.bound, 4)}$.` : ' — $\\lambda$ is real: the bound gives nothing, and $\\lambda$ may be in the spectrum.');
+          return `$\\|(\\Psi(f)-\\lambda)^{-1}\\|=1/\\operatorname{dist}(\\lambda,f([0,1]))=${v.fix(s.res, 4)}$` + (s.spikeDist < 0.15 ? '. $\\lambda$ is near the value taken on the null set, but that value is not in the essential range, so the resolvent stays bounded.' : '.');
+        });
       },
     },
     {
@@ -149,7 +168,7 @@ where $\mathscr D(T)=\{x:\int\lambda^2\,dE_{x,x}(\lambda)<\infty\}$. Moreover $f
       statement: String.raw`If $T$ is self-adjoint, then $U_t=e^{itT}=\int e^{it\lambda}dE(\lambda)$ is a strongly continuous one-parameter group of unitary operators ($U_{s+t}=U_sU_t$, $U_0=I$, $t\mapsto U_tx$ continuous), and
 $$\lim_{t\to0}\frac{U_tx-x}{t}=iTx\qquad\text{exactly for }x\in\mathscr D(T).$$
 Conversely (Stone) every strongly continuous unitary group arises in this way from a unique self-adjoint $T$, its **generator**.`,
-      idea: String.raw`Group law, unitarity and strong continuity are properties of the functions $e^{it\lambda}$ under the Borel calculus, plus dominated convergence. The difference quotient: $\norm{\frac{U_tx-x}{t}-iTx}^2=\int\big|\frac{e^{it\lambda}-1}{t}-i\lambda\big|^2dE_{x,x}$, which tends to $0$ by dominated convergence when $\int\lambda^2dE_{x,x}<\infty$, i.e. $x\in\mathscr D(T)$. For the converse one defines $T$ through the derivative and uses 13.11 to see it is self-adjoint.`,
+      idea: String.raw`Group law, unitarity and strong continuity are properties of the functions $e^{it\lambda}$ under the Borel calculus, plus dominated convergence. The difference quotient: $\norm{\frac{U_tx-x}{t}-iTx}^2=\int\big|\frac{e^{it\lambda}-1}{t}-i\lambda\big|^2dE_{x,x}$, which tends to $0$ by dominated convergence when $\int\lambda^2dE_{x,x}<\infty$, i.e. $x\in\mathscr D(T)$. For the converse one defines $T$ through the derivative, checks that $\mathscr R(T\pm iI)=H$, and concludes that it is self-adjoint (13.14, 13.19).`,
       caption: String.raw`$T=-i\,d/dx$ on $L^2(\R)$ generates the translation group $(U_tf)(x)=f(x+t)$; equivalently, in frequency space $U_t$ multiplies by $e^{it\xi}$. Drag $t$: the blue profile slides rigidly, $\norm{U_tf}=\norm f$. Bottom: the size of the difference quotient $\norm{\frac{U_tf-f}{t}}$ as $t\to0$ — it converges to $\norm{f'}$ for the smooth $f$, and blows up like $|t|^{-1/2}$ for the step $f=1_{[0,1]}$, which is not in $\mathscr D(T)$.`,
       deps: ['fa-13.30', 'fa-12.24', 'fa-7.9'],
       tags: ["Stone's theorem", 'unitary groups', 'generators'],
