@@ -1,4 +1,6 @@
 // Rudin, Functional Analysis — Chapter 9: Tauberian theory (part 1: Wiener's theorem)
+//
+// Numbering of 9.1–9.7 checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
 
 // ---------------------------------------------------------------- shared helpers
 const sinc = (t) => (Math.abs(t) < 1e-9 ? 1 : Math.sin(t) / t);
@@ -258,14 +260,11 @@ A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $
     {
       num: '9.5',
       kind: 'Theorem',
-      name: "Wiener's Tauberian theorem",
-      statement: String.raw`Let $K\in L^1(\R^n)$ satisfy $\hat K(t)\ne0$ for every $t\in\R^n$.
-(a) The translates of $K$ span a dense subspace of $L^1(\R^n)$.
-(b) If $\varphi\in L^\infty(\R^n)$, $a$ is a constant, and $(K*\varphi)(x)\to a\hat K(0)$ as $x\to\infty$, then $(f*\varphi)(x)\to a\hat f(0)$ as $x\to\infty$ for **every** $f\in L^1(\R^n)$.
-
-(Here $x\to\infty$ means $|x|\to\infty$; on $\R$ the same holds with $x\to+\infty$ throughout. Conversely, if $\hat K$ has a zero then the translates of $K$ are not dense, since $\hat h$ vanishes there for every $h$ in their closed span.)`,
-      idea: String.raw`(a) is Theorem 9.4 applied to the closed span of the translates of $K$, whose zero set is empty. For (b), let $Y$ be the set of $f\in L^1$ with $(f*\varphi)(x)-a\hat f(0)\to0$. It is a subspace, closed because $\|(f-g)*\varphi\|_\infty\le\|f-g\|_1\|\varphi\|_\infty$ and $|\hat f(0)-\hat g(0)|\le\|f-g\|_1$, and translation-invariant because $(\tau_sf)*\varphi=\tau_s(f*\varphi)$ while $\widehat{\tau_sf}(0)=\hat f(0)$. Since $K\in Y$, (a) forces $Y=L^1$. The hypothesis $\hat K\ne0$ cannot be dropped: if $\hat K(t_0)=0$ with $t_0\ne0$, then $\varphi(x)=e^{it_0x}$ gives $K*\varphi\equiv0$, while $f*\varphi=\hat f(t_0)\varphi$ does not converge.`,
-      caption: String.raw`On $\R$ with $a=1$ (plain $dx$, so $\hat K(0)=\int K$). Choose a kernel $K$ and a bounded $\varphi$. Top: $\varphi$ and the normalised averages $(K*\varphi)/\hat K(0)$ and $(f*\varphi)/\hat f(0)$, where $f$ is a narrow Gaussian test function. Bottom: $\hat K$, $\hat f$ and the frequencies present in $\varphi-1$ (gold). An average forgets exactly the frequencies where its kernel's transform vanishes. With a pure tone, $K*\varphi$ converges only when $\omega\in Z(K)$ (use the button), and then $f*\varphi$ keeps oscillating. With the chirp, whose frequency runs off to infinity, every average converges, as (b) predicts.`,
+      name: 'Translates of K are dense iff K̂ has no zero',
+      statement: String.raw`Suppose $K\in L^1(\R^n)$ and $Y$ is the smallest closed translation-invariant subspace of $L^1(\R^n)$ that contains $K$, the closed span of the translates of $K$. Then
+$$Y=L^1(\R^n)\quad\text{if and only if}\quad\hat K(t)\ne0\ \text{for every }t\in\R^n .$$`,
+      idea: String.raw`Every element of $Y$ is a limit of combinations $\sum c_jK(x-s_j)$, whose transforms are $\hat K(t)\sum c_je^{-is_j\cdot t}$. So $Z(Y)$ is exactly the zero set of $\hat K$. If that set is empty, Theorem 9.4 gives $Y=L^1$. If $\hat K(t_0)=0$, every $h\in Y$ has $\hat h(t_0)=0$, while the Gaussian $g$ has $\hat g(t_0)\ne0$; since $|\hat g(t_0)-\hat h(t_0)|\le\norm{g-h}_1$, $g$ stays at distance at least $|\hat g(t_0)|$ from $Y$. Dually, the bounded function $e^{it_0\cdot x}$ annihilates every translate of $K$: $K*e^{it_0\cdot x}=\hat K(t_0)e^{it_0\cdot x}=0$.`,
+      caption: String.raw`The duality behind 9.5, on $\R$. Choose a kernel $K$ and a bounded $\varphi$. Top: $\varphi$ and the normalised averages $(K*\varphi)/\hat K(0)$ and $(f*\varphi)/\hat f(0)$, where $f$ is a narrow Gaussian. Bottom: $\hat K$, $\hat f$ and the frequencies in $\varphi-1$ (gold). For the tone $\varphi=1+\sin\omega x$, $K*\varphi=\hat K(0)+\operatorname{Im}(\hat K(\omega)e^{i\omega x})$. Press the button to put $\omega$ in $Z(K)$: the tone vanishes from every translate's average. Then $\sin\omega x$ is a nonzero bounded function orthogonal to all translates of $K$, so they are not dense. The Gaussian and $\frac12e^{-|x|}$ have no zeros, no tone is invisible to them, and their translates are dense. For the chirp, every average converges; that is Wiener's Tauberian theorem 9.7.`,
       deps: ['fa-9.4', 'fa-7.2'],
       see: ['rca-9.16'],
       tags: ['Wiener', 'Tauberian', 'convolution'],
@@ -341,8 +340,8 @@ A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $
           let msg = `On the tail $60\\le x\\le80$: $\\;(K*\\varphi)/\\hat K(0)\\in${rng(s.kt)}$, $\\;(f*\\varphi)/\\hat f(0)\\in${rng(s.ft)}$`;
           if (s.tones) msg += `; $\\;|\\hat K(\\omega)|/\\hat K(0)=${v.fix(Math.abs(s.Kw), 4)}$`;
           msg += '. ';
-          if (Kok && Fok) msg += s.zeroFree ? 'The hypothesis holds and, as (b) predicts, the other average converges to $1$ as well.' : 'Both averages converge here, although $\\hat K$ has zeros.';
-          else if (Kok && !Fok) msg += '$K*\\varphi$ converges but $f*\\varphi$ does not. This is possible only because $\\hat K(\\omega)=0$: the hypothesis $Z(K)=\\emptyset$ fails.';
+          if (Kok && Fok) msg += s.zeroFree ? '$\\hat K$ has no zero, so the translates of $K$ are dense, and here every average converges (9.7).' : 'Both averages converge here, although $\\hat K$ has zeros.';
+          else if (Kok && !Fok) msg += 'The tone is invisible to $K$ (it converges) but not to $f$: $\\hat K(\\omega)=0$, so $\\sin\\omega x$ annihilates every translate of $K$, and those translates are not dense in $L^1$.';
           else msg += '$K*\\varphi$ does not converge, so the theorem makes no prediction.';
           return msg;
         });
@@ -437,15 +436,17 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
     {
       num: '9.7',
       kind: 'Theorem',
-      name: 'Tauberian theorem for slowly oscillating functions',
-      statement: String.raw`Suppose that $\varphi\in L^\infty(\R)$ is slowly oscillating, that $K\in L^1(\R)$ satisfies $\hat K(t)\ne0$ for every real $t$, and that
-$$\lim_{x\to+\infty}(K*\varphi)(x)=a\hat K(0).$$
-Then $\varphi(x)\to a$ as $x\to+\infty$.`,
-      idea: String.raw`By Wiener's theorem 9.5(b), in its one-sided form, $f*\varphi\to a\hat f(0)$ for every $f\in L^1$. Take for $f$ the indicator of $[0,\delta]$, normalised so that $(f*\varphi)(x)/\hat f(0)=A_\delta\varphi(x)=\frac1\delta\int_{x-\delta}^x\varphi$. Then
+      name: "Wiener's Tauberian theorem",
+      statement: String.raw`Suppose $\varphi\in L^\infty(\R^n)$, $K\in L^1(\R^n)$, $\hat K(t)\ne0$ for every $t\in\R^n$, and
+$$\lim_{x\to\infty}(K*\varphi)(x)=a\hat K(0).$$
+(a) Then $\lim_{x\to\infty}(f*\varphi)(x)=a\hat f(0)$ for **every** $f\in L^1(\R^n)$.
+(b) If, in addition, $\varphi$ is slowly oscillating (9.6), then $\varphi(x)\to a$ as $x\to\infty$.
+(On $\R$ everything holds with $x\to+\infty$ in place of $|x|\to\infty$.)`,
+      idea: String.raw`(a) Let $Y$ be the set of $f\in L^1$ with $(f*\varphi)(x)-a\hat f(0)\to0$. It is a subspace, closed because $\norm{(f-g)*\varphi}_\infty\le\norm{f-g}_1\norm\varphi_\infty$, and translation-invariant because $(\tau_sf)*\varphi=\tau_s(f*\varphi)$ while $\widehat{\tau_sf}(0)=\hat f(0)$. It contains $K$, so it is all of $L^1$ by 9.5. (b) Take for $f$ the indicator of $[0,\delta]$, normalised so that $(f*\varphi)(x)/\hat f(0)=A_\delta\varphi(x)=\frac1\delta\int_{x-\delta}^x\varphi$. Then
 $$|\varphi(x)-a|\le|\varphi(x)-A_\delta\varphi(x)|+|A_\delta\varphi(x)-a|.$$
 The first term is at most $\omega(x-\delta,\delta)$, which is below $\eps$ for large $x$ once $\delta$ is chosen by slow oscillation. The second tends to $0$ by Wiener.`,
       caption: String.raw`$a=1$. Top: $\varphi$ (grey), $(K*\varphi)/\hat K(0)$ (blue) and the backward average $A_\delta\varphi$ (green). At the draggable point the bars split $|\varphi(x)-1|$ into the slow-oscillation term $|\varphi-A_\delta\varphi|$ (orange) and the Wiener term $|A_\delta\varphi-1|$ (green). Bottom: the tail suprema $\sup_{y\ge x}|\cdot-1|$ on a log scale. The staircase satisfies every hypothesis and converges, slowly. The chirp is not slowly oscillating, so the orange term never shrinks. The tone at $\pi$ is slowly oscillating, but with the box kernel $\hat K(\pi)=0$, so the green term never shrinks.`,
-      deps: ['fa-9.5', 'fa-9.6'],
+      deps: ['fa-9.5', 'fa-9.6', 'fa-9.4'],
       tags: ['Tauberian', 'Wiener', 'oscillation'],
       verify: true,
       viz(v) {
