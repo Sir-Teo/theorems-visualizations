@@ -16,6 +16,15 @@ const args = process.argv.slice(2);
 const flags = new Set(args.filter((a) => a.startsWith('--')).map((a) => a.split('=')[0]));
 const flagVal = (k, d) => { const a = args.find((x) => x.startsWith(k + '=')); return a ? a.split('=')[1] : d; };
 const targets = args.filter((a) => !a.startsWith('--'));
+// --changed[=ref]: check the content files changed relative to ref (default origin/main)
+if (flags.has('--changed')) {
+  const { execSync } = await import('node:child_process');
+  const ref = flagVal('--changed', 'origin/main');
+  const out = execSync(`git diff --name-only ${ref}...HEAD -- content; git diff --name-only -- content; git ls-files --others --exclude-standard -- content`, { encoding: 'utf8' });
+  const files = [...new Set(out.split('\n').filter((f) => /^content\/[a-z0-9]+\/ch\d{2}[\w-]*\.js$/.test(f)))];
+  console.log(`changed chapter files vs ${ref}: ${files.length}`);
+  if (!files.length) targets.push('--none--'); else targets.push(...files);
+}
 
 const { items, planned, collections, problems } = await loadAll();
 const P = [...problems, ...validate(items, planned, collections)];

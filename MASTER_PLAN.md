@@ -1,19 +1,27 @@
-# Master plan: from *Rudin, visualized* to an atlas of STEM
+# Master plan: from *Rudin, visualized* to an atlas of human knowledge
 
-> **Status:** proposal · **Scope:** the whole project · **Supersedes nothing**: AUTHORING.md stays
-> the rulebook for writing items and gets field-specific extensions (§7).
+> **Status:** in progress (Phase 0 done, Phase 1 under way) · **Scope:** the whole project ·
+> AUTHORING.md stays the rulebook for writing items and gets field-specific extensions (§7).
+>
+> **Revision 2.** The scope widened from STEM theorems to *the breadth of human knowledge*:
+> six more fields (Earth & environment, medicine, economics, social sciences, arts, humanities),
+> item kinds beyond theorems (concepts, phenomena, methods, paradoxes, inventions, events), and
+> the working name *Ideas, Visualized*. The §11 decisions have been made (see there).
 
 ## 0. The one-paragraph version
 
 Today the site covers one subfield, analysis: 1,062 results from Rudin's three books, each with
 an interactive picture, all wired into one dependency graph. The goal is the same treatment for
-**the load-bearing results of STEM**: mathematics, statistics, computer science, physics,
-chemistry, biology and engineering. That means **about 59 collections and about 10,000 results**,
-still **one graph**, so a reader can follow a single chain from the completeness of ℝ through
-the spectral theorem to the hydrogen spectrum, or from Fourier series to the sampling theorem to
-MRI. We get there in four steps. First, generalise the engine so that adding a field means adding
-a folder, with no code edits (Phase 0). Next, test the new schema on three pilots from three
-different fields (Phase 1). Then sketch the whole atlas as a graph of planned results before
+**the load-bearing ideas of human knowledge**. That means theorems and laws, but also models,
+mechanisms, phenomena, methods, paradoxes and inventions, across 13 fields: mathematics,
+statistics, computer science, physics, chemistry, Earth & environment, biology, medicine,
+engineering, economics, the social sciences, the arts, and the humanities. That comes to **85
+collections and roughly 12,500 ideas**, still in **one graph**. A reader can follow a single
+chain from the completeness of ℝ through the spectral theorem to the hydrogen spectrum, from
+Fourier series to the sampling theorem to MRI, from the harmonic series to equal temperament, or
+from simple machines to the printing press to the internet. We get there in four steps. First,
+generalise the engine so that adding a field means adding a folder, with no code edits (Phase 0).
+Next, test the new schema on five pilots from five different fields (Phase 1). Then sketch the whole atlas as a graph of planned results before
 writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first waves (Phases
 3–6). Alongside the waves, build the connective tissue that only an atlas can offer: cross-field
 *bridges*, prerequisite paths, a zoomable map, and proof steppers (Phase 7).
@@ -55,9 +63,9 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 
 ## 2. Vision and principles
 
-**Product.** *Theorems, Visualized*: an atlas of STEM's load-bearing results. Each result gets
-a faithful statement, an interactive picture you can push on, the idea behind it, and its place
-in a single cross-field dependency graph. The Rudin trilogy becomes the **Analysis** shelf of the
+**Product.** *Ideas, Visualized*: an atlas of the load-bearing ideas of human knowledge. Each
+idea gets a faithful statement, an interactive picture you can push on, the reason it is true or
+the way it works, and its place in a single cross-field dependency graph. The Rudin trilogy becomes the **Analysis** shelf of the
 Mathematics field and keeps its identity and URLs.
 
 Principles:
@@ -85,8 +93,10 @@ Principles:
 ## 3. Information architecture
 
 ```
-Field (7)          Mathematics · Statistics & Data Science · Computer Science · Physics & Astronomy
-                   · Chemistry · Biology · Engineering
+Field (13)         Mathematics · Statistics & Data Science · Computer Science · Physics & Astronomy
+                   · Chemistry & Materials · Earth & Environment · Biology · Medicine & Health
+                   · Engineering · Economics & Finance · Social & Behavioral Sciences
+                   · Arts, Music & Design · Humanities
   └ Area           e.g. Mathematics → Analysis · Algebra · Geometry & Topology · Probability
                    · Discrete · Logic · Applied & Computational
       └ Collection e.g. pma, rca, fa · ladr · mech · algo      (a "book" generalised)
@@ -149,7 +159,7 @@ Item schema changes (all optional except `kind`):
 
 | field | change |
 |---|---|
-| `kind` | add **Law, Principle, Postulate, Algorithm, Model** to Theorem/Lemma/Corollary/Proposition/Definition |
+| `kind` | add **Law, Principle, Postulate, Algorithm, Model, Concept, Phenomenon, Method, Paradox, Hypothesis, Invention, Event** to Theorem/Lemma/Corollary/Proposition/Definition |
 | `num` | allow three-level (`2.4.1`) and lettered appendices (`A.3`): `^([A-Z]\|\d{1,2})(\.\d{1,3}){1,2}[a-z]?$` |
 | `refs` | pointers into standard texts: `['Griffiths 4e §2.2.1', 'Feynman II-4']` |
 | `scope` | regime of validity for laws and models ("non-relativistic, point masses"), rendered as a box |
@@ -221,7 +231,7 @@ Estimates are planning numbers. Anchors marked † are open-access or freely ava
 makes numbering verifiable; licences get confirmed before we commit to an anchor. **B** = book-anchored, **C** = curated
 course with refs.
 
-### 5.1 Mathematics (22 collections, ≈ 4,640 items)
+### 5.1 Mathematics (21 collections, ≈ 4,560 items; `game` moved to economics)
 
 | id | collection | type · anchor / refs | est. | flagship visualizations | key cross-links |
 |---|---|---|---|---|---|
@@ -268,7 +278,7 @@ course with refs.
 | `pl` | Programming languages & types | C · Pierce *TAPL* | 100 | λ-reduction graphs; Church–Rosser diamonds; progress and preservation; Curry–Howard proof trees ↔ programs; Hindley–Milner unification | `logic`, `toc` |
 | `cg` | Geometry & graphics | C · de Berg et al., Pharr–Jakob–Humphreys† | 100 | de Casteljau/Bézier; Voronoi/Delaunay empty circles; convex hull algorithms; aliasing; Monte Carlo rendering equation; quaternion rotations | `algo`, `sig`, `ladr` |
 
-### 5.4 Physics & astronomy (11 collections, ≈ 1,660)
+### 5.4 Physics & astronomy (10 collections, ≈ 1,580; `geo` moved to Earth & environment)
 
 | id | collection | type · refs | est. | flagship visualizations | cross-links |
 |---|---|---|---|---|---|
@@ -313,7 +323,64 @@ course with refs.
 | `solid` | Solid mechanics & structures | C · Gere, Timoshenko | 120 | Mohr's circle as an eigenproblem; beam bending; Euler buckling; torsion; Castigliano; trusses by joints; Griffith fracture; FEM in one dimension | `ladr`, `pde`, `mech` |
 | `robot` | Robotics | C · Lynch–Park, *Modern Robotics*† | 80 | SE(3) transforms; forward and inverse kinematics; Jacobian singularities; manipulability ellipsoids (SVD); configuration space and RRT | `ladr`, `mfd`, `ctrl` |
 
-**Totals:** 59 collections (3 existing + 56 new) · ≈ 8,700 new items · **≈ 9,800 overall**.
+### 5.8 Earth & environment (4 collections, ≈ 360)
+
+| id | collection | refs | est. | flagship visualizations |
+|---|---|---|---|---|
+| `geol` | Geology & geophysics | Turcotte–Schubert; Stein–Wysession | 100 | plates rotating about Euler poles on a globe; isostasy; radiometric decay chains and isochrons; seismic rays bending through the layered Earth; Gutenberg–Richter statistics; magnetic stripes from reversals |
+| `geo` | Atmosphere & ocean dynamics (moved from physics) | Vallis; Pierrehumbert | 80 | Coriolis and inertial circles; geostrophic balance; the Ekman spiral; Rossby waves; Lorenz-63 |
+| `climate` | Climate science | Pierrehumbert; Archer; IPCC AR6 WG1 | 100 | energy-balance models with ice–albedo bistability (snowball Earth); the greenhouse layer model; forcing and feedback sliders; Milankovitch cycles; a carbon-cycle box model |
+| `geog` | Geography & cartography | Snyder (USGS); Haggett | 80 | map projections with Tissot ellipses (← Theorema Egregium: no flat map is perfect); great circles vs rhumb lines; central places as hexagons; gravity models; Zipf's law of cities |
+
+### 5.9 Medicine & health (4 collections, ≈ 360)
+
+| id | collection | refs | est. | flagship visualizations |
+|---|---|---|---|---|
+| `physio` | Human physiology | Guyton–Hall; Keener–Sneyd | 120 | pressure–volume loops of the heart (Frank–Starling); Poiseuille flow in vessels; the oxygen–hemoglobin curve and its shifts; the Windkessel model; Nernst/GHK membrane potentials; glucose–insulin feedback |
+| `pharm` | Pharmacology | Rowland–Tozer; Goodman & Gilman | 80 | one- and two-compartment kinetics; repeated dosing and accumulation to steady state; dose–response curves and the therapeutic window; receptor occupancy |
+| `epi` | Epidemiology & evidence | Rothman; Gordis | 100 | base rates and the positive predictive value of a test; ROC curves; confounding and Simpson's paradox; Kaplan–Meier curves; herd immunity threshold 1 − 1/R₀ |
+| `imaging` | Medical imaging | Prince–Links; Kak–Slaney | 60 | CT reconstruction: sinograms, back-projection and filtered back-projection (← Fourier slice theorem); MRI k-space; ultrasound Doppler |
+
+### 5.10 Economics & finance (5 collections, ≈ 550)
+
+| id | collection | refs | est. | flagship visualizations |
+|---|---|---|---|---|
+| `micro` | Microeconomics | Varian; Mankiw; CORE Econ | 160 | draggable supply and demand with taxes, price controls and shaded deadweight loss; indifference maps and pivoting budget lines; income and substitution effects; the Edgeworth box and the welfare theorems; Cournot/Bertrand; the market for lemons |
+| `macro` | Macroeconomics | Mankiw; Romer; CORE Econ | 120 | the Solow model converging to steady state; the Keynesian multiplier; IS–LM and AD–AS shifts; the Taylor rule; the quantity theory |
+| `fin` | Finance | Luenberger; Hull | 120 | compounding and present value; the efficient frontier and CAPM line; option payoffs and put–call parity; binomial trees converging to Black–Scholes (← heat equation); the Kelly criterion |
+| `behav` | Behavioral economics & decisions | Kahneman; Wilkinson–Klaes | 80 | the St Petersburg paradox; risk aversion as concavity (Jensen); prospect-theory value and weighting functions; Allais; hyperbolic vs exponential discounting |
+| `game` | Game theory & social choice (moved from math) | Osborne; Maschler–Solan–Zamir | 80 | as in §5.1 |
+
+### 5.11 Social & behavioral sciences (4 collections, ≈ 430)
+
+| id | collection | refs | est. | flagship visualizations |
+|---|---|---|---|---|
+| `psych` | Psychology & perception | Gescheider; Macmillan–Creelman; Goldstein | 150 | Weber–Fechner and Stevens laws you can test on yourself; signal detection (d′, criteria, ROC); Hick's and Fitts's laws with live timing; the Ebbinghaus forgetting curve and spacing; Rescorla–Wagner learning; illusions and lateral inhibition (Mach bands) |
+| `soc` | Networks & collective behavior | Easley–Kleinberg; Schelling; Newman | 100 | Schelling segregation from mild preferences; Granovetter thresholds and cascades; small worlds (Watts–Strogatz); preferential attachment and power laws; the Bass diffusion model |
+| `polsci` | Political science & social choice | Taylor–Pacelli; Saari | 100 | one electorate, five voting methods, five winners; Condorcet cycles; Arrow; the median voter; apportionment paradoxes; gerrymandering and the efficiency gap; Banzhaf power |
+| `demo` | Demography | Preston–Heuveline–Guillot; Keyfitz–Caswell | 80 | life tables and life expectancy; population pyramids and momentum; stable populations (← Perron–Frobenius); the demographic transition |
+
+### 5.12 Arts, music & design (3 collections, ≈ 350)
+
+| id | collection | refs | est. | flagship visualizations |
+|---|---|---|---|---|
+| `music` | Music theory & acoustics | Benson; Tymoczko; Sethares; Loy | 150 | standing waves and the harmonic series, with sound; beats and roughness; dissonance curves that change with timbre; Pythagorean and syntonic commas; 12-EDO from continued fractions of log₂(3/2); the pitch-class clock and maximal evenness; the Tonnetz; Euclidean rhythms |
+| `art` | Visual art & colour | Kemp; Livingstone; Fairchild; Conway et al. | 120 | linear perspective with draggable vanishing points; anamorphosis; additive vs subtractive colour; CIE chromaticity; simultaneous contrast; the 17 wallpaper groups; halftoning and dithering |
+| `arch` | Architecture & structural form | Allen–Zalewski; Heyman | 80 | the hanging chain inverted into an arch (Hooke, Gaudí); thrust lines in masonry; domes; trusses; Sabine reverberation |
+
+### 5.13 Humanities (4 collections, ≈ 470)
+
+| id | collection | refs | est. | flagship visualizations |
+|---|---|---|---|---|
+| `ling` | Linguistics | Fromkin et al.; Ladefoged; Jurafsky–Martin | 120 | the vowel space from formants; Zipf's and Heaps' laws on real text; syntax trees and recursion; Grimm's law as sound change; language family trees (← phylogenetics) |
+| `phil` | Philosophy & reasoning | Sainsbury; Resnik; SEP | 120 | Zeno's paradoxes and convergent series (← PMA 3); the sorites and fuzzy boundaries; Newcomb and the two envelopes; Bayesian confirmation and the raven paradox; Sleeping Beauty; the veil of ignorance as maximin |
+| `tech` | History of technology | Cardwell; Usher; Mokyr | 150 | **the tech tree as a dependency graph**: simple machines → water wheel → clockwork escapement → printing press → steam engine (Watt's governor) → telegraph → radio → transistor → laser → GPS (trilateration) → internet (packet routing); each invention shown working, with deps into the physics that explains it |
+| `bighist` | Big history & quantitative history | Christian; Clark; Turchin–Nefedov | 80 | deep time on a log axis; farming spreading as a wave of advance (← Fisher–KPP); the Malthusian trap and the escape from it; plague as SIR; secular cycles |
+
+Also added: `mat` Materials science (chemistry, ≈ 100), `ecol` Ecology (biology, ≈ 100),
+`aero` Aerospace engineering and `energy` Energy systems (engineering, ≈ 80 each).
+
+**Totals:** 85 collections (3 existing + 82 new) across 13 fields · ≈ 11,400 new items · **≈ 12,500 overall**.
 
 ---
 
@@ -431,12 +498,12 @@ collections that depend on them.
 | phase | contents | new items | exit criterion |
 |---|---|---|---|
 | **0 · Engine** | registry, schema v2, catalog split, routes, field pages, colours, map v2 groundwork, core runtime additions, CI and smoke tests | 0 | dummy collection appears with zero code edits; Rudin unchanged |
-| **1 · Pilots** | `ladr` (math, book-anchored), `mech` (physics, curated), `algo` (CS, curated) + kits `graph`, `steps`, `table`, `sim`, `units` + the first three field guides | ≈ 820 | schema and kit APIs frozen; pilot retrospective folded into AUTHORING |
-| **2 · Skeleton** | syllabi for all 53 remaining collections (≈ 7,900 planned entries with deps); ghost nodes on the map; `#/status`; map v2 at full scale | (planned) | every planned id exists; the planned graph is acyclic; you have reviewed each field's syllabus |
-| **3 · Wave A**: every field gets a shelf | `vcalc`, `ode`, `prob`, `em`, `qm`, `thermo`, `toc`, `info`, `stat`, `sig`, `mathbio`, `pchem` + kits `grid`, `fields`, `freq`, `automata` | ≈ 2,430 | all 7 fields live; first bridges (Fourier, Spectral, Entropy, Diffusion) |
-| **4 · Wave B**: core curriculum | `alg`, `graph`, `nla`, `num`, `opt`, `stoch`, `waves`, `ml`, `ctrl`, `kin`, `popgen`, `qchem`, `circ` + kits `circuit`, `mol`, `nt` | ≈ 2,030 | prerequisite planner; bridges (Fixed points, Duality, Stability) |
-| **5 · Wave C**: depth | `top`, `dg`, `mfd`, `pde`, `nt`, `comb`, `logic`, `rep`, `game`, `rel`, `fluid`, `crypto`, `cplx`, `solid` | ≈ 2,180 | proof steppers for the first 50 flagships; bridges (Least action, Harmonic, Symmetry) |
-| **6 · Wave D**: frontiers & crossovers | `astro`, `cm`, `qinfo`, `geo`, `deep`, `causal`, `dist`, `pl`, `cg`, `neuro`, `bioinf`, `sysbio`, `xtal`, `robot` + kits `quantum`, `lattice` | ≈ 1,260 | ≈ 9,800 items; 15+ bridges; 100 proof steppers |
+| **1 · Pilots** | `ladr` (math, book-anchored), `mech` (physics), `algo` (CS), `micro` (economics), `music` (arts) + kits `graph`, `steps`, `table`, audio, numerics + the first field guides | ≈ 1,100 | schema and kit APIs frozen; pilot retrospective folded into AUTHORING |
+| **2 · Skeleton** | syllabi for all 80 remaining collections (≈ 10,000 planned entries with deps); ghost nodes on the map; `#/status`; map v2 at full scale | (planned) | every planned id exists; the planned graph is acyclic; each field's syllabus reviewed |
+| **3 · Wave A**: every field gets a shelf | `vcalc`, `ode`, `prob`, `em`, `qm`, `thermo`, `toc`, `info`, `stat`, `sig`, `mathbio`, `pchem`, `climate`, `epi`, `macro`, `psych`, `art`, `tech` + kits `grid`, `fields`, `freq`, `automata` | ≈ 3,000 | all 13 fields live; first bridges (Fourier, Spectral, Entropy, Diffusion) |
+| **4 · Wave B**: core curriculum | `alg`, `graph`, `nla`, `num`, `opt`, `stoch`, `waves`, `ml`, `ctrl`, `kin`, `popgen`, `qchem`, `circ`, `fin`, `behav`, `physio`, `pharm`, `soc`, `polsci`, `ling`, `phil` + kits `circuit`, `mol`, `nt` | ≈ 2,900 | prerequisite planner; bridges (Fixed points, Duality, Stability) |
+| **5 · Wave C**: depth | `top`, `dg`, `mfd`, `pde`, `nt`, `comb`, `logic`, `rep`, `game`, `rel`, `fluid`, `crypto`, `cplx`, `solid`, `geol`, `geog`, `ecol`, `demo`, `arch`, `bighist` | ≈ 2,800 | proof steppers for the first 50 flagships; bridges (Least action, Harmonic, Symmetry) |
+| **6 · Wave D**: frontiers & crossovers | `astro`, `cm`, `qinfo`, `geo`, `deep`, `causal`, `dist`, `pl`, `cg`, `neuro`, `bioinf`, `sysbio`, `xtal`, `robot`, `mat`, `aero`, `energy`, `imaging` + kits `quantum`, `lattice` | ≈ 1,700 | ≈ 12,500 items; 15+ bridges; 100 proof steppers |
 | **7 · Connective tissue** | runs alongside 3–6 (§8) | — | — |
 
 **Effort, roughly.** The trilogy, about 1,000 items, took around three days of agent-driven
@@ -461,21 +528,17 @@ are worth doing carefully, because every later item inherits their decisions.
 
 ---
 
-## 11. Decisions needed from you (defaults in bold)
+## 11. Decisions (taken)
 
-1. **Name**: **"Theorems, Visualized"** (matches the repo; the Rudin trilogy stays a named
-   shelf), or something else.
-2. **Anchor policy**: **open-access anchors where a canonical theorem-numbered free text
-   exists (`ladr`, `alg`, `prob`, `graph`, `ode`, `ml`); curated syllabi with refs elsewhere.**
-   The alternative is to follow canonical closed texts (Munkres, Griffiths, CLRS, Sipser) for
-   "use it alongside your course" value, at the cost of Rudin-style numbering verification.
-3. **Order**: **breadth-first waves (every field visible after Wave A)**, or math-first depth.
-4. **Planned items in public**: **visible as ghost nodes on the map and on `#/status` only**,
-   or hidden until written.
-5. **Git flow**: **a branch and PR per collection with CI**, or keep committing to `main`.
-6. **Scope edges**: include `game` (game theory), `geo` (earth and climate) and `robot`? Add
-   anything missing (economics/finance, materials science, medicine/epidemiology as its own
-   field)?
-
-**Next step once you approve:** Phase 0. It is pure refactoring with Rudin as the regression
-suite, and it ends with "add a folder, get a field".
+1. **Name:** *Ideas, Visualized*. "Theorems" was too narrow once the scope became the breadth of
+   human knowledge; the Rudin trilogy stays a named shelf with its original URLs.
+2. **Anchor policy:** open-access book anchors where a canonical numbered free text exists
+   (`ladr`, `alg`, `prob`, `graph`, `ml`); curated syllabi with refs everywhere else.
+3. **Order:** breadth-first. Five pilots in five fields, then Wave A gives every one of the 13
+   fields a shelf.
+4. **Planned items:** visible as faded ghost nodes on the map, on chapter pages ("On the
+   syllabus") and on `#/status`; each has its own page showing its place in the graph.
+5. **Git flow:** work on a feature branch (`claude/stem-atlas`) with CI checks; merge to `main`
+   (which deploys) once a phase is green.
+6. **Scope:** all of §5, including game theory, earth and climate, robotics, and the six non-STEM
+   fields (§5.8–5.13).
