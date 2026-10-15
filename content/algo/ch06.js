@@ -21,6 +21,11 @@ function coin(v, s, x, y, o = {}) {
   }
   c.restore();
 }
+/** Set a chart's window with room for tick labels: l px on the left, b px at the bottom, r px right, t px on top. */
+function pv(s, [x0, x1], [y0, y1], { l = 32, b = 20, r = 8, t = 0 } = {}) {
+  const kx = (x1 - x0) / Math.max(40, s.width - l - r), ky = (y1 - y0) / Math.max(40, s.height - b - t);
+  s.setView([x0 - l * kx, x1 + r * kx], [y0 - b * ky, y1 + t * ky]);
+}
 /** Step-shaped polyline through the values ys[0..] centred at x = x0, x0 + 1, … */
 function stepPts(ys, x0 = 1) {
   const pts = [];
@@ -291,7 +296,7 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
           const N = ops.length; let tot = 0, maxC = 0, worstAvg = 0; const avg = [];
           ops.forEach((o, i) => { tot += o.cost; maxC = Math.max(maxC, o.cost); avg.push([i + 1, tot / (i + 1)]); worstAvg = Math.max(worstAvg, tot / (i + 1)); });
           const broken = worstAvg > bound + 1e-9, X1 = Math.max(30, N) + 0.7, Y1 = Math.max(maxC, bound * 1.6) * 1.14;
-          B.setView([0.3, X1], [0, Y1]);
+          pv(B, [0.3, X1], [0, Y1]);
           const bw = Math.min(0.74, 0.74 * 60 / Math.max(N, 60));
           ops.forEach((o, i) => B.rect(i + 1 - bw / 2, 0, i + 1 + bw / 2, o.cost, { fill: o.cost > bound ? 'orange' : 'accent', fillAlpha: 0.55, stroke: false }));
           B.hline(bound, { color: broken ? 'red' : 'green', dash: [8, 5], width: 2 });
@@ -329,7 +334,7 @@ where $s_2(n)$ is the number of 1s in the binary expansion of $n$. Each incremen
         const by = v.select('add the flips up by', [{ value: 'col', label: 'increment (column)' }, { value: 'row', label: 'bit (row)' }], 'row');
         const K = 7, ROWC = ['blue', 'teal', 'green', 'gold', 'orange', 'red', 'purple'];
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true, hover: true });
-        const B = v.stage({ x: [0, 64], y: [0, 130], axes: 'box', height: 200, full: true, xlabel: 'increments so far, j', title: 'total number of flips after j increments' });
+        const B = v.stage({ x: [0, 64], y: [0, 130], axes: 'box', height: 200, full: true, title: 'total number of flips after $j$ increments' });
         const flips = (j, i) => j % (1 << i) === 0;           // bit i flips at increment j ≥ 1
         const cost = (j) => { let c = 0; for (let i = 0; i < K; i++) if (flips(j, i)) c++; return c; };
         const pop = (n) => n.toString(2).split('').filter((c) => c === '1').length;
@@ -378,7 +383,7 @@ where $s_2(n)$ is the number of 1s in the binary expansion of $n$. Each incremen
           }
           // running totals
           const cum = [0]; for (let j = 1; j <= n; j++) cum.push(cum[j - 1] + cost(j));
-          B.setView([0, n + 0.5], [0, row ? Math.max(2.2 * n, 4) : K * n * 1.04]);
+          pv(B, [0, n + 0.5], [0, row ? Math.max(2.2 * n, 4) : K * n * 1.04]);
           if (row) {
             let base = cum.map(() => 0);
             for (let i = 0; i < K; i++) {
@@ -393,9 +398,9 @@ where $s_2(n)$ is the number of 1s in the binary expansion of $n$. Each incremen
           if (!row) B.text(`${K}j  (k flips per increment)`, n * 0.62, K * n * 0.62, { align: 'right', dx: -8, size: 11.5, weight: 700, color: 'red' });
           if (hov.c > 0) B.vline(hov.c, { color: 'gold', width: 1.2, dash: [3, 3] });
         });
-        v.legend([['accent', 'bit is 1', { area: true }], ['gold', 'flipped (cost 1)', { dot: true }], ['ink', 'total flips'], ['green', '2j', { dash: true }]]);
         v.readout(() => {
           const n = nS.value, row = by.value === 'row';
+          v.legend([['accent', 'bit is 1', { area: true }], [row ? 'teal' : 'gold', row ? 'flip, coloured by bit' : 'flip (cost 1)', { dot: true }], ['ink', 'total flips'], ['green', '2j', { dash: true }], ...(row ? [] : [['red', 'kj', { dash: true }]])]);
           const terms = []; for (let i = 0; 2 ** i <= n; i++) terms.push(Math.floor(n / 2 ** i));
           const T = terms.reduce((a, b) => a + b, 0);
           const hc = hov.c > 0 ? ` · increment ${hov.c}: ${(hov.c - 1).toString(2)} → ${hov.c.toString(2)} flips **${cost(hov.c)}** bits` : hov.r >= 0 && row ? ` · bit ${hov.r} flips every $2^{${hov.r}} = ${2 ** hov.r}$ increments` : '';
@@ -457,6 +462,7 @@ where $s_2(n)$ is the number of 1s in the binary expansion of $n$. Each incremen
           R = sim();
           const { S, surplus, debt, H } = R, last = H[H.length - 1] || {}, c = ch.value;
           // ---- the stack with its coins
+          A.setView([-0.7, 6.6], [-1.1, Math.max(6, S.length + (last.popped || []).length) + 0.4]);
           A.line(-0.2, 0, 2.4, 0, { color: 'muted', width: 2 });
           S.forEach((e, i) => {
             const hot = i === S.length - 1 && last.name === 'push';
@@ -481,7 +487,7 @@ where $s_2(n)$ is the number of 1s in the binary expansion of $n$. Each incremen
           // ---- ledger
           const N = H.length, maxC = Math.max(1, ...H.map((h) => h.cost)), bals = H.map((h) => h.bal);
           const lo = Math.min(0, ...bals), hi = Math.max(maxC, ...bals, 3), X1 = Math.max(24, N) + 0.7;
-          B.setView([0.3, X1], [lo - 1, hi + 1.2]);
+          pv(B, [0.3, X1], [lo - 0.6, hi + 1.2]);
           H.forEach((h, i) => B.rect(i + 0.5, 0, i + 1.5, h.bal, { fill: h.bal < 0 ? 'red' : 'green', fillAlpha: 0.13, stroke: false }));
           H.forEach((h, i) => { if (h.cost) B.rect(i + 1 - 0.22, 0, i + 1 + 0.22, h.cost, { fill: 'orange', fillAlpha: 0.75, stroke: false }); });
           H.forEach((h, i) => B.line(i + 0.5, h.bal, i + 1.5, h.bal, { color: h.bal < 0 ? 'red' : 'green', width: 2.6 }));
@@ -550,7 +556,7 @@ The sum telescopes: $\sum_{i\le n}\hat c_i=\sum_{i\le n}c_i+\Phi(D_n)-\Phi(D_0)\
           const rows = ops.map((o, i) => { const d = phis[i + 1] - phis[i]; return { c: o.cost, d, a: o.cost + d }; });
           const N = rows.length, X1 = Math.max(24, N) + 0.7;
           const lo = Math.min(0, ...rows.map((r) => r.a)), hi = Math.max(3, ...rows.map((r) => Math.max(r.c, r.a)));
-          A.setView([0.3, X1], [lo - 0.5, hi + 0.9]);
+          pv(A, [0.3, X1], [lo - 0.3, hi + 0.9]);
           const w = Math.min(0.66, 0.66 * 50 / Math.max(N, 50));
           rows.forEach(({ c, d, a }, k) => {
             const i = k + 1, x0 = i - w / 2, x1 = i + w / 2;
@@ -560,20 +566,20 @@ The sum telescopes: $\sum_{i\le n}\hat c_i=\sum_{i\le n}c_i+\Phi(D_n)-\Phi(D_0)\
             } else {
               const lo2 = Math.max(a, 0);
               if (lo2 > 0) A.rect(x0, 0, x1, lo2, { fill: 'orange', fillAlpha: 0.62, stroke: false });
-              if (c > lo2) A.rect(x0, lo2, x1, c, { fill: 'green', fillAlpha: 0.06, color: 'green', width: 1.1, hatch: 'green', hatchGap: 5 });
+              if (c > lo2) { A.rect(x0, lo2, x1, c, { fill: 'green', fillAlpha: 0.08, stroke: false, hatch: 'green', hatchGap: 5 }); A.rect(x0, lo2, x1, c, { color: 'green', width: 1.1 }); }
               if (a < 0) A.rect(x0, a, x1, 0, { fill: 'red', fillAlpha: 0.35, stroke: false });
             }
             A.line(x0 - 0.1, a, x1 + 0.1, a, { color: 'ink', width: 2.6 });
           });
           A.hline(0, { color: 'muted', width: 1 });
-          if (bound != null) { A.hline(bound, { color: 'green', dash: [8, 5], width: 1.8 }); A.text(`$\\hat c \\le ${bound}$`, X1 - 0.3, bound, { align: 'right', baseline: 'bottom', dy: -3, size: 12, weight: 700, color: 'green' }); }
+          if (bound != null) { A.hline(bound, { color: 'green', dash: [8, 5], width: 1.8 }); A.text(`ĉ ≤ ${bound}`, X1 - 0.3, bound, { align: 'right', baseline: 'bottom', dy: -3, size: 12, weight: 700, color: 'green' }); }
           // the battery
           const p0 = phis[0], pmin = Math.min(...phis), pmax = Math.max(...phis);
-          B.setView([0.3, X1], [Math.min(0, pmin) - 0.5, Math.max(pmax, 1) * 1.15 + 0.5]);
+          pv(B, [0.3, X1], [Math.min(0, pmin) - 0.3, Math.max(pmax, 1) * 1.15 + 0.5]);
           phis.slice(1).forEach((p, k) => B.rect(k + 0.5, p0, k + 1.5, p, { fill: p < p0 ? 'red' : 'blue', fillAlpha: p < p0 ? 0.3 : 0.2, stroke: false }));
           B.path(stepPts(phis.slice(1)), { color: 'blue', width: 2 });
           B.hline(p0, { color: 'muted', width: 1.2, dash: [4, 3] });
-          B.text('Φ(D₀)', 0.5, p0, { baseline: 'bottom', dy: -2, size: 11, color: 'muted', weight: 600 });
+          B.text('Φ(D₀)', X1, p0, { align: 'right', baseline: 'bottom', dy: -2, dx: -4, size: 11, color: 'muted', weight: 600 });
           const lastS = ops[N - 1] && ops[N - 1].state;
           if (lastS) B.corner(isC() ? `counter = ${lastS.bits.slice().reverse().join('')}` : `stack size ${lastS.size}`, 'tl', { size: 12, weight: 600 });
           info = { rows, phis, bound, key };
@@ -584,7 +590,7 @@ The sum telescopes: $\sum_{i\le n}\hat c_i=\sum_{i\le n}c_i+\Phi(D_n)-\Phi(D_0)\
           const L = rows[N - 1], maxA = Math.max(...rows.map((r) => r.a)), sumA = rows.reduce((s, r) => s + r.a, 0), sumC = rows.reduce((s, r) => s + r.c, 0);
           const dP = phis[N] - phis[0], below = phis.some((p) => p < phis[0]);
           const head = `last operation: $c = ${L.c}$, $\\Delta\\Phi = ${sgn(L.d)}$, $\\hat c = ${r2(L.a)}$ · $\\sum c_i = \\sum\\hat c_i - (\\Phi_n - \\Phi_0) = ${r2(sumA)} - ${r2(dP)} = ${sumC}$`;
-          if (bound != null) return `${head} · every $\\hat c_i \\le ${r2(maxA)} \\le ${bound}$ ✓ and $\\Phi \\ge \\Phi_0$ ✓, so any $n$ operations cost at most ${bound}n`;
+          if (bound != null) return `${head} · every $\\hat c_i \\le ${bound}$ ✓ (largest ${r2(maxA)}) and $\\Phi \\ge \\Phi_0$ ✓, so any $n$ operations cost at most ${bound}n`;
           if (key === 'zero') return `${head} · with $\\Phi = 0$ the amortized cost is just the actual cost (max ${maxA}): nothing is saved for the expensive operations`;
           return `${head} · ✗ this potential ${below ? 'drops below $\\Phi_0$, so $\\sum\\hat c_i$ is not an upper bound, and ' : ''}gives amortized costs up to ${r2(maxA)} — they are not flat`;
         });
@@ -605,10 +611,10 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
       tags: ['amortized', 'arrays'],
       viz(v) {
         const g = v.select('grow by', [{ value: 'x2', label: '×2' }, { value: 'x15', label: '×1.5' }, { value: 'add', label: '+4' }], 'x2');
-        const nS = v.slider('appends $n$', 1, 96, 32, { int: true });
-        v.button('Append', () => nS.set(Math.min(96, nS.value + 1)));
-        const A = v.stage({ x: [-0.6, 32.6], y: [-6, 1.2], axes: false, equal: true, height: 190, full: true });
-        const B = v.stage({ x: [0.3, 96.7], y: [0, 70], axes: 'box', height: 230, full: true, xlabel: 'append number i' });
+        const nS = v.slider('appends $n$', 1, 64, 32, { int: true });
+        v.button('Append', () => nS.set(Math.min(64, nS.value + 1)));
+        const A = v.stage({ x: [-0.6, 32.6], y: [-3.9, 1.2], axes: false, equal: true, height: 132, full: true });
+        const B = v.stage({ x: [0.3, 64.7], y: [0, 70], axes: 'box', height: 230, full: true, title: 'cost of append number $i$' });
         const ROW = 32, CH = { x2: 3, x15: 4, add: 3 }, PER = { x2: 2, x15: 3 };
         const grow = (c) => (g.value === 'x2' ? Math.max(1, 2 * c) : g.value === 'x15' ? Math.max(1, Math.ceil(1.5 * c)) : c + 4);
         const phiOf = (n, cap) => (g.value === 'x2' ? 2 * n - cap : g.value === 'x15' ? 3 * n - 2 * cap : null);
@@ -627,7 +633,7 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
           H = run(N); const last = H[N - 1], cap = last.cap, rows = Math.ceil(cap / ROW);
           // ---- the array, 32 cells per row
           const cell = (idx) => { const c = idx % ROW, r = Math.floor(idx / ROW); return [c, -r * 1.25]; };
-          A.setView([-0.6, ROW + 0.6], [-Math.max(rows, 4) * 1.25 - 0.1, 1.15]);
+          A.setView([-0.6, ROW + 0.6], [-Math.max(rows, 3) * 1.25 - 0.1, 1.15]);
           const coinsOn = (idx) => {
             if (!mult || idx >= N) return 0;
             const iApp = idx + 1;                     // element idx was appended by operation idx + 1
@@ -639,7 +645,7 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
             const [x, y] = cell(idx), used = idx < N, isNew = idx === N - 1, cop = idx < last.copy;
             A.rect(x + 0.06, y - 0.94, x + 0.94, y - 0.06, used ? { fill: isNew ? 'gold' : 'accent', fillAlpha: isNew ? 0.35 : 0.22, color: cop ? 'orange' : isNew ? 'gold' : 'muted', width: cop || isNew ? 2.2 : 1, radius: 2 } : { color: 'faint', width: 1, dash: [3, 3], radius: 2 });
             const k = coinsOn(idx);
-            for (let q = 0; q < k; q++) coin(v, A, x + 0.5, y - 0.5, { r: 4.6, dx: (q - (k - 1) / 2) * 7 });
+            for (let q = 0; q < k; q++) coin(v, A, x + 0.5, y - 0.5, k < 3 ? { r: 4.4, dx: (q - (k - 1) / 2) * 9.4 } : { r: 4.2, dx: q < 2 ? (q - 0.5) * 9 : 0, dy: q < 2 ? 3.6 : -4.6 });
           }
           let msg;
           if (last.copy) msg = mult ? `append ${N}: the array was full, so it moved to a block of ${cap} — copying ${last.copy} elements, paid by the ${last.copy} coins that were waiting` : `append ${N}: copy ${last.copy} elements into a block of ${cap} — nothing was saved to pay for it`;
@@ -650,7 +656,7 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
           const maxC = Math.max(...H.map((h) => h.cost)), X1 = Math.max(32, N) + 0.7;
           const bank = H.map((h) => 3 * h.i - h.tot);
           const lo = mult ? 0 : Math.min(0, ...bank) * 1.06, hi = Math.max(maxC, mult ? Math.max(...H.map((h) => h.phi)) : 0, 6) * 1.1;
-          B.setView([0.3, X1], [lo, hi]);
+          pv(B, [0.3, X1], [lo, hi]);
           const bw = Math.min(0.72, 0.72 * 40 / Math.max(N, 40));
           H.forEach((h) => B.rect(h.i - bw / 2, 0, h.i + bw / 2, h.cost, { fill: h.copy ? 'orange' : 'accent', fillAlpha: 0.6, stroke: false }));
           if (mult) {
@@ -658,7 +664,7 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
             const am = H.map((h, k) => h.cost + h.phi - (k ? H[k - 1].phi : 0));
             B.hline(CH[g.value], { color: 'green', dash: [8, 5], width: 1.6 });
             B.dots(am.map((a, k) => [k + 1, a]), { r: 2.8, color: 'green' });
-            B.text(`$c_i + \\Delta\\Phi_i \\le ${CH[g.value]}$`, X1 - 0.5, CH[g.value], { align: 'right', baseline: 'bottom', dy: -4, size: 12, color: 'green' });
+            B.text(`cᵢ + ΔΦᵢ ≤ ${CH[g.value]}`, X1 - 0.5, CH[g.value], { align: 'right', baseline: 'bottom', dy: -4, size: 12, weight: 700, color: 'green' });
           } else {
             B.path(stepPts(bank), { color: 'red', width: 2 });
             B.path(H.map((h) => [h.i, h.tot / h.i]), { color: 'gold', width: 2.4 });
@@ -695,8 +701,8 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
         const kS = v.slider('first fill to $2^k$', 2, 5, 4, { int: true, onChange: () => rebuild() });
         const tS = v.slider('operations so far $t$', 1, T, T, { int: true });
         const A = v.stage({ x: [-0.5, 33], y: [-1.6, 3.4], axes: false, height: 160, full: true });
-        const B = v.stage({ x: [0, T], y: [0, 400], axes: 'box', height: 220, weight: 1.15, xlabel: 'operation t', title: 'total cost so far' });
-        const C = v.stage({ x: [0, T], y: [0, 1.1], axes: 'box', height: 220, weight: 0.85, xlabel: 'operation t', title: 'load factor $\\alpha = n / \\mathrm{cap}$', yticks: [[0.25, '¼'], [0.5, '½'], [1, '1']] });
+        const B = v.stage({ x: [0, T], y: [0, 400], axes: 'box', height: 220, weight: 1.15, title: 'total cost of the first $t$ operations' });
+        const C = v.stage({ x: [0, T], y: [0, 1.1], axes: 'box', height: 220, weight: 0.85, title: 'load factor $\\alpha = n / \\mathrm{cap}$ after operation $t$', yticks: [[0.25, '¼'], [0.5, '½'], [1, '1']] });
         const POL = [{ lim: 0.5, color: 'red', name: 'halve when α < ½' }, { lim: 0.25, color: 'green', name: 'halve when α < ¼' }];
         function workload() {
           const k = kS.value, n0 = 2 ** k, ops = Array(n0).fill('I'), r = v.rng(11 + k);
@@ -722,10 +728,12 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
         rebuild();
         v.render(() => {
           const t = tS.value, CW = Math.max(...runs.map((R) => Math.max(...R.H.map((h) => h.cap))));
-          A.setView([-0.5, CW + 0.5 + 9.5 * CW / 64], [-1.6, 3.4]);
+          A.setView([-0.5, CW + 0.5], [-0.75, 3.2]);
           POL.forEach((p, k) => {
             const h = runs[k].H[t - 1], y = k === 0 ? 1.85 : -0.15;
+            const op = h.o === 'I' ? 'insert' : 'delete';
             A.text(p.name, -0.4, y + 1.05, { size: 12, weight: 700, color: p.color });
+            A.text(`n = ${h.n}, cap = ${h.cap}, α = ${r2(h.n / h.cap)} · last operation: ${op}` + (h.copy ? `, copied ${h.copy}` : ''), CW + 0.5, y + 1.05, { align: 'right', size: 11.5, weight: 600, color: h.copy ? 'orange' : 'muted' });
             for (let j = 0; j < h.cap; j++) {
               const used = j < h.n, cop = j < h.copy;
               A.rect(j + 0.08, y, j + 0.92, y + 0.72, used ? { fill: p.color, fillAlpha: 0.3, color: cop ? 'orange' : 'muted', width: cop ? 2.2 : 0.8 } : { color: 'faint', width: 0.8, dash: [2, 2] });
@@ -735,15 +743,13 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
               A.line(xq, y - 0.05, xq, y - 0.3, { color: on ? p.color : 'faint', width: on ? 2.2 : 1.2 });
               A.text(lab, xq, y - 0.32, { align: 'center', baseline: 'top', size: 10.5, color: on ? p.color : 'faint', weight: 700 });
             }
-            const op = h.o === 'I' ? 'insert' : 'delete';
-            A.text(`n = ${h.n}, cap = ${h.cap}, α = ${r2(h.n / h.cap)}` + (h.copy ? ` · ${op} copied ${h.copy}` : ` · ${op}`), h.cap + 0.6, y + 0.36, { size: 11.5, weight: 600, color: h.copy ? 'orange' : 'ink' });
           });
           // cumulative cost
           const top = Math.max(3 * T, ...runs.map((R) => R.H[T - 1].tot)) * 1.05;
-          B.setView([0, T + 1], [0, top]);
+          pv(B, [0, T + 1], [0, top], { l: 36 });
           B.fn((x) => 3 * x, { color: 'ink', dash: [7, 5], width: 1.5, domain: [0, T] });
           B.text('3t', T, 3 * T, { align: 'right', baseline: 'bottom', dy: -2, dx: -4, size: 12, weight: 700, color: 'muted' });
-          C.setView([0, T + 1], [0, 1.1]);
+          pv(C, [0, T + 1], [0, 1.1], { l: 22 });
           for (const q of [0.25, 0.5, 1]) C.hline(q, { color: 'faint', dash: [4, 4], width: 1 });
           POL.forEach((p, k) => {
             const H = runs[k].H, pts = [[0, 0], ...H.map((h, i) => [i + 1, h.tot])], al = [...H.map((h, i) => [i + 1, h.n / h.cap])];
@@ -756,7 +762,7 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
         v.legend([['red', 'halve when α < ½'], ['green', 'halve when α < ¼'], ['muted', '3t', { dash: true }], ['orange', 'cells copied by the last operation', { area: true }]]);
         v.readout(() => {
           const t = tS.value, [a, b] = runs.map((R) => R.H[t - 1]), rsA = runs[0].H.slice(0, t).filter((h) => h.rs).length, rsB = runs[1].H.slice(0, t).filter((h) => h.rs).length;
-          return `after $t = ${t}$ operations — ½ rule: cost **${a.tot}** (${r2(a.tot / t)} per operation, ${plural(rsA, 'resize')}) · ¼ rule: cost **${b.tot}** (${r2(b.tot / t)} per operation, ${plural(rsB, 'resize')}) ${b.tot <= 3 * t ? '≤' : '>'} 3t = ${3 * t} ${b.tot <= 3 * t ? '✓' : '✗'} · with $\\Phi = 2n - \\mathrm{cap}$ ($\\alpha \\ge \\frac12$) or $\\mathrm{cap}/2 - n$ ($\\alpha < \\frac12$), every ¼-rule operation has amortized cost ≤ ${r2(runs[1].maxAm)} ≤ 3 ✓, while the ½ rule reaches ${r2(runs[0].maxAm)}`;
+          return `after $t = ${t}$ operations — ½ rule: cost **${a.tot}** (${r2(a.tot / t)} per operation, ${plural(rsA, 'resize')}) · ¼ rule: cost **${b.tot}** (${r2(b.tot / t)} per operation, ${plural(rsB, 'resize')}) ${b.tot <= 3 * t ? '≤' : '>'} 3t = ${3 * t} ${b.tot <= 3 * t ? '✓' : '✗'} · with $\\Phi = 2n - \\mathrm{cap}$ ($\\alpha \\ge \\frac12$) or $\\mathrm{cap}/2 - n$ ($\\alpha < \\frac12$), every ¼-rule operation has amortized cost ≤ 3 ✓ (largest ${r2(runs[1].maxAm)}), while under the ½ rule the same potential allows ${r2(runs[0].maxAm)}`;
         });
       },
     },
@@ -781,7 +787,7 @@ Insertion and deletion are reduced to accesses (insert as in a BST and splay the
       viz(v) {
         const zz = v.toggle('zig-zig rule (off: plain move-to-root)', true, { onChange: () => restart() });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1.75, minWidth: 380 });
-        const D = v.stage({ x: [0.3, 8.7], y: [0, 9], axes: 'box', height: 350, weight: 0.75, minWidth: 220, title: 'depth of the old access path', ylabel: 'depth', xlabel: 'root → x' });
+        const D = v.stage({ x: [0.3, 8.7], y: [0, 9], axes: 'box', height: 350, weight: 0.75, minWidth: 220, title: 'depths on the old path, root → x' });
         const START = [50, 10, 40, 48, 42, 47, 46, 44, 60, 5, 30, 43, 45, 49, 41];
         const first = (zzOn) => splayFrames(bstFrom(START), 44, zzOn).F;
         const S = v.steps({ frames: first(true), code: SPLAY_CODE, codeTitle: 'splay', codePos: 'below', transition: 0.45, speed: 1.1, still: 'end' });
@@ -805,7 +811,7 @@ Insertion and deletion are reduced to accesses (insert as in a BST and splay the
             edgeColor: (a, b) => (f.showPath && pe.has(a + ',' + b) ? 'accent' : null), edgeWidth: (a, b) => (f.showPath && pe.has(a + ',' + b) ? 3.5 : null),
           });
           const n = path.length, dmax = Math.max(3, ...path.map((k) => f.d0.get(k)));
-          D.setView([0.3, Math.max(n, 4) + 0.7], [0, dmax + 1]);
+          pv(D, [0.3, Math.max(n, 4) + 0.7], [0, dmax + 0.6], { l: 22 });
           D.setTicks(path.map((k, i) => [i + 1, String(k)]), null);
           path.forEach((k, i) => {
             const d0 = f.d0.get(k), d = f.L.pos.get(k).d;
@@ -821,7 +827,8 @@ Insertion and deletion are reduced to accesses (insert as in a BST and splay the
           if (!path.length) return '';
           const mean = (g) => path.reduce((s, k) => s + g(k), 0) / path.length, b = mean((k) => f.d0.get(k)), a = mean((k) => L.pos.get(k).d);
           const worse = path.filter((k) => L.pos.get(k).d > f.d0.get(k) / 2 + 1 && k !== f.x).length;
-          return `access ${f.x}: depth ${f.d0.get(f.x)} → ${L.pos.get(f.x).d} after ${plural(f.rot, 'rotation')} · old path nodes: mean depth ${r2(b)} → **${r2(a)}** (×${r2(a / (b || 1))}) · ${worse ? `${plural(worse, 'node')} still deeper than half its old depth + 1` : 'every node at most half its old depth + 1 ✓'} · tree height ${L.h}`;
+          const verdict = !f.done ? 'splaying…' : worse ? `${plural(worse, 'node')} of the old path still deeper than half its old depth + 1` : 'every node of the old path is at most half its old depth + 1 ✓';
+          return `access ${f.x}: depth ${f.d0.get(f.x)} → ${L.pos.get(f.x).d} after ${plural(f.rot, 'rotation')} · old path nodes: mean depth ${r2(b)} → **${r2(a)}** (×${r2(a / (b || 1))}) · ${verdict} · tree height ${L.h}`;
         });
       },
     },
@@ -844,8 +851,8 @@ Consequently any $m$ accesses, starting from any tree on $n$ nodes, perform at m
         const shS = v.select('start', [{ value: 'path', label: 'a path' }, { value: 'bal', label: 'balanced' }], 'path');
         const nS = v.select('$n$', [{ value: 63, label: '63' }, { value: 255, label: '255' }, { value: 1023, label: '1023' }], 255);
         const zz = v.toggle('splay (off: plain move-to-root)', true);
-        const A = v.stage({ x: [0, 1000], y: [0, 1000], axes: 'box', height: 290, weight: 1.15, xlabel: 'access i', title: 'total rotations after i accesses' });
-        const B = v.stage({ x: [0, 1000], y: [0, 30], axes: 'box', height: 290, weight: 1, xlabel: 'access i', title: 'rotations per access: actual and amortized' });
+        const A = v.stage({ x: [0, 1000], y: [0, 1000], axes: 'box', height: 290, weight: 1.15, title: 'total rotations after $i$ accesses' });
+        const B = v.stage({ x: [0, 1000], y: [0, 30], axes: 'box', height: 290, weight: 1, title: 'access $i$: rotations and amortized cost' });
         let cache = null, ckey = '';
         function compute() {
           const n = nS.value, m = 4 * n, key = [seqS.value, shS.value, n, zz.value].join('|');
@@ -872,16 +879,18 @@ Consequently any $m$ accesses, starting from any tree on $n$ nodes, perform at m
         v.render(() => {
           const R = compute(), { n, m } = R, lin = (i) => i * (3 * LG(n) + 1) + n * LG(n);
           const top = Math.max(R.tot, lin(m)) * 1.05;
-          A.setView([0, m], [0, top]);
+          pv(A, [0, m], [0, top], { l: 44, r: 18 });
           A.fn(lin, { color: 'green', dash: [7, 5], width: 1.6, domain: [0, m] });
           A.path(R.bnd, { color: 'green', width: 2 });
           A.path(R.cum, { color: R.tot > R.bnd[m][1] ? 'red' : 'accent', width: 2.6 });
           A.text('i(3 log₂n + 1) + n log₂n', m, lin(m), { align: 'right', baseline: 'bottom', dy: -3, dx: -4, size: 11, weight: 700, color: 'green' });
           const lineY = 3 * LG(n) + 1, cap = lineY * 2.6;
-          B.setView([0, m], [Math.min(0, ...R.ams) - 1, cap]);
+          const low = -lineY * 0.6; pv(B, [0, m], [low, cap], { l: 40, r: 18, b: 22 });
           const w = Math.max(m / B.width, 0.6);
           R.rots.forEach((x, j) => { if (x) B.rect(j + 0.5 - w / 2, 0, j + 0.5 + w / 2, Math.min(x, cap), { fill: 'orange', fillAlpha: 0.45, stroke: false }); });
-          B.dots(R.ams.map((a, j) => [j + 0.5, a]), { r: 1.6, color: 'green' });
+          B.dots(R.ams.map((a, j) => [j + 0.5, Math.max(a, low)]), { r: 1.5, color: 'green' });
+          B.hline(0, { color: 'muted', width: 1 });
+          if (Math.min(...R.ams) < low) B.text(`amortized values below ${Math.round(low)} are drawn at the floor (lowest ${Math.round(Math.min(...R.ams))})`, 0, cap, { baseline: 'top', dy: 22, dx: 6, size: 11, color: 'green', weight: 600 });
           B.hline(lineY, { color: 'green', dash: [7, 5], width: 1.8 });
           B.text(`3 log₂ n + 1 = ${r2(lineY)}`, m, lineY, { align: 'right', baseline: 'bottom', dy: -3, dx: -4, size: 11.5, weight: 700, color: 'green' });
           if (Math.max(...R.rots) > cap) B.text(`orange bars clipped at ${Math.round(cap)} (largest: ${Math.max(...R.rots)})`, 0, cap, { baseline: 'top', dy: 4, dx: 6, size: 11, color: 'orange', weight: 600 });

@@ -217,7 +217,7 @@ relative to the Earth, clockwise seen from above in the northern hemisphere and 
         const rel = v.select('release', [{ value: 'rest', label: 'from rest at the edge' }, { value: 'push', label: 'pushed from the centre' }], 'rest');
         const sN = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 300, title: 'frame not turning about the vertical' });
         const sE = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 300, title: 'on the floor (Earth’s frame)' });
-        const sP = v.stage({ x: [-90, 90], y: [12, 3000], ylog: true, axes: 'box', height: 180, full: true, xlabel: 'latitude (°)', title: 'time for the swing plane to turn once (hours)', xticks: [-90, -60, -30, 0, 30, 60, 90] });
+        const sP = v.stage({ x: [-90, 90], y: [12, 3000], ylog: true, axes: 'box', height: 180, full: true, title: 'time for the swing plane to turn once (hours) against latitude (°)', xticks: [-90, -60, -30, 0, 30, 60, 90] });
         const T0 = TAU * Math.sqrt(67 / 9.81), NP = 40, PR = 0.97;
         const cache = memo();
         const run = () => cache([latS.value, fS.value, rel.value].join('|'), () => {
@@ -294,14 +294,15 @@ relative to the Earth, clockwise seen from above in the northern hemisphere and 
 $$T_{\rm i} = \frac{2\pi}{|f|} = \frac{\pi}{\Omega|\sin\lambda|},\qquad f = 2\Omega\sin\lambda,$$
 half a pendulum day: 16.9 h at $45°$ latitude. When a horizontal pressure gradient also acts, the velocity circles around the **geostrophic velocity** $\mathbf u_g = \frac{1}{\rho f}\hat{\mathbf z}\times\nabla p$, at which the Coriolis force balances the pressure force. That velocity runs along the isobars, with low pressure on the left in the northern hemisphere, so the flow goes anticlockwise around a low (a cyclone). Friction damps the inertial circling, and near the ground it turns the settled flow slightly across the isobars toward low pressure.`,
       idea: String.raw`With only the Coriolis force (9.8) the horizontal equations are $\dot u = fv$, $\dot v = -fu$, so the velocity vector rotates at the rate $f$ with constant length, and the path is a circle traversed in $2\pi/f$. A constant pressure-gradient force shifts the centre of that rotation from zero to $\mathbf u_g$, because subtracting $\mathbf u_g$ gives back the force-free equations. The parcel therefore drifts along the isobars while looping, and once friction has removed the loops it simply follows the isobars. Large-scale weather is close to this geostrophic balance, which is why winds blow around highs and lows rather than straight into them.`,
-      caption: String.raw`Drag the parcel’s start (gold) and the tip of its initial velocity (blue). Left: the path on the map (in km), with isobars (hPa) and, at the parcel, the Coriolis force (purple), the pressure-gradient force (blue) and friction (red), per unit mass. Right: the velocity itself, plotted as a point in the plane of $(u, v)$ in m/s. With no pressure gradient it runs round a circle centred on zero; with a gradient the circle is centred on the geostrophic velocity (green), and friction spirals it in. Try the southern hemisphere, or latitudes near the equator, where $f \to 0$ and the circles grow without bound.`,
+      caption: String.raw`Drag the parcel’s start (gold) and the tip of its initial velocity (blue). Left: the path on the map (in km), with isobars (hPa) and, at the parcel, the Coriolis force (purple), the pressure-gradient force (teal) and friction (red), per unit mass. Right: the velocity itself, plotted as a point in the plane of $(u, v)$ in m/s. With no pressure gradient it runs round a circle centred on zero; with a gradient the circle is centred on the geostrophic velocity (green), and friction spirals it in. Try the southern hemisphere, or latitudes near the equator, where $f \to 0$ and the circles grow without bound.`,
       deps: ['mech-9.8'],
       see: ['geo-2.2', 'geo-3.1', 'fluid-3.10'],
       refs: ['Taylor §9.7'],
       tags: ['Coriolis force', 'geostrophic balance', 'atmosphere'],
       scope: String.raw`Horizontal motion on an $f$-plane: a region small enough that $f$ is constant, with slow vertical motion. Near the equator, or for flows that change in less than an inertial period (small Rossby number fails), the balance does not hold.`,
       viz(v) {
-        const mode = v.select('pressure', [{ value: 'none', label: 'none' }, { value: 'uni', label: 'uniform gradient' }, { value: 'low', label: 'a low' }], 'none');
+        const START = { none: [-150, -60, 0, 36], uni: [-100, 250, 0, 0], low: [-320, 0, 0, 0] }; // km, km/h
+        const mode = v.select('pressure', [{ value: 'none', label: 'none' }, { value: 'uni', label: 'uniform gradient' }, { value: 'low', label: 'a low' }], 'none', { onChange: (k) => { const [x, y, u, w] = START[k]; P0.set(x, y); V0.set(x + KV * u, y + KV * w); } });
         const fric = v.toggle('surface friction', false);
         const latS = v.slider('latitude (°)', -80, 80, 45, { step: 0.5 });
         const S = v.stage({ x: [-600, 600], y: [-600, 600], equal: true, axes: 'box', height: 340, weight: 1.25, title: 'map: km east and north' });
@@ -340,7 +341,8 @@ half a pendulum day: 16.9 h at $45°$ latitude. When a horizontal pressure gradi
           // mean velocity over the last inertial period (drift)
           let mean = null;
           if (isFinite(Ti) && R.t[R.t.length - 1] > Ti) { const i0 = idxAt(R, R.t[R.t.length - 1] - Ti); let su = 0, sv = 0, n = 0; for (let i = i0; i < R.y.length; i++) { su += R.y[i][2]; sv += R.y[i][3]; n++; } mean = [su / n, sv / n]; }
-          return { m, f, r, Ti, T, R, tTurn, mean, U0: Math.hypot(y0[2], y0[3]) };
+          let Lz = 0; for (const q of R.y) Lz += q[0] * q[3] - q[1] * q[2];
+          return { m, f, r, Ti, T, R, tTurn, mean, U0: Math.hypot(y0[2], y0[3]), Lz };
         });
         let cur = null;
         v.animate((tA) => {
@@ -350,14 +352,14 @@ half a pendulum day: 16.9 h at $45°$ latitude. When a horizontal pressure gradi
             const lv = []; for (let p = 990; p <= 1040; p += 2) lv.push(p);
             S.contour((x, y) => press(m, x, y), lv, { color: 'muted', width: 1, labels: true, fmt: (p) => String(p), res: 80 });
             if (m === 'low') S.text('L', 0, 0, { color: 'red', size: 20, weight: 700, align: 'center' });
-            else { S.text('low', -560, 560, { color: 'red', size: 13, weight: 600 }); S.text('high', 560, 560, { color: 'blue', size: 13, weight: 600, align: 'right' }); }
+            else { S.text('high', -560, 560, { color: 'blue', size: 13, weight: 600 }); S.text('low', 560, 560, { color: 'red', size: 13, weight: 600, align: 'right' }); }
           }
           S.path(R.y.map((q) => [q[0], q[1]]), { color: 'accent', width: 1, alpha: 0.3 });
           S.path(R.y.slice(0, i + 1).map((q) => [q[0], q[1]]), { color: 'accent', width: 2.2 });
           S.arrow(P0.x, P0.y, V0.x, V0.y, { color: 'accent', width: 1.4, head: 7, alpha: 0.7 });
           const pg = pga(m, Y[0], Y[1]), co = [B.f * Y[3], -B.f * Y[2]], fr = [-B.r * Y[2], -B.r * Y[3]], KA = 7;
           farrow(S, Y[0], Y[1], co[0], co[1], KA, 'purple', null, { width: 2.4 });
-          farrow(S, Y[0], Y[1], pg[0], pg[1], KA, 'blue', null, { width: 2.4 });
+          farrow(S, Y[0], Y[1], pg[0], pg[1], KA, 'teal', null, { width: 2.4 });
           farrow(S, Y[0], Y[1], fr[0], fr[1], KA, 'red', null, { width: 2.4 });
           S.dot(Y[0], Y[1], { r: 6, color: 'gold' });
           S.corner(`t = ${v.fix(R.t[i], 1)} h`, 'tr');
@@ -375,7 +377,7 @@ half a pendulum day: 16.9 h at $45°$ latitude. When a horizontal pressure gradi
           Hd.dot(U[i][0], U[i][1], { r: 5, color: 'gold' });
           cur = { B, i, ug };
         }, { period: 13, still: 5.2 });
-        v.legend([['accent', 'path / velocity'], ['purple', 'Coriolis'], ['blue', 'pressure gradient'], ['red', 'friction'], ['green', 'geostrophic velocity', { dot: true }]]);
+        v.legend([['accent', 'path / velocity'], ['purple', 'Coriolis'], ['teal', 'pressure gradient'], ['red', 'friction'], ['green', 'geostrophic velocity', { dot: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const { B, ug } = cur, f = B.f, lat = latS.value;
@@ -384,7 +386,7 @@ half a pendulum day: 16.9 h at $45°$ latitude. When a horizontal pressure gradi
           if (B.m !== 'low' && isFinite(B.tTurn) && !B.r) out += String.raw` · measured: the velocity turns once in ${v.fix(B.tTurn, 2)} h`;
           if (B.m === 'none' && !B.r) out += String.raw` · circle radius $U/|f| = ${v.fix(B.U0 / Math.abs(f), 1)}$ km at $U = ${v.fix(B.U0 / 3.6, 2)}$ m/s`;
           if (B.m === 'uni' && B.mean) out += String.raw` · mean velocity over the last inertial period (${v.fix(B.mean[0] / 3.6, 2)}, ${v.fix(B.mean[1] / 3.6, 2)}) m/s vs geostrophic (${v.fix(ug[0], 2)}, ${v.fix(ug[1], 2)}) m/s: along the isobars`;
-          if (B.m === 'low') out += f > 0 ? ' · the parcel ends up circling the low anticlockwise: a cyclone' : ' · southern hemisphere: the low is circled clockwise';
+          if (B.m === 'low') out += (B.Lz > 0 ? ' · on average the parcel circles the low anticlockwise' : ' · on average the parcel circles the low clockwise') + ((B.Lz > 0) === (f > 0) ? ' (cyclonic, as the geostrophic flow does)' : ' (against the geostrophic flow: it started with the wrong velocity)');
           if (B.r && B.m !== 'none') out += ' · with friction the loops die out and the flow crosses the isobars slightly toward low pressure';
           return out;
         });
@@ -410,7 +412,9 @@ This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \ap
       viz(v) {
         let muS = null;
         const SYS = { sj: ['Sun–Jupiter', 9.537e-4], em: ['Earth–Moon', 0.01215], over: ['μ = 0.045 (past Routh)', 0.045] };
-        const sys = v.select('system', Object.entries(SYS).map(([value, [label]]) => ({ value, label })), 'sj', { onChange: (k) => muS.set(SYS[k][1]) });
+        const sys = v.select('system', Object.entries(SYS).map(([value, [label]]) => ({ value, label })), 'sj', {
+          onChange: (k) => { const mu = SYS[k][1]; muS.set(mu); if (k === 'sj') setStart(Math.cos(85 * DEG) - mu, Math.sin(85 * DEG)); else setStart(0.5 - mu + (k === 'em' ? 0.03 : 0.005), Math.sqrt(3) / 2); },
+        });
         muS = v.slider('mass ratio $\\mu$', 1e-4, 0.5, 9.537e-4, { log: true, sig: 4 });
         const view = v.select('left panel', [{ value: 'zoom', label: 'unrolled along the orbit' }, { value: 'whole', label: 'whole frame' }], 'zoom');
         const Sz = v.stage({ x: [-180, 180], y: [-0.08, 0.08], axes: 'box', height: 340, weight: 1.25, xticks: [-180, -120, -60, 0, 60, 120, 180], title: 'co-rotating frame, unrolled: angle from $m_2$ (°) against $r - 1$' });
@@ -554,7 +558,7 @@ half the cyclotron frequency. The neglected term is the centrifugal force $m\ome
         const sR = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 300, title: 'frame rotating at $\\omega_{\\rm L} = -qB/2m$' });
         const sG = v.stage({ x: [0.005, 1.5], y: [1e-6, 3], xlog: true, ylog: true, axes: 'box', height: 190, full: true, xlabel: 'ω_c = qB/m', title: 'largest gap between the orbit and the rotated field-free orbit, over four orbits' });
         const SET = {
-          coul: { acc: (x, y) => { const r = Math.hypot(x, y); return [-x / r ** 3, -y / r ** 3]; }, r0: [1, 0], v0: [0, 0.8] },
+          coul: { acc: (x, y) => { const r = Math.hypot(x, y); return [-x / r ** 3, -y / r ** 3]; }, r0: [1, 0], v0: [0, 0.65] },
           harm: { acc: (x, y) => [-x, -y], r0: [1, 0], v0: [0, 0.45] },
         };
         const period = (k) => { if (k === 'harm') return TAU; const r0 = SET.coul.r0, v0 = SET.coul.v0, E = 0.5 * (v0[0] ** 2 + v0[1] ** 2) - 1 / Math.hypot(...r0), a = -1 / (2 * E); return TAU * a ** 1.5; };

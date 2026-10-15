@@ -97,7 +97,7 @@ A **macrostate** is specified by a few macroscopic variables — volume $V$, pre
       statement: String.raw`If system A is in thermal equilibrium with system C, and B is in thermal equilibrium with C, then A and B are in thermal equilibrium with each other: when they are brought into contact through a diathermal wall, no heat flows and neither state changes.
 
 Equivalently, "being in thermal equilibrium with" is an equivalence relation on equilibrium states, and its classes can be labelled by a single number, the **empirical temperature** $\theta$: two systems are in equilibrium with each other exactly when $\theta_A = \theta_B$. Each class is a surface (for a simple fluid, a curve, the **isotherm**) in the space of state variables.`,
-      idea: String.raw`The law is the reason a thermometer works: C can be carried from A to B and its reading compared, without ever putting A and B together. Transitivity is an empirical fact about heat contact, not a logical necessity — it fails for, say, "being able to exchange particles without a membrane" in suitable setups — which is why it needed stating, and it was given its name ("zeroth") by Fowler only after the first and second laws were already numbered. For a dilute gas the label can be taken to be $\theta = PV/Nk$: two gas samples sharing a diathermal wall end with equal values of $PV/N$, whatever their pressures, volumes or molecules.`,
+      idea: String.raw`The law is the reason a thermometer works: C can be carried from A to B and its reading compared, without ever putting A and B together. Transitivity is an empirical fact about heat contact, not a logical necessity, which is why it needed stating; it was given its name ("zeroth") by Fowler only after the first and second laws were already numbered. For a dilute gas the label can be taken to be $\theta = PV/Nk$: two gas samples sharing a diathermal wall end with equal values of $PV/N$, whatever their pressures, volumes or molecules.`,
       caption: String.raw`A and B are samples of gas (0.40 mol of a diatomic and 0.25 mol of a monatomic gas); drag their states on the $P$–$V$ plane. The small thermometer C is a third, tiny gas sample. Let C touch A, then B: its column reads each body's temperature without disturbing it. Then let **A touch B**: the arrows show where the two states go at fixed volume and how much heat flows. Press *Put B on A's isotherm* — the pressures and volumes still differ, but C reads the same and the A–B contact moves nothing.`,
       deps: ['thermo-1.1'],
       refs: ['Kardar §1.2', 'Tong ch. 4'],
@@ -489,6 +489,7 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
       idea: String.raw`Combine kinetic theory, $PV = \tfrac23 N\langle \tfrac12mv^2\rangle$ (1.6), with the ideal gas law $PV = NkT$ (1.4): the two agree only if $\langle\tfrac12mv^2\rangle = \tfrac32kT$. That it holds for each species separately is the content of equilibrium: collisions between unequal molecules transfer energy, on average, from the one with more kinetic energy to the one with less, until the averages agree — whereupon thermal contact with any other gas exchanges no net energy either, which is the zeroth law at the molecular level. So temperature, defined operationally by thermometers, measures the average energy of random molecular motion.`,
       caption: String.raw`A light and a heavy kind of molecule share the cylinder, the light ones starting hot and the heavy ones cold. Watch their mean kinetic energies (middle) meet at the common value $\tfrac32kT$ set by the total energy, while the speed distributions (right) stay different: the heavy molecules are slower by $\sqrt{m_2/m_1}$. Make the end wall a **heat bath** and both kinds settle at $\tfrac32kT_b$, whatever their masses. Change the mass ratio to see that only the speeds care about mass.`,
       deps: ['thermo-1.6'],
+      see: ['thermo-6.12', 'thermo-6.15'],
       refs: ['Schroeder §1.2'],
       tags: ['kinetic theory', 'temperature'],
       credit: 'Clausius, 1857; Maxwell, 1860',
@@ -689,7 +690,8 @@ positive when the gas is compressed ($dV < 0$) and negative when it expands and 
         v.legend([['accent', 'chosen path'], ['orange', 'area under the path = work done by the gas', { area: true }], ['purple', 'net work of the closed cycle', { area: true }]]);
         v.readout(() => {
           const ws = { PV: work(pts('PV')), VP: work(pts('VP')), line: work(pts('line')), curve: work(pts('curve')) };
-          const cyc = loop.value ? ` · closed cycle: net work on the gas ${v.fix(ws[path.value] - ws.line, 0)} J (minus the purple area)` : '';
+          const net = ws[path.value] - ws.line;
+          const cyc = loop.value ? ` · closed cycle: net work ${v.fix(Math.abs(net), 0)} J (the purple area) ${net > 0 ? 'done on the gas — the cycle runs counter-clockwise' : 'delivered by the gas — the cycle runs clockwise'}` : '';
           return `work done on the gas from A to B, $W = -\\int P\\,dV$: expand-then-cool ${v.fix(ws.PV, 0)} J · cool-then-expand ${v.fix(ws.VP, 0)} J · straight ${v.fix(ws.line, 0)} J · curved ${v.fix(ws.curve, 0)} J — same endpoints, different work${cyc}`;
         });
       },

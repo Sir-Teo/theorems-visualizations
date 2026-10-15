@@ -244,6 +244,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `tex(latex, x, y, {color, size, align, baseline, dx, dy})` | KaTeX label overlay. |
 | `corner(str, 'tl'|'tr'|'bl'|'br', {color, weight})` | status text in a corner. |
 | `raster((x,y) => [r,g,b,a?] or null, {res, key, id})` | per-pixel image; recomputed only when `key` changes. |
+| `v.ramp(t, to='accent', from='panel')`, `v.diverge(t, neg='blue', pos='red')` | theme-aware colour ramps → `[r,g,b]` built from the panel colour, so heat maps read in light and dark; `s.heat(f, {cmap: 'theme' \| 'theme-diverging', color, neg, pos})` uses them. `raster`/`heat` take `rect: [x0, y0, x1, y1]` to fill only part of the stage. Text: `s.text`/`s.corner(..., {plate: true})` draws a rounded backing box for labels over busy pictures. |
 | `heat((x,y) => number, {range:[lo,hi], cmap:'viridis'|'magma'|'diverging', res, key})` | scalar field. |
 | `domain(z => Cx, {key, res, contours, gridLines, fade})` | phase portrait of a complex function; `fade` (0–1) blends toward the panel colour so labels drawn on top stay legible. |
 | `hist(values or {edges, counts}, {bins, range, density, color, fillAlpha, outline, gap})` | histogram: bars + step outline (binned by `M.histogram`; `density: true` integrates to 1; on a log x axis pass log-spaced edges as `bins`). |

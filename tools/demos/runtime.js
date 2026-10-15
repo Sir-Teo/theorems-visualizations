@@ -190,5 +190,21 @@ export default {
         v.readout(() => (f.error ? `error: ${f.error}` : `f compiled: f(1, 0.5) = ${v.fix(f.fn(1, 0.5), 4)}`));
       },
     },
+    {
+      num: '1.10',
+      kind: 'Definition',
+      name: 'Theme-aware ramps, raster rect, text plates',
+      statement: String.raw`$\sin x \cos y$ with the 'theme-diverging' colour map, limited to a rectangle, plus a plated corner label.`,
+      caption: String.raw`Switch the theme: the ramp is built from the panel colour, so it reads in both. The heat map only fills the dashed rectangle.`,
+      viz(v) {
+        const s = v.stage({ x: [-4, 4], y: [-3, 3], height: 280, axes: 'box', equal: true, xlabel: '$x$', ylabel: '$y$' });
+        v.render(() => {
+          s.heat((x, y) => Math.sin(x) * Math.cos(y), { range: [-1, 1], cmap: 'theme-diverging', rect: [-3, -2, 3, 2], key: 1 });
+          s.rect(-3, -2, 3, 2, { color: 'muted', dash: true, width: 1 });
+          s.corner('max = 1, min = −1', 'tr', { plate: true, color: 'ink' });
+          for (let k = 0; k <= 10; k++) s.rect(-3.6 + k * 0.72, -2.9, -3.6 + (k + 1) * 0.72, -2.5, { fill: `rgb(${v.ramp(k / 10).join(',')})`, fillAlpha: 1, stroke: false });
+        });
+      },
+    },
   ],
 };

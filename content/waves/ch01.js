@@ -546,8 +546,8 @@ The principle holds exactly only for linear media. For a medium whose restoring 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Superposition_principle' },
       viz(v) {
         const M = v.M, L = 8, NX = 400, DX = L / NX, DT = 0.2 * DX, NU = 0.0015, HIST = 10;
-        const sc = v.select('waves', [{ value: 'same', label: 'two pulses' }, { value: 'opp', label: 'opposite pulses' }, { value: 'trains', label: 'wave trains (beats)' }], 'same', { onChange: () => { v.t = 0; } });
-        const bS = v.slider('nonlinear stiffness $\\beta$', 0, 0.6, 0, { step: 0.01, onChange: () => { v.t = 0; } });
+        const sc = v.select('waves', [{ value: 'same', label: 'two pulses' }, { value: 'opp', label: 'opposite pulses' }, { value: 'trains', label: 'wave trains (beats)' }], 'same');
+        const bS = v.slider('nonlinear stiffness $\\beta$', 0, 0.6, 0, { step: 0.01 });
         const s = v.stage({ x: [0, L], y: [-1.05, 1.15], height: 230, axes: false, full: true });
         const dp = v.stage({ x: [0, L], y: [-0.3, 0.3], height: 200, axes: 'box', xlabel: 'x', title: 'superposition defect: (A and B) − (A alone + B alone)' });
         const pr = v.stage({ x: [-HIST, 0], y: [-1.1, 1.1], height: 200, axes: 'box', xlabel: 'time before now', title: 'what the probe records' });
@@ -748,11 +748,11 @@ So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of
       tags: ['impedance', 'power'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mechanical_impedance' },
       viz(v) {
-        const M = v.M, L = 2, LS = 2.6, F0 = 0.5, FR = 50, SLOW = 0.02, WIN = 0.06;
-        const Ts = v.slider('tension $T$ (N)', 20, 180, 100, { step: 1, onChange: () => { v.t = 0; } });
-        const mS = v.slider('density $\\mu$ (g/m)', 2, 20, 10, { step: 0.1, onChange: () => { v.t = 0; } });
-        const far = v.select('far end', [{ value: 'inf', label: 'infinite (absorbed)' }, { value: 'fixed', label: 'fixed at 2 m' }, { value: 'free', label: 'free at 2 m' }], 'inf', { onChange: () => { v.t = 0; } });
-        const drv = v.select('force', [{ value: 'sine', label: 'sinusoid, 50 Hz' }, { value: 'pulses', label: 'pulses' }], 'sine', { onChange: () => { v.t = 0; } });
+        const M = v.M, L = 2, LS = 2.6, F0 = 0.5, FR = 45, SLOW = 0.02, WIN = 0.06;
+        const Ts = v.slider('tension $T$ (N)', 20, 180, 100, { step: 1 });
+        const mS = v.slider('density $\\mu$ (g/m)', 2, 20, 10, { step: 0.1 });
+        const far = v.select('far end', [{ value: 'inf', label: 'infinite (absorbed)' }, { value: 'fixed', label: 'fixed at 2 m' }, { value: 'free', label: 'free at 2 m' }], 'inf');
+        const drv = v.select('force', [{ value: 'sine', label: 'sinusoid, 45 Hz' }, { value: 'pulses', label: 'pulses' }], 'sine');
         const s = v.stage({ x: [-0.12, L + 0.62], y: [-11, 11], height: 210, axes: false, full: true });
         const tr = v.stage({ x: [-WIN * 1000, 0], y: [-0.7, 0.7], height: 210, axes: 'box', xlabel: 'time before now (ms)', ylabel: 'N', title: 'force F and Z·(ring velocity)' });
         const fv = v.stage({ x: [-1, 1], y: [-0.7, 0.7], height: 210, axes: 'box', xlabel: 'ring velocity (m/s)', ylabel: 'F (N)', title: 'force against velocity' });
@@ -761,24 +761,28 @@ So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of
           let f = 0; for (let k = 0; k < 40; k++) { const tk = 0.006 + 0.016 * k; if (Math.abs(t - tk) < 0.01) f += (k % 2 ? -1 : 1) * F0 * Math.exp(-(((t - tk) / 0.0015) ** 2)); }
           return f;
         };
-        let C = null, key = '', rec = [], lastRec = 0, y0prev = 0;
+        let C = null, key = "", rec = [], lastRec = 0;
+        const pre = () => (far.value === 'inf' ? 0.16 : 0.4); // the force has been on for a while, so the motion has settled
         const build = () => {
           const T = Ts.value, mu = mS.value / 1000, c = Math.sqrt(T / mu), inf = far.value === 'inf';
           const x1 = inf ? L + LS : L;
-          const damp = inf ? (x) => (x > L ? 3.2 * (c / LS) * ((x - L) / LS) ** 2 * 6 : 0) : () => 4;
+          const damp = inf ? (x) => (x > L ? 20 * (c / LS) * ((x - L) / LS) ** 2 : 0) : () => 6;
           C = makeChain({ x0: 0, x1, mu: () => mu, T, delta: 0.008 / c, left: 'driven', right: far.value === 'free' ? 'free' : 'fixed', damp });
-          C.force = force; C.set(null, null); rec = []; lastRec = 0; y0prev = 0;
+          C.force = force; C.set(null, null); rec = []; lastRec = 0;
+          // the force has been acting for a while: run up to PRE so that the motion has settled
+          const dt = 0.5 * C.delta;
+          while (C.t < pre()) { C.step(dt); if (C.t - lastRec >= 2.5e-4) { lastRec = C.t; rec.push([C.t, C.Fmid, C.v[0]]); if (rec.length > 400) rec.shift(); } }
         };
         let Z = 1, cc = 100;
         v.animate((t) => {
           const k = [Ts.value, mS.value, far.value, drv.value].join();
-          const tp = t * SLOW;
+          const tp = pre() + t * SLOW;
           if (k !== key || tp < C.t - 1e-9) { key = k; build(); }
           Z = Math.sqrt(Ts.value * mS.value / 1000); cc = Math.sqrt(Ts.value / (mS.value / 1000));
           const dt = 0.5 * C.delta;
           while (C.t < tp) {
             C.step(dt);
-            if (C.t - lastRec >= 2.5e-4) { lastRec = C.t; rec.push([C.t, C.F, C.v[0]]); if (rec.length > 400) rec.shift(); }
+            if (C.t - lastRec >= 2.5e-4) { lastRec = C.t; rec.push([C.t, C.Fmid, C.v[0]]); if (rec.length > 400) rec.shift(); }
           }
           // ---- the string (displacement in mm)
           const inf = far.value === 'inf';
@@ -806,11 +810,11 @@ So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of
           fv.setView([-vm, vm], [-0.7, 0.7]);
           fv.hline(0, { color: 'faint', width: 1 }); fv.vline(0, { color: 'faint', width: 1 });
           fv.line(-vm, -Z * vm, vm, Z * vm, { color: 'green', width: 2, dash: [7, 5] });
-          fv.text(`slope Z = √(Tμ) = ${v.fix(Z, 3)} kg/s`, -0.95 * vm, 0.6, { color: 'green', size: 11.5 });
+          fv.text(`slope Z = √(Tμ) = ${v.fix(Z, 3)} kg/s`, 0.95 * vm, -0.45, { color: 'green', size: 11.5, align: 'right' });
           const last = rec.filter((r) => r[0] > tn - 0.024);
           fv.path(last.map((r) => [r[2], r[1]]), { color: 'gold', width: 2.2 });
           if (last.length) fv.dot(last[last.length - 1][2], last[last.length - 1][1], { r: 5, color: 'gold' });
-        }, { still: 2.2 });
+        }, { period: 12, still: 2.2 });
         v.legend([['gold', 'driving force F'], ['teal', 'Z × ring velocity', { dash: true }], ['green', 'F = Z v', { dash: true }]]);
         v.readout(() => {
           const last = rec.filter((r) => r[0] > C.t - 0.02);

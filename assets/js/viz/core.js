@@ -24,7 +24,14 @@ export function resolveColor(c) {
   return c;
 }
 /** [r,g,b,a] (0–255, a in 0–1) of a palette name or any CSS colour. */
-export function rgbOf(c) {
+export /** Interpolate between two theme colours in linear light (t clamped to [0,1]) → [r,g,b] 0–255. */
+function themeRamp(t, to, from) {
+  const a = rgbOf(from), b = rgbOf(to), u = Math.max(0, Math.min(1, +t || 0));
+  const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const enc = (c) => Math.round(255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055));
+  return [0, 1, 2].map((k) => enc(lin(a[k]) + (lin(b[k]) - lin(a[k])) * u));
+}
+function rgbOf(c) {
   if (Array.isArray(c)) return [c[0], c[1], c[2], c[3] ?? 1];
   const s = resolveColor(c);
   if (RGB.has(s)) return RGB.get(s);
@@ -703,11 +710,18 @@ class Stage {
     const c = this.ctx; c.save();
     c.font = this._font(st); c.textAlign = st.align || 'left'; c.textBaseline = st.baseline || 'middle';
     X += st.dx || 0; Y += st.dy || 0;
-    if (st.halo !== false) { c.lineWidth = 4; c.lineJoin = 'round'; c.strokeStyle = withAlpha('panel', 0.85); c.strokeText(str, X, Y); }
+    if (st.plate) { // rounded backing plate for text over busy pictures
+      const m = c.measureText(str), w = m.width, hgt = (st.size || 12.5) * 1.25, pad = 5;
+      const x0 = c.textAlign === 'right' ? X - w : c.textAlign === 'center' ? X - w / 2 : X;
+      const y0 = c.textBaseline === 'top' ? Y : c.textBaseline === 'bottom' ? Y - hgt : Y - hgt / 2;
+      c.beginPath(); if (c.roundRect) c.roundRect(x0 - pad, y0 - 2, w + 2 * pad, hgt + 4, 6); else c.rect(x0 - pad, y0 - 2, w + 2 * pad, hgt + 4);
+      c.fillStyle = withAlpha('panel', 0.88); c.fill(); c.strokeStyle = withAlpha('faint', 0.6); c.lineWidth = 1; c.stroke();
+    }
+    if (st.halo !== false && !st.plate) { c.lineWidth = 4; c.lineJoin = 'round'; c.strokeStyle = withAlpha('panel', 0.85); c.strokeText(str, X, Y); }
     c.fillStyle = withAlpha(st.color || 'ink', st.alpha); c.fillText(str, X, Y);
     c.restore(); return this;
   }
-  /** Canvas text at data coords. st: {size, color, align, baseline, dx, dy, math (italic serif), halo}. */
+  /** Canvas text at data coords. st: {size, color, align, baseline, dx, dy, math (italic serif), halo, plate (rounded backing box)}. */
   text(str, x, y, st = {}) { return this.textPx(String(str), this.X(x), this.Y(y), st); }
   /** Status text pinned to a corner: pos = 'tl' | 'tr' | 'bl' | 'br'. */
   corner(str, pos = 'tl', st = {}) {
@@ -739,6 +753,7 @@ class Stage {
     el.style.color = resolveColor(st.color || 'ink');
     el.style.fontSize = (st.size || 15) + 'px';
     el.style.opacity = st.alpha ?? 1;
+    el.classList.toggle('plate', !!st.plate);
     const ax = { left: '0', center: '-50%', right: '-100%' }[st.align || 'center'];
     const ay = { top: '0', middle: '-50%', bottom: '-100%' }[st.baseline || 'middle'];
     el.style.transform = `translate(${ax}, ${ay})`;
@@ -748,13 +763,14 @@ class Stage {
   // ---------- rasters ----------
   /**
    * Per-pixel image: fn(x,y) → [r,g,b] or [r,g,b,a] (0–255) or null (transparent).
-   * st.res = pixel block size (default 2); st.key = cache key (recompute only when it changes); st.id to cache several layers.
+   * st.res = pixel block size (default 2); st.key = cache key (recompute only when it changes); st.id to cache several layers; st.rect = [x0, y0, x1, y1] limits it to a data rectangle.
    */
   raster(fn, st = {}) {
     const res = st.res || 2; const w = Math.ceil(this.W / res), hh = Math.ceil(this.H / res);
+    const R = st.rect ? [Math.min(st.rect[0], st.rect[2]), Math.min(st.rect[1], st.rect[3]), Math.max(st.rect[0], st.rect[2]), Math.max(st.rect[1], st.rect[3])] : null; // limit to a data rectangle
     const id = st.id || 'r';
     const theme = typeof document !== 'undefined' ? document.documentElement.dataset.theme || (matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : '';
-    const key = st.key != null ? `${w}x${hh}|${this.xr}|${this.yr}|${theme}|${st.key}` : null; // colours resolved from the theme must not survive a theme switch
+    const key = st.key != null ? `${w}x${hh}|${this.xr}|${this.yr}|${theme}|${st.rect || ''}|${st.key}` : null; // colours resolved from the theme must not survive a theme switch
     let ent = this._raster.get(id);
     if (!ent || key == null || ent.key !== key) {
       const off = ent?.canvas || document.createElement('canvas');
@@ -764,6 +780,7 @@ class Stage {
         const y = this.invY((j + 0.5) * res);
         for (let i = 0; i < w; i++) {
           const x = this.invX((i + 0.5) * res); const k = 4 * (j * w + i);
+          if (R && (x < R[0] || x > R[2] || y < R[1] || y > R[3])) { d[k + 3] = 0; continue; }
           const col = fn(x, y);
           if (!col) { d[k + 3] = 0; continue; }
           d[k] = col[0]; d[k + 1] = col[1]; d[k + 2] = col[2]; d[k + 3] = col.length > 3 ? col[3] : 255;
@@ -775,10 +792,11 @@ class Stage {
     const c = this.ctx; c.save(); c.globalAlpha = st.alpha ?? 1; c.imageSmoothingEnabled = res > 1; c.drawImage(ent.canvas, 0, 0, w * res, hh * res); c.restore();
     return this;
   }
-  /** Scalar heat map: fn(x,y) → number, coloured by st.cmap ('viridis'|'magma'|'diverging') over st.range=[lo,hi]. */
+  /** Scalar heat map: fn(x,y) → number, coloured by st.cmap ('viridis'|'magma'|'diverging'|'theme'|'theme-diverging'|(u)→[r,g,b]) over st.range=[lo,hi]. 'theme' ramps panel→st.color; 'theme-diverging' st.neg←panel→st.pos, so both read in light and dark. */
   heat(fn, st = {}) {
     const [lo, hi] = st.range || [0, 1]; const name = st.cmap || 'viridis';
-    return this.raster((x, y) => { const v = fn(x, y); if (!isFinite(v)) return null; return M.cmap((v - lo) / (hi - lo), name); }, st);
+    const col = name === 'theme' ? (u) => themeRamp(u, st.color || 'accent', 'panel') : name === 'theme-diverging' ? (u) => (u < 0.5 ? themeRamp(1 - 2 * u, st.neg || 'blue', 'panel') : themeRamp(2 * u - 1, st.pos || 'red', 'panel')) : typeof name === 'function' ? name : (u) => M.cmap(u, name);
+    return this.raster((x, y) => { const v = fn(x, y); if (!isFinite(v)) return null; return col((v - lo) / (hi - lo)); }, st);
   }
   /** Domain colouring of a complex function f(z: Cx) → Cx (hue = argument, shading = log-modulus contours). */
   domain(f, st = {}) {
@@ -1391,6 +1409,10 @@ class Runtime {
       /** Palette colour (optionally with alpha) as a CSS string. */
       color: (name, alpha) => withAlpha(name, alpha),
       rgb: (name) => rgbOf(name),
+      /** Theme-aware sequential ramp: t ∈ [0,1] → [r,g,b] from `from` (default the panel colour) to `to` (default accent). */
+      ramp: (t, to = 'accent', from = 'panel') => themeRamp(t, to, from),
+      /** Theme-aware diverging ramp: t ∈ [−1,1] → [r,g,b], neg colour ← panel → pos colour. */
+      diverge: (t, neg = 'blue', pos = 'red') => (t < 0 ? themeRamp(-t, neg, 'panel') : themeRamp(t, pos, 'panel')),
       mix,
       onCleanup: (f) => rt.cleanups.push(f),
       M, Cx: M.Cx, cx: M.cx, rng: M.rng, fmt: M.fmt, fix: M.fix, sci: M.sci,

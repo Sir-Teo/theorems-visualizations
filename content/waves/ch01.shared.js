@@ -56,7 +56,7 @@ export function makeChain({ x0, x1, mu, T = 1, delta, breaks = [], left = 'fixed
   for (let i = 0; i < N; i++) m[i] = 0.5 * ((i > 0 ? musg[i - 1] * h[i - 1] : 0) + (i < N - 1 ? musg[i] * h[i] : 0));
   const g = new Float64Array(N); if (damp) for (let i = 0; i < N; i++) g[i] = damp(x[i]);
   const y = new Float64Array(N), v = new Float64Array(N), a = new Float64Array(N);
-  const C = { N, x, h, k, m, mu: musg, y, v, a, T, t: 0, delta, left, right, force: null, F: 0, ends: [left, right] };
+  const C = { N, x, h, k, m, mu: musg, y, v, a, T, t: 0, delta, left, right, force: null, F: 0, Fmid: 0, ends: [left, right] };
   const fixL = left === 'fixed', fixR = right === 'fixed', drvL = left === 'driven';
   const acc = () => {
     for (let i = 0; i < N; i++) {
@@ -71,11 +71,14 @@ export function makeChain({ x0, x1, mu, T = 1, delta, breaks = [], left = 'fixed
     C.t = 0; acc();
   };
   C.step = (dt) => {
+    const y0old = y[0];
     for (let i = 0; i < N; i++) { v[i] += 0.5 * dt * a[i]; y[i] += dt * v[i]; }
     C.t += dt;
-    if (drvL) { const F = C.force ? C.force(C.t) : 0; C.F = F; const y0 = y[1] + (F * h[0]) / T; v[0] = (y0 - y[0]) / dt; y[0] = y0; }
+    let vr = 0;
+    if (drvL) { const F = C.force ? C.force(C.t) : 0; C.Fmid = 0.5 * (F + C.F); C.F = F; const y0 = y[1] + (F * h[0]) / T; vr = (y0 - y0old) / dt; y[0] = y0; }
     acc();
     for (let i = 0; i < N; i++) v[i] += 0.5 * dt * a[i];
+    if (drvL) v[0] = vr; // the massless ring: its velocity comes from the constraint, not from Newton's law
     if (damp) for (let i = 0; i < N; i++) if (g[i]) v[i] *= Math.exp(-g[i] * dt);
     if (fixL) y[0] = v[0] = 0; if (fixR) y[N - 1] = v[N - 1] = 0;
   };
