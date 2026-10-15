@@ -169,6 +169,7 @@ which can be made arbitrarily small. Hence $\mu(E)=0$, i.e. $\liminf_{r\to0}Q_r\
       num: '7.17',
       kind: 'Definition',
       name: 'Absolutely continuous functions',
+      credit: 'Vitali, 1905',
       statement: String.raw`A complex function $f$ on an interval $I=[a,b]$ is **absolutely continuous** on $I$ (briefly, $f$ is AC on $I$) if to every $\eps>0$ there corresponds $\delta>0$ such that
 $$\sum_{i=1}^n|f(\beta_i)-f(\alpha_i)|<\eps$$
 for every $n$ and every choice of disjoint segments $(\alpha_1,\beta_1),\dots,(\alpha_n,\beta_n)$ in $I$ with $\sum_{i=1}^n(\beta_i-\alpha_i)<\delta$.`,

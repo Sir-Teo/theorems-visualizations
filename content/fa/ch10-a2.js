@@ -138,6 +138,7 @@ Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ 
       num: '10.13',
       kind: 'Theorem',
       name: 'The spectrum is compact and nonempty; spectral radius formula',
+      credit: 'Gelfand, 1941',
       statement: String.raw`If $A$ is a Banach algebra and $x\in A$, then
 (a) $\sigma(x)$ is compact and nonempty, and
 (b) $\displaystyle\rho(x)=\lim_{n\to\infty}\norm{x^n}^{1/n}=\inf_{n\ge1}\norm{x^n}^{1/n}$.`,
@@ -179,6 +180,7 @@ Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ 
       num: '10.14',
       kind: 'Theorem',
       name: 'Gelfand–Mazur theorem',
+      credit: 'Gelfand & Mazur, 1938',
       statement: String.raw`If $A$ is a Banach algebra in which every nonzero element is invertible (a division algebra), then $A$ is isometrically isomorphic to $\C$: every $x\in A$ equals $\lambda e$ for some $\lambda\in\C$.`,
       idea: String.raw`By 10.13, $\sigma(x)\ne\varnothing$; pick $\lambda\in\sigma(x)$. Then $\lambda e-x$ is not invertible, so in a division algebra it is $0$. Complex scalars are essential — Liouville's theorem is what makes the spectrum nonempty — and indeed the quaternions are a real Banach division algebra different from $\R$ and $\C$.`,
       caption: String.raw`The scalar function $f(\lambda)=\operatorname{tr}\,(\lambda e-x)^{-1}$ (phase portrait) for an element $x$ of three algebras (drag the diagonal entries $a$, $b$). Its poles are exactly $\sigma(x)$, and $\lambda f(\lambda)\to\dim A$ at infinity — so the poles cannot all disappear (Liouville). In $\C$ there is one pole $a$ and $ae-x=0$. In $\C^2$ (diagonal matrices) and in $M_2(\C)$, at each pole $\lambda$ the element $\lambda e-x$ is non-invertible **but not zero** (rank $1$): these are not division algebras.`,

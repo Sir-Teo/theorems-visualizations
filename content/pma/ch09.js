@@ -45,6 +45,7 @@ export default {
       num: '9.1',
       kind: 'Definition',
       name: 'Vector spaces, span, independence, dimension, basis',
+      credit: 'Peano, 1888',
       statement: String.raw`(a) A nonempty set $X\subset\R^n$ is a *vector space* if $x+y\in X$ and $cx\in X$ for all $x,y\in X$ and all scalars $c$.
 (b) A *linear combination* of $x_1,\dots,x_k$ is a vector $c_1x_1+\dots+c_kx_k$. The set of all linear combinations of members of $S\subset\R^n$ is the *span* of $S$; every span is a vector space.
 (c) $\{x_1,\dots,x_k\}$ is *independent* if $c_1x_1+\dots+c_kx_k=0$ forces $c_1=\dots=c_k=0$, and *dependent* otherwise. An independent set never contains $0$.

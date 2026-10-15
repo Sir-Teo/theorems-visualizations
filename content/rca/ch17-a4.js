@@ -116,6 +116,7 @@ On $L^2(\T)$ it is unitary; it maps $H^2$ isometrically onto the proper subspace
       num: '17.21',
       kind: 'Theorem',
       name: "Beurling's theorem on invariant subspaces of H²",
+      credit: 'Beurling, 1949',
       verify: true,
       statement: String.raw`Let $M\ne\{0\}$ be a closed $S$-invariant subspace of $H^2$. Then there is an inner function $\varphi$, unique up to a constant factor of modulus $1$, such that
 $$M=\varphi H^2=\{\varphi f:\ f\in H^2\}.$$
@@ -280,6 +281,7 @@ which exists for almost every $\theta$ (17.24). On the Fourier side, if $f\sim\s
       num: '17.24',
       kind: 'Theorem',
       name: 'Positive real part forces Hᵖ for p < 1 (Kolmogorov)',
+      credit: 'Kolmogorov, 1925',
       verify: true,
       statement: String.raw`If $F\in H(U)$ and $\Re F>0$ in $U$, then $F\in H^p$ for every $0<p<1$; in fact
 $$M_p(F;r)^p\le\sec\big(\tfrac{p\pi}{2}\big)\,|F(0)|^p\qquad(0\le r<1).$$
@@ -342,6 +344,7 @@ Consequently, for every real $f\in L^1(\T)$ the function $F=u+iv$ of 17.23 lies 
       num: '17.26',
       kind: 'Theorem',
       name: "M. Riesz's theorem on conjugate functions",
+      credit: 'M. Riesz, 1927',
       statement: String.raw`Suppose $1<p<\infty$. There is a constant $A_p<\infty$ such that
 $$\|\tilde f\|_p\le A_p\|f\|_p$$
 for every real $f\in L^p(\T)$. Equivalently, if $u=P[f]$ and $v$ is its harmonic conjugate with $v(0)=0$, then $M_p(v;r)\le A_p\|f\|_p$ for all $r<1$, so $F=u+iv\in H^p$. The statement fails for $p=1$ and for $p=\infty$.`,

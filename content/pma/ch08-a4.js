@@ -41,6 +41,7 @@ export default {
       num: '8.17',
       kind: 'Definition',
       name: 'The gamma function',
+      credit: 'Euler, 1729',
       statement: String.raw`For $0<x<\infty$,
 $$\Gamma(x)=\int_0^\infty t^{x-1}e^{-t}\,dt .$$
 The integral converges for every such $x$: near $t=0$ the integrand is at most $t^{x-1}$, which is integrable because $x>0$, and for large $t$ the factor $e^{-t}$ beats any power of $t$ (8.6(f)).`,
@@ -125,6 +126,7 @@ The integral converges for every such $x$: near $t=0$ the integrand is at most $
       num: '8.19',
       kind: 'Theorem',
       name: 'Bohr–Mollerup theorem',
+      credit: 'Bohr & Mollerup, 1922',
       statement: String.raw`If $f$ is a positive function on $(0,\infty)$ such that
 (a) $f(x+1)=x\,f(x)$,
 (b) $f(1)=1$,
@@ -254,6 +256,7 @@ $$\int_0^1 t^{x-1}(1-t)^{y-1}\,dt=\frac{\Gamma(x)\Gamma(y)}{\Gamma(x+y)} .$$`,
       num: '8.22',
       kind: 'Theorem',
       name: "Stirling's formula",
+      credit: 'Stirling, 1730',
       statement: String.raw`$$\lim_{x\to\infty}\frac{\Gamma(x+1)}{(x/e)^x\sqrt{2\pi x}}=1 .$$
 In particular $n!\sim(n/e)^n\sqrt{2\pi n}$.`,
       idea: String.raw`Substitute $t=x(1+u)$ in $\Gamma(x+1)=\int_0^\infty t^xe^{-t}dt$ and then $u=s\sqrt{2/x}$, to get $\Gamma(x+1)=x^xe^{-x}\sqrt{2x}\int_{-\infty}^{\infty}\psi_x(s)\,ds$, where $\psi_x(s)=\bigl[(1+u)e^{-u}\bigr]^x=\exp\bigl(-s^2h(s\sqrt{2/x})\bigr)$ for $s>-\sqrt{x/2}$ (and $0$ otherwise), with $h(u)=2\frac{u-\log(1+u)}{u^2}$ continuous, decreasing, $h(0)=1$. As $x\to\infty$, $\psi_x\to e^{-s^2}$ monotonically on each side, with an integrable majorant, so $\int\psi_x\to\int e^{-s^2}=\sqrt\pi$ (8.21).`,

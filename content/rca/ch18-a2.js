@@ -55,6 +55,7 @@ export default {
       num: '18.7',
       kind: 'Theorem',
       name: 'Gelfand–Mazur theorem',
+      credit: 'Gelfand & Mazur, 1938',
       statement: String.raw`If $A$ is a Banach algebra in which every nonzero element is invertible, then every $x\in A$ is a scalar multiple of the unit, $x=\lambda e$ for a unique $\lambda\in\C$. Thus $\lambda\mapsto\lambda e$ is an isometric isomorphism of $\C$ onto $A$.`,
       idea: String.raw`Take $x\in A$. By 18.5 its spectrum contains some $\lambda$, so $\lambda e-x$ is not invertible; by hypothesis the only non-invertible element is $0$, hence $x=\lambda e$. Since $\norm{\lambda e}=\abs\lambda$, the map is an isometry. The complex scalars are essential: the quaternions form a *real* Banach algebra in which every nonzero element is invertible, yet they are not $\R$ — over $\R$ spectra can be empty, because nothing like Liouville's theorem is available.`,
       caption: String.raw`Pick an algebra and drag the element's data. The right panel shows $\norm{(\lambda e-x)^{-1}}$ for $\lambda$ on the dashed line. In $\C$ the spectrum is the single point $a$ and $ae-x=0$. In $\C^2$ and $M_2(\C)$ the resolvent still blows up somewhere, but $ae-x$ is a *nonzero* non-invertible element, so these are not division algebras. In the quaternions $\mathbb H$ (real scalars only) $\lambda-q$ is invertible for every real $\lambda$: the resolvent stays bounded, the spectrum is empty, and $\mathbb H\neq\R$.`,

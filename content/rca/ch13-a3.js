@@ -63,6 +63,7 @@ export default {
       num: '13.10',
       kind: 'Theorem',
       name: 'Mittag-Leffler theorem',
+      credit: 'Mittag-Leffler, 1884',
       statement: String.raw`Let $\Omega\subset\C$ be open and let $A\subset\Omega$ have no limit point in $\Omega$. Suppose that to each $\alpha\in A$ are assigned a positive integer $m(\alpha)$ and a rational function
 $$P_\alpha(z)=\sum_{j=1}^{m(\alpha)}\frac{c_{j,\alpha}}{(z-\alpha)^j}.$$
 Then there is a function $f$, meromorphic in $\Omega$, whose principal part at every $\alpha\in A$ is $P_\alpha$ and which has no other poles in $\Omega$.`,

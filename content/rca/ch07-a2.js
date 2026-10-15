@@ -237,6 +237,7 @@ and the right side tends to $0$ at every Lebesgue point (7.6), which is almost e
       num: '7.11',
       kind: 'Theorem',
       name: 'Fundamental theorem of calculus for Lebesgue integrals',
+      credit: 'Lebesgue, 1904',
       statement: String.raw`If $f\in L^1(\R)$ and
 $$F(x)=\int_{-\infty}^x f\,dm\qquad(-\infty<x<\infty),$$
 then $F'(x)=f(x)$ at every Lebesgue point of $f$; in particular $F'=f$ almost everywhere.`,

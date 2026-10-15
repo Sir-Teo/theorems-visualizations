@@ -134,6 +134,7 @@ $$\liminf_{n\to\infty}\frac{c_{n+1}}{c_n}\;\le\;\liminf_{n\to\infty}\sqrt[n]{c_n
       num: '3.39',
       kind: 'Theorem',
       name: 'Radius of convergence (Cauchy–Hadamard)',
+      credit: 'Cauchy & Hadamard, 1821',
       statement: String.raw`Given the power series $\sum c_nz^n$, put $$\alpha=\limsup_{n\to\infty}\sqrt[n]{|c_n|},\qquad R=\frac1\alpha,$$ with $R=+\infty$ if $\alpha=0$ and $R=0$ if $\alpha=+\infty$. Then $\sum c_nz^n$ converges if $|z|<R$ and diverges if $|z|>R$. $R$ is the *radius of convergence*.`,
       idea: String.raw`Apply the root test (3.33) to the terms $c_nz^n$: $\limsup\sqrt[n]{|c_nz^n|}=|z|\,\alpha=|z|/R$, which is $<1$ inside the circle and $>1$ outside. Nothing is claimed on the circle $|z|=R$ itself — there the behaviour varies from point to point (3.44).`,
       caption: String.raw`Choose a series and drag $z$. Left: a phase portrait of the partial sum $S_N(z)$ (hue = argument); inside the green circle $|z|=R$ it settles to the phase portrait of the limit, while outside it is dominated by its top term. The zeros of $S_N$ (where all colours meet) crowd onto the circle as $N$ grows. Right: the partial sums $S_0(z),S_1(z),\dots$ spiral into $f(z)$ (green ring) for $|z|<R$ and run away for $|z|>R$. Bottom: the root test at work — the dots $|c_n|^{1/n}$ must eventually stay below the gold level $1/|z|$.`,
@@ -221,6 +222,7 @@ $$\liminf_{n\to\infty}\frac{c_{n+1}}{c_n}\;\le\;\liminf_{n\to\infty}\sqrt[n]{c_n
       num: '3.41',
       kind: 'Theorem',
       name: 'Summation by parts',
+      credit: 'Abel, 1826',
       statement: String.raw`Let $\{a_n\}$, $\{b_n\}$ be sequences, put $A_n=\sum_{k=0}^{n}a_k$ for $n\ge0$ and $A_{-1}=0$. Then for $0\le p\le q$,
 $$\sum_{n=p}^{q}a_nb_n=\sum_{n=p}^{q-1}A_n\,(b_n-b_{n+1})\;+\;A_qb_q-A_{p-1}b_p .$$`,
       idea: String.raw`Write $a_n=A_n-A_{n-1}$, split the sum into $\sum A_nb_n-\sum A_{n-1}b_n$, shift the index in the second sum, and collect the coefficient of each $A_n$. It is the discrete analogue of integration by parts: differences of $A$ against $b$ become $A$ against differences of $b$, plus boundary terms.`,
@@ -283,6 +285,7 @@ $$\sum_{n=p}^{q}a_nb_n=\sum_{n=p}^{q-1}A_n\,(b_n-b_{n+1})\;+\;A_qb_q-A_{p-1}b_p 
       num: '3.42',
       kind: 'Theorem',
       name: "Dirichlet's test",
+      credit: 'Dirichlet, 1862',
       statement: String.raw`Suppose
 (a) the partial sums $A_n$ of $\sum a_n$ form a bounded sequence;
 (b) $b_0\ge b_1\ge b_2\ge\cdots$;

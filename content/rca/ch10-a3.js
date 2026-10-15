@@ -37,6 +37,7 @@ export default {
       num: '10.14',
       kind: 'Theorem',
       name: "Cauchy's theorem in a convex set",
+      credit: 'Cauchy, 1825',
       statement: String.raw`Suppose $\Omega$ is a convex open set, $p\in\Omega$, $f$ is continuous on $\Omega$, and $f\in H(\Omega\setminus\{p\})$. Then $f=F'$ for some $F\in H(\Omega)$. Hence
 $$\int_\gamma f(z)\,dz=0$$
 for every closed path $\gamma$ in $\Omega$.`,
@@ -114,6 +115,7 @@ for every closed path $\gamma$ in $\Omega$.`,
       num: '10.16',
       kind: 'Theorem',
       name: 'Holomorphic functions are representable by power series',
+      credit: 'Cauchy, 1831',
       statement: String.raw`For every open set $\Omega$ in the plane, every $f\in H(\Omega)$ is representable by power series in $\Omega$: if $D(a;R)\subset\Omega$, then $f(z)=\sum_{n\ge0}c_n(z-a)^n$ for all $z\in D(a;R)$.`,
       idea: String.raw`Take $D(a;R)\subset\Omega$ and $r<R$. Cauchy's formula in the convex set $D(a;R)$ (10.15, with the circle of radius $r$, for which $\Ind=1$ inside by 10.11) writes $f(z)=\frac1{2\pi i}\int_{|\zeta-a|=r}\frac{f(\zeta)\,d\zeta}{\zeta-z}$ for $|z-a|<r$. This is a Cauchy-type integral of a finite measure on the circle, so 10.7 expands it in powers of $z-a$; the coefficients $c_n=\frac1{2\pi i}\int\frac{f(\zeta)\,d\zeta}{(\zeta-a)^{n+1}}$ do not depend on $r$ (they equal $f^{(n)}(a)/n!$), so one series works on all of $D(a;R)$.`,
       caption: String.raw`Drag the centre $a$. The coefficients are computed exactly as in the proof, by the Cauchy integral over a circle inside $\Omega$. Left: $f$; right: the partial sum $S_N$ — identical inside the green disc $D(a;R)$, the largest disc in $\Omega$, and unrelated outside. Bottom: real parts along the horizontal line through $a$. $\frac{1}{1+z^2}$ is perfectly smooth on $\R$, yet its series about $0$ stops at $|x|=1$: the poles $\pm i$ are invisible on the real line.`,
@@ -231,6 +233,7 @@ for every closed path $\gamma$ in $\Omega$.`,
       num: '10.17',
       kind: 'Theorem',
       name: "Morera's theorem",
+      credit: 'Morera, 1886',
       statement: String.raw`Suppose $f$ is a continuous complex function in an open set $\Omega$ such that
 $$\int_{\partial\Delta}f(z)\,dz=0$$
 for every closed triangle $\Delta\subset\Omega$. Then $f\in H(\Omega)$.`,

@@ -283,6 +283,7 @@ export default {
       num: '3.27',
       kind: 'Theorem',
       name: 'Cauchy condensation test',
+      credit: 'Cauchy, 1821',
       statement: String.raw`Suppose $a_1\ge a_2\ge a_3\ge\cdots\ge0$. Then $\sum_{n=1}^\infty a_n$ converges if and only if the series
 $$\sum_{k=0}^\infty 2^ka_{2^k}=a_1+2a_2+4a_4+8a_8+\cdots$$
 converges.`,

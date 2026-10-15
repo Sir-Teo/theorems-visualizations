@@ -270,6 +270,7 @@ Each $x$ lies in some $E_n$, so $w(x)>0$; also $w<\sum 2^{-n}=1$, and $\int w\,d
       num: '6.10',
       kind: 'Theorem',
       name: 'Lebesgue–Radon–Nikodym theorem',
+      credit: 'Radon & Nikodym, 1913',
       statement: String.raw`Let $\mu$ be a positive σ-finite measure on a σ-algebra $\mathfrak M$ in $X$, and let $\lambda$ be a complex measure on $\mathfrak M$.
 (a) There is a unique pair of complex measures $\lambda_a,\lambda_s$ on $\mathfrak M$ with
 $$\lambda=\lambda_a+\lambda_s,\qquad\lambda_a\ll\mu,\qquad\lambda_s\perp\mu .$$

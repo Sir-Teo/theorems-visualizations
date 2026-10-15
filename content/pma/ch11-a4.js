@@ -82,6 +82,7 @@ $$\int_Ef\,d\mu=\sum_{n=1}^\infty\int_Ef_n\,d\mu .$$`,
       num: '11.31',
       kind: 'Theorem',
       name: "Fatou's theorem",
+      credit: 'Fatou, 1906',
       statement: String.raw`Let $E\in\mathfrak M$. If $f_n\ge0$ are measurable and $f(x)=\liminf_{n\to\infty}f_n(x)$ for $x\in E$, then
 $$\int_Ef\,d\mu\le\liminf_{n\to\infty}\int_Ef_n\,d\mu .$$
 Strict inequality can occur.`,
@@ -132,6 +133,7 @@ Strict inequality can occur.`,
       num: '11.32',
       kind: 'Theorem',
       name: "Lebesgue's dominated convergence theorem",
+      credit: 'Lebesgue, 1908',
       statement: String.raw`Let $E\in\mathfrak M$ and let $\{f_n\}$ be measurable with $f_n(x)\to f(x)$ for $x\in E$. If there is $g\in\mathscr L(\mu)$ on $E$ with $|f_n(x)|\le g(x)$ for all $n$ and $x\in E$, then
 $$\lim_{n\to\infty}\int_Ef_n\,d\mu=\int_Ef\,d\mu .$$`,
       idea: String.raw`$f\in\mathscr L$ by 11.27. Apply Fatou (11.31) to the nonnegative functions $g+f_n$ and $g-f_n$: they give $\int(g+f)\le\liminf\int(g+f_n)$ and $\int(g-f)\le\liminf\int(g-f_n)$. Since $\int g<\infty$ it can be cancelled, leaving $\limsup\int f_n\le\int f\le\liminf\int f_n$. The best candidate for $g$ is the least majorant $G=\sup_n|f_n|$: the theorem applies exactly when $\int G<\infty$ is achievable.`,
@@ -245,6 +247,7 @@ $$\lim_{n\to\infty}\int_Ef_n\,d\mu=\int_Ef\,d\mu .$$`,
       num: '11.33',
       kind: 'Theorem',
       name: 'Riemann integrability is continuity almost everywhere',
+      credit: 'Lebesgue, 1902',
       statement: String.raw`(a) If $f\in\mathscr R$ on $[a,b]$, then $f\in\mathscr L$ on $[a,b]$ and its Lebesgue integral equals its Riemann integral.
 
 (b) A bounded function $f$ on $[a,b]$ is Riemann integrable if and only if it is continuous at almost every point of $[a,b]$.`,
@@ -354,6 +357,7 @@ the $\mathscr L^2(\mu)$ norm of $f$.`,
       num: '11.35',
       kind: 'Theorem',
       name: 'Schwarz inequality in L²',
+      credit: 'Cauchy & Schwarz, 1821',
       statement: String.raw`If $f\in\mathscr L^2(\mu)$ and $g\in\mathscr L^2(\mu)$, then $fg\in\mathscr L(\mu)$ and
 $$\int|fg|\,d\mu\le\|f\|\,\|g\| .$$`,
       idea: String.raw`For every real $\lambda$, $0\le\int(|f|+\lambda|g|)^2\,d\mu=\|f\|^2+2\lambda\int|fg|\,d\mu+\lambda^2\|g\|^2$ (the middle integral is finite since $2|fg|\le|f|^2+|g|^2$). A quadratic in $\lambda$ that never goes negative has a nonpositive discriminant: $\big(\int|fg|\big)^2\le\|f\|^2\|g\|^2$.`,

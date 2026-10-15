@@ -228,6 +228,7 @@ is a **$B^*$-algebra** (a $C^*$-algebra).`,
       num: '11.18',
       kind: 'Theorem',
       name: 'Gelfand–Naimark theorem (commutative case)',
+      credit: 'Gelfand & Naimark, 1943',
       statement: String.raw`If $A$ is a commutative $B^*$-algebra with maximal ideal space $\Delta$, the Gelfand transform is an isometric isomorphism of $A$ onto $C(\Delta)$ that carries the involution to complex conjugation:
 $$\widehat{x^*}=\overline{\hat x},\qquad\norm{\hat x}_\infty=\norm x\qquad(x\in A).$$`,
       idea: String.raw`For hermitian $u$ and real $t$, $e^{itu}$ is unitary, so $|h(e^{itu})|=1$ and $h(u)$ is real: $\widehat{x^*}=\overline{\hat x}$. Every element is normal, and the $B^*$ identity gives $\norm{x^{2^k}}=\norm x^{2^k}$ for hermitian $x$, hence $\norm x=\rho(x)=\norm{\hat x}_\infty$ (first for hermitian, then for all $x$ via $\norm{xx^*}=\norm x^2$). So $\hat A$ is a closed, self-adjoint, point-separating subalgebra of $C(\Delta)$ containing the constants — all of $C(\Delta)$ by Stone–Weierstrass.`,

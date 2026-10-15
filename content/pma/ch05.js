@@ -44,6 +44,7 @@ export default {
       num: '5.1',
       kind: 'Definition',
       name: 'The derivative',
+      credit: 'Newton & Leibniz, 1684',
       statement: String.raw`Let $f$ be a real function on $[a,b]$. For each $x\in[a,b]$ form the difference quotient
 $$\varphi(t)=\frac{f(t)-f(x)}{t-x}\qquad(a<t<b,\ t\neq x),$$
 and set $f'(x)=\lim_{t\to x}\varphi(t)$ whenever this limit exists in the sense of Definition 4.1. The function $f'$, defined at exactly those points where the limit exists, is the *derivative* of $f$; at such points $f$ is *differentiable*, and $f$ is differentiable on $E\subset[a,b]$ if $f'(x)$ exists for every $x\in E$. Taking only $t>x$ or only $t<x$ gives the right- and left-hand derivatives; at the endpoints $a$ and $b$ the derivative is automatically one-sided.`,
@@ -437,6 +438,7 @@ $$h'(x)=g'(f(x))\,f'(x).$$`,
       num: '5.8',
       kind: 'Theorem',
       name: 'Interior extrema have zero derivative',
+      credit: 'Fermat, 1637',
       statement: String.raw`Let $f$ be defined on $[a,b]$. If $f$ has a local maximum at a point $x\in(a,b)$ and $f'(x)$ exists, then $f'(x)=0$. The same conclusion holds at a local minimum.`,
       idea: String.raw`Choose $\delta$ as in Definition 5.7 with $a<x-\delta<x+\delta<b$. For $x-\delta<t<x$ the quotient $\frac{f(t)-f(x)}{t-x}$ has a numerator $\le0$ and a negative denominator, so it is $\ge0$; for $x<t<x+\delta$ it is $\le0$. Letting $t\to x$ from the left and from the right gives $f'(x)\ge0$ and $f'(x)\le0$.`,
       caption: String.raw`Drag $x$ along the graph (it snaps to the extrema) and move the offset $h$. At a local maximum the left secants (teal) slope up and the right secants (purple) slope down, so in the lower panel the quotients $\varphi(t)$ are confined to the green quadrants and squeezed to $0$. Break the hypotheses: at the kink $f'(x)$ does not exist, and at the endpoint maximum $x=b$ only left quotients are available, so $f'(b)\ne0$ is possible.`,

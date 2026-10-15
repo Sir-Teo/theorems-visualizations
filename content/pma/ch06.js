@@ -131,6 +131,7 @@ export default {
       num: '6.1',
       kind: 'Definition',
       name: 'Partitions, upper and lower sums, the Riemann integral',
+      credit: 'Riemann, 1854',
       statement: String.raw`A **partition** $P$ of $[a,b]$ is a finite set of points $a=x_0\le x_1\le\cdots\le x_n=b$; put $\Delta x_i=x_i-x_{i-1}$. For a bounded real function $f$ on $[a,b]$ let $M_i$ and $m_i$ be the supremum and infimum of $f$ on $[x_{i-1},x_i]$, and set
 $$U(P,f)=\sum_{i=1}^n M_i\,\Delta x_i,\qquad L(P,f)=\sum_{i=1}^n m_i\,\Delta x_i .$$
 The **upper integral** $\overline{\int_a^b} f\,dx$ is the infimum of $U(P,f)$ over all partitions, and the **lower integral** $\underline{\int_a^b} f\,dx$ is the supremum of $L(P,f)$. When the two agree, $f$ is **Riemann-integrable** on $[a,b]$, written $f\in\mathscr R$, and the common value is $\int_a^b f\,dx$. If $m\le f\le M$ then $m(b-a)\le L(P,f)\le U(P,f)\le M(b-a)$ for every $P$, so both integrals are finite for every bounded $f$.`,
@@ -199,6 +200,7 @@ The **upper integral** $\overline{\int_a^b} f\,dx$ is the infimum of $U(P,f)$ ov
       num: '6.2',
       kind: 'Definition',
       name: 'Riemann–Stieltjes sums and the class ℛ(α)',
+      credit: 'Stieltjes, 1894',
       statement: String.raw`Let $\alpha$ be monotonically increasing on $[a,b]$; then $\alpha$ is bounded there. For a partition $P$ put $\Delta\alpha_i=\alpha(x_i)-\alpha(x_{i-1})\ \ (\ge 0)$, and for a bounded real $f$ on $[a,b]$ define
 $$U(P,f,\alpha)=\sum_{i=1}^n M_i\,\Delta\alpha_i,\qquad L(P,f,\alpha)=\sum_{i=1}^n m_i\,\Delta\alpha_i ,$$
 with $M_i,m_i$ the supremum and infimum of $f$ on $[x_{i-1},x_i]$. The upper integral $\overline{\int_a^b} f\,d\alpha$ is the infimum of $U(P,f,\alpha)$ over all $P$ and the lower integral $\underline{\int_a^b} f\,d\alpha$ is the supremum of $L(P,f,\alpha)$. If they are equal, $f$ is said to be integrable with respect to $\alpha$, written $f\in\mathscr R(\alpha)$, and the common value $\int_a^b f\,d\alpha$ is the **Riemann–Stieltjes integral** of $f$ with respect to $\alpha$. The choice $\alpha(x)=x$ gives back Definition 6.1; $\alpha$ is not required to be continuous.`,

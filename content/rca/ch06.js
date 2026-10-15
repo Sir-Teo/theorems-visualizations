@@ -412,6 +412,7 @@ is a norm on it (finite by 6.4); one has $|\mu+\lambda|\le|\mu|+|\lambda|$ and $
       num: '6.6',
       kind: 'Definition',
       name: 'Positive and negative variations; Jordan decomposition',
+      credit: 'Jordan, 1881',
       verify: true,
       statement: String.raw`Let $\mu$ be a real measure on $\mathfrak M$. Its **positive** and **negative variations** are
 $$\mu^+=\tfrac12\big(|\mu|+\mu\big),\qquad \mu^-=\tfrac12\big(|\mu|-\mu\big).$$

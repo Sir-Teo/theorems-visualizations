@@ -175,6 +175,7 @@ $$\Big|\int_X f\,d\mu\Big|\le\int_X|f|\,d\mu .$$`,
       num: '1.34',
       kind: 'Theorem',
       name: "Lebesgue's dominated convergence theorem",
+      credit: 'Lebesgue, 1908',
       statement: String.raw`Let $\{f_n\}$ be complex measurable functions on $X$ such that $f(x)=\lim_{n\to\infty}f_n(x)$ exists for every $x\in X$. If there is $g\in L^1(\mu)$ with
 $$|f_n(x)|\le g(x)\qquad(n=1,2,3,\ldots;\ x\in X),$$
 then $f\in L^1(\mu)$,

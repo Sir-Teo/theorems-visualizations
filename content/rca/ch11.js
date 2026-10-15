@@ -204,6 +204,7 @@ the differential is the real-linear map $h\mapsto\alpha h+\beta\bar h$, split in
       num: '11.2',
       kind: 'Theorem',
       name: 'The Cauchy–Riemann equations',
+      credit: 'Cauchy & Riemann, 1814',
       statement: String.raw`Let $f$ be a complex function in an open set $\Omega\subset\C$ and assume that $f$, as a map of $\Omega\subset\R^2$ into $\R^2$, is differentiable at every point. Then the following are equivalent:
 (a) $f\in H(\Omega)$;
 (b) $\bar\partial f=0$ at every point of $\Omega$ (the Cauchy–Riemann equation).

@@ -188,6 +188,7 @@ In particular $f^{(k)}(0)=k!\,c_k$ for $k=0,1,2,\dots$`,
       num: '8.2',
       kind: 'Theorem',
       name: "Abel's theorem",
+      credit: 'Abel, 1826',
       statement: String.raw`Suppose $\sum_{n=0}^\infty c_n$ converges, and put $f(x)=\sum_{n=0}^{\infty} c_n x^n$ for $-1<x<1$. Then
 $$\lim_{x\to 1^-} f(x)=\sum_{n=0}^{\infty} c_n .$$`,
       idea: String.raw`With partial sums $s_n=c_0+\dots+c_n$, summation by parts (3.41) gives $f(x)=(1-x)\sum_{n\ge0} s_n x^n$ for $|x|<1$. The weights $(1-x)x^n$ are positive and add up to $1$, so $f(x)-s=(1-x)\sum (s_n-s)x^n$. Choose $N$ with $|s_n-s|<\eps$ for $n>N$: the first $N$ terms carry total weight $\le (1-x)(N+1)$, which tends to $0$ as $x\to1$, and the rest contribute at most $\eps$.`,

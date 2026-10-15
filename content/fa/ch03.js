@@ -111,6 +111,7 @@ export default {
       num: '3.2',
       kind: 'Theorem',
       name: 'Hahn–Banach extension, dominated form',
+      credit: 'Hahn & Banach, 1927',
       statement: String.raw`Let $M$ be a subspace of a real vector space $X$, and let $p:X\to\R$ be sublinear, i.e. $p(x+y)\le p(x)+p(y)$ and $p(tx)=t\,p(x)$ for $x,y\in X$, $t\ge0$. If $f:M\to\R$ is linear and $f(x)\le p(x)$ on $M$, then there is a linear $\Lambda:X\to\R$ with $\Lambda x=f(x)$ on $M$ and
 $$-p(-x)\le\Lambda x\le p(x)\qquad(x\in X).$$`,
       idea: String.raw`The heart is a one-dimensional step: to extend $f$ to $M\oplus\R x_1$ one needs a number $\alpha=\Lambda x_1$ with $f(y)-p(y-x_1)\le\alpha\le p(y+x_1)-f(y)$ for all $y\in M$, and subadditivity of $p$ shows that every left-hand side is at most every right-hand side, so such an $\alpha$ exists. Zorn's lemma applied to the dominated extensions, ordered by inclusion, gives a maximal one, which by the step must be defined on all of $X$. The lower bound is $-\Lambda x=\Lambda(-x)\le p(-x)$.`,
@@ -205,6 +206,7 @@ $$-p(-x)\le\Lambda x\le p(x)\qquad(x\in X).$$`,
       num: '3.3',
       kind: 'Theorem',
       name: 'Hahn–Banach extension for seminorms (real or complex)',
+      credit: 'Hahn & Banach, 1927',
       statement: String.raw`Let $M$ be a subspace of a vector space $X$ over $\R$ or $\C$, let $p$ be a seminorm on $X$, and let $f$ be a linear functional on $M$ with $|f(x)|\le p(x)$ for all $x\in M$. Then $f$ extends to a linear functional $\Lambda$ on $X$ with $|\Lambda x|\le p(x)$ for all $x\in X$.`,
       idea: String.raw`Over $\R$, apply 3.2: a seminorm is sublinear and $-p(-x)=-p(x)$, so the two-sided bound becomes $|\Lambda x|\le p(x)$. Over $\C$, write $u=\Re f$; then $f(x)=u(x)-i\,u(ix)$. Extend the real-linear $u$ by the real case to $U$ with $|U|\le p$ and put $\Lambda x=U(x)-iU(ix)$, which is complex-linear and extends $f$. Choosing $|\alpha|=1$ with $\alpha\Lambda x=|\Lambda x|$ gives $|\Lambda x|=U(\alpha x)\le p(\alpha x)=p(x)$.`,
       caption: String.raw`A real picture in $X=\R^2$. Left: the unit ball $\{p\le1\}$ of the chosen seminorm, the line $M$, and the points $\pm m$ where $f=\pm1$; each extension $\Lambda$ gives a strip $\{|\Lambda|\le 1\}$ (green) that must contain the ball. Right, in $X^*$: the dual ball $\{\Lambda:|\Lambda|\le p\}$ and the line of functionals that agree with $f$ on $M$; their intersection (green) is the set of **all** extensions. Drag $\Lambda$ along it, try the degenerate seminorm $|x_1|$, and push $\|f\|$ past $1$.`,
@@ -282,6 +284,7 @@ $$-p(-x)\le\Lambda x\le p(x)\qquad(x\in X).$$`,
       num: '3.4',
       kind: 'Theorem',
       name: 'Hahn–Banach separation theorem',
+      credit: 'Hahn & Banach, 1927',
       statement: String.raw`Let $A$ and $B$ be disjoint, nonempty, convex subsets of a topological vector space $X$.
 (a) If $A$ is open, there exist $\Lambda\in X^*$ and $\gamma\in\R$ with $\Re\Lambda x<\gamma\le\Re\Lambda y$ for all $x\in A$, $y\in B$.
 (b) If $A$ is compact, $B$ is closed, and $X$ is locally convex, there exist $\Lambda\in X^*$ and $\gamma_1<\gamma_2$ with $\Re\Lambda x<\gamma_1<\gamma_2<\Re\Lambda y$ for all $x\in A$, $y\in B$.`,

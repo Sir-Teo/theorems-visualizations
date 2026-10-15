@@ -190,6 +190,7 @@ $$|\lambda|(E)=\int_E|g|\,d\mu\qquad(E\in\mathfrak M).$$`,
       num: '6.14',
       kind: 'Theorem',
       name: 'Hahn decomposition theorem',
+      credit: 'Hahn, 1921',
       statement: String.raw`Let $\mu$ be a real measure on a σ-algebra $\mathfrak M$ in $X$. Then there are sets $A,B\in\mathfrak M$ with $A\cup B=X$, $A\cap B=\varnothing$, such that
 $$\mu^+(E)=\mu(A\cap E),\qquad\mu^-(E)=-\mu(B\cap E)\qquad(E\in\mathfrak M).$$`,
       idea: String.raw`By 6.12, $d\mu=h\,d|\mu|$ with $|h|=1$; as $\mu$ is real, $h$ is real a.e., so we may take $h=\pm1$. Let $A=\{h=1\}$, $B=\{h=-1\}$. Since $\tfrac12(1+h)=\chi_A$,
@@ -306,6 +307,7 @@ and similarly for $\mu^-$ with $\tfrac12(1-h)=\chi_B$. Thus $A$ is a positive se
       num: '6.16',
       kind: 'Theorem',
       name: 'The dual of Lᵖ(μ) is L^q(μ) (1 ≤ p < ∞)',
+      credit: 'F. Riesz, 1910',
       statement: String.raw`Suppose $1\le p<\infty$, $\mu$ is a σ-finite positive measure on $X$, and $\Phi$ is a bounded linear functional on $L^p(\mu)$. Then there is a unique $g\in L^q(\mu)$, where $q$ is the exponent conjugate to $p$, such that
 $$\Phi(f)=\int_X fg\,d\mu\qquad(f\in L^p(\mu)),$$
 and $\|\Phi\|=\|g\|_q$. Thus $L^q(\mu)$ is isometrically isomorphic to the dual space of $L^p(\mu)$.`,
@@ -402,6 +404,7 @@ which is bounded, with $|\Phi_\mu(f)|\le\|f\|_\infty|\mu|(X)$.`,
       num: '6.19',
       kind: 'Theorem',
       name: 'Riesz representation theorem for C₀(X)*',
+      credit: 'F. Riesz, 1909',
       statement: String.raw`If $X$ is a locally compact Hausdorff space, then every bounded linear functional $\Phi$ on $C_0(X)$ is represented by a unique regular complex Borel measure $\mu$, in the sense that
 $$\Phi f=\int_X f\,d\mu\qquad(f\in C_0(X)).$$
 Moreover $\|\Phi\|=|\mu|(X)$.`,

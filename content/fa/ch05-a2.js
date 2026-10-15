@@ -69,6 +69,7 @@ export default {
       num: '5.7',
       kind: 'Theorem',
       name: "Bishop's generalized Stone–Weierstrass theorem",
+      credit: 'Bishop, 1961',
       statement: String.raw`Let $A$ be a closed subalgebra of $C(S)$, $S$ compact Hausdorff, that contains the constants, and let $\mathscr K$ be the collection of maximal $A$-antisymmetric sets. If $g\in C(S)$ and, for every $E\in\mathscr K$, the restriction $g|_E$ agrees with the restriction to $E$ of some member of $A$, then $g\in A$.
 
 In particular, if $A$ is closed under conjugation and separates points, every $E\in\mathscr K$ is a point and $A=C(S)$ (the complex Stone–Weierstrass theorem).`,
@@ -180,6 +181,7 @@ In particular, if $A$ is closed under conjugation and separates points, every $E
       num: '5.9',
       kind: 'Theorem',
       name: "Bishop's peak-interpolation theorem",
+      credit: 'Bishop, 1962',
       statement: String.raw`Let $S$, $Y$ and $K$ be as in 5.8: $Y$ a closed subspace of $C(S)$ and $K\subset S$ compact with $|\mu|(K)=0$ for every $\mu\in Y^\perp$. Let $\psi\in C(S)$ be strictly positive and $f\in C(K)$ with $|f(p)|<\psi(p)$ for all $p\in K$. Then there is $F\in Y$ with $F|_K=f$ and $|F(x)|<\psi(x)$ for **every** $x\in S$.
 
 For the disc algebra and a closed set $K\subset\T$ of Lebesgue measure $0$ this contains the *Rudin–Carleson theorem*: every $f\in C(K)$ extends to a member of the disc algebra (with the dominant $\psi$ as close to $|f|$ on $K$ as desired).`,

@@ -322,6 +322,7 @@ Then:
       num: '16.22',
       kind: 'Theorem',
       name: "Picard's theorem",
+      credit: 'Picard, 1879',
       verify: true,
       statement: String.raw`If $f$ is an entire function and there are two distinct complex numbers $\alpha$ and $\beta$ that are not in the range of $f$, then $f$ is constant.`,
       idea: String.raw`Compose with an affine map so that $\alpha=0$ and $\beta=1$; then $f$ maps $\C$ into $\Omega=\C\setminus\{0,1\}$. Every point of $\Omega$ has a neighbourhood on which $\lambda$ (16.19) has holomorphic local inverses, and these local inverses can be continued along every curve in $\Omega$. So the element $\lambda^{-1}\circ f$ at $0$ can be continued along every curve in the plane. The plane is simply connected, so the monodromy theorem (16.15) gives an entire $g$ with $\lambda\circ g=f$ and $g(\C)\subset\Pi^+$. Then $(g-i)/(g+i)$ is a bounded entire function, constant by Liouville's theorem (10.23). Hence $g$, and so $f$, is constant.`,

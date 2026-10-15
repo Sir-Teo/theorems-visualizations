@@ -216,6 +216,7 @@ Conversely, every $P[d\mu]$ satisfies $\|u_r\|_1\le\|\mu\|$, and every $P[f]$ wi
       num: '11.32',
       kind: 'Theorem',
       name: 'Bounded holomorphic functions have radial limits a.e.',
+      credit: 'Fatou, 1906',
       verify: true,
       statement: String.raw`Let $f$ be a bounded holomorphic function in $U$ ($f\in H^\infty$). Then the radial limit
 $$f^*(e^{i\theta})=\lim_{r\to1}f(re^{i\theta})$$

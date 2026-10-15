@@ -289,6 +289,7 @@ so $\mathscr R(T)$ is dense iff $T^*$ is one-to-one. If moreover $T$ is closed, 
       num: '13.13',
       kind: 'Theorem',
       name: 'von Neumann: I + T*T is invertible and T*T is self-adjoint',
+      credit: 'von Neumann, 1932',
       statement: String.raw`Let $T$ be closed and densely defined, and $Q=I+T^*T$ with $\mathscr D(Q)=\mathscr D(T^*T)$. Then $Q$ maps $\mathscr D(Q)$ one-to-one onto $H$, and
 $$B=Q^{-1},\qquad C=TQ^{-1}$$
 are bounded, with $\norm B\le1$, $\norm C\le1$, $B\ge0$. Moreover $T^*T$ is self-adjoint, and $\mathscr D(T^*T)$ is a core for $T$.`,

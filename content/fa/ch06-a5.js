@@ -137,6 +137,7 @@ Thus $u*\varphi$ is a complex function on $\R^n$: at $x$, the distribution $u$ i
       num: '6.31',
       kind: 'Definition',
       name: 'Approximate identities (mollifiers)',
+      credit: 'Friedrichs, 1944',
       statement: String.raw`Fix $h\in\mathscr D(\R^n)$ with $h\ge0$, $\int h\,dm_n=1$ and support in the closed unit ball, and put $h_j(x)=j^nh(jx)$ for $j=1,2,3,\dots$. The sequence $\{h_j\}$ is an **approximate identity**: each $h_j$ has integral $1$ and support in the ball of radius $1/j$.`,
       idea: String.raw`Convolving with $h_j$ averages over smaller and smaller balls. Because $h_j$ is smooth, $u*h_j$ is a $C^\infty$ function for every distribution $u$ (6.30), so $\{h_j\}$ is the standard tool for smoothing distributions — see 6.32.`,
       deps: ['fa-6.29'],

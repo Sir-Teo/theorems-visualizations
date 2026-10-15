@@ -34,6 +34,7 @@ export default {
       num: '2.3',
       kind: 'Definition',
       name: 'Equivalent sets (same cardinal number)',
+      credit: 'Cantor, 1878',
       statement: String.raw`Two sets $A$ and $B$ are **equivalent**, written $A\sim B$, if there is a mapping of $A$ onto $B$ that is one-to-one (a bijection); one also says that $A$ and $B$ have the same cardinal number. The relation $\sim$ is
 (a) reflexive: $A\sim A$;
 (b) symmetric: $A\sim B$ implies $B\sim A$;
@@ -129,6 +130,7 @@ export default {
       num: '2.4',
       kind: 'Definition',
       name: 'Finite, countable and uncountable sets',
+      credit: 'Cantor, 1874',
       statement: String.raw`For a positive integer $n$ let $J_n=\{1,2,\dots,n\}$, and let $J=\{1,2,3,\dots\}$. A set $A$ is
 (a) **finite** if $A\sim J_n$ for some $n$ (the empty set is also called finite);
 (b) **infinite** if it is not finite;
@@ -431,6 +433,7 @@ export default {
       num: '2.13a',
       kind: 'Corollary',
       name: 'The rational numbers are countable',
+      credit: 'Cantor, 1874',
       statement: String.raw`The set $\Q$ of all rational numbers is countable.`,
       idea: String.raw`Every rational number has the form $b/a$ with $b\in\Z$ and $a\in J$. The pairs $(a,b)$ form a countable set by 2.13 (the integers are countable), so the set of quotients $b/a$ is at most countable; it is infinite, so it is countable (2.8). That different pairs such as $(2,1)$ and $(4,2)$ name the same rational only produces harmless repetitions.`,
       caption: String.raw`The lattice point $(a,b)$ names the rational $b/a$, the slope of the ray from the origin; read it off where the ray crosses the green line $a=1$. Pairs are visited shell by shell ($a+|b|$ constant, dashed). A point on an already-used ray is a repeat (red) and is skipped. Watch the green line fill up with a set that is dense, yet listed one element at a time.`,
@@ -486,6 +489,7 @@ export default {
       num: '2.14',
       kind: 'Theorem',
       name: "Cantor's diagonal argument: 0–1 sequences are uncountable",
+      credit: 'Cantor, 1891',
       statement: String.raw`Let $A$ be the set of all sequences $s=(s(1),s(2),s(3),\dots)$ whose terms are $0$ or $1$. Then $A$ is uncountable.`,
       idea: String.raw`Take any countable subset $E=\{s_1,s_2,s_3,\dots\}$ of $A$ and flip its diagonal: $s(n)=1-s_n(n)$. Then $s\in A$ but $s$ differs from $s_n$ in the $n$-th term, so $s\notin E$. Thus every countable subset of $A$ is a proper subset, and $A$ cannot be countable; it is clearly infinite. Reading binary expansions, the same argument shows that $\R$ is uncountable.`,
       caption: String.raw`Click any digit to change the list. The orange diagonal determines the green sequence $s$: each diagonal digit is flipped, so $s$ disagrees with row $i$ in column $i$. Press **Append** to add $s$ to the list (its label turns green): the diagonal grows and a new missing sequence appears. (Digits of $s$ past the last row are decided by later rows of the infinite list.)`,

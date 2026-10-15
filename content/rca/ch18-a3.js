@@ -206,6 +206,7 @@ A proper ideal contains no invertible element — if $x\in J$ were invertible, e
       num: '18.17',
       kind: 'Theorem',
       name: 'Gelfand: maximal ideals are kernels of homomorphisms',
+      credit: 'Gelfand, 1941',
       statement: String.raw`Let $A$ be a commutative Banach algebra and $\Delta$ the set of all nonzero complex homomorphisms of $A$.
 (a) Every maximal ideal of $A$ is the kernel of some $h\in\Delta$.
 (b) If $h\in\Delta$, the kernel of $h$ is a maximal ideal of $A$.
@@ -285,6 +286,7 @@ Writing $\hat x(h)=h(x)$, (e) says that $\sigma(x)$ is the range of the function
       num: '18.21',
       kind: 'Theorem',
       name: "Wiener's lemma: 1/f has an absolutely convergent Fourier series",
+      credit: 'Wiener, 1932',
       statement: String.raw`Suppose $f$ is a continuous function on the unit circle whose Fourier series converges absolutely,
 $$f(e^{it})=\sum_{n=-\infty}^{\infty}c_ne^{int},\qquad \sum_{n=-\infty}^{\infty}\abs{c_n}<\infty,$$
 and $f(e^{it})\neq0$ for every real $t$. Then $1/f$ also has an absolutely convergent Fourier series.`,

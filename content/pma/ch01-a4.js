@@ -12,6 +12,7 @@ export default {
       num: '1.33',
       kind: 'Theorem',
       name: 'Properties of |z|; the triangle inequality',
+      credit: 'Euclid, c. 300 BCE',
       statement: String.raw`For complex numbers $z$ and $w$:
 (a) $|z|>0$ unless $z=0$, and $|0|=0$;
 (b) $|\bar z|=|z|$;
@@ -74,6 +75,7 @@ then use $\Re(z\bar w)\le|z\bar w|=|z|\,|w|$ (by (d), (c), (b)) to get $|z+w|^2\
       num: '1.35',
       kind: 'Theorem',
       name: 'Schwarz inequality',
+      credit: 'Cauchy, 1821',
       statement: String.raw`If $a_1,\dots,a_n$ and $b_1,\dots,b_n$ are complex numbers, then
 $$\Big|\sum_{j=1}^n a_j\bar b_j\Big|^2\le\sum_{j=1}^n|a_j|^2\,\sum_{j=1}^n|b_j|^2 .$$`,
       idea: String.raw`Put $A=\sum|a_j|^2$, $B=\sum|b_j|^2$, $C=\sum a_j\bar b_j$. If $B=0$ every $b_j$ is $0$ and both sides vanish. Otherwise expand a sum of squares:

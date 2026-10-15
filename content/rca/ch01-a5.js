@@ -246,6 +246,7 @@ lie in $S$ for every $E\in\mathfrak M$ with $\mu(E)>0$. Then $f(x)\in S$ for alm
       num: '1.41',
       kind: 'Theorem',
       name: 'Borel–Cantelli: summable measures, finitely many hits',
+      credit: 'Borel & Cantelli, 1909',
       statement: String.raw`Let $\{E_k\}$ be a sequence of measurable sets in $X$ with
 $$\sum_{k=1}^\infty\mu(E_k)<\infty .$$
 Then almost every $x\in X$ lies in at most finitely many of the sets $E_k$.`,

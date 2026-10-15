@@ -100,6 +100,7 @@ $$(f*g)^\wedge=\hat f\,\hat g,\qquad(fg)^\wedge=\hat f*\hat g .$$`,
       num: '7.9',
       kind: 'Theorem',
       name: 'The Plancherel theorem',
+      credit: 'Plancherel, 1910',
       statement: String.raw`There is a linear isometry $\Psi$ of $L^2(\R^n)$ onto $L^2(\R^n)$, uniquely determined by
 $$\Psi f=\hat f\qquad(f\in\mathscr S_n).$$
 It satisfies $\langle\Psi f,\Psi g\rangle=\langle f,g\rangle$, agrees with the Fourier transform on $L^1\cap L^2$, and $\Psi f$ is the $L^2$-limit of the truncated transforms $\int_{|x|\le A}f\,e_{-t}\,dm_n$ as $A\to\infty$.`,

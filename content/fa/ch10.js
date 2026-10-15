@@ -381,6 +381,7 @@ Then $f(\lambda)=1$ for every $\lambda\in\C$.`,
       num: '10.9',
       kind: 'Theorem',
       name: 'Gleason–Kahane–Żelazko theorem',
+      credit: 'Gleason, Kahane & Żelazko, 1967',
       statement: String.raw`Let $\varphi$ be a linear functional on a Banach algebra $A$ — continuity is not assumed — such that $\varphi(e)=1$ and $\varphi(x)\ne0$ for every $x\in G(A)$. Then
 $$\varphi(xy)=\varphi(x)\varphi(y)\qquad(x,y\in A),$$
 so $\varphi$ is a complex homomorphism (and in particular continuous, with $\norm\varphi=1$).`,

@@ -36,6 +36,7 @@ export default {
       num: '3.8',
       kind: 'Definition',
       name: 'Cauchy sequence',
+      credit: 'Cauchy, 1821',
       statement: String.raw`A sequence $\{p_n\}$ in a metric space $X$ is a *Cauchy sequence* if for every $\eps>0$ there is an integer $N$ such that $d(p_n,p_m)<\eps$ whenever $n\ge N$ and $m\ge N$.`,
       idea: String.raw`The condition never mentions a limit: it only asks that late terms be close *to one another* — all pairs, not just consecutive ones. Every convergent sequence is Cauchy (3.11(a)); whether every Cauchy sequence converges is a property of the space, called completeness (3.12).`,
       caption: String.raw`The right panel is the matrix of all distances $d(p_m,p_n)$, $1\le m,n\le 48$: blue cells are below $\eps$, red cells are not. The sequence is Cauchy when some square $[N,\infty)^2$ — outlined in green — is free of red. Hover a cell to see the pair on the left. The harmonic partial sums have steps $1/n\to0$ hugging the diagonal, yet far-apart pairs stay red: not Cauchy.`,

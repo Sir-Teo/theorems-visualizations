@@ -190,6 +190,7 @@ This $g$ is odd: $g(-z)=-g(z)$.`,
       num: '14.12',
       kind: 'Theorem',
       name: 'The area theorem',
+      credit: 'Gronwall, 1914',
       verify: true,
       statement: String.raw`Let $V=\{\zeta:|\zeta|>1\}$ and let $F\in H(V)$ be one-to-one in $V$, with
 $$F(\zeta)=\zeta+\sum_{n=0}^\infty\alpha_n\zeta^{-n}\qquad(\zeta\in V).$$
@@ -249,6 +250,7 @@ Then $\displaystyle\sum_{n=1}^\infty n|\alpha_n|^2\le1$.`,
       num: '14.13',
       kind: 'Theorem',
       name: "|a₂| ≤ 2 and Koebe's one-quarter theorem",
+      credit: 'Bieberbach, 1916',
       verify: true,
       statement: String.raw`If $f\in\mathscr S$ and $f(z)=z+\sum_{n\ge2}a_nz^n$, then
 (a) $|a_2|\le2$, and

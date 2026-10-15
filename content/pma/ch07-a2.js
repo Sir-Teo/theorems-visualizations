@@ -97,6 +97,7 @@ export default {
       num: '7.13',
       kind: 'Theorem',
       name: "Dini's theorem",
+      credit: 'Dini, 1878',
       statement: String.raw`Suppose $K$ is compact and
 (a) $\{f_n\}$ is a sequence of continuous functions on $K$,
 (b) $f_n\to f$ pointwise on $K$, where $f$ is continuous on $K$,

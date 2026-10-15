@@ -122,6 +122,7 @@ export default {
       num: '13.6',
       kind: 'Theorem',
       name: "Runge's theorem",
+      credit: 'Runge, 1885',
       statement: String.raw`Let $K\subset\C$ be compact and let $A$ be a set containing at least one point of each component of $S^2\setminus K$ (the point $\infty$ is allowed). If $\Omega\supset K$ is open, $f\in H(\Omega)$ and $\eps>0$, then there is a rational function $R$, all of whose poles lie in $A$, such that
 $$|f(z)-R(z)|<\eps\qquad\text{for every }z\in K.$$`,
       idea: String.raw`Let $X$ be the closure in $C(K)$ of the rational functions with poles in $A$. By the Hahn–Banach criterion (5.19) and the Riesz representation theorem (6.19) it suffices to show $\int_K f\,d\mu=0$ for every complex measure $\mu$ on $K$ that annihilates $X$. Put $h(z)=\int_K\frac{d\mu(\zeta)}{\zeta-z}$ for $z\notin K$. Near a point $\alpha\in A$, expanding $\frac1{\zeta-z}$ in powers of $\frac{1}{\zeta-\alpha}$ (or of $\zeta$ when $\alpha=\infty$) shows that all Taylor coefficients of $h$ are integrals of functions in $X$, so $h=0$ near $\alpha$; by the identity theorem $h=0$ on the whole component containing $\alpha$, hence on $S^2\setminus K$. Finally Cauchy's formula over the cycle of 13.5 and Fubini's theorem give $\int_K f\,d\mu=-\frac{1}{2\pi i}\int_\Gamma f(\zeta)h(\zeta)\,d\zeta=0$.`,
@@ -338,6 +339,7 @@ $$|f(z)-R(z)|<\eps\qquad\text{for every }z\in K.$$`,
       num: '13.9',
       kind: 'Theorem',
       name: 'Runge’s theorem for open sets',
+      credit: 'Runge, 1885',
       verify: true,
       statement: String.raw`Let $\Omega\subset\C$ be open, let $A$ be a set with at least one point in each component of $S^2\setminus\Omega$, and let $f\in H(\Omega)$. Then there are rational functions $R_n$, with all poles in $A$, such that $R_n\to f$ uniformly on every compact subset of $\Omega$.
 

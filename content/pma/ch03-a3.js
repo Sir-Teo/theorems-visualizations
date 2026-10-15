@@ -233,6 +233,7 @@ $$\liminf_{n\to\infty}s_n\le\liminf_{n\to\infty}t_n\qquad\text{and}\qquad\limsup
       num: '3.22',
       kind: 'Theorem',
       name: 'Cauchy criterion for series',
+      credit: 'Cauchy, 1821',
       statement: String.raw`$\sum a_n$ converges if and only if for every $\eps>0$ there is an integer $N$ such that
 $$\Big|\sum_{k=n}^{m}a_k\Big|\le\eps\qquad\text{whenever } m\ge n\ge N .$$`,
       idea: String.raw`A block sum is a difference of partial sums: $\sum_{k=n}^m a_k=s_m-s_{n-1}$. So the condition says exactly that $\{s_n\}$ is a Cauchy sequence, and Cauchy sequences of real or complex numbers converge (3.11(c)).`,

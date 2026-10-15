@@ -55,6 +55,7 @@ export default {
       num: '1.2',
       kind: 'Definition',
       name: 'Topological space and continuous map',
+      credit: 'Hausdorff, 1914',
       statement: String.raw`A **topology** on a set $X$ is a family $\tau$ of subsets of $X$ such that
 (i) $\emptyset\in\tau$ and $X\in\tau$;
 (ii) the intersection of finitely many members of $\tau$ is in $\tau$;
@@ -452,6 +453,7 @@ It follows at once that $\emptyset\in\mathfrak M$ and that $\mathfrak M$ is clos
       num: '1.11',
       kind: 'Definition',
       name: 'Borel sets and Borel mappings',
+      credit: 'Borel, 1898',
       statement: String.raw`Let $X$ be a topological space. By Theorem 1.10 there is a smallest σ-algebra $\mathscr B$ in $X$ containing every open set; its members are the **Borel sets** of $X$. In particular closed sets, countable unions of closed sets ($F_\sigma$'s) and countable intersections of open sets ($G_\delta$'s) are Borel sets. Regarding $X$ as the measurable space $(X,\mathscr B)$, a map $f$ of $X$ into a topological space is a **Borel mapping** (Borel measurable) when $f^{-1}(V)\in\mathscr B$ for every open $V$; continuous maps are Borel mappings.`,
       idea: String.raw`The Borel σ-algebra is the bridge between the two parallel theories: once $X$ carries $\mathscr B$, every continuous map is measurable, and every measurable function can be composed with Borel maps (Theorem 1.12(d)).`,
       deps: ['rca-1.10', 'rca-1.2'],

@@ -489,6 +489,7 @@ and the same holds for $n=-2,-3,-4,\dots$ provided $0\notin\gamma^*$.`,
       num: '10.13',
       kind: 'Theorem',
       name: 'Cauchy–Goursat theorem for triangles',
+      credit: 'Cauchy & Goursat, 1825',
       statement: String.raw`Let $\Delta$ be a closed triangle in a plane open set $\Omega$, let $p\in\Omega$, and let $f$ be continuous on $\Omega$ with $f\in H(\Omega\setminus\{p\})$. Then
 $$\int_{\partial\Delta}f(z)\,dz=0 .$$`,
       idea: String.raw`First let $p\notin\Delta$. Joining the midpoints of the sides splits $\Delta$ into four triangles whose boundary integrals add up to $\int_{\partial\Delta}f$ (the inner edges cancel), so one of them, $\Delta_1$, has $|\int_{\partial\Delta_1}f|\ge\frac14|\int_{\partial\Delta}f|$. Repeating gives nested triangles $\Delta_n$ with $|\int_{\partial\Delta}f|\le4^n|\int_{\partial\Delta_n}f|$, shrinking to a point $z_0$ (pma-2.36a). Differentiability at $z_0$ and 10.12a (linear functions integrate to $0$) give $|\int_{\partial\Delta_n}f|\le\eps\,d\,\ell\,4^{-n}$, so $|\int_{\partial\Delta}f|\le\eps\,d\,\ell$ for every $\eps>0$. If $p$ is a vertex, cut off a tiny corner triangle whose contribution is small because $f$ is bounded; other positions of $p$ reduce to this case.`,

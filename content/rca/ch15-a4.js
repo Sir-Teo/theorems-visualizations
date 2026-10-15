@@ -197,6 +197,7 @@ $$\lim_{r\to1}\frac1{2\pi}\int_{-\pi}^{\pi}\log\big|B(re^{i\theta})\big|\,d\thet
       num: '15.26',
       kind: 'Theorem',
       name: 'Müntz–Szász theorem',
+      credit: 'Müntz & Szász, 1914',
       statement: String.raw`Let $0<\lambda_1<\lambda_2<\lambda_3<\cdots$ and let $X$ be the closure in $C(I)$, $I=[0,1]$, of the linear span of $1,t^{\lambda_1},t^{\lambda_2},t^{\lambda_3},\dots$
 (a) If $\sum_n1/\lambda_n=\infty$, then $X=C(I)$.
 (b) If $\sum_n1/\lambda_n<\infty$ and $\lambda>0$ is not one of the $\lambda_n$, then $t^\lambda\notin X$.`,

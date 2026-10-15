@@ -38,6 +38,7 @@ export default {
       num: '7.18',
       kind: 'Theorem',
       name: 'A continuous, nowhere differentiable function',
+      credit: 'Weierstrass, 1872',
       statement: String.raw`There is a real-valued continuous function on $\R$ which fails to be differentiable at every point of $\R$. Rudin's example: let $\varphi(x)=|x|$ for $-1\le x\le 1$, extend $\varphi$ to all of $\R$ by $\varphi(x+2)=\varphi(x)$, and set
 $$f(x)=\sum_{n=0}^{\infty}\Big(\tfrac34\Big)^{n}\varphi(4^{n}x).$$`,
       idea: String.raw`Since $0\le\varphi\le1$, the Weierstrass M-test (7.10) makes the series converge uniformly, so $f$ is continuous (7.12). Fix $x$ and an integer $m$, and step by $\delta_m=\pm\tfrac12 4^{-m}$, the sign chosen so that no integer lies strictly between $4^m x$ and $4^m(x+\delta_m)$. For $n>m$, $4^n\delta_m$ is an even integer, so those terms do not move at all; the $m$-th term moves with slope exactly $\pm4^m$, i.e. contributes $3^m$ after the weight $(3/4)^m$; the earlier terms contribute at most $3^n$ each because $|\varphi(s)-\varphi(t)|\le|s-t|$. Hence
@@ -178,6 +179,7 @@ while $\delta_m\to0$, so $f'(x)$ cannot exist.`,
       num: '7.22',
       kind: 'Definition',
       name: 'Equicontinuous family',
+      credit: 'Ascoli, 1884',
       statement: String.raw`A family $\mathscr F$ of complex functions defined on a set $E$ in a metric space $X$ is **equicontinuous** on $E$ if for every $\eps>0$ there is a $\delta>0$ such that
 $$|f(x)-f(y)|<\eps\quad\text{whenever } x,y\in E,\ d(x,y)<\delta,\ f\in\mathscr F .$$
 So a single $\delta$ must serve every point and every member of the family at once.`,
@@ -404,6 +406,7 @@ Finitely many members are handled by compactness, and the infinite tail by unifo
       num: '7.25',
       kind: 'Theorem',
       name: 'Arzelà–Ascoli theorem',
+      credit: 'Arzelà & Ascoli, 1884',
       statement: String.raw`Let $K$ be a compact metric space, $f_n\in\mathscr C(K)$ for $n=1,2,3,\dots$, and suppose $\{f_n\}$ is pointwise bounded and equicontinuous on $K$. Then
 (a) $\{f_n\}$ is uniformly bounded on $K$;
 (b) $\{f_n\}$ has a subsequence that converges uniformly on $K$.`,

@@ -70,6 +70,7 @@ export default {
       num: '1.39',
       kind: 'Theorem',
       name: "Kolmogorov's normability criterion",
+      credit: 'Kolmogorov, 1934',
       statement: String.raw`A topological vector space $X$ is normable if and only if its origin has a convex bounded neighbourhood.`,
       idea: String.raw`A norm ball is convex and bounded. Conversely, if $V$ is a convex bounded neighbourhood of $0$, it contains a convex balanced neighbourhood $U$ (1.14), still bounded. Put $\norm x=\mu_U(x)$: it is a seminorm (1.35), the sets $rU$ are its balls and form a local base by 1.15(c), and it is a norm because $U$ bounded forces $\mu_U(x)>0$ for $x\ne0$ (the space is Hausdorff).`,
       caption: String.raw`Left: in $\R^2$ the quasi-ball $B_p=\{\abs{x_1}^p+\abs{x_2}^p<1\}$ is not convex when $p<1$, but its convex hull (dashed) is still bounded, so its gauge is a norm — here the $\ell^1$ norm. Right: in $L^p[0,1]$ with $0<p<1$ the analogous hull is unbounded. The $n$ functions $f_k=n^{1/p}\mathbf 1_{[(k-1)/n,\,k/n]}$ all have $\Delta(f_k)=\int\abs{f_k}^p=1$, yet their average, the constant $n^{1/p-1}$, has $\Delta=n^{1-p}\to\infty$: no convex neighbourhood of $0$ is bounded, and $L^p$ is not normable. Push $p$ to $1$ and the effect disappears.`,

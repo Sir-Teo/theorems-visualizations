@@ -44,6 +44,7 @@ export default {
       num: '11.21',
       kind: 'Definition',
       name: 'The Lebesgue integral of a nonnegative function',
+      credit: 'Lebesgue, 1902',
       statement: String.raw`Let $E\in\mathfrak M$. For a measurable simple function $s=\sum_{i=1}^nc_iK_{E_i}$ with $c_i>0$ put
 $$I_E(s)=\sum_{i=1}^nc_i\,\mu(E\cap E_i).$$
 For a measurable $f\ge0$ define the **Lebesgue integral**
@@ -379,6 +380,7 @@ The same holds for complex $f=u+iv$, which Rudin calls integrable when $u,v$ are
       num: '11.28',
       kind: 'Theorem',
       name: "Lebesgue's monotone convergence theorem",
+      credit: 'B. Levi, 1906',
       statement: String.raw`Let $E\in\mathfrak M$ and let $\{f_n\}$ be measurable functions with
 $$0\le f_1(x)\le f_2(x)\le\cdots\qquad(x\in E).$$
 If $f_n(x)\to f(x)$ for every $x\in E$, then

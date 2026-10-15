@@ -294,6 +294,7 @@ where $\alpha$ is the number of pairs $(i,j)\in I\times J$ with $i>j$. This prod
       num: '10.17',
       kind: 'Definition',
       name: 'Exterior product of forms',
+      credit: 'Grassmann, 1844',
       statement: String.raw`If $\omega=\sum_Ib_I(\mathbf x)\,dx_I$ is a $p$-form and $\lambda=\sum_Jc_J(\mathbf x)\,dx_J$ is a $q$-form in $E$ (standard presentations), their **product** is the $(p+q)$-form
 $$\omega\wedge\lambda=\sum_{I,J}b_I(\mathbf x)\,c_J(\mathbf x)\,dx_I\wedge dx_J,$$
 with $dx_I\wedge dx_J$ as in 10.16. The product is bilinear and associative, it satisfies $\lambda\wedge\omega=(-1)^{pq}\,\omega\wedge\lambda$, and for a $0$-form $f$ one sets $f\wedge\omega=\omega\wedge f=f\omega$.`,

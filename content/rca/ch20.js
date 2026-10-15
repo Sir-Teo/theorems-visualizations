@@ -353,6 +353,7 @@ $$f(z)=-\frac1\pi\iint_{\R^2}\frac{(\bar\partial f)(\zeta)}{\zeta-z}\,d\xi\,d\et
       num: '20.4',
       kind: 'Theorem',
       name: "Tietze's extension theorem",
+      credit: 'Tietze, 1915',
       verify: true,
       statement: String.raw`Let $K$ be a compact subset of a locally compact Hausdorff space $X$, and let $f\in C(K)$. Then there is a function $F\in C_c(X)$ with $F(x)=f(x)$ for every $x\in K$.`,
       idea: String.raw`Treat $\operatorname{Re}f$ and $\operatorname{Im}f$ separately and normalise to $-1\le f\le1$. Fix an open $W\supset K$ with compact closure (2.7). The sets $\{f\ge\frac13\}$ and $\{f\le-\frac13\}$ are disjoint compact subsets of $K$, so Urysohn's lemma (2.12) gives $g_1\in C_c(X)$, supported in $W$, equal to $\pm\frac13$ on them, with $|g_1|\le\frac13$; then $|f-g_1|\le\frac23$ on $K$. Repeating with the residual gives corrections $|g_n|\le\frac13(\frac23)^{n-1}$ and residuals $|f-\sum_{k\le n}g_k|\le(\frac23)^n$ on $K$. The series $F=\sum g_n$ converges uniformly (M-test, pma 7.10) to a continuous function that vanishes off $W$ and equals $f$ on $K$; moreover $|F|\le\sum\frac13(\frac23)^{n-1}=1$.`,
@@ -450,6 +451,7 @@ $$f(z)=-\frac1\pi\iint_{\R^2}\frac{(\bar\partial f)(\zeta)}{\zeta-z}\,d\xi\,d\et
       num: '20.5',
       kind: 'Theorem',
       name: "Mergelyan's theorem",
+      credit: 'Mergelyan, 1951',
       statement: String.raw`Let $K\subset\C$ be compact with connected complement $\C\setminus K$, and let $f$ be a continuous complex function on $K$ that is holomorphic in the interior of $K$. Then for every $\eps>0$ there is a polynomial $P$ with
 $$|f(z)-P(z)|<\eps\qquad\text{for all }z\in K.$$`,
       idea: String.raw`All three hypotheses are needed: uniform limits of polynomials are continuous on $K$ and holomorphic in its interior, and a bounded component of $\C\setminus K$ obstructs (if $c$ lies in a hole, $\oint(\frac{1}{z-c}-P)\,dz=2\pi i$ around it). For the proof, extend $f$ to the plane (Tietze, 20.4) and let $\omega(\delta)$ be its modulus of continuity. Averaging $f$ against a radial bump of radius $\delta$ gives $\Phi\in C^1_c$ with $|f-\Phi|\le\omega(\delta)$ and $|\bar\partial\Phi|\le2\omega(\delta)/\delta$, and $\Phi=f$ near every point whose $\delta$-disc lies in the interior of $K$ (mean value property), so $\bar\partial\Phi$ lives in a layer $X$ of width $\delta$ along $\C\setminus\operatorname{int}K$. By 20.3, $\Phi$ is the Cauchy integral of $\bar\partial\Phi$ over $X$. Cover $X$ by finitely many discs of radius $\sim\delta$ centred off $K$; since $\C\setminus K$ is connected, each contains a piece $E_j$ of a path to $\infty$ that misses $K$. Replacing the kernel $\frac{1}{z-\zeta}$ for $\zeta$ in the $j$-th disc by $Q_\zeta$ from 20.2 gives $\Psi$, holomorphic off $\bigcup E_j$, hence near $K$, and the two estimates of 20.2 give $|\Phi-\Psi|\le C\,\omega(\delta)$ on $K$ with an absolute constant $C$. Runge's theorem (13.7) approximates $\Psi$ by a polynomial.`,

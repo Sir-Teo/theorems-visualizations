@@ -299,6 +299,7 @@ the sum running over all ordered $n$-tuples with $1\le j_r\le n$. Writing the co
       num: '9.35',
       kind: 'Theorem',
       name: 'Determinant of a product',
+      credit: 'Cauchy & Binet, 1812',
       statement: String.raw`If $[A]$ and $[B]$ are $n\times n$ matrices, then $\det([B][A])=\det[B]\,\det[A]$.`,
       idea: String.raw`Fix $[B]$ and regard $\det([B][A])=\det(B\mathbf x_1,\dots,B\mathbf x_n)$ as a function of the columns $\mathbf x_j$ of $[A]$; it inherits the column rules (b)–(d) of 9.34. Expanding each $\mathbf x_j=\sum_ia(i,j)\mathbf e_i$ by linearity and collapsing the resulting determinants $\det(B\mathbf e_{i_1},\dots,B\mathbf e_{i_n})$ with (c) and (d) to $\pm\det(B\mathbf e_1,\dots,B\mathbf e_n)=\pm\det[B]$ or $0$, one gets $\det([B][A])=\det[B]$ times a sum that does not involve $B$; the case $B=I$ identifies that sum as $\det[A]$. Geometrically, areas are scaled by $|\det A|$ and then by $|\det B|$, and orientation reversals are counted with signs.`,
       caption: String.raw`A region $E$ (with its unit square, dashed) is mapped by $A$ and then by $B$. Drag the columns of $A$ (middle) and of $B$ (right). The readout compares area ratios with $|\det A|$ and $|\det B|$ and checks $\det(BA)=\det B\det A$. The arrows on the boundary show orientation: it flips (pink) once for each factor with negative determinant, so the sign of $\det(BA)$ is the product of the signs.`,
@@ -407,6 +408,7 @@ the sum running over all ordered $n$-tuples with $1\le j_r\le n$. Writing the co
       num: '9.38',
       kind: 'Definition',
       name: 'Jacobian',
+      credit: 'Jacobi, 1841',
       statement: String.raw`If $\mathbf f$ maps an open set $E\subset\R^n$ into $\R^n$ and is differentiable at $\mathbf x\in E$, the **Jacobian** of $\mathbf f$ at $\mathbf x$ is the determinant of the linear operator $\mathbf f'(\mathbf x)$:
 $$J_{\mathbf f}(\mathbf x)=\det\mathbf f'(\mathbf x),\qquad\text{also written}\quad\frac{\partial(y_1,\dots,y_n)}{\partial(x_1,\dots,x_n)}\ \text{ when }(y_1,\dots,y_n)=\mathbf f(x_1,\dots,x_n).$$`,
       idea: String.raw`By 9.36, $J_{\mathbf f}(\mathbf a)\ne0$ is exactly the hypothesis "$\mathbf f'(\mathbf a)$ is invertible" of the inverse function theorem (9.24), and in the implicit function theorem (9.28) the condition on $A_x$ reads $\partial(f_1,\dots,f_n)/\partial(x_1,\dots,x_n)\ne0$. Geometrically $|J_{\mathbf f}(\mathbf x)|$ is the local factor by which $\mathbf f$ multiplies volume and its sign tells whether orientation is kept — the source of the $|J|$ in the change of variables formula (10.9).`,

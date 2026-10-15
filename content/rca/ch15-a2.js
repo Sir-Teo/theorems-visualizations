@@ -82,6 +82,7 @@ export default {
       num: '15.9',
       kind: 'Theorem',
       name: 'Entire functions with prescribed zeros',
+      credit: 'Weierstrass, 1876',
       statement: String.raw`Let $\{z_n\}$ be complex numbers with $z_n\ne0$ and $|z_n|\to\infty$, and put $r_n=|z_n|$. If $\{p_n\}$ are nonnegative integers such that
 $$\sum_{n=1}^\infty\Big(\frac{r}{r_n}\Big)^{1+p_n}<\infty\qquad\text{for every }r>0,$$
 then $P(z)=\prod_{n=1}^\infty E_{p_n}(z/z_n)$ is an entire function whose zeros are exactly the points $z_n$: if $\alpha$ occurs $m$ times in the sequence, $P$ has a zero of order $m$ at $\alpha$. The condition always holds with $p_n=n-1$.`,
@@ -150,6 +151,7 @@ then $P(z)=\prod_{n=1}^\infty E_{p_n}(z/z_n)$ is an entire function whose zeros 
       num: '15.10',
       kind: 'Theorem',
       name: 'Weierstrass factorization theorem',
+      credit: 'Weierstrass, 1876',
       statement: String.raw`Let $f$ be an entire function, not identically $0$, with a zero of order $k\ge0$ at the origin, and let $z_1,z_2,z_3,\dots$ be its other zeros, each listed as often as its multiplicity. Then there is an entire function $g$ such that
 $$f(z)=z^k\,e^{g(z)}\prod_{n=1}^\infty E_{n-1}\Big(\frac{z}{z_n}\Big).$$
 (If $f$ has only finitely many zeros the product is finite; the factorization holds with any $p_n$ satisfying the condition of 15.9, with a corresponding $g$.)`,

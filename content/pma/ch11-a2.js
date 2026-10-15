@@ -132,6 +132,7 @@ Examples: $\R^p$ with the Lebesgue measurable sets and Lebesgue measure; the pos
       num: '11.13',
       kind: 'Definition',
       name: 'Measurable function',
+      credit: 'Lebesgue, 1902',
       statement: String.raw`Let $f$ be a function on a measurable space $X$ with values in the extended real number system. $f$ is **measurable** if for every real $a$ the set
 $$\{x\in X: f(x)>a\}$$
 is measurable. For instance, if $X=\R^p$ and $\mathfrak M=\mathfrak M(\mu)$, every continuous $f$ is measurable, since then $\{f>a\}$ is open.`,

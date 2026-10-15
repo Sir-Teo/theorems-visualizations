@@ -92,6 +92,7 @@ export default {
       num: '15.18',
       kind: 'Theorem',
       name: "Jensen's formula",
+      credit: 'Jensen, 1899',
       statement: String.raw`Let $f\in H(D(0;R))$ with $f(0)\ne0$, let $0<r<R$, and let $\alpha_1,\dots,\alpha_N$ be the zeros of $f$ in the closed disc $\overline D(0;r)$, repeated according to multiplicity. Then
 $$|f(0)|\prod_{n=1}^N\frac{r}{|\alpha_n|}=\exp\Big\{\frac1{2\pi}\int_{-\pi}^{\pi}\log\big|f(re^{i\theta})\big|\,d\theta\Big\}.$$
 Equivalently, $\frac1{2\pi}\int\log|f(re^{i\theta})|\,d\theta=\log|f(0)|+\sum_{|\alpha_n|\le r}\log\frac{r}{|\alpha_n|}$.`,
@@ -219,6 +220,7 @@ Then $\mu_r(f)\le\mu_s(f)$ for $0<r<s<1$, $\ \mu_r(f)\to\log|f(0)|$ as $r\to0$, 
       num: '15.21',
       kind: 'Theorem',
       name: 'Blaschke products',
+      credit: 'Blaschke, 1915',
       statement: String.raw`Let $\{\alpha_n\}$ be a sequence in $U$ with $\alpha_n\ne0$ and
 $$\sum_{n=1}^\infty(1-|\alpha_n|)<\infty,$$
 let $k\ge0$ be an integer, and put

@@ -384,6 +384,7 @@ $$m(r_1)\le\frac1{2\pi}\int h(r_1e^{i\theta})\,d\theta=h(0)=\frac1{2\pi}\int u(r
       num: '17.6',
       kind: 'Theorem',
       name: 'Integral means of holomorphic functions increase',
+      credit: 'Hardy, 1915',
       verify: true,
       statement: String.raw`Let $f\in H(U)$ and, for $0\le r<1$ and $0<p<\infty$, put
 $$M_p(f;r)=\Big\{\frac1{2\pi}\int_{-\pi}^{\pi}|f(re^{i\theta})|^p\,d\theta\Big\}^{1/p},\qquad M_0(f;r)=\exp\Big\{\frac1{2\pi}\int_{-\pi}^{\pi}\log^+|f(re^{i\theta})|\,d\theta\Big\},$$

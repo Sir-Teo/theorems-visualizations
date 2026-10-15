@@ -100,6 +100,7 @@ Moreover $u*(\varphi*\psi)=(u*\varphi)*\psi$ for $\varphi,\psi\in\mathscr S_n$.`
       num: '7.22',
       kind: 'Theorem',
       name: 'Paley–Wiener theorem for test functions',
+      credit: 'Paley & Wiener, 1934',
       statement: String.raw`(a) If $\varphi\in\mathscr D(\R^n)$ has support in the ball $rB$, then
 $$f(z)=\int_{\R^n}\varphi(t)\,e^{-iz\cdot t}\,dm_n(t)\qquad(z\in\C^n)$$
 is an entire function, and for every $N$ there is $\gamma_N<\infty$ with
@@ -218,6 +219,7 @@ $$|f(z)|\le\gamma\,(1+|z|)^{N}e^{r|\operatorname{Im}z|}\qquad(z\in\C^n).$$
       num: '7.25',
       kind: 'Theorem',
       name: "Sobolev's lemma",
+      credit: 'Sobolev, 1938',
       statement: String.raw`Suppose $\Omega\subset\R^n$ is open, $p$ and $r$ are integers with $p>r+\frac n2$, and $f\in L^2_{loc}(\Omega)$ is such that its distribution derivatives $D^\alpha f$ belong to $L^2_{loc}(\Omega)$ for all $|\alpha|\le p$. Then $f$ agrees almost everywhere with a function in $C^{(r)}(\Omega)$. In particular, if $D^\alpha f\in L^2_{loc}$ for every $\alpha$, then $f$ is (a.e. equal to) a $C^\infty$ function.`,
       idea: String.raw`Localise with a cutoff, so $f$ has compact support and $D^\alpha f\in L^2$ for $|\alpha|\le p$. By Plancherel, $(1+|t|)^p\hat f\in L^2$. Cauchy–Schwarz then gives
 $$\int|t|^r|\hat f|\le\Big(\int(1+|t|)^{2p}|\hat f|^2\Big)^{1/2}\Big(\int(1+|t|)^{2r-2p}\Big)^{1/2},$$

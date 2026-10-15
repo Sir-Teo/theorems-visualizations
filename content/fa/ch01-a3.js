@@ -169,6 +169,7 @@ export default {
       num: '1.24',
       kind: 'Theorem',
       name: 'Metrization: a countable local base gives an invariant metric',
+      credit: 'Birkhoff & Kakutani, 1936',
       statement: String.raw`If $X$ is a topological vector space with a countable local base, then there is a metric $d$ on $X$ such that
 (a) $d$ is compatible with the topology of $X$,
 (b) the open balls centred at $0$ are balanced, and

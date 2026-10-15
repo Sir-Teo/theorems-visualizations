@@ -604,6 +604,7 @@ Restricted to any $\mathscr D_K$, these norms induce the Fréchet topology $\tau
       num: '6.7',
       kind: 'Definition',
       name: 'Distributions',
+      credit: 'L. Schwartz, 1945',
       statement: String.raw`A **distribution** in $\Omega$ is a linear functional on $\mathscr D(\Omega)$ that is continuous for the topology $\tau$. The space of all distributions in $\Omega$ is denoted $\mathscr D'(\Omega)$.`,
       idea: String.raw`A distribution is known only through its action on test functions. By 6.6, continuity can be tested on sequences or on each $\mathscr D_K$ separately, which makes membership in $\mathscr D'(\Omega)$ easy to verify (6.8). Locally integrable functions and measures are distributions (6.11), but so are objects like $\delta'$ and the principal value of $1/x$, which are not functions at all.`,
       caption: String.raw`Choose a distribution on $\R$ and drag the test function $\varphi$ (its peak) or change its width. The top panel shows what $\Lambda$ "does" with $\varphi$ — evaluate it, minus its slope, integrate it over $(0,\infty)$, take the cancelling principal-value integral against $1/x$, or sum it over $\Z$. Bottom: the value $\Lambda(\varphi_c)$ for every translate $\varphi_c=\varphi(\cdot-c)$, with the current position marked.`,

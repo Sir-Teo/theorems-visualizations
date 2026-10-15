@@ -43,6 +43,7 @@ export default {
       num: '5.1',
       kind: 'Definition',
       name: 'Normed linear space; Banach space',
+      credit: 'Banach, 1922',
       statement: String.raw`A **normed linear space** is a complex (or real) vector space $X$ together with a function $x\mapsto\norm{x}\in[0,\infty)$ such that for all $x,y\in X$ and scalars $\alpha$:
 (a) $\norm{x+y}\le\norm{x}+\norm{y}$;
 (b) $\norm{\alpha x}=\abs{\alpha}\,\norm{x}$;
@@ -246,6 +247,7 @@ If $\norm{\Lambda}<\infty$, $\Lambda$ is a **bounded linear transformation**; th
       num: '5.6',
       kind: 'Theorem',
       name: "Baire's theorem",
+      credit: 'Baire, 1899',
       statement: String.raw`If $X$ is a complete metric space, then the intersection of every countable collection of dense open subsets of $X$ is dense in $X$.`,
       idea: String.raw`Let $V_1,V_2,\dots$ be dense and open and let $W\ne\emptyset$ be open. Since $V_1$ is dense, $W\cap V_1$ is a nonempty open set and contains a closed ball $\bar B_1$ of radius $<1$; inductively choose $\bar B_n\subset B_{n-1}\cap V_n$ with radius $<1/n$. The centres form a Cauchy sequence; completeness gives a limit $x$, which lies in every $\bar B_n$, hence in $W\cap\bigcap_n V_n$.`,
       caption: String.raw`Here $X=\R^2$ and $V_n$ is the complement of $E_n$, a family of parallel lines (closed, nowhere dense; each $E_n$ is drawn only inside the ball where it matters). Drag the open set $W$ and step $N$: each new closed ball sits inside the previous one and misses $E_N$. The right panel zooms into the last step. The shrinking balls close down on a point of $W$ that avoids every $E_n$, although $\bigcup_n E_n$ is dense.`,
@@ -311,6 +313,7 @@ If $\norm{\Lambda}<\infty$, $\Lambda$ is a **bounded linear transformation**; th
       num: '5.7',
       kind: 'Definition',
       name: 'Nowhere dense sets, category, dense Gδ',
+      credit: 'Baire, 1899',
       statement: String.raw`Let $X$ be a metric space. A set $E\subset X$ is **nowhere dense** if its closure contains no nonempty open set. A countable union of nowhere dense sets is **of the first category** in $X$; every other subset is **of the second category**. A **$G_\delta$** is a countable intersection of open sets. In this language Baire's theorem says: in a complete metric space the complement of a set of the first category is dense, a countable intersection of dense $G_\delta$'s is again a dense $G_\delta$, and the space itself is of the second category.`,
       idea: String.raw`$E$ is nowhere dense exactly when $X\setminus\bar E$ is a dense open set, so complements of first-category sets contain countable intersections of dense open sets — the sets Baire's theorem controls. Category and measure are independent notions of size: a dense $G_\delta$ can have measure zero.`,
       caption: String.raw`On $[0,1]$, $V_n$ is a union of open intervals centred at the rationals $q_k$ (radius $\eps_n/k^{1.2}$; each pixel column is shaded by the fraction of it the set covers). Each $V_n$ is open and dense, yet its total length is tiny; the bottom row shows $V_1\cap\dots\cap V_N$. The limit $G=\bigcap V_n$ is a dense $G_\delta$ of measure $0$ — topologically large, metrically negligible. Drag the window to zoom.`,

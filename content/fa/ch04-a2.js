@@ -335,6 +335,7 @@ Moreover, if (d) holds, then (a) holds for some $\delta>0$.`,
       num: '4.14',
       kind: 'Theorem',
       name: 'Closed range theorem',
+      credit: 'Banach, 1932',
       statement: String.raw`Let $X$ and $Y$ be Banach spaces and $T\in\mathscr B(X,Y)$. The following three conditions are equivalent:
 (a) $\mathscr R(T)$ is closed in $Y$;
 (b) $\mathscr R(T^*)$ is weak$^*$-closed in $X^*$;

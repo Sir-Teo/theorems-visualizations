@@ -63,6 +63,7 @@ export default {
       num: '17.7',
       kind: 'Definition',
       name: 'The Hardy spaces Hᵖ and the Nevanlinna class N',
+      credit: 'F. Riesz, 1923',
       statement: String.raw`For $f\in H(U)$ and $0<p\le\infty$ let $M_p(f;r)$ be the integral means of 17.6. Then $H^p$ is the class of all $f\in H(U)$ for which
 $$\|f\|_p=\sup_{0\le r<1}M_p(f;r)$$
 is finite; in particular $H^\infty$ consists of the bounded holomorphic functions in $U$, with the supremum norm. The **Nevanlinna class** $N$ is the class of all $f\in H(U)$ for which
@@ -505,6 +506,7 @@ Equivalently, $\hat f^*(n)=0$ for every $n<0$, and $\hat f^*(n)$ is the $n$-th T
       num: '17.13',
       kind: 'Theorem',
       name: 'Theorem of F. and M. Riesz',
+      credit: 'F. Riesz & M. Riesz, 1916',
       statement: String.raw`Let $\mu$ be a complex Borel measure on $\T$ whose Fourier coefficients
 $$\hat\mu(n)=\int_{-\pi}^{\pi}e^{-int}\,d\mu(t)$$
 vanish for all negative integers $n$. Then $\mu$ is absolutely continuous with respect to Lebesgue measure $m$ on $\T$.`,

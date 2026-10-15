@@ -40,6 +40,7 @@ export default {
       num: '5.10',
       kind: 'Theorem',
       name: 'Mean value theorem',
+      credit: 'Lagrange, 1797',
       statement: String.raw`If $f$ is a real continuous function on $[a,b]$ which is differentiable in $(a,b)$, then there is a point $x\in(a,b)$ at which
 $$f(b)-f(a)=(b-a)\,f'(x).$$`,
       idea: String.raw`Take $g(x)=x$ in the generalized mean value theorem 5.9: then $g'\equiv1$ and its identity becomes $f(b)-f(a)=(b-a)f'(x)$. In words, the average rate of change over $[a,b]$ is attained as an instantaneous rate somewhere inside — the tangent at $x$ is parallel to the chord.`,
@@ -191,6 +192,7 @@ $$f(b)-f(a)=(b-a)\,f'(x).$$`,
       num: '5.12',
       kind: 'Theorem',
       name: "Darboux's theorem: intermediate values of derivatives",
+      credit: 'Darboux, 1875',
       statement: String.raw`Let $f$ be a real differentiable function on $[a,b]$ and suppose $f'(a)<\lambda<f'(b)$. Then there is a point $x\in(a,b)$ with $f'(x)=\lambda$. (The same holds if $f'(a)>\lambda>f'(b)$.)`,
       idea: String.raw`Tilt the graph: $g(t)=f(t)-\lambda t$ has $g'(a)<0$ and $g'(b)>0$, so $g$ dips below $g(a)$ just right of $a$ and below $g(b)$ just left of $b$. Being continuous on the compact interval, $g$ attains its minimum (4.16), and by the previous remark not at an endpoint. At that interior minimum $g'(x)=0$ (5.8), i.e. $f'(x)=\lambda$. No continuity of $f'$ is needed.`,
       caption: String.raw`Drag $a$ and $b$ along the graph of $f'$ (bottom) and the level $\lambda$. The top panel shows the tilted function $g(t)=f(t)-\lambda t$: its slopes at the ends point into the interval (orange), so its minimum on $[a,b]$ (green) is interior, and there $f'(x)=\lambda$. Try $x^2\sin(1/x)$: its derivative is discontinuous at $0$ yet still hits every intermediate value.`,
@@ -330,6 +332,7 @@ $$f(b)-f(a)=(b-a)\,f'(x).$$`,
       num: '5.13',
       kind: 'Theorem',
       name: "L'Hospital's rule",
+      credit: "L'Hospital, 1696",
       statement: String.raw`Let $f$ and $g$ be real and differentiable in $(a,b)$, where $-\infty\le a<b\le+\infty$, with $g'(x)\ne0$ for every $x\in(a,b)$, and suppose that
 $$\frac{f'(x)}{g'(x)}\to A\qquad\text{as }x\to a$$
 for some $A$ in the extended real number system. If $f(x)\to0$ and $g(x)\to0$ as $x\to a$, or if $g(x)\to+\infty$ as $x\to a$, then
@@ -456,6 +459,7 @@ The analogous statements hold as $x\to b$, and when $g(x)\to-\infty$.`,
       num: '5.15',
       kind: 'Theorem',
       name: "Taylor's theorem",
+      credit: 'Taylor, 1715',
       statement: String.raw`Let $f$ be a real function on $[a,b]$ and $n$ a positive integer such that $f^{(n-1)}$ is continuous on $[a,b]$ and $f^{(n)}(t)$ exists for every $t\in(a,b)$. Let $\alpha\ne\beta$ be points of $[a,b]$ and put
 $$P(t)=\sum_{k=0}^{n-1}\frac{f^{(k)}(\alpha)}{k!}\,(t-\alpha)^k .$$
 Then there is a point $x$ strictly between $\alpha$ and $\beta$ with

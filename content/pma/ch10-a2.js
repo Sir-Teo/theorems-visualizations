@@ -376,6 +376,7 @@ $$\int_{\R^k}f(\mathbf y)\,d\mathbf y=\int_{\R^k}f(T(\mathbf x))\,|J_T(\mathbf x
       num: '10.11',
       kind: 'Definition',
       name: 'Differential forms and their integrals',
+      credit: 'É. Cartan, 1899',
       statement: String.raw`Let $E\subset\R^n$ be open and $k\ge1$. A **$k$-form in $E$** is a function $\omega$, written symbolically as
 $$\omega=\sum a_{i_1\cdots i_k}(\mathbf x)\,dx_{i_1}\wedge\cdots\wedge dx_{i_k}$$
 (each index running independently over $1,\dots,n$, with real continuous coefficients $a_{i_1\cdots i_k}$ on $E$), which assigns to every $k$-surface $\Phi$ in $E$ with parameter domain $D$ the number

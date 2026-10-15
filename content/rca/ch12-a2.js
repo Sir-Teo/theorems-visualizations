@@ -197,6 +197,7 @@ that is, $\log M$ lies below the chord joining its end values — $\log M$ is a 
       num: '12.9',
       kind: 'Theorem',
       name: 'Phragmén–Lindelöf theorem in a strip',
+      credit: 'Phragmén & Lindelöf, 1908',
       statement: String.raw`Let $\Omega=\{x+iy:\ \abs y<\pi/2\}$, and let $f$ be continuous on $\bar\Omega$ and holomorphic in $\Omega$, with $\abs{f(z)}\le1$ on $\partial\Omega$. Suppose there are constants $\alpha<1$ and $A<\infty$ such that
 $$\abs{f(x+iy)}<\exp\{A\exp(\alpha\abs x)\}\qquad(x+iy\in\Omega).$$
 Then $\abs{f(z)}\le1$ for all $z\in\Omega$. The condition $\alpha<1$ cannot be weakened to $\alpha=1$: $f(z)=\exp(e^z)$ has modulus $1$ on $\partial\Omega$ and is unbounded on the real axis.`,
@@ -280,6 +281,7 @@ Then $\abs{f(z)}\le1$ for all $z\in\Omega$. The condition $\alpha<1$ cannot be w
       num: '12.11',
       kind: 'Theorem',
       name: 'Riesz–Thorin interpolation theorem',
+      credit: 'M. Riesz & Thorin, 1927',
       statement: String.raw`Let $(X,\mu)$ and $(Y,\nu)$ be $\sigma$-finite measure spaces, let $1\le p_0,p_1,q_0,q_1\le\infty$, and let $T$ be a linear map, defined on the complex simple functions on $X$ that vanish outside sets of finite measure, with values measurable functions on $Y$, such that
 $$\norm{Tf}_{q_0}\le M_0\norm{f}_{p_0},\qquad\norm{Tf}_{q_1}\le M_1\norm{f}_{p_1}.$$
 For $0<t<1$ define $p_t,q_t$ by $\dfrac1{p_t}=\dfrac{1-t}{p_0}+\dfrac t{p_1}$ and $\dfrac1{q_t}=\dfrac{1-t}{q_0}+\dfrac t{q_1}$. Then

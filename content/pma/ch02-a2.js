@@ -22,6 +22,7 @@ export default {
       num: '2.15',
       kind: 'Definition',
       name: 'Metric space',
+      credit: 'Fréchet, 1906',
       statement: String.raw`A set $X$, whose elements are called points, is a **metric space** if to every pair $p,q\in X$ there is assigned a real number $d(p,q)$, the distance from $p$ to $q$, such that
 (a) $d(p,q)>0$ when $p\ne q$, and $d(p,p)=0$;
 (b) $d(p,q)=d(q,p)$;

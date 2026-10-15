@@ -16,6 +16,7 @@ export default {
       num: '1.24',
       kind: 'Definition',
       name: 'Complex numbers as ordered pairs',
+      credit: 'Hamilton, 1833',
       statement: String.raw`A **complex number** is an ordered pair $(a,b)$ of real numbers, two pairs being equal only when both coordinates agree. For $x=(a,b)$ and $y=(c,d)$ put
 $$x+y=(a+c,\ b+d),\qquad xy=(ac-bd,\ ad+bc).$$`,
       idea: String.raw`Nothing mysterious is assumed: complex numbers are points of the plane, added like vectors and multiplied by an explicit rule. The product rule is chosen so that $(0,1)^2=(-1,0)$ (1.28) while every field axiom survives (1.25). Geometrically, multiplication by $x$ carries the triangle with vertices $0,1,y$ onto a similar triangle with vertices $0,x,xy$.`,

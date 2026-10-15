@@ -424,6 +424,7 @@ is representable by power series in $\Omega$.`,
       num: '10.15',
       kind: 'Theorem',
       name: "Cauchy's formula in a convex set",
+      credit: 'Cauchy, 1831',
       statement: String.raw`Let $\gamma$ be a closed path in a convex open set $\Omega$ and let $f\in H(\Omega)$. If $z\in\Omega$ does not lie on $\gamma^*$, then
 $$f(z)\,\Ind_\gamma(z)=\frac{1}{2\pi i}\int_\gamma \frac{f(\xi)}{\xi-z}\,d\xi .$$`,
       idea: String.raw`Apply Cauchy's theorem (10.14) to $g(\xi)=\frac{f(\xi)-f(z)}{\xi-z}$, which is holomorphic once the removable singularity at $z$ is filled in. Its integral vanishes, so the integral of $f(\xi)/(\xi-z)$ equals $f(z)$ times $\frac{1}{2\pi i}\int_\gamma \frac{d\xi}{\xi-z}=\Ind_\gamma(z)$.`,

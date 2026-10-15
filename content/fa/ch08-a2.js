@@ -151,6 +151,7 @@ In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O
       num: '8.12a',
       kind: 'Corollary',
       name: "Weyl's lemma: harmonic distributions are smooth",
+      credit: 'Weyl, 1940',
       statement: String.raw`If $u\in\mathscr D'(\Omega)$ and $\Delta u=0$ in $\Omega$, then $u$ is (equal to) a $C^\infty$ — indeed real-analytic — harmonic function in $\Omega$.`,
       idea: String.raw`The Laplacian is elliptic, so 8.12 applies. A direct argument: for a radial mollifier $h_\varepsilon$, harmonic functions satisfy $u*h_\varepsilon=u$ (mean value property). For a harmonic distribution, $u*h_\varepsilon$ is a smooth harmonic function and $(u*h_\varepsilon)*h_\delta=(u*h_\delta)*h_\varepsilon$; letting $\delta\to0$ gives $u*h_\varepsilon=u$ near each point, so $u$ is smooth.`,
       caption: String.raw`The mechanism behind Weyl's lemma: averaging over discs. For a function $u$ on the plane (left) we compute $u*h_\varepsilon-u$ (right, log scale) with a radial mollifier of radius $\varepsilon$. For harmonic $u$ it vanishes to rounding error everywhere — except within $\varepsilon$ of the singularity of $\log|z-a|$, where $\Delta u=2\pi\delta_a\ne0$. For a non-harmonic $u$ such as $|z|^2$ or $x|y|$ the defect is of size $\varepsilon^2\Delta u$, concentrated where $\Delta u\ne0$.`,

@@ -26,6 +26,7 @@ export default {
       num: '11.1',
       kind: 'Definition',
       name: 'The maximal ideal space Δ',
+      credit: 'Gelfand, 1941',
       statement: String.raw`Throughout the chapter $A$ is a commutative complex Banach algebra with unit $e$. Its **maximal ideal space** $\Delta$ is the set of all complex homomorphisms $h:A\to\C$ (nonzero, linear, multiplicative). Each $h\in\Delta$ satisfies $h(e)=1$ and $|h(x)|\le\norm x$, so $\Delta$ lies in the closed unit ball of $A^*$.`,
       idea: String.raw`The bound $|h(x)|\le\norm x$ is 10.7(c): if $|h(x)|>\norm x$, then $e-x/h(x)$ would be invertible yet killed by $h$. The name anticipates 11.5: the kernels of the elements of $\Delta$ are exactly the maximal ideals. For $C(K)$, $\Delta$ is $K$ (point evaluations); for the disc algebra it is the closed disc.`,
       caption: String.raw`The disc algebra $A$ (uniform limits of polynomials on $\T$, sup norm). For any $w\in\C$, $h_w(p)=p(w)$ is multiplicative on polynomials; it extends to a homomorphism of $A$ only if it is bounded. Drag $w$: the bars are $|h_w(z^n)|=|w|^n$ against $\norm{z^n}=1$ — bounded exactly when $|w|\le1$. The lower panel tests the bound on a polynomial $p$: $|p(w)|\le\max_\T|p|$ inside the disc (maximum modulus), not outside. So $\Delta$ is the closed unit disc.`,
@@ -142,6 +143,7 @@ export default {
       num: '11.5',
       kind: 'Theorem',
       name: "Gelfand's theorem: maximal ideals are kernels of homomorphisms",
+      credit: 'Gelfand, 1941',
       statement: String.raw`(a) Every maximal ideal of $A$ is the kernel of some $h\in\Delta$.
 (b) If $h\in\Delta$, the kernel of $h$ is a maximal ideal.
 (c) An element $x\in A$ is invertible if and only if $h(x)\ne0$ for every $h\in\Delta$.
@@ -196,6 +198,7 @@ export default {
       num: '11.9',
       kind: 'Theorem',
       name: 'The Gelfand transform',
+      credit: 'Gelfand, 1941',
       statement: String.raw`For $x\in A$ define $\hat x:\Delta\to\C$ by $\hat x(h)=h(x)$, and give $\Delta$ the weakest topology making every $\hat x$ continuous (the **Gelfand topology**, the weak* topology inherited from $A^*$). Then
 (a) $\Delta$ is a compact Hausdorff space;
 (b) $x\mapsto\hat x$ is a homomorphism of $A$ onto a subalgebra $\hat A$ of $C(\Delta)$ that separates points and contains the constants, with kernel $\operatorname{rad}A$;

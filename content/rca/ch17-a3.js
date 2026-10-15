@@ -64,6 +64,7 @@ export default {
       num: '17.14',
       kind: 'Definition',
       name: 'Inner and outer functions',
+      credit: 'Beurling, 1949',
       statement: String.raw`A function $M\in H^\infty$ is an **inner function** if $|M^*|=1$ a.e. on $\T$.
 
 If $c$ is a constant with $|c|=1$ and $\varphi$ is a positive measurable function on $\T$ with $\log\varphi\in L^1(\T)$, the function

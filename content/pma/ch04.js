@@ -40,6 +40,7 @@ export default {
       num: '4.19',
       kind: 'Theorem',
       name: 'Continuity on a compact space is uniform',
+      credit: 'Heine, 1872',
       statement: String.raw`Let $f$ be a continuous map from a compact metric space $X$ into a metric space $Y$. Then $f$ is uniformly continuous on $X$: for every $\eps>0$ there is a single $\delta>0$ such that $d_Y(f(p),f(q))<\eps$ whenever $d_X(p,q)<\delta$.`,
       idea: String.raw`Continuity gives each point $p$ its own radius $\delta(p)$. The balls of radius $\tfrac12\delta(p)$ cover $X$; compactness extracts finitely many, and the smallest of their radii works everywhere. Without compactness the radii can shrink to $0$, as they do for $1/x$ near $0$.`,
       caption: String.raw`Drag the point $p$ and change $\eps$. The lower panel plots the largest admissible $\delta(p)$ at every $p$: on a compact interval its minimum stays positive; on $(0,1]$ it collapses to $0$.`,

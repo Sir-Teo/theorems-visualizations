@@ -112,6 +112,7 @@ with equality only when $\gamma_m=c_m$ for $m=1,\dots,n$.`,
       num: '8.12',
       kind: 'Theorem',
       name: "Bessel's inequality",
+      credit: 'Bessel, 1828',
       statement: String.raw`If $\{\phi_n\}$ is orthonormal on $[a,b]$ and $f(x)\sim\sum_{n=1}^\infty c_n\phi_n(x)$, then
 $$\sum_{n=1}^{\infty}|c_n|^2\le\int_a^b|f(x)|^2\,dx .$$
 In particular $c_n\to0$.`,
@@ -184,6 +185,7 @@ In particular $c_n\to0$.`,
       num: '8.13',
       kind: 'Definition',
       name: 'Partial sums of Fourier series and the Dirichlet kernel',
+      credit: 'Dirichlet, 1829',
       statement: String.raw`For $f$ of period $2\pi$, Riemann-integrable on $[-\pi,\pi]$, let $c_n=\frac1{2\pi}\int_{-\pi}^{\pi}f(t)e^{-int}\,dt$ and let $s_N(f;x)=\sum_{n=-N}^{N}c_ne^{inx}$ be the $N$-th partial sum of its Fourier series. The **Dirichlet kernel** is
 $$D_N(x)=\sum_{n=-N}^{N}e^{inx}=\frac{\sin\bigl(N+\frac12\bigr)x}{\sin(x/2)},$$
 and substituting the formula for $c_n$ gives
@@ -233,6 +235,7 @@ Moreover $\frac1{2\pi}\int_{-\pi}^{\pi}D_N=1$, and Bessel's inequality takes the
       num: '8.14',
       kind: 'Theorem',
       name: 'Pointwise convergence where $f$ is Lipschitz',
+      credit: 'Lipschitz, 1864',
       statement: String.raw`Let $f$ have period $2\pi$ and be Riemann-integrable on $[-\pi,\pi]$. If at some point $x$ there are constants $\delta>0$ and $M<\infty$ with
 $$|f(x+t)-f(x)|\le M|t|\qquad\text{for all }t\in(-\delta,\delta),$$
 then $\lim_{N\to\infty}s_N(f;x)=f(x)$.`,
@@ -304,6 +307,7 @@ then $\lim_{N\to\infty}s_N(f;x)=f(x)$.`,
       num: '8.14a',
       kind: 'Corollary',
       name: 'Localization: only the behaviour near $x$ matters',
+      credit: 'Riemann, 1854',
       statement: String.raw`If $f(x)=0$ for all $x$ in some segment $J$, then $\lim_{N\to\infty}s_N(f;x)=0$ for every $x\in J$. Equivalently, if $f=g$ on a neighbourhood of a point $x$, then $s_N(f;x)-s_N(g;x)=s_N(f-g;x)\to0$.`,
       idea: String.raw`At an interior point $x$ of $J$, $f$ vanishes on a neighbourhood of $x$, so $|f(x+t)-f(x)|=0\le M|t|$ for small $|t|$, and Theorem 8.14 gives $s_N(f;x)\to f(x)=0$. (At an endpoint of $J$ the one-sided version of the same estimate works.) Convergence of a Fourier series at $x$ thus depends only on $f$ near $x$, even though every coefficient $c_n$ involves all of $f$.`,
       caption: String.raw`$f$ (blue) and $g$ (purple) agree on the green segment $J=[-1,1]$ but differ wildly outside it, so all their Fourier coefficients differ. Raise $N$: below, the difference $s_N(f)-s_N(g)=s_N(f-g)$ flattens to $0$ on $J$, while outside $J$ it follows $f-g$.`,
@@ -344,6 +348,7 @@ then $\lim_{N\to\infty}s_N(f;x)=f(x)$.`,
       num: '8.15',
       kind: 'Theorem',
       name: 'Trigonometric polynomials are uniformly dense',
+      credit: 'Weierstrass, 1885',
       statement: String.raw`If $f$ is continuous with period $2\pi$ and $\eps>0$, then there is a trigonometric polynomial $P$ with $|P(x)-f(x)|<\eps$ for all real $x$.`,
       idea: String.raw`A $2\pi$-periodic function is a function on the unit circle $T$ via $x\mapsto e^{ix}$. Trigonometric polynomials form a self-adjoint algebra of continuous functions on the compact set $T$ that separates points and vanishes at no point, so the complex Stone–Weierstrass theorem (7.33) makes it dense in $\mathscr C(T)$ in the uniform metric. (A constructive choice of $P$ is the Fejér mean $\sigma_N$, used in the picture.)`,
       caption: String.raw`Drag the six knots to shape a continuous periodic $f$ (the ends are glued: $f(-\pi)=f(\pi)$), and pick $\eps$. The green curve is a trigonometric polynomial — the Fejér mean $\sigma_N$ with the first $N$ found for which it lies inside the blue $\eps$-band. Right: the same functions wrapped onto the circle $T$, the compact space on which Stone–Weierstrass is applied.`,
@@ -395,6 +400,7 @@ then $\lim_{N\to\infty}s_N(f;x)=f(x)$.`,
       num: '8.16',
       kind: 'Theorem',
       name: "Parseval's theorem",
+      credit: 'Parseval, 1799',
       statement: String.raw`Let $f$ and $g$ be Riemann-integrable with period $2\pi$, with $f(x)\sim\sum c_ne^{inx}$ and $g(x)\sim\sum\gamma_ne^{inx}$. Then
 $$\lim_{N\to\infty}\frac1{2\pi}\int_{-\pi}^{\pi}|f(x)-s_N(f;x)|^2dx=0,$$
 $$\frac1{2\pi}\int_{-\pi}^{\pi}f(x)\overline{g(x)}\,dx=\sum_{n=-\infty}^{\infty}c_n\overline{\gamma_n},\qquad\frac1{2\pi}\int_{-\pi}^{\pi}|f(x)|^2dx=\sum_{n=-\infty}^{\infty}|c_n|^2 .$$`,

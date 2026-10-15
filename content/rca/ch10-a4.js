@@ -103,6 +103,7 @@ export default {
       num: '10.21',
       kind: 'Theorem',
       name: 'Removable, pole or essential (Casorati–Weierstrass)',
+      credit: 'Casorati & Weierstrass, 1868',
       statement: String.raw`If $a\in\Omega$ and $f\in H(\Omega\setminus\{a\})$, then exactly one of the following occurs:
 (a) $f$ has a removable singularity at $a$;
 (b) there are a positive integer $m$ and complex numbers $c_1,\dots,c_m$ with $c_m\ne0$ such that $f(z)-\sum_{k=1}^m\frac{c_k}{(z-a)^k}$ has a removable singularity at $a$ — a **pole of order $m$**, with **principal part** $\sum_{k=1}^m c_k(z-a)^{-k}$;
@@ -227,6 +228,7 @@ $$\sum_{n=0}^\infty|c_n|^2r^{2n}=\frac1{2\pi}\int_{-\pi}^{\pi}\bigl|f(a+re^{i\th
       num: '10.23',
       kind: 'Theorem',
       name: "Liouville's theorem",
+      credit: 'Liouville, 1844',
       statement: String.raw`An entire function (one in $H(\C)$) whose modulus is bounded on all of $\C$ must be constant.`,
       idea: String.raw`Let $f=\sum c_nz^n$ be entire with $|f|\le M$. By 10.22, $\sum|c_n|^2r^{2n}\le M^2$ for every $r>0$, so $|c_n|\le M/r^n$; letting $r\to\infty$ forces $c_n=0$ for all $n\ge1$. Being bounded on the real line is not enough: the growth happens off $\R$.`,
       caption: String.raw`Pick a non-constant entire function and grow the circle $|z|=r$ (left; the red dot marks where $|f|$ is largest on it). Right, on log–log axes: the maximum $M(r)$ over the circle (ink) and over the real segment $[-r,r]$ (gold), and the bounds $M(r)/r^n$ for $|c_1|$, $|c_2|$ (dashed horizontal lines). $\sin z$ and $e^{-z^2}$ are bounded on $\R$, yet $M(r)$ blows up — otherwise $M(r)/r^n\to0$ would squeeze every $c_n$, $n\ge1$, to $0$.`,

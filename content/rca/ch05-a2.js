@@ -26,6 +26,7 @@ export default {
       num: '5.8',
       kind: 'Theorem',
       name: 'Banach–Steinhaus theorem',
+      credit: 'Banach & Steinhaus, 1927',
       statement: String.raw`Let $X$ be a Banach space, $Y$ a normed linear space, and $\{\Lambda_\alpha\}_{\alpha\in A}$ any collection of bounded linear transformations of $X$ into $Y$. Then either
 (a) there is $M<\infty$ with $\norm{\Lambda_\alpha}\le M$ for every $\alpha\in A$, or
 (b) $\sup_{\alpha\in A}\norm{\Lambda_\alpha x}=\infty$ for every $x$ in some dense $G_\delta$ subset of $X$.`,
@@ -87,6 +88,7 @@ export default {
       num: '5.9',
       kind: 'Theorem',
       name: 'Open mapping theorem',
+      credit: 'Banach, 1929',
       statement: String.raw`Let $X$ and $Y$ be Banach spaces with open unit balls $U$ and $V$, and let $\Lambda:X\to Y$ be a bounded linear transformation **onto** $Y$. Then there is $\delta>0$ such that
 $$\Lambda(U)\supset\delta V .$$
 Consequently $\Lambda$ maps open sets of $X$ to open sets of $Y$.`,
@@ -190,6 +192,7 @@ Consequently $\Lambda$ maps open sets of $X$ to open sets of $Y$.`,
       num: '5.10',
       kind: 'Theorem',
       name: 'Bounded inverse theorem',
+      credit: 'Banach, 1929',
       statement: String.raw`If $X$ and $Y$ are Banach spaces and $\Lambda:X\to Y$ is a bounded linear transformation that is one-to-one and onto, then there is $\delta>0$ with
 $$\norm{\Lambda x}\ge\delta\norm{x}\qquad(x\in X).$$
 Equivalently, $\Lambda^{-1}:Y\to X$ is a bounded linear transformation.`,
@@ -249,6 +252,7 @@ Equivalently, $\Lambda^{-1}:Y\to X$ is a bounded linear transformation.`,
       num: '5.11',
       kind: 'Theorem',
       name: 'Continuous functions with divergent Fourier series',
+      credit: 'du Bois-Reymond, 1873',
       statement: String.raw`For $f\in C(T)$ let $s_n(f;x)=\sum_{k=-n}^{n}\hat f(k)e^{ikx}=\int f(t)D_n(x-t)\,dm(t)$, where $D_n(t)=\sum_{k=-n}^n e^{ikt}$. Then $\norm{D_n}_1\to\infty$, and there is a dense $G_\delta$ set $E\subset C(T)$ such that for every $f\in E$ the set
 $$Q_f=\{x:\ \sup_n\abs{s_n(f;x)}=\infty\}$$
 is a dense $G_\delta$ in $T$. In particular, the Fourier series of some continuous functions diverge at a dense $G_\delta$ of points.`,

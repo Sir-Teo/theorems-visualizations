@@ -144,6 +144,7 @@ has a solution $u$ with compact support if and only if there is an entire functi
       num: '8.8',
       kind: 'Definition',
       name: 'Sobolev spaces Hˢ',
+      credit: 'Sobolev, 1938',
       statement: String.raw`To each real number $s$ associate the positive measure $d\mu_s(y)=(1+|y|^2)^s\,dm_n(y)$ on $\R^n$. $H^s$ is the space of tempered distributions $u$ whose Fourier transform is a function with
 $$\norm u_s=\Big(\int_{\R^n}|\hat u|^2\,d\mu_s\Big)^{1/2}<\infty ,$$
 that is, $\hat u\in L^2(\mu_s)$. So $H^0=L^2$, $H^t\subset H^s$ when $s<t$, and for an integer $p\ge0$, $H^p$ consists of the $f\in L^2$ with $D^\alpha f\in L^2$ for $|\alpha|\le p$.`,

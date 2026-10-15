@@ -80,6 +80,7 @@ export default {
       num: '2.15',
       kind: 'Theorem',
       name: 'Closed graph theorem',
+      credit: 'Banach, 1932',
       statement: String.raw`Suppose
 (a) $X$ and $Y$ are F-spaces,
 (b) $\Lambda:X\to Y$ is linear, and

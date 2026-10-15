@@ -93,6 +93,7 @@ export default {
       num: '2.1',
       kind: 'Definition',
       name: 'Nowhere dense sets; first and second category',
+      credit: 'Baire, 1899',
       statement: String.raw`Let $S$ be a topological space. A set $E\subset S$ is **nowhere dense** if its closure $\overline E$ has empty interior. $E$ is **of the first category** in $S$ if it is a countable union of nowhere dense sets; every subset of $S$ that is not of the first category is **of the second category** in $S$. Directly from the definitions:
 (a) a subset of a set of the first category is of the first category;
 (b) a countable union of sets of the first category is of the first category;
@@ -219,6 +220,7 @@ export default {
       num: '2.2',
       kind: 'Theorem',
       name: "Baire's theorem",
+      credit: 'Baire, 1899',
       statement: String.raw`Suppose $S$ is either
 (a) a complete metric space, or
 (b) a locally compact Hausdorff space.
@@ -494,6 +496,7 @@ Then the intersection of every countable collection of dense open subsets of $S$
       num: '2.5',
       kind: 'Theorem',
       name: 'Banach–Steinhaus theorem',
+      credit: 'Banach & Steinhaus, 1927',
       statement: String.raw`Let $X$ and $Y$ be topological vector spaces, $\Gamma$ a collection of continuous linear mappings of $X$ into $Y$, and $B$ the set of all $x\in X$ whose orbits $\Gamma(x)=\{\Lambda x:\Lambda\in\Gamma\}$ are bounded in $Y$. If $B$ is of the second category in $X$, then $B=X$ and $\Gamma$ is equicontinuous.`,
       idea: String.raw`Fix a neighbourhood $W$ of $0$ in $Y$ and a balanced neighbourhood $U$ with $\overline U-\overline U\subset W$. The set $E=\bigcap_{\Lambda\in\Gamma}\Lambda^{-1}(\overline U)$ is closed, and every $x\in B$ lies in some $nE$, so $B\subset\bigcup_n nE$. If $B$ is of the second category, some $nE$ — hence $E$ itself (2.1(d)) — has an interior point $x$. Then $E-x$ contains a neighbourhood $V$ of $0$, and $\Lambda(V)\subset\overline U-\overline U\subset W$ for every $\Lambda$. So $\Gamma$ is equicontinuous, and by 2.4 every orbit is bounded: $B=X$.`,
       caption: String.raw`$X=\R^2$, $Y=\R$, $\Lambda_nx=\langle a_n,x\rangle$, $U=[-1,1]$. Each strip $|\Lambda_nx|\le1$ is closed, and their intersection $E$ (green) is the set of the proof; $B=\bigcup_k kE$. Drag $x$ and watch its orbit on the right. For the bounded family, $E$ contains the disc $V$ for every $N$. For the unbounded families, $E$ collapses as $N$ grows and $B$ is only a line or the point $0$, which has empty interior: $B$ is of the first category, as the theorem predicts for a family that is not equicontinuous.`,

@@ -29,6 +29,7 @@ export default {
       num: '3.15',
       kind: 'Theorem',
       name: 'Banach–Alaoglu theorem',
+      credit: 'Banach & Alaoglu, 1932',
       statement: String.raw`If $V$ is a neighbourhood of $0$ in a topological vector space $X$ and
 $$K=\{\Lambda\in X^*:\ |\Lambda x|\le1\ \text{for every }x\in V\},$$
 then $K$ is weak$^*$-compact.`,

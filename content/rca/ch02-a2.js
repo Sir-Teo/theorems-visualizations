@@ -56,6 +56,7 @@ export default {
       num: '2.8',
       kind: 'Definition',
       name: 'Lower and upper semicontinuous functions',
+      credit: 'Baire, 1899',
       statement: String.raw`Let $X$ be a topological space and $f:X\to[-\infty,\infty]$. Then $f$ is *lower semicontinuous* if $\{x: f(x)>\alpha\}$ is open for every real $\alpha$, and *upper semicontinuous* if $\{x:f(x)<\alpha\}$ is open for every real $\alpha$. A real function is continuous exactly when it is both. Two facts follow at once:
 (a) the characteristic function of an open set is lower semicontinuous, and that of a closed set is upper semicontinuous;
 (b) the supremum of any family of lower semicontinuous functions is lower semicontinuous, and the infimum of any family of upper semicontinuous functions is upper semicontinuous.`,
@@ -315,6 +316,7 @@ export default {
       num: '2.12',
       kind: 'Theorem',
       name: "Urysohn's lemma",
+      credit: 'Urysohn, 1925',
       statement: String.raw`Let $X$ be a locally compact Hausdorff space, $V\subset X$ open and $K\subset V$ compact. Then there is an $f\in C_c(X)$ with
 $$K\prec f\prec V.$$`,
       idea: String.raw`Using 2.7 repeatedly, build open sets $V_r$ with compact closures, one for each rational $r$ in $[0,1]$, decreasing in $r$: $K\subset V_1$, $\overline{V_0}\subset V$, and $\overline{V_s}\subset V_r$ whenever $r<s$. Put $f(x)=\sup\{r: x\in V_r\}$. Upper and lower semicontinuity of $f$ both come from the nesting, so $f$ is continuous. It equals $1$ on $K$ and has support in $\overline{V_0}$.`,

@@ -30,6 +30,7 @@ export default {
       num: '9.13',
       kind: 'Theorem',
       name: 'The Plancherel theorem',
+      credit: 'Plancherel, 1910',
       statement: String.raw`To every $f\in L^2$ one can assign a function $\hat f\in L^2$ (determined up to a null set) such that:
 (a) if $f\in L^1\cap L^2$, then $\hat f$ is the Fourier transform of 9.1;
 (b) $\norm{\hat f}_2=\norm f_2$ for every $f\in L^2$;

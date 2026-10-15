@@ -35,6 +35,7 @@ export default {
       num: '7.22',
       kind: 'Definition',
       name: 'Differentiable transformations and the Jacobian',
+      credit: 'Jacobi, 1841',
       statement: String.raw`Let $V$ be an open set in $\R^k$ and $T:V\to\R^k$. If $x\in V$ and there is a linear operator $A$ on $\R^k$ such that
 $$\lim_{h\to0}\frac{|T(x+h)-T(x)-Ah|}{|h|}=0 ,$$
 then $T$ is **differentiable** at $x$ and $T'(x)=A$ (the operator $A$ is unique). The determinant $J_T(x)=\det T'(x)$ is the **Jacobian** of $T$ at $x$.`,

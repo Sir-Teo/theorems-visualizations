@@ -58,6 +58,7 @@ export default {
       num: '1.2',
       kind: 'Definition',
       name: 'Normed spaces and Banach spaces',
+      credit: 'Banach, 1922',
       statement: String.raw`A vector space $X$ is a **normed space** if every $x\in X$ is assigned a number $\norm{x}\ge 0$ such that
 (a) $\norm{x+y}\le\norm{x}+\norm{y}$ for all $x,y$;
 (b) $\norm{\alpha x}=\abs{\alpha}\,\norm{x}$ for every scalar $\alpha$;

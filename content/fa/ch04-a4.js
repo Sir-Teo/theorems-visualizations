@@ -50,6 +50,7 @@ export default {
       num: '4.22',
       kind: 'Lemma',
       name: 'Almost-orthogonal vectors (Riesz)',
+      credit: 'F. Riesz, 1918',
       statement: String.raw`Let $M$ be a closed subspace of a normed space $X$ with $M\ne X$, and let $r>1$. Then there is an $x\in X$ with $\|x\|<r$ and $\|x-y\|\ge1$ for every $y\in M$.`,
       idea: String.raw`Pick $x_0\notin M$. Because $M$ is closed, $d=\operatorname{dist}(x_0,M)>0$, so some $y_0\in M$ has $\|x_0-y_0\|<rd$. Put $x=(x_0-y_0)/d$. Then $\|x\|<r$, and for $y\in M$, $\|x-y\|=\|x_0-(y_0+dy)\|/d\ge d/d=1$. The slack $r>1$ is needed because the distance from $x_0$ to $M$ need not be attained in infinite dimensions. This replaces orthogonal complements in the compactness arguments of 4.24.`,
       caption: String.raw`$X=(\R^2,\|\cdot\|_p)$ and $M$ a line. Drag $x_0$. Right: the distance $t\mapsto\|x_0-tu\|$ along $M$, its minimum $d$, and the window where it is below $rd$ (orange); the slider picks $y_0$ in that window. Left: the rescaled $x=(x_0-y_0)/d$ lands inside the ball $rB$ (green) but outside the red strip $\{\operatorname{dist}(\cdot,M)<1\}$. Push $r$ down to $1$ — the window shrinks to the nearest points (for $p=1,\infty$ there may be a whole segment of them).`,
@@ -237,6 +238,7 @@ export default {
       num: '4.25',
       kind: 'Theorem',
       name: 'Riesz–Schauder theory; the Fredholm alternative',
+      credit: 'Fredholm, 1903',
       statement: String.raw`Let $X$ be a Banach space and $T\in\mathscr B(X)$ compact.
 (a) If $\lambda\ne0$, the four numbers
 $$\alpha=\dim\mathscr N(T-\lambda I),\quad \beta=\dim X/\mathscr R(T-\lambda I),\quad \alpha^*=\dim\mathscr N(T^*-\lambda I),\quad \beta^*=\dim X^*/\mathscr R(T^*-\lambda I)$$

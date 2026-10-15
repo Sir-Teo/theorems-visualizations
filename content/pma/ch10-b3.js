@@ -198,6 +198,7 @@ When $E$ is $\mathscr{C}''$-equivalent to a convex set, these are the only obstr
       num: '10.45',
       kind: 'Theorem',
       name: "Green's theorem",
+      credit: 'Green, 1828',
       statement: String.raw`**Green's theorem.** For functions $\alpha,\beta\in\mathscr{C}'(E)$ on an open set $E\subset\R^2$, and a closed set $\Omega\subset E$ that has a positively oriented boundary $\partial\Omega$ in the sense of 10.31, the line integral of $\alpha\,dx+\beta\,dy$ around $\partial\Omega$ equals a double integral over $\Omega$:
 $$\int_{\partial\Omega}(\alpha\,dx+\beta\,dy)=\int_\Omega\Big(\frac{\partial\beta}{\partial x}-\frac{\partial\alpha}{\partial y}\Big)\,dA .$$
 The choice $\alpha=-y$, $\beta=x$ yields the area formula $A(\Omega)=\frac12\int_{\partial\Omega}(x\,dy-y\,dx)$.`,
@@ -444,6 +445,7 @@ the integral of the normal component of $F$ (with $N$, $n$, $dA$ as in 10.46).`,
       num: '10.50',
       kind: 'Theorem',
       name: "Stokes' formula",
+      credit: 'Kelvin & Stokes, 1850',
       statement: String.raw`**Stokes' formula.** The flux of the curl of a vector field through a surface equals the circulation of the field around the boundary of the surface:
 $$\int_\Phi(\nabla\times F)\cdot n\,dA=\int_{\partial\Phi}(F\cdot T)\,ds ,$$
 valid for every vector field $F$ of class $\mathscr{C}'$ on an open set $E\subset\R^3$ and every $2$-surface $\Phi$ of class $\mathscr{C}''$ lying in $E$.`,
@@ -499,6 +501,7 @@ valid for every vector field $F$ of class $\mathscr{C}'$ on an open set $E\subse
       num: '10.51',
       kind: 'Theorem',
       name: 'The divergence theorem',
+      credit: 'Ostrogradsky, 1826',
       statement: String.raw`**The divergence theorem.** The outward flux of a vector field through the boundary of a solid equals the integral of its divergence over the solid:
 $$\int_\Omega(\nabla\cdot F)\,dV=\int_{\partial\Omega}(F\cdot n)\,dA .$$
 This holds for every vector field $F$ of class $\mathscr{C}'$ on an open set $E\subset\R^3$ and every closed set $\Omega\subset E$ that has a positively oriented boundary $\partial\Omega$ in the sense of 10.31.`,

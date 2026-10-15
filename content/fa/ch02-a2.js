@@ -250,6 +250,7 @@ export default {
       num: '2.11',
       kind: 'Theorem',
       name: 'Open mapping theorem',
+      credit: 'Banach, 1929',
       statement: String.raw`Suppose
 (a) $X$ is an F-space,
 (b) $Y$ is a topological vector space,
@@ -361,6 +362,7 @@ Then (i) $\Lambda(X)=Y$, (ii) $\Lambda$ is an open mapping, and (iii) $Y$ is an 
       num: '2.12',
       kind: 'Corollary',
       name: 'Inverse mapping theorem and comparable complete topologies',
+      credit: 'Banach, 1929',
       statement: String.raw`(a) A continuous linear mapping $\Lambda$ of an F-space $X$ onto an F-space $Y$ is open.
 (b) If, in addition, $\Lambda$ is one-to-one, then $\Lambda^{-1}:Y\to X$ is continuous.
 (c) If $X$ and $Y$ are Banach spaces and $\Lambda:X\to Y$ is continuous, linear, one-to-one and onto, there are constants $0<a\le b<\infty$ with $a\norm{x}\le\norm{\Lambda x}\le b\norm{x}$ for every $x\in X$.

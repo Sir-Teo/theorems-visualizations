@@ -62,6 +62,7 @@ export default {
       num: '8.8',
       kind: 'Theorem',
       name: 'The Fubini theorem',
+      credit: 'Fubini, 1907',
       statement: String.raw`Let $(X,\mathscr S,\mu)$ and $(Y,\mathscr T,\lambda)$ be $\sigma$-finite measure spaces and let $f$ be an $(\mathscr S\times\mathscr T)$-measurable function on $X\times Y$.
 (a) If $0\le f\le\infty$ and
 $$\varphi(x)=\int_Y f_x\,d\lambda,\qquad \psi(y)=\int_X f^y\,d\mu\qquad(x\in X,\ y\in Y),$$

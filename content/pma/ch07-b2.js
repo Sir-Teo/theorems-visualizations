@@ -29,6 +29,7 @@ export default {
       num: '7.26',
       kind: 'Theorem',
       name: 'Weierstrass approximation theorem',
+      credit: 'Weierstrass, 1885',
       statement: String.raw`Let $f$ be a continuous complex function on $[a,b]$. Then there are polynomials $P_n$ with $P_n(x)\to f(x)$ uniformly on $[a,b]$. If $f$ is real-valued, the $P_n$ can be chosen with real coefficients.`,
       idea: String.raw`By an affine change of variable, and by subtracting the linear polynomial $f(0)+x\,(f(1)-f(0))$, we may take $[a,b]=[0,1]$ and $f(0)=f(1)=0$; extend $f$ by $0$ outside $[0,1]$. Let $Q_n(x)=c_n(1-x^2)^n$ be normalised to have integral $1$ over $[-1,1]$ (the Landau kernels). Then
 $$P_n(x)=\int_{-1}^{1}f(x+t)\,Q_n(t)\,dt=\int_0^1 f(t)\,Q_n(t-x)\,dt$$
@@ -425,6 +426,7 @@ takes the prescribed values — a Lagrange-style interpolation inside $\mathscr 
       num: '7.32',
       kind: 'Theorem',
       name: 'Stone–Weierstrass theorem (real version)',
+      credit: 'Stone & Weierstrass, 1885',
       statement: String.raw`Let $\mathscr A$ be an algebra of real continuous functions on a compact set $K$. If $\mathscr A$ separates points on $K$ and vanishes at no point of $K$, then the uniform closure $\mathscr B$ of $\mathscr A$ consists of all real continuous functions on $K$.`,
       idea: String.raw`$\mathscr B$ is a uniformly closed algebra (7.29). **Step 1:** if $f\in\mathscr B$ then $|f|\in\mathscr B$, using the polynomials of 7.27 on $[-\|f\|,\|f\|]$, which have no constant term. **Step 2:** hence $\max(f,g)=\tfrac{f+g}2+\tfrac{|f-g|}2$ and $\min(f,g)$ lie in $\mathscr B$. **Step 3:** fix $f$, $x$ and $\eps$. By 7.31 each $y$ has $h_y\in\mathscr B$ with $h_y(x)=f(x)$, $h_y(y)=f(y)$. The open sets $J_y=\{h_y>f-\eps\}$ cover $K$, finitely many do by compactness, and $g_x=\max_j h_{y_j}$ satisfies $g_x(x)=f(x)$, $g_x>f-\eps$. **Step 4:** the open sets $V_x=\{g_x<f+\eps\}$ cover $K$; for finitely many of them $h=\min_i g_{x_i}$ satisfies $|h-f|<\eps$ on $K$. So $f\in\mathscr B$.`,
       caption: String.raw`$K=[-1,1]$ and $\mathscr A$ = polynomials, so the two-point interpolants $h_y$ can be taken to be chords of $f$ through $(x,f(x))$ and $(y,f(y))$. **Step 3:** drag $x$; the chords (orange) that a greedy finite subcover needs, their maximum $g_x$ (blue), and the open cover $\{J_y\}$ as bars below. **Step 4:** the minimum $h$ of finitely many $g_{x_i}$ (green) lies inside the $\eps$-band about $f$, and the bars show the cover $\{V_x\}$. **Hypothesis fails:** with even polynomials, every $h$ has $h(x)=h(-x)$, so $\|f-h\|\ge\|f_{\rm odd}\|$ for every $h$ in the closure.`,
@@ -539,6 +541,7 @@ takes the prescribed values — a Lagrange-style interpolation inside $\mathscr 
       num: '7.33',
       kind: 'Theorem',
       name: 'Stone–Weierstrass theorem (complex version)',
+      credit: 'Stone & Weierstrass, 1885',
       statement: String.raw`Call an algebra $\mathscr A$ of complex functions **self-adjoint** if $\bar f\in\mathscr A$ whenever $f\in\mathscr A$, where $\bar f(x)=\overline{f(x)}$. Let $\mathscr A$ be a self-adjoint algebra of complex continuous functions on a compact set $K$ that separates points on $K$ and vanishes at no point of $K$. Then the uniform closure of $\mathscr A$ consists of all complex continuous functions on $K$; that is, $\mathscr A$ is dense in $\mathscr C(K)$.`,
       idea: String.raw`Let $\mathscr A_\R$ be the set of real-valued members of $\mathscr A$. Self-adjointness gives $\Re f=\tfrac12(f+\bar f)\in\mathscr A_\R$ for every $f\in\mathscr A$. Using 7.31, take $f\in\mathscr A$ with $f(x_1)=1$, $f(x_2)=0$; then $\Re f$ separates $x_1$ and $x_2$. A suitable complex multiple $\lambda g$ of a $g$ with $g(x)\neq0$ has $\Re(\lambda g)(x)>0$, so $\mathscr A_\R$ vanishes nowhere. By 7.32, $\mathscr A_\R$ is dense in the real continuous functions; approximate $\Re f$ and $\Im f$ separately. Without self-adjointness the conclusion fails: on the unit circle the polynomials in $z$ separate points and vanish nowhere, yet $\int_0^{2\pi}p(e^{i\theta})e^{i\theta}\,d\theta=0$ for each of them, which keeps $\bar z$ at uniform distance $\ge1$.`,
       caption: String.raw`$K$ is the unit circle (dashed). Left: the image curve $\theta\mapsto f(e^{i\theta})$ in black, and the approximant $\sigma_N$ built from Fourier modes $|k|\le N$ (Fejér weights) — green when both $z^k$ and $\bar z^{k}$ are allowed (the self-adjoint algebra of trigonometric polynomials), red when only $z^0,\dots,z^N$ are (not self-adjoint). Drag $z$ around $K$ to compare $f(z)$ with the approximation. Right: the uniform error against $N$. The green curve tends to $0$; the red one never drops below the dashed $\beta=\big(\sum_{k<0}|\hat f(k)|^2\big)^{1/2}$, a lower bound for every polynomial in $z$.`,

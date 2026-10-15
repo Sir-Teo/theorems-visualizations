@@ -313,6 +313,7 @@ export default {
       num: '3.32',
       kind: 'Theorem',
       name: 'e is irrational',
+      credit: 'Euler, 1737',
       statement: String.raw`The number $e$ is irrational.`,
       idea: String.raw`The tail after $s_q=\sum_{k\le q}\frac1{k!}$ is less than a geometric series: $0<e-s_q<\frac{1}{q!\,q}$. Multiply by $q!$: the number $q!\,s_q$ is an integer, and $q!\,e$ exceeds it by a positive amount smaller than $\frac1q\le 1$. If $e=p/q$ with integers $p,q$, then $q!\,e=(q-1)!\,p$ would itself be an integer, and an integer cannot lie strictly between two consecutive integers.`,
       caption: String.raw`Choose a would-be denominator $q$. The number line is magnified by $q!$: the integers $N=q!\,s_q$ and $N+1$ are where $q!\cdot\frac pq$ would have to land (red), but $q!\,e$ (blue) is trapped in the green window $(N,\,N+\frac1q)$. Bottom: the gap $q!(e-s_q)$ for every $q$ stays strictly between $0$ and $\frac1q$.`,
@@ -363,6 +364,7 @@ export default {
       num: '3.33',
       kind: 'Theorem',
       name: 'Root test',
+      credit: 'Cauchy, 1821',
       statement: String.raw`Given $\sum a_n$, let $\alpha=\limsup_{n\to\infty}\sqrt[n]{|a_n|}$. Then
 (a) if $\alpha<1$, the series converges;
 (b) if $\alpha>1$, the series diverges;
@@ -441,6 +443,7 @@ export default {
       num: '3.34',
       kind: 'Theorem',
       name: 'Ratio test',
+      credit: "d'Alembert, 1768",
       statement: String.raw`The series $\sum a_n$
 (a) converges if $\displaystyle\limsup_{n\to\infty}\Bigl|\frac{a_{n+1}}{a_n}\Bigr|<1$;
 (b) diverges if $\Bigl|\dfrac{a_{n+1}}{a_n}\Bigr|\ge 1$ for all $n\ge n_0$, where $n_0$ is some fixed integer.`,

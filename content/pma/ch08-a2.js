@@ -164,6 +164,7 @@ Consequently $e^x$ has an inverse $\log:(0,\infty)\to\R$, with $(\log y)'=1/y$ a
       num: '8.8',
       kind: 'Theorem',
       name: 'Fundamental theorem of algebra',
+      credit: 'Gauss, 1799',
       statement: String.raw`Let $a_0,\dots,a_n$ be complex numbers with $n\ge1$ and $a_n\ne0$, and put $P(z)=\sum_{k=0}^n a_kz^k$. Then $P(z)=0$ for some complex number $z$.`,
       idea: String.raw`Let $\mu=\inf_{\C}|P|$. Since $|P(z)|\ge|z|^n\bigl(|a_n|-|a_{n-1}||z|^{-1}-\dots-|a_0||z|^{-n}\bigr)\to\infty$, the infimum is the infimum over a closed disc, where it is attained at some $z_0$ (4.16). If $P(z_0)\ne0$, write $P(z_0+w)/P(z_0)=1+b_kw^k+\dots+b_nw^n$ with $b_k\ne0$, and use 8.7(d) to pick $\theta$ with $e^{ik\theta}b_k=-|b_k|$. Then for small $r>0$, $|P(z_0+re^{i\theta})|/|P(z_0)|\le1-r^k\bigl(|b_k|-r|b_{k+1}|-\dots\bigr)<1$, contradicting minimality. So $\mu=|P(z_0)|=0$.`,
       caption: String.raw`Left: $\log|P|$ over the plane (dark = small; bands are level curves). Outside the orange circle $|P|>|P(0)|$, so the minimum lies in the disc. Drag $z_0$: the green arrows are the $k$ descent directions $e^{i\theta}$ from the proof, and the gold path repeats the proof's step until it lands on a root. Right: the surface $|P|$ over the disc, funnelling down to $0$ at each root.`,

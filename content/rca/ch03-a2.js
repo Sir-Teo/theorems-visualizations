@@ -29,6 +29,7 @@ export default {
       num: '3.6',
       kind: 'Definition',
       name: 'The spaces Lᵖ(μ) and the Lᵖ-norm',
+      credit: 'F. Riesz, 1910',
       statement: String.raw`Let $\mu$ be a positive measure on $X$ and $0<p<\infty$. For a complex measurable function $f$ on $X$ put
 $$\|f\|_p=\Big(\int_X|f|^p\,d\mu\Big)^{1/p},$$
 and let $L^p(\mu)$ be the set of all such $f$ with $\|f\|_p<\infty$; $\|f\|_p$ is the $L^p$-norm of $f$. For Lebesgue measure on $\R^k$ one writes $L^p(\R^k)$, and for counting measure on a set $A$ one writes $\ell^p(A)$ (just $\ell^p$ when $A$ is countable): its elements are the functions $x$ on $A$ with $\sum_{\alpha\in A}|x(\alpha)|^p<\infty$.`,
@@ -151,6 +152,7 @@ and let $L^p(\mu)$ be the set of all such $f$ with $\|f\|_p<\infty$; $\|f\|_p$ i
       num: '3.8',
       kind: 'Theorem',
       name: "Hölder's inequality in Lᵖ",
+      credit: 'Hölder, 1889',
       statement: String.raw`Let $p$ and $q$ be conjugate exponents with $1\le p\le\infty$. If $f\in L^p(\mu)$ and $g\in L^q(\mu)$, then $fg\in L^1(\mu)$ and
 $$\|fg\|_1\le\|f\|_p\,\|g\|_q .$$`,
       idea: String.raw`For $1<p<\infty$ apply 3.5(a) to $|f|$ and $|g|$. For $p=\infty$ (or $p=1$) use that $|f(x)|\le\|f\|_\infty$ for almost every $x$ (3.7): then $|fg|\le\|f\|_\infty|g|$ a.e. and integration gives the claim. Geometrically, for $\|g\|_q=1$ the functional $f\mapsto\int fg$ is at most $1$ on the unit ball of $L^p$, with the maximum attained at $\operatorname{sgn}(g)\,|g|^{q-1}$.`,
@@ -220,6 +222,7 @@ $$\|fg\|_1\le\|f\|_p\,\|g\|_q .$$`,
       num: '3.9',
       kind: 'Theorem',
       name: "Minkowski's inequality in Lᵖ",
+      credit: 'Minkowski, 1896',
       statement: String.raw`Let $1\le p\le\infty$. If $f,g\in L^p(\mu)$, then $f+g\in L^p(\mu)$ and
 $$\|f+g\|_p\le\|f\|_p+\|g\|_p .$$`,
       idea: String.raw`For $1<p<\infty$ this is 3.5(b) applied to $|f|$ and $|g|$, since $|f+g|\le|f|+|g|$. For $p=1$ integrate $|f+g|\le|f|+|g|$; for $p=\infty$ note that $|f+g|\le\|f\|_\infty+\|g\|_\infty$ off the union of two null sets (3.7). Geometrically the inequality says the ball of radius $\|g\|_p$ about $f$ sits inside the ball of radius $\|f\|_p+\|g\|_p$ about $0$ — equivalently, the unit ball is convex. For $0<p<1$ it is not, and the inequality fails.`,
@@ -300,6 +303,7 @@ $$\|f+g\|_p\le\|f\|_p+\|g\|_p .$$`,
       num: '3.11',
       kind: 'Theorem',
       name: 'Completeness of Lᵖ (Riesz–Fischer)',
+      credit: 'F. Riesz & Fischer, 1907',
       statement: String.raw`For $1\le p\le\infty$ and every positive measure $\mu$, $L^p(\mu)$ is a complete metric space: every Cauchy sequence in $L^p(\mu)$ converges in the $L^p$ metric to an element of $L^p(\mu)$.`,
       idea: String.raw`For $p<\infty$: pick $n_1<n_2<\cdots$ with $\|f_{n_{i+1}}-f_{n_i}\|_p<2^{-i}$ and put $g_k=\sum_{i\le k}|f_{n_{i+1}}-f_{n_i}|$. Minkowski (3.9) gives $\|g_k\|_p<1$, and Fatou's lemma gives $\|g\|_p\le1$ for $g=\lim g_k$; so $g<\infty$ a.e., the telescoping series $f_{n_1}+\sum(f_{n_{i+1}}-f_{n_i})$ converges absolutely a.e., and its sum $f$ is the $L^p$-limit (Fatou once more). For $p=\infty$ the sequence converges uniformly off a null set.`,
       caption: String.raw`The sequence is the Fourier partial sums $f_n$ of a square or sawtooth wave on $[0,1]$: continuous functions, Cauchy in $L^p$ for $p<\infty$, whose limit is discontinuous — completeness is what guarantees a limit exists. The proof's fast subsequence $n_1<n_2<\cdots$ is computed live (using $\|f_m-f_{m'}\|_p\le2\sup_{k\ge n}\|f_k-f\|_p$ for $m,m'\ge n$, over the first $256$ terms): note how sparse it must be. Bottom right: the dominating function $g_k$, with $\|g_k\|_p<1$. Choose $p=\infty$ to see the hypothesis fail.`,

@@ -361,6 +361,7 @@ where $m(g;z)$ denotes the multiplicity of the zero of $g$ at $z$ ($0$ if $g(z)\
       num: '15.7',
       kind: 'Definition',
       name: 'Elementary factors $E_p$',
+      credit: 'Weierstrass, 1876',
       statement: String.raw`Put $E_0(z)=1-z$ and, for $p=1,2,3,\dots$,
 $$E_p(z)=(1-z)\exp\Big(z+\frac{z^2}{2}+\cdots+\frac{z^p}{p}\Big).$$
 These entire functions are Weierstrass's **elementary factors**. The only zero of $E_p$ is a simple zero at $z=1$.`,

@@ -202,6 +202,7 @@ A differentiable $\varphi$ is convex exactly when $\varphi'$ is nondecreasing; f
       num: '3.3',
       kind: 'Theorem',
       name: "Jensen's inequality",
+      credit: 'Jensen, 1906',
       statement: String.raw`Let $\mu$ be a positive measure on a $\sigma$-algebra in a set $\Omega$ with $\mu(\Omega)=1$. Suppose $f\in L^1(\mu)$ is real with $a<f(x)<b$ for every $x\in\Omega$ (where $-\infty\le a<b\le\infty$), and $\varphi$ is convex on $(a,b)$. Then
 $$\varphi\Big(\int_\Omega f\,d\mu\Big)\;\le\;\int_\Omega(\varphi\circ f)\,d\mu .$$
 Here $\varphi\circ f$ need not be in $L^1(\mu)$; its integral always exists in the extended sense, possibly equal to $+\infty$.`,
@@ -385,6 +386,7 @@ are called a pair of **conjugate exponents**; this forces $1<p<\infty$ and $1<q<
       num: '3.5',
       kind: 'Theorem',
       name: 'Hölder and Minkowski inequalities',
+      credit: 'Hölder & Minkowski, 1889',
       statement: String.raw`Let $p$ and $q$ be conjugate exponents with $1<p<\infty$, let $\mu$ be a measure on $X$, and let $f,g$ be measurable functions on $X$ with values in $[0,\infty]$. Then
 (a) (Hölder) $\displaystyle\int_X fg\,d\mu\le\Big(\int_X f^p\,d\mu\Big)^{1/p}\Big(\int_X g^q\,d\mu\Big)^{1/q}$;
 (b) (Minkowski) $\displaystyle\Big(\int_X (f+g)^p\,d\mu\Big)^{1/p}\le\Big(\int_X f^p\,d\mu\Big)^{1/p}+\Big(\int_X g^p\,d\mu\Big)^{1/p}$.

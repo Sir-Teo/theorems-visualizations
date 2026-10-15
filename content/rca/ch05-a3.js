@@ -25,6 +25,7 @@ export default {
       num: '5.12',
       kind: 'Theorem',
       name: 'Riemann–Lebesgue lemma on the circle',
+      credit: 'Riemann & Lebesgue, 1854',
       statement: String.raw`For $f\in L^1(T)$ put $\hat f(n)=\int_T f(t)e^{-int}\,dm(t)$ $(n\in\Z)$. Then $|\hat f(n)|\le\norm{f}_1$ for every $n$, and
 $$\lim_{\abs{n}\to\infty}\hat f(n)=0,$$
 i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at infinity.`,
@@ -204,6 +205,7 @@ i.e. $\hat f$ belongs to the space $c_0$ of sequences on $\Z$ that vanish at inf
       num: '5.16',
       kind: 'Theorem',
       name: 'Hahn–Banach theorem',
+      credit: 'Hahn & Banach, 1927',
       statement: String.raw`If $M$ is a subspace of a normed linear space $X$ and $f$ is a bounded linear functional on $M$, then $f$ extends to a bounded linear functional $F$ on $X$ with $\norm{F}=\norm{f}$.`,
       idea: String.raw`Real case, $\norm f=1$: to extend to $M+\R x_1$ one needs a value $\alpha=F(x_1)$ with $f(y)-\norm{y-x_1}\le\alpha\le\norm{y+x_1}-f(y)$ for all $y\in M$; such $\alpha$ exist because the triangle inequality makes every left side at most every right side. The Hausdorff maximality theorem (4.21) pushes this one-dimensional step to all of $X$. The complex case applies the real case to $u=\Re f$ and returns via $F(x)=U(x)-iU(ix)$ (5.15).`,
       caption: String.raw`$X=\R^2$ with the $\ell^p$ norm; $M$ is the line through $0$ (drag its direction) and $f$ has norm $1$ on $M$. Right: the dual plane, where an extension $F=\langle a,\cdot\rangle$ is a point on the orange line $\{a:\ a|_M=f\}$ and $\norm F=\norm{a}_q$. Admissible extensions form the green set where that line touches the dual ball: a whole interval when $M$ runs through a corner of the unit ball (try $p=1$ or $p=\infty$; the handle snaps to those directions), a single point otherwise and always for $p=2$. Drag $a$: on the left, the level lines $F=\pm1$ support the unit ball exactly when $\norm F=1$.`,

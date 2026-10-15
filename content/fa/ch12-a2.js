@@ -211,6 +211,7 @@ If $T$ is normal, then $\mathscr N(T)=\mathscr N(T^*)$; $\mathscr R(T)$ is dense
       num: '12.16',
       kind: 'Theorem',
       name: 'Fuglede–Putnam–Rosenblum theorem',
+      credit: 'Fuglede, Putnam & Rosenblum, 1950',
       statement: String.raw`Suppose $M,N,T\in B(H)$, $M$ and $N$ are normal, and
 $$MT=TN .$$
 Then $M^*T=TN^*$. In particular (Fuglede), an operator that commutes with a normal operator $N$ also commutes with $N^*$.`,

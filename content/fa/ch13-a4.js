@@ -304,6 +304,7 @@ for some $A\in B(X)$; $A$ is then the infinitesimal generator, defined on all of
       num: '13.37',
       kind: 'Theorem',
       name: 'The Yosida approximation',
+      credit: 'Yosida, 1948',
       statement: String.raw`Let $A$ generate a strongly continuous contraction semigroup $Q(t)$ on a Banach space $X$, so that $\norm{(\lambda I-A)^{-1}}\le1/\lambda$ for $\lambda>0$. Put
 $$A_\lambda=\lambda A(\lambda I-A)^{-1}=\lambda^2(\lambda I-A)^{-1}-\lambda I\in B(X).$$
 Then $\norm{e^{tA_\lambda}}\le1$, $A_\lambda x\to Ax$ for $x\in\mathscr D(A)$, and $e^{tA_\lambda}x\to Q(t)x$ as $\lambda\to\infty$, uniformly for $t$ in compact intervals.`,
@@ -352,6 +353,7 @@ Then $\norm{e^{tA_\lambda}}\le1$, $A_\lambda x\to Ax$ for $x\in\mathscr D(A)$, a
       num: '13.39',
       kind: 'Theorem',
       name: 'Dissipative generators (Lumer–Phillips)',
+      credit: 'Lumer & Phillips, 1961',
       statement: String.raw`Let $A$ be a densely defined operator in a Hilbert space $H$. Then $A$ generates a strongly continuous contraction semigroup if and only if
 (a) $A$ is **dissipative**: $\operatorname{Re}(Ax,x)\le0$ for all $x\in\mathscr D(A)$, and
 (b) $\mathscr R(I-A)=H$.

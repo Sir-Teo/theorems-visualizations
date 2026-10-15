@@ -274,6 +274,7 @@ because the midpoint lies in $E$ by convexity. Hence any two minimizers coincide
       num: '4.12',
       kind: 'Theorem',
       name: 'Riesz representation of bounded functionals on H',
+      credit: 'F. Riesz & Fréchet, 1907',
       statement: String.raw`If $L$ is a continuous linear functional on a Hilbert space $H$, there is a unique $y\in H$ such that
 $$Lx=(x,y)\qquad\text{for all }x\in H .$$
 Moreover $\|L\|=\|y\|$.`,

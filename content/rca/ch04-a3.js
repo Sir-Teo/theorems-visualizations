@@ -229,6 +229,7 @@ and $x\mapsto\hat x$ is a continuous linear map of $H$ **onto** $\ell^2(A)$ whos
       num: '4.18',
       kind: 'Theorem',
       name: 'Maximal orthonormal sets and Parseval’s identity',
+      credit: 'Parseval, 1799',
       statement: String.raw`For an orthonormal set $\{u_\alpha:\alpha\in A\}$ in a Hilbert space $H$ the following are equivalent:
 (i) $\{u_\alpha\}$ is a maximal orthonormal set in $H$;
 (ii) the finite linear combinations of the $u_\alpha$ are dense in $H$;

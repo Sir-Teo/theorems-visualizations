@@ -308,6 +308,7 @@ In particular $C\{n!\}$ is quasi-analytic.`,
       num: '19.11',
       kind: 'Theorem',
       name: 'Denjoy–Carleman theorem',
+      credit: 'Denjoy & Carleman, 1921',
       statement: String.raw`Suppose $M_0=1$ and $M_n^2\le M_{n-1}M_{n+1}$ for $n=1,2,3,\dots$ (the sequence is log-convex), and for $x>0$ put
 $$Q(x)=\sum_{n=0}^\infty\frac{x^n}{M_n},\qquad q(x)=\sup_{n\ge0}\frac{x^n}{M_n}.$$
 Then each of the following five conditions implies the other four:

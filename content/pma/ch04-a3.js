@@ -210,6 +210,7 @@ If, in addition, $E$ is bounded, then
       num: '4.23',
       kind: 'Theorem',
       name: 'Intermediate value theorem',
+      credit: 'Bolzano, 1817',
       statement: String.raw`Let $f$ be a continuous real function on $[a,b]$. If $f(a)<f(b)$ and $f(a)<c<f(b)$, then $f(x)=c$ for some $x\in(a,b)$. (A similar statement holds if $f(a)>f(b)$.)`,
       idea: String.raw`The interval $[a,b]$ is connected (2.47), so $f([a,b])$ is a connected subset of $\R$ by 4.22, hence an interval (2.47 again); it contains $f(a)$ and $f(b)$, so it contains $c$. Concretely: if $c$ were not attained, $\{f<c\}$ and $\{f>c\}$ would be disjoint, relatively open, nonempty sets splitting $[a,b]$ — a separation of a connected set.`,
       caption: String.raw`Drag the level $c$. The axis is coloured by the two sets $\{f<c\}$ (blue) and $\{f>c\}$ (purple); wherever they meet there is a solution of $f(x)=c$ (green). The bar on the left is the image $f([a,b])$ — an interval. Switch on the jump: the image acquires a gap (red), and a level $c$ inside it is never attained even though $f(a)<c<f(b)$.`,

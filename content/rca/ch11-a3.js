@@ -297,6 +297,7 @@ Consequently, by the maximal theorem (7.4), $\sigma\{N_\alpha u>\lambda\}\le 3c_
       num: '11.24',
       kind: 'Theorem',
       name: 'Fatou: P[dμ] tends to dμ/dσ almost everywhere',
+      credit: 'Fatou, 1906',
       verify: true,
       statement: String.raw`Let $\mu$ be a complex Borel measure on $T$ with Lebesgue decomposition $d\mu=f\,d\sigma+d\mu_s$, where $f\in L^1(T)$ and $\mu_s\perp\sigma$. Then $P[d\mu]$ has nontangential limit $f(e^{i\theta})$ at $\sigma$-almost every point of $T$. In particular, if $\mu\perp\sigma$, then $P[d\mu]\to0$ nontangentially $\sigma$-a.e.`,
       idea: String.raw`By 11.22 it is enough to show that $P[d\mu_s]\to0$ nontangentially a.e. Since $\mu_s\perp\sigma$, the symmetric derivative of $|\mu_s|$ with respect to $\sigma$ is $0$ at $\sigma$-almost every point (Chapter 7); at such a point $|\mu_s|$ restricted to a small arc has a small maximal function there, and 11.18 bounds its Poisson integral by $c_\alpha$ times that inside $\Omega_\alpha$, while the part of $\mu_s$ away from the arc contributes something continuous that vanishes at the point. The singular part can only make itself felt on the $\sigma$-null set where it lives — where, for positive $\mu_s$, $P[d\mu_s]$ typically blows up.`,

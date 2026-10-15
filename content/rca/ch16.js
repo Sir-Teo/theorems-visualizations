@@ -346,6 +346,7 @@ The regular points form an open subset of $\partial D$, so the singular points f
       num: '16.6',
       kind: 'Theorem',
       name: 'Hadamard gap theorem',
+      credit: 'Hadamard, 1892',
       verify: true,
       statement: String.raw`Let $\lambda$ be a positive integer and $p_1<p_2<p_3<\cdots$ positive integers with
 $$p_{k+1}>\Big(1+\frac1\lambda\Big)\,p_k\qquad(k=1,2,3,\dots).$$

@@ -1,46 +1,60 @@
 # Authoring guide
 
-This site gives **every numbered theorem** in Walter Rudin's three analysis books an
-interactive visualization, and draws the **dependency graph** that shows how the results
-build on one another — from the least-upper-bound property in *Principles* to the spectral
-theorem in *Functional Analysis*.
-
-| id prefix | book | edition |
-|---|---|---|
-| `pma` | Principles of Mathematical Analysis (“Baby Rudin”) | 3rd ed., 1976 — chapters 1–11 |
-| `rca` | Real and Complex Analysis (“Papa Rudin”) | 3rd ed., 1987 — Prologue (= chapter 0) and chapters 1–20 |
-| `fa`  | Functional Analysis (“Grandpa Rudin”) | 2nd ed., 1991 — chapters 1–13 |
+*Ideas, Visualized* gives the load-bearing ideas of human knowledge (theorems, laws, models,
+algorithms, phenomena, inventions and more) an interactive visualization each, and draws the
+**dependency graph** that shows how they build on one another across collections and fields.
+The atlas began with every numbered result of Walter Rudin's three analysis books; see
+MASTER_PLAN.md for the 85 collections it is growing into.
 
 Everything is a static site (no build step for the browser). Content lives in
-`content/<book>/chNN.js`; `node scripts/build.mjs` turns it into `data/catalog.json`.
+`content/<collection>/chNN.js`; `node scripts/build.mjs` turns it into `data/` (an index, one
+detail file per collection, and the collection colours).
 
 ---
 
+## 0. Fields, collections and syllabi
+
+- `content/fields.js` lists the 13 fields and their areas.
+- `content/<id>/collection.js` describes a collection: `id`, `short`, `title`, `field`, `area`,
+  `order`, `source` (`{type: 'book', author, title, edition, license?, url?}` when the collection
+  follows a book's numbering, or `{type: 'course', refs: [...]}` for a curated course), `blurb`,
+  and optionally `nick`, `color: [light, dark]`, `chapterLabels: {0: 'Prologue'}`,
+  `mapRows: [[fromCh, toCh, label], …]`. Adding a folder with a `collection.js` adds a collection;
+  no code changes are needed.
+- `content/<id>/syllabus.js` is the planned inventory (see docs/syllabus.md). Planned items
+  appear as faded nodes until a chapter file defines an item with the same number.
+- docs/fields.md has field-specific guidance; read your field's section.
+
 ## 1. Content files
 
-One chapter = one module `content/<book>/chNN.js` (two-digit chapter). Large chapters may be
-split into extra **part files** `chNN-b.js`, `chNN-c.js`, … that export only `book`, `chapter`
-and `items` (the build merges parts and sorts items by number). Keep each file under ~1 500
-lines; a part per 8–12 items is a good size.
+One chapter = one module `content/<collection>/chNN.js` (two-digit chapter). Large chapters may
+be split into extra **part files** `chNN-b.js`, `chNN-c.js`, … that export only `collection`,
+`chapter` and `items` (the build merges parts and sorts items by number; a chapter's title can
+also come from the syllabus). Keep each file under ~1 500 lines; a part per 8–12 items is a good
+size.
 
 ```js
 // Rudin, Principles of Mathematical Analysis — Chapter 4: Continuity
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 4,
   title: 'Continuity',                 // only in chNN.js
   summary: String.raw`2–4 sentences, in your own words, on the arc of the chapter.`,
   items: [
     {
-      num: '4.19',                      // Rudin's number, as a string
-      kind: 'Theorem',                  // Theorem | Lemma | Corollary | Proposition | Definition
+      num: '4.19',                      // the book's number, or the syllabus number, as a string
+      kind: 'Theorem',                  // see "kind" below
       name: 'Continuity on a compact space is uniform',
       statement: String.raw`... $\eps$ ...`,
-      idea: String.raw`... why it is true, 2–4 sentences ...`,
+      idea: String.raw`... why it is true (or how it works), 2–4 sentences ...`,
       caption: String.raw`... what to drag / watch, 1–2 sentences ...`,
       deps: ['pma-4.18', 'pma-2.32', 'pma-4.8'],
-      see: ['rca-2.x'],                 // optional related results in any book (no ordering constraint)
+      see: ['rca-2.x'],                 // optional related items anywhere (no ordering constraint)
       tags: ['compactness', 'continuity'],
+      refs: ['Taylor §7.3'],            // optional: where to read more (curated collections)
+      scope: String.raw`...`,           // optional: where a law or model holds ("Holds when …")
+      credit: 'Heine & Borel, 1872',    // optional: who and when (feeds the timeline)
+      links: { wikipedia: 'https://…' },// optional external references
       verify: true,                     // optional: set when unsure of the number or exact hypotheses
       viz(v) { /* see §3 */ },
     },
@@ -51,15 +65,19 @@ export default {
 ### Field rules
 
 - **Always use `String.raw\`…\``** for any string containing TeX, so backslashes survive.
-- **`num`** — Rudin's own number (`'2.41'`). Every numbered *Theorem, Lemma, Corollary,
-  Proposition* in the chapter gets an item. An *unnumbered* corollary that Rudin states right
+- **`kind`** — `Theorem Lemma Corollary Proposition Definition` for mathematics, plus `Law
+  Principle Postulate Algorithm Model Concept Phenomenon Method Paradox Hypothesis Invention
+  Event` for the rest of the atlas. Pick the most honest one (docs/syllabus.md has examples).
+- **`num`** — the book's own number (`'2.41'`; three levels such as `'2.4.1'` are allowed) for
+  book-anchored collections, the syllabus number for curated ones; never renumber. In a book,
+  every numbered *Theorem, Lemma, Corollary, Proposition* in the chapter gets an item. An *unnumbered* corollary that Rudin states right
   after a theorem gets the theorem's number plus a letter (`'2.35a'`, `'2.35b'`); it is shown
   as “Corollary to 2.35”. If a whole section is unnumbered (e.g. RCA's Prologue), number its
   results `0.1, 0.2, …` in order and set `verify: true`.
 - **Definitions** — include the *key* numbered definitions that later theorems rely on
   (compactness, Cauchy sequence, measure, Banach space, …): typically 3–10 per chapter.
   `kind: 'Definition'`, `viz` optional (but a good picture of a central definition is welcome).
-- **`id`** is derived: `<book>-<num>`, e.g. `pma-4.19`, `rca-10.15`, `fa-3.4`. Never write it.
+- **`id`** is derived: `<collection>-<num>`, e.g. `pma-4.19`, `rca-10.15`, `mech-5.3`. Never write it.
 - **`name`** — short and recognisable (≤ 60 chars): the classical name if there is one
   (“Heine–Borel theorem”, “Baire category theorem”), otherwise a crisp description
   (“Closed subsets of compact sets are compact”).

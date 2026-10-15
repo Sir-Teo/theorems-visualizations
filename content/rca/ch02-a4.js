@@ -111,6 +111,7 @@ export default {
       num: '2.20',
       kind: 'Theorem',
       name: 'Existence and properties of Lebesgue measure',
+      credit: 'Lebesgue, 1902',
       statement: String.raw`There is a positive complete measure $m$ on a $\sigma$-algebra $\mathfrak M$ in $\R^k$ such that:
 (a) $m(W)=\operatorname{vol}(W)$ for every $k$-cell $W$;
 (b) $\mathfrak M$ contains all Borel sets: in fact $E\in\mathfrak M$ exactly when there are an $F_\sigma$ set $A$ and a $G_\delta$ set $B$ with $A\subset E\subset B$ and $m(B-A)=0$; and $m$ is regular;
@@ -168,6 +169,7 @@ export default {
       num: '2.21',
       kind: 'Definition',
       name: 'Lebesgue measurable sets and Lebesgue measure',
+      credit: 'Lebesgue, 1902',
       statement: String.raw`The members of the $\sigma$-algebra $\mathfrak M$ of Theorem 2.20 are the *Lebesgue measurable* subsets of $\R^k$, and $m$ is *Lebesgue measure* on $\R^k$; a function is Lebesgue measurable if it is measurable with respect to $\mathfrak M$. Because $m$ is complete, every subset of a set of measure $0$ is Lebesgue measurable. Consequently $\mathfrak M$ is strictly larger than the Borel $\sigma$-algebra. For example, the Cantor set has measure $0$ but the cardinality of $\R$, so it alone has $2^{\mathfrak c}$ measurable subsets, while there are only $\mathfrak c$ Borel sets.`,
       idea: String.raw`Completeness comes from 2.14(e). The Cantor set $C$ is covered by $2^n$ intervals of total length $(2/3)^n$ for every $n$, so $m(C)=0$, yet $C$ is uncountable. A cardinality count then shows that some Lebesgue measurable sets are not Borel.`,
       caption: String.raw`The Cantor set at stage $n$: $2^n$ closed intervals of total length $(2/3)^n$, which tends to $0$. The gold points form an arbitrary subset of $C$ (resample it). By completeness every such subset is Lebesgue measurable with measure $0$, no matter how wild it is.`,
@@ -203,6 +205,7 @@ export default {
       num: '2.22',
       kind: 'Theorem',
       name: 'Sets all of whose subsets are measurable are null',
+      credit: 'Vitali, 1905',
       statement: String.raw`If $A\subset\R$ and every subset of $A$ is Lebesgue measurable, then $m(A)=0$.`,
       idea: String.raw`Choose a set $E$ containing exactly one point of each coset $x+\Q$ (axiom of choice). The translates $E+r$, $r\in\Q$, are disjoint and cover $\R$, so $A=\bigcup_r A\cap(E+r)$. Fix $t$, let $B\subset A\cap(E+t)$ be bounded, and suppose $B$ is measurable. Its translates $B+r$ for rational $r\in[0,1]$ are disjoint, all lie in one bounded interval, and all have measure $m(B)$. Countable additivity then forces $m(B)=0$, and a countable union of null sets is null.`,
       caption: String.raw`The circle $\R/\Z$, with a schematic stand-in for a bounded piece $B$ of a Vitali-type set; a genuine one cannot be drawn. Its rotations by the rationals $p/q$ with $q\le N$ are pairwise disjoint and lie in a set of measure $1$. So $K_N\cdot m(B)\le1$, where $K_N$ is the number of rotations. Raise $N$: the bound $1/K_N$ collapses to $0$, so a measurable $B$ must be null.`,

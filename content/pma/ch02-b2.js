@@ -221,6 +221,7 @@ export default {
       num: '2.41',
       kind: 'Theorem',
       name: 'Heine–Borel theorem',
+      credit: 'Borel, 1895',
       statement: String.raw`For a set $E\subset\R^k$ the following three properties are equivalent:
 (a) $E$ is closed and bounded;
 (b) $E$ is compact;
@@ -316,6 +317,7 @@ export default {
       num: '2.42',
       kind: 'Theorem',
       name: 'Weierstrass (Bolzano–Weierstrass) theorem',
+      credit: 'Bolzano & Weierstrass, 1817',
       statement: String.raw`Every bounded infinite subset of $\R^k$ has a limit point in $\R^k$.`,
       idea: String.raw`A bounded set $E$ lies in some $k$-cell $I$, which is compact by 2.40; by 2.37 the infinite set $E$ then has a limit point in $I$. Unwinding the proofs gives the familiar bisection: of the $2^k$ halves of a cell holding infinitely many points of $E$, at least one again holds infinitely many, and the nested cells shrink to a limit point.`,
       caption: String.raw`$E=\{x_1,x_2,\dots\}$; the first 20000 points are used. Each step halves the current square and keeps a quarter holding the most of them — a finite stand-in for "infinitely many". The right panel shows the kept square magnified. For the bounded sets the squares close in on a limit point; for the unbounded spiral every square eventually holds only finitely many points.`,

@@ -173,6 +173,7 @@ export default {
       num: '6.8',
       kind: 'Theorem',
       name: 'Continuous functions are integrable',
+      credit: 'Cauchy, 1823',
       statement: String.raw`If $f$ is continuous on $[a,b]$, then $f\in\mathscr R(\alpha)$ on $[a,b]$ (for every monotonically increasing $\alpha$, continuous or not).`,
       idea: String.raw`Given $\eps>0$ choose $\eta>0$ with $[\alpha(b)-\alpha(a)]\,\eta<\eps$. Since $[a,b]$ is compact, $f$ is uniformly continuous (4.19): some $\delta>0$ makes $|f(x)-f(t)|<\eta$ whenever $|x-t|<\delta$. On any partition whose cells are shorter than $\delta$ we get $M_i-m_i\le\eta$ in every cell, hence $U-L\le\eta\,[\alpha(b)-\alpha(a)]<\eps$, and 6.6 applies.`,
       caption: String.raw`Choose $\eps$: the viz computes $\eta=\eps/[\alpha(1)-\alpha(0)]$, reads off a $\delta$ from the modulus of continuity $\omega$ (lower panel), and uses equal cells shorter than $\delta$. Every box $[m_i,M_i]$ is then at most $\eta$ tall (the ruler on the right). The steep $\sqrt x$ needs a much smaller $\delta$ — but one still exists.`,

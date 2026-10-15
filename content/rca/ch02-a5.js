@@ -76,6 +76,7 @@ export default {
       num: '2.24',
       kind: 'Theorem',
       name: "Lusin's theorem",
+      credit: 'Lusin, 1912',
       statement: String.raw`Let $X$ be a locally compact Hausdorff space and $\mu$ a measure on $X$ with the properties listed in the Riesz representation theorem 2.14. Let $f$ be a complex measurable function on $X$ and $A\subset X$ with $\mu(A)<\infty$ and $f=0$ off $A$, and let $\eps>0$. Then there is a $g\in C_c(X)$ such that
 $$\mu(\{x: f(x)\ne g(x)\})<\eps,$$
 and $g$ can be chosen with $\sup_X|g|\le\sup_X|f|$.`,

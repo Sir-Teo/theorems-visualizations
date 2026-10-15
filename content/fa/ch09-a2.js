@@ -108,6 +108,7 @@ and $\pi(x)$ is the number of primes $\le x$.`,
       num: '9.11',
       kind: 'Theorem',
       name: 'ζ has no zeros on the line Re s = 1',
+      credit: 'Hadamard & de la Vallée Poussin, 1896',
       statement: String.raw`The function $\zeta(s)-\frac1{s-1}$ extends to a holomorphic function in $\operatorname{Re}s>0$, so $\zeta$ is meromorphic there with a single simple pole at $s=1$; and
 $$\zeta(1+it)\ne0\qquad(t\in\R,\ t\ne0).$$`,
       idea: String.raw`The extension comes from comparing $\sum n^{-s}$ with $\int_1^\infty x^{-s}dx=\frac1{s-1}$. For the zero-free line: from the Euler product, $\log|\zeta(\sigma+it)|=\sum_p\sum_k\frac{\cos(kt\log p)}{kp^{k\sigma}}$ for $\sigma>1$, and $3+4\cos\theta+\cos2\theta=2(1+\cos\theta)^2\ge0$ gives
@@ -159,6 +160,7 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
       num: '9.12',
       kind: 'Theorem',
       name: "Ingham's Tauberian theorem",
+      credit: 'Ingham, 1935',
       statement: String.raw`Suppose $g$ is a real nondecreasing function on $(0,\infty)$, $g(x)=0$ for $0<x<1$, and
 $$\sum_{n=1}^\infty g\Big(\frac xn\Big)=ax\log x+bx+o(x)\qquad(x\to\infty)$$
 for some constants $a,b$. Then $g(x)=ax+o(x)$ as $x\to\infty$.`,
@@ -208,6 +210,7 @@ has no zero. $\zeta(1+it)\ne0$ for $t\ne0$ (9.11), the bracket vanishes only if 
       num: '9.12a',
       kind: 'Corollary',
       name: 'The prime number theorem',
+      credit: 'Hadamard & de la Vallée Poussin, 1896',
       statement: String.raw`$$\lim_{x\to\infty}\frac{\pi(x)\log x}{x}=1,\qquad\text{equivalently}\qquad\lim_{x\to\infty}\frac{\psi(x)}{x}=1 .$$`,
       idea: String.raw`Apply Ingham's theorem 9.12 to $g=\psi$, which is nondecreasing and vanishes on $(0,2)$. Every $m\le x$ satisfies $\log m=\sum_{d\mid m}\Lambda(d)$, so
 $$\sum_{n\ge1}\psi\Big(\frac xn\Big)=\sum_{m\le x}\log m=\log[x]!=x\log x-x+O(\log x)$$

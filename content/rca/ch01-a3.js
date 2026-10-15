@@ -88,6 +88,7 @@ Consequently (with 1.14 and 1.17) sums and products of measurable functions $X\t
       num: '1.23',
       kind: 'Definition',
       name: 'The integral of a nonnegative measurable function',
+      credit: 'Lebesgue, 1902',
       statement: String.raw`If $s=\sum_{i=1}^n\alpha_i\chi_{A_i}$ is a measurable simple function with distinct values $\alpha_i\in[0,\infty)$, and $E\in\mathfrak M$, put
 $$\int_E s\,d\mu=\sum_{i=1}^n\alpha_i\,\mu(A_i\cap E)\qquad(0\cdot\infty=0).$$
 For measurable $f:X\to[0,\infty]$ and $E\in\mathfrak M$ define
@@ -272,6 +273,7 @@ $$\int_X(s+t)\,d\mu=\int_X s\,d\mu+\int_X t\,d\mu.$$`,
       num: '1.26',
       kind: 'Theorem',
       name: "Lebesgue's monotone convergence theorem",
+      credit: 'B. Levi, 1906',
       statement: String.raw`Let $\{f_n\}$ be a sequence of measurable functions on $X$ such that
 (a) $0\le f_1(x)\le f_2(x)\le\cdots\le\infty$ for every $x\in X$, and
 (b) $f_n(x)\to f(x)$ as $n\to\infty$, for every $x\in X$.
@@ -437,6 +439,7 @@ $$\sum_{i=1}^\infty\sum_{j=1}^\infty a_{ij}=\sum_{j=1}^\infty\sum_{i=1}^\infty a
       num: '1.28',
       kind: 'Lemma',
       name: "Fatou's lemma",
+      credit: 'Fatou, 1906',
       statement: String.raw`If $f_n:X\to[0,\infty]$ is measurable for each positive integer $n$, then
 $$\int_X\Big(\liminf_{n\to\infty}f_n\Big)\,d\mu\ \le\ \liminf_{n\to\infty}\int_X f_n\,d\mu .$$`,
       idea: String.raw`Put $g_k=\inf_{i\ge k}f_i$. Then $g_k\le f_k$, so $\int g_k\le\int f_k$; and $0\le g_1\le g_2\le\cdots$ with $g_k\to\liminf f_n$. By monotone convergence (1.26) the left side is $\lim\int g_k$, which is at most $\liminf\int f_k$. Inequality can be strict: mass can concentrate or oscillate away without leaving a trace in the pointwise $\liminf$.`,

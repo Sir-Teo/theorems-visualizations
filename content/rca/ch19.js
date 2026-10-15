@@ -167,6 +167,7 @@ An entire function $f$ is of **exponential type** if there are constants $A,C$ w
       num: '19.2',
       kind: 'Theorem',
       name: 'Paley–Wiener theorem for the upper half-plane',
+      credit: 'Paley & Wiener, 1934',
       statement: String.raw`Let $\Pi^+=\{x+iy:y>0\}$ and let $f\in H(\Pi^+)$ have uniformly bounded $L^2$ norms on horizontal lines:
 $$\sup_{0<y<\infty}\int_{-\infty}^{\infty}|f(x+iy)|^2\,dx=C<\infty .$$
 Then there is an $F\in L^2(0,\infty)$ such that
@@ -277,6 +278,7 @@ Conversely, every $F\in L^2(0,\infty)$ defines in this way a function $f\in H(\P
       num: '19.3',
       kind: 'Theorem',
       name: 'Paley–Wiener theorem for entire functions of exponential type',
+      credit: 'Paley & Wiener, 1934',
       statement: String.raw`Let $A$ and $C$ be positive constants and let $f$ be an entire function such that
 $$|f(z)|\le C\,e^{A|z|}\quad(z\in\C)\qquad\text{and}\qquad\int_{-\infty}^{\infty}|f(x)|^2\,dx<\infty .$$
 Then there exists $F\in L^2(-A,A)$ with

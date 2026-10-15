@@ -65,6 +65,7 @@ is an isometry from $\mathscr R(T+iI)$ onto $\mathscr R(T-iI)$, $I-U$ is one-to-
       num: '13.20',
       kind: 'Definition',
       name: 'Deficiency indices',
+      credit: 'von Neumann, 1929',
       statement: String.raw`For a closed symmetric densely defined $T$, the **deficiency indices** are $n_\pm=\dim\mathscr N(T^*\mp iI)$, the dimensions of the orthogonal complements of $\mathscr R(T\pm iI)$. $T$ is self-adjoint iff $n_+=n_-=0$; $T$ has self-adjoint extensions iff $n_+=n_-$, and they correspond to the unitary maps of $\mathscr N(T^*-iI)$ onto $\mathscr N(T^*+iI)$ (extensions of the Cayley transform to a unitary).`,
       idea: String.raw`The Cayley transform $U$ of $T$ is an isometry between closed subspaces with orthogonal complements of dimensions $n_+$ and $n_-$; a symmetric extension of $T$ is a partial isometry extending $U$, and it is unitary — the extension self-adjoint — exactly when it maps one complement onto the other. For $-i\,d/dx$ on $[0,1]$ with $f(0)=f(1)=0$, $n_\pm=1$ (spanned by $e^{\pm x}$), giving the circle of extensions $T_\theta$ of 13.15; on $[0,\infty)$, $n_+=1\ne n_-=0$ and no self-adjoint extension exists.`,
       deps: ['fa-13.19'],
@@ -125,6 +126,7 @@ With the spectral theorem 13.30 this shows that a self-adjoint $T$ has $\sigma(T
       num: '13.30',
       kind: 'Theorem',
       name: 'The spectral theorem for unbounded self-adjoint operators',
+      credit: 'von Neumann, 1929',
       statement: String.raw`Every self-adjoint $T$ (more generally every closed normal densely defined $T$) has a unique resolution of the identity $E$ on the Borel sets of $\sigma(T)\subset\R$ with
 $$(Tx,y)=\int_{\sigma(T)}\lambda\,dE_{x,y}(\lambda)\qquad(x\in\mathscr D(T),\ y\in H),$$
 where $\mathscr D(T)=\{x:\int\lambda^2\,dE_{x,x}(\lambda)<\infty\}$. Moreover $f(T)=\int f\,dE$ defines a functional calculus for all Borel $f$ (unbounded $f$ giving unbounded operators).`,
@@ -165,6 +167,7 @@ where $\mathscr D(T)=\{x:\int\lambda^2\,dE_{x,x}(\lambda)<\infty\}$. Moreover $f
       num: '13.38',
       kind: 'Theorem',
       name: "Stone's theorem: one-parameter unitary groups",
+      credit: 'Stone, 1930',
       statement: String.raw`If $T$ is self-adjoint, then $U_t=e^{itT}=\int e^{it\lambda}dE(\lambda)$ is a strongly continuous one-parameter group of unitary operators ($U_{s+t}=U_sU_t$, $U_0=I$, $t\mapsto U_tx$ continuous), and
 $$\lim_{t\to0}\frac{U_tx-x}{t}=iTx\qquad\text{exactly for }x\in\mathscr D(T).$$
 Conversely (Stone) every strongly continuous unitary group arises in this way from a unique self-adjoint $T$, its **generator**.`,
@@ -200,6 +203,7 @@ Conversely (Stone) every strongly continuous unitary group arises in this way fr
       num: '13.35',
       kind: 'Theorem',
       name: 'Semigroups and their infinitesimal generators (Hille–Yosida)',
+      credit: 'Hille & Yosida, 1948',
       statement: String.raw`Let $\{Q(t)\}_{t\ge0}$ be a strongly continuous semigroup of bounded operators on a Banach space $X$ ($Q(0)=I$, $Q(s+t)=Q(s)Q(t)$). Its **infinitesimal generator** $A$, $Ax=\lim_{t\downarrow0}\frac{Q(t)x-x}{t}$ on the set where the limit exists, is closed and densely defined, and $Q(t)x$ solves $\frac d{dt}Q(t)x=AQ(t)x$. If $\norm{Q(t)}\le1$ (a contraction semigroup), then every $\lambda>0$ is in the resolvent set of $A$, $\norm{(\lambda I-A)^{-1}}\le1/\lambda$, and
 $$Q(t)x=\lim_{n\to\infty}\Big(I-\frac tnA\Big)^{-n}x .$$
 Conversely (Hille–Yosida), every closed densely defined $A$ with these resolvent bounds generates a contraction semigroup.`,

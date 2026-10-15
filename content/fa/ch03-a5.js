@@ -27,6 +27,7 @@ export default {
       num: '3.26',
       kind: 'Definition',
       name: 'Weak (Pettis) integral of a vector-valued function',
+      credit: 'Pettis, 1938',
       statement: String.raw`Let $\mu$ be a measure on a measure space $Q$, let $X$ be a topological vector space on which $X^*$ separates points, and let $f:Q\to X$ be such that $\Lambda f$ is $\mu$-integrable for every $\Lambda\in X^*$. If there is $y\in X$ with
 $$\Lambda y=\int_Q(\Lambda f)\,d\mu\qquad\text{for every }\Lambda\in X^*,$$
 we write $y=\int_Qf\,d\mu$. Such a $y$ is unique, because $X^*$ separates points.`,

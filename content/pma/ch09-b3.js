@@ -179,6 +179,7 @@ Then there is a point $(x,y)$ in the interior of $Q$ such that $\Delta(f,Q)=hk\,
       num: '9.41',
       kind: 'Theorem',
       name: 'Equality of mixed partial derivatives',
+      credit: 'Schwarz, 1873',
       statement: String.raw`Suppose $f$ is defined in an open set $E\subset\R^2$, that $D_1f$, $D_{21}f$ and $D_2f$ exist at every point of $E$, and that $D_{21}f$ is continuous at some point $(a,b)\in E$. Then $D_{12}f$ exists at $(a,b)$ and
 $$(D_{12}f)(a,b)=(D_{21}f)(a,b).$$`,
       idea: String.raw`Put $A=(D_{21}f)(a,b)$ and fix $\eps>0$. For every small rectangle $Q$ with vertices $(a,b)$ and $(a+h,b+k)$, 9.40 writes $\Delta(f,Q)/hk$ as a value of $D_{21}f$ inside $Q$, so continuity at $(a,b)$ gives $|\Delta(f,Q)/hk-A|<\eps$. Keep $h$ fixed and let $k\to0$: because $D_2f$ exists, $\Delta(f,Q)/hk\to\big[(D_2f)(a+h,b)-(D_2f)(a,b)\big]/h$, which therefore stays within $\eps$ of $A$. These are precisely the difference quotients defining $D_1(D_2f)=D_{12}f$ at $(a,b)$.`,

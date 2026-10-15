@@ -37,6 +37,7 @@ export default {
       num: '10.18',
       kind: 'Definition',
       name: 'The exterior derivative d',
+      credit: 'É. Cartan, 1899',
       statement: String.raw`For a $0$-form $f\in\mathscr C'(E)$ put
 $$df=\sum_{i=1}^n(D_if)(\mathbf x)\,dx_i .$$
 If $\omega=\sum_Ib_I(\mathbf x)\,dx_I$ is the standard presentation of a $k$-form of class $\mathscr C'$ in $E$, its **exterior derivative** is the $(k+1)$-form

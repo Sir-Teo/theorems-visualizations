@@ -162,6 +162,7 @@ for every $t$ in some neighbourhood of $t_0$.`,
       num: '9.4',
       kind: 'Theorem',
       name: "Wiener's theorem on translation-invariant subspaces",
+      credit: 'Wiener, 1932',
       statement: String.raw`For $Y\subset L^1(\R^n)$ let $Z(Y)$ be the set of all $t\in\R^n$ at which $\hat f(t)=0$ for **every** $f\in Y$. If $Y$ is a closed subspace of $L^1(\R^n)$ that is invariant under all translations ($f\in Y\Rightarrow\tau_xf\in Y$ for every $x\in\R^n$) and $Z(Y)=\emptyset$, then $Y=L^1(\R^n)$.`,
       idea: String.raw`(i) $Y$ is an ideal: if $f\in Y$ and $g\in L^1$ then $f*g\in Y$. Otherwise Hahn–Banach (3.5) gives $\Lambda\in(L^1)^*=L^\infty$ vanishing on $Y$ with $\Lambda(f*g)\ne0$, yet $\Lambda(f*g)=\int g(y)\,\Lambda(\tau_yf)\,dy=0$.
 (ii) Fix $t_0$ and pick $f\in Y$ with $c=\hat f(t_0)\ne0$. Lemma 9.2 gives $h$ with $\|h\|_1<|c|$ and $\hat f=c-\hat h$ near $t_0$, so the Neumann series $u=\sum_k c^{-k-1}h^{*k}*g$ converges for every $g$. If $\hat g$ is supported in that neighbourhood, $\hat u=\hat g/\hat f$ there, and $f*u=g$ lies in $Y$ by (i).
@@ -261,6 +262,7 @@ A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $
       num: '9.5',
       kind: 'Theorem',
       name: 'Translates of K are dense iff K̂ has no zero',
+      credit: 'Wiener, 1932',
       statement: String.raw`Suppose $K\in L^1(\R^n)$ and $Y$ is the smallest closed translation-invariant subspace of $L^1(\R^n)$ that contains $K$, the closed span of the translates of $K$. Then
 $$Y=L^1(\R^n)\quad\text{if and only if}\quad\hat K(t)\ne0\ \text{for every }t\in\R^n .$$`,
       idea: String.raw`Every element of $Y$ is a limit of combinations $\sum c_jK(x-s_j)$, whose transforms are $\hat K(t)\sum c_je^{-is_j\cdot t}$. So $Z(Y)$ is exactly the zero set of $\hat K$. If that set is empty, Theorem 9.4 gives $Y=L^1$. If $\hat K(t_0)=0$, every $h\in Y$ has $\hat h(t_0)=0$, while the Gaussian $g$ has $\hat g(t_0)\ne0$; since $|\hat g(t_0)-\hat h(t_0)|\le\norm{g-h}_1$, $g$ stays at distance at least $|\hat g(t_0)|$ from $Y$. Dually, the bounded function $e^{it_0\cdot x}$ annihilates every translate of $K$: $K*e^{it_0\cdot x}=\hat K(t_0)e^{it_0\cdot x}=0$.`,
@@ -437,6 +439,7 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
       num: '9.7',
       kind: 'Theorem',
       name: "Wiener's Tauberian theorem",
+      credit: 'Wiener, 1932',
       statement: String.raw`Suppose $\varphi\in L^\infty(\R^n)$, $K\in L^1(\R^n)$, $\hat K(t)\ne0$ for every $t\in\R^n$, and
 $$\lim_{x\to\infty}(K*\varphi)(x)=a\hat K(0).$$
 (a) Then $\lim_{x\to\infty}(f*\varphi)(x)=a\hat f(0)$ for **every** $f\in L^1(\R^n)$.

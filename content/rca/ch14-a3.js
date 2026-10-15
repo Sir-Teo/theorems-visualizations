@@ -286,6 +286,7 @@ export default {
       num: '14.19',
       kind: 'Theorem',
       name: 'Jordan regions: boundary map is a homeomorphism',
+      credit: 'Carathéodory, 1913',
       verify: true,
       statement: String.raw`If $\Omega$ is a bounded region whose boundary is a Jordan curve, then every boundary point of $\Omega$ is simple; hence (14.18) every conformal map of $\Omega$ onto $U$ extends to a homeomorphism of $\overline\Omega$ onto $\overline U$, and in particular restricts to a homeomorphism of the Jordan curve $\partial\Omega$ onto the circle $T$.`,
       idea: String.raw`Near a point $\beta$ of a Jordan curve the region cannot approach $\beta$ from two separated sides (that would need the curve to pass through $\beta$ twice), and the Jordan curve theorem lets one connect points of $\Omega$ near $\beta$ inside $\Omega$ by short arcs; threading a sequence $\alpha_n\to\beta$ by such arcs gives the curve required in the definition. Then 14.18 applies. Without the Jordan hypothesis the extension can fail to be one-to-one: for a slit disc the two banks of the slit come from two different arcs of $T$.`,

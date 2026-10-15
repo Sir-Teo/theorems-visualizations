@@ -206,6 +206,7 @@ is the *principal part* of $f$ at $a$. The coefficient $c_1$ is the *residue* of
       num: '10.42',
       kind: 'Theorem',
       name: 'The residue theorem',
+      credit: 'Cauchy, 1826',
       statement: String.raw`Suppose $f$ is meromorphic in $\Omega$, $A$ is the set of poles of $f$ in $\Omega$, and $\Gamma$ is a cycle in $\Omega\setminus A$ such that $\Ind_\Gamma(\alpha)=0$ for every $\alpha$ not in $\Omega$. Then
 $$\frac1{2\pi i}\int_\Gamma f(z)\,dz=\sum_{a\in A}\Res(f;a)\,\Ind_\Gamma(a).$$`,
       idea: String.raw`Only finitely many poles $a_1,\dots,a_n$ have $\Ind_\Gamma(a)\ne0$ (they lie in a compact set, and $A$ has no limit point in $\Omega$). Subtract their principal parts $Q_j$: then $f-\sum Q_j$ is holomorphic in $\Omega$ minus the remaining poles, a set on which $\Gamma$ still satisfies the hypothesis of the global Cauchy theorem 10.35, so its integral over $\Gamma$ is $0$. Finally $\frac1{2\pi i}\int_\Gamma Q_j=\Res(f;a_j)\Ind_\Gamma(a_j)$, because the higher negative powers integrate to $0$ over closed paths.`,

@@ -258,6 +258,7 @@ export default {
       num: '4.19',
       kind: 'Theorem',
       name: "Schauder's theorem: T is compact iff T* is",
+      credit: 'Schauder, 1930',
       statement: String.raw`Let $X$ and $Y$ be Banach spaces and $T\in\mathscr B(X,Y)$. Then $T$ is compact if and only if $T^*$ is compact.`,
       idea: String.raw`Let $T$ be compact and $K=\overline{T(U)}$, a compact metric space. Restricted to $K$, the functionals $y^*$ with $\|y^*\|\le1$ form a uniformly bounded, equicontinuous (indeed $1$-Lipschitz) family in $C(K)$, so by Arzelà–Ascoli it is totally bounded there. Since $\|T^*y^*-T^*z^*\|=\sup_{x\in U}|\langle Tx,y^*-z^*\rangle|=\sup_K|y^*-z^*|$, the set $T^*(B_{Y^*})$ is totally bounded in $X^*$. Conversely, if $T^*$ is compact, so is $T^{**}$, and $T$ is the restriction of $T^{**}$ to $X\subset X^{**}$ (4.3), hence compact.`,
       caption: String.raw`On $L^2(0,1)$ (real, so $T^*$ has the transposed kernel). Apply $T$ and $T^*$ to the bounded orthonormal sequence $f_k=\sqrt2\sin k\pi t$, $k\le K$ (later $k$ = lighter). For the Volterra operator $Vf(s)=\int_0^sf$ and its adjoint $V^*f(s)=\int_s^1f$, both image families are uniformly bounded and equicontinuous and shrink to $0$ — compact, with the same singular values $1/((n-\frac12)\pi)$. Multiplication by $1+t$ (its own adjoint) is not compact: its images keep oscillating at full size. The bottom strip shows the kernels $k(s,t)$ and $k(t,s)$.`,

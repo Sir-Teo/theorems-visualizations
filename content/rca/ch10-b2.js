@@ -199,6 +199,7 @@ $$\Ind_\Gamma(\alpha)=\frac1{2\pi i}\int_\Gamma\frac{dz}{z-\alpha}=\sum_j\Ind_{\
       num: '10.35',
       kind: 'Theorem',
       name: "Cauchy's theorem, global version",
+      credit: 'Cauchy, 1825',
       statement: String.raw`Let $\Omega$ be an arbitrary open set in the plane, $f\in H(\Omega)$, and $\Gamma$ a cycle in $\Omega$ such that $\Ind_\Gamma(\alpha)=0$ for every $\alpha$ not in $\Omega$. Then
 (a) $f(z)\,\Ind_\Gamma(z)=\dfrac1{2\pi i}\displaystyle\int_\Gamma\frac{f(w)}{w-z}\,dw$ for every $z\in\Omega\setminus\Gamma^*$, and
 (b) $\displaystyle\int_\Gamma f(z)\,dz=0$.

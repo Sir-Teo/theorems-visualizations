@@ -388,6 +388,7 @@ Consequently $G$ is an open subset of $A$, and $x\mapsto x^{-1}$ is a homeomorph
       num: '18.5',
       kind: 'Theorem',
       name: 'Nonempty compact spectrum; spectral radius formula',
+      credit: 'Gelfand, 1941',
       statement: String.raw`Let $A$ be a Banach algebra and $x\in A$. Then
 (a) $\sigma(x)$ is compact and nonempty, and $\abs\lambda\le\norm x$ for every $\lambda\in\sigma(x)$;
 (b) the spectral radius satisfies $$\rho(x)=\lim_{n\to\infty}\norm{x^n}^{1/n}=\inf_{n\ge1}\norm{x^n}^{1/n}.$$`,

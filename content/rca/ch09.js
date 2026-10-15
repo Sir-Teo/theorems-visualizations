@@ -56,6 +56,7 @@ export default {
       num: '9.1',
       kind: 'Definition',
       name: 'Fourier transform of an L¹ function',
+      credit: 'Fourier, 1822',
       statement: String.raw`In this chapter $m$ is Lebesgue measure on $\R$ divided by $\sqrt{2\pi}$: $\int f\,dm=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}f(x)\,dx$. Accordingly $L^p$ means $L^p(m)$, with $\norm{f}_p=\big(\int|f|^p\,dm\big)^{1/p}$, and the convolution of $f,g\in L^1$ is $(f*g)(x)=\int f(x-y)g(y)\,dm(y)$.
 
 The **Fourier transform** of $f\in L^1$ is the function on $\R$
@@ -305,6 +306,7 @@ The factor $1/\sqrt{2\pi}$ is built into $m$ so that the inversion and Planchere
       num: '9.6',
       kind: 'Theorem',
       name: 'Riemann–Lebesgue lemma: f̂ ∈ C₀(ℝ)',
+      credit: 'Riemann & Lebesgue, 1854',
       statement: String.raw`If $f\in L^1$, then $\hat f\in C_0(\R)$ and $\norm{\hat f}_\infty\le\norm f_1$. That is, $\hat f$ is continuous, bounded by $\norm f_1$, and $\hat f(t)\to0$ as $|t|\to\infty$.`,
       idea: String.raw`The bound is $|e^{-ixt}|=1$; continuity follows from dominated convergence (1.34). For the decay, use $e^{i\pi}=-1$: substituting $x\mapsto x+\pi/t$ gives $\hat f(t)=-\int f(x-\pi/t)e^{-ixt}\,dm(x)$, and averaging with the definition
 $$2\hat f(t)=\int\big[f(x)-f(x-\tfrac{\pi}{t})\big]e^{-ixt}\,dm(x),\qquad |\hat f(t)|\le\tfrac12\norm{f-f_{\pi/t}}_1 .$$

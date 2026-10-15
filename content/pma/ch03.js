@@ -466,6 +466,7 @@ A sequence converges to $p$ precisely when every one of its subsequences converg
       num: '3.6',
       kind: 'Theorem',
       name: 'Convergent subsequences (Bolzano–Weierstrass)',
+      credit: 'Bolzano & Weierstrass, 1817',
       statement: String.raw`(a) Every sequence in a compact metric space $X$ has a subsequence converging to a point of $X$.
 (b) Every bounded sequence in $\R^k$ has a convergent subsequence.`,
       idea: String.raw`If the range of $\{p_n\}$ is finite, some value is taken for infinitely many $n$, giving a constant subsequence. Otherwise the range is an infinite subset of the compact space $X$ and so has a limit point $p\in X$ (2.37); choose $n_1<n_2<\cdots$ with $d(p,p_{n_i})<1/i$. Part (b) follows because a bounded set in $\R^k$ lies in a $k$-cell, which is compact (2.40). The picture shows the halving argument behind 2.40: always keep a quarter that still contains infinitely many terms.`,

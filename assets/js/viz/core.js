@@ -120,6 +120,7 @@ class Stage {
     const o = this.o = Object.assign({
       x: [-1, 1], y: [-1, 1], height: 340, equal: false, axes: true, grid: false, ticks: true, pad: 0,
       hover: false, title: null, weight: 1, minWidth: 260, xlabel: null, ylabel: null, xticks: null, yticks: null, aspect: null,
+      xlog: false, ylog: false,
     }, opts);
     if (o.axes === 'none') o.axes = false;
     this.view = { x: [...o.x], y: [...o.y] };
@@ -137,6 +138,7 @@ class Stage {
     this._drag = []; this._click = []; this._hoverFns = [];
     this.pointer = { x: NaN, y: NaN, px: NaN, py: NaN, inside: false, down: false };
     this.W = 300; this.H = o.height;
+    this._fit();
     this._bind();
     this.canvas.style.touchAction = 'pan-y';
   }
@@ -168,20 +170,34 @@ class Stage {
   }
   _fit() {
     const { pad } = this.o; const W = this.W - 2 * pad, H = this.H - 2 * pad;
+    // log axes: everything below works in log10 units; xr/yr (and bounds) stay in actual units
+    const lx = this.lx = !!this.o.xlog, ly = this.ly = !!this.o.ylog;
     let [x0, x1] = this.view.x, [y0, y1] = this.view.y;
+    if (lx) { x0 = Math.log10(x0); x1 = Math.log10(x1); }
+    if (ly) { y0 = Math.log10(y0); y1 = Math.log10(y1); }
     if (this.o.equal) {
       const s = Math.min(W / (x1 - x0), H / (y1 - y0));
       const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hw = W / s / 2, hh = H / s / 2;
       x0 = cx - hw; x1 = cx + hw; y0 = cy - hh; y1 = cy + hh;
-    }
-    this.xr = [x0, x1]; this.yr = [y0, y1];
+      this.xr = [lx ? 10 ** x0 : x0, lx ? 10 ** x1 : x1]; this.yr = [ly ? 10 ** y0 : y0, ly ? 10 ** y1 : y1];
+    } else { this.xr = [...this.view.x]; this.yr = [...this.view.y]; }
+    this._x0 = x0; this._y0 = y0;
     this.sx = W / (x1 - x0); this.sy = H / (y1 - y0);
   }
-  // transforms
-  X(x) { return this.o.pad + (x - this.xr[0]) * this.sx; }
-  Y(y) { return this.H - this.o.pad - (y - this.yr[0]) * this.sy; }
-  invX(px) { return this.xr[0] + (px - this.o.pad) / this.sx; }
-  invY(py) { return this.yr[0] + (this.H - this.o.pad - py) / this.sy; }
+  // transforms (pixels per data unit sx/sy are per decade on a log axis)
+  X(x) { return this.o.pad + ((this.lx ? Math.log10(x) : x) - this._x0) * this.sx; }
+  Y(y) { return this.H - this.o.pad - ((this.ly ? Math.log10(y) : y) - this._y0) * this.sy; }
+  invX(px) { const u = this._x0 + (px - this.o.pad) / this.sx; return this.lx ? 10 ** u : u; }
+  invY(py) { const u = this._y0 + (this.H - this.o.pad - py) / this.sy; return this.ly ? 10 ** u : u; }
+  // like X/Y, but a non-positive value on a log axis maps just outside the panel (left / bottom edge) instead of NaN
+  _px(x) { return this.lx && !(x > 0) ? -2 : this.X(x); }
+  _py(y) { return this.ly && !(y > 0) ? this.H + 2 : this.Y(y); }
+  /** A data interval reaching far beyond the view along an axis (for infinite lines). */
+  _far(axis) {
+    const [a, b] = axis === 'x' ? this.xr : this.yr;
+    if (axis === 'x' ? this.lx : this.ly) { const r = b / a; return [a / r, b * r]; }
+    return [a - 1e3 * (b - a), b + 1e3 * (b - a)];
+  }
   inv(px, py) { return [this.invX(px), this.invY(py)]; }
   get bounds() { return { x: this.xr.slice(), y: this.yr.slice() }; }
   get width() { return this.W; }
@@ -208,10 +224,49 @@ class Stage {
     const custom = axis === 'x' ? this.o.xticks : this.o.yticks;
     const [a, b] = axis === 'x' ? this.xr : this.yr;
     if (custom) return custom.map((t) => Array.isArray(t) ? t : [t, tickLabel(t, 1e-3).replace(/\.?0+$/, '')]).filter(([v]) => v >= a - 1e-9 && v <= b + 1e-9);
+    if (axis === 'x' ? this.lx : this.ly) return this._logTicks(axis).major;
     const px = axis === 'x' ? this.W : this.H;
     const step = niceStep(b - a, px, axis === 'x' ? 90 : 60);
     const out = [];
     for (let v = Math.ceil(a / step) * step; v <= b + step * 1e-9; v += step) out.push([v, tickLabel(v, step)]);
+    return out;
+  }
+  /**
+   * Ticks of a log axis → {major: [[v, label]], minor: [v]}. Labels decades (1, 10, 100, 1k … or 10ⁿ for wide ranges),
+   * adds 2·10ᵏ, 5·10ᵏ (or every mantissa) when there is room, thins to every n-th decade when crowded,
+   * and falls back to linear nice steps on a sub-decade window. Minor ticks: the remaining m·10ᵏ (m = 2…9) when they fit.
+   */
+  _logTicks(axis) {
+    const isX = axis === 'x', [a, b] = isX ? this.xr : this.yr, px = isX ? this.W : this.H;
+    const la = Math.log10(a), lb = Math.log10(b), out = { major: [], minor: [] };
+    if (!(lb > la) || !isFinite(la) || !isFinite(lb)) return out;
+    const ppd = px / (lb - la), gap = isX ? 62 : 32, inR = (v) => v >= a * (1 - 1e-9) && v <= b * (1 + 1e-9);
+    const k0 = Math.floor(la), k1 = Math.ceil(lb), kLo = Math.ceil(la - 1e-9), kHi = Math.floor(lb + 1e-9), decades = kHi - kLo + 1;
+    const pow = Math.floor(la + 1e-9) < -3 || kHi > 5; // 10ⁿ labels outside 0.001 … 100k
+    const label = (v) => {
+      const k = Math.floor(Math.log10(v) + 1e-9), m = Number((v / 10 ** k).toPrecision(6));
+      if (pow) return (m === 1 ? '' : m + '×') + M.pow10Text(k);
+      return v >= 1000 ? Number((v / 1000).toPrecision(6)) + 'k' : String(Number(v.toPrecision(6)));
+    };
+    const mant = (set) => { const vs = []; for (let k = k0; k <= k1; k++) for (const m of set) { const v = m * 10 ** k; if (inR(v)) vs.push(v); } return vs; };
+    const sets = pow && decades >= 2 ? [[1]] : [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 5], [1, 3], [1]];
+    let major = null;
+    for (const set of sets) {
+      const vs = mant(set); let g = Infinity;
+      for (let i = 1; i < vs.length; i++) g = Math.min(g, Math.log10(vs[i] / vs[i - 1]) * ppd);
+      if (vs.length >= 2 && g >= gap) { major = vs; break; }
+    }
+    if (!major && decades >= 2) { // crowded: label every n-th decade, the others become minor ticks
+      let n = Math.ceil(gap / ppd); n = [1, 2, 3, 5, 10, 20, 25, 50, 100].find((s) => s >= n) ?? n;
+      major = []; for (let k = kLo; k <= kHi; k++) (M.mod(k, n) === 0 ? major : out.minor).push(10 ** k);
+    }
+    if (!major) { // less than a decade visible: linear nice steps
+      const step = niceStep(b - a, px, isX ? 90 : 60);
+      for (let v = Math.ceil(a / step) * step; v <= b + step * 1e-9; v += step) out.major.push([v, tickLabel(v, step)]);
+      return out;
+    }
+    out.major = major.map((v) => [v, label(v)]);
+    if (ppd * Math.log10(10 / 9) >= 3.5) { const has = new Set(major.map((v) => v.toPrecision(8))); for (const v of mant([1, 2, 3, 4, 5, 6, 7, 8, 9])) if (!has.has(v.toPrecision(8))) out.minor.push(v); }
     return out;
   }
   grid(st = {}) {
@@ -219,7 +274,14 @@ class Stage {
     c.beginPath();
     for (const [v] of this._ticks('x')) { const x = Math.round(this.X(v)) + 0.5; c.moveTo(x, 0); c.lineTo(x, this.H); }
     for (const [v] of this._ticks('y')) { const y = Math.round(this.Y(v)) + 0.5; c.moveTo(0, y); c.lineTo(this.W, y); }
-    c.stroke(); c.restore();
+    c.stroke();
+    if ((this.lx && !this.o.xticks) || (this.ly && !this.o.yticks)) { // fainter minor grid on log axes
+      c.beginPath();
+      if (this.lx && !this.o.xticks) for (const v of this._logTicks('x').minor) { const x = Math.round(this.X(v)) + 0.5; c.moveTo(x, 0); c.lineTo(x, this.H); }
+      if (this.ly && !this.o.yticks) for (const v of this._logTicks('y').minor) { const y = Math.round(this.Y(v)) + 0.5; c.moveTo(0, y); c.lineTo(this.W, y); }
+      c.globalAlpha = 0.45; c.stroke();
+    }
+    c.restore();
   }
   axes() {
     const c = this.ctx, o = this.o;
@@ -245,6 +307,12 @@ class Stage {
         const y = this.Y(v); if (Math.abs(v - y0) < 1e-12 && !box) continue; if (y < 8 || y > this.H - 8) continue;
         c.beginPath(); c.moveTo(ay - 3, y); c.lineTo(ay + 3, y); c.stroke();
         c.textAlign = left ? 'right' : 'left'; c.fillText(lab, left ? ay - 6 : ay + 6, y);
+      }
+      if ((this.lx && !o.xticks) || (this.ly && !o.yticks)) { // unlabelled minor ticks on log axes
+        c.beginPath();
+        if (this.lx && !o.xticks) for (const v of this._logTicks('x').minor) { const x = this.X(v); if (x > 2 && x < this.W - 2) { c.moveTo(x, ax - 2); c.lineTo(x, ax + 2); } }
+        if (this.ly && !o.yticks) for (const v of this._logTicks('y').minor) { const y = this.Y(v); if (y > 2 && y < this.H - 2) { c.moveTo(ay - 2, y); c.lineTo(ay + 2, y); } }
+        c.stroke();
       }
     }
     c.font = 'italic 15px Newsreader, "Times New Roman", serif'; c.fillStyle = resolveColor('muted');
@@ -275,7 +343,7 @@ class Stage {
     if (!pts || pts.length < 2) return this;
     const c = this.ctx; c.beginPath(); let pen = false;
     for (const p of pts) {
-      if (!p || !isFinite(p[0]) || !isFinite(p[1])) { pen = false; continue; }
+      if (!p || !isFinite(p[0]) || !isFinite(p[1]) || (this.lx && !(p[0] > 0)) || (this.ly && !(p[1] > 0))) { pen = false; continue; }
       const X = this.X(p[0]), Y = this.Y(p[1]);
       if (pen) c.lineTo(X, Y); else { c.moveTo(X, Y); pen = true; }
     }
@@ -292,24 +360,28 @@ class Stage {
   /** Graph of y = f(x). st.domain=[a,b], st.n samples, st.fill to shade down to st.base (default 0). Breaks at discontinuities. */
   fn(f, st = {}) {
     const [a, b] = st.domain || this.xr;
-    const lo = Math.max(a, this.xr[0] - (this.xr[1] - this.xr[0]) * 0.02), hi = Math.min(b, this.xr[1] + (this.xr[1] - this.xr[0]) * 0.02);
+    let lo, hi;
+    if (this.lx) { // sample uniformly in log10(x)
+      const l0 = Math.log10(this.xr[0]), l1 = Math.log10(this.xr[1]), m = (l1 - l0) * 0.02;
+      lo = Math.max(a > 0 ? Math.log10(a) : -Infinity, l0 - m); hi = Math.min(b > 0 ? Math.log10(b) : -Infinity, l1 + m);
+    } else { lo = Math.max(a, this.xr[0] - (this.xr[1] - this.xr[0]) * 0.02); hi = Math.min(b, this.xr[1] + (this.xr[1] - this.xr[0]) * 0.02); }
     if (!(hi > lo)) return this;
     const n = st.n || Math.max(240, Math.ceil(this.W * 1.5));
     const pts = []; let prev = null;
     const lim = this.H * 4;
     for (let i = 0; i <= n; i++) {
-      const x = lo + (hi - lo) * i / n; let y;
+      const u = lo + (hi - lo) * i / n, x = this.lx ? 10 ** u : u; let y;
       try { y = f(x); } catch { y = NaN; }
       const py = this.Y(y);
-      const bad = !isFinite(y) || Math.abs(py) > lim + this.H;
+      const bad = !isFinite(y) || Math.abs(py) > lim + this.H || py !== py;
       if (bad) { if (prev) pts.push(null); prev = null; continue; }
       if (prev && Math.abs(py - prev) > this.H * 0.8 && !st.connect) pts.push(null);
       pts.push([x, y]); prev = py;
     }
     if (st.fill) {
-      const base = st.base ?? 0; const c = this.ctx;
+      const base = st.base ?? 0; const c = this.ctx, Yb = this._py(base);
       let run = [];
-      const flushFill = () => { if (run.length > 1) { c.beginPath(); c.moveTo(this.X(run[0][0]), this.Y(base)); run.forEach((p) => c.lineTo(this.X(p[0]), this.Y(p[1]))); c.lineTo(this.X(run[run.length - 1][0]), this.Y(base)); c.closePath(); c.fillStyle = withAlpha(st.fill === true ? st.color || 'ink' : st.fill, st.fillAlpha ?? 0.18); c.fill(); } run = []; };
+      const flushFill = () => { if (run.length > 1) { c.beginPath(); c.moveTo(this.X(run[0][0]), Yb); run.forEach((p) => c.lineTo(this.X(p[0]), this.Y(p[1]))); c.lineTo(this.X(run[run.length - 1][0]), Yb); c.closePath(); c.fillStyle = withAlpha(st.fill === true ? st.color || 'ink' : st.fill, st.fillAlpha ?? 0.18); c.fill(); } run = []; };
       for (const p of pts) { if (p) run.push(p); else flushFill(); }
       flushFill();
     }
@@ -324,7 +396,8 @@ class Stage {
   /** Shade the region between y=f(x) and y=g(x) for x in [a,b]. */
   between(f, g, a, b, st = {}) {
     const n = st.n || 200; const top = [], bot = [];
-    for (let i = 0; i <= n; i++) { const x = a + (b - a) * i / n; top.push([x, f(x)]); bot.push([x, g(x)]); }
+    const lg = this.lx && a > 0 && b > 0;
+    for (let i = 0; i <= n; i++) { const x = lg ? a * (b / a) ** (i / n) : a + (b - a) * i / n; top.push([x, f(x)]); bot.push([x, g(x)]); }
     return this.path(top.concat(bot.reverse()), { fill: st.fill || st.color || 'accent', fillAlpha: st.fillAlpha ?? 0.18, stroke: false, close: true, ...st });
   }
   /** Filled dot with a fixed pixel radius st.r (default 4). st.hollow for an open circle; st.label + st.labelPos ('n','ne','e',...). */
@@ -359,15 +432,15 @@ class Stage {
     return this.poly(M.unitBall(p, 160).map(([a, b]) => [x + r * a, y + r * b]), st);
   }
   rect(x0, y0, x1, y1, st = {}) {
-    const c = this.ctx; const X0 = this.X(x0), X1 = this.X(x1), Y0 = this.Y(y0), Y1 = this.Y(y1);
+    const c = this.ctx; const X0 = this._px(x0), X1 = this._px(x1), Y0 = this._py(y0), Y1 = this._py(y1);
     c.beginPath(); c.rect(Math.min(X0, X1), Math.min(Y0, Y1), Math.abs(X1 - X0), Math.abs(Y1 - Y0)); this._paint(st); return this;
   }
   /** Vertical strip a ≤ x ≤ b across the whole view (e.g. a δ-neighbourhood). */
-  vband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(this.X(a), 0, this.X(b) - this.X(a), this.H); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.vline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.vline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
+  vband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(this._px(a), 0, this._px(b) - this._px(a), this.H); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.vline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.vline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
   /** Horizontal strip a ≤ y ≤ b (e.g. an ε-band). */
-  hband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(0, this.Y(b), this.W, this.Y(a) - this.Y(b)); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.hline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.hline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
-  vline(x, st = {}) { return this.line(x, this.yr[0] - 1e3 * (this.yr[1] - this.yr[0]), x, this.yr[1] + 1e3 * (this.yr[1] - this.yr[0]), { width: 1.2, ...st }); }
-  hline(y, st = {}) { return this.line(this.xr[0] - 1e3 * (this.xr[1] - this.xr[0]), y, this.xr[1] + 1e3 * (this.xr[1] - this.xr[0]), y, { width: 1.2, ...st }); }
+  hband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(0, this._py(b), this.W, this._py(a) - this._py(b)); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.hline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.hline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }
+  vline(x, st = {}) { const [lo, hi] = this._far('y'); return this.line(x, lo, x, hi, { width: 1.2, ...st }); }
+  hline(y, st = {}) { const [lo, hi] = this._far('x'); return this.line(lo, y, hi, y, { width: 1.2, ...st }); }
   /** Arrow from (x1,y1) to (x2,y2). st.head = head size px; st.both for double-headed. */
   arrow(x1, y1, x2, y2, st = {}) {
     const c = this.ctx, X1 = this.X(x1), Y1 = this.Y(y1), X2 = this.X(x2), Y2 = this.Y(y2);
@@ -407,8 +480,10 @@ class Stage {
     const pts = [];
     let maxL = 1e-12;
     for (let px = sp / 2; px < this.W; px += sp) for (let py = sp / 2; py < this.H; py += sp) {
-      const [x, y] = this.inv(px, py); const [u, v] = F(x, y); const L = Math.hypot(u * this.sx, v * this.sy);
-      if (isFinite(L)) { pts.push([px, py, u * this.sx, -v * this.sy, L]); maxL = Math.max(maxL, L); }
+      const [x, y] = this.inv(px, py); const [u, v] = F(x, y);
+      const kx = this.lx ? this.sx / (x * Math.LN10) : this.sx, ky = this.ly ? this.sy / (y * Math.LN10) : this.sy; // d(pixel)/d(data)
+      const L = Math.hypot(u * kx, v * ky);
+      if (isFinite(L)) { pts.push([px, py, u * kx, -v * ky, L]); maxL = Math.max(maxL, L); }
     }
     c.save(); c.strokeStyle = c.fillStyle = withAlpha(col, st.alpha ?? 0.75); c.lineWidth = st.width ?? 1.3;
     for (const [px, py, du, dv, L] of pts) {
@@ -427,6 +502,120 @@ class Stage {
       const col = typeof st.color === 'function' ? st.color(v, i) : st.color || 'accent';
       this.rect(x0 + i * dx - w / 2, base, x0 + i * dx + w / 2, v, { fill: col, fillAlpha: st.fillAlpha ?? 0.75, stroke: false });
     });
+    return this;
+  }
+  /**
+   * Histogram of raw values (binned by M.histogram with st.bins / st.range) or of a precomputed {edges, counts[, density]}.
+   * st: {density (heights integrate to 1), color, fill, fillAlpha (.35), outline (true: step line on top), width, gap (px between bars), base}.
+   */
+  hist(data, st = {}) {
+    const Hd = data && data.edges ? data : M.histogram(data || [], { bins: st.bins, range: st.range });
+    const E = Hd.edges, n = E.length - 1; if (n < 1) return this;
+    let ys = st.density ? Hd.density : Hd.counts ?? Hd.density;
+    if (st.density && !ys) { const tot = Hd.counts.reduce((s, k) => s + k, 0); ys = Hd.counts.map((k, i) => (tot ? k / (tot * (E[i + 1] - E[i])) : 0)); }
+    const c = this.ctx, col = st.color || 'accent', Yb = this._py(st.base ?? 0), Xs = E.map((e) => this._px(e));
+    const gap = st.gap ?? (Math.abs(Xs[n] - Xs[0]) / n >= 7 ? 1 : 0), Yt = (y) => (y ? this._py(y) : Yb);
+    c.save(); c.fillStyle = withAlpha(st.fill || col, st.fillAlpha ?? 0.35);
+    for (let i = 0; i < n; i++) {
+      if (!ys[i]) continue;
+      const x = Math.min(Xs[i], Xs[i + 1]) + gap / 2, w = Math.abs(Xs[i + 1] - Xs[i]) - gap, y = Yt(ys[i]);
+      if (w > 0) c.fillRect(x, Math.min(y, Yb), w, Math.abs(Yb - y));
+    }
+    if (st.outline !== false) {
+      c.beginPath(); c.moveTo(Xs[0], Yb);
+      for (let i = 0; i < n; i++) { const y = Yt(ys[i]); c.lineTo(Xs[i], y); c.lineTo(Xs[i + 1], y); }
+      c.lineTo(Xs[n], Yb);
+      c.strokeStyle = withAlpha(col, st.alpha); c.lineWidth = st.width ?? 1.5; c.lineJoin = 'miter'; c.setLineDash([]); c.stroke();
+    }
+    c.restore(); return this;
+  }
+  /**
+   * Colour bar for a heat map, drawn on a small panel inside the stage edge.
+   * range = [lo, hi]; cmap = 'viridis' | 'magma' | 'diverging' | (t ∈ [0,1]) → [r,g,b] or colour.
+   * st: {pos: 'right' | 'left' | 'top' | 'bottom', label (plain text), tex (KaTeX label instead), ticks: [values], fmt(v) → string,
+   *      length (fraction of the stage side, .6), thickness (px, 10), margin (px, 10)}.
+   */
+  colorbar(range, cmap = 'viridis', st = {}) {
+    const [lo, hi] = range, pos = st.pos || 'right', vert = pos === 'right' || pos === 'left', c = this.ctx;
+    const css = (v) => (Array.isArray(v) ? `rgb(${v[0] | 0},${v[1] | 0},${v[2] | 0})` : resolveColor(v));
+    const color = typeof cmap === 'function' ? (t) => css(cmap(t)) : (t) => css(M.cmap(t, cmap));
+    const th = st.thickness ?? 10, mg = st.margin ?? 10, len = Math.max(48, Math.round((vert ? this.H : this.W) * (st.length ?? 0.6)));
+    const step = niceStep(Math.abs(hi - lo) || 1, len, vert ? 34 : 64), fmtT = st.fmt || ((v) => tickLabel(v, step));
+    const tv = st.ticks || []; if (!st.ticks) for (let v = Math.ceil(Math.min(lo, hi) / step - 1e-9) * step; v <= Math.max(lo, hi) + step * 1e-9; v += step) tv.push(v);
+    const ticks = tv.map((v) => [v, fmtT(v), (v - lo) / (hi - lo)]).filter(([, , t]) => t >= -1e-9 && t <= 1 + 1e-9);
+    c.save();
+    const tickFont = '500 10.5px Inter, system-ui, sans-serif', titleFont = '500 11.5px Inter, system-ui, sans-serif';
+    c.font = tickFont; const labW = ticks.reduce((m, [, s]) => Math.max(m, c.measureText(s).width), 0);
+    c.font = titleFont; const title = st.label || null, ttl = title || st.tex ? 17 : 0;
+    const titleW = title ? c.measureText(title).width : st.tex ? st.tex.length * 6 : 0;
+    let bx, by, bw, bh, barX, barY;
+    if (vert) {
+      bw = Math.max(8 + th + 6 + labW + 8, titleW + 16); bh = len + 16 + ttl;
+      bx = pos === 'right' ? this.W - mg - bw : mg; by = Math.round((this.H - bh) / 2);
+      barX = bx + 8; barY = by + 8 + ttl;
+    } else {
+      bw = Math.max(len + 16 + labW, titleW + 16); bh = 8 + ttl + th + 17;
+      bx = Math.round((this.W - bw) / 2); by = pos === 'top' ? mg : this.H - mg - bh;
+      barX = bx + (bw - len) / 2; barY = by + 6 + ttl;
+    }
+    const bW = vert ? th : len, bH = vert ? len : th;
+    c.beginPath(); if (c.roundRect) c.roundRect(bx + 0.5, by + 0.5, bw, bh, 7); else c.rect(bx + 0.5, by + 0.5, bw, bh);
+    c.fillStyle = withAlpha('panel', 0.86); c.fill(); c.strokeStyle = resolveColor('grid'); c.lineWidth = 1; c.stroke();
+    const g = vert ? c.createLinearGradient(0, barY + bH, 0, barY) : c.createLinearGradient(barX, 0, barX + bW, 0);
+    for (let i = 0; i <= 32; i++) g.addColorStop(i / 32, color(i / 32));
+    c.fillStyle = g; c.fillRect(barX, barY, bW, bH);
+    c.strokeStyle = withAlpha('ink', 0.35); c.strokeRect(barX + 0.5, barY + 0.5, bW - 1, bH - 1);
+    c.font = tickFont; c.fillStyle = resolveColor('muted'); c.strokeStyle = resolveColor('muted'); c.beginPath();
+    for (const [, s, t] of ticks) {
+      if (vert) { const y = Math.round(barY + bH - t * bH) + 0.5; c.moveTo(barX + bW, y); c.lineTo(barX + bW + 3, y); c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(s, barX + bW + 6, y); }
+      else { const x = Math.round(barX + t * bW) + 0.5; c.moveTo(x, barY + bH); c.lineTo(x, barY + bH + 3); c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText(s, x, barY + bH + 4); }
+    }
+    c.stroke();
+    if (title) { c.font = titleFont; c.fillStyle = resolveColor('ink'); c.textAlign = vert ? 'left' : 'center'; c.textBaseline = 'middle'; c.fillText(title, vert ? bx + 8 : bx + bw / 2, by + 6 + ttl / 2); }
+    c.restore();
+    if (st.tex && !title) this.texPx(st.tex, vert ? bx + 8 : bx + bw / 2, by + 6 + ttl / 2, { align: vert ? 'left' : 'center', size: 13 });
+    return this;
+  }
+  /**
+   * Polar grid centred at st.center ([0, 0]): rings (a count, or an array of radii; default nice steps), spokes (count, 12),
+   * up to st.rmax (default: largest nice radius that fits), with ring labels (along st.labelAngle) and angle labels
+   * st.angles = 'deg' | 'rad' | false. st.color for the lines. Use with equal: true and axes: false.
+   */
+  polarGrid(st = {}) {
+    const [cx, cy] = st.center || [0, 0], c = this.ctx, X0 = this.X(cx), Y0 = this.Y(cy);
+    const fit = Math.min(cx - this.xr[0], this.xr[1] - cx, cy - this.yr[0], this.yr[1] - cy);
+    let radii, rmax = st.rmax, step;
+    if (Array.isArray(st.rings)) { radii = st.rings.slice(); rmax ??= Math.max(...radii); }
+    else {
+      step = niceStep(rmax ?? fit, 4, 1); rmax ??= Math.max(step, Math.floor(fit * 0.94 / step + 1e-9) * step);
+      const n = typeof st.rings === 'number' ? st.rings : Math.max(1, Math.round(rmax / step));
+      radii = M.range(n, 1).map((k) => rmax * k / n); step = rmax / n;
+    }
+    const spokes = st.spokes ?? 12, start = st.start ?? 0, col = st.color || 'grid';
+    c.save(); c.lineWidth = 1; c.setLineDash([]);
+    c.beginPath();
+    for (let k = 0; k < spokes; k++) { const a = start + M.TAU * k / spokes; c.moveTo(X0, Y0); c.lineTo(X0 + rmax * this.sx * Math.cos(a), Y0 - rmax * this.sy * Math.sin(a)); }
+    for (const r of radii) if (r < rmax) { c.moveTo(X0 + r * this.sx, Y0); c.ellipse(X0, Y0, r * this.sx, r * this.sy, 0, 0, M.TAU); }
+    c.strokeStyle = resolveColor(col); c.stroke();
+    c.beginPath(); c.ellipse(X0, Y0, rmax * this.sx, rmax * this.sy, 0, 0, M.TAU); c.strokeStyle = resolveColor(st.color || 'faint'); c.stroke();
+    c.restore();
+    if (st.labels !== false) {
+      const la = st.labelAngle ?? start + Math.PI / spokes;
+      const dec = step ? [0, 1, 2, 3, 4, 5, 6].find((d) => Math.abs(Math.round(step * 10 ** d) - step * 10 ** d) < 1e-6) ?? 6 : 6;
+      for (const r of radii) this.textPx(String(Number(r.toFixed(dec))).replace('-', '−'), X0 + r * this.sx * Math.cos(la) + 3, Y0 - r * this.sy * Math.sin(la) - 2, { size: 10.5, color: 'muted', align: 'left', baseline: 'bottom' });
+    }
+    if (st.angles !== false) {
+      const rad = st.angles === 'rad';
+      for (let k = 0; k < spokes; k++) {
+        const a = start + M.TAU * k / spokes, ca = Math.cos(a), sa = Math.sin(a);
+        let lab;
+        if (rad) { const g = M.gcd(2 * k, spokes), nu = 2 * k / g, de = spokes / g; lab = nu === 0 ? '0' : (nu === 1 ? '' : nu) + 'π' + (de === 1 ? '' : '/' + de); }
+        else lab = Number((a * 180 / Math.PI).toFixed(1)) % 360 + '°';
+        let px = X0 + (rmax * this.sx + 13) * ca, py = Y0 - (rmax * this.sy + 11) * sa;
+        if (px < 12 || px > this.W - 12 || py < 9 || py > this.H - 9) { px = X0 + (rmax * this.sx - 13) * ca; py = Y0 - (rmax * this.sy - 11) * sa; }
+        this.textPx(lab, px, py, { size: 10.5, color: 'muted', align: 'center', baseline: 'middle' });
+      }
+    }
     return this;
   }
 
@@ -767,6 +956,137 @@ class Stage3D {
   }
 }
 
+// ================================================================== audio
+// One AudioContext for the whole page, created lazily and only once the page has had a user gesture (browsers block
+// autoplay). Nothing here may throw: without Web Audio (headless checks, old browsers) every call is a silent no-op.
+let AUDIO = null;
+function audioContext() {
+  try {
+    if (AUDIO) { if (AUDIO.state === 'suspended') AUDIO.resume().catch(() => {}); return AUDIO; }
+    if (typeof window === 'undefined') return null;
+    const C = window.AudioContext || window.webkitAudioContext; if (!C) return null;
+    const ua = typeof navigator !== 'undefined' && navigator.userActivation;
+    if (ua && !ua.hasBeenActive) return null; // no gesture yet: stay silent instead of queueing sound for later
+    AUDIO = new C();
+    if (AUDIO.state === 'suspended') { // older browsers without userActivation: resume on the next gesture
+      const wake = () => { AUDIO.resume().catch(() => {}); for (const ev of ['pointerdown', 'keydown']) window.removeEventListener(ev, wake, true); };
+      for (const ev of ['pointerdown', 'keydown']) window.addEventListener(ev, wake, true);
+    }
+    return AUDIO;
+  } catch { return null; }
+}
+const SPEAKER = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+/** The per-viz sound controller behind v.sound(). */
+function makeSound(rt) {
+  const voices = new Set(); let master = null;
+  const NOOP = Object.freeze({ stop() {}, playing: false });
+  const out = () => {
+    if (rt.dead) return null;
+    const ac = audioContext(); if (!ac) return null;
+    if (!master) {
+      master = ac.createGain(); master.gain.value = 0.9;
+      const comp = ac.createDynamicsCompressor(); // soft safety limiter so chords never clip
+      comp.threshold.value = -10; comp.knee.value = 8; comp.ratio.value = 6; comp.attack.value = 0.003; comp.release.value = 0.2;
+      master.connect(comp); comp.connect(ac.destination); master._comp = comp;
+    }
+    return ac;
+  };
+  const addVoice = (ac, srcs, env) => {
+    const v = {
+      stop(fade = 0.03) {
+        try { const t = ac.currentTime; env.gain.cancelScheduledValues(t); env.gain.setValueAtTime(env.gain.value, t); env.gain.linearRampToValueAtTime(0, t + fade); for (const s of srcs) s.stop(t + fade + 0.02); } catch { /* already stopped */ }
+      },
+      get playing() { return voices.has(v); },
+    };
+    let left = srcs.length;
+    for (const s of srcs) s.onended = () => { if (--left === 0) { voices.delete(v); try { env.disconnect(); } catch { /* ignore */ } rt.invalidate(); } };
+    voices.add(v); rt.invalidate(); return v;
+  };
+  const envelope = (ac, o, t0, peak) => { // attack → hold until `duration` → exponential-ish release
+    const g = ac.createGain(), atk = Math.max(0.002, o.attack ?? 0.01), dur = Math.max(atk, o.duration ?? 1), rel = Math.max(0.005, o.release ?? 0.3);
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(peak, t0 + atk); g.gain.setValueAtTime(peak, t0 + dur); g.gain.setTargetAtTime(0, t0 + dur, rel / 5);
+    g.connect(master); return { g, end: t0 + dur + rel };
+  };
+  const toPartials = (p, o) => {
+    if (typeof p === 'number') { const H = Math.max(1, o.harmonics ?? 1), roll = o.rolloff ?? 1; return M.range(H).map((k) => [p * (k + 1), 1 / Math.pow(k + 1, roll)]); }
+    return p.map((q) => (Array.isArray(q) ? [q[0], q[1] ?? 1] : [q, 1]));
+  };
+  const play = (sets, o, scale) => {
+    const ac = out(); if (!ac) return NOOP;
+    try {
+      const t0 = ac.currentTime + 0.01 + Math.max(0, o.delay ?? 0), nyq = ac.sampleRate / 2;
+      const { g, end } = envelope(ac, o, t0, (o.gain ?? 0.25) * scale), srcs = [];
+      for (const parts of sets) {
+        const tot = parts.reduce((s, [f, a]) => s + (f > 0 && f < nyq ? Math.abs(a) : 0), 0) || 1;
+        for (const [f, a] of parts) {
+          if (!(f > 0 && f < nyq) || !a) continue;
+          const osc = ac.createOscillator(), pg = ac.createGain();
+          osc.type = o.type || 'sine'; osc.frequency.value = f; pg.gain.value = o.normalize === false ? a : a / tot;
+          osc.connect(pg); pg.connect(g); osc.start(t0); osc.stop(end + 0.05); srcs.push(osc);
+        }
+      }
+      if (!srcs.length) { g.disconnect(); return NOOP; }
+      return addVoice(ac, srcs, g);
+    } catch { return NOOP; }
+  };
+  const isOpts = (x) => x != null && typeof x === 'object' && !Array.isArray(x);
+  const snd = {
+    /** false when the browser has no Web Audio (every call is then a no-op). */
+    get available() { return typeof window !== 'undefined' && !!(window.AudioContext || window.webkitAudioContext); },
+    get playing() { return voices.size > 0; },
+    get ctx() { return AUDIO; },
+    get now() { return AUDIO ? AUDIO.currentTime : 0; },
+    /** partials: a frequency, [f, …] (equal amplitudes) or [[f, amp], …]. opts: {duration 1, gain .25, attack .01, release .3, delay, type, harmonics, rolloff, normalize}. */
+    tone: (partials, o = {}) => play([toPartials(partials, o)], o, 1),
+    /** chord(f1, f2, …, opts?) — each note a frequency or a partial list [[f, a], …]; an array of numbers is a list of notes. */
+    chord: (...args) => {
+      const o = args.length && isOpts(args[args.length - 1]) ? args.pop() : {};
+      const notes = args.flatMap((a) => (Array.isArray(a) && a.length && a.every((x) => typeof x === 'number') ? a : [a]));
+      return notes.length ? play(notes.map((nt) => toPartials(nt, o)), o, 1 / Math.sqrt(notes.length)) : NOOP;
+    },
+    /** Play raw samples (Float32Array or array in [−1, 1]; louder input is normalised). opts: {gain .8, loop, delay, duration}. */
+    samples: (data, sampleRate = 44100, o = {}) => {
+      const ac = out(); if (!ac || !data || !data.length) return NOOP;
+      try {
+        let peak = 0; for (let i = 0; i < data.length; i++) peak = Math.max(peak, Math.abs(data[i]));
+        const k = o.normalize === false || peak <= 1 ? 1 : 1 / peak, buf = ac.createBuffer(1, data.length, sampleRate), ch = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) ch[i] = data[i] * k;
+        const src = ac.createBufferSource(), g = ac.createGain(), t0 = ac.currentTime + 0.01 + Math.max(0, o.delay ?? 0);
+        src.buffer = buf; src.loop = !!o.loop; g.gain.value = o.gain ?? 0.8;
+        src.connect(g); g.connect(master); src.start(t0); if (o.duration) src.stop(t0 + o.duration);
+        return addVoice(ac, [src], g);
+      } catch { return NOOP; }
+    },
+    /** Noise burst. opts: {color: 'white' | 'pink' | 'brown', duration 1, gain .2, attack, release, delay}. */
+    noise: (o = {}) => {
+      const ac = out(); if (!ac) return NOOP;
+      try {
+        const t0 = ac.currentTime + 0.01 + Math.max(0, o.delay ?? 0), { g, end } = envelope(ac, o, t0, o.gain ?? 0.2);
+        const n = Math.ceil((end - t0 + 0.1) * ac.sampleRate), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0;
+        for (let i = 0; i < n; i++) {
+          const w = Math.random() * 2 - 1;
+          if (o.color === 'pink') { // Paul Kellet's filter
+            b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.969 * b2 + w * 0.153852; b3 = 0.8665 * b3 + w * 0.3104856;
+            b4 = 0.55 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.016898; d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
+          } else if (o.color === 'brown') { last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w;
+        }
+        const src = ac.createBufferSource(); src.buffer = buf; src.connect(g); src.start(t0); src.stop(end + 0.05);
+        return addVoice(ac, [src], g);
+      } catch { return NOOP; }
+    },
+    /** Stop everything this viz is playing (short fade, no click). */
+    stop: () => { for (const v of [...voices]) v.stop(); },
+  };
+  rt.cleanups.push(() => {
+    for (const v of [...voices]) v.stop(0.01);
+    voices.clear();
+    try { if (master) { master.disconnect(); master._comp.disconnect(); } } catch { /* ignore */ }
+    master = null;
+  });
+  return snd;
+}
+
 // ================================================================== controls
 function controlBox(rt, cls) { const el = h('div', 'ctl ' + cls); rt.controlsEl.append(el); return el; }
 function makeSlider(rt, label, min, max, value, o = {}) {
@@ -920,6 +1240,14 @@ class Runtime {
       toggle: (label, value, o) => makeToggle(rt, label, value, o),
       select: (label, options, value, o) => makeSelect(rt, label, options, value, o),
       button: (label, fn) => makeButton(rt, label, fn),
+      /** Sound controller (one per viz): tone, chord, samples, noise, stop, playing. Silent no-op without Web Audio. */
+      sound: () => (rt._sound ||= makeSound(rt)),
+      /** Button with a speaker icon that stops any current sound and calls fn(sound). */
+      soundButton(label, fn) {
+        const b = makeButton(rt, label, () => { const s = api.sound(); s.stop(); fn?.(s); });
+        b.innerHTML = SPEAKER + `<span>${inlineHTML(label)}</span>`;
+        return b;
+      },
       /** Live text under the panels; f(t) returns a rich string (TeX allowed). */
       readout(f) { rt.readoutFn = f; rt.invalidate(); },
       /** Legend: items = [[colour, label], ...] or [{color, label, dash, dot}]. */

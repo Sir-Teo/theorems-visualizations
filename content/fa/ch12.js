@@ -60,6 +60,7 @@ export default {
       num: '12.1',
       kind: 'Definition',
       name: 'Inner product spaces and Hilbert spaces',
+      credit: 'von Neumann, 1929',
       statement: String.raw`A complex vector space $H$ is an **inner product space** if to every ordered pair $x,y\in H$ there is assigned a complex number $(x,y)$ such that $(y,x)=\overline{(x,y)}$, $(x+y,z)=(x,z)+(y,z)$, $(\alpha x,y)=\alpha(x,y)$, $(x,x)\ge0$, and $(x,x)=0$ only for $x=0$.
 
 Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,\|y\|$. If $H$ is complete in this norm it is a **Hilbert space**. Two vectors are orthogonal, $x\perp y$, when $(x,y)=0$; $M^\perp$ is the set of vectors orthogonal to every vector of $M$.`,
@@ -196,6 +197,7 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       num: '12.3',
       kind: 'Theorem',
       name: 'Riesz representation: H* is H',
+      credit: 'F. Riesz & Fréchet, 1907',
       statement: String.raw`For each $y\in H$ the functional $\Lambda_y x=(x,y)$ is bounded with $\|\Lambda_y\|=\|y\|$. Conversely every bounded linear functional $\Lambda$ on $H$ equals $\Lambda_y$ for exactly one $y\in H$. The map $y\mapsto\Lambda_y$ is thus a conjugate-linear isometry of $H$ onto $H^*$.`,
       idea: String.raw`Schwarz gives $\|\Lambda_y\|\le\|y\|$ and $x=y$ gives equality. For the converse, if $\Lambda\ne0$ its null space $N$ is a closed proper subspace, so by the orthogonal decomposition there is a unit vector $z\perp N$. Since $(\Lambda x)z-(\Lambda z)x\in N$, taking inner products with $z$ yields $\Lambda x=(x,y)$ with $y=\overline{\Lambda z}\,z$.`,
       caption: String.raw`$H=L^2[0,1]$ (real-valued, for the picture). Choose a functional and watch its representer $y$ (green). The function $x$ splits as a multiple of $y$ plus a part $z$ in the null space of $\Lambda$; the readout checks $\Lambda x=(x,y)$ and $\Lambda z=0$. For the local average, shrink $h$: $\|\Lambda\|=\|y\|=1/\sqrt{2h}$ blows up, which is why evaluation at a point has no representer in $L^2$.`,
@@ -250,6 +252,7 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       num: '12.4',
       kind: 'Theorem',
       name: 'Orthonormal bases and Parseval’s identity',
+      credit: 'Parseval, 1799',
       statement: String.raw`Every orthonormal set in $H$ is contained in a maximal one. If $\{u_\alpha\}_{\alpha\in A}$ is a maximal orthonormal set (an orthonormal basis), then for every $x\in H$
 $$x=\sum_\alpha (x,u_\alpha)\,u_\alpha\qquad\text{and}\qquad \|x\|^2=\sum_\alpha|(x,u_\alpha)|^2,$$
 only countably many coefficients being nonzero; $x\mapsto\{(x,u_\alpha)\}$ is an isometry of $H$ onto $\ell^2(A)$.`,

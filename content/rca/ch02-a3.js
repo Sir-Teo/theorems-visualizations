@@ -42,6 +42,7 @@ export default {
       num: '2.14',
       kind: 'Theorem',
       name: 'Riesz representation theorem',
+      credit: 'F. Riesz, 1909',
       statement: String.raw`Let $X$ be a locally compact Hausdorff space and $\Lambda$ a positive linear functional on $C_c(X)$. Then there are a $\sigma$-algebra $\mathfrak M$ in $X$ containing every Borel set and a unique positive measure $\mu$ on $\mathfrak M$ such that
 (a) $\Lambda f=\int_X f\,d\mu$ for every $f\in C_c(X)$,
 and which in addition satisfies:

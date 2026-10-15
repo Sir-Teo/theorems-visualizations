@@ -153,6 +153,7 @@ export default {
       num: '11.11',
       kind: 'Theorem',
       name: "Harnack's theorem",
+      credit: 'Harnack, 1887',
       statement: String.raw`**Harnack's inequalities.** If $u\ge0$ is harmonic in a disc $D(a;R)$, then for $|z-a|=r<R$
 $$\frac{R-r}{R+r}\,u(a)\;\le\;u(z)\;\le\;\frac{R+r}{R-r}\,u(a).$$
 **Harnack's theorem.** Let $\{u_n\}$ be a sequence of harmonic functions in a region $\Omega$.
@@ -388,6 +389,7 @@ Only some sequence of radii is required, and it may depend on $z$. Harmonic func
       num: '11.14',
       kind: 'Theorem',
       name: 'The Schwarz reflection principle',
+      credit: 'Schwarz, 1870',
       statement: String.raw`Assume:
 - $L$ is a segment of $\R$, $\Omega^+$ is a region contained in the upper half-plane $\Pi^+$, and $\Omega^-=\{\bar z:z\in\Omega^+\}$ is its mirror image;
 - each $t\in L$ is the centre of an open disc $D_t$ whose upper half $D_t\cap\Pi^+$ lies in $\Omega^+$;

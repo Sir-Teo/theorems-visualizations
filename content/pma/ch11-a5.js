@@ -327,6 +327,7 @@ $$\lim_{N\to\infty}\|f-s_N\|=0,\qquad\sum_{n=-\infty}^{\infty}|c_n|^2=\frac1{2\p
       num: '11.42',
       kind: 'Theorem',
       name: 'L²(μ) is complete',
+      credit: 'F. Riesz & Fischer, 1907',
       statement: String.raw`If $\{f_n\}$ is a Cauchy sequence in $\mathscr L^2(\mu)$, there is $f\in\mathscr L^2(\mu)$ such that $f_n\to f$ in $\mathscr L^2(\mu)$. In other words, $\mathscr L^2(\mu)$ is a complete metric space.`,
       idea: String.raw`Extract $n_1<n_2<\cdots$ with $\|f_{n_{k+1}}-f_{n_k}\|<2^{-k}$. For every $g\in\mathscr L^2$, Schwarz gives $\int|g|\,|f_{n_{k+1}}-f_{n_k}|\le\|g\|2^{-k}$, and termwise integration (11.30) shows $\sum_k|f_{n_{k+1}}(x)-f_{n_k}(x)|<\infty$ almost everywhere. So $f=\lim f_{n_k}$ exists a.e.; Fatou (11.31) gives $\|f-f_{n_k}\|\le\liminf_i\|f_{n_i}-f_{n_k}\|$, which is small, and the Cauchy property passes the convergence to the whole sequence.`,
       caption: String.raw`$f_n=h+$ typewriter bump: a Cauchy sequence with $\mathscr L^2$ limit $h$ (green), whose values $f_n(x)$ converge at no point $x$. Drag $x$ on the axis: the lower panel shows $f_n(x)-h(x)\in\{0,1\}$ for $n\le256$, flickering forever. The proof's fast subsequence (gold, $n_k=4^{k+1}$, chosen so that $\|f_{n_{k+1}}-f_{n_k}\|<2^{-k}$) settles at $0$ for every $x>0$ — it converges almost everywhere, as the proof requires.`,
@@ -366,6 +367,7 @@ $$\lim_{N\to\infty}\|f-s_N\|=0,\qquad\sum_{n=-\infty}^{\infty}|c_n|^2=\frac1{2\p
       num: '11.43',
       kind: 'Theorem',
       name: 'Riesz–Fischer theorem',
+      credit: 'F. Riesz & Fischer, 1907',
       statement: String.raw`Let $\{\varphi_n\}$ be orthonormal on $X$. If $\sum|c_n|^2<\infty$ and $s_n=c_1\varphi_1+\dots+c_n\varphi_n$, then there is $f\in\mathscr L^2(\mu)$ such that $s_n\to f$ in $\mathscr L^2(\mu)$ and $f\sim\sum c_n\varphi_n$.`,
       idea: String.raw`For $n>m$, orthonormality gives $\|s_n-s_m\|^2=|c_{m+1}|^2+\dots+|c_n|^2$, the tail of a convergent series — so $\{s_n\}$ is Cauchy and converges to some $f$ by completeness (11.42). For $n\ge k$, $\int f\bar\varphi_k-c_k=\int(f-s_n)\bar\varphi_k$, which is at most $\|f-s_n\|$ by Schwarz; letting $n\to\infty$ gives $c_k=\int f\bar\varphi_k$.`,
       caption: String.raw`The orthonormal sines $\varphi_n=\sin(nx)/\sqrt\pi$ with prescribed coefficients $c_n$. Top: $s_N$ (blue) and a much later partial sum (faint). Bottom: the tail $\big(\sum_{n>N}|c_n|^2\big)^{1/2}$, which bounds $\|s_m-s_N\|$ for all $m>N$. With $c_n=\sqrt\pi/n$ the limit is the sawtooth; with $c_n=n^{-0.6}$ it is an unbounded function that exists only as an $\mathscr L^2$ limit ($\sum|c_n|=\infty$, so no uniform convergence). With $c_n=n^{-1/2}$ the series $\sum|c_n|^2$ diverges and $\|s_N\|\to\infty$.`,
@@ -475,6 +477,7 @@ $$\lim_{N\to\infty}\|f-s_N\|=0,\qquad\sum_{n=-\infty}^{\infty}|c_n|^2=\frac1{2\p
       num: '11.45',
       kind: 'Theorem',
       name: 'Parseval identity for complete orthonormal sets',
+      credit: 'Parseval, 1799',
       statement: String.raw`Let $\{\varphi_n\}$ be a complete orthonormal set. If $f\in\mathscr L^2(\mu)$ and $f\sim\sum c_n\varphi_n$, then
 $$\int_X|f|^2\,d\mu=\sum_{n=1}^\infty|c_n|^2 .$$`,
       idea: String.raw`Bessel's inequality makes $\sum|c_n|^2$ finite, so Riesz–Fischer (11.43) gives $g\in\mathscr L^2$ with $g\sim\sum c_n\varphi_n$ and $\|g-s_n\|\to0$; hence $\|g\|^2=\lim\|s_n\|^2=\sum|c_n|^2$. Now $f-g$ is orthogonal to every $\varphi_n$, so completeness forces $\|f-g\|=0$ and $\|f\|=\|g\|$. Conversely, Parseval for every $f$ implies completeness.`,

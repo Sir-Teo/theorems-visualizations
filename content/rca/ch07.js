@@ -61,6 +61,7 @@ export default {
       num: '7.2',
       kind: 'Definition',
       name: 'Symmetric derivative and maximal function of a measure',
+      credit: 'Hardy & Littlewood, 1930',
       statement: String.raw`Let $B(x,r)$ be the open ball of radius $r>0$ about $x\in\R^k$ and let $m$ be Lebesgue measure on $\R^k$; the number $m(B_r)=m(B(x,r))$ does not depend on $x$. For a complex Borel measure $\mu$ on $\R^k$ put
 $$(Q_r\mu)(x)=\frac{\mu(B(x,r))}{m(B_r)} .$$
 The **symmetric derivative** of $\mu$ at $x$ is $(D\mu)(x)=\lim_{r\to0}(Q_r\mu)(x)$, at every $x$ where this limit exists. The **maximal function** of $\mu$ is
@@ -120,6 +121,7 @@ a function $M\mu:\R^k\to[0,\infty]$ that is lower semicontinuous, hence Borel me
       num: '7.3',
       kind: 'Lemma',
       name: 'Covering lemma: disjoint balls whose triples cover',
+      credit: 'Vitali, 1908',
       statement: String.raw`Let $W$ be the union of finitely many open balls $B(x_i,r_i)$, $1\le i\le N$, in $\R^k$. Then there is a set $S\subset\{1,\dots,N\}$ such that
 (a) the balls $B(x_i,r_i)$ with $i\in S$ are pairwise disjoint,
 (b) $W\subset\bigcup_{i\in S}B(x_i,3r_i)$, and
@@ -204,6 +206,7 @@ a function $M\mu:\R^k\to[0,\infty]$ that is lower semicontinuous, hence Borel me
       num: '7.4',
       kind: 'Theorem',
       name: 'The maximal theorem (weak-type bound for Mμ)',
+      credit: 'Hardy & Littlewood, 1930',
       statement: String.raw`If $\mu$ is a complex Borel measure on $\R^k$ and $\lambda>0$, then
 $$m\{x\in\R^k:(M\mu)(x)>\lambda\}\le 3^k\lambda^{-1}\|\mu\| ,$$
 where $\|\mu\|=|\mu|(\R^k)$ is the total variation of $\mu$. (The set on the left is open, because $M\mu$ is lower semicontinuous.)`,
