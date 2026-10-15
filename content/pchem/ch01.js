@@ -190,8 +190,8 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
         v.button('Clear data', () => clear());
         const P3 = oblique(0.36, 0.62), DY = 40, YOKE = 16, yc = (DY + W) / 2;
         const sb = v.stage({ x: [-4, LMAX + YOKE + 12], y: [-11, DY + W + P3.cy * W + 9], equal: true, height: 260, axes: false, full: true });
-        const sp = v.stage({ x: [0, 0.84], y: [0, 400], height: 290, axes: 'box', title: 'measured pressure $p$ (bar) against $V_m$ (L/mol)' });
-        const sz = v.stage({ x: [0, 0.84], y: [0.3, 1.4], height: 290, axes: 'box', title: 'Boyle product $pV_m/RT$ against $V_m$ (L/mol)' });
+        const sp = v.stage({ x: [0, 0.65], y: [0, 400], height: 290, axes: 'box', title: 'measured pressure $p$ (bar) against $V_m$ (L/mol)' });
+        const sz = v.stage({ x: [0, 0.65], y: [0.3, 1.4], height: 290, axes: 'box', title: 'Boyle product $pV_m/RT$ against $V_m$ (L/mol)' });
         const ph = sb.handle(LMAX + YOKE, yc, { color: 'orange', r: 8, constrain: (xx) => [Math.min(LMAX, Math.max(LMIN, xx - YOKE)) + YOKE, yc] });
         ph.onDrag = () => { if (auto.value) auto.set(false); };
         let G, win, pts, tLast = 0, tSim = 0, last = [null, null];
@@ -243,13 +243,13 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
           sb.corner(`Vₘ = ${v.fix(Lmol(Lx * W * W, N), 3)} L/mol  ·  T = ${Tsl.value.toFixed(0)} K  ·  ${v.fix(G[0].t * T0 * 1e9, 2)} ns simulated`, 'tr', { size: 11.5 });
           // --- p–V and Boyle product ---
           const T = Tsl.value, pmax = RBAR * T / VMIN * 1.12;
-          sp.setView([0, 0.84], [0, pmax]);
-          sp.fn((Vm) => RBAR * T / Vm, { color: 'ink', width: 1.6, dash: [6, 4], domain: [0.06, 0.84] });
+          sp.setView([0, 0.65], [0, pmax]);
+          sp.fn((Vm) => RBAR * T / Vm, { color: 'ink', width: 1.6, dash: [6, 4], domain: [0.06, 0.65] });
           sz.hline(1, { color: 'ink', width: 1.4, dash: [6, 4] });
           [[0, 'accent'], [1, 'purple']].forEach(([k, col]) => {
             sp.dots(pts[k].map((q) => [q.Vm, q.p]), { r: 2.3, color: col, alpha: 0.45 });
             sz.dots(pts[k].map((q) => [q.Vm, q.Z]), { r: 2.3, color: col, alpha: 0.45 });
-            const bm = binMeans(pts[k], (q) => q.Vm, (q) => q.p, 0.07, 0.86, 12), bz = binMeans(pts[k], (q) => q.Vm, (q) => q.Z, 0.07, 0.86, 12);
+            const bm = binMeans(pts[k], (q) => q.Vm, (q) => q.p, 0.07, 0.66, 12), bz = binMeans(pts[k], (q) => q.Vm, (q) => q.Z, 0.07, 0.66, 12);
             sp.path(bm.map((q) => [q[0], q[1]]), { color: col, width: 2.4 }); sz.path(bz.map((q) => [q[0], q[1]]), { color: col, width: 2.4 });
             if (last[k]) { sp.dot(last[k].Vm, last[k].p, { r: 4.5, color: col }); sz.dot(last[k].Vm, last[k].Z, { r: 4.5, color: col }); }
           });
@@ -260,7 +260,7 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
           if (!last[0] || !last[1]) return 'Collecting impacts…';
           const Vc = Lmol(G[0].L[0] * W * W, N), near = (k) => pts[k].slice(-60).filter((q) => Math.abs(Math.log(q.Vm / Vc)) < 0.12);
           const avg = (a, f) => a.reduce((s2, q) => s2 + f(q), 0) / a.length, A = near(0), B = near(1);
-          const zr = (k) => { const q = binMeans(pts[k], (r) => r.Vm, (r) => r.Z, 0.07, 0.86, 12); return q.length ? [Math.min(...q.map((r) => r[1])), Math.max(...q.map((r) => r[1]))] : [1, 1]; };
+          const zr = (k) => { const q = binMeans(pts[k], (r) => r.Vm, (r) => r.Z, 0.07, 0.66, 12); return q.length ? [Math.min(...q.map((r) => r[1])), Math.max(...q.map((r) => r[1]))] : [1, 1]; };
           const z0 = zr(0), z1 = zr(1);
           const now = A.length && B.length ? `Around $V_m = ${v.fix(Vc, 3)}$ L/mol (${A.length} windows): perfect gas $\\bar p = ${v.fix(avg(A, (q) => q.p), 1)}$ bar against $nRT/V = ${v.fix(avg(A, (q) => q.pid), 1)}$ bar; xenon $\\bar p = ${v.fix(avg(B, (q) => q.p), 1)}$ bar, $pV/nRT = ${v.fix(avg(B, (q) => q.Z), 2)}$. ` : '';
           return now + `Over the whole sweep the averaged Boyle product stays within $${v.fix(z0[0], 2)}$–$${v.fix(z0[1], 2)}$ for the perfect gas but wanders over $${v.fix(z1[0], 2)}$–$${v.fix(z1[1], 2)}$ for xenon.`;

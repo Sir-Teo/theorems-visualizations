@@ -695,7 +695,7 @@ Conversely, a path with this property satisfies the equations of motion. For sho
           sS.path(es.map((e, i) => [e, ys[i]]), { color: 'gold', width: 2.8 });
           sS.path(es.map((e, i) => [e, pr[i]]), { color: 'purple', width: 1.6, dash: [6, 4] });
           sS.dot(0, 0, { r: 5, color: wrong.value ? 'red' : 'green' });
-          const one = dS(1), up = dS(1.05) > dS(0.95); sS.dot(1, one, { r: 5, color: 'gold', label: 'your path', labelPos: up ? 'se' : 'ne', labelColor: 'gold', math: false });
+          const one = dS(1), low = one < l2 + 0.3 * (h2 - l2); sS.dot(1, one, { r: 5, color: 'gold', label: 'your path', labelPos: low ? 'n' : 'se', labelColor: 'gold', math: false });
           // log–log
           const el = v.M.linspace(-3, Math.log10(1.6), 70).map((u) => 10 ** u), yl = el.map((e) => Math.abs(dS(e)));
           let ymin = Infinity, ymax = 0; for (const y of yl) if (y > 0) { ymin = Math.min(ymin, y); ymax = Math.max(ymax, y); }
