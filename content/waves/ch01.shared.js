@@ -144,19 +144,25 @@ export function retarded(t, O, S0, V, c) {
 
 /**
  * Pressure heard by a listener at O (metres) from a point source moving at velocity V (m/s) along a straight line
- * through S0 at t = 0, emitting the signal s(t_e): p(t) = Σ s(t_e)/r over all retarded times (monopole, 3D spreading).
- * Returns a Float32Array of dur seconds at rate sr, normalised to peak 0.8, with short fades.
+ * through S0 at t = 0, emitting the signal s(t_e). This is the exact retarded solution for a moving monopole,
+ * p(t) = Σ s(t_e) / (r |1 − M_r|) over all emission times t_e that are heard at t (one below the wave speed, zero or
+ * two above it), with r the distance at emission and M_r the source's velocity towards the listener over c.
+ * Returns a Float32Array of dur seconds at rate sr, starting at t0; the loudest 0.5 % is softly limited so that a
+ * sonic boom does not drown everything else.
  */
 export function movingSourceSound(s, O, S0, V, c, dur, sr = 44100, t0 = -dur / 2, rmin = 1) {
   const n = Math.round(dur * sr), out = new Float32Array(n);
-  let peak = 0;
   for (let i = 0; i < n; i++) {
     const t = t0 + i / sr; let p = 0;
-    for (const te of retarded(t, O, S0, V, c)) { const r = Math.max(rmin, c * (t - te)); p += s(te) / r; }
-    out[i] = p; peak = Math.max(peak, Math.abs(p));
+    for (const te of retarded(t, O, S0, V, c)) {
+      const sx = S0[0] + V[0] * te, sy = S0[1] + V[1] * te, dx = O[0] - sx, dy = O[1] - sy, r = Math.max(rmin, Math.hypot(dx, dy));
+      const Mr = (V[0] * dx + V[1] * dy) / (c * r);
+      p += s(te) / (r * Math.max(0.03, Math.abs(1 - Mr)));
+    }
+    out[i] = p;
   }
-  const k = peak > 0 ? 0.8 / peak : 0, f = Math.round(0.03 * sr);
-  for (let i = 0; i < n; i++) out[i] *= k * Math.min(1, i / f, (n - 1 - i) / f);
+  const mags = Array.from(out, Math.abs).sort((a, b) => a - b), ref = mags[Math.floor(0.995 * (n - 1))] || 1, f = Math.round(0.03 * sr);
+  for (let i = 0; i < n; i++) out[i] = 0.85 * Math.tanh(out[i] / ref) * Math.min(1, i / f, (n - 1 - i) / f);
   return out;
 }
 
@@ -169,16 +175,4 @@ export function wall(s, x, y0, y1, side = 1, w = 0.06) {
 export function rod(s, x, y0, y1, y) {
   s.line(x, y0, x, y1, { color: 'muted', width: 2.5 });
   s.dot(x, y, { r: 5, hollow: true, color: 'ink', width: 2 });
-}
-
-/** Time-integrated running mean helper: keeps the last n samples. */
-export function ring(n) {
-  const a = new Float64Array(n); let i = 0, full = false;
-  return {
-    push(x) { a[i] = x; i = (i + 1) % n; if (i === 0) full = true; },
-    get length() { return full ? n : i; },
-    /** k-th oldest sample still kept */
-    at(k) { const L = full ? n : i; const j = full ? (i + k) % n : k; return k < L ? a[j] : NaN; },
-    clear() { i = 0; full = false; },
-  };
 }

@@ -67,6 +67,10 @@ export function prefs(kind, P = {}) {
     default: throw new Error('unknown preference family ' + kind);
   }
 }
+/** The same preferences represented by u^k (a monotone transform): same curves and demand, different numbers. */
+export function powU(F, k) {
+  return { ...F, u: (x, y) => Math.max(F.u(x, y), 0) ** k, grad: (x, y) => { const w = Math.max(F.u(x, y), 1e-300), g = F.grad(x, y), c = k * w ** (k - 1); return [c * g[0], c * g[1]]; } };
+}
 /** Numerical gradient (central differences) for a utility without a formula. */
 export function numGrad(u, x, y) { const hx = 1e-5 * (1 + Math.abs(x)), hy = 1e-5 * (1 + Math.abs(y)); return [(u(x + hx, y) - u(x - hx, y)) / (2 * hx), (u(x, y + hy) - u(x, y - hy)) / (2 * hy)]; }
 

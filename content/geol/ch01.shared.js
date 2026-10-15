@@ -78,7 +78,8 @@ export function lithPoly(v, s, pts, lith, o = {}) {
 // Events (all lengths in data units of the section, z up):
 //   {type: 'base', lith, top}                     basement below z = top (the start of the history)
 //   {type: 'dep', lith, top, from}                sediment fills every empty point below z = top (rising from `from` while p < 1)
-//   {type: 'erode', level, amp, wl, ph, from}     removes rock above z = level + amp·sin(2πx/wl + ph) (lowering from `from`)
+//   {type: 'erode', level, amp, wl, ph, slope, sx, from}  removes rock above z = level + slope·(x − sx) + amp·sin(2πx/wl + ph)
+//                                                 (lowering from `from` while p < 1)
 //   {type: 'tilt', ang, cx, cz}                   rotates everything by ang (radians, counter-clockwise) about (cx, cz)
 //   {type: 'dike', lith, x0, w, ang}              a slab of width w through (x0, 0), leaning by ang from vertical, intrudes rock
 //   {type: 'fault', x0, dip, slip}                plane through (x0, 0) dipping toward +x; the hanging wall slides `slip` down-dip
@@ -88,7 +89,7 @@ export function lithPoly(v, s, pts, lith, o = {}) {
 // Each event may carry `p` ∈ [0, 1], the fraction completed (for animations).
 
 /** Erosion surface height at x. */
-export const erodeZ = (e, x) => e.level + (e.amp || 0) * Math.sin((TAU * x) / (e.wl || 4) + (e.ph || 0));
+export const erodeZ = (e, x) => e.level + (e.slope || 0) * (x - (e.sx ?? 0)) + (e.amp || 0) * Math.sin((TAU * x) / (e.wl || 4) + (e.ph || 0));
 
 /**
  * Rock at present point (x, z) after events[0..k] → {k, x, z, side} (k = the event whose rock it is, (x, z) = where
@@ -104,7 +105,7 @@ export function classify(E, x, z, k = E.length - 1, side = 0) {
         const top = p < 1 ? (e.from ?? e.top) + (e.top - (e.from ?? e.top)) * p : e.top; // during an animation the fill rises from `from`
         return z <= top ? { k: i, x, z, side } : null;
       }
-      case 'erode': { const lv = p < 1 ? (e.from ?? e.level) + (e.level - (e.from ?? e.level)) * p : e.level; if (z > lv + (e.amp || 0) * p * Math.sin((TAU * x) / (e.wl || 4) + (e.ph || 0))) return null; break; }
+      case 'erode': { const lv = p < 1 ? (e.from ?? e.level) + (e.level - (e.from ?? e.level)) * p : e.level; if (z > lv + p * ((e.slope || 0) * (x - (e.sx ?? 0)) + (e.amp || 0) * Math.sin((TAU * x) / (e.wl || 4) + (e.ph || 0)))) return null; break; }
       case 'tilt': { const a = -e.ang * p, c = Math.cos(a), s = Math.sin(a), dx = x - e.cx, dz = z - e.cz; x = e.cx + c * dx - s * dz; z = e.cz + s * dx + c * dz; break; }
       case 'uplift': z -= e.dz * p; break;
       case 'fold': z -= (e.amp * p) * Math.sin((TAU * x) / e.wl + (e.ph || 0)); break;

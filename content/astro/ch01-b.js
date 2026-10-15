@@ -12,6 +12,12 @@ const nums = (s) => s.split(',').map(Number);
  */
 function hidden(p, z, u1 = 0, u2 = 0, n = 90) {
   if (z >= 1 + p) return 0;
+  if (!u1 && !u2) { // uniform disc: exact lens area
+    if (z <= Math.abs(1 - p)) return Math.min(1, p * p);
+    const A = p * p * Math.acos(clamp((z * z + p * p - 1) / (2 * z * p), -1, 1)) + Math.acos(clamp((z * z + 1 - p * p) / (2 * z), -1, 1))
+      - 0.5 * Math.sqrt(Math.max(0, (-z + p + 1) * (z + p - 1) * (z - p + 1) * (z + p + 1)));
+    return A / Math.PI;
+  }
   const I = (r) => { const mu = Math.sqrt(Math.max(0, 1 - r * r)); return 1 - u1 * (1 - mu) - u2 * (1 - mu) ** 2; };
   const lo = Math.max(0, z - p), hi = Math.min(1, z + p), h = (hi - lo) / n;
   let blocked = 0;
@@ -29,9 +35,13 @@ function hidden(p, z, u1 = 0, u2 = 0, n = 90) {
 }
 /** Colour between orange (3000 K) and blue (30 000 K) on a log scale, as an [r, g, b] array from the palette. */
 function tcol(v, T) {
-  const t = clamp(Math.log(T / 3000) / Math.log(10), 0, 1), A = v.rgb('orange'), B = v.rgb('blue'), C = v.rgb('gold');
-  const mix = (P, Q, s) => [0, 1, 2].map((k) => P[k] + (Q[k] - P[k]) * s);
-  return t < 0.4 ? mix(A, C, t / 0.4) : mix(C, B, (t - 0.4) / 0.6);
+  const stops = [[3000, v.rgb('red')], [4300, v.rgb('orange')], [5800, v.rgb('gold')], [10000, v.rgb('blue')]];
+  const lt = Math.log(clamp(T, 3000, 10000));
+  for (let k = 0; k + 1 < stops.length; k++) {
+    const [Ta, A] = stops[k], [Tb, B] = stops[k + 1];
+    if (lt <= Math.log(Tb)) { const s = (lt - Math.log(Ta)) / (Math.log(Tb) - Math.log(Ta)); return [0, 1, 2].map((j) => A[j] + (B[j] - A[j]) * s); }
+  }
+  return stops[3][1].slice(0, 3);
 }
 /** A star drawn with mild limb darkening (nested translucent discs). */
 function star(s, x, y, R, col, alpha = 1) {
@@ -92,7 +102,7 @@ give the radii of the smaller and larger star. When both eclipses are total/annu
           const eps = 1e-7; let ta = NaN, tb = NaN, tc = NaN;
           const i0 = Math.round(0.25 * N), fmin = Math.min(...fl.slice(Math.round(0.15 * N), Math.round(0.35 * N)));
           for (let k = Math.round(0.1 * N); k <= i0; k++) if (fl[k] < 1 - eps) { ta = ph[k - 1] + (ph[k] - ph[k - 1]) * ((1 - eps - fl[k - 1]) / (fl[k] - fl[k - 1])); break; }
-          const flat = (k) => Math.abs(fl[k] - fmin) < 2e-5 * (1 - fmin + 1e-9) + 1e-9;
+          const flat = (k) => Math.abs(fl[k] - fmin) < (u ? 2e-3 : 1e-7) * (1 - fmin) + 1e-12;
           for (let k = Math.round(0.1 * N); k <= i0; k++) if (flat(k)) { tb = ph[k]; break; }
           for (let k = Math.round(0.4 * N); k >= i0; k--) if (flat(k)) { tc = ph[k]; break; }
           const sec = Math.min(...fl.slice(Math.round(0.65 * N), Math.round(0.85 * N)));
@@ -115,10 +125,11 @@ give the radii of the smaller and larger star. When both eclipses are total/annu
           sky.corner(`phase ${v.fix(((ph % 1) + 1) % 1, 3)}`, 'tl', { color: 'gold' });
           // light curve
           const lo = Math.min(D.fmin, D.sec);
-          lc.setView([-0.25, 0.75], [Math.max(0, lo - 0.08 * (1 - lo) - 0.02), 1 + 0.08 * (1 - lo) + 0.01]);
+          const y0 = Math.max(0, lo - 0.1 * (1 - lo) - 0.02), y1 = 1 + 0.16 * (1 - lo) + 0.01;
+          lc.setView([-0.25, 0.75], [y0, y1]);
           lc.path(D.ph.map((p, k) => [p, D.fl[k]]), { color: 'accent', width: 2.2 });
-          if (isFinite(D.ta)) for (const [t, lab] of [[D.ta, 'a'], [D.tb, 'b'], [D.tc, 'c']]) if (isFinite(t)) { lc.vline(t, { color: 'orange', width: 1, dash: [3, 3], alpha: 0.8 }); lc.text(`t${lab === 'a' ? 'ₐ' : lab === 'b' ? 'ᵦ' : '𝒸'}`, t, 1 + 0.04 * (1 - lo), { color: 'orange', size: 10.5, align: 'center' }); }
-          lc.text('primary', 0, D.fmin, { color: 'muted', size: 10.5, dy: 12, align: 'center' });
+          if (isFinite(D.ta)) for (const [t, lab] of [[D.ta, 'a'], [D.tb, 'b'], [D.tc, 'c']]) if (isFinite(t)) { lc.vline(t, { color: 'orange', width: 1, dash: [3, 3], alpha: 0.8 }); lc.tex(`t_${lab}`, t, y0, { color: 'orange', size: 12, dy: -10, dx: lab === 'a' ? -7 : lab === 'c' ? 7 : 0 }); }
+          lc.text('primary', isFinite(D.ta) ? D.ta : -0.05, D.fmin, { color: 'muted', size: 10.5, dx: -8, align: 'right' });
           lc.text('secondary', 0.5, D.sec, { color: 'muted', size: 10.5, dy: 12, align: 'center' });
           cur = D;
         });
@@ -164,12 +175,12 @@ of the starlight (modified by limb darkening), and the shape of the transit fixe
         const which = v.select('planet', [{ value: 'k7', label: 'Kepler-7b (RV + transit)' }, { value: 'peg', label: '51 Peg b (RV only)' }], 'k7');
         const sig = v.slider('RV noise σ (m/s)', 1, 30, 8, { step: 0.5 });
         const nRV = v.slider('RV measurements', 6, 60, 20, { int: true });
-        const kS = v.slider('$R_p/R_*$', 0.04, 0.12, 0.072, { step: 0.0005, decimals: 4 });
-        const bS = v.slider('impact parameter $b$', 0, 0.95, 0.15, { step: 0.005 });
+        const kS = v.slider('$R_p/R_*$', 0.04, 0.12, 0.076, { step: 0.0005, decimals: 4 });
+        const bS = v.slider('impact parameter $b$', 0, 0.95, 0.2, { step: 0.005 });
         const ldT = v.toggle('limb darkening', true);
         const fitB = v.button('fit $R_p/R_*$ and $b$', () => fit());
         const rv = v.stage({ x: [0, 1], y: [-90, 90], axes: 'box', height: 330, weight: 1, xlabel: 'orbital phase', ylabel: 'stellar radial velocity (m/s)', title: 'radial velocity' });
-        const tr = v.stage({ x: [-6, 6], y: [-1500, 9500], axes: 'box', height: 330, weight: 1.25, xlabel: 'hours from mid-transit', ylabel: 'flux drop (ppm)', title: 'transit' });
+        const tr = v.stage({ x: [-6, 6], y: [-9500, 1800], axes: 'box', height: 330, weight: 1.25, xlabel: 'hours from mid-transit', ylabel: 'change in flux (ppm)', title: 'transit' });
         const BIN = nums(K7_BIN), ERR = nums(K7_ERR), RH = nums(K7_RAW_H), RF = nums(K7_RAW_F);
         const binC = BIN.map((_, k) => -8 + 0.2 * k + 0.1);
         const U1 = 0.36, U2 = 0.27; // quadratic limb darkening typical of a 5900 K dwarf in the Kepler band
@@ -210,27 +221,25 @@ of the starlight (modified by limb darkening), and the shape of the transit fixe
           rv.fn((p) => -Pp.K * Math.sin(TAU * p), { color: 'muted', width: 1.2, dash: [5, 4] });
           rv.fn((p) => D.sol[0] * Math.sin(TAU * p) + D.sol[1] * Math.cos(TAU * p) + D.sol[2], { color: 'accent', width: 2.2 });
           D.ph.forEach((p, j) => { rv.line(p, D.vv[j] - sig.value, p, D.vv[j] + sig.value, { color: 'ink', width: 1, alpha: 0.4 }); rv.dot(p, D.vv[j], { r: 3, color: 'ink' }); });
-          rv.corner(`${Pp.name}: P = ${Pp.P} d`, 'tl', { color: 'muted', size: 11.5 });
+          rv.corner(`${Pp.name}: P = ${Pp.P} d`, 'tr', { color: 'muted', size: 11.5 });
           // transit
           const msini = ((D.K * (Pp.P * DAY / (TAU * G)) ** (1 / 3) * (Pp.Ms * MS) ** (2 / 3)) / MJ);
           let T = null;
           if (Pp.transit) {
-            tr.setView([-6, 6], [-1500, 9500]);
-            tr.dots(RH.map((h, j) => [h, RF[j]]), { r: 1.6, color: 'muted', alpha: 0.45 });
-            binC.forEach((h, j) => { if (Math.abs(h) > 6.05) return; tr.line(h, BIN[j] - ERR[j], h, BIN[j] + ERR[j], { color: 'ink', width: 1.1 }); tr.dot(h, BIN[j], { r: 2.6, color: 'ink' }); });
+            tr.dots(RH.map((h, j) => [h, -RF[j]]), { r: 1.6, color: 'muted', alpha: 0.45 });
+            binC.forEach((h, j) => { if (Math.abs(h) > 6.05) return; tr.line(h, -BIN[j] - ERR[j], h, -BIN[j] + ERR[j], { color: 'ink', width: 1.1 }); tr.dot(h, -BIN[j], { r: 2.6, color: 'ink' }); });
             const k = kS.value, b = bS.value, c2 = cacheC(`${k}|${b}|${ldT.value}`, () => chi2(k, b, ldT.value));
-            tr.fn((h) => depthAt(h, k, b, ldT.value, Pp.P, Pp.aR), { color: 'accent', width: 2.2, n: 240, domain: [-6, 6] });
-            tr.hline(k * k * 1e6, { color: 'orange', width: 1, dash: [4, 4] });
-            tr.text('(Rp/R*)²', -5.9, k * k * 1e6, { color: 'orange', size: 10.5, dy: -9, align: 'left' });
+            tr.fn((h) => -depthAt(h, k, b, ldT.value, Pp.P, Pp.aR), { color: 'accent', width: 2.2, n: 240, domain: [-6, 6] });
+            tr.hline(-k * k * 1e6, { color: 'orange', width: 1, dash: [4, 4] });
+            tr.text('−(Rp/R*)²', -5.9, -k * k * 1e6, { color: 'orange', size: 10.5, dy: 9, align: 'left' });
             const inc = Math.acos(clamp(b / Pp.aR, 0, 1)), Rp = k * Pp.Rs * RS, mp = (msini * MJ) / Math.sin(inc), rho = mp / ((4 / 3) * Math.PI * Rp ** 3);
             T = { k, b, c2, inc, Rp, mp, rho };
           } else {
-            tr.setView([-6, 6], [-1500, 9500]);
             tr.hline(0, { color: 'ink', width: 1.6 });
             const k = 1.2 * RJ / (Pp.Rs * RS);
-            tr.fn((h) => depthAt(h, k, 0, true, Pp.P, Pp.aR), { color: 'muted', width: 1.4, dash: [5, 4], domain: [-6, 6], n: 200 });
-            tr.text('no transit is seen: the orbit is not edge-on', 0, 3600, { color: 'red', size: 12, align: 'center' });
-            tr.text('dashed: the dip a 1.2 R_J planet would cause if it were', 0, 2600, { color: 'muted', size: 10.5, align: 'center' });
+            tr.fn((h) => -depthAt(h, k, 0, true, Pp.P, Pp.aR), { color: 'muted', width: 1.4, dash: [5, 4], domain: [-6, 6], n: 200 });
+            tr.text('no transit is seen: the orbit is not edge-on', 0, -3600, { color: 'red', size: 12, align: 'center' });
+            tr.text('dashed: the dip a 1.2 R_J planet would cause if it were', 0, -4600, { color: 'muted', size: 10.5, align: 'center' });
           }
           kS.el.hidden = bS.el.hidden = ldT.el.hidden = fitB.hidden = !Pp.transit;
           cur = { Pp, D, msini, T };
@@ -242,7 +251,7 @@ of the starlight (modified by limb darkening), and the shape of the transit fixe
           let out = String.raw`RV fit: $K = ${v.fix(D.K, 1)} \pm ${v.fix(D.sK, 1)}$ m/s (published ${Pp.K}) ⇒ $m_p\sin i = K\,(P/2\pi G)^{1/3}M_*^{2/3} = ${v.fix(msini, 3)}\,M_J$ for $M_* = ${Pp.Ms}\,M_\odot$ (the published orbit gives ${Pp.transit ? '0.437' : '0.47'})`;
           if (!T) return out + String.raw` · without a transit, $\sin i$ — and so the true mass — stays unknown`;
           out += String.raw` · transit: $\chi^2 = ${v.fix(T.c2, 1)}$ for 80 bins (≈ 80 is a good fit) · $R_p = ${v.fix(T.k, 4)}\times ${Pp.Rs}\,R_\odot = ${v.fix(T.Rp / RJ, 3)}\,R_J$, $i = ${v.fix(T.inc / DEG, 2)}^\circ$, $m_p = ${v.fix(T.mp / MJ, 3)}\,M_J$, mean density $${v.fix(T.rho / 1000, 3)}$ g/cm³ (Jupiter 1.33, Latham et al. 2010: 0.166)`;
-          if (!ldT.value) out += ' · without limb darkening the best depth needs a smaller planet and the ingress shape fits worse';
+          if (!ldT.value) out += ' · without limb darkening no choice of $R_p/R_*$ and $b$ fits the rounded bottom (best χ² ≈ 2700): real stellar discs are darker at the edge';
           return out;
         });
       },
@@ -299,13 +308,13 @@ the node **regresses** (moves westward) for prograde orbits, advances for retrog
         v.animate((t) => {
           const a = RE + hS.value, inc = iS.value * DEG, day = (t / 15) * 365.25, M = measure();
           const r0 = isFinite(M.rate) ? M.rate : rate(a, inc), Om = (r0 * day) * DEG, lamS = (SUN * day) * DEG;
-          const R = 1, ro = (a / RE) * R * 0.92;
+          const R = 0.62, ro = 1.22; // the Earth is drawn small so the orbit can be seen (not to scale)
           sc.begin();
           // Earth: equator disc, latitude circles and meridians
           sc.disc([1, 0, 0], [0, 1, 0], R, { fill: 'blue', fillAlpha: 0.16, color: 'blue', width: 1 });
           for (const lat of [-60, -30, 30, 60]) { const c = Math.cos(lat * DEG), z = Math.sin(lat * DEG), q = []; for (let k = 0; k <= 48; k++) { const u = (TAU * k) / 48; q.push([R * c * Math.cos(u), R * c * Math.sin(u), R * z]); } sc.path(q, { color: 'blue', width: 0.8, alpha: 0.35 }); }
           for (let m = 0; m < 6; m++) { const L = (m * Math.PI) / 6, q = []; for (let k = 0; k <= 48; k++) { const u = (TAU * k) / 48; q.push([R * Math.cos(u) * Math.cos(L), R * Math.cos(u) * Math.sin(L), R * Math.sin(u)]); } sc.path(q, { color: 'blue', width: 0.8, alpha: 0.35 }); }
-          sc.line([0, 0, -1.35], [0, 0, 1.35], { color: 'muted', width: 1.2 }, 6);
+          sc.line([0, 0, -0.95], [0, 0, 0.95], { color: 'muted', width: 1.2 }, 6);
           // orbit plane at this date
           const n = [Math.cos(Om), Math.sin(Om), 0], u = [-Math.sin(Om) * Math.cos(inc), Math.cos(Om) * Math.cos(inc), Math.sin(inc)];
           const q = []; for (let k = 0; k <= 96; k++) { const th = (TAU * k) / 96; q.push([ro * (Math.cos(th) * n[0] + Math.sin(th) * u[0]), ro * (Math.cos(th) * n[1] + Math.sin(th) * u[1]), ro * Math.sin(th) * u[2]]); }
@@ -315,11 +324,12 @@ the node **regresses** (moves westward) for prograde orbits, advances for retrog
           sc.dot([ro * n[0], ro * n[1], 0], { r: 4.5, color: 'orange' });
           // the Sun direction
           const sd = [Math.cos(lamS), Math.sin(lamS), 0];
-          sc.arrow([0, 0, 0], [1.6 * sd[0], 1.6 * sd[1], 0], { color: 'gold', width: 2.4, head: 9 });
-          sc.dot([1.62 * sd[0], 1.62 * sd[1], 0], { r: 7, color: 'gold' });
+          sc.arrow([0, 0, 0], [1.55 * sd[0], 1.55 * sd[1], 0], { color: 'gold', width: 2.4, head: 9 });
+          sc.dot([1.6 * sd[0], 1.6 * sd[1], 0], { r: 7, color: 'gold' });
           sc.flush();
           const ang = (((Om - lamS) / DEG) % 360 + 540) % 360 - 180;
           S.corner(`day ${Math.floor(day)}: node − Sun = ${v.fix(ang, 1)}°`, 'tl', { color: 'muted', size: 12 });
+          S.corner('Earth and orbit not to scale', 'bl', { color: 'faint', size: 10.5 });
           // rate vs inclination
           const lim = Math.max(2, Math.abs(rate(a, 0)) * 1.15);
           g.setView([0, 180], [-lim, lim]);
@@ -338,7 +348,7 @@ the node **regresses** (moves westward) for prograde orbits, advances for retrog
         v.readout(() => {
           if (!cur) return '';
           const { M, a, inc, iSSO } = cur, F = rate(a, inc);
-          let out = String.raw`$a = ${v.fix(a, 0)}$ km, period ${v.fix(M.Tor / 60, 1)} min · integrated ${M.N} orbits: measured $\dot\Omega = ${isFinite(M.rate) ? v.fix(M.rate, 4) : '—'}$ °/day, formula ${v.fix(F, 4)} °/day`;
+          let out = String.raw`$a = ${v.fix(a, 0)}$ km, period ${v.fix(M.Tor / 60, 1)} min · integrated ${M.N} orbits: measured $\dot\Omega = ${isFinite(M.rate) ? v.fix(M.rate, 4) : '—'}$ °/day, formula ${v.fix(F, 4)} °/day${isFinite(M.rate) && Math.abs(F) > 1e-3 ? ` (agree to ${v.fix(Math.abs(M.rate / F - 1) * 100, 1)}%: the formula is first order in $J_2$ and treats the starting state as mean elements)` : ''}`;
           if (!j2.value) return out + ' · spherical Earth: the orbit plane is fixed in inertial space, so the Sun’s direction sweeps round it once a year';
           out += String.raw` · Sun-synchronous at $i = ${isFinite(iSSO) ? v.fix(iSSO, 2) + '^\\circ' : '\\text{(none)}'}$`;
           if (isFinite(iSSO) && Math.abs(iS.value - iSSO) < 0.3) out += ' — the plane now turns with the Sun: the same local solar time at every equator crossing, year round';
@@ -356,7 +366,7 @@ the node **regresses** (moves westward) for prograde orbits, advances for retrog
 $$a_n = 0.4 + 0.3\times 2^n,\qquad n = -\infty, 0, 1, 2, \dots$$
 It fitted the six planets known at the time and seemed to be confirmed by Uranus (1781, predicted 19.6 AU, actual 19.2) and Ceres (1801, in the “gap” at 2.8 AU), but it fails for Neptune (38.8 predicted, 30.1 actual). There is no accepted dynamical derivation: roughly geometric spacing is what one expects of any system in which planets cannot sit too close together, and randomly generated systems obeying a minimum-spacing rule fit geometric laws about as well as the solar system does (Hayes & Tremaine 1998).`,
       idea: String.raw`A rule with three adjustable numbers fitted to a handful of increasing values can look impressive by chance, so the right test is statistical: compare the solar system’s fit with the fits achieved by systems generated *without* any law. Orbital stability forbids neighbouring planets from being closer than a few mutual Hill radii, which already makes the spacing roughly proportional to distance — i.e. geometric (orbital elements, 1.1, and the Hill sphere, 2.5). Whatever regularity remains is then not evidence for a law.`,
-      caption: String.raw`Left: actual semi-major axes (filled) against the rule (hollow) on a log scale, with the percentage error; Neptune and Pluto break it. The dashed line is the best pure geometric law $a_n = AB^n$ for Mercury to Neptune with Ceres. Right: the same fit applied to 2000 random 9-planet systems whose planets are scattered at random in $\log a$ between 0.3 and 40 AU, subject only to a minimum ratio between neighbours (slider). The red line is the solar system. Press *new random system* to see one of them on the left; with a modest spacing rule, random systems fit about as well as ours.`,
+      caption: String.raw`Left: actual semi-major axes (filled) against the rule (hollow) on a log scale, with the percentage error; Neptune and Pluto break it. The dashed line is the best pure geometric law $a_n = AB^n$ for Mercury to Neptune with Ceres. Right: the same fit applied to 2000 random 9-planet systems whose planets are scattered at random in $\log a$ between 0.3 and 40 AU, subject only to a minimum ratio between neighbours (slider). The red line is the solar system. Press *new random system* to see one of them on the left. With the spacing set to the solar system’s own tightest pair (Earth/Venus, 1.38) about a quarter of the random systems fit as well as ours — a pattern, but no evidence of a law.`,
       deps: ['astro-1.1'],
       see: ['astro-2.5'],
       refs: ['Murray–Dermott §1.5'],
@@ -364,12 +374,12 @@ It fitted the six planets known at the time and seemed to be confirmed by Uranus
       credit: 'Titius, 1766; Bode, 1772',
       viz(v) {
         const PLAN = [['Mercury', 0.387, -Infinity], ['Venus', 0.723, 0], ['Earth', 1.0, 1], ['Mars', 1.524, 2], ['Ceres', 2.767, 3], ['Jupiter', 5.204, 4], ['Saturn', 9.583, 5], ['Uranus', 19.19, 6], ['Neptune', 30.07, 7], ['Pluto', 39.48, 8]];
-        const kS = v.slider('minimum ratio of neighbouring a', 1.0, 1.6, 1.3, { step: 0.01 });
+        const kS = v.slider('minimum ratio of neighbouring a', 1.0, 1.6, 1.383, { step: 0.01 });
         const show = v.toggle('overlay a random system', false);
         let seed = 1;
         v.button('new random system', () => { seed++; showRand = true; });
         let showRand = false;
-        const L = v.stage({ x: [-0.5, 9.5], y: [0.25, 100], ylog: true, axes: 'box', height: 340, weight: 1.2, ylabel: 'semi-major axis (AU)', title: 'the rule against the planets' });
+        const L = v.stage({ x: [-0.8, 9.5], y: [0.25, 160], ylog: true, axes: 'box', height: 340, weight: 1.2, xlabel: 'index n in the rule', ylabel: 'semi-major axis (AU)', title: 'the rule against the planets' });
         const R = v.stage({ x: [0, 0.25], y: [0, 1], axes: 'box', height: 340, weight: 1, xlabel: 'rms misfit of the best geometric law (dex)', ylabel: 'fraction of random systems', title: 'is our fit special?' });
         const fitGeo = (as) => { const xs = as.map((_, k) => k), ys = as.map((a) => Math.log10(a)), f = v.M.linreg(xs, ys); const rms = Math.sqrt(ys.reduce((s, y, k) => s + (y - f.predict(k)) ** 2, 0) / ys.length); return { f, rms }; };
         const solar = PLAN.slice(0, 9).map((p) => p[1]), SF = fitGeo(solar);
@@ -398,7 +408,6 @@ It fitted the six planets known at the time and seemed to be confirmed by Uranus
           }
           L.fn((x) => 10 ** SF.f.predict(x), { domain: [-0.3, 8.3], color: 'green', width: 1.4, dash: [6, 4] });
           L.setTicks(PLAN.map((p, n) => [n, p[2] === -Infinity ? '−∞' : String(p[2])]), null);
-          L.corner('tick labels: the rule’s index n', 'br', { color: 'faint', size: 10.5 });
           if (show.value || showRand) {
             const r = v.rng(seed * 977), s = gen(r, kS.value);
             if (s) { const F = fitGeo(s); s.forEach((a, j) => L.dot(j, a, { r: 4, color: 'purple' })); L.fn((x) => 10 ** F.f.predict(x), { domain: [-0.3, 8.3], color: 'purple', width: 1.2, dash: [2, 3] }); L.corner(`random system #${seed}: rms ${v.fix(F.rms, 3)} dex`, 'tl', { color: 'purple', size: 11.5 }); }
@@ -407,7 +416,7 @@ It fitted the six planets known at the time and seemed to be confirmed by Uranus
           const xs = sample(); let ytop = 0.05;
           if (xs.length) {
             const Hh = v.M.histogram(xs, { bins: 40, range: [0, 0.25] }), tot = xs.length, fr = { edges: Hh.edges, counts: Hh.counts.map((c) => c / tot) };
-            const ymax = Math.max(...fr.counts) * 1.2;
+            const ymax = Math.max(...fr.counts) * 1.4;
             ytop = Math.max(0.05, ymax); R.setView([0, 0.25], [0, ytop]);
             R.hist(fr, { color: 'purple', fillAlpha: 0.35 });
           } else R.text('spacing too large to fit 9 planets', 0.125, 0.5, { color: 'red', align: 'center' });
@@ -418,7 +427,7 @@ It fitted the six planets known at the time and seemed to be confirmed by Uranus
         v.readout(() => {
           const xs = sample(), better = xs.filter((x) => x <= SF.rms).length;
           const med = xs.length ? v.M.median(xs) : NaN;
-          return String.raw`Titius–Bode: Uranus off by ${v.fix(Math.abs(19.19 / 19.6 - 1) * 100, 1)}%, Neptune by ${v.fix(Math.abs(30.07 / 38.8 - 1) * 100, 0)}% · best geometric law for Mercury–Neptune (with Ceres): ratio $B = ${v.fix(10 ** SF.f.slope, 3)}$, rms misfit ${v.fix(SF.rms, 3)} dex (${v.fix((10 ** SF.rms - 1) * 100, 0)}% typical error) · random systems with neighbour ratio ≥ ${v.fix(kS.value, 2)}: median misfit ${v.fix(med, 3)} dex, and ${v.fix((100 * better) / Math.max(1, xs.length), 1)}% fit at least as well as the solar system${kS.value < 1.05 ? ' — with no spacing rule at all, random systems are lumpier and fit worse' : ''}`;
+          return String.raw`Titius–Bode: Uranus off by ${v.fix(Math.abs(19.19 / 19.6 - 1) * 100, 1)}%, Neptune by ${v.fix(Math.abs(30.07 / 38.8 - 1) * 100, 0)}% · best geometric law for Mercury–Neptune (with Ceres): ratio $B = ${v.fix(10 ** SF.f.slope, 3)}$, rms misfit ${v.fix(SF.rms, 3)} dex (${v.fix((10 ** SF.rms - 1) * 100, 0)}% typical error) · random systems with neighbour ratio ≥ ${v.fix(kS.value, 2)}: median misfit ${v.fix(med, 3)} dex, and ${v.fix((100 * better) / Math.max(1, xs.length), 1)}% fit at least as well as the solar system${Math.abs(kS.value - 1.383) < 0.006 ? ' (spacing set to the solar system’s own tightest pair, Earth/Venus = 1.38)' : ''}${kS.value < 1.05 ? ' — with no spacing rule at all, random systems are lumpier and fit worse' : ''}`;
         });
       },
     },

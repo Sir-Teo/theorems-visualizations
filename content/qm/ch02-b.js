@@ -12,20 +12,14 @@
 //   is proportional to the square of the quantity Φ_nm". The note contains no numbers or data.
 // - First Born approximation for elastic e⁻–H(1s) scattering (textbook): f = 2a₀(8 + Q²a₀²)/(4 + Q²a₀²)², Q = 2k sin(θ/2);
 //   σ = πa₀²(7k⁴a₀⁴ + 18k²a₀² + 12)/(3(1 + k²a₀²)³) (checked numerically in the viz).
-import { TAU, grid, packet, normSq, normalize, moments, toMomentum, sampler, phaseLUT, drawPsi, phaseWheel, big, fz } from './ch02.shared.js';
+import { TAU, grid, packet, normSq, normalize, moments, toMomentum, sampler, phaseLUT, drawPsi, phaseWheel, splitStepper, big, fz } from './ch02.shared.js';
 
 const D2R = Math.PI / 180;
-/**
- * CN-evolve a state; every step record ⟨p⟩ and ⟨−V'⟩ in the forms that are exact for the grid Hamiltonian (central-difference
- * momentum, force −Σ Re(ψ̄ᵢψᵢ₊₁)(Vᵢ₊₁ − Vᵢ)), and every `every` steps a snapshot {t, mx, mp, sx, re, im}.
- */
-function evolveRecord(M, x, dx, V, re, im, dt, steps, every) {
-  const n = x.length, out = [], fine = [];
-  const pf = () => { let p = 0, f = 0; for (let i = 1; i < n - 1; i++) { p += (re[i] * (im[i + 1] - im[i - 1]) - im[i] * (re[i + 1] - re[i - 1])) / 2; f -= (re[i] * re[i + 1] + im[i] * im[i + 1]) * (V[i + 1] - V[i]); } return [p, f]; };
-  const snap = (t) => { const m = moments(x, re, im); out.push({ t, mx: m.mx, mp: m.mp, sx: m.sx, re: Float32Array.from(re), im: Float32Array.from(im) }); };
-  snap(0); fine.push(pf());
-  for (let s = 1; s <= steps; s++) { M.crankNicolson1D(re, im, V, dx, dt); fine.push(pf()); if (s % every === 0) snap(s * dt); }
-  return { rec: out, fine };
+/** ⟨p⟩ computed spectrally (FFT, ħ = 1) for ψ on a periodic grid of spacing dx. */
+function pSpectral(M, re, im, dx) {
+  const n = re.length, R = Array.from(re), I = Array.from(im); M.fft(R, I);
+  let s = 0, w = 0; for (let m = 0; m < n; m++) { const k = (TAU * (m < n / 2 ? m : m - n)) / (n * dx), a = R[m] * R[m] + I[m] * I[m]; s += k * a; w += a; }
+  return s / w;
 }
 /** Numerov integration of u'' = g(r) u outward on [0, R] (u(0) = 0, u ~ r^{l+1}); g = l(l+1)/r² − 2Z/r − ε (Rydberg units). */
 function numerov(eps, l, R, N, Z = 1) {
@@ -55,14 +49,14 @@ export default {
 $$\frac{d}{dt}\langle x\rangle=\frac{\langle p\rangle}{m},\qquad \frac{d}{dt}\langle p\rangle=\Big\langle-\frac{\partial V}{\partial x}\Big\rangle .$$
 Expectation values obey Newton's equations (mech-1.6) **with the force averaged over the wave packet**. They follow the classical trajectory exactly when $\langle V'(x)\rangle=V'(\langle x\rangle)$ — for all states when $V$ is at most quadratic (free particle, uniform field, harmonic oscillator) — and approximately when the packet is narrow compared with the scale on which the force changes, $\tfrac12|V'''|\,(\Delta x)^2\ll|V'|$. In an anharmonic potential a wide packet's mean drifts away from the classical orbit.`,
       idea: String.raw`Differentiate $\langle x\rangle=\int x|\psi|^2$ and use the continuity equation (2.6): $\frac{d}{dt}\langle x\rangle=-\int x\,\partial_xj\,dx=\int j\,dx=\langle p\rangle/m$ after one integration by parts. Likewise, inserting the Schrödinger equation into $\frac{d}{dt}\int\bar\psi(-i\hbar\psi')$ and integrating by parts, the kinetic terms cancel and only $-\int|\psi|^2V'\,dx$ survives. The catch is the order of averaging: Newton would need $V'(\langle x\rangle)$, the theorem gives $\langle V'(x)\rangle$. Expanding $V'$ around $\langle x\rangle$, the difference is $\tfrac12V'''(\langle x\rangle)(\Delta x)^2+\dots$, which vanishes identically for quadratic $V$ — the reason the harmonic oscillator's mean position oscillates classically for any state.`,
-      caption: String.raw`A Gaussian packet (height $|\psi|$, colour phase, riding at its mean energy) is released at rest at $x_0$; a classical particle (red) starts at the same place. Gold: the quantum mean $\langle x\rangle$. Right: $(\langle x\rangle,\langle p\rangle)$ against the classical orbit in phase space; bottom: $\langle x\rangle(t)$ against $x_{\rm cl}(t)$. In the **harmonic** well they agree for any width. In the **quartic** or **double** well, widen the packet ($\sigma$): the mean falls behind the classical orbit and its oscillation decays as the packet smears out. The readout checks $\frac{d}{dt}\langle p\rangle=\langle-V'\rangle$ (always true) against $-V'(\langle x\rangle)$ (Newton for the mean, true only for the harmonic well).`,
+      caption: String.raw`A Gaussian packet (height $|\psi|$, colour phase, riding at its mean energy; split-step Fourier simulation) is released at rest at $x_0$; a classical particle (red) starts at the same place. Gold: the quantum mean $\langle x\rangle$. Right: $(\langle x\rangle,\langle p\rangle)$ against the classical orbit in phase space; bottom: $\langle x\rangle(t)$ against $x_{\rm cl}(t)$. In the **harmonic** well they agree for any width. In the **quartic** or **double** well, widen the packet ($\sigma$): the mean falls behind the classical orbit and its oscillation decays as the packet smears out. The readout checks $\frac{d}{dt}\langle p\rangle=\langle-V'\rangle$ (always true) against $-V'(\langle x\rangle)$ (Newton for the mean, true only for the harmonic well).`,
       deps: ['qm-2.8', 'qm-2.4', 'mech-1.6'],
       see: ['qm-5.17', 'mech-4.2'],
       refs: ['Griffiths §1.5'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ehrenfest_theorem' },
       tags: ['ehrenfest theorem', 'classical limit'],
       viz(v) {
-        const M = v.M, { x, dx } = grid(-12, 12, 601), n = x.length, DT = 0.01, TT = 20, EVERY = 4;
+        const M = v.M, NG = 512, dx = 24 / NG, x = Float64Array.from({ length: NG }, (_, i) => -12 + i * dx), n = NG, DT = 0.02, TT = 20, EVERY = 2;
         const POT = {
           harmonic: { label: 'harmonic $\\tfrac12x^2$', V: (X) => 0.5 * X * X, F: (X) => -X },
           quartic: { label: 'quartic $\\tfrac18x^4$', V: (X) => X ** 4 / 8, F: (X) => -(X ** 3) / 2 },
@@ -77,8 +71,12 @@ Expectation values obey Newton's equations (mech-1.6) **with the force averaged 
         const s3 = v.stage({ x: [0, TT], y: [-4, 4], height: 190, axes: 'box', full: true, xlabel: 't', ylabel: 'x', title: '$\\langle x\\rangle(t)$ (gold) and the classical $x_{\\rm cl}(t)$ (red, dashed)' });
         let key = null, run = null;
         const compute = () => {
-          const P = POT[pot.value], V = Float64Array.from(x, P.V), Q = packet(x, x0.value, sg.value, 0);
-          const { rec, fine } = evolveRecord(M, x, dx, V, Q.re, Q.im, DT, Math.round(TT / DT), EVERY);
+          const P = POT[pot.value], V = Float64Array.from(x, P.V), Q = packet(x, x0.value, sg.value, 0), re = Array.from(Q.re), im = Array.from(Q.im);
+          const step = splitStepper(M, V, dx, DT), Fx = Float64Array.from(x, P.F), rec = [], fine = [];
+          const meas = () => { let N = 0, f = 0; for (let i = 0; i < n; i++) { const r = re[i] * re[i] + im[i] * im[i]; N += r; f += Fx[i] * r; } return [pSpectral(M, re, im, dx), f / N]; };
+          const snap = (t, pf) => { const m = moments(x, re, im); rec.push({ t, mx: m.mx, mp: pf[0], sx: m.sx, re: Float32Array.from(re), im: Float32Array.from(im) }); };
+          let pf = meas(); fine.push(pf); snap(0, pf);
+          for (let s = 1; s <= Math.round(TT / DT); s++) { step(re, im); pf = meas(); fine.push(pf); if (s % EVERY === 0) snap(s * DT, pf); }
           // classical orbit with the same initial ⟨x⟩, ⟨p⟩ (RK4 at the record times)
           let X = rec[0].mx, Pp = rec[0].mp; const cl = [[X, Pp]], h = DT * EVERY, sub = 4, hh = h / sub;
           for (let k = 1; k < rec.length; k++) {
@@ -151,17 +149,17 @@ $$\phi(p)=\frac{1}{\sqrt{2\pi\hbar}}\int_{-\infty}^{\infty}e^{-ipx/\hbar}\,\psi(
           box: { label: 'box', f: (X, w) => 0.5 * (Math.tanh((X + 1.6 * w) / 0.08) - Math.tanh((X - 1.6 * w) / 0.08)) },
           cat: { label: 'two momenta', f: (X, w) => Math.exp(-X * X / (4 * w * w)) * 2 * Math.cos(2.2 * X) },
         };
-        const sh = v.select('shape', Object.entries(SH).map(([value, S]) => ({ value, label: S.label })), 'slits', { onChange: () => { samples = []; } });
-        const w = v.slider('width', 0.4, 2.5, 1, { step: 0.01, onChange: () => { samples = []; } });
-        const xs = v.slider('position shift $x_0$', -6, 6, 0, { step: 0.05 });
-        const ps = v.slider('momentum boost $p_0$', -4, 4, 0, { step: 0.05, onChange: () => { samples = []; } });
-        let samples = [], rng = v.rng(10);
+        const sh = v.select('shape', Object.entries(SH).map(([value, S]) => ({ value, label: S.label })), 'slits');
+        const w = v.slider('width', 0.4, 2.5, 1, { step: 0.01 });
+        const xs = v.slider('position shift $x_0$', -6, 6, 1.5, { step: 0.05 });
+        const ps = v.slider('momentum boost $p_0$', -4, 4, 0.6, { step: 0.05 });
+        let nS = 2000; const U = [], r0 = v.rng(10), u = (i) => { while (U.length <= i) U.push(r0()); return U[i]; };
         const sX = v.stage({ x: [-12, 12], y: [-0.05, 1], height: 220, axes: 'box', weight: 1, xlabel: 'x', yticks: [], title: 'position space: $\\psi(x)$' });
         const sP = v.stage({ x: [-8, 8], y: [-0.05, 1], height: 220, axes: 'box', weight: 1, xlabel: 'p', yticks: [], title: 'momentum space: $\\phi(p)$ ($\\hbar=1$)' });
         const sH = v.stage({ x: [-8, 8], y: [0, 1], height: 170, axes: 'box', full: true, xlabel: 'p', ylabel: 'density', title: 'momentum measurements against $|\\phi(p)|^2$' });
         let cur = null;
-        v.button('Measure momentum ×1000', () => { if (cur) for (let i = 0; i < 1000; i++) samples.push(cur.draw(rng())); });
-        v.button('Clear', () => { samples = []; });
+        v.button('Measure momentum ×1000', () => { nS += 1000; });
+        v.button('Clear', () => { nS = 0; });
         let st = null;
         v.render(() => {
           const col = phaseLUT(v), S = SH[sh.value], re = new Float64Array(NG), im = new Float64Array(NG);
@@ -169,6 +167,7 @@ $$\phi(p)=\frac{1}{\sqrt{2\pi\hbar}}\int_{-\infty}^{\infty}e^{-ipx/\hbar}\,\psi(
           normalize(re, im, dxg);
           const F = toMomentum(M, x, re, im), rho = Float64Array.from(F.re, (r, i) => r * r + F.im[i] ** 2);
           cur = { draw: sampler(F.p, rho) };
+          const samples = []; for (let i = 0; i < nS; i++) samples.push(cur.draw(u(i)));
           let ax = 0, ap = 0; for (let i = 0; i < NG; i++) { ax = Math.max(ax, Math.hypot(re[i], im[i])); ap = Math.max(ap, Math.hypot(F.re[i], F.im[i])); }
           sX.setView([-12, 12], [-0.05 * ax, ax * 1.15]); sP.setView([-8, 8], [-0.05 * ap, ap * 1.15]);
           drawPsi(sX, x, re, im, { col }); drawPsi(sP, F.p, F.re, F.im, { col });
@@ -205,7 +204,7 @@ $1=\big|\int x(\bar\psi\psi'+\psi\bar\psi')\big|\le2\norm{x\psi}\norm{\psi'}$ by
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Uncertainty_principle' },
       tags: ['uncertainty principle', 'fourier transform'],
       viz(v) {
-        const M = v.M, NG = 2048, X0 = -40, dxg = 80 / NG, x = Float64Array.from({ length: NG }, (_, i) => X0 + i * dxg);
+        const M = v.M, NG = 4096, X0 = -40, dxg = 80 / NG, x = Float64Array.from({ length: NG }, (_, i) => X0 + i * dxg);
         const SH = {
           gauss: { label: 'Gaussian', color: 'green', f: (u) => Math.exp(-u * u / 4) },
           sech: { label: 'sech', color: 'teal', f: (u) => 1 / Math.cosh(u / 1.1) },
@@ -218,8 +217,8 @@ $1=\big|\int x(\bar\psi\psi'+\psi\bar\psi')\big|\le2\norm{x\psi}\norm{\psi'}$ by
         const sq = v.slider('squeeze $s$ (width ∝ s)', 0.3, 3, 1, { log: true });
         const ch = v.slider('chirp $c$ in $e^{icx^2}$', 0, 0.6, 0, { step: 0.005 });
         const sX = v.stage({ x: [-10, 10], y: [0, 1], height: 210, axes: 'box', weight: 1, xlabel: 'x', title: '$|\\psi(x)|^2$' });
-        const sP = v.stage({ x: [-8, 8], y: [0, 1], height: 210, axes: 'box', weight: 1, xlabel: 'p (ħ = 1)', title: '$|\\phi(p)|^2$' });
-        const sL = v.stage({ x: [0.3, 3], y: [0.8, 4], xlog: true, ylog: true, yticks: [1, 1.5, 2, 3, 4], height: 220, axes: 'box', full: true, xlabel: 'squeeze s', ylabel: 'ΔxΔp / (ħ/2)', title: 'the product $\\Delta x\\,\\Delta p$ in units of $\\hbar/2$, for each shape and squeeze' });
+        const sP = v.stage({ x: [-8, 8], y: [0, 1], height: 210, axes: 'box', weight: 1, xlabel: 'p', title: '$|\\phi(p)|^2$ ($\\hbar=1$)' });
+        const sL = v.stage({ x: [0.3, 3], y: [0.7, 4], xlog: true, ylog: true, yticks: [1, 1.5, 2, 3, 4], height: 220, axes: 'box', full: true, xlabel: 'squeeze s', ylabel: 'ΔxΔp / (ħ/2)', title: 'the product $\\Delta x\\,\\Delta p$ in units of $\\hbar/2$, for each shape and squeeze' });
         const state = (key, s, c) => {
           const f = SH[key].f, re = new Float64Array(NG), im = new Float64Array(NG);
           for (let i = 0; i < NG; i++) { const a = f(x[i] / s), ph = c * x[i] * x[i]; re[i] = a * Math.cos(ph); im[i] = a * Math.sin(ph); }
@@ -252,9 +251,9 @@ $1=\big|\int x(\bar\psi\psi'+\psi\bar\psi')\big|\le2\norm{x\psi}\norm{\psi'}$ by
           else sP.corner(`Δp = ${v.fix(S.sp, 2)}: wider than the window`, 'tr', { color: 'red' });
           // product chart
           const CAP = 3.9, LX = { gauss: 0.36, sech: 0.6, tri: 1.05, cusp: 0.36, two: 0.36, box: 1.2 };
-          sL.rect(0.3, 0.8, 3, 1, { fill: 'red', fillAlpha: 0.07, hatch: 'red', hatchAlpha: 0.4, stroke: false });
+          sL.rect(0.3, 0.7, 3, 1, { fill: 'red', fillAlpha: 0.07, hatch: 'red', hatchAlpha: 0.4, stroke: false });
           sL.hline(1, { color: 'red', width: 1.6 });
-          sL.text('forbidden: ΔxΔp < ħ/2', 1, 0.895, { color: 'red', size: 11.5, align: 'center', baseline: 'middle', weight: 600 });
+          sL.text('forbidden: ΔxΔp < ħ/2', 1, 0.865, { color: 'red', size: 11.5, align: 'center', baseline: 'middle', weight: 600 });
           for (const [k, L] of Object.entries(lines)) {
             const sel = k === sh.value, off = L.some(([, y]) => y > CAP), pts = L.map(([s, y]) => [s, Math.min(y, CAP)]);
             sL.path(pts, { color: SH[k].color, width: sel ? 3 : 1.4, alpha: sel ? 1 : 0.7, dash: off ? [6, 4] : null });
@@ -266,7 +265,7 @@ $1=\big|\int x(\bar\psi\psi'+\psi\bar\psi')\big|\le2\norm{x\psi}\norm{\psi'}$ by
           st = { sx: S.sx, sp: S.sp, ratio, key: sh.value, c };
         });
         v.legend([['accent', '|ψ(x)|² and ±Δx'], ['orange', '|φ(p)|² and ±Δp'], ['red', 'the bound ħ/2']]);
-        v.readout(() => st && `$\\Delta x = ${v.fix(st.sx, 4)}$, $\\Delta p = ${v.fix(st.sp, 4)}\\,\\hbar$ (from the FFT of $\\psi$) → $\\Delta x\\,\\Delta p = ${v.fix(st.sx * st.sp, 4)}\\,\\hbar$ = **${v.fix(st.ratio, 4)}** × $\\hbar/2$` + (st.key === 'gauss' && st.c === 0 ? ' — the minimum, attained' : st.key === 'tri' && st.c === 0 ? ' (exact: $\\sqrt{6/5} = 1.0954$)' : st.key === 'sech' && st.c === 0 ? ' (exact: $\\pi/3 = 1.0472$)' : st.key === 'cusp' && st.c === 0 ? ' (exact: $\\sqrt2 = 1.4142$)' : st.key === 'box' ? ' — a jump makes $\\Delta p$ infinite; the finite value comes from the grid ($\\Delta x_{\\rm grid}$ = 0.039)' : '') + '. Squeezing leaves this number fixed.');
+        v.readout(() => st && `$\\Delta x = ${v.fix(st.sx, 4)}$, $\\Delta p = ${v.fix(st.sp, 4)}\\,\\hbar$ (from the FFT of $\\psi$) → $\\Delta x\\,\\Delta p = ${v.fix(st.sx * st.sp, 4)}\\,\\hbar$ = **${v.fix(st.ratio, 4)}** × $\\hbar/2$` + (st.key === 'gauss' && st.c === 0 ? ' — the minimum, attained' : st.key === 'tri' && st.c === 0 ? ' (exact: $\\sqrt{6/5} = 1.0954$)' : st.key === 'sech' && st.c === 0 ? ' (exact: $\\pi/3 = 1.0472$)' : st.key === 'cusp' && st.c === 0 ? ' (exact: $\\sqrt2 = 1.4142$; a kink makes $|\\phi|^2$ fall only like $p^{-4}$, so the finite grid adds a little)' : st.key === 'box' ? ' — a jump makes $\\Delta p$ infinite; the finite value comes from the grid ($\\Delta x_{\\rm grid}$ = 0.020)' : '') + '. Squeezing leaves this number fixed.');
       },
     },
     // ------------------------------------------------------------------ 2.12
@@ -300,7 +299,7 @@ while $\Delta p=\hbar/2\sigma_0$ stays constant; $\Delta x\Delta p=\frac\hbar2\s
         const ph = v.select('particle', Object.entries(PHYS).map(([value, p]) => ({ value, label: p.label })), 'e01');
         const s1 = v.stage({ x: XW, y: [0, TT], height: 280, axes: 'box', weight: 1.35, xlabel: 'x', ylabel: 't', title: 'history $|\\psi(x,t)|^2$' });
         const s2 = v.stage({ x: [0, TT], y: [0, 10], height: 280, axes: 'box', weight: 1, xlabel: 't', ylabel: 'σ(t)', title: 'width $\\sigma(t)$: formula (lines), simulation (dots)' });
-        const s3 = v.stage({ x: XW, y: [-0.05, 0.6], height: 170, axes: 'box', full: true, xlabel: 'x', yticks: [], title: '$\\psi(x,t)$ now (height $|\\psi|$, colour $\\arg\\psi$)' });
+        const s3 = v.stage({ x: XW, y: [-0.05, 0.6], height: 170, axes: 'box', full: true, xlabel: 'x', yticks: [], xticks: [], title: '$\\psi(x,t)$ now (height $|\\psi|$, colour $\\arg\\psi$)' });
         const sigT = (s0, t) => s0 * Math.sqrt(1 + (t / (2 * s0 * s0)) ** 2);
         const psiAt = (X, t, s0, k0) => {
           const th = t / (2 * s0 * s0), d = 1 + th * th, u = X - X0 - k0 * t;
@@ -353,7 +352,7 @@ while $\Delta p=\hbar/2\sigma_0$ stays constant; $\Delta x\Delta p=\frac\hbar2\s
         v.readout(() => {
           if (!st) return '';
           const P = st.P, tauS = 2 * P.m * P.s * P.s / C.hbar, yr = tauS / 3.156e7;
-          return `$t = ${v.fix(st.T, 2)}$, $\\tau = 2m\\sigma_0^2/\\hbar = ${v.fix(st.tau, 3)}$ · width $\\sigma(t) = ${v.fix(st.w, 4)}$ (formula) vs ${v.fix(st.near[1], 4)} (simulation at $t = ${v.fix(st.near[0], 2)}$, formula there ${v.fix(sigT(st.s0, st.near[0]), 4)}) · centre at $x_0+vt = ${v.fix(X0 + st.k0 * st.T, 3)}$ · for a real **${P.label}**: $\\tau =$ ${tauS < 1e4 ? M.si(tauS, 's', 3) : `${v.fix(yr, 0).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',')} years`}, and the width doubles after $\\sqrt3\\,\\tau$.`;
+          return `$t = ${v.fix(st.T, 2)}$, $\\tau = 2m\\sigma_0^2/\\hbar = ${v.fix(st.tau, 3)}$ · width $\\sigma(t) = ${v.fix(st.w, 4)}$ (formula) vs ${v.fix(st.near[1], 4)} (simulation at $t = ${v.fix(st.near[0], 2)}$, formula there ${v.fix(sigT(st.s0, st.near[0]), 4)}) · centre at $x_0+vt = ${v.fix(X0 + st.k0 * st.T, 3)}$ · for a real **${P.label}**: $\\tau =$ ${tauS < 1e4 ? M.si(tauS, 's', 3) : `${big(yr)} years`}, and the width doubles after $\\sqrt3\\,\\tau$.`;
         });
       },
     },
@@ -440,12 +439,12 @@ With the relativistic relation $\hbar\omega=\sqrt{m^2c^4+\hbar^2k^2c^2}$ (de Bro
             s2.line(0, 0, vp * T, T, { color: 'gold', width: 1.4, dash: [6, 4] });
             if (run.rel) s2.line(0, 0, T, T, { color: 'ink', width: 1.2, dash: [2, 4] });
           });
-          if (run.rel) s2.text('light', Math.min(T, xr[1]) * 0.92, Math.min(T, xr[1]) * 0.92, { color: 'ink', size: 11, dx: -6, align: 'right' });
+          if (run.rel) s2.text('light', T * 0.62, T * 0.62, { color: 'ink', size: 11, dx: 8, align: 'left', plate: true });
           s2.hline(F.t, { color: 'muted', width: 1, dash: [3, 3] });
           st = run;
         }, { period: 12, still: 6 });
         v.legend([['accent', 'Re ψ'], ['ink', 'envelope ±|ψ|'], ['gold', 'a crest (phase velocity)'], ['green', 'envelope centre', { dot: true }], ['red', 'classical particle p/m']]);
-        v.readout(() => st && `$v = p/m = ${v.fix(st.rel ? st.vg : st.k0, 3)}$${st.rel ? ` (momentum $${v.fix(st.k0, 2)}\\,mc$)` : ''} · measured crest speed **${v.fix(st.vcrest, 3)}** vs $v_p=\\omega/k = ${v.fix(st.vp, 3)}$${st.rel ? ` $= c^2/v$ (faster than light)` : ` $= v/2$ (the small excess is the Gouy phase of the spreading packet, $\\tfrac{d}{dt}\\tfrac{\\arctan(t/\\tau)}{2k_0}\\le ${v.fix(1 / (2 * st.k0 * st.tau), 3)}$)`} · measured envelope speed **${v.fix(st.venv, 3)}** vs $v_g = d\\omega/dk = ${v.fix(st.vg, 3)}$ = the classical velocity.`);
+        v.readout(() => st && `$v = p/m = ${v.fix(st.rel ? st.vg : st.k0, 3)}$${st.rel ? ` (momentum $${v.fix(st.k0, 2)}\\,mc$)` : ''} · measured crest speed **${v.fix(st.vcrest, 3)}** vs $v_p=\\omega/k = ${v.fix(st.vp, 3)}$${st.rel ? ` $= c^2/v$ (faster than light)` : ` $= v/2$ (the small difference comes from the spreading packet's chirp and Gouy phase, of order $1/(2k_0\\tau) = ${v.fix(1 / (2 * st.k0 * st.tau), 3)}$)`} · measured envelope speed **${v.fix(st.venv, 3)}** vs $v_g = d\\omega/dk = ${v.fix(st.vg, 3)}$ = the classical velocity.`);
       },
     },
     // ------------------------------------------------------------------ 2.14
@@ -470,7 +469,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation#Historical_background_and_development' },
       viz(v) {
         const M = v.M, C = M.CONST, MU = 1 / (1 + C.me / C.mp), RYE = (C.h * C.c * C.Ry) / C.eV, RYH = RYE * MU; // Rydberg energy (eV), reduced-mass corrected
-        const MEAS = [656.461, 486.272, 434.169, 410.294], NAMES = ['Hα', 'Hβ', 'Hγ', 'Hδ'], NSTEP = 3000;
+        const MEAS = [656.461, 486.272, 434.169, 410.294], NAMES = ['Hα', 'Hβ', 'Hγ', 'Hδ'], NSTEP = 6000;
         const rng = v.select('energy range', [{ value: 'bound', label: 'bound: $E<0$' }, { value: 'free', label: 'free: $E>0$' }], 'bound', { onChange: () => sync() });
         const lsel = v.select('angular momentum', [{ value: 0, label: '$s$ ($l=0$)' }, { value: 1, label: '$p$ ($l=1$)' }, { value: 2, label: '$d$ ($l=2$)' }], 0);
         const nu = v.slider('energy $E=-13.6\\text{ eV}/\\nu^2$', 0.7, 6.2, 1.86, { step: 0.0005, fmt: (q) => `${v.fix(-RYH / (q * q), 4)} eV` });
@@ -479,8 +478,8 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
         const sync = () => { const b = rng.value === 'bound'; nu.el.hidden = !b; snap.hidden = !b; Ef.el.hidden = b; };
         const s1 = v.stage({ x: [0, 20], y: [-1.75, 1.75], height: 280, axes: 'box', weight: 1.15, xlabel: 'r / a₀', yticks: [], title: 'radial solution $u(r)=rR(r)$, integrated outward' });
         const s2 = v.stage({ x: [0.7, 8], y: [-1.25, 1.25], height: 280, axes: 'box', weight: 1, xlabel: 'E (eV)', yticks: [[-1, '−∞'], [0, '0'], [1, '+∞']], xticks: [[1, '−13.6'], [2, '−3.40'], [3, '−1.51'], [4, '−0.85'], [6.6, '0'], [8, '+10']], title: 'where $u$ runs off to, against energy' });
-        const s3 = v.stage({ x: [395, 670], y: [0, 3], height: 120, axes: false, full: true, title: 'Balmer lines (nm): computed from the eigenvalues, Bohr’s formula, measured' });
-        const Rof = (q) => Math.min(110, 4.4 * q * q + 7);
+        const s3 = v.stage({ x: [395, 670], y: [0, 3.7], height: 135, axes: false, full: true, title: 'Balmer lines (nm): computed from the eigenvalues, Bohr’s formula, measured' });
+        const Rof = (q) => Math.min(150, 4.4 * q * q + 7);
         const shoot = (eps, l, R) => numerov(eps, l, R, NSTEP);
         const tail = (eps, l, R) => { // u(R) relative to the largest |u| inside the classically allowed region
           const { u, h } = shoot(eps, l, R); const rt = eps < 0 ? (1 + Math.sqrt(Math.max(0, 1 + eps * l * (l + 1)))) / -eps : R;
@@ -493,7 +492,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
           const out = [], f = (q) => Math.sign(shoot(-1 / (q * q), l, Rof(q)).u[NSTEP]);
           let q0 = l + 0.55, f0 = f(q0);
           for (let k = 1; k <= 520 && out.length < 6; k++) {
-            const q1 = l + 0.55 + k * 0.011, f1 = f(q1);
+            const q1 = l + 0.55 + k * 0.011, f1 = f(q1); if (q1 > 6.35) break;
             if (f1 !== f0) { let a = q0, b = q1, fa = f0; for (let it = 0; it < 50; it++) { const m = (a + b) / 2, fm = f(m); if (fm === fa) { a = m; } else b = m; } out.push((a + b) / 2); }
             q0 = q1; f0 = f1;
           }
@@ -508,20 +507,20 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
           // ---- radial solution
           s1.setView([0, R], [-1.75, 1.75]);
           s1.hline(0, { color: 'faint' });
-          if (bound && T.rt < R) { s1.vband(T.rt, R, { color: 'muted', alpha: 0.07 }); s1.vline(T.rt, { color: 'muted', dash: [4, 4] }); s1.text('classically forbidden →', T.rt, 1.62, { color: 'muted', size: 11, dx: 6, baseline: 'top' }); }
+          if (bound && T.rt < R) { s1.vband(T.rt, R, { color: 'muted', alpha: 0.07 }); s1.vline(T.rt, { color: 'muted', dash: [4, 4] }); s1.text('classically forbidden →', T.rt, 1.18, { color: 'muted', size: 11, dx: 6, baseline: 'middle' }); }
           const finite = !bound || Math.abs(T.end) < 0.02, pts = [];
           for (let i = 0; i < T.u.length; i += 3) { const y = T.u[i] / T.mx; pts.push([i * T.h, Math.max(-1.7, Math.min(1.7, y))]); }
           s1.path(pts, { color: finite ? 'green' : 'red', width: 2.6 });
-          if (!finite) { const up = T.end > 0; s1.arrow(R * 0.955, up ? 1.25 : -1.25, R * 0.955, up ? 1.68 : -1.68, { color: 'red', width: 2.4, head: 9 }); s1.text(up ? '→ +∞' : '→ −∞', R * 0.94, up ? 1.45 : -1.45, { color: 'red', size: 12.5, align: 'right', weight: 700 }); }
+          if (!finite) { const up = T.end > 0; s1.arrow(R * 0.955, up ? 0.95 : -0.95, R * 0.955, up ? 1.68 : -1.68, { color: 'red', width: 2.4, head: 9 }); s1.text(up ? 'u → +∞' : 'u → −∞', R * 0.93, up ? 1.35 : -1.35, { color: 'red', size: 12.5, align: 'right', weight: 700 }); }
           // exact eigenfunction nearest in energy, for comparison
-          s1.corner(bound ? (finite ? 'finite everywhere: an eigenvalue' : 'not finite: no state at this energy') : 'E > 0: finite and oscillating — allowed', 'tr', { color: finite ? 'green' : 'red', weight: 600 });
+          s1.corner(bound ? (finite ? 'finite everywhere: an eigenvalue' : 'not finite: no state at this energy') : 'E > 0: finite and oscillating — allowed', 'tl', { color: finite ? 'green' : 'red', weight: 600 });
           // ---- landscape
           const Lp = land(l);
           s2.hline(0, { color: 'faint' });
           s2.rect(6.6, -1.25, 8, 1.25, { fill: 'green', fillAlpha: 0.06, hatch: 'green', hatchAlpha: 0.3, stroke: false });
-          s2.text('E > 0: all allowed', 7.3, 1.08, { color: 'green', size: 11, align: 'center' });
+          s2.text('E > 0:', 7.3, 0.5, { color: 'green', size: 11.5, align: 'center', weight: 600 }); s2.text('all allowed', 7.3, 0.32, { color: 'green', size: 11.5, align: 'center', weight: 600 });
           s2.text('…', 6.4, 0, { color: 'muted', size: 14, align: 'center' });
-          for (let n = 1; n <= 6; n++) if (n > l) { s2.vline(n, { color: 'muted', dash: [2, 4], width: 1 }); s2.text(`n=${n}`, n, -1.12, { color: 'muted', size: 10.5, align: 'center' }); }
+          for (let n = 1; n <= 6; n++) if (n > l) { s2.vline(n, { color: 'muted', dash: [2, 4], width: 1 }); s2.text(`n=${n}`, n, 1.13, { color: 'muted', size: 10.5, align: 'center' }); }
           s2.path(Lp, { color: 'accent', width: 2.2 });
           s2.dots(ev.map((e) => [e, 0]), { r: 5, color: 'green' });
           const X = bound ? q : 6.6 + 1.4 * (Ef.value / 10);
@@ -530,13 +529,13 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
           // ---- spectrum (s-state eigenvalues)
           const e0 = eig(0), lamC = [], lamB = [];
           for (let k = 0; k < 4; k++) { const n = k + 3; lamC.push(1e9 / (C.Ry * MU * (1 / e0[1] ** 2 - 1 / e0[n - 1] ** 2))); lamB.push(1e9 / (C.Ry * MU * (1 / 4 - 1 / (n * n)))); }
-          s3.rect(395, 0, 670, 3, { fill: DARK, fillAlpha: 1, stroke: false });
+          s3.rect(395, 0, 670, 3.7, { fill: DARK, fillAlpha: 1, stroke: false });
           const rows = [[lamC, 2, 'Schrödinger (computed)'], [lamB, 1, 'Bohr’s formula'], [MEAS, 0, 'measured']];
           for (const [L, y, lab] of rows) {
             for (let k = 0; k < 4; k++) s3.line(L[k], y + 0.12, L[k], y + 0.88, { color: M.wavelengthRGB(L[k]), width: 3.2 });
-            s3.text(lab, 398, y + 0.5, { color: [220, 220, 230], size: 11, baseline: 'middle' });
+            s3.text(lab, 571, y + 0.5, { color: [220, 220, 230], size: 11.5, baseline: 'middle', align: 'center', halo: false });
           }
-          for (let k = 0; k < 4; k++) s3.text(NAMES[k], MEAS[k], 2.9, { color: [220, 220, 230], size: 10.5, align: 'center', baseline: 'top', dx: k === 3 ? 0 : 0 });
+          for (let k = 0; k < 4; k++) s3.text(`${NAMES[k]} ${v.fix(MEAS[k], 1)}`, MEAS[k], 3.35, { color: [220, 220, 230], size: 10.5, align: k === 0 ? 'right' : k === 3 ? 'left' : 'center', dx: k === 0 ? 4 : k === 3 ? -4 : 0, baseline: 'middle', halo: false });
           st = { l, bound, E: bound ? -RYH / (q * q) : Ef.value, end: T.end, finite, ev, lamC, lamB, R };
         });
         sync();
@@ -544,7 +543,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
         v.readout(() => {
           if (!st) return '';
           const E = st.ev.map((q) => -RYH / (q * q)), Bohr = st.ev.map((q, i) => -RYH / (i + 1 + st.l) ** 2);
-          let dmax = 0; E.forEach((e, i) => { dmax = Math.max(dmax, Math.abs(e - Bohr[i])); });
+          let dmax = 0; E.slice(0, 4).forEach((e, i) => { dmax = Math.max(dmax, Math.abs(e - Bohr[i])); });
           return `$E = ${v.fix(st.E, 4)}$ eV: ` + (st.bound ? (st.finite ? `the solution stays finite — eigenvalue` : `$u$ at $r = ${v.fix(st.R, 0)}\\,a_0$ is ${st.end > 0 ? '+' : '−'}$${v.sci(Math.abs(st.end), 1)}$ × its inner peak and still growing`) : 'oscillating and finite (continuous spectrum)') +
             ` · computed eigenvalues for $l = ${st.l}$: ${E.slice(0, 4).map((e) => v.fix(e, 4)).join(', ')} eV; Bohr's $-13.598\\,\\text{eV}/n^2$ (reduced mass): ${Bohr.slice(0, 4).map((e) => v.fix(e, 4)).join(', ')} eV (largest difference $${v.sci(dmax || 1e-12, 1)}$ eV, numerical) · Hα: computed ${v.fix(st.lamC[0], 3)} nm, Bohr ${v.fix(st.lamB[0], 3)} nm, measured 656.461 nm (vacuum) — the last 0.01 nm is fine structure and the Lamb shift, beyond this equation.`;
         });
@@ -571,7 +570,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
         const Es = v.slider('electron energy', 10, 1000, 100, { log: true, fmt: (q) => `${q < 100 ? v.fix(q, 1) : Math.round(q)} eV` });
         const rule = v.select('probability ∝', [{ value: 'sq', label: '$|\\Phi|^2$ (note added in proof)' }, { value: 'abs', label: '$|\\Phi|$ (main text)' }], 'sq');
         const Rd = v.slider('detector radius $R$', 3, 9, 7, { step: 0.1, fmt: (q) => `${v.fix(q, 1)} a₀` });
-        let extra = 0;
+        let extra = 3000;
         v.button('+10,000 electrons', () => { extra += 10000; });
         v.button('Reset counts', () => { extra = 0; v.restart(); });
         const s1 = v.stage({ x: [-10, 10], y: [-10, 10], equal: true, height: 330, axes: false, weight: 1, title: 'outgoing wave $f(\\theta)\\,e^{ikr}/r$ and detector clicks' });
@@ -602,7 +601,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
             const r = Math.hypot(X, Y); if (r > 10) return null;
             if (r < 0.9) return null;
             const th = Math.atan2(Math.abs(Y), X), a = fB(th, k) / r, ph = k * r - w, L = lut.length;
-            const c = lut[((Math.round((ph / TAU) * L) % L) + L) % L], al = Math.min(1, Math.pow(a / 0.5, 0.6));
+            const c = lut[((Math.round((ph / TAU) * L) % L) + L) % L], al = Math.min(1, Math.pow(a / 0.3, 0.6));
             return [c[0], c[1], c[2], Math.round(235 * al)];
           }, { res: 3, key: `${key}|${Math.round(w * 30)}` });
           s1.circle(0, 0, 0.75, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1 });
@@ -610,10 +609,10 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
           s1.arrow(-9.6, 0, -2.2, 0, { color: 'ink', width: 1.8, head: 9 });
           s1.text('incident e⁻', -9.4, 0.7, { color: 'ink', size: 11 });
           s1.circle(0, 0, R, { color: 'muted', width: 1.2, dash: [3, 4] });
-          const showN = Math.min(N, 400);
+          const showN = Math.min(N, 160);
           for (let i = N - showN; i < N; i++) {
             const th = draw(u(2 * i)), sgn = u(2 * i + 1) < 0.5 ? 1 : -1, age = i < nAnim ? (nAnim - i) / (3 + 4.4 * t) : 5;
-            s1.dot(R * Math.cos(th), sgn * R * Math.sin(th), { r: age < 0.25 ? 5 : 2.4, color: 'gold', alpha: age < 0.25 ? 1 : 0.55 });
+            s1.dot(R * Math.cos(th), sgn * R * Math.sin(th), { r: age < 0.25 ? 5 : 2, color: 'gold', alpha: age < 0.25 ? 1 : 0.5 });
           }
           // ---- histogram per solid angle
           const counts = new Array(NB).fill(0);
@@ -628,7 +627,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
           st = { N, back: N ? back / N : 0, pBack: S.back, k, sig: S.sig, sigF: S.sigF, R, sq: S.sq, sAbs: S.sAbs };
         }, { period: 12, still: 9 });
         v.legend([['green', 'Born rule: |f(θ)|²'], ['red', 'if probability ∝ |f| (same total)', { dash: true }], ['gold', 'clicks (histogram)', { area: true }]]);
-        v.readout(() => st && `$ka_0 = ${v.fix(st.k, 3)}$ · ${big(st.N)} electrons, fraction scattered beyond 90°: **${v.fix(100 * st.back, 2)} %** (predicted by the chosen rule: ${v.fix(100 * st.pBack, 2)} %) · total cross-section $\\int|f|^2d\\Omega = ${v.fix(st.sig / Math.PI, 4)}\\,\\pi a_0^2$ (closed form ${v.fix(st.sigF / Math.PI, 4)}\\,$\\pi a_0^2$) · outgoing flux through the detector sphere, per unit incident flux: with $|\\psi|^2$, $\\oint|f|^2/R^2\\,R^2d\\Omega = ${v.fix(st.sig, 3)}\\,a_0^2$ at any $R$; if probability went with $|\\psi|$ it would be $R\\oint|f|\\,d\\Omega = ${v.fix(st.R * st.sAbs, 2)}\\,a_0^2$ at $R = ${v.fix(st.R, 1)}\\,a_0$, growing with the radius — electrons from nowhere.`);
+        v.readout(() => st && `$ka_0 = ${v.fix(st.k, 3)}$ · ${big(st.N)} electrons, fraction scattered beyond 90°: **${v.fix(100 * st.back, 2)} %** (predicted by the chosen rule: ${v.fix(100 * st.pBack, 2)} %) · total cross-section $\\int|f|^2d\\Omega = ${v.fix(st.sig / Math.PI, 4)}\\,\\pi a_0^2$ (closed form $${v.fix(st.sigF / Math.PI, 4)}\\,\\pi a_0^2$) · outgoing flux through the detector sphere, per unit incident flux: with $|\\psi|^2$, $\\oint|f|^2/R^2\\,R^2d\\Omega = ${v.fix(st.sig, 3)}\\,a_0^2$ at any $R$; if probability went with $|\\psi|$ it would be $R\\oint|f|\\,d\\Omega = ${v.fix(st.R * st.sAbs, 2)}\\,a_0^2$ at $R = ${v.fix(st.R, 1)}\\,a_0$, growing with the radius — electrons from nowhere.`);
       },
     },
   ],

@@ -31,7 +31,7 @@ const AGE = {
 // ---------- parsed data and helpers ----------
 const AG = Object.fromEntries(Object.entries(AGE).map(([k, o]) => { const P = nums(o.P), D = nums(o.D); return [k, { P, D, m: D.map((d, i) => d / P[i]), c: P.map((p) => p / sum(P)), crude: sum(D) / sum(P) }]; }));
 const NAMES = { SWE2019: 'Sweden 2019', MEX2019: 'Mexico 2019', ITA2019: 'Italy 2019', KEN2019: 'Kenya 2019', JPN1990: 'Japan 1990', JPN2019: 'Japan 2019', CHN1990: 'China 1990', CHN2023: 'China 2023', USA1950: 'USA 1950', USA2019: 'USA 2019', SWE1950: 'Sweden 1950' };
-/** Per-1 000 rates in AG are D (persons) / P (thousands). Directly standardized rate with weights w. */
+/** Per-1 000 rates in AG are D (persons) / P (thousands). Directly standardized rate with weights w. */
 const direct = (m, w) => { const t = sum(w); return sum(m.map((x, i) => (x * w[i]) / t)); };
 const AGE_TICKS = AGE18.map((l, i) => [i, i % 3 === 0 ? l : '']);
 /** US census counts, millions (US Census Bureau): conterminous United States to 1950, all 50 states from 1960. */
@@ -83,7 +83,7 @@ Then for every number $\theta$ the effects
 $$\alpha'_a = \alpha_a + \theta(a - \bar a),\qquad \pi'_p = \pi_p - \theta(p - \bar p),\qquad \gamma'_c = \gamma_c + \theta(c - \bar c)\quad(\bar c = \bar p - \bar a)$$
 reproduce exactly the same rate in every cell, because the added terms sum to $\theta(a - p + c) - \theta(\bar a - \bar p + \bar c) = 0$. So the **linear trends** of the three effects cannot be identified from any table of rates, however large and however precise: only combinations unchanged by the transformation are — the curvature (second differences) of each effect, such as a bump for one generation, and sums like (age slope $+$ period slope). Every published APC decomposition therefore rests on an extra assumption (two adjacent cohorts equal, no period trend, a period effect proportional to some external variable), and different assumptions tell different stories with the same data.`,
       idea: String.raw`With linear terms in $a$, $p$ and $c$, the columns of the design matrix are linearly dependent — the cohort column equals the period column minus the age column — so the least-squares problem has a one-dimensional null space spanned by the tilt $(+\theta, -\theta, +\theta)$ (ladr 3.11; the extreme case of multicollinearity, stat 12.12). Moving along the null space changes the parameters without changing any fitted value. On the Lexis diagram (1.5) the same fact is geometric: a trend along the diagonals can always be rewritten as an age trend minus a period trend. Departures from linearity are orthogonal to this ambiguity, which is why a localized cohort bump is visible in every decomposition.`,
-      caption: String.raw`The heat map is a table of death rates by 5-year age group (rows) and period (columns), drawn as a Lexis diagram, generated from the age, period and cohort effects on the right: rates rise with age, fall over time, and the generations born around 1915–1935 carry extra mortality. Slide the **tilt θ**: the age and cohort effects rotate one way, the period effect the other (dashed: the effects as generated) — yet every cell of the table stays exactly the same, as the readout's largest change confirms. The buttons pick three stories that fit the same table. Switch on *tilt only the age effect* to see that any other change does alter the table. The cohort bump survives every tilt. Drag the gold handle to check the arithmetic in one cell.`,
+      caption: String.raw`The heat map is a table of death rates by 5-year age group (rows) and period (columns), drawn as a Lexis diagram, generated from the age, period and cohort effects on the right: rates rise with age, fall over time, and the generations born around 1915–1935 carry extra mortality. Slide the **tilt θ**: the age and cohort effects rotate one way, the period effect the other (dashed: the effects as generated) — yet every cell of the table stays exactly the same, as the readout's largest change confirms. The buttons pick three stories that fit the same table. Switch on *tilt only the period effect* to see that any other change does alter the table (changed cells outlined in red). The cohort bump survives every tilt. Drag the gold handle to check the arithmetic in one cell.`,
       deps: ['demo-1.5'],
       see: ['epi-1.10', 'stat-12.12', 'ladr-3.11'],
       refs: ['PHG ch. 1'],
@@ -98,19 +98,19 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
         const abar = (NA - 1) / 2, pbar = (NP - 1) / 2, cbar = pbar - abar + (NA - 1);
         const slope = (arr) => { const n = arr.length, xm = (n - 1) / 2, ym = sum(arr) / n; let a = 0, b = 0; arr.forEach((y, i) => { a += (i - xm) * (y - ym); b += (i - xm) ** 2; }); return a / b; };
         const sP = slope(PI), sC = slope(GAMMA);
-        const Hs = v.stage({ x: [1951, 2041], y: [37.5, 91.5], equal: true, height: 450, axes: 'box', weight: 1.2, minWidth: 300, ylabel: 'age', xticks: [1960, 1980, 2000, 2020], yticks: [40, 50, 60, 70, 80, 90], title: 'the table of death rates' });
-        const E = v.stage({ x: [0, 1], y: [0, 3], height: 450, axes: false, weight: 1, minWidth: 260, title: 'the three effects (log rate)' });
-        const th = v.slider('tilt θ (change in log rate per 5 years)', -0.25, 0.15, 0, { step: 0.005, fmt: (x) => sg(x, 3) });
+        const Hs = v.stage({ x: [1953, 2038], y: [37.5, 91.5], equal: true, height: 400, axes: 'box', weight: 1.35, minWidth: 300, ylabel: 'age', xticks: [1960, 1980, 2000, 2020], yticks: [40, 50, 60, 70, 80, 90], title: 'the table of death rates' });
+        const E = v.stage({ x: [0, 1], y: [0, 3], height: 400, axes: false, weight: 1, minWidth: 260, title: 'the three effects (log rate)' });
+        const th = v.slider('tilt θ (change in log rate per 5 years)', -0.25, 0.15, -0.06, { step: 0.005, fmt: (x) => sg(x, 3) });
         const col = v.select('colour the table by', [{ value: 'rel', label: 'rate ÷ its age group’s average' }, { value: 'abs', label: 'death rate' }], 'rel');
         v.button('as generated', () => th.set(0));
         v.button('no period trend', () => th.set(sP));
         v.button('no cohort trend', () => th.set(-sC));
-        const brk = v.toggle('tilt only the age effect', false);
+        const brk = v.toggle('tilt only the period effect', false, { onChange: (on) => { if (on && Math.abs(th.value) < 1e-9) th.set(-0.1); } });
         const H = Hs.handle(1992.5, 62.5, { color: 'gold', constrain: (x, y) => [P0 + 5 * clamp(Math.floor((x - P0) / 5), 0, NP - 1) + 2.5, A0 + 5 * clamp(Math.floor((y - A0) / 5), 0, NA - 1) + 2.5] });
-        const eff = (t, onlyAge) => ({
-          al: ALPHA.map((x, a) => x + t * (a - abar)),
-          pi: PI.map((x, p) => (onlyAge ? x : x - t * (p - pbar))),
-          ga: GAMMA.map((x, c) => (onlyAge ? x : x + t * (c - cbar))),
+        const eff = (t, onlyP) => ({
+          al: ALPHA.map((x, a) => (onlyP ? x : x + t * (a - abar))),
+          pi: PI.map((x, p) => x - t * (p - pbar)),
+          ga: GAMMA.map((x, c) => (onlyP ? x : x + t * (c - cbar))),
         });
         const cell = (e, a, p) => e.al[a] + e.pi[p] + e.ga[p - a + NA - 1];
         const LO = cell(eff(0), 0, NP - 1) - 0.3, HI = cell(eff(0), NA - 1, 0) + 0.3, REL = 0.55;
@@ -132,7 +132,7 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
           }
           const ai = Math.floor((H.y - A0) / 5), pi = Math.floor((H.x - P0) / 5), ci = pi - ai + NA - 1;
           Hs.rect(P0 + 5 * pi, A0 + 5 * ai, P0 + 5 * pi + 5, A0 + 5 * ai + 5, { color: 'gold', width: 2.6 });
-          if (col.value === 'abs') Hs.colorbar([LO, HI], 'viridis', { pos: 'right', label: 'per 1 000', fmt: (x) => { const r = 1000 * Math.exp(x); return r >= 10 ? fx(r, 0) : fx(r, 1); } });
+          if (col.value === 'abs') Hs.colorbar([LO, HI], 'viridis', { pos: 'right', label: 'per 1 000', fmt: (x) => { const r = 1000 * Math.exp(x); return r >= 10 ? fx(r, 0) : fx(r, 1); } });
           else Hs.colorbar([-REL, REL], 'diverging', { pos: 'right', label: '× age avg', fmt: (x) => `×${fx(Math.exp(x), 2)}` });
           // ----- effects panel: three bands, each with a fixed vertical scale covering the slider's range
           const bands = [['age effect α (by age)', e.al, e0.al, 'blue', ['40', '85'], ai], ['period effect π (by period)', e.pi, e0.pi, 'orange', ['1960', '2015'], pi], ['cohort effect γ (by birth year)', e.ga, e0.ga, 'purple', ['1875', '1975'], ci]];
@@ -162,7 +162,7 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
           const { e, e0, ai, pi, ci, dmax, t } = st, f = (x) => fx(x, 3);
           const z = e.al[ai] + e.pi[pi] + e.ga[ci], z0 = e0.al[ai] + e0.pi[pi] + e0.ga[ci];
           const where = `ages ${A0 + 5 * ai}–${A0 + 5 * ai + 4} in ${P0 + 5 * pi}–${P0 + 5 * pi + 4} (born about ${1875 + 5 * ci})`;
-          return `**${where}:** α + π + γ = ${f(e.al[ai])} + (${f(e.pi[pi])}) + (${f(e.ga[ci])}) = **${f(z)}**; as generated ${f(e0.al[ai])} + (${f(e0.pi[pi])}) + (${f(e0.ga[ci])}) = ${f(z0)} → ${fx(1000 * Math.exp(z), 1)} per 1 000 · largest change over all ${NA * NP} cells: **${dmax < 1e-12 ? '0' : fx(dmax, 3)}**${brk.value ? ' — tilting one effect alone changes the table' : ` — the tilt θ = ${sg(t, 3)} is invisible in the data`} · invariants: age trend + period trend = ${sg((slope(e.al) + slope(e.pi)) / 5, 4)} per year, period + cohort = ${sg((slope(e.pi) + slope(e.ga)) / 5, 4)}.`;
+          return `**${where}:** α + π + γ = ${f(e.al[ai])} + (${f(e.pi[pi])}) + (${f(e.ga[ci])}) = **${f(z)}**; as generated ${f(e0.al[ai])} + (${f(e0.pi[pi])}) + (${f(e0.ga[ci])}) = ${f(z0)} → ${fx(1000 * Math.exp(z), 1)} per 1 000 · largest change over all ${NA * NP} cells: **${dmax < 1e-12 ? '0' : fx(dmax, 3)}**${brk.value ? ' — tilting one effect alone changes the table' : ` — the tilt θ = ${sg(t, 3)} is invisible in the data`} · invariants: age trend + period trend = ${sg((slope(e.al) + slope(e.pi)) / 5, 4)} per year, period + cohort = ${sg((slope(e.pi) + slope(e.ga)) / 5, 4)}.`;
         });
       },
     },
@@ -176,7 +176,7 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
 - **Indirect standardization** fixes a standard *schedule of rates* $m^S_x$ and computes the deaths expected at those rates, $E = \sum_x N_x m^S_x$ ($N_x$ the population's person-years by age). The **standardized mortality ratio** is $\text{SMR} = D/E$ and the indirectly standardized rate is $\text{SMR} \times \text{CDR}_S$.
 Direct standardization needs each population's age-specific rates; indirect needs only its total deaths and age structure, which suits small populations. A standardized rate is an index, not an observed rate: its level depends on the standard chosen, while comparisons usually change little unless the rate ratios vary strongly with age.`,
       idea: String.raw`A crude rate is an average of age-specific rates weighted by the population's own age structure, so the difference between two crude rates mixes a difference in risks with a difference in weights. Using the same weights for both removes the second. The SMR asks the converse question — how many deaths would the standard's rates have produced in *this* age structure? — and any excess over that cannot be due to age. Because each SMR is weighted by its own population's expected deaths, two SMRs are strictly comparable with each other only when rate ratios are similar across ages (epi 1.8).`,
-      caption: String.raw`Two populations from UN World Population Prospects 2024 (deaths = abridged life-table $m_x$ × population, 18 age groups). Left: death rates by age on a log scale. Middle: age structures, with the chosen standard outlined. Bottom left: each death rate as a stack of its age contributions (weight × rate), coloured from young (light) to old (dark): the crude rates use each population's own weights, the standardized rates one common set — choose the standard and watch the ranking hold. Bottom right: indirect standardization, each population's observed deaths over the deaths expected at the other's rates. Sweden against Mexico: Mexico's rates are higher at every age, yet Sweden's crude rate is higher. Japan 1990 against 2019 and China 1990 against 2023: crude death rates that rose while mortality fell.`,
+      caption: String.raw`Two populations from UN World Population Prospects 2024 (deaths = abridged life-table $m_x$ × population, 18 age groups). Left: death rates by age on a log scale. Middle: age structures, with the chosen standard outlined. Bottom left: each death rate as a stack of its age contributions (weight × rate), coloured from young (light) to old (dark): the crude rates use each population's own weights, the standardized rates one common set — choose the standard and watch the ranking hold. Bottom right: indirect standardization, each population's observed deaths over the deaths expected at the other's rates. Sweden against Mexico: Mexico's rates are higher in all 18 age groups, yet Sweden's crude rate is higher. Japan 1990 against 2019 and China 1990 against 2023: crude death rates that rose while mortality fell.`,
       deps: ['demo-1.3'],
       see: ['epi-1.8', 'causal-2.6'],
       refs: ['PHG ch. 2'],
@@ -184,9 +184,9 @@ Direct standardization needs each population's age-specific rates; indirect need
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Age_adjustment' },
       viz(v) {
         const PAIRS = [['SWE2019', 'MEX2019'], ['ITA2019', 'KEN2019'], ['JPN1990', 'JPN2019'], ['CHN1990', 'CHN2023']];
-        const R = v.stage({ x: [-0.7, 17.7], y: [0.05, 400], ylog: true, height: 270, axes: 'box', weight: 1, minWidth: 260, xticks: AGE_TICKS, ylabel: 'deaths per 1 000', title: 'death rates by age' });
+        const R = v.stage({ x: [-0.7, 17.7], y: [0.05, 400], ylog: true, height: 270, axes: 'box', weight: 1, minWidth: 260, xticks: AGE_TICKS, ylabel: 'deaths per 1 000', title: 'death rates by age' });
         const S = v.stage({ x: [-0.7, 17.7], y: [0, 14], height: 270, axes: 'box', weight: 1, minWidth: 260, xticks: AGE_TICKS, ylabel: '% of population', title: 'age structure' });
-        const C = v.stage({ x: [0, 5], y: [0, 16], height: 300, axes: 'box', weight: 1.55, minWidth: 300, ylabel: 'per 1 000', xticks: [], title: 'each rate as a sum of weight × rate, by age' });
+        const C = v.stage({ x: [0, 5], y: [0, 16], height: 300, axes: 'box', weight: 1.55, minWidth: 300, xticks: [], title: 'each rate (per 1 000) as a sum of weight × rate, by age' });
         const I = v.stage({ x: [0, 3], y: [0, 4], height: 300, axes: 'box', weight: 1, minWidth: 220, ylabel: 'SMR', xticks: [], title: 'indirect: observed ÷ expected deaths' });
         const pr = v.select('compare', PAIRS.map(([a, b], k) => ({ value: k, label: `${NAMES[a]} vs ${NAMES[b]}` })), 0);
         const sd = v.select('standard', [{ value: 'who', label: 'WHO world 2000–25' }, { value: 'a', label: 'first population' }, { value: 'b', label: 'second population' }, { value: 'avg', label: 'average of the two' }], 'who');
@@ -200,17 +200,17 @@ Direct standardization needs each population's age-specific rates; indirect need
           R.setView(null, [mn * 0.5, mx * 2.2]);
           for (const [o, col] of [[A, 'blue'], [B, 'orange']]) { const pts = o.m.map((y, i) => [i, y]); R.path(pts, { color: col, width: 2.2 }); R.dots(pts, { r: 3, color: col }); }
           const higher = A.m.filter((x, i) => B.m[i] > x).length;
-          R.corner(`${nb} higher in ${higher} of 18 groups`, 'br', { color: 'ink', size: 11.5 });
           // ----- age structure
           const top = Math.max(...A.c, ...B.c, ...ws) * 100;
-          S.setView(null, [0, top * 1.15]);
+          S.setView(null, [-top * 0.09, top * 1.15]);
           A.c.forEach((x, i) => { S.rect(i - 0.38, 0, i, 100 * x, { fill: 'blue', fillAlpha: 0.6, stroke: false }); S.rect(i, 0, i + 0.38, 100 * B.c[i], { fill: 'orange', fillAlpha: 0.6, stroke: false }); });
           const stp = []; ws.forEach((x, i) => { stp.push([i - 0.5, 100 * x], [i + 0.5, 100 * x]); });
           S.path(stp, { color: 'ink', width: 1.8 });
           // ----- stacked contributions
           const cols = [['crude', A, A.c, na, 'blue'], ['standardized', A, ws, na, 'blue'], ['crude', B, B.c, nb, 'orange'], ['standardized', B, ws, nb, 'orange']];
           const vals = cols.map(([, o, wt]) => sum(o.m.map((m, i) => m * wt[i])));
-          C.setView(null, [0, Math.max(...vals) * 1.22]);
+          C.setView(null, [-Math.max(...vals) * 0.09, Math.max(...vals) * 1.22]);
+          C.hline(0, { color: 'ink', width: 1 });
           cols.forEach(([kind, o, wt, name, col], j) => {
             const x = 0.75 + j * (j < 2 ? 1 : 1) + (j >= 2 ? 0.5 : 0);
             let acc = 0;
@@ -222,24 +222,26 @@ Direct standardization needs each population's age-specific rates; indirect need
           C.text(na, 1.25, Math.max(...vals) * 1.13, { align: 'center', color: 'blue', size: 11.5, weight: 700 });
           C.text(nb, 3.75, Math.max(...vals) * 1.13, { align: 'center', color: 'orange', size: 11.5, weight: 700 });
           // ----- indirect standardization: each against the other's rates
-          const EB = sum(B.P.map((p, i) => p * A.m[i])), EA = sum(A.P.map((p, i) => p * B.m[i])), DB = sum(B.D) / 1000, DA = sum(A.D) / 1000;
+          const EB = sum(B.P.map((p, i) => p * A.m[i])) / 1000, EA = sum(A.P.map((p, i) => p * B.m[i])) / 1000, DB = sum(B.D) / 1000, DA = sum(A.D) / 1000;
           const smrB = DB / EB, smrA = DA / EA, ytop = Math.max(smrA, smrB, 1) * 1.3;
-          I.setView(null, [0, ytop]);
+          I.setView(null, [-ytop * 0.15, ytop]);
+          I.hline(0, { color: 'ink', width: 1 });
           I.hline(1, { color: 'ink', width: 1.2, dash: [5, 4] });
-          [[0.95, smrB, 'orange', `${nb.split(' ')[0]} at ${na.split(' ')[0]}’s rates`, DB, EB], [2.05, smrA, 'blue', `${na.split(' ')[0]} at ${nb.split(' ')[0]}’s rates`, DA, EA]].forEach(([x, s, col, lab, O, Ex]) => {
+          [[0.95, smrB, 'orange', [nb, `at ${na}’s rates`], DB, EB], [2.05, smrA, 'blue', [na, `at ${nb}’s rates`], DA, EA]].forEach(([x, s, col, lab, O, Ex]) => {
             I.rect(x - 0.36, 0, x + 0.36, s, { fill: col, fillAlpha: 0.6, color: col, width: 1.6 });
             I.text(fx(s, 2), x, s, { dy: -9, align: 'center', color: 'ink', size: 12, weight: 700 });
             I.text(`${int(O)}k ÷ ${int(Ex)}k`, x, s, { dy: -24, align: 'center', color: 'muted', size: 10.5 });
-            I.text(lab, x, 0, { dy: 9, baseline: 'top', align: 'center', color: col, size: 10.5, weight: 650 });
+            I.text(lab[0], x, 0, { dy: 6, baseline: 'top', align: 'center', color: col, size: 10.5, weight: 700 });
+            I.text(lab[1], x, 0, { dy: 20, baseline: 'top', align: 'center', color: col, size: 10 });
           });
+          v.legend([['blue', na], ['orange', nb], ['ink', 'standard weights'], ['purple', 'stacks: young (light) → old (dark)', { area: true }]]);
           st = { na, nb, vals, higher, smrA, smrB, DB, EB, A, B };
         });
-        v.legend([['blue', 'first population'], ['orange', 'second population'], ['ink', 'standard weights'], ['muted', 'stack colours: young (light) → old (dark)', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { na, nb, vals, higher, smrA, smrB, DB, EB, A, B } = st, rat = B.m.map((x, i) => x / A.m[i]);
           const cr = vals[0] > vals[2] ? `${na} higher` : `${nb} higher`, sr = vals[1] > vals[3] ? `${na} higher` : `${nb} higher`;
-          return `Crude death rates: ${na} **${fx(vals[0], 2)}**, ${nb} **${fx(vals[2], 2)}** per 1 000 (${cr}). Directly standardized: ${na} **${fx(vals[1], 2)}**, ${nb} **${fx(vals[3], 2)}** (${sr}; ratio ${fx(vals[3] / vals[1], 2)}). ${nb}'s rates are higher in ${higher} of 18 age groups (rate ratios ${fx(Math.min(...rat), 2)} to ${fx(Math.max(...rat), 2)}). Indirect: ${nb} recorded ${int(DB)} thousand deaths against ${int(EB)} thousand expected at ${na}'s rates → SMR **${fx(smrB, 2)}**; ${na} against ${nb}'s rates → SMR ${fx(smrA, 2)} — not the reciprocal ${fx(1 / smrB, 2)}, because each SMR weights the age groups by its own population.`;
+          return `Crude death rates: ${na} **${fx(vals[0], 2)}**, ${nb} **${fx(vals[2], 2)}** per 1 000 (${cr}). Directly standardized: ${na} **${fx(vals[1], 2)}**, ${nb} **${fx(vals[3], 2)}** (${sr}; ratio ${fx(vals[3] / vals[1], 2)}). ${nb}'s rates are higher in ${higher} of 18 age groups (rate ratios ${fx(Math.min(...rat), 2)} to ${fx(Math.max(...rat), 2)}). Indirect: ${nb} recorded ${int(DB)} thousand deaths against ${int(EB)} thousand expected at ${na}'s rates → SMR **${fx(smrB, 2)}**; ${na} against ${nb}'s rates → SMR ${fx(smrA, 2)} — not the reciprocal ${fx(1 / smrB, 2)}, because each SMR weights the age groups by its own population.`;
         });
       },
     },
@@ -250,7 +252,7 @@ Direct standardization needs each population's age-specific rates; indirect need
       name: 'Simpson’s paradox in crude death rates',
       statement: String.raw`A population $B$ can have a higher death rate than population $A$ in **every** age group and nevertheless a **lower** crude death rate, because $\text{CDR} = \sum_x c_x m_x$ weights the rates by each population's own age structure. With two age groups, young and old, rates $m^y < m^o$ and a share $s$ of old people,
 $$\text{CDR} = m^y + s\,(m^o - m^y),$$
-so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}_A$ occurs exactly when $m^y_B + s_B(m^o_B - m^y_B) < m^y_A + s_A(m^o_A - m^y_A)$ — a half-plane of age structures $(s_A, s_B)$ lying below the diagonal $s_A = s_B$, so it needs $B$ to be markedly younger. A real instance (UN WPP 2024): in 2019 Mexico's death rate exceeded Sweden's in every age group, while Mexico's crude death rate was 6.1 per 1 000 and Sweden's 8.7. The crude rate answers "how many deaths per head this year"; the age-specific rates answer "how risky is it to be a given age here" — age confounds the comparison of the two countries.`,
+so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}_A$ occurs exactly when $m^y_B + s_B(m^o_B - m^y_B) < m^y_A + s_A(m^o_A - m^y_A)$ — a half-plane of age structures $(s_A, s_B)$ lying below the diagonal $s_A = s_B$, so it needs $B$ to be markedly younger. A real instance (UN WPP 2024): in 2019 Mexico's death rate exceeded Sweden's in every five-year age group up to 90–94 (only the tiny groups aged 95 and over reverse), while Mexico's crude death rate was 6.1 per 1 000 and Sweden's 8.7. The crude rate answers "how many deaths per head this year"; the age-specific rates answer "how risky is it to be a given age here" — age confounds the comparison of the two countries.`,
       idea: String.raw`The crude rate is a weighted mean, and a weighted mean sits wherever its weights put it between the group values: each population is a lever whose ends are its young and old death rates and whose balance point is set by the share of old people. $B$'s whole lever can lie above $A$'s while $B$'s balance point sits near its young end and $A$'s near its old end. This is Simpson's paradox (causal 4.4) with age as the lurking variable; giving both populations the same weights — standardization (1.7) — removes it, and on the diagonal $s_A = s_B$ it cannot occur.`,
       caption: String.raw`Each population is a lever: its ends are the death rates of the young (under 65) and the old (65 and over), and its crude rate is the dot that divides it in proportion to the share of old people. Drag the ends to change the rates and the dots to change the age structures (or drag the point in the square). Right: the square of all age structures $(s_A, s_B)$; in the red region the crude ranking contradicts the age-specific one, and the diagonal is "same age structure". Presets: a two-group toy, and Sweden vs Mexico or Italy vs Kenya in 2019 collapsed into two age groups (UN WPP 2024).`,
       deps: ['demo-1.7', 'causal-4.4'],
@@ -260,8 +262,8 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
       credit: 'G. Udny Yule, 1903; Edward H. Simpson, 1951',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Simpson%27s_paradox' },
       viz(v) {
-        const L = v.stage({ x: [0, 3], y: [0, 70], height: 400, axes: 'box', weight: 1.2, minWidth: 290, ylabel: 'deaths per 1 000', xticks: [], title: 'two levers: young and old death rates' });
-        const Q = v.stage({ x: [-0.06, 1.06], y: [-0.06, 1.06], equal: true, height: 400, axes: false, weight: 1, minWidth: 260, title: 'all age structures: where is the paradox?' });
+        const L = v.stage({ x: [-0.3, 3.3], y: [-4, 77], height: 400, axes: 'box', weight: 1.2, minWidth: 290, xticks: [], title: 'two levers: death rates per 1 000, young and old' });
+        const Q = v.stage({ x: [-0.17, 1.05], y: [-0.17, 1.08], equal: true, height: 400, axes: false, weight: 1, minWidth: 260, title: 'all age structures: where is the paradox?' });
         const two = (k) => { const o = AG[k], yd = sum(o.D.slice(0, 13)), yp = sum(o.P.slice(0, 13)), od = sum(o.D.slice(13)), op = sum(o.P.slice(13)); return { y: yd / yp, o: od / op, s: op / (yp + op) }; };
         const PRE = {
           toy: { A: { y: 1.0, o: 50, s: 0.3 }, B: { y: 2.0, o: 60, s: 0.08 }, na: 'Old-land', nb: 'Young-land' },
@@ -269,7 +271,7 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
           itaken: { A: two('ITA2019'), B: two('KEN2019'), na: 'Italy 2019', nb: 'Kenya 2019' },
         };
         let names = PRE.toy, ymax = 70;
-        const XA = 1, XB = 2;
+        const XA = 0.8, XB = 2.2;
         const lim = (y) => clamp(y, 0.05, ymax * 0.97);
         const hAy = L.handle(XA, 1, { color: 'blue', constrain: (x, y) => [XA, lim(y)] });
         const hAo = L.handle(XA, 50, { color: 'blue', constrain: (x, y) => [XA, lim(y)] });
@@ -283,7 +285,7 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
         const hq = Q.handle(0.3, 0.08, { color: 'ink', constrain: (x, y) => [clamp(x, 0, 1), clamp(y, 0, 1)], onDrag: (h) => { sA = h.x; sB = h.y; } });
         const load = (k) => {
           const p = PRE[k]; names = p; ymax = Math.max(p.A.o, p.B.o, 10) * 1.3;
-          L.setView(null, [0, ymax]);
+          L.setView(null, [-0.055 * ymax, ymax * 1.1]);
           hAy.y = p.A.y; hAo.y = p.A.o; hBy.y = p.B.y; hBo.y = p.B.o; sA = p.A.s; sB = p.B.s;
         };
         v.select('preset', [{ value: 'toy', label: 'toy' }, { value: 'swemex', label: 'Sweden vs Mexico 2019' }, { value: 'itaken', label: 'Italy vs Kenya 2019' }], 'toy', { onChange: (k) => load(k) });
@@ -297,13 +299,16 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
           // ----- levers
           for (const [X, o, col, nm] of [[XA, A, 'blue', names.na], [XB, B, 'orange', names.nb]]) {
             L.line(X, o.y, X, o.o, { color: col, width: 9, alpha: 0.35, cap: 'butt' });
-            L.text(nm, X, ymax, { dy: 12, align: 'center', color: col, size: 12, weight: 700 });
-            L.text(`young ${fx(o.y, 1)}`, X, o.y, { dx: 14, color: col, size: 11 });
-            L.text(`old ${fx(o.o, 1)}`, X, o.o, { dx: 14, color: col, size: 11 });
+            const inner = X === XA ? 1 : -1;
+            L.text(nm, X, ymax * 1.05, { align: 'center', color: col, size: 12, weight: 700 });
+            L.text(`young ${fx(o.y, o.y < 10 ? 2 : 1)}`, X, o.y, { dx: 14 * inner, align: inner > 0 ? 'left' : 'right', color: col, size: 11 });
+            L.text(`old ${fx(o.o, 1)}`, X, o.o, { dx: 14 * inner, align: inner > 0 ? 'left' : 'right', color: col, size: 11 });
           }
           L.line(XA, crA, XB, crB, { color: para ? 'red' : 'green', width: 1.6, dash: [5, 4] });
-          L.text(`crude ${fx(crA, 2)} (${Math.round(100 * sA)}% old)`, XA, crA, { dx: -12, align: 'right', color: 'ink', size: 11.5, weight: 700 });
-          L.text(`crude ${fx(crB, 2)} (${Math.round(100 * sB)}% old)`, XB, crB, { dx: 12, dy: 14, align: 'left', color: 'ink', size: 11.5, weight: 700 });
+          L.text(`crude ${fx(crA, 2)}`, XA, crA, { dx: -13, dy: -7, align: 'right', color: 'ink', size: 11.5, weight: 700 });
+          L.text(`${Math.round(100 * sA)}% old`, XA, crA, { dx: -13, dy: 8, align: 'right', color: 'ink', size: 11 });
+          L.text(`crude ${fx(crB, 2)}`, XB, crB, { dx: 13, dy: -7, align: 'left', color: 'ink', size: 11.5, weight: 700 });
+          L.text(`${Math.round(100 * sB)}% old`, XB, crB, { dx: 13, dy: 8, align: 'left', color: 'ink', size: 11 });
           // ----- the square of age structures
           const sq = [[0, 0], [1, 0], [1, 1], [0, 1]];
           const dA = A.o - A.y, dB = B.o - B.y;
@@ -313,8 +318,8 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
           else if (domA) reg = clipHalf(sq, dA, -dB, B.y - A.y);     // CDR_A < CDR_B
           if (reg && reg.length > 2) Q.poly(reg, { fill: 'red', fillAlpha: 0.22, color: 'red', width: 1.4 });
           Q.line(0, 0, 1, 1, { color: 'ink', width: 1, dash: [4, 4] });
-          Q.text('same age structure', 0.62, 0.62, { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'muted', size: 10.5 });
-          Q.text(`share old in ${names.na} →`, 0.5, -0.03, { align: 'center', baseline: 'top', color: 'blue', size: 11, weight: 650 });
+          Q.text('same age structure', 0.4, 0.4, { dx: -8, dy: -6, align: 'right', baseline: 'bottom', color: 'muted', size: 10.5 });
+          Q.text(`share old in ${names.na} →`, 0.5, -0.1, { align: 'center', baseline: 'top', color: 'blue', size: 11, weight: 650 });
           Q.text(`↑ share old in ${names.nb}`, 0.02, 1.03, { align: 'left', baseline: 'bottom', color: 'orange', size: 11, weight: 650 });
           for (const t of [0, 0.25, 0.5, 0.75, 1]) { Q.text(`${t * 100}%`, t, 0, { dy: 14, align: 'center', color: 'muted', size: 9.5 }); if (t > 0) Q.text(`${t * 100}%`, 0, t, { dx: -4, align: 'right', color: 'muted', size: 9.5 }); }
           if (!domA && !domB) Q.text('the rates cross: no age-specific ranking, no paradox', 0.5, 0.5, { align: 'center', color: 'muted', size: 11 });
@@ -325,7 +330,7 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
           if (!st) return '';
           const { A, B, crA, crB, domA, domB, para } = st, na = names.na, nb = names.nb;
           const dom = domB ? `${nb} has the higher death rate at both ages (${fx(B.y, 2)} vs ${fx(A.y, 2)} young, ${fx(B.o, 1)} vs ${fx(A.o, 1)} old)` : domA ? `${na} has the higher death rate at both ages (${fx(A.y, 2)} vs ${fx(B.y, 2)} young, ${fx(A.o, 1)} vs ${fx(B.o, 1)} old)` : 'the age-specific rates cross, so neither population is riskier at every age';
-          return `${dom}. Crude rates: ${na} ${fx(A.y, 2)} + ${fx(A.s, 3)} × (${fx(A.o, 1)} − ${fx(A.y, 2)}) = **${fx(crA, 2)}**, ${nb} ${fx(B.y, 2)} + ${fx(B.s, 3)} × (${fx(B.o, 1)} − ${fx(B.y, 2)}) = **${fx(crB, 2)}** per 1 000. ${para ? '**Paradox:** the crude comparison reverses the age-specific one, because the riskier population is much younger.' : domA || domB ? 'No paradox: the crude comparison agrees with the age-specific one.' : ''} Standardized to a common 15% old: ${na} ${fx(A.y + 0.15 * (A.o - A.y), 2)}, ${nb} ${fx(B.y + 0.15 * (B.o - B.y), 2)}.`;
+          return `${dom}. Crude rates: ${na} ${fx(A.y, 2)} + ${fx(A.s, 3)} × (${fx(A.o, 1)} − ${fx(A.y, 2)}) = **${fx(crA, 2)}**, ${nb} ${fx(B.y, 2)} + ${fx(B.s, 3)} × (${fx(B.o, 1)} − ${fx(B.y, 2)}) = **${fx(crB, 2)}** per 1 000. ${para ? '**Paradox:** the crude comparison reverses the age-specific one, because the riskier population is much younger.' : domA || domB ? 'No paradox: the crude comparison agrees with the age-specific one.' : ''} Standardized to a common 15% old: ${na} ${fx(A.y + 0.15 * (A.o - A.y), 2)}, ${nb} ${fx(B.y + 0.15 * (B.o - B.y), 2)}.`;
         });
       },
     },
@@ -339,7 +344,7 @@ so if $m^y_B > m^y_A$ and $m^o_B > m^o_A$ the paradox $\text{CDR}_B < \text{CDR}
 $$\text{CDR}_B - \text{CDR}_A = \underbrace{\sum_x \frac{c^A_x + c^B_x}{2}\,(m^B_x - m^A_x)}_{\text{rate effect}} + \underbrace{\sum_x \frac{m^A_x + m^B_x}{2}\,(c^B_x - c^A_x)}_{\text{composition effect}},$$
 and each sum can be read age group by age group to see where the difference arises. Holding one factor at $A$'s level while changing the other, then the reverse, gives two other exact splits ("rates first" uses $c^A$ and $m^B$, "composition first" $m^A$ and $c^B$) that disagree by an interaction term; Kitagawa's symmetric version is their average and leaves no residual. The rate effect equals the difference of directly standardized rates with the average composition as standard (1.7). The idea extends to more factors (Das Gupta) and, in economics, to the Oaxaca–Blinder decomposition of wage gaps.`,
       idea: String.raw`It is one line of algebra applied age by age: $ab - a'b' = \tfrac{b + b'}{2}(a - a') + \tfrac{a + a'}{2}(b - b')$, which can be checked by expanding. Summing over ages gives the two effects. Changing rates "at the average composition" and composition "at the average rates" treats the two populations symmetrically, so swapping $A$ and $B$ just flips both signs — the one-sided versions do not have this property.`,
-      caption: String.raw`Choose two crude death rates (UN World Population Prospects 2024; 18 age groups). Left: each age group's contribution to the difference, split into a rate effect (blue: the change in that age's death rate) and a composition effect (orange: the change in that age's share of the population). Right: the waterfall from one crude rate to the other. Japan 1990 → 2019: the crude death rate rose by 4.6 per 1 000 although death rates fell at every age — a rate effect of −4.5 overwhelmed by a composition effect of +9.1, almost all of it at ages 70 and over. Switch the method to see the one-sided splits disagree, and scale the second population's death rates to watch the rate effect respond while the composition effect barely moves.`,
+      caption: String.raw`Choose two crude death rates (UN World Population Prospects 2024; 18 age groups). Left: each age group's contribution to the difference, split into a rate effect (blue: the change in that age's death rate) and a composition effect (orange: the change in that age's share of the population). Right: the waterfall from one crude rate to the other. Japan 1990 → 2019: the crude death rate rose by 4.6 per 1 000 although death rates fell at every age — a rate effect of −4.5 overwhelmed by a composition effect of +9.1, almost all of it at ages 70 and over. Switch the method to see the one-sided splits disagree, and scale the second population's death rates to watch the rate effect respond while the composition effect barely moves.`,
       deps: ['demo-1.7'],
       see: ['demo-1.8'],
       refs: ['PHG ch. 2'],
@@ -347,9 +352,10 @@ and each sum can be read age group by age group to see where the difference aris
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Oaxaca%E2%80%93Blinder_decomposition' },
       viz(v) {
         const PAIRS = [['JPN1990', 'JPN2019'], ['SWE2019', 'MEX2019'], ['SWE1950', 'SWE2019'], ['USA1950', 'USA2019'], ['CHN1990', 'CHN2023']];
-        const G = v.stage({ x: [-0.7, 17.7], y: [-2, 4], height: 340, axes: 'box', weight: 1.55, minWidth: 300, xticks: AGE_TICKS, ylabel: 'per 1 000', title: 'contribution of each age group' });
-        const W = v.stage({ x: [0, 4], y: [0, 14], height: 340, axes: 'box', weight: 1, minWidth: 240, xticks: [], ylabel: 'per 1 000', title: 'from one crude rate to the other' });
-        const pr = v.select('compare', PAIRS.map(([a, b], k) => ({ value: k, label: `${NAMES[a]} → ${NAMES[b]}` })), 0);
+        const G = v.stage({ x: [-0.7, 17.7], y: [-2, 4], height: 340, axes: 'box', weight: 1.55, minWidth: 300, xticks: AGE_TICKS, title: 'contribution of each age group (per 1 000)' });
+        const W = v.stage({ x: [0, 4], y: [0, 14], height: 340, axes: 'box', weight: 1, minWidth: 240, xticks: [], title: 'from one crude rate to the other (per 1 000)' });
+        const SHORT = ['Japan 1990 → 2019', 'Sweden vs Mexico, 2019', 'Sweden 1950 → 2019', 'USA 1950 → 2019', 'China 1990 → 2023'];
+        const pr = v.select('compare', SHORT.map((l, k) => ({ value: k, label: l })), 0);
         const how = v.select('method', [{ value: 'kit', label: 'Kitagawa (average weights)' }, { value: 'rf', label: 'rates first' }, { value: 'cf', label: 'composition first' }], 'kit');
         const kS = v.slider('second population’s death rates ×', 0.5, 1.5, 1, { step: 0.01, fmt: (x) => `× ${x.toFixed(2)}` });
         const parts = (A, B, k, h) => {
@@ -375,7 +381,8 @@ and each sum can be read age group by age group to see where the difference aris
           G.corner(`rate effect ${sg(D.R, 2)} · composition effect ${sg(D.C, 2)}`, 'tl', { color: 'ink', size: 12, weight: 650 });
           // ----- waterfall
           const top = Math.max(D.crA, D.crB, D.crA + D.R, D.crA + Math.max(0, D.R) + Math.max(0, D.C)) * 1.25;
-          W.setView(null, [0, top]);
+          W.setView(null, [-top * 0.1, top]);
+          W.hline(0, { color: 'ink', width: 1 });
           const bars = [[0.55, 0, D.crA, 'gray', NAMES[ka], fx(D.crA, 2)], [1.5, D.crA, D.crA + D.R, 'blue', 'rate effect', sg(D.R, 2)], [2.45, D.crA + D.R, D.crA + D.R + D.C, 'orange', 'composition', sg(D.C, 2)], [3.4, 0, D.crB, 'gray', NAMES[kb], fx(D.crB, 2)]];
           bars.forEach(([x, a, b, col, lab, val], j) => {
             W.rect(x - 0.3, a, x + 0.3, b, { fill: col, fillAlpha: col === 'gray' ? 0.45 : 0.75, color: col, width: 1.4 });
@@ -391,7 +398,7 @@ and each sum can be read age group by age group to see where the difference aris
           const { ka, kb, D, A, B, k } = st, f = (x) => sg(x, 2);
           const K = parts(A, B, k, 'kit'), RF = parts(A, B, k, 'rf'), CF = parts(A, B, k, 'cf');
           const imax = D.c.reduce((b, x, i) => (Math.abs(x) > Math.abs(D.c[b]) ? i : b), 0), old = sum(D.c.slice(14));
-          return `**${NAMES[ka]} → ${NAMES[kb]}${k !== 1 ? ` (rates × ${k.toFixed(2)})` : ''}:** crude death rate ${fx(D.crA, 2)} → ${fx(D.crB, 2)}, a change of **${f(D.crB - D.crA)}** per 1 000 = rate effect **${f(D.R)}** + composition effect **${f(D.C)}** (sum ${f(D.R + D.C)}). Kitagawa ${f(K.R)} / ${f(K.C)}; rates first ${f(RF.R)} / ${f(RF.C)}; composition first ${f(CF.R)} / ${f(CF.C)} — all exact, and Kitagawa's is the average of the other two. Largest composition contribution: ages ${AGE18[imax]} (${f(D.c[imax])}); ages 70+ together ${f(old)}.`;
+          return `**${NAMES[ka]} → ${NAMES[kb]}${k !== 1 ? ` (rates × ${k.toFixed(2)})` : ''}:** crude death rate ${fx(D.crA, 2)} → ${fx(D.crB, 2)}, a change of **${f(D.crB - D.crA)}** per 1 000 = rate effect **${f(D.R)}** + composition effect **${f(D.C)}** (sum ${f(D.R + D.C)}). Kitagawa ${f(K.R)} / ${f(K.C)}; rates first ${f(RF.R)} / ${f(RF.C)}; composition first ${f(CF.R)} / ${f(CF.C)} — all exact, and Kitagawa's is the average of the other two. Largest composition contribution: ages ${AGE18[imax]} (${f(D.c[imax])}); ages 70+ together ${f(old)}.`;
         });
       },
     },
@@ -412,11 +419,11 @@ and each sum can be read age group by age group to see where the difference aris
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Logistic_function#In_ecology:_modeling_population_growth' },
       viz(v) {
         const CUTS = US_T.filter((t) => t >= 1850), LS = Object.fromEntries(CUTS.map((c) => [c, fitLogistic(c)])), TP = Object.fromEntries(CUTS.map((c) => [c, fitThree(c)]));
-        const Mn = v.stage({ x: [1780, 2062], y: [0, 420], height: 380, axes: 'box', weight: 1.6, minWidth: 320, ylabel: 'millions', xticks: [1800, 1850, 1900, 1950, 2000, 2050], title: 'U.S. population and logistic forecasts' });
-        const Kp = v.stage({ x: [1843, 2027], y: [0, 600], height: 380, axes: 'box', weight: 1, minWidth: 240, ylabel: 'ceiling K (millions)', xticks: [1850, 1900, 1950, 2000], title: 'fitted ceiling vs last census used' });
+        const Mn = v.stage({ x: [1780, 2062], y: [-16, 420], height: 380, axes: 'box', weight: 1.6, minWidth: 320, ylabel: 'millions', xticks: [1800, 1850, 1900, 1950, 2000, 2050], title: 'U.S. population and logistic forecasts' });
+        const Kp = v.stage({ x: [1843, 2027], y: [-20, 540], height: 380, axes: 'box', weight: 1, minWidth: 240, ylabel: 'ceiling K (millions)', xticks: [1850, 1900, 1950, 2000], title: 'fitted ceiling vs last census used' });
         const cut = v.slider('last census used', 1850, 2020, 1910, { step: 10, int: true });
         const meth = v.select('fit', [{ value: 'ls', label: 'least squares (log scale)' }, { value: 'tp', label: 'three equally spaced censuses' }], 'ls');
-        v.select('vertical axis', ['linear', 'log'], 'linear', { onChange: (x) => Mn.setScale(x === 'log' ? { ylog: true, y: [2.5, 900] } : { ylog: false, y: [0, 420] }) });
+        v.select('vertical axis', ['linear', 'log'], 'linear', { onChange: (x) => Mn.setScale(x === 'log' ? { ylog: true, y: [2.5, 900] } : { ylog: false, y: [-16, 420] }) });
         Kp.onClick((x) => { cut.set(clamp(Math.round(x / 10) * 10, 1850, 2020)); v.invalidate(); });
         let st = null;
         v.render(() => {
@@ -438,16 +445,18 @@ and each sum can be read age group by age group to see where the difference aris
           US_T.forEach((t, i) => { const seen = t <= c; Mn.dot(t, US_P[i], seen ? { r: 4, color: 'ink' } : { r: 4, color: 'ink', hollow: true, width: 1.8 }); });
           // ----- ceiling vs cutoff
           Kp.path(CUTS.map((t) => [t, US_P[US_T.indexOf(t)]]), { color: 'ink', width: 1.6 });
-          Kp.text('population at that census', 1990, 230, { align: 'center', color: 'ink', size: 10.5 });
-          Kp.path(CUTS.map((t) => [t, LS[t].K]), { color: 'blue', width: 2.2 });
-          Kp.dots(CUTS.map((t) => [t, LS[t].K]), { r: 3, color: 'blue' });
+          Kp.text('population at that census', 1952, 118, { align: 'left', color: 'ink', size: 10.5 });
+          const KMAX = 500, inK = CUTS.filter((t) => LS[t].K <= KMAX);
+          Kp.path(CUTS.map((t) => (LS[t].K <= KMAX ? [t, LS[t].K] : null)), { color: 'blue', width: 2.2 });
+          Kp.dots(inK.map((t) => [t, LS[t].K]), { r: 3, color: 'blue' });
+          for (const t of CUTS.filter((u) => LS[u].K > KMAX)) { Kp.arrow(t, KMAX - 30, t, KMAX + 10, { color: 'blue', width: 2, head: 7 }); Kp.text(`${Math.round(LS[t].K)}`, t, KMAX + 10, { dx: 6, dy: 8, color: 'blue', size: 10 }); }
           Kp.dots(CUTS.filter((t) => TP[t]).map((t) => [t, TP[t].K]), { r: 3.2, color: 'purple' });
           Kp.hline(331.449, { color: 'ink', width: 1, dash: [3, 4] });
           Kp.text('2020 census: 331 M', 1846, 331.449, { dy: -9, color: 'muted', size: 10.5 });
           Kp.dot(1910, 197.27, { r: 6, color: 'red' });
-          Kp.text('Pearl & Reed', 1910, 197.27, { dx: 9, dy: 10, color: 'red', size: 10.5, weight: 650 });
+          Kp.text('Pearl & Reed', 1910, 197.27, { dx: -8, dy: 14, align: 'right', color: 'red', size: 10.5, weight: 650 });
           Kp.vline(c, { color: 'gold', width: 1.6 });
-          if (f) Kp.dot(c, f.K, { r: 6, color: meth.value === 'ls' ? 'blue' : 'purple' });
+          if (f && f.K <= 500) Kp.dot(c, f.K, { r: 6, color: meth.value === 'ls' ? 'blue' : 'purple' });
           st = { c, f };
         });
         v.legend([['ink', 'census counts', { dot: true }], ['red', 'Pearl & Reed 1920', { dash: true }], ['blue', 'refit (least squares)'], ['purple', 'three-point fits', { dot: true }]]);

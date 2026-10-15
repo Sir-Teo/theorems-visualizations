@@ -669,8 +669,8 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
         const lith = v.select('next layer', [{ value: 'sand', label: 'sandstone' }, { value: 'shale', label: 'shale' }, { value: 'lime', label: 'limestone' }, { value: 'cong', label: 'conglomerate' }], 'sand');
         const tiltS = v.slider('tilt angle (°)', -40, 40, 15, { step: 1 });
         const quiz = v.toggle('quiz: order the units yourself', false, { onChange: () => { placed = []; msg = ''; } });
-        const S = v.stage({ x: [0, ST_W], y: [0, ST_H], axes: false, height: 400, weight: 1.45, equal: true });
-        const G2 = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 400, weight: 0.7, minWidth: 220, title: 'what the outcrop proves' });
+        const S = v.stage({ x: [0, ST_W], y: [0, ST_H], axes: false, aspect: ST_H / ST_W, full: true, equal: true });
+        const G2 = v.stage({ x: [0, 10], y: [0, 4], axes: false, height: 170, full: true, title: 'what the outcrop proves: older → younger' });
         const G = v.graph(G2, { nodes: [], edges: [], directed: true, layout: 'none', draggable: false, r: 12, fontSize: 12 });
         const surf = () => { let lo = Infinity, hi = -Infinity; for (let x = 0.2; x < ST_W; x += 0.4) { const z = surfaceAt(hist, x, ST_H + 0.02, -1, 0.05); lo = Math.min(lo, z); hi = Math.max(hi, z); } return [lo, hi]; };
         const add = (e, note) => { hist.push(e); placed = []; msg = note || ''; msgCol = 'muted'; };
@@ -715,7 +715,7 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
           for (let it = 0; it < units.length; it++) for (const [a, b] of A.rel) rank.set(b, Math.max(rank.get(b), rank.get(a) + 1));
           const maxR = Math.max(0, ...rank.values()), byR = new Map();
           for (const u of units) { const r = rank.get(u); if (!byR.has(r)) byR.set(r, []); byR.get(r).push(u); }
-          const nodes = units.map((u) => { const row = byR.get(rank.get(u)), i = row.indexOf(u); return { id: String(u), x: 5 + (i - (row.length - 1) / 2) * 2.1, y: 0.9 + (maxR ? (8.2 * rank.get(u)) / maxR : 4) }; });
+          const nodes = units.map((u) => { const row = byR.get(rank.get(u)), i = row.indexOf(u); return { id: String(u), y: 2 + ((row.length - 1) / 2 - i) * 1.15, x: 0.5 + (maxR ? (9 * rank.get(u)) / maxR : 4.5) }; });
           G.set({ nodes, edges: A.hasse.map(([a, b, t]) => ({ from: String(a), to: String(b), color: t === 'cut' ? 'red' : 'accent', width: 2 })), directed: true });
           return A;
         };
@@ -751,7 +751,6 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
             edgeColor: (e) => e.color,
             dim: q ? [...G.edges.filter((e) => !(show(e.from) && show(e.to))), ...G.nodes.filter((n) => !show(n.id)).map((n) => n.id)] : [],
           });
-          G2.corner('older ↓   younger ↑', 'br', { size: 11, color: 'faint' });
           st = { a, q };
         });
         v.legend([['accent', 'superposition: lies on'], ['red', 'cross-cutting: cuts']]);

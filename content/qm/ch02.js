@@ -132,7 +132,7 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
           return (cache[key] = { re, im, rho, draw: sampler(x, rho) });
         };
         const measure = (k) => { const P = get(); for (let i = 0; i < k; i++) { const u = rng(); last = P.draw(u); data.push({ x: last, y: rng() }); } };
-        function reset() { rng = v.rng(2026); data = []; last = null; measure(240); }
+        function reset() { rng = v.rng(2026 + Object.keys(STATES).indexOf(state.value)); data = []; last = null; measure(240); }
         v.button('Measure 1', () => measure(1));
         v.button('Measure 100', () => measure(100));
         v.button('Measure 10,000', () => measure(10000));
@@ -215,12 +215,13 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
         let st = null;
         v.render(() => {
           const L = Ls.value, N = NL(L), c = 1 / Math.sqrt(N), f = fam.value;
+          s1.setView([-12, 12], f === 'plane' ? [-1.25, 1.35] : [-0.8, 1.2]);
           if (L < 12) { s1.vband(-12, -L, { color: 'muted', alpha: 0.12 }); s1.vband(L, 12, { color: 'muted', alpha: 0.12 }); s1.vline(-L, { color: 'muted', dash: [3, 3] }); s1.vline(L, { color: 'muted', dash: [3, 3] }); }
           if (f === 'plane') {
             s1.fn((X) => Math.cos(2 * X), { color: 'accent', width: 1.4, dash: [5, 3], n: 600 });
             s1.fn((X) => Math.sin(2 * X), { color: 'purple', width: 1.1, dash: [2, 3], n: 600, alpha: 0.7 });
             s1.fn((X) => (Math.abs(X) <= L ? c * Math.cos(2 * X) : NaN), { color: 'green', width: 2.4, n: 900 });
-            s1.text('|e^{ikx}| = 1 everywhere', -11.5, 1.12, { color: 'accent', size: 11.5, baseline: 'top' });
+            s1.text('|e^{ikx}| = 1 everywhere', -11.5, 1.3, { color: 'accent', size: 11.5, baseline: 'top' });
           } else {
             s1.fn(psi, { color: 'accent', width: 1.6, dash: [5, 3], n: 700 });
             s1.fn((X) => (Math.abs(X) <= L ? c * psi(X) : NaN), { color: 'green', width: 2.4, n: 900, fill: 'green', fillAlpha: 0.1 });
@@ -378,7 +379,7 @@ so total probability drains away where $V_I<0$ (absorption: particles removed fr
           drawPsi(s1, x, c.re, c.im, { col });
           s1.fn((X) => 0.25 * 1.45 * Math.exp(-X * X / 0.8), { color: 'ink', width: 1.6, dash: [4, 3], fill: 'muted', fillAlpha: 0.25, n: 400 });
           s1.text('barrier V', 0.9, 0.34, { color: 'ink', size: 11, align: 'left' });
-          phaseWheel(s1, col, s1.X(11), 42, 12);
+          phaseWheel(s1, col, s1.X(12), 42, 12);
           // norm histories
           const R = S.rec, COLS = ['green', 'red', 'orange'];
           s2.hline(1, { color: 'muted', dash: [3, 4], width: 1 });
@@ -416,10 +417,10 @@ the probability in any interval changes only by what flows through its ends. Wri
         const M = v.M, { x, dx } = grid(-20, 20, 501), n = x.length, TMAX = 16;
         const POT = { barrier: ['barrier', (X) => 1.9 * Math.exp(-X * X / 0.6)], step: ['step down', (X) => -1.2 * (1 + Math.tanh(3 * X)) / 2], harmonic: ['harmonic well', (X) => 0.06 * X * X] };
         const pot = v.select('potential', Object.entries(POT).map(([value, p]) => ({ value, label: p[0] })), 'barrier', { onChange: () => sim.reset() });
-        const s1 = v.stage({ x: [-20, 20], y: [-0.2, 0.42], height: 260, axes: 'box', full: true, xlabel: 'x', yticks: [0, 0.1, 0.2, 0.3, 0.4], title: 'density $\\rho=|\\psi|^2$ (blue) and current $j$ (orange arrows)' });
+        const s1 = v.stage({ x: [-20, 20], y: [-0.25, 0.42], height: 270, axes: 'box', full: true, xlabel: 'x', yticks: [0, 0.1, 0.2, 0.3, 0.4], title: 'density $\\rho=|\\psi|^2$ (blue) and current $j$ (orange arrows)' });
         const s2 = v.stage({ x: [0, TMAX], y: [-0.4, 0.4], height: 200, axes: 'box', full: true, xlabel: 't', ylabel: 'rate', title: 'inside $[a,b]$: $\\frac{d}{dt}\\int_a^b\\rho\\,dx$ (blue) and $j(a)-j(b)$ (gold, dashed)' });
-        const ha = s1.handle(-3, -0.17, { color: 'orange', r: 7, label: 'a', labelPos: 'n', constrain: (X) => [M.clamp(X, -19, hb ? hb.x - 0.5 : 19), -0.17] });
-        const hb = s1.handle(3.5, -0.17, { color: 'orange', r: 7, label: 'b', labelPos: 'n', constrain: (X) => [M.clamp(X, ha.x + 0.5, 19), -0.17] });
+        const ha = s1.handle(-3, -0.22, { color: 'orange', r: 7, label: 'a', labelPos: 'n', constrain: (X) => [M.clamp(X, -19, hb ? hb.x - 0.5 : 19), -0.22] });
+        const hb = s1.handle(3.5, -0.22, { color: 'orange', r: 7, label: 'b', labelPos: 'n', constrain: (X) => [M.clamp(X, ha.x + 0.5, 19), -0.22] });
         ha.onDrag = () => sim.reset(); hb.onDrag = () => sim.reset();
         const idx = (X) => M.clamp(Math.round((X - x[0]) / dx), 1, n - 2);
         const inside = (S, ia, ib) => { let s = 0; for (let i = ia; i <= ib; i++) s += (S.re[i] ** 2 + S.im[i] ** 2) * (i === ia || i === ib ? 0.5 : 1); return s * dx; };
@@ -441,14 +442,14 @@ the probability in any interval changes only by what flows through its ends. Wri
           const rho = Float64Array.from(S.re, (r, i) => r * r + S.im[i] ** 2);
           // potential (scaled) and window
           const Vs = POT[pot.value][1];
-          s1.fn((X) => 0.08 * Vs(X), { color: 'muted', width: 1.4, dash: [4, 3], n: 400 });
+          s1.fn((X) => 0.05 * Vs(X), { color: 'muted', width: 1.4, dash: [4, 3], n: 400 });
           s1.vband(ha.x, hb.x, { color: 'orange', alpha: 0.1 });
           s1.vline(ha.x, { color: 'orange', width: 1.2, dash: [4, 3] }); s1.vline(hb.x, { color: 'orange', width: 1.2, dash: [4, 3] });
           s1.path(Array.from(x, (X, i) => [X, rho[i]]), { color: 'accent', width: 2.2 });
           s1.fn((X) => rho[idx(X)], { color: 'accent', width: 0, fill: 'accent', fillAlpha: 0.2, n: 500 });
           // arrows of j on a strip
           let jmax = 0.02; for (const q of j) jmax = Math.max(jmax, Math.abs(q));
-          const yA = -0.085;
+          const yA = -0.13;
           s1.hline(yA, { color: 'faint', width: 1 });
           for (let X = -19; X <= 19.01; X += 1) {
             const q = j[idx(X)], u = Math.min(1, Math.abs(q) / 0.55), len = Math.sign(q) * 0.92 * u;
@@ -570,7 +571,7 @@ and a function of momentum is computed by substituting $\hat p$, e.g. $\langle p
           const k = ks.value, re = new Float64Array(n), im = new Float64Array(n);
           for (let i = 0; i < n; i++) {
             const X = x[i]; let a = 0, ph = 0, r = 0, q = 0;
-            if (kind.value === 'plane') { a = Math.exp(-X * X / (4 * 12 * 12)); ph = k * X; r = a * Math.cos(ph); q = a * Math.sin(ph); }
+            if (kind.value === 'plane') { const c = k >= 0 ? -6 : 6; a = Math.exp(-((X - c) ** 2) / (4 * 8 * 8)); ph = k * X; r = a * Math.cos(ph); q = a * Math.sin(ph); }
             else if (kind.value === 'packet') { a = Math.exp(-X * X / (4 * 1.6 * 1.6)); ph = k * X; r = a * Math.cos(ph); q = a * Math.sin(ph); }
             else if (kind.value === 'two') { a = Math.exp(-X * X / (4 * 2.2 * 2.2)); r = a * (Math.cos(k * X) + 0.7 * Math.cos(-0.5 * k * X)); q = a * (Math.sin(k * X) + 0.7 * Math.sin(-0.5 * k * X)); }
             else { a = Math.exp(-X * X / (4 * 1.6 * 1.6)); r = a * Math.cos(k * X); }

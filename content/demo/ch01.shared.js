@@ -8,7 +8,7 @@ export const nums = (s) => s.split(',').map(Number);
 /** Integer with thin spaces between thousands and a real minus sign (plain text). */
 export function int(x) {
   const r = Math.round(Math.abs(x));
-  return (x < 0 && r > 0 ? '−' : '') + String(r).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (x < 0 && r > 0 ? '−' : '') + String(r).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
 }
 /** Fixed decimals with a real minus sign. */
 export function fx(x, d = 1) { const s = Math.abs(x).toFixed(d); return (x < 0 && +s !== 0 ? '−' : '') + s; }

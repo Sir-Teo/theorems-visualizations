@@ -21,7 +21,7 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
       idea: String.raw`Sensitivity conditions on the diseased column and specificity on the healthy column. Change the prevalence and each column is scaled as a whole, so the proportions inside it do not move — which is why they are treated as properties of the test, and why they do not answer the patient's question "given my result, do I have it?" (that is a row proportion, 2.2). For a continuous marker the two numbers are areas under two overlapping curves on either side of the cut-off: wherever the curves overlap, some error is unavoidable, and moving the cut-off only trades one error for the other. Tracing $(1 - \text{Sp}, \text{Se})$ over all cut-offs gives the ROC curve (2.5), whose area is the probability that a random diseased person scores higher than a random healthy one.`,
       caption: String.raw`Drag the gold cut-off: people scoring at or above it test positive. Shaded areas are the four cells (solid = correct, hatched = errors); the $2\times2$ table counts them per 1 000 people and the ROC dot moves along the curve. Change the prevalence: the counts change but sensitivity and specificity — each worked out down one column — do not, while the share of positives who are diseased (PPV) does. Switch to *PSA*: a binormal model fitted to the four operating points published for the Prostate Cancer Prevention Trial (Thompson et al., *JAMA* 2005; dots on the ROC) shows why no PSA cut-off is both sensitive and specific. Turn on *random pairs* to see the AUC as a probability.`,
       deps: [],
-      see: ['psych-2.2', 'stat-6.5', 'psych-2.15'],
+      see: ['psych-2.2', 'stat-6.5', 'psych-2.10', 'psych-2.15'],
       refs: ['Gordis ch. 5'],
       tags: ['diagnostic tests', 'sensitivity', 'specificity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sensitivity_and_specificity' },
@@ -29,7 +29,7 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
         const M = v.M, PSA = psaModel(M), NP = 2000, SHOW = 14;
         const sD = v.stage({ x: [-3.6, 6.6], y: [0, 0.62], height: 250, full: true, axes: 'box', yticks: [], xlabel: 'biomarker score' });
         const sT = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: false, weight: 1.15, minWidth: 300, title: 'the 2×2 table, per 1 000 people tested' });
-        const sR = v.stage({ x: [-0.15, 1.03], y: [-0.1, 1.04], height: 290, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0.2, 0.4, 0.6, 0.8, 1], yticks: [0.2, 0.4, 0.6, 0.8, 1], weight: 0.85, minWidth: 250, title: 'ROC curve: every cut-off at once' });
+        const sR = v.stage({ x: [-0.15, 1.03], y: [-0.1, 1.12], height: 290, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0.2, 0.4, 0.6, 0.8, 1], yticks: [0.2, 0.4, 0.6, 0.8, 1], weight: 0.85, minWidth: 250, title: 'ROC curve: every cut-off at once' });
         const mk = v.select('biomarker', [{ value: 'gen', label: 'generic score' }, { value: 'psa', label: 'PSA for prostate cancer (PCPT)' }], 'gen');
         const dS = v.slider("separation $d'$ (difference of means in SDs)", 0, 4, 1.8, { step: 0.05 });
         const prevS = v.slider('prevalence among the people tested', 0.01, 0.5, 0.2, { log: true, fmt: (x) => pcs(x) });
@@ -125,7 +125,7 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
 $$\text{PPV} = P(D\mid +) = \frac{\text{Se}\,p}{\text{Se}\,p + (1-\text{Sp})(1-p)}, \qquad \text{NPV} = P(\bar D\mid -) = \frac{\text{Sp}\,(1-p)}{\text{Sp}\,(1-p) + (1-\text{Se})\,p}.$$
 With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases: $\text{PPV}\to 0$ as $p \to 0$ and $\text{NPV} \to 0$ as $p\to 1$. A positive result raises the probability of disease ($\text{PPV} > p$) exactly when $\text{Se} > 1 - \text{Sp}$, and $\text{PPV} = \tfrac12$ when true and false positives are equally numerous, $\text{Se}\,p = (1-\text{Sp})(1-p)$. Predictive values therefore belong to a test *in a population*, not to the test alone.`,
       idea: String.raw`It is Bayes' theorem (stat 10.1) with the law of total probability in the denominator: the positives are the true positives $\text{Se}\,p$ plus the false positives $(1-\text{Sp})(1-p)$, and the PPV is the share of the first among all of them. In natural frequencies the formula becomes counting: out of 1 000 people, $1000p$ are ill and $\text{Se}$ of them test positive, while $1000(1-p)$ are well and $1 - \text{Sp}$ of *them* test positive. When the disease is rare the healthy group is so large that even a small false-positive rate produces more positives than the whole diseased group can — so the predictive value is governed by prevalence (1.3) as much as by the test's accuracy (2.1).`,
-      caption: String.raw`Each dot is a person (red = has the disease); a gold tile means the test came back positive. The tree counts the same 1 000 people in natural frequencies, and the bars underneath split the positives and the negatives by true status — that split is the predictive value. Slide the prevalence and watch PPV move along its curve while sensitivity and specificity (dashed) stay put. The starting values are screening mammography in the US Breast Cancer Surveillance Consortium, 2007–2013 (sensitivity 86.9%, specificity 88.9%, about 5.9 cancers per 1 000 women screened; Lehman et al., *Radiology* 2017): Bayes predicts a PPV of 4.4%, exactly the share of recalled women found to have cancer.`,
+      caption: String.raw`Each dot is a person (red = has the disease); a gold tile means the test came back positive. The tree counts the same 1 000 people in natural frequencies, and the bars underneath split the positives and the negatives by true status — that split is the predictive value. Slide the prevalence and watch PPV move along its curve while sensitivity and specificity (dashed) stay put. The starting values are screening mammography in the US Breast Cancer Surveillance Consortium, 2007–2013 (sensitivity 86.9%, specificity 88.9%, about 5.9 cancers per 1 000 women screened; Lehman et al., *Radiology* 2017): Bayes' formula gives a PPV of 4.4%, matching the 4.4% of recalled women who were found to have cancer.`,
       deps: ['epi-2.1', 'epi-1.3', 'stat-10.1'],
       see: ['behav-3.7'],
       refs: ['Gordis ch. 5'],
@@ -181,7 +181,7 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
           // ----- curves against prevalence
           sC.hline(se, { color: 'red', width: 1.2, dash: [6, 5], alpha: 0.6 }); sC.hline(sp, { color: 'blue', width: 1.2, dash: [6, 5], alpha: 0.6 });
           sC.hline(0, { color: 'grid', width: 1 });
-          sC.text('sensitivity', 0.0045, se, { dy: se >= sp ? -8 : 9, align: 'left', color: 'red', size: 10.5, alpha: 0.85 }); sC.text('specificity', 0.0045, sp, { dy: sp > se ? -8 : 9, align: 'left', color: 'blue', size: 10.5, alpha: 0.85 });
+          sC.text('sensitivity', 0.00058, se, { dy: se >= sp ? -8 : 9, align: 'left', color: 'red', size: 10.5, alpha: 0.85 }); sC.text('specificity', 0.00058, sp, { dy: sp > se ? -8 : 9, align: 'left', color: 'blue', size: 10.5, alpha: 0.85 });
           sC.fn((x) => ppv(x, se, sp), { color: 'red', width: 2.6 });
           sC.fn((x) => npv(x, se, sp), { color: 'blue', width: 2.6 });
           const pHalf = (1 - sp) / (se + 1 - sp);
@@ -202,7 +202,7 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
           const { p, se, sp, F, P1, N1 } = st;
           const bc = Math.abs(p - BCSC.prev) < 1e-4 && Math.abs(se - BCSC.se) < 1e-4 && Math.abs(sp - BCSC.sp) < 1e-4;
           return `of 1 000 people, ${F.D} have the disease and ${F.TP} of them test positive; ${int(F.H)} do not, and ${int(F.FP)} of them test positive anyway → **PPV = ${F.TP} ÷ ${int(F.pos)} = ${F.pos ? pc(F.TP / F.pos) : '—'}** · Bayes: $\\dfrac{${v.fix(se, 3)}\\times${v.fix(p, 4)}}{${v.fix(se, 3)}\\times${v.fix(p, 4)} + ${v.fix(1 - sp, 3)}\\times${v.fix(1 - p, 4)}} = ${pcs(P1)}$ · NPV = ${pcs(N1)}` +
-            (bc ? ` · the BCSC registries observed a PPV of 4.4% for a positive screening mammogram — what Bayes predicts` : P1 < p * 1.0001 ? ' · with Se ≤ 1 − Sp a positive result carries no information' : ` · a positive result raises the probability ${v.fix(P1 / p, 1)}-fold, from ${pcs(p)} to ${pcs(P1)}`);
+            (bc ? ` · the BCSC registries observed that 4.4% of positive screening mammograms led to a cancer diagnosis — the same figure` : P1 < p * 1.0001 ? ' · with Se ≤ 1 − Sp a positive result carries no information' : ` · a positive result raises the probability ${v.fix(P1 / p, 1)}-fold, from ${pcs(p)} to ${pcs(P1)}`);
         });
       },
     },
@@ -213,7 +213,7 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
       name: 'Base-rate fallacy in diagnosis',
       credit: 'Casscells, Schoenberger & Graboys, 1978',
       statement: String.raw`The **base-rate fallacy** is to judge the probability of disease after a positive test, $P(D\mid +)$, by the test's accuracy $P(+\mid D)$, ignoring the prior probability (the base rate). For a rare disease even an excellent test gives mostly false positives: with prevalence $1/1000$ and sensitivity and specificity both $99\%$, only about $9\%$ of positives are diseased. When Casscells, Schoenberger and Graboys (1978) asked 60 physicians, house officers and medical students about a disease of prevalence $1/1000$ and a test with a $5\%$ false-positive rate, 27 answered $95\%$ and 11 gave the correct answer of about $2\%$; a 2014 replication found the same (27 and 14 of 61). Repeating a test on the positives helps only to the extent that its errors are independent: each independent positive result multiplies the odds of disease by the same likelihood ratio (2.4), but a false positive with a persistent cause repeats.`,
-      idea: String.raw`The fallacy confuses a conditional probability with its inverse. Bayes' theorem (2.2) in odds form makes the role of the base rate plain: posterior odds = prior odds $\times\,\text{Se}/(1 - \text{Sp})$. A $99\%$ test has likelihood ratio $99$, which lifts odds of $1 : 999$ only to about $1 : 10$. The intuition fails because the false positives come from the *large* healthy group: $1\%$ of $9\,990$ is about $100$ people, ten times the $10$ who are ill. A second independent test starts from the new odds $1 : 10$ and multiplies them by $99$ again, giving about $10 : 1$ — but only if a false positive is a fresh coin toss each time. Showing the numbers as natural frequencies, as here, is the remedy that best helps people reason correctly (Gigerenzer & Hoffrage, 1995).`,
+      idea: String.raw`The fallacy confuses a conditional probability with its inverse. Bayes' theorem (2.2) in odds form makes the role of the base rate plain: posterior odds = prior odds $\times\,\text{Se}/(1 - \text{Sp})$. A $99\%$ test has likelihood ratio $99$, which lifts odds of $1 : 999$ only to about $1 : 10$. The intuition fails because the false positives come from the *large* healthy group: $1\%$ of $9\,990$ is about $100$ people, ten times the $10$ who are ill. A second independent test starts from the new odds $1 : 10$ and multiplies them by $99$ again, giving about $10 : 1$ — but only if a false positive is a fresh coin toss each time. Presenting the numbers as natural frequencies, as here, markedly improves people's Bayesian reasoning (Gigerenzer & Hoffrage, 1995).`,
       caption: String.raw`Left: 10 000 people (red = diseased, gold square = tested positive). Middle: everyone who tested positive, enlarged — mostly blue, that is, healthy. Choose *retest the positives* and *test a third time*: those who test negative again fade, and the share of red among the rest — the predictive value, laddered below — climbs. Raise the share of false positives that repeat (a cross-reacting antibody, say, rather than random lab error) and retesting stops helping. Right, below: what 60 clinicians answered in 1978 (Casscells et al., *NEJM*) and 61 in 2014 (Manrai et al., *JAMA Intern Med*) when asked the 5%-false-positive version.`,
       deps: ['epi-2.2', 'behav-3.7'],
       see: ['phil-6.3', 'psych-2.14'],
@@ -321,7 +321,7 @@ for a positive and a negative result (for a continuous score, $\text{LR}(x) = f_
 $$\text{post-test odds} = \text{pre-test odds} \times \text{LR}.$$
 Ratios above $10$ or below $0.1$ change the probability of disease substantially; ratios near $1$ hardly at all. Results of tests that are **conditionally independent** given disease status combine by multiplying their likelihood ratios, that is, by adding their logarithms. The **Fagan nomogram** performs the multiplication with a straight edge.`,
       idea: String.raw`Write Bayes' theorem (2.2) for $D$ and for $\bar D$ and divide: the denominators $P(r)$ cancel, leaving odds × LR. Taking logarithms turns the product into a sum, so on a log-odds scale every result is a fixed *step* whatever the starting point, and independent results are steps laid end to end. Fagan's nomogram puts $-\text{logit}$ of the pre-test probability on the left, $\tfrac12\ln\text{LR}$ in the middle and logit of the post-test probability on the right: three equally spaced parallel scales, on which a straight line through two points meets the third exactly where $\text{logit}(\text{post}) = \text{logit}(\text{pre}) + \ln\text{LR}$. The steps add only when the tests' errors are independent given disease status (2.8); two tests that respond to the same thing count the same evidence twice.`,
-      caption: String.raw`Drag the blue point on the left scale (pre-test probability) and the orange point on the middle scale (likelihood ratio): the straight line reads off the post-test probability on the right. Marks on the middle scale are published results — a screening mammogram (Breast Cancer Surveillance Consortium: sensitivity 86.9%, specificity 88.9%) and PSA at 4.1 ng/mL (Prostate Cancer Prevention Trial: 20.5%, 93.8%); the handle snaps to them. Starting from the 0.59% prevalence of breast cancer among women screened, a positive mammogram gives 4.4%. The purple line chains a second, independent test. Right: the same steps as odds bars, and as arrows on a log-odds ruler, where independent evidence simply adds.`,
+      caption: String.raw`Drag the blue point on the left scale (pre-test probability) and the orange point on the middle scale (likelihood ratio): the straight line reads off the post-test probability on the right. Marks on the middle scale are published results — a screening mammogram (Breast Cancer Surveillance Consortium: sensitivity 86.9%, specificity 88.9%) and PSA at 4.1 ng/mL (Prostate Cancer Prevention Trial: 20.5%, 93.8%); the handle snaps to them. Starting from the 0.59% prevalence of breast cancer among women screened, a positive mammogram gives 4.4%. The purple line chains a second, independent test: it starts on the left scale at test 1's result (hollow dot). Right: the same steps as odds bars, and as arrows on a log-odds ruler, where independent evidence simply adds.`,
       deps: ['epi-2.2'],
       see: ['stat-10.13', 'psych-2.4'],
       refs: ['Gordis ch. 5'],
@@ -367,7 +367,7 @@ Ratios above $10$ or below $0.1$ change the probability of disease substantially
           sN.dot(2, -yL(p1), { r: 5, color: 'orange' }); sN.text(pcs(p1), 2, -yL(p1), { dx: -9, align: 'right', color: 'orange', size: 12, weight: 700 });
           if (two) {
             sN.clip(() => { const [a, b] = ext(p1, lr2); sN.line(a[0], a[1], b[0], b[1], { color: 'purple', width: 2.4 }); });
-            sN.dot(0, yL(p1), { r: 4.5, color: 'purple', hollow: true, width: 2 }); sN.text('test 2 starts here', 0.07, yL(p1), { dy: 12, align: 'left', color: 'purple', size: 10.5, weight: 600 });
+            sN.dot(0, yL(p1), { r: 4.5, color: 'purple', hollow: true, width: 2 });
             sN.dot(2, -yL(p2), { r: 5, color: 'purple' }); sN.text(pcs(p2), 2, -yL(p2), { dx: -9, dy: Math.abs(yL(p2) - yL(p1)) < 0.5 ? 12 : 0, align: 'right', color: 'purple', size: 12, weight: 700 });
           }
           // ----- odds bars
@@ -432,12 +432,12 @@ the point at which a line of that slope (an iso-cost line) touches the curve. Yo
       viz(v) {
         const M = v.M, PSA = psaModel(M), NG = 600;
         const sD = v.stage({ x: [-3.6, 6.6], y: [0, 0.5], height: 150, full: true, axes: 'box', yticks: [], xlabel: 'score' });
-        const sR = v.stage({ x: [-0.15, 1.03], y: [-0.1, 1.04], height: 330, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0.2, 0.4, 0.6, 0.8, 1], yticks: [0.2, 0.4, 0.6, 0.8, 1], weight: 1, minWidth: 280, title: 'ROC curve: Youden versus least cost' });
+        const sR = v.stage({ x: [-0.15, 1.03], y: [-0.1, 1.12], height: 330, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0.2, 0.4, 0.6, 0.8, 1], yticks: [0.2, 0.4, 0.6, 0.8, 1], weight: 1, minWidth: 280, title: 'ROC curve: Youden versus least cost' });
         const sC = v.stage({ x: [-3.6, 6.6], y: [0, 1], height: 330, axes: 'box', xlabel: 'cut-off', weight: 1.05, minWidth: 280, title: 'expected cost per 1 000 people tested' });
         const mk = v.select('test', [{ value: 'gen', label: 'generic score' }, { value: 'psa', label: 'PSA (PCPT)' }], 'gen');
         const dS = v.slider("separation $d'$", 0.3, 3.5, 1.5, { step: 0.05 });
         const prevS = v.slider('prevalence $p$', 0.005, 0.6, 0.05, { log: true, fmt: (x) => pcs(x) });
-        const costS = v.slider('cost of a missed case (a false alarm costs 1)', 0.1, 100, 4, { log: true, fmt: (x) => sig3(x) });
+        const costS = v.slider('cost of a miss (false alarm = 1)', 0.1, 100, 4, { log: true, fmt: (x) => sig3(x) });
         const model = () => (mk.value === 'psa' ? scoreModel(M, 'lognormal', PSA.mu0, PSA.s0, PSA.mu1, PSA.s1, 0.15, 40) : scoreModel(M, 'normal', 0, 1, dS.value, 1, -3.6, 6.6));
         const grid = (S) => Array.from({ length: NG + 1 }, (_, k) => S.at(k / NG));
         const nearest = (x, y) => { const S = model(); let best = null, bd = Infinity; for (const c of grid(S)) { const d = (1 - S.sp(c) - x) ** 2 + (S.se(c) - y) ** 2; if (d < bd) { bd = d; best = c; } } return best; };
@@ -483,15 +483,16 @@ the point at which a line of that slope (an iso-cost line) touches the curve. Yo
           sR.line(1 - sp, 1 - sp, 1 - sp, se, { color: 'gold', width: 1.4, dash: [2, 3] });
           sR.text(`slope m* = ${sig3(m)}`, 0.97, 0.06, { align: 'right', color: 'purple', size: 11.5, weight: 700 });
           // ----- expected cost
-          const top = Math.max(cost(S.lo), cost(S.hi), cost(cut)) * 1.12;
-          sC.setView(null, [0, top]);
+          const top = Math.max(cost(S.lo), cost(S.hi), cost(cut)) * 1.15;
+          sC.setView(null, [-0.12 * top, top]);
           const fnC = (c) => 1000 * p * (1 - S.se(c)) * cr;
           sC.fn(fnC, { color: 'red', width: 1.2, fill: 'red', fillAlpha: 0.25 });
           sC.between(cost, fnC, S.lo, S.hi, { fill: 'blue', fillAlpha: 0.22 });
           sC.fn(cost, { color: 'ink', width: 2 });
           for (const [c, col] of [[cJ, 'green'], [cE, 'purple'], [cut, 'gold']]) { sC.vline(c, { color: col, width: col === 'gold' ? 2 : 1.6, dash: col === 'gold' ? null : [5, 4] }); sC.dot(c, cost(c), { r: 4.5, color: col }); }
-          sC.text('missed cases', psa ? S.hi / 1.15 : S.hi - 0.2, fnC(psa ? S.hi / 1.15 : S.hi - 0.2) * 0.5, { align: 'right', color: 'red', size: 11, weight: 600 });
-          sC.text('false alarms', psa ? S.lo * 1.15 : S.lo + 0.2, top * 0.93, { align: 'left', color: 'blue', size: 11, weight: 600 });
+          const xm = S.at(0.97), xf = S.at(0.05);
+          sC.text('missed cases', xm, Math.max(fnC(xm) * 0.5, top * 0.06), { align: 'right', color: 'red', size: 11, weight: 600 });
+          sC.text('false alarms', xf, Math.max(cost(xf) - fnC(xf), 0) * 0.5 + fnC(xf), { align: 'left', color: 'blue', size: 11, weight: 600 });
           st = { psa, cut, se, sp, cJ, cE, p, cr, m, cost, J, S };
         });
         v.legend([['gold', 'your cut-off'], ['green', 'Youden: max Se + Sp − 1', { dash: true }], ['purple', 'least expected cost', { dash: true }], ['red', 'cost of missed cases', { area: true }], ['blue', 'cost of false alarms', { area: true }]]);

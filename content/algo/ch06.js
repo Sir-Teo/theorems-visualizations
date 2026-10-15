@@ -22,7 +22,7 @@ function coin(v, s, x, y, o = {}) {
   c.restore();
 }
 /** Set a chart's window with room for tick labels: l px on the left, b px at the bottom, r px right, t px on top. */
-function pv(s, [x0, x1], [y0, y1], { l = 32, b = 20, r = 8, t = 0 } = {}) {
+function pv(s, [x0, x1], [y0, y1], { l = 32, b = 26, r = 8, t = 0 } = {}) {
   const kx = (x1 - x0) / Math.max(40, s.width - l - r), ky = (y1 - y0) / Math.max(40, s.height - b - t);
   s.setView([x0 - l * kx, x1 + r * kx], [y0 - b * ky, y1 + t * ky]);
 }
@@ -200,7 +200,7 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
         const kind = v.select('', [{ value: 'counter', label: 'binary counter' }, { value: 'stack', label: 'multipop stack' }, { value: 'array', label: 'doubling array' }], 'counter', { onChange: () => reset() });
         const dec = v.toggle('allow DECREMENT', false, { onChange: () => reset() });
         const A = v.stage({ x: [-1, 13], y: [-0.9, 1.3], axes: false, height: 118, full: true });
-        const B = v.stage({ x: [0.3, 30.7], y: [0, 10], axes: 'box', height: 230, full: true, xlabel: 'operation i', title: 'actual cost of each operation, running average, and the amortized bound' });
+        const B = v.stage({ x: [0.3, 30.7], y: [0, 10], axes: 'box', height: 230, full: true, title: 'operation $i$: actual cost (bars), running average (gold line), amortized bound (green)' });
         const K = 10, MAXOPS = 300, BOUND = { counter: 2, stack: 2, array: 3 };
         let st, ops = [];
         const isC = () => kind.value === 'counter', isS = () => kind.value === 'stack';
@@ -224,7 +224,7 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
         }
         function reset() {
           ops = []; st = isC() ? { bits: Array(K).fill(0) } : isS() ? { S: [], next: 1 } : { cap: 0, n: 0 };
-          if (isC()) for (let i = 0; i < 24; i++) apply('inc');
+          if (isC()) { for (let i = 0; i < 24; i++) apply('inc'); if (dec.value) adversary(); }
           else if (isS()) for (const c of 'ppppppmppppoppppppppmppp') apply(c === 'p' ? 'push' : c === 'o' ? 'pop' : 'multi');
           else for (let i = 0; i < 33; i++) apply('append');
         }
@@ -239,13 +239,14 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
             else apply('append');
           }
         });
-        v.button('Adversary ×10', () => {
+        function adversary() {
           for (let t = 0; t < 10; t++) {
             if (isC()) apply(dec.value && trail(0) > trail(1) ? 'dec' : 'inc');
             else if (isS()) apply(st.S.length >= 9 ? 'multi' : 'push');
             else apply('append');
           }
-        });
+        }
+        v.button('Adversary ×10', () => adversary());
         v.button('Reset', () => reset());
         reset();
         let info = {};
@@ -268,7 +269,7 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
             A.text(last.name ? `${last.name === 'inc' ? 'increment' : 'decrement'}: ${plural(last.cost, 'bit')} flipped` : '', K - 0.2, -0.62, { size: 11.5, color: 'muted', weight: 600 });
           } else if (isS()) {
             const S = st.S, gh = (last.popped || []).length, W = Math.max(14, S.length + gh + 3);
-            A.setView([-1.6, W], [-0.9, 1.3]);
+            A.setView([-1.6, W], [-0.9, 1.45]);
             S.forEach((e, i) => {
               const top = i === S.length - 1, hot = top && last.pushed;
               A.rect(i + 0.06, -0.42, i + 0.94, 0.42, { fill: 'accent', fillAlpha: 0.22, color: hot ? 'gold' : 'muted', width: hot ? 3 : 1.2, radius: 3 });
@@ -296,12 +297,12 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
           const N = ops.length; let tot = 0, maxC = 0, worstAvg = 0; const avg = [];
           ops.forEach((o, i) => { tot += o.cost; maxC = Math.max(maxC, o.cost); avg.push([i + 1, tot / (i + 1)]); worstAvg = Math.max(worstAvg, tot / (i + 1)); });
           const broken = worstAvg > bound + 1e-9, X1 = Math.max(30, N) + 0.7, Y1 = Math.max(maxC, bound * 1.6) * 1.14;
-          pv(B, [0.3, X1], [0, Y1]);
+          pv(B, [0.3, X1], [0, Y1], { r: 112 });
           const bw = Math.min(0.74, 0.74 * 60 / Math.max(N, 60));
           ops.forEach((o, i) => B.rect(i + 1 - bw / 2, 0, i + 1 + bw / 2, o.cost, { fill: o.cost > bound ? 'orange' : 'accent', fillAlpha: 0.55, stroke: false }));
           B.hline(bound, { color: broken ? 'red' : 'green', dash: [8, 5], width: 2 });
           B.path(avg, { color: 'gold', width: 2.8 });
-          B.text(`amortized bound ${bound}`, X1 - 0.3, bound, { align: 'right', baseline: 'bottom', dy: -3, size: 11.5, weight: 700, color: broken ? 'red' : 'green' });
+          B.text(`amortized bound ${bound}`, X1, bound, { baseline: 'bottom', dx: 6, dy: -3, size: 11.5, weight: 700, color: broken ? 'red' : 'green' });
           info = { N, tot, maxC, worstAvg, broken, bound };
         });
         v.legend([['accent', 'actual cost', { area: true }], ['orange', 'single operation above the bound', { area: true }], ['gold', 'running average (total ÷ i)'], ['green', 'amortized bound', { dash: true }]]);
@@ -309,7 +310,10 @@ If every operation has amortized cost at most $a$, then *any* $n$ operations cos
           const { N, tot, maxC, worstAvg, broken, bound } = info;
           if (!N) return 'No operations yet.';
           const head = `**${N}** operations, total actual cost **${tot}**, average **${r2(tot / N)}** · most expensive single operation: **${maxC}**`;
-          if (broken) return `${head} · ✗ some prefix averages ${r2(worstAvg)} > ${bound}: with DECREMENT allowed there is no constant amortized bound — the adversary alternates between $0111\\ldots1$ and $1000\\ldots0$ (or $0\\ldots0$ and $1\\ldots1$), flipping all ${K} bits every time.`;
+          if (broken) {
+            const val = st.bits.reduce((s, b, i) => s + b * 2 ** i, 0), prev = ops[N - 1].name === 'inc' ? (val + 1023) % 1024 : (val + 1) % 1024;
+            return `${head} · ✗ a prefix has average ${r2(worstAvg)} > ${bound}: with DECREMENT allowed there is no constant amortized bound — the adversary steps back and forth between ${Math.min(val, prev)} and ${Math.max(val, prev)}, flipping ${ops[N - 1].cost} bits every time, and between $0$ and $2^{${K}} - 1$ it would flip all ${K}.`;
+          }
           return `${head} · every prefix has average ≤ ${r2(worstAvg)} ≤ ${bound} ✓ — the expensive operations are paid for by the cheap ones before them.`;
         });
       },
@@ -513,7 +517,7 @@ where $s_2(n)$ is the number of 1s in the binary expansion of $n$. Each incremen
 $$\hat c_i \;=\; c_i + \Phi(D_i)-\Phi(D_{i-1}).$$
 The sum telescopes: $\sum_{i\le n}\hat c_i=\sum_{i\le n}c_i+\Phi(D_n)-\Phi(D_0)\ge\sum_{i\le n}c_i$, so the $\hat c_i$ are valid amortized costs. For a binary counter, $\Phi=$ number of 1 bits gives $\hat c\le 2$ per increment; for a multipop stack, $\Phi=$ stack size gives $\hat c\le 2$ for PUSH and $0$ for POP and MULTIPOP.`,
       idea: String.raw`The potential is the bank balance of the accounting method (6.3), but computed from the state alone instead of being tracked coin by coin. An increment that turns $t$ trailing 1s into 0s costs $t+1$ and lowers the number of 1s by $t-1$, so its amortized cost is exactly $2$: the expensive work is paid by released potential. A bad choice of $\Phi$ shows itself at once: with $\Phi=0$ the amortized costs are the actual ones, and with $\Phi=$ number of 0 bits they grow like $2t$ and $\Phi$ ends below where it started.`,
-      caption: String.raw`Each column is one operation: the orange part of the actual cost is paid by the amortized charge, blue is the part of the charge deposited into $\Phi$, and the hatched part is paid by potential released. The black tick is $\hat c_i=c_i+\Delta\Phi_i$: with a good potential the ticks lie flat on the green line. Change $\Phi$ to see what a bad potential looks like; the lower chart shows $\Phi$ charging and discharging like a battery.`,
+      caption: String.raw`Each column is one operation: the orange part of the actual cost is paid by the amortized charge, blue is the part of the charge deposited into $\Phi$, and the hatched part is paid by potential released. The heavy tick on each column is $\hat c_i=c_i+\Delta\Phi_i$: with a good potential the ticks lie flat on the green line. Change $\Phi$ to see what a bad potential looks like; the lower chart shows $\Phi$ charging and discharging like a battery.`,
       deps: ['algo-6.3'],
       refs: ['CLRS 4e §16.3'],
       credit: 'Sleator & Tarjan (potential functions), 1985',
@@ -581,7 +585,7 @@ The sum telescopes: $\sum_{i\le n}\hat c_i=\sum_{i\le n}c_i+\Phi(D_n)-\Phi(D_0)\
           B.hline(p0, { color: 'muted', width: 1.2, dash: [4, 3] });
           B.text('Φ(D₀)', X1, p0, { align: 'right', baseline: 'bottom', dy: -2, dx: -4, size: 11, color: 'muted', weight: 600 });
           const lastS = ops[N - 1] && ops[N - 1].state;
-          if (lastS) B.corner(isC() ? `counter = ${lastS.bits.slice().reverse().join('')}` : `stack size ${lastS.size}`, 'tl', { size: 12, weight: 600 });
+          if (lastS) B.setTitle(`the potential $\\Phi(D_i)$ — now ${isC() ? `counter = ${lastS.bits.slice().reverse().join('')}` : `stack size ${lastS.size}`}`);
           info = { rows, phis, bound, key };
         });
         v.legend([['orange', 'cost paid by the charge', { area: true }], ['blue', 'charge saved in Φ', { area: true }], ['green', 'cost paid by Φ', { area: true }], ['ink', '$\\hat c_i$']]);
@@ -589,7 +593,7 @@ The sum telescopes: $\sum_{i\le n}\hat c_i=\sum_{i\le n}c_i+\Phi(D_n)-\Phi(D_0)\
           const { rows, phis, bound, key } = info, N = rows.length; if (!N) return '';
           const L = rows[N - 1], maxA = Math.max(...rows.map((r) => r.a)), sumA = rows.reduce((s, r) => s + r.a, 0), sumC = rows.reduce((s, r) => s + r.c, 0);
           const dP = phis[N] - phis[0], below = phis.some((p) => p < phis[0]);
-          const head = `last operation: $c = ${L.c}$, $\\Delta\\Phi = ${sgn(L.d)}$, $\\hat c = ${r2(L.a)}$ · $\\sum c_i = \\sum\\hat c_i - (\\Phi_n - \\Phi_0) = ${r2(sumA)} - ${r2(dP)} = ${sumC}$`;
+          const head = `last operation: $c = ${L.c}$, $\\Delta\\Phi = ${sgn(L.d)}$, $\\hat c = ${r2(L.a)}$ · $\\sum c_i = \\sum\\hat c_i - (\\Phi_n - \\Phi_0) = ${r2(sumA)} - ${dP < 0 ? '(' + r2(dP) + ')' : r2(dP)} = ${sumC}$`;
           if (bound != null) return `${head} · every $\\hat c_i \\le ${bound}$ ✓ (largest ${r2(maxA)}) and $\\Phi \\ge \\Phi_0$ ✓, so any $n$ operations cost at most ${bound}n`;
           if (key === 'zero') return `${head} · with $\\Phi = 0$ the amortized cost is just the actual cost (max ${maxA}): nothing is saved for the expensive operations`;
           return `${head} · ✗ this potential ${below ? 'drops below $\\Phi_0$, so $\\sum\\hat c_i$ is not an upper bound, and ' : ''}gives amortized costs up to ${r2(maxA)} — they are not flat`;
@@ -656,7 +660,7 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
           const maxC = Math.max(...H.map((h) => h.cost)), X1 = Math.max(32, N) + 0.7;
           const bank = H.map((h) => 3 * h.i - h.tot);
           const lo = mult ? 0 : Math.min(0, ...bank) * 1.06, hi = Math.max(maxC, mult ? Math.max(...H.map((h) => h.phi)) : 0, 6) * 1.1;
-          pv(B, [0.3, X1], [lo, hi]);
+          pv(B, [0.3, X1], [lo, hi], { r: mult ? 92 : 8 });
           const bw = Math.min(0.72, 0.72 * 40 / Math.max(N, 40));
           H.forEach((h) => B.rect(h.i - bw / 2, 0, h.i + bw / 2, h.cost, { fill: h.copy ? 'orange' : 'accent', fillAlpha: 0.6, stroke: false }));
           if (mult) {
@@ -664,17 +668,18 @@ More generally, growing by any constant factor $r>1$ gives amortized cost at mos
             const am = H.map((h, k) => h.cost + h.phi - (k ? H[k - 1].phi : 0));
             B.hline(CH[g.value], { color: 'green', dash: [8, 5], width: 1.6 });
             B.dots(am.map((a, k) => [k + 1, a]), { r: 2.8, color: 'green' });
-            B.text(`cᵢ + ΔΦᵢ ≤ ${CH[g.value]}`, X1 - 0.5, CH[g.value], { align: 'right', baseline: 'bottom', dy: -4, size: 12, weight: 700, color: 'green' });
+            B.text(`cᵢ + ΔΦᵢ ≤ ${CH[g.value]}`, X1, CH[g.value], { baseline: 'bottom', dx: 6, dy: -3, size: 12, weight: 700, color: 'green' });
           } else {
             B.path(stepPts(bank), { color: 'red', width: 2 });
             B.path(H.map((h) => [h.i, h.tot / h.i]), { color: 'gold', width: 2.4 });
             B.hline(0, { color: 'muted', width: 1 });
-            B.text('bank if every append pays 3', X1 - 0.5, bank[N - 1], { align: 'right', baseline: 'top', dy: 4, size: 11.5, weight: 700, color: 'red' });
+            B.text('bank if every append pays 3: in debt', 1, lo, { baseline: 'bottom', dy: -6, size: 11.5, weight: 700, color: 'red' });
           }
         });
-        v.legend([['accent', 'actual cost', { area: true }], ['orange', 'append that copies', { area: true }], ['blue', 'potential Φ'], ['green', 'amortized cost', { dot: true }], ['gold', 'coin (credit)', { dot: true }]]);
         v.readout(() => {
           const N = nS.value, last = H[N - 1];
+          v.legend(g.value === 'add' ? [['accent', 'actual cost', { area: true }], ['orange', 'append that copies', { area: true }], ['red', 'bank: 3i − total cost'], ['gold', 'average cost so far']]
+            : [['accent', 'actual cost', { area: true }], ['orange', 'append that copies', { area: true }], ['blue', 'potential Φ'], ['green', 'amortized cost', { dot: true }], ['gold', 'coin (credit)', { dot: true }]]);
           if (g.value === 'add') return `growing by +4: ${N} appends cost **${last.tot}** in total, an average of ${r2(last.tot / N)} that keeps rising (about $n/8$): the copies $4 + 8 + 12 + \\cdots$ form an arithmetic series of size $\\Theta(n^2)$, so no constant charge pays for them ✗`;
           const am = Math.max(...H.map((h, k) => h.cost + h.phi - (k ? H[k - 1].phi : 0)));
           const f = g.value === 'x2' ? '2n - \\mathrm{cap}' : '3n - 2\\,\\mathrm{cap}';
@@ -697,7 +702,7 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
       tags: ['amortized', 'arrays'],
       viz(v) {
         const T = 120;
-        const wl = v.select('workload', [{ value: 'thrash', label: 'I, D, D, I, I, D, D, …' }, { value: 'walk', label: 'random walk' }, { value: 'wave', label: 'grow, shrink, grow' }], 'thrash', { onChange: () => rebuild() });
+        const wl = v.select('workload', [{ value: 'thrash', label: 'I, D, D, I, I, D, D, …' }, { value: 'walk', label: 'random ups and downs' }, { value: 'wave', label: 'grow, shrink, grow' }], 'thrash', { onChange: () => rebuild() });
         const kS = v.slider('first fill to $2^k$', 2, 5, 4, { int: true, onChange: () => rebuild() });
         const tS = v.slider('operations so far $t$', 1, T, T, { int: true });
         const A = v.stage({ x: [-0.5, 33], y: [-1.6, 3.4], axes: false, height: 160, full: true });
@@ -707,7 +712,7 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
         function workload() {
           const k = kS.value, n0 = 2 ** k, ops = Array(n0).fill('I'), r = v.rng(11 + k);
           if (wl.value === 'thrash') { const pat = ['I', 'D', 'D', 'I']; for (let i = 0; ops.length < T; i++) ops.push(pat[i % 4]); }
-          else if (wl.value === 'walk') { let n = n0; while (ops.length < T) { const ins = n <= 1 || (n < 3 * n0 && r() < 0.5); ops.push(ins ? 'I' : 'D'); n += ins ? 1 : -1; } }
+          else if (wl.value === 'walk') { let n = n0; while (ops.length < T) { const pr = 0.5 + 0.4 * Math.cos((ops.length - n0) / 9), ins = n <= 1 || r() < pr; ops.push(ins ? 'I' : 'D'); n += ins ? 1 : -1; } }
           else { let n = n0, up = true; while (ops.length < T) { if (up && n >= 3 * n0) up = false; if (!up && n <= 2) up = true; ops.push(up ? 'I' : 'D'); n += up ? 1 : -1; } }
           return ops.slice(0, T);
         }
@@ -748,7 +753,7 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
           const top = Math.max(3 * T, ...runs.map((R) => R.H[T - 1].tot)) * 1.05;
           pv(B, [0, T + 1], [0, top], { l: 36 });
           B.fn((x) => 3 * x, { color: 'ink', dash: [7, 5], width: 1.5, domain: [0, T] });
-          B.text('3t', T, 3 * T, { align: 'right', baseline: 'bottom', dy: -2, dx: -4, size: 12, weight: 700, color: 'muted' });
+          B.text('3t', T * 0.9, 2.7 * T, { align: 'right', baseline: 'bottom', dy: -4, dx: -4, size: 12, weight: 700, color: 'muted' });
           pv(C, [0, T + 1], [0, 1.1], { l: 22 });
           for (const q of [0.25, 0.5, 1]) C.hline(q, { color: 'faint', dash: [4, 4], width: 1 });
           POL.forEach((p, k) => {
@@ -779,7 +784,7 @@ Halving as soon as $\alpha<\tfrac12$ fails: around a power of two, the sequence 
 
 Insertion and deletion are reduced to accesses (insert as in a BST and splay the new node; to delete, splay the node and join its two subtrees).`,
       idea: String.raw`Each step is one or two rotations (5.5), so splaying keeps the in-order sequence. The zig-zig case is what makes splay trees work: rotating the grandparent edge first means that every node on the access path roughly halves its depth, so a long path is never left behind. Plain move-to-root, which only ever rotates $x$ above its current parent, moves $x$ up just as fast but leaves the rest of the path almost as deep, and an adversary can make every access expensive.`,
-      caption: String.raw`Click any node to access it and step through the splay: the accessed node is gold, its parent orange and grandparent purple, and the blue rings mark the old access path. The panel on the right compares each path node's depth before (dashed) and now (solid). Turn off the zig-zig rule to compare with plain move-to-root.`,
+      caption: String.raw`Click any node to access it and step through the splay: the accessed node is gold, its parent orange and grandparent purple, and the blue rings mark the old access path. The panel on the right compares each path node's depth before (dashed outline) and now (solid), against about half the old depth (green ticks at $\lceil d/2\rceil+2$). Turn off the zig-zig rule to compare with plain move-to-root.`,
       deps: ['algo-5.5', 'algo-5.2'],
       refs: ['Erickson notes: Scapegoat and Splay Trees'],
       credit: 'Sleator & Tarjan, 1985',
@@ -819,15 +824,15 @@ Insertion and deletion are reduced to accesses (insert as in a BST and splay the
             if (d > 0) D.rect(i + 0.74, 0, i + 1.26, d, { fill: k === f.x ? 'gold' : 'accent', fillAlpha: 0.7, stroke: false });
             else D.line(i + 0.74, 0, i + 1.26, 0, { color: k === f.x ? 'gold' : 'accent', width: 4 });
           });
-          D.fn((x) => (x - 1) / 2 + 1, { color: 'green', dash: [5, 4], width: 1.4, domain: [0.5, n + 0.5] });
+          path.forEach((k, i) => { const y = Math.ceil(f.d0.get(k) / 2) + 2; if (y <= dmax + 0.5) D.line(i + 0.56, y, i + 1.44, y, { color: 'green', width: 2.2, dash: [4, 3] }); });
         });
-        v.legend([['gold', 'x', { dot: true }], ['orange', 'parent p', { dot: true }], ['purple', 'grandparent g', { dot: true }], ['accent', 'old access path', { dot: true }], ['muted', 'depth before', { dash: true }], ['green', 'half the old depth (+1)', { dash: true }]]);
+        v.legend([['gold', 'x', { dot: true }], ['orange', 'parent p', { dot: true }], ['purple', 'grandparent g', { dot: true }], ['accent', 'old access path', { dot: true }], ['muted', 'depth before', { dash: true }], ['green', '⌈old depth / 2⌉ + 2', { dash: true }]]);
         v.readout(() => {
           const f = S.frame, path = f.path || [], L = f.L;
           if (!path.length) return '';
           const mean = (g) => path.reduce((s, k) => s + g(k), 0) / path.length, b = mean((k) => f.d0.get(k)), a = mean((k) => L.pos.get(k).d);
-          const worse = path.filter((k) => L.pos.get(k).d > f.d0.get(k) / 2 + 1 && k !== f.x).length;
-          const verdict = !f.done ? 'splaying…' : worse ? `${plural(worse, 'node')} of the old path still deeper than half its old depth + 1` : 'every node of the old path is at most half its old depth + 1 ✓';
+          const worse = path.filter((k) => L.pos.get(k).d > Math.ceil(f.d0.get(k) / 2) + 2).length;
+          const verdict = !f.done ? 'splaying…' : worse ? `✗ ${plural(worse, 'node')} of the old path deeper than ⌈d/2⌉ + 2, d its old depth` : 'every node of the old path now has depth ≤ ⌈d/2⌉ + 2, d its old depth ✓';
           return `access ${f.x}: depth ${f.d0.get(f.x)} → ${L.pos.get(f.x).d} after ${plural(f.rot, 'rotation')} · old path nodes: mean depth ${r2(b)} → **${r2(a)}** (×${r2(a / (b || 1))}) · ${verdict} · tree height ${L.h}`;
         });
       },

@@ -81,7 +81,7 @@ export function rocFrame(s, M, o = {}) {
   s.rect(0, 0, 1, 1, { color: 'faint', width: 1 });
   if (o.family) for (const d of o.family) {
     s.path(rocPts(M, d, 1, 120), { color: 'faint', width: 1 });
-    if (o.labels !== false) { const F = Phi(M, -d / 2 - 0.9), H = Phi(M, d / 2 - 0.9); s.text(`${d}`, F, H, { dx: -4, dy: -7, align: 'right', color: 'muted', size: 10.5 }); }
+    if (o.labels !== false) { const F = Phi(M, -d / 2), H = Phi(M, d / 2); s.text(`${d}`, F, H, { dx: 6, dy: 8, align: 'left', color: 'muted', size: 10.5 }); }
   }
   s.line(0, 0, 1, 1, { color: 'muted', dash: [5, 4], width: 1.2 });
 }
@@ -139,7 +139,22 @@ export function fitRating(M, nC, sC, o = {}) {
   const t0 = [mu0, ...(o.equal ? [] : [Math.log(Math.max(0.2, Math.min(5, sig0)))]), b0[0], ...b0.slice(1).map((x, i) => Math.log(Math.max(0.03, x - b0[i])))];
   const r = nelderMead(nll, t0, t0.map(() => 0.25), 2500);
   const P = unpack(r.x);
-  return { ...P, nll: r.f, k: t0.length, Nn, Ns };
+  let seMu = NaN, seLs = NaN;
+  if (o.se) { // Wald standard errors from the inverse of a numerical Hessian of the negative log-likelihood
+    const H = numHess(nll, r.x, 1e-3);
+    try { const C = M.inverse(H); if (C[0][0] > 0) seMu = Math.sqrt(C[0][0]); if (!o.equal && C[1][1] > 0) seLs = Math.sqrt(C[1][1]); } catch { /* singular */ }
+  }
+  return { ...P, nll: r.f, k: t0.length, Nn, Ns, seMu, seLs };
+}
+/** Numerical Hessian of f at x (central differences, step h). */
+export function numHess(f, x, h = 1e-3) {
+  const n = x.length, f0 = f(x), H = Array.from({ length: n }, () => new Array(n).fill(0));
+  const at = (i, a, j, b) => { const y = x.slice(); y[i] += a; if (j >= 0) y[j] += b; return f(y); };
+  for (let i = 0; i < n; i++) {
+    H[i][i] = (at(i, h, -1, 0) - 2 * f0 + at(i, -h, -1, 0)) / (h * h);
+    for (let j = i + 1; j < n; j++) H[i][j] = H[j][i] = (at(i, h, j, h) - at(i, h, j, -h) - at(i, -h, j, h) + at(i, -h, j, -h)) / (4 * h * h);
+  }
+  return H;
 }
 /** Expected rating proportions of a binormal fit: {pN: [...], pS: [...]} */
 export function ratingProbs(M, f) {

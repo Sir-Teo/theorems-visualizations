@@ -643,7 +643,7 @@ Examples for a sample of size $n$: $\bar X$ for $N(\mu,1)$; $(\bar X,S^2)$ for $
             }
             sR.clip(() => sR.path(pts.map(([t, r]) => [t, isFinite(r) ? clamp(r, yc - 3 * yh, yc + 3 * yh) : NaN]), { color: col, width: 2.6 }));
           }
-          const spread = isFinite(hi - lo) ? hi - lo : Infinity, isFlat = flat && spread < 1e-9;
+          const spread = !flat ? Infinity : isFinite(hi - lo) ? hi - lo : Infinity, isFlat = flat && spread < 1e-9;
           tR(`$\\log f(x\\mid\\theta)-\\log f(y\\mid\\theta)$: ${isFlat ? '**flat**' : 'not flat'}`);
           axisLabels(sR, mod === 'unif' ? '\\theta' : mod === 'cauchy' ? '\\theta' : '\\mu', null);
           lgd(mod === 'n2' ? [['purple', '$\\sigma=0.6$'], ['accent', '$\\sigma=1$'], ['teal', '$\\sigma=1.8$']] : [['accent', 'log-likelihood ratio'], ...(mod === 'unif' ? [['red', 'one likelihood is zero', { area: true }]] : [])]);

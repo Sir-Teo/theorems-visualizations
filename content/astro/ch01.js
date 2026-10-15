@@ -135,7 +135,9 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
           constrain: (x, y) => { const e = eS.value, a = aS.value * scale, nu = Math.atan2(y, x), r = (a * (1 - e * e)) / (1 + e * Math.cos(nu)); st.nu = (nu + TAU) % TAU; return [r * Math.cos(nu), r * Math.sin(nu)]; } });
         function load(k) {
           const E = EL_PRESETS[k]; if (!E) return;
-          aS.set(E.a); eS.set(E.e); st.Om = E.Om * DEG; st.inc = E.i * DEG; st.w = E.w * DEG; st.nu = E.nu * DEG; v.invalidate();
+          aS.set(E.a); eS.set(E.e); st.Om = E.Om * DEG; st.inc = E.i * DEG; st.w = E.w * DEG; st.nu = E.nu * DEG;
+          // turn the view so that the major axis lies across the screen
+          const Pd = pqw(st.Om, st.inc, st.w).P; sc.yaw = Math.atan2(-Pd[1], Pd[0]) - 0.45; v.invalidate();
         }
         load('ceres');
         let out = null;

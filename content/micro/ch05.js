@@ -42,7 +42,7 @@ has a solution: some affordable bundle $x^*$ has $u(x^*) \ge u(x)$ for every aff
         const Z = s.handle(2.4, 2.2, { color: 'gold', label: 'Z', labelPos: 'sw', constrain: fit });
         /** Best bundle on the grid of spacing H/2^n (columns x1 = ih; in each column the highest affordable grid point). */
         const search = (k, P1, P2, n) => {
-          const H = m / P1, h = H / 2 ** n;
+          const H = m / P1, h = H / 2 ** (n + 1);
           if (k === 'free') return [H, h * Math.round((3 * 2 ** (n / 2)) / h)];
           let best = null, bu = -1;
           for (let i = 0; i <= 2 ** n; i++) {
@@ -61,8 +61,8 @@ has a solution: some affordable bundle $x^*$ has $u(x^*) \ge u(x)$ for every aff
           if (k === 'free') {
             s.rect(0, 0, H, 12.5, { fill: 'accent', fillAlpha: 0.1, stroke: false });
             s.line(H, 0, H, 12.5, { color: 'accent', width: 2.8 });
-            for (const xa of [0.3 * H, 0.7 * H]) s.arrow(xa, 10.6, xa, 12.3, { color: 'accent', width: 2, head: 9 });
-            s.text('the set goes on forever', 0.5 * H, 11.4, { color: 'accent', ...LBL, align: 'center' });
+            for (const xa of [0.06 * H, 0.42 * H]) s.arrow(xa, 11, xa, 12.4, { color: 'accent', width: 2, head: 9 });
+            s.text('the set goes on forever', 0.24 * H, 10.5, { color: 'accent', ...LBL, align: 'center' });
           } else {
             s.clip(() => s.poly([[0, 0], [H, 0], [0, m / P2]], { fill: 'accent', fillAlpha: 0.1, stroke: false }));
             s.clip(() => s.line(H, 0, 0, m / P2, { color: 'accent', width: k === 'open' ? 2 : 2.8, dash: k === 'open' ? [7, 6] : null }));
@@ -73,15 +73,15 @@ has a solution: some affordable bundle $x^*$ has $u(x^*) \ge u(x)$ for every aff
           s.raster((x, y) => (inSet(k, x, y, P1, P2) && u(x, y) > uZ + 1e-9 ? [gc[0], gc[1], gc[2], 92] : null), { key: `${k}|${P1}|${P2}|${uZ}|${gc}`, res: 2 });
           drawLevel(s, F, uZ, { color: 'purple', width: 2 });
           // the grid of candidates while it is coarse, and the search sequence
-          const h = H / 2 ** n;
+          const h = H / 2 ** (n + 1);
           if (h * s.scale > 9 && k !== 'free') { const pts = []; for (let i = 0; i * h <= H + 1e-9; i++) for (let j = 0; j * h <= 12.5; j++) if (inSet(k, i * h, j * h, P1, P2)) pts.push([i * h, j * h]); s.dots(pts, { r: 2.2, color: 'muted', alpha: 0.7 }); }
           const seq = []; for (let i = 1; i <= 12; i++) seq.push(search(k, P1, P2, i));
           const shown = seq.slice(0, n), vis = shown.filter((q) => q[1] <= 12.4);
           s.path(vis, { color: 'gold', width: 1.4, alpha: 0.7 });
           vis.forEach((q, i) => { if (i < vis.length - 1) s.dot(q[0], q[1], { r: 3.4, color: 'gold' }); });
           const last = shown[n - 1];
-          if (last[1] <= 12.4) s.dot(last[0], last[1], { r: 5.5, color: 'gold', label: `x${SUB(n)}`, labelPos: k === 'open' ? 'sw' : 'ne', math: false });
-          else s.text(`x${n} = (${v.fix(last[0], 1)}, ${v.fix(last[1], 0)}) is off the chart ↑`, H, 12.2, { dx: -8, color: 'gold', ...LBL, align: 'right', baseline: 'top' });
+          if (last[1] <= 12.4) s.dot(last[0], last[1], { r: 5.5, color: 'gold', label: `x${SUB(n)}`, labelPos: 'sw', math: false });
+          else s.text(`x${SUB(n)} = (${v.fix(last[0], 1)}, ${v.fix(last[1], 0)}) is off the chart ↑`, H, 11.7, { dx: -8, color: 'gold', ...LBL, align: 'right' });
           let xs = null;
           if (k !== 'free') {
             xs = F.dem(P1, P2, m);
@@ -151,15 +151,15 @@ The rate at which the consumer is willing to trade the goods equals the rate at 
           if (Math.abs(gap) > 0.012 * k) pxArrow(s, B.x, B.y, gap > 0 ? X1 : -X1, gap > 0 ? -X2 : X2, 44, { color: 'green', width: 3, head: 10 });
           let tg = null;
           if (fam.value === 'concave') { const d = P1 * P1 + P2 * P2; tg = [(P1 * m) / d, (P2 * m) / d]; s.dot(tg[0], tg[1], { r: 6, hollow: true, color: 'red', width: 2.4 }); s.text('tangency = worst point', tg[0], tg[1], { dx: 10, dy: -11, color: 'red', ...LBL, align: 'left' }); }
-          s.dot(xs[0], xs[1], { r: 6.5, color: 'green', label: 'x*', labelPos: xs[1] < 1 ? 'n' : 'ne' });
+          s.dot(xs[0], xs[1], { r: 6.5, color: 'green', label: 'x*', labelPos: xs[1] < 1 ? 'n' : xs[0] < 0.5 ? 'e' : 'ne' });
           // utility along the line
           const along = (x) => F.u(x, (m - P1 * x) / P2), us = []; for (let i = 0; i <= 200; i++) us.push(along((X1 * i) / 200));
           const lo = Math.min(...us), hi = Math.max(...us), pd = 0.12 * (hi - lo || 1);
           g.setView([0, X1], [lo - pd, hi + 1.6 * pd]);
           g.fn(along, { domain: [0, X1], color: 'ink', width: 2.6, n: 240 });
           g.line(B.x, lo - pd, B.x, uB, GUIDE); g.dot(B.x, uB, { r: 6, color: 'gold', label: 'B', labelPos: 'nw' });
-          g.dot(xs[0], F.u(xs[0], xs[1]), { r: 6.5, color: 'green', label: 'x*', labelPos: xs[0] > 0.8 * X1 ? 'nw' : 'ne' });
-          if (tg) g.dot(tg[0], along(tg[0]), { r: 6, hollow: true, color: 'red', width: 2.4, label: 'tangency', labelPos: 's', labelColor: 'red' });
+          g.dot(xs[0], F.u(xs[0], xs[1]), { r: 6.5, color: 'green', label: 'x*', labelPos: xs[0] > 0.8 * X1 ? 'w' : xs[0] < 0.05 * X1 ? 'e' : 'ne' });
+          if (tg) g.dot(tg[0], along(tg[0]), { r: 6, hollow: true, color: 'red', width: 2.4, label: 'tangency', labelPos: 'n', labelColor: 'red' });
           // MRS along the line against the price ratio
           const mr = (x) => { const [a1, a2] = F.grad(x, (m - P1 * x) / P2); return a1 / a2; };
           const top = 3 * k; r.setView([0, X1], [0, top]);
@@ -170,9 +170,9 @@ The rate at which the consumer is willing to trade the goods equals the rate at 
           r.text(`p₁/p₂ = ${v.fix(k, 2)}`, X1, k, { dx: -8, dy: -10, color: 'accent', ...LBL, align: 'right' });
           r.clip(() => r.fn(mr, { domain: [eps, X1 - eps], color: 'purple', width: 2.6, n: 300 }));
           const conc = fam.value === 'concave';
-          r.text(conc ? 'MRS < p₁/p₂: move left' : 'MRS > p₁/p₂: buy more good 1', conc ? 0.03 * X1 : 0.03 * X1, conc ? 0.45 * k : 2.6 * k, { color: conc ? 'red' : 'green', size: 11.5, weight: 600, align: 'left' });
-          r.text(conc ? 'MRS > p₁/p₂: move right' : 'MRS < p₁/p₂: buy less good 1', 0.97 * X1, conc ? 2.6 * k : 0.45 * k, { color: conc ? 'green' : 'red', size: 11.5, weight: 600, align: 'right' });
-          r.line(B.x, 0, B.x, clamp(mrs, 0, top), GUIDE); if (mrs <= top) r.dot(B.x, mrs, { r: 6, color: 'gold' });
+          r.textPx(conc ? 'MRS < p₁/p₂: move left' : 'MRS > p₁/p₂: buy more good 1', 90, conc ? r.Y(0.5 * k) : r.Y(2.35 * k), { color: conc ? 'red' : 'green', size: 11.5, weight: 600, align: 'left' });
+          r.textPx(conc ? 'MRS > p₁/p₂: move right' : 'MRS < p₁/p₂: buy less good 1', r.width - 12, conc ? r.Y(2.35 * k) : r.Y(0.62 * k), { color: conc ? 'green' : 'red', size: 11.5, weight: 600, align: 'right' });
+          r.line(B.x, 0, B.x, clamp(mrs, 0, top), GUIDE); if (mrs <= top) r.dot(B.x, mrs, { r: 6, color: 'gold' }); else r.arrow(B.x, 0.86 * top, B.x, 0.99 * top, { color: 'gold', width: 2.4, head: 8 });
           st = { o, P1, P2, k, xs, uB, mrs, gap, g2, tg, conc };
         });
         v.readout(() => {
@@ -236,15 +236,14 @@ and a good that is not bought at all has $MU_i/p_i \le \lambda$. The common valu
           if (n > 2) s.corner(`budget line: the $${v.fix(M12, 2)} left after good 3`, 'tr', { color: 'accent', weight: 600 });
           // bars of MU/p
           const top = Math.max(...a.map((ai, i) => ai / P[i]), lam) * 1.12;
-          b.setView([0.3, n + 0.7], [0, top]); b.setTicks(a.map((_, i) => [i + 1, `good ${i + 1}`]), undefined);
+          b.setView([0.3, n + 0.7], [-0.09 * top, top]); b.line(0.3, 0, n + 0.7, 0, { color: 'ink', width: 1 }); b.setTicks(a.map((_, i) => [i + 1, `good ${i + 1}:  x${'₁₂₃'[i]} = ${v.fix(x[i], 2)}`]), undefined);
           a.forEach((_, i) => {
             b.rect(i + 0.72, 0, i + 1.28, mu[i], { fill: COL[i], fillAlpha: 0.7, color: COL[i], width: 1.2, radius: 4 });
             b.text(v.fix(mu[i], 3), i + 1, mu[i], { dy: -10, align: 'center', color: COL[i], ...LBL });
-            b.text(`x${'₁₂₃'[i]} = ${v.fix(x[i], 2)}`, i + 1, 0, { dy: -12, align: 'center', size: 11.5, weight: 600 });
           });
           b.hline(lam, { color: 'green', width: 2, dash: [6, 4] }); b.text(`λ* = ${v.fix(lam, 3)}`, n + 0.66, lam, { dy: -10, align: 'right', color: 'green', ...LBL });
           // utility added by each step
-          d.setView([0, M], [0, top]);
+          d.setView([0, M], [-0.16 * top, top]); d.line(0, 0, M, 0, { color: 'ink', width: 1 });
           hist.forEach(([i, gn], j) => d.rect(j * dl, 0, (j + 1) * dl, gn, { fill: COL[i], fillAlpha: 0.75, stroke: false }));
           d.hline(lam, { color: 'green', width: 2, dash: [6, 4] });
           const U = (q) => a.reduce((acc, ai, i) => acc + ai * Math.log(1 + q[i]), 0);
@@ -275,7 +274,7 @@ Every interior optimum solves these equations; for quasi-concave $u$ every solut
       credit: 'Joseph-Louis Lagrange, 1788',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lagrange_multiplier' },
       viz(v) {
-        const PRE = { cd: ['Cobb–Douglas', 'x1^0.4 x2^0.6'], ces: ['CES', '(sqrt(x1) + sqrt(x2))^2'], ql: ['quasilinear', '3 ln(x1) + x2'], log: ['logs', 'ln(x1 + 1) + 2 ln(x2 + 1)'] };
+        const PRE = { cd: ['Cobb–Douglas', 'x1^0.3 x2^0.45'], ces: ['CES', '(sqrt(x1) + sqrt(x2))^2'], ql: ['quasilinear', '3 ln(x1) + x2'], log: ['logs', 'ln(x1 + 1) + 2 ln(x2 + 1)'] };
         let inp = null;
         v.select('preset', Object.entries(PRE).map(([value, [label]]) => ({ value, label })), 'cd', { onChange: (k) => inp.set(PRE[k][1]) });
         inp = v.input('$u(x_1, x_2) =$', PRE.cd[1], { vars: ['x1', 'x2', 'x', 'y'], width: 240 });
@@ -299,7 +298,7 @@ Every interior optimum solves these equations; for quasi-concave $u$ every solut
           budget(s, P1, P2, M);
           const opt = best(u, P1, P2, M), xs = opt.x;
           s.contour(u, opt.u, { color: 'purple', width: 2.4, res: 130 });
-          const uP = u(P.x, P.y); if (Math.abs(uP - opt.u) > 1e-6 * Math.max(1, Math.abs(opt.u))) s.contour(u, uP, { color: 'purple', width: 1.4, dash: [5, 4], res: 130 });
+          const uP = u(P.x, P.y); if (Math.abs(uP - opt.u) > 1e-6 * Math.max(1, Math.abs(opt.u))) s.contour(u, uP, { color: 'purple', width: 1.3, alpha: 0.6, res: 130 });
           // the gradient at P and its two components
           const G = numGrad(u, P.x, P.y), Gs = numGrad(u, xs[0], xs[1]), pp = P1 * P1 + P2 * P2;
           const lamP = (G[0] * P1 + G[1] * P2) / pp, Nv = [lamP * P1, lamP * P2], T = [G[0] - Nv[0], G[1] - Nv[1]];
@@ -365,7 +364,7 @@ so even at the corner the consumer would trade more of good 2 for good 1 at mark
           s.rect(-1.8, -1.8, 0, 12.5, { fill: 'red', fillAlpha: 0.05, hatch: 'red', hatchAlpha: 0.3, stroke: false });
           s.rect(0, -1.8, 12.5, 0, { fill: 'red', fillAlpha: 0.05, hatch: 'red', hatchAlpha: 0.3, stroke: false });
           s.line(0, -1.8, 0, 12.5, { color: 'ink', width: 1.3 }); s.line(-1.8, 0, 12.5, 0, { color: 'ink', width: 1.3 });
-          s.text('x₂ < 0: not allowed', 12.3, -0.9, { color: 'red', size: 11.5, weight: 600, align: 'right' });
+          s.text('x₂ < 0: not allowed', 0.3, -0.9, { color: 'red', size: 11.5, weight: 600, align: 'left' });
           const xs = F.dem(P1, P2, M), us = F.u(xs[0], xs[1]), tie = kind === 'subs' && Math.abs(1 / P1 - 1.5 / P2) < 1e-9;
           for (const t of [2, 4, 6, 8, 10]) drawLevel(s, F, F.u(t, t), { color: v.color('purple', 0.2), width: 1 });
           budget(s, P1, P2, M);
@@ -390,12 +389,12 @@ so even at the corner the consumer would trade more of good 2 for good 1 at mark
           const mu = [g1 / P1, g2 / P2], lam = tie ? mu[0] : corner === 1 ? mu[1] : corner === 2 ? mu[0] : (mu[0] + mu[1]) / 2;
           const top = Math.max(mu[0], mu[1], lam) * 1.25 || 1, Yb = (q) => 5.7 + (3.6 * q) / top;
           [0, 1].forEach((i) => {
-            const cx = 2.2 + 2.4 * i, col = i ? 'teal' : 'orange';
+            const cx = 1.9 + 3 * i, col = i ? 'teal' : 'orange';
             k.rect(cx - 0.6, 5.7, cx + 0.6, Yb(mu[i]), { fill: col, fillAlpha: 0.7, color: col, width: 1.2, radius: 4 });
-            k.text(v.fix(mu[i], 3), cx, Yb(mu[i]), { dy: -10, align: 'center', color: col, ...LBL });
             k.tex(`MU_${i + 1}/p_${i + 1}`, cx, 5.25, { size: 14, color: col });
+            const tall = (Yb(mu[i]) - 5.7) * (k.height / 10) > 34; k.text(v.fix(mu[i], 3), cx, Yb(mu[i]), { dy: tall ? 13 : -10, align: 'center', color: tall ? 'ink' : col, ...LBL });
           });
-          k.line(0.9, Yb(lam), 5.9, Yb(lam), { color: 'green', width: 2, dash: [6, 4] }); k.tex(`\\lambda = ${v.fix(lam, 3)}`, 6.1, Yb(lam), { align: 'left', color: 'green', size: 15 });
+          k.line(0.8, Yb(lam), 6.2, Yb(lam), { color: 'green', width: 2, dash: [6, 4] }); k.tex(`\\lambda = ${v.fix(lam, 3)}`, 6.4, Yb(lam), { align: 'left', color: 'green', size: 15 });
           const ok = (b) => (b ? '✓' : '✗'), tol = 1e-7;
           const rows = [0, 1].map((i) => { const d = (i ? g2 : g1) - lam * (i ? P2 : P1), xi = xs[i]; return [`$x_${i + 1} = ${v.fix(xi, 2)} \\ge 0$, $\\ MU_${i + 1} - \\lambda p_${i + 1} = ${v.fix(d, 3)} \\le 0$`, d <= tol, `$x_${i + 1}\\,(MU_${i + 1} - \\lambda p_${i + 1}) = ${v.fix(xi * d, 3)}$`, Math.abs(xi * d) < 1e-6]; });
           let y = 4.1;
@@ -443,11 +442,11 @@ so scaling every price and income by the same factor, a change of currency or a 
         v.render(() => {
           const F = FAM[fam.value].F, k = what.value, T = t.value, fz = fee.value;
           const base = at(F, 'all', 1, fz), cur = at(F, k, T, fz);
-          s.line(base.M / base.P1, 0, 0, base.M / base.P2, { color: 'muted', width: 1.8, dash: [7, 5] });
           budget(s, cur.P1, cur.P2, cur.M);
+          s.line(base.M / base.P1, 0, 0, base.M / base.P2, { color: 'muted', width: 1.8, dash: [7, 5] });
           drawLevel(s, F, F.u(...cur.x), { color: 'purple', width: 2.2 });
           const same = Math.hypot(cur.x[0] - base.x[0], cur.x[1] - base.x[1]) < 1e-6;
-          if (!same) s.dot(base.x[0], base.x[1], { r: 6, hollow: true, color: 'muted', width: 2.2, label: 'at t = 1', labelPos: 'sw', labelColor: 'muted' });
+          if (!same) s.dot(base.x[0], base.x[1], { r: 6, hollow: true, color: 'muted', width: 2.2, label: 'at t = 1', labelPos: 'sw', labelColor: 'muted', math: false });
           s.dot(cur.x[0], cur.x[1], { r: 6.5, color: 'green', label: same ? 'x* (unchanged)' : 'x*', labelPos: 'ne' });
           const tag = `p₁ = $${v.fix(cur.P1, 2)}   p₂ = $${v.fix(cur.P2, 2)}   m = $${v.fix(cur.M + (fz ? 2 : 0), 2)}${fz ? ' − $2 fee' : ''}`;
           s.textPx(tag, s.width - 10, 16, { align: 'right', color: 'accent', size: 12, weight: 700 });
@@ -504,8 +503,8 @@ so the **budget shares** $s_1 = p_1x_1/m = \alpha$ and $s_2 = 1-\alpha$ do not d
           s.clip(() => s.poly([[0, 0], [X1, 0], [0, X2]], { fill: 'accent', fillAlpha: 0.08, stroke: false }));
           drawLevel(s, F, F.u(...xs), { color: 'purple', width: 2.2 });
           s.clip(() => { s.line(0, X2, xs[0], xs[1], { color: 'orange', width: 5 }); s.line(xs[0], xs[1], X1, 0, { color: 'teal', width: 5 }); });
-          const lab = (x0, y0, x1, y1, txt, col, side) => { const mx = (x0 + x1) / 2, my = (y0 + y1) / 2; if (mx < 15.5 && my < 15.5) s.text(txt, mx, my, { dx: side * 10, dy: side * 10, color: col, ...LBL, align: side > 0 ? 'left' : 'right' }); };
-          lab(0, X2, xs[0], xs[1], `s₁ = ${v.fix(s1, 2)}`, 'orange', 1); lab(xs[0], xs[1], X1, 0, `s₂ = ${v.fix(1 - s1, 2)}`, 'teal', -1);
+          const lab = (x0, y0, x1, y1, txt, col) => { const mx = (x0 + x1) / 2, my = (y0 + y1) / 2; if (mx > 15.5 || my > 15.5) return; const left = s.X(mx) > 80; s.text(txt, mx, my, { dx: left ? -9 : 9, dy: left ? 9 : -9, color: col, ...LBL, align: left ? 'right' : 'left' }); };
+          lab(0, X2, xs[0], xs[1], `s₁ = ${v.fix(s1, 2)}`, 'orange'); lab(xs[0], xs[1], X1, 0, `s₂ = ${v.fix(1 - s1, 2)}`, 'teal');
           s.line(xs[0], 0, xs[0], xs[1], GUIDE);
           s.dot(xs[0], xs[1], { r: 6.5, color: 'green', label: 'x*', labelPos: 'ne' });
           // share bars
@@ -514,13 +513,13 @@ so the **budget shares** $s_1 = p_1x_1/m = \alpha$ and $s_2 = 1-\alpha$ do not d
             b.text(`${nm} = ${v.fix(h, 3)}`, x, h, { dy: -11, align: 'center', color: col, ...LBL });
           });
           b.line(0.25, 0, 2.75, 0, { color: 'ink', width: 1.2 });
-          if (cd) { b.line(0.3, a, 1.4, a, { color: 'ink', width: 1.6, dash: [5, 4] }); b.line(1.6, 1 - a, 2.7, 1 - a, { color: 'ink', width: 1.6, dash: [5, 4] }); b.text('α', 0.3, a, { dx: -4, dy: 0, align: 'right', math: true, size: 15 }); b.text('1 − α', 2.7, 1 - a, { dx: 4, align: 'left', math: true, size: 13 }); }
+          if (cd) { b.line(0.3, a, 1.4, a, { color: 'ink', width: 1.6, dash: [5, 4] }); b.line(1.6, 1 - a, 2.7, 1 - a, { color: 'ink', width: 1.6, dash: [5, 4] }); b.text('α', 0.3, a, { dx: -4, dy: 0, align: 'right', math: true, size: 15 }); b.text('1 − α', 1.6, 1 - a, { dx: -5, align: 'right', math: true, size: 14 }); }
           // share against the relative price
-          for (const q of [0.5, 2]) if (Math.abs(q - sig) > 0.08) c.fn((r) => share1(a, q, r), { domain: [0.125, 8], color: 'faint', width: 1.4, n: 200 });
-          c.hline(a, { color: 'muted', width: 1.2, dash: [4, 4] }); c.text(`α = ${v.fix(a, 2)}`, 0.13, a, { dx: 4, dy: -9, color: 'muted', size: 11.5, align: 'left' });
+          for (const q of [0.5, 2]) if (Math.abs(q - sig) > 0.08) { c.fn((r) => share1(a, q, r), { domain: [0.125, 8], color: 'faint', width: 1.4, n: 200 }); const yq = share1(a, q, 0.18); c.text(`σ = ${q}`, 0.18, yq, { dy: yq > 0.9 ? 12 : -9, color: 'muted', size: 11, align: 'left' }); }
+          c.hline(a, { color: 'muted', width: 1.2, dash: [4, 4] }); c.text(`α = ${v.fix(a, 2)}`, 2.6, a, { dy: a > 0.88 ? 12 : -9, color: 'muted', size: 11.5, align: 'left' });
           c.fn((r) => share1(a, sig, r), { domain: [0.125, 8], color: 'orange', width: 2.8, n: 240 });
           const rel = P1 / P2; c.vline(rel, GUIDE); c.dot(rel, s1, { r: 6.5, color: 'orange' });
-          c.text(cd ? 'σ = 1: flat' : `σ = ${v.fix(sig, 2)}`, 7.8, share1(a, sig, 7.8), { dy: share1(a, sig, 7.8) > 0.85 ? 14 : -11, color: 'orange', ...LBL, align: 'right' });
+          c.text(cd ? 'σ = 1: flat' : `σ = ${v.fix(sig, 2)}`, rel, s1, { dx: 10, dy: s1 > 0.85 ? 14 : -13, color: 'orange', ...LBL, align: 'left' });
           st = { cd, a, sig, P1, P2, M, xs, s1 };
         });
         v.readout(() => {

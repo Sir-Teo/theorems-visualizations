@@ -11,9 +11,18 @@ const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const sup = (n) => String(n).split('').map((d) => SUP[+d]).join('');
 
 /** Set a chart's window with room for tick labels: l px on the left, b px at the bottom, r px right, t px on top. */
-function pv(s, [x0, x1], [y0, y1], { l = 32, b = 20, r = 8, t = 0 } = {}) {
+function pv(s, [x0, x1], [y0, y1], { l = 32, b = 26, r = 8, t = 0 } = {}) {
   const kx = (x1 - x0) / Math.max(40, s.width - l - r), ky = (y1 - y0) / Math.max(40, s.height - b - t);
   s.setView([x0 - l * kx, x1 + r * kx], [y0 - b * ky, y1 + t * ky]);
+}
+
+/** pv for a stage with a logarithmic x and/or y axis (padding in pixels, applied in log space). */
+function pvLog(s, [x0, x1], [y0, y1], { l = 32, b = 26, r = 8, t = 0, xlog = false, ylog = false } = {}) {
+  const pad = (a0, a1, lo, hi, len, lg) => {
+    if (!lg) { const k = (a1 - a0) / Math.max(40, len - lo - hi); return [a0 - lo * k, a1 + hi * k]; }
+    const k = Math.log10(a1 / a0) / Math.max(40, len - lo - hi); return [a0 / 10 ** (lo * k), a1 * 10 ** (hi * k)];
+  };
+  s.setView(pad(x0, x1, l, r, s.width, xlog), pad(y0, y1, b, t, s.height, ylog));
 }
 
 // ---------- disjoint-set forests drawn with roots on top and parent pointers as arrows pointing up
@@ -31,8 +40,8 @@ function forestLayout(p) {
     for (const c of kids[u]) place(c, d + 1);
     pos.set(u, { x: (pos.get(kids[u][0]).x + pos.get(kids[u][kids[u].length - 1]).x) / 2, d });
   };
-  for (const r of roots) { place(r, 0); slot += 0.6; }
-  return { pos, kids, roots, p: Array.from(p), w: slot - 0.6, h, n };
+  for (const r of roots) { place(r, 0); slot += kids[r].length ? 0.6 : 0.25; }
+  return { pos, kids, roots, p: Array.from(p), w: slot - (roots.length && kids[roots[roots.length - 1]].length ? 0.6 : 0.25), h, n };
 }
 const rootOf = (p, x) => { while (p[x] !== x) x = p[x]; return x; };
 const depthOf = (p, x) => { let d = 0; while (p[x] !== x) { x = p[x]; d++; } return d; };
@@ -72,7 +81,7 @@ function drawForest(s, L, o = {}) {
     if (fill) s.dot(x, y, { r, color: fill });
     else { s.dot(x, y, { r, hollow: true, color: col || 'muted', width: col ? 2.2 : 1.5 }); if (col) s.dot(x, y, { r: r - 1.1, color: col, alpha: 0.16, ring: false }); }
     const lab = o.label ? o.label(i) : String(i);
-    if (lab != null && r >= 6.5) s.text(lab, x, y, { align: 'center', size: clamp(r * 0.86, 8, 13), weight: 700, color: fnv(o.labelColor, i) || (fill ? 'panel' : 'ink'), halo: false });
+    if (lab != null && r >= 5.5) s.text(lab, x, y, { align: 'center', size: clamp(r * 0.9, 7.5, 13), weight: 700, color: fnv(o.labelColor, i) || (fill ? 'panel' : 'ink'), halo: false });
     const note = o.note && o.note(i);
     if (note) {
       const [txt, nc, pos = 'e'] = note, D = { e: [1, 0], n: [0, -1], ne: [0.72, -0.72], w: [-1, 0], s: [0, 1] }[pos];
@@ -88,7 +97,7 @@ function hitF(s, L, x, y, rad = 16) {
 }
 
 // ---------- 6.12: union by rank + path compression with witnesses (the members of a root's tree when it reached each rank)
-function ufWorkload(n, kind, seed, track) {
+function ufWorkload(n, kind, seed, track, scale = 1) {
   const p = new Int32Array(n), rank = new Int32Array(n); for (let i = 0; i < n; i++) p[i] = i;
   const mem = track ? Array.from({ length: n }, (_, i) => [i]) : null, W = track ? Array.from({ length: n }, (_, i) => [[i]]) : null;
   let s = (seed >>> 0) || 1;
@@ -101,8 +110,8 @@ function ufWorkload(n, kind, seed, track) {
     if (rank[a] === rank[b]) { rank[b]++; if (track) W[b][rank[b]] = mem[b].slice(); }
   };
   if (kind === 'doubling') { for (let st = 1; st < n; st *= 2) for (let i = 0; i + st < n; i += 2 * st) union(i, i + st); }
-  else if (kind === 'unions') { for (let t = 0; t < 2 * n; t++) union(ri(), ri()); }
-  else { for (let t = 0; t < 3 * n; t++) { if (rnd() < 0.45) union(ri(), ri()); else find(ri()); } }
+  else if (kind === 'unions') { for (let t = 0; t < 2 * n * scale; t++) union(ri(), ri()); }
+  else { for (let t = 0; t < 3 * n * scale; t++) { if (rnd() < 0.45) union(ri(), ri()); else find(ri()); } }
   return { p, rank, W };
 }
 
@@ -202,24 +211,24 @@ function tTeX(N) {
 /** A workload on n elements as a flat list of operations: [0, a, b] = UNION(a, b), [1, x, 0] = FIND(x). Oblivious: it does not depend on the heuristics. */
 function ufOps(n, wl) {
   const buf = new Int32Array(15 * n + 30); let len = 0, s = 12345;
-  const ops = { push: (...a) => { for (const x of a) buf[len++] = x; } };
+  const U = (a, b) => { buf[len++] = 0; buf[len++] = a; buf[len++] = b; }, Fd = (x) => { buf[len++] = 1; buf[len++] = x; buf[len++] = 0; };
   const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }, ri = () => Math.floor(rnd() * n);
-  if (wl === 'random') { for (let t = 0; t < 4 * n; t++) { if (rnd() < 0.5) ops.push(0, ri(), ri()); else ops.push(1, ri(), 0); } }
-  else if (wl === 'chain') { for (let i = 1; i < n; i++) ops.push(0, 0, i, 1, 0, 0); for (let t = 0; t < 2 * n; t++) ops.push(1, ri(), 0); }
+  if (wl === 'random') { for (let t = 0; t < 4 * n; t++) { if (rnd() < 0.5) U(ri(), ri()); else Fd(ri()); } }
+  else if (wl === 'chain') { for (let i = 1; i < n; i++) { U(0, i); Fd(0); } for (let t = 0; t < 2 * n; t++) Fd(ri()); }
   else {
     // a binomial tree on half the elements; then, again and again, hang the whole tree below a new element and FIND the deepest leaf.
     // ch/bv track the tree that naive linking + path compression would produce, which always contains a binomial tree B_k.
-    const B = 2 ** Math.floor(LG(n / 2)), ch = Array.from({ length: n }, () => []), bv = new Int32Array(n);
-    for (let st = 1, b = 0; st < B; st *= 2, b++) for (let i = 0; i + st < B; i += 2 * st) { ops.push(0, i + st - 1, i + 2 * st - 1); ch[i + 2 * st - 1].push(i + st - 1); bv[i + 2 * st - 1] = b + 1; }
+    const B = 2 ** Math.floor(LG(n / 2)), ch = Array.from({ length: n }, () => []);
+    for (let st = 1; st < B; st *= 2) for (let i = 0; i + st < B; i += 2 * st) { U(i + st - 1, i + 2 * st - 1); ch[i + 2 * st - 1].push(i + st - 1); }
     let root = B - 1;
     for (let z = B; z < n; z++) {
-      ops.push(0, root, z); ch[z] = [root];
+      U(root, z); ch[z] = [root];
       const path = [z]; let u = z; while (ch[u].length) { u = ch[u][ch[u].length - 1]; path.push(u); }
-      ops.push(1, u, 0);
-      const k = path.length - 2;                 // path = z, v_k, …, v_0
+      Fd(u);
+      // path = z, v_k, …, v_0: compression hangs every v_i below z, and v_i loses its largest child v_{i−1}
       for (let i = 1; i < path.length; i++) ch[path[i - 1]].pop();
-      const vs = path.slice(1).reverse();          // v_0 … v_k
-      ch[z] = vs.slice(1); vs.forEach((w, i) => { if (i) bv[w] = i - 1; }); bv[z] = k;
+      const nz = []; for (let i = path.length - 2; i >= 1; i--) nz.push(path[i]);
+      ch[z] = nz;                                  // z with children v_1 … v_k is again a binomial tree (plus the leaf v_0)
       root = z;
     }
   }
@@ -380,7 +389,7 @@ In the **disjoint-set forest** representation each set is a rooted tree whose ro
       refs: ['CLRS 4e §19.3', 'Erickson notes: Disjoint Sets'],
       tags: ['union-find'],
       viz(v) {
-        const ord = v.select('union order', [{ value: 'chain', label: 'big ∪ singleton' }, { value: 'pairs', label: 'equal sizes in pairs' }, { value: 'random', label: 'random' }], 'chain', { onChange: () => rebuild() });
+        const ord = v.select('union order', [{ value: 'chain', label: 'big ∪ singleton' }, { value: 'pairs', label: 'equal sizes in pairs' }, { value: 'random', label: 'random' }], 'pairs', { onChange: () => rebuild() });
         const nS = v.select('$n$', [{ value: 16, label: '16' }, { value: 32, label: '32' }], 16, { onChange: () => rebuild() });
         const bySize = v.toggle('union by size', true, { onChange: () => rebuild() });
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.35, minWidth: 320 });
@@ -531,7 +540,7 @@ Ranks never change except when a root gains a child of equal rank; ranks strictl
             ring: (i) => (i === sel ? 'gold' : null),
             edgeColor: (i) => (pe.has(i) ? 'gold' : f.ghost && f.ghost.some((g) => g[0] === i) ? 'green' : null),
             edgeWidth: (i) => (pe.has(i) ? 3.4 : f.ghost && f.ghost.some((g) => g[0] === i) ? 2.6 : null),
-            note: (i) => [String(f.rank[i]), i === f.rankUp ? 'orange' : 'muted', 'e'],
+            note: (i) => [String(f.rank[i]), i === f.rankUp ? 'orange' : 'muted', 'ne'],
           });
         });
         v.legend([['gold', 'find path', { dot: true }], ['green', 'root reached / new pointer'], ['faint', 'old pointer', { dash: true }], ['muted', 'small number = rank', { dot: true }]]);
@@ -560,8 +569,9 @@ Ranks never change except when a root gains a child of equal rank; ranks strictl
       refs: ['CLRS 4e §19.4'],
       tags: ['union-find'],
       viz(v) {
-        const wl = v.select('workload', [{ value: 'random', label: 'random unions and finds' }, { value: 'unions', label: 'random unions only' }, { value: 'doubling', label: 'equal ranks in pairs' }], 'random', { onChange: () => { small = ufWorkload(32, wl.value, 9, true); rS.set(Math.min(rS.value, maxR())); } });
-        let small = ufWorkload(32, 'random', 9, true);
+        const wl = v.select('workload', [{ value: 'random', label: 'random unions and finds' }, { value: 'unions', label: 'random unions only' }, { value: 'doubling', label: 'equal ranks in pairs' }], 'doubling', { onChange: () => { small = smallRun(wl.value); picked = null; rS.set(Math.min(rS.value, maxR())); } });
+        const smallRun = (k) => ufWorkload(32, k, k === 'unions' ? 3 : 7, true, k === 'doubling' ? 1 : 0.45);
+        let small = smallRun('doubling');
         const maxR = () => Math.max(...small.rank);
         const rS = v.slider('$r$', 0, 5, 2, { int: true });
         const kS = v.slider('$n$ for the histogram', 6, 16, 12, { int: true, fmt: (k) => String(2 ** k) });
@@ -589,12 +599,12 @@ Ranks never change except when a root gains a child of equal rank; ranks strictl
           // histogram for a large run
           const G = big(), N = 2 ** kS.value, cnt = Array(kS.value + 2).fill(0); for (const x of G.rank) cnt[x]++;
           const ge = cnt.map((_, k) => cnt.slice(k).reduce((a, b) => a + b, 0)), R = Math.max(...G.rank);
-          B.setView([-0.6, kS.value + 0.6], [0.5, N * 1.6]);
-          for (let k = 0; k <= kS.value; k++) if (cnt[k]) B.rect(k - 0.32, 0.5, k + 0.32, cnt[k], { fill: 'accent', fillAlpha: 0.5, stroke: false });
-          B.path(Array.from({ length: kS.value + 1 }, (_, k) => [k, N / 2 ** k]), { color: 'red', dash: [6, 4], width: 1.8 });
-          B.dots(Array.from({ length: kS.value + 1 }, (_, k) => [k, N / 2 ** k]), { r: 2.6, color: 'red' });
+          pvLog(B, [-0.6, kS.value + 0.6], [0.6, N * 1.6], { l: 30, ylog: true });
+          for (let k = 0; k <= kS.value; k++) if (cnt[k]) B.rect(k - 0.32, 0.6, k + 0.32, cnt[k], { fill: 'accent', fillAlpha: 0.5, stroke: false });
           const geP = []; for (let k = 0; k <= R; k++) geP.push([k, ge[k]]);
-          B.path(geP, { color: 'purple', width: 2 }); geP.forEach(([x, y]) => B.dot(x, y, { r: 3.4, color: 'purple' }));
+          B.path(geP, { color: 'purple', width: 2.4 }); geP.forEach(([x, y]) => B.dot(x, y, { r: 3.6, color: 'purple' }));
+          B.path(Array.from({ length: kS.value + 1 }, (_, k) => [k, N / 2 ** k]), { color: 'red', dash: [6, 4], width: 1.8 });
+          B.dots(Array.from({ length: kS.value + 1 }, (_, k) => [k, N / 2 ** k]), { r: 2.2, color: 'red' });
           B.vline(r, { color: 'gold', width: 1.2, dash: [3, 3] });
           let worst = 0, worstR = 0; ge.forEach((g, k) => { if (k <= R && g / (N / 2 ** k) > worst) { worst = g / (N / 2 ** k); worstR = k; } });
           info = { r, owners, sizes, overlap, N, R, worst, worstR, cntR: ge[r] ?? 0 };
@@ -626,13 +636,13 @@ so $\alpha(n)=0,1,2,3$ for $n\le 2$, $n=3$, $4\le n\le 7$, $8\le n\le 2047$, and
       viz(v) {
         const inp = v.input('$n$ =', '10^80', { width: 170, placeholder: 'e.g. 2^65536 or 2^^5' });
         for (const t of ['10^80', '2^65536', '2^^6', '2^^2052']) v.button(t.replace('^^', '↑↑'), () => inp.set(t));
-        const TS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, weight: 1, minWidth: 300, title: '$A_k(j)$' });
-        const C = v.stage({ x: [0, 18], y: [0, 7], axes: 'box', height: 250, weight: 1.15, minWidth: 300, title: '$\\alpha(n)$, $\\log^* n$ and $\\log_2\\log_2 n$', xlabel: 'n',
+        const TS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true, title: '$A_k(j)$ for small $k$ and $j$ (click a cell)' });
+        const C = v.stage({ x: [0, 18], y: [0, 7], axes: 'box', height: 260, full: true, title: '$\\alpha(n)$, $\\log^* n$ and $\\log_2\\log_2 n$ against $n$ (axis spaced by $\\log_2\\log_2 n$)',
           xticks: [[0, '2'], [1, '4'], [2, '16'], [3, '256'], [4, '2¹⁶'], [8.05, '10⁸⁰'], [12, '2⁴⁰⁹⁶'], [16, '2⁶⁵⁵³⁶']] });
         const K = 5, J = 5, ATOMS = T(1e80);
         const val = (k, j) => (k === 0 ? T(j + 1) : k === 1 ? T(2 * j + 1) : k === 2 ? A2t(T(j)) : k === 3 ? A3t(j) : j === 0 ? T(1) : j === 1 ? A41 : null);
         const vals = Array.from({ length: K }, (_, k) => Array.from({ length: J }, (_, j) => val(k, j)));
-        const tab = v.table(TS, { rows: K, cols: J, square: false, cellAspect: 2.1, maxCell: 46, size: 12.5, rowLabels: (k) => `$k=${k}$`, colLabels: (j) => `$j=${j}$`, cornerLabel: '' });
+        const tab = v.table(TS, { rows: K, cols: J, square: false, cellAspect: 3.6, maxCell: 40, size: 12.5, rowLabels: (k) => `$k=${k}$`, colLabels: (j) => `$j=${j}$`, cornerLabel: '' });
         let cell = [3, 1];
         TS.onClick((x, y) => { const c = tab.hit(x, y); if (c && c.i >= 0 && c.j >= 0) cell = [c.i, c.j]; });
         const fmtCell = (N) => (N == null ? '$\\gg A_4(1)$' : `$${tTeX(N)}$`);
@@ -653,8 +663,8 @@ so $\alpha(n)=0,1,2,3$ for $n\le 2$, $n=3$, $4\le n\le 7$, $8\le n\le 2047$, and
           C.fn((x) => x, { color: 'orange', width: 1.8, domain: [0, 7] });
           C.fn(lstarX, { color: 'purple', width: 2.2, domain: [0, 18], n: 2000 });
           C.fn(alphaX, { color: 'green', width: 3, domain: [0, 18], n: 2000 });
-          C.text('log₂ n', 2.7, 6.5, { align: 'left', size: 11, weight: 700, color: 'red', dx: 4 });
-          C.text('log₂ log₂ n', 6.5, 6.5, { align: 'right', size: 11, weight: 700, color: 'orange', dx: -6 });
+          C.text('log₂ n', 2.55, 6.5, { align: 'right', size: 11, weight: 700, color: 'red', dx: -6 });
+          C.text('log₂ log₂ n', 6.4, 6.5, { align: 'right', size: 11, weight: 700, color: 'orange', dx: -6 });
           C.text('log* n', 17.8, 5, { align: 'right', baseline: 'bottom', dy: -3, size: 11, weight: 700, color: 'purple' });
           C.text('α(n)', 17.8, 4, { align: 'right', baseline: 'bottom', dy: -3, size: 11, weight: 700, color: 'green' });
           if (parsed.N) {
@@ -709,14 +719,14 @@ so $\alpha(n)=0,1,2,3$ for $n\le 2$, $n=3$, $4\le n\le 7$, $8\le n\le 2047$, and
         const lstar = (n) => { let c = 0; while (n > 1) { n = LG(n); c++; } return c; };
         v.render(() => {
           const Cv = curve(wl.value), TOP = 18;
-          pv(A, [16, 65536], [0, TOP], { l: 26, r: 10 });
+          pvLog(A, [16, 65536], [0, TOP], { l: 26, r: 10, xlog: true });
           A.fn((n) => LG(n), { color: 'ink', dash: [6, 4], width: 1.2, alpha: 0.55 });
           A.fn(lstar, { color: 'ink', dash: [2, 3], width: 1.3, alpha: 0.6, n: 600 });
           A.fn(alphaSmall, { color: 'ink', width: 1, alpha: 0.4, n: 600 });
           A.text('log₂ n', 65536, 16, { align: 'right', baseline: 'bottom', dx: -4, dy: -2, size: 11, color: 'muted', weight: 700 });
           A.text('log* n', 65536, 4, { align: 'right', baseline: 'bottom', dx: -4, dy: -2, size: 11, color: 'muted', weight: 700 });
           A.text('α(n)', 300, 3, { align: 'right', baseline: 'top', dy: 3, size: 11, color: 'muted', weight: 700 });
-          HEUR.forEach((h, k) => {
+          HEUR.map((h, k) => [h, k]).reverse().forEach(([h, k]) => {
             const pts = NS.map((n, i) => (Cv[k][i] == null ? null : [n, Cv[k][i]]));
             A.clip(() => { A.path(pts, { color: h.color, width: k === 0 ? 3 : 2 }); pts.forEach((q) => { if (q && q[1] <= TOP) A.dot(q[0], q[1], { r: 3, color: h.color }); }); });
             const lastI = pts.reduce((b, q, i) => (q ? i : b), -1);
@@ -728,11 +738,11 @@ so $\alpha(n)=0,1,2,3$ for $n\le 2$, $n=3$, $4\le n\le 7$, $8\le n\le 2047$, and
           const maxC = Math.max(...F.map((e) => e.c)), lo = -bound;
           pv(B, [0, F.length], [lo, Math.max(maxC, bound) + 1.2], { l: 26, r: 10 });
           B.hline(0, { color: 'muted', width: 1 });
-          B.dots(F.map((e, i) => [i, e.c]), { r: 1.6, color: 'orange' });
-          B.dots(F.map((e, i) => [i, Math.max(e.am, lo)]), { r: 1.6, color: 'green' });
+          B.dots(F.map((e, i) => [i, Math.max(e.am, lo)]), { r: 2.4, color: 'green' });
+          B.dots(F.map((e, i) => [i, e.c]), { r: 1.5, color: 'orange' });
           B.hline(bound, { color: 'green', dash: [7, 5], width: 1.8 });
           B.text(`α(n) + 2 = ${bound}`, F.length, bound, { align: 'right', baseline: 'bottom', dy: -3, dx: -4, size: 11.5, weight: 700, color: 'green' });
-          B.corner(`n = ${2 ** kS.value}, ${F.length} finds, ${Lk.length} links`, 'tl', { size: 11.5 });
+          B.setTitle(`both heuristics, $n = ${2 ** kS.value}$: each of the ${F.length} FINDs`);
         });
         v.legend([...HEUR.map((h) => [h.color, h.label]), ['ink', 'log₂ n, log* n, α(n)', { dash: true }], ['orange', 'FIND path length', { dot: true }], ['green', 'amortized FIND cost', { dot: true }]]);
         v.readout(() => {

@@ -1,5 +1,5 @@
 // Waves & Optics — Chapter 1: The wave equation
-import { TAU, pulse, dpulse, makeChain, wall, rod, ring } from './ch01.shared.js';
+import { TAU, pulse, dpulse, makeChain, wall, rod } from './ch01.shared.js';
 
 /** Periodic pulse on [0, 1): profile `name`, FWHM w, centred at x0. */
 const periodic = (name, w, x0) => (x) => { let u = (((x - x0) % 1) + 1) % 1; if (u > 0.5) u -= 1; return pulse(name, u / w); };
@@ -194,18 +194,31 @@ $$c=\sqrt{T/\mu},$$
           if (curve) return curve;
           curve = [0.2, 0.5, 1, 1.6, 2.5, 3.5, 5, 6.5, 8, 10, 12].map((Acm) => {
             const S = runFor(Acm / 100), rec = [];
-            while (S.t < 1.2) { for (let k = 0; k < 20; k++) S.step(); const p = S.peak(); if (p.x > 0.35 && p.x < 0.8) rec.push([S.t, p.x]); if (p.x >= 0.8) break; }
+            while (S.t < 1.2) {
+              for (let k = 0; k < 20; k++) S.step();
+              const p = S.peak();
+              if (rec.length && p.x < rec[rec.length - 1][1] - 0.01) break; // the crest must keep moving right
+              if (p.x > 0.35 && p.x < 0.8) rec.push([S.t, p.x]); if (p.x >= 0.8) break;
+            }
             return [Acm, fitSpeed(rec)];
           });
           return curve;
         };
-        let S = null, key = '', rec = [], tau = 0;
+        let S = null, key = '', rec = [], tau = 0, recDone = false;
         v.animate((t) => {
           const A = aS.value / 100, c = Math.sqrt(Ts.value / (mS.value / 1000));
-          if (key !== String(A)) { key = String(A); S = runFor(A); rec = []; }
+          if (key !== String(A)) { key = String(A); S = runFor(A); rec = []; recDone = false; }
           tau = (t * SLOW * c) % TMAX;
-          if (tau < S.t - 1e-9) { S = runFor(A); rec = []; }
-          while (S.t < tau) { S.step(); if (rec.length < 400 && S.t < 1.0) { const p = S.peak(); if (p.x > 0.33 && p.x < 0.82 && (!rec.length || S.t - rec[rec.length - 1][0] > 0.02)) rec.push([S.t, p.x]); } }
+          if (tau < S.t - 1e-9) { S = runFor(A); rec = []; recDone = false; }
+          while (S.t < tau) {
+            S.step();
+            if (!recDone && (!rec.length || S.t - rec[rec.length - 1][0] > 0.02)) {
+              const p = S.peak();
+              if (rec.length && p.x < rec[rec.length - 1][1] - 0.01) recDone = true; // follow the first passage only
+              else if (p.x >= 0.82) recDone = true;
+              else if (p.x > 0.33) rec.push([S.t, p.x]);
+            }
+          }
           // ---- the string, with an automatic vertical scale
           const hy = 1.3 * Math.max(A, 0.004), span = 2 * hy;
           s.setView([-0.01, 1.01], [-hy, hy]);
@@ -223,7 +236,7 @@ $$c=\sqrt{T/\mu},$$
           const tms = (u) => (u / c) * 1000;
           wl.line(X0, 0, X0 + c * 0.01, 10, { color: 'green', width: 2, dash: [7, 5] });
           wl.dots(rec.map((r) => [r[1], tms(r[0])]), { r: 3.2, color: 'gold' });
-          if (tau < 1) { const p = S.peak(); if (p.x < 0.95) wl.dot(p.x, tms(tau), { r: 5, color: 'accent' }); }
+          if (!recDone) { const p = S.peak(); if (p.x < 0.95) wl.dot(p.x, tms(tau), { r: 5, color: 'accent' }); }
           // ---- speed against amplitude
           const cv = speedCurve();
           sp.setView([0.2, 12], [0.9, Math.max(1.3, ...cv.map((p) => p[1] || 0)) * 1.04]);
