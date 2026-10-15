@@ -203,8 +203,8 @@ Staircases spend almost all trials near threshold, so they are far more efficien
           // ---- the track
           const tmax = Math.max(isYou ? 30 : T, S.pts.length + 1);
           tr.setView([-1, tmax + 1], null);
-          if (xt) { tr.hline(xt, { color: 'green', dash: [7, 5], width: 1.6 }); tr.text(`target: ${(100 * p).toFixed(1)}% correct at ${v.fix(xt, 1)} ¢`, tmax, xt, { dy: -9, align: 'right', color: 'green', weight: 600, size: 12 }); }
-          else tr.text('target 50% = guessing: no threshold to converge on', tmax, 120, { align: 'right', color: 'red', weight: 600, size: 12 });
+          if (xt) tr.hline(xt, { color: 'green', dash: [7, 5], width: 1.6 });
+          tr.textPx(xt ? `target: ${(100 * p).toFixed(1)}% correct at ${v.fix(xt, 2)} ¢` : 'target 50% = guessing: no threshold to converge on', tr.width - 10, 16, { align: 'right', color: xt ? 'green' : 'red', weight: 600, size: 12 });
           if (S.pts.length > 1) tr.path(S.pts.map((q) => [q.t, q.L]), { color: 'muted', width: 1.2 });
           if (isYou && phase !== 'idle' || isYou && S.pts.length) tr.dot(S.pts.length, S.L, { r: 4, color: 'gold', hollow: true });
           S.rev.forEach((q, i) => { tr.dot(q.t, q.L, { r: 7.5, color: 'gold', hollow: true, width: 2 }); if (i < 30) tr.text(String(i + 1), q.t, q.L, { dy: q.L > 1.2 * (xt || 1) ? -14 : 14, align: 'center', color: 'gold', size: 10, weight: 600 }); });
@@ -212,7 +212,7 @@ Staircases spend almost all trials near threshold, so they are far more efficien
           if (est) {
             const t0 = S.rev[est.from].t;
             tr.line(t0, est.x, tmax + 1, est.x, { color: 'gold', width: 2.4 });
-            tr.text(`estimate ${v.fix(est.x, 1)} ¢`, t0, est.x, { dy: est.x < (xt || 0) ? 14 : -11, dx: 2, align: 'left', color: 'gold', weight: 700, size: 12 });
+            tr.textPx(`estimate: mean of reversals ${est.from + 1}–${S.rev.length} = ${v.fix(est.x, 2)} ¢`, tr.width - 10, 34, { align: 'right', color: 'gold', weight: 700, size: 12 });
           }
           if (isYou && !S.pts.length) tr.text('press ▶ Play trial: which of the two tones is higher?', tmax / 2, 90, { align: 'center', color: 'muted', size: 13 });
           // ---- the listener's psychometric function
@@ -222,9 +222,9 @@ Staircases spend almost all trials near threshold, so they are far more efficien
             pf.hline(pk, { color: on ? 'green' : 'faint', dash: [4, 4], width: on ? 1.6 : 1 });
             if (xk) { pf.line(xk, 0.4, xk, pk, { color: on ? 'green' : 'faint', dash: [3, 3], width: on ? 1.6 : 1 }); pf.dot(xk, pk, { r: on ? 5 : 3.5, color: on ? 'green' : 'muted' }); }
           }
-          pf.text('1-up–2-down', 0.4, 0.707, { dy: -8, align: 'left', color: n === 2 ? 'green' : 'muted', size: 11 });
-          pf.text('1-up–3-down', 0.4, 0.794, { dy: -8, align: 'left', color: n === 3 ? 'green' : 'muted', size: 11 });
-          pf.text('1-up–1-down: chance', 0.4, 0.5, { dy: -8, align: 'left', color: n === 1 ? 'red' : 'muted', size: 11 });
+          pf.text('1-up–2-down: 70.7%', 145, 0.707, { dy: -8, align: 'right', color: n === 2 ? 'green' : 'muted', size: 11, weight: n === 2 ? 700 : 500 });
+          pf.text('1-up–3-down: 79.4%', 145, 0.794, { dy: -8, align: 'right', color: n === 3 ? 'green' : 'muted', size: 11, weight: n === 3 ? 700 : 500 });
+          pf.text('1-up–1-down: 50% = chance', 145, 0.5, { dy: -8, align: 'right', color: n === 1 ? 'red' : 'muted', size: 11, weight: n === 1 ? 700 : 500 });
           // ---- many runs
           const key = [n, f, T, seed].join('|');
           if (key !== cKey) {
@@ -235,7 +235,7 @@ Staircases spend almost all trials near threshold, so they are far more efficien
             cache = { H, n: xs.length, gm: xs.length ? 10 ** M.mean(lg) : NaN, sd: xs.length > 1 ? M.stdev(lg) : NaN };
           }
           const ymax = Math.max(4, ...cache.H.counts) * 1.25;
-          hs.setView(null, [-0.12 * ymax, ymax]);
+          hs.setView(null, [-0.22 * ymax, ymax]);
           hs.hist(cache.H, { color: 'gold', fillAlpha: 0.45 });
           if (xt) { hs.vline(xt, { color: 'green', dash: [6, 4], width: 1.8 }); }
           if (isFinite(cache.gm)) { hs.vline(cache.gm, { color: 'gold', width: 2 }); hs.text(`mean ${v.fix(cache.gm, 1)} ¢`, cache.gm, ymax * 0.9, { dx: 6, align: 'left', color: 'gold', weight: 700, size: 11.5 }); }
@@ -394,17 +394,18 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
       scope: String.raw`Holds over the middle of a sense's range (for vision, photopic luminances on a steady background; for hearing, broadband noise from about 30 dB above threshold). It fails at low intensities, where the JND levels off at a constant (1.10), and for pure-tone intensity, where $\Delta I/I$ falls slowly with level (the near miss).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Weber%E2%80%93Fechner_law' },
       viz(v) {
-        const M = v.M, after = timers(v), BASES = [0.03, 0.06, 0.12, 0.24, 0.48], NTR = 50, R0 = 0.3, FST = Math.pow(10, 0.1), RMIN = 0.003, I0D = 0.03, DR = 0.55;
-        let seed = 23, phase = 'idle', cur = null, tid = 0, sel = 2;
+        const M = v.M, after = timers(v), BASES = [0.03, 0.06, 0.12, 0.24, 0.48], NTR = 80, R0 = 0.3, FST = Math.pow(10, 0.1), RMIN = 0.003, I0D = 0.03, DR = 0.55;
+        let seed = 357, phase = 'idle', cur = null, tid = 0, sel = 2;
         const who = v.select('subject', OBS, 'sim', { onChange: () => { after.clear(); phase = 'idle'; if (who.value === 'you' && !cur) newTrial(); } });
         const axes = v.select('axes', [{ value: 'lin', label: 'linear' }, { value: 'log', label: 'log–log' }], 'lin');
         const kS = v.slider('simulated Weber fraction $k$', 0.01, 0.15, 0.04, { step: 0.005 });
         const dark = v.toggle('dark light $I_0$ (see 1.10)', false);
+        const big = v.toggle('preview 5 JNDs', false);
         const bL = v.button('Left half brighter', () => answer(0));
         const bR = v.button('Right half brighter', () => answer(1));
         const bNew = v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
         const bRes = v.button('Reset', () => { after.clear(); stairs = BASES.map(fresh); phase = 'idle'; newTrial(); });
-        const st = v.stage({ x: [-1, 1], y: [-0.8, 0.8], equal: true, axes: false, height: 300, weight: 0.85, title: 'which half is brighter?' });
+        const st = v.stage({ x: [-1, 1], y: [-0.86, 0.8], equal: true, axes: false, height: 300, weight: 0.85, title: 'which half is brighter?' });
         const pl = v.stage({ x: [0, 0.55], y: [0, 0.05], height: 300, axes: 'box', weight: 1.15, title: 'JND against background: Weber’s line' });
         const fresh = () => ({ j: 0, run: 0, dir: 0, trials: [] });
         const ratio = (j) => R0 / Math.pow(FST, j), JMAX = Math.floor(Math.log(R0 / RMIN) / Math.log(FST));
@@ -440,7 +441,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
         const P = (I, d) => (axes.value === 'log' ? [Math.log10(I), Math.log10(d)] : [I, d]);
         v.render(() => {
           const isYou = who.value === 'you', log = axes.value === 'log';
-          bL.hidden = bR.hidden = bRes.hidden = !isYou; bNew.hidden = kS.el.hidden = dark.el.hidden = isYou; probe.visible = !isYou;
+          bL.hidden = bR.hidden = bRes.hidden = !isYou; bNew.hidden = kS.el.hidden = dark.el.hidden = big.el.hidden = isYou; probe.visible = !isYou;
           if (isYou && !cur) newTrial();
           const pts = isYou ? stairs.map((S, i) => (S.trials.length >= 8 ? jndOf(S, BASES[i]) : null)) : simulate();
           fitInfo = pts;
@@ -458,7 +459,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           }
           const [xa, xb] = pl.bounds.x;
           const lineFn = (fn, st) => { const pts2 = []; for (let i = 0; i <= 60; i++) { const I = log ? 10 ** (xa + ((xb - xa) * i) / 60) : Math.max(1e-6, xa + ((xb - xa) * i) / 60); const d = fn(I); if (d > 0) pts2.push(P(I, d)); } pl.path(pts2, st); };
-          if (!isYou) lineFn((I) => kS.value * (I + (dark.value ? I0D : 0)), { color: 'muted', dash: [2, 4], width: 1.4 });
+          if (!isYou) lineFn((I) => kS.value * (I + (dark.value ? I0D : 0)), { color: 'orange', dash: [2, 4], width: 1.6 });
           if (L) {
             lineFn((I) => L.a + L.b * I, { color: 'muted', dash: [7, 5], width: 1.6 });
             lineFn((I) => L.k0 * I, { color: 'green', width: 2.6 });
@@ -474,24 +475,25 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           let I, dI, side, txt;
           if (isYou) { I = cur ? BASES[cur.b] : BASES[0]; dI = phase === 'show' ? cur.r * I : 0; side = cur ? cur.side : 0; }
           else {
-            const p = pts[sel]; I = BASES[sel]; dI = p ? p.d : 0; side = 1;
+            const p = pts[sel], mult = big.value ? 5 : 1; I = BASES[sel]; dI = p ? mult * p.d : 0; side = 1;
             if (p) [probe.x, probe.y] = P(p.I, p.d);
-            txt = `I = ${I}, ΔI = ${v.fix(dI, 4)} (one JND, ${v.fix((100 * dI) / I, 1)}%)`;
+            txt = `I = ${I}, ΔI = ${v.fix(dI, 4)} (${mult === 1 ? 'one JND' : 'five JNDs'}, ${v.fix((100 * dI) / I, 1)}%)`;
           }
           const key = `${isYou ? 'y' + tid + phase : 's' + sel + dI.toFixed(6)}`;
           const Rn = v.rng(31 + tid);
           st.raster((x, y) => {
-            const inDisc = x * x + y * y < DR * DR;
+            const r2 = x * x + y * y, inDisc = r2 < DR * DR;
             let Lum = I;
             if (inDisc && dI) { const right = x > 0; if ((right ? 1 : 0) === side) Lum = I + dI; }
+            else if (!inDisc && r2 < (DR + 0.014) ** 2) Lum = 0.6 * I;
             return dither(srgb(Math.min(1, Lum)), Rn);
           }, { res: 1, key, id: 'w' });
           const gs = Math.round(srgb(I)), tc = gs < 120 ? Math.min(255, gs + 60) : gs - 60, tcol = [tc, tc, tc];
           st.line(0, DR + 0.04, 0, DR + 0.13, { color: tcol, width: 2 }); st.line(0, -DR - 0.04, 0, -DR - 0.13, { color: tcol, width: 2 });
-          if (!isYou) { st.text(txt, 0, -0.72, { align: 'center', color: tcol, halo: false, size: 12 }); st.text('I', -0.28, DR + 0.1, { align: 'center', color: tcol, halo: false, size: 13, math: true }); st.text('I + ΔI', 0.28, DR + 0.1, { align: 'center', color: tcol, halo: false, size: 13, math: true }); }
-          else st.text(phase === 'show' ? `background ${cur.b + 1} of 5 · trial ${stairs[cur.b].trials.length + 1}` : '', 0, -0.72, { align: 'center', color: tcol, halo: false, size: 12 });
+          if (!isYou) { st.text(txt, 0, -0.78, { align: 'center', color: tcol, halo: false, size: 12 }); st.text('I', -0.28, DR + 0.1, { align: 'center', color: tcol, halo: false, size: 13, math: true }); st.text('I + ΔI', 0.28, DR + 0.1, { align: 'center', color: tcol, halo: false, size: 13, math: true }); }
+          else st.text(phase === 'show' ? `background ${cur.b + 1} of 5 · trial ${stairs[cur.b].trials.length + 1}` : '', 0, -0.78, { align: 'center', color: tcol, halo: false, size: 12 });
         });
-        v.legend([['accent', 'JND at each background, 95% interval', { dot: true }], ['green', 'best line through the origin: slope = Weber fraction'], ['muted', 'best line with a free intercept', { dash: true }], ['muted', 'the simulated observer’s true JNDs', { dash: [2, 4] }]]);
+        v.legend([['accent', 'JND at each background, 95% interval', { dot: true }], ['green', 'best line through the origin: slope = Weber fraction'], ['muted', 'best line with a free intercept', { dash: true }], ['orange', 'the simulated observer’s true JNDs', { dash: true }]]);
         v.readout(() => {
           const pts = fitInfo || [], L = lines(pts), good = pts.filter(Boolean);
           if (!good.length) return 'Press the button for the brighter half. The difference shrinks after two correct answers in a row and grows after a mistake, so each background homes in on your 70–75% point. Keep going until all five JNDs appear.';
@@ -509,76 +511,91 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
       name: 'Where Weber’s law fails: low intensities and the near miss',
       statement: String.raw`Measured over the whole range of a sense, the Weber fraction $\Delta I/I$ is not constant.
 
-- **Near threshold it rises steeply.** As $I$ falls toward the absolute threshold, $\Delta I$ stops shrinking in proportion and levels off. The data are described well by the *modified* Weber law $$\Delta I = k\,(I+I_0),$$ where $I_0$ acts like a constant internal noise (for vision, the “dark light” of spontaneous activity) added to every stimulus. On log–log axes the threshold-versus-intensity curve is flat at low $I$ and bends into Weber's line of slope 1 above $I\approx I_0$. Miller (1947) found exactly this for the intensity of broadband noise: $\Delta I/I\approx0.1$ (about 0.4 dB) from roughly 30 dB above threshold up, with a sharp rise below.
-- **For pure tones it falls slowly: the near miss.** For the intensity of a sinusoid, $\Delta I/I$ keeps decreasing with level, roughly $\Delta I\propto I^{0.93}$, from about 1.5 dB near threshold to about 0.5 dB at 80 dB above it (McGill & Goldberg, 1968; Jesteadt, Wier & Green, 1977) — close to Weber's law but systematically not it, probably because louder tones recruit more auditory nerve fibres spread along the cochlea.`,
-      idea: String.raw`If discrimination is limited by noise of two kinds, a part proportional to the stimulus (which gives Weber's law, 1.9) and a fixed part independent of it, the total noise is proportional to $I+I_0$ and so is the JND: at high intensities the proportional part wins and $\Delta I/I\to k$, at low intensities the fixed part wins and $\Delta I\to kI_0$, a constant. Dividing $\Delta I$ by $I+I_0$ instead of $I$ therefore makes the plot flat again, and the value of $I_0$ that does so is a measurement of the internal noise. No single $I_0$ can straighten the pure-tone data, whose slope on log–log axes is below 1 at every level: that residual is the near miss.`,
-      caption: String.raw`Left: JNDs against intensity on log–log axes (intensities relative to the absolute threshold), with Weber's line (red, dashed), the modified law (green) and, for tones, the best power law (purple). Right: the Weber fraction $\Delta I/I$ (red) curls upward at low intensities; the green points divide by $I+I_0$ instead and lie flat when $I_0$ is right. Drag **lowest level tested** up to 30 dB and Weber's law looks perfect; bring it down to threshold and it fails. Adjust $I_0$ to straighten the green points; switch to **pure tone** for the near miss. Drag the **gold** handle to a level and press *Listen* to hear increments of 1 or 3 JNDs on a sustained sound at that level (relative to your volume setting).`,
+- **Toward threshold it rises steeply.** As $I$ falls, $\Delta I$ stops shrinking in proportion and levels off at a constant. The data are described well by the *modified* Weber law $$\Delta I = k\,(I+I_0),$$ where $I_0$ acts like a fixed internal noise added to every stimulus (for vision, the so-called dark light of spontaneous activity in the retina). On log–log axes the threshold-versus-intensity curve is flat for $I\ll I_0$ and bends into Weber's line of slope 1 for $I\gg I_0$. Kőnig and Brodhun (1889) saw this for brightness over a millionfold range of intensities, and Miller (1947) for the intensity of broadband noise: $\Delta I/I\approx0.1$ (about 0.4 dB) from roughly 30 dB above threshold, with a sharp rise below.
+- **For pure tones it falls slowly: the near miss.** For the intensity of a sinusoid, $\Delta I/I$ keeps decreasing with level, roughly $\Delta I\propto I^{0.93}$, from about 1.5 dB near threshold to about 0.5 dB at 80 dB above it (McGill & Goldberg, 1968; Jesteadt, Wier & Green, 1977): close to Weber's law but systematically not it, probably because louder tones excite more auditory nerve fibres, spread over more of the cochlea.`,
+      idea: String.raw`If discrimination is limited by noise of two kinds, a part proportional to the stimulus (which gives Weber's law, 1.9) and a fixed part independent of it, the total noise is proportional to $I+I_0$ and so is the JND: at high intensities the proportional part wins and $\Delta I/I\to k$; at low intensities the fixed part wins and $\Delta I\to kI_0$, a constant. Dividing $\Delta I$ by $I+I_0$ instead of $I$ therefore makes the Weber fraction flat again, and the value of $I_0$ that does so measures the internal noise in stimulus units. No single $I_0$ straightens the pure-tone data, whose log–log slope is below 1 at every level: that residual is the near miss.`,
+      caption: String.raw`Left: the threshold-versus-intensity curve on log–log axes, with Weber's line (red, dashed), the modified law (green) and, for tones, the best power law (purple). Right: the Weber fraction $\Delta I/I$ (red) curls upward at low intensities; the green points divide by $I+I_0$ instead and lie flat when $I_0$ is right. Raise **drop the lowest levels** and Weber's law looks perfect; bring it back down and it fails. Adjust $I_0$ to straighten the green points, and switch **stimulus** to see the dark light in vision, Miller's noise, and the pure-tone near miss. For sounds, drag the **gold** handle to a level and press *Listen* to hear increments of 1 or 3 JNDs on a sustained sound at that level (relative to your volume setting).`,
       deps: ['psych-1.9', 'music-1.8'],
       refs: ['Gescheider ch. 1'],
-      tags: ['Weber', 'hearing'],
-      credit: 'Miller, 1947; McGill & Goldberg, 1968 (the near miss)',
+      tags: ['Weber', 'noise'],
+      credit: 'Kőnig & Brodhun, 1889; Miller, 1947; McGill & Goldberg, 1968 (the near miss)',
       viz(v) {
-        const M = v.M, after = timers(v), LEVELS = M.range(19).map((i) => 5 * i), K = 0.1, I0T = Math.pow(10, 0.6);
-        const mod = v.select('stimulus', [{ value: 'noise', label: 'broadband noise' }, { value: 'tone', label: 'pure tone (1 kHz)' }], 'noise');
-        const low = v.slider('lowest level tested', 0, 45, 0, { step: 5, fmt: (x) => `${x} dB above threshold` });
-        const i0S = v.slider('$I_0$ in the model', -10, 25, 6, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} dB (${v.fmt(10 ** (x / 10), 3)}×)` });
-        const model = (I, m) => (m === 'noise' ? K * (I + I0T) : 0.463 * Math.pow(I, -0.072) * I);
-        const Z = (() => { const R = v.rng(5); return LEVELS.map(() => R.normal()); })();
-        const data = (m) => LEVELS.map((L, i) => { const I = 10 ** (L / 10); return { L, I, d: model(I, m) * Math.exp(0.07 * Z[i]) }; });
-        const tvi = v.stage({ x: [0.5, 3e9], y: [0.1, 3e9], xlog: true, ylog: true, height: 320, axes: 'box', weight: 1, xlabel: 'I (re threshold)', ylabel: 'ΔI', title: 'threshold versus intensity' });
-        const wf = v.stage({ x: [0.5, 3e9], y: [-0.08, 0.62], xlog: true, height: 320, axes: 'box', weight: 1, xlabel: 'I (re threshold)', title: 'Weber fraction: ΔI/I (red) and ΔI/(I+I₀) (green)' });
-        const hL = tvi.handle(1e4, model(1e4, 'noise'), { color: 'gold', constrain: (x) => { const I = M.clamp(x, 1, 1e9); return [I, model(I, mod.value)]; } });
+        const M = v.M, after = timers(v);
+        const MOD = {
+          light: { lo: -2, hi: 6, I0: 3, model: (I) => 0.015 * (I + 3), unit: 'background I (relative units)', wf: [0.006, 12] },
+          noise: { lo: 0, hi: 9, I0: 4, model: (I) => 0.1 * (I + 4), unit: 'I (re threshold)', wf: [0.04, 1.2] },
+          tone: { lo: 0, hi: 9, I0: null, model: (I) => 0.463 * Math.pow(I, 0.928), unit: 'I (re threshold)', wf: [0.04, 1.2] },
+        };
+        const mod = v.select('stimulus', [{ value: 'light', label: 'light on a background' }, { value: 'noise', label: 'broadband noise' }, { value: 'tone', label: 'pure tone (1 kHz)' }], 'light');
+        const drop = v.slider('drop the lowest levels', 0, 40, 0, { step: 5, fmt: (x) => (x ? `lowest ${x} dB dropped` : 'none dropped') });
+        const i0S = v.slider('$I_0$ in the model', -20, 30, 5, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} dB = ${v.fmt(10 ** (x / 10), 3)}` });
+        const Z = (() => { const R = v.rng(5); return M.range(20).map(() => R.normal()); })();
+        const data = (m) => { const C = MOD[m], out = []; for (let i = 0, u = C.lo; u <= C.hi + 1e-9; i++, u += 0.5) { const I = 10 ** u; out.push({ u, I, d: C.model(I) * Math.exp(0.07 * Z[i]) }); } return out; };
+        const tvi = v.stage({ x: [0.005, 3e6], y: [0.01, 1e5], xlog: true, ylog: true, height: 320, axes: 'box', weight: 1, ylabel: 'JND ΔI', title: 'threshold versus intensity' });
+        const wf = v.stage({ x: [0.005, 3e6], y: [0.006, 12], xlog: true, ylog: true, height: 320, axes: 'box', weight: 1, title: 'Weber fraction: ΔI/I (red), ΔI/(I + I₀) (green)' });
+        const hL = tvi.handle(1e4, MOD.noise.model(1e4), { color: 'gold', constrain: (x) => { const I = M.clamp(x, 1, 1e9); return [I, MOD[mod.value].model(I)]; } });
         const listen = (mult) => (snd) => {
-          const I = hL.x, L = 10 * Math.log10(I), dL = 10 * Math.log10(1 + (mult * model(I, mod.value)) / I), g = Math.pow(10, Math.min(-12, L - 100) / 20), up = Math.pow(10, dL / 20);
+          if (mod.value === 'light') return;
+          const I = hL.x, L = 10 * Math.log10(I), C = MOD[mod.value], dL = 10 * Math.log10(1 + (mult * C.model(I)) / I), g = Math.pow(10, Math.min(-12, L - 100) / 20), up = Math.pow(10, dL / 20);
           const vc = mod.value === 'noise' ? snd.noise({ color: 'white', sustain: true, gain: g, attack: 0.05 }) : snd.tone(1000, { sustain: true, gain: g, attack: 0.05 });
           [[600, up], [1000, 1], [1500, up], [1900, 1], [2400, up], [2800, 1]].forEach(([ms, k]) => after(ms, () => vc.setGain(k)));
           after(3300, () => vc.stop(0.08));
         };
-        v.soundButton('Listen: 1 JND', listen(1));
-        v.soundButton('Listen: 3 JND', listen(3));
+        const b1 = v.soundButton('Listen: 1 JND', listen(1));
+        const b3 = v.soundButton('Listen: 3 JND', listen(3));
         let st = null;
         v.render(() => {
-          const m = mod.value, D = data(m).filter((p) => p.L >= low.value), I0 = 10 ** (i0S.value / 10);
-          hL.y = model(hL.x, m);
-          tvi.setView(null, m === 'noise' ? [0.1, 3e9] : [0.1, 3e9]);
-          wf.setView(null, m === 'noise' ? [-0.08, 0.62] : [-0.08, 0.62]);
-          // fits
+          const m = mod.value, C = MOD[m], all = data(m), D = all.filter((p) => p.u >= C.lo + drop.value / 10 - 1e-9), I0 = 10 ** (i0S.value / 10), snd = m !== 'light';
+          b1.hidden = b3.hidden = !snd; hL.visible = snd;
+          const x0 = 10 ** (C.lo - 0.35), x1 = 10 ** (C.hi + 0.35), dmin = Math.min(...all.map((p) => p.d)), dmax = Math.max(...all.map((p) => p.d));
+          tvi.setView([x0, x1], [dmin / 6, dmax * 4]); wf.setView([x0, x1], C.wf);
+          tvi.o.xlabel = wf.o.xlabel = C.unit;
+          if (snd) { hL.x = M.clamp(hL.x, 1, 1e9); hL.y = C.model(hL.x); }
+          // fits on the levels kept
           const gm = (xs) => 10 ** M.mean(xs.map(Math.log10));
           const kW = gm(D.map((p) => p.d / p.I)), kM = gm(D.map((p) => p.d / (p.I + I0)));
           const rms = (f) => Math.sqrt(M.mean(D.map((p) => (Math.log10(p.d) - Math.log10(f(p.I))) ** 2)));
           const eW = rms((I) => kW * I), eM = rms((I) => kM * (I + I0));
           let best = { e: Infinity, x: 0 };
-          for (let x = -20; x <= 30; x += 0.25) { const J = 10 ** (x / 10), kk = gm(D.map((p) => p.d / (p.I + J))), e = rms((I) => kk * (I + J)); if (e < best.e) best = { e, x }; }
-          const hiD = D.filter((p) => p.L >= 20), lr = hiD.length > 2 ? M.linreg(hiD.map((p) => Math.log10(p.I)), hiD.map((p) => Math.log10(p.d))) : null;
+          for (let x = -30; x <= 40; x += 0.25) { const J = 10 ** (x / 10), kk = gm(D.map((p) => p.d / (p.I + J))), e = rms((I) => kk * (I + J)); if (e < best.e) best = { e, x }; }
+          const hiD = D.filter((p) => p.u >= C.lo + 2), lr = hiD.length > 2 ? M.linreg(hiD.map((p) => p.u), hiD.map((p) => Math.log10(p.d))) : null;
           // ---- TVI
-          if (low.value > 0) { tvi.rect(0.5, 0.1, 10 ** (low.value / 10), 3e9, { fill: 'gray', fillAlpha: 0.1, stroke: false }); wf.rect(0.5, -0.08, 10 ** (low.value / 10), 0.62, { fill: 'gray', fillAlpha: 0.1, stroke: false }); }
+          if (drop.value > 0) { const xc = 10 ** (C.lo + drop.value / 10 - 0.25); tvi.rect(x0, dmin / 6, xc, dmax * 4, { fill: 'gray', fillAlpha: 0.12, stroke: false }); wf.rect(x0, C.wf[0], xc, C.wf[1], { fill: 'gray', fillAlpha: 0.12, stroke: false }); }
           tvi.fn((I) => kW * I, { color: 'red', dash: [7, 5], width: 1.8 });
           tvi.fn((I) => kM * (I + I0), { color: 'green', width: 2.4 });
           if (m === 'tone' && lr) tvi.fn((I) => 10 ** (lr.intercept + lr.slope * Math.log10(I)), { color: 'purple', width: 1.8, dash: [3, 3] });
-          tvi.dots(D.map((p) => [p.I, p.d]), { r: 3.6, color: 'ink' });
+          tvi.dots(all.filter((p) => !D.includes(p)).map((p) => [p.I, p.d]), { r: 3.2, color: 'faint' });
+          tvi.dots(D.map((p) => [p.I, p.d]), { r: 3.8, color: 'ink' });
           tvi.vline(I0, { color: 'green', dash: [2, 4], width: 1.2 });
-          tvi.text('I₀', I0, 3e8, { dx: 5, align: 'left', color: 'green', weight: 700, size: 12 });
-          tvi.text('Weber: slope 1', 3e7, kW * 3e7, { dx: 6, dy: 10, align: 'left', color: 'red', size: 11.5, weight: 600 });
-          tvi.line(hL.x, 0.1, hL.x, hL.y, { color: 'gold', dash: [2, 3], width: 1.2 });
+          tvi.text('I₀', I0, dmax * 1.6, { dx: 5, align: 'left', color: 'green', weight: 700, size: 12.5 });
+          const xw = 10 ** (C.hi - 1.6);
+          tvi.text('Weber: slope 1', xw, kW * xw, { dx: 8, dy: 12, align: 'left', color: 'red', size: 11.5, weight: 600 });
+          const xf = 10 ** (C.lo + 0.2);
+          tvi.text(m === 'tone' ? 'slope < 1 everywhere' : 'flat: ΔI → k·I₀', xf, C.model(xf), { dy: -14, align: 'left', color: m === 'tone' ? 'purple' : 'green', size: 11.5, weight: 600 });
+          if (snd) tvi.line(hL.x, dmin / 6, hL.x, hL.y, { color: 'gold', dash: [2, 3], width: 1.2 });
           // ---- Weber fraction
           wf.hline(kW, { color: 'red', dash: [7, 5], width: 1.4 });
           wf.hline(kM, { color: 'green', width: 1.4, alpha: 0.6 });
           wf.path(D.map((p) => [p.I, p.d / p.I]), { color: 'red', width: 1.2, alpha: 0.5 });
-          wf.dots(D.map((p) => [p.I, p.d / p.I]), { r: 3.6, color: 'red' });
+          wf.dots(D.map((p) => [p.I, p.d / p.I]), { r: 3.8, color: 'red' });
           wf.path(D.map((p) => [p.I, p.d / (p.I + I0)]), { color: 'green', width: 1.2, alpha: 0.5 });
-          wf.dots(D.map((p) => [p.I, p.d / (p.I + I0)]), { r: 3.6, color: 'green' });
-          wf.text('ΔI / I', 0.8, D.length ? D[0].d / D[0].I : 0.3, { dy: -12, align: 'left', color: 'red', weight: 700, size: 12 });
-          wf.text('ΔI / (I + I₀)', 3e8, kM, { dy: -12, align: 'right', color: 'green', weight: 700, size: 12 });
-          wf.vline(hL.x, { color: 'gold', dash: [2, 3], width: 1.2 });
-          st = { m, kW, kM, eW, eM, best, lr, I0, n: D.length };
+          wf.dots(D.map((p) => [p.I, p.d / (p.I + I0)]), { r: 3.8, color: 'green' });
+          if (D.length) wf.text('ΔI / I', D[0].I, D[0].d / D[0].I, { dx: 10, align: 'left', color: 'red', weight: 700, size: 12 });
+          wf.text('ΔI / (I + I₀)', x1, kM, { dx: -6, dy: kM > kW ? -12 : 13, align: 'right', color: 'green', weight: 700, size: 12 });
+          if (snd) wf.vline(hL.x, { color: 'gold', dash: [2, 3], width: 1.2 });
+          st = { m, kW, kM, eW, eM, best, lr, n: D.length, C };
         });
-        v.legend([['ink', 'measured JND (simulated data with 7% scatter)', { dot: true }], ['red', 'Weber: $\\Delta I = kI$', { dash: true }], ['green', 'modified Weber: $\\Delta I = k(I+I_0)$'], ['purple', 'power law fit (tones)', { dash: [3, 3] }], ['gold', 'level for Listen']]);
+        v.legend([['ink', 'measured JND (simulated, 7% scatter)', { dot: true }], ['red', 'Weber: $\\Delta I = kI$', { dash: true }], ['green', 'modified: $\\Delta I = k(I+I_0)$'], ['purple', 'power law (tones)', { dash: [3, 3] }]]);
         v.readout(() => {
           if (!st) return '';
-          const { m, kW, kM, eW, eM, best, lr, n } = st, L = 10 * Math.log10(hL.x), dL = 10 * Math.log10(1 + model(hL.x, m) / hL.x);
-          const fits = `${n} levels from ${low.value} dB · Weber alone: $k$ = ${v.fix(kW, 3)}, rms error ${v.fix(eW, 3)} decades · modified, $I_0$ = ${v.fix(i0S.value, 1)} dB: $k$ = ${v.fix(kM, 3)}, rms error ${v.fix(eM, 3)} (best $I_0$ = ${v.fix(best.x, 1)} dB, error ${v.fix(best.e, 3)})`;
-          const tail = m === 'noise' ? (low.value >= 30 ? ' · above 30 dB the data alone cannot tell the two models apart: Weber’s law looks exact' : ' · with $I_0$ added the Weber fraction is flat, so a constant internal noise explains the failure') : ` · power law above 20 dB: $\\Delta I\\propto I^{${lr ? v.fix(lr.slope, 3) : '—'}}$, an exponent just below 1 — the near miss, which no $I_0$ removes`;
-          return `${fits}${tail} · at the gold level (${v.fix(L, 0)} dB above threshold) one JND is ${v.fix(dL, 2)} dB`;
+          const { m, kW, kM, eW, eM, best, lr, n, C } = st;
+          const fits = `${n} levels · Weber alone: $k$ = ${v.fix(kW, 3)}, rms error ${v.fix(eW, 3)} decades · with $I_0$ = ${v.fmt(10 ** (i0S.value / 10), 3)}: $k$ = ${v.fix(kM, 3)}, rms error ${v.fix(eM, 3)} (best $I_0$ = ${v.fmt(10 ** (best.x / 10), 3)}, error ${v.fix(best.e, 3)}${C.I0 ? `; true ${C.I0}` : ''})`;
+          let tail;
+          if (m === 'tone') tail = ` · log–log slope ${lr ? v.fix(lr.slope, 3) : '—'}: just below 1 at every level, the near miss, which no $I_0$ removes`;
+          else if (best.e > 0.6 * eW && drop.value >= 20) tail = ' · with the low levels dropped the data cannot tell the two models apart: Weber’s law looks exact';
+          else tail = ' · adding $I_0$ makes the Weber fraction flat: a fixed internal noise explains the failure';
+          const lis = m !== 'light' ? ` · at the gold level (${v.fix(10 * Math.log10(hL.x), 0)} dB above threshold) one JND is ${v.fix(10 * Math.log10(1 + C.model(hL.x) / hL.x), 2)} dB` : '';
+          return `${fits}${tail}${lis}`;
         });
       },
     },
@@ -634,6 +651,8 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
           const pts = [[X(1), 0]];
           for (let n = 1; n < steps.length; n++) { const I = Math.min(steps[n], IMAX); pts.push([X(I), n - 1]); if (steps[n] > IMAX) break; pts.push([X(I), n]); }
           s.path(pts, { color: 'accent', width: 1.8 });
+          const corners = steps.filter((I) => I <= IMAX).map((I, n) => [X(I), n]);
+          if (corners.length > 1) s.path(corners, { color: 'accent', width: 1.2, dash: [3, 4], alpha: 0.8 });
           if (steps.length < 140) for (let n = 1; n < steps.length && steps[n] <= IMAX; n++) s.dot(X(steps[n]), n, { r: 2.4, color: 'accent' });
           // Fechner's integral
           const cur = []; for (let i = 0; i <= 240; i++) { const I = log ? 10 ** ((2 * i) / 240) : 1 + ((IMAX - 1) * i) / 240; cur.push([X(I), Sint(I)]); }
@@ -651,10 +670,10 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
             lad.line(x0, 0, x0, Sint(IMAX), { color: 'faint', width: 1 });
             Is.forEach((I, j) => { const y = Sint(I), hot = playing === name && j === on; lad.line(x0 - 0.3, y, x0 + 0.3, y, { color: hot ? 'gold' : col, width: hot ? 5 : 3 }); });
           }
-          lad.text('×1.93 each', 0.5, -0.05 * ytop, { align: 'center', color: 'teal', size: 11 });
-          lad.text('+14.1 each', 1.5, -0.05 * ytop, { align: 'center', color: 'orange', size: 11 });
+          lad.text('×1.93 each', 0.5, Sint(IMAX), { dy: -14, align: 'center', color: 'teal', size: 11.5, weight: 600 });
+          lad.text('+14.1 each', 1.5, Sint(IMAX), { dy: -14, align: 'center', color: 'orange', size: 11.5, weight: 600 });
         });
-        v.legend([['accent', 'one JND per step'], ['green', 'Fechner’s integral $\\int dI/\\Delta I$'], ['purple', 'Stevens: $\\propto I^{0.33}$', { dash: true }], ['teal', 'equal-ratio ladder'], ['orange', 'equal-difference ladder']]);
+        v.legend([['accent', 'one JND per step; dashed: through the corners'], ['green', 'Fechner’s integral $\\int dI/\\Delta I$'], ['purple', 'Stevens: $\\propto I^{0.33}$', { dash: true }], ['teal', 'equal-ratio ladder'], ['orange', 'equal-difference ladder']]);
         v.readout(() => {
           const k = kS.value, steps = cache ? cache.steps : [1];
           const n = steps.filter((I) => I <= Ih).length - 1, S = Sint(Ih);
@@ -683,12 +702,12 @@ In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p
       tags: ['threshold theory', 'guessing'],
       credit: 'Abbott, 1925 (the formula); Blackwell, 1953 (high-threshold theory)',
       viz(v) {
-        const M = v.M, LEV = [1, 2, 3, 4, 5, 6, 7, 8, 9], NT = 60, NB = 120, MU = 5, SG = 1.3, GREF = 0.05;
+        const M = v.M, LEV = [1, 2, 3, 4, 5, 6, 7, 8, 9], NT = 100, NB = 200, MU = 5, SG = 1.3, GREF = 0.05;
         const gS = v.slider('guessing rate $g$', 0, 0.6, 0.3, { step: 0.01 });
         const kind = v.select('true observer', [{ value: 'ht', label: 'high threshold' }, { value: 'sdt', label: 'Gaussian (signal detection)' }], 'ht');
-        let seed = 13;
+        let seed = 86;
         v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
-        const mo = v.stage({ x: [0, 2.4], y: [-0.2, 1.22], height: 310, axes: false, weight: 0.85, title: 'where the yes answers come from' });
+        const mo = v.stage({ x: [0, 2.4], y: [-0.3, 1.2], height: 310, axes: false, weight: 0.85, title: 'where the yes answers come from' });
         const pl = v.stage({ x: [-0.6, 10.2], y: [-0.14, 1.08], height: 310, axes: 'box', weight: 1.15, xlabel: 'intensity', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'raw and corrected detection' });
         const pTrue = (x) => Phi(M, (x - MU) / SG);
         const dpr = (x) => Math.max(0, (2.6 * x) / MU);  // SDT observer: d′ grows linearly with intensity
@@ -720,9 +739,9 @@ In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p
           if (ht) col(0.15, [[p, 'green', `detected ${pc(p)}`], [(1 - p) * g, 'gold', 'guess yes'], [(1 - p) * (1 - g), 'gray', 'no']], 'signal trials');
           else col(0.15, [[H, 'orange', `yes ${pc(H)}`], [1 - H, 'gray', 'no']], 'signal trials');
           col(1.35, [[g, 'gold', `guess yes ${pc(g)}`], [1 - g, 'gray', 'no']], 'blank trials');
-          mo.text(`H = ${v.fix(H, 3)}`, 0.6, -0.08, { align: 'center', color: 'orange', weight: 700, size: 12.5 });
-          mo.text(`F = ${v.fix(F, 3)}`, 1.8, -0.08, { align: 'center', color: 'red', weight: 700, size: 12.5 });
-          mo.text(`(H − F)/(1 − F) = ${v.fix((H - F) / (1 - F), 3)}${ht ? ` = p ✓` : ''}`, 1.2, -0.17, { align: 'center', color: 'green', weight: 700, size: 12.5 });
+          mo.text(`H = ${v.fix(H, 3)}`, 0.6, -0.09, { align: 'center', color: 'orange', weight: 700, size: 12.5 });
+          mo.text(`F = ${v.fix(F, 3)}`, 1.8, -0.09, { align: 'center', color: 'red', weight: 700, size: 12.5 });
+          mo.text(`(H − F)/(1 − F) = ${v.fix((H - F) / (1 - F), 3)}${ht ? ` = p ✓` : ''}`, 1.2, -0.2, { align: 'center', color: 'green', weight: 700, size: 12.5 });
           // ---- the curves
           pl.hline(S.F, { color: 'red', dash: [6, 4], width: 1.6 });
           pl.text('false alarms F', 10, S.F, { dy: -9, align: 'right', color: 'red', size: 11.5, weight: 600 });
@@ -760,7 +779,7 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
       credit: 'Moyer & Landauer, 1967; Halberda & Feigenson, 2008',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Approximate_number_system' },
       viz(v) {
-        const M = v.M, after = timers(v), BASES = [10, 20, 40], RATIOS = [1.1, 1.2, 1.3, 1.5, 2], W = 0.18, LP = 0.02, NPER = 20, RAD = 0.82, CX = 1.08;
+        const M = v.M, after = timers(v), BASES = [10, 20, 40], RATIOS = [1.1, 1.2, 1.3, 1.5, 2], W = 0.18, LP = 0.02, NPER = 40, RAD = 0.82, CX = 1.08;
         const COLS = { 10: 'blue', 20: 'orange', 40: 'purple' };
         const pcN = (n1, n2, w) => LP / 2 + (1 - LP) * Phi(M, Math.abs(n2 - n1) / (w * Math.sqrt(n1 * n1 + n2 * n2)));
         let phase = 'idle', cur = null, tid = 0, last = null;
@@ -773,7 +792,7 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
         const pd = v.stage({ x: [-3, 42], y: [0.36, 1.04], height: 270, axes: 'box', weight: 1, xlabel: 'difference', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'accuracy against the difference' });
         const pr = v.stage({ x: [0.95, 2.08], y: [0.36, 1.04], height: 270, axes: 'box', weight: 1, xlabel: 'ratio larger/smaller', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'accuracy against the ratio' });
         // simulated trials
-        const sim = (() => { const R = v.rng(61), out = []; for (const b of BASES) for (const r of RATIOS) for (let i = 0; i < NPER; i++) { const big = Math.round(b * r); out.push({ b, r, big, ok: R() < pcN(b, big, W) }); } return out; })();
+        const sim = (() => { const R = v.rng(127), out = []; for (const b of BASES) for (const r of RATIOS) for (let i = 0; i < NPER; i++) { const big = Math.round(b * r); out.push({ b, r, big, ok: R() < pcN(b, big, W) }); } return out; })();
         let you = [];
         const Ry = v.rng(314), conds = [];
         for (const b of BASES) for (const r of RATIOS) conds.push({ b, r });
@@ -811,6 +830,8 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
           const isYou = who.value === 'you';
           bFl.hidden = bL.hidden = bR.hidden = bRes.hidden = !isYou; hd.visible = !isYou;
           const cells = agg(isYou ? you : sim), F = fitW(cells), w = F ? F.w : W;
+          const pc0 = cells.find((c) => c.b === pick.b && c.r === pick.r);
+          if (pc0 && !isYou) { hd.x = pc0.big - pc0.b; hd.y = pc0.k / pc0.n; }
           // ---- stimulus
           for (const sx of [-CX, CX]) st.circle(sx, 0, RAD, { color: 'faint', width: 1.2, dash: [3, 4] });
           let show = null;
@@ -843,7 +864,8 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
           if (!cells.length) return 'No trials yet. Press **▶ Flash**, don’t try to count, and answer by impression.';
           const acc = (b, r) => { const c = cells.find((q) => q.b === b && q.r === r); return c ? `${pc(c.k / c.n)} (${c.n})` : '—'; };
           const N = cells.reduce((s, c) => s + c.n, 0);
-          return `${N} trials · fitted internal Weber fraction $\\hat w$ = **${F ? v.fix(F.w, 3) : '—'}**${F && isFinite(F.se) ? `, 95% CI ${v.fix(F.w * Math.exp(-1.96 * F.se), 3)}–${v.fix(F.w * Math.exp(1.96 * F.se), 3)}` : ''}${isYou ? '' : ` (true ${W})`} · ratio 1.2: 10 vs 12 ${acc(10, 1.2)}, 20 vs 24 ${acc(20, 1.2)}, 40 vs 48 ${acc(40, 1.2)} · the same difference of 4 dots: 20 vs 24 ${acc(20, 1.2)} but 40 vs 44 would sit at ratio 1.1: ${acc(40, 1.1)} · model accuracy at ratio 1.2: ${pc(pcN(1, 1.2, F ? F.w : W))} for every base`;
+          const ww = F ? F.w : W;
+          return `${N} trials · fitted internal Weber fraction $\\hat w$ = **${F ? v.fix(F.w, 3) : '—'}**${F && isFinite(F.se) ? `, 95% CI ${v.fix(F.w * Math.exp(-1.96 * F.se), 3)}–${v.fix(F.w * Math.exp(1.96 * F.se), 3)}` : ''}${isYou ? '' : ` (true ${W})`} · same ratio 1.2, differences 2, 4 and 8: 10 vs 12 ${acc(10, 1.2)}, 20 vs 24 ${acc(20, 1.2)}, 40 vs 48 ${acc(40, 1.2)} (model ${pc(pcN(1, 1.2, ww))} for all three) · same difference 4, different ratios: 20 vs 24 ${acc(20, 1.2)} against 40 vs 44 ${acc(40, 1.1)} (model ${pc(pcN(1, 1.2, ww))} and ${pc(pcN(40, 44, ww))})`;
         });
       },
     },

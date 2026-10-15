@@ -313,22 +313,23 @@ its ordinary derivative plus an impulse of area $J_k$ at every jump.`,
       refs: ['Oppenheim–Willsky §1.4', 'Oppenheim–Willsky §2.5'],
       tags: ['impulse', 'distributions'],
       viz(v) {
-        const M = v.M, XL = -2.6, XR = 2.6, YB = [-2.5, 2.9];
+        const M = v.M, XL = -2.6, XR = 2.6;
         const SIG = {
-          step: { label: '$u(t)$', x: (t) => (t >= 0 ? 1 : 0), X: (t) => Math.max(t, 0), d: () => 0, J: [[0, 1]] },
-          exp: { label: '$e^{-t}u(t)$', x: (t) => (t >= 0 ? Math.exp(-t) : 0), X: (t) => (t > 0 ? 1 - Math.exp(-t) : 0), d: (t) => (t > 0 ? -Math.exp(-t) : 0), J: [[0, 1]] },
-          pulse: { label: '$u(t+1)-u(t-1)$', x: (t) => (t >= -1 && t < 1 ? 1 : 0), X: (t) => M.clamp(t, -1, 1) + 1, d: () => 0, J: [[-1, 1], [1, -1]] },
-          saw: { label: 'sawtooth', x: (t) => t - Math.floor(t), X: (t) => Math.floor(t) / 2 + (t - Math.floor(t)) ** 2 / 2, d: () => 1, J: [[-2, -1], [-1, -1], [0, -1], [1, -1], [2, -1]] },
+          step: { label: '$u(t)$', x: (t) => (t >= 0 ? 1 : 0), X: (t) => Math.max(t, 0), d: () => 0, J: [[0, 1]], yb: [-1.2, 2.9] },
+          exp: { label: '$e^{-t}u(t)$', x: (t) => (t >= 0 ? Math.exp(-t) : 0), X: (t) => (t > 0 ? 1 - Math.exp(-t) : 0), d: (t) => (t > 0 ? -Math.exp(-t) : 0), J: [[0, 1]], yb: [-1.5, 2.9] },
+          pulse: { label: '$u(t+1)-u(t-1)$', x: (t) => (t >= -1 && t < 1 ? 1 : 0), X: (t) => M.clamp(t, -1, 1) + 1, d: () => 0, J: [[-1, 1], [1, -1]], yb: [-2.6, 2.9] },
+          saw: { label: 'sawtooth', x: (t) => t - Math.floor(t), X: (t) => Math.floor(t) / 2 + (t - Math.floor(t)) ** 2 / 2, d: () => 1, J: [[-2, -1], [-1, -1], [0, -1], [1, -1], [2, -1]], yb: [-2.6, 2.9] },
         };
         const which = v.select('signal', Object.entries(SIG).map(([value, o]) => ({ value, label: o.label })), 'step');
         const eS = v.slider('smoothing width $\\varepsilon$', 0.01, 1, 0.35, { log: true, fmt: (x) => v.fmt(x, 3) });
         const top = v.stage({ x: [XL, XR], y: [-0.35, 1.45], height: 185, axes: 'box', yticks: [0, 1], full: true, title: 'the signal $x$ and its smoothed version $x_\\varepsilon(t)=\\frac1\\varepsilon\\int_{t-\\varepsilon/2}^{t+\\varepsilon/2}x$' });
-        const bot = v.stage({ x: [XL, XR], y: YB, height: 250, axes: 'box', yticks: [-2, -1, 0, 1, 2], xlabel: 't', full: true, title: '$x_\\varepsilon\'$ and the predicted limit $x\'_{\\rm ord}+\\sum_k J_k\\,\\delta(t-t_k)$' });
+        const bot = v.stage({ x: [XL, XR], y: [-2.6, 2.9], height: 250, axes: 'box', yticks: [-2, -1, 0, 1, 2], xlabel: 't', full: true, title: '$x_\\varepsilon\'$ and the predicted limit $x\'_{\\rm ord}+\\sum_k J_k\\,\\delta(t-t_k)$' });
         const phi = (t) => Math.exp(-((t - 0.3) ** 2) / 0.3), dphi = (t) => (-2 * (t - 0.3) / 0.3) * phi(t);
         let st = null;
         v.render(() => {
           const S = SIG[which.value], e = eS.value, J = S.J, tj = J.map((p) => p[0]);
-          const xe = (t) => (S.X(t + e / 2) - S.X(t - e / 2)) / e, dxe = (t) => (S.x(t + e / 2) - S.x(t - e / 2)) / e;
+          const xe = (t) => (S.X(t + e / 2) - S.X(t - e / 2)) / e, dxe = (t) => (S.x(t + e / 2) - S.x(t - e / 2)) / e, YB = S.yb;
+          bot.setView(null, YB);
           // ---- top
           top.hline(0, { color: 'faint', width: 1 });
           const cuts = [XL, ...tj.filter((t) => t > XL && t < XR), XR];

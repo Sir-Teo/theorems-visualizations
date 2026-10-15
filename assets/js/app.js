@@ -767,7 +767,7 @@ async function pagePapers(params) {
   </div>`);
   app.replaceChildren(el);
   const host = el.querySelector('#ptl');
-  if (host) { const view = new TimelineView(host, G, { items: fsel ? papers.filter((p) => fieldOf(p) === fsel) : papers, what: 'papers', onOpen: (id) => go(`#/t/${id}`) }); cleanup = () => view.destroy(); }
+  if (host) { const view = new TimelineView(host, G, { items: fsel ? papers.filter((p) => fieldOf(p) === fsel) : papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) }); cleanup = () => view.destroy(); }
 }
 
 // ------------------------------------------------------------ theme

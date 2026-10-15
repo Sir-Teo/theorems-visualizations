@@ -250,8 +250,8 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
             let msg;
             if (u1 < 1e-3) msg = 'start: $x(t)$';
             else if (u2 < 1e-3) msg = R === 'shift' ? `step 1, shift: $x(t${Bs})$` : `step 1, scale: $x(${A}t)$`;
-            else if (R === 'shift') msg = `step 2, scale: $x(${A}t${Bs})$`;
-            else if (R === 'scale') msg = `step 2, shift by $b/a$: $x(${A}(t${Ba}))=x(${A}t${Bs})$`;
+            else if (R === 'shift') msg = `step 2, scale: $x(${A}t${Bs})$` + (u2 > 0.999 ? ' ✓ on the green curve' : '');
+            else if (R === 'scale') msg = `step 2, shift by $b/a$: $x(${A}(t${Ba}))=x(${A}t${Bs})$` + (u2 > 0.999 ? ' ✓' : '');
             else msg = `step 2, shift by $b$: $x(${A}(t${Bs}))=x(${A}t${signed(v, a * b)})$` + (u2 > 0.999 && mism > 0.01 ? ' ✗' : '');
             bot.corner(msg, 'tl', { color: bad ? 'red' : 'ink', size: 13 });
           } else bot.corner(`$a=0$: every $t$ reads the same value $x(b)$ = ${v.fix(sig.f(b), 2)}`, 'tl', { color: 'red', size: 13 });

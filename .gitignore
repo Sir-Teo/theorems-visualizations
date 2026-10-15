@@ -2,3 +2,5 @@ node_modules/
 shots/
 .DS_Store
 data/
+data.tmp-*/
+data.old-*/

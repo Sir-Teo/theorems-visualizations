@@ -689,7 +689,7 @@ function tAxisInv(u) {
 const fmtYear = (y) => (y < 0 ? `${Math.round(-y)} BCE` : `${Math.round(y)}`);
 export class TimelineView {
   /** opts: onOpen(id), items (default: written items with a year), what ('dated ideas'), highlight (Set of ids). */
-  constructor(host, G, { onOpen, items, what = 'dated ideas', highlight = null } = {}) {
+  constructor(host, G, { onOpen, items, what = 'dated ideas', highlight = null, fit = false } = {}) {
     this.host = host; this.G = G; this.onOpen = onOpen; this.hl = highlight;
     host.classList.add('timeline-page');
     this.items = (items || G.items).filter((it) => it.yr != null);
@@ -698,6 +698,7 @@ export class TimelineView {
       <div class="map-help">${this.items.length} ${what} · scroll to zoom in time · drag to pan · click a dot to open</div>`;
     this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d'); this.tip = host.querySelector('.map-tip');
     this.u0 = 0; this.u1 = 1; this.hover = null;
+    if (fit && this.items.length) { const us = this.items.map((it) => tAxis(it.yr)); const a = Math.min(...us), b = Math.max(...us), pad = Math.max(0.02, (b - a) * 0.06); this.u0 = Math.max(0, a - pad); this.u1 = Math.min(1, b + pad); }
     this.ro = new ResizeObserver(() => { this.resize(); this.layout(); this.draw(); }); this.ro.observe(host);
     this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
     this._bind(); this.resize(); this.layout(); this.draw();

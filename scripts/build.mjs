@@ -3,7 +3,7 @@
 //   data/col/<id>.json   per-collection detail (statements, refs, scope, …), lazy-loaded by the app
 //   data/atlas.css       collection and field colours (light + dark) as CSS custom properties
 //   node scripts/build.mjs [--strict] [--verbose]
-import { writeFile, mkdir, rm } from 'node:fs/promises';
+import { writeFile, mkdir, rm, rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
 
@@ -37,7 +37,8 @@ for (const it of all) {
 for (const it of ghosts) it.deps = (it.deps || []).filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
 for (const it of [...all, ...ghosts]) if (it.introduces) it.introduces = it.introduces.filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
 // short author string for lists and search: "Shannon", "Watson & Crick", "Kahneman, Tversky et al."
-const shortAuthors = (a) => { const xs = String(a).split(/\s*(?:,|;|\band\b|&)\s*/).filter(Boolean).map((x) => x.trim().split(/\s+/).pop()); return xs.length > 2 ? `${xs[0]} et al.` : xs.join(' & '); };
+const surname = (x) => { const w = x.trim().split(/\s+/); let i = w.length - 1; while (i > 0 && /^(von|van|de|der|den|del|della|di|du|da|le|la|ter|ten|zu|al|bin|ibn)$/i.test(w[i - 1])) i--; return w.slice(i).join(' '); };
+const shortAuthors = (a) => { const xs = String(a).split(/\s*(?:,|;|\band\b|&)\s*/).filter((x) => x && !/^(jr\.?|sr\.?|ii|iii)$/i.test(x.trim())).map(surname); return xs.length > 2 ? `${xs[0]} et al.` : xs.join(' & '); };
 const paperYear = (it) => (it.kind === 'Paper' && Number.isInteger(it.paper?.year) ? it.paper.year : undefined);
 
 // ---------- graph statistics (written items only) ----------
@@ -256,9 +257,11 @@ const index = {
   chapterEdges: edgeList(chEdges),
   collectionEdges: edgeList(colEdges),
 };
-await rm(join(ROOT, 'data'), { recursive: true, force: true });
-await mkdir(join(ROOT, 'data/col'), { recursive: true });
-await writeFile(join(ROOT, 'data/index.json'), JSON.stringify(index));
+// write into a private folder, then swap it in, so pages being served or checked never see a half-written data/
+const OUT = `data.tmp-${process.pid}`;
+await rm(join(ROOT, OUT), { recursive: true, force: true });
+await mkdir(join(ROOT, OUT, 'col'), { recursive: true });
+await writeFile(join(ROOT, OUT, 'index.json'), JSON.stringify(index));
 // planned (ghost) items, compact rows, loaded lazily: [num, chapter, kind#, name, deps, x, y, paper?: {y, a, i}] grouped by collection
 const KIND_LIST = [...new Set(ghosts.map((it) => it.kind))];
 const plannedOut = { kinds: KIND_LIST, cols: {} };
@@ -267,7 +270,7 @@ for (const it of ghosts) {
   if (it.kind === 'Paper' && it.paper) row.push({ y: paperYear(it), a: shortAuthors(it.paper.authors), i: it.introduces?.length ? it.introduces : undefined });
   (plannedOut.cols[it.col] ||= []).push(row);
 }
-await writeFile(join(ROOT, 'data/planned.json'), JSON.stringify(plannedOut));
+await writeFile(join(ROOT, OUT, 'planned.json'), JSON.stringify(plannedOut));
 for (const C of collections) {
   const its = all.filter((it) => it.col === C.id), pl = ghosts.filter((it) => it.col === C.id);
   if (!its.length && !pl.length) continue;
@@ -277,7 +280,11 @@ for (const C of collections) {
   // chapter summaries live here (not in index.json) to keep the catalog small
   const sums = Object.fromEntries([...chapters.values()].filter((c) => c.col === C.id && c.summary).map((c) => [c.chapter, c.summary]));
   if (Object.keys(sums).length) det._ch = sums;
-  await writeFile(join(ROOT, `data/col/${C.id}.json`), JSON.stringify(det));
+  await writeFile(join(ROOT, OUT, 'col', `${C.id}.json`), JSON.stringify(det));
 }
-await writeFile(join(ROOT, 'data/atlas.css'), css);
+await writeFile(join(ROOT, OUT, 'atlas.css'), css);
+const OLD = `data.old-${process.pid}`;
+await rename(join(ROOT, 'data'), join(ROOT, OLD)).catch(() => {});
+await rename(join(ROOT, OUT), join(ROOT, 'data'));
+await rm(join(ROOT, OLD), { recursive: true, force: true });
 console.log(`wrote data/index.json (${(JSON.stringify(index).length / 1024).toFixed(0)} KB), data/planned.json (${(JSON.stringify(plannedOut).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);

@@ -657,7 +657,7 @@ For example, the ball $B = \{v \in V : \|v\| < 1\}$ equals $E(f_1, \dots, f_n)$ 
         const tw = v.slider('turn $f_2, f_3$ about $f_1$', -3.14, 3.14, 0.5, { step: 0.01 });
         const sk = v.slider('skew $f_2$ toward $f_1$ (degrees)', 0, 50, 0, { step: 1 });
         const fh = sc.handle(unit([1, 0.45, 0.3]), { color: 'blue', label: 'f₁', snap: (p) => (len(p) > 1e-6 ? unit(p) : [1, 0, 0]) });
-        const ph = sc.handle([0.3, -0.75, 0.35], { color: 'gold', label: 'p' });
+        const ph = sc.handle([0.7, 0.3, 0.32], { color: 'gold', label: 'p' });
         const CC = ['blue', 'purple', 'teal'];
         let st = null;
         v.render(() => {
@@ -688,11 +688,11 @@ For example, the ball $B = \{v \in V : \|v\| < 1\}$ equals $E(f_1, \dots, f_n)$ 
           // the bar: three terms stacked against the threshold 1
           const Y = (x) => 0.08 + 0.33 * Math.min(x, 2.4);
           let acc = 0;
-          q.forEach((x, k) => { if (x > 1e-6) B.rect(0.1, Y(acc), 0.3, Y(acc + x), { fill: CC[k], fillAlpha: 0.55, color: CC[k], width: 1 }); acc += x; });
-          B.rect(0.1, Y(0), 0.3, Y(2.4), { color: 'faint', width: 1 });
-          B.line(0.04, Y(1), 0.36, Y(1), { color: 'ink', width: 2.2, dash: [5, 3] });
-          B.text('1', 0.03, Y(1), { align: 'right', size: 13, weight: 700, dx: 2 });
-          if (tot > 2.4) B.text('↑', 0.2, Y(2.4), { align: 'center', dy: -9, size: 14, weight: 700, color: 'red' });
+          q.forEach((x, k) => { if (x > 1e-6) B.rect(0.15, Y(acc), 0.33, Y(acc + x), { fill: CC[k], fillAlpha: 0.55, color: CC[k], width: 1 }); acc += x; });
+          B.rect(0.15, Y(0), 0.33, Y(2.4), { color: 'faint', width: 1 });
+          B.line(0.09, Y(1), 0.38, Y(1), { color: 'ink', width: 2.2, dash: [5, 3] });
+          B.text('1', 0.07, Y(1), { align: 'right', size: 13, weight: 700 });
+          if (tot > 2.4) B.text('↑', 0.24, Y(2.4), { align: 'center', dy: -9, size: 14, weight: 700, color: 'red' });
           q.forEach((x, k) => B.tex(`\\tfrac{|\\langle p, f_${k + 1}\\rangle|^2}{s_${k + 1}^2} = ${tn(x)}`, 0.42, 0.18 + 0.13 * k, { color: CC[k], size: 14, align: 'left' }));
           B.tex(`\\text{total} = ${tn(tot)} ${inside ? '<' : '\\ge'} 1`, 0.42, 0.62, { color: inside ? 'green' : 'red', size: 15, align: 'left' });
           B.text(inside ? 'p ∈ E' : 'p ∉ E', 0.42, 0.71, { color: inside ? 'green' : 'red', size: 15, weight: 700 });
@@ -731,7 +731,8 @@ by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \f
         let T0 = PRE.gen;
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'diag', label: 'diagonal' }], 'gen', { onChange: (k) => { T0 = PRE[k]; } });
         const ep = v.slider('flatten: $T(I - \\varepsilon\\, e_3e_3^*)$, $\\varepsilon$', 0, 1, 0, { step: 0.01 });
-        const vh = scV.handle([0.35, -0.45, 0.5], { color: 'gold', label: 'v', snap: (p) => (Math.abs(len(p) - 1) < 0.06 ? unit(p) : p) });
+        const e0 = svd3(M, PRE.gen).e;
+        const vh = scV.handle(scl(unit(add(add(e0[0], scl(e0[1], 0.55)), scl(e0[2], 0.3))), 0.85), { color: 'gold', label: 'v', snap: (p) => (Math.abs(len(p) - 1) < 0.06 ? unit(p) : p) });
         const CC = ['blue', 'purple', 'teal'];
         let last = null, st = null;
         v.render(() => {
@@ -793,7 +794,7 @@ by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \f
         const bh = PE.handle(-0.55 * 0.6 / 1.366, 1.25 * 0.6 / 1.366, {
           color: 'purple', label: 's₂f₂', constrain: (x, y) => { const u = perp(unit([ah.x, ah.y])); s2 = Math.max(0.2, Math.min(1.9, dot([x, y], u))); return scl(u, s2); },
         });
-        const PRE = { gen: [[1.1, 0.7], [-0.5, 0.9]], shear: [[1, 1.2], [0, 1]], sing: [[1.2, 0.6], [0.6, 0.3]] };
+        const PRE = { gen: [[1.0, 1.0], [-0.4, 0.7]], shear: [[1, 1.2], [0, 1]], sing: [[1.2, 0.6], [0.6, 0.3]] };
         const H = colHandles(PT, PRE.gen);
         v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'sing', label: 'not invertible' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         const uh = PB.handle(Math.cos(0.9), Math.sin(0.9), { color: 'gold', label: 'u', constrain: (x, y) => (Math.hypot(x, y) > 1e-9 ? unit([x, y]) : [1, 0]) });
@@ -813,7 +814,8 @@ by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \f
           PE.arrow(0, 0, bp[0], bp[1], { color: 'purple', width: 2.4 });
           rightMark(PE, f1, f2, 0.16, 'muted');
           PE.dot(Su[0], Su[1], { color: 'gold', r: 5.5 });
-          PE.tex('Su', Su[0] * 1.18, Su[1] * 1.18, { color: 'gold', size: 14 });
+          const sl = sub(Su, scl(unit(Su), 0.32));
+          PE.tex('Su', sl[0], sl[1], { color: 'gold', size: 14 });
           // T(E): T applied to points of the boundary of E, and the axes from the SVD of TS
           PT.path(ellPts(Sm, 1, 200).map((p) => mv(T, p)), { fill: 'green', fillAlpha: 0.13, color: 'green', width: 1.8 });
           if (ok) { sv.f.forEach((d, k) => { const w = scl(d, sv.s[k]); PT.arrow(0, 0, w[0], w[1], { color: 'green', width: 2.8 }); const lp = add(w, scl(d, 0.32)); PT.tex(`s_${k + 1}'f_${k + 1}'`, lp[0], lp[1], { color: 'green', size: 14 }); }); rightMark(PT, sv.f[0], sv.f[1], 0.18, 'green'); }
@@ -856,14 +858,14 @@ A **parallelepiped** is a set of the form $u + P(v_1, \dots, v_n)$ for some $u \
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 230, title: 'the coordinates $a_1, a_2, a_3$ of $x$' });
         const sc = v.scene3(S, { yaw: -0.7, pitch: 0.33, axis: 1.45, lim: 1.8 });
         const PRE = { gen: [[1.0, 0.15, -0.05], [0.3, 0.85, 0.1], [0.1, 0.25, 0.8]], cube: [[0.8, 0, 0], [0, 0.8, 0], [0, 0, 0.8]], flat: [[1.0, 0.15, -0.05], [0.3, 0.85, 0.1], [0.65, 0.5, 0.025]] };
-        const U0 = [-0.55, -0.5, -0.4], CC = ['blue', 'purple', 'teal'];
+        const U0 = [-0.75, -0.65, -0.5], CC = ['blue', 'purple', 'teal'];
         let Ed = PRE.gen.map((e) => e.slice());
         const uh = sc.handle(U0, { color: 'orange', label: 'u', onDrag: (Hu) => H.forEach((h, k) => { h.p = add(Hu.p, Ed[k]); }) });
         const H = PRE.gen.map((e, k) => sc.handle(add(U0, e), {
           color: CC[k], label: `v${'₁₂₃'[k]}`,
           snap: k === 2 ? (p) => { const n = cross(Ed[0], Ed[1]), nn = len(n); if (nn < 1e-9) return p; const d = dot(sub(p, uh.p), n) / nn; return Math.abs(d) < 0.08 ? sub(p, scl(n, d / nn)) : p; } : null,
         }));
-        const xh = sc.handle(add(U0, [0.62, 0.55, 0.38]), { color: 'gold', label: 'x' });
+        const xh = sc.handle(add(U0, [0.42, 0.46, 0.57]), { color: 'gold', label: 'x' });
         v.select('', [{ value: 'gen', label: 'general edges' }, { value: 'cube', label: 'a cube' }, { value: 'flat', label: '$v_3$ in the plane of $v_1, v_2$' }], 'gen', { onChange: (k) => { Ed = PRE[k].map((e) => e.slice()); H.forEach((h, j) => h.set(add(uh.p, Ed[j]))); } });
         const rr = v.rng(11);
         v.button('random x inside', () => { const a = [0, 1, 2].map(() => 0.1 + 0.8 * rr()); xh.set(add(uh.p, Ed.reduce((acc, e, k) => add(acc, scl(e, a[k])), ZERO))); });
@@ -872,7 +874,7 @@ A **parallelepiped** is a set of the form $u + P(v_1, \dots, v_n)$ for some $u \
           Ed = H.map((h) => sub(h.p, uh.p));
           const u = uh.p, det = dot(Ed[0], cross(Ed[1], Ed[2])), basis = Math.abs(det) > 1e-4;
           sc.begin();
-          ppedEdges(sc, ZERO, Ed[0], Ed[1], Ed[2], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.8 });
+          ppedEdges(sc, ZERO, Ed[0], Ed[1], Ed[2], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 });
           sc.arrow(ZERO, u, { color: 'orange', width: 2, dash: [5, 4] });
           pped(sc, u, Ed[0], Ed[1], Ed[2], { fill: basis ? 'accent' : 'red', color: basis ? 'accent' : 'red', fillAlpha: 0.09, alpha: 0.6 });
           Ed.forEach((e, k) => sc.arrow(u, add(u, e), { color: CC[k], width: 3.2 }));
@@ -921,11 +923,11 @@ $$T\big(u + P(v_1, \dots, v_n)\big) = Tu + P(Tv_1, \dots, Tv_n).$$`,
         const V = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 330, minWidth: 260, ticks: false, title: 'in $V$: $u + P(v_1, v_2)$' });
         const W = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 330, minWidth: 260, ticks: false, title: 'in $V$: $T\\big(u + P(v_1, v_2)\\big)$' });
         const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
-        let Ed = [[1.4, 0.3], [0.5, 1.1]];
-        const uh = V.handle(-0.9, -0.8, { color: 'orange', label: 'u', constrain: snap, onDrag: () => { h1.set(uh.x + Ed[0][0], uh.y + Ed[0][1]); h2.set(uh.x + Ed[1][0], uh.y + Ed[1][1]); } });
-        const h1 = V.handle(0.5, -0.5, { color: 'blue', label: 'u+v₁', constrain: snap });
-        const h2 = V.handle(-0.4, 0.3, { color: 'purple', label: 'u+v₂', constrain: snap });
-        const xh = V.handle(0.05, -0.05, { color: 'gold', label: 'x' });
+        let Ed = [[1.9, 0.4], [0.7, 1.5]];
+        const uh = V.handle(-1.3, -1.1, { color: 'orange', label: 'u', constrain: snap, onDrag: () => { h1.set(uh.x + Ed[0][0], uh.y + Ed[0][1]); h2.set(uh.x + Ed[1][0], uh.y + Ed[1][1]); } });
+        const h1 = V.handle(0.6, -0.7, { color: 'blue', label: 'u+v₁', constrain: snap });
+        const h2 = V.handle(-0.6, 0.4, { color: 'purple', label: 'u+v₂', constrain: snap });
+        const xh = V.handle(0.15, 0.05, { color: 'gold', label: 'x' });
         const PRE = { gen: [[1.1, -0.5], [0.4, 0.9]], shear: [[1, 0.9], [0, 1]], refl: [[-0.6, 1.0], [1.0, 0.5]], sing: [[1, 0.5], [0.6, 0.3]] };
         const H = colHandles(W, PRE.gen);
         v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: 'orientation-reversing' }, { value: 'sing', label: 'not invertible' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
@@ -936,9 +938,9 @@ $$T\big(u + P(v_1, \dots, v_n)\big) = Tu + P(Tv_1, \dots, Tv_n).$$`,
           const basisV = Math.abs(cross2(v1, v2)) > 1e-9, inv = Math.abs(T[0][0] * T[1][1] - T[0][1] * T[1][0]) > 1e-9;
           const at = (a1, a2) => add(u, add(scl(v1, a1), scl(v2, a2)));
           for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
-            const cell = [[i, j], [i + 1, j], [i + 1, j + 1], [i, j + 1]].map(([p, q]) => at(p / 4, q / 4)), col = (i + j) % 2 ? 'blue' : 'teal';
-            V.poly(cell, { fill: col, fillAlpha: 0.17, stroke: false });
-            W.poly(cell.map((p) => mv(T, p)), { fill: col, fillAlpha: 0.22, stroke: false });
+            const cell = [[i, j], [i + 1, j], [i + 1, j + 1], [i, j + 1]].map(([p, q]) => at(p / 4, q / 4)), fa = (i + j) % 2 ? 0.3 : 0.07;
+            V.poly(cell, { fill: 'accent', fillAlpha: fa, stroke: false });
+            W.poly(cell.map((p) => mv(T, p)), { fill: 'accent', fillAlpha: fa, stroke: false });
           }
           V.poly([at(0, 0), at(1, 0), at(1, 1), at(0, 1)], { color: 'accent', width: 1.8 });
           V.arrow(0, 0, u[0], u[1], { color: 'orange', width: 1.8, dash: [5, 4] });
@@ -982,7 +984,7 @@ $$T\big(u + P(v_1, \dots, v_n)\big) = Tu + P(Tv_1, \dots, Tv_n).$$`,
 $$u + P(r_1e_1, \dots, r_ne_n),$$
 where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ is an orthonormal basis of $V$: a parallelepiped whose edges are mutually orthogonal. In $\mathbf R^2$ the boxes are the rectangles. When $\mathbf F = \mathbf R$, the **volume** of this box is defined to be $r_1 \times \cdots \times r_n$ (7.108).`,
       idea: String.raw`A box is a parallelepiped (7.102) with orthogonal edges $r_ke_k$ of lengths $r_k$. Orthogonality is exactly what makes the product of the edge lengths the honest volume: the Gram matrix $\big(\langle w_j, w_k\rangle\big)$ of the edges is diagonal, $\operatorname{diag}(r_1^2, \dots, r_n^2)$. Tilt one edge and the solid becomes a slanted parallelepiped whose volume (base area times height) drops below the product of its edge lengths — so 7.108 defines volume only for boxes, and other sets get their volume from boxes (7.109).`,
-      caption: String.raw`Aim $e_1$ (its handle stays on the unit sphere), turn the frame about it, set the edge lengths $r_k$, and drag the corner $u$ (drag the background to rotate). The faint arrows at the origin are the orthonormal $e_1, e_2, e_3$; the box has edges $w_k = r_ke_k$. Right: the inner products $\langle w_j, w_k\rangle$ — a diagonal table for a box — and two bars: the product of the edge lengths $r_1r_2r_3$, and the actual volume (base area times height). They agree for a box. Tilt $w_2$ toward $e_1$: the edges stop being orthogonal, the solid is no longer a box, and the true volume falls short of $r_1r_2r_3$.`,
+      caption: String.raw`Drag the corner $u$ and the tip of the first edge (it aims $e_1$, keeping the length $r_1$), turn the frame about $e_1$, and set the edge lengths $r_k$; drag the background to rotate. The dashed lines from $u$ are the directions of the orthonormal $e_1, e_2, e_3$, and the box has edges $w_k = r_ke_k$. Right: the inner products $\langle w_j, w_k\rangle$ — a diagonal table for a box — and two bars: the product of the edge lengths $r_1r_2r_3$, and the actual volume (base area times height). They agree for a box. Tilt $w_2$ toward $e_1$: the edges stop being orthogonal, the solid is no longer a box, and the true volume falls short of $r_1r_2r_3$.`,
       deps: ['ladr-7.102', 'ladr-6.27'],
       tags: ['geometry'],
       viz(v) {
@@ -992,19 +994,24 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
         const rs = [['$r_1$', 1.2], ['$r_2$', 0.8], ['$r_3$', 0.55]].map(([l, x]) => v.slider(l, 0.2, 1.5, x, { step: 0.01 }));
         const tw = v.slider('turn the frame about $e_1$', -3.14, 3.14, 0.35, { step: 0.01 });
         const tilt = v.slider('tilt $w_2$ toward $e_1$ (degrees)', -60, 60, 0, { step: 1 });
-        const eh = sc.handle(unit([1, 0.35, 0.15]), { color: 'blue', label: 'e₁', snap: (p) => (len(p) > 1e-6 ? unit(p) : [1, 0, 0]) });
-        const uh = sc.handle([-0.6, -0.5, -0.35], { color: 'orange', label: 'u' });
+        // the handle at u + w₁ aims e₁ (it stays at distance r₁ from u); moving u carries it along
+        const U0 = [-0.75, -0.55, -0.35];
+        let e1 = unit([1, 0.35, 0.15]);
+        const uh = sc.handle(U0, { color: 'orange', label: 'u', onDrag: (Hu) => { eh.p = add(Hu.p, scl(e1, rs[0].value)); } });
+        const eh = sc.handle(add(U0, scl(e1, 1.2)), { color: 'blue', label: 'u+w₁', snap: (p) => { const d = sub(p, uh.p); return len(d) > 1e-6 ? add(uh.p, scl(unit(d), rs[0].value)) : p; } });
         const TB = v.table(R, { rows: 3, cols: 3, region: [0.06, 0.4, 0.96, 0.94], maxCell: 56, size: 13.5, rowLabels: ['$w_1$', '$w_2$', '$w_3$'], colLabels: ['$w_1$', '$w_2$', '$w_3$'] });
         const CC = ['blue', 'purple', 'teal'];
         let st = null;
         v.render(() => {
-          const e1 = unit(eh.p), [g, h] = basisPerp(e1), t = tw.value, d = tilt.value / DEG;
-          const e2 = add(scl(g, Math.cos(t)), scl(h, Math.sin(t))), e3 = cross(e1, e2), E = [e1, e2, e3], r = rs.map((x) => x.value);
+          const r = rs.map((x) => x.value);
+          e1 = unit(sub(eh.p, uh.p)); eh.p = add(uh.p, scl(e1, r[0]));
+          const [g, h] = basisPerp(e1), t = tw.value, d = tilt.value / DEG;
+          const e2 = add(scl(g, Math.cos(t)), scl(h, Math.sin(t))), e3 = cross(e1, e2), E = [e1, e2, e3];
           const w = [scl(e1, r[0]), scl(add(scl(e2, Math.cos(d)), scl(e1, Math.sin(d))), r[1]), scl(e3, r[2])];
           const box = Math.abs(d) < 1e-9, u = uh.p, base = cross(w[0], w[1]), vol = Math.abs(dot(base, w[2])), prod = r[0] * r[1] * r[2];
           sc.begin();
-          E.forEach((ek, k) => sc.arrow(ZERO, ek, { color: CC[k], width: 1.6, alpha: 0.4 }));
           sc.arrow(ZERO, u, { color: 'orange', width: 1.6, dash: [5, 4] });
+          E.forEach((ek, k) => sc.line(u, add(u, scl(ek, 1.6)), { color: CC[k], width: 1, dash: [3, 4], alpha: 0.6 }));
           pped(sc, u, w[0], w[1], w[2], { fill: box ? 'green' : 'orange', color: box ? 'green' : 'orange', fillAlpha: 0.1, alpha: 0.65 });
           w.forEach((wk, k) => { sc.arrow(u, add(u, wk), { color: CC[k], width: 3.2 }); sc.tex(`w_${k + 1}`, add(u, scl(wk, 1.0)), { color: CC[k], size: 14, dx: 12, dy: -10 }); });
           for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) if (Math.abs(dot(w[i], w[j])) < 1e-9) rightMark3(sc, w[i], w[j], 0.14, 'green', u);
@@ -1014,7 +1021,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
           const G = w.map((a) => w.map((b) => dot(a, b)));
           TB.draw({ value: (i, j) => G[i][j], format: (x) => pf(x, 2), fill: (i, j) => (i === j ? ['blue', 0.12] : Math.abs(G[i][j]) < 1e-9 ? ['green', 0.2] : ['red', 0.28]) });
           // the volume bars
-          const top = Math.max(2.4, prod * 1.05), X = (x) => 0.08 + (0.84 * x) / top;
+          const top = prod * 1.2, X = (x) => 0.08 + (0.84 * x) / top;
           R.text('product of edge lengths r₁r₂r₃', 0.08, 0.31, { size: 11.5, color: 'muted' });
           R.rect(X(0), 0.235, X(prod), 0.275, { fill: 'blue', fillAlpha: 0.45, color: 'blue', width: 1 });
           R.text(pf(prod, 3), X(prod), 0.255, { size: 12, dx: 6, weight: 700 });
@@ -1046,12 +1053,12 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
         const V = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 320, minWidth: 260, ticks: false, title: 'in $V$: a box and the axes $e_1, e_2$' });
         const W = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 320, minWidth: 260, ticks: false, title: 'in $V$: its image and the axes $f_1, f_2$' });
         const G = v.stage({ x: [0, 180], y: [0, 180], height: 170, full: true, axes: 'box', xlabel: 'direction of b₁ (degrees)', xticks: [0, 45, 90, 135, 180], yticks: [[0, '0°'], [45, '45°'], [90, '90°'], [135, '135°'], [180, '180°']], title: 'angle between the image edges $T(r_1b_1)$ and $T(r_2b_2)$' });
-        const PRE = { gen: [[1.2, 0.8], [-0.3, 0.9]], shear: [[1, 1.1], [0, 1]], refl: [[0.4, 1.1], [1.0, -0.2]] };
+        const PRE = { gen: [[1.4, 1.0], [-0.2, 0.5]], shear: [[1, 1.1], [0, 1]], refl: [[0.4, 1.1], [1.0, -0.2]] };
         const H = colHandles(W, PRE.gen);
         v.select('', [{ value: 'gen', label: 'generic $T$' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: '$\\det T < 0$' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
-        let r2 = 0.75, lastU = [-0.9, -0.7];
-        const uh = V.handle(-0.9, -0.7, { color: 'orange', label: 'u', onDrag: () => { ah.x += uh.x - lastU[0]; ah.y += uh.y - lastU[1]; lastU = [uh.x, uh.y]; } });
-        const ah = V.handle(-0.9 + 1.3 * Math.cos(0.45), -0.7 + 1.3 * Math.sin(0.45), {
+        let r2 = 0.9, lastU = [-1.0, -0.8];
+        const uh = V.handle(-1.0, -0.8, { color: 'orange', label: 'u', onDrag: () => { ah.x += uh.x - lastU[0]; ah.y += uh.y - lastU[1]; lastU = [uh.x, uh.y]; } });
+        const ah = V.handle(-1.0 + 1.5 * Math.cos(0.75), -0.8 + 1.5 * Math.sin(0.75), {
           color: 'blue', label: 'r₁b₁', constrain: (x, y) => {
             const d = [x - uh.x, y - uh.y], r = Math.max(0.25, len(d)); let t = Math.atan2(d[1], d[0]);
             const te = angOf(svd22(H.A).e[0]);
@@ -1115,7 +1122,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
       see: ['rca-2.23'],
       tags: ['geometry'],
       viz(v) {
-        const S = v.stage({ x: [-2.05, 2.05], y: [-2.05, 2.05], equal: true, height: 360, minWidth: 300, weight: 1.1, axes: false });
+        const S = v.stage({ x: [-2.05, 2.05], y: [-2.2, 2.2], equal: true, height: 360, minWidth: 300, weight: 1.1, axes: false });
         const G = v.stage({ x: [1.8, 72], y: [0, 8], xlog: true, height: 360, minWidth: 260, axes: 'box', xlabel: 'boxes per side n', title: 'total area of the boxes' });
         const mkS = (rings, exact, label) => ({ rings, area: Math.abs(polyArea(rings[0])) - (rings[1] ? Math.abs(polyArea(rings[1])) : 0), exact, label });
         const SH = {
@@ -1180,7 +1187,7 @@ $$\operatorname{volume} T(\Omega) = (\text{product of the singular values of } T
         const W = v.stage({ x: [-2.7, 2.7], y: [-2.7, 2.7], equal: true, height: 340, minWidth: 270, axes: false, title: 'in $V$: $T(\\Omega)$ and the image boxes' });
         const heart = Array.from({ length: 360 }, (_, k) => { const t = (TAU * k) / 360; return [1.2 * Math.sin(t) ** 3, 0.075 * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) + 0.19]; });
         const SHP = { blob: ringOf((t) => 1.05 + 0.28 * Math.sin(3 * t + 0.4) + 0.12 * Math.cos(5 * t)), heart };
-        const PRE = { gen: [[1.4, 0.5], [-0.2, 0.9]], shear: [[1, 1.2], [0, 1]], refl: [[0.3, 1.3], [1.1, -0.1]] };
+        const PRE = { gen: [[1.6, 0.5], [-0.3, 0.7]], shear: [[1, 1.2], [0, 1]], refl: [[0.3, 1.3], [1.1, -0.1]] };
         const H = colHandles(W, PRE.gen);
         v.select('', [{ value: 'gen', label: 'generic $T$' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: '$\\det T < 0$' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         const shape = v.select('', [{ value: 'blob', label: 'blob' }, { value: 'heart', label: 'heart' }], 'blob');
@@ -1204,9 +1211,9 @@ $$\operatorname{volume} T(\Omega) = (\text{product of the singular values of } T
           V.poly(ring, { color: 'ink', width: 2 });
           const img = ring.map((p) => mv(T, p));
           W.poly(img, { color: 'ink', width: 2 });
-          const axesAt = (P, D, nm, R) => D.forEach((d, k) => { P.line(-R * d[0], -R * d[1], R * d[0], R * d[1], { color: k ? 'purple' : 'blue', width: 1.2, dash: [6, 4], alpha: 0.75 }); const lp = scl(d, (d[1] >= 0 ? 1 : -1) * R * 0.9); P.tex(`${nm}_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 14, dx: 12 }); });
-          axesAt(V, e, 'e', 1.65);
-          axesAt(W, f, 'f', 2.5);
+          const axesAt = (P, D, nm, R, up) => D.forEach((d, k) => { P.line(-R * d[0], -R * d[1], R * d[0], R * d[1], { color: k ? 'purple' : 'blue', width: 1.2, dash: [6, 4], alpha: 0.75 }); const lp = scl(d, ((d[1] >= 0) === up ? 1 : -1) * R * 0.9); P.tex(`${nm}_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 14, dx: 12 }); });
+          axesAt(V, e, 'e', 1.65, true);
+          axesAt(W, f, 'f', 2.5, false);
           W.corner(lined ? `each box → a box with sides s₁h, s₂h (s₁s₂ = ${pf(s[0] * s[1], 3)})` : 'boxes → slanted parallelograms', 'tl', { color: lined ? 'green' : 'purple', weight: 700, size: 11.5 });
           st = { n, h, N: c.inn.length, s, det, imgSum, aO: Math.abs(polyArea(ring)), aT: Math.abs(polyArea(img)), lined };
         });
