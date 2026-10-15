@@ -84,6 +84,13 @@ function rightMark(S, o, a, b, s, st) {
   const p = [o[0] + (s * a[0]) / la, o[1] + (s * a[1]) / la], q = [o[0] + (s * b[0]) / lb, o[1] + (s * b[1]) / lb];
   S.path([p, [p[0] + q[0] - o[0], p[1] + q[1] - o[1]], q], { width: 1.6, ...st });
 }
+/** Arrow from (x0, y0) that stops `gap` pixels short of (x1, y1), so that its head stays visible beside a handle there. */
+function arrowTo(S, x0, y0, x1, y1, st = {}, gap = 8) {
+  const L = Math.hypot(S.X(x1) - S.X(x0), S.Y(y1) - S.Y(y0));
+  if (L < gap + 3) return;
+  const t = (L - gap) / L;
+  S.arrow(x0, y0, x0 + (x1 - x0) * t, y0 + (y1 - y0) * t, st);
+}
 /** Right-angle marker in a scene3 at o between the directions a and b. */
 function rightMark3(sc, o, a, b, s, st) {
   const A = mul3(unit3(a), s), B = mul3(unit3(b), s);
@@ -168,7 +175,7 @@ An **inner product space** is a vector space together with an inner product on i
           ns: { A: [[1, 0.7], [-0.7, 1]] }, ind: { A: [[1, 0], [0, -0.6]] },
           abs: { f: (x, y) => Math.abs(x[0] * y[0]) + Math.abs(x[1] * y[1]) },
         };
-        const START = { abs: [[1.2, 0.6], [-0.9, 0.7], [1, 0.4]] };
+        const START = { abs: [[1.2, 0.6], [-0.9, 0.7], [0.6, -1.1]] };
         const pre = v.select('', [
           { value: 'dot', label: 'dot product' }, { value: 'w', label: 'weighted' }, { value: 'sk', label: 'skewed' },
           { value: 'ns', label: 'not symmetric' }, { value: 'ind', label: 'indefinite' }, { value: 'abs', label: '$|x_1y_1| + |x_2y_2|$' },
@@ -200,9 +207,9 @@ An **inner product space** is a vector space together with an inner product on i
           if (pre.value === 'ns') { const A = F.A, n = [A[0][0] * U[0] + A[0][1] * U[1], A[1][0] * U[0] + A[1][1] * U[1]], L = 9 / (len2(n) || 1); S.line(n[1] * L, -n[0] * L, -n[1] * L, n[0] * L, { color: 'red', width: 1.4, dash: [3, 4] }); }
           const perp = d && Math.abs(ip(V, U)) < 1e-9 && len2(V) > 0.1 && len2(U) > 0.1;
           if (perp) rightMark(S, [0, 0], U, V, 0.26, { color: 'green', width: 2 });
-          S.arrow(0, 0, w.x, w.y, { color: 'teal', width: 2 });
-          S.arrow(0, 0, vv.x, vv.y, { color: 'orange', width: 2.6 });
-          S.arrow(0, 0, u.x, u.y, { color: 'accent', width: 2.6 });
+          arrowTo(S, 0, 0, w.x, w.y, { color: 'teal', width: 2 });
+          arrowTo(S, 0, 0, vv.x, vv.y, { color: 'orange', width: 2.6 });
+          arrowTo(S, 0, 0, u.x, u.y, { color: 'accent', width: 2.6 });
           if (perp) S.corner(pre.value === 'ns' && Math.abs(ip(U, V)) > 1e-6 ? '⟨v, u⟩ = 0 but ⟨u, v⟩ ≠ 0' : 'v is orthogonal to u', 'tl', { color: pre.value === 'ns' ? 'red' : 'green', weight: 700 });
           // the axioms
           const near = (a, b) => Math.abs(a - b) < 1e-9 * (1 + Math.abs(a) + Math.abs(b));
@@ -223,7 +230,7 @@ An **inner product space** is a vector space together with an inner product on i
             T.text(ok ? '✓' : '✗', 0.97, y - 0.035, { color: ok ? 'green' : 'red', size: 19, weight: 700, align: 'right' });
           });
           st = { uv, vu, ok: rows.every((r) => r[2]), fails: rows.filter((r) => !r[2]).map((r) => r[0]) };
-          v.legend([['accent', '$\\langle x, x\\rangle = 1$'], ['green', '$\\{x : \\langle x, u\\rangle = 0\\}$', { dash: true }], ...(mm.min < 0 ? [['red', '$\\langle x, x\\rangle < 0$', { area: true }]] : []), ...(pre.value === 'ns' ? [['red', '$\\{x : \\langle u, x\\rangle = 0\\}$', { dash: true }]] : [])]);
+          v.legend([['accent', '$\\langle x, x\\rangle = 1$'], ...(d ? [['green', '$\\{x : \\langle x, u\\rangle = 0\\}$', { dash: true }]] : []), ...(mm.min < 0 ? [['red', '$\\langle x, x\\rangle < 0$', { area: true }]] : []), ...(pre.value === 'ns' ? [['red', '$\\{x : \\langle u, x\\rangle = 0\\}$', { dash: true }]] : [])]);
         });
         v.readout(() => {
           if (!st) return '';
@@ -255,7 +262,7 @@ An **inner product space** is a vector space together with an inner product on i
         const P3 = v.stage({ x: [-3.8, 3.8], y: [-3.8, 3.8], ...opt, minWidth: 250, weight: 1.25, title: 'the inner products, in $\\mathbf C$' });
         const u1 = P1.handle(1.2, 0.5, { color: 'accent', label: 'u₁' }), v1 = P1.handle(0.9, -0.6, { color: 'orange', label: 'v₁' }), w1 = P1.handle(-0.9, -1.1, { color: 'teal', label: 'w₁', r: 6 });
         const u2 = P2.handle(-0.4, 1.0, { color: 'accent', label: 'u₂' }), v2 = P2.handle(0.7, 0.8, { color: 'orange', label: 'v₂' }), w2 = P2.handle(1.2, -0.5, { color: 'teal', label: 'w₂', r: 6 });
-        const lam = P3.handle(0.55, 0.85, { color: 'gold', label: 'λ', constrain: (x, y) => (Math.hypot(x, y) < 0.14 ? [0, 0] : Math.abs(y) < 0.07 ? [x, 0] : [x, y]) });
+        const lam = P3.handle(0.75, -0.6, { color: 'gold', label: 'λ', constrain: (x, y) => (Math.hypot(x, y) < 0.14 ? [0, 0] : Math.abs(y) < 0.07 ? [x, 0] : [x, y]) });
         const C = (h) => [h.x, h.y];
         const ipC = (a1, a2, b1, b2) => cadd(cmul(a1, cbar(b1)), cmul(a2, cbar(b2)));
         const arcC = (S, r, t0, t1, col) => { let d = t1 - t0; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU; if (Math.abs(d) > 0.03) S.curve((t) => [r * Math.cos(t), r * Math.sin(t)], t0, t0 + d, { color: col, width: 1.8, n: 50 }); };
@@ -268,15 +275,18 @@ An **inner product space** is a vector space together with an inner product on i
           [[P1, U1, V1, W1, '1'], [P2, U2, V2, W2, '2']].forEach(([P, Uk, Vk, Wk, k]) => {
             if (md === 'a') { const p = cmul(L, Uk); P.arrow(0, 0, p[0], p[1], { color: 'accent', width: 1.6, dash: [5, 4] }); lab(P, `\\lambda u_${k}`, p, 'accent'); }
             if (md === 'e') { const p = cmul(L, Vk); P.arrow(0, 0, p[0], p[1], { color: 'orange', width: 1.6, dash: [5, 4] }); lab(P, `\\lambda v_${k}`, p, 'orange'); }
-            if (md === 'd') { const p = cadd(Vk, Wk); P.poly([[0, 0], Vk, p, Wk], { color: 'green', width: 1, dash: [3, 4], fill: 'green', fillAlpha: 0.05 }); P.arrow(0, 0, p[0], p[1], { color: 'green', width: 1.8 }); lab(P, `v_${k}{+}w_${k}`, p, 'green'); P.arrow(0, 0, Wk[0], Wk[1], { color: 'teal', width: 2.2 }); }
-            P.arrow(0, 0, Vk[0], Vk[1], { color: 'orange', width: 2.4 });
-            P.arrow(0, 0, Uk[0], Uk[1], { color: 'accent', width: 2.4 });
+            if (md === 'd') { const p = cadd(Vk, Wk); P.poly([[0, 0], Vk, p, Wk], { color: 'green', width: 1, dash: [3, 4], fill: 'green', fillAlpha: 0.05 }); P.arrow(0, 0, p[0], p[1], { color: 'green', width: 1.8 }); lab(P, `v_${k}{+}w_${k}`, p, 'green'); arrowTo(P, 0, 0, Wk[0], Wk[1], { color: 'teal', width: 2.2 }); }
+            arrowTo(P, 0, 0, Vk[0], Vk[1], { color: 'orange', width: 2.4 });
+            arrowTo(P, 0, 0, Uk[0], Uk[1], { color: 'accent', width: 2.4 });
           });
           const t1 = cmul(U1, cbar(V1)), uv = ipC(U1, U2, V1, V2);
+          // keep every value in view
+          const pts = [uv, t1, L, cmul(L, uv), cmul(cbar(L), uv)];
+          if (md === 'd') { const uw = ipC(U1, U2, W1, W2); pts.push(uw, cadd(uv, uw)); }
+          const R = Math.max(2.6, 1.22 * Math.max(...pts.map(cabs)));
+          P3.setView([-R, R], [-R, R]);
           // ⟨u, v⟩ assembled from its two terms
           P3.arrow(0, 0, t1[0], t1[1], { color: 'muted', width: 1.3 }); P3.arrow(t1[0], t1[1], uv[0], uv[1], { color: 'muted', width: 1.3 });
-          const tl = 0.5;
-          if (cabs(t1) > 0.6) P3.tex('u_1\\bar v_1', t1[0] * tl, t1[1] * tl, { color: 'muted', size: 12, dx: 12 });
           let res = {};
           if (md === 'a' || md === 'e') {
             const naive = cmul(L, uv), good = md === 'a' ? naive : cmul(cbar(L), uv);
@@ -287,7 +297,7 @@ An **inner product space** is a vector space together with an inner product on i
             if (md === 'e' && cabs(cadd(naive, [-good[0], -good[1]])) > 0.02) { P3.dot(naive[0], naive[1], { color: 'red', hollow: true, r: 6, width: 2 }); lab(P3, '\\lambda\\langle u, v\\rangle', naive, 'red', 10, 12); }
             P3.dot(uv[0], uv[1], { color: 'accent', r: 5.5 }); lab(P3, '\\langle u, v\\rangle', uv, 'accent');
             P3.dot(good[0], good[1], { color: 'green', r: 6 });
-            lab(P3, md === 'a' ? '\\langle \\lambda u, v\\rangle = \\lambda\\langle u, v\\rangle' : '\\langle u, \\lambda v\\rangle = \\bar\\lambda\\langle u, v\\rangle', good, 'green', good[0] >= 0 ? 10 : -10, 14);
+            lab(P3, md === 'a' ? '\\langle \\lambda u, v\\rangle' : '\\langle u, \\lambda v\\rangle', good, 'green', good[0] >= 0 ? 10 : -10, 14);
             if (cabs(L) === 0) P3.corner(md === 'a' ? '(b): ⟨0, v⟩ = 0' : '(c): ⟨u, 0⟩ = 0', 'tl', { color: 'green', weight: 700 });
             else if (L[1] === 0) P3.corner('λ real: λ̄ = λ, no difference', 'tl', { color: 'muted', weight: 600 });
             const direct = md === 'a' ? ipC(cmul(L, U1), cmul(L, U2), V1, V2) : ipC(U1, U2, cmul(L, V1), cmul(L, V2));
@@ -296,6 +306,7 @@ An **inner product space** is a vector space together with an inner product on i
             const uw = ipC(U1, U2, W1, W2), s = cadd(uv, uw), direct = ipC(U1, U2, cadd(V1, W1), cadd(V2, W2));
             P3.poly([[0, 0], uv, s, uw], { color: 'green', width: 1, dash: [3, 4], fill: 'green', fillAlpha: 0.06 });
             P3.arrow(0, 0, uw[0], uw[1], { color: 'teal', width: 2.2 }); P3.arrow(0, 0, uv[0], uv[1], { color: 'orange', width: 2.2 });
+            P3.arrow(0, 0, s[0], s[1], { color: 'green', width: 1.4, dash: [4, 3] });
             P3.dot(direct[0], direct[1], { color: 'green', r: 6 });
             lab(P3, '\\langle u, v\\rangle', uv, 'orange'); lab(P3, '\\langle u, w\\rangle', uw, 'teal', 10, 12);
             lab(P3, '\\langle u, v{+}w\\rangle', direct, 'green', direct[0] >= 0 ? 10 : -10, -12);
@@ -303,7 +314,7 @@ An **inner product space** is a vector space together with an inner product on i
           }
           st = { md, uv, L, ...res };
         });
-        v.legend([['accent', '$u$'], ['orange', '$v$'], ['teal', '$w$'], ['gold', '$\\lambda$', { dot: true }], ['green', 'computed directly', { dot: true }], ['red', 'the wrong guess $\\lambda\\langle u,v\\rangle$', { dot: true }]]);
+        v.legend([['accent', '$u$'], ['orange', '$v$'], ['teal', '$w$'], ['gold', '$\\lambda$', { dot: true }], ['muted', 'the terms $u_1\\bar v_1$, $u_2\\bar v_2$'], ['green', 'computed directly', { dot: true }], ['red', 'the wrong guess $\\lambda\\langle u,v\\rangle$', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { md, uv, L } = st;
@@ -331,7 +342,10 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
         const S = v.stage({ x: [-2.6, 2.6], y: [-2.2, 2.2], equal: true, height: 360, weight: 1.3, minWidth: 300 });
         const Fs = v.stage({ x: [-1.2, 1.2], y: [-2.2, 2.2], height: 360, weight: 1.3, minWidth: 300, title: '$f$, a quadratic on $[-1, 1]$' });
         const R = v.stage({ x: [-0.2, 4.2], y: [-0.3, 5], height: 360, minWidth: 250, axes: 'box', title: 'the norm squared, as an area' });
-        const show = () => { const fn = mode.value === 'fn'; layout(v, [[S, !fn], [Fs, fn], [R, true]]); c1.el.hidden = c2.el.hidden = fn; };
+        const show = () => {
+          const fn = mode.value === 'fn'; layout(v, [[S, !fn], [Fs, fn], [R, true]]); c1.el.hidden = c2.el.hidden = fn;
+          R.setTicks(fn ? null : [], null); R.setTitle(fn ? '$f^2$: the shaded area is $\\|f\\|^2$' : 'bars $c_k v_k^2$: the total area is $\\|v\\|_c^2$');
+        };
         const vh = S.handle(1.5, 0.9, { color: 'accent', label: 'v' });
         const XS = [-0.75, 0, 0.75], fh = [[-0.75, -0.4], [0, 0.9], [0.75, 1.4]].map(([x, y]) => Fs.handle(x, y, { color: 'accent', constrain: (_, yy) => [x, Math.max(-2.1, Math.min(2.1, yy))] }));
         show();
@@ -344,35 +358,39 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
             S.path(levelSet(qE, 1), { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.05 });
             S.path(levelSet(qW, 1), { color: 'orange', width: 2.2, fill: 'orange', fillAlpha: 0.05 });
             if (nE > 0.05) { S.path(levelSet(qE, nE * nE, 20), { color: 'accent', width: 1, dash: [4, 4], alpha: 0.7 }); S.path(levelSet(qW, nW * nW, 20), { color: 'orange', width: 1, dash: [4, 4], alpha: 0.7 }); }
-            S.arrow(0, 0, V[0], V[1], { color: 'ink', width: 2.6 });
+            arrowTo(S, 0, 0, V[0], V[1], { color: 'ink', width: 2.6 });
             if (nE > 0.05) {
               S.dot(V[0] / nE, V[1] / nE, { color: 'accent', r: 5 }); S.dot(V[0] / nW, V[1] / nW, { color: 'orange', r: 5 });
               S.tex('v/\\|v\\|_2', V[0] / nE, V[1] / nE, { color: 'accent', size: 13, dx: -8, dy: -12, align: 'right' });
               S.tex('v/\\|v\\|_c', V[0] / nW, V[1] / nW, { color: 'orange', size: 13, dx: 8, dy: 12, align: 'left' });
             }
             // bars of c_k v_k²: widths c_k, heights v_k²
-            const h1 = V[0] * V[0], h2 = V[1] * V[1], top = Math.max(1.5, h1, h2) * 1.18;
-            R.setView([-0.25, 2 * 3 + 0.9], [-0.06 * top, top]);
-            const bar = (x0, wd, ht, col, k) => { R.rect(x0, 0, x0 + wd, ht, { fill: col, fillAlpha: 0.22, color: col, width: 1.6 }); R.tex(`v_${k}^2 = ${tn(ht)}`, x0 + wd / 2, ht, { color: col, size: 13, dy: -11 }); R.tex(`c_${k} = ${tn(wd)}`, x0 + wd / 2, 0, { color: 'muted', size: 12, dy: 11 }); };
-            bar(0.2, a, h1, 'orange', 1); bar(0.2 + a + 0.5, b, h2, 'orange', 2);
-            R.rect(0.2, 0, 1.2, h1, { color: 'accent', width: 1.2, dash: [4, 3] }); R.rect(0.2 + a + 0.5, 0, 0.2 + a + 1.5, h2, { color: 'accent', width: 1.2, dash: [4, 3] });
-            R.corner(`area = ${pn(nW * nW)} = ‖v‖²_c`, 'tr', { color: 'orange', weight: 700 });
-            R.corner(`dashed (c = 1): ${pn(nE * nE)} = ‖v‖²₂`, 'tr', { color: 'accent', weight: 600, dy: 18 });
+            const h1 = V[0] * V[0], h2 = V[1] * V[1], top = Math.max(1.5, h1, h2) * 1.45;
+            const x2 = 0.25 + Math.max(a, 1) + 0.55, xr = x2 + Math.max(b, 1) + 0.3;
+            R.setView([0, xr], [-0.09 * top, top]);
+            const bar = (x0, wd, ht, k) => {
+              R.rect(x0, 0, x0 + 1, ht, { color: 'accent', width: 1.2, dash: [4, 3] });
+              R.rect(x0, 0, x0 + wd, ht, { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.6 });
+              R.tex(`v_${k}^2 = ${tn(ht)}`, x0 + Math.max(wd, 1) / 2, ht, { color: 'ink', size: 13, dy: -11 });
+              R.tex(`c_${k} = ${tn(wd)}`, x0 + wd / 2, 0, { color: 'orange', size: 12, dy: 11 });
+            };
+            bar(0.25, a, h1, 1); bar(x2, b, h2, 2);
+            R.texPx(`\\text{orange area} = ${tn(nW * nW)} = \\|v\\|_c^2`, R.width - 10, 10, { color: 'orange', align: 'right', baseline: 'top', size: 14 });
+            R.texPx(`\\text{dashed } (c_k = 1)\\text{: } ${tn(nE * nE)} = \\|v\\|_2^2`, R.width - 10, 34, { color: 'accent', align: 'right', baseline: 'top', size: 14 });
             st = { R2: true, V, nE, nW, a, b };
+            v.legend([['accent', 'dot product: unit circle, $\\|\\cdot\\|_2$'], ['orange', 'weighted: unit ellipse, $\\|\\cdot\\|_c$'], ['muted', 'spheres through $v$', { dash: true }]]);
           } else {
             const c = quadThrough(XS, fh.map((h) => h.y)), f = (x) => pval(c, x), f2 = (x) => f(x) * f(x);
             Fs.vline(-1, { color: 'faint', dash: [3, 4] }); Fs.vline(1, { color: 'faint', dash: [3, 4] });
             Fs.fn(f, { domain: [-1, 1], color: 'accent', width: 2.8 });
-            const area = integ(f2), top = Math.max(1, ...Array.from({ length: 41 }, (_, i) => f2(-1 + i / 20))) * 1.15;
+            const area = integ(f2), top = Math.max(1, ...Array.from({ length: 41 }, (_, i) => f2(-1 + i / 20))) * 1.3;
             R.setView([-1.2, 1.2], [-0.06 * top, top]);
             R.fn(f2, { domain: [-1, 1], color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.22 });
-            R.tex('f^2', 0.96, f2(0.96), { color: 'accent', size: 15, dx: 6, dy: -10, align: 'left' });
-            R.corner(`shaded area = ∫ f² = ${pn(area, 3)}`, 'tr', { color: 'accent', weight: 700 });
-            R.corner(`‖f‖ = ${pn(Math.sqrt(area), 3)}`, 'tr', { color: 'accent', weight: 600, dy: 18 });
+            R.texPx(`\\int_{-1}^1 f^2 = ${tn(area, 3)},\\ \\|f\\| = ${tn(Math.sqrt(area), 3)}`, R.width / 2, 10, { color: 'accent', align: 'center', baseline: 'top', size: 14 });
             st = { R2: false, c, area };
+            v.legend([['accent', '$f$ and $f^2$; area $= \\int_{-1}^1 f^2 = \\|f\\|^2$', { area: true }]]);
           }
         });
-        v.legend([['accent', 'dot product $\\|\\cdot\\|_2$ (functions: $\\int f^2$)'], ['orange', 'weighted $\\|\\cdot\\|_c$']]);
         v.readout(() => {
           if (!st) return '';
           if (st.R2) { const { V, nE, nW, a, b } = st; return `$v = ${vt(V)}$: $\\|v\\|_2 = \\sqrt{${sqT(V[0])} + ${sqT(V[1])}} = ${tn(nE, 3)}$, $\\quad \\|v\\|_c = \\sqrt{${tn(a)}\\cdot ${sqT(V[0])} + ${tn(b)}\\cdot ${sqT(V[1])}} = ${tn(nW, 3)}$ — one vector, two lengths.`; }
@@ -403,12 +421,12 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
         v.render(() => {
           const q = FORMS[form.value], N = (x) => Math.sqrt(Math.max(0, q(x))), V = [vh.x, vh.y], l = lam.value, LV = [l * V[0], l * V[1]];
           const nv = N(V), nl = N(LV);
-          if (form.value === 'deg') { S.line(-9, -9, 9, 9, { color: 'red', width: 2, alpha: 0.6 }); S.tex('\\|x\\| = 0', 1.9, 1.9, { color: 'red', size: 14, dx: 10, dy: 12, align: 'left' }); }
+          if (form.value === 'deg') { S.line(-9, -9, 9, 9, { color: 'red', width: 2, alpha: 0.6 }); S.tex('\\|x\\| = 0 \\text{ on this line}', -1.9, -1.9, { color: 'red', size: 14, dx: 12, dy: 4, align: 'left' }); }
           S.path(levelSet(q, 1, 12), { color: 'muted', width: 1.2 });
           if (nv > 1e-6) S.path(levelSet(q, nv * nv, 14), { color: 'accent', width: 1.4, dash: [5, 4] });
           if (nl > 1e-6) S.path(levelSet(q, nl * nl, 14), { color: 'gold', width: 1.4, dash: [5, 4] });
           S.arrow(0, 0, LV[0], LV[1], { color: 'gold', width: 3.2 });
-          S.arrow(0, 0, V[0], V[1], { color: 'accent', width: 2.4 });
+          arrowTo(S, 0, 0, V[0], V[1], { color: 'accent', width: 2 });
           if (Math.abs(l) > 0.15) S.tex('\\lambda v', LV[0], LV[1], { color: 'gold', size: 15, dx: 12, dy: 10, align: 'left' });
           // the graph
           const top = Math.max(1.2, 2.7 * nv * 1.12);
@@ -420,13 +438,13 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
           G.dot(0, 0, { color: nv > 1e-9 ? 'green' : 'red', r: 5 });
           if (nv < 1e-9) G.corner('v ≠ 0 but ‖v‖ = 0: (a) fails', 'tl', { color: 'red', weight: 700 });
           else G.corner(`slope ‖v‖ = ${pn(nv, 3)}`, 'tl', { color: 'green', weight: 700 });
-          st = { nv, nl, l, V };
+          st = { nv, nl, l, V, deg: form.value === 'deg' };
         });
         v.legend([['accent', '$v$, level curve through $v$'], ['gold', '$\\lambda v$'], ['accent', '$\\|\\lambda v\\|$ computed'], ['green', '$|\\lambda|\\,\\|v\\|$']]);
         v.readout(() => {
           if (!st) return '';
-          const { nv, nl, l, V } = st;
-          return `$\\|\\lambda v\\| = ${tn(nl, 3)}$ and $|\\lambda|\\,\\|v\\| = ${tn(Math.abs(l), 2)} \\cdot ${tn(nv, 3)} = ${tn(Math.abs(l) * nv, 3)}$. ` + (nv < 1e-9 && len2(V) > 1e-9 ? 'Here $v \\ne 0$ has norm $0$: this form is not definite, so it is not an inner product.' : '$\\|v\\| = 0$ would force $v = 0$.');
+          const { nv, nl, l, V, deg } = st;
+          return `$\\|\\lambda v\\| = ${tn(nl, 3)}$ and $|\\lambda|\\,\\|v\\| = ${tn(Math.abs(l), 2)} \\cdot ${tn(nv, 3)} = ${tn(Math.abs(l) * nv, 3)}$: (b) holds. ` + (nv < 1e-9 && len2(V) > 1e-9 ? 'But $v \\ne 0$ has norm $0$ — (a) fails, because this form is not definite (not an inner product).' : deg ? '(a) fails for this form: every $x$ on the red line has $\\|x\\| = 0$.' : 'And $\\|v\\| > 0$ for every $v \\ne 0$: (a).');
         });
       },
     },

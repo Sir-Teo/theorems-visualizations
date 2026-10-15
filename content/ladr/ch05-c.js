@@ -395,6 +395,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           R.line(-1.3, LY, 3.3, LY, { color: 'muted', width: 1.4 });
           for (let t = -1; t <= 3; t++) { R.line(t, LY - 0.015, t, LY + 0.015, { color: 'muted', width: 1 }); R.text(pn(t), t, LY - 0.05, { align: 'center', size: 11, color: 'muted' }); }
           const ndist = new Set(L.map((x) => x.toFixed(4))).size;
+          for (let a = 0; a < 3; a++) for (let b = a + 1; b < 3; b++) if (Math.abs(L[a] - L[b]) < 1e-9) R.text(`λ${'₁₂₃'[a]} = λ${'₁₂₃'[b]}`, L[a], LY + 0.115, { align: 'center', size: 12, weight: 700, color: 'red' });
           R.text(`${ndist} distinct eigenvalue${ndist > 1 ? 's' : ''} on dim V = 3`, 1, 0.71, { align: 'center', size: 12.5, weight: 600, color: ndist === 3 ? 'green' : 'muted' });
           if (d === 3) {
             const V = fromCols(vecs.map((w) => w.b)), D = M.matMul(M.inverse(V), M.matMul(T, V));
@@ -445,6 +446,12 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           sc.begin();
           drawSub(sc, Rg, 'orange', { r: 1.5, fillAlpha: 0.12, width: 5, alpha: 0.5, len: 1.65 });
           drawSub(sc, N, 'green', { r: 1.35, fillAlpha: 0.14, width: 7, alpha: 0.55, len: 1.65 });
+          // how a line sits relative to a plane: drop its tip onto the plane (the drop has length 0 exactly when the line lies in it)
+          const [Ln, Pl, lc] = N.length === 1 && Rg.length === 2 ? [N[0], Rg, 'green'] : N.length === 2 && Rg.length === 1 ? [Rg[0], N, 'orange'] : [null];
+          if (Ln && !interB.length) {
+            const tip = mul3(Ln, sc.P(Ln)[1] >= 0 ? 1.45 : -1.45), q = projOnto(tip, Pl);
+            sc.line(tip, q, { color: lc, width: 1.4, dash: [4, 3] }); sc.line(ZERO, q, { color: lc, width: 1.4, dash: [4, 3], alpha: 0.7 }); sc.dot(q, { r: 3.5, color: lc });
+          }
           if (interB.length === 1) sc.line(mul3(interB[0], -1.65), mul3(interB[0], 1.65), { color: 'red', width: 2.6, bias: -0.02 }, 16);
           if (Rg.length && Rg.length < 3) sc.tex(`\\operatorname{range}(T - ${m}I)`, subLabelAt(sc, Rg, { r: 1.5, len: 1.65 }), { color: 'orange', size: 14, dy: -13 });
           if (N.length && N.length < 3) sc.tex(`\\operatorname{null}(T - ${m}I)`, subLabelAt(sc, N, { r: 1.35, len: 1.65, low: true }), { color: 'green', size: 14, dy: 15 });
@@ -599,18 +606,18 @@ So $T$ has $n$ Gershgorin disks. When $\mathbf F = \mathbf C$ the $j$th one is t
             const [cx, cy] = r[j];
             S.circle(cx, cy, rad[j], { color: EC[j], width: 1.8, fill: EC[j], fillAlpha: real.value ? 0.05 : 0.13, alpha: real.value ? 0.45 : 1 });
             // the radius as a chain of |A_jk|
-            const th = [2.3, -0.75, 0.5][j];
+            const th = real.value ? 0 : [2.3, -0.75, 0.5][j], y0 = real.value ? -0.32 - 0.28 * j : cy;
             let s0 = 0;
             r.forEach((z, k) => {
               if (k === j) return;
-              const m = Math.hypot(z[0], z[1]), a = [cx + s0 * Math.cos(th), cy + s0 * Math.sin(th)], b = [cx + (s0 + m) * Math.cos(th), cy + (s0 + m) * Math.sin(th)];
+              const m = Math.hypot(z[0], z[1]), a = [cx + s0 * Math.cos(th), y0 + s0 * Math.sin(th)], b = [cx + (s0 + m) * Math.cos(th), y0 + (s0 + m) * Math.sin(th)];
               S.line(a[0], a[1], b[0], b[1], { color: EC[j], width: 3, dash: s0 > 0 ? [5, 3] : false });
               S.dot(b[0], b[1], { r: 3, color: EC[j] });
               s0 += m;
             });
             if (real.value) {
               const y = -0.32 - 0.28 * j;
-              S.line(cx - rad[j], y, cx + rad[j], y, { color: EC[j], width: 4 });
+              S.line(cx - rad[j], y, cx + rad[j], y, { color: EC[j], width: 4, alpha: 0.45 });
               for (const e of [-1, 1]) { S.line(cx + e * rad[j], y - 0.09, cx + e * rad[j], y + 0.09, { color: EC[j], width: 2 }); S.line(cx + e * rad[j], y, cx + e * rad[j], 0, { color: EC[j], width: 1, dash: [2, 3], alpha: 0.6 }); }
             }
             S.tex(`D_${j + 1}`, cx + rad[j] * Math.cos(th + 0.9) * 0.62, cy + rad[j] * Math.sin(th + 0.9) * 0.62, { color: EC[j], size: 15 });
@@ -639,7 +646,7 @@ So $T$ has $n$ Gershgorin disks. When $\mathbf F = \mathbf C$ the $j$th one is t
         v.readout(() => {
           if (!st) return '';
           const { A, rad } = st;
-          return A.map((r, j) => `$D_{${j + 1}}$: centre $${ctn(r[j][0], r[j][1])}$, radius $${r.map((z, k) => (k === j ? null : tn(Math.hypot(z[0], z[1])))).filter((x) => x != null).join(' + ')} = ${tn(rad[j])}$`).join(';  ');
+          return A.map((r, j) => `$D_{${j + 1}}$: centre $${ctn(r[j][0], r[j][1])}$, radius $${r.map((z, k) => (k === j ? null : tn(Math.hypot(z[0], z[1])))).filter((x) => x != null).join(' + ')} = ${tn(rad[j])}$${real.value ? `, i.e. the interval $[${tn(r[j][0] - rad[j])}, ${tn(r[j][0] + rad[j])}]$` : ''}`).join(';  ');
         });
       },
     },
@@ -931,8 +938,8 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           const cell = (X, off) => (i, j) => (i === j ? ['green', 0.14] : Math.abs(X[i][j]) < 1e-9 ? null : ['red', 0.18]);
           TA.draw({ value: (i, j) => MS[i][j], format: (x) => pn(Math.abs(x) < 5e-10 ? 0 : x), fill: cell(MS, offS) });
           TB.draw({ value: (i, j) => MT[i][j], format: (x) => pn(Math.abs(x) < 5e-10 ? 0 : x), fill: cell(MT, offT) });
-          const bn = common ? 'common eigenbasis' : which.value === 's' ? "T's eigenbasis" : "S's eigenbasis";
-          ttl(TA, `\\mathcal M(S) \\text{ in the ${bn}}`, 'blue'); ttl(TB, `\\mathcal M(T) \\text{ in the same basis}`, offT < 1e-9 ? 'green' : 'red');
+          const bn = common ? 'the common eigenbasis' : which.value === 's' ? "T's eigenbasis" : "S's eigenbasis";
+          ttl(TA, `\\mathcal M(S) \\text{ in ${bn}}`, 'blue'); ttl(TB, `\\mathcal M(T) \\text{ in the same basis}`, offT < 1e-9 ? 'green' : 'red');
           st = { comm, ok, common, offT, nonreal: eT.nonreal, T };
         });
         v.legend([['blue', "$S$'s eigen-axes and grid"], ['orange', "$T$'s eigen-axes; image of the grid under $T$", { dash: true }]]);
@@ -992,7 +999,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           drawSub(sc, PL, 'blue', { r: 1.45, fillAlpha: lam === 2 ? 0.14 : 0.04, edge: lam === 2 ? 0.6 : 0.2, grid: lam === 2 });
           drawSub(sc, LN, 'purple', { len: 1.7, alpha: lam === -1 ? 0.55 : 0.2 });
           sc.tex(lam === 2 ? 'E(2,S)' : 'E(-1,S)', lam === 2 ? subLabelAt(sc, PL, { r: 1.45, side: 'left' }) : subLabelAt(sc, LN, { len: 1.7, low: true }), { color: lam === 2 ? 'blue' : 'purple', size: 14, dx: lam === 2 ? -30 : 0, dy: lam === 2 ? 0 : 14 });
-          if (k >= 1) {
+          if (k >= 1 && !(k >= 3 && E.length === 1)) {
             if (E.length === 2) {
               const circ = [], img = [];
               for (let i = 0; i <= 48; i++) { const t = (2 * Math.PI * i) / 48, w = add3(mul3(E[0], 0.6 * Math.cos(t)), mul3(E[1], 0.6 * Math.sin(t))); circ.push(w); img.push(ap(T, w)); }
@@ -1002,9 +1009,10 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           const w = ws[0];
           if (k >= 2 && w) ws.forEach((u, i) => { const s = sc.P(u.w)[1] >= 0 ? 1 : -1; sc.line(mul3(u.w, -1.6), mul3(u.w, 1.6), { color: 'gold', width: i ? 2 : 3.5, alpha: i ? 0.45 : 0.85 }, 12); });
           if (k >= 3 && w) {
-            const ww = mul3(w.w, sc.P(w.w)[1] >= 0 ? 0.75 : -0.75), Sw = ap(SM, ww), Tw = ap(T, ww);
+            const ww = mul3(w.w, sc.P(w.w)[0] >= 0 ? 0.75 : -0.75), Sw = ap(SM, ww), Tw = ap(T, ww);
+            const pd = sc.P(ww), pl = Math.hypot(pd[0], pd[1]) || 1, nx = -pd[1] / pl, ny = pd[0] / pl; // screen normal to the line of w
             sc.arrow(ZERO, Sw, { color: 'blue', width: 7, head: 14, alpha: 0.45, bias: 0.02 }); sc.arrow(ZERO, Tw, { color: 'orange', width: 4, head: 11, bias: 0.01 }); sc.arrow(ZERO, ww, { color: 'gold', width: 2.4, head: 9 });
-            sc.tex('w', ww, { color: 'gold', size: 15, dx: 14, dy: 10 }); sc.tex('Sw', Sw, { color: 'blue', size: 14, dx: 16, dy: -8 }); sc.tex('Tw', Tw, { color: 'orange', size: 14, dx: -20, dy: -6 });
+            sc.tex('w', ww, { color: 'gold', size: 15, dx: -16 * nx, dy: 16 * ny }); sc.tex('Sw', Sw, { color: 'blue', size: 14, dx: 18 * nx + 8 * pd[0] / pl, dy: -18 * ny - 8 * pd[1] / pl }); sc.tex('Tw', Tw, { color: 'orange', size: 14, dx: -18 * nx, dy: 18 * ny });
           }
           sc.flush();
           let msg, col;
@@ -1156,7 +1164,10 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
             else S.arrow(a.re, a.im, z.re, z.im, { color: 'purple', width: 1.4, dash: [5, 4], head: 7 });
           });
           const dists = ev.map((z) => Math.min(...cands.map((c) => Math.hypot(z.re - c.z.re, z.im - c.z.im))));
-          ev.forEach((z, k) => S.dot(z.re, z.im, { r: 6, color: dists[k] < 1e-6 ? 'green' : 'red' }));
+          ev.forEach((z, k) => {
+            if (dists[k] >= 1e-6) { const c = cands.reduce((b, q) => (Math.hypot(z.re - q.z.re, z.im - q.z.im) < Math.hypot(z.re - b.z.re, z.im - b.z.im) ? q : b)); S.line(z.re, z.im, c.z.re, c.z.im, { color: 'red', width: 1.4, dash: [3, 3] }); }
+            S.dot(z.re, z.im, { r: 6, color: dists[k] < 1e-6 ? 'green' : 'red' });
+          });
           const comm = (() => { let m = 0; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { let a = new Cx(0, 0), b = new Cx(0, 0); for (let k = 0; k < 3; k++) { a = a.add(SM[i][k].mul(TM[k][j])); b = b.add(TM[i][k].mul(SM[k][j])); } m = Math.max(m, a.sub(b).abs()); } return m; })();
           S.corner(comm < 1e-9 ? `ST = TS: every eigenvalue of ${sum ? 'S + T' : 'ST'} is a candidate` : `ST ≠ TS: eigenvalues of ${sum ? 'S + T' : 'ST'} miss the candidates`, 'tl', { color: comm < 1e-9 ? 'green' : 'red', weight: 700 });
           st = { ev, dists, comm, sum };
@@ -1165,7 +1176,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         v.readout(() => {
           if (!st) return '';
           const { ev, dists, comm, sum } = st, nm = sum ? 'S + T' : 'ST';
-          return `Eigenvalues of $${nm}$: ${ev.map((z) => `$${ctn(z.re, z.im)}$`).join(', ')}. Distance to the nearest candidate: ${dists.map((d) => (d < 1e-6 ? `$${v.sci(d, 1)}$` : `$${tn(d, 3)}$`)).join(', ')} — ${comm < 1e-9 ? '**on the candidates**, as 5.81 promises.' : `**off** them: with $\\|ST - TS\\| \\approx ${tn(comm, 2)}$ the theorem does not apply.`}`;
+          return `Eigenvalues of $${nm}$: ${ev.map((z) => `$${ctn(z.re, z.im)}$`).join(', ')}. Distance to the nearest candidate: ${dists.map((d) => (d < 1e-6 ? `$${v.sci(d, 1)}$` : `$${tn(d, 3)}$`)).join(', ')} — ${comm < 1e-9 ? '**on the candidates**, as 5.81 promises.' : `**off** them (red dashes): $ST - TS$ has entries up to ${tn(comm, 2)}, so the theorem does not apply.`}`;
         });
       },
     },

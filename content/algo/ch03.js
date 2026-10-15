@@ -649,7 +649,7 @@ and the number of comparisons is at most twice that. (The bound $n\log_2 n$ obta
       refs: ['CLRS 4e §6.3'],
       tags: ['heaps'],
       viz(v) {
-        const HC = ['teal', 'blue', 'purple', 'orange', 'red'], rng = v.rng(17);
+        const HC = ['teal', 'blue', 'purple', 'orange', 'pink'], rng = v.rng(17);
         let pool = distinct(rng, 31, 10, 99);
         const gen = () => {
           const n = nS.value, a = pool.slice(0, n);

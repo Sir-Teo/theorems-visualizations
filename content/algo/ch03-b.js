@@ -197,7 +197,7 @@ for every input order.`,
         let pick = 13, key = '', T = null;
         v.button('Next input', () => { pick = (pick + 1) % T.leaves.length; });
         const S = v.stage({ x: [-0.8, 23.8], y: [-6.8, 0.6], axes: false, height: 350, full: true });
-        const P = v.stage({ x: [2, 256], y: [0.84, 2.15], xlog: true, axes: 'box', height: 180, full: true, title: 'worst-case comparisons $\\div \\lceil\\log_2 n!\\rceil$ (never below 1)', xlabel: 'n' });
+        const P = v.stage({ x: [2, 256], y: [0.9, 1.45], xlog: true, axes: 'box', height: 180, yticks: [1, 1.1, 1.2, 1.3, 1.4], full: true, title: 'worst-case comparisons $\\div \\lceil\\log_2 n!\\rceil$ (never below 1)', xlabel: 'n' });
         S.onClick((x, y) => { if (!T) return; let best = -1, bd = 18; T.leaves.forEach((L, k) => { const d = Math.hypot(S.X(L.x) - S.X(x), S.Y(-L.depth) - S.Y(y)); if (d < bd) { bd = d; best = k; } }); if (best >= 0) pick = best; });
         const ser = { merge: [], insertion: [], fj: [] };
         for (let k = 0; k <= 56; k++) {
@@ -235,9 +235,9 @@ for every input order.`,
           // ratio plot
           P.hline(1, { color: 'red', width: 1.4, dash: [6, 4] });
           P.path(ser.insertion, { color: 'orange', width: 2 }); P.path(ser.fj, { color: 'purple', width: 2 }); P.path(ser.merge, { color: 'accent', width: 2 });
-          P.text('insertion sort', 4.2, 1.95, { size: 11, color: 'orange' });
-          P.text('merge insertion (Ford–Johnson)', 240, 1.005, { size: 11, color: 'purple', align: 'right', baseline: 'bottom' });
-          P.text('merge sort', 240, 1.115, { size: 11, color: 'accent', align: 'right', baseline: 'bottom' });
+          P.text('insertion sort', 5.6, 1.4, { size: 11, color: 'orange' });
+          P.text('merge insertion (Ford–Johnson)', 245, 0.99, { size: 11, color: 'purple', align: 'right', baseline: 'top' });
+          P.text('merge sort', 60, 1.135, { size: 11, color: 'accent', align: 'center', baseline: 'bottom' });
           P.text('lower bound', 2.2, 0.99, { size: 11, color: 'red', baseline: 'top' });
         });
         v.legend([['green', 'path of the chosen input'], ['orange', 'node with a single branch (a wasted comparison)', { dot: true }], ['red', '$\\lceil\\log_2 n!\\rceil$', { dash: true }]]);
@@ -317,7 +317,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
       credit: 'Hollerith, 1890 (card sorters)',
       statement: String.raw`**LSD radix sort** sorts $n$ integers of $d$ digits in base $b$ by sorting them $d$ times, on the least significant digit first and the most significant last, each time with a **stable** sort such as counting sort (3.13). It takes $\Theta(d(n+b))$ time. For $w$-bit keys and base $b=2^r$ this is $\Theta\big(\tfrac wr(n+2^r)\big)$, minimized near $r=\log_2 n$, giving $\Theta(wn/\log n)$; for $w=O(\log n)$ the sort is linear.`,
       idea: String.raw`Invariant: after pass $t$ the keys are sorted by their last $t$ digits. Pass $t+1$ orders them by digit $t+1$; keys whose digit $t+1$ ties keep their previous relative order because the pass is stable, and that order was already correct on the last $t$ digits. After $d$ passes they are sorted on all digits. Stability is essential: without it a pass can scramble ties and undo the earlier passes. As with counting sort, no keys are compared, so the $n\log n$ bound (3.12) does not apply.`,
-      caption: String.raw`Ten 8-bit numbers written in the chosen base; step through the passes. In each column the green digits are the ones already sorted on (the invariant), the gold digit is the one this pass sorts by, and lines track each number from column to column. Switch **stable passes** off and ties are reversed in every pass: the final column comes out wrong (red). Below: the work $d(n+b)$ for 32-bit keys against $n\log_2 n$ as $n$ grows.`,
+      caption: String.raw`Ten 8-bit numbers written in the chosen base; step through the passes. In each column the green digits are the ones already sorted on (the invariant), the gold digit is the one this pass sorts by, and lines track each number from column to column. Switch **stable passes** off and ties are reversed in every pass: the final column comes out wrong (red). Below: the work per key, $d(n+b)/n$, for 32-bit keys against the $\log_2 n$ comparisons per key of a comparison sort, as $n$ grows; with the best base the radix curve keeps falling.`,
       deps: ['algo-3.13'],
       refs: ['CLRS 4e §8.3'],
       tags: ['sorting'],
@@ -328,7 +328,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
         const stable = v.toggle('stable passes', true, { onChange: () => S.reset({ at: 'end' }) });
         v.button('New numbers', () => { vals = distinct(rng, n, 0, 255); S.reset({ at: 'end' }); });
         const C = v.stage({ x: [-0.5, 3.5], y: [-n + 0.4, 1.35], axes: false, height: 330, full: true });
-        const P = v.stage({ x: [10, 1e8], y: [-2, 36], xlog: true, axes: true, height: 200, full: true, title: 'work $\\div\\, n$ for sorting $n$ keys of 32 bits', xlabel: 'n' });
+        const P = v.stage({ x: [10, 1e8], y: [-4.5, 36], xlog: true, axes: true, height: 210, full: true, title: 'work $\\div\\, n$ for sorting $n$ keys of 32 bits', xlabel: 'n' });
         const digitsOf = (x, b, d) => { const out = []; for (let t = 0; t < d; t++) { out.unshift(x % b); x = Math.floor(x / b); } return out; };
         const passes = () => {
           const b = base.value, d = Math.ceil(Math.log(256) / Math.log(b) - 1e-9);
@@ -369,7 +369,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
           const bits = 32, passesFor = (bb) => Math.ceil(bits / Math.log2(bb) - 1e-9);
           P.fn((m) => Math.log2(m), { color: 'orange', width: 2, dash: [6, 4] });
           P.fn((m) => (passesFor(b) * (m + b)) / m, { color: 'accent', width: 2.4 });
-          P.fn((m) => { const r = Math.max(1, Math.min(16, Math.round(Math.log2(m)))); return (Math.ceil(bits / r) * (m + 2 ** r)) / m; }, { color: 'green', width: 1.8, dash: [3, 3] });
+          P.fn((m) => { let best = Infinity; for (let r = 1; r <= 16; r++) best = Math.min(best, (Math.ceil(bits / r) * (m + 2 ** r)) / m); return best; }, { color: 'green', width: 1.8, dash: [3, 3] });
           P.text(`radix, base ${b}: ${passesFor(b)} passes`, 3e7, passesFor(b) * (1 + b / 3e7) + 0.6, { size: 11, color: 'accent', align: 'right', baseline: 'bottom' });
           P.text('comparison sort: log₂ n', 3e7, Math.log2(3e7) + 0.8, { size: 11, color: 'orange', align: 'right', baseline: 'bottom' });
           P.text('best base b ≈ n', 3e7, 32 / 16 + 3.2, { size: 11, color: 'green', align: 'right', baseline: 'bottom' });
@@ -426,20 +426,21 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
           const n = xs.length, B = Array.from({ length: n }, () => []);
           for (const x of xs) B[Math.min(n - 1, Math.floor(n * x))].push(x);
           B.forEach((q) => q.sort((a, b) => a - b));
-          const mx = Math.max(...B.map((q) => q.length)), top = Math.max(5, mx) + 2;
-          T.setView([0, 1], [-0.75, top]);
+          const mx = Math.max(...B.map((q) => q.length)), rows = Math.max(5, mx) + 0.9, u = rows / (T.height - 70);
+          const top = rows + 44 * u;
+          T.setView([0, 1], [-26 * u, top]);
           for (let i = 0; i <= n; i++) T.line(i / n, 0, i / n, Math.max(1.2, mx + 0.3), { color: 'grid', width: 1 });
           T.line(0, 0, 1, 0, { color: 'muted', width: 1.4 });
           const pxPer = Math.min(T.width / n, T.height / top), rr = Math.max(1.8, Math.min(6.5, pxPer * 0.36));
           B.forEach((q, i) => {
             const L = q.length, col = L <= 1 ? 'green' : L === 2 ? 'accent' : L <= 4 ? 'orange' : 'red';
             q.forEach((x, k) => T.dot((i + 0.5) / n, k + 0.55, { r: rr, color: col }));
-            if (L >= 3) T.text(String(L), (i + 0.5) / n, L + 0.75, { align: 'center', size: 10.5, weight: 700, color: col });
+            if (L >= 3) T.text(String(L), (i + 0.5) / n, L + 0.15, { align: 'center', baseline: 'bottom', size: 10.5, weight: 700, color: col });
           });
-          T.dots(xs.map((x) => [x, top - 0.9]), { r: 2.6, color: 'gold' });
-          T.text('input values in [0, 1)', 0.002, top - 0.25, { size: 11, color: 'muted' });
-          T.text('0', 0, -0.42, { size: 10.5, color: 'muted' }); T.text('1', 1, -0.42, { size: 10.5, color: 'muted', align: 'right' });
-          T.text(`${n} buckets of width 1/${n}`, 0.5, -0.42, { size: 10.5, color: 'muted', align: 'center' });
+          T.dots(xs.map((x) => [x, top - 30 * u]), { r: 2.6, color: 'gold' });
+          T.text('input values in [0, 1)', 0.003, top - 12 * u, { size: 11, color: 'muted' });
+          T.text('0', 0.003, -13 * u, { size: 10.5, color: 'muted' }); T.text('1', 0.997, -13 * u, { size: 10.5, color: 'muted', align: 'right' });
+          T.text(`${n} buckets of width 1/${n}`, 0.5, -13 * u, { size: 10.5, color: 'muted', align: 'center' });
           // cost panel
           P.fn((m) => 2 - 1 / m, { color: 'green', width: 1.4, dash: [6, 4] });
           P.path(curve('uniform'), { color: 'green', width: 2 }); P.dots(curve('uniform'), { r: 3, color: 'green' });
@@ -599,9 +600,10 @@ the maximum being near the median. The worst case, when every pivot is an extrem
         v.render(() => {
           const f = S.frame, n = nS.value, k = kOf(), rounds = f.rounds || [];
           const nr = rounds.length;
-          F.setView([0.5, n + 0.5], [-Math.max(nr, 6) + 0.2, 0.75]);
+          const rowsV = Math.max(nr, 6), uu = rowsV / (F.height - 34);
+          F.setView([0.5, n + 0.5], [-rowsV + 0.2 - 6 * uu, 0.3 + 26 * uu]);
           F.vline(k, { color: 'green', width: 1.6, dash: [5, 4] });
-          F.text(`k = ${k}`, k, 0.45, { align: 'center', size: 11, color: 'green', weight: 600 });
+          F.text(`k = ${k}`, k, 0.3 + 13 * uu, { align: 'center', size: 11, color: 'green', weight: 600 });
           const rowPx = F.height / Math.max(nr, 6), th = Math.min(0.62, Math.max(0.18, 1 - 3 / rowPx));
           rounds.slice(0, f.t + 1).forEach((rd, t) => {
             const y = -t - 0.2;
@@ -616,16 +618,18 @@ the maximum being near the median. The worst case, when every pivot is an extrem
           // histogram
           const key = `${n}|${k}|${piv.value}`;
           if (key !== hkey) { hkey = key; hist = simulate(n, k); }
-          const exact = piv.value === 'first' ? hist[0] : 2 * ((n + 1) * harmonic(n) - (n + 3 - k) * harmonic(n + 1 - k) - (k + 2) * harmonic(k) + n + 3) / n;
-          const lo = Math.min(...hist), hi = Math.max(...hist), bound = 2 + 2 * Math.LN2;
-          const x0 = piv.value === 'first' ? Math.max(0, lo - 1) : 0, x1 = piv.value === 'first' ? hi + 1 : Math.max(6, hi * 1.02);
+          const exactR = 2 * ((n + 1) * harmonic(n) - (n + 3 - k) * harmonic(n + 1 - k) - (k + 2) * harmonic(k) + n + 3) / n;
+          const exact = piv.value === 'first' ? hist[0] : exactR;
+          const hi = Math.max(...hist), bound = 2 + 2 * Math.LN2;
+          const x0 = 0, x1 = piv.value === 'first' ? Math.max(6, hi * 1.08) : Math.max(6, hi * 1.02);
           const Hd = v.M.histogram(Array.from(hist), { bins: 60, range: [x0, x1] }), top = Math.max(...Hd.counts);
           Hs.setView([x0, x1], [-top * 0.13, top * 1.24]);
           Hs.hist(Hd, { color: 'accent', fillAlpha: 0.35 });
           if (S.atEnd) Hs.line(f.total / n, 0, f.total / n, top * 1.02, { color: 'gold', width: 2.2 });
           Hs.line(exact, 0, exact, top * 1.24, { color: 'green', width: 2 });
           if (piv.value === 'random') { Hs.line(bound, 0, bound, top * 1.24, { color: 'red', width: 1.6, dash: [6, 4] }); Hs.text('(2 + 2 ln 2) n', bound, top * 1.15, { size: 11, color: 'red', dx: 5 }); }
-          Hs.text('exact E[C]/n', exact, top * 1.15, { size: 11, color: 'green', align: 'right', dx: -5 });
+          if (piv.value === 'first') { Hs.line(exactR, 0, exactR, top * 1.24, { color: 'muted', width: 1.4, dash: [4, 3] }); Hs.text(`random pivot: ${v.fix(exactR, 2)} n`, exactR, top * 0.6, { size: 11, color: 'muted', dx: 5 }); }
+          Hs.text(piv.value === 'first' ? `first-element pivot: ${v.fix(exact, 1)} n` : 'exact E[C]/n', exact, top * 1.15, { size: 11, color: 'green', align: 'right', dx: -5 });
         });
         v.legend([['accent', 'ranks alive / kept side'], ['gold', 'pivot · this run (histogram)'], ['green', 'target rank $k$ · exact expectation'], ['red', 'bound for the worst $k$', { dash: true }]]);
         v.readout(() => {
@@ -679,7 +683,7 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
         for (const g of [3, 5, 7]) {
           const W = momWorst(g); worst[g] = []; meas[g] = [];
           for (let k = 0; k <= 40; k++) { const N = Math.round(100 * 10000 ** (k / 40)); worst[g].push([N, W(N) / N]); }
-          for (let k = 0; k <= 8; k++) { const N = Math.round(100 * 200 ** (k / 8)); meas[g].push([N, momCount(r2.shuffle(range1(N)), N >> 1, g) / N]); }
+          for (let k = 0; k <= 8; k++) { const N = Math.round(100 * 200 ** (k / 8)); let c = 0; for (let t = 0; t < 3; t++) c += momCount(r2.shuffle(range1(N)), N >> 1, g); meas[g].push([N, c / 3 / N]); }
         }
         v.render(() => {
           const f = S.frame, g = gS.value, p0 = S.prev.pos && Object.keys(S.prev.pos).length === Object.keys(f.pos).length ? S.prev.pos : f.pos, t = S.tween;

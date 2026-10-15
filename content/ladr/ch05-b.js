@@ -242,7 +242,7 @@ export default {
       statement: String.raw`Suppose $V$ is finite-dimensional, $T \in \mathcal L(V)$, and $U$ is a subspace of $V$ that is invariant under $T$, so that the restriction $T|_U$ is an operator on $U$. Then the minimal polynomial of $T$ is a polynomial multiple of the minimal polynomial of $T|_U$: there is $s \in \mathcal P(\mathbf F)$ with
 $$p_T = s\cdot p_{T|_U}.$$`,
       idea: String.raw`Let $p$ be the minimal polynomial of $T$. Then $p(T)$ is the zero operator on all of $V$, so in particular $p(T)u = 0$ for every $u \in U$. Because $U$ is invariant, applying $T|_U$ to a vector of $U$ is the same as applying $T$, so $p(T|_U)u = p(T)u = 0$: the polynomial $p$ annihilates $T|_U$. By 5.29, applied to the operator $T|_U$, every polynomial that annihilates $T|_U$ is a multiple of its minimal polynomial. In particular every eigenvalue of $T|_U$ is an eigenvalue of $T$, with no larger multiplicity in the minimal polynomial.`,
-      caption: String.raw`The diagram shows every subspace of $\mathbf R^3$ invariant under the chosen operator $T$, ordered by inclusion, each labelled with the minimal polynomial of $T$ restricted to it — computed from the matrix of the restriction. **Click a node** $U$: the invariant subspaces above it light up, and each green edge carries the factor by which the polynomial grows. On the right, $U$ is drawn in $\mathbf R^3$; drag $u$ inside it and $Tu$ stays in $U$. Switch on the plane $W$, which is *not* invariant, to see the conclusion fail.`,
+      caption: String.raw`The diagram shows every subspace of $\mathbf R^3$ invariant under the chosen operator $T$, ordered by inclusion, each labelled with the minimal polynomial of $T$ restricted to it — computed from the matrix of the restriction. **Click a node** $U$: the invariant subspaces containing it light up in green, each showing its polynomial as $p_U$ times a quotient — computed by long division, always with remainder $0$. On the right, $U$ is drawn in $\mathbf R^3$; drag $u$ inside it and $Tu$ stays in $U$. Switch on the plane $W$, which is *not* invariant, to see the conclusion fail.`,
       deps: ['ladr-5.29', 'ladr-5.2'],
       tags: ['minimal polynomial', 'invariant subspaces'],
       viz(v) {
@@ -269,9 +269,9 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         const sc = v.scene3(S3, { yaw: -0.75, pitch: 0.55, axis: 1.6, lim: 1.25, labels: ['x', 'y', 'z'] });
         const hu = sc.handle([0.6, 0.2, 0.1], { color: 'accent', label: 'u', mode: 'plane', a: [1, 0, 0], b: [0, 1, 0] });
         let sel = PRE.jordan.sel, reset = true, curKey = '', st = null, geo = [];
-        const BW = 116, BH = 30;
+        const BW = 112, BH = 42;
         D.onClick((x, y) => {
-          for (const g of geo) if (Math.abs(D.X(x) - D.X(g.x)) <= BW / 2 && Math.abs(D.Y(y) - D.Y(g.y)) <= BH / 2 + 12) { sel = g.k; reset = true; }
+          for (const g of geo) if (Math.abs(D.X(x) - D.X(g.x)) <= g.w / 2 && Math.abs(D.Y(y) - D.Y(g.y)) <= BH / 2 + 12) { sel = g.k; reset = true; }
         });
         const Wvecs = [add3(Sb[0], Sb[2]), Sb[1]];
         v.render(() => {
@@ -290,28 +290,27 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           info.forEach((a, i) => info.forEach((b, j) => { if (contains(a, b) && !info.some((c) => contains(a, c) && contains(c, b))) edges.push([i, j]); }));
           const isW = sel === 'W' && showW.value, sIdx = isW ? -1 : Math.min(sel, info.length - 1);
           const above = new Set(info.map((b, j) => (sIdx >= 0 && (j === sIdx || contains(info[sIdx], b)) ? j : -1)).filter((j) => j >= 0));
-          // ---- the diagram
+          // ---- the diagram (boxes sized to their labels; supersets of U show the quotient by p_U)
+          const texW = (t, size) => Math.max(0, t.replace(/\\[a-z]+|[{}^]/g, '').replace(/\s/g, '').length) * size * 0.6;
+          const pU = sIdx >= 0 ? info[sIdx].p : null;
+          const wOf = (nd) => Math.max(BW, texW(nd.f, 14) * 1.12 + 30);
           for (const [i, j] of edges) {
             const a = info[i], b = info[j], on = above.has(i) && above.has(j);
             const y0 = D.invY(D.Y(a.y) - BH / 2 - 17), y1 = D.invY(D.Y(b.y) + BH / 2 + 1);
             D.line(a.x, y0, b.x, y1, { color: on ? 'green' : 'faint', width: on ? 2.6 : 1.4 });
-            if (on) {
-              const f = factored(M, pDiv(b.p, a.p).q), lab = f === '1' || f.startsWith('(') || !/[+-]/.test(f) ? f : `(${f})`;
-              let ex = D.X(b.x) - D.X(a.x), ey = D.Y(y1) - D.Y(y0); const l = Math.hypot(ex, ey); ex /= l; ey /= l;
-              let nx = -ey, ny = ex; if (nx < 0 || (Math.abs(nx) < 1e-6 && ny > 0)) { nx = -nx; ny = -ny; }
-              if (a.x > b.x + 1e-6) { nx = -nx; ny = -ny; }
-              const mx = (D.X(a.x) + D.X(b.x)) / 2 + nx * 24, my = (D.Y(y0) + D.Y(y1)) / 2 + ny * 24;
-              D.texPx(`\\times ${lab}`, mx, my, { color: 'green', size: 12.5 });
-            }
           }
           geo = [];
           info.forEach((nd, j) => {
-            const isSel = j === sIdx, on = above.has(j);
-            box(D, nd.x, nd.y, BW, BH, { v, color: isSel ? 'accent' : on ? 'green' : 'muted', width: isSel ? 3 : on ? 2 : 1.2, fill: isSel ? 'accent' : on ? 'green' : 'faint', fillAlpha: isSel ? 0.16 : on ? 0.1 : 0.06 });
-            D.tex(nd.f, nd.x, nd.y, { size: 14, color: isSel ? 'accent' : 'ink' });
+            const isSel = j === sIdx, on = above.has(j), w = wOf(nd);
+            box(D, nd.x, nd.y, w, BH, { v, color: isSel ? 'accent' : on ? 'green' : 'muted', width: isSel ? 3 : on ? 2 : 1.2, fill: isSel ? 'accent' : on ? 'green' : 'faint', fillAlpha: isSel ? 0.16 : on ? 0.1 : 0.06 });
+            if (on) {
+              const f = factored(M, pDiv(nd.p, pU).q), lab = isSel ? '= p_U' : `= p_U\\cdot ${f === '1' ? '1' : f.startsWith('(') || !/[+-]/.test(f) ? f : `(${f})`}`;
+              D.texPx(nd.f, D.X(nd.x), D.Y(nd.y) - 8, { size: 14, color: isSel ? 'accent' : 'ink' });
+              D.texPx(lab, D.X(nd.x), D.Y(nd.y) + 11, { size: 11.5, color: isSel ? 'accent' : 'green' });
+            } else D.tex(nd.f, nd.x, nd.y, { size: 14, color: 'ink' });
             const name = !nd.idx.length ? '{0}' : nd.idx.length === 3 ? 'V = ℝ³' : `span(${nd.idx.map((i) => 's' + sub(i + 1)).join(', ')})`;
             D.textPx(name, D.X(nd.x), D.Y(nd.y) - BH / 2 - 7, { align: 'center', size: 11, color: 'muted' });
-            geo.push({ k: j, x: nd.x, y: nd.y });
+            geo.push({ k: j, x: nd.x, y: nd.y, w });
           });
           let wInfo = null;
           if (showW.value) {
@@ -322,7 +321,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
             box(D, wx, wy, BW + 30, BH, { v, color: 'red', width: isW ? 3 : 1.6, dash: [5, 4], fill: 'red', fillAlpha: isW ? 0.14 : 0.06 });
             D.tex(wInfo.f, wx, wy, { size: 11.5, color: 'red' });
             D.textPx('W (not invariant)', D.X(wx), D.Y(wy) - BH / 2 - 7, { align: 'center', size: 11, color: 'red' });
-            geo.push({ k: 'W', x: wx, y: wy });
+            geo.push({ k: 'W', x: wx, y: wy, w: BW + 30 });
           }
           D.corner('click a node', 'bl', { size: 11, color: 'faint' });
           // ---- the subspace in R³
@@ -364,7 +363,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
             return `$Tu$ is at distance ${tn(st.out, 3)} from $W$, so $W$ is not invariant and $T|_W$ is not an operator on $W$ — 5.31 says nothing. Its nearest stand-in, the compression $P_W T|_W$, has minimal polynomial $${wInfo.f}$, and dividing $p_T = ${st.fT}$ by it leaves the remainder $${polyT(wInfo.r)}$` + (rm > 1e-6 ? ' $\\ne 0$: **not a divisor**.' : '.');
           }
           const { nd, q, rmax, killed } = st.pu;
-          return `$p_T = ${st.fT}$ and $p_{T|_U} = ${nd.f}$. Long division gives $p_T = p_{T|_U}\\cdot(${polyT(q)})$ with remainder of size $${v.sci(rmax, 1)}$ — **a polynomial multiple** ✓.` + (st.dim ? ` For your $u$: $\\lVert p_{T|_U}(T)\\,u\\rVert = ${v.sci(killed, 1)}$.` : '');
+          return `$p_T = ${st.fT}$ and $p_{T|_U} = ${nd.f}$. Long division gives $p_T = p_{T|_U}\\cdot${(() => { const f = factored(M, q); return f.startsWith('(') || f === '1' || !/[+-]/.test(f) ? f : `(${f})`; })()}$ with remainder of size $${v.sci(rmax, 1)}$ — **a polynomial multiple** ✓.` + (st.dim ? ` For your $u$: $\\lVert p_{T|_U}(T)\\,u\\rVert = ${v.sci(killed, 1)}$.` : '');
         });
       },
     },
