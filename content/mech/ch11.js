@@ -220,8 +220,8 @@ The neglected terms are of third order, so solutions of the true and linearised 
       viz(v) {
         const M = v.M, T = 25, DT = 0.01, N = Math.round(T / DT);
         const POT = {
-          pend: { R: 1.7, c: 0.45, V: (x, y) => 1 - Math.cos(x) + 1 - Math.cos(y) + 0.45 * (1 - Math.cos(x - y)), g: (x, y) => [Math.sin(x) + 0.45 * Math.sin(x - y), Math.sin(y) - 0.45 * Math.sin(x - y)], start: [0.55, 0.12], zmax: 3.2, levels: [0.05, 0.15, 0.3, 0.5, 0.8, 1.2, 1.7, 2.3] },
-          hh: { R: 0.95, V: (x, y) => 0.5 * (x * x + y * y) + x * x * y - (y * y * y) / 3, g: (x, y) => [x + 2 * x * y, y + x * x - y * y], start: [0.3, 0.22], zmax: 0.42, levels: [0.01, 0.03, 0.06, 0.1, 0.1667, 0.25, 0.35] },
+          pend: { R: 1.7, RD: 1.7, c: 0.45, V: (x, y) => 1 - Math.cos(x) + 1 - Math.cos(y) + 0.45 * (1 - Math.cos(x - y)), g: (x, y) => [Math.sin(x) + 0.45 * Math.sin(x - y), Math.sin(y) - 0.45 * Math.sin(x - y)], start: [0.55, 0.12], zmax: 3.2, levels: [0.05, 0.15, 0.3, 0.5, 0.8, 1.2, 1.7, 2.3] },
+          hh: { R: 0.95, RD: 0.98, V: (x, y) => 0.5 * (x * x + y * y) + x * x * y - (y * y * y) / 3, g: (x, y) => [x + 2 * x * y, y + x * x - y * y], start: [0.3, 0.22], zmax: 0.8, levels: [0.01, 0.03, 0.06, 0.1, 0.1667, 0.25, 0.35] },
         };
         const pick = v.select('potential', [{ value: 'pend', label: 'two coupled pendulums' }, { value: 'hh', label: 'Hénon–Heiles' }], 'pend', { onChange: (k) => { const P = POT[k]; hd.set(P.start[0], P.start[1]); } });
         const s3 = v.stage3d({ range: 1.55, height: 300, yaw: -0.7, pitch: 0.5, labels: ['q₁', 'q₂', 'V'], axes: false });
@@ -249,14 +249,15 @@ The neglected terms are of third order, so solutions of the true and linearised 
           const dir = [x0[0] / eps, x0[1] / eps];
           const sw = sweepC(`${pick.value}|${dir}`, () => {
             const out = []; for (let j = 0; j <= 14; j++) { const e = 0.012 * 1.42 ** j; if (e > 0.98 * R0 * Math.SQRT2) break; const r = sim(P, G, [dir[0] * e, dir[1] * e]); out.push([e, r.dev / e]); }
-            const fit = out.filter((p) => isFinite(p[1]) && p[0] < 0.12 && p[1] > 1e-9);
+            const fit = out.filter((p) => isFinite(p[1]) && p[0] < 0.05 && p[1] > 1e-12);
             const slope = fit.length > 2 ? M.linreg(fit.map((p) => Math.log(p[0])), fit.map((p) => Math.log(p[1]))).slope : NaN;
             return { out, slope };
           });
           // 3D: surface and osculating bowl, both clipped at zmax
           const zs = 1.5 / P.zmax, sc = 1.5 / R0, zc = (z) => Math.min(z, P.zmax) * zs - 0.75;
-          s3.surface((u, w) => (P.V(u, w) <= P.zmax ? [u * sc, w * sc, zc(P.V(u, w))] : null), [-R0, R0], [-R0, R0], { n: 34, colorFn: (u, w) => v.ramp(0.25 + 0.7 * Math.min(1, P.V(u, w) / P.zmax), 'blue'), alpha: 0.9 });
-          s3.surface((u, w) => (Q(u, w) <= P.zmax ? [u * sc, w * sc, zc(Q(u, w)) + 0.005] : null), [-R0, R0], [-R0, R0], { n: 22, color: 'orange', alpha: 0.12, wire: true, wireColor: 'orange', shade: false });
+          const pol = (f, dz) => (r, a) => { const x = r * Math.cos(a), y = r * Math.sin(a); return [x * sc, y * sc, zc(f(x, y)) + dz]; };
+          s3.surface(pol(P.V, 0), [0, P.RD], [0, TAU], { nu: 16, nv: 48, colorFn: (r, a) => v.ramp(0.25 + 0.7 * Math.min(1, P.V(r * Math.cos(a), r * Math.sin(a)) / P.zmax), 'blue'), alpha: 0.9 });
+          s3.surface(pol(Q, 0.005), [0, P.RD], [0, TAU], { nu: 10, nv: 36, color: 'orange', alpha: 0.12, wire: true, wireColor: 'orange', shade: false });
           const lift = (pts, f) => pts.map((p) => [p[0] * sc, p[1] * sc, zc(f(p[0], p[1])) + 0.02]);
           s3.path(lift(S.R.y, P.V), { color: 'blue', width: 2.2 });
           s3.path(lift(S.lin, Q), { color: 'orange', width: 1.8, dash: [5, 4] });
@@ -277,7 +278,7 @@ The neglected terms are of third order, so solutions of the true and linearised 
           const pts = sw.out.filter((p) => isFinite(p[1]) && p[1] > 0);
           if (pts.length) {
             const [e0, d0] = pts[0];
-            for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) { sL.fn((e) => d0 * (e / e0) ** pw, { color: 'faint', dash: [4, 4], width: 1.2 }); sL.text(lab, 0.04, d0 * (0.04 / e0) ** pw, { color: 'muted', size: 11, dx: 4, dy: -9 }); }
+            for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) { sL.fn((e) => d0 * (e / e0) ** pw, { color: 'faint', dash: [4, 4], width: 1.2 }); sL.text(lab, 0.06, d0 * (0.06 / e0) ** pw, { color: 'muted', size: 11, dx: 4, dy: pw === 1 ? 10 : -10 }); }
             sL.path(pts, { color: 'blue', width: 2 }); sL.dots(pts, { r: 3, color: 'blue' });
           }
           if (isFinite(S.dev) && S.dev > 0) sL.dot(eps, S.dev / eps, { r: 6, color: 'gold' });
@@ -814,7 +815,7 @@ so every harmonic with a node at the plucking point is missing.`,
           for (const x of [0, 1]) { sY.line(x, -0.08, x, 0.08, { color: 'muted', width: 3 }); }
           for (let n = 2; n <= 9; n++) if (B.missing.includes(n)) for (let j = 1; j < n; j++) { const xn = j / n; if (Math.abs(xn - B.p) < 1e-3) sY.text(`node of harmonic ${n}`, xn, -0.3, { color: 'red', size: 11, align: 'center' }); }
           sY.vline(B.p, { color: 'gold', width: 1, dash: [2, 4], alpha: 0.7 });
-          sY.corner(B.strike ? 'hammer strike: starts flat, with velocity near the gold mark' : 'plucked shape (grey) released from rest', 'tl');
+          sY.corner(B.strike ? 'hammer strike: starts flat, with velocity near the gold mark' : 'plucked shape (grey) released from rest', 'br');
           // first six modes, each with its own phase
           for (let n = 1; n <= 6; n++) {
             const w = n * Math.PI, A = B.b[n - 1] * Math.cos(w * tt) + (B.bd[n - 1] / w) * Math.sin(w * tt), amp = Math.hypot(B.b[n - 1], B.bd[n - 1] / w), y0 = -(n - 1) * 1.15, rel = amp / Math.hypot(B.b[0], B.bd[0] / Math.PI), s = amp > 1e-12 ? (0.45 * Math.pow(rel, 0.4)) / amp : 0;

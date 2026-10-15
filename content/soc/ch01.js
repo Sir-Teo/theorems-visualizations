@@ -97,7 +97,7 @@ function tipModel(mW, mB, RW, RB) {
     if (prev && Math.sign(g) !== Math.sign(prev[1])) {
       let lo = prev[0], hi = x, glo = prev[1];
       for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2, gm = TB(TW(m)) - m; if (Math.sign(gm) === Math.sign(glo)) { lo = m; glo = gm; } else hi = m; }
-      const xm = (lo + hi) / 2; eq.push([xm, TW(xm)]);
+      const xm = (lo + hi) / 2; if (!eq.some(([a, b]) => Math.hypot(a - xm, b - TW(xm)) < 0.5)) eq.push([xm, TW(xm)]);
     }
     prev = [x, g];
   }
@@ -297,7 +297,7 @@ A smaller group ends up more isolated relative to random mixing than the majorit
         const rule = v.select('move to', [{ value: 'random', label: 'any vacancy' }, { value: 'content', label: 'a suitable vacancy' }], 'random', { onChange: () => snap() });
         const vacS = v.select('vacancies', [{ value: '10', label: '10%' }, { value: '25', label: '25%' }], '10', { onChange: () => snap() });
         const shS = v.select('blue share', [{ value: '50', label: '50%' }, { value: '25', label: '25% (minority)' }], '50', { onChange: () => snap() });
-        const P = v.stage({ x: [-0.03, 0.93], y: [-0.24, 1.05], height: 350, weight: 1.35, axes: 'box', xlabel: 'tolerance $T$ (share of like neighbours each agent asks for)', title: 'like-neighbour share at rest, against the demand $T$' });
+        const P = v.stage({ x: [-0.03, 0.93], y: [-0.24, 1.05], yticks: [0, 0.2, 0.4, 0.6, 0.8, 1], height: 350, weight: 1.35, axes: 'box', xlabel: 'tolerance $T$ (share of like neighbours each agent asks for)', title: 'like-neighbour share at rest, against the demand $T$' });
         const Bd = v.stage({ x: [0, W], y: [0, W], height: 350, weight: 0.75, minWidth: 220, axes: false, equal: true, title: 'final board' });
         const cache = new Map();
         const data = () => {
@@ -441,8 +441,8 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
       tags: ['segregation', 'tipping', 'dynamics'],
       credit: 'Schelling, 1971',
       viz(v) {
-        const EX = { one: [50, 2, 2], two: [100, 5, 5], three: [60, 3, 1.5] };
-        const ex = v.select('example', [{ value: 'one', label: 'Schelling 1: 100 vs 50, up to 2 : 1' }, { value: 'two', label: 'Schelling 2: 100 vs 100, up to 5 : 1' }, { value: 'three', label: 'tolerant blues, wary oranges' }], 'one',
+        const EX = { one: [50, 2, 2], two: [100, 5, 5], three: [70, 3, 6] };
+        const ex = v.select('example', [{ value: 'one', label: 'Schelling 1: 100 vs 50, up to 2 : 1' }, { value: 'two', label: 'Schelling 2: 100 vs 100, up to 5 : 1' }, { value: 'three', label: 'tolerant oranges: 100 vs 70' }], 'one',
           { onChange: (k) => { const [m, a, b] = EX[k]; mB.set(m); RW.set(a); RB.set(b); place(); } });
         const mB = v.slider('oranges in the city $m_B$', 10, 150, 50, { int: true, step: 1, onChange: () => place() });
         const RW = v.slider('top blue tolerance $R_W$', 0.2, 6, 2, { step: 0.05 });
@@ -487,8 +487,8 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
           Q.line(0, Rw, mW, 0, { color: 'blue', width: 4.2, alpha: 0.85 }); Q.line(0, Rb, m, 0, { color: 'orange', width: 2 });
           const w0 = start.x, b0 = start.y, rW = w0 > 0.01 ? b0 / w0 : Infinity, rB = b0 > 0.01 ? w0 / b0 : Infinity;
           const okW = isFinite(rW) ? Math.max(0, Math.min(mW, mW * (1 - rW / Rw))) : 0, okB = isFinite(rB) ? Math.max(0, Math.min(m, m * (1 - rB / Rb))) : 0;
-          if (isFinite(rW) && rW < top) { Q.line(0, rW, okW, rW, { color: 'blue', width: 4, alpha: 0.3 }); Q.dot(okW, rW, { r: 4.5, color: 'blue' }); Q.text(`${v.fix(okW, 0)} blues content`, okW, rW, { color: 'blue', size: 11, dx: 8, dy: -9, weight: 600 }); }
-          if (isFinite(rB) && rB < top) { Q.line(0, rB, okB, rB, { color: 'orange', width: 4, alpha: 0.3 }); Q.dot(okB, rB, { r: 4.5, color: 'orange' }); Q.text(`${v.fix(okB, 0)} oranges content`, okB, rB, { color: 'orange', size: 11, dx: 8, dy: -9, weight: 600 }); }
+          if (isFinite(rW) && rW < top) { Q.line(0, rW, okW, rW, { color: 'blue', width: 4, alpha: 0.3 }); Q.dot(okW, rW, { r: 4.5, color: 'blue' }); const rt = okW > 0.55 * xm; Q.text(`${v.fix(okW, 0)} blues content`, okW, rW, { color: 'blue', size: 11, dx: rt ? -8 : 8, dy: -12, align: rt ? 'right' : 'left', weight: 600, plate: true }); }
+          if (isFinite(rB) && rB < top) { Q.line(0, rB, okB, rB, { color: 'orange', width: 4, alpha: 0.3 }); Q.dot(okB, rB, { r: 4.5, color: 'orange' }); const rt = okB > 0.55 * xm; Q.text(`${v.fix(okB, 0)} oranges content`, okB, rB, { color: 'orange', size: 11, dx: rt ? -8 : 8, dy: -12, align: rt ? 'right' : 'left', weight: 600, plate: true }); }
           out = { T, end, okW, okB, w0, b0, rW, rB };
         });
         v.readout(() => {
