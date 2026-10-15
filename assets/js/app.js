@@ -210,7 +210,7 @@ function pageField(f) {
       <p class="sub">${inlineHTML(F.blurb)}</p>
       <div class="stats-row"><span><b>${cols.length}</b> collections</span><span><b>${cols.filter((C) => C.count).length}</b> live</span><span><b>${n.toLocaleString('en')}</b> ideas written</span>${pl ? `<span><b>${pl.toLocaleString('en')}</b> planned</span>` : ''}</div>
     </div>
-    ${F.areas.map((A) => { const ac = cols.filter((C) => C.area === A.id); return ac.length ? `<section class="area"><h2 class="area-title">${escapeHTML(A.title)}</h2><div class="col-grid">${ac.map((C) => `<a class="card col-card ${C.count ? '' : 'soon'}" data-col="${C.id}" href="#/c/${C.id}">
+    ${F.areas.map((A) => { const ac = cols.filter((C) => C.area === A.id); return ac.length ? `<section class="field-area"><h2 class="area-title">${escapeHTML(A.title)}</h2><div class="col-grid">${ac.map((C) => `<a class="card col-card ${C.count ? '' : 'soon'}" data-col="${C.id}" href="#/c/${C.id}">
       <span class="eyebrow"><span class="col-dot"></span>${escapeHTML(C.short)} · ${C.source?.type === 'book' ? 'book' : 'curated course'}</span>
       <h3>${escapeHTML(C.title)}</h3>
       <div class="sum">${inlineHTML(C.blurb)}</div>

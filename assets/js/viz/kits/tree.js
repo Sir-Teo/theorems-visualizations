@@ -166,7 +166,7 @@ class Tree {
       for (const [n, p] of this._pos) { const d = Math.hypot(p[0] - px, p[1] - py) - (p.r || 0); if (d < bd) { bd = d; best = n; } }
       for (const [n, b] of this._lab || []) if (px >= b[0] && px <= b[2] && py >= b[1] && py <= b[3]) { best = n; break; }
       if (!best) { this.selected = []; this.onSelect?.(this.selected); return; }
-      if (best.children.length && this.o.collapsible && !(best.collapsed && false)) { this.toggle(best); return; }
+      if (best.children.length) { if (this.o.collapsible && best.parent) this.toggle(best); return; } // the root never collapses
       if (this.o.selectable) { this.selected = [...this.selected.filter((q) => q !== best), best].slice(-2); this.onSelect?.(this.selected); }
     });
     s.canvas.style.cursor = 'pointer';
