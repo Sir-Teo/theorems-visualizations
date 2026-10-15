@@ -40,14 +40,17 @@ const LOMOLINO = {
 /** Draw a fox-like animal in side view (cm): ear = ear height, leg = leg length, tail = tail length; returns nothing. */
 function drawAnimal(s, ear, leg, tail, col) {
   const body = []; for (let k = 0; k <= 60; k++) { const t = (2 * Math.PI * k) / 60; body.push([25 * Math.cos(t), 8 * Math.sin(t)]); }
-  for (const x of [-17, -9, 13, 20]) s.rect(x - 1.7, -6 - leg, x + 1.7, -2, { fill: col, fillAlpha: 0.55, color: 'ink', width: 1 });
-  s.path([[-23, 2], [-23 - tail * 0.75, -2 - tail * 0.25], [-23 - tail, -6 - tail * 0.2]], { color: col, width: 6, alpha: 0.75 });
-  s.poly(body, { fill: col, fillAlpha: 0.55, color: 'ink', width: 1.2 });
-  const hx = 29, hy = 7;
-  for (const dx of [-3.4, 1.2]) s.poly([[hx + dx - 1.9, hy + 4.5], [hx + dx + 1.9, hy + 4.5], [hx + dx + 0.3, hy + 4.5 + ear]], { fill: col, fillAlpha: 0.7, color: 'ink', width: 1 });
-  s.circle(hx, hy, 6, { fill: col, fillAlpha: 0.7, color: 'ink', width: 1.2 });
-  s.poly([[hx + 4.5, hy + 2.5], [hx + 12, hy - 1.5], [hx + 4.5, hy - 3]], { fill: col, fillAlpha: 0.7, color: 'ink', width: 1 });
-  s.dot(hx + 2.5, hy + 1.8, { r: 1.8, color: 'ink', ring: false });
+  const tl = []; for (let k = 0; k <= 20; k++) { const u = k / 20; tl.push([-22 - 0.62 * tail * u, 1 - 0.45 * tail * u * u - 2 * u]); }
+  s.path(tl, { color: col, width: 7, alpha: 0.9 });
+  for (const x of [-17, -10, 14, 20]) s.rect(x - 1.8, -6 - leg, x + 1.8, -3, { fill: col, fillAlpha: 0.85, color: 'ink', width: 1 });
+  s.poly(body, { fill: col, fillAlpha: 0.95, color: 'ink', width: 1.2 });
+  const hx = 28, hy = 9;
+  s.poly([[hx - 6, hy - 6], [hx - 2, hy - 3], [hx - 9, hy + 3]], { fill: col, fillAlpha: 0.95, stroke: false });
+  for (const dx of [-3.2, 1.6]) s.poly([[hx + dx - 1.9, hy + 4], [hx + dx + 1.9, hy + 4.6], [hx + dx - 0.2, hy + 4.3 + ear]], { fill: col, fillAlpha: 0.95, color: 'ink', width: 1 });
+  s.circle(hx, hy, 6, { fill: col, fillAlpha: 0.95, color: 'ink', width: 1.2 });
+  s.poly([[hx + 4, hy + 2.6], [hx + 11, hy - 1.2], [hx + 10.6, hy - 2.4], [hx + 3.5, hy - 3.4]], { fill: col, fillAlpha: 0.95, color: 'ink', width: 1 });
+  s.dot(hx + 10.7, hy - 1.8, { r: 2, color: 'ink', ring: false });
+  s.dot(hx + 2.8, hy + 1.6, { r: 1.8, color: 'ink', ring: false });
 }
 /** Surface (cm²) and volume (cm³) of the schematic animal: body cylinder, head sphere, 4 legs, tail, 2 thin ears. */
 function animalSV(ear, leg, tail) {
@@ -69,7 +72,7 @@ export default {
       statement: String.raw`Across mammals (and within other groups), biological times — lifespan, age at maturity, gestation and generation time, and the periods of the heartbeat and of breathing — increase roughly as the **quarter power** of body mass, $t\propto M^{1/4}$, so the corresponding rates (heart rate, breathing rate, rates of growth and reproduction) fall as $M^{-1/4}$. Because the exponents nearly match, ratios of times are almost independent of size: a mammal breathes about once every four to five heartbeats whatever its size, and the number of heartbeats in a lifetime is roughly the same, of the order of a billion, for a shrew and an elephant.`,
       scope: String.raw`An approximate, statistical regularity across species; real exponents scatter around $1/4$ (here between about 0.19 and 0.24), and whole groups depart from the line — bats and primates, including humans, live far longer than their size predicts. Maximum recorded lifespans are used because they are the most widely available, but they depend on sample size.`,
       idea: String.raw`If metabolic rate scales as $M^{3/4}$ (1.5), the metabolic rate per unit mass — the rate at which each gram turns over energy and materials — scales as $M^{-1/4}$. Any time set by turning over a fixed fraction of the body's mass or energy (growing to adult size, replacing tissues, pumping the blood volume once, which is proportional to $M$) then scales as $M/M^{3/4} = M^{1/4}$. Heart and breathing rates follow from the same argument applied to the circulatory and respiratory networks (1.6). Products of a rate and a time cancel the mass dependence, which is why "heartbeats per lifetime" is nearly invariant.`,
-      caption: String.raw`Left: real data from PanTHERIA for maximum lifespan, age at maturity and gestation, against body mass, with the heartbeat and breath periods given by Stahl's (1967) allometric fits to 447 and 692 measurements; the vertical axis runs from a tenth of a second to a century. Each family of times is a band of slope near $1/4$ (fitted slopes at the right). Right: for each of the 1 000 species with a recorded lifespan, the lifetime number of heartbeats (or breaths) = maximum lifespan × Stahl's heart rate for its mass. The cloud is almost flat: the fitted slope is close to 0. Hover over a point to identify the species; humans and bats stand out above the band.`,
+      caption: String.raw`Left: real data from PanTHERIA for maximum lifespan, age at maturity and gestation, against body mass, with the heartbeat and breath periods given by Stahl's (1967) allometric fits to 447 and 692 measurements; the vertical axis runs from a tenth of a second to a century. Each family of times is a band of slope near $1/4$ (fitted slopes at the right). Right: for each of the 1 000 species with a recorded lifespan, the lifetime number of heartbeats (or breaths) = maximum lifespan × Stahl's heart rate for its mass. The cloud is almost flat: its fitted slope, about −0.05, is far closer to 0 than any of the times' slopes, and slightly negative because maximum lifespans grow only as $M^{0.20}$. Hover over a point to identify the species; humans and bats stand out above the band.`,
       deps: ['ecol-1.5'],
       see: ['ecol-1.4'],
       refs: ['Brown et al. 2004'],
@@ -94,14 +97,12 @@ export default {
             const rs = R.filter((r) => r[sr.key]);
             A.dots(rs.map((r) => [r.m / 1000, sr.f(r)]), { r: 1.9, color: sr.col, alpha: 0.45 });
             A.fn(fits[i].f, { color: sr.col, width: 2.6, domain: [2e-3, 2e5] });
-            A.text(`${fits[i].slope.toFixed(2)}`, 2e5, fits[i].f(2e5), { color: sr.col, dx: 4, size: 11, weight: 700 });
+            A.text(`slope ${fits[i].slope.toFixed(2)}`, 1.5e5, fits[i].f(1.5e5), { color: sr.col, align: 'right', dy: 12, size: 11, weight: 700 });
           });
           A.fn((m) => 1 / (heartRate(m) * MIN_PER_YEAR), { color: 'red', width: 2.6, domain: [2e-3, 2e5] });
           A.fn((m) => 1 / (breathRate(m) * MIN_PER_YEAR), { color: 'accent', width: 2.6, domain: [2e-3, 2e5] });
-          A.text('0.25', 2e5, 1 / (heartRate(2e5) * MIN_PER_YEAR), { color: 'red', dx: 4, size: 11, weight: 700 });
-          A.text('0.26', 2e5, 1 / (breathRate(2e5) * MIN_PER_YEAR), { color: 'accent', dx: 4, dy: -2, size: 11, weight: 700 });
-          A.text('heartbeat', 3e-3, 1 / (heartRate(3e-3) * MIN_PER_YEAR), { color: 'red', dy: 12, size: 11, weight: 600 });
-          A.text('breath', 3e-3, 1 / (breathRate(3e-3) * MIN_PER_YEAR), { color: 'accent', dy: -11, size: 11, weight: 600 });
+          A.text('heartbeat period, slope 0.25', 1.5e5, 1 / (heartRate(1.5e5) * MIN_PER_YEAR), { color: 'red', align: 'right', dy: 12, size: 11, weight: 700 });
+          A.text('breath period, slope 0.26', 1.5e5, 1 / (breathRate(1.5e5) * MIN_PER_YEAR), { color: 'accent', align: 'right', dy: -12, size: 11, weight: 700 });
           // right panel: lifetime counts
           const heart = prod.value === 'heart', rate = heart ? heartRate : breathRate;
           B.setTitle(heart ? 'heartbeats per lifetime' : 'breaths per lifetime');
@@ -112,7 +113,7 @@ export default {
           const sorted = rs.map(cnt).sort((a, b) => a - b), med = sorted[sorted.length >> 1];
           B.hline(med, { color: 'ink', dash: [5, 4], width: 1.3 });
           B.fn(F.f, { color: 'ink', width: 2.4, domain: [2e-3, 2e5] });
-          B.text(`median ${v.fmt(med / 1e9, 2)} × 10⁹`, 2e-3, med, { dy: 12, size: 11.5, weight: 600 });
+          B.text(`median ${v.fmt(med / 1e9, 2)} × 10⁹`, 2e5, med, { align: 'right', dy: -11, size: 11.5, weight: 600 });
           const hu = find(rs, 'Homo sapiens'); if (hu) B.dot(hu.m / 1000, cnt(hu), { r: 4, hollow: true, color: 'ink', label: 'human', labelPos: 'n', math: false, labelSize: 11 });
           const hv = hoverPick(B, hits);
           if (hv) { B.dot(hv.x, hv.y, { r: 6, hollow: true, color: 'ink', width: 2 }); B.textPx(`${hv.r.name} · ${massTxt(hv.r.m)} · ${(hv.r.L / 12).toFixed(1)} yr`, Math.min(hv.X + 10, B.W - 8), hv.Y - 12, { align: hv.X > B.W * 0.55 ? 'right' : 'left', size: 12, weight: 600 }); }
@@ -152,7 +153,7 @@ $$D\propto M^{-3/4}$$
         const K = (() => { const rs = mammals().filter((r) => r.b && r.bm); return logFit(M, rs.map((r) => r.bm / 1000), rs.map(bmrW)); })();
         const TC = ['faint', 'green', 'gold', 'red'], TN = ['unknown', 'herbivore', 'omnivore', 'carnivore'];
         const A = v.stage({ x: [2e-3, 5e4], y: [2e-3, 5e4], xlog: true, ylog: true, height: 360, weight: 1, axes: 'box', hover: true, xlabel: 'body mass (kg)', title: 'population density (per km²)' });
-        const Bst = v.stage({ x: [2e-3, 5e4], y: [0.5, 3e5], xlog: true, ylog: true, height: 360, weight: 1, axes: 'box', xlabel: 'body mass (kg)', title: 'energy used per km² (W/km²)' });
+        const Bst = v.stage({ x: [2e-3, 5e4], y: [0.2, 3e5], xlog: true, ylog: true, height: 360, weight: 1, axes: 'box', xlabel: 'body mass (kg)', title: 'energy used per km² (W/km²)' });
         const damuth = (kg) => 10 ** (4.23 - 0.75 * Math.log10(kg * 1000));
         let info = null;
         v.render(() => {
@@ -202,7 +203,7 @@ $$D\propto M^{-3/4}$$
       statement: String.raw`Within a broadly distributed group of warm-blooded animals — a species, or a set of closely related species — populations and species living in colder climates (usually at higher latitudes) tend to be **larger** than those in warmer climates. The classic explanation is thermal: a larger body has less surface per unit of heat-producing mass, so it loses heat more slowly relative to its production and can keep warm at lower air temperatures without spending extra energy.`,
       scope: String.raw`A tendency, not a law: in large comparative studies a majority, but far from all, of species and clades follow it (here 71 of 130 bird families). Much of the pattern may have causes other than heat conservation — resource seasonality and fasting endurance, starvation resistance, migration — and ectotherms follow it inconsistently.`,
       idea: String.raw`Heat production scales with mass and heat loss with surface. If production were proportional to volume, as Bergmann assumed, the ratio of production to surface would grow as $M^{1/3}$ and size would be a powerful insulator. With Kleiber's $M^{3/4}$ (1.5) and a body surface of about $0.11\,M^{0.65}$ m² (Stahl 1967), the ratio grows only as $M^{0.1}$: the lower critical temperature — the air temperature below which an animal must raise its metabolism to stay warm, $T_{lc} = T_b - B/(hA)$ — falls with size, but slowly, and insulation $h$ matters much more. This is why Bergmann's rule is a weak statistical trend rather than a strict rule.`,
-      caption: String.raw`Left: the lower critical temperature of a model mammal (body temperature 38 °C, metabolic rate from the Kleiber fit of 1.5, surface area from Stahl's formula) against body mass, for the insulation set by the slider. Drag the animal (gold) along the curve and the air temperature (red line): below its critical temperature an animal must burn extra energy, shown in the readout. Switch heat production to Bergmann's "∝ volume" assumption to see how much stronger the effect would be. The diamond is the arctic fox's measured winter value (−7 °C). Right: real data from AVONET — body mass against the latitude of the range centre for every species in a bird family. Penguins follow the rule (the emperor is the largest and the most southerly); tits and sandpipers run the other way.`,
+      caption: String.raw`Left: the lower critical temperature of a model mammal (body temperature 38 °C, metabolic rate from the Kleiber fit of 1.5, surface area from Stahl's formula) against body mass, for the insulation set by the slider. Drag the animal (gold) along the curve and the air temperature (red line): below its critical temperature an animal must burn extra energy, shown in the readout. Switch heat production to Bergmann's "∝ volume" assumption to see how much stronger the effect would be. The black dot is the arctic fox's measured winter value (−7 °C), which this model matches with $h\approx 0.64$. Right: real data from AVONET — body mass against the latitude of the range centre for every species in a bird family. Penguins follow the rule (the emperor is the largest and the most southerly); tits and sandpipers run the other way.`,
       deps: ['ecol-1.4'],
       see: ['ecol-1.5', 'thermo-7.5', 'physio-9.14', 'arch-7.1'],
       refs: ['Begon ch. 2'],
@@ -215,7 +216,7 @@ $$D\propto M^{-3/4}$$
         const ins = v.slider(String.raw`insulation: conductance $h$ (W m⁻² K⁻¹)`, 0.3, 8, 1, { log: true, sig: 2 });
         const fam = v.select('bird family', ['Spheniscidae', 'Alcidae', 'Laridae', 'Podicipedidae', 'Paridae', 'Scolopacidae'].map((f) => ({ value: f, label: BIRD_NAMES[f] })), 'Spheniscidae');
         const A = v.stage({ x: [1e-3, 3e3], y: [-60, 42], xlog: true, axes: 'box', height: 360, weight: 1, xlabel: 'body mass (kg)', title: 'lower critical temperature (°C)' });
-        const B = v.stage({ x: [0, 80], y: [5, 6e4], ylog: true, axes: 'box', height: 360, weight: 1, hover: true, xlabel: '|latitude of range centre| (°)', title: 'body mass (g)' });
+        const B = v.stage({ x: [-3, 80], y: [5, 6e4], ylog: true, axes: 'box', height: 360, weight: 1, hover: true, xlabel: '|latitude of range centre| (°)', title: 'body mass (g)' });
         const Tb = 38, area = (m) => 0.11 * m ** 0.65;
         const prod = (m) => (prodSel.value === 'k' ? K.f(m) : K.f(1) * m);
         const Tlc = (m) => Tb - prod(m) / (ins.value * area(m));
@@ -227,7 +228,7 @@ $$D\propto M^{-3/4}$$
           hm.set(hm.x, M.clamp(Tlc(hm.x), -59, 41));
           const Ta = ha.y;
           A.hline(Ta, { color: 'red', width: 1.6, dash: [6, 4] });
-          A.text(`air ${Ta.toFixed(0)} °C`, 1.3e-3, Ta, { color: 'red', dy: -10, size: 11, weight: 600 });
+          A.text(`air ${Ta.toFixed(0)} °C`, 400, Ta, { color: 'red', dx: -14, dy: -11, size: 11, weight: 600, align: 'right' });
           A.clip(() => {
             A.between((x) => Math.max(Tlc(x), Ta), () => Ta, 1e-3, 3e3, { fill: 'red', fillAlpha: 0.12, n: 160 });
             A.fn(Tlc, { color: 'accent', width: 3 });
@@ -235,9 +236,7 @@ $$D\propto M^{-3/4}$$
           A.text('red: air too cold for that size — extra heat needed', 1.3e-3, 40, { size: 10.5, color: 'muted', baseline: 'top' });
           A.dot(3.5, -7, { r: 5, color: 'ink', ring: false });
           A.text('arctic fox (winter)', 3.5, -7, { dx: 8, dy: 10, size: 10.5, color: 'ink' });
-          // the animal as a ball, size ∝ M^(1/3)
-          const rad = 3 + 9 * Math.cbrt(hm.x / 2e3) * 3;
-          A.ctx.save(); A.ctx.beginPath(); A.ctx.arc(A.X(hm.x), A.Y(hm.y) - rad - 10, rad, 0, 2 * Math.PI); A.ctx.fillStyle = v.color('gold', 0.35); A.ctx.fill(); A.ctx.strokeStyle = v.color('gold'); A.ctx.lineWidth = 1.5; A.ctx.stroke(); A.ctx.restore();
+          A.text(massTxt(hm.x * 1000), hm.x, hm.y, { color: 'gold', dy: -16, align: 'center', weight: 700, size: 11.5 });
           const m = hm.x, need = Math.max(0, ins.value * area(m) * (Tlc(m) - Ta));
           const per10 = Tlc(m) - Tlc(m * 10);
           // birds
@@ -287,7 +286,7 @@ $$D\propto M^{-3/4}$$
         const limb = v.slider('limb and tail length (× temperate)', 0.5, 1.5, 1, { step: 0.01 });
         const fam = v.select('bird family', ['Spheniscidae', 'Laridae', 'Alcidae', 'Phasianidae', 'Ramphastidae', 'Paridae'].map((f) => ({ value: f, label: BIRD_NAMES[f] })), 'Laridae');
         const A = v.stage({ x: [-52, 46], y: [-36, 34], equal: true, axes: false, height: 340, weight: 1, title: 'surface against volume' });
-        const B = v.stage({ x: [0, 80], y: [-40, 40], axes: 'box', height: 340, weight: 1, hover: true, xlabel: '|latitude of range centre| (°)', title: 'bill length vs expected for body mass (%)' });
+        const B = v.stage({ x: [-2, 80], y: [-40, 40], axes: 'box', height: 340, weight: 1, hover: true, xlabel: '|latitude of range centre| (°)', title: 'bill length vs expected for body mass (%)' });
         const ref = animalSV(8 / 100 * 50, 18 * 0.7, 30 * 0.7);
         let info = null;
         v.render(() => {
@@ -301,10 +300,10 @@ $$D\propto M^{-3/4}$$
           const F = lin(bs.map((b) => Math.log10(b.mass)), bs.map((b) => Math.log10(b.bill)));
           const res = bs.map((b) => 100 * (10 ** (Math.log10(b.bill) - (F.a + F.b * Math.log10(b.mass))) - 1));
           const lats = bs.map((b) => Math.abs(b.lat)), L = lin(lats, res.map((r) => Math.log10(1 + r / 100)));
-          const yr = Math.max(25, ...res.map(Math.abs)) * 1.15; B.setView(null, [-yr, yr]);
+          const sortedAbs = res.map(Math.abs).sort((p, q) => p - q), yr = Math.max(25, sortedAbs[Math.floor(0.97 * (sortedAbs.length - 1))] * 1.2); B.setView(null, [-yr, yr]);
           B.hline(0, { color: 'muted', width: 1 });
           const hits = [];
-          bs.forEach((b, i) => { B.dot(lats[i], res[i], { r: 3.4, color: L.r < 0 ? 'accent' : 'red', alpha: 0.8, ring: false }); hits.push({ X: B.X(lats[i]), Y: B.Y(res[i]), r: b, x: lats[i], y: res[i] }); });
+          bs.forEach((b, i) => { B.dot(lats[i], M.clamp(res[i], -yr * 0.98, yr * 0.98), { r: 3.4, color: L.r < 0 ? 'accent' : 'red', alpha: 0.8, ring: false }); hits.push({ X: B.X(lats[i]), Y: B.Y(res[i]), r: b, x: lats[i], y: res[i] }); });
           B.fn((x) => 100 * (10 ** (L.a + L.b * x) - 1), { color: L.r < 0 ? 'accent' : 'red', width: 2.6, domain: [Math.min(...lats), Math.max(...lats)] });
           const hv = hoverPick(B, hits);
           if (hv) { B.dot(hv.x, hv.y, { r: 6, hollow: true, color: 'ink', width: 2 }); B.textPx(`${hv.r.name} · bill ${hv.r.bill} mm · ${massTxt(hv.r.mass)}`, Math.min(hv.X + 10, B.W - 8), hv.Y - 12, { align: hv.X > B.W * 0.55 ? 'right' : 'left', size: 12, weight: 600 }); }
@@ -358,25 +357,25 @@ $$D\propto M^{-3/4}$$
           const sf = 10 ** ((1 - R.intercept) / R.slope);
           const mm = view.value === 'mm';
           if (mm) {
-            s.setView([1, 1e7], [1, 1e7]); s.setTitle('insular body mass (g), against mainland mass');
+            s.setView([10 ** (x0 - 0.4), 10 ** (x1 + 0.4)], [10 ** (x0 - 0.7), 10 ** (x1 + 0.7)]); s.setTitle('insular body mass (g), against mainland mass');
             s.fn((x) => x, { color: 'ink', dash: [6, 5], width: 1.5 });
-            s.text('1 : 1', 3e6, 3e6, { dx: 8, size: 11 });
+            s.text('1 : 1', 10 ** (x1 + 0.25), 10 ** (x1 + 0.25), { dx: -6, dy: -10, align: 'right', size: 11 });
             s.dots(pts.filter((p) => p[1] >= 1).map((p) => [p[0], p[0] * p[1]]), { r: 3, color: 'orange', alpha: 0.75 });
             s.dots(pts.filter((p) => p[1] < 1).map((p) => [p[0], p[0] * p[1]]), { r: 3, color: 'teal', alpha: 0.75 });
             s.fn((x) => 10 ** (RB.intercept + RB.slope * Math.log10(x)), { color: 'accent', width: 3, domain: [10 ** x0, 10 ** x1] });
           } else {
-            s.setView([1, 1e7], [0.15, 6]); s.setTitle('insular ÷ mainland body mass, Si');
+            s.setView([10 ** (x0 - 0.4), 10 ** (x1 + 0.4)], [0.15, 6]); s.setTitle('insular ÷ mainland body mass, Si');
             s.hband(1, 6, { color: 'orange', alpha: 0.06 }); s.hband(0.15, 1, { color: 'teal', alpha: 0.06 });
             s.hline(1, { color: 'ink', width: 1.4 });
-            s.text('giants', 1.5, 4.5, { color: 'orange', weight: 700, size: 13 });
-            s.text('dwarfs', 1.5, 0.22, { color: 'teal', weight: 700, size: 13 });
+            s.text('giants', s.xr[0], 4.5, { dx: 40, color: 'orange', weight: 700, size: 13 });
+            s.text('dwarfs', s.xr[0], 0.21, { dx: 40, color: 'teal', weight: 700, size: 13 });
             s.dots(pts.filter((p) => p[1] >= 1), { r: 3, color: 'orange', alpha: 0.75 });
             s.dots(pts.filter((p) => p[1] < 1), { r: 3, color: 'teal', alpha: 0.75 });
             s.clip(() => {
               s.fn((x) => g.b0 + g.b1 * Math.log10(x), { color: 'ink', dash: [6, 5], width: 1.5, domain: [10 ** x0, 10 ** x1] });
               s.fn((x) => R.intercept + R.slope * Math.log10(x), { color: 'accent', width: 3, domain: [10 ** x0, 10 ** x1] });
             });
-            if (sf > 1 && sf < 1e7 && R.slope < 0) { s.dot(sf, 1, { r: 5.5, color: 'gold', label: `Si = 1 at ${massTxt(sf)}`, labelPos: 'ne', math: false, labelSize: 11.5, labelColor: 'ink' }); }
+            if (sf > s.xr[0] && sf < s.xr[1] && R.slope < 0) { s.dot(sf, 1, { r: 5.5, color: 'gold', label: `Si = 1 at ${massTxt(sf)}`, labelPos: 'ne', math: false, labelSize: 11.5, labelColor: 'ink' }); }
           }
           info = { g, R, RB, sf, n: pts.length, giants: pts.filter((p) => p[1] > 1).length };
         });
@@ -408,11 +407,11 @@ $$D\propto M^{-3/4}$$
         const M = v.M;
         const excl = v.toggle('exclude ruminants (9 groups)', false);
         const surf = v.toggle('show the surface law (slope 2/3)', true);
-        const A = v.stage({ x: [0.08, 1500], y: [10, 2e4], xlog: true, ylog: true, axes: 'box', height: 360, weight: 1.15, xlabel: 'body weight W (kg)', title: 'heat production (kcal per 24 h)' });
+        const A = v.stage({ x: [0.08, 1500], y: [7, 2e4], xlog: true, ylog: true, axes: 'box', height: 360, weight: 1.15, xlabel: 'body weight W (kg)', title: 'heat production (kcal per 24 h)' });
         const B = v.stage({ x: [0.6, 1.02], y: [0, 45], axes: 'box', height: 360, weight: 1, xlabel: 'exponent n', title: 'variability of heat production per Wⁿ (%)' });
         const rows = () => KLEIBER.filter((_, i) => !excl.value || !RUMINANTS.has(i));
         const hn = B.handle(0.75, 8, { color: 'gold', constrain: (x) => { const n = M.clamp(x, 0.62, 1.0); return [n, Math.min(44, cvOf(rows(), n).cv)]; } });
-        const hw = A.handle(5, 12, { color: 'purple', constrain: (x) => [M.clamp(x, 0.1, 1200), 12] });
+        const hw = A.handle(5, 9.5, { color: 'purple', constrain: (x) => [M.clamp(x, 0.1, 1200), 9.5] });
         let info = null;
         v.render(() => {
           const rs = rows(), n = hn.x, { mean } = cvOf(rs, n);
@@ -425,7 +424,7 @@ $$D\propto M^{-3/4}$$
           A.fn((W) => mean * W ** n, { color: 'gold', width: 2.6 });
           if (surf.value) { const m23 = cvOf(rs, 2 / 3).mean; A.fn((W) => m23 * W ** (2 / 3), { color: 'orange', dash: [6, 5], width: 1.6 }); }
           const Wp = hw.x, Mp = mean * Wp ** n;
-          A.line(Wp, 12, Wp, Mp, { color: 'purple', dash: [3, 4], width: 1.2 });
+          A.line(Wp, 9.5, Wp, Mp, { color: 'purple', dash: [3, 4], width: 1.2 });
           A.dot(Wp, Mp, { r: 4.5, color: 'purple' });
           A.text(`${v.fmt(Mp, 3)} kcal/day`, Wp, Mp, { dx: 8, dy: 10, color: 'purple', size: 11.5, weight: 600 });
           // right: CV curve
@@ -443,7 +442,7 @@ $$D\propto M^{-3/4}$$
         v.readout(() => {
           if (!info) return '';
           const i = info, se = i.sl.seSlope, t = M.dist.studentT(i.k - 2).quantile(0.975);
-          let s = String.raw`$n = ${i.n.toFixed(3)}$: heat production per $W^n$ = ${i.mean.toFixed(1)} ± ${i.cv.toFixed(1)} % kcal/day over ${i.k} groups`;
+          let s = String.raw`$n = ${i.n.toFixed(3)}$: mean heat production per $W^n$ ${i.mean.toFixed(1)} kcal/day over ${i.k} groups, coefficient of variability **${i.cv.toFixed(1)} %**`;
           if (i.printed) s += ` (Kleiber printed ±${excl.value ? i.printed[2] : i.printed[1]} %)`;
           s += String.raw` · variability is smallest at $n = ${i.best[0].toFixed(3)}$ · least-squares slope of the log–log line ${i.sl.slope.toFixed(3)} (95 % CI ${(i.sl.slope - t * se).toFixed(3)}–${(i.sl.slope + t * se).toFixed(3)}) · a ${i.Wp < 1 ? (i.Wp * 1000).toFixed(0) + ' g' : i.Wp.toFixed(i.Wp < 10 ? 1 : 0) + ' kg'} animal: ${v.fmt(i.Mp, 3)} kcal/day · today: 572 mammals in PanTHERIA give an exponent of 0.72 (1.5), with real curvature`;
           return s;
@@ -516,7 +515,7 @@ $$D\propto M^{-3/4}$$
             B.rect(i, GH - 1 - j, i + 1, GH - j, { fill: o === 1 ? 'accent' : o === 2 ? 'orange' : 'grid', fillAlpha: o ? (in1 && in2 ? 0.95 : 0.55) : 0.5, stroke: false });
           }
           B.text('warmer →', 47.5, -0.2, { align: 'right', baseline: 'top', size: 11, color: 'muted' });
-          B.text('larger food ↑', 0.3, 31.6, { baseline: 'top', size: 11, color: 'muted' });
+          B.text('larger food ↑', 0.3, 32.3, { baseline: 'bottom', size: 11, color: 'muted' });
           info = { a1: ar(N1), a2: ar(N2), ov, r1, r2, n1, n2, both, tot: GW * GH };
         });
         v.legend([['accent', 'species 1: realized niche', { area: true }], ['orange', 'species 2: realized niche', { area: true }], ['muted', 'fundamental niches (dashed)', { dash: true }]]);

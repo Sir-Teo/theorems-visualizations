@@ -123,6 +123,11 @@ export function dfaGraph(v, s, D, o = {}) {
   G.sync(D, o);
   return G;
 }
+/** 'ink' or 'panel', whichever contrasts more with the palette colour `name` (labels on solid fills, in both themes). */
+export function onColor(v, name) {
+  const L = (c) => { const [r, g, b] = v.rgb(c); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }, f = L(name);
+  return Math.abs(L('ink') - f) > Math.abs(L('panel') - f) ? 'ink' : 'panel';
+}
 /** Draw D: double ring on accepting states, start arrow, optional highlight of a current state / edge. */
 export function drawDFA(v, s, G, D, o = {}) {
   G.draw({
@@ -130,7 +135,7 @@ export function drawDFA(v, s, G, D, o = {}) {
     nodeRing: (id) => (isAcc(D, id) ? o.ring?.(id) ?? 'ink' : null),
     nodeFill: (id) => o.fill?.(id) ?? null,
     nodeColor: (id) => o.color?.(id) ?? (id === DEAD ? 'muted' : null),
-    labelColor: (id) => o.labelColor?.(id) ?? (o.fill?.(id) === 'gold' ? 'ink' : id === DEAD && !o.fill?.(id) ? 'muted' : null),
+    labelColor: (id) => o.labelColor?.(id) ?? (o.fill?.(id) ? onColor(v, o.fill(id)) : id === DEAD ? 'muted' : null),
     edgeColor: (e) => o.edgeColor?.(e) ?? (e.multi ? 'red' : null),
     edgeWidth: (e) => o.edgeWidth?.(e) ?? (e.multi ? 2.4 : null),
     edgeDash: (e) => (e.toDead ? [5, 4] : null),

@@ -164,10 +164,17 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
           if (cum.length) cs.dot(cum[cum.length - 1][0], cum[cum.length - 1][1], { r: 4.5, color: ok ? 'green' : 'red' });
           if (mode === 'ball') cs.vline(Math.min(r, 1), { color: 'gold', dash: [3, 3] });
           // profile
-          const pts = profile(mode, ux, uy);
-          gp.vband(0, mode === 'cube' ? 1 / Math.max(Math.abs(ux), Math.abs(uy)) : 1, { color: 'accent', alpha: 0.06 });
-          gp.fn((x) => (x > 1 ? 1 / (x * x) : mode === 'ball' ? x : 0), { color: 'green', width: 2, dash: [6, 4] });
+          const pts = profile(mode, ux, uy), rs = mode === 'cube' ? 1 / Math.max(Math.abs(ux), Math.abs(uy)) : 1;
+          gp.vband(0, rs, { color: 'accent', alpha: 0.06 });
+          gp.fn((x) => (x > rs ? 1 / (x * x) : mode === 'ball' ? x : 0), { color: 'green', width: 2, dash: [6, 4] });
           gp.dots(pts, { r: 3, color: mode === 'cube' ? 'red' : 'accent' });
+          if (mode === 'cube') { // magnify the small but non-zero field inside the cube
+            const mag = pts.filter((q) => q[0] < rs).map((q) => [q[0], 20 * q[1]]), lo = Math.min(-0.16, 1.25 * Math.min(...mag.map((q) => q[1])));
+            gp.setView([0, 2.6], [lo, Math.max(1.15, -lo * 0.4 + 1.15)]);
+            gp.hline(0, { color: 'faint', width: 1 });
+            gp.dots(mag, { r: 2.6, color: 'purple' });
+            const lab = mag[mag.length - 1]; if (lab) gp.text('inside ×20', lab[0], lab[1], { color: 'purple', size: 11, dx: 8, dy: -10, align: 'left' });
+          } else gp.setView([0, 2.6], [-0.16, 1.15]);
           gp.vline(r, { color: 'gold', width: 1.5 });
           gp.dot(Math.min(r, 2.58), radial, { r: 5, color: 'gold' });
           cur = { mode, r, radial, perp, pred, gm, ok, extra };

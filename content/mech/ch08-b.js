@@ -383,7 +383,8 @@ the integral taken along the unperturbed ellipse. A term $\delta U = -\gamma/r^3
         v.render(() => {
           const F = family(), D = current(), e = D.e, rp = 1 - e;
           // orbits and perihelion directions
-          s.setView([-(1 + e) - 0.35, rp + 0.35 + 0.2], [-1.25, 1.25]);
+          if (mode.value === 'ring') s.setView([-RR - 0.15, RR + 0.15], [-RR * 0.82, RR * 0.82]);
+          else s.setView([-(1 + e) - 0.35, rp + 0.35 + 0.2], [-1.25, 1.25]);
           s.path(D.R.s.map((S) => [S[0], S[1]]), { color: isFinite(D.adv) ? 'accent' : 'red', width: 1.2, alpha: 0.85 });
           if (isFinite(D.adv)) for (let k = 0; k <= 8; k++) { const a = k * D.adv; s.line(0, 0, (rp + 0.25) * Math.cos(a), (rp + 0.25) * Math.sin(a), { color: k ? 'red' : 'ink', width: k ? 1.2 : 1.6, alpha: k ? 0.7 : 1 }); }
           if (mode.value === 'ring') s.circle(0, 0, RR, { color: 'orange', width: 2, dash: [6, 4] });
@@ -425,7 +426,7 @@ the integral taken along the unperturbed ellipse. A term $\delta U = -\gamma/r^3
 $$\Delta v_1 = \sqrt{\frac{\mu_g}{r_1}}\Big(\sqrt{\frac{2r_2}{r_1+r_2}} - 1\Big),\qquad \Delta v_2 = \sqrt{\frac{\mu_g}{r_2}}\Big(1 - \sqrt{\frac{2r_1}{r_1+r_2}}\Big),\qquad t = \pi\sqrt{\frac{(r_1+r_2)^3}{8\mu_g}}.$$
 Among two-impulse transfers it needs the least total $\Delta v$, at the price of the longest flight; faster transfers cost more. For $r_2/r_1 > 11.94$ a three-burn bi-elliptic transfer can be cheaper. Phasing is counterintuitive: to catch a target ahead in the same orbit, one burns *backward*, dropping into a lower, faster orbit.`,
       idea: String.raw`A tangential burn at perihelion is the most efficient way to raise the aphelion, because the energy gained per unit $\Delta v$ is $v\,\Delta v$ and $v$ is largest there. The vis-viva relation $v^2 = \mu_g(2/r - 1/a)$ (8.21), with $a = (r_1+r_2)/2$ for the transfer ellipse (8.7), gives the speeds at both ends; the flight time is half the Kepler period (8.8). Burning harder makes the craft cross $r_2$ sooner but at an angle, and the second burn then has to cancel a radial velocity too. In the phasing problem a lower orbit has a shorter period (8.8), so slowing down makes you gain on the target.`,
-      caption: String.raw`Pick a scenario. The craft (gold) is simulated through its burns; the target (green) starts at the lead angle a Hohmann transfer needs. With the first-burn slider at 1 the craft meets the target; burn harder to arrive sooner and watch the right panel: total $\Delta v$ against flight time for the whole family, with the Hohmann point at the minimum. In the custom scenario push the radius ratio past 15.6, where even the bi-elliptic route through infinity is cheaper. In the phasing scenario the target is ahead in the same orbit: find the burn that catches it after one lap.`,
+      caption: String.raw`Pick a scenario. The craft (gold) is simulated through its burns; the target (green) starts at the lead angle a Hohmann transfer needs. With the first-burn slider at 1 the craft meets the target; burn harder to arrive sooner and watch the right panel: total $\Delta v$ against flight time for the whole family, with the Hohmann point at the minimum. In the custom scenario push the radius ratio past 11.94: there the three-burn bi-elliptic route out to infinity and back (purple line) becomes cheaper than Hohmann. In the phasing scenario the target is ahead in the same orbit: find the burn that catches it after one lap.`,
       deps: ['mech-8.7', 'mech-8.4'],
       refs: ['Taylor §8.8'],
       tags: ['spaceflight', 'orbits', 'energy'],
@@ -552,7 +553,7 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           let out = String.raw`Hohmann: $\Delta v_1 = ${v.fix(D.dv1H / 1000, 3)}$, $\Delta v_2 = ${v.fix(D.dv2H / 1000, 3)}$ km/s, total ${v.fix(totH, 3)} km/s, ${v.fix(D.tH / Q.tu, 1)} ${Q.tn}, target lead $${v.fix((D.lead0 * 180) / Math.PI, 1)}°$`;
           if (D.reached && fS.value > 1.0001) out += String.raw` · this transfer (simulated): ${v.fix(D.tx / Q.tu, 1)} ${Q.tn}, total ${v.fix(tot, 3)} km/s (conic formula ${v.fix((D.v1 - D.vc1 + D.an.dv2) / 1000, 3)}), ${v.fix(100 * (tot / totH - 1), 1)}% more fuel-equivalent`;
           else if (D.reached) out += String.raw` · simulated: arrival after ${v.fix(D.tx / Q.tu, 2)} ${Q.tn}, $\Delta v_2 = ${v.fix(D.dv2 / 1000, 4)}$ km/s`;
-          if (sc.value === 'custom') out += String.raw` · ratio ${v.fix(D.Rr, 1)}: bi-elliptic via $r_b\to\infty$ needs ${v.fix(D.bi / 1000, 3)} km/s ${D.bi < D.dv1H + D.dv2H ? '— **cheaper than Hohmann**' : '(more than Hohmann below ratio 15.58)'}`;
+          if (sc.value === 'custom') out += String.raw` · ratio ${v.fix(D.Rr, 1)}: bi-elliptic via $r_b\to\infty$ needs ${v.fix(D.bi / 1000, 3)} km/s ${D.bi < D.dv1H + D.dv2H ? '— **cheaper than Hohmann** (above ratio 15.58 every bi-elliptic transfer is)' : '(more than Hohmann below ratio 11.94)'}`;
           return out;
         });
       },

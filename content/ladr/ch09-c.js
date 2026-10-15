@@ -68,7 +68,7 @@ function cycles(a) {
   return c;
 }
 /** The fixed "shuffled" starting list for each m. */
-const START = { 2: [2, 1], 3: [3, 1, 2], 4: [3, 1, 4, 2], 5: [3, 1, 4, 5, 2], 6: [4, 1, 6, 3, 5, 2], 7: [4, 7, 1, 5, 3, 6, 2] };
+const START = { 2: [2, 1], 3: [3, 1, 2], 4: [3, 1, 4, 2], 5: [3, 1, 5, 4, 2], 6: [4, 1, 6, 3, 5, 2], 7: [4, 7, 1, 5, 3, 6, 2] };
 
 // ---------- trilinear forms on R³ ----------
 const FORMS = {
@@ -402,7 +402,7 @@ $$\alpha(v_2, v_1, v_3, \dots, v_m) = -\alpha(v_1, v_2, v_3, \dots, v_m).$$`,
       tags: ['multilinear'],
       viz(v) {
         const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
-        const P = v.stage({ x: [0, 1], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', title: 'value of the form during the swap' });
+        const P = v.stage({ x: [-0.16, 1.06], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', xticks: [0, 0.5, 1], title: 'value of the form during the swap' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.5, lim: 1.5 });
         const fs = formSelect(v);
         const pair = v.select('swap slots', [{ value: '01', label: '$1 \\leftrightarrow 2$' }, { value: '02', label: '$1 \\leftrightarrow 3$' }, { value: '12', label: '$2 \\leftrightarrow 3$' }], '01');
@@ -421,13 +421,13 @@ $$\alpha(v_2, v_1, v_3, \dots, v_m) = -\alpha(v_1, v_2, v_3, \dots, v_m).$$`,
           sc.line(V[i], V[j], { color: 'gold', width: 2, dash: [2, 4] }, 1);
           X.forEach((x, k) => sc.arrow(ZERO, x, { color: k === i || k === j ? 'gold' : CC[k], width: 3.2 }));
           sc.flush();
-          X.forEach((x, k) => sc.tex(`${k + 1}`, scl(x, 1.13), { color: k === i || k === j ? 'gold' : CC[k], size: 15 }));
-          S.corner(`slots ${i + 1} and ${j + 1} trading places`, 'tl', { color: 'gold', weight: 700 });
+          X.forEach((x, k) => badge(S, sc, scl(x, 0.6), k + 1, k === i || k === j ? 'gold' : CC[k]));
+          S.corner(`slots ${i + 1} and ${j + 1} trading places (badges = slot numbers)`, 'tl', { color: 'gold', weight: 700 });
           // the graph
           const f0 = f(0), f1 = f(1);
           let mx = 0.5; for (let k = 0; k <= 40; k++) mx = Math.max(mx, Math.abs(f(k / 40)));
           const Y = nice(1.18 * Math.max(mx, Math.abs(f0)), [0.75, 1, 1.5, 2, 3, 4, 6, 8, 12]);
-          if (Y !== view) { view = Y; P.setView([0, 1], [-Y, Y]); }
+          if (Y !== view) { view = Y; P.setView([-0.16, 1.06], [-Y, Y]); }
           P.hline(-f0, { color: 'green', dash: [6, 4], width: 1.4 });
           P.vline(0.5, { color: 'muted', dash: [3, 4], width: 1 });
           P.text('equal inputs', 0.5, -0.92 * Y, { align: 'center', size: 11.5, color: 'muted' });
@@ -436,8 +436,8 @@ $$\alpha(v_2, v_1, v_3, \dots, v_m) = -\alpha(v_1, v_2, v_3, \dots, v_m).$$`,
           P.dot(0, f0, { r: 5.5, color: 'accent' });
           P.dot(1, f1, { r: 7, color: okEnd ? 'green' : 'red' });
           P.dot(t, f(t), { r: 5.5, color: 'gold' });
-          P.text('before', 0.02, f0, { size: 12, color: 'accent', dy: f0 >= 0 ? -14 : 14 });
-          P.text('after', 0.98, f1, { size: 12, color: okEnd ? 'green' : 'red', align: 'right', dy: f1 >= 0 ? -14 : 14 });
+          P.text('before', 0, f0, { size: 12, color: 'accent', dx: 10, dy: f0 >= 0 ? -14 : 14 });
+          P.text('after', 1, f1, { size: 12, color: okEnd ? 'green' : 'red', align: 'right', dx: -10, dy: f1 >= 0 ? -14 : 14 });
           st = { i, j, f0, f1, ft: f(t), t, okEnd, ii: F(...put(V[i], V[i])), jj: F(...put(V[j], V[j])), both: F(...put(add(V[i], V[j]), add(V[i], V[j]))) };
         });
         v.legend([['orange', '$v_1$'], ['purple', '$v_2$'], ['teal', '$v_3$'], ['gold', 'the two inputs being swapped'], ['green', '$-\\alpha(v_1, v_2, v_3)$', { dash: true }]]);
@@ -446,8 +446,9 @@ $$\alpha(v_2, v_1, v_3, \dots, v_m) = -\alpha(v_1, v_2, v_3, \dots, v_m).$$`,
           const { i, j, f0, f1, okEnd, ii, jj, both } = st;
           const a = i + 1, b = j + 1;
           const ratio = Math.abs(f0) > 1e-9 ? `; the ratio is $${tn(f1 / f0, 4)}$` : '';
-          const exp = `$${small(v, both)} = \\alpha(\\ldots v_${a} + v_${b} \\ldots v_${a} + v_${b} \\ldots) = ${small(v, ii)} + (${tn(f0, 3)}) + (${tn(f1, 3)}) + ${small(v, jj)}$`;
-          return `Before: $${tn(f0, 3)}$. After swapping slots ${a} and ${b}: $${tn(f1, 3)}$${ratio}. Expansion as in the proof (both slots holding $v_${a}$ / $v_${a}$, $v_${b}$ / $v_${b}$): ${exp}. ` +
+          const sl = (x, y) => `\\alpha(\\overset{${a}}{${x}}, \\overset{${b}}{${y}})`;
+          const exp = `$${sl(`v_${a} + v_${b}`, `v_${a} + v_${b}`)} = ${sl(`v_${a}`, `v_${a}`)} + ${sl(`v_${a}`, `v_${b}`)} + ${sl(`v_${b}`, `v_${a}`)} + ${sl(`v_${b}`, `v_${b}`)}$, that is, $${zt(both)} = ${zt(ii)} + ${zt(f0)} + ${zt(f1)} + ${zt(jj)}$`;
+          return `Before: $${tn(f0, 3)}$. After swapping slots ${a} and ${b}: $${tn(f1, 3)}$${ratio}. Expanding as in the proof (only slots ${a} and ${b} shown): ${exp}. ` +
             (okEnd ? 'The outer terms vanish, so the middle two are opposite.' : 'The outer terms are **not** $0$ — the form is not alternating — and the swap does not simply flip the sign.');
         });
       },
@@ -507,7 +508,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
           if (adj) for (const p of desc) { const x0 = X(p, m), x1 = X(p + 1, m); S.line(x0 + 0.02, TOP + 0.075, x1 - 0.02, TOP + 0.075, { color: 'gold', width: 3 }); S.text('>', (x0 + x1) / 2, TOP + 0.075, { align: 'center', size: 13, weight: 700, color: 'gold', dy: -10 }); }
           S.tex(ptex(list), 0.5, 0.95, { size: 15 });
           const D = desc.length, used = adj ? D : N, s = used % 2 ? -1 : 1;
-          S.tex(adj ? `D = ${D}\\ \\text{adjacent descents}:\\ (-1)^{${D}} = ${s > 0 ? '+1' : '-1'}` : `N = ${cr.length}\\ \\text{crossings}:\\ \\operatorname{sign} = (-1)^{${N}} = ${s > 0 ? '+1' : '-1'}`, 0.5, 0.055, { size: 15, color: adj ? 'gold' : s > 0 ? 'blue' : 'red' });
+          S.tex(adj ? `D = ${D}\\text{ adjacent descents, }\\ (-1)^{${D}} = ${s > 0 ? '+1' : '-1'}` : `N = ${cr.length}\\text{ crossings, }\\ \\operatorname{sign} = (-1)^{${N}} = ${s > 0 ? '+1' : '-1'}`, 0.5, 0.055, { size: 15, color: adj ? 'gold' : s > 0 ? 'blue' : 'red' });
           // the pair triangle
           const pos = []; list.forEach((x, p) => { pos[x] = p; });
           const isInv = (k, l) => pos[k] > pos[l];
@@ -515,7 +516,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
           TG.draw({
             rows: m - 1, cols: m - 1,
             value: (i, j) => (i <= j ? (isInv(i + 1, j + 2) ? '×' : '·') : null),
-            fill: (i, j) => (i > j ? null : adj ? (isDesc(i + 1, j + 2) ? ['gold', 0.45] : isInv(i + 1, j + 2) ? ['red', 0.12] : null) : isInv(i + 1, j + 2) ? ['red', 0.4] : null),
+            fill: (i, j) => (i > j ? ['faint', 0.12] : adj ? (isDesc(i + 1, j + 2) ? ['gold', 0.45] : isInv(i + 1, j + 2) ? ['red', 0.12] : null) : isInv(i + 1, j + 2) ? ['red', 0.4] : null),
             textColor: (i, j) => (isInv(i + 1, j + 2) ? 'ink' : 'faint'),
           });
           G.tex(adj ? `D = ${D}\\ \\text{(gold)},\\quad N = ${N}` : `N = ${N}\\ \\text{inverted pairs (red)}`, 0.5, 0.09, { size: 14, color: adj ? 'gold' : 'red' });
@@ -526,7 +527,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
           const { list, N, D, adj, m } = st, c = cycles(list), selSw = m - c;
           const pairs = []; list.forEach((x, p) => list.forEach((y, q) => { if (p < q && x > y) pairs.push(`(${y}, ${x})`); }));
           const sN = N % 2 ? '-1' : '+1';
-          if (!adj) return `$\\operatorname{sign}${ptex(list)} = (-1)^{${N}} = ${sN}$; inverted pairs $(k, \\ell)$: ${pairs.length ? `$${pairs.join(',\\ ')}$` : 'none'}. Sorting by adjacent swaps (bubble sort) takes exactly $N = ${N}$ swaps; sorting by selection takes $${selSw}$ swaps ($m$ minus the number of cycles) — a different number of the same parity.`;
+          if (!adj) return `$\\operatorname{sign}${ptex(list)} = (-1)^{${N}} = ${sN}$; inverted pairs $(k, \\ell)$: ${pairs.length ? `$${pairs.join(',\\ ')}$` : 'none'}. Sorting by adjacent swaps (bubble sort) takes exactly $N = ${N}$ swaps; sorting by selection takes $${selSw}$ swaps ($m$ minus the number of cycles)${selSw === N ? ' — here the same number' : ' — a different number, of the same parity'}.`;
           const agree = D % 2 === N % 2;
           return `Adjacent descents: $D = ${D}$, so $(-1)^D = ${D % 2 ? '-1' : '+1'}$, while $N = ${N}$ inverted pairs give $${sN}$ and selection sort uses $${selSw}$ swaps. ${agree ? 'Here the parities happen to agree,' : '**They disagree:**'} descents miss the inverted pairs that are not neighbours, and their count does not change parity under every swap — so only $(-1)^N$ gives a well-defined sign.`;
         });
@@ -545,7 +546,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
       viz(v) {
         const S1 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 280, title: 'before — click two entries' });
         const S2 = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 280, title: 'after the swap' });
-        const PRE = { perm: { a: [4, 1, 6, 3, 5, 2], sel: [0, 4] }, rep: { a: [3, 1, 4, 1, 5, 2], sel: [0, 3] } };
+        const PRE = { perm: { a: [1, 6, 3, 2, 5, 4], sel: [1, 5] }, rep: { a: [3, 1, 4, 1, 5, 2], sel: [0, 3] } };
         let a = PRE.perm.a.slice(), sel = PRE.perm.sel.slice(), seed = 4;
         const kind = v.select('', [{ value: 'perm', label: 'a permutation' }, { value: 'rep', label: 'a list with a repeated entry' }], 'perm', { onChange: (k) => { a = PRE[k].a.slice(); sel = PRE[k].sel.slice(); } });
         v.button('shuffle', () => { const r = v.rng(++seed); a = r.shuffle(a.slice()); });
@@ -563,7 +564,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
           const d = {}; // change contributed by each in-between position
           for (let r = p + 1; r < q; r++) { const c = a[r]; d[r] = (+(yv > c) + +(c > xv)) - (+(xv > c) + +(c > yv)); }
           const dPair = (+(yv > xv)) - (+(xv > yv));
-          const col = (r) => (r === p || r === q ? 'gold' : d[r] == null ? 'muted' : Math.abs(d[r]) === 2 ? 'orange' : Math.abs(d[r]) === 1 ? 'red' : 'faint');
+          const col = (r) => (r === p || r === q ? 'gold' : d[r] == null ? 'faint' : Math.abs(d[r]) === 2 ? 'orange' : Math.abs(d[r]) === 1 ? 'red' : 'muted');
           const wid = (r) => (r === p || r === q ? 4.5 : d[r] ? 3.5 : 2.2);
           const o = { top: TOP, bot: 0.2, fill: col, strand: col, width: wid, botColor: col };
           const before = strands(S1, a, o), after = strands(S2, b, o);
@@ -571,14 +572,14 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
           const xp = X(p), xq = X(q), top = TOP + 0.075;
           S1.path([[xp, top], [xp, top + 0.05], [xq, top + 0.05], [xq, top]], { color: 'gold', width: 2 });
           S1.text(`${dPair > 0 ? '+' : dPair < 0 ? '−' : '±'}${Math.abs(dPair)}`, (xp + xq) / 2, top + 0.085, { align: 'center', size: 13, weight: 700, color: 'gold' });
-          for (let r = p + 1; r < q; r++) S1.text(`${d[r] > 0 ? '+' : d[r] < 0 ? '−' : ''}${Math.abs(d[r])}`, X(r), top + 0.005, { align: 'center', size: 12.5, weight: 700, color: col(r) === 'faint' ? 'muted' : col(r) });
+          for (let r = p + 1; r < q; r++) S1.text(`${d[r] > 0 ? '+' : d[r] < 0 ? '−' : ''}${Math.abs(d[r])}`, X(r), top + 0.005, { align: 'center', size: 12.5, weight: 700, color: col(r) });
           const N0 = before.cr.length, N1 = after.cr.length, ch = N1 - N0;
           S1.tex(`N = ${N0},\\ \\ \\operatorname{sign} = ${N0 % 2 ? '-1' : '+1'}`, 0.5, 0.06, { size: 15, color: N0 % 2 ? 'red' : 'blue' });
           S2.tex(`N = ${N1},\\ \\ \\operatorname{sign} = ${N1 % 2 ? '-1' : '+1'}`, 0.5, 0.06, { size: 15, color: N1 % 2 ? 'red' : 'blue' });
           S2.corner(`change ${ch > 0 ? '+' : ch < 0 ? '−' : ''}${Math.abs(ch)}: ${ch % 2 ? 'odd' : 'even'}`, 'tr', { color: ch % 2 ? 'green' : 'red', weight: 700, size: 12.5 });
           st = { a, b, p, q, xv, yv, d, dPair, N0, N1, ch, lo, hi };
         });
-        v.legend([['gold', 'the swapped entries'], ['orange', 'in between, value between: $\\pm 2$'], ['faint', 'in between, otherwise: $0$'], ['red', 'equal to a swapped value: $\\pm 1$'], ['red', 'crossing', { dot: true }]]);
+        v.legend([['gold', 'swapped'], ['orange', 'in between, value between: $\\pm 2$'], ['muted', 'in between, otherwise: $0$'], ['faint', 'outside: unaffected'], ['red', 'equal to a swapped value: $\\pm 1$'], ['red', 'crossing', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { a, b, p, q, xv, yv, d, dPair, N0, N1, ch } = st;
@@ -621,11 +622,12 @@ for every list $v_1, \dots, v_m$ of vectors in $V$ and every $(j_1, \dots, j_m) 
           pped(sc, V[0], V[1], V[2], { fill: oc, color: oc, fillAlpha: 0.08, alpha: 0.45 });
           V.forEach((x, k) => sc.arrow(ZERO, x, { color: CC[k], width: 3.2 }));
           // the oriented triangle through the slot directions
-          const T = X.map((x) => scl(unit(x), 0.5));
-          for (let k = 0; k < 3; k++) sc.arrow(T[k], T[(k + 1) % 3], { color: oc, width: 2.4, head: 8 });
+          const T = X.map((x) => scl(unit(x), 0.48));
+          sc.poly(T, { fill: oc, fillAlpha: 0.22, edge: false, top: true });
+          for (let k = 0; k < 3; k++) sc.arrow(T[k], T[(k + 1) % 3], { color: oc, width: 2.6, head: 9 });
           sc.flush();
-          X.forEach((x, k) => sc.tex(`${k + 1}`, scl(x, 1.14), { color: CC[jp[k] - 1], size: 15 }));
-          S.corner(`slots hold v${sb(jp[0])}, v${sb(jp[1])}, v${sb(jp[2])}`, 'tl', { color: 'muted', weight: 700 });
+          X.forEach((x, k) => badge(S, sc, scl(x, 0.8), k + 1, CC[jp[k] - 1]));
+          S.corner(`slots 1, 2, 3 (badges) hold v${sb(jp[0])}, v${sb(jp[1])}, v${sb(jp[2])}`, 'tl', { color: 'muted', weight: 700 });
           // the bars
           const Y = Math.max(0.2, Math.abs(base), ...vals.map(Math.abs));
           for (const yy of [base, -base]) B.line(0, yy / Y, 6, yy / Y, { color: yy === base ? 'blue' : 'red', dash: [6, 4], width: 1.2, alpha: 0.8 });
@@ -633,7 +635,7 @@ for every list $v_1, \dots, v_m$ of vectors in $V$ and every $(j_1, \dots, j_m) 
           PS.forEach((p, i) => {
             const s = sign(p), h = vals[i] / Y, c = s > 0 ? 'blue' : 'red';
             B.rect(i + 0.22, 0, i + 0.78, h, { fill: c, fillAlpha: i === sel ? 0.75 : 0.4, color: i === sel ? 'gold' : c, width: i === sel ? 3 : 1 });
-            B.text(pn(vals[i], 2), i + 0.5, h, { align: 'center', size: 11.5, color: c, dy: h >= 0 ? -10 : 10 });
+            B.text(pn(vals[i], 2), i + 0.5, h / 2, { align: 'center', size: 11.5, color: 'ink', weight: 600 });
             // the strand diagram of this order: slot k (top) ← v_{j_k} (bottom)
             const xs = (k) => i + 0.25 + 0.25 * k;
             for (let k = 0; k < 3; k++) B.line(xs(k), -1.32, xs(p[k] - 1), -1.68, { color: CC[p[k] - 1], width: 2.4 });
@@ -672,7 +674,7 @@ for every alternating $n$-linear form $\alpha$ on $V$.`,
         const fS = v.select('', [{ value: 'alt', label: 'alternating $\\alpha$' }, { value: 'not', label: 'a non-alternating $\\beta$' }], 'alt');
         const cS = v.slider('$\\alpha(e_1, \\dots, e_n)$', -2, 2, 1, { step: 0.1 });
         const E = { 2: [[1, 0.3], [-0.4, 1]], 3: [[1, 0.2, 0], [0.3, 1, 0.1], [0, -0.4, 1]] }; // basis vectors (rows here = the e_j)
-        const Bm = { 2: [[2, 1], [-1, 1]], 3: [[2, 1, 0], [-1, 1, 2], [1, 0, 1]] };
+        const Bm = { 2: [[2, 1], [-1, 1]], 3: [[2, 1, -1], [-1, 1, 2], [1, 3, 1]] };
         const r = v.rng(5), BETA = { 2: randTensor(r, 2, 2, -2, 2), 3: randTensor(r, 3, 3, -2, 2) };
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 230, title: 'coordinates: $v_k = \\sum_j b_{j,k}\\,e_j$' });
         const G = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.9, minWidth: 420, title: 'the full expansion: one term per list $(j_1, \\dots, j_n)$' });
@@ -725,18 +727,18 @@ for every alternating $n$-linear form $\alpha$ on $V$.`,
             TG[0].draw({ rows: 2, cols: 2, region: [0.25, 0.27, 0.75, 0.86], value: (i, j) => val[`${i}${j}`], format: (x) => pn(x, 2), fill: (i, j) => fill([i, j]), textColor: (i, j) => tcol([i, j]) });
             G.text('rows j₁, columns j₂', 0.5, 0.955, { align: 'center', size: 12, color: 'muted' });
           }
-          const nn = n ** n, nf = n === 2 ? 2 : 6;
-          G.tex(`\\text{all } ${nn} \\text{ terms: } ${tn(full, 3)} = ${alt ? '\\alpha' : '\\beta'}(v_1, \\dots, v_${n})`, 0.5, 0.16, { size: 14.5 });
+          const nn = n ** n, nf = n === 2 ? 2 : 6, F = alt ? '\\alpha' : '\\beta', es = n === 2 ? 'e_1, e_2' : 'e_1, e_2, e_3', vs = n === 2 ? 'v_1, v_2' : 'v_1, v_2, v_3';
+          G.tex(`\\text{all } ${nn} \\text{ terms: } ${tn(full, 3)} = ${F}(${vs})`, 0.5, 0.16, { size: 14.5 });
           const ok = Math.abs(formula - direct) < 1e-9 * Math.max(1, Math.abs(direct));
-          G.tex(`${alt ? '\\alpha' : '\\beta'}(e_1, \\dots, e_${n})\\sum_{\\text{${nf} perms}} \\operatorname{sign}\\cdot b\\cdots b = ${tn(atBasis, 3)}\\cdot ${tn(permSum, 3)} = ${tn(formula, 3)}`, 0.5, 0.06, { size: 14.5, color: ok ? 'green' : 'red' });
-          st = { n, alt, full, direct, formula, permSum, atBasis, repSum, ok, nn, nf };
+          G.tex(`${F}(${es})\\sum_{\\text{${nf} perms}} \\operatorname{sign}\\cdot b\\cdots b = ${tn(atBasis, 3)}\\cdot ${tn(permSum, 3)} = ${tn(formula, 3)}`, 0.5, 0.06, { size: 14.5, color: ok ? 'green' : 'red' });
+          st = { n, alt, full, direct, formula, permSum, atBasis, repSum, ok, nn, nf, es, vs };
         });
         v.legend([['blue', 'permutation, sign $+1$', { area: true }], ['red', 'permutation, sign $-1$', { area: true }], ['orange', 'repeated index, nonzero', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
-          const { n, alt, direct, formula, permSum, atBasis, repSum, ok, nn, nf } = st;
-          if (alt) return `Of the $${nn}$ terms, the $${nn - nf}$ with a repeated index vanish ($\\alpha$ is alternating) and the $${nf}$ permutation terms give $\\alpha(e_1, \\dots, e_${n}) \\cdot ${tn(permSum, 3)} = ${tn(formula, 3)}$, which matches $\\alpha(v_1, \\dots, v_${n}) = ${tn(direct, 3)}$ computed directly from the vectors ${ok ? '✓' : ''}.`;
-          return `$\\beta$ is multilinear, so all $${nn}$ terms still add up to $\\beta(v_1, \\dots, v_${n}) = ${tn(direct, 3)}$; but the repeated-index terms contribute $${tn(repSum, 3)}$ and the permutation terms are not $\\pm\\beta(e_1, \\dots, e_${n})$, so the formula gives $${tn(atBasis, 3)}\\cdot ${tn(permSum, 3)} = ${tn(formula, 3)}$ — ${ok ? 'equal only by accident' : '**wrong**'}.`;
+          const { alt, direct, formula, permSum, atBasis, repSum, ok, nn, nf, es, vs } = st;
+          if (alt) return `Of the $${nn}$ terms, the $${nn - nf}$ with a repeated index vanish ($\\alpha$ is alternating) and the $${nf}$ permutation terms give $\\alpha(${es}) \\cdot ${zt(permSum)} = ${tn(formula, 3)}$, which ${ok ? 'matches' : 'differs from'} $\\alpha(${vs}) = ${tn(direct, 3)}$ computed directly from the vectors (as $\\alpha(e_1, \\dots, e_n)/\\det(e_1, \\dots, e_n)$ times their signed volume).`;
+          return `$\\beta$ is multilinear, so all $${nn}$ terms still add up to $\\beta(${vs}) = ${tn(direct, 3)}$; but the repeated-index terms contribute $${tn(repSum, 3)}$ and the permutation terms are not $\\pm\\beta(${es})$, so the formula gives $${zt(atBasis)}\\cdot ${zt(permSum)} = ${tn(formula, 3)}$ — ${ok ? 'equal only by accident' : '**wrong**'}.`;
         });
       },
     },

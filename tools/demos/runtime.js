@@ -172,5 +172,23 @@ export default {
         v.readout(() => `x: ${lx.value ? 'log' : 'linear'}, y: ${ly.value ? 'log' : 'linear'}`);
       },
     },
+    {
+      num: '1.9',
+      kind: 'Method',
+      name: 'v.input: typing a formula',
+      statement: String.raw`Type any right-hand side $f(t, x)$; the slope field and a solution update as you type.`,
+      caption: String.raw`Try **x(1 - x)**, **sin(t) - x**, **x^2 - t**, or a typo to see the error message.`,
+      viz(v) {
+        const s = v.stage({ x: [0, 6], y: [-2, 2], height: 300, axes: 'box', xlabel: 't', ylabel: 'x' });
+        const f = v.input('$\\dot x = f(t, x) =$', 'x (1 - x) - 0.2 sin(3t)', { vars: ['t', 'x'] });
+        v.render(() => {
+          const F = f.fn; if (!F) return;
+          for (let t = 0.25; t < 6; t += 0.5) for (let x = -1.75; x < 2; x += 0.5) { const m = F(t, x), L = 0.18 / Math.hypot(1, m); s.line(t - L, x - m * L, t + L, x + m * L, { color: 'muted', width: 1 }); }
+          let x = 0.1; const pts = [[0, x]]; for (let t = 0; t < 6; t += 0.01) { x += 0.01 * F(t, x); if (!isFinite(x) || Math.abs(x) > 50) break; pts.push([t + 0.01, x]); }
+          s.clip(() => s.path(pts, { color: 'accent', width: 2.2 }));
+        });
+        v.readout(() => (f.error ? `error: ${f.error}` : `f compiled: f(1, 0.5) = ${v.fix(f.fn(1, 0.5), 4)}`));
+      },
+    },
   ],
 };

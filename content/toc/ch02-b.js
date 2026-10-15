@@ -1,5 +1,5 @@
 // Theory of Computation — Chapter 2: Finite automata (items 2.7–2.12; 2.1–2.6 in ch02.js)
-import { EPS, DEAD, sh, layer, SANS, pen, keypad, dfa, cloneD, tgt, isAcc, step, run, dfaGraph, drawDFA, startArrow } from './ch02.shared.js';
+import { EPS, DEAD, sh, layer, SANS, pen, keypad, dfa, cloneD, tgt, isAcc, step, run, dfaGraph, drawDFA, startArrow, onColor } from './ch02.shared.js';
 
 const texState = (D, q) => (q === DEAD ? '\\varnothing' : String(D.states.find((s) => s.id === q)?.label ?? q).replace(/\$/g, ''));
 const tt = (u) => (u ? `\\mathtt{${u}}` : '\\varepsilon');
@@ -105,7 +105,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           drawDFA(v, s, G, D0, {
             fill: (id) => (id === f.cur ? 'gold' : f.C?.has(id) ? 'green' : f.R?.has(id) ? 'accent' : null),
             color: (id) => (f.R?.has(id) ? 'accent' : 'faint'),
-            labelColor: (id) => (f.R?.has(id) && id !== f.cur ? 'panel' : !f.R?.has(id) ? 'muted' : null),
+            labelColor: (id) => (id === f.cur ? onColor(v, 'gold') : f.C?.has(id) ? onColor(v, 'green') : f.R?.has(id) ? onColor(v, 'accent') : 'muted'),
             edgeColor: (e) => (e.syms.every((c) => cut.has(e.from + '|' + c)) ? 'faint' : cycE.has(e.from + '|' + e.to) ? 'red' : null),
             edgeWidth: (e) => (cycE.has(e.from + '|' + e.to) ? 3.4 : null),
             dim: D0.states.filter((q) => f.phase >= 2 && !f.R?.has(q.id)).map((q) => q.id),
@@ -196,7 +196,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           BT.draw({
             nodeFill: (id) => (isAcc(M1, R.info[id].p) !== isAcc(M2, R.info[id].q) ? 'red' : id === f.cur ? 'gold' : null),
             nodeColor: (id) => (isAcc(M1, R.info[id].p) && isAcc(M2, R.info[id].q) ? 'green' : null),
-            labelColor: (id) => (isAcc(M1, R.info[id].p) !== isAcc(M2, R.info[id].q) ? 'panel' : 'ink'),
+            labelColor: (id) => (isAcc(M1, R.info[id].p) !== isAcc(M2, R.info[id].q) ? onColor(v, 'red') : id === S.frame.cur ? onColor(v, 'gold') : 'ink'),
             edgeLabel: (e) => e.label, highlightPath: path, pathColor: 'orange',
           });
           bs.corner(f.final ? (R.found ? `they differ on ${sh(R.info[R.found].via)}` : 'equivalent') : `${shown.length} pairs so far`, 'tr', { size: 13, weight: 700, color: f.final ? (R.found ? 'red' : 'green') : 'muted' });
@@ -258,7 +258,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
         v.render(() => {
           const r = sim(), t = S.frame.t ?? 0, cs = 'c' + r.car[t], prevC = t > 0 ? 'c' + r.car[t - 1] : null, inp = t > 0 ? `${r.a[t - 1]}${r.b[t - 1]}` : null;
           GM.draw({
-            nodeFill: (id) => (id === cs ? 'gold' : null), labelColor: (id) => (id === cs ? 'ink' : null),
+            nodeFill: (id) => (id === cs ? 'gold' : null), labelColor: (id) => (id === cs ? onColor(v, 'gold') : null),
             edgeColor: (e) => (prevC && e.from === prevC && e.to === cs && e.label.includes(inp + '/') ? 'gold' : null),
             edgeWidth: (e) => (prevC && e.from === prevC && e.to === cs && e.label.includes(inp + '/') ? 3.2 : null),
             edgeLabel: (e) => e.label,
@@ -267,7 +267,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           ml.corner('Mealy: arrows read in/out (carry state c)', 'tl', { size: 12, color: 'muted', weight: 600 });
           const ms = r.moSt[t], pms = t > 0 ? r.moSt[t - 1] : null;
           GO.draw({
-            nodeFill: (id) => (id === ms ? 'gold' : null), labelColor: (id) => (id === ms ? 'ink' : null),
+            nodeFill: (id) => (id === ms ? 'gold' : null), labelColor: (id) => (id === ms ? onColor(v, 'gold') : null),
             edgeColor: (e) => (pms && e.from === pms && e.to === ms && e.label.split(',').includes(inp) ? 'gold' : null),
             edgeWidth: (e) => (pms && e.from === pms && e.to === ms && e.label.split(',').includes(inp) ? 3.2 : null),
             edgeLabel: (e) => e.label,
@@ -345,7 +345,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           const f = S.frame, n = nS.value, map = f.map || [], mult = {}; map.forEach((q) => { mult[q] = (mult[q] || 0) + 1; });
           const last = f.k > 0 ? word[f.k - 1] : null;
           G.draw({
-            nodeFill: (id) => (mult[+id.slice(1)] ? 'gold' : null), labelColor: (id) => (mult[+id.slice(1)] ? 'ink' : null),
+            nodeFill: (id) => (mult[+id.slice(1)] ? 'gold' : null), labelColor: (id) => (mult[+id.slice(1)] ? onColor(v, 'gold') : null),
             nodeNote: (id) => (mult[+id.slice(1)] > 1 ? `×${mult[+id.slice(1)]}` : null), noteColor: 'gold', notePos: 'n',
             edgeColor: (e) => (e.syms.length === 2 ? 'muted' : e.syms[0] === 'a' ? 'blue' : 'orange'),
             edgeWidth: (e) => (last != null && e.syms.includes('ab'[last]) && mult[+e.to.slice(1)] ? 2.8 : 1.5),

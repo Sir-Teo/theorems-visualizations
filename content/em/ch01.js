@@ -118,7 +118,7 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
       viz(v) {
         const M = v.M, C = M.CONST, e = C.e, g = C.g0;
         const mode = v.select('', [{ value: 'balls', label: 'pith balls: rub, touch, ground' }, { value: 'drops', label: 'oil drops (Millikan)' }], 'balls');
-        const sB = v.stage({ x: [-13, 13], y: [-15.5, 1.2], equal: true, height: 330, axes: false, full: true });
+        const sB = v.stage({ x: [-13, 13], y: [-15.6, 1.0], equal: true, height: 330, axes: false, full: true });
         const sA = v.stage({ x: [-1.3, 1.3], y: [-1.55, 1.95], equal: true, height: 340, axes: false, weight: 0.75, title: 'the last drop, between the plates' });
         const sH = v.stage({ x: [0, 13.5], y: [0, 10], height: 340, axes: 'box', weight: 1.35, title: 'number of drops against measured charge (10⁻¹⁹ C)' });
         // ---------- pith balls (SI inside, cm for drawing)
@@ -218,7 +218,7 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
               s.text(`${groupInt(n)} e`, X + dx * 0.6, Y + 2.1, { align: al, size: 12.5, color: n ? col : 'muted', weight: 600 });
               s.text(`${n ? (n > 0 ? '+' : '−') + v.fix(Math.abs(n * e) * 1e9, 3) : '0'} nC`, X + dx * 0.6, Y + 1.0, { align: al, size: 11.5, color: 'muted' });
             }
-            s.text('weight', sol.pA[0] * 100, sol.pA[1] * 100 - 5.6, { align: 'center', size: 11, color: 'muted' });
+            s.text('weight', sol.pA[0] * 100 - 0.35, sol.pA[1] * 100 - 3.2, { align: 'right', size: 11, color: 'muted' });
             if (Math.hypot(...sol.F) * fs > 0.25) s.text('Coulomb force', sol.pB[0] * 100 + 0.9, sol.pB[1] * 100 - 1.2, { size: 11, color: 'orange' });
             s.corner('threads 10 cm, pith balls 0.015 g, hung 5 cm apart', 'tr', { size: 11 });
           }
@@ -817,10 +817,10 @@ which tends to $\sigma/2\varepsilon_0$ just above the disk and to the point-char
       viz(v) {
         const M = v.M, C = M.CONST, Q = 10e-9, k = C.ke;
         const shape = v.select('', [{ value: 'ring', label: 'ring' }, { value: 'disk', label: 'disk' }], 'ring');
-        const s3 = v.stage3d({ range: 3.5, height: 340, yaw: -0.55, pitch: 0.32, labels: ['x', 'y', 'z'], axisLength: 3.1, weight: 0.9 });
+        const s3 = v.stage3d({ range: 3.5, height: 340, yaw: -0.55, pitch: 0.32, axes: false, weight: 0.9 });
         const sp = v.stage({ x: [-8, 8], y: [-1, 1], height: 340, axes: 'box', weight: 1.15, xlabel: 'height z on the axis (cm)', title: '$E_z$ on the axis (kN/C)' });
         const Rs = v.slider('radius $R$', 1, 3, 2, { step: 0.05, fmt: (x) => `${x.toFixed(2)} cm` });
-        const zh = sp.handle(2.2, 0, { color: 'gold', r: 7, label: '$P$', constrain: 'x' });
+        const zh = sp.handle(3.2, 0, { color: 'gold', r: 7, label: '$P$', constrain: 'x' });
         const NR = 720;
         /** Ring of radius R (cm), charge q (C): vector sum of NR element fields at (0, 0, z) cm → [Ex, Ey, Ez] N/C. */
         const ringE = (z, R, q = Q) => { let ex = 0, ey = 0, ez = 0; for (let j = 0; j < NR; j++) { const ph = (TAU * j) / NR, dx = -R * Math.cos(ph) * 0.01, dy = -R * Math.sin(ph) * 0.01, dz = z * 0.01, d3 = Math.pow(dx * dx + dy * dy + dz * dz, 1.5), c = (k * q) / NR / d3; ex += c * dx; ey += c * dy; ez += c * dz; } return [ex, ey, ez]; };
@@ -846,14 +846,17 @@ which tends to $\sigma/2\varepsilon_0$ just above the disk and to the point-char
             zpk = (a + b) / 2; const Ep = ringE(zpk, R)[2] / 1e3;
             sp.line(zpk, 0, zpk, Ep, { color: 'green', dash: [4, 3], width: 1.2 }); sp.dot(zpk, Ep, { r: 5, color: 'green', label: '$R/\\sqrt2$', labelPos: 'ne' });
           }
-          // 3D picture
+          // 3D picture (shifted along the axis so that P stays in view)
+          const off = -Math.sign(z) * Math.min(1.2, Math.abs(z) * 0.5), sh = (p) => [p[0], p[1], p[2] + off];
+          const S3 = { curve: (g, a, b, o) => s3.curve((t) => sh(g(t)), a, b, o), poly: (pts, o) => s3.poly(pts.map(sh), o), dot: (p, o) => s3.dot(sh(p), o), arrow: (p, q, o) => s3.arrow(sh(p), sh(q), o), text: (t, p, o) => s3.text(t, sh(p), o), line: (p, q, o) => s3.line(sh(p), sh(q), o) };
+          for (const [e, lab] of [[[1, 0, 0], 'x'], [[0, 1, 0], 'y'], [[0, 0, 1], 'z']]) { S3.line(e.map((c) => -3.1 * c), e.map((c) => 3.1 * c), { color: 'faint', width: 1 }); S3.text(lab, e.map((c) => 3.35 * c), { color: 'muted', math: true }); }
           
           if (ring) {
-            s3.curve((t) => [R * Math.cos(t), R * Math.sin(t), 0], 0, TAU, { color: 'red', width: 3.5, n: 120 });
+            S3.curve((t) => [R * Math.cos(t), R * Math.sin(t), 0], 0, TAU, { color: 'red', width: 3.5, n: 120 });
           } else {
             const poly = []; for (let i = 0; i < 72; i++) poly.push([R * Math.cos((TAU * i) / 72), R * Math.sin((TAU * i) / 72), 0]);
-            s3.poly(poly, { fill: 'red', fillAlpha: 0.22, color: 'red', width: 1.5 });
-            for (const f of [0.25, 0.5, 0.75]) s3.curve((t) => [f * R * Math.cos(t), f * R * Math.sin(t), 0], 0, TAU, { color: 'red', width: 1, alpha: 0.5, n: 60 });
+            S3.poly(poly, { fill: 'red', fillAlpha: 0.22, color: 'red', width: 1.5 });
+            for (const f of [0.25, 0.5, 0.75]) S3.curve((t) => [f * R * Math.cos(t), f * R * Math.sin(t), 0], 0, TAU, { color: 'red', width: 1, alpha: 0.5, n: 60 });
           }
           // element fields at P, drawn to a common scale (each piece magnified by the number of pieces shown)
           const P3 = [0, 0, z], els = ring ? [1] : [0.35, 0.7, 1], nE = 8, parts = [];
@@ -864,11 +867,11 @@ which tends to $\sigma/2\varepsilon_0$ just above the disk and to the point-char
           }
           const sz = parts.reduce((a, p) => a + p[4], 0), sc = 1.3 / Math.abs(sz || 1), mag = ring ? 5 : 9;
           for (const [ex, ey, ux, uy, uz] of parts) {
-            s3.dot([ex, ey, 0], { r: 3, color: 'red', ring: false });
-            s3.arrow(P3, [ux * sc * mag, uy * sc * mag, z + uz * sc * mag], { color: 'red', alpha: 0.55, width: 1.5, head: 8 });
+            S3.dot([ex, ey, 0], { r: 3, color: 'red', ring: false });
+            S3.arrow(P3, [ux * sc * mag, uy * sc * mag, z + uz * sc * mag], { color: 'red', alpha: 0.55, width: 1.5, head: 8 });
           }
-          s3.arrow(P3, [0, 0, z + Math.sign(sz) * 1.3], { color: 'green', width: 4, head: 12 });
-          s3.dot(P3, { r: 5, color: 'gold' }); s3.text('P', [-0.45, 0.2, z - 0.15], { color: 'gold', math: true });
+          S3.arrow(P3, [0, 0, z + Math.sign(sz) * 1.3], { color: 'green', width: 4, head: 12 });
+          S3.dot(P3, { r: 5, color: 'gold' }); S3.text('P', [-0.45, 0.2, z - 0.15], { color: 'gold', math: true });
           st = { Ez, z, R, zpk };
         });
         v.legend([['accent', 'numerical sum / integral'], ['muted', 'closed-form formula', { area: true }], ['orange', 'point charge $Q/4\\pi\\varepsilon_0 z^2$', { dash: true }]]);

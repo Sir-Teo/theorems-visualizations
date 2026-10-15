@@ -460,5 +460,14 @@ test('complex rref, rank, nullspace, charPolyC, clusterRoots', () => {
   eq(cl.length, 2); eq(cl[0].mult, 3); close(cl[0].value.re, 2, 1e-9); close(cl[1].value.re, 5, 1e-9);
 });
 
+test('compileExpr: safe formula parser', () => {
+  const f = (src, vars, args) => { const r = M.compileExpr(src, vars); if (r.error) throw new Error(src + ': ' + r.error); return r.f(...args); };
+  close(f('x^2-3', ['x'], [2]), 1); close(f('2x+1', ['x'], [3]), 7); close(f('3(x+1)^2', ['x'], [1]), 12); close(f('-x^2', ['x'], [3]), -9);
+  close(f('2^3^2', [], []), 512); close(f('|x-2|', ['x'], [0]), 2); close(f('x y + t', ['t', 'x', 'y'], [1, 2, 3]), 7);
+  close(f('sin(pi x)', ['x'], [0.5]), 1); close(f('cos x^2', ['x'], [2]), Math.cos(4)); close(f('sinx', ['x'], [1]), Math.sin(1)); close(f('max(x, 1)', ['x'], [0.5]), 1);
+  ok(M.compileExpr('foo(x)', ['x']).error, 'unknown name'); ok(M.compileExpr('2*', ['x']).error, 'dangling operator'); ok(M.compileExpr('(x', ['x']).error, 'missing )');
+  ok(M.compileExpr('alert(1)', ['x']).error, 'no arbitrary code');
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

@@ -29,16 +29,16 @@ The rays from $E$ to all the points of an object form a cone with its apex at th
         const M = v.M;
         const S = v.stage({ x: [-1.75, 1.75], y: [-1.45, 0.95], equal: true, axes: false, height: 390, weight: 1.25, title: 'eye, pane and objects' });
         const P = v.stage({ x: [-0.82, 0.82], y: [-0.06, 1.3], equal: true, axes: false, height: 390, weight: 0.75, title: 'what is traced on the pane' });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.36, axes: false, lim: 2.2 });
+        const sc = v.scene3(S, { yaw: -0.85, pitch: 0.4, axes: false, lim: 2.2 });
         const G = -0.75, PW = 0.75, PH = 1.25; // ground height, pane half-width and height (scene units)
-        const house = houseMesh([0.32, 0.85, G], [0.62, 0.7, 0.42], 0.27, 0.5);
-        const cube = boxMesh([-0.55, 0.45, G], [0.34, 0.34, 0.34], -0.3);
+        const house = houseMesh([0.35, 1.05, G], [0.55, 0.78, 0.4], 0.26, 1.15);
+        const cube = boxMesh([-0.5, 0.65, G], [0.34, 0.34, 0.34], -0.3);
         const solids = [{ mesh: house, color: 'accent' }, { mesh: cube, color: 'purple' }];
         let eye = null;
-        const pane = sc.handle([PW, -0.3, G + PH], { color: 'orange', label: 'pane', snap: (p) => [PW, M.clamp(p[1], (eye ? eye.p[1] : -1.4) + 0.25, 0.1), G + PH] });
+        const pane = sc.handle([PW, -0.45, G + PH], { color: 'orange', label: 'pane', snap: (p) => [PW, M.clamp(p[1], (eye ? eye.p[1] : -1.4) + 0.25, 0.1), G + PH] });
         eye = sc.handle([-0.2, -1.35, G + 0.92], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -1.1, 1.1), M.clamp(p[1], -1.9, pane.p[1] - 0.25), M.clamp(p[2], G + 0.08, G + 1.45)] });
         const pyr = v.toggle('visual pyramid', true);
-        const floor = gridLines(-1.2, 1.2, 0.0, 1.6, 0.2, G);
+        const floor = gridLines(-1.2, 1.2, 0.0, 1.8, 0.2, G);
         const pierce = (Q) => {
           const E = eye.p, yp = pane.p[1];
           if (Q[1] <= E[1] + 1e-6) return null;
@@ -50,10 +50,16 @@ The rays from $E$ to all the points of an object form a cone with its apex at th
         v.render(() => {
           const E = eye.p, yp = pane.p[1];
           sc.begin();
-          sc.poly([[-1.5, -2.0, G], [1.5, -2.0, G], [1.5, 1.7, G], [-1.5, 1.7, G]], { fill: 'faint', fillAlpha: 0.07, edge: false, bias: 6 });
+          sc.poly([[-1.5, -2.0, G], [1.5, -2.0, G], [1.5, 1.9, G], [-1.5, 1.9, G]], { fill: 'faint', fillAlpha: 0.07, edge: false, bias: 6 });
           for (const [a, b] of floor) sc.line(a, b, { color: 'faint', width: 0.8, alpha: 0.7, bias: 3 }, 6);
-          for (const s of solids) for (const f of s.mesh.F) sc.poly(f.map((i) => s.mesh.V[i]), { fill: s.color, fillAlpha: 0.2, color: s.color, width: 1.3 });
-          sc.poly([[-PW, yp, G], [PW, yp, G], [PW, yp, G + PH], [-PW, yp, G + PH]], { fill: 'orange', fillAlpha: 0.08, color: 'orange', width: 1.8 });
+          for (const s of solids) for (const f of s.mesh.F) { // solid-looking objects: cull faces turned away from the viewer
+            const q = f.map((i) => sc.P(s.mesh.V[i])); let ar = 0;
+            for (let i = 0; i < q.length; i++) { const j = (i + 1) % q.length; ar += q[i][0] * q[j][1] - q[j][0] * q[i][1]; }
+            if (ar <= 0) continue;
+            const A = s.mesh.V[f[0]], B = s.mesh.V[f[1]], Cc = s.mesh.V[f[2]], u = M.vsub(B, A), w = M.vsub(Cc, A), n = M.normalize(M.cross3(u, w));
+            sc.poly(f.map((i) => s.mesh.V[i]), { fill: s.color, fillAlpha: 0.12 + 0.3 * (1 - Math.max(0, M.dot(n, [0.3, -0.45, 0.84]))), color: s.color, width: 1.4 });
+          }
+          sc.poly([[-PW, yp, G], [PW, yp, G], [PW, yp, G + PH], [-PW, yp, G + PH]], { fill: 'orange', fillAlpha: 0.12, color: 'orange', width: 1.8 });
           // the rays and their pierce points
           for (const s of solids) {
             const pts = s.mesh.V.map((V) => ({ V, Q: pierce(V) }));

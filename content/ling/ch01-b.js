@@ -560,7 +560,7 @@ export default {
             fits.push({ k: f.slope, c: f.intercept, L });
           }
           if (locus) le.hline(locus, { color: 'red', dash: [6, 4], width: 1.2 }); else { le.hline(3000, { color: 'red', dash: [6, 4], width: 1.2 }); le.hline(1500, { color: 'red', dash: [6, 4], width: 1.2 }); }
-          d.sy.forEach((s, i) => { le.dot(s.vowel, s.onset, { r: 5, color: 'accent' }); le.text(`[${VOWS[i]}]`, s.vowel, s.onset + 120, { size: 12, color: 'accent', align: 'center' }); });
+          d.sy.forEach((s, i) => { le.dot(s.vowel, s.onset, { r: 5, color: 'accent' }); le.text(`[${VOWS[i]}]`, s.vowel + (VOWS[i] === 'o' ? -40 : VOWS[i] === 'u' ? 40 : 0), s.onset + (VOWS[i] === 'o' ? -130 : 120), { size: 12, color: 'accent', align: VOWS[i] === 'o' ? 'right' : VOWS[i] === 'u' ? 'left' : 'center' }); });
           info = { fits, c };
         });
         v.readout(() => info && info.fits.map((f, j) => `${info.c === 'g' ? (j ? 'back vowels: ' : 'front vowels: ') : ''}measured locus equation $F2_{onset}$ = ${v.fix(f.k, 2)} $F2_{vowel}$ + ${Math.round(f.c)} Hz → locus ${f.L ? `**${Math.round(f.L)} Hz**` : 'undefined (slope ≈ 1)'}`).join(' · ') + ` · Delattre et al.: ${info.c === 'b' ? '720' : info.c === 'd' ? '1800' : '≈ 3000 (front)'} Hz`);
@@ -573,7 +573,7 @@ export default {
       name: 'Categorical perception of stop consonants',
       statement: String.raw`When listeners hear a continuum of synthetic syllables whose voice onset time increases in equal steps from [ba] to [pa], they do not hear a gradual change: **identification** stays near 100 % /b/ up to a boundary (about 25 ms VOT for English labials), then switches to /p/ within one or two steps. **Discrimination** follows the labels: two stimuli 20 ms apart are told apart well when they straddle the boundary and barely above chance when both fall in the same category, although the acoustic difference is the same. Perception of this kind, where discrimination is predicted by identification, is called **categorical perception**. It is strong for stop consonants and much weaker for vowels, and it is shaped by the listener's language: the boundary sits where the language's categories need it.`,
       idea: String.raw`If listeners could only compare category labels, the probability of answering an ABX trial correctly (is X the same as A or as B?) would be $\tfrac12+\tfrac12(p_A-p_B)^2$, where $p_A, p_B$ are the probabilities of labelling A and B as /p/: discrimination is then at chance within a category and peaks at the boundary. Liberman, Harris, Hoffman and Griffith (1957) found that real discrimination of stop continua nearly matches this prediction. Later work showed it is not purely categorical (listeners do hear some within-category differences, given sensitive tasks), and that chinchillas and infants show similar VOT boundaries, so part of the effect is auditory; but the boundary's location is tuned by experience with a language (ling-1.5).`,
-      caption: String.raw`The eight stimuli (top) are [ba]–[pa] syllables synthesized with VOT from 0 to 70 ms; click one to hear it. Then test yourself: *Random step* plays a hidden stimulus and you answer **/b/** or **/p/**; *ABX trial* plays three stimuli and you say whether the third matched the first or the second. Your identification points (gold) and ABX scores (green bars) accumulate beside the curves of a model English listener (boundary 25 ms) and the discrimination it predicts. The pair straddling the boundary should be the only easy one.`,
+      caption: String.raw`The eight stimuli (top) are [ba]–[pa] syllables synthesized with VOT from 0 to 70 ms; click one to hear it. Then test yourself: *Random step* plays a hidden stimulus and you answer **/b/** or **/p/**; *ABX trial* plays three stimuli and you say whether the third matched the first or the second. Your identification points (gold) and ABX scores (green bars) accumulate beside the curves of a model English listener (boundary 25 ms) and the discrimination it predicts. Only the pairs that straddle the boundary should be easy.`,
       deps: ['ling-1.5'],
       refs: ['Fromkin et al.'],
       tags: ['perception', 'categories'],
@@ -643,7 +643,7 @@ export default {
       name: 'Vowel systems as maximal dispersion',
       statement: String.raw`The **dispersion theory** of vowel systems (Liljencrants and Lindblom, 1972) proposes that languages choose vowels that are as far apart as possible in auditory space, so that they are easy to tell apart. Model each vowel as a point in the space of possible vowels, measured by its first two formants on an auditory (Bark) scale, and choose $n$ points that minimise the total "energy" $E=\sum_{i<j}1/d_{ij}^2$, where $d_{ij}$ is the auditory distance between vowels $i$ and $j$. The optima for small $n$ match the most common inventories of the world's languages: three vowels go to the corners [i a u], five to [i e a o u], seven to [i e ɛ a ɔ o u]. For larger $n$ the simple model predicts too many high vowels (central [ɨ]-like vowels) compared with real languages, which add mid vowels instead.`,
       idea: String.raw`The repulsive energy pushes points apart like charges confined to a region, so they first occupy the corners of the vowel space and then spread along its edge: the edge is longest along the front–back dimension at the top (high vowels have the widest F2 range), so the optimum fills the periphery and avoids the centre. The space itself is the triangle-like region reachable by the vocal tract, here the hull of the measured cardinal vowels (ling-1.9). Weighting F2 less (because higher formants are perceived less sharply) shrinks the top edge and improves the predictions for larger systems, an observation that led to refinements such as Schwartz and colleagues' dispersion–focalisation theory (1997).`,
-      caption: String.raw`The shaded region is the space of possible vowels (outline of the cardinal vowels, on Bark scales: F2 leftward, F1 downward). Choose the number of vowels and watch them repel each other to the configuration of least energy; each settles next to the nearest cardinal vowel symbol, named in the readout. Drag any vowel to disturb the system and see the others rearrange; *Shake* restarts from a random cluster. Lower the F2 weight to see larger systems shift from extra high vowels to mid vowels.`,
+      caption: String.raw`The shaded region is the space of possible vowels (outline of the cardinal vowels, on Bark scales: F2 leftward, F1 downward). Choose the number of vowels and watch them repel each other to the configuration of least energy; each settles next to the nearest cardinal vowel symbol, named in the readout. Drag any vowel to disturb the system and see the others rearrange; *Shake* starts again from new random positions (the energy has local minima, so the best of ten starts is animated). Raise the F2 weight to 1 to see the model add extra high vowels, its best-known failure; lower it and mid vowels appear instead.`,
       deps: ['ling-1.9'],
       refs: ['Ladefoged & Johnson'],
       tags: ['vowel systems', 'typology'],
@@ -653,36 +653,43 @@ export default {
       viz(v) {
         const M = v.M;
         const nS = v.slider('number of vowels $n$', 3, 9, 5, { int: true, step: 1, onChange: () => shake() });
-        const wS = v.slider('F2 weight', 0.4, 1.2, 1.0, { step: 0.05 });
+        const wS = v.slider('F2 weight', 0.3, 1.2, 0.5, { step: 0.05, onChange: () => shake() });
         const st = v.stage({ x: [-15, -4.5], y: [-8.6, -1.6], height: 380, axes: 'box', full: true, title: 'auditory vowel space: −F2 (Bark) across, −F1 (Bark) down', xticks: [2400, 2000, 1500, 1000, 700].map((f) => [-bark(f), `${f} Hz`]), yticks: [250, 400, 600, 800].map((f) => [-bark(f), `${f}`]) });
         const card = CARD16.map(([s, F1, F2]) => ({ s, x: -bark(F2), y: -bark(F1) }));
         const hullPts = M.hull(card.map((c) => [c.x, c.y]));
         const inHull = (p) => M.closestOnConvexPoly(p, hullPts);
-        let pts = [], it = 0, E = 0;
-        const R = v.rng(5);
-        const shake = () => { const n = nS.value; pts = M.range(n).map(() => inHull([-9.6 + R.uniform(-0.6, 0.6), -4.6 + R.uniform(-0.6, 0.6)])); it = 0; };
-        shake();
-        v.button('Shake', () => shake());
+        let pts = [], it = 0, E = 0, round = 0;
         const hs = M.range(9).map(() => st.handle(-9, -5, { color: 'accent', r: 8, constrain: (x, y) => inHull([x, y]) }));
         const energy = (P, w) => { let e = 0; for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) e += 1 / ((w * (P[i][0] - P[j][0])) ** 2 + (P[i][1] - P[j][1]) ** 2); return e; };
-        const stepOpt = (w, iters) => {
-          for (let k = 0; k < iters; k++, it++) {
-            const n = pts.length, g = pts.map(() => [0, 0]);
-            for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { if (i === j) continue; const dx = w * (pts[i][0] - pts[j][0]), dy = pts[i][1] - pts[j][1], d2 = dx * dx + dy * dy + 1e-6, f = 2 / (d2 * d2); g[i][0] += f * dx * w; g[i][1] += f * dy; }
-            const step = 0.04 / (1 + it / 400);
+        /** Projected gradient descent on E: each vowel steps along its repulsive force, then is pushed back into the space. */
+        const descend = (P, w, it0, iters, drag) => {
+          for (let k = 0; k < iters; k++) {
+            const n = P.length, g = P.map(() => [0, 0]);
+            for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { if (i === j) continue; const dx = w * (P[i][0] - P[j][0]), dy = P[i][1] - P[j][1], d2 = dx * dx + dy * dy + 1e-6, f = 2 / (d2 * d2); g[i][0] += f * dx * w; g[i][1] += f * dy; }
+            const step = 0.05 / (1 + (it0 + k) / 300);
             for (let i = 0; i < n; i++) {
-              if (hs[i].dragging) { pts[i] = [hs[i].x, hs[i].y]; continue; }
-              const gl = Math.hypot(g[i][0], g[i][1]) || 1, s = Math.min(step, 0.5 * step * gl);
-              pts[i] = inHull([pts[i][0] + (s * g[i][0]) / gl, pts[i][1] + (s * g[i][1]) / gl]);
+              if (drag && hs[i].dragging) { P[i] = [hs[i].x, hs[i].y]; continue; }
+              const gl = Math.hypot(g[i][0], g[i][1]) || 1;
+              P[i] = inHull([P[i][0] + (step * g[i][0]) / gl, P[i][1] + (step * g[i][1]) / gl]);
             }
           }
+          return P;
         };
+        const start = (seed, n) => { const R = v.rng(seed); return M.range(n).map(() => inHull([R.uniform(-14, -6), R.uniform(-7.5, -2.5)])); };
+        // the energy landscape has local minima: try 10 random starts, then animate the descent from the one that ends lowest
+        const shake = () => {
+          const n = nS.value, w = wS.value; let best = null;
+          for (let k = 0; k < 10; k++) { const seed = 1000 * round + k + 1, e = energy(descend(start(seed, n), w, 0, 1200, false), w); if (!best || e < best.e) best = { e, seed }; }
+          pts = start(best.seed, n); it = 0; round++;
+        };
+        v.button('Shake', () => shake());
+        const stepOpt = (w, iters) => { descend(pts, w, it, iters, true); it += iters; };
         const COMMON = { 3: 'i a u', 5: 'i e a o u', 7: 'i e ɛ a ɔ o u' };
         let info = null;
         v.animate(() => {
           if (pts.length !== nS.value) shake();
-          if (hs.some((h) => h.dragging)) it = Math.min(it, 200);
-          stepOpt(wS.value, 40);
+          if (hs.some((h) => h.dragging)) it = Math.min(it, 150);
+          stepOpt(wS.value, 30);
           E = energy(pts, wS.value);
           st.poly(hullPts, { fill: 'accent', fillAlpha: 0.06, color: 'muted', width: 1.2 });
           for (const c of card) st.text(c.s, c.x, c.y, { size: 13, color: 'muted', align: 'center', alpha: 0.75 });
@@ -749,7 +756,7 @@ export default {
           pc.setView([0, u.dur], [80, 225]); sg.setView([0, u.dur], [0, 1600]);
           if (zh) {
             for (let L = 1; L <= 5; L++) { pc.hline(lv(L), { color: 'grid', width: 1 }); pc.text(`${L}`, u.dur - 0.004, lv(L), { size: 10.5, color: 'muted', align: 'right' }); }
-            TONES.forEach((T) => { const pts = M.range(41).map((k) => { const t = u.t0 + ((u.t1 - u.t0) * k) / 40, x = (4 * k) / 40, i = Math.min(3, Math.floor(x)), a = x - i; return [t, lv(T.L[i] + (T.L[i + 1] - T.L[i]) * a)]; }); pc.path(pts, { color: 'muted', width: 1.2, dash: [4, 4], alpha: 0.7 }); pc.text(`${T.n}`, pts[40][0] + 0.008, pts[40][1], { size: 11, color: 'muted', align: 'left' }); });
+            TONES.forEach((T) => { const pts = M.range(41).map((k) => { const t = u.t0 + ((u.t1 - u.t0) * k) / 40, x = (4 * k) / 40, i = Math.min(3, Math.floor(x)), a = x - i; return [t, lv(T.L[i] + (T.L[i + 1] - T.L[i]) * a)]; }); pc.path(pts, { color: 'muted', width: 1.2, dash: [4, 4], alpha: 0.7 }); pc.text(`tone ${T.n}`, pts[T.n === 3 ? 22 : 20][0], pts[T.n === 3 ? 22 : 20][1] + (T.n === 4 ? -7 : 7), { size: 10.5, color: 'muted', align: 'center' }); });
           } else { pc.vband(u.t0 + 0.7 * (u.t1 - u.t0), u.t1, { color: 'accent', alpha: 0.06 }); pc.text('final movement', u.t0 + 0.85 * (u.t1 - u.t0), 218, { size: 10.5, color: 'accent', align: 'center' }); }
           pc.curve((t) => [t, contour(t)], u.t0, u.t1, { color: 'gold', width: 2.6, n: 160 });
           drawSpec(sg, S.S, v.rgb('ink'), { key: S.key, range: 45 });

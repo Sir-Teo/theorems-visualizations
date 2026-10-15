@@ -42,8 +42,8 @@ Scope: one market at a time, other prices and incomes held fixed (*ceteris parib
       viz(v) {
         const per = v.select('period', [{ value: 'market', label: 'market day' }, { value: 'short', label: 'short period' }, { value: 'long', label: 'long period' }], 'short');
         const dS = v.slider('rise in demand (amount at each price)', 0, 30, 15, { step: 0.5 });
-        const S1 = v.stage({ x: [0, 100], y: [0, 100], axes: 'box', height: 360, weight: 1.15, minWidth: 300, xlabel: 'amount', ylabel: 'price', title: 'the scissors: demand $DD\'$ and supply $SS\'$' });
-        const S2 = v.stage({ x: [0, 125], y: [0, 118], axes: 'box', height: 360, weight: 1, minWidth: 280, xlabel: 'amount', ylabel: 'price', title: 'elasticity at $P$ = $PT/Pt$' });
+        const S1 = v.stage({ x: [-4, 100], y: [-6, 100], axes: true, height: 360, weight: 1.15, minWidth: 300, xlabel: 'amount', ylabel: 'price', title: 'the scissors: demand $DD\'$ and supply $SS\'$' });
+        const S2 = v.stage({ x: [-5, 125], y: [-7, 124], axes: true, height: 360, weight: 1, minWidth: 280, xlabel: 'amount', ylabel: 'price', title: 'elasticity at $P$ = $PT/Pt$' });
         const box = (x, y) => [clamp(x, 2, 98), clamp(y, 2, 98)];
         const D0 = S1.handle(8, 88, { color: 'ink', constrain: box }), D1 = S1.handle(90, 22, { color: 'ink', constrain: box });
         const Sa = S1.handle(8, 14, { color: 'ink', constrain: box }), Sb = S1.handle(90, 80, { color: 'ink', constrain: box });
@@ -76,17 +76,17 @@ Scope: one market at a time, other prices and incomes held fixed (*ceteris parib
               if (per.value === 'short') S1.fn((q) => S.at(q), { domain: [0, 100], color: 'orange', width: 2.2 });
             }
           });
-          S1.text('D', D0.x - 2.5, D0.y + 3.5, { size: 15, math: true, color: 'ink' }); S1.text('D′', D1.x + 1.5, D1.y - 4, { size: 15, math: true, color: 'ink' });
+          S1.text('D', D0.x - 4.5, D0.y - 5, { size: 15, math: true, color: 'ink' }); S1.text('D′', D1.x + 1.5, D1.y - 4, { size: 15, math: true, color: 'ink' });
           S1.text('S', Sa.x - 2.5, Sa.y - 4, { size: 15, math: true, color: 'ink' }); S1.text('S′', Sb.x + 1.5, Sb.y + 4, { size: 15, math: true, color: 'ink' });
           if (ok) {
             S1.line(A.q, 0, A.q, A.p, { color: 'muted', width: 1, dash: [2, 3] }); S1.line(0, A.p, A.q, A.p, { color: 'muted', width: 1, dash: [2, 3] });
             S1.dot(A.q, A.p, { r: 5, color: 'ink' }); S1.text('A', A.q + 1.6, A.p + 3.5, { size: 15, math: true, color: 'ink' });
             S1.text('H', A.q, -0.5, { size: 13, math: true, color: 'muted', align: 'center', baseline: 'top', dy: 2 });
-            S1.text("consumers' surplus", 2, (D.at(0) + A.p) / 2 + 2, { size: 10.5, color: 'accent', align: 'left' });
+            S1.text("consumers' surplus", Math.max(9, A.q * 0.22), A.p + Math.min(5, (D.at(0) - A.p) * 0.2), { size: 10.5, color: 'accent', align: 'left' });
             if (shift > 0 && An && An.q < 100 && An.p > 0 && An.p < 100) {
               S1.dot(An.q, An.p, { r: 5.5, color: 'green' });
               S1.text('A′', An.q + 1.6, An.p + 3.5, { size: 15, math: true, color: 'green' });
-              if (Math.abs(An.p - A.p) > 0.6) S1.arrow(3.5, A.p, 3.5, An.p, { color: 'green', width: 2, head: 7 });
+              if (Math.abs(An.p - A.p) > 0.6) { S1.arrow(-1.8, A.p, -1.8, An.p, { color: 'green', width: 2.2, head: 7 }); S1.text((An.p > A.p ? '+' : '−') + v.fix(Math.abs(An.p - A.p), 1), -0.8, (A.p + An.p) / 2, { size: 11, color: 'green', weight: 700 }); }
             }
           }
           // the amount-index R with demand price Rd and supply price Rs
@@ -98,14 +98,14 @@ Scope: one market at a time, other prices and incomes held fixed (*ceteris parib
           // ---- elasticity figure
           const q0 = P.x, p0 = DEM(q0), sl = DEMd(q0), T = q0 - p0 / sl, t = p0 - sl * q0;
           S2.fn(DEM, { domain: [0, 120], color: 'ink', width: 2 });
-          S2.text('D', 3, DEM(0) + 4, { size: 15, math: true, color: 'ink' }); S2.text('D′', 113, 6, { size: 15, math: true, color: 'ink' });
+          S2.text('D', 14, DEM(14) + 6, { size: 15, math: true, color: 'ink' }); S2.text('D′', 98, DEM(98) + 8, { size: 15, math: true, color: 'ink' });
           S2.line(0, t, T, 0, { color: 'muted', width: 1 });
           S2.line(q0, p0, T, 0, { color: 'accent', width: 3.2 });
           S2.line(q0, p0, 0, t, { color: 'orange', width: 3.2 });
           S2.text('T', T, 0, { size: 15, math: true, color: 'accent', align: 'center', baseline: 'bottom', dy: -4 });
-          S2.text('t', 0, t, { size: 15, math: true, color: 'orange', align: 'left', dx: 5, dy: t > 110 ? 8 : -8 });
+          S2.text('t', 0, t, { size: 15, math: true, color: 'orange', align: 'right', dx: -6 });
           const qU = 75 / 1.625; S2.dot(qU, DEM(qU), { r: 3.5, color: 'muted', hollow: true }); S2.text('unit elasticity', qU + 2.5, DEM(qU) + 4, { size: 10, color: 'muted' });
-          S2.text('O', 0, 0, { size: 13, math: true, color: 'muted', align: 'right', baseline: 'top', dx: -3, dy: 2 });
+
         });
         v.legend([['ink', 'Marshall’s curves'], ['accent', "consumers' surplus", { area: true }], ['orange', 'supply in the chosen period'], ['green', 'new equilibrium', { dot: true }]]);
         v.readout(() => {

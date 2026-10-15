@@ -189,6 +189,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.slider(label, min, max, value, {step, int, log, sig, decimals, fmt, onChange})` | returns `{value, set(x)}`. `int: true` for integers, `log: true` for log scale (drags round to `sig` = 3 significant figures). The default and `set(x)` are kept exact (never snapped to the step grid). |
 | `v.toggle(label, value, {onChange})` | switch → `{value}` |
 | `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
+| `v.input(label, text, {vars, onChange, width, placeholder})` | text field; with `vars: ['t', 'x']` it compiles a typed formula safely (no eval) → `.fn(t, x)` (last valid version), `.error`, `.value`; errors show under the field. The parser alone is `v.M.compileExpr(src, vars)`. |
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
 | `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
 | `v.onCleanup(fn)` | run `fn` when the viz is destroyed (clear your own `setInterval`s, observers…). |

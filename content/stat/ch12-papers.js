@@ -74,13 +74,13 @@ In modern terms: for a bivariate normal pair the conditional mean is linear, $E[
         const mode = v.select('select', [{ value: 'par', label: 'select mid-parents' }, { value: 'ch', label: 'select children' }], 'par', { onChange: () => { hp.visible = mode.value === 'par'; hc.visible = mode.value === 'ch'; } });
         const disp = v.select('display', [{ value: 'dots', label: 'dots' }, { value: 'table', label: 'Table I counts' }, { value: 'plate', label: 'Plate X smoothing' }], 'dots');
         const lev = v.slider('ellipse holds', 0.25, 0.95, 0.5, { step: 0.05, fmt: (x) => `${Math.round(100 * x)}%` });
-        const s = v.stage({ x: [63, 74.2], y: [60.4, 75.2], equal: true, height: 420, axes: 'box', xlabel: 'height of mid-parent (in)', ylabel: 'height of adult child (in)', weight: 1.35, title: 'Table I: 928 adult children of 205 mid-parents' });
-        const r = v.stage({ x: [63, 74.2], y: [63, 74.2], equal: true, height: 420, axes: 'box', xlabel: 'height of the selected class (in)', ylabel: 'median of the other (in)', weight: 0.85, minWidth: 250, title: 'both ways: Galton’s medians' });
+        const s = v.stage({ x: [63, 74.2], y: [60.4, 75.2], equal: true, height: 470, axes: 'box', xlabel: 'height of mid-parent (in)', ylabel: 'height of adult child (in)', weight: 1.05, title: 'Table I: 928 adult children of 205 mid-parents' });
+        const r = v.stage({ x: [63, 74.2], y: [63, 74.2], equal: true, height: 470, axes: 'box', xlabel: 'height of the selected class (in)', ylabel: 'median of the other (in)', weight: 0.95, minWidth: 250, title: 'both ways: Galton’s medians' });
         // jittered dots, deterministic
         const R = M.rng(1886), dots = [];
         T1.forEach((row, i) => row.forEach((k, j) => { for (let m = 0; m < k; m++) dots.push({ i, j, x: PX[i] - 0.47 + 0.94 * R(), y: CY[j] - 0.47 + 0.94 * R() }); }));
-        const hp = s.handle(70.5, 60.9, { color: 'gold', label: 'mid-parents', labelPos: 'n', constrain: (x) => [M.clamp(x, 63.6, 73.4), 60.9] });
-        const hc = s.handle(63.4, 71.2, { color: 'gold', label: 'children', labelPos: 'e', constrain: (x, y) => [63.4, M.clamp(y, 61.3, 74.1)] });
+        const hp = s.handle(70.5, 74.75, { color: 'gold', label: 'drag: mid-parents', labelPos: 'e', constrain: (x) => [M.clamp(x, 63.6, 73.4), 74.75] });
+        const hc = s.handle(63.35, 71.2, { color: 'gold', label: 'drag: children', labelPos: 'e', constrain: (x, y) => [63.35, M.clamp(y, 61.3, 74.1)] });
         hc.visible = false;
         const rowOf = (x) => PX.reduce((b, c, i) => (Math.abs(c - x) < Math.abs(PX[b] - x) ? i : b), 0);
         const colOf = (y) => CY.reduce((b, c, j) => (Math.abs(c - y) < Math.abs(CY[b] - y) ? j : b), 0);
@@ -102,7 +102,7 @@ In modern terms: for a bivariate normal pair the conditional mean is linear, $E[
           return (1 - fa) * (1 - fb) * corner(a0, b0) + fa * (1 - fb) * corner(a0 + 1, b0) + (1 - fa) * fb * corner(a0, b0 + 1) + fa * fb * corner(a0 + 1, b0 + 1);
         };
         let sel = null;
-        v.legend([['blue', 'child on mid-parent (least squares)'], ['purple', 'mid-parent on child'], ['faint', 'no regression (diagonal)', { dash: true }], ['orange', 'ellipse of equal frequency'], ['green', 'average of the other group', { dot: true }], ['gold', 'Galton’s printed medians', { dot: true }]]);
+        v.legend([['blue', 'child on mid-parent (least squares)'], ['purple', 'mid-parent on child'], ['faint', 'no regression (diagonal)', { dash: true }], ['orange', 'ellipse of equal frequency'], ['green', 'average of the other group', { dot: true }], ['gold', 'Galton’s printed medians (filled: rows, hollow: columns)', { dot: true }]]);
         v.render(() => {
           const isPar = mode.value === 'par';
           // ---- mediocrity cross-hairs, diagonal
@@ -123,7 +123,7 @@ In modern terms: for a bivariate normal pair the conditional mean is linear, $E[
               s.text(String(k), PX[i], CY[j], { align: 'center', size: k >= 10 ? 11 : 10.5, weight: on ? 700 : 500, color: on ? 'ink' : 'muted' });
             }
           } else {
-            s.contour(smooth, [3, 6, 10, 15, 22, 30, 40], { color: 'blue', width: 1.4, res: 140, labels: true, fmt: (x) => String(x) });
+            s.contour(smooth, [5, 10, 20, 30, 40], { color: 'blue', width: 1.4, res: 140, labels: true, fmt: (x) => String(x) });
           }
           // ---- ellipse and its tangency points
           const { pts, k } = ellipsePts(lev.value);
@@ -154,14 +154,13 @@ In modern terms: for a bivariate normal pair the conditional mean is linear, $E[
           // ---- right: medians both ways (Galton's printed values) and the means
           r.hline(MEDIOCRITY, { color: 'faint', width: 1, dash: [3, 4] }); r.vline(MEDIOCRITY, { color: 'faint', width: 1, dash: [3, 4] });
           r.line(63, 63, 74.2, 74.2, { color: 'faint', width: 1.4, dash: [7, 5] });
-          r.text('no regression', 73.6, 73.6, { color: 'muted', size: 11.5, align: 'right', dy: -10 });
+          r.text('no regression', 73.9, 73.9, { color: 'muted', size: 11.5, align: 'right', dx: -14, dy: 2 });
           r.fn((x) => MEDIOCRITY + (2 / 3) * (x - MEDIOCRITY), { color: 'blue', width: 2.2 });
           r.fn((x) => MEDIOCRITY + (1 / 3) * (x - MEDIOCRITY), { color: 'purple', width: 2.2 });
-          r.text('⅔: children of a class of mid-parents', 63.3, MEDIOCRITY + (2 / 3) * (64.6 - MEDIOCRITY), { color: 'blue', size: 11.5, weight: 600, dy: 16 });
-          r.text('⅓: mid-parents of a class of children', 74, MEDIOCRITY + (1 / 3) * (74 - MEDIOCRITY), { color: 'purple', size: 11.5, weight: 600, align: 'right', dy: 16 });
+          r.text('slope ⅔: children of each class of mid-parents', 63.35, 73.55, { color: 'blue', size: 11.5, weight: 600 });
+          r.text('slope ⅓: mid-parents of each class of children', 63.35, 72.8, { color: 'purple', size: 11.5, weight: 600 });
           MED_ROW.forEach((m, i) => { if (m != null) r.dot(PAR[i], m, { r: i === iSel ? 6.5 : 4.5, color: i === iSel ? 'green' : 'gold', ring: true }); });
           MED_COL.forEach((m, j) => { if (m != null) r.dot(CH[j], m, { r: j === jSel ? 6.5 : 4.5, color: j === jSel ? 'green' : 'gold', ring: true, hollow: j !== jSel, width: 2.2 }); });
-          r.corner('filled: row medians · hollow: column medians', 'br', { size: 11 });
         });
         v.readout(() => {
           if (!sel) return '';

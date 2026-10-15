@@ -169,8 +169,8 @@ are linear functionals on $V$. The set of bilinear forms on $V$ is denoted $V^{(
         const cand = v.select('$\\beta$', [{ value: 'bil', label: '$u^{t}Av$ (bilinear)' }, { value: 'aff', label: '$u^{t}Av + 1$' }, { value: 'nrm', label: '$\\|u\\|\\,\\|v\\|$' }], 'bil');
         const slot = v.select('freeze', [{ value: 'first', label: 'first slot at $u$' }, { value: 'second', label: 'second slot at $u$' }], 'first');
         const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 370, title: 'levels of $x \\mapsto \\beta(u, x)$' });
-        const S3 = v.stage3d({ range: 2.05, height: 370, yaw: -0.5, pitch: 0.45, labels: ['x₁', 'x₂', ''], title: 'its graph over $[-1.6, 1.6]^2$ (heights $\\times 0.3$)' });
-        const uh = P.handle(0.8, 0.7, { color: 'accent', label: 'u', constrain: disc(1.5) });
+        const S3 = v.stage3d({ range: 2.05, height: 370, yaw: -0.5, pitch: 0.45, labels: ['x₁', 'x₂', ''], title: 'its graph over $[-1.6, 1.6]^2$ (heights $\\times 0.4$)' });
+        const uh = P.handle(0.3, 1.0, { color: 'accent', label: 'u', constrain: disc(1.5) });
         const vh = P.handle(0.9, 0.6, { color: 'gold', label: 'v', constrain: disc(1.15) });
         const wh = P.handle(0.3, -1.05, { color: 'teal', label: 'w', constrain: disc(1.15) });
         let st = null, lastTitle = '';
@@ -194,11 +194,11 @@ are linear functionals on $V$. The set of bilinear forms on $V$ is denoted $V^{(
           P.arrow(0, 0, u[0], u[1], { color: 'accent', width: 3 });
           // the graph
           const k = 0.4, R = 1.6, fa = f(...a), fb = f(...b), fab = f(...ab), f00 = f(0, 0), zm = Math.max(0.3, k * fmax * 0.7);
-          S3.surface((x, y) => [x, y, k * f(x, y)], [-R, R], [-R, R], { n: 24, alpha: 0.7, colorFn: (x, y, p) => v.mix('panel', p[2] >= 0 ? 'blue' : 'red', 0.3 + 0.7 * Math.min(1, Math.abs(p[2]) / zm)) });
+          S3.surface((x, y) => [x, y, k * f(x, y)], [-R, R], [-R, R], { n: 24, alpha: 0.7, colorFn: (x, y, p) => v.mix('panel', p[2] >= 0 ? 'blue' : 'red', 0.85 * Math.min(1, Math.abs(p[2]) / zm)) });
           if (cand.value !== 'nrm') {
             // the zero level of the frozen functional, drawn on the graph
             const g = first ? mv(tp(A), u) : mv(A, u), d = unit(rot90(g)), c0 = cand.value === 'aff' ? -1 : 0, gg = dot(g, g);
-            if (gg > 1e-9) { const p0 = scl(g, c0 / gg), pts = []; for (let t = -3; t <= 3; t += 0.1) { const q = add(p0, scl(d, t)); if (Math.abs(q[0]) <= R && Math.abs(q[1]) <= R) pts.push([q[0], q[1], 0]); } S3.path(pts, { color: 'purple', width: 2.4 }); }
+            if (gg > 1e-9) { const p0 = scl(g, c0 / gg), pts = []; for (let t = -3; t <= 3; t += 0.1) { const q = add(p0, scl(d, t)); if (Math.abs(q[0]) <= R && Math.abs(q[1]) <= R) pts.push([q[0], q[1], 0]); } S3.path(pts, { color: 'purple', width: 2.6, bias: -0.6 }); }
           }
           const stick = (p, val, col, w = 2.6) => { S3.line([p[0], p[1], 0], [p[0], p[1], k * val], { color: col, width: w }); S3.dot([p[0], p[1], k * val], { r: 4.5, color: col }); };
           S3.line([a[0], a[1], 0], [0, 0, 0], { color: 'gold', width: 1, alpha: 0.6 });
@@ -341,6 +341,216 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
           else if (st.drop && st.floor > 0.01) s += `Without $\\beta_{21}$ the error can never drop below $|\\beta(e_2, e_1)| = ${tn(st.floor)}$: at $(u, v) = (e_2, e_1)$ the remaining three forms are all $0$. Three forms do not span a 4-dimensional space.`;
           else s += 'Adjust the sliders until the black level lines run inside the gold ones.';
           return s;
+        });
+      },
+    },
+
+    // ------------------------------------------------------------------ 9.6
+    {
+      num: '9.6',
+      kind: 'Theorem',
+      name: 'Composition of a bilinear form and an operator',
+      statement: String.raw`Suppose $\beta \in V^{(2)}$ and $T \in \mathcal L(V)$. Define bilinear forms $\alpha$ and $\rho$ on $V$ by
+$$\alpha(u, v) = \beta(u, Tv) \qquad\text{and}\qquad \rho(u, v) = \beta(Tu, v).$$
+If $e_1, \dots, e_n$ is a basis of $V$ and all matrices are taken with respect to it, then
+$$\mathcal M(\alpha) = \mathcal M(\beta)\,\mathcal M(T) \qquad\text{and}\qquad \mathcal M(\rho) = \mathcal M(T)^{t}\,\mathcal M(\beta).$$`,
+      idea: String.raw`Compute one entry. The $k$-th column of $\mathcal M(T)$ lists the coordinates of $Te_k$ (5.35), so linearity in the second slot gives
+$$\mathcal M(\alpha)_{j,k} = \beta(e_j, Te_k) = \textstyle\sum_m \beta(e_j, e_m)\,\mathcal M(T)_{m,k},$$
+row $j$ of $\mathcal M(\beta)$ against column $k$ of $\mathcal M(T)$ — the $(j,k)$ entry of the product. In the first slot, $\mathcal M(\rho)_{j,k} = \beta(Te_j, e_k) = \sum_m \mathcal M(T)_{m,j}\,\beta(e_m, e_k)$: now *column* $j$ of $\mathcal M(T)$ meets column $k$ of $\mathcal M(\beta)$, and turning that column into a row is exactly what the transpose (3.54) does.`,
+      caption: String.raw`Drag $Te_1$ (teal) and $Te_2$ (pink) to change $T$; the matrix of $\beta$ is fixed. Click an entry of the matrix computed from the definition (bottom left): the row and the column it is built from light up in the product above, and the sum is written out underneath. The product in the order of the theorem always agrees with it (green frame); the tempting other order (bottom right) does not. Switch to the first slot and watch the transpose appear — the coloured columns of $\mathcal M(T)$ become rows. Drag $u$ and $v$ to evaluate the new form both ways in the readout.`,
+      deps: ['ladr-9.4', 'ladr-5.35', 'ladr-3.54'],
+      tags: ['bilinear forms', 'matrices'],
+      viz(v) {
+        const B = [[1, 2], [-1, 0.5]];
+        const slot = v.select('feed $T$ into the', [{ value: 'second', label: 'second slot: $\\alpha(u, v) = \\beta(u, Tv)$' }, { value: 'first', label: 'first slot: $\\rho(u, v) = \\beta(Tu, v)$' }], 'second');
+        const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400, weight: 0.85, minWidth: 260 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, weight: 1.15, minWidth: 330 });
+        const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
+        const h1 = P.handle(1.2, 0.4, { color: 'teal', label: 'Te₁', constrain: snap });
+        const h2 = P.handle(-0.5, 1.1, { color: 'pink', label: 'Te₂', constrain: snap });
+        const uh = P.handle(-1.5, -0.8, { color: 'accent', label: 'u' });
+        const vh = P.handle(0.8, -1.4, { color: 'gold', label: 'v' });
+        let sel = [0, 1], box = null, st = null;
+        R.onClick((x, y) => { const c = box && box.hit(R.X(x), R.Y(y)); if (c) sel = c; });
+        v.render(() => {
+          const T = [[h1.x, h2.x], [h1.y, h2.y]], second = slot.value === 'second', [j, k] = sel;
+          const form = second ? (a, b) => bil(B, a, mv(T, b)) : (a, b) => bil(B, mv(T, a), b);
+          const I2 = [[1, 0], [0, 1]], direct = I2.map((ej) => I2.map((ek) => form(ej, ek)));
+          const Lm = second ? B : tp(T), Rm = second ? T : B, prod = mm(Lm, Rm), wrongP = mm(T, B);
+          const agree = maxAbs(msub(prod, direct)) < 1e-9, wrongOK = maxAbs(msub(wrongP, direct)) < 1e-9;
+          // the plane: T as the image of the unit square
+          P.poly([[0, 0], [1, 0], [1, 1], [0, 1]], { fill: 'muted', fillAlpha: 0.05, color: 'muted', width: 1, dash: [4, 4] });
+          P.poly([[0, 0], mv(T, [1, 0]), mv(T, [1, 1]), mv(T, [0, 1])], { fill: 'accent', fillAlpha: 0.07, color: 'accent', width: 1, alpha: 0.5 });
+          P.arrow(0, 0, 1, 0, { color: 'teal', width: 1.4, alpha: 0.5 }); P.arrow(0, 0, 0, 1, { color: 'pink', width: 1.4, alpha: 0.5 });
+          P.arrow(0, 0, h1.x, h1.y, { color: 'teal', width: 2.8 }); P.arrow(0, 0, h2.x, h2.y, { color: 'pink', width: 2.8 });
+          const u = [uh.x, uh.y], w = [vh.x, vh.y], img = second ? mv(T, w) : mv(T, u);
+          P.arrow(0, 0, u[0], u[1], { color: 'accent', width: 2.2 }); P.arrow(0, 0, w[0], w[1], { color: 'gold', width: 2.2 });
+          P.arrow(0, 0, img[0], img[1], { color: second ? 'gold' : 'accent', width: 2, dash: [5, 4] });
+          tip(P, second ? 'Tv' : 'Tu', img, second ? 'gold' : 'accent', { size: 14, off: 16 });
+          // the matrices
+          const W = R.width, H = R.height, cw = Math.max(32, Math.min(50, (W - 120) / 6)), ch = Math.min(30, cw * 0.72), gap = 26;
+          const tot = 6 * cw + 2 * gap, X0 = (W - tot) / 2, Y1 = 50;
+          const colT = (i, jj) => (second ? null : (jj === 0 ? 'teal' : 'pink'));
+          const tint = (isT, trans) => (i, jj) => (isT ? [(trans ? i : jj) === 0 ? 'teal' : 'pink', 0.12] : null);
+          matPx(v, R, Lm, X0, Y1, { cw, ch, row: j, fill: tint(!second, true), label: second ? '\\mathcal M(\\beta)' : '\\mathcal M(T)^{t}' });
+          R.textPx('·', X0 + 2 * cw + gap / 2, Y1 + ch, { align: 'center', size: 22, color: 'muted' });
+          matPx(v, R, Rm, X0 + 2 * cw + gap, Y1, { cw, ch, col: k, fill: tint(second, false), label: second ? '\\mathcal M(T)' : '\\mathcal M(\\beta)' });
+          R.textPx('=', X0 + 4 * cw + 1.5 * gap, Y1 + ch, { align: 'center', size: 18, color: 'muted' });
+          matPx(v, R, prod, X0 + 4 * cw + 2 * gap, Y1, { cw, ch, cells: [[j, k, 'gold']], frame: agree ? 'green' : 'red', frameW: 2.4, label: '\\text{product}' });
+          const Y2 = Y1 + 2 * ch + 74, X2a = W / 4 - cw + 6, X2b = (3 * W) / 4 - cw - 6;
+          box = matPx(v, R, direct, X2a, Y2, { cw, ch, cells: [[j, k, 'gold']], frame: 'ink', label: second ? '\\alpha(e_j, e_k) = \\beta(e_j, Te_k)' : '\\rho(e_j, e_k) = \\beta(Te_j, e_k)', labelSize: 13 });
+          matPx(v, R, wrongP, X2b, Y2, { cw, ch, cells: [[j, k, wrongOK ? 'green' : 'red']], frame: wrongOK ? 'green' : 'red', frameW: 2, label: second ? '\\text{other order: } \\mathcal M(T)\\mathcal M(\\beta)' : '\\text{no transpose: } \\mathcal M(T)\\mathcal M(\\beta)', labelSize: 13, labelColor: 'red' });
+          R.textPx('click an entry', X2a + cw, Y2 + 2 * ch + 14, { align: 'center', size: 11, color: 'muted' });
+          // the expansion of the chosen entry
+          const terms = [0, 1].map((m) => (second ? [B[j][m], T[m][k]] : [T[m][j], B[m][k]]));
+          const ex = terms.map(([a, b]) => `${tn(a, 1).startsWith('-') ? `(${tn(a, 1)})` : tn(a, 1)}\\cdot${tn(b, 1).startsWith('-') ? `(${tn(b, 1)})` : tn(b, 1)}`).join(' + ');
+          const head = second ? `\\beta(e_${j + 1}, Te_${k + 1})` : `\\beta(Te_${j + 1}, e_${k + 1})`;
+          const Y3 = Y2 + 2 * ch + 52;
+          R.texPx(`${head} = ${ex} = ${tn(direct[j][k], 2)}`, W / 2, Y3, { size: 15, color: 'gold' });
+          R.texPx(second ? `\\text{row } ${j + 1} \\text{ of } \\mathcal M(\\beta) \\text{ against column } ${k + 1} \\text{ of } \\mathcal M(T)` : `\\text{column } ${j + 1} \\text{ of } \\mathcal M(T) \\text{ against column } ${k + 1} \\text{ of } \\mathcal M(\\beta)`, W / 2, Y3 + 28, { size: 13, color: 'muted' });
+          const x = u, y = w, val = form(u, w), viaM = same(bil(direct, x, y), val);
+          st = { second, prod, direct, wrongP, agree, wrongOK, val, viaM };
+        });
+        v.legend([['teal', '$Te_1$'], ['pink', '$Te_2$'], ['accent', '$u$'], ['gold', '$v$'], ['gold', 'chosen entry, its row and column', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const nm = st.second ? '\\alpha' : '\\rho', f = st.second ? '\\beta(u, Tv)' : '\\beta(Tu, v)', fm = st.second ? '\\mathcal M(\\beta)\\mathcal M(T)' : '\\mathcal M(T)^{t}\\mathcal M(\\beta)';
+          return `$${nm}(u, v) = ${f} = ${tn(st.val, 3)}$, and from the matrix, $\\sum_{j,k}\\mathcal M(${nm})_{j,k}\\,u_jv_k = ${tn(st.viaM, 3)}$ ${mark(Math.abs(st.viaM - st.val) < 1e-9)}. $\\ \\mathcal M(${nm}) = ${mtex(st.direct)} = ${fm}$ ${mark(st.agree)}, whereas $\\mathcal M(T)\\mathcal M(\\beta) = ${mtex(st.wrongP)}$ ${st.wrongOK ? '(equal here only by coincidence)' : mark(false)}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.7
+    {
+      num: '9.7',
+      kind: 'Theorem',
+      name: 'Change-of-basis formula for bilinear forms',
+      statement: String.raw`Suppose $\beta \in V^{(2)}$, and $e_1, \dots, e_n$ and $f_1, \dots, f_n$ are bases of $V$. Let
+$$A = \mathcal M\big(\beta, (e_1, \dots, e_n)\big), \quad B = \mathcal M\big(\beta, (f_1, \dots, f_n)\big), \quad C = \mathcal M\big(I, (e_1, \dots, e_n), (f_1, \dots, f_n)\big),$$
+so that the $k$-th column of $C$ holds the coordinates of $e_k$ with respect to $f_1, \dots, f_n$. Then
+$$A = C^{t}BC.$$`,
+      idea: String.raw`By the linear map lemma (3.4) there is an operator $T$ with $Tf_k = e_k$ for each $k$; its matrix in the basis $f$ is $C$. Put $\rho(u, v) = \beta(Tu, Tv)$. Then $A_{j,k} = \beta(e_j, e_k) = \beta(Tf_j, Tf_k) = \rho(f_j, f_k)$, and applying 9.6 once to each slot gives $\mathcal M(\rho, f) = C^{t}BC$. Compare the change-of-basis formula for operators (3.84), $C^{-1}BC$: a transpose instead of an inverse. So the matrix of a bilinear form changes by *congruence*, not similarity — its trace, determinant and eigenvalues are not invariant ($\det A = (\det C)^2\det B$), but for symmetric forms the *signs* of the eigenvalues are (Sylvester's law of inertia), reflecting the fact that the curve $\beta(v, v) = 1$ does not depend on any basis.`,
+      caption: String.raw`The same symmetric matrix $B$ is read in two ways in the standard basis: as a bilinear form $\beta$ (its curves $\beta(v, v) = \pm1$ in blue and orange) and as an operator $T$. Drag the new basis $e_1, e_2$. Right: the new matrices, $C^{t}BC$ for the form and $C^{-1}BC$ for the operator, and their eigenvalues on two number lines (compressed scale). The operator's eigenvalues never move; the form's slide around but never cross $0$ — their signs are fixed. On the left, the dotted green curve is drawn from the new matrix in the new coordinates and lies exactly on the true curves. Use the operator formula for the form instead and the dotted curve (now red) comes loose.`,
+      deps: ['ladr-3.4', 'ladr-9.6'],
+      see: ['ladr-3.84'],
+      tags: ['bilinear forms', 'change of basis'],
+      viz(v) {
+        const PRE = { ind: [[1, 1.1], [1.1, -0.4]], pos: [[1.4, 0.5], [0.5, 0.7]] };
+        const which = v.select('$B$', [{ value: 'ind', label: 'indefinite' }, { value: 'pos', label: 'positive definite' }], 'ind', { onChange: () => { trail.length = 0; } });
+        const wrong = v.toggle('treat the form like an operator: $C^{-1}BC$', false);
+        const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400, minWidth: 280 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 300 });
+        const e1 = P.handle(1.3, 0.35, { color: 'teal', label: 'e₁' });
+        const e2 = P.handle(-0.6, 1.3, { color: 'pink', label: 'e₂' });
+        const trail = [];
+        let st = null;
+        const sl = (x) => Math.sign(x) * Math.log1p(Math.abs(x));
+        v.render(() => {
+          const B = PRE[which.value], E = [[e1.x, e1.y], [e2.x, e2.y]], C = fromCols(E), dC = det2(E[0], E[1]), ok = Math.abs(dC) > 0.04;
+          const A = mm(mm(tp(C), B), C), direct = gram(B, E), Ci = ok ? inv2(C) : null, Sm = ok ? mm(mm(Ci, B), C) : null;
+          const used = wrong.value && ok ? Sm : A;
+          // the plane
+          if (ok) skewGrid(P, E[0], E[1], { alpha: 0.2 });
+          P.clip(() => { P.path(conic(B, 1), { color: 'accent', width: 2.8 }); P.path(conic(B, -1), { color: 'orange', width: 2.8 }); });
+          if (ok) {
+            const back = mm(mm(tp(Ci), symPart(used)), Ci), col = wrong.value ? 'red' : 'green';
+            P.clip(() => { P.path(conic(back, 1), { color: col, width: 2.2, dash: [2, 5] }); P.path(conic(back, -1), { color: col, width: 2.2, dash: [2, 5] }); });
+          } else P.corner('e₁, e₂ are not a basis', 'tl', { color: 'red', weight: 700 });
+          P.arrow(0, 0, E[0][0], E[0][1], { color: 'teal', width: 2.8 }); P.arrow(0, 0, E[1][0], E[1][1], { color: 'pink', width: 2.8 });
+          // matrices
+          const W = R.width, cw = Math.max(36, Math.min(52, (W - 70) / 4.6)), ch = 30, Y1 = 44;
+          const XA = W / 4 - cw, XB = (3 * W) / 4 - cw;
+          const formOK = maxAbs(msub(used, direct)) < 1e-9;
+          matPx(v, R, used, XA, Y1, { cw, ch, frame: formOK ? 'green' : 'red', frameW: 2.2, label: wrong.value ? '\\text{form: } C^{-1}BC' : '\\text{form: } C^{t}BC', labelColor: wrong.value ? 'red' : 'ink' });
+          if (ok) matPx(v, R, Sm, XB, Y1, { cw, ch, frame: 'purple', frameW: 2.2, label: '\\text{operator: } C^{-1}BC' });
+          R.texPx(formOK ? '= \\big(\\beta(e_j, e_k)\\big)\\ ✓' : '\\ne \\big(\\beta(e_j, e_k)\\big)\\ ✗', XA + cw, Y1 + 2 * ch + 18, { size: 13, color: formOK ? 'green' : 'red' });
+          if (ok) R.texPx('\\text{matrix of } T \\text{ in } e_1, e_2', XB + cw, Y1 + 2 * ch + 18, { size: 12, color: 'muted' });
+          // eigenvalue number lines
+          const lf = ok ? eig2r(symPart(A)).l : [NaN, NaN], lo = ok ? eig2r(Sm) : null, l0 = eig2r(B).l;
+          if (ok && lf.every(isFinite) && (!trail.length || Math.abs(trail[trail.length - 1][0] - lf[0]) + Math.abs(trail[trail.length - 1][1] - lf[1]) > 0.02)) { trail.push(lf); if (trail.length > 160) trail.shift(); }
+          const xl = 24, xr = W - 24, xc = (xl + xr) / 2, smax = sl(40), X = (l) => xc + (sl(l) / smax) * (xr - xc);
+          const line = (Y, title, col) => {
+            R.ctx.save(); R.ctx.fillStyle = v.color('red', 0.05); R.ctx.fillRect(xl, Y - 16, xc - xl, 32); R.ctx.fillStyle = v.color('blue', 0.05); R.ctx.fillRect(xc, Y - 16, xr - xc, 32); R.ctx.restore();
+            R.ctx.save(); R.ctx.strokeStyle = v.color('muted'); R.ctx.lineWidth = 1.2; R.ctx.beginPath(); R.ctx.moveTo(xl, Y); R.ctx.lineTo(xr, Y); R.ctx.stroke();
+            for (const t of [-30, -10, -3, -1, 0, 1, 3, 10, 30]) { R.ctx.beginPath(); R.ctx.moveTo(X(t), Y - (t ? 4 : 9)); R.ctx.lineTo(X(t), Y + (t ? 4 : 9)); R.ctx.stroke(); }
+            R.ctx.restore();
+            for (const t of [-30, -10, -3, -1, 0, 1, 3, 10, 30]) R.textPx(pn(t, 0), X(t), Y + 15, { align: 'center', size: 10, color: 'muted', halo: false });
+            R.texPx(title, xl, Y - 26, { align: 'left', size: 13, color: col });
+          };
+          const Yf = Y1 + 2 * ch + 100, Yo = Yf + 92;
+          line(Yf, '\\text{eigenvalues of the form\'s matrix } C^{t}BC', 'accent');
+          line(Yo, '\\text{eigenvalues of the operator\'s matrix } C^{-1}BC', 'purple');
+          for (const p of trail) for (const l of p) R.dots([[R.invX(X(l)), R.invY(Yf)]], { r: 2, color: 'accent', alpha: 0.25 });
+          for (const l of l0) { R.dot(R.invX(X(l)), R.invY(Yf), { r: 7, hollow: true, color: 'muted', width: 1.4 }); }
+          if (ok) {
+            for (const l of lf) R.dot(R.invX(X(l)), R.invY(Yf), { r: 6, color: l > 0 ? 'blue' : 'red' });
+            if (lo.real) for (const l of lo.l) R.dot(R.invX(X(l)), R.invY(Yo), { r: 6, color: 'purple' });
+          }
+          const sg = signature(lf, 1e-9);
+          st = { ok, A, used, direct, formOK, Sm, lf, lo, l0, dC, detB: B[0][0] * B[1][1] - B[0][1] * B[1][0], sg, wrong: wrong.value };
+        });
+        v.legend([['accent', '$\\beta(v, v) = 1$'], ['orange', '$\\beta(v, v) = -1$'], ['green', 'curve rebuilt from the new matrix', { dash: [2, 4] }], ['muted', 'eigenvalues of $B$', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          if (!st.ok) return '$e_1, e_2$ are not a basis, so $C$ is not invertible and there is no matrix of $\\beta$ with respect to them.';
+          const s = `$C^{t}BC = ${mtex(st.A)} = \\big(\\beta(e_j, e_k)\\big)$ ${mark(maxAbs(msub(st.A, st.direct)) < 1e-9)}: $\\det = (\\det C)^2\\det B = ${tn(st.dC * st.dC, 2)}\\cdot(${tn(st.detB, 2)}) = ${tn(st.dC * st.dC * st.detB, 3)}$, eigenvalues $${tn(st.lf[0])}, ${tn(st.lf[1])}$ — signs $(n_+, n_-) = (${st.sg[0]}, ${st.sg[1]})$ as for $B$. The operator's $C^{-1}BC$ keeps trace $${tn(st.Sm[0][0] + st.Sm[1][1])}$ and determinant $${tn(st.detB)}$ of $B$.`;
+          return st.wrong ? s + ` **But** $C^{-1}BC = ${mtex(st.Sm)}$ is not the matrix of the form: it disagrees with $\\big(\\beta(e_j, e_k)\\big)$, and the red curve it predicts is wrong.` : s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.9
+    {
+      num: '9.9',
+      kind: 'Definition',
+      name: 'Symmetric bilinear form',
+      statement: String.raw`A bilinear form $\rho \in V^{(2)}$ is called **symmetric** if
+$$\rho(u, w) = \rho(w, u) \qquad\text{for all } u, w \in V.$$
+The set of symmetric bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{sym}}$. A square matrix $A$ is called **symmetric** if $A^{t} = A$.`,
+      idea: String.raw`Examples: a real inner product; $\langle u, Tw\rangle$ on a real inner product space, which is symmetric exactly when $T$ is self-adjoint (7.10); $\operatorname{tr}(ST)$ on $\mathcal L(V)$, because $\operatorname{tr}(ST) = \operatorname{tr}(TS)$. Expanding in a basis with $A = \mathcal M(\rho)$ gives $\rho(u, w) - \rho(w, u) = \sum_{j,k}(A_{j,k} - A_{k,j})\,x_jy_k$, so a form is symmetric exactly when its matrix is (9.12 makes this precise). On $\mathbf R^2$ the defect is $(A_{1,2} - A_{2,1})(u_1w_2 - u_2w_1)$: a multiple of the signed area of the parallelogram on $u$ and $w$.`,
+      caption: String.raw`Right: the chart of all values $\rho(u, w)$ for unit vectors $u, w$, the angle of the first input across and of the second up. Swapping the inputs is reflection in the dashed diagonal, so $\rho$ is symmetric exactly when the chart is mirror-symmetric — the black level lines and their reflections (gold) coincide. Drag $u$ and $w$ on the circle: the gold point is $(u, w)$, the purple one its mirror image $(w, u)$. Add a skew part $s$ (or pick a non-self-adjoint $T$): the picture loses its mirror symmetry and the parallelogram on the left fills with the defect $\rho(u, w) - \rho(w, u) = s \cdot (\text{signed area})$.`,
+      deps: ['ladr-9.1'],
+      see: ['ladr-7.10'],
+      tags: ['bilinear forms', 'symmetry'],
+      viz(v) {
+        const BASE = { sa: [[1, 0.8], [0.8, -0.5]], dot: [[1, 0], [0, 1]], ns: [[1, 0.8], [0.8, -0.5]] };
+        const pre = v.select('$\\rho(u, w) = \\langle u, Tw\\rangle$ with', [{ value: 'sa', label: '$T$ self-adjoint' }, { value: 'dot', label: '$T = I$' }, { value: 'ns', label: '$T$ not self-adjoint' }], 'sa', { onChange: (k) => sk.set(k === 'ns' ? 1.2 : 0) });
+        const sk = v.slider('skew part $s = A_{1,2} - A_{2,1}$', -2, 2, 0, { step: 0.05 });
+        const P = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, height: 380, weight: 0.85, minWidth: 250 });
+        const R = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', height: 380, weight: 1.15, xticks: PI_TICKS, yticks: PI_TICKS, xlabel: 'angle of the first input', ylabel: 'angle of the second input', title: '$\\rho(\\text{first}, \\text{second})$ on unit vectors' });
+        const onC = (x, y) => { const r = Math.hypot(x, y) || 1; return [x / r, y / r]; };
+        const uh = P.handle(Math.cos(0.6), Math.sin(0.6), { color: 'accent', label: 'u', constrain: onC });
+        const wh = P.handle(Math.cos(2.2), Math.sin(2.2), { color: 'gold', label: 'w', constrain: onC });
+        let st = null;
+        v.render(() => {
+          const S0 = BASE[pre.value], s = sk.value, A = [[S0[0][0], S0[0][1] + s / 2], [S0[1][0] - s / 2, S0[1][1]]];
+          const u = [uh.x, uh.y], w = [wh.x, wh.y], ang = (p) => (Math.atan2(p[1], p[0]) + TAU) % TAU, a = ang(u), b = ang(w);
+          const ruw = bil(A, u, w), rwu = bil(A, w, u), d = ruw - rwu, area = det2(u, w);
+          // the plane
+          P.circle(0, 0, 1, { color: 'muted', dash: [4, 4], width: 1 });
+          P.poly([[0, 0], u, add(u, w), w], { fill: d >= 0 ? 'blue' : 'red', fillAlpha: Math.min(0.5, 0.35 * Math.abs(d)), color: 'muted', width: 1, dash: [4, 4] });
+          if (Math.abs(d) > 0.05) P.text(`ρ(u,w) − ρ(w,u) = ${pn(d, 2)}`, (u[0] + w[0]) / 2, (u[1] + w[1]) / 2, { align: 'center', size: 12, color: d > 0 ? 'blue' : 'red', weight: 700 });
+          P.arrow(0, 0, u[0], u[1], { color: 'accent', width: 2.6 }); P.arrow(0, 0, w[0], w[1], { color: 'gold', width: 2.6 });
+          P.corner(`ρ(u, w) = ${pn(ruw, 3)}`, 'tl', { color: 'gold', weight: 700 });
+          P.corner(`ρ(w, u) = ${pn(rwu, 3)}`, 'bl', { color: 'purple', weight: 700 });
+          // the chart and its mirror image
+          const Pc = v.rgb('blue'), Nc = v.rgb('red'), BG = v.rgb('panel');
+          R.raster((x, y) => (x < 0 || y < 0 || x > TAU || y > TAU ? null : divCol(chartVal(A, x, y), 1.8, Pc, Nc, BG, 0.75)), { key: `${A.flat()}|${BG}`, res: 2 });
+          const lv = [-1.5, -1, -0.5, 0.5, 1, 1.5];
+          R.contour((x, y) => chartVal(A, y, x), lv, { color: 'gold', width: 2.6, res: 90 });
+          R.contour((x, y) => chartVal(A, y, x), [0], { color: 'gold', width: 3.6, res: 90 });
+          R.contour((x, y) => chartVal(A, x, y), lv, { color: 'ink', width: 1, res: 90 });
+          R.contour((x, y) => chartVal(A, x, y), [0], { color: 'ink', width: 1.8, res: 90 });
+          R.line(0, 0, TAU, TAU, { color: 'ink', width: 1.4, dash: [6, 5], alpha: 0.7 });
+          R.line(a, b, b, a, { color: 'muted', width: 1.4, dash: [3, 4] });
+          R.dot(a, b, { r: 7, color: 'gold', label: '(u, w)', labelPos: 'ne' });
+          R.dot(b, a, { r: 7, color: 'purple', label: '(w, u)', labelPos: 'sw' });
+          R.axes();
+          st = { A, ruw, rwu, d, area, s };
+        });
+        v.legend([['ink', 'levels of $\\rho$'], ['gold', 'levels of the swapped form $\\rho(w, u)$'], ['blue', '$> 0$', { area: true }], ['red', '$< 0$', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const sym = Math.abs(st.s) < 1e-9;
+          return `$A = \\mathcal M(\\rho) = ${mtex(st.A)}$. $\\ \\rho(u, w) = ${tn(st.ruw, 3)}$, $\\rho(w, u) = ${tn(st.rwu, 3)}$, and $\\rho(u, w) - \\rho(w, u) = ${tn(st.d, 3)} = (A_{1,2} - A_{2,1})(u_1w_2 - u_2w_1) = ${tn(st.s, 2)} \\cdot ${tn(st.area, 3)}$ ${mark(Math.abs(st.d - st.s * st.area) < 1e-9)}. ` + (sym ? '**Symmetric**: $A = A^{t}$, so the values agree for every pair.' : '**Not symmetric**: $A \\ne A^{t}$, and the values differ for every pair of independent vectors.');
         });
       },
     },

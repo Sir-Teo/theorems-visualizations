@@ -202,6 +202,64 @@ export function trigCoeffs(f, N, samples = 1024) {
 }
 export function trigEval({ a, b }, x, N = a.length - 1) { let s = a[0] / 2; for (let k = 1; k <= N; k++) s += a[k] * Math.cos(k * x) + b[k] * Math.sin(k * x); return s; }
 
+// ---------- safe expression parser (no eval) ----------
+const EXPR_FN = { sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin, acos: Math.acos, atan: Math.atan, sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+  exp: Math.exp, log: Math.log, ln: Math.log, log10: Math.log10, log2: Math.log2, sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs, sign: Math.sign, floor: Math.floor, ceil: Math.ceil, round: Math.round,
+  min: Math.min, max: Math.max, pow: Math.pow, atan2: Math.atan2, sec: (x) => 1 / Math.cos(x), csc: (x) => 1 / Math.sin(x), cot: (x) => 1 / Math.tan(x), sgn: Math.sign };
+const EXPR_CONST = { pi: Math.PI, π: Math.PI, e: Math.E, tau: 2 * Math.PI };
+/**
+ * Compile a formula typed by the reader into a function, without eval: compileExpr('x^2 - 3 sin(t x)', ['t', 'x']).
+ * Supports + − * / ^ (right-assoc), unary minus, parentheses, implicit multiplication (2x, 3(x+1), x y), |x|,
+ * constants pi e tau, and sin cos tan exp ln log sqrt abs min max pow … → {f: (...vars) => number, error: null} or {f: null, error: 'message'}.
+ */
+export function compileExpr(src, vars = ['x']) {
+  const s = String(src ?? '').replace(/\*\*/g, '^').replace(/[−–]/g, '-').replace(/·|×/g, '*'); let i = 0;
+  const err = (m) => { throw new Error(`${m} at position ${i + 1}`); };
+  const ws = () => { while (i < s.length && /\s/.test(s[i])) i++; };
+  const peek = () => { ws(); return s[i]; };
+  const startsAtom = () => { const c = peek(); return c != null && (/[0-9.(|a-zA-Zπ]/.test(c)); };
+  let inAbs = 0;
+  const atom = () => {
+    const c = peek();
+    if (c === '(') { i++; const e = expr(); if (peek() !== ')') err('missing )'); i++; return e; }
+    if (c === '|') { i++; inAbs++; const e = expr(); inAbs--; if (peek() !== '|') err('missing |'); i++; return (env) => Math.abs(e(env)); }
+    if (/[0-9.]/.test(c)) { const m = /^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i.exec(s.slice(i)); if (!m) err('bad number'); i += m[0].length; const v = +m[0]; return () => v; }
+    const m = /^([a-zA-Zπ][a-zA-Z0-9_]*)/.exec(s.slice(i)); if (!m) err(c == null ? 'unexpected end' : `unexpected "${c}"`);
+    let name = m[1];
+    // longest known prefix: "xsin" → x · sin is not supported, but "pix" → pi · x and "2pi" work via implicit products
+    if (!(name in EXPR_FN) && !(name in EXPR_CONST) && !vars.includes(name)) {
+      const pre = [...vars, ...Object.keys(EXPR_CONST), ...Object.keys(EXPR_FN)].filter((v) => name.startsWith(v)).sort((a, b) => b.length - a.length)[0];
+      if (!pre) err(`unknown name "${name}"`); name = pre;
+    }
+    i += name.length;
+    if (name in EXPR_FN) {
+      const fn = EXPR_FN[name];
+      if (peek() === '(') { i++; const args = [expr()]; while (peek() === ',') { i++; args.push(expr()); } if (peek() !== ')') err('missing )'); i++; return args.length === 1 ? ((a) => (env) => fn(a(env)))(args[0]) : (env) => fn(...args.map((a) => a(env))); }
+      const a = power(); return (env) => fn(a(env)); // sin x
+    }
+    if (name in EXPR_CONST) { const v = EXPR_CONST[name]; return () => v; }
+    const k = vars.indexOf(name); return (env) => env[k];
+  };
+  const power = () => { const b = atom(); if (peek() === '^') { i++; const ex = unary(); return (env) => Math.pow(b(env), ex(env)); } return b; };
+  const unary = () => { const c = peek(); if (c === '-') { i++; const a = unary(); return (env) => -a(env); } if (c === '+') { i++; return unary(); } return power(); };
+  const term = () => {
+    let a = unary();
+    for (;;) {
+      const c = peek();
+      if (c === '*' || c === '/') { i++; const b = unary(); const l = a; a = c === '*' ? (env) => l(env) * b(env) : (env) => l(env) / b(env); }
+      else if (startsAtom() && !(c === '|' && inAbs)) { const b = power(); const l = a; a = (env) => l(env) * b(env); } // implicit product
+      else return a;
+    }
+  };
+  const expr = () => { let a = term(); for (;;) { const c = peek(); if (c === '+' || c === '-') { i++; const b = term(); const l = a; a = c === '+' ? (env) => l(env) + b(env) : (env) => l(env) - b(env); } else return a; } };
+  try {
+    if (!s.trim()) err('empty formula');
+    const e = expr(); if (peek() != null) err(`unexpected "${peek()}"`);
+    const f = (...a) => e(a); f(...vars.map(() => 0.37)); // smoke-evaluate
+    return { f, error: null };
+  } catch (x) { return { f: null, error: x.message }; }
+}
+
 // ---------- polynomials & approximation ----------
 export const polyEval = (coef, x) => coef.reduceRight((acc, c) => acc * x + c, 0); // coef[0] + coef[1] x + ...
 /**

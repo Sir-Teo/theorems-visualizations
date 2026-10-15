@@ -205,7 +205,7 @@ As $K$ rises the closed-loop response typically becomes faster, then oscillatory
           sp.vband(0, 10, { color: 'red', alpha: 0.07 });
           const pts = []; for (const L of loc) for (const z of L.rs) pts.push(z);
           sp.dots(pts, { r: 1.6, color: 'muted', alpha: 0.6 });
-          if (!del) sp.dot(-1, 0, { r: 4, color: 'muted', label: 'open-loop pole (triple)', labelPos: 'sw' });
+          sp.dot(-1, 0, { r: 6, hollow: true, color: 'ink', width: 2 });
           const cl = roots(K);
           for (const z of cl) { const col = z[0] > 1e-9 ? 'red' : 'accent'; cross(sp, clamp(z[0], -4.4, 1.7), clamp(z[1], -4.4, 4.4), 0.17, { color: col, width: 3 }); }
           // ---- rightmost real part vs K
@@ -214,12 +214,12 @@ As $K$ rises the closed-loop response typically becomes faster, then oscillatory
           gs.hline(0, { color: 'muted', width: 1 });
           gs.path(loc.map((L) => [L.K, L.mx]), { color: 'purple', width: 2.4 });
           gs.vline(U.K, { color: 'red', dash: [5, 4], width: 1.4 });
-          gs.text(`K_u = ${v.fix(U.K, 3)}`, U.K, 1.15, { size: 11.5, color: 'red', align: U.K > 8 ? 'right' : 'left', dx: U.K > 8 ? -6 : 6 });
+          gs.text(`K_u = ${v.fix(U.K, 3)}`, U.K, 1.15, { size: 11.5, color: 'red', align: U.K > 4 ? 'right' : 'left', dx: U.K > 4 ? -6 : 6 });
           const mx = Math.max(...cl.map((z) => z[0]));
           gs.dot(K, clamp(mx, -2.55, 1.35), { r: 6, color: mx > 0 ? 'red' : 'accent' });
           gs.text('unstable', 0.13, 0.7, { size: 11, color: 'red' });
         });
-        v.legend([['accent', 'stable pole / response'], ['red', 'unstable pole', { dot: true }], ['muted', 'pole paths for $0.1\\le K\\le20$', { dot: true }], ['purple', 'rightmost real part']]);
+        v.legend([['accent', 'stable pole / response'], ['red', 'unstable pole', { dot: true }], ['ink', 'open-loop pole', { dot: true }], ['muted', 'pole paths for $0.1\\le K\\le20$', { dot: true }], ['purple', 'rightmost real part']]);
         v.readout(() => {
           const K = kS.value, cl = roots(K), z = cl.reduce((a, b) => (b[0] > a[0] ? b : a)), U = ultimate();
           const kind = z[0] > 1e-6 ? '**unstable**: the oscillation grows' : Math.abs(z[1]) > 1e-6 ? (z[0] > -0.15 ? 'stable but barely damped' : 'stable, oscillatory') : 'stable, no oscillation';
@@ -246,12 +246,12 @@ where $F$ is the feedforward compensator. Feedforward lies outside the loop and 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Feed_forward_(control)' },
       viz(v) {
         const TEND = 130, Ca = 20, Cr = 3, krr = 0.3, kw = 0.1, Tref = 20, Tout = 0, gd = 0.12, QMAX = 12;
-        const tauR = Cr / krr, Kp = 3, Ki = 3 / 15, Q0 = kw * (Tref - Tout);
+        const tauR = Cr / krr, Kp = 2.5, Ki = 2.5 / 80, Q0 = kw * (Tref - Tout);
         const errS = v.slider('feedforward model error', -0.6, 0.6, -0.3, { step: 0.05, fmt: (x) => `${x > 0 ? '+' : ''}${Math.round(100 * x)} %` });
         const showS = v.select('room shows', [{ value: 'fb', label: 'feedback only' }, { value: 'ff', label: 'feedforward only' }, { value: 'both', label: 'both' }], 'both');
         const room = v.stage({ x: [0, 10], y: [0, 7.4], equal: true, axes: false, height: 270, weight: 0.85, minWidth: 300 });
-        const tc = v.stage({ x: [0, TEND], y: [16.6, 21], height: 270, axes: 'box', xlabel: 't (min)', ylabel: 'room temperature (°C)', weight: 1.35 });
-        const qc = v.stage({ x: [0, TEND], y: [-0.5, 12.5], height: 150, axes: 'box', xlabel: 't (min)', ylabel: 'heater power (kW)', full: true, yticks: [0, 4, 8, 12] });
+        const tc = v.stage({ x: [0, TEND], y: [17.5, 20.85], height: 270, axes: 'box', xlabel: 't (min)', ylabel: 'room temperature (°C)', weight: 1.35 });
+        const qc = v.stage({ x: [0, TEND], y: [-1.2, 11], height: 160, axes: 'box', xlabel: 't (min)', ylabel: 'heater power (kW)', full: true, yticks: [0, 5, 10] });
         const door = (t) => (t >= 20 && t < 35 ? 1 : 0), win = (t) => (t >= 80 && t < 95 ? 1 : 0);
         const COL = { fb: 'accent', ff: 'orange', both: 'green' };
         let sim = null, sk = '';
@@ -302,7 +302,7 @@ where $F$ is the feedforward compensator. Feedforward lies outside the loop and 
           // radiator, glowing with the heater power
           room.rect(6.6, 0.85, 8.4, 2.0, { fill: 'orange', fillAlpha: 0.12 + 0.75 * (Qn / QMAX), color: 'orange', width: 1.6 });
           for (let x = 6.9; x < 8.4; x += 0.3) room.line(x, 0.95, x, 1.9, { color: 'orange', width: 1 });
-          room.text(`${v.fix(Qn, 1)} kW`, 7.5, 2.3, { size: 11.5, color: 'orange', align: 'center', weight: 600 });
+          room.text(`${v.fix(Qn, 1)} kW`, 6.45, 1.42, { size: 11.5, color: 'orange', align: 'right', weight: 600 });
           // thermometer
           room.circle(4.6, 1.5, 0.26, { fill: 'red', fillAlpha: 0.85, color: 'ink', width: 1.2 });
           room.rect(4.5, 1.7, 4.7, 3.7, { color: 'ink', width: 1.2 });
@@ -320,8 +320,8 @@ where $F$ is the feedforward compensator. Feedforward lies outside the loop and 
           room.corner(`t = ${v.fix(tm, 0)} min`, 'tl', { size: 11.5 });
           // ---- temperatures and powers
           for (const s of [tc, qc]) { s.vband(20, 35, { color: 'gold', alpha: 0.1 }); s.vband(80, 95, { color: 'teal', alpha: 0.1 }); }
-          tc.text('door', 27.5, 20.8, { size: 11, color: 'muted', align: 'center' });
-          tc.text('window', 87.5, 20.8, { size: 11, color: 'muted', align: 'center' });
+          tc.text('door', 27.5, 17.65, { size: 11, color: 'muted', align: 'center' });
+          tc.text('window', 87.5, 17.65, { size: 11, color: 'muted', align: 'center' });
           tc.hline(Tref, { color: 'ink', dash: [5, 4], width: 1 });
           for (const m of ['ff', 'fb', 'both']) {
             trace(tc, S[m].tt, S[m].Tt, { color: COL[m], width: m === mode ? 3 : 1.7, alpha: m === mode ? 1 : 0.75 });
@@ -333,7 +333,7 @@ where $F$ is the feedforward compensator. Feedforward lies outside the loop and 
         v.legend([['accent', 'feedback only'], ['orange', 'feedforward only'], ['green', 'feedforward + feedback'], ['gold', 'door open: measured', { area: true }], ['teal', 'window open: not measured', { area: true }]]);
         v.readout(() => {
           const S = simulate(), f = (x) => `${v.fix(x, 2)} °C`;
-          return `largest temperature drop · door (measured): feedback ${f(S.fb.door)}, feedforward ${f(S.ff.door)}, both **${f(S.both.door)}** · window (not measured): feedback ${f(S.fb.win)}, feedforward ${f(S.ff.win)}, both **${f(S.both.win)}**`;
+          return `largest deviation from 20 °C · door (measured): feedback ${f(S.fb.door)}, feedforward ${f(S.ff.door)}, both **${f(S.both.door)}** · window (not measured): feedback ${f(S.fb.win)}, feedforward ${f(S.ff.win)}, both **${f(S.both.win)}**`;
         });
       },
     },
@@ -351,7 +351,7 @@ $$\delta v_\infty=-\frac{g\,\theta}{a+bk_p},$$
 which shrinks as the gain grows but never vanishes; integral action removes it (5.2).`,
       scope: String.raw`small speed deviations about $v_0$ (drag linearised), a throttle that stays inside its limits, and a fixed gear; a steep hill that saturates the throttle leaves the linear model.`,
       idea: String.raw`Newton's law for the car is $m\dot v=F_{\max}u-k_dv^2-mg\sin\theta$; linearising about $v_0$ (2.2) gives the model. The closed-loop pole is $-(a+bk_p)$, so feedback speeds the car's response, since without control the only restoring effect is drag, with the long time constant $1/a$. At steady state the controller must supply the extra force $mg\theta$, and a proportional controller produces force only in proportion to an error, so an error of exactly $g\theta/(a+bk_p)$ remains. This is the closed-loop transfer function of 1.4 with the hill as a load disturbance (1.8): $S(0)=a/(a+bk_p)$.`,
-      caption: String.raw`A car cruising at 25 m/s meets a hill. Top: the road (heights exaggerated five times) with the car where it is at the time you pick by dragging the gold handle in the speed panel. Left: speed from the full nonlinear car model (blue) and from the first-order model (green dashed); the grey curves are other gains. Right: the steady-state error against the gain, predicted by $g\theta/(a+bk_p)$ (curve) and measured in the simulation (dot). Raise $k_p$: the dip gets shallower and shorter. Switch on integral action: the error goes to zero, with an overshoot. Choose the small engine and a steep hill: the throttle saturates and the linear model stops applying.`,
+      caption: String.raw`A car cruising at 25 m/s meets a hill. Top: the road (vertical scale stretched by the factor shown) with the car where it is at the time you pick by dragging the gold handle in the speed panel. Left: speed from the full nonlinear car model (blue) and from the first-order model (green dashed); the grey curves are other gains. Right: the steady-state error against the gain, predicted by $g\theta/(a+bk_p)$ (curve) and measured in the simulation (dot). Raise $k_p$: the dip gets shallower and shorter. Switch on integral action: the error goes to zero, with an overshoot. Choose the small engine and a steep hill: the throttle saturates and the linear model stops applying.`,
       deps: ['ctrl-1.4'],
       refs: ['Åström–Murray §4.1'],
       tags: ['cruise control', 'first-order system'],
@@ -362,7 +362,7 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
         const gS = v.slider('hill grade $\\theta$', 0, 12, 6, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} %` });
         const iT = v.toggle('integral action ($T_i=4$ s)', false);
         const enS = v.select('engine', [{ value: 4500, label: 'strong (4.5 kN)' }, { value: 2000, label: 'small (2.0 kN)' }], 4500);
-        const road = v.stage({ x: [0, 1150], y: [-12, 75], height: 150, axes: false, full: true });
+        const road = v.stage({ x: [0, 1150], y: [-12, 75], height: 160, axes: false, full: true });
         const sp = v.stage({ x: [0, TEND], y: [19.5, 26], height: 280, axes: 'box', xlabel: 't (s)', ylabel: 'speed (m/s)', weight: 1.4 });
         const er = v.stage({ x: [0.02, 2], y: [0, 8], xlog: true, height: 280, axes: 'box', xlabel: 'gain k_p', ylabel: 'steady-state error (m/s)', weight: 1 });
         const hT = sp.handle(16, 19.75, { color: 'gold', constrain: (x) => [clamp(x, 0, TEND), hT ? hT.y : 19.75] });
@@ -404,23 +404,25 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
         };
         v.render(() => {
           const c = compute(), R = c.main, { a, b } = lin(), th = gS.value / 100, sth = th / Math.sqrt(1 + th * th);
-          // ---- road (heights × 5)
-          const pts = []; for (let x = 0; x <= 1150; x += 5) pts.push([x, 5 * elev(x)]);
-          road.poly([...pts, [1150, -12], [0, -12]], { fill: 'green', fillAlpha: 0.12, stroke: false });
+          // ---- road (true heights, vertical scale stretched to fit)
+          const Hmax = elev(1150), top = Math.max(6, Hmax);
+          road.setView(null, [-0.28 * top, 1.45 * top]);
+          const pts = []; for (let x = 0; x <= 1150; x += 5) pts.push([x, elev(x)]);
+          road.poly([...pts, [1150, -top], [0, -top]], { fill: 'green', fillAlpha: 0.12, stroke: false });
           road.path(pts, { color: 'ink', width: 2.4 });
           const i = clamp(Math.round((hT.x / TEND) * (R.tt.length - 1)), 0, R.tt.length - 1), xc = R.xx[i];
-          const ang = Math.atan((5 * grade(xc) * road.sy) / road.sx);
-          carIcon(road, xc, 5 * elev(xc), ang, { color: 'accent', px: 7.5 });
-          road.text(`${v.fix(R.vv[i], 2)} m/s, throttle ${v.fix(100 * R.uu[i], 0)} %`, xc, 5 * elev(xc) + 22, { size: 11.5, color: 'accent', align: 'center', weight: 600 });
-          road.text(`grade ${v.fix(gS.value, 1)} %`, X0 + RAMP + 180, 5 * elev(X0 + RAMP + 180) - 7, { size: 11, color: 'muted', align: 'left' });
-          road.corner('heights exaggerated ×5', 'tr', { size: 10.5 });
+          const ang = Math.atan((grade(xc) * road.sy) / road.sx);
+          carIcon(road, xc, elev(xc), ang, { color: 'accent', px: 7.5 });
+          road.text(`${v.fix(R.vv[i], 2)} m/s, throttle ${v.fix(100 * R.uu[i], 0)} %`, xc, elev(xc), { size: 11.5, color: 'accent', align: xc > 900 ? 'right' : 'center', weight: 600, dy: -26 });
+          if (gS.value > 0) road.text(`grade ${v.fix(gS.value, 1)} %`, X0 + RAMP + 250, elev(X0 + RAMP + 250), { size: 11, color: 'muted', align: 'left', dx: 10, dy: 12 });
+          road.corner(`heights exaggerated ×${v.fix(road.sy / road.sx, 0)}`, 'tr', { size: 10.5 });
           // ---- speed (the window widens when the throttle saturates and the car slows a lot)
           const vmin = Math.min(...R.vv), lo = Math.min(19.5, Math.floor(vmin - 0.6));
           sp.setView(null, [lo, 26]); hT.y = lo + 0.25;
           sp.hline(vr, { color: 'ink', dash: [5, 4], width: 1 });
           if (!iT.value) sp.hline(vr - c.pred, { color: 'green', dash: [2, 4], width: 1.2 });
           for (const f of c.fam) sp.clip(() => trace(sp, f.tt, f.vv, { color: 'muted', width: 1.1, alpha: 0.6 }));
-          sp.clip(() => { trace(sp, R.tt, R.vl, { color: 'green', width: 2, dash: [6, 4] }); trace(sp, R.tt, R.vv, { color: 'accent', width: 2.6 }); });
+          sp.clip(() => { trace(sp, R.tt, R.vv, { color: 'accent', width: 2.8 }); trace(sp, R.tt, R.vl, { color: 'green', width: 2, dash: [7, 5] }); });
           sp.vline(hT.x, { color: 'gold', width: 1.2 });
           sp.dot(hT.x, R.vv[i], { r: 5, color: 'accent' });
           // ---- steady error vs gain
@@ -574,7 +576,7 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
           },
         };
         const prS = v.select('graph', Object.entries(PRESETS).map(([value, o]) => ({ value, label: o.label })), 'a');
-        const s = v.stage({ x: [-0.7, 10.7], y: [-2.3, 2.5], equal: true, axes: false, height: 270, full: true });
+        const s = v.stage({ x: [-0.7, 10.7], y: [-1.7, 2.3], equal: true, axes: false, height: 230, full: true });
         const lab = (id) => (id === 'u' ? '$u$' : id === 'y' ? '$y$' : `$x_{${id.slice(1)}}$`);
         const mk = (key) => {
           const P = PRESETS[key];
@@ -632,12 +634,12 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
           const sumL = A.loops.map((l, i) => `L_{${i + 1}}`).join('+') || '0';
           F.push({ line: 4, loops: A.loops.map((_, i) => i), note: String.raw`$\Delta=1-(${sumL})${A.groups.length ? '+\\dots' : ''}=${num(A.Delta)}$`, A });
           A.paths.forEach((p, k) => F.push({ line: 5, path: k, loops: p.free, note: p.free.length ? String.raw`Loops not touching $P_{${k + 1}}$: ${p.free.map((i) => `$L_{${i + 1}}$`).join(', ')}, so $\Delta_{${k + 1}}=${num(p.D)}$` : String.raw`$P_{${k + 1}}$ touches every loop, so $\Delta_{${k + 1}}=1$`, A }));
-          F.push({ line: 6, final: true, note: String.raw`$T=\frac{\sum_k P_k\Delta_k}{\Delta}=\frac{${A.paths.map((p) => `(${num(p.g)})(${num(p.D)})`).join('+') || '0'}}{${num(A.Delta)}}=${num(A.T)}$`, A });
+          F.push({ line: 6, final: true, paths: A.paths.map((_, k) => k), note: String.raw`$T=\frac{\sum_k P_k\Delta_k}{\Delta}=\frac{${A.paths.map((p) => `(${num(p.g)})(${num(p.D)})`).join('+') || '0'}}{${num(A.Delta)}}=${num(A.T)}$`, A });
           return F;
         };
         const S = v.steps({
           frames: framesFor,
-          code: ['find every forward path $P_k$ from $u$ to $y$', 'find every loop $L_i$', 'find the sets of mutually non-touching loops', '$\\Delta=1-\\sum L_i+\\sum L_iL_j-\\sum L_iL_jL_k+\\cdots$', '$\\Delta_k=\\Delta$ restricted to the loops not touching $P_k$', '$T=\\sum_k P_k\\Delta_k/\\Delta$'],
+          code: ['forward paths $P_k$: $u\\to y$, no node twice', 'loops $L_i$: closed paths, no node twice', 'sets of loops that share no node', '$\\Delta=1-\\sum L_i+\\sum L_iL_j-\\sum L_iL_jL_k+\\cdots$', '$\\Delta_k$: the same sum over the loops that miss $P_k$', '$T=\\sum_k P_k\\Delta_k/\\Delta$'],
           codeTitle: 'Mason’s gain formula', codePos: 'below', start: 'end', still: 'end',
         });
         G.onClick = ({ edge, shift }) => {
@@ -650,7 +652,7 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
         v.render(() => {
           if (prS.value !== shown) { shown = prS.value; G.set({ ...mk(shown) }); S.reset({ at: 'end' }); }
           const f = S.frame || {}, A = f.A || analyse();
-          const onPath = new Set(f.path != null ? A.paths[f.path].edges : []), loopCol = new Map();
+          const onPath = new Set(f.path != null ? A.paths[f.path].edges : (f.paths || []).flatMap((k) => A.paths[k].edges)), loopCol = new Map();
           (f.loops || []).forEach((i, k) => A.loops[i].edges.forEach((e) => { if (!loopCol.has(e)) loopCol.set(e, LC[k % LC.length]); }));
           const inFocus = (e) => onPath.has(e) || loopCol.has(e);
           const any = onPath.size || loopCol.size;

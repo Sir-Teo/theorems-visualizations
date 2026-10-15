@@ -66,6 +66,11 @@ function tape(P, w, x, y, cell, style = () => ({}), size) {
   }
 }
 const LETTER = { a: 'blue', b: 'orange', c: 'purple' };
+/** 'ink' or 'panel', whichever contrasts more with the palette colour `name` (text on solid fills, in both themes). */
+function onColor(v, name) {
+  const L = (c) => { const [r, g, b] = v.rgb(c); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }, f = L(name);
+  return Math.abs(L('ink') - f) > Math.abs(L('panel') - f) ? 'ink' : 'panel';
+}
 
 // ---- 1.4: strings over the infinite alphabet ℕ = {1, 2, 3, …} (arrays of positive integers)
 // Row n lists ℕⁿ by increasing letter sum, then lexicographically.
@@ -405,7 +410,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
               const y2 = top + L * dy; P.line(x, y + r + (L === D + 1 ? 16 : 0), x, y2 - r, { color: 'red', width: 1.6, dash: [5, 4] });
               const u = 'a'.repeat(L), on = seen.has(u);
               P.circle(x, y2, r, { fill: u === cur ? 'gold' : on ? 'red' : 'panel', fillAlpha: u === cur ? 1 : on ? 0.25 : 1, color: 'red', width: 1.6 });
-              P.text(String(L), x, y2 + 0.5, { size: 11, weight: 700, color: u === cur ? 'panel' : 'red', font: SANS });
+              P.text(String(L), x, y2 + 0.5, { size: 11, weight: 700, color: u === cur ? onColor(v, 'gold') : 'red', font: SANS });
               P.text(u, x + r + 6, y2, { align: 'left', size: 11, color: 'red' });
               y = y2;
             }
@@ -419,7 +424,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
             const [x, y] = xy(u), isCur = u === cur, done = seen.has(u), num = dict ? (/^a*$/.test(u) ? u.length : '∞') : pos(u, k);
             const col = dict && num === '∞' ? 'red' : 'accent';
             P.circle(x, y, r, { fill: isCur ? 'gold' : done ? col : 'panel', fillAlpha: isCur ? 1 : done ? 0.85 : 1, color: isCur ? 'gold' : onPath(u) ? 'gold' : col, width: onPath(u) ? 2.6 : 1.4 });
-            P.text(String(num), x, y + 0.5, { size: r < 12 ? 9.5 : 11, weight: 700, color: isCur || done ? 'panel' : col, font: SANS });
+            P.text(String(num), x, y + 0.5, { size: r < 12 ? 9.5 : 11, weight: 700, color: isCur ? onColor(v, 'gold') : done ? onColor(v, col) : col, font: SANS });
             if (u.length === D) P.text(sh(u), x, y + r + 9, { size: k === 3 ? 9 : 11, color: onPath(u) ? 'gold' : 'muted' });
           }
           P.text(EPS, xy('')[0] + r + 8, top, { align: 'left', size: 12, color: 'muted' });
@@ -723,21 +728,21 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
             const l1 = sg + rev(X + u), l2 = sg + rev(u) + rev(X), l3 = rev(w) + rev(X), ok = rev(X + w) === l3;
             return { ok, lines: [
               [String.raw`(x\,u\sigma)^R = \sigma\,(x u)^R`, String.raw`(${tt(X)}\cdot${tt(w)})^R = ${tt(sg)}\cdot(${tt(X + u)})^R = ${tt(l1)}`],
-              [String.raw`\phantom{(x\,u\sigma)^R} = \sigma\, u^R x^R \quad\text{by } P(u)`, String.raw`= ${tt(sg)}\cdot${tt(rev(u))}\cdot${tt(rev(X))} = ${tt(l2)}`],
-              [String.raw`\phantom{(x\,u\sigma)^R} = (u\sigma)^R x^R`, String.raw`= ${tt(rev(w))}\cdot${tt(rev(X))} = ${tt(l3)}\ ${ok ? '\\checkmark' : '\\times'}`]] };
+              [String.raw`= \sigma\, u^R x^R \quad\text{by } P(u)`, String.raw`= ${tt(sg)}\cdot${tt(rev(u))}\cdot${tt(rev(X))} = ${tt(l2)}`],
+              [String.raw`= (u\sigma)^R x^R`, String.raw`= ${tt(rev(w))}\cdot${tt(rev(X))} = ${tt(l3)}\ ${ok ? '\\checkmark' : '\\times'}`]] };
           }
           if (c === 'len') {
             const n = u.length;
             return { ok: true, lines: [
               [String.raw`|(u\sigma)^R| = |\sigma\, u^R| = 1 + |u^R|`, String.raw`|${tt(rev(w))}| = 1 + |${tt(rev(u))}|`],
-              [String.raw`\phantom{|(u\sigma)^R|} = 1 + |u| \quad\text{by } P(u)`, String.raw`= 1 + ${n}`],
-              [String.raw`\phantom{|(u\sigma)^R|} = |u\sigma|`, String.raw`= ${n + 1} = |${tt(w)}|\ \checkmark`]] };
+              [String.raw`= 1 + |u| \quad\text{by } P(u)`, String.raw`= 1 + ${n}`],
+              [String.raw`= |u\sigma|`, String.raw`= ${n + 1} = |${tt(w)}|\ \checkmark`]] };
           }
           const ok = sg + u === u + sg;
           return { ok, lines: [
             [String.raw`(u\sigma)^R = \sigma\, u^R`, String.raw`(${tt(w)})^R = ${tt(sg)}\cdot(${tt(u)})^R`],
-            [String.raw`\phantom{(u\sigma)^R} = \sigma\, u \quad\text{by } P(u)`, String.raw`= ${tt(sg)}\cdot${tt(u)} = ${tt(sg + u)}`],
-            [String.raw`\phantom{(u\sigma)^R} \overset{?}{=} u\sigma`, String.raw`${tt(sg + u)} ${ok ? '=' : '\\neq'} ${tt(w)}\ ${ok ? '\\checkmark' : '\\times\\ \\text{step fails}'}`]] };
+            [String.raw`= \sigma\, u \quad\text{by } P(u)`, String.raw`= ${tt(sg)}\cdot${tt(u)} = ${tt(sg + u)}`],
+            [String.raw`\overset{?}{=} u\sigma`, String.raw`${tt(sg + u)} ${ok ? '=' : '\\neq'} ${tt(w)}\ ${ok ? '\\checkmark' : '\\times\\ \\text{step fails}'}`]] };
         }
         const frames = () => {
           const status = {}; const out = [];
@@ -761,14 +766,14 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
             const [x, y] = xy(u), s0 = st[u], isCur = u === f.w;
             const col = s0 === 'ok' ? 'green' : s0 === 'bad' ? 'red' : s0 === 'open' ? 'muted' : 'faint';
             P.circle(x, y, r, { fill: isCur ? 'gold' : s0 ? col : 'panel', fillAlpha: isCur ? 0.9 : s0 === 'open' ? 0.12 : s0 ? 0.28 : 1, color: isCur ? 'gold' : col, width: isCur ? 2.6 : 1.5, dash: s0 === 'open' ? [3, 3] : undefined });
-            P.text(sh(u), x, y + 0.5, { size: u.length > 2 ? 11 : 12.5, weight: 600, color: 'ink' });
+            P.text(sh(u), x, y + 0.5, { size: u.length > 2 ? 11 : 12.5, weight: 600, color: isCur ? onColor(v, 'gold') : 'ink' });
           }
           // the inductive template, filled in
           const Q = pen(ds, v), r0 = check(f.w || '');
           Q.sans(f.w ? `inductive step at w = ${f.w}:  u = ${sh(f.w.slice(0, -1))},  σ = ${f.w.slice(-1)}` : 'base case  w = ε', 14, 20, { align: 'left', size: 13, weight: 600, color: 'muted' });
           r0.lines.forEach(([sym, con], k) => {
-            Q.tex(sym, 16, 56 + k * 74, { size: 15, align: 'left' });
-            Q.tex(con, 30, 56 + k * 74 + 28, { size: 14, align: 'left', color: r0.ok || k < r0.lines.length - 1 ? 'muted' : 'red' });
+            Q.tex(sym, k ? 96 : 16, 56 + k * 74, { size: 15, align: 'left' });
+            Q.tex(con, k ? 110 : 30, 56 + k * 74 + 28, { size: 14, align: 'left', color: r0.ok || k < r0.lines.length - 1 ? 'muted' : 'red' });
           });
           if (f.w) Q.sans(r0.ok ? 'uses only the claim for u — the parent node' : 'this step is invalid, so the claim is not proved for w', 14, Q.H - 14, { align: 'left', size: 12, color: r0.ok ? 'green' : 'red', weight: 600 });
         });

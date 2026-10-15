@@ -1212,6 +1212,26 @@ function makeToggle(rt, label, value, o = {}) {
   input.addEventListener('change', () => { o.onChange?.(input.checked); rt.invalidate(); });
   return { el, get value() { return input.checked; }, set value(v) { input.checked = !!v; }, set(v) { input.checked = !!v; rt.invalidate(); } };
 }
+/** Text field; with o.vars it compiles a formula (M.compileExpr) and exposes .fn, showing parse errors inline. */
+function makeInput(rt, label, value = '', o = {}) {
+  const el = controlBox(rt, 'ctl-input');
+  if (label) { const lab = h('span', 'ctl-label'); lab.innerHTML = inlineHTML(label); el.append(lab); }
+  const input = h('input'); input.type = 'text'; input.value = value; input.spellcheck = false; input.autocomplete = 'off';
+  if (o.placeholder) input.placeholder = o.placeholder; if (o.width) input.style.width = typeof o.width === 'number' ? o.width + 'px' : o.width;
+  const msg = h('span', 'ctl-input-err'); el.append(input, msg);
+  let fn = null, error = null, cur = String(value);
+  const compile = (src) => {
+    if (!o.vars) { fn = null; error = null; return true; }
+    const r = M.compileExpr(src, o.vars); error = r.error; if (r.f) fn = r.f;
+    el.classList.toggle('bad', !!error); msg.textContent = error || ''; return !error;
+  };
+  compile(cur);
+  let t = 0;
+  input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { cur = input.value; if (compile(cur)) { o.onChange?.(cur, fn); rt.invalidate(); } }, 160); });
+  input.addEventListener('keydown', (e) => e.stopPropagation()); // keep typing out of keyboard shortcuts
+  return { el, get value() { return cur; }, get fn() { return fn; }, get error() { return error; },
+    set(v) { input.value = cur = String(v); compile(cur); rt.invalidate(); } };
+}
 function makeSelect(rt, label, options, value, o = {}) {
   const el = controlBox(rt, 'ctl-select');
   if (label) { const lab = h('span', 'ctl-label'); lab.innerHTML = inlineHTML(label); el.append(lab); }
@@ -1329,6 +1349,8 @@ class Runtime {
       slider: (label, min, max, value, o) => makeSlider(rt, label, min, max, value, o),
       toggle: (label, value, o) => makeToggle(rt, label, value, o),
       select: (label, options, value, o) => makeSelect(rt, label, options, value, o),
+      /** Text / formula field: v.input('f(t, x) =', 'x (1 - x)', {vars: ['t', 'x']}) → {value, fn (last valid formula), error, set}. */
+      input: (label, value, o) => makeInput(rt, label, value, o),
       button: (label, fn) => makeButton(rt, label, fn),
       /** Sound controller (one per viz): tone, chord, samples, noise, stop, playing. Silent no-op without Web Audio. */
       sound: () => (rt._sound ||= makeSound(rt)),
