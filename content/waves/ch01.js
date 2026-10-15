@@ -102,10 +102,11 @@ so all components with $ka\ll1$ travel at the same speed $c$, while short waves 
         const errCurve = () => {
           const k = shp.value + wS.value; if (k === eKey) return curve; eKey = k;
           const F = periodic(shp.value, wS.value, X0), Ns = [...new Set(M.range(36).map((i) => Math.round(4 * 128 ** (i / 35))))];
+          let norm2 = 0; for (let j = 0; j < 4000; j++) norm2 += F(j / 4000) ** 2; norm2 /= 4000;
           curve = Ns.map((N) => {
-            const y = ringChain(M, N, F, 1); let e = 0, n = 0;
-            for (let j = 0; j < N; j++) { const Y = F(j / N); e += (y[j] - Y) ** 2; n += Y * Y; }
-            return [N, Math.sqrt(e / Math.max(n, 1e-12))];
+            const y = ringChain(M, N, F, 1); let e = 0;
+            for (let j = 0; j < N; j++) { const Y = F(j / N); e += (y[j] - Y) ** 2; }
+            return [N, Math.sqrt(e / N / norm2)];
           });
           return curve;
         };
@@ -138,9 +139,13 @@ so all components with $ka\ll1$ travel at the same speed $c$, while short waves 
           const cv = errCurve();
           ep.path(cv, { color: 'accent', width: 2 });
           ep.dots(cv, { r: 2.2, color: 'accent' });
-          const eL = cv[cv.length - 1][1] * 0.4, g = (n) => eL * (512 / n) ** 2;
-          ep.line(48, g(48), 512, g(512), { color: 'muted', dash: [4, 4], width: 1.2 });
-          ep.text('slope −2 (error ∝ 1/N²)', 150, g(150), { color: 'muted', size: 11.5, align: 'right', baseline: 'top', dx: -6, dy: 4 });
+          const tail = cv.slice(-9), fit = M.linreg(tail.map((p) => Math.log(p[0])), tail.map((p) => Math.log(p[1])));
+          if (shp.value === 'gauss') {
+            const eL = cv[cv.length - 1][1] * 0.4, g = (n) => eL * (512 / n) ** 2;
+            ep.line(48, g(48), 512, g(512), { color: 'muted', dash: [4, 4], width: 1.2 });
+            ep.text('slope −2 (error ∝ 1/N²)', 150, g(150), { color: 'muted', size: 11.5, align: 'right', baseline: 'top', dx: -6, dy: 4 });
+          }
+          ep.corner(`fitted slope for large N: ${v.fix(fit.slope, 2)}`, 'bl', { color: 'accent', weight: 600 });
           const cur = cv.reduce((b, p) => (Math.abs(Math.log(p[0] / N)) < Math.abs(Math.log(b[0] / N)) ? p : b), cv[0]);
           ep.vline(N, { color: 'gold', width: 1.5 });
           ep.dot(cur[0], cur[1], { r: 5, color: 'gold' });
@@ -458,7 +463,7 @@ Products do not commute with $\Re$: quadratic quantities need care, e.g. the tim
         let A1 = new Cx(0.9, 0.35), A2 = new Cx(-0.15, 0.7);
         const two = v.toggle('second wave $\\tilde A_2$', true);
         const cp = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, height: 320, axes: true, xlabel: 'Re', ylabel: 'Im', title: 'phasors at x = 0' });
-        const s3 = v.stage3d({ range: 1.75, height: 320, yaw: -0.5, pitch: 0.32, axes: false, title: 'the complex wave and its real shadow', weight: 1.2 });
+        const s3 = v.stage3d({ range: 1.9, height: 320, yaw: -0.5, pitch: 0.3, axes: false, title: 'the complex wave and its real shadow', weight: 1.2 });
         const wv = v.stage({ x: [0, 3], y: [-2.1, 2.1], height: 200, axes: 'box', xlabel: 'x  (two wavelengths)', yticks: [-1, 0, 1], full: true, title: 'the physical waves' });
         const rot = (z, a) => z.mul(Cx.polar(1, a));
         const h1 = cp.handle(A1.re, A1.im, { color: 'accent', label: '$\\tilde A_1$', onDrag: (h) => { v.pause(); A1 = rot(new Cx(h.x, h.y), OM * v.t); } });
@@ -584,7 +589,14 @@ The principle holds exactly only for linear media. For a medium whose restoring 
           const p = S.prev; S.prev = S.u; S.u = S.nxt; S.nxt = p;
         };
         let A, B, AB, tSim = 0, key = '', hist = [], lastProbe = 5;
-        const reset = () => { A = mk('A'); B = mk('B'); AB = mk('AB'); for (let i = 0; i < NX; i++) { AB.u[i] = A.u[i] + B.u[i]; AB.prev[i] = A.prev[i] + B.prev[i]; } tSim = 0; hist = []; };
+        const reset = () => {
+          A = mk('A'); B = mk('B'); AB = mk('AB'); for (let i = 0; i < NX; i++) { AB.u[i] = A.u[i] + B.u[i]; AB.prev[i] = A.prev[i] + B.prev[i]; }
+          tSim = 0; hist = [];
+          if (sc.value === 'trains') { // wave trains have been running for a while: start the clock after a pre-roll
+            tSim = -HIST;
+            while (tSim < 0) { stepSim(A, bS.value); stepSim(B, bS.value); stepSim(AB, bS.value); tSim += DT; if (Math.round(tSim / DT) % 5 === 0) hist.push([tSim, at(AB, probe.x)]); }
+          }
+        };
         const at = (S, x) => { const u = per(x) / DX, i = Math.floor(u) % NX, f = u - Math.floor(u); return S.u[i] * (1 - f) + S.u[(i + 1) % NX] * f; };
         let dmax = 0, umax = 0, ke = 0, pe = 0;
         v.animate((t) => {
@@ -614,7 +626,7 @@ The principle holds exactly only for linear media. For a medium whose restoring 
           // ---- defect
           dp.hline(0, { color: 'faint', width: 1 });
           dp.path(pts(AB, (i) => AB.u[i] - A.u[i] - B.u[i]), { color: 'red', width: 2.2 });
-          dp.corner(`largest |defect| = ${dmax < 1e-12 ? v.fix(dmax * 1e15, 1) + '×10⁻¹⁵' : v.fix(dmax, 4)}`, 'tl', { color: dmax < 1e-9 ? 'green' : 'red', weight: 600 });
+          dp.corner(`largest |defect| = ${dmax < 1e-12 ? 'below 10⁻¹² (rounding)' : v.fix(dmax, 4)}`, 'tl', { color: dmax < 1e-9 ? 'green' : 'red', weight: 600 });
           // ---- probe history
           pr.hline(0, { color: 'faint', width: 1 });
           pr.path(hist.map(([tt, y]) => [tt - tSim, y]), { color: 'teal', width: 1.6 });
@@ -630,7 +642,7 @@ The principle holds exactly only for linear media. For a medium whose restoring 
           let extra = '';
           if (sc.value === 'opp') extra = ` · energy now: ${v.fix((100 * ke) / (ke + pe), 0)} % kinetic, ${v.fix((100 * pe) / (ke + pe), 0)} % stretch (at the moment of cancellation the string is flat but moving)`;
           if (sc.value === 'trains') extra = ` · wave trains with $k_1=2\\pi\\cdot10/L$, $k_2=2\\pi\\cdot12/L$: beat period $1/|f_1-f_2|$ = ${v.fix(1 / (((K2 - K1) / TAU)), 2)} $L/c$ (the dashed envelope)`;
-          return `largest superposition defect ${lin ? 'with a linear string' : `with $\\beta$ = ${v.fix(bS.value, 2)}`}: ${v.fix(100 * rel, rel < 1e-6 ? 12 : 2)} % of the amplitude${lin ? ' (rounding error only)' : ''}${extra}`;
+          return `largest superposition defect ${lin ? 'with a linear string' : `with $\\beta$ = ${v.fix(bS.value, 2)}`}: ${rel < 1e-12 ? 'less than $10^{-12}$ of the amplitude (rounding error only)' : v.fix(100 * rel, 2) + ' % of the amplitude'}${extra}`;
         });
       },
     },

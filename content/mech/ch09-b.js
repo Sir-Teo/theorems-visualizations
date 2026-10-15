@@ -253,9 +253,9 @@ relative to the Earth, clockwise seen from above in the northern hemisphere and 
               if (down) { const q = rot(PR * 1.07 * Math.cos(pin.a + 0.05), PR * 1.07 * Math.sin(pin.a + 0.05), phi); s.line(p[0], p[1], q[0], q[1], { color: 'red', width: 2, alpha: 0.7 }); }
               else s.dot(p[0], p[1], { r: 3, color: 'ink', ring: false });
             }
-            const pts = []; for (let k = Math.max(0, i - 900); k <= i; k++) { const p = rot(R.y[k][0], R.y[k][1], phi - B.Wz * R.t[k]); pts.push(p); }
+            const pts = []; for (let k = Math.max(0, i - 900); k <= i; k++) pts.push(rot(R.y[k][0], R.y[k][1], s === sN ? B.Wz * R.t[k] : 0));
             s.path(pts, { color: 'accent', width: 1.1, alpha: 0.6 });
-            const b = rot(R.y[i][0], R.y[i][1], phi - B.Wz * tt);
+            const b = rot(R.y[i][0], R.y[i][1], phi);
             s.line(0, 0, b[0], b[1], { color: 'muted', width: 1, alpha: 0.6 });
             s.dot(0, 0, { r: 2.5, color: 'muted' });
             s.dot(b[0], b[1], { r: 7, color: 'gold' });

@@ -1,5 +1,5 @@
 // Quantum Mechanics — Chapter 2: The wave function (items 2.1–2.8; 2.9–2.15 in ch02-b.js)
-import { TAU, grid, packet, normSq, normalize, moments, current, sampler, ksDistance, phaseLUT, drawPsi, phaseWheel, splitStepper, clockSim, big } from './ch02.shared.js';
+import { TAU, grid, packet, normSq, normalize, moments, current, sampler, ksDistance, phaseLUT, drawPsi, phaseWheel, splitStepper, clockSim, big, fz } from './ch02.shared.js';
 
 /** π-multiple formatter for phase sliders. */
 const piFmt = (t) => (Math.abs(t) < 5e-3 ? '0' : `${(t / Math.PI).toFixed(2)}π`);
@@ -91,7 +91,7 @@ A particle of definite momentum $p$ and energy $E$ has the de Broglie wave $\psi
           st = { m, N: normSq(P.re, P.im, dx), dG, dA, re0: P.re[i0], im0: P.im[i0] };
         });
         v.legend([['accent', 'Re ψ'], ['purple', 'Im ψ', { dash: true }], ['ink', '|ψ| (filled by phase)'], ['accent', '|ψ|²', { area: true }], ['muted', '|ψ|² with α = 0', { dash: true }]]);
-        v.readout(() => st && `$\\int|\\psi|^2dx = ${v.fix(st.N, 6)}$ · $\\langle x\\rangle = ${v.fix(st.m.mx, 4)}$ · $\\langle p\\rangle = ${v.fix(st.m.mp, 4)}\\,\\hbar$ · $\\Delta x = ${v.fix(st.m.sx, 4)}$ — none of these move with $\\theta$. Yet $\\psi(0) = ${v.fix(st.re0, 3)} ${st.im0 < 0 ? '-' : '+'} ${v.fix(Math.abs(st.im0), 3)}\\,i$ does. Largest change of $|\\psi|^2$ caused by the global phase: **${st.dG < 1e-12 ? '0' : v.sci(st.dG, 1)}** (rounding)${mode.value === 'two' ? `; caused by the relative phase $\\alpha$: **${v.fix(st.dA, 3)}**` : ''}.`);
+        v.readout(() => st && `$\\int|\\psi|^2dx = ${v.fix(st.N, 6)}$ · $\\langle x\\rangle = ${fz(v, st.m.mx, 4)}$ · $\\langle p\\rangle = ${fz(v, st.m.mp, 4)}\\,\\hbar$ · $\\Delta x = ${v.fix(st.m.sx, 4)}$ — none of these move with $\\theta$. Yet $\\psi(0) = ${v.fix(st.re0, 3)} ${st.im0 < 0 ? '-' : '+'} ${v.fix(Math.abs(st.im0), 3)}\\,i$ does. Largest change of $|\\psi|^2$ caused by the global phase: **${st.dG < 1e-12 ? '0' : v.sci(st.dG, 1)}** (rounding)${mode.value === 'two' ? `; caused by the relative phase $\\alpha$: **${v.fix(st.dA, 3)}**` : ''}.`);
       },
     },
     // ------------------------------------------------------------------ 2.2

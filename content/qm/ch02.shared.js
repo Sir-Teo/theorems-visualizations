@@ -191,3 +191,5 @@ export function clockSim(init, step, dt, maxSteps = 40000) {
 
 /** Thousands separators. */
 export const big = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+/** v.fix without a "−0.000": values that round to zero print as 0. */
+export const fz = (v, x, d) => v.fix(Math.abs(x) < 0.5 * 10 ** -d ? 0 : x, d);

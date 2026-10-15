@@ -360,7 +360,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
       name: 'Stretched tuning and the Railsback curve',
       statement: String.raw`Because piano strings are inharmonic (2.11), the second partial of every note is a few cents sharp of twice its fundamental. A tuner who makes each octave beatless, matching the upper note to a partial of the lower one, therefore tunes octaves slightly **wider than 2:1**, and the stretch accumulates from the middle of the keyboard outwards. Plotted against key number, the deviation of a well-tuned piano from equal temperament traces the **Railsback curve**: a gentle S, flat in the middle, falling to roughly 10–30 cents flat in the low bass and rising to some 20–40 cents sharp at the top. The size of the stretch depends on the instrument's inharmonicity (short pianos stretch more) and on which partials the tuner matches (2:1, 4:2, 6:3 octaves).`,
       idea: String.raw`If the lower note has first partial $f$ and inharmonicity $B$, its second partial is $2f\sqrt{(1+4B)/(1+B)}\approx2f(1+\tfrac32B)$, about $2600B$ cents above $2f$ (1.6). Making the octave beat-free puts the upper fundamental there, so each octave is stretched by that amount; tuning 4:2 octaves uses $\sqrt{(1+16B)/(1+4B)}$ instead and stretches more. In the treble $B$ grows quickly, so the stretch per octave grows and the curve bends up; in the bass, where the fundamentals are weak, tuners match higher partials of the low note, which pulls the bass flat. Without stretch the octaves beat audibly, at the rate given by the mismatch.`,
-      caption: String.raw`A model piano whose inharmonicity rises from about $10^{-4}$ in the tenor to $3\times10^{-4}$ at A0, $3.5\times10^{-4}$ at middle C and $10^{-2}$ at C8 (typical measured sizes, as in 2.11). The middle octave is set first (A4 = 440 Hz, A3 an octave below it by the same rule, equal steps between) and every other note is tuned octave by octave from it, making the chosen partials coincide. Top: the resulting deviation from equal temperament (faint curves: the other octave types). Click a key to select an octave; the bottom panel shows how its partials line up and the readout gives the beat rates; *Hear this octave* plays it. Set **no stretch** or the inharmonicity to 0 to break the effect.`,
+      caption: String.raw`A model piano whose inharmonicity rises from about $10^{-4}$ in the tenor to $3\times10^{-4}$ at A0, $3.5\times10^{-4}$ at middle C and $10^{-2}$ at C8 (typical measured sizes, as in 2.11). The middle octave is set first (A4 = 440 Hz, A3 an octave below it, equal steps between) and every other note is tuned octave by octave from it, making the chosen partials coincide. Top: the resulting deviation from equal temperament (faint curves: the other octave types). Click a key to select an octave; the bottom panel shows how its partials line up and the readout gives the beat rates; *Hear this octave* plays it. Set **no stretch** or the inharmonicity to 0 to break the effect.`,
       deps: ['music-2.11', 'music-1.6'],
       refs: ['Rossing ch. 14', 'Sethares ch. 6'],
       tags: ['piano', 'tuning'],
@@ -369,7 +369,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
       viz(v) {
         const M = v.M, PAIRS = { '21': [2, 1], '42': [4, 2], '63': [6, 3] };
         // octave types: which partials of the lower note (a) and the upper note (b) are made to coincide, above and below the middle octave
-        const SCH = { mix: { up: [2, 1], dn: [6, 3], name: 'mixed octaves (6:3 in the bass, 2:1 in the treble)' }, '21': { up: [2, 1], dn: [2, 1], name: '2:1 octaves' }, '42': { up: [4, 2], dn: [4, 2], name: '4:2 octaves' }, '63': { up: [6, 3], dn: [6, 3], name: '6:3 octaves' } };
+        const SCH = { mix: { up: [2, 1], dn: (m) => 1 + 2 * Math.min(1, Math.max(0, (57 - m) / 24)), name: 'mixed octaves (2:1 from the middle up; going down, a compromise sliding from 2:1 through 4:2 to 6:3)' }, '21': { up: [2, 1], dn: [2, 1], name: '2:1 octaves' }, '42': { up: [4, 2], dn: [4, 2], name: '4:2 octaves' }, '63': { up: [6, 3], dn: [6, 3], name: '6:3 octaves' } };
         const type = v.select('octaves tuned', [{ value: 'mix', label: 'mixed' }, { value: '21', label: '2:1' }, { value: '42', label: '4:2' }, { value: '63', label: '6:3' }, { value: 'none', label: 'no stretch' }], 'mix');
         const kS = v.slider('inharmonicity ×', 0, 3, 1, { step: 0.05, fmt: (x) => '×' + v.fix(x, 2) });
         const Bm = (m) => kS.value * (3e-4 * Math.pow(10, -(m - 21) / 22) + 1.4e-4 * Math.pow(10, (m - 48) / 32));
@@ -379,12 +379,14 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           const f = new Map();
           for (let m = 21; m <= 108; m++) f.set(m, et(m));
           if (ty === 'none') return f;
-          const { up: [a, b], dn: [c, d] } = SCH[ty];
-          // temperament octave: A4 = 440 Hz, A3 tuned from it by the octave rule, the eleven notes between in equal steps
-          { const B = Bm(57), X = Pj(440, Bm(69), d), f57 = (X * Math.sqrt(1 + B)) / (c * Math.sqrt(1 + B * c * c));
+          const { up: [a, b] } = SCH[ty], dn = (m) => (typeof SCH[ty].dn === 'function' ? SCH[ty].dn(m) : SCH[ty].dn[1]);
+          // temperament octave: A4 = 440 Hz, A3 tuned an octave below it by the treble rule, the eleven notes between in equal steps
+          { const B = Bm(57), X = Pj(440, Bm(69), b), f57 = (X * Math.sqrt(1 + B)) / (a * Math.sqrt(1 + B * a * a));
             for (let m = 57; m <= 69; m++) f.set(m, f57 * Math.pow(440 / f57, (m - 57) / 12)); }
           for (let m = 70; m <= 108; m++) { const lo = m - 12, X = Pj(f.get(lo), Bm(lo), a), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (b * Math.sqrt(1 + B * b * b))); }
-          for (let m = 56; m >= 21; m--) { const up = m + 12, X = Pj(f.get(up), Bm(up), d), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (c * Math.sqrt(1 + B * c * c))); }
+          // going down: the lower note's partial 2k matches the upper note's partial k; a fractional order k blends neighbouring matches (in cents)
+          const down = (m, k) => { const up = m + 12, X = Pj(f.get(up), Bm(up), k), B = Bm(m); return (X * Math.sqrt(1 + B)) / (2 * k * Math.sqrt(1 + 4 * B * k * k)); };
+          for (let m = 56; m >= 21; m--) { const q = dn(m), k0 = Math.floor(q), w = q - k0; f.set(m, w ? Math.pow(down(m, k0), 1 - w) * Math.pow(down(m, k0 + 1), w) : down(m, k0)); }
           return f;
         };
         let cKey = '', T = null;
@@ -439,7 +441,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
             const y = { '21': 3, '42': 2, '63': 1 }[key], pu = Pj(f.get(sel), Bm(sel), b), pl = Pj(f.get(lo), Bm(lo), a);
             const c = 1200 * Math.log2(pu / pl), beat = Math.abs(pu - pl);
             al.line(-16, y, 16, y, { color: 'faint', width: 1 });
-            const used = ty !== 'none' && ((sel > 69 && SCH[ty].up[0] === a) || (sel < 69 && SCH[ty].dn[0] === a));
+            const used = ty !== 'none' && ((sel >= 69 && SCH[ty].up[0] === a) || (sel < 69 && Math.round(typeof SCH[ty].dn === 'function' ? SCH[ty].dn(lo) : SCH[ty].dn[1]) === b));
             if (used) al.text('tuned to coincide', -15.8, y - 0.3, { align: 'left', color: 'green', size: 10.5, weight: 600 });
             al.dot(M.clamp(c, -15.5, 15.5), y, { r: 6, color: Math.abs(c) < 0.5 ? 'green' : 'red' });
             al.text(`${v.fix(c, 1)} ¢ · ${v.fix(beat, 2)} beats/s`, M.clamp(c, -15.5, 15.5) + (c > 8 ? -0.8 : 0.8), y + 0.28, { align: c > 8 ? 'right' : 'left', color: 'ink', size: 11 });
