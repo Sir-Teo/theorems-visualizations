@@ -70,6 +70,8 @@ export function formula(m) {
   const keys = Object.keys(n).sort(); const ord = n.C ? ['C', ...(n.H ? ['H'] : []), ...keys.filter((k) => k !== 'C' && k !== 'H')] : keys;
   return ord.map((k) => k + (n[k] > 1 ? n[k] : '')).join('');
 }
+/** Formula as TeX, e.g. '\\mathrm{C_2H_6O}'. */
+export const formulaTeX = (m) => `\\mathrm{${(typeof m === 'string' && LIBRARY[m] ? m : formula(getMolecule(m))).replace(/(\d+)/g, '_{$1}')}}`;
 export const molarMass = (m) => getMolecule(m).atoms.reduce((s, a) => s + el(a.el).m, 0);
 export const distance = (m, i, j) => { const { atoms } = getMolecule(m), a = atoms[i].pos, b = atoms[j].pos; return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]); };
 /** Angle i–j–k at atom j in degrees. */
@@ -137,6 +139,7 @@ export function spins(g, k) { const up = Math.min(k, g), dn = Math.max(0, k - g)
 
 // ================================================================== drawing
 const FONT = (size, w = 600) => `${w} ${size}px Inter, system-ui, sans-serif`;
+const bare = (t) => String(t).replace(/^\$+|\$+$/g, ''); // labels may be given with or without $…$
 const lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
 function tones(api) {
   const ink = api.rgb('ink'), pan = api.rgb('panel'), light = lum(ink) > lum(pan) ? 'ink' : 'panel', dark = light === 'ink' ? 'panel' : 'ink';
@@ -165,22 +168,26 @@ function draw3d(api, s3, mol, o = {}) {
   const pxR = M.atoms.map((a, i) => { const q = s3.project([P[i][0] + U[0] * rad(a.el), P[i][1] + U[1] * rad(a.el), P[i][2]]); return Math.hypot(q[0] - scr[i][0], q[1] - scr[i][1]); });
   const cols = M.atoms.map((a) => (o.colors?.[a.el] ? api.color(o.colors[a.el]) : atomColor(api, a.el, T)));
   const outline = api.color(T.isDark ? 'bg' : 'ink', T.isDark ? 0.9 : 0.55);
+  let sx = 0, sy = 0; for (const q of scr) { sx += q[0]; sy += q[1]; } sx /= scr.length || 1; sy /= scr.length || 1; // screen centroid (aromatic dashes point inward)
   // bonds: two halves, each coloured like its atom; multiple bonds offset perpendicular on screen
   if (style !== 'spacefill') for (const [i, j, ord] of M.bonds) {
     const A = scr[i], B = scr[j], dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
     const scale = (pxR[i] + pxR[j]) / (rad(M.atoms[i].el) + rad(M.atoms[j].el)) / 40;
     const w = (o.bondWidth ?? (style === 'stick' ? 7 : 5.2)) * Math.max(0.6, Math.min(1.6, scale * 1.2 || 1));
     const n = ord >= 3 ? 3 : ord >= 2 ? 2 : ord > 1 ? 2 : 1, gap = n > 1 ? w * 1.15 : 0, ww = n > 1 ? w * 0.62 : w;
-    const offs = n === 3 ? [-gap, 0, gap] : n === 2 ? [-gap / 2, gap / 2] : [0];
+    const arom = ord > 1 && ord < 2, inward = ((sx - (A[0] + B[0]) / 2) * nx + (sy - (A[1] + B[1]) / 2) * ny) >= 0 ? 1 : -1;
+    const offs = n === 3 ? [-gap, 0, gap] : arom ? [0, inward * gap * 1.1] : n === 2 ? [-gap / 2, gap / 2] : [0];
     const mid = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2], mdz = (A[2] + B[2]) / 2;
     [[A, i], [B, j]].forEach(([E, a]) => {
       push(s3, (E[2] + mdz) / 2, (c) => {
         c.save(); c.lineCap = 'butt';
         offs.forEach((off, t) => {
-          const dashed = ord > 1 && ord < 2 && t === 1;
-          const x0 = E[0] + nx * off, y0 = E[1] + ny * off, x1 = mid[0] + nx * off, y1 = mid[1] + ny * off;
-          c.setLineDash(dashed ? [4, 3] : []);
-          c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.strokeStyle = outline; c.lineWidth = ww + 2; if (!dashed) c.stroke();
+          const dashed = arom && t === 1, sh = dashed ? 0.22 : 0; // aromatic dash: shortened, thinner, inside the ring
+          const x0 = E[0] + nx * off + (mid[0] - E[0]) * sh * 2, y0 = E[1] + ny * off + (mid[1] - E[1]) * sh * 2, x1 = mid[0] + nx * off, y1 = mid[1] + ny * off;
+          c.setLineDash(dashed ? [3.5, 3] : []);
+          c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1);
+          if (dashed) { c.strokeStyle = api.color('muted'); c.lineWidth = Math.max(1.6, ww * 0.55); c.stroke(); return; }
+          c.strokeStyle = outline; c.lineWidth = ww + 2; c.stroke();
           c.strokeStyle = cols[a]; c.lineWidth = ww; c.stroke();
         });
         c.restore();
@@ -196,11 +203,12 @@ function draw3d(api, s3, mol, o = {}) {
       g.addColorStop(0, api.mix(cols[i], T.light, T.isDark ? 0.55 : 0.75)); g.addColorStop(0.55, cols[i]); g.addColorStop(1, api.mix(cols[i], T.isDark ? 'bg' : 'ink', 0.35));
       c.beginPath(); c.arc(X, Y, R, 0, TAU); c.fillStyle = g; c.fill(); c.lineWidth = 1; c.strokeStyle = outline; c.stroke();
       if (hl.has(i)) { c.beginPath(); c.arc(X, Y, R + 4, 0, TAU); c.lineWidth = 2.2; c.strokeStyle = api.color('gold'); c.stroke(); }
-      if (o.labels && (o.labels !== 'heavy' || a.el !== 'H') && R > 7) {
-        c.font = FONT(Math.max(10, Math.min(15, R * 0.85))); c.textAlign = 'center'; c.textBaseline = 'middle';
-        const light = lum(api.rgb(cols[i])) > 140; c.fillStyle = api.color(light ? (T.isDark ? 'bg' : 'ink') : (T.isDark ? 'ink' : 'panel'));
-        c.fillText(a.el, X, Y + 0.5);
-      }
+    });
+    // element symbols in a last pass so bonds never hide them
+    if (o.labels && (o.labels !== 'heavy' || a.el !== 'H') && R > 6) push(s3, -1e9 + d * 1e-6, (c) => {
+      c.font = FONT(Math.max(10, Math.min(15, R * 0.8))); c.textAlign = 'center'; c.textBaseline = 'middle';
+      const light = lum(api.rgb(cols[i])) > 140; c.lineWidth = 3; c.strokeStyle = api.color(light ? (T.isDark ? 'ink' : 'panel') : (T.isDark ? 'bg' : 'ink'), 0.55); c.fillStyle = api.color(light ? (T.isDark ? 'bg' : 'ink') : (T.isDark ? 'ink' : 'panel'));
+      c.strokeText(a.el, X - R * 0.1, Y - R * 0.12); c.fillText(a.el, X - R * 0.1, Y - R * 0.12);
     });
   });
   return M;
@@ -238,14 +246,15 @@ function levels(api, s, spec) {
     cx.font = 'italic 15px Newsreader, "Times New Roman", serif'; cx.textAlign = 'left'; cx.textBaseline = 'top'; cx.fillText('E', ax + 7, top - 2);
     if (spec.unit) { cx.font = FONT(10.5, 500); cx.fillText(`(${spec.unit})`, ax + 18, top + 1); }
   }
-  if (spec.columns) spec.columns.forEach((t, k) => s.texPx(t, CX(k), 14, { align: 'center', color: 'ink', size: 14 }));
+  if (spec.columns) spec.columns.forEach((t, k) => s.texPx(bare(t), CX(k), 14, { align: 'center', color: 'ink', size: 14 }));
   // correlation lines
   for (const [a, b] of spec.links || []) {
     const A = geo[a], B = geo[b]; if (!A || !B) continue; const ab = A.x1 < B.x0, xa = ab ? A.x1 : A.x0, xb = ab ? B.x0 : B.x1;
     cx.setLineDash([4, 4]); cx.strokeStyle = api.color('faint'); cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(xa + (ab ? 3 : -3), A.y); cx.lineTo(xb + (ab ? -3 : 3), B.y); cx.stroke(); cx.setLineDash([]);
   }
-  // HOMO / LUMO
-  const filled = Ls.map((L, i) => i).filter((i) => occ[i].occ > 0), empty = Ls.map((L, i) => i).filter((i) => occ[i].occ < 2 * (Ls[i].deg ?? 1));
+  // HOMO / LUMO and the statistics refer to the molecule: spec.mo (column index), else the typed levels, else all
+  const inMol = (i) => (spec.mo != null ? (Ls[i].col ?? 0) === spec.mo : Ls.some((L) => L.type) ? !!Ls[i].type : true);
+  const filled = Ls.map((L, i) => i).filter((i) => inMol(i) && occ[i].occ > 0), empty = Ls.map((L, i) => i).filter((i) => inMol(i) && occ[i].occ < 2 * (Ls[i].deg ?? 1));
   const homo = filled.length ? filled.reduce((a, b) => (Ls[b].E > Ls[a].E ? b : a)) : null, lumo = empty.length ? empty.reduce((a, b) => (Ls[b].E < Ls[a].E ? b : a)) : null;
   const TYPE = { bonding: 'green', antibonding: 'red', nonbonding: 'ink' };
   Ls.forEach((L, i) => {
@@ -258,13 +267,13 @@ function levels(api, s, spec) {
       if (o2.down[j]) arrow((xa + xb) / 2 + 5, false);
     }
     const side = L.labelSide || ((L.col ?? 0) === 0 && ncol > 1 ? 'left' : 'right');
-    if (L.label) s.texPx(L.label, side === 'left' ? G.x0 - 8 : G.x1 + 8, G.y, { align: side === 'left' ? 'right' : 'left', color: L.color || TYPE[L.type] || 'ink', size: 13.5 });
-    if (spec.energies) { cx.font = FONT(10, 500); cx.fillStyle = muted; cx.textAlign = side === 'left' ? 'left' : 'right'; cx.textBaseline = 'top'; cx.fillText(L.E.toFixed(1).replace('-', '−'), side === 'left' ? G.x0 : G.x1, G.y + 5); }
+    if (L.label) s.texPx(bare(L.label), side === 'left' ? G.x0 - 8 : G.x1 + 8, spec.energies ? G.y - 2 : G.y, { align: side === 'left' ? 'right' : 'left', baseline: spec.energies ? 'bottom' : 'middle', color: L.color || TYPE[L.type] || 'ink', size: 13.5 });
+    if (spec.energies) { cx.font = FONT(10, 500); cx.fillStyle = muted; cx.textAlign = side === 'left' ? 'right' : 'left'; cx.textBaseline = 'top'; cx.fillText(L.E.toFixed(1).replace('-', '−'), side === 'left' ? G.x0 - 8 : G.x1 + 8, G.y + 9); }
     if (spec.homo && (i === homo || i === lumo)) { cx.font = FONT(9.5, 600); cx.fillStyle = api.color('gold'); cx.textAlign = 'center'; cx.textBaseline = 'bottom'; cx.fillText(i === homo ? 'HOMO' : 'LUMO', (G.x0 + G.x1) / 2, G.y - 13); }
   });
   cx.restore();
   let b = 0, a = 0, unpaired = 0, energy = 0;
-  Ls.forEach((L, i) => { const o2 = occ[i]; if (L.type === 'bonding') b += o2.occ; if (L.type === 'antibonding') a += o2.occ; unpaired += o2.up.filter((u, j) => u && !o2.down[j]).length; energy += o2.occ * L.E; });
+  Ls.forEach((L, i) => { if (!inMol(i)) return; const o2 = occ[i]; if (L.type === 'bonding') b += o2.occ; if (L.type === 'antibonding') a += o2.occ; unpaired += o2.up.filter((u, j) => u && !o2.down[j]).length; energy += o2.occ * L.E; });
   return { homo, lumo, bondOrder: (b - a) / 2, unpaired, energy, occ: occ.map((o2) => o2.occ) };
 }
 
@@ -307,7 +316,7 @@ export default function mol(api, rt, name, ...args) {
     draw3d: (s3, m, o) => draw3d(api, s3, m, o),
     levels: (s, spec) => levels(api, s, spec),
     orbitalSlice: (s, psi, o) => orbitalSlice(api, s, psi, o),
-    get: getMolecule, library: Object.keys(LIBRARY), formula, molarMass, distance, angle, autoBond,
+    get: getMolecule, library: Object.keys(LIBRARY), formula, formulaTeX, molarMass, distance, angle, autoBond,
     hydrogen, radial, realY, laguerre, legendre, orbitalSpec, energyH, orbitalExtent, aufbau, spins, ELEMENTS,
     color: (e) => atomColor(api, e, tones(api)),
   };

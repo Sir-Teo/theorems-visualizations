@@ -310,7 +310,8 @@ const spaceOf = (s) => ({ x: s.bounds.x, y: s.bounds.y, sx: s.sx, sy: s.sy });
 
 // ================================================================== the kit
 const TYPE_COL = { charge: (q) => (q >= 0 ? 'red' : 'blue'), source: (q) => (q >= 0 ? 'teal' : 'orange'), vortex: () => 'purple', mass: () => 'gold' };
-const fmtQ = (q) => (q > 0 ? '+' : q < 0 ? '−' : '') + (Math.abs(q) === 1 ? '' : String(+Math.abs(q).toFixed(2)));
+/** Charge label: '+1', '−2', '+0.5', '0'. */
+export const fmtQ = (q) => (q > 0 ? '+' : q < 0 ? '−' : '') + String(+Math.abs(q).toFixed(2));
 const SYM = { charge: 'q', source: 'm', vortex: 'Γ', mass: 'M' };
 
 class Fields {
@@ -341,6 +342,12 @@ class Fields {
       const hs = pts.map((p) => s.handle(p[0], p[1], { color: col, r: 5 }));
       this.loop = { type: 'poly', hs, color: col, get pts() { return hs.map((h) => [h.x, h.y]); } };
     }
+  }
+  /** Change a source's strength (q, m or gamma) and keep its handle's colour and label in sync. */
+  setStrength(i, q) {
+    const src = this.sources[i], hd = this.handles[i], t = src.type; if (t === 'vortex') src.gamma = q; else if (t === 'mass' || t === 'source') src.m = q; else src.q = q;
+    if (hd) { hd.color = src.color || (TYPE_COL[t] || TYPE_COL.charge)(q); if (src.label == null) hd.label = t === 'charge' ? fmtQ(q) : t === 'vortex' ? (q < 0 ? '−Γ' : 'Γ') : t === 'source' ? (q < 0 ? 'sink' : 'source') : 'M'; }
+    return this;
   }
   /** Current sources with live (dragged) positions. */
   live() { return this.sources.map((s, i) => (this.handles[i] ? { ...s, x: this.handles[i].x, y: this.handles[i].y } : s)); }
@@ -481,7 +488,7 @@ class Fields {
     if (o.streamlines) items.push([o.streamColor || 'muted', 'streamlines']);
     if (o.equipotentials) items.push(['red', 'equipotentials ($\\varphi > 0$ red, $< 0$ blue)']);
     if (o.streamFunction) items.push(['muted', 'level sets of $\\psi$']);
-    if (this.loop) items.push([this.loop.color, o.loopArrows === 'tangent' ? 'loop · tangential $F$' : 'loop · normal $F$', { area: true }]);
+    if (this.loop) items.push([this.loop.color, o.loopArrows === 'tangent' ? 'loop (arrows: tangential component)' : o.loopArrows && o.loopArrows !== 'none' ? 'loop (arrows: normal component, out green / in red)' : 'loop']);
     this.api.legend([...items, ...extra]); return items;
   }
 }

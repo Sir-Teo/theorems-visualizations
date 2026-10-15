@@ -185,7 +185,7 @@ export default {
           pic: 'A box of particles: T⁰⁰ counts energy density, T⁰ⁱ energy flux and Tⁱʲ momentum flux, each tallied from the particles; give the box a velocity and watch the components mix.' },
         { num: '5.8', kind: 'Model', name: 'Dust and the perfect fluid', deps: ['rel-5.7', 'fluid-2.1'], refs: ['Schutz §4.6', 'Carroll ch. 1'],
           pic: 'Random particle velocities in a box produce an isotropic pressure; the measured T is diag(ρc², p, p, p) in the rest frame and acquires off-diagonal terms when boosted.' },
-        { num: '5.9', kind: 'Theorem', name: 'Local conservation of energy and momentum', deps: ['rel-5.7', 'rel-5.8', 'fluid-2.7', 'fluid-1.5'], refs: ['Schutz §4.6'],
+        { num: '5.9', kind: 'Theorem', name: 'Local conservation of energy and momentum', deps: ['rel-5.7', 'rel-5.8', 'fluid-2.8', 'fluid-1.5'], refs: ['Schutz §4.6'],
           pic: 'For a perfect fluid, the time component of ∂_μT^{μν} = 0 gives the continuity equation and the space components a relativistic Euler equation; a pressure step drives a slab and the conserved totals are read out.' },
         { num: '5.10', kind: 'Definition', name: 'Electromagnetic stress–energy and radiation pressure', deps: ['rel-5.7', 'rel-5.1'], refs: ['Carroll ch. 1'],
           pic: 'For a plane wave the energy density, Poynting flux and radiation pressure are all equal (in units of c); a mirror recoils by the computed momentum when the wave reflects.' },

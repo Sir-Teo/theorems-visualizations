@@ -1,4 +1,31 @@
 // Syllabus — Ordinary Differential Equations & Dynamical Systems (curated course; see collection.js for references)
+//
+// Sources consulted (research pass, Oct 2026):
+//   - G. Teschl, Ordinary Differential Equations and Dynamical Systems — section-level TOC from the
+//     author's open PDF (refs 'Teschl §x.y' use its numbering): https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf
+//   - Hirsch, Smale & Devaney 3e — chapter list (first-order eqs; planar linear systems; phase
+//     portraits; classification; higher-dim linear algebra/systems; nonlinear systems; equilibria;
+//     global techniques; closed orbits & limit sets; biology; circuits; mechanics; Lorenz; discrete
+//     systems; homoclinic phenomena; existence & uniqueness revisited). Refs cite chapters only:
+//     https://www.ebay.com/p/112806103 , https://www.inspectioncopy.elsevier.com/book/details/9780123820105
+//   - Strogatz, Nonlinear Dynamics and Chaos 2e — chapter list (library record) plus the standard
+//     2nd-edition section numbering: https://library.holycross.edu/Record/b2162145/TOC
+//   - UC Davis MAT 119A (Strogatz-based) syllabus: https://www.math.ucdavis.edu/courses/syllabus_detail?cm_id=68
+//   - MIT OCW 18.03 Differential Equations syllabus (first-order methods, second-order linear,
+//     resonance, Fourier, Laplace, eigenvalue methods, phase plane):
+//     https://www.ocw.mit.edu/courses/18-03-differential-equations-spring-2010/pages/syllabus
+//   - Vienna VO 250082 Dynamical systems & nonlinear ODEs (Teschl-based; Sharkovskii, PB, Hopf,
+//     Lyapunov): https://www.mat.univie.ac.at/~bruin/VO_DS2018.html ; Bath notes for Cambridge Part II
+//     Dynamical Systems (centre manifolds, Hopf normal form, symbolic dynamics): https://people.bath.ac.uk/jhpd20/lecturenotes/
+//   - Wikipedia, List of dynamical systems and differential equations topics (named theorems:
+//     Picard–Lindelöf, Peano, Bendixson–Dulac, Poincaré–Bendixson, Liénard, Sharkovskii, Takens, KAM):
+//     https://en.wikipedia.org/wiki/List_of_dynamical_systems_and_differential_equations_topics
+// Gaps filled after comparison: Laplace transform (MIT 18.03), Frobenius/Bessel/Legendre and
+//   Sturm–Liouville oscillation theory (Teschl ch. 4–5), centre manifolds (Cambridge Part II),
+//   Takens' embedding, Shilnikov chaos (HSD ch. 16), Melnikov (Teschl ch. 12–13), Kuramoto, SIR.
+// Deliberate omissions: delay and stochastic differential equations (not in the references;
+//   `stoch` covers SDEs), complex dynamics/Julia sets (belongs to `cplx`), periodic Sturm–Liouville
+//   (Teschl §5.6), Hénon–Heiles/billiards (in `mech` ch. 13).
 export default {
   collection: 'ode',
   chapters: [
@@ -110,7 +137,7 @@ export default {
           pic: 'The Wronskian parallelogram area is compared with det Φ(0)·exp∫tr A(s)ds; the two plots overlap exactly as you edit the coefficients.' },
         { num: '3.12', kind: 'Method', name: 'Variation of constants (Duhamel’s formula)', deps: ['ode-3.10', 'ode-3.3'], refs: ['Teschl §3.4'],
           pic: 'Feed a forcing signal into a linear system; the response is built as a sum of decaying impulse responses, each drawn faintly, and their total matches the integrated solution.' },
-        { num: '3.13', kind: 'Theorem', name: 'Linear equations of order n and the characteristic polynomial', deps: ['ode-3.5'], refs: ['Teschl §3.3'],
+        { num: '3.13', kind: 'Theorem', name: 'Order-n linear equations and the characteristic polynomial', deps: ['ode-3.5'], refs: ['Teschl §3.3'],
           pic: 'Place the roots of the characteristic polynomial in the complex plane; the corresponding exponentials, oscillations and polynomial factors are drawn as basis solutions of the order-n equation.' },
         { num: '3.14', kind: 'Model', name: 'Damped harmonic oscillator', deps: ['ode-3.13', 'ode-3.8'], refs: ['Teschl §3.3'],
           pic: 'A mass on a spring with a damping slider: the motion and the phase portrait pass through underdamped spirals, critical damping and overdamped nodes, with the fastest return at critical damping.' },
@@ -122,6 +149,10 @@ export default {
           pic: 'For a periodically varying linear system, the monodromy matrix Φ(T) is computed; its eigenvalues (Floquet multipliers) are plotted against the unit circle and decide whether the stroboscopic samples decay or grow.' },
         { num: '3.18', kind: 'Phenomenon', name: 'Parametric resonance (Mathieu equation)', deps: ['ode-3.17'], refs: ['Teschl §3.6'],
           pic: 'Pump a swing by varying its effective length periodically; in the (frequency, amplitude) plane the tongues of instability are computed from Floquet multipliers, and a point inside a tongue makes the swing grow.' },
+        { num: '3.19', kind: 'Theorem', name: 'Stable, unstable and centre subspaces', deps: ['ode-3.7', 'ladr-8.22'], refs: ['Teschl §3.2', 'Teschl §9.1'],
+          pic: 'For a 3×3 matrix with eigenvalues of mixed sign, the three invariant subspaces are drawn in 3D; trajectories started in each one stay there and decay, grow or neither, and a generic start is decomposed into the three parts.' },
+        { num: '3.20', kind: 'Theorem', name: 'Robustness of stability under small perturbations', deps: ['ode-3.9', 'ode-2.5'], refs: ['Teschl §3.7'],
+          pic: 'Add a small, possibly time-varying perturbation B(t) to a stable system ẋ = Ax; solutions still decay while ‖B‖ stays below the Grönwall threshold shown on the slider, and can blow up beyond it.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -242,6 +273,8 @@ export default {
           pic: 'Equilibria are labelled by index (saddles −1, nodes, spirals and centres +1); a closed orbit is drawn and its index +1 is verified against the sum of indices it encloses.' },
         { num: '6.16', kind: 'Theorem', name: 'Poincaré–Hopf index formula on the sphere', deps: ['ode-6.15', 'vcalc-10.7'], refs: ['Strogatz §6.8'],
           pic: 'Place sources, sinks and saddles of a flow on a sphere; the readout adds their indices and always gets 2, and on a torus always 0.' },
+        { num: '6.17', kind: 'Model', name: 'SIR epidemic model and the threshold theorem', deps: ['ode-6.1', 'ode-5.15'], refs: ['Hirsch–Smale–Devaney ch. 11'],
+          pic: 'Set the contact and recovery rates; the epidemic curve takes off only when R₀S(0) > 1, and the final susceptible fraction read from the conserved quantity matches the simulation.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -320,6 +353,12 @@ export default {
           pic: 'Two uncoupled oscillators wind around a torus; with a rational frequency ratio the orbit closes and with an irrational one it fills the torus densely, then coupling locks the phases.' },
         { num: '8.17', kind: 'Model', name: 'Kuramoto model of synchronization', deps: ['ode-8.12'], refs: ['Strogatz ch. 4'],
           pic: 'A crowd of oscillators with spread-out natural frequencies is coupled with strength K; above a critical K a synchronized cluster forms, measured by the order parameter r(t).' },
+        { num: '8.18', kind: 'Paradox', name: 'Paradox of enrichment', deps: ['ode-8.13', 'ode-6.8'], refs: ['Hirsch–Smale–Devaney ch. 11'],
+          pic: 'Raise the prey’s carrying capacity in a predator–prey model with saturating predation; the steady coexistence point loses stability through a Hopf bifurcation and the populations swing into ever wider cycles.' },
+        { num: '8.19', kind: 'Model', name: 'Oscillating chemical reactions (CIMA/BZ)', deps: ['ode-8.13', 'ode-7.3'], refs: ['Strogatz §8.3'],
+          pic: 'In the Lengyel–Epstein model, slide the feed parameter across the computed Hopf threshold; the concentrations switch from a steady state to sustained oscillation, with a trapping region drawn around the cycle.' },
+        { num: '8.20', kind: 'Phenomenon', name: 'Hysteresis in the driven pendulum and Josephson junction', deps: ['ode-8.15', 'ode-6.10'], refs: ['Strogatz §8.5'],
+          pic: 'Ramp the applied torque on a damped pendulum up and down; it starts rotating at one torque but keeps rotating down to a lower one, as a homoclinic bifurcation and a saddle-node on the cylinder bracket the bistable range.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -334,9 +373,9 @@ export default {
           pic: 'Advect a disc of initial conditions in a Hamiltonian flow; it shears into a long filament but its area readout stays constant, and H along each point stays fixed.' },
         { num: '9.3', kind: 'Theorem', name: 'No asymptotically stable equilibria in Hamiltonian systems', deps: ['ode-9.2'], refs: ['Teschl §8.3'],
           pic: 'Search for an attracting equilibrium by editing H; the eigenvalues of every equilibrium come in ± pairs (shown in the complex plane), so an attracting basin would shrink area, which the flow forbids.' },
-        { num: '9.4', kind: 'Theorem', name: 'Poincaré recurrence theorem', deps: ['ode-9.2', 'rca-2.20'], refs: ['Teschl §8.3'],
+        { num: '9.4', kind: 'Theorem', name: 'Poincaré recurrence theorem', deps: ['ode-9.2', 'rca-2.20'], refs: ['Teschl ch. 8'],
           pic: 'Flow a small patch inside a bounded energy shell; the patch is marked whenever it returns to overlap its starting position, and returns keep happening however small it is made.' },
-        { num: '9.5', kind: 'Definition', name: 'Poisson brackets and conserved quantities', deps: ['ode-9.1'], refs: ['Teschl §8.4'],
+        { num: '9.5', kind: 'Definition', name: 'Poisson brackets and conserved quantities', deps: ['ode-9.1'], refs: ['Teschl ch. 8'],
           pic: 'Pick a function F(q, p); its rate of change along the flow equals {F, H}, plotted along trajectories, and is identically zero for the conserved quantities found by the reader.' },
         { num: '9.6', kind: 'Theorem', name: 'Liouville–Arnold theorem: invariant tori', deps: ['ode-9.5', 'ode-8.16'], refs: ['Teschl §8.4'],
           pic: 'For two uncoupled oscillators (two integrals), trajectories in 4D phase space are projected onto a 3D view and wind on nested tori; the frequencies on each torus are read out.' },
@@ -344,8 +383,120 @@ export default {
           pic: 'An orbit around a central mass is integrated with energy, angular momentum and the Runge–Lenz vector displayed; all stay constant, and perturbing the force law makes the ellipse precess.' },
         { num: '9.8', kind: 'Theorem', name: 'KAM theorem', deps: ['ode-9.6'], refs: ['Teschl §8.6'],
           pic: 'A Poincaré section of a weakly perturbed integrable system shows most invariant curves deformed but intact; raising the perturbation destroys those with nearly rational frequency ratio first.' },
-        { num: '9.9', kind: 'Method', name: 'Symplectic integration', deps: ['ode-9.2', 'ode-2.10'], refs: ['Teschl §8.3'],
+        { num: '9.9', kind: 'Method', name: 'Symplectic integration', deps: ['ode-9.2', 'ode-2.10'], refs: ['Teschl ch. 8'],
           pic: 'Run explicit Euler and the symplectic Euler/leapfrog method side by side on a pendulum; the first spirals out with growing energy error while the second keeps the energy error bounded for long times.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 10
+    {
+      n: 10,
+      title: 'Higher-dimensional flows and the Lorenz equations',
+      summary: String.raw`In three dimensions trajectories can weave around each other forever without settling down. The Lorenz equations, derived from a convection model and realized by a chaotic waterwheel, contract volume yet never repeat: their attractor is a strange, fractal object on which nearby trajectories separate exponentially. Lyapunov exponents measure that separation, the Lorenz map reduces the flow to a one-dimensional map, and delay embedding reconstructs such attractors from a single measured signal.`,
+      items: [
+        { num: '10.1', kind: 'Definition', name: 'Attracting sets and attractors', deps: ['ode-5.4', 'ode-5.12'], refs: ['Teschl §8.1'],
+          pic: 'Release a cloud of points and flow it forward; the cloud collapses onto an attracting set, and the reader can test minimality by trying to find a smaller invariant piece that still attracts the cloud.' },
+        { num: '10.2', kind: 'Model', name: 'The chaotic (Malkus) waterwheel', deps: ['ode-3.1'], refs: ['Strogatz §9.1'],
+          pic: 'Leaky cups on a tilted wheel fill from a tap; at low flow rate the wheel turns steadily, at high rate it reverses direction erratically, and the angular velocity trace is shown next to the Lorenz variables it obeys.' },
+        { num: '10.3', kind: 'Model', name: 'The Lorenz equations', deps: ['ode-10.2'], refs: ['Strogatz §9.2', 'Teschl §8.2'],
+          pic: 'Integrate the Lorenz system in 3D with sliders for σ, ρ and β; at ρ = 28 the trajectory traces the butterfly, switching wings at irregular intervals that are plotted as a sequence.' },
+        { num: '10.4', kind: 'Theorem', name: 'Lorenz flow contracts volume and has a trapping ellipsoid', deps: ['ode-10.3', 'ode-5.17'], refs: ['Strogatz §9.2'],
+          pic: 'A ball of initial conditions shrinks in volume by e^{−(σ+1+β)t} (measured from a tetrahedral mesh) while an ellipsoid drawn around the attractor is shown to have inflowing field on its surface.' },
+        { num: '10.5', kind: 'Phenomenon', name: 'Bifurcations of the Lorenz system as ρ grows', deps: ['ode-10.3', 'ode-8.5', 'ode-8.14'], refs: ['Strogatz §9.2'],
+          pic: 'Slide ρ from 0 to 30: the origin undergoes a pitchfork at ρ = 1, the two convection states lose stability in a subcritical Hopf near ρ ≈ 24.7, and the eigenvalues are tracked live.' },
+        { num: '10.6', kind: 'Phenomenon', name: 'The Lorenz strange attractor', deps: ['ode-10.4', 'ode-10.1'], refs: ['Strogatz §9.3'],
+          pic: 'Rotate the attractor in 3D and slice it with a plane; the section looks like a few sheets that, on zooming, split into more and more layers — infinitely many surfaces with zero total volume.' },
+        { num: '10.7', kind: 'Phenomenon', name: 'Sensitive dependence and the butterfly effect', deps: ['ode-10.6', 'ode-2.6'], refs: ['Strogatz §9.3'],
+          pic: 'Start two Lorenz trajectories 10⁻⁹ apart; their separation on a log scale climbs in a straight line until it saturates at the attractor size, and the prediction horizon is read from the crossing of a tolerance.' },
+        { num: '10.8', kind: 'Definition', name: 'Lyapunov exponents of a flow', deps: ['ode-10.7', 'ode-2.7'], refs: ['Strogatz §9.3'],
+          pic: 'Track an infinitesimal ellipsoid along a trajectory using the variational equation with repeated orthonormalization; the running averages of its log axis growth rates converge to the spectrum of exponents.' },
+        { num: '10.9', kind: 'Method', name: 'The Lorenz map', deps: ['ode-10.6'], refs: ['Strogatz §9.4'],
+          pic: 'Record successive maxima zₙ of the Lorenz variable z and plot zₙ₊₁ against zₙ; the points fall on a thin tent-shaped curve whose slope exceeds 1 everywhere, ruling out stable cycles.' },
+        { num: '10.10', kind: 'Phenomenon', name: 'Transient chaos and intermittency', deps: ['ode-10.6'], refs: ['Strogatz §9.5'],
+          pic: 'Sweep ρ through the Lorenz parameter space; for some values trajectories wander chaotically before settling, for others long laminar stretches are broken by chaotic bursts, timed and histogrammed.' },
+        { num: '10.11', kind: 'Phenomenon', name: 'Synchronized chaos and masked messages', deps: ['ode-10.7'], refs: ['Strogatz §9.6'],
+          pic: 'Drive a receiver Lorenz system with one signal from a transmitter; the receiver locks onto the chaotic transmitter, so subtracting reveals a small message hidden in the chaotic carrier.' },
+        { num: '10.12', kind: 'Model', name: 'The Rössler attractor', deps: ['ode-10.6'], refs: ['Strogatz §12.3'],
+          pic: 'Increase c in the Rössler system: a limit cycle doubles its period repeatedly before becoming a folded band of chaos, with the stretching and folding visible on a rotating 3D view.' },
+        { num: '10.13', kind: 'Model', name: 'Forced double-well (Duffing) oscillator', deps: ['ode-10.7', 'ode-7.12'], refs: ['Strogatz §12.5'],
+          pic: 'Drive a particle in a double well with adjustable forcing; its stroboscopic samples settle on a cycle at low forcing and spread over a strange attractor at high forcing, displayed as a Poincaré section.' },
+        { num: '10.14', kind: 'Theorem', name: 'Takens’ delay-embedding theorem', deps: ['ode-10.6'], refs: ['Strogatz §12.4'],
+          pic: 'From a single measured coordinate x(t), plot (x(t), x(t+τ), x(t+2τ)); with a good delay the reconstructed object reproduces the attractor’s shape, and too small a delay squashes it onto the diagonal.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 11
+    {
+      n: 11,
+      title: 'One-dimensional maps',
+      summary: String.raw`Iterating a map of an interval is the simplest setting for chaos. The logistic map passes through a cascade of period doublings into chaos, with periodic windows inside it and scaling constants that are the same for every smooth unimodal map — Feigenbaum’s universality. Period three forces every other period (Sharkovskii, Li–Yorke), symbolic dynamics turns chaotic orbits into sequences of symbols, and Lyapunov exponents and invariant densities quantify the chaos.`,
+      items: [
+        { num: '11.1', kind: 'Definition', name: 'Maps, orbits and cobweb diagrams', deps: [], refs: ['Strogatz §10.1', 'Teschl §10.1'],
+          pic: 'Draw a map on the unit square; clicking a starting point produces its cobweb between the graph and the diagonal, revealing convergence, cycles or wandering.' },
+        { num: '11.2', kind: 'Theorem', name: 'Stability of fixed points and cycles of maps', deps: ['ode-11.1', 'pma-5.10'], refs: ['Teschl §10.2', 'Teschl §10.4'],
+          pic: 'Slide the slope of a map at its fixed point through ±1; the cobweb converges monotonically, spirals in, spirals out or escapes, matching the multiplier readout.' },
+        { num: '11.3', kind: 'Model', name: 'The logistic map', deps: ['ode-11.1'], refs: ['Strogatz §10.2', 'Teschl §10.1'],
+          pic: 'Iterate xₙ₊₁ = r xₙ(1 − xₙ) with an r slider; the time series settles to a point, a 2-cycle, a 4-cycle or never settles, shown alongside the cobweb.' },
+        { num: '11.4', kind: 'Phenomenon', name: 'Period-doubling cascade and the orbit diagram', deps: ['ode-11.3', 'ode-11.2'], refs: ['Strogatz §10.2', 'Teschl §11.1'],
+          pic: 'Build the orbit diagram by plotting long-time iterates against r; zoom into any branch point to see doublings accumulate geometrically at r∞ ≈ 3.5699.' },
+        { num: '11.5', kind: 'Theorem', name: 'Flip bifurcation at multiplier −1', deps: ['ode-11.2'], refs: ['Strogatz §10.3'],
+          pic: 'As r passes 3 the fixed point’s multiplier crosses −1 (readout) and a 2-cycle is born from it; plotting f∘f shows its two new fixed points appearing in a pitchfork.' },
+        { num: '11.6', kind: 'Phenomenon', name: 'Periodic windows and tangent bifurcations', deps: ['ode-11.4', 'ode-8.3'], refs: ['Strogatz §10.4'],
+          pic: 'Zoom into the period-3 window near r ≈ 3.83: the graph of f³ touches the diagonal in a tangent bifurcation, and just before it the time series shows intermittent bursts between near-periodic stretches.' },
+        { num: '11.7', kind: 'Definition', name: 'Lyapunov exponent of a map', deps: ['ode-11.3'], refs: ['Strogatz §10.5'],
+          pic: 'The running average of ln|f′(xₙ)| along an orbit is plotted against r beneath the orbit diagram; it dips negative in every periodic window and is positive in the chaotic bands.' },
+        { num: '11.8', kind: 'Phenomenon', name: 'Feigenbaum universality', deps: ['ode-11.4'], refs: ['Strogatz §10.6'],
+          pic: 'Compute the bifurcation points of the logistic map and of the sine map; the ratios of successive gaps converge to the same δ ≈ 4.669 for both, shown in a table as more doublings are located.' },
+        { num: '11.9', kind: 'Method', name: 'Renormalization of unimodal maps', deps: ['ode-11.8'], refs: ['Strogatz §10.7'],
+          pic: 'Take f∘f near its maximum, flip and rescale it by α ≈ −2.5; repeating the operation, the graphs converge to a universal function, overlaid after each step.' },
+        { num: '11.10', kind: 'Theorem', name: 'Period three implies chaos (Li–Yorke)', deps: ['ode-11.1', 'pma-4.23'], refs: ['Teschl §11.2'],
+          pic: 'For a continuous map with a 3-cycle, intervals I₀ and I₁ covering each other are highlighted; following the covering graph produces periodic points of every period, located numerically.' },
+        { num: '11.11', kind: 'Theorem', name: 'Sharkovskii’s theorem', deps: ['ode-11.10'], refs: ['Teschl §11.2'],
+          pic: 'The Sharkovskii ordering 3 ▷ 5 ▷ 7 ▷ … ▷ 2ⁿ ▷ … ▷ 4 ▷ 2 ▷ 1 is laid out; pick a map with a cycle of period p and every period after p in the ordering is found, those before it are not.' },
+        { num: '11.12', kind: 'Definition', name: 'Devaney’s definition of chaos', deps: ['ode-11.3'], refs: ['Teschl §11.3'],
+          pic: 'Three panels test a map for sensitive dependence, topological transitivity and dense periodic points: pairs of nearby orbits separate, one orbit visits every subinterval, and periodic points fill the interval.' },
+        { num: '11.13', kind: 'Model', name: 'The tent map and its Cantor-set repeller', deps: ['ode-11.12', 'pma-2.44'], refs: ['Teschl §11.4'],
+          pic: 'For a tent map with peak above 1, points that leave [0, 1] are removed at each iterate; the survivors form a Cantor set, built level by level.' },
+        { num: '11.14', kind: 'Theorem', name: 'Logistic map at r = 4 is conjugate to the tent map', deps: ['ode-11.13', 'ode-11.3'], refs: ['Teschl §11.4'],
+          pic: 'Push an orbit of the full tent map through h(y) = sin²(πy/2); it becomes an orbit of the logistic map at r = 4, checked step by step, so both share periodic points and Lyapunov exponent ln 2.' },
+        { num: '11.15', kind: 'Method', name: 'Symbolic dynamics and the shift map', deps: ['ode-11.13'], refs: ['Teschl §11.5'],
+          pic: 'Each orbit of the doubling map x ↦ 2x mod 1 is coded by its binary digits; the map simply shifts the sequence, so orbits with any prescribed itinerary can be typed in and are realized.' },
+        { num: '11.16', kind: 'Phenomenon', name: 'Invariant density of the chaotic logistic map', deps: ['ode-11.14', 'rca-2.20'], refs: ['Teschl ch. 11'],
+          pic: 'A histogram of a long orbit at r = 4 converges to the density 1/(π√(x(1 − x))), overlaid; at r = 3.8 the histogram is spiky and has no simple formula.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 12
+    {
+      n: 12,
+      title: 'Fractals, horseshoes and homoclinic chaos',
+      summary: String.raw`Strange attractors are fractals, so we need dimensions that need not be integers: similarity, box-counting and correlation dimension. Stretching and folding is the universal mechanism behind them, distilled in the baker’s map, the Hénon map and Smale’s horseshoe, which contains a full shift. A transverse homoclinic orbit always produces a horseshoe (Smale–Birkhoff), and Melnikov’s method detects when a perturbation creates one.`,
+      items: [
+        { num: '12.1', kind: 'Theorem', name: 'The Cantor set: uncountable, null and self-similar', deps: ['pma-2.44', 'pma-2.43'], refs: ['Strogatz §11.2'],
+          pic: 'Remove middle thirds level by level; the remaining length tends to 0 while the ternary-address tree keeps branching, and zooming into any piece reproduces the whole.' },
+        { num: '12.2', kind: 'Definition', name: 'Similarity dimension', deps: ['ode-12.1'], refs: ['Strogatz §11.3'],
+          pic: 'Build self-similar fractals from m copies scaled by r; the dimension ln m / ln(1/r) is read out, and the Koch curve’s value lies strictly between 1 and 2.' },
+        { num: '12.3', kind: 'Paradox', name: 'The Koch snowflake: infinite perimeter, finite area', deps: ['ode-12.2', 'pma-3.26'], refs: ['Strogatz §11.3'],
+          pic: 'Add Koch iterations one at a time; the perimeter readout grows by a factor 4/3 each step while the enclosed area converges to 8/5 of the original triangle.' },
+        { num: '12.4', kind: 'Definition', name: 'Box-counting dimension', deps: ['ode-12.2'], refs: ['Strogatz §11.4'],
+          pic: 'Cover a fractal or a point cloud from an attractor with grids of shrinking box size ε; the slope of log N(ε) against log(1/ε) is fitted live.' },
+        { num: '12.5', kind: 'Definition', name: 'Correlation dimension', deps: ['ode-12.4', 'ode-10.6'], refs: ['Strogatz §11.5'],
+          pic: 'For points sampled from the Lorenz attractor, the fraction of pairs closer than ε is plotted on log–log axes; the slope of the scaling region estimates a dimension near 2.05.' },
+        { num: '12.6', kind: 'Model', name: 'The baker’s map', deps: ['ode-11.15'], refs: ['Strogatz §12.1'],
+          pic: 'Stretch a square to twice its width, cut and stack it; repeated iterations mix a coloured image into fine stripes, and with compression the attractor becomes a Cantor set of lines.' },
+        { num: '12.7', kind: 'Model', name: 'The Hénon map', deps: ['ode-12.6'], refs: ['Strogatz §12.2'],
+          pic: 'Iterate the Hénon map at a = 1.4, b = 0.3 and zoom repeatedly into the attractor; each apparent curve resolves into more parallel curves, while the Jacobian b is read out as the area contraction.' },
+        { num: '12.8', kind: 'Theorem', name: 'Smale horseshoe', deps: ['ode-12.6', 'ode-11.15'], refs: ['Teschl §13.1', 'Strogatz §12.1'],
+          pic: 'Stretch a square into a horseshoe and lay it back over itself; the points that stay forever under forward and backward iteration form a Cantor dust, each labelled by a bi-infinite symbol sequence.' },
+        { num: '12.9', kind: 'Theorem', name: 'Stable and unstable manifolds of periodic orbits', deps: ['ode-6.4', 'ode-7.12'], refs: ['Teschl §12.3'],
+          pic: 'For a saddle fixed point of a Poincaré map, the stable and unstable curves are grown from short eigen-segments by iterating backward and forward, and drawn in contrasting colours.' },
+        { num: '12.10', kind: 'Phenomenon', name: 'Homoclinic tangle', deps: ['ode-12.9', 'ode-6.11'], refs: ['Teschl §11.7'],
+          pic: 'Perturb a separatrix loop periodically; the stable and unstable manifolds of the saddle now cross transversally, and each crossing forces infinitely many more, drawn as the curves are extended.' },
+        { num: '12.11', kind: 'Theorem', name: 'Smale–Birkhoff homoclinic theorem', deps: ['ode-12.10', 'ode-12.8'], refs: ['Teschl §13.2'],
+          pic: 'Near a transverse homoclinic point a small box is iterated until it returns stretched and folded across itself; the horseshoe inside is highlighted and its symbolic coding displayed.' },
+        { num: '12.12', kind: 'Method', name: 'Melnikov’s method', deps: ['ode-12.10', 'ode-2.14'], refs: ['Teschl §12.4', 'Teschl §13.3'],
+          pic: 'For a periodically forced, damped pendulum, the Melnikov function M(t₀) is computed and plotted; its simple zeros appear exactly when the numerically computed manifolds start to cross.' },
+        { num: '12.13', kind: 'Phenomenon', name: 'Fractal basin boundaries', deps: ['ode-10.13', 'ode-5.12'], refs: ['Strogatz §12.5'],
+          pic: 'Colour initial conditions of the forced double-well oscillator by the well they end in; zooming into the boundary reveals interleaved stripes at every scale, so final states cannot be predicted near it.' },
+        { num: '12.14', kind: 'Theorem', name: 'Shilnikov’s theorem (saddle-focus homoclinic chaos)', deps: ['ode-12.11'], refs: ['Hirsch–Smale–Devaney ch. 16'],
+          pic: 'In a 3D flow with a homoclinic orbit to a saddle-focus, slide the ratio of the real eigenvalues; when the spiralling is stronger than the expansion, nearby trajectories show horseshoes and chaotic return times.' },
       ],
     },
   ],

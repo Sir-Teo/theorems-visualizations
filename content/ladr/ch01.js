@@ -45,7 +45,7 @@ const disc = (r) => (x, y) => { const n = Math.hypot(x, y); return n > r ? [(x *
  */
 function scene3(v, S, o = {}) {
   const M = v.M;
-  const sc = { yaw: o.yaw ?? -0.62, pitch: o.pitch ?? 0.34, L: o.axis ?? 1.75, lim: o.lim ?? 1.6, labels: o.labels ?? ['x', 'y', 'z'], q: [], top: [], hs: [] };
+  const sc = { yaw: o.yaw ?? -0.62, pitch: o.pitch ?? 0.34, L: o.axis ?? 1.5, lim: o.lim ?? 1.45, labels: o.labels ?? ['x', 'y', 'z'], q: [], top: [], hs: [] };
   let ex = [1, 0, 0], ey = [0, 0, 1], ez = [0, 1, 0];
   const basis = () => {
     const cy = Math.cos(sc.yaw), sy = Math.sin(sc.yaw), cp = Math.cos(sc.pitch), sp = Math.sin(sc.pitch);
@@ -239,9 +239,9 @@ for $a,b,c,d\in\R$. The real number $a$ is identified with $a+0i$, so $\R\subset
         const cx = v.cx;
         const prop = v.select('', [{ value: 'comm', label: 'commutativity' }, { value: 'assoc', label: 'associativity' }, { value: 'dist', label: 'distributivity' }, { value: 'inv', label: 'identities & inverses' }], 'dist');
         const S = v.stage({ x: [-3, 3], y: [-2.7, 2.7], equal: true, height: 420, ticks: false, xlabel: 'Re', ylabel: 'Im' });
-        const A = S.handle(1.15, 0.4, { color: 'blue', label: 'α', constrain: (x, y) => { const [u, w] = disc(1.6)(x, y); return prop.value === 'inv' && Math.hypot(u, w) < 0.07 ? [0, 0] : [u, w]; } });
-        const B = S.handle(-0.3, 1.05, { color: 'orange', label: 'β', constrain: disc(1.6) });
-        const L = S.handle(0.85, 0.7, { color: 'purple', label: 'λ', constrain: disc(1.45) });
+        const A = S.handle(1.1, 0.7, { color: 'blue', label: 'α', constrain: (x, y) => { const [u, w] = disc(1.6)(x, y); return prop.value === 'inv' && Math.hypot(u, w) < 0.07 ? [0, 0] : [u, w]; } });
+        const B = S.handle(-0.45, 1.15, { color: 'orange', label: 'β', constrain: disc(1.6) });
+        const L = S.handle(0.95, 0.55, { color: 'purple', label: 'λ', constrain: disc(1.45) });
         const pt = (z) => [z.re, z.im];
         let st = {};
         v.render(() => {
@@ -281,6 +281,7 @@ for $a,b,c,d\in\R$. The real number $a$ is identified with $a+0i$, so $\R\subset
             S.dot(0, 0, { r: 4, color: 'ink' }); S.tex('0', 0, 0, { dx: -10, dy: 12, size: 13, color: 'muted' });
             S.dot(1, 0, { r: 4, color: 'ink' }); S.tex('1', 1, 0, { dx: 8, dy: 13, size: 13, color: 'muted' });
             const zero = a.abs() < 1e-9;
+            if (!zero) arrow2(S, [0, 0], pt(a), 'blue');
             arrow2(S, [0, 0], pt(a.neg()), 'teal', '-\\alpha');
             if (!zero) {
               const inv = a.inv(), cj = a.conj(), far = inv.abs() > 2.6;
@@ -428,7 +429,7 @@ is the set of all lists of length $n$ of elements of $\mathbf F$, and for $(x_1,
           const A = along([z, x, xy], s), B = along([z, y, xy], s);
           sc.path(A.done, { color: 'gold', width: 8, alpha: 0.3, top: true }); sc.path(B.done, { color: 'teal', width: 8, alpha: 0.25, top: true });
           sc.dot(A.p, { color: 'gold', r: 6 }); sc.dot(B.p, { color: 'teal', r: 6 }); sc.dot(xy, { color: 'green', r: 5 });
-          sc.tex('x+y=y+x', xy, { color: 'green', dx: 48, dy: -4 });
+          sc.tex('x+y=y+x', xy, { color: 'green', align: 'left', dx: 10, dy: -12 });
           sc.flush();
         }, { period: 4.6, still: 1.6 });
         v.readout(() => {
@@ -484,13 +485,12 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
         // elements: plane (u, w), polynomials by their values at −1, 0, 1, functions on {1,2,3} by their values
         const U = PL.handle(1.3, 0.9, { color: 'blue', label: 'u', constrain: (x, y) => [x, which.value === 'H' ? Math.max(0, y) : y] });
         const W = PL.handle(-0.6, 1.4, { color: 'orange', label: 'w', constrain: (x, y) => [x, which.value === 'H' ? Math.max(0, y) : y] });
-        const NODES = [-1, 0, 1], clampY = (lo, hi) => (x, y) => [x, M.clamp(y, lo, hi)];
+        const NODES = [-1, 0, 1];
         const pu = NODES.map((x, k) => G.handle(x, [0.8, -0.4, 0.6][k], { color: 'blue', r: 6, constrain: (xx, y) => [x, M.clamp(y, -1.8, 1.8)] }));
         const pw = NODES.map((x, k) => G.handle(x, [-0.6, 0.9, 1.2][k], { color: 'orange', r: 6, constrain: (xx, y) => [x, M.clamp(y, -1.8, 1.8)] }));
         const BX = [1, 2, 3];
         const fu = BX.map((x, k) => G.handle(x - 0.17, [1.1, -0.6, 0.5][k], { color: 'blue', r: 6, constrain: (xx, y) => [x - 0.17, M.clamp(y, -1.6, 1.6)] }));
         const fw = BX.map((x, k) => G.handle(x + 0.17, [0.4, 1.0, -0.9][k], { color: 'orange', r: 6, constrain: (xx, y) => [x + 0.17, M.clamp(y, -1.6, 1.6)] }));
-        void clampY;
         const quad = (p) => (x) => p[0] * (x * (x - 1)) / 2 + p[1] * (1 - x * x) + p[2] * (x * (x + 1)) / 2;
         const ROWS = [
           ['addition stays in V', 'u+w\\in V'],
@@ -552,7 +552,7 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
             const f = quad(u), g = quad(w), s = quad(add(u, w)), af = quad(smul(a, u));
             G.fn(af, { color: 'purple', width: 2, dash: [6, 4] });
             G.fn(f, { color: 'blue', width: 2.4 }); G.fn(g, { color: 'orange', width: 2.4 }); G.fn(s, { color: 'green', width: 3 });
-            G.tex('u', 1.85, f(1.85), { color: 'blue', dx: 10 }); G.tex('w', 1.85, g(1.85), { color: 'orange', dx: 10 });
+            G.tex('u', 1.9, M.clamp(f(1.9), -2.9, 2.9), { color: 'blue', dx: 10 }); G.tex('w', 1.9, M.clamp(g(1.9), -2.9, 2.9), { color: 'orange', dx: 10 });
             v.legend([['blue', '$u$'], ['orange', '$w$'], ['green', '$u+w$'], ['purple', '$au$', { dash: true }]]);
           } else if (K.kind === 'bars') {
             u = fu.map((h) => h.y); w = fw.map((h) => h.y);
@@ -610,9 +610,9 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
         const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'sh', label: 'shifted: $u\\oplus w=u+w-c$' }, { value: 'pos', label: '$(0,\\infty)$, $x\\oplus y=xy$' }], 'sh');
         const S = v.stage({ x: [-2.8, 2.8], y: [-2.1, 2.1], equal: true, height: 380, ticks: false });
         const NL = v.stage({ x: [-3.3, 3.3], y: [-0.75, 3], height: 380, axes: false });
-        const Cc = S.handle(0.9, 0.6, { color: 'green', label: 'c' });
+        const Cc = S.handle(0.9, 0.6, { color: 'green' });
         const zeroOf = () => (sp.value === 'sh' ? [Cc.x, Cc.y] : [0, 0]);
-        const E = S.handle(-1.2, -0.9, { color: 'red', label: "0′", constrain: (x, y) => { const z = zeroOf(); return Math.hypot(x - z[0], y - z[1]) < 0.12 ? z : [x, y]; } });
+        const E = S.handle(-0.3, -0.7, { color: 'red', label: "0′", constrain: (x, y) => { const z = zeroOf(); return Math.hypot(x - z[0], y - z[1]) < 0.12 ? z : [x, y]; } });
         const EL = NL.handle(1.3, 0, { color: 'red', label: "0′", constrain: (x) => [Math.abs(x) < 0.08 ? 0 : M.clamp(x, -3, 3), 0] });
         const TESTS = [[-1.9, 1.3], [1.7, 1.45], [0.5, -1.5], [-1.6, -0.2]];
         const TL = [-2.1, 0.6, 1.7]; // test vectors in (0,∞), as log₂ x
@@ -636,7 +636,7 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
             S.tex('v\\oplus 0\'', ...op(TESTS[0], e), { color: 'red', dx: 0, dy: 16, size: 13 });
             S.dot(c[0], c[1], { r: 6, color: 'green' });
             if (m !== 'sh') S.tex('0', 0, 0, { dx: -10, dy: 12, size: 14, color: 'green' });
-            else S.tex('0_V', c[0], c[1], { dx: 20, dy: 14, size: 14, color: 'green' });
+            else S.tex('0_V = c', c[0], c[1], { align: 'left', dx: 10, dy: 14, size: 14, color: 'green' });
             if (m !== 'pos') st = { m, e, z: c, op, ok: Math.hypot(e[0] - c[0], e[1] - c[1]) < 1e-9 };
           }
           // ---- (0,∞) as a log-scale line
@@ -659,12 +659,10 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
         });
         v.readout(() => {
           const s = st; if (!s.m) return '';
-          const mark = (b) => (b ? '<span style="color:var(--c-green)">✓</span>' : '<span style="color:var(--c-red)">✗</span>');
-          void mark;
-          let val, e0, z0, last;
+          let e0, z0, last;
           if (s.m === 'pos') {
-            val = (x) => fmtPos(x); e0 = val(s.e); z0 = '1';
-            last = `$0' = ${e0}$, $\\;0'\\oplus 1 = ${val(s.e * 1)}$ (because $1$ is the identity), $\\;1\\oplus 0' = ${val(1 * s.e)}$ (commutativity), and the last link "$1\\oplus0' = 1$" — the hypothesis that $0'$ is an identity, tested on $v=1$ — `;
+            e0 = fmtPos(s.e); z0 = '1';
+            last = `$0' = ${e0}$, $\\;0'\\oplus 1 = ${fmtPos(s.e * 1)}$ (because $1$ is the identity), $\\;1\\oplus 0' = ${fmtPos(1 * s.e)}$ (commutativity), and the last link "$1\\oplus0' = 1$" — the hypothesis that $0'$ is an identity, tested on $v=1$ — `;
           } else {
             e0 = vtex(s.e); z0 = vtex(s.z);
             last = `$0' = ${e0}$, $\\;0'\\oplus 0 = ${vtex(s.op(s.e, s.z))}$ (because $0$ is the identity), $\\;0\\oplus 0' = ${vtex(s.op(s.z, s.e))}$ (commutativity), and the last link "$0\\oplus0' = 0$" — the hypothesis that $0'$ is an identity, tested on $v=0$ — `;
@@ -810,18 +808,24 @@ The steps use the additive identity, the hypothesis $v+w'=0$, associativity (and
           };
           // scalar panel
           if (m === 'C') F.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 4] }); else F.line(-2.5, 0, 2.5, 0, { color: 'purple', width: 3, alpha: 0.25 });
-          F.dot(1, 0, { r: 3, color: 'muted' }); F.tex('1', 1, 0, { dy: 13, size: 12, color: 'muted' });
-          F.tex(m === 'C' ? `a = ${ctex(a)}` : `a = ${tn(a.re)}`, 0, 1.75, { color: 'purple', size: 15 });
-          // vectors panel: original grid faint, image grid, tracks of lattice points
+          for (const [x, y, l] of [[1, 0, '1'], [-1, 0, '-1'], [0, 0, '0']]) { F.dot(x, y, { r: 3, color: 'muted' }); F.tex(l, x, y, { dy: 13, dx: 6, size: 12, color: 'muted' }); }
+          if (m === 'C') { F.dot(0, 1, { r: 3, color: 'muted' }); F.tex('i', 0, 1, { dx: 9, dy: -9, size: 12, color: 'muted' }); }
+          F.tex(m === 'C' ? `a = ${ctex(a)}` : `a = ${tn(a.re)}`, F.bounds.x[0], F.bounds.y[1], { color: 'purple', size: 15, align: 'left', baseline: 'top', dx: 10, dy: 8 });
+          // vectors panel: original grid (faint), its image, and the track of each lattice point as the scalar
+          // runs from 1 to a (a spiral t ↦ a^t v for complex a, a straight segment for real a or the bad rule)
+          const track = (p) => {
+            if (m === 'C' && a.abs() > 1e-6) { const la = a.log(), out = []; for (let k = 0; k <= 24; k++) { const z = cx(p[0], p[1]).mul(la.scale(k / 24).exp()); out.push([z.re, z.im]); } return out; }
+            return [p, act(p)];
+          };
           for (let k = -3; k <= 3; k++) {
-            S.line(k * 0.5 - 1.5 + 1.5, -1.5, k * 0.5, 1.5, { color: 'grid', width: 1 });
-            S.line(-1.5, k * 0.5, 1.5, k * 0.5, { color: 'grid', width: 1 });
+            S.line(k * 0.5, -1.5, k * 0.5, 1.5, { color: 'faint', width: 1, alpha: 0.35 });
+            S.line(-1.5, k * 0.5, 1.5, k * 0.5, { color: 'faint', width: 1, alpha: 0.35 });
             const p1 = act([k * 0.5, -1.5]), p2 = act([k * 0.5, 1.5]), q1 = act([-1.5, k * 0.5]), q2 = act([1.5, k * 0.5]);
-            S.line(p1[0], p1[1], p2[0], p2[1], { color: 'accent', width: 1, alpha: 0.45 }); S.line(q1[0], q1[1], q2[0], q2[1], { color: 'accent', width: 1, alpha: 0.45 });
+            S.line(p1[0], p1[1], p2[0], p2[1], { color: 'accent', width: 1, alpha: 0.4 }); S.line(q1[0], q1[1], q2[0], q2[1], { color: 'accent', width: 1, alpha: 0.4 });
           }
           for (let i = -3; i <= 3; i++) for (let j = -3; j <= 3; j++) {
             const p = [i * 0.5, j * 0.5], q = act(p);
-            if (Math.hypot(q[0] - p[0], q[1] - p[1]) > 0.03) S.line(p[0], p[1], q[0], q[1], { color: 'gold', width: 1.2, alpha: 0.55 });
+            if ((i + j) % 2 === 0 && Math.max(Math.abs(i), Math.abs(j)) % 3 !== 1 && Math.hypot(q[0] - p[0], q[1] - p[1]) > 0.03) S.path(track(p), { color: 'gold', width: 1.4, alpha: 0.7 });
             S.dot(q[0], q[1], { r: 2.2, color: 'accent', ring: false });
           }
           S.path(LETTER, { color: 'muted', width: 2, alpha: 0.5 });

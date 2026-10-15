@@ -16,13 +16,14 @@ export default {
       scope: String.raw`Well-mixed populations, no age structure; the closed cycles are structurally unstable: almost any perturbation of the model breaks them.`,
       caption: String.raw`**Click** to launch a trajectory (solid forward, faint backward); it stops once it closes up. Grey curves are level sets of $H$. Turn on crowding and the cycles spiral in.`,
       viz(v) {
-        const s = v.stage({ x: [-0.25, 4.2], y: [-0.25, 3.3], height: 360, axes: 'box', xlabel: 'prey x', ylabel: 'predators y' });
+        const s = v.stage({ x: [-0.25, 4.5], y: [-0.25, 3.5], height: 360, axes: 'box', xlabel: 'prey x', ylabel: 'predators y', xticks: [0, 1, 2, 3, 4], yticks: [0, 1, 2, 3] });
         const a = v.slider('$\\alpha$ (prey growth)', 0.4, 2, 1, { step: 0.01 }), g = v.slider('$\\gamma$ (predator death)', 0.4, 2, 1, { step: 0.01 });
         const crowd = v.toggle('prey crowding, $K = 6$', false);
         const pp = v.phasePlane(s, {
           f: (x, y, t, p) => [p.a * x * (p.crowd ? 1 - x / 6 : 1) - x * y, x * y - p.g * y],
           params: { a, g, crowd },
-          H: (x, y, p) => (p.crowd ? NaN : x - p.g * Math.log(x) + y - p.a * Math.log(y)), contours: 12,
+          H: (x, y, p) => (p.crowd ? NaN : x - p.g * Math.log(x) + y - p.a * Math.log(y)),
+          contours: (p) => { const h0 = p.g - p.g * Math.log(p.g) + p.a - p.a * Math.log(p.a); return [0.03, 0.12, 0.27, 0.48, 0.75, 1.1, 1.55, 2.1, 2.8].map((d) => h0 + d); },
           seeds: [[1.9, 1], [2.9, 1]], trajColor: 'cycle', tMax: 80,
         });
         v.button('Clear trajectories', () => pp.clear());
@@ -40,16 +41,16 @@ export default {
       statement: String.raw`With time in units of $\sqrt{L/g}$, a pendulum with linear friction obeys $\ddot\theta + b\dot\theta + \sin\theta = 0$. Its equilibria are $(k\pi, 0)$: hanging down ($k$ even) is a stable spiral for $b > 0$ and a center for $b = 0$; standing up ($k$ odd) is a saddle with eigenvalues $\lambda = \tfrac12\left(-b \pm \sqrt{b^2 + 4}\right)$. The energy $E = \tfrac12\omega^2 - \cos\theta$ obeys $\dot E = -b\,\omega^2 \le 0$.`,
       caption: String.raw`**Click** to launch trajectories. The saddles' separatrices are drawn (green: stable manifold, red: unstable); the dashed grey curve is the energy level of the saddles. Slide $b$ to $0$ to recover the frictionless pendulum.`,
       viz(v) {
-        const s = v.stage({ x: [-2 * PI - 0.5, 2 * PI + 0.5], y: [-3.3, 3.3], height: 360, xticks: piTicks(-2, 2), xlabel: 'θ', ylabel: 'ω' });
+        const s = v.stage({ x: [-2 * PI - 0.5, 2 * PI + 0.5], y: [-3.6, 3.6], height: 360, axes: 'box', xticks: piTicks(-2, 2), yticks: [-3, -2, -1, 0, 1, 2, 3], xlabel: 'θ', ylabel: 'ω' });
         const b = v.slider('damping $b$', 0, 1, 0.2, { step: 0.01 });
         const pp = v.phasePlane(s, {
           f: (x, y, t, p) => [y, -Math.sin(x) - p.b * y], params: { b },
-          field: 'stream', separatrices: true, H: (x, y) => y * y / 2 - Math.cos(x), contours: [-0.6, 0, 0.5, 1.6, 2.6, 3.8],
+          field: 'stream', nullclines: false, separatrices: true, H: (x, y) => y * y / 2 - Math.cos(x), contours: [],
           seeds: [[-4.6, 2.75]], trajColor: 'accent', tMax: 120,
         });
         v.button('Clear trajectories', () => pp.clear());
         v.render(() => pp.draw());
-        pp.legend([['muted', 'saddle energy $E = 1$', { dash: true }]]);
+        pp.legend([['muted', 'saddle energy level $E = 1$', { dash: true }]]);
         v.readout(() => {
           const sad = pp.fixedPoints().find((f) => f.kind === 'saddle'), tr = pp.trajectories[0];
           const E = (p) => p[1] * p[1] / 2 - Math.cos(p[0]);
@@ -69,10 +70,10 @@ export default {
         const bg = v.select('background', ['potential', '|E|', 'none'], 'potential');
         const F = v.fields(s, {
           sources: [{ type: 'charge', x: -1, y: 0, q: 1 }, { type: 'charge', x: 1, y: 0, q: -1 }],
-          lines: true, lineDensity: 10, equipotentials: { n: 16 }, heat: 'potential', loop: { type: 'circle', x: -1, y: 0.15, r: 0.8 },
+          lines: true, lineDensity: 10, equipotentials: { n: 16 }, heat: 'potential', loop: { type: 'circle', x: -1.35, y: 0.3, r: 0.85, handleAngle: 2.3 },
         });
         v.render(() => {
-          const q = q2.value; F.sources[1].q = q; F.handles[1].label = (q > 0 ? '+' : q < 0 ? '−' : '') + (Math.abs(q) === 1 || q === 0 ? (q === 0 ? '0' : '') : Math.abs(q)); F.handles[1].color = q >= 0 ? 'red' : 'blue';
+          F.setStrength(1, q2.value);
           F.draw({ heat: bg.value === 'none' ? false : bg.value === '|E|' ? 'magnitude' : 'potential' });
         });
         F.legend([['red', '$+$ charge', { dot: true }], ['blue', '$-$ charge', { dot: true }]]);
@@ -119,7 +120,7 @@ export default {
         const sd = v.stage({ height: 92, axes: false, full: true });
         const s3 = v.stage3d({ height: 320, range: 1.5, yaw: -0.95, pitch: 0.32 });
         const sa = v.stage({ height: 320, axes: false, weight: 0.75, title: 'Amplitudes' });
-        const th = v.slider('$\\theta$', 0, 2 * PI, 2 * PI / 3, { step: 0.01 }), ph = v.slider('$\\varphi$', -PI, PI, 0, { step: 0.01 });
+        const th = v.slider('$\\theta$', 0, 2 * PI, 2 * PI / 3, { step: 0.01 }), ph = v.slider('$\\varphi$', -3.14, 3.14, 0, { step: 0.01 });
         const qc = Q.circuit(1).rx(th.value, 0).rz(ph.value, 0).measure();
         v.render(() => {
           qc.setTheta(0, th.value).setTheta(1, ph.value);
@@ -143,20 +144,20 @@ export default {
       viz(v) {
         const Mo = v.mol();
         const sL = v.stage3d({ height: 320, range: 1.25, axes: false, title: 'Water, H₂O', weight: 0.8, yaw: -0.3, pitch: 0.25 });
-        const sR = v.stage3d({ height: 320, range: 3, axes: false, title: 'Benzene', yaw: -0.5, pitch: 0.75 });
+        const sR = v.stage3d({ height: 320, range: 3, axes: false, yaw: -0.5, pitch: 0.75, title: 'From the built-in library' });
         const names = { C6H6: 'Benzene, C₆H₆', NH3: 'Ammonia, NH₃', CH4: 'Methane, CH₄', CO2: 'Carbon dioxide, CO₂', C2H4: 'Ethylene, C₂H₄', SF6: 'Sulfur hexafluoride, SF₆', C2H5OH: 'Ethanol, C₂H₅OH' };
         const which = v.select('', Object.keys(names).map((k) => ({ value: k, label: names[k].split(',')[0] })), 'C6H6');
         const labels = v.toggle('element labels', true);
         v.render(() => {
           const M = Mo.get(which.value); let R = 0; for (const a of M.atoms) R = Math.max(R, Math.hypot(...a.pos.map((x, i) => x - M.atoms.reduce((s, b) => s + b.pos[i], 0) / M.atoms.length)));
-          sR.o.range = Math.max(1.4, R + 0.65); sR.el.querySelector('.stage-title').textContent = names[which.value];
+          sR.zoom = 3 / Math.max(1.4, R + 0.7);
           Mo.draw3d(sL, 'H2O', { labels: labels.value });
           Mo.draw3d(sR, which.value, { labels: labels.value ? 'heavy' : false });
         });
         v.readout(() => {
           const k = which.value, M = Mo.get(k), b = M.bonds[0], heavy = M.bonds.find(([i, j]) => M.atoms[i].el !== 'H' && M.atoms[j].el !== 'H') || b;
           const ang = { NH3: [1, 0, 2], CH4: [1, 0, 2], CO2: [1, 0, 2], C2H4: [2, 0, 3], C6H6: [5, 0, 1], SF6: [1, 0, 3], C2H5OH: [0, 1, 2] }[k];
-          return `water: O–H $= ${v.fix(Mo.distance('H2O', 0, 1), 3)}$ Å, ∠H–O–H $= ${v.fix(Mo.angle('H2O', 1, 0, 2), 1)}^\\circ$ · ${M.name} (${M.formula}, $${v.fix(Mo.molarMass(k), 2)}$ g/mol): ${M.atoms[heavy[0]].el}–${M.atoms[heavy[1]].el} $= ${v.fix(Mo.distance(k, heavy[0], heavy[1]), 3)}$ Å` + (ang ? `, ∠${M.atoms[ang[0]].el}–${M.atoms[ang[1]].el}–${M.atoms[ang[2]].el} $= ${v.fix(Mo.angle(k, ...ang), 1)}^\\circ$` : '');
+          return `water: O–H $= ${v.fix(Mo.distance('H2O', 0, 1), 3)}$ Å, ∠H–O–H $= ${v.fix(Mo.angle('H2O', 1, 0, 2), 1)}^\\circ$ · ${M.name} ($${Mo.formulaTeX(k)}$, $${v.fix(Mo.molarMass(k), 2)}$ g/mol): ${M.atoms[heavy[0]].el}–${M.atoms[heavy[1]].el} $= ${v.fix(Mo.distance(k, heavy[0], heavy[1]), 3)}$ Å` + (ang ? `, ∠${M.atoms[ang[0]].el}–${M.atoms[ang[1]].el}–${M.atoms[ang[2]].el} $= ${v.fix(Mo.angle(k, ...ang), 1)}^\\circ$` : '');
         });
       },
     },
@@ -168,7 +169,7 @@ export default {
       viz(v) {
         const Mo = v.mol();
         const s = v.stage({ height: 330, axes: false, weight: 1.2 });
-        const sp = v.stage({ x: [-3.2, 3.2], y: [-0.85, 0.95], height: 330, xlabel: 'z / a₀', title: 'Along the bond axis' });
+        const sp = v.stage({ x: [-3.2, 3.2], y: [-0.85, 0.95], height: 330, axes: 'box', xticks: [-2, -1, 0, 1, 2], yticks: [-0.6, -0.3, 0, 0.3, 0.6], xlabel: 'z / a₀', ylabel: 'ψ', title: 'Along the bond axis' });
         const SP = { 'H2+': ['H', 1, 0, '\\mathrm{H_2^+}'], H2: ['H', 1, 1, '\\mathrm{H_2}'], 'H2-': ['H', 1, 2, '\\mathrm{H_2^-}'], 'He2+': ['He', 2, 1, '\\mathrm{He_2^+}'], He2: ['He', 2, 2, '\\mathrm{He_2}'] };
         const sel = v.select('species', Object.keys(SP).map((k) => ({ value: k, label: `$${SP[k][3]}$` })), 'H2');
         let info = null;
@@ -184,7 +185,7 @@ export default {
           const plus = (z) => (phi(z, -R / 2) + phi(z, R / 2)) / Math.sqrt(2 * (1 + S)), minus = (z) => (phi(z, -R / 2) - phi(z, R / 2)) / Math.sqrt(2 * (1 - S));
           sp.fn(plus, { color: 'green', width: 2.4, fill: 'green', fillAlpha: 0.12 });
           sp.fn(minus, { color: 'red', width: 2.4, fill: 'red', fillAlpha: 0.12 });
-          sp.vline(0, { color: 'red', dash: [4, 4], alpha: 0.6 });
+          sp.hline(0, { color: 'faint', width: 1 }); sp.vline(0, { color: 'red', dash: [4, 4], alpha: 0.6 });
           for (const c of [-R / 2, R / 2]) sp.dot(c, 0, { color: 'ink', r: 4.5 });
           sp.text('σ', -2.15, plus(-1.6) + 0.1, { color: 'green', math: true, size: 17 }); sp.text('σ*', 1.9, minus(1.6) - 0.12, { color: 'red', math: true, size: 17 });
           sp.text('nodal plane', 0.08, 0.86, { color: 'red', size: 11, align: 'left' });
@@ -229,7 +230,7 @@ export default {
           { type: 'R', id: 'R', value: 1e3, at: [2, 3, 5, 3] },
           { type: 'C', id: 'C', value: 100e-6, at: [5, 3, 5, 0] },
           { type: 'W', at: [5, 0, 0, 0] }, { type: 'GND', at: [2.5, 0] },
-          { type: 'label', at: [5, 3], text: 'vC', dx: 8, dy: -8 },
+          { type: 'label', at: [5, 3], text: '$v_C$', dx: 8, dy: -6 },
         ]);
         C.control('R', '$R$', 100, 10e3); C.control('C', '$C$', 10e-6, 1e-3);
         let tr = null, key = '';
@@ -239,8 +240,8 @@ export default {
           const time = (t % 6) / 6 * 5 * tau, snap = tr.at(time), nC = C.net.termNode.get('C').a;
           C.draw({ result: snap, t });
           sp.setView([0, 5 * tau * 1e3], [0, 5.6]);
-          sp.hband(V0 * (1 - Math.exp(-1)) - 0.004, V0 * (1 - Math.exp(-1)) + 0.004, { color: 'muted', alpha: 0.5 });
-          sp.vline(tau * 1e3, { color: 'muted', dash: [4, 4] }); sp.text('τ = RC', tau * 1e3, 5.35, { dx: 5, color: 'muted', size: 11.5, align: 'left' });
+          sp.hline(V0 * (1 - Math.exp(-1)), { color: 'muted', width: 1, dash: [2, 3] }); sp.text('63.2%', 5 * tau * 1e3, V0 * (1 - Math.exp(-1)), { dx: -6, dy: -9, color: 'muted', size: 11, align: 'right' });
+          sp.vline(tau * 1e3, { color: 'muted', dash: [4, 4] }); sp.text('τ = RC', tau * 1e3, 5.35, { dx: -5, color: 'muted', size: 11.5, align: 'right' });
           sp.fn((x) => V0 * (1 - Math.exp(-x / 1e3 / tau)), { color: 'ink', width: 1.4, dash: [5, 4], alpha: 0.7 });
           sp.path(tr.series(nC).map(([tt, vv]) => [tt * 1e3, vv]), { color: 'accent', width: 2.4 });
           sp.path(Array.from(tr.t, (tt, j) => [tt * 1e3, tr.i.R[j] * R]), { color: 'orange', width: 2 });
@@ -261,7 +262,7 @@ export default {
       caption: String.raw`The curve is an AC sweep of the drawn circuit (phasor MNA at 300 frequencies). Move the drive frequency $f$: the dots slosh back and forth with the current's amplitude and phase. Lower $R$ to sharpen the peak.`,
       viz(v) {
         const s = v.stage({ x: [-1.6, 6.8], y: [-1, 3.95], equal: true, height: 290, axes: false });
-        const sp = v.stage({ x: [2, 4.5], y: [0, 110], height: 290, axes: 'box', xticks: [[2, '100 Hz'], [2.5, ''], [3, '1 kHz'], [3.5, ''], [4, '10 kHz'], [4.5, '']], xlabel: 'f', ylabel: '|I| (mA)', weight: 1.1 });
+        const sp = v.stage({ x: [1.82, 4.55], y: [0, 110], height: 290, axes: 'box', xticks: [[2, '100 Hz'], [3, '1 kHz'], [4, '10 kHz']], xlabel: 'f', ylabel: '|I| (mA)', weight: 1.1 });
         const L = 10e-3, Cv = 1e-6, f0 = 1 / (2 * PI * Math.sqrt(L * Cv));
         const C = v.circuit(s, [
           { type: 'V', id: 'V', value: 1, ac: 1, at: [0, 3, 0, 0], label: '1 V ac' },
@@ -279,13 +280,13 @@ export default {
           const res = C.ac(f.value);
           C.draw({ result: res, t, acRate: 0.5 });
           const pk = sweep.reduce((a, b) => (b.y > a.y ? b : a)), top = Math.max(1.15 * pk.y, 5);
-          sp.setView([2, 4.5], [0, top]);
+          sp.setView([1.82, 4.55], [0, top]);
           sp.vline(Math.log10(f0), { color: 'muted', dash: [4, 4] }); sp.text('f₀ = 1/2π√LC', Math.log10(f0), top * 0.95, { dx: 5, color: 'muted', size: 11.5, align: 'left' });
-          const half = pk.y / Math.SQRT2; sp.hband(half - top * 0.002, half + top * 0.002, { color: 'muted', alpha: 0.45 });
+          const half = pk.y / Math.SQRT2; sp.hline(half, { color: 'muted', width: 1, dash: [4, 4] });
           sp.path(sweep.map((p) => [Math.log10(p.f), p.y]), { color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.08 });
           sp.vline(Math.log10(f.value), { color: 'gold', width: 1.4 });
           sp.dot(Math.log10(f.value), res.imag('R') * 1e3, { color: 'gold', r: 5 });
-        }, { period: 1e9 });
+        });
         v.legend([['accent', '$|I|(f)$ from the AC sweep'], ['gold', 'drive frequency'], ['muted', '$|I|_{max}/\\sqrt2$ (half power)', { dash: true }]]);
         v.readout(() => {
           if (!sweep) return '';

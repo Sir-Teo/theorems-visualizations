@@ -1,6 +1,33 @@
 // Syllabus — Statistical Inference (curated course; see collection.js for references)
-// Refs: 'Casella–Berger §x.y' = Casella & Berger, Statistical Inference (2nd ed.);
-//       'Wasserman §x.y'      = Wasserman, All of Statistics (a bare '§n' means chapter n).
+// Refs: 'Casella–Berger §x.y' = Casella & Berger, Statistical Inference (2nd ed., 2002);
+//       'Wasserman §x.y'      = Wasserman, All of Statistics (2004). A bare '§n' means chapter n.
+//
+// Sources consulted (Oct 2026) to build and audit this map:
+//   - Casella & Berger 2e, full table of contents (sections checked):
+//       https://book.douban.com/subject/1464795/
+//   - Wasserman, All of Statistics, table of contents and full-text search for coverage:
+//       https://www.stat.cmu.edu/~brian/valerie/617-2022/0%20-%20books/2004%20-%20wasserman%20-%20all%20of%20statistics.pdf
+//   - MIT 18.650 Statistics for Applications (Fall 2016), lecture list:
+//       https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
+//   - Stanford STATS 200 Introduction to Statistical Inference, lecture list:
+//       https://web.stanford.edu/class/stats200/lectures.html
+//   - Berkeley Stat 210A Theoretical Statistics (Fithian), lecture list:
+//       http://www.stat.berkeley.edu/~wfithian/courses/stat210a/
+//   - Cambridge Mathematical Tripos schedules: IB Statistics, II Principles of Statistics,
+//       II Statistical Modelling: https://www.maths.cam.ac.uk/undergrad/course/schedules.pdf
+//   - Wikipedia, Category:Theorems in statistics and Category:Statistical paradoxes:
+//       https://en.wikipedia.org/wiki/Category:Theorems_in_statistics
+//       https://en.wikipedia.org/wiki/Category:Statistical_paradoxes
+// Gaps filled after comparing: Birnbaum’s theorem, unbiased (UMPU) tests, Welch’s test, the
+// multivariate normal and partial correlation, accept–reject sampling, improper priors, minimaxity
+// of the sample mean, overdispersion, Mallows’ Cp. KL divergence and Gibbs’ inequality are cited
+// from `info` rather than duplicated.
+// Deliberate omissions: LLN/CLT and convergence modes (belong to `prob`); PCA (in `ladr` via the
+// SVD and best low-rank approximation); classification/LDA (`ml`); survival analysis (in `causal`,
+// ch. 8, where its reference covers it); union–intersection tests, pivoting the CDF, Hájek–Le Cam
+// convolution theorem and the Bradley–Terry model (specialised); Cox’s theorem (foundations, `phil`).
+// Refs for rank tests, ridge/lasso and Freedman’s paradox point to the nearest section: neither
+// reference treats them directly.
 export default {
   collection: 'stat',
   chapters: [
@@ -46,6 +73,8 @@ export default {
           pic: 'Choose a family (Bernoulli, Poisson, normal, gamma) and drag the natural parameter: the log-partition A(η) is drawn as a convex curve whose slope and curvature match the live mean and variance of simulated draws.' },
         { num: '1.18', kind: 'Definition', name: 'Location–scale family', deps: ['stat-1.1'], refs: ['Casella–Berger §3.5'],
           pic: 'Drag location and scale handles on a standard density to generate the whole family; a Q–Q plot of a sample against the standard member is a straight line whose intercept and slope read off μ and σ.' },
+        { num: '1.19', kind: 'Definition', name: 'Multivariate normal: marginals and conditionals', deps: ['ladr-7.62', 'rca-2.23'], refs: ['Wasserman §14.3', 'Casella–Berger §4.6'],
+          pic: 'Drag the entries of a 2×2 covariance matrix and watch the elliptical contours of a bivariate normal; slicing at x₁ = a gives a normal conditional whose mean slides along the regression line and whose variance stays fixed, checked against the simulated points in a thin strip.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -54,9 +83,9 @@ export default {
       title: 'Sufficiency and the likelihood principle',
       summary: String.raw`A sufficient statistic keeps everything the sample has to say about the parameter, so the rest of the data can be discarded; the factorization theorem makes sufficiency easy to recognize, and minimal sufficiency says how far the compression can go. Ancillary statistics carry no information at all, and when the sufficient statistic is also complete, Basu’s theorem makes the two independent. The likelihood function then emerges as the carrier of evidence, and the sufficiency and conditionality principles lead to the likelihood principle, which ordinary significance tests violate.`,
       items: [
-        { num: '2.1', kind: 'Definition', name: 'Conditional distributions and conditional independence', deps: ['rca-6.10', 'rca-8.8'], refs: ['Casella–Berger §4.2', 'Wasserman §17.1'],
+        { num: '2.1', kind: 'Definition', name: 'Conditional distributions and conditional independence', deps: ['rca-6.10', 'rca-8.8'], refs: ['Casella–Berger §4.2', 'Wasserman §17.2'],
           pic: 'A joint density is shown as a heat map; slice it at a chosen x to read the conditional density, and toggle a third variable to see two variables that are dependent overall become independent within each of its levels.' },
-        { num: '2.2', kind: 'Definition', name: 'Sufficient statistic', deps: ['stat-1.2', 'stat-2.1'], refs: ['Casella–Berger §6.2'],
+        { num: '2.2', kind: 'Definition', name: 'Sufficient statistic', deps: ['stat-1.2', 'stat-2.1'], refs: ['Casella–Berger §6.2', 'Wasserman §9.13'],
           pic: 'Generate coin-flip sequences under several values of p and condition on the number of heads: the conditional frequencies of the possible orderings stay flat whatever p is dragged to.' },
         { num: '2.3', kind: 'Theorem', name: 'Fisher–Neyman factorization theorem', deps: ['stat-2.2', 'rca-6.10'], refs: ['Casella–Berger §6.2'],
           pic: 'Two different normal samples with the same Σx and Σx² are drawn side by side and their likelihood surfaces over (μ, σ) coincide exactly, while editing one point to change the sums separates them.' },
@@ -84,6 +113,8 @@ export default {
           pic: 'Nine heads and three tails arrive either from twelve planned tosses or from tossing until the third tail; the likelihoods coincide, but the simulated null distributions give one-sided p-values of 0.073 and 0.033, on opposite sides of 0.05.' },
         { num: '2.15', kind: 'Principle', name: 'Equivariance principle', deps: ['stat-1.18'], refs: ['Casella–Berger §6.4'],
           pic: 'Shift or rescale the data with sliders: an equivariant estimator moves in lock-step, while an estimator that shrinks toward a fixed point gives answers that depend on the units of measurement.' },
+        { num: '2.16', kind: 'Theorem', name: 'Birnbaum’s theorem', deps: ['stat-2.12', 'stat-2.13', 'stat-2.3'], refs: ['Casella–Berger §6.3'],
+          pic: 'Pick two outcomes with proportional likelihoods from two different experiments and build the coin-flip mixture of the experiments: the mixture’s minimal sufficient statistic merges the two outcomes, conditionality splits them back, and the reader sees the two principles jointly force identical evidence.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -108,7 +139,7 @@ export default {
           pic: 'The slope A′(η) of the log-partition is plotted; the MLE is where it crosses the observed average of the sufficient statistic, and the reader drags η to find the crossing.' },
         { num: '3.8', kind: 'Phenomenon', name: 'Unbounded likelihood in Gaussian mixtures', deps: ['stat-3.5'], refs: ['Wasserman §9.13'],
           pic: 'Centre one mixture component on a single data point and shrink its σ: the log-likelihood readout climbs without bound, and a floor on σ restores a sensible local maximum.' },
-        { num: '3.9', kind: 'Paradox', name: 'Neyman–Scott problem', deps: ['stat-3.5', 'stat-3.3'], refs: ['Wasserman §9.5'],
+        { num: '3.9', kind: 'Paradox', name: 'Neyman–Scott problem', deps: ['stat-3.5', 'stat-3.3'], refs: ['Casella–Berger §10.1'],
           pic: 'Many pairs each have their own mean but share a variance; as the number of pairs grows the MLE of σ² converges confidently to σ²/2, the gap to the truth shown never closing.' },
         { num: '3.10', kind: 'Algorithm', name: 'Newton–Raphson and Fisher scoring', deps: ['stat-3.5', 'pma-5.15'], refs: ['Wasserman §9.13'],
           pic: 'Step Newton’s method on a log-likelihood with the tangent parabola drawn at each iterate and the correct digits counted as they double; start far out on a Cauchy likelihood and watch it run to the wrong root.' },
@@ -160,35 +191,31 @@ export default {
       title: 'Large-sample theory: maximum likelihood and M-estimation',
       summary: String.raw`As the sample grows, the log-likelihood becomes a parabola around the truth, so the MLE is consistent, approximately normal, and asymptotically as precise as the Cramér–Rao bound allows — with Hodges’ estimator as the cautionary footnote. When the model is wrong, the MLE still converges, but to the member closest in Kullback–Leibler divergence, and the sandwich variance repairs its standard errors. The same machinery covers general M-estimators, whose influence functions and breakdown points measure robustness to contaminated data.`,
       items: [
-        { num: '5.1', kind: 'Definition', name: 'Kullback–Leibler divergence', deps: ['rca-6.10'], refs: ['Wasserman §9.5'],
-          pic: 'Drag the mean and spread of a model density against a fixed bimodal truth and read KL(truth‖model) by quadrature; swapping the arguments shows the asymmetry between mass-covering and mode-seeking fits.' },
-        { num: '5.2', kind: 'Theorem', name: 'Gibbs’ inequality', deps: ['stat-5.1', 'rca-3.3'], refs: ['Wasserman §9.5'],
-          pic: 'The integrand p·log(p/q) is shaded where positive and where negative; as q is dragged the net area stays non-negative and reaches zero only when q coincides with p.' },
-        { num: '5.3', kind: 'Theorem', name: 'Consistency of the MLE', deps: ['stat-5.2', 'stat-3.5', 'stat-3.3'], refs: ['Wasserman §9.5', 'Casella–Berger §10.1'],
-          pic: 'The average log-likelihood of a seeded sample converges, as n grows, to the expected log-likelihood whose peak is the true θ, dragging the argmax with it; a non-identifiable model leaves a flat ridge instead.' },
-        { num: '5.4', kind: 'Theorem', name: 'Asymptotic normality of the MLE', deps: ['stat-5.3', 'stat-4.3', 'stat-1.14', 'pma-5.10'], refs: ['Wasserman §9.7', 'Casella–Berger §10.1'],
+        { num: '5.1', kind: 'Theorem', name: 'Consistency of the MLE', deps: ['info-2.2', 'stat-3.5', 'stat-3.3'], refs: ['Wasserman §9.5', 'Casella–Berger §10.1'],
+          pic: 'The average log-likelihood of a seeded sample converges, as n grows, to the expected log-likelihood, whose peak sits at the true θ because the KL divergence is minimized there; the argmax is dragged along, and a non-identifiable model leaves a flat ridge instead.' },
+        { num: '5.2', kind: 'Theorem', name: 'Asymptotic normality of the MLE', deps: ['stat-5.1', 'stat-4.3', 'stat-1.14', 'pma-5.10'], refs: ['Wasserman §9.7', 'Casella–Berger §10.1'],
           pic: 'Histogram √n(θ̂ − θ) over 2,000 repeats against the N(0, 1/I(θ)) density with a normal Q–Q plot beside it; sliding n from 5 to 500 straightens the skewed small-sample histogram.' },
-        { num: '5.5', kind: 'Concept', name: 'Asymptotic efficiency and relative efficiency', deps: ['stat-5.4', 'stat-4.4'], refs: ['Wasserman §9.8', 'Casella–Berger §10.1'],
+        { num: '5.3', kind: 'Concept', name: 'Asymptotic efficiency and relative efficiency', deps: ['stat-5.2', 'stat-4.4'], refs: ['Wasserman §9.8', 'Casella–Berger §10.1'],
           pic: 'n·Var of the mean and the median for location is simulated: their ratio approaches 2/π for normal data, but switching to Laplace or t₃ data makes the median the more efficient one.' },
-        { num: '5.6', kind: 'Paradox', name: 'Hodges’ superefficient estimator', deps: ['stat-5.5'], refs: ['Wasserman §9.8'],
+        { num: '5.4', kind: 'Paradox', name: 'Hodges’ superefficient estimator', deps: ['stat-5.3'], refs: ['Casella–Berger §10'],
           pic: 'The estimator that snaps X̄ to zero whenever |X̄| < n^{−1/4} beats the MLE exactly at θ = 0, but its n-scaled risk curve develops a spike near zero that grows taller with n.' },
-        { num: '5.7', kind: 'Method', name: 'Observed information and Wald standard errors', deps: ['stat-5.4'], refs: ['Wasserman §9.7'],
+        { num: '5.5', kind: 'Method', name: 'Observed information and Wald standard errors', deps: ['stat-5.2'], refs: ['Wasserman §9.7'],
           pic: 'The curvature of the log-likelihood at its peak gives a standard error; observed-information and expected-information versions are compared with the actual spread of estimates over repeats in a logistic model.' },
-        { num: '5.8', kind: 'Theorem', name: 'Multiparameter asymptotics and the delta method', deps: ['stat-5.4', 'stat-1.15', 'stat-4.6'], refs: ['Wasserman §9.10'],
+        { num: '5.6', kind: 'Theorem', name: 'Multiparameter asymptotics and the delta method', deps: ['stat-5.2', 'stat-1.15', 'stat-4.6'], refs: ['Wasserman §9.10'],
           pic: 'Joint estimates (μ̂, σ̂) scatter inside the ellipse predicted by the inverse information, and the derived coefficient of variation σ̂/μ̂ is histogrammed against its multivariate delta-method normal law.' },
-        { num: '5.9', kind: 'Theorem', name: 'Misspecified MLE converges to the KL projection', deps: ['stat-5.3', 'stat-5.1'], refs: ['Wasserman §9.5'],
+        { num: '5.7', kind: 'Theorem', name: 'Misspecified MLE converges to the KL projection', deps: ['stat-5.1', 'info-2.1'], refs: ['Wasserman §9.5'],
           pic: 'Fit an exponential model to gamma-distributed data: as n grows the fitted density converges not to the truth but to the exponential member closest in KL divergence, located by a separate numerical minimization.' },
-        { num: '5.10', kind: 'Theorem', name: 'Sandwich (Huber–White) variance', deps: ['stat-5.9', 'stat-5.7'], refs: ['Casella–Berger §10.2'],
+        { num: '5.8', kind: 'Theorem', name: 'Sandwich (Huber–White) variance', deps: ['stat-5.7', 'stat-5.5'], refs: ['Casella–Berger §10.2'],
           pic: 'Under misspecification, intervals built from the model-based variance cover in far fewer than 95% of 1,000 repeats while sandwich intervals recover the nominal rate; with the model correct, both agree.' },
-        { num: '5.11', kind: 'Method', name: 'M-estimators and estimating equations', deps: ['stat-3.5'], refs: ['Casella–Berger §10.2'],
+        { num: '5.9', kind: 'Method', name: 'M-estimators and estimating equations', deps: ['stat-3.5'], refs: ['Casella–Berger §10.2'],
           pic: 'Pick a ψ-function (mean, median, Huber) and see Σψ(xᵢ − θ) drawn as a curve in θ whose zero is the estimate; drag a data point to see how far the root moves.' },
-        { num: '5.12', kind: 'Theorem', name: 'Asymptotic normality of M-estimators', deps: ['stat-5.11', 'stat-5.10'], refs: ['Casella–Berger §10.2'],
+        { num: '5.10', kind: 'Theorem', name: 'Asymptotic normality of M-estimators', deps: ['stat-5.9', 'stat-5.8'], refs: ['Casella–Berger §10.2'],
           pic: 'Histogram √n(θ̂ − θ) for the Huber estimator under clean and contaminated normal data, against the sandwich variance E[ψ²]/(E[ψ′])² computed for each.' },
-        { num: '5.13', kind: 'Definition', name: 'Influence function', deps: ['stat-5.11', 'stat-1.7'], refs: ['Casella–Berger §10.2'],
+        { num: '5.11', kind: 'Definition', name: 'Influence function', deps: ['stat-5.9', 'stat-1.7'], refs: ['Casella–Berger §10.2'],
           pic: 'Drag one added contaminating point along the axis and plot how much the estimate moves per unit of contamination: an unbounded line for the mean, a bounded step for the median and a clipped ramp for Huber.' },
-        { num: '5.14', kind: 'Definition', name: 'Breakdown point', deps: ['stat-5.13'], refs: ['Casella–Berger §10.2'],
+        { num: '5.12', kind: 'Definition', name: 'Breakdown point', deps: ['stat-5.11'], refs: ['Casella–Berger §10.2'],
           pic: 'Replace data points one by one with arbitrarily large values: the mean breaks after one, a trimmed mean after its trimming fraction, and the median holds until half the sample is corrupted.' },
-        { num: '5.15', kind: 'Method', name: 'Huber’s robust location estimator', deps: ['stat-5.12', 'stat-5.14'], refs: ['Casella–Berger §10.2'],
+        { num: '5.13', kind: 'Method', name: 'Huber’s robust location estimator', deps: ['stat-5.10', 'stat-5.12'], refs: ['Casella–Berger §10.2'],
           pic: 'Contaminate a normal sample with a fraction ε of wild points; efficiency readouts for the mean, the median and Huber’s estimator trace how Huber gives up a little on clean data to stay stable under contamination.' },
       ],
     },
@@ -204,7 +231,7 @@ export default {
           pic: 'Null and alternative densities overlap with the cutoff between them; the two error areas are shaded and trade off as the cutoff moves, confirmed by counting errors over 1,000 simulated decisions.' },
         { num: '6.3', kind: 'Definition', name: 'Power function', deps: ['stat-6.2'], refs: ['Casella–Berger §8.3'],
           pic: 'The exact power curve of a one-sided z-test is drawn over θ and checked by simulated rejection rates at chosen points; increasing n steepens the curve while its height at θ₀ stays at α.' },
-        { num: '6.4', kind: 'Theorem', name: 'Neyman–Pearson lemma', deps: ['stat-6.3', 'rca-6.10'], refs: ['Casella–Berger §8.3', 'Wasserman §10.11'],
+        { num: '6.4', kind: 'Theorem', name: 'Neyman–Pearson lemma', deps: ['stat-6.3', 'rca-6.10'], refs: ['Casella–Berger §8.3', 'Wasserman §10.10'],
           pic: 'Paint any rejection region of size α on a discretized sample space; its power is scored against the likelihood-ratio region of the same size, which is never beaten.' },
         { num: '6.5', kind: 'Concept', name: 'ROC curve', deps: ['stat-6.4'], refs: ['Casella–Berger §8.3'],
           pic: 'Sweep the threshold of the likelihood-ratio test to trace power against size, beside the ROC curve of a suboptimal statistic, which lies below it everywhere; the area under each is read out.' },
@@ -216,13 +243,13 @@ export default {
           pic: 'Power curves of the two one-sided tests and the symmetric two-sided test cross: each one-sided test wins on its own side and is worse than useless on the other, so none dominates.' },
         { num: '6.9', kind: 'Method', name: 'Likelihood ratio test', deps: ['stat-6.4', 'stat-3.5'], refs: ['Casella–Berger §8.2', 'Wasserman §10.6'],
           pic: 'The log-likelihood is drawn with the null value marked; the drop from the peak to the null value is the test statistic, read out against its cutoff as the data are dragged.' },
-        { num: '6.10', kind: 'Theorem', name: 'Wilks’ theorem', deps: ['stat-6.9', 'stat-5.4', 'stat-1.8'], refs: ['Casella–Berger §10.3', 'Wasserman §10.6'],
+        { num: '6.10', kind: 'Theorem', name: 'Wilks’ theorem', deps: ['stat-6.9', 'stat-5.2', 'stat-1.8'], refs: ['Casella–Berger §10.3', 'Wasserman §10.6'],
           pic: 'Simulate 2 log Λ under the null for growing n against the χ² density with as many degrees of freedom as restrictions; testing a variance at its boundary value zero breaks the limit into a 50:50 mixture.' },
-        { num: '6.11', kind: 'Method', name: 'Wald test', deps: ['stat-5.7'], refs: ['Wasserman §10.1'],
+        { num: '6.11', kind: 'Method', name: 'Wald test', deps: ['stat-5.5'], refs: ['Wasserman §10.1'],
           pic: 'Simulate the Wald test for a Bernoulli p near 0.01: its realized size wanders far from the nominal 5% because the estimated standard error collapses whenever few successes are observed.' },
         { num: '6.12', kind: 'Method', name: 'Score (Rao) test', deps: ['stat-4.3', 'stat-6.10', 'stat-6.11'], refs: ['Casella–Berger §10.3'],
           pic: 'On one log-likelihood the score test uses the slope at the null, the Wald test the distance at the peak scaled by curvature, and the LRT the drop between them; all three agree for a parabola and diverge for a skewed likelihood.' },
-        { num: '6.13', kind: 'Method', name: 'Student’s t-tests', deps: ['stat-1.10', 'stat-6.2'], refs: ['Casella–Berger §8.2', 'Wasserman §10.11'],
+        { num: '6.13', kind: 'Method', name: 'Student’s t-tests', deps: ['stat-1.10', 'stat-6.2'], refs: ['Casella–Berger §8.2', 'Wasserman §10.10'],
           pic: 'One- and two-sample t-tests are simulated under the null to confirm a 5% rejection rate; then strongly skewed data at n = 10, or unequal variances with unequal group sizes, make the realized size drift.' },
         { num: '6.14', kind: 'Method', name: 'Pearson’s chi-squared goodness-of-fit test', deps: ['stat-1.8', 'stat-6.10'], refs: ['Wasserman §10.4'],
           pic: 'Roll a die (optionally loaded) and compare observed with expected counts as bars; the statistic Σ(O − E)²/E is histogrammed under the null against χ²₅, and expected counts below five visibly distort the fit.' },
@@ -232,6 +259,10 @@ export default {
           pic: 'The lady tasting tea: eight cups, four with milk first; the hypergeometric distribution of correct identifications is drawn and the reader’s guesses earn an exact p-value of 1/70 for a perfect score.' },
         { num: '6.17', kind: 'Method', name: 'Power analysis and sample size', deps: ['stat-6.3'], refs: ['Casella–Berger §8.3'],
           pic: 'Choose an effect size, α and target power; the required n is solved for and then checked by 1,000 simulated studies whose realized power lands near the target.' },
+        { num: '6.18', kind: 'Definition', name: 'Unbiased tests and UMP unbiased tests', deps: ['stat-6.8'], refs: ['Casella–Berger §8.3'],
+          pic: 'Tune how α is split between the two tails of a two-sided test: only the balanced split keeps the power curve above α everywhere off the null, and that unbiased test beats every other unbiased test at every alternative.' },
+        { num: '6.19', kind: 'Method', name: 'Welch’s t-test (Behrens–Fisher problem)', deps: ['stat-6.13'], refs: ['Casella–Berger §8'],
+          pic: 'With unequal variances and unequal group sizes, the pooled t-test’s simulated size drifts far above 5% when the smaller group is noisier and far below it when the larger one is, while Welch’s test with Satterthwaite degrees of freedom stays near 5%.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -282,10 +313,10 @@ export default {
           pic: 'Coverage of the z-interval with S plugged in and of the t-interval is accumulated at small n: the z version under-covers at n = 5, and a skewed population makes the t-interval fall short as well.' },
         { num: '8.4', kind: 'Theorem', name: 'Duality of tests and confidence sets', deps: ['stat-8.1', 'stat-6.2'], refs: ['Casella–Berger §9.2'],
           pic: 'A grid over (θ, x) shades the acceptance region of the test of each θ; reading across at the observed x gives the confidence set, which changes as the reader moves x.' },
-        { num: '8.5', kind: 'Method', name: 'Wald interval', deps: ['stat-8.1', 'stat-5.7'], refs: ['Wasserman §9.7'],
+        { num: '8.5', kind: 'Method', name: 'Wald interval', deps: ['stat-8.1', 'stat-5.5'], refs: ['Wasserman §9.7'],
           pic: 'θ̂ ± 1.96·SE is drawn for repeated samples from an exponential model with a skewed likelihood; coverage accumulates below 95% at small n and approaches it as n grows.' },
         { num: '8.6', kind: 'Phenomenon', name: 'Erratic coverage of the Wald binomial interval', deps: ['stat-8.5'], refs: ['Wasserman §9.7'],
-          pic: 'Exact coverage of p̂ ± 1.96√(p̂(1 − p̂)/n) is computed on a fine grid of p and drawn as a jagged curve that dips far below 95% near p = 0.05 even at n = 100, with a slider for n.' },
+          pic: 'Exact coverage of p̂ ± 1.96√(p̂(1 − p̂)/n) is computed on a fine grid of p and drawn as a jagged curve that dips well below 95% for p near 0 or 1 even at n = 100, and oscillates rather than improving steadily as the n slider moves.' },
         { num: '8.7', kind: 'Method', name: 'Wilson score interval', deps: ['stat-8.4', 'stat-6.12'], refs: ['Casella–Berger §10.4'],
           pic: 'The exact coverage curve of the Wilson interval hugs 95% on top of the jagged Wald curve, and the interval is drawn as the set of p that the score test does not reject.' },
         { num: '8.8', kind: 'Method', name: 'Clopper–Pearson exact interval', deps: ['stat-8.4'], refs: ['Casella–Berger §9.2'],
@@ -298,9 +329,9 @@ export default {
           pic: 'Pointwise 95% intervals for a CDF at many x are compared with the DKW band: over 1,000 repeats the pointwise bars miss somewhere in most runs, while the band covers the entire curve at least 95% of the time.' },
         { num: '8.12', kind: 'Concept', name: 'Prediction intervals', deps: ['stat-8.3'], refs: ['Casella–Berger §11.3'],
           pic: 'From each sample build a confidence interval for μ and a prediction interval for the next observation; as n grows the first shrinks to zero width while the second stays wide, and both coverages are tracked.' },
-        { num: '8.13', kind: 'Paradox', name: 'Relevant subsets: intervals known to be right', deps: ['stat-8.1', 'stat-2.12'], refs: ['Casella–Berger §9.3'],
+        { num: '8.13', kind: 'Paradox', name: 'Relevant subsets: intervals known to be right', deps: ['stat-8.1', 'stat-2.12'], refs: ['Casella–Berger §9'],
           pic: 'Two draws from Uniform(θ − ½, θ + ½) give a 50% confidence interval between them; colouring repeats by the distance between the draws splits the coverage into 100% for distant pairs and far below 50% for close ones.' },
-        { num: '8.14', kind: 'Paradox', name: 'Fieller’s problem: unbounded sets for a ratio', deps: ['stat-8.4'], refs: ['Casella–Berger §9.2'],
+        { num: '8.14', kind: 'Paradox', name: 'Fieller’s problem: unbounded sets for a ratio', deps: ['stat-8.4'], refs: ['Casella–Berger §9'],
           pic: 'Estimate μ₁/μ₂ from two normal means; dragging μ₂ toward zero turns the exact confidence set from an interval into the complement of an interval and then the whole line, while the delta-method interval stays finite and its coverage collapses.' },
       ],
     },
@@ -322,7 +353,7 @@ export default {
           pic: 'Resample the t-statistic instead of the estimate; for skewed exponential data at n = 15 the coverage readout of the bootstrap-t sits closer to 95% than those of the percentile and normal intervals.' },
         { num: '9.6', kind: 'Method', name: 'Parametric bootstrap', deps: ['stat-9.2', 'stat-3.5'], refs: ['Wasserman §9.11'],
           pic: 'Fit a model, simulate new datasets from the fit and refit each; parametric and nonparametric bootstrap standard errors agree when the model is right and part ways for overdispersed counts fitted as Poisson.' },
-        { num: '9.7', kind: 'Method', name: 'Jackknife', deps: ['stat-9.2'], refs: ['Wasserman §8'],
+        { num: '9.7', kind: 'Method', name: 'Jackknife', deps: ['stat-9.2'], refs: ['Wasserman §8.5'],
           pic: 'Leave out each point in turn and plot the n leave-one-out estimates; the jackknife standard error matches the bootstrap for the mean but is badly off for the median, whose leave-one-out values take only two distinct values.' },
         { num: '9.8', kind: 'Theorem', name: 'Bootstrap consistency for smooth statistics', deps: ['stat-9.2', 'stat-1.15'], refs: ['Wasserman §8'],
           pic: 'The Kolmogorov distance between the bootstrap and the true sampling distribution of √n(X̄ − μ) is tracked over seeded replications as n grows, and falls toward zero.' },
@@ -332,6 +363,8 @@ export default {
           pic: 'With Pareto data of tail index 1.5, bootstrap intervals for the mean keep under-covering as n grows, while the identical code on finite-variance data reaches 95%.' },
         { num: '9.11', kind: 'Method', name: 'Block bootstrap for dependent data', deps: ['stat-9.3'], refs: ['Wasserman §8'],
           pic: 'Resample an AR(1) series point by point and in blocks of adjustable length: the iid bootstrap underestimates the standard error of the mean by a factor that grows with the autocorrelation, and long enough blocks recover it.' },
+        { num: '9.12', kind: 'Algorithm', name: 'Accept–reject sampling', deps: ['stat-9.1'], refs: ['Casella–Berger §5.6'],
+          pic: 'Darts are thrown uniformly under M times an envelope density; those landing under the target are kept, the kept histogram matches the target exactly, and the acceptance-rate readout equals 1/M as the envelope is loosened or tightened.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -360,9 +393,9 @@ export default {
           pic: 'Fix a true θ and repeat: the 95% credible interval under a confident prior centred far from the truth covers well under 95%, while drawing θ afresh from the prior on each repeat restores exactly 95%.' },
         { num: '10.10', kind: 'Definition', name: 'Jeffreys prior', deps: ['stat-10.1', 'stat-4.2', 'rca-7.26'], refs: ['Wasserman §11.6'],
           pic: 'A flat prior on p becomes a lopsided prior on the log-odds after reparametrizing, while the Jeffreys prior ∝ √I(θ) transforms into the Jeffreys prior of the new parameter; both pairs are drawn and compared.' },
-        { num: '10.11', kind: 'Theorem', name: 'Bernstein–von Mises theorem', deps: ['stat-10.1', 'stat-5.4'], refs: ['Wasserman §11.5'],
+        { num: '10.11', kind: 'Theorem', name: 'Bernstein–von Mises theorem', deps: ['stat-10.1', 'stat-5.2'], refs: ['Wasserman §11.5'],
           pic: 'As n grows, posteriors from three very different priors merge onto the normal curve centred at the MLE with variance 1/(nI); a total-variation readout tracks the merger, and a prior that excludes the truth never joins.' },
-        { num: '10.12', kind: 'Theorem', name: 'De Finetti’s representation theorem', deps: ['stat-10.1', 'fa-3.23'], refs: ['Wasserman §11'],
+        { num: '10.12', kind: 'Theorem', name: 'De Finetti’s representation theorem', deps: ['stat-10.1', 'fa-3.23'], refs: ['Casella–Berger §4.4'],
           pic: 'A Pólya urn generates exchangeable 0–1 sequences: different runs settle on different limiting frequencies whose histogram is the mixing Beta law, and within a run the sequence passes for iid coin flips with that frequency.' },
         { num: '10.13', kind: 'Definition', name: 'Bayes factor', deps: ['stat-10.2'], refs: ['Wasserman §11.8'],
           pic: 'The prior predictive densities of two models are drawn and their ratio at the observed data is the Bayes factor; the simpler model wins when the data land where its predictive mass is concentrated.' },
@@ -376,6 +409,8 @@ export default {
           pic: 'A random-walk chain explores a banana-shaped posterior with accepted and rejected proposals marked; the proposal-scale slider produces sticky chains when too large and slow diffusion when too small, while the running histogram converges to the target.' },
         { num: '10.18', kind: 'Algorithm', name: 'Gibbs sampler', deps: ['stat-10.17', 'stat-2.1'], refs: ['Wasserman §24.5'],
           pic: 'Alternating draws from the two full conditionals of a bivariate normal trace an axis-parallel staircase; raising the correlation to 0.99 shrinks the steps and slows mixing, quantified by the autocorrelation readout.' },
+        { num: '10.19', kind: 'Concept', name: 'Improper priors and posterior propriety', deps: ['stat-10.10'], refs: ['Wasserman §11.6'],
+          pic: 'A flat prior on a normal mean gives a proper posterior after a single observation, but a flat prior on the log of a group-level standard deviation in a hierarchical model does not: the running integral of the unnormalized posterior keeps growing as the integration range is widened.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11
@@ -410,6 +445,8 @@ export default {
           pic: 'Early-season batting averages of 18 players are shrunk toward their grand mean by the estimated James–Stein factor; arrows to the end-of-season averages show the shrunken estimates landing closer for most players.' },
         { num: '11.13', kind: 'Theorem', name: 'Tweedie’s formula', deps: ['stat-11.12', 'stat-10.6'], refs: ['Wasserman §12.7'],
           pic: 'Simulate x = θ + noise with θ drawn from a prior the reader sketches; the posterior mean computed by brute force matches x + σ²·(log m)′(x) computed from a kernel estimate of the marginal density m alone.' },
+        { num: '11.14', kind: 'Theorem', name: 'The sample mean is minimax for a normal mean', deps: ['stat-11.5', 'stat-10.6'], refs: ['Wasserman §12.4'],
+          pic: 'The Bayes risks of N(0, τ²) priors climb toward σ²/n, the constant risk of X̄, as τ grows, so no estimator can have a smaller maximum risk; in d ≥ 3 the readout shows X̄ still minimax yet dominated by James–Stein.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12
@@ -446,12 +483,14 @@ export default {
           pic: 'Drag a single point horizontally away from the cloud: its leverage hᵢᵢ rises toward 1, the fitted line pivots to follow it, and Cook’s distance flags it.' },
         { num: '12.14', kind: 'Concept', name: 'Anscombe’s quartet', deps: ['stat-12.7'], refs: ['Wasserman §13.1'],
           pic: 'Four datasets with identical means, variances, correlation and fitted line are plotted side by side, and a morph slider generates new datasets that keep every summary fixed while the picture changes completely.' },
-        { num: '12.15', kind: 'Method', name: 'Heteroscedasticity-robust standard errors', deps: ['stat-12.6', 'stat-5.10'], refs: ['Wasserman §13.3'],
+        { num: '12.15', kind: 'Method', name: 'Heteroscedasticity-robust standard errors', deps: ['stat-12.6', 'stat-5.8'], refs: ['Wasserman §13.3'],
           pic: 'With error variance growing in x, classical intervals for the slope cover far below 95% over 1,000 repeats, while sandwich intervals stay close to nominal.' },
         { num: '12.16', kind: 'Method', name: 'Weighted and generalized least squares', deps: ['stat-12.5'], refs: ['Wasserman §13.5'],
           pic: 'Weighting points by their inverse variance (shown as marker size) pulls the fit toward precise points, and over repeats the weighted slope is less spread out than ordinary least squares when the weights are right.' },
         { num: '12.17', kind: 'Phenomenon', name: 'Attenuation from errors in variables', deps: ['stat-12.2'], refs: ['Casella–Berger §12.2'],
           pic: 'Add measurement noise to x with a slider: the fitted slope shrinks toward zero by the reliability ratio var(x)/(var(x) + var(noise)), and the simulated average slope follows the formula.' },
+        { num: '12.18', kind: 'Definition', name: 'Partial correlation', deps: ['stat-12.10', 'stat-1.19'], refs: ['Wasserman §14.3'],
+          pic: 'Two variables driven by a common third are strongly correlated; the correlation of their residuals after regressing out the third is near zero, and for Gaussian data it vanishes exactly when the matching entry of the precision matrix does.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 13
@@ -472,22 +511,24 @@ export default {
           pic: 'Set contrast weights summing to zero with sliders; the estimated contrast and its interval update, and a set of orthogonal contrasts splits the between-group sum of squares into independent pieces.' },
         { num: '13.6', kind: 'Method', name: 'Simultaneous intervals: Tukey and Scheffé', deps: ['stat-13.5', 'stat-7.7'], refs: ['Casella–Berger §11.2'],
           pic: 'All pairwise intervals are computed naïvely and with Tukey’s and Scheffé’s adjustments; over 1,000 null repeats the naïve set misses somewhere most of the time, while the adjusted sets keep familywise coverage.' },
-        { num: '13.7', kind: 'Model', name: 'Two-way ANOVA and interaction', deps: ['stat-13.2'], refs: ['Casella–Berger §11.2'],
+        { num: '13.7', kind: 'Model', name: 'Two-way ANOVA and interaction', deps: ['stat-13.2'], refs: ['Casella–Berger §11'],
           pic: 'An interaction plot of cell means: parallel lines mean additive effects and crossing lines mean interaction; dragging cell means updates the split into main effects and interaction.' },
-        { num: '13.8', kind: 'Principle', name: 'Fisher’s principles of experimental design', deps: ['stat-13.4'], refs: ['Casella–Berger §11.2'],
+        { num: '13.8', kind: 'Principle', name: 'Fisher’s principles of experimental design', deps: ['stat-13.4'], refs: ['Casella–Berger §11'],
           pic: 'Assign treatments to plots of a field with a fertility gradient systematically or at random, with or without blocks; repeating the experiment shows systematic designs biased, random ones unbiased, and blocking narrowing the spread.' },
         { num: '13.9', kind: 'Model', name: 'Generalized linear models', deps: ['stat-1.17', 'stat-12.1'], refs: ['Casella–Berger §12.3', 'Wasserman §13.7'],
           pic: 'Pick a response family and a link; the linear predictor is drawn as a plane and pushed through the inverse link to a curved mean surface with simulated responses scattered around it.' },
         { num: '13.10', kind: 'Model', name: 'Logistic regression', deps: ['stat-13.9'], refs: ['Wasserman §13.7', 'Casella–Berger §12.3'],
           pic: 'Binary outcomes are jittered at 0 and 1 above x with the fitted sigmoid and its 50% boundary; dragging the coefficients shows the log-likelihood falling away from its value at the MLE.' },
-        { num: '13.11', kind: 'Model', name: 'Poisson regression', deps: ['stat-13.9'], refs: ['Wasserman §13.7'],
+        { num: '13.11', kind: 'Model', name: 'Poisson regression', deps: ['stat-13.9'], refs: ['Wasserman §13'],
           pic: 'Counts are simulated with log-linear means and fitted by Poisson regression and by least squares on the raw counts; the straight-line fit predicts negative means at small x while the log-linear fit cannot.' },
         { num: '13.12', kind: 'Algorithm', name: 'Iteratively reweighted least squares', deps: ['stat-13.10', 'stat-3.10', 'stat-12.16'], refs: ['Wasserman §13.7'],
           pic: 'Each IRLS step is a weighted least-squares fit to working responses; the coefficients and log-likelihood are traced over iterations, converging in a handful of steps exactly as Newton’s method does.' },
         { num: '13.13', kind: 'Definition', name: 'Deviance', deps: ['stat-13.9', 'stat-6.9'], refs: ['Casella–Berger §12.3'],
           pic: 'Deviance is twice the log-likelihood gap to the saturated model; adding predictors one at a time lowers it, and the drops for useless predictors match χ²₁ in simulation.' },
-        { num: '13.14', kind: 'Phenomenon', name: 'Separation in logistic regression', deps: ['stat-13.10'], refs: ['Wasserman §13.7'],
+        { num: '13.14', kind: 'Phenomenon', name: 'Separation in logistic regression', deps: ['stat-13.10'], refs: ['Casella–Berger §12.3'],
           pic: 'Drag points until the two classes become perfectly separable: the log-likelihood keeps rising as the slope grows, the coefficient readout runs off to infinity and the reported standard error explodes.' },
+        { num: '13.15', kind: 'Phenomenon', name: 'Overdispersion', deps: ['stat-13.11', 'stat-10.7'], refs: ['Casella–Berger §4.4'],
+          pic: 'Counts generated with extra unit-to-unit variation (a gamma–Poisson mixture) are fitted by Poisson regression; the residual deviance far exceeds its degrees of freedom and nominal intervals under-cover until a quasi-Poisson or negative-binomial fit is used.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 14
@@ -514,7 +555,7 @@ export default {
           pic: 'A Nadaraya–Watson smoother and a local linear smoother are fitted to noisy data with a draggable bandwidth; near the boundary the kernel average is visibly biased while the local line is not.' },
         { num: '14.9', kind: 'Phenomenon', name: 'Overfitting: training versus test error', deps: ['stat-12.2', 'stat-3.2'], refs: ['Wasserman §13.6'],
           pic: 'Fit polynomials of increasing degree to seeded data: training error falls steadily while error on fresh test data traces a U-curve, and a Resample button shows high-degree fits flailing between samples.' },
-        { num: '14.10', kind: 'Method', name: 'Akaike information criterion (AIC)', deps: ['stat-14.9', 'stat-5.9'], refs: ['Wasserman §13.6'],
+        { num: '14.10', kind: 'Method', name: 'Akaike information criterion (AIC)', deps: ['stat-14.9', 'stat-5.7'], refs: ['Wasserman §13.6'],
           pic: 'AIC = −2 log L + 2p is computed for a nested sequence of models and compared with twice the expected out-of-sample log-loss estimated by simulation; the two curves have the same minimum on average.' },
         { num: '14.11', kind: 'Method', name: 'Bayesian information criterion (BIC)', deps: ['stat-14.10', 'stat-10.13'], refs: ['Wasserman §13.6'],
           pic: 'As n grows BIC selects the true model with probability tending to one while AIC keeps a fixed chance of choosing a larger one; selection frequencies over 1,000 repeats are drawn as stacked bars.' },
@@ -528,6 +569,8 @@ export default {
           pic: 'Generate a response and 50 predictors of pure noise, keep the predictors with p < 0.25 and refit: the final model shows several “significant” coefficients and a respectable R², and repeating shows it happens routinely.' },
         { num: '14.16', kind: 'Concept', name: 'Selective inference and sample splitting', deps: ['stat-14.15'], refs: ['Wasserman §13.6'],
           pic: 'Choose a model on the data and then report its intervals: coverage over repeats falls far below 95%, while choosing on one half and estimating on the other restores nominal coverage at the cost of wider intervals.' },
+        { num: '14.17', kind: 'Method', name: 'Mallows’ Cp', deps: ['stat-14.9', 'stat-12.6'], refs: ['Wasserman §13.6'],
+          pic: 'For nested regression models, training error plus 2pσ²/n is plotted against the number of predictors p and tracks the simulated test error closely, picking the same model as cross-validation in most repeats.' },
       ],
     },
   ],

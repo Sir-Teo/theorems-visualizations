@@ -477,8 +477,14 @@ class CircuitKit {
     if (p.type === 'label') {
       const X = s.X(p.at[0]), Y = s.Y(p.at[1]), node = p.node ?? net.pointNode(p.at[0], p.at[1]);
       c.beginPath(); c.arc(X, Y, 3.6, 0, TAU); c.fillStyle = node ? vcol(node) : ink; c.fill();
-      let txt = p.text ?? node ?? ''; if (o.probes !== false && p.show !== false && node && res.v) { const V = res.V(node); txt += (txt ? ' = ' : '') + (Array.isArray(V) ? si(Math.hypot(...V), 'V') : si(V, 'V')); }
-      const dx = p.dx ?? 8, dy = p.dy ?? -10; c.restore(); s.textPx(txt, X + dx, Y + dy, { color: 'ink', size: 12, weight: 600, align: dx < 0 ? 'right' : 'left', baseline: dy < 0 ? 'bottom' : 'top' }); return;
+      const raw = p.text ?? node ?? '', tex = /^\$.*\$$/.test(raw), V = o.probes !== false && p.show !== false && node && res.v ? res.V(node) : null;
+      const val = V == null ? '' : Array.isArray(V) ? `|V| = ${si(Math.hypot(...V), 'V')}` : si(V, 'V');
+      const dx = p.dx ?? 8, dy = p.dy ?? -10, al = dx < 0 ? 'right' : 'left', bl = dy < 0 ? 'bottom' : 'top'; c.restore();
+      if (tex) { // TeX name with the live value on the line beyond it
+        s.texPx(raw.slice(1, -1), X + dx, Y + dy + (bl === 'bottom' && val ? -15 : 0), { color: 'ink', size: 15, align: al, baseline: bl });
+        if (val) s.textPx(val, X + dx, Y + dy + (bl === 'bottom' ? 0 : 19), { color: 'ink', size: 12, weight: 600, align: al, baseline: bl });
+      } else s.textPx(raw + (raw && val ? ' = ' : '') + val, X + dx, Y + dy, { color: 'ink', size: 12, weight: 600, align: al, baseline: bl });
+      return;
     }
     if (p.type === 'OA') { this._opamp(p, vcol, u, nodeOf); c.restore(); return; }
     if (!TWO.has(p.type) || !p.at) { c.restore(); return; }

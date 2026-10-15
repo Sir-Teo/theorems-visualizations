@@ -134,5 +134,124 @@ export default {
         });
       },
     },
+    // ---------------------------------------------------------------- agents
+    {
+      num: '3.6', kind: 'Model', name: 'Schelling’s segregation model',
+      statement: String.raw`Agents of two kinds live on a grid with some empty cells. An agent is content if at least a fraction $t$ of its occupied neighbours are like itself; discontented agents move to a random empty cell. Even a mild preference ($t \approx 1/3$, happy as a minority) drives the city to strong segregation — a macro pattern nobody chose.`,
+      caption: String.raw`Press ▶ or Step; change the tolerance $t$ at any time (the run resumes). The segregation index is the mean fraction of like neighbours: about $0.5$ for a random mix.`,
+      viz(v) {
+        const s = v.stage({ height: 330, weight: 1 }), ts = v.stage({ height: 330, weight: 1.15, axes: 'box', xlabel: 'step', title: 'segregation index and unhappy fraction' });
+        let A = null; const tol = v.slider('tolerance $t$', 0, 0.9, 0.35, { step: 0.01, onChange: () => A.resume() });
+        A = v.agents(s, { ...v.automata('schelling', { tolerance: () => tol.value, density: 0.9 }), size: 50, seed: 7, speed: 6 });
+        v.render(() => { A.draw(); A.plot(ts, { series: ['segregation', 'unhappy'], colors: { segregation: 'purple', unhappy: 'red' }, minWindow: 40 }); ts.hline(A.history.segregation[0], { color: 'muted', dash: [4, 4], width: 1 }); });
+        v.legend([['blue', 'kind A'], ['orange', 'kind B'], ['purple', 'segregation index'], ['red', 'unhappy fraction'], ['muted', 'initial (random) index', { dash: true }]]);
+        v.readout(() => `step ${A.t} · segregation index **${v.fix(A.stats.segregation, 3)}** (start ${v.fix(A.history.segregation[0], 3)}) · unhappy ${v.fix(100 * A.stats.unhappy, 1)}%${A.model.done ? ' · **everyone is content**' : ''}`);
+      },
+    },
+    {
+      num: '3.7', kind: 'Model', name: 'An epidemic on a lattice',
+      statement: String.raw`In a lattice SIR model each susceptible cell is infected by each infected neighbour with probability $\beta$ per step, and infected cells recover with probability $\gamma$. Because infection can only travel to neighbours, the epidemic is a slow expanding front: it peaks lower and later than the well-mixed (mean-field) prediction with the same contacts. It invades only if the chance $T = \beta/(\beta + \gamma - \beta\gamma)$ of passing the infection to a given neighbour exceeds the bond-percolation threshold of the lattice ($\approx 0.25$ with 8 neighbours).`,
+      caption: String.raw`Five infected cells start the outbreak. Dashed curves: the mean-field model in which every cell sees the average density of infected among its 8 neighbours. Push $T$ below $0.25$ (e.g. $\beta = 0.03$) and the outbreak dies, although the mean-field model still predicts an epidemic.`,
+      viz(v) {
+        const s = v.stage({ height: 330 }), ts = v.stage({ height: 330, weight: 1.15, axes: 'box', xlabel: 'step', title: 'fractions S, I, R' });
+        const beta = v.slider('$\\beta$ (per contact)', 0.01, 0.5, 0.12, { step: 0.01 }), gamma = v.slider('$\\gamma$ (recovery)', 0.02, 0.5, 0.1, { step: 0.01 });
+        const A = v.agents(s, { ...v.automata('sir', { beta: () => beta.value, gamma: () => gamma.value, seeds: 5, center: true }), size: 100, seed: 3, speed: 15 });
+        const mf = () => { // discrete-time mean field with the same update probabilities
+          const out = { S: [], I: [], R: [] }; let S = 1 - 5 / 1e4, I = 5 / 1e4, R = 0; const n = Math.max(200, A.t + 1);
+          for (let t = 0; t < n; t++) { out.S.push([t, S]); out.I.push([t, I]); out.R.push([t, R]); const inf = S * (1 - (1 - beta.value) ** (8 * I)), rec = gamma.value * I; S -= inf; I += inf - rec; R += rec; }
+          return out;
+        };
+        v.render(() => {
+          A.draw(); A.plot(ts, { minWindow: 200 });
+          const M = mf(); for (const k of ['S', 'I', 'R']) ts.path(M[k], { color: { S: 'blue', I: 'red', R: 'faint' }[k], width: 1.3, dash: [5, 4], alpha: 0.8 });
+        });
+        v.legend([['blue', 'susceptible'], ['red', 'infected'], ['faint', 'recovered'], ['muted', 'mean-field model', { dash: true }]]);
+        v.readout(() => { const I = A.history.I, peak = Math.max(...I), tp = A.history.t[I.indexOf(peak)], b = beta.value, g = gamma.value, T = b / (b + g - b * g); return `$T = ${v.fix(T, 2)}$ ${T > 0.25 ? '> 0.25' : '< 0.25'} · step ${A.t} · infected now ${v.fix(100 * A.stats.I, 1)}% · peak ${v.fix(100 * peak, 1)}% at step ${tp} · ever infected ${v.fix(100 * (A.stats.I + A.stats.R), 1)}%${A.model.done ? ' · **outbreak over**' : ''}`; });
+      },
+    },
+    {
+      num: '3.8', kind: 'Model', name: 'Flocking from local rules (boids)',
+      statement: String.raw`Each bird steers by three local rules — keep apart from very close neighbours, match the heading of those it sees, drift towards their centre. With alignment, a disordered crowd self-organises into coherent flocks: the polarisation $|\sum v_i| / \sum |v_i|$ rises from near $0$ towards $1$. Without alignment it never does.`,
+      caption: String.raw`Continuous agents in a periodic box (spatial hashing finds neighbours). Set alignment to $0$ to break the flock.`,
+      viz(v) {
+        const s = v.stage({ height: 300, weight: 1.4 }), ts = v.stage({ height: 300, axes: 'box', xlabel: 'step', title: 'polarisation' });
+        const al = v.slider('alignment', 0, 0.2, 0.06, { step: 0.005 });
+        const A = v.agents(s, { ...v.automata('boids', { align: () => al.value, n: 260 }), seed: 5, speed: 50 });
+        v.render(() => { A.draw(); A.plot(ts, { series: ['order'], colors: { order: 'purple' }, names: { order: 'polarisation' }, minWindow: 300 }); });
+        v.readout(() => `step ${A.t} · polarisation **${v.fix(A.stats.order, 3)}** (a random crowd of 260 gives about ${v.fix(1 / Math.sqrt(260), 2)})`);
+      },
+    },
+    // ---------------------------------------------------------------- curves
+    {
+      num: '3.9', kind: 'Model', name: 'A per-unit tax and its deadweight loss',
+      statement: String.raw`A tax $t$ per unit drives a wedge between the price buyers pay, $P_b$, and the price sellers keep, $P_s = P_b - t$. Trade falls from $Q^*$ to $Q_t$; part of the lost surplus becomes tax revenue $tQ_t$, the rest — the **deadweight loss** — is lost to everyone. For linear curves $\mathrm{DWL} = \tfrac12\, t\,(Q^* - Q_t)$.`,
+      caption: String.raw`Drag the four handles to reshape demand and supply; slide the tax (negative = subsidy) or switch to a price ceiling or floor. Every area is integrated numerically.`,
+      viz(v) {
+        const s = v.stage({ x: [0, 100], y: [0, 106], height: 360, axes: 'box', xlabel: 'Q', ylabel: 'P' });
+        const pol = v.select('policy', ['tax', 'ceiling', 'floor'], 'tax');
+        const t = v.slider('tax $t$', -20, 40, 18, { step: 0.5 }), cap = v.slider('price limit', 5, 95, 38, { step: 0.5 });
+        const E = v.curves(s, {
+          demand: { linear: [[8, 92], [92, 14]] }, supply: { linear: [[8, 14], [92, 82]] },
+          tax: () => (pol.value === 'tax' ? t.value : 0), ceiling: () => (pol.value === 'ceiling' ? cap.value : null), floor: () => (pol.value === 'floor' ? cap.value : null),
+        });
+        v.render(() => { t.el.hidden = pol.value !== 'tax'; cap.el.hidden = pol.value === 'tax'; E.draw(); });
+        v.legend([['blue', 'consumer surplus'], ['orange', 'producer surplus'], ['green', 'tax revenue'], ['red', 'deadweight loss']]);
+        v.readout(() => {
+          const r = E.result; if (!r) return 'Curves do not cross in view.'; const f = (x) => v.fix(x, 1);
+          const D = E.D, S = E.S, lin = Math.abs(D(30) - 2 * D(50) + D(70)) < 1e-9 && Math.abs(S(30) - 2 * S(50) + S(70)) < 1e-9;
+          const tri = r.binding === 'tax' || r.binding === 'subsidy' ? ` = ½·t·ΔQ = ${f(0.5 * t.value * (r.q0 - r.q))}${lin ? ' ✓' : ' (curves are not linear)'}` : '';
+          return `$Q^* = ${f(r.q0)}$, $Q = ${f(r.q)}$ · CS ${f(r.cs)} · PS ${f(r.psur)} · ${r.rev < 0 ? 'subsidy cost' : 'revenue'} ${f(Math.abs(r.rev))} · **DWL ${f(r.dwl)}**${tri} · CS + PS + revenue + DWL = ${f(r.total + r.dwl)} = free-market surplus ${f(r.total0)}${r.shortage ? ` · shortage ${f(r.shortage)}` : ''}${r.excess ? ` · unsold ${f(r.excess)}` : ''}`;
+        });
+      },
+    },
+    {
+      num: '3.10', kind: 'Model', name: 'A Cobb–Douglas consumer',
+      statement: String.raw`A consumer with utility $U(x, y) = x^{\alpha} y^{1-\alpha}$ and income $m$ chooses the bundle on the budget line $p_x x + p_y y = m$ that reaches the highest indifference curve. At an interior optimum the indifference curve is tangent to the budget line, $\mathrm{MRS} = U_x/U_y = p_x/p_y$, and Cobb–Douglas demand is $x^* = \alpha m/p_x$, $y^* = (1-\alpha)m/p_y$: a fixed share $\alpha$ of income goes to $x$.`,
+      caption: String.raw`Drag either intercept to change one price (the budget line pivots about the other intercept). Switch the preferences to see a corner solution (perfect substitutes) and a kink (perfect complements).`,
+      viz(v) {
+        const s = v.stage({ x: [-0.4, 20], y: [-0.4, 20], height: 360, axes: 'box', xlabel: 'x', ylabel: 'y' });
+        const pref = v.select('preferences', [{ value: 'cobb-douglas', label: 'Cobb–Douglas' }, { value: 'substitutes', label: 'substitutes' }, { value: 'complements', label: 'complements' }, { value: 'quasilinear', label: 'quasilinear' }], 'cobb-douglas');
+        const al = v.slider('$\\alpha$', 0.1, 0.9, 0.4, { step: 0.01 });
+        const E = v.curves(s, { utility: () => 0, income: 24, prices: [2, 1.6], alpha: () => al.value, beta: () => (pref.value === 'quasilinear' ? 1 : pref.value === 'complements' ? 1.5 : 1) });
+        v.render(() => { E.spec.utility = pref.value; E.spec.alpha = pref.value === 'quasilinear' ? () => 6 * al.value : pref.value === 'complements' ? 1 : () => al.value; al.el.hidden = pref.value === 'complements'; E.draw(); });
+        v.legend([['accent', 'budget line'], ['purple', 'indifference curves'], ['green', 'optimal bundle']]);
+        v.readout(() => {
+          const C = E.consumer, o = C.opt, f = (x) => v.fix(x, 2);
+          const cd = pref.value === 'cobb-douglas' ? ` · formula: $\\alpha m/p_x = ${f(al.value * C.m / C.px)}$, $(1-\\alpha)m/p_y = ${f((1 - al.value) * C.m / C.py)}$` : '';
+          return `$p_x = ${f(C.px)}$, $p_y = ${f(C.py)}$, $m = ${C.m}$ · optimum $(x^*, y^*) = (${f(o.x)}, ${f(o.y)})$, $U^* = ${f(o.u)}$ · MRS ${isFinite(C.mrs) ? f(C.mrs) : '—'} vs $p_x/p_y = ${f(C.ratio)}$${cd}`;
+        });
+      },
+    },
+    {
+      num: '3.11', kind: 'Concept', name: 'Frontiers, cost curves and inequality',
+      statement: String.raw`Three workhorse diagrams. A **production possibility frontier** bowed outwards means rising opportunity cost. **Marginal cost** cuts average variable and average total cost at their minima. The **Lorenz curve** plots the share of income held by the poorest fraction of people; the **Gini coefficient** is twice the area between it and the line of equality.`,
+      caption: String.raw`PPF: drag the bundle $A$ inside, onto or beyond the frontier; the slider sets the curvature. Costs: the slider sets the fixed cost. Lorenz: the slider sets the spread of a log-normal income sample.`,
+      viz(v) {
+        const s = v.stage({ x: [0, 10], y: [0, 10], height: 340, axes: 'box' });
+        const mode = v.select('', [{ value: 'ppf', label: 'PPF' }, { value: 'cost', label: 'cost curves' }, { value: 'lorenz', label: 'Lorenz / Gini' }], 'ppf');
+        const k = v.slider('parameter', 0, 1, 0.5, { step: 0.01 });
+        const P = v.curves(s, { frontier: { a: 8, b: 7, k: () => 1 + 2.5 * k.value, point: [5, 5] } }), C = v.curves(s, {});
+        const r = v.rng(4), z = Array.from({ length: 400 }, () => r.normal());
+        let out = '';
+        v.render(() => {
+          const m = mode.value; P.front.h.visible = m === 'ppf';
+          if (m === 'ppf') { s.setView([0, 10], [0, 10]); s.o.xlabel = 'guns'; s.o.ylabel = 'butter'; P.draw(); const F = P.frontier; out = `$(x/a)^k + (y/b)^k = 1$ with $k = ${v.fix(F.k, 2)}$ · $A$ is **${F.status}** the frontier · opportunity cost of one more unit of $x$: ${v.fix(F.cost, 2)} units of $y$`; }
+          if (m === 'cost') {
+            s.setView([0, 40], [0, 60]); s.o.xlabel = 'q'; s.o.ylabel = 'cost per unit';
+            const K = v.econ('costs', { F: 50 + 400 * k.value, a: 20, b: -1.2, c: 0.03 });
+            C.curve(K.MC, { color: 'red', label: 'MC', domain: [0.5, 40] }); C.curve(K.AC, { color: 'blue', label: 'AC', domain: [2, 40] }); C.curve(K.AVC, { color: 'teal', label: 'AVC', domain: [0.5, 40] }); C.draw();
+            s.dot(K.minAVC.q, K.minAVC.value, { color: 'teal', r: 4.5 }); s.dot(K.minAC.q, K.minAC.value, { color: 'blue', r: 4.5 });
+            out = `min AVC at $q = ${v.fix(K.minAVC.q, 2)}$ where MC = ${v.fix(K.MC(K.minAVC.q), 3)} = AVC ${v.fix(K.minAVC.value, 3)} · min AC at $q = ${v.fix(K.minAC.q, 2)}$ where MC = ${v.fix(K.MC(K.minAC.q), 3)} = AC ${v.fix(K.minAC.value, 3)}`;
+          }
+          if (m === 'lorenz') {
+            s.setView([0, 1], [0, 1]); s.o.xlabel = 'population share'; s.o.ylabel = 'income share';
+            const sig = 0.1 + 1.4 * k.value, inc = z.map((u) => Math.exp(sig * u)), G = C.lorenz(inc), exact = 2 * v.M.gaussian(0) * 0 + (2 * (0.5 * (1 + erf(sig / 2))) - 1);
+            out = `log-normal incomes, $\\sigma = ${v.fix(sig, 2)}$ · sample Gini **${v.fix(G, 3)}** · population value $2\\Phi(\\sigma/\\sqrt2) - 1 = ${v.fix(exact, 3)}$`;
+          }
+        });
+        function erf(x) { const t = 1 / (1 + 0.3275911 * Math.abs(x)), y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return Math.sign(x) * y; }
+        v.readout(() => out);
+      },
+    },
   ],
 };

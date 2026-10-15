@@ -102,8 +102,9 @@ export class QState {
     return terms.map(([k, b], j) => { const neg = k.startsWith('-'); const kk = neg ? k.slice(1) : k; return (j ? (neg ? ' - ' : ' + ') : neg ? '-' : '') + (kk === '1' ? '' : kk) + b; }).join('');
   }
 }
-function coefTeX(re, im, d) {
-  const r = (x) => { const s = (+x.toFixed(d)).toString(); return s; };
+function coefTeX(re, im, d) { // eslint-disable-line no-param-reassign
+  const r = (x) => (+x.toFixed(d)).toString(), eps = 0.5 * 10 ** -d;
+  if (Math.abs(im) < eps) im = 0; if (Math.abs(re) < eps) re = 0;
   const known = (x) => { const a = Math.abs(x); for (const [v, t] of [[S2, '\\tfrac{1}{\\sqrt2}'], [0.5, '\\tfrac12'], [1, '1'], [Math.sqrt(3) / 2, '\\tfrac{\\sqrt3}{2}']]) if (Math.abs(a - v) < 1e-9) return (x < 0 ? '-' : '') + t; return null; };
   if (Math.abs(im) < 1e-12) return known(re) ?? r(re);
   if (Math.abs(re) < 1e-12) { const k = known(im) ?? r(im); return k === '1' ? 'i' : k === '-1' ? '-i' : k[0] === '-' ? '-i' + k.slice(1) : 'i' + k; }
@@ -165,6 +166,7 @@ export function toBloch(st, q = 0) {
 }
 /** Pretty angle: multiples of π/4 as TeX-free text (π/2, 3π/4, −π), otherwise 2 decimals. */
 export function fmtAngle(t) {
+  if (Math.abs(t) < 0.005) return '0';
   const k = t / (Math.PI / 4); if (Math.abs(k - Math.round(k)) < 1e-6) {
     const n = Math.round(k); if (n === 0) return '0'; const g = gcd(Math.abs(n), 4), num = n / g, den = 4 / g;
     return `${num < 0 ? '−' : ''}${Math.abs(num) === 1 ? '' : Math.abs(num)}π${den === 1 ? '' : '/' + den}`;
@@ -235,9 +237,10 @@ function diagram(api, s, qc, o = {}) {
   if (cur != null) { rr(cx, X(cur) - colW / 2 + 4, Y(0) - dy / 2 + 4, colW - 8, dy * n - 8, 10); cx.fillStyle = api.color(o.highlight || 'gold', 0.16); cx.fill(); }
   // wires
   cx.save(); cx.strokeStyle = muted; cx.lineWidth = 1.4;
-  for (let q = 0; q < n; q++) { cx.beginPath(); cx.moveTo(left - 8, Y(q)); cx.lineTo(W - right + 6, Y(q)); cx.stroke(); }
+  const xEnd = o.wireEnd === 'full' ? W - right + 6 : Math.min(W - right + 6, X(Math.max(0, ncols - 1)) + colW * 0.5 + 24);
+  for (let q = 0; q < n; q++) { cx.beginPath(); cx.moveTo(left - 8, Y(q)); cx.lineTo(xEnd, Y(q)); cx.stroke(); }
   cx.restore();
-  for (let q = 0; q < n; q++) s.texPx(`${o.labels ? o.labels[q] : `q_${q}`}\\ |${o.init?.[q] ?? '0'}\\rangle`, left - 12, Y(q), { align: 'right', color: 'ink', size: 14 });
+  for (let q = 0; q < n; q++) s.texPx(`${o.labels ? String(o.labels[q]).replace(/^\$+|\$+$/g, '') : `q_${q}`}\\ |${o.init?.[q] ?? '0'}\\rangle`, left - 12, Y(q), { align: 'right', color: 'ink', size: 14 });
   const boxes = [];
   items.forEach(({ col, op, k }) => {
     const done = k < step, alpha = done ? 1 : 0.38, x = X(col);
@@ -302,7 +305,8 @@ function amplitudes(api, s, st, o = {}) {
   }
   if (o.wheel !== false) {
     const R = 15, wx = W - right / 2 - 2, wy = top + R + 6;
-    for (let k = 0; k < 48; k++) { cx.beginPath(); cx.arc(wx, wy, R, -(k + 0.5) / 48 * TAU, -(k - 0.5) / 48 * TAU, true); cx.lineWidth = 6; cx.strokeStyle = phaseColor(api, k / 48 * TAU); cx.stroke(); }
+    // canvas angles grow clockwise on screen, phases counter-clockwise: phase φ sits at canvas angle −φ
+    for (let k = 0; k < 48; k++) { cx.beginPath(); cx.arc(wx, wy, R, -(k + 0.6) / 48 * TAU, -(k - 0.6) / 48 * TAU, false); cx.lineWidth = 6; cx.strokeStyle = phaseColor(api, k / 48 * TAU); cx.stroke(); }
     cx.fillStyle = api.color('muted'); cx.font = FONT(9.5, 500); cx.textAlign = 'center'; cx.textBaseline = 'top'; cx.fillText('phase', wx, wy + R + 6);
     cx.textBaseline = 'middle'; cx.fillText('0', wx + R + 9, wy); cx.fillText('π', wx - R - 8, wy);
   }

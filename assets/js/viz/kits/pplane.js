@@ -208,7 +208,7 @@ class PhasePlane {
     }
     if (o.H) {
       const p = this.params(), Hf = (x, y) => o.H(x, y, p), G = gridOf(Hf, B, nx, ny), opt = typeof o.contours === 'object' && !Array.isArray(o.contours) ? o.contours : {};
-      const levels = Array.isArray(o.contours) ? o.contours : Array.isArray(opt.levels) ? opt.levels : niceLevels(G, typeof o.contours === 'number' ? o.contours : opt.n ?? 12, 0.02);
+      const levels = typeof o.contours === 'function' ? o.contours(p, Hf) : Array.isArray(o.contours) ? o.contours : Array.isArray(opt.levels) ? opt.levels : niceLevels(G, typeof o.contours === 'number' ? o.contours : opt.n ?? 12, 0.02);
       this._layers.H = levels.map((lv) => isolines(G, lv, { fn: Hf }));
       this._layers.Hsaddle = this._fp.filter((f) => f.kind === 'saddle').map((f) => isolines(G, Hf(f.x, f.y), { fn: Hf }));
     }
@@ -248,13 +248,14 @@ class PhasePlane {
     }
     if (o.particles) this.trajectories.forEach((tr, k) => { const p = this.at(k, o.t ?? 0); if (p) s.dot(p[0], p[1], { color: 'gold', r: 5 }); });
     if (o.fixedPoints !== false) for (const f of this._fp) this._glyph(f, o.labels);
+    if (this._legendExtra) { const items = this.legendItems(this._legendExtra), sig = JSON.stringify(items); if (sig !== this._legendSig) { this._legendSig = sig; this.api.legend(items); } }
     return this;
   }
   _heads(pts, color, alpha, every, size, reverse) {
     const s = this.s, c = s.ctx; if (pts.length < 3) return;
     const P = pts.map((p) => [s.X(p[0]), s.Y(p[1])]); let total = 0; for (let i = 1; i < P.length; i++) total += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]);
     if (total < 24) return;
-    const marks = every === 'mid' ? [total / 2] : Array.from({ length: Math.max(1, Math.floor(total / every)) }, (_, k, a) => (k + 0.5) * total / a.length);
+    const nm = Math.max(1, Math.floor(total / every)), marks = every === 'mid' ? [total / 2] : Array.from({ length: nm }, (_, k) => (k + 0.5) * total / nm);
     c.save(); c.fillStyle = this.api.color(color, alpha); let acc = 0, mi = 0;
     for (let i = 1; i < P.length && mi < marks.length; i++) {
       const Ls = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]);
@@ -307,16 +308,21 @@ class PhasePlane {
     const lam = (f) => (f.l[0].im ? `\\lambda = ${fx(f.l[0].re, d)} \\pm ${fx(Math.abs(f.l[0].im), d)}i` : `\\lambda = ${fx(f.l[0].re, d)},\\ ${fx(f.l[1].re, d)}`);
     return fp.map((f) => `$(${fx(f.x, d)},\\,${fx(f.y, d)})$ **${f.type}**${opts.eig === false ? '' : ` ($${lam(f)}$)`}`).join(' · ');
   }
-  /** Set the legend for the layers in use (extra items appended). */
-  legend(extra = []) {
-    const o = this.o, items = [];
-    if (this.trajectories.length) items.push([this.trajectories[0].color, 'trajectories (click to add)']);
-    if (o.nullclines) items.push([o.nullColorX || 'orange', "$x' = 0$"], [o.nullColorY || 'purple', "$y' = 0$"]);
-    if (o.H) items.push(['faint', 'level sets of $H$']);
+  /** Legend entries for the layers in use and the kinds of equilibria currently in view (extra items appended). */
+  legendItems(extra = []) {
+    const o = this.o, items = [], names = o.names || {};
+    if (o.click || this.trajectories.length) items.push([this.trajectories[0]?.color || (o.trajColor === 'cycle' ? 'accent' : o.trajColor), o.click ? 'trajectories (click to add)' : 'trajectories']);
+    if (o.nullclines) items.push([o.nullColorX || 'orange', names.x ? `$${names.x}' = 0$` : "$x' = 0$"], [o.nullColorY || 'purple', names.y ? `$${names.y}' = 0$` : "$y' = 0$"]);
+    if (o.H && !(Array.isArray(o.contours) && !o.contours.length)) items.push(['faint', 'level sets of $H$']);
     if (o.separatrices) items.push(['green', 'stable manifold'], ['red', 'unstable manifold']);
-    if (o.fixedPoints !== false) items.push(['green', 'stable', { dot: true }], ['red', 'unstable', { dot: true }], ['ink', 'saddle', { dot: true }], ['teal', 'center', { dot: true }]);
-    const all = [...items, ...extra]; this.api.legend(all); return all;
+    if (o.fixedPoints !== false) {
+      const seen = new Set(); this.update();
+      for (const f of this._fp) { if (seen.has(f.type)) continue; seen.add(f.type); items.push([f.kind === 'saddle' ? 'ink' : f.kind === 'center' ? GLYPH.center : f.kind === 'degenerate' ? GLYPH.degenerate : f.stable ? GLYPH.stable : GLYPH.unstable, f.type, { dot: true }]); }
+    }
+    return [...items, ...extra];
   }
+  /** Set the legend (extra items appended) and keep it in sync with the equilibria on later draws. */
+  legend(extra = []) { this._legendExtra = extra; const items = this.legendItems(extra); this._legendSig = JSON.stringify(items); this.api.legend(items); return items; }
 }
 
 export default function phasePlane(api, rt, stage, spec) { return new PhasePlane(api, rt, stage, spec); }

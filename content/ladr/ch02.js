@@ -81,12 +81,12 @@ function inConvex(p, poly) {
  * scene3(v, opts) → G: an orthographic 3D view on a 2D stage.
  * G.handle(p, {color, constrain(q, f)}) makes a draggable tip (read h.p); the background rotates the view.
  * Inside G.render(fn): G.line/arrow/vec/dot/poly/disc/lattice/lineSpan/cube/text/tex. Filled faces are drawn first
- * (far to near) and act as tinted glass: anything behind one is drawn fainter.
+ * (far to near) and act as tinted glass: whatever lies behind one is drawn fainter (more so for denser faces).
  */
 function scene3(v, o = {}) {
-  const R = o.range ?? 2.6;
+  const R = o.range ?? 2.3;
   const S = v.stage({ x: [-R, R], y: [-R, R], equal: true, axes: false, height: o.height ?? 380, title: o.title, weight: o.weight ?? 1, minWidth: o.minWidth ?? 280, full: o.full });
-  const G = { S, yaw: o.yaw ?? -0.62, pitch: o.pitch ?? 0.36, ball: o.ball ?? 2.1, handles: [] };
+  const G = { S, yaw: o.yaw ?? -0.62, pitch: o.pitch ?? 0.36, ball: o.ball ?? 2.0, handles: [] };
   let rt = [1, 0, 0], up = [0, 0, 1], fw = [0, 1, 0], items = [], faces = [], occ = [];
   const frame = () => {
     const cy = Math.cos(G.yaw), sy = Math.sin(G.yaw), cp = Math.cos(G.pitch), sp = Math.sin(G.pitch);
@@ -121,33 +121,33 @@ function scene3(v, o = {}) {
     H.set = (p) => { H.p = p.slice(); v.invalidate(); };
     G.handles.push(H); return H;
   };
-  // ---- occlusion: how many filled faces lie between q and the viewer
-  const occN = (q) => {
-    let n = 0;
+  // ---- occlusion: the fraction of q that shows through the filled faces between q and the viewer
+  const seen = (q) => {
+    let f = 1;
     for (const O of occ) {
       const den = -dot3(O.n, fw); if (Math.abs(den) < 1e-4) continue;
       const t = dot3(O.n, sub3(O.c, q)) / den; if (t <= 0.03) continue;
       const d = sub3(add3(q, mul3(fw, -t)), O.c);
-      if (inConvex([dot3(d, O.e1), dot3(d, O.e2)], O.poly)) n++;
+      if (inConvex([dot3(d, O.e1), dot3(d, O.e2)], O.poly)) f *= O.k;
     }
-    return n;
+    return f;
   };
   const drawLine = (p, q, st) => {
     const L = len3(sub3(q, p)); if (L < 1e-9) return;
     const n = st.n ?? Math.max(1, Math.min(48, Math.ceil(L / 0.1)));
-    const dim = st.dim ?? 0.38, base = st.alpha ?? 1, col = st.color || 'ink', w = st.width ?? 2;
+    const base = st.alpha ?? 1, col = st.color || 'ink', w = st.width ?? 2;
     if (st.fade) {
       for (let i = 0; i < n; i++) {
         const s = Math.abs(((i + 0.5) / n) * 2 - 1), fa = Math.min(1, (1 - s) / 0.4);
-        S.path([G.P(lerp3(p, q, i / n)), G.P(lerp3(p, q, (i + 1) / n))], { color: col, width: w, alpha: base * fa * dim ** occN(lerp3(p, q, (i + 0.5) / n)), cap: 'butt' });
+        S.path([G.P(lerp3(p, q, i / n)), G.P(lerp3(p, q, (i + 1) / n))], { color: col, width: w, alpha: base * fa * seen(lerp3(p, q, (i + 0.5) / n)), cap: 'butt' });
       }
       return;
     }
-    let run = [G.P(p)], k = occN(lerp3(p, q, 0.5 / n));
+    let run = [G.P(p)], k = seen(lerp3(p, q, 0.5 / n));
     for (let i = 1; i <= n; i++) {
-      const kn = i < n ? occN(lerp3(p, q, (i + 0.5) / n)) : null;
+      const kn = i < n ? seen(lerp3(p, q, (i + 0.5) / n)) : null;
       run.push(G.P(lerp3(p, q, i / n)));
-      if (i === n || kn !== k) { S.path(run, { color: col, width: w, alpha: base * dim ** k, dash: st.dash }); run = [run[run.length - 1]]; k = kn; }
+      if (i === n || kn !== k) { S.path(run, { color: col, width: w, alpha: base * k, dash: st.dash }); run = [run[run.length - 1]]; k = kn; }
     }
   };
   G.line = (p, q, st = {}) => { items.push(() => drawLine(p, q, st)); return G; };
@@ -159,7 +159,7 @@ function scene3(v, o = {}) {
       drawLine(p, Lpx > 1 ? lerp3(p, q, 1 - (hs * 0.8) / Lpx) : q, st);
       if (Lpx < 1 || hs <= 0) return;
       const ux = ((B[0] - A[0]) * sc) / Lpx, uy = ((B[1] - A[1]) * sc) / Lpx, h = hs / sc;
-      const al = (st.alpha ?? 1) * (st.dim ?? 0.38) ** occN(q);
+      const al = (st.alpha ?? 1) * seen(q);
       S.poly([B, [B[0] - ux * h - uy * h * 0.45, B[1] - uy * h + ux * h * 0.45], [B[0] - ux * h + uy * h * 0.45, B[1] - uy * h - ux * h * 0.45]], { fill: st.color || 'ink', fillAlpha: al, stroke: false });
     });
     return G;
@@ -171,12 +171,13 @@ function scene3(v, o = {}) {
     if (st.label) {
       const A = G.P(from), B = G.P(p); let dx = B[0] - A[0], dy = B[1] - A[1]; const L = Math.hypot(dx, dy);
       if (L * S.scale < 8) { dx = 0.7; dy = 0.7; } else { dx /= L; dy /= L; }
-      const off = st.off ?? 15;
-      S.tex(st.label, B[0], B[1], { color: st.labelColor || st.color || 'ink', dx: dx * off + (st.dx || 0), dy: -dy * off + (st.dy || 0), size: st.size ?? 15 });
+      const off = st.off ?? 15, at = st.at ?? 1, X = A[0] + (B[0] - A[0]) * at, Y = A[1] + (B[1] - A[1]) * at;
+      if (at < 1) [dx, dy] = [-dy, dx]; // mid-arrow labels sit beside the arrow
+      S.tex(st.label, X, Y, { color: st.labelColor || st.color || 'ink', dx: dx * off + (st.dx || 0), dy: -dy * off + (st.dy || 0), size: st.size ?? 15 });
     }
     return G;
   };
-  G.dot = (p, st = {}) => { items.push(() => { const [x, y] = G.P(p); S.dot(x, y, { ...st, alpha: (st.alpha ?? 1) * (st.dim ?? 0.38) ** (st.noDim ? 0 : occN(p)) }); }); return G; };
+  G.dot = (p, st = {}) => { items.push(() => { const [x, y] = G.P(p); S.dot(x, y, { ...st, alpha: (st.alpha ?? 1) * (st.noDim ? 1 : seen(p)) }); }); return G; };
   G.text = (str, p, st = {}) => { items.push(() => { const [x, y] = G.P(p); S.text(str, x, y, st); }); return G; };
   G.tex = (latex, p, st = {}) => { const [x, y] = G.P(p); S.tex(latex, x, y, st); return G; };
   /** Queue a status line in a corner, or any pixel drawing, to be painted on top of the scene. */
@@ -185,14 +186,15 @@ function scene3(v, o = {}) {
   /** Filled planar polygon; it also tints whatever lies behind it (unless occlude: false). */
   G.poly = (pts, st = {}) => {
     const c = mul3(pts.reduce((s, p) => add3(s, p), [0, 0, 0]), 1 / pts.length);
-    faces.push({ pts, depth: G.depth(c), st: { fill: st.fill ?? st.color ?? 'accent', fillAlpha: st.fillAlpha ?? 0.14, color: st.stroke === false ? undefined : st.color ?? st.fill ?? 'accent', width: st.width ?? 1, alpha: st.alpha ?? 0.5, stroke: st.stroke } });
+    const fa = st.fillAlpha ?? 0.14;
+    faces.push({ pts, depth: G.depth(c), st: { fill: st.fill ?? st.color ?? 'accent', fillAlpha: fa, color: st.stroke === false ? undefined : st.color ?? st.fill ?? 'accent', width: st.width ?? 1, alpha: st.alpha ?? 0.5, stroke: st.stroke } });
     if (st.occlude !== false && pts.length >= 3) {
       let nrm = [0, 0, 0];
       for (let i = 1; i + 1 < pts.length; i++) nrm = add3(nrm, cross(sub3(pts[i], pts[0]), sub3(pts[i + 1], pts[0])));
       const e1 = unit3(sub3(pts[1], pts[0]));
       if (len3(nrm) > 1e-6 && len3(e1) > 0) {
         const n = unit3(nrm), e2 = cross(n, e1);
-        occ.push({ n, c: pts[0], e1, e2, poly: pts.map((p) => { const d = sub3(p, pts[0]); return [dot3(d, e1), dot3(d, e2)]; }) });
+        occ.push({ n, c: pts[0], e1, e2, k: Math.max(0.3, Math.min(0.95, 1 - 3.4 * fa)), poly: pts.map((p) => { const d = sub3(p, pts[0]); return [dot3(d, e1), dot3(d, e2)]; }) });
       }
     }
     return G;
@@ -220,13 +222,13 @@ function scene3(v, o = {}) {
   };
   /** The line R·d through 0, fading out at both ends. */
   G.lineSpan = (d, st = {}) => { const u = unit3(d), L = st.len ?? 2.3; return G.line(mul3(u, -L), mul3(u, L), { fade: true, width: 4, alpha: 0.5, ...st }); };
-  /** A cube [−h, h]³ as tinted glass (used for "all of R³"). */
+  /** A lightly tinted cube [−h, h]³, standing for "all of R³" (it does not dim what is inside). */
   G.cube = (h, st = {}) => {
     const V = (i, j, k) => [i * h, j * h, k * h];
     for (const s of [-1, 1]) {
-      G.poly([V(s, -1, -1), V(s, 1, -1), V(s, 1, 1), V(s, -1, 1)], { fillAlpha: 0.035, alpha: 0.4, ...st });
-      G.poly([V(-1, s, -1), V(1, s, -1), V(1, s, 1), V(-1, s, 1)], { fillAlpha: 0.035, alpha: 0.4, ...st });
-      G.poly([V(-1, -1, s), V(1, -1, s), V(1, 1, s), V(-1, 1, s)], { fillAlpha: 0.035, alpha: 0.4, ...st });
+      G.poly([V(s, -1, -1), V(s, 1, -1), V(s, 1, 1), V(s, -1, 1)], { fillAlpha: 0.035, alpha: 0.4, occlude: false, ...st });
+      G.poly([V(-1, s, -1), V(1, s, -1), V(1, s, 1), V(-1, s, 1)], { fillAlpha: 0.035, alpha: 0.4, occlude: false, ...st });
+      G.poly([V(-1, -1, s), V(1, -1, s), V(1, 1, s), V(-1, 1, s)], { fillAlpha: 0.035, alpha: 0.4, occlude: false, ...st });
     }
     return G;
   };
@@ -238,7 +240,7 @@ function scene3(v, o = {}) {
     return G.cube(st.h ?? 1.6, { color: st.color || 'accent' });
   };
   G.axes = () => {
-    const L = o.axisLen ?? 2.2, lab = o.labels ?? ['x', 'y', 'z'];
+    const L = o.axisLen ?? 2.2, lab = G.labels ?? o.labels ?? ['x', 'y', 'z'];
     for (let i = 0; i < 3; i++) {
       const e = [0, 0, 0]; e[i] = 1;
       G.line(mul3(e, -L), mul3(e, L), { color: 'faint', width: 1, n: 16 });
@@ -301,6 +303,8 @@ function snapLine2(p, w, tol) {
   return Math.abs(p[0] * u[1] - p[1] * u[0]) < tol ? [t * u[0], t * u[1]] : p;
 }
 const det2 = (p, q) => p[0] * q[1] - p[1] * q[0];
+/** Snap each coordinate to a multiple of step when it is within tol of one. */
+const snapGrid = (q, step = 0.5, tol = 0.09) => q.map((c) => { const r = Math.round(c / step) * step; return Math.abs(c - r) < tol ? r : c; });
 const to3 = (p) => [p[0], p[1], 0];
 
 export default {
@@ -337,9 +341,10 @@ The span of the empty list $(\,)$ is defined to be $\{0\}$. If $\spn(v_1,\dots,v
           H.forEach((h, i) => { h.visible = i < k; });
           A.forEach((s, i) => { s.el.hidden = i >= k; });
           const vs = H.slice(0, k).map((h) => h.p), B = orth(vs), d = B.length;
-          if (d === 2) { const ix = siftIdx(vs); G.disc(B, { color: 'accent', r: 2.1 }); G.lattice(vs[ix[0]], vs[ix[1]], 2.1, { color: 'accent', alpha: 0.28 }); }
-          else G.subspace(B, { color: 'accent', h: 1.65 });
-          for (const c of CO) { const p = comb(c.slice(0, k), vs); if (len3(p) < 2.35) G.dot(p, { r: 1.8, color: 'gold', alpha: 0.75, ring: false }); }
+          if (d === 2) { const ix = siftIdx(vs); G.disc(B, { color: 'accent', r: 2 }); G.lattice(vs[ix[0]], vs[ix[1]], 2, { color: 'accent', alpha: 0.28 }); }
+          else G.subspace(B, { color: 'accent', h: 1.5, len: 2.2 });
+          const lim = d === 3 ? 1.5 : 1.97;
+          for (const c of CO) { const p = comb(c.slice(0, k), vs); if (d === 3 ? Math.max(...p.map(Math.abs)) < lim : len3(p) < lim) G.dot(p, { r: 1.8, color: 'gold', alpha: 0.75, ring: false }); }
           vs.forEach((p, i) => G.vec(p, { color: VC[i], label: `v_${i + 1}`, width: 2.7 }));
           let s = ZERO;
           for (let i = 0; i < k; i++) { const nx = add3(s, mul3(vs[i], A[i].value)); G.arrow(s, nx, { color: VC[i], width: 1.8, dash: [5, 4], head: 8 }); s = nx; }
@@ -375,7 +380,7 @@ The span of the empty list $(\,)$ is defined to be $\{0\}$. If $\spn(v_1,\dots,v
         const tilt = v.slider('tilt of the plane', 0, 180, 25, { step: 0.5, fmt: (x) => `${x.toFixed(1)}°` });
         const h1 = G.handle([1.45, 0.25, 0.1], { color: VC[0] });
         const h2 = G.handle([0.2, 1.15, 0.85], { color: VC[1], constrain: (q) => snapInto(q, orth([h1.p]), 0.16) });
-        const r = v.rng(5), CO = Array.from({ length: 230 }, () => [r.uniform(-1.25, 1.25), r.uniform(-1.25, 1.25)]);
+        const r = v.rng(5), CO = Array.from({ length: 220 }, () => [r.uniform(-1.2, 1.2), r.uniform(-1.2, 1.2)]).concat(Array.from({ length: 14 }, (_, i) => [-1.2 + (2.4 * i) / 13, 0]));
         let st = null;
         v.legend([['accent', '$\\operatorname{span}(v_1,v_2)$', { area: true }], ['orange', 'candidate $U$', { area: true }], ['green', 'combination in $U$', { dot: true }], ['red', 'combination not in $U$', { dot: true }]]);
         G.render(() => {
@@ -388,12 +393,12 @@ The span of the empty list $(\,)$ is defined to be $\{0\}$. If $\spn(v_1,\dots,v
           const th = (tilt.value * Math.PI) / 180, dirU = add3(mul3(a, Math.cos(th)), mul3(b, Math.sin(th))), nU = cross(u1, dirU);
           const inU = (p) => (mode === 'space' ? true : mode === 'plane' ? Math.abs(dot3(p, nU)) < 1e-6 * Math.max(1, len3(p)) : distTo(p, orth([v1])) < 1e-6 || distTo(p, orth([v2])) < 1e-6);
           // the span and the candidate
-          G.subspace(orth([v1, v2]), { color: 'accent', r: 1.95 });
-          if (mode === 'plane') G.disc([u1, dirU], { color: 'orange', r: 2.2, fillAlpha: 0.1 });
+          G.subspace(orth([v1, v2]), { color: 'accent', r: 1.9 });
+          if (mode === 'plane') G.disc([u1, dirU], { color: 'orange', r: 2.1, fillAlpha: 0.1 });
           else if (mode === 'space') G.cube(1.75, { color: 'orange' });
           else { G.lineSpan(v1, { color: 'orange', width: 3, len: 2.4 }); G.lineSpan(v2, { color: 'orange', width: 3, len: 2.4 }); }
           let inside = 0;
-          for (const [c1, c2] of CO) { const p = add3(mul3(v1, c1), mul3(v2, c2)), ok = inU(p); if (ok) inside++; if (len3(p) < 2.4) G.dot(p, { r: 2.6, color: ok ? 'green' : 'red', alpha: 0.85, ring: false }); }
+          for (const [c1, c2] of CO) { const p = add3(mul3(v1, c1), mul3(v2, c2)), ok = inU(p); if (ok) inside++; if (len3(p) < 2.1) G.dot(p, { r: 2.6, color: ok ? 'green' : 'red', alpha: 0.85, ring: false }); }
           const s = add3(v1, v2), sOk = inU(s);
           G.line(v1, s, { color: 'muted', width: 1, dash: [3, 4] }); G.line(v2, s, { color: 'muted', width: 1, dash: [3, 4] });
           G.dot(s, { r: 5, color: sOk ? 'green' : 'red', noDim: true }); G.tex('v_1+v_2', s, { color: sOk ? 'green' : 'red', dx: 26, dy: -10, size: 14 });
@@ -408,7 +413,7 @@ The span of the empty list $(\,)$ is defined to be $\{0\}$. If $\spn(v_1,\dots,v
           const mem = `$v_1\\in U$, $v_2${in2 ? '\\in' : '\\notin'} U$; ${inside} of ${n} random combinations lie in $U$.`;
           if (mode === 'union') return `${mem} The union contains both vectors but $v_1+v_2${sOk ? '\\in' : '\\notin'} U$: it is not closed under addition, so it is not a subspace and the theorem says nothing about it.`;
           if (mode === 'space') return `${mem} $\\mathbf R^3$ is a subspace containing $v_1,v_2$, so it contains their span.`;
-          if (!in2) return `${mem} This plane misses $v_2$, so it is not a competitor — and indeed most of the span escapes it. Tilt it until it catches $v_2$.`;
+          if (!in2) return `${mem} This plane misses $v_2$, so it is not a competitor — only the multiples of $v_1$ stay inside, the rest of the span escapes. Tilt it until it catches $v_2$.`;
           return `${mem} ` + (par ? 'Now $v_2\\in\\mathbf Rv_1$, so the span is the line $\\mathbf Rv_1$, and it lies inside every one of the tilted planes: the span is the *smallest* subspace containing the list.' : 'This plane contains $v_1$ and $v_2$, so — being a subspace — it contains every combination: here it is exactly the span.');
         });
       },
@@ -477,11 +482,11 @@ The set of all polynomials with coefficients in $\mathbf F$ is denoted $\mathcal
       tags: ['polynomials'],
       viz(v) {
         const L = v.stage({ x: [-1.6, 1.6], y: [-3, 3], height: 340, minWidth: 300, xlabel: 'x', title: 'graphs: functions $\\mathbf R\\to\\mathbf R$' });
-        const G = scene3(v, { height: 340, range: 2.5, labels: ['a₀', 'a₁', 'a₂'], title: 'coefficient points $(a_0,a_1,a_2)$', minWidth: 280, ball: 1.7, hint: false });
+        const G = scene3(v, { height: 340, range: 2.3, labels: ['a₀', 'a₁', 'a₂'], title: 'coefficient points $(a_0,a_1,a_2)$', minWidth: 280, ball: 1.7, hint: false });
         const lam = v.slider('$\\lambda$', -1.5, 1.5, 0.8, { step: 0.05 });
         const q10 = (p) => p.map((c) => Math.round(c * 10) / 10);
-        const hp = G.handle([0.5, -0.8, 0.7], { color: 'blue', constrain: q10 });
-        const hq = G.handle([-0.9, 0.5, -0.3], { color: 'orange', constrain: q10 });
+        const hp = G.handle([1.2, 0.3, 0.8], { color: 'blue', constrain: q10 });
+        const hq = G.handle([-0.4, -1.1, -0.5], { color: 'orange', constrain: q10 });
         const x0 = L.handle(0.9, 0, { color: 'gold', constrain: (x) => [Math.max(-1.5, Math.min(1.5, x)), 0] });
         const ev = (c, x) => c[0] + c[1] * x + c[2] * x * x;
         const polyTeX = (c) => { let s = ''; [[c[0], ''], [c[1], 'x'], [c[2], 'x^2']].forEach(([a, m]) => { if (Math.abs(a) < 0.005) return; const t = Math.abs(a).toFixed(2); s += (s ? (a < 0 ? ' - ' : ' + ') : a < 0 ? '-' : '') + (m && t === '1.00' ? '' : t) + m; }); return s || '0'; };
@@ -491,7 +496,7 @@ The set of all polynomials with coefficients in $\mathbf F$ is denoted $\mathcal
           const p = hp.p, q = hq.p, l = lam.value, lp = mul3(p, l), r = add3(lp, q);
           G.line(lp, r, { color: 'muted', width: 1, dash: [4, 4] }); G.line(q, r, { color: 'muted', width: 1, dash: [4, 4] });
           G.poly([ZERO, lp, r, q], { fill: 'green', fillAlpha: 0.08, stroke: false, occlude: false });
-          G.vec(lp, { color: 'blue', width: 1.8, dash: [6, 4], label: '\\lambda p', off: 18 });
+          G.vec(lp, { color: 'blue', width: 1.8, dash: [6, 4], label: '\\lambda p', off: 14, at: 0.55 });
           G.vec(p, { color: 'blue', label: 'p', width: 2.6 }); G.vec(q, { color: 'orange', label: 'q', width: 2.6 });
           G.vec(r, { color: 'green', label: '\\lambda p+q', width: 3, off: 26 });
           G.corner('drag the background to rotate', 'br', { color: 'faint', size: 10.5 });
@@ -586,7 +591,7 @@ is $a_1=\dots=a_m=0$. The empty list $(\,)$ is also declared to be linearly inde
         const M = v.M;
         const S = v.stage({ x: [-3.3, 3.3], y: [-2.3, 2.3], equal: true, height: 380 });
         const START = [[1.7, 0.45], [0.35, 1.45], [-1.5, 0.9], [-0.7, -1.4], [1.3, -1.15]];
-        let n = 2;
+        let n = 3;
         const H = START.map((p, i) => S.handle(p[0], p[1], {
           color: VC[i],
           constrain: (x, y) => {
@@ -601,7 +606,7 @@ is $a_1=\dots=a_m=0$. The empty list $(\,)$ is also declared to be linearly inde
           H[n].x = x; H[n].y = y; n++;
         });
         v.button('Remove last', () => { if (n > 1) n--; });
-        v.button('Reset', () => { n = 2; START.forEach((p, i) => { H[i].x = p[0]; H[i].y = p[1]; }); });
+        v.button('Reset', () => { n = 3; START.forEach((p, i) => { H[i].x = p[0]; H[i].y = p[1]; }); });
         let st = null;
         v.legend([['gold', 'a nontrivial combination equal to $0$', { area: true }]]);
         v.render(() => {
@@ -653,7 +658,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
         const J = v.slider('show $v_1,\\dots,v_j$, $\\;j=$', 1, 4, 3, { int: true });
         const rem = v.toggle('remove $v_k$', false);
         const P0 = [[1.4, 0.15, 0.1], [0.15, 1.3, 0.35]];
-        P0.push(add3(mul3(P0[0], -0.55), mul3(P0[1], 0.95)), [0.55, 0.6, 1.3]);
+        P0.push(add3(mul3(P0[0], -0.6), mul3(P0[1], 1.05)), [0.6, -0.5, 1.3]);
         const H = [];
         P0.forEach((p, i) => H.push(G.handle(p, { color: VC[i], constrain: (q) => (i === 0 ? (len3(q) < 0.16 ? ZERO.slice() : q) : snapInto(q, orth(H.slice(0, i).map((h) => h.p)), 0.16)) })));
         let st = null;
@@ -673,8 +678,8 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
             else G.vec(all[i], { color: VC[i], label: `v_${i + 1}`, width: 2.7 });
           }
           if (dep) G.dot(all[k], { r: 12, hollow: true, color: 'red', width: 2.6, noDim: true });
-          const dims = []; for (let i = 1; i <= j; i++) dims.push(orth(all.slice(0, i)).length);
-          S3corner(G, `dim span(v₁…vᵢ), i = 1…${j}:  ${dims.join(' → ')}`, 'muted');
+          const SH = ['point', 'line', 'plane', 'space'], dims = []; for (let i = 1; i <= j; i++) dims.push(SH[orth(all.slice(0, i)).length]);
+          S3corner(G, `span(v₁), span(v₁,v₂), …:  ${dims.join(' → ')}`, 'muted');
           st = { j, dep, dimAll, dimKeep: B.length, removed };
         });
         v.readout(() => {
@@ -683,7 +688,8 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
           if (!dep) return `$${names.join(',')}$ is still linearly independent — no vector lies in the span of its predecessors. Add more vectors.`;
           const k = dep.k + 1;
           const expr = k === 1 ? '$v_1 = 0 \\in \\operatorname{span}(\\,)$' : `$v_${k} = ${combTeX(dep.c, names)} \\in \\operatorname{span}(${names.slice(0, k - 1).join(',')})$`;
-          return `${expr}, so $k=${k}$. The span of $${names.join(',')}$ has dimension ${dimAll}; ${removed ? `after removing $v_${k}$ the span drawn is the same (dimension ${dimKeep}).` : `switch on *remove* — the span stays the same.`}`;
+          const SH = ['$\\{0\\}$', 'a line', 'a plane', 'all of $\\mathbf R^3$'];
+          return `${expr}, so $k=${k}$. The span of $${names.join(',')}$ is ${SH[dimAll]}; ${removed ? `after removing $v_${k}$ it is still ${SH[dimKeep]} — the same set.` : 'switch on *remove* — the span stays the same.'}`;
         });
       },
     },
@@ -705,8 +711,8 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
         const G = scene3(v, { height: 420, minWidth: 340 });
         const nSel = v.select('spanning list', [{ value: '3', label: '$w_1,w_2,w_3$' }, { value: '4', label: '$w_1,\\dots,w_4$' }, { value: '5', label: '$w_1,\\dots,w_5$' }], '4');
         const mSel = v.select('independent list', [{ value: '2', label: '$u_1,u_2$' }, { value: '3', label: '$u_1,u_2,u_3$' }, { value: '4', label: '$u_1,\\dots,u_4$' }], '3');
-        const HW = [[1.55, 0.1, -0.25], [0.25, 1.45, 0.05], [-0.25, 0.25, 1.45], [1.0, -0.95, 0.65], [-0.95, 0.75, 0.95]].map((p) => G.handle(p, { color: 'orange', r: 5.5 }));
-        const HU = [[0.9, 0.85, 0.35], [-0.75, 0.55, 0.95], [0.65, -0.45, 1.1], [1.1, 0.45, -0.85]].map((p) => G.handle(p, { color: 'blue', r: 5.5 }));
+        const HW = [[1.5, -0.5, -0.3], [-0.3, 1.4, 0.2], [0.5, -0.4, 1.4], [-1.2, 0.2, -0.6], [0.6, 0.4, -1.3]].map((p) => G.handle(p, { color: 'orange', r: 5.5 }));
+        const HU = [[1.1, 0.9, 0.6], [-1.2, 1.0, 0.4], [0.2, -1.2, -0.9], [-0.6, -1.4, 0.4]].map((p) => G.handle(p, { color: 'blue', r: 5.5 }));
         const CODE = [
           '$B \\leftarrow (w_1,\\dots,w_n)$   ▷ spans $V$',
           'for $k = 1$ to $m$:',
@@ -739,7 +745,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
           F.push({ B: B.slice(), gone: gone.slice(), line: 7, done: true, hold: 2, note: `All ${m} $u$'s are in and each step evicted a different $w$, so $m = ${m} \\le ${n} = n$.` });
           return F;
         }
-        const S = v.steps({ frames: build, code: CODE, codeTitle: 'Exchange $u$\'s for $w$\'s', speed: 0.9 });
+        const S = v.steps({ frames: build, code: CODE, codeTitle: 'The exchange (proof of 2.22)', speed: 0.9, start: 2 });
         let sig = '', st = null;
         v.legend([['blue', '$u$ (independent list)'], ['orange', '$w$ (spanning list)'], ['red', 'vector to evict', { dot: true }], ['gold', 'its expression in its predecessors', { dash: true }]]);
         G.render(() => {
@@ -761,7 +767,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
         v.readout(() => {
           if (!st) return '';
           const { f, rank } = st;
-          return `Current list: $${listTeX(f.B)}$ (length ${f.B.length}); $\\dim\\operatorname{span} = ${rank}$` + (rank === 3 ? ' — it spans $\\mathbf R^3$ at every step.' : '.') + (f.done ? ' **Done:** $m\\le n$.' : f.fail ? ' **Stopped:** the $u$-list was dependent.' : '');
+          return `Current list: $${listTeX(f.B)}$ (length ${f.B.length}); ` + (rank === 3 ? 'it spans $\\mathbf R^3$, as it does at every step.' : 'it does not span $\\mathbf R^3$ — drag the $w$\'s apart.') + (f.done ? ' **Done:** $m\\le n$.' : f.fail ? ' **Stopped:** the $u$-list was dependent.' : '');
         });
       },
     },
@@ -778,7 +784,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
       viz(v) {
         const G = scene3(v, { height: 410 });
         const Usel = v.select('subspace $U$', [{ value: '0', label: '$\\{0\\}$' }, { value: '1', label: 'a line' }, { value: '2', label: 'a plane' }, { value: '3', label: '$\\mathbf R^3$' }], '2');
-        const UB = { 0: [], 1: orth([[0.75, 0.5, 0.45]]), 2: orth([[1, 0.15, -0.35], [0.1, 0.95, 0.45]]), 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) };
+        const UB = { 0: [], 1: orth([[0.8, -0.35, 0.5]]), 2: orth([[1, 0, -0.8], [0, 1, -0.4]]), 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) };
         let list = [], msg = '', lastU = null, seed = 3;
         const cand = G.handle([0.9, 0.8, 0.2], { color: 'gold', constrain: (q, f) => snapInto(intoSpan(q, UB[Usel.value], f), orth(list), 0.16) });
         const add = () => {
@@ -800,7 +806,11 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
         v.legend([['orange', 'the subspace $U$', { area: true }], ['accent', '$\\operatorname{span}(u_1,\\dots,u_k)$', { area: true }], ['gold', 'candidate in $U$']]);
         G.render(() => {
           const key = Usel.value, U = UB[key];
-          if (key !== lastU) { lastU = key; list = []; msg = ''; cand.p = U.length ? randomOutside(U, []) : ZERO.slice(); }
+          if (key !== lastU) {
+            list = []; msg = ''; cand.p = U.length ? randomOutside(U, []) : ZERO.slice();
+            if (lastU === null && U.length === 2) { list.push(cand.p.slice()); cand.p = randomOutside(U, orth(list)); } // open with one vector chosen
+            lastU = key;
+          }
           cand.visible = U.length > 0;
           const B = orth(list), done = B.length === U.length;
           if (U.length === 3) G.cube(1.7, { color: 'orange' }); else if (U.length === 2) G.disc(U, { color: 'orange', r: 2.25, fillAlpha: 0.08 }); else if (U.length === 1) G.lineSpan(U[0], { color: 'orange', width: 3, len: 2.4 });
