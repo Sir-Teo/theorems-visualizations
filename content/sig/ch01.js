@@ -228,9 +228,8 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
           // ---- top: x(τ) with its two landmarks
           for (const S of [top, bot]) { S.hline(0, { color: 'faint', width: 1 }); S.vline(0, { color: 'faint', width: 1 }); }
           top.fn(sig.f, { color: 'accent', width: 2.6, n: 900 });
-          top.dot(0, sig.f(0), { color: 'orange', r: 5.5 }); top.dot(1, sig.f(1), { color: 'purple', r: 5.5 });
-          top.text('τ = 0', 0, -0.28, { align: 'center', color: 'orange', size: 12, weight: 600 });
-          top.text('τ = 1', 1, -0.28, { align: 'center', color: 'purple', size: 12, weight: 600 });
+          top.dot(0, sig.f(0), { color: 'orange', r: 5.5, label: 'τ = 0', labelPos: 'nw', math: false, labelSize: 12.5 });
+          top.dot(1, sig.f(1), { color: 'purple', r: 5.5, label: 'τ = 1', labelPos: 'ne', math: false, labelSize: 12.5 });
           // ---- bottom
           bot.fn(sig.f, { color: 'muted', width: 1.2, dash: [4, 4], alpha: 0.7 });
           const y = (t) => sig.f(a * t + b);
@@ -296,21 +295,23 @@ The same formulas with $x[n]$ and $x[-n]$ split a discrete-time signal. The two 
         };
         let sig = null;
         v.select('start from', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'exp', { onChange: (k) => sig.set(PRE[k].f) });
-        const top = v.stage({ x: [-4.3, 4.3], y: [-1.3, 1.68], height: 215, axes: true, full: true, title: '$x(t)$ (drag to draw) and its mirror image $x(-t)$' });
+        const top = v.stage({ x: [-4.3, 4.3], y: [-0.9, 1.62], height: 215, axes: true, full: true, title: '$x(t)$ (drag to draw) and its mirror image $x(-t)$' });
         const se = v.stage({ x: [-4.3, 4.3], y: [-1, 1], height: 185, axes: true, title: 'even part $x_e(t)=\\tfrac12[x(t)+x(-t)]$' });
         const so = v.stage({ x: [-4.3, 4.3], y: [-1, 1], height: 185, axes: true, title: 'odd part $x_o(t)=\\tfrac12[x(t)-x(-t)]$' });
-        sig = drawable(top, -L, L, N, PRE.exp.f, [-1.2, 1.55]);
-        const probe = top.handle(1.2, PRE.exp.f(1.2), { color: 'ink', r: 6, constrain: (x) => { const t = M.clamp(x, 0.1, 3.9); return [t, sig.f(t)]; } });
+        sig = drawable(top, -L, L, N, PRE.exp.f, [-0.82, 1.52]);
+        const probe = top.handle(0.6, PRE.exp.f(0.6), { color: 'ink', r: 6, constrain: (x) => { const t = M.clamp(x, 0.1, 3.9); return [t, sig.f(t)]; } });
         let st = null;
         v.render(() => {
           const f = sig.f, xe = (t) => (f(t) + f(-t)) / 2, xo = (t) => (f(t) - f(-t)) / 2, t0 = probe.x, h = sig.h, ys = sig.ys;
           probe.y = f(t0);
-          // energies on the symmetric grid (trapezoid); sample i mirrors sample N − i
+          // exact integrals of the piecewise-linear signals on the symmetric grid (sample i mirrors sample N − i)
           let Ex = 0, Ee = 0, Eo = 0, X = 0, rec = 0, m = 0.55;
-          for (let i = 0; i <= N; i++) {
-            const w = i === 0 || i === N ? h / 2 : h, a = ys[i], b = ys[N - i], e = (a + b) / 2, o = (a - b) / 2;
-            Ex += w * a * a; Ee += w * e * e; Eo += w * o * o; X += w * e * o; rec = Math.max(rec, Math.abs(e + o - a)); m = Math.max(m, Math.abs(e), Math.abs(o));
+          const E = (i) => (ys[i] + ys[N - i]) / 2, O = (i) => (ys[i] - ys[N - i]) / 2;
+          const seg = (p0, p1, q0, q1) => (h * (2 * p0 * q0 + p0 * q1 + p1 * q0 + 2 * p1 * q1)) / 6;
+          for (let i = 0; i < N; i++) {
+            Ex += seg(ys[i], ys[i + 1], ys[i], ys[i + 1]); Ee += seg(E(i), E(i + 1), E(i), E(i + 1)); Eo += seg(O(i), O(i + 1), O(i), O(i + 1)); X += seg(E(i), E(i + 1), O(i), O(i + 1));
           }
+          for (let i = 0; i <= N; i++) { rec = Math.max(rec, Math.abs(E(i) + O(i) - ys[i])); m = Math.max(m, Math.abs(E(i)), Math.abs(O(i))); }
           se.setView(null, [-1.22 * m, 1.3 * m]); so.setView(null, [-1.22 * m, 1.3 * m]);
           // ---- top
           top.fn((t) => f(-t), { color: 'muted', width: 1.6, dash: [5, 4], n: 900 });
@@ -323,7 +324,7 @@ The same formulas with $x[n]$ and $x[-n]$ split a discrete-time signal. The two 
           top.line(t0, b, t0, mid, { color: 'orange', width: 3.5, alpha: 0.35 });
           top.dot(t0, b, { color: 'muted', r: 4.5 });
           top.dot(t0, mid, { color: 'purple', r: 5.5 });
-          top.tex('t_0', t0, -1.12, { color: 'ink', size: 14 }); top.tex('-t_0', -t0, -1.12, { color: 'muted', size: 14 });
+          top.tex('t_0', t0, -0.62, { color: 'ink', size: 14 }); top.tex('-t_0', -t0, -0.62, { color: 'muted', size: 14 });
           // ---- even part
           se.vline(0, { color: 'purple', dash: [5, 4], width: 1.2, alpha: 0.7 });
           se.fn(xe, { color: 'purple', width: 2.6, n: 900 });
@@ -359,7 +360,7 @@ Then $2T,3T,\dots$ are periods too, and the smallest positive period, when there
       refs: ['Oppenheim–Willsky §1.2'],
       tags: ['periodicity', 'sinusoids'],
       viz(v) {
-        const M = v.M, F1 = 220, QMAX = 80, LO = 2e-4;
+        const M = v.M, F1 = 220, QMAX = 80, LO = 6e-5, ZERO = 1.4e-4, BRK = 3e-4;
         const PRE = {
           fifth: { label: 'fifth 3 : 2', r: [3, 2], W: 30 },
           third: { label: 'major third 5 : 4', r: [5, 4], W: 45 },
@@ -367,14 +368,14 @@ Then $2T,3T,\dots$ are periods too, and the smallest positive period, when there
           just: { label: 'just tritone 45 : 32', r: [45, 32], W: 60 },
           et: { label: 'tempered tritone $\\sqrt2$', r: null, W: 60 },
         };
-        const pre = v.select('ratio $f_2/f_1$', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'fifth', { onChange: (k) => qS.set(PRE[k].r ? PRE[k].r[1] : 5) });
-        const qS = v.slider('lag $\\tau=q/f_1$, $q$ =', 1, QMAX, 2, { int: true });
+        const pre = v.select('ratio $f_2/f_1$', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'et', { onChange: (k) => qS.set(PRE[k].r ? PRE[k].r[1] : 5) });
+        const qS = v.slider('lag $\\tau=q/f_1$, $q$ =', 1, QMAX, 12, { int: true });
         v.soundButton('Listen', (snd) => snd.chord(F1, F1 * ratio(), { duration: 2.6, gain: 0.3 }));
         const ratio = () => { const P = PRE[pre.value]; return P.r ? P.r[0] / P.r[1] : Math.SQRT2; };
         /** slip of the second tone after q periods of the first, in cycles (exact for rational ratios) */
         const slip = (q) => { const P = PRE[pre.value]; if (P.r) { const [p, d] = P.r, m = (q * p) % d; return Math.min(m, d - m) / d; } const x = q * Math.SQRT2; return Math.abs(x - Math.round(x)); };
         const st = v.stage({ x: [0, 30], y: [-2.45, 2.45], height: 205, axes: 'box', yticks: [-2, -1, 0, 1, 2], xlabel: 't (ms)', full: true, title: '$x(t)=\\cos 2\\pi f_1t+\\cos 2\\pi f_2t$ and the shifted copy $x(t+\\tau)$' });
-        const sb = v.stage({ x: [0.2, QMAX + 0.8], y: [LO, 0.9], ylog: true, height: 215, axes: 'box', xlabel: 'q (the lag in periods of the first tone)', ylabel: 'slip (cycles)', full: true, title: 'how far the second tone slips after the lag $q/f_1$: zero means a period' });
+        const sb = v.stage({ x: [-4.2, QMAX + 0.8], y: [LO, 1.3], ylog: true, height: 215, axes: 'box', yticks: [[ZERO, '0'], [1e-3, '0.001'], [1e-2, '0.01'], [0.1, '0.1'], [0.5, '0.5']], xticks: [1, 10, 20, 30, 40, 50, 60, 70, 80], full: true, title: 'slip of the second tone (in cycles) after the lag $\\tau=q/f_1$, for $q=1,\\dots,80$: zero means a period' });
         sb.onClick((x) => qS.set(M.clamp(Math.round(x), 1, QMAX)));
         let info = null;
         v.render(() => {
@@ -389,31 +390,30 @@ Then $2T,3T,\dots$ are periods too, and the smallest positive period, when there
           let mx = 0; for (let i = 0; i <= 4000; i++) { const t = (P.W * i) / 4000; mx = Math.max(mx, Math.abs(xs(t) - x(t))); }
           // ---- slip bars
           let best = 1, firstZero = null; const records = [];
+          sb.hline(BRK, { color: 'faint', width: 1, dash: [3, 3] });
           for (let k = 1; k <= QMAX; k++) {
             const e = slip(k), sel = k === q;
             if (e === 0 || e < 1e-12) {
               if (firstZero == null) firstZero = k;
-              sb.line(k, LO, k, LO * 1.6, { color: sel ? 'gold' : 'green', width: 3 });
-              sb.dot(k, LO * 1.75, { color: sel ? 'gold' : 'green', r: sel ? 6 : 4.5 });
+              sb.dot(k, ZERO, { color: sel ? 'gold' : 'green', r: sel ? 6 : 4.5 });
               continue;
             }
             const rec = e < best - 1e-12; if (rec) { best = e; records.push(k); }
-            sb.rect(k - 0.36, LO, k + 0.36, e, { fill: sel ? 'gold' : rec && !P.r ? 'accent' : 'muted', fillAlpha: sel ? 0.95 : rec && !P.r ? 0.75 : 0.45, stroke: false });
+            sb.rect(k - 0.36, BRK, k + 0.36, e, { fill: sel ? 'gold' : rec && !P.r ? 'accent' : 'muted', fillAlpha: sel ? 0.95 : rec && !P.r ? 0.75 : 0.45, stroke: false });
           }
           if (!P.r) for (const k of records) if (k > 1) sb.text(String(k), k, slip(k), { dy: -9, align: 'center', color: 'accent', size: 11.5, weight: 600 });
-          if (firstZero) sb.text(`0 (exact) at q = ${firstZero}`, firstZero, LO * 3.2, { align: firstZero > 60 ? 'right' : 'left', dx: firstZero > 60 ? -8 : 8, color: 'green', size: 12, weight: 600 });
           info = { r, f2, q, tau, mx, e: slip(q), firstZero, best, bestAt: records[records.length - 1] };
         });
         v.legend([['accent', '$x(t)$'], ['orange', '$x(t+\\tau)$', { dash: true }], ['red', 'difference', { area: true }], ['green', 'zero slip: a period', { dot: true }], ['gold', 'chosen lag', { area: true }]]);
         v.readout(() => {
           if (!info) return '';
           const P = PRE[pre.value], { f2, q, tau, mx, e, firstZero, best, bestAt } = info;
-          const head = `$f_1$ = 220 Hz, $f_2$ = ${v.fix(f2, 3)} Hz · lag $\\tau=${q}/f_1$ = ${v.fix(tau * 1e3, 3)} ms: the second tone slips by ${e === 0 ? '0' : v.fix(e, 5)} cycles and $\\max_t|x(t+\\tau)-x(t)|$ = ${v.fix(mx, 4)}${mx < 1e-9 ? ': **a period**' : ': not a period'}`;
+          const head = `$f_1$ = 220 Hz, $f_2$ = ${v.fmt(f2, 6)} Hz · lag $\\tau=${q}/f_1$ = ${v.fix(tau * 1e3, 3)} ms: the second tone slips by ${e === 0 ? '0' : v.fix(e, 5)} cycles and $\\max_t|x(t+\\tau)-x(t)|$ = ${v.fix(mx, 4)}${mx < 1e-9 ? ': **a period**' : ': not a period'}`;
           if (P.r) {
             const [p, d] = P.r, T0 = d / F1;
-            return `${head} · $f_2/f_1=${p}/${d}$ in lowest terms, so the fundamental period is $T_0=${d}/f_1=${p}/f_2$ = ${v.fix(T0 * 1e3, 2)} ms, i.e. $1/T_0=\\gcd(f_1,f_2)$ = ${v.fix(1 / T0, 3)} Hz${pre.value === 'beats' ? ' (also the beat rate $|f_2-f_1|$)' : ''}; every other slip is at least $1/${d}$`;
+            return `${head} · $f_2/f_1=${p}/${d}$ in lowest terms, so the fundamental period is $T_0=${d}/f_1=${p}/f_2$ = ${v.fix(T0 * 1e3, 2)} ms, i.e. $1/T_0=\\gcd(f_1,f_2)$ = ${v.fmt(1 / T0, 6)} Hz${pre.value === 'beats' ? ' (also the beat rate $|f_2-f_1|$)' : ''}; every other slip is at least $1/${d}$`;
           }
-          return `${head} · $f_2/f_1=\\sqrt2$ is irrational: no lag up to $q=${QMAX}$ is a period${firstZero ? '' : ''}; the smallest slip is ${v.fix(best, 5)} cycles at $q=${bestAt}$ (from $${Math.round(bestAt * Math.SQRT2)}/${bestAt}\\approx\\sqrt2$), and the slips keep shrinking but never reach zero`;
+          return `${head} · $f_2/f_1=\\sqrt2$ is irrational: no lag up to $q=${QMAX}$ is a period; the smallest slip is ${v.fix(best, 5)} cycles at $q=${bestAt}$ (from $${Math.round(bestAt * Math.SQRT2)}/${bestAt}\\approx\\sqrt2$), and the slips keep shrinking but never reach zero`;
         });
       },
     },
@@ -438,7 +438,7 @@ In discrete time the analogous signal is $Cz^n$ with $z=e^{s}$.`,
         const M = v.M, TEND = 6, RMAX = 2.6;
         const sp = v.stage({ x: [-1.1, 0.62], y: [-7.2, 7.2], height: 265, axes: true, xlabel: 'σ (1/s)', ylabel: 'ω (rad/s)', title: 'the exponent $s=\\sigma+j\\omega$' });
         const pz = v.stage({ x: [-2.75, 2.75], y: [-2.75, 2.75], equal: true, height: 265, axes: true, title: '$x(t)=Ce^{st}$ in the complex plane' });
-        const s3 = v.stage3d({ height: 330, range: 3.45, axes: false, yaw: -0.5, pitch: 0.36, persp: 9, full: true, title: 'against time: a spiral, with $\\Re\\,x$ on the floor and $\\Im\\,x$ on the back wall' });
+        const s3 = v.stage3d({ height: 330, range: 3.75, axes: false, yaw: -0.32, pitch: 0.34, persp: 9, full: true, title: 'against time: a spiral, with $\\Re\\,x$ on the floor and $\\Im\\,x$ on the back wall' });
         const sH = sp.handle(-0.22, 3.2, { color: 'accent', label: '$s$', constrain: (x, y) => [Math.abs(x) < 0.035 ? 0 : x, Math.abs(y) < 0.28 ? 0 : y] });
         const cH = pz.handle(1.7, 0.35, { color: 'gold', label: '$C$', constrain: (x, y) => { const r = Math.hypot(x, y), k = r > 2.4 ? 2.4 / r : r < 0.3 ? 0.3 / Math.max(r, 1e-9) : 1; return [x * k, y * k]; } });
         const pp = v.phasePlane(pz, { f: (x, y, t, p) => [p.sg * x - p.om * y, p.om * x + p.sg * y], params: { sg: () => sH.x, om: () => sH.y }, field: 'stream', nullclines: false, fixedPoints: true, click: false, both: false, seeds: [] });
@@ -453,7 +453,6 @@ In discrete time the analogous signal is $Cz^n$ with $z=e^{s}$.`,
           sp.rect(0, -7.2, 0.62, 7.2, { fill: 'red', fillAlpha: 0.07, stroke: false });
           sp.text('decays', -0.55, -6.3, { align: 'center', color: 'green', size: 12, weight: 600 });
           sp.text('grows', 0.31, -6.3, { align: 'center', color: 'red', size: 12, weight: 600 });
-          sp.text('steady', 0.03, 6.5, { align: 'left', color: 'muted', size: 11.5 });
           sp.dot(sg, -om, { r: 5, hollow: true, color: 'accent', label: om ? '$\\bar s$' : null, labelPos: 'se' });
           sp.line(sg, om, sg, -om, { color: 'accent', dash: [2, 4], width: 1, alpha: 0.5 });
           // ---- complex plane
@@ -520,7 +519,7 @@ Unlike its continuous-time counterpart, $e^{j\omega n}$ is **periodic only if $\
       viz(v) {
         const M = v.M, NS = 32, FS = 8000;
         const mode = v.select('frequency', [{ value: 'rat', label: '$\\omega=2\\pi m/N$' }, { value: 'rad', label: '$\\omega$ in radians' }], 'rat');
-        const mS = v.slider('$m$', 0, 40, 3, { int: true });
+        const mS = v.slider('$m$', 0, 40, 5, { int: true });
         const nS = v.slider('$N$', 1, 24, 8, { int: true });
         const wS = v.slider('$\\omega$ (rad per sample)', 0, 12.6, 1, { step: 0.01 });
         const kS = v.slider('points on the circle: $n\\le$', 8, 400, 40, { int: true });
@@ -537,8 +536,8 @@ Unlike its continuous-time counterpart, $e^{j\omega n}$ is **periodic only if $\
           snd.samples(fade(out, FS), FS, { gain: 0.35 }); ph.start(D);
         });
         const s1 = v.stage({ x: [-0.8, NS + 0.8], y: [-1.38, 1.5], height: 205, axes: 'box', yticks: [-1, 0, 1], xlabel: 'n', full: true, title: 'the sequence $x[n]=\\cos\\omega n$' });
-        const s2 = v.stage({ x: [-1.32, 1.32], y: [-1.32, 1.32], equal: true, height: 270, axes: false, title: 'the points $e^{j\\omega n}$ on the unit circle' });
-        const s3 = v.stage({ x: [0, 4 * Math.PI + 0.25], y: [-0.25, Math.PI + 0.75], height: 270, axes: 'box', xlabel: 'ω', ylabel: 'ω_a', xticks: [0, 1, 2, 3, 4].map((k) => [k * Math.PI, k ? `${k > 1 ? k : ''}π` : '0']), yticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']], title: 'the slowest frequency $\\omega_a$ with the same samples' });
+        const s2 = v.stage({ x: [-1.32, 1.32], y: [-1.32, 1.32], equal: true, height: 255, axes: false, title: 'the points $e^{j\\omega n}$ on the unit circle' });
+        const s3 = v.stage({ x: [0, 4 * Math.PI + 0.25], y: [-0.25, Math.PI + 0.75], height: 255, axes: 'box', ylabel: 'ωₐ', xticks: [0, 1, 2, 3, 4].map((k) => [k * Math.PI, k ? `${k > 1 ? k : ''}π` : '0']), yticks: [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']], title: 'the slowest frequency $\\omega_a$ with the same samples' });
         let info = null;
         v.render(() => {
           const rat = mode.value === 'rat';
@@ -586,6 +585,7 @@ Unlike its continuous-time counterpart, $e^{j\omega n}$ is **periodic only if $\
             const per = p === 0 ? 'constant (period 1)' : `$\\omega/2\\pi=${p}/${q}$ in lowest terms, so the fundamental period is $N_0$ = ${q}`;
             return `$\\omega=2\\pi\\cdot${mS.value}/${nS.value}$ = ${v.fix(w, 4)} rad/sample · ${per} · ${same} · ${play}`;
           }
+          if (w === 0) return `$\\omega$ = 0: the constant sequence, periodic with period 1 · move the slider: every other value on it is a rational number of radians, so $\\omega/2\\pi$ is irrational`;
           return `$\\omega$ = ${v.fix(w, 2)} rad/sample: $\\omega/2\\pi$ = ${v.fix(w / TAU, 6)}… is irrational (because $\\pi$ is), so **no** $N$ gives $x[n+N]=x[n]$: the points never repeat · closest return to $e^{j0}$ for $1\\le n\\le$ ${kS.value}: $n$ = ${ret.n}, distance ${v.fix(ret.d, 5)} · ${same} · ${play}`;
         });
       },

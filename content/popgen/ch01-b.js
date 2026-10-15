@@ -496,7 +496,7 @@ falling linearly on a log scale with slope $B \approx \sum_i p_iq_is_i(1-2h_i)/\
 $$H' = \alpha\,\tfrac12 H + (1-\alpha)\,2pq, \qquad p' = p,$$
 so with complete assortment ($\alpha = 1$) the heterozygote frequency halves every generation and the population splits into the two homozygotes, while partial assortment settles at $H^* = 2pq\,\dfrac{1-\alpha}{1-\alpha/2}$. With dominance ($AA$ and $Aa$ look alike) heterozygotes still decline, but more slowly. Allele frequencies do not change in either case: assortative mating, like inbreeding, only rearranges alleles into genotypes — but only at loci affecting the trait used to choose mates.`,
       idea: String.raw`Mating like with like is selfing at the level of the genotype: $AA\times AA$ and $aa\times aa$ breed true, and $Aa\times Aa$ gives back only half heterozygotes (1.2), so the assortative part of the population contributes $\tfrac12H$ and the random part $2pq$ (1.5). No genotype leaves more offspring than another, so $p$ is unchanged. The fixed point of the linear recursion gives $H^*$. With dominance, dominant-phenotype parents still produce some heterozygotes, and the deficit grows more slowly; unlike inbreeding, loci unrelated to the mating trait are unaffected.`,
-      caption: String.raw`Two copies of the same population (1000 individuals, Hardy–Weinberg at $p = 0.5$) breed side by side — left at random, right assortatively; colours are genotypes. Press play: the purple heterozygotes vanish on the right while the left stays put, and the plot shows heterozygosity (solid: simulation, dashed: the recursion) with both allele frequencies flat. Lower $\alpha$ to see the deficit level off at $H^*$; switch to dominance to see a slower decline.`,
+      caption: String.raw`Two copies of the same population (1000 individuals, Hardy–Weinberg at $p = 0.3$) breed side by side — left at random, right assortatively; colours are genotypes. Press play: the purple heterozygotes vanish on the right while the left stays put, and the plot shows heterozygosity (solid: simulation, dashed: the recursion) with both allele frequencies flat. Lower $\alpha$ to see the deficit level off at $H^*$; switch to dominance to see a slower decline.`,
       deps: ['popgen-1.12', 'popgen-1.5'],
       refs: ['Ewens §2.8'],
       credit: 'Jennings, 1916; Wright, 1921',
@@ -510,12 +510,12 @@ so with complete assortment ($\alpha = 1$) the heterozygote frequency halves eve
         v.button('New run', () => { seed += 1; reset(); });
         const s1 = v.stage({ height: 250, title: 'random mating' });
         const s2 = v.stage({ height: 250, title: 'assortative mating' });
-        const sT = v.stage({ x: [0, G], y: [0, 0.62], axes: 'box', height: 230, full: true, xlabel: 'generation', title: 'heterozygosity $H$ and allele frequency $p$' });
+        const sT = v.stage({ x: [0, G], y: [-0.05, 0.62], axes: 'box', height: 230, full: true, xlabel: 'generation', title: 'heterozygosity $H$ and allele frequency $p$' });
         const ph = (g) => (dom.value === 'co' ? g : g === 2 ? 1 : 0);
         const spec = (assort) => ({
           size: [W, HH], seed, animate: false, controls: false,
           states: [{ name: 'AA', color: 'blue' }, { name: 'Aa', color: 'purple' }, { name: 'aa', color: 'orange' }],
-          init: (r) => drawG(r, 0.25, 0.5),
+          init: (r) => drawG(r, 0.09, 0.42), // Hardy–Weinberg at p = 0.3
           step: (Mo, r) => {
             const g = Mo.grid, N = Mo.N, by = [[], [], []], nx = new Uint8Array(N);
             for (let k = 0; k < N; k++) by[ph(g[k])].push(g[k]);
@@ -547,16 +547,16 @@ so with complete assortment ($\alpha = 1$) the heterozygote frequency halves eve
           sync(A1, gen); sync(A2, gen);
           A1.draw(); A2.draw();
           s1.corner(`generation ${A1.t}`, 'tl', { color: 'ink', weight: 700 }); s2.corner(`generation ${A2.t}`, 'tl', { color: 'ink', weight: 700 });
-          const T = theory(), H1 = A1.history, H2 = A2.history;
+          const H1 = A1.history, H2 = A2.history, T = theory();
           sT.path(T.map((h, i) => [i, h]), { color: 'purple', width: 1.5, dash: [6, 4] });
-          sT.hline(0.5, { color: 'gray', width: 1.2, dash: [6, 4] });
-          if (alpha.value < 1 && dom.value === 'co') { const a = alpha.value, Hs = (0.5 * (1 - a)) / (1 - a / 2); sT.text(`H* = ${v.fix(Hs, 3)}`, G, Hs, { align: 'right', dy: -9, size: 11, color: 'purple' }); }
+          const p0 = H2.p[0]; sT.hline(2 * p0 * (1 - p0), { color: 'gray', width: 1.2, dash: [6, 4] });
+          if (alpha.value < 1 && dom.value === 'co') { const a = alpha.value, Hs = (2 * p0 * (1 - p0) * (1 - a)) / (1 - a / 2); sT.text(`H* = ${v.fix(Hs, 3)}`, G, Hs, { align: 'right', dy: -9, size: 11, color: 'purple' }); }
           sT.path(H1.t.map((x, i) => [x, H1.Aa[i]]), { color: 'gray', width: 2.4 }); sT.path(H2.t.map((x, i) => [x, H2.Aa[i]]), { color: 'purple', width: 2.4 });
-          sT.path(H1.t.map((x, i) => [x, H1.p[i]]), { color: 'gray', width: 1.2, alpha: 0.7 }); sT.path(H2.t.map((x, i) => [x, H2.p[i]]), { color: 'blue', width: 1.2, alpha: 0.8 });
+          sT.path(H1.t.map((x, i) => [x, H1.p[i]]), { color: 'blue', width: 1.2, alpha: 0.45 }); sT.path(H2.t.map((x, i) => [x, H2.p[i]]), { color: 'blue', width: 1.2, alpha: 0.8 });
           H2.t.forEach((x, i) => sT.dot(x, H2.Aa[i], { r: 3.5, color: 'purple' }));
-          sT.text('p', 0.15, H2.p[H2.p.length - 1], { dy: -9, size: 12, color: 'blue', math: true });
+          sT.text('allele frequency p', G - 0.1, H2.p[H2.p.length - 1], { align: 'right', dy: -10, size: 11.5, color: 'blue', weight: 600 });
         }, { period: G / RATE + 2.5, still: G / RATE + 1 });
-        v.legend([['purple', '$H$, assortative'], ['gray', '$H$, random mating'], ['purple', 'recursion', { dash: true }], ['blue', 'allele frequency $p$ (both)']]);
+        v.legend([['purple', '$H$, assortative'], ['gray', '$H$, random mating'], ['purple', 'recursion', { dash: true }], ['gray', '$2pq$ at the start', { dash: true }], ['blue', 'allele frequency $p$ (both)']]);
         v.readout(() => {
           const H1 = A1.history, H2 = A2.history, i = H2.t.length - 1, T = theory();
           return String.raw`generation ${H2.t[i]}: heterozygotes ${v.fix(H1.Aa[i], 3)} with random mating, **${v.fix(H2.Aa[i], 3)}** with assortative mating (recursion ${v.fix(T[H2.t[i]], 3)}) · allele frequency ${v.fix(H2.p[0], 3)} at the start, now ${v.fix(H1.p[i], 3)} and ${v.fix(H2.p[i], 3)} (sampling noise only) · apparent $F = 1 - H/2pq = ${v.fix(1 - H2.Aa[i] / (2 * H2.p[i] * (1 - H2.p[i])), 3)}$`;

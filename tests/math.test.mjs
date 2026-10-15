@@ -419,5 +419,30 @@ test('eigC & solveC', () => {
   const R = M.eigC([[0, -1], [1, 0]]).values; ok(R.some((z) => z.sub(C(0, 1)).abs() < 1e-9) && R.some((z) => z.sub(C(0, -1)).abs() < 1e-9), 'rotation ±i');
 });
 
+test('more distributions: cauchy, lognormal, F, mixture, kolmogorov', () => {
+  const C = M.dist.cauchy(1, 2); close(C.cdf(1), 0.5, 1e-12); close(C.quantile(0.75), 3, 1e-12); close(C.pdf(1), 1 / (2 * Math.PI), 1e-12);
+  const L = M.dist.lognormal(0.3, 0.5); close(L.cdf(Math.exp(0.3)), 0.5, 1e-9); close(L.quantile(L.cdf(2.2)), 2.2, 1e-6); close(M.integrate(L.pdf, 1e-9, 60, 4000), 1, 1e-4);
+  const F = M.dist.F(5, 12); close(F.cdf(F.quantile(0.9)), 0.9, 1e-7); close(F.quantile(0.95), 3.105875, 1e-4); close(M.integrate(F.pdf, 1e-9, 200, 20000), 1, 1e-3);
+  const X = M.dist.mixture([[M.dist.normal(-2, 1), 1], [M.dist.normal(3, 0.5), 3]]); close(X.mean, 0.25 * -2 + 0.75 * 3, 1e-12); close(X.cdf(X.quantile(0.3)), 0.3, 1e-7);
+  const rng = M.rng(7); const xs = X.sample(rng, 20000); close(xs.reduce((s, x) => s + x, 0) / xs.length, X.mean, 0.05);
+  const K = M.dist.kolmogorov(); close(K.cdf(1.3581), 0.95, 1e-3); close(K.cdf(0.5), 0.0360, 1e-3); close(K.quantile(0.99), 1.6276, 1e-3);
+});
+
+test('schrodinger1D, crankNicolson1D, wavelengthRGB', () => {
+  // particle in a box of width π (ħ = m = 1): E_n = n²/2
+  const S = M.schrodinger1D(() => 0, [0, Math.PI], { n: 600, k: 4 });
+  S.E.forEach((E, i) => close(E, (i + 1) ** 2 / 2, 2e-4 * (i + 1) ** 2));
+  const dx = S.x[1] - S.x[0]; close(S.psi[0].reduce((s, p) => s + p * p, 0) * dx, 1, 1e-6);
+  // harmonic oscillator V = x²/2 on a wide box: E_n = n + 1/2
+  const H = M.schrodinger1D((x) => x * x / 2, [-10, 10], { n: 800, k: 3 }); H.E.forEach((E, i) => close(E, i + 0.5, 1e-3));
+  // Crank–Nicolson conserves the norm and keeps a stationary state stationary up to phase
+  const N = 400, X = Float64Array.from({ length: N }, (_, i) => -10 + (i + 1) * 20 / (N + 1)), h = X[1] - X[0], V = X.map((x) => x * x / 2);
+  const re = Float64Array.from(X, (x) => Math.exp(-x * x / 2) / Math.PI ** 0.25), im = new Float64Array(N);
+  const n0 = re.reduce((s, r) => s + r * r, 0) * h; for (let k = 0; k < 200; k++) M.crankNicolson1D(re, im, V, h, 0.01);
+  const n1 = re.reduce((s, r, i) => s + r * r + im[i] * im[i], 0) * h; close(n1, n0, 1e-9);
+  close(Math.atan2(im[N / 2], re[N / 2]), -0.5 * 2, 2e-3); // phase −E t with E = ½, t = 2
+  eq(M.wavelengthRGB(300), [0, 0, 0]); ok(M.wavelengthRGB(530)[1] === 255 && M.wavelengthRGB(530)[2] === 0, 'green'); ok(M.wavelengthRGB(650)[0] > 200, 'red');
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

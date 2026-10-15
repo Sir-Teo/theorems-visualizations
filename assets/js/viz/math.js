@@ -1115,8 +1115,56 @@ function geometricD(p) { // number of trials up to and including the first succe
     _draw: (r) => (p === 1 ? 1 : Math.max(1, Math.ceil(Math.log(U01(r)) / Math.log1p(-p)))),
   });
 }
+const cauchyD = (x0 = 0, g = 1) => mkDist({
+  name: 'cauchy', discrete: false, support: [-Infinity, Infinity], mean: NaN, variance: NaN,
+  pdf: (x) => 1 / (Math.PI * g * (1 + ((x - x0) / g) ** 2)), cdf: (x) => 0.5 + Math.atan((x - x0) / g) / Math.PI,
+  quantile: (q) => x0 + g * Math.tan(Math.PI * (q - 0.5)), _draw: (r) => x0 + g * Math.tan(Math.PI * (U01(r) - 0.5)),
+});
+function lognormalD(mu = 0, sigma = 1) {
+  const N = normalD(mu, sigma);
+  return mkDist({
+    name: 'lognormal', discrete: false, support: [0, Infinity], mean: Math.exp(mu + sigma * sigma / 2), variance: Math.expm1(sigma * sigma) * Math.exp(2 * mu + sigma * sigma),
+    pdf: (x) => (x <= 0 ? 0 : N.pdf(Math.log(x)) / x), cdf: (x) => (x <= 0 ? 0 : N.cdf(Math.log(x))),
+    quantile: (q) => Math.exp(N.quantile(q)), _draw: (r) => Math.exp(mu + sigma * stdNormal(r)),
+  });
+}
+/** Fisher–Snedecor F(d1, d2). */
+function fD(d1, d2) {
+  const lb = lbeta(d1 / 2, d2 / 2);
+  const pdf = (x) => (x <= 0 ? (x === 0 && d1 < 2 ? Infinity : 0) : Math.exp(0.5 * (d1 * Math.log(d1 * x) + d2 * Math.log(d2) - (d1 + d2) * Math.log(d1 * x + d2)) - Math.log(x) - lb));
+  const cdf = (x) => (x <= 0 ? 0 : betaI(d1 / 2, d2 / 2, d1 * x / (d1 * x + d2)));
+  return mkDist({
+    name: 'F', discrete: false, support: [0, Infinity], mean: d2 > 2 ? d2 / (d2 - 2) : NaN,
+    variance: d2 > 4 ? 2 * d2 * d2 * (d1 + d2 - 2) / (d1 * (d2 - 2) ** 2 * (d2 - 4)) : NaN, pdf, cdf,
+    quantile: (q) => (q <= 0 ? 0 : q >= 1 ? Infinity : invertCdf(cdf, pdf, q, 0, bracketUp(cdf, q, 4), 1)),
+    _draw: (r) => (2 * sampleGamma(d1 / 2, r) / d1) / (2 * sampleGamma(d2 / 2, r) / d2),
+  });
+}
+/** Finite mixture: comps = [[dist, weight], …] (weights normalised). */
+function mixtureD(comps) {
+  const tot = comps.reduce((s, [, w]) => s + w, 0), cs = comps.map(([d, w]) => [d, w / tot]);
+  const mean = cs.reduce((s, [d, w]) => s + w * d.mean, 0), m2 = cs.reduce((s, [d, w]) => s + w * (d.variance + d.mean ** 2), 0);
+  const pdf = (x) => cs.reduce((s, [d, w]) => s + w * d.pdf(x), 0), cdf = (x) => cs.reduce((s, [d, w]) => s + w * d.cdf(x), 0);
+  const lo = Math.min(...cs.map(([d]) => d.quantile(1e-9))), hi = Math.max(...cs.map(([d]) => d.quantile(1 - 1e-9)));
+  return mkDist({
+    name: 'mixture', discrete: cs.every(([d]) => d.discrete), support: [Math.min(...cs.map(([d]) => d.support[0])), Math.max(...cs.map(([d]) => d.support[1]))],
+    mean, variance: m2 - mean * mean, pdf, cdf, quantile: (q) => (q <= 0 ? lo : q >= 1 ? hi : invertCdf(cdf, pdf, q, lo, hi, mean)),
+    _draw: (r) => { let u = r(); for (const [d, w] of cs) { if ((u -= w) <= 0) return d._draw(r); } return cs[cs.length - 1][0]._draw(r); },
+  });
+}
+/** Kolmogorov distribution: the limit law of √n·sup|Fₙ − F| (cdf 1 − 2Σ(−1)^{k−1}e^{−2k²x²}). */
+function kolmogorovD() {
+  const cdf = (x) => {
+    if (x <= 0) return 0;
+    if (x < 1) { const t = Math.PI * Math.PI / (8 * x * x); let s = 0; for (let k = 1; k <= 7; k++) s += Math.exp(-((2 * k - 1) ** 2) * t); return Math.sqrt(2 * Math.PI) / x * s; } // small-x series
+    let s = 0; for (let k = 1; k <= 100; k++) { const term = Math.exp(-2 * k * k * x * x); s += (k % 2 ? 1 : -1) * term; if (term < 1e-17) break; } return 1 - 2 * s;
+  };
+  const pdf = (x) => { const h = 1e-5 * Math.max(1, x); return Math.max(0, (cdf(x + h) - cdf(x - h)) / (2 * h)); };
+  const quantile = (q) => (q <= 0 ? 0 : q >= 1 ? Infinity : invertCdf(cdf, pdf, q, 0, 5, 0.87));
+  return mkDist({ name: 'kolmogorov', discrete: false, support: [0, Infinity], mean: Math.sqrt(Math.PI / 2) * Math.LN2, variance: Math.PI * Math.PI / 12 - Math.PI / 2 * Math.LN2 ** 2, pdf, cdf, quantile, _draw: (r) => quantile(U01(r)) });
+}
 // The distributions hang off `dist` (which stays the Euclidean distance function dist(p, q)).
-Object.assign(dist, { normal: normalD, binomial: binomialD, poisson: poissonD, exponential: exponentialD, uniform: uniformD, gamma: gammaD, beta: betaD, chi2: chi2D, studentT: studentTD, geometric: geometricD });
+Object.assign(dist, { normal: normalD, binomial: binomialD, poisson: poissonD, exponential: exponentialD, uniform: uniformD, gamma: gammaD, beta: betaD, chi2: chi2D, studentT: studentTD, geometric: geometricD, cauchy: cauchyD, lognormal: lognormalD, F: fD, mixture: mixtureD, kolmogorov: kolmogorovD });
 
 // ================================================================== descriptive statistics
 const finiteSorted = (arr) => Array.from(arr).filter((x) => isFinite(x)).sort((a, b) => a - b);
@@ -1590,4 +1638,86 @@ export function noteName(m, { flats = false, octave = true, ascii = false } = {}
   const k = Math.round(m); let s = (flats ? NOTE_FLAT : NOTE_SHARP)[mod(k, 12)];
   if (ascii) s = s.replace('♯', '#').replace('♭', 'b');
   return octave ? s + (Math.floor(k / 12) - 1) : s;
+}
+
+// ================================================================== waves, quanta and light
+/** Approximate sRGB colour [r, g, b] (0–255) of monochromatic light of wavelength nm (380–780; black outside). */
+export function wavelengthRGB(nm, gamma = 0.8) {
+  let r = 0, g = 0, b = 0;
+  if (nm >= 380 && nm < 440) { r = (440 - nm) / 60; b = 1; } else if (nm < 490) { g = (nm - 440) / 50; b = 1; } else if (nm < 510) { g = 1; b = (510 - nm) / 20; }
+  else if (nm < 580) { r = (nm - 510) / 70; g = 1; } else if (nm < 645) { r = 1; g = (645 - nm) / 65; } else if (nm <= 780) r = 1;
+  const f = nm < 380 || nm > 780 ? 0 : nm < 420 ? 0.3 + 0.7 * (nm - 380) / 40 : nm > 700 ? 0.3 + 0.7 * (780 - nm) / 80 : 1; // eye sensitivity falls at the ends
+  const c = (v) => Math.round(255 * Math.pow(v * f, gamma));
+  return [c(r), c(g), c(b)];
+}
+/** Number of eigenvalues < x of the symmetric tridiagonal matrix (diagonal d, off-diagonal e) — Sturm count. */
+function sturmCount(d, e, x) {
+  let q = 1, k = 0; for (let i = 0; i < d.length; i++) { q = d[i] - x - (i ? (e[i - 1] * e[i - 1]) / (q || 1e-300) : 0); if (q < 0) k++; } return k;
+}
+/** Solve (T − σI) y = b for symmetric tridiagonal T (Thomas algorithm). */
+function triSolve(d, e, s, b) {
+  const n = d.length, c = new Float64Array(n), y = new Float64Array(n);
+  let m = d[0] - s || 1e-300; c[0] = (e[0] ?? 0) / m; y[0] = b[0] / m;
+  for (let i = 1; i < n; i++) { m = d[i] - s - e[i - 1] * c[i - 1] || 1e-300; c[i] = i < n - 1 ? e[i] / m : 0; y[i] = (b[i] - e[i - 1] * y[i - 1]) / m; }
+  for (let i = n - 2; i >= 0; i--) y[i] -= c[i] * y[i + 1];
+  return y;
+}
+/** Lowest k eigenpairs of a symmetric tridiagonal matrix: Sturm bisection for the values, inverse iteration for the vectors. */
+export function tridiagEig(d, e, k = 6) {
+  const n = d.length; k = Math.min(k, n);
+  let lo = Infinity, hi = -Infinity; for (let i = 0; i < n; i++) { const r = Math.abs(e[i - 1] ?? 0) + Math.abs(e[i] ?? 0); lo = Math.min(lo, d[i] - r); hi = Math.max(hi, d[i] + r); }
+  const values = [], vectors = [];
+  for (let j = 0; j < k; j++) {
+    let a = lo, b = hi; for (let it = 0; it < 200 && b - a > 1e-13 * Math.max(1, Math.abs(a) + Math.abs(b)); it++) { const m = (a + b) / 2; if (sturmCount(d, e, m) > j) b = m; else a = m; }
+    const lam = (a + b) / 2; values.push(lam);
+    let v = new Float64Array(n).map((_, i) => 1 + 0.01 * Math.sin(i + j));
+    for (let it = 0; it < 3; it++) { v = triSolve(d, e, lam + 1e-10 * Math.max(1, Math.abs(lam)), v); let s = 0; for (let i = 0; i < n; i++) s += v[i] * v[i]; s = Math.sqrt(s) || 1; for (let i = 0; i < n; i++) v[i] /= s; }
+    vectors.push(v);
+  }
+  return { values, vectors };
+}
+/**
+ * Bound states of −(ħ²/2m)ψ'' + V(x)ψ = Eψ on [x0, x1] with ψ = 0 at both ends (finite differences, n interior points).
+ * Returns {x (n+2 points incl. ends), E: [k lowest], psi: [k arrays on x, ∫|ψ|²dx = 1, positive just right of x0]}.
+ */
+export function schrodinger1D(V, [x0, x1], { n = 400, k = 6, mass = 1, hbar = 1 } = {}) {
+  const h = (x1 - x0) / (n + 1), t = (hbar * hbar) / (2 * mass * h * h);
+  const x = Float64Array.from({ length: n + 2 }, (_, i) => x0 + i * h);
+  const d = Float64Array.from({ length: n }, (_, i) => 2 * t + V(x[i + 1])), e = new Float64Array(n - 1).fill(-t);
+  const { values, vectors } = tridiagEig(d, e, k);
+  const psi = vectors.map((v) => {
+    const p = new Float64Array(n + 2); for (let i = 0; i < n; i++) p[i + 1] = v[i] / Math.sqrt(h);
+    const first = p.find((y) => Math.abs(y) > 1e-6 * Math.max(...p.map(Math.abs))); if (first < 0) for (let i = 0; i < p.length; i++) p[i] = -p[i];
+    return p;
+  });
+  return { x, E: values, psi };
+}
+/**
+ * One Crank–Nicolson step of iħψ_t = −(ħ²/2m)ψ'' + Vψ on a uniform grid (ψ = 0 at the ends). Unitary: ∫|ψ|² is conserved.
+ * re, im: Float64Arrays (updated in place); V: array of potential values on the grid; dx, dt.
+ */
+export function crankNicolson1D(re, im, V, dx, dt, { mass = 1, hbar = 1 } = {}) {
+  const n = re.length, a = (hbar * dt) / (4 * mass * dx * dx), bv = (i) => (dt * V[i]) / (2 * hbar);
+  // (1 + iH dt/2ħ) ψ⁺ = (1 − iH dt/2ħ) ψ ; H dt/2ħ has diagonal 2a + bv, off-diagonal −a
+  const rr = new Float64Array(n), ri = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const L = i > 0 ? i - 1 : -1, R = i < n - 1 ? i + 1 : -1, dg = 2 * a + bv(i);
+    const offR = (L >= 0 ? re[L] : 0) + (R >= 0 ? re[R] : 0), offI = (L >= 0 ? im[L] : 0) + (R >= 0 ? im[R] : 0);
+    // (1 − i·H') ψ: real += dg·im − a·offI ; imag += −dg·re + a·offR
+    rr[i] = re[i] + dg * im[i] - a * offI; ri[i] = im[i] - dg * re[i] + a * offR;
+  }
+  // solve (1 + iH') ψ⁺ = r with complex Thomas: diagonal 1 + i·dg, off-diagonal −i·a
+  const cr = new Float64Array(n), ci = new Float64Array(n), yr = new Float64Array(n), yi = new Float64Array(n);
+  const cdiv = (ar, ai, br, bi) => { const q = br * br + bi * bi; return [(ar * br + ai * bi) / q, (ai * br - ar * bi) / q]; };
+  let [mr, mi] = [1, 2 * a + bv(0)];
+  [cr[0], ci[0]] = cdiv(0, -a, mr, mi); [yr[0], yi[0]] = cdiv(rr[0], ri[0], mr, mi);
+  for (let i = 1; i < n; i++) {
+    // m = diag − off·c[i−1], off = −i·a  ⇒ off·c = (a·ci[i−1]) + i(−a·cr[i−1])
+    mr = 1 - a * ci[i - 1]; mi = 2 * a + bv(i) + a * cr[i - 1];
+    if (i < n - 1) [cr[i], ci[i]] = cdiv(0, -a, mr, mi);
+    const tr = rr[i] - a * yi[i - 1], ti = ri[i] + a * yr[i - 1]; // r − off·y[i−1]
+    [yr[i], yi[i]] = cdiv(tr, ti, mr, mi);
+  }
+  for (let i = n - 2; i >= 0; i--) { const pr = cr[i] * yr[i + 1] - ci[i] * yi[i + 1], pi = cr[i] * yi[i + 1] + ci[i] * yr[i + 1]; yr[i] -= pr; yi[i] -= pi; }
+  re.set(yr); im.set(yi);
 }

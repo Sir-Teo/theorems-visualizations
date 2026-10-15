@@ -76,6 +76,21 @@ const SYLL = {
   AAI4: 'Bramantip', AEE4: 'Camenes', IAI4: 'Dimaris', EAO4: 'Fesapo', EIO4: 'Fresison', AEO4: 'Camenos',
 };
 
+/** Traditional rules of the syllogism that a mood-and-figure breaks (distribution: A its subject, E both, I neither, O its predicate). */
+function fallacies(st, imp) {
+  const dist = (s, t) => (s.q === 'A' ? t === s.a : s.q === 'E' ? t === s.a || t === s.b : s.q === 'O' ? t === s.b : false);
+  const neg = (s) => s.q === 'E' || s.q === 'O', uni = (s) => s.q === 'A' || s.q === 'E';
+  const [ma, mi, co] = st, out = [];
+  if (!dist(ma, 'M') && !dist(mi, 'M')) out.push('undistributed middle');
+  if (dist(co, 'P') && !dist(ma, 'P')) out.push('illicit major');
+  if (dist(co, 'S') && !dist(mi, 'S')) out.push('illicit minor');
+  if (neg(ma) && neg(mi)) out.push('two negative premises');
+  if ((neg(ma) || neg(mi)) && !neg(co)) out.push('affirmative conclusion from a negative premise');
+  if (!neg(ma) && !neg(mi) && neg(co)) out.push('negative conclusion from affirmative premises');
+  if (!imp && uni(ma) && uni(mi) && !uni(co)) out.push('existential fallacy');
+  return out;
+}
+
 // ---- the four conditional argument forms (P: she has measles, Q: she has a rash)
 const FORMS4 = [
   { id: 'mp', name: 'modus ponens', p2: ['P', (w) => w.P], c: ['Q', (w) => w.Q], en: 'If she has measles, she has a rash. She has measles. So she has a rash.' },
@@ -90,16 +105,16 @@ const WASON = {
   abs: {
     rule: 'Rule: if a card has a vowel on one side, it has an even number on the other.',
     cards: [
-      { role: 'p', face: 'E', sub: 'vowel', back: 'a number', bad: 'an odd number' },
+      { role: 'p', face: 'E', sub: 'vowel', back: 'a number', bad: 'odd' },
       { role: 'not-p', face: 'K', sub: 'consonant', back: 'a number', bad: null },
       { role: 'q', face: '4', sub: 'even', back: 'a letter', bad: null },
-      { role: 'not-q', face: '7', sub: 'odd', back: 'a letter', bad: 'a vowel' },
+      { role: 'not-q', face: '7', sub: 'odd', back: 'a letter', bad: 'vowel' },
     ],
   },
   soc: {
     rule: 'Rule: if a person is drinking beer, they must be over 18.',
     cards: [
-      { role: 'p', face: 'beer', sub: 'drinking', back: 'an age', bad: 'an age under 18' },
+      { role: 'p', face: 'beer', sub: 'drinking', back: 'an age', bad: 'under 18' },
       { role: 'not-p', face: 'cola', sub: 'drinking', back: 'an age', bad: null },
       { role: 'q', face: '25', sub: 'years old', back: 'a drink', bad: null },
       { role: 'not-q', face: '16', sub: 'years old', back: 'a drink', bad: 'beer' },
@@ -158,8 +173,8 @@ An argument is **sound** when it is valid *and* all its premises are true in the
         const preset = v.select('example', [{ value: 'mp', label: 'modus ponens' }, { value: 'ac', label: 'affirming the consequent' }, { value: 'hs', label: 'chain' }, { value: 'ds', label: 'disjunctive syllogism' }, { value: 'own', label: 'your own' }], 'mp',
           { onChange: (k) => { if (PRE[k]) { slots = PRE[k].slice(); sel = 1; } } });
         const A = v.stage({ x: [0, 20], y: [0, 10], axes: false, height: 236, full: true });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 282, full: true });
-        const T = v.table(B, { square: false, cellAspect: 1.75, maxCell: 28, size: 14, region: [0, 0, 0.6, 1] });
+        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
+        const T = v.table(B, { square: false, cellAspect: 2.45, maxCell: 30, size: 14, region: [0, 0, 0.8, 0.86] });
         const CHIPS = ['P', 'Q', 'R', 'nP', 'nQ', 'nR', 'PQ', 'QP', 'QR', 'PR', 'PoQ', 'PaQ', 'nPaQ', null];
         const SY = [8.3, 6.55, 4.8, 2.0];
         const chipXY = (k) => [13.35 + (k % 3) * 2.45, 8.3 - Math.floor(k / 3) * 1.55];
@@ -206,21 +221,24 @@ An argument is **sound** when it is valid *and* all its premises are true in the
             fill: (i, j) => { const r = an.rows[i]; if (r.bad) return ['red', j === cC ? 0.42 : 0.18]; if (r.all) return ['green', 0.15]; return null; },
           });
           if (ai >= 0) T.box(ai, 0, ai, cols - 1, { color: 'gold', width: 2.6 });
+          const g = T.geo, cx = B.ctx;
+          cx.save(); cx.strokeStyle = v.color('ink', 0.55); cx.lineWidth = 2;
+          for (const j of [L.length, cC]) { const X = Math.round(g.X0 + j * g.cw) + 0.5; cx.beginPath(); cx.moveTo(X, g.Y0 - g.lh); cx.lineTo(X, g.Y0 + an.rows.length * g.ch); cx.stroke(); }
+          cx.restore();
           const right = T.cellRect(0, cV)[2], fb = an.rows.findIndex((r) => r.bad);
           an.rows.forEach((r, i) => {
             const y = T.cellCenter(i, 0)[1], tags = [];
-            if (i === fb) tags.push(['counterexample', 'red']);
-            if (i === ai) tags.push(['★ actual world', 'gold']);
-            tags.forEach(([t, col], m) => B.text((m ? '' : '◀ ') + t, right + 0.01 + m * 0.125, y, { size: 12, weight: 600, color: col }));
+            if (i === fb) tags.push(['◀ counterexample', 'red']);
+            if (i === ai) tags.push([(i === fb ? '' : '◀ ') + '★ actual world', 'gold']);
+            tags.forEach(([t, col], m) => B.text(t, right + 0.01 + m * 0.135, y, { size: 12, weight: 600, color: col }));
           });
-          // ---- verdicts
-          const ar = an.rows[ai], falseP = an.prem.filter((p, m) => !ar.pv[m]), sound = an.valid && !falseP.length;
-          const vx = 0.86;
-          B.text(an.valid ? 'VALID' : 'INVALID', vx, 0.84, { align: 'center', size: 23, weight: 700, color: an.valid ? 'green' : 'red' });
-          B.text(an.valid ? `no counterexample in ${an.rows.length} rows` : `${an.rows.filter((r) => r.bad).length} counterexample row${an.rows.filter((r) => r.bad).length > 1 ? 's' : ''}`, vx, 0.72, { align: 'center', size: 11.5, color: 'muted' });
-          B.text(sound ? 'SOUND' : 'NOT SOUND', vx, 0.48, { align: 'center', size: 19, weight: 700, color: sound ? 'green' : 'orange' });
-          B.text(!an.valid ? 'an invalid argument is never sound' : falseP.length ? `premise ${falseP.map((p) => p.i + 1).join(' & ')} false at ★` : 'valid + premises true at ★', vx, 0.37, { align: 'center', size: 11.5, color: 'muted' });
-          if (sound) B.text(`so the conclusion is true at ★`, vx, 0.29, { align: 'center', size: 11.5, color: 'muted' });
+          // ---- verdicts (banner)
+          const ar = an.rows[ai], falseP = an.prem.filter((p, m) => !ar.pv[m]), sound = an.valid && !falseP.length, nb = an.rows.filter((r) => r.bad).length;
+          B.line(0.01, 0.875, 0.99, 0.875, { color: 'faint', width: 1 });
+          B.text(an.valid ? 'VALID' : 'INVALID', 0.02, 0.94, { size: 21, weight: 700, color: an.valid ? 'green' : 'red' });
+          B.text(an.valid ? `no counterexample among ${an.rows.length} rows` : `${nb} counterexample row${nb > 1 ? 's' : ''}`, 0.15, 0.94, { size: 12, color: 'muted' });
+          B.text(sound ? 'SOUND' : 'NOT SOUND', 0.5, 0.94, { size: 19, weight: 700, color: sound ? 'green' : 'orange' });
+          B.text(!an.valid ? 'an invalid argument is never sound' : falseP.length ? `valid, but premise ${falseP.map((p) => p.i + 1).join(' & ')} is false at ★` : 'valid + every premise true at ★', 0.655, 0.94, { size: 12, color: 'muted' });
         });
         v.legend([['green', 'all premises true', { area: true }], ['red', 'counterexample: premises true, conclusion false', { area: true }], ['gold', 'the actual world (click a row)']]);
         v.readout(() => {
@@ -267,7 +285,7 @@ On the modern (Boole’s) reading, universal statements do not imply that their 
         const imp = v.toggle('existential import (Aristotle)', false);
         const cm = v.toggle('show a counter-model', true);
         const L = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 340, weight: 1 });
-        const D = v.stage({ x: [-1.9, 1.9], y: [-1.62, 1.92], equal: true, axes: false, height: 340, weight: 1.05 });
+        const D = v.stage({ x: [-1.9, 1.9], y: [-1.86, 1.9], equal: true, axes: false, height: 340, weight: 1.05 });
         const ROWY = [8.5, 6.9, 4.95];
         const TCOL = { S: 'blue', M: 'orange', P: 'purple' };
         L.onClick((x, y) => {
@@ -315,7 +333,9 @@ On the modern (Boole’s) reading, universal statements do not imply that their 
             L.text(s.b, 8.2, y, { align: 'center', size: 19, weight: 700, color: TCOL[s.b] });
           });
           L.line(0.2, 5.9, 9.6, 5.9, { color: 'ink', width: 1.5 });
-          L.text(`${mood}-${fig}${name ? '  ·  ' + name : ''}`, 5, 3.55, { align: 'center', size: 17, weight: 700, color: 'ink' });
+          L.text(`${mood}-${fig}${name ? '  ·  ' + name : ''}`, 5, 3.7, { align: 'center', size: 17, weight: 700, color: 'ink' });
+          const fl = fallacies(st, imp.value);
+          if (!res.valid && fl.length) L.text(`breaks the rule: ${fl[0]}`, 5, 3.05, { align: 'center', size: 12, weight: 600, color: 'red' });
           const verdict = (r) => (r.valid ? (r.models.length ? 'valid' : 'valid (premises inconsistent)') : 'invalid');
           const rows = [[false, imp.value ? alt : res], [true, imp.value ? res : alt]];
           rows.forEach(([withImp, r], m) => {
@@ -329,11 +349,11 @@ On the modern (Boole’s) reading, universal statements do not imply that their 
           D.raster((x, y) => {
             const r = vregion(x, y); if (!r) return null;
             const base = cr.has(r) ? [pan[0] + (tint[0] - pan[0]) * 0.16, pan[1] + (tint[1] - pan[1]) * 0.16, pan[2] + (tint[2] - pan[2]) * 0.16] : null;
-            if ((empty >> r) & 1) { const on = ((x + y) * 14) % 1 < 0.42 || ((x + y) * 14) % 1 < -0.58; return on ? [hatch[0], hatch[1], hatch[2], 150] : base ? [...base, 255] : [pan[0], pan[1], pan[2], 0]; }
+            if ((empty >> r) & 1) { const u = (((x + y) * 14) % 1 + 1) % 1; return u < 0.42 ? [hatch[0], hatch[1], hatch[2], 165] : base ? [...base, 255] : null; }
             return base ? [...base, 255] : null;
           }, { res: 1, key: `${empty}|${[...cr].join()}` });
           for (const T of ['S', 'M', 'P']) D.circle(VN[T][0], VN[T][1], VN.r, { color: TCOL[T], width: 2.4 });
-          D.tex('S', -1.62, -1.25, { color: TCOL.S, size: 20 }); D.tex('P', 1.62, -1.25, { color: TCOL.P, size: 20 }); D.tex('M', 1.05, 1.62, { color: TCOL.M, size: 20 });
+          D.tex('S', -1.68, -1.05, { color: TCOL.S, size: 20 }); D.tex('P', 1.68, -1.05, { color: TCOL.P, size: 20 }); D.tex('M', 1.12, 1.5, { color: TCOL.M, size: 20 });
           // marks for the particular premises (and for import)
           const marks = [];
           st.slice(0, 2).forEach((s) => {
@@ -351,7 +371,7 @@ On the modern (Boole’s) reading, universal statements do not imply that their 
             const m = res.bad.slice().sort((a, b) => bitsOf(a) - bitsOf(b))[0]; let c = 0;
             for (let r = 1; r < 8; r++) if ((m >> r) & 1) { const [x, y] = CEN[r]; D.dot(x + 0.13, y - 0.13, { r: 6, color: 'gold', label: 'abcdefg'[c++], labelPos: 'e' }); }
           }
-          D.corner(res.valid ? 'the premises force the conclusion' : 'the premises do not force the conclusion', 'tr', { color: res.valid ? 'green' : 'red', weight: 600 });
+          D.text(res.valid ? 'the premises force the conclusion' : 'the premises do not force the conclusion', 0, -1.67, { align: 'center', size: 12.5, weight: 600, color: res.valid ? 'green' : 'red' });
         });
         v.legend([['muted', 'shaded: must be empty', { area: true }], ['accent', 'regions the conclusion is about', { area: true }], ['gold', 'counter-model: an occupied region', { dot: true }]]);
         v.readout(() => {
@@ -387,7 +407,7 @@ Both fallacies have the same counterexample, the situation where $P$ is false an
         const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1.25 });
         const R = v.stage({ x: [-0.16, 1.06], y: [-0.2, 1.12], axes: false, height: 350, weight: 1 });
         const REG = [[0.01, 0.52, 0.49, 0.9], [0.51, 0.52, 0.99, 0.9], [0.01, 0.03, 0.49, 0.41], [0.51, 0.03, 0.99, 0.41]];
-        const TT = FORMS4.map((f, k) => v.table(L, { rows: 4, cols: 3, square: false, cellAspect: 1.55, maxCell: 23, size: 13, region: REG[k], cornerLabel: '$P\\ Q$',
+        const TT = FORMS4.map((f, k) => v.table(L, { rows: 4, cols: 3, square: false, cellAspect: 2.35, maxCell: 23, size: 13, region: REG[k], cornerLabel: 'P Q',
           rowLabels: ['T T', 'T F', 'F T', 'F F'], colLabels: ['$P\\to Q$', `$${f.p2[0]}$`, `$\\therefore ${f.c[0]}$`] }));
         let world = 2; // P false, Q true
         L.onClick((x, y) => { TT.forEach((T) => { const c = T.hit(x, y); if (c && c.i >= 0) world = c.i; }); });
@@ -398,6 +418,7 @@ Both fallacies have the same counterexample, the situation where $P$ is false an
           const fsel = FORMS4.find((f) => f.id === form.value);
           FORMS4.forEach((f, k) => {
             const rs = rowsOf(f), valid = !rs.some((r) => r.bad), on = f === fsel, T = TT[k];
+            if (on) L.rect(REG[k][0] + 0.005, REG[k][1] - 0.012, REG[k][2] - 0.005, REG[k][3] + 0.085, { fill: 'accent', fillAlpha: 0.07, color: 'accent', width: 1.6 });
             T.draw({
               value: (i, j) => [rs[i].p1, rs[i].p2, rs[i].c][j],
               textColor: (i, j) => ([rs[i].p1, rs[i].p2, rs[i].c][j] ? 'ink' : 'muted'),
@@ -406,7 +427,6 @@ Both fallacies have the same counterexample, the situation where $P$ is false an
             T.box(world, 0, world, 2, { color: 'gold', width: 2.2 });
             const [x0, , x1, y1] = [REG[k][0], 0, REG[k][2], REG[k][3]];
             L.text(`${f.name}: ${valid ? 'valid' : 'invalid'}`, (x0 + x1) / 2, y1 + 0.045, { align: 'center', size: 12.5, weight: on ? 700 : 600, color: valid ? 'green' : 'red' });
-            if (on) { const g = T.geo; L.ctx.save(); L.ctx.strokeStyle = v.color('accent'); L.ctx.lineWidth = 2; L.ctx.setLineDash([5, 4]); L.ctx.strokeRect(g.X0 - g.lw - 6, g.Y0 - g.lh - 26, g.lw + 3 * g.cw + 12, g.lh + 4 * g.ch + 32); L.ctx.restore(); }
           });
           // ---- the probability square
           const a = pP.value, c = pQ.value;
@@ -463,8 +483,8 @@ When the same logical structure is about a familiar social rule, such as “if s
       viz(v) {
         const ver = v.select('version', [{ value: 'abs', label: 'abstract rule' }, { value: 'soc', label: 'drinking-age rule' }], 'abs', { onChange: () => { picked = new Set([0, 2]); shown = true; } });
         const C = v.stage({ x: [0, 12], y: [0, 5.2], axes: false, height: 236, full: true });
-        const H = v.stage({ x: [0, 5], y: [0, 100], axes: 'box', height: 230, title: 'what people choose (approximate %)', yticks: [0, 25, 50, 75, 100] });
-        const G = v.stage({ x: [0, 4], y: [0, 1], axes: 'box', height: 230, title: 'expected information gain per card (bits)' });
+        const H = v.stage({ x: [-0.6, 5], y: [-13, 104], axes: 'box', height: 236, title: 'what people choose (approximate %)', yticks: [0, 25, 50, 75, 100] });
+        const G = v.stage({ x: [-0.6, 4], y: [-0.13, 1.04], axes: 'box', height: 236, title: 'expected information gain per card (bits)', yticks: [0, 0.25, 0.5, 0.75, 1] });
         const pa = v.slider('$\\Pr(p)$: share of vowels', 0.02, 0.5, 0.1, { step: 0.01 });
         const pb = v.slider('$\\Pr(q)$: share of even numbers', 0.02, 0.95, 0.2, { step: 0.01 });
         v.button('Check my choice', () => { shown = true; });
@@ -488,12 +508,13 @@ When the same logical structure is about a familiar social rule, such as “if s
             C.text(cd.role, cx, 0.42, { align: 'center', size: 12, weight: 600, color: 'muted' });
             if (shown) {
               C.text(`hidden: ${cd.back}`, cx, 1.95, { align: 'center', size: 10.5, color: 'muted' });
-              C.text(need ? `${cd.bad} would falsify` : 'nothing can falsify', cx, 1.5, { align: 'center', size: 10.5, weight: 600, color: need ? 'red' : 'muted' });
+              C.text(need ? `${cd.bad} there: rule broken` : 'no back breaks the rule', cx, 1.5, { align: 'center', size: 10.5, weight: 600, color: need ? 'red' : 'muted' });
               const tag = need ? (on ? '✓ needed' : '✗ missed') : on ? 'wasted' : '';
               if (tag) C.text(tag, cx, 1.03, { align: 'center', size: 12, weight: 700, color: need ? (on ? 'green' : 'red') : 'orange' });
             } else if (on) C.text('selected', cx, 1.2, { align: 'center', size: 12, weight: 700, color: 'accent' });
           });
           // ---- what people choose
+          H.line(-0.6, 0, 5, 0, { color: 'faint', width: 1 }); G.line(-0.6, 0, 4, 0, { color: 'faint', width: 1 });
           if (!soc) {
             H.setTicks(ABS.map((c, i) => [i + 0.5, c[0]]), null);
             const cur = catOf();
@@ -523,17 +544,18 @@ When the same logical structure is about a familiar social rule, such as “if s
             gains.forEach((g, i) => {
               const col = ['accent', 'muted', 'orange', 'green'][i];
               G.rect(i + 0.15, 0, i + 0.85, g, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
-              G.text(v.fix(g, 3), i + 0.5, g + 0.04, { align: 'center', size: 11.5, weight: 700, color: col });
-              G.text(`#${order.indexOf(i) + 1}`, i + 0.5, 0.06, { align: 'center', size: 11, weight: 700, color: 'ink' });
+              G.text(`#${order.indexOf(i) + 1} · ${v.fix(g, 3)}`, i + 0.5, g + 0.045, { align: 'center', size: 11.5, weight: 700, color: col });
             });
             if (pb.value < a) G.corner('Pr(q) raised to Pr(p): the rule needs Pr(q) ≥ Pr(p)', 'tr', { size: 10.5 });
           } else {
-            G.setTitle('can the hidden side reveal a violator?');
+            G.setTitle('chance the hidden side shows a rule-breaker');
+            const CATCH = [0.2, 0, 0, 0.3]; // 30% drink beer, 20% are under 18, independently
             D.cards.forEach((cd, i) => {
-              const val = cd.bad ? 1 : 0, col = cd.bad ? 'green' : 'muted';
-              if (val) G.rect(i + 0.15, 0, i + 0.85, 0.9, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
-              G.text(val ? 'yes' : 'no', i + 0.5, val ? 0.95 : 0.06, { align: 'center', size: 12, weight: 700, color: col });
+              const val = CATCH[i], col = val ? 'green' : 'muted';
+              if (val) G.rect(i + 0.15, 0, i + 0.85, val, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
+              G.text(val ? v.fix(val, 2) : '0', i + 0.5, val + 0.045, { align: 'center', size: 12, weight: 700, color: col });
             });
+            G.text('if 30% drink beer and 20% are under 18, independently', 1.7, 0.86, { align: 'center', size: 11, color: 'muted' });
             gains = null;
           }
         });
@@ -542,7 +564,7 @@ When the same logical structure is about a familiar social rule, such as “if s
           const D = WASON[ver.value], roles = [...picked].sort().map((k) => D.cards[k].face);
           const need = D.cards.map((c, k) => [c, k]).filter(([c]) => c.bad), ok = need.every(([, k]) => picked.has(k)) && picked.size === need.length;
           const head = `Your choice: **${roles.length ? roles.join(', ') : 'nothing'}**${shown ? (ok ? ' → correct: exactly the cards that could falsify the rule ✓' : ` → the cards that could falsify the rule are **${need.map(([c]) => c.face).join(' and ')}**`) : ' (press Check)'}`;
-          if (!gains) return head + ' · in the deontic version the task is to find rule-breakers, and the two cards that can hide one are obvious to most people.';
+          if (!gains) return head + ' · in the deontic version the task is to find rule-breakers: only *beer* and *16* can hide one (here with chance 0.2 and 0.3), and most people see this at once.';
           const order = gains.map((g, i) => [g, D.cards[i].face]).sort((x, y) => y[0] - x[0]).map((x) => x[1]).join(' > ');
           return head + ` · information gain order: **${order}**${order.startsWith('E > 4') ? ' — the order of people’s choices (p, then q, then not-q, then not-p)' : ''}.`;
         });
@@ -564,7 +586,7 @@ To weigh a map one needs a model of how strengths combine. A simple probabilisti
       viz(v) {
         const s = v.stage({ x: [0, 10], y: [-0.05, 6.25], axes: false, height: 410 });
         const CRED = [0.1, 0.3, 0.5, 0.7, 0.8, 0.9, 0.95];
-        const base = { R1: 0.8, R2: 0.9, R3: 0.6, O1: 0.6, B1: 0.7, O2: 0.3 };
+        const BASE0 = { R1: 0.8, R2: 0.9, R3: 0.6, O1: 0.6, B1: 0.7, O2: 0.3 }, base = { ...BASE0 };
         const SHORT = { C: 'conclusion', R1: 'agreement', R2: 'never break', R3: 'harm to city', O1: 'unjust verdict', B1: 'two wrongs', O2: 'children', J: 'linked pair' };
         const nodes = [
           { id: 'C', x: 5, y: 5.55, label: 'Socrates should not\nescape from prison' },
@@ -572,7 +594,7 @@ To weigh a map one needs a model of how strengths combine. A simple probabilisti
           { id: 'R1', x: 1.55, y: 2.3, label: 'Escaping would break a\njust agreement with the laws' },
           { id: 'R2', x: 4.45, y: 2.3, label: 'One must never break\na just agreement' },
           { id: 'R3', x: 7.05, y: 3.95, label: 'Escaping would\nharm the city' },
-          { id: 'O2', x: 8.75, y: 5.55, label: 'He owes it to his\nchildren to stay alive' },
+          { id: 'O2', x: 8.6, y: 5.55, label: 'He owes it to his\nchildren to stay alive' },
           { id: 'O1', x: 1.55, y: 0.6, label: 'The verdict was unjust,\nso the agreement is void' },
           { id: 'B1', x: 4.75, y: 0.6, label: 'Answering a wrong with\na wrong is still wrong' },
         ];
@@ -581,7 +603,15 @@ To weigh a map one needs a model of how strengths combine. A simple probabilisti
           { from: 'J', to: 'C', type: 'sup', w: 1 }, { from: 'R3', to: 'C', type: 'sup', w: 0.6 },
           { from: 'O2', to: 'C', type: 'att', w: 1 }, { from: 'O1', to: 'R1', type: 'att', w: 1 }, { from: 'B1', to: 'O1', type: 'att', w: 1 },
         ];
+        const TYPE0 = edges.map((e) => e.type);
         const G = v.graph(s, { nodes, edges, directed: true, layout: 'none', shape: 'box', fontSize: 11.5, r: 12 });
+        const setScene = (k) => {
+          Object.assign(base, BASE0); edges.forEach((e, i) => { e.type = TYPE0[i]; });
+          if (k === 'single') edges.find((e) => e.from === 'R3').type = 'off';
+          if (k === 'unanswered') edges.find((e) => e.from === 'B1').type = 'off';
+          if (k === 'flip') edges.find((e) => e.from === 'O2').type = 'sup';
+        };
+        v.select('scenario', [{ value: 'crito', label: 'as in the Crito' }, { value: 'single', label: 'drop the city argument' }, { value: 'unanswered', label: 'leave the objection unanswered' }, { value: 'flip', label: 'children as a reason' }], 'crito', { onChange: setScene });
         G.onClick = ({ node, edge, shift }) => {
           if (edge && !edge.fixed) edge.type = { sup: 'att', att: 'off', off: 'sup' }[edge.type];
           else if (node && base[node.id] != null) { const k = CRED.indexOf(base[node.id]); base[node.id] = CRED[(k + (shift ? CRED.length - 1 : 1)) % CRED.length]; }
@@ -611,7 +641,7 @@ To weigh a map one needs a model of how strengths combine. A simple probabilisti
           const py = s.height / (s.bounds.y[1] - s.bounds.y[0]);
           for (const n of G.nodes) {
             if (n.id === 'J') continue;
-            const hh = (2 * 11.5 * 0.62 + 5) / py, y = n.y - hh - 13 / py, w = 1.0, x0 = n.x - w / 2 - 0.25;
+            const hh = (2 * 11.5 * 0.62 + 5) / py, y = n.id === 'C' ? n.y + hh + 11 / py : n.y - hh - 13 / py, w = 1.0, x0 = n.id === 'C' ? n.x - 0.85 : n.x + 0.08;
             s.rect(x0, y - 3 / py, x0 + w, y + 3 / py, { fill: 'faint', fillAlpha: 0.35, stroke: false });
             s.rect(x0, y - 3 / py, x0 + w * a[n.id], y + 3 / py, { fill: a[n.id] >= 0.5 ? 'green' : 'orange', fillAlpha: 0.9, stroke: false });
             s.text(v.fix(a[n.id], 2) + (base[n.id] != null && Math.abs(a[n.id] - base[n.id]) > 1e-9 ? ` (credence ${v.fix(base[n.id], 2)})` : base[n.id] != null ? ' credence' : ''), x0 + w + 0.08, y, { size: 10.5, weight: 600, color: 'muted' });

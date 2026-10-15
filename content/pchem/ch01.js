@@ -71,22 +71,15 @@ function mdGas(o) {
       const cx = Math.min(ncx - 1, Math.max(0, (x[i] / L[0] * ncx) | 0)), cy = Math.min(ncy - 1, Math.max(0, (y[i] / L[1] * ncy) | 0)), cz = Math.min(ncz - 1, Math.max(0, (z[i] / L[2] * ncz) | 0));
       const c = (cx * ncy + cy) * ncz + cz; next[i] = head[c]; head[c] = i;
     }
-    for (let cx = 0; cx < ncx; cx++) for (let cy = 0; cy < ncy; cy++) for (let cz = 0; cz < ncz; cz++) {
-      const c = (cx * ncy + cy) * ncz + cz;
-      for (let i = head[c]; i >= 0; i = next[i]) {
-        const si = S[i] * ns;
-        for (let ox = -1; ox <= 1; ox++) { const qx = cx + ox; if (qx < 0 || qx >= ncx) continue;
-          for (let oy = -1; oy <= 1; oy++) { const qy = cy + oy; if (qy < 0 || qy >= ncy) continue;
-            for (let oz = -1; oz <= 1; oz++) { const qz = cz + oz; if (qz < 0 || qz >= ncz) continue;
-              const q = (qx * ncy + qy) * ncz + qz; if (q < c) continue;
-              for (let j = q === c ? next[i] : head[q]; j >= 0; j = next[j]) {
-                const k = si + S[j], dx = x[i] - x[j], dy = y[i] - y[j], dz = z[i] - z[j], r2 = dx * dx + dy * dy + dz * dz;
-                if (r2 >= rc2[k]) continue;
-                const ir2 = s2[k] / Math.max(r2, 0.5 * s2[k]), ir6 = ir2 * ir2 * ir2, f = 6 * e4[k] * ir6 * (2 * ir6 - 1) / Math.max(r2, 0.5 * s2[k]);
-                fx[i] += f * dx; fy[i] += f * dy; fz[i] += f * dz; fx[j] -= f * dx; fy[j] -= f * dy; fz[j] -= f * dz;
-              }
-            }
-          }
+    for (let i = 0; i < N; i++) {
+      const cx = Math.min(ncx - 1, Math.max(0, (x[i] / L[0] * ncx) | 0)), cy = Math.min(ncy - 1, Math.max(0, (y[i] / L[1] * ncy) | 0)), cz = Math.min(ncz - 1, Math.max(0, (z[i] / L[2] * ncz) | 0)), si = S[i] * ns;
+      for (let qx = Math.max(0, cx - 1); qx <= Math.min(ncx - 1, cx + 1); qx++) for (let qy = Math.max(0, cy - 1); qy <= Math.min(ncy - 1, cy + 1); qy++) for (let qz = Math.max(0, cz - 1); qz <= Math.min(ncz - 1, cz + 1); qz++) {
+        for (let j = head[(qx * ncy + qy) * ncz + qz]; j >= 0; j = next[j]) {
+          if (j <= i) continue;
+          const k = si + S[j], dx = x[i] - x[j], dy = y[i] - y[j], dz = z[i] - z[j], r2 = dx * dx + dy * dy + dz * dz;
+          if (r2 >= rc2[k]) continue;
+          const rr = Math.max(r2, 0.5 * s2[k]), ir2 = s2[k] / rr, ir6 = ir2 * ir2 * ir2, f = 6 * e4[k] * ir6 * (2 * ir6 - 1) / rr;
+          fx[i] += f * dx; fy[i] += f * dy; fz[i] += f * dz; fx[j] -= f * dx; fy[j] -= f * dy; fz[j] -= f * dz;
         }
       }
     }
@@ -271,9 +264,9 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
     {
       num: '1.2', kind: 'Law', name: 'Charles’s and Gay-Lussac’s laws',
       statement: String.raw`For a fixed amount of gas:
-(a) at fixed pressure the volume is a linear function of the temperature, $V = V_0\,(1 + \theta/273.15\,^\circ\mathrm C)$ (Charles's law);
-(b) at fixed volume the pressure is a linear function of the temperature, $p = p_0\,(1 + \theta/273.15\,^\circ\mathrm C)$ (Gay-Lussac's or Amontons's law).
-For every gas and every fixed pressure or volume the straight lines extrapolate to zero at the same temperature, $\theta = -273.15\,^\circ$C. Measuring temperature from that point, $T = \theta + 273.15$ K, both laws read $V \propto T$ and $p \propto T$. Like Boyle's law they are limiting laws, exact as the pressure goes to zero.`,
+(a) at fixed pressure the volume is a linear function of the temperature, $V = V_0\,(1 + \theta/273.15\,{}^\circ\mathrm C)$ (Charles's law);
+(b) at fixed volume the pressure is a linear function of the temperature, $p = p_0\,(1 + \theta/273.15\,{}^\circ\mathrm C)$ (Gay-Lussac's or Amontons's law).
+For every gas and every fixed pressure or volume the straight lines extrapolate to zero at the same temperature, $\theta = -273.15\,{}^\circ$C. Measuring temperature from that point, $T = \theta + 273.15$ K, both laws read $V \propto T$ and $p \propto T$. Like Boyle's law they are limiting laws, exact as the pressure goes to zero.`,
       idea: String.raw`Temperature measures the mean kinetic energy of the molecules, $\tfrac12 m\langle v^2\rangle = \tfrac32 kT$ (1.6). At fixed volume, heating makes each impact on the wall harder and the impacts more frequent — each grows like $\sqrt T$ — so the pressure grows like $T$. To hold the pressure at a fixed value instead, the gas must spread over a proportionally larger volume. The common intercept is the temperature at which the molecules of a perfect gas would stop moving: it does not depend on the gas because the kinetic energy per molecule does not. Real gases condense before reaching it, and their attractions bend the lines near condensation.`,
       caption: String.raw`A cylinder of 160 molecules sits in a bath that cycles between $-100$ °C and $300$ °C (or set the bath yourself). Weights on a free piston hold the pressure fixed; in constant-volume mode pins hold the piston where the weights left it at 20 °C and the wall pressure is measured instead. Each window adds a dot: the gas's own temperature (from the kinetic energy of its molecules) against its volume or pressure. After every ramp a new weight starts a new line; extended (dashed), every line hits zero near $-273$ °C. Switch to xenon: near condensation the cold end curls below its line and the intercept moves.`,
       deps: [],
@@ -282,88 +275,89 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
       credit: 'Amontons, 1702; Charles, c. 1787; Gay-Lussac, 1802; Thomson (Kelvin), 1848',
       scope: String.raw`Holds in the limit of low pressure for any gas, far from its condensation temperature. Near condensation real gases contract more than the law predicts; below it they liquefy, so the lines can never actually be followed down to absolute zero.`,
       viz(v) {
-        const N = 160, W = 70, RATE = 25, WIN = 8, HALF = 220, TLO = 173.15, THI = 573.15, PSTEP = 10, S0 = 66, COLS = ['accent', 'orange', 'teal'];
-        const law = v.select('hold fixed', [{ value: 'p', label: 'pressure (Charles)' }, { value: 'V', label: 'volume (Gay-Lussac)' }], 'p', { onChange: () => { configure(); newSeries(); } });
+        const N = 160, W = 100, WIN = 10, TLO = 173.15, THI = 573.15, PSTEP = 10, COLS = ['accent', 'orange', 'teal'];
+        const STEPS = [-100, -20, 60, 140, 220, 300].map((c) => c + 273.15);
+        const law = v.select('hold fixed', [{ value: 'p', label: 'pressure (Charles)' }, { value: 'V', label: 'volume (Gay-Lussac)' }], 'p', { onChange: () => { make(); newSeries(); } });
         const gas = v.select('molecules', [{ value: 'ideal', label: 'point molecules' }, { value: 'lj', label: 'xenon atoms' }], 'ideal', { onChange: () => { make(); newSeries(); } });
-        const load = v.slider('weights', 1, 3, 1, { int: true, fmt: (k) => `${k} (${k * PSTEP} bar)`, onChange: () => { configure(); newSeries(); } });
-        const auto = v.toggle('automatic heating cycle', true);
-        const Tb = v.slider('bath', -100, 300, 20, { step: 1, fmt: (x) => `${x.toFixed(0)} °C`, onChange: () => { if (auto.value) auto.set(false); } });
+        const load = v.slider('weights', 1, 3, 1, { int: true, fmt: (k) => `${k} (${k * PSTEP} bar)`, onChange: () => { make(); newSeries(); } });
+        const auto = v.toggle('automatic heating in steps', true);
+        const Tb = v.slider('bath', -100, 300, 20, { step: 1, fmt: (x) => `${x.toFixed(0)} °C`, onChange: () => { if (auto.value) auto.set(false); tChange = tSim; } });
         const P3 = oblique(0.42, 0.5), HMAX = N * THI / (PSTEP / BAR * W * W);
-        const sc = v.stage({ x: [-66, W + P3.cx * W + 14], y: [-14, HMAX + 70], equal: true, height: 430, axes: false, weight: 0.62, minWidth: 220 });
-        const sg = v.stage({ x: [-300, 330], y: [0, 5], height: 430, axes: 'box', weight: 1.3, xticks: [[-273.15, '−273'], -200, -100, 0, 100, 200, 300], title: 'temperature θ (°C, measured)' });
-        let G, win, series = [], tLast = 0, tSim = 0, ramp = -1, Vpin = null, last = null;
-        const bathT = () => {
-          if (!auto.value) return Tb.value + 273.15;
-          const u = ((tSim + S0) % (2 * HALF)) / (2 * HALF), tri = u < 0.5 ? 2 * u : 2 - 2 * u;
-          return TLO + (THI - TLO) * tri;
-        };
-        const configure = () => {
-          if (law.value === 'p') { G.piston = { k: 3, M: 1000, pext: load.value * PSTEP / BAR, gamma: 100 }; Vpin = null; }
-          else { G.piston = null; G.wv[3] = 0; Vpin = N * 293.15 / (load.value * PSTEP / BAR); G.L[1] = Vpin / (W * W); }
-          win = G.snap();
-        };
+        const sc = v.stage({ x: [-56, W + P3.cx * W + 6], y: [-12, HMAX + P3.cy * W + 46], equal: true, height: 400, axes: false, weight: 0.8, minWidth: 240 });
+        const sg = v.stage({ x: [-300, 330], y: [0, 5], height: 400, axes: 'box', weight: 1.2, xticks: [[-273.15, '−273'], -100, 0, 100, 200, 300] });
+        let G, win, series = [], tLast = 0, tSim = 0, step = 0, dir = 1, tStep = 0, tChange = 0, last = null;
+        const fast = () => gas.value === 'ideal';
+        const DWELL = () => (fast() ? 80 : 360), RATE = () => (fast() ? 30 : 60);
+        const bathT = () => (auto.value ? STEPS[step] : Tb.value + 273.15);
+        const settled = () => tSim - (auto.value ? tStep : tChange) >= DWELL() / 2;
         const make = () => {
-          const T = bathT(), h = N * T / (load.value * PSTEP / BAR * W * W);
-          G = mdGas({ N, species: [MOL.Xe], L: [W, h, W], mode: gas.value, T, rng: v.rng(21), thermal: [1, 1, 1, 0, 1, 1] });
-          configure();
+          const T = bathT(), pe = load.value * PSTEP / BAR, h = law.value === 'p' ? N * T / (pe * W * W) : N * 293.15 / (pe * W * W);
+          G = mdGas({ N, species: [fast() ? MOL.He : MOL.Xe], L: [W, h, W], mode: gas.value, T, rng: v.rng(21 + series.length), thermal: [1, 1, 1, 0, 1, 1] });
+          if (law.value === 'p') G.piston = { k: 3, M: fast() ? 200 : 2000, pext: pe, gamma: fast() ? 20 : 100 };
+          win = G.snap(); tStep = tChange = tSim;
         };
         const newSeries = () => { series.push({ law: law.value, k: load.value, gas: gas.value, pts: [], col: COLS[(series.length ? COLS.indexOf(series[series.length - 1].col) + 1 : 0) % 3] }); if (series.length > 3) series.shift(); last = null; };
-        const reset = () => { tSim = 0; ramp = -1; series = []; load.value = 1; make(); newSeries(); };
+        const reset = () => { tSim = 0; step = 0; dir = 1; series = []; load.value = 1; make(); newSeries(); };
         reset();
         const fit = (S) => {
           if (S.pts.length < 4) return null;
           const xs = S.pts.map((q) => q.th), ys = S.pts.map((q) => q.y), r = v.M.linreg(xs, ys), n = xs.length, mx = v.M.mean(xs), my = v.M.mean(ys);
+          if (!(Math.abs(r.slope) > 0)) return null;
           const th0 = mx - my / r.slope, se = Math.sqrt((r.sigma * r.sigma / n) / (r.slope * r.slope) + (my * my) * r.seSlope * r.seSlope / r.slope ** 4);
           return { ...r, th0, se, lo: Math.min(...xs), hi: Math.max(...xs) };
         };
         const advance = (dT) => {
-          const CH = 0.5, dt = gas.value === 'ideal' ? 0.1 : 0.03;
+          const CH = 0.5, dt = fast() ? 0.05 : 0.03;
           for (let done = 0; done < dT - 1e-9; done += CH) {
-            if (auto.value) {
-              const r = Math.floor((tSim + S0) / HALF);
-              if (r !== ramp) { if (ramp >= 0) { load.value = (load.value % 3) + 1; configure(); newSeries(); } ramp = r; }
+            if (auto.value && tSim - tStep >= DWELL()) {
+              step += dir; tStep = tSim;
+              if (step < 0 || step >= STEPS.length) { dir = -dir; step += dir; load.value = (load.value % 3) + 1; make(); newSeries(); }
             }
             G.T = bathT(); G.run(CH, dt); tSim += CH;
             if (G.t - win.t >= WIN) {
-              const b = G.snap(), m = G.meas(win, b), S = series[series.length - 1];
-              const pt = { th: m.T - 273.15, y: law.value === 'p' ? Lmol(m.V, N) : m.p * BAR, T: m.T };
-              S.pts.push(pt); last = pt; win = b;
+              const b = G.snap();
+              if (settled()) {
+                const m = G.meas(win, b), pt = { th: m.T - 273.15, y: law.value === 'p' ? Lmol(m.V, N) : m.p * BAR, T: m.T };
+                series[series.length - 1].pts.push(pt); last = pt;
+              }
+              win = b;
             }
           }
         };
         v.animate((t) => {
           if (t < tLast - 1e-6) reset();
-          const dT = Math.min(800, (t - tLast) * RATE); tLast = t;
+          const dT = Math.min(2400, (t - tLast) * RATE()); tLast = t;
           if (dT > 0) advance(dT);
           // --- the bath, the cylinder and its molecules ---
           const h = G.L[1], Tbath = bathT(), f = Math.max(0, Math.min(1, (Tbath - TLO) / (THI - TLO))), hot = v.mix('blue', 'red', f);
-          sc.rect(-10, -9, W + P3.cx * W + 9, HMAX + P3.cy * W + 6, { fill: hot, fillAlpha: 0.1, color: hot, width: 1, alpha: 0.5 });
+          sc.rect(-8, -8, W + P3.cx * W + 4, HMAX + P3.cy * W + 4, { fill: hot, fillAlpha: 0.12, color: hot, width: 1, alpha: 0.6 });
+          boxBack(sc, P3, 0, W, 0, HMAX, W, { color: 'faint' });
+          sc.path([P3(0, h, 0), P3(0, HMAX, 0), P3(W, HMAX, 0), P3(W, h, 0)], { color: 'faint', width: 1.2, dash: [4, 3] });
           boxBack(sc, P3, 0, W, 0, h, W, { color: 'muted', fill: 'muted', fillAlpha: 0.08 });
-          drawMolecules(sc, G, P3, { point: gas.value === 'ideal', pointR: 2, color: () => (gas.value === 'ideal' ? 'accent' : 'purple') });
+          drawMolecules(sc, G, P3, { point: fast(), pointR: 2, color: () => (fast() ? 'accent' : 'purple') });
           boxFront(sc, P3, 0, W, 0, h);
-          // piston, pins or weights
-          const top = [P3(0, h, 0), P3(W, h, 0), P3(W, h, W), P3(0, h, W)], th = 5;
-          sc.poly(top.map(([X, Y]) => [X, Y + th]), { fill: 'gray', fillAlpha: 0.5, color: 'muted', width: 1 });
-          sc.poly([top[0], top[1], [top[1][0], top[1][1] + th], [top[0][0], top[0][1] + th]], { fill: 'gray', fillAlpha: 0.7, color: 'muted', width: 1 });
+          const th = 4, top = [P3(0, h, 0), P3(W, h, 0), P3(W, h, W), P3(0, h, W)];
+          sc.poly(top.map(([X, Y]) => [X, Y + th]), { fill: 'gray', fillAlpha: 0.55, color: 'muted', width: 1 });
+          sc.poly([top[0], top[1], [top[1][0], top[1][1] + th], [top[0][0], top[0][1] + th]], { fill: 'gray', fillAlpha: 0.75, color: 'muted', width: 1 });
           if (law.value === 'p') for (let k = 0; k < load.value; k++) {
-            const y0 = h + th + 1 + k * 13, a = P3(12, y0, W / 2), b = P3(W - 12, y0 + 11, W / 2);
-            sc.rect(a[0], a[1], b[0], b[1], { fill: 'ink', fillAlpha: 0.75, color: 'ink', width: 1 });
+            const y0 = h + th + 1 + k * 11, a = P3(22, y0, W / 2), b = P3(W - 22, y0 + 9.5, W / 2);
+            sc.rect(a[0], a[1], b[0], b[1], { fill: 'ink', fillAlpha: 0.78, color: 'ink', width: 1 });
             sc.text(`${PSTEP} bar`, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2, { color: 'panel', size: 10, align: 'center', halo: false, weight: 600 });
-          } else for (const xx of [-6, W + 6]) { const [X, Y] = P3(xx, h + th / 2, 0); sc.rect(X - 3, Y - 3, X + 3, Y + 3, { fill: 'red', fillAlpha: 0.9, stroke: false }); }
-          // thermometer
-          const tx = -40, ty0 = 14, ty1 = HMAX, Ty = (T) => ty0 + (ty1 - ty0) * (T - TLO) / (THI - TLO);
-          sc.rect(tx - 4, ty0 - 4, tx + 4, ty1 + 6, { color: 'muted', width: 1.2 });
-          sc.circle(tx, ty0 - 9, 7, { fill: 'red', fillAlpha: 0.85, stroke: false });
-          sc.rect(tx - 2.2, ty0 - 4, tx + 2.2, Ty(Tbath), { fill: 'red', fillAlpha: 0.85, stroke: false });
-          for (const c of [-100, 0, 100, 200, 300]) { sc.line(tx + 4, Ty(c + 273.15), tx + 8, Ty(c + 273.15), { color: 'muted', width: 1 }); sc.text(`${c}°`, tx - 7, Ty(c + 273.15), { size: 10, color: 'muted', align: 'right' }); }
-          if (last) sc.dot(tx + 4, Ty(last.T), { r: 4, color: gas.value === 'ideal' ? 'accent' : 'purple' });
-          sc.text('bath', tx, ty1 + 14, { size: 10.5, color: 'muted', align: 'center' });
+          } else for (const xx of [-5, W + 5]) { const [X, Y] = P3(xx, h + th / 2, 0); sc.rect(X - 2.5, Y - 2.5, X + 2.5, Y + 2.5, { fill: 'red', fillAlpha: 0.9, stroke: false }); }
+          // thermometer: bath (red column) and the gas's own measured temperature (dot)
+          const tx = -36, ty0 = 10, ty1 = HMAX + 10, Ty = (T) => ty0 + (ty1 - ty0) * (T - TLO) / (THI - TLO);
+          sc.rect(tx - 3.5, ty0 - 3, tx + 3.5, ty1 + 5, { color: 'muted', width: 1.2 });
+          sc.circle(tx, ty0 - 7, 6, { fill: 'red', fillAlpha: 0.85, stroke: false });
+          sc.rect(tx - 2, ty0 - 3, tx + 2, Ty(Tbath), { fill: 'red', fillAlpha: 0.85, stroke: false });
+          for (const c of [-100, 0, 100, 200, 300]) { sc.line(tx + 3.5, Ty(c + 273.15), tx + 7, Ty(c + 273.15), { color: 'muted', width: 1 }); sc.text(`${c}°`, tx - 6, Ty(c + 273.15), { size: 10, color: 'muted', align: 'right' }); }
+          if (last) sc.dot(tx + 3.5, Ty(last.T), { r: 4, color: fast() ? 'accent' : 'purple' });
+          sc.text(settled() ? 'measuring' : 'settling…', W / 2 + P3.cx * W / 2, -5, { size: 11, color: settled() ? 'green' : 'muted', align: 'center' });
           // --- the graph ---
-          const isP = law.value === 'p', ymax = isP ? RBAR * THI / PSTEP * 1.08 : RBAR * THI / (RBAR * 293.15 / (3 * PSTEP)) * 1.08;
-          sg.setView([-300, 330], [0, ymax]);
-          sg.setTitle(isP ? 'molar volume $V_m$ (L/mol) against θ (°C)' : 'measured pressure $p$ (bar) against θ (°C)');
+          const isP = law.value === 'p', ymax = isP ? RBAR * THI / PSTEP * 1.12 : 3 * PSTEP * THI / 293.15 * 1.12;
+          sg.setView([-300, 330], [-0.035 * ymax, ymax]);
+          sg.setTitle(isP ? 'molar volume $V_m$ (L/mol) against the gas temperature θ (°C)' : 'measured pressure $p$ (bar) against the gas temperature θ (°C)');
           sg.vline(-273.15, { color: 'red', width: 1.2, dash: [4, 3] });
-          sg.text('absolute zero', -268, ymax * 0.95, { color: 'red', size: 11.5, align: 'left' });
+          sg.text('absolute zero', -266, ymax * 0.95, { color: 'red', size: 11.5, align: 'left' });
           for (const S of series) {
             if (S.law !== law.value) continue;
             sg.dots(S.pts.map((q) => [q.th, q.y]), { r: 2.6, color: S.col, alpha: 0.55 });
@@ -371,16 +365,16 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
             sg.line(F.th0, 0, F.lo, F.predict(F.lo), { color: S.col, width: 1.4, dash: [5, 4] });
             sg.line(F.lo, F.predict(F.lo), F.hi, F.predict(F.hi), { color: S.col, width: 2.2 });
             sg.dot(F.th0, 0, { r: 4.5, color: S.col });
+            sg.text(`${S.k}×${PSTEP} bar${S.gas === 'lj' ? ', Xe' : ''}`, F.hi, F.predict(F.hi), { color: S.col, size: 11, dx: -2, dy: -14, align: 'right' });
           }
           if (last) sg.dot(last.th, last.y, { r: 5, color: series[series.length - 1].col });
-        }, { still: 30 });
-        v.legend([['accent', 'one load (or volume) per colour', { dot: true }], ['muted', 'least-squares line, extended to zero', { dash: true }], ['red', 'θ = −273.15 °C', { dash: true }]]);
+        }, { still: 45 });
+        v.legend([['accent', 'measured windows, one colour per load', { dot: true }], ['muted', 'least-squares line, extended to zero', { dash: true }], ['red', 'θ = −273.15 °C', { dash: true }]]);
         v.readout(() => {
           const rows = series.filter((S) => S.law === law.value).map((S) => [S, fit(S)]).filter(([, F]) => F);
           if (!rows.length) return 'Collecting windows…';
-          const what = law.value === 'p' ? 'pressure' : 'volume';
           const ints = rows.map(([S, F]) => `$${v.fix(F.th0, 0)} \\pm ${v.fix(Math.max(1, 2 * F.se), 0)}$ °C (${S.k} weight${S.k > 1 ? 's' : ''}${S.gas === 'lj' ? ', xenon' : ''})`).join(', ');
-          return `Each line holds the ${what} fixed. Extrapolated zero of the fitted lines: ${ints} — against $-273.15$ °C. ` + (last ? `Latest window: gas at $${v.fix(last.th, 1)}$ °C, ${law.value === 'p' ? `$V_m = ${v.fix(last.y, 3)}$ L/mol` : `$p = ${v.fix(last.y, 2)}$ bar`}.` : '');
+          return `Extrapolated zero of each fitted line (±2 standard errors): ${ints} — against $-273.15$ °C. ` + (last ? `Latest window: gas at $${v.fix(last.th, 1)}$ °C, ${law.value === 'p' ? `$V_m = ${v.fix(last.y, 3)}$ L/mol` : `$p = ${v.fix(last.y, 2)}$ bar`}.` : '');
         });
       },
     },

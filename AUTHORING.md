@@ -186,7 +186,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.stage3d(opts)` → Stage3D | 3D panel (drag to rotate). |
 | `v.render(fn)` | register `fn(t)`; rerun on any change. |
 | `v.animate(fn, {period, speed, autoplay, once})` | continuous `fn(t)`, `t` in seconds (wraps at `period`; `once` stops at the end). Adds play/pause/restart. |
-| `v.slider(label, min, max, value, {step, int, log, decimals, fmt, onChange})` | returns `{value, set(x)}`. `int: true` for integers, `log: true` for log scale. |
+| `v.slider(label, min, max, value, {step, int, log, sig, decimals, fmt, onChange})` | returns `{value, set(x)}`. `int: true` for integers, `log: true` for log scale (drags round to `sig` = 3 significant figures). The default and `set(x)` are kept exact (never snapped to the step grid). |
 | `v.toggle(label, value, {onChange})` | switch → `{value}` |
 | `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
@@ -249,6 +249,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `colorbar([lo,hi], cmap, {pos:'right'|'left'|'top'|'bottom', label, tex, ticks, fmt, length})` | colour bar on a small panel inside the edge, for a `heat` map (`cmap`: name or `t => [r,g,b]`). |
 | `polarGrid({rings, spokes:12, rmax, center, angles:'deg'|'rad'|false, labelAngle, labels})` | polar grid (`rings`: count or radii); use with `equal: true, axes: false`. |
 | `setView([x0,x1], [y0,y1])` | change the window (fine to call inside render). |
+| `contour(f, levels, {color, width, dash, res, labels, fmt})` | contour lines of a scalar field `f(x, y)` by marching squares (`levels`: a number or an array; `res` grid cells across, default 120; `labels: true` writes each level on its line). |
 | `clip(fn, [x0,x1]?, [y0,y1]?)` | run `fn` with drawing clipped to a data rectangle (default: the window), e.g. `s.clip(() => s.curve(f))`. |
 | `setTitle(rich)` | change (or add) the stage title. |
 | `setTicks(xticks, yticks)` | change custom ticks per mode (`null` = automatic). |
@@ -312,6 +313,10 @@ sign, singular}` (PA = LU), `luSolve(lu or A, b or B)` · `qr(A, {thin})` (House
 one-sided Jacobi) → thin `{U, S ↓, V}`, A = U diag(S) Vᵀ · `pinv`, `lstsq(A, b)`, `rank(A, tol)`,
 `nullspace(A)` (orthonormal list), `rref(A)` → `{R, pivots}` · `expm(A)` (Padé + squaring) ·
 `charPoly(A)` → ascending coefficients for `polyEval`.
+
+**Quanta & light**: `schrodinger1D(V, [x0, x1], {n, k, mass, hbar})` → `{x, E, psi}` (lowest k bound states, ψ = 0 at the ends, ∫|ψ|² = 1) · `crankNicolson1D(re, im, Vgrid, dx, dt, {mass, hbar})` (one unitary time step, in place: wavepackets, tunnelling) · `tridiagEig(d, e, k)` · `wavelengthRGB(nm)` → `[r, g, b]` for spectral colours (pass the array as a colour).
+
+**More distributions** in `dist`: `cauchy(x0, γ)`, `lognormal(μ, σ)`, `F(d1, d2)`, `mixture([[dist, w], …])`, `kolmogorov()` (limit law of √n·Dₙ).
 
 **Probability**: `dist.normal(μ,σ) dist.binomial(n,p) dist.poisson(λ) dist.exponential(rate)
 dist.uniform(a,b) dist.gamma(k,θ) dist.beta(a,b) dist.chi2(k) dist.studentT(ν) dist.geometric(p)`

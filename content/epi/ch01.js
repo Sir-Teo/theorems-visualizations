@@ -34,7 +34,7 @@ function pctTicks(top, map = (p) => p) { const step = top <= 0.13 ? 0.02 : top <
 /** Calendar date of t years after 1 January 2021 (plain text, e.g. "14 Feb 2022"). */
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function dateOf(t) { const y = Math.floor(t), d = (t - y) * 365, ml = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; let m = 0, r = d; while (m < 11 && r >= ml[m]) { r -= ml[m]; m++; } return `${Math.floor(r) + 1} ${MONTHS[m]} ${2021 + y}`; }
-/** Sum of the first-year-style life table: m = yearly death rates m_0 … m_ω → {l, d, L, T, e} (constant hazard within each year). */
+/** Life table from yearly death rates m_0 … m_ω → {l, d, L, T, e} (constant hazard within each year). */
 function lifeTable(m) {
   const n = m.length, l = new Float64Array(n + 1), L = new Float64Array(n), T = new Float64Array(n + 1), e = new Float64Array(n);
   l[0] = 1;
@@ -44,6 +44,9 @@ function lifeTable(m) {
   for (let x = 0; x < n; x++) e[x] = l[x] > 1e-300 ? T[x] / l[x] : 0;
   return { l, L, T, e, n };
 }
+/** Yearly death rates m_0 … m_110 from infant mortality q0 and the death rate at 60 (both per 1 000): an infant/child
+ *  component, a background level and a Gompertz rise (doubling every ~7.7 years). */
+function deathRates(q0, m60, amax = 110) { const m0 = -Math.log(1 - q0 / 1000), g = m60 / 1000; return Array.from({ length: amax + 1 }, (_, x) => (x === 0 ? m0 : m0 * 0.07 * Math.exp(-0.55 * (x - 1)) + 0.12 * g + g * Math.exp(0.09 * (x - 60)))); }
 /** Survivorship l(a) at a fractional age, using the constant hazard within each year. */
 function lAt(lt, m, a) { const x = Math.max(0, Math.min(lt.n - 1, Math.floor(a))); return lt.l[x] * Math.exp(-m[x] * (a - x)); }
 /** Remaining life expectancy at a fractional age a: ∫_a^∞ l / l(a). */
@@ -695,7 +698,7 @@ the area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the
         const q0S = v.slider('infant mortality $q_0$ (per 1 000 births)', 2, 300, 150, { log: true, fmt: (x) => x.toFixed(0) });
         const m60S = v.slider('death rate at age 60 (per 1 000 per year)', 3, 50, 25, { log: true, fmt: (x) => x.toFixed(1) });
         const view = v.select('right panel', [{ value: 'deaths', label: 'ages at death' }, { value: 'rates', label: 'death rates (log)' }], 'deaths');
-        const sched = () => { const m0 = -Math.log(1 - q0S.value / 1000), m60 = m60S.value / 1000; return Array.from({ length: AMAX + 1 }, (_, x) => (x === 0 ? m0 : m0 * 0.07 * Math.exp(-0.55 * (x - 1)) + 0.12 * m60 + m60 * Math.exp(0.09 * (x - 60)))); };
+        const sched = () => deathRates(q0S.value, m60S.value, AMAX);
         let base = null; v.button('Keep as baseline', () => { base = sched(); });
         base = sched();
         const U = uniforms(M, 91, NS);
@@ -745,6 +748,302 @@ the area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the
           if (!st) return '';
           const { e0, e20, b0, b20, a, ea, mean, mode, l20 } = st, d = (x) => `${x >= 0 ? '+' : '−'}${v.fix(Math.abs(x), 1)}`;
           return `$e_0 = ${v.fix(e0, 1)}$ years (2 000 simulated newborns: mean age at death ${v.fix(mean, 1)}) · ${pc(l20, 0)} reach 20, and then expect $e_{20} = ${v.fix(e20, 1)}$ more years · at age ${v.fix(a, 0)}: $e_a = ${v.fix(ea, 1)}$ → expected age at death ${v.fix(a + ea, 1)} · vs baseline: $e_0$ **${d(e0 - b0)}** y, $e_{20}$ **${d(e20 - b20)}** y · most common adult age at death ${mode}, whatever $e_0$ says`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.10
+    {
+      num: '1.10',
+      kind: 'Concept',
+      name: 'Lexis diagram: age, period and cohort',
+      credit: 'Wilhelm Lexis, 1875 (after Zeuner, 1869, and Becker, 1874)',
+      statement: String.raw`A **Lexis diagram** plots calendar time horizontally and age vertically, on equal scales. Each person is a **lifeline** of slope $1$ that starts on the time axis at birth and ends at death or at the end of observation; events are points on lifelines and person-time is length along them. The same events and person-time can then be grouped three ways:
+- an **age group** is a horizontal band,
+- a **period** (calendar interval) is a vertical band,
+- a **birth cohort** is a diagonal band between two lines of slope $1$.
+The rate for any such region is the number of events in it divided by the person-time inside it (1.2). Because age $=$ period $-$ year of birth, the three time scales are tied together: an influence acting at a moment in history appears as a vertical stripe, one carried by a generation as a diagonal stripe.`,
+      idea: String.raw`Every death has three coordinates — when it happened, how old the person was, and when they were born — but only two are free, which is exactly what a plane with diagonal lifelines encodes. Tabulating deaths and person-years in squares of the diagram gives an age-by-period table of rates; reading it along rows, columns or diagonals answers different questions (how risk varies with age in one year, how one age group's risk changed over history, how one generation fared as it aged). Distinguishing effects of age, period and cohort is possible only when a pattern clearly follows one direction; in general the three cannot be separated (the identification problem, demo 1.6).`,
+      caption: String.raw`The background colours are death rates per 1 000 person-years in each 5-year × 5-year square, computed from a simulated population with 20 000 births in every year since 1800 (white: a sample of individual lifelines, red dots = deaths). Add a 1918 pandemic or extra mortality in the generation born 1920–34 and look for a vertical or a diagonal stripe. Choose how to read the diagram and drag the gold point: the highlighted band's rates are plotted on the right, against the other bands of the same kind in grey.`,
+      deps: ['epi-1.2'],
+      see: ['demo-1.5', 'demo-1.6'],
+      refs: ['Rothman ch. 3'],
+      tags: ['lexis diagram', 'cohort', 'rates'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Lexis_diagram' },
+      viz(v) {
+        const M = v.M, P0 = 1900, P1 = 2020, AMAX = 100, C = 5, NP = 24, NA = 20, B0 = 1800, NCB = 44, BIRTHS = 20000;
+        const s = v.stage({ x: [1893, 2052], y: [0, AMAX], equal: true, height: 410, axes: 'box', weight: 1.55, ylabel: 'age', xticks: [1900, 1920, 1940, 1960, 1980, 2000, 2020] });
+        const g = v.stage({ x: [P0, P1], y: [0.2, 600], ylog: true, height: 410, axes: 'box', weight: 1, minWidth: 250 });
+        const eff = v.select('extra mortality', [{ value: 'none', label: 'none' }, { value: 'period', label: '1918 pandemic' }, { value: 'cohort', label: 'born 1920–34' }], 'cohort');
+        const dir = v.select('read along', [{ value: 'age', label: 'an age band' }, { value: 'period', label: 'a period' }, { value: 'cohort', label: 'a birth cohort' }], 'age');
+        const H = s.handle(1987, 67, { color: 'gold', constrain: (x, y) => [M.clamp(x, P0 + 0.5, P1 - 0.5), M.clamp(y, 0.5, AMAX - 0.5)] });
+        const sims = memo();
+        const sim = (e) => sims(e, () => {
+          const r = M.rng(101), D = new Float64Array(NP * NA), PY = new Float64Array(NP * NA), CD = new Float64Array(NCB * NA), CPY = new Float64Array(NCB * NA), lines = [];
+          const haz = (a, p, b) => {
+            let h = 0.1 * Math.exp(-0.9 * a - 0.035 * (p - 1900)) + (0.0015 + 3e-5 * Math.exp(0.095 * a)) * Math.exp(-0.01 * (p - 1900));
+            if (e === 'period' && p >= 1918 && p < 1919) h *= 1.5 + 8 * Math.exp(-(((a - 28) / 10) ** 2));
+            if (e === 'cohort' && b >= 1920 && b < 1935 && a >= 20) h *= 2.4;
+            return h;
+          };
+          // 20 000 births in every year since 1800, followed year of age by year of age with binomial deaths
+          for (let y = B0; y < P1; y++) {
+            let n = BIRTHS;
+            for (let a = 0; a < AMAX && n > 0; a++) {
+              const pm = y + a + 1, q = 1 - Math.exp(-haz(a + 0.5, pm, y + 0.5)); if (pm >= P1) break;
+              let d = 0;
+              if (n < 200) { for (let k = 0; k < n; k++) if (r() < q) d++; } else d = Math.max(0, Math.min(n, Math.round(n * q + Math.sqrt(n * q * (1 - q)) * r.normal())));
+              if (pm >= P0) { const ai = Math.floor((a + 0.5) / C), k = Math.floor((pm - P0) / C) * NA + ai, kc = Math.floor((y - B0) / C) * NA + ai; PY[k] += n - d / 2; D[k] += d; CPY[kc] += n - d / 2; CD[kc] += d; }
+              n -= d;
+            }
+          }
+          // a sample of individual lives, for the lifelines
+          for (let i = 0; i < 34; i++) {
+            const b = 1812 + 6 * i + 4 * r(); let a = 0, dead = -1;
+            while (b + a < P1 && a < AMAX) { if (r() < 1 - Math.exp(-haz(a + 0.5, b + a + 0.5, b))) { dead = a + r(); break; } a++; }
+            const end = dead >= 0 ? b + dead : Math.min(P1, b + AMAX);
+            if (end > P0) { const sp = Math.max(b, P0); lines.push({ p0: sp, a0: sp - b, p1: end, a1: end - b, died: dead >= 0 }); }
+          }
+          return { D, PY, CD, CPY, lines };
+        });
+        const rate = (d, py) => (py > 3000 ? (1000 * Math.max(d, 0.5)) / py : NaN);
+        let st = null;
+        v.render(() => {
+          const S = sim(eff.value), mode = dir.value;
+          // ----- heat map of rates in Lexis squares
+          s.heat((x, y) => { if (x < P0 || x >= P1 || y < 0 || y >= AMAX) return NaN; const k = Math.floor((x - P0) / C) * NA + Math.floor(y / C); return Math.log10(rate(S.D[k], S.PY[k])); }, { range: [-0.6, 2.7], cmap: 'viridis', key: eff.value, res: 2, alpha: 0.82 });
+          for (const L of S.lines) { s.line(L.p0, L.a0, L.p1, L.a1, { color: 'panel', width: 0.9, alpha: 0.5 }); if (L.died) s.dot(L.p1, L.a1, { r: 2.6, color: 'red', ring: true }); }
+          s.colorbar([-0.6, 2.7], 'viridis', { pos: 'right', length: 0.55, ticks: [0, 1, 2], fmt: (t) => ['1', '10', '100'][t], label: 'per 1 000' });
+          if (eff.value === 'period') s.text('1918', 1918.7, 102, { align: 'center', baseline: 'bottom', color: 'red', size: 11, weight: 600 });
+          // ----- the selected band
+          const ai = Math.min(NA - 1, Math.floor(H.y / C)), ci = Math.min(NP - 1, Math.floor((H.x - P0) / C)), cb = Math.floor((H.x - H.y - B0) / C), c0 = B0 + C * cb;
+          let D = 0, PY = 0, label, xs, sel, others = [];
+          if (mode === 'age') {
+            s.rect(P0, C * ai, P1, C * ai + C, { color: 'gold', width: 2.4, fill: 'gold', fillAlpha: 0.12 });
+            for (let c = 0; c < NP; c++) { D += S.D[c * NA + ai]; PY += S.PY[c * NA + ai]; }
+            label = `ages ${C * ai}–${C * ai + 4}`;
+            xs = Array.from({ length: NP }, (_, c) => P0 + C * c + 2.5);
+            sel = xs.map((x, c) => [x, rate(S.D[c * NA + ai], S.PY[c * NA + ai])]);
+            for (let a = 0; a < NA; a++) if (a !== ai) others.push(xs.map((x, c) => [x, rate(S.D[c * NA + a], S.PY[c * NA + a])]));
+            g.setView([P0, P1], [0.2, 600]); g.setTitle(`rates in the band ${label}, by period`);
+          } else if (mode === 'period') {
+            s.rect(P0 + C * ci, 0, P0 + C * ci + C, AMAX, { color: 'gold', width: 2.4, fill: 'gold', fillAlpha: 0.12 });
+            for (let a = 0; a < NA; a++) { D += S.D[ci * NA + a]; PY += S.PY[ci * NA + a]; }
+            label = `years ${P0 + C * ci}–${P0 + C * ci + 4}`;
+            xs = Array.from({ length: NA }, (_, a) => C * a + 2.5);
+            sel = xs.map((x, a) => [x, rate(S.D[ci * NA + a], S.PY[ci * NA + a])]);
+            for (let c = 0; c < NP; c++) if (c !== ci) others.push(xs.map((x, a) => [x, rate(S.D[c * NA + a], S.PY[c * NA + a])]));
+            g.setView([0, AMAX], [0.2, 600]); g.setTitle(`rates in ${label}, by age`);
+          } else {
+            s.clip(() => s.poly([[c0, 0], [c0 + C, 0], [c0 + C + AMAX, AMAX], [c0 + AMAX, AMAX]], { color: 'gold', width: 2.4, fill: 'gold', fillAlpha: 0.12 }), [P0, P1], [0, AMAX]);
+            for (let a = 0; a < NA; a++) { D += S.CD[cb * NA + a]; PY += S.CPY[cb * NA + a]; }
+            label = `the cohort born ${c0}–${c0 + 4}`;
+            xs = Array.from({ length: NA }, (_, a) => C * a + 2.5);
+            sel = xs.map((x, a) => [x, rate(S.CD[cb * NA + a], S.CPY[cb * NA + a])]);
+            for (let k = 8; k < NCB; k += 1) if (k !== cb) others.push(xs.map((x, a) => [x, rate(S.CD[k * NA + a], S.CPY[k * NA + a])]));
+            g.setView([0, AMAX], [0.2, 600]); g.setTitle(`rates of ${label}, by age`);
+          }
+          for (const o of others) g.path(o, { color: 'gray', width: 1, alpha: 0.35 });
+          g.path(sel, { color: 'accent', width: 2.6 });
+          g.dots(sel.filter((p) => isFinite(p[1])), { r: 3, color: 'accent' });
+          g.text('per 1 000 person-years', g.bounds.x[0], 450, { dx: 30, align: 'left', color: 'muted', size: 11 });
+          st = { D, PY, label, mode, e: eff.value };
+        });
+        v.legend([['panel', 'lifelines (sample)'], ['red', 'death', { dot: true }], ['gold', 'selected band', { area: true }], ['accent', 'rates along it'], ['gray', 'other bands of the same kind']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { D, PY, label, mode, e } = st;
+          const hint = e === 'period' ? 'the pandemic is a **vertical** stripe: every age band shows it in the same column, every cohort at a different age' : e === 'cohort' ? 'the extra risk is a **diagonal** stripe: each age band meets it in a later period the older the band, and only one cohort carries it all its life' : 'without an extra effect, rates rise with age and fall steadily over the century';
+          return `${label}: ${int(D)} deaths in ${int(PY)} person-years → **${v.fix((1000 * D) / Math.max(PY, 1), 2)} per 1 000 per year** (reading along ${mode === 'age' ? 'a row' : mode === 'period' ? 'a column' : 'a diagonal'}) · ${hint}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.11
+    {
+      num: '1.11',
+      kind: 'Concept',
+      name: 'Epidemic curves and attack rates',
+      credit: 'John Snow, 1854–55 (spot map, epidemic curve and attack rates by water supply)',
+      statement: String.raw`An **epidemic curve** is a histogram of an outbreak's cases by date of onset. Its shape reflects how the outbreak spreads:
+- a **point-source** outbreak, with everyone exposed at about the same time, gives a single sharp peak spread over about the range of the incubation period;
+- a **continuing common source** gives a plateau that lasts as long as the exposure and ends about one incubation period after the source is removed;
+- a **propagated** (person-to-person) outbreak gives successive, growing waves spaced by the serial interval.
+The **attack rate** of a group is its incidence proportion (1.1) over the outbreak: cases divided by the people at risk. Comparing attack rates between people exposed and not exposed to each candidate source — a food, a well, a contact — points to the source: high among the exposed, low among the unexposed. A spot map of cases adds the third classic view, place, to time (the curve) and person (the attack rates).`,
+      idea: String.raw`If everyone is infected at one moment, onsets are the incubation period's distribution shifted to that moment — hence one peak whose width is the incubation spread; removing the source after the peak changes nothing, because everyone exposed is already infected. A source that keeps infecting adds a new copy of that distribution every day, giving a plateau that stops one incubation period after the exposure ends. When cases infect others, each generation follows the last by roughly the incubation period, so the curve comes in waves, and the attack rate no longer depends on which source people used. Attack rates turn the map's visual cluster into a number: the ratio of attack rates in users and non-users of a source is a risk ratio.`,
+      caption: String.raw`A simulated town of about 1 500 people and five pumps; most households use the nearest pump (thin grey lines bound the pumps' areas). Press play and watch the days pass: each case is drawn as a bar at its house, as on Snow's map (gold = fell ill today), while the epidemic curve fills in. Click a pump to contaminate it (or, person to person, a house to place the first case), move the day the pump handle is removed, and compare the three kinds of outbreak. The bars below are the attack rates among each pump's users.`,
+      deps: ['epi-1.1'],
+      see: ['epi-4.4'],
+      refs: ['Gordis ch. 2'],
+      tags: ['outbreaks', 'attack rate'],
+      viz(v) {
+        const M = v.M, DAYS = 40, SX = [0.8, 3.3, 5.8, 8.3, 10.8], SY = [1.1, 3.0, 4.9, 6.8];
+        const PUMPS = [[4.55, 4.9], [9.55, 4.9], [2.05, 1.1], [7.05, 1.1], [7.05, 6.8]];
+        const sm = v.stage({ x: [0.25, 11.35], y: [0.45, 7.45], equal: true, axes: false, height: 330, weight: 1.2, title: 'spot map: a bar for each case at its house' });
+        const se = v.stage({ x: [0, DAYS], y: [0, 10], height: 330, axes: 'box', xlabel: 'day of onset', weight: 1, minWidth: 250, title: 'epidemic curve: cases by day of onset' });
+        const sa = v.stage({ x: [0, 100], y: [0, 10], height: 165, axes: false, full: true });
+        const rem = v.slider('pump handle removed on day', 1, DAYS, 8, { step: 1 });
+        const inc = v.slider('median incubation (days)', 1, 7, 2, { step: 0.5 });
+        const type = v.select('outbreak', [{ value: 'point', label: 'point source' }, { value: 'cont', label: 'continuing source' }, { value: 'prop', label: 'person to person' }], 'point', { onChange: (t) => { inc.set(t === 'prop' ? 5 : 2); rem.set(t === 'cont' ? 20 : 8); } });
+        let seed = 1, src = 0, idx = null; v.button('New outbreak', () => { seed++; });
+        const town = (() => {
+          const r = M.rng(5), houses = [], K = M.dist.poisson(2.6);
+          const add = (x, y, nx, ny) => houses.push({ x, y, nx, ny, k: 1 + K.sample(r) });
+          for (const y of SY) for (let x = 0.55; x < 11.1; x += 0.27) { if (SX.some((sx) => Math.abs(x - sx) < 0.3)) continue; add(x, y + 0.2, 0, 1); add(x, y - 0.2, 0, -1); }
+          for (const x of SX) for (let y = 0.6; y < 7.3; y += 0.27) { if (SY.some((sy) => Math.abs(y - sy) < 0.3)) continue; add(x + 0.2, y, 1, 0); add(x - 0.2, y, -1, 0); }
+          const res = [];
+          houses.forEach((h, hi) => {
+            const d = PUMPS.map(([px, py]) => Math.hypot(px - h.x, py - h.y)); h.near = d.indexOf(Math.min(...d)); h.res = [];
+            for (let j = 0; j < h.k; j++) { h.res.push(res.length); res.push({ h: hi, pump: r() < 0.85 ? h.near : r.int(0, 4) }); }
+          });
+          houses.forEach((h) => { h.nb = []; houses.forEach((q, qi) => { if (Math.hypot(q.x - h.x, q.y - h.y) < 0.75) h.nb.push(qi); }); });
+          return { houses, res };
+        })();
+        const users = PUMPS.map((_, p) => town.res.filter((q) => q.pump === p).length);
+        const outbreaks = memo();
+        const run = () => outbreaks(`${type.value}|${src}|${idx}|${rem.value}|${inc.value}|${seed}`, () => {
+          const r = M.rng(1000 + seed * 31), { houses, res } = town, n = res.length, on = new Float64Array(n).fill(Infinity), med = inc.value, R = rem.value, kind = type.value;
+          const incub = (sd) => med * Math.exp(sd * r.normal());
+          if (kind === 'point') { for (let i = 0; i < n; i++) if (res[i].pump === src && r() < 0.3) { const t = r() * Math.min(1, R); on[i] = t + incub(0.45); } }
+          else if (kind === 'cont') { for (let i = 0; i < n; i++) if (res[i].pump === src) { const t = -Math.log(1 - r()) / 0.016; if (t < Math.min(R, DAYS)) on[i] = t + incub(0.45); } }
+          else {
+            const i0 = idx ?? houses[Math.floor(houses.length * 0.37)].res[0], inf = new Float64Array(n).fill(Infinity), heap = [[0, i0]]; inf[i0] = 0;
+            const push = (it) => { heap.push(it); let k = heap.length - 1; while (k > 0) { const p = (k - 1) >> 1; if (heap[p][0] <= heap[k][0]) break; [heap[p], heap[k]] = [heap[k], heap[p]]; k = p; } };
+            const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let k = 0; for (;;) { const l = 2 * k + 1, rr = l + 1; let m = k; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (rr < heap.length && heap[rr][0] < heap[m][0]) m = rr; if (m === k) break; [heap[m], heap[k]] = [heap[k], heap[m]]; k = m; } } return top; };
+            while (heap.length) {
+              const [t, i] = pop(); if (t > inf[i] || t > DAYS) continue;
+              const o = t + incub(0.25); on[i] = o; const hi = res[i].h;
+              for (const qi of houses[hi].nb) for (const j of houses[qi].res) { if (j === i || inf[j] <= o) continue; if (r() < (qi === hi ? 0.3 : 0.028)) { const tj = o + 1.5 * r(); if (tj < inf[j]) { inf[j] = tj; push([tj, j]); } } }
+            }
+          }
+          return on;
+        });
+        sm.onClick((x, y) => {
+          if (type.value === 'prop') { let best = 0, bd = Infinity; town.houses.forEach((h, hi) => { const d = Math.hypot(h.x - x, h.y - y); if (d < bd) { bd = d; best = hi; } }); idx = town.houses[best].res[0]; }
+          else { const d = PUMPS.map(([px, py]) => Math.hypot(px - x, py - y)); src = d.indexOf(Math.min(...d)); }
+        });
+        const vorKey = () => `vor|${v.color('faint')}`;
+        let st = null;
+        v.animate((t) => {
+          const on = run(), kind = type.value, R = rem.value, day = Math.min(DAYS, (DAYS * t) / 10.5), { houses, res } = town;
+          // ----- map
+          const fc = v.rgb('faint');
+          sm.raster((x, y) => { const d = PUMPS.map(([px, py]) => Math.hypot(px - x, py - y)).sort((a, b) => a - b); return d[1] - d[0] < 0.035 ? [fc[0], fc[1], fc[2], 150] : null; }, { key: vorKey(), res: 1 });
+          for (const y of SY) sm.line(0.3, y, 11.3, y, { color: 'gray', width: 8, alpha: 0.16, cap: 'butt' });
+          for (const x of SX) sm.line(x, 0.5, x, 7.4, { color: 'gray', width: 8, alpha: 0.16, cap: 'butt' });
+          sm.dots(houses.map((h) => [h.x, h.y]), { r: 1.2, color: 'faint' });
+          let cases = 0; const daily = new Array(DAYS).fill(0), dailyAll = new Array(DAYS).fill(0), byPump = PUMPS.map(() => 0);
+          for (let i = 0; i < res.length; i++) { const o = on[i]; if (o < DAYS) { dailyAll[Math.floor(o)]++; if (o <= day) { daily[Math.floor(o)]++; cases++; byPump[res[i].pump]++; } } }
+          houses.forEach((h) => {
+            let j = 0;
+            const mine = h.res.map((i) => on[i]).filter((o) => o <= day).sort((a, b) => a - b);
+            for (const o of mine) {
+              if (j > 10) break; const d = 0.12 + 0.07 * j, cx = h.x + h.nx * d, cy = h.y + h.ny * d, tx = -h.ny * 0.1, ty = h.nx * 0.1;
+              sm.line(cx - tx, cy - ty, cx + tx, cy + ty, { color: day - o < 1 ? 'gold' : 'red', width: 2.4, cap: 'butt' }); j++;
+            }
+          });
+          PUMPS.forEach(([px, py], p) => {
+            const isSrc = kind !== 'prop' && p === src, off = isSrc && day >= R;
+            sm.dot(px, py, { r: 6, color: isSrc ? 'red' : 'blue', label: `P${p + 1}`, labelPos: 'ne' });
+            if (off) { sm.line(px - 0.17, py - 0.17, px + 0.17, py + 0.17, { color: 'ink', width: 2.4 }); sm.line(px - 0.17, py + 0.17, px + 0.17, py - 0.17, { color: 'ink', width: 2.4 }); }
+          });
+          if (kind === 'prop') { const i0 = idx ?? houses[Math.floor(houses.length * 0.37)].res[0], h = houses[res[i0].h]; sm.circle(h.x, h.y, 0.22, { color: 'gold', width: 2.2 }); }
+          sm.corner(`day ${Math.floor(day)}`, 'tl', { color: 'ink', size: 13, weight: 700 });
+          // ----- epidemic curve
+          const top = Math.max(4, Math.max(...dailyAll) * 1.18);
+          se.setView([0, DAYS], [-0.07 * top, top]);
+          for (let d = 0; d < DAYS; d++) if (daily[d]) se.rect(d + 0.08, 0, d + 0.92, daily[d], { fill: d === Math.floor(day) ? 'gold' : 'red', fillAlpha: 0.75, stroke: false });
+          if (kind !== 'prop') { se.vline(R, { color: 'ink', width: 1.4, dash: [5, 4] }); se.text('handle removed', R, top * 0.93, { dx: 4, align: 'left', color: 'ink', size: 11 }); }
+          se.vline(day, { color: 'gold', width: 1.4 });
+          // ----- attack rates by pump used
+          const ARf = PUMPS.map((_, p) => res.filter((q, i) => q.pump === p && on[i] < DAYS).length / users[p]), amax = Math.max(0.02, ...ARf) * 1.15;
+          sa.text('attack rate among the people who draw water from each pump: cases so far ÷ users (dashed: by the end of the outbreak)', 1, 9.3, { align: 'left', color: 'ink', size: 12, weight: 600 });
+          PUMPS.forEach((_, p) => {
+            const x = 8 + 19 * p, ar = byPump[p] / users[p], hgt = (6 * ar) / amax, isSrc = kind !== 'prop' && p === src;
+            sa.rect(x - 4, 1.6, x + 4, 1.6 + 6 * (ARf[p] / amax), { color: 'faint', width: 1, dash: [3, 3] });
+            sa.rect(x - 4, 1.6, x + 4, 1.6 + hgt, { fill: isSrc ? 'red' : 'blue', fillAlpha: 0.6, stroke: false });
+            sa.text(`P${p + 1}`, x, 1.0, { align: 'center', color: isSrc ? 'red' : 'blue', size: 12, weight: 700 });
+            sa.text(`${byPump[p]}/${users[p]} = ${pc(ar)}`, x + 4.6, 1.6 + Math.max(hgt, 0.4), { dy: -2, align: 'left', baseline: 'bottom', color: 'ink', size: 11.5 });
+          });
+          const sU = byPump[src], sN = users[src], oU = cases - sU, oN = res.length - sN;
+          let first = Infinity, last = -Infinity, peak = 0; for (let i = 0; i < res.length; i++) if (on[i] < DAYS) { first = Math.min(first, on[i]); last = Math.max(last, on[i]); }
+          for (let d = 0; d < DAYS; d++) if (dailyAll[d] > dailyAll[peak]) peak = d;
+          st = { day, cases, kind, R, src, ar1: sU / sN, ar0: oN ? oU / oN : 0, sU, sN, oU, oN, first, last, peak, total: dailyAll.reduce((x, y) => x + y, 0), med: inc.value };
+        }, { period: 13, still: 12.6 });
+        v.legend([['red', 'case (bar at its house)'], ['gold', 'fell ill today'], ['blue', 'pump', { dot: true }], ['red', 'contaminated pump', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { day, cases, kind, R, src, ar1, ar0, sU, sN, oU, oN, first, last, peak, total, med } = st;
+          const shape = kind === 'point' ? `one peak (day ${peak}); onsets span days ${v.fix(first, 1)}–${v.fix(last, 1)}, about the incubation range${R > peak + 1 ? ` — the handle came off on day ${R}, after the peak: the outbreak was already fading` : ''}`
+            : kind === 'cont' ? `a plateau while the pump stays in use, ending about ${v.fix(med, 1)} days (one incubation period) after the handle is removed on day ${R}`
+            : `growing waves about ${v.fix(med + 0.75, 1)} days apart (one serial interval) as each case infects others`;
+          const ar = `attack rate among users of P${src + 1}: ${sU}/${sN} = ${pc(ar1)} vs ${oU}/${oN} = ${pc(ar0, 2)} among everyone else` + (ar0 > 0 ? ` (ratio ${v.fix(ar1 / ar0, 1)})` : '');
+          return `day ${Math.floor(day)}: ${cases} of ${total} cases so far · ${shape} · ${kind === 'prop' ? `${ar.replace(`P${src + 1}`, `P${src + 1} (not a source here)`)} — no pump stands out` : ar}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.12
+    {
+      num: '1.12',
+      kind: 'Event',
+      name: 'Graunt’s Bills of Mortality (1662)',
+      credit: 'John Graunt, 1662',
+      statement: String.raw`In *Natural and Political Observations … upon the Bills of Mortality* (London, 1662) the haberdasher John Graunt analysed decades of the weekly London **Bills of Mortality** — parish counts of christenings and burials, with causes of death reported by the "searchers" who viewed the bodies. He was the first to treat such tallies as data: more boys than girls are christened (about $14$ to $13$); London's burials exceed its christenings, so the city grows by migration from the country; several causes of death recur in strikingly stable proportions from year to year; and plague comes in distinct epidemic years. From the deaths due to diseases of childhood he estimated that about $36$ in $100$ children die before age $6$, and assuming a roughly constant chance of dying in each later decade he drew up the first **life table**: of $100$ born, $64$ are alive at $6$, $40$ at $16$, $25$ at $26$, $16$ at $36$, $10$ at $46$, $6$ at $56$, $3$ at $66$ and $1$ at $76$.`,
+      idea: String.raw`Graunt had counts of deaths but no ages at death, so his table is an inference: a share of childhood deaths read off the causes that kill only children, then survival multiplied by about $5/8$ in each decade — a constant hazard, which gives a geometric decline, a straight line on a log scale. Crude as it is, it was the first summary of a population's mortality as survivorship by age (1.9) and implies a life expectancy at birth of about $18$ years, the area under his curve. Halley's Breslau table of 1693 replaced the guesswork with deaths by age, and William Farr's work at the General Register Office from 1839 turned vital statistics into routine public-health surveillance.`,
+      caption: String.raw`Gold: Graunt's published survivors per 100 born. Dashed: his recipe — a share dying before 6, then the same fraction surviving each decade — which you can tune with the sliders. Green: a modern low-mortality life table (a model with $e_0 \approx 81$). The log-scale panel shows Graunt's constant-hazard assumption as a straight line, while real adult mortality accelerates with age. Below, a timeline of what followed; click an event to read about it, drag to pan.`,
+      deps: ['epi-1.6', 'epi-1.9'],
+      refs: ['Gordis ch. 1'],
+      tags: ['history', 'life table', 'vital statistics'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/John_Graunt' },
+      viz(v) {
+        const M = v.M, G = [[0, 100], [6, 64], [16, 40], [26, 25], [36, 16], [46, 10], [56, 6], [66, 3], [76, 1]];
+        const sL = v.stage({ x: [-7, 92], y: [-5, 105], height: 300, axes: 'box', xlabel: 'age', weight: 1, title: 'survivors per 100 born' });
+        const sG = v.stage({ x: [-7, 92], y: [0.4, 150], ylog: true, height: 300, axes: 'box', xlabel: 'age', weight: 1, title: 'the same on a log scale' });
+        const sT = v.stage({ height: 190, full: true });
+        const d6 = v.slider('dying before 6', 0.2, 0.6, 0.36, { step: 0.01, fmt: (x) => `${Math.round(100 * x)} in 100` });
+        const sv = v.slider('surviving each later decade', 0.4, 0.85, 0.625, { step: 0.005, fmt: (x) => x.toFixed(3) });
+        const T = v.timeline(sT, {
+          scale: 'linear', range: [1585, 1875], zoom: true, fontSize: 11.5,
+          events: [
+            { id: 'bills', t: 1603, label: 'weekly Bills of Mortality', note: 'London’s parish clerks publish weekly counts of christenings and burials, with causes of death, continuously from 1603 (earlier only in plague years).' },
+            { id: 'graunt', t: 1662, label: 'Graunt’s Observations', priority: 1, color: 'accent', note: 'Graunt turns twenty years of bills into tables: sex ratio at birth, urban growth by migration, stable cause-of-death proportions, plague years, and the first life table.' },
+            { id: 'plague', t: 1665, label: 'Great Plague', color: 'red', note: 'The bills for 1665 record roughly 68 600 plague deaths in London out of about 97 000 burials.' },
+            { id: 'dewitt', t: 1671, label: 'de Witt prices annuities', note: 'Johan de Witt uses mortality assumptions to price Dutch life annuities — actuarial science begins.' },
+            { id: 'halley', t: 1693, label: 'Halley’s Breslau table', priority: 1, note: 'Edmond Halley builds a life table from Breslau’s records of deaths by age, and uses it to value annuities.' },
+            { id: 'sus', t: 1741, label: 'Süssmilch’s Göttliche Ordnung', note: 'Johann Peter Süssmilch extends Graunt’s “political arithmetic” to the regularities of births, marriages and deaths across Europe.' },
+            { id: 'gro', t: 1837, label: 'civil registration', note: 'England and Wales begin compulsory registration of births, marriages and deaths under the General Register Office.' },
+            { id: 'farr', t: 1839, label: 'Farr at the GRO', priority: 1, note: 'William Farr becomes compiler of abstracts at the General Register Office, building cause-of-death classification, life tables and rates by occupation and district.' },
+            { id: 'snow', t: 1854, label: 'Snow, Broad Street', note: 'John Snow uses the GRO’s weekly returns and his own house-to-house survey to link cholera to the Broad Street pump and to one water company.' },
+          ],
+          links: [['bills', 'graunt'], ['graunt', 'halley'], ['graunt', 'sus'], ['gro', 'farr'], ['farr', 'snow']],
+        });
+        T.selected = T.event('graunt');
+        const m = deathRates(4, 6), lt = lifeTable(m), modern = (x) => 100 * lAt(lt, m, x);
+        const areaOf = (pts) => { let a = 0; for (let i = 1; i < pts.length; i++) a += ((pts[i][1] + pts[i - 1][1]) / 2) * (pts[i][0] - pts[i - 1][0]); return a / 100; };
+        let st = null;
+        v.render(() => {
+          const rec = [[0, 100], [6, 100 * (1 - d6.value)]]; for (let k = 1; k <= 8; k++) rec.push([6 + 10 * k, rec[1][1] * Math.pow(sv.value, k)]);
+          const Gt = [...G, [86, 0]], recT = [...rec.filter((p) => p[0] <= 76), [86, 0]];
+          for (const S of [sL, sG]) {
+            const lg = S === sG;
+            if (!lg) { S.fn(modern, { domain: [0, 92], fill: 'green', fillAlpha: 0.1, color: 'green', width: 0.01 }); S.poly([[0, 0], ...Gt, [86, 0]], { fill: 'gold', fillAlpha: 0.2, stroke: false }); }
+            S.fn(modern, { domain: [0, 92], color: 'green', width: 2.4 });
+            S.path(rec, { color: 'accent', width: 2, dash: [6, 4] });
+            rec.forEach(([x, y]) => S.dot(x, y, { r: 3.2, color: 'accent', hollow: true }));
+            S.path(G, { color: 'gold', width: 2 });
+            G.forEach(([x, y]) => S.dot(x, y, { r: 4.6, color: 'gold' }));
+          }
+          sL.text(`Graunt: area = e₀ ≈ ${v.fix(areaOf(Gt), 1)} y`, 13, 54, { align: 'left', color: 'gold', size: 12, weight: 700 });
+          sL.text(`modern: e₀ ≈ ${v.fix(lt.e[0], 0)} y`, 60, 92, { align: 'center', color: 'green', size: 12, weight: 700 });
+          G.slice(1).forEach(([x, y]) => sL.text(String(y), x, y, { dx: 5, dy: -9, align: 'left', color: 'gold', size: 10.5 }));
+          sG.text('constant hazard = straight line', 50, 3.2, { align: 'center', color: 'accent', size: 11 });
+          T.draw();
+          st = { eG: areaOf(Gt), eR: areaOf(recT), rec, e0: lt.e[0], m36: modern(36), sel: T.selected };
+        });
+        v.legend([['gold', 'Graunt’s table (1662)'], ['accent', 'his recipe with your numbers', { dash: true }], ['green', 'modern life table (model)']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { eG, eR, rec, e0, m36, sel } = st;
+          const note = sel && sel.note ? ` · **${sel.label}** (${Math.round(sel.year ?? sel.t)}): ${sel.note}` : '';
+          return `Graunt's table: e₀ = area under the curve ≈ **${v.fix(eG, 1)} years**; 16 of 100 reach 36 · your recipe: ${rec.slice(1, 6).map((p) => Math.round(p[1])).join(', ')} … → e₀ ≈ ${v.fix(eR, 1)} y · modern: ${v.fix(m36, 1)} of 100 reach 36, e₀ ≈ ${v.fix(e0, 1)} y${note}`;
         });
       },
     },

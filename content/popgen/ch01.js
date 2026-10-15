@@ -475,7 +475,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
         v.animate((t) => {
           sync(Math.min(G, Math.floor(t * RATE)));
           A.draw();
-          A.plot(sT, { series: ['AA', 'Aa', 'aa'], window: G, y: [-0.03, 1.05] });
+          A.plot(sT, { series: ['AA', 'Aa', 'aa'], window: G, y: [-0.13, 1.05] });
           const Hs = A.history;
           for (let i = 1; i < Hs.t.length; i++) {
             const pp = Hs.p[i - 1], e = [pp * pp, 2 * pp * (1 - pp), (1 - pp) ** 2];
@@ -581,7 +581,7 @@ Under Hardy–Weinberg proportions $X^2$ is approximately $\chi^2$ with $3-1-1 =
 $$P(n_{Aa}=h \mid n, n_A) = \frac{n!}{n_{AA}!\,h!\,n_{aa}!}\,\frac{2^{h}\,n_A!\,n_a!}{(2n)!},$$
 and the $p$-value is the total probability of the outcomes no more likely than the one observed.`,
       idea: String.raw`Conditioning on the allele counts removes the unknown $p$: under random union of gametes (1.4) the $2n$ sampled gene copies are paired into individuals at random, and counting the pairings with $h$ heterozygotes gives Levene’s formula. Pearson’s statistic compares counts with their expectations and is asymptotically $\chi^2$ with degrees of freedom equal to the number of classes minus one minus the number of estimated parameters (here $3-1-1$). The asymptotics need every expected count to be reasonably large; with a rare allele the expected number of rare homozygotes is far below one, a single such individual inflates $X^2$ enormously, and the exact distribution shows how much less surprising it really is.`,
-      caption: String.raw`MN blood groups are codominant, so every genotype can be read off directly — the classic test case. Left: observed counts (filled) against Hardy–Weinberg expectations (dashed outlines). Right, on a log scale: the probability that random re-pairing of the sample’s own alleles gives an $X^2$ at least $x$ — read at the red line, that is the $p$-value — exactly (blue steps) and in 4000 simulated re-pairings (gold), against the $\chi^2_1$ approximation (green). For the large samples the steps hug the curve. In the rare-allele sample $X^2$ takes only a handful of values and the curve gives a $p$-value a hundred times too small. *Custom* lets you enter counts.`,
+      caption: String.raw`MN blood groups are codominant, so every genotype can be read off directly — the classic test case. Left: observed counts (filled) against Hardy–Weinberg expectations (dashed outlines). Right, on a log scale: the probability that random re-pairing of the sample’s own alleles gives an $X^2$ at least $x$ — read at the red line, that is the $p$-value — exactly (blue steps) and in 4000 simulated re-pairings (gold), against the $\chi^2_1$ approximation (green). For the large samples the steps hug the curve. In the rare-allele sample $X^2$ takes only a handful of values and the curve gives a $p$-value about a hundred times too small. *Custom* lets you enter counts.`,
       deps: ['popgen-1.5', 'stat-6.14', 'stat-3.5'],
       refs: ['Nielsen–Slatkin'],
       credit: 'Pearson, 1900 (χ² test); Levene, 1949; Haldane, 1954 (exact test)',

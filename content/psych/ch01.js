@@ -169,12 +169,12 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
         const bYes = v.button('Seen it', () => answer(true));
         const bNo = v.button('Nothing', () => answer(false));
         const bMore = v.button('35 more trials', () => simulate(35));
-        v.button('Reset', () => { after.clear(); phase = 'idle'; if (who.value === 'sim') { Rs = v.rng(11); nextS = blockQueue(LEV, Rs); sim = []; simulate(140); } else you = []; });
+        v.button('Reset', () => { after.clear(); phase = 'idle'; if (who.value === 'sim') { Rs = v.rng(97); nextS = blockQueue(LEV, Rs); sim = []; simulate(140); } else you = []; });
         const st = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 310, weight: 0.8, title: 'the screen' });
         const pl = v.stage({ x: [-1.4, 12.2], y: [-0.14, 1.08], height: 310, axes: 'box', weight: 1.2, xlabel: 'dot intensity', ylabel: 'proportion “seen”', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'detection: proportion of trials answered “seen”' });
         let fit = null;
         const probe = pl.handle(4.5, 0.4, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0, 11.5); return [xx, fit ? psi(M, fit, xx) : 0.5]; } });
-        let Rs = v.rng(11), nextS = blockQueue(LEV, Rs), sim = [], you = [];
+        let Rs = v.rng(97), nextS = blockQueue(LEV, Rs), sim = [], you = [];
         const Ry = v.rng(2024), nextY = blockQueue(LEV, Ry);
         const simulate = (n) => { for (let i = 0; i < n; i++) { const x = nextS(); sim.push({ x, r: Rs() < psi(M, OBSV, x) }); } };
         simulate(140);
@@ -277,12 +277,12 @@ Like the absolute threshold (1.1), the JND is a statistical quantity defined by 
           after(11 * 360, () => vc.stop());
         });
         const bMore = v.button('45 more trials', () => simulate(45));
-        v.button('Reset', () => { after.clear(); phase = 'idle'; if (who.value === 'sim') { Rs = v.rng(21); nextS = blockQueue(LEV, Rs); sim = []; simulate(405); } else { you = []; last = null; } });
+        v.button('Reset', () => { after.clear(); phase = 'idle'; if (who.value === 'sim') { Rs = v.rng(129); nextS = blockQueue(LEV, Rs); sim = []; simulate(405); } else { you = []; last = null; } });
         const roll = v.stage({ x: [-0.16, 1.42], y: [-40, 44], height: 300, axes: 'box', weight: 0.75, xlabel: 't (s)', ylabel: 'pitch (cents)', yticks: [-30, -20, -10, 0, 10, 20, 30], title: 'one trial: standard, then comparison' });
         const pl = v.stage({ x: [-XR - 6, XR + 1], y: [-0.14, 1.08], height: 300, axes: 'box', weight: 1.25, xlabel: 'comparison − standard (cents)', ylabel: 'P(“2nd higher”)', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'comparison judgements' });
         let fit = null;
         const probe = pl.handle(12, 0.8, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, -XR, XR); return [xx, fit ? psi(M, fit, xx) : 0.5]; } });
-        let Rs = v.rng(21), nextS = blockQueue(LEV, Rs), sim = [], you = [];
+        let Rs = v.rng(129), nextS = blockQueue(LEV, Rs), sim = [], you = [];
         const nextY = blockQueue(LEV, v.rng(77));
         const simulate = (n) => { for (let i = 0; i < n; i++) { const x = nextS(); sim.push({ x, r: Rs() < psi(M, OBSV, x) }); } };
         simulate(405);
@@ -319,8 +319,8 @@ Like the absolute threshold (1.1), the JND is a statistical quantity defined by 
             for (const [x, p] of [[q25, 0.25], [q50.x, 0.5], [q75, 0.75]]) { pl.line(x, -0.14, x, p, { color: 'green', dash: [4, 3], width: 1.2 }); pl.dot(x, p, { r: 4.5, color: 'green' }); }
             pl.text('PSE', q50.x, 0.5, { dx: 8, dy: 10, color: 'green', weight: 600, size: 12 });
             pl.measure(q25, 0.93, q75, 0.93, 'interval of uncertainty', { color: 'purple', math: false, size: 11.5, offset: -10 });
-            pl.text('JND', (q25 + q50.x) / 2, 0.25, { dy: -11, align: 'center', color: 'purple', weight: 600, size: 11.5 });
-            pl.text('JND', (q50.x + q75) / 2, 0.75, { dy: 13, align: 'center', color: 'purple', weight: 600, size: 11.5 });
+            pl.text('JND', (q25 + q50.x) / 2, 0.25, { dy: 12, align: 'center', color: 'purple', weight: 600, size: 11.5 });
+            pl.text('JND', (q50.x + q75) / 2, 0.75, { dy: -12, align: 'center', color: 'purple', weight: 600, size: 11.5 });
             pl.line(q25, 0.25, q50.x, 0.25, { color: 'purple', width: 2 }); pl.line(q50.x, 0.75, q75, 0.75, { color: 'purple', width: 2 });
           }
           drawData(pl, data);
@@ -333,7 +333,7 @@ Like the absolute threshold (1.1), the JND is a statistical quantity defined by 
           if (!f) return `${N} trial${N > 1 ? 's' : ''} so far: keep going.`;
           const q25 = thrOf(M, f, 0.25).x, q50 = thrOf(M, f, 0.5), q75 = thrOf(M, f, 0.75).x, J = (q75 - q25) / 2;
           const ci = isFinite(q50.se) ? ` ± ${v.fix(1.96 * q50.se, 1)}` : '';
-          return `${N} trials · PSE = ${v.fix(q50.x, 1)}${ci} ¢, so the constant error is ${v.fix(q50.x, 1)} ¢${who.value === 'sim' ? ' (this observer hears the second tone as slightly higher: a time-order error)' : ''} · $C_{25}$ = ${v.fix(q25, 1)} ¢, $C_{75}$ = ${v.fix(q75, 1)} ¢ · upper DL ${v.fix(q75 - q50.x, 1)} ¢, lower DL ${v.fix(q50.x - q25, 1)} ¢ · **JND = ${v.fix(J, 1)} ¢** = ${v.fix(100 * (Math.pow(2, J / 1200) - 1), 2)}% of the frequency (${v.fix(fq(J) - F0, 2)} Hz at 500 Hz) $= 0.674\\,\\hat\\sigma$ with $\\hat\\sigma$ = ${v.fix(f.sigma, 1)} ¢`;
+          return `${N} trials · PSE = ${v.fix(q50.x, 1)}${ci} ¢, so the constant error is ${v.fix(q50.x, 1)} ¢${who.value === 'sim' ? ' (this observer hears the second tone as slightly higher: a time-order error)' : ''} · $C_{25}$ = ${v.fix(q25, 1)} ¢, $C_{75}$ = ${v.fix(q75, 1)} ¢ · upper DL ${v.fix(q75 - q50.x, 1)} ¢, lower DL ${v.fix(q50.x - q25, 1)} ¢ · **JND = ${v.fix(J, 1)} ¢** = ${v.fix(100 * (Math.pow(2, J / 1200) - 1), 2)}% of the frequency (${v.fix(fq(J) - F0, 2)} Hz at 500 Hz) · fitted spread $\\hat\\sigma$ = ${v.fix(f.sigma, 1)} ¢${who.value === 'sim' ? ' (true 9 ¢, JND 6.4 ¢)' : ''}`;
         });
       },
     },
@@ -361,10 +361,10 @@ so the threshold is the criterion and the spread is the internal noise: the slop
         const lapse = v.toggle('lapses (4% of trials answered at random)', false);
         let seed = 3, U = null, Useed = -1;
         v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
-        const ev = v.stage({ x: [-1.6, 11.6], y: [-0.13, 1.18], height: 300, axes: 'box', weight: 1, xlabel: 'internal response R', yticks: [], title: 'inside the observer: responses to one level' });
+        const ev = v.stage({ x: [-1.6, 11.6], y: [-0.24, 1.3], height: 300, axes: 'box', weight: 1, xlabel: 'internal response R', yticks: [], title: 'inside the observer: responses to one level' });
         const pl = v.stage({ x: [-0.9, 10.3], y: [-0.14, 1.08], height: 300, axes: 'box', weight: 1.1, xlabel: 'stimulus level x', ylabel: 'P(yes)', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'the psychometric function' });
         const obs = () => ({ mu: crit.x, sigma: sg.value, g: lapse.value ? 0.02 : 0, l: lapse.value ? 0.02 : 0 });
-        const crit = ev.handle(5, 1.08, { color: 'red', constrain: (x) => [M.clamp(x, 1.5, 8.5), 1.08] });
+        const crit = ev.handle(5, 1.19, { color: 'red', constrain: (x) => [M.clamp(x, 1.5, 8.5), 1.19] });
         const probe = pl.handle(4, 0.25, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0, 10); return [xx, psi(M, obs(), xx)]; } });
         const sample = () => {
           if (Useed !== seed) { const R = v.rng(seed); U = LEV.map(() => M.range(NMAX).map(() => R())); Useed = seed; }
@@ -384,12 +384,12 @@ so the threshold is the criterion and the spread is the internal noise: the slop
           if (c < hi) ev.between(b, () => 0, Math.max(c, lo), hi, { fill: 'green', fillAlpha: 0.3 });
           ev.fn(b, { domain: [lo, hi], color: 'gold', width: 2.6, n: 240 });
           ev.vline(c, { color: 'red', width: 2 });
-          ev.text('criterion c', c, 1.08, { dx: 10, align: 'left', color: 'red', weight: 600, size: 12 });
-          ev.line(xp, -0.13, xp, 0.92, { color: 'gold', dash: [3, 3], width: 1.2 });
-          ev.text('x', xp, -0.06, { dx: 6, align: 'left', color: 'gold', math: true, size: 15 });
+          ev.text('criterion c', c, 1.19, { dx: 12, align: 'left', color: 'red', weight: 600, size: 12 });
+          ev.line(xp, 0, xp, 0.92, { color: 'gold', dash: [3, 3], width: 1.2 });
+          ev.text('x', xp, 0.06, { dx: 5, align: 'left', color: 'gold', math: true, size: 15 });
           const pYes = M.integrate((R) => phi((R - xp) / s) / s, c, xp + 12 * s, 600);
-          if (c < hi - 0.3 * s) ev.text(`yes: ${v.fix(pYes, 3)}`, Math.min(hi, Math.max(c, xp) + 0.9 * s) + 0.2, 0.55, { align: 'left', color: 'green', weight: 700, size: 12.5 });
-          if (c > lo + 0.3 * s) ev.text(`no: ${v.fix(1 - pYes, 3)}`, Math.max(lo, Math.min(c, xp) - 0.9 * s) - 0.2, 0.55, { align: 'right', color: 'red', weight: 700, size: 12.5 });
+          ev.text(`yes: ${v.fix(pYes, 3)}`, c, 1.03, { dx: 7, align: 'left', color: 'green', weight: 700, size: 12.5 });
+          ev.text(`no: ${v.fix(1 - pYes, 3)}`, c, 1.03, { dx: -7, align: 'right', color: 'red', weight: 700, size: 12.5 });
           // ---- the psychometric function
           const data = sample(), f = fitPsy(M, data, { g: T.g, l: T.l, lo: 0, hi: 10 });
           pl.hline(0.5, { color: 'faint', dash: [4, 4], width: 1 });
@@ -437,7 +437,7 @@ The standard error of the threshold shrinks like $1/\sqrt{N}$ in the total numbe
         const M = v.M, OB = { mu: 5, sigma: 1.4, g: 0, l: 0.01 }, NMAX = 7 * 90, PER = 16, YH = -0.075;
         let seed = 41, trials = null, tSeed = -1, seCache = null, seKey = '', st = null;
         v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
-        const pl = v.stage({ x: [-0.9, 12.4], y: [-0.24, 1.1], height: 320, axes: 'box', weight: 1.3, xlabel: 'stimulus level', ylabel: 'proportion “yes”', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'seven fixed levels, presented in random order' });
+        const pl = v.stage({ x: [-0.9, 12.4], y: [-0.24, 1.1], height: 320, axes: 'box', weight: 1.3, xlabel: 'stimulus level', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'proportion “yes” at seven fixed levels, presented in random order' });
         const se = v.stage({ x: [7, 900], y: [0.03, 30], xlog: true, ylog: true, height: 320, axes: 'box', weight: 0.85, xlabel: 'trials N', ylabel: 'SE of threshold', title: 'precision grows like √N' });
         const hLo = pl.handle(2.4, YH, { color: 'orange', constrain: (x) => [M.clamp(x, 0, hHi.x - 1.2), YH] });
         const hHi = pl.handle(8.4, YH, { color: 'orange', constrain: (x) => [M.clamp(x, hLo.x + 1.2, 12), YH] });
@@ -491,7 +491,7 @@ The standard error of the threshold shrinks like $1/\sqrt{N}$ in the total numbe
           const key = L.map((x) => x.toFixed(3)).join() + '|' + seed;
           if (key !== seKey) {
             seKey = key; seCache = [];
-            for (let j = 0; j <= 26; j++) { const n = Math.round(14 * Math.pow(NMAX / 14, j / 26)), ff = fitN(L, n); if (ff && ff.ok) seCache.push([n, thrOf(M, ff, 0.5).se]); }
+            for (let j = 0; j <= 24; j++) { const n = Math.round(21 * Math.pow(NMAX / 21, j / 24)), ff = fitN(L, n); if (ff && ff.ok) seCache.push([n, thrOf(M, ff, 0.5).se]); }
           }
           const p1 = predSE1(L);
           if (isFinite(p1)) se.fn((n) => p1 / Math.sqrt(n), { color: 'green', width: 2.4 });
@@ -507,7 +507,7 @@ The standard error of the threshold shrinks like $1/\sqrt{N}$ in the total numbe
           const { N, f, th, p1, L } = st;
           const info = isFinite(p1) ? (1 / (p1 * p1)).toFixed(3) : '0';
           const lvl = `levels ${L.map((x) => v.fix(x, 1)).join(', ')}`;
-          if (!th) return `${N} trials · ${lvl} · the fit cannot locate the threshold: ${f ? 'all levels give nearly the same proportion, so the likelihood is flat in the threshold' : 'not enough data yet'} · information per trial about the threshold: ${info}`;
+          if (!th) return `${N} trials · ${lvl} · the fit cannot locate the threshold yet: ${!f ? 'not enough data' : !isFinite(p1) || p1 > 4 ? 'the levels all sit where the curve is flat, so every level gives nearly the same proportion and the likelihood hardly changes as the threshold moves' : 'with so few trials the answers jump from all “no” to all “yes” between neighbouring levels, so the likelihood has no peak in the slope'} · information per trial about the threshold: ${info}`;
           return `${N} trials · threshold estimate ${v.fix(th.x, 2)} ± ${v.fix(1.96 * th.se, 2)} (95% CI; true value 5.00) · its standard error ${v.fix(th.se, 3)}, predicted $1/\\sqrt{N I}$ = ${isFinite(p1) ? v.fix(p1 / Math.sqrt(N), 3) : '∞'} with information per trial $I$ = ${info} · ${lvl}`;
         });
       },
@@ -527,14 +527,14 @@ Two expectation errors bias the series in opposite directions. With **habituatio
       tags: ['method', 'bias'],
       credit: 'Fechner, 1860 (method of just noticeable differences)',
       viz(v) {
-        const M = v.M, OB = { mu: -63, sigma: 2.6, g: 0.01, l: 0.01 }, STEP = 3, NS = 10;
+        const M = v.M, OB = { mu: -63, sigma: 2, g: 0.01, l: 0.01 }, STEP = 3, NS = 16;
         const who = v.select('subject', OBS, 'sim', { onChange: () => { stopTone(); } });
-        const hab = v.slider('expectation', -0.6, 0.6, 0.35, { step: 0.01, fmt: (h) => (Math.abs(h) < 0.005 ? 'neutral' : h > 0 ? `habituation ${Math.round(100 * h)}%` : `anticipation ${Math.round(-100 * h)}%`) });
+        const hab = v.slider('expectation', -0.6, 0.6, 0.45, { step: 0.01, fmt: (h) => (Math.abs(h) < 0.005 ? 'neutral' : h > 0 ? `habituation ${Math.round(100 * h)}%` : `anticipation ${Math.round(-100 * h)}%`) });
         const bStart = v.soundButton('▶ Start next series', () => startSeries());
         const bYes = v.button('I hear it', () => respond(true));
         const bNo = v.button('I don’t', () => respond(false));
         v.button('Reset', () => { stopTone(); you = []; });
-        const sheet = v.stage({ x: [-0.75, NS - 0.25], y: [-84, -38], height: 340, axes: 'box', weight: 1.55, ylabel: 'level (dB re full scale)', xticks: M.range(NS).map((i) => [i, String(i + 1)]), xlabel: 'series', title: 'the data sheet' });
+        const sheet = v.stage({ x: [-0.75, NS - 0.25], y: [-84, -38], height: 340, axes: 'box', weight: 1.6, xticks: M.range(NS).map((i) => [i, String(i + 1)]), xlabel: 'series', title: 'the data sheet: tone level in dB re full scale' });
         const sum = v.stage({ x: [0, 3.1], y: [-84, -38], height: 340, axes: 'box', weight: 0.6, minWidth: 170, xticks: [[0.75, 'A'], [1.55, 'D'], [2.4, 'mean']], title: 'transition points' });
         // simulated series: fixed starting points and uniforms, responses recomputed for any expectation bias
         const R = v.rng(31), SER = M.range(NS).map((s) => ({ dir: s % 2 ? 'D' : 'A', start: OB.mu + (s % 2 ? 1 : -1) * STEP * R.int(3, 6), u: M.range(40).map(() => R()) }));
@@ -550,6 +550,20 @@ Two expectation errors bias the series in opposite directions. With **habituatio
           const n = steps.length;
           return { dir: S.dir, steps, trans: n > 1 ? (steps[n - 1].L + steps[n - 2].L) / 2 : steps[0].L + (S.dir === 'A' ? -STEP / 2 : STEP / 2) };
         });
+        /** exact expected transition point of the simulated series, by direction (sum over the step at which a series stops) */
+        const expect = (h) => {
+          const acc = { A: [0, 0], D: [0, 0] };
+          for (const S of SER) {
+            const asc = S.dir === 'A'; let cont = 1, E = 0, L = S.start;
+            for (let j = 0; j < 60 && cont > 1e-12; j++) {
+              const p = psi(M, OB, L), py = h >= 0 ? (1 - h) * p + (asc ? 0 : h) : asc ? p - h * (1 - p) : (1 + h) * p, q = asc ? py : 1 - py;
+              E += cont * q * (L + (asc ? -STEP / 2 : STEP / 2)); // stopping at L: the midpoint of the last two steps
+              cont *= 1 - q; L += asc ? STEP : -STEP;
+            }
+            acc[S.dir][0] += E; acc[S.dir][1]++;
+          }
+          return { A: acc.A[0] / acc.A[1], D: acc.D[0] / acc.D[1] };
+        };
         // the reader's series, on a live tone
         let you = [], cur = null, voice = null, L0 = 0;
         const Ry = v.rng(55);
@@ -586,7 +600,8 @@ Two expectation errors bias the series in opposite directions. With **habituatio
           if (isYou && ser.length) { const all = ser.flatMap((s) => s.steps.map((q) => q.L)); lo = Math.min(-80, Math.min(...all) - 6); hi = Math.max(-42, Math.max(...all) + 7); }
           const ncol = Math.max(NS, ser.length + (isYou && !cur ? 1 : 0));
           sheet.setView([-0.75, ncol - 0.25], [lo, hi]); sum.setView(null, [lo, hi]);
-          sheet.setTicks(M.range(ncol).map((i) => [i, String(i + 1)]), null);
+          const yt = []; for (let y = 10 * Math.ceil((lo + 2) / 10); y <= hi - 5; y += 10) yt.push(y);
+          sheet.setTicks(M.range(ncol).map((i) => [i, String(i + 1)]), yt); sum.setTicks(null, yt);
           for (let L = STEP * Math.ceil(lo / STEP); L <= hi - 4; L += STEP) sheet.hline(L, { color: 'grid', width: 1 });
           ser.forEach((S, i) => {
             const col = S.dir === 'A' ? 'orange' : 'blue';
@@ -616,15 +631,15 @@ Two expectation errors bias the series in opposite directions. With **habituatio
             sum.text(v.fix(avg, 1), 2.4, avg, { dy: -11, align: 'center', color: 'green', weight: 700, size: 12 });
           }
           if (!isYou) sum.hline(OB.mu, { color: 'muted', dash: [6, 5], width: 1.3 });
-          stats = { mA, mD, nA: A.length, nD: D.length, isYou, playing: !!cur, curL: cur ? cur.steps[cur.steps.length - 1].L : null };
+          stats = { mA, mD, nA: A.length, nD: D.length, isYou, playing: !!cur, curL: cur ? cur.steps[cur.steps.length - 1].L : null, ex: isYou ? null : expect(hab.value) };
         });
         v.readout(() => {
           if (!stats) return '';
-          const { mA, mD, nA, nD, isYou, playing, curL } = stats;
+          const { mA, mD, nA, nD, isYou, playing, curL, ex } = stats;
           const head = isYou && playing ? `tone on at ${curL} dB re full scale — answer whether you hear it · ` : '';
           if (mA == null || mD == null) return head + (isYou ? 'Run at least one ascending and one descending series. The first series ascends from silence; press *I hear it* the moment the tone appears.' : '');
           const avg = (mA + mD) / 2;
-          const truth = isYou ? '' : ` · true 50% point ${v.fix(OB.mu, 1)} dB: the ascending mean alone is off by ${v.fix(mA - OB.mu, 1)} dB, the average by ${v.fix(avg - OB.mu, 1)} dB`;
+          const truth = isYou ? '' : ` · true 50% point ${v.fix(OB.mu, 1)} dB · exact expectations for this observer: ascending ${v.fix(ex.A, 1)}, descending ${v.fix(ex.D, 1)}, average ${v.fix((ex.A + ex.D) / 2, 1)} dB`;
           return `${head}ascending mean ${v.fix(mA, 1)} dB (${nA} series), descending mean ${v.fix(mD, 1)} dB (${nD}) · hysteresis A − D = ${v.fix(mA - mD, 1)} dB ${mA - mD > 0.5 ? '(habituation: each series ran on too long)' : mA - mD < -0.5 ? '(anticipation: each series stopped too early)' : ''} · threshold = average = **${v.fix(avg, 1)} dB**${truth}`;
         });
       },
@@ -648,7 +663,7 @@ The method is quick and natural and is the standard way to measure matches, from
       credit: 'Fechner, 1860 (method of average error); Müller-Lyer, 1889 (the illusion)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/M%C3%BCller-Lyer_illusion' },
       viz(v) {
-        const M = v.M, S = 26, XS = 11, XC = 56, YS = 6.5, YC = -6.5, FIN = 5.2, ANG = (38 * Math.PI) / 180;
+        const M = v.M, S = 30, XS = 9, XC = 54, YS = 5.5, YC = -5.5, FIN = 5.5, ANG = (38 * Math.PI) / 180;
         const BIAS = { plain: 0, out: 0.14, in: -0.11 }, SDV = 0.035;
         const who = v.select('subject', OBS, 'sim', { onChange: () => newTrial() });
         const fig = v.select('figure', [{ value: 'plain', label: 'plain lines' }, { value: 'out', label: 'fins out >—<' }, { value: 'in', label: 'fins in <—>' }], 'plain', { onChange: () => newTrial() });
@@ -656,11 +671,11 @@ The method is quick and natural and is the standard way to measure matches, from
         const bNew = v.button('New start', () => newTrial());
         const bMore = v.button('10 more settings', () => { nSim = Math.min(80, nSim + 10); });
         v.button('Reset', () => { if (who.value === 'sim') nSim = 10; else you[fig.value] = []; newTrial(); });
-        const fs = v.stage({ x: [0, 100], y: [-13, 13], equal: true, axes: false, height: 200, full: true, title: 'make the lower line as long as the upper one' });
+        const fs = v.stage({ x: [0, 100], y: [-11, 11], equal: true, axes: false, height: 180, full: true, title: 'make the lower line as long as the upper one' });
         const hs = v.stage({ x: [-32, 42], y: [0, 5], height: 220, axes: 'box', full: true, xlabel: 'setting − standard (% of the standard)', yticks: [], title: 'the settings' });
-        const H = fs.handle(XC + S * 0.7, YC, { color: 'accent', constrain: (x) => [M.clamp(x, XC + 8, XC + 42), YC] });
+        const H = fs.handle(XC + S * 0.7, YC, { color: 'accent', constrain: (x) => [M.clamp(x, XC + 10, XC + 45), YC] });
         let nSim = 10, you = { plain: [], out: [], in: [] }, tr = 0;
-        const Z = (() => { const R = v.rng(101); return M.range(80).map(() => R.normal()); })();
+        const Z = (() => { const R = v.rng(253); return M.range(80).map(() => R.normal()); })();
         const simSet = () => Z.slice(0, nSim).map((z) => 100 * (BIAS[fig.value] + SDV * z));
         const newTrial = () => { tr++; const f = tr % 2 ? 0.62 + 0.12 * ((tr * 0.618) % 1) : 1.3 + 0.15 * ((tr * 0.618) % 1); H.set(XC + S * f, YC); v.invalidate(); };
         const record = () => { if (who.value !== 'you') return; you[fig.value].push(100 * ((H.x - XC) / S - 1)); newTrial(); };
@@ -687,22 +702,22 @@ The method is quick and natural and is the standard way to measure matches, from
           fs.line(XC, YC - 1.6, XC, YC + 1.6, { color: 'accent', width: 2 });
           if (!isYou) {
             for (const s of sets) fs.line(XC + S * (1 + s / 100), YC - 2.3, XC + S * (1 + s / 100), YC + 2.3, { color: 'gold', width: 1.6, alpha: 0.85 });
-            fs.text(`mean of ${n} settings`, (XC + xEnd) / 2, YC - 4.2, { align: 'center', color: 'gold', size: 11.5 });
+            fs.text(`mean of ${n} settings`, (XC + xEnd) / 2, YC - 3.8, { align: 'center', color: 'gold', size: 11.5 });
           }
           fs.line(XS + S, YS + 2.5, XS + S, YS - 1.5, { color: 'faint', width: 1, dash: [2, 3] });
           // ---- histogram
-          hs.vline(0, { color: 'muted', width: 1.4 });
-          hs.text('true length', 0, 0, { dy: -54, dx: 5, align: 'left', color: 'muted', size: 11 });
           const counts = M.histogram(sets, { bins: M.range(31).map((i) => -32 + 2.5 * i), range: [-32, 45.5] });
-          const ymax = Math.max(3, ...counts.counts) * 1.3;
-          hs.setView(null, [-0.17 * ymax, ymax]);
+          const ymax = Math.max(3, ...counts.counts) * 1.3, left = mu != null && mu > 0.5;
+          hs.setView(null, [-0.3 * ymax, ymax]);
+          hs.vline(0, { color: 'muted', width: 1.4 });
+          hs.text('true length', 0, ymax * 0.92, { dx: left ? -6 : 6, align: left ? 'right' : 'left', color: 'muted', size: 11.5 });
           hs.hist(counts, { color: isYou ? 'accent' : 'gold', fillAlpha: 0.4 });
           if (mu != null && sd > 0) {
             const J = 0.674 * sd;
-            hs.fn((x) => n * 2.5 * phi((x - mu) / sd) / sd, { domain: [-32, 42], color: 'ink', width: 1.6, alpha: 0.7 });
+            hs.fn((x) => n * 2.5 * phi((x - mu) / sd) / sd, { domain: [mu - 4 * sd, mu + 4 * sd], color: 'ink', width: 1.6, alpha: 0.7 });
             hs.vband(mu - J, mu + J, { color: 'purple', alpha: 0.1, edges: true });
             hs.vline(mu, { color: 'green', width: 2.4 });
-            hs.text('PSE', mu, ymax * 0.92, { dx: 6, align: 'left', color: 'green', weight: 700, size: 12 });
+            hs.text('PSE', mu, ymax * 0.92, { dx: left ? 6 : -6, align: left ? 'left' : 'right', color: 'green', weight: 700, size: 12 });
             if (Math.abs(mu) > 3) hs.arrow(0, ymax * 0.78, mu, ymax * 0.78, { color: 'red', width: 1.8, head: 7 });
             if (Math.abs(mu) > 3) hs.text('constant error', mu / 2, ymax * 0.78, { dy: -10, align: 'center', color: 'red', size: 11.5, weight: 600 });
           } else if (!n) hs.text('no settings yet: drag the handle, then Record match', 5, ymax * 0.5, { align: 'center', color: 'muted', size: 13 });

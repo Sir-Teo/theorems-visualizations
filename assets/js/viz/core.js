@@ -164,6 +164,36 @@ class Stage {
     this.box.style.height = H + 'px';
     this._fit();
   }
+  /**
+   * Contour lines of f(x, y) by marching squares. levels: number or array. st: {color, width, dash, res (cells across), labels, fmt}.
+   * Saddle cells are resolved with the cell-centre value.
+   */
+  contour(f, levels, st = {}) {
+    const Ls = Array.isArray(levels) ? levels : [levels];
+    const nx = Math.max(8, Math.round(st.res ?? 120)), ny = Math.max(8, Math.round(nx * this.H / Math.max(1, this.W)));
+    const [x0, x1] = this.xr, [y0, y1] = this.yr, dx = (x1 - x0) / nx, dy = (y1 - y0) / ny;
+    const F = new Float64Array((nx + 1) * (ny + 1));
+    for (let j = 0; j <= ny; j++) for (let i = 0; i <= nx; i++) F[j * (nx + 1) + i] = f(x0 + i * dx, y0 + j * dy);
+    const c = this.ctx; c.save(); c.strokeStyle = resolveColor(st.color || 'muted'); c.lineWidth = st.width ?? 1.2; c.setLineDash(st.dash || []);
+    const fmt = st.fmt || ((v) => M.fix(v, 2));
+    const SEG = { 1: [['s', 'w']], 2: [['s', 'e']], 3: [['w', 'e']], 4: [['e', 'n']], 6: [['s', 'n']], 7: [['w', 'n']], 8: [['w', 'n']], 9: [['s', 'n']], 11: [['e', 'n']], 12: [['w', 'e']], 13: [['s', 'e']], 14: [['s', 'w']] };
+    for (const L of Ls) {
+      c.beginPath(); let lab = null;
+      for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+        const a = F[j * (nx + 1) + i] - L, b = F[j * (nx + 1) + i + 1] - L, d = F[(j + 1) * (nx + 1) + i] - L, e = F[(j + 1) * (nx + 1) + i + 1] - L;
+        if (!(isFinite(a) && isFinite(b) && isFinite(d) && isFinite(e))) continue;
+        const code = (a > 0) | ((b > 0) << 1) | ((e > 0) << 2) | ((d > 0) << 3); if (code === 0 || code === 15) continue;
+        const X = x0 + i * dx, Y = y0 + j * dy;
+        const pts = { s: [X + dx * a / (a - b), Y], e: [X + dx, Y + dy * b / (b - e)], n: [X + dx * d / (d - e), Y + dy], w: [X, Y + dy * a / (a - d)] };
+        const up = (a + b + d + e) / 4 > 0;
+        const segs = code === 5 ? (up ? [['s', 'e'], ['n', 'w']] : [['s', 'w'], ['e', 'n']]) : code === 10 ? (up ? [['s', 'w'], ['e', 'n']] : [['s', 'e'], ['n', 'w']]) : SEG[code];
+        for (const [p, q] of segs) { const P = pts[p], Q = pts[q]; c.moveTo(this.X(P[0]), this.Y(P[1])); c.lineTo(this.X(Q[0]), this.Y(Q[1])); if (!lab && i > nx * 0.3 && i < nx * 0.7) lab = P; }
+      }
+      c.stroke();
+      if (st.labels && lab) this.textPx(fmt(L), this.X(lab[0]), this.Y(lab[1]), { size: 10.5, color: st.color || 'muted', align: 'center' });
+    }
+    c.restore(); return this;
+  }
   /** Run fn with drawing clipped to a data rectangle (default: the current window), e.g. s.clip(() => s.curve(f)). */
   clip(fn, x = this.xr, y = this.yr) {
     const c = this.ctx, a = this._px(x[0]), b = this._px(x[1]), p = this._py(y[0]), q = this._py(y[1]);
@@ -1138,14 +1168,17 @@ function makeSlider(rt, label, min, max, value, o = {}) {
   const step = o.step ?? (o.int ? 1 : (max - min) / 200);
   const decimals = o.decimals ?? Math.max(0, Math.min(4, -Math.floor(Math.log10(step) + 1e-9)));
   const format = o.fmt || ((x) => o.int ? String(Math.round(x)) : M.fix(x, decimals));
+  // the exact value is kept apart from the thumb position, so defaults and set() are never snapped to the step grid
+  const roundSig = (x, sig) => (x === 0 ? 0 : +x.toPrecision(sig));
+  let cur = value;
   const ctl = {
     el, input,
-    get value() { const x = fromInput(+input.value); return o.int ? Math.round(x) : x; },
-    set value(x) { input.value = toInput(x); sync(); },
-    set(x) { input.value = toInput(x); sync(); rt.invalidate(); },
+    get value() { return o.int ? Math.round(cur) : cur; },
+    set value(x) { cur = x; input.value = toInput(x); sync(); },
+    set(x) { cur = x; input.value = toInput(x); sync(); rt.invalidate(); },
   };
   const sync = () => { out.textContent = format(ctl.value); };
-  input.addEventListener('input', () => { sync(); o.onChange?.(ctl.value); rt.invalidate(); });
+  input.addEventListener('input', () => { const x = fromInput(+input.value); cur = log ? roundSig(x, o.sig ?? 3) : x; sync(); o.onChange?.(ctl.value); rt.invalidate(); });
   sync(); el.append(lab, input, out);
   return ctl;
 }
