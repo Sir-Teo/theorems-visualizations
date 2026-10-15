@@ -371,7 +371,7 @@ On the modern (Boole’s) reading, universal statements do not imply that their 
             const m = res.bad.slice().sort((a, b) => (bitsOf(a) || 9) - (bitsOf(b) || 9))[0]; let c = 0;
             for (let r = 1; r < 8; r++) if ((m >> r) & 1) { const [x, y] = CEN[r]; D.dot(x + 0.13, y - 0.13, { r: 6, color: 'gold', label: 'abcdefg'[c++], labelPos: 'e' }); }
             const emptyT = ['S', 'M', 'P'].filter((T) => ![1, 2, 3, 4, 5, 6, 7].some((r) => (r & VBIT[T]) && ((m >> r) & 1)));
-            if (emptyT.length) D.text(emptyT.length === 3 ? 'counter-model: nothing exists at all' : `counter-model: no ${emptyT.join(', no ')} exist`, 0, 1.78, { align: 'center', size: 12, weight: 600, color: 'gold' });
+            if (emptyT.length) D.corner(emptyT.length === 3 ? 'counter-model: nothing exists' : `counter-model: ${emptyT.join(', ')} ${emptyT.length > 1 ? 'are' : 'is'} empty`, 'tl', { color: 'gold', weight: 700 });
           }
           D.text(res.valid ? 'the premises force the conclusion' : 'the premises do not force the conclusion', 0, -1.67, { align: 'center', size: 12.5, weight: 600, color: res.valid ? 'green' : 'red' });
         });

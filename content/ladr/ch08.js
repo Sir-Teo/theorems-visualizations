@@ -318,7 +318,7 @@ Once the chain of 8.1 pauses, it never grows again.`,
       statement: String.raw`Suppose $T \in \mathcal L(V)$, where $V$ is finite-dimensional. Then
 $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operatorname{null} T^{\dim V + 2} = \cdots.$$`,
       idea: String.raw`By 8.2 it is enough to show $\operatorname{null}T^{n} = \operatorname{null}T^{n+1}$ for $n = \dim V$. If not, then by 8.1 and 8.2 every inclusion $\{0\} = \operatorname{null}T^0 \subsetneq \operatorname{null}T^1 \subsetneq \cdots \subsetneq \operatorname{null}T^{n+1}$ is strict. Each strict inclusion of subspaces raises the dimension by at least one, so $\dim\operatorname{null}T^{n+1} \ge n + 1 > \dim V$ — impossible for a subspace of $V$ (2.37). The bound is sharp: a single chain $v \mapsto Tv \mapsto \cdots \mapsto 0$ of length $n$ needs all $n$ steps.`,
-      caption: String.raw`Each thin line is the null-space staircase of a random operator on $\mathbf F^n$ (random chains plus an invertible part, conjugated by a random integer matrix so the structure is hidden; ranks are computed exactly). The dots mark where each staircase freezes — never to the right of the orange line $k = n$. On the right, the highlighted operator's chains: the cells at height $j$ are the new dimensions of $\operatorname{null}T^j$, so it freezes at the length of its longest chain. Choose one chain of length $n$ to see the bound attained, and $\dim V = \infty$ to break the hypothesis.`,
+      caption: String.raw`Each thin line is the null-space staircase of a random operator on $\mathbf F^n$ (random chains plus an invertible part, conjugated by a random integer matrix so the structure is hidden; ranks are computed exactly). The dots mark where each staircase freezes — never to the right of the orange line $k = n$. On the right, the chains of the highlighted operator (the one that freezes last): the cells at height $j$ are the new dimensions of $\operatorname{null}T^j$, so it freezes at the length of its longest chain. Choose one chain of length $n$ to see the bound attained, and $\dim V = \infty$ to break the hypothesis.`,
       deps: ['ladr-8.2', 'ladr-8.1', 'ladr-2.37'],
       tags: ['generalized eigenvectors'],
       viz(v) {
@@ -520,14 +520,16 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
         v.render(() => {
           const mode = pre.value, T = mm(mm(P, PRE[mode]), Pi), A = shiftI(T, lam);
           // regions
-          if (mode === 'scalar') S.rect(-2.5, -1.75, 2.5, 1.75, { fill: 'teal', fillAlpha: 0.07, stroke: false });
+          const bx = S.bounds.x, by = S.bounds.y;
+          if (mode === 'scalar') S.rect(bx[0], by[0], bx[1], by[1], { fill: 'teal', fillAlpha: 0.07, stroke: false });
           else {
-            S.rect(-2.5, -1.75, 2.5, 1.75, { fill: mode === 'jordan' ? 'orange' : 'red', fillAlpha: 0.05, stroke: false });
-            S.line(-4 * e1[0], -4 * e1[1], 4 * e1[0], 4 * e1[1], { color: 'teal', width: 4, alpha: 0.75 });
-            S.tex('E(\\lambda, T)', 2.2 * e1[0], 2.2 * e1[1], { color: 'teal', size: 14, dy: 16, dx: -6 });
+            S.rect(bx[0], by[0], bx[1], by[1], { fill: mode === 'jordan' ? 'orange' : 'red', fillAlpha: 0.05, stroke: false });
+            S.line(-9 * e1[0], -9 * e1[1], 9 * e1[0], 9 * e1[1], { color: 'teal', width: 4, alpha: 0.75 });
+            S.tex('E(\\lambda, T)', -2.6 * e1[0], -2.6 * e1[1], { color: 'teal', size: 15, dy: 18, dx: 10 });
           }
           // field
-          for (let x = -2.4; x <= 2.41; x += 0.4) for (let y = -1.6; y <= 1.61; y += 0.4) {
+          const gx0 = Math.ceil(bx[0] / 0.4) * 0.4, gy0 = Math.ceil(by[0] / 0.4) * 0.4;
+          for (let x = gx0; x <= bx[1] - 0.1; x += 0.4) for (let y = gy0; y <= by[1] - 0.1; y += 0.4) {
             const w = mv(A, [x, y]), l = normN(w); if (l < 0.03) continue;
             const k = 0.28 / Math.max(1, l / 0.9);
             S.arrow(x, y, x + k * w[0], y + k * w[1], { color: 'muted', width: 1.1, head: 5, alpha: 0.55 });
@@ -540,7 +542,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
             S.arrow(0, 0, ch[k][0], ch[k][1], { color: 'orange', width: 2.4, alpha: 1 - 0.18 * (k - 1) });
             if (k <= 2) S.tex(k === 1 ? '(T-\\lambda I)v' : '(T-\\lambda I)^2v', ch[k][0], ch[k][1], { color: 'orange', size: 13, dx: ch[k][0] >= 0 ? 12 : -12, dy: -12, align: ch[k][0] >= 0 ? 'left' : 'right' });
           }
-          if (zeroAt > 0) { S.dot(0, 0, { r: 7, color: 'green' }); S.tex(`(T-\\lambda I)^{${zeroAt}}v = 0`, 0, 0, { color: 'green', size: 13, dy: 18 }); }
+          if (zeroAt > 0) { S.dot(0, 0, { r: 7, color: 'green' }); S.tex(`(T-\\lambda I)^{${zeroAt}}v = 0`, 0, 0, { color: 'green', size: 13, dy: 12, dx: 12, align: 'left', baseline: 'top' }); }
           S.arrow(0, 0, hv.x, hv.y, { color: 'gold', width: 3 });
           st = { mode, ch, zeroAt };
         });
