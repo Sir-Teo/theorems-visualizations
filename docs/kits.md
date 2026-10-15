@@ -296,3 +296,32 @@ viz(v) {
 A DP table with steps (demo 1.5) keeps a snapshot of the table in each frame (`vals`, `ptr`, `cur`, `deps`,
 `path`) and draws `T.draw({value: (i, j) => f.vals[i][j], fill: …, highlight: [f.cur]})`, then
 `T.pointer(...)` for every stored back-pointer and `T.arrow(...)` along the trace-back.
+
+## `v.scene3(stage, opts)` — 3D scenes with draggable handles
+
+A rotatable orthographic 3D scene drawn on an ordinary 2D stage (create the stage with `equal: true, axes: false`), so that points in ℝ³ can carry handles — the runtime's `stage3d` rotates but has no handles. Drag the background to rotate.
+
+| member | |
+|---|---|
+| `opts` | `{yaw, pitch, axis (axis length), lim (handle box), labels: ['x','y','z'], axes: true, hint: true}` |
+| `sc.begin()` / `sc.flush()` | call at the start / end of each `render`; everything drawn in between is depth-sorted |
+| `sc.line(p, q, st, n)`, `sc.path(pts, st)`, `sc.poly(pts, st)`, `sc.disc(a, b, r, st, c)` | geometry (points are `[x, y, z]`; `disc` lies in span{a, b}, orthonormal) |
+| `sc.arrow(p, q, st)`, `sc.dot(p, st)`, `sc.dots(pts, st)`, `sc.tex(latex, p, st)` | drawn on top (`st.top: false` to depth-sort them too) |
+| `sc.handle(p0, {mode: 'free'|'plane'|'line', a, b, d, snap: p => p', color, label})` | draggable point; read `h.p` (3D), `h.t` (line parameter); `h.set(p)` |
+| `sc.P(p)` | project a 3D point → `[x, y, depth]` on the stage |
+
+```js
+viz(v) {
+  const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 360 });
+  const sc = v.scene3(S, { yaw: -0.6, pitch: 0.35 });
+  const u = sc.handle([1, 0.4, 0.3], { color: 'accent', label: 'u' });
+  const w = sc.handle([0.2, 1, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'orange', label: 'w' });
+  v.render(() => {
+    sc.begin();
+    sc.disc([1, 0, 0], [0, 1, 0], 1.4, { fill: 'orange', fillAlpha: 0.08, grid: true });
+    sc.arrow([0, 0, 0], u.p, { color: 'accent' }); sc.arrow([0, 0, 0], w.p, { color: 'orange' });
+    sc.flush();
+  });
+  v.readout(() => `$u\\cdot w = ${v.fix(v.M.dot(u.p, w.p), 3)}$`);
+}
+```

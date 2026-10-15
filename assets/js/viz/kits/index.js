@@ -14,8 +14,10 @@ import fields from './fields.js';
 import quantum from './quantum.js';
 import mol from './mol.js';
 import circuit from './circuit.js';
+import { scene3 } from './scene3.js';
 
 export const KITS = {
+  scene3,  // v.scene3(stage, opts) → rotatable 3D scene on a 2D stage with draggable 3D handles (free / plane / line)
   graph,   // v.graph(stage, spec) → Graph: node-link diagrams, layouts, editing, bfs/dfs/dijkstra/topoSort/mst/maxflow
   graphs,  // v.graphs(name, ...args) → {nodes, edges, layout} generators (random, grid, complete, cycle, petersen, …)
   steps,   // v.steps({frames, code, speed}) → step-through player with pseudocode + notes
