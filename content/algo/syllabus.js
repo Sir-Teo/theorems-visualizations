@@ -1,4 +1,72 @@
 // Syllabus — Algorithms (curated course; see collection.js for references)
+//
+// Sources consulted (Oct 2026):
+//   References (tables of contents checked):
+//   - Cormen, Leiserson, Rivest & Stein, Introduction to Algorithms, 4th ed. (MIT Press, 2022):
+//     chapter list with page numbers from the publisher's listing (Google Books
+//     https://books.google.com/books/about/?id=HOJyzgEACAAJ and retailer copies of the MIT Press
+//     contents); 3e→4e changes from the MIT Press transition guide
+//     https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/3923/11599-transition-guide.pdf
+//     (new ch. 25 matchings, 27 online, 33 ML; Fibonacci heaps, van Emde Boas trees, computational
+//     geometry, perfect hashing, randomly built BSTs, matroids, push–relabel, the iterative FFT,
+//     simplex details and factoring moved online); section numbers cross-checked against the official
+//     errata https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/11599/e4-bugs.html
+//     (e.g. §25.1 Hopcroft–Karp, §25.3 Hungarian, §26.1 fork–join, §27.2 move-to-front, §30.3 FFT
+//     circuits, §31.5 CRT, Prob. 13-3 AVL trees).
+//   - Erickson, Algorithms (2019) and the Extended Dance Remix / Director's Cut notes, read from
+//     https://jeffe.cs.illinois.edu/teaching/algorithms/ (book ch. 0–12; notes A FFT, B fast
+//     exponential algorithms, D faster DP, E matroids, F pseudoflows, G min-cost flows, H LP,
+//     I LP algorithms, J approximation; 1 probability, 2 nuts and bolts, 3 treaps and skip lists,
+//     4 tail inequalities, 5 hashing (incl. cuckoo), 6 filtering and streaming, 7 string matching,
+//     8 randomized min cut (incl. Karger–Stein), 9 amortized, 10 scapegoat and splay, 11 disjoint
+//     sets, 12 lower bounds, 13 adversary arguments; app. II recurrences).
+//   - Kleinberg & Tardos, Algorithm Design — full section list from Pearson
+//     https://www.pearson.com/en-us/subject-catalog/p/algorithm-design/P200000003259/9780137546350
+//   Courses:
+//   - MIT 6.006 Spring 2020 lectures: https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/pages/lecture-notes/
+//   - MIT 6.046J Spring 2015 lectures: https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/
+//   - CMU 15-451 Fall 2023 schedule: https://www.cs.cmu.edu/~15451-f23/schedule.html
+//   - Stanford CS161 Spring 2023: https://web.stanford.edu/class/archive/cs/cs161/cs161.1236/index.html
+//   - Princeton COS 423 (Wayne) lectures: https://www.cs.princeton.edu/~wayne/cs423
+//   Lists of named results:
+//   - https://en.wikipedia.org/wiki/List_of_algorithms and https://en.wikipedia.org/wiki/List_of_data_structures
+//
+// Changes after the comparison (existing numbers untouched; new items appended):
+//   Gaps filled: backtracking (2.14); simultaneous min and max (3.19); Held–Karp (7.16); Tarjan’s SCC
+//   and Euler tours (8.19–8.20); APSP by min-plus squaring (9.16); matroid scheduling (10.21);
+//   Klee–Minty, polynomial-time LP, total unimodularity (11.22–11.24); Markov, Chernoff, balls into
+//   bins, Karger–Stein, distinct elements, move-to-front, weighted majority (12.17–12.23);
+//   Boyer–Moore–Horspool and Aho–Corasick (13.12–13.13); PTAS/FPTAS, center selection, local search
+//   for max cut (14.21–14.23); new ch. 15 advanced data structures (augmentation, order-statistic,
+//   interval and segment trees, treaps, cuckoo hashing, external memory, B-tree height, van Emde Boas,
+//   Fibonacci heaps, dynamic optimality); new ch. 16 flow algorithms and matchings (decomposition,
+//   Dinic, push–relabel, Hopcroft–Karp, min-cost flow, Hungarian, circulations, project selection,
+//   baseball elimination, segmentation, Dilworth); new ch. 17 parallel algorithms (CLRS 4e ch. 26).
+//   Corrections: refs fixed where the 4e moved material online (random BSTs, iterative FFT) or a
+//   section did not cover the item (Las Vegas/Monte Carlo, A*, Christofides, LP duality items);
+//   12.7 is a Theorem, not an Algorithm; Kosaraju–Sharir and Christofides–Serdyukov named in full;
+//   8.18 includes biconnected components; 14.5 now points to the proof in toc-13.4.
+//   A* (9.12) is not treated in the three references; it stays as the bridge to robot-7.7 and its ref
+//   points to Erickson’s reweighting chapter, which is what makes it correct. Held–Karp, segment trees
+//   and Boyer–Moore are likewise only sketched or cited there, so their refs are chapter-level.
+//
+// Deliberate omissions (and where they live):
+//   - Extended Euclid/Bézout, linear congruences, CRT, Carmichael numbers, Miller–Rabin: nt-1.4, nt-2.2,
+//     nt-2.4, nt-3.11, nt-3.12 and cplx-5.9, cplx-5.10 (AKS); RSA, discrete logs and factoring
+//     algorithms (CLRS 31.7, 31.9): crypto. Euclid and fast exponentiation stay here (1.7, 2.12).
+//   - P/NP foundations duplicate toc ch. 12–13 and stay only as the short chain 14.1–14.11; PCP,
+//     hardness of approximation, Goemans–Williamson, Yao’s principle, Freivalds, Schwartz–Zippel,
+//     FPT vertex cover and parallel prefix circuits are in cplx (cplx-9.x, 10.3, 5.8, 5.5, 12.8, 4.11).
+//   - Convex hulls, segment intersection, range trees, Voronoi/Delaunay (CLRS 3e ch. 33, 6.046 L2/L9,
+//     CMU L21–23): cg. Closest pair (4.4) stays as the canonical divide-and-conquer example.
+//   - Matrix operations / LUP (CLRS 28): nla; k-means and gradient descent (CLRS 33.1, 33.3): ml/opt;
+//     consistent hashing and 6.046’s distributed algorithms: dist; Huffman optimality is shared with
+//     info-4.8/4.9; zero-sum games and the minimax theorem: game.
+//   - Not taught by most sources: sorting networks (dropped after CLRS 2e), cache-oblivious algorithms
+//     (6.046 only), Stoer–Wagner (Karger and Karger–Stein cover global min cut), Edmonds’ blossom
+//     algorithm, suffix trees and the Z-algorithm (suffix arrays and KMP chosen, as in CLRS 4e),
+//     binomial and scapegoat trees, maximum subarray (moved online in CLRS 4e), RNA folding and
+//     segmented least squares (KT-only DP examples), min-cost arborescences (KT starred section).
 export default {
   collection: 'algo',
   chapters: [
@@ -64,12 +132,14 @@ export default {
           pic: 'Enter uneven splits like T(n) = T(n/5) + T(7n/10) + n; the exponent p with Σ aᵢbᵢ^p = 1 is found by bisection on a plotted decreasing curve, the integral is evaluated, and the prediction is checked against the exact recurrence.' },
         { num: '2.10', kind: 'Method', name: 'Change of variables in recurrences', deps: ['algo-2.7'], refs: ['CLRS 4e §4.3'], tags: ['recurrences'],
           pic: 'Toggle between T(n) = 2T(√n) + log n and its rewritten form S(m) = 2S(m/2) + m with m = log n, shown as two recursion trees whose levels line up one for one.' },
-        { num: '2.11', kind: 'Theorem', name: 'Linear recurrences with constant coefficients', deps: ['algo-2.4', 'algo-2.5'], refs: ['Erickson App. II'], tags: ['recurrences'],
+        { num: '2.11', kind: 'Theorem', name: 'Linear recurrences with constant coefficients', deps: ['algo-2.4', 'algo-2.5'], refs: ['Erickson notes: Solving Recurrences'], tags: ['recurrences'],
           pic: 'Set the coefficients of aₙ = c₁aₙ₋₁ + c₂aₙ₋₂; the characteristic roots appear in the complex plane and the ratio aₙ₊₁/aₙ homes in on the dominant root, the golden ratio for Fibonacci.' },
         { num: '2.12', kind: 'Algorithm', name: 'Exponentiation by repeated squaring', deps: ['algo-2.1', 'algo-2.4'], refs: ['Erickson Ch. 1', 'CLRS 4e §31.6'], tags: ['divide and conquer'],
           pic: 'Choose an exponent n and watch its binary digits drive a chain of squarings and multiplications, with the multiplication count ⌊log₂ n⌋ + popcount(n) − 1 set against the naive n − 1.' },
         { num: '2.13', kind: 'Algorithm', name: 'Counting inversions by merging', deps: ['algo-2.3', 'algo-2.7'], refs: ['KT §5.3'], tags: ['divide and conquer'],
           pic: 'Drag items to reorder a ranking; arcs mark every inverted pair, and the merge-based count, which adds whole batches of cross pairs when a right-half element jumps ahead, matches the arc count.' },
+        { num: '2.14', kind: 'Method', name: 'Backtracking: n queens and subset sum', deps: ['algo-2.1'], refs: ['Erickson Ch. 2'], tags: ['recursion', 'search'],
+          pic: 'Place queens row by row on an n × n board while the recursion tree grows beside it; branches die the moment a queen is attacked, and a counter compares the nodes visited with the nⁿ placements a blind search would try.' },
       ],
     },
     {
@@ -107,12 +177,14 @@ export default {
           pic: 'Multi-digit numbers are sorted one digit at a time from the least significant, with a base slider; the cost d(n + base) is plotted against n log n, beaten because no comparisons are made.' },
         { num: '3.15', kind: 'Algorithm', name: 'Bucket sort', deps: ['algo-3.2', 'algo-3.3'], refs: ['CLRS 4e §8.4'], tags: ['sorting', 'randomized'],
           pic: 'Uniform random reals drop into n buckets and the loads are shown as stacks; switch the input to a clustered distribution and the sum of squared loads, the true cost, blows up.' },
-        { num: '3.16', kind: 'Method', name: 'Adversary arguments: the maximum needs n − 1 comparisons', deps: ['algo-3.1'], refs: ['CLRS 4e §9.1'], tags: ['lower bounds'],
+        { num: '3.16', kind: 'Method', name: 'Adversary arguments: the maximum needs n − 1 comparisons', deps: ['algo-3.1'], refs: ['CLRS 4e §9.1', 'Erickson notes: Lower Bounds'], tags: ['lower bounds'],
           pic: 'Play against an adversary that answers each comparison so as to keep the most candidates alive; every comparison removes at most one never-beaten key, so the counter cannot finish below n − 1.' },
         { num: '3.17', kind: 'Algorithm', name: 'Randomized selection (quickselect)', deps: ['algo-3.9', 'algo-3.3'], refs: ['CLRS 4e §9.2'], tags: ['selection', 'randomized'],
           pic: 'Pick a rank k and step randomized partitioning, where only the side holding rank k survives each round, and histogram the total work over many runs against a constant multiple of n.' },
         { num: '3.18', kind: 'Algorithm', name: 'Median of medians: selection in linear time', deps: ['algo-3.17', 'algo-2.6', 'algo-1.12'], refs: ['CLRS 4e §9.3', 'Erickson Ch. 1'], tags: ['selection'],
           pic: 'The array is laid out as columns of five sorted by their medians; the median of medians splits the grid into a surely-smaller and a surely-larger block of about 3n/10 each, and the recursion tree’s level costs shrink by 9/10.' },
+        { num: '3.19', kind: 'Theorem', name: 'Minimum and maximum together in ⌈3n/2⌉ − 2 comparisons', deps: ['algo-3.16'], refs: ['CLRS 4e §9.1', 'Erickson notes: Adversary Arguments'], tags: ['selection', 'lower bounds'],
+          pic: 'Elements are compared in pairs, the winners compete for the maximum and the losers for the minimum; an adversary that tracks which keys can still be the maximum or the minimum shows that no strategy finishes in fewer comparisons.' },
       ],
     },
     {
@@ -146,9 +218,9 @@ export default {
           pic: 'Transform a drawn signal, optionally zero some frequency bars, and invert with conjugate roots and a factor 1/n; with nothing removed the reconstruction overlays the original exactly.' },
         { num: '4.13', kind: 'Theorem', name: 'Convolution theorem: multiplying polynomials in O(n log n)', deps: ['algo-4.7', 'algo-4.11', 'algo-4.12'], refs: ['CLRS 4e §30.2', 'KT §5.6'], tags: ['fft', 'convolution'],
           pic: 'Multiply two editable polynomials by evaluating at 2n roots of unity, multiplying pointwise and interpolating; the result matches the schoolbook convolution, and a timing plot sets n log n against n².' },
-        { num: '4.14', kind: 'Algorithm', name: 'Iterative FFT and the bit-reversal permutation', deps: ['algo-4.11'], refs: ['CLRS 4e §30.3'], tags: ['fft'],
+        { num: '4.14', kind: 'Algorithm', name: 'Iterative FFT and the bit-reversal permutation', deps: ['algo-4.11'], refs: ['CLRS 4e §30.3', 'Erickson notes: Fast Fourier Transforms'], tags: ['fft'],
           pic: 'Indices 0 … n − 1 are drawn with arcs to their bit-reversed partners; after the permutation, the in-place butterflies run level by level on the reordered array.' },
-        { num: '4.15', kind: 'Algorithm', name: 'Integer multiplication via the FFT', deps: ['algo-4.13', 'algo-4.1'], refs: ['CLRS 4e §30.2'], tags: ['fft', 'arithmetic'],
+        { num: '4.15', kind: 'Algorithm', name: 'Integer multiplication via the FFT', deps: ['algo-4.13', 'algo-4.1'], refs: ['CLRS 4e Ch. 30', 'Erickson notes: Fast Fourier Transforms'], tags: ['fft', 'arithmetic'],
           pic: 'Two long integers are cut into digit blocks, the blocks are convolved by FFT and carries ripple through; a cost plot compares this route with Karatsuba and the schoolbook method as the length grows.' },
       ],
     },
@@ -163,7 +235,7 @@ export default {
           pic: 'Drag keys into a binary tree: edges whose subtrees break the left-smaller, right-larger rule turn red, and the in-order ribbon reads in sorted order exactly when the tree is valid.' },
         { num: '5.3', kind: 'Algorithm', name: 'Search, insertion and deletion in a BST', deps: ['algo-5.2'], refs: ['CLRS 4e §12.2', 'CLRS 4e §12.3'], tags: ['search trees'],
           pic: 'Insert and delete keys from buttons, including the two-child case in which the successor is spliced in, with the visited path highlighted and its length compared with the height h.' },
-        { num: '5.4', kind: 'Theorem', name: 'Random BSTs have average depth about 2 ln n', deps: ['algo-5.3', 'algo-3.11'], refs: ['CLRS 4e Prob. 12-3'], tags: ['search trees', 'randomized'],
+        { num: '5.4', kind: 'Theorem', name: 'Random BSTs have average depth about 2 ln n', deps: ['algo-5.3', 'algo-3.11'], refs: ['CLRS 4e Ch. 12', 'Erickson notes: Treaps and Skip Lists'], tags: ['search trees', 'randomized'],
           pic: 'Insert a random permutation key by key and watch the tree grow, with average node depth over many shuffles plotted against 2 ln n, while sorted insertion order degenerates into a path.' },
         { num: '5.5', kind: 'Definition', name: 'Tree rotations', deps: ['algo-5.2'], refs: ['CLRS 4e §13.2'], tags: ['search trees'],
           pic: 'Click any edge to rotate it: the subtrees A, B and C keep their in-order positions on a ribbon below while the heights on the two sides change by one.' },
@@ -222,7 +294,7 @@ export default {
           pic: 'Run a long access sequence and plot the potential Σ log(subtree size) together with the cumulative rotation count, which stays under the O((m + n) log n) line while sequential access is strikingly cheap.' },
         { num: '6.9', kind: 'Definition', name: 'Disjoint-set (union–find) structure', deps: ['algo-5.1'], refs: ['CLRS 4e §19.1'], tags: ['union-find'],
           pic: 'Click pairs of elements to union them; the partition appears both as coloured blobs and as a forest of parent pointers, and a find highlights the path to the representative.' },
-        { num: '6.10', kind: 'Theorem', name: 'Union by size keeps trees O(log n) deep', deps: ['algo-6.9'], refs: ['CLRS 4e §19.2'], tags: ['union-find'],
+        { num: '6.10', kind: 'Theorem', name: 'Union by size keeps trees O(log n) deep', deps: ['algo-6.9'], refs: ['CLRS 4e §19.2', 'Erickson notes: Disjoint Sets'], tags: ['union-find'],
           pic: 'Union sets in an adversarial order and follow one element’s depth: it grows only when its set at least doubles, so its counter never passes log₂ n.' },
         { num: '6.11', kind: 'Algorithm', name: 'Union by rank with path compression', deps: ['algo-6.10'], refs: ['CLRS 4e §19.3'], tags: ['union-find'],
           pic: 'Run finds on a tall forest and watch path compression reattach every node on the path directly to the root, while the rank labels stay frozen.' },
@@ -269,6 +341,8 @@ export default {
           pic: 'Drag access-frequency sliders for the keys; the cost and root tables fill by interval length and the optimal tree redraws, pulling popular keys toward the top.' },
         { num: '7.15', kind: 'Algorithm', name: 'Dynamic programming on trees: independent sets', deps: ['algo-7.2'], refs: ['Erickson Ch. 3', 'KT §10.2'], tags: ['dynamic programming', 'trees'],
           pic: 'Edit a tree and its node weights; each node shows two numbers computed in postorder (best with the node, best without it), and the optimal independent set is highlighted.' },
+        { num: '7.16', kind: 'Algorithm', name: 'Held–Karp: travelling salesman in O(n² 2ⁿ)', deps: ['algo-7.2'], refs: ['Erickson notes: Fast Exponential Algorithms'], tags: ['dynamic programming', 'tsp'],
+          pic: 'Drag a handful of cities; the table indexed by (visited set, last city) fills subset by subset, the optimal tour is read back from it, and the step count is plotted against the n! tours that brute force examines.' },
       ],
     },
     {
@@ -308,10 +382,14 @@ export default {
           pic: 'Edit a directed graph: its strongly connected components are shaded in distinct colours and contracted beside it into a component graph that stays acyclic however you add edges.' },
         { num: '8.16', kind: 'Lemma', name: 'The last-finishing component is a source', deps: ['algo-8.15', 'algo-8.9'], refs: ['CLRS 4e §20.5'], tags: ['graphs', 'connectivity'],
           pic: 'After DFS, each component in the component DAG is labelled with its latest finishing time; every edge between components points from a larger label to a smaller one.' },
-        { num: '8.17', kind: 'Algorithm', name: 'Strongly connected components (Kosaraju)', deps: ['algo-8.16', 'algo-8.13'], refs: ['CLRS 4e §20.5', 'Erickson Ch. 6'], tags: ['graphs', 'connectivity'],
+        { num: '8.17', kind: 'Algorithm', name: 'Strongly connected components (Kosaraju–Sharir)', deps: ['algo-8.16', 'algo-8.13'], refs: ['CLRS 4e §20.5', 'Erickson Ch. 6'], tags: ['graphs', 'connectivity'],
           pic: 'The first pass records finishing times; the second runs DFS on the reversed graph in decreasing finishing order, and each tree it grows floods exactly one component with a single colour.' },
-        { num: '8.18', kind: 'Algorithm', name: 'Cut vertices and bridges via low values', deps: ['algo-8.10'], refs: ['CLRS 4e Prob. 20-2'], tags: ['graphs', 'connectivity'],
-          pic: 'DFS on an undirected graph labels each vertex with its low value; cut vertices and bridges are highlighted, and deleting one confirms that the graph falls apart.' },
+        { num: '8.18', kind: 'Algorithm', name: 'Cut vertices, bridges and biconnected components', deps: ['algo-8.10'], refs: ['CLRS 4e Prob. 20-2'], tags: ['graphs', 'connectivity'],
+          pic: 'DFS on an undirected graph labels each vertex with its low value; cut vertices and bridges are highlighted, the biconnected blocks between them get their own colours, and deleting a cut vertex confirms that the graph falls apart.' },
+        { num: '8.19', kind: 'Algorithm', name: 'Tarjan’s strongly connected components algorithm', deps: ['algo-8.15', 'algo-8.18'], refs: ['Erickson Ch. 6'], tags: ['graphs', 'connectivity'],
+          pic: 'A single DFS pushes vertices on a stack and tracks low values; whenever a vertex’s low value equals its own discovery time, the stack is popped down to it and that component is coloured, sinks first.' },
+        { num: '8.20', kind: 'Algorithm', name: 'Euler tours in linear time (Hierholzer)', deps: ['algo-8.1', 'algo-8.7'], refs: ['CLRS 4e Prob. 20-3', 'Erickson Ch. 6'], tags: ['graphs'],
+          pic: 'Draw a graph whose vertices all have even degree; a walk is traced until it returns to its start, unused edges hanging off it are spliced in as sub-tours, and an odd-degree vertex added by the reader is flagged as the obstruction.' },
       ],
     },
     {
@@ -341,7 +419,7 @@ export default {
           pic: 'Drag one edge weight below zero: Dijkstra freezes a vertex too early, and its label disagrees with the Bellman–Ford answer shown side by side.' },
         { num: '9.11', kind: 'Definition', name: 'Vertex potentials and reduced costs', deps: ['algo-9.1'], refs: ['CLRS 4e §23.3', 'Erickson Ch. 9'], tags: ['shortest paths'],
           pic: 'Drag a height for each vertex; every weight becomes w(u, v) + h(u) − h(v), each s–t path’s cost shifts by the same h(s) − h(t), and the shortest path stays put.' },
-        { num: '9.12', kind: 'Algorithm', name: 'A* search with a consistent heuristic', deps: ['algo-9.11', 'algo-9.9'], refs: ['Erickson Ch. 8'], tags: ['shortest paths', 'search'],
+        { num: '9.12', kind: 'Algorithm', name: 'A* search with a consistent heuristic', deps: ['algo-9.11', 'algo-9.9'], refs: ['Erickson Ch. 9'], tags: ['shortest paths', 'search'],
           pic: 'On a grid with draggable walls, A* and Dijkstra race to the goal; A*’s explored region hugs the target while both report the same length, until an inadmissible heuristic makes A* return a longer path.' },
         { num: '9.13', kind: 'Algorithm', name: 'Floyd–Warshall', deps: ['algo-9.2', 'algo-7.2'], refs: ['CLRS 4e §23.2', 'Erickson Ch. 9'], tags: ['shortest paths', 'dynamic programming'],
           pic: 'The n × n distance matrix is updated once per intermediate vertex k, with improved cells flashing; click a cell to trace its path through the allowed intermediate set {1, …, k}.' },
@@ -349,6 +427,8 @@ export default {
           pic: 'Add a super-source, run Bellman–Ford to obtain potentials, watch every edge weight become nonnegative after reweighting, then let n runs of Dijkstra fill the all-pairs table.' },
         { num: '9.15', kind: 'Algorithm', name: 'Difference constraints via Bellman–Ford', deps: ['algo-9.7'], refs: ['CLRS 4e §22.4'], tags: ['shortest paths', 'constraints'],
           pic: 'Enter constraints x_j − x_i ≤ c, each drawn as an edge; Bellman–Ford from a virtual source returns a feasible assignment plotted on a number line, or a negative cycle proving infeasibility.' },
+        { num: '9.16', kind: 'Algorithm', name: 'All-pairs shortest paths by min-plus matrix squaring', deps: ['algo-9.2', 'algo-7.2', 'algo-2.12'], refs: ['CLRS 4e §23.1', 'Erickson Ch. 9'], tags: ['shortest paths', 'matrices'],
+          pic: 'The weight matrix is “multiplied” by itself with min in place of sum and plus in place of product; each squaring doubles the number of edges a path may use, and the table stops changing after about log₂ n squarings.' },
       ],
     },
     {
@@ -396,6 +476,8 @@ export default {
           pic: 'Pick a ground set (graph edges, vectors in the plane, a uniform family) and toggle elements; the exchange axiom is tested live by finding, for two independent sets of different sizes, an element that extends the smaller.' },
         { num: '10.20', kind: 'Theorem', name: 'Greedy is optimal exactly on matroids (Rado–Edmonds)', deps: ['algo-10.19', 'algo-10.3'], refs: ['Erickson notes: Matroids'], tags: ['matroids', 'greedy'],
           pic: 'Run greedy by decreasing weight on a matroid and match the brute-force best basis; switch to a non-matroid family such as matchings and weights are built from a failed exchange to make greedy lose.' },
+        { num: '10.21', kind: 'Algorithm', name: 'Scheduling unit jobs with deadlines via matroids', deps: ['algo-10.20', 'algo-10.6'], refs: ['Erickson notes: Matroids'], tags: ['matroids', 'scheduling'],
+          pic: 'Unit-time jobs with deadlines and penalties are taken greedily by decreasing penalty, a job being kept only if the chosen set can still all meet their deadlines; the feasibility test is drawn as a filling timeline, and the result matches brute force.' },
       ],
     },
     {
@@ -441,22 +523,28 @@ export default {
           pic: 'Drag a target vector b against the cone spanned by a few columns: inside, a nonnegative combination reaching b is drawn; outside, a separating line through the origin appears as the certificate.' },
         { num: '11.19', kind: 'Theorem', name: 'LP duality: weak and strong', deps: ['algo-11.18', 'algo-11.15'], refs: ['CLRS 4e §29.3'], tags: ['linear programming', 'duality'],
           pic: 'A primal LP and its dual are solved side by side as you edit coefficients; feasible primal values rise from below, feasible dual values fall from above, and the gap closes at a common optimum.' },
-        { num: '11.20', kind: 'Theorem', name: 'Complementary slackness', deps: ['algo-11.19'], refs: ['CLRS 4e §29.3'], tags: ['linear programming', 'duality'],
+        { num: '11.20', kind: 'Theorem', name: 'Complementary slackness', deps: ['algo-11.19'], refs: ['CLRS 4e §29.3', 'Erickson notes: Linear Programming'], tags: ['linear programming', 'duality'],
           pic: 'At the optimal vertex the tight constraints are highlighted and only their dual variables are nonzero; loosen a constraint by dragging it and its dual price drops to zero.' },
-        { num: '11.21', kind: 'Theorem', name: 'Max-flow min-cut as LP duality', deps: ['algo-11.19', 'algo-11.6'], refs: ['CLRS 4e §29.3'], tags: ['linear programming', 'flow'],
+        { num: '11.21', kind: 'Theorem', name: 'Max-flow min-cut as LP duality', deps: ['algo-11.19', 'algo-11.6'], refs: ['Erickson notes: Linear Programming', 'CLRS 4e §29.3'], tags: ['linear programming', 'flow'],
           pic: 'The max-flow LP and its dual are written out for an editable network; the dual optimum, displayed as 0/1 labels, is a cut, and both objective values match the combinatorial flow and cut.' },
+        { num: '11.22', kind: 'Proposition', name: 'Simplex can take exponentially many pivots (Klee–Minty)', deps: ['algo-11.17'], refs: ['Erickson notes: Linear Programming Algorithms'], tags: ['linear programming', 'counterexample'],
+          pic: 'A squashed three-dimensional cube is drawn; with the largest-coefficient pivot rule the simplex path visits all eight vertices, and a dimension slider shows the pivot count doubling with each added variable.' },
+        { num: '11.23', kind: 'Theorem', name: 'Linear programs are solvable in polynomial time (statement)', deps: ['algo-11.15', 'algo-11.22'], refs: ['CLRS 4e §29.1'], tags: ['linear programming'],
+          pic: 'Khachiyan’s ellipsoid shrinks around the feasible region of a two-variable LP, halving its area by a fixed factor at every cut, while an interior-point path glides through the middle of the polygon to the optimum.' },
+        { num: '11.24', kind: 'Theorem', name: 'Totally unimodular LPs have integral vertices', deps: ['algo-11.16', 'algo-11.10'], refs: ['Erickson notes: Linear Programming Algorithms'], tags: ['linear programming', 'matching'],
+          pic: 'For a bipartite graph every vertex of the matching polytope is checked to be 0/1, and the determinant of every square submatrix is in {−1, 0, 1}; add an odd cycle and a half-integral vertex appears.' },
       ],
     },
     {
       n: 12,
       title: 'Randomized, online and streaming algorithms',
-      summary: String.raw`Coin flips buy simplicity and speed: Las Vegas algorithms are always right but have random running time, Monte Carlo algorithms run on schedule but may err, and repetition drives the error down exponentially. Shuffling, sampling, collision estimates, Karger’s contraction and Bloom filters illustrate the toolkit. Online algorithms must act before seeing the future and are judged by their competitive ratio against an all-knowing optimum; streaming algorithms see data once and keep only a small sketch of it.`,
+      summary: String.raw`Coin flips buy simplicity and speed: Las Vegas algorithms are always right but have random running time, Monte Carlo algorithms run on schedule but may err, and repetition drives the error down exponentially. Shuffling, sampling, collision estimates, Karger’s contraction and Bloom filters illustrate the toolkit, and the tail bounds of Markov and Chernoff turn expectations into guarantees that hold with high probability. Online algorithms must act before seeing the future and are judged by their competitive ratio against an all-knowing optimum; streaming algorithms see data once and keep only a small sketch of it.`,
       items: [
-        { num: '12.1', kind: 'Definition', name: 'Las Vegas and Monte Carlo algorithms', deps: ['algo-3.11'], refs: ['CLRS 4e §5.3', 'KT §13.3'], tags: ['randomized'],
+        { num: '12.1', kind: 'Definition', name: 'Las Vegas and Monte Carlo algorithms', deps: ['algo-3.11'], refs: ['KT §13.3', 'Erickson notes: Nuts and Bolts'], tags: ['randomized'],
           pic: 'Run randomized quicksort and a random-sampling majority test many times; one histogram shows random running time with always-correct output, the other fixed time with a measured error rate.' },
         { num: '12.2', kind: 'Lemma', name: 'Amplification by independent repetition', deps: ['algo-12.1', 'pma-3.31'], refs: ['KT §13.2'], tags: ['randomized'],
           pic: 'Slide the single-run success probability p and the number of repetitions k; the failure probability (1 − p)ᵏ is plotted under e^(−pk), showing that about (1/p) ln(1/δ) runs push it below δ.' },
-        { num: '12.3', kind: 'Algorithm', name: 'Fisher–Yates shuffle', deps: ['algo-3.3'], refs: ['CLRS 4e §5.3'], tags: ['randomized', 'sampling'],
+        { num: '12.3', kind: 'Algorithm', name: 'Fisher–Yates shuffle', deps: ['algo-3.3'], refs: ['CLRS 4e §5.3', 'Erickson notes: Discrete Probability'], tags: ['randomized', 'sampling'],
           pic: 'Shuffle a four-element array thousands of times with Fisher–Yates and with the naive swap-with-anyone loop; the histogram over all 24 permutations is flat for the first and visibly lopsided for the second.' },
         { num: '12.4', kind: 'Algorithm', name: 'Reservoir sampling', deps: ['algo-12.3'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['randomized', 'streaming'],
           pic: 'Items stream past a reservoir of size k, the t-th replacing a random slot with probability k/t; over many runs each stream position’s inclusion frequency settles at k/n.' },
@@ -464,7 +552,7 @@ export default {
           pic: 'Throw keys into n slots one at a time; the probability of a first collision is plotted against the number thrown, crossing 1/2 near 1.18√n, with a live simulation overlaid.' },
         { num: '12.6', kind: 'Theorem', name: 'Coupon collector: n Hₙ expected draws', deps: ['algo-1.14', 'algo-3.3', 'pma-3.26'], refs: ['CLRS 4e §5.4'], tags: ['probability'],
           pic: 'Draw random coupons until all n types have appeared; the wait for each new type is a bar of expected height n/(n − i), and their sum tracks n Hₙ over many runs.' },
-        { num: '12.7', kind: 'Algorithm', name: 'Random assignments satisfy 7/8 of 3-SAT clauses', deps: ['algo-3.3'], refs: ['KT §13.4'], tags: ['randomized', 'satisfiability'],
+        { num: '12.7', kind: 'Theorem', name: 'Random assignments satisfy 7/8 of 3-SAT clauses', deps: ['algo-3.3'], refs: ['KT §13.4'], tags: ['randomized', 'satisfiability'],
           pic: 'Generate a random 3-CNF formula and flip random assignments: the satisfied fraction fluctuates around 7/8, and conditional expectations fix the variables one at a time without ever dropping below it.' },
         { num: '12.8', kind: 'Algorithm', name: 'Karger’s contraction algorithm', deps: ['algo-8.1', 'algo-12.1'], refs: ['KT §13.2', 'Erickson notes: Randomized Minimum Cut'], tags: ['randomized', 'cuts'],
           pic: 'Click Contract to merge the endpoints of a random edge; supernodes absorb vertices and keep parallel edges until two remain, and their crossing edges are compared with a true minimum cut.' },
@@ -482,14 +570,28 @@ export default {
           pic: 'Choose the purchase price B and a renting threshold; the adversary picks the season length, and the worst-case ratio curve bottoms out at 2 − 1/B exactly when the threshold matches B.' },
         { num: '12.15', kind: 'Theorem', name: 'Paging: LRU is k-competitive, the best deterministic ratio', deps: ['algo-12.13', 'algo-10.8'], refs: ['CLRS 4e §27.3'], tags: ['online', 'caching'],
           pic: 'An adversary always requests the page the online rule just evicted; LRU’s misses are compared with the furthest-in-future count phase by phase, and their ratio approaches the cache size k.' },
-        { num: '12.16', kind: 'Theorem', name: 'Randomized marking for paging is O(log k)-competitive', deps: ['algo-12.15', 'algo-1.14'], refs: ['KT §13.8'], tags: ['online', 'randomized'],
+        { num: '12.16', kind: 'Theorem', name: 'Randomized marking for paging is O(log k)-competitive', deps: ['algo-12.15', 'algo-1.14'], refs: ['KT §13.8', 'CLRS 4e §27.3'], tags: ['online', 'randomized'],
           pic: 'Pages are marked when requested and a uniformly random unmarked page is evicted; over adversarial phases the average miss count stays within about 2H_k times the optimum, far below k.' },
+        { num: '12.17', kind: 'Theorem', name: 'Markov’s inequality: from Las Vegas to Monte Carlo', deps: ['algo-12.1', 'algo-3.3'], refs: ['Erickson notes: Tail Inequalities', 'CLRS 4e App. C.3'], tags: ['probability', 'randomized'],
+          pic: 'A histogram of running times of a Las Vegas algorithm is cut at t times its mean; the mass beyond the cut stays below 1/t, so stopping at twice the mean and restarting fails with probability at most one half.' },
+        { num: '12.18', kind: 'Theorem', name: 'Chernoff bounds', deps: ['algo-12.17'], refs: ['KT §13.9', 'Erickson notes: Tail Inequalities'], tags: ['probability', 'randomized'],
+          pic: 'Sum n fair or biased coins many times; the empirical tail beyond (1 + δ)μ is plotted on a log scale beneath the Chernoff curve, which falls exponentially in μ while the Markov and Chebyshev bounds lag far above.' },
+        { num: '12.19', kind: 'Theorem', name: 'Balls into bins: maximum load Θ(log n / log log n)', deps: ['algo-12.18', 'algo-5.11'], refs: ['KT §13.10', 'Erickson notes: Hashing'], tags: ['probability', 'hashing'],
+          pic: 'Throw n balls into n bins and watch the fullest bin; over many trials its load tracks ln n / ln ln n, and a “two choices” toggle that places each ball in the emptier of two random bins flattens the maximum dramatically.' },
+        { num: '12.20', kind: 'Algorithm', name: 'Karger–Stein recursive contraction', deps: ['algo-12.9', 'algo-2.7'], refs: ['Erickson notes: Randomized Minimum Cut'], tags: ['randomized', 'cuts'],
+          pic: 'Contract down to n/√2 vertices, branch into two independent copies and recurse; the recursion tree shows survival probabilities per level, and the overall success rate stays near 1/log n instead of 1/n².' },
+        { num: '12.21', kind: 'Algorithm', name: 'Estimating distinct elements (Flajolet–Martin)', deps: ['algo-5.15', 'algo-12.2'], refs: ['Erickson notes: Filtering and Streaming'], tags: ['streaming', 'hashing'],
+          pic: 'Each stream item is hashed and the largest number of trailing zeros seen so far is kept; the estimate 2^z jumps around the true count, and taking the median of several independent copies pulls it into a narrow band.' },
+        { num: '12.22', kind: 'Theorem', name: 'Move-to-front is 4-competitive for list access', deps: ['algo-12.13', 'algo-6.4'], refs: ['CLRS 4e §27.2'], tags: ['online', 'amortized'],
+          pic: 'Requests to a linked list are served by move-to-front and by an offline optimum; the potential (twice the number of pairs the two lists order differently) is drawn as a bar that pays for every expensive access, keeping the ratio under 4 (and under 2 in Sleator and Tarjan’s cost model).' },
+        { num: '12.23', kind: 'Algorithm', name: 'Weighted majority (multiplicative weights)', deps: ['algo-12.13'], refs: ['CLRS 4e §33.2'], tags: ['online', 'learning'],
+          pic: 'A panel of experts predicts a sequence of outcomes; each wrong expert’s weight is halved, the weighted vote is plotted, and its mistake count stays below about 2.41 times the best expert’s plus a log₂ n term.' },
       ],
     },
     {
       n: 13,
       title: 'String algorithms',
-      summary: String.raw`Finding a pattern in a text can be done in linear time by refusing to re-read characters. Rabin–Karp compares rolling fingerprints and checks only on a hash match; finite automata and Knuth–Morris–Pratt use the pattern’s self-overlaps to slide forward without backtracking in the text. Suffix arrays index every substring of a text at once, are built by repeated rank doubling, and become far more useful once the longest common prefixes of neighbouring suffixes are known.`,
+      summary: String.raw`Finding a pattern in a text can be done in linear time by refusing to re-read characters. Rabin–Karp compares rolling fingerprints and checks only on a hash match; finite automata and Knuth–Morris–Pratt use the pattern’s self-overlaps to slide forward without backtracking in the text. Suffix arrays index every substring of a text at once, are built by repeated rank doubling, and become far more useful once the longest common prefixes of neighbouring suffixes are known. Boyer–Moore skips ahead by reading the pattern backwards, and Aho–Corasick matches a whole dictionary at once.`,
       items: [
         { num: '13.1', kind: 'Definition', name: 'String matching and the naive matcher', deps: ['algo-1.1'], refs: ['CLRS 4e §32.1'], tags: ['strings'],
           pic: 'Type a text and a pattern; the pattern slides along the text with character comparisons marked green or red at each shift, and the total is compared with (n − m + 1)m.' },
@@ -501,7 +603,7 @@ export default {
           pic: 'Type a pattern and its matching automaton is drawn with one state per matched prefix; feeding the text moves a token through the states, reaching the accepting state at every occurrence.' },
         { num: '13.5', kind: 'Definition', name: 'The prefix (failure) function', deps: ['algo-13.1'], refs: ['CLRS 4e §32.4'], tags: ['strings'],
           pic: 'For a typed pattern each position shows π[q], the longest proper prefix that is also a suffix of the first q characters, drawn as a pair of matching brackets.' },
-        { num: '13.6', kind: 'Algorithm', name: 'Knuth–Morris–Pratt', deps: ['algo-13.5', 'algo-13.4', 'algo-6.4'], refs: ['CLRS 4e §32.4'], tags: ['strings'],
+        { num: '13.6', kind: 'Algorithm', name: 'Knuth–Morris–Pratt', deps: ['algo-13.5', 'algo-13.4', 'algo-6.4'], refs: ['CLRS 4e §32.4', 'Erickson notes: String Matching'], tags: ['strings'],
           pic: 'Run KMP on a typed text and pattern: on a mismatch the pattern jumps by the failure function, and a potential meter (the current match length) shows total work never exceeding 2n.' },
         { num: '13.7', kind: 'Algorithm', name: 'Computing the prefix function in linear time', deps: ['algo-13.6'], refs: ['CLRS 4e §32.4'], tags: ['strings'],
           pic: 'The pattern is matched against itself: the π table fills left to right, fallback jumps are drawn as arcs, and an amortization counter keeps the total number of steps below 2m.' },
@@ -513,12 +615,16 @@ export default {
           pic: 'Pairs of ranks for the first 2ᵏ and next 2ᵏ characters are radix-sorted round by round, and the number of distinct ranks rises until every suffix is separated after about log₂ n rounds.' },
         { num: '13.11', kind: 'Algorithm', name: 'LCP array in linear time (Kasai)', deps: ['algo-13.9'], refs: ['CLRS 4e §32.5'], tags: ['strings'],
           pic: 'Suffixes are visited in text order and each one’s common prefix with its sorted predecessor is measured; a counter that drops by at most one per step proves O(n) work, and the maximum entry reveals the longest repeated substring.' },
+        { num: '13.12', kind: 'Algorithm', name: 'Boyer–Moore–Horspool: skipping with the bad-character rule', deps: ['algo-13.1'], refs: ['CLRS 4e Ch. 32'], tags: ['strings'],
+          pic: 'The pattern is compared right to left; on a mismatch it jumps ahead by the distance stored for the text character under its last position, and a counter shows far fewer than n comparisons on natural-language text.' },
+        { num: '13.13', kind: 'Algorithm', name: 'Aho–Corasick dictionary matching', deps: ['algo-13.8', 'algo-13.7'], refs: ['Erickson notes: String Matching'], tags: ['strings', 'automata'],
+          pic: 'A trie of several patterns gains failure links computed breadth-first, generalizing the prefix function; one pass of the text moves a token through the automaton and reports every occurrence of every pattern.' },
       ],
     },
     {
       n: 14,
       title: 'NP-completeness and approximation',
-      summary: String.raw`Some problems resist every polynomial-time attack, and reductions explain why: if one NP-complete problem were easy, all of them would be. Starting from satisfiability, a chain of gadget reductions reaches independent sets, vertex covers, Hamiltonian cycles, subset sum and graph colouring. When exact answers are out of reach, approximation algorithms promise solutions within a proven factor of optimal, using matchings, LP relaxations, greedy charging and spanning trees, while some problems, such as general TSP, admit no constant factor at all unless P = NP.`,
+      summary: String.raw`Some problems resist every polynomial-time attack, and reductions explain why: if one NP-complete problem were easy, all of them would be. Starting from satisfiability, a chain of gadget reductions reaches independent sets, vertex covers, Hamiltonian cycles, subset sum and graph colouring. When exact answers are out of reach, approximation algorithms promise solutions within a proven factor of optimal, using matchings, LP relaxations, greedy charging, local search and spanning trees, and approximation schemes trade accuracy for time at any rate one likes, while some problems, such as general TSP, admit no constant factor at all unless P = NP.`,
       items: [
         { num: '14.1', kind: 'Definition', name: 'Decision problems and the class P', deps: ['algo-1.11', 'algo-1.2'], refs: ['CLRS 4e §34.1'], tags: ['complexity'],
           pic: 'Running times n², n³, 2ⁿ and n! are plotted against a one-second line, and a speed-up slider shows a faster machine multiplying the reachable n for polynomials but adding only a constant for exponentials.' },
@@ -528,7 +634,7 @@ export default {
           pic: 'A gadget maps an instance of one problem to an instance of another, a brute-force oracle solves the target, and the answer is pulled back along arrows drawn between the two instances.' },
         { num: '14.4', kind: 'Definition', name: 'NP-hardness and NP-completeness', deps: ['algo-14.2', 'algo-14.3'], refs: ['CLRS 4e §34.3', 'Erickson Ch. 12'], tags: ['complexity'],
           pic: 'A map of problems joined by reduction arrows: selecting a problem highlights everything that reduces to it, and it is badged NP-complete once it lies in NP and every NP problem reaches it.' },
-        { num: '14.5', kind: 'Theorem', name: 'Cook–Levin theorem: SAT is NP-complete (statement)', deps: ['algo-14.4'], refs: ['CLRS 4e §34.3', 'KT §8.4'], tags: ['complexity', 'satisfiability'],
+        { num: '14.5', kind: 'Theorem', name: 'Cook–Levin theorem: SAT is NP-complete (statement)', deps: ['algo-14.4', 'toc-13.4'], refs: ['CLRS 4e §34.3', 'KT §8.4'], tags: ['complexity', 'satisfiability'],
           pic: 'A tiny verifier’s computation is laid out as a tableau of cells, the clauses forcing each row to follow from the previous one are highlighted, and a satisfying assignment reads off an accepting run.' },
         { num: '14.6', kind: 'Theorem', name: '3-SAT is NP-complete', deps: ['algo-14.5'], refs: ['CLRS 4e §34.4', 'Erickson Ch. 12'], tags: ['complexity', 'satisfiability'],
           pic: 'Type a clause of any width and watch it split into three-literal clauses chained by fresh variables; random assignments confirm that satisfiability is preserved in both directions.' },
@@ -552,7 +658,7 @@ export default {
           pic: 'Sets are coloured regions over a grid of elements; greedy keeps taking the set that covers the most uncovered elements, each new element is charged a price, and the total price is compared with Hₙ times the optimum.' },
         { num: '14.16', kind: 'Algorithm', name: 'Metric TSP: 2-approximation from an MST', deps: ['algo-14.12', 'algo-14.9', 'algo-10.16'], refs: ['CLRS 4e §35.2'], tags: ['approximation', 'tsp'],
           pic: 'Drag cities in the plane: the MST is drawn, walked twice around as an Euler tour, and shortcut into a tour whose length is shown between the MST weight and twice it.' },
-        { num: '14.17', kind: 'Theorem', name: 'Christofides’ 3/2-approximation (statement)', deps: ['algo-14.16'], refs: ['CLRS 4e §35.2'], tags: ['approximation', 'tsp'],
+        { num: '14.17', kind: 'Theorem', name: 'Christofides–Serdyukov 3/2-approximation (statement)', deps: ['algo-14.16'], refs: ['Erickson notes: Approximation Algorithms', 'CLRS 4e Ch. 35'], tags: ['approximation', 'tsp'],
           pic: 'A minimum perfect matching on the MST’s odd-degree vertices is added, an Eulerian circuit is shortcut, and the tour is compared with 1.5 times the exact optimum on small instances.' },
         { num: '14.18', kind: 'Theorem', name: 'General TSP cannot be approximated unless P = NP', deps: ['algo-14.9', 'algo-14.12'], refs: ['CLRS 4e §35.2'], tags: ['approximation', 'tsp'],
           pic: 'A Hamiltonian-cycle instance becomes a TSP instance with weight 1 on edges and ρn + 1 on non-edges; the histogram of tour lengths shows a gap between tours of cost n and everything else.' },
@@ -560,6 +666,99 @@ export default {
           pic: 'Jobs of draggable lengths go to the least-loaded machine; the makespan is compared with the lower bounds “largest job” and “average load”, and sorting jobs first tightens the ratio from 2 toward 4/3.' },
         { num: '14.20', kind: 'Algorithm', name: 'Knapsack approximation scheme by value scaling', deps: ['algo-14.12', 'algo-7.10'], refs: ['KT §11.8'], tags: ['approximation', 'dynamic programming'],
           pic: 'Item values are rounded down to multiples of a step set by ε, the scaled problem is solved exactly by DP, and the value found and the running time are plotted against 1/ε.' },
+        { num: '14.21', kind: 'Definition', name: 'Approximation schemes: PTAS and FPTAS', deps: ['algo-14.12'], refs: ['CLRS 4e Ch. 35', 'KT §11.8'], tags: ['approximation'],
+          pic: 'Slide ε toward 0 and watch the guaranteed ratio 1 + ε tighten while the running time grows, polynomially in 1/ε for a fully polynomial scheme and like n^(1/ε) for a mere PTAS.' },
+        { num: '14.22', kind: 'Algorithm', name: 'Center selection: farthest-first is a 2-approximation', deps: ['algo-14.12'], refs: ['KT §11.2'], tags: ['approximation', 'clustering'],
+          pic: 'Drag sites in the plane and choose k; each new center is the site farthest from those already chosen, the covering radius is drawn as discs, and it never exceeds twice the optimal radius found by brute force.' },
+        { num: '14.23', kind: 'Algorithm', name: 'Local search for maximum cut', deps: ['algo-14.12', 'cplx-2.7'], refs: ['KT §12.4'], tags: ['approximation', 'local search'],
+          pic: 'Vertices switch sides while doing so increases the number of cut edges; at a local optimum every vertex has at least half its edges crossing, so the cut holds at least half of all edges and half the optimum.' },
+      ],
+    },
+    {
+      n: 15,
+      title: 'Advanced data structures',
+      summary: String.raw`A balanced search tree can carry extra information at every node, as long as that information can be recomputed from the children after a rotation; order statistics, intervals and range sums all ride along at no asymptotic cost. Randomized priorities give treaps, two hash functions give cuckoo hashing, and counting block transfers instead of operations explains B-trees. For integer keys the van Emde Boas recursion beats comparison bounds, and Fibonacci heaps make decrease-key cheap enough to speed up Dijkstra’s and Prim’s algorithms.`,
+      items: [
+        { num: '15.1', kind: 'Theorem', name: 'Augmenting a red–black tree', deps: ['algo-5.8', 'algo-5.5'], refs: ['CLRS 4e §17.2'], tags: ['search trees', 'augmentation'],
+          pic: 'Store at each node a field computed from its children (size, sum, maximum); insert keys and watch each rotation repair only the two fields it touches, so the extra bookkeeping stays O(log n).' },
+        { num: '15.2', kind: 'Definition', name: 'Order-statistic trees: select and rank', deps: ['algo-15.1'], refs: ['CLRS 4e §17.1'], tags: ['search trees', 'selection'],
+          pic: 'Each node shows its subtree size; ask for the k-th smallest key or the rank of a key and the search path is highlighted as it goes left or right by comparing k with the left subtree’s size.' },
+        { num: '15.3', kind: 'Definition', name: 'Interval trees', deps: ['algo-15.1'], refs: ['CLRS 4e §17.3'], tags: ['search trees', 'intervals'],
+          pic: 'Intervals drawn on a timeline are stored by left endpoint, each node remembering the largest right endpoint below it; a query interval descends one path and returns an overlapping interval or proves none exists.' },
+        { num: '15.4', kind: 'Definition', name: 'Segment trees for range queries', deps: ['algo-15.1', 'algo-2.1'], refs: ['CLRS 4e Ch. 17'], tags: ['data structures', 'augmentation'],
+          pic: 'An array sits under a complete binary tree of partial sums; drag a query range and the O(log n) canonical nodes that tile it light up, and changing one entry updates only its root-to-leaf path.' },
+        { num: '15.5', kind: 'Definition', name: 'Treaps', deps: ['algo-5.5', 'algo-5.4', 'algo-3.4'], refs: ['Erickson notes: Treaps and Skip Lists'], tags: ['search trees', 'randomized'],
+          pic: 'Keys are in search-tree order and random priorities in heap order; inserting a key rotates it up until its priority fits, and over many runs the depth histogram matches that of a randomly built search tree.' },
+        { num: '15.6', kind: 'Algorithm', name: 'Cuckoo hashing', deps: ['algo-5.15', 'algo-5.18'], refs: ['Erickson notes: Hashing'], tags: ['hashing', 'randomized'],
+          pic: 'Every key has one slot in each of two tables; an insertion that finds both occupied evicts a resident, which flies to its other slot, and the chain of evictions is animated until it settles or a cycle forces a rehash.' },
+        { num: '15.7', kind: 'Model', name: 'The external-memory (disk-access) model', deps: ['algo-1.2'], refs: ['CLRS 4e Ch. 18'], tags: ['models', 'memory'],
+          pic: 'Data lives on a disk read in blocks of B items through a memory of size M; scanning, binary search and a search tree are replayed with a counter of block transfers instead of operations.' },
+        { num: '15.8', kind: 'Theorem', name: 'B-trees: height at most log_t((n + 1)/2)', deps: ['algo-5.10', 'algo-15.7'], refs: ['CLRS 4e §18.1'], tags: ['balanced trees', 'memory'],
+          pic: 'Fill a B-tree as sparsely as the rules allow for a given minimum degree t; its height is compared with log_t((n + 1)/2), and each search is charged one disk read per level.' },
+        { num: '15.9', kind: 'Definition', name: 'Van Emde Boas trees: O(log log u) operations', deps: ['algo-2.10', 'algo-3.8'], refs: ['CLRS 3e Ch. 20 (online for 4e)'], tags: ['data structures', 'integers'],
+          pic: 'A universe of size u splits into √u clusters with a summary structure over them; a successor query recurses into one cluster or into the summary, and the recursion depth counter reads log₂ log₂ u.' },
+        { num: '15.10', kind: 'Definition', name: 'Fibonacci heaps', deps: ['algo-3.8', 'algo-6.4'], refs: ['CLRS 3e Ch. 19 (online for 4e)'], tags: ['heaps', 'amortized'],
+          pic: 'A root list of heap-ordered trees absorbs inserts lazily; extract-min consolidates trees of equal degree, decrease-key cuts a node loose and cascades through marked parents, and the potential (trees plus twice the marks) is drawn as a bank balance.' },
+        { num: '15.11', kind: 'Theorem', name: 'Fibonacci heaps: O(1) amortized decrease-key', deps: ['algo-15.10', 'algo-2.11'], refs: ['CLRS 3e Ch. 19 (online for 4e)'], tags: ['heaps', 'amortized'],
+          pic: 'A node of degree k is shown to own at least F(k + 2) descendants, so degrees stay below log_φ n; a long random workload plots actual costs as spikes and their running average flat at the amortized bounds.' },
+        { num: '15.12', kind: 'Theorem', name: 'Dijkstra and Prim in O(m + n log n) with Fibonacci heaps', deps: ['algo-15.11', 'algo-9.8', 'algo-10.16'], refs: ['CLRS 4e §22.3', 'CLRS 4e §21.2'], tags: ['shortest paths', 'heaps'],
+          pic: 'Run Dijkstra on graphs of growing density with a binary heap and with a Fibonacci heap; the operation counts split into extract-mins and decrease-keys, and the binary heap’s m log n line pulls away from the m + n log n line.' },
+        { num: '15.13', kind: 'Hypothesis', name: 'Dynamic optimality conjecture for splay trees', deps: ['algo-6.8', 'algo-7.14'], refs: ['Erickson notes: Scapegoat and Splay Trees'], tags: ['search trees', 'open problem'],
+          pic: 'On short access sequences, the rotation cost of splaying is compared with the best offline sequence of rotations found by exhaustive search; the ratio stays small on every sequence tried, as Sleator and Tarjan conjectured it always would.' },
+      ],
+    },
+    {
+      n: 16,
+      title: 'Flow algorithms, matchings and min-cost flow',
+      summary: String.raw`Faster maximum-flow algorithms push along many shortest paths at once or abandon augmenting paths altogether in favour of local pushes. Bipartite matching gets its own phase-based algorithm, and attaching costs to edges leads to minimum-cost flow, whose optimality is certified by the absence of negative residual cycles and which the Hungarian algorithm solves for assignments. Demands, lower bounds and cleverly built cuts turn surprising problems (project selection, sports elimination, image segmentation, chain covers of posets) into flows.`,
+      items: [
+        { num: '16.1', kind: 'Theorem', name: 'Flow decomposition into paths and cycles', deps: ['algo-11.1'], refs: ['Erickson Ch. 10'], tags: ['flow'],
+          pic: 'Peel an s–t path or a cycle off a feasible flow, subtract its bottleneck and repeat; the flow falls apart into at most m coloured pieces whose values add back up to the original.' },
+        { num: '16.2', kind: 'Algorithm', name: 'Dinic’s blocking-flow algorithm', deps: ['algo-11.9'], refs: ['Erickson Ch. 10'], tags: ['flow'],
+          pic: 'The residual graph is layered by BFS distance from s; a blocking flow saturates some edge on every shortest path, and the s–t distance shown after each phase strictly increases, so at most n − 1 phases occur.' },
+        { num: '16.3', kind: 'Algorithm', name: 'Push–relabel (preflow–push) maximum flow', deps: ['algo-11.4', 'algo-11.6'], refs: ['KT §7.4'], tags: ['flow'],
+          pic: 'Vertices sit at heights on a vertical axis; excess water is pushed downhill along residual edges, a stuck vertex is lifted one level, and when only s and t hold water the flow is maximum.' },
+        { num: '16.4', kind: 'Algorithm', name: 'Hopcroft–Karp bipartite matching in O(m√n)', deps: ['algo-11.10', 'algo-8.5'], refs: ['CLRS 4e §25.1'], tags: ['matching'],
+          pic: 'Each phase finds a maximal set of vertex-disjoint shortest augmenting paths by BFS and DFS and flips them all at once; the augmenting-path length per phase is plotted and the phase count stays near 2√n.' },
+        { num: '16.5', kind: 'Theorem', name: 'Min-cost flow is optimal iff no negative residual cycle', deps: ['algo-11.4', 'algo-9.7'], refs: ['Erickson notes: Minimum-Cost Flows'], tags: ['flow', 'min-cost flow'],
+          pic: 'Edit edge costs on a network carrying a fixed flow value; any negative-cost cycle in the residual graph is highlighted and pushing flow around it lowers the total cost, and when none remains the cost is minimal.' },
+        { num: '16.6', kind: 'Algorithm', name: 'Successive shortest paths for min-cost flow', deps: ['algo-16.5', 'algo-9.11', 'algo-9.8'], refs: ['Erickson notes: Minimum-Cost Flows'], tags: ['flow', 'min-cost flow'],
+          pic: 'Augment one unit at a time along a cheapest residual path, found by Dijkstra on reduced costs; vertex potentials are shown as heights that keep every residual edge nonnegative from one round to the next.' },
+        { num: '16.7', kind: 'Algorithm', name: 'Hungarian algorithm for the assignment problem', deps: ['algo-11.10', 'algo-11.12', 'algo-9.11'], refs: ['CLRS 4e §25.3', 'Erickson notes: Minimum-Cost Flows'], tags: ['matching', 'min-cost flow'],
+          pic: 'Workers and jobs carry labels whose sums bound every edge weight; the matching grows inside the equality subgraph of tight edges, and when it gets stuck the labels shift to make new edges tight, ending at a perfect matching of optimal weight.' },
+        { num: '16.8', kind: 'Theorem', name: 'Circulations with demands and lower bounds', deps: ['algo-11.6', 'algo-11.7'], refs: ['KT §7.7'], tags: ['flow'],
+          pic: 'Give vertices supplies and demands and edges lower bounds; a super-source and super-sink are attached, and the instance is feasible exactly when the auxiliary maximum flow saturates them, otherwise a violated cut is shown.' },
+        { num: '16.9', kind: 'Algorithm', name: 'Project selection as a minimum cut', deps: ['algo-11.6'], refs: ['KT §7.11', 'Erickson Ch. 11'], tags: ['flow', 'cuts'],
+          pic: 'Projects with profits and prerequisite arrows are wired to a source and sink; the minimum cut picks a prerequisite-closed set, and its profit is checked against all closed sets on small instances.' },
+        { num: '16.10', kind: 'Algorithm', name: 'Baseball elimination via max flow', deps: ['algo-11.6', 'algo-11.7'], refs: ['KT §7.12', 'Erickson Ch. 11'], tags: ['flow'],
+          pic: 'Edit a standings table; remaining games flow to teams capped by how many wins each may still take, and an unsaturated source edge marks the chosen team as eliminated, with the minimum cut naming the subset of teams that proves it.' },
+        { num: '16.11', kind: 'Algorithm', name: 'Image segmentation by minimum cut', deps: ['algo-11.6'], refs: ['KT §7.10'], tags: ['flow', 'cuts', 'imaging'],
+          pic: 'Each pixel of a small image is tied to the source by its foreground likelihood, to the sink by its background likelihood and to its neighbours by a smoothness penalty; sliders reweight the terms and the minimum cut redraws the segmentation.' },
+        { num: '16.12', kind: 'Theorem', name: 'Dilworth’s theorem via bipartite matching', deps: ['algo-11.10', 'algo-11.12', 'comb-8.4'], refs: ['Erickson Ch. 11'], tags: ['matching', 'posets'],
+          pic: 'A poset is split into a left and right copy of its elements with an edge for each comparable pair; every matching edge glues two chains together, so the minimum chain cover has n − |M| chains, matched by an antichain read off the König cover.' },
+      ],
+    },
+    {
+      n: 17,
+      title: 'Parallel algorithms',
+      summary: String.raw`A fork–join program describes which steps may run at the same time, and its computation unrolls into a DAG. Two numbers summarize that DAG: the work, the total number of steps, and the span, the length of the longest dependency chain. Every scheduler needs at least work/P and span steps on P processors, a greedy scheduler comes within a factor of two of that, and divide and conquer with parallel recursive calls yields matrix multiplication and merge sort with polylogarithmic span.`,
+      items: [
+        { num: '17.1', kind: 'Model', name: 'Fork–join parallelism and the computation DAG', deps: ['algo-2.1', 'algo-8.11'], refs: ['CLRS 4e §26.1'], tags: ['parallel', 'models'],
+          pic: 'Step through a parallel Fibonacci program: each spawn forks the DAG and each sync joins it, and the unrolled computation is drawn as a directed acyclic graph of unit-time strands.' },
+        { num: '17.2', kind: 'Definition', name: 'Work, span and parallelism', deps: ['algo-17.1'], refs: ['CLRS 4e §26.1'], tags: ['parallel'],
+          pic: 'For a computation DAG the total number of strands (work) and the longest path (span, highlighted) are computed live, and their ratio, the parallelism, is shown as the most processors that could ever be kept busy.' },
+        { num: '17.3', kind: 'Lemma', name: 'Work law and span law', deps: ['algo-17.2'], refs: ['CLRS 4e §26.1'], tags: ['parallel'],
+          pic: 'Schedule a DAG by hand on P processors, dragging strands into time slots; however you do it, the finishing time never drops below work/P or below the span, both drawn as floors.' },
+        { num: '17.4', kind: 'Theorem', name: 'Greedy schedulers: T_P ≤ T₁/P + T∞ (Graham–Brent)', deps: ['algo-17.3'], refs: ['CLRS 4e §26.1'], tags: ['parallel', 'scheduling'],
+          pic: 'A greedy scheduler runs any ready strands each step; every step is either complete (all P busy, charged to work) or incomplete (charged to span), and the two tallies add up under the bound.' },
+        { num: '17.5', kind: 'Concept', name: 'Determinacy races', deps: ['algo-17.1'], refs: ['CLRS 4e §26.1'], tags: ['parallel', 'correctness'],
+          pic: 'Two parallel strands increment a shared counter; replaying random interleavings of their load, add and store instructions shows final values that differ from run to run.' },
+        { num: '17.6', kind: 'Algorithm', name: 'Parallel matrix multiplication by divide and conquer', deps: ['algo-17.4', 'algo-2.7'], refs: ['CLRS 4e §26.2'], tags: ['parallel', 'matrices'],
+          pic: 'The eight block products are spawned in parallel and summed; the recursion tree is coloured by depth, with work Θ(n³) and span Θ(log² n) plotted against the matrix size.' },
+        { num: '17.7', kind: 'Algorithm', name: 'Parallel merge sort with parallel merging', deps: ['algo-17.4', 'algo-2.3', 'algo-1.5'], refs: ['CLRS 4e §26.3'], tags: ['parallel', 'sorting'],
+          pic: 'Merging splits at the median of the larger array, binary-searches its partner in the smaller one and recurses on both halves in parallel; the resulting sort shows work Θ(n log n) and span Θ(log³ n).' },
+        { num: '17.8', kind: 'Theorem', name: 'Work stealing runs in T₁/P + O(T∞) expected time (statement)', deps: ['algo-17.4', 'algo-12.1'], refs: ['CLRS 4e Ch. 26'], tags: ['parallel', 'randomized', 'scheduling'],
+          pic: 'Each processor works from its own deque and an idle one steals from a random victim; the number of steal attempts over many runs is plotted against P·T∞, as Blumofe and Leiserson’s analysis predicts.' },
       ],
     },
   ],

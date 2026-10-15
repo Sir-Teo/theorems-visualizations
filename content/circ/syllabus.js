@@ -1,4 +1,18 @@
 // Syllabus — Circuits (curated course; see collection.js for references)
+//
+// Sources consulted (2026-10):
+//   Agarwal & Lang, Foundations of Analog and Digital Electronic Circuits — full section-level TOC (MIT 6.002 text):
+//     https://neurophysics.ucsd.edu/courses/physics_120/Agarwal%20and%20Lang%20(2005)%20Foundations%20of%20Analog%20and%20Digital.pdf
+//   Horowitz & Hill, The Art of Electronics 3e — full TOC: https://artofelectronics.net/the-book/table-of-contents/
+//     (PDF: http://artofelectronics.net/wp-content/uploads/2014/04/AoE_3_table-of-contents.pdf)
+//   MIT 6.002 Circuits and Electronics (Spring 2007) lectures:
+//     https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/pages/lecture-notes/
+//   Wikipedia: "Network analysis (electrical circuits)", Category "Circuit theorems".
+// Gaps filled after comparison: Millman's theorem, modified nodal analysis (SPICE), the cross-coupled latch,
+//   the buck converter, the Miller effect, Foster's reactance theorem, the instrumentation amplifier.
+// Deliberate omissions: Bartlett's bisection, Belevitch, Richards' theorem (specialist network synthesis), BJT biasing
+//   detail, digital logic design (→ arch), power electronics beyond the buck converter.
+// The physics behind the circuit laws (charge conservation, Faraday, Kirchhoff from Maxwell) lives in `em`.
 export default {
   collection: 'circ',
   chapters: [
@@ -8,21 +22,21 @@ export default {
       title: 'The circuit abstraction',
       summary: String.raw`A circuit is a deliberately simplified picture of electromagnetism: if we promise that no magnetic flux leaks between elements and no charge piles up inside them, every element can be described by a single voltage across it and a single current through it. This chapter sets up that bargain — the lumped matter discipline — along with the bookkeeping of power, the resistor and Ohm's law, and the ideal and real sources that drive circuits. It ends by seeing a circuit as a graph, the shape that all later network theorems exploit.`,
       items: [
-        { num: '1.1', kind: 'Definition', name: 'Charge, current and voltage', deps: [], refs: ['Agarwal–Lang §1.2', 'Horowitz–Hill §1.2'],
+        { num: '1.1', kind: 'Definition', name: 'Charge, current and voltage', deps: ['em-1.2', 'em-2.3', 'em-6.1'], refs: ['Agarwal–Lang §1.2', 'Horowitz–Hill §1.2'],
           pic: 'Charges drift along a wire while a counter at a cross-section tallies coulombs per second; drag a test charge between two points and the work done per coulomb is read out as the voltage, independent of the path taken.' },
         { num: '1.2', kind: 'Definition', name: 'Power and the passive sign convention', deps: ['circ-1.1'], refs: ['Agarwal–Lang §1.2'],
           pic: 'Flip the reference arrows on an element and watch the sign of v·i flip with them; a battery charging and discharging shows power absorbed versus delivered with a colour-coded meter.' },
-        { num: '1.3', kind: 'Principle', name: 'Lumped matter discipline', deps: ['circ-1.1'], refs: ['Agarwal–Lang §1.3', 'Agarwal–Lang §1.4'],
+        { num: '1.3', kind: 'Principle', name: 'Lumped matter discipline', deps: ['circ-1.1', 'em-9.3', 'em-1.2'], refs: ['Agarwal–Lang §1.3', 'Agarwal–Lang §1.4'],
           pic: 'Shrink or grow a circuit relative to the wavelength of its signal: while it is small, a voltmeter reads the same between two nodes whatever path its leads take; at high frequency the reading starts to depend on the loop and the lumped picture visibly breaks.' },
-        { num: '1.4', kind: 'Law', name: 'Ohm’s law', deps: ['circ-1.1'], refs: ['Horowitz–Hill §1.2', 'Agarwal–Lang §1.5'],
+        { num: '1.4', kind: 'Law', name: 'Ohm’s law', deps: ['circ-1.1', 'em-6.3'], refs: ['Horowitz–Hill §1.2', 'Agarwal–Lang §1.5'],
           pic: 'Sweep the voltage across a resistor and plot the measured current: a straight line through the origin whose slope is 1/R; switch to a filament lamp and the line curves as the filament heats up.' },
-        { num: '1.5', kind: 'Proposition', name: 'Resistance of a conductor: R = ρL/A', deps: ['circ-1.4'], refs: ['Agarwal–Lang §1.5'],
+        { num: '1.5', kind: 'Proposition', name: 'Resistance of a conductor: R = ρL/A', deps: ['circ-1.4', 'em-6.5'], refs: ['Agarwal–Lang §1.5'],
           pic: 'Stretch and thicken a wire with handles; the resistance readout tracks ρL/A and doubling the length doubles R while doubling the cross-section halves it.' },
         { num: '1.6', kind: 'Definition', name: 'Ideal voltage and current sources', deps: ['circ-1.1'], refs: ['Agarwal–Lang §1.6'],
           pic: 'Turn a load-resistance knob from short to open: the ideal voltage source holds its voltage while the current swings, the ideal current source holds its current while the voltage swings, shown as horizontal and vertical lines on the i–v plane.' },
         { num: '1.7', kind: 'Model', name: 'Real sources and internal resistance', deps: ['circ-1.6', 'circ-1.4'], refs: ['Agarwal–Lang §1.7', 'Horowitz–Hill §1.2'],
           pic: 'Draw more and more current from a battery model: the terminal voltage sags linearly with slope −R_int, and the i–v line of the real source tilts between the two ideal extremes.' },
-        { num: '1.8', kind: 'Phenomenon', name: 'Joule heating: P = I²R', deps: ['circ-1.2', 'circ-1.4'], refs: ['Horowitz–Hill §1.2'],
+        { num: '1.8', kind: 'Phenomenon', name: 'Joule heating: P = I²R', deps: ['circ-1.2', 'circ-1.4', 'em-6.6'], refs: ['Horowitz–Hill §1.2'],
           pic: 'Push current through a resistor and watch its simulated temperature rise until heat loss balances I²R; doubling the current quadruples the steady temperature rise.' },
         { num: '1.9', kind: 'Definition', name: 'Element i–v characteristics: linear and nonlinear', deps: ['circ-1.4', 'circ-1.6'], refs: ['Agarwal–Lang §1.6'],
           pic: 'A gallery of i–v curves (resistor, source, diode, lamp, open, short) that can be dragged onto the same axes; hovering checks whether scaling the voltage scales the current, the test for linearity.' },
@@ -36,9 +50,9 @@ export default {
       title: 'Kirchhoff’s laws and resistive networks',
       summary: String.raw`Kirchhoff's two laws — currents into a node sum to zero, voltages around a loop sum to zero — are what the lumped matter discipline buys us. Combined with element laws they turn any resistive network into a linear system of equations, solved systematically by node voltages or mesh currents. Along the way come dividers, bridges, the delta–wye trick, and a beautiful bridge to combinatorics and probability: spanning trees count effective resistance, and voltages are hitting probabilities of random walks.`,
       items: [
-        { num: '2.1', kind: 'Law', name: 'Kirchhoff’s current law', deps: ['circ-1.3', 'circ-1.10'], refs: ['Agarwal–Lang §2.2'],
+        { num: '2.1', kind: 'Law', name: 'Kirchhoff’s current law', deps: ['circ-1.3', 'circ-1.10', 'em-6.2', 'em-6.8'], refs: ['Agarwal–Lang §2.2'],
           pic: 'On an editable circuit, every node shows arrows for its branch currents with a live sum that stays at zero as resistors and sources are changed; a "leaky node" toggle lets charge pile up and shows the sum going nonzero.' },
-        { num: '2.2', kind: 'Law', name: 'Kirchhoff’s voltage law', deps: ['circ-1.3', 'circ-1.10'], refs: ['Agarwal–Lang §2.2'],
+        { num: '2.2', kind: 'Law', name: 'Kirchhoff’s voltage law', deps: ['circ-1.3', 'circ-1.10', 'em-6.8'], refs: ['Agarwal–Lang §2.2'],
           pic: 'Click out any closed loop in a live-solved circuit; the voltage rises and drops around it are tallied as a bar chart that always sums to zero.' },
         { num: '2.3', kind: 'Proposition', name: 'Series resistors and the voltage divider', deps: ['circ-2.2', 'circ-1.4'], refs: ['Agarwal–Lang §2.3', 'Horowitz–Hill §1.2'],
           pic: 'Slide the wiper of a potentiometer: the output voltage moves linearly between the rails, and attaching a load resistor shows how the divider sags when the load is not much larger than the divider resistance.' },
@@ -62,7 +76,7 @@ export default {
           pic: 'For a small editable graph of unit resistors, all spanning trees are enumerated as thumbnails; the effective resistance between two nodes equals the ratio of two tree counts, matching the circuit solver.' },
         { num: '2.13', kind: 'Theorem', name: 'Rayleigh’s monotonicity law', deps: ['circ-2.12'], refs: ['Agarwal–Lang §3.3'],
           pic: 'Increase any single resistance in a network and the effective resistance between two chosen terminals never decreases — a live plot of R_eff against the edited resistor is always monotone.' },
-        { num: '2.14', kind: 'Theorem', name: 'Voltages as random-walk hitting probabilities', deps: ['circ-2.5', 'circ-2.8'], refs: ['Agarwal–Lang §3.3'],
+        { num: '2.14', kind: 'Theorem', name: 'Voltages as random-walk hitting probabilities', deps: ['circ-2.5', 'circ-2.8', 'em-6.15'], refs: ['Agarwal–Lang §3.3'],
           pic: 'Hold one node at 1 V and another at 0 V; random walkers released from each node step to neighbours with probability proportional to conductance, and the fraction reaching the 1 V node converges to its node voltage.' },
         { num: '2.15', kind: 'Proposition', name: 'Infinite resistor lattice: R/2 between neighbours', deps: ['circ-2.1', 'circ-1.4'], refs: ['Agarwal–Lang ch. 2'],
           pic: 'Solve ever-larger square grids of 1 Ω resistors numerically: the resistance between adjacent nodes converges to ½ Ω, while that between diagonal neighbours approaches 2/π Ω.' },
@@ -92,7 +106,7 @@ export default {
           pic: 'Wire a voltage-controlled current source and turn up its gain: the output current follows the control voltage elsewhere in the circuit, making amplification possible in a linear model.' },
         { num: '3.9', kind: 'Definition', name: 'Two-port networks and their parameter matrices', deps: ['circ-3.2', 'circ-3.8'], refs: ['Agarwal–Lang §15.9'],
           pic: 'Measure a black-box two-port with test sources on each side; its 2×2 parameter matrices are assembled live and cascaded boxes multiply their transmission matrices.' },
-        { num: '3.10', kind: 'Theorem', name: 'Thomson’s principle: currents minimize dissipated power', deps: ['circ-2.9', 'circ-3.6'], refs: ['Agarwal–Lang ch. 3'],
+        { num: '3.10', kind: 'Theorem', name: 'Thomson’s principle: currents minimize dissipated power', deps: ['circ-2.9', 'circ-3.6', 'em-6.9'], refs: ['Agarwal–Lang ch. 3'],
           pic: 'Drag a trial current pattern that satisfies KCL; the dissipated power is plotted and is smallest exactly at the true Kirchhoff solution, where KVL also holds.' },
         { num: '3.11', kind: 'Concept', name: 'Duality of planar networks', deps: ['circ-2.6', 'circ-2.5'], refs: ['Agarwal–Lang ch. 3'],
           pic: 'A planar circuit and its dual are drawn side by side: series becomes parallel, voltage becomes current, meshes become nodes, and the two solvers return mirror-image numbers.' },
@@ -108,7 +122,7 @@ export default {
       title: 'Nonlinear elements and the digital abstraction',
       summary: String.raw`Diodes and transistors are nonlinear, but three ideas tame them: graphical load-line analysis, piecewise-linear models, and small-signal linearization around an operating point. The same devices used as switches give the digital abstraction, where noise margins let a chain of gates restore clean logic levels. The chapter closes with the transistor as an amplifier, the source of all gain in electronics.`,
       items: [
-        { num: '4.1', kind: 'Model', name: 'Diode: the Shockley equation', deps: ['circ-1.9'], refs: ['Agarwal–Lang §16.2', 'Horowitz–Hill §1.6'],
+        { num: '4.1', kind: 'Model', name: 'Diode: the Shockley equation', deps: ['circ-1.9', 'cm-4.7'], refs: ['Agarwal–Lang §16.2', 'Horowitz–Hill §1.6'],
           pic: 'Plot i = I_s(e^{v/V_T} − 1) on linear and log axes; the knee near 0.6 V and the 60 mV-per-decade slope are measured off the curve as temperature and saturation current are varied.' },
         { num: '4.2', kind: 'Method', name: 'Load-line analysis', deps: ['circ-4.1', 'circ-3.2'], refs: ['Agarwal–Lang §4.3'],
           pic: 'Slide the Thévenin source voltage and resistance: the straight load line moves across the diode curve and their intersection — the operating point — is tracked live.' },
@@ -142,15 +156,15 @@ export default {
       title: 'Capacitors, inductors and first-order transients',
       summary: String.raw`Capacitors and inductors store energy in electric and magnetic fields, so circuits containing them have memory and evolve in time. A single storage element gives a first-order differential equation whose solution relaxes exponentially with time constant RC or L/R. These transients explain delays in digital logic, the CV² cost of switching, the voltage spike when an inductor is interrupted, and one of the classic paradoxes of circuit theory.`,
       items: [
-        { num: '5.1', kind: 'Definition', name: 'Capacitor: i = C dv/dt', deps: ['circ-1.1', 'pma-5.1'], refs: ['Agarwal–Lang §9.1', 'Horowitz–Hill §1.4'],
+        { num: '5.1', kind: 'Definition', name: 'Capacitor: i = C dv/dt', deps: ['circ-1.1', 'pma-5.1', 'em-3.8'], refs: ['Agarwal–Lang §9.1', 'Horowitz–Hill §1.4'],
           pic: 'Draw any voltage waveform across a capacitor with the mouse; the current is drawn as its scaled derivative, spiking at every steep edge.' },
-        { num: '5.2', kind: 'Definition', name: 'Inductor: v = L di/dt', deps: ['circ-1.1', 'pma-5.1'], refs: ['Agarwal–Lang §9.1', 'Horowitz–Hill §1.5'],
+        { num: '5.2', kind: 'Definition', name: 'Inductor: v = L di/dt', deps: ['circ-1.1', 'pma-5.1', 'em-9.15'], refs: ['Agarwal–Lang §9.1', 'Horowitz–Hill §1.5'],
           pic: 'Draw a current waveform through an inductor and see the voltage as its scaled derivative; a ramp in current gives a constant voltage.' },
-        { num: '5.3', kind: 'Proposition', name: 'Energy stored: ½CV² and ½LI²', deps: ['circ-5.1', 'circ-5.2', 'circ-1.2'], refs: ['Agarwal–Lang §9.5'],
+        { num: '5.3', kind: 'Proposition', name: 'Energy stored: ½CV² and ½LI²', deps: ['circ-5.1', 'circ-5.2', 'circ-1.2', 'em-2.11', 'em-9.17'], refs: ['Agarwal–Lang §9.5'],
           pic: 'Charge a capacitor with a constant current: the power v·i integrated over time is shaded and equals ½CV² at every instant, with an analogous panel for an inductor.' },
         { num: '5.4', kind: 'Proposition', name: 'Continuity of capacitor voltage and inductor current', deps: ['circ-5.3'], refs: ['Agarwal–Lang §10.3'],
           pic: 'Close a switch in a circuit with storage elements: capacitor voltages and inductor currents evolve continuously while other variables jump, highlighted in different colours.' },
-        { num: '5.5', kind: 'Model', name: 'RC circuit: charging and discharging', deps: ['circ-5.1', 'circ-2.2'], refs: ['Agarwal–Lang §10.1', 'Horowitz–Hill §1.4'],
+        { num: '5.5', kind: 'Model', name: 'RC circuit: charging and discharging', deps: ['circ-5.1', 'circ-2.2', 'ode-1.4'], refs: ['Agarwal–Lang §10.1', 'Horowitz–Hill §1.4'],
           pic: 'Flip a switch and watch the capacitor voltage approach the source exponentially; markers at τ, 2τ and 3τ show 63%, 86% and 95% of the final value as R and C are changed.' },
         { num: '5.6', kind: 'Definition', name: 'Time constant', deps: ['circ-5.5'], refs: ['Agarwal–Lang §10.1'],
           pic: 'The tangent to an exponential at any point hits the final value exactly one time constant later — drag the tangent point along the curve to verify.' },
@@ -178,7 +192,7 @@ export default {
       title: 'Second-order circuits',
       summary: String.raw`With one capacitor and one inductor, energy can slosh back and forth between electric and magnetic form, and the circuit can oscillate. The series RLC circuit obeys exactly the equation of a damped mass on a spring, so the same three regimes appear — overdamped, critically damped and ringing. The state-variable view, with capacitor voltages and inductor currents as coordinates, prepares the ground for control theory.`,
       items: [
-        { num: '6.1', kind: 'Model', name: 'Series RLC circuit: the second-order equation', deps: ['circ-5.5', 'circ-5.7', 'mech-4.7'], refs: ['Agarwal–Lang §12.2'],
+        { num: '6.1', kind: 'Model', name: 'Series RLC circuit: the second-order equation', deps: ['circ-5.5', 'circ-5.7', 'mech-4.7', 'ode-3.14'], refs: ['Agarwal–Lang §12.2'],
           pic: 'Step the source of a series RLC circuit: the capacitor voltage is simulated live, with R, L and C sliders, and the characteristic roots are plotted in the complex plane beside the waveform.' },
         { num: '6.2', kind: 'Definition', name: 'Natural frequency and damping ratio', deps: ['circ-6.1'], refs: ['Agarwal–Lang §12.2'],
           pic: 'Drag the roots in the s-plane: their distance from the origin is ω₀ and the cosine of their angle is ζ; the corresponding R, L, C and step response update together.' },
@@ -190,7 +204,7 @@ export default {
           pic: 'The parallel circuit is the dual of the series one: increasing R reduces damping, and the two circuits are shown side by side with matched responses.' },
         { num: '6.6', kind: 'Principle', name: 'Electromechanical analogies', deps: ['circ-6.1', 'mech-4.7'], refs: ['Agarwal–Lang §12.2'],
           pic: 'A mass–spring–damper and a series RLC circuit run in lockstep: mass ↔ inductance, spring compliance ↔ capacitance, damping ↔ resistance, with one parameter panel driving both.' },
-        { num: '6.7', kind: 'Method', name: 'State variables: capacitor voltages and inductor currents', deps: ['circ-6.1', 'circ-5.4'], refs: ['Agarwal–Lang §12.8'],
+        { num: '6.7', kind: 'Method', name: 'State variables: capacitor voltages and inductor currents', deps: ['circ-6.1', 'circ-5.4', 'ode-3.1'], refs: ['Agarwal–Lang §12.8'],
           pic: 'The RLC state (v_C, i_L) moves on a phase plane while the time-domain traces scroll; spirals, nodes and the critically damped case are traced from draggable initial conditions.' },
         { num: '6.8', kind: 'Phenomenon', name: 'Ringing on digital edges', deps: ['circ-6.3'], refs: ['Agarwal–Lang §10.6'],
           pic: 'A fast logic edge drives a trace with parasitic inductance and load capacitance: overshoot and ringing appear, and a small series damping resistor tames them.' },
@@ -226,13 +240,13 @@ export default {
           pic: 'Add capacitance across an inductive motor load: the line current drops to a minimum at unity power factor while the real power delivered stays the same.' },
         { num: '7.12', kind: 'Theorem', name: 'Conjugate matching for maximum AC power', deps: ['circ-3.5', 'circ-7.10'], refs: ['Agarwal–Lang §13.7'],
           pic: 'Drag the load impedance around the complex plane: delivered power is shown as a heat map peaking at the complex conjugate of the source impedance.' },
-        { num: '7.13', kind: 'Invention', name: 'The ideal transformer', deps: ['circ-5.2', 'circ-7.4'], refs: ['Horowitz–Hill §1.5', 'Agarwal–Lang §9.3'],
+        { num: '7.13', kind: 'Invention', name: 'The ideal transformer', deps: ['circ-5.2', 'circ-7.4', 'em-9.14'], refs: ['Horowitz–Hill §1.5', 'Agarwal–Lang §9.3'],
           pic: 'Change the turns ratio: secondary voltage scales up as current scales down, input power equals output power, and a load on the secondary appears at the primary scaled by n².' },
         { num: '7.14', kind: 'Method', name: 'Impedance matching with a transformer', deps: ['circ-7.13', 'circ-3.5'], refs: ['Horowitz–Hill §1.5'],
           pic: 'Match an 8 Ω loudspeaker to an amplifier with a large output impedance: the power delivered peaks at the turns ratio that makes the reflected load equal the source resistance.' },
         { num: '7.15', kind: 'Invention', name: 'Three-phase power', deps: ['circ-7.10'], refs: ['Agarwal–Lang ch. 13'],
           pic: 'Three sinusoids 120° apart feed a balanced load: individual phase powers pulse but their sum is perfectly constant, and the neutral current is zero until the load is unbalanced.' },
-        { num: '7.16', kind: 'Method', name: 's-domain circuit analysis', deps: ['circ-7.3', 'circ-6.7'], refs: ['Agarwal–Lang §13.6'],
+        { num: '7.16', kind: 'Method', name: 's-domain circuit analysis', deps: ['circ-7.3', 'circ-6.7', 'ode-3.16'], refs: ['Agarwal–Lang §13.6'],
           pic: 'Replace each element by its impedance in s; poles of the resulting network function appear in the s-plane and the transient computed from them matches a direct simulation.' },
         { num: '7.17', kind: 'Phenomenon', name: 'The Miller effect', deps: ['circ-4.12', 'circ-7.3'], refs: ['Horowitz–Hill §2.4'],
           pic: 'Place a small capacitor between the input and output of an inverting stage: the input sees it multiplied by one plus the gain, and the amplifier’s bandwidth on the Bode plot collapses as the gain slider rises.' },
@@ -286,7 +300,7 @@ export default {
       items: [
         { num: '9.1', kind: 'Concept', name: 'When the lumped approximation breaks down', deps: ['circ-1.3'], refs: ['Agarwal–Lang §1.4', 'Horowitz–Hill App. H'],
           pic: 'Slide the frequency on a long cable: once its length exceeds about a tenth of a wavelength, the voltage at the far end lags and differs from the near end, and the lumped prediction diverges.' },
-        { num: '9.2', kind: 'Model', name: 'Telegrapher’s equations', deps: ['circ-9.1', 'circ-5.1', 'circ-5.2'], refs: ['Horowitz–Hill App. H'],
+        { num: '9.2', kind: 'Model', name: 'Telegrapher’s equations', deps: ['circ-9.1', 'circ-5.1', 'circ-5.2', 'em-11.17', 'pde-2.10'], refs: ['Horowitz–Hill App. H'],
           pic: 'Model a line as a chain of tiny L and C sections; as the number of sections grows, a pulse injected at one end travels as a wave with speed 1/√(LC) per unit length.' },
         { num: '9.3', kind: 'Definition', name: 'Characteristic impedance', deps: ['circ-9.2'], refs: ['Horowitz–Hill App. H'],
           pic: 'Measure the input impedance of an ever-longer LC ladder: it converges to √(L/C), the impedance an infinitely long line presents to a source.' },
@@ -310,7 +324,7 @@ export default {
       title: 'Noise',
       summary: String.raw`Every resistor at a nonzero temperature generates a fluctuating voltage, and every current made of discrete electrons fluctuates too. These are not engineering defects but physics, and they set the ultimate floor below which no signal can be detected. This chapter quantifies thermal, shot and flicker noise, and shows how amplifier chains and filtering trade bandwidth against signal-to-noise ratio.`,
       items: [
-        { num: '10.1', kind: 'Law', name: 'Johnson–Nyquist thermal noise: v² = 4kTRB', deps: ['circ-1.4', 'circ-7.5'], refs: ['Horowitz–Hill §8.1'],
+        { num: '10.1', kind: 'Law', name: 'Johnson–Nyquist thermal noise: v² = 4kTRB', deps: ['circ-1.4', 'circ-7.5', 'pchem-2.6'], refs: ['Horowitz–Hill §8.1'],
           pic: 'Simulate the random voltage across a resistor and histogram it: the variance grows linearly with temperature, resistance and measurement bandwidth, matching 4kTRB.' },
         { num: '10.2', kind: 'Law', name: 'Shot noise', deps: ['circ-1.1'], refs: ['Horowitz–Hill §8.1'],
           pic: 'Electrons cross a junction as random Poisson events; the current fluctuations around the mean have variance 2qIB, which the reader checks by changing the mean current and bandwidth.' },

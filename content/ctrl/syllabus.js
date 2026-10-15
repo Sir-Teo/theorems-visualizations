@@ -1,4 +1,18 @@
 // Syllabus — Control Theory (curated course; see collection.js for references)
+//
+// Sources consulted (2026-10):
+//   Åström & Murray, Feedback Systems 2e (2021) — full section-level TOC (Princeton UP page):
+//     https://press.princeton.edu/books/hardcover/9780691193984/feedback-systems
+//   Franklin, Powell & Emami-Naeini, Feedback Control of Dynamic Systems 8e — detailed TOC:
+//     https://pearson.com/en-au/media/3yicj41p/9781292274522-toc.pdf
+//   MIT 16.06 Principles of Automatic Control (Fall 2012) lectures:
+//     https://ocw.mit.edu/courses/16-06-principles-of-automatic-control-fall-2012/pages/lecture-notes/
+//   MIT 16.30 Feedback Control Systems (Fall 2010) lectures:
+//     https://ocw.mit.edu/courses/16-30-feedback-control-systems-fall-2010/pages/lecture-notes/
+// Gaps filled after comparison: Mason's gain formula, transfer matrices and transmission zeros, loop transfer recovery.
+// Deliberate omissions: Brockett's obstruction (kept in robot, with nonholonomic systems), H∞ synthesis and μ-analysis
+//   beyond the H∞ norm, zero-degree root locus, notch compensation, Youla parametrisation.
+// Topics beyond both references (Bellman/HJB, Pontryagin, particle and unscented filters) cite the nearest chapter.
 export default {
   collection: 'ctrl',
   chapters: [
@@ -42,7 +56,7 @@ export default {
       title: 'Modelling dynamical systems',
       summary: String.raw`Control needs models, but only good enough ones. State-space models describe a system by a few internal variables obeying first-order differential equations, and near an operating point they can be linearised. Classic examples — the inverted pendulum, the DC motor, the steering of a vehicle — anchor the abstractions, and transfer functions, time delays and common nonlinearities complete the modeller's kit.`,
       items: [
-        { num: '2.1', kind: 'Definition', name: 'State-space models: state, input and output', deps: ['mech-1.9', 'circ-6.7'], refs: ['Åström–Murray §3.2', 'Franklin–Powell §7.2'],
+        { num: '2.1', kind: 'Definition', name: 'State-space models: state, input and output', deps: ['mech-1.9', 'circ-6.7', 'ode-1.1'], refs: ['Åström–Murray §3.2', 'Franklin–Powell §7.2'],
           pic: 'A mechanical system is described by its state vector; the state trajectory in phase space and the outputs in time are animated together from draggable initial states and inputs.' },
         { num: '2.2', kind: 'Method', name: 'Linearisation about an equilibrium', deps: ['ctrl-2.1', 'pma-9.17'], refs: ['Åström–Murray §6.4', 'Franklin–Powell §9.2'],
           pic: 'Simulate a pendulum and its linearisation side by side from the same initial angle: they agree for small swings and part company as the angle slider grows.' },
@@ -76,29 +90,29 @@ export default {
       title: 'Dynamic behaviour and stability',
       summary: String.raw`Before designing controllers we need to know when a system is stable. For linear systems the answer lies in the eigenvalues of the dynamics matrix; for nonlinear ones, linearisation decides locally, and Lyapunov's energy-like functions give global certificates. The chapter introduces phase portraits, regions of attraction, LaSalle's principle, and the limit cycles and bifurcations that feedback systems can exhibit.`,
       items: [
-        { num: '3.1', kind: 'Definition', name: 'Equilibria and Lyapunov stability', deps: ['ctrl-2.1', 'mech-3.12'], refs: ['Åström–Murray §5.3'],
+        { num: '3.1', kind: 'Definition', name: 'Equilibria and Lyapunov stability', deps: ['ctrl-2.1', 'mech-3.12', 'ode-5.6'], refs: ['Åström–Murray §5.3'],
           pic: 'Pick an ε-ball around an equilibrium and the tool searches for a δ-ball of initial conditions whose trajectories never leave it; for an unstable equilibrium no δ works.' },
-        { num: '3.2', kind: 'Theorem', name: 'The matrix exponential solves ẋ = Ax', deps: ['ctrl-2.1', 'ladr-8.46'], refs: ['Åström–Murray §6.2'],
+        { num: '3.2', kind: 'Theorem', name: 'The matrix exponential solves ẋ = Ax', deps: ['ctrl-2.1', 'ladr-8.46', 'ode-3.3'], refs: ['Åström–Murray §6.2'],
           pic: 'Partial sums of the series for e^{At} act on a grid of initial states; the flowed grid converges to the true solution, and a Jordan block shows the t·e^{λt} term appearing.' },
-        { num: '3.3', kind: 'Theorem', name: 'Linear stability iff all eigenvalues have negative real part', deps: ['ctrl-3.2', 'ladr-5.5'], refs: ['Åström–Murray §5.3', 'Franklin–Powell §3.6'],
+        { num: '3.3', kind: 'Theorem', name: 'Linear stability iff all eigenvalues have negative real part', deps: ['ctrl-3.2', 'ladr-5.5', 'ode-3.9'], refs: ['Åström–Murray §5.3', 'Franklin–Powell §3.6'],
           pic: 'Drag the eigenvalues of a 2×2 system across the complex plane: trajectories spiral in, circle forever on the axis, or fly away exactly as the real parts change sign.' },
-        { num: '3.4', kind: 'Theorem', name: 'Stability by linearisation (Lyapunov’s indirect method)', deps: ['ctrl-3.3', 'ctrl-2.2'], refs: ['Åström–Murray §5.3'],
+        { num: '3.4', kind: 'Theorem', name: 'Stability by linearisation (Lyapunov’s indirect method)', deps: ['ctrl-3.3', 'ctrl-2.2', 'ode-6.3'], refs: ['Åström–Murray §5.3'],
           pic: 'Zoom into an equilibrium of a nonlinear system: its phase portrait straightens into the linearised one; a centre in the linearisation leaves the nonlinear verdict open, shown by two systems with the same linear part.' },
-        { num: '3.5', kind: 'Definition', name: 'Lyapunov functions', deps: ['ctrl-3.1'], refs: ['Åström–Murray §5.4'],
+        { num: '3.5', kind: 'Definition', name: 'Lyapunov functions', deps: ['ctrl-3.1', 'ode-5.8'], refs: ['Åström–Murray §5.4'],
           pic: 'Level sets of a candidate function V are drawn over the phase portrait, with trajectory arrows coloured by the sign of dV/dt.' },
-        { num: '3.6', kind: 'Theorem', name: 'Lyapunov’s direct method', deps: ['ctrl-3.5'], refs: ['Åström–Murray §5.4', 'Franklin–Powell §9.5'],
+        { num: '3.6', kind: 'Theorem', name: 'Lyapunov’s direct method', deps: ['ctrl-3.5', 'ode-5.9'], refs: ['Åström–Murray §5.4', 'Franklin–Powell §9.5'],
           pic: 'Trajectories cross each level set of V inward when dV/dt < 0; drag the shape of V and watch the certificate succeed or fail, while the true trajectories do not change.' },
         { num: '3.7', kind: 'Theorem', name: 'The Lyapunov equation AᵀP + PA = −Q', deps: ['ctrl-3.6', 'ctrl-3.3', 'ladr-7.62'], refs: ['Åström–Murray §5.4'],
           pic: 'For a stable A the solver finds P > 0 and draws its ellipses as Lyapunov level sets; move an eigenvalue of A into the right half-plane and P loses positive definiteness.' },
-        { num: '3.8', kind: 'Theorem', name: 'LaSalle’s invariance principle', deps: ['ctrl-3.6'], refs: ['Åström–Murray §5.4'],
+        { num: '3.8', kind: 'Theorem', name: 'LaSalle’s invariance principle', deps: ['ctrl-3.6', 'ode-5.10'], refs: ['Åström–Murray §5.4'],
           pic: 'A damped pendulum’s energy only satisfies dV/dt ≤ 0, zero along the whole velocity-zero line; trajectories still converge because the only invariant set on that line is the bottom equilibrium.' },
-        { num: '3.9', kind: 'Definition', name: 'Region of attraction', deps: ['ctrl-3.6'], refs: ['Åström–Murray §5.4'],
+        { num: '3.9', kind: 'Definition', name: 'Region of attraction', deps: ['ctrl-3.6', 'ode-5.12'], refs: ['Åström–Murray §5.4'],
           pic: 'Colour each initial condition by where its trajectory ends up: the basin of the stable equilibrium appears, and the largest Lyapunov sublevel set inside it is drawn as a certified estimate.' },
-        { num: '3.10', kind: 'Definition', name: 'Phase portraits of planar linear systems', deps: ['ctrl-3.3'], refs: ['Åström–Murray §5.2'],
+        { num: '3.10', kind: 'Definition', name: 'Phase portraits of planar linear systems', deps: ['ctrl-3.3', 'ode-3.8'], refs: ['Åström–Murray §5.2'],
           pic: 'The trace–determinant plane is divided into nodes, foci, saddles and centres; drag a point and the corresponding phase portrait is drawn live.' },
-        { num: '3.11', kind: 'Phenomenon', name: 'Limit cycles in feedback systems', deps: ['ctrl-3.10', 'mech-4.19'], refs: ['Åström–Murray §5.2'],
+        { num: '3.11', kind: 'Phenomenon', name: 'Limit cycles in feedback systems', deps: ['ctrl-3.10', 'mech-4.19', 'ode-7.1'], refs: ['Åström–Murray §5.2'],
           pic: 'Trajectories of a van der Pol oscillator started inside and outside converge onto the same closed orbit, whose amplitude is measured as the nonlinearity is varied.' },
-        { num: '3.12', kind: 'Phenomenon', name: 'Hopf bifurcation as a gain is raised', deps: ['ctrl-3.11', 'ctrl-3.3'], refs: ['Åström–Murray §5.5'],
+        { num: '3.12', kind: 'Phenomenon', name: 'Hopf bifurcation as a gain is raised', deps: ['ctrl-3.11', 'ctrl-3.3', 'ode-8.13'], refs: ['Åström–Murray §5.5'],
           pic: 'Raise a feedback gain: a pair of eigenvalues crosses the imaginary axis and a small limit cycle is born, its amplitude growing like the square root of the excess gain.' },
         { num: '3.13', kind: 'Theorem', name: 'BIBO stability of state-space systems', deps: ['ctrl-3.3', 'sig-3.6', 'ctrl-2.7'], refs: ['Åström–Murray §6.3'],
           pic: 'A system with an unstable but hidden mode has a bounded output for every bounded input while its internal state explodes, shown with state and output traces side by side.' },
@@ -360,7 +374,7 @@ export default {
       items: [
         { num: '12.1', kind: 'Definition', name: 'Process and measurement noise models', deps: ['sig-13.4', 'ctrl-2.1'], refs: ['Åström–Murray §8.4'],
           pic: 'A moving cart is pushed by random forces and measured by a noisy sensor; sliders set the process and measurement noise levels, and the true and measured trajectories are drawn.' },
-        { num: '12.2', kind: 'Method', name: 'Recursive least squares', deps: ['ladr-6.61'], refs: ['Åström–Murray ch. 8'],
+        { num: '12.2', kind: 'Method', name: 'Recursive least squares', deps: ['ladr-6.61', 'stat-12.2'], refs: ['Åström–Murray ch. 8'],
           pic: 'Fit a line to data points arriving one at a time: the estimate and its uncertainty ellipse update with each new point, matching the batch least-squares fit.' },
         { num: '12.3', kind: 'Algorithm', name: 'The Kalman filter: predict and update', deps: ['ctrl-12.1', 'ctrl-11.5', 'ctrl-12.2'], refs: ['Åström–Murray §8.4', 'Franklin–Powell §7.7'],
           pic: 'Track a cart: each step the uncertainty ellipse grows in the predict phase and shrinks toward the measurement in the update phase, with the gain displayed as a tug-of-war bar.' },

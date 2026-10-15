@@ -1,4 +1,17 @@
 // Syllabus — Signals & Systems (curated course; see collection.js for references)
+//
+// Sources consulted (2026-10):
+//   Oppenheim & Willsky (with Nawab), Signals and Systems 2e — full section list (order verified):
+//     https://iasexamportal.com/ies/books/signals-and-systems-by-oppenheim-hamid-willsky
+//   Lathi, Linear Systems and Signals — chapter structure only (eBay/OUP listings); Lathi refs are chapter-level.
+//   MIT 6.003 Signals and Systems (Fall 2011) lectures: https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/pages/lecture-notes/
+//   MIT 6.341 Discrete-Time Signal Processing (Fall 2005) lectures:
+//     https://ocw.mit.edu/courses/6-341-discrete-time-signal-processing-fall-2005/pages/lecture-notes/
+// Gaps filled after comparison: polyphase/multirate filter banks, the Levinson–Durbin recursion, Goertzel/DTMF,
+//   compressed sensing as a modern counterpoint to Nyquist.
+// Deliberate omissions: feedback systems (O&W ch. 11 → ctrl), chirp-z transform, fractional-delay filters.
+// Note: chapter 13 (random signals) and parts of ch. 8/10 (wavelets, equiripple design) go beyond both references;
+//   their refs point to the nearest related chapter.
 export default {
   collection: 'sig',
   chapters: [
@@ -90,7 +103,7 @@ export default {
           pic: 'Feed e^{st} into an arbitrary LTI system: after the transient the output is the same exponential scaled by a complex number H(s), shown as an arrow scaling and rotating the input phasor.' },
         { num: '3.10', kind: 'Definition', name: 'System function and frequency response', deps: ['sig-3.9'], refs: ['Oppenheim–Willsky §3.2'],
           pic: 'Sweep the frequency of a sinusoidal input and record output amplitude and phase; the resulting curves are the frequency response, computed as the transform of h.' },
-        { num: '3.11', kind: 'Method', name: 'Linear constant-coefficient differential equations', deps: ['sig-3.3', 'sig-2.11'], refs: ['Oppenheim–Willsky §2.4', 'Lathi ch. 2'],
+        { num: '3.11', kind: 'Method', name: 'Linear constant-coefficient differential equations', deps: ['sig-3.3', 'sig-2.11', 'ode-3.13'], refs: ['Oppenheim–Willsky §2.4', 'Lathi ch. 2'],
           pic: 'Type the coefficients of an ODE at initial rest and drive it: the solver’s output equals the input convolved with the computed impulse response, overlaid curve on curve.' },
         { num: '3.12', kind: 'Definition', name: 'FIR and IIR systems', deps: ['sig-2.10', 'sig-3.1'], refs: ['Oppenheim–Willsky §2.4'],
           pic: 'Toggle a feedback coefficient on and off: with feedback the impulse response rings on forever (IIR); without it it stops after a fixed number of taps (FIR).' },
@@ -328,7 +341,7 @@ export default {
           pic: 'Differentiate a signal that jumps at t = 0: the unilateral transform picks up the initial value as an extra term, shown as the impulse the bilateral transform would contain.' },
         { num: '9.11', kind: 'Theorem', name: 'Initial- and final-value theorems', deps: ['sig-9.10'], refs: ['Oppenheim–Willsky §9.5', 'Lathi ch. 4'],
           pic: 'For a draggable set of poles, compare lim sF(s) at s → 0 with the long-time value of the response; the theorem fails visibly when a pole sits in the right half-plane.' },
-        { num: '9.12', kind: 'Method', name: 'Solving differential equations with the Laplace transform', deps: ['sig-9.10', 'sig-3.11'], refs: ['Lathi ch. 4'],
+        { num: '9.12', kind: 'Method', name: 'Solving differential equations with the Laplace transform', deps: ['sig-9.10', 'sig-3.11', 'ode-3.16'], refs: ['Lathi ch. 4'],
           pic: 'Enter an ODE with initial conditions: the algebraic solution in s is shown step by step and its inverse is overlaid on a numerical integration.' },
         { num: '9.13', kind: 'Method', name: 'Transfer-function algebra and block-diagram reduction', deps: ['sig-2.7', 'sig-9.6'], refs: ['Oppenheim–Willsky §9.8', 'Lathi ch. 4'],
           pic: 'Collapse a block diagram step by step — series blocks multiply, parallels add, a feedback loop becomes G/(1 + GH) — and compare the simulated response before and after.' },
@@ -434,7 +447,7 @@ export default {
           pic: 'A voltage-controlled oscillator chases an input whose frequency jumps: the phase error spikes and settles to zero as the loop locks, with lock lost if the jump exceeds the pull-in range.' },
         { num: '12.13', kind: 'Method', name: 'OFDM: modulation by the inverse FFT', deps: ['sig-8.8', 'sig-12.10'], refs: ['Lathi ch. 8'],
           pic: 'Place QAM symbols on dozens of orthogonal subcarriers with an inverse FFT; a cyclic prefix absorbs a multipath echo, and the receiver’s FFT recovers each subcarrier’s constellation.' },
-        { num: '12.14', kind: 'Theorem', name: 'Shannon–Hartley channel capacity', deps: ['sig-7.3', 'sig-12.10'], refs: ['Oppenheim–Willsky ch. 8'],
+        { num: '12.14', kind: 'Theorem', name: 'Shannon–Hartley channel capacity', deps: ['sig-7.3', 'sig-12.10', 'info-6.8'], refs: ['Oppenheim–Willsky ch. 8'],
           pic: 'Vary bandwidth and SNR: the capacity B log₂(1 + SNR) is plotted against the bit rates actually achieved by QAM constellations of increasing size, which approach but never cross it.' },
         { num: '12.15', kind: 'Phenomenon', name: 'Heterodyning and beat frequencies', deps: ['sig-5.7'], refs: ['Oppenheim–Willsky §8.1'],
           pic: 'Play two tones a few hertz apart: the sum swells and fades at the difference frequency, and multiplying instead of adding moves energy to the sum and difference frequencies.' },
