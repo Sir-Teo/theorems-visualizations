@@ -275,7 +275,7 @@ Different thermometric properties give scales that agree at the fixed points but
           for (const [yy, g, sel] of labs) sx.textPx(g.replace('2', '₂'), sx.X(1.97), yy - 8, { align: 'right', color: LJ[g].col, size: 11.5, weight: sel ? 700 : 500 });
           sx.dot(Pf.value, steam(gasSel.value, Pf.value), { r: 5, color: LJ[gasSel.value].col });
           sx.dot(0, 373.15, { r: 5, hollow: true, color: 'ink' });
-          sx.text('373.15 K', 0.06, 373.15, { dy: span > 1 ? -10 : 12, size: 11.5, color: 'ink' });
+          sx.text('373.15 K', 0.06, 373.15, { dy: sEnd >= 373.15 ? 12 : -10, size: 11.5, color: 'ink' });
         });
         v.legend([['accent', 'gas thermometer (chosen gas)'], ['green', 'platinum'], ['teal', 'water'], ['purple', 'thermistor']]);
         v.readout(() => {

@@ -690,12 +690,14 @@ export default {
           if (pts.length !== nS.value) shake();
           if (hs.some((h) => h.dragging)) it = Math.min(it, 150);
           stepOpt(wS.value, 30);
+          if (!v.playing && it < 1500) stepOpt(wS.value, 1500 - it); // paused (or a still frame): show the settled configuration
           E = energy(pts, wS.value);
           st.poly(hullPts, { fill: 'accent', fillAlpha: 0.06, color: 'muted', width: 1.2 });
           for (const c of card) st.text(c.s, c.x, c.y, { size: 13, color: 'muted', align: 'center', alpha: 0.75 });
           // springs between nearest neighbours show the repulsion
           for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) { const d = Math.hypot(wS.value * (pts[i][0] - pts[j][0]), pts[i][1] - pts[j][1]); if (d < 3.2) st.line(pts[i][0], pts[i][1], pts[j][0], pts[j][1], { color: 'orange', width: 1, alpha: Math.min(0.6, 0.9 / d) }); }
-          const names = pts.map((p) => { let b = 0, bd = 1e9; card.forEach((c, i) => { const d = Math.hypot(wS.value * (c.x - p[0]), c.y - p[1]); if (d < bd) { bd = d; b = i; } }); return card[b].s; });
+          // name each vowel by the nearest cardinal vowel (plain Bark distance; front rounded vowels left out, as F1–F2 cannot tell them from central ones)
+          const names = pts.map((p) => { let b = 0, bd = 1e9; card.forEach((c, i) => { if ('yøœɶ'.includes(c.s)) return; const d = Math.hypot(c.x - p[0], c.y - p[1]); if (d < bd) { bd = d; b = i; } }); return card[b].s; });
           hs.forEach((h, i) => { h.visible = i < pts.length; if (i < pts.length && !h.dragging) { h.x = pts[i][0]; h.y = pts[i][1]; } });
           pts.forEach((p, i) => st.text(names[i], p[0], p[1] + 0.42, { size: 15, color: 'accent', align: 'center', weight: 700 }));
           const order = 'i y e ø ɛ œ a ɶ ɯ ɤ ʌ ɑ u o ɔ ɒ'.split(' ');

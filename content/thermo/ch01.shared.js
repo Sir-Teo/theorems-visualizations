@@ -281,9 +281,10 @@ export function drawGas(s, G, o = {}) {
     const f = 1 - 0.5 * G.z[i] / G.Lz, r = Math.max(1.4, (o.rScale ?? 1) * rpx * G.d[i]);
     s.dot(x0 + G.x[i] * k, y0 + G.y[i] * k, { r, color: o.color ? o.color(i) : 'accent', alpha: 0.35 + 0.6 * f, ring: false });
   }
-  // walls
-  s.line(x0, y0, x0 + Lc, y0, { color: wc, width: 2.4 });
-  s.line(x0, y0 + H, x0 + Lc, y0 + H, { color: wc, width: 2.4 });
+  // walls (dashed when the gas repeats periodically sideways)
+  const sideSt = o.periodic ? { color: 'muted', width: 1.4, dash: [5, 4] } : { color: wc, width: 2.4 };
+  s.line(x0, y0, x0 + Lc, y0, sideSt);
+  s.line(x0, y0 + H, x0 + Lc, y0 + H, sideSt);
   s.line(x0, y0, x0, y0 + H, { color: o.leftColor || wc, width: o.leftWidth ?? 2.4 });
   if (G.plate) {
     const Xp = x0 + G.plate.X * k;
