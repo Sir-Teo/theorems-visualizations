@@ -446,7 +446,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
       viz(v) {
         const mode = v.select('do', [{ value: 'turn', label: 'turn the cube' }, { value: 'untangle', label: 'untangle after 720°' }, { value: 'try', label: 'try after 360°' }], 'turn');
         const aS = v.slider('cube turned by (°)', 0, 720, 360, { step: 1 });
-        const lS = v.slider('deformation', 0, 2, 1.5, { step: 0.005 });
+        const lS = v.slider('deformation', 0, 2, 0, { step: 0.005 });
         const S = v.stage({ x: [-1.45, 1.45], y: [-1.85, 1.85], equal: true, axes: false, height: 400, title: 'a cube tied to floor and ceiling (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.18, axes: false, hint: false });
         const Q = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 400, title: 'the ribbon’s frames lifted to $S^3$' });

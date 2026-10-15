@@ -233,7 +233,7 @@ $$X_1 = \frac{F\,(k - m\Omega^2)}{(K + k - M\Omega^2)(k - m\Omega^2) - k^2}.$$
           if (!att) { const X1 = div(cx(1, 0), cx(1 - Om * Om, 2 * Z1 * Om)); return { X1, X2: X1 }; }
           const k2 = mu * f * f, c2 = 2 * za * mu * f;
           const A11 = cx(1 + k2 - Om * Om, Om * (2 * Z1 + c2)), A12 = cx(-k2, -Om * c2), A22 = cx(k2 - mu * Om * Om, Om * c2);
-          const det = sub(mul(A11, A22), mul(A12, A12)), X1 = div(A22, det), X2 = div(mul(cx(-A12.re, -A12.im), X1), A22.re === 0 && A22.im === 0 ? cx(1e-300, 0) : A22);
+          const det = sub(mul(A11, A22), mul(A12, A12)), X1 = div(A22, det), X2 = div(cx(-A12.re, -A12.im), det); // Cramer's rule
           return { X1, X2 };
         };
         const ab = (z) => Math.hypot(z.re, z.im);

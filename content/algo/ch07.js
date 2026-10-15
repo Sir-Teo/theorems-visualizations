@@ -95,8 +95,7 @@ function gridFrames(kind, R, C, blocked, diag) {
 }
 
 // ---------------------------------------------------------------- 7.3 optimal substructure on a grid of cell costs
-function gridCosts(R, C, seed) { const r = v0rng(seed); return Array.from({ length: R * C }, () => 1 + Math.floor(r() * 9)); }
-function v0rng(seed) { let s = (seed * 2654435761) >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
+const gridCosts = (R, C, r) => Array.from({ length: R * C }, () => 1 + Math.floor(r() * 9));
 function gridNb(R, C) { return Array.from({ length: R * C }, (_, k) => { const i = Math.floor(k / C), j = k % C, o = []; if (i) o.push(k - C); if (j) o.push(k - 1); if (j < C - 1) o.push(k + 1); if (i < R - 1) o.push(k + C); return o; }); }
 /** Cheapest path (sum of cell costs, both ends included) by Dijkstra. */
 function cheapest(nb, cost, s, t) {
@@ -518,9 +517,9 @@ It can fail. For the **longest (most valuable) simple path**, the piece of an op
       tags: ['dynamic programming'],
       viz(v) {
         const R = 4, C = 6, N = R * C, nb = gridNb(R, C), S0 = 0, T0 = N - 1;
-        let seed = 5, cost = gridCosts(R, C, seed), m = null, cache = new Map();
+        let seed = 5, cost = gridCosts(R, C, v.rng(seed)), m = null, cache = new Map();
         const mode = v.select('', [{ value: 'min', label: 'cheapest path' }, { value: 'max', label: 'most valuable simple path' }], 'min', { onChange: () => { m = null; } });
-        v.button('Shuffle costs', () => { seed++; cost = gridCosts(R, C, seed); cache = new Map(); m = null; });
+        v.button('Shuffle costs', () => { seed++; cost = gridCosts(R, C, v.rng(seed)); cache = new Map(); m = null; });
         const s = v.stage({ x: [-0.3, C + 0.3], y: [-R - 0.3, 0.3], axes: false, equal: true, height: 330 });
         const best = (a, b) => {
           const k = `${mode.value}|${a}|${b}`; if (!cache.has(k)) cache.set(k, mode.value === 'min' ? cheapest(nb, cost, a, b) : richest(nb, cost, a, b));
@@ -600,7 +599,7 @@ where $i$ is the length of the first piece. Computing $r_1,\dots,r_n$ in increas
           if (f.cand) {
             // r_j ← p_i + r_{j−i}: arrows from the chosen candidate to the price it used and the revenue it used
             T.arrow([1, f.bi], [0, f.bi], { color: 'green', width: 1.8, trim: 0.45 });
-            if (j - f.bi >= 0) { const [ax, ay] = T.cellCenter(2, j), [bx] = T.cellCenter(2, j - f.bi), hh = (T.cellRect(2, j)[3] - T.cellRect(2, j)[1]); if (f.bi) arcArrow(s, ax, ay - hh * 0.3, bx, ay - hh * 0.3, j - f.bi === j ? 0 : 14, { color: 'green', width: 2, headSize: 7 }); }
+            if (j - f.bi >= 0) { const [ax, ay] = T.cellCenter(2, j), [bx] = T.cellCenter(2, j - f.bi), hh = (T.cellRect(2, j)[3] - T.cellRect(2, j)[1]); arcArrow(s, ax, ay - hh * 0.32, bx, ay - hh * 0.32, 12, { color: 'green', width: 2, headSize: 7 }); }
           }
           // the rod
           rod.setView([-0.35, Math.max(n, 4) + 0.35], [-0.95, 1.25]);
@@ -626,7 +625,7 @@ where $i$ is the length of the first piece. Computing $r_1,\dots,r_n$ in increas
           const n = nS.value, { r, s: sA } = rodSolve(p, n), pcs = rodPieces(sA, n);
           let g = 0, left = n; const gp = []; // greedy by price per unit length
           while (left > 0) { let bi = 1; for (let i = 1; i <= left; i++) if (p[i] / i > p[bi] / bi) bi = i; gp.push(bi); g += p[bi]; left -= bi; }
-          return `$r_{${n}} = **${r[n]}**$ from pieces ${pcs.join(' + ')} · no cut: $p_{${n}} = ${p[n]}$ · greedy by price per unit length (${gp.join(' + ')}): **${g}** ${g === r[n] ? '✓ (lucky here)' : '✗'} · the naive recursion tries $2^{${n - 1}} = ${2 ** (n - 1)}$ cuttings, the table checks $${n}\\cdot${n + 1}/2 = ${n * (n + 1) / 2}$ candidates`.replace('**', '').replace('**$', '$');
+          return `Best revenue $r_{${n}} = ${r[n]}$ from pieces ${pcs.join(' + ')} · no cut: $p_{${n}} = ${p[n]}$ · greedy by price per unit length (${gp.join(' + ')}): **${g}** ${g === r[n] ? '✓ (lucky here)' : '✗'} · the naive recursion tries $2^{${n - 1}} = ${2 ** (n - 1)}$ cuttings, the table checks $${n}\\cdot ${n + 1}/2 = ${n * (n + 1) / 2}$ candidates`;
         });
       },
     },

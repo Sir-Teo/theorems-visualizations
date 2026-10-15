@@ -361,7 +361,7 @@ All satellites of one centre lie on a single line of slope $\tfrac32$ in $\log T
           LINES.forEach(([M, lab], k) => {
             s.fn((a) => Tof(a, M), { color: 'faint', width: 1, dash: [2, 4] });
             const Ttop = k % 2 ? 4e9 : 1.6e10, aTop = Math.cbrt((G * M * Ttop * Ttop) / (4 * Math.PI * Math.PI));
-            if (aTop < 1.2e14) s.text(lab, aTop, Ttop, { color: 'muted', size: 10, dx: 6, align: 'left' });
+            if (aTop < 5e13) s.text(lab, aTop, Ttop, { color: 'muted', size: 10, dx: 6, align: 'left' });
             else s.text(lab, 3.6e14, Tof(3.6e14, M), { color: 'muted', size: 10, dx: -4, dy: -9, align: 'right' });
           });
           // every system's points
