@@ -398,5 +398,422 @@ export default {
         });
       },
     },
+    // ------------------------------------------------------------------ 6.61
+    {
+      num: '6.61',
+      kind: 'Theorem',
+      name: 'Minimizing distance to a subspace',
+      statement: String.raw`Suppose $U$ is a finite-dimensional subspace of $V$, $v\in V$ and $u\in U$. Then $$\|v-P_Uv\|\le\|v-u\|,$$ with equality if and only if $u=P_Uv$. In words: $P_Uv$ is the unique point of $U$ closest to $v$.`,
+      idea: String.raw`Write $v-u=(v-P_Uv)+(P_Uv-u)$. The first piece lies in $U^\perp$ by 6.57(f) and the second lies in $U$, so Pythagoras (6.12) gives $$\|v-u\|^2=\|v-P_Uv\|^2+\|P_Uv-u\|^2\ge\|v-P_Uv\|^2,$$ with equality exactly when $P_Uv-u=0$. Combined with the formula 6.57(i) this solves concrete approximation problems: projecting $\sin x$ onto the polynomials of degree at most $5$ in $C[-\pi,\pi]$ with $\langle f,g\rangle=\int_{-\pi}^{\pi}fg$ gives $0.987862x-0.155271x^3+0.00564312x^5$, far better on $[-\pi,\pi]$ than the Taylor polynomial.`,
+      caption: String.raw`**$\mathbf R^3$:** drag $v$ (gold) and your candidate $u$ in the plane $U$ (orange). The red distance $\|v-u\|$ is the hypotenuse of a right triangle whose legs are $v-P_Uv$ (green, perpendicular to $U$) and $P_Uv-u$ (in $U$) — so it can never beat the green one. Try. **Functions:** $v$ is $\sin x$ (or $|x|$) on $[-\pi,\pi]$ and $U=\mathcal P_n(\mathbf R)$. Drag the handles of your polynomial $u$ (orange; it starts as the Taylor polynomial); the red area between $v$ and $u$ is the error, and $\|v-u\|^2=\int_{-\pi}^{\pi}|v-u|^2$. The green curve is $P_Uv$, computed from an orthonormal basis of $U$ by 6.57(i); **Best** moves your handles onto it.`,
+      deps: ['ladr-6.57', 'ladr-6.12'],
+      see: ['rca-4.14', 'rca-4.10'],
+      tags: ['projections', 'approximation'],
+      viz(v) {
+        const M = v.M, PI = Math.PI;
+        const mode = v.select('$V$', [{ value: 'R3', label: '$\\mathbf R^3$, $U$ a plane' }, { value: 'F', label: '$C[-\\pi,\\pi]$, $U=\\mathcal P_n(\\mathbf R)$' }], 'R3', { onChange: (m) => show(m) });
+        const S = v.stage({ x: [-1.8, 1.8], y: [-1.75, 1.75], equal: true, axes: false, height: 420, weight: 1.3 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.4, axis: 1.4, lim: 1.4 });
+        const D = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, weight: 0.7, minWidth: 220, title: 'distance to $v$' });
+        const F = v.stage({ x: [-3.45, 3.45], y: [-1.6, 1.6], height: 320, full: true, title: '$v$, your polynomial $u$ (drag the handles) and the best approximation $P_Uv$' });
+        const E = v.stage({ x: [-3.45, 3.45], y: [-0.5, 0.5], height: 150, full: true, title: 'errors $v-u$ (red) and $v-P_Uv$ (green)' });
+        const tgt = v.select('$v$', [{ value: 'sin', label: '$\\sin x$' }, { value: 'abs', label: '$|x|$' }], 'sin', { onChange: (t) => { bTay.hidden = t !== 'sin'; setTaylor(); best = Infinity; } });
+        const nS = v.slider('$n$ (degree)', 1, 7, 5, { int: true, onChange: () => renode() });
+        const bTay = v.button('Taylor', () => { setTaylor(); });
+        const bBest = v.button('Best', () => { snapBest = true; });
+        // ---- R³ part
+        const nrm = unit3([0.25, -0.35, 0.9]), [pa, pb] = perp(nrm);
+        const Vh = sc.handle([0.45, 0.55, 1.0], { color: 'gold', label: 'v' });
+        const Uh = sc.handle(add3(mul3(pa, 0.9), mul3(pb, -0.5)), { mode: 'plane', a: pa, b: pb, color: 'orange', label: 'u', snap: (p) => { const f = sub3(Vh.p, mul3(nrm, dot3(Vh.p, nrm))); return len3(sub3(p, f)) < 0.06 ? f : p; } });
+        // ---- function part: u interpolates handles at Chebyshev nodes of [−0.97π, 0.97π]
+        let nodes = chebNodes(5, -0.97 * PI, 0.97 * PI), snapBest = false, best = Infinity, lastV = null;
+        const H = [];
+        for (let j = 0; j < 8; j++) H.push(F.handle(0, 0, { color: 'orange', r: 6, constrain: (x, y) => [nodes[j] ?? 0, M.clamp(y, -3, 4)] }));
+        const target = () => (tgt.value === 'sin' ? Math.sin : Math.abs);
+        const taylor = (n) => { const c = new Array(n + 1).fill(0); for (let k = 1; k <= n; k += 2) c[k] = (k % 4 === 1 ? 1 : -1) / M.factorial(k); return c; };
+        function setTaylor() {
+          const n = nS.value;
+          const c = tgt.value === 'sin' ? taylor(n) : [0.4, 0, Math.min(n, 2) === 2 ? 0.3 : 0];
+          H.forEach((h, j) => { if (j <= n) { h.x = nodes[j]; h.y = pev(c, nodes[j]); } });
+          best = Infinity; v.invalidate();
+        }
+        let ucoef = null;
+        function renode() {
+          const n = nS.value;
+          nodes = chebNodes(n, -0.97 * PI, 0.97 * PI);
+          H.forEach((h, j) => { h.visible = j <= n && mode.value === 'F'; if (j <= n) { h.x = nodes[j]; h.y = ucoef ? M.clamp(pev(ucoef, nodes[j]), -3, 4) : 0; } });
+          best = Infinity; v.invalidate();
+        }
+        function show(m) {
+          layout(v, [[S, m === 'R3'], [D, m === 'R3'], [F, m === 'F'], [E, m === 'F']]);
+          Vh.visible = Uh.visible = m === 'R3';
+          H.forEach((h, j) => { h.visible = m === 'F' && j <= nS.value; });
+          for (const c of [tgt, nS]) c.el.hidden = m !== 'F';
+          bTay.hidden = m !== 'F' || tgt.value !== 'sin'; bBest.hidden = m !== 'F';
+          best = Infinity;
+        }
+        show('R3'); setTaylor();
+        // orthonormal basis of P_n on [−π, π]: e_k(x) = ê_k(x/π)/√π with ê_k orthonormal on [−1, 1]
+        const onb = (n) => legendreON(n).map((e) => e.map((a, i) => a / PI ** i / Math.sqrt(PI)));
+        let cache = { key: '', pc: null };
+        let st = null;
+        v.render(() => {
+          if (mode.value === 'R3') {
+            v.legend([['blue', '$U$', { area: true }], ['green', '$v-P_Uv$, the shortest'], ['red', 'your $v-u$'], ['orange', '$P_Uv-u$ in $U$', { dash: true }]]);
+            const p = Vh.p, f = sub3(p, mul3(nrm, dot3(p, nrm))), u = Uh.p;
+            const dBest = len3(sub3(p, f)), dYou = len3(sub3(p, u)), leg = len3(sub3(f, u));
+            if (!lastV || len3(sub3(lastV, p)) > 1e-9) { best = Infinity; lastV = p.slice(); }
+            best = Math.min(best, dYou);
+            sc.begin();
+            sc.disc(pa, pb, 1.4, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
+            sc.line(f, p, { color: 'green', width: 3 });
+            if (leg > 1e-6) { sc.line(p, u, { color: 'red', width: 2.6 }); sc.line(f, u, { color: 'orange', width: 2, dash: [5, 4] }); if (leg > 0.06 && dBest > 0.06) corner3(sc, f, unit3(sub3(u, f)), nrm, 0.11, { color: 'ink' }); }
+            sc.dot(f, { r: 5.5, color: 'green' }); sc.tex('P_Uv', f, { color: 'green', dx: -24, dy: 14, size: 13.5 });
+            sc.arrow(ZERO, p, { color: 'gold', width: 2.2, head: 9, alpha: 0.8 });
+            sc.flush();
+            // the meter
+            const sc2 = 0.62 / Math.max(1.2, dYou, dBest), y0 = 0.1;
+            const bar = (x, h, col, lab, val) => { D.rect(x - 0.09, y0, x + 0.09, y0 + h * sc2, { fill: col, fillAlpha: 0.45, color: col, width: 1.5 }); D.tex(lab, x, y0 + h * sc2, { color: col, dy: -24, size: 13 }); D.text(pn(val, 3), x, y0 + h * sc2, { color: col, dy: -8, align: 'center', size: 12 }); };
+            bar(0.27, dYou, 'red', '\\|v-u\\|', dYou); bar(0.73, dBest, 'green', '\\|v-P_Uv\\|', dBest);
+            if (isFinite(best)) { D.hline(y0 + best * sc2, { color: 'gold', width: 1.6, dash: [5, 4] }); D.text('your best', 0.5, y0 + best * sc2, { color: 'gold', dy: 9, align: 'center', size: 11 }); }
+            D.hline(y0, { color: 'muted', width: 1 });
+            st = { m: 'R3', dBest, dYou, leg, best };
+          } else {
+            v.legend([['blue', '$v$'], ['orange', 'your $u$'], ['red', 'error area', { area: true }], ['green', '$P_Uv$', { dash: true }]]);
+            const n = nS.value, f = target(), cuts = tgt.value === 'abs' ? [0] : [];
+            const key = `${tgt.value}|${n}`;
+            if (cache.key !== key) {
+              const Eb = onb(n), w = Eb.map((e) => gint((x) => f(x) * pev(e, x), -PI, PI, cuts));
+              const pc = new Array(n + 1).fill(0); Eb.forEach((e, k) => e.forEach((a, i) => { pc[i] += w[k] * a; }));
+              cache = { key, pc };
+            }
+            const pc = cache.pc;
+            if (snapBest) { snapBest = false; H.forEach((h, j) => { if (j <= n) h.y = pev(pc, nodes[j]); }); }
+            const uc = interpCoef(M, nodes.slice(0, n + 1), H.slice(0, n + 1).map((h) => h.y), PI);
+            ucoef = uc;
+            const U = (x) => pev(uc, x), P = (x) => pev(pc, x);
+            const yr = tgt.value === 'sin' ? [-1.6, 1.6] : [-0.6, 3.6];
+            F.setView([-3.45, 3.45], yr);
+            F.vline(-PI, { color: 'muted', width: 1, dash: [3, 3], alpha: 0.6 }); F.vline(PI, { color: 'muted', width: 1, dash: [3, 3], alpha: 0.6 });
+            F.clip(() => {
+              F.between(f, U, -PI, PI, { fill: 'red', fillAlpha: 0.22 });
+              F.fn(f, { domain: [-PI, PI], color: 'blue', width: 3, n: 400 });
+              F.fn(P, { domain: [-PI, PI], color: 'green', width: 2.4, dash: [7, 5], n: 300 });
+              F.fn(U, { domain: [-PI, PI], color: 'orange', width: 2.4, n: 300 });
+            });
+            const eU = (x) => f(x) - U(x), eP = (x) => f(x) - P(x);
+            let mx = 0.01; for (let i = 0; i <= 200; i++) { const x = -PI + (2 * PI * i) / 200; mx = Math.max(mx, Math.abs(eU(x)), Math.abs(eP(x))); }
+            E.setView([-3.45, 3.45], [-mx * 1.15, mx * 1.15]);
+            E.hline(0, { color: 'muted', width: 1 });
+            E.fn(eU, { domain: [-PI, PI], color: 'red', width: 2, fill: 'red', fillAlpha: 0.18, n: 300 });
+            E.fn(eP, { domain: [-PI, PI], color: 'green', width: 2.2, n: 300 });
+            const dYou = Math.sqrt(Math.max(0, gint((x) => eU(x) ** 2, -PI, PI, cuts))), dBest = Math.sqrt(Math.max(0, gint((x) => eP(x) ** 2, -PI, PI, cuts)));
+            const leg = Math.sqrt(Math.max(0, gint((x) => (P(x) - U(x)) ** 2, -PI, PI)));
+            best = Math.min(best, dYou);
+            st = { m: 'F', n, pc, dYou, dBest, leg, best, at3: [Math.abs(eP(3)), Math.abs(eU(3))], sin: tgt.value === 'sin' };
+          }
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { dYou, dBest, leg, best: b } = st;
+          const pyth = `Pythagoras: $${tn(dYou, 4)}^2 = ${tn(dBest, 4)}^2 + ${tn(leg, 4)}^2$ (the last term is $\\|P_Uv-u\\|^2$).`;
+          if (st.m === 'R3') {
+            return `Your $\\|v-u\\| = ${tn(dYou, 3)}$, best so far $${tn(b, 3)}$; the minimum is $\\|v-P_Uv\\| = ${tn(dBest, 3)}$. ${pyth} ${leg < 1e-9 ? 'You found it: $u = P_Uv$, the only minimizer.' : ''}`;
+          }
+          const { n, pc, at3, sin } = st;
+          return `$P_Uv = ${polyTeX(pc, sin ? 6 : 4)}$. Your polynomial: $\\|v-u\\| = ${tn(dYou, 4)}$ (best so far $${tn(b, 4)}$); the minimum over $\\mathcal P_${n}(\\mathbf R)$ is $\\|v-P_Uv\\| = ${tn(dBest, 5)}$. ${pyth} At $x=3$ the errors are $${zs(at3[0])}$ for $P_Uv$ and $${tn(at3[1], 3)}$ for $u$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.67
+    {
+      num: '6.67',
+      kind: 'Theorem',
+      name: 'T restricted to (null T)⊥ is a bijection onto range T',
+      statement: String.raw`Suppose $V$ is finite-dimensional and $T\in\mathcal L(V,W)$. Then the restriction $T|_{(\operatorname{null}T)^\perp}$ is an injective linear map of $(\operatorname{null}T)^\perp$ onto $\operatorname{range}T$.`,
+      idea: String.raw`If $v\in(\operatorname{null}T)^\perp$ and $Tv=0$, then $v\in\operatorname{null}T\cap(\operatorname{null}T)^\perp=\{0\}$ (6.48(d)), so the restriction is injective. For $w=Tv\in\operatorname{range}T$, split $v=u+x$ with $u\in\operatorname{null}T$ and $x\in(\operatorname{null}T)^\perp$ (6.49); then $Tx=Tv-Tu=w$, so the restriction already hits all of $\operatorname{range}T$. Every vector of $W$ that $T$ reaches has exactly one preimage in $(\operatorname{null}T)^\perp$.`,
+      caption: String.raw`$T\colon\mathbf R^3\to\mathbf R^2$. Left: $\operatorname{null}T$ (red) and the subspace $X$ we restrict to (green, drawn with a polar grid). Right: the image of that grid. With tilt $0°$, $X=(\operatorname{null}T)^\perp$ and the grid maps one-to-one onto $\operatorname{range}T$. Drag $y$ on the right: its unique preimage in $X$ is the green dot, where the orange set $T^{-1}(y)$ — a translate of $\operatorname{null}T$ — crosses $X$. Tilt $X$ towards $\operatorname{null}T$: the image grid flattens, and at $90°$ $X$ contains the null space and the restriction collapses. Switch to rank 1: then $(\operatorname{null}T)^\perp$ is a line and $\operatorname{range}T$ is a line.`,
+      deps: ['ladr-6.48', 'ladr-6.49', 'ladr-3.15'],
+      tags: ['projections', 'linear maps'],
+      viz(v) {
+        const M = v.M;
+        const S3 = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, axes: false, height: 400, title: '$V=\\mathbf R^3$' });
+        const sc = v.scene3(S3, { yaw: -0.65, pitch: 0.32, axis: 1.4, lim: 1.4 });
+        const SW = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400, minWidth: 260, title: '$W=\\mathbf R^2$' });
+        const rS = v.select('$T$', [{ value: '2', label: 'rank 2' }, { value: '1', label: 'rank 1' }], '2', { onChange: () => { const p = onRange(Yh.x, Yh.y); Yh.x = p[0]; Yh.y = p[1]; } });
+        const al = v.slider('tilt $X$ towards $\\operatorname{null}T$', 0, 90, 0, { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const A2 = [[0.9, 0.5, -0.6], [-0.3, 0.8, 0.7]], A1 = [[0.9, 0.5, -0.6], [0.45, 0.25, -0.3]];
+        const rdir = [0.9 / Math.hypot(0.9, 0.45), 0.45 / Math.hypot(0.9, 0.45)];
+        const onRange = (x, y) => { if (rS.value === '2') return [x, y]; const t = dot2([x, y], rdir); return [rdir[0] * t, rdir[1] * t]; };
+        const Yh = SW.handle(0.9, 0.75, { color: 'gold', label: 'y', constrain: onRange });
+        v.legend([['red', '$\\operatorname{null}T$'], ['green', 'the subspace $X$ and its image'], ['orange', '$T^{-1}(y)$', { dash: true }], ['gold', 'target $y$', { dot: true }]]);
+        let st = null;
+        v.render(() => {
+          const A = rS.value === '2' ? A2 : A1, N = M.nullspace(A, 1e-9), P = compl(orth(N)), r = P.length;
+          const t = (al.value * Math.PI) / 180;
+          const X = P.slice(); X[r - 1] = add3(mul3(P[r - 1], Math.cos(t)), mul3(N[0], Math.sin(t)));   // still orthonormal
+          const TX = X.map((x) => mv(A, x));
+          const y = onRange(Yh.x, Yh.y);
+          // the restricted map in the orthonormal basis X of X and the standard basis of W
+          let pre = null, det = 0;
+          if (r === 2) { const K = [[TX[0][0], TX[1][0]], [TX[0][1], TX[1][1]]]; det = M.det(K); if (Math.abs(det) > 1e-9) { const c = M.solve(K, y); pre = add3(mul3(X[0], c[0]), mul3(X[1], c[1])); } }
+          else { const l2 = dot2(TX[0], TX[0]); det = Math.sqrt(l2); if (l2 > 1e-12) pre = mul3(X[0], dot2(y, TX[0]) / l2); }
+          const ok = Math.abs(det) > 1e-6, col = ok ? 'green' : 'red';
+          sc.begin();
+          if (N.length === 1) sc.line(mul3(N[0], -1.7), mul3(N[0], 1.7), { color: 'red', width: 3.2, alpha: 0.8 }, 14);
+          else sc.disc(N[0], N[1], 1.3, { fill: 'red', color: 'red', fillAlpha: 0.08, grid: false, alpha: 0.5 });
+          const grid = (fn, rr) => { // circles and spokes of radius ≤ rr in the plane of X, mapped by fn
+            const out = [];
+            for (const R of [0.4, 0.8, 1.2]) { const pts = []; for (let i = 0; i <= 64; i++) { const a = (2 * Math.PI * i) / 64; pts.push(fn(R * Math.cos(a), R * Math.sin(a))); } out.push(pts); }
+            for (let k = 0; k < 8; k++) { const a = (Math.PI * k) / 4; out.push([fn(0, 0), fn(rr * Math.cos(a), rr * Math.sin(a))]); }
+            return out;
+          };
+          if (r === 2) {
+            sc.disc(X[0], X[1], 1.2, { fill: col, color: col, fillAlpha: 0.1, grid: false, alpha: 0.6 });
+            grid((s, q) => add3(mul3(X[0], s), mul3(X[1], q)), 1.2).forEach((pts) => sc.path(pts, { color: col, width: 1, alpha: 0.55 }));
+          } else {
+            sc.line(mul3(X[0], -1.6), mul3(X[0], 1.6), { color: col, width: 3.2, alpha: 0.8 }, 12);
+            for (let k = -3; k <= 3; k++) if (k) sc.dot(mul3(X[0], 0.4 * k), { r: 3, color: col });
+          }
+          if (pre) {
+            if (N.length === 1) sc.line(add3(pre, mul3(N[0], -1.4)), add3(pre, mul3(N[0], 1.4)), { color: 'orange', width: 2, dash: [6, 4] });
+            else sc.disc(N[0], N[1], 0.7, { fill: 'orange', color: 'orange', fillAlpha: 0.08, alpha: 0.7, width: 1.2 }, pre);
+            sc.dot(pre, { r: 6.5, color: 'green' }); sc.tex('x', pre, { color: 'green', dx: 12, dy: -12, size: 15 });
+          }
+          sc.flush();
+          // W side
+          if (rS.value === '2') SW.rect(-9, -9, 9, 9, { fill: 'teal', fillAlpha: 0.04, stroke: false });
+          else lineThrough(SW, [0, 0], rdir, 'teal', { width: 8, alpha: 0.2 });
+          SW.corner(rS.value === '2' ? 'range T = ℝ²' : 'range T = a line', 'tl', { color: 'teal' });
+          if (r === 2) grid((s, q) => [s * TX[0][0] + q * TX[1][0], s * TX[0][1] + q * TX[1][1]], 1.2).forEach((pts) => SW.path(pts, { color: col, width: ok ? 1.3 : 3, alpha: ok ? 0.75 : 0.9 }));
+          else for (let k = -3; k <= 3; k++) SW.dot(0.4 * k * TX[0][0], 0.4 * k * TX[0][1], { r: k ? 3.5 : 4, color: col });
+          SW.dot(0, 0, { r: 3, color: 'ink' });
+          if (!ok) SW.corner('the whole restriction collapses: not injective', 'bl', { color: 'red', weight: 600 });
+          st = { r, det, ok, pre, y, tilt: al.value, check: pre ? Math.hypot(...mv(A, pre).map((c, i) => c - y[i])) : null };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { r, det, ok, pre, y, tilt, check } = st;
+          const what = r === 2 ? `$\\det$ of the restricted map in orthonormal coordinates: $${tn(det, 3)}$` : `$\\|Tx_1\\|$ for the unit vector $x_1$ spanning $X$: $${tn(det, 3)}$`;
+          if (!ok) return `${what}. At $90°$ the subspace $X$ contains the null direction, so $T$ kills a nonzero vector of $X$: the restriction is not injective and its image is smaller than $\\operatorname{range}T$. Only a complement of $\\operatorname{null}T$ works, and $(\\operatorname{null}T)^\\perp$ is the natural one.`;
+          return `${what} $\\ne 0$, so $T|_X$ is injective and onto $\\operatorname{range}T$. The target $y = ${vt(y)}$ has exactly one preimage in $X$: $x = ${vt(pre)}$ ($\\|Tx-y\\| = ${zs(check)}$). ${tilt === 0 ? 'Here $X = (\\operatorname{null}T)^\\perp$, which is what the pseudoinverse will use.' : 'Any complement of the null space would do; the theorem uses the orthogonal one.'}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.68
+    {
+      num: '6.68',
+      kind: 'Definition',
+      name: 'Pseudoinverse T†',
+      statement: String.raw`Suppose $V$ is finite-dimensional and $T\in\mathcal L(V,W)$. The **pseudoinverse** $T^\dagger\in\mathcal L(W,V)$ of $T$ is defined by $$T^\dagger w=\bigl(T|_{(\operatorname{null}T)^\perp}\bigr)^{-1}P_{\operatorname{range}T}\,w\qquad(w\in W),$$ where $T|_{(\operatorname{null}T)^\perp}$ is regarded as an invertible map of $(\operatorname{null}T)^\perp$ onto $\operatorname{range}T$ (6.67).`,
+      idea: String.raw`Two steps: first project $w$ orthogonally onto $\operatorname{range}T$, the closest vector that $T$ can actually reach; then take its unique preimage inside $(\operatorname{null}T)^\perp$. So $T^\dagger w=0$ for $w\in(\operatorname{range}T)^\perp$, and for $w\in\operatorname{range}T$, $T^\dagger w$ is the one solution of $Tv=w$ orthogonal to $\operatorname{null}T$. When $T$ is invertible both steps are trivial and $T^\dagger=T^{-1}$. $T^\dagger$ is also called the Moore–Penrose inverse.`,
+      caption: String.raw`Drag $Te_1$ and $Te_2$ on the right to choose $T\colon\mathbf R^2\to\mathbf R^2$; $Te_2$ snaps onto the line of $Te_1$, making $T$ singular (rank 1). Drag $w$: step ① drops it perpendicularly onto $\operatorname{range}T$ (teal); step ② pulls the foot back to $V$. All its preimages form the orange line, a translate of $\operatorname{null}T$ (red); $T^\dagger w$ is where that line crosses $(\operatorname{null}T)^\perp$ (green). Pull $Te_2$ off the line: $T$ becomes invertible and $T^\dagger w=T^{-1}w$.`,
+      deps: ['ladr-6.67', 'ladr-6.55'],
+      credit: 'E. H. Moore, 1920; Roger Penrose, 1955',
+      tags: ['pseudoinverse'],
+      viz(v) {
+        const M = v.M;
+        const SV = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, height: 380, title: '$V=\\mathbf R^2$: ② the preimage in $(\\operatorname{null}T)^\\perp$' });
+        const SW = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, height: 380, title: '$W=\\mathbf R^2$: ① project $w$ onto $\\operatorname{range}T$' });
+        const T1 = SW.handle(1.2, 0.6, { color: 'blue', label: 'Te₁' });
+        const T2 = SW.handle(-0.6, -0.3, { color: 'purple', label: 'Te₂', constrain: (x, y) => {
+          const l = Math.hypot(T1.x, T1.y); if (l < 1e-6) return [x, y];
+          const e = [T1.x / l, T1.y / l], t = x * e[0] + y * e[1], d = Math.abs(-x * e[1] + y * e[0]);
+          return d < 0.12 ? [e[0] * t, e[1] * t] : [x, y];
+        } });
+        const Wh = SW.handle(-0.7, 1.5, { color: 'gold', label: 'w' });
+        v.legend([['teal', '$\\operatorname{range}T$'], ['red', '$\\operatorname{null}T$'], ['green', '$(\\operatorname{null}T)^\\perp$ and $T^\\dagger w$'], ['orange', 'all $v$ with $Tv=P_{\\operatorname{range}T}w$', { dash: true }]]);
+        let st = null;
+        v.render(() => {
+          const A = [[T1.x, T2.x], [T1.y, T2.y]], w = [Wh.x, Wh.y];
+          const R = orth([[T1.x, T1.y], [T2.x, T2.y]], 1e-6), N = M.nullspace(A, 1e-6 * (1 + maxAbs(A))), Pn = compl(orth(N), 2);
+          const r = R.length;
+          const Pw = projOnto(w, R);
+          // (T restricted to (null T)⊥)⁻¹: solve in the orthonormal bases Pn of (null T)⊥ and R of range T
+          let x = [0, 0];
+          if (r === 2) x = M.solve(A, w);
+          else if (r === 1) { const Tp = mv(A, Pn[0]), k = dot2(Tp, R[0]); x = Pn[0].map((c) => (c * dot2(Pw, R[0])) / k); }
+          const Tx = mv(A, x), pinv = mv(M.pinv(A, 1e-6 * (1 + maxAbs(A))), w);
+          // W panel
+          if (r === 2) SW.rect(-9, -9, 9, 9, { fill: 'teal', fillAlpha: 0.05, stroke: false });
+          else if (r === 1) lineThrough(SW, [0, 0], R[0], 'teal', { width: 7, alpha: 0.25 });
+          arr(SW, [0, 0], [T1.x, T1.y], 'blue', null, { width: 2 }); arr(SW, [0, 0], [T2.x, T2.y], 'purple', null, { width: 2 });
+          if (r === 1) {
+            SW.line(w[0], w[1], Pw[0], Pw[1], { color: 'teal', width: 1.6, dash: [4, 3] });
+            const dw = [w[0] - Pw[0], w[1] - Pw[1]], ld = Math.hypot(...dw);
+            if (ld > 0.12) corner2(SW, Pw, [-R[0][0] * Math.sign(dot2(Pw, R[0]) || 1), -R[0][1] * Math.sign(dot2(Pw, R[0]) || 1)], [dw[0] / ld, dw[1] / ld], 0.13);
+          }
+          SW.dot(Pw[0], Pw[1], { r: 6, color: 'teal' }); SW.tex('P_{\\operatorname{range}T}\\,w', Pw[0], Pw[1], { color: 'teal', dx: 16, dy: 18, align: 'left', size: 13 });
+          SW.dot(Tx[0], Tx[1], { r: 11, hollow: true, color: 'green', width: 1.6 });
+          SW.dot(0, 0, { r: 3, color: 'ink' });
+          // V panel
+          if (r === 1) {
+            lineThrough(SV, [0, 0], N[0], 'red', { width: 2.6, alpha: 0.85 });
+            lineThrough(SV, [0, 0], Pn[0], 'green', { width: 2, alpha: 0.6 });
+            lineThrough(SV, x, N[0], 'orange', { width: 2, dash: [6, 4] });
+            corner2(SV, [0, 0], N[0], Pn[0], 0.18, { color: 'muted' });
+          } else if (r === 2) SV.corner('null T = {0}: (null T)⊥ = V', 'tl', { color: 'green' });
+          else SV.corner('T = 0: null T = V, so T†w = 0', 'tl', { color: 'red' });
+          arr(SV, [0, 0], x, 'green', 'T^\\dagger w', { width: 3, size: 14 });
+          SV.dot(0, 0, { r: 3, color: 'ink' });
+          st = { r, x, Pw, err: Math.hypot(x[0] - pinv[0], x[1] - pinv[1]), back: Math.hypot(Tx[0] - Pw[0], Tx[1] - Pw[1]), inv: r === 2 ? M.inverse(A) : null };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { r, x, Pw, err, back } = st;
+          const head = `$T^\\dagger w = ${vt(x)}$, and $T(T^\\dagger w) = P_{\\operatorname{range}T}w = ${vt(Pw)}$ (difference $${zs(back)}$). The SVD-based pseudoinverse agrees to within $${zs(err)}$.`;
+          if (r === 2) return head + ` Here $T$ is invertible: $\\operatorname{range}T = W$, $\\operatorname{null}T = \\{0\\}$, and $T^\\dagger = T^{-1}$.`;
+          if (r === 1) return head + ` Of all the vectors on the orange line, $T^\\dagger w$ is the one orthogonal to $\\operatorname{null}T$ — and so the shortest, $\\|T^\\dagger w\\| = ${tn(Math.hypot(...x), 3)}$.`;
+          return head;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.69
+    {
+      num: '6.69',
+      kind: 'Theorem',
+      name: 'Algebraic properties of the pseudoinverse',
+      statement: String.raw`Suppose $V$ is finite-dimensional and $T\in\mathcal L(V,W)$.
+(a) If $T$ is invertible, then $T^\dagger=T^{-1}$.
+(b) $TT^\dagger=P_{\operatorname{range}T}$, the orthogonal projection of $W$ onto $\operatorname{range}T$.
+(c) $T^\dagger T=P_{(\operatorname{null}T)^\perp}$, the orthogonal projection of $V$ onto $(\operatorname{null}T)^\perp$.`,
+      idea: String.raw`(a) If $T$ is invertible, $(\operatorname{null}T)^\perp=V$ and $\operatorname{range}T=W$, so neither step of the definition does anything. (b) On $\operatorname{range}T$, $TT^\dagger$ undoes the restricted inverse and is the identity; on $(\operatorname{range}T)^\perp$, $T^\dagger$ is already $0$. These are the two values of $P_{\operatorname{range}T}$, and $W=\operatorname{range}T\oplus(\operatorname{range}T)^\perp$ (6.49), so the maps agree. (c) Likewise on $(\operatorname{null}T)^\perp$ the map $T^\dagger T$ is the identity and on $\operatorname{null}T$ it is $0$. In particular $T^\dagger T=I$ when $T$ is injective and $TT^\dagger=I$ when $T$ is surjective.`,
+      caption: String.raw`$T$ is the operator on $\mathbf R^3$ whose matrix has columns $Te_1,Te_2,Te_3$ (drag them on the right; $Te_3$ snaps into the plane of $Te_1,Te_2$, and $Te_2$ onto the line of $Te_1$). Right: $TT^\dagger$ sends the gold $w$ straight down onto $\operatorname{range}T$. Left: $T^\dagger T$ sends the gold $x$ straight onto $(\operatorname{null}T)^\perp$, perpendicular to the red null space. Both maps are computed from the definition of $T^\dagger$, and the readout compares them with the orthogonal projections. Pull $Te_3$ out of the plane: $T$ becomes invertible, both maps become $I$, and $T^\dagger=T^{-1}$.`,
+      deps: ['ladr-6.68', 'ladr-6.49'],
+      tags: ['pseudoinverse'],
+      viz(v) {
+        const M = v.M;
+        const SV = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 380, title: '$V$: $T^\\dagger T = P_{(\\operatorname{null}T)^\\perp}$' });
+        const scV = v.scene3(SV, { yaw: -0.65, pitch: 0.34, axis: 1.35, lim: 1.35, hint: false });
+        const SW = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 380, title: '$W$: $TT^\\dagger = P_{\\operatorname{range}T}$' });
+        const scW = v.scene3(SW, { yaw: -0.65, pitch: 0.34, axis: 1.35, lim: 1.35 });
+        const C1 = scW.handle([0.95, 0.15, -0.1], { color: 'blue', label: 'Te₁' });
+        const C2 = scW.handle([0.05, 0.8, 0.45], { color: 'purple', label: 'Te₂', snap: (p) => snapSpan(p, orth([C1.p]), 0.1) });
+        const C3 = scW.handle(add3(mul3([0.95, 0.15, -0.1], 0.6), mul3([0.05, 0.8, 0.45], -0.7)), { color: 'teal', label: 'Te₃', snap: (p) => snapSpan(p, orth([C1.p, C2.p]), 0.12) });
+        const Wh = scW.handle([-0.3, 0.35, 1.05], { color: 'gold', label: 'w' });
+        const Xh = scV.handle([0.6, -0.5, 0.9], { color: 'gold', label: 'x' });
+        v.legend([['teal', '$\\operatorname{range}T$', { area: true }], ['red', '$\\operatorname{null}T$'], ['green', '$(\\operatorname{null}T)^\\perp$ and the images'], ['gold', '$w$, $x$', { dot: true }]]);
+        let st = null;
+        v.render(() => {
+          const cols = [C1.p, C2.p, C3.p], A = fromCols(cols), tol = 1e-7;
+          const R = orth(cols, tol), N = M.nullspace(A, 1e-6 * (1 + maxAbs(A))), P = compl(orth(N)), r = R.length;
+          // T† from the definition: K = matrix of T restricted to (null T)⊥ (basis P) onto range T (basis R)
+          const K = R.map((e) => P.map((p) => dot3(e, mv(A, p)))), Ki = r ? M.inverse(K) : null;
+          const Tdag = (w) => { if (!r) return [0, 0, 0]; const c = mv(Ki, R.map((e) => dot3(e, w))); return P.reduce((s, p, j) => add3(s, mul3(p, c[j])), [0, 0, 0]); };
+          const TD = fromCols([[1, 0, 0], [0, 1, 0], [0, 0, 1]].map(Tdag));      // the matrix of T†
+          const TTd = M.matMul(A, TD), TdT = M.matMul(TD, A);
+          const PR = [0, 1, 2].map((i) => [0, 1, 2].map((j) => R.reduce((s, e) => s + e[i] * e[j], 0)));
+          const PN = [0, 1, 2].map((i) => [0, 1, 2].map((j) => P.reduce((s, e) => s + e[i] * e[j], 0)));
+          const w = Wh.p, x = Xh.p, pw = mv(TTd, w), px = mv(TdT, x);
+          // W
+          scW.begin();
+          if (r === 2) scW.disc(R[0], R[1], 1.35, { fill: 'teal', color: 'teal', fillAlpha: 0.12, grid: true });
+          else if (r === 1) scW.line(mul3(R[0], -1.6), mul3(R[0], 1.6), { color: 'teal', width: 4, alpha: 0.5 }, 12);
+          else if (r === 3) spanDraw(scW, R, { color: 'teal', box: 1.1, fillAlpha: 0.03 });
+          cols.forEach((c, i) => scW.arrow(ZERO, c, { color: VC[i], width: 2, head: 8, alpha: 0.8 }));
+          if (len3(sub3(w, pw)) > 1e-6) { scW.line(w, pw, { color: 'green', width: 1.8, dash: [4, 3] }); if (len3(pw) > 0.08 && len3(sub3(w, pw)) > 0.08) corner3(scW, pw, unit3(mul3(pw, -1)), unit3(sub3(w, pw)), 0.11); }
+          scW.arrow(ZERO, w, { color: 'gold', width: 2.2, head: 9 });
+          scW.dot(pw, { r: 6.5, color: 'green' }); scW.tex('TT^\\dagger w', pw, { color: 'green', dx: 18, dy: 16, size: 13 });
+          scW.flush();
+          // V
+          scV.begin();
+          if (N.length === 1) scV.line(mul3(N[0], -1.6), mul3(N[0], 1.6), { color: 'red', width: 3.2, alpha: 0.8 }, 12);
+          else if (N.length === 2) scV.disc(N[0], N[1], 1.3, { fill: 'red', color: 'red', fillAlpha: 0.08, grid: false, alpha: 0.5 });
+          if (P.length === 2) scV.disc(P[0], P[1], 1.35, { fill: 'green', color: 'green', fillAlpha: 0.1, grid: true });
+          else if (P.length === 1) scV.line(mul3(P[0], -1.6), mul3(P[0], 1.6), { color: 'green', width: 3, alpha: 0.6 }, 12);
+          else if (P.length === 3) spanDraw(scV, P, { color: 'green', box: 1.1, fillAlpha: 0.03 });
+          if (len3(sub3(x, px)) > 1e-6) { scV.line(x, px, { color: 'green', width: 1.8, dash: [4, 3] }); if (len3(px) > 0.08 && len3(sub3(x, px)) > 0.08) corner3(scV, px, unit3(mul3(px, -1)), unit3(sub3(x, px)), 0.11); }
+          scV.arrow(ZERO, x, { color: 'gold', width: 2.2, head: 9 });
+          scV.dot(px, { r: 6.5, color: 'green' }); scV.tex('T^\\dagger Tx', px, { color: 'green', dx: 18, dy: 16, size: 13 });
+          scV.flush();
+          if (r === 3) { SV.corner('null T = {0}: T†T = I', 'tl', { color: 'green' }); SW.corner('range T = W: TT† = I', 'tl', { color: 'green' }); }
+          const Ai = r === 3 ? M.inverse(A) : null;
+          st = { r, dB: maxAbs(msub(TTd, PR)), dC: maxAbs(msub(TdT, PN)), dA: Ai ? maxAbs(msub(TD, Ai)) : null, dS: maxAbs(msub(TD, M.pinv(A, 1e-6 * (1 + maxAbs(A))))), idem: maxAbs(msub(M.matMul(TTd, TTd), TTd)), sym: maxAbs(msub(TTd, M.transpose(TTd))), TTd };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { r, dB, dC, dA, dS, idem, sym, TTd } = st;
+          let s = `$\\operatorname{rank}T = ${r}$. (b) $\\max\\lvert TT^\\dagger - P_{\\operatorname{range}T}\\rvert = ${zs(dB)}$, and $TT^\\dagger = ${mtex(TTd)}$ is symmetric (${zs(sym)}) and idempotent (${zs(idem)}), as an orthogonal projection must be. (c) $\\max\\lvert T^\\dagger T - P_{(\\operatorname{null}T)^\\perp}\\rvert = ${zs(dC)}$. `;
+          s += r === 3 ? `(a) $T$ is invertible and $\\max\\lvert T^\\dagger - T^{-1}\\rvert = ${zs(dA)}$.` : `$T$ is not invertible, so (a) says nothing; drag $Te_3$ out of the plane to see it.`;
+          return s + ` (The definition-based $T^\\dagger$ matches the SVD pseudoinverse to within $${zs(dS)}$.)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.70
+    {
+      num: '6.70',
+      kind: 'Theorem',
+      name: 'Pseudoinverse gives best approximate solution',
+      statement: String.raw`Suppose $V$ is finite-dimensional, $T\in\mathcal L(V,W)$ and $w\in W$.
+(a) For every $v\in V$, $$\|T(T^\dagger w)-w\|\le\|Tv-w\|,$$ with equality if and only if $v\in T^\dagger w+\operatorname{null}T$.
+(b) If $v\in T^\dagger w+\operatorname{null}T$, then $\|T^\dagger w\|\le\|v\|$, with equality if and only if $v=T^\dagger w$.
+So $T^\dagger w$ is the best approximate solution of $Tv=w$, and among all best approximate solutions it has the smallest norm.`,
+      idea: String.raw`(a) Write $Tv-w=(Tv-TT^\dagger w)+(TT^\dagger w-w)$. The first term lies in $\operatorname{range}T$, and since $TT^\dagger=P_{\operatorname{range}T}$ (6.69(b)) the second lies in $(\operatorname{range}T)^\perp$ (6.57(f)). Pythagoras (6.12) gives $\|Tv-w\|^2=\|T(v-T^\dagger w)\|^2+\|TT^\dagger w-w\|^2$, with equality exactly when $v-T^\dagger w\in\operatorname{null}T$. (b) $T^\dagger w\in(\operatorname{null}T)^\perp$, so $v=(v-T^\dagger w)+T^\dagger w$ is again an orthogonal split and $\|v\|^2=\|v-T^\dagger w\|^2+\|T^\dagger w\|^2$.`,
+      caption: String.raw`Three equations in two unknowns, $a_k\cdot x=w_k$, drawn as three lines in the plane of $x=(x_1,x_2)$ (each $a_k$ a unit vector, so the residual of an equation is the distance to its line). Drag the dots on the lines to change $w$ — the lines have no common point. The shading and the contours show $\|Tx-w\|$; drag your guess $x$ (gold) and try to beat $T^\dagger w$ (green): the red segments are the three residuals. Switch to **dependent columns**: all three lines are parallel, the best points fill a whole line (green dashed), and $T^\dagger w$ is the one closest to the origin.`,
+      deps: ['ladr-6.69', 'ladr-6.57', 'ladr-6.12'],
+      tags: ['pseudoinverse', 'approximation'],
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-3, 3], y: [-2.1, 2.1], equal: true, height: 430, xlabel: 'x₁', ylabel: 'x₂' });
+        const mS = v.select('$T$', [{ value: 'ind', label: 'independent columns' }, { value: 'dep', label: 'dependent columns' }], 'ind', { onChange: () => setMode() });
+        const ROWS = {
+          ind: [[1, 0.2], [-0.35, 1], [0.75, 0.95]].map(([a, b]) => { const l = Math.hypot(a, b); return [a / l, b / l]; }),
+          dep: [0, 1, 2].map(() => [Math.cos(1.1), Math.sin(1.1)]),
+        };
+        const W0 = { ind: [0.9, 0.7, -0.5], dep: [0.3, 1.1, 1.6] };
+        let rows = ROWS.ind;
+        const LH = [0, 1, 2].map((k) => S.handle(0, 0, { color: VC[k], r: 6, constrain: (x, y) => { const a = rows[k], t = M.clamp(x * a[0] + y * a[1], -1.9, 1.9); return [a[0] * t, a[1] * t]; } }));
+        const Xh = S.handle(-1.6, -1.2, { color: 'gold', label: 'x' });
+        let best = Infinity, lastKey = '';
+        function setMode() {
+          rows = ROWS[mS.value];
+          LH.forEach((h, k) => { const t = W0[mS.value][k]; h.x = rows[k][0] * t; h.y = rows[k][1] * t; });
+          if (mS.value === 'dep') { Xh.x = 1.9; Xh.y = -0.2; } else { Xh.x = -1.6; Xh.y = -1.2; }
+          best = Infinity; v.invalidate();
+        }
+        setMode();
+        v.legend([['green', 'least-squares point $T^\\dagger w$'], ['red', 'residuals of your $x$'], ['gold', 'your guess $x$', { dot: true }], ['green', 'all best points', { dash: true }]]);
+        let st = null;
+        v.render(() => {
+          const A = rows, w = LH.map((h, k) => h.x * rows[k][0] + h.y * rows[k][1]);
+          const res = (x) => A.map((a, k) => a[0] * x[0] + a[1] * x[1] - w[k]);
+          const f = (x) => res(x).reduce((s, r) => s + r * r, 0);
+          const xs = mv(M.pinv(A, 1e-9), w), fmin = f(xs), dep = mS.value === 'dep';
+          // shading by the residual (palette colour, alpha falls off with ‖Tx − w‖² − min)
+          const g = v.rgb('green'), key = `${mS.value}|${w.map((c) => c.toFixed(3)).join(',')}`;
+          S.raster((x, y) => { const d = f([x, y]) - fmin; return [g[0], g[1], g[2], Math.round(120 * Math.exp(-d / 0.9))]; }, { res: 3, key });
+          // contours ‖Tx − w‖² = fmin + c
+          const AtA = M.matMul(M.transpose(A), A), es = M.eigSym2(AtA);
+          for (const c of [0.25, 0.75, 1.5, 2.5, 4]) {
+            if (!dep) S.curve((t) => { const u = es.vectors[0], q = es.vectors[1], s1 = Math.sqrt(c / es.values[0]), s2 = Math.sqrt(c / es.values[1]); return [xs[0] + s1 * Math.cos(t) * u[0] + s2 * Math.sin(t) * q[0], xs[1] + s1 * Math.cos(t) * u[1] + s2 * Math.sin(t) * q[1]]; }, 0, 2 * Math.PI, { color: 'green', width: 1, alpha: 0.5, n: 120 });
+            else { const a = A[0], h = Math.sqrt(c / 3); for (const s of [1, -1]) lineThrough(S, [xs[0] + s * h * a[0], xs[1] + s * h * a[1]], [-a[1], a[0]], 'green', { width: 1, alpha: 0.5 }); }
+          }
+          // the three lines a_k·x = w_k
+          A.forEach((a, k) => lineThrough(S, [a[0] * w[k], a[1] * w[k]], [-a[1], a[0]], VC[k], { width: 2.2, alpha: 0.9 }));
+          if (dep) {
+            const a = A[0];
+            lineThrough(S, xs, [-a[1], a[0]], 'green', { width: 2.2, dash: [7, 5] });
+            S.line(0, 0, xs[0], xs[1], { color: 'green', width: 1.5, dash: [3, 3] });
+            if (Math.hypot(...xs) > 0.2) corner2(S, xs, [-xs[0] / Math.hypot(...xs), -xs[1] / Math.hypot(...xs)], [-a[1], a[0]], 0.14, { color: 'green' });
+          }
+          const x = [Xh.x, Xh.y], r = res(x);
+          A.forEach((a, k) => { const q = [x[0] - r[k] * a[0], x[1] - r[k] * a[1]]; S.line(x[0], x[1], q[0], q[1], { color: 'red', width: 2.2 }); S.dot(q[0], q[1], { r: 2.5, color: 'red' }); });
+          S.dot(xs[0], xs[1], { r: 7, color: 'green' }); S.tex('T^\\dagger w', xs[0], xs[1], { color: 'green', dx: 22, dy: -16, size: 14 });
+          S.dot(0, 0, { r: 3, color: 'ink' });
+          if (key !== lastKey) { lastKey = key; best = Infinity; }
+          const fx = Math.sqrt(f(x)); best = Math.min(best, fx);
+          const onValley = dep && Math.abs(fx - Math.sqrt(fmin)) < 1e-3;
+          st = { w, xs, fx, fmin: Math.sqrt(fmin), best, dep, onValley, nx: Math.hypot(...x), nxs: Math.hypot(...xs), r };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { w, xs, fx, fmin, best: b, dep, onValley, nx, nxs, r } = st;
+          let s = `$w = ${vt(w)}$, $T^\\dagger w = ${vt(xs)}$ with $\\|T(T^\\dagger w)-w\\| = ${tn(fmin, 4)}$. Your $x$: residuals $${r.map((c) => tn(c, 2)).join(',\\ ')}$, $\\|Tx-w\\| = ${tn(fx, 4)}$ (best so far $${tn(b, 4)}$) — never below the minimum. `;
+          if (dep) s += onValley ? `Your $x$ is also a best point (on the green line), but $\\|x\\| = ${tn(nx, 3)} \\ge \\|T^\\dagger w\\| = ${tn(nxs, 3)}$ — part (b).` : `Every point of the green dashed line is a best point ($T^\\dagger w + \\operatorname{null}T$); $T^\\dagger w$ is the shortest, $\\|T^\\dagger w\\| = ${tn(nxs, 3)}$.`;
+          else s += 'Here $\\operatorname{null}T = \\{0\\}$, so $T^\\dagger w$ is the only best point.';
+          return s;
+        });
+      },
+    },
   ],
 };

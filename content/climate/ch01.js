@@ -484,5 +484,181 @@ $$\frac{S(1-\alpha)}{4}\approx 238\ \text{W m}^{-2}\ \text{for Earth.}$$`,
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 1.6
+    {
+      num: '1.6',
+      kind: 'Model',
+      name: 'Zero-dimensional energy balance and effective temperature',
+      credit: 'Joseph Fourier, 1824 (planetary temperature as a radiative balance); Svante Arrhenius, 1896',
+      statement: String.raw`Treat a planet as one body of uniform temperature $T$ in steady state. It absorbs $S(1-\alpha)/4$ per unit area of its surface (1.5) and emits $\sigma T^4$ (1.2); balance gives
+$$\frac{S(1-\alpha)}{4} = \sigma T_e^4,\qquad T_e = \Big(\frac{S(1-\alpha)}{4\sigma}\Big)^{1/4}.$$
+$T_e$ is the **effective (emission) temperature**: the temperature of the blackbody that radiates what the planet absorbs. For Earth ($S = 1361$ W m⁻², $\alpha = 0.30$) the absorbed flux is 238 W m⁻² and $T_e \approx 255$ K ($-18$ °C), **33 K colder than the observed global-mean surface temperature of 288 K**. The equilibrium is stable: a planet warmer than $T_e$ emits more than it absorbs and cools, a colder one warms. The 33 K gap is what the greenhouse effect must explain; equivalently, Earth radiates to space only about 61 % of $\sigma T_s^4$ (an *effective emissivity* $\varepsilon \approx 0.61$).`,
+      scope: String.raw`Holds for global, annual means in steady state with no internal heat source (it fails for Jupiter, which radiates about 1.7 times the sunlight it absorbs). $T_e$ is the temperature at which the planet radiates to space; it equals the surface temperature only for an airless planet of uniform temperature (1.7).`,
+      idea: String.raw`Over a year the planet's heat content barely changes, so absorbed and emitted power must match. Sunlight is intercepted by the shadow disc $\pi R^2$ but the planet radiates from its whole surface $4\pi R^2$ — the area integral of $\max(0,\cos Z)$ over the sphere is exactly $\pi R^2$, hence the factor 4. Because $\sigma T^4$ rises steeply, $T_e \propto [S(1-\alpha)]^{1/4}$ is insensitive: 1 % more sunlight raises $T_e$ by 0.25 %, about 0.64 K, and the restoring slope $4\sigma T_e^3 \approx 3.8$ W m⁻² K⁻¹ makes the equilibrium stable.`,
+      caption: String.raw`Top left: the instantaneous sunlight on the globe, $S\max(0,\cos Z)$; drag the subsolar point anywhere — its area mean stays $S/4$. Top right: the planet catches a beam as wide as its disc but radiates from its whole sphere. Below: absorbed sunlight (gold) against emission (red), crossing at $T_e$; the purple band is the gap to Earth's observed 288 K. Drag the trial temperature along the red curve: below $T_e$ the planet gains energy and warms, above it loses energy and cools. Lower the emissivity to find the fraction of $\sigma T^4$ that Earth must send to space to sit at 288 K.`,
+      deps: ['climate-1.2', 'climate-1.5'],
+      refs: ['Archer ch. 3', 'Pierrehumbert'],
+      tags: ['energy balance', 'effective temperature'],
+      viz(v) {
+        const P = phys(v), M = v.M, sig = P.sigma, vec = (p) => v.geo('vec', p);
+        const S = v.slider('solar constant $S$ (W/m²)', 500, 3000, 1361, { step: 1 });
+        const alb = v.slider('albedo $\\alpha$', 0, 0.95, 0.3, { step: 0.01 });
+        const eps = v.slider('effective emissivity $\\varepsilon$', 0.4, 1, 1, { step: 0.01 });
+        const sA = v.stage({ height: 270, title: String.raw`sunlight $S\max(0,\cos Z)$ on the globe` });
+        const sB = v.stage({ x: [-2.3, 2.3], y: [-1.4, 1.4], equal: true, axes: false, height: 270, title: String.raw`catches $\pi R^2$, radiates from $4\pi R^2$` });
+        const sC = v.stage({ x: [150, 400], y: [0, 450], axes: 'box', height: 300, full: true, xlabel: 'T (K)', title: 'energy balance (W/m²)' });
+        const G = v.globe(sA, { projection: 'orthographic', center: [30, 18], graticule: 30 });
+        const sub = G.handle(-5, 14, { label: 'subsolar point', color: 'gold', labelPos: 'n' });
+        const trial = sC.handle(215, 0, { color: 'accent', label: 'trial T', labelPos: 'nw', constrain: (x) => { const T = M.clamp(x, 152, 398); return [T, eps.value * sig * T ** 4]; } });
+        const GRID = []; // unit vectors and weights of a 1° × 1° grid, for the sphere average
+        for (let i = 0; i < 180; i++) { const f = -89.5 + i, w = Math.cos(f * D2R); for (let j = 0; j < 360; j++) GRID.push([...vec([-179.5 + j, f]), w]); }
+        let mc = null, mk = '';
+        const meanCos = () => {
+          const k = `${sub.lon}|${sub.lat}`; if (k === mk) return mc; mk = k;
+          const u = vec([sub.lon, sub.lat]); let num = 0, den = 0;
+          for (const g of GRID) { num += Math.max(0, g[0] * u[0] + g[1] * u[1] + g[2] * u[2]) * g[3]; den += g[3]; }
+          return (mc = num / den);
+        };
+        let R = null;
+        v.render(() => {
+          // ── globe
+          const u = vec([sub.lon, sub.lat]);
+          G.draw({ land: false, graticule: false });
+          sA.raster((x, y) => {
+            const q = G.invert(x, y); if (!q) return null;
+            const w = vec(q), c = w[0] * u[0] + w[1] * u[1] + w[2] * u[2];
+            return c <= 0 ? [10, 16, 44, 125] : [255, 186, 30, Math.round(35 + 185 * c)];
+          }, { key: `${G.center}|${sub.lon}|${sub.lat}`, res: 2 });
+          G.graticule(30);
+          G.land(null, { fillAlpha: 0, color: 'ink', alpha: 0.45, width: 0.8 });
+          G.smallCircle([sub.lon, sub.lat], 90, { color: 'ink', width: 1.1, dash: [4, 3], alpha: 0.6 });
+          sA.corner(`area mean: ${v.fix(meanCos(), 4)} S`, 'bl', { color: 'gold', weight: 600 });
+          // ── side view
+          const Rr = 0.95, cx = 0.45;
+          sB.rect(cx, -Rr, 2.3, Rr, { fill: 'ink', fillAlpha: 0.06, stroke: false });
+          sB.text('shadow', 1.85, 0, { color: 'muted', size: 11, align: 'center' });
+          for (let k = -4; k <= 4; k++) {
+            const y = k * 0.265, hit = Math.abs(y) < Rr, xe = hit ? cx - Math.sqrt(Rr * Rr - y * y) : 2.25;
+            sB.arrow(-2.25, y, xe - 0.03, y, { color: 'gold', width: 1.6, head: 6, alpha: hit ? 1 : 0.4 });
+          }
+          const disc = []; for (let i = 0; i <= 60; i++) { const t = (i / 60) * TAU; disc.push([-1.3 + 0.11 * Math.cos(t), Rr * Math.sin(t)]); }
+          sB.poly(disc, { fill: 'gold', fillAlpha: 0.3, color: 'gold', width: 1.6 });
+          sB.tex(String.raw`\pi R^2`, -1.3, Rr, { color: 'gold', baseline: 'bottom', dy: -4, size: 14 });
+          sB.circle(cx, 0, Rr, { fill: 'blue', fillAlpha: 0.13, color: 'blue', width: 1.6 });
+          for (let i = 0; i < 14; i++) { const a = (i / 14) * TAU + 0.22; sB.arrow(cx + Rr * 1.05 * Math.cos(a), Rr * 1.05 * Math.sin(a), cx + Rr * 1.36 * Math.cos(a), Rr * 1.36 * Math.sin(a), { color: 'red', width: 1.5, head: 5 }); }
+          sB.tex(String.raw`4\pi R^2`, cx, 0, { color: 'blue', size: 15 });
+          // ── balance
+          const ASR = (S.value * (1 - alb.value)) / 4, e = eps.value, Te = (ASR / sig) ** 0.25, Ts = (ASR / (e * sig)) ** 0.25;
+          const ymax = Math.max(450, ASR * 1.5);
+          sC.setView(null, [0, ymax]);
+          if (Te < 288) { sC.vband(Te, 288, { color: 'purple', alpha: 0.12 }); sC.text(`gap ${v.fix(288 - Te, 1)} K`, (Te + 288) / 2, ymax * 0.93, { color: 'purple', size: 11.5, weight: 600, align: 'center' }); }
+          sC.vline(288, { color: 'blue', dash: [5, 4], width: 1.4 });
+          sC.text('observed Earth 288 K', 288, ymax * 0.84, { color: 'blue', size: 11, align: 'left', dx: 6 });
+          sC.fn((T) => sig * T ** 4, { color: 'red', width: e < 1 ? 1.3 : 2.6, dash: e < 1 ? [5, 4] : null, alpha: e < 1 ? 0.6 : 1 });
+          if (e < 1) sC.fn((T) => e * sig * T ** 4, { color: 'red', width: 2.6 });
+          sC.hline(ASR, { color: 'gold', width: 2.6 });
+          sC.tex(String.raw`\text{absorbed } S(1-\alpha)/4`, 152, ASR, { color: 'gold', align: 'left', baseline: 'bottom', dy: -4, size: 13 });
+          const xr = Math.min(398, (ymax * 0.97 / (e * sig)) ** 0.25);
+          sC.tex(e < 1 ? String.raw`\varepsilon\sigma T^4` : String.raw`\sigma T^4`, xr, e * sig * xr ** 4, { color: 'red', align: 'right', baseline: 'middle', dx: -10, size: 14 });
+          const T = M.clamp(trial.x, 152, 398), O = e * sig * T ** 4, N = ASR - O; trial.y = O;
+          if (Math.abs(N) > 1) {
+            sC.line(T, O, T, ASR, { color: N > 0 ? 'green' : 'red', width: 3, alpha: 0.75 });
+            sC.arrow(T, ymax * 0.07, T + Math.sign(N) * Math.min(28, 4 + Math.abs(N) / 6), ymax * 0.07, { color: N > 0 ? 'green' : 'red', width: 2.4, head: 8 });
+            sC.text(N > 0 ? 'gains energy: warms' : 'loses energy: cools', T, ymax * 0.07, { color: N > 0 ? 'green' : 'red', size: 11, align: N > 0 ? 'right' : 'left', dx: N > 0 ? -6 : 6 });
+          }
+          if (Ts >= 150 && Ts <= 400) sC.dot(Ts, ASR, { color: 'green', r: 6.5, label: e < 1 ? `T_s = ${v.fix(Ts, 1)} K` : `T_e = ${v.fix(Te, 1)} K`, labelPos: 'se', labelColor: 'green' });
+          R = { ASR, Te, Ts, e, T, N, epsNeed: ASR / (sig * 288 ** 4) };
+        });
+        v.legend([['gold', 'absorbed sunlight'], ['red', 'emitted infrared'], ['green', 'equilibrium', { dot: true }], ['purple', 'greenhouse gap to 288 K', { dot: true }]]);
+        v.readout(() => {
+          if (!R) return '';
+          let s = String.raw`absorbed $S(1-\alpha)/4$ = ${v.fix(R.ASR, 1)} W/m² · $T_e = (S(1-\alpha)/4\sigma)^{1/4}$ = ${v.fix(R.Te, 1)} K (${v.fix(R.Te - 273.15, 1)} °C)`;
+          if (R.e < 1) s += String.raw` · with $\varepsilon$ = ${v.fix(R.e, 2)} the surface sits at ${v.fix(R.Ts, 1)} K`;
+          s += String.raw` · Earth at 288 K needs $\varepsilon$ = ${v.fix(R.epsNeed, 3)} · at the trial ${v.fix(R.T, 0)} K the net flux is ${v.fix(R.N, 1)} W/m² · restoring slope $4\varepsilon\sigma T_s^3$ = ${v.fix(4 * R.e * P.sigma * R.Ts ** 3, 2)} W m⁻² K⁻¹`;
+          return s;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.7
+    {
+      num: '1.7',
+      kind: 'Phenomenon',
+      name: 'Effective versus surface temperatures of the planets',
+      statement: String.raw`The zero-dimensional balance (1.6) predicts each body's effective temperature from its distance and albedo alone. Compared with measured mean surface temperatures it ranks the strength of their greenhouse effects:
+- **Venus** $T_e \approx 229$ K, surface 737 K: about $+510$ K under 92 bar of CO₂;
+- **Earth** 255 K against 288 K: $+33$ K;
+- **Mars** 210 K against roughly 215 K: a few kelvin from 6 mbar of CO₂;
+- **Titan** 83 K against 94 K: about $+11$ K from 1.5 bar of nitrogen with methane.
+
+Venus is hot although it absorbs *less* sunlight than Earth — its clouds reflect 76 % — and no albedo, not even zero, explains its surface by sunlight alone. An airless, slowly rotating body breaks the model the other way: the Moon's mean surface temperature (about 200 K) lies far *below* its $T_e = 270$ K, because a body with uneven temperature has $\langle T\rangle < \langle T^4\rangle^{1/4}$.`,
+      idea: String.raw`$T_e$ follows from $S = S_\oplus/d^2$ and $\alpha$ (1.5, 1.6); the excess $T_s - T_e$ measures how far the atmosphere lifts the surface above the level that radiates to space, and it grows with the amount of infrared-absorbing gas (chapter 2). Without an atmosphere and without heat storage or transport, each patch balances its own sunlight: $T = T_{ss}\cos^{1/4}Z$ by day and nearly zero at night, where $T_{ss} = (S(1-\alpha)/\sigma)^{1/4}$. The power-mean inequality then gives $\langle T\rangle \le \langle T^4\rangle^{1/4} = T_e$, with equality only for a uniform temperature; the numerical sphere average is $\langle T\rangle = 0.400\,T_{ss} \approx 0.57\,T_e$.`,
+      caption: String.raw`Each row compares the computed effective temperature (hollow dot) with the measured mean surface temperature (filled dot) and labels the difference; the small orange mark is the mean temperature the body would have with no atmosphere and no heat transport. Pick a body (or click its row) and change its albedo to test whether reflectivity alone could produce its surface temperature. The globe shows the selected body either at a uniform $T_e$ or in local radiative equilibrium; drag it to turn it.`,
+      deps: ['climate-1.6'],
+      refs: ['Pierrehumbert'],
+      tags: ['planets', 'greenhouse effect', 'effective temperature'],
+      viz(v) {
+        const P = phys(v), sig = P.sigma, vec = (p) => v.geo('vec', p);
+        const B = [
+          { id: 'venus', name: 'Venus', d: 0.723, alb: 0.76, Ts: 737, atm: '92 bar, 96 % CO₂, sulfuric-acid clouds' },
+          { id: 'earth', name: 'Earth', d: 1, alb: 0.3, Ts: 288, atm: '1 bar N₂ and O₂ with H₂O and CO₂' },
+          { id: 'mars', name: 'Mars', d: 1.524, alb: 0.25, Ts: 215, atm: '6 mbar CO₂ (mean surface temperature uncertain by several K)' },
+          { id: 'titan', name: 'Titan', d: 9.58, alb: 0.265, Ts: 94, atm: '1.5 bar N₂ with methane and organic haze' },
+          { id: 'moon', name: 'Moon', d: 1, alb: 0.11, Ts: 200, atm: 'none' },
+        ];
+        // sphere averages of max(0, cos Z) and max(0, cos Z)^{1/4}, by quadrature on a 1° grid
+        let m1 = 0, mq = 0, wsum = 0;
+        for (let i = 0; i < 180; i++) { const f = (-89.5 + i) * D2R, w = Math.cos(f); for (let j = 0; j < 360; j++) { const c = Math.max(0, Math.cos(f) * Math.cos((-179.5 + j) * D2R)); m1 += c * w; mq += Math.sqrt(Math.sqrt(c)) * w; wsum += w; } }
+        m1 /= wsum; mq /= wsum;
+        let alb = null, cur = 'venus';
+        const body = v.select('', B.map((b) => ({ value: b.id, label: b.name })), 'venus', { onChange: (id) => { cur = id; alb.set(B.find((b) => b.id === id).alb); } });
+        alb = v.slider('albedo of the selected body', 0, 0.95, 0.76, { step: 0.01 });
+        const mode = v.select('globe', [{ value: 'u', label: 'uniform at $T_e$' }, { value: 'l', label: 'airless, no transport' }], 'l');
+        const sA = v.stage({ x: [-175, 800], y: [-0.65, 4.65], axes: 'box', height: 330, weight: 1.4, xticks: [0, 100, 200, 300, 400, 500, 600, 700, 800], yticks: [], xlabel: 'temperature (K)' });
+        const sB = v.stage({ height: 330, weight: 1 });
+        const G = v.globe(sB, { projection: 'orthographic', center: [-40, 18], graticule: 30, land: false, zoom: 0.8 });
+        sA.onClick((x, y) => { const i = Math.round(4 - y); if (i >= 0 && i < B.length) body.set(B[i].id), (cur = B[i].id), alb.set(B[i].alb); });
+        const temps = (b, a) => { const S = P.S0 / (b.d * b.d), Te = ((S * (1 - a)) / (4 * sig)) ** 0.25, Tss = ((S * (1 - a)) / sig) ** 0.25; return { S, Te, Tss, Tloc: mq * Tss }; };
+        let R = null;
+        v.render(() => {
+          cur = body.value;
+          B.forEach((b, i) => {
+            const y = 4 - i, sel = b.id === cur, t = temps(b, sel ? alb.value : b.alb), d = b.Ts - t.Te;
+            if (sel) sA.hband(y - 0.45, y + 0.45, { color: 'accent', alpha: 0.09 });
+            sA.text(b.name, -165, y, { color: sel ? 'accent' : 'ink', weight: sel ? 700 : 500, size: 12.5, align: 'left' });
+            sA.line(t.Te, y, b.Ts, y, { color: d >= 0 ? 'red' : 'blue', width: 5, alpha: 0.45 });
+            sA.dot(t.Tloc, y, { color: 'orange', r: 3.5 });
+            sA.dot(t.Te, y, { color: 'accent', r: 6, hollow: true, width: 2.2 });
+            sA.dot(b.Ts, y, { color: d >= 0 ? 'red' : 'blue', r: 6 });
+            sA.text(`${d >= 0 ? '+' : '−'}${Math.round(Math.abs(d))} K`, (t.Te + b.Ts) / 2, y, { color: d >= 0 ? 'red' : 'blue', size: 11.5, weight: 600, align: 'center', baseline: 'bottom', dy: -9 });
+          });
+          // ── globe of the selected body
+          const b = B.find((x) => x.id === cur), t = temps(b, alb.value), Tmax = Math.max(t.Tss, b.Ts) * 1.02;
+          sB.setTitle(`${b.name}: ${mode.value === 'u' ? `uniform ${Math.round(t.Te)} K` : 'local radiative equilibrium, no atmosphere'}`);
+          G.draw({ land: false, graticule: false, shade: false });
+          const u = vec([0, 0]);
+          sB.raster((x, y) => {
+            const q = G.invert(x, y); if (!q) return null;
+            const w = vec(q), c = Math.max(0, w[0] * u[0] + w[1] * u[1] + w[2] * u[2]);
+            const T = mode.value === 'u' ? t.Te : t.Tss * Math.sqrt(Math.sqrt(c));
+            return v.M.cmap(T / Tmax, 'magma');
+          }, { key: `${G.center}|${cur}|${alb.value}|${mode.value}`, res: 2 });
+          G.graticule(30, { color: 'faint', alpha: 0.5 });
+          if (cur === 'earth') G.land(null, { fillAlpha: 0, color: 'faint', alpha: 0.8, width: 0.8 });
+          G.dot([0, 0], { color: 'gold', r: 4 });
+          sB.colorbar([0, Tmax], 'magma', { pos: 'right', label: 'K', length: 0.5 });
+          R = { b, t, a: alb.value };
+        });
+        v.legend([['accent', 'effective temperature $T_e$ (computed)', { dot: true }], ['red', 'measured mean surface temperature', { dot: true }], ['orange', 'mean if airless, no heat transport', { dot: true }]]);
+        v.readout(() => {
+          if (!R) return '';
+          const { b, t, a } = R, need = 1 - (4 * sig * b.Ts ** 4) / t.S;
+          let s = String.raw`**${b.name}**: $S$ = ${v.fix(t.S, t.S < 100 ? 1 : 0)} W/m², $\alpha$ = ${v.fix(a, 2)} → $T_e$ = ${v.fix(t.Te, 1)} K; measured ${b.Ts} K → ${b.Ts >= t.Te ? 'greenhouse warming' : 'difference'} ${b.Ts >= t.Te ? '+' : '−'}${v.fix(Math.abs(b.Ts - t.Te), 0)} K · atmosphere: ${b.atm}`;
+          if (b.id !== 'moon') s += need < 0 ? String.raw` · no albedo can do it: even $\alpha = 0$ gives only ${v.fix(((t.S / 4) / sig) ** 0.25, 0)} K` : String.raw` · sunlight alone would need $\alpha$ = ${v.fix(need, 3)}`;
+          s += String.raw` · airless and without heat transport: $\langle T\rangle$ = ${v.fix(mq, 3)} $T_{ss}$ = ${v.fix(t.Tloc, 0)} K, while $\langle T^4\rangle^{1/4}$ = ${v.fix(Math.sqrt(Math.sqrt(m1)) * t.Tss, 1)} K = $T_e$`;
+          if (b.id === 'moon') s += ' — the measured ≈ 200 K lies between this no-storage limit and the uniform $T_e$, because the regolith stores a little daytime heat';
+          return s;
+        });
+      },
+    },
   ],
 };

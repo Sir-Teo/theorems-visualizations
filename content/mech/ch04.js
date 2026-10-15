@@ -77,8 +77,8 @@ function lockIn(ts, xs, w, periods = 4) {
   const tEnd = ts[ts.length - 1], t0 = tEnd - periods * TAU / w; let a = 0, b = 0, n = 0;
   for (let i = 1; i < ts.length; i++) {
     if (ts[i - 1] < t0 - 1e-9 * tEnd) continue;
-    const dt = ts[i] - ts[i - 1], tm = (ts[i] + ts[i - 1]) / 2, xm = (xs[i] + xs[i - 1]) / 2;
-    a += xm * Math.cos(w * tm) * dt; b += xm * Math.sin(w * tm) * dt; n += dt;
+    const dt = ts[i] - ts[i - 1]; // uniform samples over whole periods: the periodic trapezoid rule is spectrally accurate
+    a += xs[i] * Math.cos(w * ts[i]) * dt; b += xs[i] * Math.sin(w * ts[i]) * dt; n += dt;
   }
   a *= 2 / n; b *= 2 / n;
   return { A: Math.hypot(a, b), d: Math.atan2(b, a) };

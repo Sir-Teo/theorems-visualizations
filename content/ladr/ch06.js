@@ -1030,8 +1030,9 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
         const M = v.M;
         const Q = [unit3([1, -0.35, 0.15]), null, null];
         Q[1] = unit3(sub3([0.25, 1, 0.3], mul3(Q[0], dot3([0.25, 1, 0.3], Q[0])))); Q[2] = cross3(Q[0], Q[1]);
-        const sq = v.slider('squeeze $e_3$', 0, 1, 0, { step: 0.01 });
-        const A = [v.slider('$a_1$', -1.5, 1.5, 0.9, { step: 0.01 }), v.slider('$a_2$', -1.5, 1.5, 0.6, { step: 0.01 }), v.slider('$a_3$', -1.5, 1.5, -0.5, { step: 0.01 })];
+        const sq = v.slider('squeeze $e_3$', 0, 1, 1, { step: 0.01 });
+        const A = [v.slider('$a_1$', -1.5, 1.5, 0.5, { step: 0.01 }), v.slider('$a_2$', -1.5, 1.5, 0.5, { step: 0.01 }), v.slider('$a_3$', -1.5, 1.5, -0.7071067811865476, { step: 0.0000001 })];
+
         let F = null;
         v.button('search for a zero combination', () => {
           const { S: Sg, V } = M.svd(M.transpose(F)), r = Math.hypot(...A.map((s) => s.value)) || 1, vmin = V.map((row) => row[2]);
@@ -1059,7 +1060,7 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
           sc.flush();
           const smin = Sg[2], nx = len3(X);
           if (nx < 1e-6 && r > 1e-6) S.corner('a ≠ 0 but the combination is 0: dependent', 'tl', { color: 'red', weight: 700 });
-          else S.corner(`min of ‖Σ aₖeₖ‖ over Σ aₖ² = 1: ${pn(smin, 3)}${smin > 1 - 1e-9 ? ' (never below 1)' : ''}`, 'tl', { color: smin > 1 - 1e-9 ? 'green' : smin < 1e-6 ? 'red' : 'muted', weight: 700 });
+          else S.corner(`smallest ‖Σ aₖeₖ‖ with Σ aₖ² = 1: ${pn(smin, 3)}`, 'tl', { color: smin > 1 - 1e-9 ? 'green' : smin < 1e-6 ? 'red' : 'muted', weight: 700 });
           st = { a, r, nx, smin, s };
         });
         v.legend([['gold', 'the walk $a_1e_1 + a_2e_2 + a_3e_3$'], ['purple', 'all combinations with $\\sqrt{\\sum a_k^2}$ fixed']]);
