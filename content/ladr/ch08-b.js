@@ -175,11 +175,35 @@ function genDims(M, T, mu) {
   for (let k = 1; k <= n; k++) { d.push(n - cRank(M, P)); if (d[k] === d[k - 1]) break; P = cMM(P, A); }
   return d;
 }
-/** Eigenvalues of a complex matrix, clustered, with algebraic (dim G) and geometric (dim E) multiplicities, all computed. */
+/**
+ * Sharpen a clustered eigenvalue μ₀ (c computed roots close together): take the c-dimensional subspace on which
+ * (T − μ₀I)^c is smallest (its right singular vectors) and return the mean eigenvalue of T on it, tr(B*TB)/c.
+ */
+function refineEig(M, T, mu, c) {
+  const n = T.length, A = cShift(T, mu); let P = A;
+  for (let k = 1; k < c; k++) P = cMM(P, A);
+  const { V } = M.svd(realify(P)), m = V[0].length, zs = [];
+  for (let i = m - 1; i >= Math.max(0, m - 2 * c); i--) zs.push(Array.from({ length: n }, (_, k) => [V[k][i], V[k + n][i]]));
+  const B = cOrth(zs, 1e-6).slice(0, c);
+  if (B.length < c) return mu;
+  const tr = B.reduce((s, b) => cadd(s, cIP(cMV(T, b), b)), [0, 0]);
+  return csc(tr, 1 / c);
+}
+/** Eigenvalues of a complex matrix, clustered and sharpened, with algebraic (dim G) and geometric (dim E) multiplicities, all computed. */
 function eigenData(M, T) {
+  // A multiple eigenvalue comes out of any root finder as a little ring of nearby roots (radius ~ ε^{1/k}); group them
+  // loosely first, and accept a grouping only when every group's computed multiplicity equals its number of roots.
   const vals = M.eigC(T, { vectors: false }).values.map((z) => [z.re, z.im]);
-  return clusters(vals).map((c) => { const d = genDims(M, T, c.z); return { z: c.z, count: c.count, alg: d[d.length - 1], geo: d[1] ?? 0, dims: d }; })
-    .sort((a, b) => a.z[0] - b.z[0] || a.z[1] - b.z[1]);
+  let best = null;
+  for (const tol of [0.06, 1e-2, 1e-3, 1e-5]) {
+    const out = clusters(vals, tol).map((c) => {
+      let z = c.z;
+      for (let it = 0; it < 4; it++) { const z1 = refineEig(M, T, z, c.count), moved = cabs(csub(z1, z)); z = z1; if (moved < 1e-14) break; }
+      const d = genDims(M, T, z); return { z, count: c.count, alg: d[d.length - 1], geo: d[1] ?? 0, dims: d }; });
+    if (!best) best = out;
+    if (out.every((e) => e.alg === e.count)) { best = out; break; }
+  }
+  return best.sort((a, b) => a.z[0] - b.z[0] || a.z[1] - b.z[1]);
 }
 /** Random complex matrix close to the identity (well conditioned), from a seeded rng. */
 const randS = (r, n, amp = 0.55) => Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => [(i === j ? 1 : 0) + r.uniform(-amp, amp), r.uniform(-amp, amp)]));

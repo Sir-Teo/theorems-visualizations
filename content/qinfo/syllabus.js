@@ -25,6 +25,7 @@
 //   bound (cplx-13.7); thermo — Landauer’s principle (thermo-5.17).
 // Deliberate omissions: no-broadcasting/no-deleting/no-hiding variants, privacy amplification, quantum
 //   Fano inequality, interpretational results (PBR, Wigner’s friend), QSVT.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'qinfo',
   chapters: [
@@ -178,6 +179,10 @@ export default {
           pic: 'Phase estimation on the Grover iterate reads out its rotation angle, from which the number of marked items is estimated, with the error shrinking as counting qubits are added.' },
         { num: '6.11', kind: 'Algorithm', name: 'HHL algorithm for linear systems', deps: ['qinfo-6.3', 'ladr-7.31'], refs: ['Nielsen–Chuang §5.2'],
           pic: 'Phase estimation exposes the eigenvalues of a Hermitian matrix, a conditional rotation divides by them, and the success probability falls as the condition-number slider grows — with the caveats on input and output shown.' },
+        { num: '6.12', kind: 'Paper', name: 'Quantum algorithms: discrete logarithms and factoring',
+          paper: { authors: 'P. W. Shor', year: 1994, title: 'Algorithms for quantum computation: discrete logarithms and factoring', venue: 'Proceedings 35th Annual Symposium on Foundations of Computer Science (IEEE): 124–134', doi: '10.1109/SFCS.1994.365700' },
+          introduces: ['qinfo-6.7', 'qinfo-6.4', 'qinfo-6.8'], deps: ['qinfo-6.1', 'qinfo-5.5', 'qinfo-6.5', 'qinfo-6.6'], refs: [],
+          pic: 'Factor N = 15 or 21 on a simulated quantum register: modular exponentiation entangles two registers, the quantum Fourier transform turns the hidden period r into sharp peaks at multiples of 2ⁿ/r, and continued fractions recover r and then the factors, with qubit counts and classical costs compared as N grows.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7

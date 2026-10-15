@@ -16,6 +16,7 @@
 // Rhines scale, Held–Hou Hadley cell, Stommel–Arons abyssal circulation, ensemble forecasting.
 // Deliberate omissions: stratospheric dynamics (sudden warmings, QBO) and detailed boundary-layer turbulence;
 // El Niño and the thermohaline bistability are treated in `climate`.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'geo',
   chapters: [
@@ -115,6 +116,10 @@ export default {
           pic: 'Stop stirring a rotating tank: the interior decays in a few rotation periods via Ekman-layer circulation, far faster than viscous diffusion alone, and the tea leaves gather in the centre.' },
         { num: '4.6', kind: 'Phenomenon', name: 'Equatorial upwelling', deps: ['geo-4.2'], refs: ['Vallis'],
           pic: 'Let easterly trades blow along the equator: Ekman transport goes poleward on both sides because f changes sign, and the divergence draws cold water up into a tongue visible on sea-surface temperature maps.' },
+        { num: '4.7', kind: 'Paper', name: 'On the influence of the earth’s rotation on ocean-currents',
+          paper: { authors: 'V. Walfrid Ekman', year: 1905, title: 'On the influence of the earth’s rotation on ocean-currents', venue: 'Arkiv för Matematik, Astronomi och Fysik 2 (11): 1–52', url: 'http://empslocal.ex.ac.uk/people/staff/gv219/classics.d/Ekman05.pdf' },
+          introduces: ['geo-4.1', 'geo-4.2'], deps: ['geo-2.1', 'fluid-6.4'], refs: [],
+          pic: 'Blow a steady wind over a rotating ocean with eddy viscosity: the surface current sets off 45° to the right of the wind, the current turns and decays with depth in a spiral, and the depth-integrated transport points 90° to the right — the explanation of Nansen’s observation that the Fram drifted 20–40° to the right of the wind.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -139,6 +144,10 @@ export default {
           pic: 'Solve Stommel’s gyre model with and without β: without it the gyre is symmetric, with it the return flow crowds into a narrow, fast western boundary current like the Gulf Stream.' },
         { num: '5.8', kind: 'Method', name: 'Potential-vorticity inversion', deps: ['geo-5.4', 'geo-3.8'], refs: ['Vallis'],
           pic: 'Paint a blob of high PV on a map: the balanced wind and temperature fields are computed by inverting an elliptic operator, giving a cyclone whose reach scales with the deformation radius.' },
+        { num: '5.9', kind: 'Paper', name: 'The westward intensification of wind-driven ocean currents',
+          paper: { authors: 'Henry Stommel', year: 1948, title: 'The westward intensification of wind-driven ocean currents', venue: 'Transactions, American Geophysical Union 29 (2): 202–206', doi: '10.1029/TR029i002p00202' },
+          introduces: ['geo-5.7'], deps: ['geo-5.6', 'geo-2.4', 'geo-5.1', 'geo-4.7'], refs: [],
+          pic: 'Drive Stommel’s rectangular ocean with the same wind and bottom friction three times — no rotation, uniform rotation, and a Coriolis parameter that grows northward — and watch the symmetric gyre crowd into a narrow, fast western boundary current only in the third case: the Gulf Stream in miniature.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -205,6 +214,10 @@ export default {
           pic: 'Heat a model continent more than the adjacent ocean in summer: the ITCZ shifts over land, cross-equatorial winds turn into a westerly jet across the Indian Ocean, and rainfall follows.' },
         { num: '8.8', kind: 'Phenomenon', name: 'Walker circulation', deps: ['geo-8.5', 'geo-4.6'], refs: ['Vallis'],
           pic: 'Warm the western Pacific relative to the east: air rises over the warm pool and sinks over the cold tongue, closing a zonal overturning cell that the trades reinforce, a feedback the reader can switch on.' },
+        { num: '8.9', kind: 'Paper', name: 'Concerning the cause of the general trade-winds',
+          paper: { authors: 'George Hadley', year: 1735, title: 'Concerning the cause of the general trade-winds', venue: 'Philosophical Transactions of the Royal Society of London 39 (437): 58–62', doi: '10.1098/rstl.1735.0014' },
+          introduces: ['geo-8.6'], deps: ['geo-8.1'], refs: [],
+          pic: 'Let air heated at the equator rise and flow poleward aloft while surface air returns toward the equator, keeping the eastward speed of its home latitude as Hadley assumed: the returning air lags the turning Earth and blows from the east as the trades — then conserve angular momentum instead and see his deflection is too small by a factor of two.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -247,6 +260,10 @@ export default {
           pic: 'Change a Lorenz parameter slightly: individual trajectories are unpredictable, but the long-time statistics of the attractor (mean and variance of z) shift smoothly and predictably with the parameter.' },
         { num: '10.6', kind: 'Method', name: 'Data assimilation', deps: ['geo-10.4'], refs: ['Vallis'],
           pic: 'Nudge a Lorenz-63 model with noisy observations of x only using an ensemble Kalman filter: the model state locks onto the truth, and stopping the updates lets the two diverge again.' },
+        { num: '10.7', kind: 'Paper', name: 'Deterministic Nonperiodic Flow',
+          paper: { authors: 'Edward N. Lorenz', year: 1963, title: 'Deterministic Nonperiodic Flow', venue: 'Journal of the Atmospheric Sciences 20 (2): 130–141', doi: '10.1175/1520-0469(1963)020<0130:DNF>2.0.CO;2' },
+          introduces: ['geo-10.1', 'geo-10.2', 'fluid-10.11', 'ode-10.3', 'ode-10.6', 'ode-10.9'], deps: ['fluid-10.8', 'geo-1.4'], refs: [],
+          pic: 'Integrate Lorenz’s three equations with σ = 10, b = 8/3 and r = 28 from two starting points that differ in the fourth decimal: both trace the same two-lobed attractor but part company within a few dozen time units, and plotting each maximum of Z against the previous one gives the paper’s cusp-shaped map.' },
       ],
     },
   ],

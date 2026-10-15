@@ -27,6 +27,12 @@
 // Deliberate omissions: political narrative history; the physics of cosmology, stellar evolution,
 //   epidemics, travelling waves and life tables live in `astro`, `mathbio`, `pde`, `popgen` and
 //   `demo` and are cited rather than repeated.
+// Landmark papers (October 2026): Phelps Brown & Hopkins 1956 (6.10), von Foerster, Mora & Amiot 1960
+//   (6.11), Ammerman & Cavalli-Sforza 1971 (5.12), Alvarez et al. 1980 (3.10), Maddison 2001 (8.13, which
+//   introduces the hockey stick in macro-1.10), Crutzen 2002 (9.10).
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'bighist',
   chapters: [

@@ -18,6 +18,7 @@
 //   solution chemistry beyond colligative properties (→ pchem), nonequilibrium fluctuation theorems
 //   (Jarzynski, Crooks) and the Kosterlitz–Thouless transition (not covered by the references),
 //   hydrodynamics from the Boltzmann equation (→ fluid), the Saha equation (→ astro).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'thermo',
   chapters: [
@@ -107,6 +108,14 @@ export default {
           pic: 'Near any state there are states that cannot be reached adiabatically: the reachable region from a point is drawn and is bounded by an adiabatic surface, the level set of entropy.' },
         { num: '2.17', kind: 'Model', name: 'Efficiency at maximum power', deps: ['thermo-2.7'], refs: ['Schroeder §4.1'],
           pic: 'An engine exchanging heat through finite conductances: sweep its cycle speed and power peaks at an efficiency 1 − √(T_c/T_h), well below Carnot, which a slow engine reaches only at zero power.' },
+        { num: '2.18', kind: 'Paper', name: 'Réflexions sur la puissance motrice du feu',
+          paper: { authors: 'S. Carnot', year: 1824, title: 'Réflexions sur la puissance motrice du feu et sur les machines propres à développer cette puissance', venue: 'Paris: Bachelier (book)', url: 'https://fr.wikisource.org/wiki/R%C3%A9flexions_sur_la_puissance_motrice_du_feu' },
+          introduces: ['thermo-2.4', 'thermo-2.5'], deps: ['thermo-2.3', 'thermo-1.16'], refs: [],
+          pic: 'Run Carnot’s four-step cycle on a gas between a hot and a cold body and let heat “fall” like water over a mill wheel: the work per cycle depends only on the two temperatures, and any rival engine that beat it could be run backwards with it to make motive power from nothing.' },
+        { num: '2.19', kind: 'Paper', name: 'Bequeme Formen der Hauptgleichungen der Wärmetheorie',
+          paper: { authors: 'R. Clausius', year: 1865, title: 'Ueber verschiedene für die Anwendung bequeme Formen der Hauptgleichungen der mechanischen Wärmetheorie', venue: 'Annalen der Physik 201 (7): 353–400', doi: '10.1002/andp.18652010702' },
+          introduces: ['thermo-2.9', 'thermo-2.10'], deps: ['thermo-2.8', 'thermo-2.5', 'thermo-1.11', 'thermo-2.18'], refs: [],
+          pic: 'Take a gas around arbitrary closed loops in the p–V plane: ∮đQ/T returns to zero for every reversible loop, so the new state function S — Clausius’ “entropy” — can be mapped over the plane, and irreversible steps in an isolated system only ever push it up: “die Entropie der Welt strebt einem Maximum zu”.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -334,6 +343,14 @@ export default {
           pic: 'Evolve a velocity distribution under free streaming plus binary collisions: an initially lopsided distribution relaxes to a Maxwellian, matching a direct hard-sphere simulation.' },
         { num: '7.19', kind: 'Theorem', name: 'Boltzmann’s H-theorem', deps: ['thermo-7.18', 'thermo-6.6'], refs: ['Kardar §3.5'],
           pic: 'Track H = ∫f ln f during the relaxation: it decreases monotonically to its Maxwellian value, while the exact N-body entropy of the simulation stays constant.' },
+        { num: '7.20', kind: 'Paper', name: 'Studien über das Wärmegleichgewicht unter Gasmolekülen',
+          paper: { authors: 'Ludwig Boltzmann', year: 1872, title: 'Weitere Studien über das Wärmegleichgewicht unter Gasmolekülen', venue: 'Sitzungsberichte der Kaiserlichen Akademie der Wissenschaften Wien, Math.-Naturwiss. Classe 66 (II. Abt.): 275–370', url: 'https://archive.org/details/sitzungsbericht65unkngoog' },
+          introduces: ['thermo-7.18', 'thermo-7.19'], deps: ['thermo-6.15', 'thermo-7.1'], refs: [],
+          pic: 'Start a hard-sphere gas with every molecule at the same speed and watch the speed histogram relax to Maxwell’s curve while Boltzmann’s H = ∫f ln f falls monotonically; reverse all velocities mid-run to see the objection Loschmidt raised four years later.' },
+        { num: '7.21', kind: 'Paper', name: 'Bewegung von in Flüssigkeiten suspendierten Teilchen',
+          paper: { authors: 'A. Einstein', year: 1905, title: 'Über die von der molekularkinetischen Theorie der Wärme geforderte Bewegung von in ruhenden Flüssigkeiten suspendierten Teilchen', venue: 'Annalen der Physik 322 (8): 549–560', doi: '10.1002/andp.19053220806' },
+          introduces: ['thermo-7.10', 'pchem-10.3', 'pchem-10.4'], deps: ['thermo-7.8', 'thermo-7.6', 'thermo-4.14', 'fluid-7.2'], refs: [],
+          pic: 'Track simulated colloidal beads and plot their mean squared displacement against time: it grows linearly as 2Dt with D = kT/6πηa, so timing the jiggling of a micron-sized bead yields Avogadro’s number — the test Perrin carried out in 1908.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -411,6 +428,10 @@ export default {
           pic: 'Treat lattice vibrations as phonons with a sound-like spectrum cut off at the Debye frequency: the heat capacity curve matches data for metals and insulators across temperatures.' },
         { num: '9.14', kind: 'Law', name: 'Debye T³ law', deps: ['thermo-9.13'], refs: ['Schroeder §7.5'],
           pic: 'At low temperature only long-wavelength phonons are excited: the heat capacity falls as T³, far more slowly than the Einstein model’s exponential, shown on log–log axes.' },
+        { num: '9.15', kind: 'Paper', name: 'Ueber das Gesetz der Energieverteilung im Normalspectrum',
+          paper: { authors: 'Max Planck', year: 1901, title: 'Ueber das Gesetz der Energieverteilung im Normalspectrum', venue: 'Annalen der Physik 309 (3): 553–563', doi: '10.1002/andp.19013090310' },
+          introduces: ['thermo-9.4', 'qm-1.1'], deps: ['thermo-9.1', 'thermo-9.2', 'thermo-9.5', 'thermo-5.6'], refs: [],
+          pic: 'Fit the radiation law to blackbody measurements: drag h and k until the curve passes through the data at several temperatures, compare the Wien and Rayleigh–Jeans forms that each fail at one end, and land on Planck’s 1901 values h = 6.55 × 10⁻³⁴ J s and k = 1.346 × 10⁻²³ J/K.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10

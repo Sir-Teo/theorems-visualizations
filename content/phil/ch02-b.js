@@ -204,7 +204,7 @@ With finitely many reapers there is no puzzle: the earliest one strikes. With in
 $$1\leftrightarrow1,\quad 2\leftrightarrow4,\quad 3\leftrightarrow9,\quad\dots$$
 so there are exactly as many squares as numbers. Galileo (1638) concluded that “equal”, “greater” and “less” do not apply to infinite quantities. Cantor took the opposite course. He defined two sets to have the **same size** when there is a one-to-one correspondence between them, and accepted that an infinite set has the same size as some of its proper parts. Dedekind made this the *definition* of an infinite set. Hilbert’s hotel dramatises the same fact: a full hotel with rooms $1, 2, 3, \dots$ can take a new guest ($n\mapsto n+1$), infinitely many new guests ($n \mapsto 2n$), or even infinitely many coachloads of them.`,
       idea: String.raw`Two intuitive principles conflict for infinite collections: “if the members of two collections can be paired off one to one, the collections are equally large” (Hume’s principle) and “the whole is larger than any proper part” (Euclid’s fifth common notion). For finite sets both hold, and a map like $n\mapsto n+1$ always leaves someone out (the pigeonhole principle). For $\N$ the maps $n\mapsto n^2$, $n\mapsto n+1$ and $n\mapsto 2n$ are bijections onto proper subsets (pma 2.4), and Cantor’s pairing function even fits countably many countable sets into one (pma 2.12). Density, the proportion $\lfloor\sqrt R\rfloor/R$ of squares below $R$, is a different measure of size, and by it the squares are negligible. Cantor’s choice of bijection as the measure of size is now standard. Benci and Di Nasso’s *numerosities* show that one can instead keep the part–whole principle, at the cost of other properties, so which notion deserves the word “size” is partly a choice.`,
-      caption: String.raw`Pick a pairing and drag **move the guests** to carry each number (guest) to its partner (room). In Galileo’s pairing the lines fan out because the squares thin out, yet every number gets exactly one square. In the hotel modes, check that after the move every room holds exactly one guest and nobody is turned away. Tick **finite hotel** to see the same moves fail. The lower panel plots, against $R$, what share of the numbers $1, \dots, R$ the original guests end up occupying: it tends to 0, 1 or ½, even though in each case they are exactly as many as all the numbers.`,
+      caption: String.raw`Pick a pairing and drag **move the guests** to carry each number (guest) to its partner (room). In Galileo’s pairing the lines fan out because the squares thin out, yet every number gets exactly one square. In the hotel modes, check that after the move every room holds exactly one guest and nobody is turned away. Tick **finite version** to see the same moves fail. The lower panel plots, against $R$, what share of the numbers $1, \dots, R$ the original guests end up occupying: it tends to 0, 1 or ½, even though in each case they are exactly as many as all the numbers.`,
       deps: ['pma-2.4', 'pma-2.12'],
       see: ['logic-1.1'],
       refs: ['SEP “Infinity”', 'Galileo, Two New Sciences (1638)'],
@@ -233,16 +233,15 @@ so there are exactly as many squares as numbers. Galileo (1638) concluded that �
             H.text('every number n', -1.2, 2.55, { size: 11.5, weight: 600, color: 'blue' });
             H.text('its square n² on the line 1 … 100', -1.2, -0.75, { size: 11.5, weight: 600, color: 'gold' });
             // the same pairing for n = 1..100, squares on the line 1..10 000
-            const XT = (n) => 0.5 + (20 * (n - 1)) / 99, XB = (m) => 0.5 + (20 * (m - 1)) / 9999;
+            const top = finite ? 100 : 10000, XT = (n) => 0.5 + (20 * (n - 1)) / 99, XB = (m) => 0.5 + (20 * (m - 1)) / (top - 1);
             H.text('n = 1 … 100', -1.2, -1.12, { size: 11, weight: 600, color: 'blue' });
-            H.text('n² on the line 1 … 10 000', -1.2, -2.62, { size: 11, weight: 600, color: 'gold' });
-            H.line(XB(1), -2.33, XB(10000), -2.33, { color: 'faint', width: 1.2 });
+            H.text(finite ? 'n² must stay in the finite range 1 … 100' : 'n² on the line 1 … 10 000', -1.2, -2.62, { size: 11, weight: 600, color: finite ? 'red' : 'gold' });
+            H.line(XB(1), -2.33, XB(top), -2.33, { color: 'faint', width: 1.2 });
             for (let n = 1; n <= 100; n++) {
-              H.line(XT(n), -1.36, XB(n * n), -2.3, { color: 'blue', width: 0.8, alpha: 0.3 });
-              H.line(XB(n * n), -2.33, XB(n * n), -2.18, { color: 'gold', width: 1.2 });
-              H.dot(XT(n), -1.36, { r: 1.8, color: finite && n > 10 ? 'red' : 'blue', ring: false });
+              if (n * n <= top) { H.line(XT(n), -1.36, XB(n * n), -2.3, { color: 'blue', width: 0.8, alpha: 0.3 }); H.line(XB(n * n), -2.33, XB(n * n), -2.18, { color: 'gold', width: 1.2 }); }
+              H.dot(XT(n), -1.36, { r: 1.8, color: n * n > top ? 'red' : 'blue', ring: false });
             }
-            if (finite) H.text('finite range 1 … 100: only 1–10 have their square inside it — 100 numbers, 10 squares ✗', 10.5, -0.75, { align: 'left', size: 11, weight: 600, color: 'red', dx: -60 });
+            if (finite) H.text('red: 90 numbers with no square left in range ✗', 20.5, -1.12, { align: 'right', size: 11, weight: 600, color: 'red' });
             H.line(X(1), -0.15, X(100), -0.15, { color: 'faint', width: 1.4 });
             for (let m = 1; m <= 100; m++) { const sq = Number.isInteger(Math.sqrt(m)); H.line(X(m), -0.15, X(m), sq ? 0.15 : -0.02, { color: sq ? 'gold' : 'faint', width: sq ? 2 : 1 }); if (sq) H.text(String(m), X(m), -0.45, { align: 'center', size: 10, weight: 600, color: 'gold' }); }
             for (let n = 1; n <= 10; n++) {
@@ -262,11 +261,14 @@ so there are exactly as many squares as numbers. Galileo (1638) concluded that �
             for (let n = 1; n <= 20; n++) {
               const t = target(n), out = t > 20;
               if (!out) path([n, 2.0], [t, 0.0], -0.25, 'blue', String(n));
-              else if (finite) path([n, 2.0], [20.2, 1.72 - 0.21 * ev++], 0, 'blue', String(n), true);
-              else path([n, 2.0], [21.2 + (t - 21) * 0.9, 0.0], -0.1, 'blue', String(n));
+              else if (finite) path([n, 2.0], [20.95, 2.55 - 0.3 * ev++], 0, 'blue', String(n), true);
+              else path([n, 2.0], [21.7 + (t - 21) * 0.5, 0.0], -0.1, 'blue', String(n));
             }
-            if (finite && p > 0.98) H.text('no room!', 20.0, -0.62, { align: 'center', size: 11, weight: 700, color: 'red' });
-            if (k === 'n1') { H.text('lobby', -0.3, -1.25, { align: 'center', size: 11, color: 'gold', weight: 600 }); path([-0.3, -0.9], [1, 0], 0.2, 'gold', 'new'); }
+            if (finite && p > 0.98) H.text('no room!', 20.95, -0.62, { align: 'center', size: 11, weight: 700, color: 'red' });
+            if (k === 'n1') {
+              H.text('lobby', -0.3, -1.25, { align: 'center', size: 11, color: 'gold', weight: 600 }); path([-0.3, -0.9], [1, 0], 0.2, 'gold', 'new');
+              H.text(finite ? 'the hotel ends at room 20: guest 20 has nowhere to go' : 'the rooms go on forever: guest 20 moves to room 21, guest 21 to room 22, … nobody is left out', 10.5, -1.9, { align: 'center', size: 12, weight: 600, color: finite ? 'red' : 'muted' });
+            }
             if (k === '2n') {
               H.rect(0.45, -2.05, 10.55, -1.15, { color: 'gold', width: 1.4, fill: 'gold', fillAlpha: 0.07 }); H.text('coach: passengers 1, 2, 3, … → rooms 1, 3, 5, …', 11, -1.6, { size: 11, color: 'gold', weight: 600 });
               for (let s = 1; s <= 10; s++) path([s, -1.6], [2 * s - 1, 0], 0.2, 'gold', `p${s}`);
@@ -298,6 +300,7 @@ so there are exactly as many squares as numbers. Galileo (1638) concluded that �
         v.readout(() => {
           if (!st) return '';
           const { k, p, finite } = st, done = p > 0.98;
+          if (k === 'sq' && finite) return `Finite version: within $1, \\dots, 100$ only the numbers 1–10 have their squares in range, so the 100 numbers cannot be matched one to one with the 10 squares ✗. For finite collections the part really is smaller than the whole.`;
           if (k === 'sq') return `$n\\mapsto n^2$ is one-to-one, and every square is hit, so the squares are **exactly as many** as the natural numbers. Yet only 10 of the first 100 numbers are squares, and the share $\\lfloor\\sqrt R\\rfloor/R$ tends to 0. One-to-one correspondence and proportion are different measures of size.`;
           const pre = done ? 'After the move' : `Move ${Math.round(p * 100)}% done (drag to the end to check)`;
           if (finite) return `${pre}: in a finite hotel guest${k === 'n1' ? ' 20 has' : 's 11–20 have'} **no room** ✗. A finite set is never in one-to-one correspondence with a proper part of itself (the pigeonhole principle); for Dedekind that is what *finite* means.`;
@@ -324,8 +327,8 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
       viz(v) {
         const LS = v.slider('length $L$', 1.05, 1e6, 1000, { log: true });
         const pS = v.slider('exponent $p$ in $y = x^{-p}$', 0.4, 1.6, 1, { step: 0.01 });
-        const S3 = v.stage3d({ range: 6.4, height: 330, yaw: -0.38, pitch: 0.42, axes: false, weight: 0.95, persp: 0 });
-        const G = v.stage({ x: [1, 1e6], y: [0, 40], xlog: true, axes: 'box', height: 330, weight: 1.15, title: 'running totals up to $x = L$', xlabel: 'L' });
+        const S3 = v.stage3d({ range: 4.6, height: 330, yaw: -0.22, pitch: 0.3, axes: false, weight: 0.95, persp: 0 });
+        const G = v.stage({ x: [1, 1e6], y: [0.03, 1e5], xlog: true, ylog: true, axes: 'box', height: 330, weight: 1.15, title: 'running totals up to $x = L$ (log–log)', xlabel: 'L' });
         const LN = Math.log(1e6), DU = 0.005, NU = Math.ceil(LN / DU);
         let cache = { p: null, A: null };
         const areaTable = (p) => {
@@ -344,17 +347,16 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           S3.surface((x, th) => [x - 6.5, r(x) * Math.cos(th), r(x) * Math.sin(th)], [1, Xs], [0, 2 * Math.PI], { nu: 44, nv: 26, color: 'accent', alpha: 0.9, colorFn: (x) => (x < 2 ? 'blue' : 'accent') });
           S3.curve((th) => [1 - 6.5, Math.cos(th), Math.sin(th)], 0, 2 * Math.PI, { color: 'ink', width: 1.6 });
           S3.line([-6.2, 0, 0], [6.2, 0, 0], { color: 'faint', width: 1, dash: [4, 4] });
-          if (L > 12) S3.text(`… continues to x = ${bigNum(L)}`, [4.2, 0, -1.7], { size: 11.5, color: 'muted' });
+          if (L > 12) S3.text(`… continues to x = ${bigNum(L)}`, [3.6, 0, -1.25], { size: 11.5, color: 'muted' });
+          S3.text('y = 1/x' + (Math.abs(p - 1) < 0.005 ? '' : `^${v.fix(p, 2)}`) + ' rotated', [-4.2, 0, 1.6], { size: 11.5, color: 'muted' });
           // ---- running volume and area
           const Vinf = p > 0.5 ? Math.PI / (2 * p - 1) : Infinity;
-          const yMax = Math.min(140, Math.max(12, Math.min(areaAt(1e6), 120) * 1.05, isFinite(Vinf) ? Vinf * 1.2 : 0));
-          G.setView([1, 1e6], [0, yMax]);
-          if (isFinite(Vinf) && Vinf < yMax) { G.hline(Vinf, { color: 'blue', dash: [6, 4], width: 1.3 }); G.text(`volume limit π/(2p−1) = ${v.fix(Vinf, 3)}`, 1.3, Vinf, { dy: -9, size: 11, weight: 600, color: 'blue' }); }
+          if (isFinite(Vinf) && Vinf < 1e5) { G.hline(Vinf, { color: 'blue', dash: [6, 4], width: 1.3 }); G.text(`volume limit π/(2p−1) = ${v.fix(Vinf, 3)}`, 1.4, Vinf, { dy: -9, size: 11, weight: 600, color: 'blue' }); }
           G.fn((x) => vol(p, x), { color: 'blue', width: 2.6 });
           G.fn((x) => areaAt(x), { color: 'orange', width: 2.6 });
           if (Math.abs(p - 1) < 0.005) G.fn((x) => 2 * Math.PI * Math.log(x), { color: 'orange', width: 1.2, dash: [3, 4], alpha: 0.7 });
           G.vline(L, { color: 'gold', width: 1.8 });
-          G.dot(L, vol(p, L), { r: 5, color: 'blue' }); if (areaAt(L) < yMax) G.dot(L, areaAt(L), { r: 5, color: 'orange' });
+          G.dot(L, vol(p, L), { r: 5, color: 'blue' }); G.dot(L, areaAt(L), { r: 5, color: 'orange' });
           st = { L, p, V: vol(p, L), A: areaAt(L), Vinf, Ainf: p > 1 ? areaAt(1e6) + (2 * Math.PI * 1e6 ** (1 - p)) / (p - 1) : Infinity };
         });
         v.legend([['blue', 'volume $\\pi\\int_1^L x^{-2p}dx$'], ['orange', 'area $2\\pi\\int_1^L x^{-p}\\sqrt{1+p^2x^{-2p-2}}\\,dx$'], ['orange', '$2\\pi\\ln L$ (at $p = 1$)', { dash: true }]]);
@@ -363,7 +365,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           const { L, p, V, A, Vinf, Ainf } = st, f = (x) => v.fix(x, 3);
           const cls = p > 1 ? 'both converge (p > 1)' : p > 0.5 ? '**finite volume, infinite area** (½ < p ≤ 1): Gabriel’s horn' : 'both diverge (p ≤ ½)';
           return `Up to $L = ${L >= 1e4 ? v.sci(L, 2) : v.fix(L, 1)}$: volume $${f(V)}$${isFinite(Vinf) ? ` (limit $${f(Vinf)}$)` : ' (→ ∞)'}, area $${f(A)}$${p > 1 ? ` (limit ≈ $${f(Ainf)}$)` : ' (→ ∞)'} · ${cls}` +
-            (p > 0.5 && p <= 1 ? ` · a coat of paint 0.01 thick on this much surface needs about $${f(0.01 * A)}$ units of paint, more than the $${f(Vinf)}$ the whole horn holds once $L$ is large enough` : '') + '.';
+            (p > 0.5 && p <= 1 ? ` · painting this much surface with a coat 0.01 thick takes about $${f(0.01 * A)}$ units of paint, which grows without bound as $L\\to\\infty$, while filling the whole infinite horn takes only $${f(Vinf)}$` : '') + '.';
         });
       },
     },
@@ -385,10 +387,10 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
         const src = v.select('list on the left', [{ value: 'rat', label: 'the rationals in [0, 1]' }, { value: 'mine', label: 'your list (right)' }], 'rat');
         const eS = v.slider('$\\varepsilon$', 0.002, 1, 0.3, { log: true });
         const KS = v.slider('points listed $K$', 1, 60, 24, { int: true });
-        const Lst = v.stage({ x: [-0.05, 1.05], y: [-0.27, 1.08], axes: false, height: 340, weight: 1.15 });
+        const Lst = v.stage({ x: [-0.05, 1.05], y: [-0.43, 1.06], axes: false, height: 340, weight: 1.15 });
         const Rst = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1 });
         const NR = 8;
-        let digits = [[3, 1, 4, 1, 5, 9, 2, 6], [5, 0, 0, 0, 0, 0, 0, 0], [1, 4, 1, 4, 2, 1, 3, 5], [7, 1, 8, 2, 8, 1, 8, 2], [3, 3, 3, 3, 3, 3, 3, 3], [0, 5, 7, 7, 2, 1, 5, 6], [6, 1, 8, 0, 3, 3, 9, 8], [9, 9, 9, 0, 1, 2, 3, 4]];
+        let digits = [[3, 1, 4, 1, 5, 9, 2, 6], [5, 0, 0, 0, 0, 0, 0, 0], [1, 4, 1, 4, 2, 1, 3, 5], [7, 1, 8, 2, 8, 1, 8, 2], [3, 3, 3, 3, 5, 3, 3, 3], [0, 5, 7, 7, 2, 1, 5, 6], [6, 1, 8, 0, 3, 3, 9, 8], [9, 9, 9, 0, 1, 2, 3, 4]];
         const T = v.table(Rst, { rows: NR, cols: NR, size: 15, maxCell: 30, region: [0, 0.28, 1, 1], rowLabels: (i) => `x${subNum(i + 1)} = 0.`, colLabels: (j) => String(j + 1) });
         Rst.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) digits[c.i][c.j] = (digits[c.i][c.j] + 1) % 10; });
         const rngB = v.rng(2024);
@@ -401,25 +403,27 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           const val = (row) => row.reduce((s, dg, j) => s + dg * 10 ** -(j + 1), 0);
           const dVal = val(dDig);
           const pts = mine ? digits.map(val) : rationals01(KS.value).map(([a, b]) => a / b);
-          const K = pts.length, rows = Math.min(K, 30), rowH = 0.95 / (rows + 1);
+          const K = pts.length, rows = Math.min(K, 30), rowH = 0.92 / (rows + 1);
           // ---- covering intervals, one row per listed point
-          Lst.line(0, -0.12, 1, -0.12, { color: 'ink', width: 1.4 });
-          Lst.text('0', 0, -0.21, { align: 'center', size: 11, color: 'muted' }); Lst.text('1', 1, -0.21, { align: 'center', size: 11, color: 'muted' });
+          Lst.line(0, -0.15, 1, -0.15, { color: 'ink', width: 1.4 });
+          Lst.text('0', 0, -0.25, { align: 'center', size: 11, color: 'muted' }); Lst.text('1', 1, -0.25, { align: 'center', size: 11, color: 'muted' });
           const iv = pts.map((q, k) => { const len = eps * 2 ** -(k + 1); return [q - len / 2, q + len / 2]; });
           const pxPer = Lst.width / 1.1;
           iv.forEach(([a, b], k) => {
             const y = 1.0 - (k + 1) * rowH, q = pts[k];
             if (k < rows) {
-              if ((b - a) * pxPer >= 1.5) Lst.line(Math.max(-0.04, a), y, Math.min(1.04, b), y, { color: k % 2 ? 'teal' : 'blue', width: Math.max(2, Math.min(7, rowH * 300)), cap: 'butt' });
+              Lst.line(0, y, 1, y, { color: 'faint', width: 0.6, alpha: 0.5 });
+              if ((b - a) * pxPer >= 1.5) Lst.line(Math.max(-0.04, a), y, Math.min(1.04, b), y, { color: k % 2 ? 'teal' : 'blue', width: Math.max(3, Math.min(8, rowH * 300)), cap: 'butt' });
               Lst.dot(q, y, { r: 2.2, color: 'ink' });
+              if (k < 3) Lst.tex(`\\varepsilon/${2 ** (k + 1)}`, Math.min(1.04, b) + 0.012, y, { align: 'left', size: 12, color: k % 2 ? 'teal' : 'blue' });
             }
-            Lst.line(Math.max(0, a), -0.12, Math.min(1, b), -0.12, { color: 'blue', width: 8, cap: 'butt', alpha: 0.85 });
+            Lst.line(Math.max(0, a), -0.15, Math.min(1, b), -0.15, { color: 'blue', width: 8, cap: 'butt', alpha: 0.85 });
           });
           if (K > rows) Lst.text(`rows ${rows + 1}–${K} too thin to draw; their intervals are in the union below`, 0.5, 1.0 - (rows + 0.6) * rowH, { align: 'center', size: 10, color: 'muted' });
-          if (mine) { Lst.line(dVal, -0.2, dVal, 1.0, { color: 'gold', width: 1.6, dash: [4, 4] }); Lst.dot(dVal, -0.12, { r: 6, color: 'gold', label: 'd', labelPos: 'n' }); }
-          Lst.text('union of all the intervals (true widths)', 0.5, -0.045, { align: 'center', size: 10.5, color: 'blue' });
+          if (mine) { Lst.line(dVal, -0.22, dVal, 1.0, { color: 'green', width: 1.6, dash: [4, 4] }); Lst.dot(dVal, -0.15, { r: 6, color: 'green', label: 'd', labelPos: 'ne' }); }
+          Lst.text('their union on [0, 1] (true widths)', 0.5, -0.07, { align: 'center', size: 10.5, color: 'blue' });
           const U = unionLength(iv), Ssum = eps * (1 - 2 ** -K);
-          Lst.corner(`total ≤ ${v.fix(Ssum, 4)}, union = ${v.fix(U, 4)}  vs  length of [0,1] = 1`, 'tl', { color: 'ink', weight: 600 });
+          Lst.text(`total length ≤ ${v.fix(Ssum, 4)} (union ${v.fix(U, 4)})  vs  length of [0, 1] = 1`, 0.5, -0.36, { align: 'center', size: 12, weight: 700, color: 'ink' });
           // ---- Cantor's diagonal
           T.draw({
             value: (i, j) => digits[i][j],

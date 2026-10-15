@@ -358,7 +358,7 @@ Above $T_c$ no pressure liquefies the substance: there is a single **supercritic
             s.fn((Vr) => pVdw(T, Vr), { color: 'ink', width: 2.6, domain: [m.Vg, 8] });
             s.line(m.Vl, m.p, m.Vg, m.p, { color: 'green', width: 3 });
             s.dot(m.Vl, m.p, { r: 4.5, color: 'green' }); s.dot(m.Vg, m.p, { r: 4.5, color: 'green' });
-            s.text('liquid', m.Vl, m.p, { size: 11, color: 'green', align: 'right', dx: -6, dy: 10 });
+            s.text('liquid', m.Vl, m.p, { size: 11, color: 'green', align: 'left', dx: 6, dy: 11 });
             s.text('vapour', m.Vg, m.p, { size: 11, color: 'green', align: 'left', dx: 6, dy: 10 });
           } else s.fn((Vr) => pVdw(T, Vr), { color: 'ink', width: 2.6, domain: [0.42, 8] });
           s.dot(1, 1, { r: 6, color: 'red' });
@@ -383,7 +383,7 @@ Above $T_c$ no pressure liquefies the substance: there is a single **supercritic
 $$p_r = \frac{p}{p_c}, \qquad V_r = \frac{V_m}{V_c}, \qquad T_r = \frac{T}{T_c},$$
 all gases obey approximately the same equation of state: gases at the same reduced temperature and reduced pressure have the same compression factor $Z$, and the same reduced volume. The van der Waals equation is an example: in reduced variables it becomes $p_r = 8T_r/(3V_r - 1) - 3/V_r^2$, with no reference to $a$ or $b$. The law works well for simple, nearly spherical, nonpolar molecules (Ar, Kr, Xe, CH₄, N₂, O₂), less well for elongated or polar ones (CO₂, NH₃, H₂O) and for the quantum gases He and H₂; a third parameter such as Pitzer's acentric factor $\omega$ restores much of the agreement.`,
       idea: String.raw`If every molecule interacts through the same law with only an energy scale $\varepsilon$ and a length scale $\sigma$ — as for a Lennard-Jones potential — then measuring temperature in units of $\varepsilon/k$, pressure in units of $\varepsilon/\sigma^3$ and volume in units of $\sigma^3$ removes every trace of the particular gas from the classical statistical mechanics. The critical point is one point of the universal equation, so $T_c$, $p_c$, $V_c$ are proportional to those scales and dividing by them does the same job (1.15). Molecules whose interactions are not of one shape — dipoles, hydrogen bonds, rod-like shapes, or quantum zero-point motion — break the scaling.`,
-      caption: String.raw`$Z$ against pressure on a log scale for nine gases, each at the same reduced temperature $T_r$ (so at very different absolute temperatures), computed from the Peng–Robinson equation with each gas's measured $T_c$, $p_c$ and acentric factor. Slide **rescale** from 0 to 1: every curve slides along the axis by its own $\log p_c$ and the simple gases collapse onto one curve — near the van der Waals universal curve (dashed) in shape but not in depth. Water, ammonia and CO₂ stay apart, and helium and hydrogen deviate the other way. Right: the measured critical compression factors, a direct test with data.`,
+      caption: String.raw`$Z$ against pressure on a log scale for nine gases, each at the same reduced temperature $T_r$ (so at very different absolute temperatures), computed from the Peng–Robinson equation with each gas's measured $T_c$, $p_c$ and acentric factor. Slide **rescale** from 0 to 1: every curve slides along the axis by its own $\log p_c$ and the simple gases collapse onto one curve, which the van der Waals universal curve (dashed) follows at moderate pressure but not beyond. Water, ammonia and CO₂ stay apart, and helium and hydrogen deviate the other way. Right: the measured critical compression factors, a direct test with data.`,
       deps: ['pchem-1.15'],
       see: ['thermo-4.2'],
       refs: ['Atkins 1C', 'M–S ch. 16'],
@@ -403,7 +403,7 @@ all gases obey approximately the same equation of state: gases at the same reduc
           // x is log10 of p / p_c^L (bar^(1-L)); window slides with L
           const lo = (1 - L) * Math.log10(0.5) + L * Math.log10(0.05), hi = (1 - L) * Math.log10(4000) + L * Math.log10(30);
           s.setView([lo, hi], [0, 1.4]);
-          const ticks = L < 0.02 ? [0, 1, 2, 3].map((k) => [k, `${10 ** k} bar`]) : L > 0.98 ? [-1, 0, 1].map((k) => [k, `p_r = ${10 ** k}`]) : [];
+          const ticks = L < 0.02 ? [0, 1, 2, 3].map((k) => [k, `${10 ** k} bar`]) : L > 0.98 ? [-1, 0, 1].map((k) => [k, `pᵣ = ${10 ** k}`]) : [];
           s.setTicks(ticks, null);
           s.hline(1, { color: 'ink', width: 1.2, dash: [6, 4] });
           const at2 = {};
@@ -420,12 +420,11 @@ all gases obey approximately the same equation of state: gases at the same reduc
             s.path(pr.map((q) => [Math.log10(q), zv(q)]), { color: 'ink', width: 2, dash: [3, 4], alpha: 0.8 });
             s.text('van der Waals', Math.log10(3), zv(3), { size: 11, color: 'ink', dy: 14, align: 'center' });
           }
-          s.corner(L < 0.02 ? 'absolute pressure' : L > 0.98 ? 'reduced pressure p/p_c' : `p / p_c^${L.toFixed(2)}`, 'tl', { size: 11.5, color: 'ink' });
+          s.corner(L < 0.02 ? 'absolute pressure (bar), log scale' : L > 0.98 ? 'reduced pressure p/pc, log scale' : `rescaling: p / pc^${L.toFixed(2)}`, 'tl', { size: 11.5, color: 'ink' });
           st = { at2, T };
           // measured critical compression factors
           const zs = ORDER.map((nm) => [nm, GAS[nm].pc * GAS[nm].Vc / (1000 * R * GAS[nm].Tc)]);
           sz.line(0, 0.375, 9, 0.375, { color: 'ink', width: 1.2, dash: [5, 4] }); sz.text('van der Waals 3/8', 8.9, 0.375, { size: 10, color: 'ink', align: 'right', dy: -8 });
-          sz.line(0, 0.307, 9, 0.307, { color: 'muted', width: 1, dash: [2, 3] }); sz.text('Peng–Robinson 0.307', 8.9, 0.307, { size: 10, color: 'muted', align: 'right', dy: -8 });
           zs.forEach(([nm, z], k) => { const g = GAS[nm]; sz.rect(k + 0.15, 0, k + 0.85, z, { fill: g.col, fillAlpha: 0.7, stroke: false }); sz.text(g.name, k + 0.5, 0.012, { size: 10, color: 'panel', align: 'center', halo: false, weight: 600 }); sz.text(v.fix(z, 3), k + 0.5, z, { size: 9.5, color: 'ink', align: 'center', dy: -7 }); });
         });
         v.legend(ORDER.slice(0, 7).map((nm) => [GAS[nm].col, GAS[nm].name]).concat([['teal', 'He, H₂ (quantum)', { dash: true }], ['ink', 'van der Waals', { dash: true }]]));

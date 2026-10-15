@@ -30,6 +30,11 @@
 //   public-key cryptography, lithium-ion battery, solar cell, PCR.
 // Deliberate omissions: agricultural machinery beyond the plough, military history beyond
 //   gunpowder and the gun, nuclear weapons, software history beyond the stored program and the web.
+// Landmark papers (October 2026): Smeaton 1759 (4.12), Clarke 1945 (12.16), Baran 1964 (12.15),
+//   Eisenstein 1979 (6.12). Moore 1965, Bardeen & Brattain 1948 and Kilby 1959 live in `circ`.
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'tech',
   chapters: [

@@ -31,7 +31,7 @@ export default {
 - `refs` from the syllabus; `credit` (who, when) when there is a clear attribution; `scope` for laws/models (where they hold).
 - **Papers** (`kind: 'Paper'`): keep the syllabus `paper` citation and `introduces` list. `statement`: what the paper showed or claimed, in modern terms, with its scope. `idea`: the context — what was believed before, what the paper did, what it changed (name the ideas it introduced). `viz`: recreate the paper's central figure, table or experiment interactively, with the paper's own data where available (say so in the caption), and a readout that compares the paper's number with today's accepted value.
 - `viz(v)` for every item (Definitions too, whenever a good picture exists). It must be about this idea, interactive (handles, sliders, selects, clicks, step-through), make the invisible visible, compute honestly, carry a live `readout` that verifies the claim, use palette names only (light/dark), and redraw fast. Let the reader break the hypothesis/leave the regime and watch the conclusion fail. Vary the pictures across the chapter.
-- Shared helpers for several items go at the top of the module as plain functions. No imports. Use `String.raw` for TeX strings.
+- Shared helpers for several items go at the top of the module as plain functions. Helpers needed by several part files of one chapter go in `content/<col>/chNN.shared.js` (plain named exports), imported with `import { stems } from './chNN.shared.js';` — the only import allowed. Create or edit a chapter's shared file only if you own the whole chapter (if other agents are writing parts of it concurrently, keep helpers local). Use `String.raw` for TeX strings.
 
 ## Check (iterate until clean)
 ```bash

@@ -25,6 +25,12 @@
 // Deliberate omissions (covered elsewhere): Hilbert's hotel, Russell's, Berry's, Grelling's,
 //   Banach–Tarski and Gödel's theorems live in `logic` and are cited; Arrow's theorem and voting
 //   paradoxes belong to `polsci`; Simpson's paradox and Lindley's paradox to `stat`/`prob`.
+// Landmark papers (October 2026): Aristotle, Prior Analytics (1.7), Hume 1748 (8.13), Hempel 1945
+//   (8.14), Turing 1950 (10.10), Kuhn 1962 (8.15), Gettier 1963 (9.8), Nozick 1969 (5.17), Rawls 1971
+//   (11.14), Nagel 1974 (10.11), Searle 1980 (10.12). Frege’s Begriffsschrift (1879) is left to `logic`.
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'phil',
   chapters: [

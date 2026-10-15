@@ -7,54 +7,7 @@
 // pictures information about X alone is blue, about Y alone teal, and shared information purple. Every number
 // in a readout is computed from the distribution on screen; randomness comes from v.rng seeded by the settings.
 
-// ── shared helpers ────────────────────────────────────────────────────────────
-const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-const sum = (a) => { let s = 0; for (const x of a) s += x; return s; };
-/** Shannon entropy in bits of a vector of weights (normalised first; 0 log 0 = 0). */
-function H(p) { const s = sum(p); if (!(s > 0)) return 0; let h = 0; for (const x of p) if (x > 0) { const q = x / s; h -= q * Math.log2(q); } return h; }
-/** Binary entropy h(p) in bits. */
-const h2 = (p) => (p <= 0 || p >= 1 ? 0 : -p * Math.log2(p) - (1 - p) * Math.log2(1 - p));
-/** Surprisal −log₂ p (∞ for p = 0). */
-const surpr = (p) => (p > 0 ? -Math.log2(p) : Infinity);
-const LET = 'abcdefghijklmnopqrstuvwxyz';
-const commas = (n) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-/** Set p[i] = val and rescale the other entries proportionally so that the vector still sums to 1. */
-function setProb(p, i, val) {
-  val = clamp(val, 0, 1); if (val < 0.004) val = 0; if (val > 0.996) val = 1;
-  let S = 0; for (let j = 0; j < p.length; j++) if (j !== i) S += p[j];
-  const rest = 1 - val;
-  for (let j = 0; j < p.length; j++) if (j !== i) p[j] = S > 1e-12 ? (p[j] * rest) / S : rest / (p.length - 1);
-  p[i] = val;
-}
-/** Truncate or extend a distribution to n outcomes and renormalise. */
-function resizeP(p, n) { const q = p.slice(0, n); while (q.length < n) q.push(0.6 / n); const s = sum(q); return s > 0 ? q.map((x) => x / s) : q.map(() => 1 / n); }
-/** Bars of stage s sit at x = 0, 1, …: pressing on a bar and dragging sets its height (the rest rescale). */
-function dragBars(s, getP, onEdit) {
-  let idx = -1;
-  s.onDrag((x, y, phase) => {
-    const p = getP(); if (!p) return;
-    if (phase === 'start') { const i = Math.round(x); idx = i >= 0 && i < p.length && Math.abs(x - i) < 0.5 ? i : -1; }
-    if (idx >= 0) { setProb(p, idx, y); onEdit?.(idx); }
-    if (phase === 'end') idx = -1;
-  });
-}
-/** FNV-1a: a 32-bit seed from a string. */
-function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
-/** Box-axes view leaving ~34 px on the left and ~20 px at the bottom for the tick labels. */
-function viewPad(s, xr, yr, o = {}) {
-  const pad = (r, f, lg) => { const g = f / (1 - f); return lg ? [r[0] / Math.pow(r[1] / r[0], g), r[1]] : [r[0] - g * (r[1] - r[0]), r[1]]; };
-  s.setView(pad(xr, (o.left ?? 34) / Math.max(150, s.width), o.xlog), pad(yr, (o.bottom ?? 20) / Math.max(100, s.height), o.ylog));
-}
-/** Legend / title setters that touch the DOM only when the content changes. */
-function legender(v) { let last = ''; return (items) => { const k = JSON.stringify(items); if (k !== last) { last = k; v.legend(items); } }; }
-function titler(s) { let last = null; return (t) => { if (t !== last) { last = t; s.setTitle(t); } }; }
-/** Lens (intersection) area of two discs with radii a, b at distance d. */
-function lensArea(a, b, d) {
-  if (d >= a + b) return 0;
-  if (d <= Math.abs(a - b)) return Math.PI * Math.min(a, b) ** 2;
-  const x = clamp((d * d + a * a - b * b) / (2 * d * a), -1, 1), y = clamp((d * d + b * b - a * a) / (2 * d * b), -1, 1);
-  return a * a * Math.acos(x) + b * b * Math.acos(y) - 0.5 * Math.sqrt(Math.max(0, (-d + a + b) * (d + a - b) * (d - a + b) * (d + a + b)));
-}
+import { clamp, sum, H, h2, surpr, LET, commas, setProb, resizeP, dragBars, hashStr, viewPad, legender, titler, lensArea } from './ch01.shared.js';
 
 // The opening of Lewis Carroll's *Alice's Adventures in Wonderland* (1865, public domain): the built-in English sample.
 const ALICE = `Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, "and what is the use of a book," thought Alice "without pictures or conversations?"
@@ -619,7 +572,7 @@ It is the uncertainty left about $Y$ once $X$ is known. $H(Y\mid X)=0$ exactly w
             sT.tex(`x_${k + 1}`, -0.35, -k - 0.5, { color: 'accent', size: 15 });
             sT.text(v.fix(S.py[k], 2), k + 0.5, -3.45, { align: 'center', size: 12, color: 'teal', weight: 600 });
             sT.text(v.fix(S.px[k], 2), 3.38, -k - 0.5, { align: 'center', size: 12, color: 'accent', weight: 600 });
-            const bw = (1.05 * S.rowH[k]) / Math.log2(3);
+            const bw = (0.75 * S.rowH[k]) / Math.log2(3);
             sT.rect(3.72, -k - 0.66, 3.72 + bw, -k - 0.34, { fill: 'teal', fillAlpha: 0.55, stroke: false });
             sT.text(v.fix(S.rowH[k], 2), 3.72 + bw, -k - 0.5, { dx: 4, size: 11, color: 'teal' });
           }
@@ -659,10 +612,10 @@ It is the uncertainty left about $Y$ once $X$ is known. $H(Y\mid X)=0$ exactly w
             sV.text(v.fix(val, 3) + ' bits', lx, 1.9, { align: 'center', color: col, size: 11.5, weight: 600 });
             if (val > 0.003) sV.line(lx, 1.76, rx, cyv + 0.05, { color: col, width: 1, alpha: 0.7 });
           }
-          sV.tex(`H(X) = ${v.fix(S.HX, 3)}`, cX, cyv - rX, { dy: 14, color: 'accent', size: 13, align: rY > 0 && cY - cX < 0.9 ? 'right' : 'center' });
-          sV.tex(`H(Y) = ${v.fix(S.HY, 3)}`, cY, cyv - rY, { dy: 14, color: 'teal', size: 13, align: rX > 0 && cY - cX < 0.9 ? 'left' : 'center' });
+          if (rX > 0) sV.tex(`H(X) = ${v.fix(S.HX, 3)}`, cX - 0.72 * rX, cyv - 0.72 * rX, { dx: -4, dy: 4, color: 'accent', size: 13, align: 'right', baseline: 'top' });
+          if (rY > 0) sV.tex(`H(Y) = ${v.fix(S.HY, 3)}`, cY + 0.72 * rY, cyv - 0.72 * rY, { dx: 4, dy: 4, color: 'teal', size: 13, align: 'left', baseline: 'top' });
           sV.tex(`\\text{union} = H(X,Y) = ${v.fix(S.HXY, 3)}`, 0, -2.25, { color: 'ink', size: 13, baseline: 'bottom' });
-          const sq = Math.sqrt(K / 4); sV.rect(2.95 - sq, -2.3, 2.95, -2.3 + sq, { color: 'muted', width: 1, dash: [3, 3] }); sV.text('¼ bit', 2.95 - sq / 2, -2.3 + sq, { dy: -8, align: 'center', size: 10.5, color: 'muted' });
+          const sq = Math.sqrt(K / 4); sV.rect(2.95 - sq, -2.15, 2.95, -2.15 + sq, { color: 'muted', width: 1, dash: [3, 3] }); sV.text('¼ bit', 2.95 - sq / 2, -2.15 + sq, { dy: -8, align: 'center', size: 10.5, color: 'muted' });
         });
         v.readout(() => {
           const S = stats();

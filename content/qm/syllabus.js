@@ -23,6 +23,7 @@
 //   and molecular orbital theory (→ qchem), dense coding, QKD, POVMs and the Lindblad equation
 //   (→ qinfo), quantum statistics of gases (→ thermo, which builds on this collection), Klein paradox
 //   and relativistic field theory beyond the Dirac equation.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'qm',
   chapters: [
@@ -60,6 +61,18 @@ export default {
           pic: 'Silver atoms with randomly oriented classical moments would smear into a band; the simulated quantum beam splits into exactly two spots, whatever orientation the magnet is turned to.' },
         { num: '1.14', kind: 'Phenomenon', name: 'Sequential Stern–Gerlach experiments', deps: ['qm-1.13'], refs: ['Sakurai ch. 1'],
           pic: 'Chain z, x and z magnets and block beams: selecting z+ and then x+ revives the z− beam, with counts at each stage matching probabilities of 1/2 — measurement disturbs the earlier result.' },
+        { num: '1.15', kind: 'Paper', name: 'Erzeugung und Verwandlung des Lichtes',
+          paper: { authors: 'A. Einstein', year: 1905, title: 'Über einen die Erzeugung und Verwandlung des Lichtes betreffenden heuristischen Gesichtspunkt', venue: 'Annalen der Physik 322 (6): 132–148', doi: '10.1002/andp.19053220607' },
+          introduces: ['qm-1.3'], deps: ['qm-1.1', 'qm-1.2', 'thermo-5.6', 'thermo-9.15'], refs: [],
+          pic: 'Plot the stopping voltage of photoelectrons against light frequency for several metals: the light-quantum hypothesis predicts parallel straight lines of slope h/e offset by each work function, which the reader tests against measured points; brighter light adds electrons but never energy.' },
+        { num: '1.16', kind: 'Paper', name: 'On the constitution of atoms and molecules',
+          paper: { authors: 'N. Bohr', year: 1913, title: 'On the constitution of atoms and molecules', venue: 'Philosophical Magazine (6th series) 26 (151): 1–25', doi: '10.1080/14786441308634955' },
+          introduces: ['qm-1.5'], deps: ['qm-1.4', 'qm-1.1', 'mech-8.18', 'em-12.17', 'mech-8.23'], refs: [],
+          pic: 'Quantize the electron’s orbit and watch the predicted Balmer and Paschen lines land on the measured wavelengths; compute the Rydberg constant from e, m and h and compare it with the spectroscopic value, then do the same for ionized helium, whose Pickering lines the paper reassigned.' },
+        { num: '1.17', kind: 'Paper', name: 'Recherches sur la théorie des quanta',
+          paper: { authors: 'Louis de Broglie', year: 1925, title: 'Recherches sur la théorie des quanta', venue: 'Annales de Physique (10e série) 3: 22–128', doi: '10.1051/anphys/192510030022' },
+          introduces: ['qm-1.9'], deps: ['qm-1.3', 'qm-1.7', 'rel-4.2', 'qm-1.15'], refs: [],
+          pic: 'Wrap a matter wave of wavelength h/p around a Bohr orbit: only orbits whose circumference holds a whole number of wavelengths close on themselves, reproducing Bohr’s quantum condition, and a slider on the electron’s speed shows the wave shrink or stretch until it fits.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -94,6 +107,14 @@ export default {
           pic: 'Launch a Gaussian packet of adjustable width and momentum: it drifts and spreads, its width following σ√(1 + (ħt/2mσ²)²), so narrower starts spread faster.' },
         { num: '2.13', kind: 'Theorem', name: 'Matter waves move at the classical velocity', deps: ['qm-2.12', 'waves-3.5'], refs: ['Griffiths §2.4'],
           pic: 'Follow the crests and the envelope of a moving packet: crests run at half the particle’s velocity while the envelope moves at the classical speed p/m, as the group velocity predicts.' },
+        { num: '2.14', kind: 'Paper', name: 'Quantisierung als Eigenwertproblem',
+          paper: { authors: 'E. Schrödinger', year: 1926, title: 'Quantisierung als Eigenwertproblem (Erste Mitteilung)', venue: 'Annalen der Physik 384 (4): 361–376', doi: '10.1002/andp.19263840404' },
+          introduces: ['qm-2.4'], deps: ['qm-1.9', 'qm-1.5', 'mech-12.16', 'qm-1.17'], refs: [],
+          pic: 'Solve Schrödinger’s eigenvalue problem for hydrogen on screen: only for E = −13.6 eV/n² does the radial solution stay finite far away, so whole quantum numbers appear as a boundary condition instead of a rule, and the Balmer formula drops out.' },
+        { num: '2.15', kind: 'Paper', name: 'Zur Quantenmechanik der Stoßvorgänge',
+          paper: { authors: 'Max Born', year: 1926, title: 'Zur Quantenmechanik der Stoßvorgänge', venue: 'Zeitschrift für Physik 37: 863–867', doi: '10.1007/BF01397477' },
+          introduces: ['qm-2.2', 'qm-13.22'], deps: ['qm-2.4', 'qm-13.16', 'qm-2.14'], refs: [],
+          pic: 'Scatter a plane wave off an atom and watch the outgoing spherical wave: Born’s rule turns the squared amplitude in each direction into the probability of a click there, so detectors fire one at a time at random while their histogram builds up the predicted cross-section.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -226,6 +247,10 @@ export default {
           pic: 'Search over drawn wave functions to minimize Δx·Δp: an optimizer always converges to a Gaussian (possibly with a linear phase), and any deviation raises the product.' },
         { num: '5.21', kind: 'Phenomenon', name: 'Interaction-free measurement', deps: ['qm-5.7', 'waves-6.9', 'qm-1.12'], refs: ['Griffiths ch. 12'],
           pic: 'An Elitzur–Vaidman interferometer with a light-triggered bomb in one arm: a click at the normally dark port reveals the bomb in a quarter of the runs without it exploding, and Zeno-style repetition pushes the fraction toward 1.' },
+        { num: '5.22', kind: 'Paper', name: 'Quantentheoretische Umdeutung kinematischer Beziehungen',
+          paper: { authors: 'W. Heisenberg', year: 1925, title: 'Über quantentheoretische Umdeutung kinematischer und mechanischer Beziehungen', venue: 'Zeitschrift für Physik 33: 879–893', doi: '10.1007/BF01328377' },
+          introduces: [], deps: ['qm-1.4', 'qm-1.6', 'qm-1.7', 'qm-1.16'], refs: [],
+          pic: 'Replace a classical orbit’s Fourier series by Heisenberg’s array of transition amplitudes: multiply arrays with his non-commuting rule, impose his quantum condition, and the oscillator’s energies come out as (n + ½)hν — then switch on an anharmonic term and compare the computed shifts with the exact spectrum.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -449,6 +474,10 @@ export default {
           pic: 'An electric field shifts the hydrogen ground state quadratically but splits the n = 2 level linearly, because degenerate states of opposite parity mix.' },
         { num: '11.17', kind: 'Model', name: 'Polarizability and London dispersion forces', deps: ['qm-11.3', 'em-5.1'], refs: ['Griffiths ch. 7'],
           pic: 'Two atoms modelled as coupled oscillators: correlated zero-point fluctuations lower their energy by an amount falling as 1/R⁶, computed from the normal-mode frequencies.' },
+        { num: '11.18', kind: 'Paper', name: 'The quantum theory of the electron',
+          paper: { authors: 'P. A. M. Dirac', year: 1928, title: 'The quantum theory of the electron', venue: 'Proceedings of the Royal Society of London A 117 (778): 610–624', doi: '10.1098/rspa.1928.0023' },
+          introduces: ['qm-11.11', 'qm-7.13'], deps: ['qm-7.7', 'qm-2.4', 'rel-4.2'], refs: [],
+          pic: 'Factor E² = p²c² + m²c⁴ with Dirac’s 4 × 4 matrices: check that they anticommute and square to one, then put the electron in a magnetic field and in hydrogen and watch g = 2 and the fine-structure levels emerge, with the troubling negative-energy branch left in view.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12
@@ -587,6 +616,14 @@ export default {
           pic: 'Mark the paths with entangled tags, then measure the tags in a basis that erases the path: sorting the screen hits by tag result recovers complementary fringe patterns that sum to no fringes.' },
         { num: '14.20', kind: 'Paradox', name: 'The measurement problem and Wigner’s friend', deps: ['qm-14.17', 'qm-14.18'], refs: ['Griffiths §12.5'],
           pic: 'Model the friend as a quantum system measuring a qubit: from outside, unitary evolution predicts an entangled superposition that an interference test could reveal, contrasting collapse, many-worlds and other readings.' },
+        { num: '14.21', kind: 'Paper', name: 'Can quantum-mechanical description of reality be complete?',
+          paper: { authors: 'A. Einstein, B. Podolsky and N. Rosen', year: 1935, title: 'Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?', venue: 'Physical Review 47 (10): 777–780', doi: '10.1103/PhysRev.47.777' },
+          introduces: ['qm-14.6'], deps: ['qm-5.6', 'qm-5.10', 'qm-14.1'], refs: [],
+          pic: 'Prepare EPR’s pair with perfectly correlated positions and anticorrelated momenta: measuring x on particle 1 predicts x on particle 2 with certainty, measuring p predicts p, and the reader chooses only after the particles have separated — the dilemma between incompleteness and action at a distance made concrete.' },
+        { num: '14.22', kind: 'Paper', name: 'On the Einstein Podolsky Rosen paradox',
+          paper: { authors: 'J. S. Bell', year: 1964, title: 'On the Einstein Podolsky Rosen paradox', venue: 'Physics Physique Fizika 1 (3): 195–200', doi: '10.1103/PhysicsPhysiqueFizika.1.195' },
+          introduces: ['qm-14.8', 'qm-14.7'], deps: ['qm-14.6', 'qm-7.16', 'qm-7.11', 'qm-14.21'], refs: [],
+          pic: 'Let any local hidden-variable rule the reader programs assign spin outcomes to a singlet pair: every such model obeys Bell’s inequality 1 + P(b, c) ≥ |P(a, b) − P(a, c)|, while the quantum correlation −cos θ breaks it for analyser settings such as 0°, 60° and 120°.' },
       ],
     },
   ],

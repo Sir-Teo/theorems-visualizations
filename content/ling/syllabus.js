@@ -21,6 +21,13 @@
 //   pidgins and creoles, endangered languages, Nicaraguan Sign Language, aphasia.
 // Deliberate omissions: detailed generative frameworks beyond an X-bar sketch (Minimalism, HPSG,
 //   LFG), discourse analysis, neural language models (covered by the ML collections).
+// Landmark papers (October 2026): Jones 1786 (8.13), Grimm 1822 (8.14), Verner 1877 (8.15), Frege
+//   1892 (6.16), Saussure 1916 (6.15), Zipf 1935 (4.13), Swadesh 1952 (9.12), Ventris & Chadwick 1953
+//   (7.11), Shannon 1951 (4.14, also introducing info-11.9), Chomsky 1957 (5.16), Labov 1966 (8.16),
+//   Gray & Atkinson 2003 (9.13).
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'ling',
   chapters: [
@@ -159,6 +166,11 @@ export default {
                    venue: 'Boston: Houghton Mifflin, 1935', url: 'https://archive.org/details/psychobiologyofl0000zipf' },
           introduces: ['ling-4.1', 'ling-4.5'], deps: [], refs: [],
           pic: 'Zipf’s rank–frequency plot from a real text: the reader picks a text (a novel, a news corpus or their own writing), the words are counted, ranked and plotted on log–log axes with a fitted slope near −1, and a second panel plots word length against frequency to show his law of abbreviation.' },
+        { num: '4.14', kind: 'Paper', name: 'Prediction and Entropy of Printed English',
+          paper: { authors: 'C. E. Shannon', year: 1951, title: 'Prediction and Entropy of Printed English',
+                   venue: 'Bell System Technical Journal 30 (1): 50–64', doi: '10.1002/j.1538-7305.1951.tb01366.x' },
+          introduces: ['ling-4.8', 'info-11.9'], deps: ['info-1.2', 'ling-4.9'], refs: [],
+          pic: 'Shannon’s guessing game: the reader guesses the next letter of a hidden English passage, the number of guesses needed at each position is recorded, and the guess distribution gives upper and lower bounds on the entropy per letter, landing near Shannon’s 0.6–1.3 bits with long context, against his n-gram entropies F₀ … F₃ of 4.70, 4.14, 3.56 and 3.3 bits.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5

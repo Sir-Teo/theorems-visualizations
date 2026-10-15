@@ -20,6 +20,11 @@
 //   base isolation and tuned mass dampers, the Millennium Bridge wobble, thrust network analysis.
 // Deliberate omissions: code-based member design (timber/steel/concrete sizing), indeterminate
 //   frame analysis by matrix methods, construction management.
+// Landmark papers (October 2026): Hooke 1676 (3.13), Maxwell 1864 (5.15), Heyman 1966 (3.14); Sabine
+//   1900 lives in music (11.15) with Sabine’s formula and also introduces 8.2 here.
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'arch',
   chapters: [

@@ -29,6 +29,7 @@
 //   cell energy-4.3, Shockley–Queisser limit energy-4.5).
 // Deliberate omissions: Hund’s rules and atomic magnetism (qm/qchem), magnetic resonance (qinfo), surfaces,
 //   alloys, amorphous solids, Peierls instability (not in the references).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'cm',
   chapters: [
@@ -94,6 +95,10 @@ export default {
           pic: 'The computed magnetization oscillates as Landau levels cross the Fermi energy; replotted against 1/B the oscillations are periodic, and the period gives the extremal cross-section of the Fermi surface you drew.' },
         { num: '2.13', kind: 'Phenomenon', name: 'Integer quantum Hall effect', deps: ['qm-6.8', 'em-7.5'], refs: ['Kittel ch. 17'],
           pic: 'Sweep the field across a disordered 2D gas: the Hall resistance locks onto plateaus at h/(νe²) while the longitudinal resistance vanishes, explained by localized bulk states and conducting edge channels.' },
+        { num: '2.14', kind: 'Paper', name: 'Fine-structure constant from quantized Hall resistance',
+          paper: { authors: 'K. v. Klitzing, G. Dorda and M. Pepper', year: 1980, title: 'New Method for High-Accuracy Determination of the Fine-Structure Constant Based on Quantized Hall Resistance', venue: 'Physical Review Letters 45 (6): 494–497', doi: '10.1103/PhysRevLett.45.494' },
+          introduces: ['cm-2.13'], deps: ['qm-6.8', 'em-7.5', 'cm-4.10'], refs: [],
+          pic: 'Sweep the gate voltage of a silicon MOSFET at 1.5 K in an 18 T field, as in the paper: the Hall voltage forms flat plateaus at h/ie² while the longitudinal voltage drops to zero, and fitting a plateau gives the fine-structure constant to a few parts per million.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -216,6 +221,14 @@ export default {
           pic: 'Two Josephson junctions in a ring: the maximum supercurrent oscillates with the threaded flux with period h/2e, so counting fringes measures fields far weaker than the Earth’s.' },
         { num: '6.12', kind: 'Phenomenon', name: 'High-temperature cuprate superconductors', deps: ['cm-6.8', 'cm-5.5'], refs: ['Kittel ch. 10'],
           pic: 'A doping slider walks across the cuprate phase diagram: an antiferromagnetic Mott insulator at zero doping gives way to a superconducting dome peaking above 90 K, far beyond the phonon-mediated BCS estimate shown for comparison.' },
+        { num: '6.13', kind: 'Paper', name: 'The resistance of pure mercury at helium temperatures',
+          paper: { authors: 'H. Kamerlingh Onnes', year: 1911, title: 'Further experiments with liquid helium. C. On the change of electric resistance of pure metals at very low temperatures etc. IV. The resistance of pure mercury at helium temperatures', venue: 'Proceedings of the Section of Sciences, KNAW 13 (II): 1274–1276', url: 'https://dwc.knaw.nl/DL/publications/PU00013358.pdf' },
+          introduces: ['cm-6.1'], deps: ['em-6.5', 'em-6.4'], refs: [],
+          pic: 'Cool a mercury thread in the liquid-helium cryostat and plot its resistance against temperature: it follows the smooth fall expected of a pure metal and then, near 4.2 K, drops abruptly to an unmeasurably small value — the first superconductor, recreated from the Leiden measurements.' },
+        { num: '6.14', kind: 'Paper', name: 'Theory of Superconductivity',
+          paper: { authors: 'J. Bardeen, L. N. Cooper and J. R. Schrieffer', year: 1957, title: 'Theory of Superconductivity', venue: 'Physical Review 108 (5): 1175–1204', doi: '10.1103/PhysRev.108.1175' },
+          introduces: ['cm-6.8'], deps: ['cm-6.7', 'cm-6.9', 'cm-3.5', 'cm-6.13'], refs: [],
+          pic: 'Solve the BCS gap equation as the temperature falls: the gap opens at T_c and grows to Δ(0) = 1.76 kT_c, the electronic specific heat jumps by a factor 2.43 at T_c and then dies away exponentially, and the reader sets the coupling to match measured gaps and specific heats of real superconductors.' },
       ],
     },
   ],

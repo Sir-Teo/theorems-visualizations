@@ -29,6 +29,15 @@
 //   Dürer's nets, girih tiles, the 2023 aperiodic monotile.
 // Deliberate omissions: full colour-appearance models (CIECAM02 — too technical for a picture each),
 //   art-historical style periods, hyperbolic geometry beyond Escher's Circle Limit.
+// Landmark papers (October 2026): Vitruvius (10.12), Alberti 1435 (1.16), Dürer 1525 (2.10),
+//   Newton 1704 (3.12, the colour circle only; the prism experiment is left to the physics papers),
+//   Goethe 1810 (3.13), Chevreul 1839 (6.14), Grassmann 1853 (4.14), Maxwell 1860 (4.15), Fedorov 1891
+//   (9.13, the first derivation of the 17 plane groups), Smith & Guild 1931 (4.16), Penrose 1974 (11.14),
+//   Taylor, Micolich & Jonas 1999 (11.16, contested), Lu & Steinhardt 2007 (11.15), Smith, Myers,
+//   Kaplan & Goodman-Strauss 2023 (11.17, the hat).
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'art',
   chapters: [
@@ -253,6 +262,11 @@ export default {
           pic: 'Adelson’s checkerboard: squares A and B have the same pixel value; drag a connecting bar to see it, and remove the cylinder’s shadow to dissolve the illusion.' },
         { num: '6.13', kind: 'Phenomenon', name: 'Equiluminance: when colour loses depth and motion', deps: ['art-4.13', 'art-5.7'], refs: ['Livingstone'],
           pic: 'Tune a red–green pattern until the two have equal luminance: edges shimmer, depth cues flatten and drift slows, as Livingstone traced to the luminance pathway.' },
+        { num: '6.14', kind: 'Paper', name: 'De la loi du contraste simultané des couleurs',
+          paper: { authors: 'M. E. Chevreul', year: 1839, title: 'De la loi du contraste simultané des couleurs',
+                   venue: 'Paris: Pitois-Levrault, 1839', url: 'https://archive.org/details/delaloiducontras00chev' },
+          introduces: ['art-6.3'], deps: ['art-3.3'], refs: [],
+          pic: 'Chevreul’s demonstration: two strips of different colours laid side by side each shift, along their shared edge, toward the complement of the other; the reader picks the pair, sees the shift predicted on a colour circle as the neighbour’s complement added, masks the border to reveal the true colours, and lays out a tapestry-like pattern to see why the Gobelins dyes looked wrong in context.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -427,6 +441,11 @@ export default {
                    venue: 'Nature 399 (6735): 422', doi: '10.1038/20833' },
           introduces: ['art-11.13'], deps: ['art-11.11', 'ode-12.4'], refs: [],
           pic: 'Box counting on a drip painting, contest included: the reader lays ever finer grids over a simulated pour (a swinging paint can or random scribbles), plots log N against log(1/size) and reads the dimension from the slope as the paper did, then sees how much the fitted value moves with the range of scales chosen, the objection later critics raised against using it to authenticate Pollocks.' },
+        { num: '11.17', kind: 'Paper', name: 'An Aperiodic Monotile',
+          paper: { authors: 'David Smith, Joseph Samuel Myers, Craig S. Kaplan and Chaim Goodman-Strauss', year: 2023, title: 'An aperiodic monotile',
+                   venue: 'arXiv:2303.10798 (March 2023); published in Combinatorial Theory 4 (1), 2024', doi: '10.5070/C64163843' },
+          introduces: ['art-11.10'], deps: ['art-11.6', 'art-11.7'], refs: [],
+          pic: 'The hat, a 13-sided shape made of eight kites of the hexagonal grid: the reader lays hats, with a minority of mirror-image ones (about one in eight), and runs the paper’s metatile substitution (H, T, P, F) to grow ever larger patches that never repeat, then slides through the Tile(a, b) family from chevron to comet, passing the hat and the turtle.' },
       ],
     },
   ],

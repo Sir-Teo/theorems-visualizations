@@ -20,6 +20,7 @@
 // McQuarrie QC has no symmetry or electronic-spectroscopy chapter, so those items carry author-level refs.
 // Deliberate omissions: Green's-function methods (Szabo–Ostlund ch. 7) and pair theories beyond CC — too
 // specialized for a first atlas pass; semi-empirical methods other than Hückel.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'qchem',
   chapters: [
@@ -116,6 +117,10 @@ export default {
           pic: 'Compare the energies of 4s²3d⁴ and 4s¹3d⁵ as exchange stabilization and orbital spacing vary: the naive filling order loses for chromium, a reminder that the Madelung rule is a heuristic, not a law.' },
         { num: '3.12', kind: 'Phenomenon', name: 'Relativistic effects: the colour of gold', deps: ['qchem-2.8', 'qchem-3.9'], refs: ['McQuarrie ch. 9'],
           pic: 'Turn relativity on and off for group 11: the 6s orbital contracts, the 5d–6s gap narrows, and the computed absorption edge of gold moves from the ultraviolet into the blue, turning silver-white metal yellow.' },
+        { num: '3.13', kind: 'Paper', name: 'Properties and atomic weights of the elements',
+          paper: { authors: 'D. Mendeleev', year: 1869, title: 'Соотношение свойств с атомным весом элементов (The relation of the properties to the atomic weights of the elements)', venue: 'Zhurnal Russkago Khimicheskago Obshchestva 1: 60–77', url: 'https://babel.hathitrust.org/cgi/pt?id=mdp.39015065536586&seq=70' },
+          introduces: [], deps: ['pchem-1.3'], refs: [],
+          pic: 'Arrange the 63 elements known in 1869 by atomic weight as Mendeleev did and watch valence and chemistry recur period by period; keep the gaps he marked “?” near atomic weights 45, 68 and 70, predict what fills them by interpolating neighbours, and compare with scandium, gallium and germanium when they were found.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -179,6 +184,14 @@ export default {
           pic: 'Move one atomic level downward to mimic a more electronegative partner: the bonding orbital takes on its character, charge shifts, and the dipole moment readout grows toward the ionic limit.' },
         { num: '5.12', kind: 'Model', name: 'Morse potential', deps: ['qchem-5.2', 'qchem-1.7'], refs: ['McQuarrie ch. 5'],
           pic: 'Overlay a Morse well and its harmonic approximation; the numerically computed levels crowd together toward the dissociation limit while the harmonic ladder marches on with equal steps forever.' },
+        { num: '5.13', kind: 'Paper', name: 'The atom and the molecule',
+          paper: { authors: 'Gilbert N. Lewis', year: 1916, title: 'The atom and the molecule', venue: 'Journal of the American Chemical Society 38 (4): 762–785', doi: '10.1021/ja02261a002' },
+          introduces: [], deps: ['qchem-3.13'], refs: [],
+          pic: 'Build molecules from Lewis’s cubical atoms: place valence electrons on the corners, let neighbouring cubes share an edge (one shared pair) or a face (a double bond), and see the octet rule predict the formulas of water, ammonia, methane, ethylene and common ions — then watch it strain at boron trifluoride.' },
+        { num: '5.14', kind: 'Paper', name: 'Wechselwirkung neutraler Atome und homöopolare Bindung',
+          paper: { authors: 'W. Heitler and F. London', year: 1927, title: 'Wechselwirkung neutraler Atome und homöopolare Bindung nach der Quantenmechanik', venue: 'Zeitschrift für Physik 44 (6–7): 455–472', doi: '10.1007/BF01397394' },
+          introduces: ['qchem-5.6'], deps: ['qm-2.4', 'qm-10.2', 'qchem-3.6', 'qm-2.14'], refs: [],
+          pic: 'Bring two hydrogen atoms together and compute the energy with symmetric and antisymmetric combinations of atomic orbitals: the singlet curve dips into a bond near 0.87 Å with about 3.1 eV of binding, the triplet repels at every distance, and both are compared with the exact curve.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -217,6 +230,18 @@ export default {
           pic: 'Stretch an octahedral Cu²⁺ complex along one axis: for a degenerate d⁹ ground state the energy falls linearly with the distortion, so the symmetric shape is never the minimum, while for d⁸ nothing is gained.' },
         { num: '6.15', kind: 'Phenomenon', name: 'Peierls distortion and bond alternation in polyenes', deps: ['qchem-6.5', 'qchem-1.5'], refs: ['McQuarrie ch. 11'],
           pic: 'Lengthen a polyene with equal or alternating resonance integrals: with equal bonds the HOMO–LUMO gap closes as 1/N, but alternation keeps a finite gap — which is why β-carotene is orange rather than metallic.' },
+        { num: '6.16', kind: 'Paper', name: 'The Nature of the Chemical Bond',
+          paper: { authors: 'Linus Pauling', year: 1931, title: 'The Nature of the Chemical Bond. Application of Results Obtained from the Quantum Mechanics and from a Theory of Paramagnetic Susceptibility to the Structure of Molecules', venue: 'Journal of the American Chemical Society 53 (4): 1367–1400', doi: '10.1021/ja01355a027' },
+          introduces: ['qchem-6.2'], deps: ['qchem-5.6', 'qchem-2.3', 'qchem-5.14'], refs: [],
+          pic: 'Mix one s and three p orbitals with adjustable weights: as the bond strength (Pauling’s measure, 2 for sp³ against 1.732 for a pure p orbital) is maximized, four lobes swing to the tetrahedral angle of 109.5°; switch to dsp² and get the square-planar complexes the paper predicted.' },
+        { num: '6.17', kind: 'Paper', name: 'Quantentheoretische Beiträge zum Benzolproblem',
+          paper: { authors: 'Erich Hückel', year: 1931, title: 'Quantentheoretische Beiträge zum Benzolproblem. I. Die Elektronenkonfiguration des Benzols und verwandter Verbindungen', venue: 'Zeitschrift für Physik 70 (3–4): 204–286', doi: '10.1007/BF01339530' },
+          introduces: ['qchem-6.4', 'qchem-6.6', 'qchem-6.7'], deps: ['qchem-4.2', 'qchem-5.3'], refs: [],
+          pic: 'Draw a ring of n carbon atoms and solve the Hückel determinant: levels α + 2β cos(2πk/n) fill pair by pair, closed shells and extra delocalization energy appear for 2, 6, 10, … π electrons, and the reader compares benzene with cyclobutadiene and cyclooctatetraene.' },
+        { num: '6.18', kind: 'Paper', name: 'Stereochemistry of Electrocyclic Reactions',
+          paper: { authors: 'R. B. Woodward and Roald Hoffmann', year: 1965, title: 'Stereochemistry of Electrocyclic Reactions', venue: 'Journal of the American Chemical Society 87 (2): 395–397', doi: '10.1021/ja01080a054' },
+          introduces: ['qchem-6.11'], deps: ['qchem-6.10', 'qchem-6.5', 'qchem-6.17'], refs: [],
+          pic: 'Close a substituted butadiene or hexatriene into a ring by heat or by light: the symmetry of the relevant HOMO decides whether the ends turn the same way (conrotatory) or opposite ways (disrotatory), and the reader checks the predicted cis or trans product for 4n and 4n + 2 electron systems.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -253,6 +278,10 @@ export default {
           pic: 'Two different external potentials are tuned to try to give the same ground-state density; the computed densities always differ, and the energy functional evaluated on trial densities is minimized only at the true one.' },
         { num: '7.14', kind: 'Method', name: 'Kohn–Sham density functional theory', deps: ['qchem-7.13', 'qchem-7.2'], refs: ['McQuarrie ch. 12'],
           pic: 'Swap the exchange–correlation functional (none, LDA, a GGA, a hybrid) for a set of molecules and compare predicted bond lengths and atomization energies with experiment, all from the same SCF loop.' },
+        { num: '7.15', kind: 'Paper', name: 'Self-Consistent Equations with Exchange and Correlation',
+          paper: { authors: 'W. Kohn and L. J. Sham', year: 1965, title: 'Self-Consistent Equations Including Exchange and Correlation Effects', venue: 'Physical Review 140 (4A): A1133–A1138', doi: '10.1103/PhysRev.140.A1133' },
+          introduces: ['qchem-7.14'], deps: ['qchem-7.13', 'qchem-7.1'], refs: [],
+          pic: 'Iterate the Kohn–Sham loop for an atom: guess a density, build the effective potential with a local-density exchange–correlation term, solve one-electron equations, refill and repeat; the reader watches density and total energy converge and compares the result with Hartree and Hartree–Fock.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8

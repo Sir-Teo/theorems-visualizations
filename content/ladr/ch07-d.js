@@ -161,13 +161,14 @@ function segHitsRect(p, q, x0, y0, x1, y1) {
  * entirely inside (centre inside and not crossed). Returns {h, inn: [[i, j]], bnd: [[i, j]]}.
  */
 function boxCells(rings, n, L) {
-  const h = (2 * L) / n, bd = new Uint8Array(n * n), inn = [], bnd = [];
+  const h = (2 * L) / n, eps = 1e-9 * h, bd = new Uint8Array(n * n), inn = [], bnd = [];
   const cellOf = (x) => Math.floor((x + L) / h);
   for (const R of rings) for (let k = 0; k < R.length; k++) {
     const p = R[k], q = R[(k + 1) % R.length];
     const i0 = Math.max(0, cellOf(Math.min(p[0], q[0]))), i1 = Math.min(n - 1, cellOf(Math.max(p[0], q[0])));
     const j0 = Math.max(0, cellOf(Math.min(p[1], q[1]))), j1 = Math.min(n - 1, cellOf(Math.max(p[1], q[1])));
-    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) if (!bd[i * n + j] && segHitsRect(p, q, -L + i * h, -L + j * h, -L + (i + 1) * h, -L + (j + 1) * h)) bd[i * n + j] = 1;
+    // (the box is shrunk by a hair, so a boundary that only grazes a corner or an edge of a box does not count as meeting it)
+    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) if (!bd[i * n + j] && segHitsRect(p, q, -L + i * h + eps, -L + j * h + eps, -L + (i + 1) * h - eps, -L + (j + 1) * h - eps)) bd[i * n + j] = 1;
   }
   for (let j = 0; j < n; j++) {
     const y = -L + (j + 0.5) * h, xs = [];
@@ -657,7 +658,8 @@ For example, the ball $B = \{v \in V : \|v\| < 1\}$ equals $E(f_1, \dots, f_n)$ 
         const tw = v.slider('turn $f_2, f_3$ about $f_1$', -3.14, 3.14, 0.5, { step: 0.01 });
         const sk = v.slider('skew $f_2$ toward $f_1$ (degrees)', 0, 50, 0, { step: 1 });
         const fh = sc.handle(unit([1, 0.45, 0.3]), { color: 'blue', label: 'f₁', snap: (p) => (len(p) > 1e-6 ? unit(p) : [1, 0, 0]) });
-        const ph = sc.handle([0.7, 0.3, 0.32], { color: 'gold', label: 'p' });
+        const p0 = (() => { const f1 = unit([1, 0.45, 0.3]), [g, h] = basisPerp(f1), f2 = add(scl(g, Math.cos(0.5)), scl(h, Math.sin(0.5))); return add(add(scl(f1, 0.84), scl(f2, 0.43)), scl(cross(f1, f2), 0.22)); })();
+        const ph = sc.handle(p0, { color: 'gold', label: 'p' });
         const CC = ['blue', 'purple', 'teal'];
         let st = null;
         v.render(() => {
@@ -896,7 +898,7 @@ A **parallelepiped** is a set of the form $u + P(v_1, \dots, v_n)$ for some $u \
             for (const t of [0, 1]) { R.dot(X(t), y, { color: 'green', r: 4.5, hollow: true }); R.text(String(t), X(t), y - 0.05, { align: 'center', size: 11, color: 'muted' }); }
             if (a) { const ak = a[k], ok = ak > 0 && ak < 1, xx = Math.max(-0.5, Math.min(1.5, ak)); R.dot(X(xx), y, { color: ok ? CC[k] : 'red', r: 6.5 }); R.tex(`a_${k + 1} = ${tn(ak)}`, X(xx), y + 0.06, { color: ok ? CC[k] : 'red', size: 14 }); }
           });
-          R.tex('x \\in u + P(v_1, v_2, v_3) \\iff (a_1, a_2, a_3) \\in (0, 1)^3', 0.5, 0.27, { size: 14, color: 'muted' });
+          R.tex('x \\in u + P(v_1, v_2, v_3) \\iff (a_1, a_2, a_3) \\in (0, 1)^3', 0.5, 0.27, { size: 12.5, color: 'muted' });
           R.text(!a ? 'no unique coordinates: not a basis' : inside ? 'every aₖ in (0, 1): x is inside' : 'some aₖ outside (0, 1): x is outside', 0.5, 0.14, { align: 'center', size: 12.5, weight: 700, color: !a ? 'red' : inside ? 'green' : 'red' });
           st = { a, inside, det, basis };
         });

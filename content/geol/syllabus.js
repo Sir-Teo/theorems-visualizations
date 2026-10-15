@@ -19,6 +19,7 @@
 // modes, Herglotz–Wiechert, Adams–Williamson, Birch's law, Båth's law, rate-and-state friction, Rikitake dynamo.
 // Deliberate omissions: petrology and mineral identification beyond Bowen's series, sedimentology and
 // geomorphology (river and glacier erosion) — candidates for a later Earth-surface collection.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'geol',
   chapters: [
@@ -46,6 +47,10 @@ export default {
           pic: 'Cool a half-space from an initial molten temperature and match the present surface heat flow: the answer is tens of millions of years, until radiogenic heating or mantle convection (Perry’s objection) is switched on.' },
         { num: '1.9', kind: 'Concept', name: 'The relative geologic time scale', deps: ['geol-1.5', 'geol-1.6'], refs: ['Press–Siever'],
           pic: 'Stack the type sections of each period in order using superposition and fossils: eons, eras and periods are ordered without any numbers, with mass extinctions marking the boundaries.' },
+        { num: '1.10', kind: 'Paper', name: 'Theory of the Earth',
+          paper: { authors: 'James Hutton', year: 1788, title: 'Theory of the Earth; or an Investigation of the Laws observable in the Composition, Dissolution, and Restoration of Land upon the Globe', venue: 'Transactions of the Royal Society of Edinburgh 1 (2): 209–304', doi: '10.1017/S0080456800029227' },
+          introduces: ['geol-1.6'], deps: ['geol-1.4'], refs: [],
+          pic: 'Build an angular unconformity like the one Hutton found at Siccar Point the year the paper appeared: lay down sandstone, tilt it on end, erode it flat and bury it under new beds, running each step at observed rates of deposition and erosion until the section demands time with “no vestige of a beginning, no prospect of an end”.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -76,6 +81,10 @@ export default {
           pic: 'Expose a boulder surface to cosmic rays: ¹⁰Be builds up toward a saturation where production balances decay, and the concentration gives exposure age, corrected for erosion with a slider.' },
         { num: '2.11', kind: 'Method', name: 'Numerical calibration of the geologic time scale', deps: ['geol-1.9', 'geol-2.5', 'geol-2.7'], refs: ['Press–Siever'],
           pic: 'Pin radiometrically dated ash beds onto the relative time scale: period boundaries acquire ages with error bars, and zooming along the 4.6-billion-year timeline shows human history in the last pixel.' },
+        { num: '2.12', kind: 'Paper', name: 'Age of meteorites and the earth',
+          paper: { authors: 'Claire Patterson', year: 1956, title: 'Age of meteorites and the earth', venue: 'Geochimica et Cosmochimica Acta 10 (4): 230–237', doi: '10.1016/0016-7037(56)90036-9' },
+          introduces: ['geol-2.9'], deps: ['geol-2.2', 'geol-2.3', 'geol-2.4'], refs: [],
+          pic: 'Plot ²⁰⁷Pb/²⁰⁴Pb against ²⁰⁶Pb/²⁰⁴Pb for Patterson’s stony and iron meteorites: they fall on one isochron whose slope gives 4.55 ± 0.07 billion years, and modern terrestrial lead from ocean sediment lands on the same line, tying the Earth’s age to the meteorites’.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -108,6 +117,18 @@ export default {
           pic: 'Compute paleopoles from remanent magnetization in rocks of different ages: each continent traces an apparent polar-wander path, and two paths merge when the continents are restored to their past positions.' },
         { num: '3.12', kind: 'Model', name: 'The Wilson cycle', deps: ['geol-3.3', 'geol-3.10'], refs: ['Press–Siever'],
           pic: 'Animate an ocean opening from a rift, widening, starting to subduct and closing into a mountain belt: the cycle repeats, assembling and breaking supercontinents over hundreds of millions of years.' },
+        { num: '3.13', kind: 'Paper', name: 'Die Entstehung der Kontinente',
+          paper: { authors: 'Alfred Wegener', year: 1912, title: 'Die Entstehung der Kontinente', venue: 'Geologische Rundschau 3 (4): 276–292', doi: '10.1007/BF02202896' },
+          introduces: ['geol-3.1'], deps: ['geol-5.2', 'geol-1.5'], refs: [],
+          pic: 'Plot the hypsometric curve of the Earth’s surface: two peaks, continents near sea level and ocean floors near −4.5 km, which Wegener read as two different crustal materials floating isostatically — then drag the continents back together along their shelf edges and see the Atlantic close.' },
+        { num: '3.14', kind: 'Paper', name: 'Magnetic Anomalies Over Oceanic Ridges',
+          paper: { authors: 'F. J. Vine and D. H. Matthews', year: 1963, title: 'Magnetic Anomalies Over Oceanic Ridges', venue: 'Nature 199 (4897): 947–949', doi: '10.1038/199947a0' },
+          introduces: ['geol-3.2'], deps: ['geol-10.3', 'geol-10.4', 'geol-3.13'], refs: [],
+          pic: 'Spread new crust symmetrically from a ridge while the field flips according to the polarity time scale: the alternately magnetized blocks produce a surface anomaly profile, and the reader tunes the spreading rate until it matches the observed Carlsberg Ridge profile the paper modelled.' },
+        { num: '3.15', kind: 'Paper', name: 'The North Pacific: an Example of Tectonics on a Sphere',
+          paper: { authors: 'D. P. McKenzie and R. L. Parker', year: 1967, title: 'The North Pacific: an Example of Tectonics on a Sphere', venue: 'Nature 216 (5122): 1276–1280', doi: '10.1038/2161276a0' },
+          introduces: ['geol-3.4'], deps: ['geol-3.3', 'geol-3.2', 'geol-3.14'], refs: [],
+          pic: 'Rotate a rigid Pacific plate about an Euler pole on a globe: the reader places the pole and compares predicted slip directions with earthquake slip vectors from California to Japan, then redraws the map as a Mercator projection about the pole, where every predicted slip line becomes a parallel.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -266,6 +287,14 @@ export default {
           pic: 'Run a sandpile or Olami–Feder–Christensen model: avalanche sizes follow a power law like Gutenberg–Richter, and trying to forecast the next big event from the recent record fails, as in the debate over prediction.' },
         { num: '9.11', kind: 'Method', name: 'Probabilistic seismic hazard', deps: ['geol-9.6', 'stoch-9.3'], refs: ['Stein–Wysession ch. 4'],
           pic: 'Combine a Gutenberg–Richter rate with Poisson occurrence: the chance of at least one M ≥ 7 within 50 years is computed for a chosen region, and a time-dependent renewal model is compared.' },
+        { num: '9.12', kind: 'Paper', name: 'An instrumental earthquake magnitude scale',
+          paper: { authors: 'Charles F. Richter', year: 1935, title: 'An instrumental earthquake magnitude scale', venue: 'Bulletin of the Seismological Society of America 25 (1): 1–32', doi: '10.1785/BSSA0250010001' },
+          introduces: [], deps: ['astro-4.3', 'geol-9.2'], refs: [],
+          pic: 'Read the peak trace amplitudes of one shock on Wood–Anderson seismographs at several stations, plot log A against epicentral distance and slide Richter’s attenuation curve −log A₀(Δ): every station returns the same number, with 1 mm at 100 km defining magnitude 3 — the astronomers’ word “magnitude”, borrowed for earthquakes.' },
+        { num: '9.13', kind: 'Paper', name: 'Frequency of earthquakes in California',
+          paper: { authors: 'B. Gutenberg and C. F. Richter', year: 1944, title: 'Frequency of earthquakes in California', venue: 'Bulletin of the Seismological Society of America 34 (4): 185–188', doi: '10.1785/BSSA0340040185' },
+          introduces: ['geol-9.6'], deps: ['geol-9.12'], refs: [],
+          pic: 'Count Southern California earthquakes by magnitude and plot log N against M: the points line up as log N = a − bM with b near 1, so each step down in magnitude brings roughly ten times as many shocks; the reader changes the catalogue and the completeness threshold and refits b.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10

@@ -249,6 +249,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `colorbar([lo,hi], cmap, {pos:'right'|'left'|'top'|'bottom', label, tex, ticks, fmt, length})` | colour bar on a small panel inside the edge, for a `heat` map (`cmap`: name or `t => [r,g,b]`). |
 | `polarGrid({rings, spokes:12, rmax, center, angles:'deg'|'rad'|false, labelAngle, labels})` | polar grid (`rings`: count or radii); use with `equal: true, axes: false`. |
 | `setView([x0,x1], [y0,y1])` | change the window (fine to call inside render). |
+| `setScale({xlog, ylog, x, y})` | switch an axis between linear and log in place (with an optional new window); e.g. a lin/log toggle on one panel. |
 | `contour(f, levels, {color, width, dash, res, labels, fmt})` | contour lines of a scalar field `f(x, y)` by marching squares (`levels`: a number or an array; `res` grid cells across, default 120; `labels: true` writes each level on its line). |
 | `clip(fn, [x0,x1]?, [y0,y1]?)` | run `fn` with drawing clipped to a data rectangle (default: the window), e.g. `s.clip(() => s.curve(f))`. |
 | `setTitle(rich)` | change (or add) the stage title. |
@@ -364,8 +365,10 @@ labels, nothing drawn off-screen, sensible ranges, readable readouts. Check a fe
 Rules:
 - Edit only your own chapter files. Do not modify `assets/`, `scripts/`, other chapters, or run
   git. If the runtime is missing something, work around it and mention it in your report.
-- No `import` statements in content files; `v` provides everything. Helpers shared by several
-  items in a chapter go at the top of the module as plain functions.
+- No `import` statements in content files except one: `v` provides everything. Helpers shared by
+  several items in a file go at the top of the module as plain functions; helpers shared by the part
+  files of one chapter go in `content/<col>/chNN.shared.js` (named exports) and are imported with
+  `import { f } from './chNN.shared.js';`.
 - Prefer deterministic pictures (`v.rng(seed)`) so screenshots are stable; `Math.random` only
   behind a “Resample” button.
 - No network access, no DOM access outside the API.

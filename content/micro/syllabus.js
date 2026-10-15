@@ -456,7 +456,7 @@ export default {
         { num: '10.21', kind: 'Proposition', name: 'Double marginalization', deps: ['micro-10.2'], refs: ['Varian Ch. 27'], tags: ['monopoly', 'vertical relations'],
           pic: 'An upstream monopolist sells an input to a downstream monopolist: each marks up over its own marginal cost, so the final price exceeds what an integrated firm would charge, and a merge toggle lowers the price, raises output and raises joint profit all at once.' },
         { num: '10.22', kind: 'Paper', name: 'Principes mathématiques de la théorie des richesses',
-          paper: { authors: 'Augustin Cournot', year: 1838, title: 'Recherches sur les principes mathématiques de la théorie des richesses', venue: 'Paris: L. Hachette (English trans. N. T. Bacon, New York: Macmillan, 1897)', url: 'https://archive.org/details/bub_gb_AGoGpyJY_SAC' },
+          paper: { authors: 'Augustin Cournot', year: 1838, title: 'Recherches sur les principes mathématiques de la théorie des richesses', venue: 'Paris: L. Hachette', url: 'https://gallica.bnf.fr/ark:/12148/bpt6k6117257c' },
           introduces: ['micro-10.2', 'micro-10.10', 'micro-10.11'], deps: ['micro-2.1', 'pma-5.8'], refs: [],
           pic: 'Cournot’s two proprietors of mineral springs selling at zero cost: draw their reaction curves as in his chapter 7 figure, let each in turn best-respond to the other’s output and watch play converge to the crossing; then add producers one by one (his chapter 8) and see the price fall toward marginal cost, with the monopoly solution of chapter 5 as the case of one seller.' },
       ],

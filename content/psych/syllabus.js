@@ -396,7 +396,7 @@ export default {
           introduces: ['psych-10.9'], deps: [], refs: [],
           pic: 'A cat in a puzzle box: plot its escape time trial by trial as in Thorndike’s curves, falling irregularly from minutes to a few seconds with no sudden insight; set how much each success stamps in the successful response and how much it stamps out the others, and compare the simulated learning curves with his.' },
         { num: '10.17', kind: 'Paper', name: 'Conditioned Reflexes',
-          paper: { authors: 'I. P. Pavlov', year: 1927, title: 'Conditioned Reflexes: An Investigation of the Physiological Activity of the Cerebral Cortex', venue: 'London: Oxford University Press (trans. G. V. Anrep)', url: 'https://archive.org/details/conditioned-reflexes-an-investigation-of-the-physiological-activity-of-the-cerebral-cortex' },
+          paper: { authors: 'I. P. Pavlov', year: 1927, title: 'Conditioned Reflexes: An Investigation of the Physiological Activity of the Cerebral Cortex', venue: 'Oxford University Press (trans. G. V. Anrep)', url: 'https://archive.org/details/conditioned-reflexes-an-investigation-of-the-physiological-activity-of-the-cerebral-cortex' },
           introduces: ['psych-10.1', 'psych-10.2', 'psych-10.3'], deps: [], refs: [],
           pic: 'A dog, a metronome and food: pair the sound with food and watch the drops of saliva to the sound alone climb, then present it repeatedly without food and watch secretion fall away (experimental extinction), rest the dog for a couple of hours and see it partly return; vary the test tone to trace the generalization gradient around the trained one.' },
       ],

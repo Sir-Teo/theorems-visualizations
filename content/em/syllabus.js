@@ -22,6 +22,7 @@
 // Deliberate omissions: relativistic mechanics (→ rel), Fresnel equations at oblique incidence,
 //   Brewster and polarization optics (→ waves), shot/Johnson noise (→ thermo, sig), Thomas–Fermi and
 //   Lindhard screening (→ cm), Debye–Hückel screening (→ thermo), elasticity and fluids (Feynman II 38–41).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'em',
   chapters: [
@@ -69,6 +70,10 @@ export default {
           pic: 'Re-run Cavendish’s nested-sphere experiment: charge the outer shell, connect the inner one, and read the charge it picks up as the force-law exponent is nudged to 2 + δ — zero only at δ = 0.' },
         { num: '1.19', kind: 'Definition', name: 'Point charge as a delta distribution', deps: ['em-1.15', 'fa-6.11', 'fa-6.12'], refs: ['Griffiths §1.5'],
           pic: 'Shrink a charged ball at fixed total charge: its density spikes without bound while the pairing of ∇·E with a smooth bump φ converges to qφ(0)/ε₀, the action of a delta.' },
+        { num: '1.20', kind: 'Paper', name: 'The Elementary Electrical Charge and the Avogadro Constant',
+          paper: { authors: 'R. A. Millikan', year: 1913, title: 'On the Elementary Electrical Charge and the Avogadro Constant', venue: 'Physical Review 2 (2): 109–143', doi: '10.1103/PhysRev.2.109' },
+          introduces: [], deps: ['em-1.1', 'em-1.10', 'fluid-7.2'], refs: [],
+          pic: 'Recreate the oil-drop chamber: time a droplet falling under gravity and rising in the field, change its charge with a burst of X-rays, and watch the computed charges fall on integer multiples of e ≈ 1.59 × 10⁻¹⁹ C, as in the paper’s table of drops; switch off the correction to Stokes’ law for tiny drops and see the scatter grow.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -406,6 +411,10 @@ export default {
           pic: 'Sweep the driving frequency: current amplitude peaks at 1/√LC with a width set by R, and the phase swings from leading to lagging through resonance.' },
         { num: '9.21', kind: 'Invention', name: 'Electric motor', deps: ['em-7.18', 'em-9.2'], refs: ['Purcell ch. 7'],
           pic: 'A current loop in a magnetic field with a commutator: torque keeps it turning, and as it speeds up the back-emf cuts the current, so the speed settles where load torque, current and back-emf balance.' },
+        { num: '9.22', kind: 'Paper', name: 'Experimental researches in electricity',
+          paper: { authors: 'Michael Faraday', year: 1832, title: 'Experimental researches in electricity', venue: 'Philosophical Transactions of the Royal Society of London 122: 125–162', doi: '10.1098/rstl.1832.0006' },
+          introduces: ['em-9.3', 'em-9.2'], deps: ['em-7.7', 'em-7.12'], refs: [],
+          pic: 'Recreate Faraday’s iron ring and moving magnet: close and open a battery circuit on one coil, or thrust a bar magnet into a helix, and the galvanometer kicks only while the flux is changing, in opposite senses at make and break — steady currents and resting magnets give nothing.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -498,6 +507,10 @@ export default {
           pic: 'A closed metal box rings only at discrete frequencies: pick a mode to see its standing field pattern, and resize the box to watch the mode frequencies shift and cross.' },
         { num: '11.19', kind: 'Phenomenon', name: 'Hertz’s experiment', deps: ['em-11.1', 'em-9.20'], refs: ['Purcell ch. 9'],
           pic: 'A spark-gap oscillator and a tuned receiving loop across a room: the receiver sparks only near resonance, and moving it maps standing-wave nodes whose spacing gives the wavelength.' },
+        { num: '11.20', kind: 'Paper', name: 'A Dynamical Theory of the Electromagnetic Field',
+          paper: { authors: 'J. Clerk Maxwell', year: 1865, title: 'A Dynamical Theory of the Electromagnetic Field', venue: 'Philosophical Transactions of the Royal Society of London 155: 459–512', doi: '10.1098/rstl.1865.0008' },
+          introduces: ['em-10.3', 'em-11.1'], deps: ['em-9.3', 'em-10.2', 'em-1.14', 'em-7.12', 'em-9.22'], refs: [],
+          pic: 'Recreate Maxwell’s comparison: compute the wave speed 1/√(μ₀ε₀) from Weber and Kohlrausch’s measured ratio of electrostatic to electromagnetic units (310,740,000 m/s) and set it beside Fizeau’s and Foucault’s speeds of light, then launch the transverse E–B wave his equations predict and probe its speed in different media.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12

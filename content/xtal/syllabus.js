@@ -18,6 +18,7 @@
 // tensor properties (piezoelectricity), stereographic projection, powder/Scherrer, electron and neutron
 // contrast, Rietveld, twinning, small-angle scattering. Deliberate omissions: magnetic space groups,
 // dynamical electron-diffraction theory beyond the kinematic/dynamical contrast, crystallographic computing.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'xtal',
   chapters: [
@@ -170,6 +171,18 @@ export default {
           pic: 'Bombard targets of increasing atomic number: Kα lines appear on top of the bremsstrahlung continuum, and √ν against Z falls on Moseley’s straight line, which predicted missing elements.' },
         { num: '6.10', kind: 'Law', name: 'Scherrer equation for crystallite size', deps: ['xtal-6.8', 'xtal-6.1'], refs: ['Hammond ch. 10'],
           pic: 'Shrink the crystallites in a simulated powder: peaks broaden as λ/(L cos θ), and adding microstrain broadens them with a different angular dependence, separated on a Williamson–Hall plot.' },
+        { num: '6.11', kind: 'Paper', name: 'Interferenzerscheinungen bei Röntgenstrahlen',
+          paper: { authors: 'W. Friedrich, P. Knipping and M. Laue', year: 1913, title: 'Interferenzerscheinungen bei Röntgenstrahlen', venue: 'Annalen der Physik 346 (10): 971–988', doi: '10.1002/andp.19133461004' },
+          introduces: ['xtal-6.3', 'xtal-6.7'], deps: ['xtal-1.1', 'waves-7.9'], refs: [],
+          pic: 'Send a white X-ray beam through a zinc-blende crystal and watch the photographic plate fill with Laue spots; turn the crystal to bring the cube axis along the beam and see the fourfold pattern, and find which wavelengths satisfy the three Laue conditions at each spot.' },
+        { num: '6.12', kind: 'Paper', name: 'The Diffraction of Short Electromagnetic Waves by a Crystal',
+          paper: { authors: 'W. L. Bragg', year: 1913, title: 'The Diffraction of Short Electromagnetic Waves by a Crystal', venue: 'Proceedings of the Cambridge Philosophical Society 17: 43–57', url: 'https://archive.org/details/proceedingsofcam1718191316camb' },
+          introduces: ['xtal-6.2', 'xtal-6.4', 'waves-7.10'], deps: ['xtal-6.3', 'xtal-4.2', 'xtal-6.11'], refs: [],
+          pic: 'Explain each spot of the zinc-blende Laue photograph as a mirror reflection of white X-rays from a family of lattice planes: pick a plane (hkl), see which wavelength nλ = 2d sin θ selects, and find that a face-centred cubic lattice, not the simple cubic one first assumed, accounts for the spots that are missing.' },
+        { num: '6.13', kind: 'Paper', name: 'The high-frequency spectra of the elements',
+          paper: { authors: 'H. G. J. Moseley', year: 1913, title: 'The high-frequency spectra of the elements', venue: 'Philosophical Magazine (6th series) 26 (156): 1024–1034', doi: '10.1080/14786441308635052' },
+          introduces: ['xtal-6.9'], deps: ['xtal-6.2', 'qm-1.5', 'xtal-6.12', 'qm-1.16'], refs: [],
+          pic: 'Plot the square root of the Kα frequency for Moseley’s elements from calcium to zinc against their place in the periodic table: the points fall on a straight line, so each element gets a whole number N, and cobalt and nickel take the order their N demands rather than the order of their atomic weights.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -248,6 +261,10 @@ export default {
           pic: 'Scatter from particles of different shapes: at small q the computed intensity falls as e^(−q²R_g²/3) for all of them, so a Guinier plot measures the radius of gyration whatever the shape.' },
         { num: '9.8', kind: 'Method', name: 'Wulff construction of equilibrium crystal shapes', deps: ['xtal-4.2', 'pchem-4.9'], refs: ['Giacovazzo ch. 4'],
           pic: 'Edit the surface energy for each family of faces on a polar plot: the inner envelope of perpendicular planes gives the equilibrium shape, morphing from cube to octahedron to cuboctahedron.' },
+        { num: '9.9', kind: 'Paper', name: 'Metallic phase with no translational symmetry',
+          paper: { authors: 'D. Shechtman, I. Blech, D. Gratias and J. W. Cahn', year: 1984, title: 'Metallic Phase with Long-Range Orientational Order and No Translational Symmetry', venue: 'Physical Review Letters 53 (20): 1951–1953', doi: '10.1103/PhysRevLett.53.1951' },
+          introduces: ['xtal-9.1'], deps: ['xtal-2.2', 'xtal-6.5'], refs: [],
+          pic: 'Tilt the rapidly quenched Al–Mn grain under the electron beam as in the paper: sharp diffraction spots with tenfold symmetry appear, forbidden to any periodic crystal by the crystallographic restriction, and the reader compares them with the Fourier transform of a Penrose tiling.' },
       ],
     },
   ],

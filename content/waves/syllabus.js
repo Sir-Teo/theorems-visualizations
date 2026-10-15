@@ -17,6 +17,7 @@
 //   vacuum and matter, dispersion models and radiation (→ em ch. 11–12, cited), the Michelson–Morley
 //   experiment (→ rel-1.4), Wiener–Khinchin and the Gabor limit as theorems (→ sig, cited), lasers
 //   and nonlinear optics (lasers → qm ch. 13; nonlinear optics left to a later optics collection).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'waves',
   chapters: [
@@ -242,6 +243,10 @@ export default {
           pic: 'Separate two telescope mirrors viewing a star of adjustable angular size: the fringes vanish at a baseline of about 1.22λ/θ, from which the star’s diameter is read off as Michelson did.' },
         { num: '6.16', kind: 'Phenomenon', name: 'Hanbury Brown–Twiss intensity correlations', deps: ['waves-6.14'], refs: ['Hecht ch. 12'],
           pic: 'Two detectors record the fluctuating intensity of thermal light: their correlation shows excess coincidences at zero delay that fall off with separation, measuring coherence without phase-stable optics.' },
+        { num: '6.17', kind: 'Paper', name: 'Experiments and calculations relative to physical optics',
+          paper: { authors: 'Thomas Young', year: 1804, title: 'The Bakerian Lecture: Experiments and calculations relative to physical optics', venue: 'Philosophical Transactions of the Royal Society of London 94: 1–16', doi: '10.1098/rstl.1804.0001' },
+          introduces: ['waves-6.2'], deps: ['waves-4.4', 'waves-6.1'], refs: [],
+          pic: 'Recreate Young’s card experiment: split a narrow sunbeam with a thin slip of card and see fringes form inside the shadow, vanishing the moment either edge is screened; measure the fringe spacing for each colour and recover the wavelengths in his table, from red to violet.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7

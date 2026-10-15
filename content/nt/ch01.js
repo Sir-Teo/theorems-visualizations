@@ -74,7 +74,7 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
         const B = v.slider('$b$', 1, 24, 9, { int: true });
         const loose = v.toggle('drop $0 \\le r$ (allow $|r| < b$)', false);
         const R = v.stage({ x: [-2, 50], y: [-1.05, 2.75], height: 200, axes: false, full: true });
-        const T = v.stage({ x: [-4.5, 73], y: [-1.9, 19.2], height: 290, axes: false, full: true, title: 'the remainder $a \\bmod b$ for $0 \\le a \\le 72$, $1 \\le b \\le 18$ — darker = larger remainder, green = remainder $0$ · click a cell' });
+        const T = v.stage({ x: [-4.5, 73], y: [-2.3, 19.2], height: 296, axes: false, full: true, title: 'the remainder $a \\bmod b$ for $0 \\le a \\le 72$, $1 \\le b \\le 18$ — darker = larger remainder, green = remainder $0$ · click a cell' });
         T.onClick((x, y) => { const a = Math.round(x), b = Math.round(y); if (a >= 0 && a <= 72 && b >= 1 && b <= 18) { A.set(a); B.set(b); } });
         v.render(() => {
           const a = A.value, b = B.value, q = Math.floor(a / b), r = a - q * b;
@@ -91,28 +91,34 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
           R.line(0, -0.25, 0, 2.6, { color: 'faint', width: 1 });
           // the bar of length a
           if (a !== 0) {
-            R.rect(Math.min(0, a), 1.95, Math.max(0, a), 2.5, { fill: 'ink', fillAlpha: 0.1, color: 'ink', width: 1.4 });
-            R.text(`a = ${v.fmt(a)}`, a / 2, 2.225, { align: 'center', size: 12.5, weight: 600 });
+            R.rect(Math.min(0, a), 2.05, Math.max(0, a), 2.55, { fill: 'ink', fillAlpha: 0.1, color: 'ink', width: 1.4 });
+            R.text(`a = ${v.fmt(a)}`, a / 2, 2.3, { align: 'center', size: 12.5, weight: 600 });
           }
           // q whole blocks of length b
           const qa = Math.abs(q);
           for (let j = 0; j < qa; j++) {
             const x0 = q > 0 ? j * b : -(j + 1) * b, col = j % 2 ? 'teal' : 'blue';
-            R.rect(x0, 1.12, x0 + b, 1.67, { fill: col, fillAlpha: 0.32, color: col, width: 1.2 });
-            if (px >= 18) R.text(String(q > 0 ? j + 1 : -(j + 1)), x0 + b / 2, 1.395, { align: 'center', size: 11, color: col, weight: 650 });
+            R.rect(x0, 1.05, x0 + b, 1.6, { fill: col, fillAlpha: 0.32, color: col, width: 1.2 });
+            if (px >= 18) R.text(String(q > 0 ? j + 1 : -(j + 1)), x0 + b / 2, 1.325, { align: 'center', size: 11, color: col, weight: 650 });
           }
-          if (q !== 0) R.text(`q = ${v.fmt(q)} block${qa === 1 ? '' : 's'} of b = ${b}`, q > 0 ? 0 : q * b, 1.86, { align: 'left', size: 11.5, color: 'blue', dy: -2, dx: 2 });
-          else R.text('q = 0: no whole block fits', 0, 1.395, { align: 'left', size: 11.5, color: 'blue', dx: 4 });
+          if (q !== 0) R.text(`q = ${v.fmt(q)} block${qa === 1 ? '' : 's'} of length b = ${b}`, q > 0 ? 0 : q * b, 1.83, { align: 'left', size: 11.5, color: 'blue', dx: 2 });
+          else R.text('q = 0: no whole block fits', 0, 1.325, { align: 'left', size: 11.5, color: 'blue', dx: 4 });
           // the remainder (and, without 0 ≤ r, the rival negative remainder)
-          R.line(q * b, 0, q * b, 1.67, { color: 'gold', width: 1, dash: [3, 3] });
-          R.line(a, 0, a, 2.5, { color: 'ink', width: 1, dash: [3, 3], alpha: 0.6 });
+          R.line(q * b, 0, q * b, 1.6, { color: 'gold', width: 1, dash: [3, 3] });
+          R.line(a, 0, a, 2.55, { color: 'ink', width: 1, dash: [3, 3], alpha: 0.6 });
+          const showRival = loose.value && r > 0, wpx = (w) => w * R.scale;
           if (r > 0) {
-            R.rect(q * b, 0.32, a, 0.87, { fill: 'gold', fillAlpha: 0.55, color: 'gold', width: 1.4 });
-            R.text(`r = ${r}`, (q * b + a) / 2, 0.595, { align: 'center', size: 12, weight: 650, color: 'ink' });
-          } else R.text('r = 0', a, 0.595, { align: 'left', size: 12, weight: 650, color: 'green', dx: 6 });
-          if (loose.value && r > 0) {
-            R.rect(a, 0.32, (q + 1) * b, 0.87, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1.4 });
-            R.text(`r − b = ${v.fmt(r - b)}`, (a + (q + 1) * b) / 2, 0.595, { align: 'center', size: 11.5, weight: 650, color: 'red' });
+            R.rect(q * b, 0.3, a, 0.82, { fill: 'gold', fillAlpha: 0.55, color: 'gold', width: 1.4 });
+            const lab = `r = ${r}`;
+            if (wpx(r) >= 46) R.text(lab, (q * b + a) / 2, 0.56, { align: 'center', size: 12, weight: 650, color: 'ink' });
+            else if (showRival) R.text(lab, q * b, 0.56, { align: 'right', size: 12, weight: 650, color: 'gold', dx: -6 });
+            else R.text(lab, a, 0.56, { align: 'left', size: 12, weight: 650, color: 'gold', dx: 6 });
+          } else R.text('r = 0', a, 0.56, { align: 'left', size: 12, weight: 650, color: 'green', dx: 6 });
+          if (showRival) {
+            R.rect(a, 0.3, (q + 1) * b, 0.82, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1.4 });
+            const lab = `r − b = ${v.fmt(r - b)}`;
+            if (wpx(b - r) >= 80) R.text(lab, (a + (q + 1) * b) / 2, 0.56, { align: 'center', size: 11.5, weight: 650, color: 'red' });
+            else R.text(lab, (q + 1) * b, 0.56, { align: 'left', size: 11.5, weight: 650, color: 'red', dx: 6 });
           }
           // the table of remainders
           for (let bb = 1; bb <= 18; bb++) for (let aa = 0; aa <= 72; aa++) {
@@ -121,7 +127,7 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
           }
           for (let aa = 0; aa <= 72; aa += 6) T.text(String(aa), aa, -0.55, { align: 'center', size: 10.5, color: 'muted' });
           for (const bb of [1, 3, 6, 9, 12, 15, 18]) T.text(String(bb), -1.4, bb, { align: 'right', size: 10.5, color: 'muted' });
-          T.text('a →', 72.5, -1.45, { align: 'right', size: 11, color: 'muted', math: true });
+          T.text('a →', 72.5, -1.6, { align: 'right', size: 11, color: 'muted', math: true });
           T.text('b', -3.6, 18.4, { align: 'center', size: 13, color: 'muted', math: true });
           if (b <= 18) T.rect(-0.5, b - 0.5, 72.5, b + 0.5, { color: 'ink', width: 1, alpha: 0.45 });
           if (a >= 0 && a <= 72 && b <= 18) T.rect(a - 0.5, b - 0.5, a + 0.5, b + 0.5, { color: 'ink', width: 2.4 });
@@ -154,7 +160,39 @@ The gcd is characterised by divisibility alone: it is the unique $g\ge0$ that di
         const A = v.slider('$a$', 1, 240, 60, { int: true });
         const B = v.slider('$b$', 1, 240, 72, { int: true });
         const S = v.stage({ x: [-3, 3], y: [-0.5, 4], equal: true, axes: false, height: 430 });
-        const DIRS = [[0, 1], [1, 0.6], [-1, 0.6], [0.3, 1.05], [-0.62, 0.92], [0.66, 0.95]];
+        const NICE = { 2: [[1, 0.6], [-1, 0.6]], 3: [[1, 0.42], [-0.62, 0.62], [0.1, 1.05]], 4: [[1, 0.42], [-0.62, 0.62], [0.1, 1.05], [-1.05, 0.3]] };
+        const dirCache = new Map();
+        /**
+         * Directions (one per prime, all pointing upward) for the Hasse diagram, chosen to keep nodes apart: the
+         * "nice" set and ~150 seeded random sets are scored by the smallest node–node and node–edge gap in pixels.
+         */
+        const chooseDirs = (key, E, edges, k) => {
+          if (k <= 1) return [[0, 1]];
+          if (dirCache.has(key)) return dirCache.get(key);
+          const rr = v.rng(97 + k), cands = NICE[k] ? [NICE[k]] : [];
+          for (let i = 0; i < 150; i++) { const d = []; for (let j = 0; j < k; j++) { const th = rr.uniform(0.15, Math.PI - 0.15), len = rr.uniform(0.75, 1.25); d.push([Math.cos(th) * len, Math.sin(th) * len * 0.8 + 0.22]); } cands.push(d); }
+          const W = Math.max(300, S.width), H = Math.max(200, S.height);
+          let best = cands[0], bs = -1;
+          for (const d of cands) {
+            const P = E.map((e) => { let x = 0, y = 0; for (let i = 0; i < k; i++) { x += e[i] * d[i][0]; y += e[i] * d[i][1]; } return [x, y]; });
+            let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+            for (const [x, y] of P) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+            const sc = Math.min(W / (x1 - x0 + 1.1), H / (y1 - y0 + 1.35));
+            let md = Infinity;
+            for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) md = Math.min(md, Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]));
+            for (const [i, j] of edges) {
+              const [ax, ay] = P[i], dx = P[j][0] - ax, dy = P[j][1] - ay, L2 = dx * dx + dy * dy;
+              for (let m = 0; m < P.length; m++) {
+                if (m === i || m === j) continue;
+                const t = Math.max(0, Math.min(1, ((P[m][0] - ax) * dx + (P[m][1] - ay) * dy) / L2));
+                md = Math.min(md, 1.5 * Math.hypot(P[m][0] - ax - t * dx, P[m][1] - ay - t * dy));
+              }
+            }
+            const score = sc * md * (d === cands[0] && NICE[k] ? 1.15 : 1);
+            if (score > bs) { bs = score; best = d; }
+          }
+          dirCache.set(key, best); return best;
+        };
         let sel = 4, nodes = [], rad = 13;
         S.onClick((x, y) => {
           const X = S.X(x), Y = S.Y(y); let best = null, bd = rad + 6;
@@ -165,10 +203,12 @@ The gcd is characterised by divisibility alone: it is the unique $g\ge0$ that di
         v.render(() => {
           const a = A.value, b = B.value, g = M.gcd(a, b), L = M.lcm(a, b);
           const fs = M.factor(L).sort((u, w) => w[1] - u[1] || u[0] - w[0]), ps = fs.map(([p]) => p), k = ps.length;
-          const dirs = k === 1 ? [DIRS[0]] : DIRS.slice(1, k + 1);
-          const set = new Set([...divisorsOf(a), ...divisorsOf(b)]);
-          const pos = (d) => { let x = 0, y = 0; ps.forEach((p, i) => { let e = 0; while (d % p === 0) { d /= p; e++; } x += e * dirs[i][0]; y += e * dirs[i][1]; }); return [x, y]; };
-          nodes = [...set].sort((u, w) => u - w).map((d) => { const [x, y] = pos(d); return { d, x, y }; });
+          const set = new Set([...divisorsOf(a), ...divisorsOf(b)]), list = [...set].sort((u, w) => u - w);
+          const expo = (d) => ps.map((p) => { let e = 0; while (d % p === 0) { d /= p; e++; } return e; });
+          const E = list.map(expo), idx = new Map(list.map((d, i) => [d, i]));
+          const edgeIdx = []; list.forEach((d, i) => ps.forEach((p) => { if (idx.has(d * p)) edgeIdx.push([i, idx.get(d * p)]); }));
+          const dirs = chooseDirs(`${a}|${b}`, E, edgeIdx, k);
+          nodes = list.map((d, i) => { let x = 0, y = 0; E[i].forEach((e, j) => { x += e * dirs[j][0]; y += e * dirs[j][1]; }); return { d, x, y }; });
           const byD = new Map(nodes.map((nd) => [nd.d, nd]));
           const xs = nodes.map((nd) => nd.x), ys = nodes.map((nd) => nd.y);
           const m = 0.55; S.setView([Math.min(...xs) - m, Math.max(...xs) + m], [Math.min(...ys) - m, Math.max(...ys) + m + 0.25]);

@@ -20,6 +20,7 @@
 //   Tollmien–Schlichting waves (10.6). Deliberate omissions: CFD methods, double-diffusive convection,
 //   biofluids, Thwaites’ method, turbulence modelling beyond eddy viscosity, rotating-frame
 //   geophysics beyond the basics (left to geo).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'fluid',
   chapters: [
@@ -215,6 +216,10 @@ export default {
           pic: 'A line vortex released into viscous fluid spreads its core as √(4νt); the peak swirl speed decays while the circulation far away is unchanged, matching the simulation.' },
         { num: '6.13', kind: 'Model', name: 'Burgers vortex', deps: ['fluid-3.3', 'fluid-6.12'], refs: ['Acheson ch. 5'],
           pic: 'Impose an axial stretching strain on a diffusing vortex: the core stops spreading at a radius of order √(ν/α) where stretching balances diffusion, and the strain slider sets the steady core size.' },
+        { num: '6.14', kind: 'Paper', name: 'Whether the motion of water shall be direct or sinuous',
+          paper: { authors: 'Osborne Reynolds', year: 1883, title: 'An Experimental Investigation of the Circumstances Which Determine Whether the Motion of Water Shall Be Direct or Sinuous, and of the Law of Resistance in Parallel Channels', venue: 'Philosophical Transactions of the Royal Society of London 174: 935–982', doi: '10.1098/rstl.1883.0029' },
+          introduces: ['fluid-6.5', 'fluid-10.10'], deps: ['fluid-6.4', 'fluid-6.8'], refs: [],
+          pic: 'Recreate Reynolds’ dye-streak apparatus: raise the flow speed through a glass pipe and watch the coloured filament stay straight, waver and burst into eddies once ρUD/μ passes a critical value, while the pressure-drop plot bends from linear to nearly quadratic in speed.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -273,6 +278,10 @@ export default {
           pic: 'A Reynolds-number slider from 0.1 to 10⁵ walks through creeping flow, attached twin eddies, the vortex street and a turbulent wake, with the drag coefficient tracked on its classic curve.' },
         { num: '8.11', kind: 'Phenomenon', name: 'Ekman layer and the tea-leaf paradox', deps: ['fluid-3.10', 'fluid-8.2'], refs: ['Kundu §13.5', 'Kundu §10.11'],
           pic: 'Stir a cup and stop: friction at the bottom slows the swirl, the inward-pointing pressure gradient is no longer balanced there, and a secondary circulation sweeps tea leaves to the centre of the base, as traced by tracer particles.' },
+        { num: '8.12', kind: 'Paper', name: 'Über Flüssigkeitsbewegung bei sehr kleiner Reibung',
+          paper: { authors: 'L. Prandtl', year: 1904, title: 'Über Flüssigkeitsbewegung bei sehr kleiner Reibung', venue: 'Verhandlungen des III. Internationalen Mathematiker-Kongresses, Heidelberg 1904 (Teubner, 1905): 484–491', url: 'https://www.mathunion.org/fileadmin/ICM/Proceedings/ICM1904/ICM1904.ocr.pdf' },
+          introduces: ['fluid-8.1', 'fluid-8.2', 'fluid-8.6'], deps: ['fluid-6.4', 'fluid-6.3', 'fluid-4.8'], refs: [],
+          pic: 'Shrink the viscosity of flow past a cylinder toward zero: outside a thin layer the flow approaches the ideal potential solution, inside it the velocity climbs from zero at the wall, and on the rear the adverse pressure gradient stalls the layer and peels it off — Prandtl’s water-tank photographs of separation recreated.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -370,6 +379,10 @@ export default {
           pic: 'Friction factor against Reynolds number with a roughness slider: the laminar line, the transition, the smooth-pipe curve from the log law and the rough-pipe plateaus are drawn from the formulas.' },
         { num: '11.11', kind: 'Concept', name: 'Navier–Stokes existence and smoothness (open problem)', deps: ['fluid-6.4', 'fluid-3.3'], refs: ['Kundu §12.1'],
           pic: 'Run a vortex-stretching simulation and watch the maximum vorticity and enstrophy: the Beale–Kato–Majda criterion readout shows what would have to blow up for a smooth solution to fail.' },
+        { num: '11.12', kind: 'Paper', name: 'Local structure of turbulence at very large Reynolds numbers',
+          paper: { authors: 'A. N. Kolmogorov', year: 1941, title: 'The local structure of turbulence in incompressible viscous fluid for very large Reynolds numbers', venue: 'Doklady Akademii Nauk SSSR 30: 301–305 (English translation: Proc. R. Soc. Lond. A 434: 9–13, 1991)', url: 'https://doi.org/10.1098/rspa.1991.0075' },
+          introduces: ['fluid-11.5', 'fluid-11.6'], deps: ['fluid-11.4', 'fluid-6.6'], refs: [],
+          pic: 'Feed a dissipation rate ε and viscosity ν into Kolmogorov’s similarity argument: the second-order structure function grows as (εr)^{2/3} across the inertial range and stops at the microscale η = (ν³/ε)^{1/4}; the reader overlays wind-tunnel and tidal-channel spectra to find the matching −5/3 slope.' },
       ],
     },
   ],

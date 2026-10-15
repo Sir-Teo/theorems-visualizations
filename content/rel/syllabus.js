@@ -23,6 +23,7 @@
 //   (left to mfd), the initial-value problem, Unruh effect and Sagnac effect (not in the references),
 //   Mach's principle (no testable picture); cosmology (FLRW, Friedmann) lives in astro ch. 10; the
 //   Trouton–Noble (right-angle lever) paradox lives in em (em-13.12).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'rel',
   chapters: [
@@ -56,6 +57,14 @@ export default {
           pic: 'A rod slides past a row of synchronized ground clocks; marking both ends at the same ground time gives a length shrunk by 1/γ, and switching frames makes the ground’s ruler the short one instead.' },
         { num: '1.12', kind: 'Phenomenon', name: 'Cosmic-ray muons reach the ground', deps: ['rel-1.10', 'rel-1.11'], refs: ['Taylor–Wheeler §4.10'],
           pic: 'Muons born 15 km up rain down with an energy slider; the surviving count at sea level matches the dilated lifetime, not the naive one, and the muon-frame view gets the same count from a contracted atmosphere.' },
+        { num: '1.13', kind: 'Paper', name: 'Relative Motion of the Earth and the Luminiferous Ether',
+          paper: { authors: 'A. A. Michelson and E. W. Morley', year: 1887, title: 'On the Relative Motion of the Earth and the Luminiferous Ether', venue: 'American Journal of Science (3rd series) 34 (203): 333–345', doi: '10.2475/ajs.s3-34.203.333' },
+          introduces: ['rel-1.4'], deps: ['waves-6.8'], refs: [],
+          pic: 'Turn the interferometer on its stone slab floating in mercury: an ether wind of 30 km/s should shift the fringes by 0.4 of a fringe twice per turn, but the reader’s noon and evening curves, like the paper’s, stay below a twentieth of that.' },
+        { num: '1.14', kind: 'Paper', name: 'Zur Elektrodynamik bewegter Körper',
+          paper: { authors: 'A. Einstein', year: 1905, title: 'Zur Elektrodynamik bewegter Körper', venue: 'Annalen der Physik 322 (10): 891–921', doi: '10.1002/andp.19053221004' },
+          introduces: ['rel-1.3', 'rel-1.5', 'rel-1.6', 'rel-1.10', 'rel-2.4'], deps: ['rel-1.2', 'em-13.1', 'em-10.3', 'em-11.20'], refs: [],
+          pic: 'Synchronize clocks with light signals on a moving train and on the platform as Einstein prescribes: events simultaneous in one frame are not in the other, moving clocks lag by the factor γ, and a ball thrown forward on the train never exceeds c when the speeds are composed.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -162,6 +171,14 @@ export default {
           pic: 'Particles of rising energy circle in a uniform field: radius grows with momentum and the revolution frequency falls as 1/γ, so a fixed-frequency cyclotron drifts out of phase.' },
         { num: '4.15', kind: 'Phenomenon', name: 'Pair creation and annihilation', deps: ['rel-4.10', 'rel-4.6'], refs: ['Taylor–Wheeler §8.5', 'Taylor–Wheeler §8.7'],
           pic: 'Collide two photons with adjustable energies and angle: an electron–positron pair appears only when the invariant mass of the pair of photons exceeds 2mc², and a lone photon is shown to be unable to convert in empty space.' },
+        { num: '4.16', kind: 'Paper', name: 'Ist die Trägheit eines Körpers vom Energieinhalt abhängig?',
+          paper: { authors: 'A. Einstein', year: 1905, title: 'Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?', venue: 'Annalen der Physik 323 (13): 639–641', doi: '10.1002/andp.19053231314' },
+          introduces: ['rel-4.4'], deps: ['rel-2.1', 'rel-2.9', 'em-11.5', 'rel-1.14'], refs: [],
+          pic: 'Recreate the thought experiment: a body at rest emits two equal light pulses in opposite directions; seen from a moving frame the Doppler-shifted pulse energies leave the body with less kinetic energy, exactly as if its mass dropped by L/c² — then scale L to a nuclear reaction to see why the effect hides in daily life.' },
+        { num: '4.17', kind: 'Paper', name: 'Quantum Theory of the Scattering of X-rays by Light Elements',
+          paper: { authors: 'Arthur H. Compton', year: 1923, title: 'A Quantum Theory of the Scattering of X-rays by Light Elements', venue: 'Physical Review 21 (5): 483–502', doi: '10.1103/PhysRev.21.483' },
+          introduces: ['rel-4.9'], deps: ['qm-1.3', 'rel-4.3', 'rel-4.6', 'qm-1.15'], refs: [],
+          pic: 'Scatter molybdenum Kα X-rays off graphite at an adjustable angle: the scattered spectrum shows an unshifted line and one moved by (h/mc)(1 − cos θ), and the reader’s photon–electron billiard collision predicts the shift and the recoil-electron energy at every angle.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -289,6 +306,10 @@ export default {
           pic: 'Inside a matter-free region, drag a smooth deformation of the coordinates: the metric components change, but every invariant — proper times between marked events, intersections of worldlines — stays the same.' },
         { num: '8.11', kind: 'Model', name: 'De Sitter and anti-de Sitter spacetimes', deps: ['rel-8.7', 'rel-7.12', 'dg-11.8'], refs: ['Carroll ch. 8', 'Carroll ch. 4'],
           pic: 'Embed de Sitter space as a hyperboloid in five-dimensional Minkowski space: a Λ slider sets its radius, geodesics fly apart exponentially and each observer acquires a cosmological horizon, while the anti-de Sitter toggle makes geodesics refocus periodically.' },
+        { num: '8.12', kind: 'Paper', name: 'Die Grundlage der allgemeinen Relativitätstheorie',
+          paper: { authors: 'A. Einstein', year: 1916, title: 'Die Grundlage der allgemeinen Relativitätstheorie', venue: 'Annalen der Physik 354 (7): 769–822', doi: '10.1002/andp.19163540702' },
+          introduces: ['rel-8.4', 'rel-8.1'], deps: ['rel-6.3', 'rel-7.6', 'rel-7.12', 'rel-5.7', 'rel-1.14'], refs: [],
+          pic: 'Place a mass and let the field equations act: the weak-field metric reproduces Newton’s potential, a lower clock runs slow, starlight grazing the Sun bends by 1.7″ (twice the Newtonian value) and Mercury’s orbit precesses by 43″ per century — the three tests the paper proposes, each with its measured value.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -373,6 +394,10 @@ export default {
           pic: 'Try to overcharge or overspin a near-extremal black hole by throwing in test particles with sliders for their charge, angular momentum and energy; in every case the hole either rejects the particle or stays sub-extremal, so the singularity remains hidden.' },
         { num: '10.20', kind: 'Paradox', name: 'Black-hole information paradox', deps: ['rel-10.15', 'rel-10.16', 'qm-14.5'], refs: ['Carroll ch. 7'],
           pic: 'Track a black hole formed from a pure state as it evaporates: the entropy of thermal Hawking radiation climbs forever, while unitarity demands it turn over (the Page curve), and the two curves diverge at the halfway point.' },
+        { num: '10.21', kind: 'Paper', name: 'Black hole explosions?',
+          paper: { authors: 'S. W. Hawking', year: 1974, title: 'Black hole explosions?', venue: 'Nature 248 (5443): 30–31', doi: '10.1038/248030a0' },
+          introduces: ['rel-10.15'], deps: ['rel-10.1', 'rel-10.13', 'rel-10.16'], refs: [],
+          pic: 'Pick a black-hole mass: its temperature ħc³/8πGMk and blackbody glow are computed and the hole is left to evaporate — a solar-mass hole is colder than the microwave background and would last about 10⁶⁷ years, while a primordial hole of about 10¹² kg ends its life today in a burst of gamma rays.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11
@@ -407,6 +432,14 @@ export default {
           pic: 'Satellites orbit a spinning Earth in the gravitomagnetic approximation: the orbital planes precess at tens of milliarcseconds per year, shown against the LAGEOS and Gravity Probe B results.' },
         { num: '11.13', kind: 'Phenomenon', name: 'Pulsar timing arrays and the Hellings–Downs curve', deps: ['rel-11.4'], refs: ['Schutz §9.2'],
           pic: 'Scatter pulsars over the sky and bathe them in a random wave background: the correlation of their timing residuals versus angular separation reproduces the Hellings–Downs curve.' },
+        { num: '11.14', kind: 'Paper', name: 'Discovery of a pulsar in a binary system',
+          paper: { authors: 'R. A. Hulse and J. H. Taylor', year: 1975, title: 'Discovery of a pulsar in a binary system', venue: 'The Astrophysical Journal 195: L51', doi: '10.1086/181708' },
+          introduces: [], deps: ['astro-8.7', 'astro-1.4'], refs: [],
+          pic: 'Fit the 59-millisecond pulsar’s Doppler-shifted period over its 7.75-hour orbit, as in the discovery paper, to recover the eccentric orbit of PSR 1913+16 — then run the clock forward with the quadrupole formula and watch the orbit shrink along the cumulative periastron-time curve that later timing traced point by point.' },
+        { num: '11.15', kind: 'Paper', name: 'Gravitational Waves from a Binary Black Hole Merger',
+          paper: { authors: 'B. P. Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration)', year: 2016, title: 'Observation of Gravitational Waves from a Binary Black Hole Merger', venue: 'Physical Review Letters 116 (6): 061102', doi: '10.1103/PhysRevLett.116.061102' },
+          introduces: ['rel-11.10'], deps: ['rel-11.7', 'rel-11.9', 'rel-10.9', 'rel-8.12'], refs: [],
+          pic: 'Overlay the Hanford and Livingston strain records of GW150914, offset by about 7 ms, and fit a chirp template: sliding the two masses until the sweep from 35 to 250 Hz matches recovers black holes of about 36 and 29 solar masses and the three solar masses of energy radiated in a fraction of a second.' },
       ],
     },
   ],

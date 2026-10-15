@@ -20,6 +20,7 @@
 // Deliberate omissions: positional astronomy and telescopes (C–O ch. 1, 6), the solar cycle,
 //   helioseismology, white-dwarf cooling, gamma-ray bursts, cosmic rays, planetary geology, the Hubble
 //   sequence (classification without a law), baryogenesis.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'astro',
   chapters: [
@@ -197,6 +198,10 @@ export default {
           pic: 'A simple structure integration produces the Sun’s temperature, density and luminosity profiles, with the radiative core and convective envelope marked and the predicted surface values compared with observations.' },
         { num: '6.13', kind: 'Phenomenon', name: 'Solar neutrino problem', deps: ['astro-6.12'], refs: ['Carroll–Ostlie §11.1'],
           pic: 'Predicted and measured detection rates for chlorine, gallium and water detectors disagree by factors of two to three; switching on neutrino oscillations closes the gap.' },
+        { num: '6.14', kind: 'Paper', name: 'Energy Production in Stars',
+          paper: { authors: 'H. A. Bethe', year: 1939, title: 'Energy Production in Stars', venue: 'Physical Review 55 (5): 434–456', doi: '10.1103/PhysRev.55.434' },
+          introduces: ['astro-6.10'], deps: ['astro-6.11', 'astro-6.4', 'rel-4.11'], refs: [],
+          pic: 'Run the proton–proton chain and the carbon–nitrogen cycle side by side as a core-temperature slider moves: the energy output per gram rises roughly as T⁴ for the chain but as about T¹⁸ for the cycle, so the Sun runs on protons while hotter, heavier main-sequence stars switch to carbon as a catalyst.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -232,6 +237,10 @@ export default {
           pic: 'Cepheid light curves of different periods: log period against absolute magnitude falls on a line, and measuring the period and apparent magnitude of a Cepheid in a distant galaxy gives its distance.' },
         { num: '7.14', kind: 'Phenomenon', name: 'Stellar nucleosynthesis and onion-shell stars', deps: ['astro-6.10', 'rel-4.11'], refs: ['Carroll–Ostlie §15.1'],
           pic: 'A 20 M☉ star burns hydrogen, helium, carbon, neon, oxygen and silicon in successively shorter stages — millions of years down to a day — leaving nested shells around an iron core, with the binding-energy curve explaining the stop.' },
+        { num: '7.15', kind: 'Paper', name: 'Periods of 25 Variable Stars in the Small Magellanic Cloud',
+          paper: { authors: 'Henrietta S. Leavitt and Edward C. Pickering', year: 1912, title: 'Periods of 25 Variable Stars in the Small Magellanic Cloud', venue: 'Harvard College Observatory Circular 173: 1–3', url: 'https://ui.adsabs.harvard.edu/abs/1912HarCi.173....1L' },
+          introduces: ['astro-7.13'], deps: ['astro-4.3'], refs: [],
+          pic: 'Plot Leavitt’s 25 Cepheids in the Small Magellanic Cloud, maximum and minimum magnitude against the logarithm of the period, and see the straight lines she drew; calibrate the zero point with a nearby Cepheid of known distance and turn any period into a distance.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -268,6 +277,10 @@ export default {
           pic: 'Fit the radial-velocity curve of the visible star in Cygnus X-1: the mass function gives a lower bound on the unseen companion’s mass that exceeds the maximum neutron-star mass.' },
         { num: '8.14', kind: 'Phenomenon', name: 'The black hole at the Galactic Centre', deps: ['astro-1.3', 'rel-9.11', 'rel-9.6'], refs: ['Carroll–Ostlie §24.4'],
           pic: 'Fit Keplerian orbits to the S-stars around Sgr A*: the shared focus has about four million solar masses, and the S2 star shows the predicted gravitational redshift and Schwarzschild precession at pericentre.' },
+        { num: '8.15', kind: 'Paper', name: 'The Maximum Mass of Ideal White Dwarfs',
+          paper: { authors: 'S. Chandrasekhar', year: 1931, title: 'The Maximum Mass of Ideal White Dwarfs', venue: 'The Astrophysical Journal 74: 81–82', doi: '10.1086/143324' },
+          introduces: ['astro-8.3'], deps: ['astro-8.1', 'astro-6.6', 'rel-4.2'], refs: [],
+          pic: 'Fill a white dwarf with degenerate electrons and raise its mass: as the electrons turn relativistic the pressure softens from ρ^{5/3} to ρ^{4/3}, the radius shrinks to zero and no equilibrium exists above about 1.4 solar masses (the paper’s 0.91 used a mean molecular weight of 2.5).' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -296,6 +309,10 @@ export default {
           pic: 'From a quasar’s luminosity the Eddington limit gives a minimum black-hole mass, and its variability timescale bounds the emitting region’s size; both are computed for sliders and compared with real quasars.' },
         { num: '9.10', kind: 'Phenomenon', name: 'Apparent superluminal motion', deps: ['rel-1.3', 'astro-9.9', 'em-12.13'], refs: ['Carroll–Ostlie §28.3'],
           pic: 'A jet blob moves at speed β toward us at angle θ: light-travel-time differences make its sky speed β sin θ/(1 − β cos θ), exceeding c for fast blobs near the line of sight, drawn on a spacetime diagram.' },
+        { num: '9.11', kind: 'Paper', name: 'Rotation of the Andromeda Nebula from emission regions',
+          paper: { authors: 'Vera C. Rubin and W. Kent Ford, Jr.', year: 1970, title: 'Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions', venue: 'The Astrophysical Journal 159: 379', doi: '10.1086/150317' },
+          introduces: ['astro-9.2'], deps: ['astro-9.1', 'waves-1.14'], refs: [],
+          pic: 'Plot the rotation velocities of M31’s emission regions against distance from the centre, as in the paper, beside the Keplerian fall-off expected if the visible stars held all the mass: the measured curve stays nearly flat far out, and the reader adds an unseen halo until model and data agree.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -338,6 +355,26 @@ export default {
           pic: 'Regions of the microwave sky more than about two degrees apart were never in causal contact in the standard model, yet share one temperature; and Ω − 1 must have been fine-tuned to tiny values early on, as the backward integration shows.' },
         { num: '10.17', kind: 'Model', name: 'Cosmic inflation', deps: ['astro-10.16', 'astro-10.9'], refs: ['Carroll–Ostlie §30.1'],
           pic: 'Insert a brief era of exponential expansion: the comoving horizon shrinks then grows again, so the whole visible sky shares a causal past, and any initial curvature is driven toward flatness.' },
+        { num: '10.18', kind: 'Paper', name: 'Über die Krümmung des Raumes',
+          paper: { authors: 'A. Friedman', year: 1922, title: 'Über die Krümmung des Raumes', venue: 'Zeitschrift für Physik 10: 377–386', doi: '10.1007/BF01332580' },
+          introduces: ['astro-10.7'], deps: ['rel-8.4', 'rel-8.7', 'astro-10.3', 'rel-8.12'], refs: [],
+          pic: 'Solve Friedmann’s equation for the radius of a closed universe filled with dust, with an adjustable cosmological constant: the reader sees worlds that expand from a point and recollapse, expand for ever, or sit at Einstein’s static solution — one special case among the time-dependent worlds the paper allows.' },
+        { num: '10.19', kind: 'Paper', name: 'Relation between distance and radial velocity of nebulae',
+          paper: { authors: 'Edwin Hubble', year: 1929, title: 'A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae', venue: 'Proceedings of the National Academy of Sciences 15 (3): 168–173', doi: '10.1073/pnas.15.3.168' },
+          introduces: ['astro-10.2'], deps: ['astro-7.13', 'astro-4.3', 'waves-1.14', 'astro-7.15'], refs: [],
+          pic: 'Plot Hubble’s 24 nebulae from his Table 1, velocity against distance, fit a line through the origin and get his K ≈ 500 km/s per megaparsec; toggle the solar-motion correction and the grouped means, then swap in modern distances to watch the slope fall to about 70.' },
+        { num: '10.20', kind: 'Paper', name: 'A Measurement of Excess Antenna Temperature at 4080 Mc/s',
+          paper: { authors: 'A. A. Penzias and R. W. Wilson', year: 1965, title: 'A Measurement of Excess Antenna Temperature at 4080 Mc/s', venue: 'The Astrophysical Journal 142: 419–421', doi: '10.1086/148307' },
+          introduces: ['thermo-9.8'], deps: ['thermo-9.4'], refs: [],
+          pic: 'Subtract each known contribution to the horn antenna’s noise — atmosphere, ohmic losses, back lobes — and a residue of 3.5 ± 1.0 K remains in every direction and season; place that single point on a blackbody curve and add later measurements until the 2.725 K Planck spectrum fills in.' },
+        { num: '10.21', kind: 'Paper', name: 'Supernova evidence for an accelerating universe',
+          paper: { authors: 'Adam G. Riess et al.', year: 1998, title: 'Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant', venue: 'The Astronomical Journal 116 (3): 1009–1038', doi: '10.1086/300499' },
+          introduces: ['astro-10.11'], deps: ['astro-8.11', 'astro-10.8', 'astro-10.10', 'astro-10.19', 'astro-10.18'], refs: [],
+          pic: 'Plot distance modulus against redshift for the paper’s 16 high-redshift and 34 nearby Type Ia supernovae, corrected by light-curve shape: the distant ones sit 10–15 % farther than a low-density universe without Λ allows, and Ω_M and Ω_Λ sliders show the best fit needs Ω_Λ > 0.' },
+        { num: '10.22', kind: 'Paper', name: 'Measurements of Ω and Λ from 42 High-Redshift Supernovae',
+          paper: { authors: 'S. Perlmutter et al.', year: 1999, title: 'Measurements of Ω and Λ from 42 High-Redshift Supernovae', venue: 'The Astrophysical Journal 517 (2): 565–586', doi: '10.1086/307221' },
+          introduces: ['astro-10.11'], deps: ['astro-8.11', 'astro-10.8', 'astro-10.10', 'astro-10.19', 'astro-10.18'], refs: [],
+          pic: 'Fit the Hubble diagram of the 42 high-redshift and 18 Calán/Tololo supernovae and draw the confidence region in the Ω_M–Ω_Λ plane: it lies along a band that excludes Λ = 0 and, for a flat universe, centres on Ω_M ≈ 0.28; the reader drags the point and watches χ² climb.' },
       ],
     },
   ],

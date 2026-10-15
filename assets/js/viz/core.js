@@ -207,6 +207,17 @@ class Stage {
     if (same(x, this.view.x) && same(y, this.view.y)) return;
     if (x) this.view.x = [...x]; if (y) this.view.y = [...y]; this._fit(); this.rt.invalidate();
   }
+  /** Switch either axis between linear and log in place, optionally with a new window: s.setScale({ylog: true, y: [1e-6, 1]}). */
+  setScale({ xlog, ylog, x, y } = {}) {
+    const same = (xlog === undefined || !!xlog === !!this.o.xlog) && (ylog === undefined || !!ylog === !!this.o.ylog);
+    if (xlog !== undefined) this.o.xlog = !!xlog; if (ylog !== undefined) this.o.ylog = !!ylog;
+    if (same) { if (x || y) this.setView(x, y); return this; }
+    if (x) this.view.x = [...x]; if (y) this.view.y = [...y];
+    for (const [k, on] of [['x', this.o.xlog], ['y', this.o.ylog]]) if (on && !(this.view[k][0] > 0 && this.view[k][1] > 0)) {
+      const hi = Math.max(this.view[k][1], 1); this.view[k] = [hi * 1e-3, hi]; // a log window must be positive
+    }
+    this._fit(); this.rt.invalidate(); return this;
+  }
   _fit() {
     const { pad } = this.o; const W = this.W - 2 * pad, H = this.H - 2 * pad;
     // log axes: everything below works in log10 units; xr/yr (and bounds) stay in actual units

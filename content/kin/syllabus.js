@@ -19,6 +19,7 @@
 // Kramers, RRKM, polymerization kinetics, electrode kinetics (Butler–Volmer, Tafel), single-molecule
 // kinetics. Deliberate omissions: detailed scattering theory and state-to-state dynamics beyond Polanyi's
 // rules and molecular beams; combustion mechanisms beyond the H₂/O₂ explosion limits.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'kin',
   chapters: [
@@ -82,6 +83,10 @@ export default {
           pic: 'Combine a fast pre-equilibrium with an exothermic complex formation: the overall rate falls as temperature rises, giving an Arrhenius plot with the wrong slope, as for NO + O₂.' },
         { num: '2.11', kind: 'Phenomenon', name: 'Non-Arrhenius behaviour and curved Arrhenius plots', deps: ['kin-2.1'], refs: ['Houston'],
           pic: 'Extend the temperature range of a rate measurement: ln k against 1/T curves upward at high T from temperature-dependent prefactors and at low T from tunnelling, both visible against the straight Arrhenius fit.' },
+        { num: '2.12', kind: 'Paper', name: 'Reaktionsgeschwindigkeit bei der Inversion von Rohrzucker',
+          paper: { authors: 'Svante Arrhenius', year: 1889, title: 'Über die Reaktionsgeschwindigkeit bei der Inversion von Rohrzucker durch Säuren', venue: 'Zeitschrift für Physikalische Chemie 4: 226–248', doi: '10.1515/zpch-1889-0416' },
+          introduces: ['kin-2.1'], deps: ['kin-1.5', 'pchem-7.9', 'thermo-6.1'], refs: [],
+          pic: 'Plot the measured rate constants for acid-catalysed sucrose inversion, and the other reactions Arrhenius tabulated, as ln k against 1/T: each set falls on a straight line whose slope gives the energy needed to make an “active” molecule, and a temperature slider shows why 10 °C can double or triple a rate.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -112,6 +117,10 @@ export default {
           pic: 'A reactant splits into a fast-forming product and a more stable slow one: at low temperature or short time the kinetic product dominates, while heating or waiting lets equilibrium deliver the thermodynamic one.' },
         { num: '3.11', kind: 'Model', name: 'Kramers theory of barrier crossing', deps: ['kin-3.1', 'pchem-10.4', 'thermo-7.12'], refs: ['Steinfeld et al.'],
           pic: 'Langevin particles cross a barrier with adjustable friction: the rate rises at low friction, peaks, and then falls as 1/γ, bracketing the TST prediction — the Kramers turnover.' },
+        { num: '3.12', kind: 'Paper', name: 'The Activated Complex in Chemical Reactions',
+          paper: { authors: 'Henry Eyring', year: 1935, title: 'The Activated Complex in Chemical Reactions', venue: 'The Journal of Chemical Physics 3 (2): 107–115', doi: '10.1063/1.1749604' },
+          introduces: ['kin-3.1', 'kin-3.2'], deps: ['kin-2.6', 'kin-2.7', 'thermo-6.2', 'kin-2.12'], refs: [],
+          pic: 'Roll trajectories across the H + H₂ potential-energy surface and count the flux through the saddle: with the activated complex in equilibrium with reactants, k = (kT/h)K‡ follows, and the reader compares Eyring rates with Arrhenius plots as barrier height and entropy of activation change.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -174,6 +183,10 @@ export default {
           pic: 'Apply an overpotential to an electrode: anodic and cathodic currents grow exponentially in opposite directions, their sum is zero at equilibrium, and the transfer-coefficient slider skews the curve.' },
         { num: '5.10', kind: 'Law', name: 'Tafel equation', deps: ['kin-5.9'], refs: ['Houston'],
           pic: 'Replot the Butler–Volmer current on log axes: at large overpotential one branch becomes a straight Tafel line whose intercept gives the exchange current density, and mass-transport limits bend it at high current.' },
+        { num: '5.11', kind: 'Paper', name: 'Oxidation–reduction reactions involving electron transfer',
+          paper: { authors: 'R. A. Marcus', year: 1956, title: 'On the Theory of Oxidation-Reduction Reactions Involving Electron Transfer. I', venue: 'The Journal of Chemical Physics 24 (5): 966–978', doi: '10.1063/1.1742723' },
+          introduces: ['kin-5.7'], deps: ['kin-3.2', 'em-5.7'], refs: [],
+          pic: 'Slide two parabolic free-energy curves past each other: the barrier (λ + ΔG°)²/4λ falls as the reaction grows more downhill, vanishes at −ΔG° = λ and rises again beyond it, and the reader fits measured self-exchange and cross rates with one reorganization energy.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -204,6 +217,10 @@ export default {
           pic: 'Let a gas-phase molecule strike an adsorbed one directly: the rate saturates with coverage instead of passing through a maximum, distinguishing it from Langmuir–Hinshelwood on the same axes.' },
         { num: '6.11', kind: 'Method', name: 'Temperature-programmed desorption', deps: ['pchem-11.6', 'kin-2.1'], refs: ['Steinfeld et al.'],
           pic: 'Heat a covered surface at a steady ramp: the desorption signal peaks at a temperature set by the binding energy (Redhead analysis), and changing the desorption order changes the peak shape.' },
+        { num: '6.12', kind: 'Paper', name: 'Die Kinetik der Invertinwirkung',
+          paper: { authors: 'L. Michaelis and Maud L. Menten', year: 1913, title: 'Die Kinetik der Invertinwirkung', venue: 'Biochemische Zeitschrift 49: 333–369' },
+          introduces: ['kin-6.2'], deps: ['kin-1.2', 'kin-1.8', 'kin-4.4'], refs: [],
+          pic: 'Fit Michaelis and Menten’s invertase measurements — initial rates of sucrose hydrolysis at a range of sucrose concentrations — with v = V[S]/(K + [S]), dragging V and K, and set their logarithmic-concentration plot beside the double-reciprocal plot that later became standard.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7

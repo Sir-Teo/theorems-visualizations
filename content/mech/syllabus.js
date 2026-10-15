@@ -63,6 +63,7 @@
 //     Newton's revolving-orbits theorem, Bonnet's and Siacci's theorems, Fermi–Pasta–Ulam–Tsingou: obscure for a
 //     course map or outside all four references.
 // ─────────────────────────────────────────────────────────────────────────────────────────
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'mech',
   chapters: [
@@ -108,6 +109,10 @@ export default {
           pic: 'Place masses on a plane and see the gravitational field as arrows and potential contours; drag a test mass to read the inverse-square force, and double the distance to see it quarter.' },
         { num: '1.18', kind: 'Model', name: 'Charged particle in a uniform magnetic field', deps: ['mech-1.6', 'mech-1.3'], refs: ['Taylor §2.5', 'Taylor §2.7'],
           pic: 'A 3D view of a charge spiralling on a helix around B; the cyclotron period ignores the speed slider, and adding a crossed electric field makes the guiding centre drift at E/B.' },
+        { num: '1.19', kind: 'Paper', name: 'Philosophiæ Naturalis Principia Mathematica',
+          paper: { authors: 'Isaac Newton', year: 1687, title: 'Philosophiæ Naturalis Principia Mathematica', venue: 'London: Royal Society, printed by Joseph Streater (book, 3 vols. in 1)', url: 'https://archive.org/details/philosophiaenat00newt' },
+          introduces: ['mech-1.5', 'mech-1.6', 'mech-1.7', 'mech-1.17', 'mech-8.1'], deps: ['mech-1.8', 'mech-1.3'], refs: [],
+          pic: 'Recreate Newton’s cannon from Book III: fire a ball from a mountaintop with a speed slider and watch falling arcs lengthen into a circular orbit near 7.9 km/s and then ellipses, and check the Moon test — at 60 Earth radii it falls 1/3600 as far per second as the apple, one inverse-square law for both.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -336,6 +341,10 @@ export default {
           pic: 'An N-body cluster with live readouts of E, P, L and the boost charge K: all ten stay constant (energy to the small bounded error of the symplectic integrator), and an external field breaks a chosen subset.' },
         { num: '7.12', kind: 'Method', name: 'Eliminating a cyclic coordinate: effective potential', deps: ['mech-7.1', 'mech-3.10', 'mech-6.12'], refs: ['Tong §2.5', 'Goldstein §3.3'],
           pic: 'For the spherical pendulum, fix the conserved p_φ and draw the one-dimensional effective potential in θ; its turning points match the band of θ that the full 3D simulation sweeps.' },
+        { num: '7.13', kind: 'Paper', name: 'Invariante Variationsprobleme',
+          paper: { authors: 'Emmy Noether', year: 1918, title: 'Invariante Variationsprobleme', venue: 'Nachrichten von der Gesellschaft der Wissenschaften zu Göttingen, Mathematisch-Physikalische Klasse 1918: 235–257', url: 'https://eudml.org/doc/59024' },
+          introduces: ['mech-7.3', 'mech-11.17'], deps: ['mech-6.5', 'mech-7.2', 'mech-5.4'], refs: [],
+          pic: 'Pick a Lagrangian and a continuous transformation (translation, rotation, time shift, screw or a deliberately broken symmetry): the change of the action is computed and, when it vanishes, the Noether charge is plotted along a simulated trajectory — flat to machine precision, drifting the moment the symmetry is broken.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -388,6 +397,10 @@ export default {
           pic: 'Launch satellites from one point with the same speed in different directions: all their ellipses share one semi-major axis and one period, as E = −GMm/2a demands, and the speed readout along every orbit follows v² = GM(2/r − 1/a).' },
         { num: '8.22', kind: 'Theorem', name: 'Hamilton’s hodograph: Kepler velocities trace a circle', deps: ['mech-8.10', 'mech-8.5'], refs: ['Goldstein Ex. 3.29'],
           pic: 'Drag the launch velocity of a Kepler orbit: the velocity vectors, redrawn from a common origin, have tips on an exact circle offset from the origin in proportion to the eccentricity; switch to a non-inverse-square force and the circle deforms.' },
+        { num: '8.23', kind: 'Paper', name: 'The scattering of α and β particles by matter',
+          paper: { authors: 'E. Rutherford', year: 1911, title: 'The scattering of α and β particles by matter and the structure of the atom', venue: 'Philosophical Magazine (6th series) 21 (125): 669–688', doi: '10.1080/14786440508637080' },
+          introduces: ['mech-8.18'], deps: ['mech-8.7', 'em-1.3', 'mech-2.10'], refs: [],
+          pic: 'Fire α particles at a gold nucleus with random impact parameters and tally the deflections: the counts per angle follow 1/sin⁴(θ/2) and are laid over Geiger and Marsden’s 1913 scintillation counts from 15° to 150°, while a Thomson plum-pudding atom of the same size predicts almost no large-angle scattering.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9

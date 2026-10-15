@@ -85,6 +85,12 @@
 //     mechanisms it rests on (2.10 bowing, 11.12 reeds and lips, 11.13 air jets, ch. 3 percussion) are covered.
 //   - collection.js lists only Benson, Tymoczko, Sethares and Loy; Rossing, Fletcher & Rossing, Müller,
 //     Toussaint and Open Music Theory are cited here where those four are silent, and could be added there.
+// Landmark papers (October 2026): Mersenne 1636 (2.14), Rameau 1722 (9.22), Euler 1739 (6.12),
+//   Helmholtz 1863 (6.13), Sabine 1900 (11.15), Fletcher & Munson 1933 (1.14), Plomp & Levelt 1965
+//   (6.14), Sethares 1993 (6.15), Tymoczko 2006 (9.23).
+//   Citations checked against the Crossref API (DOIs, volumes, pages), archive.org / HathiTrust /
+//   IMSLP / Project Gutenberg catalogue records for treatises without a DOI, and Wikipedia citations
+//   (with JSTOR ids) where a publisher page was not reachable. No DOI was guessed.
 export default {
   collection: 'music',
   chapters: [

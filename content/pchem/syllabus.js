@@ -20,6 +20,7 @@
 // Ostwald dilution and Kohlrausch, Donnan equilibrium, surface chemistry (Langmuir/BET), transport
 // (Fick, Einstein–Smoluchowski, Stokes–Einstein). Deliberate omissions: detailed ternary diagrams beyond the
 // triangle reading, liquid crystals, polymer solution thermodynamics (Flory–Huggins lives in `mat`).
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'pchem',
   chapters: [
@@ -57,6 +58,14 @@ export default {
           pic: 'Raise the temperature and watch the liquid–vapour tie line shrink to a point where the isotherm has an inflection; the critical constants 8a/27Rb, a/27b², 3b are read out, and simulated density fluctuations grow huge near it (critical opalescence).' },
         { num: '1.16', kind: 'Principle', name: 'Law of corresponding states', deps: ['pchem-1.15'], refs: ['Atkins 1C', 'M–S ch. 16'],
           pic: 'Rescale measured Z data for several gases to reduced pressure and temperature: curves that looked unrelated collapse onto one family, except for strongly polar or quantum gases like H₂O and He.' },
+        { num: '1.17', kind: 'Paper', name: 'Traité élémentaire de chimie',
+          paper: { authors: 'A.-L. Lavoisier', year: 1789, title: 'Traité élémentaire de chimie, présenté dans un ordre nouveau et d’après les découvertes modernes', venue: 'Paris: Cuchet (book, 2 vols.)', url: 'https://archive.org/details/traitlmentairede01lavo' },
+          introduces: [], deps: [], refs: [],
+          pic: 'Recreate the mercury-calx experiment: heat mercury in a retort joined to a bell jar of air for twelve days and watch about a sixth of the air disappear as red calx forms; heat the calx strongly to recover that same volume of “vital air”, with a running balance showing the total mass unchanged at every step.' },
+        { num: '1.18', kind: 'Paper', name: 'Masses relatives des molécules élémentaires des corps',
+          paper: { authors: 'A. Avogadro', year: 1811, title: 'Essai d’une manière de déterminer les masses relatives des molécules élémentaires des corps, et les proportions selon lesquelles elles entrent dans ces combinaisons', venue: 'Journal de Physique, de Chimie et d’Histoire Naturelle 73: 58–76', url: 'https://books.google.com/books?id=MxgTAAAAQAAJ&pg=PA58' },
+          introduces: ['pchem-1.3'], deps: ['pchem-1.1', 'pchem-1.2'], refs: [],
+          pic: 'Combine gas volumes as Gay-Lussac measured — two of hydrogen and one of oxygen give two of steam, one of nitrogen and one of oxygen give two of nitric oxide — and try to explain them with indivisible atoms: it fails until equal volumes hold equal numbers of molecules that can split in two, and then relative molecular masses follow from gas densities.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -203,6 +212,10 @@ export default {
           pic: 'Plot ln x_solute against 1/T for naphthalene in benzene: the slope is fixed by the enthalpy of fusion alone, independent of the solvent, until a strongly interacting solvent bends the line.' },
         { num: '5.16', kind: 'Law', name: 'Nernst distribution law', deps: ['pchem-5.8'], refs: ['Atkins Focus 5'],
           pic: 'Shake iodine between water and an organic layer: the concentration ratio settles to a fixed partition coefficient, and repeated small extractions are shown to beat one big one.' },
+        { num: '5.17', kind: 'Paper', name: 'Rolle des osmotischen Druckes: Lösungen und Gase',
+          paper: { authors: 'J. H. van ’t Hoff', year: 1887, title: 'Die Rolle des osmotischen Druckes in der Analogie zwischen Lösungen und Gasen', venue: 'Zeitschrift für Physikalische Chemie 1: 481–508', doi: '10.1515/zpch-1887-0151' },
+          introduces: ['pchem-5.13'], deps: ['pchem-1.4', 'thermo-2.9'], refs: [],
+          pic: 'Fill Pfeffer’s semipermeable cell with sugar solutions of rising strength and plot osmotic pressure against concentration and temperature: the points fall on πV = nRT with the gas constant itself, while salt solutions overshoot by a factor i the reader can tune.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -233,6 +246,10 @@ export default {
           pic: 'Pass a molten zone along a rod repeatedly: impurities with distribution coefficient k < 1 ride along with the zone, and the computed impurity profile drops by orders of magnitude after a few passes.' },
         { num: '6.11', kind: 'Method', name: 'Ternary phase diagrams', deps: ['pchem-6.1', 'pchem-6.3'], refs: ['Atkins Focus 5'],
           pic: 'Drag a point in a triangle whose corners are three pure components: the distances to the sides read out the three mole fractions, and a two-phase region with tie lines shows the lever rule in two dimensions.' },
+        { num: '6.12', kind: 'Paper', name: 'On the Equilibrium of Heterogeneous Substances',
+          paper: { authors: 'J. Willard Gibbs', year: 1876, title: 'On the Equilibrium of Heterogeneous Substances', venue: 'Transactions of the Connecticut Academy of Arts and Sciences 3: 108–248 (1876) and 343–524 (1878)', url: 'https://archive.org/details/transactionsconn03conn' },
+          introduces: ['pchem-6.1', 'pchem-5.2', 'pchem-5.3'], deps: ['thermo-2.9', 'thermo-1.11', 'thermo-3.4', 'thermo-2.19'], refs: [],
+          pic: 'Build a phase diagram from free-energy surfaces: the reader shapes G for each phase of a binary system, Gibbs’ tangent construction picks out the coexisting phases, and counting components and phases anywhere on the diagram confirms F = C − P + 2.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -273,6 +290,14 @@ export default {
           pic: 'Add NaCl to a saturated AgCl solution: silver concentration drops along a hyperbola of fixed Ksp, then rises again at high chloride as complex ions form — the simple model’s limit.' },
         { num: '7.16', kind: 'Method', name: 'Ellingham diagram', deps: ['pchem-7.3'], refs: ['Atkins Focus 6'],
           pic: 'Plot ΔG° of oxide formation against temperature for several metals and carbon: the CO line slopes downward, crossing the others, and each crossing marks the temperature above which carbon can smelt that ore.' },
+        { num: '7.17', kind: 'Paper', name: 'Sur un énoncé général des lois des équilibres chimiques',
+          paper: { authors: 'H. Le Chatelier', year: 1884, title: 'Sur un énoncé général des lois des équilibres chimiques', venue: 'Comptes rendus hebdomadaires des séances de l’Académie des sciences 99: 786–789', url: 'https://archive.org/details/comptes-rendus-hebdomadaires-academie-des-sciences_1884-11-10_99_19' },
+          introduces: ['pchem-7.7'], deps: ['pchem-7.4', 'pchem-7.9'], refs: [],
+          pic: 'Disturb an equilibrium — N₂O₄ ⇌ 2NO₂ or the ammonia synthesis — by changing temperature, pressure or a concentration and watch the composition shift to oppose the change, with the note’s numbered cases (including the exceptions where nothing moves) checked one by one against the equilibrium constant.' },
+        { num: '7.18', kind: 'Paper', name: 'Technische Darstellung von Ammoniak aus den Elementen',
+          paper: { authors: 'F. Haber and R. Le Rossignol', year: 1913, title: 'Über die technische Darstellung von Ammoniak aus den Elementen', venue: 'Zeitschrift für Elektrochemie und angewandte physikalische Chemie 19 (2): 53–72', doi: '10.1002/bbpc.19130190201' },
+          introduces: ['pchem-7.11'], deps: ['pchem-7.7', 'pchem-7.9', 'kin-6.1', 'pchem-7.17'], refs: [],
+          pic: 'Run Haber’s high-pressure circulating reactor: choose temperature and pressure and read the equilibrium ammonia fraction (about a tenth of a percent at 1 atm, over ten percent at 200 atm near 500 °C), then add the osmium or uranium catalyst and see the approach to equilibrium become fast enough to recycle the gas.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8

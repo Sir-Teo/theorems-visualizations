@@ -19,6 +19,7 @@
 // Töpfer), MAUP, cartograms, Moran's I, kriging, Hotelling, Huff/Reilly, Ravenstein, Gibrat.
 // Deliberate omissions: remote sensing and GIS data models (better placed in an imaging/CS collection),
 // regional and cultural geography, which have no crisp testable statements.
+// Landmark papers (kind 'Paper') appended Oct 2026; each citation checked against Crossref, the publisher, or a digitized library copy.
 export default {
   collection: 'geog',
   chapters: [
@@ -210,6 +211,10 @@ export default {
           pic: 'Plot 1854 cholera deaths in Soho with the water pumps: the Voronoi cell of the Broad Street pump captures the cluster, and switching to walking distances sharpens the match.' },
         { num: '8.7', kind: 'Model', name: 'Hägerstrand’s spatial diffusion of innovations', deps: ['geog-8.5'], refs: ['Haggett'],
           pic: 'Seed an innovation in a few farms and let adopters tell neighbours with a distance-decaying contact field: adoption spreads in a wave, and the cumulative count follows an S-curve.' },
+        { num: '8.8', kind: 'Paper', name: 'Computer Movie Simulating Urban Growth in the Detroit Region',
+          paper: { authors: 'W. R. Tobler', year: 1970, title: 'A Computer Movie Simulating Urban Growth in the Detroit Region', venue: 'Economic Geography 46: 234–240', doi: '10.2307/143141' },
+          introduces: ['geog-8.1'], deps: ['geog-8.5'], refs: [],
+          pic: 'Run Tobler’s computer movie: Detroit’s population grows year by year on a grid as each cell responds to its neighbours, nearer ones weighted more — “everything is related to everything else, but near things are more related than distant things” — and the reader changes the distance-decay kernel to see the city sprawl or clump.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9

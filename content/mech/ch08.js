@@ -825,7 +825,12 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
           return { n, s0, el, bound, F, all, A, Bc, Cc, efit, pfit, wfit, res, ur, th0, sgn, adv };
         });
         v.animate((t) => {
-          const R = run(), el = R.el, col = !R.bound ? (Math.abs(el.E) < 1e-6 ? 'gold' : 'red') : el.e < 1e-3 ? 'green' : 'blue';
+          const R = run(), el = R.el;
+          let x0 = Math.min(P0.x, V.x, 0) - 0.3, x1 = Math.max(P0.x, V.x, 0) + 0.3, y0 = Math.min(P0.y, V.y, 0) - 0.3, y1 = Math.max(P0.y, V.y, 0) + 0.3;
+          for (const S of R.all) { if (Math.abs(S[0]) > 4.5 || Math.abs(S[1]) > 3.5) continue; x0 = Math.min(x0, S[0]); x1 = Math.max(x1, S[0]); y0 = Math.min(y0, S[1]); y1 = Math.max(y1, S[1]); }
+          const hy = Math.max(1.6, 0.55 * (y1 - y0), 0.42 * (x1 - x0)), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+          s.setView([cx - 1.3 * hy, cx + 1.3 * hy], [cy - hy, cy + hy]);
+          const col = !R.bound ? (Math.abs(el.E) < 1e-6 ? 'gold' : 'red') : el.e < 1e-3 ? 'green' : 'blue';
           s.path(R.all.map((S) => [S[0], S[1]]), { color: col, width: 2.6 });
           s.path(conicPts(R.pfit, Math.max(0, R.efit), R.wfit, 14), { color: 'green', width: 1.4, dash: [5, 4] });
           sun(s, 0, 0, { r: 0.07, label: 'focus', dy: 14 });
@@ -875,7 +880,7 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
 $$T^2 = \frac{4\pi^2\mu}{k}\,a^3,\qquad\text{for planets}\qquad T^2 = \frac{4\pi^2}{G(M_\odot + m)}\,a^3 .$$
 Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so on a log–log plot of period against semi-major axis they fall on one line of slope $3/2$. For a power-law force $F\propto -r^{-n}$ the circular orbits instead obey $T\propto a^{(n+1)/2}$, and eccentric orbits no longer share a single law.`,
       idea: String.raw`By the area law (8.5) the radius sweeps area at the constant rate $\ell/2\mu$, so one period sweeps the whole ellipse: $T = \pi ab\cdot 2\mu/\ell$. For the conic orbit (8.7) the semi-latus rectum $p = b^2/a = \ell^2/\mu k$ gives $\ell = b\sqrt{\mu k/a}$, and therefore $T = 2\pi\sqrt{\mu/k}\;a^{3/2}$: the semi-minor axis cancels, which is why eccentricity drops out. With the reduced mass of 8.2, $\mu/k = 1/G(M + m)$, so Jupiter’s period is about $0.05\%$ shorter than $a^{3/2}$ years.`,
-      caption: String.raw`Left: eleven bodies on orbits integrated numerically from their real perihelion distances and speeds (AU, years, $GM_\odot$ from the built-in constants); pick the inner or outer system. Right, on log–log axes: the measured periods (filled) against the catalogue values (open circles) and the line $T = 2\pi\sqrt{a^3/GM_\odot}$. Halley’s comet ($e = 0.97$) and the circular Venus sit on the same line. Change the force exponent and the simulated planets leave the catalogue: the slope changes and the eccentric bodies scatter.`,
+      caption: String.raw`Left: eleven bodies on orbits integrated numerically from their real perihelion distances and speeds (AU, years, $GM_\odot$ from the built-in constants); pick the inner or outer system. Right, on log–log axes: the measured periods (filled) against the catalogue values (open circles) and the line $T = 2\pi\sqrt{a^3/GM_\odot}$. Halley’s comet ($e = 0.97$) and the circular Venus sit on the same line. Change the force exponent: each body is relaunched so that it keeps its real perihelion and aphelion, but the periods (now perihelion to perihelion) leave the catalogue — the slope changes, the orbits become rosettes and the eccentric bodies scatter off the line.`,
       deps: ['mech-8.7', 'mech-8.5'],
       refs: ['Taylor §8.6', 'Goldstein §3.8'],
       tags: ['Kepler', 'solar system', 'scaling'],
@@ -884,21 +889,23 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
       viz(v) {
         const C = v.M.CONST, MU = (C.G * C.Msun * C.yr ** 2) / C.au ** 3; // GM☉ in AU³/yr²
         const zoom = v.select('show', [{ value: 'inner', label: 'inner system' }, { value: 'outer', label: 'outer system' }], 'inner');
-        const pw = v.slider('force exponent $n$ ($F \\propto -1/r^n$)', 1.5, 3, 2, { step: 0.01, onChange: (x) => { if (Math.abs(x - 2) < 0.015 && x !== 2) pw.set(2); } });
+        const pw = v.slider('force exponent $n$ ($F \\propto -1/r^n$)', 1.5, 2.8, 2, { step: 0.01, onChange: (x) => { if (Math.abs(x - 2) < 0.015 && x !== 2) pw.set(2); } });
         const s = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 340, weight: 1 });
         const g = v.stage({ x: [0.25, 60], y: [0.1, 400], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.1, xlabel: 'semi-major axis a (AU)', ylabel: 'period T (yr)', title: 'Kepler’s third law (log–log)' });
         const cache = memo(); let cur = null;
         const run = () => cache(pw.value, () => {
-          const n = pw.value, acc = (r) => -MU / r ** n;
+          const n = pw.value, acc = (r) => -MU / r ** n, U = (r) => (-MU * r ** (1 - n)) / (n - 1);
           return BODIES.map((B) => {
-            const rp = B.a * (1 - B.e), vp = Math.sqrt(MU * (1 + B.e) / rp) * (B.retro ? -1 : 1), w = (B.w * Math.PI) / 180;
+            // launch at the real perihelion with the speed that makes the real aphelion the other turning point
+            const rp = B.a * (1 - B.e), ra = B.a * (1 + B.e), w = (B.w * Math.PI) / 180;
+            const vp = Math.sqrt((2 * (U(ra) - U(rp))) / (1 - (rp / ra) ** 2)) * (B.retro ? -1 : 1);
             const s0 = [rp * Math.cos(w), rp * Math.sin(w), -vp * Math.sin(w), vp * Math.cos(w)];
-            const R = centralOrbit(acc, s0, { T: 6 * B.T * Math.max(1, (B.a / 1) ** ((n - 2) / 2)), eta: B.e > 0.5 ? 0.003 : 0.01, revs: 1, rmax: 400, rmin: 0.01, maxSteps: 60000 });
-            // period: time for the angle to advance 2π (interpolated), semi-major axis from the radial extremes
-            const L = R.s.length - 1; let Tm = NaN;
-            if (R.stop === 'revs') { const over = Math.abs(R.turn) - TAU, S1 = R.s[L], S0 = R.s[L - 1]; let d = Math.atan2(S1[1], S1[0]) - Math.atan2(S0[1], S0[0]); if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; Tm = R.t[L] - (over / Math.abs(d)) * (R.t[L] - R.t[L - 1]); }
+            const R = centralOrbit(acc, s0, { T: 1e5, eta: B.e > 0.5 ? 0.003 : 0.01, revs: 4.2, rmax: 400, rmin: 0.01, maxSteps: 90000 });
+            // period: perihelion to perihelion (r·v changes sign from − to +, interpolated); a from the radial extremes
+            const peri = [];
+            for (let i = 1; i < R.s.length; i++) { const A = R.s[i - 1], C2 = R.s[i], a0 = A[0] * A[2] + A[1] * A[3], a1 = C2[0] * C2[2] + C2[1] * C2[3]; if (a0 < 0 && a1 >= 0) peri.push(R.t[i - 1] + (-a0 / (a1 - a0)) * (R.t[i] - R.t[i - 1])); }
             let lo = Infinity, hi = 0; for (const S of R.s) { const r = Math.hypot(S[0], S[1]); lo = Math.min(lo, r); hi = Math.max(hi, r); }
-            return { B, R, Tm, am: (lo + hi) / 2 };
+            return { B, R, Tm: peri.length ? peri[0] : NaN, wrap: peri.length ? peri[peri.length - 1] : NaN, am: (lo + hi) / 2 };
           });
         });
         v.animate((t) => {
@@ -911,7 +918,7 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
             if (!show) continue;
             s.path(d.R.s.map((S) => [S[0], S[1]]), { color: d.B.c, width: 1.4, alpha: 0.8 });
             if (isFinite(d.Tm)) {
-              const t0 = (d.B.M0 / 360) * d.Tm, S = stateAt(d.R, (t * yrPerSec + t0) % d.Tm);
+              const t0 = (d.B.M0 / 360) * d.Tm, S = stateAt(d.R, (t * yrPerSec + t0) % d.wrap);
               if (Math.abs(S[0]) < lim && Math.abs(S[1]) < lim) { s.dot(S[0], S[1], { r: 4.5, color: d.B.c }); s.text(d.B.n, S[0], S[1], { color: d.B.c, size: 10.5, dy: -10, align: 'center' }); }
             }
           }
