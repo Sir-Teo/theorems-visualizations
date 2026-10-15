@@ -1,6 +1,7 @@
 // Rudin, Functional Analysis — Chapter 9 (part 2): the prime number theorem and the renewal equation
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Numbering from Google Books snippet views (9.10–9.12 from the 1st edition, whose ch. 9 numbering matches the 2nd at every
+// point checked); items carry `verify: true`.
 
 // ---------------------------------------------------------------- primes
 const NMAX = 1000000;
@@ -61,9 +62,9 @@ export default {
   chapter: 9,
   items: [
     {
-      num: '9.8',
+      num: '9.10',
       kind: 'Definition',
-      name: 'ζ(s), the von Mangoldt function and ψ(x)',
+      name: 'Preparation: Λ(n), ψ(x) and ζ(s)',
       statement: String.raw`For $\operatorname{Re}s>1$ the **Riemann zeta function** is $\zeta(s)=\sum_{n\ge1}n^{-s}=\prod_p(1-p^{-s})^{-1}$ (Euler product over the primes). The **von Mangoldt function** is $\Lambda(n)=\log p$ if $n=p^k$ is a power of a prime $p$ and $\Lambda(n)=0$ otherwise; then
 $$-\frac{\zeta'(s)}{\zeta(s)}=\sum_{n\ge1}\Lambda(n)\,n^{-s},\qquad\psi(x)=\sum_{n\le x}\Lambda(n),$$
 and $\pi(x)$ is the number of primes $\le x$.`,
@@ -104,7 +105,7 @@ and $\pi(x)$ is the number of primes $\le x$.`,
       },
     },
     {
-      num: '9.9',
+      num: '9.11',
       kind: 'Theorem',
       name: 'ζ has no zeros on the line Re s = 1',
       statement: String.raw`The function $\zeta(s)-\frac1{s-1}$ extends to a holomorphic function in $\operatorname{Re}s>0$, so $\zeta$ is meromorphic there with a single simple pole at $s=1$; and
@@ -113,7 +114,7 @@ $$\zeta(1+it)\ne0\qquad(t\in\R,\ t\ne0).$$`,
 $$|\zeta(\sigma)^3\,\zeta(\sigma+it)^4\,\zeta(\sigma+2it)|\ge1 .$$
 If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like $(\sigma-1)^{-3}(\sigma-1)^4\cdot O(1)\to0$ — a contradiction.`,
       caption: String.raw`Top: $|\zeta(\sigma+it)|$ for $0\le t\le60$ (computed by Euler–Maclaurin summation). On $\sigma=1$ (green) it never reaches $0$ — though it dips low; lower $\sigma$ to $\frac12$ to watch the first nontrivial zeros $t\approx14.13,21.02,25.01,\dots$ appear on the critical line. Bottom: the 3–4–1 product $\log|\zeta(\sigma)^3\zeta(\sigma+it)^4\zeta(\sigma+2it)|$ for $\sigma>1$, which stays $\ge0$ — the inequality behind the theorem.`,
-      deps: ['fa-9.8'],
+      deps: ['fa-9.10'],
       tags: ['number theory', 'zeta function'],
       verify: true,
       viz(v) {
@@ -155,13 +156,64 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
       },
     },
     {
-      num: '9.10',
+      num: '9.12',
       kind: 'Theorem',
+      name: "Ingham's Tauberian theorem",
+      statement: String.raw`Suppose $g$ is a real nondecreasing function on $(0,\infty)$, $g(x)=0$ for $0<x<1$, and
+$$\sum_{n=1}^\infty g\Big(\frac xn\Big)=ax\log x+bx+o(x)\qquad(x\to\infty)$$
+for some constants $a,b$. Then $g(x)=ax+o(x)$ as $x\to\infty$.`,
+      idea: String.raw`Pass to logarithmic variables: $\varphi(u)=e^{-u}g(e^u)$ is bounded, and the hypothesis becomes a statement about averages $K*\varphi$. Take $k(x)=[e^x]e^{-x}$ ($x\ge0$), whose Laplace transform is $\zeta(1+s)/(1+s)$ by formula (2) of 9.11, and $K(x)=2k(x)-k(x-1)-k(x-\lambda)$ with $\lambda$ irrational. Then $K\in L^1$, and
+$$\hat K(t)=\frac{\zeta(1+it)}{1+it}\big(2-e^{-it}-e^{-i\lambda t}\big)$$
+has no zero. $\zeta(1+it)\ne0$ for $t\ne0$ (9.11), the bracket vanishes only if $t$ and $\lambda t$ both lie in $2\pi\Z$, which forces $t=0$ for irrational $\lambda$, and at $t=0$ the pole of $\zeta$ gives $\hat K(0)=1+\lambda$. Wiener's theorem 9.7(a) then gives $f*\varphi\to a\hat f(0)$ for all $f\in L^1$, and monotonicity of $g$ squeezes $\varphi(u)\to a$.`,
+      caption: String.raw`Rudin's kernel from the proof. Left: $K(x)=2k(x)-k(x-1)-k(x-\lambda)$ with $k(x)=[e^x]e^{-x}$. Right: $|\hat K(t)|=\frac{|\zeta(1+it)|}{|1+it|}\,|2-e^{-it}-e^{-i\lambda t}|$, with $\zeta$ computed by Euler–Maclaurin. Set $\lambda$. For rational $\lambda=p/q$ the bracket vanishes at $t=2\pi q\,m$ (red ticks), so $\hat K$ has zeros and Wiener's theorem does not apply. For irrational $\lambda$ the bracket only comes close to $0$; the only threat would then be a zero of $\zeta$ on the line $\operatorname{Re}s=1$, which 9.11 excludes. The readout shows $\min|\hat K|$ on $[-T,T]$ and $\hat K(0)=1+\lambda$.`,
+      deps: ['fa-9.7', 'fa-9.11', 'fa-9.10'],
+      tags: ['Tauberian', 'Ingham', 'prime number theorem'],
+      verify: true,
+      viz(v) {
+        const M = v.M;
+        const lam = v.select('$\\lambda=$', [{ value: Math.SQRT2, label: '$\\sqrt2$' }, { value: (1 + Math.sqrt(5)) / 2, label: '$\\frac{1+\\sqrt5}2$' }, { value: 1.5, label: '$\\frac32$' }, { value: 2, label: '$2$' }], Math.SQRT2);
+        const TS = v.slider('range $T$', 10, 60, 40, { step: 1 });
+        const L = v.stage({ x: [-0.5, 5], y: [-0.7, 2.1], height: 300, axes: true, title: '$K(x)=2k(x)-k(x-1)-k(x-\\lambda)$' });
+        const R = v.stage({ x: [-40, 40], y: [0, 2.6], height: 300, axes: 'box', xlabel: 't', title: '$|\\hat K(t)|$' });
+        const k = (x) => (x < 0 ? 0 : Math.floor(Math.exp(x)) * Math.exp(-x));
+        let cache = { key: '' }, st = {};
+        v.legend([['blue', '$K$'], ['purple', '$|\\hat K(t)|$'], ['muted', '$|\\zeta(1+it)|/|1+it|$', { dash: true }], ['red', 'zeros of the bracket (rational λ)']]);
+        v.render(() => {
+          const l = +lam.value, T = TS.value, rational = Math.abs(l - Math.round(l * 2) / 2) < 1e-12;
+          L.fn((x) => 2 * k(x) - k(x - 1) - k(x - l), { color: 'blue', width: 2, n: 3000 });
+          const key = `${l}|${T}`;
+          if (cache.key !== key) {
+            const ts = M.linspace(-T, T, 1601), vals = [], zf = [];
+            for (const t of ts) {
+              if (Math.abs(t) < 1e-9) { vals.push(1 + l); zf.push(NaN); continue; }
+              const z = cabs(zeta([1, t])) / Math.hypot(1, t), br = Math.hypot(2 - Math.cos(t) - Math.cos(l * t), Math.sin(t) + Math.sin(l * t));
+              vals.push(z * br); zf.push(z);
+            }
+            cache = { key, ts, vals, zf, mn: Math.min(...vals) };
+          }
+          R.setView([-T, T], [0, Math.max(2.6, 1.15 * Math.max(...cache.vals))]);
+          R.path(cache.ts.map((t, i) => (isFinite(cache.zf[i]) ? [t, cache.zf[i]] : null)), { color: 'muted', width: 1.2, dash: [4, 3] });
+          R.path(cache.ts.map((t, i) => [t, cache.vals[i]]), { color: 'purple', width: 2.2 });
+          R.dot(0, 1 + l, { color: 'green', r: 4.5, label: '1+λ', labelPos: 'e' });
+          if (rational) { const q = l === 2 ? 1 : 2; for (let m = -10; m <= 10; m++) { const t = 2 * Math.PI * q * m; if (m !== 0 && Math.abs(t) <= T) R.vline(t, { color: 'red', width: 1.4, dash: [3, 3] }); } }
+          st = { mn: cache.mn, l, rational, T };
+        });
+        v.readout(() => {
+          const s = st;
+          return `$\\hat K(0)=1+\\lambda=${v.fix(1 + s.l, 4)}$; $\\min_{|t|\\le${s.T}}|\\hat K(t)|=${v.sci(s.mn + 1e-17, 2)}$. ` + (s.rational ? '$\\lambda$ is rational: $\\hat K$ has zeros, and the Tauberian argument breaks.' : '$\\lambda$ is irrational: no zeros (the minimum is small but positive, where $t$ and $\\lambda t$ are both close to $2\\pi\\Z$), so Wiener’s theorem applies.');
+        });
+      },
+    },
+    {
+      num: '9.12a',
+      kind: 'Corollary',
       name: 'The prime number theorem',
       statement: String.raw`$$\lim_{x\to\infty}\frac{\pi(x)\log x}{x}=1,\qquad\text{equivalently}\qquad\lim_{x\to\infty}\frac{\psi(x)}{x}=1 .$$`,
-      idea: String.raw`Put $\varphi(u)=e^{-u}\psi(e^u)$, a bounded function (Chebyshev). Its Laplace transform is essentially $-\zeta'(s)/(s\zeta(s))$, and $-\zeta'/\zeta-\frac1{s-1}$ is regular on $\operatorname{Re}s=1$ precisely because $\zeta$ has no zeros there (9.9). This produces a kernel $K\in L^1$ with $\hat K$ free of zeros and $K*\varphi\to\int K$ — the hypotheses of Wiener's Tauberian theorem. Since $\psi$ is nondecreasing, $\varphi$ is slowly oscillating, so 9.7 upgrades the convergence of the averages to $\varphi(u)\to1$, i.e. $\psi(x)\sim x$; and $\pi(x)\log x\sim\psi(x)$ by an elementary comparison.`,
+      idea: String.raw`Apply Ingham's theorem 9.12 to $g=\psi$, which is nondecreasing and vanishes on $(0,2)$. Every $m\le x$ satisfies $\log m=\sum_{d\mid m}\Lambda(d)$, so
+$$\sum_{n\ge1}\psi\Big(\frac xn\Big)=\sum_{m\le x}\log m=\log[x]!=x\log x-x+O(\log x)$$
+by Stirling's formula. This is the hypothesis of 9.12 with $a=1$, $b=-1$, so $\psi(x)=x+o(x)$. The step from $\psi(x)\sim x$ to $\pi(x)\log x\sim x$ is an elementary comparison. Rudin does not number this result: it is derived right after 9.12, with all the analytic depth hidden in $\zeta(1+it)\ne0$ (9.11).`,
       caption: String.raw`Primes up to $10^6$, by a sieve. The three ratios $\pi(x)\log x/x$ (red), $\psi(x)/x$ (green) and $\pi(x)/\mathrm{li}(x)$ (blue) against $\log_{10}x$: all tend to $1$, the first very slowly (it is off by about $1/\log x$). Drag the marker. Bottom: the slowly oscillating function $\varphi(u)=e^{-u}\psi(e^u)$ of the Tauberian argument, with $u=\log x$ — it settles at $1$.`,
-      deps: ['fa-9.9', 'fa-9.7'],
+      deps: ['fa-9.12', 'fa-9.11', 'fa-9.10'],
       tags: ['number theory', 'prime number theorem', 'Tauberian theorems'],
       verify: true,
       viz(v) {
@@ -192,7 +244,7 @@ If $\zeta(1+it)=0$, then as $\sigma\downarrow1$ the left side would behave like 
       },
     },
     {
-      num: '9.11',
+      num: '9.13',
       kind: 'Theorem',
       name: 'The renewal theorem',
       statement: String.raw`Let $\mu$ be a probability measure on $[0,\infty)$ with finite mean $m=\int x\,d\mu(x)$, not concentrated on a lattice $\{0,d,2d,\dots\}$ (equivalently $\hat\mu(t)\ne1$ for $t\ne0$). Let $f$ be bounded, measurable, $0$ on $(-\infty,0)$, with $\sum_k\sup_{[k,k+1]}|f|<\infty$. Then the **renewal equation**
