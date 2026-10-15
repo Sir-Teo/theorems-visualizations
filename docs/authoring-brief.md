@@ -35,7 +35,7 @@ export default {
 ## Check (iterate until clean)
 ```bash
 node scripts/build.mjs                                   # must report 0 errors
-node scripts/check.mjs <col>/<n> --shots --modes    # every item ✓, no quality warnings
+node scripts/check.mjs <col>/<n> --shots --modes    # every item ✓, no quality warnings; also screenshots every segmented option and every flipped toggle (<id>~k.png)
 node scripts/check.mjs <col>/<n> --shots --dark     # then look at the dark screenshots
 node scripts/check.mjs <col>/<n> --shots --still    # animations and step players: shows the frame set by their `still` option
 ```

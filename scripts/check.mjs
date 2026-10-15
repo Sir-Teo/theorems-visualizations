@@ -4,7 +4,7 @@
 //   node scripts/check.mjs pma/4           # one chapter
 //   node scripts/check.mjs pma-4.19 rca    # an item and a whole collection
 //   node scripts/check.mjs physics         # a whole field
-//   flags: --shots (save PNGs to shots/), --modes (also every segmented-control option → shots/<id>~k.png),
+//   flags: --shots (save PNGs to shots/), --modes (also every segmented-control option and every flipped toggle → shots/<id>~k.png),
 //          --dark, --still, --w=860, --static (skip browser), --quiet, --jobs=N
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -65,18 +65,28 @@ async function worker() {
       r = await page.evaluate(() => window.__done);
       if (flags.has('--shots')) await page.locator('#shot').screenshot({ path: join(ROOT, 'shots', `${it.id}${theme === 'dark' ? '.dark' : ''}.png`) });
       if (flags.has('--modes')) {
-        // click through every option of every segmented control and screenshot each state
+        // click through every option of every segmented control, and flip every toggle, screenshotting each state
+        const snap = async () => {
+          await page.waitForTimeout(700); await page.evaluate(() => window.dispatchEvent(new Event('vizpause'))); await page.waitForTimeout(80);
+          k++; await page.locator('#shot').screenshot({ path: join(ROOT, 'shots', `${it.id}~${k}${theme === 'dark' ? '.dark' : ''}.png`) });
+        };
         const segs = await page.locator('#viz .seg').count(); let k = 0;
         for (let i = 0; i < segs; i++) {
           if (!(await page.locator('#viz .seg').nth(i).isVisible())) continue;
           const btns = page.locator('#viz .seg').nth(i).locator('button'); const n = await btns.count();
+          let def = 0; for (let j = 0; j < n; j++) if (await btns.nth(j).evaluate((b) => b.classList.contains('on'))) def = j;
           for (let j = 0; j < n; j++) {
-            if (!(await btns.nth(j).isVisible()) || await btns.nth(j).evaluate((b) => b.classList.contains('on'))) continue;
-            await btns.nth(j).click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(700);
-            await page.evaluate(() => window.dispatchEvent(new Event('vizpause'))); await page.waitForTimeout(80);
-            k++; await page.locator('#shot').screenshot({ path: join(ROOT, 'shots', `${it.id}~${k}${theme === 'dark' ? '.dark' : ''}.png`) });
+            if (j === def || !(await btns.nth(j).isVisible())) continue;
+            await btns.nth(j).click({ timeout: 3000 }).catch(() => {}); await snap();
           }
-          await btns.nth(0).click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(150);
+          await btns.nth(def).click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(150); // back to the default
+        }
+        const togs = page.locator('#viz .ctl-toggle input'); const nt = await togs.count();
+        for (let i = 0; i < nt; i++) {
+          const lab = page.locator('#viz .ctl-toggle label').nth(i);
+          if (!(await lab.isVisible())) continue;
+          await lab.click({ timeout: 3000 }).catch(() => {}); await snap();
+          await lab.click({ timeout: 3000 }).catch(() => {}); await page.waitForTimeout(150);
         }
         const errsNow = await page.evaluate(() => window.__vizErrors || []);
         if (errsNow.length) r.errors = [...(r.errors || []), ...errsNow];

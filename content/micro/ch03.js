@@ -431,7 +431,7 @@ the area between the stepped demand curve and the price line; for a smooth inver
         let st = null;
         v.render(() => {
           const n = nB.value, vs = values(n), P = hP.y, cut = mode.value === 'cut';
-          s.setView([0, n * 1.06], [0, 100]); hP.x = n * 1.03;
+          s.setView([0, n * 1.06], [0, 105]); hP.x = n * 1.03;
           const gap = n <= 30 ? 0.1 : 0.02, Ds = (x) => D((60 * x) / n);
           let cs = 0, buyers = 0, old = 0, newG = 0, nOld = 0, nNew = 0, cs0 = 0;
           vs.forEach((val, i) => {
@@ -493,7 +493,7 @@ the area between the price line and the (stepped) supply curve; for a smooth inv
         let st = null;
         v.render(() => {
           const n = nS.value, c = costs(n), P = hP.y, gap = n <= 30 ? 0.1 : 0.02;
-          s.setView([0, n * 1.08], [0, 100]); hP.x = n * 1.04;
+          s.setView([0, n * 1.08], [0, 105]); hP.x = n * 1.04;
           let k = 0;
           c.forEach((x, i) => {
             const act = x < P;

@@ -237,5 +237,5 @@ reoriented, the Americas split at Panama and Afro-Eurasia at Suez, Antarctica's 
 66 polygons / ~2.2k vertices, 7.8 KB as base64url zig-zag varints. Robinson's table is Snyder's (1993); geologic boundaries
 are from the ICS chart.
 
-**Known site issue.** `assets/css/style.css` has a page rule `.area { margin-top: 30px }` that also hits the legend's
-`area` swatch (`v.legend([..., {area: true}])`), pushing it below its label. The world demos avoid `area: true`.
+**Legend area swatches** (`v.legend([..., {area: true}])`) are safe to use: the page rule that used to push them below
+their labels was renamed to `.field-area`.

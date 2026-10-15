@@ -510,7 +510,7 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
           syn: { label: 'syntonic comma', a: ['3/2', '3/2', '3/2', '3/2'], b: ['2/1', '2/1', '5/4'] },
           pyth: { label: 'Pythagorean comma', a: Array(12).fill('3/2'), b: Array(7).fill('2/1') },
           dies: { label: 'diesis', a: ['5/4', '5/4', '5/4'], b: ['2/1'] },
-          custom: { label: 'my chain', a: ['3/2', '4/3'], b: ['2/1'] },
+          custom: { label: 'my chain', a: ['3/2', '3/2', '-2/1'], b: [] },
         };
         const sel = v.select('chain', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'syn');
         const toCustom = () => { if (sel.value !== 'custom') { PRE.custom.a = PRE[sel.value].a.slice(); PRE.custom.b = PRE[sel.value].b.slice(); sel.set('custom'); } };

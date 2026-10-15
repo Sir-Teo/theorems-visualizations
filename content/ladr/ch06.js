@@ -870,7 +870,7 @@ the squared diagonals of a parallelogram add up to the sum of the squares of its
           S.tex('u-v', (U[0] + V[0]) / 2, (U[1] + V[1]) / 2, { color: 'purple', size: 14, dx: 10, dy: 10, align: 'left' });
           // ratio as a function of the rotation angle
           const pts = []; let mn = Infinity, mx = -Infinity;
-          for (let k = 0; k <= 360; k += 2) { const r = ratio(N, rot(u0, (k * Math.PI) / 180), rot(v0, (k * Math.PI) / 180)); pts.push([k, r]); mn = Math.min(mn, r); mx = Math.max(mx, r); }
+          for (let k = 0; k <= 360; k += 1) { const r = ratio(N, rot(u0, (k * Math.PI) / 180), rot(v0, (k * Math.PI) / 180)); pts.push([k, r]); mn = Math.min(mn, r); mx = Math.max(mx, r); }
           const spread = Math.max(0.12, 1.25 * Math.max(Math.abs(mx - 1), Math.abs(1 - mn)));
           G.setView([0, 360], [1 - spread, 1 + spread]);
           G.hline(1, { color: 'green', width: 5, alpha: 0.3 });

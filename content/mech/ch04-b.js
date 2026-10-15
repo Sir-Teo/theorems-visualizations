@@ -264,7 +264,7 @@ a series that converges absolutely and uniformly (since $|H(n\omega)| = O(1/n^2)
 $$x(t) = \int_{-\infty}^{t} G(t-t')\,f(t')\,dt',\qquad G(\tau) = \omega_0^2\,\frac{e^{-\beta\tau}\sin\omega_1\tau}{\omega_1}\ \ (\tau\ge0),\quad G(\tau)=0\ \ (\tau<0),$$
 with $\omega_1 = \sqrt{\omega_0^2-\beta^2}$ (underdamped case). $G$ is the **Green’s function**: the response to a unit impulse $f = \delta(t-t')$. It is causal — the oscillator never responds before it is pushed.`,
       idea: String.raw`Cut the force history into short slices. During a slice of length $\Delta t'$ the force delivers an impulse $\omega_0^2 f(t')\,\Delta t'$ (per unit mass), which changes the velocity by that amount without moving the mass (mech-2.1); afterwards the oscillator rings freely, which by 4.7 is the decaying sine $f(t')\Delta t'\,G(t-t')$. Because the equation is linear (4.9), the responses to all the slices simply add, and as the slices shrink the sum becomes the convolution integral — a Riemann sum converging like $\Delta t'^2$ for the midpoint rule.`,
-      caption: String.raw`**Drag in the top panel to draw any force history**, or pick a preset. The force is cut into $N$ slices (orange bars); each one launches its own decaying sine (thin gold curves), and their sum (blue) lies on top of the directly integrated motion (dashed). Raise $N$ and the sum converges. Try **two kicks**: the second, half a period after the first, arrives in antiphase and almost stops the ringing.`,
+      caption: String.raw`**Drag in the top panel to draw any force history**, or pick a preset. The force is cut into $N$ slices (orange bars); each one launches its own decaying sine (thin gold curves), and their sum (blue) lies on top of the directly integrated motion (dashed). Raise $N$ and the sum converges. Try **two kicks**: the second, half a period after the first, arrives in antiphase and almost stops the ringing — and since each slice’s impulse is placed at the slice’s centre, sharp kicks need many slices before the sum locks on.`,
       deps: ['mech-4.9', 'mech-2.1'],
       refs: ['Goldstein §6.5'],
       tags: ['Green’s function', 'convolution', 'impulse response'],
@@ -272,9 +272,9 @@ with $\omega_1 = \sqrt{\omega_0^2-\beta^2}$ (underdamped case). $G$ is the **Gre
       viz(v) {
         const TW = 10, NS = 500, w0 = TAU, f = new Float64Array(NS + 1);
         const ts = (i) => TW * i / NS;
-        const pre = v.select('force', [{ value: 'pulse', label: 'pulse' }, { value: 'step', label: 'step' }, { value: 'kicks', label: 'two kicks' }, { value: 'noise', label: 'noise' }], 'kicks', { onChange: (p) => load(p) });
-        const N = v.slider('slices $N$', 4, 120, 30, { int: true });
-        const zr = v.slider('damping $\\beta/\\omega_0$', 0, 0.6, 0.06, { step: 0.01 });
+        const pre = v.select('force', [{ value: 'pulse', label: 'pulse' }, { value: 'step', label: 'step' }, { value: 'kicks', label: 'two kicks' }, { value: 'noise', label: 'noise' }], 'pulse', { onChange: (p) => load(p) });
+        const N = v.slider('slices $N$', 4, 200, 40, { int: true });
+        const zr = v.slider('damping $\\beta/\\omega_0$', 0, 0.6, 0.06, { step: 0.01, onChange: () => { if (pre.value === 'kicks') load('kicks'); } });
         let ver = 0;
         function load(p) {
           const z = zr.value, T1 = TAU / (w0 * Math.sqrt(1 - z * z)), r = v.rng(7);
@@ -283,12 +283,12 @@ with $\omega_1 = \sqrt{\omega_0^2-\beta^2}$ (underdamped case). $G$ is the **Gre
             const t = ts(i);
             if (p === 'pulse') f[i] = 0.9 * Math.exp(-(((t - 1.6) / 0.45) ** 2));
             else if (p === 'step') f[i] = t >= 1 ? 1 : 0;
-            else if (p === 'kicks') f[i] = (Math.abs(t - 1) < 0.04 ? 1.25 : 0) + (Math.abs(t - 1 - T1 / 2) < 0.04 ? 1.25 : 0);
+            else if (p === 'kicks') { const i1 = Math.round(NS / TW), i2 = Math.round((1 + T1 / 2) * NS / TW), HW = [1, 0.75, 0.25]; const d1 = Math.abs(i - i1), d2 = Math.abs(i - i2); f[i] = 1.5 * ((d1 < 3 ? HW[d1] : 0) + (d2 < 3 ? HW[d2] : 0)); }
             else { if (i % 10 === 0) { nz2 = nz; nz = r.normal() * 0.6; } const a = (i % 10) / 10; f[i] = t < 0.5 ? 0 : nz2 + (nz - nz2) * (0.5 - 0.5 * Math.cos(Math.PI * a)); }
           }
           ver++;
         }
-        load('kicks');
+        load('pulse');
         v.button('Clear (then draw)', () => { f.fill(0); ver++; pre.set('custom'); });
         const sF = v.stage({ x: [0, TW], y: [-1.6, 1.6], height: 170, full: true, axes: true, xlabel: 't (s)', title: 'force $f(t)$, in units of the static displacement — drag to draw' });
         const sX = v.stage({ x: [0, TW], y: [-2, 2], height: 280, full: true, axes: true, xlabel: 't (s)', title: 'response $x(t)$: sum of impulse responses vs direct integration' });
@@ -320,7 +320,7 @@ with $\omega_1 = \sqrt{\omega_0^2-\beta^2}$ (underdamped case). $G$ is the **Gre
             if ((i + 1) % (m / NG) === 0) xd.push(x);
           }
           let e1 = 0, e2 = 0, mx = 0.5; for (let i = 0; i <= NG; i++) { e1 = Math.max(e1, Math.abs(xN[i] - xd[i])); e2 = Math.max(e2, Math.abs(x2N[i] - xd[i])); mx = Math.max(mx, Math.abs(xd[i]), Math.abs(xN[i])); }
-          const each = N.value <= 60 ? sl.map(([tk, I]) => grid.filter((t) => t >= tk).map((t) => [t, I * G(t - tk)])) : null;
+          const each = N.value <= 80 ? sl.filter(([, I]) => Math.abs(I) > 1e-9).map(([tk, I]) => grid.filter((t) => t >= tk).map((t) => [t, I * G(t - tk)])) : null;
           return (S = { sl, grid, xN, xd, e1, e2, mx, each });
         }
         v.render(() => {
@@ -352,10 +352,10 @@ where $K$ is the complete elliptic integral of the first kind and AGM the arithm
       tags: ['pendulum', 'elliptic integrals', 'nonlinear oscillations'],
       viz(v) {
         const Ls = v.slider('length $L$ (m)', 0.1, 5, 1, { step: 0.01 });
-        const sP = v.stage({ x: [0, 180], y: [0.9, 4], height: 330, axes: 'box', xlabel: 'θ₀ (°)', ylabel: 'T / T₀', xticks: [0, 30, 60, 90, 120, 150, 180], weight: 1.2 });
+        const sP = v.stage({ x: [0, 180], y: [0.72, 4], height: 330, axes: 'box', xlabel: 'θ₀ (°)', ylabel: 'T / T₀', xticks: [0, 30, 60, 90, 120, 150, 180], weight: 1.2, title: 'period against release angle' });
         const sW = v.stage({ x: [0, 1], y: [-1.2, 1.2], height: 330, axes: true, xlabel: 't/T', weight: 1, title: 'one swing, rescaled: $\\theta(t)/\\theta_0$' });
         const R = (deg) => 1 / agm(1, Math.cos(deg * Math.PI / 360));
-        const hd = sP.handle(120, R(120), { color: 'accent', constrain: (x) => { const d = clamp(x, 1, 179.5); return [d, Math.min(4, R(d))]; } });
+        const hd = sP.handle(165, R(165), { color: 'accent', constrain: (x) => { const d = clamp(x, 1, 179.5); return [d, Math.min(4, R(d))]; } });
         const DOTS = [10, 30, 50, 70, 90, 110, 130, 150, 160, 170, 175].map((d) => { const r = pendulumHalf(d * Math.PI / 180, 0.002); return [d, 2 * r.half / TAU]; });
         let W = null, wkey = -1;
         function wave() {

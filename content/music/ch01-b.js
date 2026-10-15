@@ -90,7 +90,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
         const M = v.M, C = M.CONST, c = cAir(C), P = 0.1, WX = 24, RMIN = 0.5;
         const fp = v.stage({ x: [-6, 54], y: [-20, 20], equal: true, height: 360, axes: false, weight: 1.3, title: 'floor plan, 60 m × 40 m: level in dB' });
         const gr = v.stage({ x: [RMIN, 60], y: [1e-6, 0.1], xlog: true, ylog: true, height: 360, axes: 'box', grid: true, xlabel: 'r (m)', ylabel: 'I (W/m²)', weight: 1, title: 'intensity along the line to the listener' });
-        const wall = v.toggle('reflecting wall', false);
+        const wall = v.toggle('reflecting wall', true);
         const Rw = v.slider('wall reflects', 0, 1, 0.8, { step: 0.01, fmt: (x) => Math.round(100 * x) + '% of the energy' });
         const lis = fp.handle(9, 4, { color: 'gold', label: 'listener', labelPos: 'nw', constrain: (x, y) => { let X = M.clamp(x, -5.5, wall.value ? WX - 0.8 : 53); let Y = M.clamp(y, -19, 19); const r = Math.hypot(X, Y); if (r < 1) { X = X / (r || 1); Y = Y / (r || 1); } return [X, Y]; } });
         const Ifree = (r) => P / (4 * Math.PI * Math.max(RMIN, r) ** 2);
@@ -237,6 +237,8 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           lad.rect(xb0, 0, xb1, 140, { color: 'muted', width: 1 });
           lad.rect(xb0, 0, xb1, Math.min(140, LN), { fill: 'green', fillAlpha: 0.45, stroke: false });
           lad.rect(xb0 + 0.015, 0, xb1 - 0.015, Math.min(140, L1), { fill: 'accent', fillAlpha: 0.85, stroke: false });
+          lad.line(xb0 - 0.03, L1, 1, L1, { color: 'accent', width: 1.4, dash: [4, 3] });
+          if (N > 1) lad.line(xb0 - 0.03, LN, 1, LN, { color: 'green', width: 1.4, dash: [4, 3] });
           for (let L = 0; L <= 140; L += 10) {
             lad.line(xb1, L, xb1 + 0.02, L, { color: 'muted', width: 1 });
             lad.text(`${L}`, xb1 + 0.03, L, { align: 'left', color: 'ink', size: 10.5 });
@@ -245,10 +247,8 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           lad.text('dB', xb1 + 0.03, 144, { align: 'left', color: 'ink', size: 10.5, weight: 600 });
           lad.text('W/m²', xb1 + 0.13, 144, { align: 'left', color: 'muted', size: 10.5, weight: 600 });
           for (const [L, lab] of LMARKS) lad.text(lab, 0.44, L, { align: 'left', color: 'muted', size: 10.5 });
-          lad.line(xb0 - 0.03, L1, 1, L1, { color: 'accent', width: 1.4, dash: [4, 3] });
           lad.text('one source', 0.99, L1, { align: 'right', baseline: 'top', dy: 2, color: 'accent', size: 11, weight: 700 });
           if (N > 1) {
-            lad.line(xb0 - 0.03, LN, 1, LN, { color: 'green', width: 1.4, dash: [4, 3] });
             lad.text(`all ${N}: ${st.dL >= 0 ? '+' : '−'}${v.fix(Math.abs(st.dL), 2)} dB`, 0.99, LN, { align: 'right', baseline: 'bottom', dy: -2, color: 'green', size: 11, weight: 700 });
           }
           // ---- waveforms, in a unit that suits the level
@@ -516,7 +516,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
       viz(v) {
         const M = v.M, C = M.CONST, c = cAir(C), TAU = 2 * Math.PI;
         const DX = 0.025, NX = 240, NY = 112, CN = 0.5, DT = (CN * DX) / c, IW = 72, IS = 6, YC = 1.4, KM = (CN - 1) / (CN + 1);
-        const fq = v.slider('frequency $f$', 100, 1600, 400, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
+        const fq = v.slider('frequency $f$', 100, 1600, 1400, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
         const wS = v.slider('doorway width $w$', 0.3, 1.2, 0.8, { step: 0.025, fmt: (x) => v.fix(x, 2) + ' m' });
         const s = v.stage({ x: [-0.04, 6.04], y: [-0.04, 2.84], equal: true, height: 380, axes: false, full: true, title: 'ripple tank: the 2D wave equation, solved live (6 m × 2.8 m)' });
         const lis = s.handle(4.2, 0.45, { color: 'gold', label: 'listener', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, (IW + 3) * DX, 5.9), M.clamp(y, 0.1, 2.7)] });

@@ -244,7 +244,7 @@ export default {
       tags: ['isometries', 'matrices'],
       viz(v) {
         const S = v.stage({ x: [-2, 2], y: [-1.9, 1.9], equal: true, height: 360, minWidth: 290 });
-        const G = v.stage({ x: [-0.6, 0.6], y: [0, 1.25], height: 360, minWidth: 290, axes: 'box', xlabel: 'ε', title: 'defect of each condition as $\\varepsilon$ varies' });
+        const G = v.stage({ x: [-0.6, 0.6], y: [0, 1.5], height: 360, minWidth: 290, axes: 'box', xlabel: 'ε', title: 'defect of each condition as $\\varepsilon$ varies' });
         const base = v.select('', [{ value: 'r', label: '$Q_0$ rotation' }, { value: 'f', label: '$Q_0$ reflection' }], 'r');
         const dir = v.select('push in direction', [{ value: 'rand', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'stretch', label: 'stretch' }], 'rand');
         const th = v.slider('$\\theta$', -3.14, 3.14, 0.6, { step: 0.01 });
@@ -278,14 +278,14 @@ export default {
           S.tex('Qv', Qv[0], Qv[1], { color: 'purple', size: 15, dx: 14, dy: -10 });
           // right: the four defects as functions of ε
           G.hline(0, { color: 'faint', width: 1 });
-          for (let k = 0; k < 4; k++) G.fn((x) => defects(Qof(x))[k], { color: DC[k], width: 2.2, n: 160 });
+          for (let k = 0; k < 4; k++) G.fn((x) => defects(Qof(x))[k], { color: DC[k], width: 2.2, n: 160, dash: k === 1 ? [7, 5] : false });
           G.vline(e, { color: 'gold', width: 1.4, dash: [4, 4] });
           for (let k = 0; k < 4; k++) G.dot(e, d[k], { color: DC[k], r: 4 });
-          G.corner(ok ? '(a) (b) (c) (d) all hold' : '(a) (b) (c) (d) all fail', 'tl', { color: ok ? 'green' : 'red', weight: 700 });
+          G.corner(ok ? '(a) (b) (c) (d) all hold' : '(a) (b) (c) (d) all fail', 'tr', { color: ok ? 'green' : 'red', weight: 700 });
           S.corner(ok ? 'Q is unitary' : 'Q is not unitary', 'tl', { color: ok ? 'green' : 'red', weight: 700 });
           st = { Q, d, ok, nv, nQv: len(Qv) };
         });
-        v.legend([['blue', '(a) max $|\\langle q_j, q_k\\rangle - \\delta_{jk}|$'], ['orange', '(b) same for rows'], ['purple', '(c) $\\max_{\\|u\\|=1} \\big|\\|Qu\\| - 1\\big|$'], ['teal', '(d) $\\max(\\|Q^*Q - I\\|, \\|QQ^* - I\\|)$']]);
+        v.legend([['blue', '(a) max $|\\langle q_j, q_k\\rangle - \\delta_{jk}|$'], ['orange', '(b) same for rows', { dash: true }], ['purple', '(c) $\\max_{\\|u\\|=1} \\big|\\|Qu\\| - 1\\big|$'], ['teal', '(d) $\\max(\\|Q^*Q - I\\|, \\|QQ^* - I\\|)$']]);
         v.readout(() => {
           if (!st) return '';
           const { Q, d, ok, nv, nQv } = st;
@@ -311,12 +311,12 @@ $$A = QR.$$`,
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 270 });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.45, lim: 1.6 });
         const CC = ['blue', 'purple', 'teal'];
-        const H = [[1.2, 0.15, 0.05], [0.75, 1.0, 0.15], [0.35, 0.45, 1.15]].map((p, k) => sc.handle(p, {
+        const H = [[1.4, 0.4, 0.15], [0.55, 1.05, 0.2], [0.35, 0.45, 1.15]].map((p, k) => sc.handle(p, {
           color: CC[k], label: `v${'₁₂₃'[k]}`,
           snap: k === 2 ? (q) => { const n = unit(cross(H[0].p, H[1].p)), d = dot(q, n); return Math.abs(d) < 0.1 ? sub(q, scl(n, d)) : q; } : null,
         }));
         const flip = v.toggle('flip the sign of $e_2$', false);
-        const code = ['$e_1 \\leftarrow v_1/\\|v_1\\|$,  $R_{1,1} \\leftarrow \\|v_1\\|$', '**for** $k = 2, 3$:', '  $R_{j,k} \\leftarrow \\langle v_k, e_j\\rangle$ for $j < k$   ▷ shadows', '  $w_k \\leftarrow v_k - \\sum_{j<k} R_{j,k}\\, e_j$', '  $R_{k,k} \\leftarrow \\|w_k\\|$,  $e_k \\leftarrow w_k / R_{k,k}$', '$Q \\leftarrow [\\,e_1\\ e_2\\ e_3\\,]$;  then $A = QR$'];
+        const code = ['$e_1 \\leftarrow v_1/\\|v_1\\|$,  $R_{1,1} \\leftarrow \\|v_1\\|$', 'for $k = 2, 3$:', '  $R_{j,k} \\leftarrow \\langle v_k, e_j\\rangle$ for $j < k$   ▷ shadows', '  $w_k \\leftarrow v_k - \\sum_{j<k} R_{j,k}\\, e_j$', '  $R_{k,k} \\leftarrow \\|w_k\\|$,  $e_k \\leftarrow w_k / R_{k,k}$', '$Q \\leftarrow [\\,e_1\\ e_2\\ e_3\\,]$;  then $A = QR$'];
         const steps = v.steps({
           frames: [
             { s: 0, line: [], note: 'The columns $v_1, v_2, v_3$ of $A$. Gram–Schmidt will turn them into an orthonormal list, keeping track of the coefficients in $R$.' },
@@ -368,15 +368,25 @@ $$A = QR.$$`,
           if (dep && s >= 5) S.corner('w₃ = 0: the columns are dependent, no e₃ and R₃₃ = 0', 'tl', { color: 'red', weight: 700 });
           // the tables
           const cellQ = (i, j) => (known.e[j] && E[j] ? E[j][i] : null);
-          tQ.draw({ value: cellQ, format: (x) => pf(x, 2), fill: (i, j) => (cellQ(i, j) != null ? ['green', 0.13] : null) });
+          tQ.draw({ value: cellQ, format: (x) => (x == null ? '' : pf(x, 2)), fill: (i, j) => (cellQ(i, j) != null ? ['green', 0.13] : null) });
           tR.draw({
-            value: (j, k) => (known.R(j, k) ? (j > k ? 0 : RR[j][k]) : null), format: (x) => pf(x, 2),
+            value: (j, k) => (known.R(j, k) ? (j > k ? 0 : RR[j][k]) : null), format: (x) => (x == null ? '' : pf(x, 2)),
             textColor: (j, k) => (j > k ? 'faint' : 'ink'),
             fill: (j, k) => (!known.R(j, k) || j > k ? null : j === k ? (RR[j][j] > 1e-6 ? ['green', 0.22] : ['red', 0.3]) : ['orange', 0.14]),
           });
           for (const [t, lab] of [[tQ, 'Q'], [tR, 'R']]) { const g = t.geo; if (g) R.texPx(lab, g.X0 + (3 * g.cw) / 2, g.Y0 - 14, { size: 17 }); }
           const Qm = fromCols(E.map((x) => x || ZERO)), A = fromCols(Vs), err = maxAbs(msub(mm(Qm, RR), A));
-          if (s === 6) R.tex(dep ? '\\text{no factorization: } R_{3,3} = 0' : `\\max|A - QR| = ${v.sci(err, 1)}`, 0.5, 0.28, { size: 15, color: dep ? 'red' : 'green' });
+          const NEW = [
+            '\\text{the columns of } A \\text{ are } v_1, v_2, v_3',
+            `R_{1,1} = \\|v_1\\| = ${tn(Rm[0][0])}`,
+            `R_{1,2} = \\langle v_2, e_1\\rangle = ${tn(Rm[0][1])}`,
+            `R_{2,2} = \\|w_2\\| = ${tn(Rm[1][1])}`,
+            `R_{1,3} = \\langle v_3, e_1\\rangle = ${tn(Rm[0][2])},\\ \\ R_{2,3} = \\langle v_3, e_2\\rangle = ${tn(Rm[1][2])}`,
+            `R_{3,3} = \\|w_3\\| = ${tn(Rm[2][2])}`,
+            dep ? '\\text{no factorization: } R_{3,3} = 0' : `\\max|A - QR| = ${v.sci(err, 1)}`,
+          ];
+          R.tex(NEW[s], 0.5, 0.29, { size: 14.5, color: s === 6 ? (dep ? 'red' : 'green') : s === 5 && dep ? 'red' : 'ink' });
+          R.line(0.06, 0.37, 0.94, 0.37, { color: 'grid', width: 1 });
           if (fl) R.tex('R_{2,2} < 0:\\ \\text{also } A = QR,\\ \\text{but not allowed}', 0.5, 0.16, { size: 13.5, color: 'red' });
           st = { s, A, RR, err, dep, fl, hh: dep ? null : M.qr(A) };
         });
@@ -429,8 +439,8 @@ $$\langle Tv, v\rangle > 0 \quad\text{for every nonzero } v \in V.$$`,
           for (let k = 0; k < 2; k++) {
             const a = uAt(ph.value + (k * Math.PI) / 2);
             S.line(-3 * a[0], -3 * a[1], 3 * a[0], 3 * a[1], { color: Math.abs(L[k]) < 1e-9 ? 'gold' : 'faint', width: Math.abs(L[k]) < 1e-9 ? 2.5 : 1, dash: Math.abs(L[k]) < 1e-9 ? false : [3, 4] });
-            const lp = scl(a, 1.9);
-            S.tex(`\\lambda_${k + 1} = ${tn(L[k])}`, lp[0], lp[1], { color: 'muted', size: 13, dy: -10 });
+            const sg = a[0] > 0.15 || (a[0] > -0.15 && a[1] < 0) ? 1 : -1, lp = scl(a, 1.72 * sg);
+            S.tex(`\\lambda_${k + 1} = ${tn(L[k])}`, lp[0], lp[1], { color: 'muted', size: 13, dy: lp[1] > 0 ? -11 : 11 });
           }
           if (L[0] * L[1] < 0) { const t0 = Math.atan(Math.sqrt(-L[0] / L[1])); for (const sg of [1, -1]) { const a = uAt(ph.value + sg * t0); S.line(-3 * a[0], -3 * a[1], 3 * a[0], 3 * a[1], { color: 'gold', width: 1.6, dash: [6, 4] }); } }
           S.circle(0, 0, 1, { color: 'muted', width: 1.2 });
@@ -439,10 +449,10 @@ $$\langle Tv, v\rangle > 0 \quad\text{for every nonzero } v \in V.$$`,
             S.arrow(u[0], u[1], tip[0], tip[1], { color: Q > 0.02 * big ? 'green' : Q < -0.02 * big ? 'red' : 'gold', width: 1.6, head: 6 });
           }
           const u = [vh.x, vh.y], Tu = mv(T, u), Q = q(u), foot = scl(u, Q);
-          S.arrow(0, 0, Tu[0], Tu[1], { color: 'accent', width: 2.6 });
+          S.arrow(0, 0, Tu[0], Tu[1], { color: 'purple', width: 2.6 });
           S.line(Tu[0], Tu[1], foot[0], foot[1], { color: 'muted', width: 1, dash: [3, 3] });
           S.line(0, 0, foot[0], foot[1], { color: Q > 1e-9 ? 'green' : Q < -1e-9 ? 'red' : 'gold', width: 5, alpha: 0.75 });
-          if (len(Tu) > 0.15) S.tex('Tv', Tu[0], Tu[1], { color: 'accent', size: 15, dx: 12, dy: -10 });
+          if (len(Tu) > 0.15) S.tex('Tv', Tu[0], Tu[1], { color: 'purple', size: 15, dx: 12, dy: -10 });
           // right: q on the unit circle (period π)
           const f = (t) => q(uAt(t)), mn = Math.min(...L), tmin = ph.value + (L[0] <= L[1] ? 0 : Math.PI / 2);
           G.setView(null, [Math.min(-0.3, mn - 0.3), Math.max(1, Math.max(...L) + 0.4)]);
@@ -451,14 +461,14 @@ $$\langle Tv, v\rangle > 0 \quad\text{for every nonzero } v \in V.$$`,
           G.hline(0, { color: 'muted', width: 1 });
           G.fn(f, { color: 'accent', width: 2.4, n: 200 });
           const tm = ((tmin % Math.PI) + Math.PI) % Math.PI;
-          G.dot(tm, mn, { color: mn > 1e-9 ? 'green' : mn < -1e-9 ? 'red' : 'gold', r: 5, label: `min = λmin = ${pn(mn)}`, labelPos: tm > Math.PI / 2 ? 'nw' : 'ne' });
+          G.dot(tm, mn, { color: mn > 1e-9 ? 'green' : mn < -1e-9 ? 'red' : 'gold', r: 5, label: `min = λmin = ${pn(mn)}`, labelPos: 's' });
           const tv = ((Math.atan2(u[1], u[0]) % Math.PI) + Math.PI) % Math.PI;
           G.vline(tv, { color: 'gold', width: 1.2, dash: [4, 4] }); G.dot(tv, Q, { color: 'gold', r: 4.5 });
           const pos = mn > 1e-9;
           S.corner(pos ? 'T positive and invertible' : mn < -1e-9 ? 'T not positive' : 'T positive, not invertible', 'tl', { color: pos ? 'green' : 'red', weight: 700 });
           st = { L, mn, Q, Tu, det: L[0] * L[1] };
         });
-        v.legend([['green', '$Tv$ points outward: $\\langle Tv, v\\rangle > 0$'], ['red', 'inward: $\\langle Tv, v\\rangle < 0$'], ['gold', 'where $\\langle Tv, v\\rangle = 0$', { dash: true }], ['blue', 'level sets of $\\langle Tv, v\\rangle$']]);
+        v.legend([['purple', '$Tv$ for the gold $v$'], ['green', 'outward: $\\langle Tv, v\\rangle > 0$'], ['red', 'inward: $\\langle Tv, v\\rangle < 0$'], ['gold', 'where $\\langle Tv, v\\rangle = 0$', { dash: true }], ['blue', 'level sets of $\\langle Tv, v\\rangle$']]);
         v.readout(() => {
           if (!st) return '';
           const { mn, Q, Tu, det } = st, at = `$\\langle Tv, v\\rangle = ${tn(Q)}$, $\\|Tv\\| = ${tn(len(Tu))}$ at the gold $v$. `;
@@ -499,13 +509,14 @@ where $\mathbf F^n$ carries the Euclidean inner product and $x$ is viewed as a c
           const a = hp.x, c = hp.y, b = bS.value, k = kS.value, B = [[a, b + k], [b - k, c]];
           const E = sym2(a, b, c), sym = Math.abs(k) < 1e-9, pd = E.l[1] > 1e-9 && sym, d = a * c - b * b;
           const key = [b, v.rgb('green').join()].join('|');
-          P.raster((x, y) => { const dd = x * y - b * b; return x > 0 && dd > 0 ? rgba(v, 'green', 0.22) : dd < 0 ? rgba(v, 'red', 0.06) : null; }, { key, res: 3 });
+          P.raster((x, y) => { const dd = x * y - b * b; return x > 0 && dd > 0 ? rgba(v, 'green', 0.22) : dd < 0 ? rgba(v, 'red', 0.06) : rgba(v, 'muted', 0.06); }, { key, res: 2 });
           P.axes();
-          if (Math.abs(b) > 1e-9) P.fn((x) => (b * b) / x, { domain: [0.01, 2.2], color: 'green', width: 1.8 }); else { P.line(0, 0, 0, 2.2, { color: 'green', width: 1.8 }); P.line(0, 0, 2.2, 0, { color: 'green', width: 1.8 }); }
+          if (Math.abs(b) > 1e-9) { P.fn((x) => (b * b) / x, { domain: [0.005, 3.5], color: 'green', width: 1.8 }); P.fn((x) => (b * b) / x, { domain: [-3.5, -0.005], color: 'muted', width: 1.2, dash: [4, 4] }); } else { P.line(0, 0, 0, 3, { color: 'green', width: 1.8 }); P.line(0, 0, 3, 0, { color: 'green', width: 1.8 }); }
           P.text('positive definite', 1.25, 1.85, { color: 'green', size: 12, weight: 700, align: 'center' });
           P.text('indefinite', -1.2, 1.6, { color: 'red', size: 12, weight: 600, align: 'center' });
+          P.text('negative definite', -1.3, -1.75, { color: 'muted', size: 12, weight: 600, align: 'center' });
           // the form and its level curve
-          S.raster((x, y) => { const q = a * x * x + 2 * b * x * y + c * y * y; return q > 0 ? rgba(v, 'blue', Math.min(0.42, q / 6)) : rgba(v, 'red', Math.min(0.42, -q / 6)); }, { key: [a, b, c, v.rgb('blue').join()].join('|'), res: 3 });
+          S.raster((x, y) => { const q = a * x * x + 2 * b * x * y + c * y * y; return q > 0 ? rgba(v, 'blue', Math.min(0.3, q / 14)) : rgba(v, 'red', Math.min(0.3, -q / 14)); }, { key: [a, b, c, v.rgb('blue').join()].join('|'), res: 3 });
           S.axes();
           const q = (u) => a * u[0] * u[0] + 2 * b * u[0] * u[1] + c * u[1] * u[1];
           const pts = []; for (let i = 0; i <= 720; i++) { const u = uAt((TAU * i) / 720), Q = q(u); pts.push(Q > 1e-6 && 1 / Math.sqrt(Q) < 8 ? scl(u, 1 / Math.sqrt(Q)) : null); }
@@ -546,9 +557,9 @@ $$B = R^*R.$$`,
       viz(v) {
         const S = v.stage({ x: [-2.4, 2.4], y: [-1.9, 2.3], equal: true, height: 370, minWidth: 300, weight: 1.1 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 370, minWidth: 280, title: 'the matrices' });
-        const tS = v.slider('apply $Q^*$', 0, 1, 1, { step: 0.01 });
+        const tS = v.slider('apply $Q^*$', 0, 1, 0.6, { step: 0.01 });
         const h1 = S.handle(0.9, 1.3, { color: 'blue', label: 'a₁' });
-        const h2 = S.handle(-1.1, 0.6, {
+        const h2 = S.handle(-0.45, 1.25, {
           color: 'teal', label: 'a₂', constrain: (x, y) => {
             const u = unit([h1.x, h1.y]), p = [x, y], c = p[0] * u[1] - p[1] * u[0];
             return Math.abs(c) < 0.08 && len(p) > 0.2 ? scl(u, dot(p, u)) : p;
@@ -576,8 +587,9 @@ $$B = R^*R.$$`,
           const ang = Math.atan2(m1[1], m1[0]), ang2 = Math.atan2(m2[1], m2[0]);
           let da = ang2 - ang; while (da > Math.PI) da -= TAU; while (da < -Math.PI) da += TAU;
           S.curve((s) => scl(uAt(ang + s * da), 0.35), 0, 1, { color: 'gold', width: 1.6 });
-          S.corner(pd ? `angle ${pf((Math.abs(da) * 180) / Math.PI, 1)}°, lengths ${pf(len(a1))} and ${pf(len(a2))} — kept by Q*` : 'a₁, a₂ dependent: B only semidefinite', 'tl', { color: pd ? 'muted' : 'red', weight: pd ? 500 : 700 });
+          S.corner(pd ? `angle ${pf((Math.abs(da) * 180) / Math.PI, 1)}°, lengths ${pf(len(a1))} and ${pf(len(a2))} — kept by Q*` : 'a₁, a₂ dependent: B only semidefinite', 'bl', { color: pd ? 'muted' : 'red', weight: pd ? 500 : 700 });
           // the matrices
+          for (const y of [0.78, 0.57, 0.355, 0.16]) R.line(0.08, y, 0.92, y, { color: 'grid', width: 1 });
           R.tex(`A = ${mtex(A)}`, 0.5, 0.88, { size: 15 });
           R.tex(`B = A^*A = ${mtex(B)}`, 0.5, 0.68, { size: 15 });
           R.tex(`R = \\begin{bmatrix} \\sqrt{B_{11}} & B_{12}/R_{11} \\\\ 0 & \\sqrt{B_{22} - R_{12}^2} \\end{bmatrix} = ${mtex(Rm)}`, 0.5, 0.46, { size: 13.5, color: pd ? 'green' : 'red' });
@@ -614,7 +626,7 @@ $$B = R^*R.$$`,
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.75, 1.9], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 320, title: '$V = \\mathbf R^3$' });
         const W = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 390, minWidth: 250, title: '$W = \\mathbf R^2$' });
         const sc = v.scene3(S, { yaw: -0.55, pitch: 0.3, axis: 1.5, lim: 1.6 });
-        const PRE = { 2: [[1.0, 0.45, -0.35], [-0.2, 0.65, 0.85]], 1: [[0.72, 0.54, -0.45], [0.4, 0.3, -0.25]] };
+        const PRE = { 2: [[1.05, 0.3, 0.25], [0.1, 0.9, -0.3]], 1: [[0.84, 0.54, 0.3], [0.42, 0.27, 0.15]] };
         let T = PRE[2], seed = 5;
         const rk = v.select('', [{ value: '2', label: 'rank 2' }, { value: '1', label: 'rank 1' }], '2', { onChange: (k) => { T = PRE[k]; } });
         v.button('Resample', () => {
@@ -642,8 +654,9 @@ $$B = R^*R.$$`,
           else if (nullB.length === 2) sc.disc(nullB[0], nullB[1], 1.45, { fill: 'red', color: 'red', fillAlpha: 0.08, alpha: 0.5, grid: true });
           if (r === 2) sc.disc(rowB[0], rowB[1], 1.45, { fill: 'green', color: 'green', fillAlpha: 0.09, alpha: 0.6, grid: true });
           else if (r === 1) sc.line(scl(rowB[0], -1.7), scl(rowB[0], 1.7), { color: 'green', width: 4.5, alpha: 0.5 }, 16);
-          sphereImage(sc, TtT, { color: 'purple', width: 1.1, alpha: 0.55 });
-          es.vecs.forEach((e, i) => { if (es.values[i] > tol) sc.line(scl(e, -es.values[i]), scl(e, es.values[i]), { color: 'purple', width: 1.4, alpha: 0.6 }); });
+          // T*T(unit ball) is the flat ellipse with semi-axes λ₁e₁, λ₂e₂ (λ₃ = 0): a disc or a segment in range T*
+          ellPoly3(sc, scl(es.vecs[0], es.values[0]), scl(es.vecs[1], Math.max(0, es.values[1])), { fill: 'purple', color: 'purple', fillAlpha: 0.16, alpha: 0.8, width: 1.6 });
+          es.vecs.forEach((e, i) => { if (es.values[i] > tol) sc.line(scl(e, -es.values[i]), scl(e, es.values[i]), { color: 'purple', width: 1.4, alpha: 0.6, dash: [4, 4] }); });
           sc.arrow(ZERO, p, { color: 'gold', width: 3 });
           if (len(TTp) > 1e-6) { sc.arrow(ZERO, TTp, { color: 'purple', width: 3 }); sc.tex('T^*Tv', TTp, { color: 'purple', size: 14, dy: -13 }); }
           if (nullB.length) { const np = nullB.length === 1 ? nullB[0] : nullB[0]; sc.tex('\\operatorname{null} T', scl(np, sc.P(np)[1] >= 0 ? 1.75 : -1.75), { color: 'red', size: 13, dy: -10 }); }
@@ -661,7 +674,7 @@ $$B = R^*R.$$`,
           const gap = rowB.length === rangeTs.length ? Math.max(0, ...rangeTs.map((e) => len(sub(e, rowB.reduce((acc, b) => add(acc, scl(b, dot(e, b))), ZERO))))) : 1;
           st = { r, nNull: nullB.length, q: dot(TTp, p), nTp: len(Tp), nTTp: len(TTp), ev: es.values, gap, rr: rangeTs.length };
         });
-        v.legend([['red', '$\\operatorname{null} T = \\operatorname{null} T^*T$'], ['green', '$\\operatorname{range} T^* = \\operatorname{range} T^*T$'], ['purple', '$T^*T$ (unit sphere)'], ['accent', '$T$ (unit ball)', { area: true }]]);
+        v.legend([['red', '$\\operatorname{null} T = \\operatorname{null} T^*T$'], ['green', '$\\operatorname{range} T^* = \\operatorname{range} T^*T$'], ['purple', '$T^*T(\\text{unit ball})$', { area: true }], ['accent', '$T(\\text{unit ball})$', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { r, nNull, q, nTp, nTTp, ev, gap, rr } = st;
@@ -685,7 +698,7 @@ $$B = R^*R.$$`,
         const V = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 320, minWidth: 260, title: 'in $V$: $T^*T$ and its eigenvectors' });
         const W = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 320, minWidth: 260, title: 'in $W$: the image of the unit circle under $T$' });
         const N = v.stage({ x: [-0.3, 5], y: [0, 3], height: 150, full: true, axes: false });
-        const PRE = { gen: [[1.4, 0.6], [0.5, 0.9]], shear: [[1, 1.5], [0, 1]], nil: [[0, 2], [0, 0]], rot: [[1.2, -0.9], [0.9, 1.2]], r1: [[1.2, 0.6], [0.8, 0.4]] };
+        const PRE = { gen: [[1.2, 1.1], [-0.3, 0.8]], shear: [[1, 1.5], [0, 1]], nil: [[0, 2], [0, 0]], rot: [[1.2, -0.9], [0.9, 1.2]], r1: [[1.2, 0.6], [0.8, 0.4]] };
         const H = colHandles(W, PRE.gen);
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'nil', label: 'nilpotent' }, { value: 'rot', label: '1.5 × rotation' }, { value: 'r1', label: 'rank 1' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         let st = null;
@@ -710,7 +723,7 @@ $$B = R^*R.$$`,
             const c = k ? 'purple' : 'blue', w = scl(u, s[k]);
             if (s[k] < 1e-6) return;
             W.arrow(0, 0, w[0], w[1], { color: c, width: 2.8 });
-            const lp = scl(u, s[k] + 0.32);
+            const n = perp(u), side = n[1] < 0 ? -1 : 1, lp = add(scl(u, s[k] * 0.55), scl(n, 0.3 * side * (k ? -1 : 1)));
             W.tex(`s_${k + 1} = ${tn(s[k])}`, lp[0], lp[1], { color: c, size: 14 });
           });
           // number lines

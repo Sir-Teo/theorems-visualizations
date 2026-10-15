@@ -314,7 +314,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
         const G = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, weight: 1, title: 'the 16 products $A_{ik}B_{lj}$, signed contributions' });
         const TG = v.table(G, { rows: 4, cols: 4, rowLabels: ['$A_{11}$', '$A_{12}$', '$A_{21}$', '$A_{22}$'], colLabels: ['$B_{11}$', '$B_{21}$', '$B_{12}$', '$B_{22}$'], maxCell: 64, size: 17, subSize: 10.5, subColor: 'muted', region: [0, 0.18, 1, 1] });
         const mode = v.select('count', [{ value: 'mul', label: 'scalar multiplications' }, { value: 'ops', label: 'all arithmetic' }], 'mul', { onChange: () => { cut.el.hidden = mode.value !== 'ops'; } });
-        const cut = v.slider('cut-off $n_0 = 2^j$, $j$', 0, 7, 3, { int: true, fmt: (j) => `${2 ** j}` }); cut.el.hidden = true;
+        const cut = v.slider('cut-off $n_0 = 2^j$, $j$', 0, 7, 4, { int: true, fmt: (j) => `${2 ** j}` }); cut.el.hidden = true;
         const Pl = v.stage({ x: [1, 4096], y: [1, 1e12], xlog: true, ylog: true, axes: 'box', height: 230, full: true, xlabel: 'n', title: 'cost for $n\\times n$ matrices, $n = 2^k$' });
         const cellA = (r, c) => [0.4 + c * 1.05, 8.1 - r * 1.05], cellB = (r, c) => [3.75 + c * 1.05, 8.1 - r * 1.05], cellC = (r, c) => [7.6 + c * 1.05, 8.1 - r * 1.05];
         L.onClick((x, y) => {
@@ -356,7 +356,6 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
             L.text(`= ${mnus(sa)} × ${mnus(sb)} = ${mnus(p)}`, 3.6, y - 0.37, { size: 13, weight: 600, color: isUsed || cur ? 'ink' : 'muted' });
             if (inTarget.has(k)) L.text(`${inTarget.get(k) > 0 ? '+' : '−'} in C${'₁₂'[ti]}${'₁₂'[tj]}`, 11.8, y - 0.37, { align: 'right', size: 12, weight: 700, color: isUsed ? (inTarget.get(k) > 0 ? 'green' : 'red') : 'faint' });
           });
-          L.text('green: added, red: subtracted', 0.2, 0.1, { size: 10.5, color: 'muted', baseline: 'bottom' });
           // ---- product table
           const tgt = new Set([`${2 * ti}:${ST_BCOL.indexOf(tj)}`, `${2 * ti + 1}:${ST_BCOL.indexOf(2 + tj)}`]);
           const curM = f.cur != null ? ST_M[f.cur] : null;
@@ -384,16 +383,18 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
             Pl.text(`at n = 4096: ${v.fix(4096 ** 3 / 4096 ** LG(7), 1)}× fewer`, 4096, 3e4, { color: 'muted', size: 11, align: 'right', dx: -8 });
             info.cross = null;
           } else {
-            const n0 = 2 ** cut.value, cr = ns.find((n, idx) => ns.slice(idx).every((m) => strassen(m, n0) < classical(m)));
-            Pl.setView([1, 4096], [1, 1e12]);
-            if (cr) { Pl.vband(cr, 4096, { color: 'green', alpha: 0.07 }); Pl.vline(cr, { color: 'green', dash: [5, 4], width: 1.5 }); Pl.text(`Strassen wins from n = ${cr}`, cr, 3e10, { color: 'green', size: 11, weight: 700, dx: 6 }); }
-            Pl.path(series(classical), { color: 'red', width: 2 }); Pl.dots(series(classical), { r: 3, color: 'red' });
-            Pl.path(series((n) => strassen(n, 1)), { color: 'blue', width: 1.2, alpha: 0.45, dash: [4, 4] });
-            Pl.path(series((n) => strassen(n, n0)), { color: 'blue', width: 2 }); Pl.dots(series((n) => strassen(n, n0)), { r: 3, color: 'blue' });
-            Pl.text('definition 2n³ − n²', 8, classical(8), { color: 'red', size: 11, dx: -6, dy: -10, align: 'right' });
-            Pl.text(`Strassen, cut-off ${n0}`, 1024, strassen(1024, n0), { color: 'blue', size: 11, dx: 6, dy: 12 });
+            const n0 = 2 ** cut.value, cr = ns.find((n, idx) => ns.slice(idx).every((m) => strassen(m, n0) < classical(m))), pure = ns.find((n, idx) => ns.slice(idx).every((m) => strassen(m, 1) < classical(m)));
+            Pl.setView([1, 4096], [0.4, 3.2]);
+            if (cr) { Pl.vband(cr, 4096, { color: 'green', alpha: 0.07 }); Pl.vline(cr, { color: 'green', dash: [5, 4], width: 1.5 }); Pl.text(`with cut-off ${n0}: Strassen wins from n = ${cr}`, cr, 2.7, { color: 'green', size: 11, weight: 700, dx: cr > 300 ? -6 : 6, align: cr > 300 ? 'right' : 'left' }); }
+            if (pure && pure !== cr) { Pl.vline(pure, { color: 'blue', dash: [3, 4], width: 1.2, alpha: 0.6 }); Pl.text(`pure Strassen: from ${pure}`, pure, 1.9, { color: 'blue', size: 10.5, dx: -6, align: 'right', alpha: 0.85 }); }
+            Pl.hline(1, { color: 'red', width: 2 }); Pl.text('definition (ratio 1)', 1.2, 1, { color: 'red', size: 11, dy: -10 });
+            Pl.path(series((n) => strassen(n, 1) / classical(n)), { color: 'blue', width: 1.3, alpha: 0.5, dash: [4, 4] });
+            Pl.path(series((n) => strassen(n, n0) / classical(n)), { color: 'blue', width: 2.2 }); Pl.dots(series((n) => strassen(n, n0) / classical(n)), { r: 3.2, color: 'blue' });
+            Pl.text(`Strassen, cut-off ${n0}`, 4096, strassen(4096, n0) / classical(4096), { color: 'blue', size: 11, dx: -6, dy: 14, align: 'right' });
+            Pl.text('pure Strassen', 2, strassen(2, 1) / classical(2), { color: 'blue', size: 10.5, dx: 8, alpha: 0.8 });
             info.cross = cr;
           }
+          Pl.setTitle(mode.value === 'mul' ? 'scalar multiplications for $n\\times n$ matrices, $n = 2^k$' : 'all arithmetic operations, Strassen ÷ definition, $n = 2^k$');
           info.ok = Cm.every((x, q) => x === Cd[q]);
         });
         v.legend([['green', 'added block / +1 cell', { area: true }], ['red', 'subtracted block / −1 cell', { area: true }], ['ink', 'cells the definition multiplies', { dash: true }]]);
