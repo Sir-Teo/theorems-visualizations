@@ -444,7 +444,7 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
           S.arrow(0, 0, f2[0], f2[1], { color: 'purple', width: 2.6 });
           S.tex('f_2', f2[0], f2[1], { color: 'purple', dx: -12, dy: -10 });
           G.hline(0, { color: 'muted', width: 1 });
-          if (len(Tf1) > 0.4 && len(sub(Tf1, f1)) > 0.3) S.tex('Tf_1', Tf1[0], Tf1[1], { color: 'gold', dx: 16, dy: 10, size: 14 });
+          if (len(Tf1) > 0.4 && len(sub(Tf1, f1)) > 0.3) S.tex('Tf_1', Tf1[0], Tf1[1], { color: 'gold', dx: 4, dy: -18, size: 14 });
           if (len(Tf2) > 0.4 && len(sub(Tf2, f2)) > 0.3) S.tex('Tf_2', Tf2[0], Tf2[1], { color: 'purple', dx: -16, dy: 10, size: 14 });
           S.corner(diag ? 'diagonal: f₁, f₂ are orthonormal eigenvectors' : tri ? 'upper-triangular, not diagonal' : 'matrix not diagonal', 'tl', { color: diag ? 'green' : tri ? 'orange' : 'muted', weight: 700 });
           const off = Math.abs(b - c) / 2, Rr = Math.hypot((b + c) / 2, (d - a) / 2), ymax = Math.max(1.1, 1.18 * (off + Rr));
@@ -959,11 +959,7 @@ in other words, $S$ preserves norms.`,
           const dok = Math.abs(d[0] - 1) < t && Math.abs(d[1] - 1) < t && Math.abs(d[2]) < t;
           return `$S^*S = ${mtex(Gm, 3)}$ — ${ok ? 'all five conditions hold:' : 'all five conditions fail:'}
 
-(a) $\\max_{\\|v\\| = 1}\\big|\\|Sv\\| - 1\\big| = ${tn(sdev, 3)}$ ${mark(sdev < t)}
-
-(b) $\\|S^*S - I\\| = ${tn(fro(msub(Gm, eye(2))), 3)}$ ${mark(ok)}
-
-(c) $\\max_{\\|u\\| = \\|v\\| = 1}|\\langle Su, Sv\\rangle - \\langle u, v\\rangle| = ${tn(dev, 3)}$ ${mark(dev < t)}
+(a) $\\max_{\\|v\\| = 1}\\big|\\|Sv\\| - 1\\big| = ${tn(sdev, 3)}$ ${mark(sdev < t)} · (b) $\\|S^*S - I\\| = ${tn(fro(msub(Gm, eye(2))), 3)}$ ${mark(ok)} · (c) $\\max_{\\|u\\| = \\|v\\| = 1}|\\langle Su, Sv\\rangle - \\langle u, v\\rangle| = ${tn(dev, 3)}$ ${mark(dev < t)}
 
 (d) at $\\varphi = ${PHI.value}^\\circ$: $\\|Sf_1\\|^2 = ${tn(d[0], 3)},\\ \\|Sf_2\\|^2 = ${tn(d[1], 3)},\\ \\langle Sf_1, Sf_2\\rangle = ${tn(d[2], 3)}$ ${mark(dok)}
 
@@ -986,7 +982,8 @@ in other words, $S$ preserves norms.`,
         const mode = v.select('$S$', [{ value: 'rot', label: 'rotation' }, { value: 'ref', label: 'reflection' }, { value: 'any', label: 'any operator' }], 'rot', {
           onChange: (m) => { if (m === 'any') { h1.set(1.2, 0.4); h2.set(-0.3, 0.8); } else { const t = Math.atan2(h1.y, h1.x); h1.set(Math.cos(t), Math.sin(t)); } },
         });
-        const S = v.stage({ x: [-2.1, 2.1], y: [-1.8, 1.8], equal: true, height: 380 });
+        const S = v.stage({ x: [-2.1, 2.1], y: [-1.8, 1.8], equal: true, height: 380, weight: 1.25 });
+        const G = v.stage({ x: [0, 360], y: [0, 2], height: 380, axes: 'box', xlabel: 'θ (degrees)', xticks: [0, 90, 180, 270, 360], title: '$\\|Sv\\|$ for the unit vector $v = (\\cos\\theta, \\sin\\theta)$' });
         const h1 = S.handle(Math.cos(0.6), Math.sin(0.6), {
           color: 'teal', label: 'Se₁', constrain: (x, y) => {
             if (mode.value === 'any') return [snap(x), snap(y)];
@@ -1016,6 +1013,12 @@ in other words, $S$ preserves norms.`,
           S.arrow(0, 0, c1[0], c1[1], { color: 'teal', width: 2.4 });
           S.arrow(0, 0, c2[0], c2[1], { color: 'pink', width: 2.4 });
           if (m !== 'any') S.tex('Se_2', c2[0], c2[1], { color: 'pink', dx: 14, dy: -10, size: 14 });
+          const sv = sv2(Sm), nf = (t) => len(mv(Sm, [Math.cos(t / DEG), Math.sin(t / DEG)]));
+          G.setView([0, 360], [0, Math.max(2, 1.15 * sv.smax)]);
+          if (sv.smax - sv.smin > 1e-6) G.hband(sv.smin, sv.smax, { color: 'orange', alpha: 0.12 });
+          G.hline(1, { color: 'green', width: 1.4, dash: [5, 4] });
+          G.fn(nf, { color: uni ? 'green' : 'red', width: 2.6 });
+          G.corner(uni ? '‖Sv‖ = 1 for every unit v' : `‖Sv‖ ranges over [${pn(sv.smin)}, ${pn(sv.smax)}]`, 'tr', { color: uni ? 'green' : 'red', weight: 700 });
           S.corner(!uni ? 'not unitary: lengths change' : det > 0 ? `rotation by ${pn(th * DEG, 0)}°: det S = 1` : `reflection across the line at ${pn(((th / 2) * DEG + 180) % 180, 1)}°: det S = −1`, 'tl', { color: uni ? 'green' : 'red', weight: 700 });
           st = { Sm, StS, dev, uni, det };
         });
@@ -1041,9 +1044,9 @@ in other words, $S$ preserves norms.`,
       tags: ['isometries'],
       viz(v) {
         const M = v.M;
-        const YA = v.slider('$\\alpha$ (about $z$)', -180, 180, 35, { step: 1 });
-        const PI = v.slider('$\\beta$ (about $y$)', -90, 90, 25, { step: 1 });
-        const RO = v.slider('$\\gamma$ (about $x$)', -180, 180, -20, { step: 1 });
+        const YA = v.slider('$\\alpha$ (about $z$)', -180, 180, -55, { step: 1 });
+        const PI = v.slider('$\\beta$ (about $y$)', -90, 90, 40, { step: 1 });
+        const RO = v.slider('$\\gamma$ (about $x$)', -180, 180, 45, { step: 1 });
         const EP = v.slider('perturbation $\\varepsilon$', 0, 0.5, 0, { step: 0.01 });
         const RF = v.toggle('compose with a reflection', false);
         const E = [[0.3, -0.5, 0.2], [0.6, 0.1, -0.4], [-0.2, 0.5, 0.3]];
@@ -1075,17 +1078,9 @@ in other words, $S$ preserves norms.`,
           const gram = (vs) => fro(msub(vs.map((x) => vs.map((y) => dot(x, y))), eye(3))), t = 1e-9, gc = gram(st.cols), gr = gram(st.rows);
           return `${st.uni ? 'All six conditions hold' : 'All six conditions fail'}:
 
-(a) $\\max_{\\|v\\| = 1}\\big|\\|Sv\\| - 1\\big| = ${tn(st.ndev, 3)}$ ${mark(st.ndev < t)}
+(a) $\\max_{\\|v\\| = 1}\\big|\\|Sv\\| - 1\\big| = ${tn(st.ndev, 3)}$ ${mark(st.ndev < t)} · (b) $\\|S^*S - I\\| = ${tn(st.d1, 3)},\\ \\|SS^* - I\\| = ${tn(st.d2, 3)}$ ${mark(st.d1 < t && st.d2 < t)} · (c) $\\|S^{-1} - S^*\\| = ${tn(st.d3, 3)}$ ${mark(st.d3 < t)}
 
-(b) $\\|S^*S - I\\| = ${tn(st.d1, 3)},\\ \\|SS^* - I\\| = ${tn(st.d2, 3)}$ ${mark(st.d1 < t && st.d2 < t)}
-
-(c) $\\|S^{-1} - S^*\\| = ${tn(st.d3, 3)}$ ${mark(st.d3 < t)}
-
-(d) columns: $\\|(\\langle Se_j, Se_k\\rangle) - I\\| = ${tn(gc, 3)}$ ${mark(gc < t)}
-
-(e) rows: $\\|(\\langle r_j, r_k\\rangle) - I\\| = ${tn(gr, 3)}$ ${mark(gr < t)}
-
-(f) $S^*$: $\\|(S^*)^*S^* - I\\| = \\|SS^* - I\\| = ${tn(st.d2, 3)}$ ${mark(st.d2 < t)}`;
+(d) columns: $\\|(\\langle Se_j, Se_k\\rangle) - I\\| = ${tn(gc, 3)}$ ${mark(gc < t)} · (e) rows: $\\|(\\langle r_j, r_k\\rangle) - I\\| = ${tn(gr, 3)}$ ${mark(gr < t)} · (f) $S^*$: $\\|(S^*)^*S^* - I\\| = \\|SS^* - I\\| = ${tn(st.d2, 3)}$ ${mark(st.d2 < t)}`;
         });
       },
     },
@@ -1111,9 +1106,14 @@ in other words, $S$ preserves norms.`,
         let st = null;
         v.render(() => {
           const n = N.value, r = v.rng(seed * 101 + n), ep = EP.value;
-          let Q;
+          let Q, cyc = null;
           if (kind.value === 'orth') Q = M.qr(Array.from({ length: n }, () => Array.from({ length: n }, () => r.normal()))).Q;
-          else { const p = r.shuffle(Array.from({ length: n }, (_, i) => i)); Q = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => +(p[j] === i))); }
+          else {
+            const p = r.shuffle(Array.from({ length: n }, (_, i) => i)); Q = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => +(p[j] === i)));
+            const seen = new Array(n).fill(false); cyc = [];
+            for (let i = 0; i < n; i++) if (!seen[i]) { let L = 0, j = i; while (!seen[j]) { seen[j] = true; j = p[j]; L++; } cyc.push(L); }
+            cyc.sort((x, y) => y - x);
+          }
           const r2 = v.rng(seed * 977 + n), Ept = Array.from({ length: n }, () => Array.from({ length: n }, () => r2.normal() / Math.sqrt(n)));
           const Sm = Q.map((row, i) => row.map((x, j) => x + ep * Ept[i][j]));
           const e = M.eig(Sm), sv = M.svd(Sm).S, smax = sv[0], smin = sv[sv.length - 1];
@@ -1126,7 +1126,7 @@ in other words, $S$ preserves norms.`,
           const mods = e.values.map((z) => z.abs()), dev = Math.max(...mods.map((m) => Math.abs(m - 1)));
           e.values.forEach((z) => Z.dot(z.re, z.im, { r: 5.5, color: Math.abs(z.abs() - 1) < 1e-9 ? 'green' : 'red' }));
           Z.corner(dev < 1e-9 ? 'all |λ| = 1' : `max ||λ| − 1| = ${pn(dev, 3)}`, 'tl', { color: dev < 1e-9 ? 'green' : 'red', weight: 700 });
-          Bs.setView([0.4, n + 0.6], [0, Math.max(1.6, 1.12 * smax)]);
+          Bs.setView([0.4, n + 0.6], [-0.14, Math.max(1.6, 1.12 * smax)]);
           if (smax - smin > 1e-6) Bs.hband(smin, smax, { color: 'orange', alpha: 0.16, edges: true });
           Bs.bars(mods, { x0: 1, dx: 1, color: (m) => (Math.abs(m - 1) < 1e-9 ? 'green' : 'red'), fillAlpha: 0.6 });
           Bs.hline(1, { color: 'green', width: 1.6 });
@@ -1134,10 +1134,10 @@ in other words, $S$ preserves norms.`,
           const cv = e.cvectors[0];
           let pr = null;
           if (cv) { const nv = Math.hypot(...cv.re, ...cv.im), Sre = Sm.map((row) => dot(row, cv.re)), Sim = Sm.map((row) => dot(row, cv.im)); pr = { lam: e.values[0], ratio: Math.hypot(...Sre, ...Sim) / nv }; }
-          st = { dev, smin, smax, d: fro(msub(mm(tr(Sm), Sm), eye(n))), pr, ep };
+          st = { dev, smin, smax, d: fro(msub(mm(tr(Sm), Sm), eye(n))), pr, ep, cyc };
         });
         v.legend([['green', 'unit circle / $|\\lambda| = 1$'], ['red', '$|\\lambda| \\ne 1$', { dot: true }], ['orange', 'annulus $\\sigma_{\\min} \\le |z| \\le \\sigma_{\\max}$']]);
-        v.readout(() => st && `$\\|S^*S - I\\| = ${tn(st.d, 3)},\\quad \\sigma_{\\min} = ${tn(st.smin, 3)},\\ \\sigma_{\\max} = ${tn(st.smax, 3)},\\quad \\max_k \\big||\\lambda_k| - 1\\big| = ${tn(st.dev, 3)}$` + (st.pr ? `. For $\\lambda_1 = ${ctn([st.pr.lam.re, st.pr.lam.im], 3)}$ and its eigenvector $v$: $\\|Sv\\|/\\|v\\| = ${tn(st.pr.ratio, 4)} = |\\lambda_1|$${st.d < 1e-9 ? ', and $\\|Sv\\| = \\|v\\|$ because $S$ is an isometry, so $|\\lambda_1| = 1$.' : '; without $S^*S = I$ this ratio need not be $1$.'}` : ''));
+        v.readout(() => st && (st.cyc && st.ep === 0 ? `Cycle type ${st.cyc.join(' + ')}: a cycle of length $m$ contributes the $m$-th roots of unity. ` : '') + `$\\|S^*S - I\\| = ${tn(st.d, 3)},\\quad \\sigma_{\\min} = ${tn(st.smin, 3)},\\ \\sigma_{\\max} = ${tn(st.smax, 3)},\\quad \\max_k \\big||\\lambda_k| - 1\\big| = ${tn(st.dev, 3)}$` + (st.pr ? `. For $\\lambda_1 = ${ctn([st.pr.lam.re, st.pr.lam.im], 3)}$ and its eigenvector $v$: $\\|Sv\\|/\\|v\\| = ${tn(st.pr.ratio, 4)} = |\\lambda_1|$${st.d < 1e-9 ? ', and $\\|Sv\\| = \\|v\\|$ because $S$ is an isometry, so $|\\lambda_1| = 1$.' : '; without $S^*S = I$ this ratio need not be $1$.'}` : ''));
       },
     },
     // ------------------------------------------------------------------ 7.55
@@ -1175,9 +1175,9 @@ in other words, $S$ preserves norms.`,
         const onC = (x, y) => { const t = Math.atan2(y, x), r = BR.value ? clamp(Math.hypot(x, y), 0.8, 1.2) : 1; return [r * Math.cos(t), r * Math.sin(t)]; };
         const m1 = Z.handle(Math.cos(0.45), Math.sin(0.45), { color: 'accent', label: 'μ₁', constrain: onC, onDrag: () => { W = null; } });
         const m2 = Z.handle(Math.cos(-1.25), Math.sin(-1.25), { color: 'orange', label: 'μ₂', constrain: onC, onDrag: () => { W = null; } });
-        const C = v.stage({ x: [0, 5.2], y: [-2.45, 2.45], equal: true, axes: false, height: 360, weight: 1.6 });
+        const C = v.stage({ x: [0, 5.2], y: [-2.6, 2.55], equal: true, axes: false, height: 380, weight: 1.6 });
         const c0 = [[0.8, 0], cscale(cexpi(0.9), 0.6)];
-        const RC = 0.85, centers = [[0.95, 1.2], [2.95, 1.2], [0.95, -1.2], [2.95, -1.2]];
+        const RC = 0.78, centers = [[0.95, 1.25], [2.95, 1.25], [0.95, -1.35], [2.95, -1.35]];
         const clock = (k, val, trail, col, lab) => {
           const [cx, cy] = centers[k];
           C.circle(cx, cy, RC, { color: 'muted', width: 1, fill: 'accent', fillAlpha: 0.03 });
@@ -1185,7 +1185,7 @@ in other words, $S$ preserves norms.`,
           C.dots(trail.map((z) => { const m = cabs(z), s = m > 1.05 ? 1.05 / m : 1; return [cx + RC * z[0] * s, cy + RC * z[1] * s]; }), { r: 2.4, color: 'gold', alpha: 0.75 });
           const m = cabs(val), s = m > 1.05 ? 1.05 / m : 1;
           C.arrow(cx, cy, cx + RC * val[0] * s, cy + RC * val[1] * s, { color: col, width: 2.6 });
-          C.tex(lab, cx, cy - RC - 0.17, { color: col, size: 13 });
+          C.tex(lab, cx, cy - RC - 0.21, { color: col, size: 13 });
         };
         let st = null;
         v.animate((t) => {
@@ -1202,22 +1202,22 @@ in other words, $S$ preserves norms.`,
           Z.corner(uni ? `S is unitary, |μ₁| = |μ₂| = 1` : `|μ₁| = ${pn(Math.hypot(m1.x, m1.y))}, |μ₂| = ${pn(Math.hypot(m2.x, m2.y))}: not unitary`, 'tl', { color: uni ? 'green' : 'red', weight: 700 });
           Z.corner(`k = ${pn(kk, 1)} steps`, 'bl', { color: 'muted' });
           // clocks
-          C.tex('\\text{coordinates along } e_1, e_2', 1.95, 2.33, { size: 13, color: 'ink' });
-          C.tex('\\text{standard coordinates}', 1.95, 0.02, { size: 13, color: 'ink' });
+          C.text('coordinates along the eigenbasis e₁, e₂', 1.95, 2.38, { size: 12.5, align: 'center', color: 'ink', weight: 600 });
+          C.text('standard coordinates z₁, z₂ of Sᵏv', 1.95, -0.33, { size: 12.5, align: 'center', color: 'ink', weight: 600 });
           clock(0, c[0], trail.map((j) => cAt(j)[0]), 'accent', '\\langle S^kv, e_1\\rangle');
           clock(1, c[1], trail.map((j) => cAt(j)[1]), 'orange', '\\langle S^kv, e_2\\rangle');
           clock(2, z[0], trail.map((j) => zAt(j)[0]), 'teal', 'z_1');
           clock(3, z[1], trail.map((j) => zAt(j)[1]), 'pink', 'z_2');
           const bar = (y0, p1, p2, c1, c2, lab) => {
-            const H = 1.6, x0 = 4.3, x1 = 4.75, top = y0 + H * (p1 + p2), lim = y0 + 2.05;
+            const H = 1.45, x0 = 4.3, x1 = 4.75, top = y0 + H * (p1 + p2), lim = y0 + 1.75;
             C.rect(x0, y0, x1, Math.min(lim, y0 + H * p1), { fill: c1, fillAlpha: 0.6, stroke: false });
             if (y0 + H * p1 < lim) C.rect(x0, y0 + H * p1, x1, Math.min(lim, top), { fill: c2, fillAlpha: 0.6, stroke: false });
             C.line(x0 - 0.12, y0 + H, x1 + 0.12, y0 + H, { color: 'green', width: 2, dash: [4, 3] });
             C.text(pn(p1 + p2, 3), (x0 + x1) / 2, Math.min(lim, top) + 0.13, { align: 'center', size: 11.5, color: Math.abs(p1 + p2 - 1) < 1e-9 ? 'green' : 'red' });
-            C.tex(lab, (x0 + x1) / 2, y0 - 0.2, { size: 12 });
+            C.tex(lab, (x0 + x1) / 2, y0 - 0.21, { size: 12 });
           };
-          bar(0.2, cabs(c[0]) ** 2, cabs(c[1]) ** 2, 'accent', 'orange', '\\|S^kv\\|^2');
-          bar(-2.2, cabs(z[0]) ** 2, cabs(z[1]) ** 2, 'teal', 'pink', '\\|S^kv\\|^2');
+          bar(0.47, cabs(c[0]) ** 2, cabs(c[1]) ** 2, 'accent', 'orange', '\\|S^kv\\|^2');
+          bar(-2.13, cabs(z[0]) ** 2, cabs(z[1]) ** 2, 'teal', 'pink', '\\|S^kv\\|^2');
           st = { Sm, uni, nrm: cnorm(z) ** 2, ip: cabs(cip(e1, e2)), Wd: W ? cfro(cmsub(Sm, W)) : null, mu };
         }, { period: 40 });
         v.readout(() => st && `$S = ${cmtex(st.Sm, 3)},\\quad \\langle e_1, e_2\\rangle = ${tn(st.ip, 3)},\\quad \\|S^kv\\|^2 = ${tn(st.nrm, 4)}$` + (st.uni ? ' — eigenvalues on the unit circle along an orthonormal basis: $S$ is unitary, and $\\|S^kv\\| = \\|v\\|$ at every step.' : ' — an eigenvalue off the unit circle: $S$ still has an orthonormal eigenbasis (it is normal) but is not unitary, and $\\|S^kv\\|$ drifts.') + (st.Wd !== null ? ` Rebuilt from the computed eigen-data of the random unitary $W$: $\\|S - W\\| = ${tn(st.Wd, 4)}$.` : ''));

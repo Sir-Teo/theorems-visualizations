@@ -191,6 +191,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
 | `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
+| `v.onCleanup(fn)` | run `fn` when the viz is destroyed (clear your own `setInterval`s, observers…). |
 | `ctl.el.hidden = true` | every control exposes its element as `.el` (a button *is* its element): hide controls that do nothing in the current mode. |
 | `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. |
 | `v.legend([[color, label], [color, label, {dash, dot, area}]])` | legend row (call once, or inside render if it changes). |
@@ -277,7 +278,7 @@ release: .3, delay, type, harmonics, rolloff})` — `partials` is a frequency, `
 `[[f, amp], …]` (amplitudes normalised to sum 1; `harmonics: n` turns a frequency into a 1/k harmonic
 tone) · `snd.chord(f1, f2, …, opts)` (each note a frequency or a partial list) ·
 `snd.samples(Float32Array, sampleRate, {gain, loop})` · `snd.noise({color: 'white'|'pink'|'brown',
-duration})` · `snd.stop()` · `snd.playing`, `snd.available`. Every play call returns `{stop(), playing}`.
+duration})` · `snd.stop()` · `snd.playing`, `snd.available`. Every play call returns a voice `{stop(), playing, setGain(k), setFreq(f)}`: `sustain: true` holds a tone (or noise) until `stop()`, and `setGain`/`setFreq` change a playing voice smoothly, so a drag can retune or fade a sound live; `glide: f1` slides the fundamental to `f1` Hz over `duration` (a chirp).
 `v.soundButton('Play', (snd) => snd.chord(220, 330))` adds a speaker button (stops what is playing
 first). Sound starts only after a user gesture (autoplay rules), so trigger it from buttons or handles;
 without Web Audio (headless checks) every call is a silent no-op; all sound stops when the viz is destroyed.

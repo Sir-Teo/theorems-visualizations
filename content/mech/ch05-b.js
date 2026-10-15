@@ -185,28 +185,28 @@ and oscillates with period $4\pi\sqrt{R/g}$ independent of amplitude. Measured a
       viz(v) {
         const R = 1, HC = 0.6627434193, HM = 0.5277;
         const hS = v.slider('ring half-separation $h/R$', 0.2, 0.8, 0.58, { step: 0.005 });
-        let burst = false, pulling = false, r0 = 0.97, lastT = 0;
-        v.button('New film', () => { burst = false; pulling = false; r0 = 0.97; neck.y = r0; });
-        v.button('Pull apart', () => { pulling = true; if (burst) { burst = false; r0 = 0.97; } });
+        let burst = false, pulling = false, r0 = 0.97, lastT = 0, hVal = 0.58;
+        v.button('New film', () => { burst = false; pulling = false; r0 = 0.97; neck.y = r0; v.play(); });
+        v.button('Pull apart', () => { pulling = true; if (burst) { burst = false; r0 = 0.97; } v.play(); });
         const s3 = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.3], equal: true, axes: false, height: 280, title: 'the film' });
         const sc = v.scene3(s3, { yaw: -0.95, pitch: 0.32, axes: false });
         const sP = v.stage({ x: [-0.95, 0.95], y: [-1.2, 1.2], equal: true, axes: false, height: 280, title: 'profile $r(x)$: drag the gold neck' });
         const sL = v.stage({ x: [0, 1], y: [1.5, 4], height: 185, full: true, axes: 'box', xlabel: 'neck radius r₀ / R', ylabel: 'area / πR²', title: 'the area landscape over the trial family $r(x)=R\\cosh(x/c)/\\cosh(h/c)$' });
         const neck = sP.handle(0, r0, { color: 'gold', r: 7, constrain: (x, y) => [0, clamp(y, 0.01, 0.995)] });
-        neck.onDrag = () => { r0 = neck.y; burst = false; pulling = false; };
+        neck.onDrag = () => { r0 = neck.y; burst = false; pulling = false; v.play(); };
         const prof = (h, n0) => { const c = h / Math.acosh(R / n0); return (x) => n0 * Math.cosh(x / c); };
         const area = (h, n0) => { if (n0 >= R) return 4 * Math.PI * R * h; const c = h / Math.acosh(R / n0); return 2 * Math.PI * simpson((x) => { const r = n0 * Math.cosh(x / c), rp = (n0 * Math.sinh(x / c)) / c; return r * Math.sqrt(1 + rp * rp); }, -h, h, 240); };
         const roots = (h) => { const g = (c) => c * Math.cosh(h / c) - R, out = []; let pc = 0.02, pv = g(pc); for (let c = 0.024; c < 1.2; c += 0.004) { const gv = g(c); if ((gv > 0) !== (pv > 0)) out.push(bisect(g, pc, c, 60)); pc = c; pv = gv; } return out; };
         const cache = memo();
-        const land = () => cache(hS.value, () => {
-          const h = hS.value, pts = sample((u) => 0.012 + 0.982 * u, 140).map((n0) => [n0, area(h, n0) / Math.PI]);
+        const land = (h) => cache(h, () => {
+          const pts = sample((u) => 0.012 + 0.982 * u, 140).map((n0) => [n0, area(h, n0) / Math.PI]);
           return { pts, cats: roots(h).map((c) => ({ c, A: area(h, c) / Math.PI })) };
         });
         let cur = null;
         v.animate((t) => {
           let dt = t - lastT; lastT = t; if (!(dt > 0) || dt > 0.1) dt = 0;
-          if (pulling && dt > 0) { hS.set(Math.min(0.8, hS.value + 0.05 * dt)); if (hS.value >= 0.8 || burst) pulling = false; }
-          const h = hS.value, L = land();
+          if (pulling && dt > 0) { hVal = Math.min(0.8, hVal + 0.05 * dt); hS.set(hVal); if (hVal >= 0.8 || burst) pulling = false; } else if (Math.abs(hS.value - hVal) > 0.003) hVal = hS.value;
+          const h = hVal, L = land(h);
           if (!neck.dragging && !burst && dt > 0) {
             for (let k = 0; k < 4; k++) { const d = 1e-4, g = (area(h, Math.min(0.9995, r0 + d)) - area(h, Math.max(1e-3, r0 - d))) / (2 * d); r0 = clamp(r0 - (1.2 * dt / 4) * g / Math.PI, 0.005, 0.995); }
             if (r0 < 0.03) burst = true;
@@ -376,8 +376,8 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         };
         reset(1.2);
         for (let k = 0; k < 4000; k++) step(1 / 600, 40, 0.97); // settle once before the first frame
-        v.button('Shake', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); for (let i = 1; i < N; i++) { prev[i][0] -= r.uniform(-0.02, 0.02); prev[i][1] -= r.uniform(-0.03, 0.05); } });
-        v.button('Drop from a hump', () => reset(-0.6));
+        v.button('Shake', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); for (let i = 1; i < N; i++) { prev[i][0] -= r.uniform(-0.02, 0.02); prev[i][1] -= r.uniform(-0.03, 0.05); } v.play(); });
+        v.button('Drop from a hump', () => { reset(-0.6); v.play(); });
         let lastT = 0, cur = null, subDt = 1 / 600;
         // Gauss–Newton fit of y = y0 + c cosh((x − x0)/c) to the beads
         const fit = (start) => {
@@ -463,6 +463,10 @@ with equality only for circles. Equivalently, among closed curves of given lengt
           });
           const eta = dt * base.L * base.L * 0.25;
           H.forEach((h, i) => { let dx = eta * grads[i][0], dy = eta * grads[i][1]; const m = Math.hypot(dx, dy); if (m > 0.04) { dx *= 0.04 / m; dy *= 0.04 / m; } h.x = clamp(h.x + dx, -2.5, 2.5); h.y = dido && (i === 0 || i === H.length - 1) ? COAST : clamp(h.y + dy, dido ? COAST + 0.02 : -2.1, 2.1); });
+          // keep the length fixed: rescale about the centroid (Q is scale invariant, so this does not change it)
+          const after = ratio(H.map((h) => [h.x, h.y]), dido), k = base.L / after.L;
+          const cx = dido ? (H[0].x + H[H.length - 1].x) / 2 : H.reduce((a, h) => a + h.x, 0) / H.length, cy = dido ? COAST : H.reduce((a, h) => a + h.y, 0) / H.length;
+          H.forEach((h) => { h.x = clamp(cx + (h.x - cx) * k, -2.5, 2.5); h.y = clamp(cy + (h.y - cy) * k, dido ? COAST : -2.1, 2.1); });
         };
         v.animate((t) => {
           const dido = mode === 'dido', H = dido ? HD : HC;
@@ -493,7 +497,7 @@ with equality only for circles. Equivalently, among closed curves of given lengt
           sm.rect(0.3, 0, 0.62, Q, { fill: Q > 0.995 ? 'green' : 'accent', fillAlpha: 0.5, stroke: false });
           sm.line(0.2, 1, 0.72, 1, { color: 'green', width: 2 });
           sm.text(dido ? 'semicircle: 1' : 'circle: 1', 0.5, 1.02, { align: 'center', baseline: 'bottom', color: 'green', size: 12, weight: 600 });
-          sm.text(v.fix(Q, 4), 0.66, Q, { align: 'left', color: 'ink', size: 13, weight: 700 });
+          sm.text(v.fix(Q, 4), 0.66, Q, { align: 'left', color: 'ink', size: 13, weight: 700, baseline: Q > 0.92 ? 'top' : 'middle', dy: Q > 0.92 ? 6 : 0 });
           if (hullQ != null && hullQ - Q > 0.002) { sm.line(0.26, hullQ, 0.66, hullQ, { color: 'purple', width: 1.6, dash: [3, 3] }); sm.text('hull', 0.25, hullQ, { align: 'right', color: 'purple', size: 11 }); }
           for (const q of [0, 0.25, 0.5, 0.75]) sm.text(v.fix(q, 2), 0.27, q, { align: 'right', size: 10.5, color: 'muted' });
           sm.text(dido ? '2πA/L²' : '4πA/L²', 0.46, -0.07, { align: 'center', size: 12, color: 'ink' });

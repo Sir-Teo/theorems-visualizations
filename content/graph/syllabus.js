@@ -34,26 +34,27 @@
 //
 // AMBIGUITIES AND DECISIONS.
 // - `deps` point backwards in reading order. Where Diestel states a theorem and proves it afterwards through results
-//   numbered after it (2.4.1/2.4.3 ← 2.4.4 ← 2.4.5; 3.3.1 ← 3.3.2–3.3.3; 3.4.1 ← 3.4.3; 5.5.4 ← 5.5.5; 7.1.2 ← 7.4.1, 7.5.2; 7.1.3 ←
-//   7.1.4; 7.4.1 ← 7.4.2–7.4.4; 8.4.4 ← 8.4.5–8.4.7; 9.3.1 ← 9.3.2–9.3.3; 10.3.1 ← 10.3.2; 12.5.1 ← 12.5.3, 12.5.8;
-//   12.5.9 ← 12.5.10), the later item names the earlier one in `see` instead.
-// - Results stated without proof (four colour theorem 5.1.1, Grötzsch 5.1.3, the strong perfect graph theorem 5.5.3,
-//   Mader 3.4.2, Kostochka–Thomason 7.2.4, Szemerédi 7.7.1, Laviolette 8.4.1, Lachlan–Woodrow 8.3.3, Alon 5.4.1, Tutte 10.1.4, the
-//   structure theorems 12.6.6–12.6.8, the grid theorem 12.6.3, the graph minor theorem 12.7.1, …) get as deps the notions needed to state them, plus the
-//   results Diestel presents as their main ingredients.
+//   numbered after it (2.4.1/2.4.3 ← 2.4.4 ← 2.4.5; 3.3.1 ← 3.3.2–3.3.3; 3.4.1 ← 3.4.3; 5.5.4 ← 5.5.5; 7.1.2 ← 7.4.1,
+//   7.5.2; 7.1.3 ← 7.1.4; 7.4.1 ← 7.4.2–7.4.4; 8.4.4 ← 8.4.5–8.4.7; 9.3.1 ← 9.3.2–9.3.3; 10.3.1 ← 10.3.2; 12.5.1 ←
+//   12.5.3, 12.5.8; 12.5.9 ← 12.5.10), the later item names the earlier one in `see` instead.
+// - Results stated without proof (four colour theorem 5.1.1, Grötzsch 5.1.3, Alon 5.4.1, the strong perfect graph
+//   theorem 5.5.3, Mader 3.4.2, Kostochka–Thomason 7.2.4, Szemerédi 7.7.1, Lachlan–Woodrow 8.3.3, Laviolette 8.4.1,
+//   Tutte 10.1.4, the grid theorem 12.6.3, the structure theorems 12.6.6–12.6.8, the graph minor theorem 12.7.1, …) get
+//   as deps the notions needed to state them, plus the results Diestel presents as their main ingredients.
 // - Erdős's theorem on girth and chromatic number appears twice in the book, as 5.2.5 and (with its probabilistic proof)
 //   as 11.2.2; both are listed and joined by `see`. Theorem 7.7.2 restates 7.7.1 in density form and depends on it.
 // - Names: Diestel's attribution where he gives one, otherwise the classical name (2.5.2 Dilworth, 7.6.5 Ruzsa–Szemerédi,
 //   7.7.3 Roth, 12.1.3 Higman's lemma, 3.2.5 Tutte's splitting construction); Diestel's own lemma names are kept (Fish,
 //   Splinter, Uncrossing, Replication, Counting, Removal, Blow-up, Jumping arc, Star-comb, Infinity lemma).
-// - Cross-links: book-anchored results are kept even when a course collection has the same idea, and are joined to it by
-//   `see` (or `deps` when it is a genuine prerequisite): algo (BFS/DFS, Hierholzer, MST, flows, matchings, Gale–Shapley,
-//   Menger, König, Hall, Dilworth, Markov's inequality, Hamiltonicity is NP-complete), comb (posets and Dilworth, chromatic
-//   polynomial, Ramsey, van der Waerden, probabilistic and second-moment methods, Turán, regularity and removal lemmas,
-//   Roth, Szemerédi, K₄ threshold, girth/chromatic number), top (Jordan curve, Schoenflies, K₃,₃, Euler's formula, surfaces,
-//   Tychonoff, compactness), logic (König's lemma, compactness, De Bruijn–Erdős, Zorn, ordinals), soc (Erdős–Rényi model,
-//   giant component), prob (Markov/Chebyshev), circ (Kirchhoff's law, matrix-tree theorem, planar duality), game
-//   (deferred acceptance), cplx (Tutte matrices), bioinf (Euler's theorem on Eulerian paths).
+// - Cross-links: book-anchored results are kept even when a course collection has the same idea, and are joined to it
+//   by `see` (or `deps` when it is a genuine prerequisite): algo (BFS/DFS, Hierholzer, flows, matchings, Gale–Shapley,
+//   Menger, König, Hall, Dilworth, Markov's inequality, Hamiltonicity is NP-complete), comb (posets and chains, Dilworth,
+//   chromatic polynomial, Ramsey, van der Waerden, probabilistic and second-moment methods, Turán, regularity and removal
+//   lemmas, Roth, Szemerédi, K₄ threshold, girth/chromatic number), top (Jordan curve, Schoenflies, K₃,₃, Euler's formula,
+//   surfaces, Tychonoff, compactness), logic (König's lemma, compactness, De Bruijn–Erdős, Zorn, ordinals), soc
+//   (Erdős–Rényi model, giant component), prob (Markov/Chebyshev), circ (Kirchhoff's law, matrix-tree theorem, planar
+//   duality), game (deferred acceptance, lattice of stable matchings), geog (four colour theorem for maps), cplx (Tutte
+//   matrices), bioinf (Euler's theorem on Eulerian paths). `node scripts/dupes.mjs graph` reports no unlinked pairs.
 // - Omitted: examples, exercises, the end-of-chapter notes, unnumbered side remarks, and the lesser displayed conjectures
 //   (Bruhn's, Seymour's on powers of Hamilton cycles, ubiquity, the self-minor conjecture).
 export default {
@@ -179,7 +180,7 @@ export default {
           pic: 'Generate a random k-regular bipartite graph; the app checks Hall’s condition by counting the k|S| edges leaving S and then shows a perfect matching.' },
         { num: '2.1.3a', kind: 'Definition', name: 'Stable matchings', deps: ['graph-2.1.1a'], refs: ['Diestel §2.1'], see: ['game-7.3'], verify: true,
           pic: 'Give each vertex a ranked list of its neighbours; for a proposed matching, any blocking pair of vertices that prefer each other is flashed in red.' },
-        { num: '2.1.4', kind: 'Theorem', name: 'Gale–Shapley: stable matchings always exist', deps: ['graph-2.1.3a', 'graph-1.6.1a'], refs: ['Diestel §2.1'], see: ['algo-11.14', 'game-7.3'],
+        { num: '2.1.4', kind: 'Theorem', name: 'Gale–Shapley: stable matchings always exist', deps: ['graph-2.1.3a', 'graph-1.6.1a'], refs: ['Diestel §2.1'], see: ['algo-11.14', 'game-7.3', 'game-7.4'],
           pic: 'Step through deferred acceptance: proposers ask down their lists, receivers trade up, and the final matching is checked for blocking pairs (there are none).' },
         { num: '2.1.5', kind: 'Corollary', name: 'Petersen: regular graphs of even degree have a 2-factor', deps: ['graph-1.8.1', 'graph-2.1.3'], refs: ['Diestel §2.1'],
           pic: 'Take a 2k-regular graph, follow an Euler tour to orient it, split each vertex into an out-copy and an in-copy, and find a 1-factor of the bipartite graph; folding back gives a 2-factor.' },
@@ -371,7 +372,7 @@ export default {
           pic: 'Click vertices to cycle through colours; conflicting edges flash red, and the app shows the fewest colours it can achieve as χ(G).' },
         { num: '5.1.1b', kind: 'Definition', name: 'Edge colourings and chromatic index', deps: ['graph-5.1.1a'], refs: ['Diestel §5.1'], verify: true,
           pic: 'Click edges to colour them; edges of the same colour meeting at a vertex flash red, and the readout compares the colours used with Δ(G) and χ′(G).' },
-        { num: '5.1.1', kind: 'Theorem', name: 'Four colour theorem', deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel §5.1'], see: ['graph-5.1.2'],
+        { num: '5.1.1', kind: 'Theorem', name: 'Four colour theorem', deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel §5.1'], see: ['graph-5.1.2', 'geog-7.8'],
           pic: 'Draw a map of countries or a planar graph; the app 4-colours it, and pressing "try 3" shows when three colours fail, as for K⁴.' },
         { num: '5.1.2', kind: 'Proposition', name: 'Five colour theorem', deps: ['graph-4.2.10', 'graph-4.4.6', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel §5.1'],
           pic: 'Remove a vertex of degree ≤ 5, colour the rest recursively, and when all five colours appear around it, swap a two-coloured Kempe chain to free a colour, step by step.' },

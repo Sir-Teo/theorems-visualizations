@@ -619,9 +619,8 @@ the widest at $\Omega = 2\omega_0$ (two pumps per swing), the $n$-th of width $O
           let mx = 0; for (const p of pts) mx = Math.max(mx, Math.abs(p[1]));
           return (SM = { m, pts, mx, th0, Om, eps, md, over, tEnd: pts[pts.length - 1][0] });
         }
-        const PAL = v.rgb('orange');
         v.animate((t) => {
-          const C = chart(), W = swing(), D = 180 / Math.PI;
+          const C = chart(), W = swing(), D = 180 / Math.PI, PAL = v.rgb('orange');
           sC.raster((x, y) => {
             const i = Math.floor((x - X0) / (X1 - X0) * NX), j = Math.floor(y / Y1 * NY);
             if (i < 0 || i >= NX || j < 0 || j >= NY) return null;

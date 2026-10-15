@@ -519,7 +519,7 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
 (a) $0$ is orthogonal to every vector in $V$;
 (b) $0$ is the only vector in $V$ that is orthogonal to itself.`,
       idea: String.raw`(a) is 6.6(b): $\langle 0, v\rangle = 0$ because $u \mapsto \langle u, v\rangle$ is linear. (b) is definiteness: $\langle v, v\rangle = 0$ forces $v = 0$. Without definiteness (b) fails — for the form $x_1y_1 - x_2y_2$ on $\mathbf R^2$ every vector on the diagonals is "orthogonal to itself".`,
-      caption: String.raw`The shading is $\langle x, x\rangle$ (darker = larger; red = negative). Drag $v$: the dashed line is $v^\perp = \{x : \langle x, v\rangle = 0\}$, and the ring of test vectors is coloured by the sign of $\langle x, v\rangle$. Shrink $v$ to the origin (it snaps): every test vector turns green — (a). For an inner product, $\langle x, x\rangle$ vanishes only at the centre, so $v$ never lies on its own line $v^\perp$ — (b). Switch to $x_1y_1 - x_2y_2$ and drag $v$ onto a diagonal: $v \ne 0$ lies on $v^\perp$.`,
+      caption: String.raw`The shading is $\langle x, x\rangle$ (stronger blue = larger; red = negative). Drag $v$: the dashed line is $v^\perp = \{x : \langle x, v\rangle = 0\}$, and the ring of test vectors is coloured by the sign of $\langle x, v\rangle$. Shrink $v$ to the origin (it snaps): every test vector turns green — (a). For an inner product, $\langle x, x\rangle$ vanishes only at the centre, so $v$ never lies on its own line $v^\perp$ — (b). Switch to $x_1y_1 - x_2y_2$ and drag $v$ onto a diagonal: $v \ne 0$ lies on $v^\perp$.`,
       deps: ['ladr-6.6', 'ladr-6.10', 'ladr-6.2'],
       tags: ['orthogonality'],
       viz(v) {
@@ -781,7 +781,8 @@ with equality if and only if one of $u, v$ is a nonnegative real multiple of the
       see: ['rca-4.3'],
       tags: ['inequalities', 'norms'],
       viz(v) {
-        const S = v.stage({ x: [-1.7, 3.1], y: [-1.5, 2.6], equal: true, height: 390, weight: 1.35, minWidth: 320 });
+        const S = v.stage({ x: [-1.7, 3.1], y: [-1.4, 2.45], equal: true, height: 390, weight: 1.35, minWidth: 320 });
+
         const R = v.stage({ x: [0, 1], y: [0, 1], height: 390, minWidth: 250, axes: false, title: 'the proof, as lengths' });
         const uh = S.handle(1.5, 0.5, { color: 'accent', label: 'u' });
         const bh = S.handle(0.5, 1.7, {
@@ -1234,7 +1235,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           const P = legs.slice(0, m).reduce(add3, ZERO), res = sub3(T, P);
           sc.begin();
           if (m === 1) sc.line(mul3(E[0], -1.7), mul3(E[0], 1.7), { color: 'accent', width: 3, alpha: 0.3 }, 12);
-          if (m === 2) sc.disc(E[0], E[1], 1.6, { fill: 'muted', color: 'muted', fillAlpha: 0.1, grid: true, alpha: 0.4 });
+          if (m === 2) sc.disc(E[0], E[1], 1.3, { fill: 'muted', color: 'muted', fillAlpha: 0.08, grid: true, alpha: 0.35 });
           // the box with edges c_k e_k (k ≤ m)
           const L = legs.map((l, k) => (k < m ? l : ZERO));
           const corners = []; for (let i = 0; i < 8; i++) corners.push(add3(add3(i & 1 ? L[0] : ZERO, i & 2 ? L[1] : ZERO), i & 4 ? L[2] : ZERO));
@@ -1252,7 +1253,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           if (!st) return '';
           const { m, c, res } = st;
           const sum = c.slice(0, m).map((x, k) => `${k ? (x < 0 ? '-' : '+') : x < 0 ? '-' : ''} ${tn(Math.abs(x), 3)}\\,e_${k + 1}`).join(' ');
-          return `$${sum}$ ${m === 3 ? '$= t$ exactly: three orthonormal vectors in a 3-dimensional space span it (2.38).' : `misses $t$ by $${tn(res, 3)}$: an orthonormal list of length ${m} spans only a ${m}-dimensional subspace.`}`;
+          return `$${sum}$ ${m === 3 ? '$= t$ exactly: three orthonormal vectors in a three-dimensional space span it (2.38).' : `misses $t$ by $${tn(res, 3)}$: an orthonormal list of length ${m} spans only a ${m === 1 ? 'line' : 'plane'}.`}`;
         });
       },
     },
@@ -1296,7 +1297,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           const E = basisOf(), V = vh.map((q) => q.y), c = E.map((e) => e.reduce((s, x, i) => s + x * V[i], 0));
           const rec = [0, 1, 2, 3].map((i) => E.reduce((s, e, k) => s + c[k] * e[i], 0));
           const all = [...V, ...rec, 0, ...E.flatMap((e, k) => e.map((x) => c[k] * x))], lo = Math.min(-2.2, ...all) - 0.4, hi = Math.max(2.2, ...all) + 0.4, yl = lo - 0.13 * (hi - lo);
-          A.setView([-0.6, 23.4], [yl - 0.06 * (hi - lo), hi]);
+          A.setView([-0.6, 23.4], [yl - 0.06 * (hi - lo), hi + 0.14 * (hi - lo)]);
           const grp = (x0, vals, col, alpha, lbl) => {
             A.line(x0, 0, x0 + 4, 0, { color: 'muted', width: 1 });
             vals.forEach((y, i) => A.rect(x0 + 0.5 + i - BW, 0, x0 + 0.5 + i + BW, y, { fill: col, fillAlpha: alpha, color: col, width: 1.3 }));
@@ -1394,13 +1395,15 @@ $$\operatorname{span}(v_1, \dots, v_k) = \operatorname{span}(e_1, \dots, e_k) \q
           sc.flush();
           const fail = !ok[1] ? 2 : !ok[2] ? 3 : 0;
           if (fail && i >= (fail === 2 ? 3 : 5)) S.corner(`v${'₁₂₃'[fail - 1]} lies in the span of the earlier vectors: f${'₁₂₃'[fail - 1]} = 0, cannot normalize`, 'tl', { color: 'red', weight: 700 });
-          st = { es, ok, i, fail };
+          st = { es, fs, ok, i, fail };
         });
         v.legend([['accent', '$v_1$ / $e_1$'], ['orange', '$v_2$ / $e_2$'], ['teal', '$v_3$ / $e_3$'], ['gold', 'shadows on earlier $f_j$'], ['purple', '$f_2$'], ['pink', '$f_3$']]);
         v.readout(() => {
           if (!st) return '';
-          const { es, fail } = st;
+          const { es, fs, fail, i } = st;
           if (fail) return `The list is linearly dependent ($v_${fail} \\in \\operatorname{span}$ of the earlier ones), so $f_${fail} = 0$: Gram–Schmidt needs independence.`;
+          if (i < 6) return `So far: $\\langle f_1, f_2\\rangle = ${tn(dot3(fs[0], fs[1]), 6)}$, $\\langle f_1, f_3\\rangle = ${tn(dot3(fs[0], fs[2]), 6)}$, $\\langle f_2, f_3\\rangle = ${tn(dot3(fs[1], fs[2]), 6)}$; lengths $\\|f_k\\| = ${fs.map((f) => tn(len3(f), 3)).join(', ')}$ — orthogonal, not yet unit.`;
+
           const G = es.map((a) => es.map((b) => dot3(a, b)));
           return `Gram matrix of $e_1, e_2, e_3$: $${mtex(G, 3)}$ — the identity, so the output is orthonormal.`;
         });

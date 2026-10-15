@@ -346,7 +346,7 @@ The body emits $\varepsilon_\lambda\,\pi B_\lambda(T)$, a fraction $\varepsilon_
         const aL = v.slider('absorptivity, long band', 0.05, 1, 0.3, { step: 0.01 });
         const sA = v.stage({ x: [0, 10], y: [0, 6.4], equal: true, axes: false, height: 280 });
         const sB = v.stage({ x: [1, 200], y: [-0.06, 1.2], xlog: true, axes: 'box', height: 280, xlabel: 'λ (µm)', title: 'energy per ln λ, scaled to the walls' });
-        const sC = v.stage({ x: [0, 600], y: [200, 600], axes: 'box', height: 190, full: true, xlabel: 't (s)', title: 'plate temperature (K)' });
+        const sC = v.stage({ x: [-18, 600], y: [200, 600], axes: 'box', height: 190, full: true, xlabel: 't (s)', title: 'plate temperature (K) — a 1 mm steel plate, both faces exchanging radiation' });
         const h0 = sC.handle(0, 300, { color: 'accent', label: 'start', labelPos: 'e', constrain: (x, y) => [0, Math.max(150, Math.min(900, y))] });
         let R = null, key = '';
         const model = () => {
@@ -396,7 +396,7 @@ The body emits $\varepsilon_\lambda\,\pi B_\lambda(T)$, a fraction $\varepsilon_
           sB.fn((l) => (ok(l) ? (m.a[band(l)] * pw(l)) / mw : NaN), { color: 'accent', width: 0.1, fill: 'accent', fillAlpha: 0.25, alpha: 0 });
           sB.fn((l) => (ok(l) ? m.e[band(l)] * pt(l) : NaN), { color: 'red', width: 2.4 });
           sB.vline(lamC, { color: 'muted', dash: [3, 4] });
-          sB.text('λ_c', lamC, 1.13, { color: 'muted', size: 11, align: 'left', dx: 4 });
+          sB.tex('\\lambda_c', lamC, 1.13, { color: 'muted', size: 13, align: 'left', dx: 4 });
           sB.text('short', lamC, 1.13, { color: 'gold', size: 11, align: 'right', dx: -8, weight: 600 });
           sB.text('long', lamC, 1.05, { color: 'red', size: 11, align: 'left', dx: 30, weight: 600 });
           // ── relaxation
@@ -447,20 +447,23 @@ $$\frac{S(1-\alpha)}{4}\approx 238\ \text{W m}^{-2}\ \text{for Earth.}$$`,
           const d = hd.x, S = Sd(d), a = alb.value;
           // ── inverse square
           sA.fn(Sd, { color: 'gold', width: 2.2 });
-          PL.forEach(([n, dd], i) => { const up = i % 2 === 0; sA.dot(dd, Sd(dd), { color: n === 'Earth' ? 'blue' : 'muted', r: 4.5, label: n, labelPos: up ? 'ne' : 'sw', labelColor: n === 'Earth' ? 'blue' : 'muted', math: false, labelSize: 11 }); });
+          PL.forEach(([n, dd]) => { sA.dot(dd, Sd(dd), { color: n === 'Earth' ? 'blue' : 'muted', r: 4.5, label: n, labelPos: n === 'Neptune' ? 'nw' : 'ne', labelColor: n === 'Earth' ? 'blue' : 'muted', math: false, labelSize: 11 }); });
           if (2 * d < 50) {
-            sA.line(d, S, 2 * d, S, { color: 'orange', dash: [4, 3], width: 1.4 });
-            sA.line(2 * d, S, 2 * d, S / 4, { color: 'orange', dash: [4, 3], width: 1.4 });
-            sA.text('×2', Math.SQRT2 * d, S, { color: 'orange', size: 11, align: 'center', baseline: 'bottom', dy: -3 });
-            sA.text('÷4', 2 * d, S / 2, { color: 'orange', size: 11, align: 'left', dx: 5 });
+            sA.line(d, S, d, S / 4, { color: 'orange', dash: [4, 3], width: 1.4 });
+            sA.line(d, S / 4, 2 * d, S / 4, { color: 'orange', dash: [4, 3], width: 1.4 });
+            sA.text('×2', Math.SQRT2 * d, S / 4, { color: 'orange', size: 11, align: 'center', baseline: 'top', dy: 4 });
+            sA.text('÷4', d, S / 2, { color: 'orange', size: 11, align: 'right', dx: -6 });
           }
           sA.corner(`${v.fix(d, 3)} AU: S = ${v.fix(S, S < 10 ? 2 : 0)} W/m²`, 'tr', { color: 'gold', weight: 600 });
           // ── the planet
           const cx = 0.25, cy = 0.2, R = 0.78, g = Math.round(255 * Math.pow(Math.max(a, 0.005), 1 / 2.2));
-          for (let k = -3; k <= 3; k++) {
-            const y = cy + (k / 3.4) * R, xs = cx - Math.sqrt(R * R - (y - cy) ** 2);
+          for (let k = -2.5; k <= 2.5; k++) {
+            const y = cy + (k / 3.2) * R, xs = cx - Math.sqrt(R * R - (y - cy) ** 2);
             sB.arrow(-1.55, y, xs - 0.02, y, { color: 'gold', width: 2.2, head: 7 });
-            if (a > 0.02) { const ang = Math.atan2(y - cy, xs - cx); sB.arrow(xs, y, xs + Math.cos(ang) * 0.55, y + Math.sin(ang) * 0.55, { color: 'gold', width: 0.5 + 3 * a, alpha: 0.85, head: 6 }); }
+          }
+          if (a > 0.02) for (let k = -2; k <= 2; k++) { // diffuse reflection, thickness ∝ albedo
+            const ang = Math.PI - (k / 3.2) * 1.25, xs = cx + R * Math.cos(ang), ys = cy + R * Math.sin(ang), L = 0.42;
+            sB.arrow(xs, ys, xs + Math.cos(ang) * L, ys + Math.sin(ang) * L, { color: 'gold', width: 0.5 + 3.5 * a, alpha: 0.6, head: 6, dash: [4, 3] });
           }
           sB.circle(cx, cy, R, { fill: [g, g, g], fillAlpha: 1, color: 'ink', width: 1.2 });
           sB.text(`α = ${v.fix(a, 2)}`, cx, cy, { color: g > 128 ? [20, 20, 20] : [235, 235, 235], halo: false, align: 'center', weight: 700, size: 13 });

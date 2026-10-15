@@ -157,7 +157,7 @@ directed back toward the natural length, in stretching ($x>0$) and in compressio
           const lo = Math.max(st.p - fy / K, XB), hi = st.p + fy / K;
           plot.vband(lo, hi, { color: 'green', alpha: 0.1 });
           plot.vband(-12, XB, { color: 'red', alpha: 0.09 });
-          plot.text('elastic range', (lo + Math.min(hi, 25)) / 2, -5.9, { color: 'green', align: 'center', size: 11.5, weight: 600 });
+          plot.text('elastic range', Math.min(hi, 25) - 0.4, -5.9, { color: 'green', align: 'right', size: 11.5, weight: 600 });
           plot.text('coil bind', (XB - 10) / 2, -5.9, { color: 'red', align: 'center', size: 11 });
           plot.fn((u) => -K * u, { color: 'muted', dash: [6, 5], width: 1.5 });
           plot.tex('F=-kx', 16, -K * 16, { color: 'muted', align: 'right', baseline: 'top', dx: -8, dy: 6, size: 14 });

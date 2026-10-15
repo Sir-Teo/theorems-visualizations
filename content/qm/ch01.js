@@ -119,7 +119,7 @@ It implies
           let a = lp / 1.02, b = lp * 1.02;
           for (let it = 0; it < 80; it++) { const m1 = a + (b - a) * 0.382, m2 = a + (b - a) * 0.618; if (planck(m1, T, h) > planck(m2, T, h)) b = m2; else a = m1; }
           lp = (a + b) / 2; const yp = planck(lp, T, h) / U;
-          if (yp < ymax * 0.97) { s.line(lp, 0, lp, yp, { color: 'green', dash: [4, 4], width: 1.2 }); s.dot(lp, yp, { r: 5, color: 'green', label: 'λ_max', labelPos: lp > xmax * 0.6 ? 'nw' : 'ne' }); }
+          if (yp < ymax * 0.97) { s.line(lp, 0, lp, yp, { color: 'green', dash: [4, 4], width: 1.2 }); s.dot(lp, yp, { r: 5, color: 'green', label: '$\\lambda_{\\max}$', labelPos: lp > xmax * 0.6 ? 'nw' : 'ne' }); }
           else s.corner(`Planck peak is off the chart: ${v.fix(yp / ymax, 0)}× higher, at λ = ${M.si(lp * 1e-6, 'm')}`, 'tr', { color: 'accent' });
           // curve labels
           const xr = Math.pow(2 * Math.PI * C.c * C.kB * T * 1e-6 / (0.88 * ymax * U), 0.25) * 1e6; // where Rayleigh–Jeans leaves the top
@@ -175,8 +175,8 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
         const lam = v.slider('wavelength λ', 180, 700, 400, { step: 1, fmt: (x) => `${Math.round(x)} nm` });
         const irr = v.slider('irradiance', 0.25, 4, 1, { log: true, fmt: (x) => `${x.toFixed(2)} W/m²` });
         const Vs = v.slider('anode voltage $V$', -5, 3, -0.5, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} V` });
-        const tube = v.stage({ x: [-0.3, 1.3], y: [-0.76, 0.68], height: 230, axes: false, full: true });
-        const iv = v.stage({ x: [-5, 3], y: [0, 1], height: 250, axes: 'box', xlabel: 'V (volts)', ylabel: 'I (nA)', weight: 1.15, title: 'photocurrent against anode voltage' });
+        const tube = v.stage({ x: [-0.3, 1.3], y: [-0.76, 0.8], height: 245, axes: false, full: true });
+        const iv = v.stage({ x: [-5, 3], y: [0, 1], height: 250, axes: 'box', ylabel: 'I (nA)', weight: 1.15, title: 'photocurrent against anode voltage $V$ (volts)' });
         const mk = v.stage({ x: [0, 1.7], y: [0, 5.2], height: 250, axes: 'box', xlabel: 'f (10¹⁵ Hz)', ylabel: 'V_s (volts)', weight: 1, title: 'stopping voltage against frequency' });
         const rng = v.rng(11), NS = 4000, U = Array.from({ length: NS }, () => rng()).sort((a, b) => a - b);
         const frac = (K, V) => { if (K <= 0) return 0; if (V >= 0) return 1; const q = -V / K; let lo = 0, hi = NS; while (lo < hi) { const mid = (lo + hi) >> 1; if (U[mid] <= q) lo = mid + 1; else hi = mid; } return (NS - lo) / NS; };
@@ -196,7 +196,7 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
           tube.path([[0.44, -0.6], [1.025, -0.6], [1.025, -0.45]], { color: 'muted', width: 1.4 });
           tube.line(0.37, -0.57, 0.37, -0.63, { color: 'ink', width: 2 }); tube.line(0.43, -0.55, 0.43, -0.65, { color: 'ink', width: 2 });
           tube.text(`V = ${v.fix(V, 2)} V`, 0.4, -0.69, { color: 'ink', size: 12, align: 'center' });
-          tube.circle(0.85, -0.6, 0.035, { color: 'ink', width: 1.4, fill: 'panel', fillAlpha: 1 });
+          tube.dot(0.85, -0.6, { r: 10, color: 'ink', hollow: true, width: 1.4 });
           tube.text('A', 0.85, -0.6, { align: 'center', size: 11, color: 'ink' });
           tube.text(`I = ${M.si(cur * 1e-9, 'A')}`, 0.85, -0.69, { color: 'green', size: 12, align: 'center', weight: 600 });
           tube.dot(LAMP[0], LAMP[1], { r: 9, color: pc });
@@ -317,8 +317,7 @@ independent of $\lambda$; classical wave scattering (Thomson) predicts no shift 
             A.hline(Pw.value / Uy, { color: 'red', dash: [7, 5], width: 2 });
             A.text('classical wave: steady P', -0.02, Pw.value / Uy, { color: 'red', size: 11.5, dy: -10, align: 'right' });
             A.path(sig, { color: pc, width: 1.8 });
-            if (ev.length < 1500) for (const x of ev) if (x > -1) A.line(x, -0.06 * ymax / Uy, x, -0.01 * ymax / Uy, { color: 'gold', width: 1.6 });
-            v.legend([[pc, 'detector signal (colour of the light)'], ['accent', 'energy absorbed'], ['red', 'classical wave', { dash: true }], ['gold', 'photon arrivals']]);
+            v.legend([[pc, 'detector signal (in the colour of the light)'], ['accent', 'energy absorbed'], ['red', 'classical wave', { dash: true }]]);
             const inWin = ev.filter((x) => x > -1);
             B.setView([-1, 0], [0, Math.max(4, 1.25 * R)]);
             const stair = [[-1, 0]]; inWin.forEach((x, i) => { stair.push([x, i]); stair.push([x, i + 1]); }); stair.push([0, inWin.length]);
@@ -327,7 +326,7 @@ independent of $\lambda$; classical wave scattering (Thomson) predicts no shift 
             B.setTitle('energy absorbed since the window opened');
             st = { cnt, E, R, N: inWin.length, overlap: R * TAUD };
           } else {
-            A.o.axes = false; B.o.xlabel = 'scattering angle θ (degrees)'; B.o.ylabel = 'Δλ (pm)';
+            A.o.axes = false; B.o.xlabel = 'θ (degrees)'; B.o.ylabel = 'Δλ (pm)';
             const S = SRC[src.value], eps = C.h * C.c / S.lam / MC2;
             const Wd = A.width, Hd = A.height, Hh = 1.25, Wh = Hh * Wd / Hd, cx0 = -0.25 * Wh;
             A.setView([-Wh - cx0, Wh - cx0], [-Hh, Hh]); A.setTitle('photon + electron at rest');
@@ -356,10 +355,10 @@ independent of $\lambda$; classical wave scattering (Thomson) predicts no shift 
             A.arrow(Qb[0], Qb[1], Ppb[0], Ppb[1], { color: 'green', width: 2, head: 7 });
             A.text('p = p′ + pₑ', Ob[0] + k / 2, Ob[1], { color: 'muted', size: 11.5, align: 'center', dy: sg > 0 ? 12 : -12 });
             // shift against angle
-            B.setView([0, 180], [-0.4, Math.max(5.3, 1.15 * 2 * LC * 1e12)]); B.setTitle('Compton shift against angle');
+            B.setView([0, 180], [-0.9, Math.max(5.3, 1.15 * 2 * LC * 1e12)]); B.setTitle('Compton shift against angle');
             const pts = []; for (let i = 0; i <= 120; i++) { const a = Math.PI * i / 120, r = scatter(eps, a); pts.push([180 * i / 120, S.lam * (eps / r.e1 - 1) * 1e12]); }
             B.hline(0, { color: 'red', dash: [7, 5], width: 2 });
-            B.text('classical (Thomson): no shift', 4, 0, { color: 'red', size: 11.5, dy: -10 });
+            B.text('classical (Thomson): no shift', 62, 0, { color: 'red', size: 11.5, dy: -10 });
             B.path(pts, { color: 'accent', width: 2.6 });
             B.hline(2 * LC * 1e12, { color: 'muted', dash: [3, 4], width: 1 });
             B.text('2h/mₑc', 4, 2 * LC * 1e12, { color: 'muted', size: 11, dy: -9 });
@@ -423,7 +422,7 @@ with a single constant $R_{\rm H}=1.09678\times10^{7}\ \text{m}^{-1}$. Lines wit
           ry.fn((x) => x * R * 1e-6, { color: 'green', width: 2 });
           HLINES.forEach(([n1, n2, l], i) => ry.dot(xOf(i), 1e3 / l, { r: i === selIdx ? 6.5 : 4.5, color: SERIES[n1].color, hollow: assign[n1] !== n1 }));
           for (const k of [1, 2, 3, 4, 5]) { const i = HLINES.findIndex((L) => L[0] === k); ry.text(SERIES[k].name, xOf(i), 1e3 / HLINES[i][2], { color: SERIES[k].color, size: 11, dx: 9, dy: 9 }); }
-          ry.text(`1/λ = R·x, R = ${v.fix(R * 1e-7, 5)}×10⁷ m⁻¹`, 0.009, 0.012 * R * 1e-6, { color: 'green', size: 12, dy: -16 });
+          ry.text(`fit 1/λ = R·x: R = ${v.fix(R * 1e-7, 5)}×10⁷ m⁻¹`, 0.0085, 5.2, { color: 'green', size: 12, dx: 30 });
           // ---- zoom on the selected series
           const a = assign[ser], idx = HLINES.map((_, i) => i).filter((i) => HLINES[i][0] === ser);
           const lim = 1e9 * a * a / R, lA = HLINES[idx[0]][2], lo = Math.min(lim, ...idx.map((i) => HLINES[i][2])) * 0.97, hi = Math.max(lA, 1e9 / (R * (1 / (a * a) - 1 / ((a + 1) ** 2)))) * 1.03;

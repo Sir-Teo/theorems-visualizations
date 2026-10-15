@@ -250,7 +250,7 @@ $$T^*(w_1 + w_2) = T^*w_1 + T^*w_2 \qquad\text{and}\qquad T^*(\lambda w) = \lamb
         const lam = v.slider('$\\lambda$', -1.5, 1.5, -1.2, { step: 0.05 });
         const W = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, height: 380, weight: 0.85, title: 'in $W = \\mathbf R^2$' });
         const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2], equal: true, axes: false, height: 380, weight: 1.15, title: 'in $V = \\mathbf R^3$' });
-        const sc = v.scene3(S, { yaw: 0.5, pitch: 0.32, axis: 1.4, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -0.3, pitch: 0.3, axis: 1.4, lim: 1.4 });
         const disc = (x, y) => { const r = Math.hypot(x, y), m = 1.3; return r > m ? [(x * m) / r, (y * m) / r] : [x, y]; };
         const w1 = W.handle(1.1, 0.35, { color: 'teal', label: 'w₁', constrain: disc });
         const w2 = W.handle(-0.2, 1.05, { color: 'pink', label: 'w₂', constrain: disc });
@@ -274,7 +274,7 @@ $$T^*(w_1 + w_2) = T^*w_1 + T^*w_2 \qquad\text{and}\qquad T^*(\lambda w) = \lamb
           W.arrow(0, 0, a[0], a[1], { color: 'teal', width: 2.2 });
           sc.begin();
           const rk = v.M.rank(T, 1e-9);
-          if (rk === 2) { const [e, f] = onb(T[0], T[1]); sc.disc(e, f, 1.5, { fill: 'accent', fillAlpha: 0.08, color: 'accent', alpha: 0.4, grid: true }); }
+          if (rk === 2) { const [e, f] = onb(T[0], T[1]); sc.disc(e, f, 1.5, { fill: 'accent', fillAlpha: 0.06, color: 'accent', alpha: 0.35, grid: true }); }
           else { const e = unit(T[0]); sc.line(scl(e, -2), scl(e, 2), { color: 'accent', width: 2, alpha: 0.5 }); }
           const A = adj(T, a), out = adj(T, wc);
           let pred;
@@ -646,7 +646,7 @@ By 7.9, $T$ is self-adjoint exactly when its matrix with respect to an orthonorm
               us.forEach((u, i) => {
                 S.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: c, width: 1.2, alpha: 0.55 });
                 const p = scl(u, e.l[i]); S.arrow(0, 0, p[0], p[1], { color: c, width: 2.6 });
-                const q = scl(u, -2.2 * Math.sign(u[0] || 1));
+                const r = Math.min(2.2, 1.55 / Math.max(Math.abs(u[1]), 1e-9)), q = scl(u, -r * Math.sign((i ? u[1] : u[0]) || 1));
                 S.tex(`\\lambda_${i + 1} = ${nm(e.l[i])}`, q[0], q[1], { color: c, size: 14, dy: -14 });
               });
               if (perp) rightMark(S, us[0], us[1], 0.17, 'green'); else angleArc(S, us[0], us[1], 0.32, 'orange', `${nm(ang, 0)}°`);
@@ -684,6 +684,8 @@ By 7.9, $T$ is self-adjoint exactly when its matrix with respect to an orthonorm
         const L = v.stage({ x: [-3, 3], y: [-1.8, 1.8], equal: true, height: 340, weight: 1.15, title: 'eigenvalues of $T$ in $\\mathbf C$' });
         const bh = E.handle(0.6, 0.8, { color: 'accent', label: 'T₁₂' });
         const ch = E.handle(0.15, -0.2, { color: 'purple', label: 'T₂₁' });
+        // a sample sweep of T₁₂ (honestly computed) so that the trail shows from the start
+        for (let k = 0; k <= 160; k++) { const r = 0.15 + (1.1 * k) / 160, t = 0.21 * k, b = [r * Math.cos(t), r * Math.sin(t)]; for (const l of cEig2([[[0.8, 0], b], [cconj(b), [-0.4, 0]]]).ls) trail.push([l[0], l[1]]); }
         let st = null;
         v.render(() => {
           const H = herm.value; ch.visible = !H;
@@ -897,9 +899,9 @@ $$TT^* = T^*T.$$`,
           P.raster((x, y) => { const f = Math.sqrt(2 * (x * x - y * y) ** 2 + 2 * (a - d) ** 2 * (x - y) ** 2); return [red[0], red[1], red[2], Math.round(150 * Math.pow(Math.min(1, f / 3), 0.6))]; }, { key: `${a.toFixed(2)}|${d.toFixed(2)}`, res: 3 });
           P.axes();
           P.line(-3, -3, 3, 3, { color: 'green', width: 2.6 });
-          P.tex('b = c\\ \\text{(symmetric)}', 1.25, 1.62, { color: 'green', size: 13, align: 'right' });
-          if (eqAD()) { P.line(-3, 3, 3, -3, { color: 'green', width: 2.6 }); P.tex('b = -c\\ \\text{and}\\ a = d', 1.25, -1.62, { color: 'green', size: 13, align: 'right' }); }
-          else { P.line(-3, 3, 3, -3, { color: 'muted', width: 1.2, dash: [5, 5] }); P.tex('b = -c\\ \\text{needs}\\ a = d', 1.25, -1.62, { color: 'muted', size: 13, align: 'right' }); }
+          P.tex('b = c\\ \\text{(symmetric)}', 0.3, 1.62, { color: 'green', size: 13, align: 'left' });
+          if (eqAD()) { P.line(-3, 3, 3, -3, { color: 'green', width: 2.6 }); P.tex('b = -c\\ \\text{and}\\ a = d', 0.3, -1.62, { color: 'green', size: 13, align: 'left' }); }
+          else { P.line(-3, 3, 3, -3, { color: 'muted', width: 1.2, dash: [5, 5] }); P.tex('b = -c\\ \\text{needs}\\ a = d', 0.3, -1.62, { color: 'muted', size: 13, align: 'left' }); }
           const C1 = mm(T, Ts), C2 = mm(Ts, T), Cm = msub(C1, C2), gap = fro(Cm), normal = gap < 1e-9;
           Q.text(normal ? 'normal: TT* = T*T' : `not normal: ‖TT* − T*T‖ = ${nmc(gap)}`, 1.8, -0.5, { size: 14, align: 'center', color: normal ? 'green' : 'red', weight: 700 });
           drawTile(Q, C1, 0, 0.15, 1); drawTile(Q, C2, 1.35, 0.15, 1); drawTile(Q, Cm, 2.7, 0.15, 1, { frame: normal ? 'green' : 'red' });
@@ -981,7 +983,8 @@ $$T \text{ is normal} \iff \|Tv\| = \|T^*v\| \text{ for every } v \in V.$$`,
         const S = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.75], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.35, axis: 1.5, lim: 1.4 });
         let nul = q3;
-        const wh = sc.handle(add(scl(q1, 0.95), scl(q2, 0.35)), { color: 'gold', label: 'w', snap: (p) => { const r = len(p); if (r < 1e-6) return p; const c = dot(p, nul) / r; return Math.abs(c) > Math.cos(7 / DEG) ? scl(nul, Math.sign(c) * r) : p; } });
+        const ez0 = [Math.sin(-0.5) * Math.cos(0.35), Math.cos(-0.5) * Math.cos(0.35), -Math.sin(0.35)], mjr = unit(cross(q3, ez0)); // the plane's long axis on screen
+        const wh = sc.handle(scl(mjr, 1.0), { color: 'gold', label: 'w', snap: (p) => { const r = len(p); if (r < 1e-6) return p; const c = dot(p, nul) / r; return Math.abs(c) > Math.cos(7 / DEG) ? scl(nul, Math.sign(c) * r) : p; } });
         const ring = (e, f, r, st) => { const pts = []; for (let k = 0; k <= 60; k++) { const t = (TAU * k) / 60; pts.push(add(scl(e, r * Math.cos(t)), scl(f, r * Math.sin(t)))); } sc.path(pts, st); };
         let st = null;
         v.render(() => {
@@ -994,11 +997,11 @@ $$T \text{ is normal} \iff \|Tv\| = \|T^*v\| \text{ for every } v \in V.$$`,
           sc.begin();
           sc.disc(rT[0], rT[1], 1.5, { fill: 'accent', fillAlpha: 0.12, color: 'accent', grid: true });
           ring(rS[0], rS[1], 1.5, { color: 'orange', width: 2, dash: [6, 4] });
-          sc.line(scl(nT, -1.8), scl(nT, 1.8), { color: 'red', width: 3.4 });
-          sc.line(scl(nTs, -1.8), scl(nTs, 1.8), { color: 'green', width: 2, dash: [6, 4], top: true });
-          sc.tex('\\operatorname{null} T', scl(nT, 1.85), { color: 'red', size: 14, dx: 26, dy: -6 });
-          sc.tex('\\operatorname{null} T^*', scl(nTs, -1.85), { color: 'green', size: 14, dx: 30, dy: 6 });
-          sc.tex('\\operatorname{range} T', scl(rT[1], -1.35), { color: 'accent', size: 14 });
+          sc.line(scl(nT, -1.4), scl(nT, 1.4), { color: 'red', width: 3.4 });
+          sc.line(scl(nTs, -1.4), scl(nTs, 1.4), { color: 'green', width: 2, dash: [6, 4], top: true });
+          sc.tex('\\operatorname{null} T', scl(nT, 1.4), { color: 'red', size: 14, dx: 34, dy: 0 });
+          sc.tex('\\operatorname{null} T^*', scl(nTs, -1.4), { color: 'green', size: 14, dx: 38, dy: 0 });
+          sc.tex('\\operatorname{range} T', scl(unit(sub(mjr, scl(nrm, dot(mjr, nrm)))), -1.2), { color: 'accent', size: 14, dy: -12 });
           sc.arrow([0, 0, 0], Tw, { color: 'accent', width: 2.4 }); sc.tex('Tw', Tw, { color: 'accent', size: 14, dx: 12, dy: -8 });
           sc.arrow([0, 0, 0], Tsw, { color: 'orange', width: 2.4 }); sc.tex('T^*w', Tsw, { color: 'orange', size: 14, dx: 14, dy: 8 });
           sc.arrow([0, 0, 0], w, { color: 'gold', width: 2.4 });

@@ -270,7 +270,6 @@ $$n = 3N - k$$
           if (twin.value) sQ.dot(wrap(yb[0]), wrap(yb[1]), { r: 5, color: 'red', alpha: 0.75 });
           sQ.dot(wrap(y[0]), wrap(y[1]), { r: 6, color: 'gold' });
           // ── log panel
-          sE.hline(1, { color: 'faint', dash: [3, 3] });
           series(sE, S.A.t, S.dE, k, { color: 'blue', width: 1.8 });
           if (twin.value) series(sE, S.A.t, S.sep, k, { color: 'red', width: 1.8 });
           sE.vline(S.A.t[k], { color: 'gold', width: 1.2 });

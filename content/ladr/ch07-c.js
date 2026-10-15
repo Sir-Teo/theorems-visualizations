@@ -460,7 +460,7 @@ $$\langle Tv, v\rangle > 0 \quad\text{for every nonzero } v \in V.$$`,
           if (len(Tu) > 0.15) S.tex('Tv', Tu[0], Tu[1], { color: 'purple', size: 15, dx: 12, dy: -10 });
           // right: q on the unit circle (period π)
           const f = (t) => q(uAt(t)), mn = Math.min(...L), tmin = ph.value + (L[0] <= L[1] ? 0 : Math.PI / 2);
-          G.setView(null, [Math.min(-0.3, mn - 0.3), Math.max(1, Math.max(...L) + 0.4)]);
+          G.setView(null, [Math.min(-0.45, mn - 0.45), Math.max(1, Math.max(...L) + 0.4)]);
           G.fn((t) => Math.max(0, f(t)), { fill: 'green', fillAlpha: 0.16, stroke: false, n: 200 });
           G.fn((t) => Math.min(0, f(t)), { fill: 'red', fillAlpha: 0.2, stroke: false, n: 200 });
           G.hline(0, { color: 'muted', width: 1 });
@@ -560,7 +560,7 @@ $$B = R^*R.$$`,
       credit: 'Cholesky, published 1924',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cholesky_decomposition' },
       viz(v) {
-        const S = v.stage({ x: [-2.4, 2.4], y: [-1.9, 2.3], equal: true, height: 370, minWidth: 300, weight: 1.1 });
+        const S = v.stage({ x: [-2.4, 2.4], y: [-1.8, 2.75], equal: true, height: 370, minWidth: 300, weight: 1.1 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 370, minWidth: 280, title: 'the matrices' });
         const tS = v.slider('apply $Q^*$', 0, 1, 0.6, { step: 0.01 });
         const h1 = S.handle(0.9, 1.3, { color: 'blue', label: 'a₁' });
@@ -630,7 +630,7 @@ $$B = R^*R.$$`,
         const M = v.M;
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.75, 1.9], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 320, title: '$V = \\mathbf R^3$' });
         const W = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 390, minWidth: 250, title: '$W = \\mathbf R^2$' });
-        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.3, axis: 1.5, lim: 1.6 });
+        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.62, axis: 1.4, lim: 1.6 });
         const PRE = { 2: [[1.05, 0.3, 0.25], [0.1, 0.9, -0.3]], 1: [[0.84, 0.54, 0.3], [0.42, 0.27, 0.15]] };
         let T = PRE[2], seed = 5;
         const rk = v.select('', [{ value: '2', label: 'rank 2' }, { value: '1', label: 'rank 1' }], '2', { onChange: (k) => { T = PRE[k]; } });
@@ -655,7 +655,7 @@ $$B = R^*R.$$`,
           const rowB = gsList(T).filter(Boolean); // range T* = span of the rows of T
           const r = rowB.length, p = vh.p, Tp = mv(T, p), TTp = mv(TtT, p);
           sc.begin();
-          if (nullB.length === 1) sc.line(scl(nullB[0], -1.7), scl(nullB[0], 1.7), { color: 'red', width: 4.5, alpha: 0.5 }, 16);
+          if (nullB.length === 1) sc.line(scl(nullB[0], -1.5), scl(nullB[0], 1.5), { color: 'red', width: 4.5, alpha: 0.5 }, 16);
           else if (nullB.length === 2) sc.disc(nullB[0], nullB[1], 1.45, { fill: 'red', color: 'red', fillAlpha: 0.08, alpha: 0.5, grid: true });
           if (r === 2) sc.disc(rowB[0], rowB[1], 1.45, { fill: 'green', color: 'green', fillAlpha: 0.09, alpha: 0.6, grid: true });
           else if (r === 1) sc.line(scl(rowB[0], -1.7), scl(rowB[0], 1.7), { color: 'green', width: 4.5, alpha: 0.5 }, 16);
@@ -664,7 +664,7 @@ $$B = R^*R.$$`,
           es.vecs.forEach((e, i) => { if (es.values[i] > tol) sc.line(scl(e, -es.values[i]), scl(e, es.values[i]), { color: 'purple', width: 1.4, alpha: 0.6, dash: [4, 4] }); });
           sc.arrow(ZERO, p, { color: 'gold', width: 3 });
           if (len(TTp) > 1e-6) { sc.arrow(ZERO, TTp, { color: 'purple', width: 3 }); sc.tex('T^*Tv', TTp, { color: 'purple', size: 14, dy: -13 }); }
-          if (nullB.length) { const np = nullB.length === 1 ? nullB[0] : nullB[0]; sc.tex('\\operatorname{null} T', scl(np, sc.P(np)[1] >= 0 ? 1.75 : -1.75), { color: 'red', size: 13, dy: -10 }); }
+          if (nullB.length) { const np = nullB.length === 1 ? nullB[0] : nullB[0]; sc.tex('\\operatorname{null} T', scl(np, sc.P(np)[1] >= 0 ? 1.5 : -1.5), { color: 'red', size: 13, dx: 30 }); }
           if (r) { const gp = rowB[0]; sc.tex('\\operatorname{range} T^*', scl(gp, sc.P(gp)[1] >= 0 ? 1.55 : -1.55), { color: 'green', size: 13, dy: -12 }); }
           sc.flush();
           // W: range T and the image of the unit ball
@@ -728,7 +728,7 @@ $$B = R^*R.$$`,
             const c = k ? 'purple' : 'blue', w = scl(u, s[k]);
             if (s[k] < 1e-6) return;
             W.arrow(0, 0, w[0], w[1], { color: c, width: 2.8 });
-            const n = perp(u), side = n[1] < 0 ? -1 : 1, lp = add(scl(u, s[k] * 0.55), scl(n, 0.3 * side * (k ? -1 : 1)));
+            const lp = scl(u, s[k] + 0.5);
             W.tex(`s_${k + 1} = ${tn(s[k])}`, lp[0], lp[1], { color: c, size: 14 });
           });
           // number lines

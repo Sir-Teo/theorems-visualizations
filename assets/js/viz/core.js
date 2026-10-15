@@ -1018,21 +1018,27 @@ function makeSound(rt) {
     }
     return ac;
   };
-  const addVoice = (ac, srcs, env) => {
+  const addVoice = (ac, srcs, env, lvl = null) => {
+    const f0 = srcs[0]?._f;
     const v = {
       stop(fade = 0.03) {
         try { const t = ac.currentTime; env.gain.cancelScheduledValues(t); env.gain.setValueAtTime(env.gain.value, t); env.gain.linearRampToValueAtTime(0, t + fade); for (const s of srcs) s.stop(t + fade + 0.02); } catch { /* already stopped */ }
       },
       get playing() { return voices.has(v); },
+      /** Change the loudness of a playing voice smoothly (1 = as started). */
+      setGain(k) { try { (lvl || env).gain.setTargetAtTime(Math.max(0, k) * (lvl ? 1 : env._g0 ?? 1), ac.currentTime, 0.015); } catch { /* stopped */ } return v; },
+      /** Retune a playing tone: its fundamental moves to f, other partials keep their ratios. */
+      setFreq(f) { if (!(f > 0) || !f0) return v; try { for (const s of srcs) if (s.frequency) s.frequency.setTargetAtTime(s._f * f / f0, ac.currentTime, 0.01); } catch { /* stopped */ } return v; },
     };
     let left = srcs.length;
     for (const s of srcs) s.onended = () => { if (--left === 0) { voices.delete(v); try { env.disconnect(); } catch { /* ignore */ } rt.invalidate(); } };
     voices.add(v); rt.invalidate(); return v;
   };
-  const envelope = (ac, o, t0, peak) => { // attack → hold until `duration` → exponential-ish release
-    const g = ac.createGain(), atk = Math.max(0.002, o.attack ?? 0.01), dur = Math.max(atk, o.duration ?? 1), rel = Math.max(0.005, o.release ?? 0.3);
-    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(peak, t0 + atk); g.gain.setValueAtTime(peak, t0 + dur); g.gain.setTargetAtTime(0, t0 + dur, rel / 5);
-    g.connect(master); return { g, end: t0 + dur + rel };
+  const envelope = (ac, o, t0, peak) => { // attack → hold until `duration` (or until stop() with sustain) → exponential-ish release
+    const g = ac.createGain(), lvl = ac.createGain(), atk = Math.max(0.002, o.attack ?? 0.01), dur = Math.max(atk, o.duration ?? 1), rel = Math.max(0.005, o.release ?? 0.3);
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(peak, t0 + atk);
+    if (!o.sustain) { g.gain.setValueAtTime(peak, t0 + dur); g.gain.setTargetAtTime(0, t0 + dur, rel / 5); }
+    g.connect(lvl); lvl.connect(master); return { g, lvl, end: o.sustain ? Infinity : t0 + dur + rel, dur };
   };
   const toPartials = (p, o) => {
     if (typeof p === 'number') { const H = Math.max(1, o.harmonics ?? 1), roll = o.rolloff ?? 1; return M.range(H).map((k) => [p * (k + 1), 1 / Math.pow(k + 1, roll)]); }
@@ -1042,18 +1048,20 @@ function makeSound(rt) {
     const ac = out(); if (!ac) return NOOP;
     try {
       const t0 = ac.currentTime + 0.01 + Math.max(0, o.delay ?? 0), nyq = ac.sampleRate / 2;
-      const { g, end } = envelope(ac, o, t0, (o.gain ?? 0.25) * scale), srcs = [];
+      const { g, lvl, end, dur } = envelope(ac, o, t0, (o.gain ?? 0.25) * scale), srcs = [];
+      const f0 = sets[0]?.[0]?.[0];
       for (const parts of sets) {
         const tot = parts.reduce((s, [f, a]) => s + (f > 0 && f < nyq ? Math.abs(a) : 0), 0) || 1;
         for (const [f, a] of parts) {
           if (!(f > 0 && f < nyq) || !a) continue;
           const osc = ac.createOscillator(), pg = ac.createGain();
-          osc.type = o.type || 'sine'; osc.frequency.value = f; pg.gain.value = o.normalize === false ? a : a / tot;
-          osc.connect(pg); pg.connect(g); osc.start(t0); osc.stop(end + 0.05); srcs.push(osc);
+          osc.type = o.type || 'sine'; osc.frequency.value = f; osc._f = f; pg.gain.value = o.normalize === false ? a : a / tot;
+          if (o.glide > 0 && f0 > 0) { osc.frequency.setValueAtTime(f, t0); osc.frequency.exponentialRampToValueAtTime(Math.min(nyq * 0.98, f * o.glide / f0), t0 + dur); } // chirp: the fundamental slides to `glide` Hz
+          osc.connect(pg); pg.connect(g); osc.start(t0); if (Number.isFinite(end)) osc.stop(end + 0.05); srcs.push(osc);
         }
       }
-      if (!srcs.length) { g.disconnect(); return NOOP; }
-      return addVoice(ac, srcs, g);
+      if (!srcs.length) { g.disconnect(); lvl.disconnect(); return NOOP; }
+      return addVoice(ac, srcs, g, lvl);
     } catch { return NOOP; }
   };
   const isOpts = (x) => x != null && typeof x === 'object' && !Array.isArray(x);
@@ -1088,8 +1096,8 @@ function makeSound(rt) {
     noise: (o = {}) => {
       const ac = out(); if (!ac) return NOOP;
       try {
-        const t0 = ac.currentTime + 0.01 + Math.max(0, o.delay ?? 0), { g, end } = envelope(ac, o, t0, o.gain ?? 0.2);
-        const n = Math.ceil((end - t0 + 0.1) * ac.sampleRate), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0);
+        const t0 = ac.currentTime + 0.01 + Math.max(0, o.delay ?? 0), { g, lvl, end } = envelope(ac, o, t0, o.gain ?? 0.2);
+        const n = Math.ceil((Number.isFinite(end) ? end - t0 + 0.1 : 2) * ac.sampleRate), buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0); // sustained noise loops a 2 s buffer
         let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0;
         for (let i = 0; i < n; i++) {
           const w = Math.random() * 2 - 1;
@@ -1098,8 +1106,8 @@ function makeSound(rt) {
             b4 = 0.55 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.016898; d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
           } else if (o.color === 'brown') { last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w;
         }
-        const src = ac.createBufferSource(); src.buffer = buf; src.connect(g); src.start(t0); src.stop(end + 0.05);
-        return addVoice(ac, [src], g);
+        const src = ac.createBufferSource(); src.buffer = buf; src.loop = !Number.isFinite(end); src.connect(g); src.start(t0); if (Number.isFinite(end)) src.stop(end + 0.05);
+        return addVoice(ac, [src], g, lvl);
       } catch { return NOOP; }
     },
     /** Stop everything this viz is playing (short fade, no click). */
