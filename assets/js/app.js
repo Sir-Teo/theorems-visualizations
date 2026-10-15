@@ -291,7 +291,7 @@ function lineageBlock(it) {
     <div class="lineage-head"><h2>Lineage</h2>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="muted" style="font-size:13px">prerequisites, steps back:</span>
         <div class="seg" id="depth"><button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button><button data-d="99">all</button></div>
-        <a class="btn" href="#/map?focus=${it.id}">Show on map</a></div>
+        <a class="btn" href="#/map?focus=${it.id}">Show on map</a><a class="btn" href="#/path/${it.id}">Plan a path</a></div>
     </div>
     <div class="lineage-svg-wrap" id="lineage"></div>
   </div>`;
@@ -409,6 +409,49 @@ function pageMap(params) {
   app.replaceChildren(host);
   const view = new MapView(host, G, { onOpen: (id) => go(`#/t/${id}`), focus: params.get('focus'), loadShard });
   cleanup = () => { view.dead = true; view.destroy(); };
+}
+
+// ------------------------------------------------------------ prerequisite planner
+const KNOWN_KEY = 'knownIdeas';
+function loadKnown() { try { return new Set(JSON.parse(localStorage.getItem(KNOWN_KEY) || '[]')); } catch { return new Set(); } }
+function saveKnown(set) { try { localStorage.setItem(KNOWN_KEY, JSON.stringify([...set])); } catch { /* ignore */ } }
+/** All prerequisites of `id` (written and planned), in an order where each comes after its own prerequisites. */
+function prerequisites(id) {
+  const anc = new Set(); const stack = [id];
+  while (stack.length) { const x = stack.pop(); for (const d of depsOf(G.byId.get(x))) if (G.byId.has(d) && !anc.has(d)) { anc.add(d); stack.push(d); } }
+  const indeg = new Map([...anc].map((x) => [x, depsOf(G.byId.get(x)).filter((d) => anc.has(d)).length]));
+  const kids = new Map([...anc].map((x) => [x, []])); for (const x of anc) for (const d of depsOf(G.byId.get(x))) if (anc.has(d)) kids.get(d).push(x);
+  const rank = (x) => G.colIdx.get(G.byId.get(x).col) * 1e6 + (G.order.get(x) || 0);
+  const ready = [...anc].filter((x) => !indeg.get(x)).sort((a, b) => rank(a) - rank(b)); const out = [];
+  while (ready.length) { const x = ready.shift(); out.push(x); for (const k of kids.get(x)) { indeg.set(k, indeg.get(k) - 1); if (!indeg.get(k)) { const r = rank(k); let i = ready.findIndex((y) => rank(y) > r); if (i < 0) i = ready.length; ready.splice(i, 0, k); } } }
+  return out;
+}
+async function pagePath(id) {
+  const target = G.byId.get(id); if (!target) return pageNotFound();
+  setTitle(`Path to ${target.name.replace(/\$/g, '')}`); setNav(''); curCol = null;
+  const order = prerequisites(id);
+  const known = loadKnown();
+  const el = h(`<div class="wrap path-page"><div class="page-head">
+    <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/t/${id}">${escapeHTML(colShort(target.col))} ${displayNum(target)}</a><span class="sep">/</span><span>Path</span></div>
+    <div class="eyebrow">Prerequisite planner</div>
+    <h1>The path to <em>${inlineHTML(target.name)}</em></h1>
+    <p class="sub">Everything this ${target.kind.toLowerCase()} rests on, in an order where each idea comes after the ideas it needs. Tick what you already know; the ideas you can learn next are highlighted. Your ticks are saved in this browser.</p>
+    <div class="stats-row" id="path-stats"></div>
+  </div><div id="path-list"></div></div>`);
+  app.replaceChildren(el);
+  const draw = () => {
+    const frontier = new Set(order.filter((x) => !known.has(x) && depsOf(G.byId.get(x)).every((d) => !G.byId.has(d) || known.has(d))));
+    const nk = order.filter((x) => known.has(x)).length;
+    el.querySelector('#path-stats').innerHTML = `<span><b>${order.length}</b> prerequisites</span><span><b>${nk}</b> known</span><span><b>${frontier.size}</b> ready to learn next</span><span class="progress" style="--bc:var(--c-accent);width:120px"><span style="width:${order.length ? (100 * nk / order.length).toFixed(1) : 0}%"></span></span>${nk ? '<button class="btn" type="button" data-reset>Clear ticks</button>' : ''}`;
+    el.querySelector('[data-reset]')?.addEventListener('click', () => { for (const x of order) known.delete(x); saveKnown(known); draw(); });
+    // group consecutive ideas from the same chapter
+    const groups = []; for (const x of order) { const it = G.byId.get(x); const k = `${it.col}/${it.c}`; if (!groups.length || groups[groups.length - 1].k !== k) groups.push({ k, its: [] }); groups[groups.length - 1].its.push(it); }
+    el.querySelector('#path-list').innerHTML = (order.length ? groups.map((g) => { const [col, c] = g.k.split('/'); const Ch = chapterOf(col, +c); const allKnown = g.its.every((it) => known.has(it.id)); return `<section class="path-group" data-col="${col}"><h3><span class="col-dot"></span>${escapeHTML(colShort(col))} · ${chapterLabel(col, +c)} · ${escapeHTML(Ch?.title || '')}<button class="mark-all" type="button" data-group="${g.its.map((it) => it.id).join(',')}" data-on="${allKnown ? 0 : 1}">${allKnown ? 'unmark all' : 'I know all of these'}</button></h3><ul>${g.its.map((it) => `<li class="${known.has(it.id) ? 'known' : frontier.has(it.id) ? 'next' : ''}${it.planned ? ' planned' : ''}"><label><input type="checkbox" data-id="${it.id}" ${known.has(it.id) ? 'checked' : ''}><span class="num">${displayNum(it)}</span></label><a href="#/t/${it.id}"><span class="kind">${kindAbbr(it.kind)}</span> ${inlineHTML(it.name)}</a>${frontier.has(it.id) ? '<span class="tag">learn next</span>' : ''}${it.planned ? '<span class="tag faint">planned</span>' : ''}</li>`).join('')}</ul></section>`; }).join('') : '<p class="empty-note">Nothing comes before it in the graph: a starting point.</p>')
+      + `<section class="path-group target" data-col="${target.col}"><h3><span class="col-dot"></span>Goal</h3><ul><li class="${frontier.size === 0 && order.length ? 'next' : ''}"><span class="num">${displayNum(target)}</span><a href="#/t/${id}"><span class="kind">${kindAbbr(target.kind)}</span> ${inlineHTML(target.name)}</a></li></ul></section>`;
+    el.querySelectorAll('#path-list [data-group]').forEach((b) => b.addEventListener('click', () => { for (const x of b.dataset.group.split(',')) { if (b.dataset.on === '1') known.add(x); else known.delete(x); } saveKnown(known); draw(); }));
+    el.querySelectorAll('#path-list input[data-id]').forEach((cb) => cb.addEventListener('change', () => { if (cb.checked) known.add(cb.dataset.id); else known.delete(cb.dataset.id); saveKnown(known); draw(); }));
+  };
+  draw();
 }
 
 function bridgesOf(id) { return (G.bridges || []).filter((B) => B.steps.some((st) => st.id === id)); }
@@ -535,6 +578,7 @@ async function route() {
     else if (parts[0] === 'status') pageStatus();
     else if (parts[0] === 'timeline') pageTimeline();
     else if (parts[0] === 'bridges') pageBridges();
+    else if (parts[0] === 'path' && parts[1]) await pagePath(decodeURIComponent(parts[1]));
     else if (parts[0] === 'bridge' && parts[1]) await pageBridge(parts[1]);
     else if (parts[0] === 'about') pageAbout();
     else if (parts[0] === 'audit') pageAudit();

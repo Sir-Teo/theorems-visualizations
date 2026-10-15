@@ -21,7 +21,7 @@ const routes = val('--routes')?.split(',') || [
   ...live.map((C) => `#/t/${someItem(C.id)?.id}`).filter((r) => !r.endsWith('undefined')),
   ...(idx.planned.length ? [`#/t/${idx.planned[0].id}`] : []),
   ...(idx.collections.find((C) => !C.count && !C.planned) ? [`#/c/${idx.collections.find((C) => !C.count && !C.planned).id}`] : []),
-  '#/book/pma/4', '#/nope',
+  '#/path/fa-12.23', '#/book/pma/4', '#/nope',
 ];
 const { chromium } = await import('playwright-core');
 const server = createServer(); await new Promise((r) => server.listen(0, r));
