@@ -191,7 +191,7 @@ Solved numerically, without further adjustment, these four equations (neuro-2.3)
             return `second shock of ${v.fix(u2.value, 1)} mV after ${v.fix(dT.value, 1)} ms: **${second ? 'fires' : 'fails'}** · needed at this interval: ${here && isFinite(here[1]) ? `${v.fix(here[1], 1)} mV` : 'no shock up to 100 mV'} against ${v.fix(thr0, 1)} mV at rest · absolutely refractory for about **${v.fix(absR, 1)} ms**, then relatively refractory while $h$ recovers and $n$ decays`;
           }
           const { C } = st;
-          return `computed conduction velocity at ${v.fix(T, 1)} °C: **${v.fix(C.v, 1)} m/s** (from the arrival times at 2 and 4 cm; radius 238 µm, axoplasm 35.4 Ω·cm) · Hodgkin & Huxley computed **18.8 m/s** at 18.5 °C and measured **21.2 m/s**: the model is about 11% slow, a gap still not fully explained`;
+          return `computed conduction velocity at ${v.fix(T, 1)} °C: **${v.fix(C.v, 1)} m/s** (from the arrival times at 2 and 4 cm; radius 238 µm, axoplasm 35.4 Ω·cm) · Hodgkin & Huxley computed **18.8 m/s** at 18.5 °C and measured **21.2 m/s**: the model is about 11% slow, a gap later authors have argued measurement error alone cannot explain`;
         });
         sync();
       },
