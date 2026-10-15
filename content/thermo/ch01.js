@@ -1,51 +1,7 @@
 // Thermodynamics & Statistical Mechanics — Chapter 1: Temperature, heat and the first law
-import { clamp, lerp, hsGas, carnahanStarling, ramp, pick, drawGas, windowed, fitLine } from './ch01.shared.js';
+import { clamp, lerp, hsGas, carnahanStarling, ramp, pick, drawGas, LJ, B2, runBudget, simClock, tRamp, scatter } from './ch01.shared.js';
 
 // ---------- helpers for this file ----------
-/** Advance a gas by up to T in chunks of ch, giving up after ms of wall-clock time; each(h) runs before every chunk. */
-function runBudget(G, T, ch, ms, each) {
-  const t0 = performance.now(); let done = 0;
-  while (done < T - 1e-9) { const h = Math.min(ch, T - done); if (each) each(h); G.advance(h); done += h; if (performance.now() - t0 > ms) break; }
-  return done;
-}
-/** Clock for animated simulations: returns the simulated time to add this frame (catching up after a jump, e.g. a still frame). */
-function simClock(rate, cap = 0.25, warm = 0) {
-  let last = null;
-  const clock = (t, reset) => {
-    clock.big = false;
-    if (last === null || t < last - 1e-6) { const first = last === null; last = t; reset?.(); clock.big = true; return Math.max(first ? warm : 0, Math.min(t, 8) * rate); }
-    const dt = t - last; last = t;
-    if (dt > 0.5) { clock.big = true; return Math.min(dt, 8) * rate; }
-    return Math.min(dt, cap) * rate;
-  };
-  clock.big = false;
-  /** wall-clock budget (ms) for this frame: generous when catching up */
-  clock.ms = () => (clock.big ? 900 : 14);
-  return clock;
-}
-/** Temperature colour ramp (cold blue → purple → hot red). */
-const tRamp = (v) => ramp(v, 'blue', 'red', 32, 'purple');
-/** Deterministic scatter of n points in a rectangle (for drawing gas samples). */
-function scatter(n, seed, x0, y0, x1, y1) { let a = seed; const r = () => ((a = (a * 16807) % 2147483647) / 2147483647); return Array.from({ length: n }, () => [x0 + (x1 - x0) * r(), y0 + (y1 - y0) * r()]); }
-
-// Second virial coefficient of a Lennard-Jones gas (cm³/mol), parameters (σ in Å, ε/k in K) fitted to measured B(T).
-const LJ = {
-  He: { sig: 2.556, eps: 10.22, tex: '\\mathrm{He}', col: 'teal' },
-  H2: { sig: 2.928, eps: 37.0, tex: '\\mathrm{H_2}', col: 'pink' },
-  N2: { sig: 3.698, eps: 95.05, tex: '\\mathrm{N_2}', col: 'accent' },
-  Ar: { sig: 3.405, eps: 119.8, tex: '\\mathrm{Ar}', col: 'green' },
-  CO2: { sig: 4.486, eps: 189, tex: '\\mathrm{CO_2}', col: 'red' },
-};
-const B2cache = new Map();
-function B2(g, T) {
-  const key = g + '|' + Math.round(T * 4);
-  if (B2cache.has(key)) return B2cache.get(key);
-  const { sig, eps } = LJ[g], a = 0.4 * sig, b = 10 * sig, n = 600, h = (b - a) / n;
-  let s = 0;
-  for (let i = 0; i <= n; i++) { const r = a + i * h, sr6 = (sig / r) ** 6, u = 4 * eps * (sr6 * sr6 - sr6); s += (Math.exp(-u / T) - 1) * r * r * (i === 0 || i === n ? 1 : i % 2 ? 4 : 2); }
-  const B = -2 * Math.PI * (s * h / 3 - a ** 3 / 3) * 0.6022141;
-  B2cache.set(key, B); return B;
-}
 // Material laws used by the thermometers of 1.3
 const ptRatio = (t) => 1 + 3.9083e-3 * t - 5.775e-7 * t * t;                 // platinum R(t)/R(0), IEC 60751 (t ≥ 0 °C form)
 const kellRho = (t) => (999.83952 + 16.945176 * t - 7.9870401e-3 * t * t - 46.170461e-6 * t ** 3 + 105.56302e-9 * t ** 4 - 280.54253e-12 * t ** 5) / (1 + 16.879850e-3 * t); // water, kg/m³ (Kell 1975)

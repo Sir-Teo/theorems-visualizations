@@ -178,3 +178,77 @@ export const isBlack = (M, m) => BLACK.has(M.mod(m, 12));
 
 /** Stiff-string partial n: n·f0·√(1 + B n²). */
 export const stiff = (f0, B, n) => n * f0 * Math.sqrt(1 + B * n * n);
+
+/**
+ * Bowed string by digital waveguide (velocity waves, one cell per sample, McIntyre–Schumacher–Woodhouse friction).
+ * The string runs from the nut (cell 0) to the bridge (cell N); the bow sits a fraction beta of the length from the bridge.
+ * o: {f1 (Hz), beta, FN (N), vb (m/s), Z (kg/s), dur (s), rec (periods recorded at the end, 0 = none),
+ *     mus, mud, v0 (friction curve), g, lp (bridge reflection loss and low-pass), sr}.
+ * Returns {N, f, sr, out (bridge force), vbow (string velocity at the bow), stick (0/1 per sample), snaps (displacement
+ * snapshots over the last rec periods, metres), ib}.
+ */
+export function bowSim(o) {
+  const sr = o.sr || SR, N = Math.max(8, Math.round(sr / (2 * o.f1))), steps = Math.round(o.dur * sr);
+  const mus = o.mus ?? 0.8, mud = o.mud ?? 0.3, v0 = o.v0 ?? 0.15, g = o.g ?? 0.985, lp = o.lp ?? 0.3, Z = o.Z, vb = o.vb, FN = o.FN;
+  const ib = Math.max(1, Math.min(N - 1, Math.round(N * (1 - o.beta))));
+  const r = new Float64Array(N + 1), l = new Float64Array(N + 1), y = new Float64Array(N + 1);
+  const out = new Float32Array(steps), vbow = new Float32Array(steps), stick = new Uint8Array(steps);
+  const rec = o.rec ? Math.round(o.rec * 2 * N) : 0, snaps = [];
+  const kap = FN / (2 * Z), dmu = mus - mud, ustar = Math.max(0, Math.sqrt(kap * dmu * v0) - v0);
+  const mu = (u) => mud + (dmu * v0) / (v0 + u);
+  // largest root of u + kap·mu(u) = a on (u*, a], or −1 when the slipping branch does not reach a
+  const slipRoot = (a) => {
+    if (ustar + kap * mu(ustar) > a) return -1;
+    let lo = ustar, hi = a;
+    for (let it = 0; it < 32; it++) { const m = 0.5 * (lo + hi); if (m + kap * mu(m) > a) hi = m; else lo = m; }
+    return 0.5 * (lo + hi);
+  };
+  let stuck = true, lps = 0;
+  const dt = 1 / sr;
+  for (let k = 0; k < steps; k++) {
+    r.copyWithin(1, 0, N); l.copyWithin(0, 1, N + 1);
+    r[0] = -l[0];
+    lps = (1 - lp) * r[N] + lp * lps; l[N] = -g * lps;
+    const vh = r[ib] + l[ib], uh = vb - vh, a = Math.abs(uh), sg = uh >= 0 ? 1 : -1;
+    let vv;
+    if (stuck && 2 * Z * a <= mus * FN) vv = vb;
+    else {
+      const u = slipRoot(a);
+      if (u < 0) { vv = vb; stuck = true; } else { vv = vb - sg * u; stuck = false; }
+      if (u < 0 && 2 * Z * a > mus * FN) { vv = vb - sg * a; stuck = false; } // (cannot happen: guard)
+    }
+    if (vv === vb) stuck = true;
+    const dv = vv - vh;
+    r[ib] += dv; l[ib] += dv;
+    for (let i = 1; i < N; i++) y[i] += (i === ib ? vv : r[i] + l[i]) * dt;
+    out[k] = r[N] - l[N]; vbow[k] = vv; stick[k] = stuck ? 1 : 0;
+    if (rec && k >= steps - rec) snaps.push(Float32Array.from(y));
+  }
+  return { N, f: sr / (2 * N), sr, out, vbow, stick, snaps, ib };
+}
+
+/**
+ * Felt hammer striking a stiff string, by modal synthesis. String: f1 (Hz), B (inharmonicity), L (m), mu (kg/m), NM modes,
+ * decays d(f). Hammer: mass mh (kg), felt law F = K·u^p (u = felt compression, m), speed V (m/s), striking at x = beta·L.
+ * Returns {F (contact force every dtRec), dtRec, tc (contact time), Fmax, q, qd (mode state at the end), w (rad/s),
+ * snaps (mode displacements every dtSnap), dtSnap, uh (hammer position at the snapshots), vOut (rebound speed)}.
+ */
+export function hammerSim(o) {
+  const NM = o.NM || 48, L = o.L, mu = o.mu, beta = o.beta, mh = o.mh, K = o.K, p = o.p, tEnd = o.tEnd || 0.008, dt = o.dt || 1e-6;
+  const w = new Float64Array(NM), sn = new Float64Array(NM), q = new Float64Array(NM), qd = new Float64Array(NM), damp = new Float64Array(NM);
+  const mModal = (mu * L) / 2;
+  for (let n = 1; n <= NM; n++) { w[n - 1] = TAU * stiff(o.f1, o.B || 0, n); sn[n - 1] = Math.sin(n * Math.PI * beta); damp[n - 1] = o.decay ? o.decay(w[n - 1] / TAU) : 0; }
+  let u = 0, ud = o.V, tc = 0, Fmax = 0;
+  const dtRec = 1e-5, dtSnap = o.dtSnap || 2.5e-5, F = [], snaps = [], uh = [];
+  const steps = Math.round(tEnd / dt), recEvery = Math.round(dtRec / dt), snapEvery = Math.round(dtSnap / dt);
+  for (let k = 0; k <= steps; k++) {
+    let yh = 0; for (let n = 0; n < NM; n++) yh += q[n] * sn[n];
+    const comp = u - yh, f = comp > 0 ? K * Math.pow(comp, p) : 0;
+    if (f > 0) tc += dt; if (f > Fmax) Fmax = f;
+    if (k % recEvery === 0) F.push(f);
+    if (k % snapEvery === 0) { snaps.push(Float64Array.from(q)); uh.push(u); }
+    ud -= (f / mh) * dt; u += ud * dt;
+    for (let n = 0; n < NM; n++) { qd[n] += (-w[n] * w[n] * q[n] - 2 * damp[n] * qd[n] + (f * sn[n]) / mModal) * dt; q[n] += qd[n] * dt; }
+  }
+  return { F, dtRec, tc, Fmax, q, qd, w, snaps, dtSnap, uh, vOut: -ud, NM };
+}

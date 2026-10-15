@@ -627,7 +627,9 @@ where $s(n,k) = (-1)^{n-k}c(n,k)$. Consequently the lower-triangular matrices $[
           A.setView([x0, x1], [-ymax * 0.55, ymax]);
           const ticks = []; for (let e = 0; 10 ** e <= 10 ** ymax; e++) { ticks.push([slog(10 ** e), e === 0 ? '1' : `10${'⁰¹²³⁴⁵⁶⁷⁸⁹'[e]}`]); if (slog(-(10 ** e)) > -ymax * 0.55) ticks.push([slog(-(10 ** e)), e === 0 ? '−1' : `−10${'⁰¹²³⁴⁵⁶⁷⁸⁹'[e]}`]); }
           A.setTicks(null, ticks);
-          for (let k = 1; k <= n; k++) { const f = term(k); if (d === 'S' && k > m) A.fn((x) => slog(f(x)), { color: CAT[k % CAT.length], width: 1.2, dash: [4, 4], alpha: 0.5 }); else A.fn((x) => slog(f(x)), { color: CAT[k % CAT.length], width: 1.6, alpha: 0.85 }); }
+          const TC = ['orange', 'purple', 'teal', 'pink', 'blue', 'red'];
+          for (let k = 1; k <= n; k++) { const f = term(k); if (d === 'S' && k > m) A.fn((x) => slog(f(x)), { color: TC[k - 1], width: 1.2, dash: [4, 4], alpha: 0.55 }); else A.fn((x) => slog(f(x)), { color: TC[k - 1], width: 1.6, alpha: 0.85 }); }
+          A.setTicks(Array.from({ length: n + 3 }, (_, i) => i - 1), undefined);
           A.fn((x) => slog(target(x)), { color: 'ink', width: 4 });
           A.fn((x) => slog(part(x)), { color: 'gold', width: 2.6, dash: d === 'S' && m < n ? [8, 5] : null });
           if (d === 'S') for (let j = 0; j <= Math.min(m, Math.floor(x1)); j++) A.dot(j, slog(j ** n), { r: 5.5, color: 'green' });
@@ -645,7 +647,7 @@ where $s(n,k) = (-1)^{n-k}c(n,k)$. Consequently the lower-triangular matrices $[
           B.text(d === 'S' ? 's(n,k)' : 'S(n,k)', 0.5, 0.97, { align: 'center', size: 12, weight: 700, color: 'muted', baseline: 'top' });
           B.text('product = identity', 0.845, 0.97, { align: 'center', size: 12, weight: 700, color: 'green', baseline: 'top' });
         });
-        v.legend([['ink', 'target polynomial'], ['gold', 'sum of the terms included'], ['green', 'agreement at $x=0,\\dots,m$', { dot: true }]]);
+        v.legend([['ink', 'target polynomial'], ['orange', 'single terms (dashed: not included)'], ['gold', 'sum of the terms included'], ['green', 'agreement at $x=0,\\dots,m$', { dot: true }]]);
         v.readout(() => {
           const n = nS.value, m = Math.min(mS.value, n), d = dir.value, M = mats(), L = d === 'S' ? M.S : M.s, R2 = d === 'S' ? M.s : M.S, [ci, cj] = cell;
           let t;
@@ -687,27 +689,28 @@ and more precisely $\dfrac{4^n}{\sqrt{\pi(n+\frac12)}} \le \dbinom{2n}{n} \le \d
           const N = Math.round(nS.value);
           A.fn((x) => 1, { color: 'red', width: 1.6, dash: [6, 4] });
           A.fn((x) => 1 / (2 * x + 1), { color: 'orange', width: 1.6, dash: [6, 4] });
-          A.fn((x) => 1 / Math.sqrt(Math.PI * x), { color: 'green', width: 2.6 });
-          A.dots(pts.map((n) => [n, r[n] / Math.sqrt(Math.PI * n)]), { r: 2.6, color: 'blue' });
+          A.dots(pts.map((n) => [n, r[n] / Math.sqrt(Math.PI * n)]), { r: 3, color: 'blue' });
+          A.fn((x) => 1 / Math.sqrt(Math.PI * x), { color: 'green', width: 1.8 });
           A.vline(N, { color: 'faint', dash: true });
           A.dot(N, r[N] / Math.sqrt(Math.PI * N), { r: 5.5, color: 'gold' });
-          A.text('upper bound 1', 1.2, 1, { dy: -9, size: 11, color: 'red' });
+          A.text('upper bound 1', 2.2, 1, { dy: -9, size: 11, color: 'red' });
           A.text('lower bound 1/(2n+1)', 300, 1 / 601, { dy: 12, align: 'center', size: 11, color: 'orange' });
-          A.text('1/√(πn)', 300, 1 / Math.sqrt(Math.PI * 300), { dy: -12, align: 'center', size: 11.5, color: 'green', weight: 600 });
+          A.text('1/√(πn)', 300, 1 / Math.sqrt(Math.PI * 300), { dy: -16, align: 'center', size: 11.5, color: 'green', weight: 700 });
           B.between((x) => Math.sqrt(x / (x + 0.25)), (x) => Math.sqrt(x / (x + 0.5)), 1, 1000, { fill: 'green', fillAlpha: 0.14 });
           B.hline(1, { color: 'muted', dash: [5, 4] });
           B.fn((x) => 1 - 1 / (8 * x), { color: 'purple', width: 1.4, dash: [4, 3] });
           B.path(r.slice(1).map((y, i) => [i + 1, y]), { color: 'blue', width: 2.2 });
           B.dot(N, r[N], { r: 5.5, color: 'gold' });
-          C.fn((x) => 1 / (8 * x), { color: 'purple', width: 2, dash: [6, 4] });
-          C.path(r.slice(1).map((y, i) => [i + 1, 1 - y]), { color: 'blue', width: 2.2 });
+          C.path(r.slice(1).map((y, i) => [i + 1, 1 - y]), { color: 'blue', width: 3.2 });
+          C.fn((x) => 1 / (8 * x), { color: 'purple', width: 1.8, dash: [6, 4] });
+          C.text('1/(8n)', 3, 1 / 24, { dx: 8, dy: -10, size: 11.5, color: 'purple', weight: 700 });
           C.dot(N, 1 - r[N], { r: 5.5, color: 'gold' });
         });
         v.legend([['blue', 'exact (from the ratio recursion)'], ['green', '$1/\\sqrt{\\pi n}$, the two-sided bound band'], ['purple', '$1/(8n)$ correction', { dash: true }], ['red', 'elementary bounds', { dash: true }]]);
         v.readout(() => {
           const N = Math.round(nS.value), big = binomBig(2 * N, N).toString(), ap = 4 ** N / Math.sqrt(Math.PI * N);
-          const exact = big.length <= 18 ? commas(big) : `${big[0]}.${big.slice(1, 7)}\\times10^{${big.length - 1}}`;
-          const approx = ap < 1e15 ? commas(Math.round(ap)) : `${(ap / 10 ** Math.floor(Math.log10(ap))).toFixed(6)}\\times10^{${Math.floor(Math.log10(ap))}}`;
+          const exact = big.length <= 18 ? commas(big).replace(/,/g, '{,}') : `${big[0]}.${big.slice(1, 7)}\\times10^{${big.length - 1}}`;
+          const approx = ap < 1e15 ? commas(Math.round(ap)).replace(/,/g, '{,}') : `${(ap / 10 ** Math.floor(Math.log10(ap))).toFixed(6)}\\times10^{${Math.floor(Math.log10(ap))}}`;
           return `$n = ${N}$: $\\binom{${2 * N}}{${N}} = ${big.length <= 18 ? exact : exact}$ (${big.length} digits, exact BigInt), $4^n/\\sqrt{\\pi n} \\approx ${approx}$. Ratio $r_n = ${r[N].toFixed(8)}$; relative error $${v.sci(1 - r[N], 4)}$ vs $1/(8n) = ${v.sci(1 / (8 * N), 4)}$ (their ratio ${((1 - r[N]) * 8 * N).toFixed(5)} → 1).`;
         });
       },

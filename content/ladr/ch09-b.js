@@ -401,8 +401,8 @@ $$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{
       deps: ['ladr-9.18', 'ladr-9.4'],
       tags: ['quadratic forms'],
       viz(v) {
-        const TG = { hyp: [1, 3, 2], ell: [2, -2, 1.5], xy: [0, 1, 0] };
-        const tg = v.select('target $q$', [{ value: 'hyp', label: '$x_1^2 + 3x_1x_2 + 2x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'xy', label: '$x_1x_2$' }], 'hyp', { onChange: (k) => { const b = TG[k][1]; oh.set(b / 2 + 1.1, b / 2 - 1.1); } });
+        const TG = { hyp: [2, 3, -1], ell: [2, -2, 1.5], xy: [0, 1, 0] };
+        const tg = v.select('target $q$', [{ value: 'hyp', label: '$2x_1^2 + 3x_1x_2 - x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'xy', label: '$x_1x_2$' }], 'hyp', { onChange: (k) => { const b = TG[k][1]; oh.set(b / 2 + 1.1, b / 2 - 1.1); } });
         const lin = v.slider('add a linear term $\\ell\\,x_1$', -1, 1, 0, { step: 0.05 });
         const P = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 390, title: '$q = \\pm1$: target (wide) and from your $A$ (thin)' });
         const R = v.stage({ x: [-3, 4.5], y: [-3, 4.5], equal: true, height: 390, xlabel: 'A₁₂', ylabel: 'A₂₁', title: 'off-diagonal entries $(A_{1,2}, A_{2,1})$' });
@@ -538,15 +538,15 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
       see: ['dg-6.13'],
       tags: ['quadratic forms', 'diagonalization'],
       viz(v) {
-        const PRE = { hyp: [1, 3, 2], ell: [2, -2, 1.5], deg: [1, 2, 1], neg: [-1, 1, -1.2] };
-        const pre = v.select('$q$', [{ value: 'hyp', label: '$x_1^2 + 3x_1x_2 + 2x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'deg', label: '$(x_1 + x_2)^2$' }, { value: 'neg', label: '$-x_1^2 + x_1x_2 - 1.2x_2^2$' }], 'hyp', { onChange: () => { trail.length = 0; } });
+        const PRE = { hyp: [1, 3, 1], ell: [2, -2, 1.5], deg: [1, 2, 1], neg: [-1, 1, -1.2] };
+        const pre = v.select('$q$', [{ value: 'hyp', label: '$x_1^2 + 3x_1x_2 + x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'deg', label: '$(x_1 + x_2)^2$' }, { value: 'neg', label: '$-x_1^2 + x_1x_2 - 1.2x_2^2$' }], 'hyp', { onChange: () => { trail.length = 0; } });
         const mode = v.select('basis', [{ value: 'own', label: 'your own' }, { value: 'pr', label: 'principal axes (orthonormal)' }, { value: 'sq', label: 'completing the square' }], 'own');
         const conj = v.toggle('keep $e_2$ $\\rho$-orthogonal to $e_1$', true);
         const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400 });
         const R = v.stage({ x: [-1.12, 1.12], y: [-1.12, 1.12], equal: true, axes: false, height: 400, title: 'the coefficients $(\\lambda_1, \\lambda_2)$ (compressed scale)' });
         const Smat = () => { const [a, b, c] = PRE[pre.value]; return [[a, b / 2], [b / 2, c]]; };
         const conjDir = (e) => { const n = mv(Smat(), e); return len(n) < 1e-9 ? unit(rot90(e)) : unit(rot90(n)); };
-        const e1h = P.handle(1.1, -0.25, { color: 'teal', label: 'e₁' });
+        const e1h = P.handle(0.95, 0.2, { color: 'teal', label: 'e₁' });
         const e2h = P.handle(-0.6, 0.8, { color: 'pink', label: 'e₂', constrain: (x, y) => { if (!conj.value) return [x, y]; const d = conjDir([e1h.x, e1h.y]), t = x * d[0] + y * d[1]; return [t * d[0], t * d[1]]; } });
         const trail = [], LM = 20, C = (l) => Math.max(-1.08, Math.min(1.08, slog(l) / slog(LM)));
         let st = null;
@@ -585,12 +585,12 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
           R.text('no points', -0.62, -0.95, { align: 'center', size: 12, color: 'red', weight: 700 });
           if (own && diagOwn) { const p = [C(ow.l[0]), C(ow.l[1])]; const lp = trail[trail.length - 1]; if (!lp || Math.hypot(lp[0] - p[0], lp[1] - p[1]) > 0.01) { trail.push(p); if (trail.length > 400) trail.shift(); } }
           R.dots(trail, { r: 2, color: 'gold', alpha: 0.35 });
-          R.dot(C(pr.l[0]), C(pr.l[1]), { r: 7, color: 'green', label: 'principal', labelPos: 'ne' });
-          R.dot(C(sq.l[0]), C(sq.l[1]), { r: 7, color: 'orange', label: 'square', labelPos: 'sw' });
-          if (diagOwn) R.dot(C(ow.l[0]), C(ow.l[1]), { r: 7, color: 'gold', label: 'yours', labelPos: 'se' });
+          R.dot(C(pr.l[0]), C(pr.l[1]), { r: 7, color: 'green' });
+          R.dot(C(sq.l[0]), C(sq.l[1]), { r: 7, color: 'orange' });
+          if (diagOwn) R.dot(C(ow.l[0]), C(ow.l[1]), { r: 7, color: 'gold' });
           st = { pr, sq, ow, own, diagOwn, cur, sg, sgs: signature(sq.l, 1e-9), sgo: signature(ow.l, 1e-9), conj: conj.value, type: TYPE[key] };
         });
-        v.legend([['accent', '$q = 1$'], ['orange', '$q = -1$'], ['teal', '$e_1$'], ['pink', '$e_2$'], ['gold', 'your $(\\lambda_1, \\lambda_2)$ and its trail', { dot: true }]]);
+        v.legend([['accent', '$q = 1$'], ['orange', '$q = -1$'], ['teal', '$e_1$'], ['pink', '$e_2$'], ['gold', 'your $(\\lambda_1, \\lambda_2)$, with trail', { dot: true }], ['green', 'principal axes', { dot: true }], ['orange', 'completing the square', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const L = (o) => `(${tn(o.l[0])}, ${tn(o.l[1])})`;
@@ -627,7 +627,7 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
         const G = v.stage({ x: [-1.5, 1.5], y: [-2, 2], axes: 'box', height: 400, weight: 0.9, minWidth: 260, xlabel: 't', title: 'slot $k$ fed $x_k + t\\,y$, the others frozen' });
         const COL = ['accent', 'orange', 'purple'], NAME = ['u', 'v', 'w'];
         const hs = [sc.handle([1, 0.15, 0.2], { color: 'accent', label: 'u' }), sc.handle([0.2, 1, 0.15], { color: 'orange', label: 'v' }), sc.handle([0.15, 0.35, 1], { color: 'purple', label: 'w' })];
-        const yh = sc.handle([0.7, -0.6, 0.45], { color: 'gold', label: 'y' });
+        const yh = sc.handle([-0.45, -0.75, 0.55], { color: 'gold', label: 'y' });
         let st = null;
         v.render(() => {
           const F = FORMS[form.value].f, X = hs.map((h) => h.p), y = yh.p, k0 = slot.value;

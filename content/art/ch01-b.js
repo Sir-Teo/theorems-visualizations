@@ -188,15 +188,15 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
           return pts;
         };
         const centreOf = (g, d) => M.normalize([g[0], d, g[1]]).map((x) => x * L);
-        const measure = (pts, c, d) => { // the outline is symmetric about the radial line through the principal point
+        const measure = (pts, c) => { // the outline is symmetric about the radial line through the principal point
           const m = pts.reduce((s, p) => [s[0] + p[0], s[1] + p[1]], [0, 0]).map((x) => x / pts.length), rr = Math.hypot(c[0], c[2]);
-          const e = rr < 1e-9 ? [1, 0] : [c[0] / rr, c[2] / rr], q = [-e[1], e[0]]; void d;
+          const e = rr < 1e-9 ? [1, 0] : [c[0] / rr, c[2] / rr], q = [-e[1], e[0]];
           const pe = pts.map((p) => p[0] * e[0] + p[1] * e[1]), pq = pts.map((p) => p[0] * q[0] + p[1] * q[1]);
           return { a: (Math.max(...pe) - Math.min(...pe)) / 2, b: (Math.max(...pq) - Math.min(...pq)) / 2, m, e };
         };
         const sphere = (c, d, col, strong) => {
           const pts = outline(c, d); if (!pts) return null;
-          const me = measure(pts, c, d);
+          const me = measure(pts, c);
           pic.poly(pts, { fill: col, fillAlpha: strong ? 0.35 : 0.22, color: col, width: strong ? 2 : 1.3 });
           if (me.a / me.b > 1.02) pic.line(me.m[0] - me.e[0] * me.a, me.m[1] - me.e[1] * me.a, me.m[0] + me.e[0] * me.a, me.m[1] + me.e[1] * me.a, { color: col, width: 1, dash: [3, 3] });
           if (circ.value) { const q = [(d * c[0]) / c[1], (d * c[2]) / c[1]]; pic.circle(q[0], q[1], me.b, { color: 'green', width: 1.6, dash: [5, 3] }); }
@@ -229,7 +229,7 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
         v.legend([['gold', 'the sphere you drag', { area: true }], ['green', 'chord of the centre sphere'], ['red', 'chord of the outer sphere']]);
         v.readout(() => {
           const F = rad(fov.value), d = 1 / Math.tan(F / 2), c = centreOf([gold.x, gold.y], d), pts = outline(c, d);
-          const th = Math.acos(c[1] / L), me = measure(pts, c, d), al = Math.asin(sa);
+          const th = Math.acos(c[1] / L), me = measure(pts, c), al = Math.asin(sa);
           const pred = Math.cos(al) / Math.sqrt(Math.cos(th) ** 2 - Math.sin(al) ** 2);
           return `gold sphere $${v.fix(deg(th), 1)}°$ off the axis: measured axis ratio $${v.fix(me.a / me.b, 3)}$ · formula $\\cos\\alpha/\\sqrt{\\cos^2\\theta-\\sin^2\\alpha} = ${v.fix(pred, 3)}$ · $1/\\cos\\theta = ${v.fix(1 / Math.cos(th), 3)}$ (each sphere subtends $2\\alpha = ${v.fix(2 * deg(al), 1)}°$)`;
         });
@@ -260,7 +260,7 @@ which depends only on the four rays through $O$. So every line cutting those ray
         const P = [-3.6, -1.9, 0.2, 3.1].map((x, i) => S.handle(x, Y0, { color: 'accent', label: 'ABCD'[i], labelPos: 's', constrain: 'x' }));
         const O = S.handle(-1.2, 3.0, { color: 'ink', label: 'O', labelPos: 'n' });
         const m1 = S.handle(-4.6, 1.6, { color: 'orange' }), m2 = S.handle(4.4, -0.4, { color: 'orange' });
-        const n1 = S.handle(-4.4, -1.1, { color: 'purple' }), n2 = S.handle(4.6, 0.9, { color: 'purple' });
+        const n1 = S.handle(-4.4, -1.55, { color: 'purple' }), n2 = S.handle(4.6, 0.15, { color: 'purple' });
         // colonnade mode: eye height 1.6, picture distance 2.4, horizon drawn at y = 1.4
         const HZ = 1.4, cam = camera([0, 0, 1.6], { d: 2.4 });
         const vpH = S.handle(3.0, HZ, { color: 'green', label: 'V', labelPos: 'n', constrain: (x) => [M.clamp(x, -5, 5), HZ] });
@@ -279,14 +279,14 @@ which depends only on the four rays through $O$. So every line cutting those ray
           projHandles.forEach((h) => (h.visible = pm)); colHandles.forEach((h) => (h.visible = !pm));
           if (pm) {
             const A = P.map((h) => [h.x, h.y]), Ob = [O.x, O.y];
-            S.line(-6, Y0, 6, Y0, { color: 'accent', width: 2 });
+            S.line(-9, Y0, 9, Y0, { color: 'accent', width: 2 }); S.text('ℓ', S.bounds.x[0] + 0.15, Y0 + 0.12, { align: 'left', baseline: 'bottom', math: true, size: 17, color: 'accent' });
             const lines = [[[m1.x, m1.y], [m2.x, m2.y], 'orange'], [[n1.x, n1.y], [n2.x, n2.y], 'purple']];
-            for (const [a, b, col] of lines) { const dx = b[0] - a[0], dy = b[1] - a[1]; S.line(a[0] - dx * 3, a[1] - dy * 3, b[0] + dx * 3, b[1] + dy * 3, { color: col, width: 2 }); }
+            for (const [a, b, col] of lines) { const dx = b[0] - a[0], dy = b[1] - a[1]; S.line(a[0] - dx * 3, a[1] - dy * 3, b[0] + dx * 3, b[1] + dy * 3, { color: col, width: 2 }); S.text(col === 'orange' ? 'm' : 'n', a[0], a[1] + 0.22, { align: 'center', baseline: 'bottom', math: true, size: 17, color: col }); }
             A.forEach((X, i) => {
               const hits = lines.map(([a, b]) => onLine(X, a, b)).filter(Boolean);
               const far = [X, ...hits].reduce((f, p) => (Math.hypot(p[0] - Ob[0], p[1] - Ob[1]) > Math.hypot(f[0] - Ob[0], f[1] - Ob[1]) ? p : f), X);
               S.line(Ob[0], Ob[1], Ob[0] + (far[0] - Ob[0]) * 1.08, Ob[1] + (far[1] - Ob[1]) * 1.08, { color: 'gold', width: 1.1, alpha: 0.8 });
-              lines.forEach(([a, b, col]) => { const H = onLine(X, a, b); if (H) S.dot(H[0], H[1], { r: 4, color: col, label: 'ABCD'[i] + "'", labelPos: 'ne', labelSize: 13 }); });
+              lines.forEach(([a, b, col]) => { const H = onLine(X, a, b); if (H) S.dot(H[0], H[1], { r: 4, color: col, label: 'ABCD'[i] + "'", labelPos: col === 'orange' ? 'ne' : 'se', labelSize: 13 }); });
             });
           } else {
             const { cols, V } = colonnade(), bx = S.bounds.x, by = S.bounds.y;
