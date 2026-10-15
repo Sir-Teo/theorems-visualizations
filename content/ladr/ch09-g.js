@@ -20,6 +20,8 @@ function tn(x, d = 2) {
 }
 /** The same for canvas text (real minus sign). */
 const pn = (x, d = 2) => tn(x, d).replace('-', '−');
+/** A factor for a TeX product: negative numbers in parentheses. */
+const tp = (x, d = 2) => (x < -0.5 * 10 ** -d ? `(${tn(x, d)})` : tn(x, d));
 const vtex = (p, d = 2) => `(${p.map((x) => tn(x, d)).join(',\\,')})`;
 const mark = (ok) => (ok ? '✓' : '✗');
 /** A small error for TeX: 0 stays 0, otherwise scientific. */
@@ -326,7 +328,7 @@ $$(v \otimes w)(\varphi, \tau) = \varphi(v)\,\tau(w) \qquad \text{for all } \var
           if (!st) return '';
           const { pv, tw, ev, s, nv } = st, ok = Math.abs(ev - pv * tw) < 1e-9;
           const sv = s[1] < 1e-9 ? `$\\sigma_1 = ${tn(s[0], 3)} = \\|v\\|\\,\\|w\\|$ and $\\sigma_2 = ${etx(M, s[1])}$: rank one, as every $v \\otimes w$ must be.` : `$\\sigma_2 = ${tn(s[1], 3)} > 0$: rank two, so this array is **not** $v' \\otimes w'$ for any $v', w'$ (a simple tensor always has rank $\\le 1$).`;
-          return `$\\varphi(v)\\,\\tau(w) = ${tn(pv, 3)} \\times ${tn(tw, 3)} = ${tn(pv * tw, 3)}$ and $\\sum_{j,k} \\varphi_j \\tau_k X_{j,k} = ${tn(ev, 3)}$ ${mark(ok)}${ok ? '' : ' — the perturbed array is a different functional'}. ${sv}${s[1] < 1e-9 ? '' : ` (Unperturbed, $\\sigma_1$ would be $\\|v\\|\\|w\\| = ${tn(nv, 3)}$.)`}`;
+          return `$\\varphi(v)\\,\\tau(w) = ${tp(pv, 3)} \\times ${tp(tw, 3)} = ${tn(pv * tw, 3)}$ and $\\sum_{j,k} \\varphi_j \\tau_k X_{j,k} = ${tn(ev, 3)}$ ${mark(ok)}${ok ? '' : ' — the perturbed array is a different functional'}. ${sv}${s[1] < 1e-9 ? '' : ` (Unperturbed, $\\sigma_1$ would be $\\|v\\|\\|w\\| = ${tn(nv, 3)}$.)`}`;
         });
       },
     },
@@ -356,8 +358,8 @@ $$\dim(V \otimes W) = (\dim V)(\dim W).$$`,
         };
         v.button('add a random element', () => { if (count < MAX) count++; else extra++; });
         v.button('start over', () => { count = 0; extra = 0; });
-        const Gs = v.stage({ x: [0, 20], y: [-0.25, 4.45], equal: true, axes: false, height: 210, full: true, title: 'the list, one tile per element (green frame = raised the dimension)' });
-        const P = v.stage({ x: [0, 20.6], y: [0, 17.6], axes: 'box', height: 260, full: true, xlabel: 'number of elements in the list', ylabel: 'dim of span', xticks: [0, 4, 8, 12, 16, 20], yticks: [0, 4, 8, 12, 16] });
+        const Gs = v.stage({ x: [0, 20], y: [-1, 1], equal: true, axes: false, height: 175, full: true, title: 'the list, one tile per element (green frame, ↑ = raised the dimension of the span)' });
+        const P = v.stage({ x: [0, 20.6], y: [0, 8], axes: 'box', height: 230, full: true, xlabel: 'number of elements in the list', ylabel: 'dim of span', xticks: [0, 4, 8, 12, 16, 20] });
         let st = null;
         v.render(() => {
           const m = sm.value, n = sn.value, ten = sp.value === 'ten';
@@ -366,18 +368,22 @@ $$\dim(V \otimes W) = (\dim V)(\dim W).$$`,
           const dims = [0];
           for (let i = 1; i <= els.length; i++) dims.push(nrank(M.svd(vecs.slice(0, i)).S));
           const target = ten ? m * n : m + n;
-          // ---- tiles
+          // ---- tiles: up to two rows of ten, centred vertically in the panel
+          const c = ten ? Math.min(1.25 / n, 1.25 / m) : Math.min(1.4 / (m + n + 0.5), 0.42), th = (ten ? m * c : c) + 0.62, rows = els.length > 10 ? 2 : 1;
+          Gs.setView([0, 20], [-rows * (th + 0.25) / 2 - 0.05, rows * (th + 0.25) / 2 + 0.05]);
           els.forEach(([a, b], i) => {
-            const row = Math.floor(i / 10), col = i % 10, x0 = col * 2 + 0.2, y0 = 4.25 - row * 2.25, up = dims[i + 1] > dims[i];
-            S1(Gs, x0, y0, up);
-            if (ten) { const c = Math.min(1.5 / n, 1.5 / m); grid(Gs, outer(a, b), x0 + 0.8 - (n * c) / 2, y0 - 0.85 + (m * c) / 2, c, { numbers: false, scale: 3, fw: 0.9 }); }
+            const row = Math.floor(i / 10), col = i % 10, x0 = col * 2 + 0.2, y0 = (rows * (th + 0.25)) / 2 - 0.12 - row * (th + 0.25), up = dims[i + 1] > dims[i];
+            Gs.rect(x0, y0 - th, x0 + 1.6, y0, { color: up ? 'green' : 'faint', width: up ? 2 : 1.2, radius: 4, fill: up ? 'green' : null, fillAlpha: 0.05 });
+            const yt = y0 - 0.42;
+            if (ten) { const T = outer(a, b); grid(Gs, T, x0 + 0.8 - (n * c) / 2, yt, c, { numbers: false, scale: Math.max(0.3, maxAbs(T)), fw: 0.9 }); }
             else {
-              const c = Math.min(1.5 / (m + n + 0.5), 0.45), w0 = x0 + 0.8 - ((m + n + 0.5) * c) / 2, yc = y0 - 0.85 + c / 2;
-              grid(Gs, [a], w0, yc, c, { numbers: false, scale: 2, fw: 0.9 }); grid(Gs, [b], w0 + (m + 0.5) * c, yc, c, { numbers: false, scale: 2, fw: 0.9 });
+              const w0 = x0 + 0.8 - ((m + n + 0.5) * c) / 2, sc0 = Math.max(0.3, maxAbs([a, b]));
+              grid(Gs, [a], w0, yt, c, { numbers: false, scale: sc0, fw: 0.9 }); grid(Gs, [b], w0 + (m + 0.5) * c, yt, c, { numbers: false, scale: sc0, fw: 0.9 });
             }
-            Gs.text(String(i + 1), x0 + 0.08, y0 - 0.12, { size: 10, color: up ? 'green' : 'muted', align: 'left', baseline: 'top' });
+            Gs.text(`${i + 1}${up ? ' ↑' : ''}`, x0 + 0.12, y0 - 0.2, { size: 10.5, color: up ? 'green' : 'muted', align: 'left', weight: 600 });
           });
-          if (!els.length) Gs.text('empty list — press “add a random element”', 10, 2.1, { align: 'center', color: 'muted', size: 13 });
+          if (!els.length) { Gs.setView([0, 20], [-1, 1]); Gs.text('empty list — press “add a random element”', 10, 0, { align: 'center', color: 'muted', size: 13 }); }
+          P.setView([0, 20.6], [0, Math.max(m * n, m + n) + 1.6]);
           // ---- staircase
           P.hline(m * n, { color: 'blue', width: 1.6, dash: [6, 4] });
           P.hline(m + n, { color: 'orange', width: 1.6, dash: [6, 4] });
@@ -388,8 +394,6 @@ $$\dim(V \otimes W) = (\dim V)(\dim W).$$`,
           dims.forEach((d, i) => { if (i) P.dot(i, d, { r: 3.5, color: d > dims[i - 1] ? 'green' : 'muted' }); });
           st = { m, n, ten, d: dims[dims.length - 1], target, k: els.length };
         });
-        /** Tile background frame. */
-        function S1(Sg, x0, y0, up) { Sg.rect(x0, y0 - 1.95, x0 + 1.6, y0, { color: up ? 'green' : 'faint', width: up ? 2 : 1.2, radius: 4, fill: up ? 'green' : null, fillAlpha: 0.05 }); }
         v.readout(() => {
           if (!st) return '';
           const { m, n, ten, d, target, k } = st;
@@ -415,7 +419,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
         const mode = v.select('', [{ value: 'add', label: 'additivity: $(v_1 + v_2)\\otimes w$' }, { value: 'scal', label: 'scalars: $(\\lambda v)\\otimes(w/\\lambda)$' }], 'scal');
         const op = v.select('table entries', [{ value: 'mul', label: '$v_j\\,w_k$ (tensor)' }, { value: 'sum', label: '$v_j + w_k$ (break)' }], 'mul');
         const lam = v.slider('$\\lambda$', 0.25, 4, 2, { log: true, sig: 2 });
-        const S = v.stage({ x: [-0.4, 18.4], y: [-3.2, 3.1], equal: true, axes: false, height: 330, full: true });
+        const S = v.stage({ x: [-0.4, 18.4], y: [-3.35, 2.75], equal: true, axes: false, height: 275, full: true });
         const V1 = [1, -0.6], V2 = [-0.4, 1.2], W = [1.2, 0.5, -0.8];
         const X0 = [1.9, 8.1, 14.3], c = 1, lim = 2, sc = 0.32;
         const mk = (vals, gi, edit, color) => bars(S, vals, { orient: 'h', pos: [-0.5, -1.5], zero: X0[gi] - 0.95, sc, lim, color, edit, cell: c });
@@ -447,15 +451,14 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           [G1, G2, G3].forEach((Gk, gi) => grid(S, Gk, X0[gi], 0, c, { scale, hl: gi === 2 ? bad3 : gi === 1 ? bad2 : [] }));
           // labels under the tables, and the relations between them
           const sym = op.value === 'mul' ? '\\otimes' : '\\boxplus';
-          const wl = add_ ? ['w', 'w', 'w'] : ['w', 'w/\\lambda', 'w'];
-          vecs.forEach(([, col, nm], gi) => S.tex(`${nm} ${sym} ${wl[gi]}`, X0[gi] + 1.5, -2.45, { color: col === 'purple' ? 'purple' : col === 'teal' ? 'teal' : 'blue', size: 15 }));
+          const wl = add_ ? ['w', 'w', 'w'] : ['w', '(w/\\lambda)', 'w'];
+          vecs.forEach(([, col, nm], gi) => S.tex(`${nm.length > 3 ? `(${nm})` : nm} ${sym} ${wl[gi]}`, X0[gi] + 1.5, -2.45, { color: col, size: 15 }));
           if (add_) {
             S.tex('+', (X0[0] + 3 + X0[1] - 1.9) / 2 - 0.05, -1, { size: 26, color: 'ink' });
             S.tex(bad3.length ? '\\ne' : '=', (X0[1] + 3 + X0[2] - 1.9) / 2 - 0.05, -1, { size: 26, color: bad3.length ? 'red' : 'green' });
           } else {
             S.tex(bad2.length ? '\\ne' : '=', (X0[0] + 3 + X0[1] - 1.9) / 2 - 0.05, -1, { size: 26, color: bad2.length ? 'red' : 'green' });
-            S.tex(bad3.length ? `\\ne \\lambda\\,\\cdot` : `= \\lambda\\,\\cdot`, X0[2] + 1.5, -3.0, { size: 13, color: bad3.length ? 'red' : 'green' });
-            S.tex(`\\text{first table}`, X0[2] + 1.5, -3.0, { size: 13, color: 'muted', dx: 62 });
+            S.tex(`${bad3.length ? '\\ne' : '='} \\lambda \\cdot (\\text{first table})`, X0[2] + 1.5, -3.05, { size: 13.5, color: bad3.length ? 'red' : 'green' });
           }
           const err3 = maxAbs(msub(G3, want3)), err2 = add_ ? 0 : maxAbs(msub(G2, want2));
           st = { add_, err2, err3, L, mul: op.value === 'mul' };
@@ -487,11 +490,11 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
         v.button('new target A', () => { const r = v.rng(++seed); A = [0, 1].map(() => [0, 1, 2].map(() => r1(r.uniform(-1.4, 1.4)))); });
         const E = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.7], equal: true, height: 270, weight: 0.8, minWidth: 220, title: 'basis of $V = \\mathbf R^2$' });
         const F = v.stage({ x: [-1.8, 1.8], y: [-1.5, 1.8], equal: true, axes: false, height: 270, weight: 1, minWidth: 250, title: 'basis of $W = \\mathbf R^3$' });
-        const T = v.stage({ x: [-0.2, 16.2], y: [-0.55, 4.3], equal: true, axes: false, height: 250, full: true });
+        const T = v.stage({ x: [-0.2, 16.2], y: [-0.3, 4.5], equal: true, axes: false, height: 235, full: true });
         const sc = v.scene3(F, { yaw: 0.6, pitch: 0.32, axis: 1.35, lim: 1.5 });
-        const he = [E.handle(1.1, 0.25, { color: 'blue', label: '$e_1$' }), E.handle(-0.3, 1.0, { color: 'purple', label: '$e_2$' })];
+        const he = [E.handle(1.1, 0.25, { color: 'blue', label: '$e_1$' }), E.handle(-0.55, 0.95, { color: 'purple', label: '$e_2$' })];
         const FC = ['orange', 'pink', 'teal'];
-        const hf = [[1.05, 0.15, -0.1], [0.2, 1.0, 0.25], [-0.15, 0.25, 1.05]].map((p, k) => sc.handle(p, { color: FC[k], label: `$f_${k + 1}$` }));
+        const hf = [[1.05, 0.15, -0.1], [0.1, 1.05, -0.25], [-0.25, 0.1, 1.05]].map((p, k) => sc.handle(p, { color: FC[k], label: `$f_${k + 1}$` }));
         let st = null;
         v.render(() => {
           he[1].visible = !brk.value;
@@ -505,7 +508,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           F.corner(`det = ${pn(dF, 2)}`, 'tl', { color: Math.abs(dF) > 1e-3 ? 'green' : 'red', weight: 700 });
           // ---- coefficients: A ≈ E a Fᵀ (least squares through pseudo-inverses)
           const a = mm(mm(M.pinv(Em), A), transp(M.pinv(Fm))), Rb = mm(mm(Em, a), transp(Fm)), res = maxAbs(msub(Rb, A));
-          const K = [], rows = [];
+          const rows = [];
           for (let j = 0; j < 2; j++) for (let k = 0; k < 3; k++) rows.push(outer(es[j], fs[k]).flat());
           const rk = nrank(M.svd(rows).S), rE = nrank(M.svd(Em).S), rF = nrank(M.svd(Fm).S), sA = M.svd(A).S;
           // ---- tiles e_j ⊗ f_k scaled by a_{jk}
@@ -515,8 +518,8 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
             grid(T, tile, x0, y0, c, { numbers: false, scale, fw: 1 });
             T.tex(`${tn(a[j][k], 2)}\\; e_${j + 1}\\!\\otimes\\! f_${k + 1}`, x0 + 1.5 * c, y0 + 0.08, { size: 12.5, baseline: 'bottom', color: 'ink' });
           }
-          T.tex('\\sum_{j,k} a_{j,k}\\, e_j \\otimes f_k', 6.15, 4.15, { size: 13, color: 'muted', align: 'left' });
-          T.tex('\\longrightarrow', 6.45, 1.55, { size: 24, color: 'muted' });
+          T.tex('\\textstyle\\sum_{j,k} a_{j,k}\\, e_j \\otimes f_k', 6.5, 2.05, { size: 13, color: 'muted' });
+          T.tex('\\longrightarrow', 6.5, 1.5, { size: 24, color: 'muted' });
           const gR = grid(T, Rb, 7.1, 2.75, 1, { scale });
           T.tex('\\text{rebuilt}', gR.cx, 3.05, { size: 13, color: res < 1e-9 ? 'green' : 'red', baseline: 'bottom' });
           T.tex(res < 1e-9 ? '=' : '\\ne', 10.75, 1.75, { size: 28, color: res < 1e-9 ? 'green' : 'red' });
@@ -570,7 +573,9 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
             sc.path(A1, { color: 'green', width: t === 0 ? 2 : 1.3, alpha: 0.85 });
             sc.path(A2, { color: 'green', width: t === 0 ? 2 : 1.3, alpha: 0.85 });
           }
-          const o = f([0, 0, 0]);
+          const o = f([0, 0, 0]), rim = [];
+          for (const [p, q] of [[[-1, -1], [1, -1]], [[1, -1], [1, 1]], [[1, 1], [-1, 1]], [[-1, 1], [-1, -1]]]) for (let i = 0; i < N; i++) { const s = i / N; rim.push(f([p[0] + s * (q[0] - p[0]), p[1] + s * (q[1] - p[1]), 0])); }
+          sc.poly(rim, { fill: 'green', fillAlpha: 0.07, edge: false, bias: 0.5 });
           sc.dot(o, { r: 4, color: 'green' });
           const g = Gm(u, w);
           sc.arrow([0, 0, 0], u, { color: 'accent', width: 2.6 });
@@ -595,7 +600,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           if (!st) return '';
           const { g, d1, d2, k } = st, ok1 = d1 < 1e-9, ok2 = d2 < 1e-9;
           const verdict = ok1 && ok2 ? '**bilinear** ✓' : ok1 ? 'linear in slot 1 only — not bilinear' : ok2 ? 'linear in slot 2 only — not bilinear' : 'linear in neither slot';
-          return `$\\Gamma(u, w) = ${vtex(g, 3)}$. Linearity defects: slot 1 $= ${tn(d1, 3)}$ ${mark(ok1)}, slot 2 $= ${tn(d2, 3)}$ ${mark(ok2)} — ${verdict}${k === 'cross' ? '; freezing $u$ gives the skew-symmetric matrix shown.' : '.'}`;
+          return `$\\Gamma(u, w) = ${vtex(g, 3)}$. Linearity defects: slot 1 $= ${tn(d1, 3)}$ ${mark(ok1)}, slot 2 $= ${tn(d2, 3)}$ ${mark(ok2)} — ${verdict}${k === 'cross' ? '; freezing $u$ gives the antisymmetric matrix shown.' : '.'}`;
         });
       },
     },

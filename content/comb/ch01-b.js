@@ -454,10 +454,11 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
           boxes = [];
           if (!shown.length) { P.text('none', W / 2, H / 2, { align: 'center', size: 13, color: 'muted' }); }
           else {
-            const g = fitGrid(shown.length, W - 12, H - 30, 1.18, 6, 150);
+            const ds = shown.map((l) => (conj.value ? conjugate(l) : l)), mC = Math.max(...ds.map((d) => d[0])), mR = Math.max(...ds.map((d) => d.length));
+            const g = fitGrid(shown.length, W - 12, H - 30, (mR + 1.9) / (mC + 0.5), 6, 34 * mC);
             shown.forEach((lam, i) => {
-              const [x, y] = g.at(i), X = x + 6, Y = y + 24, d = conj.value ? conjugate(lam) : lam, isP = pick && lam.join() === pick.join();
-              const lab = g.w > 34, q = Math.min((g.w - 6) / n, (g.h - (lab ? 16 : 6)) / n);
+              const [x, y] = g.at(i), X = x + 6, Y = y + 24, d = ds[i], isP = pick && lam.join() === pick.join();
+              const lab = g.w > 30, q = Math.min((g.w - 8) / mC, (g.h - (lab ? 18 : 8)) / mR);
               P.rect(X, Y, g.w, g.h, { fill: isP ? 'gold' : 'muted', fillAlpha: isP ? 0.25 : 0.05, r: 4 });
               const colorOf = (r, c) => (f === 'k' ? ((conj.value ? r === 0 : c === 0) ? 'orange' : 'blue') : f === 'odd' ? 'green' : f === 'dist' ? 'purple' : 'blue');
               drawFerrers(P, d, X + 4, Y + 4, q, { colorOf, dotScale: 0.38 });
@@ -503,7 +504,7 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
       tags: ['counting', 'balls into boxes'],
       viz(v) {
         let sel = [1, 0];
-        const nS = v.slider('balls $n$', 1, 5, 4, { int: true });
+        const nS = v.slider('balls $n$', 1, 5, 3, { int: true });
         const xS = v.slider('boxes $x$', 1, 4, 3, { int: true });
         const G = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 486, full: true });
         const D = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
@@ -572,7 +573,7 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
             P.tex(FORM[r][c], X + 8, Y + 15, { align: 'left', size: 13.5 });
             P.text(`${list.length}`, X + w - 10, Y + 15, { align: 'right', size: 16, weight: 700, color: list.length === f ? 'green' : 'red' });
             const area = [X + 6, Y + 32, w - 12, h - 38];
-            if (!list.length) { P.text(c === 1 ? `none: ${n} balls, ${x} boxes` : `none: ${x} boxes, ${n} balls`, X + w / 2, Y + h / 2 + 10, { align: 'center', size: 11.5, color: 'muted' }); continue; }
+            if (!list.length) { P.text(c === 1 ? `none: more balls (${n}) than boxes (${x})` : `none: more boxes (${x}) than balls (${n})`, X + w / 2, Y + h / 2 + 10, { align: 'center', size: 11.5, color: 'muted' }); continue; }
             const cap = 40, shown = list.length > cap ? cap - 1 : list.length;
             const g = fitGrid(shown + (list.length > cap ? 1 : 0), area[2], area[3], 1.15 / x, 3, 16 * x);
             for (let i = 0; i < shown; i++) { const [gx, gy] = g.at(i); glyph(P, list[i], area[0] + gx, area[1] + gy, g.w, g.h, r === 0 || r === 2, r < 2, false); }

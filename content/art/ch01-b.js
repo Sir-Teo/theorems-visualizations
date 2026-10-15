@@ -134,10 +134,10 @@ where $v_x$ is his sideways offset and $v_d$ his distance (art-1.2); heights com
           pic.text('D', -d0 - 0.12, h0 + 0.12, { align: 'right', baseline: 'bottom', math: true, size: 15, color: 'green' });
           pic.text('D', d0 + 0.12, h0 + 0.12, { align: 'left', baseline: 'bottom', math: true, size: 15, color: 'green' });
           pic.dot(0, h0, { r: 4, color: 'accent', label: 'C', labelPos: 'n' });
-          pic.measure(0, h0 - 0.32, d0, h0 - 0.32, 'd', { color: 'green' });
+          pic.measure(0, h0 + 0.3, d0, h0 + 0.3, 'd', { color: 'green' });
           // ---- plan: true floor, reconstructed floor, viewer
           plan.line(-FW, 0, FW, 0, { color: 'orange', width: 3 });
-          plan.text('picture', -FW - 0.15, 0, { align: 'right', size: 10.5, color: 'orange' });
+          plan.text('picture', 3.2, -0.1, { align: 'left', baseline: 'top', size: 10.5, color: 'orange' });
           for (let X = -3; X <= 3; X++) plan.line(X, 0, X, 10, { color: 'faint', width: 1 });
           for (let Y = 0; Y <= 10; Y++) plan.line(-3, Y, 3, Y, { color: 'faint', width: 1 });
           const R = (X, Y) => back(pp(X, Y));
@@ -148,7 +148,7 @@ where $v_x$ is his sideways offset and $v_d$ his distance (art-1.2); heights com
             plan.poly([R(x, y), R(x + s, y), R(x + s, y + s), R(x, y + s)], { fill: i ? 'purple' : 'teal', fillAlpha: 0.3, color: i ? 'purple' : 'teal', width: 1.4 });
           });
           plan.dot(0, -d0, { r: 4.5, color: 'green' });
-          plan.text('station point', -0.25, -d0, { align: 'right', size: 10.5, color: 'green' });
+          plan.text('station point', -0.45, -d0, { align: 'right', size: 10.5, color: 'green' });
           plan.line(V.x, V.y, 0, 0, { color: 'accent', width: 1, dash: [3, 3], alpha: 0.7 });
         });
         v.legend([['green', 'tile diagonals and distance points $D$'], ['faint', 'true floor (plan)'], ['accent', 'floor as you reconstruct it']]);
@@ -173,7 +173,7 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
       refs: ['Kemp ch. 2'],
       tags: ['perspective', 'distortion', 'wide angle'],
       viz(v) {
-        const M = v.M, L = 3, r = 0.42, sa = r / L;
+        const M = v.M, L = 3, r = 0.32, sa = r / L;
         const pic = v.stage({ x: [-1.06, 1.06], y: [-0.66, 0.66], equal: true, axes: false, height: 330, weight: 1.25, title: 'identical spheres on a flat picture' });
         const top = v.stage({ x: [-3.2, 3.2], y: [-0.25, 3.55], equal: true, axes: false, height: 330, weight: 0.75, minWidth: 230, title: 'from above: the tangent rays' });
         const fov = v.slider('horizontal field of view', 30, 150, 110, { step: 1, fmt: (x) => `${x}°` });
@@ -184,19 +184,19 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
           const Lc = Math.hypot(...c), cc = c.map((x) => x * (1 - (r * r) / (Lc * Lc))), rho = r * Math.sqrt(1 - (r * r) / (Lc * Lc));
           const n = M.normalize(c), e1 = M.normalize(M.cross3(n, Math.abs(n[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0])), e2 = M.cross3(n, e1);
           const pts = [];
-          for (let k = 0; k < 96; k++) { const t = (2 * Math.PI * k) / 96, p = cc.map((x, i) => x + rho * (Math.cos(t) * e1[i] + Math.sin(t) * e2[i])); if (p[1] <= 1e-6) return null; pts.push([(d * p[0]) / p[1], (d * p[2]) / p[1]]); }
+          for (let k = 0; k < 240; k++) { const t = (2 * Math.PI * k) / 240, p = cc.map((x, i) => x + rho * (Math.cos(t) * e1[i] + Math.sin(t) * e2[i])); if (p[1] <= 1e-6) return null; pts.push([(d * p[0]) / p[1], (d * p[2]) / p[1]]); }
           return pts;
         };
         const centreOf = (g, d) => M.normalize([g[0], d, g[1]]).map((x) => x * L);
-        const measure = (pts) => {
-          const m = pts.reduce((s, p) => [s[0] + p[0], s[1] + p[1]], [0, 0]).map((x) => x / pts.length), rr = Math.hypot(m[0], m[1]);
-          const e = rr < 1e-9 ? [1, 0] : [m[0] / rr, m[1] / rr], q = [-e[1], e[0]];
+        const measure = (pts, c, d) => { // the outline is symmetric about the radial line through the principal point
+          const m = pts.reduce((s, p) => [s[0] + p[0], s[1] + p[1]], [0, 0]).map((x) => x / pts.length), rr = Math.hypot(c[0], c[2]);
+          const e = rr < 1e-9 ? [1, 0] : [c[0] / rr, c[2] / rr], q = [-e[1], e[0]]; void d;
           const pe = pts.map((p) => p[0] * e[0] + p[1] * e[1]), pq = pts.map((p) => p[0] * q[0] + p[1] * q[1]);
           return { a: (Math.max(...pe) - Math.min(...pe)) / 2, b: (Math.max(...pq) - Math.min(...pq)) / 2, m, e };
         };
         const sphere = (c, d, col, strong) => {
           const pts = outline(c, d); if (!pts) return null;
-          const me = measure(pts);
+          const me = measure(pts, c, d);
           pic.poly(pts, { fill: col, fillAlpha: strong ? 0.35 : 0.22, color: col, width: strong ? 2 : 1.3 });
           if (me.a / me.b > 1.02) pic.line(me.m[0] - me.e[0] * me.a, me.m[1] - me.e[1] * me.a, me.m[0] + me.e[0] * me.a, me.m[1] + me.e[1] * me.a, { color: col, width: 1, dash: [3, 3] });
           if (circ.value) { const q = [(d * c[0]) / c[1], (d * c[2]) / c[1]]; pic.circle(q[0], q[1], me.b, { color: 'green', width: 1.6, dash: [5, 3] }); }
@@ -229,7 +229,7 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
         v.legend([['gold', 'the sphere you drag', { area: true }], ['green', 'chord of the centre sphere'], ['red', 'chord of the outer sphere']]);
         v.readout(() => {
           const F = rad(fov.value), d = 1 / Math.tan(F / 2), c = centreOf([gold.x, gold.y], d), pts = outline(c, d);
-          const th = Math.acos(c[1] / L), me = measure(pts), al = Math.asin(sa);
+          const th = Math.acos(c[1] / L), me = measure(pts, c, d), al = Math.asin(sa);
           const pred = Math.cos(al) / Math.sqrt(Math.cos(th) ** 2 - Math.sin(al) ** 2);
           return `gold sphere $${v.fix(deg(th), 1)}°$ off the axis: measured axis ratio $${v.fix(me.a / me.b, 3)}$ · formula $\\cos\\alpha/\\sqrt{\\cos^2\\theta-\\sin^2\\alpha} = ${v.fix(pred, 3)}$ · $1/\\cos\\theta = ${v.fix(1 / Math.cos(th), 3)}$ (each sphere subtends $2\\alpha = ${v.fix(2 * deg(al), 1)}°$)`;
         });
