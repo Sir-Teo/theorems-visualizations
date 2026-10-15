@@ -106,7 +106,7 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
         const src = v.select('counts', [{ value: 'paper', label: 'Student 1908' }, { value: 'sim', label: 're-shuffle the cards' }], 'paper');
         const shuffle = v.button('Shuffle the 3000 cards again', () => { seed++; });
         const nS = v.slider('sample size $n$', 4, 10, 6, { int: true });
-        const L = v.stage({ x: [0.4, 3.6], y: [-2.3, 6.3], axes: 'box', height: 340, weight: 1.05, minWidth: 280 });
+        const L = v.stage({ x: [0.4, 3.6], y: [-2.4, 6.6], axes: 'box', height: 340, weight: 1.05, minWidth: 280 });
         const R = v.stage({ x: [0, 6], y: [1e-6, 1], ylog: true, axes: 'box', height: 340, weight: 1, minWidth: 280 });
         const cache = new Map();
         const sim = (key) => { const k = key + '|' + seed; if (!cache.has(k)) cache.set(k, drawCards(v.rng(seed * 7 + (key === 'finger' ? 3 : 0)), CARD[key])); return cache.get(k); };
@@ -121,8 +121,8 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
           varSel.el.hidden = src.el.hidden = V !== 'cards'; shuffle.hidden = V !== 'cards' || src.value !== 'sim'; nS.el.hidden = V !== 'tab';
           if (V === 'sleep') {
             const C = cols(), n = 10;
-            L.setScale({ ylog: false, x: [0.4, 3.6], y: [-2.3, 6.3] }); L.setTitle('extra hours of sleep, ten patients (click a column)');
-            L.setTicks([[1, 'drug 1'], [2, 'drug 2'], [3, 'difference']], null); L.setLabels(null, 'hours');
+            L.setScale({ ylog: false, x: [0.4, 3.6], y: [-2.4, 6.6] }); L.setTitle('extra hours of sleep for ten patients (click a column)');
+            L.setTicks([[1, 'drug 1'], [2, 'drug 2'], [3, 'difference']], null); L.setLabels(null, null);
             L.hline(0, { color: 'muted', width: 1 });
             L.vband(col + 0.62, col + 1.38, { color: C[col].c, alpha: 0.08 });
             for (let i = 0; i < n; i++) L.line(1, C[0].data[i], 2, C[1].data[i], { color: 'faint', width: 1.2 });
@@ -132,9 +132,8 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
               const m = meanOf(cc.data), s = sdN(cc.data);
               L.line(j + 1 - 0.3, m, j + 1 + 0.3, m, { color: cc.c, width: 3 });
               L.line(j + 1 + 0.34, m - s, j + 1 + 0.34, m + s, { color: cc.c, width: 1.6 });
-              L.text(`${v.fix(m, 2)} ± ${v.fix(s, 2)}`, j + 1, 5.95, { align: 'center', size: 11, color: cc.c, weight: 600 });
+              L.text(`x̄ = ${v.fix(m, 2)}, s = ${v.fix(s, 2)}`, j + 1, 6.2, { align: 'center', size: 11, color: cc.c, weight: 600 });
             });
-            L.text('mean ± s (divisor n), as Student computed', 2, -2.0, { align: 'center', size: 10.5, color: 'muted' });
             // odds panel
             const cc = C[col], z = meanOf(cc.data) / sdN(cc.data), t = z * 3, td = M.dist.studentT(9), N01 = M.dist.normal(0, 1);
             R.setScale({ ylog: true, x: [0, 6], y: [1e-6, 1] }); R.setTitle('P(mean of the population ≤ 0) against $t = z\\sqrt{n-1}$, $n = 10$'); R.setLabels('t', null); R.setTicks(null, null);
@@ -149,15 +148,15 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
             const D = CARD[varSel.value], paper = src.value === 'paper', S = paper ? null : sim(varSel.value);
             const zc = paper ? D.zObs : binCounts(S.zs, ZEDGE);
             const sEdges = [...M.linspace(0, 1.7, 18), Infinity], sc = paper ? D.sObs : binCounts(S.ss, sEdges);
-            L.setScale({ ylog: false, x: [-3.6, 3.6], y: [0, 0.75] }); L.setTitle(`750 values of $z=(\\bar x-\\mu)/s$, samples of 4 (${D.label})`);
-            L.setTicks(null, null); L.setLabels('z', 'density');
+            L.setScale({ ylog: false, x: [-3.6, 3.6], y: [0, 0.86] }); L.setTitle(`750 values of $z=(\\bar x-\\mu)/s$, samples of 4 (${D.label}; density)`);
+            L.setTicks(null, null); L.setLabels('z', null);
             for (let i = 1; i < 14; i++) { const a = ZEDGE[i], b = ZEDGE[i + 1], h = zc[i] / 750 / (b - a); L.rect(a, 0, b, h, { fill: paper ? 'gold' : 'accent', fillAlpha: 0.35, color: paper ? 'gold' : 'accent', width: 1 }); }
-            L.text(`${zc[0]} below −3.05`, -3.55, 0.7, { size: 10.5, color: 'muted' }); L.text(`${zc[14]} above 3.05`, 3.55, 0.7, { size: 10.5, color: 'muted', align: 'right' });
+            L.text(`${zc[0]} below −3.05`, -3.5, 0.81, { size: 10.5, color: 'muted' }); L.text(`${zc[14]} above 3.05`, 3.5, 0.81, { size: 10.5, color: 'muted', align: 'right' });
             L.fn((z) => (2 / Math.PI) / (1 + z * z) ** 2, { color: 'green', width: 2.4, n: 300 });
             L.fn((z) => M.dist.normal(0, 0.5).pdf(z), { color: 'orange', width: 2, dash: [6, 4], n: 300 });
-            R.setScale({ ylog: false, x: [0, 2.05], y: [0, 1.25] }); R.setTitle('750 values of $s/\\sigma$, samples of 4'); R.setLabels('s / σ', 'density'); R.setTicks(null, null);
+            R.setScale({ ylog: false, x: [0, 2.05], y: [0, 1.5] }); R.setTitle('750 values of $s/\\sigma$, samples of 4 (density)'); R.setLabels('s / σ', null); R.setTicks(null, null);
             for (let i = 0; i < 17; i++) { const a = sEdges[i], b = sEdges[i + 1]; R.rect(a, 0, b, sc[i] / 750 / 0.1, { fill: paper ? 'gold' : 'accent', fillAlpha: 0.35, color: paper ? 'gold' : 'accent', width: 1 }); }
-            R.text(`${sc[17]} above 1.7`, 2.0, 1.15, { size: 10.5, color: 'muted', align: 'right' });
+            R.text(`${sc[17]} above 1.7`, 2.0, 1.42, { size: 10.5, color: 'muted', align: 'right' });
             R.fn((u) => (16 * u * u * Math.exp(-2 * u * u)) / Math.sqrt(2 * Math.PI), { color: 'green', width: 2.4, n: 200, domain: [0, 2.05] });
             const cz = chiSq(M, zc, ZCALC), cs = chiSq(M, sc, SCALC);
             st = { V, D, paper, cz, cs, zc, S };
@@ -194,7 +193,7 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
           }
           const { n, err, half } = st, ok = err.filter((e) => e != null), worst = ok.reduce((a, e) => (Math.abs(e) > Math.abs(a) ? e : a), 0), wi = err.indexOf(worst);
           const bad = err.map((e, i) => (e != null && Math.abs(e) > half + 0.01 ? `z = ${v.fix((i + 1) / 10, 1)}` : null)).filter(Boolean);
-          return `$n$ = ${n}: Student's ${ok.length} entries against the exact $P(t_{${n - 1}}\\le z\\sqrt{${n - 1}})$ — largest difference ${v.fix(worst, 2)}×10⁻⁴ at $z$ = ${v.fix((wi + 1) / 10, 1)} · ${bad.length ? `outside rounding: ${bad.join(', ')} (the odd-$n$ columns at $z$ = 0.2 are all about 6×10⁻⁴ high)` : 'every entry is exact to the printed rounding'} · e.g. $z$ = 1: Student ${v.fix(STAB[n][9], n >= 9 ? 5 : 4)}, exact ${v.fix(M.dist.studentT(n - 1).cdf(Math.sqrt(n - 1)), 5)}`;
+          return `$n$ = ${n}: Student's ${ok.length} entries against the exact $P(t_{${n - 1}}\\le z\\sqrt{${n - 1}})$ — largest difference ${v.fix(worst, 2)}×10⁻⁴ at $z$ = ${v.fix((wi + 1) / 10, 1)} · ${bad.length ? `outside rounding: ${bad.join(', ')} ${n % 2 ? '; the odd-$n$ columns 5, 7 and 9 are all about 6×10⁻⁴ high at $z$ = 0.2' : ''}` : 'every entry is exact to the printed rounding'} · e.g. $z$ = 1: Student ${v.fix(STAB[n][9], n >= 9 ? 5 : 4)}, exact ${v.fix(M.dist.studentT(n - 1).cdf(Math.sqrt(n - 1)), 5)}`;
         });
       },
     },

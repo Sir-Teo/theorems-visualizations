@@ -748,7 +748,7 @@ So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of
       tags: ['impedance', 'power'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mechanical_impedance' },
       viz(v) {
-        const M = v.M, L = 2, LS = 2.6, F0 = 0.5, FR = 45, SLOW = 0.02, WIN = 0.06;
+        const M = v.M, L = 2, LS = 5, F0 = 0.5, FR = 45, SLOW = 0.02, WIN = 0.06;
         const Ts = v.slider('tension $T$ (N)', 20, 180, 100, { step: 1 });
         const mS = v.slider('density $\\mu$ (g/m)', 2, 20, 10, { step: 0.1 });
         const far = v.select('far end', [{ value: 'inf', label: 'infinite (absorbed)' }, { value: 'fixed', label: 'fixed at 2 m' }, { value: 'free', label: 'free at 2 m' }], 'inf');
@@ -766,8 +766,8 @@ So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of
         const build = () => {
           const T = Ts.value, mu = mS.value / 1000, c = Math.sqrt(T / mu), inf = far.value === 'inf';
           const x1 = inf ? L + LS : L;
-          const damp = inf ? (x) => (x > L ? 20 * (c / LS) * ((x - L) / LS) ** 2 : 0) : () => 6;
-          C = makeChain({ x0: 0, x1, mu: () => mu, T, delta: 0.008 / c, left: 'driven', right: far.value === 'free' ? 'free' : 'fixed', damp });
+          const damp = inf ? (x) => (x > L ? 30 * (c / LS) * ((x - L) / LS) ** 2 : 0) : () => 6;
+          C = makeChain({ x0: 0, x1, mu: () => mu, T, delta: 0.01 / c, left: 'driven', right: far.value === 'free' ? 'free' : 'fixed', damp });
           C.force = force; C.set(null, null); rec = []; lastRec = 0;
           // the force has been acting for a while: run up to PRE so that the motion has settled
           const dt = 0.5 * C.delta;

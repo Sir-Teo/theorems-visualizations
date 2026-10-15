@@ -234,12 +234,12 @@ The same recipe gives the rate for any subpopulation — an age group, a sex, a 
       tags: ['person-years', 'rates'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Person-years_of_life_lost' },
       viz(v) {
-        const M = v.M, T0 = 2020, T1 = 2025, A0 = 60, A1 = 65, EMIG = 0.03, YT = [2020, 2021, 2022, 2023, 2024, 2025];
+        const M = v.M, T0 = 2020, T1 = 2025, A0 = 60, A1 = 65, EMIG = 0.05, YT = [2020, 2021, 2022, 2023, 2024, 2025];
         const L = v.stage({ x: [2019.4, 2025.6], y: [59.4, 65.6], equal: true, height: 400, axes: 'box', weight: 1.05, minWidth: 300, xticks: YT, yticks: [60, 61, 62, 63, 64, 65], ylabel: 'age', title: 'lifelines in the age band 60–65' });
         const N = v.stage({ x: [2019.75, 2025.25], y: [0, 10], height: 400, axes: 'box', weight: 1, minWidth: 260, xticks: YT, ylabel: 'N(t)', title: 'people in the band at each moment' });
         const mu = v.slider('death rate in the simulation (per 1 000 person-years)', 5, 200, 60, { step: 1 });
         const how = v.select('a line you draw ends in', [{ value: 'death', label: 'death' }, { value: 'emig', label: 'emigration' }, { value: 'edge', label: 'staying to the edge' }], 'death');
-        let seed = 3, U = [], drawn = [];
+        let seed = 10, U = [], drawn = [];
         const make = (s, k) => { const r = M.rng(s), a = []; for (let i = 0; i < k; i++) a.push([r(), r(), r(), 1 - r(), 1 - r()]); return a; };
         U = make(seed, 12);
         v.button('Clear', () => { U = []; drawn = []; });
@@ -266,7 +266,7 @@ The same recipe gives the rate for any subpopulation — an age group, a sex, a 
           // ----- the people: simulated (from fixed uniforms) and drawn
           const P = U.map(([u0, u1, u2, ud, ue]) => {
             let t0, a0, imm = false;
-            if (u0 < 0.5) { t0 = T0; a0 = A0 + 5 * u1; } else if (u0 < 0.92) { t0 = T0 + 5 * u1; a0 = A0; } else { t0 = T0 + 0.3 + 4 * u1; a0 = A0 + 0.3 + 4 * u2; imm = true; }
+            if (u0 < 0.45) { t0 = T0; a0 = A0 + 5 * u1; } else if (u0 < 0.88) { t0 = T0 + 5 * u1; a0 = A0; } else { t0 = T0 + 0.3 + 4 * u1; a0 = A0 + 0.3 + 4 * u2; imm = true; }
             const lim = Math.min(T1 - t0, A1 - a0), wd = -Math.log(ud) / m, we = -Math.log(ue) / EMIG, d = Math.min(wd, we, lim);
             return { t0, a0, t1: t0 + d, kind: d === lim ? 'edge' : d === wd ? 'death' : 'emig', imm };
           }).concat(drawn.map((p) => ({ ...p, imm: p.t0 > T0 && p.a0 > A0, user: true })));
@@ -290,15 +290,15 @@ The same recipe gives the rate for any subpopulation — an age group, a sex, a 
           area += n * (T1 - last); steps.push([T1, n]);
           const Nat = (t) => { let k = 0; for (const p of P) if (p.t0 <= t && t < p.t1) k++; return k; };
           const Nmid = Nat(T0 + 2.5), N0 = Nat(T0), N1 = P.filter((p) => p.t1 >= T1 - 1e-9).length;
-          N.setView(null, [-0.07 * nmax * 1.2, nmax * 1.25]);
+          N.setView(null, [0, nmax * 1.25]);
           N.poly([...steps, [T1, 0]], { fill: 'accent', fillAlpha: 0.22, stroke: false });
           N.path(steps, { color: 'accent', width: 2 });
           N.rect(T0, 0, T1, Nmid, { color: 'orange', width: 1.6, dash: [6, 4] });
           N.vline(T0 + 2.5, { color: 'orange', width: 1, dash: [2, 3] });
           N.dot(T0 + 2.5, Nmid, { r: 4.5, color: 'orange' });
           N.text(`N(mid) × 5 y = ${fx(Nmid * 5, 1)}`, T0 + 2.5, Nmid, { dy: -12, align: 'center', color: 'orange', size: 11.5, weight: 650 });
-          for (const t of dt) N.line(t, -0.065 * nmax * 1.2, t, 0, { color: 'red', width: many ? 1 : 2.2 });
-          N.text(`area = ${fx(area, 2)} person-years`, T0 + 0.08, nmax * 1.17, { color: 'accent', size: 12, weight: 700 });
+          for (const t of dt) N.line(t, 0, t, 0.07 * nmax, { color: 'red', width: many ? 1 : 2.4 });
+          N.text(`area = ${fx(area, 2)} person-years`, T0 + 0.12, 0.16 * nmax, { color: 'accent', size: 12, weight: 700 });
           st = { PY, area, deaths, Nmid, N0, N1, n: P.length, m };
         });
         v.readout(() => {
