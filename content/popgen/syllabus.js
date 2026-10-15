@@ -15,6 +15,8 @@
 //   correlation between relatives, McDonald–Kreitman, sweep signatures, allele surfing.
 // Deliberate omissions: detailed multi-locus modifier theory, age-structured selection (Ewens §8.5),
 //   statistical inference machinery (left to stat/bioinf); game theory proper lives in `game`.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'popgen',
   chapters: [

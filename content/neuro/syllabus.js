@@ -15,6 +15,8 @@
 //   items of `psych`; Nernst/GHK live in `physio`; the neural-level items here depend on them.
 // Deliberate omissions: generalized linear model fitting details (Gerstner ch. 10 beyond time rescaling),
 //   quasi-renewal integral equations (Gerstner ch. 14), cortical field models beyond the ring model.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'neuro',
   chapters: [

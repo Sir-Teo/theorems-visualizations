@@ -14,6 +14,8 @@
 // Deliberate omissions: large-scale network inference and omics statistics (bioinf/stat), detailed
 //   enzyme kinetics (mathbio ch. 5, kin). Items with refs: [] (metabolic control analysis, flux balance)
 //   are standard systems-biology results not treated in Alon; a reference such as Klipp et al. could be added.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'sysbio',
   chapters: [

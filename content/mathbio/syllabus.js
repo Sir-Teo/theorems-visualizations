@@ -15,6 +15,8 @@
 //   evolutionary game theory lives in popgen; enzyme-level kinetics beyond Michaelis–Menten in kin.
 // Note: ch. 11 items marked refs: [] have no counterpart in the collection's two references; a stochastic
 //   text (e.g. Allen, An Introduction to Stochastic Processes with Applications to Biology) should be added.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'mathbio',
   chapters: [

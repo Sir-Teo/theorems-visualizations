@@ -13,6 +13,8 @@
 //     Schild regression, type A/B adverse reactions, allosteric modulation)
 // Deliberate omissions: drug-class pharmacology (autonomic, antimicrobial, oncology lectures) — the atlas
 //   keeps quantitative principles; mechanisms of individual drug classes would be examples, not items.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'pharm',
   chapters: [

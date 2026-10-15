@@ -14,6 +14,8 @@
 //     https://ocw.mit.edu/courses/8-591j-systems-biology-fall-2014/pages/syllabus/
 // Deliberate omissions: physiological ecology detail (Begon ch. 2–3 beyond tolerance and scaling),
 //   decomposer biology (Begon ch. 11) beyond litter decay, Gaia hypothesis (not a testable model here).
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'ecol',
   chapters: [

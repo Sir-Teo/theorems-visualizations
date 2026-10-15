@@ -18,6 +18,8 @@
 //   AUC as 2AFC accuracy and publication bias (owner `psych`).
 // Deliberate omissions: surveillance systems, field methods and secondary-data chapters (procedural);
 //   specific disease epidemiology (examples, not ideas).
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'epi',
   chapters: [

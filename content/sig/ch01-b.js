@@ -482,7 +482,7 @@ the **norm** $\|x\|=\sqrt{\langle x,x\rangle}$ (the square root of the energy) a
         const pS = v.slider('phase $\\phi$ of $y$', 0, 360, 50, { step: 1, fmt: (x) => Math.round(x) + '°' });
         const aS = v.slider('amplitude $A$ of $y$', 0.3, 1.5, 1, { step: 0.05 });
         const s1 = v.stage({ x: [-0.035, 1], y: [-1.65, 1.65], height: 200, axes: 'box', yticks: [-1, 0, 1], weight: 1.35, title: 'the signals $x(t)$ and $y(t)$ on $[0,1]$ s, and the projection of $y$ on $x$' });
-        const s3 = v.stage({ x: [-1.5, 2.4], y: [-0.25, 1.5], equal: true, height: 200, axes: false, weight: 1, title: 'the same two signals as vectors' });
+        const s3 = v.stage({ x: [-1.65, 2.75], y: [-0.3, 1.7], equal: true, height: 200, axes: false, weight: 1, title: 'the same two signals as vectors' });
         const s2 = v.stage({ x: [-0.02, 1], y: [-1.65, 1.65], height: 175, axes: 'box', yticks: [-1, 0, 1], xlabel: 't (s)', full: true, title: 'the product $x(t)\\,y(t)$: its net area is $\\langle x,y\\rangle$' });
         let st = null;
         v.render(() => {
@@ -501,8 +501,8 @@ the **norm** $\|x\|=\sqrt{\langle x,x\rangle}$ (the square root of the energy) a
           s2.fn(p, { color: 'ink', width: 1.6 });
           s2.corner(`net area ⟨x, y⟩ = ${v.fix(Math.abs(xy) < 5e-12 ? 0 : xy, 4)}`, 'tr', { color: Math.abs(xy) < 1e-6 ? 'green' : 'ink', weight: 600 });
           // ---- vectors (Gram–Schmidt coordinates: x on the axis, y at angle θ)
-          const S = 1.2, X = [nx * S, 0], Y = [ny * S * cl, ny * S * Math.sin(th)];
-          s3.line(-1.45, 0, 2.35, 0, { color: 'faint', width: 1 });
+          const S = 1.5, X = [nx * S, 0], Y = [ny * S * cl, ny * S * Math.sin(th)];
+          s3.line(-1.6, 0, 2.7, 0, { color: 'faint', width: 1 });
           s3.poly([[0, 0], X, [X[0] + Y[0], X[1] + Y[1]], Y], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 1, dash: [3, 4] });
           s3.arrow(0, 0, X[0] + Y[0], X[1] + Y[1], { color: 'muted', width: 1.6 });
           s3.line(Y[0], Y[1], proj * X[0], 0, { color: 'accent', width: 1.2, dash: [4, 3] });

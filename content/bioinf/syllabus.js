@@ -14,6 +14,8 @@
 //   gene-tree/species-tree discordance.
 // Deliberate omissions: epigenomics, Hi-C and CRISPR technology lectures (technologies, not algorithms with
 //   crisp statements); GWAS lives in popgen.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'bioinf',
   chapters: [

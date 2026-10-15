@@ -788,13 +788,13 @@ by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \f
       tags: ['geometry'],
       viz(v) {
         const mk = (title, r) => v.stage({ x: [-r, r], y: [-r, r], equal: true, height: 290, minWidth: 240, ticks: false, title });
-        const PB = mk('the ball $B$', 1.45), PE = mk('$E = S(B)$', 2.1), PT = mk('$T(E) = (TS)(B)$', 2.9);
+        const PB = mk('the ball $B$', 1.45), PE = mk('$E = S(B)$', 2.1), PT = mk('$T(E) = (TS)(B)$', 2.5);
         let s2 = 0.6;
         const ah = PE.handle(1.25, 0.55, { color: 'blue', label: 's₁f₁', constrain: (x, y) => { const p = [x, y], l = len(p); return l < 0.3 ? scl(l > 1e-9 ? unit(p) : [1, 0], 0.3) : p; } });
         const bh = PE.handle(-0.55 * 0.6 / 1.366, 1.25 * 0.6 / 1.366, {
           color: 'purple', label: 's₂f₂', constrain: (x, y) => { const u = perp(unit([ah.x, ah.y])); s2 = Math.max(0.2, Math.min(1.9, dot([x, y], u))); return scl(u, s2); },
         });
-        const PRE = { gen: [[1.0, 1.0], [-0.4, 0.7]], shear: [[1, 1.2], [0, 1]], sing: [[1.2, 0.6], [0.6, 0.3]] };
+        const PRE = { gen: [[0.6, 0.3], [0.2, 1.4]], shear: [[1, 1.2], [0, 1]], sing: [[1.2, 0.6], [0.6, 0.3]] };
         const H = colHandles(PT, PRE.gen);
         v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'sing', label: 'not invertible' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         const uh = PB.handle(Math.cos(0.9), Math.sin(0.9), { color: 'gold', label: 'u', constrain: (x, y) => (Math.hypot(x, y) > 1e-9 ? unit([x, y]) : [1, 0]) });
@@ -998,7 +998,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
         const U0 = [-0.75, -0.55, -0.35];
         let e1 = unit([1, 0.35, 0.15]);
         const uh = sc.handle(U0, { color: 'orange', label: 'u', onDrag: (Hu) => { eh.p = add(Hu.p, scl(e1, rs[0].value)); } });
-        const eh = sc.handle(add(U0, scl(e1, 1.2)), { color: 'blue', label: 'u+w₁', snap: (p) => { const d = sub(p, uh.p); return len(d) > 1e-6 ? add(uh.p, scl(unit(d), rs[0].value)) : p; } });
+        const eh = sc.handle(add(U0, scl(e1, 1.2)), { color: 'blue', label: 'w₁', snap: (p) => { const d = sub(p, uh.p); return len(d) > 1e-6 ? add(uh.p, scl(unit(d), rs[0].value)) : p; } });
         const TB = v.table(R, { rows: 3, cols: 3, region: [0.06, 0.4, 0.96, 0.94], maxCell: 56, size: 13.5, rowLabels: ['$w_1$', '$w_2$', '$w_3$'], colLabels: ['$w_1$', '$w_2$', '$w_3$'] });
         const CC = ['blue', 'purple', 'teal'];
         let st = null;
@@ -1013,7 +1013,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
           sc.arrow(ZERO, u, { color: 'orange', width: 1.6, dash: [5, 4] });
           E.forEach((ek, k) => sc.line(u, add(u, scl(ek, 1.6)), { color: CC[k], width: 1, dash: [3, 4], alpha: 0.6 }));
           pped(sc, u, w[0], w[1], w[2], { fill: box ? 'green' : 'orange', color: box ? 'green' : 'orange', fillAlpha: 0.1, alpha: 0.65 });
-          w.forEach((wk, k) => { sc.arrow(u, add(u, wk), { color: CC[k], width: 3.2 }); sc.tex(`w_${k + 1}`, add(u, scl(wk, 1.0)), { color: CC[k], size: 14, dx: 12, dy: -10 }); });
+          w.forEach((wk, k) => { sc.arrow(u, add(u, wk), { color: CC[k], width: 3.2 }); if (k) sc.tex(`w_${k + 1}`, add(u, scl(wk, 1.0)), { color: CC[k], size: 14, dx: 12, dy: -10 }); });
           for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) if (Math.abs(dot(w[i], w[j])) < 1e-9) rightMark3(sc, w[i], w[j], 0.14, 'green', u);
           sc.flush();
           S.corner(box ? 'orthogonal edges rₖeₖ: a box' : `w₂ tilted by ${pf(Math.abs(tilt.value), 0)}°: a parallelepiped, not a box`, 'tl', { color: box ? 'green' : 'red', weight: 700, size: 11.5 });

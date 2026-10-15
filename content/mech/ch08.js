@@ -550,7 +550,7 @@ so the radial motion is that of a particle on a line in the **effective potentia
           so.path(conicPts(1, R.e, 0, 16), { color: 'ink', width: 1.2, dash: [5, 4] });
           so.dots(R.ticks, { r: 2.3, color: 'ink' });
           if (R.k === 'ellipse' || R.k === 'circle') { const a = -1 / (2 * R.E); so.dot(-2 * a * R.e, 0, { r: 3, color: col, hollow: true, label: R.k === 'ellipse' && a * R.e < 3 ? 'empty focus' : null, labelPos: 's' }); }
-          if (R.k === 'hyperbola') { const th = Math.acos(-1 / R.e); for (const sg of [-1, 1]) { const c = -1 / R.e * 0; void c; } so.line(0, 0, 8 * Math.cos(th), 8 * Math.sin(th), { color: 'red', width: 1, dash: [2, 4], alpha: 0.7 }); so.line(0, 0, 8 * Math.cos(th), -8 * Math.sin(th), { color: 'red', width: 1, dash: [2, 4], alpha: 0.7 }); }
+          if (R.k === 'hyperbola') { const th = Math.acos(-1 / R.e); so.line(0, 0, 8 * Math.cos(th), 8 * Math.sin(th), { color: 'red', width: 1, dash: [2, 4], alpha: 0.7 }); so.line(0, 0, 8 * Math.cos(th), -8 * Math.sin(th), { color: 'red', width: 1, dash: [2, 4], alpha: 0.7 }); }
           sun(so, 0, 0, { r: 0.09 });
           so.corner(`${R.k}: e = ${v.fix(R.e, 3)}`, 'tl', { color: col, weight: 700, size: 13 });
           // effective potential strip
@@ -600,7 +600,7 @@ where $\ell$ is the angular momentum about the centre. In particular a planet mo
         const Ns = v.slider('time slices $N$', 6, 16, 10, { int: true });
         const s = v.stage({ x: [-2.25, 0.85], y: [-1.15, 1.15], equal: true, axes: false, height: 330, weight: 1.45 });
         const b = v.stage({ x: [0.3, 16.7], y: [0, 1], axes: 'box', height: 330, xlabel: 'slice', title: 'swept area per slice' });
-        const Q = s.handle(0, 0, { color: 'purple', r: 6, label: 'area origin', labelPos: 's', constrain: (x, y) => { const c = force.value === 'spring' ? [0, 0] : [0, 0]; return Math.hypot(x - c[0], y - c[1]) < 0.07 ? c : [x, y]; } });
+        const Q = s.handle(0, 0, { color: 'purple', r: 6, label: 'area origin', labelPos: 's', constrain: (x, y) => (Math.hypot(x, y) < 0.07 ? [0, 0] : [x, y]) });
         const COLS = ['blue', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
         const cache = memo(); let cur = null;
         const run = () => cache([force.value, ecc.value, Ns.value].join('|'), () => {
@@ -786,7 +786,7 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
           // least-squares fit 1/r = A + B cos φ + C sin φ
           const rows = [], rhs = []; const stepK = Math.max(1, Math.floor(all.length / 700));
           for (let i = 0; i < all.length; i += stepK) { const S = all[i], r = Math.hypot(S[0], S[1]), ph = Math.atan2(S[1], S[0]); rows.push([1, Math.cos(ph), Math.sin(ph)]); rhs.push(1 / r); }
-          const fit = v.M.lstsq(rows, rhs), [A, Bc, Cc] = fit.x || fit;
+          const [A, Bc, Cc] = v.M.lstsq(rows, rhs);
           let res = 0; rows.forEach((row, i) => { res += (row[0] * A + row[1] * Bc + row[2] * Cc - rhs[i]) ** 2; });
           res = Math.sqrt(res / rows.length) / Math.abs(A);
           const efit = Math.hypot(Bc, Cc) / A, pfit = 1 / A, wfit = Math.atan2(Cc, Bc);

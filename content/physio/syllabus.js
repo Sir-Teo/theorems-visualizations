@@ -15,6 +15,8 @@
 //   calcium release, β-cell bursting, erythropoietin feedback, Mackey–Glass-type respiratory instability.
 // Deliberate omissions: gastrointestinal, retina and inner-ear chapters of Keener–Sneyd (left for later
 //   appends), immunology, detailed neuroanatomy (neuro covers neurons).
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'physio',
   chapters: [

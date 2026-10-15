@@ -16,6 +16,8 @@
 // Cross-listed rather than duplicated: Beer–Lambert law (owner `waves`), radioactive decay (owner `kin`),
 //   Larmor precession (owner `em`).
 // Deliberate omissions: optical coherence tomography, endoscopy and hardware engineering detail.
+// Landmark papers (kind 'Paper', appended Oct 2026): every citation checked against its Crossref DOI record,
+//   PubMed/PMC, the BHL OpenURL resolver or archive.org catalogue metadata (books and pre-DOI papers get a `url`).
 export default {
   collection: 'imaging',
   chapters: [
