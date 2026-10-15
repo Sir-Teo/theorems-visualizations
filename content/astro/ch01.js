@@ -326,7 +326,7 @@ where $a$ is the semi-major axis ($a<0$ for hyperbolas). Hence a single measurem
 $$M + m = \frac{4\pi^2 a^3}{G\,T^2}.$$
 All satellites of one centre lie on a single line of slope $\tfrac32$ in $\log T$ against $\log a$, and the height of the line measures the mass; one well-measured orbit is enough. When the satellite is not negligible ($m/M$ comparable to the measurement error) the result is the sum $M + m$, and the masses are split only with extra information — the sizes of the two orbits about the barycentre, $a_1/a_2 = m_2/m_1$. For visual binaries $a$ comes from an angle and a distance, $a = \alpha\, d$, so the mass scales as $d^3$.`,
       idea: String.raw`For two bodies the relative orbit is a Kepler orbit with $GM$ replaced by $G(M+m)$ (reduced mass, mech 8.2), and the area law gives $T^2 = 4\pi^2a^3/G(M+m)$ (mech 8.8). Inverting the law turns a timing and a size into a mass: this is how the masses of the Sun, the planets (from their moons), binary stars and the black hole at the Galactic Centre are known. The method assumes only Newtonian point-mass gravity; perturbations by other bodies and non-spherical centres show up as small scatter about the line.`,
-      caption: String.raw`Every satellite system on one log–log chart (SI units): the faint diagonals are lines of constant central mass, from Pluto to $10^6\,M_\odot$. Pick a system; its points are fitted with a line of slope $\tfrac32$ and the mass is read off. Click a point to drop it from the fit or restore it — one orbit alone already gives the mass. The right panel shows the mass implied by each orbit separately, divided by the accepted value. For Pluto the fitted mass is Pluto + Charon (Charon is 11% of the total); the small moons circle the pair and agree with Charon’s orbit to about 1%.`,
+      caption: String.raw`Every satellite system on one log–log chart (SI units): the faint diagonals are lines of constant central mass, from Pluto to $10^6\,M_\odot$. Pick a system; its points are fitted with a line of slope $\tfrac32$ and the mass is read off. Click a point to drop it from the fit or restore it — one orbit alone already gives the mass. The right panel shows the mass implied by each orbit separately, divided by the accepted value. For Pluto the fitted mass is Pluto + Charon (Charon is 11% of the total); the four small moons circle the pair and read 1–4% high, because a binary pulls a little harder than a point of the same mass.`,
       deps: ['mech-8.8', 'mech-8.2'],
       refs: ['Carroll–Ostlie §2.3', 'Carroll–Ostlie §7.2'],
       tags: ['Kepler', 'mass', 'measurement'],
@@ -386,7 +386,7 @@ All satellites of one centre lie on a single line of slope $\tfrac32$ in $\log T
             }
           }
           // per-orbit masses
-          const S0 = SYS[which.value], plu = which.value === 'pluto', lo = plu ? 0.87 : 0.94, hi = plu ? 1.03 : 1.06;
+          const S0 = SYS[which.value], plu = which.value === 'pluto', lo = plu ? 0.87 : 0.94, hi = plu ? 1.05 : 1.06;
           r.setView([-0.6, Math.max(S0.pts.length - 0.4, 1.4)], [lo, hi]);
           r.setTicks(S0.pts.map((p, j) => [j, p[0]]), null);
           r.hline(1, { color: 'green', width: 1.4 });
@@ -408,6 +408,7 @@ All satellites of one centre lie on a single line of slope $\tfrac32$ in $\log T
           let out = String.raw`${S0.label}: ${fit.n} orbit${fit.n > 1 ? 's' : ''} ⇒ $M + m = 4\pi^2a^3/GT^2 = ${v.sci(fit.M, 4)}$ kg $= ${big(inUnits)}\,${S0.Mname}$ (accepted $${big(acc)}$; off by ${v.fix(Math.abs(fit.M / S0.M - 1) * 100, 2)}%)`;
           if (fit.n > 1) out += String.raw`, scatter of the orbits ±${v.fix((10 ** fit.sd - 1) * 100, 2)}%`;
           if (which.value === 'pluto') out += String.raw` · this is Pluto **plus** Charon: Charon’s own orbit about Pluto has $a = a_P + a_C$, and the barycentric orbits ($a_P/a_C = m_C/m_P \approx 0.12$) split it into $m_P = 1.30\times10^{22}$ kg and $m_C = 1.59\times10^{21}$ kg`;
+          if (which.value === 'pluto') out += ' · the small moons orbit a binary, whose quadrupole field speeds them up slightly, so they read high';
           if (which.value === 'sirius') out += String.raw` · $a = 7.50''$ at parallax $0.379''$ is 19.8 AU; the astrometric orbits of A and B about their barycentre split the total into $2.06 + 1.02\,M_\odot$ (Bond et al. 2017)`;
           if (which.value === 'sgra') out += String.raw` · S2: $a = 0.1255''$ at the Galactic Centre distance 8.28 kpc ⇒ 1039 AU, period 16.05 yr: four million Suns in a region smaller than the solar system`;
           if (which.value === 'jupiter') out += String.raw` · Amalthea, deep in Jupiter’s oblate gravity field, runs 0.2% fast and reads high`;

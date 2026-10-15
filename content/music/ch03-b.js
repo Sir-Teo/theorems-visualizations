@@ -555,7 +555,7 @@ the roots of $\cos\beta L\cosh\beta L=1$, so its partials stand in the ratios $1
           if (d > 0.005) bar.poly([...prof.filter(([x]) => Math.abs(x - 0.5) <= w / 2), [0.5 + w / 2, -TH], [0.5 - w / 2, -TH]], { fill: 'red', fillAlpha: 0.06, stroke: false, hatch: 'red', hatchAlpha: 0.35, hatchGap: 7 });
           bar.poly([[0, 0], [1, 0], ...prof.slice().reverse()], { fill: 'orange', fillAlpha: 0.32, color: 'orange', width: 1.6 });
           R.nodes[0].forEach((x) => { bar.circle(x, -TH - 0.035, 0.012, { fill: 'ink', fillAlpha: 0.9, stroke: false }); bar.line(x, -TH - 0.05, x, -0.34, { color: 'muted', width: 1, dash: [2, 3] }); });
-          bar.text('cords at the nodes of the fundamental', R.nodes[0][0] - 0.015, -0.31, { align: 'right', color: 'muted', size: 10.5 });
+          bar.text('cords at the nodes of the fundamental', R.nodes[0][0] + 0.015, -0.31, { align: 'left', color: 'muted', size: 10.5 });
           bar.text(`arch: depth ${v.fix(100 * d, 0)}% of the thickness, length ${v.fix(100 * w, 0)}% of the bar`, 0.98, 0.17, { align: 'right', color: 'orange', size: 11.5, weight: 600 });
           bar.corner('thickness exaggerated', 'br', { color: 'muted', size: 10.5 });
           // ---- mode shapes
@@ -578,6 +578,93 @@ the roots of $\cos\beta L\cosh\beta L=1$, so its partials stand in the ratios $1
         v.readout(() => {
           const R = run(), c2 = 1200 * Math.log2(R.r[1] / 4), c3 = 1200 * Math.log2(R.r[2] / 10), cx = 1200 * Math.log2(R.r[1] / 3);
           return `partials $f_n/f_1$ = ${R.r.map((q) => v.fix(q, 3)).join(' : ')} (uncut: ${U.map((b) => v.fix((b / U[0]) ** 2, 3)).join(' : ')} from the computed $\\beta L$ = ${U.map((b) => v.fix(b, 3)).join(', ')}) · ${target.value === 'marimba' ? `distance from 4 and 10: ${centsTxt(c2, 0)}, ${centsTxt(c3, 0)}` : `distance from 3: ${centsTxt(cx, 0)}`} · the arch lowers the fundamental to ${v.fix(R.drop, 3)} of the uncut bar's (${v.fix(-12 * Math.log2(R.drop), 1)} semitones) · nodes of the fundamental at ${R.nodes[0].map((x) => v.fix(x, 3)).join(' and ')} of the length (uncut: 0.224 and 0.776)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.12
+    {
+      num: '3.12',
+      kind: 'Phenomenon',
+      name: 'Bells: hum, prime, tierce and nominal',
+      statement: String.raw`A bell is a thick, curved shell whose modes are named by their nodal pattern $(m,n)$: $2m$ nodal meridians and $n$ nodal circles (a $\sharp$ marks a circle near the rim). Left to themselves its partials are inharmonic; a **tuned** church or carillon bell is shaped and then turned on a lathe until its five principal partials stand, relative to the **prime**, close to
+$$\underbrace{\tfrac12}_{\text{hum }(2,0)} : \underbrace{1}_{\text{prime }(2,1\sharp)} : \underbrace{\tfrac65}_{\text{tierce }(3,1)} : \underbrace{\tfrac32}_{\text{quint }(3,1\sharp)} : \underbrace{2}_{\text{nominal }(4,1)},$$
+with higher partials near $2.5, 2.67, 3, 4, \dots$ (a measured carillon bell: $0.500, 1, 1.183, 1.506, 2.000, 2.514, 2.662, 3.011, 4.166$). The **tierce** a minor third above the prime gives a bell its characteristic, slightly melancholy colour, heard clearly when the prime and tierce sound together. The pitch one hears, the **strike note**, is usually not the prime itself but a virtual pitch an octave below the nominal, implied by the nominal, twelfth and upper octave (ratios about $2:3:4$). Moving the tierce to a major third ($5/4$) needs a completely different profile; such major-third bells were first made in the 1980s with computer optimization.`,
+      idea: String.raw`A bell's wall bends like a ring around its circumference (the $m$ in $\cos m\theta$) and like a bent plate along its height; the frequencies depend on the whole profile, not on a single length, so nothing makes them harmonic. Founders found by experience, and later by finite elements, that thickening and thinning the wall at the waist, shoulder and sound bow move each partial differently, because each mode bends most in different places (the Rayleigh quotient again, as for bars in 3.11). Tuning on the lathe removes metal where the partial to be lowered bends most. The tierce and the quint have nodal circles in different places (waist and near the rim), so they can be tuned apart. The strike note is a residue pitch, like the missing fundamental: the ear fits a harmonic series to the strong upper partials 2, 3, 4 times an absent tone.`,
+      caption: String.raw`Choose a bell and a partial. Left: the bell in 3D vibrating in that partial (drag to rotate; the shapes are drawn schematically with the measured nodal patterns: black meridians and circles). Middle: the same pattern unrolled, around the bell horizontally and from lip to crown vertically. Bottom: the partials on a keyboard, with their intervals above the prime and the strike note (gold dashes). *Ring* the bell, or play just the prime and tierce to hear the minor third; drag the **tierce** to a major third and ring again. *Strike-note partials* plays only the nominal, twelfth and upper octave: you will probably hear a pitch an octave below the nominal, though nothing sounds there.`,
+      deps: ['music-3.6'],
+      see: ['music-3.11', 'music-3.10', 'music-8.21', 'music-5.14'],
+      refs: ['Benson ch. 3', 'Sethares ch. 6'],
+      tags: ['bells', 'inharmonicity'],
+      credit: 'Tuning of the principal partials: Jacob van Eyck and the Hemony brothers, 17th c.; Simpson, 1895; mode classification: Perrin, Charnley & de Pont, 1983; major-third bell: Lehr, Schoofs and colleagues, 1987',
+      scope: String.raw`Partial frequencies from published measurements: the tuned carillon bell from the table in Fletcher and Rossing (citing Ross and Perrin 1987), the Liberty Bell replica as measured at Penn State (Young, Collier and Stearns, Physics Today 2026; only its five principal partials), and the major-third bell with the tierce set to the target ratio 5/4 and the other partials left at their ideal values (illustrative; Lehr et al., Music Perception 4, 1987). Mode shapes are schematic; levels and decay rates in the synthesis are illustrative.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Strike_tone' },
+      viz(v) {
+        const M = v.M, FP = 392;
+        // name, m (half the meridians), heights of the nodal circles (lip = 0, crown = 1), label, level, decay (1/s)
+        const PART = [
+          { name: 'hum', m: 2, c: [], lab: '(2,0)', a: 0.55, d: 0.25 }, { name: 'prime', m: 2, c: [0.17], lab: '(2,1♯)', a: 0.5, d: 0.5 },
+          { name: 'tierce', m: 3, c: [0.52], lab: '(3,1)', a: 0.65, d: 0.6 }, { name: 'quint', m: 3, c: [0.1], lab: '(3,1♯)', a: 0.22, d: 1.2 },
+          { name: 'nominal', m: 4, c: [0.46], lab: '(4,1)', a: 1.0, d: 0.9 }, { name: 'major third', m: 4, c: [0.08], lab: '(4,1♯)', a: 0.35, d: 1.4 },
+          { name: 'fourth', m: 2, c: [0.24, 0.66], lab: '(2,2)', a: 0.22, d: 1.6 }, { name: 'twelfth', m: 5, c: [0.42], lab: '(5,1)', a: 0.5, d: 1.5 },
+          { name: 'upper octave', m: 6, c: [0.38], lab: '(6,1)', a: 0.4, d: 2.0 },
+        ];
+        const BELLS = {
+          tuned: { label: 'tuned carillon bell', r: [0.5, 1, 1.183, 1.506, 2.0, 2.514, 2.662, 3.011, 4.166] },
+          liberty: { label: 'Liberty Bell replica', r: [0.54, 1, 1.18, 1.58, 1.93, null, null, null, null] },
+          major: { label: 'major-third bell', r: [0.5, 1, 1.25, 1.5, 2.0, 2.5, 2.667, 3.0, 4.0] },
+        };
+        let tierce = 1.183;
+        const bellS = v.select('bell', Object.entries(BELLS).map(([value, b]) => ({ value, label: b.label })), 'tuned', { onChange: (k) => { tierce = BELLS[k].r[2]; tS.set(tierce); } });
+        const partS = v.select('partial', PART.slice(0, 5).map((p, i) => ({ value: i, label: p.name })), 2);
+        const tS = v.slider('tierce / prime', 1.15, 1.3, tierce, { step: 0.001, fmt: (x) => `${v.fix(x, 3)} (${v.fix(1200 * Math.log2(x), 0)} ¢)`, onChange: (x) => { tierce = x; } });
+        const ratios = () => BELLS[bellS.value].r.map((r, i) => (i === 2 ? tierce : r));
+        const s3 = v.stage3d({ range: 1.12, height: 300, yaw: -0.4, pitch: 0.25, axes: false, weight: 1, minWidth: 300 });
+        const un = v.stage({ x: [0, 360], y: [0, 1], height: 300, axes: 'box', xticks: [0, 90, 180, 270, 360], yticks: [[0, 'lip'], [0.5, 'waist'], [1, 'crown']], xlabel: 'angle around the bell (°)', weight: 1, minWidth: 300, title: 'the pattern unrolled' });
+        const kb = v.stage({ x: [150, 2000], y: [-0.42, 1.45], xlog: true, height: 260, axes: 'box', yticks: [], xlabel: 'frequency (Hz)', full: true, title: 'partials, with their intervals above the prime' });
+        kb.onClick((x) => { const r = ratios(); let best = 0, bd = Infinity; r.forEach((q, i) => { if (q == null) return; const dd = Math.abs(Math.log((FP * q) / x)); if (dd < bd) { bd = dd; best = i; } }); if (best < 5) partS.set(best); else { extra = best; v.invalidate(); } });
+        let extra = null;
+        const sel = () => (extra != null ? extra : +partS.value);
+        partS.el.addEventListener('click', () => { extra = null; });
+        const radius = (z) => 0.5 + 0.1 * (1 - z) + 0.4 * (1 - z) ** 6;
+        const shapeZ = (p, z) => { let g = (1 - z) ** 1.3 + 0.08; for (const zc of p.c) g *= (zc - z) / Math.max(zc, 1 - zc); return g; };
+        const gmax = (p) => { let m2 = 0; for (let i = 0; i <= 50; i++) m2 = Math.max(m2, Math.abs(shapeZ(p, i / 50))); return m2; };
+        const bellParts = (which) => { const r = ratios(); return PART.map((p, i) => ({ f: r[i] == null ? 0 : FP * r[i], a: which.includes(i) && r[i] != null ? p.a : 0, d: p.d })); };
+        v.soundButton('Ring the bell', (snd) => snd.samples(finish(synth(bellParts([0, 1, 2, 3, 4, 5, 6, 7, 8]), 4.5), 0.8), SR, { gain: 0.6 }));
+        v.soundButton('prime + tierce', (snd) => snd.samples(finish(synth(bellParts([1, 2]).map((q) => ({ ...q, d: 0.35 })), 3), 0.8), SR, { gain: 0.55 }));
+        v.soundButton('strike-note partials only', (snd) => snd.samples(finish(synth(bellParts([4, 7, 8]), 3.5), 0.8), SR, { gain: 0.55 }));
+        v.animate((t) => {
+          const k = sel(), p = PART[k], gm = gmax(p), r = ratios(), sr = signedRamp(v), ph = Math.cos(TAU * 0.45 * t), H = 1.25, Z0 = -0.62;
+          // ---- the bell in 3D (axis vertical), crown cap closed
+          const amp = 0.09;
+          const pos = (z, th, def) => { const rr = radius(z) * (1 + (def ? amp * ph * Math.cos(p.m * th) * shapeZ(p, z) / gm : 0)); return [rr * Math.cos(th), rr * Math.sin(th), Z0 + H * z]; };
+          s3.surface((z, th) => pos(z, th, true), [0, 1], [0, TAU], { nu: 20, nv: 56, colorFn: (z, th) => colOf(sr, (Math.cos(p.m * th) * shapeZ(p, z)) / gm * (ph < 0 ? -1 : 1)), alpha: 0.96 });
+          s3.surface((u, th) => [u * radius(1) * Math.cos(th), u * radius(1) * Math.sin(th), Z0 + H], [0, 1], [0, TAU], { nu: 3, nv: 28, color: 'muted', alpha: 0.9 });
+          for (let q = 0; q < 2 * p.m; q++) { const th = ((q + 0.5) * Math.PI) / p.m; s3.curve((z) => pos(z, th, true), 0, 1, { color: 'ink', width: 1.6, n: 20 }); }
+          for (const zc of p.c) s3.curve((th) => pos(zc, th, true), 0, TAU, { color: 'ink', width: 1.8, n: 64 });
+          s3.text(`${p.name} ${p.lab}`, [0, 0, Z0 + H + 0.25], { color: 'ink', size: 13 });
+          // ---- unrolled pattern
+          un.heat((x, y) => (Math.cos((p.m * x * Math.PI) / 180) * shapeZ(p, y)) / gm, { range: [-1.05, 1.05], cmap: 'theme-diverging', res: 3, key: String(k) });
+          for (let q = 0; q < 2 * p.m; q++) un.vline((((q + 0.5) * 180) / p.m), { color: 'ink', width: 1.6 });
+          for (const zc of p.c) un.hline(zc, { color: 'ink', width: 1.8 });
+          un.corner(`${2 * p.m} meridians, ${p.c.length} circle${p.c.length === 1 ? '' : 's'}`, 'tr', { color: 'ink', weight: 600, size: 11.5, plate: true });
+          // ---- partials on the keyboard
+          const marks = new Map(); r.forEach((q, i) => { if (q != null) marks.set(Math.round(M.freqToMidi(FP * q)), i === k ? 'gold' : i < 5 ? 'accent' : 'muted'); });
+          keyboard(kb, M, 150, 2000, -0.4, -0.08, marks);
+          const fs = r[4] != null ? (FP * r[4]) / 2 : null;
+          if (fs) { kb.line(fs, 0, fs, 1.35, { color: 'gold', width: 1.6, dash: [5, 4] }); kb.text('strike note', fs * 1.015, 1.36, { align: 'left', color: 'gold', size: 10.5, weight: 600 }); }
+          r.forEach((q, i) => {
+            if (q == null) return; const x = FP * q, on = i === k, hh = 0.25 + 0.75 * PART[i].a, col = on ? 'gold' : i < 5 ? 'accent' : 'muted';
+            kb.line(x, 0, x, hh, { color: col, width: on ? 3.6 : 2.6 });
+            const c = 1200 * Math.log2(q); kb.text(PART[i].name, x, hh + 0.17, { align: 'center', color: col, size: 10.5, weight: i < 5 ? 600 : 500 });
+            kb.text(`${c >= 0 ? '+' : '−'}${Math.abs(Math.round(c))} ¢`, x, hh + 0.06, { align: 'center', color: 'muted', size: 9.5 });
+          });
+          if (bellS.value === 'liberty') kb.corner('upper partials not measured', 'tr', { color: 'muted', size: 10.5 });
+        }, { still: 0.3 });
+        v.legend([['accent', 'principal partials'], ['muted', 'upper partials'], ['gold', 'selected partial; strike note', { dash: true }], ['ink', 'nodal meridians and circles']]);
+        v.readout(() => {
+          const r = ratios(), ct = 1200 * Math.log2(r[2]), kind = Math.abs(ct - 315.6) < Math.abs(ct - 386.3) ? 'minor third' : 'major third';
+          const hum = 1200 * Math.log2(r[1] / r[0]), nom = r[4] != null ? 1200 * Math.log2(r[4] / r[1]) : null, q5 = 1200 * Math.log2(r[3]);
+          return `${BELLS[bellS.value].label}, prime ${FP} Hz (${noteOf(M, FP)}) · tierce at ${v.fix(r[2], 3)} × prime = ${v.fix(ct, 1)} ¢: closer to a ${kind} (just minor third 6/5 = 315.6 ¢, equal-tempered 300 ¢; just major third 5/4 = 386.3 ¢) · hum ${v.fix(hum, 0)} ¢ below the prime (an octave is 1200 ¢), quint ${v.fix(q5, 0)} ¢ above (a fifth is 702 ¢), nominal ${nom != null ? v.fix(nom, 0) + ' ¢' : '—'} above · strike note ≈ nominal/2 = ${r[4] != null ? v.fix((FP * r[4]) / 2, 1) + ' Hz (' + noteOf(M, (FP * r[4]) / 2) + ')' : '—'}`;
         });
       },
     },

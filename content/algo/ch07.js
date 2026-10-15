@@ -360,28 +360,25 @@ plus the cost of the lookups. For Fibonacci numbers $F_n=F_{n-1}+F_{n-2}$, the n
         });
         v.render(() => {
           const f = S.frame, pf = S.prev, tw = S.tween, L1 = f.lay || 'full', L0 = pf.lay || L1, st = f.st ?? 0;
-          T.setView([0, 100], [-(n - 1) - 1.75, 0.8]);
+          const yB = -(n - 1);
+          T.setView([0, 100], [yB - 2.05, 0.75]);
           const r = lerp(radius(L0), radius(L1), tw);
           curPos = tr.map((nd, id) => { const a = at(L0, id), b = at(L1, id); return [lerp(a[0], b[0], tw), lerp(a[1], b[1], tw), lerp(alphaOf(L0, nd), alphaOf(L1, nd), tw)]; });
           const dagEnd = L1 === 'dag' && tw > 0.97;
           // edges
           if (dagEnd) {
+            const yD = -(n - 1) / 2, bendPx = Math.min(XW / n * T.sx * 0.55, 34);
             for (let k = 2; k <= n; k++) {
-              const [x1, y1] = at('dag', tr.findIndex((d) => d.k === k));
-              for (const d of [1, 2]) {
-                const [x2, y2] = [X0 + XW * (k - d) / n, y1];
-                const pad = (r + 2) / T.sx, dir = -1;
-                arcArrow(T, x1 + dir * pad * 0.3, y1 + (d === 2 ? (k % 2 ? -1 : 1) * r / T.sy * 0.6 : 0), x2 - dir * pad, y2 + (d === 2 ? (k % 2 ? -1 : 1) * r / T.sy * 0.6 : 0), d === 2 ? (k % 2 ? 1 : -1) * (XW / n * T.sx * 0.42) : 0, { color: d === 2 ? 'purple' : 'accent', width: 1.8, headSize: 7 });
-              }
+              const xk = X0 + XW * k / n, x1 = X0 + XW * (k - 1) / n, x2 = X0 + XW * (k - 2) / n, up = k % 2 === 0, dy = (r * 0.75 / T.sy) * (up ? 1 : -1);
+              T.arrow(xk - (r + 1) / T.sx, yD, x1 + (r + 1.5) / T.sx, yD, { color: 'accent', width: 1.8, head: 7 });
+              arcArrow(T, xk - (r * 0.55) / T.sx, yD + dy, x2 + (r * 0.75) / T.sx, yD + dy, (up ? -1 : 1) * bendPx, { color: 'purple', width: 1.8, headSize: 7 });
             }
           } else {
             tr.forEach((nd, id) => {
               if (nd.parent == null) return;
               const A = curPos[nd.parent], B = curPos[id], al = Math.min(A[2], B[2]); if (al < 0.03) return;
               const col = st === 1 && nd.cls !== 'first' ? 'red' : st === 2 && nd.cls === 'hit' ? 'gold' : st === 2 && nd.cls === 'gone' ? 'red' : 'muted';
-              const bend = L1 === 'dag' && tr[nd.parent].k - nd.k === 2 ? (tr[nd.parent].k % 2 ? -1 : 1) * tw * XW / n * T.sx * 0.42 : 0;
-              if (bend) arcArrow(T, A[0], A[1], B[0], B[1], bend, { color: col, width: 1.3, alpha: al * 0.8, head: false });
-              else T.line(A[0], A[1], B[0], B[1], { color: col, width: col === 'muted' ? 1.3 : 1.7, alpha: al * (col === 'muted' ? 0.75 : 0.85) });
+              T.line(A[0], A[1], B[0], B[1], { color: col, width: col === 'muted' ? 1.3 : 1.7, alpha: al * (col === 'muted' ? 0.75 : 0.85) });
             });
           }
           // nodes (back to front so that the first occurrence ends on top)
@@ -399,18 +396,19 @@ plus the cost of the lookups. For Fibonacci numbers $F_n=F_{n-1}+F_{n-2}$, the n
             }
             if (hl) T.dot(x, y, { r: r + 4, hollow: true, color: 'gold', width: 2.6, alpha: al });
           }
-          // DAG annotations and the memo table
-          if (dagEnd) for (let k = 0; k <= n; k++) T.text(`×${counts[k]}`, X0 + XW * k / n, -(n - 1) / 2 + (r + 12) / T.sy * (k % 2 ? -1 : 1) * (k ? 1 : -1), { align: 'center', size: 11, weight: 600, color: 'muted' });
+          // the memo table (and, under the DAG, how often the naive tree calls each subproblem)
           if (st >= 2) {
-            const yM = -(n - 1) - 1.15, w = Math.min(XW / n * 0.42, 5.5), hh = 0.3;
-            T.text('memo', 1, yM, { size: 12, weight: 700, color: 'muted' });
+            const yM = yB - 1.05, w = Math.min(XW / n * 0.42, 5.5), hh = 0.27;
+            T.text('memo[k]', 0.5, yM, { size: 12, weight: 700, color: 'muted' });
+            if (st === 3) T.text('naive calls', 0.5, yM - 0.62, { size: 11, weight: 600, color: 'red' });
             for (let k = 0; k <= n; k++) {
               const x = X0 + XW * k / n;
               T.rect(x - w, yM - hh, x + w, yM + hh, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1.2, radius: 3 });
               T.text(String(fibN(k)), x, yM, { align: 'center', size: 12, weight: 700, halo: false });
-              T.text(String(k), x, yM - hh - 0.22, { align: 'center', size: 10, color: 'muted' });
+              T.text(`k = ${k}`, x, yM + hh + 0.2, { align: 'center', size: 10, color: 'muted' });
+              if (st === 3) T.text(`×${counts[k]}`, x, yM - 0.62, { align: 'center', size: 11, weight: 700, color: 'red' });
             }
-          }
+          } else T.text(`no table: ${tr.length} calls, ${n + 1} distinct arguments`, 0.5, yB - 1.05, { size: 12, weight: 600, color: 'muted' });
           // chart
           P.fn((x) => 2 * Math.pow(PHI, x + 1) / Math.sqrt(5), { color: 'red', dash: [6, 4], width: 1.4, alpha: 0.7 });
           P.fn((x) => Math.max(1, 2 * x - 1), { color: 'green', dash: [6, 4], width: 1.2, alpha: 0.6, domain: [1, 30] });

@@ -363,5 +363,83 @@ This is the Friedmann equation (astro-10.7) for closed space; the negatively cur
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 10.20
+    {
+      num: '10.20',
+      kind: 'Paper',
+      name: 'A Measurement of Excess Antenna Temperature at 4080 Mc/s',
+      paper: { authors: 'A. A. Penzias and R. W. Wilson', year: 1965, title: 'A Measurement of Excess Antenna Temperature at 4080 Mc/s', venue: 'The Astrophysical Journal 142: 419–421', doi: '10.1086/148307' },
+      introduces: ['thermo-9.8'],
+      statement: String.raw`With a 20-foot horn-reflector antenna and a maser receiver at Crawford Hill, New Jersey, Penzias and Wilson measured the noise power arriving from the zenith at 4080 Mc/s (wavelength 7.35 cm) against a liquid-helium reference. The antenna temperature was $6.7$ K. After subtracting everything they could account for, the atmosphere ($2.3\pm0.3$ K, from the change with elevation and the secant law), ohmic losses in the antenna ($0.8\pm0.4$ K) and the back lobe ($<0.1$ K), there remained
+$$T_{\rm excess}=3.5\pm1.0\ \text{K},$$
+the same in every direction, unpolarized, and unchanged from July 1964 to April 1965. A note added in proof compared it with the 16 K minimum sky temperature at 404 Mc/s and concluded that no known kind of radio source could produce so flat a spectrum.
+
+They offered no interpretation of their own and pointed to the companion letter of Dicke, Peebles, Roll and Wilkinson, which identified the excess as thermal radiation left from a hot, dense early universe: the **cosmic microwave background** (thermo-9.8), with a blackbody spectrum (thermo-9.4) now known to be at $2.725$ K. One frequency fixes a temperature only if the spectrum is assumed to be thermal; the blackbody shape was established much later (COBE, 1990).`,
+      idea: String.raw`Gamow, Alpher and Herman had predicted in the late 1940s that a hot big bang would leave a few-kelvin radiation bath, but no one looked for it, and in 1965 the steady-state theory was still a serious rival. Penzias and Wilson were calibrating an antenna built for satellite communication and radio astronomy, and found an irreducible extra noise they could not remove: they cleaned the horn (including the "white dielectric material" left by pigeons), taped every seam, and the excess stayed. Meanwhile at Princeton, a few miles away, Dicke's group was building a radiometer to search for exactly such radiation; a phone call brought the two teams together and the two letters appeared side by side. The measurement turned the big bang into the standard model of cosmology, since a steady-state universe has no natural way to fill space with isotropic blackbody radiation; it earned the 1978 Nobel Prize. COBE's FIRAS instrument later measured the spectrum to be a blackbody to parts in $10^5$.`,
+      caption: String.raw`**Left**: the noise budget at 4080 Mc/s as the paper adds it up. The antenna temperature grows with the air mass the beam looks through (secant law, $\sec z$); drag the **elevation** slider to tilt the horn and watch only the atmospheric wedge change, while the extrapolation to no atmosphere leaves losses (orange) and the unexplained **3.5 ± 1.0 K** (green). The straight line is drawn from the published numbers; the paper does not print its elevation scan. **Right**: the sky's spectrum, with the one point of 1965 (green, its error bar from the paper), the 404 Mc/s ceiling of 16 K from the note in proof, and the 43 COBE FIRAS measurements (orange, Fixsen et al. 1996; their error bars are smaller than the dots). Slide the **blackbody temperature** and the curve; switch the axis to **brightness temperature**, the scale on which an antenna measures, where the 1965 point is directly 3.5 K.`,
+      deps: ['thermo-9.4'],
+      refs: [],
+      tags: ['cosmology', 'radio astronomy', 'history'],
+      credit: 'Arno Penzias & Robert Wilson, 1965',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cosmic_microwave_background' },
+      viz(v) {
+        const view = v.select('right panel', [{ value: 'I', label: 'intensity $I_\\nu$' }, { value: 'T', label: 'brightness temperature' }], 'I');
+        const Ts = v.slider('blackbody temperature (K)', 1.5, 5, 2.725, { step: 0.001, decimals: 3 });
+        const el = v.slider('elevation of the horn', 15, 90, 90, { step: 1, fmt: (d) => `${Math.round(d)}°` });
+        const B = v.stage({ x: [0, 4.2], y: [0, 15], axes: 'box', height: 340, weight: 0.85, minWidth: 250, xlabel: 'air masses  sec z', ylabel: 'antenna temperature (K)', title: 'the budget at 4080 Mc/s' });
+        const S = v.stage({ x: [0.3, 1000], y: [0.03, 1000], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.15, xlabel: 'frequency (GHz)', ylabel: 'I_ν (MJy/sr)', title: 'the spectrum of the sky' });
+        const NU_PW = 4.08, TPW = 3.5, EPW = 1.0, ATM = 2.3, LOSS = 0.9; // GHz, K
+        const nuF = []; for (let i = 0; i < FIRAS.length; i += 3) nuF.push([FIRAS[i] * 29.9792458, FIRAS[i + 1], FIRAS[i + 2] / 1000]);
+        const chiF = (T) => nuF.reduce((s, [nu, I, sg]) => s + ((I - planckI(nu, T)) / sg) ** 2, 0);
+        let Tbest = 2.725; { let a = 2.70, b = 2.75; for (let i = 0; i < 60; i++) { const m1 = a + (b - a) / 3, m2 = b - (b - a) / 3; if (chiF(m1) < chiF(m2)) b = m2; else a = m1; } Tbest = (a + b) / 2; }
+        const chiBest = chiF(Tbest);
+        let st = null;
+        v.render(() => {
+          // ---- left: secant law
+          const X = 1 / Math.sin((el.value * Math.PI) / 180);
+          B.rect(0, 0, 4.2, TPW, { fill: 'green', fillAlpha: 0.2, stroke: false });
+          B.rect(0, TPW - EPW, 4.2, TPW + EPW, { fill: 'green', fillAlpha: 0.0, hatch: 'green', hatchAlpha: 0.25, stroke: false });
+          B.rect(0, TPW, 4.2, TPW + LOSS, { fill: 'orange', fillAlpha: 0.35, stroke: false });
+          B.poly([[0, TPW + LOSS], [4.2, TPW + LOSS + ATM * 4.2], [4.2, TPW + LOSS]], { fill: 'blue', fillAlpha: 0.16, stroke: false });
+          B.fn((x) => TPW + LOSS + ATM * x, { color: 'ink', width: 2.4, domain: [1, 4.2] });
+          B.fn((x) => TPW + LOSS + ATM * x, { color: 'ink', width: 1.6, dash: [5, 4], domain: [0, 1] });
+          B.text('atmosphere 2.3 K × sec z', 2.15, TPW + LOSS + ATM * 1.75, { size: 11.5, weight: 700, color: 'blue', align: 'left' });
+          B.text('losses 0.8 + back lobe < 0.1', 2.2, TPW + LOSS / 2, { size: 11, weight: 700, color: 'orange', align: 'left', plate: true });
+          B.text('unexplained 3.5 ± 1.0 K', 2.2, TPW / 2, { size: 12, weight: 700, color: 'green', align: 'left', plate: true });
+          B.line(1, 6.7 - 0.3, 1, 6.7 + 0.3, { color: 'ink', width: 2 });
+          B.dot(1, 6.7, { r: 5, color: 'ink' });
+          B.text('zenith: 6.7 K measured', 1, 6.7, { dx: -8, dy: -16, size: 11.5, weight: 600, align: 'left' });
+          B.vline(X, { color: 'gold', width: 1.4, dash: [3, 3] });
+          B.dot(X, TPW + LOSS + ATM * X, { r: 7, color: 'gold' });
+          B.dot(0, TPW + LOSS, { r: 4, color: 'ink', hollow: true });
+          // ---- right: spectrum
+          const T = Ts.value, tmode = view.value === 'T';
+          if (tmode) { S.setScale({ ylog: false, y: [0, 6.2] }); S.setLabels(undefined, 'brightness temperature T_RJ (K)'); }
+          else { S.setScale({ ylog: true, y: [0.03, 1000] }); S.setLabels(undefined, 'I_ν (MJy/sr)'); }
+          const yOf = (I, nu) => (tmode ? rjTemp(I, nu) : I);
+          S.fn((nu) => yOf(planckI(nu, Tbest), nu), { color: 'faint', width: 5, n: 300 });
+          S.fn((nu) => yOf(planckI(nu, T), nu), { color: 'accent', width: 2.4, n: 300 });
+          S.dots(nuF.map(([nu, I]) => [nu, yOf(I, nu)]), { r: 3.4, color: 'orange' });
+          // Penzias & Wilson: antenna temperature is a Rayleigh–Jeans brightness temperature
+          const Ipw = (t) => (2 * K_B * t * (NU_PW * 1e9) ** 2) / C_MS ** 2 * 1e20;
+          const y0 = tmode ? TPW : Ipw(TPW), ylo = tmode ? TPW - EPW : Ipw(TPW - EPW), yhi = tmode ? TPW + EPW : Ipw(TPW + EPW);
+          S.line(NU_PW, ylo, NU_PW, yhi, { color: 'green', width: 2.6 });
+          S.dot(NU_PW, y0, { r: 7, color: 'green' });
+          S.text('Penzias & Wilson 1965', NU_PW, y0, { dx: 12, dy: tmode ? -2 : -4, size: 12, weight: 700, color: 'green', align: 'left', plate: true });
+          // 404 Mc/s: no more than 16 K (upper limit)
+          if (tmode) { S.text('404 Mc/s: ≤ 16 K ↑', 0.404, 5.9, { size: 11, color: 'muted', weight: 600, align: 'left', dx: -6 }); }
+          else { const I16 = (2 * K_B * 16 * 0.404e9 ** 2) / C_MS ** 2 * 1e20; S.poly([[0.404, I16 * 0.62], [0.404 * 0.86, I16], [0.404 / 0.86, I16]], { fill: 'muted', fillAlpha: 1, color: 'muted' }); S.text('404 Mc/s ≤ 16 K', 0.404, I16, { dy: -13, size: 11, color: 'muted', weight: 600, align: 'left', dx: -10 }); }
+          S.text('COBE FIRAS', 380, yOf(planckI(380, 2.725), 380), { dx: 8, size: 12, weight: 700, color: 'orange', align: 'left' });
+          st = { X, T, chi: chiF(T), tpred: rjTemp(planckI(NU_PW, T), NU_PW) };
+        });
+        v.legend([['green', 'unexplained excess, 3.5 ± 1.0 K', { area: true }], ['orange', 'ohmic losses + back lobe', { area: true }], ['blue', 'atmosphere (secant law)', { area: true }], ['accent', 'blackbody at your T'], ['faint', 'best fit to FIRAS'], ['orange', 'COBE FIRAS 1996', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { X, T, chi, tpred } = st, Tant = TPW + LOSS + ATM * X;
+          const quad = Math.hypot(0.3, 0.3, 0.4);
+          return `Horn at ${Math.round(el.value)}°: ${v.fix(X, 2)} air masses, antenna temperature ${v.fix(Tant, 2)} K = 3.5 (excess) + 0.9 (losses) + ${v.fix(ATM * X, 2)} (air) · paper: 6.7 − 2.3 − 0.8 − (< 0.1) = **3.5 ± 1.0 K**; the three quoted errors (0.3, 0.3, 0.4 K) add in quadrature to only ${v.fix(quad, 2)} K, so their ±1.0 K is conservative · at 4.08 GHz a ${v.fix(T, 3)} K blackbody gives an antenna (Rayleigh–Jeans) temperature of **${v.fix(tpred, 2)} K**, ${v.fix(Math.abs(TPW - tpred) / EPW, 1)}σ from the 1965 point · FIRAS: χ² = ${chi < 1e5 ? v.fix(chi, 0) : v.sci(chi, 2).replace(/\\times/, '×')} for 43 frequencies at your T; best fit **${v.fix(Tbest, 4)} K** (χ² ${v.fix(chiBest, 1)}); today’s value 2.72548 ± 0.00057 K (Fixsen 2009) — the 1965 measurement was right within its error, at one frequency, 1/3 of the way down the Rayleigh–Jeans side`;
+        });
+      },
+    },
   ],
 };
