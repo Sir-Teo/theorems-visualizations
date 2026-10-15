@@ -191,7 +191,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
       viz(v) {
         const M = v.M, NMAX = 5000, FLY = 0.35;
         const CROSS = { 'Aa×Aa': [[0, 1], [0, 1]], 'Aa×aa': [[0, 1], [1, 1]], 'AA×aa': [[0, 0], [1, 1]] };
-        const cross = v.select('cross', [{ value: 'Aa×Aa', label: '$Aa\\times Aa$' }, { value: 'Aa×aa', label: '$Aa\\times aa$' }, { value: 'AA×aa', label: '$AA\\times aa$' }], 'Aa×Aa', { onChange: () => v.restart() });
+        const cross = v.select('cross', [{ value: 'Aa×Aa', label: '$Aa\\times Aa$' }, { value: 'Aa×aa', label: '$Aa\\times aa$' }, { value: 'AA×aa', label: '$AA\\times aa$' }], 'Aa×Aa');
         const kS = v.slider('share of $A$ among a heterozygote’s gametes', 0.3, 0.95, 0.5, { step: 0.01 });
         let seed = 7;
         v.button('New offspring', () => { seed += 1; v.restart(); });
@@ -260,6 +260,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
           const S = sim(), n = shownN, cnt = [0, 0, 0];
           for (let i = 0; i < n; i++) cnt[S.gt[i]]++;
           const E0 = expect(0.5), k = kS.value;
+          if (!n) return 'drawing the first offspring …';
           if (cross.value === 'AA×aa') return String.raw`$n = ${n}$ offspring, **all** $Aa$ (${cnt[1]} of ${n}): every gamete of parent 1 carries $A$ and every gamete of parent 2 carries $a$ — the uniform $F_1$ generation.`;
           const T = gof(M, cnt, E0), ratio = cross.value === 'Aa×Aa' ? `${v.fix(4 * cnt[0] / Math.max(1, n), 2)} : ${v.fix(4 * cnt[1] / Math.max(1, n), 2)} : ${v.fix(4 * cnt[2] / Math.max(1, n), 2)}` : `${v.fix(2 * cnt[1] / Math.max(1, n), 2)} : ${v.fix(2 * cnt[2] / Math.max(1, n), 2)}`;
           const mendel = cross.value === 'Aa×Aa' ? '1 : 2 : 1' : '1 : 1';
@@ -437,7 +438,7 @@ whatever the genotype mixture $(P,H,Q)$ of the parents was.`,
 $$P' = p^2,\qquad H' = 2pq,\qquad Q' = q^2 \qquad (p = P + \tfrac12H,\; q = 1-p),$$
 the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg proportions** then persist in every later generation.`,
       idea: String.raw`By random union of gametes (1.4) the offspring frequencies are the products $p^2, 2pq, q^2$ of the gamete frequencies, which depend on the parents only through $p$. The new allele frequency is $p' = p^2 + \tfrac12\cdot 2pq = p(p+q) = p$, so the next generation draws from the same gamete pool and lands on the same proportions: the map $(P,H,Q)\mapsto(p^2,2pq,q^2)$ is idempotent. If the sexes start with different allele frequencies $p_f \neq p_m$, the first offspring have $p_fp_m, \dots$ instead, and equilibrium arrives one generation later at $p = \tfrac12(p_f+p_m)$.`,
-      caption: String.raw`A population of 1008 individuals (one square each: blue $AA$, purple $Aa$, orange $aa$) mates at random, generation after generation. The lines are the genotype frequencies; the rings mark $p^2, 2pq, q^2$ computed from the *parents’* allele frequency. However generation 0 is made up, generation 1 already sits on the rings and stays there, while $p$ moves only by sampling noise. Choose the start in which all females are $AA$ and all males $aa$: generation 1 is all heterozygotes, off the rings — equal allele frequencies in the two sexes is a real hypothesis — and Hardy–Weinberg arrives in generation 2.`,
+      caption: String.raw`A population of 936 individuals (one square each: blue $AA$, purple $Aa$, orange $aa$) mates at random, generation after generation. The lines are the genotype frequencies; the rings mark $p^2, 2pq, q^2$ computed from the *parents’* allele frequency. However generation 0 is made up, generation 1 already sits on the rings and stays there, while $p$ moves only by sampling noise. Choose the start in which all females are $AA$ and all males $aa$: generation 1 is all heterozygotes, off the rings — equal allele frequencies in the two sexes is a real hypothesis — and Hardy–Weinberg arrives in generation 2.`,
       deps: ['popgen-1.4'],
       refs: ['Ewens §1.2', 'Gillespie'],
       credit: 'Hardy, 1908; Weinberg, 1908',
@@ -445,7 +446,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
       tags: ['Hardy–Weinberg', 'random mating'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hardy%E2%80%93Weinberg_principle' },
       viz(v) {
-        const M = v.M, W = 36, HH = 28, G = 14, RATE = 1.35;
+        const M = v.M, W = 36, HH = 26, G = 14, RATE = 1.35;
         let seed = 3;
         const start = v.select('generation 0', [{ value: 'homo', label: 'only $AA$ and $aa$' }, { value: 'het', label: 'only $Aa$' }, { value: 'sex', label: '♀ all $AA$, ♂ all $aa$' }], 'homo', { onChange: () => { p0.el.hidden = start.value !== 'homo'; reset(); } });
         const p0 = v.slider('starting $p$', 0.05, 0.95, 0.7, { step: 0.01, onChange: () => reset() });
@@ -469,7 +470,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
           },
           stats: (Mo) => { let s = 0; for (let k = 0; k < Mo.N; k++) s += Mo.grid[k]; return { p: 1 - s / (2 * Mo.N) }; },
         });
-        const reset = () => { A.reset(seed); v.restart(); };
+        const reset = () => { A.reset(seed); v.invalidate(); }; // the clock replays the run up to the current generation
         const sync = (gen) => { if (A.t > gen) A.reset(seed); if (A.t < gen) A.model.step(gen - A.t); };
         v.animate((t) => {
           sync(Math.min(G, Math.floor(t * RATE)));
@@ -509,7 +510,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
         const proc = v.select('', [{ value: 'random', label: 'random mating' }, { value: 'assort', label: 'assortative' }, { value: 'inbreed', label: '50% selfing' }, { value: 'small', label: '$N = 16$' }, { value: 'select', label: 'selection' }, { value: 'migrate', label: 'migration' }], 'random');
         const sT = v.stage({ x: [-0.06, 1.06], y: [-0.11, 0.93], equal: true, axes: false, height: 380, weight: 1.5 });
         const sH = v.stage({ x: [0, 12], y: [0, 1.3], axes: 'box', height: 380, xlabel: 'χ²', title: 'HW test of each run' });
-        const hp = sT.handle(0.62, 0.1 * SQ3, { color: 'accent', label: 'parents', labelPos: 'e', constrain: (x, y) => { const H = clamp(y / SQ3, 0, 1); return [clamp(x, H / 2, 1 - H / 2), H * SQ3]; } });
+        const hp = sT.handle(0.6, 0.3 * SQ3, { color: 'accent', label: 'parents', labelPos: 'e', constrain: (x, y) => { const H = clamp(y / SQ3, 0, 1); return [clamp(x, H / 2, 1 - H / 2), H * SQ3]; } });
         const PM = 0.15, MIG = 0.35, SEL = 0.6, SELF = 0.5;
         const cache = memo();
         const runs = () => cache([hp.x.toFixed(4), hp.y.toFixed(4), proc.value].join('|'), () => {
@@ -553,8 +554,9 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
           if (Math.hypot(mx - hp.x, my - hp.y) > 0.02) sT.arrow(hp.x, hp.y, mx, my, { color: 'gold', width: 1.8, head: 8 });
           sT.dot(mx, my, { r: 5, color: 'gold' });
           // χ² panel
-          const xs = Rn.map((o) => Math.min(o.chi2, 11.99)), big = Rn.filter((o) => o.chi2 >= 12).length;
-          sH.hist(xs, { bins: M.linspace(0, 12, 25), density: true, color: 'gold', fillAlpha: 0.45 });
+          const edges = M.linspace(0, 12, 25), bw = edges[1] - edges[0], big = Rn.filter((o) => o.chi2 >= 12).length;
+          const hh = M.histogram(Rn.map((o) => o.chi2).filter((x) => x < 12), { bins: edges });
+          sH.hist({ edges, counts: hh.counts.map((c) => c / (R * bw)) }, { color: 'gold', fillAlpha: 0.45 }); // density relative to all runs
           sH.clip(() => sH.fn((x) => M.dist.chi2(1).pdf(x), { domain: [0.03, 12], color: 'green', width: 2 }));
           sH.vline(3.84, { color: 'red', dash: [5, 4], width: 1.4 });
           sH.text('5% cut-off', 3.95, 1.2, { size: 10.5, color: 'red' });
@@ -579,7 +581,7 @@ Under Hardy–Weinberg proportions $X^2$ is approximately $\chi^2$ with $3-1-1 =
 $$P(n_{Aa}=h \mid n, n_A) = \frac{n!}{n_{AA}!\,h!\,n_{aa}!}\,\frac{2^{h}\,n_A!\,n_a!}{(2n)!},$$
 and the $p$-value is the total probability of the outcomes no more likely than the one observed.`,
       idea: String.raw`Conditioning on the allele counts removes the unknown $p$: under random union of gametes (1.4) the $2n$ sampled gene copies are paired into individuals at random, and counting the pairings with $h$ heterozygotes gives Levene’s formula. Pearson’s statistic compares counts with their expectations and is asymptotically $\chi^2$ with degrees of freedom equal to the number of classes minus one minus the number of estimated parameters (here $3-1-1$). The asymptotics need every expected count to be reasonably large; with a rare allele the expected number of rare homozygotes is far below one, a single such individual inflates $X^2$ enormously, and the exact distribution shows how much less surprising it really is.`,
-      caption: String.raw`MN blood groups are codominant, so every genotype can be read off directly — the classic test case. Left: observed counts (filled) against Hardy–Weinberg expectations (dashed outlines). Right: the distribution of $X^2$ in 4000 random re-pairings of the sample’s own alleles (drawn from the exact distribution) against the $\chi^2_1$ curve. The large samples fit Hardy–Weinberg and the histogram follows the curve; in the rare-allele sample the re-pairings take only a handful of values and the $\chi^2$ $p$-value is far too small next to the exact one. *Custom* lets you enter counts.`,
+      caption: String.raw`MN blood groups are codominant, so every genotype can be read off directly — the classic test case. Left: observed counts (filled) against Hardy–Weinberg expectations (dashed outlines). Right, on a log scale: the probability that random re-pairing of the sample’s own alleles gives an $X^2$ at least $x$ — read at the red line, that is the $p$-value — exactly (blue steps) and in 4000 simulated re-pairings (gold), against the $\chi^2_1$ approximation (green). For the large samples the steps hug the curve. In the rare-allele sample $X^2$ takes only a handful of values and the curve gives a $p$-value a hundred times too small. *Custom* lets you enter counts.`,
       deps: ['popgen-1.5', 'stat-6.14', 'stat-3.5'],
       refs: ['Nielsen–Slatkin'],
       credit: 'Pearson, 1900 (χ² test); Levene, 1949; Haldane, 1954 (exact test)',
@@ -597,7 +599,7 @@ and the $p$-value is the total probability of the outcomes no more likely than t
         const sl = [v.slider('$n_{MM}$', 0, 400, 30, { int: true }), v.slider('$n_{MN}$', 0, 400, 60, { int: true }), v.slider('$n_{NN}$', 0, 400, 10, { int: true })];
         for (const s of sl) s.el.hidden = true;
         const sB = v.stage({ x: [-0.6, 2.6], y: [0, 1], axes: false, height: 330, title: 'observed (filled) and expected (dashed)' });
-        const sX = v.stage({ x: [0, 10], y: [0, 1.2], axes: 'box', height: 330, weight: 1.2, xlabel: 'X²', title: '$X^2$ under random re-pairing of the sample’s alleles' });
+        const sX = v.stage({ x: [0, 10], y: [1e-4, 1], ylog: true, axes: 'box', height: 330, weight: 1.2, xlabel: 'X²', title: 'tail probability $P(X^2\\ge x)$ under random re-pairing' });
         const counts = () => (which.value === 'custom' ? sl.map((s) => s.value) : DATA[which.value].c);
         const cache = memo();
         const analyse = () => {
@@ -616,7 +618,12 @@ and the $p$-value is the total probability of the outcomes no more likely than t
               while (lo < hi) { const m = (lo + hi) >> 1; if (cum[m] >= u) hi = m; else lo = m + 1; }
               sims[k] = x2(dist[lo][0]); if (sims[k] >= T.chi2 - 1e-9) ge++;
             }
-            return { n, T, dist, exact, sims, mc: ge / S };
+            // exact tail P(X² ≥ x) over the distinct values of X², and the share of simulated re-pairings at or above each
+            const byX = dist.map(([h, pr]) => [x2(h), pr]).sort((a, b) => a[0] - b[0]), xs = [];
+            for (const [x, pr] of byX) { if (xs.length && Math.abs(xs[xs.length - 1][0] - x) < 1e-9) xs[xs.length - 1][1] += pr; else xs.push([x, pr]); }
+            let tail = 1; const steps = xs.map(([x, pr]) => { const t = tail; tail -= pr; return [x, Math.max(t, 0)]; });
+            const sorted = Array.from(sims).sort((a, b) => a - b), simTail = steps.map(([x]) => { let lo = 0, hi = S; while (lo < hi) { const m = (lo + hi) >> 1; if (sorted[m] >= x - 1e-9) hi = m; else lo = m + 1; } return [x, (S - lo) / S]; });
+            return { n, T, dist, exact, sims, mc: ge / S, steps, simTail };
           });
         };
         v.render(() => {
@@ -631,14 +638,23 @@ and the $p$-value is the total probability of the outcomes no more likely than t
             sB.tex(lab, g, -top * 0.05, { size: 14, color: GCOL[g] });
           });
           if (!A.dist) { sX.corner('only one allele present — nothing to test', 'tl', { color: 'muted' }); return; }
-          const xmax = Math.min(60, Math.max(10, T.chi2 * 1.15 + 1));
-          sX.setView([0, xmax], [0, 1.2]);
-          sX.hist(Array.from(A.sims).map((x) => Math.min(x, xmax * 0.999)), { bins: M.linspace(0, xmax, 41), density: true, color: 'accent', fillAlpha: 0.35 });
-          sX.clip(() => sX.fn((x) => M.dist.chi2(1).pdf(x), { domain: [0.02, xmax], color: 'green', width: 2.2 }));
-          sX.vline(T.chi2, { color: 'red', width: 2 });
-          sX.text(`observed X² = ${v.fix(T.chi2, 2)}`, T.chi2, 1.12, { align: T.chi2 > xmax * 0.6 ? 'right' : 'left', dx: T.chi2 > xmax * 0.6 ? -6 : 6, size: 11.5, color: 'red', weight: 600 });
+          const xmax = Math.min(40, Math.max(10, T.chi2 * 1.15 + 1));
+          sX.setView([0, xmax], [1e-4, 1.3]);
+          [0.05, 0.01, 0.001].forEach((a) => { sX.hline(a, { color: 'faint', width: 1, dash: [2, 4] }); sX.text(String(a), xmax, a, { align: 'right', dy: -7, size: 10, color: 'muted' }); });
+          sX.clip(() => {
+            sX.fn((x) => M.gammaQ(0.5, x / 2), { domain: [0, xmax], color: 'green', width: 2.2 });
+            const st = [], pts = A.steps;
+            pts.forEach(([x, t], i) => { if (i) st.push([x, pts[i - 1][1]]); st.push([x, t]); });
+            if (pts.length) st.push([xmax * 1.1, pts[pts.length - 1][1]]);
+            sX.path([[0, 1], ...st], { color: 'accent', width: 2.2 });
+            sX.dots(A.simTail.filter(([x, t]) => t > 0 && x <= xmax).map(([x, t]) => [x, t]), { r: 3.2, color: 'gold' });
+          });
+          sX.vline(T.chi2, { color: 'red', width: 1.8 });
+          const pe = Math.max(A.exact, 1.2e-4), pc = Math.max(T.pval, 1.2e-4), right = T.chi2 > xmax * 0.6;
+          sX.dot(T.chi2, pe, { r: 5.5, color: 'accent' }); sX.dot(T.chi2, pc, { r: 5.5, color: 'green' });
+          sX.text(`observed X² = ${v.fix(T.chi2, 2)}`, T.chi2, 0.62, { align: right ? 'right' : 'left', dx: right ? -6 : 6, size: 11.5, color: 'red', weight: 600 });
         });
-        v.legend([['accent', 're-pairing distribution', { area: true }], ['green', '$\\chi^2_1$ density'], ['red', 'observed $X^2$']]);
+        v.legend([['accent', 'exact tail (all re-pairings)'], ['gold', '4000 simulated re-pairings', { dot: true }], ['green', '$\\chi^2_1$ approximation'], ['red', 'observed $X^2$']]);
         v.readout(() => {
           const c = counts(), A = analyse(), T = A.T, n = A.n;
           if (!A.dist) return `n = ${n}: only one allele present, so there is no test.`;

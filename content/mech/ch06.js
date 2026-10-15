@@ -840,7 +840,8 @@ $n$ second-order ODEs with no constraint forces in them. For applied forces with
           const lam = S.newt.lam(yN, tt);
           for (const [p, F, lab] of S.newt.forces(yN, lam, tt)) {
             sN.arrow(p[0], p[1], p[0] + KF * F[0], p[1] + KF * F[1], { color: 'orange', width: 2.4, head: 8 });
-            if (lab) sN.tex(lab, p[0] + KF * F[0], p[1] + KF * F[1], { color: 'orange', size: 13, dx: 10, dy: -8 });
+            const Fl = Math.hypot(F[0], F[1]) || 1;
+            if (lab) sN.tex(lab, p[0] + KF * F[0], p[1] + KF * F[1], { color: 'orange', size: 13, dx: (13 * F[0]) / Fl + 6, dy: (-13 * F[1]) / Fl });
           }
           drawSys(sL, PL, key, tt, yL);
           if (key === 'dp') { angleArc(sL, [0, 0], 0.32, wrap(yL[0]), 'blue', '\\theta_1'); angleArc(sL, PL[0], 0.32, wrap(yL[1]), 'orange', '\\theta_2'); }

@@ -58,7 +58,7 @@ export default {
       viz(v) {
         const M = v.M, C = M.CONST, NE = 300, PEXC = 0.35, EW = 0.6, TS = 6;
         const GAS = { hg: { label: 'mercury', E1: 4.887, Vmax: 30, dV: 0.1, glow: 'purple' }, ne: { label: 'neon', E1: 18.7, Vmax: 80, dV: 0.25, glow: wlRGB(600) } };
-        const gas = v.select('vapour', Object.entries(GAS).map(([value, G]) => ({ value, label: `${G.label} ($E_1 = ${v.fix(G.E1, 2)}$ eV)` })), 'hg');
+        const gas = v.select('vapour', Object.entries(GAS).map(([value, G]) => ({ value, label: `${G.label} ($E_1 = ${G.E1 < 10 ? v.fix(G.E1, 2) : G.E1}$ eV)` })), 'hg');
         const dens = v.slider('vapour density $L/\\ell$', 20, 400, 100, { log: true, fmt: (x) => Math.round(x) + '' });
         const Vr = v.slider('retarding voltage', 0, 3, 1.5, { step: 0.05, fmt: (x) => `${x.toFixed(2)} V` });
         const cls = v.toggle('atoms absorb any amount (classical)', false);

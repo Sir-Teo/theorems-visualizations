@@ -224,7 +224,7 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
         };
         v.animate((t) => {
           if (t < tLast - 1e-6) { tSim = 0; make(); clear(); }
-          const dT = Math.min(320, (t - tLast) * RATE); tLast = t;
+          const dT = Math.min(700, (t - tLast) * RATE); tLast = t;
           if (dT > 0) advance(dT);
           // --- the cylinders, the gas and the shared piston ---
           const Lx = G[0].L[0], Y = (y0) => P3(Lx, y0 + W / 2, W / 2);

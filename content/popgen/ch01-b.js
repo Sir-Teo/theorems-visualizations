@@ -258,7 +258,7 @@ summed over all paths that run from one parent up to a common ancestor $A$ and d
             ['S1', 'm', 1.2, 3.4, 'C', 'W1'], ['W3', 'f', 2.4, 3.4], ['W4', 'm', 3.6, 3.4], ['D1', 'f', 4.8, 3.4, 'W2', 'E'],
             ['S', 'm', 1.8, 2.1, 'S1', 'W3'], ['D', 'f', 4.2, 2.1, 'W4', 'D1'], ['X', 'u', 3.0, 0.8, 'S', 'D']],
         };
-        const which = v.select('pedigree', [{ value: 'full', label: 'full sibs' }, { value: 'half', label: 'half sibs' }, { value: 'cousin', label: 'first cousins' }, { value: 'second', label: 'second cousins' }], 'cousin', { onChange: () => v.restart() });
+        const which = v.select('pedigree', [{ value: 'full', label: 'full sibs' }, { value: 'half', label: 'half sibs' }, { value: 'cousin', label: 'first cousins' }, { value: 'second', label: 'second cousins' }], 'cousin');
         let seed = 1;
         v.button('New drops', () => { seed += 1; v.restart(); });
         const sP = v.stage({ x: [-0.3, 6.3], y: [0.2, 5.4], equal: true, axes: false, height: 390, weight: 1.35 });
@@ -482,7 +482,8 @@ falling linearly on a log scale with slope $B \approx \sum_i p_iq_is_i(1-2h_i)/\
         v.readout(() => {
           const S = sims(), C = cur(), w0 = theory(0), wF = theory(Fs.value), fit = M.linreg(S.map((o) => o.F), S.map((o) => Math.log(o.mean)));
           const B = Math.log(w0) - Math.log(theory(1)), Bs = genome().reduce((a, l) => { const p = 1 - l.q, q = l.q, w0i = p * p * l.w[0] + 2 * p * q * l.w[1] + q * q * l.w[2]; return a + (p * q * (2 * l.w[1] - l.w[0] - l.w[2])) / w0i; }, 0);
-          return String.raw`$\bar w(0) = ${v.fix(w0, 3)}$, $\bar w(${v.fix(Fs.value, 2)}) = ${v.fix(wF, 3)}$ (simulated ${v.fix(C.inb.mean, 3)}): inbreeding depression $1-\bar w(F)/\bar w(0) = ${v.fix(100 * (1 - wF / w0), 1)}\%$ · slope of $\ln\bar w$ against $F$: simulated $${v.fix(-fit.slope, 3)}$, exact $${v.fix(B, 3)}$, per-locus sum $\sum p_iq_i(2w_{Aa}-w_{AA}-w_{aa})/\bar w_i = ${v.fix(Bs, 3)}$ lethal equivalents`;
+          const z = (x) => (Math.abs(x) < 5e-6 ? 0 : x);
+          return String.raw`$\bar w(0) = ${v.fix(w0, 3)}$, $\bar w(${v.fix(Fs.value, 2)}) = ${v.fix(wF, 3)}$ (simulated ${v.fix(C.inb.mean, 3)}): inbreeding depression $1-\bar w(F)/\bar w(0) = ${v.fix(z(100 * (1 - wF / w0)), 1)}\%$ · slope of $\ln\bar w$ against $F$: simulated $${v.fix(z(-fit.slope), 3)}$, exact $${v.fix(z(B), 3)}$, per-locus sum $\sum p_iq_i(2w_{Aa}-w_{AA}-w_{aa})/\bar w_i = ${v.fix(z(Bs), 3)}$ lethal equivalents`;
         });
       },
     },
@@ -529,7 +530,7 @@ so with complete assortment ($\alpha = 1$) the heterozygote frequency halves eve
           stats: (Mo) => { let s = 0; for (let k = 0; k < Mo.N; k++) s += Mo.grid[k]; return { p: 1 - s / (2 * Mo.N) }; },
         });
         const A1 = v.agents(s1, spec(false)), A2 = v.agents(s2, spec(true));
-        const reset = () => { A1.reset(seed); A2.reset(seed); v.restart(); };
+        const reset = () => { A1.reset(seed); A2.reset(seed); v.invalidate(); }; // the clock replays both runs up to the current generation
         const sync = (A, gen) => { if (A.t > gen) A.reset(seed); if (A.t < gen) A.model.step(gen - A.t); };
         const theory = () => { // deterministic recursion for the assortative population, from the simulated generation 0
           const H0 = A2.history; let P = H0.AA[0], H = H0.Aa[0], Q = H0.aa[0]; const out = [H], a = alpha.value;

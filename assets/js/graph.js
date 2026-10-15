@@ -542,7 +542,7 @@ export class MapView {
         const mx = (x1 + x2) / 2, my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.18;
         c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(mx, my, x2, y2);
         const t = Math.sqrt(n / this.maxBundle); // thin, faint strands for a few links; bold ones for the main roads
-        c.strokeStyle = withAlpha(e.a, (0.06 + 0.32 * t) * (this.hl ? 0.25 : 1)); c.lineWidth = 0.6 + 7 * t; c.lineCap = 'round'; c.stroke();
+        c.strokeStyle = withAlpha(e.a, (0.06 + 0.32 * t) * (this.hl ? 0.08 : 1)); c.lineWidth = 0.6 + 7 * t; c.lineCap = 'round'; c.stroke();
       }
     } else if (!fc) {
       const byCol = new Map();
@@ -562,8 +562,9 @@ export class MapView {
         if (!this.visible(n)) continue;
         const x = this.sx(n.x), y = this.sy(n.y); if (x < -4 || x > this.W + 4 || y < -4 || y > this.H + 4) continue;
         const on = !this.hl || this.hl.has(n.it.id);
-        const r = this.hl && on ? 2.6 : n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
-        c.fillStyle = withAlpha(n.it.col, !on ? 0.07 : n.ghost && !this.hl ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
+        const r = this.hl && on ? 3.4 : n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
+        c.fillStyle = withAlpha(n.it.col, !on ? 0.06 : n.ghost && !this.hl ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
+        if (this.hl && on) { c.lineWidth = 1.2; c.strokeStyle = withAlpha('ink', 0.55); c.strokeRect(x - r - 1.5, y - r - 1.5, 2 * r + 3, 2 * r + 3); }
       }
     } else for (const n of this.nodes) {
       if (!this.visible(n)) continue;
@@ -588,7 +589,7 @@ export class MapView {
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -100 || x > this.W || y < 0 || y > this.H) return;
       const txt = `${n.it.num} ${plainName(n.it.name, strong ? 60 : 30)}`;
       c.font = `${strong ? 600 : 500} ${strong ? 12.5 : 11}px Inter, system-ui, sans-serif`;
-      const w = c.measureText(txt).width; const r = Math.max(1.6, n.r * rk);
+      const w = c.measureText(txt).width; const r = Math.max(1.6, n.r * rk) + (this.hl && this.hl.has(n.it.id) ? 4 : 0);
       if (!strong && !free(x + r + 3, y - 7, w + 4, 14)) return;
       c.lineWidth = 3.5; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(txt, x + r + 4, y);
       c.fillStyle = resolveColor(strong ? 'ink' : n.ghost ? 'faint' : 'muted'); c.fillText(txt, x + r + 4, y);
