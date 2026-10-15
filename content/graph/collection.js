@@ -10,7 +10,7 @@ export default {
     type: "book",
     author: "Reinhard Diestel",
     title: "Graph Theory",
-    edition: "5th edition, 2017",
+    edition: "6th edition, 2025",
     license: "free electronic edition",
     url: "https://diestel-graph-theory.com"
   },

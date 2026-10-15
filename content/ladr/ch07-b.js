@@ -83,8 +83,11 @@ function trigZeros(A, B, C) {
   const R = Math.hypot(B, C);
   if (R < 1e-12) return Math.abs(A) < 1e-12 ? null : [];
   const k = -A / R; if (Math.abs(k) > 1 + 1e-9) return [];
-  const del = Math.atan2(C, B), ac = Math.acos(clamp(k, -1, 1)), md = (t) => ((t % Math.PI) + Math.PI) % Math.PI;
-  return ac < 1e-7 || Math.PI - ac < 1e-7 ? [md((del + ac) / 2)] : [md((del + ac) / 2), md((del - ac) / 2)].sort((x, y) => x - y);
+  const del = Math.atan2(C, B), md = (t) => ((t % Math.PI) + Math.PI) % Math.PI;
+  if (k >= 1 - 1e-9) return [md(del / 2)];
+  if (k <= -1 + 1e-9) return [md((del + Math.PI) / 2)];
+  const ac = Math.acos(k);
+  return [md((del + ac) / 2), md((del - ac) / 2)].sort((x, y) => x - y);
 }
 
 // complex scalars [re, im] and complex matrices (arrays of rows of complex scalars)
@@ -200,7 +203,7 @@ function factR(zs) {
   const s = zs.filter((z) => z.im >= 0).map(({ re, im, m }) => {
     let f;
     if (im === 0) f = Math.abs(re) < 5e-3 ? 'z' : `(z ${re > 0 ? '-' : '+'} ${tn(Math.abs(re))})`;
-    else { const b = -2 * re, c = re * re + im * im; f = `(z^2 ${Math.abs(b) < 5e-3 ? '' : `${b < 0 ? '-' : '+'} ${tn(Math.abs(b))}z `}+ ${tn(c)})`; }
+    else { const b = -2 * re, c = re * re + im * im; f = `(z^2 ${Math.abs(b) < 5e-3 ? '' : `${b < 0 ? '-' : '+'} ${tn(Math.abs(b)) === '1' ? '' : tn(Math.abs(b))}z `}+ ${tn(c)})`; }
     return m > 1 ? `${f.startsWith('(') ? f : `(${f})`}^{${m}}` : f;
   }).join('');
   return s || '1';
@@ -248,7 +251,7 @@ so $A$ and $B$ commute exactly when $T$ commutes with $T^*$, which is the defini
           sc.flush();
           S.corner(ok ? 'a × b = 0: AB = BA, so T is normal' : 'a × b ≠ 0: AB ≠ BA, so T is not normal', 'tl', { color: ok ? 'green' : 'red', weight: 700 });
           const al = [a0 + len(a), a0 - len(a)], be = [b0 + len(b), b0 - len(b)], E = ceig2(T);
-          const R = Math.max(2.3, 1.15 * Math.max(...al.map(Math.abs), ...be.map(Math.abs), ...E.l.map(cabs)));
+          const R = Math.max(2, 1.15 * Math.max(...al.map(Math.abs), ...be.map(Math.abs), ...E.l.map(cabs)));
           Z.setView([-R, R], [-R, R]);
           for (const x of al) Z.vline(x, { color: 'accent', dash: [5, 4], alpha: 0.75 });
           for (const y of be) Z.hline(y, { color: 'orange', dash: [5, 4], alpha: 0.75 });
@@ -278,7 +281,7 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
       tags: ['self-adjoint'],
       viz(v) {
         const PRE = { s1: symFrom(1.3, -0.7, 0.5), s2: symFrom(1.1, 0.4, -0.4), rot: [[0.4, -1.1], [1.1, 0.4]] };
-        const which = v.select('$T$', [{ value: 's1', label: 'self-adjoint, $\\lambda = 1.3,\\, -0.7$' }, { value: 's2', label: 'self-adjoint, $\\lambda = 1.1,\\, 0.4$' }, { value: 'rot', label: 'not self-adjoint' }], 's1');
+        const which = v.select('$T$', [{ value: 's1', label: 'self-adjoint, $\\lambda = 1.3,\\, -0.7$' }, { value: 's2', label: 'self-adjoint, $\\lambda = 1.1,\\, 0.4$' }, { value: 'rot', label: 'not self-adjoint' }], 's1', { onChange: (k) => { if (k === 'rot') h.set(-0.8, 1.37); else h.set(0.6, 1.5); } });
         const P = v.stage({ x: [-3.2, 3.2], y: [-2.4, 3.4], height: 370, xlabel: 'b', ylabel: 'c', title: 'parameters $(b, c)$' });
         const S = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 370, title: 'the unit circle under $Q = T^2 + bT + cI$' });
         const sing = () => { const e = eig2r(PRE[which.value]); return e.real ? { lines: e.l, pts: [] } : { lines: [], pts: [[-2 * e.re, e.re * e.re + e.im * e.im]] }; };
@@ -357,8 +360,8 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
           const R = Math.max(3, 1.3 * Math.max(...ev.map((z) => Math.hypot(z.re, z.im))));
           Z.setView([-R, R], [-0.75 * R, 0.75 * R]);
           Z.hline(0, { color: 'green', width: 3, alpha: 0.35 });
-          Z.text('real axis', R * 0.97, 0, { align: 'right', dy: -12, color: 'green', size: 12 });
-          for (const z of ev) { Z.dot(z.re, z.im, { r: 11, hollow: true, color: 'muted', width: 1.4 }); if (z.m > 1) Z.text(`λ ×${z.m}`, z.re, z.im, { dy: 22, align: 'center', color: 'muted', size: 11.5 }); }
+          Z.text('real axis', -R * 0.97, 0, { align: 'left', dy: -12, color: 'green', size: 12 });
+          for (const z of ev) { Z.dot(z.re, z.im, { r: 11, hollow: true, color: 'muted', width: 1.4 }); if (z.m > 1) Z.text(`eigenvalue ×${z.m}`, z.re, z.im, { dy: 34, align: 'center', color: 'muted', size: 11.5 }); }
           let quad = null;
           for (const z of zs) {
             const col = z.im !== 0 ? 'red' : z.m > 1 ? 'orange' : 'accent';
@@ -367,7 +370,7 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
               Z.line(z.re, z.im, z.re, -z.im, { color: 'red', dash: [4, 4], width: 1.3 });
               const b = -2 * z.re, c = z.re * z.re + z.im * z.im;
               quad = { b, c };
-              Z.tex(`z^2 ${b < 0 ? '-' : '+'} ${tn(Math.abs(b))}z + ${tn(c)}`, z.re, z.im, { color: 'red', dx: 12, dy: -14, align: 'left', size: 14 });
+              Z.tex(`z^2 ${b < 0 ? '-' : '+'} ${tn(Math.abs(b)) === '1' ? '' : tn(Math.abs(b))}z + ${tn(c)}`, z.re, z.im, { color: 'red', dx: 12, dy: -14, align: 'left', size: 14 });
             }
           }
           const allReal = zs.every((z) => z.im === 0);
@@ -383,6 +386,7 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
           let s = `${st.sym ? 'Symmetric' : 'Not symmetric'}: minimal polynomial $${factR(st.zs)}$ of degree ${st.deg}; characteristic polynomial $${factR(st.ev)}$.`;
           if (st.quad) s += ` The factor $z^2 + bz + c$ has $b^2 - 4c = ${tn(st.quad.b ** 2 - 4 * st.quad.c)} < 0$, yet $\\det(T^2 + bT + cI) = ${tn(st.qd, 3)}$: singular, which 7.26 rules out for self-adjoint $T$.`;
           else if (st.sym) s += ' Only real linear factors, as the theorem says.';
+          else if (st.zs.some((z) => z.m > 1)) s += ' Real linear factors, but one is repeated: 7.27 alone allows this, but for self-adjoint $T$ the spectral theorem (7.29) rules it out too.';
           return s;
         });
       },
@@ -403,16 +407,17 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
       tags: ['spectral theorem'],
       viz(v) {
         const snap = (x) => Math.round(x * 10) / 10;
-        const mode = v.select('$T$', [{ value: 'sym', label: 'symmetric' }, { value: 'any', label: 'not symmetric' }], 'sym', { onChange: (m) => { if (m === 'any') { h1.set(1.3, 0.2); h2.set(0.9, 0.7); } else { h1.set(1.3, 0.6); h2.set(0.6, 0.4); } } });
+        const mode = v.select('$T$', [{ value: 'sym', label: 'symmetric' }, { value: 'any', label: 'not symmetric' }], 'sym', { onChange: (m) => { if (m === 'any') { h1.set(1.3, 0.2); h2.set(0.9, 0.7); } else { h1.set(1.5, 0.6); h2.set(0.6, 0.8); } } });
         const S = v.stage({ x: [-2.3, 2.3], y: [-2, 2], equal: true, height: 380, weight: 1.1 });
-        const G = v.stage({ x: [0, 180], y: [-1.6, 1.6], height: 380, xlabel: 'angle θ of f₁ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'off-diagonal entries of $\\mathcal M\\big(T, (f_1, f_2)\\big)$' });
-        const h1 = S.handle(1.3, 0.6, { color: 'teal', label: 'Te₁', constrain: (x, y) => [snap(x), snap(y)] });
-        const h2 = S.handle(0.6, 0.4, { color: 'pink', label: 'Te₂', constrain: (x, y) => [mode.value === 'sym' ? h1.y : snap(x), snap(y)] });
+        const G = v.stage({ x: [0, 180], y: [-1.6, 1.6], height: 380, axes: 'box', xlabel: 'angle θ of f₁ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'off-diagonal entries of $\\mathcal M\\big(T, (f_1, f_2)\\big)$' });
+        const h1 = S.handle(1.5, 0.6, { color: 'teal', label: 'Te₁', constrain: (x, y) => [snap(x), snap(y)] });
+        const h2 = S.handle(0.6, 0.8, { color: 'pink', label: 'Te₂', constrain: (x, y) => [mode.value === 'sym' ? h1.y : snap(x), snap(y)] });
         const Tm = () => [[h1.x, h2.x], [h1.y, h2.y]];
         // m21(θ) = (c−b)/2 + (c+b)/2 cos2θ + (d−a)/2 sin2θ,  m12(θ) = (b−c)/2 + (b+c)/2 cos2θ + (d−a)/2 sin2θ
         const z21 = (T) => trigZeros((T[1][0] - T[0][1]) / 2, (T[1][0] + T[0][1]) / 2, (T[1][1] - T[0][0]) / 2) || [];
         const z12 = (T) => trigZeros((T[0][1] - T[1][0]) / 2, (T[1][0] + T[0][1]) / 2, (T[1][1] - T[0][0]) / 2) || [];
-        const hf = S.handle(Math.cos(0.3), Math.sin(0.3), {
+        const phi0 = esym2([[1.5, 0.6], [0.6, 0.8]]).phi;
+        const hf = S.handle(Math.cos(phi0), Math.sin(phi0), {
           color: 'gold', label: 'f₁', constrain: (x, y) => {
             let t = Math.atan2(y, x);
             for (const z of z21(Tm())) for (const k of [-2, -1, 0, 1]) if (Math.abs(t - (z + k * Math.PI)) < 3 / DEG) t = z + k * Math.PI;
@@ -438,8 +443,9 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
           S.arrow(0, 0, f1[0], f1[1], { color: 'gold', width: 2.6 });
           S.arrow(0, 0, f2[0], f2[1], { color: 'purple', width: 2.6 });
           S.tex('f_2', f2[0], f2[1], { color: 'purple', dx: -12, dy: -10 });
-          if (len(Tf1) > 0.25) S.tex('Tf_1', Tf1[0], Tf1[1], { color: 'gold', dx: 16, dy: 10, size: 14 });
-          if (len(Tf2) > 0.25) S.tex('Tf_2', Tf2[0], Tf2[1], { color: 'purple', dx: -16, dy: 10, size: 14 });
+          G.hline(0, { color: 'muted', width: 1 });
+          if (len(Tf1) > 0.4 && len(sub(Tf1, f1)) > 0.3) S.tex('Tf_1', Tf1[0], Tf1[1], { color: 'gold', dx: 16, dy: 10, size: 14 });
+          if (len(Tf2) > 0.4 && len(sub(Tf2, f2)) > 0.3) S.tex('Tf_2', Tf2[0], Tf2[1], { color: 'purple', dx: -16, dy: 10, size: 14 });
           S.corner(diag ? 'diagonal: f₁, f₂ are orthonormal eigenvectors' : tri ? 'upper-triangular, not diagonal' : 'matrix not diagonal', 'tl', { color: diag ? 'green' : tri ? 'orange' : 'muted', weight: 700 });
           const off = Math.abs(b - c) / 2, Rr = Math.hypot((b + c) / 2, (d - a) / 2), ymax = Math.max(1.1, 1.18 * (off + Rr));
           G.setView([0, 180], [-ymax, ymax]);
@@ -517,7 +523,7 @@ Hence $(T^2 + bT + cI)v \ne 0$: the operator is injective, and therefore inverti
             sc.tex('u_2', n2, { color: 'orange', dx: 14, dy: -12, size: 15 });
           }
           sc.dot(n1, { r: 4, color: 'accent' });
-          sc.tex('u_1', n1, { color: 'accent', dx: -16, dy: 14, size: 15 });
+          sc.tex('u_1', n1, { color: 'accent', dx: -20, dy: 2, size: 15 });
           sc.flush();
           S.corner(scalar ? 'T = λI: every vector is an eigenvector' : single ? 'one eigen-direction only: no eigenbasis' : normal ? 'antipodal: u₁ ⊥ u₂, orthonormal eigenbasis' : 'not antipodal: u₁, u₂ not orthogonal', 'tl', { color: normal ? 'green' : 'red', weight: 700 });
           Z.line(0, 0, t[0], t[1], { color: 'red', dash: [5, 4], width: 1.5 });
@@ -557,7 +563,7 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
           const T = [[Sy[0][0], Sy[0][1] - s], [Sy[1][0] + s, Sy[1][1]]];
           const q = (x, y) => dot(mv(T, [x, y]), [x, y]);
           S3.surface((r, w) => { const x = r * Math.cos(w), y = r * Math.sin(w); return [x, y, q(x, y)]; }, [0, 1], [0, TAU], {
-            nu: 12, nv: 48, alpha: 0.86, colorFn: (r, w, p) => (p[2] >= 0 ? v.mix('teal', 'green', Math.min(1, p[2] / 1.5)) : v.mix('orange', 'red', Math.min(1, -p[2]))),
+            nu: 12, nv: 48, alpha: 0.86, colorFn: (r, w, p) => (p[2] >= -1e-9 ? v.mix('teal', 'green', Math.min(1, p[2] / 1.5)) : v.mix('orange', 'red', Math.min(1, -p[2]))),
           });
           const ring = []; for (let k = 0; k <= 64; k++) ring.push([Math.cos((TAU * k) / 64), Math.sin((TAU * k) / 64), 0]);
           S3.path(ring, { color: 'muted', width: 1 });
@@ -585,9 +591,9 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
           P.tex('Tv', Tv[0], Tv[1], { color: 'accent', dx: 14, dy: -8, size: 14 });
           P.arrow(0, 0, vx, vy, { color: 'gold', width: 2.2 });
           const sa = Math.abs(s) < 1e-9, pos = Math.min(l1, l2) >= -1e-9, okPos = pos && sa;
-          P.corner(`q(v) = ${pn(vq, 3)}`, 'tl', { color: vq >= 0 ? 'green' : 'red', weight: 700 });
+          P.corner(`q(v) = ⟨Tv, v⟩ = ${pn(vq, 3)}`, 'tl', { color: 'ink', weight: 700 });
           const kind = !pos ? 'saddle or dome: not positive' : !sa ? 'form ≥ 0, but T ≠ T*: not positive' : Math.min(l1, l2) > 1e-9 ? 'bowl: positive (and invertible)' : 'trough: positive, not invertible';
-          S3.tex(`\\text{${kind.replace(/≥/, '\\ge').replace(/≠/, '\\ne')}}`, [0, 0, -1.55], { color: okPos ? 'green' : 'red', size: 13 });
+          S3.text(kind, [0, 0, -1.55], { color: okPos ? 'green' : 'red', size: 13.5 });
           let mn = Infinity; for (let k = 0; k < 720; k++) mn = Math.min(mn, Qd((Math.PI * k) / 720));
           mn = Math.min(mn, Qd(phi), Qd(phi + Math.PI / 2));
           st = { T, l1, l2, mn, sa, okPos, vq };
@@ -613,7 +619,7 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
       deps: ['ladr-7.34', 'ladr-7.29', 'ladr-7.31'],
       tags: ['positivity'],
       viz(v) {
-        const PRE = { in: [0.35, 0.25, 0.85], edge: [0.42, 0.42, 0.594], out: [0.6, -0.55, 0.35] };
+        const PRE = { in: [0.35, 0.25, 0.85], edge: [0.42, 0.42, Math.hypot(0.42, 0.42)], out: [0.75, -0.45, 0.3] };
         v.select('start', [{ value: 'in', label: 'inside the cone' }, { value: 'edge', label: 'on its surface' }, { value: 'out', label: 'outside' }], 'in', { onChange: (k) => hT.set(PRE[k]) });
         const S = v.stage({ x: [-1.75, 1.75], y: [-1.5, 1.8], equal: true, axes: false, height: 400, weight: 1.15, title: 'symmetric $T$ as the point $\\big(b, \\frac{a-d}2, \\frac{a+d}2\\big)$' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.26, axis: 1.3, lim: 1.4, labels: ['b', '(a−d)/2', '(a+d)/2'] });
@@ -640,13 +646,14 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
           for (const z of [0.35, 0.7, 1.05, H]) { const pts = []; for (let k = 0; k <= 48; k++) pts.push([z * Math.cos((TAU * k) / 48), z * Math.sin((TAU * k) / 48), z]); sc.path(pts, { color: 'green', alpha: z === H ? 0.7 : 0.35, width: 1 }); }
           for (let k = 0; k < 12; k++) sc.line(ZERO3, [H * Math.cos((TAU * k) / 12), H * Math.sin((TAU * k) / 12), H], { color: 'green', alpha: 0.25, width: 1 }, 6);
           sc.line([0, 0, -1.4], [0, 0, 1.6], { color: 'muted', width: 1.2, alpha: 0.6 }, 12);
+          if (Zh > 0.02) { const pts = []; for (let k = 0; k <= 48; k++) pts.push([Zh * Math.cos((TAU * k) / 48), Zh * Math.sin((TAU * k) / 48), Zh]); sc.path(pts, { color: 'green', width: 2, alpha: 0.9 }); }
           sc.line([0, 0, Zh], hT.p, { color: 'orange', width: 2.4 }, 4);
           sc.line([0, 0, lam2], [0, 0, lam1], { color: 'purple', width: 3, alpha: 0.6 }, 6);
           sc.dot([0, 0, lam1], { r: 5, color: 'purple' });
           sc.dot([0, 0, lam2], { r: 5, color: pos ? 'purple' : 'red' });
           sc.tex('\\lambda_1', [0, 0, lam1], { color: 'purple', dx: -16, size: 14 });
           sc.tex('\\lambda_2', [0, 0, lam2], { color: pos ? 'purple' : 'red', dx: -16, size: 14 });
-          sc.tex('\\lambda I', [0, 0, 1.6], { color: 'muted', dx: 14, size: 13 });
+          sc.tex('\\lambda I', [0, 0, -1.15], { color: 'muted', dx: 16, size: 13 });
           sc.flush();
           S.corner(pos ? (lam2 > 1e-9 ? 'inside the cone' : 'on the cone: λ₂ = 0') : 'outside the cone: λ₂ < 0', 'tl', { color: pos ? 'green' : 'red', weight: 700 });
           // (a) the form, sampled around the circle (plus the eigen-directions)
@@ -702,7 +709,7 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
         const PS = v.slider('mirror angle $\\psi$ (°)', 0, 180, 70, { step: 1 });
         const S = v.stage({ x: [-2.5, 2.5], y: [-2.3, 2.3], equal: true, height: 390, weight: 1.4 });
         const G = v.stage({ x: [0.4, 2.6], y: [0.05, 10], ylog: true, height: 390, weight: 0.6, axes: 'box', xticks: [[1, 'along e₁'], [2, 'along e₂']], title: 'stretch factors (log scale)' });
-        const vh = S.handle(Math.cos(2), Math.sin(2), { color: 'gold', label: 'v', constrain: (x, y) => { const t = Math.atan2(y, x); return [Math.cos(t), Math.sin(t)]; } });
+        const vh = S.handle(Math.cos(70 / DEG), Math.sin(70 / DEG), { color: 'gold', label: 'v', constrain: (x, y) => { const t = Math.atan2(y, x); return [Math.cos(t), Math.sin(t)]; } });
         let st = null;
         v.render(() => {
           const l1 = L1.value, l2 = L2.value, phi = AX.value / DEG, T = symFrom(l1, l2, phi), kind = Rsel.value;
@@ -717,7 +724,7 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
             else { const p2 = (2 * PS.value) / DEG; R = [[s1 * Math.cos(p2), s1 * Math.sin(p2)], [s1 * Math.sin(p2), -s1 * Math.cos(p2)]]; sg = null; }
           }
           const err = R ? fro(msub(mm(R, R), T)) : Infinity, root = err < 1e-9, er = R ? esym2(R) : null, Rpos = er && er.l[1] >= -1e-9;
-          const rad = Math.max(2.2, 1.12 * Math.max(Math.abs(l1), Math.abs(l2), er ? Math.abs(er.l[0]) : 0, er ? Math.abs(er.l[1]) : 0, R ? sv2(mm(R, R)).smax : 0));
+          const rad = Math.max(2.2, 1.22 * Math.max(Math.abs(l1), Math.abs(l2), er ? Math.abs(er.l[0]) : 0, er ? Math.abs(er.l[1]) : 0, R ? sv2(mm(R, R)).smax : 0));
           S.setView([-rad, rad], [-0.92 * rad, 0.92 * rad]);
           const e1 = [Math.cos(phi), Math.sin(phi)], e2 = [-e1[1], e1[0]];
           for (const e of [e1, e2]) S.line(-1.5 * rad * e[0], -1.5 * rad * e[1], 1.5 * rad * e[0], 1.5 * rad * e[1], { color: 'green', width: 1, alpha: 0.45, dash: [3, 4] });
@@ -749,8 +756,8 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
             const x = k + 1;
             if (l <= 0) { G.text(`λ${k ? '₂' : '₁'} = ${pn(l)} ≤ 0`, x, 0.07, { align: 'center', color: 'red', size: 12 }); return; }
             const sq = Math.sqrt(l), yc = (y) => clamp(y, 0.055, 9.5);
-            G.arrow(x - 0.12, 1, x - 0.12, yc(sq), { color: 'accent', width: 1.6, head: 7 });
-            G.arrow(x + 0.12, yc(sq), x + 0.12, yc(l), { color: 'purple', width: 1.6, head: 7 });
+            G.arrow(x - 0.24, 1, x - 0.24, yc(sq), { color: 'accent', width: 1.6, head: 7 });
+            G.arrow(x - 0.12, yc(sq), x - 0.12, yc(l), { color: 'purple', width: 1.6, head: 7 });
             G.dot(x, yc(l), { r: 5.5, color: 'purple', label: `λ = ${pn(l)}`, labelPos: 'e' });
             const neg = sg ? sg[k] < 0 : false;
             G.dot(x, yc(sq), { r: 5.5, color: neg ? 'red' : 'accent', label: sg ? `${neg ? '−' : ''}√λ = ${neg ? '−' : ''}${pn(sq)}` : `±√λ = ±${pn(sq)}`, labelPos: 'e' });
@@ -782,7 +789,7 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
         const PRE = { sing: symFrom(1.6, 0, 0.6), inv: symFrom(1.5, 0.5, 0.6), indef: symFrom(1.4, -0.7, 0.6), nonsa: [[1, -1], [1, 0]] };
         const which = v.select('$T$', [{ value: 'sing', label: 'positive, singular' }, { value: 'inv', label: 'positive, invertible' }, { value: 'indef', label: 'self-adjoint, indefinite' }, { value: 'nonsa', label: 'form $\\ge 0$, not self-adjoint' }], 'sing');
         const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, height: 370, weight: 1.05 });
-        const G = v.stage({ x: [0, 180], y: [-1, 2], height: 370, xlabel: 'θ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'around the unit circle, $v = (\\cos\\theta, \\sin\\theta)$' });
+        const G = v.stage({ x: [0, 180], y: [-1, 2], height: 370, axes: 'box', xlabel: 'θ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'around the unit circle, $v = (\\cos\\theta, \\sin\\theta)$' });
         // q(θ) = (a+d)/2 + (a−d)/2 cos2θ + (b+c)/2 sin2θ
         const zq = (T) => trigZeros((T[0][0] + T[1][1]) / 2, (T[0][0] - T[1][1]) / 2, (T[0][1] + T[1][0]) / 2) || [];
         const vh = S.handle(Math.cos(0.9), Math.sin(0.9), {
@@ -857,7 +864,7 @@ in other words, $S$ preserves norms.`,
           D.circle(0, 0, 1, { color: 'accent', width: 2 });
           D.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });
           D.arrow(0, 0, ww[0], ww[1], { color: 'purple', width: 2.4 });
-          D.corner(`|v| = ${pn(len(vv))}, |w| = ${pn(len(ww))}, angle ${pn(ang(vv, ww), 1)}°`, 'bl', { color: 'muted' });
+          D.corner(`|v| = ${pn(len(vv))}, |w| = ${pn(len(ww))}`, 'tl', { color: 'muted' }); D.corner(`angle ${pn(ang(vv, ww), 1)}°`, 'tr', { color: 'muted' });
           // target
           sc.begin();
           sphere(S, sc);
@@ -896,7 +903,7 @@ in other words, $S$ preserves norms.`,
       deps: ['ladr-7.44', 'ladr-7.16', 'ladr-7.1', 'ladr-6.22', 'ladr-6.30'],
       tags: ['isometries'],
       viz(v) {
-        const c1 = unit([0.9, -0.3, 0.3]), c2 = unit(cross([0.2, 0.1, 1], c1));
+        const c1 = unit([0.9, -0.3, 0.3]), c2 = unit(sub([0.1, 0.3, 1], scl(c1, dot([0.1, 0.3, 1], c1))));
         const PRE = { iso: [c1, c2], stretch: [scl(c1, 1.25), scl(c2, 0.75)], skew: [c1, unit(add(c2, scl(c1, 0.7)))] };
         v.select('$S$', [{ value: 'iso', label: 'isometry' }, { value: 'stretch', label: 'stretched' }, { value: 'skew', label: 'skewed' }], 'iso', { onChange: (k) => { h1.set(PRE[k][0]); h2.set(PRE[k][1]); } });
         const PHI = v.slider('basis angle $\\varphi$ (°)', 0, 180, 25, { step: 1 });
@@ -910,7 +917,7 @@ in other words, $S$ preserves norms.`,
         };
         const h1 = sc.handle(PRE.iso[0], { color: 'teal', label: 'Se₁', snap: snapCol(() => h2.p) });
         const h2 = sc.handle(PRE.iso[1], { color: 'pink', label: 'Se₂', snap: snapCol(() => h1.p) });
-        const G = v.stage({ x: [0, 180], y: [-0.8, 1.8], height: 380, xlabel: 'φ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'Gram entries of $Sf_1, Sf_2$' });
+        const G = v.stage({ x: [0, 180], y: [-0.8, 1.8], height: 380, axes: 'box', xlabel: 'φ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'Gram entries of $Sf_1, Sf_2$' });
         let st = null;
         v.render(() => {
           const a = h1.p, b = h2.p, Sm = fromCols([a, b]), g11 = dot(a, a), g12 = dot(a, b), g22 = dot(b, b), Gm = [[g11, g12], [g12, g22]];

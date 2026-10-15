@@ -15,6 +15,8 @@ const grp = (x) => String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 const pad = (x, n) => String(x).padStart(n, '0');
 const mnus = (s) => String(s).replace(/-/g, '−');
 const fx = (x, d = 2) => mnus((Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d));
+// complex number as TeX, tiny parts shown as 0
+const cfx = (re, im, d = 4) => `${fx(re, d)} ${im < 0 && Math.abs(im) >= 0.5 * 10 ** -d ? '-' : '+'} ${fx(Math.abs(im), d)}i`;
 
 // smallest n in [lo, N] from which f(n) < g(n) holds all the way to N (null if it fails at N)
 function crossover(f, g, lo, N) {
@@ -898,7 +900,7 @@ It is exactly the coefficient sequence of the product of polynomials: if $A(x)=\
         v.legend([['accent', 'primitive root', { dot: true }], ['gold', 'powers of $z$'], ['orange', '$z^k$', { dot: true }]]);
         v.readout(() => {
           const { n, zc, zn, sum, phi, r } = st, isRoot = Math.abs(zn.re - 1) < 1e-9 && Math.abs(zn.im) < 1e-9;
-          return `$|z| = ${fx(r, 3)}$, $\\arg z = ${fx(Math.atan2(zc.im, zc.re) / TAU * 360, 1)}^\\circ$ · $z^{${n}} = ${fx(zn.re, 4)} ${zn.im < 0 ? '-' : '+'} ${fx(Math.abs(zn.im), 4)}i$ ${isRoot ? '$= 1$ ✓ an $n$-th root of unity' : '$\\ne 1$'} · $\\sum_{j<n} z^j = ${fx(sum.re, 4)} ${sum.im < 0 ? '-' : '+'} ${fx(Math.abs(sum.im), 4)}i$ · primitive ${n}-th roots: $\\varphi(${n}) = ${phi}$`;
+          return `$|z| = ${fx(r, 3)}$, $\\arg z = ${fx(Math.atan2(zc.im, zc.re) / TAU * 360, 1)}^\\circ$ · $z^{${n}} = ${cfx(zn.re, zn.im)}$ ${isRoot ? '$= 1$ ✓ an $n$-th root of unity' : '$\\ne 1$'} · $\\sum_{j<n} z^j = ${cfx(sum.re, sum.im)}$ · primitive ${n}-th roots: $\\varphi(${n}) = ${phi}$`;
         });
       },
     },

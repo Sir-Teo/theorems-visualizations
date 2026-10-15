@@ -882,7 +882,7 @@ $$TT^* = T^*T.$$`,
         v.select('preset', [{ value: 'shear', label: 'shear' }, { value: 'rot', label: 'rotation-scaling' }, { value: 'sym', label: 'symmetric' }, { value: 'skew', label: 'skew' }], 'shear', { onChange: (k) => { const p = PRE[k]; Ad.set(p[0]); Dd.set(p[1]); bh.set(p[2], p[3]); } });
         const Ad = v.slider('$a = T_{11}$', -1.5, 1.5, 0.8, { step: 0.1 }), Dd = v.slider('$d = T_{22}$', -1.5, 1.5, 0.8, { step: 0.1 });
         const P = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, height: 360, xlabel: 'b', ylabel: 'c', title: '$\\|TT^* - T^*T\\|$ over $(b, c) = (T_{12}, T_{21})$' });
-        const Q = v.stage({ x: [-0.15, 3.75], y: [-0.75, 1.3], equal: true, axes: false, height: 360, weight: 1.05 });
+        const Q = v.stage({ x: [-0.15, 3.75], y: [-0.75, 1.65], equal: true, axes: false, height: 360, weight: 1.05 });
         const eqAD = () => Math.abs(Ad.value - Dd.value) < 1e-6;
         const bh = P.handle(1, 0, {
           color: 'gold', label: 'T', constrain: (x, y) => {
@@ -894,18 +894,18 @@ $$TT^* = T^*T.$$`,
         let st = null;
         v.render(() => {
           const a = Ad.value, d = Dd.value, b = bh.x, c = bh.y, T = [[a, b], [c, d]], Ts = tp(T), red = v.rgb('red');
-          P.raster((x, y) => { const f = Math.sqrt(2 * (x * x - y * y) ** 2 + 2 * (a - d) ** 2 * (x - y) ** 2); return [red[0], red[1], red[2], Math.round(190 * Math.pow(Math.min(1, f / 3), 0.6))]; }, { key: `${a.toFixed(2)}|${d.toFixed(2)}`, res: 3 });
+          P.raster((x, y) => { const f = Math.sqrt(2 * (x * x - y * y) ** 2 + 2 * (a - d) ** 2 * (x - y) ** 2); return [red[0], red[1], red[2], Math.round(150 * Math.pow(Math.min(1, f / 3), 0.6))]; }, { key: `${a.toFixed(2)}|${d.toFixed(2)}`, res: 3 });
           P.axes();
           P.line(-3, -3, 3, 3, { color: 'green', width: 2.6 });
-          P.tex('b = c\\ \\text{(symmetric)}', 1.05, 1.42, { color: 'green', size: 13, align: 'right' });
-          if (eqAD()) { P.line(-3, 3, 3, -3, { color: 'green', width: 2.6 }); P.tex('b = -c,\\ a = d', -1.05, 1.42, { color: 'green', size: 13, align: 'left' }); }
-          else { P.line(-3, 3, 3, -3, { color: 'muted', width: 1.2, dash: [5, 5] }); P.tex('b = -c\\ \\text{needs}\\ a = d', -1.05, 1.42, { color: 'muted', size: 13, align: 'left' }); }
+          P.tex('b = c\\ \\text{(symmetric)}', 1.25, 1.62, { color: 'green', size: 13, align: 'right' });
+          if (eqAD()) { P.line(-3, 3, 3, -3, { color: 'green', width: 2.6 }); P.tex('b = -c\\ \\text{and}\\ a = d', 1.25, -1.62, { color: 'green', size: 13, align: 'right' }); }
+          else { P.line(-3, 3, 3, -3, { color: 'muted', width: 1.2, dash: [5, 5] }); P.tex('b = -c\\ \\text{needs}\\ a = d', 1.25, -1.62, { color: 'muted', size: 13, align: 'right' }); }
           const C1 = mm(T, Ts), C2 = mm(Ts, T), Cm = msub(C1, C2), gap = fro(Cm), normal = gap < 1e-9;
-          P.corner(normal ? 'normal' : `not normal: ‖TT* − T*T‖ = ${nmc(gap)}`, 'bl', { color: normal ? 'green' : 'red', weight: 700 });
+          Q.text(normal ? 'normal: TT* = T*T' : `not normal: ‖TT* − T*T‖ = ${nmc(gap)}`, 1.8, -0.5, { size: 14, align: 'center', color: normal ? 'green' : 'red', weight: 700 });
           drawTile(Q, C1, 0, 0.15, 1); drawTile(Q, C2, 1.35, 0.15, 1); drawTile(Q, Cm, 2.7, 0.15, 1, { frame: normal ? 'green' : 'red' });
           Q.tex('-', 1.175, 0.65, { size: 22 }); Q.tex('=', 2.525, 0.65, { size: 22, color: normal ? 'green' : 'red' });
           Q.tex('TT^*', 0.5, 0.05, { baseline: 'top', size: 15 }); Q.tex('T^*T', 1.85, 0.05, { baseline: 'top', size: 15 }); Q.tex('TT^* - T^*T', 3.2, 0.05, { baseline: 'top', size: 15 });
-          Q.tex(`T = ${matT(T, 2)}`, 1.8, 1.3, { size: 14, color: 'muted' });
+          Q.tex(`T = ${matT(T, 2)}`, 1.8, 1.45, { size: 14, color: 'muted' });
           st = { T, gap, normal, kind: normal ? (Math.abs(b - c) < 1e-9 ? 'sym' : 'rot') : null };
         });
         v.readout(() => st && `$T = ${matT(st.T)}$, $T^* = ${matT(tp(st.T))}$, $\\|TT^* - T^*T\\| = ${nm(st.gap, 3)}$: ` + (st.kind === 'sym' ? `$T$ is symmetric, hence self-adjoint, hence normal.` : st.kind === 'rot' ? `$T = aI + cJ$ with $J$ the quarter turn — normal although $T \\ne T^*$ (unless $c = 0$).` : `$T$ does not commute with $T^*$, so it is not normal.`));
@@ -924,11 +924,11 @@ $$T \text{ is normal} \iff \|Tv\| = \|T^*v\| \text{ for every } v \in V.$$`,
       see: ['fa-12.11'],
       tags: ['normal'],
       viz(v) {
-        const PRE = { rs: [[0.8, -0.7], [0.7, 0.8]], sym: [[1.2, 0.5], [0.5, 0.2]], shear: [[0.7, 1.1], [0, 0.7]] };
+        const PRE = { rs: [[0.9, -1.2], [1.2, 0.9]], sym: [[1.3, 0.6], [0.6, 0.1]], shear: [[0.8, 1.2], [0, 0.8]] };
         const pre = v.select('$T_0$', [{ value: 'rs', label: 'rotation-scaling' }, { value: 'sym', label: 'symmetric' }, { value: 'shear', label: 'shear' }], 'rs');
         const sh = v.slider('add shear $s$ to $T_{12}$', -1, 1, 0, { step: 0.05 });
-        const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, height: 360 });
-        const G = v.stage({ x: [0, 360], y: [0, 2.1], height: 360, xlabel: 'θ (degrees)', xticks: [0, 90, 180, 270, 360], title: '$\\|Tv\\|$ and $\\|T^*v\\|$ for $v = (\\cos\\theta, \\sin\\theta)$' });
+        const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2], equal: true, height: 360 });
+        const G = v.stage({ x: [0, 360], y: [0, 2.6], height: 360, xlabel: 'θ (degrees)', xticks: [0, 90, 180, 270, 360], title: '$\\|Tv\\|$ and $\\|T^*v\\|$ for $v = (\\cos\\theta, \\sin\\theta)$' });
         let st = null;
         v.animate((t) => {
           const T = PRE[pre.value].map((r) => r.slice()); T[0][1] += sh.value;

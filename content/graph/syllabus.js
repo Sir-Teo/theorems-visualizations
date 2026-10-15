@@ -1,4 +1,61 @@
-// header placeholder
+// Syllabus — Reinhard Diestel, Graph Theory, 6th edition (Springer GTM 173, 2025). Book-anchored: numbers are Diestel's.
+//
+// SOURCE. The author's free preview of the main text, linked from https://diestel-graph-theory.com/basic.html
+// ("Sixth edition, 2025 — Free Preview"): one PDF per chapter,
+//   https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Contents.pdf
+//   https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf … Ch12.pdf (and Appendices.pdf),
+// built June 2024. These are the latest freely available text, so this syllabus follows the 6th edition rather than the
+// 5th (2017) named earlier in collection.js, whose `edition` field was updated accordingly. The 6th edition reorganises
+// several chapters (Erdős–Pósa moved to §2.3; new §§1.9 Some linear algebra, 2.4 packing-covering, 5.6 χ-bounded classes,
+// 7.6–7.7 counting/removal lemmas and Szemerédi's theorem, 12.5 Tangles), so its numbers differ from the 5th edition's
+// in places (König 2.1.1, Menger 3.3.1, Kuratowski 4.4.6, Brooks 5.2.4, Vizing 5.3.2, Turán 7.1.1 and Ramsey 9.1.1 are
+// unchanged). The appendices (A Infinite sets, B Surfaces) contain no numbered results and are not listed.
+//
+// EXTRACTION. `pdftotext -layout` (the PDFs forbid copying, so `pdftohtml -xml` refuses them). Result labels are lines
+// beginning "Theorem|Lemma|Proposition|Corollary c.s.n." (possibly after a margin note); Diestel numbers all four kinds
+// with ONE counter per section, and every section's sequence was checked to be gap-free. In the preview: 311 numbered
+// results (Theorem 124, Lemma 84, Proposition 61, Corollary 42). `deps` were seeded from Diestel's own margin notes —
+// "(c.s.n)" beside a proof names a result it uses, "[c.s.n]" beside a statement names a later result that uses it —
+// and from "Theorem c.s.n" citations in the proofs, then checked by reading the statements and proofs.
+//
+// WHAT IS LISTED. Every numbered Theorem, Lemma, Proposition and Corollary (all 311), under its printed number, kind and,
+// where Diestel gives one, its attribution as the name. Diestel never numbers definitions (they are margin-flagged terms in
+// running text), so the load-bearing ones are listed with the number of the preceding numbered item of the same section
+// plus a letter, and `verify: true` (e.g. 1.3.1c = distance and diameter, defined just after Proposition 1.3.1). A
+// definition printed at the start of a section, before its first numbered item, takes that item's number plus a letter
+// (1.2.1a = degree), so that the item may cite it; the sections without any numbered result, 1.1 and 1.10, use 1.1.1a–c
+// and 1.10.1a. The same scheme lists the famous displayed but unnumbered conjectures as `Hypothesis` items: list colouring
+// (5.4.2a), Gyárfás–Sumner (5.6.3a), Tutte's 5-, 4- and 3-flow conjectures (6.6.1a–c), Hadwiger (7.3.1a), unfriendly
+// partitions (8.1.3a), Erdős–Hajnal (9.1.1b) and Chvátal's toughness conjecture (10.1.3a). 396 items in all:
+//   Ch 1  27 results + 19 lettered = 46     Ch 5  26 + 11 = 37     Ch  9  15 + 3 = 18
+//   Ch 2  17 results +  9 lettered = 26     Ch 6  19 +  7 = 26     Ch 10   9 + 2 = 11
+//   Ch 3  23 results +  3 lettered = 26     Ch 7  34 +  4 = 38     Ch 11  20 + 3 = 23
+//   Ch 4  30 results +  7 lettered = 37     Ch 8  50 + 10 = 60     Ch 12  41 + 7 = 48
+//
+// AMBIGUITIES AND DECISIONS.
+// - `deps` point backwards in reading order. Where Diestel states a theorem and proves it afterwards through results
+//   numbered after it (2.4.1/2.4.3 ← 2.4.4 ← 2.4.5; 3.3.1 ← 3.3.2–3.3.3; 3.4.1 ← 3.4.3; 5.5.4 ← 5.5.5; 7.1.2 ← 7.4.1, 7.5.2; 7.1.3 ←
+//   7.1.4; 7.4.1 ← 7.4.2–7.4.4; 8.4.4 ← 8.4.5–8.4.7; 9.3.1 ← 9.3.2–9.3.3; 10.3.1 ← 10.3.2; 12.5.1 ← 12.5.3, 12.5.8;
+//   12.5.9 ← 12.5.10), the later item names the earlier one in `see` instead.
+// - Results stated without proof (four colour theorem 5.1.1, Grötzsch 5.1.3, the strong perfect graph theorem 5.5.3,
+//   Mader 3.4.2, Kostochka–Thomason 7.2.4, Szemerédi 7.7.1, Laviolette 8.4.1, Lachlan–Woodrow 8.3.3, Alon 5.4.1, Tutte 10.1.4, the
+//   structure theorems 12.6.6–12.6.8, the grid theorem 12.6.3, the graph minor theorem 12.7.1, …) get as deps the notions needed to state them, plus the
+//   results Diestel presents as their main ingredients.
+// - Erdős's theorem on girth and chromatic number appears twice in the book, as 5.2.5 and (with its probabilistic proof)
+//   as 11.2.2; both are listed and joined by `see`. Theorem 7.7.2 restates 7.7.1 in density form and depends on it.
+// - Names: Diestel's attribution where he gives one, otherwise the classical name (2.5.2 Dilworth, 7.6.5 Ruzsa–Szemerédi,
+//   7.7.3 Roth, 12.1.3 Higman's lemma, 3.2.5 Tutte's splitting construction); Diestel's own lemma names are kept (Fish,
+//   Splinter, Uncrossing, Replication, Counting, Removal, Blow-up, Jumping arc, Star-comb, Infinity lemma).
+// - Cross-links: book-anchored results are kept even when a course collection has the same idea, and are joined to it by
+//   `see` (or `deps` when it is a genuine prerequisite): algo (BFS/DFS, Hierholzer, MST, flows, matchings, Gale–Shapley,
+//   Menger, König, Hall, Dilworth, Markov's inequality, Hamiltonicity is NP-complete), comb (posets and Dilworth, chromatic
+//   polynomial, Ramsey, van der Waerden, probabilistic and second-moment methods, Turán, regularity and removal lemmas,
+//   Roth, Szemerédi, K₄ threshold, girth/chromatic number), top (Jordan curve, Schoenflies, K₃,₃, Euler's formula, surfaces,
+//   Tychonoff, compactness), logic (König's lemma, compactness, De Bruijn–Erdős, Zorn, ordinals), soc (Erdős–Rényi model,
+//   giant component), prob (Markov/Chebyshev), circ (Kirchhoff's law, matrix-tree theorem, planar duality), game
+//   (deferred acceptance), cplx (Tutte matrices), bioinf (Euler's theorem on Eulerian paths).
+// - Omitted: examples, exercises, the end-of-chapter notes, unnumbered side remarks, and the lesser displayed conjectures
+//   (Bruhn's, Seymour's on powers of Hamilton cycles, ubiquity, the self-minor conjecture).
 export default {
   collection: 'graph',
   chapters: [
