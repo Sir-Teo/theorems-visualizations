@@ -443,15 +443,20 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
           T.text(`${n} buckets of width 1/${n}`, 0.5, -13 * u, { size: 10.5, color: 'muted', align: 'center' });
           // cost panel
           P.fn((m) => 2 - 1 / m, { color: 'green', width: 1.4, dash: [6, 4] });
-          P.path(curve('uniform'), { color: 'green', width: 2 }); P.dots(curve('uniform'), { r: 3, color: 'green' });
-          if (dist.value !== 'uniform') { P.path(curve(dist.value), { color: 'red', width: 2 }); P.dots(curve(dist.value), { r: 3, color: 'red' }); }
+          const DC = { uniform: 'green', clustered: 'orange', skewed: 'purple', one: 'red' }, DN = { uniform: 'uniform', clustered: 'clustered', skewed: 'skewed', one: 'one bucket' };
+          for (const name of Object.keys(DIST)) {
+            const c = curve(name), on = name === dist.value, last = c[c.length - 1];
+            P.path(c, { color: DC[name], width: on ? 2.6 : 1.3, alpha: on ? 1 : 0.45 });
+            if (on) P.dots(c, { r: 3, color: DC[name] });
+            P.text(DN[name], last[0], last[1], { align: 'right', baseline: 'bottom', dy: -4, size: 11, weight: on ? 700 : 500, color: DC[name] });
+          }
           let s2 = 0, shifts = 0; for (const q of B) s2 += q.length * q.length;
           const order = xs.map((x) => Math.min(n - 1, Math.floor(n * x)));
           for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (order[i] === order[j] && xs[i] > xs[j]) shifts++;
           P.dot(n, s2 / n, { r: 6, color: 'gold' });
           info = { n, s2, shifts, mx };
         });
-        v.legend([['gold', 'input value · this draw (below)', { dot: true }], ['green', 'uniform input; dashed: $E = 2 - 1/n$'], ['red', 'chosen distribution']]);
+        v.legend([['gold', 'input value · this draw (below)', { dot: true }], ['green', 'uniform; dashed: exact $2 - 1/n$'], ['orange', 'clustered'], ['purple', 'skewed'], ['red', 'all in one bucket']]);
         v.readout(() => {
           if (!info) return '';
           const { n, s2, shifts, mx } = info;

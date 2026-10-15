@@ -710,7 +710,7 @@ traced by a point on a circle of radius $R$ rolling under the horizontal line th
         v.readout(() => {
           if (!cur) return '';
           const c = cur, r = c.runs;
-          return String.raw`cycloid: simulated $${v.fix(r[0].T, 4)}$ s, closed form $\theta_B\sqrt{R/g} = ${v.fix(c.cyc.T, 4)}$ s ($R = ${v.fix(c.cyc.R, 3)}$ m, $\theta_B = ${v.fix((c.cyc.th * 180) / Math.PI, 1)}^\circ$) · straight ramp: simulated $${v.fix(r[3].T, 4)}$ s, $\sqrt{2\ell/(g\sin\alpha)} = ${v.fix(c.ramp, 4)}$ s · circle $${fmtT(v, r[1].T)}$, parabola $${fmtT(v, r[2].T)}$, yours $${fmtT(v, r[4].T)}$ (quadrature $\int ds/v$: $${fmtT(v, c.quad[4])}$)`;
+          return String.raw`cycloid: simulated $${v.fix(r[0].T, 4)}$ s, closed form $\theta_B\sqrt{R/g} = ${v.fix(c.cyc.T, 4)}$ s ($R = ${v.fix(c.cyc.R, 3)}$ m, $\theta_B = ${v.fix((c.cyc.th * 180) / Math.PI, 1)}^\circ$) · straight ramp: simulated $${v.fix(r[3].T, 4)}$ s, $\sqrt{2\ell/(g\sin\alpha)} = ${v.fix(c.ramp, 4)}$ s · circle ${fmtT(v, r[1].T)}, parabola ${fmtT(v, r[2].T)}, yours ${fmtT(v, r[4].T)} (quadrature $\int ds/v$: ${fmtT(v, c.quad[4])})`;
         });
       },
     },

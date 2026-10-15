@@ -453,8 +453,8 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
             sc.line(tip, q, { color: lc, width: 1.4, dash: [4, 3] }); sc.line(ZERO, q, { color: lc, width: 1.4, dash: [4, 3], alpha: 0.7 }); sc.dot(q, { r: 3.5, color: lc });
           }
           if (interB.length === 1) sc.line(mul3(interB[0], -1.65), mul3(interB[0], 1.65), { color: 'red', width: 2.6, bias: -0.02 }, 16);
-          if (Rg.length && Rg.length < 3) sc.tex(`\\operatorname{range}(T - ${m}I)`, subLabelAt(sc, Rg, { r: 1.5, len: 1.65 }), { color: 'orange', size: 14, dy: -13 });
-          if (N.length && N.length < 3) sc.tex(`\\operatorname{null}(T - ${m}I)`, subLabelAt(sc, N, { r: 1.35, len: 1.65, low: true }), { color: 'green', size: 14, dy: 15 });
+          if (Rg.length && Rg.length < 3) sc.tex(`\\operatorname{range}(T - ${m}I)`, subLabelAt(sc, Rg, { r: 1.5, len: 1.65, low: true }), { color: 'orange', size: 14, dy: 16 });
+          if (N.length && N.length < 3) sc.tex(`\\operatorname{null}(T - ${m}I)`, subLabelAt(sc, N, { r: 1.35, len: 1.65 }), { color: 'green', size: 14, align: 'left', dx: 10, dy: -4 });
           sc.flush();
           S.corner(inter ? 'range ∩ null ≠ {0}: not complementary' : 'range + null = R³, a direct sum', 'tl', { color: inter ? 'red' : 'green', weight: 700 });
           // right panel
