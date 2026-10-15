@@ -618,6 +618,7 @@ the second being the area under the binormal ROC. A z-ROC that is curved rather 
       refs: ['M&C ch. 3'],
       tags: ['ROC', 'unequal variance'],
       credit: 'Egan, 1958 (recognition memory); Ratcliff, Sheu & Gronlund, 1992',
+      scope: String.raw`Holds when both kinds of trial give Gaussian evidence on some common scale (any increasing transformation of the evidence is allowed): a good description of most detection and recognition-memory ROCs. It fails when some trials are detected outright or answered by pure guessing (threshold components), which bend the z-ROC.`,
       viz(v) {
         const M = v.M, NMAX = 3000, BND = [-0.6, 0.2, 0.9, 1.6, 2.4], MIX = 0.4, LO = -3.4, HI = 7.4;
         const mS = v.slider('signal mean $\\mu$', 0, 3.5, 1.5, { step: 0.01 });

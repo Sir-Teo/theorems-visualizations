@@ -83,7 +83,7 @@ export default {
           const res = C.draw({ result: C.dc(), t, vmax: 100, imax: 1500 });
           const nm = C.net.termNode.get('Cm').a;
           sc.tex('V_m', 7.25, 3.25, { size: 14, color: 'ink', align: 'left' });
-          sc.text(`${v.fix(res.V(nm), 1)} mV`, 8.1, 3.25, { size: 11, color: 'ink', align: 'left', baseline: 'middle', weight: 600 });
+          sc.text(`${v.fix(Math.abs(res.V(nm)) < 0.05 ? 0 : res.V(nm), 1)} mV`, 8.1, 3.25, { size: 11, color: 'ink', align: 'left', baseline: 'middle', weight: 600 });
           sc.text(`ionic current ${v.fix(Iion, 0)} µA/cm² (${Iion < 0 ? 'inward' : 'outward'})`, 7.6, -0.5, { size: 11, color: Iion < 0 ? ION_COL.Na : ION_COL.K, align: 'center', baseline: 'middle', weight: 700 });
           // traces
           sv.hline(-65, { color: 'faint', width: 1 });

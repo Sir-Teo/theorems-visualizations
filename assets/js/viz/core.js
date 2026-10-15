@@ -1386,6 +1386,19 @@ class Runtime {
         if (window.__vizStill && o.still != null) rt.t = o.still;
         rt._addPlay(); rt.invalidate();
       },
+      /**
+       * A fixed-step simulation that follows the animation clock: const S = v.sim(() => initialState, (state, dt, t) => {…}, {dt});
+       * inside v.animate((t) => { S.advance(t); draw(S.state); }). It steps until it reaches t, restarts from init() when the clock
+       * goes backwards (loop wrap, reset, --still jump), and caps the work per frame (maxSteps) so a big jump cannot freeze the page.
+       */
+      sim(init, step, { dt = 1 / 240, maxSteps = 20000 } = {}) {
+        let state = init(), t = 0;
+        return {
+          get state() { return state; }, get t() { return t; },
+          advance(T) { if (T < t - 1e-9) { state = init(); t = 0; } let n = 0; while (t + dt <= T + 1e-12 && n++ < maxSteps) { const r = step(state, dt, t); if (r !== undefined) state = r; t += dt; } return state; },
+          reset() { state = init(); t = 0; return state; },
+        };
+      },
       slider: (label, min, max, value, o) => makeSlider(rt, label, min, max, value, o),
       toggle: (label, value, o) => makeToggle(rt, label, value, o),
       select: (label, options, value, o) => makeSelect(rt, label, options, value, o),

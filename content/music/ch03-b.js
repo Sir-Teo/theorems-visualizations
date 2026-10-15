@@ -274,8 +274,8 @@ close to $2:3:4:5:6$, the harmonics 2 to 6 of a pitch an octave below the $(1,1)
         const rhoS = v.slider('air density', 0, 2.5, 1, { step: 0.01, fmt: (x) => (x === 0 ? 'vacuum' : `${v.fix(x, 2)} × 1.2 kg/m³`) });
         const ket = v.toggle('kettle', true);
         const hd = v.stage({ x: [-1.25, 1.25], y: [-1.3, 0.75], equal: true, height: 250, axes: false, weight: 0.8, minWidth: 260, title: 'the drum from the side (head motion slowed)' });
-        const sp = v.stage({ x: [0.35, 3.5], y: [-0.1, 1.3], height: 250, axes: 'box', xticks: [0.5, 1, 1.5, 2, 2.5, 3, 3.5], yticks: [], weight: 1.4, minWidth: 320, title: 'modes at f / f₁₁; height: excitation by the mallet' });
-        const cv = v.stage({ x: [0, 2.5], y: [1.2, 3.15], height: 230, axes: 'box', xlabel: 'air density (× real air)', xticks: [0, 0.5, 1, 1.5, 2, 2.5], yticks: [1.34, 1.5, 2, 2.5, 3], full: true, title: 'frequency ratios f(m,1) / f(1,1) as the air gets denser' });
+        const sp = v.stage({ x: [0.2, 3.5], y: [-0.04, 1.42], height: 250, axes: 'box', xticks: [0.5, 1, 1.5, 2, 2.5, 3, 3.5], yticks: [], weight: 1.4, minWidth: 320, title: 'modes at f / f₁₁; height: how strongly the mallet excites each' });
+        const cv = v.stage({ x: [0, 2.5], y: [1.2, 3.25], height: 230, axes: 'box', xlabel: 'air density (× real air)', xticks: [0, 0.5, 1, 1.5, 2, 2.5], yticks: [1.34, 1.5, 2, 2.5, 3], full: true, title: 'frequency ratios f(m,1) / f(1,1) as the air gets denser' });
         const mallet = hd.handle(0.72, 0.42, { color: 'gold', r: 8, label: 'mallet', labelPos: 'e', constrain: (x) => [M.clamp(x, -0.97, 0.97), 0.42] });
         // the ratio curves (computed once)
         const RHOS = M.range(26).map((i) => i * 0.1), CURVES = [1, 2, 3, 4].map(() => []);
@@ -302,12 +302,12 @@ close to $2:3:4:5:6$, the harmonics 2 to 6 of a pitch an octave below the $(1,1)
           sol.forEach((e, i) => {
             const x = e.f / f11, ideal = e.j / MODES[0].j, hgt = Math.max(0.03, Math.abs(a[i]) / mx), col = e.n === 1 && e.m > 0 ? 'accent' : e.m === 0 ? 'red' : 'purple';
             if (x > 3.5) return;
-            sp.line(ideal, -0.1, ideal, -0.02, { color: 'muted', width: 2 });
+            sp.line(ideal, 1.16, ideal, 1.24, { color: 'muted', width: 2.2 });
             sp.line(x, 0, x, hgt, { color: col, width: 3 });
             sp.text(`${e.m},${e.n}`, x, hgt + 0.07, { align: 'center', color: col, size: 9.5, weight: 600 });
-            const ms = MEAS[`${e.m},${e.n}`]; if (ms) sp.poly([[ms, 1.23], [ms - 0.03, 1.29], [ms + 0.03, 1.29]], { fill: col, fillAlpha: 0.9, stroke: false });
+            const ms = MEAS[`${e.m},${e.n}`]; if (ms) sp.poly([[ms, 1.29], [ms - 0.03, 1.37], [ms + 0.03, 1.37]], { fill: col, fillAlpha: 0.9, stroke: false });
           });
-          sp.corner('▼ measured (Rossing)   ▮ vacuum (bottom ticks)', 'tr', { color: 'muted', size: 10.5 });
+          sp.text('measured', 0.23, 1.33, { align: 'left', color: 'muted', size: 10 }); sp.text('vacuum', 0.23, 1.2, { align: 'left', color: 'muted', size: 10 });
           // ---- ratio curves against air density
           for (const q of [1.5, 2, 2.5, 3]) cv.hline(q, { color: 'green', width: 1.2, dash: [5, 4], alpha: 0.6 });
           CURVES.forEach((c, i) => { cv.path(c, { color: 'accent', width: 2 }); cv.text(`(${i + 2},1)`, 2.47, c[c.length - 1][1] + 0.07, { align: 'right', color: 'accent', size: 10.5 }); });
@@ -319,7 +319,7 @@ close to $2:3:4:5:6$, the harmonics 2 to 6 of a pitch an octave below the $(1,1)
         v.readout(() => {
           const sol = state(), f11 = sol[0].f, r = (q) => sol[q].f / f11, vac = [2, 3, 4, 5].map((m) => besselZero(m, 1) / MODES[0].j);
           const cents = [1.5, 2, 2.5, 3].map((h, i) => 1200 * Math.log2(r(i + 1) / h)), tau = (e) => 1 / (e.drad + e.dint);
-          return `(1,1) at ${v.fix(f11, 1)} Hz (${noteOf(M, f11)}), tension ${v.fix(T, 0)} N/m · ratios (2,1) … (5,1): ${[1, 2, 3, 4].map((q) => v.fix(r(q), 3)).join(', ')} (vacuum ${vac.map((x) => v.fix(x, 2)).join(', ')}; measured 1.50, 1.97, 2.44, 2.91) · distance from 3/2, 2, 5/2, 3: ${cents.map((c) => centsTxt(c, 0)).join(', ')} · amplitude decay times: (0,1) ${v.fix(tau(sol[5]), 2)} s, (1,1) ${v.fix(tau(sol[0]), 2)} s, (2,1) ${v.fix(tau(sol[1]), 2)} s`;
+          return `(1,1) at ${v.fix(f11, 1)} Hz (${noteOf(M, f11)}), tension ${v.fix(T, 0)} N/m · ratios (2,1) … (5,1): ${[1, 2, 3, 4].map((q) => v.fix(r(q), 3)).join(', ')} (vacuum ${vac.map((x) => v.fix(x, 2)).join(', ')}; measured 1.50, 1.97, 2.44, 2.91) · distance from 3/2, 2, 5/2, 3: ${cents.map((c) => centsTxt(c, 0)).join(', ')} · amplitude decay times in the model (radiation from the baffled head plus illustrative internal losses): (0,1) ${v.fix(tau(sol[5]), 2)} s, (1,1) ${v.fix(tau(sol[0]), 2)} s, (2,1) ${v.fix(tau(sol[1]), 2)} s`;
         });
       },
     },

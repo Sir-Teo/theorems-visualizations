@@ -186,6 +186,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.stage3d(opts)` → Stage3D | 3D panel (drag to rotate). |
 | `v.render(fn)` | register `fn(t)`; rerun on any change. |
 | `v.animate(fn, {period, speed, autoplay, once})` | continuous `fn(t)`, `t` in seconds (wraps at `period`; `once` stops at the end). Adds play/pause/restart. |
+| `v.sim(init, step, {dt, maxSteps})` | fixed-step simulation that follows the animation clock: `S.advance(t)` steps to time t (restarting from `init()` when the clock goes backwards: loop wrap, reset, `--still` jump), `S.state`, `S.reset()`. `step(state, dt, t)` mutates or returns the new state. |
 | `v.slider(label, min, max, value, {step, int, log, sig, decimals, fmt, onChange})` | returns `{value, set(x)}`. `int: true` for integers, `log: true` for log scale (drags round to `sig` = 3 significant figures). The default and `set(x)` are kept exact (never snapped to the step grid). |
 | `v.toggle(label, value, {onChange})` | switch → `{value}` |
 | `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
