@@ -216,7 +216,7 @@ so the phase portrait in $(\varphi, a)$ has a separatrix: inside it $\varphi$ **
         const boost = v.toggle('Jupiter ×10 (compress time)', true);
         const eccJ = v.toggle('Jupiter’s orbit eccentric (e = 0.048)', true);
         const h = v.stage({ x: [1.7, 5.4], y: [0, 14000], axes: 'box', height: 290, full: true, hover: true, xlabel: 'semi-major axis (AU)', ylabel: 'asteroids per 0.01 AU', title: 'real asteroids: semi-major axes of the numbered asteroids' });
-        const sim = v.stage({ x: [1.95, 3.65], y: [0, 0.6], axes: 'box', height: 250, full: true, xlabel: 'initial semi-major axis (AU)', ylabel: 'largest e so far', title: 'numerical experiment: eccentricity pumping by Jupiter' });
+        const sim = v.stage({ x: [1.95, 3.65], y: [0, 0.72], axes: 'box', height: 250, full: true, xlabel: 'initial semi-major axis (AU)', ylabel: 'largest e so far', title: 'numerical experiment: eccentricity pumping by Jupiter' });
         const N = 240, gm = GSUN, mp0 = 9.5479e-4, DT = 0.25, YEARS = 3000, STEPS = Math.round(YEARS / DT);
         let S = null;
         const init = (key) => {
@@ -237,12 +237,12 @@ so the phase portrait in $(\varphi, a)$ has a separatrix: inside it $\varphi$ **
         v.animate((t) => {
           // real histogram
           const lg = logS.value;
-          h.setScale({ ylog: lg, y: lg ? [5, 30000] : [0, 14000] });
+          h.setScale({ ylog: lg, y: lg ? [5, 120000] : [0, 16500] });
           h.hist({ edges, counts: counts.map((c) => (lg ? Math.max(c, 0.001) : c)) }, { color: 'accent', fillAlpha: 0.45, gap: 0 });
           for (const R of RES) {
             const protect = (R.p === 3 && R.q === 2) || R.p === 1;
             h.vline(R.a, { color: protect ? 'green' : 'red', width: 1, dash: [3, 3], alpha: 0.8 });
-            h.text(`${R.p}:${R.q}`, R.a, lg ? 22000 : 13300, { color: protect ? 'green' : 'red', size: 10.5, align: 'center' });
+            h.text(`${R.p}:${R.q}`, R.a, lg ? 30000 : 14100, { color: protect ? 'green' : 'red', size: 10.5, align: 'center' });
           }
           h.text('Hildas', AJ * Math.pow(2 / 3, 2 / 3), lg ? 9000 : 2500, { color: 'green', size: 10, dy: -4, align: 'center' });
           h.text('Trojans', 5.2, lg ? 2000 : 2500, { color: 'green', size: 10, align: 'center' });
@@ -262,8 +262,8 @@ so the phase portrait in $(\varphi, a)$ has a separatrix: inside it $\varphi$ **
           for (let i = 0; i < N; i++) (S.dead[i] ? dead : live).push([S.a0[i], S.emax[i]]);
           sim.dots(live, { r: 2.6, color: 'accent' });
           sim.dots(dead, { r: 3.2, color: 'red' });
-          sim.corner(`${v.fix(S.t, 0)} yr of ${YEARS}${boost.value ? ' (Jupiter ×10)' : ''} · removed: ${dead.length}`, 'tl', { color: 'muted', size: 11.5 });
-          for (const R of RES.slice(0, 5)) sim.text(`${R.p}:${R.q}`, R.a, 0.57, { color: 'red', size: 10, align: 'center' });
+          sim.corner(`${v.fix(S.t, 0)} yr of ${YEARS}${boost.value ? ' (Jupiter ×10)' : ''} · removed: ${dead.length}`, 'tr', { color: 'muted', size: 11.5 });
+          for (const R of RES.slice(0, 5)) sim.text(`${R.p}:${R.q}`, R.a, 0.62, { color: 'red', size: 10, align: 'center' });
           cur = { dead: dead.length, t: S.t };
         }, { period: 1e9, still: 9 });
         v.legend([['accent', 'asteroids (top) / test particles (bottom)', { area: true }], ['red', 'gap-forming resonances; removed particles'], ['green', 'resonances that host groups']]);
@@ -310,7 +310,11 @@ and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \la
             if (sp3 < mn) { mn = sp3; tmin = t; }
             if (Math.abs((t * 20) % 100) < 1e-6) { out.push([t, ((lam[0] - 3 * lam[1] + 2 * lam[2]) % 360 + 360) % 360]); minS.push([t, mn]); }
           }
-          return { out, minS, mn, tmin, n };
+          // conjunctions: where is the third moon when two of them line up?
+          const cIE = [], cEG = [], dIE = n[0] - n[1], dEG = n[1] - n[2];
+          for (let k = Math.ceil((L0[1] - L0[0]) / 360); ; k++) { const t = (360 * k - (L0[0] - L0[1])) / dIE; if (t > 3650) break; if (t < 0) continue; const lc = L0[0] + n[0] * t, lg = L0[2] + n[2] * t; cIE.push([t, (((lg - lc) % 360) + 360) % 360]); }
+          for (let k = Math.ceil((L0[2] - L0[1]) / 360); ; k++) { const t = (360 * k - (L0[1] - L0[2])) / dEG; if (t > 3650) break; if (t < 0) continue; const lc = L0[1] + n[1] * t, li = L0[0] + n[0] * t; cEG.push([t, (((li - lc) % 360) + 360) % 360]); }
+          return { out, minS, mn, tmin, n, cIE, cEG };
         });
         let cur = null;
         v.animate((tt) => {
@@ -325,18 +329,21 @@ and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \la
           s.corner(`day ${v.fix(day % 3650, 1)} · $\\Phi_L = ${v.fix(PhL, 2)}^\\circ$`, 'tl', { color: 'muted', size: 12 });
           // time panel
           g.hline(180, { color: 'faint', width: 1, dash: [4, 4] });
+          g.dots(H.cIE, { r: 1.8, color: 'green', alpha: 0.7 });
+          g.dots(H.cEG, { r: 1.8, color: 'pink', alpha: 0.7 });
           g.path(H.out.filter((q, k, a) => k === 0 || Math.abs(q[1] - a[k - 1][1]) < 180), { color: 'accent', width: 2 });
           g.path(H.minS, { color: 'red', width: 1.8 });
           g.vline(day % 3650, { color: 'gold', width: 1.2 });
           g.tex('\\Phi_L', 60, H.out[0][1], { color: 'accent', size: 14, dy: -12, align: 'left' });
           g.text('smallest arc holding all three so far', 3600, H.minS[H.minS.length - 1][1], { color: 'red', size: 10.5, dy: -9, align: 'right' });
+          if (dn.value === 0) { g.text('Ganymede at each Io–Europa conjunction', 3600, H.cIE[0][1], { color: 'green', size: 10.5, dy: -9, align: 'right' }); g.text('Io at each Europa–Ganymede conjunction', 3600, H.cEG[0][1], { color: 'pink', size: 10.5, dy: 12, align: 'right' }); }
           cur = { H, PhL };
         }, { period: 1e9, still: 7.3 });
-        v.legend([['accent', 'Laplace angle $\\Phi_L$'], ['red', 'tightest grouping of the three moons'], ['green', 'Io–Europa conjunction'], ['pink', 'Europa–Ganymede conjunction']]);
+        v.legend([['accent', 'Laplace angle $\\Phi_L$'], ['red', 'tightest grouping of the three moons'], ['green', 'Io–Europa conjunction: angle to Ganymede', { dot: true }], ['pink', 'Europa–Ganymede conjunction: angle to Io', { dot: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const { H } = cur, n = H.n;
-          return String.raw`$n_I - 3n_E + 2n_G = ${v.fix(n[0] - 3 * n[1] + 2 * n[2], 9)}$ °/day, while $n_I - 2n_E = ${v.fix(n[0] - 2 * n[1], 5)}$ and $n_E - 2n_G = ${v.fix(n[1] - 2 * n[2], 5)}$ °/day (pericentre regression) · in ten years the three moons are never within ${v.fix(H.mn, 2)}° of each other${dn.value === 0 ? ' — exactly 60° is the closest a Φ_L = 180° configuration allows (Io and Ganymede together, Europa 60° away)' : H.mn < 5 ? ` — with the perturbation they all line up (day ${v.fix(H.tmin, 0)}): a triple conjunction` : ''}`;
+          return String.raw`$n_I - 3n_E + 2n_G = ${v.fix(n[0] - 3 * n[1] + 2 * n[2], 9)}$ °/day, while $n_I - 2n_E = ${v.fix(n[0] - 2 * n[1], 5)}$ and $n_E - 2n_G = ${v.fix(n[1] - 2 * n[2], 5)}$ °/day (pericentre regression) · in ten years the three moons are never within ${v.fix(H.mn, 2)}° of each other${dn.value === 0 ? ' — exactly 60° is the closest a $\\Phi_L = 180^\\circ$ configuration allows (Io and Ganymede together, Europa 60° away); at every Io–Europa conjunction Ganymede is 90° away, at every Europa–Ganymede conjunction Io is opposite' : H.mn < 5 ? ` — with the perturbation they all line up (day ${v.fix(H.tmin, 0)}): a triple conjunction` : ''}`;
         });
       },
     },

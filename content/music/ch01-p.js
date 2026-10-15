@@ -127,11 +127,14 @@ export default {
           if (myPts.length) { const withRef = [...myPts, [1000, P]].sort((a, b) => a[0] - b[0]); S.path(withRef, { color: 'gold', width: 2.2 }); S.dots(myPts, { r: 5, color: 'gold' }); }
           if (sweep && head.t != null) { const k = Math.floor(head.t / STEP); sweep.forEach(([f, L], i) => S.dot(f, L, { r: i === k ? 7 : 4, color: i === k ? 'red' : 'orange', hollow: i !== k })); }
           // difference panel
+          let lo = 0, hi = 0;
+          for (let k = 0; k <= 120; k++) { const f = 25 * Math.pow(500, k / 120), a = fmSpl(f, P); if (a != null) { const d = a - isoSpl(f, P); lo = Math.min(lo, d); hi = Math.max(hi, d); } }
+          D.setView([20, 16000], [Math.min(-16, lo - 3), Math.max(16, hi + 3)]);
           D.hline(0, { color: 'muted', width: 1.2 });
           const valid = P >= 20 && P <= 90;
           D.fn((f) => { const a = fmSpl(f, P); return a == null ? NaN : a - isoSpl(f, P); }, { domain: [25, 12500], color: valid ? 'accent' : 'muted', width: 2.4, n: 300, dash: valid ? null : [4, 4] });
           D.hband(-2, 2, { color: 'green', alpha: 0.1 });
-          D.text(valid ? '±2 dB: about the reading accuracy of the digitised curves' : 'ISO 226 is defined only from 20 to 90 phon (dashed: extrapolated)', 25, 13, { size: 10.5, color: valid ? 'green' : 'muted' });
+          D.text(valid ? '±2 dB: about the reading accuracy of the digitised curves' : 'ISO 226 is defined only from 20 to 90 phon (dashed: extrapolated)', 25, Math.max(16, hi + 3) - 2.5, { size: 10.5, color: valid ? 'green' : 'muted' });
           st = { P };
         });
         v.legend([['accent', 'Fletcher & Munson 1933 (chosen contour)'], ['ink', 'other 1933 contours'], ['orange', 'ISO 226:2003', { dash: true }], ['gold', 'your loudness matches', { dot: true }]]);
