@@ -420,6 +420,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           z.forEach(([x, y]) => Z.dot(x, y, { r: 6, color: 'gold' }));
           if (singNow) Z.tex('p(0) = 0', 0, 0, { color: 'red', dy: -24, size: 14 });
           Z.corner(`deg p = ${p.length - 1}`, 'tl', { color: 'muted' });
+          Z.texPx(`T = ${mtex(A)}`, 12, Z.height - 12, { align: 'left', baseline: 'bottom', size: 12, color: 'muted' });
           // ---- p(0) against t
           G.setView([-2, 2], sw.yr);
           G.hline(0, { color: 'muted', width: 1 });
@@ -442,7 +443,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           const { p, c0, singNow, invErr, nul } = st;
           const head = `$p(z) = ${polyT(p)}$, constant term $p(0) = ${tn(c0, 3)}$. `;
           if (singNow) return head + `Since $p(0) = 0$, the number $0$ is a zero of $p$, hence an eigenvalue: **$T$ is not invertible** — it kills $v = ${vtex(nul, 2)}$.`;
-          return head + `$p(0) \\ne 0$, so $T$ is invertible, and $p(T) = 0$ solved for $I$ gives $T^{-1} = -\\tfrac{1}{${tn(c0, 3)}}\\bigl(${polyOpT(p.slice(1))}\\bigr)$: $\\max|T\\,T^{-1} - I| = ${v.sci(invErr, 1)}$.`;
+          return head + `$p(0) \\ne 0$, so $T$ is invertible, and $p(T) = 0$ solved for $I$ gives $T^{-1} = ${c0 < 0 ? '' : '-'}\\tfrac{1}{${tn(Math.abs(c0), 3)}}\\bigl(${polyOpT(p.slice(1))}\\bigr)$: $\\max|T\\,T^{-1} - I| = ${v.sci(invErr, 1)}$.`;
         });
       },
     },
@@ -469,7 +470,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         let seed = 3;
         v.button('Random basis', () => { seed++; });
         const P = v.stage({ x: [-3.2, 3.2], y: [-1.9, 3.3], height: 360, weight: 1.35, xlabel: 'b', ylabel: 'c', title: 'the $(b, c)$-plane of $x^2 + bx + c$' });
-        const Q = v.stage({ x: [0.3, 4.7], y: [1e-6, 300], ylog: true, height: 360, weight: 0.8, minWidth: 230, axes: 'box', xticks: [[1, 'σ₁'], [2, 'σ₂'], [3, 'σ₃'], [4, 'σ₄']], title: 'singular values of $T^2 + bT + cI$' });
+        const Q = v.stage({ x: [0.3, 4.7], y: [2e-8, 300], ylog: true, height: 360, weight: 0.8, minWidth: 230, axes: 'box', xticks: [[1, 'σ₁'], [2, 'σ₂'], [3, 'σ₃'], [4, 'σ₄']], title: 'singular values of $T^2 + bT + cI$' });
         let geom = { pairs: [], reals: [], cross: [] };
         const h = P.handle(-1, 1.25, {
           color: 'accent',
@@ -509,23 +510,24 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           for (const l of geom.reals) { P.fn((x) => -l * l - x * l, { color: 'orange', width: 1.8, dash: [6, 4] }); P.dot(-2 * l, l * l, { r: 3, color: 'orange' }); }
           for (const [x, y] of geom.cross) P.dot(x, y, { r: 4.5, color: 'orange' });
           for (const [x, y] of geom.pairs) P.dot(x, y, { r: 7, color: 'purple', hollow: true, width: 2.6 });
-          geom.pairs.forEach(([x, y], i) => { const a = -x / 2, bb = Math.sqrt(Math.max(0, y - a * a)); P.tex(`${tn(a)} \\pm ${tn(bb)}i`, x, y, { color: 'purple', size: 12.5, dy: -18 }); });
-          geom.reals.forEach((l) => P.tex(`\\text{zero } ${tn(l)}`, -2 * l, l * l, { color: 'orange', size: 12, dy: 15, dx: l > 0 ? -26 : 26 }));
+          geom.pairs.forEach(([x, y], i) => { const a = -x / 2, bb = Math.sqrt(Math.max(0, y - a * a)); P.tex(`${tn(a)} \\pm ${tn(bb) === '1' ? '' : tn(bb)}i`, x, y, { color: 'purple', size: 12.5, dy: -18 }); });
+          geom.reals.forEach((l) => { const b0 = -2 * l - 0.85 * Math.sign(-2 * l || 1); P.tex(`\\lambda = ${tn(l)}`, b0, -l * l - b0 * l, { color: 'orange', size: 12.5, dy: 14, dx: l > 0 ? 30 : -30 }); });
           // ---- singular values
           const lo = 1e-6;
           sv.forEach((s, i) => {
             const zero = s <= tol, x = i + 1;
-            Q.rect(x - 0.3, lo, x + 0.3, Math.max(s, lo * 1.001), { fill: zero ? 'green' : 'accent', fillAlpha: zero ? 0.25 : 0.45, color: zero ? 'green' : 'accent', width: 1.4 });
-            Q.text(zero ? '0' : pn(s, s < 0.01 ? 4 : 2), x, Math.max(s, lo), { align: 'center', baseline: 'bottom', dy: -4, size: 11.5, color: zero ? 'green' : 'ink', weight: 600 });
+            if (zero) Q.line(x - 0.3, lo, x + 0.3, lo, { color: 'green', width: 3 });
+            else Q.rect(x - 0.3, lo, x + 0.3, Math.max(s, lo * 1.001), { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1.4 });
+            Q.text(zero ? '0' : pn(s, s < 0.01 ? 4 : 2), x, Math.max(s, lo), { align: 'center', baseline: 'bottom', dy: -4, size: zero ? 14 : 11.5, color: zero ? 'green' : 'ink', weight: 700 });
           });
-          Q.corner(`dim null = ${dim}`, 'tl', { color: dim ? (dim % 2 ? 'red' : 'green') : 'muted', weight: 700, size: 13 });
+          Q.corner(`dim null = ${dim}`, 'tr', { color: dim ? (dim % 2 ? 'red' : 'green') : 'muted', weight: 700, size: 13 });
           st = { b, c, dim, hyp };
         });
         v.legend([['green', 'region $b^2 < 4c$', { area: true }], ['purple', 'eigenvalue pair $\\alpha\\pm i\\beta$ ↦ $(-2\\alpha,\\,\\alpha^2+\\beta^2)$', { dot: true }], ['orange', 'real eigenvalue $\\lambda$: $\\lambda^2 + b\\lambda + c = 0$', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { b, c, dim, hyp } = st, disc = b * b - 4 * c;
-          const head = `$x^2 + ${tn(b)}x + ${tn(c)}$: $b^2 - 4c = ${tn(disc, 3)}$ ${hyp ? '$< 0$ (hypothesis holds)' : '$\\ge 0$ (hypothesis broken)'}; $\\dim\\operatorname{null}(T^2 + bT + cI) = ${dim}$`;
+          const head = `$${polyT([c, b, 1], 'x')}$: $b^2 - 4c = ${tn(disc, 3)}$ ${hyp ? '$< 0$ (hypothesis holds)' : '$\\ge 0$ (hypothesis broken)'}; $\\dim\\operatorname{null}(T^2 + bT + cI) = ${dim}$`;
           if (hyp) return head + (dim ? ` — even ✓: the null space is ${dim === 2 ? 'an invariant plane' : 'all of $\\mathbf R^4$'} on which $T$ turns like $\\alpha \\pm i\\beta$.` : ' — even ✓ (drag onto a purple point to make it positive).');
           return head + (dim % 2 ? ' — **odd**: with real zeros the quadratic splits into linear factors, and a single eigenvector contributes one dimension.' : '.');
         });

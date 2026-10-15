@@ -155,13 +155,13 @@ It depends on $E$ unless the potential is harmonic near enough; as $E$ approache
         const POTS = {
           harm: { label: 'harmonic', U: (x) => x * x / 2, dU: (x) => x, xmin: 0, E: [0.05, 2], w0: 1, exact: () => 2 * Math.PI, ex: '2\\pi' },
           pend: { label: 'pendulum', U: (x) => 1 - Math.cos(x), dU: (x) => Math.sin(x), xmin: 0, E: [0.05, 1.995], w0: 1, exact: (E) => 4 * ellipK(Math.sqrt(E / 2)), ex: '4K\\big(\\sqrt{E/2}\\big)' },
-          quart: { label: 'quartic $x^4/4$', U: (x) => x ** 4 / 4, dU: (x) => x ** 3, xmin: 0, E: [0.05, 2], w0: 0, exact: (E) => 4 * LEM * Math.pow(4 * E, 0.25) / Math.sqrt(2 * E), ex: '4\\varpi_0\\,(4E)^{1/4}/\\sqrt{2E}' },
+          quart: { label: 'quartic $x^4/4$', U: (x) => x ** 4 / 4, dU: (x) => x ** 3, xmin: 0, E: [0.05, 2], w0: 0, exact: (E) => 4 * LEM * Math.pow(4 * E, 0.25) / Math.sqrt(2 * E), ex: '4\\textstyle\\int_0^1\\frac{du}{\\sqrt{1-u^4}}\\,\\frac{(4E)^{1/4}}{\\sqrt{2E}}' },
           morse: { label: 'Morse', U: (x) => (1 - Math.exp(-x)) ** 2, dU: (x) => { const e = Math.exp(-x); return 2 * (1 - e) * e; }, xmin: 0, E: [0.02, 0.97], w0: Math.SQRT2, exact: (E) => Math.PI * Math.SQRT2 / Math.sqrt(1 - E), ex: '\\sqrt2\\,\\pi/\\sqrt{1-E}' },
         };
         const which = v.select('potential', Object.entries(POTS).map(([value, p]) => ({ value, label: p.label })), 'pend');
         const Ef = v.slider('energy (fraction of range)', 0, 1, 0.75, { step: 0.005 });
-        const s = v.stage({ x: [0, 20], y: [-3, 3], height: 300, axes: 'box', xlabel: 't', weight: 1.3, title: '$x(t)$: quadrature (curve) vs simulation (dots)' });
-        const g = v.stage({ x: [0, 2], y: [0, 20], height: 300, axes: 'box', xlabel: 'E', weight: 1, title: 'period $T(E)$' });
+        const s = v.stage({ x: [0, 20], y: [-3, 3], height: 300, axes: 'box', weight: 1.3, title: '$x(t)$: quadrature (curve) vs simulation (dots)' });
+        const g = v.stage({ x: [0, 2], y: [0, 20], height: 300, axes: 'box', weight: 1, title: 'period $T$ against energy $E$' });
         const tps = (P, E) => { const f = (z) => P.U(z) - E; let b = P.xmin + 0.01; while (f(b) < 0 && b < P.xmin + 60) b += 0.05; let a = P.xmin - 0.01; while (f(a) < 0 && a > P.xmin - 60) a -= 0.05; return [bisect(f, a, P.xmin), bisect(f, P.xmin, b)]; };
         /** t(φ) on a grid via x = c + w sin φ (midpoint rule, m = 1); returns {xs, ts, T}. */
         const quad = (P, E, n = 400) => {
@@ -231,6 +231,8 @@ It depends on $E$ unless the potential is harmonic near enough; as $E$ approache
           // displacement vs prediction
           const d0 = dS.value, k = sim.k, w = Math.sqrt(Math.abs(k));
           const pred = (tt) => (Math.abs(k) < 1e-9 ? d0 : k > 0 ? d0 * Math.cos(w * tt) : d0 * Math.cosh(w * tt));
+          let lo = -Math.abs(d0), hi = Math.abs(d0); for (const z of sim.out) { lo = Math.min(lo, z); hi = Math.max(hi, z); }
+          const pad = 0.12 * (hi - lo || 0.1); g.setView([0, TEND], [lo - pad, hi + pad]);
           g.hline(0, { color: 'faint', width: 1 });
           g.fn(pred, { color: Math.abs(k) < 1e-9 ? 'orange' : k > 0 ? 'green' : 'red', dash: [6, 4], width: 1.6, n: 600 });
           g.path(sim.out.filter((_, j) => j % 4 === 0).map((z, j) => [j * 4 * dt, z]), { color: 'gold', width: 1, alpha: 0.35 });
@@ -290,7 +292,7 @@ independently of its mass and (as long as it clears the planet) of the launch di
           s.line(1, E, XR[1], E, { color: 'gold', width: 2 });
           if (isFinite(rmax) && rmax < XR[1]) s.dot(rmax, E, { color: 'red', r: 5, label: 'turning point', labelPos: 'n' });
           if (r < XR[1]) { s.line(r, -1 / r, r, E, { color: 'green', width: 4, alpha: 0.8 }); s.dot(r, -1 / r, { color: 'gold', r: 6 }); }
-          s.text(E >= 0 ? 'E ≥ 0: unbound' : 'E < 0: bound', XR[1] - 0.2, E, { color: 'gold', size: 12, align: 'right', dy: -10 });
+          s.text(E >= 0 ? 'E ≥ 0: unbound' : 'E < 0: bound', XR[1] - 0.2, E, { color: 'gold', size: 12, align: 'right', dy: 12 });
           R = { E, rmax, r, v: st[1], v0 };
         }, { period: 14 });
         v.legend([['ink', 'potential energy $U(r) = -GM/r$'], ['gold', 'total energy $E$'], ['green', 'kinetic energy $E - U$', { area: true }], ['red', 'turning point $r_{\\max}$', { dash: true }]]);
@@ -366,6 +368,7 @@ The block stays on the track all the way round if and only if $N \ge 0$ at the t
           g.fn((th) => (vmax(th) && Nf(th) >= 0 ? Nf(th) : NaN), { color: 'purple', width: 2.4, n: 400 });
           g.fn((th) => (vmax(th) && Nf(th) < 0 ? Nf(th) : NaN), { color: 'red', width: 2.4, dash: [5, 4], n: 400 });
           const thOff = h > RR && h < 2.5 * RR ? Math.acos(-2 * (h - RR) / (3 * RR)) : null;
+          if (thOff) s.dot(RR * Math.sin(thOff), RR * (1 - Math.cos(thOff)), { color: 'red', r: 5, hollow: true, label: 'N = 0', labelPos: 'ne' });
           if (thOff) { g.dot(thOff, 0, { color: 'red', r: 5 }); g.dot(2 * Math.PI - thOff, 0, { color: 'red', r: 3, hollow: true }); }
           if (st.ph === 'loop') g.dot(st.th, Nf(st.th), { color: 'gold', r: 6 });
           R = { h, Ntop: Nf(Math.PI), thOff, ph: st.ph };

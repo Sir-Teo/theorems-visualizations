@@ -123,7 +123,7 @@ has the exact solution $T(n)=n\lceil\lg n\rceil-2^{\lceil\lg n\rceil}+n=\Theta(n
           sh: [String.raw`2T(\lfloor n/2\rfloor+s+\lfloor\varepsilon n\rfloor)+n`, null],
         };
         const sel = v.select('$T(n) =$', Object.entries(V).map(([value, x]) => ({ value, label: `$${x[0]}$` })), 'ms', { onChange: () => vis() });
-        const sS = v.slider('constant shift $s$', 0, 40, 17, { int: true });
+        const sS = v.slider('constant shift $s$', 0, 40, 5, { int: true });
         const eS = v.slider('proportional shift $\\varepsilon$', 0, 0.2, 0, { step: 0.01 });
         const vis = () => { sS.el.hidden = eS.el.hidden = sel.value !== 'sh'; };
         vis();
@@ -144,9 +144,8 @@ has the exact solution $T(n)=n\lceil\lg n\rceil-2^{\lceil\lg n\rceil}+n=\Theta(n
           const T = (cur = solve(sel.value)), R = (n) => T[n] / (n * LG(n));
           let lo = Infinity, hi = -Infinity; for (let n = 64; n <= N; n++) { lo = Math.min(lo, R(n)); hi = Math.max(hi, R(n)); }
           const others = Object.keys(V).filter((k) => k !== sel.value).map((k) => solve(k));
-          let ym = hi; others.forEach((O) => { for (let n = 64; n <= N; n++) ym = Math.max(ym, O[n] / (n * LG(n))); });
-          s.setView([2, N], [0, Math.max(1.4, ym * 1.12)]);
-          for (let k = 2; k <= 12; k++) s.vline(2 ** k, { color: 'faint', width: 1 });
+          s.setView([2, N], [0, Math.max(1.4, hi * 1.15)]);
+          for (let k = 2; k <= 12; k++) s.vline(2 ** k, { color: 'faint', width: 1, alpha: 0.35 });
           s.hband(lo, hi, { color: 'green', alpha: 0.1, edges: true });
           s.hline(1, { color: 'muted', dash: true, width: 1.2 });
           others.forEach((O) => { const pts = []; for (let n = 2; n <= N; n++) pts.push([n, O[n] / (n * LG(n))]); s.path(pts, { color: 'muted', width: 1, alpha: 0.45 }); });
@@ -174,7 +173,7 @@ has the exact solution $T(n)=n\lceil\lg n\rceil-2^{\lceil\lg n\rceil}+n=\Theta(n
 $$T(n)=\Theta\!\left(n^p\left(1+\int_1^n\frac{f(u)}{u^{p+1}}\,du\right)\right).$$
 For $f(n)=n^d$ this gives $\Theta(n^p)$ if $d<p$, $\Theta(n^p\lg n)$ if $d=p$ and $\Theta(n^d)$ if $d>p$; with one term it contains the master theorem.`,
       idea: String.raw`The function $\phi(p)=\sum a_i b_i^{\,p}$ is continuous and strictly decreasing from $+\infty$ to $0$, so the intermediate value theorem (pma 4.23) gives exactly one root, which bisection finds. The exponent $p$ is chosen so that $n^p$ solves the homogeneous recurrence exactly: $\sum a_i(b_i n)^p=n^p$. The integral (pma 6.1) plays the role of summing the recursion tree level by level (2.6), with the uneven splits handled by the weights $a_ib_i^p$, which sum to $1$ and act like probabilities of following each branch.`,
-      caption: String.raw`Set two uneven splits $a_1T(b_1n)+a_2T(b_2n)+n^d$ (default: median of medians, $T(n/5)+T(7n/10)+n$). Left: $\phi(p)$ with the bisection iterates closing in on its crossing of $1$; the dashed line marks $d$. Right: the exact recurrence (with floors, computed by memoised recursion) divided by the Akra–Bazzi prediction, which levels off.`,
+      caption: String.raw`Set two uneven splits $a_1T(b_1n)+a_2T(b_2n)+n^d$ (default: median of medians, $T(n/5)+T(7n/10)+n$). Left: $\varphi(p)$ with the bisection iterates closing in on its crossing of $1$; the dashed line marks $d$. Right: the exact recurrence (with floors, computed by memoised recursion) divided by the Akra–Bazzi prediction, which levels off.`,
       deps: ['algo-2.7', 'pma-4.23', 'pma-6.1'],
       refs: ['CLRS 4e §4.7'],
       credit: 'Akra & Bazzi, 1998; Leighton, 1996',
@@ -195,7 +194,7 @@ For $f(n)=n^d$ this gives $\Theta(n^p)$ if $d<p$, $\Theta(n^p\lg n)$ if $d=p$ an
           A.setView([p - 2, p + 2], [0, 3]);
           A.hline(1, { color: 'muted', dash: true, width: 1.2 });
           A.fn(phi, { color: 'accent', width: 2.4 });
-          its.forEach(([m, above], t) => { if (m > p - 2 && m < p + 2) A.dot(m, 0.08 + 0.1 * (t % 2), { r: 3, color: 'gold' }); });
+          its.forEach(([m, above], t) => { if (m > p - 2 && m < p + 2) A.dot(m, 0.3 + 0.12 * (t % 2), { r: 3, color: 'gold' }); });
           A.vline(p, { color: 'green', width: 2 });
           A.dot(p, 1, { r: 5, color: 'green', label: `p = ${v.fix(p, 4)}`, labelPos: 'ne' });
           if (d > p - 2 && d < p + 2) { A.vline(d, { color: 'orange', dash: true, width: 1.5 }); A.text('d', d, 2.8, { color: 'orange', dx: 5, size: 12, math: true }); }
@@ -328,7 +327,7 @@ so $S(m)=\Theta(m\lg m)$ by the master theorem and $T(n)=\Theta(\lg n\,\lg\lg n)
           const rt = (z) => (Math.abs(z.im) < 1e-12 ? v.fix(z.re, 4) : `${v.fix(z.re, 3)} ${z.im < 0 ? '-' : '+'} ${v.fix(Math.abs(z.im), 3)}i`);
           const roots = `$r_1 = ${rt(r1)}$, $r_2 = ${rt(r2)}$`;
           const conv = dom ? `ratio after 30 steps ${v.fix(last, 6)} → $r_1 = ${v.fix(lim, 6)}$ ✓` : `no dominant root ($|r_1| = |r_2| = ${v.fix(r1.abs(), 3)}$): the ratio does not converge`;
-          return `${roots} · closed form vs iteration at $n = 30$: $a_{30} = ${tnum(a30)}$, relative error ${isFinite(err) ? v.sci(err, 1) : '—'} · ${conv}`;
+          return `${roots} · closed form vs iteration at $n = 30$: $a_{30} = ${tnum(a30)}$, relative error ${isFinite(err) ? `$${v.sci(err, 1)}$` : '—'} · ${conv}`;
         });
       },
     },
@@ -363,7 +362,7 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
           out[out.length - 1].note += ` Done: $x^{${n}}$ after **${mult}** multiplications.`;
           return out;
         };
-        const S = v.steps({ frames, code: ['Power(x, n):   ▷ n = (b_{L−1} … b_0)₂, b_{L−1} = 1', '  r ← x', '  for i ← L−2 downto 0:', '    r ← r · r        ▷ square', '    if b_i = 1:  r ← r · x', '  return r'], codeTitle: 'left-to-right binary method', start: 'end', speed: 2 });
+        const S = v.steps({ frames, code: ['Power(x, n):   ▷ $n = (b_{L-1}\\cdots b_0)_2$ with $b_{L-1} = 1$', '  r ← x', '  for i ← L−2 downto 0:', '    r ← r · r        ▷ square', '    if $b_i = 1$:  r ← r · x', '  return r'], codeTitle: 'left-to-right binary method', start: 'end', speed: 2 });
         const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 190 });
         const Tb = v.table(ts, { rows: 3, cols: 6, rowLabels: ['bit', 'square', '× x'], maxCell: 58, size: 15, subSize: 10, subColor: 'muted' });
         const ps = v.stage({ x: [2, 1023], y: [1, 1023], xlog: true, ylog: true, axes: 'box', height: 230, title: 'multiplications for every $n \\le 1023$', xlabel: 'n' });
@@ -408,7 +407,7 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
         const rng = v.rng(8);
         let arr = [3, 7, 1, 9, 4, 10, 2, 6, 8, 5], run = invFrames(arr), drag = null;
         const nS = v.slider('n', 4, 14, 10, { int: true, onChange: () => { arr = rng.shuffle(Array.from({ length: nS.value }, (_, i) => i + 1)); S.reset(); } });
-        const S = v.steps({ frames: () => (run = invFrames(arr)).frames, code: ['Sort-and-Count(A):', '  split A into halves; count each half recursively', '  merge the halves L and R:', '    if L[i] ≤ R[j]: output L[i]', '    else: output R[j];', '         count += |L| − i    ▷ all of L[i..] exceed R[j]', '  return left + right + cross'], codeTitle: 'counting inversions', speed: 1.5, start: 13 });
+        const S = v.steps({ frames: () => (run = invFrames(arr)).frames, code: ['Sort-and-Count(A):', '  split A into halves; count each half recursively', '  merge the halves L and R:', '    if L[i] ≤ R[j]: output L[i]', '    else: output R[j];', '         count += |L| − i    ▷ all of L[i..] exceed R[j]', '  return left + right + cross'], codeTitle: 'counting inversions', speed: 1.5, start: 13, codePos: 'below' });
         v.button('Shuffle', () => { arr = rng.shuffle(arr); S.reset(); });
         v.button('Sorted', () => { arr = arr.slice().sort((a, b) => a - b); S.reset(); });
         v.button('Reversed', () => { arr = arr.slice().sort((a, b) => b - a); S.reset(); });
@@ -433,9 +432,9 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
           }
           const [lo, mid, hi] = f.cur || [-1, -1, -1];
           for (let p = 0; p < n; p++) {
-            const inL = p >= lo && p < mid, inR = p >= mid && p < hi, col = f.jump === p ? 'gold' : inL ? 'blue' : inR ? 'purple' : 'ink';
-            s.dot(xpos(p), 0, { r: 13, color: col, hollow: false });
-            s.text(String(arr[p]), xpos(p), 0, { align: 'center', size: 12, weight: 700, color: 'panel' });
+            const inL = p >= lo && p < mid, inR = p >= mid && p < hi, col = f.jump === p ? 'gold' : inL ? 'blue' : inR ? 'purple' : 'muted';
+            s.dot(xpos(p), 0, { r: 13, color: col });
+            s.text(String(arr[p]), xpos(p), 0, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false });
           }
           // merges level by level
           const all = []; (function seg(a, b, d) { if (b - a > 1) { all.push([a, b, d]); const m = a + Math.ceil((b - a) / 2); seg(a, m, d + 1); seg(m, b, d + 1); } })(0, n, 0);
@@ -466,9 +465,9 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
         const XS = [8, 6, 7, 5, 3, 10, 9];
         const QCODE = ['PlaceQueens(r):', '  if r = n: report the solution', '  for c ← 1 to n:', '    if some earlier queen attacks (r, c): skip  ▷ prune', '    Q[r] ← c;  PlaceQueens(r + 1)', '    if a solution was found: stop', '    remove the queen from row r  ▷ backtrack'];
         const SCODE = ['Subset(i, sum):', '  if sum = target: report the solution', '  for choice in (take x_i, leave x_i):', '    if sum′ > target or sum′ + rest < target: skip  ▷ prune', '    Subset(i + 1, sum′)', '    if a solution was found: stop', '    undo the choice  ▷ backtrack'];
-        const mode = v.select('', [{ value: 'q', label: 'n queens' }, { value: 's', label: 'subset sum' }], 'q', { onChange: () => { nS.el.hidden = mode.value !== 'q'; tS.el.hidden = mode.value !== 's'; S.setCode(mode.value === 'q' ? QCODE : SCODE); S.reset(); } });
-        const nS = v.slider('board size $n$', 4, 8, 6, { int: true, onChange: () => S.reset() });
-        const tS = v.slider('target', 1, 48, 15, { int: true, onChange: () => S.reset() });
+        const mode = v.select('', [{ value: 'q', label: 'n queens' }, { value: 's', label: 'subset sum' }], 'q', { onChange: () => { nS.el.hidden = mode.value !== 'q'; tS.el.hidden = mode.value !== 's'; S.setCode(mode.value === 'q' ? QCODE : SCODE); S.reset({ at: 'end' }); } });
+        const nS = v.slider('board size $n$', 4, 8, 6, { int: true, onChange: () => S.reset({ at: 'end' }) });
+        const tS = v.slider('target', 1, 48, 15, { int: true, onChange: () => S.reset({ at: 'end' }) });
         tS.el.hidden = true;
         const B = v.stage({ x: [0, 6], y: [0, 6], equal: true, axes: false, height: 330 });
         const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330 });
@@ -478,6 +477,8 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
           run = mode.value === 'q' ? queensRun(nS.value) : subsetRun(XS, tS.value);
           const small = run.nodes.length > 45;
           G.set({ nodes: run.nodes.map((x) => ({ ...x, label: small ? '' : x.label })), edges: run.edges, r: small ? 4.5 : 9 }).layout('tree', { root: 'R' });
+          const ys = G.nodes.map((x) => x.y), y0 = Math.min(...ys), y1 = Math.max(...ys);
+          if (y1 > y0) for (const x of G.nodes) x.y = 0.1 + 0.8 * (x.y - y0) / (y1 - y0);
           return run.frames;
         };
         const S = v.steps({ frames: build, code: QCODE, codeTitle: 'backtracking', speed: 4, start: 95 });
@@ -487,7 +488,7 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
           if (q) {
             const n = nS.value; B.setView([0, n], [0, n]);
             for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) B.rect(c, n - r - 1, c + 1, n - r, { fill: (r + c) % 2 ? 'muted' : 'faint', fillAlpha: (r + c) % 2 ? 0.25 : 0.12, stroke: false });
-            f.q.forEach((c, r) => { B.dot(c + 0.5, n - r - 0.5, { r: Math.min(16, 140 / n), color: f.sol ? 'green' : 'accent' }); B.text('Q', c + 0.5, n - r - 0.5, { align: 'center', size: Math.min(15, 120 / n), weight: 700, color: 'panel' }); });
+            f.q.forEach((c, r) => { B.dot(c + 0.5, n - r - 0.5, { r: Math.min(16, 140 / n), color: f.sol ? 'green' : 'accent' }); B.text('Q', c + 0.5, n - r - 0.5, { align: 'center', size: Math.min(15, 120 / n), weight: 700, color: 'panel', halo: false }); });
             if (f.tryAt) {
               const [r, c] = f.tryAt, ar = f.att;
               B.line(f.q[ar] + 0.5, n - ar - 0.5, c + 0.5, n - r - 0.5, { color: 'red', width: 2.5, dash: [5, 4] });
@@ -498,7 +499,7 @@ multiplications, where $\nu(n)$ is the number of 1s in binary, so between $\lg n
             XS.forEach((x, k) => {
               const st = f.pick[k], col = st === true ? 'green' : st === false ? 'muted' : 'accent';
               B.rect(k + 0.1, 4.6, k + 0.9, 5.6, { fill: col, fillAlpha: st === true ? 0.75 : st === false ? 0.12 : 0.15, color: col, width: 1.5 });
-              B.text(String(x), k + 0.5, 5.1, { align: 'center', size: 14, weight: 700, color: st === true ? 'panel' : 'ink' });
+              B.text(String(x), k + 0.5, 5.1, { align: 'center', size: 14, weight: 700, color: st === true ? 'panel' : 'ink', halo: false });
               if (st === false) B.line(k + 0.15, 4.65, k + 0.85, 5.55, { color: 'muted', width: 1.5 });
             });
             const sc = 6.8 / Math.max(T, XS.reduce((a, b) => a + b, 0) / 2);

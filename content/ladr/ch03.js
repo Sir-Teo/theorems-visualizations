@@ -695,7 +695,7 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
           drawSub(scW, B, aff ? 'orange' : 'green', { r: 1.5, c: bb });
           scW.path([TV1, sum, TV2], { color: 'muted', dash: [4, 4], width: 1.2 });
           arrow3(scW, O3, TV1, 'blue', 'Tv_1', { S }); arrow3(scW, O3, TV2, 'purple', 'Tv_2', { S });
-          arrow3(scW, O3, sum, sOK ? 'green' : 'red', sOK ? 'Tv_1+Tv_2=T(v_1+v_2)' : 'Tv_1+Tv_2', { S, size: 13 });
+          arrow3(scW, O3, sum, sOK ? 'green' : 'red', sOK ? 'T(v_1+v_2)' : 'Tv_1+Tv_2', { S, size: 13 });
           arrow3(scW, O3, lt, lOK ? 'gold' : 'red', lOK ? '\\lambda Tv_1' : '\\lambda Tv_1', { S, size: 13 });
           if (!sOK) { scW.dot(Tsum, { r: 5, color: 'green' }); scW.tex('T(v_1+v_2)', Tsum, { color: 'green', size: 13, dy: 16 }); }
           scW.dot(O3, { r: 5, color: imgDist(O3) < 1e-6 ? 'green' : 'red' });
@@ -929,7 +929,7 @@ with more variables than equations ($n>m$) has a solution $(x_1,\dots,x_n)\ne0$.
         const M = v.M;
         const third = v.toggle('third equation (then $n=m=3$)', false);
         const S = v.stage({ x: [-2.1, 2.1], y: [-1.9, 1.9], equal: true, axes: false, height: 400, full: true });
-        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.36 });
+        const sc = v.scene3(S, { yaw: -1.0, pitch: 0.4 });
         const cols = ['blue', 'purple', 'teal'], hs = [];
         [[0.3, -0.5, 0.9], [0.9, 0.5, 0.3], [-0.3, 1.0, 0.3]].forEach((p, k) => hs.push(sc.handle(p, { color: cols[k], label: `a${'₁₂₃'[k]}`, snap: (q) => { const r = snapTo(q, hs.filter((_, j) => j !== k && (j < 2 || third.value)).map((h) => h.p), 0.1); return len(r) < 0.3 ? q : r; } })));
         let info = {};
@@ -948,7 +948,7 @@ with more variables than equations ($n>m$) has a solution $(x_1,\dots,x_n)\ne0$.
           const sys = String.raw`\begin{aligned}` + A.map((a) => `${formTeX(a)} &= 0`).join(String.raw`\\`) + String.raw`\end{aligned}`;
           if (!N.length) return String.raw`$${sys}$ $\quad$ ${A.length} equations in 3 unknowns, and the planes meet only at $0$: the only solution is $x=0$ (now $n=m$, so 3.26 promises nothing).`;
           const x = scl(N[0], 1.15), res = A.map((a) => tn(dot(a, x), 3)).join(',\\ ');
-          return String.raw`$${sys}$ $\quad$ ${A.length} equations, 3 unknowns: the solution set has dimension ${N.length}. A nonzero solution: $x = ${vtex(x)}$, which gives $${res}$.`;
+          return String.raw`$${sys}$ $\quad$ a nonzero solution $x = ${vtex(x)}$ (left sides $${res}$); all solutions: dimension ${N.length}.`;
         });
       },
     },
@@ -1073,7 +1073,7 @@ $$\mathcal M(S+T)=\mathcal M(S)+\mathcal M(T).$$`,
         const H = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 360, title: 'the maps $S$, $T$, $S+T$ on a house' });
         const w1 = W.handle(0.3, -1.0, { color: 'teal', label: 'w₁', constrain: disc(1.5) }), w2 = W.handle(-0.9, 0.3, { color: 'pink', label: 'w₂', constrain: disc(1.5) });
         const s1 = W.handle(0.8, 0.3, { color: 'blue', label: 'Se₁', constrain: disc(1.3) }), s2 = W.handle(-0.3, 0.8, { color: 'blue', label: 'Se₂', constrain: disc(1.3) });
-        const t1 = W.handle(0.4, -0.5, { color: 'orange', label: 'Te₁', constrain: disc(1.3) }), t2 = W.handle(0.5, 0.6, { color: 'orange', label: 'Te₂', constrain: disc(1.3) });
+        const t1 = W.handle(0.4, -0.5, { color: 'orange', label: 'Te₁', labelPos: 'sw', constrain: disc(1.3) }), t2 = W.handle(0.5, 0.6, { color: 'orange', label: 'Te₂', constrain: disc(1.3) });
         let info = {};
         v.legend([['blue', '$S$'], ['orange', '$T$'], ['green', '$S+T$'], ['teal', 'basis $w_1, w_2$ of $W$']]);
         v.render(() => {

@@ -167,7 +167,7 @@ and integrating the second law gives the impulse–momentum theorem $\mathbf J =
           if (Math.abs(pNow) > 0.02) { s0.arrow(xNow, 0.62, xNow + pNow * unit, 0.62, { color: 'blue', width: 2.2 }); s0.tex('p', xNow + pNow * unit, 0.62, { color: 'blue', align: pNow > 0 ? 'left' : 'right', dx: pNow > 0 ? 5 : -5 }); }
           s0.corner(Fnow > 0.01 ? `F = ${v.fix(Fnow, 1)} N` : '', 'tl', { color: 'orange' });
           // ── force panel
-          s1.setView(null, shape.value === 'draw' ? [-7, 44] : [-0.16 * R.Fmax, R.Fmax * 1.18]);
+          s1.setView(null, shape.value === 'draw' ? [-7, 50] : [-0.16 * R.Fmax, R.Fmax * 1.18]);
           const area = []; for (let i = 0; i <= 300; i++) { const tt = (ts * i) / 300; area.push([tt, force(tt)]); }
           area.push([ts, 0], [0, 0]);
           s1.poly(area, { fill: 'accent', fillAlpha: 0.24, stroke: false });
@@ -300,7 +300,7 @@ For a continuous body with mass density $\rho$ occupying a region $V$ (a volume,
         const sL = v.stage({ x: [-0.9, 4.3], y: [-0.7, 3.7], equal: true, height: 320, title: 'the body: drag corners or masses, and the pin' });
         const sR = v.stage({ x: [-3, 3], y: [-4, 1], equal: true, axes: false, height: 320, title: 'hung from the pin' });
         const lam = [[0, 0], [3.4, 0], [3.4, 1], [1, 1], [1, 3.2], [0, 3.2]].map((p) => sL.handle(p[0], p[1], { color: 'accent', r: 5.5 }));
-        const pts = [[0.3, 0.3], [3.6, 0.5], [3, 3.1], [0.5, 2.7]].map((p, i) => sL.handle(p[0], p[1], { color: COLS[i], label: `m${'₁₂₃₄'[i]}`, labelPos: 'ne' }));
+        const pts = [[0.3, 0.3], [3.6, 0.5], [3, 3.1], [1.5, 2.3]].map((p, i) => sL.handle(p[0], p[1], { color: COLS[i], label: `m${'₁₂₃₄'[i]}`, labelPos: 'ne' }));
         const pin = sL.handle(0.5, 2.75, { color: 'red', label: 'pin', labelPos: 'nw' });
         const g = 9.81; let cur = null;
         const compute = () => {

@@ -36,8 +36,8 @@ const PAIRS9 = {
   sq: { label: '$n^2$ vs $n\\log_2 n$', f: (n) => n * n, g: (n) => n * Math.log2(n), type: 'w', ft: 'n^2', gt: 'n\\log_2 n' },
   lin: { label: '$2n+\\sqrt n$ vs $n$', f: (n) => 2 * n + Math.sqrt(n), g: (n) => n, type: 'o', ft: '2n+\\sqrt n', gt: 'n', theta: true },
 };
-const GRID9 = Array.from({ length: 3001 }, (_, k) => Math.pow(10, 15 * k / 3000));
-/** Least n0 with the test holding for every n ≥ n0 (n ≤ 1e15); Infinity if it still fails at 1e15. */
+const GRID9 = Array.from({ length: 6001 }, (_, k) => Math.pow(10, 100 * k / 6000));
+/** Least n0 with the test holding for every n ≥ n0 (checked on a log grid to 1e100); Infinity if it still fails there. */
 function n0Of(P, c) {
   const ok = (n) => (P.type === 'o' ? P.f(n) <= c * P.g(n) : P.f(n) >= c * P.g(n));
   let last = -1;
@@ -67,9 +67,9 @@ const FAM = {
   fact: (x, p) => p.lgamma(Math.pow(10, x) + 1) / Math.LN10,
 };
 const MATCH = {
-  pl: { slow: 'polylog', fast: 'poly', st: (p) => `(\\log_2 n)^{${p.a}}`, ft: (p) => `n^{${+p.b.toFixed(3)}}`, xmax: 1e7 },
-  pe: { slow: 'poly', fast: 'exp', st: (p) => `n^{${+p.b.toFixed(3)}}`, ft: (p) => `${+p.c.toFixed(4)}^n`, xmax: 300 },
-  ef: { slow: 'exp', fast: 'fact', st: (p) => `${+p.c.toFixed(4)}^n`, ft: () => 'n!', xmax: 300 },
+  pl: { slow: 'polylog', fast: 'poly', st: (p) => `(\\log_2 n)^{${p.a}}`, ft: (p) => `n^{${+p.b.toFixed(2)}}`, xmax: 1e7 },
+  pe: { slow: 'poly', fast: 'exp', st: (p) => `n^{${+p.b.toFixed(2)}}`, ft: (p) => `${+p.c.toFixed(3)}^n`, xmax: 300 },
+  ef: { slow: 'exp', fast: 'fact', st: (p) => `${+p.c.toFixed(3)}^n`, ft: () => 'n!', xmax: 300 },
 };
 function crossover(M, p) {
   const d = (x) => FAM[M.fast](x, p) - FAM[M.slow](x, p);
@@ -104,14 +104,14 @@ Equivalently, $f = o(g)$ iff $f(n)/g(n) \to 0$ and $f = \omega(g)$ iff $f(n)/g(n
       tags: ['asymptotics'],
       viz(v) {
         const pair = v.select('', Object.entries(PAIRS9).map(([value, P]) => ({ value, label: P.label })), 'nlog');
-        const c = v.slider('$c$', 1e-3, 1e3, 0.1, { log: true, decimals: 3 });
+        const c = v.slider('$c$', 0.005, 1e3, 0.1, { log: true, decimals: 3 });
         const L = v.stage({ x: [1, 1e6], y: [1, 1e6], xlog: true, ylog: true, height: 320, title: '$f$ and $c\\,g$' });
-        const R = v.stage({ x: [1e-3, 1e3], y: [1, 1e15], xlog: true, ylog: true, height: 320, title: 'threshold $n_0(c)$' });
+        const R = v.stage({ x: [0.005, 1e3], y: [1, 1e70], xlog: true, ylog: true, height: 320, title: 'threshold $n_0(c)$' });
         const cache = {};
-        const curve = (k) => cache[k] || (cache[k] = Array.from({ length: 241 }, (_, i) => { const cc = Math.pow(10, -3 + 6 * i / 240); return [cc, n0Of(PAIRS9[k], cc)]; }));
+        const curve = (k) => cache[k] || (cache[k] = Array.from({ length: 241 }, (_, i) => { const cc = 0.005 * Math.pow(2e5, i / 240); return [cc, n0Of(PAIRS9[k], cc)]; }));
         let cur = null;
         v.render(() => {
-          const P = PAIRS9[pair.value], C = c.value, n0 = n0Of(P, C), N = n0 === Infinity ? 1e15 : Math.min(1e15, Math.max(1e4, n0 * 1e3));
+          const P = PAIRS9[pair.value], C = c.value, n0 = n0Of(P, C), N = n0 === Infinity ? 1e15 : Math.min(1e80, Math.max(1e4, n0 * 1e3));
           cur = { P, C, n0 };
           let lo = Infinity, hi = 0;
           for (let k = 0; k <= 60; k++) { const n = Math.pow(N, k / 60); for (const y of [P.f(n), C * P.g(n)]) if (y > 0) { lo = Math.min(lo, y); hi = Math.max(hi, y); } }
@@ -120,12 +120,13 @@ Equivalently, $f = o(g)$ iff $f(n)/g(n) \to 0$ and $f = \omega(g)$ iff $f(n)/g(n
           L.fn((n) => C * P.g(n), { color: 'orange', width: 2.2, dash: [7, 4] });
           L.fn(P.f, { color: 'accent', width: 2.6 });
           // threshold curve
-          const pts = curve(pair.value);
+          const pts = curve(pair.value), fin = pts.filter(([, y]) => y < Infinity).map(([, y]) => y), ym = Math.pow(10, Math.max(4, Math.ceil(Math.log10(Math.max(...fin, 10))) + 1));
+          R.setView([0.005, 1e3], [1, ym]);
           R.path(pts.map(([cc, y]) => (y < Infinity ? [cc, Math.max(1, y)] : null)), { color: 'accent', width: 2.4 });
           const none = pts.filter(([, y]) => y === Infinity);
-          if (none.length) { R.vband(none[0][0], none[none.length - 1][0], { color: 'red', alpha: 0.1 }); R.text('no n₀ exists', Math.sqrt(none[0][0] * none[none.length - 1][0]), 1e13, { align: 'center', size: 12, weight: 600, color: 'red' }); }
+          if (none.length) { R.vband(none[0][0], none[none.length - 1][0], { color: 'red', alpha: 0.1 }); R.text('no n₀ exists', Math.sqrt(none[0][0] * none[none.length - 1][0]), Math.pow(ym, 0.85), { align: 'center', size: 12, weight: 600, color: 'red' }); }
           R.vline(C, { color: 'faint', dash: true });
-          if (n0 < Infinity) R.dot(C, Math.max(1, n0), { r: 6, color: 'gold' }); else R.dot(C, 1e15, { r: 6, color: 'red' });
+          if (n0 < Infinity) R.dot(C, Math.max(1, n0), { r: 6, color: 'gold' }); else R.dot(C, Math.pow(ym, 0.95), { r: 6, color: 'red' });
         });
         v.legend([['accent', '$f(n)$'], ['orange', '$c\\,g(n)$', { dash: true }], ['gold', 'current $c$', { dot: true }]]);
         v.readout(() => {
@@ -264,9 +265,9 @@ So every power of a logarithm is eventually beaten by every positive power of $n
           L.line(-0.6, 1, n + 0.6, 1, { color: 'faint', dash: [4, 4] });
           for (let k = 0; k <= n; k++) { const t = Math.pow(q, k) / M; L.rect(k - bw, 0, k + bw, t, { fill: t === 1 ? 'gold' : 'accent', fillAlpha: 0.5, color: t === 1 ? 'gold' : 'accent', width: 1 }); }
           let y = 0; for (let k = 0; k <= n; k++) { const t = Math.pow(q, k) / M; L.rect(xT - 0.7, y, xT + 0.7, y + t, { fill: k % 2 ? 'teal' : 'accent', fillAlpha: 0.45, color: 'panel', width: 0.6 }); y += t; }
-          if (B < H) { L.line(xT - 1.1, B, xT + 1.1, B, { color: 'green', width: 2.4 }); L.text('bound', xT + 1.15, B, { baseline: 'middle', size: 11.5, color: 'green', weight: 600 }); }
+          if (B < H) { L.line(xT - 1.1, B, xT + 1.1, B, { color: 'green', width: 2.4 }); L.text('bound', xT - 1.2, B, { align: 'right', baseline: 'middle', size: 11.5, color: 'green', weight: 600 }); }
           L.text('largest term = 1', -0.6, 1, { dy: -9, size: 11.5, color: 'muted' });
-          L.text(`${v.fix(tot, 2)}×`, xT, tot, { align: 'center', dy: -9, size: 12.5, weight: 700, color: 'ink' });
+          L.text(`${v.fix(tot, 2)}×`, xT, B < H && B - tot < 0.08 * H ? B : tot, { align: 'center', dy: -9, size: 12.5, weight: 700, color: 'ink' });
           // ratio vs n
           const pts = []; for (let m = 0; m <= 60; m++) pts.push([m, ratio(q, m)]);
           const yR = Math.max(...pts.map((p) => p[1]), one ? 0 : Math.min(B, 70)) * 1.12;
@@ -303,7 +304,7 @@ and if $f$ is nonincreasing the two inequalities hold in the opposite direction:
           sqrt: { label: '$\\sqrt x$', f: Math.sqrt, F: (x) => (2 / 3) * Math.pow(x, 1.5), m: 1, mono: 'inc' },
           sq: { label: '$x^2$', f: (x) => x * x, F: (x) => x * x * x / 3, m: 1, mono: 'inc' },
           inv: { label: '$1/x$', f: (x) => 1 / x, F: Math.log, m: 2, mono: 'dec' },
-          osc: { label: '$1+0.9\\cos 2\\pi x$', f: (x) => 1 + 0.9 * Math.cos(2 * Math.PI * x), F: (x) => x + 0.9 * Math.sin(2 * Math.PI * x) / (2 * Math.PI), m: 1, mono: 'none' },
+          osc: { label: 'not monotone', f: (x) => 1.2 + 0.9 * Math.cos(2 * Math.PI * x) + 0.15 * x, F: (x) => 1.2 * x + 0.9 * Math.sin(2 * Math.PI * x) / (2 * Math.PI) + 0.075 * x * x, m: 1, mono: 'none' },
         };
         const which = v.select('$f$', Object.entries(FUN).map(([value, P]) => ({ value, label: P.label })), 'ln');
         const nn = v.slider('$n$', 2, 20, 8, { int: true });
@@ -314,15 +315,17 @@ and if $f$ is nonincreasing the two inequalities hold in the opposite direction:
           const sh = (x) => f(x - 1);
           let lo = 0, hi = 0; for (let k = 0; k <= 400; k++) { const x = m + (n + 1 - m) * k / 400; for (const y of [f(x), sh(x)]) if (isFinite(y)) { lo = Math.min(lo, y); hi = Math.max(hi, y); } }
           if (P.mono === 'dec') hi = Math.min(hi, 1.15);
-          s.setView([m - 1.3, n + 1.5], [lo - 0.08 * (hi - lo), hi * 1.1]);
+          lo = Math.max(lo, -0.3 * hi);
+          const yl = lo - 0.08 * (hi - lo), cl = (g) => (x) => { const y = g(x); return y < yl ? NaN : y; };
+          s.setView([m - 1.3, n + 1.5], [yl, hi * 1.1]);
           for (let k = m; k <= n; k++) {
             const h = f(k);
             s.between(f, () => h, k, k + 1, { fill: 'orange', fillAlpha: 0.32 });
-            s.between(sh, () => h, k, k + 1, { fill: 'purple', fillAlpha: 0.3 });
+            s.between((x) => Math.max(sh(x), yl), () => h, k, k + 1, { fill: 'purple', fillAlpha: 0.3 });
             s.rect(k, 0, k + 1, h, { color: 'accent', width: 1.3, fill: 'accent', fillAlpha: 0.12 });
           }
-          s.fn(f, { domain: [Math.max(m - 1, 1e-3), n + 1.4], color: 'orange', width: 2.4 });
-          s.fn(sh, { domain: [Math.max(m, 1 + 1e-3), n + 1.4], color: 'purple', width: 2.4 });
+          s.fn(cl(f), { domain: [Math.max(m - 1, 1e-3), n + 1.4], color: 'orange', width: 2.4 });
+          s.fn(cl(sh), { domain: [Math.max(m, 1 + 1e-3), n + 1.4], color: 'purple', width: 2.4 });
           s.vline(m, { color: 'faint', dash: true }); s.vline(n + 1, { color: 'faint', dash: true });
           let S = 0; for (let k = m; k <= n; k++) S += f(k);
           cur = { P, n, m, S, I1: P.F(n) - P.F(m - 1), I2: P.F(n + 1) - P.F(m) };
@@ -354,13 +357,13 @@ Hence $H_n = \ln n + O(1) = \Theta(\log n)$. Moreover $H_n - \ln n$ decreases to
         const G = 0.5772156649015329;
         const nn = v.slider('$n$', 1, 1e6, 10, { log: true, int: true });
         const t = v.slider('slide', 0, 1, 0, { step: 0.01 });
-        const L = v.stage({ x: [0.5, 13.5], y: [-0.05, 1.12], axes: 'box', height: 320, title: 'slivers between $1/k$ and $1/x$' });
+        const L = v.stage({ x: [0, 13.5], y: [-0.05, 1.12], axes: 'box', height: 320, title: 'slivers between $1/k$ and $1/x$' });
         const R = v.stage({ x: [1, 1e6], y: [-0.05, 1.12], xlog: true, axes: 'box', height: 320, title: '$H_n - \\ln n$' });
         const COL = ['gold', 'teal', 'pink', 'purple', 'orange', 'green'];
         v.render(() => {
           const n = Math.round(nn.value), T = t.value, X1 = 13.5;
           for (let k = 1; k <= Math.min(n, 12); k++) L.rect(k, 0, k + 1, 1 / k, { color: 'accent', width: 1, fill: 'accent', fillAlpha: 0.08 });
-          L.fn((x) => 1 / x, { domain: [0.75, X1], color: 'orange', width: 2.2 });
+          L.fn((x) => 1 / x, { domain: [0.9, X1], color: 'orange', width: 2.2 });
           if (T > 0) L.rect(1, 0, 2, 1, { color: 'green', width: 2, dash: [6, 4] });
           for (let k = 1; k <= Math.min(n, 3000); k++) {
             const dx = -(k - 1) * T; if (k + 1 + dx > X1) continue;
@@ -374,7 +377,7 @@ Hence $H_n = \ln n + O(1) = \Theta(\log n)$. Moreover $H_n - \ln n$ decreases to
           R.path(low, { color: 'purple', width: 1.8 });
           R.path(pts, { color: 'accent', width: 2.4 });
           R.dot(n, H[n] - Math.log(n), { r: 5.5, color: 'accent' });
-          R.text('γ', 1.5, G, { dy: -9, size: 13, weight: 700, color: 'gold' });
+          R.text('γ = 0.5772…', 8e5, G, { dy: -10, align: 'right', size: 12.5, weight: 700, color: 'gold' });
         });
         v.legend([['accent', '$H_n - \\ln n$'], ['purple', '$H_n - \\ln(n+1)$ = sliver total'], ['gold', '$\\gamma$', { dash: true }], ['green', 'band $[0, 1]$', { area: true }]]);
         v.readout(() => {

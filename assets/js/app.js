@@ -132,6 +132,7 @@ function pageHome() {
         <span><b>${G.items.length.toLocaleString('en')}</b>ideas</span>
         <span><b>${nViz.toLocaleString('en')}</b>interactive visualizations</span>
         <span><b>${G.edgeCount.toLocaleString('en')}</b>dependency links</span>
+        ${G.plannedCount ? `<span><b>${G.plannedCount.toLocaleString('en')}</b>more on the syllabus</span>` : ''}
         <span><b>${G.live.length}</b>of ${G.collections.length} collections live</span>
         <span><b>${G.fields.length}</b>fields</span>
       </div>

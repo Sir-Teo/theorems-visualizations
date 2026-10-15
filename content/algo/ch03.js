@@ -339,7 +339,8 @@ A sorting algorithm is **stable** if records with equal keys leave in the order 
           const seen = {};
           cards = Array.from({ length: n }, (_, id) => { const rank = rng.int(1, K); seen[rank] = (seen[rank] || 0) + 1; return { id, rank, occ: seen[rank] - 1 }; });
         };
-        deal();
+        const hand0 = [3, 1, 3, 2, 1, 2, 4, 1, 4, 2], seen0 = {};
+        cards = hand0.map((rank, id) => { seen0[rank] = (seen0[rank] || 0) + 1; return { id, rank, occ: seen0[rank] - 1 }; });
         v.button('Deal a new hand', deal);
         const S = v.stage({ x: [-0.6, n - 0.4], y: [-0.95, 3.6], axes: false, height: 300, weight: 2.7, minWidth: 420 });
         const G = v.stage({ x: [-0.7, 4.7], y: [-0.3, 1.22], axes: false, height: 300, weight: 1, minWidth: 210, title: 'extra memory allocated (cells)' });
@@ -409,7 +410,7 @@ A sorting algorithm is **stable** if records with equal keys leave in the order 
         const fam = v.select('input', [{ value: 'random', label: 'random' }, { value: 'nearly', label: 'nearly sorted' }, { value: 'reversed', label: 'reversed' }, { value: 'sorted', label: 'sorted' }], 'random', { onChange: (f) => { vals = FAM[f](); pick = -1; S.reset(); } });
         v.button('Shuffle', () => { fam.set('random'); vals = FAM.random(); pick = -1; S.reset(); });
         const M = v.stage({ x: [-0.6, n - 0.4], y: [-3.25, 2.45], axes: false, height: 300, weight: 1.9, minWidth: 380 });
-        const P = v.stage({ x: [4, 1024], y: [1, 1e6], xlog: true, ylog: true, axes: 'box', height: 300, weight: 1, minWidth: 250, title: 'shifts (= inversions) vs $n$' });
+        const P = v.stage({ x: [4, 1024], y: [0.5, 1e6], xlog: true, ylog: true, axes: 'box', height: 300, weight: 1, minWidth: 250, title: 'shifts (= inversions) vs $n$' });
         const f0 = insertionTrace(vals);
         const S = v.steps({ frames: () => insertionTrace(vals), code: INS_CODE, codeTitle: 'Insertion-Sort(A)', codePos: 'below', speed: 3, start: f0.findIndex((f) => f.j === 6 && f.line === 4) });
         // larger inputs, counted exactly
@@ -418,7 +419,7 @@ A sorting algorithm is **stable** if records with equal keys leave in the order 
           const m = 1 << k, a = range1(m);
           big.random.push([m, inversions(r2.shuffle(a))]);
           const b = a.slice(); for (let i = 0; i + 1 < m; i += 3) if (r2() < 0.5) [b[i], b[i + 1]] = [b[i + 1], b[i]];
-          big.nearly.push([m, Math.max(1, inversions(b))]);
+          big.nearly.push([m, Math.max(0.6, inversions(b))]);
           big.reversed.push([m, (m * (m - 1)) / 2]);
         }
         M.onClick((x, y) => {
@@ -448,11 +449,11 @@ A sorting algorithm is **stable** if records with equal keys leave in the order 
           // plot
           P.fn((m) => (m * (m - 1)) / 2, { color: 'red', width: 1.5, dash: [5, 4] });
           P.fn((m) => (m * (m - 1)) / 4, { color: 'accent', width: 1.5, dash: [5, 4] });
-          P.fn((m) => m, { color: 'green', width: 1.5, dash: [5, 4] });
+          P.fn((m) => m / 6, { color: 'green', width: 1.5, dash: [5, 4] });
           P.dots(big.reversed, { r: 3.5, color: 'red' }); P.dots(big.random, { r: 3.5, color: 'accent' }); P.dots(big.nearly, { r: 3.5, color: 'green' });
           P.text('n(n−1)/2', 30, 900, { size: 11, color: 'red', align: 'right' });
           P.text('n(n−1)/4', 140, 1500, { size: 11, color: 'accent', align: 'left' });
-          P.text('n', 200, 120, { size: 11, color: 'green', math: true });
+          P.text('n/6', 300, 140, { size: 11, color: 'green' });
           P.dot(n, Math.max(1, f.inv0), { r: 6, color: 'gold' });
         });
         v.legend([['purple', 'inversion (arc joins the two keys)'], ['orange', 'inversion the key will remove'], ['red', 'reversed input', { dot: true }], ['accent', 'random input', { dot: true }], ['green', 'nearly sorted', { dot: true }], ['gold', 'this input', { dot: true }]]);
@@ -491,13 +492,13 @@ whether or not the $X_i$ are independent.
         v.button('+1000 orders', () => { for (let t = 0; t < 1000; t++) trial(); });
         resetStats();
         const T = v.stage({ x: [0.3, 20.7], y: [0, 22], axes: false, height: 190, full: true, title: 'one interview order: candidate quality in arrival order' });
-        const B = v.stage({ x: [0.3, 20.7], y: [0, 1.08], axes: 'box', height: 220, full: true, xlabel: 'i', title: 'fraction of orders hiring at position $i$, against $E[X_i]=\\Pr[\\text{candidate } i \\text{ is the best so far}]=1/i$' });
+        const B = v.stage({ x: [0.3, 20.7], y: [-0.11, 1.08], axes: true, height: 230, full: true, xlabel: 'i', title: 'fraction of orders hiring at position $i$, against $E[X_i]=\\Pr[\\text{candidate } i \\text{ is the best so far}]=1/i$' });
         v.render(() => {
-          T.setView([0.3, n + 0.7], [0, n * 1.12]); B.setView([0.3, n + 0.7], [0, 1.08]);
+          T.setView([0.3, n + 0.7], [0, n * 1.12]); B.setView([0.3, n + 0.7], [-0.11, 1.08]);
           const w = 0.36; let best = 0; const stair = [];
           last.forEach((q, i) => {
             const hire = q > best; if (hire) best = q;
-            T.rect(i + 1 - w, 0, i + 1 + w, q, { fill: hire ? 'gold' : 'muted', fillAlpha: hire ? 0.75 : 0.22, color: hire ? 'gold' : null, width: 1.2 });
+            T.rect(i + 1 - w, 0, i + 1 + w, q, hire ? { fill: 'gold', fillAlpha: 0.75, color: 'gold', width: 1.2 } : { fill: 'muted', fillAlpha: 0.3, stroke: false });
             stair.push([i + 1 - 0.5, best], [i + 1 + 0.5, best]);
           });
           T.path(stair, { color: 'green', width: 2 });
@@ -565,12 +566,12 @@ It is a **max-heap** if every node other than the root satisfies $A[\mathrm{pare
           });
           for (let i = 0; i < NMAX; i++) R.text(String(i + 1), i, -0.33, { align: 'center', size: 10.5, color: i < n ? 'muted' : 'faint' });
           kids.forEach((k, t) => {
-            arc(R, sel, k, 1.0, 0.35 + 0.11 * (k - sel), { color: 'teal', width: 2 });
-            R.tex(t ? '2i+1' : '2i', (sel + k) / 2, 1.0 + 0.35 + 0.11 * (k - sel), { size: 12, color: 'teal', baseline: 'bottom', dy: -1 });
+            arc(R, sel, k, 1.0, 0.45 + 0.1 * (k - sel), { color: 'teal', width: 2 });
+            R.tex(t ? '2i+1' : '2i', k + 0.1, 1.2, { size: 12, color: 'teal', align: 'left' });
           });
           if (par >= 0) {
-            arc(R, par, sel, 1.0, 0.35 + 0.11 * (sel - par), { color: 'orange', width: 2 });
-            R.tex('\\lfloor i/2\\rfloor', (sel + par) / 2, 1.0 + 0.35 + 0.11 * (sel - par), { size: 12, color: 'orange', baseline: 'bottom', dy: -1 });
+            arc(R, par, sel, 1.0, 0.45 + 0.1 * (sel - par), { color: 'orange', width: 2 });
+            R.tex('\\lfloor i/2\\rfloor', (sel + par) / 2, 1.0 + 0.45 + 0.1 * (sel - par), { size: 12, color: 'orange', baseline: 'bottom', dy: -1 });
           }
         });
         v.readout(() => {
@@ -620,7 +621,7 @@ Afterwards the subtree rooted at $i$ is a max-heap. The key moves down a single 
           G.line(0.67, 0, 0.67, -D, { color: 'faint', width: 4, alpha: 0.5 });
           if (dep > 0) G.line(0.67, 0, 0.67, -dep, { color: 'gold', width: 4 });
           G.dot(0.67, -dep, { r: 7, color: f.done ? 'green' : 'gold' });
-          G.text(`${f.swaps} / ${D}`, 0.67, 0.42, { align: 'center', size: 13, weight: 700, color: f.done ? 'green' : 'gold' });
+          G.text(`swaps ${f.swaps} ≤ ${D}`, 0.67, 0.42, { align: 'center', size: 13, weight: 700, color: f.done ? 'green' : 'gold' });
         });
         v.legend([['gold', 'sinking key and its path', { dot: true }], ['orange', 'children compared', { dot: true }], ['red', 'heap violation'], ['green', 'heap restored', { dot: true }]]);
         v.readout(() => {
@@ -658,7 +659,7 @@ and the number of comparisons is at most twice that. (The bound $n\log_2 n$ obta
         v.button('Shuffle', () => { pool = distinct(rng, 31, 10, 99); inp.set('random'); S.reset({ at: 'end' }); });
         const T = v.stage({ x: [0, 1], y: [-4.6, 0.6], axes: false, height: 270, weight: 2, minWidth: 380 });
         const H = v.stage({ x: [-0.6, 4.6], y: [-3, 30], axes: false, height: 270, weight: 1, minWidth: 200, title: 'swaps by height $h$ of the start node' });
-        const P = v.stage({ x: [2, 65536], y: [0, 5], xlog: true, axes: 'box', height: 200, full: true, title: 'total swaps $\\div\\, n$ for larger $n$', xlabel: 'n' });
+        const P = v.stage({ x: [2, 65536], y: [-0.55, 4.6], xlog: true, axes: true, height: 190, full: true, title: 'total swaps $\\div\\, n$ for larger $n$', xlabel: 'n' });
         const S = v.steps({ frames: () => buildTrace(gen()), code: BUILD_CODE, codeTitle: 'Build-Max-Heap(A)', codePos: 'below', speed: 1.5, start: 10 });
         // larger n, counted exactly
         const big = { asc: [], rnd: [] }, r2 = v.rng(3);
@@ -693,7 +694,7 @@ and the number of comparisons is at most twice that. (The bound $n\log_2 n$ obta
           P.path(big.asc, { color: 'red', width: 1.8 }); P.dots(big.asc, { r: 2.4, color: 'red' });
           P.path(big.rnd, { color: 'accent', width: 1.8 }); P.dots(big.rnd, { r: 2.4, color: 'accent' });
           P.text('bound 2', 40000, 2.18, { align: 'right', size: 11, color: 'green' });
-          P.text('naive: log₂ n', 22, 4.55, { size: 11, color: 'orange' });
+          P.text('naive: log₂ n', 7.5, 4.25, { size: 11, color: 'orange', align: 'right' });
           if (S.atEnd) P.dot(n, f.swaps / n, { r: 6, color: 'gold' });
         });
         v.legend([['red', 'ascending input (worst case)'], ['accent', 'random input'], ['green', 'bound $2n$', { dash: true }], ['orange', 'naive $n\\log_2 n$', { dash: true }], ['gold', 'this run (at the last step)', { dot: true }]]);
@@ -713,7 +714,7 @@ and the number of comparisons is at most twice that. (The bound $n\log_2 n$ obta
 
 It runs in $O(n\log n)$ time in the worst case, using at most about $2n\log_2 n$ comparisons, and $O(1)$ extra memory. It is not stable.`,
       idea: String.raw`Invariant: before each iteration, $A[1..i]$ is a max-heap holding the $i$ smallest keys and $A[i+1..n]$ holds the $n-i$ largest keys in sorted order. Swapping the root to position $i$ extends the sorted suffix by the next largest key, and only the root can now violate the heap property, which one sift-down repairs. The build costs $O(n)$ and each of the $n-1$ sift-downs costs at most $2\lfloor\log_2 n\rfloor$ comparisons.`,
-      caption: String.raw`Tree and bars show the same array. Step through: the root (maximum) swaps to the end of the heap, the green sorted suffix grows by one, and the new root sinks along the gold path. The right panel runs heapsort on random inputs of size up to $8192$: the comparison count divided by $n\log_2 n$ sits just below $2$.`,
+      caption: String.raw`Tree and bars show the same array. Step through: the root (maximum) swaps to the end of the heap, the green sorted suffix grows by one, and the new root sinks along the gold path. The right panel runs heapsort on random inputs of size up to $8192$: the comparison count divided by $n\log_2 n$ climbs toward $2$ but stays below it.`,
       deps: ['algo-3.6'],
       refs: ['CLRS 4e §6.4'],
       tags: ['sorting', 'heaps'],
@@ -757,7 +758,7 @@ It runs in $O(n\log n)$ time in the worst case, using at most about $2n\log_2 n$
           // plot
           P.hline(2, { color: 'red', width: 1.5, dash: [6, 4] }); P.hline(1, { color: 'green', width: 1.5, dash: [6, 4] });
           P.path(big, { color: 'accent', width: 2 }); P.dots(big, { r: 2.6, color: 'accent' });
-          P.text('2n log₂ n', 9.5, 2.12, { size: 11, color: 'red' }); P.text('n log₂ n', 9.5, 1.12, { size: 11, color: 'green' });
+          P.text('2n log₂ n', 7800, 2.13, { size: 11, color: 'red', align: 'right' }); P.text('n log₂ n', 7800, 1.13, { size: 11, color: 'green', align: 'right' });
           if (n >= 8) P.dot(n, f.cmps / (n * Math.log2(n)), { r: 5.5, color: 'gold' });
         });
         v.legend([['gold', 'root / swap / sinking key'], ['green', 'sorted suffix'], ['accent', 'heap part · random inputs (right)'], ['gold', 'this run so far', { dot: true }]]);

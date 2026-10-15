@@ -108,10 +108,14 @@ function drawSub(sc, B, color, o = {}) {
   if (B.length === 1) { const L = o.len ?? 2; sc.line(mul3(B[0], -L), mul3(B[0], L), { color, width: o.width ?? 4.5, alpha: o.alpha ?? 0.45 }, 16); }
   else if (B.length === 2) sc.disc(B[0], B[1], o.r ?? 1.5, { fill: color, color, fillAlpha: o.fillAlpha ?? 0.12, grid: o.grid ?? true, alpha: o.edge ?? 0.6 });
 }
-/** A point where a subspace label can go: the tip of a line, or the right-most rim point of a disc. */
+/**
+ * A point where a subspace label can go: the upper tip of a line (o.low: the lower one), or the top rim point of a
+ * disc (o.low: the bottom one). Pair it with dy ≈ −12 (above) or +14 (below).
+ */
 function subLabelAt(sc, B, o = {}) {
-  if (B.length === 1) { const u = sc.P(B[0])[0] >= 0 ? B[0] : mul3(B[0], -1); return mul3(u, o.len ?? 2.15); }
-  const P0 = sc.P(B[0]), P1 = sc.P(B[1]), t = Math.atan2(P1[o.axis ?? 0], P0[o.axis ?? 0]), r = (o.r ?? 1.5) * 1.06;
+  const sg = o.low ? -1 : 1;
+  if (B.length === 1) { const u = sc.P(B[0])[1] * sg >= 0 ? B[0] : mul3(B[0], -1); return mul3(u, o.len ?? 1.8); }
+  const P0 = sc.P(B[0]), P1 = sc.P(B[1]), t = Math.atan2(sg * P1[1], sg * P0[1]), r = o.r ?? 1.5;
   return add3(mul3(B[0], r * Math.cos(t)), mul3(B[1], r * Math.sin(t)));
 }
 
@@ -200,7 +204,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
         const l2 = v.slider('$\\lambda_2$', -1, 3, 2, { step: 0.05 }), l3 = v.slider('$\\lambda_3$', -1, 3, -0.6, { step: 0.05 });
         const cp = v.slider('coupling $c$', 0, 1.5, 0.6, { step: 0.05 });
         const cmp = v.toggle('compare: replace the $\\lambda_3$-eigenspace by an arbitrary line $\\ell$', false);
-        const x = sc.handle([0.9, 0.7, 1.1], { color: 'gold', label: 'x', snap: (p) => (sumB.length && sumB.length < 3 ? projOnto(p, sumB) : p) });
+        const x = sc.handle([1.1, 0.8, 1.25], { color: 'gold', label: 'x', snap: (p) => (sumB.length && sumB.length < 3 ? projOnto(p, sumB) : p) });
         const ell = sc.handle(mul3(unit3([0.75, 0.75, 0.25]), 1.5), {
           color: 'red', label: 'ℓ', snap: (p) => {
             const u = unit3(p), L = len3(p) || 1, base = orthN(others.flatMap((s) => s.B));
@@ -219,7 +223,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           others = subs.filter((s) => Math.abs(s.lam - lam[2]) > 1e-6);
           ell.h.visible = cmp.value;
           if (cmp.value) subs = [...others, { B: [unit3(ell.p)], lam: null, eig: false }];
-          subs.forEach((s, k) => { s.color = s.eig ? EC[es.findIndex((e) => Math.abs(e.lam - s.lam) < 1e-9) % 3] : 'red'; });
+          subs.forEach((s) => { s.color = s.eig ? EC[Math.max(0, lam.findIndex((t) => Math.abs(t - s.lam) < 1e-6))] : 'red'; });
           const all = subs.flatMap((s) => s.B), d = all.length;
           sumB = orthN(all);
           if (sumB.length < 3) { const q = projOnto(x.p, sumB); x.p = len3(q) > 0.25 ? q : add3(mul3(sumB[0], 1.1), sumB[1] ? mul3(sumB[1], 0.7) : ZERO); }
@@ -228,7 +232,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const N = sumB.length < d ? M.nullspace(B) : [];
           sc.begin();
           if (sumB.length === 2 && subs.length > 1) drawSub(sc, sumB, 'muted', { r: 1.7, fillAlpha: 0.05, grid: false, edge: 0.35 });
-          subs.forEach((s) => drawSub(sc, s.B, s.color, { fillAlpha: 0.14 }));
+          subs.forEach((s) => drawSub(sc, s.B, s.color, { fillAlpha: 0.14, len: 1.7 }));
           // the decomposition, tip to tail
           let at = ZERO;
           comps.forEach((u, k) => { if (len3(u) > 0.03) { sc.arrow(at, add3(at, u), { color: subs[k].color, width: 2.6, head: 9 }); sc.line(ZERO, u, { color: subs[k].color, width: 1.2, alpha: 0.6, dash: [4, 4] }); } at = add3(at, u); });
@@ -241,7 +245,8 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           subs.forEach((s) => {
             if (s.B.length === 3) return;
             const lab = s.eig ? `E(${tn(s.lam)}, T)` : '\\ell \\text{ (not an eigenspace)}';
-            sc.tex(lab, subLabelAt(sc, s.B), { color: s.color, size: 14, dx: s.B.length === 1 ? 4 : 30 });
+            const lowL = s.B.length === 1 && subs.filter((t) => t.B.length === 1).indexOf(s) === 1;
+            sc.tex(lab, subLabelAt(sc, s.B, { len: 1.7, low: lowL }), { color: s.color, size: 14, dy: lowL ? 14 : -12 });
           });
           sc.flush();
           if (sumB.length === 3 && subs.length === 1) S.corner('E(1, T) = R³: every nonzero vector is an eigenvector', 'tl', { color: 'blue', weight: 600 });
@@ -282,7 +287,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
         const aS = v.slider('$a$', -2, 2, 1, { step: 0.05 });
         const lS = v.slider('$\\lambda_2$', 0.5, 3.5, 3, { step: 0.05 });
         let lines = [];
-        const vh = S.handle(-1.2, 1.4, {
+        const vh = S.handle(-1.0, 0.6, {
           color: 'gold', label: 'v', constrain: (x, y) => {
             for (const L of lines) { const t = x * L[0] + y * L[1]; if (Math.abs(x * L[1] - y * L[0]) < 0.12 && Math.abs(t) > 0.2) return [t * L[0], t * L[1]]; }
             return [x, y];
@@ -295,13 +300,14 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const scalar = es.length === 1 && dims[0] === 2;
           lines = scalar ? [] : es.filter((e) => e.B.length === 1).map((e) => e.B[0]);
           // unit circle and its image
-          S.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 4] });
-          S.curve((t) => ap2(T, [Math.cos(t), Math.sin(t)]), 0, 2 * Math.PI, { color: 'accent', width: 1.4, fill: 'accent', fillAlpha: 0.06, n: 120 });
+          S.circle(0, 0, 0.7, { color: 'faint', width: 1, dash: [3, 4] });
+          S.curve((t) => ap2(T, [0.7 * Math.cos(t), 0.7 * Math.sin(t)]), 0, 2 * Math.PI, { color: 'muted', width: 1.2, fill: 'muted', fillAlpha: 0.07, n: 120 });
           if (scalar) S.rect(-9, -9, 9, 9, { fill: 'blue', fillAlpha: 0.05, stroke: false });
-          es.forEach((e, k) => { if (e.B.length === 1) { const u = e.B[0]; S.line(-6 * u[0], -6 * u[1], 6 * u[0], 6 * u[1], { color: EC[k], width: 4, alpha: 0.4 }); const s = u[0] < -0.05 ? -1 : 1; S.tex(`E(${tn(e.lam)}, T)`, 2.65 * u[0] * s, 2.65 * u[1] * s, { color: EC[k], size: 14, dy: -14 }); } });
+          es.forEach((e, k) => { if (e.B.length === 1) { const u = e.B[0]; S.line(-6 * u[0], -6 * u[1], 6 * u[0], 6 * u[1], { color: EC[k], width: 4, alpha: 0.4 }); const s = u[1] > 0.05 || (Math.abs(u[1]) <= 0.05 && u[0] > 0) ? -1 : 1; S.tex(`E(${tn(e.lam)}, T)`, 2.5 * u[0] * s, 2.5 * u[1] * s, { color: EC[k], size: 14, dy: 14 }); } });
           // the cell spanned by an eigenbasis (or by the standard basis when there is none) and its image
           let b1, b2, cellCol;
           if (diag) { b1 = scalar ? [1, 0] : es[0].B[0]; b2 = scalar ? [0, 1] : es[1] ? es[1].B[0] : es[0].B[1]; cellCol = 'green'; } else { b1 = [1, 0]; b2 = [0, 1]; cellCol = 'red'; }
+          b1 = [0.7 * b1[0], 0.7 * b1[1]]; b2 = [0.7 * b2[0], 0.7 * b2[1]];
           const cell = [[0, 0], b1, [b1[0] + b2[0], b1[1] + b2[1]], b2];
           S.poly(cell, { color: 'muted', width: 1.2, fill: 'muted', fillAlpha: 0.06 });
           S.poly(cell.map((p) => ap2(T, p)), { color: cellCol, width: 2, fill: cellCol, fillAlpha: 0.1, dash: diag ? false : [6, 4] });
@@ -309,7 +315,8 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const Tv = ap2(T, [vh.x, vh.y]), par = Math.abs(vh.x * Tv[1] - vh.y * Tv[0]) < 1e-9 * (1 + Math.hypot(...Tv));
           S.arrow(0, 0, Tv[0], Tv[1], { color: par ? 'green' : 'orange', width: 2.6 });
           S.arrow(0, 0, vh.x, vh.y, { color: 'gold', width: 2.8 });
-          S.tex(par ? `Tv = ${tn(Math.hypot(...Tv) / Math.hypot(vh.x, vh.y) * Math.sign(Tv[0] * vh.x + Tv[1] * vh.y))}\\,v` : 'Tv', Tv[0], Tv[1], { color: par ? 'green' : 'orange', size: 14, dx: 18, dy: -10 });
+          const bx = S.bounds, lx = M.clamp(Tv[0], bx.x[0] + 0.5, bx.x[1] - 0.6), ly = M.clamp(Tv[1], bx.y[0] + 0.3, bx.y[1] - 0.3);
+          S.tex(par ? `Tv = ${tn(Math.hypot(...Tv) / Math.hypot(vh.x, vh.y) * Math.sign(Tv[0] * vh.x + Tv[1] * vh.y))}\\,v` : 'Tv', lx, ly, { color: par ? 'green' : 'orange', size: 14, dx: 18, dy: -10 });
           // the checklist
           const ok = diag, mk = (y, s, good) => { R.tex(s, 0.06, y, { align: 'left', size: 14 }); R.text(good ? '✓' : '✗', 0.95, y, { color: good ? 'green' : 'red', size: 19, weight: 700, align: 'right' }); };
           R.text('(a)', 0.06, 0.9, { color: 'muted', size: 12, weight: 700 });
@@ -321,7 +328,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
             mk(0.81, `\\mathcal M(T,(v_1,v_2)) = ${mtex(D)}`, true);
             mk(0.58, scalar ? '\\text{every basis is an eigenbasis}' : `v_1, v_2 \\text{ eigenvectors, a basis}`, true);
             mk(0.34, scalar ? 'E(2,T) = \\mathbf R^2' : `E(${tn(es[0].lam)},T) \\oplus E(${tn(es[1].lam)},T) = \\mathbf R^2`, true);
-            mk(0.12, scalar ? '\\dim E(2,T) = 2' : `\\dim + \\dim = 1 + 1 = 2`, true);
+            mk(0.12, scalar ? '\\dim E(2,T) = 2' : `\\dim E(${tn(es[0].lam)},T) + \\dim E(${tn(es[1].lam)},T) = 2`, true);
           } else {
             mk(0.81, '\\text{no basis gives a diagonal } \\mathcal M(T)', false);
             mk(0.58, '\\text{all eigenvectors lie on one line}', false);
@@ -330,7 +337,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           }
           st = { a, l2, es, ok, scalar, par, Tv };
         });
-        v.legend([['accent', 'image of the unit circle', { area: true }], ['green', 'image of the eigen-cell: stretched', { area: true }], ['red', 'no eigenbasis: sheared square', { dash: true }]]);
+        v.legend([['muted', 'a circle and its image under $T$', { area: true }], ['green', 'image of the eigen-cell: stretched', { area: true }], ['red', 'no eigenbasis: sheared square', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { a, l2, es, ok, scalar } = st;
@@ -376,7 +383,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const es = eigenspaces(M, T).list, vecs = es.flatMap((e) => e.B.map((b) => ({ b, lam: e.lam }))), d = vecs.length;
           const order = vecs.map((w) => H.findIndex((h) => Math.abs(h.x - w.lam) < 1e-3));
           sc.begin();
-          es.forEach((e) => { const kk = H.findIndex((h) => Math.abs(h.x - e.lam) < 1e-3); drawSub(sc, e.B, EC[Math.max(0, kk)], { len: 1.95, r: 1.45, alpha: 0.35, fillAlpha: 0.08 }); });
+          es.forEach((e) => { const kk = H.findIndex((h) => Math.abs(h.x - e.lam) < 1e-3); drawSub(sc, e.B, EC[Math.max(0, kk)], { len: 1.7, r: 1.45, alpha: 0.35, fillAlpha: 0.08 }); });
           const vol = d === 3 ? Math.abs(M.det(vecs.map((w) => w.b))) : 0;
           if (d === 3) pped(sc, vecs[0].b, vecs[1].b, vecs[2].b, { fill: 'green', color: 'green', fillAlpha: 0.08 + 0.1 * vol, alpha: 0.7 });
           else if (d === 2) sc.poly([ZERO, vecs[0].b, add3(vecs[0].b, vecs[1].b), vecs[1].b], { fill: 'red', color: 'red', fillAlpha: 0.2 });
@@ -435,15 +442,15 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const mp = minPoly(M, T), zs = zerosMult(M, mp), distinct = zs.every((z) => z.m === 1);
           const es = eigenspaces(M, T).list, tot = es.reduce((a, e) => a + e.B.length, 0);
           sc.begin();
-          drawSub(sc, Rg, 'orange', { r: 1.5, fillAlpha: 0.12, width: 5, alpha: 0.5 });
-          drawSub(sc, N, 'green', { r: 1.35, fillAlpha: 0.14, width: 5, alpha: 0.6 });
-          if (interB.length === 1) drawSub(sc, interB, 'red', { width: 7, alpha: 0.9, len: 1.7 });
-          if (Rg.length && Rg.length < 3) sc.tex(`\\operatorname{range}(T - ${m}I)`, subLabelAt(sc, Rg, { r: 1.5 }), { color: 'orange', size: 14, dx: Rg.length === 2 ? 52 : 6, dy: -12 });
-          if (N.length && N.length < 3) sc.tex(`\\operatorname{null}(T - ${m}I)`, subLabelAt(sc, N, { r: 1.35, axis: 1 }), { color: 'green', size: 14, dy: -14 });
+          drawSub(sc, Rg, 'orange', { r: 1.5, fillAlpha: 0.12, width: 5, alpha: 0.5, len: 1.65 });
+          drawSub(sc, N, 'green', { r: 1.35, fillAlpha: 0.14, width: 7, alpha: 0.55, len: 1.65 });
+          if (interB.length === 1) sc.line(mul3(interB[0], -1.65), mul3(interB[0], 1.65), { color: 'red', width: 2.6, bias: -0.02 }, 16);
+          if (Rg.length && Rg.length < 3) sc.tex(`\\operatorname{range}(T - ${m}I)`, subLabelAt(sc, Rg, { r: 1.5, len: 1.65 }), { color: 'orange', size: 14, dy: -13 });
+          if (N.length && N.length < 3) sc.tex(`\\operatorname{null}(T - ${m}I)`, subLabelAt(sc, N, { r: 1.35, len: 1.65, low: true }), { color: 'green', size: 14, dy: 15 });
           sc.flush();
-          S.corner(inter ? 'range ∩ null ≠ {0}: not complementary' : 'range ⊕ null = R³', 'tl', { color: inter ? 'red' : 'green', weight: 700 });
+          S.corner(inter ? 'range ∩ null ≠ {0}: not complementary' : 'range + null = R³, a direct sum', 'tl', { color: inter ? 'red' : 'green', weight: 700 });
           // right panel
-          R.tex(`p_T(z) = ${factT(zs)}`, 0.5, 0.86, { size: 17, color: distinct ? 'green' : 'red' });
+          R.tex(factT(zs), 0.5, 0.87, { size: 20, color: distinct ? 'green' : 'red' });
           R.text(distinct ? 'distinct linear factors' : 'a repeated factor', 0.5, 0.76, { align: 'center', size: 12.5, weight: 600, color: distinct ? 'green' : 'red' });
           const prod = zs.reduce((P, z) => M.matMul(P, shift(T, z.re)), M.identity(3));
           R.tex(`\\textstyle\\prod_k (T - \\lambda_k I) ${maxAbs(prod) < 1e-7 ? '= 0' : '\\ne 0'}`, 0.5, 0.6, { size: 15 });
@@ -468,7 +475,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
       name: 'Diagonalizability passes to invariant subspaces',
       statement: String.raw`Suppose $T \in \mathcal L(V)$ is diagonalizable and $U$ is a subspace of $V$ that is invariant under $T$. Then the restriction $T|_U$ is a diagonalizable operator on $U$.`,
       idea: String.raw`By 5.62 the minimal polynomial of $T$ is $(z - \lambda_1)\cdots(z - \lambda_m)$ with distinct $\lambda_k$. The minimal polynomial of $T|_U$ divides that of $T$ (5.31), so it is again a product of distinct linear factors, and 5.62 applied on $U$ says $T|_U$ is diagonalizable. Concretely: an eigenbasis of $U$ can be found inside $U$, although the eigenbasis of $T$ itself may have no vector in $U$ at all.`,
-      caption: String.raw`Drag the normal $n$ of the plane $U$ (it snaps when $U$ becomes invariant; the dashed curve is the image of the rim of $U$ under $T$). When $U$ is invariant the right panel shows $T|_U$ in an orthonormal basis of $U$, with its eigen-directions, which are eigenvectors of $T$ lying in $U$. With eigenvalues $2, 2, 3$ there are infinitely many invariant planes, most of them containing no eigenvector of the original eigenbasis — yet $T|_U$ is still diagonalizable. Switch to the non-diagonalizable $T$ and find the plane where $T|_U$ has a single eigen-direction.`,
+      caption: String.raw`Drag the normal $n$ of the plane $U$, or press *next invariant plane*; the plane snaps when it becomes invariant (the dashed curve is the image under $T$ of a circle in $U$, and lies in $U$ exactly then). When $U$ is invariant the right panel shows $T|_U$ in an orthonormal basis of $U$, with its eigen-directions, which are eigenvectors of $T$ lying in $U$. With eigenvalues $2, 2, 3$ there are infinitely many invariant planes, most of them containing no eigenvector of the original eigenbasis — yet $T|_U$ is still diagonalizable. Switch to the non-diagonalizable $T$ and find the plane where $T|_U$ has a single eigen-direction.`,
       deps: ['ladr-5.62', 'ladr-5.31', 'ladr-5.2'],
       tags: ['diagonalization', 'invariant subspaces'],
       viz(v) {
@@ -477,15 +484,22 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.6 });
         const R = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 400, minWidth: 250, title: '$T|_U$ in an orthonormal basis $e_1, e_2$ of $U$' });
         const KS = { a: [[1, 0, 0], [0, 2, 0], [0, 0, 3]], b: [[2, 0, 0], [0, 2, 0], [0, 0, 3]], c: [[2, 1, 0], [0, 2, 0], [0, 0, 3]] };
-        const kind = v.select('$T$', [{ value: 'a', label: 'eigenvalues $1, 2, 3$' }, { value: 'b', label: 'eigenvalues $2, 2, 3$' }, { value: 'c', label: 'not diagonalizable' }], 'b');
+        // candidate invariant planes, listed by their normals (eigenvectors of Tᵀ); a 2-dimensional eigenspace of Tᵀ gives a fan of them
+        const cands = (k) => eigenspaces(M, M.transpose(conj(M, QM, KS[k]))).list.flatMap((e) => (e.B.length === 1 ? [e.B[0]] : [0.5, 1.6, 2.6].map((a) => add3(mul3(e.B[0], Math.cos(a)), mul3(e.B[1], Math.sin(a))))));
+        const START = { a: 0, b: 1, c: 1 };
+        let ci = 1;
+        const goTo = (k, idx) => { const C = cands(k); ci = ((idx % C.length) + C.length) % C.length; const u = C[ci]; n.set(mul3(u[2] < 0 ? mul3(u, -1) : u, 1.3)); };
+        const kind = v.select('$T$', [{ value: 'a', label: 'eigenvalues $1, 2, 3$' }, { value: 'b', label: 'eigenvalues $2, 2, 3$' }, { value: 'c', label: 'not diagonalizable' }], 'b', { onChange: (k) => goTo(k, START[k]) });
+        v.button('next invariant plane', () => goTo(kind.value, ci + 1));
         let normals = [];
-        const n = sc.handle(mul3(unit3([0.5, -0.3, 1]), 1.3), {
+        const n = sc.handle([0, 0, 1.3], {
           color: 'accent', label: 'n', snap: (p) => {
             const u = unit3(p), L = Math.max(0.6, len3(p));
             for (const B of normals) { const q = projOnto(u, B); if (len3(sub3(u, q)) < 0.14 && len3(q) > 0.1) return mul3(unit3(q), L); }
             return p;
           },
         });
+        goTo('b', START.b);
         let st = null;
         v.render(() => {
           const T = conj(M, QM, KS[kind.value]);
@@ -495,7 +509,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const inv = leak < 1e-7 * (1 + maxAbs(T));
           const es = eigenspaces(M, T).list;
           sc.begin();
-          es.forEach((e, k) => drawSub(sc, e.B, EC[k], { len: 1.9, r: 1.25, alpha: 0.3, fillAlpha: 0.05, grid: false }));
+          es.forEach((e, k) => drawSub(sc, e.B, EC[k], { len: 1.7, r: 1.25, alpha: 0.3, fillAlpha: 0.05, grid: false }));
           sc.disc(e1, e2, 1.3, { fill: inv ? 'green' : 'muted', color: inv ? 'green' : 'muted', fillAlpha: inv ? 0.16 : 0.08, grid: true, alpha: 0.7 });
           const rim = []; for (let i = 0; i <= 72; i++) { const t = (2 * Math.PI * i) / 72; rim.push(ap(T, add3(mul3(e1, 0.55 * Math.cos(t)), mul3(e2, 0.55 * Math.sin(t))))); }
           sc.path(rim, { color: inv ? 'green' : 'red', width: 1.8, dash: [5, 4] });
@@ -522,8 +536,9 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
             R.corner(dsum === 2 ? 'eigenbasis of U found inside U' : 'only one eigen-direction in U', 'tl', { color: dsum === 2 ? 'green' : 'red', weight: 700 });
             R.tex(`\\mathcal M(T|_U) = ${mtex(RU)}`, 0, -1.85, { size: 13.5 });
           } else {
-            R.text('T|U is not an operator on U', 0, 0.2, { align: 'center', size: 13, color: 'red', weight: 600 });
-            R.text(`(Tu leaves U by up to ${pn(leak, 2)})`, 0, -0.15, { align: 'center', size: 12, color: 'muted' });
+            R.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 4] });
+            R.text('T|U is not an operator on U', 0, 1.65, { align: 'center', size: 13, color: 'red', weight: 600 });
+            R.text(`T moves vectors of U out of U by up to ${pn(leak, 2)}`, 0, 1.35, { align: 'center', size: 12, color: 'muted' });
           }
           st = { inv, T, RU, rev, kind: kind.value };
         });

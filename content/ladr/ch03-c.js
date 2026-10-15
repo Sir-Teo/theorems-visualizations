@@ -132,13 +132,13 @@ sending each linear map to its matrix with respect to these bases, is an isomorp
         const sD = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 300, minWidth: 220, title: String.raw`$V=\mathbf R^2$, basis $v_1,v_2$` });
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 170, weight: 0.65, title: String.raw`$\mathcal M(T)\in\mathbf F^{3,2}$` });
         const sW = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 300, minWidth: 250, title: String.raw`$W=\mathbf R^3$` });
-        const sc = v.scene3(sW, { yaw: 2.1, pitch: 0.55, axis: 1.3, lim: 1.5 });
+        const sc = v.scene3(sW, { yaw: -1.0, pitch: 0.3, axis: 1.3, lim: 1.5 });
         const PRE = {
-          tilt: [[1, 0], [0, 1], [0.6, -0.5]], swap: [[0, -1], [1.2, 0], [0, 0.8]],
+          tilt: [[1, -0.2], [0.3, 0.5], [0.2, 0.9]], swap: [[0, -1], [1.2, 0], [0, 0.8]],
           rank1: [[1, 0.5], [0.6, 0.3], [0.4, 0.2]], zero: [[0, 0], [0, 0], [0, 0]],
         };
-        const h1 = sc.handle([1, 0, 0.6], { color: 'blue', label: 'Tv₁' });
-        const h2 = sc.handle([0, 1, -0.5], { color: 'orange', label: 'Tv₂' });
+        const h1 = sc.handle([1, 0.3, 0.2], { color: 'blue', label: 'Tv₁' });
+        const h2 = sc.handle([-0.2, 0.5, 0.9], { color: 'orange', label: 'Tv₂' });
         const x = sD.handle(0.9, 0.55, { color: 'gold', label: 'x' });
         v.select('matrix', [{ value: 'tilt', label: 'tilted plane' }, { value: 'swap', label: 'turn and lift' }, { value: 'rank1', label: 'rank 1' }, { value: 'zero', label: 'zero' }], 'tilt', {
           onChange: (k) => { h1.set(PRE[k].map((r) => r[0])); h2.set(PRE[k].map((r) => r[1])); },

@@ -22,7 +22,8 @@
 //    and choice; Consumer choice; Classical demand theory; Aggregate demand; Production;
 //    Uncertainty; … Externalities and public goods; Market power; Adverse selection, signaling and
 //    screening; Principal–agent; General equilibrium Part IV; Social choice, welfare, mechanism
-//    design) — via library catalogue records; used to check the graduate-level named results.
+//    design) — via library catalogue records. Only the chapter titles of ch. 1–4 and 23 were
+//    confirmed; other MWG refs are to the standard chapter order and are unverified.
 //  • MIT OCW 14.01 Principles of Microeconomics (Gruber, Fall 2023) lecture calendar:
 //    ocw.mit.edu/courses/14-01-principles-of-microeconomics-fall-2023/pages/calendar/
 //  • MIT OCW 14.04 Intermediate Microeconomic Theory (Townsend, Fall 2020) lecture calendar:

@@ -217,7 +217,7 @@ The calls form a **recursion tree**: the root is the input, the children of a no
         const disk = (k, x, y, n, a = 1) => {
           const w = 0.55 + 2.3 * k / n, col = DCOL[(k - 1) % 6];
           P.rect(x - w / 2, y, x + w / 2, y + 0.46, { fill: col, fillAlpha: Math.min(a, 1), color: a > 1.5 ? 'ink' : col, width: a > 1.5 ? 2.5 : 1.2 });
-          P.text(String(k), x, y + 0.23, { align: 'center', size: 11, weight: 700, color: 'panel' });
+          P.text(String(k), x, y + 0.23, { align: 'center', size: 11, weight: 700, color: 'panel', halo: false });
         };
         v.render(() => {
           const n = nS.value, you = mode.value === 'you', f = S.frame, pegs = you ? U : f.pegs;

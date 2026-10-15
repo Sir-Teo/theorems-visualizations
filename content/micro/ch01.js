@@ -37,7 +37,7 @@ export default {
         for (let s = 0; s <= H; s += 0.25) for (let w = 0; w <= H - s + 1e-9; w += 0.25) { const U = total(s, w, H - s - w); if (U > best.U) best = { s, w, U }; }
         const proj = (x, y) => { x = clamp(x, 0, 68); y = clamp(y, 0, 68); if (x + y > H) { const e = (x + y - H) / 2; x -= e; y -= e; if (x < 0) { y += x; x = 0; } if (y < 0) { x += y; y = 0; } } return [x, y]; };
         const free = v.toggle('unlimited time', false, { onChange: (on) => { if (!on) { const [x, y] = proj(P.x, P.y); P.set(x, y); } } });
-        const s = v.stage({ x: [0, 70], y: [0, 70], height: 330, axes: 'box', xlabel: 'study (h)', ylabel: 'work (h)', title: 'possible plans for one week' });
+        const s = v.stage({ x: [0, 78], y: [0, 70], height: 330, axes: 'box', xlabel: 'study (h)', ylabel: 'work (h)', title: 'possible plans for one week' });
         const b = v.stage({ x: [-17, 122], y: [0, 4.7], height: 330, axes: false, title: 'where the hours go' });
         const P = s.handle(12, 34, { color: 'gold', label: 'plan', constrain: (x, y) => (free.value ? [clamp(x, 0, 68), clamp(y, 0, 68)] : proj(x, y)) });
         const cols = { s: 'blue', w: 'orange', r: 'purple' };
@@ -46,11 +46,11 @@ export default {
           const lim = !free.value, rest = lim ? H - P.x - P.y : B.r, tc = v.rgb('teal');
           s.raster((x, y) => { if (lim && x + y > H) return null; const t = total(x, y, lim ? H - x - y : B.r) / 3; return [tc[0], tc[1], tc[2], 255 * (0.03 + 0.45 * t ** 5)]; }, { key: lim ? 'lim' : 'free', res: 3 });
           if (lim) {
-            for (const r of [10, 20, 30, 40, 50]) { s.line(0, H - r, H - r, 0, { color: 'faint', width: 1, dash: [3, 4] }); s.text(`rest ${r}`, (H - r) / 2, (H - r) / 2, { color: 'muted', size: 10.5, align: 'center', dy: -2 }); }
+            for (const r of [10, 20, 30, 40, 50]) { s.line(0, H - r, H - r, 0, { color: 'faint', width: 1, dash: [3, 4] }); s.text(`rest ${r}`, (H - r) * 0.86, (H - r) * 0.14, { color: 'muted', size: 10.5, align: 'center', dy: -2 }); }
             s.line(0, H, H, 0, { color: 'green', width: 2.4 }); s.text('all 60 h used', 44, 18, { color: 'green', size: 12, dx: 6 });
           } else s.corner('no time constraint', 'tr', { color: 'muted' });
           const bs = lim ? best.s : B.s, bw = lim ? best.w : B.w;
-          s.dot(bs, bw, { r: 5, color: 'green', label: 'best', labelPos: 'sw' });
+          s.dot(bs, bw, { r: 5, color: 'green', label: 'best', labelPos: 'e' });
           s.line(P.x, 0, P.x, P.y, { color: 'muted', dash: [3, 3], width: 1 }); s.line(0, P.y, P.x, P.y, { color: 'muted', dash: [3, 3], width: 1 });
           // bars
           const rows = [['study', 's', P.x, 3.85], ['work', 'w', P.y, 2.85], ['rest', 'r', rest, 1.85]];
@@ -86,8 +86,8 @@ export default {
         const names = ['work a shift', 'concert', 'study'], cols = ['orange', 'purple', 'teal'];
         const val = [v.slider('value of the shift ($)', 0, 100, 80, { step: 1 }), v.slider('value of the concert ($)', 0, 100, 65, { step: 1 }), v.slider('value of studying ($)', 0, 100, 50, { step: 1 })];
         const pick = v.select('you choose', names.map((n, i) => ({ value: String(i), label: n })), '1');
-        const s = v.stage({ x: [0.35, 3.65], y: [0, 112], height: 320, axes: 'box', ylabel: 'value ($)', xticks: names.map((n, i) => [i + 1, n]), title: 'three ways to spend Saturday' });
-        const t = v.stage({ x: [0, 100], y: [0, 112], height: 320, axes: 'box', ylabel: 'opportunity cost ($)' });
+        const s = v.stage({ x: [0.35, 3.65], y: [-9, 112], height: 320, axes: 'box', ylabel: 'value ($)', xticks: names.map((n, i) => [i + 1, n]), title: 'three ways to spend Saturday' });
+        const t = v.stage({ x: [0, 100], y: [0, 112], height: 320, axes: 'box', xticks: [20, 40], ylabel: 'opportunity cost ($)' });
         v.render(() => {
           const c = +pick.value, V = val.map((x) => x.value), oth = [0, 1, 2].filter((i) => i !== c);
           const ru = V[oth[0]] >= V[oth[1]] ? oth[0] : oth[1], oc = V[ru], net = V[c] - oc;
@@ -96,7 +96,7 @@ export default {
             const x = i + 1, me = i === c, gone = i === ru;
             s.rect(x - 0.28, 0, x + 0.28, V[i], { fill: cols[i], fillAlpha: me ? 0.8 : gone ? 0.45 : 0.18, color: me ? 'ink' : gone ? 'red' : cols[i], width: me || gone ? 2.4 : 1 });
             s.text(`$${V[i]}`, x, V[i], { dy: -9, align: 'center', color: 'ink', size: 12 });
-            if (me || gone) s.text(me ? 'chosen' : 'given up', x, Math.max(V[i], 3) / 2, { align: 'center', color: me ? 'panel' : 'red', size: 11.5, weight: 700 });
+            if (me || gone) s.text(me ? 'chosen' : 'given up', x, Math.max(V[i], 3) / 2, { align: 'center', color: me ? 'ink' : 'red', size: 11.5, weight: 700 });
           }
           s.text(`opportunity cost $${oc}`, 0.4, oc, { dy: 10, color: 'red', size: 11.5 });
           if (Math.abs(net) > 3) s.measure(c + 1.36, V[c], c + 1.36, oc, net >= 0 ? `+${net}` : `${net}`, { color: net >= 0 ? 'green' : 'red', offset: -14 });
@@ -116,8 +116,9 @@ export default {
         v.readout(() => {
           const c = +pick.value, V = val.map((x) => x.value), oth = [0, 1, 2].filter((i) => i !== c);
           const ru = V[oth[0]] >= V[oth[1]] ? oth[0] : oth[1], oc = V[ru], net = V[c] - oc;
-          const head = `Opportunity cost of “${names[c]}” = max(${oth.map((i) => `${names[i]} $${V[i]}`).join(', ')}) = **$${oc}** (${names[ru]}).`;
-          return net >= 0 ? `${head} Value $${V[c]} ≥ $${oc}: this is the best option, worth $${net} more than the next best.` : `${head} Value $${V[c]} < $${oc}: choosing it forgoes $${-net} — “${names[ru]}” is the better choice.`;
+          const d = (x) => `$\\$${x}$`;
+          const head = `Opportunity cost of “${names[c]}” = max(${oth.map((i) => `${names[i]} ${d(V[i])}`).join(', ')}) = **${d(oc)}** (${names[ru]}).`;
+          return net >= 0 ? `${head} Value ${d(V[c])} ≥ ${d(oc)}: this is the best option, worth ${d(net)} more than the next best.` : `${head} Value ${d(V[c])} < ${d(oc)}: choosing it forgoes ${d(-net)} — “${names[ru]}” is the better choice.`;
         });
       },
     },
@@ -130,10 +131,10 @@ export default {
       deps: ['micro-1.2', 'pma-5.8'], refs: ['Mankiw Ch. 1', 'CORE Unit 3'], tags: ['marginal analysis'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Marginalism' },
       viz(v) {
-        const s = v.stage({ x: [0, 100], y: [0, 105], height: 300, axes: 'box', xlabel: 'activity level q', ylabel: '$ per unit', title: 'marginal benefit and marginal cost' });
+        const s = v.stage({ x: [0, 100], y: [0, 118], height: 300, axes: 'box', xlabel: 'q', ylabel: '$ per unit', title: 'marginal benefit and marginal cost' });
         const n = v.stage({ x: [0, 100], y: [-500, 2600], height: 220, axes: 'box', xlabel: 'q', ylabel: 'net benefit', title: String.raw`net benefit $NB(q)=\int_0^q (MB-MC)\,dq$` });
         const step = v.slider('step $\\Delta q$', 2, 20, 8, { step: 1 });
-        const H = v.curves(s, { demand: { linear: [[4, 92], [96, 14]] }, supply: { linear: [[4, 8], [96, 88]] } }), L = v.curves(s, {});
+        const H = v.curves(s, { demand: { linear: [[4, 92], [88, 22]] }, supply: { linear: [[4, 8], [88, 82]] } }), L = v.curves(s, {});
         const Q = s.handle(68, 3, { color: 'gold', label: 'q', constrain: (x) => [clamp(x, 0.5, 99.5), 3] });
         let st = {};
         v.legend([['blue', 'MB'], ['orange', 'MC'], ['green', 'net gain'], ['red', 'net loss']]);
@@ -227,9 +228,9 @@ export default {
         const dY = (x, k) => -(b / a) * Math.pow(x / a, k - 1) * Math.pow(Math.max(1e-12, 1 - Math.pow(x / a, k)), 1 / k - 1);
         const kS = v.slider('curvature $k$', 1, 4, 2, { step: 0.05, onChange: (k) => P.set(P.x, Y(P.x, k)) });
         const hS = v.slider('step $\\Delta F$', 0.001, 3, 1.5, { log: true, decimals: 3 });
-        const s = v.stage({ x: [0, 11.2], y: [0, 9.4], height: 340, axes: 'box', xlabel: 'food F', ylabel: 'cloth C', title: String.raw`frontier $(F/a)^k + (C/b)^k = 1$` });
-        const e = v.stage({ x: [0.001, 3], y: [1e-6, 10], xlog: true, ylog: true, height: 340, xlabel: 'step ΔF', ylabel: 'error', title: String.raw`$\left|\,{-\Delta C/\Delta F} - \mathrm{MRT}\,\right|$` });
-        const P = s.handle(5, Y(5, 2), { color: 'accent', label: 'P', constrain: (x) => { const xx = clamp(x, 0.3, a - 0.6); return [xx, Y(xx, kS.value)]; } });
+        const s = v.stage({ x: [0, 12.6], y: [0, 9.4], height: 340, axes: 'box', xlabel: 'food F', ylabel: 'cloth C', title: String.raw`frontier $(F/a)^k + (C/b)^k = 1$` });
+        const e = v.stage({ x: [0.001, 8], y: [1e-6, 10], xlog: true, ylog: true, height: 340, xlabel: 'step ΔF', ylabel: 'error', title: String.raw`$\left|\,{-\Delta C/\Delta F} - \mathrm{MRT}\,\right|$` });
+        const P = s.handle(5, Y(5, 2), { color: 'accent', label: 'P', labelPos: 'sw', constrain: (x) => { const xx = clamp(x, 0.3, a - 0.6); return [xx, Y(xx, kS.value)]; } });
         const err = (x, h, k) => { const x2 = Math.min(x + h, a); return Math.abs(-(Y(x2, k) - Y(x, k)) / (x2 - x) + dY(x, k)); };
         v.legend([['green', 'frontier'], ['accent', 'tangent (MRT)'], ['gold', 'secant over ΔF', { dash: true }]]);
         v.render(() => {
@@ -260,21 +261,21 @@ export default {
       viz(v) {
         const nSel = v.select('workers', ['3', '6', '30'], '6', { onChange: () => resnap() });
         const same = v.toggle('identical skills', false, { onChange: () => resnap() });
-        const s = v.stage({ x: [0, 13], y: [0, 13], height: 340, axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'frontier traced worker by worker' });
-        const c = v.stage({ x: [0, 13], y: [0, 4.6], height: 340, axes: 'box', xlabel: 'food', ylabel: 'cloth per food', title: 'opportunity cost of the next unit of food' });
+        const s = v.stage({ x: [0, 13], y: [0, 13], height: 340, axes: 'box', xlabel: 'food', ylabel: 'cloth', xticks: [2, 4, 6, 8, 10], title: 'frontier traced worker by worker' });
+        const c = v.stage({ x: [0, 13], y: [0, 4.6], height: 340, axes: 'box', xlabel: 'food', xticks: [2, 4, 6, 8, 10], ylabel: 'cloth per food', title: 'opportunity cost of the next unit of food' });
         const workers = () => {
           const N = +nSel.value, r = Array.from({ length: N }, (_, i) => (same.value ? 1 : Math.exp(Math.log(0.25) + Math.log(16) * ((i + 0.5) / N))));
           const S = 10 / r.reduce((t, x) => t + 1 / Math.sqrt(x), 0); return r.map((x) => ({ r: x, F: S / Math.sqrt(x), C: S * Math.sqrt(x) }));
         };
         const frontier = () => { const W = workers(); return { W, pts: chain(W, W.map((_, i) => i)) }; };
-        const P = s.handle(4, 0, { color: 'gold', label: 'P', constrain: (x) => { const xx = clamp(x, 0, 10); return [xx, onChain(frontier().pts, xx)]; } });
+        const P = s.handle(4, 0, { color: 'gold', label: 'P', labelPos: 'sw', constrain: (x) => { const xx = clamp(x, 0, 10); return [xx, onChain(frontier().pts, xx)]; } });
         function resnap() { P.set(P.x, onChain(frontier().pts, P.x)); }
         resnap();
         const pal = ['blue', 'orange', 'purple', 'teal', 'pink', 'red'];
         let st = {};
         v.render(() => {
           const { W, pts } = frontier(), N = W.length, col = (i) => (N <= 6 ? pal[i % 6] : i % 2 ? 'green' : 'teal');
-          if (!same.value) { s.line(0, 10, 10, 0, { color: 'muted', dash: [5, 4], width: 1.2 }); s.text('identical skills', 6.4, 3.6, { color: 'muted', size: 11, dx: 4, dy: 4 }); }
+          if (!same.value) { s.line(0, 10, 10, 0, { color: 'muted', dash: [5, 4], width: 1.2 }); s.text('identical skills', 0.9, 6.6, { color: 'muted', size: 11 }); }
           s.poly([[0, 0], ...pts], { fill: 'green', fillAlpha: 0.07, stroke: false });
           let j = 0; for (let i = 0; i < N; i++) if (P.x > pts[i][0] + 1e-9) j = i;
           for (let i = 0; i < N; i++) {
@@ -306,7 +307,7 @@ export default {
       viz(v) {
         const T = 40;
         const s = v.stage({ x: [0, 46], y: [0, 46], height: 340, axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'frontiers with 40 hours each' });
-        const hb = v.stage({ x: [0.35, 2.65], y: [0, 5.6], height: 340, axes: 'box', ylabel: 'hours per unit', xticks: [[1, 'food'], [2, 'cloth']], title: 'hours needed per unit' });
+        const hb = v.stage({ x: [0.35, 2.65], y: [-0.45, 5.6], height: 340, axes: 'box', ylabel: 'hours per unit', xticks: [[1, 'food'], [2, 'cloth']], title: 'hours needed per unit' });
         const hx = (col, x, lab) => s.handle(x, 0, { color: col, label: lab, labelPos: 'n', constrain: (x) => [clamp(x, 8, 44), 0] });
         const hy = (col, y) => s.handle(0, y, { color: col, constrain: (x, y) => [0, clamp(y, 8, 44)] });
         const aF = hx('blue', 40, 'Ana'), aC = hy('blue', 20), bF = hx('orange', 14, 'Ben'), bC = hy('orange', 16);
@@ -348,7 +349,7 @@ export default {
         const T = 40;
         const sl = [['Ana: hours per food', 1], ['Ana: hours per cloth', 2], ['Ben: hours per food', 4], ['Ben: hours per cloth', 2.5]].map(([l, x]) => v.slider(l, 0.5, 5, x, { step: 0.05 }));
         const s = v.stage({ x: [0, 50], y: [0, 40], height: 330, axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'joint frontier of Ana and Ben' });
-        const o = v.stage({ x: [0.1, 10], y: [0, 1], xlog: true, height: 120, full: true, yticks: [], xlabel: 'opportunity cost of one unit of food, in cloth (log scale)' });
+        const o = v.stage({ x: [0.1, 10], y: [0, 1], xlog: true, height: 120, full: true, yticks: [], xlabel: 'cloth per food (log)', title: 'opportunity cost of one unit of food' });
         let st = {};
         v.legend([['green', 'food made first by the lower opportunity cost'], ['red', 'reverse assignment', { dash: true }]]);
         v.render(() => {
@@ -390,8 +391,8 @@ export default {
         const mode = v.select('', [{ value: 'auto', label: 'self-sufficiency' }, { value: 'trade', label: 'specialize & trade' }], 'trade');
         const same = v.toggle('identical opportunity costs', false);
         const X = v.slider('food Ana ships to Ben', 0, 10, 8, { step: 0.1 });
-        const A = v.stage({ x: [0, 44], y: [0, 24], height: 300, axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'Ana (40 food or 20 cloth)' });
-        const B = v.stage({ x: [0, 13], y: [0, 19], height: 300, axes: 'box', xlabel: 'food', ylabel: 'cloth' });
+        const A = v.stage({ x: [0, 48], y: [-1.8, 24], height: 300, xticks: [10, 20, 30, 40], axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'Ana (40 food or 20 cloth)' });
+        const B = v.stage({ x: [-0.6, 13.5], y: [-1.4, 19], height: 300, xticks: [2, 4, 6, 8, 10], axes: 'box', xlabel: 'food', ylabel: 'cloth' });
         let st = {};
         v.legend([['ink', 'production', { dot: true }], ['gold', 'consumption', { dot: true }], ['muted', 'self-sufficient bundle', { dot: true }], ['green', 'beyond own frontier']]);
         v.render(() => {
@@ -408,10 +409,10 @@ export default {
             S.dot(q.aut[0], q.aut[1], { r: 5, color: tr ? 'muted' : 'gold', hollow: tr, label: tr ? null : 'consume', labelPos: 'ne' });
             if (!tr) continue;
             const [cf, cc] = q.cons, gain = cc - Yf(cf);
-            S.line(q.prod[0], q.prod[1], cf, cc, { color: 'accent', width: 1.6, dash: [5, 4] });
+            S.line(q.prod[0], q.prod[1], cf, cc, { color: 'muted', width: 1.6, dash: [5, 4] });
             S.arrow(q.aut[0], q.aut[1], cf, cc, { color: 'muted', width: 1, head: 5, alpha: 0.6 });
             if (gain > 0.05) S.arrow(cf, Yf(cf), cf, cc, { color: 'green', width: 2.2, head: 7 });
-            S.dot(q.prod[0], q.prod[1], { r: 5, color: 'ink', label: 'produce', labelPos: q.name === 'Ana' ? 'nw' : 'se' });
+            S.dot(q.prod[0], q.prod[1], { r: 5, color: 'ink', label: 'produce', labelPos: q.name === 'Ana' ? 'nw' : 'ne' });
             S.dot(cf, cc, { r: 6, color: 'gold', label: 'consume', labelPos: 'ne' });
             out.push({ ...q, gain, gainF: cf - q.Fm * (1 - cc / q.Cm) });
           }
@@ -437,7 +438,7 @@ export default {
       viz(v) {
         const oA = 0.5, oB = 1.6;
         const g = v.stage({ x: [0, 2.6], y: [-1.1, 1.4], height: 330, xlabel: 'price p (cloth per food)', ylabel: 'gain per unit sold', title: 'who gains at price p' });
-        const q = v.stage({ x: [0, 46], y: [0, 40], height: 330, axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'trading lines vs frontiers' });
+        const q = v.stage({ x: [0, 48], y: [-2, 40], height: 330, xticks: [10, 20, 30, 40], axes: 'box', xlabel: 'food', ylabel: 'cloth', title: 'trading lines vs frontiers' });
         const P = g.handle(1, 0, { color: 'gold', label: 'p', constrain: (x) => [clamp(x, 0.15, 2.55), 0] });
         const gA = (p) => p - oA, gB = (p) => 1 / p - 1 / oB;
         v.legend([['blue', 'Ana: cloth gained per food sold'], ['orange', 'Ben: food gained per cloth sold'], ['green', 'both gain']]);
@@ -445,7 +446,7 @@ export default {
           const p = P.x;
           g.vband(oA, oB, { color: 'green', alpha: 0.12 });
           g.vline(oA, { color: 'blue', dash: [4, 4], width: 1 }); g.vline(oB, { color: 'orange', dash: [4, 4], width: 1 });
-          g.text('Ana’s cost 0.5', oA, 1.4, { dy: 10, dx: -4, align: 'right', color: 'blue', size: 11 }); g.text('Ben’s cost 1.6', oB, 1.4, { dy: 10, dx: 4, color: 'orange', size: 11 });
+          g.text('Ana’s cost 0.5', oA, -1.0, { dx: -4, align: 'right', color: 'blue', size: 11 }); g.text('Ben’s cost 1.6', oB, -1.0, { dx: 4, color: 'orange', size: 11 });
           g.fn(gA, { domain: [oA, 2.6], color: 'blue', width: 2.4 }); g.fn(gA, { domain: [0, oA], color: 'red', width: 2, dash: [5, 4] });
           g.fn(gB, { domain: [0.4, oB], color: 'orange', width: 2.4 }); g.fn(gB, { domain: [oB, 2.6], color: 'red', width: 2, dash: [5, 4] });
           g.vline(p, { color: 'gold', width: 1.4 }); g.dot(p, gA(p), { r: 5, color: 'blue' }); if (gB(p) < 1.4) g.dot(p, gB(p), { r: 5, color: 'orange' });
@@ -478,9 +479,9 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ricardian_model' },
       viz(v) {
         const Hm = { F: 100, C: 50 }, Fo = { F: 30, C: 40 }, oH = Hm.C / Hm.F, oF = Fo.C / Fo.F, k = Hm.F / Fo.C;
-        const sh = v.slider('world spending share on food $s$', 0.05, 0.95, 0.5, { step: 0.01 });
-        const w = v.stage({ x: [0, 145], y: [0, 100], height: 340, axes: 'box', xlabel: 'world food', ylabel: 'world cloth', title: 'world frontier: Home + Foreign' });
-        const r = v.stage({ x: [0, 6], y: [0, 2.3], height: 340, axes: 'box', xlabel: 'relative quantity F/C', ylabel: 'relative price p', title: 'relative supply and demand' });
+        const sh = v.slider('world spending share on food $s$', 0.05, 0.95, 0.65, { step: 0.01 });
+        const w = v.stage({ x: [0, 150], y: [0, 100], height: 340, axes: 'box', xticks: [25, 50, 75, 100], xlabel: 'world food', ylabel: 'world cloth', title: 'world frontier: Home + Foreign' });
+        const r = v.stage({ x: [0, 6], y: [0, 2.3], height: 340, axes: 'box', xticks: [1, 2, 3], xlabel: 'relative quantity F/C', ylabel: 'relative price p', title: 'relative supply and demand' });
         const eq = (s) => {
           const rd = (p) => s / ((1 - s) * p), pk = s / ((1 - s) * k);
           if (pk <= oH) { const rr = rd(oH), CH = (Hm.F - rr * Fo.C) / (rr + Hm.F / Hm.C), FH = Hm.F - (Hm.F / Hm.C) * CH; return { p: oH, F: FH, C: CH + Fo.C, reg: 'home', FH, CH, FF: 0, CF: Fo.C }; }
@@ -491,8 +492,8 @@ export default {
         v.render(() => {
           const s = sh.value, E = eq(s), W = [[0, Hm.C + Fo.C], [Hm.F, Fo.C], [Hm.F + Fo.F, 0]];
           w.poly([[0, 0], ...W], { fill: 'green', fillAlpha: 0.08, stroke: false }); w.path(W, { color: 'green', width: 2.6 });
-          w.text('Home: food · Foreign: cloth', Hm.F, Fo.C, { dx: 8, dy: -8, color: 'green', size: 11 });
-          w.text('Home’s slope 0.5', 45, 68, { color: 'muted', size: 10.5, dy: -6 }); w.text('Foreign’s slope 1.33', 115, 20, { color: 'muted', size: 10.5, dx: 6 });
+          w.text('Home: all food · Foreign: all cloth', Hm.F, Fo.C, { dx: -10, dy: 16, align: 'right', color: 'green', size: 11 });
+          w.text('Home’s slope −0.5', 18, 64, { color: 'muted', size: 10.5 }); w.text('Foreign’s slope −1.33', 112, 15, { color: 'muted', size: 10.5, align: 'right', dx: -6 });
           const U = E.F ** s * E.C ** (1 - s), Cind = (f) => (U / f ** s) ** (1 / (1 - s));
           w.fn(Cind, { domain: [3, 145], color: 'purple', width: 1.8 });
           w.fn((f) => E.C - E.p * (f - E.F), { domain: [0, 145], color: 'accent', width: 1.4, dash: [6, 4] });
@@ -501,7 +502,7 @@ export default {
           r.hline(oH, { color: 'faint', dash: [3, 4] }); r.hline(oF, { color: 'faint', dash: [3, 4] });
           r.text('Home autarky price 0.5', 5.95, oH, { dy: -9, align: 'right', color: 'muted', size: 11 }); r.text('Foreign autarky price 1.33', 5.95, oF, { dy: -9, align: 'right', color: 'muted', size: 11 });
           r.path([[0, oH], [k, oH], [k, oF], [6, oF]], { color: 'green', width: 3 }); r.text('RS', k, (oH + oF) / 2, { dx: 8, color: 'green', size: 14, math: true });
-          r.fn((x) => s / ((1 - s) * x), { domain: [0.05, 6], color: 'purple', width: 2.4 }); r.text('RD', 0.35, Math.min(2.2, s / ((1 - s) * 0.35)), { dx: 8, color: 'purple', size: 14, math: true, baseline: 'top' });
+          r.fn((x) => s / ((1 - s) * x), { domain: [0.05, 6], color: 'purple', width: 2.4 }); { const xl = clamp(s / ((1 - s) * 1.9), 0.5, 5.4); r.text('RD', xl, s / ((1 - s) * xl), { dx: 10, dy: -4, color: 'purple', size: 14, math: true }); }
           r.dot(E.F / E.C, E.p, { r: 6, color: 'gold' });
         });
         v.readout(() => {

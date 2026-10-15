@@ -135,7 +135,7 @@ function colHandles(S, A0) {
 /** The image of the unit square under A, with the column arrows. */
 function drawCols(S, A, { fill = 'teal', alpha = 0.07 } = {}) {
   const a = col(A, 0), b = col(A, 1);
-  S.poly([[0, 0], a, add(a, b), b], { fill, fillAlpha: alpha, color: fill, alpha: 0.35, width: 1 });
+  if (alpha > 0) S.poly([[0, 0], a, add(a, b), b], { fill, fillAlpha: alpha, color: fill, alpha: 0.35, width: 1 });
   S.arrow(0, 0, a[0], a[1], { color: 'teal', width: 2 });
   S.arrow(0, 0, b[0], b[1], { color: 'pink', width: 2 });
 }
@@ -307,14 +307,14 @@ export default {
       statement: String.raw`Let $T \in \mathcal L(V)$. A number $\lambda \in \mathbf F$ is an **eigenvalue** of $T$ if there is a vector $v \in V$ with $v \ne 0$ and
 $$Tv = \lambda v.$$`,
       idea: String.raw`$Tv = \lambda v$ for some $v \ne 0$ says exactly that the line $\operatorname{span}(v)$ is a one-dimensional invariant subspace, on which $T$ acts as multiplication by $\lambda$. Geometrically: $Tv$ points along $v$ (forward if $\lambda > 0$, backward if $\lambda < 0$) and $\lambda$ is the signed stretch factor. The condition $v \ne 0$ matters, since $T0 = \lambda 0$ for every $\lambda$.`,
-      caption: String.raw`Drag the unit vector $v$ (gold) around the circle. The red segment is the part of $Tv$ that sticks out of the line through $v$; on the right, the red curve plots it for every direction and the blue curve plots the part along $v$. At a zero of the red curve $Tv = \lambda v$ (green), and the blue curve reads off $\lambda$. The rotation has no real eigenvalue: its red curve never vanishes.`,
+      caption: String.raw`Drag the unit vector $v$ (gold) around the circle. The red segment is the part of $Tv$ that sticks out of the line through $v$; on the right, the red curve plots it for every direction and the purple curve plots the part along $v$. At a zero of the red curve $Tv = \lambda v$ (green), and the purple curve reads off $\lambda$. The rotation has no real eigenvalue: its red curve never vanishes.`,
       deps: ['ladr-5.1'],
       tags: ['eigenvalues'],
       viz(v) {
         const PRE = { sym: [[1.5, 0.5], [0.5, 0.5]], flip: [[0.4, 1.2], [0.8, -0.6]], shear: [[1, 0.8], [0, 1]], rot: [[0.6, -0.8], [0.8, 0.6]] };
         const which = v.select('$T$', [{ value: 'sym', label: 'symmetric' }, { value: 'flip', label: 'with $\\lambda < 0$' }, { value: 'shear', label: 'shear' }, { value: 'rot', label: 'rotation' }], 'sym');
         const S = v.stage({ x: [-2.1, 2.1], y: [-1.9, 1.9], equal: true, height: 360, weight: 1.1 });
-        const G = v.stage({ x: [0, 180], y: [-1.5, 2], height: 360, xlabel: 'direction θ of v (degrees)', xticks: [0, 45, 90, 135, 180], title: 'along $v$: $\\langle Tv, v\\rangle$ · off $v$: $\\det[v,\\ Tv]$' });
+        const G = v.stage({ x: [0, 180], y: [-1.5, 2], height: 360, xlabel: 'θ (degrees)', xticks: [0, 45, 90, 135, 180], title: 'along $v$: $\\langle Tv, v\\rangle$ · off $v$: $\\det[v,\\ Tv]$' });
         const eigAngles = () => { const A = PRE[which.value], e = eig2x2(A); return e.real ? e.l.map((l) => { const u = evec2(A, l); return u ? (Math.atan2(u[1], u[0]) + TAU) % Math.PI : null; }).filter((x) => x !== null) : []; };
         const vh = S.handle(Math.cos(1.2), Math.sin(1.2), {
           color: 'gold', label: 'v', constrain: (x, y) => {
@@ -339,15 +339,15 @@ $$Tv = \lambda v.$$`,
           // graph over all directions
           const fa = (t) => { const w = [Math.cos(t / DEG), Math.sin(t / DEG)]; return dot(mv(A, w), w); };
           const fo = (t) => { const w = [Math.cos(t / DEG), Math.sin(t / DEG)]; return det2(w, mv(A, w)); };
-          G.fn(fa, { color: 'blue', width: 2.2 });
+          G.fn(fa, { color: 'purple', width: 2.2 });
           G.fn(fo, { color: 'red', width: 2.2 });
           for (const e of angs) { const t = e * DEG; G.vline(t, { color: 'green', width: 1, dash: [3, 4] }); G.dot(t, fa(t), { r: 5, color: 'green', label: `λ = ${nmc(fa(t))}`, labelPos: 'ne' }); G.dot(t, 0, { r: 4, color: 'green', hollow: true }); }
           const th = ((Math.atan2(vv[1], vv[0]) + TAU) % Math.PI) * DEG;
           G.vline(th, { color: 'gold', width: 1.5 });
-          G.dot(th, fa(th), { r: 4, color: 'blue' }); G.dot(th, fo(th), { r: 4, color: 'red' });
+          G.dot(th, fa(th), { r: 4, color: 'purple' }); G.dot(th, fo(th), { r: 4, color: 'red' });
           if (!angs.length) G.corner('red curve never 0: no real eigenvalue', 'tr', { color: 'red', weight: 700 });
           st = { vv, Tv, along, off, ok, n: angs.length };
-          v.legend([['gold', '$v$'], ['accent', '$Tv$'], ['red', 'part of $Tv$ off the line $\\mathbf Rv$'], ['blue', 'part along $v$'], ['green', 'eigen-direction']]);
+          v.legend([['gold', '$v$'], ['accent', '$Tv$'], ['red', 'part of $Tv$ off the line $\\mathbf Rv$'], ['purple', 'part along $v$'], ['green', 'eigen-direction']]);
         });
         v.readout(() => st && `$v = ${vecT(st.vv)},\\ Tv = ${vecT(st.Tv)},\\quad \\langle Tv, v\\rangle = ${nm(st.along, 3)},\\ \\det[v, Tv] = ${nm(st.off, 3)}$` + (st.ok ? ` — so $Tv = ${nm(st.along, 3)}\\,v$ and $\\lambda = ${nm(st.along, 3)}$ is an eigenvalue.` : st.n ? ` — not an eigenvector; the eigen-directions are the green lines.` : ` — no direction works: this rotation has no real eigenvalue.`));
       },
@@ -372,7 +372,7 @@ $$Tv = \lambda v.$$`,
         const S = v.stage({ x: [-2.2, 2.2], y: [-1.9, 1.9], equal: true, height: 340, title: 'the unit square under $T - \\lambda I$' });
         const G = v.stage({ x: [-1, 3], y: [-1.5, 2.5], height: 340, xlabel: 'λ', title: 'signed area $= \\det(T - \\lambda I)$' });
         const eigs = () => { const e = eig2x2(PRE[which.value]); return e.real ? e.l : []; };
-        const L = G.handle(1.2, 0, { color: 'gold', label: 'λ', constrain: (x) => { for (const e of eigs()) if (Math.abs(x - e) < 0.05) x = e; return [x, 0]; } });
+        const L = G.handle(2, 0, { color: 'gold', label: 'λ', constrain: (x) => { for (const e of eigs()) if (Math.abs(x - e) < 0.05) x = e; return [x, 0]; } });
         let st = null;
         v.render(() => {
           const A = PRE[which.value], lam = L.x, B = [[A[0][0] - lam, A[0][1]], [A[1][0], A[1][1] - lam]], d = det2(col(B, 0), col(B, 1));
@@ -420,7 +420,7 @@ $$Tv = \lambda v.$$`,
       tags: ['eigenvalues'],
       viz(v) {
         const PRE = { gen: [[1.2, 0.8], [0.3, 0.6]], sym: [[1.3, 0.6], [0.6, 0.4]], shear: [[1, 0.7], [0, 1]], rot: [[0.5, -0.9], [0.9, 0.5]], scalar: [[1.2, 0], [0, 1.2]] };
-        v.select('preset', Object.keys(PRE), 'gen', { onChange: (k) => C.set(PRE[k]) });
+        v.select('preset', [{ value: 'gen', label: 'general' }, { value: 'sym', label: 'symmetric' }, { value: 'shear', label: 'shear' }, { value: 'rot', label: 'rotation' }, { value: 'scalar', label: 'scalar' }], 'gen', { onChange: (k) => C.set(PRE[k]) });
         const S = v.stage({ x: [-2.3, 2.3], y: [-2, 2], equal: true, height: 380, weight: 1.5 });
         const Z = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380, weight: 0.85, title: 'eigenvalues in $\\mathbf C$' });
         const C = colHandles(S, PRE.gen);
@@ -436,8 +436,8 @@ $$Tv = \lambda v.$$`,
             if (!u) { for (let k = 0; k < 12; k++) { const t = (Math.PI * k) / 12; S.line(-3 * Math.cos(t), -3 * Math.sin(t), 3 * Math.cos(t), 3 * Math.sin(t), { color: 'green', width: 1.2, alpha: 0.5 }); } lines.push({ l, u: null }); continue; }
             S.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: 'green', width: 2.6, alpha: 0.85 });
             S.arrow(0, 0, l * u[0], l * u[1], { color: 'green', width: 3 });
-            const s = Math.abs(u[1] / (u[0] || 1e-9)) > 0.8 ? 1.65 : 2.05, q = u[1] < 0 ? -1 : 1;
-            S.tex(`E(${nm(l)})`, q * s * u[0], q * s * u[1], { color: 'green', dx: 22, size: 14 });
+            const q = u[1] < 0 || (u[1] === 0 && u[0] < 0) ? -1 : 1, s = Math.min(2, 2.05 / Math.max(Math.abs(u[0]), 1e-9), 1.65 / Math.max(Math.abs(u[1]), 1e-9));
+            S.tex(`E(${nm(l)})`, q * s * u[0], q * s * u[1], { color: 'green', dx: q * u[0] >= 0 ? -34 : 34, dy: -14, size: 14 });
             lines.push({ l, u });
           }
           const vv = [vh.x, vh.y], Tv = mv(A, vv), tu = len(Tv) > 1e-9 ? unit(Tv) : vv;
@@ -447,7 +447,7 @@ $$Tv = \lambda v.$$`,
           S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });
           S.tex('Tv', Tv[0], Tv[1], { color: 'orange', dx: 14, dy: 10 });
           const turn = Math.asin(Math.min(1, Math.abs(det2(vv, tu)))) * DEG;
-          S.corner(e.real ? `${lines.length && !lines[0].u ? 'every line' : lines.length + (lines.length === 1 ? ' line' : ' lines')} mapped onto itself` : 'no real eigenvector: every line is turned', 'tl', { color: e.real ? 'green' : 'red', weight: 700 });
+          S.corner(e.real ? (lines.length && !lines[0].u ? 'every line is mapped onto itself' : lines.length === 1 ? 'one line mapped onto itself' : 'two lines, each mapped onto itself') : 'no real eigenvector: every line is turned', 'tl', { color: e.real ? 'green' : 'red', weight: 700 });
           // complex plane
           Z.circle(0, 0, 1, { color: 'faint', dash: [3, 4] });
           const zs = e.real ? e.l.map((l) => [l, 0]) : [[e.re, e.im], [e.re, -e.im]];
@@ -574,12 +574,12 @@ Part (b) follows from (a) because $pq = qp$ as polynomials. Two polynomials in t
       deps: ['ladr-5.1', 'ladr-2.10', 'ladr-3.8'],
       tags: ['polynomials', 'operators'],
       viz(v) {
-        const a = v.slider('$p(z) = z - a$, $a$', -2, 2, 0.5, { step: 0.1 });
-        const b = v.slider('$q(z) = z^2 - b$, $b$', -2, 2, 1, { step: 0.1 });
+        const a = v.slider('$p(z) = z - a$, $a$', -2, 2, 0.3, { step: 0.1 });
+        const b = v.slider('$q(z) = z^2 - b$, $b$', -2, 2, 0.5, { step: 0.1 });
         const other = v.toggle('apply $q$ to another operator $S$', false);
         const S1 = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 340, title: '$T$ acting on the grid' });
         const S2 = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 340, title: 'the products' });
-        const C = colHandles(S1, [[0.8, -0.6], [0.5, 0.9]]);
+        const C = colHandles(S1, [[1.2, 0.4], [-0.3, 0.9]]);
         const Sop = [[1, 0.9], [0, 1]];
         let st = null;
         v.render(() => {
@@ -628,13 +628,13 @@ Part (b) follows from (a) because $pq = qp$ as polynomials. Two polynomials in t
         const brk = v.toggle('use a projection $S$ instead of $p(T)$', false);
         const n0 = unit([1, -0.7, 0.5]), Sop = eye(3).map((r, i) => r.map((x, j) => x - n0[i] * n0[j]));
         const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 410 });
-        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.3, axis: 1.5 });
+        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.55, axis: 1.5 });
         const hu = sc.handle([0.5, 0.5, 0.5], { color: 'accent', label: 'u' });
         const hw = sc.handle([0.5, -0.5, 0.5], { color: 'orange', label: 'w' });
         const fit = (H, basis, p0) => {
           H.h.visible = basis.length > 0;
           if (basis.length === 1) { H.mode = 'line'; H.d = basis[0]; H.set(scl(basis[0], 0.9 * Math.sign(dot(p0, basis[0]) || 1))); }
-          else if (basis.length === 2) { H.mode = 'plane'; H.a = basis[0]; H.b = basis[1]; let p = add(scl(basis[0], dot(p0, basis[0])), scl(basis[1], dot(p0, basis[1]))); if (len(p) < 0.3) p = scl(basis[0], 0.9); H.set(p); }
+          else if (basis.length === 2) { H.mode = 'plane'; H.a = basis[0]; H.b = basis[1]; let p = add(scl(basis[0], dot(p0, basis[0])), scl(basis[1], dot(p0, basis[1]))); p = len(p) < 0.3 ? scl(basis[0], 1.05) : scl(unit(p), 1.05); H.set(p); }
           else if (basis.length === 3) { H.mode = 'free'; H.set(p0); }
         };
         let key = '', st = null;
@@ -643,7 +643,7 @@ Part (b) follows from (a) because $pq = qp$ as polynomials. Two polynomials in t
           const sv = M.svd(Q), big = Math.max(1, sv.S[0]);
           const nul = M.nullspace(Q, 1e-8 * big), ran = sv.S.map((s, k) => (s > 1e-8 * big ? col(sv.U, k) : null)).filter(Boolean);
           const k2 = which.value + brk.value;
-          if (k2 !== key) { key = k2; fit(hu, nul, [0.7, 0.6, 0.5]); fit(hw, ran, [0.6, -0.6, 0.6]); }
+          if (k2 !== key) { key = k2; fit(hu, nul, [0.7, 0.6, 0.5]); fit(hw, ran, [1, 0.9, 0.1]); }
           sc.begin();
           const drawSub = (B, c) => {
             if (B.length === 1) sc.line(scl(B[0], -1.8), scl(B[0], 1.8), { color: c, width: 3.4 });
@@ -702,7 +702,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
           const real = zs.every((z) => Math.abs(z[1]) < 1e-12), overR = F.value === 'R';
           drawCols(S, A, { alpha: 0.04 });
           if (real) for (const [l] of zs) { const u = evec2(A, l); if (u) S.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: 'green', width: 2, alpha: 0.75 }); }
-          [[w0, 'gold', 'v'], [w1, 'orange', 'Tv'], [w2, 'red', 'T^2v']].forEach(([w, c, s]) => { S.arrow(0, 0, w[0], w[1], { color: c, width: 2.6 }); S.tex(s, w[0], w[1], { color: c, dx: 14, dy: -10 }); });
+          [[w0, 'gold', ''], [w1, 'orange', 'Tv'], [w2, 'red', 'T^2v']].forEach(([w, c, s]) => { S.arrow(0, 0, w[0], w[1], { color: c, width: 2.6 }); if (s) S.tex(s, w[0], w[1], { color: c, dx: 14, dy: -10 }); });
           S.corner(real ? 'real eigen-lines (green)' : 'no line is mapped to itself', 'tl', { color: real ? 'green' : 'red', weight: 700 });
           Z.circle(0, 0, 1, { color: 'faint', dash: [3, 4] });
           const R = Math.max(2, 1.25 * Math.max(...zs.map(([x, y]) => Math.hypot(x, y))));
@@ -755,7 +755,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
           for (const [i, j] of pre.planes) { const nn = unit(cross(pc(i), pc(j))), h = dot(p, nn); if (Math.abs(h) / r < Math.sin(5 / DEG)) return scl(unit(sub(p, scl(nn, h))), r); }
           return p;
         };
-        const hu = sc.handle([0.9, 0.3, 0.6], { color: 'gold', label: 'u', snap });
+        const hu = sc.handle(scl(unit(add(scl(pc(0), 0.7), pc(2))), 1.1), { color: 'gold', label: 'u', snap });
         let st = null;
         v.render(() => {
           const T = PRE[which.value].T, K = [hu.p];
@@ -775,7 +775,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
           const cs = ['gold', 'orange', 'pink', 'purple'], lab = ['u', 'Tu', 'T^2u', 'T^3u'];
           K.forEach((w, j) => { sc.arrow([0, 0, 0], w, { color: cs[j], alpha: j > m ? 0.35 : 1 }); if (j) sc.tex(lab[j], w, { color: cs[j], dx: 14, dy: -6, size: 14 }); });
           sc.flush();
-          S.corner(`T${m === 1 ? '' : ['', '', '²', '³'][m]}u ∈ span of the earlier ones: deg q_u = ${m}`, 'tl', { color: 'green', weight: 700 });
+          S.corner(`${['', 'Tu', 'T²u', 'T³u'][m]} ∈ span of the earlier vectors: deg qᵤ = ${m}`, 'tl', { color: 'green', weight: 700 });
           st = { qu, m, mp, divides };
           v.legend([['gold', '$u$'], ['orange', '$Tu$'], ['pink', '$T^2u$'], ['purple', '$T^3u$'], ['green', '$\\operatorname{span}(u, \\dots, T^{m-1}u)$', { area: true }]]);
         });
@@ -789,7 +789,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
       name: 'Minimal polynomial',
       statement: String.raw`Suppose $V$ is finite-dimensional and $T \in \mathcal L(V)$. The **minimal polynomial** of $T$ is the unique monic polynomial $p \in \mathcal P(\mathbf F)$ of smallest degree such that $p(T) = 0$ (it exists and is unique by 5.22).`,
       idea: String.raw`To compute it, test the powers $I, T, T^2, \dots$ in turn: the first $T^m$ that is a linear combination $T^m = -(c_0I + c_1T + \dots + c_{m-1}T^{m-1})$ of the earlier powers gives $p(z) = z^m + c_{m-1}z^{m-1} + \dots + c_0$. Since $\mathcal L(V)$ has dimension $(\dim V)^2$ this must happen, and 5.22 says it happens by $m = \dim V$. Its degree measures how complicated $T$ is: $1$ for multiples of $I$, $\dim V$ for a single Jordan block.`,
-      caption: String.raw`Pick an operator and slide "powers tested". Each tile is a power $T^k$ (blue entries positive, red negative). Under each tile is its distance from the span of the earlier tiles; the first tile at distance $0$ (green frame) ends the search, and the dependency is the minimal polynomial, shown factored in the readout. Compare the diagonal matrix (degree 2) with the Jordan block (degree 3) — both have only two or one distinct eigenvalues.`,
+      caption: String.raw`Pick an operator and slide "powers tested". Each tile is a power $T^k$ (blue entries positive, red negative). Under each tile is its distance from the span of the earlier tiles; the first tile at distance $0$ (green frame) ends the search, and the dependency is the minimal polynomial, shown factored in the readout. Compare the diagonal matrix (two distinct eigenvalues, degree 2) with the Jordan block (one eigenvalue, yet degree 3).`,
       deps: ['ladr-5.22'],
       tags: ['minimal polynomial'],
       viz(v) {
@@ -797,7 +797,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
         const PRE = { diag: [[1, 0, 0], [0, 2, 0], [0, 0, 2]], jordan: [[2, 1, 0], [0, 2, 1], [0, 0, 2]], rot: [[0, -1, 0], [1, 0, 0], [0, 0, 1]], proj: [[1, 0, 1], [0, 1, 1], [0, 0, 0]], nil: [[0, 1, 0], [0, 0, 1], [0, 0, 0]] };
         const which = v.select('$T$', [{ value: 'diag', label: 'diagonal' }, { value: 'jordan', label: 'Jordan block' }, { value: 'rot', label: 'rotation' }, { value: 'proj', label: 'projection' }, { value: 'nil', label: 'nilpotent' }], 'jordan');
         const K = v.slider('powers tested', 1, 3, 3, { int: true });
-        const S = v.stage({ x: [-0.05, 4.45], y: [-0.62, 1.12], equal: true, axes: false, height: 290 });
+        const S = v.stage({ x: [-0.05, 4.45], y: [-0.45, 1.12], equal: true, axes: false, height: 280 });
         let st = null;
         v.render(() => {
           const A = PRE[which.value], mp = minPoly(M, A), m = mp.c.length - 1;
@@ -809,7 +809,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
             S.tex(labs[k], x0 + 0.45, 0.02, { color: tested ? 'ink' : 'faint', baseline: 'top', size: 16 });
             if (k && tested) {
               const r = needed ? mp.res[k - 1] : 0, z = r < 1e-8;
-              S.text(needed ? (z ? 'in the span ✓' : `distance ${nmc(r, 3)}`) : 'not needed', x0 + 0.45, -0.36, { color: needed ? (z ? 'green' : 'red') : 'faint', align: 'center', size: 13, weight: z ? 700 : 400 });
+              S.text(needed ? (z ? 'in the span ✓' : `distance ${nmc(r, 3)}`) : 'not needed', x0 + 0.45, -0.27, { color: needed ? (z ? 'green' : 'red') : 'faint', align: 'center', size: 13, weight: z ? 700 : 400 });
             }
           });
           st = { m, c: mp.c, A };
@@ -878,7 +878,7 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
         const which = v.select('$T$', [{ value: 'J', label: '$p = (z-1)^2(z+1)$' }, { value: 'D', label: '$p = (z-1)(z+1)$' }, { value: 'N', label: '$p = (z+1)^3$' }], 'J');
         const deg = v.slider('$\\deg q$', 1, 4, 3, { int: true });
         const L = v.stage({ x: [-2.6, 2.6], y: [-0.75, 4.3], axes: false, height: 290, weight: 1.2, title: 'zeros of $q$ (gold) and of $p$ (green)' });
-        const rowY = (k) => 3.6 - k;
+        const rowY = (k) => 3.3 - 0.95 * k;
         const H = [1, -1, 0.4, 2].map((x0, k) => L.handle(x0, rowY(k), { color: 'gold', label: `r${'₁₂₃₄'[k]}`, labelPos: 'n', constrain: (x) => { const n = Math.round(x); return [Math.abs(x - n) < 0.12 ? n : x, rowY(k)]; } }));
         const S = v.stage({ x: [-0.05, 2.25], y: [-0.25, 1.05], equal: true, axes: false, height: 290, weight: 1, title: '$q(T)$ and $r(T)$' });
         let st = null;
@@ -891,9 +891,9 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
           for (let t = -2; t <= 2; t++) { L.line(t, -0.43, t, -0.27, { color: 'muted' }); L.text(nmc(t, 0), t, -0.6, { color: 'muted', align: 'center', size: 12 }); }
           for (let k = 0; k < 4; k++) L.line(-2.5, rowY(k), 2.5, rowY(k), { color: 'grid', width: 1, alpha: k < d ? 1 : 0.4 });
           for (const g of zp) {
-            L.line(g.re, -0.35, g.re, 3.95, { color: 'green', width: 3, alpha: 0.6 });
-            const got = H.slice(0, d).filter((h) => Math.abs(h.x - g.re) < 1e-9).length;
-            L.text(`need ${g.m}, have ${got}`, g.re, 4.1, { color: got >= g.m ? 'green' : 'red', align: 'center', size: 12, weight: 700 });
+            L.line(g.re, -0.35, g.re, 3.85, { color: 'green', width: 3, alpha: 0.6 });
+            const got = H.slice(0, d).filter((h) => Math.abs(h.x - g.re) < 1e-3).length;
+            L.text(`need ${g.m}, have ${got}`, g.re, 4.05, { color: got >= g.m ? 'green' : 'red', align: 'center', size: 12, weight: 700 });
           }
           H.forEach((h, k) => { h.visible = k < d; });
           drawTile(S, qT, 0.05, 0.05, 0.9, { frame: zero ? 'green' : 'red' });
@@ -907,7 +907,8 @@ Since $\deg q < \deg p$, the vector $q(T)v$ is not $0$, so it is an eigenvector 
         v.readout(() => {
           if (!st) return '';
           const { q, s, r, p, zero } = st;
-          return `$q(z) = ${polyT(q, 'z')} = \\bigl(${polyT(s, 'z')}\\bigr)\\,p(z) + \\bigl(${polyT(r, 'z')}\\bigr)$ with $p(z) = ${polyT(p)}$. ` + (zero ? 'Remainder $r = 0$ and $q(T) = 0$: $q$ is a multiple of $p$.' : `Remainder $r \\ne 0$ and $q(T) = r(T) \\ne 0$ (norm $${nm(fro(polyMat(r, PRE[which.value])), 3)}$).`);
+          const sT = polyT(s, 'z'), rT = polyT(r, 'z');
+          return `$q(z) = ${polyT(q, 'z')} = ${sT === '1' ? '' : `\\bigl(${sT}\\bigr)\\,`}p(z)${rT === '0' ? '' : ` + \\bigl(${rT}\\bigr)`}$ with $p(z) = ${polyT(p)}$. ` + (zero ? 'Remainder $r = 0$ and $q(T) = 0$: $q$ is a multiple of $p$.' : `Remainder $r \\ne 0$ and $q(T) = r(T) \\ne 0$ (norm $${nm(fro(polyMat(r, PRE[which.value])), 3)}$).`);
         });
       },
     },

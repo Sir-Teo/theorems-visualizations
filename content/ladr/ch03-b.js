@@ -22,6 +22,8 @@ function fr(x) {
 /** TeX for a matrix (array of rows). */
 const mtex = (A, f = (x) => tn(x)) => `\\begin{bmatrix}${A.map((r) => r.map(f).join(' & ')).join(' \\\\ ')}\\end{bmatrix}`;
 /** TeX for a list (x₁,…,xₙ). */
+/** TeX for the combination Σ cs[i]·names[i], skipping zero terms. */
+const cmb = (cs, names) => cs.map((c, i) => [c, names[i]]).filter(([c]) => Math.abs(c) > 1e-9).map(([c, n], i) => { const a = Math.abs(c), co = Math.abs(a - 1) < 1e-9 ? '' : `${tn(a)}\\,`; return (i ? (c < 0 ? ' - ' : ' + ') : c < 0 ? '-' : '') + co + n; }).join('') || '0';
 const vtex = (p, d = 2) => `(${p.map((x) => tn(x, d)).join(',\\,')})`;
 const ap2 = (A, p) => [A[0][0] * p[0] + A[0][1] * p[1], A[1][0] * p[0] + A[1][1] * p[1]];
 const dotN = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
@@ -512,7 +514,7 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
         v.readout(() => {
           if (!st) return '';
           const { C, k, j, CR } = st, col = colOf(CR, k);
-          return `$(CR)_{\\cdot,${k + 1}} = ${tn(R[0][k])}\\,C_{\\cdot,1} + ${tn(R[1][k])}\\,C_{\\cdot,2} = ${vtex(col)}$ · $(CR)_{${j + 1},\\cdot} = ${tn(C[j][0])}\\,R_{1,\\cdot} + ${tn(C[j][1])}\\,R_{2,\\cdot} = ${vtex(CR[j])}$, at distance $${zs(v, st.off)}$ from the plane of the rows of $R$.`;
+          return `$(CR)_{\\cdot,${k + 1}} = ${cmb([R[0][k], R[1][k]], ['C_{\\cdot,1}', 'C_{\\cdot,2}'])} = ${vtex(col)}$ · $(CR)_{${j + 1},\\cdot} = ${cmb(C[j], ['R_{1,\\cdot}', 'R_{2,\\cdot}'])} = ${vtex(CR[j])}$, at distance $${zs(v, st.off)}$ from the plane of the rows of $R$.`;
         });
       },
     },
@@ -627,7 +629,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
         const pre = v.select('example', [{ value: 'a', label: 'rank 2' }, { value: 'b', label: 'rank 1' }, { value: 'c', label: 'rank 3' }], 'a');
         const jS = v.select('rebuild column', ['1', '2', '3', '4'], '3');
         const Q = v.stage({ x: [-0.5, 12.5], y: [-0.9, 3.6], equal: true, axes: false, height: 200, full: true });
-        const S = v.stage({ x: [-3.6, 3.6], y: [-3.6, 3.6], equal: true, axes: false, height: 340, title: 'the columns of $A$ in $\\mathbf R^3$; column space in green' });
+        const S = v.stage({ x: [-4.3, 4.3], y: [-4.3, 4.3], equal: true, axes: false, height: 380, title: 'the columns of $A$ in $\\mathbf R^3$; column space in green' });
         const sc = v.scene3(S, { axis: 2.4, yaw: 0.6, pitch: 0.3 });
         let A = PRE.a.map((r) => r.slice()), last = 'a', st = null;
         const TA = v.table(Q, { rows: 3, cols: 4, cell: [1, 1], x0: 0, y0: 3, size: 15 });
@@ -663,7 +665,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
           if (!st) return '';
           const { c, kept, j, R, err } = st;
           if (!c) return 'The zero matrix has column rank $0$; the theorem assumes $c \\ge 1$.';
-          return `Sifting keeps columns ${kept.map((k) => k + 1).join(', ')}: column rank $c = ${c}$, so $C$ is $3\\times${c}$ and $R$ is $${c}\\times4$. Column ${j + 1}: $A_{\\cdot,${j + 1}} = ${kept.map((k, r) => `${tn(R[r][j])}\\,A_{\\cdot,${k + 1}}`).join(' + ')}$. Largest entry of $A - CR$: $${zs(v, err)}$.`;
+          return `Sifting keeps columns ${kept.map((k) => k + 1).join(', ')}: column rank $c = ${c}$, so $C$ is $3\\times${c}$ and $R$ is $${c}\\times4$. Column ${j + 1}: $A_{\\cdot,${j + 1}} = ${cmb(kept.map((k, r) => R[r][j]), kept.map((k) => `A_{\\cdot,${k + 1}}`))}$. Largest entry of $A - CR$: $${zs(v, err)}$.`;
         });
       },
     },
@@ -807,22 +809,23 @@ using associativity of composition (3.8). Without both halves uniqueness fails: 
         const md = v.select('$T$', [{ value: 'inv', label: 'invertible, $\\mathbf R^2 \\to \\mathbf R^2$' }, { value: 'onto', label: '$T(x,y) = x + y$, onto $\\mathbf R$' }], 'inv');
         const wS = v.slider('$w \\in \\mathbf R$', -2, 2, 1.4, { step: 0.05 });
         const S = v.stage({ x: [-3.4, 3.4], y: [-3.3, 2.8], equal: true, axes: false, height: 380 });
-        const T = [[1.1, 0.6], [-0.5, 0.9]];
-        const hw = S.handle(1.2, 1.4, { color: 'accent', label: 'w' });
+        const T = [[0.6, -0.5], [0.4, 0.8]];
+        const hw = S.handle(0.4, 1.8, { color: 'accent', label: 'w' });
         const on = (x, y) => { const t = (x - y) / 2; return [M.clamp(0.5 + t, -1.8, 2.8), 1 - M.clamp(0.5 + t, -1.8, 2.8)]; };
         const p1 = S.handle(1.8, -0.8, { color: 'blue', label: 'S₁(1)', constrain: on }), p2 = S.handle(-0.6, 1.6, { color: 'purple', label: 'S₂(1)', constrain: on });
         let st = null;
         v.render(() => {
           const inv = md.value === 'inv';
           hw.visible = inv; p1.visible = !inv; p2.visible = !inv; wS.el.hidden = inv;
-          gridImage(S, [[1, 0], [0, 1]], 4);
+          gridImage(S, [[1, 0], [0, 1]], 6);
           if (inv) {
             const S1 = M.transpose(M.luSolve(M.transpose(T), [[1, 0], [0, 1]]));   // S₁T = I  ⇔  Tᵗ S₁ᵗ = I
             const S2 = M.luSolve(T, [[1, 0], [0, 1]]);                                // T S₂ = I
             const w = [hw.x, hw.y], s2w = ap2(S2, w), ts2w = ap2(T, s2w), s1w = ap2(S1, ts2w), s1Ts2 = ap2(M.matMul(S1, T), s2w);
             S.arrow(0, 0, w[0], w[1], { color: 'accent', width: 2.6 });
             S.arrow(w[0], w[1], s2w[0], s2w[1], { color: 'purple', width: 1.8, dash: [5, 4] }); S.tex('S_2', (w[0] + s2w[0]) / 2, (w[1] + s2w[1]) / 2, { color: 'purple', dy: -12, size: 13 });
-            S.dot(s2w[0], s2w[1], { r: 6, color: 'purple' }); S.dot(s1w[0], s1w[1], { r: 11, hollow: true, color: 'blue', width: 2.4 }); S.dot(s1Ts2[0], s1Ts2[1], { r: 15, hollow: true, color: 'green', width: 1.6 });
+            S.arrow(s2w[0] + 0.08, s2w[1] - 0.12, w[0] + 0.08, w[1] - 0.12, { color: 'orange', width: 1.6, dash: [5, 4] }); S.tex('T', (w[0] + s2w[0]) / 2 + 0.1, (w[1] + s2w[1]) / 2 - 0.15, { color: 'orange', dy: 12, size: 13 });
+            S.dot(s1Ts2[0], s1Ts2[1], { r: 15, hollow: true, color: 'green', width: 1.6 }); S.dot(s1w[0], s1w[1], { r: 10, hollow: true, color: 'blue', width: 2.4 }); S.dot(s2w[0], s2w[1], { r: 5, color: 'purple' });
             S.tex('S_2w', s2w[0], s2w[1], { color: 'purple', dx: 26, dy: 14, size: 13 }); S.tex('S_1(TS_2w)', s1w[0], s1w[1], { color: 'blue', dx: -46, dy: -16, size: 12 });
             S.corner('S₁w = S₁(TS₂w) = (S₁T)(S₂w) = S₂w', 'tl', { color: 'green', weight: 700, size: 13 });
             st = { inv, S1, S2, s1w, s2w };
@@ -879,7 +882,7 @@ using associativity of composition (3.8). Without both halves uniqueness fails: 
         let A = PRE.sing3.A;
         const rangeB = () => orthN(M.transpose(A).map(emb), 1e-6);
         const snap = (p) => { const B = rangeB(); if (B.length === 3) return p; const q = B.reduce((s, e) => s.map((x, i) => x + dotN(p, e) * e[i]), [0, 0, 0]); return Math.hypot(...p.map((x, i) => x - q[i])) < 0.2 ? q : p; };
-        const w3 = scR.handle([0.7, 0.9, 0.5], { color: 'accent', label: 'w', lim: 1.6, snap });
+        const w3 = scR.handle([0.7, 0.9, 0.8], { color: 'accent', label: 'w', lim: 1.6, snap });
         const w2 = scR.handle([0.9, 0.3, 0], { color: 'accent', label: 'w', mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], lim: 1.6, snap });
         const TG = v.table(G, { rows: 2, cols: 2, square: false, cellAspect: 4.2, maxCell: 40, size: 12.5, rowLabels: ['injective', 'not injective'], colLabels: ['surjective', 'not surjective'] });
         const CELL = [['invertible: ST = I = TS', 'a left inverse only'], ['a right inverse only', 'no one-sided inverse']];
@@ -1058,14 +1061,14 @@ $$T \text{ is invertible} \iff T \text{ is injective} \iff T \text{ is surjectiv
         const co = v.select('isomorphism', [{ value: 'coef', label: 'coefficients $(a_0,a_1,a_2)$' }, { value: 'val', label: 'values $(p(-1),p(0),p(1))$' }], 'coef');
         const lam = v.slider('$\\lambda$', -2, 2, -1.2, { step: 0.05 });
         const G = v.stage({ x: [-2.2, 2.2], y: [-3.2, 3.2], height: 340, title: '$\\mathcal P_2(\\mathbf R)$', xlabel: 'x' });
-        const S3 = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, axes: false, height: 340, title: '$\\mathbf R^3$' });
-        const sc = v.scene3(S3, { axis: 1.7, yaw: -0.65, pitch: 0.32 });
+        const S3 = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 340, title: '$\\mathbf R^3$' });
+        const sc = v.scene3(S3, { axis: 1.3, yaw: 0.45, pitch: 0.3 });
         const VM = [[1, -1, 1], [1, 0, 0], [1, 1, 1]], ID = M.identity(3), VI = M.inverse(VM);
         const ev = (a, x) => a[0] + a[1] * x + a[2] * x * x;
-        let pa = [0.5, -0.6, 0.7], qa = [-0.4, 0.8, -0.5], last = 'coef';
+        let pa = [0.5, -0.7, 0.9], qa = [0.9, 0.7, -0.4], last = 'coef';
         const XS = [-1, 0, 1];
         const gh = XS.map((x) => G.handle(x, ev(pa, x), { color: 'blue', constrain: (_, y) => [x, M.clamp(y, -3, 3)] }));
-        const hp = sc.handle(pa, { color: 'blue', label: 'p', lim: 1.6 }), hq = sc.handle(qa, { color: 'orange', label: 'q', lim: 1.6 });
+        const hp = sc.handle(pa, { color: 'blue', label: 'p', lim: 1.5 }), hq = sc.handle(qa, { color: 'orange', label: 'q', lim: 1.5 });
         let st = null;
         v.render(() => {
           const Phi = co.value === 'coef' ? ID : VM, Pi = co.value === 'coef' ? ID : VI;
@@ -1084,7 +1087,7 @@ $$T \text{ is invertible} \iff T \text{ is injective} \iff T \text{ is surjectiv
           G.fn((x) => ev(pa, x), { color: 'blue', width: 2.8 });
           const P = phi(pa), Qv = phi(qa), Sv = phi(sa), Lv = phi(la);
           sc.begin();
-          sc.line([0, 0, 0], P, { color: 'blue', width: 2 }); sc.line([0, 0, 0], Qv, { color: 'orange', width: 2 });
+          sc.arrow([0, 0, 0], P, { color: 'blue', width: 2.2, head: 8 }); sc.arrow([0, 0, 0], Qv, { color: 'orange', width: 2.2, head: 8 }); sc.arrow([0, 0, 0], Sv, { color: 'green', width: 2, head: 8 });
           sc.line(P, Sv, { color: 'orange', width: 1, dash: true }); sc.line(Qv, Sv, { color: 'blue', width: 1, dash: true });
           sc.line(P.map((x) => -2 * x), P.map((x) => 2 * x), { color: 'gold', width: 1, alpha: 0.4, dash: true });
           sc.dot(Sv, { r: 6, color: 'green' }); sc.dot(Lv, { r: 5.5, color: 'gold' });
@@ -1141,7 +1144,7 @@ $$T \text{ is invertible} \iff T \text{ is injective} \iff T \text{ is surjectiv
           const V = SP[Vs.value], W = SP[Ws.value], dV = V.d, dW = W.d, D = Math.max(dV, dW);
           hs.forEach((h, k) => { h.visible = k < dV; c[k] = h.y; });
           const cv = c.slice(0, dV), cw = [...Array(dW).keys()].map((k) => (k < dV ? c[k] : 0));
-          SC.setView([-0.2, D + 0.2], [-2.7, 2.4]);
+          SC.setView([-0.45, D + 0.15], [-2.7, 2.4]);
           SC.line(0, 0, D, 0, { color: 'faint', width: 1 });
           for (let k = 0; k < D; k++) {
             const inV = k < dV, inW = k < dW, col = inV && inW ? 'green' : inV ? 'red' : 'faint';
@@ -1150,7 +1153,7 @@ $$T \text{ is invertible} \iff T \text{ is injective} \iff T \text{ is surjectiv
             SC.tex(inV ? V.b[k] : '—', k + 0.5, -2.2, { color: inV ? 'ink' : 'faint', size: 12 });
             SC.tex(inW ? W.b[k] : '—', k + 0.5, -2.55, { color: inW ? (inV ? 'ink' : 'faint') : 'red', size: 12 });
           }
-          SC.text('V', -0.12, -2.2, { size: 11, color: 'muted', math: true, align: 'right' }); SC.text('W', -0.12, -2.55, { size: 11, color: 'muted', math: true, align: 'right' });
+          SC.text('V', -0.1, -2.2, { size: 11, color: 'muted', math: true, align: 'right' }); SC.text('W', -0.12, -2.55, { size: 11, color: 'muted', math: true, align: 'right' });
           show(SV, TV, V, cv, 'blue', []);
           show(SW, TW, W, cw, 'green', [...Array(dW).keys()].filter((k) => k >= dV));
           SV.setTitle(`$v \\in ${V.tex}$, $\\dim = ${dV}$`); SW.setTitle(`$Tv \\in ${W.tex}$, $\\dim = ${dW}$`);
@@ -1160,7 +1163,8 @@ $$T \text{ is invertible} \iff T \text{ is injective} \iff T \text{ is surjectiv
         v.readout(() => {
           if (!st) return '';
           const { V, W, dV, dW } = st;
-          if (dV === dW) return `$\\dim ${V.tex} = \\dim ${W.tex} = ${dV}$: $T\\bigl(\\sum c_k\\,${V.b[0]}\\ldots\\bigr) = \\sum c_k\\,${W.b[0]}\\ldots$ sends basis to basis, so it is injective and surjective — an **isomorphism**; its inverse reads the coordinates the other way.`;
+          const bn = (b) => (b === '1' ? '' : `\\,${b}`);
+          if (dV === dW) return `$\\dim ${V.tex} = \\dim ${W.tex} = ${dV}$: $T(c_1${bn(V.b[0])} + \\cdots + c_${dV}${bn(V.b[dV - 1])}) = c_1${bn(W.b[0])} + \\cdots + c_${dV}${bn(W.b[dV - 1])}$ sends basis to basis, so it is injective and surjective — an **isomorphism**; its inverse reads the coordinates the other way.`;
           if (dV > dW) return `$\\dim ${V.tex} = ${dV} > ${dW} = \\dim ${W.tex}$: this $T$ forgets ${dV - dW} coordinate${dV - dW > 1 ? 's' : ''}, so it is not injective — and no linear map can be, since $\\dim\\operatorname{null}T = ${dV} - \\dim\\operatorname{range}T \\ge ${dV - dW}$ (3.21). Not isomorphic.`;
           return `$\\dim ${V.tex} = ${dV} < ${dW} = \\dim ${W.tex}$: the range of any linear map has dimension at most ${dV}, so ${dW - dV} direction${dW - dV > 1 ? 's' : ''} of $W$ are never reached (grey) — no linear map is surjective. Not isomorphic.`;
         });
