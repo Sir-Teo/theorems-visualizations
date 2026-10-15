@@ -269,8 +269,7 @@ export default {
           pic: 'Grow a square grid of unit resistors and measure the resistance between neighbours: it converges to R/2, while between distant points it grows like log distance.' },
         { num: '6.15', kind: 'Theorem', name: 'Random walks and effective resistance', deps: ['em-6.14', 'em-6.9'], refs: ['Purcell ch. 4'],
           pic: 'Random walkers released at one node of a network: the fraction reaching a target before returning matches the escape probability computed from the effective resistance.' },
-        { num: '6.16', kind: 'Paradox', name: 'Two-capacitor paradox', deps: ['em-6.12', 'em-3.10'], refs: ['Purcell ch. 4'],
-          pic: 'Connect a charged capacitor to an identical empty one through a resistor of adjustable size: half the stored energy always disappears, and the heat integrated in the resistor accounts for it whether R is huge or tiny — at R → 0, radiation and inductance take over.' },
+        { num: '6.16', alias: 'circ-5.11', name: 'Two-capacitor paradox' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7

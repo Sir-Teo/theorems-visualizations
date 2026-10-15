@@ -222,8 +222,7 @@ export default {
       items: [
         { num: '9.1', kind: 'Definition', name: 'Classical orbital elements', deps: ['mech-8.7'], refs: ['Curtis ch. 4'],
           pic: 'Six sliders — semi-major axis, eccentricity, inclination, node, argument of periapsis, true anomaly — place an orbit and a satellite in 3D around a globe.' },
-        { num: '9.2', kind: 'Theorem', name: 'The vis-viva equation', deps: ['mech-8.6', 'mech-3.6'], refs: ['Curtis ch. 2'],
-          pic: 'Drag a satellite around an ellipse: its speed computed from v² = μ(2/r − 1/a) matches the simulated speed at every point, fastest at periapsis.' },
+        { num: '9.2', alias: 'astro-1.2', name: 'The vis-viva equation' },
         { num: '9.3', kind: 'Definition', name: 'Circular and escape velocity', deps: ['aero-9.2', 'mech-3.13'], refs: ['Curtis ch. 2'],
           pic: 'Launch horizontally from a mountain with increasing speed: the trajectories pass from falling back, to a circle, to ellipses, to the parabola at √2 times circular speed, to hyperbolas.' },
         { num: '9.4', kind: 'Model', name: 'Kepler’s equation and time of flight', deps: ['mech-8.9', 'aero-9.1'], refs: ['Curtis ch. 3'],

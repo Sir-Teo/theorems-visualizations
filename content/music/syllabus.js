@@ -1,4 +1,90 @@
 // Syllabus — Music Theory & Acoustics (curated course; see collection.js for references)
+//
+// RESEARCH AUDIT (October 2026). The first draft (157 items, chs. 1–12) was written from memory; it has been
+// checked against the sources below, its refs corrected, and 35 items added. Existing numbers are unchanged.
+//
+// Sources consulted
+//   Reference tables of contents (refs cite chapters; section numbers were not checked unless noted):
+//   - Benson, Music: A Mathematical Offering. Online TOC and the full free PDF, whose text was searched to verify
+//     each "Benson" ref: https://homepages.abdn.ac.uk/d.j.benson/pages/html/maths-music.html
+//     (1 Waves and harmonics, 2 Fourier theory, 3 A mathematician's guide to the orchestra, 4 Consonance and
+//     dissonance, 5 Scales and temperaments: the fivefold way, 6 More scales and temperaments, 7 Digital music,
+//     8 Synthesis, 9 Symmetry in music; app. I Intervals, app. M Music theory).
+//   - Sethares, Tuning, Timbre, Spectrum, Scale, 2nd ed. Author's contents page:
+//     https://sethares.engr.wisc.edu/contents.html . Refs use its chapter order: 2 The science of sound,
+//     3 Sound on sound, 4 Musical scales, 5 Consonance and dissonance of harmonic sounds, 6 Related spectra and
+//     scales, 8 Adaptive tunings, 10 The gamelan, 12 From tuning to spectrum; app. B Ratios make cents.
+//   - Loy, Musimathics I–II. Chapter lists from the archive.org catalogue record (musimathicsmathe0000loyd) and
+//     Google Books (https://books.google.com/books/about/Musimathics_Volume_2.html?id=88fxCwAAQBAJ).
+//     I: 1 Music and sound, 2 Representing music, 3 Musical scales, tuning and intonation, 4 Physical basis of
+//     sound, 5 Geometrical basis of sound, 6 Psychophysical basis of sound, 7 Introduction to acoustics,
+//     8 Vibrating systems, 9 Composition and methodology. II: 1 Digital signals and sampling, 2 Musical signals,
+//     3 Spectral analysis and synthesis, 4 Convolution, 5 Filtering, 6 Resonance, 7 The wave equation,
+//     8 Acoustical systems, 9 Sound synthesis, 10 Dynamic spectra.
+//   - Tymoczko, A Geometry of Music. Chapter list from library catalogue records: 1 Five components of tonality,
+//     2 Harmony and voice leading, 3 A geometry of chords, 4 Scales, 5 Macroharmony and centricity, 6 The extended
+//     common practice, 7 Functional harmony, 8 Chromaticism, 9 Scales in twentieth-century music, 10 Jazz.
+//   Acoustics coverage (cited where the four references above are silent):
+//   - Rossing, Moore & Wheeler, The Science of Sound, 3rd ed. (Pearson TOC, chs. 1–32: 3 Waves, 6 Sound pressure,
+//     power and loudness, 7 Pitch and tone color, 10 Stringed instruments, 12 Woodwind instruments, 14 Keyboard
+//     instruments, 23 Auditorium acoustics): https://www.pearson.com/en-us/subject-catalog/p/models-of-teaching/P200000006977
+//   - Fletcher & Rossing, The Physics of Musical Instruments, 2nd ed. (ch. 10 Bowed string instruments, ch. 13 Sound
+//     generation by reed and lip vibrations; Springer listing).
+//   - Müller, Fundamentals of Music Processing (ch. 4 Music structure analysis, ch. 6 Tempo and beat tracking):
+//     https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html
+//   - Toussaint, The Geometry of Musical Rhythm (cited by title only, for the rhythm-combinatorics items).
+//   Courses:
+//   - MIT 21M.301 Harmony and Counterpoint I (OCW calendar):
+//     https://ocw.mit.edu/courses/21m-301-harmony-and-counterpoint-i-spring-2005/pages/calendar/
+//   - MIT 21M.051 Fundamentals of Music (OCW syllabus):
+//     https://ocw.mit.edu/courses/21m-051-fundamentals-of-music-spring-2007/pages/syllabus
+//   - Stanford CCRMA Music 150, Musical Acoustics: https://ccrma.stanford.edu/courses/150/
+//   - UNSW Music Acoustics (FAQ index of topics): https://www.phys.unsw.edu.au/jw/musFAQ.html
+//   - Leeds MATH2340, The Mathematics of Music: https://catalogue.leeds.ac.uk/Module/UG/MATH/2340/202526
+//   Lists and open textbooks:
+//   - Open Music Theory (v1 contents): https://openmusictheory.github.io/contents.html
+//   - Wikipedia: https://en.wikipedia.org/wiki/Psychoacoustics , https://en.wikipedia.org/wiki/Musical_tuning ,
+//     https://en.wikipedia.org/wiki/Neo-Riemannian_theory
+//
+// What changed
+//   - Refs corrected after checking the TOCs: Sethares chapter numbers were off by one or more throughout (now
+//     2nd-ed. order); "Loy II ch. 7/8" for Fourier and DFT items -> ch. 3 (ch. 7 is the wave equation), spectrogram
+//     -> ch. 10, convolution reverb -> ch. 4; Mersenne's laws are in Benson ch. 3, not ch. 1; Benson has no
+//     stiff-string, wolf-note, coupled-string or Sabine material, so those cite Rossing; Benson does
+//     not treat the pitch-class Fourier transform (8.14–8.15 now cite Tymoczko by title); rhythm-combinatorics items
+//     (10.5–10.7, 10.10–10.11) cite Toussaint instead of Loy/Tymoczko; tempo and pitch tracking no longer cite
+//     Loy II ch. 6 (Resonance).
+//   - Renamed 5.11 (Shepard tones and the Risset glissando) and 9.3 (Roman numerals and harmonic function);
+//     6.5 kind Theorem -> Principle (a modelling claim, not a theorem).
+//   - Added (appended to chapters): 1.13 reflection and diffraction; 4.15 timbre space, 4.16 vibrato and tremolo;
+//     5.14 place and temporal theories of pitch, 5.15 tonal fusion and the mistuned harmonic (auditory scene
+//     analysis); 8.17–8.20 notation, interval names, major and minor scales, key signatures (the fundamentals every
+//     course opens with), 8.21 change ringing; 9.15–9.21 inversion and figured bass, cadences, dominant-seventh
+//     resolution, circle-of-fifths progressions, applied dominants, pivot modulation, tritone substitution;
+//     10.12 hypermeter, 10.13 hemiola; 11.12 reed and lip excitation, 11.13 air-jet (flute) excitation, 11.14
+//     critical distance; 12.14 phase vocoder.
+//   - New chapter 13, Melody, counterpoint and form (Open Music Theory, MIT 21M.301): conjunct motion, tonal
+//     hierarchy and key finding, Markov models of melody, contrapuntal motion, species counterpoint, embellishing
+//     tones, canon, sentence and period, large forms, self-similarity matrices, Schenkerian reduction.
+//
+// Deliberate omissions
+//   - Partch's 43-tone scale, Wendy Carlos's alpha/beta/gamma scales, harmonic entropy, Eitz notation and schismas
+//     (Benson 6.1, 6.6, 5.8–5.9; Sethares 5.16): specialist tuning lore beyond what most courses teach.
+//   - The Gibbs phenomenon, wavelets, the Hilbert transform and cepstrum (Benson ch. 2): general signal processing,
+//     already planned in sig, pde and waves. Electroacoustics, loudspeakers and environmental noise (Rossing parts
+//     V and VIII) belong to engineering collections.
+//   - Pólya enumeration and the Mathieu group M12 (Benson 9.15–9.16): Burnside (8.10) carries the counting idea.
+//   - Neo-Riemannian compound operations (N, S, H), Cube Dance and other alternative lattices: shown within the
+//     PLR and Tonnetz pictures rather than as separate items.
+//   - Singing voice registers and the singer's formant, absolute pitch and the tritone paradox: interesting, but
+//     not in the reference books and harder to make testable on screen; candidates for a later pass.
+//   - Pop and rock progressions, galant schemata, the details of sonata theory and non-Western systems beyond
+//     gamelan (maqam, raga): outside the collection's theory-and-acoustics core.
+//   - Golden-ratio and Fibonacci claims about musical form (taught in the Leeds module): contested empirically.
+//   - Instrument classification (Hornbostel–Sachs): a taxonomy without a testable picture; the excitation
+//     mechanisms it rests on (2.10 bowing, 11.12 reeds and lips, 11.13 air jets, ch. 3 percussion) are covered.
+//   - collection.js lists only Benson, Tymoczko, Sethares and Loy; Rossing, Fletcher & Rossing, Müller,
+//     Toussaint and Open Music Theory are cited here where those four are silent, and could be added there.
 export default {
   collection: 'music',
   chapters: [
@@ -13,13 +99,13 @@ export default {
           pic: 'A mass on a spring beside a rotating phasor whose shadow traces a sine wave; drag amplitude, frequency and phase, and swap in a stiffer spring or a heavier mass to hear the pitch move as √(k/m).' },
         { num: '1.3', kind: 'Definition', name: 'Frequency, period and wavelength', deps: ['music-1.1', 'music-1.2'], refs: ['Loy I ch. 4'], tags: ['frequency'],
           pic: 'A travelling sine wave with a ruler and a stopwatch: drag the frequency and watch the wavelength λ = c/f shrink from a 17 m bass wave to a 1.7 cm treble one while the tone plays.' },
-        { num: '1.4', kind: 'Law', name: 'Speed of sound (Newton–Laplace)', deps: ['music-1.1'], refs: ['Loy I ch. 4'], tags: ['speed of sound'],
+        { num: '1.4', kind: 'Law', name: 'Speed of sound (Newton–Laplace)', deps: ['music-1.1'], refs: ['Benson ch. 3', 'Loy I ch. 4'], tags: ['speed of sound'],
           pic: 'Choose a gas and a temperature and see c = √(γp/ρ) computed; switch to Newton’s isothermal assumption to watch the prediction fall about 15% short, and hear a pipe of fixed length jump up in pitch when filled with helium.' },
         { num: '1.5', kind: 'Concept', name: 'Pitch is logarithmic: the octave', deps: ['music-1.3', 'pma-8.6'], refs: ['Sethares ch. 2', 'Loy I ch. 3'], tags: ['pitch', 'octave'],
           pic: 'Play ascending tones spaced evenly on a linear frequency axis and then on a logarithmic one: equal steps of 100 Hz sound like shrinking intervals, while every doubling of frequency sounds like the same octave.' },
-        { num: '1.6', kind: 'Definition', name: 'Cents', deps: ['music-1.5', 'pma-8.6'], refs: ['Benson ch. 5', 'Sethares ch. 2'], tags: ['intervals', 'cents'],
+        { num: '1.6', kind: 'Definition', name: 'Cents', deps: ['music-1.5', 'pma-8.6'], refs: ['Benson ch. 5', 'Sethares app. B'], tags: ['intervals', 'cents'],
           pic: 'Two frequency sliders with live readouts of their ratio and of 1200·log₂ of it; stack intervals end to end to see ratios multiply while cents add, and hear a 5-cent and a 50-cent difference side by side.' },
-        { num: '1.7', kind: 'Law', name: 'Intensity and the inverse-square law', deps: ['music-1.1'], refs: ['Loy I ch. 4'], tags: ['intensity'],
+        { num: '1.7', kind: 'Law', name: 'Intensity and the inverse-square law', deps: ['music-1.1'], refs: ['Loy I ch. 4', 'Rossing ch. 6'], tags: ['intensity'],
           pic: 'A point source radiates spherical shells; drag the listener outward and watch the power spread over 4πr², the intensity quartering with each doubling of distance as the tone fades, then add a reflecting wall to break the free-field assumption.' },
         { num: '1.8', kind: 'Definition', name: 'Sound pressure level and the decibel', deps: ['music-1.7', 'pma-8.6'], refs: ['Loy I ch. 4', 'Benson ch. 1'], tags: ['decibel', 'loudness'],
           pic: 'An intensity slider spanning twelve orders of magnitude drives a decibel meter; switch on a second identical source and the level rises only 3 dB, ten sources only 10 dB, and you hear how modest that is.' },
@@ -29,8 +115,9 @@ export default {
           pic: 'The audible region between the threshold of hearing and the threshold of pain shaded on frequency × level; sweep a tone upward until it vanishes for you, and slide an age control to watch the upper edge sink below 20 kHz.' },
         { num: '1.11', kind: 'Principle', name: 'Superposition and interference', deps: ['music-1.1', 'music-1.2'], refs: ['Benson ch. 1', 'Loy I ch. 5'], tags: ['superposition', 'interference'],
           pic: 'Two loudspeakers play the same tone over a floor plan coloured by the interference pattern; drag the listener through loud and quiet zones, and drag one speaker’s phase to swing a null onto the listener and hear it.' },
-        { num: '1.12', kind: 'Phenomenon', name: 'The Doppler effect', deps: ['music-1.3', 'music-1.4'], refs: ['Loy I ch. 4'], tags: ['doppler'],
-          pic: 'A siren crosses the screen with its wavefronts bunching ahead and spreading behind; drag its speed toward Mach 1 and hear the pitch drop as it passes the listener, matching the readout f·c/(c ∓ v).' },
+        { num: '1.12', alias: 'waves-1.14', name: 'The Doppler effect' },
+        { num: '1.13', kind: 'Phenomenon', name: 'Reflection and diffraction of sound', deps: ['music-1.3', 'music-1.11', 'waves-4.4'], refs: ['Rossing ch. 3'], tags: ['diffraction', 'reflection'],
+          pic: 'A ripple-tank simulation of the 2D wave equation sends a sound wave at a wall with a doorway: drag the frequency and watch a 100 Hz wave flood around the corner while a 5 kHz wave beams straight through, leaving a shadow you can walk the listener into and hear.' },
       ],
     },
     {
@@ -44,9 +131,9 @@ export default {
           pic: 'Draw an initial displacement and watch it split into two half-height copies travelling left and right at c = √(T/μ), flipping sign each time they reflect from a fixed end.' },
         { num: '2.3', kind: 'Concept', name: 'Standing waves and normal modes', deps: ['music-2.2', 'music-1.11'], refs: ['Benson ch. 1', 'Loy I ch. 8'], tags: ['standing waves', 'modes'],
           pic: 'Two equal waves travel in opposite directions and their sum stands still between fixed nodes; choose the mode number and hear it alone, then detune one travelling wave and watch the nodes start to drift.' },
-        { num: '2.4', kind: 'Theorem', name: 'Mode frequencies of a fixed string', deps: ['music-2.3'], refs: ['Benson ch. 3', 'Sethares ch. 3'], tags: ['modes', 'string'],
+        { num: '2.4', kind: 'Theorem', name: 'Mode frequencies of a fixed string', deps: ['music-2.3'], refs: ['Benson ch. 3', 'Loy II ch. 7'], tags: ['modes', 'string'],
           pic: 'A ladder of the first eight mode shapes labelled f_n = n·c/2L; drag length, tension and mass per length and watch the whole ladder slide together, keeping its exact integer ratios as each rung plays.' },
-        { num: '2.5', kind: 'Law', name: 'Mersenne’s laws', deps: ['music-2.4'], refs: ['Benson ch. 1', 'Loy I ch. 8'], tags: ['string', 'pitch'],
+        { num: '2.5', kind: 'Law', name: 'Mersenne’s laws', deps: ['music-2.4'], refs: ['Benson ch. 3', 'Loy I ch. 8'], tags: ['string', 'pitch'],
           pic: 'A monochord with a movable bridge, a hanging weight and a choice of string gauges: vary one quantity at a time, hear the pitch, and see the measurements fall on log–log lines of slope −1, ½ and −½.' },
         { num: '2.6', kind: 'Concept', name: 'The harmonic series', deps: ['music-2.4', 'music-1.6'], refs: ['Benson ch. 4', 'Loy I ch. 3'], tags: ['harmonics'],
           pic: 'Harmonics 1–16 on a logarithmic frequency axis and on a staff, crowding together as they rise; click any harmonic to hear it and read in cents how far the 7th, 11th and 13th lie from the nearest piano key.' },
@@ -58,11 +145,11 @@ export default {
           pic: 'Rest a finger lightly anywhere on a sounding string and only modes with a node there survive; slide the finger and hear harmonics pop out at the simple fractions, the twelfth at 1/3 and two octaves at 1/4.' },
         { num: '2.10', kind: 'Model', name: 'The bowed string: Helmholtz motion', deps: ['music-2.2'], refs: ['Benson ch. 3'], tags: ['bowing', 'string'],
           pic: 'A bow drags the string by stick–slip friction and a single kink circulates around a lens-shaped envelope, giving a sawtooth force at the bridge; vary bow speed, force and position to fall out of the Helmholtz regime into scratch or whistle.' },
-        { num: '2.11', kind: 'Phenomenon', name: 'Inharmonicity of stiff strings', deps: ['music-2.4'], refs: ['Sethares ch. 3', 'Benson ch. 3'], tags: ['inharmonicity', 'piano'],
+        { num: '2.11', kind: 'Phenomenon', name: 'Inharmonicity of stiff strings', deps: ['music-2.4'], refs: ['Rossing ch. 14', 'Sethares ch. 6'], tags: ['inharmonicity', 'piano'],
           pic: 'Add bending stiffness and watch the partials f_n = n·f₁·√(1 + Bn²) drift sharp of the harmonic grid; play the tone against a perfectly harmonic one and hear slow beats, with B preset for bass, middle and treble piano strings.' },
-        { num: '2.12', kind: 'Phenomenon', name: 'Stretched tuning and the Railsback curve', deps: ['music-2.11', 'music-1.6'], refs: ['Sethares ch. 7'], tags: ['piano', 'tuning'],
+        { num: '2.12', kind: 'Phenomenon', name: 'Stretched tuning and the Railsback curve', deps: ['music-2.11', 'music-1.6'], refs: ['Rossing ch. 14', 'Sethares ch. 6'], tags: ['piano', 'tuning'],
           pic: 'Tune a virtual piano octave by octave so each upper fundamental matches the second partial below; the deviation from equal temperament traces the Railsback S-curve, and switching stretch off makes the octaves beat.' },
-        { num: '2.13', kind: 'Invention', name: 'The piano hammer: strike point and brightness', deps: ['music-2.8', 'music-2.11'], refs: ['Benson ch. 3'], tags: ['piano', 'timbre'],
+        { num: '2.13', kind: 'Invention', name: 'The piano hammer: strike point and brightness', deps: ['music-2.8', 'music-2.11'], refs: ['Benson ch. 1', 'Rossing ch. 14'], tags: ['piano', 'timbre'],
           pic: 'A felt hammer strikes a string near 1/8 of its length; drag the key velocity and watch the contact time shorten and the spectrum widen, so a loud note is brighter and not just louder, and move the strike point to hear harmonics drop out.' },
       ],
     },
@@ -73,9 +160,9 @@ export default {
       items: [
         { num: '3.1', kind: 'Model', name: 'Standing waves in an air column', deps: ['music-2.3', 'music-1.4'], refs: ['Benson ch. 3', 'Loy I ch. 8'], tags: ['pipes', 'standing waves'],
           pic: 'A tube of jostling air parcels in its lowest modes: toggle between displacement and pressure to see that a displacement node is a pressure antinode, and hear each resonance in turn.' },
-        { num: '3.2', kind: 'Theorem', name: 'The open pipe: all harmonics', deps: ['music-3.1'], refs: ['Benson ch. 3', 'Sethares ch. 3'], tags: ['pipes', 'harmonics'],
+        { num: '3.2', kind: 'Theorem', name: 'The open pipe: all harmonics', deps: ['music-3.1'], refs: ['Benson ch. 3', 'Rossing ch. 12'], tags: ['pipes', 'harmonics'],
           pic: 'An open cylinder (a flute) with its first modes drawn; drag its length and hear the pitch while the spectrum shows resonances at n·c/2L forming a complete harmonic series.' },
-        { num: '3.3', kind: 'Theorem', name: 'The closed pipe: odd harmonics only', deps: ['music-3.1'], refs: ['Benson ch. 3', 'Sethares ch. 3'], tags: ['pipes', 'harmonics'],
+        { num: '3.3', kind: 'Theorem', name: 'The closed pipe: odd harmonics only', deps: ['music-3.1'], refs: ['Benson ch. 3', 'Rossing ch. 12'], tags: ['pipes', 'harmonics'],
           pic: 'Click to cap one end of the tube: the fundamental drops an octave, the even harmonics vanish from the spectrum and the tone turns hollow and clarinet-like, then uncap it to compare.' },
         { num: '3.4', kind: 'Theorem', name: 'Conical bores overblow at the octave', deps: ['music-3.3'], refs: ['Benson ch. 3'], tags: ['pipes', 'woodwinds'],
           pic: 'Morph the bore from a cylinder to a cone closed at its narrow end: the resonances slide from 1:3:5 to the full series 1:2:3, and the overblown note jumps from a twelfth (clarinet) to an octave (oboe, saxophone).' },
@@ -87,13 +174,12 @@ export default {
           pic: 'A round membrane animated in its (m, n) modes with nodal diameters and circles; the overtone ratios 1, 1.59, 2.14, 2.30, … sit off the harmonic grid, and striking the head mixes them into the pitchless thud you hear.' },
         { num: '3.8', kind: 'Phenomenon', name: 'Timpani: pitch from air loading', deps: ['music-3.7'], refs: ['Benson ch. 3'], tags: ['drum', 'timpani'],
           pic: 'Add a kettle and an air-loading slider to the membrane: the (1,1), (2,1), (3,1) modes slide toward the ratios 2:3:4 and a definite pitch emerges, while striking at the centre to excite the symmetric modes breaks the effect.' },
-        { num: '3.9', kind: 'Theorem', name: 'Can one hear the shape of a drum?', deps: ['music-3.6'], refs: ['Benson ch. 3'], tags: ['eigenvalues', 'isospectral'],
-          pic: 'Two differently shaped polygonal drums (Gordon–Webb–Wolpert) have their lowest eigenvalues computed side by side and identical, both play the same sound, and the eigenvalue counting function hugs Weyl’s area term to show what can be heard.' },
-        { num: '3.10', kind: 'Phenomenon', name: 'Chladni figures', deps: ['music-3.6'], refs: ['Loy I ch. 8'], tags: ['plates', 'modes'],
+        { num: '3.9', alias: 'pde-7.12', name: 'Can one hear the shape of a drum?' },
+        { num: '3.10', kind: 'Phenomenon', name: 'Chladni figures', deps: ['music-3.6'], refs: ['Benson ch. 3', 'Loy I ch. 8'], tags: ['plates', 'modes'],
           pic: 'Sand on a square plate drifts to the nodal lines as you sweep the driving frequency and snaps into a new figure at each resonance; clamp the plate at a different point and the figures change while the tone sounds.' },
-        { num: '3.11', kind: 'Model', name: 'Bars: xylophone and marimba tuning', deps: ['music-2.11'], refs: ['Benson ch. 3', 'Sethares ch. 3'], tags: ['bars', 'percussion'],
+        { num: '3.11', kind: 'Model', name: 'Bars: xylophone and marimba tuning', deps: ['music-2.11'], refs: ['Benson ch. 3', 'Sethares ch. 6'], tags: ['bars', 'percussion'],
           pic: 'A uniform free bar has partials at 1 : 2.76 : 5.40; deepen the arch cut beneath it and watch the partials move until the marimba ratios 1:4:10 lock in, hearing the bar go from clangy to sweet.' },
-        { num: '3.12', kind: 'Phenomenon', name: 'Bells: hum, prime, tierce and nominal', deps: ['music-3.6'], refs: ['Benson ch. 3', 'Sethares ch. 8'], tags: ['bells', 'inharmonicity'],
+        { num: '3.12', kind: 'Phenomenon', name: 'Bells: hum, prime, tierce and nominal', deps: ['music-3.6'], refs: ['Benson ch. 3', 'Sethares ch. 6'], tags: ['bells', 'inharmonicity'],
           pic: 'A bell profile with its first five partials drawn as patterns of nodal rings and meridians; reshape the wall thickness to move the tierce from a minor third (a church bell) to a major third, and hear the character change.' },
       ],
     },
@@ -102,34 +188,37 @@ export default {
       title: 'Timbre and spectrum',
       summary: String.raw`Two tones of equal pitch and loudness can still sound utterly different, and that difference lives largely in the spectrum and in how it evolves over the first moments of a note. Fourier series split a periodic tone into harmonics and Parseval accounts for its energy; the Fourier transform handles sounds that are not periodic, and the uncertainty principle limits how sharply any sound can be located in both time and frequency. Formants explain vowels, the missing fundamental shows that pitch is computed by the listener, and additive and FM synthesis run the analysis in reverse.`,
       items: [
-        { num: '4.1', kind: 'Concept', name: 'Timbre and the spectra of instruments', deps: ['music-1.1', 'music-2.6'], refs: ['Sethares ch. 1', 'Loy I ch. 6'], tags: ['timbre', 'spectrum'],
+        { num: '4.1', kind: 'Concept', name: 'Timbre and the spectra of instruments', deps: ['music-1.1', 'music-2.6'], refs: ['Sethares ch. 2', 'Loy I ch. 6'], tags: ['timbre', 'spectrum'],
           pic: 'Flute, clarinet, trumpet and violin play the same pitch at the same loudness with waveforms and spectra side by side; graft one instrument’s spectrum onto another’s envelope and hear which identity wins.' },
-        { num: '4.2', kind: 'Theorem', name: 'Fourier series of a periodic tone', deps: ['music-2.6', 'pma-8.9', 'pma-8.10', 'pma-8.14'], refs: ['Benson ch. 2', 'Loy II ch. 7'], tags: ['fourier', 'harmonics'],
+        { num: '4.2', kind: 'Theorem', name: 'Fourier series of a periodic tone', deps: ['music-2.6', 'pma-8.9', 'pma-8.10', 'pma-8.14'], refs: ['Benson ch. 2', 'Loy II ch. 3'], tags: ['fourier', 'harmonics'],
           pic: 'Draw one period of a waveform: its harmonic amplitudes and phases appear as bars, the partial sum with N harmonics is overlaid and played, and you hear it converge on the drawn wave as N grows.' },
         { num: '4.3', kind: 'Theorem', name: 'Smoothness controls how fast harmonics decay', deps: ['music-4.2', 'rca-5.12'], refs: ['Benson ch. 2'], tags: ['fourier', 'brightness'],
           pic: 'Round off the corners of a square wave with a slider: on a log–log spectrum the harmonics fall like 1/n for a jump, 1/n² for a kink and faster still for a smooth wave, and the tone darkens audibly as the slope steepens.' },
         { num: '4.4', kind: 'Theorem', name: 'Parseval: a tone’s energy is the sum over harmonics', deps: ['music-4.2', 'pma-8.16'], refs: ['Benson ch. 2'], tags: ['fourier', 'energy'],
           pic: 'Drag harmonic amplitudes and scramble their phases: the waveform changes shape wildly, but its RMS readout, always equal to the root-sum-square of the bars, and the loudness you hear stay put.' },
-        { num: '4.5', kind: 'Concept', name: 'Continuous spectra and the Fourier transform', deps: ['music-4.2', 'rca-9.1', 'rca-9.11'], refs: ['Benson ch. 2', 'Loy II ch. 7'], tags: ['fourier transform', 'spectrum'],
+        { num: '4.5', kind: 'Concept', name: 'Continuous spectra and the Fourier transform', deps: ['music-4.2', 'rca-9.1', 'rca-9.11'], refs: ['Benson ch. 2', 'Loy II ch. 3'], tags: ['fourier transform', 'spectrum'],
           pic: 'Switch among a sustained tone, a decaying pluck, a single click and a burst of noise: the spectrum goes from sharp lines to broadened peaks to a flat continuum, and each sound plays as you see it.' },
         { num: '4.6', kind: 'Theorem', name: 'Time–frequency uncertainty (the Gabor limit)', deps: ['music-4.5', 'fa-7.6', 'rca-9.13'], refs: ['Benson ch. 2'], tags: ['uncertainty', 'fourier transform'],
           pic: 'A Gaussian-windowed tone with a duration slider: as the note shortens its spectral peak widens, the product of the two widths never drops below 1/4π, and the tone audibly degrades into a click with no definite pitch.' },
-        { num: '4.7', kind: 'Method', name: 'The spectrogram (short-time Fourier transform)', deps: ['music-4.6'], refs: ['Loy II ch. 7'], tags: ['spectrogram', 'analysis'],
-          pic: 'Spectrograms of a melody, a chirp and a spoken phrase with a cursor you can scrub and hear; lengthen the analysis window and watch frequency lines sharpen while note onsets smear, and shorten it for the reverse.' },
+        { num: '4.7', alias: 'sig-8.13', name: 'The spectrogram (short-time Fourier transform)' },
         { num: '4.8', kind: 'Phenomenon', name: 'Attack transients and the envelope', deps: ['music-4.1'], refs: ['Benson ch. 8', 'Loy I ch. 6'], tags: ['envelope', 'timbre'],
           pic: 'Drag the attack, decay, sustain and release handles of an envelope, then cut the first 50 ms off recorded piano, trumpet and violin notes and hear how hard they become to tell apart.' },
-        { num: '4.9', kind: 'Concept', name: 'Formants and the spectral envelope', deps: ['music-4.5'], refs: ['Loy I ch. 6'], tags: ['formants', 'timbre'],
+        { num: '4.9', kind: 'Concept', name: 'Formants and the spectral envelope', deps: ['music-4.5'], refs: ['Loy I ch. 6', 'Benson ch. 2'], tags: ['formants', 'timbre'],
           pic: 'A harmonic source passes through a filter with draggable resonance peaks so the harmonics rise and fall under the envelope; change the pitch and the formants stay put, and so does the vowel-like colour you hear.' },
         { num: '4.10', kind: 'Model', name: 'The source–filter model of vowels', deps: ['music-4.9'], refs: ['Loy I ch. 6'], tags: ['voice', 'formants'],
           pic: 'Drag a point around the F1–F2 vowel chart and hear a synthetic voice glide through /i/, /a/ and /u/; raise the fundamental to soprano heights and watch the harmonics grow too sparse to outline the formants, so the vowels blur.' },
         { num: '4.11', kind: 'Phenomenon', name: 'The missing fundamental', deps: ['music-2.6', 'music-4.2'], refs: ['Benson ch. 1', 'Loy I ch. 6'], tags: ['pitch', 'perception'],
           pic: 'A harmonic tone whose bars you can switch off one at a time: remove the fundamental, then the 2nd and 3rd harmonics too, and the waveform keeps its period while the pitch you hear stays at the absent fundamental.' },
-        { num: '4.12', kind: 'Model', name: 'Virtual pitch', deps: ['music-4.11'], refs: ['Sethares ch. 2'], tags: ['pitch', 'perception'],
+        { num: '4.12', kind: 'Model', name: 'Virtual pitch', deps: ['music-4.11'], refs: ['Sethares ch. 2', 'Benson ch. 4'], tags: ['pitch', 'perception'],
           pic: 'Shift every partial of a harmonic complex by the same number of hertz so it is no longer harmonic; a best-fitting-fundamental estimator and the pitch you hear both move by only a fraction of the shift, as Schouten found.' },
         { num: '4.13', kind: 'Method', name: 'Additive synthesis', deps: ['music-4.2', 'music-4.8', 'pma-8.11', 'pma-8.15'], refs: ['Benson ch. 8'], tags: ['synthesis'],
           pic: 'A bank of oscillators, each with its own level and envelope: rebuild a clarinet partial by partial while the mean-square error of the truncated sum falls, then nudge partials off their harmonic positions and hear the tone turn bell-like.' },
         { num: '4.14', kind: 'Method', name: 'FM synthesis', deps: ['music-4.5'], refs: ['Benson ch. 8', 'Benson ch. 2'], tags: ['synthesis', 'bessel'],
           pic: 'A carrier frequency-modulated by a second oscillator: drag the frequency ratio and modulation index and watch sidebands spread with Bessel-function heights, integer ratios giving brassy harmonic tones and irrational ones bells and gongs.' },
+        { num: '4.15', kind: 'Model', name: 'Timbre space: brightness, attack and spectral flux', deps: ['music-4.1', 'music-4.7', 'music-4.8'], refs: ['Sethares ch. 2'], tags: ['timbre', 'perception'],
+          pic: 'Instrument tones placed as points in a three-axis space computed from their spectral centroid, log attack time and spectral flux; tilt one tone’s spectrum or sharpen its attack and watch it travel toward new neighbours as you hear it change, in the manner of Grey’s and McAdams’s similarity maps.' },
+        { num: '4.16', kind: 'Phenomenon', name: 'Vibrato and tremolo', deps: ['music-4.7', 'music-4.8'], refs: ['Benson ch. 8'], tags: ['modulation', 'timbre'],
+          pic: 'A tone with separate rate and depth controls for slow frequency modulation (vibrato) and amplitude modulation (tremolo): the spectrogram shows every partial wiggling with an excursion proportional to its number, and pushing the rate past about 20 Hz turns the wobble into sidebands and roughness you can hear.' },
       ],
     },
     {
@@ -143,13 +232,13 @@ export default {
           pic: 'An uncoiled basilar membrane carries a travelling wave whose envelope peaks at a place fixed by frequency along Greenwood’s map; drag the frequency to move the peak, and add a second tone to see two peaks or one merged bump.' },
         { num: '5.3', kind: 'Law', name: 'Ohm’s acoustic law: the ear hears partials, not phases', deps: ['music-5.2', 'music-4.4'], refs: ['Loy I ch. 6'], tags: ['phase', 'perception'],
           pic: 'Randomize the phases of a harmonic tone’s partials: the waveform changes completely but the sound hardly at all, except when a toggle moves the partials high enough to share a cochlear filter and the phase becomes audible.' },
-        { num: '5.4', kind: 'Concept', name: 'Critical bands', deps: ['music-5.2'], refs: ['Benson ch. 4', 'Sethares ch. 4'], tags: ['critical band', 'perception'],
+        { num: '5.4', kind: 'Concept', name: 'Critical bands', deps: ['music-5.2'], refs: ['Benson ch. 4', 'Sethares ch. 3'], tags: ['critical band', 'perception'],
           pic: 'A tone sits in band-limited noise; widen the noise band and the tone’s masked threshold climbs until the band exceeds a critical bandwidth, then levels off, with the Bark scale and ERB widths drawn along the frequency axis.' },
-        { num: '5.5', kind: 'Phenomenon', name: 'Masking', deps: ['music-5.4', 'music-1.8'], refs: ['Loy I ch. 6'], tags: ['masking', 'perception'],
+        { num: '5.5', kind: 'Phenomenon', name: 'Masking', deps: ['music-5.4', 'music-1.8'], refs: ['Loy I ch. 6', 'Benson ch. 1'], tags: ['masking', 'perception'],
           pic: 'A loud masker tone casts a threshold curve that spreads further toward high frequencies; drag a quiet probe tone around it and hear it vanish under the curve, and raise the masker level to watch the upward spread grow.' },
-        { num: '5.6', kind: 'Phenomenon', name: 'Beats', deps: ['music-1.11', 'rca-0.1'], refs: ['Benson ch. 1', 'Sethares ch. 4'], tags: ['beats', 'interference'],
+        { num: '5.6', kind: 'Phenomenon', name: 'Beats', deps: ['music-1.11', 'rca-0.1'], refs: ['Benson ch. 1', 'Sethares ch. 3'], tags: ['beats', 'interference'],
           pic: 'Two tones f and f + Δ swell and fade Δ times per second inside the envelope 2|cos πΔt|, shown also as two phasors turning at slightly different speeds; slide Δ and count the beats you hear.' },
-        { num: '5.7', kind: 'Phenomenon', name: 'From beats to roughness', deps: ['music-5.6', 'music-5.4'], refs: ['Sethares ch. 4', 'Benson ch. 4'], tags: ['roughness', 'beats'],
+        { num: '5.7', kind: 'Phenomenon', name: 'From beats to roughness', deps: ['music-5.6', 'music-5.4'], refs: ['Sethares ch. 3', 'Benson ch. 4'], tags: ['roughness', 'beats'],
           pic: 'Slide two pure tones apart from unison: slow beats become a fast flutter, roughness peaks near a quarter of a critical band and then resolves into two smooth separate tones, with a roughness meter tracking what you hear.' },
         { num: '5.8', kind: 'Phenomenon', name: 'Combination tones', deps: ['music-5.2'], refs: ['Benson ch. 4'], tags: ['nonlinearity', 'perception'],
           pic: 'Two loud tones pass through a slightly nonlinear model ear and the spectrum grows lines at f₂ − f₁ and 2f₁ − f₂; as you raise f₂ the cubic difference tone moves down, audible as a faint descending pitch.' },
@@ -157,12 +246,16 @@ export default {
           pic: 'An adaptive listening test plays pairs of tones and narrows their difference until you can no longer tell which is higher, then plots your just-noticeable difference in cents against the textbook curve across frequency.' },
         { num: '5.10', kind: 'Concept', name: 'Pitch height and chroma: the pitch helix', deps: ['music-1.5'], refs: ['Loy I ch. 6'], tags: ['pitch', 'octave'],
           pic: 'Pitches wind up a 3D helix, one turn per octave; rotate it and play notes to watch octaves line up vertically, then flatten it onto the base circle to see chroma alone.' },
-        { num: '5.11', kind: 'Paradox', name: 'The Shepard tone', deps: ['music-5.10', 'music-4.9'], refs: ['Benson ch. 4'], tags: ['illusion', 'pitch'],
+        { num: '5.11', kind: 'Paradox', name: 'Shepard tones and the Risset glissando', deps: ['music-5.10', 'music-4.9'], refs: ['Benson ch. 4'], tags: ['illusion', 'pitch'],
           pic: 'Octave-spaced partials glide upward under a fixed bell-shaped loudness envelope, so the tone climbs forever without getting higher; narrow, widen or remove the envelope and the illusion collapses into an ordinary glissando.' },
         { num: '5.12', kind: 'Phenomenon', name: 'Localization: time and level differences', deps: ['music-1.3'], refs: ['Loy I ch. 6'], tags: ['localization', 'binaural'],
           pic: 'A top view of a head with a draggable source: the interaural time and level differences are computed and rendered over headphones, and sources placed on the cone of confusion give identical cues.' },
         { num: '5.13', kind: 'Phenomenon', name: 'Auditory streaming', deps: ['music-5.4'], refs: ['Loy I ch. 6'], tags: ['streaming', 'perception'],
           pic: 'A galloping high–low–high pattern repeats; raise the tempo or the pitch separation until it splits into two independent streams, and see your switch points plotted against van Noorden’s coherence and fission boundaries.' },
+        { num: '5.14', kind: 'Model', name: 'Place and temporal theories of pitch', deps: ['music-5.2', 'music-4.11', 'music-4.12'], refs: ['Rossing ch. 7', 'Loy I ch. 6'], tags: ['pitch', 'place theory'],
+          pic: 'A harmonic tone shown two ways at once, as an excitation pattern along the basilar membrane and as the pooled autocorrelation of simulated phase-locked nerve firings; filter it down to unresolved upper harmonics and only the timing view still finds the pitch, then shift everything above about 5 kHz, where phase locking fails, and hear a melody lose its definite pitch.' },
+        { num: '5.15', kind: 'Phenomenon', name: 'Tonal fusion and the mistuned harmonic', deps: ['music-5.13', 'music-2.6'], refs: ['Sethares ch. 2'], tags: ['grouping', 'scene analysis'],
+          pic: 'Twelve harmonics fuse into a single tone; mistune one of them with a slider and beyond a few percent it pops out as a separate pitch, and starting it 50 ms early segregates it too, the harmonicity and common-onset cues of auditory scene analysis.' },
       ],
     },
     {
@@ -170,23 +263,23 @@ export default {
       title: 'Consonance and dissonance',
       summary: String.raw`Why do some intervals sound smooth and others rough? The Pythagoreans pointed to small whole-number ratios, Helmholtz traced the ratios to beating between partials, and Plomp and Levelt measured how strongly two pure tones clash as a function of their distance in critical bands. Summing that curve over every pair of partials, as Sethares did, makes consonance a joint property of a timbre and a tuning: change the spectrum and the most consonant intervals move with it.`,
       items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'Consonance and simple ratios', deps: ['music-2.5', 'music-2.6'], refs: ['Benson ch. 4', 'Sethares ch. 6'], tags: ['consonance', 'ratios'],
+        { num: '6.1', kind: 'Phenomenon', name: 'Consonance and simple ratios', deps: ['music-2.5', 'music-2.6'], refs: ['Benson ch. 4', 'Sethares ch. 5'], tags: ['consonance', 'ratios'],
           pic: 'A monochord whose sliding bridge splits the string in two: the octave, fifth and fourth appear at 1:2, 2:3 and 3:4, and you hear the sound smooth out at those points and sour between them.' },
-        { num: '6.2', kind: 'Model', name: 'Helmholtz’s theory: coinciding partials', deps: ['music-6.1', 'music-5.7'], refs: ['Benson ch. 4', 'Sethares ch. 6'], tags: ['consonance', 'helmholtz'],
+        { num: '6.2', kind: 'Model', name: 'Helmholtz’s theory: coinciding partials', deps: ['music-6.1', 'music-5.7'], refs: ['Benson ch. 4', 'Sethares ch. 5'], tags: ['consonance', 'helmholtz'],
           pic: 'The partial ladders of two harmonic tones stand side by side; as you slide the interval, coinciding partials light green and near-misses glow red labelled with their beat rates, which you hear as roughness.' },
-        { num: '6.3', kind: 'Model', name: 'The Plomp–Levelt curve', deps: ['music-5.4', 'music-5.7'], refs: ['Sethares ch. 6', 'Benson ch. 4'], tags: ['dissonance', 'critical band'],
+        { num: '6.3', kind: 'Model', name: 'The Plomp–Levelt curve', deps: ['music-5.4', 'music-5.7'], refs: ['Sethares ch. 3', 'Benson ch. 4'], tags: ['dissonance', 'critical band'],
           pic: 'Sensory dissonance of two pure tones against their separation; drag the lower tone from 100 Hz to 2 kHz and the curve stretches in hertz but stays fixed in critical-band units, with the interval at the cursor playing.' },
-        { num: '6.4', kind: 'Model', name: 'Dissonance curves of complex tones (Sethares)', deps: ['music-6.3', 'music-6.2'], refs: ['Sethares ch. 6'], tags: ['dissonance', 'timbre'],
+        { num: '6.4', kind: 'Model', name: 'Dissonance curves of complex tones (Sethares)', deps: ['music-6.3', 'music-6.2'], refs: ['Sethares ch. 5', 'Benson ch. 4'], tags: ['dissonance', 'timbre'],
           pic: 'The Plomp–Levelt curve summed over every pair of partials of two complex tones; drag partial amplitudes and watch the dips at 6/5, 5/4, 4/3 and 3/2 deepen or vanish, and click anywhere on the curve to hear that interval.' },
-        { num: '6.5', kind: 'Theorem', name: 'Timbre determines the most consonant tuning', deps: ['music-6.4'], refs: ['Sethares ch. 7'], tags: ['dissonance', 'tuning'],
+        { num: '6.5', kind: 'Principle', name: 'Timbre determines the most consonant tuning', deps: ['music-6.4'], refs: ['Sethares ch. 6', 'Benson ch. 4'], tags: ['dissonance', 'tuning'],
           pic: 'Stretch or compress all partials of a tone with one slider: the dissonance minima follow, the pure octave stops being consonant, and a scale built on the new minima sounds smooth with this timbre but sour with an ordinary one.' },
-        { num: '6.6', kind: 'Method', name: 'Designing spectra for a tuning', deps: ['music-6.5'], refs: ['Sethares ch. 7'], tags: ['timbre', 'tuning'],
+        { num: '6.6', kind: 'Method', name: 'Designing spectra for a tuning', deps: ['music-6.5'], refs: ['Sethares ch. 12'], tags: ['timbre', 'tuning'],
           pic: 'Pick an equal temperament such as 10- or 11-EDO and let the algorithm move partials onto scale steps until the dissonance minima line up with the scale, then hear one progression with matched and with harmonic timbres.' },
-        { num: '6.7', kind: 'Phenomenon', name: 'Gamelan spectra and slendro tuning', deps: ['music-6.5', 'music-3.11'], refs: ['Sethares ch. 11'], tags: ['gamelan', 'tuning'],
+        { num: '6.7', kind: 'Phenomenon', name: 'Gamelan spectra and slendro tuning', deps: ['music-6.5', 'music-3.11'], refs: ['Sethares ch. 10'], tags: ['gamelan', 'tuning'],
           pic: 'The measured inharmonic spectrum of a metallophone bar and its dissonance curve with slendro and pelog steps marked; drag the bar’s partials and watch curve minima and scale steps fall in and out of alignment as the bar plays.' },
         { num: '6.8', kind: 'Model', name: 'Euler’s gradus and Tenney height', deps: ['music-6.1'], refs: ['Benson ch. 4'], tags: ['consonance', 'ratios'],
           pic: 'Just ratios plotted on an interval axis with heights from Euler’s gradus suavitatis or from log₂(pq); drag a complexity cutoff to see which intervals qualify, and compare the ranking with the Plomp–Levelt curve for a harmonic tone.' },
-        { num: '6.9', kind: 'Phenomenon', name: 'The low interval limit', deps: ['music-6.3'], refs: ['Sethares ch. 6'], tags: ['register', 'roughness'],
+        { num: '6.9', kind: 'Phenomenon', name: 'The low interval limit', deps: ['music-6.3'], refs: ['Sethares ch. 5'], tags: ['register', 'roughness'],
           pic: 'Drag a major third down the keyboard: the roughness meter climbs as both notes fall inside one critical band, showing why chords are voiced wide in the bass, while an octave or fifth dragged the same way stays clean.' },
         { num: '6.10', kind: 'Model', name: 'Dissonance of three-note chords', deps: ['music-6.4'], refs: ['Sethares ch. 6'], tags: ['chords', 'dissonance'],
           pic: 'A heat map of total dissonance over the plane of two stacked intervals, with valleys at the major and minor triads; drag a point to hear each chord, and switch to an inharmonic timbre to watch the valleys migrate.' },
@@ -219,7 +312,7 @@ export default {
           pic: 'Frets spaced by the twelfth root of 2 beside the just ratios: bars show the fifth 2 cents flat and the major third 14 cents sharp, and an equal-tempered triad alternates with a just one so the slow beating is audible.' },
         { num: '7.10', kind: 'Theorem', name: 'Continued fractions give best approximations', deps: ['music-7.2', 'pma-1.20'], refs: ['Benson ch. 6'], tags: ['continued fractions', 'approximation'],
           pic: 'Lattice points near the line of slope log₂(3/2), with the convergents 1/2, 3/5, 7/12, 24/41, 31/53 closing in from alternate sides; step through the Euclidean expansion and watch each error shrink.' },
-        { num: '7.11', kind: 'Theorem', name: 'Why twelve: 7/12 is a convergent of log₂(3/2)', deps: ['music-7.10', 'music-7.9'], refs: ['Benson ch. 6', 'Sethares ch. 5'], tags: ['equal temperament', 'continued fractions'],
+        { num: '7.11', kind: 'Theorem', name: 'Why twelve: 7/12 is a convergent of log₂(3/2)', deps: ['music-7.10', 'music-7.9'], refs: ['Benson ch. 6', 'Sethares ch. 4'], tags: ['equal temperament', 'continued fractions'],
           pic: 'Slide the number of equal steps per octave from 5 to 60: the error of the best fifth hits record lows at 5, 7, 12, 29, 41 and 53, the convergent and intermediate denominators of log₂(3/2), and each tuning’s fifth plays as you go.' },
         { num: '7.12', kind: 'Concept', name: '19- and 31-tone equal temperament', deps: ['music-7.11', 'music-7.7'], refs: ['Benson ch. 6'], tags: ['equal temperament', 'meantone'],
           pic: 'Fifths, thirds and harmonic sevenths of 12-, 19- and 31-EDO compared as error bars and on generalized keyboards; 31-EDO turns out to be almost exactly quarter-comma meantone, and its nearly pure triads play.' },
@@ -229,7 +322,7 @@ export default {
           pic: 'The open spiral of pure fifths and the closed twelve-note circle of tempered fifths drawn together; drag a slider from pure to tempered to watch the spiral close up, and click around the circle to hear the keys it connects.' },
         { num: '7.15', kind: 'Theorem', name: 'Unison vectors and periodicity blocks (Fokker)', deps: ['music-7.6', 'music-7.3'], refs: ['Benson ch. 6'], tags: ['lattice', 'comma'],
           pic: 'Pick two commas as vectors in the 5-limit lattice: they span a parallelogram holding as many notes as their determinant, and tempering the commas out rolls the lattice into a torus while the resulting scale plays.' },
-        { num: '7.16', kind: 'Method', name: 'Adaptive tuning', deps: ['music-7.6', 'music-6.4'], refs: ['Sethares ch. 9'], tags: ['tuning', 'dissonance'],
+        { num: '7.16', kind: 'Method', name: 'Adaptive tuning', deps: ['music-7.6', 'music-6.4'], refs: ['Sethares ch. 8'], tags: ['tuning', 'dissonance'],
           pic: 'A chord progression is retuned in real time to minimize each chord’s summed dissonance; watch pitches nudge by a few cents, and slowly drift, on a pitch graph, and A/B the result against fixed equal temperament.' },
         { num: '7.17', kind: 'Concept', name: 'The Bohlen–Pierce scale', deps: ['music-7.11', 'music-3.3', 'music-6.5'], refs: ['Benson ch. 6'], tags: ['non-octave', 'tuning'],
           pic: 'A scale that divides the 3:1 twelfth into 13 equal steps, played first with a closed-pipe timbre of odd harmonics and then with a full harmonic timbre, while the dissonance curve shows why only the first sounds consonant.' },
@@ -254,7 +347,7 @@ export default {
           pic: 'Choose a generator and stack n copies mod the octave: the circle is always cut into at most three gap lengths, and into exactly two at the well-formed sizes (5, 7, 12, 17, 29, … for the fifth), with each scale playing as it forms.' },
         { num: '8.7', kind: 'Concept', name: 'Transposition and inversion as a group action', deps: ['music-8.1'], refs: ['Benson ch. 9', 'Tymoczko ch. 2'], tags: ['group action', 'symmetry'],
           pic: 'A chord drawn as a polygon on the clock with buttons for Tₙ (rotate) and Iₙ (reflect); composing operations fills in the Cayley table of the dihedral group of order 24, confirming Tₙ·I = I·T₋ₙ as the transformed chords play.' },
-        { num: '8.8', kind: 'Theorem', name: 'Modes of limited transposition', deps: ['music-8.7'], refs: ['Tymoczko ch. 4'], tags: ['symmetry', 'scales'],
+        { num: '8.8', kind: 'Theorem', name: 'Modes of limited transposition', deps: ['music-8.7'], refs: ['Tymoczko ch. 4', 'Tymoczko ch. 9'], tags: ['symmetry', 'scales'],
           pic: 'Choose a scale and count its distinct transpositions: 12 for most, but 2 for the whole-tone, 3 for the octatonic and 4 for the hexatonic scale, since orbit size times stabilizer is always 12, and you can build and hear your own symmetric sets.' },
         { num: '8.9', kind: 'Definition', name: 'Set classes and prime form', deps: ['music-8.7'], refs: ['Benson ch. 9'], tags: ['set theory'],
           pic: 'Draw a pitch-class set and watch it rotated and reflected into its most compact normal order and prime form, labelled with its Forte name, while every member of its class plays in turn.' },
@@ -266,24 +359,34 @@ export default {
           pic: 'Choose any six notes and the complementary six appear in a second colour with the two interval vectors side by side, always identical; switch to five notes and the complement’s vector exceeds the set’s by 2 in each class (1 for the tritone).' },
         { num: '8.13', kind: 'Concept', name: 'Z-related sets', deps: ['music-8.11', 'music-8.9'], refs: ['Benson ch. 9'], tags: ['interval vector', 'counterexample'],
           pic: 'The all-interval tetrachords {0,1,4,6} and {0,1,3,7} share the vector ⟨1,1,1,1,1,1⟩, yet no rotation or reflection of the clock carries one onto the other (try it), and they sound distinctly different.' },
-        { num: '8.14', kind: 'Method', name: 'The Fourier transform of a pitch-class set', deps: ['music-8.1', 'music-8.4', 'pma-8.10'], refs: ['Tymoczko ch. 4'], tags: ['fourier', 'evenness'],
+        { num: '8.14', kind: 'Method', name: 'The Fourier transform of a pitch-class set', deps: ['music-8.1', 'music-8.4', 'pma-8.10'], refs: ['Tymoczko, A Geometry of Music'], tags: ['fourier', 'evenness'],
           pic: 'A set on the clock beside the magnitudes of its six Fourier coefficients: drag notes and watch |f₅| peak for diatonic sets, |f₆| for whole-tone and |f₄| for octatonic ones, the magnitudes unmoved by any transposition or inversion.' },
-        { num: '8.15', kind: 'Theorem', name: 'Interval content from Fourier magnitudes', deps: ['music-8.14', 'music-8.12', 'pma-8.16'], refs: ['Benson ch. 9'], tags: ['fourier', 'interval vector'],
+        { num: '8.15', kind: 'Theorem', name: 'Interval content from Fourier magnitudes', deps: ['music-8.14', 'music-8.12', 'pma-8.16'], refs: ['Tymoczko, A Geometry of Music'], tags: ['fourier', 'interval vector'],
           pic: 'A set’s interval function (its autocorrelation) and its squared Fourier magnitudes shown as a transform pair: complementary hexachords have equal magnitudes, so the hexachord theorem falls out, and Z-related pairs match in every magnitude too.' },
         { num: '8.16', kind: 'Concept', name: 'Twelve-tone rows and the row matrix', deps: ['music-8.7'], refs: ['Benson ch. 9'], tags: ['serialism', 'symmetry'],
           pic: 'Enter or randomize a twelve-tone row and its 12×12 matrix of transpositions, inversions, retrogrades and retrograde inversions builds itself; click any row or column to hear that form.' },
+        { num: '8.17', kind: 'Concept', name: 'Staff notation, note names and the keyboard', deps: ['music-8.1', 'music-8.3'], refs: ['Benson app. M'], tags: ['notation'],
+          pic: 'A staff, a piano keyboard and a logarithmic frequency axis linked together: click a note in any of them and it lights in all three, enharmonic spellings such as C♯ and D♭ land on one key, and switching clefs moves the noteheads but not the sound.' },
+        { num: '8.18', kind: 'Definition', name: 'Interval names: number and quality', deps: ['music-8.17', 'music-8.2'], refs: ['Benson app. I', 'Benson app. M'], tags: ['intervals'],
+          pic: 'Two notes on a staff read out their generic size (letter names counted) and specific size (semitones), from which the quality follows; add sharps or flats to turn major into minor or augmented, and invert the interval to watch the numbers sum to 9 while major and minor swap.' },
+        { num: '8.19', kind: 'Concept', name: 'Major and minor scales; relative and parallel keys', deps: ['music-8.3'], refs: ['Benson app. M'], tags: ['scales', 'keys'],
+          pic: 'Natural, harmonic and melodic minor drawn on the clock beside the major scale: the relative minor is the same set rotated to a new tonic, the parallel minor keeps the tonic and lowers three degrees, and each scale plays over a drone with the harmonic minor’s augmented second flagged.' },
+        { num: '8.20', kind: 'Concept', name: 'Key signatures', deps: ['music-8.19', 'music-7.14'], refs: ['Benson app. M'], tags: ['keys', 'circle of fifths'],
+          pic: 'Step around the circle of fifths and the key signature gains one sharp (in the order F C G D A E B) or one flat (in the reverse order) per step, with the tonic read off from the last accidental; each key’s scale plays with its altered notes lit on the keyboard.' },
+        { num: '8.21', kind: 'Concept', name: 'Change ringing and permutations', deps: ['comb-1.5'], refs: ['Benson ch. 9'], tags: ['permutations', 'bells'],
+          pic: 'Bells ring rows in changing orders, each change swapping disjoint adjacent pairs; the plain hunt draws a braid of crossing lines, and a method such as Plain Bob Minimus extends it until all 24 orders of four bells have rung exactly once, which the diagram checks as the peal plays.' },
       ],
     },
     {
       n: 9,
       title: 'Harmony and the geometry of chords',
-      summary: String.raw`Chords are stacks of thirds with roots, functions and habitual successions, and voice leading is how their individual notes move from one chord to the next. Tymoczko’s geometry turns this into topology: the space of n-note chords is an orbifold, n-dimensional space folded by octave shifts and by permutations of the voices, where efficient voice leadings are short paths and nearly even chords sit near the centre. The neo-Riemannian operations, the Tonnetz and the circle of fifths reappear as lattices and loops inside these spaces.`,
+      summary: String.raw`Chords are stacks of thirds with roots, functions and habitual successions, and voice leading is how their individual notes move from one chord to the next. Tymoczko’s geometry turns this into topology: the space of n-note chords is an orbifold, n-dimensional space folded by octave shifts and by permutations of the voices, where efficient voice leadings are short paths and nearly even chords sit near the centre. The neo-Riemannian operations, the Tonnetz and the circle of fifths reappear as lattices and loops inside these spaces. The chapter ends with the working vocabulary of tonal harmony: inversions and figured bass, cadences, the resolving dominant seventh, circle-of-fifths sequences, applied dominants, pivot-chord modulation and the jazz tritone substitution.`,
       items: [
         { num: '9.1', kind: 'Definition', name: 'Triads and seventh chords', deps: ['music-8.3'], refs: ['Tymoczko ch. 2'], tags: ['chords'],
           pic: 'Stack thirds on each scale degree to build major, minor, diminished and augmented triads and the common seventh chords, each drawn as a polygon on the pitch-class clock, labelled by quality and played.' },
-        { num: '9.2', kind: 'Concept', name: 'Chord roots and the fundamental bass', deps: ['music-9.1', 'music-4.12'], refs: ['Tymoczko ch. 7'], tags: ['roots', 'virtual pitch'],
+        { num: '9.2', kind: 'Concept', name: 'Chord roots and the fundamental bass', deps: ['music-9.1', 'music-4.12'], refs: ['Tymoczko ch. 7', 'Benson app. M'], tags: ['roots', 'virtual pitch'],
           pic: 'Play a triad in any inversion and voicing: a virtual-pitch model estimates its root from the pooled partials and draws Rameau’s fundamental bass beneath the progression, agreeing with the spelled root for major triads and wavering for minor ones.' },
-        { num: '9.3', kind: 'Concept', name: 'Harmonic function: tonic, subdominant, dominant', deps: ['music-9.1'], refs: ['Tymoczko ch. 7'], tags: ['function', 'progressions'],
+        { num: '9.3', kind: 'Concept', name: 'Roman numerals and harmonic function (T, S, D)', deps: ['music-9.1'], refs: ['Tymoczko ch. 7', 'Benson ch. 5'], tags: ['function', 'progressions'],
           pic: 'A transition graph of Roman-numeral chords with arrow widths taken from a chorale corpus; click to walk a progression and hear it, and watch the tonic → subdominant → dominant → tonic cycle emerge as the dominant flow.' },
         { num: '9.4', kind: 'Concept', name: 'Keys and key distance', deps: ['music-7.14', 'music-8.3'], refs: ['Tymoczko ch. 4'], tags: ['keys', 'modulation'],
           pic: 'The twelve major keys around the circle of fifths with shared-note counts on each chord: neighbours share six of seven notes, so drag a modulation path and hear near keys slide while distant ones jolt.' },
@@ -307,6 +410,20 @@ export default {
           pic: 'Alternate P and L to circle the six triads of a hexatonic cycle, or P and R through the eight of an octatonic one; each cycle is traced on the Tonnetz and the clock and played as a late-Romantic progression.' },
         { num: '9.14', kind: 'Concept', name: 'The circle of fifths as a voice-leading circle', deps: ['music-9.8', 'music-8.4', 'music-7.14'], refs: ['Tymoczko ch. 4'], tags: ['circle of fifths', 'geometry'],
           pic: 'The twelve diatonic scales as points in scale space, each joined to two neighbours by moving one note a semitone; animate the moves and the circle of fifths reappears as the shortest voice-leading loop, the way triads circle the centre of the orbifold.' },
+        { num: '9.15', kind: 'Concept', name: 'Chord inversion and figured bass', deps: ['music-9.1', 'music-9.2'], refs: ['Benson app. M'], tags: ['inversion', 'figured bass'],
+          pic: 'Choose which chord tone sits in the bass and the figures 5/3, 6/3 or 6/4 (7, 6/5, 4/3 or 4/2 for a seventh chord) are computed from the intervals above it; type a figured bass line and hear it realized in four voices while the root stays the same.' },
+        { num: '9.16', kind: 'Concept', name: 'Cadences', deps: ['music-9.3', 'music-9.5'], refs: ['Benson ch. 5', 'Tymoczko ch. 7'], tags: ['cadence', 'function'],
+          pic: 'End one phrase with V–I, IV–I, I–V or V–vi and hear authentic, plagal, half and deceptive cadences, with voice-leading arrows showing the leading tone rising to the tonic; move the final soprano note from degree 1 to degree 3 to turn a perfect authentic cadence into an imperfect one.' },
+        { num: '9.17', kind: 'Concept', name: 'The dominant seventh and its resolution', deps: ['music-9.16', 'music-9.5'], refs: ['Benson ch. 5'], tags: ['dominant', 'tritone'],
+          pic: 'A V⁷ chord on the clock with its tritone highlighted: the third rises and the seventh falls by a semitone into the tonic triad, the minimal voice leading found by search, and inverting the chord shows the same tendency tones resolving in every position.' },
+        { num: '9.18', kind: 'Concept', name: 'Circle-of-fifths progressions and sequences', deps: ['music-9.3', 'music-7.14'], refs: ['Benson ch. 5'], tags: ['progressions', 'sequence'],
+          pic: 'Roots falling by fifths through the diatonic triads I–IV–vii°–iii–vi–ii–V–I are traced on the circle of fifths and on the Tonnetz as the progression plays; transpose a two-chord model step by step to build a sequence and see the single diminished-fifth root move needed to stay in the key.' },
+        { num: '9.19', kind: 'Concept', name: 'Applied dominants and tonicization', deps: ['music-9.17', 'music-9.4'], refs: ['Open Music Theory, Applied chords'], tags: ['tonicization', 'chromaticism'],
+          pic: 'Precede any diatonic triad with its own dominant (V/V, V/ii, V⁷/IV): the borrowed accidental lights on the keyboard, the target briefly sounds like a tonic, and the momentary key is marked on the circle of fifths.' },
+        { num: '9.20', kind: 'Method', name: 'Modulation by pivot chord', deps: ['music-9.4', 'music-9.19'], refs: ['Open Music Theory, Modulation'], tags: ['modulation', 'keys'],
+          pic: 'The diatonic triads of two keys drawn as overlapping sets: the shared chords are the possible pivots, labelled with a Roman numeral in each key; pick one to write a modulation and hear it, and see that closely related keys offer several pivots while distant keys offer none.' },
+        { num: '9.21', kind: 'Concept', name: 'Tritone substitution', deps: ['music-9.17', 'music-8.7'], refs: ['Tymoczko ch. 10'], tags: ['jazz', 'tritone'],
+          pic: 'Two dominant seventh chords a tritone apart share the same tritone, which T₆ maps onto itself; swap one for the other in a ii–V–I and hear the bass slide down by semitones while the resolving third and seventh move exactly as before.' },
       ],
     },
     {
@@ -322,49 +439,58 @@ export default {
           pic: 'A cyclic rhythm drawn as onsets around a circle of n steps with a sweeping playhead; rotate the necklace to hear the pattern start elsewhere, and click steps to add or remove onsets.' },
         { num: '10.4', kind: 'Phenomenon', name: 'Polyrhythm as a frequency ratio', deps: ['music-10.1', 'music-6.1'], refs: ['Loy I ch. 2'], tags: ['polyrhythm', 'ratios'],
           pic: 'Two click trains in the ratio 3:2 (or 4:3, 5:4) speed up continuously, and once they pass about 20 clicks per second the polyrhythm turns into a sustained fifth (fourth, major third) that you hear and see in the spectrum.' },
-        { num: '10.5', kind: 'Method', name: 'Euclidean rhythms (Bjorklund’s algorithm)', deps: ['music-10.3', 'music-8.4'], refs: ['Tymoczko ch. 4'], tags: ['euclidean rhythm', 'algorithm'],
+        { num: '10.5', kind: 'Method', name: 'Euclidean rhythms (Bjorklund’s algorithm)', deps: ['music-10.3', 'music-8.4'], refs: ['Toussaint, The Geometry of Musical Rhythm'], tags: ['euclidean rhythm', 'algorithm'],
           pic: 'Choose k onsets among n steps and step through Euclid’s remainder algorithm as it spreads them out: the tresillo E(3,8), the cinquillo E(5,8) and other timelines emerge, each looping audibly and matching the maximally even pattern.' },
-        { num: '10.6', kind: 'Concept', name: 'The rhythmic oddity property', deps: ['music-10.3'], refs: ['Loy I ch. 2'], tags: ['cyclic rhythm', 'timelines'],
+        { num: '10.6', kind: 'Concept', name: 'The rhythmic oddity property', deps: ['music-10.3'], refs: ['Toussaint, The Geometry of Musical Rhythm'], tags: ['cyclic rhythm', 'timelines'],
           pic: 'A timeline on a 12- or 16-step necklace with its diameters drawn: the property holds when no two onsets split the cycle into equal halves, a checker lights as you drag onsets, and Central African timelines pass while many others fail.' },
-        { num: '10.7', kind: 'Concept', name: 'Measuring syncopation', deps: ['music-10.2'], refs: ['Loy I ch. 2'], tags: ['syncopation'],
+        { num: '10.7', kind: 'Concept', name: 'Measuring syncopation', deps: ['music-10.2'], refs: ['Toussaint, The Geometry of Musical Rhythm'], tags: ['syncopation'],
           pic: 'A rhythm on a metrical-weight grid scores a Longuet-Higgins–Lee syncopation wherever a note on a weak position is followed by silence on a stronger one; drag onsets or rotate the clave and watch the score track the felt off-beatness.' },
         { num: '10.8', kind: 'Concept', name: 'Swing and microtiming', deps: ['music-10.1'], refs: ['Loy I ch. 2'], tags: ['groove', 'swing'],
           pic: 'A drum loop with a swing slider from straight 1:1 through triplet 2:1 to dotted 3:1 and a separate microtiming-jitter control; hear the groove change and see each onset’s deviation from the grid plotted.' },
-        { num: '10.9', kind: 'Method', name: 'Tempo estimation by autocorrelation', deps: ['music-10.1', 'rca-8.13'], refs: ['Loy II ch. 6'], tags: ['tempo', 'autocorrelation'],
+        { num: '10.9', kind: 'Method', name: 'Tempo estimation by autocorrelation', deps: ['music-10.1', 'rca-8.13'], refs: ['Müller FMP ch. 6'], tags: ['tempo', 'autocorrelation'],
           pic: 'The onset-strength signal of a drum recording and its autocorrelation: peaks at the beat period and its multiples appear, the tracker picks one, and a click locked to the estimate plays over the loop, half- and double-tempo mistakes included.' },
-        { num: '10.10', kind: 'Concept', name: 'Additive meters and aksak rhythms', deps: ['music-10.2', 'music-10.5'], refs: ['Loy I ch. 2'], tags: ['meter', 'aksak'],
+        { num: '10.10', kind: 'Concept', name: 'Additive meters and aksak rhythms', deps: ['music-10.2', 'music-10.5'], refs: ['Toussaint, The Geometry of Musical Rhythm'], tags: ['meter', 'aksak'],
           pic: 'Group a fast pulse into cells such as 2+2+3, 3+2+2 or 2+2+2+3, drawn as long and short beats on a necklace and played with accents, and compare 2+2+3 with the Euclidean rhythm E(3,7).' },
-        { num: '10.11', kind: 'Phenomenon', name: 'Phasing: rhythmic beats', deps: ['music-10.3', 'music-5.6'], refs: ['Loy I ch. 2'], tags: ['phasing', 'minimalism'],
+        { num: '10.11', kind: 'Phenomenon', name: 'Phasing: rhythmic beats', deps: ['music-10.3', 'music-5.6'], refs: ['Toussaint, The Geometry of Musical Rhythm'], tags: ['phasing', 'minimalism'],
           pic: 'Two copies of one pattern loop at slightly different tempi and drift through every rotation against each other, as in Steve Reich’s phase pieces; slide the tempo difference and watch the phase offset grow like the phase between beating tones.' },
+        { num: '10.12', kind: 'Concept', name: 'Hypermeter', deps: ['music-10.2'], refs: ['Open Music Theory, Phrase rhythm'], tags: ['meter', 'phrase'],
+          pic: 'Extra rows of metrical dots group whole bars into 2-, 4- and 8-bar hypermeasures above a melody; insert or delete a bar and watch the hypermetric count shift until a strong bar lands where a weak one should be, and hear the phrase stretch or stumble.' },
+        { num: '10.13', kind: 'Phenomenon', name: 'Hemiola', deps: ['music-10.2', 'music-10.4'], refs: ['Toussaint, The Geometry of Musical Rhythm'], tags: ['meter', 'polyrhythm'],
+          pic: 'Six beats heard as two bars of 3/4 or regrouped as three groups of two (one bar of 3/2): switch the accents at a cadence and hear the meter broaden, with the dot grid redrawing its strong beats and the 3:2 ratio of the two groupings displayed.' },
       ],
     },
     {
       n: 11,
       title: 'Rooms and instruments as systems',
-      summary: String.raw`Instruments and rooms are linear systems that store, filter and radiate energy. Resonance and its sharpness, coupling between strings and bodies, and impedance mismatches at boundaries decide which frequencies an instrument favours and how long it rings. A room adds its own modes and a long exponential tail of reflections, summarized by Sabine’s reverberation time and captured completely by the room’s impulse response.`,
+      summary: String.raw`Instruments and rooms are linear systems that store, filter and radiate energy. Resonance and its sharpness, coupling between strings and bodies, and impedance mismatches at boundaries decide which frequencies an instrument favours and how long it rings. A room adds its own modes and a long exponential tail of reflections, summarized by Sabine’s reverberation time and captured completely by the room’s impulse response. Wind instruments add a nonlinear engine, a reed, the player’s lips or an air jet, that feeds energy into a bore resonance and turns the passive resonator into a self-sustained oscillator.`,
       items: [
-        { num: '11.1', kind: 'Model', name: 'Resonance of a driven damped oscillator', deps: ['music-1.2'], refs: ['Benson ch. 1', 'Loy I ch. 8'], tags: ['resonance', 'damping'],
-          pic: 'Sweep the driving frequency of a damped oscillator and watch its amplitude and phase response curves form, sharpening as you raise Q, while the time view shows the response building up and ringing down over about Q cycles.' },
-        { num: '11.2', kind: 'Phenomenon', name: 'Coupled strings and sympathetic resonance', deps: ['music-11.1', 'music-2.4'], refs: ['Benson ch. 1', 'Loy I ch. 8'], tags: ['coupling', 'piano'],
+        { num: '11.1', alias: 'mech-4.9', name: 'Resonance of a driven damped oscillator' },
+        { num: '11.2', kind: 'Phenomenon', name: 'Coupled strings and sympathetic resonance', deps: ['music-11.1', 'music-2.4'], refs: ['Loy I ch. 8', 'Rossing ch. 14'], tags: ['coupling', 'piano'],
           pic: 'Two nearly unison piano strings coupled through the bridge: detune them slightly to see the modes split into the fast prompt sound and slow aftersound you hear, and strike one string to set the undamped other ringing.' },
         { num: '11.3', kind: 'Concept', name: 'Acoustic impedance and reflection', deps: ['music-1.1', 'music-3.1'], refs: ['Benson ch. 3', 'Loy I ch. 7'], tags: ['impedance', 'reflection'],
           pic: 'A pulse runs down a duct and meets a change of cross-section; drag the impedance ratio and see the reflected and transmitted pulses obey R = (Z₂ − Z₁)/(Z₂ + Z₁), inverting at an open end and not at a closed one.' },
         { num: '11.4', kind: 'Model', name: 'Input impedance of a wind instrument', deps: ['music-11.3', 'music-3.4'], refs: ['Benson ch. 3'], tags: ['impedance', 'woodwinds'],
           pic: 'The input impedance curve of a clarinet-like bore, with peaks where the reed can lock in; open tone holes one by one to shift the peaks up and hear the note the reed selects, then distort the bore so the peaks fall out of line.' },
-        { num: '11.5', kind: 'Phenomenon', name: 'Body resonances and the wolf note', deps: ['music-11.2'], refs: ['Benson ch. 3'], tags: ['coupling', 'strings'],
+        { num: '11.5', kind: 'Phenomenon', name: 'Body resonances and the wolf note', deps: ['music-11.2'], refs: ['Rossing ch. 10'], tags: ['coupling', 'strings'],
           pic: 'A cello string drives a body resonance; slide the played pitch through the body mode to see the coupled modes split and hear the stuttering wolf note, then add a wolf-eliminator mass and hear it subside.' },
         { num: '11.6', kind: 'Model', name: 'The Helmholtz resonator', deps: ['music-1.4', 'music-11.1'], refs: ['Loy I ch. 8'], tags: ['resonance', 'cavity'],
           pic: 'A bottle with adjustable neck and air volume: pour in water and hear the blown pitch rise as f = (c/2π)·√(A/VL) predicts, then use the resonator as a bass trap that removes a narrow band from a room’s response.' },
         { num: '11.7', kind: 'Model', name: 'Room modes', deps: ['music-3.6', 'music-1.4'], refs: ['Benson ch. 3', 'Loy I ch. 7'], tags: ['room acoustics', 'modes'],
           pic: 'A shoebox room with sliders for its dimensions: axial, tangential and oblique mode frequencies line up on a frequency axis, a chosen mode’s pressure pattern colours the floor, and moving the listener onto a pressure maximum makes the bass boom.' },
-        { num: '11.8', kind: 'Law', name: 'Sabine’s reverberation formula', deps: ['music-1.8', 'music-11.3'], refs: ['Benson ch. 3', 'Loy I ch. 7'], tags: ['reverberation', 'room acoustics'],
+        { num: '11.8', kind: 'Law', name: 'Sabine’s reverberation formula', deps: ['music-1.8', 'music-11.3'], refs: ['Rossing ch. 23', 'Loy I ch. 7'], tags: ['reverberation', 'room acoustics'],
           pic: 'Set the room volume and assign absorbing materials to the walls: the decay curve on a decibel scale gives RT₆₀ = 0.161·V/A and a hand-clap plays with that tail, and lining every surface with absorber shows Sabine overestimating where Eyring’s formula does not.' },
-        { num: '11.9', kind: 'Method', name: 'Convolution reverb: the impulse response', deps: ['music-11.8', 'rca-8.13', 'rca-8.14', 'rca-9.2'], refs: ['Loy II ch. 6'], tags: ['convolution', 'reverberation'],
+        { num: '11.9', kind: 'Method', name: 'Convolution reverb: the impulse response', deps: ['music-11.8', 'rca-8.13', 'rca-8.14', 'rca-9.2'], refs: ['Loy II ch. 4', 'Benson ch. 2'], tags: ['convolution', 'reverberation'],
           pic: 'Pick or draw a room impulse response and hear a dry phrase convolved with it, with the response, its spectrum and the wet signal shown together; editing a single early reflection audibly changes the space.' },
-        { num: '11.10', kind: 'Concept', name: 'Early reflections and the precedence effect', deps: ['music-5.12', 'music-11.3'], refs: ['Loy I ch. 7'], tags: ['reflections', 'localization'],
+        { num: '11.10', kind: 'Concept', name: 'Early reflections and the precedence effect', deps: ['music-5.12', 'music-11.3'], refs: ['Loy I ch. 7', 'Rossing ch. 23'], tags: ['reflections', 'localization'],
           pic: 'An image-source picture of a room and the echogram of direct sound and first reflections; drag one reflection’s delay and level and hear it fuse with the direct sound, leaving the image at the source, until about 30–40 ms when it splits off as an echo.' },
         { num: '11.11', kind: 'Invention', name: 'The Schroeder diffuser', deps: ['music-11.10'], refs: ['Loy I ch. 7'], tags: ['diffusion', 'number theory'],
           pic: 'A quadratic-residue diffuser whose well depths follow n² mod p: choose p and compare its polar scattering pattern with a flat panel’s across frequency, the diffuser spreading reflected energy evenly within its design band.' },
+        { num: '11.12', kind: 'Model', name: 'Reeds and lips: self-sustained oscillation', deps: ['music-11.4', 'music-11.1', 'music-3.5'], refs: ['F&R ch. 13'], tags: ['reed', 'brass'],
+          pic: 'A reed valve’s flow-versus-pressure curve has a falling branch that acts as negative resistance; raise the blowing pressure past threshold and oscillation grows at the strongest bore resonance, and switching from an inward-striking reed (clarinet, sounding just below resonance) to outward-striking lips (trumpet, just above) changes which peak it locks to.' },
+        { num: '11.13', kind: 'Model', name: 'The air jet: flutes and flue pipes', deps: ['music-3.2', 'music-11.1'], refs: ['Rossing ch. 12'], tags: ['flute', 'jet'],
+          pic: 'A jet of air sways across the edge of a flute’s embouchure hole or an organ pipe’s labium in step with the pipe resonance; raise the jet speed and its travel time across the mouth shortens until the pipe jumps to its second mode and overblows to the octave, while with the pipe removed only a thin edge tone remains.' },
+        { num: '11.14', kind: 'Concept', name: 'Direct and reverberant sound: the critical distance', deps: ['music-11.8', 'music-1.7'], refs: ['Rossing ch. 23'], tags: ['room acoustics', 'reverberation'],
+          pic: 'Sound level against distance from a source in a room: the direct sound falls 6 dB per doubling while the reverberant field stays flat, the two crossing at the critical distance r_c ≈ 0.057·√(V/T₆₀) m; add absorption and hear the crossover move outward as speech grows clearer.' },
       ],
     },
     {
@@ -374,30 +500,59 @@ export default {
       items: [
         { num: '12.1', kind: 'Definition', name: 'Sampling', deps: ['music-1.2'], refs: ['Benson ch. 7', 'Loy II ch. 1'], tags: ['sampling'],
           pic: 'A continuous waveform with sample dots at an adjustable rate; switch between stems, a staircase hold and the reconstructed curve, and hear the sampled tone at the rate you chose.' },
-        { num: '12.2', kind: 'Theorem', name: 'The Nyquist–Shannon sampling theorem', deps: ['music-12.1', 'rca-9.11', 'rca-4.26', 'rca-9.13'], refs: ['Benson ch. 7', 'Loy II ch. 1'], tags: ['sampling', 'band-limited'],
-          pic: 'A band-limited signal rebuilt as a sum of sinc pulses, one per sample: drag sample values and watch the reconstruction pass exactly through them, then drop the rate below twice the bandwidth and see the rebuilt signal part from the original.' },
-        { num: '12.3', kind: 'Phenomenon', name: 'Aliasing', deps: ['music-12.2'], refs: ['Loy II ch. 1', 'Benson ch. 7'], tags: ['aliasing', 'sampling'],
-          pic: 'Sweep an input frequency up past the Nyquist frequency: the output folds back along a zigzag, you hear the tone turn around and fall, and switching on an anti-aliasing filter removes the fold.' },
-        { num: '12.4', kind: 'Theorem', name: 'No sound is both time-limited and band-limited', deps: ['music-12.2', 'rca-19.3'], refs: ['Loy II ch. 7'], tags: ['band-limited', 'paley-wiener'],
+        { num: '12.2', alias: 'sig-7.3', name: 'The Nyquist–Shannon sampling theorem' },
+        { num: '12.3', alias: 'sig-7.5', name: 'Aliasing' },
+        { num: '12.4', kind: 'Theorem', name: 'No sound is both time-limited and band-limited', deps: ['music-12.2', 'rca-19.3'], refs: ['Loy II ch. 3'], tags: ['band-limited', 'paley-wiener'],
           pic: 'Cut a tone off with a rectangular, Hann or Gaussian window of adjustable length: on a decibel scale the spectrum always grows tails that extend forever, lower for smoother windows but never zero, and each windowed tone plays.' },
         { num: '12.5', kind: 'Concept', name: 'Quantization and bit depth', deps: ['music-12.1', 'music-1.8'], refs: ['Benson ch. 7', 'Loy II ch. 1'], tags: ['quantization', 'noise'],
           pic: 'A bit-depth slider from 1 to 16 redraws the staircase waveform and its error signal; the measured signal-to-noise ratio tracks about 6 dB per bit, and you hear the grit fade into silence as bits are added.' },
         { num: '12.6', kind: 'Method', name: 'Dither', deps: ['music-12.5'], refs: ['Benson ch. 7'], tags: ['quantization', 'noise'],
           pic: 'Fade a tone out at 4-bit depth with and without a little added noise: without dither the error is distortion that pulses with the signal, with it a steady hiss, plain both in the error spectrum and to the ear.' },
-        { num: '12.7', kind: 'Definition', name: 'The discrete Fourier transform', deps: ['music-4.2', 'music-12.1', 'pma-8.13'], refs: ['Benson ch. 7', 'Loy II ch. 8'], tags: ['DFT', 'spectrum'],
-          pic: 'Analyze N samples of a tone: when its frequency falls between bins the energy leaks into neighbours along the Dirichlet-kernel shape, a window toggle trades leakage for width, and dragging the frequency plays the tone.' },
-        { num: '12.8', kind: 'Algorithm', name: 'The fast Fourier transform', deps: ['music-12.7'], refs: ['Benson ch. 7'], tags: ['FFT', 'algorithm'],
-          pic: 'The butterfly diagram of a radix-2 FFT stage by stage, splitting even and odd samples; a counter compares N log₂ N with N² operations as N grows, and the spectrum of a played chord is checked against the slow DFT.' },
+        { num: '12.7', alias: 'sig-8.4', name: 'The discrete Fourier transform' },
+        { num: '12.8', alias: 'sig-8.8', name: 'The fast Fourier transform' },
         { num: '12.9', kind: 'Concept', name: 'Digital filters: poles and zeros', deps: ['music-12.7'], refs: ['Benson ch. 7', 'Loy II ch. 5'], tags: ['filters', 'z-transform'],
           pic: 'Drag poles and zeros inside the unit disk and watch the frequency response update while filtered noise plays; push a pole outside the circle and the filter blows up.' },
         { num: '12.10', kind: 'Algorithm', name: 'Karplus–Strong plucked-string synthesis', deps: ['music-12.9', 'music-2.7'], refs: ['Benson ch. 8'], tags: ['synthesis', 'physical modelling'],
           pic: 'A burst of noise circulates through a delay line and a two-point averaging filter and settles into a plucked-string tone: the delay length sets the pitch, a blend control turns it into a drum, and the spectrum shows high partials dying first.' },
         { num: '12.11', kind: 'Definition', name: 'MIDI note numbers and frequency', deps: ['music-7.9', 'music-1.6'], refs: ['Benson ch. 7'], tags: ['MIDI', 'tuning'],
           pic: 'A keyboard maps each MIDI note number m to 440·2^((m − 69)/12) Hz; bend the pitch wheel in cents, or load another tuning table to retune every key, and play.' },
-        { num: '12.12', kind: 'Method', name: 'Pitch detection by autocorrelation', deps: ['music-4.11', 'rca-8.13', 'rca-9.2'], refs: ['Loy II ch. 6'], tags: ['pitch detection', 'autocorrelation'],
+        { num: '12.12', kind: 'Method', name: 'Pitch detection by autocorrelation', deps: ['music-4.11', 'rca-8.13', 'rca-9.2'], refs: ['Loy, Musimathics II'], tags: ['pitch detection', 'autocorrelation'],
           pic: 'A waveform beside its autocorrelation as you slide the lag: the first strong peak marks the period and gives the pitch even for a tone missing its fundamental, while noisy or inharmonic tones expose the octave errors the method risks.' },
         { num: '12.13', kind: 'Method', name: 'Perceptual audio coding', deps: ['music-5.5', 'music-12.7'], refs: ['Benson ch. 7'], tags: ['compression', 'masking'],
           pic: 'One frame’s spectrum with its computed masking threshold: bits go only to components above the threshold, and as you lower the bitrate you hear the pre-echo and swirling artifacts that appear when the model is pushed too far.' },
+        { num: '12.14', kind: 'Method', name: 'The phase vocoder', deps: ['music-4.7', 'music-12.8'], refs: ['Benson ch. 8'], tags: ['time stretching', 'analysis'],
+          pic: 'A phrase is analysed frame by frame with the FFT, each bin’s phase advance yields its true frequency, and resynthesis with a different hop size stretches time without changing pitch; push the stretch factor high and hear the phasiness that appears when neighbouring bins lose phase coherence.' },
+      ],
+    },
+    {
+      n: 13,
+      title: 'Melody, counterpoint and form',
+      summary: String.raw`Melodies move mostly by step, and listeners hear their notes against a hierarchy of stability centred on the tonic, a hierarchy learned from exposure that simple probabilistic models capture. Counterpoint is the craft of combining independent lines: Fux’s species introduce its constraints one at a time, from note-against-note consonance to passing tones and suspensions, and canon exploits the symmetries of a melody. Above the bar, phrases form sentences and periods, sections form binary, ternary, rondo and sonata designs, and Schenkerian reduction strips away embellishment to expose the slower progression underneath.`,
+      items: [
+        { num: '13.1', kind: 'Phenomenon', name: 'Conjunct melodic motion', deps: ['music-8.3', 'music-5.13'], refs: ['Tymoczko ch. 1'], tags: ['melody', 'steps'],
+          pic: 'Histograms of melodic interval sizes from a folk-song corpus and from random note sequences: real melodies move mostly by step and tend to turn after a leap, and a slider that widens every leap eventually splits the tune into two auditory streams.' },
+        { num: '13.2', kind: 'Model', name: 'The tonal hierarchy (probe-tone profiles)', deps: ['music-8.19', 'music-9.4'], refs: ['Tymoczko ch. 5'], tags: ['tonality', 'cognition'],
+          pic: 'After a cadence in C, rate how well each of the twelve probe tones fits; your ratings are plotted against Krumhansl and Kessler’s major and minor profiles, with tonic, fifth and third on top and the chromatic notes at the bottom.' },
+        { num: '13.3', kind: 'Method', name: 'Key finding by profile correlation', deps: ['music-13.2'], refs: ['Tymoczko ch. 5'], tags: ['key finding', 'tonality'],
+          pic: 'A passage’s duration-weighted pitch-class histogram is correlated with all 24 rotations of the major and minor profiles (the Krumhansl–Schmuckler algorithm); the winning key lights on the circle of fifths and changes as you scrub through a modulation or edit notes.' },
+        { num: '13.4', kind: 'Model', name: 'Markov models of melody', deps: ['music-13.1', 'stoch-1.1', 'info-1.1'], refs: ['Loy I ch. 9'], tags: ['expectation', 'probability'],
+          pic: 'Train an n-gram model on a small corpus of melodies: each note of a new tune is coloured by its surprisal under the model, the predicted next-note distribution updates as it plays, and generated melodies sound more idiomatic but copy more of the corpus as the order rises.' },
+        { num: '13.5', kind: 'Definition', name: 'Types of contrapuntal motion', deps: ['music-9.5'], refs: ['Open Music Theory, Types of motion'], tags: ['counterpoint', 'motion'],
+          pic: 'Two voices on a staff with each move labelled parallel, similar, contrary or oblique as you drag notes, and a tally that shows contrary motion keeping the lines independent while parallel perfect intervals fuse them into one.' },
+        { num: '13.6', kind: 'Method', name: 'First-species counterpoint (Fux)', deps: ['music-13.5', 'music-6.1', 'music-13.1'], refs: ['Open Music Theory, First-species counterpoint'], tags: ['counterpoint', 'species'],
+          pic: 'Write a note-against-note line above a cantus firmus while a checker applies Fux’s rules (consonances only, perfect intervals at the ends, no parallel fifths or octaves, mostly stepwise motion); break a rule to see it flagged, or let a search list every legal counterpoint and play one.' },
+        { num: '13.7', kind: 'Concept', name: 'Embellishing tones and dissonance treatment', deps: ['music-13.6', 'music-9.1'], refs: ['Open Music Theory, Embellishing tones'], tags: ['counterpoint', 'dissonance'],
+          pic: 'Dissonant notes against a chord are classified live as passing, neighbour, suspension, appoggiatura or anticipation from how they are approached and left, as in the second to fourth species; delay a suspension’s resolution and hear the dissonance hang.' },
+        { num: '13.8', kind: 'Concept', name: 'Canon and the symmetries of a melody', deps: ['music-8.7', 'music-13.6'], refs: ['Benson ch. 9'], tags: ['canon', 'symmetry'],
+          pic: 'A melody as a shape on a piano roll that can be transposed, inverted, reversed or stretched; delay a copy to make a canon and a counter tallies the vertical intervals, showing which delays and transformations keep the voices consonant as they play.' },
+        { num: '13.9', kind: 'Concept', name: 'Phrase structure: sentence and period', deps: ['music-9.16', 'music-10.12'], refs: ['Open Music Theory, Classical theme types'], tags: ['form', 'phrase'],
+          pic: 'An eight-bar theme segmented into basic idea, repetition, continuation and cadence (a sentence) or antecedent and consequent (a period); replace the antecedent’s half cadence with an authentic one and hear the period’s question and answer collapse.' },
+        { num: '13.10', kind: 'Concept', name: 'Binary, ternary, rondo and sonata form', deps: ['music-13.9', 'music-9.20'], refs: ['Open Music Theory, Form'], tags: ['form'],
+          pic: 'Forms drawn as lettered blocks on a timeline coloured by key (AB, ABA, ABACA, exposition–development–recapitulation); scrub through a piece to light its sections, and move the second theme’s key in the recapitulation to hear why it returns in the tonic.' },
+        { num: '13.11', kind: 'Method', name: 'Self-similarity matrices reveal form', deps: ['music-13.10', 'music-4.7'], refs: ['Müller FMP ch. 4'], tags: ['form', 'analysis'],
+          pic: 'Every moment of a recording is compared with every other through chroma features: repeated sections appear as off-diagonal stripes and blocks, a novelty curve along the diagonal marks section boundaries, and you can click any cell to hear the two passages it compares.' },
+        { num: '13.12', kind: 'Concept', name: 'Prolongation and Schenkerian reduction', deps: ['music-13.7', 'music-9.16'], refs: ['Open Music Theory, Harmonic syntax – prolongation'], tags: ['reduction', 'hierarchy'],
+          pic: 'A phrase is reduced level by level as embellishing tones and prolonging chords are pruned, until a descending 3–2–1 line over I–V–I remains; step between levels to hear each reduction and see which notes survive.' },
       ],
     },
   ],

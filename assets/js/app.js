@@ -257,7 +257,7 @@ async function pageCollection(id) {
     ${C.chapters.length ? `<div class="chapters-grid">${C.chapters.map((Ch) => `<a class="card ch-card ${Ch.count ? '' : 'soon'}" href="#/c/${C.id}/${Ch.n}">
       <span class="eyebrow">${chapterLabel(C.id, Ch.n)}</span><h3>${escapeHTML(Ch.title || '')}</h3>
       <div class="sum">${inlineHTML(Ch.summary || '')}</div>
-      <div class="meta">${Ch.count ? `${Ch.count} results · ${Ch.viz} visualizations` : ''}${Ch.planned ? `${Ch.count ? ' · ' : ''}${Ch.planned} planned` : ''}</div></a>`).join('')}</div>`
+      <div class="meta">${Ch.count ? `${Ch.count} results · ${Ch.viz} visualizations` : ''}${Ch.planned ? `${Ch.count ? ' · ' : ''}${Ch.planned} planned` : ''}${Ch.cross ? `${Ch.count || Ch.planned ? ' · ' : ''}${Ch.cross.length} cross-listed` : ''}</div></a>`).join('')}</div>`
     : `<div class="card empty-shelf"><h2>A planned shelf</h2><p>No syllabus or results yet. This collection is part of the <a href="#/status">roadmap</a>; its outline will appear here first, then its results, each with an interactive picture.</p></div>`}
     ${C.count ? `<div class="card flow-card" style="margin-top:22px">
       <div class="flow-head"><h2>Inside the collection</h2><span class="muted" style="font-size:13px">arcs: results of one chapter used in a later one</span></div>
@@ -286,7 +286,7 @@ async function pageChapter(col, c) {
         <div class="thm-nav">${prev ? `<a class="btn" href="#/c/${col}/${prev.n}" title="${escapeHTML(prev.title || '')}">← ${prev.n}</a>` : ''}${next ? `<a class="btn" href="#/c/${col}/${next.n}" title="${escapeHTML(next.title || '')}">${next.n} →</a>` : ''}</div>
       </div>
       <p class="sub">${inlineHTML(Ch.summary || '')}</p>
-      <div class="stats-row"><span><b>${items.length}</b> results</span><span><b>${items.filter((i) => i.viz).length}</b> visualizations</span>${items.length ? `<span><b>${extDeps.size}</b> results used from elsewhere</span>` : ''}${planned.length ? `<span><b>${planned.length}</b> planned</span>` : ''}</div>
+      <div class="stats-row"><span><b>${items.length}</b> results</span><span><b>${items.filter((i) => i.viz).length}</b> visualizations</span>${items.length ? `<span><b>${extDeps.size}</b> results used from elsewhere</span>` : ''}${planned.length ? `<span><b>${planned.length}</b> planned</span>` : ''}${cross.length ? `<span><b>${cross.length}</b> cross-listed</span>` : ''}</div>
     </div>
     ${items.length ? `<div class="card ch-graph-card">
       <div class="cg-head"><h2 style="font-size:21px">Dependency graph</h2><span class="legend-row"><span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--ink-3)" stroke-width="1.6"/></svg>within the chapter</span><span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--bc)" stroke-width="1.6" stroke-dasharray="4 3"/></svg>from elsewhere</span><span><svg width="22" height="12"><rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="var(--bc)" stroke-dasharray="3 2"/></svg>definition</span></span></div>

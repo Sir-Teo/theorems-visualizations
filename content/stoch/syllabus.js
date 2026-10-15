@@ -477,8 +477,7 @@ export default {
           pic: 'Draw a planar domain and boundary values; the average boundary value where Brownian paths from x first exit is plotted as a field and matches the harmonic solution computed by relaxation.' },
         { num: '13.17', kind: 'Theorem', name: 'Feynman–Kac and the heat equation', deps: ['stoch-13.13'], refs: ['Grimmett–Stirzaker §13.3'],
           pic: 'Average f(x + B_t) over paths, with an optional killing rate V; the result solves the heat equation with potential, compared against a finite-difference solution.' },
-        { num: '13.18', kind: 'Model', name: 'Black–Scholes formula', deps: ['stoch-13.14'], refs: ['Grimmett–Stirzaker §13.10'],
-          pic: 'Price a call option by averaging discounted payoffs over risk-neutral GBM paths and by the closed formula; a delta-hedging simulation shows the replicating portfolio tracking the payoff.' },
+        { num: '13.18', alias: 'fin-9.3', name: 'Black–Scholes formula' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 14

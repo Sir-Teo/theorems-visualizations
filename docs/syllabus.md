@@ -31,6 +31,16 @@ export default {
 };
 ```
 
+## Cross-listings
+
+When an idea already lives in another collection, do not copy it: cite it in `deps`. If your course genuinely covers it in a chapter, list it with a cross-listing entry, which takes a number but is not a new node:
+
+```js
+{ num: '6.7', alias: 'toc-9.7', name: 'Undecidability of the halting problem' },
+```
+
+References to `logic-6.7` then resolve to `toc-9.7`, `#/t/logic-6.7` redirects there, and the chapter page shows the owner's card under "Cross-listed". Numbers stay reserved (ids are append-only), so an existing duplicate can be turned into a cross-listing at any time: `node scripts/crosslist.mjs logic-6.7=toc-9.7`. `node scripts/dupes.mjs [col …]` lists likely duplicates that are not yet linked; prefer the more elementary or more natural home as owner, and keep both (linked by `see` or `deps`) when the two differ in generality.
+
 ## Research first
 
 A syllabus is a map of a subject, and a map drawn from memory has holes. Before writing one:

@@ -25,7 +25,7 @@ export default {
 };
 ```
 
-- **Every** planned item of chapter <n>, with exactly the syllabus `num` and `kind`, and its name (polish wording only if it helps). Never renumber. If an item is genuinely wrong or redundant, still write it as well as you can and flag it in your report.
+- **Every** planned item of chapter <n> (skip cross-listing entries `{ num, alias, name }`: those ideas live in another collection and appear on your chapter page automatically; cite the alias target in `deps` where needed), with exactly the syllabus `num` and `kind`, and its name (polish wording only if it helps). Never renumber. If an item is genuinely wrong or redundant, still write it as well as you can and flag it in your report.
 - `statement`: complete and faithful, your own words (never copy a textbook), with hypotheses/scope. `idea`: why it is true / how it works, 2–5 sentences, naming the earlier results that do the work. `caption`: what to drag/click and what to notice.
 - `deps`: start from the syllabus deps; fix them if wrong. Only ids that exist (written items in data/index.json or planned items in any content/*/syllabus.js). Point backwards; no cycles.
 - `refs` from the syllabus; `credit` (who, when) when there is a clear attribution; `scope` for laws/models (where they hold).
