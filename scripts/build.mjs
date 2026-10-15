@@ -243,7 +243,7 @@ const index = {
     file: it.file, viz: typeof it.viz === 'function', x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0),
     anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined, yr: yearOf(it.credit),
   })),
-  planned: ghosts.map((it) => ({ id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps, x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0) })),
+  plannedCount: ghosts.length,
   map: { rows: rowsOut.map(({ bands, ...r }) => r), fields: fieldBoxes },
   bridges: bridges.map((B) => ({ slug: B.slug, title: B.title, blurb: B.blurb, steps: B.steps.filter((st) => byId.has(st.id) || plannedById.has(st.id)) })),
   chapterEdges: edgeList(chEdges),
@@ -252,6 +252,11 @@ const index = {
 await rm(join(ROOT, 'data'), { recursive: true, force: true });
 await mkdir(join(ROOT, 'data/col'), { recursive: true });
 await writeFile(join(ROOT, 'data/index.json'), JSON.stringify(index));
+// planned (ghost) items, compact rows, loaded lazily: [num, chapter, kind#, name, deps, x, y] grouped by collection
+const KIND_LIST = [...new Set(ghosts.map((it) => it.kind))];
+const plannedOut = { kinds: KIND_LIST, cols: {} };
+for (const it of ghosts) (plannedOut.cols[it.col] ||= []).push([it.num, it.chapter, KIND_LIST.indexOf(it.kind), it.name, it.deps, Math.round(pos.get(it.id)?.x ?? 0), Math.round(pos.get(it.id)?.y ?? 0)]);
+await writeFile(join(ROOT, 'data/planned.json'), JSON.stringify(plannedOut));
 for (const C of collections) {
   const its = all.filter((it) => it.col === C.id), pl = ghosts.filter((it) => it.col === C.id);
   if (!its.length && !pl.length) continue;
@@ -261,4 +266,4 @@ for (const C of collections) {
   await writeFile(join(ROOT, `data/col/${C.id}.json`), JSON.stringify(det));
 }
 await writeFile(join(ROOT, 'data/atlas.css'), css);
-console.log(`wrote data/index.json (${(JSON.stringify(index).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);
+console.log(`wrote data/index.json (${(JSON.stringify(index).length / 1024).toFixed(0)} KB), data/planned.json (${(JSON.stringify(plannedOut).length / 1024).toFixed(0)} KB), data/col/*.json, data/atlas.css`);

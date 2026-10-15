@@ -19,7 +19,7 @@ const routes = val('--routes')?.split(',') || [
   ...idx.fields.slice(0, 3).map((F) => `#/f/${F.id}`), `#/f/${idx.fields[idx.fields.length - 1].id}`,
   ...live.map((C) => `#/c/${C.id}`), ...live.map((C) => `#/c/${C.id}/${C.chapters.find((c) => c.count).n}`),
   ...live.map((C) => `#/t/${someItem(C.id)?.id}`).filter((r) => !r.endsWith('undefined')),
-  ...(idx.planned.length ? [`#/t/${idx.planned[0].id}`] : []),
+  ...(() => { try { const P = JSON.parse(readFileSync(join(ROOT, 'data/planned.json'), 'utf8')); const c = Object.keys(P.cols)[0]; return c ? [`#/t/${c}-${P.cols[c][0][0]}`] : []; } catch { return []; } })(),
   ...(idx.collections.find((C) => !C.count && !C.planned) ? [`#/c/${idx.collections.find((C) => !C.count && !C.planned).id}`] : []),
   '#/path/fa-12.23', '#/book/pma/4', '#/nope',
 ];

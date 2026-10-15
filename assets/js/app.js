@@ -12,25 +12,41 @@ const modCache = new Map();
 async function loadCatalog() {
   const res = await fetch('data/index.json', { cache: 'no-cache' });
   const cat = await res.json();
-  for (const it of cat.planned) it.planned = true;
-  const byId = new Map([...cat.items, ...cat.planned].map((it) => [it.id, it]));
+  const byId = new Map(cat.items.map((it) => [it.id, it]));
   const children = new Map(cat.items.map((it) => [it.id, []]));
   for (const it of cat.items) for (const d of it.deps) children.get(d)?.push(it.id);
-  const allChildren = new Map([...byId.keys()].map((id) => [id, []]));
-  for (const it of byId.values()) for (const d of depsOf(it)) allChildren.get(d)?.push(it.id);
-  const order = new Map([...cat.items, ...cat.planned].map((it, i) => [it.id, i]));
   const colById = new Map(cat.collections.map((C) => [C.id, C]));
   const colIdx = new Map(cat.collections.map((C, i) => [C.id, i]));
   const fieldById = new Map(cat.fields.map((F) => [F.id, F]));
-  G = { ...cat, byId, children, allChildren, order, colById, colIdx, fieldById };
+  G = { ...cat, planned: [], byId, children, colById, colIdx, fieldById };
+  indexGraph();
   G.edgeCount = cat.items.reduce((s, it) => s + it.deps.length, 0);
   G.live = cat.collections.filter((C) => C.count);
   setAtlas(G);
   buildSearch();
   buildNav();
-  // statements for search: fetch every shard when the browser is idle
+  // background: planned items (for the map, chapter pages, lineages) and statements (for search)
   const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1200));
-  idle(() => Promise.all(G.live.map((C) => loadShard(C.id))).then(buildSearch).catch(() => {}));
+  idle(() => { ensurePlanned().catch(() => {}); Promise.all(G.live.map((C) => loadShard(C.id))).then(buildSearch).catch(() => {}); });
+}
+/** order and reverse edges over written + planned items */
+function indexGraph() {
+  const all = [...G.items, ...G.planned];
+  G.order = new Map(all.map((it, i) => [it.id, i]));
+  G.allChildren = new Map(all.map((it) => [it.id, []]));
+  for (const it of all) for (const d of depsOf(it)) G.allChildren.get(d)?.push(it.id);
+}
+let plannedP = null;
+/** Planned (not yet written) items live in data/planned.json and are merged into the graph on demand. */
+function ensurePlanned() {
+  if (!plannedP) plannedP = fetch('data/planned.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : { kinds: [], cols: {} })).then((P) => {
+    const list = [];
+    for (const C of G.collections) for (const [num, c, k, name, deps, x, y] of P.cols[C.id] || []) list.push({ id: `${C.id}-${num}`, col: C.id, c, num, kind: P.kinds[k], name, deps, x, y, planned: true });
+    G.planned = list;
+    for (const it of list) G.byId.set(it.id, it);
+    indexGraph();
+  }).catch((e) => { plannedP = null; throw e; });
+  return plannedP;
 }
 const shards = new Map();
 /** Per-collection details (statements, refs, …) are lazy-loaded from data/col/<id>.json. */
@@ -250,7 +266,7 @@ function pageCollection(id) {
 async function pageChapter(col, c) {
   const C = G.colById.get(col); const Ch = chapterOf(col, c); if (!C || !Ch) return pageNotFound();
   setTitle(`${C.short} ${chapterLabel(col, c)}: ${Ch.title}`); setNav('fields'); curCol = col;
-  await loadShard(col);
+  await Promise.all([loadShard(col), ensurePlanned()]);
   const items = G.items.filter((it) => it.col === col && it.c === c);
   const planned = G.planned.filter((it) => it.col === col && it.c === c);
   const idx = C.chapters.indexOf(Ch); const prev = C.chapters[idx - 1], next = C.chapters[idx + 1];
@@ -333,6 +349,7 @@ async function pagePlanned(it) {
 }
 
 async function pageTheorem(id) {
+  await ensurePlanned().catch(() => {});
   const it = G.byId.get(id); if (!it) return pageNotFound();
   if (it.planned) return await pagePlanned(it);
   const C = G.colById.get(it.col); const Ch = chapterOf(it.col, it.c);
@@ -403,8 +420,9 @@ async function pageTheorem(id) {
   }
 }
 
-function pageMap(params) {
+async function pageMap(params) {
   setTitle('Map'); setNav('map'); curCol = null;
+  await ensurePlanned().catch(() => {});
   const host = document.createElement('div');
   app.replaceChildren(host);
   const view = new MapView(host, G, { onOpen: (id) => go(`#/t/${id}`), focus: params.get('focus'), loadShard });
@@ -427,6 +445,7 @@ function prerequisites(id) {
   return out;
 }
 async function pagePath(id) {
+  await ensurePlanned().catch(() => {});
   const target = G.byId.get(id); if (!target) return pageNotFound();
   setTitle(`Path to ${target.name.replace(/\$/g, '')}`); setNav(''); curCol = null;
   const order = prerequisites(id);
@@ -470,6 +489,7 @@ function pageBridges() {
 }
 async function pageBridge(slug) {
   const B = (G.bridges || []).find((x) => x.slug === slug); if (!B) return pageNotFound();
+  await ensurePlanned().catch(() => {});
   setTitle(B.title); setNav('bridges'); curCol = null;
   await loadShards(B.steps.map((st) => G.byId.get(st.id)?.col).filter(Boolean));
   const el = h(`<div class="wrap bridge-page"><div class="page-head">
@@ -504,7 +524,7 @@ function pageStatus() {
     <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span>Status</span></div>
     <h1>Status of the atlas</h1>
     <p class="sub">Every collection, written and planned. A collection's syllabus is written first, so its ideas appear on the map as faded nodes; then each one is written up with a statement, an explanation and an interactive picture.</p>
-    <div class="stats-row"><span><b>${tot.n.toLocaleString('en')}</b> written</span><span><b>${tot.p.toLocaleString('en')}</b> planned on syllabi</span><span><b>${tot.v.toLocaleString('en')}</b> visualizations</span><span><b>${G.live.length}</b> / ${G.collections.length} collections live</span></div>
+    <div class="stats-row"><span><b>${tot.n.toLocaleString('en')}</b> written</span><span><b>${(G.plannedCount ?? tot.p).toLocaleString('en')}</b> planned on syllabi</span><span><b>${tot.v.toLocaleString('en')}</b> visualizations</span><span><b>${G.live.length}</b> / ${G.collections.length} collections live</span></div>
   </div>
   ${G.fields.map((F) => `<section class="status-field" data-field="${F.id}" style="--fc:var(--f-${F.id})"><h2><a href="#/f/${F.id}">${escapeHTML(F.title)}</a></h2>
     <table class="status-table"><thead><tr><th>Collection</th><th>Type</th><th class="r">Written</th><th class="r">Planned</th><th class="r">Viz</th><th>Progress</th></tr></thead><tbody>
@@ -575,7 +595,7 @@ async function route() {
     else if (parts[0] === 'c' && parts.length === 2) pageCollection(parts[1]);
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
-    else if (parts[0] === 'map') pageMap(params);
+    else if (parts[0] === 'map') await pageMap(params);
     else if (parts[0] === 'status') pageStatus();
     else if (parts[0] === 'timeline') pageTimeline();
     else if (parts[0] === 'bridges') pageBridges();
