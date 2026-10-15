@@ -1,6 +1,78 @@
 // Syllabus — Microeconomics (curated course; see collection.js for references)
 // Reference pointers: Varian = Intermediate Microeconomics, chapter numbers of the 9th edition;
 // Mankiw = Principles of Economics, 8th/9th edition chapters; CORE = The Economy (1.0) units.
+//
+// ── Research audit (Oct 2026) ────────────────────────────────────────────────────────────
+// Sources consulted:
+//  • Varian, Intermediate Microeconomics 9th ed. (2014), full TOC with section headings, from
+//    the scanned contents pages linked in the Bavarian union catalogue record BV041825636
+//    (search.ub.tum.de/vufind/Record/DE-604.BV041825636). Chapters 1 The Market … 14 Consumer's
+//    Surplus, 15 Market Demand, 16 Equilibrium, 17 Measurement, 18 Auctions, 19 Technology,
+//    20 Profit Maximization, 21 Cost Minimization, 22 Cost Curves, 23 Firm Supply, 24 Industry
+//    Supply, 25 Monopoly, 26 Monopoly Behavior, 27 Factor Markets, 28 Oligopoly, 29–30 Game
+//    Theory/Applications, 31 Behavioral Economics, 32 Exchange, 33 Production, 34 Welfare,
+//    35 Externalities, 36 Information Technology, 37 Public Goods, 38 Asymmetric Information.
+//  • Mankiw, Principles of Economics 9th ed. (Cengage 2022) part structure:
+//    adoptions.ngl.cengage.com/wp-content/uploads/2022/10/Principles-of-Economics.pdf
+//    (chapter numbers 1–22 for the micro parts as used below; checked at part level only).
+//  • CORE Econ, The Economy 1.0 unit and section list (www.core-econ.org/the-economy/v1/index.html)
+//    and The Economy 2.0: Microeconomics units 1–10
+//    (www.core-econ.org/the-economy/microeconomics/0-3-contents.html).
+//  • Mas-Colell, Whinston & Green, Microeconomic Theory (1995): part/chapter structure (Preference
+//    and choice; Consumer choice; Classical demand theory; Aggregate demand; Production;
+//    Uncertainty; … Externalities and public goods; Market power; Adverse selection, signaling and
+//    screening; Principal–agent; General equilibrium Part IV; Social choice, welfare, mechanism
+//    design) — via library catalogue records; used to check the graduate-level named results.
+//  • MIT OCW 14.01 Principles of Microeconomics (Gruber, Fall 2023) lecture calendar:
+//    ocw.mit.edu/courses/14-01-principles-of-microeconomics-fall-2023/pages/calendar/
+//  • MIT OCW 14.04 Intermediate Microeconomic Theory (Townsend, Fall 2020) lecture calendar:
+//    ocw.mit.edu/courses/14-04-intermediate-microeconomic-theory-fall-2020/pages/calendar/
+//  • LSE EC1A1 Microeconomics I course guide (www.lse.ac.uk/resources/calendar/courseGuides/EC/2024_EC1A1.htm).
+//  • Wikipedia: Category:Economics theorems (en.wikipedia.org/wiki/Category:Economics_theorems);
+//    List of paradoxes § Economics (en.wikipedia.org/wiki/List_of_paradoxes).
+//
+// What changed (no existing num was renumbered or removed):
+//  • Added (appended at chapter ends): 3.16–3.17 trade policy (gains from trade in the supply–
+//    demand diagram, tariffs and quotas — Mankiw Ch. 9, MIT 14.01 L18–19, CORE 18); 5.12–5.15
+//    (indirect utility/expenditure functions, Roy's identity, homothetic preferences, income tax
+//    vs quantity tax — Varian Ch. 5/6/8, MWG Ch. 3); 6.12–6.13 (negative substitution effect,
+//    endowment income effect — Varian Ch. 8–9); 7.15 MC = w/MP; 8.11 short- vs long-run response
+//    with entry; 9.14–9.19 (MRS = MRT, Heckscher–Ohlin, Stolper–Samuelson, Gorman aggregation,
+//    Sonnenschein–Mantel–Debreu, equal-division equilibrium is fair — Varian Ch. 33–34, MIT 14.04);
+//    10.18–10.21 (two-part tariffs, bundling, price leadership, double marginalization — Varian
+//    Ch. 26–28); 11.11–11.13 (Hotelling's rule, Fisher separation, Becker discrimination — Varian
+//    Ch. 11, CORE 10, Mankiw Ch. 19); 12.13–12.14 (Weitzman prices vs quantities, Lindahl
+//    equilibrium); 13.17–13.18 (risk pooling, Arrow–Pratt).
+//  • Corrected refs to the verified Varian chapters: Giffen goods → Ch. 6 (Ordinary and Giffen
+//    goods); marginal revenue → Ch. 15 (Elasticity and marginal revenue); natural monopoly → Ch. 25;
+//    sunk costs → Ch. 21; derived factor demand → Ch. 20; cap-and-trade → Ch. 24 (Carbon tax vs cap
+//    and trade); producer surplus → Ch. 14. Names: 4.8 credits Debreu, 13.6 credits Akerlof, 13.8
+//    renamed to the Rothschild–Stiglitz screening model it depicts (kind Concept → Model).
+//    Deps: 5.4 ← vcalc-2.14 (Lagrange multipliers), 9.7 ← top-13.11 (Brouwer, n goods).
+//  • Already present and kept: Hicksian demand and duality (5.10–5.11), envelope theorem (7.9),
+//    Shephard's lemma (7.10), Hotelling's lemma (8.5), cost-curve relations (7.12, 7.14), free
+//    entry and long-run supply (8.7–8.9), Cournot convergence (10.11), Hotelling's linear city
+//    (10.17), monopsony (11.5–11.6), efficiency wages (13.11), Coase theorem with transaction costs
+//    (12.5), Pigouvian tax (12.3), Samuelson condition (12.9), lemons/signalling/screening/moral
+//    hazard/principal–agent (13.6–13.10), auctions and revenue equivalence (13.12–13.16).
+//
+// Deliberate omissions:
+//  • Game theory proper (Nash equilibrium, prisoners' dilemma, repeated games, entry deterrence,
+//    mechanism design incl. VCG/Clarke pivot of Varian Ch. 37, Arrow's theorem of Varian Ch. 34)
+//    and stable matching (Varian Ch. 18) belong to `game`, which has no syllabus yet (matching is
+//    also algo-11.14); cross-link from game once its ids exist rather than duplicating here.
+//  • Behavioural deviations (Varian Ch. 31: framing, anchoring, loss aversion, present bias,
+//    Allais) and Veblen/status goods belong to `behav`; expected utility (13.2) stays here as the
+//    benchmark behav will cite.
+//  • Asset pricing, mean–variance, CAPM, arbitrage (Varian Ch. 11 §§, Ch. 13) belong to `fin`;
+//    econometric measurement (Varian Ch. 17) to `stat`/`causal`; unemployment, wage-setting and
+//    banking (CORE Units 9–10 macro halves) to `macro`.
+//  • Kinked-demand (Sweezy) oligopoly: absent from Varian, Mankiw and CORE and empirically
+//    discredited (Stigler 1947). Herfindahl index, Dorfman–Steiner advertising rule, Ramsey
+//    taxation, Lerner symmetry, Henry George theorem: specialist IO/public-finance results not in
+//    the core references — candidates for a later IO or public-economics collection.
+//  • Lexicographic preferences get no separate item: 4.8's picture already uses them as the
+//    counterexample to utility representation.
 export default {
   collection: 'micro',
   chapters: [
@@ -65,7 +137,7 @@ export default {
     {
       n: 3,
       title: 'Elasticity, surplus and government intervention',
-      summary: String.raw`Elasticities measure how strongly quantities respond to prices and income, and they determine both how revenue changes and who really pays a tax. Consumer and producer surplus turn the supply–demand diagram into a welfare ledger. With it one sees that a competitive equilibrium maximizes the total gains from trade, and one can measure the deadweight loss caused by taxes, price ceilings and price floors.`,
+      summary: String.raw`Elasticities measure how strongly quantities respond to prices and income, and they determine both how revenue changes and who really pays a tax. Consumer and producer surplus turn the supply–demand diagram into a welfare ledger. With it one sees that a competitive equilibrium maximizes the total gains from trade, and one can measure the deadweight loss caused by taxes, price ceilings and price floors, and the gains and losses when a country opens to trade or protects itself with tariffs and quotas.`,
       items: [
         { num: '3.1', kind: 'Concept', name: 'Price elasticity of demand', deps: ['micro-2.1'], refs: ['Mankiw Ch. 5', 'Varian Ch. 15'], tags: ['elasticity'],
           pic: 'Drag a point along a linear or constant-elasticity demand curve: the percentage changes in price and quantity for a small step and their ratio are displayed, and the curve is coloured by its elastic, unit-elastic and inelastic stretches.' },
@@ -79,7 +151,7 @@ export default {
           pic: 'The same demand shock hits a steep short-run supply curve and a flat long-run one; a horizon toggle contrasts the price spike with the quantity response and reads out each elasticity.' },
         { num: '3.6', kind: 'Concept', name: 'Consumer surplus', deps: ['micro-2.1'], refs: ['Mankiw Ch. 7', 'Varian Ch. 14'], tags: ['welfare'],
           pic: 'Each buyer’s surplus is the part of their reservation-price bar above the market price; the pieces are shaded and summed, and lowering the price adds a trapezoid of gains split between existing and new buyers.' },
-        { num: '3.7', kind: 'Concept', name: 'Producer surplus', deps: ['micro-2.3'], refs: ['Mankiw Ch. 7'], tags: ['welfare'],
+        { num: '3.7', kind: 'Concept', name: 'Producer surplus', deps: ['micro-2.3'], refs: ['Mankiw Ch. 7', 'Varian Ch. 14'], tags: ['welfare'],
           pic: 'Sellers’ cost bars sit below the price line and the gap above each is shaded as its surplus; raising the price enlarges the total and draws in higher-cost sellers.' },
         { num: '3.8', kind: 'Proposition', name: 'Competitive equilibrium maximizes total surplus', deps: ['micro-2.5', 'micro-3.6', 'micro-3.7'], refs: ['Mankiw Ch. 7'], tags: ['welfare', 'efficiency'],
           pic: 'Force the quantity traded with a slider: total surplus, shaded and plotted against quantity, peaks at the equilibrium quantity; less leaves gains untaken, and more destroys value on units that cost more than buyers think they are worth.' },
@@ -97,6 +169,10 @@ export default {
           pic: 'Lower a ceiling below the equilibrium price: a shortage opens and the deadweight loss is shaded; switching the rationing rule from “highest value first” to a lottery shows the extra loss when scarce units go to buyers who value them less.' },
         { num: '3.15', kind: 'Concept', name: 'Price floors', deps: ['micro-2.5', 'micro-3.9'], refs: ['Mankiw Ch. 6'], tags: ['price controls'],
           pic: 'Raise a floor above the equilibrium price: unsold output piles up and the deadweight loss is shaded, and a toggle makes the government buy the surplus, adding its outlay to the welfare tally.' },
+        { num: '3.16', kind: 'Model', name: 'Gains and losses from opening to trade', deps: ['micro-3.8', 'micro-1.9'], refs: ['Mankiw Ch. 9', 'CORE Unit 18'], tags: ['trade', 'welfare'],
+          pic: 'A small country’s supply and demand with a world-price slider: below the autarky price imports fill the gap, consumers gain more than producers lose, and the net-gain triangle grows as the world price moves away from autarky; above it the country exports and the roles swap.' },
+        { num: '3.17', kind: 'Concept', name: 'Tariffs and import quotas', deps: ['micro-3.16', 'micro-3.10'], refs: ['Mankiw Ch. 9'], tags: ['trade', 'policy'],
+          pic: 'Raise a tariff slider on the small-country import diagram: imports shrink, tariff revenue appears as a rectangle and two deadweight-loss triangles open; a quota toggle set to the same import level gives the same triangles but hands the rectangle to licence holders.' },
       ],
     },
     {
@@ -118,7 +194,7 @@ export default {
           pic: 'Drag two bundles on the same indifference curve: for convex preferences every mixture between them stays in the preferred set, and switching to concave or thick indifference curves shows where the segment escapes.' },
         { num: '4.7', kind: 'Definition', name: 'Utility function (ordinal utility)', deps: ['micro-4.3'], refs: ['Varian Ch. 4'], tags: ['utility'],
           pic: 'A 3D utility surface with its contour lines projected below as the indifference map; apply a monotone transformation (log, square, cube root) and the surface warps while the contours stay exactly where they were.' },
-        { num: '4.8', kind: 'Theorem', name: 'Existence of a continuous utility function', deps: ['micro-4.6', 'micro-4.7', 'pma-4.23'], refs: ['Varian Ch. 4'], tags: ['utility', 'existence'],
+        { num: '4.8', kind: 'Theorem', name: 'Existence of a continuous utility function (Debreu)', deps: ['micro-4.6', 'micro-4.7', 'pma-4.23'], refs: ['Varian Ch. 4'], tags: ['utility', 'existence'],
           pic: 'Each bundle’s indifference curve meets the diagonal at a unique point (t, t), and t is read out as its utility while you drag; switch to lexicographic preferences and every indifference class shrinks to a single point, so the construction, and any utility representation, breaks down.' },
         { num: '4.9', kind: 'Definition', name: 'Marginal utility', deps: ['micro-4.7'], refs: ['Varian Ch. 4'], tags: ['utility', 'marginal analysis'],
           pic: 'Slice the utility surface along one axis through the current bundle: the slope of the slice is marginal utility, read out as units are added, falling for Cobb–Douglas and constant for perfect substitutes.' },
@@ -141,7 +217,7 @@ export default {
           pic: 'Slide a bundle along the budget line while utility along the line is plotted beneath: it peaks where an indifference curve touches the line and the MRS and price-ratio readouts agree, and with non-convex preferences the tangency turns into a minimum.' },
         { num: '5.3', kind: 'Principle', name: 'Equimarginal principle', deps: ['micro-5.2'], refs: ['Varian Ch. 5'], tags: ['optimization', 'marginal analysis'],
           pic: 'Spend a budget one dollar at a time in an animation, each dollar going to the good with the highest marginal utility per dollar; the MU/p bars level out, and the final bundle matches the tangency solution.' },
-        { num: '5.4', kind: 'Method', name: 'Lagrange multipliers for constrained choice', deps: ['micro-5.2', 'pma-9.28'], refs: ['Varian Ch. 5'], tags: ['optimization'],
+        { num: '5.4', kind: 'Method', name: 'Lagrange multipliers for constrained choice', deps: ['micro-5.2', 'pma-9.28', 'vcalc-2.14'], refs: ['Varian Ch. 5'], tags: ['optimization'],
           pic: 'At a draggable point on the budget line the utility gradient and the constraint’s normal are drawn as arrows that line up only at the optimum; the ratio of their lengths there is λ, and nudging income confirms λ as the marginal utility of income.' },
         { num: '5.5', kind: 'Concept', name: 'Corner solutions', deps: ['micro-5.2', 'micro-4.12'], refs: ['Varian Ch. 5'], tags: ['optimization'],
           pic: 'With perfect substitutes or quasilinear tastes, drag the prices until the optimum snaps onto an axis; the tangency condition gives way to an inequality between the MRS and the price ratio, which is read out.' },
@@ -157,6 +233,14 @@ export default {
           pic: 'Fix a target indifference curve and push the budget line inward until it barely touches; the touching bundle is compensated demand, and rotating relative prices slides it along the fixed curve.' },
         { num: '5.11', kind: 'Proposition', name: 'Duality: maximizing utility vs minimizing expenditure', deps: ['micro-5.10', 'micro-5.6'], refs: ['Varian Ch. 8'], tags: ['duality'],
           pic: 'Two panels solve the two problems side by side; set the utility target equal to the maximized utility and both land on the same bundle, with the minimum expenditure equal to the original income.' },
+        { num: '5.12', kind: 'Definition', name: 'Indirect utility and expenditure functions', deps: ['micro-5.6', 'micro-5.10'], refs: ['Varian Ch. 8', 'Varian Ch. 14'], tags: ['duality', 'demand'],
+          pic: 'Slide prices and income: the highest indifference curve the budget reaches gives v(p, m), and the cheapest budget line touching a chosen indifference curve gives e(p, u); the read-outs invert each other, e(p, v(p, m)) = m, at every setting.' },
+        { num: '5.13', kind: 'Theorem', name: 'Roy’s identity', deps: ['micro-5.12', 'micro-7.9'], refs: ['Varian Ch. 8'], tags: ['duality', 'demand'],
+          pic: 'Plot indirect utility against the price of good 1 and drag a tangent: minus its slope divided by the marginal utility of income (found by nudging income) equals Marshallian demand at that price, matching the demand curve drawn alongside.' },
+        { num: '5.14', kind: 'Definition', name: 'Homothetic preferences and linear Engel curves', deps: ['micro-5.8', 'micro-4.12'], refs: ['Varian Ch. 6'], tags: ['demand', 'preferences'],
+          pic: 'Scale income with a slider: for homothetic preferences every optimal bundle lies on one ray from the origin, so Engel curves are straight lines and budget shares never change; switch to quasilinear preferences and the expansion path turns parallel to an axis once income passes a threshold.' },
+        { num: '5.15', kind: 'Proposition', name: 'An income tax beats an equal-yield quantity tax', deps: ['micro-5.2', 'micro-4.2'], refs: ['Varian Ch. 5'], tags: ['taxes', 'welfare'],
+          pic: 'Put a per-unit tax on one good and note the revenue, then swap it for a lump-sum income tax raising the same amount: the new budget line passes through the old optimum at the original slope, so the consumer reaches a higher indifference curve, with the gain read out.' },
       ],
     },
     {
@@ -168,7 +252,7 @@ export default {
           pic: 'Raise a price: the budget line first pivots around the old bundle (the substitution arrow) and then shifts inward (the income arrow), and the two arrows add up to the total change, each with its length read out.' },
         { num: '6.2', kind: 'Theorem', name: 'Slutsky equation', deps: ['micro-6.1', 'micro-5.10', 'pma-9.15'], refs: ['Varian Ch. 8'], tags: ['demand', 'decomposition'],
           pic: 'For a chosen utility, the total price effect, the compensated effect and the income term −x·∂x/∂m are computed numerically and stacked as bars that always add up; shrinking the price step shows the finite decomposition converging to the derivative identity.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Giffen goods', deps: ['micro-6.2'], refs: ['Varian Ch. 8', 'Mankiw Ch. 21'], tags: ['demand'],
+        { num: '6.3', kind: 'Phenomenon', name: 'Giffen goods', deps: ['micro-6.2'], refs: ['Varian Ch. 6', 'Mankiw Ch. 21'], tags: ['demand'],
           pic: 'For a strongly inferior staple, cut its price and watch the income-effect arrow outrun the substitution arrow so that less is bought; the resulting demand curve slopes upward over the highlighted range.' },
         { num: '6.4', kind: 'Definition', name: 'Revealed preference', deps: ['micro-5.1'], refs: ['Varian Ch. 7'], tags: ['revealed preference'],
           pic: 'Place observed price–choice pairs: each chosen bundle is revealed preferred to everything that was affordable, drawn as a shaded budget triangle, and indirect revelations are chained together by arrows.' },
@@ -186,6 +270,10 @@ export default {
           pic: 'Pull the old budget line inward until it touches the new indifference curve: the shift is the equivalent variation, read out next to the compensating variation for the same price change.' },
         { num: '6.11', kind: 'Proposition', name: 'Ranking CV, EV and consumer surplus', deps: ['micro-6.8', 'micro-6.9', 'micro-6.10', 'pma-6.21'], refs: ['Varian Ch. 14'], tags: ['welfare'],
           pic: 'For a normal good, vary the size of a price cut and the income elasticity: the three money measures are plotted in the order CV ≤ ΔCS ≤ EV and merge into one when the income elasticity is set to zero.' },
+        { num: '6.12', kind: 'Proposition', name: 'The substitution effect is never positive', deps: ['micro-6.1', 'micro-6.5'], refs: ['Varian Ch. 8'], tags: ['demand', 'revealed preference'],
+          pic: 'Raise a price and pivot the budget line through the original bundle: revealed preference rules out every point of the pivoted line with more of the dearer good, and that forbidden segment is shaded while you drag the new price, pinning the compensated response downward.' },
+        { num: '6.13', kind: 'Proposition', name: 'Endowment income effect', deps: ['micro-6.2', 'micro-4.1'], refs: ['Varian Ch. 9'], tags: ['demand', 'endowments'],
+          pic: 'A trader starts from an endowment point rather than a money income: raise the price of the good she sells and the budget line pivots through the endowment, splitting her response into substitution, ordinary income and endowment-income arrows, the last of which can make a net seller sell less.' },
       ],
     },
     {
@@ -217,10 +305,12 @@ export default {
           pic: 'Drag output along a total-cost curve: average cost is the slope of the ray from the origin, average variable cost the slope of the ray from the fixed-cost intercept, and marginal cost the tangent slope, each traced in the lower panel.' },
         { num: '7.12', kind: 'Proposition', name: 'Marginal cost cuts average cost at its minimum', deps: ['micro-7.11', 'pma-5.3', 'pma-5.8'], refs: ['Varian Ch. 22', 'Mankiw Ch. 13'], tags: ['costs'],
           pic: 'Drag output: while marginal cost is below average cost the average falls, once it is above the average rises, and the crossing is marked exactly at minimum average cost (likewise for average variable cost).' },
-        { num: '7.13', kind: 'Principle', name: 'Sunk costs are irrelevant', deps: ['micro-1.2', 'micro-7.11'], refs: ['Mankiw Ch. 14'], tags: ['costs', 'decisions'],
+        { num: '7.13', kind: 'Principle', name: 'Sunk costs are irrelevant', deps: ['micro-1.2', 'micro-7.11'], refs: ['Mankiw Ch. 14', 'Varian Ch. 21'], tags: ['costs', 'decisions'],
           pic: 'A project has already absorbed a sunk sum set by a slider: the decision to continue compares only future revenue with future cost and never changes as the sunk sum moves, while a “sunk-cost fallacy” toggle tallies the losses of the wrong rule.' },
         { num: '7.14', kind: 'Proposition', name: 'Long-run average cost and economies of scale', deps: ['micro-7.6', 'micro-7.9', 'micro-7.11'], refs: ['Varian Ch. 22', 'Mankiw Ch. 13'], tags: ['costs', 'scale'],
           pic: 'A plant-size slider draws one short-run average cost curve at a time; the long-run curve is their lower envelope, touching each at an output that is off that curve’s minimum except at the efficient scale, and its falling, flat and rising stretches mark economies of scale, minimum efficient scale and diseconomies.' },
+        { num: '7.15', kind: 'Proposition', name: 'Marginal cost mirrors marginal product', deps: ['micro-7.2', 'micro-7.11'], refs: ['Mankiw Ch. 13', 'Varian Ch. 22'], tags: ['costs', 'production'],
+          pic: 'With one variable input at wage w, drag along output: marginal cost is drawn as w divided by the marginal product, so the rising stretch of the MC curve lines up exactly with the falling stretch of the marginal-product curve plotted beneath it.' },
       ],
     },
     {
@@ -248,12 +338,14 @@ export default {
           pic: 'Shift demand out repeatedly: the successive long-run equilibria trace a flat, rising or falling long-run supply curve, depending on a slider for how industry expansion moves input prices.' },
         { num: '8.10', kind: 'Concept', name: 'Economic rent', deps: ['micro-8.8'], refs: ['Varian Ch. 24'], tags: ['competition', 'rent'],
           pic: 'Farms on land of different quality face one output price: the marginal farm earns nothing, the better farms’ surpluses are rents, and raising the price shows the gain absorbed by rising land rents rather than profits.' },
+        { num: '8.11', kind: 'Model', name: 'Short-run and long-run response to a demand shift', deps: ['micro-8.4', 'micro-8.9'], refs: ['Mankiw Ch. 14', 'CORE Unit 11'], tags: ['competition', 'dynamics'],
+          pic: 'Shift market demand outward: price first jumps along the steep short-run supply curve and incumbents earn profits, then an entry animation adds firms one by one until price slides back to minimum average cost on the flat long-run supply curve.' },
       ],
     },
     {
       n: 9,
       title: 'General equilibrium and welfare',
-      summary: String.raw`Markets are linked, and the Edgeworth box is the smallest picture of a whole economy: two traders, two goods, and prices that must clear both markets at once. Inside the box the chapter defines Pareto efficiency and the contract curve. It then proves that equilibria exist and are efficient (the first welfare theorem), shows that under convexity every efficient allocation can be reached by a market after lump-sum transfers (the second), and adds production and social welfare comparisons.`,
+      summary: String.raw`Markets are linked, and the Edgeworth box is the smallest picture of a whole economy: two traders, two goods, and prices that must clear both markets at once. Inside the box the chapter defines Pareto efficiency and the contract curve. It then proves that equilibria exist and are efficient (the first welfare theorem), shows that under convexity every efficient allocation can be reached by a market after lump-sum transfers (the second), and adds production, trade between countries with different factor endowments, the limits of aggregation, and fairness and social welfare comparisons.`,
       items: [
         { num: '9.1', kind: 'Model', name: 'Edgeworth box exchange economy', deps: ['micro-4.4'], refs: ['Varian Ch. 32', 'CORE Unit 5'], tags: ['general equilibrium', 'exchange'],
           pic: 'Drag the endowment point inside a box whose sides are the total amounts of two goods; each trader’s indifference curve through it is drawn from opposite corners, enclosing a lens of trades that both prefer.' },
@@ -267,7 +359,7 @@ export default {
           pic: 'Rotate a price line through the endowment: each trader’s best bundle on it is marked and the excess demands are read out, and at the market-clearing price the two bundles coincide.' },
         { num: '9.6', kind: 'Proposition', name: 'Walras’ law', deps: ['micro-9.5'], refs: ['Varian Ch. 32'], tags: ['general equilibrium'],
           pic: 'For any relative price the value of excess demand in each market is drawn as a bar, and the two bars always cancel, so clearing one market clears the other, as dragging the price confirms.' },
-        { num: '9.7', kind: 'Theorem', name: 'Existence of exchange equilibrium', deps: ['micro-9.6', 'pma-4.23'], refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'existence'],
+        { num: '9.7', kind: 'Theorem', name: 'Existence of exchange equilibrium', deps: ['micro-9.6', 'pma-4.23', 'top-13.11'], refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'existence'],
           pic: 'Excess demand for good 1 is plotted against the relative price: continuous, positive as the price nears zero and negative as it grows large, so it must cross zero; give one trader non-convex preferences and demand jumps, letting the crossing disappear.' },
         { num: '9.8', kind: 'Phenomenon', name: 'Multiple and unstable equilibria', deps: ['micro-9.7', 'micro-2.7'], refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'stability'],
           pic: 'With strong income effects the offer curves cross three times; animated price adjustment from different starting prices settles at the two outer equilibria and runs away from the middle one.' },
@@ -281,6 +373,18 @@ export default {
           pic: 'Crusoe’s production function and indifference map share the labour–coconut plane; a wage line lets Crusoe-the-firm maximize profit and Crusoe-the-consumer choose separately, and the two plans meet where the MRS equals the marginal product.' },
         { num: '9.13', kind: 'Concept', name: 'Utility possibility frontier and social welfare', deps: ['micro-9.3'], refs: ['Varian Ch. 34'], tags: ['welfare', 'equity'],
           pic: 'The contract curve is mapped into utility space to draw the frontier; a selector overlays utilitarian, Rawlsian or Nash welfare contours, and the welfare-maximizing point slides along the frontier.' },
+        { num: '9.14', kind: 'Principle', name: 'Efficiency with production: MRS equals MRT', deps: ['micro-9.12', 'micro-1.5', 'micro-4.11'], refs: ['Varian Ch. 33'], tags: ['general equilibrium', 'efficiency'],
+          pic: 'Slide along the production possibility frontier and find the consumer’s best point at each output mix: welfare peaks exactly where the indifference curve’s slope equals the frontier’s, and a price line drawn there supports both the firm’s and the consumer’s choice.' },
+        { num: '9.15', kind: 'Model', name: 'Heckscher–Ohlin model', deps: ['micro-1.11', 'micro-7.3', 'micro-9.14'], refs: ['CORE Unit 18'], tags: ['trade', 'general equilibrium'],
+          pic: 'Two countries share technologies but differ in capital–labour endowments set by sliders: each production frontier bulges toward the good that uses its abundant factor intensively, and opening trade makes each country export that good.' },
+        { num: '9.16', kind: 'Theorem', name: 'Stolper–Samuelson theorem', deps: ['micro-9.15', 'micro-8.8'], refs: ['CORE Unit 18'], tags: ['trade', 'distribution'],
+          pic: 'Raise the relative price of the labour-intensive good: the zero-profit lines in the wage–rental plane shift so the real wage rises in terms of both goods while the real rental rate falls, with the magnified factor-price change read out.' },
+        { num: '9.17', kind: 'Theorem', name: 'Gorman aggregation and the representative consumer', deps: ['micro-2.4', 'micro-5.12', 'micro-5.14'], refs: ['Varian Ch. 15'], tags: ['aggregation', 'demand'],
+          pic: 'Transfer income between two consumers with a slider: aggregate demand stays put when their Engel curves are parallel straight lines, and drifts, with the drift read out, as soon as one curve bends or the slopes differ.' },
+        { num: '9.18', kind: 'Theorem', name: 'Sonnenschein–Mantel–Debreu theorem', deps: ['micro-9.6', 'micro-9.17'], refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'aggregation'],
+          pic: 'Sketch any continuous excess-demand curve that obeys Walras’ law and the boundary conditions, with as many zeros as you like, and the tool builds an exchange economy of well-behaved consumers whose summed demands trace your sketch.' },
+        { num: '9.19', kind: 'Proposition', name: 'Equal-division competitive equilibrium is fair', deps: ['micro-9.5', 'micro-9.9'], refs: ['Varian Ch. 34'], tags: ['welfare', 'fairness'],
+          pic: 'Start both traders at the centre of the box and let them trade to the Walrasian price: each one’s envy test (would I rather have your bundle?) stays negative and the outcome is efficient, while an unequal starting point lights up the poorer trader’s envy meter.' },
       ],
     },
     {
@@ -288,7 +392,7 @@ export default {
       title: 'Market power: monopoly and oligopoly',
       summary: String.raw`A firm facing a downward-sloping demand curve restricts output to raise its price, setting marginal revenue equal to marginal cost with a markup governed by the elasticity of demand. The chapter measures the resulting deadweight loss and studies how price discrimination, regulation and free entry change the picture. It then turns to industries with a few firms whose choices interact (the Cournot, Bertrand and Stackelberg models and the fragility of cartels), leaving the general theory of games to its own collection.`,
       items: [
-        { num: '10.1', kind: 'Definition', name: 'Marginal revenue', deps: ['micro-3.2'], refs: ['Varian Ch. 25', 'Mankiw Ch. 15'], tags: ['monopoly', 'revenue'],
+        { num: '10.1', kind: 'Definition', name: 'Marginal revenue', deps: ['micro-3.2'], refs: ['Varian Ch. 15', 'Mankiw Ch. 15'], tags: ['monopoly', 'revenue'],
           pic: 'Cut the price to sell one more unit: the revenue gained on the new unit (green) minus the revenue lost on all earlier units (red) is marginal revenue, plotted below the demand curve, with MR = p(1 + 1/ε) read out.' },
         { num: '10.2', kind: 'Principle', name: 'Monopoly pricing: marginal revenue equals marginal cost', deps: ['micro-10.1', 'micro-7.11', 'pma-5.8'], refs: ['Varian Ch. 25', 'Mankiw Ch. 15'], tags: ['monopoly', 'optimization'],
           pic: 'Drag output: profit peaks where MR crosses MC, the price is read off the demand curve above that quantity, and the profit rectangle is shaded.' },
@@ -302,7 +406,7 @@ export default {
           pic: 'Two buyer types with different demand curves: drag the size and price of two packages while the participation and self-selection constraints light up when violated, and the profit-maximizing menu shrinks the small package below its efficient size.' },
         { num: '10.7', kind: 'Concept', name: 'Third-degree price discrimination', deps: ['micro-10.3'], refs: ['Varian Ch. 26', 'Mankiw Ch. 15'], tags: ['price discrimination'],
           pic: 'Two markets with separate demand curves share one marginal cost: the firm equalizes marginal revenue across them, so the less elastic market pays more, and a uniform-price toggle compares profit, output and total surplus.' },
-        { num: '10.8', kind: 'Concept', name: 'Natural monopoly and its regulation', deps: ['micro-7.14', 'micro-10.4'], refs: ['Mankiw Ch. 15'], tags: ['monopoly', 'regulation'],
+        { num: '10.8', kind: 'Concept', name: 'Natural monopoly and its regulation', deps: ['micro-7.14', 'micro-10.4'], refs: ['Varian Ch. 25', 'Mankiw Ch. 15'], tags: ['monopoly', 'regulation'],
           pic: 'Average cost falls across the whole market, so splitting output among n firms raises cost (read out); a regulation selector compares the unregulated price, marginal-cost pricing (efficient but needing a subsidy) and average-cost pricing (break-even with a small deadweight loss).' },
         { num: '10.9', kind: 'Model', name: 'Monopolistic competition', deps: ['micro-10.2', 'micro-8.8'], refs: ['Mankiw Ch. 16', 'Varian Ch. 26'], tags: ['competition', 'entry'],
           pic: 'Animate entry: each new variety pulls every firm’s demand curve left until it is tangent to average cost, profit reaches zero, and output stops short of minimum average cost (excess capacity), with the remaining markup read out.' },
@@ -322,6 +426,14 @@ export default {
           pic: 'The joint-profit-maximizing outputs are marked in the quantity plane, and each firm’s best deviation raises its own profit (payoff table alongside); a discount-factor slider shows when the threat of a price war in repeated play holds the cartel together.' },
         { num: '10.17', kind: 'Model', name: 'Hotelling’s linear city', deps: ['micro-10.14'], refs: ['Varian Ch. 26'], tags: ['oligopoly', 'differentiation'],
           pic: 'Two vendors on a beach drag their positions while customers walk to the nearer one; best-response moves bring both to the middle, and adding price competition with travel costs pushes them apart again.' },
+        { num: '10.18', kind: 'Concept', name: 'Two-part tariffs', deps: ['micro-10.5', 'micro-3.6'], refs: ['Varian Ch. 26'], tags: ['pricing', 'monopoly'],
+          pic: 'An amusement park sets an entry fee and a per-ride price with two sliders: profit peaks with the ride price at marginal cost and the fee equal to the whole consumer surplus, and adding a second, low-demand customer type pulls the optimal ride price above cost.' },
+        { num: '10.19', kind: 'Concept', name: 'Bundling', deps: ['micro-10.5'], refs: ['Varian Ch. 26'], tags: ['pricing', 'monopoly'],
+          pic: 'Two buyers value a word processor and a spreadsheet in opposite orders: price the goods separately or as a bundle and compare revenue, which rises with bundling when valuations are negatively correlated and loses its edge as you drag them toward perfect correlation.' },
+        { num: '10.20', kind: 'Model', name: 'Price leadership by a dominant firm', deps: ['micro-10.2', 'micro-8.4'], refs: ['Varian Ch. 28'], tags: ['oligopoly'],
+          pic: 'A dominant firm sets the price and a competitive fringe supplies along its marginal cost: the leader’s residual demand is market demand minus fringe supply, and it picks the price where residual marginal revenue meets its own marginal cost, with both shares read out.' },
+        { num: '10.21', kind: 'Proposition', name: 'Double marginalization', deps: ['micro-10.2'], refs: ['Varian Ch. 27'], tags: ['monopoly', 'vertical relations'],
+          pic: 'An upstream monopolist sells an input to a downstream monopolist: each marks up over its own marginal cost, so the final price exceeds what an integrated firm would charge, and a merge toggle lowers the price, raises output and raises joint profit all at once.' },
       ],
     },
     {
@@ -329,7 +441,7 @@ export default {
       title: 'Factor markets and time',
       summary: String.raw`Labour and capital are traded in markets of their own. Firms hire labour until its marginal value equals the wage, and households supply it by trading leisure for consumption, sometimes offering fewer hours at higher wages. A single dominant employer changes these conclusions, to the point that a minimum wage can raise employment. Discounting puts payments at different dates on a common scale and turns education into an investment decision.`,
       items: [
-        { num: '11.1', kind: 'Concept', name: 'Derived demand: the value of marginal product', deps: ['micro-7.1', 'micro-8.2'], refs: ['Mankiw Ch. 18', 'Varian Ch. 27'], tags: ['labour', 'factor demand'],
+        { num: '11.1', kind: 'Concept', name: 'Derived demand: the value of marginal product', deps: ['micro-7.1', 'micro-8.2'], refs: ['Mankiw Ch. 18', 'Varian Ch. 20'], tags: ['labour', 'factor demand'],
           pic: 'The value-of-marginal-product curve p·MP_L with a wage slider: the firm hires until the curve meets the wage, and raising the output price shifts the whole labour-demand curve outward.' },
         { num: '11.2', kind: 'Model', name: 'Labour–leisure choice', deps: ['micro-5.2'], refs: ['Varian Ch. 9', 'Mankiw Ch. 21'], tags: ['labour'],
           pic: 'In the leisure–consumption plane a wage slider pivots the budget line around the time endowment plus non-labour income, and the optimal hours of work are read out.' },
@@ -349,6 +461,12 @@ export default {
           pic: 'Two payment streams drawn as bars, with their discounted values shrinking geometrically; move the interest rate and watch the present values, and which stream is worth more, switch.' },
         { num: '11.10', kind: 'Model', name: 'Human capital investment', deps: ['micro-11.9'], refs: ['Mankiw Ch. 19'], tags: ['labour', 'time'],
           pic: 'Choose years of schooling: forgone earnings early are traded for a higher earnings profile later, the present value of each plan is plotted against years of schooling, and its peak moves left as the interest rate rises.' },
+        { num: '11.11', kind: 'Principle', name: 'Hotelling’s rule for exhaustible resources', deps: ['micro-11.9'], refs: ['Varian Ch. 11'], tags: ['resources', 'time'],
+          pic: 'An owner of a fixed oil stock chooses when to extract: arbitrage between selling now and holding makes the price net of extraction cost rise at the interest rate, so the price path climbs exponentially until demand is choked off just as the stock runs out.' },
+        { num: '11.12', kind: 'Theorem', name: 'Fisher separation theorem', deps: ['micro-11.8', 'micro-11.9'], refs: ['CORE Unit 10', 'Varian Ch. 10'], tags: ['investment', 'time'],
+          pic: 'In the two-period plane a curved investment frontier meets a market borrowing line: the firm invests until the frontier’s slope equals 1 + r, maximizing present value, and owners of very different patience then borrow or lend along the same line to their own optima.' },
+        { num: '11.13', kind: 'Model', name: 'Taste-based discrimination (Becker)', deps: ['micro-11.4', 'micro-8.8'], refs: ['Mankiw Ch. 19'], tags: ['labour', 'discrimination'],
+          pic: 'Employers differ in a slider-set distaste for hiring one group: the wage gap is set by the marginal employer, and as the share of unprejudiced firms grows they hire the cheaper workers, out-earn their rivals and, with free entry, drive the gap toward zero.' },
       ],
     },
     {
@@ -368,7 +486,7 @@ export default {
           pic: 'A rancher and a farmer bargain over herd size: give the right to either party with a toggle and the bargain lands on the same efficient herd, with payments flowing the opposite way; raise a transaction-cost slider and the outcome starts to depend on who holds the right.' },
         { num: '12.6', kind: 'Concept', name: 'Efficient pollution abatement', deps: ['micro-12.2', 'micro-1.3'], refs: ['CORE Unit 20'], tags: ['environment'],
           pic: 'Firms with different abatement-cost curves must cut total emissions by a target: a uniform standard is compared with the split that equalizes marginal abatement costs, and the total cost of each is read out.' },
-        { num: '12.7', kind: 'Model', name: 'Cap-and-trade', deps: ['micro-12.6', 'micro-12.3'], refs: ['Mankiw Ch. 10', 'CORE Unit 20'], tags: ['environment', 'markets'],
+        { num: '12.7', kind: 'Model', name: 'Cap-and-trade', deps: ['micro-12.6', 'micro-12.3'], refs: ['Varian Ch. 24', 'CORE Unit 20'], tags: ['environment', 'markets'],
           pic: 'Two firms share a cap and trade permits until their marginal abatement costs meet: the permit price equals the equivalent Pigouvian tax, and changing the initial allocation of permits changes only who pays whom.' },
         { num: '12.8', kind: 'Definition', name: 'Public goods and common resources', deps: [], refs: ['Mankiw Ch. 11', 'Varian Ch. 37'], tags: ['public goods'],
           pic: 'A rivalry-by-excludability grid: drag a good (an apple, a toll road, a fishery, a lighthouse) into a cell and a small simulation tests whether one more user depletes it and whether non-payers can be kept out.' },
@@ -380,6 +498,10 @@ export default {
           pic: 'Herders keep adding cows to a shared pasture while the average product exceeds a cow’s cost, overshooting the optimum where the marginal product equals cost; the pasture’s rent is plotted falling to zero, and a sole-owner toggle restores the optimum.' },
         { num: '12.12', kind: 'Concept', name: 'Network externalities', deps: ['micro-12.1', 'micro-2.7'], refs: ['Varian Ch. 36', 'CORE Unit 21'], tags: ['externalities', 'networks'],
           pic: 'Willingness to pay rises with the share of adopters, so the demand curve is hump-shaped; animated adoption from different starting shares collapses to zero or climbs to the high equilibrium, with the critical mass marked.' },
+        { num: '12.13', kind: 'Proposition', name: 'Prices vs quantities (Weitzman)', deps: ['micro-12.3', 'micro-12.7'], refs: ['CORE Unit 20', 'Varian Ch. 24'], tags: ['environment', 'uncertainty'],
+          pic: 'Abatement costs are uncertain: draw a cost shock and compare the deadweight loss of a fixed emissions tax with that of a fixed cap; the tax wins when marginal damage is flatter than marginal abatement cost, and tilting the damage curve flips the winner.' },
+        { num: '12.14', kind: 'Model', name: 'Lindahl equilibrium', deps: ['micro-12.9'], refs: ['Varian Ch. 37'], tags: ['public goods'],
+          pic: 'Two citizens each pay a personal share of the cost of a park: adjust the shares until both demand the same size, and that size satisfies the Samuelson condition; a misreport toggle shows how understating your valuation lowers your share, the free-rider problem in a new form.' },
       ],
     },
     {
@@ -397,11 +519,11 @@ export default {
           pic: 'Widen a gamble’s spread with a slider: the certainty equivalent and the risk premium are read off horizontally, and an Arrow–Pratt curvature slider shows the premium growing with risk aversion.' },
         { num: '13.5', kind: 'Proposition', name: 'Full insurance at a fair premium', deps: ['micro-13.4'], refs: ['Varian Ch. 12'], tags: ['uncertainty', 'insurance'],
           pic: 'In the plane of consumption in the good and bad states, buying cover moves along a line whose slope is set by the premium: at a fair premium the best point lands on the certainty line, and a loading slider leaves the buyer only partly insured.' },
-        { num: '13.6', kind: 'Phenomenon', name: 'Adverse selection: the market for lemons', deps: ['micro-13.1', 'micro-2.5'], refs: ['Varian Ch. 38', 'Mankiw Ch. 22'], tags: ['information'],
+        { num: '13.6', kind: 'Phenomenon', name: 'Adverse selection: Akerlof’s market for lemons', deps: ['micro-13.1', 'micro-2.5'], refs: ['Varian Ch. 38', 'Mankiw Ch. 22'], tags: ['information'],
           pic: 'Used cars of uniformly spread quality: buyers will pay only for the average quality on offer, so the best sellers withdraw and the market unravels round by round in an animation, while a symmetric-information or warranty toggle restores trade.' },
         { num: '13.7', kind: 'Model', name: 'Job-market signalling (Spence)', deps: ['micro-13.6'], refs: ['Varian Ch. 38', 'Mankiw Ch. 22'], tags: ['information', 'signalling'],
           pic: 'Schooling is cheaper for able workers: drag the education level employers require and see the separating range in which only the able find it worth acquiring, with the socially wasted signalling cost read out.' },
-        { num: '13.8', kind: 'Concept', name: 'Screening', deps: ['micro-13.7', 'micro-13.5', 'micro-10.6'], refs: ['Mankiw Ch. 22'], tags: ['information', 'insurance'],
+        { num: '13.8', kind: 'Model', name: 'Screening in insurance (Rothschild–Stiglitz)', deps: ['micro-13.7', 'micro-13.5', 'micro-10.6'], refs: ['Mankiw Ch. 22'], tags: ['information', 'insurance'],
           pic: 'An insurer offers a full-cover and a partial-cover contract in the two-state plane, and high and low risks sort themselves into them; a pooling-contract toggle shows a rival cream-skimming the low risks.' },
         { num: '13.9', kind: 'Concept', name: 'Moral hazard', deps: ['micro-13.5'], refs: ['Varian Ch. 38', 'Mankiw Ch. 22'], tags: ['information', 'insurance'],
           pic: 'An insured agent chooses how careful to be: more cover lowers care and raises the accident rate, and deductible or co-payment sliders restore some incentive at the price of less insurance.' },
@@ -419,6 +541,10 @@ export default {
           pic: 'Run first- and second-price auctions on the same independent private values: average seller revenue converges to the same number in both while the spread differs, and making bidders risk-averse lets the first-price revenue pull ahead.' },
         { num: '13.16', kind: 'Phenomenon', name: 'Winner’s curse', deps: ['micro-13.12'], refs: ['Varian Ch. 18'], tags: ['auctions', 'information'],
           pic: 'Bidders see noisy signals of a common value and bid their signal: the winner is the most optimistic and loses money on average, more so as the number of bidders grows, until a correction toggle shades bids for the curse.' },
+        { num: '13.17', kind: 'Principle', name: 'Risk pooling and diversification', deps: ['micro-13.3'], refs: ['Varian Ch. 12'], tags: ['risk', 'insurance'],
+          pic: 'Pool n households facing independent identical loss risks and share losses equally: the per-member loss distribution narrows as n grows while its mean stays put, so each member’s certainty equivalent climbs toward the expected value.' },
+        { num: '13.18', kind: 'Definition', name: 'Arrow–Pratt measure of risk aversion', deps: ['micro-13.4', 'pma-5.15'], refs: ['Varian Ch. 12'], tags: ['risk'],
+          pic: 'Choose a utility curve (CARA, CRRA or a hand-bent one) and a small fair gamble: the risk premium read off the curve matches half the variance times −u″/u′, and the approximation visibly degrades as you widen the gamble.' },
       ],
     },
   ],

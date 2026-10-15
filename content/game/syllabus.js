@@ -199,7 +199,7 @@ export default {
           pic: 'The relative entropy from an ESS to the current state is plotted along trajectories; it decreases steadily, acting as a Lyapunov function, and fails to for non-ESS equilibria.' },
         { num: '6.6', kind: 'Model', name: 'Rock–Paper–Scissors cycles', deps: ['game-6.4'], refs: ['MSZ §5.9'],
           pic: 'Tune the win and loss payoffs of Rock–Paper–Scissors; replicator trajectories spiral inward, cycle on closed orbits or spiral out to the boundary, as for side-blotched lizards.' },
-        { num: '6.7', kind: 'Theorem', name: 'Fixation probabilities in finite populations', deps: ['game-6.1', 'stoch-14.3'], refs: ['Osborne ch. 13'],
+        { num: '6.7', kind: 'Theorem', name: 'Fixation probabilities in finite populations', deps: ['game-6.1', 'popgen-2.5'], refs: ['Osborne ch. 13'],
           pic: 'Run a frequency-dependent Moran process for a 2 × 2 game in a population of N; the probability that one mutant takes over is compared with the neutral value 1/N to decide whether selection favours it.' },
         { num: '6.8', kind: 'Theorem', name: 'Stochastic stability selects the risk-dominant equilibrium', deps: ['game-1.5', 'stoch-4.4'], refs: ['Osborne ch. 13'],
           pic: 'Players best-respond with rare mistakes in a Stag Hunt; the long-run time fractions concentrate on the risk-dominant convention as the mistake rate goes to 0, matching the stationary distribution of the perturbed chain.' },

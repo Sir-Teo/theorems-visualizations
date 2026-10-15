@@ -21,14 +21,17 @@
 // Gaps filled after the comparison: Brownian bridge (G&S §13.6), the law of the iterated logarithm
 // (G&S §7.6), waiting times for patterns (LPW §11.5), hitting times on trees and cover times
 // (LPW §10.4, §11.2), slow mixing of the mean-field Ising model (LPW §15.2), Feynman–Kac / heat
-// equation, Cramér–Lundberg ruin, the Chinese restaurant process, Gaussian processes and the spectral
+// equation, Cramér–Lundberg ruin, gene shuffling and the exclusion process (LPW ch. 16, 23), dam models
+// (Norris §5.3), age-dependent branching (G&S §5.5), Gaussian processes and the spectral
 // representation (G&S §9.4–9.6). Deliberate omissions: measure-theoretic foundations, the strong law
 // and the CLT (prob), Kolmogorov extension and continuity theorems, Girsanov, martingale
 // representation and SDE existence theory, Lévy processes, lamplighters and exclusion processes
 // (LPW ch. 19, 23), wide-sense stationarity, autocorrelation and Wiener–Khinchin (sig-13.1 to sig-13.3),
 // Rayleigh monotonicity, Thomson’s principle and the matrix-tree theorem (circ-2.12, circ-2.13, circ-3.10),
-// coupon collecting (algo-12.6). Items outside the three references (Markov chain tree theorem, PageRank,
-// Wilson’s algorithm, hidden Markov models, Gillespie, uniformization) cite the nearest related section.
+// coupon collecting (algo-12.6), population-genetic models — Wright–Fisher, Moran, fixation, coalescent,
+// Ewens, diffusion limits (popgen ch. 2, 3, 10) — and Gillespie’s algorithm / linear birth–death
+// processes (mathbio ch. 11, kin ch. 9). Items outside the three references (Markov chain tree theorem, PageRank,
+// Wilson’s algorithm, hidden Markov models, uniformization) cite the nearest related section.
 export default {
   collection: 'stoch',
   chapters: [
@@ -354,12 +357,12 @@ export default {
           pic: 'Set birth and death rates level by level; the equilibrium π_n ∝ ∏λ/μ is drawn as bars and matches the simulated occupation times, diverging when births dominate.' },
         { num: '10.9', kind: 'Algorithm', name: 'Uniformization', deps: ['stoch-10.2', 'stoch-9.3'], refs: ['Norris §2.6'],
           pic: 'Run a discrete chain at the ticks of a Poisson clock with rate above every q_i, allowing fictitious self-jumps; the resulting process has exactly the same law, confirmed against e^(tQ).' },
-        { num: '10.10', kind: 'Algorithm', name: 'Gillespie’s stochastic simulation algorithm', deps: ['stoch-10.3', 'stoch-9.2'], refs: ['Norris §2.6'],
-          pic: 'Simulate reactions A + B → C and C → A + B molecule by molecule; noisy trajectories at small copy numbers converge to the mass-action ODE as the volume slider grows.' },
+        { num: '10.10', kind: 'Theorem', name: 'Ergodic theorem in continuous time', deps: ['stoch-10.6', 'stoch-4.13'], refs: ['Norris §3.8'],
+          pic: 'Follow one long continuous-time path and plot the fraction of time spent in each state; it converges to π from πQ = 0, not to the jump chain’s stationary law, whatever the start.' },
         { num: '10.11', kind: 'Model', name: 'Stochastic SIR epidemic and the threshold R₀', deps: ['stoch-10.3', 'stoch-3.9'], refs: ['Norris §5.1'],
           pic: 'Simulate infection and recovery events in a population of N; for R₀ < 1 outbreaks fizzle, for R₀ > 1 a fraction still dies out early with probability about 1/R₀, as the early branching approximation predicts.' },
-        { num: '10.12', kind: 'Model', name: 'Linear birth–death process', deps: ['stoch-10.8', 'stoch-3.10'], refs: ['Grimmett–Stirzaker §6.11'],
-          pic: 'Each individual gives birth at rate λ and dies at rate μ; extinction probability (μ/λ)ⁿ⁰ when λ > μ and the mean e^((λ−μ)t)n₀ are compared with simulation.' },
+        { num: '10.12', kind: 'Theorem', name: 'Recurrence and transience in continuous time', deps: ['stoch-10.3', 'stoch-3.2'], refs: ['Norris §3.4'],
+          pic: 'Compare a continuous-time chain with its jump chain on ℤ or ℤ²: return probabilities are estimated for both and agree, so recurrence is decided by the jump chain, while the holding rates only change how fast returns happen.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11
@@ -481,21 +484,21 @@ export default {
     // ───────────────────────────────────────────────────────────── 14
     {
       n: 14,
-      title: 'Applications: genes, decisions, hidden states and time series',
-      summary: String.raw`Markov chains model genetic drift: under neutrality a gene’s fixation probability is its current frequency, selection tilts it, genealogies are described by Kingman’s coalescent and diffusion limits connect drift to Brownian motion. Markov decision processes add choice, solved by Bellman’s equation, with optimal stopping as a special case. Hidden Markov models infer unseen states from noisy observations, and stationary time series close the course with autoregressive models, spectral representations and the ergodic theorem.`,
+      title: 'Applications: genes, resources, decisions, hidden states and time series',
+      summary: String.raw`The methods of the course meet applications. Card-shuffling chains reappear as models of genome rearrangement, exclusion processes model traffic and molecular motors, absorbing-chain calculations time the fixation of alleles in population-genetic models, and reflected random walks model dams and inventories. Markov decision processes add choice, solved by Bellman’s equation, with optimal stopping as a special case; hidden Markov models infer unseen states from noisy observations; stationary time series close the course with autoregressive models, spectral representations and the ergodic theorem.`,
       items: [
-        { num: '14.1', kind: 'Model', name: 'Wright–Fisher model of genetic drift', deps: ['stoch-1.1'], refs: ['Norris §5.1'],
-          pic: 'Each generation resamples N gene copies from the previous one; allele-frequency traces wander and eventually hit 0 or 1, faster for small N.' },
-        { num: '14.2', kind: 'Theorem', name: 'Neutral fixation probability equals initial frequency', deps: ['stoch-14.1', 'stoch-12.3'], refs: ['Norris §5.1'],
-          pic: 'Start many populations at frequency p; the fraction that fixes the allele is p, explained by the allele frequency being a martingale stopped at 0 or 1.' },
-        { num: '14.3', kind: 'Model', name: 'Moran process and fixation under selection', deps: ['stoch-14.2', 'stoch-2.4'], refs: ['Norris §5.1'],
-          pic: 'One individual reproduces and one dies at each step, with fitness advantage r for mutants; the fixation probability of a single mutant (1 − 1/r)/(1 − 1/rᴺ) is compared with simulation.' },
-        { num: '14.4', kind: 'Model', name: 'Kingman’s coalescent', deps: ['stoch-14.1', 'stoch-9.2'], refs: ['Norris §5.1'],
-          pic: 'Trace the ancestry of a sample backwards in time; lineages merge pairwise at rate C(k, 2), and the expected time to the most recent common ancestor approaches 2(1 − 1/n).' },
-        { num: '14.5', kind: 'Model', name: 'Chinese restaurant process and the Ewens sampling formula', deps: ['stoch-14.4', 'comb-2.3'], refs: ['Norris §5.1'],
-          pic: 'Seat customers at existing tables proportionally to size or at a new table with weight θ; table-size counts match the Ewens formula, and θ = 1 reproduces the cycle structure of a random permutation.' },
-        { num: '14.6', kind: 'Model', name: 'Diffusion approximation of genetic drift', deps: ['stoch-14.1', 'stoch-13.13'], refs: ['Grimmett–Stirzaker §13.3'],
-          pic: 'Rescale Wright–Fisher frequencies by time N; the paths converge to the diffusion dX = √(X(1 − X))dB, whose absorption-time distribution is compared with the discrete model.' },
+        { num: '14.1', kind: 'Model', name: 'Shuffling genes: random reversals of a genome', deps: ['stoch-6.5'], refs: ['LPW §16.2'],
+          pic: 'A circular genome of n genes is scrambled by random segment reversals; the number of breakpoints relative to the original order is tracked and approaches its stationary value after order n log n reversals.' },
+        { num: '14.2', kind: 'Theorem', name: 'Random adjacent transpositions mix in order n³ log n', deps: ['stoch-6.11', 'stoch-5.11'], refs: ['LPW §16.1'],
+          pic: 'Swap neighbouring cards at random; a single card performs a slow random walk, Wilson’s eigenfunction gives the lower bound and the comparison method the upper bound, both plotted against measured mixing times.' },
+        { num: '14.3', kind: 'Model', name: 'The exclusion process', deps: ['stoch-6.7'], refs: ['LPW §23.1'],
+          pic: 'Particles hop to empty neighbouring sites on a ring or a segment, symmetrically or with a bias (TASEP); density and current are measured, and the biased system forms traffic-jam shocks.' },
+        { num: '14.4', kind: 'Theorem', name: 'Absorption times of the neutral Moran chain', deps: ['popgen-2.5', 'stoch-2.3'], refs: ['Norris §5.1'],
+          pic: 'Solve the first-step equations for the expected time until a neutral allele is lost or fixed in the Moran chain; the solution, of order N² from intermediate frequencies, matches simulated absorption times.' },
+        { num: '14.5', kind: 'Model', name: 'Dams, inventories and reflected random walks', deps: ['stoch-11.12'], refs: ['Norris §5.3'],
+          pic: 'A reservoir receives random inflows and releases a fixed amount each period; the content is a random walk reflected at empty and full, and the long-run probability of running dry is computed from its stationary law.' },
+        { num: '14.6', kind: 'Model', name: 'Age-dependent (Bellman–Harris) branching', deps: ['stoch-3.9', 'stoch-11.1'], refs: ['Grimmett–Stirzaker §5.5'],
+          pic: 'Individuals live for random lifetimes before splitting; the population grows like e^(αt), with the Malthusian parameter α solving a renewal-type equation, compared with simulation for several lifetime laws.' },
         { num: '14.7', kind: 'Definition', name: 'Markov decision processes', deps: ['stoch-1.1'], refs: ['Norris §5.4'],
           pic: 'A grid world with rewards and slippery moves: choose an action in each cell and watch the induced Markov chain and its expected discounted reward.' },
         { num: '14.8', kind: 'Theorem', name: 'Bellman’s equation and value iteration', deps: ['stoch-14.7', 'ctrl-10.5', 'pma-9.23'], refs: ['Norris §5.4'],

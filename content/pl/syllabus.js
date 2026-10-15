@@ -296,7 +296,7 @@ export default {
       title: 'Denotational semantics and program reasoning',
       summary: String.raw`Denotational semantics gives each program a mathematical meaning: recursive definitions denote least fixed points of continuous functions on partial orders, the limits of successive approximations. The meaning agrees with evaluation (adequacy) but distinguishes more programs than any context can (full abstraction fails for PCF). Axiomatic reasoning goes the other way, proving properties with Hoare triples, loop invariants and weakest preconditions; abstract interpretation automates sound approximations, within the limits set by Rice’s theorem.`,
       items: [
-        { num: '10.1', kind: 'Definition', name: 'Complete partial orders and continuous functions', deps: ['pma-1.8', 'pma-1.10'], refs: ['Pierce §2.2', 'Pierce §3.4'],
+        { num: '10.1', kind: 'Definition', name: 'Complete partial orders and continuous functions', deps: ['pma-1.8', 'pma-1.10', 'comb-8.1'], refs: ['Pierce §2.2', 'Pierce §3.4'],
           pic: 'Chains of partial functions approximating factorial are drawn as growing tables; each has a least upper bound, and a continuous operator commutes with taking it.' },
         { num: '10.2', kind: 'Theorem', name: 'Kleene fixed-point theorem', deps: ['pl-10.1', 'pma-1.5'], refs: ['Pierce §3.4'],
           pic: 'Iterate an operator from the everywhere-undefined function: ⊥, F(⊥), F(F(⊥)), … define more and more of factorial, and their limit is the least fixed point, plotted as a filling table.' },
