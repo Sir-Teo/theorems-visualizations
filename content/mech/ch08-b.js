@@ -301,11 +301,11 @@ $\Psi = \pi$ for gravity ($n = -2$), $\Psi = \pi/2$ for the spring ($n = 1$). Fo
         const run = () => cache(nS.value, () => {
           const n = nS.value;
           const orbits = FS.map((f) => {
-            const R = centralOrbit((r) => -(r ** n), [1, 0, 0, f], { T: 1e4, eta: 0.003, revs: 8, rmax: 3, rmin: 1e-3, maxSteps: 150000 });
+            const R = centralOrbit((r) => -(r ** n), [1, 0, 0, f], { T: 1e4, eta: 0.005, revs: 8, rmax: 3, rmin: 1e-3, maxSteps: 150000 });
             const ph = unwound(R), aps = apsides(R, ph), p1 = aps.find((q) => q.peri);
             return { R, psi: p1 ? p1.phi : NaN };
           });
-          const curve = []; for (let i = 1; i <= 80; i++) { const f = 0.02 + (0.978 * i) / 80; curve.push([f, psiQ(n, f) / Math.PI]); }
+          const curve = []; for (let i = 1; i <= 60; i++) { const f = 0.02 + (0.978 * i) / 60; curve.push([f, psiQ(n, f) / Math.PI]); }
           const vals = curve.map((q) => q[1]).filter(isFinite);
           return { n, orbits, curve, lo: Math.min(...vals), hi: Math.max(...vals) };
         });

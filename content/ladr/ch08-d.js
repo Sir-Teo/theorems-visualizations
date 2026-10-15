@@ -231,13 +231,13 @@ $$\operatorname{tr}(AB) = \operatorname{tr}(BA).$$
             const W = S2.width, H = S2.height, cy = H / 2 + 8, D = (p) => [S2.invX(p[0]), S2.invY(p[1])];
             const cyc = [['ABC', 'BCA', 'CAB'], ['ACB', 'CBA', 'BAC']], eq = trs.ABC === trs.ACB;
             cyc.forEach((g, gi) => {
-              const cx = W * (gi ? 0.73 : 0.27), col = gi ? 'orange' : 'green', P = [0, 1, 2].map((i) => { const a = -Math.PI / 2 + (i * TAU) / 3; return [cx + 2.3 * 70 * Math.cos(a), cy + 70 * Math.sin(a)]; });
-              P.forEach((a, i) => { const b = P[(i + 1) % 3], p0 = [a[0] + 0.3 * (b[0] - a[0]), a[1] + 0.3 * (b[1] - a[1])], p1 = [a[0] + 0.7 * (b[0] - a[0]), a[1] + 0.7 * (b[1] - a[1])]; S2.arrow(...D(p0), ...D(p1), { color: col, width: 1.8, head: 8, alpha: 0.75 }); });
+              const cx = W * (gi ? 0.76 : 0.24), col = gi ? 'orange' : 'green', P = [0, 1, 2].map((i) => { const a = -Math.PI / 2 + (i * TAU) / 3; return [cx + 1.75 * 70 * Math.cos(a), cy + 70 * Math.sin(a)]; });
+              P.forEach((a, i) => { const b = P[(i + 1) % 3], f0 = Math.abs(a[1] - b[1]) < 1 ? 0.36 : 0.3, p0 = [a[0] + f0 * (b[0] - a[0]), a[1] + f0 * (b[1] - a[1])], p1 = [a[0] + (1 - f0) * (b[0] - a[0]), a[1] + (1 - f0) * (b[1] - a[1])]; S2.arrow(...D(p0), ...D(p1), { color: col, width: 1.8, head: 8, alpha: 0.75 }); });
               g.forEach((k, i) => S2.texPx(`\\operatorname{tr}(${k}) = ${trs[k]}`, P[i][0], P[i][1], { size: 15, color: col }));
               S2.texPx(gi ? '\\text{rotations of } ACB' : '\\text{rotations of } ABC', cx, 16, { size: 13, color: col });
             });
-            S2.texPx(eq ? '=' : '\\ne', W / 2, cy, { size: 30, color: eq ? 'green' : 'red' });
-            S2.texPx('\\text{swap two factors}', W / 2, cy + 30, { size: 12, color: 'muted' });
+            S2.texPx(eq ? '=' : '\\ne', W / 2, cy - 4, { size: 30, color: eq ? 'green' : 'red' });
+            S2.texPx('\\text{swap two factors}', W / 2, cy - 38, { size: 12, color: 'muted' });
             st = { two: false, trs };
           }
         });
@@ -462,7 +462,7 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
         const M = v.M;
         const PRE = {
           ax: [[3, -1, -2], [3, 2, -3], [1, 2, 0]],
-          four: [[2, 1, 0, -1], [1, -1, 2, 0], [0, 3, 1, 1], [-2, 0, 1, 2]],
+          four: [[0, -2, 1, 0], [2, 1, 0, 1], [1, 0, 2, -3], [0, 1, 2, 1]],
         };
         const P3 = [[1, 1, 0], [1, 2, 1], [0, 1, 2]];
         PRE.rep = mm(mm(P3, [[2, 0, 0], [0, 2, 0], [0, 0, -1]]), M.inverse(P3).map((r) => r.map((x) => Math.round(x))));
@@ -500,6 +500,7 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
           });
           const last = layers[deg - 1][0];
           S.dot(t / n, 0, { r: 13, hollow: true, color: 'green', width: 2.6 });
+          S.dot(last[0], last[1], { r: 4.5, color: 'gold' });
           S.text(`tr A / ${n} = ${pn(t / n, 3)}`, t / n, 0, { dy: 28, align: 'center', size: 12.5, color: 'green', weight: 700 });
           const hit = cabs([last[0] - t / n, last[1]]) < 1e-6;
           S.corner(hit ? `zero of p^(${deg - 1}) = tr A / n` : `zero of p^(${deg - 1}) ≠ tr A / n`, 'tr', { color: hit ? 'green' : 'red', weight: 700 });
@@ -515,7 +516,7 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
           E.texPx(`-\\operatorname{tr} A = -(${A.map((r, i) => r[i]).join(' + ').replace(/\+ -/g, '- ')}) = ${tn(-t, 2)}`, E.width / 2, E.height - 18, { size: 14, color: hit ? 'green' : 'red' });
           st = { p, deg, n, t, hit, coef: p[deg - 1], cp };
         });
-        v.legend([['pink', 'zeros of $p$', { dot: true }], ['purple', "zeros of $p'$", { dot: true }], ['blue', "zeros of $p''$", { dot: true }], ['green', '$\\operatorname{tr} A/n$', { dot: true }]]);
+        v.legend([['pink', 'zeros of $p$', { dot: true }], ['purple', "zeros of $p'$", { dot: true }], ['blue', "zeros of $p''$", { dot: true }], ['gold', 'the zero of $p^{(\\deg p - 1)}$', { dot: true }], ['green', '$\\operatorname{tr} A/n$', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { deg, n, t, hit, coef } = st;

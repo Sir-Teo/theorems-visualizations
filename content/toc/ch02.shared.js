@@ -130,7 +130,7 @@ export function drawDFA(v, s, G, D, o = {}) {
     nodeRing: (id) => (isAcc(D, id) ? o.ring?.(id) ?? 'ink' : null),
     nodeFill: (id) => o.fill?.(id) ?? null,
     nodeColor: (id) => o.color?.(id) ?? (id === DEAD ? 'muted' : null),
-    labelColor: (id) => o.labelColor?.(id) ?? (id === DEAD && !o.fill?.(id) ? 'muted' : null),
+    labelColor: (id) => o.labelColor?.(id) ?? (o.fill?.(id) === 'gold' ? 'ink' : id === DEAD && !o.fill?.(id) ? 'muted' : null),
     edgeColor: (e) => o.edgeColor?.(e) ?? (e.multi ? 'red' : null),
     edgeWidth: (e) => o.edgeWidth?.(e) ?? (e.multi ? 2.4 : null),
     edgeDash: (e) => (e.toDead ? [5, 4] : null),

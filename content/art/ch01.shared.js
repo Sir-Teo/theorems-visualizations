@@ -47,7 +47,7 @@ export function boxMesh(c, [w, dp, h], yaw = 0) {
     const x = (a * w) / 2, y = (b * dp) / 2;
     V.push([c[0] + x * cs + y * sn, c[1] - x * sn + y * cs, c[2] + z]);
   }
-  const F = [[0, 1, 2, 3], [4, 7, 6, 5], [0, 4, 5, 1], [1, 5, 6, 2], [2, 6, 7, 3], [3, 7, 4, 0]];
+  const F = [[0, 3, 2, 1], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]]; // outward (counter-clockwise from outside)
   const E = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
   return { V, F, E, c, size: [w, dp, h], yaw };
 }
@@ -58,7 +58,7 @@ export function houseMesh(c, [w, dp, h], rh, yaw = 0) {
   const cs = Math.cos(yaw), sn = Math.sin(yaw);
   const ridge = [-1, 1].map((b) => { const y = (b * dp) / 2; return [c[0] + y * sn, c[1] + y * cs, c[2] + h + rh]; });
   const V = [...m.V, ridge[0], ridge[1]]; // 8 = front ridge end, 9 = back ridge end
-  const F = [[0, 1, 2, 3], [0, 4, 8, 5, 1], [2, 6, 9, 7, 3], [1, 5, 6, 2], [3, 7, 4, 0], [4, 7, 9, 8], [5, 8, 9, 6]];
+  const F = [[0, 3, 2, 1], [0, 1, 5, 8, 4], [2, 3, 7, 9, 6], [1, 2, 6, 5], [3, 0, 4, 7], [5, 6, 9, 8], [4, 8, 9, 7]];
   const E = [[0, 1], [1, 2], [2, 3], [3, 0], [0, 4], [1, 5], [2, 6], [3, 7], [4, 7], [5, 6], [4, 8], [5, 8], [6, 9], [7, 9], [8, 9]];
   return { V, F, E, c, yaw, roof: [[4, 8], [5, 8], [6, 9], [7, 9]] };
 }
@@ -124,4 +124,28 @@ export function drawFigure(S, map, F, h, st = {}) {
   S.poly([[foot[0] - w * 0.55, foot[1]], [foot[0] + w * 0.55, foot[1]], [foot[0] + w, neck - H * 0.3], [foot[0] + w * 0.75, neck], [foot[0] - w * 0.75, neck], [foot[0] - w, neck - H * 0.3]],
     { fill: col, fillAlpha: st.alpha ?? 0.55, stroke: false });
   S.circle(foot[0], neck + hr * 1.05, hr, { fill: col, fillAlpha: st.alpha ?? 0.55, stroke: false });
+}
+
+/** Clip the 2D segment ab to the rectangle [x0, x1] × [y0, y1] (Liang–Barsky); returns [a', b'] or null. */
+export function clipSeg2(a, b, [x0, x1], [y0, y1]) {
+  let t0 = 0, t1 = 1; const dx = b[0] - a[0], dy = b[1] - a[1];
+  for (const [p, q] of [[-dx, a[0] - x0], [dx, x1 - a[0]], [-dy, a[1] - y0], [dy, y1 - a[1]]]) {
+    if (Math.abs(p) < 1e-15) { if (q < 0) return null; continue; }
+    const r = q / p; if (p < 0) { if (r > t1) return null; if (r > t0) t0 = r; } else { if (r < t0) return null; if (r < t1) t1 = r; }
+  }
+  return [[a[0] + t0 * dx, a[1] + t0 * dy], [a[0] + t1 * dx, a[1] + t1 * dy]];
+}
+
+/** Prism over a counter-clockwise base polygon [[x, y], …] from height z0 to z1; pyramid to an apex. Faces outward. */
+export function prismMesh(base, z0, z1) {
+  const n = base.length, V = [...base.map(([x, y]) => [x, y, z0]), ...base.map(([x, y]) => [x, y, z1])];
+  const F = [base.map((_, i) => n - 1 - i), base.map((_, i) => n + i)];
+  for (let i = 0; i < n; i++) { const j = (i + 1) % n; F.push([i, j, n + j, n + i]); }
+  return { V, F };
+}
+export function pyramidMesh(base, z0, apex) {
+  const n = base.length, V = [...base.map(([x, y]) => [x, y, z0]), apex];
+  const F = [base.map((_, i) => n - 1 - i)];
+  for (let i = 0; i < n; i++) F.push([i, (i + 1) % n, n]);
+  return { V, F };
 }

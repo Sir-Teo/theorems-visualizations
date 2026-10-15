@@ -16,7 +16,7 @@ const cxTeX = (v, z, d = 3) => `${v.fix(z[0], d)} ${z[1] < 0 ? '-' : '+'} ${v.fi
 
 /** The centrifugal governor driving a throttle valve, with flywheel engine and steam pipe (for 1.2). */
 function drawGovernor(s, { phi, psi, u, flow, load, K, on }) {
-  const top = 4.1, La = 1.55, Lk = 0.85, rb = 0.25, pipeY = 0.3, fx = -2.4, fy = 1.15, R = 0.95;
+  const top = 4.1, La = 1.55, Lk = 1.25, rb = 0.25, pipeY = 0.3, fx = -2.4, fy = 1.0, R = 0.92;
   // steam pipe from the boiler (right) through the valve to the cylinder (left)
   s.rect(-0.75, pipeY - 0.17, 4.2, pipeY + 0.17, { fill: 'muted', fillAlpha: 0.14, color: 'muted', width: 1.2 });
   const vx = 2.6, gap = 0.3;
@@ -46,7 +46,7 @@ function drawGovernor(s, { phi, psi, u, flow, load, K, on }) {
   const lw = 1 + 4 * clamp(load, 0, 2);
   s.curve((t) => [fx + 1.18 * Math.cos(t), fy + 1.18 * Math.sin(t)], 2.0, 3.6, { color: 'purple', width: lw, n: 40 });
   const a1 = 2.0; s.arrow(fx + 1.18 * Math.cos(a1 + 0.12), fy + 1.18 * Math.sin(a1 + 0.12), fx + 1.18 * Math.cos(a1), fy + 1.18 * Math.sin(a1), { color: 'purple', width: lw, head: 7 + lw });
-  s.text('load', fx - 1.3, fy + 0.95, { color: 'purple', size: 11.5, align: 'right', weight: 600 });
+  s.text('load', fx - 0.75, fy + 1.3, { color: 'purple', size: 11.5, align: 'right', weight: 600 });
   // drive shaft and bevel gear to the spindle
   s.line(fx, fy, -0.2, fy, { color: 'muted', width: 3 });
   s.poly([[-0.24, fy - 0.2], [-0.12, fy - 0.12], [-0.12, fy + 0.12], [-0.24, fy + 0.2]], { fill: 'muted', fillAlpha: 0.6, color: 'ink', width: 1 });
@@ -66,7 +66,7 @@ function drawGovernor(s, { phi, psi, u, flow, load, K, on }) {
   }
   s.circle(0, top, 0.08, { fill: 'ink', fillAlpha: 1, stroke: false });
   // the lever: collar end at the sleeve, fulcrum placed so that (valve arm)/(collar arm) = K
-  const Lt = 2.3, a = Lt / (1 + Math.max(K, 0.05)), Fx = 0.24 + a, Fy = 2.75;
+  const Lt = 2.3, a = Lt / (1 + Math.max(K, 0.05)), Fx = 0.24 + a, Fy = 2.3;
   const C0 = [0.24, ys], dir = [Fx - C0[0], Fy - C0[1]], dl = Math.hypot(dir[0], dir[1]);
   const E = [Fx + (dir[0] / dl) * (Lt - a), Fy + (dir[1] / dl) * (Lt - a)];
   s.line(Fx, Fy, Fx, Fy - 0.55, { color: 'muted', width: 2 });
@@ -81,8 +81,9 @@ function drawGovernor(s, { phi, psi, u, flow, load, K, on }) {
   }
   s.dot(Fx, Fy, { r: 3.5, color: 'ink' });
   // labels
-  s.text('flyballs', -1.75, top - 0.55, { size: 11, color: 'muted', align: 'center' });
-  s.text('sleeve', -0.3, ys, { size: 11, color: 'muted', align: 'right' });
+  s.text('flyballs', -1.2, top + 0.3, { size: 11, color: 'muted', align: 'center' });
+  s.text('sleeve', -0.27, ys - 0.3, { size: 11, color: 'muted', align: 'right' });
+  s.text('lever', E[0] + 0.12, E[1] + 0.12, { size: 11, color: 'muted', align: 'left' });
   s.text('throttle valve', vx, pipeY - 0.42, { size: 11, color: 'orange', align: 'center' });
   s.text('steam from boiler →', 3.95, pipeY + 0.4, { size: 10.5, color: 'muted', align: 'right' });
   s.text('flywheel', fx, fy - R - 0.3, { size: 11, color: 'muted', align: 'center' });
@@ -115,12 +116,12 @@ The price of feedback is a sensor, action that starts only after an error has ap
         const SP = 4, DT = 0.05, WIN = 90; // simulated seconds per real second, step, chart window
         const hillS = v.slider('hills: steepest grade', 0, 8, 5, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} %` });
         const loadS = v.slider('payload', 0, 600, 250, { step: 10, fmt: (x) => `${Math.round(x)} kg` });
-        const kpS = v.slider('feedback gain $k_p$', 0.01, 0.6, 0.15, { log: true, fmt: (x) => v.fix(x, 3) });
+        const kpS = v.slider('feedback gain $k_p$', 0.01, 1, 0.3, { log: true, fmt: (x) => v.fix(x, 3) });
         let gustReq = 0;
         v.button('Headwind gust', () => { gustReq++; });
-        const road = v.stage({ x: [-50, 50], y: [-8, 12], equal: true, axes: false, height: 215, full: true });
-        const sp = v.stage({ x: [-WIN, 0], y: [18.5, 31.5], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'speed (m/s)', weight: 1.45, yticks: [20, 22.5, 25, 27.5, 30] });
-        const th = v.stage({ x: [-WIN, 0], y: [-0.55, 1.08], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'throttle u', weight: 1, yticks: [-0.5, 0, 0.5, 1] });
+        const road = v.stage({ x: [-28, 28], y: [-6, 9], equal: true, axes: false, height: 215, full: true });
+        const sp = v.stage({ x: [0, WIN], y: [18.5, 31.5], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'speed (m/s)', weight: 1.45, yticks: [20, 22.5, 25, 27.5, 30] });
+        const th = v.stage({ x: [0, WIN], y: [-0.55, 1.08], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'throttle u', weight: 1, yticks: [-0.5, 0, 0.5, 1] });
         const G = () => hillS.value / 100;
         const grade = (x) => G() * (0.62 * Math.sin((TAU * x) / 640) + 0.38 * Math.sin((TAU * x) / 270 + 1.1));
         const elev = (x) => G() * (-0.62 * (640 / TAU) * Math.cos((TAU * x) / 640) - 0.38 * (270 / TAU) * Math.cos((TAU * x) / 270 + 1.1));
@@ -128,7 +129,7 @@ The price of feedback is a sensor, action that starts only after an error has ap
         const wind = (st, t) => { let w = 0; for (const g0 of st.gusts) { const a = t - g0; if (a > 0 && a < 14) w += 12 * Math.sin((Math.PI * a) / 14) ** 2; } return w; };
         const sim = clocked(DT, () => ({ ol: { x: 0, v: CAR.vr, u: u0 }, cl: { x: 0, v: CAR.vr, u: u0, I: 0 }, gusts: [], seen: gustReq, h: { t: [], vo: [], vc: [], uo: [], uc: [], w: [] }, k: 0 }), (st, t, dt) => {
           while (st.seen < gustReq) { st.gusts.push(t); st.seen++; }
-          const m = CAR.m0 + loadS.value, w = wind(st, t), kp = kpS.value, ki = kp / 8;
+          const m = CAR.m0 + loadS.value, w = wind(st, t), kp = kpS.value, ki = kp / 6;
           // open loop: fixed throttle; closed loop: PI on the speed error with anti-windup
           const stepCar = (c, uFn) => {
             const u = uFn(c), a1 = carAccel(c.v, u, grade(c.x), m, w), vm = c.v + a1 * dt;
@@ -150,39 +151,41 @@ The price of feedback is a sensor, action that starts only after an error has ap
           const st = sim.to(t * SP), T = sim.t, H = st.h, xr = CAR.vr * T;
           // ---- road, in a window that moves with the 25 m/s pace flag
           const hc = elev(xr);
-          road.setView([xr - 50, xr + 50], [hc - 9, hc + 11]);
-          const xs = []; for (let x = xr - 60; x <= xr + 60; x += 1) xs.push([x, elev(x)]);
-          road.poly([...xs, [xr + 60, hc - 40], [xr - 60, hc - 40]], { fill: 'green', fillAlpha: 0.1, stroke: false });
+          road.setView([xr - 28, xr + 28], [hc - 4.5, hc + 7.5]);
+          const xs = []; for (let x = xr - 40; x <= xr + 40; x += 0.5) xs.push([x, elev(x)]);
+          road.poly([...xs, [xr + 40, hc - 30], [xr - 40, hc - 30]], { fill: 'green', fillAlpha: 0.1, stroke: false });
           road.path(xs.map(([x, y]) => [x, y + 1.15]), { color: 'faint', width: 1.4 });
           road.path(xs.map(([x, y]) => [x, y + 0.58]), { color: 'faint', width: 1, dash: [6, 6] });
           road.path(xs, { color: 'ink', width: 2.4 });
-          for (let x = Math.ceil((xr - 50) / 50) * 50; x < xr + 50; x += 50) {
-            road.line(x, elev(x), x, elev(x) - 1.4, { color: 'muted', width: 1.2 });
-            road.text(`${x} m`, x, elev(x) - 2.3, { size: 10, color: 'muted', align: 'center' });
+          for (let x = Math.ceil((xr - 40) / 20) * 20; x < xr + 40; x += 20) {
+            road.line(x, elev(x), x, elev(x) - 0.9, { color: 'muted', width: 1.2 });
+            road.text(`${x} m`, x, elev(x) - 1.6, { size: 10, color: 'muted', align: 'center' });
           }
-          road.line(xr, hc, xr, hc + 7.2, { color: 'ink', width: 1.3, dash: [4, 3] });
-          road.poly([[xr, hc + 7.2], [xr + 3.2, hc + 6.5], [xr, hc + 5.8]], { fill: 'ink', fillAlpha: 0.6, stroke: false });
-          road.text('pace 25 m/s', xr + 3.8, hc + 6.5, { size: 11, color: 'ink', align: 'left' });
+          road.line(xr, hc, xr, hc + 6.6, { color: 'ink', width: 1.3, dash: [4, 3] });
+          road.poly([[xr, hc + 6.6], [xr + 2.2, hc + 6.1], [xr, hc + 5.6]], { fill: 'ink', fillAlpha: 0.6, stroke: false });
+          road.text('pace 25 m/s', xr + 2.6, hc + 6.1, { size: 11, color: 'ink', align: 'left' });
           const w = H.w.length ? H.w[H.w.length - 1] : 0;
           if (w > 0.6) {
-            for (let k = 0; k < 3; k++) road.arrow(xr + 34 - k * 8, hc + 9.3 - k * 0.2, xr + 28 - k * 8, hc + 9.3 - k * 0.2, { color: 'teal', width: 2 });
-            road.text(`headwind ${v.fix(w, 0)} m/s`, xr + 40, hc + 9.2, { size: 11, color: 'teal', align: 'left' });
+            for (let k = 0; k < 3; k++) road.arrow(xr + 25 - k * 4.5, hc + 7.6, xr + 22 - k * 4.5, hc + 7.6, { color: 'teal', width: 2 });
+            road.text(`headwind ${v.fix(w, 0)} m/s`, xr + 12, hc + 7.6, { size: 11, color: 'teal', align: 'right' });
           }
-          const car = (c, lane, col) => {
+          const close = Math.abs(st.ol.x - st.cl.x) < 9;
+          const car = (c, lane, col, lift) => {
             const y = elev(c.x) + lane, ang = Math.atan(grade(c.x));
             drawCar(road, c.x, y, ang, { color: col, scale: lane ? 0.9 : 1, alpha: lane ? 0.85 : 1 });
-            road.text(`${v.fix(c.v, 1)} m/s`, c.x, y + 2.6, { size: 11.5, color: col, align: 'center', weight: 600 });
+            road.text(`${v.fix(c.v, 1)} m/s`, c.x, y + 2.3 + lift, { size: 11.5, color: col, align: 'center', weight: 600 });
           };
           const off = st.ol.x - xr;
-          if (Math.abs(off) < 47) car(st.ol, 0.75, 'red');
+          if (Math.abs(off) < 25.5) car(st.ol, 0.7, 'red', close ? 1.25 : 0);
           else {
-            const ex = off > 0 ? xr + 47 : xr - 47, yy = elev(ex) + 4.5;
-            road.arrow(off > 0 ? ex - 6 : ex + 6, yy, ex, yy, { color: 'red', width: 2.2 });
-            road.text(`open-loop car ${v.fix(Math.abs(off), 0)} m ${off > 0 ? 'ahead' : 'behind'}`, off > 0 ? ex - 7 : ex + 7, yy, { size: 11.5, color: 'red', align: off > 0 ? 'right' : 'left', weight: 600 });
+            const ex = off > 0 ? xr + 26 : xr - 26, yy = elev(ex) + 3.2;
+            road.arrow(off > 0 ? ex - 4 : ex + 4, yy, ex, yy, { color: 'red', width: 2.2 });
+            road.text(`open-loop car ${v.fix(Math.abs(off), 0)} m ${off > 0 ? 'ahead' : 'behind'}`, off > 0 ? ex - 4.5 : ex + 4.5, yy, { size: 11.5, color: 'red', align: off > 0 ? 'right' : 'left', weight: 600 });
           }
-          car(st.cl, 0, 'green');
+          car(st.cl, 0, 'green', 0);
           // ---- speed and throttle charts
-          sp.setView([T - WIN, T], null); th.setView([T - WIN, T], null);
+          const T0 = Math.max(0, T - WIN);
+          sp.setView([T0, T0 + WIN], null); th.setView([T0, T0 + WIN], null);
           sp.hband(CAR.vr - 0.5, CAR.vr + 0.5, { color: 'green', alpha: 0.1 });
           sp.hline(CAR.vr, { color: 'ink', dash: [5, 4], width: 1.2 });
           trace(sp, H.t, H.vo, { color: 'red', width: 2 });
@@ -219,13 +222,13 @@ It is a **proportional** controller. The valve opening is tied to the ball heigh
       viz(v) {
         const SP = 5, DT = 0.01, WIN = 80;
         const loadS = v.slider('load (% of design)', 60, 140, 115, { step: 1, fmt: (x) => `${Math.round(x)} %` });
-        const kS = v.slider('linkage gain $K$', 0.2, 6, 1, { log: true, fmt: (x) => v.fix(x, 2) });
+        const kS = v.slider('linkage gain $K$', 0.2, 6, 1.4, { log: true, fmt: (x) => v.fix(x, 2) });
         const onT = v.toggle('governor connected', true);
         v.button('Add load +15 %', () => loadS.set(clamp(loadS.value + 15, 60, 140)));
         v.button('Shed load −15 %', () => loadS.set(clamp(loadS.value - 15, 60, 140)));
-        const mech = v.stage({ x: [-3.6, 4.2], y: [-0.5, 4.6], equal: true, axes: false, height: 370, weight: 1, minWidth: 330 });
-        const sp = v.stage({ x: [-WIN, 0], y: [70, 135], height: 370, axes: 'box', xlabel: 't', ylabel: 'engine speed (% of design)', weight: 1.15, yticks: [80, 90, 100, 110, 120, 130] });
-        const va = v.stage({ x: [-WIN, 0], y: [-5, 108], height: 150, axes: 'box', xlabel: 't', ylabel: 'valve opening, load (%)', full: true, yticks: [0, 50, 100] });
+        const mech = v.stage({ x: [-3.85, 4.2], y: [-0.5, 4.6], equal: true, axes: false, height: 370, weight: 1, minWidth: 330 });
+        const sp = v.stage({ x: [0, WIN], y: [70, 135], height: 370, axes: 'box', xlabel: 't', ylabel: 'engine speed (% of design)', weight: 1.15, yticks: [80, 90, 100, 110, 120, 130] });
+        const va = v.stage({ x: [0, WIN], y: [-6, 150], height: 160, axes: 'box', xlabel: 't', ylabel: 'valve opening, load (%)', full: true, yticks: [0, 50, 100, 150] });
         const par = () => ({ K: onT.value ? kS.value : 0, beta: 0.8 });
         const TL = () => (GOV.TL0 * loadS.value) / 100;
         const sim = clocked(DT, () => {
@@ -243,7 +246,8 @@ It is a **proportional** controller. The valve opening is tied to the ball heigh
         v.animate((t) => {
           const st = sim.to(t * SP), T = sim.t, H = st.h, p = par();
           drawGovernor(mech, { phi: st.x[1], psi: st.psi, u: govValve(p, st.x[1]), flow: st.flow, load: loadS.value / 100, K: kS.value, on: onT.value });
-          sp.setView([T - WIN, T], null); va.setView([T - WIN, T], null);
+          const T0 = Math.max(0, T - WIN);
+          sp.setView([T0, T0 + WIN], null); va.setView([T0, T0 + WIN], null);
           sp.hline(100, { color: 'ink', dash: [5, 4], width: 1.1 });
           const eq = govEquilibrium(p, TL());
           if (onT.value && !eq.stop) sp.hline((100 * eq.w) / GOV.w0, { color: 'green', dash: [7, 4], width: 1.6 });
@@ -285,8 +289,8 @@ The canonical feedback loop has five parts: the **reference** $r$; the **compara
         const nT = v.toggle('sensor noise', true);
         const dg = v.stage({ x: [0, 20], y: [0.2, 7.2], equal: true, axes: false, height: 245, full: true });
         const sc = v.stage({ x: [0, TEND], y: [-0.6, 2.6], height: 215, axes: 'box', xlabel: 't (s)', full: true });
-        const rng = v.rng(7), NZ = Array.from({ length: Math.ceil(TEND / 0.05) + 2 }, () => rng.normal() * 0.05);
-        const noise = (t) => { const u = t / 0.05, i = Math.floor(u), f = u - i; return NZ[i] * (1 - f) + NZ[i + 1] * f; };
+        const rng = v.rng(7), NZ = Array.from({ length: Math.ceil(TEND / 0.08) + 2 }, () => rng.normal() * 0.03);
+        const noise = (t) => { const u = t / 0.08, i = Math.floor(u), f = u - i; return NZ[i] * (1 - f) + NZ[i + 1] * f; };
         let run = null, key = '';
         const getRun = () => {
           const k = `${dT.value}|${nT.value}`;
@@ -345,7 +349,7 @@ The canonical feedback loop has five parts: the **reference** $r$; the **compara
           bdSum(dg, ...S.sd, R, { w: '+', n: '+' }, { color: cur === 'sd' ? 'accent' : 'ink', active: cur === 'sd' });
           bdSum(dg, ...S.sn, R, { e: '+', s: '+' }, { color: cur === 'sn' ? 'accent' : 'ink', active: cur === 'sn' });
           dg.text('reference', 0.6, Y1 - 0.5, { size: 10.5, color: 'muted' });
-          dg.text('disturbance', S.sd[0] - 0.45, Y1 + 1.95, { size: 10.5, color: 'muted', align: 'right' });
+          dg.text('disturbance', S.sd[0] - 0.3, Y1 + 1.35, { size: 10.5, color: 'muted', align: 'right' });
           dg.text('noise', S.sn[0] - 0.4, 0.55, { size: 10.5, color: 'muted', align: 'right' });
           dg.text('output', 19.4, Y1 - 0.5, { size: 10.5, color: 'muted', align: 'right' });
           dg.corner(`t = ${v.fix(tc, 1)} s`, 'tr', { color: 'muted' });
@@ -385,16 +389,16 @@ and with polynomial fractions $C=n_C/d_C$, $P=n_P/d_P$, $H=n_H/d_H$ every closed
       viz(v) {
         const M = v.M, TEND = 16;
         const PL = {
-          p1: { label: '$\\frac{1}{s+1}$', P: tf([1], [1, 1]), tex: '\\frac{1}{s+1}' },
-          p2: { label: '$\\frac{1}{(s+1)(0.5s+1)}$', P: tf([1], [1, 1.5, 0.5]), tex: '\\frac{1}{(s+1)(0.5s+1)}' },
-          p3: { label: '$\\frac{1}{(s+1)^3}$', P: tf([1], [1, 3, 3, 1]), tex: '\\frac{1}{(s+1)^3}' },
-          p4: { label: '$\\frac{1}{s(s+1)}$', P: tf([1], [0, 1, 1]), tex: '\\frac{1}{s(s+1)}' },
+          p1: { label: '$1/(s+1)$', P: tf([1], [1, 1]), tex: '\\dfrac{1}{s+1}' },
+          p2: { label: '$1/((s+1)(0.5s+1))$', P: tf([1], [1, 1.5, 0.5]), tex: '\\dfrac{1}{(s+1)(0.5s+1)}' },
+          p3: { label: '$1/(s+1)^3$', P: tf([1], [1, 3, 3, 1]), tex: '\\dfrac{1}{(s+1)^3}' },
+          p4: { label: '$1/(s(s+1))$', P: tf([1], [0, 1, 1]), tex: '\\dfrac{1}{s(s+1)}' },
         };
         const plS = v.select('plant $P$', Object.entries(PL).map(([value, o]) => ({ value, label: o.label })), 'p3');
         const ctS = v.select('controller $C$', [{ value: 'P', label: 'P: $K$' }, { value: 'PI', label: 'PI: $K(1+\\frac{1}{2s})$' }], 'P');
         const kS = v.slider('gain $K$', 0.1, 20, 4, { log: true, fmt: (x) => v.fix(x, 2) });
         const hT = v.toggle('sensor lag $H=1/(0.3s+1)$', false);
-        const dg = v.stage({ x: [0, 20], y: [0.3, 5.0], equal: true, axes: false, height: 175, full: true });
+        const dg = v.stage({ x: [0, 20.4], y: [0.3, 5.0], equal: true, axes: false, height: 190, full: true });
         const st = v.stage({ x: [0, TEND], y: [-0.6, 2.2], height: 290, axes: 'box', xlabel: 't (s)', ylabel: 'y(t)', weight: 1.45, title: 'unit-step response of the closed loop' });
         const pz = v.stage({ x: [-4.2, 1.6], y: [-3, 3], equal: true, height: 290, weight: 1, axes: true, xlabel: 'Re s', ylabel: 'Im s', title: 'poles in the $s$-plane' });
         let cache = null, ckey = '';
@@ -415,21 +419,23 @@ and with polynomial fractions $C=n_C/d_C$, $P=n_P/d_P$, $H=n_H/d_H$ every closed
         };
         v.render(() => {
           const c = compute();
-          // ---- diagram
-          const Y = 3.6, Y2 = 1.25, R = 0.32;
-          bdWire(dg, [[0.5, Y], [2.6 - R, Y]]); dg.tex('r', 1.2, Y + 0.38, { size: 15 });
-          bdSum(dg, 2.6, Y, R, { w: '+', s: '−' });
-          bdWire(dg, [[2.6 + R, Y], [4.4, Y]]); dg.tex('e', 3.5, Y + 0.38, { size: 15 });
-          const ctex = ctS.value === 'P' ? v.fix(c.K, 2) : `${v.fix(c.K, 2)}\\left(1+\\frac{1}{2s}\\right)`;
-          bdBlock(dg, 6.0, Y, 3.2, 1.25, ctex, { color: 'orange', size: 15, sub: 'C(s)' });
-          bdWire(dg, [[7.6, Y], [9.2, Y]]); dg.tex('u', 8.4, Y + 0.38, { size: 15 });
-          bdBlock(dg, 10.8, Y, 3.2, 1.25, PL[plS.value].tex, { color: 'accent', size: 15, sub: 'P(s)' });
-          bdWire(dg, [[12.4, Y], [19.5, Y]]); dg.tex('y', 18.8, Y + 0.38, { size: 15 });
-          dg.dot(14.0, Y, { r: 3.2, color: 'ink' });
-          bdWire(dg, [[14.0, Y], [14.0, Y2], [12.4, Y2]]);
-          bdBlock(dg, 10.8, Y2, 3.2, 1.1, hT.value ? '\\frac{1}{0.3s+1}' : '1', { color: 'teal', size: 14, sub: 'H(s)' });
-          bdWire(dg, [[9.2, Y2], [2.6, Y2], [2.6, Y - R]]);
-          dg.tex(`T(s)=\\frac{G}{1+GH}=${tfTeX(c.T)}`, 16.8, 1.55, { size: 14, color: 'accent' });
+          // ---- diagram (left) and the closed-loop transfer function (right)
+          const Y = 3.7, Y2 = 1.35, R = 0.3;
+          bdWire(dg, [[0.2, Y], [1.6 - R, Y]]); dg.tex('r', 0.6, Y + 0.38, { size: 15 });
+          bdSum(dg, 1.6, Y, R, { w: '+', s: '−' });
+          bdWire(dg, [[1.6 + R, Y], [2.75, Y]]); dg.tex('e', 2.2, Y + 0.38, { size: 15 });
+          const ctex = ctS.value === 'P' ? v.fix(c.K, 2) : `${v.fix(c.K, 2)}\\left(1+\\tfrac{1}{2s}\\right)`;
+          bdBlock(dg, 4.25, Y, 3.0, 1.2, ctex, { color: 'orange', size: 14, sub: 'C(s)' });
+          bdWire(dg, [[5.75, Y], [6.75, Y]]); dg.tex('u', 6.25, Y + 0.38, { size: 15 });
+          bdBlock(dg, 8.25, Y, 3.0, 1.2, PL[plS.value].tex, { color: 'accent', size: 14, sub: 'P(s)' });
+          bdWire(dg, [[9.75, Y], [12.4, Y]]); dg.tex('y', 12.0, Y + 0.38, { size: 15 });
+          dg.dot(10.7, Y, { r: 3.2, color: 'ink' });
+          bdWire(dg, [[10.7, Y], [10.7, Y2], [9.75, Y2]]);
+          bdBlock(dg, 8.25, Y2, 3.0, 1.1, hT.value ? '\\dfrac{1}{0.3s+1}' : '1', { color: 'teal', size: 14, sub: 'H(s)' });
+          bdWire(dg, [[6.75, Y2], [1.6, Y2], [1.6, Y - R]]);
+          dg.line(13.1, 0.4, 13.1, 4.9, { color: 'faint', width: 1 });
+          dg.tex('T(s)=\\dfrac{G}{1+GH}=\\dfrac{PC}{1+PCH}', 16.7, 3.85, { size: 14, color: 'ink' });
+          dg.tex(`=${tfTeX(c.T)}`, 16.7, 1.75, { size: 14, color: 'accent' });
           // ---- step responses
           st.hline(1, { color: 'ink', dash: [5, 4], width: 1 });
           st.clip(() => {
@@ -446,14 +452,14 @@ and with polynomial fractions $C=n_C/d_C$, $P=n_P/d_P$, $H=n_H/d_H$ every closed
             const col = p[0] > 1e-9 ? 'red' : 'accent', q = [clamp(p[0], -4.1, 1.5), clamp(p[1], -2.9, 2.9)];
             pz.line(q[0] - 0.17, q[1] - 0.17, q[0] + 0.17, q[1] + 0.17, { color: col, width: 3 }); pz.line(q[0] - 0.17, q[1] + 0.17, q[0] + 0.17, q[1] - 0.17, { color: col, width: 3 });
           }
-          pz.text('unstable', 0.8, 2.6, { size: 11, color: 'red', align: 'center' });
+          pz.text('unstable', 0.8, -2.65, { size: 11, color: 'red', align: 'center' });
         });
         v.legend([['accent', 'from the formula $T=G/(1+GH)$'], ['gold', 'direct simulation of the loop', { dot: true }], ['muted', 'open loop, no feedback (scaled to aim at 1)', { dash: true }], ['green', 'closed-loop zeros', { dot: true }]]);
         v.readout(() => {
           const c = compute(), mr = Math.max(...c.cl.map((p) => p[0]));
           const T0 = Math.abs(c.T.den[0]) > 1e-12 ? c.T.num[0] / c.T.den[0] : NaN;
           const poles = c.cl.slice().sort((a, b) => b[0] - a[0]).map((p) => (Math.abs(p[1]) < 1e-9 ? v.fix(p[0], 3) : `$${v.fix(p[0], 3)}${p[1] < 0 ? '-' : '+'}${v.fix(Math.abs(p[1]), 3)}i$`)).join(', ');
-          const fin = mr < 0 ? ` · final value $T(0)$ = ${v.fix(T0, 4)}, simulation at $t=16$ s: ${v.fix(c.sim.y[c.sim.y.length - 1], 4)}` : '';
+          const fin = mr < 0 ? ` · steady state $T(0)$ = ${v.fix(T0, 4)}${Math.abs(T0 - 1) > 1e-6 ? `, so the loop leaves an error of ${v.fix(1 - T0, 4)}` : ': no steady-state error'}` : '';
           return `closed-loop poles: ${poles} → ${mr < 0 ? '**stable**' : '**unstable**'}${fin} · formula vs loop simulation: largest difference $${v.sci(Math.max(c.mx, 1e-16), 2)}$${mr >= 0 ? ` (relative to the largest output, $${v.sci(Math.max(c.rel, 1e-16), 2)}$)` : ''}, so the two agree`;
         });
       },
@@ -489,29 +495,33 @@ the injected signal minus what comes back, per unit injected. The closed-loop ch
           const w = wS.value, cut = +cutS.value, k = `${w}|${kS.value}|${cut}`;
           if (k === ckey) return cache;
           ckey = k;
-          const per = TAU / w, Tset = 14, Tend = Tset + 3 * per, dt = Math.min(0.005, per / 300);
+          const per = TAU / w, Tset = 14, Tend = Tset + 3 * per, dt = Math.min(0.01, per / 300);
           const bl = blocks(), seq = [0, 1, 2].map((i) => bl[(startAt[cut] + i) % 3]).map(realize);
-          const xs = seq.map((b) => new Array(b.n).fill(0));
-          const out = (X, u0) => { let u = u0; for (let i = 0; i < 3; i++) { const b = seq[i]; let y = b.D * u; for (let j = 0; j < b.n; j++) y += b.C[j] * X[i][j]; u = y; } return u; };
-          const der = (X, t) => {
-            let u = Math.sin(w * t); const dX = [];
+          const offs = [0, seq[0].n, seq[0].n + seq[1].n], NS = offs[2] + seq[2].n;
+          // the open chain x → block → block → block; returns the chain output (z is minus this: the comparator)
+          const deriv = (X, t, dX) => {
+            let u = Math.sin(w * t);
             for (let i = 0; i < 3; i++) {
-              const b = seq[i], x = X[i], d = new Array(b.n);
-              let last = u; for (let j = 0; j < b.n; j++) last -= b.a[j] * x[j];
-              for (let j = 0; j < b.n - 1; j++) d[j] = x[j + 1]; if (b.n) d[b.n - 1] = last;
-              let y = b.D * u; for (let j = 0; j < b.n; j++) y += b.C[j] * x[j];
-              dX.push(d); u = y;
+              const b = seq[i], o = offs[i]; let last = u, y = b.D * u;
+              for (let j = 0; j < b.n; j++) { last -= b.a[j] * X[o + j]; y += b.C[j] * X[o + j]; }
+              for (let j = 0; j < b.n - 1; j++) dX[o + j] = X[o + j + 1];
+              if (b.n) dX[o + b.n - 1] = last;
+              u = y;
             }
-            return dX;
+            return u;
           };
-          const add = (X, D, h) => X.map((x, i) => x.map((q, j) => q + h * D[i][j]));
-          let X = xs, t = 0; const ts = [], zs = [], xsIn = [];
-          const N = Math.ceil(Tend / dt);
+          const X = new Float64Array(NS), Xt = new Float64Array(NS), k1 = new Float64Array(NS), k2 = new Float64Array(NS), k3 = new Float64Array(NS), k4 = new Float64Array(NS);
+          const ts = [], zs = [], xsIn = [], N = Math.ceil(Tend / dt);
           for (let n = 0; n <= N; n++) {
-            if (t >= Tset) { ts.push(t); xsIn.push(Math.sin(w * t)); zs.push(-out(X, Math.sin(w * t))); }
-            const k1 = der(X, t), k2 = der(add(X, k1, dt / 2), t + dt / 2), k3 = der(add(X, k2, dt / 2), t + dt / 2), k4 = der(add(X, k3, dt), t + dt);
-            X = X.map((x, i) => x.map((q, j) => q + (dt / 6) * (k1[i][j] + 2 * k2[i][j] + 2 * k3[i][j] + k4[i][j])));
-            t += dt;
+            const t = n * dt, y = deriv(X, t, k1);
+            if (t >= Tset) { ts.push(t); xsIn.push(Math.sin(w * t)); zs.push(-y); }
+            for (let i = 0; i < NS; i++) Xt[i] = X[i] + (dt / 2) * k1[i];
+            deriv(Xt, t + dt / 2, k2);
+            for (let i = 0; i < NS; i++) Xt[i] = X[i] + (dt / 2) * k2[i];
+            deriv(Xt, t + dt / 2, k3);
+            for (let i = 0; i < NS; i++) Xt[i] = X[i] + dt * k3[i];
+            deriv(Xt, t + dt, k4);
+            for (let i = 0; i < NS; i++) X[i] += (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
           }
           const f = fitSine(ts, zs, w);
           // z ≈ amp cos(ωt + φ) = amp sin(ωt + φ + π/2); the injected x = sin ωt, so z/x = amp e^{i(φ+π/2)} = −L
@@ -522,7 +532,7 @@ the injected signal minus what comes back, per unit injected. The closed-loop ch
           return cache;
         };
         dg.onClick((x, y) => {
-          const pts = [[3.1, 4.1], [7.9, 4.1], [15.6, 2.5], [5.5, 1.4]];
+          const pts = [[3.5, 4.1], [9.05, 4.1], [15.9, 4.1], [6.5, 1.4]];
           let best = 0, bd = 1e9; pts.forEach((p, i) => { const d = Math.hypot(x - p[0], y - p[1]); if (d < bd) { bd = d; best = i; } });
           if (bd < 2.5) cutS.set(best);
         });
@@ -531,34 +541,33 @@ the injected signal minus what comes back, per unit injected. The closed-loop ch
           // ---- diagram: comparator, C, P, sensor, with the cut marked
           const Y = 4.1, Y2 = 1.4, R = 0.34;
           const segs = [
-            { pts: [[2.4 + R, Y], [4.6, Y]], lab: ['e', 3.4, Y + 0.42] },
-            { pts: [[7.4, Y], [9.6, Y]], lab: ['u', 8.5, Y + 0.42] },
-            { pts: [[12.4, Y], [15.6, Y], [15.6, Y2], [12.4, Y2]], lab: ['y', 16.0, 2.75] },
-            { pts: [[9.6, Y2], [2.4, Y2], [2.4, Y - R]], lab: ['y_m', 5.4, Y2 + 0.42] },
+            { pts: [[2.0 + R, Y], [4.7, Y]], lab: ['e', 3.5, Y + 0.42] },
+            { pts: [[7.3, Y], [10.8, Y]], lab: ['u', 9.05, Y + 0.42] },
+            { pts: [[14.4, Y], [17.4, Y], [17.4, Y2], [14.4, Y2]], lab: ['y', 17.8, 2.75] },
+            { pts: [[10.8, Y2], [2.0, Y2], [2.0, Y - R]], lab: ['y_m', 6.5, Y2 + 0.42] },
           ];
-          bdSum(dg, 2.4, Y, R, { w: '+', s: '−' });
-          bdWire(dg, [[0.6, Y], [2.4 - R, Y]], { alpha: 0.4 }); dg.tex('r=0', 1.1, Y + 0.45, { size: 13, color: 'muted' });
-          bdBlock(dg, 6.0, Y, 2.8, 1.3, `${v.fix(kS.value, 2)}`, { color: 'orange', sub: 'C(s)', size: 15 });
-          bdBlock(dg, 11.0, Y, 2.8, 1.3, '\\frac{1}{(s+1)(0.5s+1)}', { color: 'accent', sub: 'P(s)', size: 14 });
-          bdBlock(dg, 11.0, Y2, 2.8, 1.2, '\\frac{1}{0.2s+1}', { color: 'teal', sub: 'H(s)', size: 14 });
+          bdSum(dg, 2.0, Y, R, { w: '+', s: '−' });
+          bdWire(dg, [[0.3, Y], [2.0 - R, Y]], { alpha: 0.4 }); dg.tex('r=0', 0.9, Y + 0.45, { size: 13, color: 'muted' });
+          bdBlock(dg, 6.0, Y, 2.6, 1.3, `${v.fix(kS.value, 2)}`, { color: 'orange', sub: 'C(s)', size: 15 });
+          bdBlock(dg, 12.6, Y, 3.6, 1.35, '\\dfrac{1}{(s+1)(0.5s+1)}', { color: 'accent', sub: 'P(s)', size: 12.5 });
+          bdBlock(dg, 12.6, Y2, 3.6, 1.25, '\\dfrac{1}{0.2s+1}', { color: 'teal', sub: 'H(s)', size: 12.5 });
           segs.forEach((sg, i) => {
             const cutHere = i === cut;
             bdWire(dg, sg.pts, { color: cutHere ? 'faint' : 'muted', width: cutHere ? 1.3 : 1.7 });
             dg.tex(sg.lab[0], sg.lab[1], sg.lab[2], { size: 15, color: cutHere ? 'muted' : 'ink' });
           });
-          // the cut: on the first segment of the chosen wire
+          // the cut, in the middle of the first segment of the chosen wire: z is read upstream, x injected downstream
           const sg = segs[cut], A = sg.pts[0], Bp = sg.pts[1], mid = [(A[0] + Bp[0]) / 2, (A[1] + Bp[1]) / 2];
-          const hor = Math.abs(Bp[1] - A[1]) < 1e-9, dir = hor ? Math.sign(Bp[0] - A[0]) : Math.sign(Bp[1] - A[1]);
-          const g = 0.35, up = hor ? [mid[0] - dir * g, mid[1]] : [mid[0], mid[1] - dir * g], dn = hor ? [mid[0] + dir * g, mid[1]] : [mid[0], mid[1] + dir * g];
-          const tick = (p) => (hor ? dg.line(p[0], p[1] - 0.3, p[0], p[1] + 0.3, { color: 'red', width: 2.6 }) : dg.line(p[0] - 0.3, p[1], p[0] + 0.3, p[1], { color: 'red', width: 2.6 }));
-          tick(up); tick(dn);
-          const gen = hor ? [dn[0] + dir * 0.0, dn[1] - 0.95] : [dn[0] + 0.95, dn[1]];
-          dg.circle(gen[0], gen[1], 0.38, { color: 'orange', width: 2, fill: 'panel', fillAlpha: 1 });
-          dg.curve((s) => [gen[0] - 0.24 + 0.48 * s, gen[1] + 0.15 * Math.sin(TAU * s)], 0, 1, { color: 'orange', width: 1.6, n: 30 });
-          dg.arrow(gen[0], gen[1] + (hor ? 0.38 : 0), dn[0] + (hor ? 0 : 0.12), dn[1] + (hor ? -0.06 : 0), { color: 'orange', width: 1.6, head: 6 });
-          dg.tex('x', gen[0] + (hor ? 0.65 : 0.6), gen[1] + (hor ? -0.1 : 0.5), { size: 15, color: 'orange' });
+          const dir = Math.sign(Bp[0] - A[0]), g = 0.45;
+          const up = [mid[0] - dir * g, mid[1]], dn = [mid[0] + dir * g, mid[1]];
+          for (const p of [up, dn]) dg.line(p[0], p[1] - 0.32, p[0], p[1] + 0.32, { color: 'red', width: 2.8 });
+          const side = mid[1] < 2.5 ? 1 : -1, gen = [dn[0] + dir * 0.55, dn[1] + side * 1.0];
+          dg.circle(gen[0], gen[1], 0.36, { color: 'orange', width: 2, fill: 'panel', fillAlpha: 1 });
+          dg.curve((q) => [gen[0] - 0.22 + 0.44 * q, gen[1] + 0.14 * Math.sin(TAU * q)], 0, 1, { color: 'orange', width: 1.6, n: 30 });
+          dg.arrow(gen[0], gen[1] - side * 0.36, dn[0] + dir * 0.55, dn[1] - side * 0.04, { color: 'orange', width: 1.6, head: 6 });
+          dg.tex('x', gen[0] + 0.62, gen[1], { size: 15, color: 'orange' });
           dg.dot(up[0], up[1], { r: 4.5, color: 'accent' });
-          dg.tex('z', up[0] + (hor ? -0.45 : -0.55), up[1] + (hor ? -0.5 : 0), { size: 15, color: 'accent' });
+          dg.tex('z', up[0] - dir * 0.15, up[1] + side * 0.62, { size: 15, color: 'accent' });
           dg.corner('click a wire to cut the loop there', 'tr', { size: 11 });
           // ---- scope: last two periods
           const t1 = m.ts[m.ts.length - 1], t0 = t1 - 2 * m.per;
@@ -575,9 +584,12 @@ the injected signal minus what comes back, per unit injected. The closed-loop ch
           const lo = Math.min(-1.6, ...curve.map((z) => z[0])) - 0.3;
           ny.setView([lo, Math.max(lim, 1.2)], [-Math.max(1.4, lim * 0.75), Math.max(1.4, lim * 0.6)]);
           ny.path(curve, { color: 'purple', width: 2 });
-          ny.dot(-1, 0, { r: 5, color: 'red', label: '−1', labelPos: 'sw' });
+          ny.dot(-1, 0, { r: 5, color: 'red', label: '−1', labelPos: 'nw' });
           ny.arrow(-1, 0, Lw[0], Lw[1], { color: 'green', width: 2.4 });
-          ny.tex('1+L', (Lw[0] - 1) / 2, Lw[1] / 2, { size: 14, color: 'green', dy: -12 });
+          { // label beside the middle of the arrow, on its left-hand side (screen pixels)
+            const X0 = ny.X(-1), Y0 = ny.Y(0), X1 = ny.X(Lw[0]), Y1 = ny.Y(Lw[1]), ln = Math.hypot(X1 - X0, Y1 - Y0) || 1;
+            ny.texPx('1+L', (X0 + X1) / 2 - ((Y1 - Y0) / ln) * 24, (Y0 + Y1) / 2 + ((X1 - X0) / ln) * 24, { size: 14, color: 'green' });
+          }
           ny.dot(Lw[0], Lw[1], { r: 5.5, color: 'accent' });
           ny.dot(m.Lm[0], m.Lm[1], { r: 9, hollow: true, color: 'gold', width: 2.2 });
           ny.tex('L(i\\omega)', Lw[0], Lw[1], { size: 14, color: 'accent', dx: 14, dy: 14, align: 'left' });
@@ -612,7 +624,7 @@ as complex numbers. So $S$ and $T$ cannot both be small at the same frequency. W
           p3: { label: 'P + three lags', L: (K) => tf([K], [1, 3, 3, 1]) },
         };
         const lpS = v.select('loop', Object.entries(LOOPS).map(([value, o]) => ({ value, label: o.label })), 'pi');
-        const kS = v.slider('gain $K$', 0.2, 7, 1.6, { log: true, fmt: (x) => v.fix(x, 2) });
+        const kS = v.slider('gain $K$', 0.2, 7, 2.5, { log: true, fmt: (x) => v.fix(x, 2) });
         const scS = v.select('magnitude axis', [{ value: 'log', label: 'log' }, { value: 'lin', label: 'linear' }], 'log');
         const bd = v.stage({ x: [0.01, 100], y: [0.01, 100], xlog: true, ylog: true, height: 320, axes: 'box', xlabel: 'ω (rad/s)', ylabel: 'magnitude', weight: 1.45, title: 'Bode magnitudes' });
         const cp = v.stage({ x: [-1, 2.2], y: [-1.6, 1.6], equal: true, height: 320, axes: true, weight: 1, title: '$S(i\\omega)+T(i\\omega)$ in the complex plane' });
@@ -671,7 +683,7 @@ $$\frac{T-T_0}{T}=S_0\,\frac{P-P_0}{P},\qquad S_0=\frac{1}{1+P_0C}.$$
 So at frequencies where the loop gain $|PC|$ is large, the closed loop is much less sensitive to plant variations than the plant itself; in open loop (no feedback) the output changes in full proportion to the plant.`,
       scope: String.raw`linear loops that stay stable for all the plants considered; the gain in insensitivity is available only where $|PC|\gg1$, and it does not extend to the sensor: in a loop $T\approx1/H$, so sensor errors pass straight through.`,
       idea: String.raw`Differentiate: $dT/dP=C/(1+PC)^2$, so $\frac{P}{T}\frac{dT}{dP}=\frac{1}{1+PC}$. The closed loop's output is set by the comparison $e=r-y$, and the plant matters only through how much error it needs to produce a given output; with large loop gain that error is tiny whatever the plant. This is the principle behind Black's feedback amplifier (circ-8.2): vacuum tubes whose gain drifted by tens of percent, wrapped in feedback, gave amplifiers stable to a fraction of a percent. The price is that high loop gain must be achieved without destabilising the loop (1.9).`,
-      caption: String.raw`Forty plants $P_k(s)=k/((\tau s+1)(0.1s+1))$ are drawn at random with the gain $k$ within $\pm\delta$ of 1 (and optionally the time constant $\tau$ within $\pm50\%$ of 1). Left: open loop, driven by the input that would give $y\to1$ for the nominal plant. Middle: closed loop with proportional gain $K$ and a fixed prefilter that again aims the nominal plant at 1. The final values fan out by $\pm\delta$ in open loop and much less in closed loop. Bottom: final value against plant gain $k$, with each trial as a dot; the closed-loop slope at $k=1$ is $S_0=1/(1+K)$. Raise $K$ to tighten the bundle, and watch the price: overshoot.`,
+      caption: String.raw`Forty plants $P_k(s)=k/((\tau s+1)(0.1s+1))$ are drawn at random with the gain $k$ within $\pm\delta$ of 1 (and optionally the time constant $\tau$ within $\pm50\%$ of 1). Left: open loop, driven by the input that would give $y\to1$ for the nominal plant. Right: closed loop with proportional gain $K$ and a fixed prefilter that again aims the nominal plant at 1. The final values fan out by $\pm\delta$ in open loop and much less in closed loop. Bottom: final value against plant gain $k$, with each trial as a dot; the closed-loop slope at $k=1$ is $S_0=1/(1+K)$. Raise $K$ to tighten the bundle, and watch the price: overshoot.`,
       deps: ['ctrl-1.6'],
       refs: ['Åström–Murray §2.5', 'Franklin–Powell §4.1'],
       tags: ['sensitivity', 'robustness'],
@@ -714,10 +726,10 @@ So at frequencies where the loop gain $|PC|$ is large, the closed loop is much l
           fv.fn((g) => (c.F * g * c.K) / (1 + g * c.K), { color: 'green', width: 2.4, domain: [0.35, 1.65] });
           const S0 = 1 / (1 + c.K);
           fv.line(0.5, 1 - 0.5 * S0, 1.5, 1 + 0.5 * S0, { color: 'accent', width: 1.4, dash: [5, 4] });
-          fv.vband(1 - c.d, 1 + c.d, { color: 'gold', alpha: 0.1 });
+          fv.vband(1 - c.d, 1 + c.d, { color: 'gold', alpha: 0.07 });
           for (const rr of c.runs) { fv.dot(rr.g, rr.olF, { r: 3.2, color: 'red' }); fv.dot(rr.g, rr.clF, { r: 3.2, color: 'green' }); }
           fv.dot(1, 1, { r: 5, color: 'ink' });
-          fv.text(`slope ${v.fix(S0, 3)} = 1/(1+K)`, 1.52, 1 + 0.52 * S0, { size: 11.5, color: 'accent', align: 'left', dy: -12 });
+          fv.text(`closed loop: slope ${v.fix(S0, 3)} = 1/(1+K)`, 1.6, 1 + 0.6 * S0, { size: 11.5, color: 'accent', align: 'right', dy: -14 });
           fv.text('open loop: slope 1', 1.3, 1.37, { size: 11.5, color: 'red', align: 'right' });
         });
         v.legend([['red', 'open loop'], ['green', 'closed loop'], ['accent', 'tangent at $k_0=1$: slope $S_0$', { dash: true }], ['gold', 'range of plant gains', { area: true }]]);

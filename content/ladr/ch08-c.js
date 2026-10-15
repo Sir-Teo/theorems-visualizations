@@ -720,7 +720,7 @@ where $A_1, \dots, A_m$ are square matrices (possibly of different sizes) lying 
           const names = sizes.map((s, k) => `A_${k + 1}`).join(', ');
           const base = `Blocks of sizes $${sizes.join(', ')}$: $A = \\operatorname{diag}(${names})$${sizes.every((s) => s === 1) ? ' — a diagonal matrix' : ''}.`;
           if (leak.value && !stray) return `${base} A single block fills the whole matrix, so there is no entry outside it to switch on.`;
-          if (stray) return `${base.replace('$A = ', '$A \\ne ')} — the entry $A_{${stray[0] + 1},${stray[1] + 1}} = 2$ lies outside the blocks: $Ae_${stray[1] + 1}$ gets a component along $e_${stray[0] + 1}$, which belongs to another block, so $\\operatorname{span}$ of the block containing $e_${stray[1] + 1}$ is no longer invariant.`;
+          if (stray) return `${base.replace('$A = ', '$A \\ne ')} — the entry $A_{${stray[0] + 1},${stray[1] + 1}} = 2$ lies outside the blocks: $Ae_${stray[1] + 1}$ gets a component along $e_${stray[0] + 1}$, which belongs to another block, so the coordinate subspace of the block containing $e_${stray[1] + 1}$ is no longer invariant.`;
           return `${base} Each span of a group of basis vectors is invariant, and $A$ acts on it by its own block: $Ax$ is computed block by block.`;
         });
       },

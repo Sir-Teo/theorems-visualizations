@@ -40,7 +40,7 @@ export function buildIndex({ G, chapterOf }) {
   for (const it of all) {
     const C = G.colById.get(it.col); if (!C) continue; const F = G.fieldById.get(C.field); const Ch = chapterOf(it.col, it.c);
     const name = norm(it.name);
-    const body = norm([it.kind, C.short, C.title, F?.short, F?.title, Ch?.title, (it.tags || []).join(' '), it.st, it.pic, it.credit, it.au, it.paper?.authors, it.paper?.title, it.paper?.venue].filter(Boolean).join(' '));
+    const body = norm([it.kind, C.short, C.title, F?.short, F?.title, Ch?.title, (it.tags || []).join(' '), it.st, it.pic, it.credit, it.au, it.yr, it.paper?.authors, it.paper?.title, it.paper?.venue].filter((x) => x != null && x !== '').join(' '));
     entries.push({ t: 'item', it, name, nw: words(name), body, num: it.num, yr: it.yr, kind: it.kind, col: it.col, field: C.field, by: norm([it.credit, it.au, it.paper?.authors].filter(Boolean).join(' ')), planned: !!it.planned, w: it.planned ? Math.min(1.5, (G.allChildren?.get(it.id)?.length || 0) / 8) : 1.5 + Math.min(3, (it.desc || 0) / 30) });
   }
   for (const F of G.fields) { const name = norm(`${F.title} ${F.short}`); entries.push({ t: 'field', F, name, nw: words(name), body: norm((F.areas || []).map((a) => a.title || a).join(' ') + ' ' + (F.blurb || '')), field: F.id }); }

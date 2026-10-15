@@ -334,7 +334,7 @@ Each equals GDP. In published statistics the three are built from different sour
           // flows
           const flows = [
             ['C', bz([11, 40], [11, 64], [89, 64], [89, 40]), d.C, 'blue', [50, 60.6], `consumption C ${Math.round(tg.C)}`],
-            ['Y', bz([90, 24], [90, -2], [10, -2], [10, 24]), d.Y, 'teal', [50, 4.6], `factor incomes Y ${Math.round(tg.Y)}`],
+            ['Y', bz([90, 24], [90, -2], [10, -2], [10, 24]), d.Y, 'teal', [50, 1.2], `factor incomes Y ${Math.round(tg.Y)}`],
             ['T', bz([20, 37], [29, 37], [29, 49], [38, 49]), d.T, 'gold', [27.5, 46], `taxes T ${Math.round(tg.T)}`],
             ['G', bz([58, 49], [72, 49], [85, 51], [85, 40.2]), d.G, 'pink', [70, 51.6], `purchases G ${Math.round(tg.G)}`],
             ['S', bz([20, 27], [29, 27], [29, 13], [38, 13]), d.Sp, 'purple', [24.5, 15.2], `private saving ${Math.round(tg.Sp)}`],
@@ -419,7 +419,7 @@ where $Y$ is GDP; $C$ is household **consumption** of goods and services; $I$ is
           T.hline(100, { color: 'muted', width: 1.4, dash: [5, 4] }); T.hline(0, { color: 'ink', width: 1 });
           T.path(nx, { color: 'ink', width: 1.8 });
           T.text('World War II', 1944, 104, { align: 'center', color: 'muted', size: 10.5, dy: -4 });
-          if (naive.value) { T.path(cigx, { color: 'red', width: 2, dash: [5, 3] }); T.text('C + I + G + X', 2024, cigx[cigx.length - 1][1], { align: 'right', dy: -10, color: 'red', size: 11, weight: 700 }); }
+          if (naive.value) { T.path(cigx, { color: 'red', width: 2, dash: [5, 3] }); T.text('naive C + I + G + X', 1988, 117, { align: 'center', color: 'red', size: 11, weight: 700 }); }
           T.text(String(sel), sel, 121, { dx: sel > 2012 ? -8 : 8, align: sel > 2012 ? 'right' : 'left', color: 'accent', size: 11.5, weight: 700 });
           // ----- one transaction
           const [eff, note] = EFF[tx.value], d = { C: 0, I: 0, G: 0, X: 0, M: 0, ...eff };
@@ -431,13 +431,13 @@ where $Y$ is GDP; $C$ is household **consumption** of goods and services; $I$ is
             if (Math.abs(x) > 1e-9) { B.rect(k + 1 - 0.28, 0, k + 1 + 0.28, x, { fill: cols[k], fillAlpha: k === 4 && naive.value ? 0.15 : 0.7, color: cols[k], width: 1.2 }); B.text(`${x > 0 ? '+' : '−'}${Math.abs(x)}`, k + 1, x, { align: 'center', dy: x > 0 ? -10 : 10, color: cols[k], size: 12, weight: 700 }); }
             else if (!(k === 4 && naive.value)) B.text('0', k + 1, 0, { align: 'center', dy: -10, color: 'muted', size: 11 });
           });
-          if (wrong) B.text('overstated: foreign production counted as ours', 6, 30, { align: 'right', dy: -14, color: 'red', size: 11, weight: 700 });
+          if (wrong) B.text('overstated: foreign production counted as ours', 6.4, 49, { align: 'right', color: 'red', size: 11, weight: 700 });
           st = { sel, r: BEA[i0], note, dY, wrong };
         });
         v.readout(() => {
           const { sel, r, note, dY, wrong } = st, [C, I, G, X, M, Yb] = r, sumv = C + I + G + X - M, f = (x) => num(x, 1), sh = (x) => pctx(x / Yb);
           const naiveTxt = naive.value ? ` Without subtracting imports the sum would be ${f(C + I + G + X)} — ${sh(M)} too high.` : '';
-          return `**${sel}** (billions of dollars): $C$ ${f(C)} + $I$ ${f(I)} + $G$ ${f(G)} + $X$ ${f(X)} − $M$ ${f(M)} = **${f(sumv)}**; BEA's GDP: ${f(Yb)} (shares ${sh(C)}, ${sh(I)}, ${sh(G)}, net exports ${sh(X - M)}).${naiveTxt} — ${note} ΔGDP = ${dY > 0 ? '+' : ''}${dY}${wrong ? ' (wrong!)' : ''}.`;
+          return `**${sel}** (billions of dollars): $C$ ${f(C)} + $I$ ${f(I)} + $G$ ${f(G)} + $X$ ${f(X)} − $M$ ${f(M)} = **${f(sumv)}**; BEA's GDP: ${f(Yb)} (shares ${sh(C)}, ${sh(I)}, ${sh(G)}, net exports ${sh(X - M)}).${naiveTxt} — ${note}${naive.value ? ` The naive sum records ΔGDP = ${dY > 0 ? '+' : ''}${dY}${wrong ? ' — wrong, because the import is never subtracted' : ''}.` : ''}`;
         });
       },
     },
@@ -468,6 +468,7 @@ national saving equals domestic investment plus net exports, i.e. **net capital 
         let st = {};
         v.legend([['gray', '$C$', { area: true }], ['orange', '$I$', { area: true }], ['pink', '$G$', { area: true }], ['teal', '$NX$', { area: true }], ['gold', '$T$', { area: true }], ['blue', '$S_p$ private saving', { area: true }], ['purple', '$S_g = T - G$', { area: true }], ['green', 'national saving']]);
         v.render(() => {
+          ch.el.hidden = brk.value;
           const m = model(Gs.value), hh = 0.45;
           const lab = (key, w) => `${key === 'Sp' ? 'Sₚ' : key === 'Sg' ? 'T−G' : key} ${w < 0 ? '−' : ''}${num(Math.abs(w), w % 1 ? 1 : 0)}`;
           const row = (y, parts, title, k = 1) => {
@@ -606,8 +607,8 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
           const s = Math.abs(sg.value - 1) < 1e-4 ? 1 + 1e-4 : sg.value, g = gb.value;
           const price = (t) => [(1 + g) ** t, 1.01 ** t, 1.03 ** t * (oil.value && t >= 5 ? 1.5 : 1), 1.03 ** t, 0.97 ** t]; // beef, chicken, petrol, rent, machines
           const Pm = (p) => (0.5 * p[0] ** (1 - s) + 0.5 * p[1] ** (1 - s)) ** (1 / (1 - s));
-          const col = (p) => Pm(p) ** 0.4 * p[2] ** 0.15 * p[3] ** 0.45;
-          const qty = (p) => { const E = 100 * col(p), um = (0.4 * E) / Pm(p); return [um * 0.5 * (p[0] / Pm(p)) ** -s, um * 0.5 * (p[1] / Pm(p)) ** -s, (0.15 * E) / p[2], (0.45 * E) / p[3]]; };
+          const col = (p) => 0.4 * Pm(p) + 0.15 * p[2] + 0.45 * p[3]; // cost of the base-year level of well-being (meat composite, petrol and rent in fixed amounts)
+          const qty = (p) => { const um = 40; return [um * 0.5 * (p[0] / Pm(p)) ** -s, um * 0.5 * (p[1] / Pm(p)) ** -s, 15, 45]; };
           const T = Array.from({ length: 11 }, (_, t) => t), P = T.map(price), Q = P.map(qty);
           const cpi = P.map((p) => (100 * sum(q0.map((q, i) => q * p[i]))) / 100), cl = P.map((p) => 100 * col(p));
           const sh = (t) => { const e = Q[t].map((q, i) => q * P[t][i]), E = sum(e); return e.map((x) => x / E); };
@@ -628,7 +629,7 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
           const rows = [[2.85, 'base year: 2015 basket at 2015 prices', P[0], q0], [1.75, `${yh.x}: the 2015 basket at ${yh.x} prices (CPI)`, P[t], q0], [0.65, `${yh.x}: cheapest basket as good as 2015's`, P[t], Q[t]]];
           for (const [y, lab, p, q] of rows) {
             L.text(lab, 0, y + 0.44, { color: 'ink', size: 11, weight: 650 });
-            let x = 0; q.forEach((qq, i) => { const w = qq * p[i]; hseg(L, x, w, y, 0.26, GC[i], GOODS[i], { size: 10.5, min: 44 }); x += w; });
+            let x = 0; q.forEach((qq, i) => { const w = qq * p[i]; hseg(L, x, w, y, 0.26, GC[i], GOODS[i], { size: 10, min: 36 }); x += w; });
             L.text(num(x, 1), x, y, { dx: 6, color: 'ink', size: 12, weight: 700 });
           }
           hatch(v, L, cl[t], 1.75 - 0.26, cpi[t], 1.75 + 0.26, 'red', 0.8, 5);
@@ -648,20 +649,20 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
       num: '1.8', kind: 'Definition', name: 'Unemployment and labour-force flows',
       statement: String.raw`The adult population is divided into the **employed** $E$ (worked for pay in the reference week), the **unemployed** $U$ (without work, available, and actively searching), and those **not in the labour force** $N$ (students, retirees, carers, discouraged workers). The **labour force** is $L = E + U$, the **unemployment rate** is $u = U/L$ and the **participation rate** is $L/(E + U + N)$. Each month people move between the three states; if the monthly transition probabilities stay constant, the shares converge to a **steady state** — the stationary distribution of the three-state Markov chain — at which every stock's inflows equal its outflows. Ignoring moves in and out of the labour force, the steady-state rate is $u^* = s/(s + f)$, with $s$ the job-loss rate and $f$ the job-finding rate (2.4).`,
       idea: String.raw`The unemployment rate is a ratio of stocks fed by flows. A stock stops changing when what flows in equals what flows out — for unemployment, $sE + (\text{entrants from } N) = fU + (\text{exits to } N)$ — and solving the balance for all three stocks gives the stationary distribution (stoch 4.1). Because the gross flows are large (a quarter of the unemployed find a job in a typical U.S. month), the stocks approach the steady state within months. The definition has a blind spot: someone who stops searching leaves $U$ for $N$, so a wave of discouragement lowers the unemployment rate even though nobody found a job — which is why the participation rate is read alongside it.`,
-      caption: String.raw`A simulated population of 1,000 adults, each dot a person; every month each person moves between the boxes with the probabilities on the arrows (the job-finding, job-loss and giving-up rates are sliders; the others are fixed). The economy starts in a slump with 10% unemployment; the charts show the unemployment and participation rates converging to their steady states (dashed). Press **half the unemployed give up searching**: the unemployment rate drops at once, though nobody found work.`,
+      caption: String.raw`A simulated population of 2,000 adults, each dot a person; every month each person moves between the boxes with the probabilities on the arrows (the job-finding, job-loss and giving-up rates are sliders; the others are fixed). The economy starts in a slump with 10% unemployment; the charts show the unemployment and participation rates converging to their steady states (dashed) and then fluctuating around them, as a finite population must. Press **half the unemployed give up searching**: the unemployment rate drops at once, though nobody found work.`,
       deps: ['stoch-4.1'], refs: ['Mankiw ch. 2', 'Mankiw ch. 7'], tags: ['unemployment', 'labour market'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Unemployment#Measurement' },
       viz(v) {
         const D = v.stage({ x: [0, 100], y: [0, 60], height: 330, axes: false, full: true });
         const Us = v.stage({ x: [0, 120], y: [0, 14], height: 190, axes: 'box', xticks: [0, 24, 48, 72, 96, 120], yticks: [0, 4, 8, 12], title: 'unemployment rate $U/(E+U)$, %', xlabel: 'month' });
-        const Ps = v.stage({ x: [0, 120], y: [50, 70], height: 190, axes: 'box', xticks: [0, 24, 48, 72, 96, 120], yticks: [50, 55, 60, 65, 70], title: 'participation rate $(E+U)/\\text{population}$, %', xlabel: 'month' });
+        const Ps = v.stage({ x: [0, 120], y: [57, 72], height: 190, axes: 'box', xticks: [0, 24, 48, 72, 96, 120], yticks: [60, 65, 70], title: 'participation rate $(E+U)/\\text{population}$, %', xlabel: 'month' });
         const pm = (x) => `${(100 * x).toFixed(1)}%/mo`;
         const fS = v.slider('job-finding rate $f$ (U → E)', 0.05, 0.6, 0.25, { step: 0.01, fmt: pm });
         const sS = v.slider('job-loss rate $s$ (E → U)', 0.005, 0.05, 0.015, { step: 0.001, fmt: pm });
         const qS = v.slider('giving up searching (U → N)', 0, 0.4, 0.15, { step: 0.01, fmt: pm });
-        const FIX = { EN: 0.025, NE: 0.04, NU: 0.025 }, POP = 1000, SPEED = 3, MONTHS = 120;
+        const FIX = { EN: 0.025, NE: 0.04, NU: 0.025 }, POP = 2000, SPEED = 3, MONTHS = 120;
         let hist, rng, events, pending = false, lastT = -1;
-        const reset = () => { hist = [{ E: 560, U: 62, N: 378 }]; rng = v.rng(2024); events = []; };
+        const reset = () => { hist = [{ E: 1188, U: 132, N: 680 }]; rng = v.rng(2024); events = []; };
         reset();
         v.button('Half the unemployed give up searching', () => { pending = true; v.play(); });
         const rates = () => ({ EU: sS.value, EN: FIX.EN, UE: fS.value, UN: qS.value, NE: FIX.NE, NU: FIX.NU });
@@ -681,7 +682,7 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
         const COLS = { E: 'green', U: 'red', N: 'gray' };
         // slot positions (px) inside a box, filled bottom-up
         const slots = (key) => {
-          const [x0, y0, x1, y1] = BOX[key], X0 = D.X(x0) + 7, X1 = D.X(x1) - 7, Yb = D.Y(y0) - 7, Yt = D.Y(y1) + 22, sp = 8.6, out = [];
+          const [x0, y0, x1, y1] = BOX[key], X0 = D.X(x0) + 6, X1 = D.X(x1) - 6, Yb = D.Y(y0) - 6, Yt = D.Y(y1) + 22, sp = 6.2, out = [];
           const nc = Math.max(1, Math.floor((X1 - X0) / sp)), nr = Math.max(1, Math.floor((Yb - Yt) / sp));
           for (let r = 0; r < nr; r++) for (let c = 0; c < nc; c++) out.push([X0 + (c + 0.5) * ((X1 - X0) / nc), Yb - (r + 0.5) * sp]);
           return out;
@@ -706,7 +707,7 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
           // arrows with rates
           for (const key in ARC) {
             const [p0, c, p1] = ARC[key], pts = []; for (let i = 0; i <= 24; i++) { const u = i / 24; pts.push([(1 - u) ** 2 * p0[0] + 2 * u * (1 - u) * c[0] + u * u * p1[0], (1 - u) ** 2 * p0[1] + 2 * u * (1 - u) * c[1] + u * u * p1[1]]); }
-            const flow = R[key] * st[key[0]], w = clamp(flow * 0.32, 1.2, 9);
+            const flow = R[key] * st[key[0]], w = clamp(flow * 0.16, 1.2, 9);
             D.path(pts, { color: COLS[key[1]], width: w, alpha: 0.28 });
             D.arrow(pts[20][0], pts[20][1], p1[0], p1[1], { color: COLS[key[1]], width: 1.4, head: 7, alpha: 0.7 });
             const [lx, ly, nm] = LAB[key]; D.text(`${nm ? nm + ' = ' : ''}${(100 * R[key]).toFixed(1)}%`, lx, ly, { align: 'center', color: COLS[key[1]], size: 10.5, weight: 650 });
@@ -718,13 +719,13 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
             rbox(v, D, x0, y0, x1, y1, { fill: COLS[key], fillAlpha: 0.06, color: COLS[key], width: 1.4 });
             const n = st[key] - gone[key] + came[key], sl = slots(key); pos[key] = sl;
             const pts = []; for (let i = 0; i < n; i++) { const s0 = sl[i % sl.length]; pts.push(D.inv(s0[0], s0[1])); }
-            D.dots(pts, { r: 2.7, color: COLS[key], alpha: 0.85 });
+            D.dots(pts, { r: 2.1, color: COLS[key], alpha: 0.85 });
             D.text(`${name}  ${n}`, (x0 + x1) / 2, y1, { dy: 11, align: 'center', color: 'ink', size: 12, weight: 700 });
           }
           // people in flight
           for (const [key, p] of fly) {
             const [p0, c, p1] = ARC[key], e = p * p * (3 - 2 * p);
-            D.dot((1 - e) ** 2 * p0[0] + 2 * e * (1 - e) * c[0] + e * e * p1[0], (1 - e) ** 2 * p0[1] + 2 * e * (1 - e) * c[1] + e * e * p1[1], { r: 3.4, color: COLS[key[1]] });
+            D.dot((1 - e) ** 2 * p0[0] + 2 * e * (1 - e) * c[0] + e * e * p1[0], (1 - e) ** 2 * p0[1] + 2 * e * (1 - e) * c[1] + e * e * p1[1], { r: 2.8, color: COLS[key[1]] });
           }
           // time series
           const uS = [], pS = [];
@@ -737,8 +738,8 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
           Us.text(`steady state ${(100 * ss.rate).toFixed(1)}%`, 118, 100 * ss.rate, { dy: -9, align: 'right', color: 'ink', size: 10.5 });
           Ps.text(`steady state ${(100 * ss.part).toFixed(1)}%`, 118, 100 * ss.part, { dy: -9, align: 'right', color: 'ink', size: 10.5 });
           for (const [ek] of events) { Us.vline(ek, { color: 'gray', width: 1.2, dash: [3, 3] }); Ps.vline(ek, { color: 'gray', width: 1.2, dash: [3, 3] }); Us.text('give up', ek, 13.2, { dx: 4, color: 'gray', size: 10 }); }
-          state = { k, now, ss, R };
-        }, { period: MONTHS / SPEED + 2, still: 16 });
+          state = { k, now: hist[k], ss, R };
+        }, { period: MONTHS / SPEED + 2, still: 16.55 });
         v.readout(() => {
           if (!state) return '';
           const { k, now, ss, R } = state, L = now.E + now.U, f1 = (x) => (100 * x).toFixed(1);
@@ -757,8 +758,8 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
       credit: 'William Nordhaus and James Tobin, 1972; Charles Jones and Peter Klenow, 2016',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Measures_of_national_income_and_output#Criticism' },
       viz(v) {
-        const S = v.stage({ x: [-1.05, 2.05], y: [0.35, 7.0], height: 360, axes: false, weight: 1.15, minWidth: 330, title: 'rank by GDP per head → rank by adjusted measure' });
-        const W = v.stage({ x: [0.35, 6.65], y: [0, 100], height: 360, axes: 'box', weight: 1, minWidth: 290, xticks: [[1, 'GDP'], [2, 'leisure'], [3, 'home'], [4, 'depletion'], [5, 'inequality'], [6, 'adjusted']], yticks: [0, 20, 40, 60, 80], ylabel: 'thousand $ per head' });
+        const S = v.stage({ x: [-1.3, 1.6], y: [0.35, 7.0], height: 360, axes: false, weight: 1.15, minWidth: 330, title: 'rank by GDP per head → rank by adjusted measure' });
+        const W = v.stage({ x: [0.35, 6.65], y: [-9, 100], height: 360, axes: 'box', weight: 1, minWidth: 290, xticks: [[1, 'GDP'], [2, 'leisure'], [3, 'home'], [4, 'depletion'], [5, 'inequality'], [6, 'adjusted']], yticks: [0, 20, 40, 60, 80], ylabel: 'thousand dollars per head' });
         const tL = v.toggle('value leisure', true), tH = v.toggle('add home production', true), tD = v.toggle('subtract resource depletion', true), tI = v.toggle('penalize inequality', true);
         const eps = v.slider('inequality aversion $\\varepsilon$', 0, 3, 1, { step: 0.05 });
         const C = [
@@ -825,41 +826,44 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
       credit: 'Angus Maddison, 1995–2010; Maddison Project (Bolt and van Zanden), 2023 update',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Great_Divergence' },
       viz(v) {
-        const T = v.stage({ x: [995, 2032], y: [0, 62000], height: 330, axes: 'box', full: true, ylabel: 'GDP per head (2011 int. $)', xticks: [1000, 1200, 1400, 1600, 1800, 2000], title: 'GDP per head, year 1000 to 2022' });
-        const Mp = v.stage({ height: 270, full: true });
+        const T = v.stage({ x: [995, 2068], y: [-9000, 62000], height: 340, axes: 'box', full: true, ylabel: 'GDP per head (2011 int. $)', xticks: [1000, 1200, 1400, 1600, 1800, 2000], title: 'GDP per head, year 1000 to 2022' });
+        const Mp = v.stage({ height: 260, full: true });
         const G = v.globe(Mp, { projection: 'robinson', center: [12, 0], graticule: 30, drag: false });
-        const ax = v.select('vertical axis', ['linear', 'log'], 'linear', { onChange: (x) => T.setScale(x === 'log' ? { ylog: true, y: [380, 90000] } : { ylog: false, y: [0, 62000] }) });
-        const set = v.select('series', [{ value: 'c', label: 'countries with long records' }, { value: 'r', label: 'world regions (from 1820)' }], 'c');
+        const ax = v.select('vertical axis', ['linear', 'log'], 'linear', { onChange: (x) => T.setScale(x === 'log' ? { ylog: true, y: [240, 90000] } : { ylog: false, y: [-9000, 62000] }) });
+        const set = v.select('series', [{ value: 'c', label: 'countries with long records' }, { value: 'r', label: 'world regions (from 1820)' }], 'c', {
+          onChange: (x) => { const r = x === 'r'; T.setView(r ? [1805, 2045] : [995, 2068], null); T.setTicks(r ? [1850, 1900, 1950, 2000] : [1000, 1200, 1400, 1600, 1800, 2000]); T.setTitle(r ? 'GDP per head, 1820 to 2022' : 'GDP per head, year 1000 to 2022'); if (r) { hA.x = Math.max(hA.x, 1820); hB.x = Math.max(hB.x, 1821); } },
+        });
         const SER = {
-          c: [['uk', 'Britain', 'blue', [-2, 53]], ['nl', 'Netherlands', 'orange', [5.3, 52.2]], ['it', 'Italy', 'teal', [12.5, 42.8]], ['us', 'United States', 'purple', [-98, 39]], ['jp', 'Japan', 'pink', [138, 36]], ['cn', 'China', 'red', [104, 34]], ['in', 'India', 'gold', [79, 22]]],
-          r: [['world', 'World', 'ink', null], ['wof', 'Western offshoots', 'purple', [-100, 42]], ['weu', 'Western Europe', 'blue', [6, 48]], ['eeu', 'Eastern Europe', 'teal', [42, 54]], ['lat', 'Latin America', 'orange', [-60, -12]], ['mena', 'Middle East & N. Africa', 'gold', [22, 27]], ['eas', 'East Asia', 'red', [114, 33]], ['sas', 'South & SE Asia', 'pink', [88, 16]], ['ssa', 'Sub-Saharan Africa', 'green', [22, -2]]],
+          c: [['uk', 'Britain', 'blue', [-2, 53], 'UK', 'w'], ['nl', 'Netherlands', 'orange', [5.3, 52.2], 'NL', 'n'], ['it', 'Italy', 'teal', [12.5, 42.8], 'IT', 's'], ['us', 'United States', 'purple', [-98, 39], 'US', 's'], ['jp', 'Japan', 'pink', [138, 36], 'JP', 'e'], ['cn', 'China', 'red', [104, 34], 'CN', 's'], ['in', 'India', 'gold', [79, 22], 'IN', 's']],
+          r: [['world', 'World', 'ink', null, 'World'], ['wof', 'Western offshoots', 'purple', [-100, 42], 'WOF', 's'], ['weu', 'Western Europe', 'blue', [4, 48], 'WEU', 'n'], ['eeu', 'Eastern Europe', 'teal', [42, 54], 'EEU', 'e'], ['lat', 'Latin America', 'orange', [-60, -12], 'LAT', 's'], ['mena', 'Middle East & N. Africa', 'gold', [24, 27], 'MENA', 'w'], ['eas', 'East Asia', 'red', [114, 33], 'EAS', 'e'], ['sas', 'South & SE Asia', 'pink', [86, 16], 'SAS', 's'], ['ssa', 'Sub-Saharan Africa', 'green', [22, -4], 'SSA', 's']],
         };
         const pts = {}; for (const k in MPD) { const a = MPD[k], o = []; for (let i = 0; i < a.length; i += 2) o.push([a[i], a[i + 1]]); pts[k] = o; }
         const at = (k, yr) => { const p = pts[k]; if (yr < p[0][0] || yr > p[p.length - 1][0]) return null; let i = 1; while (i < p.length - 1 && p[i][0] < yr) i++; const [x0, y0] = p[i - 1], [x1, y1] = p[i]; const u = x1 === x0 ? 0 : (yr - x0) / (x1 - x0); return y0 * (y1 / y0) ** u; };
         const takeoff = (k, base) => { const b = at(k, base); if (b == null) return null; let last = base; for (let yr = base; yr <= 2022; yr++) { const y = at(k, yr); if (y != null && y < 2 * b) last = yr; } return last < 2022 ? last + 1 : null; };
-        const yb = () => (T.ly ? T.bounds.y[0] * (T.bounds.y[1] / T.bounds.y[0]) ** 0.05 : T.bounds.y[1] * 0.035);
-        const hA = T.handle(1820, 2000, { color: 'gray', label: 'from', labelPos: 'n', constrain: (x) => [Math.round(clamp(x, 1000, 2022)), yb()] });
-        const hB = T.handle(2022, 2000, { color: 'accent', label: 'to', labelPos: 'n', constrain: (x) => [Math.round(clamp(x, 1000, 2022)), yb()] });
+        const yb = () => (T.ly ? T.bounds.y[0] * (T.bounds.y[1] / T.bounds.y[0]) ** 0.078 : -3600);
+        const hA = T.handle(1820, -3600, { color: 'gray', label: 'from', labelPos: 'w', constrain: (x) => [Math.round(clamp(x, set.value === 'r' ? 1820 : 1000, 2022)), yb()] });
+        const hB = T.handle(2022, -3600, { color: 'accent', label: 'to', labelPos: 'w', constrain: (x) => [Math.round(clamp(x, set.value === 'r' ? 1820 : 1000, 2022)), yb()] });
         let st = {};
         v.render(() => {
           hA.y = yb(); hB.y = yb();
           const list = SER[set.value], base = set.value === 'c' ? 1700 : 1820, a = Math.min(hA.x, hB.x), b = Math.max(hA.x, hB.x);
-          v.legend(list.map(([, n, c]) => [c, n]));
+          v.legend(list.map(([, n, c, , code]) => [c, code === n || code === 'World' ? n : `${n} (${code})`]));
           T.vband(1760, 1840, { color: 'gold', alpha: 0.1 });
-          T.text('British industrial revolution', 1800, T.ly ? 70000 : 59000, { align: 'center', color: 'muted', size: 10.5 });
+          if (set.value === 'c') T.text('British industrial revolution', 1800, T.ly ? 70000 : 59000, { align: 'center', color: 'muted', size: 10.5 });
           T.vband(a, b, { color: 'accent', alpha: 0.06 });
           T.vline(hA.x, { color: 'gray', width: 1, dash: [3, 3] }); T.vline(hB.x, { color: 'accent', width: 1, dash: [3, 3] });
           const rows = [];
-          for (const [k, name, col, ll] of list) {
+          if (!T.ly) T.hline(0, { color: 'ink', width: 1 });
+          for (const [k, name, col, ll, code, lp] of list) {
             T.path(pts[k], { color: col, width: k === 'world' ? 3.2 : 2.2 });
             const to = takeoff(k, base); if (to) T.dot(to, at(k, to), { r: 5, color: col, hollow: true, width: 2.2 });
             const ya = at(k, a), ybv = at(k, b);
             if (ybv != null) T.dot(b, ybv, { r: 3.5, color: col });
-            rows.push({ k, name, col, ll, to, g: ya != null && ybv != null && b > a ? Math.log(ybv / ya) / (b - a) : null, yb: ybv });
+            rows.push({ k, name, col, ll, lp, to, g: ya != null && ybv != null && b > a ? Math.log(ybv / ya) / (b - a) : null, yb: ybv });
           }
           // end labels, spread apart
-          const ends = list.map(([k, name, col]) => { const p = pts[k][pts[k].length - 1]; return [T.Y(p[1]), name, col]; });
-          const ys = spread(ends.map((e) => e[0]), 12.5, 10, T.height - 24);
+          const ends = list.map(([k, , col, , code]) => { const p = pts[k][pts[k].length - 1]; return [T.Y(p[1]), code, col]; });
+          const ys = spread(ends.map((e) => e[0]), 12.5, 10, T.height - 34);
           ends.forEach(([, name, col], i) => T.textPx(name, T.X(2022) + 5, ys[i], { color: col, size: 10, weight: 650 }));
           // map
           Mp.setTitle(`GDP per head in ${b} (bubble area proportional to income)`);
@@ -868,7 +872,8 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
           for (const r of rows.slice().sort((p, q) => (q.yb || 0) - (p.yb || 0))) {
             if (!r.ll || r.yb == null) continue;
             G.dot(r.ll, { r: k0 * Math.sqrt(r.yb), color: r.col, alpha: 0.55 });
-            const q = G.project(r.ll[0], r.ll[1]); if (q) Mp.text(r.name, q[0], q[1], { dy: k0 * Math.sqrt(r.yb) + 8, align: 'center', color: 'ink', size: 10, weight: 600 });
+            const q = G.project(r.ll[0], r.ll[1]), rr = k0 * Math.sqrt(r.yb) + 4, d = { n: [0, -rr - 6, 'center'], s: [0, rr + 6, 'center'], e: [rr + 2, 0, 'left'], w: [-rr - 2, 0, 'right'] }[r.lp || 's'];
+            if (q) Mp.text(r.name, q[0], q[1], { dx: d[0], dy: d[1], align: d[2], color: 'ink', size: 10, weight: 600 });
           }
           st = { rows, a, b };
         });

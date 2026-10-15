@@ -21,21 +21,29 @@ export function rk4(f, y, h) {
  * Returns {t: [], s: [[x, y, vx, vy]], stop: 'time' | 'escape' | 'centre' | 'revs' | 'steps'}.
  */
 export function centralOrbit(acc, s0, o = {}) {
-  const f = (S) => { const r = Math.hypot(S[0], S[1]), a = acc(r) / r; return [S[2], S[3], a * S[0], a * S[1]]; };
   const T = o.T ?? 50, dir = T < 0 ? -1 : 1, eta = o.eta ?? 0.02, rmax = o.rmax ?? Infinity, rmin = o.rmin ?? 1e-3, maxN = o.maxSteps ?? 30000;
-  let S = s0.slice(), t = 0, th = Math.atan2(S[1], S[0]), turn = 0, stop = 'steps';
-  const out = { t: [0], s: [S.slice()], stop };
+  let x = s0[0], y = s0[1], vx = s0[2], vy = s0[3], t = 0, th = Math.atan2(y, x), turn = 0, stop = 'steps';
+  const out = { t: [0], s: [[x, y, vx, vy]], stop };
+  // inline RK4 for the planar central-force system (no allocations in the inner loop)
+  const A = (px, py) => { const r = Math.sqrt(px * px + py * py); return acc(r) / r; };
   for (let n = 0; n < maxN; n++) {
-    const r = Math.hypot(S[0], S[1]), v = Math.hypot(S[2], S[3]), a = Math.abs(acc(r));
+    const r = Math.sqrt(x * x + y * y), v = Math.sqrt(vx * vx + vy * vy), a = Math.abs(acc(r));
     let h = eta * Math.min(r / (v || 1e-12), Math.sqrt(r / (a || 1e-12)));
     if (o.hmax) h = Math.min(h, o.hmax);
     const left = Math.abs(T) - Math.abs(t);
-    if (left <= 1e-12) { stop = 'time'; break; }
+    if (left <= 1e-12 * Math.abs(T)) { stop = 'time'; break; }
     if (h > left) h = left;
-    S = rk4(f, S, dir * h); t += dir * h;
-    const th2 = Math.atan2(S[1], S[0]); let d = th2 - th; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; turn += d; th = th2;
-    out.t.push(t); out.s.push(S);
-    const r2 = Math.hypot(S[0], S[1]);
+    h *= dir;
+    const q1 = A(x, y), k1x = vx, k1y = vy, l1x = q1 * x, l1y = q1 * y;
+    const x2 = x + 0.5 * h * k1x, y2 = y + 0.5 * h * k1y, u2 = vx + 0.5 * h * l1x, w2 = vy + 0.5 * h * l1y, q2 = A(x2, y2);
+    const x3 = x + 0.5 * h * u2, y3 = y + 0.5 * h * w2, u3 = vx + 0.5 * h * q2 * x2, w3 = vy + 0.5 * h * q2 * y2, q3 = A(x3, y3);
+    const x4 = x + h * u3, y4 = y + h * w3, u4 = vx + h * q3 * x3, w4 = vy + h * q3 * y3, q4 = A(x4, y4);
+    x += (h / 6) * (k1x + 2 * u2 + 2 * u3 + u4); y += (h / 6) * (k1y + 2 * w2 + 2 * w3 + w4);
+    vx += (h / 6) * (l1x + 2 * q2 * x2 + 2 * q3 * x3 + q4 * x4); vy += (h / 6) * (l1y + 2 * q2 * y2 + 2 * q3 * y3 + q4 * y4);
+    t += h;
+    const th2 = Math.atan2(y, x); let d = th2 - th; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; turn += d; th = th2;
+    out.t.push(t); out.s.push([x, y, vx, vy]);
+    const r2 = Math.sqrt(x * x + y * y);
     if (r2 > rmax) { stop = 'escape'; break; }
     if (r2 < rmin) { stop = 'centre'; break; }
     if (o.revs && Math.abs(turn) >= o.revs * TAU) { stop = 'revs'; break; }

@@ -378,7 +378,7 @@ because appending a bit $b$ to a numeral of value $x$ gives $2x+b$, and $(2x+b)\
             edgeLabelColor: (e) => (e.syms.includes('0') ? 'blue' : 'orange'),
           });
           // prefix table
-          const P = pen(ts, v), rows = fd.length + 1, rh = Math.min(24, (P.H - 40) / rows), cx = [16, P.W * 0.42, P.W * 0.62, P.W * 0.8, P.W - 14];
+          const P = pen(ts, v), rows = fd.length + 1, rh = Math.min(30, (P.H - 40) / rows), cx = [16, P.W * 0.42, P.W * 0.62, P.W * 0.8, P.W - 14];
           P.sans(order.value === 'msb' ? 'bits read' : 'bits read (low end)', cx[0], 14, { align: 'left', size: 11.5, weight: 600, color: 'muted' });
           P.sans('value', cx[1], 14, { size: 11.5, weight: 600, color: 'muted' });
           P.sans(`value mod ${k}`, cx[2], 14, { size: 11.5, weight: 600, color: 'muted' });
@@ -476,8 +476,8 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
       tags: ['closure properties', 'product construction'],
       viz(v) {
         const M1S = {
-          evenA: () => dfa(['a', 'b'], [['E', 0, 0, 1, '$E$'], ['O', 0, 0, 0, '$O$']], 'E', { E: { a: 'O', b: 'E' }, O: { a: 'E', b: 'O' } }, { name: 'even number of a', loops: { E: 180, O: 180 } }),
-          endsB: () => dfa(['a', 'b'], [['x', 0, 0, 0, '$x$'], ['y', 0, 0, 1, '$y$']], 'x', { x: { a: 'x', b: 'y' }, y: { a: 'x', b: 'y' } }, { name: 'ends in b', loops: { x: 180, y: 180 } }),
+          evenA: () => dfa(['a', 'b'], [['E', 0, 0, 1, '$E$'], ['O', 0, 0, 0, '$O$']], 'E', { E: { a: 'O', b: 'E' }, O: { a: 'E', b: 'O' } }, { name: 'even number of a', loops: { E: 180, O: 180 }, startDir: 90 }),
+          endsB: () => dfa(['a', 'b'], [['x', 0, 0, 0, '$x$'], ['y', 0, 0, 1, '$y$']], 'x', { x: { a: 'x', b: 'y' }, y: { a: 'x', b: 'y' } }, { name: 'ends in b', loops: { x: 180, y: 180 }, startDir: 90 }),
         };
         const M2S = {
           bMod3: () => dfa(['a', 'b'], [['0', 0, 0, 1, '$0$'], ['1', 0, 0, 0, '$1$'], ['2', 0, 0, 0, '$2$']], '0', { 0: { a: '0', b: '1' }, 1: { a: '1', b: '2' }, 2: { a: '2', b: '0' } }, { name: 'number of b divisible by 3', loops: { 0: 90, 1: 90, 2: 90 } }),
@@ -488,7 +488,7 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
         v.select('$M_1$', [{ value: 'evenA', label: 'even # of a' }, { value: 'endsB', label: 'ends in b' }], 'evenA', { onChange: (k) => { M1 = M1S[k](); rebuild(); } });
         v.select('$M_2$', [{ value: 'bMod3', label: '# of b ≡ 0 mod 3' }, { value: 'hasAB', label: 'contains ab' }], 'bMod3', { onChange: (k) => { M2 = M2S[k](); rebuild(); } });
         keypad(v, ['a', 'b'], () => w, (x) => { w = x; S.reset({ at: 'end' }); }, { max: 10 });
-        const s = v.stage({ x: [-0.6, 15.2], y: [0, 7.6], axes: false, equal: true, height: 380, full: true });
+        const s = v.stage({ x: [-0.6, 15.2], y: [0, 8.2], axes: false, equal: true, height: 404, full: true });
         const ACC = { or: (a, b) => a || b, and: (a, b) => a && b, minus: (a, b) => a && !b, xor: (a, b) => a !== b };
         let G1, G2, GP, PD;
         function rebuild() {
@@ -502,14 +502,14 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
             delta[id] = {}; for (const c of ['a', 'b']) delta[id][c] = step(M1, p.id, c) + '|' + step(M2, q.id, c);
           }));
           PD = dfa(['a', 'b'], states, M1.start + '|' + M2.start, delta, { startDir: 180 });
-          if (!G1) { G1 = dfaGraph(v, s, M1, { draggable: false, r: 15, texSize: 14 }); G2 = dfaGraph(v, s, M2, { draggable: false, r: 15, texSize: 14 }); GP = dfaGraph(v, s, PD, { draggable: false, r: 22, texSize: 12.5 }); }
+          if (!G1) { G1 = dfaGraph(v, s, M1, { draggable: false, r: 15, texSize: 14 }); G2 = dfaGraph(v, s, M2, { draggable: false, r: 15, texSize: 14 }); GP = dfaGraph(v, s, PD, { draggable: false, r: 24, texSize: 12.5 }); }
           else { G1.sync(M1); G2.sync(M2); GP.sync(PD); }
           // arrows that would pass through another pair are bent
           for (const e of GP.edges) {
             if (e.from === e.to) continue;
             const a = GP.node(e.from), b = GP.node(e.to);
             const hits = PD.states.some((q) => { if (q.id === e.from || q.id === e.to) return false; const t = ((q.x - a.x) * (b.x - a.x) + (q.y - a.y) * (b.y - a.y)) / ((b.x - a.x) ** 2 + (b.y - a.y) ** 2); if (t <= 0 || t >= 1) return false; return Math.hypot(a.x + t * (b.x - a.x) - q.x, a.y + t * (b.y - a.y) - q.y) < 0.55; });
-            if (hits) e.bend = 40;
+            if (hits) e.bend = 54;
           }
           if (S) S.reset({ at: 'keep' });
         }
@@ -528,7 +528,7 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
           drawDFA(v, s, G1, M1, { fill: (id) => (id === f.p ? tok(a1) : null), startColor: 'muted' });
           drawDFA(v, s, G2, M2, { fill: (id) => (id === f.q ? tok(a2) : null), startColor: 'muted' });
           drawDFA(v, s, GP, PD, { fill: (id) => (id === pid ? tok(ap) : null), ring: () => 'accent' });
-          s.tex('M_1', 1.2, 6.0, { size: 15, color: 'muted' }); s.tex('M_2', 3.0, 6.75, { size: 15, color: 'muted' });
+          s.tex('M_1', 2.3, 5.5, { size: 15, color: 'muted' }); s.tex('M_2', 3.0, 6.75, { size: 15, color: 'muted' });
           s.text('product  M₁ × M₂', 14.6, 0.55, { align: 'right', size: 12, color: 'muted', weight: 600 });
         });
         v.legend([['gold', 'current states', { dot: true }], ['accent', 'accepting pairs (double ring)', { dot: true }], ['green', 'accept at the end', { dot: true }], ['red', 'reject at the end', { dot: true }]]);

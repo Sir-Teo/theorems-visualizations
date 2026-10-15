@@ -119,11 +119,11 @@ export default {
         const mode = v.select('', [{ value: 'line', label: 'on the line: $\\dot x = f(x)$' }, { value: 'forced', label: 'time-dependent: $\\dot x = f(x) + A\\cos t$' }, { value: 'plane', label: 'in the plane: $\\dot x = f(x)+y,\\ \\dot y = -x$' }], 'line');
         const amp = v.slider('$A$', 0, 2, 1, { step: 0.01 });
         const TM = 25;
-        const sf = v.stage({ x: [-2.7, 2.7], y: [-2.3, 2.3], height: 320, weight: 1, minWidth: 270, xlabel: 'x', ylabel: 'ẋ', title: 'velocity against position' });
+        const sf = v.stage({ x: [-2.7, 2.7], y: [-2.8, 2.8], height: 320, weight: 1, minWidth: 270, xlabel: 'x', ylabel: 'ẋ', title: 'velocity against position' });
         const sx = v.stage({ x: [-0.8, TM], y: [-2.7, 2.7], height: 320, weight: 1.3, minWidth: 300, xlabel: 't', ylabel: 'x', title: 'the solution $x(t)$' });
         const KX = [-2.5, -1.25, 0, 1.25, 2.5], KY = [1.0, -0.6, 0.5, 0.9, -1.1];
         const knots = KX.map((x, i) => sf.handle(x, KY[i], { color: 'accent', r: 6, constrain: (xx, yy) => [x, v.M.clamp(yy, -2.2, 2.2)] }));
-        const X0 = sx.handle(0, -0.3, { color: 'gold', label: '$x_0$', labelPos: 'w', constrain: (x, y) => [0, v.M.clamp(y, -2.6, 2.6)] });
+        const X0 = sx.handle(0, -0.3, { color: 'gold', label: '$x_0$', labelPos: 'se', constrain: (x, y) => [0, v.M.clamp(y, -2.6, 2.6)] });
         let info = null;
         v.legend([['accent', 'graph of $f$'], ['gold', '$(x(t),\\dot x(t))$ and $x(t)$'], ['red', 'turnaround ($\\dot x = 0$ with a sign change)', { dot: true }]]);
         v.render(() => {
@@ -175,30 +175,23 @@ with equality only at fixed points: $V$ decreases strictly along non-constant so
       caption: String.raw`Drag the ball to a starting position on the potential and watch it roll; the lower panel plots $x(t)$. The orange curve is the solution of $\dot x = f(x)$, which the ball follows exactly. Raise the mass $m$ to add inertia: the hollow purple ball obeys $m\ddot x + \dot x = f(x)$, overshoots and oscillates in the valley, and approaches the first-order motion as $m\to0$. Tilt the potential with $h$ to merge a valley with a hill.`,
       deps: ['ode-1.7'],
       refs: ['Strogatz §2.7'],
-      see: ['mech-3.3', 'ode-9.4'],
+      see: ['mech-3.3', 'ode-5.13', 'ode-5.8'],
       tags: ['potential', 'gradient flow', 'lyapunov function'],
       viz(v) {
         const POT = {
-          dw: { label: 'double well $f = h + x - x^3$', f: (x, h) => h + x - x ** 3, V: (x, h) => -h * x - (x * x) / 2 + x ** 4 / 4, xr: [-1.9, 1.9], x0: -0.1 },
+          dw: { label: 'double well $f = h + x - x^3$', f: (x, h) => h + x - x ** 3, V: (x, h) => -h * x - (x * x) / 2 + x ** 4 / 4, xr: [-1.62, 1.62], x0: -1.5 },
           wb: { label: 'washboard $f = h - \\sin x$', f: (x, h) => h - Math.sin(x), V: (x, h) => -h * x + 1 - Math.cos(x), xr: [-7, 7], x0: -2.6 },
         };
         const which = v.select('', Object.entries(POT).map(([value, o]) => ({ value, label: o.label })), 'dw', { onChange: (k) => { B.x = POT[k].x0; } });
         const hS = v.slider('tilt $h$', -0.6, 0.6, 0.15, { step: 0.01 });
         const mS = v.slider('mass $m$', 0, 1.5, 0.35, { step: 0.01 });
         const TM = 10, PER = 8;
-        const sV = v.stage({ x: [-1.9, 1.9], y: [-0.6, 1.2], height: 280, full: true, xlabel: 'x', title: 'the potential $V(x) = -\\int f$' });
-        const sx = v.stage({ x: [0, TM], y: [-1.9, 1.9], height: 190, full: true, xlabel: 't', ylabel: 'x', title: 'position against time' });
-        const B = sV.handle(-0.1, 0, { color: 'gold', r: 7, constrain: (x) => { const E = POT[which.value]; const xx = v.M.clamp(x, E.xr[0] * 0.97, E.xr[1] * 0.97); return [xx, E.V(xx, hS.value)]; } });
+        const sV = v.stage({ x: [-1.62, 1.62], y: [-0.6, 1.2], height: 280, full: true, xlabel: 'x', title: 'the potential $V(x) = -\\int f$' });
+        const sx = v.stage({ x: [0, TM], y: [-1.62, 1.62], height: 190, full: true, xlabel: 't', ylabel: 'x', title: 'position against time' });
+        const B = sV.handle(-1.5, 0, { color: 'gold', r: 7, constrain: (x) => { const E = POT[which.value]; const xx = v.M.clamp(x, E.xr[0] * 0.97, E.xr[1] * 0.97); return [xx, E.V(xx, hS.value)]; } });
         B.visible = false;
         let cache = { key: null }, info = null;
         v.legend([['orange', 'first order $\\dot x = f(x)$ (the ball)'], ['purple', 'with inertia $m\\ddot x+\\dot x = f(x)$', { dash: true }], ['green', 'valley = stable', { dot: true }], ['red', 'hill = unstable', { dot: true }]]);
-        const ballAt = (s, x, y, r, st) => { // a ball resting on the curve: offset along the upward normal in pixels
-          const E = POT[which.value], h = hS.value, d = 1e-3, sl = (E.V(x + d, h) - E.V(x - d, h)) / (2 * d);
-          const px = s.X(1) - s.X(0), py = s.Y(0) - s.Y(1), nx = -sl * py, ny = px, nn = Math.hypot(nx, ny);
-          const X = s.X(x) - (r * nx) / nn * (py / py), Y = s.Y(y) - (r * ny) / nn;
-          const [cx, cy] = s.inv(s.X(x) + (r * (-nx)) / nn * -1, Y);
-          s.dot(...s.inv(X + 0 * cx, Y + 0 * cy), { r, ...st });
-        };
         v.animate((tt) => {
           const E = POT[which.value], h = hS.value, m = mS.value, f = (x) => E.f(x, h), V = (x) => E.V(x, h);
           if (Math.abs(B.y - V(B.x)) > 1e-9 && !B.dragging) B.y = V(B.x);
@@ -240,7 +233,6 @@ with equality only at fixed points: $V$ decreases strictly along non-constant so
           B.visible = true;
           info = { E, h, m, x0, xa, zs, f, V };
         }, { still: 2.2 });
-        void ballAt;
         v.readout(() => {
           if (!info) return '';
           const { m, x0, f, V } = info, { first, incr, dev } = cache, xe = first[first.length - 1][1];
@@ -272,7 +264,7 @@ the upper one stable and the lower one unstable: stocks above $x_-$ recover to $
         const hS = v.slider('harvest $h$', 0, 0.4, 0.2, { step: 0.001 });
         const TM = 25;
         const sL = v.stage({ x: [-0.08, 1.3], y: [-0.12, 0.45], height: 290, weight: 1, minWidth: 270, xlabel: 'x', title: 'growth $x(1-x)$ against harvest $h$' });
-        const sR = v.stage({ x: [0, TM], y: [-0.05, 1.25], height: 290, weight: 1.2, minWidth: 300, xlabel: 't', ylabel: 'x', title: 'stocks $x(t)$' });
+        const sR = v.stage({ x: [-2.2, TM], y: [-0.05, 1.25], height: 290, weight: 1.2, minWidth: 300, xlabel: 't', ylabel: 'x', title: 'stocks $x(t)$' });
         const sB = v.stage({ x: [0, 0.4], y: [-0.05, 1.1], height: 200, full: true, axes: 'box', xlabel: 'h', ylabel: 'x*', title: 'bifurcation diagram: equilibria against $h$' });
         const Hh = sL.handle(1.18, 0.2, { color: 'accent', label: '$h$', labelPos: 'n', constrain: (x, y) => [1.18, v.M.clamp(y, 0, 0.4)] });
         Hh.onDrag = (hd) => hS.set(+hd.y.toFixed(3));
@@ -283,9 +275,6 @@ the upper one stable and the lower one unstable: stocks above $x_-$ recover to $
           if (!Hh.dragging) Hh.y = h;
           const disc = 1 - 4 * h, xp = disc >= 0 ? (1 + Math.sqrt(disc)) / 2 : NaN, xm = disc >= 0 ? (1 - Math.sqrt(disc)) / 2 : NaN;
           // left
-          sL.between((x) => x * (1 - x), () => h, -0.08, 1.3, { fill: 'green', fillAlpha: 0.0 });
-          const pos = [], neg = [];
-          for (const x of v.M.linspace(-0.08, 1.3, 240)) (x * (1 - x) > h ? pos : neg).push(x);
           sL.clip(() => {
             sL.between((x) => Math.max(x * (1 - x), h), () => h, -0.08, 1.3, { fill: 'green', fillAlpha: 0.22, n: 300 });
             sL.between((x) => Math.min(x * (1 - x), h), () => h, -0.08, 1.3, { fill: 'red', fillAlpha: 0.14, n: 300 });
@@ -355,7 +344,7 @@ and then $\Psi(x,y) = \int_{\gamma} M\,dx + N\,dy$ along any path $\gamma$ from 
         const EX = {
           B: { label: '$(3xy+y^2)\\,dx + (x^2+xy)\\,dy$', M: (x, y) => 3 * x * y + y * y, N: (x, y) => x * x + x * y, mu: 'x', good: 1, xr: [0.15, 2.6], yr: [-2, 2], seeds: [[1, 0.8], [0.6, -0.5], [1.6, -0.9], [2, 0.3]], loop: [1.3, 1.1] },
           A: { label: '$(2xy+1)\\,dx + (x^2+3y^2)\\,dy$', M: (x, y) => 2 * x * y + 1, N: (x, y) => x * x + 3 * y * y, mu: 'x', good: 0, xr: [0.15, 2.6], yr: [-1.6, 1.6], seeds: [[0.5, 0.6], [1.2, -0.4], [2, -1.1], [1.8, 0.8]], loop: [1.4, 0.4] },
-          C: { label: '$y\\,dx + (2x - ye^y)\\,dy$', M: (x, y) => y, N: (x, y) => 2 * x - y * Math.exp(y), mu: 'y', good: 1, xr: [-2, 2], yr: [0.15, 2.4], seeds: [[-1, 1], [0.5, 0.6], [1.2, 1.6], [-1.5, 0.4]], loop: [0.9, 1.0] },
+          C: { label: '$y\\,dx + (2x - ye^y)\\,dy$', M: (x, y) => y, N: (x, y) => 2 * x - y * Math.exp(y), mu: 'y', good: 1, xr: [-2, 2], yr: [0.15, 2.4], seeds: [[-1, 1], [0.5, 0.6], [1.2, 2.1], [-1.5, 0.4]], loop: [0.9, 1.0] },
         };
         let seeds = EX.B.seeds.map((p) => p.slice());
         const which = v.select('', Object.entries(EX).map(([value, o]) => ({ value, label: o.label })), 'B', {
@@ -366,7 +355,7 @@ and then $\Psi(x,y) = \int_{\gamma} M\,dx + N\,dy$ along any path $\gamma$ from 
         const L = s.handle(EX.B.loop[0], EX.B.loop[1], { color: 'purple', r: 6 });
         s.onClick((x, y) => { if (Math.hypot(s.X(x) - s.X(L.x), s.Y(y) - s.Y(L.y)) < 14) return; seeds.push([x, y]); if (seeds.length > 8) seeds.shift(); });
         let info = null;
-        v.legend([['accent', 'solution curves'], ['orange', 'level sets of $\\Psi$ (path $x$ then $y$)', { dash: true }], ['red', '$\\partial_y(\\mu M) - \\partial_x(\\mu N) > 0$', { area: true }], ['blue', '$< 0$', { area: true }], ['purple', 'loop for $\\oint \\mu M\\,dx + \\mu N\\,dy$']]);
+        v.legend([['accent', 'solution curves'], ['orange', 'level sets of $\\Psi$ (path $x$ then $y$)'], ['red', '$\\partial_y(\\mu M) - \\partial_x(\\mu N) > 0$', { area: true }], ['blue', '$< 0$', { area: true }], ['purple', 'loop for $\\oint \\mu M\\,dx + \\mu N\\,dy$']]);
         v.render(() => {
           const E = EX[which.value], k = kS.value;
           s.setView(E.xr, E.yr);
@@ -374,7 +363,7 @@ and then $\Psi(x,y) = \int_{\gamma} M\,dx + N\,dy$ along any path $\gamma$ from 
           const P = (x, y) => mu(x, y) * E.M(x, y), Q = (x, y) => mu(x, y) * E.N(x, y);
           const D = (x, y) => { const e = 1e-4; return (P(x, y + e) - P(x, y - e)) / (2 * e) - (Q(x + e, y) - Q(x - e, y)) / (2 * e); };
           const red = v.rgb('red'), blue = v.rgb('blue');
-          s.raster((x, y) => { const d = D(x, y), a = Math.min(1, Math.abs(d) / 3); if (a < 0.01) return null; const c = d > 0 ? red : blue; return [c[0], c[1], c[2], Math.round(150 * Math.sqrt(a))]; }, { res: 3, key: `${which.value}|${k}|${red.join()}` });
+          s.raster((x, y) => { const d = D(x, y), a = Math.min(1, Math.abs(d) / 4); if (a < 0.01) return null; const c = d > 0 ? red : blue; return [c[0], c[1], c[2], Math.round(95 * Math.sqrt(a))]; }, { res: 3, key: `${which.value}|${k}|${red.join()}` });
           // potential Ψ by cumulative trapezoid: along the bottom edge in x, then up each column in y
           const nx = 140, ny = 100, [x0, x1] = E.xr, [y0, y1] = E.yr, dx = (x1 - x0) / nx, dy = (y1 - y0) / ny;
           const G = new Float64Array((nx + 1) * (ny + 1));
@@ -413,25 +402,26 @@ and then $\Psi(x,y) = \int_{\gamma} M\,dx + N\,dy$ along any path $\gamma$ from 
             s.clip(() => s.path(c, { color: 'accent', width: 2.2 }));
             let lo = Infinity, hi = -Infinity; for (const [x, y] of c) if (x > x0 && x < x1 && y > y0 && y < y1) { const q = psi(x, y); lo = Math.min(lo, q); hi = Math.max(hi, q); }
             if (hi > lo) spread = Math.max(spread, (hi - lo) / range);
-            s.contour(psi, [psi(xs, ys)], { color: 'orange', width: 1.8, dash: [6, 4], res: 140 });
+            s.contour(psi, [psi(xs, ys)], { color: 'orange', width: 1.7, res: 140 });
             s.dot(xs, ys, { r: 3.5, color: 'accent' });
           }
           // circulation around the loop and the double integral of the defect inside it
-          const r = 0.32 * Math.min(x1 - x0, y1 - y0) / 2;
+          // the loop is a circle of 46 px on screen, i.e. an ellipse with semi-axes rx, ry in data units
+          const rx = 46 / sx, ry = 46 / sy;
           let circ = 0; const n = 600;
           for (let i = 0; i < n; i++) {
-            const th = ((i + 0.5) / n) * 2 * Math.PI, x = L.x + r * Math.cos(th), y = L.y + r * Math.sin(th);
-            circ += (P(x, y) * -Math.sin(th) + Q(x, y) * Math.cos(th)) * r * ((2 * Math.PI) / n);
+            const th = ((i + 0.5) / n) * 2 * Math.PI, x = L.x + rx * Math.cos(th), y = L.y + ry * Math.sin(th);
+            circ += (P(x, y) * -rx * Math.sin(th) + Q(x, y) * ry * Math.cos(th)) * ((2 * Math.PI) / n);
           }
           let dbl = 0; const m = 60;
           for (let i = 0; i < m; i++) for (let j = 0; j < m; j++) {
-            const u = -r + ((i + 0.5) * 2 * r) / m, w = -r + ((j + 0.5) * 2 * r) / m;
-            if (u * u + w * w <= r * r) dbl += -D(L.x + u, L.y + w) * ((2 * r) / m) ** 2;
+            const u = -1 + ((i + 0.5) * 2) / m, w = -1 + ((j + 0.5) * 2) / m;
+            if (u * u + w * w <= 1) dbl += -D(L.x + rx * u, L.y + ry * w) * ((2 * rx) / m) * ((2 * ry) / m);
           }
-          s.circle(L.x, L.y, r, { color: 'purple', width: 2 });
-          for (const th of [0.4, 0.4 + (2 * Math.PI) / 3, 0.4 + (4 * Math.PI) / 3]) {
-            const xa = L.x + r * Math.cos(th), ya = L.y + r * Math.sin(th);
-            s.arrow(xa, ya, xa - 0.02 * r * Math.sin(th) * 6, ya + 0.02 * r * Math.cos(th) * 6, { color: 'purple', width: 2 });
+          s.curve((th) => [L.x + rx * Math.cos(th), L.y + ry * Math.sin(th)], 0, 2 * Math.PI, { color: 'purple', width: 2.2, n: 90 });
+          for (const th of [0.5, 0.5 + (2 * Math.PI) / 3, 0.5 + (4 * Math.PI) / 3]) {
+            const xa = L.x + rx * Math.cos(th), ya = L.y + ry * Math.sin(th), xb = L.x + rx * Math.cos(th + 0.3), yb = L.y + ry * Math.sin(th + 0.3);
+            s.arrow(xa, ya, xb, yb, { color: 'purple', width: 2.2 });
           }
           info = { k, E, maxD, circ, dbl, spread };
         });
@@ -472,8 +462,10 @@ The general Riccati equation has no solution by quadratures; a single particular
         };
         const which = v.select('', Object.entries(EQ).map(([value, o]) => ({ value, label: o.label })), 'n2');
         const pS = v.slider('coordinate exponent $p$', -2.5, 1.5, 1, { step: 0.01 });
-        const sL = v.stage({ x: [0, 6], y: [-1, 1], height: 320, weight: 1.25, minWidth: 300, xlabel: 't', title: 'solutions' });
-        const sR = v.stage({ x: [-1, 1], y: [-1, 1], height: 320, weight: 1, minWidth: 260, title: 'the transformed equation' });
+        const sL = v.stage({ x: [0, 6], y: [-1, 1], height: 320, weight: 1.25, minWidth: 300, xlabel: 't', ylabel: 'u', title: 'solutions' });
+        let target = -1;
+        const jump = v.button('Apply the Bernoulli substitution', () => pS.set(target));
+        const sR = v.stage({ x: [-1, 1], y: [-1, 1], height: 320, weight: 1, minWidth: 260, xlabel: 'u', ylabel: 'u̇', title: 'the transformed equation' });
         const X0 = sL.handle(0, -1.2, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(Math.abs(y) < 0.05 ? 0.05 * Math.sign(y || 1) : y, -2.9, 4.8)] });
         const SQ = Math.sqrt(Math.PI / 2);
         let info = null;
@@ -482,10 +474,10 @@ The general Riccati equation has no solution by quadratures; a single particular
         let lastMode = null;
         v.render(() => {
           const ric = which.value === 'ric';
-          pS.el.hidden = ric; X0.visible = ric;
-          if (lastMode !== ric) { lastMode = ric; v.legend(ric ? legR : legB); }
+          pS.el.hidden = ric; jump.hidden = ric; X0.visible = ric;
+          if (lastMode !== ric) { lastMode = ric; v.legend(ric ? legR : legB); sL.o.ylabel = ric ? 'x' : 'u'; sR.o.xlabel = ric ? 't' : 'u'; sR.o.ylabel = ric ? 'v' : 'u̇'; }
           if (!ric) {
-            const { a, b, n } = EQ[which.value], target = 1 - n;
+            const { a, b, n } = EQ[which.value]; target = 1 - n;
             let p = pS.value; if (Math.abs(p - target) < 0.03) p = target;
             const U = (x) => (Math.abs(p) < 1e-9 ? Math.log(x) : (Math.pow(x, p) - 1) / p);
             const Udot = (x) => Math.pow(x, p - 1) * (a * x + b * Math.pow(x, n));
@@ -516,7 +508,7 @@ The general Riccati equation has no solution by quadratures; a single particular
             if (rel < 1e-6) { const lam = fit.slope; expErr = 0; for (const q of sols) for (const [t, u] of q) expErr = Math.max(expErr, Math.abs(u - q[0][1] * Math.exp(lam * t))); }
             info = { ric, p, target, rel, slope: fit.slope, icpt: fit.intercept, expErr, n, a, b };
           } else {
-            sL.setView([0, 4], [-3, 5]); sR.setView([0, 4], [-3, 6]);
+            sL.setView([-0.25, 4], [-3, 5]); sR.setView([-0.25, 4], [-3, 6]);
             sL.setTitle('solutions of $\\dot x = 1 + tx - x^2$'); sR.setTitle('$v(t) = 1/(x - x_1)$ solves the linear $\\dot v = tv + 1$');
             const vOf = (x0, t) => Math.exp((t * t) / 2) * (1 / x0 + SQ * v.M.erf(t / Math.SQRT2));
             const blow = (x0) => (x0 < -1 / SQ ? v.M.bisect((t) => 1 / x0 + SQ * v.M.erf(t / Math.SQRT2), 0, 12) : NaN);
@@ -564,7 +556,7 @@ and then $x(t)\to\infty$ as $t\uparrow T$. For $f(x) = x^p$ with $p>1$ this give
       caption: String.raw`Drag $x_0$ and choose the growth law. Top: solutions from several starting values; the red dashed line is the blow-up time $T(x_0)$, which moves left as $x_0$ increases. Bottom left: $1/f$, with the area from $x_0$ onward shaded — that area *is* the time to reach infinity. Bottom right: the time $t(X)$ at which the solution reaches the level $X$, against $\log_{10}X$: it levels off at $T$ when there is blow-up and keeps climbing when there is none. Dots are RK4, curves exact.`,
       deps: ['ode-1.3'],
       refs: ['Teschl §1.3'],
-      see: ['ode-2.11', 'ode-2.12', 'pde-11.1'],
+      see: ['ode-2.11', 'ode-2.12', 'pde-12.2'],
       tags: ['blow-up', 'maximal solutions'],
       viz(v) {
         const LAW = {
@@ -573,7 +565,7 @@ and then $x(t)\to\infty$ as $t\uparrow T$. For $f(x) = x^p$ with $p>1$ this give
           osg: { label: '$(1+x)\\ln(1+x)$' },
         };
         const which = v.select('$\\dot x = f(x) =$', Object.entries(LAW).map(([value, o]) => ({ value, label: o.label })), 'pow');
-        const pS = v.slider('$p$', 0.5, 3, 2, { step: 0.01 });
+        const pS = v.slider('$p$', 0.5, 3, 1.5, { step: 0.01 });
         const s = v.stage({ x: [-0.15, 3], y: [0, 10], height: 280, full: true, xlabel: 't', ylabel: 'x', title: 'solutions and their blow-up times' });
         const sA = v.stage({ x: [0, 10], y: [0, 2.2], height: 210, weight: 1, minWidth: 260, xlabel: 'ξ', title: '$1/f(\\xi)$: area from $x_0$ to $\\infty$ = escape time' });
         const sT = v.stage({ x: [0, 40], y: [0, 3], height: 210, weight: 1, minWidth: 260, axes: 'box', xlabel: 'log₁₀ X', title: 'time $t(X)$ to reach the level $X$' });
@@ -663,12 +655,12 @@ is a $C^1$ solution, and so is $x\equiv0$. The right-hand side is continuous but
             if (bucket) {
               sR.setScale({ xlog: false, ylog: false, x: [0, 1], y: [0, 1.15] }); sR.setTicks([], []); sR.setTitle('the bucket at time $\\tau$');
               s.setView([-0.3, 6], [-0.2, 4.4]); s.setTitle('water depth $h(t)$: all of these are empty at $t = 5$');
-              C.labelPos = 's'; C.set(3, 0);
+              C.labelPos = 's'; C.label = '$T_e$'; C.set(3, 0); s.o.ylabel = 'h'; sR.o.xlabel = null;
               v.legend([['accent', 'depth $h(t)$ for different emptying times'], ['gold', 'the highlighted bucket'], ['red', 'observation: $h(5) = 0$']]);
             } else {
               sR.setScale({ xlog: true, ylog: true, x: [1e-6, 1], y: [1e-2, 1e4] }); sR.setTicks(null, null); sR.setTitle('Lipschitz quotient $|f(x) - f(0)|/|x| = |x|^{\\alpha-1}$');
-              s.setView([-1, 6], [-2, 3]); s.setTitle('solutions with $x(0) = 0$');
-              v.legend([['accent', 'solutions $x_c$ leaving $0$ at time $c$'], ['purple', 'solutions arriving at $0$'], ['gold', 'RK4 from $x(0) = 10^{-12}$', { dot: true }]]);
+              s.setView([-1, 6], [-2, 3]); s.setTitle('solutions with $x(0) = 0$'); C.label = '$c$'; s.o.ylabel = 'x'; sR.o.xlabel = 'x';
+              v.legend([['accent', 'solutions $x_c$ leaving $0$ at time $c$'], ...(md === 'abs' ? [['purple', 'solutions arriving at $0$']] : []), ['gold', 'RK4 from $x(0) = 10^{-12}$', { dot: true }]]);
             }
           }
           if (bucket) {
@@ -683,10 +675,11 @@ is a $C^1$ solution, and so is $x\equiv0$. The right-hand side is continuous but
             s.vline(tau, { color: 'gold', width: 1, alpha: 0.5 }); s.dot(tau, hT, { r: 5, color: 'gold' });
             // bucket drawing (depth scaled by the largest initial depth in view)
             const H0 = Math.max(hOf(Te, 0), 1e-9), Hmax = Math.max(hOf(4.5, 0), H0), lev = Math.min(1, hT / Hmax);
-            sR.rect(0.28, 0.1, 0.72, 0.1 + 0.9 * lev, { fill: 'blue', fillAlpha: 0.35, stroke: false });
-            sR.path([[0.25, 1.05], [0.25, 0.07], [0.47, 0.07]], { color: 'ink', width: 3 });
-            sR.path([[0.53, 0.07], [0.75, 0.07], [0.75, 1.05]], { color: 'ink', width: 3 });
-            if (hT > 1e-6) { const sp = 0.06 + 0.12 * Math.sqrt(lev); for (let k = 0; k < 4; k++) sR.dot(0.5 + k * sp * 0.15, 0.04 - k * 0.012, { r: 2.4, color: 'blue', ring: false }); }
+            sR.rect(0.27, 0.18, 0.73, 0.18 + 0.82 * lev, { fill: 'blue', fillAlpha: 0.35, stroke: false });
+            sR.path([[0.25, 1.05], [0.25, 0.16], [0.47, 0.16]], { color: 'ink', width: 3 });
+            sR.path([[0.53, 0.16], [0.75, 0.16], [0.75, 1.05]], { color: 'ink', width: 3 });
+            if (hT > 1e-6) { const sp = 0.3 + 0.7 * Math.sqrt(lev); for (let k = 0; k < 4; k++) sR.dot(0.5 + k * 0.02 * sp, 0.13 - k * 0.025, { r: 2.4, color: 'blue', ring: false }); }
+            else sR.text('empty', 0.5, 0.3, { color: 'red', size: 12, align: 'center' });
             sR.text(`h = ${v.fix(hT, 3)}`, 0.5, 1.1, { color: 'ink', size: 12, align: 'center' });
             info = { bucket, Te, tau, hT };
             return;
@@ -710,7 +703,8 @@ is a $C^1$ solution, and so is $x\equiv0$. The right-hand side is continuous but
           const zMax = Math.max(...z.map((p) => Math.abs(p[1])));
           // integral check of the highlighted member: x(t) = ∫_c^t |x|^α
           let ierr = 0;
-          if (leaves) for (const t of [C.x + 0.5, C.x + 1.5, 5.9]) if (t > C.x && t <= 6) ierr = Math.max(ierr, Math.abs(up(C.x, t) - simpson((u) => f(up(C.x, u)), C.x, t, 400)));
+          // substitute u = c + s² to remove the square-root-type singularity of the integrand at u = c
+          if (leaves) for (const t of [C.x + 0.5, C.x + 1.5, 5.9]) if (t > C.x && t <= 6) ierr = Math.max(ierr, Math.abs(up(C.x, t) - simpson((q) => 2 * q * f(up(C.x, C.x + q * q)), 0, Math.sqrt(t - C.x), 600)));
           // Lipschitz quotient
           sR.fn((x) => Math.pow(x, al - 1), { color: al < 1 ? 'red' : 'green', width: 2.6 });
           sR.hline(1, { color: 'muted', width: 1, dash: [4, 4] });
@@ -746,12 +740,12 @@ Since $P$ is monotone, every solution that stays bounded converges to a periodic
       see: ['ode-3.17', 'ode-2.6'],
       tags: ['period map', 'periodic forcing'],
       viz(v) {
-        const hS = v.slider('mean harvest $h$', 0, 0.3, 0.16, { step: 0.001 });
+        const hS = v.slider('mean harvest $h$', 0, 0.3, 0.14, { step: 0.001 });
         const aS = v.slider('seasonal amplitude $a$', 0, 0.95, 0.6, { step: 0.01 });
         const NY = 6;
-        const sL = v.stage({ x: [0, NY], y: [-0.15, 1.3], height: 320, weight: 1.35, minWidth: 320, xlabel: 't', ylabel: 'x', title: 'population over six seasons' });
+        const sL = v.stage({ x: [-0.4, NY], y: [-0.15, 1.3], height: 320, weight: 1.35, minWidth: 320, xlabel: 't', ylabel: 'x', title: 'population over six seasons' });
         const sP = v.stage({ x: [-0.1, 1.25], y: [-0.1, 1.25], height: 320, weight: 1, minWidth: 270, equal: true, xlabel: 'x(0)', ylabel: 'x(T)', title: 'period map $P(x_0) = x(T; x_0)$' });
-        const X0 = sP.handle(0.3, -0.1, { color: 'gold', label: '$x_0$', labelPos: 'ne', constrain: (x) => [v.M.clamp(x, -0.05, 1.2), sP.bounds.y[0]] });
+        const X0 = sP.handle(0.3, 0, { color: 'gold', label: '$x_0$', labelPos: 'se', constrain: (x) => [v.M.clamp(x, -0.05, 1.2), 0] });
         let cache = { key: null }, info = null;
         v.legend([['accent', 'period map $P$'], ['green', 'stable periodic solution'], ['red', 'unstable periodic solution', { dash: true }], ['gold', 'yearly samples / cobweb'], ['teal', 'trapping interval', { area: true }]]);
         v.render(() => {
@@ -796,7 +790,7 @@ Since $P$ is monotone, every solution that stays bounded converges to a periodic
           sP.path(xs.map((x, i) => (isFinite(Ps[i]) ? [x, Ps[i]] : null)), { color: 'accent', width: 2.6 });
           const cob = []; let xc = x0;
           for (let k = 0; k < 14 && isFinite(xc) && xc > -0.1; k++) { const y = P(xc); if (!isFinite(y)) break; cob.push([xc, xc], [xc, y]); xc = y; }
-          sP.clip(() => sP.path([[x0, sP.bounds.y[0]], ...cob], { color: 'gold', width: 1.5 }));
+          sP.clip(() => sP.path([[x0, 0], ...cob], { color: 'gold', width: 1.5 }));
           for (const fp of fps) fpGlyph(v, sP, fp.x, fp.x, fp.d < 1 ? 'stable' : 'unstable');
           info = { h, a, fps, trap, samples };
         });

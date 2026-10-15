@@ -187,13 +187,19 @@ function noiseShape(pl) {
   const ff = Math.min(7000, C_TRACT / (4 * lf));
   return { ff, fb: Math.max(320, 0.3 * ff), amp: 1 };
 }
-/** Coarticulated consonant formants next to vowel V: locus + k·(vowel − locus). Velars have a vowel-dependent locus. */
-function onsetF(pl, V) {
+/**
+ * Coarticulated consonant formants next to vowel V: locus + k·(vowel − locus), k = 0.42 for F2 unless given. Velars have a
+ * vowel-dependent locus (F2 and F3 pinch together); with an explicit k they use two loci, 3000 Hz before front vowels and
+ * 1500 Hz before back ones (Delattre, Liberman & Cooper 1955).
+ */
+function onsetF(pl, V, k) {
   if (!pl.loc) {
     if (pl.lf > 16) return V.slice(); // glottal: the vowel's own formants
-    const f2 = 0.85 * V[1] + 600; return [230, f2, Math.max(V[2] - 150, f2 + 180)]; // velar: F2 and F3 pinch together
+    const f2 = k == null ? 0.85 * V[1] + 600 : (V[1] > 1600 ? 3000 : 1500) * (1 - k) + k * V[1];
+    return [230, f2, Math.max(V[2] - 150, f2 + 180)];
   }
-  return [pl.loc[0] + 0.15 * (V[0] - pl.loc[0]), pl.loc[1] + 0.42 * (V[1] - pl.loc[1]), pl.loc[2] + 0.5 * (V[2] - pl.loc[2])];
+  const k2 = k ?? 0.42;
+  return [pl.loc[0] + 0.15 * (V[0] - pl.loc[0]), pl.loc[1] + k2 * (V[1] - pl.loc[1]), pl.loc[2] + 0.5 * (V[2] - pl.loc[2])];
 }
 /**
  * Synthesize a phone string, e.g. speak(['a', 'b', 'a']) or speak([['a', 0.2], {pl, mn, vc}, 'a'], {vot: 0.06}).
@@ -218,9 +224,9 @@ function speak(list, o = {}) {
   segs.forEach((s, i) => {
     let tgt, a = s.t0, b = s.t1;
     if (s.V) { tgt = s.V; const pc = segs[i - 1], nc = segs[i + 1]; a += pc ? (pc.V ? 0.03 : pc.mn === 'approx' || pc.mn === 'latapprox' ? 0.06 : 0.045) : 0; b -= nc ? (nc.V ? 0.03 : 0.04) : 0; if (b < a) a = b = (s.t0 + s.t1) / 2; }
-    else if (s.mn === 'approx' || s.mn === 'latapprox') { tgt = APPROX[s.sym] || onsetF(s.pl, nearV(i)); a = b = (s.t0 + s.t1) / 2; }
-    else if (s.mn === 'nasal') { tgt = onsetF(s.pl, nearV(i)); tgt = [260, tgt[1], tgt[2]]; }
-    else tgt = onsetF(s.pl, nearV(i));
+    else if (s.mn === 'approx' || s.mn === 'latapprox') { tgt = APPROX[s.sym] || onsetF(s.pl, nearV(i), s.k); a = b = (s.t0 + s.t1) / 2; }
+    else if (s.mn === 'nasal') { tgt = onsetF(s.pl, nearV(i), s.k); tgt = [260, tgt[1], tgt[2]]; }
+    else tgt = onsetF(s.pl, nearV(i), s.k);
     for (let k = 0; k < 3; k++) { kf[k].push([a, tgt[k]]); if (b > a) kf[k].push([b, tgt[k]]); }
   });
   const Ff = kf.map((k) => ramp(k));
@@ -630,7 +636,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
         IPA_ROWS.forEach(([, , cells], i) => cells.forEach(([a, b, vl, vd]) => { if (vl) where[vl] = [i, a, b, 0]; if (vd) where[vd] = [i, a, b, 1]; }));
         const rowY = (i) => 7.5 - i;
         const symX = (a, b, half) => (b > a ? 2 + (a + b + 1) / 2 + (half ? 0.42 : -0.42) : 2 + a + (half ? 0.72 : 0.28));
-        const vpos = (h, b, r) => { const xf = 6.0 - (2.6 * h) / 3, x = xf + b * (10.6 - xf); return [x + (r ? 0.3 : -0.3), 0.75 + 2.35 * h]; };
+        const vpos = (h, b, r) => { const xf = 6.0 - (2.6 * h) / 3, x = xf + b * (10.6 - xf); return [x + (r ? 0.3 : -0.3), 1.15 + 2.3 * h]; };
         const VROW = Object.fromEntries(IPA_V.map((r) => [r[0], r]));
         ch.onClick((x, y) => {
           const px = ch.X(x), py = ch.Y(y); let best = null, bd = 26;
@@ -686,7 +692,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
             ch.path([C(3, 0), C(3, 1), C(0, 1), C(0, 0), C(3, 0)], { color: 'muted', width: 1.4 });
             for (const h of [2, 1]) ch.path([C(h, 0), C(h, 1)], { color: 'grid', width: 1.2 });
             ch.path([C(3, 0.5), C(0, 0.5)], { color: 'grid', width: 1.2 });
-            [['Close', 3], ['Close-mid', 2], ['Open-mid', 1], ['Open', 0]].forEach(([t, h]) => ch.text(t, C(h, 0)[0] - 0.55, C(h, 0)[1], { size: hs, color: 'muted', align: 'right' }));
+            [['Close', 3], ['Close-mid', 2], ['Open-mid', 1], ['Open', 0]].forEach(([t, h]) => ch.text(t, C(h, 0)[0] - 0.85, C(h, 0)[1], { size: hs, color: 'muted', align: 'right' }));
             [['Front', 0], ['Central', 0.5], ['Back', 1]].forEach(([t, b]) => ch.text(t, C(3, b)[0], 9.15, { size: hs, color: 'muted', align: 'center' }));
             const seen = new Set();
             for (const [sym, h, b, r] of IPA_V) {
@@ -695,7 +701,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
               if (on) ch.dot(x, y, { r: fs * 0.82, color: 'accent', hollow: true, width: 2 });
               ch.text(sym, x, y + 0.03, { size: fs, align: 'center', color: on ? 'accent' : 'ink', weight: on ? 650 : 450 });
             }
-            ch.text('Where symbols appear in pairs, the one to the right is rounded.', 6.5, 0.12, { size: hs, color: 'muted', align: 'center' });
+            ch.text('Where symbols appear in pairs, the one to the right is rounded.', 6.5, 0.42, { size: hs, color: 'muted', align: 'center' });
             const [, h, b, r] = VROW[selV];
             drawTract(tr, { hx: 3.2 + 2.5 * b, hy: fitTongue(3.2 + 2.5 * b, -0.9 + 0.85 * h), round: !!r, velum: 'up', glottis: 'voiced', mark: { x: 3.2 + 2.5 * b, y: fitTongue(3.2 + 2.5 * b, -0.9 + 0.85 * h), color: 'gold' } });
             const HN = { 3: 'close', 2.5: 'near-close', 2: 'close-mid', 1.5: 'mid', 1: 'open-mid', 0.5: 'near-open', 0: 'open' }, BN = { 0: 'front', 0.2: 'near-front', 0.5: 'central', 0.8: 'near-back', 1: 'back' };
@@ -1031,7 +1037,7 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
         const tr = v.stage({ x: [-2.5, 9.6], y: [-9.6, 4.6], equal: true, height: 360, axes: false, minWidth: 280, weight: 1.1 });
         const LF = (f) => -Math.log(f);
         const ch = v.stage({ x: [LF(2700), LF(480)], y: [LF(1000), LF(185)], height: 360, axes: 'box', minWidth: 260, title: 'computed formants on the F1–F2 chart', xticks: [2500, 2000, 1500, 1000, 700, 500].map((f) => [LF(f), f >= 1000 ? `${f / 1000}k` : `${f}`]), yticks: [200, 300, 400, 600, 800].map((f) => [LF(f), `${f}`]), xlabel: 'F2 (Hz)', ylabel: 'F1 (Hz)' });
-        const af = v.stage({ x: [0, 18.5], y: [0, 9], height: 120, axes: 'box', full: true, xlabel: 'distance from the glottis (cm)', ylabel: 'area (cm²)', yticks: [0, 4, 8] });
+        const af = v.stage({ x: [0, 18.5], y: [0, 10], height: 130, axes: 'box', full: true, title: 'area function read off the drawing: cross-section $A$ (cm²) against distance from the glottis (cm)', yticks: [0, 5, 10] });
         const H = tr.handle(3.4, 1.2, { color: 'accent', r: 8, constrain: (x, y) => { const hx = clampN(x, 3.0, 5.8); return [hx, fitTongue(hx, clampN(y, -1.0, 1.9))]; } });
         H.set(3.4, fitTongue(3.4, 1.9));
         const CSYM = ['i', 'e', 'ɛ', 'a', 'y', 'ø', 'œ', 'ɶ', 'ɯ', 'ɤ', 'ʌ', 'ɑ', 'u', 'o', 'ɔ', 'ɒ'];
@@ -1054,7 +1060,6 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
         v.render(() => {
           const m = model();
           drawTract(tr, { hx: H.x, hy: H.y, round: rnd.value, velum: 'up', glottis: 'voiced' });
-          tr.text('tongue body', H.x, H.y + 0.75, { size: 11, color: 'accent', align: 'center' });
           if (rnd.value) tr.text('rounded', -1.9, -1.4, { size: 11, color: 'purple', align: 'center' });
           // F1–F2 chart
           CARD.forEach((c, i) => ch.text(CSYM[i], LF(c[4]), LF(c[3]), { size: 15, color: i === m.near ? 'accent' : 'muted', align: 'center', weight: i === m.near ? 700 : 450 }));
@@ -1062,11 +1067,138 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
           ch.corner(`nearest: [${CSYM[m.near]}]`, 'tr', { color: 'accent', weight: 650, size: 13 });
           // area function: glottis on the left, lips on the right
           const L = m.A.length * m.dl;
-          m.A.forEach((a, i) => af.rect(i * m.dl, 0, (i + 1) * m.dl - 0.04, Math.min(a, 9), { fill: i >= m.A.length - (rnd.value ? 4 : 2) ? 'purple' : 'accent', fillAlpha: 0.55, stroke: false }));
-          af.text('glottis', 0.15, 8.2, { size: 10.5, color: 'muted', align: 'left' }); af.text('lips', L - 0.1, 8.2, { size: 10.5, color: 'purple', align: 'right' });
+          m.A.forEach((a, i) => af.rect(i * m.dl, 0, (i + 1) * m.dl - 0.04, Math.min(a, 10), { fill: i >= m.A.length - (rnd.value ? 4 : 2) ? 'purple' : 'accent', fillAlpha: 0.55, stroke: false }));
+          af.text('glottis', 0.3, 9.0, { size: 10.5, color: 'muted', align: 'left' }); af.text('lips', L - 0.1, 9.0, { size: 10.5, color: 'purple', align: 'right' });
           info = { F: m.F, near: CSYM[m.near], L, minA: Math.min(...m.A), at: m.A.indexOf(Math.min(...m.A.slice(0, m.A.length - 4))) * m.dl };
         });
         v.readout(() => info && `tongue body ${H.y > 0.6 ? 'high' : H.y > -0.2 ? 'mid' : 'low'} and ${H.x < 4.0 ? 'front' : H.x < 4.9 ? 'central' : 'back'}, lips ${rnd.value ? 'rounded' : 'spread'} · tube model: F1 = **${Math.round(info.F[0])} Hz**, F2 = **${Math.round(info.F[1])} Hz**, F3 = ${Math.round(info.F[2])} Hz (tract ${v.fix(info.L, 1)} cm) · nearest cardinal vowel **[${info.near}]**`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7',
+      kind: 'Concept',
+      name: 'Formants: resonances of the vocal tract',
+      statement: String.raw`The **formants** F1, F2, F3, … of a speech sound are the resonance frequencies of the vocal tract, seen as peaks of the envelope of its spectrum. They are properties of the filter, not of the source: changing the pitch $f_0$ moves the harmonics, which always sit at $k f_0$, but leaves the envelope and its peaks where they are, so a vowel keeps its identity when sung on different notes. The harmonics only *sample* the envelope at multiples of $f_0$; formant frequencies must be inferred from those samples, which is easy for a low voice (harmonics close together compared with the formant bandwidths) and becomes impossible once $f_0$ is comparable to F1.`,
+      idea: String.raw`In the source–filter model (ling-1.1) the output spectrum is the product of a harmonic line spectrum and the filter's transfer function. Raising $f_0$ spreads the lines apart but cannot move the resonances, which are set by the tract's shape (music-4.9 makes the same point for instruments). A spectrogram of a vowel sung on a rising glide shows it directly: the harmonics fan out as diverging curves, while the bands where they are strong stay horizontal. When the harmonic spacing exceeds the width of a formant peak, the peak can fall between two harmonics and become invisible; sopranos singing high notes face exactly this, and often move F1 up to the nearest harmonic, at the cost of vowel clarity.`,
+      caption: String.raw`Pick a vowel and drag the pitch $f_0$. Left: the harmonics (stems) under the fixed resonance curve of the tract (dashed), computed from one period of the synthesized vowel; the red marker is F1 as an analyst would estimate it from the harmonics alone (peak of the strongest harmonics, interpolated). Right: a narrow-band spectrogram of the vowel sung on a glide from 100 to 800 Hz, with the true formants as dashed lines and the current pitch marked; *Sing the glide* plays it. Raise $f_0$ past 400 Hz on [i] or [u] and watch the estimate of F1 break down.`,
+      deps: ['ling-1.1', 'music-4.9'],
+      refs: ['Ladefoged & Johnson', 'Jurafsky & Martin ch. 15'],
+      tags: ['formants', 'acoustics'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Formant' },
+      viz(v) {
+        const M = v.M, FM = 4000, GL = [100, 800], GD = 2.6;
+        const vow = v.select('vowel', ['i', 'ɛ', 'a', 'ɔ', 'u'].map((x) => ({ value: x, label: `[${x}]` })), 'a');
+        const f0S = v.slider('pitch $f_0$', 80, 1000, 120, { log: true, fmt: (x) => `${Math.round(SR / Math.round(SR / x))} Hz` });
+        const sp = v.stage({ x: [0, FM], y: [-45, 30], height: 300, axes: 'box', minWidth: 280, title: 'spectrum of one period (dB)', xticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
+        const sg = v.stage({ x: [0, GD], y: [0, FM], height: 300, axes: 'box', minWidth: 280, title: 'sung glide, narrow-band spectrogram', xlabel: 'time (s)', yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
+        const Fof = () => [...VF[vow.value], ...FHI];
+        const glideF0 = (t) => GL[0] * Math.pow(GL[1] / GL[0], Math.min(1, t / GD));
+        const glides = new Map();
+        const glide = () => {
+          if (glides.has(vow.value)) return glides.get(vow.value);
+          const F = Fof(), buf = synth((t) => ({ f0: glideF0(t), av: 1, ah: 0, af: 0, F, B: BW5 }), GD + 0.05, { jitter: 0.002 });
+          const g = { buf, S: stft(M, buf, { win: 0.045, hop: 0.01, fmax: FM, nfft: 2048 }) }; glides.set(vow.value, g); return g;
+        };
+        const ph = playhead(v);
+        v.soundButton('Listen', (snd) => { const f0 = SR / Math.round(SR / f0S.value), F = Fof(); snd.samples(normalise(synth((t) => ({ f0: f0 * (1 + 0.012 * Math.sin(2 * Math.PI * 5.5 * t)), av: 1, ah: 0, af: 0, F, B: BW5 }), 1.2), 0.85, 0.06), SR, { gain: 0.55 }); });
+        v.soundButton('Sing the glide', (snd) => { snd.samples(normalise(glide().buf.slice(), 0.85, 0.06), SR, { gain: 0.5 }); ph.start(GD); });
+        v.legend([['accent', 'harmonics $k f_0$', { dot: true }], ['ink', 'tract resonance curve', { dash: true }], ['orange', 'true formants F1–F3', { dash: true }], ['red', 'F1 estimated from the harmonics', { dot: true }]]);
+        let info = null;
+        v.render(() => {
+          const P = Math.round(SR / f0S.value), f0 = SR / P, F = Fof();
+          const per = vowelPeriod(F, BW5, P), h = harmonicsDb(M, per), src = harmonicsDb(M, vowelPeriod([], [], P));
+          const ref = src[1];
+          // resonance curve placed on the harmonics: filter gain + the source's trend
+          const tilt = (f) => { const k = f / f0, lo = Math.max(1, Math.floor(k)), hi = lo + 1; return hi < src.length ? src[lo] + (src[hi] - src[lo]) * Math.max(0, k - lo) : src[lo]; };
+          sp.fn((f) => dB(tractGain(F, BW5, f)) + tilt(Math.max(f, f0)) - ref, { domain: [30, FM], n: 500, color: 'ink', dash: [5, 4], width: 1.4 });
+          for (let k = 0; k < 3; k++) { sp.vline(F[k], { color: 'orange', dash: [3, 4], alpha: 0.8 }); sp.text(`F${k + 1}`, F[k], 27, { size: 11.5, color: 'orange', align: 'center', weight: 650 }); }
+          for (let k = 1; k * f0 < FM && k < h.length; k++) { sp.line(k * f0, -45, k * f0, h[k] - ref, { color: 'accent', width: 1.8 }); sp.dot(k * f0, h[k] - ref, { r: 3, color: 'accent' }); }
+          // F1 as estimated from the harmonics: the strongest harmonic below 1.2 kHz, refined by a parabola through its neighbours
+          let kb = 1; for (let k = 1; k * f0 < 1200 && k < h.length; k++) if (h[k] > h[kb]) kb = k;
+          let est = kb * f0;
+          if (kb > 1 && h[kb + 1] != null) { const a = h[kb - 1], b = h[kb], c = h[kb + 1], den = a - 2 * b + c; if (den < 0) est = f0 * (kb + clampN((0.5 * (a - c)) / den, -0.5, 0.5)); }
+          sp.dot(est, h[kb] - ref + 4, { r: 5.5, color: 'red' });
+          sp.corner(`f₀ = ${Math.round(f0)} Hz`, 'tr', { color: 'accent', weight: 650 });
+          // glide spectrogram
+          const g = glide();
+          drawSpec(sg, g.S, v.rgb('ink'), { key: 'g' + vow.value, range: 50 });
+          for (let k = 0; k < 3; k++) sg.hline(F[k], { color: 'orange', dash: [5, 4], width: 1.3 });
+          const tNow = f0 >= GL[0] && f0 <= GL[1] ? (GD * Math.log(f0 / GL[0])) / Math.log(GL[1] / GL[0]) : null;
+          if (tNow != null) { sg.vline(tNow, { color: 'accent', width: 1.6 }); sg.dot(tNow, f0, { r: 4, color: 'accent' }); }
+          if (ph.t != null) sg.vline(Math.min(GD, ph.t), { color: 'gold', width: 2 });
+          info = { f0, F1: F[0], est, err: (100 * (est - F[0])) / F[0], kb };
+        });
+        v.readout(() => info && `$f_0$ = ${Math.round(info.f0)} Hz, so harmonics every ${Math.round(info.f0)} Hz · true F1 = ${info.F1} Hz · F1 read off the harmonics = **${Math.round(info.est)} Hz** (${info.err >= 0 ? '+' : '−'}${v.fix(Math.abs(info.err), 0)} %)${info.f0 > 0.8 * info.F1 ? ' · the harmonics are now too sparse to show the F1 peak: the estimate is just the nearest harmonic' : ''}`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.8
+    {
+      num: '1.8',
+      kind: 'Model',
+      name: 'The uniform tube: a quarter-wave resonator',
+      statement: String.raw`Model the vocal tract as a uniform tube of length $L$ (about 17 cm for an adult man, 14.5 cm for a woman), closed at the glottis, where the folds are nearly shut, and open at the lips. Plane sound waves in it resonate when the tube holds an odd number of quarter wavelengths, i.e. at
+$$F_n=\frac{(2n-1)\,c}{4L},\qquad n=1,2,3,\ldots$$
+With $c\approx350$ m/s in warm humid air and $L=17.5$ cm this gives 500, 1500, 2500 Hz: the formants of the neutral vowel schwa [ə]. Narrowing the tube changes the resonances in a predictable way: a constriction near a maximum of the volume velocity of a mode (a pressure node) lowers that formant, while one near a pressure maximum raises it. A tube open at both ends would instead resonate at $n\,c/2L$.`,
+      idea: String.raw`At a closed end the air cannot move (volume velocity zero, pressure maximal); at an open end the pressure is atmospheric (pressure zero). The standing waves that fit these conditions have a quarter, three quarters, five quarters … of a wavelength in the tube, as for a stopped organ pipe (music-3.3). For non-uniform shapes the tube is cut into short sections and the transfer matrices of the sections are multiplied; resonances are the frequencies where the volume velocity at the glottis vanishes for unit flow at the lips. Perturbation theory explains the direction of the shifts: narrowing a section increases the kinetic (inertial) energy stored where the air moves fast and decreases the potential (compressional) energy where the pressure swings, so the sign of (kinetic − potential) energy density, the **sensitivity function**, tells whether that formant falls or rises (ling-1.7).`,
+      caption: String.raw`Slide the tube length, then drag the **gold** handle to squeeze the tube anywhere (up and down sets the area). The middle panel shows the standing wave of the chosen formant, pressure (red) and volume velocity (blue), with the sensitivity shaded: blue where narrowing *lowers* this formant, red where it *raises* it. The right panel is the tube's response with its computed resonances (solid) against the uniform-tube values $(2n-1)c/4L$ (dashed). Squeeze near the lips (rounding) and every formant drops; squeeze near the glottis and they rise. Switch the glottis end to **open** to break the quarter-wave pattern.`,
+      deps: ['ling-1.7', 'music-3.3'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['tube model', 'acoustics'],
+      credit: 'T. Chiba & M. Kajiyama 1941; G. Fant 1960',
+      scope: String.raw`Holds for plane-wave propagation, i.e. below roughly 4–5 kHz where the tube's width is small compared with the wavelength, ignoring losses (which broaden the peaks), the yielding walls and the nasal side branch. A real tract is curved and non-uniform; the uniform tube describes only the neutral vowel, and other vowels are perturbations of it.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Acoustic_resonance#Closed_tube' },
+      viz(v) {
+        const M = v.M, A0 = 3.0, N = 70, FMX = 5000;
+        const LS = v.slider('tube length $L$', 10, 20, 17.5, { step: 0.1, fmt: (x) => v.fix(x, 1) + ' cm' });
+        const modeSel = v.select('show mode', [{ value: 0, label: 'F1' }, { value: 1, label: 'F2' }, { value: 2, label: 'F3' }], 0);
+        const ends = v.select('glottis end', [{ value: 'closed', label: 'closed' }, { value: 'open', label: 'open' }], 'closed');
+        const tube = v.stage({ x: [-0.8, 20.6], y: [-1.6, 1.6], height: 150, axes: false, full: true });
+        const md = v.stage({ x: [0, 20], y: [-1.25, 1.25], height: 220, axes: 'box', minWidth: 270, title: 'standing wave and sensitivity (cm from the glottis)', yticks: [] });
+        const tf = v.stage({ x: [0, FMX], y: [-25, 42], height: 220, axes: 'box', minWidth: 270, title: 'tube response (dB)', xticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4k'], [5000, '5 kHz']] });
+        const Hs = tube.handle(14.5, 0.55, { color: 'gold', r: 8, constrain: (x, y) => [clampN(x, 0.6, LS.value - 0.3), clampN(y, 0.18, 1.0)] });
+        v.button('Uniform again', () => Hs.set(Hs.x, 1.0));
+        const areas = () => { const L = LS.value, dl = L / N, Ac = A0 * Hs.y * Hs.y, xc = Math.min(Hs.x, L - 0.3); return { L, dl, A: M.range(N).map((i) => { const x = (i + 0.5) * dl; return A0 - (A0 - Ac) * Math.exp(-(((x - xc) / 1.0) ** 2)); }) }; };
+        const modeShape = (A, dl, f) => { // pressure and volume velocity along the tube (glottis → lips), driven by unit flow at the lips
+          const k = (2 * Math.PI * f) / C_TRACT, c = Math.cos(k * dl), sn = Math.sin(k * dl); let p = 0, u = 1; const P = [p], U = [u];
+          for (let i = A.length - 1; i >= 0; i--) { const Z = 1 / A[i], p2 = c * p + Z * sn * u; u = c * u - (sn * p) / Z; p = p2; P.push(p); U.push(u); }
+          return { P: P.reverse(), U: U.reverse() };
+        };
+        const formantsOf = () => { const { A, dl } = areas(); return tubeFormants(A, dl, 5, ends.value === 'open', 9000); };
+        v.soundButton('Listen', (snd) => { const F = formantsOf(); snd.samples(normalise(synth((t) => ({ f0: 120 - 15 * t, av: 1, ah: 0, af: 0, F, B: BW5 }), 0.9), 0.85, 0.05), SR, { gain: 0.6 }); });
+        v.legend([['red', 'pressure'], ['accent', 'volume velocity'], ['accent', 'narrowing lowers the formant', { area: true }], ['red', 'narrowing raises it', { area: true }]]);
+        let info = null;
+        v.render(() => {
+          const { L, dl, A } = areas(), open = ends.value === 'open', F = tubeFormants(A, dl, 5, open, 9000), Fu = M.range(5).map((n) => (open ? ((n + 1) * C_TRACT) / (2 * L) : ((2 * n + 1) * C_TRACT) / (4 * L)));
+          tube.setView([-0.8, Math.max(20.6, L + 0.8)], [-1.6, 1.6]);
+          md.setView([0, L], [-1.25, 1.25]);
+          // the tube, radius ∝ √area
+          const top = A.map((a, i) => [(i + 0.5) * dl, Math.sqrt(a / A0)]), bot = top.map(([x, y]) => [x, -y]);
+          tube.poly([[0, 1], ...top, [L, Math.sqrt(A[N - 1] / A0)], [L, -Math.sqrt(A[N - 1] / A0)], ...bot.reverse(), [0, -1]], { fill: 'accent', fillAlpha: 0.1, stroke: false });
+          tube.path([[0, Math.sqrt(A[0] / A0)], ...top, [L, Math.sqrt(A[N - 1] / A0)]], { color: 'ink', width: 2.2 });
+          tube.path([[0, -Math.sqrt(A[0] / A0)], ...top.map(([x, y]) => [x, -y]), [L, -Math.sqrt(A[N - 1] / A0)]], { color: 'ink', width: 2.2 });
+          if (!open) tube.line(0, -1.05, 0, 1.05, { color: 'ink', width: 5 });
+          tube.text(open ? 'glottis (open)' : 'glottis (closed)', 0, -1.4, { size: 11, color: 'muted', align: 'left' });
+          tube.text('lips (open)', L, -1.4, { size: 11, color: 'muted', align: 'right' });
+          tube.line(Hs.x, -Hs.y, Hs.x, Hs.y, { color: 'gold', dash: [3, 3], width: 1.2 });
+          tube.text(`A = ${v.fix(A0 * Hs.y * Hs.y, 2)} cm²`, Hs.x, Hs.y + 0.42, { size: 11, color: 'gold', align: 'center' });
+          // mode shape and sensitivity of the chosen formant
+          const n = +modeSel.value, f = F[n], ms = modeShape(A, dl, f);
+          const xs = M.range(N + 1).map((i) => i * dl), pm = Math.max(...ms.P.map(Math.abs)), um = Math.max(...ms.U.map(Math.abs));
+          const sens = M.range(N).map((i) => { const ke = (0.5 * (ms.U[i] ** 2 + ms.U[i + 1] ** 2)) / A[i], pe = 0.5 * (ms.P[i] ** 2 + ms.P[i + 1] ** 2) * A[i]; return ke / (um * um / A0) - pe / (pm * pm * A0); });
+          const sm = Math.max(...sens.map(Math.abs)) || 1;
+          sens.forEach((sv, i) => md.rect(i * dl, 0, (i + 1) * dl, sv / sm, { fill: sv > 0 ? 'accent' : 'red', fillAlpha: 0.16, stroke: false }));
+          md.path(xs.map((x, i) => [x, ms.P[i] / pm]), { color: 'red', width: 2.2 });
+          md.path(xs.map((x, i) => [x, ms.U[i] / um]), { color: 'accent', width: 2.2 });
+          md.hline(0, { color: 'faint' }); md.vline(Hs.x, { color: 'gold', dash: [3, 3] });
+          md.corner(`F${n + 1} = ${Math.round(f)} Hz`, 'tr', { color: 'ink', weight: 650 });
+          // response (cascade of resonators at the computed formants, the filter that is played)
+          tf.fn((x) => dB(tractGain(F, BW5, x)), { domain: [0, FMX], n: 500, color: 'ink', width: 2 });
+          Fu.forEach((x, k) => { if (x < FMX) tf.vline(x, { color: 'orange', dash: [4, 4], width: 1.3 }); if (F[k] < FMX) tf.vline(F[k], { color: k === n ? 'accent' : 'muted', width: k === n ? 2 : 1.2 }); });
+          const iC = Math.min(N - 1, Math.floor(Hs.x / dl)), sc = sens[iC] / sm;
+          info = { L, F, Fu, open, squeezed: Hs.y < 0.97, n, sc };
+        });
+        v.readout(() => info && `computed: ${info.F.slice(0, 3).map((x) => Math.round(x)).join(', ')} Hz · ${info.open ? 'open–open tube $nc/2L$' : 'quarter-wave $(2n-1)c/4L$'}: ${info.Fu.slice(0, 3).map((x) => Math.round(x)).join(', ')} Hz${info.squeezed ? ` · at the squeeze the sensitivity of F${info.n + 1} is ${info.sc > 0.05 ? '**positive**, so narrowing lowers it' : info.sc < -0.05 ? '**negative**, so narrowing raises it' : 'near zero, so it barely moves'} (now ${info.F[info.n] < info.Fu[info.n] ? '−' : '+'}${Math.round(Math.abs(info.F[info.n] - info.Fu[info.n]))} Hz)` : ''}`);
       },
     },
   ],

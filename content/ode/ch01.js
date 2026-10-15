@@ -204,8 +204,8 @@ An equation of order $k$, $x^{(k)} = F(t,x,\dot x,\dots,x^{(k-1)})$, is equivale
           else s1 += String.raw` The solution does not reach $\tau = ${v.fix(T, 2)}$.`;
           if (E.exact) {
             let err = 0;
-            for (const k of ['fw', 'bw']) for (const [t, x] of sol[k]) if (Math.abs(x) < 50) { const e = Math.abs(x - E.exact(t, t0, x0)); if (isFinite(e)) err = Math.max(err, e); }
-            s1 += String.raw` RK4 agrees with the exact solution to $${v.sci(Math.max(err, 1e-16), 1)}$.`;
+            for (const k of ['fw', 'bw']) for (const [t, x] of sol[k]) if (Math.abs(x) < 1e3) { const e = Math.abs(x - E.exact(t, t0, x0)) / Math.max(1, Math.abs(x)); if (isFinite(e)) err = Math.max(err, e); }
+            s1 += String.raw` RK4 agrees with the exact solution to relative error $${v.sci(Math.max(err, 1e-16), 1)}$.`;
           } else {
             let res = 0; const F = info.full;
             for (let i = 0; i + 1 < F.length; i++) { const [ta, xa] = F[i], [tb, xb] = F[i + 1]; if (Math.abs(xa) > 20 || tb === ta) continue; res = Math.max(res, Math.abs((xb - xa) / (tb - ta) - (E.f(ta, xa) + E.f(tb, xb)) / 2)); }
@@ -334,15 +334,15 @@ as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly mon
         const EX = {
           logcos: {
             label: '$x(1-x)\\cos t$', g: Math.cos, h: (x) => x * (1 - x), G: Math.sin, H: (x) => Math.log(Math.abs(x / (1 - x))),
-            sing: [0, 1], lost: [0, 1], x: [-0.45, 1.45], t: [0, 12.6], P: [1.6, 0.5], t1: 4.4, levels: arange(-4, 4, 0.5), hy: [-12, 12],
+            sing: [0, 1], lost: [0, 1], x: [-0.45, 1.45], t: [0, 12.6], P: [1.6, 0.5], t1: 4.4, lv: arange(-0.4, 1.4, 0.1), hy: [-12, 12],
           },
           tx2: {
             label: '$t\\,x^2$', g: (t) => t, h: (x) => x * x, G: (t) => (t * t) / 2, H: (x) => -1 / x,
-            sing: [0], lost: [0], x: [-2.5, 3], t: [-3, 3], P: [-1.5, 0.6], t1: 0.8, levels: arange(-6, 6, 0.5), hy: [0, 12],
+            sing: [0], lost: [0], x: [-2.5, 3], t: [-3, 3], P: [-1.5, 0.6], t1: 0.8, lv: arange(-2.4, 2.9, 0.25), hy: [0, 12],
           },
           circ: {
             label: '$-t/x$', g: (t) => -t, h: (x) => 1 / x, G: (t) => (-t * t) / 2, H: (x) => (x * x) / 2,
-            sing: [0], lost: [], x: [-2.6, 2.6], t: [-6, 6], P: [-1, 1.6], t1: 1.2, levels: arange(0.25, 8, 0.5), hy: [-2.8, 2.8],
+            sing: [0], lost: [], x: [-2.6, 2.6], t: [-6, 6], P: [-1, 1.6], t1: 1.2, lv: arange(0.25, 7, 0.25), hy: [-2.8, 2.8],
           },
         };
         const which = v.select('$\\dot x = g(t)h(x) =$', Object.entries(EX).map(([value, o]) => ({ value, label: o.label })), 'logcos', {
@@ -370,7 +370,9 @@ as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly mon
           const t0 = P.x, x0 = P.y;
           const near = (x) => E.sing.some((z) => Math.abs(x - z) < 0.012 * (E.x[1] - E.x[0]));
           const Phi = (t, x) => (near(x) ? NaN : E.H(x) - E.G(t));
-          s.contour(Phi, E.levels, { color: 'faint', width: 1.1, res: 150 });
+          // one level set through each of a row of evenly spaced points on the line t = 0, so the curves are evenly spread
+          const levels = E.lv.filter((x) => !E.sing.some((z) => Math.abs(x - z) < 1e-9)).map((x) => E.H(x) - E.G(0));
+          s.contour(Phi, levels, { color: 'faint', width: 1.1, res: 150 });
           for (const z of E.lost) { s.hline(z, { color: 'red', width: 1.6, dash: [7, 5] }); s.text('h(x) = 0', tr[1], z, { color: 'red', size: 11, align: 'right', dx: -6, dy: 10 }); }
           if (which.value === 'circ') s.hline(0, { color: 'orange', width: 1, dash: [2, 4] });
           // numerical solution, stopped near the singular lines (where the slope blows up for -t/x)
@@ -438,7 +440,7 @@ It is the sum of the solution $x_0e^{-A(t)}$ of the homogeneous equation and the
         const T = 12;
         const s = v.stage({ x: [-0.4, T], y: [-3, 4], height: 300, full: true, xlabel: 't', ylabel: 'x', title: 'solutions of $\\dot x + a(t)x = b(t)$' });
         const sl = v.stage({ x: [-0.4, T], y: [1e-5, 10], ylog: true, height: 175, full: true, xlabel: 't', title: 'distance to the particular solution, $|x(t) - x_p(t)|$ (log scale)' });
-        const H = s.handle(0, 3, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, -2.9, 3.9)] });
+        const H = s.handle(0, 2.6, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, -2.9, 3.9)] });
         let info = null;
         v.legend([['accent', '$x = x_0e^{-A} + x_p$'], ['purple', 'homogeneous $x_0e^{-A(t)}$', { dash: true }], ['orange', 'particular $x_p$'], ['gold', 'RK4 check', { dot: true }], ['muted', 'other $x_0$']]);
         v.render(() => {
@@ -576,7 +578,7 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
         const K = v.slider('$K$', 0.6, 2, 1.6, { step: 0.01 });
         const TM = 12;
         const s = v.stage({ x: [-0.5, TM], y: [0, 2.6], height: 320, weight: 1.6, minWidth: 330, xlabel: 't', ylabel: 'x', title: 'population $x(t)$' });
-        const sp = v.stage({ x: [0, 2.6], y: [-0.5, 1.15], height: 320, weight: 1, minWidth: 250, xlabel: 'x', ylabel: 'ẋ', title: 'phase line: $\\dot x = rx(1 - x/K)$' });
+        const sp = v.stage({ x: [-0.15, 2.6], y: [-0.5, 1.15], height: 320, weight: 1, minWidth: 250, xlabel: 'x', ylabel: 'ẋ', title: 'phase line: $\\dot x = rx(1 - x/K)$' });
         const H = s.handle(0, 0.08, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, 0.02, 2.55)] });
         let cache = { key: null }, info = null;
         v.legend([['accent', 'solution from $x_0$'], ['gold', 'state at time $\\tau$', { dot: true }], ['orange', '$x = K/2$ (inflection)', { dash: true }], ['green', '$x = K$', { dash: true }]]);
@@ -645,7 +647,7 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
       tags: ['phase line', 'stability', 'fixed points'],
       viz(v) {
         const mode = v.select('', [{ value: 'shape', label: 'shape $f$ with handles' }, { value: 'zeros', label: 'drag the zeros' }], 'shape');
-        const flip = v.toggle('flip $f \\to -f$', false);
+        const flip = v.toggle('flip $f \\to -f$', false, { onChange: () => { for (const h of knots) h.y = -h.y; } });
         const sf = v.stage({ x: [-3.25, 3.25], y: [-2.5, 2.5], height: 330, weight: 1.15, minWidth: 300, xlabel: 'x', ylabel: 'ẋ = f(x)', title: '$\\dot x = f(x)$ and its phase line' });
         const sx = v.stage({ x: [-0.7, 6], y: [-3, 3], height: 330, weight: 1, minWidth: 260, xlabel: 't', ylabel: 'x', title: 'solutions $x(t)$' });
         const KX = [-3, -2, -1, 0, 1, 2, 3], KY = [1.6, -0.3, -1.2, 0.4, 1.3, 0.2, -1.6];
@@ -659,8 +661,8 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
           knots.forEach((h) => { h.visible = shape; }); roots.forEach((h) => { h.visible = !shape; });
           let f, zs;
           if (shape) {
-            const sp = spline(KX, knots.map((h) => h.y));
-            f = (x) => sg * sp(x);
+            const sp = spline(KX, knots.map((h) => h.y)); // the toggle negates the handles themselves
+            f = sp;
             zs = zerosOf(f, -3, 3, 600);
           } else {
             const rs = roots.map((h) => h.x);
@@ -671,7 +673,7 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
           // left: graph, shading by sign
           sf.fn(f, { color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.08 });
           phaseArrows(sf, f, zs, -3, 3, 0, { len: 30 });
-          for (const c of cls) fpGlyph(v, sf, c.z, 0, c.type, c.dir > 0 ? Math.PI : 0, 6.5);
+          for (const c of cls) fpGlyph(v, sf, c.z, 0, c.type, c.dir > 0 ? Math.PI : 0, shape ? 6.5 : 10);
           // right: solutions from a fan of initial values
           const F = (t, x) => f(x);
           for (const x0 of v.M.linspace(-2.9, 2.9, 19)) {

@@ -53,7 +53,7 @@ export default {
 $$2\langle T\rangle = -\Big\langle\sum_i \mathbf F_i\cdot\mathbf r_i\Big\rangle .$$
 If the forces come from a potential energy $U$ that is homogeneous of degree $k$ in the coordinates, $U(\lambda\mathbf r_1,\dots) = \lambda^kU(\mathbf r_1,\dots)$, this reads $2\langle T\rangle = k\langle U\rangle$: for gravity or the Coulomb force ($k = -1$) $\langle T\rangle = -\tfrac12\langle U\rangle$ and $\langle E\rangle = -\langle T\rangle < 0$; for springs ($k = 2$) $\langle T\rangle = \langle U\rangle$. The time average of $\tfrac{d}{dt}\sum\mathbf p_i\cdot\mathbf r_i$ is what vanishes, so the theorem fails for unbound motion.`,
       idea: String.raw`Let $G = \sum_i\mathbf p_i\cdot\mathbf r_i$. By Newton’s second law, $\dot G = \sum_i m_i|\dot{\mathbf r}_i|^2 + \sum_i\mathbf F_i\cdot\mathbf r_i = 2T + \sum\mathbf F_i\cdot\mathbf r_i$ (2.1). Averaging over $[0,t]$ with the fundamental theorem of calculus (pma-6.21) gives $\langle 2T + \sum\mathbf F_i\cdot\mathbf r_i\rangle_t = (G(t) - G(0))/t$, which tends to zero like $1/t$ whenever $G$ stays bounded. For a homogeneous potential Euler’s relation gives $\sum\mathbf r_i\cdot\nabla_iU = kU$, and $\mathbf F_i = -\nabla_iU$ (3.4). The same scaling idea underlies mechanical similarity (3.16).`,
-      caption: String.raw`Sixteen particles attract each other (velocity Verlet); pick the pair force. Top right: the running time averages of $2T$ (gold) and of $-\sum\mathbf F_i\cdot\mathbf r_i$ (blue) — the faint gold curve is $2T$ itself — with $k\langle U\rangle$ dashed: they lock together although $T$ and $U$ keep fluctuating. Bottom: the gap between the two averages on log–log axes, falling like $1/t$ (dashed guide) because $G = \sum\mathbf p\cdot\mathbf r$ stays bounded. Choose the unbound start: the cluster flies apart, $G$ grows, and the gap stops shrinking.`,
+      caption: String.raw`Sixteen bodies, integrated with velocity Verlet: with gravity they orbit a star and pull on each other; with springs or quartic bonds they are tied together pairwise. Top right: the running time averages of $2T$ (gold) and of $-\sum\mathbf F_i\cdot\mathbf r_i$ (blue) — the faint gold curve is $2T$ itself — with $k\langle U\rangle$ dashed: they lock together although $T$ and $U$ keep fluctuating. Bottom: the gap between the two averages on log–log axes, falling like $1/t$ (dashed guide) because $G = \sum\mathbf p\cdot\mathbf r$ stays bounded. Choose the unbound start: the cluster flies apart, $G$ grows, and the gap stops shrinking.`,
       deps: ['mech-2.1', 'mech-3.4', 'mech-3.16', 'pma-6.21'],
       refs: ['Goldstein §3.4'],
       tags: ['virial', 'time average', 'many-body'],
@@ -62,8 +62,8 @@ If the forces come from a potential energy $U$ that is homogeneous of degree $k$
       viz(v) {
         const N = 16;
         const LAW = {
-          grav: { label: 'gravity ($k=-1$)', k: -1, kick: 0.45 },
-          unbound: { label: 'gravity, unbound start', k: -1, kick: 1.9 },
+          grav: { label: 'gravity ($k=-1$)', k: -1, kick: 1 },
+          unbound: { label: 'gravity, unbound start', k: -1, kick: 1.55 },
           spring: { label: 'springs ($k=2$)', k: 2, kick: 0.6 },
           quartic: { label: 'quartic ($k=4$)', k: 4, kick: 0.6 },
         };
@@ -73,19 +73,26 @@ If the forces come from a potential energy $U$ that is homogeneous of degree $k$
         const c = v.stage({ x: [0.3, 60], y: [1e-4, 10], xlog: true, ylog: true, axes: 'box', height: 200, full: true, xlabel: 't (log)', title: 'gap $|\\langle 2T\\rangle_t - \\langle -\\sum\\mathbf F\\cdot\\mathbf r\\rangle_t| = |G(t) - G(0)|/t$' });
         const cache = memo(); let cur = null;
         const run = () => cache(law.value, () => {
-          const L = LAW[law.value], m = 1 / N, eps2 = 0.06 ** 2, r = v.rng(7);
-          // pair force magnitude along r̂ (positive = repulsive) and pair potential
-          const pf = law.value === 'spring' ? (d) => -m * m * N * d : law.value === 'quartic' ? (d) => -m * m * N * d ** 3 : (d) => (-m * m * d) / (d * d + eps2) ** 1.5;
+          const L = LAW[law.value], grav = L.k === -1, r = v.rng(7);
+          // gravity: N bodies of mass 0.01 orbit a fixed star of mass 1 and attract each other (softened); springs / quartic: N bodies of mass 1/N tied pairwise
+          const m = grav ? 0.01 : 1 / N, eps2 = 0.08 ** 2;
+          const pf = law.value === 'spring' ? (d) => -m * m * N * d : law.value === 'quartic' ? (d) => -m * m * N * d ** 3 : (d) => (-m * m * d) / (d * d + eps2) ** 1.5; // along r̂, + = repulsive
           const pu = law.value === 'spring' ? (d) => 0.5 * m * m * N * d * d : law.value === 'quartic' ? (d) => 0.25 * m * m * N * d ** 4 : (d) => (-m * m) / Math.sqrt(d * d + eps2);
           const x = [], vel = [];
-          for (let i = 0; i < N; i++) { const rr = Math.sqrt(r()) * 1.0, ph = TAU * r(); x.push(rr * Math.cos(ph), rr * Math.sin(ph)); vel.push(r.normal(), r.normal()); }
-          // remove centre-of-mass motion and set the kinetic energy relative to |U|
-          for (const arr of [x, vel]) { let mx = 0, my = 0; for (let i = 0; i < N; i++) { mx += arr[2 * i] / N; my += arr[2 * i + 1] / N; } for (let i = 0; i < N; i++) { arr[2 * i] -= mx; arr[2 * i + 1] -= my; } }
-          const forces = (X, F) => { F.fill(0); let U = 0, W = 0; for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const dx = X[2 * j] - X[2 * i], dy = X[2 * j + 1] - X[2 * i + 1], d = Math.hypot(dx, dy), f = pf(d) / d; F[2 * j] += f * dx; F[2 * j + 1] += f * dy; F[2 * i] -= f * dx; F[2 * i + 1] -= f * dy; U += pu(d); W += f * d * d; } return { U, W }; };
+          for (let i = 0; i < N; i++) {
+            const ph = TAU * r();
+            if (grav) { const rr = 0.6 + 1.1 * r(), vc = Math.sqrt(1 / rr), f = law.value === 'unbound' ? 1.5 + 0.25 * r() : 0.8 + 0.3 * r(), tilt = 0.35 * (r() - 0.5); x.push(rr * Math.cos(ph), rr * Math.sin(ph)); vel.push(-f * vc * Math.sin(ph + tilt), f * vc * Math.cos(ph + tilt)); }
+            else { const rr = Math.sqrt(r()); x.push(rr * Math.cos(ph), rr * Math.sin(ph)); vel.push(r.normal(), r.normal()); }
+          }
+          if (!grav) for (const arr of [x, vel]) { let mx = 0, my = 0; for (let i = 0; i < N; i++) { mx += arr[2 * i] / N; my += arr[2 * i + 1] / N; } for (let i = 0; i < N; i++) { arr[2 * i] -= mx; arr[2 * i + 1] -= my; } }
+          const forces = (X, F) => {
+            F.fill(0); let U = 0, W = 0;
+            for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const dx = X[2 * j] - X[2 * i], dy = X[2 * j + 1] - X[2 * i + 1], d = Math.hypot(dx, dy), f = pf(d) / d; F[2 * j] += f * dx; F[2 * j + 1] += f * dy; F[2 * i] -= f * dx; F[2 * i + 1] -= f * dy; U += pu(d); W += f * d * d; }
+            if (grav) for (let i = 0; i < N; i++) { const rr = Math.hypot(X[2 * i], X[2 * i + 1]), k = -m / rr ** 3; F[2 * i] += k * X[2 * i]; F[2 * i + 1] += k * X[2 * i + 1]; U -= m / rr; W -= m / rr; }
+            return { U, W };
+          };
           const F = new Array(2 * N).fill(0); let st = forces(x, F);
-          let T0 = 0; for (let i = 0; i < 2 * N; i++) T0 += 0.5 * m * vel[i] ** 2;
-          const target = L.kick * Math.abs(st.U - (law.value === 'grav' || law.value === 'unbound' ? 0 : 0)), sc = Math.sqrt(target / T0);
-          for (let i = 0; i < 2 * N; i++) vel[i] *= sc;
+          if (!grav) { let T0 = 0; for (let i = 0; i < 2 * N; i++) T0 += 0.5 * m * vel[i] ** 2; const sc = Math.sqrt((L.kick * Math.abs(st.U)) / T0); for (let i = 0; i < 2 * N; i++) vel[i] *= sc; }
           const dt = 0.001, TT = 60, every = 25, nSteps = Math.round(TT / dt);
           const rec = { t: [], T: [], U: [], W: [], G: [], x: [], E0: 0 };
           let intT = 0, intW = 0, intU = 0; const avT = [], avW = [], avU = [];
@@ -114,7 +121,8 @@ If the forces come from a potential energy $U$ that is homogeneous of degree $k$
           const D = run(), n = D.rec.t.length - 1, k = Math.min(n, Math.round(((t * D.TT) / 20) / D.dt));
           // particles with short trails
           for (let j = Math.max(0, k - 12); j < k; j++) s.dots(Array.from({ length: N }, (_, i) => [D.rec.x[j][2 * i], D.rec.x[j][2 * i + 1]]), { r: 1.4, color: 'accent', alpha: 0.25 });
-          s.dots(Array.from({ length: N }, (_, i) => [D.rec.x[k][2 * i], D.rec.x[k][2 * i + 1]]), { r: 4.2, color: 'gold' });
+          if (D.L.k === -1) sun(s, 0, 0, { r: 0.09 });
+          s.dots(Array.from({ length: N }, (_, i) => [D.rec.x[k][2 * i], D.rec.x[k][2 * i + 1]]), { r: 4.2, color: D.L.k === -1 ? 'accent' : 'gold' });
           s.corner(`t = ${v.fix(D.rec.t[k], 1)}`, 'tl', { color: 'muted' });
           if (law.value === 'unbound') s.corner('E > 0: unbound', 'tr', { color: 'red', weight: 600 });
           // running averages
@@ -137,8 +145,8 @@ If the forces come from a potential energy $U$ that is homogeneous of degree $k$
           const { D, k } = cur, i = Math.max(0, Math.min(D.avT.length - 1, Math.round((D.rec.t[k] / D.TT) * D.avT.length) - 1));
           const aT = D.avT[i][1], aW = D.avW[i][1], aU = D.avU[i][1];
           const base = String.raw`at $t = ${v.fix(D.avT[i][0], 1)}$: $\langle 2T\rangle = ${v.fix(aT, 4)}$, $\langle -\sum\mathbf F\cdot\mathbf r\rangle = ${v.fix(aW, 4)}$, $k\langle U\rangle = ${v.fix(aU, 4)}$ ($k = ${D.L.k}$) · gap $${sci(v, Math.abs(aT - aW))}$ · energy drift $${sci(v, D.dEmax)}$`;
-          if (law.value === 'unbound') return base + String.raw` · $E = ${v.fix(D.rec.E0, 3)} > 0$: $G$ has grown to $${v.fix(D.rec.G[k] - D.rec.G[0], 2)}$, so the gap $(G - G_0)/t$ levels off instead of vanishing — no virial balance for unbound motion`;
-          return base + String.raw` · $G$ stays within $\pm${v.fix(D.Gmax, 3)}$ of its start, so the gap is at most $${v.fix(D.Gmax, 3)}/t$` + (D.L.k === -1 ? ' (softened gravity: $k\\langle U\\rangle$ differs slightly from the exact virial)' : '');
+          if (law.value === 'unbound') return base + String.raw` · $E = ${v.fix(D.rec.E0, 3)} > 0$ (every body above escape speed): $G$ has grown to $${v.fix(D.rec.G[k] - D.rec.G[0], 2)}$, so the gap $(G - G_0)/t$ levels off instead of vanishing — no virial balance for unbound motion`;
+          return base + String.raw` · $G$ stays within $\pm${v.fix(D.Gmax, 3)}$ of its start, so the gap is at most $${v.fix(D.Gmax, 3)}/t$` + (D.L.k === -1 ? ' (the softened mutual pull makes $k\\langle U\\rangle$ differ slightly from the exact virial)' : '');
         });
       },
     },
@@ -162,10 +170,10 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
           well: { label: 'attractive well (rainbow)', bmax: 2.4, X0: 6, U0: -1.2 },
         };
         const tg = v.select('target', Object.entries(TG).map(([value, q]) => ({ value, label: q.label })), 'sphere');
-        const s = v.stage({ x: [-3.2, 3.2], y: [-1.7, 1.7], equal: true, axes: false, height: 250, full: true, title: 'side view: beam from the left (energy $E = 1$, $m = 1$)' });
+        const s = v.stage({ x: [-4.6, 4.6], y: [-1.7, 1.7], equal: true, axes: false, height: 250, full: true, title: 'side view: beam from the left (energy $E = 1$, $m = 1$)' });
         const g = v.stage({ x: [0, 1], y: [0, 180], axes: 'box', height: 260, xlabel: 'impact parameter b', ylabel: 'θ (°)', title: 'deflection function $\\theta(b)$' });
         const h = v.stage({ x: [0, 180], y: [0, 1], axes: 'box', height: 260, xlabel: 'θ (°)', title: 'cross-section $d\\sigma/d\\Omega$' });
-        const Hb = s.handle(-2.9, 0.45, { color: 'orange', r: 6, label: 'b', labelPos: 'w', constrain: (x, y) => [-2.9, clamp(Math.abs(y), 0.02, TG[tg.value].bmax * (tg.value === 'sphere' ? 0.97 : 0.9) * (s.bounds ? 1 : 1))] });
+        const Hb = s.handle(-4.2, 0.45, { color: 'orange', r: 6, label: 'b', labelPos: 'w', constrain: (x, y) => [-4.2, clamp(Math.abs(y), 0.02, TG[tg.value].bmax * (tg.value === 'sphere' ? 0.94 : 0.9))] });
         const v0 = Math.SQRT2, DB = 0.05;
         const cache = memo(); let cur = null;
         const run = () => cache(tg.value, () => {
@@ -178,7 +186,7 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
             theta = (b) => interp(tab, b);
             Q.acc = acc;
           }
-          const tabT = []; for (let i = 0; i <= 400; i++) { const b = (Q.bmax * i) / 400; tabT.push([b, theta(b)]); }
+          const tabT = []; for (let i = 0; i <= 2000; i++) { const b = Q.bmax * (tg.value === 'sphere' ? Math.sin((Math.PI / 2) * (i / 2000)) : i / 2000); tabT.push([b, theta(b)]); }
           // Monte Carlo: b uniform over the disc of radius bmax (b = bmax √u), binned in θ
           const r = v.rng(11), NMC = 6000, nb = 36, cnt = new Array(nb).fill(0);
           for (let i = 0; i < NMC; i++) { const b = Q.bmax * Math.sqrt(r()), th = theta(b); const k = Math.min(nb - 1, Math.floor((th / Math.PI) * nb)); cnt[k]++; }
@@ -188,16 +196,16 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
           const formula = [];
           for (let k = 1; k < 180; k++) {
             const th = (k * Math.PI) / 180; let sum = 0;
-            for (let i = 0; i < tabT.length - 1; i++) { const [b0, t0] = tabT[i], [b1, t1] = tabT[i + 1]; if ((t0 - th) * (t1 - th) <= 0 && t1 !== t0) { const bb = b0 + ((th - t0) / (t1 - t0)) * (b1 - b0); sum += (bb * Math.abs((b1 - b0) / (t1 - t0))) / Math.sin(th); } }
-            formula.push([k, sum]);
+            for (let i = 0; i < tabT.length - 1; i++) { const [b0, t0] = tabT[i], [b1, t1] = tabT[i + 1]; if (((t0 <= th && th < t1) || (t1 <= th && th < t0)) && t1 !== t0) { const bb = b0 + ((th - t0) / (t1 - t0)) * (b1 - b0); sum += (bb * Math.abs((b1 - b0) / (t1 - t0))) / Math.sin(th); } }
+            if (k >= 4) formula.push([k, sum]);
           }
           let rb = null; if (tg.value === 'well') { let best = 0; for (const [b, t] of tabT) if (t > best) { best = t; rb = b; } rb = { b: rb, th: best }; }
-          return { Q, theta, tabT, hist, formula, rb, sigma: (NMC - cnt[0] * 0) / I };
+          return { Q, theta, tabT, hist, formula, rb };
         });
         v.render(() => {
           const D = run(), Q = D.Q, b0 = Hb.y, b1 = Math.min(b0 + DB, Q.bmax);
           const th0 = D.theta(b0), th1 = D.theta(b1);
-          s.setView([-3.2, 3.2], [-1.7, 1.7]);
+          s.setView([-4.6, 4.6], [-1.7, 1.7]);
           // target
           if (tg.value === 'sphere') s.circle(0, 0, 1, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1.5 });
           else for (let k = 6; k >= 1; k--) s.circle(0, 0, 0.35 * k, { fill: Q.U0 > 0 ? 'red' : 'blue', fillAlpha: 0.05, stroke: false });
@@ -209,17 +217,17 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
           const ray = (b, st) => {
             const sg = Math.sign(b) || 1, ab = Math.abs(b);
             if (tg.value === 'sphere') {
-              if (ab >= 1) { s.line(-3.3, b, 3.3, b, st); return; }
+              if (ab >= 1) { s.line(-7, b, 7, b, st); return; }
               const xh = -Math.sqrt(1 - ab * ab), out = Math.PI - 2 * Math.asin(ab);
-              s.line(-3.3, b, xh, b, st); s.line(xh, b, xh + 4 * Math.cos(sg * out), b + 4 * Math.sin(sg * out), st);
+              s.line(-7, b, xh, b, st); s.line(xh, b, xh + 8 * Math.cos(sg * out), b + 8 * Math.sin(sg * out), st);
             } else {
-              const R = deflect(Q.acc, sg * Math.max(ab, 1e-4), v0, 3.4).R;
+              const R = deflect(Q.acc, sg * Math.max(ab, 1e-4), v0, 7).R;
               s.path(R.s.map((S) => [S[0], S[1]]), st);
             }
           };
           const nr = 13; for (let i = -nr; i <= nr; i++) { const b = (Q.bmax * 1.15 * i) / nr; ray(b, { color: 'muted', width: 1, alpha: 0.55 }); }
           for (const b of [b0, b0 + DB / 2, b1]) for (const sg of [1, -1]) ray(sg * b, { color: 'orange', width: 1.8 });
-          s.line(-2.9, -b0, -2.9, -b1, { color: 'orange', width: 4, alpha: 0.6 });
+          s.line(-4.2, -b0, -4.2, -b1, { color: 'orange', width: 4, alpha: 0.6 });
           // deflection function
           g.setView([0, Q.bmax], [0, 185]);
           g.vband(b0, b1, { color: 'orange', alpha: 0.25 });
@@ -227,11 +235,12 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
           g.path(D.tabT.map(([b, t]) => [b, (t * 180) / Math.PI]), { color: 'accent', width: 2.4 });
           if (D.rb) { g.hline((D.rb.th * 180) / Math.PI, { color: 'red', dash: [4, 4], width: 1.2 }); g.text('rainbow', Q.bmax * 0.97, (D.rb.th * 180) / Math.PI, { color: 'red', size: 11, align: 'right', dy: -9 }); }
           // cross-section
-          const ymax = tg.value === 'sphere' ? 0.5 : Math.max(0.5, Math.min(6, 1.3 * Math.max(...D.hist.slice(1).map((q) => q[1]))));
+          const ymax = tg.value === 'sphere' ? 0.5 : Math.max(0.5, 1.25 * Math.max(...D.hist.filter((q) => q[0] > 15).map((q) => q[1])));
           h.setView([0, 180], [0, ymax]);
           h.bars(D.hist.map((q) => q[1]), { x0: D.hist[0][0], dx: 5, color: 'gold', fillAlpha: 0.55, barWidth: 0.92 });
           h.path(D.formula.filter((q) => q[1] < ymax * 3), { color: 'accent', width: 2.2 });
           if (tg.value === 'sphere') h.hline(0.25, { color: 'green', dash: [5, 4], width: 1.4 });
+          else h.text('forward peak off scale ↑', 14, ymax * 0.93, { color: 'muted', size: 10.5 });
           const mid = ((th0 + th1) / 2) * (180 / Math.PI);
           h.vline(mid, { color: 'orange', width: 1.5 });
           const dsig = TAU * ((b0 + b1) / 2) * (b1 - b0), dOm = TAU * Math.sin((th0 + th1) / 2) * Math.abs(th1 - th0);
@@ -257,7 +266,7 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
 $$\frac{d\sigma}{d\Omega} = \Big(\frac{d}{4}\Big)^2\frac{1}{\sin^4(\theta/2)} = \Big(\frac{kqQ}{4E}\Big)^2\frac{1}{\sin^4(\theta/2)},$$
 independent of the sign of the charges, steeply forward-peaked, and with infinite total cross-section (the Coulomb force has infinite range). Classical mechanics happens to give the exact quantum-mechanical result. The formula fails once the particle reaches the nucleus itself, $r_{\min} \lesssim R_{\rm nucleus}$.`,
       idea: String.raw`The orbit is a conic (8.7) with eccentricity $e = \sqrt{1 + (2b/d)^2}$; the asymptotes make the angle $2\arcsin(1/e)$, which gives $\tan(\theta/2) = d/2b$. Inverting, $b = \tfrac d2\cot(\theta/2)$, and the definition of the cross-section (8.17) gives $b\,|db/d\theta|/\sin\theta = (d/4)^2/\sin^4(\theta/2)$. Only $b^2$ enters, so flipping the sign of the force (attractive orbits wrap around the nucleus) leaves $d\sigma/d\Omega$ unchanged. Geiger and Marsden’s 1913 counts of alpha particles scattered by gold foil followed the $1/\sin^4(\theta/2)$ law over a factor of 4000 in counting rate — the evidence for a tiny, massive, charged nucleus.`,
-      caption: String.raw`Alpha particles ($z = 2$) from a uniform beam scatter off a nucleus (units: femtometres). Left: hyperbolas for evenly spaced impact parameters; the dashed circle is the head-on closest approach $d/2$… actually the turning radius for $b=0$ is $d$, drawn dashed, and the shaded disc is the nucleus. Right, on a log scale: 200 000 beam particles binned by angle per solid angle (dots), against Rutherford’s formula (curve) and Geiger and Marsden’s 1913 gold data (diamonds, one overall scale factor). Flip the charge: the paths change, the cross-section does not. Choose aluminium at high energy with the finite nucleus switched on to see the formula break at large angles.`,
+      caption: String.raw`Alpha particles ($z = 2$) from a uniform beam scatter off a nucleus (units: femtometres). Left: hyperbolas for evenly spaced impact parameters; the dashed circle of radius $d$ is the closest any alpha can come (head-on), and the red disc is the nucleus. Right, on a log scale: 400 000 beam particles binned by angle per solid angle (dots), against Rutherford’s formula (curve) and Geiger and Marsden’s 1913 gold data (diamonds, one overall scale factor). Flip the charge: the paths change, the cross-section does not. Choose aluminium at high energy with the finite nucleus switched on to see the formula break at large angles.`,
       deps: ['mech-8.17', 'mech-8.7'],
       refs: ['Taylor §14.6', 'Goldstein §3.10'],
       tags: ['scattering', 'Coulomb', 'nucleus'],
@@ -274,19 +283,19 @@ independent of the sign of the charges, steeply forward-peaked, and with infinit
         const g = v.stage({ x: [0, 180], y: [1e-4, 1e4], ylog: true, axes: 'box', height: 320, xlabel: 'θ (°)', title: 'counts per solid angle (log scale)', weight: 1.15 });
         const cache = memo(); let cur = null;
         const run = () => cache([tgt.value, En.value, flip.value, finite.value].join('|'), () => {
-          const T = TGT[tgt.value], E = En.value, d = (KE2 * 2 * T.Z) / E, Rn = 1.2 * Math.cbrt(T.A) + 1.2 * Math.cbrt(4), sg = flip.value ? -1 : 1;
-          // potential energy / E as a function of r (fm): point charge d/r, or a uniform sphere of radius Rn inside
-          const acc = (r) => sg * (finite.value && r < Rn ? (2 * d * r) / Rn ** 3 : (2 * d) / (r * r)) * 0.5 * 2; // −dU/dr with m = 1, E = 1 (v0 = √2), U = E·d/r
+          const T = TGT[tgt.value], E = En.value, d = (KE2 * 2 * T.Z) / E, Rn = 1.2 * Math.cbrt(T.A), sg = flip.value ? -1 : 1;
+          // m = 1, E = 1 (v0 = √2): U = d/r for a point charge, U = (d/2R)(3 − r²/R²) inside a uniformly charged sphere; acc = −dU/dr
+          const acc = (r) => sg * (finite.value && r < Rn ? (d * r) / Rn ** 3 : d / (r * r));
           const v0 = Math.SQRT2, X0 = 60 * d;
           // deflection table on log-spaced b (fm)
           const tab = []; for (let i = 0; i <= 500; i++) { const b = d * 10 ** (-3 + (5 * i) / 500); tab.push([b, Math.abs(deflect(acc, b, v0, X0).th)]); }
           tab.unshift([0, Math.PI]);
-          const bmax = 20 * d, r = v.rng(5), NMC = 200000, nb = 34, cnt = new Array(nb).fill(0);
+          const bmax = 6 * d, r = v.rng(5), NMC = 400000, nb = 34, cnt = new Array(nb).fill(0);
           for (let i = 0; i < NMC; i++) { const b = bmax * Math.sqrt(r()), th = interp(tab, b); const k = Math.floor(((th * 180) / Math.PI - 10) / 5); if (k >= 0 && k < nb) cnt[k]++; }
           const I = NMC / (Math.PI * bmax * bmax);
           const pts = cnt.map((n, k) => { const t0 = ((10 + 5 * k) * Math.PI) / 180, t1 = t0 + (5 * Math.PI) / 180, dO = TAU * (Math.cos(t0) - Math.cos(t1)); return [10 + 5 * k + 2.5, n / (I * dO), n]; });
-          const fans = []; for (let i = -12; i <= 12; i++) { const b = (i / 12) * 3.2 * d; if (Math.abs(b) < 1e-9) continue; fans.push(deflect(acc, b, v0, 3.5 * d).R); }
-          fans.push(deflect(acc, 1e-3 * d, v0, 3.5 * d).R);
+          const fans = []; for (let i = -12; i <= 12; i++) { const b = (i / 12) * 3.2 * d; if (Math.abs(b) < 1e-9) continue; fans.push(deflect(acc, b, v0, 7 * d).R); }
+          fans.push(deflect(acc, 1e-3 * d, v0, 7 * d).R);
           // Geiger–Marsden scale factor: least squares in log against the formula
           const ruth = (th) => (d / 4) ** 2 / Math.sin((th * Math.PI) / 360) ** 4;
           let lsum = 0; for (const [th, n] of GM1913) lsum += Math.log(ruth(th) / n);
@@ -300,7 +309,7 @@ independent of the sign of the charges, steeply forward-peaked, and with infinit
           s.circle(0, 0, D.Rn, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1 });
           for (const R of D.fans) s.path(R.s.map((S) => [S[0], S[1]]), { color: D.sg > 0 ? 'accent' : 'purple', width: 1.3, alpha: 0.85 });
           s.dot(0, 0, { r: 3, color: 'red' });
-          s.corner(`d = ${v.fix(d, 1)} fm, nucleus ${v.fix(D.Rn, 1)} fm`, 'tl', { color: 'muted', size: 11.5 });
+          s.corner(`d = ${v.fix(d, 1)} fm, nucleus R = ${v.fix(D.Rn, 1)} fm`, 'tl', { color: 'muted', size: 11.5 });
           // cross-section, log scale
           const ys = D.pts.filter((q) => q[2] > 0).map((q) => q[1]);
           const lo = Math.min(...ys, D.ruth(180)) / 3, hi = Math.max(...ys, D.ruth(10)) * 3;
@@ -318,9 +327,9 @@ independent of the sign of the charges, steeply forward-peaked, and with infinit
           const back = D.pts.filter((q) => q[0] > 150 && q[2] > 0), bratio = back.length ? back.reduce((a, q) => a + q[1] / D.ruth(q[0]), 0) / back.length : NaN;
           let out = String.raw`$d = kzZe^2/E = ${v.fix(KE2, 3)}\times 2\times ${D.T.Z}/${v.fix(D.E, 1)} = ${v.fix(d, 2)}$ fm · simulated ÷ formula for $30°$–$150°$: ${v.fix(mean, 3)} (largest deviation ${v.fix(100 * dev, 1)}%, statistical)`;
           if (finite.value && d < D.Rn) out += String.raw` · backscattering ($>150°$) is only ${v.fix(100 * bratio, 0)}% of Rutherford: the alphas reach the nucleus ($d = ${v.fix(d, 1)} < R = ${v.fix(D.Rn, 1)}$ fm) and the $1/r$ potential is cut off — real nuclei deviate further through the strong force`;
-          else if (finite.value) out += String.raw` · the alphas never get closer than $${v.fix(d / 2 * (1 + 1), 1)}$… at least $d/2$… so the finite size does not matter here`;
+          else if (finite.value) out += String.raw` · no alpha gets closer than $d = ${v.fix(d, 1)}$ fm, outside the nucleus ($R = ${v.fix(D.Rn, 1)}$ fm), so its size does not matter here`;
           if (D.sg < 0) out += ' · attractive force: the same $|\\theta(b)|$, so the same cross-section';
-          if (tgt.value === 'gold') out += String.raw` · Geiger–Marsden: $N\sin^4(\theta/2)$ stays within ±${v.fix(100 * Math.max(...GM1913.map(([th, n]) => Math.abs((n * Math.sin((th * Math.PI) / 360) ** 4) / 31 - 1))), 0)}% of constant over a ${v.fix(132000 / 33.1, 0)}-fold range of counts`;
+          if (tgt.value === 'gold') { const ns = GM1913.map(([th, n]) => n * Math.sin((th * Math.PI) / 360) ** 4), mn = ns.reduce((a, b) => a + b, 0) / ns.length; out += String.raw` · Geiger–Marsden: $N\sin^4(\theta/2)$ stays within ±${v.fix(100 * Math.max(...ns.map((x) => Math.abs(x / mn - 1))), 0)}% of its mean while $N$ itself varies ${v.fix(132000 / 33.1, 0)}-fold`; }
           return out;
         });
       },
@@ -419,12 +428,13 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
         const x1 = [-0.97000436, 0.24308753], v3 = [-0.93240737, -0.86473146];
         const LAGR = (() => { const R = 1 / Math.sqrt(3), w = Math.sqrt(3), x = [], vv = []; for (let i = 0; i < 3; i++) { const a = Math.PI / 2 + (i * TAU) / 3; x.push(R * Math.cos(a), R * Math.sin(a)); vv.push(-w * R * Math.sin(a), w * R * Math.cos(a)); } return { x, v: vv }; })();
         const CFG = {
-          eight: { label: 'figure-eight', m: [1, 1, 1], x: [x1[0], x1[1], -x1[0], -x1[1], 0, 0], v: [-v3[0] / 2, -v3[1] / 2, -v3[0] / 2, -v3[1] / 2, v3[0], v3[1]], T: 80, lim: 2.2, eta: 0.002 },
-          lagrange: { label: 'Lagrange triangle', m: [1, 1, 1], x: LAGR.x, v: LAGR.v, T: 60, lim: 2.4, eta: 0.002 },
-          pyth: { label: 'Pythagorean 3–4–5', m: [3, 4, 5], x: [1, 3, -2, -1, 1, -1], v: [0, 0, 0, 0, 0, 0], T: 70, lim: 6, eta: 0.0007 },
+          eight: { label: 'figure-eight', m: [1, 1, 1], x: [x1[0], x1[1], -x1[0], -x1[1], 0, 0], v: [-v3[0] / 2, -v3[1] / 2, -v3[0] / 2, -v3[1] / 2, v3[0], v3[1]], T: 80, lim: 2.2, eta: 0.002, ej: 3.5, push: 0.15 },
+          lagrange: { label: 'Lagrange triangle', m: [1, 1, 1], x: LAGR.x, v: LAGR.v, T: 60, lim: 2.4, eta: 0.002, ej: 3.5, push: 0 },
+          pyth: { label: 'Pythagorean 3–4–5', m: [3, 4, 5], x: [1, 3, -2, -1, 1, -1], v: [0, 0, 0, 0, 0, 0], T: 70, lim: 6, eta: 0.0007, ej: 9, push: 0 },
         };
-        const cfg = v.select('configuration', Object.entries(CFG).map(([value, q]) => ({ value, label: q.label })), 'eight');
-        const push = v.slider('push on body 1 (fraction of its speed)', 0, 0.3, 0.15, { step: 0.005 });
+        let push = null;
+        const cfg = v.select('configuration', Object.entries(CFG).map(([value, q]) => ({ value, label: q.label })), 'eight', { onChange: (k) => push.set(CFG[k].push) });
+        push = v.slider('push on body 1', 0, 0.3, 0.15, { step: 0.005 });
         const s = v.stage({ x: [-2.2, 2.2], y: [-1.6, 1.6], equal: true, axes: false, height: 320, weight: 1.3 });
         const ge = v.stage({ x: [0, 80], y: [1e-14, 1e-2], ylog: true, axes: 'box', height: 320, xlabel: 't', title: 'relative energy error $|\\Delta E/E|$' });
         const gd = v.stage({ x: [0, 80], y: [0, 6], axes: 'box', height: 190, full: true, xlabel: 't', title: 'distance of each body from the centre of mass' });
@@ -442,7 +452,7 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
             t += h; n++; rClose = Math.min(rClose, rmin);
             if (t >= nextRec) { rec.t.push(t); rec.x.push(x.slice()); nextRec += 0.02; }
             if (t >= nextE) { const e = Math.abs(energy3(x, vel, m) / E0 - 1); rec.tE.push(t); rec.dE.push(e); dEmax = Math.max(dEmax, e); nextE += 0.05; }
-            if (!ej) for (let i = 0; i < 3; i++) { const r = Math.hypot(x[2 * i], x[2 * i + 1]); if (r > 4 * Q.lim / 2.2 * 1.6) { ej = { i, t }; } }
+            if (!ej) for (let i = 0; i < 3; i++) { const r = Math.hypot(x[2 * i], x[2 * i + 1]); if (r > Q.ej) { ej = { i, t }; } }
           }
           let P = [0, 0], Lz = 0; for (let i = 0; i < 3; i++) { P[0] += m[i] * vel[2 * i]; P[1] += m[i] * vel[2 * i + 1]; Lz += m[i] * (x[2 * i] * vel[2 * i + 1] - x[2 * i + 1] * vel[2 * i]); }
           const dist = rec.x.map((X) => [0, 1, 2].map((i) => Math.hypot(X[2 * i], X[2 * i + 1])));
@@ -452,7 +462,6 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
           const D = run(), Q = D.Q, N = D.rec.t.length - 1, simT = Math.min((t * Q.T) / 30, Q.T);
           let k = 0; { let lo = 0, hi = N; while (hi - lo > 1) { const mm = (lo + hi) >> 1; if (D.rec.t[mm] <= simT) lo = mm; else hi = mm; } k = lo; }
           s.setView([-Q.lim, Q.lim], [-Q.lim * 0.73, Q.lim * 0.73]);
-          if (cfg.value === 'eight') s.path(CFG.eight.x && Array.from({ length: 200 }, (_, j) => j), { color: 'faint' });
           const tail = Math.round((cfg.value === 'pyth' ? 4 : 2.5) / 0.02);
           for (let i = 0; i < 3; i++) {
             s.path(D.rec.x.slice(0, k + 1).map((X) => [X[2 * i], X[2 * i + 1]]), { color: COL[i], width: 0.8, alpha: 0.18 });
@@ -524,8 +533,10 @@ at every point of the orbit. Consequently all satellites launched from the same 
         });
         v.animate((t) => {
           const D = run(), simT = D.bound ? ((t % 9) / 8) * D.Tp : ((t % 9) / 8) * D.Tsim, tt = Math.min(simT, D.Tsim);
-          const lim = D.bound ? Math.min(14, Math.max(3.2, 1.1 * (2 * D.a / RE))) : 8;
-          s.setView([-lim * 1.25 + 1, lim * 0.6 + 1], [-lim * 0.85, lim * 0.85]);
+          let x0 = -1.2, x1 = r0 / RE + 0.3, y0 = -1.2, y1 = 1.2;
+          for (const o of D.orbits) for (const S of o.R.s) { const X = S[0] / RE, Y = S[1] / RE; if (Math.abs(X) > 25 || Math.abs(Y) > 25) continue; x0 = Math.min(x0, X); x1 = Math.max(x1, X); y0 = Math.min(y0, Y); y1 = Math.max(y1, Y); }
+          const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hw = 0.54 * Math.max(x1 - x0, (y1 - y0) * 1.25), lim = hw;
+          s.setView([cx - hw, cx + hw], [cy - hw / 1.25, cy + hw / 1.25]);
           s.circle(0, 0, 1, { fill: 'blue', fillAlpha: 0.25, color: 'blue', width: 1.2 });
           if (D.bound) s.circle(r0 / RE, 0, (2 * D.a - r0) / RE, { color: 'muted', width: 1, dash: [4, 4] });
           D.orbits.forEach((o, k) => {
@@ -551,7 +562,7 @@ at every point of the orbit. Consequently all satellites launched from the same 
           if (!cur) return '';
           const D = cur;
           if (!D.bound) return String.raw`$v_0 = ${v.fix(sp.value, 2)}$ km/s $\ge v_{\rm esc} = \sqrt{2GM_\oplus/r_0} = ${v.fix(vesc, 3)}$ km/s at $r_0 = 2R_\oplus$: $1/a \le 0$, every direction escapes (parabolas or hyperbolas)`;
-          const as = D.orbits.map((o) => (o.lo + o.hi) / 2), aErr = Math.max(...as.map((x) => Math.abs(x / D.a - 1))), back = Math.max(...D.orbits.map((o) => o.back / RE)), vv = Math.max(...D.orbits.map((o) => o.vvErr));
+          const ok = D.orbits.filter((o) => o.stop === 'time'), as = ok.map((o) => (o.lo + o.hi) / 2), aErr = Math.max(...as.map((x) => Math.abs(x / D.a - 1))), back = Math.max(...ok.map((o) => o.back / RE)), vv = Math.max(...ok.map((o) => o.vvErr));
           const es = D.orbits.map((o) => o.el.e);
           return String.raw`$v_0 = ${v.fix(sp.value, 2)}$ km/s (circular ${v.fix(vcirc, 2)}, escape ${v.fix(vesc, 2)}): $a = 1/(2/r_0 - v_0^2/GM) = ${v.fix(D.a / 1000, 0)}$ km for every direction; measured $(r_{\min}+r_{\max})/2$ agrees to $${sci(v, aErr)}$ although $e$ ranges from ${v.fix(Math.min(...es), 3)} to ${v.fix(Math.max(...es), 3)} · after one period $2\pi\sqrt{a^3/GM} = ${v.fix(D.Tp / 60, 2)}$ min all twelve are back within $${sci(v, back)}\,R_\oplus$ of the launch point · vis-viva holds along every orbit to $${sci(v, vv)}$`;
         });

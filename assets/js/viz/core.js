@@ -71,7 +71,7 @@ export function katexHTML(tex, display = false) {
  * Render a "rich" string: text with $inline$ and $$display$$ TeX, **bold**, *italic*,
  * blank-line paragraphs, and lines starting with "(a)", "(i)", "- " rendered as list items.
  */
-export function richHTML(src, { lists = true } = {}) {
+export function richHTML(src, { lists = true, lineWrap = true } = {}) {
   if (src == null) return '';
   const maths = [];
   let s = String(src).replace(/\$\$([\s\S]+?)\$\$|\$((?:\\.|[^$\\])+?)\$/g, (_, d, i) => {
@@ -82,7 +82,7 @@ export function richHTML(src, { lists = true } = {}) {
   const paras = s.split(/\n\s*\n/).map((p) => {
     const lines = p.split('\n');
     const html = []; let buf = [];
-    const flush = () => { if (buf.length) { html.push(`<span class="rich-line">${buf.join(' ')}</span>`); buf = []; } };
+    const flush = () => { if (buf.length) { html.push(lineWrap ? `<span class="rich-line">${buf.join(' ')}</span>` : buf.join(' ')); buf = []; } };
     for (const raw of lines) {
       const line = raw.trim();
       const m = lists && line.match(/^(\((?:[a-z]|[ivx]+|\d+)\)|-)\s+(.*)$/);
@@ -96,7 +96,7 @@ export function richHTML(src, { lists = true } = {}) {
 }
 export function renderRich(el, src) { el.innerHTML = richHTML(src); }
 /** Inline-only variant (no <p> wrapper), for labels. */
-export function inlineHTML(src) { const h = richHTML(src, { lists: false }); return h.replace(/^<p>/, '').replace(/<\/p>$/, '').replace(/<\/?span class="rich-line">/g, ''); }
+export function inlineHTML(src) { return richHTML(src, { lists: false, lineWrap: false }).replace(/^<p>/, '').replace(/<\/p>$/, '').replace(/<\/p><p>/g, ' '); }
 
 // ------------------------------------------------------------------ DOM helper
 function h(tag, cls, ...kids) { const el = document.createElement(tag); if (cls) el.className = cls; for (const k of kids) el.append(k); return el; }
