@@ -1,4 +1,24 @@
 // Syllabus — Numerical Linear Algebra (curated course; see collection.js for references)
+//
+// Sources consulted (research pass, Oct 2026):
+//   - Trefethen & Bau, Numerical Linear Algebra (SIAM 1997): 40 lectures in six parts
+//     (fundamentals; QR & least squares; conditioning & stability; systems of equations;
+//     eigenvalues; iterative methods); refs 'Lec. n' use the lecture numbers. Author page:
+//     https://people.maths.ox.ac.uk/trefethen/text.html
+//   - Golub & Van Loan, Matrix Computations 4e: chapter-level refs (1 multiplication, 2 analysis,
+//     3 general systems, 4 special systems, 5 orthogonalization & LS, 6 modified LS, 7 unsymmetric
+//     eigenproblems incl. §7.9 pseudospectra, 8 symmetric eigenproblems, 9 functions of matrices,
+//     10 large sparse eigenproblems, 11 large sparse linear systems, 12 special topics).
+//   - MIT OCW 18.335J Introduction to Numerical Methods (Trefethen–Bau based; direct & iterative
+//     solvers, eigen/QR/SVD, stability, IEEE floating point, sparse matrices):
+//     https://ocw.mit.edu/courses/18-335j-introduction-to-numerical-methods-spring-2019/pages/syllabus/
+//   - Wikipedia, List of numerical analysis topics (NLA sections: direct, iterative, eigenvalue
+//     algorithms, least squares, conditioning): https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics
+// Gaps filled after comparison: Givens, rank-revealing QR, total least squares and Tikhonov (GVL 5–6),
+//   Hilbert/Wilkinson examples, Gershgorin, Bauer–Fike, pseudospectra & transient growth, Kaczmarz,
+//   multigrid, MINRES, implicitly restarted Arnoldi, matrix functions (GVL 9), PageRank.
+// Deliberate omissions: Bareiss/fraction-free elimination, block/parallel algorithms, LOBPCG and
+//   other specialised eigensolvers, tensor decompositions.
 export default {
   collection: 'nla',
   chapters: [
@@ -234,6 +254,8 @@ export default {
           pic: 'Restart GMRES every m steps to save memory; residual curves for several m are overlaid, showing cheaper iterations but possible stagnation when m is too small.' },
         { num: '7.9', kind: 'Algorithm', name: 'Biorthogonalization methods (BiCG, BiCGSTAB)', deps: ['nla-7.5'], refs: ['Trefethen–Bau Lec. 39'],
           pic: 'Compare GMRES, BiCG and BiCGSTAB on the same non-symmetric system; BiCG’s residual zigzags erratically while using short recurrences, and BiCGSTAB smooths it out.' },
+        { num: '7.10', kind: 'Algorithm', name: 'Implicitly restarted Arnoldi', deps: ['nla-7.4', 'nla-6.9'], refs: ['Golub–Van Loan ch. 10'],
+          pic: 'Compute the five rightmost eigenvalues of a large sparse matrix with a fixed small subspace; shifted QR steps filter out unwanted Ritz values at each restart, and the wanted ones converge, tracked per restart.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -258,6 +280,66 @@ export default {
           pic: 'Give a matrix only k distinct eigenvalues (drag them into clusters); CG converges in k steps in exact arithmetic and almost that fast when the eigenvalues are merely clustered.' },
         { num: '8.8', kind: 'Algorithm', name: 'MINRES for symmetric indefinite systems', deps: ['nla-8.1', 'nla-7.5'], refs: ['Golub–Van Loan ch. 11'],
           pic: 'Solve a symmetric indefinite system with CG (which can break down) and MINRES (which minimizes the residual with Lanczos’ short recurrence); the two residual histories are compared.' },
+        { num: '8.9', kind: 'Algorithm', name: 'Steepest descent for linear systems', deps: ['nla-8.4'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Run steepest descent with exact line search on SPD systems of growing κ; the error decreases by a factor (κ − 1)/(κ + 1) per step, far slower than CG on the same plot.' },
+        { num: '8.10', kind: 'Theorem', name: 'Convergence of Lanczos for extreme eigenvalues', deps: ['nla-8.1', 'nla-8.6'], refs: ['Golub–Van Loan ch. 10'],
+          pic: 'For a large symmetric matrix, the error of the largest Ritz value is plotted per step against the Kaniel–Paige Chebyshev bound, which depends on the gap to the next eigenvalue.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 9
+    {
+      n: 9,
+      title: 'Classical iterations, preconditioning and multigrid',
+      summary: String.raw`Stationary iterations such as Jacobi, Gauss–Seidel and SOR split the matrix and converge exactly when the iteration matrix has spectral radius below one. On their own they are slow for discretized PDEs, because smooth error components barely change; but they are excellent smoothers, which multigrid exploits by correcting on coarser grids. Preconditioning transforms a system into one with clustered eigenvalues, so that Krylov methods converge in a handful of steps.`,
+      items: [
+        { num: '9.1', kind: 'Algorithm', name: 'Jacobi iteration', deps: ['nla-7.1'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Solve a small diagonally dominant system by Jacobi sweeps; each component is updated from the old values only, and the iterates walk toward the solution in a 2D view.' },
+        { num: '9.2', kind: 'Algorithm', name: 'Gauss–Seidel iteration', deps: ['nla-9.1'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Run Gauss–Seidel beside Jacobi on the same system; updating components in place makes the 2D iterates move along coordinate axes and converge roughly twice as fast for the model problem.' },
+        { num: '9.3', kind: 'Theorem', name: 'Convergence iff the spectral radius is below 1', deps: ['nla-9.1', 'fa-10.13'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Edit the splitting of a 2×2 matrix; the eigenvalues of the iteration matrix are drawn with the unit circle, and the error converges or diverges exactly as they sit inside or outside it.' },
+        { num: '9.4', kind: 'Algorithm', name: 'Successive over-relaxation (SOR) and the optimal ω', deps: ['nla-9.2', 'nla-9.3'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Sweep ω from 0 to 2 on the model Poisson problem; the spectral radius of the SOR matrix is plotted, dipping sharply at the theoretical optimum and the iteration count follows it.' },
+        { num: '9.5', kind: 'Phenomenon', name: 'Smooth errors are slow to die under relaxation', deps: ['nla-9.1', 'pde-13.8'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Start Jacobi on a 1D Poisson problem with an error mixing low and high frequencies; the oscillatory part disappears in a few sweeps while the smooth part lingers, shown in a Fourier bar chart.' },
+        { num: '9.6', kind: 'Algorithm', name: 'Multigrid', deps: ['nla-9.5'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Step through a V-cycle: smooth on the fine grid, restrict the residual, solve on coarse grids, interpolate back and smooth again; the error drops by a constant factor per cycle independent of grid size.' },
+        { num: '9.7', kind: 'Method', name: 'Preconditioning', deps: ['nla-8.6', 'nla-7.6'], refs: ['Trefethen–Bau Lec. 40'],
+          pic: 'Show the eigenvalues of A and of M⁻¹A for diagonal, incomplete-Cholesky and exact preconditioners; the tighter the cluster, the fewer CG iterations, counted live.' },
+        { num: '9.8', kind: 'Method', name: 'Incomplete Cholesky and ILU factorizations', deps: ['nla-9.7', 'nla-4.10'], refs: ['Trefethen–Bau Lec. 40', 'Golub–Van Loan ch. 11'],
+          pic: 'Compute a Cholesky factor that keeps only the sparsity pattern of A; the dropped fill-in is shown in red, and the resulting preconditioner cuts the CG iteration count for a Poisson matrix.' },
+        { num: '9.9', kind: 'Algorithm', name: 'Preconditioned conjugate gradients', deps: ['nla-9.7', 'nla-8.4'], refs: ['Trefethen–Bau Lec. 40'],
+          pic: 'Run CG and preconditioned CG on the same discretized PDE as the grid is refined; the plain iteration count grows like the grid size while a good preconditioner keeps it nearly flat.' },
+        { num: '9.10', kind: 'Algorithm', name: 'Kaczmarz method (row projections)', deps: ['nla-2.1'], refs: ['Golub–Van Loan ch. 11'],
+          pic: 'Project the current guess onto the hyperplane of one equation at a time, cyclically or at random; in 2D the iterates bounce between the lines toward their intersection, slowly when the lines are nearly parallel.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 10
+    {
+      n: 10,
+      title: 'Matrix functions, structure and special topics',
+      summary: String.raw`Many applications need more than solving systems: the exponential of a matrix for differential equations, square roots and sign functions, solutions of matrix equations, and generalized eigenproblems. Structure changes everything: circulant matrices are diagonalized by the Fourier transform, Kronecker products separate variables, and randomized sketching computes low-rank approximations of enormous matrices from a few products.`,
+      items: [
+        { num: '10.1', kind: 'Method', name: 'Computing the matrix exponential: scaling and squaring', deps: ['ode-3.2', 'nla-5.2'], refs: ['Golub–Van Loan ch. 9'],
+          pic: 'Compute e^A by truncated Taylor series, by eigendecomposition and by scaling and squaring with Padé approximation; errors are compared for normal and highly non-normal A.' },
+        { num: '10.2', kind: 'Theorem', name: 'Functions of matrices via Schur and Jordan forms', deps: ['nla-5.2', 'ladr-8.46', 'fa-10.26'], refs: ['Golub–Van Loan ch. 9'],
+          pic: 'Apply f(z) = √z, log z or e^z to a matrix through its Schur form; the eigenvalues of f(A) are f of the eigenvalues, checked on the complex plane, and a Jordan block shows the derivative terms appearing.' },
+        { num: '10.3', kind: 'Algorithm', name: 'Newton iterations for the matrix square root and sign', deps: ['nla-10.2'], refs: ['Golub–Van Loan ch. 9'],
+          pic: 'Iterate X ↦ (X + X⁻¹)/2 from a matrix with eigenvalues on both sides of the imaginary axis; the eigenvalues flow to ±1, plotted per iteration, and quadratic convergence appears in the residual.' },
+        { num: '10.4', kind: 'Algorithm', name: 'Bartels–Stewart algorithm for Sylvester equations', deps: ['nla-5.2'], refs: ['Golub–Van Loan ch. 7'],
+          pic: 'Solve AX + XB = C by Schur-factoring A and B and back-substituting column by column; the solution exists exactly when the spectra of A and −B do not meet, shown as two point sets in ℂ.' },
+        { num: '10.5', kind: 'Algorithm', name: 'Generalized eigenvalue problems and the QZ algorithm', deps: ['nla-6.9'], refs: ['Golub–Van Loan ch. 7'],
+          pic: 'For a pencil A − λB, slide B toward singularity; one generalized eigenvalue runs off to infinity, while QZ computes the pair (αᵢ, βᵢ) stably throughout.' },
+        { num: '10.6', kind: 'Theorem', name: 'Circulant matrices are diagonalized by the DFT', deps: ['nla-5.1', 'pma-8.9'], refs: ['Golub–Van Loan ch. 4'],
+          pic: 'Edit the first row of a circulant matrix; its eigenvalues are computed and coincide with the discrete Fourier transform of that row, and every Fourier mode is an eigenvector.' },
+        { num: '10.7', kind: 'Algorithm', name: 'Fast Fourier transform as a sparse factorization', deps: ['nla-10.6', 'nla-1.11'], refs: ['Golub–Van Loan ch. 1'],
+          pic: 'The DFT matrix is factored into log₂ n sparse butterfly stages with bit-reversal, drawn as a network; the operation count n log n is compared with n² as n grows.' },
+        { num: '10.8', kind: 'Definition', name: 'Kronecker products and separable problems', deps: ['nla-1.1'], refs: ['Golub–Van Loan ch. 12'],
+          pic: 'The 2D Laplacian on a grid is assembled as I⊗T + T⊗I from the 1D matrix T; its eigenvalues are all sums of pairs of 1D eigenvalues, verified by sorting both lists.' },
+        { num: '10.9', kind: 'Algorithm', name: 'Randomized low-rank approximation', deps: ['nla-1.8', 'nla-2.6'], refs: ['Golub–Van Loan ch. 12', 'Trefethen–Bau Lec. 5'],
+          pic: 'Multiply a large matrix by a few random vectors, orthogonalize, and project; the error of the sketch is compared with the optimal σ_{k+1} from the full SVD as oversampling is increased.' },
+        { num: '10.10', kind: 'Concept', name: 'Structured matrices: Toeplitz, banded, low-rank', deps: ['nla-10.6', 'nla-4.9'], refs: ['Golub–Van Loan ch. 4'],
+          pic: 'Pick a structure; the number of parameters, storage and solve cost are compared with dense matrices, and a Toeplitz system is solved by Levinson recursion in O(n²) operations.' },
       ],
     },
   ],
