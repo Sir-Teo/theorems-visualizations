@@ -478,10 +478,10 @@ counted once every case's outcome is known. When deaths follow onset within the 
         const delS = v.slider('mean onset-to-death delay (days)', 5, 30, 16, { step: 1 });
         const DIS = [
           { id: 'A', name: 'mild, widespread', color: 'teal', at: [6000, 0.06] },
-          { id: 'B', name: 'rare, deadly', color: 'purple', at: [4, 45] },
+          { id: 'B', name: 'rare, deadly', color: 'purple', at: [5, 40], pos: 'e' },
           { id: 'C', name: 'moderate', color: 'orange', at: [60, 4] },
         ];
-        DIS.forEach((d, i) => { d.h = sL.handle(...d.at, { color: d.color, label: d.id, labelPos: 'ne' }); d.u = uniforms(M, 61 + i, 2); });
+        DIS.forEach((d, i) => { d.h = sL.handle(...d.at, { color: d.color, label: d.id, labelPos: d.pos || 'ne' }); d.u = uniforms(M, 61 + i, 2); });
         const TB = v.table(sR, { rows: 3, cols: 4, square: false, cellAspect: 1.55, maxCell: 50, size: 12.5, region: [0, 0.56, 1, 1], colLabels: ['cases', 'deaths', 'per 100k', 'CFR'], rowLabels: ['A', 'B', 'C'], rowLabelColor: (i) => DIS[i].color, labelSize: 13 });
         /** A count with the given mean and variance from a fixed uniform: exact quantile for small means, normal otherwise. */
         const count = (mean, sd, u, exact) => (mean < 60 ? exact().quantile(u) : Math.max(0, Math.round(mean + sd * M.dist.normal(0, 1).quantile(u))));
@@ -731,9 +731,9 @@ the area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the
             sD.hist({ edges: hs.edges, counts: hs.counts.map((c) => Math.min(c / NS, 0.0495)) }, { color: 'red', fillAlpha: 0.3, width: 1 });
             sD.path(Array.from({ length: 105 }, (_, x) => [x + 0.5, Math.min(lt.l[x] - lt.l[x + 1], 0.0495)]), { color: 'ink', width: 1.8 });
             const d0 = lt.l[0] - lt.l[1];
-            if (d0 > 0.05) sD.text(`infant deaths: ${Math.round(1000 * d0)} per 1 000 ↑`, 2, 0.0465, { align: 'left', color: 'red', size: 11.5, weight: 600 });
+            if (d0 > 0.05) sD.text(`infant deaths: ${Math.round(1000 * d0)} per 1 000 ↑`, 2, 0.0415, { align: 'left', color: 'red', size: 11.5, weight: 600 });
             sD.vline(lt.e[0], { color: 'accent', width: 1.6, dash: [5, 4] });
-            sD.text(`mean = e₀`, lt.e[0], 0.04, { dx: lt.e[0] > 60 ? -5 : 5, align: lt.e[0] > 60 ? 'right' : 'left', color: 'accent', size: 11.5, weight: 600 });
+            sD.text(`mean = e₀`, lt.e[0], 0.034, { dx: lt.e[0] > 60 ? -5 : 5, align: lt.e[0] > 60 ? 'right' : 'left', color: 'accent', size: 11.5, weight: 600 });
             sD.dot(mode + 0.5, Math.min(lt.l[mode] - lt.l[mode + 1], 0.0495), { r: 4, color: 'ink' });
             sD.corner(`most common adult age at death: ${mode}`, 'tr', { color: 'ink', size: 11.5 });
           } else {

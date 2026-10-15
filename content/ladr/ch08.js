@@ -608,7 +608,8 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           rot: [[0, -1, 0], [1, 0, 0], [0, 0, 2]],
         };
         const pre = v.select('$T$', [{ value: 'defect', label: 'defective: $2, 2, -1$' }, { value: 'triple', label: 'one eigenvalue, one eigen-line' }, { value: 'diag', label: 'diagonalizable' }, { value: 'rot', label: 'rotation, over $\\mathbf R$' }], 'defect', { onChange: () => ST.reset(undefined, { at: 'end' }) });
-        const S = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.95], equal: true, axes: false, height: 390, title: 'the proof of 8.9, one step at a time' });
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.7, 1.95], equal: true, axes: false, height: 390, weight: 1.3, title: 'the proof of 8.9, one step at a time' });
+        const Q = v.stage({ x: [0, 1], y: [0, 1.9], equal: true, axes: false, height: 390, weight: 0.7, minWidth: 210, title: 'the matrix of $T$' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.45, lim: 1.3 });
         const hv = sc.handle([0.4, -0.9, 0.95], { color: 'gold', label: 'v' });
         const LC = ['green', 'blue', 'pink'];
@@ -687,6 +688,17 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           sc.flush();
           let coords = null;
           if (last) coords = M.solve(fromCols(A.basis.map((q) => q.b)), hv.p);
+          // ---- matrices: standard basis, and the basis of generalized eigenvectors
+          const sc1 = Math.max(1, maxAbs(A.T));
+          intTile(Q, A.T, 0.2, 1.08, 0.6, { fmt: (x) => pn(x, 2), scale: sc1, size: 11.5 });
+          Q.text('in the standard basis', 0.5, 1.75, { align: 'center', size: 12, color: 'muted' });
+          if (A.ok) {
+            const Bm = fromCols(A.basis.map((q) => q.b)), Mg = M.solve(Bm, mm(A.T, Bm)).map((r) => r.map((x) => (Math.abs(x) < 1e-9 ? 0 : x)));
+            intTile(Q, Mg, 0.2, 0.18, 0.6, { fmt: (x) => pn(x, 2), scale: sc1, size: 11.5, frame: last ? 'gold' : 'muted', frameW: last ? 2.4 : 1.1 });
+            let o = 0; const cw = 0.2;
+            A.levels.forEach((L, j) => { const d = L.G.length; Q.rect(0.2 + o * cw, 0.18 + 0.6 - (o + d) * cw, 0.2 + (o + d) * cw, 0.18 + 0.6 - o * cw, { color: LC[j], width: 2.4 }); o += d; });
+            Q.tex('\\text{in the basis } g_1, g_2, g_3', 0.5, 0.88, { size: 13, color: last ? 'gold' : 'muted' });
+          } else Q.text('no basis of real generalized eigenvectors', 0.5, 0.5, { align: 'center', size: 11.5, color: 'red', weight: 700 });
           st = { f, coords };
         });
         v.legend([['teal', 'eigenvectors'], ['green', 'first generalized eigenspace', { area: true }], ['purple', 'invariant remainder', { area: true }], ['gold', 'basis box and $v$']]);
@@ -722,8 +734,8 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
         const mode = v.select('$v$', [{ value: 'gl', label: '$v \\in G(\\lambda, T)$' }, { value: 'gm', label: '$v \\in G(\\mu, T)$' }, { value: 'mix', label: 'mixed: not a generalized eigenvector' }], 'gl');
         const th = v.slider('which $v$ in $G(\\lambda, T)$: $v = \\cos\\theta\\, u_1 + \\sin\\theta\\, u_2$, $\\theta$', 0, 3.14, 1.1, { step: 0.01 });
         const Z = v.stage({ x: [-1.65, 1.65], y: [-1.3, 1.3], equal: true, height: 360, weight: 1.2, xlabel: 'Re', ylabel: 'Im', title: 'the $\\alpha$-plane, shaded by $\\|(T - \\alpha I)^3 v\\|$' });
-        const B = v.stage({ x: [-0.6, 6.6], y: [1e-4, 30], ylog: true, height: 360, weight: 0.8, minWidth: 220, axes: 'box', xticks: [0, 1, 2, 3, 4, 5, 6], xlabel: 'k', title: '$\\|(T - \\alpha I)^k v\\| \\,/\\, \\|v\\|$' });
-        const ah = Z.handle(-0.2, 0.75, { color: 'gold', label: 'α', constrain: (x, y) => { for (const e of [lam, mu]) if (Math.hypot(x - e[0], y - e[1]) < 0.08) return [e[0], e[1]]; return [x, y]; } });
+        const B = v.stage({ x: [-0.6, 6.6], y: [1e-5, 30], ylog: true, height: 360, weight: 0.8, minWidth: 220, axes: 'box', xticks: [0, 1, 2, 3, 4, 5, 6], xlabel: 'k', title: '$\\|(T - \\alpha I)^k v\\| \\,/\\, \\|v\\|$' });
+        const ah = Z.handle(lam[0], lam[1], { color: 'gold', label: 'α', constrain: (x, y) => { for (const e of [lam, mu]) if (Math.hypot(x - e[0], y - e[1]) < 0.08) return [e[0], e[1]]; return [x, y]; } });
         const gr = v.rgb('green'), pa = v.rgb('panel'), ink = v.rgb('ink');
         const vec = () => {
           if (mode.value === 'gm') return s[2];
@@ -736,19 +748,20 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
         v.render(() => {
           th.el.hidden = mode.value !== 'gl';
           const x = vec(), nx = cNorm(x);
+          const lg = (re, im) => { const a = [re, im]; let w = x; for (let k = 0; k < 3; k++) w = cMV(T, w).map((z, i) => csub(z, cmul(a, w[i]))); return Math.log10(Math.max(1e-12, cNorm(w) / nx)); };
+          const hpx = (3 * (Z.bounds.x[1] - Z.bounds.x[0])) / Z.width;
           Z.raster((re, im) => {
-            const a = [re, im]; let w = x;
-            for (let k = 0; k < 3; k++) w = cMV(T, w).map((z, i) => csub(z, cmul(a, w[i])));
-            const L = Math.log10(Math.max(1e-12, cNorm(w) / nx)), t = M.clamp((L + 3) / 4, 0, 1);
-            const f = Math.abs(L - Math.round(L)) < 0.045 ? 0.82 : 1, g = 1 - t;
+            const L = lg(re, im), t = M.clamp((L + 3) / 4, 0, 1), g = 1 - t;
+            const tol = 0.55 * Math.max(Math.abs(lg(re + hpx, im) - L), Math.abs(lg(re, im + hpx) - L));
+            const f = Math.abs(L - Math.round(L)) < tol && L > -2.95 ? 0.72 : 1;
             return [0, 1, 2].map((c) => (gr[c] * g + pa[c] * (1 - g)) * f + ink[c] * (1 - f)).concat(255);
           }, { res: 3, key: `${mode.value}|${th.value}` });
           Z.axes();
-          for (const [e, name] of [[lam, '\\lambda'], [mu, '\\mu']]) { Z.dot(e[0], e[1], { r: 9, hollow: true, color: 'ink', width: 2 }); Z.tex(name, e[0], e[1], { size: 15, dx: 14, dy: 14 }); }
+          for (const [e, name] of [[lam, '\\lambda'], [mu, '\\mu']]) { Z.circle(e[0], e[1], 0.05, { color: 'ink', width: 2 }); Z.tex(name, e[0], e[1], { size: 15, dx: 16, dy: 14 }); }
           const a = [ah.x, ah.y], ns = powNorms(x, a, 6).map((t) => t / nx);
           ns.forEach((t, k) => {
-            if (t < 1e-12) { B.dot(k, 1.6e-4, { r: 6, color: 'green' }); B.text('0', k, 2.8e-4, { align: 'center', color: 'green', size: 12, weight: 700 }); }
-            else B.rect(k - 0.32, 1e-4, k + 0.32, Math.min(t, 30), { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1 });
+            if (t < 1e-12) { B.dot(k, 1.7e-5, { r: 6, color: 'green' }); B.text('0', k, 3.6e-5, { align: 'center', color: 'green', size: 12, weight: 700 }); }
+            else B.rect(k - 0.28, 1e-5, k + 0.28, Math.min(t, 30), { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1 });
           });
           st = { a, ns, onL: a[0] === lam[0] && a[1] === lam[1], onM: a[0] === mu[0] && a[1] === mu[1] };
         });
@@ -771,7 +784,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
       name: 'Linearly independent generalized eigenvectors',
       statement: String.raw`Suppose $T \in \mathcal L(V)$. Then every list of generalized eigenvectors of $T$ corresponding to distinct eigenvalues of $T$ is linearly independent.`,
       idea: String.raw`Suppose not, and take a shortest dependent list $v_1, \dots, v_m$ (eigenvalues $\lambda_1, \dots, \lambda_m$ distinct), with $a_1v_1 + \cdots + a_mv_m = 0$ and all $a_k \ne 0$. Apply $(T - \lambda_m I)^n$, $n = \dim V$: it kills $v_m$, while for $k < m$ the vector $(T - \lambda_m I)^n v_k$ is nonzero (else $v_k$ would belong to two eigenvalues, against 8.11) and is still a generalized eigenvector for $\lambda_k$, since the operators commute. That gives a shorter dependent list — a contradiction. The argument copies 5.11 for eigenvectors.`,
-      caption: String.raw`A function-space instance: $T = d/dt$ acting on $V = \operatorname{span}(e^{at}, te^{at}, e^{bt}, e^{ct})$ with $a = 0$. Here $v_1 = (\cos\varphi + \sin\varphi\,t)e^{at}$ is a generalized eigenvector for $a$ (an eigenvector only when $\sin\varphi = 0$), and $v_2 = e^{bt}$, $v_3 = e^{ct}$ are eigenvectors for $b$ and $c$. Left: the three functions, and in gold the combination $c_1v_1 + c_2v_2 + c_3v_3$ with $|c| = 1$ that comes closest to $0$; its size $\sigma$ is the smallest singular value. Right: $\sigma$ as $b$ sweeps $[-2, 2]$ — it touches $0$ only where $b$ collides with another eigenvalue. Move $b$ onto $c$ (or onto $a$ with $\varphi = 0$) to break the hypothesis.`,
+      caption: String.raw`A function-space instance: $T = d/dt$ acting on $V = \operatorname{span}(e^{at}, te^{at}, e^{bt}, e^{ct})$ with $a = 0$. Here $v_1 = (\cos\varphi + \sin\varphi\,t)e^{at}$ is a generalized eigenvector for $a$ (an eigenvector only when $\sin\varphi = 0$), and $v_2 = e^{bt}$, $v_3 = e^{ct}$ are eigenvectors for $b$ and $c$. Left: the three functions, and in gold the combination $c_1v_1 + c_2v_2 + c_3v_3$ with $|c| = 1$ that comes closest to $0$; its size $\sigma$ is the smallest singular value. Right: $\sigma$ (log scale) as $b$ sweeps $[-2, 2]$ — it plunges to $0$ only where $b$ collides with another eigenvalue; elsewhere it may get small, but stays positive. Move $b$ onto $c$ (or onto $a$ with $\varphi = 0$) to break the hypothesis.`,
       deps: ['ladr-8.11', 'ladr-5.11'],
       tags: ['generalized eigenvectors', 'independence'],
       viz(v) {
@@ -780,7 +793,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
         const bS = v.slider('$b$, the eigenvalue of $v_2 = e^{bt}$', -2, 2, 0.8, { step: 0.01 });
         const cS = v.slider('$c$, the eigenvalue of $v_3 = e^{ct}$', -2, 2, -1.1, { step: 0.01 });
         const F = v.stage({ x: [0, L], y: [-2.6, 2.6], height: 340, weight: 1.1, axes: 'box', xlabel: 't', title: '$v_1, v_2, v_3$ scaled to norm 1 on $[0, 2]$; gold: closest to a dependency' });
-        const Sg = v.stage({ x: [-2, 2], y: [0, 0.8], height: 340, weight: 0.9, axes: 'box', xlabel: 'b', title: '$\\sigma = \\min_{|c| = 1}\\|c_1v_1 + c_2v_2 + c_3v_3\\|$ against $b$' });
+        const Sg = v.stage({ x: [-2, 2], y: [1e-4, 1], ylog: true, height: 340, weight: 0.9, axes: 'box', xlabel: 'b', title: '$\\sigma = \\min_{|c| = 1}\\|c_1v_1 + c_2v_2 + c_3v_3\\|$ against $b$' });
         const ts = Array.from({ length: NS + 1 }, (_, i) => (L * i) / NS), W = ts.map((_, i) => ((i === 0 || i === NS ? 1 : i % 2 ? 4 : 2) * (L / NS)) / 3);
         const ip = (x, y) => x.reduce((s, xi, i) => s + W[i] * xi * y[i], 0);
         const funcs = (ph, b, c) => [ts.map((t) => (Math.cos(ph) + Math.sin(ph) * t) * Math.exp(a * t)), ts.map((t) => Math.exp(b * t)), ts.map((t) => Math.exp(c * t))].map((f) => { const r = Math.sqrt(ip(f, f)); return f.map((y) => y / r); });
@@ -802,11 +815,10 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           // σ as b varies
           const pts = [];
           for (let i = 0; i <= 200; i++) { const bb = -2 + (4 * i) / 200; pts.push([bb, sigma(funcs(ph, bb, c)).s]); }
-          const top = Math.max(0.2, ...pts.map((p) => p[1])) * 1.15;
-          Sg.setView([-2, 2], [0, top]);
-          for (const [x0, name] of [[a, 'b = a'], [c, 'b = c']]) { Sg.vline(x0, { color: 'red', dash: [5, 4], width: 1.4, alpha: 0.7 }); Sg.text(name, x0, top * 0.94, { align: 'center', color: 'red', size: 12, weight: 700 }); }
-          Sg.path(pts, { color: 'accent', width: 2.4 });
-          Sg.dot(b, r.s, { r: 6, color: r.s < 1e-6 ? 'red' : 'gold' });
+          for (const [x0, name] of [[a, 'b = a'], [c, 'b = c']]) { Sg.vline(x0, { color: 'red', dash: [5, 4], width: 1.4, alpha: 0.7 }); Sg.text(name, x0, 0.62, { align: 'center', color: 'red', size: 12, weight: 700 }); }
+          Sg.clip(() => Sg.path(pts.map(([x, y]) => [x, Math.max(y, 2e-6)]), { color: 'accent', width: 2.4 }));
+          if (r.s < 1e-4) { Sg.dot(b, 1.25e-4, { r: 6, color: 'red' }); Sg.text('σ = 0', b, 2.4e-4, { align: 'center', color: 'red', size: 12, weight: 700 }); }
+          else Sg.dot(b, r.s, { r: 6, color: 'gold' });
           st = { r, b, c, ph };
         });
         v.legend([['purple', '$v_1 \\in G(a, T)$'], ['teal', '$v_2 \\in E(b, T)$'], ['pink', '$v_3 \\in E(c, T)$'], ['gold', 'best combination']]);
@@ -846,7 +858,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           const r = cur.ranks[k], vol = cur.vols[k];
           if (k === 0) return 'The unit cube, volume $1$.';
           const shape = ['the single point $0$', 'a segment', 'a flat parallelogram', 'a solid'][r];
-          return `$N^{${k}}(\\text{cube})$ is ${shape} (rank $${r}$` + (r === 3 ? `, volume $|\\det N|^{${k}} = ${tn(vol, 3)}$)` : ')') + (r === 0 && k === cur.idx ? ': **$N^{' + k + '} = 0$**.' : '.');
+          return `$${k === 1 ? 'N' : `N^{${k}}`}(\\text{cube})$ is ${shape} (rank $${r}$` + (r === 3 ? `, volume $|\\det N|^{${k}} = ${tn(vol, 3)}$)` : ')') + (r === 0 && k === cur.idx ? ': **$N^{' + k + '} = 0$**.' : '.');
         };
         const ST = v.steps({ frames: [0, 1, 2, 3, 4].map((k) => ({ k, note: () => noteFor(k) })), transition: 0.7, speed: 0.7, start: 1, still: 1 });
         let st = null;
@@ -863,14 +875,14 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           // the original cube, dashed
           for (let i = 0; i < 8; i++) for (let d = 0; d < 3; d++) if (!((i >> d) & 1)) { const j = i | (1 << d); sc.line(corners[i], corners[j], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 }); }
           box3(sc, [0, 0, 0], colOf(Pt, 0), colOf(Pt, 1), colOf(Pt, 2), { fill: brk.value ? 'red' : 'accent', fillAlpha: 0.12, alpha: 0.85, width: 1.6 });
-          ['blue', 'purple', 'teal'].forEach((col, j) => { const e = colOf(Pt, j); if (normN(e) > 0.03) { sc.arrow([0, 0, 0], e, { color: col, width: 2.4 }); sc.tex(`N^{${k}}e_${j + 1}`, e, { color: col, size: 12.5, dx: 12, dy: -9 }); } });
+          ['blue', 'purple', 'teal'].forEach((col, j) => { const e = colOf(Pt, j); if (normN(e) > 0.03) { sc.arrow([0, 0, 0], e, { color: col, width: 2.4 }); sc.tex(`${k === 0 ? '' : k === 1 ? 'N' : `N^{${k}}`}e_${j + 1}`, e, { color: col, size: 12.5, dx: 12, dy: -9 }); } });
           if (V.every((p) => normN(p) < 0.02)) sc.dot([0, 0, 0], { r: 7, color: 'green' });
           sc.flush();
           // tiles of N, N², N³
           for (let j = 1; j <= 3; j++) {
             const y0 = 1.5 - j * 0.47, on = j === k;
             intTile(R, P[j], 0.33, y0, 0.36, { frame: on ? 'gold' : maxAbs(P[j]) < 1e-12 ? 'green' : 'muted', frameW: on ? 2.6 : 1.2, fmt: (x) => pn(x, 2), scale: 1.2, size: 11 });
-            R.tex(`N^{${j}}`, 0.29, y0 + 0.18, { size: 15, align: 'right', color: on ? 'gold' : 'ink' });
+            R.tex(j === 1 ? 'N' : `N^{${j}}`, 0.29, y0 + 0.18, { size: 15, align: 'right', color: on ? 'gold' : 'ink' });
             R.text(maxAbs(P[j]) < 1e-12 ? '= 0' : `rank ${ranks[j]}`, 0.73, y0 + 0.18, { size: 12, color: maxAbs(P[j]) < 1e-12 ? 'green' : 'muted', weight: 700 });
           }
           st = { ranks, vols, idx, eps };
@@ -904,7 +916,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
         v.button('New disguise', () => { seed += 1; });
         const kS = v.slider('water line: apply $T^k$, $k$', 0, 6, 3, { int: true });
         const C = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 370, weight: 0.72, minWidth: 210, title: 'the chains of $T$' });
-        const P = v.stage({ x: [0, 3.3], y: [0, 2.35], equal: true, axes: false, height: 370, weight: 1.28, title: 'its powers in the standard basis (exact integers)' });
+        const P = v.stage({ x: [0, 3.3], y: [0, 2.6], equal: true, axes: false, height: 370, weight: 1.28, title: 'its powers in the standard basis (exact integers)' });
         const partition = (r, n) => { for (let t = 0; t < 30; t++) { const p = []; let left = n; while (left > 0) { const c = r.int(1, Math.min(left, n - 1 || 1)); p.push(c); left -= c; } if (p.length > 1 || n === 1) return p.sort((x, y) => y - x); } return [n - 1, 1]; };
         let st = null;
         v.render(() => {
@@ -938,10 +950,10 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           // ---- tiles T^1 … T^n
           const per = 3, tw = 0.82;
           for (let j = 1; j <= n; j++) {
-            const row = Math.floor((j - 1) / per), colI = (j - 1) % per, x = 0.18 + colI * 1.06, y = 2.35 - 0.2 - (row + 1) * 1.08;
+            const row = Math.floor((j - 1) / per), colI = (j - 1) % per, x = 0.18 + colI * 1.06, y = 2.6 - 0.12 - (row + 1) * 1.24;
             const zero = ranks[j] === 0, on = j === k;
             intTile(P, pw[j], x, y + 0.14, tw, { frame: on ? 'blue' : zero ? 'green' : 'muted', frameW: on || zero ? 2.6 : 1.1, numbers: n <= 4, size: 11 });
-            P.tex(`T^{${j}}`, x + tw / 2, y + 0.14 + tw + 0.06, { size: 14, color: on ? 'blue' : 'ink', baseline: 'bottom' });
+            P.tex(j === 1 ? 'T' : `T^{${j}}`, x + tw / 2, y + 0.14 + tw + 0.05, { size: 14, color: on ? 'blue' : 'ink', baseline: 'bottom' });
             P.text(zero ? '= 0' : `rank ${ranks[j]}`, x + tw / 2, y + 0.06, { align: 'center', size: 12, color: zero ? 'green' : 'muted', weight: 700 });
           }
           st = { n, chains, ranks, k, T };
