@@ -31,6 +31,29 @@ export default {
 };
 ```
 
+## Research first
+
+A syllabus is a map of a subject, and a map drawn from memory has holes. Before writing one:
+
+1. **Gather the canon.** Fetch the tables of contents of the references in `collection.js`
+   (publisher pages, the author's site, open-access PDFs, Google Books previews), and the
+   syllabi of two or three well-regarded university courses on the subject (MIT OpenCourseWare,
+   Stanford, Cambridge/Oxford lecture lists, Tong's notes for physics, CORE Econ for economics…).
+2. **Collect the named results.** Wikipedia's "List of theorems / laws / paradoxes / algorithms
+   in …" pages, the subject's encyclopedia entries (SEP for philosophy, Scholarpedia, nLab,
+   PlanetMath) and the indices of the references.
+3. **Compare and decide.** Every topic that appears in most of these sources belongs in the
+   syllabus; famous named results belong in it; obscure ones need a reason. Note what you left
+   out and why.
+4. **Verify the facts you encode**: attributions and dates, the exact statement a name refers
+   to, and the section numbers in `refs` (cite chapter-level refs when you cannot check a
+   section number).
+5. **Record your sources** in a comment block at the top of `syllabus.js` (course pages, TOCs,
+   lists consulted), so the next person can audit the map.
+
+Book-anchored collections take their inventory from the book itself (extract the numbered
+items from the text, as was done for `ladr`) rather than from memory.
+
 ## Fields
 
 | field | rule |
