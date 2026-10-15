@@ -892,10 +892,9 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
           R.setView(null, [-maxD - 0.55, 0.6]);
           const xOf = (c) => (c.q != null ? c.q : (c.p + c.r) / 2);
           const rr = Math.max(5, Math.min(12, R.height / (maxD + 1.2) * 0.32));
-          for (const c of all.slice(C.length)) { // calls still to come: a faint preview of the whole tree
-            if (c.parent >= 0) { const P = all[c.parent]; R.line(P.q, -P.depth, c.q, -c.depth, { color: 'faint', width: 1, dash: [3, 4] }); }
-            disc(R, c.q, -c.depth, rr, null, { stroke: 'faint', width: 1.2 });
-          }
+          const future = all.slice(C.length); // calls still to come: a faint preview of the whole tree
+          for (const c of future) if (c.parent >= 0) { const P = all[c.parent]; R.line(P.q, -P.depth, c.q, -c.depth, { color: 'faint', width: 1, dash: [3, 4] }); }
+          for (const c of future) disc(R, c.q, -c.depth, rr, c.size, { stroke: 'faint', width: 1.2, text: 'faint', size: 10 });
           for (const c of C) if (c.parent >= 0) { const P = C[c.parent]; R.line(xOf(P), -P.depth, xOf(c), -c.depth, { color: 'muted', width: 1.6 }); }
           for (const c of C) {
             const col = BAL(c), cur = c.id === f.cur && !f.done;

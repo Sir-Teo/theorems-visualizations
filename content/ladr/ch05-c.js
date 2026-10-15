@@ -886,7 +886,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         const P0 = M.transpose([ang(18), ang(105)]);
         const SS = { d: M.matMul(M.matMul(P0, [[2, 0], [0, 0.6]]), M.inverse(P0)), s: [[1.5, 0], [0, 1.5]] };
         const which = v.select('$S$', [{ value: 'd', label: 'eigenvalues $2, 0.6$' }, { value: 's', label: '$S = 1.5I$' }], 'd');
-        const P = v.stage({ x: [-2.8, 2.8], y: [-2.4, 2.4], equal: true, height: 400, weight: 1.3, minWidth: 320 });
+        const P = v.stage({ x: [-2.8, 2.8], y: [-2.4, 2.4], equal: true, axes: false, height: 400, weight: 1.3, minWidth: 320 });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 250 });
         const T0 = SS.d.map((r, i) => r.map((x, j) => -0.6 * x + (i === j ? 1.8 : 0)));
         // snap T onto the commutant span{I, S} (Frobenius projection) when it is close
@@ -919,8 +919,9 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
               P.line(k * Ta[0] - 6 * Tb[0], k * Ta[1] - 6 * Tb[1], k * Ta[0] + 6 * Tb[0], k * Ta[1] + 6 * Tb[1], { color: 'orange', width: 0.8, alpha: 0.3 });
               P.line(-6 * Ta[0] + k * Tb[0], -6 * Ta[1] + k * Tb[1], 6 * Ta[0] + k * Tb[0], 6 * Ta[1] + k * Tb[1], { color: 'orange', width: 0.8, alpha: 0.3 });
             }
-            eS.forEach((e) => { const u = e.B[0]; P.line(-6 * u[0], -6 * u[1], 6 * u[0], 6 * u[1], { color: 'blue', width: 5, alpha: 0.35 }); const s = u[1] < -0.05 ? -1 : 1; P.tex(`E(${tn(e.lam)}, S)`, 2.2 * u[0] * s, 2.2 * u[1] * s, { color: 'blue', size: 13.5, dx: -34 * Math.abs(u[1]), dy: -12 * Math.abs(u[0]) }); });
-          } else P.corner('S = 1.5 I: every nonzero vector is an eigenvector of S', 'tl', { color: 'blue', weight: 600 });
+            eS.forEach((e) => { const u = e.B[0]; P.line(-6 * u[0], -6 * u[1], 6 * u[0], 6 * u[1], { color: 'blue', width: 5, alpha: 0.35 }); const s = u[0] < 0 ? -1 : 1; P.tex(`E(${tn(e.lam)}, S)`, 2.15 * u[0] * s, 2.15 * u[1] * s, { color: 'blue', size: 13.5, dx: 34 * Math.abs(u[1]), dy: -13 * Math.abs(u[0]) }); });
+          } else { P.rect(-9, -9, 9, 9, { fill: 'blue', fillAlpha: 0.05, stroke: false }); P.corner('S = 1.5 I: every nonzero vector is an eigenvector of S', 'tl', { color: 'blue', weight: 600 }); }
+          P.dot(0, 0, { r: 3, color: 'ink' });
           eT.list.forEach((e) => e.B.length === 1 && P.line(-6 * e.B[0][0], -6 * e.B[0][1], 6 * e.B[0][0], 6 * e.B[0][1], { color: 'orange', width: 2, dash: [7, 5] }));
           P.arrow(0, 0, h1.x, h1.y, { color: 'orange', width: 2.2 }); P.arrow(0, 0, h2.x, h2.y, { color: 'orange', width: 2.2 });
           if (eT.nonreal) P.corner('T has no real eigenvectors', which.value === 'd' ? 'tl' : 'bl', { color: 'red', weight: 700 });
@@ -1088,6 +1089,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         let st = null;
         v.render(() => {
           const f = SP.frame.basis ? SP.frame : { k: 0, basis: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], A: SM, B: TM };
+          const kk = f.fail ? (f.k === 1 ? 0 : 1) : f.k;
           const Bm = fromCols(f.basis), Bi = M.inverse(Bm), MA = M.matMul(Bi, M.matMul(f.A, Bm)), MB = M.matMul(Bi, M.matMul(f.B, Bm));
           const fill = (X) => (i, j) => (i > j ? (Math.abs(X[i][j]) < 1e-8 ? ['green', 0.16] : ['red', 0.2]) : i === j ? ['gold', 0.12] : null);
           const fmt = (x) => pn(Math.abs(x) < 5e-9 ? 0 : x, 2);
@@ -1105,7 +1107,6 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
             else sc.disc(b2, b3, 1.3, { fill: 'muted', color: 'muted', fillAlpha: 0.06, grid: false, alpha: 0.4 });
             sc.line(mul3(b1, -1.7), mul3(b1, 1.7), { color: 'gold', width: 4, alpha: 0.5 }, 12);
           }
-          const kk = f.fail ? (f.k === 1 ? 0 : 1) : f.k;
           const names = kk === 0 ? ['e_1', 'e_2', 'e_3'] : kk === 1 ? ['v_1', 'w_2', 'w_3'] : ['v_1', 'v_2', 'v_3'];
           f.basis.forEach((b, i) => { const c = kk >= 1 && i <= (kk >= 2 ? 1 : 0) ? 'gold' : 'muted'; sc.arrow(ZERO, mul3(b, 1.1), { color: kk === 0 ? EC[i] : c, width: 2.6 }); sc.tex(names[i], mul3(b, 1.27), { color: kk === 0 ? EC[i] : c, size: 14 }); });
           if (f.k >= 1 && !f.fail) {
