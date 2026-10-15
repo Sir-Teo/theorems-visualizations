@@ -425,7 +425,7 @@ Inbreeding leaves the allele frequency unchanged but converts a fraction $F$ of 
 $$\bar w(F) = \prod_{\text{loci}} \bigl(\bar w_i(0) - F\,p_iq_is_i(1-2h_i)\bigr), \qquad \ln \bar w(F) \approx -A - BF,$$
 falling linearly on a log scale with slope $B \approx \sum_i p_iq_is_i(1-2h_i)/\bar w_i(0)$, the number of **lethal equivalents** per gamete. Purely additive effects ($h=\tfrac12$) cause no inbreeding depression; overdominance (heterozygote advantage) causes it too.`,
       idea: String.raw`Inbreeding converts heterozygotes into homozygotes in equal numbers (1.13). Moving a pair of copies from $Aa$ (fitness $1-hs$) into one $AA$ and one $aa$ (average fitness $1-s/2$) changes fitness by $s(h-\tfrac12)$, which is negative exactly when the deleterious allele is partly recessive — the hidden recessive load of 1.11 is exposed. Each locus contributes a term linear in $F$; multiplied over loci this gives $\ln\bar w$ nearly linear in $F$ with slope $B$.`,
-      caption: String.raw`A genome of 300 loci carrying rare deleterious mutations (a fifth of them nearly lethal and almost completely recessive, the rest mild and partly recessive). The left panel plots mean fitness against $F$ on a log scale: dots are simulated populations of 250 individuals (each locus autozygous with probability $F$), the line is the exact prediction. Right: how many loci are homozygous for a deleterious allele per individual, outbred (outline) versus at the slider’s $F$ (filled). Make the mutations additive and the depression disappears; make the loci overdominant and it returns for a different reason.`,
+      caption: String.raw`A genome of 300 loci carrying rare deleterious mutations (a fifth of them nearly lethal and almost completely recessive, the rest mild and partly recessive). The left panel plots mean fitness against $F$ on a log scale: dots are simulated populations of 250 individuals (each locus autozygous with probability $F$), the line is the exact prediction. Right: how many loci are homozygous for a deleterious allele per individual, outbred (outline) versus at the slider’s $F$ (filled). Make the mutations additive ($h = \tfrac12$) and the depression disappears; make the loci overdominant and it returns for a different reason.`,
       deps: ['popgen-1.13', 'popgen-1.11'],
       refs: ['Gillespie'],
       credit: 'Darwin, 1876 (crossing experiments); Morton, Crow & Muller, 1956 (lethal equivalents)',
@@ -434,7 +434,7 @@ falling linearly on a log scale with slope $B \approx \sum_i p_iq_is_i(1-2h_i)/\
       viz(v) {
         const M = v.M, L = 300, NI = 250, FG = M.linspace(0, 1, 9);
         const Fs = v.slider('inbreeding coefficient $F$', 0, 1, 0.5, { step: 0.01 });
-        const dom = v.select('deleterious alleles', [{ value: 'rec', label: 'partly recessive' }, { value: 'add', label: 'additive ($h = \\tfrac12$)' }, { value: 'over', label: 'overdominant loci' }], 'rec');
+        const dom = v.select('deleterious alleles', [{ value: 'rec', label: 'partly recessive' }, { value: 'add', label: 'additive' }, { value: 'over', label: 'overdominant loci' }], 'rec');
         let gseed = 3;
         v.button('New genome', () => { gseed += 1; });
         const sW = v.stage({ x: [-0.03, 1.03], y: [0.2, 1], ylog: true, axes: 'box', height: 340, weight: 1.25, xlabel: 'F', title: 'mean fitness $\\bar w$ (log scale)' });
@@ -506,7 +506,7 @@ so with complete assortment ($\alpha = 1$) the heterozygote frequency halves eve
         const M = v.M, W = 40, HH = 25, G = 12, RATE = 1.2;
         let seed = 5;
         const alpha = v.slider('share of assortative matings $\\alpha$', 0, 1, 1, { step: 0.05, onChange: () => reset() });
-        const dom = v.select('phenotypes', [{ value: 'co', label: 'codominant: three phenotypes' }, { value: 'dom', label: '$A$ dominant: two phenotypes' }], 'co', { onChange: () => reset() });
+        const dom = v.select('phenotypes', [{ value: 'co', label: 'codominant' }, { value: 'dom', label: '$A$ dominant' }], 'co', { onChange: () => reset() });
         v.button('New run', () => { seed += 1; reset(); });
         const s1 = v.stage({ height: 250, title: 'random mating' });
         const s2 = v.stage({ height: 250, title: 'assortative mating' });

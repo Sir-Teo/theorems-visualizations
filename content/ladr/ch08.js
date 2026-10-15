@@ -398,8 +398,8 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
           if (inv) {
             const x = x0 + chains.length * gx + 0.25 * cell;
             for (let j = 0; j < inv; j++) Y.rect(x, y0 + j * gy, x + cell, y0 + j * gy + cell, { fill: 'faint', fillAlpha: 0.55, color: 'muted', width: 1 });
-            Y.text('invertible', x + cell / 2, y0 + inv * gy + 0.1 * cell, { align: 'center', baseline: 'bottom', size: 11, color: 'muted' });
-            Y.text('part', x + cell / 2, y0 + inv * gy + 0.1 * cell, { align: 'center', baseline: 'bottom', size: 11, color: 'muted', dy: -13 });
+            Y.text('part', x + cell / 2, y0 + inv * gy + 0.1 * cell, { align: 'center', baseline: 'bottom', size: 11, color: 'muted' });
+            Y.text('invertible', x + cell / 2, y0 + inv * gy + 0.1 * cell, { align: 'center', baseline: 'bottom', size: 11, color: 'muted', dy: -13 });
           }
           for (let j = 1; j <= Math.min(hmax, 8); j++) Y.text(`${j}`, x0 - 0.5 * cell, y0 + (j - 1) * gy + cell / 2, { align: 'right', size: 11, color: 'muted' });
           Y.text('height', x0 - 0.5 * cell, y0 + Math.min(hmax, 8) * gy + 0.1 * cell, { align: 'right', baseline: 'bottom', size: 11, color: 'muted' });

@@ -107,7 +107,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Allele_frequency' },
       viz(v) {
         const N = 40, COLS = 8, ROWS = 5, DY = 1.08, TOP = ROWS * DY + 0.04;
-        const kS = v.slider('copies of $A$ among the $2N = 80$', 0, 80, 46, { int: true, onChange: () => build() });
+        const kS = v.slider('copies of $A$ (of 80)', 0, 80, 46, { int: true, onChange: () => build() });
         const how = v.select('package them', [{ value: 'random', label: 'at random' }, { value: 'like', label: 'like with like' }, { value: 'unlike', label: 'unlike with unlike' }], 'random', { onChange: () => build() });
         let seed = 11;
         v.button('Re-pair at random', () => { seed += 1; how.set('random'); build(); });
@@ -192,7 +192,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
         const M = v.M, NMAX = 5000, FLY = 0.35;
         const CROSS = { 'Aa×Aa': [[0, 1], [0, 1]], 'Aa×aa': [[0, 1], [1, 1]], 'AA×aa': [[0, 0], [1, 1]] };
         const cross = v.select('cross', [{ value: 'Aa×Aa', label: '$Aa\\times Aa$' }, { value: 'Aa×aa', label: '$Aa\\times aa$' }, { value: 'AA×aa', label: '$AA\\times aa$' }], 'Aa×Aa');
-        const kS = v.slider('share of $A$ among a heterozygote’s gametes', 0.3, 0.95, 0.5, { step: 0.01 });
+        const kS = v.slider('$A$-share of $Aa$ gametes', 0.3, 0.95, 0.5, { step: 0.01 });
         let seed = 7;
         v.button('New offspring', () => { seed += 1; v.restart(); });
         const sQ = v.stage({ x: [-0.78, 2.12], y: [-0.22, 2.72], equal: true, axes: false, height: 340 });
@@ -499,7 +499,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
       name: 'De Finetti diagram',
       statement: String.raw`The genotype frequencies $(P, H, Q)$ at a biallelic locus are a point of the triangle $P + H + Q = 1$, $P,H,Q\ge 0$; drawn as an equilateral triangle with vertices $AA$, $Aa$, $aa$, the distance from the point to each side is proportional to one frequency. In this **de Finetti diagram** the horizontal coordinate is the allele frequency $p = P + \tfrac12H$ and the height is proportional to $H$. Populations in Hardy–Weinberg proportions lie on the parabola $H = 2p(1-p)$; points above it have a heterozygote excess, points below a deficit, and one generation of random mating moves any point vertically (at constant $p$) onto the parabola.`,
       idea: String.raw`Barycentric coordinates turn three frequencies summing to one into a point in a triangle, and with the $AA$ and $aa$ vertices on the base the horizontal position is $P\cdot1 + H\cdot\tfrac12 + Q\cdot0 = p$. The Hardy–Weinberg law (1.5) says random mating keeps $p$ and replaces $H$ by $2pq$: a vertical drop or rise onto the curve. Any force that acts on genotypes rather than on gametes — non-random mate choice, selection between fertilisation and census, the mixing of populations — leaves its mark as a distance from the parabola, which is why the diagram is the standard way to see departures.`,
-      caption: String.raw`Drag the blue handle to set the parents’ genotype frequencies. Each gold dot is one simulated population of 400 offspring after one generation; the dots scatter around the green ring, the Hardy–Weinberg point straight below or above the parents, and the right panel shows the $\chi^2$ test of each run against the $\chi^2_1$ curve. Now break an assumption: assortative mating (by phenotype, $A$ dominant) or 50% selfing pull the cloud below the curve, selection against $aa$ before the census lifts it above, immigrants from a population with $p_m = 0.15$ drag it down (a Wahlund mixture), and a population of 16 scatters it widely and shifts $p$ itself.`,
+      caption: String.raw`Drag the blue handle to set the parents’ genotype frequencies. Each gold dot is one simulated population of 400 offspring after one generation; the dots scatter around the green ring, the Hardy–Weinberg point straight below or above the parents, and the right panel shows the $\chi^2$ test of each run against the $\chi^2_1$ curve. Now break an assumption, alone or in combination: assortative mating (by phenotype, $A$ dominant) or 50% selfing pull the cloud below the curve; selection against $aa$ before the census lifts it above; immigrants from a population with $p_m = 0.15$ drag it down (a Wahlund mixture); and a population of 16 scatters it widely and shifts $p$ itself.`,
       deps: ['popgen-1.5'],
       refs: ['Nielsen–Slatkin'],
       credit: 'de Finetti, 1926',
@@ -507,27 +507,28 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
       links: { wikipedia: 'https://en.wikipedia.org/wiki/De_Finetti_diagram' },
       viz(v) {
         const M = v.M, R = 90;
-        const proc = v.select('', [{ value: 'random', label: 'random mating' }, { value: 'assort', label: 'assortative' }, { value: 'inbreed', label: '50% selfing' }, { value: 'small', label: '$N = 16$' }, { value: 'select', label: 'selection' }, { value: 'migrate', label: 'migration' }], 'random');
+        const mating = v.select('mating', [{ value: 'random', label: 'random' }, { value: 'assort', label: 'assortative' }, { value: 'inbreed', label: '50% selfing' }], 'random');
+        const force = v.select('plus', [{ value: 'none', label: 'nothing' }, { value: 'small', label: '$N = 16$' }, { value: 'select', label: 'selection' }, { value: 'migrate', label: 'migration' }], 'none');
         const sT = v.stage({ x: [-0.06, 1.06], y: [-0.11, 0.93], equal: true, axes: false, height: 380, weight: 1.5 });
         const sH = v.stage({ x: [0, 12], y: [0, 1.3], axes: 'box', height: 380, xlabel: 'χ²', title: 'HW test of each run' });
         const hp = sT.handle(0.6, 0.3 * SQ3, { color: 'accent', label: 'parents', labelPos: 'e', constrain: (x, y) => { const H = clamp(y / SQ3, 0, 1); return [clamp(x, H / 2, 1 - H / 2), H * SQ3]; } });
         const PM = 0.15, MIG = 0.35, SEL = 0.6, SELF = 0.5;
         const cache = memo();
-        const runs = () => cache([hp.x.toFixed(4), hp.y.toFixed(4), proc.value].join('|'), () => {
-          const H = hp.y / SQ3, P = hp.x - H / 2, r = v.rng(17), pr = proc.value, N = pr === 'small' ? 16 : 400, out = [];
+        const runs = () => cache([hp.x.toFixed(4), hp.y.toFixed(4), mating.value, force.value].join('|'), () => {
+          const H = hp.y / SQ3, P = hp.x - H / 2, r = v.rng(17), ma = mating.value, fo = force.value, N = fo === 'small' ? 16 : 400, out = [];
           for (let k = 0; k < R; k++) {
             const c = [0, 0, 0];
             let made = 0, guard = 0;
             while (made < N && guard++ < 50 * N) {
               let g1 = drawG(r, P, H), g2;
-              if (pr === 'assort') g2 = g1 === 2 ? 2 : r() < P / Math.max(1e-12, P + H) ? 0 : 1;
-              else if (pr === 'inbreed' && r() < SELF) g2 = g1;
+              if (ma === 'assort') g2 = g1 === 2 ? 2 : r() < P / Math.max(1e-12, P + H) ? 0 : 1;
+              else if (ma === 'inbreed' && r() < SELF) g2 = g1;
               else g2 = drawG(r, P, H);
               const child = gamete(r, g1) + gamete(r, g2);
-              if (pr === 'select' && child === 2 && r() < SEL) continue;
+              if (fo === 'select' && child === 2 && r() < SEL) continue;
               c[child]++; made++;
             }
-            if (pr === 'migrate') { // replace a share of the census by immigrants in HW with p = PM
+            if (fo === 'migrate') { // replace a share of the census by immigrants in HW with p = PM
               const m = Math.round(MIG * N);
               for (let j = 0; j < m; j++) { const u = r() * N; let g = u < c[0] ? 0 : u < c[0] + c[1] ? 1 : 2; c[g]--; c[drawG(r, PM * PM, 2 * PM * (1 - PM))]++; }
             }

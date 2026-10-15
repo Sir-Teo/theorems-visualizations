@@ -354,7 +354,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           sc.text(settled() ? 'measuring' : 'settling…', W / 2 + P3.cx * W / 2, -5, { size: 11, color: settled() ? 'green' : 'muted', align: 'center' });
           // --- the graph ---
           const isP = law.value === 'p', ymax = isP ? RBAR * THI / PSTEP * 1.12 : 3 * PSTEP * THI / 293.15 * 1.12;
-          sg.setView([-300, 330], [-0.035 * ymax, ymax]);
+          sg.setView([-300, 330], [-0.075 * ymax, ymax]);
           sg.setTitle(isP ? 'molar volume $V_m$ (L/mol) against the gas temperature θ (°C)' : 'measured pressure $p$ (bar) against the gas temperature θ (°C)');
           sg.vline(-273.15, { color: 'red', width: 1.2, dash: [4, 3] });
           sg.text('absolute zero', -266, ymax * 0.95, { color: 'red', size: 11.5, align: 'left' });
@@ -365,7 +365,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
             sg.line(F.th0, 0, F.lo, F.predict(F.lo), { color: S.col, width: 1.4, dash: [5, 4] });
             sg.line(F.lo, F.predict(F.lo), F.hi, F.predict(F.hi), { color: S.col, width: 2.2 });
             sg.dot(F.th0, 0, { r: 4.5, color: S.col });
-            sg.text(`${S.k}×${PSTEP} bar${S.gas === 'lj' ? ', Xe' : ''}`, F.hi, F.predict(F.hi), { color: S.col, size: 11, dx: -2, dy: -14, align: 'right' });
+            sg.text(`${S.k}×${PSTEP} bar${S.gas === 'lj' ? ', Xe' : ''}`, Math.min(F.hi, 285), F.predict(Math.min(F.hi, 285)), { color: S.col, size: 11, dx: -2, dy: -14, align: 'right' });
           }
           if (last) sg.dot(last.th, last.y, { r: 5, color: series[series.length - 1].col });
         }, { still: 45 });
@@ -391,11 +391,11 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
       scope: String.raw`Holds in the low-pressure limit. At 1 bar and room temperature real gases depart from it by less than about 1% (more for easily condensed gases such as xenon, CO₂ or water vapour); at hundreds of bar the departures reach tens of percent.`,
       viz(v) {
         const N = 100, T = 300, RATE = 15, GAS = [MOL.H2, MOL.N2, MOL.Xe], DT = [0.003, 0.012, 0.03], SETTLE = 15;
-        const dens = v.slider('crowding: perfect-gas pressure $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
+        const dens = v.slider('crowding $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
         v.button('Restart the gauges', () => make());
         const B = 10, GAP = 15.5, R = 4.2;
         const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.2, B + R + 3.4], equal: true, height: 330, axes: false, weight: 1.6 });
-        const sr = v.stage({ x: [0, 3], y: [0.1, 10], ylog: true, height: 330, axes: false, weight: 0.85, minWidth: 230, title: 'relative to nitrogen (log scale)' });
+        const sr = v.stage({ x: [-0.3, 3], y: [0.1, 10], ylog: true, height: 330, axes: false, weight: 0.85, minWidth: 230, title: 'relative to the three-gas average (log scale)' });
         let G = [], s0 = [], tLast = 0, tSim = 0, L = 1;
         const make = () => {
           L = Math.cbrt(N * T / (dens.value / BAR));
@@ -416,7 +416,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
             const a0 = ang(rd.p - 2 * rd.dp), a1 = ang(rd.p + 2 * rd.dp);
             sa.curve((t) => [cx + 0.94 * R * Math.cos(t), cy + 0.94 * R * Math.sin(t)], a1, a0, { color: col, width: 7, alpha: 0.3 });
             const a = ang(rd.p); sa.line(cx, cy, cx + 0.86 * R * Math.cos(a), cy + 0.86 * R * Math.sin(a), { color: col, width: 2.6 });
-            sa.text(`${v.fix(rd.p, rd.p < 10 ? 2 : 1)} bar`, cx, cy + 0.42 * R, { size: 11.5, color: col, align: 'center', weight: 600 });
+            sa.text(`${v.fix(rd.p, rd.p < 10 ? 2 : 1)} ± ${v.fix(2 * rd.dp, rd.p < 10 ? 2 : 1)} bar`, cx, cy - 0.85, { size: 11.5, color: col, align: 'center', weight: 600 });
           }
           sa.dot(cx, cy, { r: 3.5, color: 'ink' });
         };
@@ -445,21 +445,23 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           sa.corner(`${N} molecules each · box ${v.fix(L / 10, 2)} nm wide · T = ${T} K · ${v.fix(tSim * T0 * 1e9, 2)} ns`, 'tl', { size: 11 });
           // why: rate × impulse
           if (RD) {
-            const ref = RD[1];
-            sr.hline(1, { color: 'ink', width: 1.2 });
-            for (const yv of [0.2, 0.5, 2, 5]) sr.hline(yv, { color: 'grid', width: 1 });
+            const gm = (f) => Math.cbrt(f(RD[0]) * f(RD[1]) * f(RD[2]));
+            const ref = { rate: gm((r) => r.rate), imp: gm((r) => r.imp), p: gm((r) => r.p) };
+            for (const yv of [0.2, 0.5, 2, 5]) { sr.hline(yv, { color: 'grid', width: 1 }); sr.text(String(yv), -0.27, yv, { size: 10, color: 'muted', align: 'left' }); }
+            sr.hline(1, { color: 'ink', width: 1.2 }); sr.text('1', -0.27, 1, { size: 10, color: 'ink', align: 'left' });
             GAS.forEach((sp, k) => {
-              const x = k + 0.5, rr = RD[k].rate / ref.rate, ri = RD[k].imp / ref.imp, rp = RD[k].p / ref.p;
-              sr.rect(x - 0.36, 1, x - 0.13, rr, { fill: sp.col, fillAlpha: 0.75, stroke: false });
-              sr.rect(x - 0.11, 1, x + 0.12, ri, { fill: sp.col, fillAlpha: 0.35, color: sp.col, width: 1 });
-              sr.rect(x + 0.14, 1, x + 0.37, rp, { fill: 'green', fillAlpha: 0.7, stroke: false });
-              sr.tex(sp.tex, x, 0.13, { color: sp.col, size: 14 });
+              const x = k + 0.5, rr = RD[k].rate / ref.rate, ri = RD[k].imp / ref.imp, rp = RD[k].p / ref.p, e = 2 * RD[k].dp / RD[k].p;
+              sr.rect(x - 0.34, 1, x - 0.06, rr, { fill: sp.col, fillAlpha: 0.75, stroke: false });
+              sr.rect(x - 0.03, 1, x + 0.25, ri, { fill: sp.col, fillAlpha: 0.25, color: sp.col, width: 1.2 });
+              sr.line(x + 0.36, rp * (1 - e), x + 0.36, rp * (1 + e), { color: 'green', width: 2 });
+              sr.dot(x + 0.36, rp, { r: 4.5, color: 'green' });
+              sr.tex(sp.tex, x, 0.135, { color: sp.col, size: 14 });
             });
-            sr.text('impacts per s', 0.14, 7.6, { size: 10.5, color: 'muted', align: 'left' });
-            sr.text('impulse per impact', 2.86, 0.23, { size: 10.5, color: 'muted', align: 'right' });
+            sr.text('impacts per second', 0.16, 8, { size: 10.5, color: 'muted', align: 'left' });
+            sr.text('impulse per impact', 2.95, 0.25, { size: 10.5, color: 'muted', align: 'right' });
           }
         }, { still: 40 });
-        v.legend([['green', 'perfect-gas pressure $nRT/V$ (dial) · measured pressure (bars)'], ['muted', 'bars: impacts per second (solid), impulse per impact (open)', { area: true }]]);
+        v.legend([['green', 'dial: perfect-gas $nRT/V$ · right: measured pressure ±2σ', { dot: true }], ['muted', 'impacts per second (solid bars) and impulse per impact (open bars)', { area: true }]]);
         v.readout(() => {
           if (!RD) return 'Letting the gases settle…';
           const pm = RD.map((r) => r.p), spread = (Math.max(...pm) - Math.min(...pm)) / v.M.mean(pm), err = Math.max(...RD.map((r) => 2 * r.dp / r.p));

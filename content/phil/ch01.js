@@ -406,8 +406,8 @@ Both fallacies have the same counterexample, the situation where $P$ is false an
         const form = v.select('form', FORMS4.map((f) => ({ value: f.id, label: f.name })), 'ac');
         const pP = v.slider('$\\Pr(P)$: base rate of measles', 0.02, 0.9, 0.12, { step: 0.01 });
         const pQ = v.slider('$\\Pr(Q\\mid\\neg P)$: rash from other causes', 0, 1, 0.25, { step: 0.01 });
-        const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1.25 });
-        const R = v.stage({ x: [-0.16, 1.06], y: [-0.2, 1.12], axes: false, height: 350, weight: 1 });
+        const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1.4 });
+        const R = v.stage({ x: [-0.17, 1.05], y: [-0.2, 1.12], axes: false, height: 350, weight: 1 });
         const REG = [[0.01, 0.52, 0.49, 0.9], [0.51, 0.52, 0.99, 0.9], [0.01, 0.03, 0.49, 0.41], [0.51, 0.03, 0.99, 0.41]];
         const TT = FORMS4.map((f, k) => v.table(L, { rows: 4, cols: 3, square: false, cellAspect: 2.35, maxCell: 23, size: 13, region: REG[k], cornerLabel: 'P Q',
           rowLabels: ['T T', 'T F', 'F T', 'F F'], colLabels: ['$P\\to Q$', `$${f.p2[0]}$`, `$\\therefore ${f.c[0]}$`] }));
@@ -428,7 +428,7 @@ Both fallacies have the same counterexample, the situation where $P$ is false an
             });
             T.box(world, 0, world, 2, { color: 'gold', width: 2.2 });
             const [x0, , x1, y1] = [REG[k][0], 0, REG[k][2], REG[k][3]];
-            L.text(`${f.name}: ${valid ? 'valid' : 'invalid'}`, (x0 + x1) / 2, y1 + 0.045, { align: 'center', size: 12.5, weight: on ? 700 : 600, color: valid ? 'green' : 'red' });
+            L.text(`${f.name}: ${valid ? 'valid' : 'invalid'}`, (x0 + x1) / 2, y1 + 0.045, { align: 'center', size: 12, weight: on ? 700 : 600, color: valid ? 'green' : 'red' });
           });
           // ---- the probability square
           const a = pP.value, c = pQ.value;
