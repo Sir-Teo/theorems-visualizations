@@ -459,7 +459,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
       num: '5.15', kind: 'Proposition', name: 'An income tax beats an equal-yield quantity tax',
       statement: String.raw`A consumer with income $m$ faces prices $p_1, p_2$. A **quantity tax** of $t$ per unit of good 1 raises $R = t\,x_1^q$, where $x^q$ is the bundle chosen at prices $(p_1 + t, p_2)$. An **income tax** that raises the same revenue $R$ leaves the consumer at least as well off: $v(p, m - R) \ge v(p_1 + t, p_2, m)$, strictly if the consumer substitutes away from good 1 (an indifference curve without a kink at $x^q$). The money value of the difference, the **excess burden** of the quantity tax, is $(m - R) - e(p, v(p_1 + t, p_2, m)) \ge 0$. The comparison is for one consumer with fixed producer prices; it says nothing about distribution across consumers or about taxes on labour supply.`,
       idea: String.raw`Under the quantity tax the consumer spends $(p_1 + t)x_1^q + p_2x_2^q = m$, that is $p_1x_1^q + p_2x_2^q = m - R$. So the bundle $x^q$ lies on the income-tax budget line $p \cdot x = m - R$, and the consumer could keep $x^q$ under the income tax (revealed preference, 4.2). But at $x^q$ the indifference curve has slope $-(p_1 + t)/p_2$, steeper than the income-tax line, so it cuts that line, and moving along it toward more good 1 reaches a higher curve. The quantity tax distorts the relative price the consumer acts on; the income tax collects the same money without that distortion. The loss is second order in $t$, roughly $\tfrac12 t\,\Delta x_1$ with $\Delta x_1$ the compensated response, which is the triangle of 3.12.`,
-      caption: String.raw`Set the per-unit tax on good 1. The quantity tax pivots the budget line inward and the consumer moves to $q$ (red); the gold bar at $q$ is the revenue, measured in units of good 2. The teal income-tax line raises the same revenue: it is parallel to the original line and passes through $q$, and the consumer moves to $i$ on a higher indifference curve. The dashed purple line is the cheapest budget that reaches the quantity-tax indifference curve at the original prices; its distance below the teal line is the excess burden. Bars compare the two taxes; the bottom panel plots revenue and excess burden against the tax rate. With **perfect complements** the gain disappears.`,
+      caption: String.raw`Set the per-unit tax on good 1. The quantity tax pivots the budget line inward and the consumer moves to $q$ (red); the gold bar at $q$ is the revenue, measured in units of good 2. The teal income-tax line raises the same revenue: it is parallel to the original line and passes through $q$, and the consumer moves to $i$ on a higher indifference curve. The dashed purple line is the cheapest budget that reaches the quantity-tax indifference curve at the original prices; its distance below the teal line is the excess burden. The bars show what each tax costs the consumer in money: the quantity tax costs its revenue plus the excess burden; the bottom panel plots revenue and excess burden against the tax rate. With **perfect complements** the gain disappears.`,
       deps: ['micro-5.2', 'micro-4.2', 'micro-5.12'], refs: ['Varian Ch. 5'], tags: ['taxes', 'welfare'],
       see: ['micro-3.9', 'micro-3.12', 'micro-3.10'],
       credit: 'Harold Hotelling, 1938; Miles Joseph, 1939',
@@ -475,7 +475,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const t = v.slider('tax per unit of good 1, $t$', 0, 2, 1, { step: 0.01 });
         const s = v.stage({ x: [0, 13], y: [0, 13], height: 370, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.25 });
-        const b = v.stage({ x: [0, 1], y: [0, 13], height: 370, axes: false, weight: 0.7, minWidth: 220, title: 'same revenue, different welfare' });
+        const b = v.stage({ x: [0, 1], y: [0, 13], height: 370, axes: false, weight: 0.7, minWidth: 220, title: 'same revenue, different cost' });
         const c = v.stage({ x: [0, 2], y: [0, 1], height: 170, axes: 'box', full: true, xlabel: 'tax per unit t', ylabel: '$', title: 'revenue and excess burden of the quantity tax' });
         v.legend([['muted', 'no tax', { dash: true }], ['accent', 'quantity-tax budget'], ['teal', 'income tax, same revenue'], ['gold', 'revenue R'], ['red', 'excess burden']]);
         const solve = (F, T) => {
@@ -497,20 +497,22 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           s.dot(x0[0], x0[1], { r: 5, hollow: true, color: 'muted', width: 2, label: 'no tax', labelPos: 'ne', labelColor: 'muted', math: false });
           s.dot(r.q[0], r.q[1], { r: 6.5, color: 'red', label: 'q', labelPos: 'sw' });
           s.dot(r.i[0], r.i[1], { r: 6.5, color: 'green', label: 'i', labelPos: r.i[0] > r.q[0] ? 'ne' : 'nw' });
-          // bars: money-metric welfare under each tax, at the original prices
-          const top = m * 1.02;
-          const bar = (x0b, x1b, h, col, txt) => { b.rect(x0b, 0, x1b, h, { fill: col, fillAlpha: 0.7, stroke: false, radius: 5 }); b.text(txt, (x0b + x1b) / 2, h, { dy: -10, align: 'center', color: col, ...LBL }); };
-          b.setView([0, 1], [0, top * 1.12]);
-          bar(0.08, 0.42, r.eq, 'red', `${v.fix(r.eq, 2)}`); bar(0.58, 0.92, m - r.R, 'teal', `${v.fix(m - r.R, 2)}`);
-          if (r.EB > 0.01) b.rect(0.08, r.eq, 0.42, m - r.R, { fill: 'red', fillAlpha: 0.08, hatch: 'red', stroke: false });
-          b.line(0.02, m - r.R, 0.98, m - r.R, { color: 'teal', width: 1, dash: [3, 3] });
-          b.text('quantity tax', 0.25, 0, { dy: -12, align: 'center', color: 'ink', size: 11.5, weight: 600 });
-          b.text('income tax', 0.75, 0, { dy: -12, align: 'center', color: 'ink', size: 11.5, weight: 600 });
-          b.text('money-metric welfare e(p, u)', 0.5, top * 1.1, { align: 'center', color: 'muted', size: 11.5, baseline: 'top' });
-          b.text(`revenue ${v.fix(r.R, 2)} in both cases`, 0.5, top * 1.03, { align: 'center', color: 'gold', ...LBL, baseline: 'top' });
+          // bars: what each tax costs the consumer in money (at the original prices), against the revenue it raises
+          const costQ = m - r.eq, costI = r.R, top = Math.max(costQ, 0.5) * 1.3;
+          b.setView([0, 1], [-0.07 * top, top]);
+          b.line(0.02, 0, 0.98, 0, { color: 'ink', width: 1 });
+          [[0.08, 0.42, costQ, 'quantity tax'], [0.58, 0.92, costI, 'income tax']].forEach(([x0b, x1b, cost, nm]) => {
+            b.rect(x0b, 0, x1b, Math.min(r.R, cost), { fill: 'gold', fillAlpha: 0.65, stroke: false, radius: 4 });
+            if (cost > r.R + 1e-6) b.rect(x0b, r.R, x1b, cost, { fill: 'red', fillAlpha: 0.2, hatch: 'red', color: 'red', width: 1.2 });
+            b.text(v.fix(cost, 2), (x0b + x1b) / 2, cost, { dy: -10, align: 'center', color: cost > r.R + 1e-6 ? 'red' : 'ink', ...LBL });
+            b.text(nm, (x0b + x1b) / 2, 0, { dy: 12, align: 'center', color: 'ink', size: 11.5, weight: 600, baseline: 'top' });
+          });
+          if (r.R * (b.height / (1.07 * top)) > 22) b.text('revenue R', 0.25, r.R / 2, { align: 'center', color: 'ink', size: 11.5, weight: 600 });
+          if (r.EB * (b.height / (1.07 * top)) > 16) b.text('excess burden', 0.25, r.R + r.EB / 2, { align: 'center', color: 'red', size: 11.5, weight: 700 });
+          b.text("cost to the consumer, in money", 0.5, top, { dy: 6, align: 'center', color: 'muted', size: 11.5, baseline: 'top' });
           // revenue and excess burden against t
           const cv = curve(k), cmax = Math.max(...cv.map((z) => z[1])) * 1.12 || 1;
-          c.setView([0, 2], [0, cmax]);
+          c.setView([0, 2], [-0.2 * cmax, cmax]); c.line(0, 0, 2, 0, { color: 'ink', width: 1 });
           c.path(cv.map((z) => [z[0], z[1]]), { color: 'gold', width: 2.6 });
           c.path(cv.map((z) => [z[0], z[2]]), { color: 'red', width: 2.6 });
           c.between((x) => { const j = Math.min(59, Math.floor(x * 30)), w = x * 30 - j; return cv[j][2] * (1 - w) + cv[j + 1][2] * w; }, () => 0, 0, T, { fill: 'red', fillAlpha: 0.12 });

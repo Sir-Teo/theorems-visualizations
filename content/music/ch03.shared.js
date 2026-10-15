@@ -112,8 +112,9 @@ export function keyboard(s, M, fLo, fHi, y0, y1, marks) {
 
 /** Hann-windowed magnitude spectrum in dB (re the largest bin) of the last n samples of buf (n a power of two). */
 export function spectrumDB(M, buf, n = 8192, sr = SR) {
-  const s = Math.max(0, buf.length - n), x = new Array(n);
-  for (let i = 0; i < n; i++) x[i] = (buf[s + i] || 0) * (0.5 - 0.5 * Math.cos((TAU * i) / n));
+  const s = Math.max(0, buf.length - n), x = new Array(n); let mean = 0;
+  for (let i = 0; i < n; i++) mean += (buf[s + i] || 0) / n; // remove any DC offset first
+  for (let i = 0; i < n; i++) x[i] = ((buf[s + i] || 0) - mean) * (0.5 - 0.5 * Math.cos((TAU * i) / n));
   const sp = M.spectrum(x, sr); let mx = 1e-20; for (const a of sp.amp) mx = Math.max(mx, a);
   return { freq: sp.freq, db: Array.from(sp.amp, (a) => 20 * Math.log10(a / mx + 1e-12)), df: sr / n };
 }

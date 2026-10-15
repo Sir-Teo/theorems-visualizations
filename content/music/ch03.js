@@ -225,17 +225,19 @@ a **complete harmonic series**. The **end correction** $\delta$ is the distance 
         const top = v.stage({ x: [-0.1, 1.1], y: [-1.45, 1.45], height: 200, axes: false, full: true });
         const zm = v.stage({ x: [-4.5, 3.2], y: [-2.3, 2.3], equal: true, height: 240, axes: false, weight: 0.85, minWidth: 260, title: 'the open end at true scale' });
         const sp = v.stage({ x: [40, 8000], y: [-0.42, 1.3], xlog: true, height: 240, axes: 'box', yticks: [], xlabel: 'frequency (Hz)', weight: 1.4, title: 'resonances on the keyboard' });
-        const hEnd = top.handle(0.644, 0, { color: 'gold', r: 8, constrain: (x) => [x, 0], onDrag: (h) => { Ls.set(M.clamp(h.x, 0.1, 5)); sync(); } });
+        let Rv = 0.8;
+        const hEnd = top.handle(0.644, Rv, { color: 'gold', r: 8, constrain: (x) => [x, Rv], onDrag: (h) => { Ls.set(M.clamp(h.x, 0.1, 5)); sync(); } });
         v.animate((t) => {
           const L = Ls.value, a = as.value, d = dOf(), Le = L + 2 * d, n = nS.value, f = f1();
-          if (!hEnd.dragging) hEnd.set(L, 0);
+          const R = 0.62 + 0.45 * Math.sqrt(a / 0.06); Rv = R;
+          if (!hEnd.dragging) hEnd.set(L, R);
           // ---- whole pipe (vertical scale exaggerated)
           top.setView([-0.1 * L, 1.1 * L], [-1.45, 1.45]);
-          const R = 0.32 + 0.55 * Math.sqrt(a / 0.06), k = (n * Math.PI) / Le, p = (x) => Math.sin(k * (x + d)), ph = Math.cos(TAU * 0.5 * t * Math.sqrt(n));
+          const W = 0.8 * R, k = (n * Math.PI) / Le, p = (x) => Math.sin(k * (x + d)), ph = Math.cos(TAU * 0.5 * t * Math.sqrt(n));
           drawTube(top, 0, L, R, R);
-          top.between((x) => 0.85 * Math.abs(p(x)), (x) => -0.85 * Math.abs(p(x)), 0, L, { fill: 'red', fillAlpha: 0.1, n: 300 });
-          top.fn((x) => 0.85 * p(x) * ph, { domain: [0, L], n: 300, color: 'red', width: 2.6 });
-          if (d > 0) for (const [x0, x1] of [[-d, 0], [L, L + d]]) top.fn((x) => 0.85 * p(x) * ph, { domain: [x0, x1], n: 30, color: 'red', width: 1.6, dash: [4, 3] });
+          top.between((x) => W * Math.abs(p(x)), (x) => -W * Math.abs(p(x)), 0, L, { fill: 'red', fillAlpha: 0.1, n: 300 });
+          top.fn((x) => W * p(x) * ph, { domain: [0, L], n: 300, color: 'red', width: 2.6 });
+          if (d > 0) for (const [x0, x1] of [[-d, 0], [L, L + d]]) top.fn((x) => W * p(x) * ph, { domain: [x0, x1], n: 30, color: 'red', width: 1.6, dash: [4, 3] });
           for (const x of [-d, L + d]) top.dot(x, 0, { r: 5, color: 'red', hollow: true, width: 2 });
           for (let q = 1; q < n; q++) top.dot((q * Le) / n - d, 0, { r: 4, color: 'red', hollow: true, width: 1.6 });
           top.text(`L = ${L < 1 ? v.fix(L * 100, 1) + ' cm' : v.fix(L, 3) + ' m'}`, L / 2, -R - 0.28, { align: 'center', color: 'ink', size: 12, weight: 600 });
@@ -243,18 +245,18 @@ a **complete harmonic series**. The **end correction** $\delta$ is the distance 
           if (voice && voice.playing) top.corner(`♪ ${v.fix(f, 1)} Hz`, 'tr', { color: 'gold', weight: 600 });
           // ---- the open end, true scale (units of the radius)
           const da = d / a;
+          zm.hline(0, { color: 'faint', width: 1 });
           zm.rect(-4.5, 1, 0, 1.18, { fill: 'muted', fillAlpha: 0.5, stroke: false }); zm.rect(-4.5, -1.18, 0, -1, { fill: 'muted', fillAlpha: 0.5, stroke: false });
           if (endS.value === 'fl') { zm.rect(0, 1, 0.18, 2.3, { fill: 'muted', fillAlpha: 0.5, stroke: false }); zm.rect(0, -2.3, 0.18, -1, { fill: 'muted', fillAlpha: 0.5, stroke: false }); }
           for (const r0 of [0.9, 1.6, 2.3]) zm.curve((u) => [0.05 + r0 * Math.cos(u), r0 * Math.sin(u)], -1.25, 1.25, { color: 'accent', width: 1, alpha: 0.35, dash: [3, 4], n: 60 });
           // pressure amplitude along the axis near the end: sin(k(L + δ − x)) ≈ k(δ − u a): a straight line through zero at u = δ/a
-          const slope = 0.42, pz = (u) => slope * (da - u);
-          zm.hline(0, { color: 'faint', width: 1 });
+          const slope = 0.17, pz = (u) => slope * (da - u);
           zm.fn(pz, { domain: [-4.5, 0], color: 'red', width: 2.6 });
           if (da > 0) zm.fn(pz, { domain: [0, da], color: 'red', width: 1.8, dash: [4, 3] });
           zm.dot(da, 0, { r: 6, color: 'red', hollow: true, width: 2.2 });
           if (da > 0) zm.measure(0, -1.55, da, -1.55, `δ = ${v.fix(da, 3)} a`, { color: 'red', math: false, size: 11.5, offset: -11 });
-          zm.measure(-3.6, -1, -3.6, 1, '2a', { color: 'muted', size: 12, offset: 13 });
-          zm.text('pressure amplitude on the axis', -4.35, pz(-4.35) + 0.28, { align: 'left', color: 'red', size: 11 });
+          zm.measure(-3.9, -1, -3.9, 0.98, '2a', { color: 'muted', size: 12, offset: 14 });
+          zm.text('pressure amplitude on the axis', -3.3, 1.55, { align: 'left', color: 'red', size: 11 });
           zm.text(endS.value === 'none' ? 'idealized: node at the rim' : 'virtual node', da + 0.15, 0.35, { align: 'left', color: 'red', size: 11 });
           // ---- resonances on the keyboard
           const fs = M.range(NM, 1).map((q) => q * f), f0i = C_AIR / (2 * L), marks = new Map();
@@ -307,7 +309,7 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
         const src = v.select('sound source', [{ value: 'tap', label: 'tap the end' }, { value: 'breath', label: 'breath noise' }, { value: 'reed', label: 'reed (clarinet)' }], 'reed');
         const tb = v.stage({ x: [-0.07, 1.07], y: [-1.5, 1.5], height: 150, axes: false, full: true });
         const wf = v.stage({ x: [0, 1], y: [-1.25, 1.25], height: 150, axes: 'box', yticks: [], xlabel: 'time (ms)', full: true, title: 'pressure at the open end (simulated)' });
-        const sp = v.stage({ x: [0, NH + 0.6], y: [-72, 8], height: 250, axes: 'box', xlabel: 'frequency / (c/4L_eff)', xticks: M.range(NH, 1), yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true, title: 'spectrum of the simulated sound (FFT)' });
+        const sp = v.stage({ x: [0, NH + 0.6], y: [-72, 8], height: 250, axes: 'box', xlabel: 'frequency in units of $c/4L_{\\text{eff}}$', xticks: M.range(NH, 1), yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true, title: 'spectrum of the simulated sound (FFT)' });
         tb.onClick(() => { if (src.value !== 'reed') capT.el.querySelector('input')?.click(); });
         const capped = () => src.value === 'reed' || capT.value;
         const fq = () => C_AIR / (4 * (Ls.value + D)), fo = () => C_AIR / (2 * (Ls.value + 2 * D));
@@ -337,7 +339,7 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
           if (reed) { // mouthpiece and reed: they close the tube
             tb.poly([[0, R], [-0.055, 0.45], [-0.055, -0.45], [0, -R]], { fill: 'muted', fillAlpha: 0.6, color: 'ink', width: 1.4 });
             tb.line(-0.05, -0.42, 0.0, -0.1, { color: 'gold', width: 3.5 });
-            tb.text('reed', -0.06, -1.05, { align: 'left', color: 'gold', size: 11, weight: 600 });
+            tb.text('reed', -0.06, -1.12, { align: 'left', color: 'gold', size: 11, weight: 600 });
           }
           for (const [q, col] of [[1, 'red'], [2, 'orange']]) {
             const k = closed ? ((2 * q - 1) * Math.PI) / 2 : q * Math.PI, P = (x) => (closed ? Math.cos(k * x) : Math.sin(k * x));
@@ -345,9 +347,9 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
           }
           tb.text(closed ? 'closed end: pressure antinode' : 'open end', 0.01, R + 0.38, { align: 'left', color: 'muted', size: 11 });
           tb.text('open end: pressure node', 0.99, R + 0.38, { align: 'right', color: 'muted', size: 11 });
-          tb.corner(reed ? 'the reed closes the tube' : 'click the tube to cap or uncap it', 'bl', { color: 'muted', size: 11 });
+          tb.corner(reed ? 'the reed closes the tube' : 'click the tube to cap or uncap it', 'br', { color: 'muted', size: 11 });
           // ---- waveform: four periods of the capped tube
-          const Tq = 1 / fq(), win = 4 * Tq * 1000, seg = R0.src === 'tap' ? null : null;
+          const Tq = 1 / fq(), win = 4 * Tq * 1000;
           wf.setView([0, win], [-1.25, 1.25]);
           const b = R0.buf, n0 = src.value === 'tap' ? 0 : b.length - Math.round((win / 1000) * SR) - 1, nW = Math.round((win / 1000) * SR);
           let mx = 1e-9; for (let i = 0; i < nW; i++) mx = Math.max(mx, Math.abs(b[n0 + i]));
@@ -356,14 +358,14 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
           wf.path(pts, { color: closed ? 'accent' : 'teal', width: 1.6 });
           const Tp = (closed ? Tq : 1 / fo()) * 1000;
           for (let q = 1; q * Tp < win; q++) wf.vline(q * Tp, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 });
-          wf.corner(`dashed lines: one period, ${v.fix(Tp, 2)} ms = ${closed ? '4L/c' : '2L/c'}`, 'tr', { color: 'muted', size: 11 });
+          wf.setTitle(`pressure at the open end (simulated); dashed lines: one period, ${v.fix(Tp, 2)} ms = ${closed ? '4L/c' : '2L/c'}`);
           // ---- spectrum on the c/4L grid
           const S2 = R0.spec, fu = fq();
           for (let h = 1; h <= NH; h++) sp.line(h, -70, h, 6, { color: h % 2 ? 'green' : 'red', width: 1, dash: [3, 4], alpha: 0.45 });
           const curve = []; for (let i = 1; i < S2.db.length; i++) { const x = S2.freq[i] / fu; if (x > NH + 0.6) break; curve.push([x, Math.max(-71, S2.db[i])]); }
           sp.path(curve, { color: closed ? 'accent' : 'teal', width: 1.5 });
           for (let h = 1; h <= NH; h++) sp.text(h % 2 ? 'odd' : 'even', h, 3.5, { align: 'center', color: h % 2 ? 'green' : 'red', size: 9.5 });
-          sp.corner(closed ? 'capped: peaks on the odd lines only' : 'open: peaks on the even lines', 'tr', { color: closed ? 'accent' : 'teal', weight: 600, size: 11.5 });
+          sp.setTitle(`spectrum of the simulated sound (FFT): ${closed ? 'capped, peaks on the odd lines only' : 'open, peaks on the even lines'}`);
         });
         v.legend([['accent', 'capped tube'], ['teal', 'open tube'], ['red', 'lowest pressure mode'], ['orange', 'second mode']]);
         v.readout(() => {

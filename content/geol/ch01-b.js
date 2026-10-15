@@ -172,13 +172,13 @@ const COL9 = { Hadean: 'pink', Archean: 'red', Proterozoic: 'orange', Phanerozoi
 const HKM = 0.25; // km per section unit in 1.10
 function siccarEvents() {
   const E = [{ type: 'base', lith: 'grey', top: -6 }];
-  let prev = -6; for (let z = -5.5; z <= 3.01; z += 0.5) { E.push({ type: 'dep', lith: Math.round((z + 6) / 0.5) % 2 ? 'grey' : 'shale', top: z, from: prev, step: 0 }); prev = z; }
+  let prev = -6; for (let z = -5.5; z <= 4.51; z += 0.5) { E.push({ type: 'dep', lith: Math.round((z + 6) / 0.5) % 2 ? 'grey' : 'shale', top: z, from: prev, step: 0 }); prev = z; }
   E.push({ type: 'fold', amp: 3.2, wl: 4.4, ph: 0.6, step: 1 });
   E.push({ type: 'uplift', dz: 1.2, step: 2 });
   E.push({ type: 'erode', level: 1.7, amp: 0.08, wl: 2.3, ph: 0.4, from: 9, step: 2 });
   E.push({ type: 'dep', lith: 'cong', top: 2.1, from: 1.55, step: 3 });
   prev = 2.1; for (const z of [2.65, 3.2, 3.75, 4.3, 4.85]) { E.push({ type: 'dep', lith: 'red', top: z, from: prev, step: 3 }); prev = z; }
-  E.push({ type: 'tilt', ang: (-14 * Math.PI) / 180, cx: 6, cz: 2, step: 4 });
+  E.push({ type: 'tilt', ang: (14 * Math.PI) / 180, cx: 6, cz: 2, step: 4 });
   E.push({ type: 'uplift', dz: 0.4, step: 4 });
   E.push({ type: 'erode', level: 3.4, slope: 0.32, sx: 6, amp: 0.1, wl: 3.7, ph: 1.1, from: 9, step: 4 });
   return E;
@@ -391,13 +391,13 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
         const preset = v.select('inputs', [{ value: 'kelvin', label: 'Kelvin 1862' }, { value: 'modern', label: 'today' }], 'kelvin', { onChange: () => { const k = preset.value === 'kelvin'; T0s.set(k ? Math.round(KELVIN.T0) : 1300); Gs.set(k ? +KELVIN.G.toFixed(1) : 20); } });
         const T0s = v.slider('initial temperature $T_0$ (°C)', 500, 6000, Math.round(KELVIN.T0), { step: 10 });
         const Gs = v.slider('measured surface gradient (°C/km)', 8, 60, +KELVIN.G.toFixed(1), { step: 0.1 });
-        const age = v.slider('age shown (years)', 1e6, 4.54e9, 9.8e7, { log: true, sig: 2 });
+        const age = v.slider('age shown', 1e6, 4.54e9, 9.8e7, { log: true, sig: 2, fmt: (x) => fmtYr(x) });
         const rad = v.select('radiogenic heat', [{ value: 'none', label: 'none' }, { value: 'mantle', label: 'spread through mantle' }, { value: 'crust', label: 'all in top 20 km' }], 'none');
         const perry = v.toggle('convecting interior (Perry)', false);
         const Ls = v.slider('conducting lid $L$ (km)', 25, 200, 100, { step: 5 });
         const fs = v.slider('interior conductivity ×$f$', 1, 1e4, 100, { log: true, sig: 2 });
         const P = v.stage({ x: [0, 4300], y: [-300, 0], axes: 'box', height: 360, weight: 0.85, minWidth: 260, xlabel: 'T (°C)', ylabel: 'depth (km)' });
-        const Q = v.stage({ x: [1e5, 6.5e9], y: [2, 400], xlog: true, ylog: true, axes: 'box', height: 360, weight: 1.15, xlabel: 'time since solidification (years)', ylabel: 'surface gradient (°C/km)' });
+        const Q = v.stage({ x: [1e6, 6.5e9], y: [2, 1000], xlog: true, ylog: true, axes: 'box', height: 360, weight: 1.15, xlabel: 'time since solidification (years)', ylabel: 'surface gradient (°C/km)' });
         const K = 3, cache = new Map();
         const model = () => {
           const kap = preset.value === 'kelvin' ? KELVIN.kappa : 1e-6, T0 = T0s.value, L = Ls.value * 1000, f = perry.value ? fs.value : 1;
@@ -413,7 +413,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           // gradient vs time
           if (mod) Q.hband(40 / K, 80 / K, { color: 'gold', alpha: 0.18, edges: true });
           Q.hline(G, { color: 'gold', width: 2.2 });
-          Q.vline(4.54e9, { color: 'green', width: 2 }); Q.text('4.54 Gyr', 4.54e9, 300, { dx: -5, align: 'right', size: 11.5, color: 'green', weight: 700 });
+          Q.vline(4.54e9, { color: 'green', width: 2 }); Q.text('4.54 Gyr', 4.54e9, 600, { dx: -5, align: 'right', size: 11.5, color: 'green', weight: 700 });
           if (!perry.value && !A) Q.fn((t) => (T0 / Math.sqrt(Math.PI * kap * t * YR)) * 1000, { color: 'ink', width: 1.3, dash: [6, 4] });
           Q.path(R.t.map((t, i) => [t, R.G[i]]), { color: 'accent', width: 2.6 });
           const xs = crossings(R, G), tAge = xs.length ? xs[xs.length - 1] : null;
@@ -423,12 +423,13 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           const i = clamp(Math.round(Math.log(age.value / R.t[0]) / Math.log(R.t[1] / R.t[0])), 0, R.t.length - 1), prof = R.prof[i];
           const zv = clamp(4.2 * Math.sqrt(kap * age.value * YR) / 1000, 60, 1400);
           P.setView([0, Math.max(T0, 600) * 1.08], [-zv, 0]);
-          if (!perry.value && !A) P.curve((u) => { const zm = u * zv * 1000; return [T0 * v.M.erf(zm / (2 * Math.sqrt(kap * age.value * YR))), -u * zv]; }, 0, 1, { color: 'ink', width: 1.3, dash: [6, 4] });
+          const step = [20, 50, 100, 200, 250, 500].find((q) => zv / q <= 6) || 500; const yt = []; for (let d = step; d < zv; d += step) yt.push([-d, String(d)]); P.setTicks(undefined, yt);
           const pts = []; for (let j = 0; j < R.z.length && R.z[j] <= zv * 1000 * 1.001; j++) pts.push([prof[j], -R.z[j] / 1000]);
           P.path(pts, { color: 'accent', width: 2.6 });
+          if (!perry.value && !A) P.curve((u) => { const zm = u * zv * 1000; return [T0 * v.M.erf(zm / (2 * Math.sqrt(kap * R.t[i] * YR))), -u * zv]; }, 0, 1, { color: 'ink', width: 1.4, dash: [6, 4] });
           const zt = Math.min(zv, (0.9 * Math.max(T0, 600)) / G); P.line(0, 0, G * zt, -zt, { color: 'gold', width: 2 });
           if (perry.value) { P.hband(-Ls.value, 0, { color: 'orange', alpha: 0.08 }); P.text('conducting lid', Math.max(T0, 600) * 1.05, -Ls.value / 2, { align: 'right', size: 11, color: 'orange', weight: 600 }); }
-          P.corner(fmtYr(R.t[i]), 'br', { size: 13, weight: 700, color: 'ink' });
+          P.corner(`after ${fmtYr(R.t[i])}`, 'tr', { size: 13, weight: 700, color: 'ink' });
           const gan = (T0 / Math.sqrt(Math.PI * kap * (tAge || 1e8) * YR)) * 1000;
           st = { R, tAge, xs, G, mod, gan, kap, T0, A, i };
         });
@@ -474,9 +475,9 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           // relative column: equal heights
           const rel = all ? [['Precambrian', 4567, 538.8, 2], ...PHAN.map((p) => [p[0], p[1], p[2], 1])] : PHAN.map((p) => [p[0], p[1], p[2], 1]);
           const wTot = rel.reduce((s, r) => s + r[3], 0); let acc = 0; const relY = new Map();
-          const rx0 = 0.55, rx1 = 3.15, nx0 = 4.75, nx1 = 6.95;
+          const rx0 = 1.45, rx1 = 3.75, nx0 = 4.85, nx1 = 6.85;
           S.text('relative scale: order only', (rx0 + rx1) / 2, 1.035, { align: 'center', size: 12.5, weight: 700 });
-          S.text(`numerical ages (ICS), ${lg ? 'log' : 'linear'}`, 7.4, 1.035, { align: 'center', size: 12.5, weight: 700 });
+          S.text(`numerical ages (ICS), ${lg ? 'log' : 'linear'}`, 7.05, 1.035, { align: 'center', size: 12.5, weight: 700 });
           for (const [name, a, b, w] of rel) {
             const y0 = acc / wTot, y1 = (acc + w) / wTot; acc += w; relY.set(name, [y0, y1]);
             const P = PHAN.find((p) => p[0] === name), col = P ? P[7] : 'pink', on = sel === name || (name === 'Precambrian' && !P && ['Hadean', 'Archean', 'Proterozoic'].includes(sel));
@@ -497,12 +498,12 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
             boxes.push({ name, x0, x1, y0: Math.min(y0, y1), y1: Math.max(y0, y1) });
           });
           drawCol(all ? [...PRE_P.map((p) => [p[0], p[1], p[2]]), ...PHAN.map((p) => [p[0], p[1], p[2]])] : PHAN.map((p) => [p[0], p[1], p[2]]), nx0, nx1, 13, (n, P) => (P ? P[7] : PRE_P.findIndex((q) => q[0] === n) % 2 ? 'orange' : 'pink'));
-          drawCol(ERAS, 7.05, 8.25, 26, (n) => COL9[n] || (n.includes('archean') ? 'red' : 'orange'), true);
-          drawCol(EONS, 8.35, 9.45, 26, (n) => COL9[n], true);
+          drawCol(ERAS, 6.95, 8.05, 26, (n) => COL9[n] || (n.includes('archean') ? 'red' : 'orange'), true);
+          drawCol(EONS, 8.15, 9.25, 26, (n) => COL9[n], true);
           // age ticks
-          const ticks = lg ? (all ? [1, 10, 100, 538.8, 1000, 2500, 4567] : [1, 2.58, 10, 23.04, 66, 143.1, 251.9, 538.8]) : all ? [0, 538.8, 1000, 1600, 2500, 3200, 4031, 4567] : [0, ...PHAN.map((p) => p[1])];
-          for (const t of ticks) { if (t > tMax) continue; const y = yN(t); S.line(9.5, y, 9.62, y, { color: 'muted', width: 1 }); S.text(`${t === 0 ? 0 : v.fix(t, t < 10 ? 2 : 1).replace(/\.0$/, '')}`, 9.66, y, { size: 10, color: 'muted' }); }
-          S.text('Ma', 9.66, yN(0) + 0.03, { size: 10, color: 'muted' });
+          const ticks = lg ? (all ? [1, 10, 100, 538.8, 1000, 2500, 4567] : [1, 2.58, 10, 23.04, 66, 143.1, 251.9, 538.8]) : all ? [0, 538.8, 1000, 1600, 2500, 3200, 4031, 4567] : [0, ...PHAN.map((p) => p[1]).filter((t) => t > 3)];
+          for (const t of ticks) { if (t > tMax) continue; const y = yN(t); S.line(9.3, y, 9.42, y, { color: 'muted', width: 1 }); S.text(`${t === 0 ? 0 : v.fix(t, t < 10 ? 2 : 1).replace(/\.0$/, '')}`, 9.46, y, { size: 10, color: 'muted' }); }
+          S.text('Ma', 9.46, yN(0) + 0.03, { size: 10, color: 'muted' });
           // connectors between the columns
           for (const [name, a, b] of rel) { const [y0, y1] = relY.get(name); S.line(rx1, y0, nx0, yN(Math.min(a, tMax)), { color: 'faint', width: 1 }); if (b === 0) S.line(rx1, y1, nx0, yN(0), { color: 'faint', width: 1 }); }
           // mass extinctions
@@ -538,7 +539,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
       introduces: ['geol-1.6'],
       statement: String.raw`Hutton argued that the rocks of the continents are made of the debris of earlier land: worn down by rain, rivers and the sea, carried into the ocean, laid down in layers, consolidated by the Earth's internal heat (he also recognized granite as once molten and intruded), and raised again by that heat to form new land, which is then eroded in turn. Working through the same slow processes we see today, this cycle of **decay and renovation** has run many times, so the time involved is beyond reckoning: "we find no vestige of a beginning, — no prospect of an end." In modern terms the paper sets out the rock cycle (geol-1.2), plutonism and the principle that present processes explain the past (uniformitarianism, geol-1.6), and it requires deep time; it claims no number for the age of the Earth, and its picture of a steady, indefinitely old Earth was later corrected by thermodynamics and radiometric dating.`,
       idea: String.raw`The prevailing view in 1785 (Werner's Neptunism) held that rocks precipitated from a primeval ocean, in an Earth only thousands of years old on the biblical chronology. Hutton, a farmer and physician who had watched soil wash from his fields, reasoned like an engineer about a machine that maintains itself: erosion would level the continents unless something restored them, and that something was internal heat. Read to the Royal Society of Edinburgh in March and April 1785 and printed in 1788, the theory found its most famous evidence the same year, when Hutton, John Playfair and James Hall sailed to Siccar Point and saw near-vertical grey beds cut off and overlain by gently dipping red sandstone: two cycles, each of deposition, consolidation, uplift and erosion, in one cliff. "The mind seemed to grow giddy by looking so far into the abyss of time," Playfair wrote. Lyell built uniformitarian geology on Hutton's foundation; Kelvin's thermodynamics (geol-1.8) later showed that the Earth does have a history with a beginning.`,
-      caption: String.raw`Step through a schematic Siccar Point (the unconformity drawing Hutton commissioned, of Jedburgh, appeared only in his 1795 book). Each step runs one of Hutton's processes: sea-floor deposition of the grey beds, folding until they stand on end, uplift and erosion to a plain, deposition of the breccia and red sandstone, tilting and erosion to today's cliff. Set the **deposition** and **erosion** rates to values measured today; the clock on the right adds up each step from the thicknesses in the picture (1 square of grid = 250 m) and sets the total against Ussher's 6000 years and against radiometric dating, which puts the lower beds at about 435 Myr and the gap at about 65 Myr.`,
+      caption: String.raw`Step through a schematic Siccar Point (the unconformity drawing Hutton commissioned, of Jedburgh, appeared only in his 1795 book). Each step runs one of Hutton's processes: sea-floor deposition of the grey beds, folding until they stand on end, uplift and erosion to a plain, deposition of the breccia and red sandstone, tilting and erosion to today's cliff. Set the **deposition** and **erosion** rates to values measured today; the clock on the right adds up each step from the thicknesses in the picture (see the 500 m scale bar) and sets the total against Ussher's 6000 years and against radiometric dating, which puts the lower beds at about 435 Myr and the gap at about 65 Myr.`,
       deps: ['geol-1.4'],
       refs: [],
       tags: ['deep time', 'history', 'unconformity'],
@@ -552,7 +553,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
         const E0 = siccarEvents();
         const kE1 = E0.findIndex((e) => e.type === 'erode'), kE2 = E0.length - 1;
         // thicknesses (km) measured from the geometry
-        const H1 = (3 - -6) * HKM, Hup = (4.85 - 1.55) * HKM, Hfold = 3.2 * HKM, He1 = erodedThickness(E0, kE1, 0, 12, 12) * HKM, He2 = erodedThickness(E0, kE2, 0, 12, 12) * HKM;
+        const H1 = (4.5 - -6) * HKM, Hup = (4.85 - 1.55) * HKM, Hfold = 3.2 * HKM, He1 = erodedThickness(E0, kE1, 0, 12, 12) * HKM, He2 = erodedThickness(E0, kE2, 0, 12, 12) * HKM;
         const NOTES = [
           'The Silurian sea floor: sand and mud from the land settle layer on layer (these became the grey beds, about 435 Myr ago).',
           'Consolidated and squeezed: the layers are folded until they stand nearly on end.',
@@ -572,15 +573,15 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           if (k === 5) E.forEach((e) => { e.p = 1; });
           if (k <= 1) S.rect(-5, -1, 17, 5.6, { fill: 'blue', fillAlpha: 0.07, stroke: false });
           if (k >= 4) S.rect(-5, -1, 17, 2.0, { fill: 'blue', fillAlpha: 0.14, stroke: false });
-          for (let x = 0; x <= 12; x++) S.line(x, -0.2, x, 6, { color: 'grid', width: 0.6 }); for (let y = 0; y <= 6; y++) S.line(0, y, 12, y, { color: 'grid', width: 0.6 });
           drawSection(v, S, E, { key: `${k}|${tw.toFixed(3)}`, res: 2, pale: 0.45 });
           if (k >= 3 && (k > 3 || tw > 0.05)) uncLine(S, E, kE1, { res: 170 });
           if (k >= 4) S.text('North Sea', 0.3, 1.75, { size: 12, color: 'blue', weight: 600 });
           S.corner(`${k + 1}/6`, 'tr', { size: 12, weight: 700, color: 'muted' });
+          S.line(11.6, 3.6, 11.6, 5.6, { color: 'ink', width: 2 }); S.line(11.45, 3.6, 11.75, 3.6, { color: 'ink', width: 2 }); S.line(11.45, 5.6, 11.75, 5.6, { color: 'ink', width: 2 }); S.text('500 m', 11.4, 4.6, { size: 11.5, weight: 700, align: 'right' });
           // the clock
           const d = dur(), labels = ['grey beds laid down', 'folding', 'erosion to a plain', 'red beds laid down', 'tilt, uplift, erosion'];
           const total = d.reduce((a, b) => a + b, 0), gap = d[1] + d[2];
-          C.vband(6000, 6030, { color: 'purple', alpha: 0.6 }); C.text('Ussher: 6000 yr', 6000, 8.2, { dx: 5, size: 11, color: 'purple', weight: 700 });
+          C.vline(6000, { color: 'purple', width: 2.4 }); C.text('Ussher: 6000 yr', 6000, 8.2, { dx: 5, size: 11, color: 'purple', weight: 700 });
           C.vline(4.54e9, { color: 'green', width: 1.6 }); C.text('Earth 4.54 Gyr', 4.54e9, 8.2, { dx: -5, align: 'right', size: 11, color: 'green', weight: 700 });
           d.forEach((t, i) => {
             const y = 7 - i * 1.15, on = i <= k - (k === 5 ? 1 : 0), col = i === 0 ? 'teal' : i === 3 ? 'red' : 'orange';
@@ -597,7 +598,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
         v.readout(() => {
           if (!st) return '';
           const { total, gap } = st;
-          return `at ${v.fix(dep.value, 2)} mm/yr of deposition and ${v.fix(ero.value, 3)} mm/yr of erosion and uplift, this cliff needs **${fmtYr(total)}**, of which the hidden gap (folding plus erosion) is **${fmtYr(gap)}** · that is ${v.fix(total / 6000, 0)} times Ussher's 6000 years · Hutton gave no number ("no vestige of a beginning"); radiometric dating: the grey beds ≈ 435 Myr old, the gap ≈ 60–65 Myr, the Earth 4.54 Gyr`;
+          return `at ${v.fix(dep.value, 2)} mm/yr of deposition and ${v.fix(ero.value, 3)} mm/yr of erosion and uplift, this cliff needs **${fmtYr(total)}**, of which the hidden gap (folding plus erosion) is **${fmtYr(gap)}** · that is ${Math.round(total / 6000).toLocaleString('en-US').replace(/,/g, ' ')} times Ussher's 6000 years · Hutton gave no number ("no vestige of a beginning"); radiometric dating: the grey beds ≈ 435 Myr old, the gap ≈ 60–65 Myr, the Earth 4.54 Gyr`;
         });
       },
     },
