@@ -461,11 +461,13 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
       viz(v) {
         const FS = { one: [1, 0, 0], x: [0, 1, 0], x2: [0, 0, 1], leg: [-1 / 3, 0, 1] };
         const fsel = v.select('$f =$', [{ value: 'one', label: '$1$' }, { value: 'x', label: '$x$' }, { value: 'x2', label: '$x^2$' }, { value: 'leg', label: '$x^2 - \\frac13$' }], 'one');
-        const iv = v.select('on', [{ value: 's', label: '$[-1, 1]$' }, { value: 'h', label: '$[0, 1]$' }], 's');
+        const XS_S = [-0.7, 0, 0.7], XS_H = [0.15, 0.5, 0.85];
+        let XS = XS_S, gh = [];
+        const iv = v.select('on', [{ value: 's', label: '$[-1, 1]$' }, { value: 'h', label: '$[0, 1]$' }], 's', {
+          onChange: (k) => { const gc = quadThrough(XS, gh.map((h) => h.y)); XS = k === 's' ? XS_S : XS_H; gh.forEach((h, i) => h.set(XS[i], pval(gc, XS[i]))); },
+        });
         const G = v.stage({ x: [-1.15, 1.15], y: [-1.7, 1.9], height: 250, full: true, title: '$f$ (blue) and $g$ (orange)' });
         const P = v.stage({ x: [-1.15, 1.15], y: [-1.6, 1.6], height: 230, full: true, title: 'the product $fg$ — its signed area is $\\langle f, g\\rangle$' });
-        const XS = [-0.7, 0, 0.7];
-        let gh = [];
         const dom = () => (iv.value === 's' ? [-1, 1] : [0, 1]);
         const ipWith = (ys) => { const c = quadThrough(XS, ys), f = FS[fsel.value]; return ipF((x) => pval(f, x), (x) => pval(c, x), ...dom()); };
         gh = [[0.55], [-0.45], [1.15]].map(([y], k) => G.handle(XS[k], y, {
@@ -480,19 +482,22 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
         v.render(() => {
           const [a, b] = dom(), fc = FS[fsel.value], gc = quadThrough(XS, gh.map((h) => h.y));
           const f = (x) => pval(fc, x), g = (x) => pval(gc, x), fg = (x) => f(x) * g(x);
-          for (const S of [G, P]) { S.vband(-1.15, a, { color: 'faint', alpha: 0.18 }); S.vband(b, 1.15, { color: 'faint', alpha: 0.18 }); }
+          const m = 0.08 * (b - a), xs = Array.from({ length: 41 }, (_, i) => a + ((b - a) * i) / 40);
+          const R = Math.min(5.8, Math.max(1.3, 1.15 * Math.max(...xs.map((x) => Math.max(Math.abs(f(x)), Math.abs(g(x)))))));
+          G.setView([a - m, b + m], [-R, R]);
+          for (const S of [G, P]) { S.vband(a - 2 * m, a, { color: 'faint', alpha: 0.18 }); S.vband(b, b + 2 * m, { color: 'faint', alpha: 0.18 }); }
           G.fn(f, { color: 'accent', width: 1, alpha: 0.4 }); G.fn(g, { color: 'orange', width: 1, alpha: 0.4 });
           G.fn(f, { domain: [a, b], color: 'accent', width: 2.8 }); G.fn(g, { domain: [a, b], color: 'orange', width: 2.8 });
           const top = Math.max(1, ...Array.from({ length: 41 }, (_, i) => Math.abs(fg(a + ((b - a) * i) / 40)))) * 1.25;
-          P.setView([-1.15, 1.15], [-top, top]);
+          P.setView([a - m, b + m], [-top, top]);
           P.fn((x) => Math.max(0, fg(x)), { domain: [a, b], fill: 'accent', fillAlpha: 0.3, stroke: false });
           P.fn((x) => Math.min(0, fg(x)), { domain: [a, b], fill: 'red', fillAlpha: 0.3, stroke: false });
           P.fn(fg, { domain: [a, b], color: 'ink', width: 2 });
           const ip = ipF(f, g, a, b), pos = integ((x) => Math.max(0, fg(x)), a, b), neg = integ((x) => Math.max(0, -fg(x)), a, b);
           const nf = Math.sqrt(ipF(f, f, a, b)), ng = Math.sqrt(ipF(g, g, a, b)), orth = Math.abs(ip) < 1e-9;
           const ang = nf > 1e-9 && ng > 1e-9 ? (Math.acos(Math.max(-1, Math.min(1, ip / (nf * ng)))) * 180) / Math.PI : NaN;
-          P.texPx(`+${tn(pos, 3)}`, P.width - 12, 12, { color: 'accent', align: 'right', baseline: 'top', size: 15 });
-          P.texPx(`-${tn(neg, 3)}`, P.width - 12, P.height - 12, { color: 'red', align: 'right', baseline: 'bottom', size: 15 });
+          P.corner(`blue area +${pn(pos, 3)}`, 'tr', { color: 'accent', weight: 700, size: 13 });
+          P.corner(`red area −${pn(neg, 3)}`, 'br', { color: 'red', weight: 700, size: 13 });
           if (orth) G.corner('⟨f, g⟩ = 0: f and g are orthogonal', 'tl', { color: 'green', weight: 700 });
           else if (isFinite(ang)) G.corner(`angle arccos(⟨f, g⟩ / ‖f‖‖g‖) = ${pn(ang, 1)}°`, 'tl', { color: 'muted', weight: 600 });
           st = { ip, pos, neg, orth, ang, a, b };
@@ -520,7 +525,8 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
       viz(v) {
         const FORMS = { dot: [[1, 0], [0, 1]], sk: [[1.4, 0.6], [0.6, 0.8]], mink: [[1, 0], [0, -1]] };
         const form = v.select('', [{ value: 'dot', label: 'dot product' }, { value: 'sk', label: 'skewed inner product' }, { value: 'mink', label: '$x_1y_1 - x_2y_2$ (not definite)' }], 'sk');
-        const S = v.stage({ x: [-2.5, 2.5], y: [-2.05, 2.05], equal: true, height: 410 });
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.05, 2.05], equal: true, height: 400, weight: 1.35, minWidth: 320 });
+        const G = v.stage({ x: [0, 360], y: [-1.3, 2.3], height: 400, minWidth: 250, xlabel: 'θ°', xticks: [0, 90, 180, 270, 360], title: '$\\langle x, x\\rangle$ for $x = (\\cos\\theta, \\sin\\theta)$' });
         const vh = S.handle(1.1, 0.7, {
           color: 'gold', label: 'v', constrain: (x, y) => {
             if (Math.hypot(x, y) < 0.16) return [0, 0];
@@ -534,8 +540,8 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
           const A = FORMS[form.value], ip = formA(A), q = (x) => ip(x, x), V = [vh.x, vh.y];
           const pos = v.rgb('accent'), neg = v.rgb('red'), bg = v.rgb('panel');
           S.raster((x, y) => {
-            const s = q([x, y]), t = Math.min(1, Math.abs(s) / 6) ** 0.7, c = s >= 0 ? pos : neg;
-            return [0, 1, 2].map((i) => Math.round(bg[i] + (c[i] - bg[i]) * 0.55 * t)).concat(255);
+            const s = q([x, y]), t = Math.min(1, Math.abs(s) / 9) ** 0.8, c = s >= 0 ? pos : neg;
+            return [0, 1, 2].map((i) => Math.round(bg[i] + (c[i] - bg[i]) * 0.42 * t)).concat(255);
           }, { key: form.value + v.color('panel'), res: 3 });
           for (const lev of [0.25, 1, 2.25, 4]) S.path(levelSet(q, lev, 6), { color: 'accent', width: 0.8, alpha: 0.35 });
           if (form.value === 'mink') { for (const lev of [-0.25, -1, -2.25]) S.path(levelSet(q, lev, 6), { color: 'red', width: 0.8, alpha: 0.35 }); S.line(-3, -3, 3, 3, { color: 'red', width: 1.6, alpha: 0.7 }); S.line(-3, 3, 3, -3, { color: 'red', width: 1.6, alpha: 0.7 }); }
@@ -551,9 +557,19 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
           const self = q(V);
           if (zero) S.corner('v = 0: ⟨x, 0⟩ = 0 for every x — (a)', 'tl', { color: 'green', weight: 700 });
           else if (Math.abs(self) < 1e-9) S.corner('v ≠ 0 yet ⟨v, v⟩ = 0: v lies on its own v⊥', 'tl', { color: 'red', weight: 700 });
-          else S.corner(`⟨v, v⟩ = ${pn(self, 3)} ≠ 0: v is not on v⊥`, 'tl', { color: 'muted', weight: 600 });
+          else S.corner(`⟨v, v⟩ = ${pn(self, 3)} ≠ 0: v is not on v⊥`, 'tl', { color: 'ink', weight: 600 });
           if (!zero) arrowTo(S, 0, 0, V[0], V[1], { color: 'gold', width: 2.8 });
           if (!zero) { const n = [A[0][0] * V[0] + A[1][0] * V[1], A[0][1] * V[0] + A[1][1] * V[1]], L = len2(n), d = n[1] > 0 ? [n[1] / L, -n[0] / L] : [-n[1] / L, n[0] / L]; S.tex('v^\\perp', 1.55 * d[0], 1.55 * d[1], { color: 'green', size: 16, dx: 14 }); }
+          // ⟨x, x⟩ around the unit circle
+          const qs = []; let qmin = Infinity, qmax = -Infinity;
+          for (let k = 0; k <= 360; k += 2) { const t = (k * Math.PI) / 180, val = q([Math.cos(t), Math.sin(t)]); qs.push([k, val]); qmin = Math.min(qmin, val); qmax = Math.max(qmax, val); }
+          G.setView([0, 360], [Math.min(-0.3, qmin * 1.2), qmax * 1.25]);
+          G.hline(0, { color: 'ink', width: 1.2 });
+          G.fn((k) => Math.max(0, q([Math.cos((k * Math.PI) / 180), Math.sin((k * Math.PI) / 180)])), { fill: 'accent', fillAlpha: 0.15, stroke: false });
+          G.fn((k) => Math.min(0, q([Math.cos((k * Math.PI) / 180), Math.sin((k * Math.PI) / 180)])), { fill: 'red', fillAlpha: 0.2, stroke: false });
+          G.path(qs, { color: 'accent', width: 2.2 });
+          if (!zero) { let k = (Math.atan2(V[1], V[0]) * 180) / Math.PI; if (k < 0) k += 360; const qv = q([Math.cos((k * Math.PI) / 180), Math.sin((k * Math.PI) / 180)]); G.vline(k, { color: 'gold', width: 1, dash: [3, 4] }); G.dot(k, qv, { color: Math.abs(qv) < 1e-9 ? 'red' : 'gold', r: 6 }); }
+          G.corner(qmin > 1e-9 ? `minimum ${pn(qmin)} > 0: never 0` : 'touches 0: not definite', 'tl', { color: qmin > 1e-9 ? 'green' : 'red', weight: 700 });
           st = { V, self, zero, mink: form.value === 'mink' };
         });
         v.legend([['gold', '$v$'], ['green', '$v^\\perp$; test vectors with $\\langle x, v\\rangle = 0$', { dash: true }], ['accent', '$\\langle x, v\\rangle > 0$', { dot: true }], ['orange', '$\\langle x, v\\rangle < 0$', { dot: true }]]);
@@ -562,7 +578,7 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
           const { V, self, zero, mink } = st;
           if (zero) return 'With $v = 0$: $\\langle x, 0\\rangle = 0$ for every test vector $x$, so $0$ is orthogonal to everything.';
           if (Math.abs(self) < 1e-9) return `$v = ${vt(V)} \\ne 0$ but $\\langle v, v\\rangle = 0$ — possible only because $x_1y_1 - x_2y_2$ is not definite.`;
-          return `$\\langle v, v\\rangle = ${tn(self, 3)} ${self > 0 ? '> 0' : '< 0'}$: $v$ is not orthogonal to itself` + (mink ? ' (here even negative — this form is not an inner product).' : '; for an inner product only $v = 0$ is.');
+          return `$\\langle v, v\\rangle = |v|^2\\,\\langle x, x\\rangle_{x = v/|v|} = ${tn(self, 3)} \\ne 0$: $v$ is not orthogonal to itself` + (mink ? (self < 0 ? ' (even negative: this form is not an inner product).' : ' — but drag it onto a diagonal: this form is not definite.') : '; the right graph never reaches $0$, so for an inner product only $v = 0$ is.');
         });
       },
     },

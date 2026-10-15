@@ -88,7 +88,7 @@ The outcome does not depend on which side is legally required to pay: a tax coll
           if (q > 0) s.rect(0, Math.min(ps, pb), q, Math.max(ps, pb), { fill: tv >= 0 ? 'green' : 'purple', fillAlpha: 0.13, stroke: false });
           const lab = tv >= 0 ? ['S + t', 'D − t'] : ['S − s', 'D + s'];
           s.fn(D, { color: 'blue', width: 2.6 }); s.fn(S, { color: 'orange', width: 2.6 });
-          s.text('D', 90, D(90), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
+          s.text('D', 90, D(90), { dx: -8, dy: 6, align: 'right', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 99, S(99), { dy: -10, align: 'right', color: 'orange', size: 15, math: true });
           if (sell) {
             s.fn((x) => S(x) + tv, { color: 'orange', width: 2, dash: [7, 4] });
@@ -249,13 +249,13 @@ $$DWL(t) = \frac{t^2}{2\,\bigl(S'(Q^*) - D'(Q^*)\bigr)} + O(t^3) = \frac{t^2}{2}
               s.poly([mid(A, B), mid(B, C), mid(C, A)], { color: 'red', width: 1.1, dash: [3, 3] });
               const cen = (P, Q, R) => [(P[0] + Q[0] + R[0]) / 3, (P[1] + Q[1] + R[1]) / 3];
               const parts = [cen(A, mid(A, B), mid(C, A)), cen(B, mid(A, B), mid(B, C)), cen(mid(A, B), mid(B, C), mid(C, A))];
-              if ((r2.q0 - r2.q) * s.scale > 60) parts.forEach((p, i) => s.text(String(i + 2), p[0], p[1], { color: 'red', size: 11, weight: 700, align: 'center' }));
+              if ((r2.q0 - r2.q) * s.scale > 60) parts.forEach((p, i) => s.text(String(i + 2), p[0], p[1], { color: 'red', size: 12, weight: 700, align: 'center' }));
               if ((r2.q0 - r2.q) * s.scale > 60) { const p = cen(C, mid(B, C), mid(C, A)); s.text('1', p[0], p[1], { color: 'panel', size: 11, weight: 700, align: 'center', halo: false }); }
             }
             s.fn((x) => S(x) + 2 * tv, { color: 'orange', width: 1.2, dash: [3, 4], alpha: 0.7 });
             s.text('S + 2t', 97, S(97) + 2 * tv, { dy: -9, align: 'right', color: 'orange', size: 13, math: true, alpha: 0.8 });
           }
-          if (tv > 0) { s.fn((x) => S(x) + tv, { color: 'orange', width: 1.6, dash: [7, 4] }); s.measure(r1.q - 1.5, r1.ps, r1.q - 1.5, r1.pb, 't', { color: 'green', offset: -10 }); }
+          if (tv > 0) { s.fn((x) => S(x) + tv, { color: 'orange', width: 1.6, dash: [7, 4] }); if (!dbl.value) s.measure(r1.q - 1.5, r1.ps, r1.q - 1.5, r1.pb, 't', { color: 'green', offset: -10 }); }
           E.draw({ shade: [], guides: false });
           // DWL(t): exact, Harberger, and the two points
           const h = 1e-3, dD = (D(r1.q0 + h) - D(r1.q0 - h)) / (2 * h), dS = (S(r1.q0 + h) - S(r1.q0 - h)) / (2 * h), H = (x) => (x * x) / (2 * (dS - dD));
@@ -326,7 +326,7 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
           const tmax = k === 'lin' && a > 0 ? 50 * (1 / a + 1 / b) : Infinity;
           if (tmax < 150) { g.dot(tmax, 0, { r: 4.5, color: 'red', hollow: true }); g.text('no trade', tmax, 0, { dy: -28, align: tmax > 130 ? 'right' : 'center', color: 'red', size: 11 }); }
           g.dot(tv, c.R, { r: 6, color: 'green' });
-          { let i = W.findIndex((w) => w > top * 0.88); if (i < 0) i = 140; g.text('DWL', xs[i], Math.min(W[i], top * 0.88), { dx: 8, align: 'left', color: 'red', size: 11.5, weight: 700 }); }
+          { let i = W.findIndex((w) => w > top * 0.88); if (i < 0) i = 140; const rt = xs[i] > 120; g.text('DWL', xs[i], Math.min(W[i], top * 0.88), { dx: rt ? -8 : 8, dy: rt ? 12 : 0, align: rt ? 'right' : 'left', color: 'red', size: 11.5, weight: 700 }); }
           st = { k, a, b, tv, c, pk, peakIn, Rpk: at(pk).R, tmax };
         });
         v.legend([['green', 'tax revenue'], ['gold', 'revenue rectangles at $t = 20, 40, \\dots, 100$'], ['red', 'deadweight loss']]);
@@ -390,7 +390,7 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
           band(s, () => pb, S, 0, qs, 'orange', 0.22);
           if (bind) band(s, D, S, qs, q0, 'red', 0.4);
           s.fn(D, { color: 'blue', width: 2.4, domain: [0, 64] }); s.fn(S, { color: 'orange', width: 2.4, domain: [0, 64] });
-          s.text('D', 57, D(57), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
+          s.text('D', 57, D(57), { dx: -8, dy: 6, align: 'right', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 63.5, Math.min(97, S(63.5)), { dx: -8, align: 'right', color: 'orange', size: 15, math: true });
           s.hline(P, { color: 'red', width: 1.8, dash: [8, 4] }); s.text(bind ? 'ceiling' : 'ceiling (not binding)', 63.5, P, { dy: -9, align: 'right', color: 'red', size: 11.5 });
           if (bind) { s.arrow(qs, P, qd, P, { color: 'red', both: true, head: 6, width: 1.5 }); s.text('shortage', (qs + qd) / 2, P, { dy: 10, align: 'center', color: 'red', size: 11 }); }
@@ -516,7 +516,7 @@ with equality only at $P_w = P_A$. With imports, consumers gain more than produc
             tag(s, imp ? 'transfer from producers' : 'transfer from consumers', tx + 9, (P + PA) / 2, imp ? 'orange' : 'blue', 40, Math.abs(P - PA), 11);
           }
           s.fn(TD, { color: 'blue', width: 2.6 }); s.fn(TS, { color: 'orange', width: 2.6, domain: [0, 100] });
-          s.text('D', 90, TD(90), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
+          s.text('D', 90, TD(90), { dx: -8, dy: 6, align: 'right', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 99, Math.min(97, TS(99)), { dx: -10, align: 'right', color: 'orange', size: 15, math: true });
           s.hline(P, { color: 'gold', width: 2.4 }); s.text('world price', 99, P, { dy: imp ? -9 : 10, align: 'right', color: 'gold', size: 11.5, weight: 700 });
           s.dot(QA, PA, { r: 4.5, color: 'ink', hollow: true }); s.tex('A', QA, PA, { dx: 7, dy: 2, align: 'left', baseline: 'top', size: 14 });
@@ -582,7 +582,7 @@ with equality only at $P_w = P_A$. With imports, consumers gain more than produc
             tag(s, m === 'tariff' ? 'revenue' : 'rents', (qs + qd) / 2, (P + PW) / 2, rc === 'pink' ? 'red' : rc, qd - qs, P - PW, 11.5);
           }
           s.fn(TD, { color: 'blue', width: 2.6 }); s.fn(TS, { color: 'orange', width: 2.6 });
-          s.text('D', 90, TD(90), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
+          s.text('D', 90, TD(90), { dx: -8, dy: 6, align: 'right', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 99, Math.min(97, TS(99)), { dx: -10, align: 'right', color: 'orange', size: 15, math: true });
           s.hline(PW, { color: 'gold', width: 2.2 }); s.text('world price', 99, PW, { dy: 10, align: 'right', color: 'gold', size: 11.5, weight: 700 });
           if (P > PW + 0.05) { s.hline(P, { color: 'gold', width: 1.8, dash: [7, 4] }); s.text(m === 'tariff' ? (P >= PA - 1e-9 ? 'prohibitive: autarky price' : 'world price + t') : 'domestic price', 99, P, { dy: -9, align: 'right', color: 'gold', size: 11.5, weight: 700 }); }

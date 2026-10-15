@@ -633,7 +633,7 @@ the maximum being near the median. The worst case, when every pivot is an extrem
           if (S.atEnd) Hs.line(f.total / n, 0, f.total / n, top * 1.02, { color: 'gold', width: 2.2 });
           Hs.line(exact, 0, exact, top * 1.24, { color: 'green', width: 2 });
           if (piv.value === 'random') { Hs.line(bound, 0, bound, top * 1.24, { color: 'red', width: 1.6, dash: [6, 4] }); Hs.text('(2 + 2 ln 2) n', bound, top * 1.15, { size: 11, color: 'red', dx: 5 }); }
-          if (piv.value === 'first') { Hs.line(exactR, 0, exactR, top * 1.24, { color: 'muted', width: 1.4, dash: [4, 3] }); Hs.text(`random pivot: ${v.fix(exactR, 2)} n`, exactR, top * 0.6, { size: 11, color: 'muted', dx: 5 }); }
+          if (piv.value === 'first') { Hs.line(exactR, 0, exactR, top * 1.24, { color: 'muted', width: 1.4, dash: [4, 3] }); Hs.text(`random pivot: ${v.fix(exactR, 2)} n`, exactR, top * 0.78, { size: 11, color: 'muted', dx: 8 }); }
           Hs.text(piv.value === 'first' ? `first-element pivot: ${v.fix(exact, 1)} n` : 'exact E[C]/n', exact, top * 1.15, { size: 11, color: 'green', align: 'right', dx: -5 });
         });
         v.legend([['accent', 'ranks alive / kept side'], ['gold', 'pivot · this run (histogram)'], ['green', 'target rank $k$ · exact expectation'], ['red', 'bound for the worst $k$', { dash: true }]]);

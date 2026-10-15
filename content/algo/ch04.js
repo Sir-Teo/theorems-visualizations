@@ -829,7 +829,7 @@ It is exactly the coefficient sequence of the product of polynomials: if $A(x)=\
       refs: ['CLRS 4e §30.2'],
       tags: ['fft', 'complex numbers'],
       viz(v) {
-        const Cx = v.Cx;
+        const ONE = v.cx(1, 0);
         const nS = v.slider('$n$', 2, 16, 8, { int: true, onChange: () => { if (snap.value) { const th = Math.atan2(z.y, z.x), n = nS.value, j = ((Math.round(th / TAU * n) % n) + n) % n; z.set(Math.cos(TAU * j / n), Math.sin(TAU * j / n)); } } });
         const kS = v.slider('power $k$', 0, 16, 3, { int: true });
         const snap = v.toggle('snap $z$ to the $n$-th roots', true);
@@ -839,7 +839,7 @@ It is exactly the coefficient sequence of the product of polynomials: if $A(x)=\
         let st = {};
         v.render(() => {
           const n = nS.value, k = kS.value, zc = v.cx(z.x, z.y);
-          C.domain((w) => { let p = Cx.ONE || v.cx(1, 0); p = w.pow ? w.pow(n) : w; return p.sub(v.cx(1, 0)); }, { key: 'zn' + n, res: 3, fade: 0.62 });
+          C.domain((w) => w.pow(n).sub(ONE), { key: 'zn' + n, res: 3, fade: 0.62 });
           C.circle(0, 0, 1, { color: 'ink', width: 1.4 });
           // roots, primitive ones filled
           for (let j = 0; j < n; j++) {

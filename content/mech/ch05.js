@@ -585,7 +585,7 @@ This first-order equation is a first integral that replaces the second-order Eul
         const fsel = v.select('', [{ value: 'film', label: 'soap film' }, { value: 'brach', label: 'brachistochrone' }, { value: 'act', label: 'pendulum' }, { value: 'xdep', label: 'explicit $x$' }], 'film');
         const aS = v.slider('bump added to the red curve', 0, 0.3, 0.12, { step: 0.005 });
         const X1 = 1.6, HX = 0.32;
-        const sY = v.stage({ x: [-0.08, 1.68], y: [-0.1, 2.3], height: 270, full: true, axes: true, title: 'extremal (green) and a non-extremal with the same ends (red)' });
+        const sY = v.stage({ x: [-0.08, 1.68], y: [-0.1, 2.3], height: 270, full: true, axes: 'box', title: 'extremal (green) and a non-extremal with the same ends (red)' });
         const sB = v.stage({ x: [-0.08, 1.68], y: [0, 1], height: 190, full: true, axes: 'box', xlabel: 'x', title: 'the Beltrami quantity $f-y\'f_{y\'}$ along each curve' });
         const disp = (F, y) => (F.flip ? -y : y);
         const T = sY.handle(HX, 0, { color: 'accent', label: 'slope', labelPos: 'ne', constrain: (x, y) => [HX, y] });
@@ -606,10 +606,11 @@ This first-order equation is a first integral that replaces the second-order Eul
         v.render(() => {
           const F = FN[fsel.value];
           if (lastF !== fsel.value) { T.y = disp(F, F.y0 + HX * F.p0); lastF = fsel.value; }
+          sY.setTicks(undefined, F.flip ? [0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4].map((d) => [-d, d ? `depth ${v.fix(d, 1)}` : '0']) : null);
           sY.setView(null, F.flip ? [-F.view[1], -F.view[0]] : F.view);
           T.y = clamp(T.y, sY.bounds.y[0] + 0.03, sY.bounds.y[1] - 0.03);
           const p0 = (disp(F, T.y) - F.y0) / HX, E = shoot(F, p0), n = E.xs.length - 1, xe = E.xs[n];
-          if (F.flip) { sY.hline(0, { color: 'muted', width: 1.4 }); sY.text('start height (depth 0)', 1.66, 0, { align: 'right', baseline: 'bottom', size: 11, color: 'muted', dy: -2 }); }
+          if (F.flip) { sY.hline(0, { color: 'muted', width: 1.4 }); sY.text('height of the start (depth 0)', 1.66, 0, { align: 'right', baseline: 'top', size: 11, color: 'muted', dy: 3 }); }
           // perturbed curve: same ends, y + a·bump
           const bump = (x) => Math.sin((Math.PI * x) / xe) * (1 + 0.8 * Math.sin((3 * Math.PI * x) / xe));
           const dbump = (x) => (Math.PI / xe) * Math.cos((Math.PI * x) / xe) * (1 + 0.8 * Math.sin((3 * Math.PI * x) / xe)) + Math.sin((Math.PI * x) / xe) * 0.8 * ((3 * Math.PI) / xe) * Math.cos((3 * Math.PI * x) / xe);
@@ -628,8 +629,8 @@ This first-order equation is a first integral that replaces the second-order Eul
           const [lo, hi] = span([Bext, Bper.filter(isFinite), pred || []], 0.12, 0.05);
           sB.setView(null, [lo, hi]);
           sB.path(Pp.map(([x], i) => [x, Bper[i]]), { color: 'red', width: 2 });
+          sB.path(E.xs.map((x, i) => [x, Bext[i]]), { color: 'green', width: 4 });
           if (pred) sB.path(E.xs.map((x, i) => [x, pred[i]]), { color: 'ink', width: 1.6, dash: [6, 4] });
-          sB.path(E.xs.map((x, i) => [x, Bext[i]]), { color: 'green', width: 3 });
           const sp = (a) => { const f = a.filter(isFinite); return Math.max(...f) - Math.min(...f); };
           cur = { key: fsel.value, spE: sp(Bext), spP: sp(Bper), B0: Bext[0], dE: Bext[n] - Bext[0], dP: pred ? pred[n] - pred[0] : 0, p0, y0: F.y0 };
           v.legend([['green', 'extremal (Euler–Lagrange, RK4)'], ['red', 'extremal + bump: not an extremal'], ...(pred ? [['ink', 'predicted $B(0)+\\int_0^x f_x\\,dx$', { dash: true }]] : [])]);
@@ -638,7 +639,7 @@ This first-order equation is a first integral that replaces the second-order Eul
           if (!cur) return '';
           const c = cur;
           if (c.key === 'xdep') return String.raw`$f$ depends on $x$: along the extremal $f-y'f_{y'}$ changes by $${v.fix(c.dE, 5)}$, and $\int f_x\,dx$ along it predicts $${v.fix(c.dP, 5)}$ — the identity $\frac{d}{dx}(f-y'f_{y'}) = f_x$ at work.`;
-          const mean = { film: String.raw`$y/\sqrt{1+y'^2} = c$, the catenary's parameter $c = ${v.fix(c.B0, 4)}$`, brach: String.raw`$1/\sqrt{y(1+y'^2)}$, so $y(1+y'^2) = 2R$: a cycloid with $R = ${v.fix(1 / (2 * c.B0 * c.B0), 4)}$`, act: String.raw`$-(\tfrac12y'^2 - 9\cos y) = -E$: energy $E = ${v.fix(-c.B0, 4)}$` }[c.key];
+          const mean = { film: String.raw`$y/\sqrt{1+y'^2} = c$, the catenary's parameter $c = ${v.fix(c.B0, 4)}$`, brach: String.raw`$1/\sqrt{y(1+y'^2)}$, so $y(1+y'^2) = 2R$: a cycloid with $R = ${v.fix(1 / (2 * c.B0 * c.B0), 4)}$`, act: String.raw`minus the energy, with $E = \tfrac12y'^2 - 9\cos y = ${v.fix(-c.B0, 4)}$ (conservation of energy)` }[c.key];
           return String.raw`along the extremal $f-y'f_{y'}$ varies by $${v.sci(Math.max(c.spE, 1e-16), 2)}$ (max − min); along the red curve by $${v.fix(c.spP, 4)}$ · here it is ${mean}`;
         });
       },

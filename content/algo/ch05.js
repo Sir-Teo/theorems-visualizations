@@ -221,7 +221,7 @@ A **singly linked list** stores the elements in nodes, each holding a key and a 
       viz(v) {
         const kind = v.select('', [{ value: 'stack', label: 'stack' }, { value: 'queue', label: 'queue' }], 'queue', { onChange: () => reset() });
         const impl = v.select('stored as', [{ value: 'list', label: 'linked list' }, { value: 'array', label: 'array' }], 'list', { onChange: () => reset() });
-        const A = v.stage({ x: [-2, 14], y: [-1.3, 1.85], axes: false, height: 200, full: true });
+        const A = v.stage({ x: [-2, 14], y: [-1.1, 1.75], axes: false, height: 175, full: true });
         const B = v.stage({ x: [0.4, 30.6], y: [0, 14], axes: 'box', height: 160, full: true, title: 'cells touched by each operation (bars) and the size $n$ after it (line)', xlabel: 'operation' });
         const CAP = 11; let rng = v.rng(17), Q = [], last = null, hist = [];
         const isQ = () => kind.value === 'queue', isL = () => impl.value === 'list';
@@ -241,7 +241,7 @@ A **singly linked list** stores the elements in nodes, each holding a key and a 
           else if (isL()) { val = Q.shift(); cost = 3; } else { val = Q.pop(); cost = 2; }
           last = { op, val, cost, n0 }; hist.push({ cost, n: Q.length });
         }
-        function reset() { rng = v.rng(17); Q = []; hist = []; for (const c of 'iiiiiriirriiiriii') (c === 'i' ? insert : remove)(); }
+        function reset() { rng = v.rng(17); Q = []; hist = []; for (const c of 'iiiiiriirriiiriiirrriiiri') (c === 'i' ? insert : remove)(); }
         const bI = v.button('Enqueue', () => insert()), bR = v.button('Dequeue', () => remove());
         v.button('10 random operations', () => { for (let k = 0; k < 10; k++) (rng() < (Q.length < 4 ? 0.75 : Q.length > 8 ? 0.3 : 0.55) ? insert : remove)(); });
         v.button('Reset', () => reset());
@@ -253,7 +253,7 @@ A **singly linked list** stores the elements in nodes, each holding a key and a 
           const n = Q.length, Lst = last || {}, hot = 'gold', rew = 'orange';
           if (isL()) {
             const st = 1.55, cw = 0.72, pw = 0.36, hh = 0.36;
-            A.setView([-2.05, Math.max(7, CAP) * st + 0.15], [-1.3, 1.85]);
+            A.setView([-2.05, Math.max(7, CAP) * st + 0.15], [-1.1, 1.75]);
             const newIdx = Lst.ins ? (isQ() ? n - 1 : 0) : -1, removed = !Lst.ins && Lst.val != null;
             const node = (x0, val, o = {}) => {
               const kc = o.hot ? hot : o.ghost ? 'faint' : 'muted';
@@ -287,7 +287,7 @@ A **singly linked list** stores the elements in nodes, each holding a key and a 
             if (isQ()) ptr('tail', n ? n - 1 : -1, both ? 0.2 : 0, (Lst.ins) || (removed && n === 0));
           } else {
             const cw = 0.95;
-            A.setView([-2.05, CAP * cw + 2.6], [-1.3, 1.85]);
+            A.setView([-2.05, CAP * cw + 2.6], [-1.1, 1.75]);
             const hotSet = new Set();
             if (Lst.ins) hotSet.add(n - 1);
             if (!Lst.ins && Lst.val != null) { if (isQ()) for (let i = 0; i < n; i++) hotSet.add(i); else hotSet.add(n); }
@@ -312,7 +312,7 @@ A **singly linked list** stores the elements in nodes, each holding a key and a 
           }
           // history chart
           const H = hist.slice(-30), ymax = Math.max(12, ...H.map((h) => Math.max(h.cost, h.n) + 1));
-          B.setView([0.4, 30.6], [0, ymax]);
+          B.setView([0.4, 30.6], [-0.18 * ymax, ymax]);
           H.forEach((h, i) => B.rect(i + 0.62, 0, i + 1.38, h.cost, { fill: h.ins ? 'gold' : 'accent', fillAlpha: 0.6, color: h.ins ? 'gold' : 'accent', width: 1 }));
           const line = []; H.forEach((h, i) => { line.push([i + 0.5, h.n]); line.push([i + 1.5, h.n]); });
           B.path(line, { color: 'muted', width: 2 });
@@ -428,7 +428,7 @@ Each operation preserves the BST property and follows a single root-to-leaf path
       credit: 'Hibbard (deletion), 1962',
       tags: ['search trees'],
       viz(v) {
-        let tree = bstFrom([50, 30, 72, 18, 41, 60, 85, 9, 25, 36, 47, 66, 79, 93, 33, 38]);
+        let tree = bstFrom([50, 30, 72, 18, 41, 60, 85, 9, 25, 36, 47, 66, 79, 93, 33, 38, 34]);
         const key = v.slider('key $k$', 1, 99, 30, { int: true });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, full: true });
         let run = bstOpFrames(tree, 'delete', 30); tree = run.root;
@@ -482,8 +482,8 @@ where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log
         const nS = v.slider('tree size $n$', 4, 40, 28, { int: true, onChange: () => S.reset() });
         let seed = 3;
         v.button('Shuffle', () => { seed++; S.reset({ at: 'end' }); });
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 300 });
-        const P = v.stage({ x: [2, 65536], y: [0, 46], xlog: true, axes: 'box', height: 330, minWidth: 300, title: 'depth against $n$ (log scale)', xlabel: 'n' });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true, title: 'the tree built so far' });
+        const P = v.stage({ x: [2, 65536], y: [0, 46], xlog: true, axes: 'box', height: 270, full: true, title: 'average depth and height against $n$ (log scale, 40 random orders per $n$)', xlabel: 'n' });
         let perm = [];
         const frames = () => {
           const n = nS.value; perm = orderPerm(order.value, n, v.rng(seed * 101 + n)).map((x) => x + 1);
@@ -521,7 +521,7 @@ where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log
             fill: (k) => (k === f.newk ? 'gold' : null), color: (k) => (path.has(k) ? 'green' : null),
             edgeColor: (a, b) => (path.has(a) && (path.has(b) || b === f.newk) ? 'green' : null), edgeWidth: (a, b) => (path.has(a) && (path.has(b) || b === f.newk) ? 3 : null),
           });
-          if (f.L.n) T.corner(`height ${f.L.h} · ⌊log₂ n⌋ = ${Math.floor(LG(f.L.n))}`, 'tr', { color: f.L.h > 2.5 * Math.log2(f.L.n + 1) ? 'red' : 'muted', weight: 600 });
+          T.setTitle(f.L.n ? `the tree built so far: $n = ${f.L.n}$, height **${f.L.h}**, while $\\lfloor\\log_2 n\\rfloor = ${Math.floor(LG(f.L.n))}$` : 'the tree built so far: empty');
           // plot
           const D = series(order.value);
           P.fn((n) => Math.floor(LG(n)), { color: 'faint', width: 1.4, dash: [3, 4] });
@@ -543,7 +543,7 @@ where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log
           const f = S.frame, n = f.L.n, D = series(order.value), big = D[D.length - 1];
           let sum = 0; for (const c of f.L.nodes) sum += c.d;
           const here = n ? `Left tree: $n = ${n}$, height ${f.L.h}, average depth ${v.fix(sum / n, 2)} (random-order expectation ${v.fix(Dexp(n), 2)})` : 'Empty tree';
-          const at = `at $n = ${big.n.toLocaleString('en')}$${big.trials > 1 ? ` (mean of ${big.trials} trees)` : ''}: average depth **${v.fix(big.avg, 2)}**, height ${v.fix(big.h, 1)} · exact expectation ${v.fix(Dexp(big.n), 2)} · $2\\ln n = ${v.fix(2 * Math.log(big.n), 2)}$ · $\\log_2 n = ${v.fix(LG(big.n), 0)}$`;
+          const at = `at $n = ${big.n.toLocaleString('en').replace(/,/g, '{,}')}$${big.trials > 1 ? ` (mean of ${big.trials} trees)` : ''}: average depth **${v.fix(big.avg, 2)}**, height ${v.fix(big.h, 1)} · exact expectation ${v.fix(Dexp(big.n), 2)} · $2\\ln n = ${v.fix(2 * Math.log(big.n), 2)}$ · $\\log_2 n = ${v.fix(LG(big.n), 0)}$`;
           return `${here} · ${at}`;
         });
       },
@@ -581,7 +581,7 @@ where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log
         v.button('Reset', () => { F = [first(bstFrom(START))]; S.reset(F); });
         v.button('Random tree', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); F = [first(bstFrom(r.shuffle(START.slice())))]; S.reset(F); });
         // make one rotation so the picture opens mid-story
-        rotate(6);
+        rotate(9);
         const COL = { A: 'blue', B: 'purple', C: 'teal' };
         v.render(() => {
           const f = S.frame, I = f.info;
