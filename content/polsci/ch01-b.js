@@ -36,7 +36,7 @@ function rankingStr(sc, C) {
 // majority judgment: grades 0..5
 const GRADES = ['Reject', 'Poor', 'Acceptable', 'Good', 'Very good', 'Excellent'];
 const GSHORT = ['Rej', 'Poor', 'Acc', 'Good', 'VG', 'Exc'];
-const gradeRGB = (v, g) => v.diverge([-1, -0.72, -0.42, 0.42, 0.72, 1][g], 'red', 'green');
+const gradeRGB = (v, g) => v.diverge([-0.95, -0.72, -0.5, 0.5, 0.72, 0.95][g], 'red', 'green');
 /** Majority value: the sequence of majority grades (lower median) obtained by removing them one at a time. */
 function mjValue(list) {
   const L = list.slice().sort((a, b) => b - a), seq = [];
@@ -71,7 +71,7 @@ export default {
       viz(v) {
         const Br = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, minWidth: 360, title: 'the chosen agenda, one vote at a time' });
         const Ag = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, minWidth: 380, title: 'all 24 agendas, coloured by the winner — click one' });
-        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true, title: 'ballots' });
+        const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 180, full: true, title: 'ballots' });
         const PRE = {
           taylor: mkProfile(4, [[7, 'ABDC'], [6, 'CABD'], [5, 'BDCA']]),
           cyc: mkProfile(4, [[5, 'ABCD'], [4, 'BCAD'], [3, 'CABD']]),
@@ -80,7 +80,7 @@ export default {
         const P = copyProfile(PRE.taylor), AG = perms(4);
         let agenda = [0, 1, 2, 3], grid = null;
         v.select('electorate', [{ value: 'taylor', label: 'everyone can win (Taylor)' }, { value: 'cyc', label: 'a three-way cycle' }, { value: 'cw', label: 'a Condorcet winner' }], 'taylor', { onChange: (val) => { setProfile(P, PRE[val]); S.reset({ at: 'end' }); } });
-        const ed = blocEditor(v, E, P, { max: 12, rank: true, rowMax: 30, onEdit: () => S.reset({ at: 'end' }) });
+        const ed = blocEditor(v, E, P, { max: 12, rank: true, rowMax: 36, onEdit: () => S.reset({ at: 'end' }) });
         const frames = () => {
           const N = pairwise(P), run = agendaRun(N, agenda), L = (c) => LET[c];
           return range(agenda.length).map((k) => {
@@ -112,7 +112,7 @@ export default {
             if (done) {
               const mt = run.matches[l];
               chip(v, c, nd.x, nd.y, mt.w, { r: 11 + (now ? 2 * (1 - tw) : 0), alpha: a, ring: l === m - 2 && a > 0.99 ? 'gold' : null });
-              txt(v, c, `${Math.max(mt.a, mt.b)}–${Math.min(mt.a, mt.b)}`, nd.x, nd.y - 21, { size: 11, weight: 700, color: 'muted', alpha: a, halo: true });
+              txt(v, c, `${Math.max(mt.a, mt.b)}–${Math.min(mt.a, mt.b)}`, nd.x + 16, nd.y - 15, { size: 11, weight: 700, color: 'muted', alpha: a, halo: true, align: 'left' });
             } else { c.beginPath(); c.arc(nd.x, nd.y, 5, 0, 2 * Math.PI); c.fillStyle = v.color('faint'); c.fill(); }
           });
           agenda.forEach((cand, i) => {
@@ -121,7 +121,6 @@ export default {
             txt(v, c, i === 0 ? '1st' : i === 1 ? '2nd' : i === 2 ? '3rd' : `${i + 1}th`, xs[i], yb + 21, { size: 10, weight: 600, color: 'muted' });
           });
           if (k === m - 1) winTag(v, c, nodes[m - 2].x, nodes[m - 2].y - 40, `${LET[run.win]} wins`);
-          txt(v, c, 'entry order →', W - 8, yb + 21, { size: 10, weight: 600, color: 'muted', align: 'right' });
           // ---- grid of all agendas
           const g = Ag.ctx, GW = Ag.width, GH = Ag.height, cols = 3, rows = 8, top = 34;
           const tw2 = (GW - 12) / cols, th = (GH - top - 6) / rows;
@@ -171,7 +170,7 @@ The outcome therefore depends not only on the voters’ rankings but on where ea
       credit: 'Robert J. Weber (name, 1971); Steven Brams & Peter Fishburn, 1978',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Approval_voting' },
       viz(v) {
-        const U = v.stage({ x: [-3.7, 10.9], y: [0.05, 4.6], axes: false, height: 310, minWidth: 420, weight: 1.35, title: 'each group approves the candidates right of its line' });
+        const U = v.stage({ x: [-3.7, 10.9], y: [-0.12, 4.6], axes: false, height: 310, minWidth: 420, weight: 1.35, title: 'each group approves the candidates right of its line' });
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, minWidth: 300, title: 'approval totals' });
         const GR = [{ n: 9, u: [10, 7, 2.6, 0.4] }, { n: 7, u: [4.2, 10, 8, 1] }, { n: 6, u: [0.4, 8.4, 10, 5.4] }, { n: 4, u: [1, 3, 6.3, 10] }];
         const ys = [3.95, 2.85, 1.75, 0.65];
@@ -200,8 +199,8 @@ The outcome therefore depends not only on the voters’ rankings but on where ea
             U.text(`group ${i + 1}`, -3.5, y + 0.14, { size: 11.5, weight: 700, color: 'ink' });
             U.text(`${g.n} voters`, -3.5, y - 0.16, { size: 10.5, weight: 600, color: 'muted' });
           });
-          [0, 5, 10].forEach((x) => U.text(String(x), x, 0.08, { size: 10, color: 'muted', align: 'center' }));
-          U.text('utility →', 10.6, 0.08, { size: 10, color: 'muted', align: 'right' });
+          [0, 5, 10].forEach((x) => U.text(String(x), x, 0.02, { size: 10, color: 'muted', align: 'center' }));
+          U.text('utility', -0.6, 0.02, { size: 10, color: 'muted', align: 'right' });
           // ---- tallies, counted group by group
           const g2 = T.ctx, W = T.width, H = T.height, sc = tally(ts), win = best(sc, range(4)), n = sum(GR.map((g) => g.n));
           const p = t >= DUR ? GR.length : (t / DUR) * GR.length;
@@ -293,9 +292,9 @@ On the same ballots the two can elect different candidates: a mean rewards inten
           txt(v, c, 'click: +1 · shift-click: −1', 14, H - 14, { size: 10.5, weight: 500, color: 'muted', align: 'left' });
           // ---- merit profiles
           const st = stats(), g2 = Mp.ctx, MW = Mp.width, MH = Mp.height;
-          const bx0 = 40, bx1 = MW - 150, bh = Math.min(34, (MH - 80) / m - 18), gap = (MH - 70 - m * bh) / m;
+          const bx0 = 40, bx1 = MW - 128, bh = Math.min(34, (MH - 84) / m - 18), gap = (MH - 74 - m * bh) / m;
           range(m).forEach((cand) => {
-            const Y = 34 + cand * (bh + gap) + gap / 2, L = st.L[cand].slice().sort((a, b) => b - a), n = L.length || 1;
+            const Y = 30 + cand * (bh + gap) + gap / 2, L = st.L[cand].slice().sort((a, b) => b - a), n = L.length || 1;
             chip(v, g2, 20, Y + bh / 2, cand, { r: 11 });
             let x = bx0;
             for (let gr = 5; gr >= 0; gr--) {
@@ -306,20 +305,21 @@ On the same ballots the two can elect different candidates: a mean rewards inten
               if (w > 22) txt(v, g2, String(k), x + w / 2, Y + bh / 2, { size: 10.5, weight: 700, color: 'ink', alpha: 0.85 });
               x += w;
             }
-            const med = st.mv[cand][0];
-            txt(v, g2, `majority grade: ${GRADES[med] ?? '—'}`, bx1 + 10, Y + bh / 2 - 8, { size: 11, weight: 700, align: 'left', color: st.mj.length === 1 && st.mj[0] === cand ? 'gold' : 'ink' });
-            txt(v, g2, `mean ${st.mean[cand].toFixed(2)}`, bx1 + 10, Y + bh / 2 + 9, { size: 11, weight: 600, align: 'left', color: st.meanWin.length === 1 && st.meanWin[0] === cand ? 'blue' : 'muted' });
-            // mean marker on a 0..5 scale under the bar
-            const mx = bx0 + (1 - st.mean[cand] / 5) * (bx1 - bx0);
-            g2.fillStyle = v.color('blue'); g2.beginPath(); g2.moveTo(mx, Y + bh + 2); g2.lineTo(mx - 5, Y + bh + 9); g2.lineTo(mx + 5, Y + bh + 9); g2.closePath(); g2.fill();
+            const med = st.mv[cand][0], mjW = st.mj.length === 1 && st.mj[0] === cand, mnW = st.meanWin.length === 1 && st.meanWin[0] === cand;
+            txt(v, g2, 'majority grade', bx1 + 10, Y + bh / 2 - 15, { size: 9.5, weight: 600, align: 'left', color: 'muted' });
+            txt(v, g2, (GRADES[med] ?? '—') + (mjW ? '  ★ MJ' : ''), bx1 + 10, Y + bh / 2, { size: 12, weight: 800, align: 'left', color: mjW ? 'gold' : 'ink' });
+            txt(v, g2, `mean ${st.mean[cand].toFixed(2)}` + (mnW ? '  ★ score' : ''), bx1 + 10, Y + bh / 2 + 15, { size: 10.5, weight: mnW ? 800 : 600, align: 'left', color: mnW ? 'blue' : 'muted' });
           });
           const xm = (bx0 + bx1) / 2;
-          linePx(v, g2, xm, 22, xm, MH - 34, 'ink', 1.6, [5, 4]);
-          txt(v, g2, '50%', xm, 13, { size: 10.5, weight: 700, color: 'muted' });
-          txt(v, g2, 'Excellent ←', bx0, MH - 22, { size: 10, weight: 600, color: 'muted', align: 'left' });
-          txt(v, g2, '→ Reject', bx1, MH - 22, { size: 10, weight: 600, color: 'muted', align: 'right' });
-          txt(v, g2, '▲ = mean on the same scale', xm, MH - 22, { size: 10, weight: 600, color: 'blue' });
-          v.legend(range(6).reverse().map((gr) => [gradeRGB(v, gr), `${gr} ${GRADES[gr]}`, { area: true }]));
+          linePx(v, g2, xm, 20, xm, MH - 46, 'ink', 1.6, [5, 4]);
+          txt(v, g2, '50%', xm, 11, { size: 10.5, weight: 700, color: 'muted' });
+          // grade key
+          const kw = Math.min(64, (MW - 20) / 6), kx0 = (MW - 6 * kw) / 2;
+          range(6).forEach((q) => {
+            const gr = 5 - q, X = kx0 + q * kw;
+            g2.fillStyle = `rgb(${gradeRGB(v, gr).join(',')})`; g2.fillRect(X + 2, MH - 32, kw - 4, 10);
+            txt(v, g2, GRADES[gr], X + kw / 2, MH - 12, { size: 9.5, weight: 600, color: 'muted' });
+          });
         });
         v.readout(() => {
           const st = stats();
@@ -446,7 +446,7 @@ and **Kemeny’s rule** selects the ranking(s) with the smallest score — a med
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Kemeny%E2%80%93Young_method' },
       viz(v) {
         const Bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true, title: 'Kemeny score of every possible social ranking (brute force over all permutations)' });
-        const Ms = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, minWidth: 300, title: 'pairwise tallies: orange = voters overruled by the selected ranking' });
+        const Ms = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, minWidth: 300, title: 'pairwise tallies · orange: overruled' });
         const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, minWidth: 420, weight: 1.3, title: 'ballots' });
         const PRE = { 3: mkProfile(3, [[5, 'ABC'], [4, 'BCA'], [3, 'CAB'], [1, 'ACB']]), 4: mkProfile(4, [[9, 'ACDB'], [4, 'BDAC'], [3, 'BCDA'], [7, 'CBAD'], [2, 'DBAC']]) };
         const P = copyProfile(PRE[4]);

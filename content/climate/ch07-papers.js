@@ -197,5 +197,86 @@ Continued at Mauna Loa, the record (climate-7.10) has risen from 316 ppm (annual
         win.el.hidden = true;
       },
     },
+    // ───────────────────────────────────────────────────────────── 7.15
+    {
+      num: '7.15',
+      kind: 'Paper',
+      name: 'CO₂ exchange between atmosphere and ocean',
+      paper: { authors: 'Roger Revelle and Hans E. Suess', year: 1957, title: 'Carbon Dioxide Exchange Between Atmosphere and Ocean and the Question of an Increase of Atmospheric CO₂ during the Past Decades', venue: 'Tellus 9 (1): 18–27', doi: '10.1111/j.2153-3490.1957.tb01849.x' },
+      introduces: ['climate-7.4'],
+      statement: String.raw`Revelle and Suess estimated, from the carbon-14 content of wood and of marine carbon, that a CO₂ molecule spends only about a decade in the air before it is taken up by the sea, so the ocean, holding some sixty times as much carbon as the atmosphere, might seem able to swallow almost all the CO₂ released by burning fossil fuel. They showed that it cannot, because of the **buffer chemistry of sea water**: dissolved inorganic carbon is mostly bicarbonate and carbonate ion, and added CO₂ reacts as
+$$\mathrm{CO_2+CO_3^{2-}+H_2O\rightleftharpoons 2\,HCO_3^-},$$
+so at fixed alkalinity the partial pressure of CO₂ in the water rises about ten times faster, in relative terms, than its total carbon:
+$$R=\frac{\Delta p\mathrm{CO_2}/p\mathrm{CO_2}}{\Delta\mathrm{DIC}/\mathrm{DIC}}\approx10 .$$
+The well-mixed surface layer, which holds about as much carbon as the air, can therefore absorb only about a tenth of what a naive calculation suggests, and the ocean below it is reached only over centuries, so fossil CO₂ accumulates in the atmosphere. Their famous sentence: "human beings are now carrying out a large scale geophysical experiment".
+
+$R$ is today called the Revelle factor (climate-7.4); it depends on temperature and alkalinity (about 9 in warm, 14 in cold water) and grows as the ocean takes up CO₂. On timescales of millennia, dissolution of carbonate sediments restores much of the buffer capacity.`,
+      idea: String.raw`Callendar (1938) had argued that fossil CO₂ was accumulating and warming the climate; the standard reply was that the ocean, the far larger reservoir, would absorb it. Suess had just found the dilution of radiocarbon by fossil carbon (the Suess effect), and with Revelle used it to measure the air–sea exchange (climate-7.3): fast. The paper's turn came from the chemistry of the carbonate system (climate-7.11), which Revelle added late, in a paragraph that changed the argument: fast exchange does not mean large uptake, because the buffer makes the surface water's CO₂ pressure catch up with the atmosphere's after only a small addition of carbon. The authors still underestimated the coming rise (they assumed fossil emissions would grow slowly), but the paper persuaded Revelle to place Charles Keeling's measurements on Mauna Loa and at the South Pole in the International Geophysical Year (climate-7.16), whose curve vindicated it. Today the ocean takes up about a quarter of each year's emissions, much less than its size would suggest, exactly as the buffer factor demands.`,
+      caption: String.raw`**Left**: the buffer. At fixed alkalinity and temperature, the CO₂ partial pressure of sea water (blue curve) climbs steeply as its dissolved inorganic carbon rises, about ten times faster in relative terms than the dashed "naive" line, along which pCO₂ would grow in proportion to the carbon (Henry's law applied to all of it). The black point is the pre-industrial ocean (280 µatm); gold is the new equilibrium after the **added carbon**. **Right**: the share of the added carbon that stays in the air once atmosphere and the chosen **ocean layer** have equilibrated, for the real chemistry (solid) and for the naive ocean (dashed), for three depths. Change the **temperature** (cold water buffers less) and the **alkalinity**, and watch the Revelle factor in the readout. Chemistry computed with standard seawater constants; Revelle and Suess's text is quoted through Weart's history.`,
+      deps: ['climate-7.3', 'climate-7.11'],
+      refs: [],
+      tags: ['carbon cycle', 'ocean chemistry', 'history'],
+      credit: 'Roger Revelle & Hans Suess, 1957',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Revelle_factor' },
+      viz(v) {
+        const res = v.select('ocean layer', [{ value: '75', label: 'mixed layer 75 m' }, { value: '1000', label: 'upper 1000 m' }, { value: '3700', label: 'whole ocean' }], '75');
+        const E = v.slider('added carbon (GtC)', 0, 2000, 500, { step: 10 });
+        const Tc = v.slider('temperature (°C)', 0, 30, 18, { step: 0.5 });
+        const TA = v.slider('alkalinity (µmol/kg)', 2100, 2500, 2300, { step: 10 });
+        const L = v.stage({ x: [1850, 2350], y: [0, 1600], axes: 'box', height: 360, weight: 1, xlabel: 'dissolved inorganic carbon (µmol/kg)', ylabel: 'pCO₂ of sea water (µatm)', title: 'the buffer: pressure climbs faster than carbon' });
+        const R = v.stage({ x: [0, 2000], y: [0, 100], axes: 'box', height: 360, weight: 1, xlabel: 'carbon added to the air (GtC)', ylabel: 'share left in the air (%)', title: 'where the added carbon ends up' });
+        const DEPTHS = [[75, 'blue'], [1000, 'teal'], [3700, 'purple']];
+        let tab = null, tabKey = '';
+        const table = () => { // ln pCO₂ → DIC, tabulated once per (T, TA)
+          const key = `${Tc.value}|${TA.value}`; if (key === tabKey) return tab;
+          const c = seaConsts(Tc.value, 35), ta = TA.value * 1e-6, lp = [], D = [];
+          for (let i = 0; i <= 70; i++) { const l = Math.log(150) + (i / 70) * (Math.log(30000) - Math.log(150)); lp.push(l); D.push(seaDIC(Math.exp(l), ta, c)); }
+          tabKey = key; return (tab = { c, ta, lp, D, dic: (p) => { const l = Math.log(p), f = ((l - lp[0]) / (lp[70] - lp[0])) * 70, i = Math.max(0, Math.min(69, Math.floor(f))), u = f - i; return D[i] * (1 - u) + D[i + 1] * u; } });
+        };
+        const massKg = (d) => OCEAN_AREA * d * SEAWATER_RHO;
+        const equil = (Tb, d, e, naive) => { // equilibrium pCO₂ after adding e GtC to the air
+          const m = massKg(d) * 12e-15, C0 = 280 * GTC_PER_PPM + m * Tb.dic(280);
+          if (naive) { const Coc0 = m * Tb.dic(280); return 280 + e / (GTC_PER_PPM + Coc0 / 280); }
+          let a = 280, b = 29000; for (let i = 0; i < 60; i++) { const p = (a + b) / 2; if (p * GTC_PER_PPM + m * Tb.dic(p) < C0 + e) a = p; else b = p; } return (a + b) / 2;
+        };
+        let st = null;
+        v.render(() => {
+          const Tb = table(), c = Tb.c, ta = Tb.ta, d = +res.value;
+          // ---- left: pCO₂ against DIC
+          const D0 = Tb.dic(280) * 1e6, p1 = equil(Tb, d, E.value, false), D1 = Tb.dic(p1) * 1e6;
+          L.setView([D0 - 140, D0 + 330], [0, Math.max(1000, p1 * 1.25)]);
+          L.fn((x) => seaSolve(x * 1e-6, ta, c).pCO2, { color: 'blue', width: 2.8, n: 120 });
+          L.fn((x) => (280 * x) / D0, { color: 'muted', width: 1.8, dash: [6, 4] });
+          L.hline(280, { color: 'faint', width: 1 }); L.vline(D0, { color: 'faint', width: 1 });
+          L.dot(D0, 280, { r: 6, color: 'ink' }); L.text('1850 ocean, 280 µatm', D0, 280, { dx: -10, dy: -14, size: 11.5, weight: 600, align: 'right' });
+          if (E.value > 0) {
+            L.line(D0, p1, D1, p1, { color: 'gold', width: 1.2, dash: [3, 3] }); L.line(D1, 0, D1, p1, { color: 'gold', width: 1.2, dash: [3, 3] });
+            L.dot(D1, p1, { r: 7, color: 'gold' }); L.text(`after +${E.value} GtC: ${Math.round(p1)} µatm`, D1, p1, { dx: 10, dy: 2, size: 11.5, weight: 700, color: 'gold', align: 'left', plate: true });
+          }
+          L.text('naive: pCO₂ ∝ carbon', D0 + 300, (280 * (D0 + 300)) / D0, { dy: 14, size: 11, color: 'muted', weight: 600, align: 'right' });
+          // ---- right: airborne share against added carbon
+          for (const [dd, col] of DEPTHS) {
+            const sel = dd === d, pts = [], ptsN = [];
+            for (let e = 20; e <= 2000; e += 40) { pts.push([e, (100 * (equil(Tb, dd, e, false) - 280) * GTC_PER_PPM) / e]); ptsN.push([e, (100 * (equil(Tb, dd, e, true) - 280) * GTC_PER_PPM) / e]); }
+            R.path(pts, { color: col, width: sel ? 3 : 1.6, alpha: sel ? 1 : 0.55 });
+            R.path(ptsN, { color: col, width: sel ? 2.2 : 1.2, dash: [6, 4], alpha: sel ? 1 : 0.55 });
+            R.text(dd === 75 ? 'mixed layer' : dd === 1000 ? 'upper 1 km' : 'whole ocean', 1980, pts[pts.length - 1][1], { align: 'right', dy: -10, size: 11.5, weight: 700, color: col });
+          }
+          const fa = E.value > 0 ? (100 * (p1 - 280) * GTC_PER_PPM) / E.value : null;
+          if (fa != null) { R.vline(E.value, { color: 'gold', width: 1.2, dash: [3, 3] }); R.dot(E.value, fa, { r: 7, color: 'gold' }); }
+          R.hline(48, { color: 'red', width: 1.3, dash: [2, 3] }); R.text('observed 2014–2023: 48% stays in the air', 30, 48, { dy: -10, size: 11, color: 'red', weight: 600 });
+          const s0 = seaSolve(D0 * 1e-6, ta, c), s1 = seaSolve(D1 * 1e-6, ta, c);
+          const rf = (DIC) => { const a = seaSolve(DIC, ta, c), b = seaSolve(DIC * 1.0005, ta, c); return (b.pCO2 / a.pCO2 - 1) / 0.0005; };
+          st = { p1, D0, D1, fa, faN: (100 * (equil(Tb, d, Math.max(E.value, 1), true) - 280) * GTC_PER_PPM) / Math.max(E.value, 1), rf0: rf(D0 * 1e-6), rf1: rf(D1 * 1e-6), s0, s1, inv: massKg(d) * 12e-15 * D0 * 1e-6 };
+        });
+        v.legend([['blue', 'real sea water (75 m)'], ['teal', '1000 m'], ['purple', 'whole ocean'], ['muted', 'naive ocean (no buffer)', { dash: true }], ['gold', 'your addition', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { p1, D0, D1, fa, faN, rf0, rf1, s0, s1, inv } = st, lay = res.value === '75' ? 'the mixed layer' : res.value === '1000' ? 'the upper 1000 m' : 'the whole ocean';
+          const add = fa == null ? '' : ` · adding ${E.value} GtC: the air rises to **${Math.round(p1)} ppm** while ${lay} gains only ${v.fix(D1 - D0, 0)} µmol/kg (${v.fix((100 * (D1 - D0)) / D0, 1)}%) — **${v.fix(fa, 0)}%** of the carbon stays airborne, against ${v.fix(faN, 0)}% for a naive ocean`;
+          return `Revelle factor: **${v.fix(rf0, 1)}** at 280 µatm and ${v.fix(rf1, 1)} after the addition (${Tc.value} °C, alkalinity ${TA.value} µmol/kg) · ${lay} holds ${Math.round(inv)} GtC against ${Math.round(280 * GTC_PER_PPM)} GtC in the 1850 air; only ${v.fix((100 * s0.co2) / (D0 * 1e-6), 1)}% of its carbon is dissolved CO₂, and carbonate ion falls from ${Math.round(s0.co3 * 1e6)} to ${Math.round(s1.co3 * 1e6)} µmol/kg as it is used up${add} · Revelle & Suess (via Weart): uptake “barely one-tenth” of the naive amount · today: global mean Revelle factor ≈ 10.8 (2000), about 1 above pre-industrial; the ocean took 26% of emissions in 2014–2023 and the air kept 48% (Global Carbon Budget 2024), because only the upper ocean keeps pace`;
+        });
+      },
+    },
   ],
 };

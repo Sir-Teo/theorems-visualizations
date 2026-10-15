@@ -374,7 +374,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
 $$\mathbf p = \tfrac12\left(\mathbf d_\perp + \cot\tfrac\theta2\;\mathbf n\times\mathbf d_\perp\right), \qquad \mathbf d_\perp = \mathbf d - h\,\mathbf n ,$$
 which is the unique point of the plane $\perp\mathbf n$ through the origin with $(\mathsf I - \mathsf R)\mathbf p = \mathbf d_\perp$. Special cases: $h = 0$ gives a pure rotation about a fixed line (every planar motion is a rotation about some point); $\mathsf R = \mathsf I$ gives a pure translation, whose axis has gone to infinity. The infinitesimal version says that every instantaneous rigid velocity field is a twist about a unique axis.`,
       idea: String.raw`Split $\mathbf d$ into its part $h\mathbf n$ along the rotation axis and its part $\mathbf d_\perp$ perpendicular to it. On the plane $\perp\mathbf n$ the map $\mathbf x\mapsto \mathsf R\mathbf x + \mathbf d_\perp$ is a planar rotation plus translation; since $\mathsf R$ has no eigenvalue $1$ there, $\mathsf I - \mathsf R$ is invertible on that plane, and the planar motion has exactly one fixed point $\mathbf p$. Writing out the inverse of $\mathsf I - \mathsf R$ for a rotation by $\theta$ in the plane gives the half-angle formula. Then $\mathbf x\mapsto \mathsf R(\mathbf x - \mathbf p) + \mathbf p + h\mathbf n$ is the same map, a screw about the line through $\mathbf p$ along $\mathbf n$. The proof needs Euler’s theorem (10.1) only for the direction of the axis.`,
-      caption: String.raw`Drag the gold handle to move the block’s target position, drag the orange tip to choose the rotation axis, and set the angle. The faint outline is the starting pose and the solid outline the target. The equivalent screw axis is computed and drawn in green. The block then travels by the single screw motion, turning about the green line while sliding along it, and its corners trace helices that land exactly on the target corners. In *planar* mode the slide vanishes and the motion is a rotation about a fixed line; in *translation* mode there is no rotation and the axis is gone.`,
+      caption: String.raw`Drag the gold handle to move the block’s target position, drag the orange tip to choose the rotation axis, and set the angle. The faint outline is the starting pose and the solid outline the target. The equivalent screw axis is computed and drawn in green. The block then travels by the single screw motion, turning about the green line while sliding along it, and its corners trace helices that land exactly on the target corners. Right: the same motion seen straight down the axis, where the slide is invisible and what remains is a turn about one point. In *planar* mode the slide vanishes and the motion is a rotation about a fixed line; in *translation* mode there is no rotation and the axis is gone.`,
       deps: ['mech-10.1'],
       see: ['robot-2.3'],
       refs: ['Goldstein §4.6'],
@@ -383,8 +383,9 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
       viz(v) {
         const mode = v.select('motion', [{ value: 'gen', label: 'general' }, { value: 'plan', label: 'planar' }, { value: 'tran', label: 'translation only' }], 'gen');
         const thS = v.slider('rotation angle $\\theta$ (°)', -180, 180, 110, { step: 1 });
-        const S = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.9], equal: true, axes: false, height: 390, title: 'from the start pose (faint) to the target (outline) by one screw' });
-        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.32, axis: 1.3, lim: 1.8, hint: false });
+        const S = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.6], equal: true, axes: false, height: 370, weight: 1.25, title: 'start (faint) to target (outline) by one screw' });
+        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.32, axis: 1.2, lim: 1.8, hint: false });
+        const sP = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, axes: false, height: 370, weight: 0.85, minWidth: 250, title: 'looking down the axis: a pure rotation' });
         const H = [0.42, 0.26, 0.15], C0 = [-0.75, -0.45, -0.2];
         const D = sc.handle([0.7, 0.6, 0.55], { color: 'gold', label: 'target' });
         const A = sc.handle([0.3, 0.45, 1.1], { color: 'orange', label: '$\\mathbf a$', snap: (p) => scl(unit(p), 1.15) });
@@ -419,6 +420,23 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           if (md === 'gen') { sc.arrow([0, 0, 0], A.p, { color: 'orange', width: 2 }); }
           sc.flush();
           const err = Math.max(...corners.map((c) => nrm(sub(add(poseAt(1).c, mv(poseAt(1).R, c)), add(c1, mv(R, c))))));
+          // projection onto the plane ⟂ n: the screw becomes a rotation about the axis point
+          const pa = perp(n), pb = crs(n, pa), pr = (x) => [dot(x, pa), dot(x, pb)];
+          const hullOf = (Rr, cc) => v.M.hull(corners.map((c) => pr(add(cc, mv(Rr, c)))));
+          const H0 = hullOf(I3(), C0), H1 = hullOf(R, c1), Hn = hullOf(P.R, P.c);
+          const allP = [...H0, ...H1]; let cx0 = 0, cy0 = 0; for (const q of allP) { cx0 += q[0] / allP.length; cy0 += q[1] / allP.length; }
+          let rad = 0.5; for (const q of allP) rad = Math.max(rad, Math.hypot(q[0] - cx0, q[1] - cy0));
+          if (axisPt) { const q = pr(axisPt); rad = Math.max(rad, Math.hypot(q[0] - cx0, q[1] - cy0) + 0.2); }
+          sP.setView([cx0 - 1.15 * rad, cx0 + 1.15 * rad], [cy0 - 1.15 * rad, cy0 + 1.15 * rad]);
+          sP.poly(H0, { color: 'muted', width: 1.2, dash: [4, 3] });
+          sP.poly(H1, { color: 'ink', width: 1.8 });
+          sP.poly(Hn, { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.2 });
+          if (axisPt) {
+            const q = pr(axisPt);
+            [0, 3, 5, 6].forEach((j, k) => { const c0 = pr(add(C0, corners[j])); sP.circle(q[0], q[1], Math.hypot(c0[0] - q[0], c0[1] - q[1]), { color: ['blue', 'purple', 'teal', 'pink'][k], width: 1, alpha: 0.35 }); });
+            sP.dot(q[0], q[1], { r: 6, color: 'green' }); sP.text('axis', q[0], q[1], { color: 'green', size: 11, dx: 8, dy: 10 });
+          } else { const a0 = pr(C0), a1 = pr(c1); sP.arrow(a0[0], a0[1], a1[0], a1[1], { color: 'green', width: 2 }); }
+          sP.corner(axisPt ? `slide along the axis so far: ${v.fix(h * es, 3)} of ${v.fix(h, 3)}` : 'no fixed point: a translation', 'bl', { color: 'green' });
           cur = { ang, h, axisPt, n, err, d, R, md };
         }, { period: 8, still: 3.6 });
         v.legend([['faint', 'start pose'], ['ink', 'target pose'], ['green', 'screw axis $\\ell$'], ['blue', 'corner paths (helices)']]);

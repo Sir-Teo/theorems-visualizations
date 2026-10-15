@@ -297,7 +297,7 @@ $$X_1 = \frac{F\,(k - m\Omega^2)}{(K + k - M\Omega^2)(k - m\Omega^2) - k^2}.$$
           const { pk, pk0 } = curves(mu, f, za, att);
           const s = String.raw`At $\Omega/\omega_0 = ${v.fix(Om, 3)}$: $|X_1| = ${num(v, a1, 3)}\,F/K$` + (att ? String.raw`, absorber swing $|X_2-X_1| = ${v.fix(rel, 2)}\,F/K$, phase of the absorber relative to the drive ${v.fix((Math.atan2(X2.im, X2.re) * 180) / Math.PI, 0)}°` : '');
           const opt = String.raw` · Den Hartog: $\omega_a/\omega_0 = 1/(1+\mu) = ${v.fix(1 / (1 + mu), 3)}$, $\zeta = ${v.fix(Math.sqrt((3 * mu) / (8 * (1 + mu) ** 3)), 3)}$, peak level $\approx\sqrt{1+2/\mu} = ${v.fix(Math.sqrt(1 + 2 / mu), 1)}$`;
-          return s + String.raw` · highest response over the band: ${v.fix(pk, 1)} with the absorber, ${v.fix(pk0, 1)} without (1% structural damping)` + (att ? opt : '');
+          return s + (att ? String.raw` · highest response over the band: ${v.fix(pk, 1)} with the absorber, ${v.fix(pk0, 1)} without (1% structural damping)` + opt : String.raw` · highest response over the band without the absorber: ${v.fix(pk0, 1)} $= 1/(2\zeta)$ for 1% structural damping`);
         });
       },
     },
@@ -668,7 +668,7 @@ For the string, $\mathcal L = \tfrac12\mu y_t^2 - \tfrac12\tau y_x^2$ gives $\ma
             force(t); for (let j = 0; j < N; j++) u[j] += 0.5 * dt * acc[j];
             if (k % EVR === 0) push(t);
           }
-          let mE = 0; for (let r = 0; r < rec.t.length; r += 10) for (let j = 0; j < N; j++) { const s = (rec.y[r][(j + 1) % N] - rec.y[r][j]) / dx; mE = Math.max(mE, 0.5 * mu[j] * rec.u[r][j] ** 2 + 0.5 * rec.tau[r] * s * s); }
+          let mE = 0; for (let r = 0; r < rec.t.length; r += 10) for (let j = 0; j < N; j++) { const Y = rec.y[r], U = rec.u[r], jp = (j + 1) % N, jm = (j + N - 1) % N, s = (Y[jp] - Y[j]) / dx, tt = rec.tau[r]; mE = Math.max(mE, 0.5 * mu[j] * U[j] ** 2 + 0.5 * tt * s * s, Math.abs(tt * s * 0.5 * (U[j] + U[jp])), Math.abs(mu[j] * U[j] * (Y[jp] - Y[jm]) / (2 * dx))); }
           return { key, mu, rec, dtr: dt * EVR, mE };
         });
         const windowOf = (S, ia, ib) => cacheW(`${S.key}|${ia}|${ib}`, () => {
