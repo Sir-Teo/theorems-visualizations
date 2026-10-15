@@ -22,6 +22,9 @@ Working examples of everything below: `tools/demos/kits.js`, rendered by
 | 1.11 | Euclid by cutting squares — `v.steps` without a graph, `vars` chips |
 | 1.12 | Payoff matrices with best responses (pair values) |
 | 1.13 | DFS edge classification (d/f times, self-loop) and Kahn's topological sort with cycle detection |
+| 1.14 | Automaton notation: start arrow, accepting double ring, contrast labels on filled nodes |
+| 1.15 | Icon array of 1000 screened people; split by test result (`block`) to read off $P(\text{ill}\mid +)$ |
+| 1.16 | Parliament hemicycle under d'Hondt / Sainte-Laguë apportionment |
 
 ---
 
@@ -327,3 +330,44 @@ viz(v) {
   v.readout(() => `$u\\cdot w = ${v.fix(v.M.dot(u.p, w.p), 3)}$`);
 }
 ```
+
+---
+
+## 7. `v.icons(stage, spec)` → `I`
+
+Icon arrays for counts of people or things: natural frequencies, risk, base rates, waffles, conditioning by
+splitting into blocks, and parliament hemicycles. Positions are computed in **pixels** inside `spec.region`
+(data units, default the whole stage) so icons stay square; use a stage with `axes: false`.
+
+```js
+const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340 });
+const I = v.icons(s, { n: 1000, order: 'group' });
+v.render(() => {
+  I.set({ groups: [{ n: TP, color: 'red', label: 'ill, test +' }, { n: FN, color: 'orange', label: 'ill, test −' }, { n: FP, color: 'blue', label: 'healthy, test +' }],
+          rest: { color: 'muted', alpha: 0.35, label: 'healthy, test −' },
+          block: split ? (i) => (positive(i) ? 0 : 1) : null, blockLabels: (b, n) => (b ? `test − (${n})` : `test + (${n})`) });
+  I.draw(); I.legend();
+});
+```
+
+| key | default | |
+|---|---|---|
+| `n` | Σ group counts, else 100 | number of icons |
+| `groups` | `[]` | consecutive runs `{n, color, label, alpha?, hollow?, ring?, mark?, shape?}`: icon i is in the first group whose running total covers it |
+| `rest` | `{color: 'muted', alpha: 0.35}` | style of icons in no group (give it a `label` to show it in the legend and tooltip) |
+| `style` | — | `(i) => style \| null \| undefined` per-icon override (null hides; undefined falls back to groups) |
+| `layout` | `'grid'` | `'grid'` or `'hemicycle'` (parliament: rows ∝ radius, seats filled left → right by `order`) |
+| `order` | `'index'` | slot order: `'index'`, `'group'` (groups together), `'shuffle'` (seeded by `seed`), a permutation array, or `(i) => sort key` |
+| `cols`, `rows` | auto | grid size (auto = largest icons that fit) |
+| `fill`, `from` | `'rows'`, `'top'` | grid fill order (`'columns'`, `'bottom'` for waffles that grow upward) |
+| `block` | — | `(i) => k` splits the grid into side-by-side blocks (k < 0 or null hides the icon); `blockLabels`: array or `(k, count) => label`; `blockWidths` to override the √count widths |
+| `shape` | `'auto'` | `'person'` (pictogram, when cells ≥ 13 px), `'dot'`, `'square'` |
+| `gap`, `margin`, `maxCell`, `inner` | 0.18, 8, 46, 0.38 | spacing fraction, px margin, largest cell px, hemicycle inner radius |
+| `tween` | 650 | glide duration ms (0 = snap; still captures and reduced motion always snap) |
+| `hover` | `true` | dims the other groups and shows "label · count of n"; `onClick(i, {group, style})` |
+
+`I.set(spec)` compares by content and only re-lays out when an icon actually moves, so calling it every frame
+in `v.render` is free. `I.draw({dim: pred, highlight: pred, ringColor, label: false})`. Geometry for annotations:
+`I.pos(i)` (data units), `I.bbox(k | pred)`, `I.blocks()` → `[{x0, y0, x1, y1, n, label, members}]`, `I.cell` (px),
+`I.hit(x, y)`, `I.groupOf(i)`, `I.counts()`, `I.legend({percent, digits, rest})`.
+`v.hemicycle(n, inner)` returns raw seat positions `{seats: [{x, y, r, a}], d}` for custom drawings.

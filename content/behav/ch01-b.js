@@ -21,7 +21,8 @@ function card(s, r, { tag, lines = [], segs, chosen = false, dim = false, sub })
   s.rect(x0, y0, x1, y1, { fill: chosen ? 'accent' : 'panel', fillAlpha: chosen ? 0.13 : 1, color: chosen ? 'accent' : 'faint', width: chosen ? 2.6 : 1.2, radius: 9 });
   s.text(tag, x0, y1, { dx: 12, dy: 17, size: 17, weight: 800, color: chosen ? 'accent' : dim ? 'faint' : 'muted' });
   lines.forEach((t, i) => s.text(t, x0, y1, { dx: 40, dy: 15 + 17 * i, size: 12.5, weight: 500, color: dim ? 'muted' : 'ink' }));
-  if (sub) s.text(sub, x1, y1, { dx: -10, dy: 15, size: 11, align: 'right', color: chosen ? 'accent' : 'muted', weight: 600 });
+  if (sub && segs) s.text(sub, x1, y1, { dx: -10, dy: 15, size: 11, align: 'right', color: chosen ? 'accent' : 'muted', weight: 600 });
+  else if (sub) s.text(sub, x0, y0, { dx: 40, dy: -12, size: 11, color: chosen ? 'accent' : 'muted', weight: 600 });
   if (segs) {
     const bx0 = s.X(x0) + 12, bx1 = s.X(x1) - 12, by = s.Y(y0) - 16;
     let acc = 0;
@@ -60,9 +61,9 @@ First-order dominance implies second-order dominance; the CDFs of a pair related
         const PRE = { fosd: [[30, 50, 70, 90], [20, 40, 60, 80]], sosd: [[40, 45, 55, 60], [20, 35, 65, 80]], neither: [[10, 55, 70, 85], [35, 45, 55, 65]] };
         const pre = v.select('example', [{ value: 'fosd', label: 'first-order' }, { value: 'sosd', label: 'mean-preserving spread' }, { value: 'neither', label: 'neither' }], 'fosd',
           { onChange: (k) => { PRE[k][0].forEach((x, i) => hA[i].set(x, 1)); PRE[k][1].forEach((x, i) => hB[i].set(x, 0)); } });
-        const top = v.stage({ x: [-2, 102], y: [-0.55, 1.55], axes: false, height: 118, full: true, title: 'four equally likely outcomes each (drag them)' });
-        const cs = v.stage({ x: [0, 100], y: [0, 1.06], axes: 'box', height: 290, xlabel: 'outcome x', ylabel: 'F(x)', title: 'CDFs' });
-        const is = v.stage({ x: [0, 100], y: [0, 60], axes: 'box', height: 290, xlabel: 'outcome x', ylabel: '∫₀ˣ F', title: 'integrated CDFs' });
+        const top = v.stage({ x: [-6, 102], y: [-0.5, 1.55], axes: false, height: 118, full: true, title: 'four equally likely outcomes each (drag them)' });
+        const cs = v.stage({ x: [-10, 100], y: [-0.1, 1.06], axes: 'box', height: 290, xlabel: 'outcome x', ylabel: 'F(x)', title: 'CDFs' });
+        const is = v.stage({ x: [-10, 100], y: [-5, 60], axes: 'box', height: 290, xlabel: 'outcome x', ylabel: '∫₀ˣ F', title: 'integrated CDFs' });
         const us = v.stage({ x: [-0.7, 8.7], y: [-1.25, 1.25], axes: false, height: 290, weight: 0.85, title: 'E u(A) − E u(B)' });
         const hA = PRE.fosd[0].map((x) => top.handle(x, 1, { color: 'blue', r: 8, constrain: (x2) => [clamp(x2, 0, 100), 1] }));
         const hB = PRE.fosd[1].map((x) => top.handle(x, 0, { color: 'orange', r: 8, constrain: (x2) => [clamp(x2, 0, 100), 0] }));
@@ -77,10 +78,10 @@ First-order dominance implies second-order dominance; the CDFs of a pair related
           // top strip
           top.line(0, 1, 100, 1, { color: 'faint', width: 2 }); top.line(0, 0, 100, 0, { color: 'faint', width: 2 });
           for (const t of [0, 25, 50, 75, 100]) { top.line(t, -0.12, t, 0, { color: 'faint', width: 1 }); top.text(String(t), t, -0.12, { dy: 9, align: 'center', size: 10, color: 'muted' }); }
-          top.text('A', -2, 1, { dx: -2, align: 'right', size: 14, weight: 800, color: 'blue' }); top.text('B', -2, 0, { dx: -2, align: 'right', size: 14, weight: 800, color: 'orange' });
+          top.text('A', -2.5, 1, { align: 'right', size: 14, weight: 800, color: 'blue' }); top.text('B', -2.5, 0, { align: 'right', size: 14, weight: 800, color: 'orange' });
           const mA = A.reduce((s, x) => s + x, 0) / 4, mB = B.reduce((s, x) => s + x, 0) / 4;
           top.line(mA, 1.3, mA, 1.12, { color: 'blue', width: 2 }); top.text(`mean ${v.fix(mA, 1)}`, mA, 1.38, { align: 'center', size: 10.5, color: 'blue', weight: 600 });
-          top.line(mB, -0.3, mB, -0.12, { color: 'orange', width: 2 }); top.text(`mean ${v.fix(mB, 1)}`, mB, -0.38, { align: 'center', size: 10.5, color: 'orange', weight: 600 });
+          top.line(mB, 0.12, mB, 0.3, { color: 'orange', width: 2 }); top.text(`mean ${v.fix(mB, 1)}`, mB, 0.38, { align: 'center', size: 10.5, color: 'orange', weight: 600 });
           // CDF panel with shading
           const N = 400; let fosdAB = true, fosdBA = true, sosdAB = true, sosdBA = true, strict = false;
           for (let i = 0; i < N; i++) {
@@ -93,7 +94,7 @@ First-order dominance implies second-order dominance; the CDFs of a pair related
           }
           const step = (xs) => { const s = xs.slice().sort((p, q) => p - q), pts = [[0, 0]]; s.forEach((x, i) => { pts.push([x, i / 4], [x, (i + 1) / 4]); }); pts.push([100, 1]); return pts; };
           cs.path(step(B), { color: 'orange', width: 2.4 }); cs.path(step(A), { color: 'blue', width: 2.4, dash: [7, 3] });
-          is.setView([0, 100], [0, Math.max(I(A, 100), I(B, 100)) * 1.08]);
+          const imax = Math.max(I(A, 100), I(B, 100)) * 1.08; is.setView([-10, 100], [-0.09 * imax, imax]);
           is.fn((x) => I(B, x), { color: 'orange', width: 2.4, domain: [0, 100] }); is.fn((x) => I(A, x), { color: 'blue', width: 2.4, dash: [7, 3], domain: [0, 100] });
           // utility test
           let pos = 0, neg = 0, conc = true;
@@ -128,7 +129,7 @@ First-order dominance implies second-order dominance; the CDFs of a pair related
 $$f\succsim g\iff\int_Su\big(f(s)\big)\,d\mu(s)\ \ge\ \int_Su\big(g(s)\big)\,d\mu(s).$$
 Probabilities are not assumed but **revealed by betting**: event $E$ is more likely than $F$ when you prefer a prize on $E$ to the same prize on $F$, and $\mu(E)$ is the chance $q$ at which you are indifferent between a prize on $E$ and the same prize with known probability $q$.`,
       idea: String.raw`Savage combined von Neumann and Morgenstern's utility (behav-1.3) with de Finetti's and Ramsey's idea that degrees of belief show up in betting. P2 and P4 let one compare events by comparing bets on them, P6 makes that comparative likelihood fine enough to be measured by a number, and the result is a probability: additive because a coherent bettor must avoid a **Dutch book**, a set of bets she accepts at her own prices that loses money in every state. With beliefs fixed, the vNM construction then supplies $u$. Bayes' theorem (stat-10.1) becomes the rule for updating $\mu$. The theory's weak point is its claim that all uncertainty can be reduced to a single probability, which Ellsberg tested (behav-1.13).`,
-      caption: String.raw`The states are tomorrow's noon temperature where you are: $A$ below 10 °C, $B$ 10–20 °C, $C$ above 20 °C. For each event set the chance $q$ at which you would be indifferent between a $\$100$ ticket on that event and a $\$100$ lottery with known probability $q$; under subjective expected utility these are your probabilities. The bar shows them laid end to end against the unit interval, and $A$-or-$B$ against $A$ plus $B$. If they are not additive the table builds the bookie's Dutch book at your own prices (buy means you pay $100q$ for the ticket, sell means you receive it) and shows your net payoff in each state: a sure loss. **make them additive** fixes the numbers.`,
+      caption: String.raw`The states are tomorrow's noon temperature where you are: $A$ below 10 °C, $B$ 10–20 °C, $C$ above 20 °C. For each event set the chance $q$ at which you would be indifferent between a $\$100$ ticket on that event and a $\$100$ lottery with known probability $q$; under subjective expected utility these are your probabilities. The bars lay them end to end against the unit interval, and compare your number for "A or B" with $A$ plus $B$. If they are not additive the table builds the bookie's Dutch book at your own prices (buy means you pay $100q$ for the ticket, sell means you receive it) and shows your net payoff in each state: a sure loss. **make them additive** fixes the numbers.`,
       deps: ['behav-1.3', 'stat-10.1'], refs: ['W&K ch. 5'], tags: ['subjective probability', 'expected utility', 'uncertainty'],
       see: ['phil-5.1', 'behav-1.13'],
       credit: 'Savage, 1954; Ramsey, 1926; de Finetti, 1937',
@@ -208,11 +209,11 @@ so whatever the utility, $A\succ B$ exactly when $C\succ D$. The two pairs diffe
       viz(v) {
         const uS = v.slider('expected utility: $u(100\\text{M})$, with $u(0)=0,\\ u(500\\text{M})=1$', 0.5, 0.99, 0.8, { step: 0.005 });
         const fan = v.toggle('fanning-out preferences', false);
-        const cs = v.stage({ x: [0, 100], y: [0, 40], axes: false, height: 236, full: true, title: 'choose one option in each pair (prizes in millions of francs)' });
+        const cs = v.stage({ x: [0, 100], y: [0, 44], axes: false, height: 214, full: true, title: 'choose one option in each pair (prizes in millions of francs)' });
         const T = v.stage({ x: [-0.12, 1.1], y: [-0.17, 1.1], equal: true, axes: false, height: 380, title: 'the four lotteries in the triangle' });
-        const E = v.stage({ x: [0.5, 1], y: [-0.06, 0.06], axes: 'box', height: 380, xlabel: 'u(100M)', ylabel: 'EU difference', title: 'whatever the utility' });
+        const E = v.stage({ x: [0.42, 1], y: [-0.06, 0.06], axes: 'box', height: 380, xlabel: 'u(100M)', ylabel: 'EU difference', title: 'whatever the utility' });
         const ans = { 1: null, 2: null };
-        const R = { A: [2, 21, 49, 38], B: [51, 21, 98, 38], C: [2, 2, 49, 19], D: [51, 2, 98, 19] };
+        const R = { A: [2, 24.5, 49, 40.5], B: [51, 24.5, 98, 40.5], C: [2, 3, 49, 19], D: [51, 3, 98, 19] };
         cs.onClick((x, y) => { for (const k of ['A', 'B', 'C', 'D']) if (inside(R[k], x, y)) ans[k === 'A' || k === 'B' ? 1 : 2] = k; });
         const L = { A: [0, 0], B: [0.01, 0.1], C: [0.89, 0], D: [0.9, 0.1] };
         v.legend([['blue', 'indifference lines'], ['accent', 'your choice', { dot: true }], ['green', 'EU(A) − EU(B) = EU(C) − EU(D)']]);
@@ -225,7 +226,7 @@ so whatever the utility, $A\succ B$ exactly when $C\succ D$. The two pairs diffe
             const pair = k === 'A' || k === 'B' ? 1 : 2;
             card(cs, R[k], { tag: k, lines: lines[k], segs: segs[k], chosen: ans[pair] === k, dim: ans[pair] && ans[pair] !== k, sub: `EU = ${v.fix(k === 'A' ? u : k === 'B' ? 0.1 + 0.89 * u : k === 'C' ? 0.11 * u : 0.1, 3)}` });
           }
-          cs.text('choice 1', 50, 39.6, { align: 'center', size: 11, color: 'muted', weight: 600 }); cs.text('choice 2', 50, 20.4, { align: 'center', size: 11, color: 'muted', weight: 600 });
+          cs.text('choice 1', 50, 42.4, { align: 'center', size: 11, color: 'muted', weight: 600 }); cs.text('choice 2', 50, 21.8, { align: 'center', size: 11, color: 'muted', weight: 600 });
           // triangle
           const pref = fan.value ? makePref('out', 10 / 11, 0.85, [0.45, 0.05]) : makePref('eu', u);
           drawTriangle(T, ['0', '100M', '500M']);
@@ -238,12 +239,13 @@ so whatever the utility, $A\succ B$ exactly when $C\succ D$. The two pairs diffe
           }
           const better = (p, q) => pref.value(p[0], p[1]) - pref.value(q[0], q[1]);
           const pr1 = better(L.A, L.B) > 0 ? 'A' : 'B', pr2 = better(L.C, L.D) > 0 ? 'C' : 'D';
-          T.text(`these preferences choose ${pr1} and ${pr2}`, 0.55, 0.62, { size: 12, weight: 700, color: pr1 === 'A' && pr2 === 'D' ? 'purple' : 'blue' });
+          T.text('these preferences', 0.5, 0.8, { size: 12, weight: 700, color: pr1 === 'A' && pr2 === 'D' ? 'purple' : 'blue' });
+          T.text(`choose ${pr1} and ${pr2}`, 0.5, 0.72, { size: 12, weight: 700, color: pr1 === 'A' && pr2 === 'D' ? 'purple' : 'blue' });
           // EU differences as functions of u
           E.fn((x) => 0.11 * x - 0.1, { color: 'green', width: 3.2, domain: [0.5, 1] });
           E.fn((x) => 0.11 * x - 0.1, { color: 'teal', width: 1.4, dash: [6, 5], domain: [0.5, 1] });
           E.hline(0, { color: 'muted', width: 1 });
-          E.vline(10 / 11, GUIDE); E.text('u = 10/11', 10 / 11, -0.055, { dx: -4, align: 'right', size: 11, color: 'muted' });
+          E.vline(10 / 11, GUIDE); E.text('u = 10/11', 10 / 11, 0.018, { dx: 5, size: 11, color: 'muted' });
           E.text('A ≻ B and C ≻ D', 0.99, 0.045, { align: 'right', size: 11.5, weight: 600, color: 'green' });
           E.text('B ≻ A and D ≻ C', 0.52, -0.045, { size: 11.5, weight: 600, color: 'green' });
           E.text('A and D: needs the first difference > 0', 0.52, 0.045, { size: 10.5, color: 'red' });
@@ -274,16 +276,16 @@ Yet many people choose $S$ when $\lambda=1$ and $R_\lambda$ when $\lambda$ is sm
       credit: 'Allais, 1953; Kahneman & Tversky, 1979',
       viz(v) {
         const SETS = {
-          kt: { x: '3,000', y: '4,000', r: 0.8, labs: ['0', '3,000', '4,000'], data: { 0: [80, 'S'], 2: [65, 'R'] }, k0: 4 },
-          allais: { x: '100 million', y: '500 million', r: 0.98, labs: ['0', '100M', '500M'], data: {}, k0: 49 },
+          kt: { x: '3,000', y: '4,000', xv: 3000, yv: 4000, unit: '', r: 0.8, labs: ['0', '3,000', '4,000'], data: { 0: [80, 'S'], 2: [65, 'R'] }, k0: 4 },
+          allais: { x: '100 million', y: '500 million', xv: 100, yv: 500, unit: ' million', r: 0.98, labs: ['0', '100M', '500M'], data: {}, k0: 49 },
         };
         const LAD = [1, 0.5, 0.25, 0.1, 0.05, 0.01];
         const ds = v.select('pair', [{ value: 'kt', label: 'Kahneman–Tversky: 3,000 vs 4,000' }, { value: 'allais', label: 'Allais: 100M vs 500M' }], 'kt');
         const lS = v.slider('scale $\\lambda$', 0, LAD.length - 1, 0, { int: true, fmt: (i) => String(LAD[Math.round(i)]) });
         const uS = v.slider('expected utility: $u(x)/u(y)$', 0.5, 0.995, 0.85, { step: 0.005 });
-        const cs = v.stage({ x: [0, 100], y: [0, 20], axes: false, height: 120, full: true, title: 'which do you prefer?' });
+        const cs = v.stage({ x: [0, 100], y: [0, 20], axes: false, height: 98, full: true, title: 'which do you prefer?' });
         const T = v.stage({ x: [-0.12, 1.1], y: [-0.17, 1.1], equal: true, axes: false, height: 370, title: 'the pair at every scale' });
-        const C = v.stage({ x: [0.006, 1.6], xlog: true, y: [-0.7, 1.7], axes: 'box', height: 370, xlabel: 'scale λ (log)', title: 'choices across scales', yticks: [[0, 'R (risky)'], [1, 'S (safe)']] });
+        const C = v.stage({ x: [0.0032, 1.6], xlog: true, y: [-0.7, 1.7], axes: 'box', height: 370, xlabel: 'scale λ (log)', title: 'choices across scales', yticks: [[0, 'R (risky)'], [1, 'S (safe)']] });
         const ans = { kt: {}, allais: {} };
         const RS = [2, 2, 49, 18], RR = [51, 2, 98, 18];
         cs.onClick((x, y) => { const i = Math.round(lS.value); if (inside(RS, x, y)) ans[ds.value][i] = 'S'; else if (inside(RR, x, y)) ans[ds.value][i] = 'R'; });
@@ -292,12 +294,11 @@ Yet many people choose $S$ when $\lambda=1$ and $R_\lambda$ when $\lambda$ is sm
         v.render(() => {
           const D = SETS[ds.value], i = Math.round(lS.value), lam = LAD[i], r = D.r, A = ans[ds.value];
           const pc = (p) => `${+(100 * p).toFixed(3)}%`;
-          card(cs, RS, { tag: 'S', lines: [lam === 1 ? `${D.x} for sure` : `${D.x} with probability ${pc(lam)}`], segs: [[lam, 'teal', ''], [1 - lam, 'faint', '']], chosen: A[i] === 'S', dim: A[i] === 'R' });
-          card(cs, RR, { tag: 'R', lines: [`${D.y} with probability ${pc(r * lam)}`], segs: [[r * lam, 'purple', ''], [1 - r * lam, 'faint', '']], chosen: A[i] === 'R', dim: A[i] === 'S' });
+          const ev = (x) => `expected value ${x.toLocaleString('en-US', { maximumFractionDigits: 2 })}${D.unit}`;
+          card(cs, RS, { tag: 'S', lines: [lam === 1 ? `${D.x} for sure` : `${D.x} with probability ${pc(lam)}`], segs: [[lam, 'teal', ''], [1 - lam, 'faint', '']], chosen: A[i] === 'S', dim: A[i] === 'R', sub: ev(D.xv * lam) });
+          card(cs, RR, { tag: 'R', lines: [`${D.y} with probability ${pc(r * lam)}`], segs: [[r * lam, 'purple', ''], [1 - r * lam, 'faint', '']], chosen: A[i] === 'R', dim: A[i] === 'S', sub: ev(D.yv * r * lam) });
           // triangle
-          const eu = makePref('eu', uS.value), fanP = makePref('out', r / (1 + r) + 0.0, 0.9, [0.35, 0.05]);
-          const fanPref = makePref('out', D.k0 / (1 + D.k0), 0.9, [0.4, 0.04]);
-          void fanP;
+          const eu = makePref('eu', uS.value), fanPref = makePref('out', D.k0 / (1 + D.k0), 0.9, [0.4, 0.04]);
           drawTriangle(T, D.labs);
           drawIndiff(T, eu, { n: 18, color: 'blue', alpha: 0.25 });
           LAD.forEach((L, j) => {
@@ -308,7 +309,7 @@ Yet many people choose $S$ when $\lambda=1$ and $R_\lambda$ when $\lambda$ is sm
             T.dot(R[0], R[1], { r: cur ? 6 : 4, color: ch === 'R' ? 'accent' : 'muted', hollow: ch === 'S', width: 1.8 });
           });
           T.line(1, 0, 1 - r, r, { color: 'faint', width: 1, dash: [3, 4] });
-          T.text(`λ = ${lam}`, 1 - r * lam, r * lam, { dx: 9, dy: -4, size: 11.5, weight: 700 });
+          T.corner(`bold: λ = ${lam}`, 'tr', { color: 'ink', weight: 700 });
           // choices strip
           const euS = uS.value > r;
           C.hband(euS ? 0.75 : -0.25, euS ? 1.25 : 0.25, { color: 'blue', alpha: 0.12 });
@@ -349,50 +350,53 @@ Most people prefer I to II and IV to III (Ellsberg 1961). No single subjective p
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ellsberg_paradox' },
       viz(v) {
         const bS = v.slider('hypothetical number of black balls $b$', 0, 60, 20, { step: 1 });
-        const us = v.stage({ x: [0, 100], y: [0, 52], axes: false, height: 300, weight: 1.2, title: 'the urn and the four bets' });
-        const ch = v.stage({ x: [0, 60], y: [-0.36, 1.04], axes: 'box', height: 300, xlabel: 'number of black balls b (of 60 unknown)', ylabel: 'chance of winning', title: 'each bet’s chance, for every composition', yticks: [0, 0.333, 0.667, 1] });
+        const us = v.stage({ x: [0, 100], y: [0, 50], axes: false, height: 240, full: true, title: 'the urn and the four bets: click one bet in each pair' });
+        const ch = v.stage({ x: [-6, 60], y: [-0.42, 1.06], axes: 'box', height: 320, full: true, xlabel: 'number of black balls b (of the 60 unknown)', ylabel: 'chance of winning', title: 'each bet’s chance of winning, for every composition', yticks: [0, [1 / 3, '1/3'], [2 / 3, '2/3'], 1] });
         const ans = { 1: null, 2: null };
-        const R = { I: [42, 27, 70, 49], II: [72, 27, 99, 49], III: [42, 3, 70, 25], IV: [72, 3, 99, 25] };
+        const R = { I: [27, 26.5, 62, 47], II: [64, 26.5, 99, 47], III: [27, 3, 62, 23.5], IV: [64, 3, 99, 23.5] };
         us.onClick((x, y) => { for (const k of ['I', 'II', 'III', 'IV']) if (inside(R[k], x, y)) ans[k === 'I' || k === 'II' ? 1 : 2] = k; });
         const COL = { I: 'red', II: 'ink', III: 'orange', IV: 'teal' };
-        v.legend([['red', 'I: red'], ['ink', 'II: black'], ['orange', 'III: red or yellow'], ['teal', 'IV: black or yellow']]);
+        v.legend([['red', 'I: red'], ['ink', 'II: black'], ['orange', 'III: red or yellow'], ['teal', 'IV: black or yellow'], ['green', 'compositions where your choice is best', { area: true }]]);
         let st = {};
         v.render(() => {
           const b = bS.value;
           // urn: 90 balls in a 9 × 10 grid
-          us.rect(1, 2, 39, 49, { fill: 'grid', fillAlpha: 0.5, color: 'muted', width: 1.4, radius: 14 });
-          const cols = 9, rows = 10, dx = 36 / cols, dy = 44 / rows;
+          us.rect(1, 3, 24, 47, { fill: 'grid', fillAlpha: 0.5, color: 'muted', width: 1.4, radius: 14 });
+          const cols = 9, dx = 21 / cols, dy = 3.15;
           for (let n = 0; n < 90; n++) {
-            const c = n % cols, rr = Math.floor(n / cols), x = 2.5 + dx * (c + 0.5), y = 47 - dy * (rr + 0.5);
+            const c = n % cols, rr = Math.floor(n / cols), x = 2 + dx * (c + 0.5), y = 41.5 - dy * rr;
             if (n < 30) us.dot(x, y, { r: 6.5, color: 'red' });
             else { const isB = n - 30 < b; us.dot(x, y, { r: 6.5, color: isB ? 'ink' : 'gold', alpha: 0.35 }); us.text('?', x, y, { align: 'center', size: 9.5, weight: 700, color: 'ink', halo: false }); }
           }
-          us.text('30 red', 20, 49, { dy: 11, align: 'center', size: 11, weight: 700, color: 'red' });
-          us.text(`60 unknown (shown: ${b} black, ${60 - b} yellow)`, 20, 2, { dy: -9, align: 'center', size: 10.5, color: 'muted' });
-          const lines = { I: ['$100 if red'], II: ['$100 if black'], III: ['$100 if red', 'or yellow'], IV: ['$100 if black', 'or yellow'] };
-          const pw = { I: 30 / 90, II: b / 90, III: (90 - b) / 90, IV: 60 / 90 };
+          us.text('30 red', 12.5, 45, { align: 'center', size: 11, weight: 700, color: 'red' });
+          us.text('60 of unknown colour', 12.5, 8.4, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
+          us.text(`(shown: ${b} black, ${60 - b} yellow)`, 12.5, 5.6, { align: 'center', size: 10, color: 'muted' });
+          const lines = { I: ['$100 if the ball is red'], II: ['$100 if the ball is black'], III: ['$100 if the ball is red', 'or yellow'], IV: ['$100 if the ball is black', 'or yellow'] };
           for (const k of ['I', 'II', 'III', 'IV']) {
             const pair = k === 'I' || k === 'II' ? 1 : 2;
-            card(us, R[k], { tag: k, lines: lines[k], chosen: ans[pair] === k, dim: ans[pair] && ans[pair] !== k, sub: k === 'I' ? 'chance 1/3' : k === 'IV' ? 'chance 2/3' : 'chance ?' });
+            card(us, R[k], { tag: k, lines: lines[k], chosen: ans[pair] === k, dim: ans[pair] && ans[pair] !== k, sub: k === 'I' ? 'chance 1/3, known' : k === 'IV' ? 'chance 2/3, known' : 'chance unknown' });
           }
-          us.text('or', 71, 38, { align: 'center', size: 11, color: 'muted' }); us.text('or', 71, 14, { align: 'center', size: 11, color: 'muted' });
+          us.text('or', 63, 36.7, { align: 'center', size: 11, color: 'muted', weight: 600 }); us.text('or', 63, 13.2, { align: 'center', size: 11, color: 'muted', weight: 600 });
           // chart
+          const pw = { I: 30 / 90, II: b / 90, III: (90 - b) / 90, IV: 60 / 90 };
           ch.fn(() => 1 / 3, { color: COL.I, width: 2.6, domain: [0, 60] });
           ch.fn((x) => x / 90, { color: COL.II, width: 2.6, domain: [0, 60] });
           ch.fn((x) => (90 - x) / 90, { color: COL.III, width: 2.6, domain: [0, 60] });
           ch.fn(() => 2 / 3, { color: COL.IV, width: 2.6, domain: [0, 60] });
-          ch.vline(30, GUIDE); ch.text('b = 30', 30, 1, { dx: 5, dy: 6, size: 10.5, color: 'muted' });
+          ch.text('I', 60, 1 / 3, { dx: -6, dy: -9, align: 'right', size: 12, weight: 800, color: COL.I }); ch.text('II', 60, 60 / 90, { dx: -6, dy: 12, align: 'right', size: 12, weight: 800, color: COL.II });
+          ch.text('III', 0, 1, { dx: 8, dy: 4, size: 12, weight: 800, color: COL.III }); ch.text('IV', 0, 2 / 3, { dx: 8, dy: -9, size: 12, weight: 800, color: COL.IV });
+          ch.vline(30, GUIDE); ch.text('b = 30', 30, 1.04, { dx: 5, size: 10.5, color: 'muted' });
           ch.vline(b, { color: 'gold', width: 1.4 });
           for (const k of ['I', 'II', 'III', 'IV']) ch.dot(b, pw[k], { r: 4, color: COL[k] });
           // feasibility strips
           const fit = (c) => (c === 'I' || c === 'III' ? [0, 30] : [30, 60]);
-          const strips = [[ans[1], -0.13, 'choice 1'], [ans[2], -0.27, 'choice 2']];
-          for (const [c, y, lab] of strips) {
-            ch.text(lab, 0, y, { dx: 4, size: 10, color: 'muted' });
+          for (const [c, y, lab] of [[ans[1], -0.09, 'choice 1'], [ans[2], -0.2, 'choice 2']]) {
+            ch.text(lab, -6, y, { dx: 4, size: 10, color: 'muted', weight: 600 });
             if (!c) { ch.text('not chosen yet', 30, y, { align: 'center', size: 10.5, color: 'muted' }); continue; }
-            const [a, z] = fit(c); ch.rect(a, y - 0.045, z, y + 0.045, { fill: 'green', fillAlpha: 0.35, color: 'green', width: 1 });
-            ch.text(`${c} is best if b ${c === 'I' || c === 'III' ? '≤' : '≥'} 30`, (a + z) / 2, y, { align: 'center', size: 10.5, weight: 700, halo: true });
+            const [a, z] = fit(c); ch.rect(a, y - 0.04, z, y + 0.04, { fill: 'green', fillAlpha: 0.35, color: 'green', width: 1 });
+            ch.text(`${c} is best if b ${c === 'I' || c === 'III' ? '≤' : '≥'} 30`, (a + z) / 2, y, { align: 'center', size: 10.5, weight: 700 });
           }
+          if (ans[1] && ans[2] && (ans[1] === 'I') !== (ans[2] === 'III')) ch.text('no composition fits both choices', 30, -0.31, { align: 'center', size: 11.5, weight: 700, color: 'red', plate: true });
           st = { b, a1: ans[1], a2: ans[2], pw };
         });
         v.readout(() => {
@@ -418,10 +422,10 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
       see: ['phil-5.3', 'phil-5.10'],
       credit: 'Gilboa & Schmeidler, 1989',
       viz(v) {
-        const kS = v.slider('width of the prior set: black count 30 ± k', 0, 30, 15, { step: 1 });
+        const kS = v.slider('prior set: black count $30 \\pm k$', 0, 30, 15, { step: 1 });
         const aS = v.slider('weight on the worst case $\\alpha$', 0, 1, 1, { step: 0.01 });
         const S = v.stage({ x: [-0.12, 1.12], y: [-0.14, 0.98], equal: true, axes: false, height: 360, title: 'beliefs about the drawn ball' });
-        const B = v.stage({ x: [-0.5, 3.5], y: [0, 1.08], axes: 'box', height: 360, ylabel: 'chance of winning $100', title: 'each bet over the prior set', xticks: [[0, 'I: red'], [1, 'II: black'], [2, 'III: red/yellow'], [3, 'IV: black/yellow']] });
+        const B = v.stage({ x: [-0.6, 3.5], y: [0, 1.1], axes: 'box', height: 360, ylabel: 'chance of winning', title: 'each bet over the prior set', xticks: [[0, 'I: red'], [1, 'II: black'], [2, 'III: red/yellow'], [3, 'IV: black/yellow']] });
         const Vr = [0.5, Math.sqrt(3) / 2], Vb = [0, 0], Vy = [1, 0];
         const P = (r, b) => { const y = 1 - r - b; return [r * Vr[0] + b * Vb[0] + y * Vy[0], r * Vr[1] + b * Vb[1] + y * Vy[1]]; };
         const COL = ['red', 'ink', 'orange', 'teal'];
@@ -455,8 +459,9 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
             return val;
           });
           const cmp = (x, y) => (Math.abs(x - y) < 1e-9 ? '∼' : x > y ? '≻' : '≺');
-          B.text(`I ${cmp(vals[0], vals[1])} II`, 0.5, 1.02, { align: 'center', size: 13, weight: 700, color: vals[0] > vals[1] + 1e-9 ? 'green' : 'ink' });
-          B.text(`III ${cmp(vals[2], vals[3])} IV`, 2.5, 1.02, { align: 'center', size: 13, weight: 700, color: vals[3] > vals[2] + 1e-9 ? 'green' : 'ink' });
+          const say = (x, y, a, b) => (cmp(x, y) === '≺' ? `${b} ≻ ${a}` : `${a} ${cmp(x, y)} ${b}`);
+          B.text(say(vals[0], vals[1], 'I', 'II'), 0.5, 1.03, { align: 'center', size: 13, weight: 700, color: vals[0] > vals[1] + 1e-9 ? 'green' : 'ink' });
+          B.text(say(vals[2], vals[3], 'III', 'IV'), 2.5, 1.03, { align: 'center', size: 13, weight: 700, color: vals[3] > vals[2] + 1e-9 ? 'green' : 'ink' });
           st = { k, a, vals };
         });
         v.readout(() => {
@@ -490,7 +495,9 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
         const sS = v.slider('ships lost per ten (Sempronius)', 0.5, 3, 1, { step: 0.1 });
         const M = v.stage({ x: [0, 100], y: [-1, 1], axes: 'box', height: 360, weight: 1.35, title: '' });
         const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.9, title: 'the paper against an exact computation' });
-        const T = v.table(tb, { rows: 4, cols: 3, square: false, cellAspect: 1.9, maxCell: 46, size: 12.5, colLabels: ['', 'Bernoulli', 'exact'], region: [0, 0.08, 1, 1] });
+        const T = v.table(tb, { rows: 4, cols: 3, square: false, cellAspect: 2.2, maxCell: 46, size: 12.5, colLabels: ['', '1738', 'exact'], colWeights: [1.8, 1, 1], region: [0, 0.04, 1, 0.96] });
+        const sup = (n) => String(n).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('');
+        const drawT = (rows, title) => { tb.setTitle(title); T.draw({ value: (i, j) => rows[i][j], textColor: (i, j) => (j === 1 ? 'gold' : 'ink'), weight: (i, j) => (j ? 700 : 500) }); };
         const bis = (f, lo, hi) => { let flo = f(lo); for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2, fm = f(m); if (flo * fm <= 0) hi = m; else { lo = m; flo = fm; } } return (lo + hi) / 2; };
         const caius = (P, q) => bis((x) => Math.log(x + 10000 - P) - ((1 - q) * Math.log(x + 10000) + q * Math.log(x)), 1e-6, 1e8);
         const insurer = (P, q) => bis((y) => (1 - q) * Math.log(y + P) + q * Math.log(y + P - 10000) - Math.log(y), 10000 - P + 1e-6, 1e9);
@@ -503,21 +510,24 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
           if (md === 'paul') {
             const a = aS.value, N = nS.value, xmax = a + Math.pow(2, N - 1) * 1.08, u = (x) => Math.log(x / a);
             const ymin = u(Math.max(a * 0.25, 0.3)), ymax = u(xmax) * 1.12;
-            M.setView([0, xmax], [ymin, ymax]); M.setTitle("Bernoulli's figure: utility b·log(x/a), value of the risk BP");
+            M.setView([-0.07 * xmax, xmax], [ymin, ymax]); M.setTitle("Bernoulli's figure: utility b·log(x/a), value of the risk BP");
             M.setLabels('fortune x (ducats)', 'utility');
             M.fn(u, { domain: [Math.max(a * 0.25, 0.3), xmax], color: 'ink', width: 2.4 });
             M.hline(0, { color: 'muted', width: 1 });
-            let eu = Math.pow(2, -N) * 0;
-            for (let k = 1; k <= N; k++) { const x = a + Math.pow(2, k - 1), y = u(x); eu += Math.pow(2, -k) * y; M.line(x, 0, x, y, { color: 'teal', width: 1 + 2.5 * Math.pow(2, -k + 1), alpha: 0.85 }); if (k <= 5 || k === N) M.text(`½${k > 1 ? '^' + k : ''}`.replace('½^', '2⁻').replace(/\^?(\d+)$/, (m, d) => (k > 1 ? d.split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join('') : '')), x, y, { dy: -9, align: 'center', size: 10, color: 'teal' }); }
+            let eu = 0, lastX = -1e9;
+            for (let k = 1; k <= N; k++) {
+              const x = a + Math.pow(2, k - 1), y = u(x); eu += Math.pow(2, -k) * y;
+              M.line(x, 0, x, y, { color: 'teal', width: 1 + 2.5 * Math.pow(2, -k + 1), alpha: 0.85 });
+              if (M.X(x) - lastX > 30 || k === N) { M.text(k === 1 ? 'p = ½' : `2⁻${sup(k)}`, x, y, { dy: -9, align: 'center', size: 10, color: 'teal' }); lastX = M.X(x); }
+            }
             const ce = a * Math.exp(eu) - a;
             M.hline(eu, { color: 'orange', width: 1.4, dash: [5, 4] });
             M.dot(a, 0, { r: 5, color: 'ink', label: 'B', labelPos: 's' });
             M.dot(a + ce, 0, { r: 5, color: 'orange', label: 'P', labelPos: 's' });
             M.line(a + ce, 0, a + ce, eu, { color: 'orange', width: 2 }); M.dot(a + ce, eu, { r: 4.5, color: 'orange', label: 'O', labelPos: 'nw' });
-            M.text(`mean utility PO; BP = ${v.fix(ce, 3)} ducats`, a + ce, eu, { dx: 10, dy: 10, size: 11.5, weight: 600, color: 'orange' });
-            M.text('A = 0', 0, 0, { dx: 4, dy: 10, size: 10.5, color: 'muted' });
-            const rows = [['fortune 0', '2', v.fix(bernValue(0), 3)], ['fortune 10', '≈ 3', v.fix(bernValue(10), 3)], ['fortune 100', '≈ 4', v.fix(bernValue(100), 3)], ['fortune 1,000', '≈ 6', v.fix(bernValue(1000), 3)]];
-            T.draw({ value: (i, j) => rows[i][j], rowLabels: ['', '', '', ''], colLabels: ['owner of the game', 'Bernoulli §19', 'exact'], textColor: (i, j) => (j === 1 ? 'gold' : 'ink'), weight: (i, j) => (j ? 700 : 500), colWeights: [1.5, 1, 1] });
+            M.text(`mean utility PO; BP = ${v.fix(ce, 3)} ducats`, xmax, eu, { dx: -6, dy: -14, align: 'right', size: 11.5, weight: 600, color: 'orange', plate: true });
+            M.text('A', 0, 0, { dx: 4, dy: 10, size: 11, color: 'muted', weight: 600 });
+            drawT([['fortune 0', '2', v.fix(bernValue(0), 3)], ['fortune 10', '≈ 3', v.fix(bernValue(10), 3)], ['fortune 100', '≈ 4', v.fix(bernValue(100), 3)], ['fortune 1,000', '≈ 6', v.fix(bernValue(1000), 3)]], 'value of Paul’s game to its owner (§19)');
             st = { md, a, N, ce, full: bernValue(a), price: bernPrice(a) };
           } else if (md === 'caius') {
             const P = pS.value, q = qS.value / 100, x0 = caius(P, q), y0 = insurer(P, q), xmax = Math.max(32000, 1.25 * y0);
@@ -527,20 +537,19 @@ Gilboa and Schmeidler (1989) showed that this representation, with $u$ unique up
             M.hband(0, 25, { color: 'green', alpha: 0.04 });
             M.hline(0, { color: 'muted', width: 1 });
             M.clip(() => { M.fn(dC, { domain: [30, xmax], color: 'blue', width: 2.6, n: 500 }); M.fn(dI, { domain: [10000 - P + 1, xmax], color: 'orange', width: 2.6, n: 500 }); });
-            M.dot(x0, 0, { r: 5.5, color: 'blue' }); M.text(`Caius should insure below ${money(x0)}`, x0, 0, { dx: 8, dy: -12, size: 11.5, weight: 700, color: 'blue' });
+            M.dot(x0, 0, { r: 5.5, color: 'blue' }); M.text('Caius should insure', x0, 0, { dx: 8, dy: -28, size: 11.5, weight: 700, color: 'blue' }); M.text(`if his fortune is below ${money(x0)}`, x0, 0, { dx: 8, dy: -13, size: 11.5, weight: 700, color: 'blue' });
             M.dot(y0, 0, { r: 5.5, color: 'orange' }); M.text(`insurer gains above ${money(y0)}`, y0, 0, { dx: 8, dy: 14, size: 11.5, weight: 700, color: 'orange' });
             M.text('blue: Caius buys the policy · orange: the insurer sells it', xmax, 23, { align: 'right', dx: -6, size: 11, color: 'muted' });
-            const rows = [['800: Caius insures below', '5,043', money(caius(800, 0.05), 1)], ['800: insurer needs', '14,243', money(insurer(800, 0.05), 1)], ['600: Caius insures below', '20,478', money(caius(600, 0.05), 1)], ['600: insurer needs', '29,878', money(insurer(600, 0.05), 1)]];
-            T.draw({ value: (i, j) => rows[i][j], rowLabels: ['', '', '', ''], colLabels: ['premium (5 in 100 lost)', 'Bernoulli §15', 'exact'], textColor: (i, j) => (j === 1 ? 'gold' : 'ink'), weight: (i, j) => (j ? 700 : 500), colWeights: [1.7, 1, 1] });
+            drawT([['Caius, premium 800', '5,043', money(caius(800, 0.05), 1)], ['insurer, premium 800', '14,243', money(insurer(800, 0.05), 1)], ['Caius, premium 600', '20,478', money(caius(600, 0.05), 1)], ['insurer, premium 600', '29,878', money(insurer(600, 0.05), 1)]], 'fortune thresholds in rubles, 5 ships in 100 lost (§15)');
             st = { md, P, q, x0, y0 };
           } else {
             const q = sS.value / 10, nmax = 12, ev = 8000 * (1 - q);
-            M.setView([0.3, nmax + 0.7], [5000, 8200]); M.setTitle('the goods spread over n ships: their value to Sempronius'); M.setLabels('number of ships n', 'value (ducats)');
-            for (let n = 1; n <= nmax; n++) { const val = semp(n, q); M.rect(n - 0.32, 5000, n + 0.32, val, { fill: 'teal', fillAlpha: 0.55, color: 'teal', width: 1 }); if (n <= 3 || n === nmax) M.text(money(val), n, val, { dy: -9, align: 'center', size: 10.5, weight: 600 }); }
+            const base = Math.min(6000, Math.floor((semp(1, q) - 300) / 500) * 500);
+            M.setView([-1, nmax + 0.7], [base, 8200]); M.setTitle('the goods spread over n ships: their value to Sempronius'); M.setLabels('number of ships n', 'value (ducats)');
+            for (let n = 1; n <= nmax; n++) { const val = semp(n, q); M.rect(n - 0.32, base, n + 0.32, val, { fill: 'teal', fillAlpha: 0.55, color: 'teal', width: 1 }); if (n <= 2 || n === nmax) M.text(money(val, 1), n, val, { dy: -10, align: n === 1 ? 'left' : 'center', dx: n === 1 ? -14 : 0, size: 10.5, weight: 600 }); }
             M.hline(ev, { color: 'green', width: 1.8, dash: [6, 4] }); M.text(`expected value ${money(ev)}: never reached`, nmax + 0.6, ev, { align: 'right', dy: -9, size: 11.5, weight: 600, color: 'green' });
             if (Math.abs(q - 0.1) < 1e-9) { M.dot(1, 6751, { r: 6, hollow: true, color: 'gold', width: 2.4 }); M.dot(2, 7033, { r: 6, hollow: true, color: 'gold', width: 2.4 }); }
-            const rows = [['one ship', '6,751', money(semp(1, 0.1), 1)], ['two ships', '7,033', money(semp(2, 0.1), 1)], ['ten ships', '—', money(semp(10, 0.1), 1)], ['the limit', '7,200', money(7200, 1)]];
-            T.draw({ value: (i, j) => rows[i][j], rowLabels: ['', '', '', ''], colLabels: ['8,000 in goods, 1 ship in 10 lost', 'Bernoulli §16', 'exact'], textColor: (i, j) => (j === 1 ? 'gold' : 'ink'), weight: (i, j) => (j ? 700 : 500), colWeights: [1.7, 1, 1] });
+            drawT([['one ship', '6,751', money(semp(1, 0.1), 1)], ['two ships', '7,033', money(semp(2, 0.1), 1)], ['ten ships', '—', money(semp(10, 0.1), 1)], ['the limit', '7,200', money(7200, 1)]], 'value of 8,000 ducats of goods, 1 ship in 10 lost (§16)');
             st = { md, q, v1: semp(1, q), v2: semp(2, q), ev };
           }
         });
@@ -569,7 +578,7 @@ His claims were normative as well as descriptive, and concerned large sums relat
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Allais_paradox' },
       viz(v) {
         const ex = v.select('example', [{ value: 1, label: 'first: common consequence' }, { value: 2, label: 'second: common ratio' }], 1);
-        const G = v.stage({ x: [0, 100], y: [0, 34], axes: false, height: 250, full: true, title: 'Savage’s 100 tickets: click the situation you prefer in each pair' });
+        const G = v.stage({ x: [0, 100], y: [0, 36], axes: false, height: 262, full: true, title: 'Savage’s 100 tickets: click the situation you prefer in each pair' });
         const T = v.stage({ x: [-0.12, 1.1], y: [-0.17, 1.1], equal: true, axes: false, height: 330, title: 'both pairs in the triangle' });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, title: 'your answers and the evidence' });
         const ans = { 1: { p: null, q: null }, 2: { p: null, q: null } };
@@ -615,7 +624,7 @@ His claims were normative as well as descriptive, and concerned large sums relat
             const common = e === 1 ? (i < 2 ? 'common, 100M' : 'common, nothing') : null;
             grid(boxes[i], tick(k), chosen, dim, k, DESC[k], common, e === 2 && i >= 2 ? (i === 2 ? 'E' : 'F') : null);
           });
-          G.text('pair 1', 25, 33.4, { align: 'center', size: 10.5, color: 'muted', weight: 600 }); G.text('pair 2', 75, 33.4, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
+          G.text('pair 1', 25, 34.2, { align: 'center', size: 10.5, color: 'muted', weight: 600 }); G.text('pair 2', 75, 34.2, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
           // triangle
           drawTriangle(T, ['0', '100M', '500M'], { size: 11 });
           drawIndiff(T, makePref('eu', e === 1 ? 0.915 : 0.985), { n: 16, color: 'blue', alpha: 0.22 });

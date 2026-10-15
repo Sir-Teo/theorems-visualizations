@@ -305,5 +305,233 @@ The conclusion holds for cholera (*Vibrio cholerae*, identified by Pacini in 185
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 4.15
+    {
+      num: '4.15',
+      kind: 'Paper',
+      name: 'Ätiologie, Begriff und Prophylaxis des Kindbettfiebers',
+      paper: { authors: 'Ignaz Philipp Semmelweis', year: 1861, title: 'Die Aetiologie, der Begriff und die Prophylaxis des Kindbettfiebers',
+               venue: 'Pest, Wien und Leipzig: C. A. Hartleben', url: 'https://archive.org/details/b33953740' },
+      introduces: ['epi-4.5'],
+      statement: String.raw`Semmelweis showed that childbed (puerperal) fever, which killed about one woman in ten in the First Obstetric Clinic of the Vienna General Hospital, was carried to women in labour on the hands of doctors and students who came from the dissecting room, and that washing hands in chlorinated lime solution prevents it.
+
+(a) **A natural comparison.** From 1841 the First Clinic trained medical students and the Second only midwives, who did no autopsies; women were admitted to them on alternate days. In 1841–46 the First Clinic lost 1,989 of 20,042 mothers (9.9%), the Second 691 of 17,791 (3.9%): a risk ratio of about 2.6 between otherwise comparable patients.
+
+(b) **An intervention.** After his colleague Kolletschka died of a wound from an autopsy knife with the same signs, Semmelweis required everyone to wash in chlorinated lime from mid-May 1847. The First Clinic's mortality fell from 18.3% in April 1847 to about 2% for the rest of the year and 1.3% in 1848, the same as the midwives' clinic.
+
+He concluded that childbed fever is caused by "decaying animal-organic matter" introduced into the birth canal, from corpses or from living patients, which in modern terms is an infection (mostly streptococcal) and its prevention by **hand hygiene** (epi-4.5).`,
+      idea: String.raw`Before germ theory, childbed fever was blamed on "epidemic atmospheric influences", overcrowding, or the shame of unmarried mothers; the striking difference between Vienna's two clinics was known and unexplained (women begged not to be admitted to the First). Semmelweis worked through the hypotheses one by one, eliminating those that applied equally to both clinics, which is the comparative logic of a controlled study (risk ratios, epi-3.2). The answer came from the one systematic difference: who examined the women. His intervention then served as the experiment. Yet his superiors rejected the idea, his contract was not renewed in 1849, he published only in 1861, and he died in an asylum in 1865; Lister's antisepsis (1867) and Pasteur's and Koch's bacteriology later explained why he was right. The book's monthly tables are among the earliest records of an intervention evaluated with a time series, and the change point is still unmistakable in them.`,
+      caption: String.raw`**Top**: deaths as a share of births in the First Clinic, month by month from January 1841 to March 1849, from Semmelweis's own tables (red before, green after chlorine washing began in mid-May 1847; December 1841 is missing), with the Second Clinic's yearly rate (blue steps). **Hover** a month for its numbers. **Drag the gold split** to divide the record anywhere and compare the two parts. **Bottom right**: for every possible split, how much better two constant rates explain the data than one ($2\Delta\log L$, a change-point scan): the peak is the true break. **Bottom left**: both clinics over 1833–1858: the gap opens in 1841, when the Second Clinic became the midwives' school, closes in 1847–48, and returns after Semmelweis left.`,
+      deps: ['epi-3.2'],
+      refs: [],
+      tags: ['hand hygiene', 'natural experiment', 'history'],
+      credit: 'Ignaz Semmelweis, 1847 (published 1861)',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ignaz_Semmelweis' },
+      viz(v) {
+        const N = SEMM_MONTHLY.length, WASH = 76.5; // index of mid-May 1847 (Jan 1841 = 0)
+        const yt = Array.from({ length: 9 }, (_, k) => [12 * k, `${1841 + k}`]);
+        const show2 = v.toggle('Second Clinic (yearly rate)', true);
+        const A = v.stage({ x: [-1, 99.5], y: [-2.6, 34], axes: 'box', yticks: [0, 5, 10, 15, 20, 25, 30], height: 320, full: true, hover: true, xticks: yt, ylabel: 'deaths (% of births)', title: 'the First Clinic, month by month' });
+        const Y = v.stage({ x: [1832.5, 1858.5], y: [0, 17.5], axes: 'box', height: 250, weight: 1, xticks: [1835, 1840, 1845, 1850, 1855], ylabel: 'deaths (% of births)', title: 'both clinics by year, 1833–1858' });
+        const C = v.stage({ x: [5, 94], y: [-45, 640], axes: 'box', yticks: [0, 200, 400, 600], height: 250, weight: 1, xticks: yt.slice(1, 8), ylabel: '2Δ log-likelihood', title: 'where is the break? a change-point scan' });
+        const H = A.handle(40, 31, { color: 'gold', r: 7, label: 'split', labelPos: 'e', constrain: (x) => [Math.round(Math.min(93, Math.max(6, x))), 31] });
+        const [BT, DT] = semmSum(0, N), l0 = binLL(BT, DT);
+        const prof = []; for (let c = 6; c <= 93; c++) { const [a, b] = semmSum(0, c), [x, y] = semmSum(c, N); prof.push([c, 2 * (binLL(a, b) + binLL(x, y) - l0)]); }
+        const best = prof.reduce((m, p) => (p[1] > m[1] ? p : m));
+        const label = (i) => `${MON3[i % 12]} ${1841 + Math.floor(i / 12)}`;
+        let st = null;
+        v.render(() => {
+          const c = H.x;
+          // ---- monthly bars
+          SEMM_MONTHLY.forEach((r, i) => {
+            if (!r) { A.text('n/a', i, 1.2, { size: 9, color: 'muted', align: 'center' }); return; }
+            const p = (100 * r[1]) / r[0], col = i < 76 ? 'red' : i === 76 ? 'orange' : 'green';
+            A.rect(i - 0.4, 0, i + 0.4, p, { fill: col, fillAlpha: 0.75, stroke: false });
+          });
+          if (show2.value) for (const [yr, , , b2, d2] of SEMM_YEARLY) { if (yr < 1841 || yr > 1849) continue; const x0 = 12 * (yr - 1841) - 0.5, x1 = Math.min(x0 + 12, 99); A.line(x0, (100 * d2) / b2, x1, (100 * d2) / b2, { color: 'blue', width: 2.6 }); }
+          A.vline(WASH, { color: 'ink', width: 1.4, dash: [4, 3] });
+          A.text('chlorine washing from mid-May 1847', WASH, 27, { dx: -6, size: 11.5, weight: 700, align: 'right' });
+          A.text('Apr 1847: 18.3%', 75, (100 * 57) / 312, { dx: -6, dy: -2, size: 11, color: 'red', weight: 600, align: 'right' });
+          // the split and the two mean rates
+          const [b1, d1] = semmSum(0, c), [b2, d2] = semmSum(c, N), r1 = (100 * d1) / b1, r2 = (100 * d2) / b2;
+          A.line(c - 0.5, 0, c - 0.5, 31, { color: 'gold', width: 2 });
+          A.line(-0.5, r1, c - 0.5, r1, { color: 'gold', width: 2.6, dash: [6, 3] }); A.line(c - 0.5, r2, 99, r2, { color: 'gold', width: 2.6, dash: [6, 3] });
+          const P = A.pointer;
+          if (P.inside) { const i = Math.round(P.x); const r = SEMM_MONTHLY[i]; if (r) { A.rect(i - 0.5, 0, i + 0.5, 33, { fill: 'ink', fillAlpha: 0.06, stroke: false }); A.text(`${label(i)}: ${r[1]} deaths in ${r[0]} births (${v.fix((100 * r[1]) / r[0], 1)}%)`, i, 33, { dx: i > 60 ? -8 : 8, dy: 0, align: i > 60 ? 'right' : 'left', size: 12, weight: 600, plate: true, baseline: 'top' }); } }
+          // ---- yearly, both clinics
+          Y.vband(1847.37, 1849.21, { color: 'green', alpha: 0.12 });
+          Y.vline(1841, { color: 'muted', width: 1, dash: [3, 3] });
+          Y.text('dashed: 1841, the Second Clinic becomes midwives-only', 1858.3, 16.6, { size: 10.5, color: 'muted', align: 'right' });
+          Y.path(SEMM_YEARLY.map((r) => [r[0], (100 * r[2]) / r[1]]), { color: 'red', width: 2.4 });
+          Y.path(SEMM_YEARLY.map((r) => [r[0], (100 * r[4]) / r[3]]), { color: 'blue', width: 2.4 });
+          Y.dots(SEMM_YEARLY.map((r) => [r[0], (100 * r[2]) / r[1]]), { r: 3, color: 'red' }); Y.dots(SEMM_YEARLY.map((r) => [r[0], (100 * r[4]) / r[3]]), { r: 3, color: 'blue' });
+          Y.text('Semmelweis', 1848.3, 14.5, { size: 10.5, color: 'green', weight: 700, align: 'center' });
+          // ---- change-point scan
+          C.path(prof, { color: 'purple', width: 2.4 });
+          C.vline(WASH, { color: 'ink', width: 1, dash: [4, 3] });
+          C.dot(best[0], best[1], { r: 5, color: 'purple' }); C.text(`peak: ${label(best[0])}`, best[0], best[1], { dx: -8, dy: -4, size: 11.5, weight: 700, color: 'purple', align: 'right' });
+          const cur = prof.find((p) => p[0] === c); if (cur) { C.vline(c, { color: 'gold', width: 1.6 }); C.dot(c, cur[1], { r: 6, color: 'gold' }); }
+          st = { c, b1, d1, b2, d2, r1, r2, dev: cur ? cur[1] : 0 };
+        });
+        v.legend([['red', 'First Clinic (doctors), before washing', { area: true }], ['green', 'after chlorine washing', { area: true }], ['blue', 'Second Clinic (midwives), yearly'], ['gold', 'your split and the mean rate on each side', { dash: true }], ['purple', 'evidence for a break at each month']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { c, b1, d1, b2, d2, r1, r2, dev } = st;
+          const Y4 = SEMM_YEARLY.filter((r) => r[0] >= 1841 && r[0] <= 1846), s = (k) => Y4.reduce((a, r) => a + r[k], 0);
+          const [rr, lo, hi] = riskRatio(s(2), s(1), s(4), s(3)), [rs, ls, hs] = riskRatio(d1, b1, d2, b2);
+          return `1841–46: First Clinic ${s(2).toLocaleString('en-US')} deaths in ${s(1).toLocaleString('en-US')} births (**${v.fix((100 * s(2)) / s(1), 2)}%**), Second ${s(4)} in ${s(3).toLocaleString('en-US')} (**${v.fix((100 * s(4)) / s(3), 2)}%**): risk ratio **${v.fix(rr, 2)}** (95% CI ${v.fix(lo, 2)}–${v.fix(hi, 2)}) · split before ${label(c)}: ${v.fix(r1, 2)}% (${d1} / ${b1.toLocaleString('en-US')}) then ${v.fix(r2, 2)}% (${d2} / ${b2.toLocaleString('en-US')}), ratio ${v.fix(rs, 1)} (${v.fix(ls, 1)}–${v.fix(hs, 1)}), $2\\Delta\\log L$ = ${v.fix(dev, 0)}; the scan peaks at **${label(best[0])}** (${v.fix(best[1], 0)}), the first full month of washing · 1848: 45 deaths in 3,556 births (1.27%), the midwives’ clinic 1.30% · today: maternal mortality from all causes is 197 per 100,000 live births worldwide (2023), about 0.2%, and sepsis causes roughly a tenth of it`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 4.16
+    {
+      num: '4.16',
+      kind: 'Paper',
+      name: 'Smoking and Carcinoma of the Lung',
+      paper: { authors: 'Richard Doll and A. Bradford Hill', year: 1950, title: 'Smoking and Carcinoma of the Lung: Preliminary Report',
+               venue: 'British Medical Journal 2 (4682): 739–748', doi: '10.1136/bmj.2.4682.739' },
+      introduces: ['epi-4.12'],
+      statement: String.raw`Doll and Hill interviewed 709 patients with carcinoma of the lung in twenty London hospitals (1948–49) and, as controls, the same number of patients with other diseases, each matched for sex, five-year age group and hospital. Among the 649 men with lung cancer only **2** had never smoked, against **27** of their 649 controls; the exact probability of so extreme a difference by chance was $6.4\times10^{-7}$. The odds ratio is
+$$\mathrm{OR}=\frac{647\times27}{2\times622}\approx14 .$$
+Among smokers the cancer patients smoked more (26% of men with lung cancer smoked 25 or more cigarettes a day, against 13.5% of controls; $\chi^2=36.95$ on 4 degrees of freedom), and with population estimates for Greater London the risk rose steadily with the amount smoked, roughly in proportion to it. Women showed the same pattern on smaller numbers. They concluded "that smoking is a factor, and an important factor, in the production of carcinoma of the lung."
+
+A case–control study (epi-4.12) estimates the odds ratio, which approximates the relative risk for a rare disease, and is open to recall and selection bias; the authors checked interviewers, hospitals and the reliability of smoking histories, and the result was confirmed by their prospective study of British doctors (from 1951).`,
+      idea: String.raw`Lung cancer deaths in England and Wales rose about fifteen-fold between 1922 and 1947; candidates included road tar, motor exhaust, the 1918 influenza and better diagnosis, and tobacco was one suspicion among many (most of the investigators themselves smoked). Doll, a physician, and Hill, the statistician who had just run the streptomycin trial, chose a design that could answer quickly: compare the past exposure of people with and without the disease (epi-3.6), with matched controls and standard interviews, and test whether chance could explain the difference (epi-5.2). The answer was the smoking habits table, and above all its dose–response gradient, which no simple bias would produce. The same year Wynder and Graham published a similar study in the USA. The paper made the case–control study a principal tool of epidemiology, started the evidence that led to the Royal College of Physicians report (1962) and the US Surgeon General's report (1964), and prepared Hill's later list of viewpoints for causation (epi-4.17).`,
+      caption: String.raw`**Left**: the paper's Table IV as a 2 × 2 table (switch **men / women**), with the odds ratio and Fisher's exact probability computed live. **Bias probe**: slide the number of lung-cancer patients who were really non-smokers but were recorded as smokers (recall bias in its most damaging form) and watch the odds ratio fall; for men it reaches 1 only when 25 of the 649 patients are misrecorded. **Right**: dose and response on a log scale: odds ratios for each class of daily consumption against non-smokers, from Table V (bars, 95% intervals), the age-averaged relative risks the authors derived for Greater London (Table XIV, purple), the prospective British doctors' rates Hill quoted in 1965 (green), and today's relative risk for current smokers (teal).`,
+      deps: ['epi-3.6', 'epi-5.2'],
+      refs: [],
+      tags: ['case-control', 'smoking', 'history'],
+      credit: 'Richard Doll & Austin Bradford Hill, 1950',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/British_Doctors_Study' },
+      viz(v) {
+        const sex = v.select('patients', [{ value: 'men', label: 'men (649 pairs)' }, { value: 'women', label: 'women (60 pairs)' }], 'men');
+        const bias = v.slider('patients misrecorded as smokers', 0, 30, 0, { int: true, step: 1 });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 0.85, minWidth: 260, title: 'Table IV: who had ever smoked' });
+        const D = v.stage({ x: [0, 72], y: [0.8, 150], ylog: true, axes: 'box', height: 320, weight: 1.15, xlabel: 'cigarettes a day', ylabel: 'risk relative to non-smokers', yticks: [1, 2, 5, 10, 20, 50, 100], title: 'dose and response' });
+        const tab = v.table(T, { rows: 2, cols: 2, square: false, cellAspect: 1.5, maxCell: 72, size: 20, rowLabels: ['lung carcinoma', 'controls'], colLabels: ['non-smokers', 'smokers'], region: [0, 0.18, 1, 1] });
+        const lg = v.M.lgamma, lC = (n, k) => lg(n + 1) - lg(k + 1) - lg(n - k + 1);
+        const fisherLow = (a, n1, m, N) => { let p = 0; for (let x = 0; x <= a; x++) p += Math.exp(lC(m, x) + lC(N - m, n1 - x) - lC(N, n1)); return p; }; // P(X ≤ a)
+        let st = null;
+        v.render(() => {
+          const s = sex.value, k = Math.min(bias.value, DH_IV[s][0][1]);
+          const ca = [DH_IV[s][0][0] + k, DH_IV[s][0][1] - k], co = DH_IV[s][1], n = ca[0] + ca[1];
+          tab.draw({
+            value: (i, j) => (i ? co[j] : ca[j]),
+            sub: (i, j) => `${v.fix((100 * (i ? co[j] : ca[j])) / n, 1)}%`, subSize: 11,
+            fill: (i, j) => (j === 0 ? ['blue', 0.18] : ['red', 0.16]),
+            highlight: k ? [[0, 0, 'gold'], [0, 1, 'gold']] : [],
+          });
+          const OR = (ca[1] * co[0]) / (ca[0] * co[1]), se = Math.sqrt(1 / ca[0] + 1 / ca[1] + 1 / co[0] + 1 / co[1]);
+          const p = fisherLow(ca[0], n, ca[0] + co[0], 2 * n);
+          T.text(`odds ratio ${v.fix(OR, 2)}   (95% CI ${v.fix(OR * Math.exp(-1.96 * se), 1)}–${v.fix(OR * Math.exp(1.96 * se), 1)})`, 0.5, 0.1, { size: 14, weight: 700, color: OR > 1.0001 ? 'red' : 'ink', align: 'center' });
+          // ---- dose and response: odds ratios against non-smokers, from Table V (with the same misrecording)
+          D.hline(1, { color: 'ink', width: 1 });
+          D.hband(24.97, 25.66, { color: 'teal', alpha: 0.4 }); D.hline(25.3, { color: 'teal', width: 1.4, dash: [6, 4] }); D.corner('teal: today, 25× (2000–10)', 'tr', { color: 'teal', weight: 700, size: 11 });
+          const [vc, vk] = DH_V[s], ors = [];
+          vc.forEach((c, j) => {
+            const cc = c - (j === 1 ? Math.min(k, c) : 0); // misrecorded patients taken from the commonest class
+            if (!cc || !vk[j]) { ors.push(null); return; }
+            const o = (cc / ca[0]) / (vk[j] / co[0]), e = Math.sqrt(1 / cc + 1 / ca[0] + 1 / vk[j] + 1 / co[0]); ors.push(o);
+            const xm = DH_DOSE[j] - 1.6;
+            D.rect(xm - 1.3, 1, xm + 1.3, o, { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.2 });
+            D.line(xm, o * Math.exp(-1.96 * e), xm, Math.min(149, o * Math.exp(1.96 * e)), { color: 'red', width: 1.6 });
+          });
+          if (s === 'men') {
+            D.path(DH_DOSE.map((d, j) => [d, DH_XIV[j]]), { color: 'purple', width: 1.6, dash: [4, 3] });
+            DH_DOSE.forEach((d, j) => D.dot(d, DH_XIV[j], { r: 5, color: 'purple' }));
+            D.text('Table XIV: 6, 19, 26, 49, 65', 60, 65, { dx: -8, dy: -12, size: 11, weight: 700, color: 'purple', align: 'right' });
+            [[7.5, 8], [20, 20], [35, 32]].forEach(([d, r]) => D.rect(d + 1.2 - 0.9, r / 1.07, d + 1.2 + 0.9, r * 1.07, { fill: 'green', fillAlpha: 1, stroke: false }));
+            D.text('British doctors (prospective): 8, 20, 32', 20, 20, { dx: 10, dy: 14, size: 11, weight: 700, color: 'green', align: 'left', plate: true });
+          }
+          st = { s, k, OR, se, p, ors, ca, co };
+        });
+        v.legend([['blue', 'non-smokers', { area: true }], ['red', 'smokers; odds ratio by daily amount', { area: true }], ['purple', 'Greater London relative risks (Table XIV)', { dot: true }], ['green', 'British doctors, 1951– (Hill 1965)', { area: true }], ['teal', 'today (Thun et al. 2013)', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { s, k, OR, p, ors, ca } = st, men = s === 'men';
+          const pt = p < 1e-3 ? `$${v.sci(p, 2)}$` : v.fix(p, 4);
+          const bit = k ? ` · with ${k} of the ${ca[0] + ca[1]} patients misrecorded the odds ratio would be **${v.fix(OR, 2)}**${OR <= 1.0001 ? ' — the association vanishes' : ''}` : '';
+          const dose = ors.map((o, j) => (o == null ? '—' : v.fix(o, 1))).join(', ');
+          return `${men ? 'men' : 'women'}: odds ratio **${v.fix(OR, 2)}**, exact one-sided P = ${pt}${men && !k ? ' (paper: P = 0.00000064)' : !men && !k ? ' (paper: χ² = 5.76, 0.01 < P < 0.02)' : ''}${bit} · by daily amount (1–4, 5–14, 15–24, 25–49, 50+): odds ratios ${dose}${men ? '; Table V χ² = 36.95 on 4 df, as printed; to remove the association entirely 25 of the 649 men with lung cancer (3.9%) would all have to be non-smokers who claimed to smoke, and the gradient would remain' : ''} · today: lung-cancer death rate of current smokers about 25 times that of never-smokers (US cohorts 2000–10; 12 for men in 1959–65), close to the 1950 heavy-smoker figures`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 4.17
+    {
+      num: '4.17',
+      kind: 'Paper',
+      name: 'The Environment and Disease: Association or Causation?',
+      paper: { authors: 'Austin Bradford Hill', year: 1965, title: 'The Environment and Disease: Association or Causation?',
+               venue: 'Proceedings of the Royal Society of Medicine 58 (5): 295–300', doi: '10.1177/003591576505800503' },
+      introduces: ['epi-4.3'],
+      statement: String.raw`Given an association between an environmental feature and a disease that is "perfectly clear-cut and beyond what we would care to attribute to the play of chance", Hill listed nine aspects to consider before deciding that the most likely interpretation is causation:
+(1) **strength** of the association; (2) **consistency** across persons, places, circumstances and times; (3) **specificity** to particular workers and diseases; (4) **temporality**, cause before effect; (5) a **biological gradient** (dose–response); (6) biological **plausibility**; (7) **coherence** with the natural history and biology of the disease; (8) **experiment**, such as a preventive action that lowers the frequency; (9) **analogy** with similar causes.
+
+His central qualification: "None of my nine viewpoints can bring indisputable evidence for or against the cause-and-effect hypothesis and none can be required as a *sine qua non*"; they help answer whether any other explanation is equally or more likely. He added that formal tests of significance contribute "nothing to the 'proof' of our hypothesis".
+
+These are the Bradford Hill viewpoints (epi-4.3), often misquoted as "criteria"; only temporality is logically necessary.`,
+      idea: String.raw`Hill gave this lecture to the new Section of Occupational Medicine fifteen years after his study with Doll (epi-4.12, epi-4.16) and a year after the US Surgeon General's report, which had used similar considerations to call smoking a cause of lung cancer. Observational data cannot be randomized, so the question is when an association earns the word cause. His examples carry the argument: the chimney sweeps' scrotal cancer (some 200 times the usual rate), cigarettes and lung cancer (9–10 times, 20–30 in heavy smokers, rising with dose), but cigarettes and coronary thrombosis (no more than twice, so a confounder is easy to imagine); Snow's water companies (14 times); and nickel refiners in South Wales, a unique event with no repetition possible, accepted anyway. Strength matters because a confounder must itself be strongly tied to both exposure and disease to explain a large ratio, the argument Cornfield made for smoking in 1959 and that the E-value now quantifies. Later cases (hormone therapy and heart disease) showed how consistency, plausibility and coherence can all agree with an association that a randomized trial then overturns.`,
+      caption: String.raw`**Top**: Hill's nine viewpoints (strength, consistency, specificity, temporality, biological gradient, plausibility, coherence, experiment, analogy) applied to seven associations, with suggested ratings (✓ supports, ~ partly, ✗ against or absent, ? unknown); **click a cell** to change it, **click a row label** to select a case. The score is the share of supporting viewpoints, a reminder rather than a verdict. **Bottom left**: the strength viewpoint made quantitative for the selected case: a hidden confounder associated with exposure by a risk ratio $RR_{EU}$ and with disease by $RR_{UD}$ can explain the whole association only above the curve; **drag the gold confounder** and read the bias it would produce. The diagonal point is the E-value. **Bottom right**: the scores, side by side.`,
+      deps: ['epi-4.12', 'epi-3.2'],
+      refs: [],
+      tags: ['causation', 'epidemiology', 'history'],
+      credit: 'Austin Bradford Hill, 1965',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Bradford_Hill_criteria' },
+      viz(v) {
+        let R = HILL_CASES.map((c) => c.r.slice()), sel = 0;
+        v.button('Reset ratings', () => { R = HILL_CASES.map((c) => c.r.slice()); });
+        const SY = ['?', '✗', '~', '✓'], FILL = { 2: ['green', 0.32], 1: ['gold', 0.3], 0: ['red', 0.22] };
+        const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true, title: 'nine viewpoints, seven associations' });
+        const tab = v.table(S, { rows: 7, cols: 10, square: false, cellAspect: 1.55, maxCell: 38, size: 17, labelSize: 12, rowLabels: HILL_CASES.map((c) => c.name), colLabels: ['strength', 'consist.', 'specif.', 'tempor.', 'gradient', 'plausib.', 'coher.', 'experim.', 'analogy', 'score'] });
+        const E = v.stage({ x: [1, 400], y: [1, 400], xlog: true, ylog: true, axes: 'box', height: 330, weight: 1.1, xlabel: 'confounder–exposure risk ratio', ylabel: 'confounder–disease risk ratio', title: 'could a hidden confounder explain it?' });
+        const B = v.stage({ x: [0, 100], y: [-0.5, 6.5], axes: false, height: 330, weight: 0.9, minWidth: 250, title: 'share of viewpoints in favour' });
+        const Hc = E.handle(3, 3, { color: 'gold', r: 8, label: 'confounder', labelPos: 'se' });
+        const score = (r) => { const rated = r.filter((x) => x >= 0); return rated.length ? (100 * rated.reduce((s, x) => s + x / 2, 0)) / rated.length : 0; };
+        S.onClick((x, y) => {
+          const h = tab.hit(x, y); if (!h) return;
+          if (h.header === 'row' || (h.i >= 0 && h.j === 9)) sel = h.i;
+          else if (h.i >= 0 && h.j >= 0 && h.j < 9) { const cur = R[h.i][h.j]; R[h.i][h.j] = cur === 2 ? 1 : cur === 1 ? 0 : cur === 0 ? -1 : 2; sel = h.i; }
+        });
+        let st = null;
+        v.render(() => {
+          tab.draw({
+            value: (i, j) => (j === 9 ? `${Math.round(score(R[i]))}%` : SY[R[i][j] + 1]),
+            fill: (i, j) => (j === 9 ? ['accent', 0.12] : FILL[R[i][j]] || null),
+            size: 17, activeRow: sel,
+            textColor: (i, j) => (j === 9 ? 'accent' : R[i][j] === 2 ? 'green' : R[i][j] === 0 ? 'red' : 'ink'),
+          });
+          // ---- confounding plane for the selected case
+          const c = HILL_CASES[sel], rr = c.rr == null ? null : c.rr < 1 ? 1 / c.rr : c.rr;
+          if (rr) {
+            const yOf = (x) => (x > rr ? (rr * (x - 1)) / (x - rr) : Infinity);
+            E.clip(() => E.between((x) => Math.min(400, yOf(x)), () => 400, rr * 1.0005, 400, { fill: 'red', fillAlpha: 0.12, n: 300 }));
+            E.fn((x) => yOf(x), { domain: [rr * 1.0005, 400], color: 'red', width: 2.4, n: 300 });
+            const ev = eValue(rr); E.line(1, 1, 400, 400, { color: 'faint', width: 1, dash: [3, 3] });
+            E.dot(ev, ev, { r: 6, color: 'red' }); E.text(`E-value ${v.fix(ev, 1)}`, ev, ev, { dx: 10, dy: 10, size: 12, weight: 700, color: 'red', align: 'left', plate: true });
+            E.text('strong enough to explain it all', 380, 380, { size: 11.5, weight: 700, color: 'red', align: 'right', dy: 4, baseline: 'top' });
+          } else E.text('no risk ratio: a correlation across countries', 20, 20, { align: 'center', size: 12.5, weight: 700, color: 'muted' });
+          E.corner(c.name, 'tl', { color: 'ink', weight: 700, size: 12.5, dx: 60, dy: 22 });
+          // ---- scores
+          HILL_CASES.forEach((cs, i) => {
+            const y = 6 - i, sc = score(R[i]);
+            B.rect(0, y - 0.32, sc, y + 0.32, { fill: i === sel ? 'accent' : 'muted', fillAlpha: i === sel ? 0.7 : 0.35, stroke: false, radius: 3 });
+            B.text(`${cs.name.split(' → ')[0]} → ${cs.name.split(' → ')[1]}`, 1.5, y, { size: 11, weight: i === sel ? 700 : 500, color: 'ink', plate: false });
+            B.text(`${Math.round(sc)}%`, 99, y, { size: 11.5, weight: 700, color: i === sel ? 'accent' : 'muted', align: 'right' });
+          });
+          st = { c, rr };
+        });
+        v.legend([['green', '✓ supports', { area: true }], ['gold', '~ partly', { area: true }], ['red', '✗ against or absent; region where a confounder could explain the association', { area: true }], ['gold', 'a hypothetical confounder (drag)', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { c, rr } = st;
+          let conf = '';
+          if (rr) {
+            const x = Hc.x, y = Hc.y, Bf = (x * y) / (x + y - 1), adj = rr / Bf;
+            conf = ` · a confounder with $RR_{EU} = ${v.fix(x, 1)}$, $RR_{UD} = ${v.fix(y, 1)}$ can create a spurious ratio of at most ${v.fix(Bf, 2)}, leaving **${v.fix(Math.max(adj, 0), 2)}**${adj <= 1 ? ' — enough to explain the whole association' : ''} · E-value **${v.fix(eValue(rr), 1)}**: weaker confounding cannot explain an observed ${c.rr < 1 ? `protective ratio of ${v.fix(c.rr, 2)}` : `ratio of ${v.fix(rr, 0)}`}`;
+          }
+          return `**${c.name}** — ${c.note}${conf} · score ${Math.round(score(R[sel]))}% of the viewpoints rated · Hill: “none of my nine viewpoints … can be required as a sine qua non”: hormone therapy (${Math.round(score(R[5]))}%) had consistency, plausibility and coherence on its side and was overturned by experiment, while the nickel refiners (${Math.round(score(R[2]))}%), never repeated, were accepted`;
+        });
+      },
+    },
   ],
 };

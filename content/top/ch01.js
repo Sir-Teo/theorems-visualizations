@@ -17,6 +17,32 @@ function clipHalf(poly, [nx, ny], [cx, cy]) {
 /** Largest r with f(r) true, by bisection on [0, hi] (f monotone: true then false). */
 function largest(f, hi) { if (!f(1e-9)) return 0; let lo = 0; for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; if (f(m)) lo = m; else hi = m; } return lo; }
 
+const LAT = new Map();
+/** The lattice of all topologies on n points: layers by number of open sets, covering pairs, barycentric ordering. */
+function lattice(n) {
+  if (LAT.has(n)) return LAT.get(n);
+  const T = allTops(n), sizes = [...new Set(T.map(pc))].sort((a, b) => a - b);
+  const layers = sizes.map((sz) => T.filter((F) => pc(F) === sz).sort((a, b) => a - b));
+  const layerOf = new Map(); layers.forEach((L, j) => L.forEach((F) => layerOf.set(F, j)));
+  const covers = [];
+  for (const A of T) for (const B of T) {
+    if (A === B || (A & B) !== A) continue;
+    const ja = layerOf.get(A), jb = layerOf.get(B); let ok = true;
+    for (let j = ja + 1; j < jb && ok; j++) for (const C of layers[j]) if ((A & C) === A && (C & B) === C) { ok = false; break; }
+    if (ok) covers.push([A, B]);
+  }
+  const down = new Map(T.map((F) => [F, []])), up = new Map(T.map((F) => [F, []]));
+  for (const [a, b] of covers) { up.get(a).push(b); down.get(b).push(a); }
+  const rank = new Map(); layers.forEach((L) => L.forEach((F, i) => rank.set(F, (i + 0.5) / L.length)));
+  const sweep = (order, nb) => { for (const j of order) { const L = layers[j]; const key = new Map(L.map((F) => { const ns = nb.get(F); return [F, ns.length ? ns.reduce((s, G) => s + rank.get(G), 0) / ns.length : rank.get(F)]; })); L.sort((a, b) => key.get(a) - key.get(b)); L.forEach((F, i) => rank.set(F, (i + 0.5) / L.length)); } };
+  const idx = layers.map((_, j) => j);
+  for (let it = 0; it < 6; it++) { sweep(idx.slice(1), down); sweep(idx.slice(0, -1).reverse(), up); }
+  const pos = new Map();
+  layers.forEach((L, j) => { const dx = Math.min(8.8 / L.length, 1.35); L.forEach((F, i) => pos.set(F, [5.4 + (i - (L.length - 1) / 2) * dx, 0.45 + (5.1 * j) / Math.max(layers.length - 1, 1)])); });
+  const res = { T, layers, sizes, covers, pos };
+  LAT.set(n, res); return res;
+}
+
 export default {
   collection: 'top',
   chapter: 1,
@@ -258,7 +284,7 @@ A **subbasis** is any family $\mathscr S$ of subsets whose union is $X$. The top
       tags: ['basis', 'generating topologies'],
       viz(v) {
         const fam = v.select('family', [{ value: 'disc', label: 'open discs' }, { value: 'sq', label: 'open squares' }, { value: 'half', label: 'open half-planes' }, { value: 'cdisc', label: 'closed discs' }], 'disc', {
-          onChange: (f) => { if (f === 'cdisc') { const d = Math.hypot(c2.x - c1.x, c2.y - c1.y) || 1; X.set(c1.x + ((c2.x - c1.x) * R1) / d, c1.y + ((c2.y - c1.y) * R1) / d); } },
+          onChange: (f) => { if (f === 'cdisc') { const th = Math.atan2(c2.y - c1.y, c2.x - c1.x) - 0.5; X.set(c1.x + R1 * Math.cos(th), c1.y + R1 * Math.sin(th)); } },
         });
         const tanB = v.button('Tangent', () => { const d = Math.hypot(c2.x - c1.x, c2.y - c1.y) || 1, ux = (c2.x - c1.x) / d, uy = (c2.y - c1.y) / d; c2.set(c1.x + ux * (R1 + R2), c1.y + uy * (R1 + R2)); X.set(c1.x + ux * R1, c1.y + uy * R1); });
         const A = v.stage({ x: [-2.5, 2.5], y: [-2.1, 2.1], equal: true, axes: false, height: 340, title: '(B2): a basic set around $x$ inside $B_1\\cap B_2$' });
@@ -347,6 +373,204 @@ A **subbasis** is any family $\mathscr S$ of subsets whose union is $X$. The top
           if (F === 'half') return '**(B2) fails for half-planes:** a half-plane containing $x$ is never inside the wedge $H_1\\cap H_2$ (the red hatched part sticks out). Half-planes are a **subbasis**, not a basis: the wedge is a finite intersection, and the finite intersections — convex open polygons — form a basis for the usual topology.';
           if (F === 'cdisc' && rho <= 1e-6) return `**(B2) fails:** $x$ lies on the boundary of ${st.tangent ? 'both discs, which are tangent, so $B_1\\cap B_2=\\{x\\}$' : '$B_1\\cap B_2$'}, and no closed disc of positive radius around $x$ fits inside. Used as a subbasis, closed discs generate the **discrete** topology, since two tangent closed discs meet in a single point.`;
           return `$B_3$ = the ${F === 'sq' ? 'square' : 'disc'} of radius $${v.fix(rho, 3)}$ about $x$ satisfies $x\\in B_3\\subset B_1\\cap B_2$ ✓` + (F === 'cdisc' ? ' — here; now put $x$ on the boundary.' : `. Open ${F === 'sq' ? 'squares' : 'discs'} satisfy (B2) everywhere, and both families generate the usual topology of $\\R^2$: every disc contains a concentric square and vice versa.`);
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4',
+      kind: 'Definition',
+      name: 'Finer and coarser topologies',
+      statement: String.raw`If $\tau$ and $\tau'$ are topologies on the same set $X$ with $\tau\subset\tau'$, then $\tau'$ is **finer** (larger) than $\tau$ and $\tau$ is **coarser** (smaller) than $\tau'$; *strictly* so if $\tau\ne\tau'$. Two topologies are **comparable** if one contains the other.
+
+The topologies on $X$ form a complete lattice under inclusion: the discrete topology is the finest and the indiscrete the coarsest; any two have a **meet** $\tau_1\wedge\tau_2=\tau_1\cap\tau_2$ and a **join** $\tau_1\vee\tau_2$, the topology generated by $\tau_1\cup\tau_2$ as a subbasis. For bases: $\mathscr B'$ generates a topology finer than $\mathscr B$ does if and only if for every $B\in\mathscr B$ and $x\in B$ there is $B'\in\mathscr B'$ with $x\in B'\subset B$.`,
+      idea: String.raw`An intersection of topologies satisfies the axioms (each union or intersection lies in every one of them), so the meet is just $\tau_1\cap\tau_2$; but a union of two topologies usually misses some unions and intersections, and generating from it (1.3) adds exactly what is needed. Finer means more open sets, hence fewer convergent sequences and more continuous functions *out of* the space: the identity $(X,\tau')\to(X,\tau)$ is continuous precisely when every $\tau$-open set is $\tau'$-open, i.e. $\tau\subset\tau'$. Counting the lattice is a classical problem: 1, 4, 29, 355, 6942 topologies on 1–5 points.`,
+      caption: String.raw`The Hasse diagram of *all* topologies on $n$ points, finer ones higher; each glyph is the power set with its open sets filled. Click two topologies (they become $\tau_1$, blue, and $\tau_2$, orange): their meet and join are ringed, and the interval between them stays bright. Below, the join's new sets (gold) are those created by unions or intersections across $\tau_1$ and $\tau_2$; the table counts topologies by enumeration ($n\le4$) and as preorders ($n=5$).`,
+      deps: ['top-1.1', 'top-1.3'],
+      refs: ['Munkres §13'],
+      tags: ['lattice of topologies', 'counting'],
+      viz(v) {
+        const init = {
+          2: [famOf([0, 1, 3]), famOf([0, 2, 3])],
+          3: [famOf([0, setOf([1]), setOf([1, 2]), 7]), famOf([0, setOf([2, 3]), 7])],
+          4: [famOf([0, setOf([1]), setOf([1, 2]), 15]), famOf([0, setOf([2, 3]), setOf([2, 3, 4]), 15])],
+        };
+        let n = 3, sel = init[3].slice(), next = 0;
+        v.select('points $n$', [{ value: '2', label: '2' }, { value: '3', label: '3' }, { value: '4', label: '4 (355 topologies)' }], '3', { onChange: (x) => { n = +x; sel = init[n].slice(); next = 0; } });
+        const M = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 380, full: true, title: 'all topologies on $n$ points, ordered by inclusion — finer is higher' });
+        const D = v.stage({ x: [0, 12], y: [0, 4.6], axes: false, height: 210, weight: 1.7, title: 'the open sets of $\\tau_1$, $\\tau_2$ and their join' });
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 210, weight: 1, title: 'how many topologies on $n$ points?' });
+        const counts = [1, 2, 3, 4].map((k) => ({ top: allTops(k).length, t0: allTops(k).filter((F) => isT0(F, k)).length, cls: classesOf(k) }));
+        const c5 = countPreorders(5); counts.push({ top: c5.pre, t0: c5.po, cls: c5.classes });
+        const tab = v.table(Tb, { rows: 5, cols: 3, square: false, cellAspect: 1.9, maxCell: 30, size: 13, rowLabels: ['1', '2', '3', '4', '5'], colLabels: ['all', 'T₀', 'up to ≅'], cornerLabel: 'n' });
+        M.onClick((x, y) => {
+          const L = lattice(n); let best = null, bd = Infinity;
+          for (const F of L.T) { const [px, py] = L.pos.get(F); const d = Math.hypot(M.X(px) - M.X(x), M.Y(py) - M.Y(y)); if (d < bd) { bd = d; best = F; } }
+          if (best != null && bd < 26) { sel[next] = best; next = 1 - next; }
+        });
+        let st = null;
+        v.render(() => {
+          const L = lattice(n), [t1, t2] = sel;
+          const meet = t1 & t2, join = generate(t1 | t2, n).top;
+          const inI = (F) => (meet & F) === meet && (F & join) === F;
+          const big = n <= 3, w = n === 2 ? 34 : 30, h = n === 2 ? 30 : 26;
+          for (const [a, b] of L.covers) {
+            const [x1, y1] = L.pos.get(a), [x2, y2] = L.pos.get(b), hl = inI(a) && inI(b);
+            M.line(x1, y1, x2, y2, { color: hl ? 'muted' : 'faint', width: big ? (hl ? 1.6 : 1) : hl ? 0.9 : 0.5, alpha: big ? (hl ? 0.9 : 0.5) : hl ? 0.55 : 0.16 });
+          }
+          const role = (F) => [F === t1 && 'accent', F === t2 && 'orange', F === join && 'green', F === meet && 'purple'].filter(Boolean);
+          for (const F of L.T) {
+            const [px, py] = L.pos.get(F), X = M.X(px), Y = M.Y(py), r = role(F), dim = !inI(F);
+            if (big) {
+              M.ctx.save();
+              M.ctx.beginPath(); M.ctx.roundRect(X - w / 2 - 3, Y - h / 2 - 3, w + 6, h + 6, 6);
+              M.ctx.fillStyle = v.color('panel'); M.ctx.fill();
+              M.ctx.lineWidth = r.length ? 2.6 : 1; M.ctx.strokeStyle = v.color(r[0] || 'faint', r.length ? 1 : 0.7); M.ctx.stroke();
+              if (r.length > 1) { M.ctx.beginPath(); M.ctx.roundRect(X - w / 2 - 7, Y - h / 2 - 7, w + 14, h + 14, 9); M.ctx.lineWidth = 2.2; M.ctx.strokeStyle = v.color(r[1]); M.ctx.stroke(); }
+              M.ctx.restore();
+              glyph(v, M, F, n, X, Y, w, h, F === t1 ? 'accent' : F === t2 ? 'orange' : 'ink', dim ? 0.35 : 1);
+            } else {
+              M.dot(px, py, { r: r.length ? 5.5 : 2.4, color: r[0] || 'muted', alpha: r.length ? 1 : dim ? 0.35 : 0.85 });
+              if (r.length > 1) M.circle(px, py, 0.07, { color: r[1], width: 2 });
+            }
+          }
+          // labels for the four special topologies
+          const tags = new Map();
+          for (const [F, t, c] of [[t1, 'τ₁', 'accent'], [t2, 'τ₂', 'orange'], [join, 'τ₁∨τ₂', 'green'], [meet, 'τ₁∧τ₂', 'purple']]) { const o = tags.get(F) || []; o.push([t, c]); tags.set(F, o); }
+          for (const [F, list] of tags) {
+            const [px, py] = L.pos.get(F);
+            M.text(list.map((q) => q[0]).join(' = '), px, py, { dx: big ? w / 2 + 10 : 9, color: list[0][1], weight: 700, size: 12, plate: true });
+          }
+          L.sizes.forEach((sz, j) => M.text(`${sz} open`, 0.05, 0.45 + (5.1 * j) / Math.max(L.sizes.length - 1, 1), { color: 'muted', size: 10.5 }));
+          // detail: τ1, τ2, join
+          const boxes = [[t1, 'τ₁', 'accent', 0.2], [t2, 'τ₂', 'orange', 4.2], [join, 'τ₁ ∨ τ₂', 'green', 8.2]];
+          for (const [F, name, col, x0] of boxes) {
+            const pos = powerPos(n, [x0 + 0.35, x0 + 3.25], [0.45, 3.45]);
+            for (let m = 0; m < 1 << n; m++) for (let i = 0; i < n; i++) if (!(m & (1 << i))) D.line(pos[m][0], pos[m][1], pos[m | (1 << i)][0], pos[m | (1 << i)][1], { color: 'faint', width: 1 });
+            for (let m = 0; m < 1 << n; m++) {
+              const isNew = F === join && inF(join, m) && !inF(t1 | t2, m);
+              if (n <= 3) {
+                if (inF(F, m)) D.text(setName(m, n), pos[m][0], pos[m][1], { align: 'center', color: isNew ? 'gold' : col, weight: 700, size: 11.5, plate: true });
+                else D.text(setName(m, n), pos[m][0], pos[m][1], { align: 'center', color: 'muted', size: 10.5, alpha: 0.6 });
+              } else D.dot(pos[m][0], pos[m][1], { r: inF(F, m) ? 4.5 : 3, color: isNew ? 'gold' : inF(F, m) ? col : 'muted', hollow: !inF(F, m) });
+            }
+            D.text(`${name}: ${pc(F)} open sets`, x0 + 1.8, 4.2, { align: 'center', color: col, weight: 700, size: 12 });
+          }
+          tab.draw({ value: (i, j) => [counts[i].top, counts[i].t0, counts[i].cls][j], activeRow: n - 1, activeColor: 'accent', textColor: (i, j) => (i === 4 ? 'purple' : 'ink') });
+          st = { t1, t2, meet, join };
+        });
+        v.legend([['accent', '$\\tau_1$', { dot: true }], ['orange', '$\\tau_2$', { dot: true }], ['purple', 'meet $\\tau_1\\cap\\tau_2$', { dot: true }], ['green', 'join: generated by $\\tau_1\\cup\\tau_2$', { dot: true }], ['gold', 'new sets in the join', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { t1, t2, meet, join } = st;
+          const rel = t1 === t2 ? 'equal' : (t1 & t2) === t1 ? '$\\tau_1\\subset\\tau_2$: $\\tau_2$ is finer' : (t1 & t2) === t2 ? '$\\tau_2\\subset\\tau_1$: $\\tau_1$ is finer' : 'not comparable';
+          const bad = members(t2, n).find((m) => !inF(t1, m));
+          const id = bad == null ? 'The identity $(X,\\tau_1)\\to(X,\\tau_2)$ **is continuous**: every $\\tau_2$-open set is $\\tau_1$-open.' : `The identity $(X,\\tau_1)\\to(X,\\tau_2)$ **is not continuous**: $${setTex(bad, n)}$ is $\\tau_2$-open but its preimage is not $\\tau_1$-open.`;
+          const extra = pc(join) - pc(t1 | t2);
+          return `$\\tau_1$ and $\\tau_2$ are ${rel}. Meet: ${pc(meet)} open sets; join: ${pc(join)}${extra ? ` (${extra} created by generating)` : ''}. ${id} Topologies on ${n} points: **${allTops(n).length}**.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Definition',
+      name: 'Metric topology; metrizable spaces',
+      statement: String.raw`Let $d$ be a metric on $X$. The balls $B_d(x,\eps)=\{y: d(x,y)<\eps\}$ form a basis; the topology they generate is the **metric topology** of $d$. Thus $U$ is open exactly when every $x\in U$ has some $\eps>0$ with $B_d(x,\eps)\subset U$ — the definition of Rudin 2.18. A topological space is **metrizable** if its topology is the metric topology of some metric on it.
+
+Different metrics can give the same topology: $d$ and $d'$ do so exactly when every $d$-ball about a point contains a $d'$-ball about that point, and vice versa.`,
+      idea: String.raw`Balls satisfy (B2) because a ball is a neighbourhood of each of its points (Rudin 2.19): if $y\in B(x,\eps)$, then $B(y,\eps-d(x,y))\subset B(x,\eps)$ by the triangle inequality. On $\R^2$ the taxicab, Euclidean and maximum metrics satisfy $d_\infty\le d_2\le d_1\le 2d_\infty$, so each kind of ball contains a ball of the others with comparable radius: they define one topology, the usual one. The discrete metric ($d=1$ off the diagonal) has $B(x,1)=\{x\}$, so every set is open. The French railway metric (distances measured through the hub $O$ unless both points lie on one ray from $O$) has thin segments as small balls away from $O$: it is metrizable by definition, but strictly finer than the usual topology.`,
+      caption: String.raw`Click a cell of the table to choose a metric (row) and a set (column); the table itself is computed by testing every sample point of the set for a ball inside it. In the picture, drag $x$ (it snaps to edges, the segment and the point): the filled shape is the largest ball of the chosen metric around $x$ inside the set, with the largest $d_1$, $d_2$, $d_\infty$ balls outlined — whenever one exists, all three do.`,
+      deps: ['top-1.3', 'pma-2.15', 'pma-2.19'],
+      refs: ['Munkres §20'],
+      tags: ['metric spaces', 'metrizability'],
+      viz(v) {
+        const SETS = [
+          { key: 'disc', label: 'disc', open: true, has: (x, y) => Math.hypot(x - 0.3, y - 0.2) < 1.15 },
+          { key: 'osq', label: 'open □', open: true, has: (x, y) => Math.abs(x - 0.1) < 0.95 && Math.abs(y - 0.1) < 0.95 },
+          { key: 'csq', label: 'closed □', open: false, has: (x, y) => Math.abs(x - 0.1) <= 0.95 + 1e-12 && Math.abs(y - 0.1) <= 0.95 + 1e-12 },
+          { key: 'seg', label: 'segment', open: false, has: (x, y) => { const r = Math.hypot(x, y); return r > 0.45 && r < 1.75 && Math.abs(Math.atan2(y, x) - 0.6) < 1e-9; } },
+          { key: 'pt', label: 'point', open: false, has: (x, y) => Math.abs(x - 0.9) < 1e-12 && Math.abs(y + 0.7) < 1e-12 },
+        ];
+        const SEG = [0.6, 0.45, 1.75];
+        const METRICS = ['$d_1$', '$d_2$', '$d_\\infty$', 'discrete', 'railway'];
+        const norm = (x, y, k) => (k === 0 ? Math.abs(x) + Math.abs(y) : k === 1 ? Math.hypot(x, y) : Math.max(Math.abs(x), Math.abs(y)));
+        // exit distance from p along the unit direction u (sets are convex, so A ∩ ray is an initial segment)
+        const exitT = (A, px, py, ux, uy) => { if (!A.has(px, py)) return 0; let lo = 0, hi = 5; if (A.has(px + hi * ux, py + hi * uy)) return hi; for (let k = 0; k < 44; k++) { const m = (lo + hi) / 2; if (A.has(px + m * ux, py + m * uy)) lo = m; else hi = m; } return lo; };
+        const DIRS = Array.from({ length: 144 }, (_, i) => (2 * Math.PI * i) / 144);
+        /** sup{r : B_d(p, r) ⊂ A} for metric k (0 = d1, 1 = d2, 2 = d∞, 3 = discrete, 4 = railway). */
+        function radius(A, px, py, k) {
+          if (!A.has(px, py)) return 0;
+          if (k === 3) return 1;
+          if (k === 4) {
+            const r0 = Math.hypot(px, py);
+            if (r0 < 1e-12) return radius(A, px, py, 1);
+            const ux = px / r0, uy = py / r0;
+            return Math.min(exitT(A, px, py, ux, uy), exitT(A, px, py, -ux, -uy), r0);
+          }
+          let r = Infinity;
+          for (const th of DIRS) { const ux = Math.cos(th), uy = Math.sin(th); r = Math.min(r, exitT(A, px, py, ux, uy) * norm(ux, uy, k)); if (r < 1e-9) return 0; }
+          return r;
+        }
+        // sample points of each set (boundary points that belong to it included)
+        const samples = (A) => {
+          if (A.key === 'disc') return Array.from({ length: 40 }, (_, i) => { const t = i * 2.4, rr = 1.14 * Math.sqrt((i + 0.5) / 40); return [0.3 + rr * Math.cos(t), 0.2 + rr * Math.sin(t)]; });
+          if (A.key === 'osq' || A.key === 'csq') { const e = A.key === 'csq' ? 0.95 : 0.949; const out = []; for (const a of [-1, -0.5, 0, 0.5, 1]) for (const b of [-1, -0.5, 0, 0.5, 1]) out.push([0.1 + a * e, 0.1 + b * e]); return out; }
+          if (A.key === 'seg') return [0.5, 0.8, 1.1, 1.4, 1.7].map((r) => [r * Math.cos(SEG[0]), r * Math.sin(SEG[0])]);
+          return [[0.9, -0.7]];
+        };
+        const table = METRICS.map((_, k) => SETS.map((A) => { let worst = null; for (const [x, y] of samples(A)) if (radius(A, x, y, k) <= 1e-9) { worst = [x, y]; break; } return { open: worst == null, worst }; }));
+        let mk = 1, sk = 2;
+        const P = v.stage({ x: [-2, 2.2], y: [-1.75, 2.0], equal: true, axes: false, height: 340, weight: 1.15, title: 'largest ball about $x$ inside the set' });
+        const Tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1, title: 'is the set open? (click a cell)' });
+        const T = v.table(Tb, { rows: 5, cols: 5, square: false, cellAspect: 1.25, maxCell: 46, size: 16, rowLabels: METRICS, colLabels: SETS.map((A) => A.label), labelSize: 11.5 });
+        Tb.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0) mk = c.i; if (c && c.j >= 0) { sk = c.j; place(); } });
+        const snap = (x, y) => {
+          const A = SETS[sk];
+          if (A.key === 'pt') return Math.hypot(x - 0.9, y + 0.7) < 0.25 ? [0.9, -0.7] : [x, y];
+          if (A.key === 'seg') { const r = x * Math.cos(SEG[0]) + y * Math.sin(SEG[0]), off = -x * Math.sin(SEG[0]) + y * Math.cos(SEG[0]); if (Math.abs(off) < 0.15 && r > 0.46 && r < 1.74) return [r * Math.cos(SEG[0]), r * Math.sin(SEG[0])]; return [x, y]; }
+          if (A.key === 'csq') { let [a, b] = [x - 0.1, y - 0.1]; if (Math.abs(Math.abs(a) - 0.95) < 0.07 && Math.abs(b) <= 0.95) a = Math.sign(a) * 0.95; if (Math.abs(Math.abs(b) - 0.95) < 0.07 && Math.abs(a) <= 0.95) b = Math.sign(b) * 0.95; return [a + 0.1, b + 0.1]; }
+          return [x, y];
+        };
+        const X = P.handle(0.62, 0.4, { color: 'ink', label: '$x$', constrain: snap });
+        function place() { const A = SETS[sk]; const p = A.key === 'pt' ? [0.9, -0.7] : A.key === 'seg' ? [1.1 * Math.cos(SEG[0]), 1.1 * Math.sin(SEG[0])] : A.key === 'csq' ? [0.62, 0.4] : [0.75, 0.55]; X.set(p[0], p[1]); }
+        let st = null;
+        v.render(() => {
+          const A = SETS[sk];
+          // railway lines
+          if (mk === 4) for (let i = 0; i < 12; i++) { const th = (Math.PI * i) / 6 + 0.6; P.line(0, 0, 3 * Math.cos(th), 3 * Math.sin(th), { color: 'faint', width: 1, alpha: 0.7 }); }
+          if (mk === 4) P.dot(0, 0, { r: 4, color: 'muted', label: 'O', labelPos: 'sw' });
+          // the set
+          if (A.key === 'disc') P.circle(0.3, 0.2, 1.15, { fill: 'accent', fillAlpha: 0.12, color: 'accent', width: 1.8, dash: [6, 4] });
+          if (A.key === 'osq' || A.key === 'csq') P.rect(-0.85, -0.85, 1.05, 1.05, { fill: 'accent', fillAlpha: 0.12, color: 'accent', width: 1.8, dash: A.key === 'osq' ? [6, 4] : null });
+          if (A.key === 'seg') { const [th, a, b] = SEG; P.line(a * Math.cos(th), a * Math.sin(th), b * Math.cos(th), b * Math.sin(th), { color: 'accent', width: 4 }); P.dot(a * Math.cos(th), a * Math.sin(th), { hollow: true, color: 'accent' }); P.dot(b * Math.cos(th), b * Math.sin(th), { hollow: true, color: 'accent' }); }
+          if (A.key === 'pt') P.dot(0.9, -0.7, { r: 5, color: 'accent' });
+          // balls
+          const r = [0, 1, 2, 3, 4].map((k) => radius(A, X.x, X.y, k));
+          const ballK = (k, rr, o) => (k === 0 ? P.ball(X.x, X.y, rr, { p: 1, ...o }) : k === 1 ? P.circle(X.x, X.y, rr, o) : P.rect(X.x - rr, X.y - rr, X.x + rr, X.y + rr, o));
+          const cols = ['teal', 'green', 'purple'];
+          for (let k = 0; k < 3; k++) if (r[k] > 1e-9 && k !== mk) ballK(k, r[k], { color: cols[k], width: 1.3, dash: [4, 3], alpha: 0.85 });
+          if (mk < 3 && r[mk] > 1e-9) ballK(mk, r[mk], { fill: cols[mk], fillAlpha: 0.28, color: cols[mk], width: 2.2 });
+          if (mk === 3 && r[3] > 0) { P.circle(X.x, X.y, 0.13, { color: 'green', width: 2.4 }); P.text('B(x, 1) = {x}', X.x, X.y, { dx: 14, dy: 16, color: 'green', weight: 700, size: 12, plate: true }); }
+          if (mk === 4 && r[4] > 1e-9) { const r0 = Math.hypot(X.x, X.y), ux = X.x / r0, uy = X.y / r0; P.line(X.x - r[4] * ux, X.y - r[4] * uy, X.x + r[4] * ux, X.y + r[4] * uy, { color: 'green', width: 7, alpha: 0.55 }); }
+          if (r[mk] <= 1e-9 && A.has(X.x, X.y)) P.circle(X.x, X.y, 0.12, { color: 'red', width: 2, dash: [3, 3] });
+          P.corner(!A.has(X.x, X.y) ? 'x is not in the set' : r[mk] > 1e-9 ? `ball of radius ${v.fmt(Math.min(r[mk], 9), 3)} fits` : 'no ball about x fits inside', 'bl', { color: !A.has(X.x, X.y) ? 'muted' : r[mk] > 1e-9 ? 'green' : 'red', weight: 600, plate: true });
+          T.draw({
+            value: (i, j) => (table[i][j].open ? '✓' : '✗'),
+            textColor: (i, j) => (table[i][j].open ? 'green' : 'red'),
+            fill: (i, j) => (i === mk && j === sk ? ['accent', 0.22] : null),
+            highlight: [[mk, sk]], activeRow: mk, activeCol: sk, activeColor: 'faint',
+          });
+          st = { A, r, inA: A.has(X.x, X.y) };
+        });
+        v.legend([['teal', '$d_1$ ball', { area: true }], ['green', '$d_2$ ball', { area: true }], ['purple', '$d_\\infty$ ball', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { A, r, inA } = st, names = ['d_1', 'd_2', 'd_\\infty', '\\text{disc}', '\\text{rail}'];
+          const row = table[mk], col = table.map((rw) => rw[sk].open);
+          const verdict = row[sk].open ? `**open** in ${METRICS[mk]}` : `**not open** in ${METRICS[mk]} (the sample point $(${v.fix(row[sk].worst[0], 2)}, ${v.fix(row[sk].worst[1], 2)})$ has no ball inside)`;
+          const here = inA ? `At $x$ the largest balls have radii ${[0, 1, 2].map((k) => `$${names[k]}$: ${v.fix(r[k], 3)}`).join(', ')} — all zero or all positive. ` : '';
+          return `${here}The ${A.label === 'disc' ? 'open disc' : A.label === 'point' ? 'single point' : A.label.replace('□', 'square')} is ${verdict}. Columns agree on the rows $d_1,d_2,d_\\infty$ (one topology); the discrete row is all ✓; the railway row (${col[4] ? 'open' : 'not open'} here) is strictly between.`;
         });
       },
     },

@@ -152,7 +152,7 @@ Eratosthenes, as Cleomedes tells it, used Syene (Aswan), where the summer-solsti
             A.arrow(xA, YG - 0.13, XS, YG - 0.13, { color: 'orange', width: 1.4, head: 6, both: true });
             A.tex('d', XS + 0.05, YG - 0.13, { color: 'orange', size: 14, align: 'left' });
             A.text('Syene', XS + 0.05, YG + 0.14, { size: 12, align: 'left', weight: 600 });
-            A.text('Alexandria', xA, YG + GH + 0.1, { size: 12, align: 'center', weight: 600 });
+            A.text('Alexandria', xA - 0.04, YG + GH + 0.09, { size: 12, align: 'right', weight: 600 });
             const ang3 = Math.atan(s3 * tanT) * R2D;
             A.text('3', x3, YG - 0.15, { size: 12, color: 'purple', weight: 700, align: 'center' });
             A.text(`observer 3: flat ${ang3.toFixed(1)}°`, A.xr[0] + 0.05, 1.54, { size: 12, color: 'purple', weight: 600 });
@@ -389,7 +389,7 @@ The two are equal in exact arithmetic, but the haversine form stays accurate in 
           const c = r(r(r(Math.sin(f1)) * r(Math.sin(f2))) + r(r(r(Math.cos(f1)) * r(Math.cos(f2))) * r(Math.cos(r(l2 - l1)))));
           return r(Math.acos(Math.max(-1, Math.min(1, c))));
         }
-        const floor = 1e-17, re = (x, ref) => Math.max(floor, Math.abs(x - ref) / ref);
+        const floor = 1e-17, re = (x, ref) => Math.min(1.4, Math.max(floor, Math.abs(x - ref) / ref));
         let scan = null, skey = '';
         function doScan() {
           const k = `${A.lon},${A.lat},${B.lon},${B.lat},${prec.value}`; if (k === skey) return scan; skey = k;
@@ -516,7 +516,7 @@ So the excess is between $0$ and $4\pi$ ($720^\circ$), a small triangle is nearl
           if (refs[rhumb]) return refs[rhumb];
           const rng = v.rng(11), out = [];
           for (let k = 0; out.length < 24 && k < 200; k++) {
-            const c = [rng.uniform(-180, 180), rng.uniform(-50, 50)], rad = 6 + 50 * rng() ** 1.5;
+            const c = [rng.uniform(-180, 180), rng.uniform(-50, 50)], rad = 8 + 62 * rng();
             const P = [0, 1, 2].map((j) => v.geo('destination', c, rng.uniform(0, 360), rad * rng.uniform(0.6, 1)));
             const m = measureP(P, rhumb); if (m.ok && m.area > 0.01) out.push([m.area * R2D, m.excess * R2D]);
           }

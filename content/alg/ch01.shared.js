@@ -61,19 +61,16 @@ function compileSet(t) {
     default: return (m) => L(m) !== R(m);
   }
 }
-const LEVEL = { u: 1, d: 1, s: 1, n: 2 };
 const OPTEX = { u: '\\cup', n: '\\cap', d: '\\setminus', s: '\\mathbin{\\triangle}' };
-/** TeX of a parsed expression with only the parentheses that are needed (mixed ∪ / \ / Δ are always bracketed). */
+/** TeX of a parsed expression; mixed operations are always bracketed (∩ still binds tighter than ∪ when parsing). */
 export function setTex(t) {
   if (t.v) return t.v === '0' ? '\\varnothing' : t.v;
   if (t.op === 'c') { const inner = setTex(t.L); return t.L.v || t.L.op === 'c' ? `${inner}'` : `(${inner})'`; }
   const wrap = (c, right) => {
     const s = setTex(c);
     if (c.v || c.op === 'c') return s;
-    const lc = LEVEL[c.op], lp = LEVEL[t.op];
-    if (lc > lp) return s;
-    if (lc === lp && c.op === t.op && (!right || t.op === 'u' || t.op === 'n')) return s;
-    return `(${s})`;
+    if (c.op === t.op && (!right || t.op === 'u' || t.op === 'n')) return s; // A ∪ B ∪ C, (A \ B) \ C written A \ B \ C
+    return `(${s})`; // mixed operations are always bracketed, as in the book
   };
   return `${wrap(t.L, false)} ${OPTEX[t.op]} ${wrap(t.R, true)}`;
 }
@@ -98,8 +95,8 @@ export function drawVenn(v, s, circles, f, o = {}) {
   if (o.ulabel !== false) s.text('U', x0, y1, { dx: 7, dy: 11, color: 'muted', math: true, size: 15 });
   for (const c of circles) s.circle(c.x, c.y, c.r, { color: c.color || 'ink', width: 2, fill: false });
   for (const c of circles) if (c.name) {
-    const a = c.namePos ?? Math.atan2(c.y - (y0 + y1) / 2, c.x - (x0 + x1) / 2), lx = c.x + Math.cos(a) * c.r * 0.82, ly = c.y + Math.sin(a) * c.r * 0.82;
-    s.text(c.name, lx, ly, { color: c.color || 'ink', math: true, size: 17, align: 'center', weight: 700 });
+    const a = c.namePos ?? Math.atan2(c.y - (y0 + y1) / 2, c.x - (x0 + x1) / 2), off = c.r + 15 / s.scale;
+    s.text(c.name, c.x + Math.cos(a) * off, c.y + Math.sin(a) * off, { color: c.color || 'ink', math: true, size: 18, align: 'center', weight: 700 });
   }
 }
 /** Deterministic, well-spread sample points inside [x0,x1]×[y0,y1] (jittered grid). */

@@ -1341,8 +1341,10 @@ class Runtime {
   }
   frame() {
     for (const s of this.stages) s.begin();
+    this._inFrame = true;
     try { for (const f of this.draws) f(this.t); }
-    catch (e) { this.fail(e); return; }
+    catch (e) { this._inFrame = false; this.fail(e); return; }
+    this._inFrame = false;
     for (const s of this.stages) s.end();
     if (this.readoutFn) {
       let str; try { str = this.readoutFn(this.t); } catch (e) { this.fail(e); return; }

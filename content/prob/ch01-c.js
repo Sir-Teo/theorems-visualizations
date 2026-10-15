@@ -25,6 +25,14 @@ function weightedLaw(vals, wts) {
   const G = (c) => { let lo = 0, hi = xs.length; while (lo < hi) { const md = (lo + hi) >> 1; if (xs[md] <= c) lo = md + 1; else hi = md; } return lo ? cum[lo - 1] : 0; };
   return { G, total: s, mean: m, absMean: Array.from(vals).reduce((t, v, i) => t + Math.abs(v) * wts[i], 0) };
 }
+/** Status text pinned to a corner of the data area (inside the gutter, unlike s.corner which uses the canvas corner). */
+function cornerIn(S, str, pos = 'tl', st = {}) {
+  const l = S.X(S.xr[0]), r = S.X(S.xr[1]), t = S.Y(S.yr[1]), b = S.Y(S.yr[0]);
+  const X = pos[1] === 'l' ? l + 8 : r - 8, Y = pos[0] === 't' ? t + 13 : b - 13;
+  const o = { align: pos[1] === 'l' ? 'left' : 'right', color: 'muted', size: 12, ...st };
+  if (/\$[^$]+\$/.test(str)) return S.texPx(String(str), X, Y, { ...o, rich: true });
+  return S.textPx(String(str), X, Y, o);
+}
 const fmtTerm = (v, a, m) => `${a < 0 ? `(${v.fix(a, 2)})` : v.fix(a, 2)}\\cdot ${v.fix(m, 2)}`;
 
 export default {
@@ -49,8 +57,8 @@ The representation is not unique (the $a_i$ need not be distinct, and a set may 
       tags: ['integration'],
       viz(v) {
         const PAT = [0, 1, 2, 1, 3, 0, 2, 3]; // interval j belongs to the set A_{PAT[j]}
-        const L = v.stage({ x: [-0.03, 1.03], y: [-1.75, 3.1], height: 330, weight: 1.6, axes: 'box', xlabel: '$\\omega$', title: 'a simple random variable $\\varphi$ on $\\Omega=[0,1)$' });
-        const R = v.stage({ x: [0, 1.0], y: [-1.75, 3.1], height: 330, axes: 'box', xlabel: 'mass', title: 'its law: mass $P(A_i)$ at value $a_i$' });
+        const L = v.stage({ x: [-0.03, 1.03], y: [-1.75, 3.1], height: 330, weight: 1.6, axes: 'box', gutter: true, xlabel: '$\\omega$', title: 'a simple random variable $\\varphi$ on $\\Omega=[0,1)$' });
+        const R = v.stage({ x: [0, 1.0], y: [-1.75, 3.1], height: 330, axes: 'box', gutter: true, xlabel: 'mass', title: 'its law: mass $P(A_i)$ at value $a_i$' });
         const split = v.toggle('split each $A_i$ into its two intervals', false);
         const cuts = [];
         [0.1, 0.22, 0.38, 0.5, 0.63, 0.78, 0.9].forEach((c, k) => cuts.push(L.handle(c, -1.35, {
@@ -90,7 +98,7 @@ The representation is not unique (the $a_i$ need not be distinct, and a set may 
           if (!split.value) for (let i = 0; i < 4; i++) R.tex(`a_${i + 1}`, off[i] + mass[i] + 0.012, a[i], { align: 'left', color: SETCOL[i], size: 13 });
           R.hline(I, { color: 'green', width: 2, dash: [7, 4] });
           R.poly([[0, I], [0.04, I + 0.13], [0.04, I - 0.13]], { fill: 'green', fillAlpha: 0.9, stroke: false });
-          R.corner(split.value ? '8 sets, same balance point' : '4 sets', 'tr', { color: 'muted' });
+          cornerIn(R, split.value ? '8 sets' : '4 sets', 'tr', { color: 'muted' });
           v.legend(SETCOL.map((c, i) => [c, `$A_${i + 1}$, value $a_${i + 1}$`, { area: true }]).concat([['green', 'balance point $\\int\\varphi\\,dP$', { dash: true }]]));
         });
         v.readout(() => {
@@ -114,7 +122,7 @@ The representation is not unique (the $a_i$ need not be distinct, and a set may 
 (ii) For every $a\in\R$, $\int a\varphi\,d\mu=a\int\varphi\,d\mu$.
 (iii) $\int(\varphi+\psi)\,d\mu=\int\varphi\,d\mu+\int\psi\,d\mu$.`,
       idea: String.raw`(i) and (ii) are read off the definition. For (iii), write $\varphi=\sum a_i1_{A_i}$ and $\psi=\sum b_j1_{B_j}$, padding each with a zero-valued set so both cover the same region. Then $\varphi+\psi=\sum_{i,j}(a_i+b_j)1_{A_i\cap B_j}$ is simple, and $\sum_{i,j}(a_i+b_j)\mu(A_i\cap B_j)$ splits into two sums. Summing the table $\mu(A_i\cap B_j)$ along $j$ gives $\mu(A_i)$ and along $i$ gives $\mu(B_j)$. In probability language: the cells form the joint law of $(\varphi,\psi)$, and the mean of a sum is read off the centre of mass of the joint law.`,
-      caption: String.raw`Drag the blue handles (values of $\varphi$ on three intervals) and the orange ones (values of $\psi$; its first set is $[0,0.2)\cup[0.9,1)$), and slide $a$. Right: each cell $A_i\cap B_j$ of the common refinement becomes a disc at $(a\,a_i,\,b_j)$ with area proportional to its probability. Its centre of mass (gold) has coordinates $(a\int\varphi,\int\psi)$, and the green diagonal through it is the level $x+y=\int(a\varphi+\psi)$.`,
+      caption: String.raw`Drag the blue handles (values of $\varphi$ on three intervals) and the orange ones (values of $\psi$; its first set is $[0,0.2)\cup[0.9,1)$), and slide $a$; the dashed lines are the cuts of the common refinement. Right: each cell $A_i\cap B_j$ becomes a disc at $(a\,a_i,\,b_j)$ with area proportional to its probability. Its centre of mass (gold) has coordinates $(a\int\varphi,\int\psi)$, and the green diagonal through it is the level $x+y=\int(a\varphi+\psi)$.`,
       deps: ['prob-1.4.1a'],
       see: ['rca-1.25'],
       tags: ['integration'],
@@ -123,8 +131,8 @@ The representation is not unique (the $a_i$ need not be distinct, and a set may 
         const Bof = (x) => (x < 0.2 || x >= 0.9 ? 0 : x < 0.55 ? 1 : 2);
         const CUTS = [0, 0.2, 0.3, 0.55, 0.75, 0.9, 1];
         const Aof = (x) => (x < 0.3 ? 0 : x < 0.75 ? 1 : 2);
-        const L = v.stage({ x: [-0.03, 1.03], y: [-3.7, 4.3], height: 340, weight: 1.3, axes: 'box', xlabel: '$\\omega$', title: '$\\varphi$, $\\psi$ and $a\\varphi+\\psi$ on $\\Omega=[0,1)$' });
-        const R = v.stage({ x: [-2.8, 2.8], y: [-1.4, 2.0], height: 340, axes: 'box', xlabel: '$a\\varphi$', ylabel: '$\\psi$', title: 'joint law of $(a\\varphi,\\psi)$' });
+        const L = v.stage({ x: [-0.03, 1.03], y: [-3.7, 4.3], height: 340, weight: 1.3, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$\\varphi$, $\\psi$ and $a\\varphi+\\psi$ on $\\Omega=[0,1)$' });
+        const R = v.stage({ x: [-2.8, 2.8], y: [-1.4, 2.0], height: 340, axes: 'box', gutter: true, xlabel: '$a\\varphi$', ylabel: '$\\psi$', title: 'joint law of $(a\\varphi,\\psi)$' });
         const aS = v.slider('$a$', -1.5, 1.5, 1, { step: 0.05 });
         const ph = [0.9, -0.6, 1.4].map((y, i) => L.handle((A[i] + A[i + 1]) / 2, y, { color: 'accent', constrain: (x, yy) => [(A[i] + A[i + 1]) / 2, clampN(yy, -1, 1.6)] }));
         const ps = [[0.95, 0.5], [0.375, 1.2], [0.725, -0.7]].map(([x, y]) => L.handle(x, y, { color: 'orange', constrain: (xx, yy) => [x, clampN(yy, -1, 1.6)] }));
@@ -142,7 +150,6 @@ The representation is not unique (the $a_i$ need not be distinct, and a set may 
           L.fn(phi, { domain: [0, 1], color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.12 });
           L.fn(psi, { domain: [0, 1], color: 'orange', width: 2.4, fill: 'orange', fillAlpha: 0.12 });
           L.fn((x) => a * phi(x) + psi(x), { domain: [0, 1], color: 'green', width: 3 });
-          L.corner('dashed cuts: the refinement $A_i\\cap B_j$', 'bl', { color: 'muted' });
           // joint law
           for (let t = -6; t <= 6; t += 0.5) R.line(t + 3, -3, t - 3, 3, { color: 'grid', width: 1 });
           for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (m[i][j] > 1e-9) {
@@ -182,29 +189,30 @@ If (ii) also holds for $a=-1$, then
         const kS = v.slider('points', 1, 9, 4, { int: true });
         const nS = v.slider('Cantor level $n$', 0, 7, 3, { int: true });
         const lS = v.slider('length $\\ell$', 0.02, 0.4, 0.15, { step: 0.01 });
-        const S = v.stage({ x: [-0.03, 1.03], y: [-1.6, 3.6], height: 330, axes: 'box', xlabel: '$\\omega$', title: '$\\psi=\\varphi+h\\,1_N$ on $\\Omega=[0,1)$, $P$ = length' });
-        const H = S.handle(0.6, phi(0.6) + 1.4, {
+        const S = v.stage({ x: [-0.03, 1.03], y: [-1.6, 3.6], height: 330, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$\\psi=\\varphi+h\\,1_N$ on $\\Omega=[0,1)$, $P$ = length' });
+        const H = S.handle(0.6, phi(0.6) + 1.3, {
           color: 'gold', label: 'h',
-          constrain: (x, y) => { const xx = mode.value === 'int' ? clampN(x, 0.02, 0.98 - lS.value) : mode.value === 'cantor' ? 0.5 : clampN(x, 0.06, 0.94); return [xx, clampN(y, phi(xx) - 2, phi(xx) + 2.2)]; },
+          constrain: (x, y) => { const xx = mode.value === 'int' ? clampN(x, 0.02, 0.98 - lS.value) : mode.value === 'cantor' ? 2 / 3 : clampN(x, 0.06, 0.94); return [xx, clampN(y, phi(xx) - 2, phi(xx) + 2.2)]; },
         });
         const cantor = (n) => { let I = [[0, 1]]; for (let k = 0; k < n; k++) I = I.flatMap(([a, b]) => { const t = (b - a) / 3; return [[a, a + t], [b - t, b]]; }); return I; };
         let st = null;
         v.render(() => {
           const md = mode.value; kS.el.hidden = md !== 'pts'; nS.el.hidden = md !== 'cantor'; lS.el.hidden = md !== 'int';
-          if (md === 'cantor') H.x = 0.5;
+          if (md === 'cantor') H.x = 2 / 3;
           const h = H.y - phi(H.x);
           S.hline(0, { color: 'muted', width: 1 });
           S.fn((x) => Math.abs(phi(Math.min(x, 0.9999))), { domain: [0, 1], color: 'muted', width: 1.4, dash: [5, 4] });
           S.fn((x) => phi(Math.min(x, 0.9999)), { domain: [0, 1], color: 'ink', width: 2.6, fill: 'ink', fillAlpha: 0.07 });
           let Ipsi, note;
           if (md === 'pts') {
-            const k = kS.value, xs = Array.from({ length: k }, (_, j) => clampN(H.x + (j - (k - 1) / 2) * 0.07, 0.01, 0.99));
+            const k = kS.value, xs = Array.from({ length: k }, (_, j) => clampN(H.x + (j - Math.floor((k - 1) / 2)) * 0.055, 0.01, 0.99));
             for (const x of xs) { S.line(x, phi(x), x, phi(x) + h, { color: 'gold', width: 1.6 }); S.dot(x, phi(x) + h, { color: 'gold', r: 4 }); S.dot(x, phi(x), { hollow: true, color: 'ink', r: 3.5 }); }
             Ipsi = Iphi; note = `$N$ = ${k} point${k > 1 ? 's' : ''}, $P(N)=0$`;
           } else if (md === 'cantor') {
             const n = nS.value, I = cantor(n);
             for (const [a, b] of I) {
-              S.rect(a, phi(Math.min(a, 0.9999)), b, phi(Math.min(a, 0.9999)) + h, { fill: 'gold', fillAlpha: 0.25, stroke: false });
+              const cuts = [a, ...[0.25, 0.5, 0.75].filter((c) => c > a && c < b), b];
+              for (let j = 0; j + 1 < cuts.length; j++) { const y0 = phi(Math.min((cuts[j] + cuts[j + 1]) / 2, 0.9999)); S.rect(cuts[j], y0, cuts[j + 1], y0 + h, { fill: 'gold', fillAlpha: 0.3, stroke: false }); }
               S.rect(a, -1.45, b, -1.3, { fill: 'gold', fillAlpha: 0.85, stroke: false });
             }
             S.text(`$C_${n}$: ${2 ** n} intervals, total length $(2/3)^{${n}}$`, 0.02, -1.15, { size: 11, color: 'muted' });
@@ -218,7 +226,7 @@ If (ii) also holds for $a=-1$, then
             Ipsi = (() => { const cuts = [a, 0.25, 0.5, 0.75, b].filter((c) => c >= a && c <= b).sort((p, q) => p - q); let s = 0; for (let i = 0; i + 1 < cuts.length; i++) s += h * (cuts[i + 1] - cuts[i]); return Iphi + s; })();
             note = `$P(N)=${v.fix(lS.value, 2)}$`;
           }
-          S.corner(note, 'tl', { color: 'muted' });
+          cornerIn(S, note, 'tl', { color: 'muted' });
           st = { md, h, Ipsi, n: nS.value };
           v.legend([['ink', '$\\varphi$'], ['gold', '$\\psi$ where it differs from $\\varphi$', { area: true }], ['muted', '$|\\varphi|$', { dash: true }]]);
         });
@@ -256,7 +264,7 @@ and $\int f\,d\mu$ is defined as this common value. For bounded $f,g$ vanishing 
         let pmax = 0; for (let i = 0; i <= 2000; i++) pmax = Math.max(pmax, Math.abs(pathRaw(i / 2000)));
         const FN = {
           sin: { label: '$\\sin(1/\\omega)$', f: (x) => (x <= 0 ? 0 : Math.sin(1 / x)) },
-          path: { label: 'a random path', f: (x) => (0.95 * pathRaw(x)) / pmax },
+          path: { label: 'a random path', f: (x) => (0.95 * (pathRaw(x) + 0.35 * pmax)) / (1.35 * pmax) },
         };
         const laws = {};
         const lawFor = (k) => {
@@ -271,8 +279,8 @@ and $\int f\,d\mu$ is defined as this common value. For bounded $f,g$ vanishing 
         };
         const which = v.select('$f$ =', Object.entries(FN).map(([value, o]) => ({ value, label: o.label })), 'sin');
         const nS = v.slider('$n$ (levels $kM/n$)', 1, 12, 4, { int: true });
-        const L = v.stage({ x: [-0.02, 1.04], y: [-1.45, 1.15], height: 330, weight: 1.6, axes: 'box', xlabel: '$\\omega$', title: '$\\varphi_n\\le f\\le\\psi_n$ on $E=[0,1]$, $M=1$' });
-        const Rt = v.stage({ x: [0, 12.8], y: [-1.1, 1.3], height: 330, axes: 'box', xlabel: '$n$', title: 'lower and upper integrals' });
+        const L = v.stage({ x: [-0.02, 1.04], y: [-1.45, 1.15], height: 330, weight: 1.6, axes: 'box', gutter: true, xlabel: '$\\omega$', title: '$\\varphi_n\\le f\\le\\psi_n$ on $E=[0,1]$, $M=1$' });
+        const Rt = v.stage({ x: [0, 12.8], y: [-1.1, 1.3], height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: 'lower and upper integrals' });
         const band = L.handle(1.02, 0.55, { color: 'gold', constrain: (x, y) => [1.02, clampN(y, -0.999, 0.999)] });
         let st = null;
         v.render(() => {
@@ -301,10 +309,11 @@ and $\int f\,d\mu$ is defined as this common value. For bounded $f,g$ vanishing 
             up += -m * dm * law.G(-M); // values exactly at −M (measure zero here)
             ups.push([m, up]); lows.push([m, up - dm]);
           }
+          Rt.setView(null, [Math.min(...lows.map((p) => p[1])) - 0.12, Math.max(...ups.map((p) => p[1])) + 0.18]);
           Rt.hline(law.mean, { color: 'green', dash: [6, 4], width: 1.8 });
           for (let m = 0; m < 12; m++) Rt.line(ups[m][0], lows[m][1], ups[m][0], ups[m][1], { color: m + 1 === n ? 'gold' : 'faint', width: m + 1 === n ? 3 : 2 });
           Rt.dots(ups, { color: 'orange', r: 3.5 }); Rt.dots(lows, { color: 'accent', r: 3.5 });
-          Rt.tex(`\\textstyle\\int f=${v.fix(law.mean, 4)}`, 12.6, law.mean, { align: 'right', baseline: 'bottom', color: 'green', size: 13, dy: -4 });
+          cornerIn(Rt, `$\\int f=${v.fix(law.mean, 4)}$`, 'tr', { color: 'green', size: 13 });
           st = { up: ups[n - 1][1], low: lows[n - 1][1], I: law.mean, abs: law.absMean, n, muEk, k };
           v.legend([['ink', '$f$'], ['accent', '$\\varphi_n$ and $\\int\\varphi_n$'], ['orange', '$\\psi_n$ and $\\int\\psi_n$'], ['gold', 'chosen band and its preimage $E_k$', { area: true }]]);
         });
@@ -342,8 +351,8 @@ $$\int_{E_n} f\wedge n\,d\mu\ \uparrow\ \int f\,d\mu\qquad(n\to\infty).$$`,
         };
         const which = v.select('$f$ =', Object.entries(FN).map(([value, o]) => ({ value, label: o.label })), 'gam');
         const nS = v.slider('$n$', 1, 1000, 6, { log: true });
-        const L = v.stage({ x: [1e-4, 2e3], y: [1e-3, 3e3], xlog: true, ylog: true, height: 320, axes: 'box', xlabel: '$x$', title: '$f$ and its truncation $f\\wedge n$ on $E_n=(0,n]$ (log–log)' });
-        const R = v.stage({ x: [1, 1000], y: [0, 1.12], xlog: true, height: 320, axes: 'box', xlabel: '$n$', title: '$\\int_{E_n} f\\wedge n\\,dx$' });
+        const L = v.stage({ x: [1e-4, 2e3], y: [1e-3, 3e3], xlog: true, ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$x$', title: '$f$ and its truncation $f\\wedge n$ on $E_n=(0,n]$ (log–log)' });
+        const R = v.stage({ x: [1, 1000], y: [0, 1.12], xlog: true, height: 320, axes: 'box', gutter: true, xlabel: '$n$', title: '$\\int_{E_n} f\\wedge n\\,dx$' });
         let st = null;
         v.render(() => {
           const k = which.value, F = FN[k], n = nS.value;
@@ -355,7 +364,7 @@ $$\int_{E_n} f\wedge n\,d\mu\ \uparrow\ \int f\,d\mu\qquad(n\to\infty).$$`,
           L.tex('x=n', n, 1.5e-3, { color: 'orange', align: 'left', baseline: 'bottom', dx: 5 });
           R.setView(null, [0, F.ymax]);
           if (isFinite(F.lim)) { R.hline(F.lim, { color: 'green', dash: [6, 4], width: 1.8 }); R.tex(`\\textstyle\\int f=${F.lim}`, 1.3, F.lim, { align: 'left', baseline: 'bottom', color: 'green', dy: -3 }); }
-          else R.corner('$\\int f=\\infty$: the climb never stops', 'tl', { color: 'red' });
+          else cornerIn(R, '$\\int f=\\infty$: the climb never stops', 'tl', { color: 'red' });
           R.fn((m) => I(k, m), { color: 'accent', width: 2.4 });
           const In = I(k, n); R.dot(n, In, { color: 'gold', r: 5.5 });
           st = { In, lim: F.lim, n };
@@ -385,8 +394,8 @@ $$\int_{E_n} f\wedge n\,d\mu\ \uparrow\ \int f\,d\mu\qquad(n\to\infty).$$`,
         const f = (x) => 0.5 / Math.sqrt(x), Ifn = (n) => (n >= 0.5 ? 1 - 1 / (4 * n) : n);
         const aS = v.slider('$\\alpha$', 0.2, 1.3, 0.6, { step: 0.01 });
         const nS = v.slider('cap $n$', 1, 300, 4, { log: true });
-        const L = v.stage({ x: [0, 1], y: [0, 9], height: 320, weight: 1.3, axes: 'box', xlabel: '$x$', title: '$f$ and $g$ stacked, with the cap $n$' });
-        const R = v.stage({ x: [1, 300], y: [0, 3], xlog: true, height: 320, axes: 'box', xlabel: '$n$', title: 'truncated integrals' });
+        const L = v.stage({ x: [0, 1], y: [0, 9], height: 320, weight: 1.3, axes: 'box', gutter: true, xlabel: '$x$', title: '$f$ and $g$ stacked, with the cap $n$' });
+        const R = v.stage({ x: [1, 300], y: [0, 3], xlog: true, height: 320, axes: 'box', gutter: true, xlabel: '$n$', title: 'truncated integrals' });
         let cache = null;
         const curves = (al) => {
           if (cache && cache.al === al) return cache;
@@ -407,11 +416,11 @@ $$\int_{E_n} f\wedge n\,d\mu\ \uparrow\ \int f\,d\mu\qquad(n\to\infty).$$`,
             L.between((x) => Math.max(n, top(x)), () => n, 1e-4, 1, { fill: 'red', fillAlpha: 0.12, hatch: 'red', n: 1200 });
           });
           if (n <= 9) { L.hline(n, { color: 'ink', width: 1.8 }); L.tex('n', 0.985, n, { align: 'right', baseline: 'bottom', dy: -3 }); }
-          else L.corner(`cap $n=${v.fmt(n, 3)}$ is above the panel`, 'tr', { color: 'muted' });
+          else cornerIn(L, `cap $n=${v.fmt(n, 3)}$ is above the panel`, 'tr', { color: 'muted' });
           const lim = 1 + C.Ig, ymax = isFinite(lim) ? Math.max(2.4, lim * 1.15) : 6.5;
           R.setView(null, [0, ymax]);
           if (isFinite(lim)) { R.hline(lim, { color: 'green', dash: [6, 4], width: 1.8 }); R.tex(`\\textstyle\\int f+\\int g = ${v.fix(lim, 3)}`, 1.2, lim, { align: 'left', baseline: 'bottom', color: 'green', dy: -3 }); }
-          else R.corner('$\\int g=\\infty$: both sides diverge', 'tl', { color: 'red' });
+          else cornerIn(R, '$\\int g=\\infty$: both sides diverge', 'tl', { color: 'red' });
           R.path(C.B, { color: 'purple', width: 2.4 });
           R.path(C.A, { color: 'teal', width: 2.4, dash: [6, 4] });
           const a = C.Ian(n), b = Ifn(n) + C.Ign(n);
@@ -438,24 +447,24 @@ $$\int f\,d\mu=\int f_1\,d\mu-\int f_2\,d\mu.$$`,
         const N = 8000, grid = Array.from({ length: N }, (_, i) => (i + 0.5) / N);
         const Ip = grid.reduce((s, x) => s + Math.max(0, f(x)), 0) / N, Im = grid.reduce((s, x) => s + Math.max(0, -f(x)), 0) / N;
         const bad = v.toggle('non-integrable bump $h\\propto 1/|x-c|$', false);
-        const L = v.stage({ x: [-0.02, 1.02], y: [-1.9, 4.2], height: 330, weight: 1.5, axes: 'box', xlabel: '$x$', title: '$f=f_1-f_2$ with $f_1=f^++h$, $f_2=f^-+h$' });
-        const R = v.stage({ x: [0.2, 7.3], y: [-0.38, 2.4], height: 330, axes: 'box', xticks: [], title: 'the ledger' });
+        const L = v.stage({ x: [-0.02, 1.02], y: [-1.9, 4.2], height: 330, weight: 1.5, axes: 'box', gutter: true, xlabel: '$x$', title: '$f=f_1-f_2$ with $f_1=f^++h$, $f_2=f^-+h$' });
+        const R = v.stage({ x: [0.2, 7.3], y: [-0.38, 2.4], height: 330, axes: 'box', gutter: true, xticks: [], title: 'the ledger' });
         const H = L.handle(0.62, 1.4, { color: 'gold', label: 'h', constrain: (x, y) => [clampN(x, 0.08, 0.92), clampN(y, 0.05, 3.8)] });
         const w = 0.07;
         let st = null;
         v.render(() => {
           const c = H.x, A = H.y;
-          const h = bad.value ? (x) => Math.min(60, (0.04 * A) / Math.abs(x - c)) : (x) => A * Math.exp(-((x - c) ** 2) / (2 * w * w));
+          const h = bad.value ? (x) => Math.min(9, (0.04 * A) / Math.abs(x - c)) : (x) => A * Math.exp(-((x - c) ** 2) / (2 * w * w));
           const Ih = bad.value ? Infinity : grid.reduce((s, x) => s + h(x), 0) / N;
           const f1 = (x) => Math.max(0, f(x)) + h(x), f2 = (x) => Math.max(0, -f(x)) + h(x);
           L.hline(0, { color: 'muted', width: 1 });
           L.clip(() => {
-            L.fn(f1, { color: 'green', width: 2, fill: 'green', fillAlpha: 0.12, n: 1200 });
-            L.fn((x) => -f2(x), { color: 'red', width: 2, fill: 'red', fillAlpha: 0.12, n: 1200 });
-            L.fn(h, { color: 'gold', width: 1.6, dash: [5, 4], n: 1200 });
+            L.fn(f1, { color: 'green', width: 2, fill: 'green', fillAlpha: 0.12, n: 1200, connect: true });
+            L.fn((x) => -f2(x), { color: 'red', width: 2, fill: 'red', fillAlpha: 0.12, n: 1200, connect: true });
+            L.fn(h, { color: 'gold', width: 1.6, dash: [5, 4], n: 1200, connect: true });
             L.fn(f, { color: 'ink', width: 2.6 });
           });
-          L.corner('$-f_2$ drawn below the axis', 'bl', { color: 'muted' });
+          cornerIn(L, '$-f_2$ drawn below the axis', 'bl', { color: 'muted' });
           const bars = [[1, Ip + Ih, 'green', '\\int f_1'], [2, Im + Ih, 'red', '\\int f_2'], [3, Ip - Im, 'ink', '\\text{diff}'], [4.6, Ip, 'green', '\\int f^+'], [5.6, Im, 'red', '\\int f^-'], [6.6, Ip - Im, 'ink', '\\text{diff}']];
           for (const [x, val, col, lab] of bars) {
             const undefinedDiff = !isFinite(Ih) && x === 3;
@@ -498,9 +507,9 @@ Special cases of notation: $\int f(x)\,dx$ for Lebesgue measure, $\int f(x)\,dG(
         const gL = (x) => 0.8 * Math.sin(2 * x) * Math.exp(-(x * x) / 4) + 0.5 * Math.exp(-((x - 2.2) ** 2));
         const fC = (i) => (-0.8) ** i, gC = (i) => (1.5 * (i % 2 ? -1 : 1)) / (i + 1) ** 2;
         const meas = v.select('', Object.entries(MEAS).map(([value, o]) => ({ value, label: o.label })), 'leb');
-        const aS = v.slider('$a$', -2, 2, 1, { step: 0.05 }), bS = v.slider('$b$', -2, 2, -1.2, { step: 0.05 });
-        const L = v.stage({ x: [-5, 5], y: [-3.2, 3.2], height: 320, weight: 1.3, axes: 'box', title: '$h=af+bg$' });
-        const R = v.stage({ x: [0.3, 8.2], y: [-2, 2], height: 320, axes: 'box', xticks: [], title: 'waterfall of integrals' });
+        const aS = v.slider('$a$', -2, 2, 1, { step: 0.05 }), bS = v.slider('$b$', -2, 2, 0.8, { step: 0.05 });
+        const L = v.stage({ x: [-5, 5], y: [-3.2, 3.2], height: 320, weight: 1.3, axes: 'box', gutter: true, title: '$h=af+bg$' });
+        const R = v.stage({ x: [0.4, 8.3], y: [-2, 2], height: 320, axes: 'box', gutter: true, xticks: [[1, '∫(af)⁺'], [2, '∫(af)⁻'], [3, '∫(bg)⁺'], [4, '∫(bg)⁻'], [5, 'sum'], [6.2, '∫h⁺'], [7, '∫h⁻'], [7.9, '∫h']], title: 'waterfall of integrals' });
         const integ = (F) => {
           if (meas.value === 'leb') { const N = 6000, a = -9, b = 9, hh = (b - a) / N; let p = 0, m = 0; for (let i = 0; i < N; i++) { const y = F(a + (i + 0.5) * hh); if (y > 0) p += y; else m -= y; } return [p * hh, m * hh]; }
           let p = 0, m = 0; for (let i = 0; i < 20000; i++) { const y = F(i); if (y > 0) p += y; else m -= y; } return [p, m];
@@ -524,27 +533,24 @@ Special cases of notation: $\int f(x)\,dx$ for Lebesgue measure, $\int f(x)\,dG(
           const steps = [[1, afp, 'green', '(af)^+'], [2, -afm, 'red', '(af)^-'], [3, bgp, 'green', '(bg)^+'], [4, -bgm, 'red', '(bg)^-']];
           const levels = [0]; steps.forEach(([, d]) => levels.push(levels[levels.length - 1] + d));
           const lv2 = [0, hp, hp - hm];
-          const all = [...levels, ...lv2], lo = Math.min(0, ...all), hi = Math.max(0, ...all), pad = 0.18 * (hi - lo || 1);
-          R.setView(null, [lo - pad * 1.6, hi + pad]);
+          const all = [...levels, ...lv2], lo = Math.min(0, ...all), hi = Math.max(0, ...all), pad = 0.1 * (hi - lo || 1);
+          R.setView(null, [lo - pad, hi + pad]);
           R.hline(0, { color: 'muted', width: 1 });
           steps.forEach(([x, d, col, lab], k) => {
             R.rect(x - 0.32, levels[k], x + 0.32, levels[k + 1], { fill: col, fillAlpha: 0.55, stroke: false });
             if (k < 3) R.line(x + 0.32, levels[k + 1], x + 0.68, levels[k + 1], { color: 'muted', width: 1, dash: [2, 2] });
-            R.tex(`\\int${lab}`, x, lo - pad * 0.85, { size: 12, color: col });
           });
           R.rect(5 - 0.32, 0, 5 + 0.32, levels[4], { fill: 'gold', fillAlpha: 0.6, stroke: false });
-          R.tex('a\\!\\int\\!f+b\\!\\int\\!g', 5, lo - pad * 0.85, { size: 11, color: 'gold' });
-          R.line(5.6, lo - pad * 1.5, 5.6, hi + pad, { color: 'grid', width: 1 });
+          R.line(5.6, lo - pad, 5.6, hi + pad, { color: 'grid', width: 1 });
           R.rect(6.2 - 0.32, 0, 6.2 + 0.32, hp, { fill: 'green', fillAlpha: 0.55, stroke: false });
           R.rect(7.0 - 0.32, hp, 7.0 + 0.32, hp - hm, { fill: 'red', fillAlpha: 0.55, stroke: false });
           R.line(6.52, hp, 6.68, hp, { color: 'muted', width: 1, dash: [2, 2] });
-          R.rect(7.8 - 0.32, 0, 7.8 + 0.32, hp - hm, { fill: 'gold', fillAlpha: 0.6, stroke: false });
-          R.tex('\\int h^+', 6.2, lo - pad * 0.85, { size: 12, color: 'green' }); R.tex('\\int h^-', 7.0, lo - pad * 0.85, { size: 12, color: 'red' }); R.tex('\\int h', 7.8, lo - pad * 0.85, { size: 12, color: 'gold' });
-          R.line(4.6, levels[4], 8.15, levels[4], { color: 'gold', width: 1.6, dash: [5, 3] });
+          R.rect(7.9 - 0.32, 0, 7.9 + 0.32, hp - hm, { fill: 'gold', fillAlpha: 0.6, stroke: false });
+          R.line(4.6, levels[4], 8.25, levels[4], { color: 'gold', width: 1.6, dash: [5, 3] });
           st = { lhs: hp - hm, rhs: levels[4], abs: hp + hm, a, b, If: integ(f), Ig: integ(g) };
-          v.legend([['ink', '$h=af+bg$'], ['accent', '$af$', { dash: true }], ['orange', '$bg$', { dash: true }], ['green', 'positive parts', { area: true }], ['red', 'negative parts', { area: true }]]);
+          v.legend([['ink', '$h=af+bg$'], ['accent', '$af$', { dash: true }], ['orange', '$bg$', { dash: true }], ['green', 'positive parts', { area: true }], ['red', 'negative parts', { area: true }], ['gold', 'totals', { area: true }]]);
         });
-        v.readout(() => st && `$\\int h = ${v.fix(st.lhs, 4)}$, $\\ a\\int f+b\\int g = ${v.fix(st.a, 2)}\\cdot(${v.fix(st.If[0] - st.If[1], 3)}) + ${v.fix(st.b, 2)}\\cdot(${v.fix(st.Ig[0] - st.Ig[1], 3)}) = ${v.fix(st.rhs, 4)}$. (vi): $|\\int h| = ${v.fix(Math.abs(st.lhs), 3)} \\le \\int|h| = ${v.fix(st.abs, 3)}$.`);
+        v.readout(() => st && `$\\int h = ${v.fix(st.lhs, 4)}$, $\\ a\\int f+b\\int g = ${fmtTerm(v, st.a, st.If[0] - st.If[1]).replace(/\\cdot\s*(\S+)$/, '\\cdot($1)')} + ${fmtTerm(v, st.b, st.Ig[0] - st.Ig[1]).replace(/\\cdot\s*(\S+)$/, '\\cdot($1)')} = ${v.fix(st.rhs, 4)}$. (vi): $|\\int h| = ${v.fix(Math.abs(st.lhs), 3)} \\le \\int|h| = ${v.fix(st.abs, 3)}$.`);
       },
     },
     // ======================================================================== §1.5 Properties of the integral
@@ -566,8 +572,8 @@ $$\varphi\Big(\int f\,d\mu\Big)\le\int\varphi(f)\,d\mu.$$`,
         const law = v.select('law of $X$', [{ value: 'two', label: 'two-point' }, { value: 'unif', label: 'uniform on $[x_1,x_2]$' }], 'two');
         const lam = v.slider('$P(X=x_1)$', 0, 1, 0.4, { step: 0.01 });
         const nodes = [3.3, 1.7, 0.7, 0.45, 1.2, 2.9].map((y, i) => S.handle(NX[i], y, { color: 'accent', r: 6, constrain: (x, yy) => [NX[i], clampN(yy, -0.5, 4.4)] }));
-        const x1 = S.handle(-1.9, 0, { color: 'gold', label: '$x_1$', labelPos: 's', constrain: (x) => [clampN(x, -2.9, 2.9), 0] });
-        const x2 = S.handle(1.6, 0, { color: 'gold', label: '$x_2$', labelPos: 's', constrain: (x) => [clampN(x, -2.9, 2.9), 0] });
+        const x1 = S.handle(-1.6, 0, { color: 'gold', label: '$x_1$', labelPos: 's', constrain: (x) => [clampN(x, -2.9, 2.9), 0] });
+        const x2 = S.handle(1.9, 0, { color: 'gold', label: '$x_2$', labelPos: 's', constrain: (x) => [clampN(x, -2.9, 2.9), 0] });
         let st = null;
         v.render(() => {
           lam.el.hidden = law.value !== 'two';
@@ -632,24 +638,24 @@ The case $p=q=2$ is the Cauchy–Schwarz inequality.`,
         };
         const pair = v.select('$(f,g)$ =', Object.entries(PAIRS).map(([value, o]) => ({ value, label: o.label })), 'al');
         const free = v.toggle('free $(p,q)$', false);
-        const S = v.stage({ x: [1, 16], y: [1, 16], xlog: true, ylog: true, equal: true, height: 360, axes: 'box', xlabel: '$p$', ylabel: '$q$', xticks: [1, 2, 4, 8, 16].map((t) => [t, String(t)]), yticks: [1, 2, 4, 8, 16].map((t) => [t, String(t)]), title: 'the $(p,q)$ plane' });
-        const R = v.stage({ x: [0, 1], y: [0.03, 60], ylog: true, height: 360, axes: 'box', xlabel: '$\\omega$', title: 'normalised $|f|^p$ and $|g|^q$' });
-        const H = S.handle(2, 2, { color: 'gold', constrain: (x, y) => { if (free.value) return [clampN(x, 1.02, 15.8), clampN(y, 1.02, 15.8)]; const p = clampN(x, 1.067, 15); return [p, p / (p - 1)]; } });
+        const S = v.stage({ x: [1, 8], y: [1, 8], xlog: true, ylog: true, height: 380, axes: 'box', gutter: true, xlabel: '$p$', ylabel: '$q$', title: 'the $(p,q)$ plane, log axes' });
+        const R = v.stage({ x: [0, 1], y: [0.03, 60], ylog: true, height: 360, axes: 'box', gutter: true, xlabel: '$\\omega$', title: 'normalised $|f|^p$ and $|g|^q$' });
+        const H = S.handle(2, 2, { color: 'gold', constrain: (x, y) => { if (free.value) return [clampN(x, 1.02, 7.9), clampN(y, 1.02, 7.9)]; const p = clampN(x, 8 / 7, 8); return [p, p / (p - 1)]; } });
         const ratio = (P, p, q) => { const d = P.nf(p) * P.ng(q); return isFinite(d) ? P.E / d : 0; };
         let st = null;
         v.render(() => {
           const P = PAIRS[pair.value];
           if (!free.value) H.y = H.x / (H.x - 1);
           const p = H.x, q = H.y;
-          S.heat((x, y) => { const r = ratio(P, x, y); return r > 0 ? Math.log2(r) : NaN; }, { range: [-1.5, 1.5], cmap: 'theme-diverging', neg: 'blue', pos: 'red', key: pair.value, res: 3 });
+          S.heat((x, y) => { const r = ratio(P, x, y); return r > 0 ? Math.log2(r) : NaN; }, { range: [-0.45, 0.45], cmap: 'theme-diverging', neg: 'blue', pos: 'red', key: pair.value, res: 3 });
           S.contour((x, y) => { const r = ratio(P, x, y); return r > 0 ? Math.log(r) : -5; }, [0], { color: 'ink', width: 1.6, res: 140 });
-          S.fn((x) => x / (x - 1), { domain: [1.0667, 16], color: 'green', width: 3 });
-          S.tex('\\tfrac1p+\\tfrac1q=1', 9, 1.45, { color: 'green', size: 13, plate: true });
+          S.fn((x) => x / (x - 1), { domain: [8 / 7, 8], color: 'green', width: 3 });
+          S.tex('\\tfrac1p+\\tfrac1q=1', 5.2, 1.55, { color: 'green', size: 13, plate: true });
           const r = ratio(P, p, q);
           if (isFinite(P.nf(p))) R.fn((x) => P.F(x, p), { domain: [0.0005, 0.9995], color: 'accent', width: 2.4, n: 800 });
           if (isFinite(P.ng(q))) R.fn((x) => P.G(x, q), { domain: [0.0005, 0.9995], color: 'orange', width: 2.2, dash: [7, 4], n: 800 });
-          if (!isFinite(P.nf(p))) R.corner('$\\|f\\|_p=\\infty$', 'tl', { color: 'red' });
-          if (!isFinite(P.ng(q))) R.corner('$\\|g\\|_q=\\infty$', 'tr', { color: 'red' });
+          if (!isFinite(P.nf(p))) cornerIn(R, '$\\|f\\|_p=\\infty$', 'tl', { color: 'red' });
+          if (!isFinite(P.ng(q))) cornerIn(R, '$\\|g\\|_q=\\infty$', 'tr', { color: 'red' });
           st = { p, q, r, E: P.E, B: P.nf(p) * P.ng(q), eq: P.eq };
           v.legend([['green', 'conjugate curve'], ['ink', 'ratio $=1$'], ['accent', '$|f|^p/\\|f\\|_p^p$'], ['orange', '$|g|^q/\\|g\\|_q^q$', { dash: true }]]);
         });
@@ -692,8 +698,8 @@ The finiteness of $\mu(E)$ cannot be dropped: on $\R$ with Lebesgue measure, $f_
         };
         const which = v.select('', Object.entries(SEQ).map(([value, o]) => ({ value, label: o.label })), 'tw');
         const nS = v.slider('$n$', 1, 48, 5, { int: true }), eS = v.slider('$\\varepsilon$', 0.02, 0.6, 0.2, { step: 0.01 });
-        const T = v.stage({ x: [-0.03, 1.03], y: [-0.25, 1.25], height: 230, full: true, axes: 'box', xlabel: '$x$', title: '$f_n$, the $\\varepsilon$-band around $f=0$, and the bad set $B_n$' });
-        const B = v.stage({ x: [0, 49], y: [0, 1.1], height: 210, full: true, axes: 'box', xlabel: '$n$', title: 'error $|\\int f_n-\\int f|$ and the bound $\\varepsilon\\mu(E)+2M\\mu(B_n)$' });
+        const T = v.stage({ x: [-0.03, 1.03], y: [-0.25, 1.25], height: 230, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: '$f_n$, the $\\varepsilon$-band around $f=0$, and the bad set $B_n$' });
+        const B = v.stage({ x: [0, 49], y: [0, 1.1], height: 210, full: true, axes: 'box', gutter: true, xlabel: '$n$', title: 'error $|\\int f_n-\\int f|$ and the bound $\\varepsilon\\mu(E)+2M\\mu(B_n)$' });
         let st = null;
         v.render(() => {
           const k = which.value, Sq = SEQ[k], n = nS.value, e = eS.value;
@@ -704,7 +710,7 @@ The finiteness of $\mu(E)$ cannot be dropped: on $\R$ with Lebesgue measure, $f_
           for (const [a, b] of Bs) { T.vband(a, b, { color: 'red', alpha: 0.08 }); T.rect(a, -0.05 * Y1 - 0.1, b, -0.02 * Y1 - 0.05, { fill: 'red', fillAlpha: 0.85, stroke: false }); }
           T.hline(0, { color: 'green', width: 2, dash: [6, 4] });
           T.fn(fn[k](n), { domain: [0, k === 'inf' ? X1 : 1], color: 'accent', width: 2.6, n: 2400 });
-          T.corner(`$\\mu(B_n)=${v.fix(muB, 4)}$`, 'tr', { color: 'red', plate: true });
+          cornerIn(T, `$\\mu(B_n)=${v.fix(muB, 4)}$`, 'tr', { color: 'red', plate: true });
           // bottom: errors and bound
           const errs = [], bnd = [];
           for (let m = 1; m <= 48; m++) {
@@ -714,10 +720,10 @@ The finiteness of $\mu(E)$ cannot be dropped: on $\R$ with Lebesgue measure, $f_
           }
           const ymax = k === 'unb' ? 2.6 : 1.15;
           B.setView(null, [0, ymax]);
-          if (isFinite(Sq.muE)) B.path(bnd, { color: 'orange', width: 2.2 }); else B.corner('$\\varepsilon\\,\\mu(E)=\\infty$: the bound is useless', 'tr', { color: 'red' });
+          if (isFinite(Sq.muE)) B.path(bnd, { color: 'orange', width: 2.2 }); else cornerIn(B, '$\\varepsilon\\,\\mu(E)=\\infty$: the bound is useless', 'tr', { color: 'red' });
           B.dots(errs, { color: 'accent', r: 3 });
           B.dot(n, integral[k](n), { color: 'gold', r: 6 });
-          if (k === 'unb') B.corner('no uniform $M$: the bound uses $M=n$ and stays $\\ge 2$', 'tr', { color: 'red' });
+          if (k === 'unb') cornerIn(B, 'no uniform $M$: the bound uses $M=n$ and stays $\\ge 2$', 'tr', { color: 'red' });
           st = { k, n, e, I: integral[k](n), muB, bound: isFinite(Sq.muE) ? e * Sq.muE + 2 * (k === 'unb' ? n : Sq.M) * muB : Infinity };
           v.legend([['accent', '$f_n$ and $|\\int f_n - \\int f|$'], ['green', '$f=0$', { dash: true }], ['red', 'bad set $B_n$', { area: true }], ['orange', 'bound']]);
         });
@@ -747,17 +753,17 @@ The inequality can be strict, even on a space of finite measure: on $(0,1)$ with
         };
         const which = v.select('', Object.entries(SEQ).map(([value, o]) => ({ value, label: o.label })), 'sq');
         const nS = v.slider('$n$', 1, 20, 4, { int: true });
-        const T = v.stage({ x: [0, 1], y: [0, 22], height: 220, full: true, axes: 'box', xlabel: '$x$', title: '$f_n$ and $\\liminf f_n$' });
-        const B1 = v.stage({ x: [0, 21], y: [0, 2.3], height: 220, axes: 'box', xlabel: '$k$', title: '$\\int f_k$ against $\\int\\liminf f_n$' });
-        const B2 = v.stage({ x: [0, 1], y: [0, 2.2], height: 220, axes: 'box', xlabel: '$x$', title: 'cumulative mass $\\int_0^x f_n$' });
+        const T = v.stage({ x: [0, 1], y: [0, 22], height: 220, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: '$f_n$ and $\\liminf f_n$' });
+        const B1 = v.stage({ x: [0, 21], y: [0, 2.3], height: 220, axes: 'box', gutter: true, xlabel: '$k$', title: '$\\int f_k$ against $\\int\\liminf f_n$' });
+        const B2 = v.stage({ x: [0, 1], y: [0, 2.2], height: 220, axes: 'box', gutter: true, xlabel: '$x$', title: 'cumulative mass $\\int_0^x f_n$' });
         let st = null;
         v.render(() => {
           const Sq = SEQ[which.value], n = nS.value;
-          T.setView(Sq.X, Sq.Y); B2.setView(Sq.X, [0, which.value === 'up' ? 2.3 : 1.25]);
+          T.setView(Sq.X, [-0.05 * Sq.Y[1], Sq.Y[1]]); B2.setView(Sq.X, [-0.07, which.value === 'up' ? 2.3 : 1.25]); B1.setView(null, [-0.15, 2.3]);
           T.fn(Sq.f(n), { domain: Sq.X, color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.2, n: 2400 });
           if (which.value === 'up') T.fn(Sq.lim, { domain: [0.002, 1], color: 'green', width: 2, dash: [6, 4] });
           else T.hline(0, { color: 'green', width: 3, dash: [6, 4] });
-          T.corner(`$\\int f_n = ${v.fix(Sq.I(n), 3)}$`, 'tr', { color: 'accent', plate: true });
+          cornerIn(T, `$\\int f_n = ${v.fix(Sq.I(n), 3)}$`, 'tr', { color: 'accent', plate: true });
           const pts = Array.from({ length: 20 }, (_, i) => [i + 1, Sq.I(i + 1)]);
           B1.hline(Sq.Ilim, { color: 'green', width: 2, dash: [6, 4] });
           B1.dots(pts, { color: 'accent', r: 3.2 }); B1.dot(n, Sq.I(n), { color: 'gold', r: 6 });
@@ -786,8 +792,8 @@ The inequality can be strict, even on a space of finite measure: on $(0,1)$ with
         const which = v.select('', [{ value: 'up', label: 'dyadic $\\uparrow x^{-\\alpha}$' }, { value: 'neg', label: '$-x^{-1}1_{(0,1/n)}\\uparrow 0$' }, { value: 'down', label: '$1_{[n,\\infty)}\\downarrow 0$' }, { value: 'bump', label: 'not monotone' }], 'up');
         const aS = v.slider('$\\alpha$', 0.2, 1.4, 0.6, { step: 0.01 });
         const nS = v.slider('$n$', 1, 12, 3, { int: true });
-        const T = v.stage({ x: [0, 1], y: [0, 13], height: 240, full: true, axes: 'box', xlabel: '$x$', title: '$f_n$ (blue), $f_{n-1}$ (dashed) and the limit $f$ (green)' });
-        const B = v.stage({ x: [0.5, 12.5], y: [0, 3], height: 200, full: true, axes: 'box', xlabel: '$k$', title: '$\\int f_k$ against $\\int f$' });
+        const T = v.stage({ x: [0, 1], y: [0, 13], height: 240, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: '$f_n$ (blue), $f_{n-1}$ (dashed) and the limit $f$ (green)' });
+        const B = v.stage({ x: [0.5, 12.5], y: [0, 3], height: 200, full: true, axes: 'box', gutter: true, xlabel: '$k$', title: '$\\int f_k$ against $\\int f$' });
         const dy = (al, n) => (x) => (x > 0 && x <= 1 ? Math.min(Math.floor(2 ** n * x ** -al) / 2 ** n, n) : 0);
         let cache = null;
         const dyInts = (al) => {
@@ -813,13 +819,13 @@ The inequality can be strict, even on a space of finite measure: on $(0,1)$ with
           const lo = k === 'neg' ? -2 : 0;
           B.setView(null, [lo, k === 'neg' || k === 'down' ? 2 : top]);
           if (isFinite(lim)) { B.hline(lim, { color: 'green', width: 2, dash: [6, 4] }); B.tex(`\\textstyle\\int f=${v.fix(lim, 3)}`, 12.4, lim, { align: 'right', baseline: 'bottom', color: 'green', dy: -3 }); }
-          else B.corner('$\\int f=\\infty$', 'tl', { color: 'green' });
+          else cornerIn(B, '$\\int f=\\infty$', 'tl', { color: 'green' });
           ints.forEach((I, i) => {
             const x = i + 1, col = x === n ? 'gold' : 'accent';
             if (isFinite(I)) B.dot(x, I, { color: col, r: x === n ? 6 : 3.5 });
             else B.arrow(x, I > 0 ? 1.2 : -0.6, x, I > 0 ? 1.9 : -1.9, { color: col, width: 2 });
           });
-          if (!isFinite(ints[0])) B.corner(ints[0] > 0 ? 'every $\\int f_k=+\\infty$' : 'every $\\int f_k=-\\infty$', 'tr', { color: 'red' });
+          if (!isFinite(ints[0])) cornerIn(B, ints[0] > 0 ? 'every $\\int f_k=+\\infty$' : 'every $\\int f_k=-\\infty$', 'tr', { color: 'red' });
           st = { k, I: ints[n - 1], lim };
           v.legend([['accent', '$f_n$', { area: true }], ['muted', '$f_{n-1}$', { dash: true }], ['green', 'limit $f$', { dash: true }]]);
         });
@@ -845,8 +851,8 @@ The inequality can be strict, even on a space of finite measure: on $(0,1)$ with
         const M = v.M, phi = (x) => Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI);
         const which = v.select('', [{ value: 't', label: 'Student $t_n\\to$ normal' }, { value: 'bump', label: '$n1_{(1/n,2/n)}$' }, { value: 'drift', label: '$1_{[n,n+1)}$' }], 't');
         const nS = v.slider('$n$', 1, 40, 3, { int: true });
-        const T = v.stage({ x: [-5, 5], y: [0, 0.45], height: 250, full: true, axes: 'box', xlabel: '$x$', title: '$f_n$, limit $f$ and majorant' });
-        const B = v.stage({ x: [0, 41], y: [0, 1.15], height: 190, full: true, axes: 'box', xlabel: '$k$', title: '$\\int|f_k-f|$' });
+        const T = v.stage({ x: [-5, 5], y: [0, 0.45], height: 250, full: true, axes: 'box', gutter: true, xlabel: '$x$', title: '$f_n$, limit $f$ and majorant' });
+        const B = v.stage({ x: [0, 41], y: [0, 1.15], height: 190, full: true, axes: 'box', gutter: true, xlabel: '$k$', title: '$\\int|f_k-f|$' });
         let tErr = null;
         const tErrors = () => {
           if (tErr) return tErr;
@@ -865,7 +871,7 @@ The inequality can be strict, even on a space of finite measure: on $(0,1)$ with
             T.fn(phi, { color: 'green', width: 2.2, dash: [6, 4] });
             T.fn(D.pdf, { color: 'accent', width: 2.6 });
             errs = tErrors(); envI = 0.4 * Math.PI * Math.SQRT2;
-            T.corner('$g(x)=0.4/(1+x^2/2)$, $\\int g = 0.4\\pi\\sqrt2\\approx1.78$', 'tr', { color: 'orange', plate: true });
+            cornerIn(T, '$g(x)=0.4/(1+x^2/2)$, $\\int g = 0.4\\pi\\sqrt2\\approx1.78$', 'tr', { color: 'orange', plate: true });
           } else if (k === 'bump') {
             T.setView([0, 1], [0, 42]);
             const env = (x) => { if (x <= 0 || x >= 2) return 0; const m = Math.ceil(2 / x) - 1; return m > 1 / x && m >= 1 ? m : 0; };
@@ -873,23 +879,23 @@ The inequality can be strict, even on a space of finite measure: on $(0,1)$ with
             T.fn((x) => (x > 1 / n && x < 2 / n ? n : 0), { domain: [0, 1], color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.25, n: 3000 });
             T.hline(0, { color: 'green', width: 3, dash: [6, 4] });
             errs = Array(40).fill(1); envI = Infinity;
-            T.corner('least majorant $\\sup_k f_k\\approx 2/x$: $\\int=\\infty$', 'tr', { color: 'orange', plate: true });
+            cornerIn(T, 'least majorant $\\sup_k f_k\\approx 2/x$: $\\int=\\infty$', 'tr', { color: 'orange', plate: true });
           } else {
             T.setView([0, 42], [0, 1.4]);
             T.fn((x) => (x >= 1 ? 1 : 0), { domain: [0, 42], color: 'orange', width: 1.8, dash: [5, 4], fill: 'orange', fillAlpha: 0.08, n: 3000 });
             T.fn((x) => (x >= n && x < n + 1 ? 1 : 0), { domain: [0, 42], color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.25, n: 3000 });
             T.hline(0, { color: 'green', width: 3, dash: [6, 4] });
             errs = Array(40).fill(1); envI = Infinity;
-            T.corner('least majorant $1_{[1,\\infty)}$: $\\int=\\infty$', 'tr', { color: 'orange', plate: true });
+            cornerIn(T, 'least majorant $1_{[1,\\infty)}$: $\\int=\\infty$', 'tr', { color: 'orange', plate: true });
           }
-          B.setView(null, [0, k === 't' ? Math.max(...errs) * 1.15 : 1.15]);
+          B.setView(null, k === 't' ? [-0.04 * Math.max(...errs), Math.max(...errs) * 1.15] : [-0.05, 1.15]);
           B.hline(0, { color: 'green', width: 2, dash: [6, 4] });
           B.dots(errs.map((e, i) => [i + 1, e]), { color: 'accent', r: 3.2 });
           B.dot(n, errs[n - 1], { color: 'gold', r: 6 });
           st = { k, n, err: errs[n - 1], envI };
           v.legend([['accent', '$f_n$'], ['green', 'limit $f$', { dash: true }], ['orange', k === 't' ? 'majorant $g$' : 'least majorant $\\sup_k f_k$', k === 't' ? { area: true } : { dash: true }]]);
         });
-        v.readout(() => st && `$\\int|f_n-f| = ${v.fix(st.err, 4)}$; integral of the best majorant: $${isFinite(st.envI) ? v.fix(st.envI, 3) : '\\infty'}$.` + (st.k === 't' ? ' Dominated, so $\\int f_n\\mathbf 1_A\\to\\int f\\mathbf 1_A$ for every set $A$.' : ' No integrable majorant: $\\int f_n=1\\not\\to\\int f=0$.'));
+        v.readout(() => st && `$\\int|f_n-f| = ${v.fix(st.err, 4)}$; ` + (st.k === 't' ? `the majorant has $\\int g = ${v.fix(st.envI, 3)}<\\infty$.` : 'even the least majorant has infinite integral.') + (st.k === 't' ? ' Dominated, so $\\int f_n\\mathbf 1_A\\to\\int f\\mathbf 1_A$ for every set $A$.' : ' No integrable majorant: $\\int f_n=1\\not\\to\\int f=0$.'));
       },
     },
   ],

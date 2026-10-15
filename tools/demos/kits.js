@@ -516,5 +516,52 @@ export default {
         v.readout(() => `input “${w || 'ε'}” → ${run()} · ${run() === 'q2' ? 'accepted' : 'rejected'}`);
       },
     },
+    {
+      num: '1.15',
+      kind: 'Definition',
+      name: 'Icons kit: natural frequencies, split blocks (conditioning)',
+      statement: String.raw`Of 1000 people screened, how many with a **positive** test are actually ill? Splitting the icon array by test result shows $P(\text{ill}\mid +)$ as a fraction you can count.`,
+      caption: String.raw`Hover an icon for its group count. Switch the view to split the same 1000 people by test result: the icons glide into the new blocks.`,
+      viz(v) {
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340 });
+        const prev = v.slider('prevalence', 0.001, 0.2, 0.02, { step: 0.001, format: (x) => (100 * x).toFixed(1) + '%' });
+        const se = v.slider('sensitivity', 0.5, 1, 0.9, { step: 0.01 });
+        const sp = v.slider('specificity', 0.5, 1, 0.91, { step: 0.01 });
+        const view = v.select('view', [{ value: 'all', label: 'all 1000' }, { value: 'split', label: 'split by test' }, { value: 'pos', label: 'positives only' }], 'all');
+        const N = 1000, I = v.icons(s, { n: N, order: 'group' });
+        v.render(() => {
+          const D = Math.round(N * prev.value), TP = Math.round(D * se.value), FP = Math.round((N - D) * (1 - sp.value));
+          const groups = [{ n: TP, color: 'red', label: 'ill, test +' }, { n: D - TP, color: 'orange', label: 'ill, test −' }, { n: FP, color: 'blue', label: 'healthy, test +' }];
+          const pos = (i) => i < TP || (i >= D && i < D + FP);
+          const block = view.value === 'all' ? null : view.value === 'split' ? (i) => (pos(i) ? 0 : 1) : (i) => (pos(i) ? 0 : -1);
+          const labels = view.value === 'all' ? null : (b, n) => (b === 0 ? `test + (${n})` : `test − (${n})`);
+          I.set({ groups, block, blockLabels: labels, rest: { color: 'muted', alpha: 0.35, label: 'healthy, test −' } });
+          I.draw(); I.legend();
+        });
+        v.readout(() => { const D = Math.round(N * prev.value), TP = Math.round(D * se.value), FP = Math.round((N - D) * (1 - sp.value)); return `$P(\\text{ill}\\mid +) = ${TP}/${TP + FP} = ${(TP / Math.max(1, TP + FP)).toFixed(3)}$`; });
+      },
+    },
+    {
+      num: '1.16',
+      kind: 'Definition',
+      name: 'Icons kit: parliament hemicycle',
+      statement: String.raw`Seats are apportioned by a **highest-averages** rule: each seat goes to the party with the largest quotient $V/d(s)$, where $s$ is the number of seats it already has; d'Hondt uses $d(s) = s+1$, Sainte-Laguë $d(s) = 2s+1$.`,
+      caption: String.raw`Drag the vote shares; switch the divisor rule and the seats glide to their new owners.`,
+      viz(v) {
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300 });
+        const P = [['A', 'blue', 34], ['B', 'red', 28], ['C', 'green', 17], ['D', 'gold', 12], ['E', 'purple', 9]];
+        const sl = P.map(([nm, , x]) => v.slider(`votes ${nm}`, 0, 50, x, { step: 0.5 }));
+        const rule = v.select('rule', [{ value: 'dh', label: "d'Hondt" }, { value: 'sl', label: 'Sainte-Laguë' }], 'dh');
+        const seats = v.slider('seats', 20, 300, 120, { step: 1 });
+        const I = v.icons(s, { layout: 'hemicycle', order: 'group' });
+        const apportion = () => {
+          const S = P.map(() => 0), d = rule.value === 'dh' ? (k) => k + 1 : (k) => 2 * k + 1;
+          for (let k = 0; k < seats.value; k++) { let b = 0, bq = -1; P.forEach((_, j) => { const q = sl[j].value / d(S[j]); if (q > bq) { bq = q; b = j; } }); S[b]++; }
+          return S;
+        };
+        v.render(() => { const S = apportion(); I.set({ n: seats.value, groups: P.map(([nm, col], j) => ({ n: S[j], color: col, label: `party ${nm}` })) }); I.draw(); I.legend(); });
+        v.readout(() => { const S = apportion(), tv = sl.reduce((a, x) => a + x.value, 0); return P.map(([nm], j) => `${nm}: ${S[j]} (${((100 * S[j]) / seats.value).toFixed(1)}% of seats, ${((100 * sl[j].value) / tv).toFixed(1)}% of votes)`).join(' · '); });
+      },
+    },
   ],
 };

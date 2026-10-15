@@ -54,7 +54,7 @@ The spectrum of an instrument is not a fixed property. It changes with the note 
         const note = v.select('note', ['E4', 'A4', 'C5'], 'E4');
         const keep = v.select('play', [{ value: 'all', label: 'all harmonics' }, { value: 'odd', label: 'odd only' }, { value: 'even', label: 'even only' }], 'all');
         const wv = v.stage({ x: [0, 2], y: [-1.18, 1.18], height: 235, axes: false, weight: 1, title: 'two periods, rebuilt from the data (equal RMS)' });
-        const sp = v.stage({ x: [0.3, NH + 0.7], y: [-62, 5], height: 235, axes: 'box', xlabel: 'harmonic n', weight: 1.3, xticks: [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'harmonic levels re the loudest' });
+        const sp = v.stage({ x: [-1.6, NH + 0.7], y: [-71, 5], height: 235, axes: 'box', xlabel: 'harmonic n', weight: 1.3, xticks: [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], title: 'harmonic levels re the loudest' });
         const fp = v.stage({ x: [-3.6, NH + 4.2], y: [-0.2, 6.05], height: 225, axes: false, full: true, title: 'fingerprints at the same note: harmonics 1–24, stronger = darker (click a row)' });
         const ph = playhead(v);
         const kept = (n) => keep.value === 'all' || (keep.value === 'odd') === (n % 2 === 1);
@@ -82,10 +82,11 @@ The spectrum of an instrument is not a fixed property. It changes with the note 
           // ---- spectrum
           for (let n = 1; n <= Math.min(NH, S.n); n++) {
             const d = S.db[n - 1], on = kept(n), col = n % 2 ? 'accent' : 'orange';
-            if (d > -62) sp.rect(n - 0.34, -62, n + 0.34, d, on ? { fill: col, fillAlpha: 0.75, stroke: false } : { fill: col, fillAlpha: 0.08, color: col, width: 1, alpha: 0.5, dash: [2, 2] });
+            if (d > -60) sp.rect(n - 0.34, -60, n + 0.34, d, on ? { fill: col, fillAlpha: 0.75, stroke: false } : { fill: col, fillAlpha: 0.08, color: col, width: 1, alpha: 0.5, dash: [2, 2] });
           }
           const cH = centroidOf(amps);
           sp.vline(cH, { color: 'gold', width: 2.2, dash: [6, 4] });
+          sp.hline(-60, { color: 'muted', width: 1 });
           sp.text(`centroid ${v.fix(cH, 1)}`, cH + 0.4, 1.5, { color: 'gold', size: 11.5, weight: 600, align: 'left' });
           // ---- fingerprints
           const r = R();
@@ -98,11 +99,11 @@ The spectrum of an instrument is not a fixed property. It changes with the note 
             }
             const c = centroidOf(F.amp);
             fp.text(`${v.fix(c, 1)} · ${v.fix((c * F.f) / 1000, 2)} kHz`, NH + 0.75, y, { align: 'left', color: on ? 'gold' : 'muted', size: 11.5, weight: on ? 700 : 500 });
-            fp.dot(c + 0.5, y, { r: 3.2, color: 'gold', alpha: on ? 1 : 0.55 });
+            fp.dot(c, y, { r: 3.2, color: 'gold', alpha: on ? 1 : 0.55 });
             if (on || playing) fp.rect(0.45, y - 0.46, NH + 0.55, y + 0.46, { color: playing ? 'gold' : 'ink', width: playing ? 2.6 : 1.6, radius: 3 });
           });
           for (const n of [1, 4, 8, 12, 16, 20, 24]) fp.text(String(n), n, -0.08, { align: 'center', color: 'muted', size: 10.5 });
-          fp.text('centroid (harmonics · Hz)', NH + 0.75, 5.95, { align: 'left', color: 'muted', size: 10.5 });
+          fp.text('centroid', NH + 0.75, 5.98, { align: 'left', color: 'gold', size: 10.5 });
         });
         v.legend([['accent', 'odd harmonics'], ['orange', 'even harmonics'], ['gold', 'spectral centroid', { dash: true }]]);
         v.readout(() => {
@@ -158,8 +159,8 @@ So a periodic tone is a sum of **harmonics** at the whole multiples $nf_0$ of it
         const nS = v.slider('harmonics kept $N$', 1, NB, 5, { int: true, onChange: sync });
         const hold = v.toggle('hold the tone', false, { onChange: (on) => { if (on) lv.start(loopBuf(), 0.7); else lv.stop(); } });
         const s = v.stage({ x: [-3.1, 4.05], y: [-1.42, 1.42], equal: true, height: 290, axes: false, full: true });
-        const am = v.stage({ x: [0.2, NB + 0.8], y: [0, 1.14], height: 185, axes: 'box', xlabel: 'harmonic n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], yticks: [[0.5, '½'], [1, 'max']], title: 'amplitudes $A_n$' });
-        const pp = v.stage({ x: [0.2, NB + 0.8], y: [-3.6, 3.6], height: 185, axes: 'box', xlabel: 'harmonic n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], yticks: [[-Math.PI, '−π'], [0, '0'], [Math.PI, 'π']], title: 'phases $\\varphi_n$ (where $A_n$ is not tiny)' });
+        const am = v.stage({ x: [-2.2, NB + 0.8], y: [-0.16, 1.14], height: 185, axes: 'box', xlabel: 'harmonic n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], yticks: [[0.5, '½'], [1, 'max']], title: 'amplitudes $A_n$' });
+        const pp = v.stage({ x: [-2.2, NB + 0.8], y: [-4.5, 3.75], height: 185, axes: 'box', xlabel: 'harmonic n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], yticks: [[-Math.PI, '−π'], [0, '0'], [Math.PI, 'π']], title: 'phases $\\varphi_n$ (where $A_n$ is not tiny)' });
         let last = null;
         s.onDrag((x, y, phase) => {
           if (x < X0 - 0.05 && phase === 'start') return;
@@ -215,6 +216,7 @@ So a periodic tone is a sum of **harmonics** at the whole multiples $nf_0$ of it
             am.rect(n - 0.33, 0, n + 0.33, a, { fill: on ? 'accent' : 'muted', fillAlpha: on ? 0.75 : 0.22, stroke: false });
             if (a > 0.02) pp.dot(n, c.P[n], { r: on ? 4 : 3, color: on ? 'accent' : 'muted', alpha: on ? 1 : 0.6 });
           }
+          am.hline(0, { color: 'muted', width: 1 });
           am.vline(N + 0.5, { color: 'accent', width: 1.4, dash: [4, 3] });
           pp.vline(N + 0.5, { color: 'accent', width: 1.4, dash: [4, 3] });
           pp.hline(0, { color: 'faint', width: 1 });
@@ -288,7 +290,7 @@ On a log–log plot of $|c_n|$ against $n$ the harmonics therefore line up with 
         const loopBuf = () => { const d = data(); const h = []; for (let n = 1; n <= NMAX && n * F0 < 19000; n++) if (d.A[n] > 1e-7) h.push([n, 0.25 * d.A[n], 0]); return periodicLoop(h, F0).buf; };
         function sync() { lv.update(loopBuf, 0.6); }
         v.toggle('hold the tone', false, { onChange: (on) => { if (on) lv.start(loopBuf(), 0.6); else lv.stop(); } });
-        const ws = v.stage({ x: [0, 2], y: [-2.45, 1.3], height: 290, axes: false, weight: 1, title: 'the wave $p$ and its slope $p\'$' });
+        const ws = v.stage({ x: [0, 2], y: [-3.15, 1.3], height: 290, axes: false, weight: 1, title: 'the wave $p$ and its slope $p\'$' });
         const ls = v.stage({ x: [1, NMAX], y: [1e-7, 3], xlog: true, ylog: true, height: 290, axes: 'box', xlabel: 'harmonic n', weight: 1.3, title: '$|A_n|/A_1$ on log–log axes' });
         const tone = (name, dur) => { const d = compute(name, name === wS.value ? rS.value : 0); const parts = []; for (let n = 1; n <= NMAX && n * F0 < 19000; n++) if (d.A[n] > 1e-7) parts.push({ f: n * F0, a: d.A[n] }); return toRms(partials(parts, dur, { att: 0.02, rel: 0.08 }), 0.13); };
         v.soundButton('Listen', (snd) => snd.samples(tone(wS.value, 1.3), SR, { gain: 0.9 }));
@@ -296,7 +298,7 @@ On a log–log plot of $|c_n|$ against $n$ the harmonics therefore line up with 
         v.render(() => {
           const d = data(), w = W[wS.value], r = rS.value, k = w.k + (d.m >= 2 ? 1 : 0);
           // ---- the wave and its slope (offset band below)
-          const base = -1.55, f = (x) => { const u = M.mod(x, 1) * K, i = Math.floor(u), t = u - i; return d.ys[i % K] * (1 - t) + d.ys[(i + 1) % K] * t; };
+          const base = -2.1, f = (x) => { const u = M.mod(x, 1) * K, i = Math.floor(u), t = u - i; return d.ys[i % K] * (1 - t) + d.ys[(i + 1) % K] * t; };
           ws.hline(0, { color: 'faint', width: 1 }); ws.hline(base, { color: 'faint', width: 1 });
           ws.vline(1, { color: 'faint', width: 1, dash: [3, 4] });
           ws.fn(f, { domain: [0, 2], n: 900, color: 'accent', width: 2.4 });
@@ -309,8 +311,7 @@ On a log–log plot of $|c_n|$ against $n$ the harmonics therefore line up with 
           ws.text('p', 0.03, 1.12, { color: 'accent', math: true, size: 16 });
           ws.text("p′", 0.03, base + 0.78 + 0.1, { color: 'orange', math: true, size: 16 });
           const why = k === 0 ? 'p jumps: harmonics ∝ 1/n' : k === 1 ? 'p continuous, p′ jumps: ∝ 1/n²' : k === 2 ? 'p, p′ continuous, p″ jumps: ∝ 1/n³' : 'every derivative continuous: faster than any power';
-          ws.corner(why, 'bl', { color: 'ink', weight: 600 });
-          if (d.m < 2 && w.jumps.length) ws.corner('red arrows: deltas in p′ at the jumps', 'tr', { color: 'red', size: 11 });
+          if (d.m < 2 && w.jumps.length) ws.corner('red arrows: deltas in p′ at the jumps', 'br', { color: 'red', size: 11, plate: true });
           // ---- log–log spectrum
           for (const [q, lab] of [[1, '1/n'], [2, '1/n²'], [3, '1/n³']]) {
             ls.fn((n) => n ** -q, { domain: [1, NMAX], color: 'muted', width: 1.1, dash: [5, 4], alpha: 0.75 });
@@ -320,7 +321,7 @@ On a log–log plot of $|c_n|$ against $n$ the harmonics therefore line up with 
           ls.dots(pts, { r: 2.6, color: 'accent' });
           if (d.m >= 2) { const nk = 1 / r; if (nk < NMAX) { ls.vline(nk, { color: 'gold', width: 1.4, dash: [4, 3] }); ls.text('knee ≈ 1/width', nk * 1.08, 1.5, { color: 'gold', size: 11, align: 'left' }); } }
           for (const [n, s, b] of d.slopes) if (b > 3e-7 && n > 1.5) ls.text(v.fix(s, 1), n, Math.min(1.5, b * 3.2), { color: 'ink', size: 10.5, align: 'center', weight: 600 });
-          ls.corner('numbers: measured slope per octave of n', 'bl', { color: 'muted', size: 11 });
+          ls.corner(why, 'tr', { color: 'ink', weight: 600, plate: true });
         });
         v.legend([['accent', 'wave / its harmonics'], ['orange', 'slope $p\'$'], ['muted', 'reference slopes −1, −2, −3', { dash: true }]]);
         v.readout(() => {
@@ -393,8 +394,8 @@ The **peak** value, and so the crest factor $\max|p|/p_{\rm rms}$, does depend o
           let m = 0; for (const b of bufs) for (let i = 0; i < b.length; i++) m = Math.max(m, Math.abs(b[i]));
           snd.samples(join(bufs.map((b) => b.map((x) => (0.9 * x) / m)), 0.25), SR, { gain: 0.8 });
         });
-        const bs = v.stage({ x: [0.3, NH + 0.7], y: [-0.36, 1.1], height: 245, axes: 'box', xlabel: 'harmonic n', xticks: M.range(NH, 1), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], weight: 1.35, title: 'amplitudes $A_n$ (drag) and phases (dials)' });
-        const es = v.stage({ x: [0, 3.2], y: [0, 1.1], height: 245, axes: false, weight: 0.75, minWidth: 220, title: 'energy budget' });
+        const bs = v.stage({ x: [-0.5, NH + 0.7], y: [-0.38, 1.1], height: 245, axes: 'box', xticks: M.range(NH, 1), yticks: [[0, '0'], [0.5, '0.5'], [1, '1']], weight: 1.35, title: 'amplitudes $A_n$ (drag) and phases (dials)' });
+        const es = v.stage({ x: [0, 3.2], y: [-0.1, 1.1], height: 245, axes: false, weight: 0.75, minWidth: 220, title: 'energy budget' });
         const ws = v.stage({ x: [0, 2], y: [-3.2, 3.2], height: 205, axes: false, full: true });
         bs.onDrag((x, y) => { const n = Math.round(x); if (n >= 1 && n <= NH && y > -0.05) { A[n - 1] = M.clamp(y, 0, 1); sync(); } });
         const hue = (n) => v.mix(v.color('accent'), v.color('teal'), (n - 1) / (NH - 1));
@@ -414,13 +415,14 @@ The **peak** value, and so the crest factor $\max|p|/p_{\rm rms}$, does depend o
           let acc = 0;
           for (let n = 1; n <= NH; n++) { const e = (A[n - 1] * A[n - 1]) / 2; if (e > 0) es.rect(1.9, sy(acc), 2.9, sy(acc + e), { fill: hue(n), fillAlpha: 0.8, color: 'panel', width: 0.8 }); if (e / top > 0.06) es.text(String(n), 2.4, sy(acc + e / 2), { align: 'center', color: 'panel', size: 10.5, halo: false, weight: 600 }); acc += e; }
           es.line(0.15, sy(st.ms), 3.05, sy(st.ms), { color: 'ink', width: 1, dash: [3, 3] });
-          es.text('mean of p²', 0.8, -0.0, { align: 'center', baseline: 'top', color: 'ink', size: 10.5, dy: 4 });
-          es.text('Σ Aₙ²/2', 2.4, -0.0, { align: 'center', baseline: 'top', color: 'ink', size: 10.5, dy: 4 });
+          es.text('mean of p²', 0.8, -0.05, { align: 'center', color: 'ink', size: 11 });
+          es.text('Σ Aₙ²/2', 2.4, -0.05, { align: 'center', color: 'ink', size: 11 });
           es.text(v.fix(st.ms, 4), 0.8, sy(st.ms), { align: 'center', baseline: 'bottom', color: 'green', size: 11, weight: 600, dy: -3 });
           es.text(v.fix(st.par, 4), 2.4, sy(st.par), { align: 'center', baseline: 'bottom', color: 'ink', size: 11, weight: 600, dy: -3 });
           // ---- waveform
-          const ym = Math.max(1, st.pk) * 1.15;
-          ws.setView([0, 2], [-ym, ym]);
+          let wmin = 0, wmax = 0; for (let i = 0; i < 600; i++) { const y = wave(i / 600); wmin = Math.min(wmin, y); wmax = Math.max(wmax, y); }
+          const lo = Math.min(wmin, -rms), hi = Math.max(wmax, rms), rg = Math.max(0.5, hi - lo);
+          ws.setView([0, 2], [lo - 0.12 * rg, hi + 0.28 * rg]);
           ws.hline(0, { color: 'faint', width: 1 });
           ws.hband(-rms, rms, { color: 'green', alpha: 0.08 });
           ws.hline(rms, { color: 'green', width: 1.6, dash: [6, 4] }); ws.hline(-rms, { color: 'green', width: 1.6, dash: [6, 4] });
@@ -434,7 +436,7 @@ The **peak** value, and so the crest factor $\max|p|/p_{\rm rms}$, does depend o
         v.legend([['green', '±RMS, from the waveform'], ['red', 'peak'], ['accent', 'waveform']]);
         v.readout(() => {
           const st = stats();
-          return `mean square measured on the waveform (${KS} samples per period): ${v.fix(st.ms, 6)} · Parseval's sum $\\tfrac12\\sum A_n^2$: ${v.fix(st.par, 6)} · difference ${v.sci(Math.abs(st.ms - st.par) || 1e-17, 1)} · RMS ${v.fix(Math.sqrt(st.ms), 4)}, the same for every choice of phases · peak ${v.fix(st.pk, 3)}, crest factor ${v.fix(st.pk / Math.sqrt(st.ms), 2)}: this is what the phases change`;
+          return `mean square measured on the waveform (${KS} samples per period): ${v.fix(st.ms, 6)} · Parseval's sum $\\tfrac12\\sum A_n^2$: ${v.fix(st.par, 6)} · difference $${v.sci(Math.abs(st.ms - st.par) || 1e-17, 1)}$ · RMS ${v.fix(Math.sqrt(st.ms), 4)}, the same for every choice of phases · peak ${v.fix(st.pk, 3)}, crest factor ${v.fix(st.pk / Math.sqrt(st.ms), 2)}: this is what the phases change`;
         });
       },
     },
@@ -450,7 +452,7 @@ spreads its content over a continuum of frequencies. When $P$ is integrable the 
 - a partial that dies away as $e^{-t/\tau}\cos 2\pi f_kt$ has a **broadened line**, the Lorentzian $|P(f)|^2\propto1/\big(\tau^{-2}+4\pi^2(f-f_k)^2\big)$ near $f_k$. Its full width at half power is $$\Delta f=\frac1{\pi\tau},$$ so the faster the decay, the broader the line;
 - a click has a flat, continuous spectrum, and noise a continuous spectrum with no lines at all.`,
       idea: String.raw`Watch a periodic sound for a time $T_{\rm obs}$ and expand it in a Fourier series of period $T_{\rm obs}$. As $T_{\rm obs}\to\infty$ the allowed frequencies $k/T_{\rm obs}$ crowd together and the sum becomes the integral (sig-5.1; rca-9.1, rca-9.11). For a decaying partial the integral can be done exactly: $\int_0^\infty e^{-t/\tau}e^{-2\pi i(f-f_k)t}\,dt=1/(\tau^{-1}+2\pi i(f-f_k))$, whose squared modulus falls to half its peak where $2\pi|f-f_k|=1/\tau$. In a plucked string or a struck bar each partial is such a line, and the upper partials, which die faster, are broader. The width is a direct reading of the decay time, that is of the resonator's $Q=f_k/\Delta f$. A click contains every frequency in equal measure because it is shorter than any period of interest.`,
-      caption: String.raw`Choose a sound; each spectrum is computed by FFT from the whole 3 s sound. The organ tone gives lines as narrow as 3 s of listening allows. The guitar pluck and the marimba stroke give lines broadened by their decay, and their higher partials, which die faster, are broader. A woodblock is two short-lived partials smeared into bumps, a click is flat, and noise is a continuum. Drag the decay time $\tau$ (for the plucked and struck sounds): the zoom on the right shows the fundamental's line measured from the sound, the Lorentzian predicted from $\tau$ (dashed), and the half-power width. *Listen* to each.`,
+      caption: String.raw`Choose a sound; each spectrum is computed by FFT from the whole 4 s sound. The organ tone gives lines as narrow as 4 s of listening allows. The guitar pluck and the marimba stroke give lines broadened by their decay, and their higher partials, which die faster, are broader. A woodblock is two short-lived partials smeared into bumps, a click is flat, and noise is a continuum. Drag the decay time $\tau$ (for the plucked and struck sounds): the zoom on the right shows the fundamental's line measured from the sound, the Lorentzian predicted from $\tau$ (dashed), and the half-power width. *Listen* to each.`,
       deps: ['music-4.2', 'rca-9.1', 'rca-9.11'],
       see: ['sig-5.1', 'sig-5.12', 'rca-9.13', 'music-3.11', 'mech-4.7', 'sig-8.11'],
       refs: ['Benson ch. 2', 'Loy II ch. 3'],
@@ -458,7 +460,7 @@ spreads its content over a continuum of frequencies. When $P$ is integrable the 
       credit: 'Fourier, 1822; Plancherel, 1910',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fourier_transform' },
       viz(v) {
-        const M = v.M, SR2 = 22050, NF = 65536, FMAX = 3000;
+        const M = v.M, SR2 = 16000, NF = 65536, FMAX = 3000;
         const SND = {
           organ: { name: 'organ pipe (steady)', f1: 196, tau: null },
           guitar: { name: 'guitar pluck', f1: 196, tau: 0.8 },
@@ -470,7 +472,7 @@ spreads its content over a continuum of frequencies. When $P$ is integrable the 
         const sel = v.select('sound', [{ value: 'organ', label: 'organ' }, { value: 'guitar', label: 'guitar' }, { value: 'marimba', label: 'marimba' }, { value: 'block', label: 'woodblock' }, { value: 'click', label: 'click' }, { value: 'noise', label: 'noise' }], 'guitar', { onChange: (x) => { if (SND[x].tau) tS.set(SND[x].tau); tS.el.hidden = !SND[x].tau; } });
         const tS = v.slider('decay time $\\tau$ of the fundamental', 0.01, 3, 0.8, { log: true, fmt: (x) => (x < 0.1 ? v.fix(x * 1000, 0) + ' ms' : v.fix(x, 2) + ' s') });
         const wv = v.stage({ x: [0, 1.6], y: [-1.12, 1.12], height: 150, axes: 'box', xlabel: 'time (s)', yticks: [], full: true });
-        const sp = v.stage({ x: [0, FMAX], y: [-82, 5], height: 255, axes: 'box', xlabel: 'frequency (Hz)', yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60'], [-80, '−80']], weight: 1.55, title: '$|P(f)|$ of the whole sound (FFT, 3 s)' });
+        const sp = v.stage({ x: [-260, FMAX], y: [-92, 5], height: 255, axes: 'box', xlabel: 'frequency (Hz)', xticks: [500, 1000, 1500, 2000, 2500, 3000], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60'], [-80, '−80']], weight: 1.55, title: '$|P(f)|$ of the whole sound (FFT of 4 s)' });
         const zm = v.stage({ x: [-10, 10], y: [0, 1.1], height: 255, axes: 'box', xlabel: 'f − f₁ (Hz)', yticks: [[0.5, '½'], [1, '1']], weight: 0.85, minWidth: 220, title: 'zoom on the fundamental: power' });
         let key = '', D = null;
         const make = () => {
@@ -515,10 +517,10 @@ spreads its content over a continuum of frequencies. When $P$ is integrable the 
         v.render(() => {
           const d = make(), S = SND[sel.value];
           // ---- waveform envelope
-          const E = envelopeOf(d.x, SR2, 0, 1.6, 500);
+          const E = envelopeOf(d.x, SR2, 0, 1.6, 240);
           wv.poly([...E.hi, ...E.lo.slice().reverse()], { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 0.8 });
           if (S.tau) { wv.fn((t) => (t < 0.05 ? NaN : Math.exp(-(t - 0.05) / tS.value)), { domain: [0.05, 1.6], color: 'gold', width: 1.6, dash: [5, 4] }); wv.corner(`gold: $e^{-t/\\tau}$, $\\tau$ = ${tS.value < 0.1 ? v.fix(tS.value * 1000, 0) + ' ms' : v.fix(tS.value, 2) + ' s'}`, 'tr', { color: 'gold' }); }
-          wv.corner(S.name, 'tl', { color: 'ink', weight: 600 });
+          wv.corner(S.name, 'tl', { color: 'ink', weight: 600, plate: true });
           // ---- full spectrum, pooled per pixel column
           const cols = Math.max(200, Math.round(sp.width || 600)), pts = [];
           for (let c = 0; c < cols; c++) {
@@ -527,6 +529,7 @@ spreads its content over a continuum of frequencies. When $P$ is integrable the 
             pts.push([((b0 + b1) / 2) * d.df, Math.max(-82, dB(m / d.mm))]);
           }
           sp.poly([[0, -82], ...pts, [pts[pts.length - 1][0], -82]], { fill: 'accent', fillAlpha: 0.18, stroke: false });
+          sp.hline(-82, { color: 'muted', width: 1 });
           sp.path(pts, { color: 'accent', width: 1.4 });
           if (sel.value !== 'click' && sel.value !== 'noise') sp.vline(S.f1, { color: 'gold', width: 1.2, dash: [3, 3] });
           // ---- zoom
@@ -543,10 +546,10 @@ spreads its content over a continuum of frequencies. When $P$ is integrable the 
         v.readout(() => {
           const d = make(), S = SND[sel.value];
           if (S.tau) {
-            const pred = 1 / (Math.PI * tS.value);
-            return `${S.name}: fundamental ${S.f1} Hz, decay time $\\tau$ = ${tS.value < 0.1 ? v.fix(tS.value * 1000, 0) + ' ms' : v.fix(tS.value, 2) + ' s'} · measured half-power width ${d.width != null ? v.fix(d.width, 3) : '—'} Hz, predicted $1/\\pi\\tau$ = ${v.fix(pred, 3)} Hz · quality factor $Q=f_1/\\Delta f$ ≈ ${v.fix(S.f1 / pred, 0)} · ${sel.value === 'guitar' ? 'partial $n$ decays $1+0.12(n-1)$ times faster, so its line is that much broader' : sel.value === 'marimba' ? 'the overtones (×3.98, ×9.85) decay 3 and 7 times faster: broader lines' : 'two short-lived partials: bumps, no pitch-defining lines'}`;
+            const pred = 1 / (Math.PI * tS.value), Tobs = NF / SR2 - 0.05;
+            return `${S.name}: fundamental ${S.f1} Hz, decay time $\\tau$ = ${tS.value < 0.1 ? v.fix(tS.value * 1000, 0) + ' ms' : v.fix(tS.value, 2) + ' s'} · measured half-power width ${d.width != null ? v.fix(d.width, 3) : '—'} Hz, predicted $1/\\pi\\tau$ = ${v.fix(pred, 3)} Hz${tS.value > Tobs / 4 ? ` (the ${v.fix(Tobs, 1)} s recording cuts the decay short and adds about $1/T_{\\rm obs}$ of width)` : ''} · quality factor $Q=f_1/\\Delta f$ ≈ ${v.fix(S.f1 / pred, 0)} · ${sel.value === 'guitar' ? 'partial $n$ decays $1+0.12(n-1)$ times faster, so its line is that much broader' : sel.value === 'marimba' ? 'the overtones (×3.98, ×9.85) decay 3 and 7 times faster: broader lines' : 'two short-lived partials: bumps, no pitch-defining lines'}`;
           }
-          if (sel.value === 'organ') return `steady organ-like tone on ${S.f1} Hz, held for the whole 3 s: lines of width ${d.width != null ? v.fix(d.width, 2) : '—'} Hz, close to the limit $0.89/T_{\\rm obs}$ = ${v.fix(0.886 / (NF / SR2 - 0.05), 2)} Hz set by the 3 s of observation (see 4.6) · listen longer and the lines get narrower`;
+          if (sel.value === 'organ') return `steady organ-like tone on ${S.f1} Hz, held for the whole 4 s: lines of width ${d.width != null ? v.fix(d.width, 2) : '—'} Hz, close to the limit $0.89/T_{\\rm obs}$ = ${v.fix(0.886 / (NF / SR2 - 0.05), 2)} Hz set by the 4 s of observation (see 4.6) · listen longer and the lines get narrower`;
           let s = 0, s2 = 0, n = 0; for (let b = Math.round(100 / d.df); b < d.nb; b += 7) { const x = dB(d.mag[b] / d.mm); s += x; s2 += x * x; n++; }
           const sd = Math.sqrt(Math.max(0, s2 / n - (s / n) ** 2));
           return sel.value === 'click' ? `a 0.27 ms click: level from 100 Hz to 3 kHz is flat to within ${v.fix(sd, 2)} dB (standard deviation): every frequency at once, none singled out` : `0.4 s of white noise: a continuum with random ripples (standard deviation ${v.fix(sd, 1)} dB across 100 Hz–3 kHz) but no lines anywhere`;
@@ -571,7 +574,7 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
       scope: String.raw`$\Delta t$ and $\Delta f$ here are root-mean-square widths of the energy distributions; other measures of width (−3 dB widths, effective durations) give other constants but the same reciprocal law. The bound limits what a single linear time–frequency analysis can resolve. The ear is a nonlinear system, and in some tasks listeners beat the naive bound (Oppenheim and Magnasco, 2013).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Uncertainty_principle#Signal_processing' },
       viz(v) {
-        const M = v.M, NG = 4096, SCALE = [0, 2, 4, 5, 7];
+        const M = v.M, NG = 8192, SCALE = [0, 2, 4, 5, 7];
         const shS = v.select('envelope', [{ value: 'gauss', label: 'Gaussian' }, { value: 'hann', label: 'raised cosine' }, { value: 'glide', label: 'glide' }, { value: 'two', label: 'two notes' }], 'gauss');
         const dS = v.slider('note length $\\Delta t$', 0.0008, 0.2, 0.02, { log: true, fmt: (x) => (x < 0.01 ? v.fix(x * 1000, 1) : v.fix(x * 1000, 0)) + ' ms' });
         const fS = v.slider('pitch', 110, 1760, 440, { log: true, fmt: (x) => `${v.fix(x, 0)} Hz (${noteOf(M, x)})` });
@@ -588,7 +591,7 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
         let key = '', D = null;
         const analyse = () => {
           const k = [shS.value, dS.value, fS.value].join(); if (k === key) return D; key = k;
-          const sh = shS.value, st = dS.value, f0 = fS.value, e = env(sh, st, f0), L = span(sh, st) * 2, dt = (2 * L) / NG;
+          const sh = shS.value, st = dS.value, f0 = fS.value, e = env(sh, st, f0), L = span(sh, st) * 3, dt = (2 * L) / NG;
           const re = new Float64Array(NG), im = new Float64Array(NG);
           for (let i = 0; i < NG; i++) { const [a, b] = e(-L + i * dt); re[i] = a; im[i] = b; }
           let w0 = 0, w1 = 0, w2 = 0; for (let i = 0; i < NG; i++) { const p = re[i] * re[i] + im[i] * im[i], t = -L + i * dt; w0 += p; w1 += p * t; w2 += p * t * t; }
@@ -625,10 +628,10 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
           G = { rows, nfft, fs, fc, T, NT, mx, Dn };
           return G;
         };
-        const ts = v.stage({ x: [-0.1, 0.1], y: [-1.15, 1.15], height: 200, axes: 'box', xlabel: 'time (ms)', yticks: [], weight: 1, title: 'one note' });
-        const fsP = v.stage({ x: [400, 480], y: [0, 1.12], height: 200, axes: 'box', xlabel: 'frequency (Hz)', yticks: [[0.5, '½'], [1, '1']], weight: 1, title: 'its power spectrum' });
-        const sg = v.stage({ x: [0, 1], y: [380, 800], height: 255, axes: 'box', xlabel: 'time (ms)', ylabel: 'Hz', weight: 1.25, title: 'spectrogram of C–D–E–F–G' });
-        const pl = v.stage({ x: [0.3, 600], y: [0.05, 600], xlog: true, ylog: true, height: 255, axes: 'box', xlabel: 'Δt (ms)', ylabel: 'Δf (Hz)', weight: 0.9, minWidth: 240, title: 'the $(\\Delta t,\\Delta f)$ plane' });
+        const ts = v.stage({ x: [-0.1, 0.1], y: [-1.15, 1.15], height: 220, axes: 'box', xlabel: 'time (ms)', yticks: [], weight: 1, minWidth: 360, title: 'one note' });
+        const fsP = v.stage({ x: [400, 480], y: [-0.34, 1.12], height: 220, axes: 'box', yticks: [[0.5, '½'], [1, '1']], weight: 1, minWidth: 360, title: 'its power spectrum (frequency in Hz)' });
+        const sg = v.stage({ x: [0, 1], y: [380, 800], height: 255, axes: 'box', xlabel: 'time (ms)', weight: 1.15, minWidth: 360, title: 'spectrogram of C–D–E–F–G (frequency in Hz)' });
+        const pl = v.stage({ x: [0.3, 600], y: [0.05, 600], xlog: true, ylog: true, height: 255, axes: 'box', xlabel: 'Δt (ms)', ylabel: 'Δf (Hz)', weight: 1, minWidth: 360, title: 'the $(\\Delta t,\\Delta f)$ plane' });
         const ph = playhead(v);
         const noteBuf = (sh, st, f0, fk, sr = SR) => { const e = env(sh, st, f0), L = Math.min(span(sh, st), 1.2), n = Math.round(2 * L * sr), out = new Float32Array(n); for (let i = 0; i < n; i++) { const t = i / sr - L, [a, b] = e(t), p = TAU * fk * (i / sr); out[i] = a * Math.cos(p) - b * Math.sin(p); } return out; };
         const figBuf = (st) => { const sh = shS.value, f0 = fS.value, Dn = (sh === 'two' ? 9 : 6) * st, n = Math.round((5 * Dn + 2 * Math.min(span(sh, st), 1.2)) * SR), out = new Float32Array(n);
@@ -651,8 +654,15 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
           ts.corner(`${v.fix(cyc / 2, 0)} cycles in view`, 'tr', { color: 'muted', size: 11 });
           // ---- spectrum around f0 with the keyboard
           const W = Math.max(5 * d.sF, f0 * 0.03), a = f0 + d.mF - W, b = f0 + d.mF + W;
-          fsP.setView([a, b], [0, 1.12]);
-          for (let m = Math.ceil(M.freqToMidi(Math.max(20, a))); m <= M.freqToMidi(b); m++) { const fk = M.midiToFreq(m); fsP.line(fk, 0, fk, 0.06, { color: 'muted', width: 1.4 }); if ((b - a) / (fsP.width || 300) * 40 < fk * 0.06) fsP.text(M.noteName(m), fk, 0.1, { align: 'center', color: 'muted', size: 9.5 }); }
+          fsP.setView([a, b], [-0.34, 1.12]);
+          // the piano keys under the spectrum (cells halfway in log frequency between semitones)
+          for (let m = Math.floor(M.freqToMidi(Math.max(20, a))) - 1; m <= M.freqToMidi(b) + 1; m++) {
+            const x0 = Math.max(a, M.midiToFreq(m - 0.5)), x1 = Math.min(b, M.midiToFreq(m + 0.5)); if (x1 <= x0) continue;
+            const blk = [1, 3, 6, 8, 10].includes(M.mod(m, 12)), on = Math.abs(M.midiToFreq(m) - f0 - d.mF) <= d.sF + 0.5 * (x1 - x0);
+            fsP.rect(x0, -0.17, x1, -0.03, { fill: on ? 'gold' : blk ? 'ink' : 'panel', fillAlpha: on ? 0.75 : blk ? 0.7 : 1, color: 'muted', width: 0.8 });
+            if (fsP.X(x1) - fsP.X(x0) > 26) fsP.text(M.noteName(m), (x0 + x1) / 2, -0.1, { align: 'center', color: on ? 'ink' : blk ? 'panel' : 'muted', size: 9.5, halo: false });
+          }
+          fsP.hline(0, { color: 'muted', width: 1 });
           fsP.vband(f0 + d.mF - d.sF, f0 + d.mF + d.sF, { color: 'accent', alpha: 0.1, edges: true });
           fsP.path(d.spec.filter(([f]) => f0 + f >= a && f0 + f <= b).map(([f, p]) => [f0 + f, p]), { color: 'accent', width: 2.2 });
           fsP.corner(`±Δf = ±${v.fix(d.sF, d.sF < 10 ? 2 : 1)} Hz`, 'tl', { color: 'accent', weight: 600 });
@@ -669,7 +679,7 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
           }, { key: `${gkey}|${Rp.key}`, res: 2 });
           sg.axes();
           SCALE.forEach((s) => { const fk = f0 * 2 ** (s / 12); sg.line(0, fk, ms(g.T) * 0.03, fk, { color: 'gold', width: 2 }); sg.line(ms(g.T) * 0.97, fk, ms(g.T), fk, { color: 'gold', width: 2 }); });
-          sg.corner(`analysis window matched: σ = ${v.fix(ms(st), st < 0.01 ? 1 : 0)} ms`, 'tl', { color: 'ink', size: 11, plate: true });
+          sg.corner(`analysis window matched to the notes: σ = ${v.fix(ms(st), st < 0.01 ? 1 : 0)} ms`, 'tl', { color: 'ink', size: 11, plate: true });
           // ---- the (Δt, Δf) plane
           const bound = (x) => 1 / (4 * Math.PI * (x / 1000));
           pl.poly([[0.3, 0.05], [0.3, bound(0.3)], ...M.range(41).map((i) => { const x = 0.3 * (600 / 0.3) ** (i / 40); return [x, bound(x)]; }), [600, 0.05]], { fill: 'red', fillAlpha: 0.14, stroke: false });
@@ -736,7 +746,7 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
         let key = '', D = null;
         const note = () => {
           const k = aS.value + '|' + sS.value; if (k === key) return D; key = k;
-          const buf = render(aS.value, sS.value), S = stft(M, buf, SR, { win: 0.012, hop: 0.004, fmax: 6000 });
+          const buf = render(aS.value, sS.value), S = stft(M, buf, SR, { win: 0.018, hop: 0.004, fmax: 6000 });
           // heterodyne analysis of harmonics 1–6: amplitude in a 10 ms Hann window every 4 ms over the first 0.3 s
           const W = Math.round(0.01 * SR), hw = M.range(W).map((j) => 0.5 - 0.5 * Math.cos((TAU * (j + 0.5)) / W)), tracks = [];
           const ratio = steady(sS.value).ratio;
@@ -762,13 +772,13 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
         v.soundButton('Mystery note (attack cut)', (snd) => { const k = KIN[Math.floor(Math.random() * 4)]; mystery = k; lastGuess = ''; snd.samples(playable(render(k, k), 80, false), SR, { gain: 0.8 }); v.invalidate(); });
         KIN.forEach((k) => v.button(`${k}?`, () => { if (!mystery) { lastGuess = 'press Mystery note first'; return; } const ok = k === mystery; score = [score[0] + (ok ? 1 : 0), score[1] + 1]; lastGuess = ok ? `yes, it was the ${mystery}` : `no, it was the ${mystery}`; mystery = null; }));
         const wv = v.stage({ x: [0, DUR], y: [-1.05, 1.05], height: 205, axes: 'box', xlabel: 'time (s)', yticks: [], weight: 1, title: 'waveform' });
-        const hs = v.stage({ x: [0, 300], y: [-50, 3], height: 205, axes: 'box', xlabel: 'time (ms)', yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], weight: 1, title: 'harmonics 1–6 during the attack' });
-        const sg = v.stage({ x: [0, DUR], y: [0, 6000], height: 215, axes: 'box', xlabel: 'time (s)', ylabel: 'Hz', full: true, title: 'spectrogram' });
+        const hs = v.stage({ x: [0, 300], y: [-52, 3], height: 205, axes: 'box', xlabel: 'time (ms)', yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], weight: 1, title: 'harmonics 1–6 during the attack' });
+        const sg = v.stage({ x: [-0.1, DUR], y: [-520, 6000], height: 235, axes: 'box', xlabel: 'time (s)', xticks: [0, 0.2, 0.4, 0.6, 0.8, 1, 1.2], yticks: [[1000, '1 kHz'], [2000, '2'], [3000, '3'], [4000, '4'], [5000, '5'], [6000, '6']], full: true, title: 'spectrogram (18 ms window)' });
         const HC = ['accent', 'orange', 'green', 'purple', 'teal', 'pink'];
         v.render(() => {
           const d = note(), cut = cS.value / 1000;
           // ---- waveform
-          const E = envelopeOf(d.buf, SR, 0, DUR, 500);
+          const E = envelopeOf(d.buf, SR, 0, DUR, 220);
           wv.poly([...E.hi, ...E.lo.slice().reverse()], { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 0.7 });
           if (cut) wv.vband(0, cut, { color: 'red', alpha: 0.16, edges: true });
           wv.measure(d.t10, 0.93, d.t90, 0.93, '');
@@ -777,10 +787,13 @@ with equality exactly for Gaussian tone bursts $z(t)=e^{-(t-t_0)^2/4\Delta t^2}\
           // ---- harmonic tracks
           let tm = 1e-9; for (const tr of d.tracks) for (const [, a] of tr) tm = Math.max(tm, a);
           if (cut) hs.vband(0, Math.min(300, cut * 1000), { color: 'red', alpha: 0.14 });
-          d.tracks.forEach((tr, i) => hs.path(tr.map(([t, a]) => [t * 1000, Math.max(-50, dB(a / tm))]), { color: HC[i], width: 2 }));
-          d.tracks.forEach((tr, i) => { const end = tr[tr.length - 1]; hs.text(String(i + 1), 296, Math.max(-48, dB(end[1] / tm)), { align: 'right', color: HC[i], size: 11, weight: 700 }); });
+          d.tracks.forEach((tr, i) => hs.path(tr.map(([t, a]) => (dB(a / tm) < -52 ? null : [t * 1000, dB(a / tm)])), { color: HC[i], width: 2 }));
+          // end labels, pushed apart so they never overlap
+          const labs = d.tracks.map((tr, i) => [i, Math.max(-47, dB(tr[tr.length - 1][1] / tm))]).sort((p, q) => q[1] - p[1]);
+          for (let j = 1; j < labs.length; j++) labs[j][1] = Math.min(labs[j][1], labs[j - 1][1] - 3.6);
+          labs.forEach(([i, y]) => hs.text(String(i + 1), 297, y, { align: 'right', color: HC[i], size: 11, weight: 700, plate: false }));
           // ---- spectrogram
-          drawSpec(v, sg, d.S, { range: 70, key });
+          drawSpec(v, sg, d.S, { range: 60, key });
           sg.axes();
           if (cut) sg.vband(0, cut, { color: 'red', alpha: 0.2, edges: true });
           if (ph.t != null && !rev.value) sg.vline(cut + ph.t, { color: 'gold', width: 2 });

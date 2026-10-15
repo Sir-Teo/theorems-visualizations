@@ -708,7 +708,7 @@ the two cases being â€œ$j$ is in an optimal solution of the first $j$ intervalsâ
             const it = A[k - 1], y = -k, isC = chosen.has(k), active = k === cur, compat = cur && k < cur && it.f <= A[cur - 1].s;
             const col = isC ? 'green' : active ? 'gold' : compat ? 'teal' : k <= f.upto ? 'accent' : 'muted';
             s.rect(it.s, y - 0.27, it.f, y + 0.27, { fill: col, fillAlpha: isC || active ? 0.55 : 0.22, color: col, width: active || isC ? 2.2 : 1.3, radius: 4 });
-            s.text(`w = ${it.w}`, (it.s + it.f) / 2, y, { align: 'center', size: 12, weight: 700, color: 'ink' });
+            s.text(`w = ${it.w}`, (it.s + it.f) / 2, y, { align: 'center', size: 12, weight: 700, color: 'ink', halo: false });
             s.text(String(k), -1.1, y, { align: 'center', size: 12.5, weight: 700, color: active ? 'gold' : 'muted' });
             // OPT column
             const shown = k <= f.upto;

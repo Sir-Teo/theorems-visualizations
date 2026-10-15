@@ -32,7 +32,7 @@ export default {
 $$\Delta S \ge 0,$$
 with equality only if the process is reversible. Consequently, when an internal constraint of an isolated system is removed (a wall made conducting, movable or permeable), the system evolves to the equilibrium state of **maximum entropy** compatible with the remaining constraints (fixed total $U$, $V$, $N$). The entropy of a *part* of the system can decrease, provided the rest gains at least as much.`,
       idea: String.raw`Let the isolated system go irreversibly from A to B, then bring it back from B to A along some reversible path, during which it may exchange heat with auxiliary reservoirs. The Clausius inequality (2.8) for this cycle reads $0 + \int_B^A \delta Q_{\text{rev}}/T \le 0$ (no heat crossed during the isolated leg), and the second integral is $S(A) - S(B)$ by the definition of entropy (2.9). Hence $S(B) \ge S(A)$. Since every spontaneous change raises $S$, the process stops only where $S$ cannot rise any further — at its constrained maximum, which is how equilibrium conditions such as equal temperatures and pressures follow (3.4).`,
-      caption: String.raw`An isolated box of simulated hard spheres: gas A (100 light molecules, orange) starts hot and dense, gas B (60 molecules of twice the mass, teal) cool and dilute. Choose what the partition lets through: **heat** only (a light wall jiggling in place), **heat and volume** (a free piston) or also **particles** (the partition is lifted at $t = 10$). The curves are each gas's entropy, measured from the simulation as $N[\ln(V/N) + \tfrac32\ln T]$ (per slab for mixing gases, in units of $k$), and their sum. The total climbs to the dashed line — the maximum entropy allowed by the constraints, computed from the conserved energy — while gas A's entropy can fall as it gives up heat. Small wiggles are the fluctuations of a few hundred molecules.`,
+      caption: String.raw`An isolated box of simulated hard spheres: gas A (100 light molecules, orange) starts hot and dense, gas B (60 molecules of twice the mass, teal) cool and dilute. Choose what the partition lets through: **heat** only (a light wall jiggling in place), **heat and volume** (a free piston) or also **particles** (the partition is lifted at $t = 10$). The curves are each gas's entropy, measured from the simulation as $N[\ln(V/N) + \tfrac32\ln T]$ (per slab for mixing gases, in units of $k$; coarse-graining into slabs costs a few $k$), and their sum. The total climbs to the dashed line — the maximum entropy allowed by the constraints, computed from the conserved energy — while gas A's entropy can fall as it gives up heat. Small wiggles are the fluctuations of a few hundred molecules.`,
       deps: ['thermo-2.9'],
       see: ['thermo-5.7', 'thermo-3.4'],
       refs: ['Kardar §1.6'],
@@ -134,7 +134,7 @@ plus rotational terms for molecules.`,
           const g = gas.value, f = GAS[g].f, cv = f / 2 * R;
           const S = (V, P) => Sabs(g, V, P * V / R);
           const S0 = S(h.x, h.y);
-          sp.heat((V, P) => S(V, P), { range: [S0 - 60, S0 + 60], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 4, key: 'S-' + g + Math.round(S0) });
+          sp.heat((V, P) => S(V, P), { range: [S0 - 90, S0 + 90], cmap: 'theme-diverging', neg: 'blue', pos: 'red', res: 4, key: 'S-' + g + Math.round(S0) });
           const lv = []; for (let k = -7; k <= 9; k++) lv.push(S0 + 5 * k);
           sp.contour((V, P) => S(V, P), lv, { color: 'ink', width: 0.8, alpha: 0.35, res: 90 });
           sp.axes();
@@ -195,8 +195,7 @@ plus rotational terms for molecules.`,
         const bars = (dSys, dSur, x0, y0, w, hgt, mx) => {
           const items = [[dSys, 'system', 'accent'], [dSur, 'surroundings', 'purple'], [dSys + dSur, 'universe', 'green']];
           sa.line(x0, y0, x0 + w, y0, { color: 'muted', width: 1 });
-          items.forEach(([val, lab, col], k) => { const x = x0 + w * (k + 0.5) / 3, hh = hgt * val / mx; sa.rect(x - 0.35, y0, x + 0.35, y0 + hh, { fill: col, fillAlpha: 0.75, color: col, width: 1 }); sa.text(lab, x, y0 - 0.3, { align: 'center', size: 10.5, color: col }); sa.text(`${v.fix(val, 2)}`, x, y0 + hh, { dy: val >= 0 ? -9 : 9, align: 'center', size: 10.5, weight: 650, color: col }); });
-          sa.text('ΔS (J/K)', x0, y0 + hgt + 0.25, { size: 10.5, color: 'muted' });
+          items.forEach(([val, lab, col], k) => { const x = x0 + w * (k + 0.5) / 3, hh = hgt * val / mx; sa.rect(x - 0.35, y0, x + 0.35, y0 + hh, { fill: col, fillAlpha: 0.75, color: col, width: 1 }); sa.text(lab, x, y0 - 0.3, { align: 'center', size: 10.5, color: col }); sa.text(`${v.fix(val, 2)} J/K`, x, y0 + hh, { dy: val >= 0 ? -9 : 9, align: 'center', size: 10.5, weight: 650, color: col }); });
         };
         v.render(() => {
           const p = proc.value, u = prog.value, rp = tRamp(v);
@@ -230,6 +229,7 @@ plus rotational terms for molecules.`,
             sa.rect(0.7, 4, 9.3, 6.4, { color: 'ink', width: 1.6 }); sa.rect(0.7, 4, 0.7 + 8.6 * V1 / 40, 6.4, { fill: 'accent', fillAlpha: 0.08, stroke: false });
             sa.dots(dots.map(([x, y]) => [0.7 + (x - 0.8) / 8.4 * 8.6 * V2 / 40, y]), { r: 2.6, color: 'accent' });
             sa.line(0.7 + 8.6 * V1 / 40, 4, 0.7 + 8.6 * V1 / 40, 6.4, { color: 'muted', width: 1.4, dash: [4, 3] });
+            if (V2 < 39.9) { const xw = 0.7 + 8.6 * V2 / 40; sa.rect(xw, 4, 9.3, 6.4, { fill: 'faint', fillAlpha: 0.25, stroke: false, hatch: 'muted', hatchGap: 7, hatchAlpha: 0.3 }); sa.line(xw, 4, xw, 6.4, { color: 'ink', width: 2 }); }
             sa.text(`vacuum opened up to V₂ = ${V2.toFixed(0)} L`, 5, 6.75, { align: 'center', size: 11.5, color: 'muted' });
             bars(dS, 0, 0.8, 1.0, 8.4, 2.2, Math.max(1, dS) * 1.1);
             sa.text('no work, no heat: surroundings unchanged', 5, 3.55, { align: 'center', size: 11, color: 'muted' });
@@ -251,10 +251,10 @@ plus rotational terms for molecules.`,
             sa.text(`1 mol in total: ${v.fix(x, 2)} mol of A, ${v.fix(1 - x, 2)} mol of B, mixed`, 5, 6.75, { align: 'center', size: 11.5, color: 'muted' });
             bars(dS, 0, 0.8, 1.0, 8.4, 2.2, Math.max(1, R * Math.log(2)) * 1.15);
             sa.text('equal T and P before and after: no heat, no work', 5, 3.55, { align: 'center', size: 11, color: 'muted' });
-            sb.setTitle('replacement path: semipermeable pistons, each gas expanding isothermally'); sb.setLabels('mole fraction of A', 'ΔS_mix (J/K)');
+            sb.setTitle('replacement path: semipermeable pistons'); sb.setLabels('mole fraction of A', 'entropy of mixing (J/K)');
             sb.setView([0, 1], [0, 6.5]);
             sb.fn((z) => -R * (z * Math.log(z) + (1 - z) * Math.log(1 - z)), { color: 'green', width: 2.6, domain: [0.001, 0.999] });
-            sb.hline(R * Math.log(2), { color: 'faint', dash: [4, 4] }); sb.text('R ln 2 = 5.76 J/K', 0.02, R * Math.log(2), { dy: -9, size: 11, color: 'muted' });
+            sb.hline(R * Math.log(2), { color: 'faint', dash: [4, 4] }); sb.text('R ln 2 = 5.76 J/K', 0.98, R * Math.log(2), { dy: -9, align: 'right', size: 11, color: 'muted' });
             sb.dot(x, dS, { r: 6, color: 'green' });
             res = { gen: dS, txt: `$-nR[x\\ln x + (1-x)\\ln(1-x)]$ = ${v.fix(dS, 3)} J/K (largest, $R\\ln 2$, at $x = 1/2$)` };
             v.legend([['green', 'entropy of mixing'], ['orange', 'gas A', { dot: true }], ['teal', 'gas B', { dot: true }]]);
@@ -263,9 +263,9 @@ plus rotational terms for molecules.`,
             sa.rect(3, 3.9, 7, 6.5, { fill: pick(rp, (Tf - 150) / 450), fillAlpha: 0.55, color: 'ink', width: 1.6, radius: 4 });
             sa.line(5, 6.9, 5, 4.6, { color: 'muted', width: 3 }); for (const s of [-1, 1]) sa.rect(5 + s * 0.15, 4.3, 5 + s * 1.1, 4.9, { fill: 'muted', fillAlpha: 0.8, stroke: false });
             sa.text(`1 kg of water, ${T0} K → ${Tf.toFixed(2)} K`, 5, 3.55, { align: 'center', size: 11, color: 'muted' });
-            sa.text(`paddle work W = ${(W / 1000).toFixed(1)} kJ`, 5, 6.75, { dx: 0, align: 'center', size: 11.5, color: 'orange', weight: 650 });
+            sa.text(`paddle work W = ${(W / 1000).toFixed(1)} kJ`, 4.8, 6.75, { align: 'right', size: 11.5, color: 'orange', weight: 650 });
             bars(dS, 0, 0.8, 0.6, 8.4, 2.0, Math.max(1, Cw * Math.log((T0 + 100000 / Cw) / T0)) * 1.1);
-            sb.setTitle('replacement path: heat the water reversibly from reservoirs'); sb.setLabels('heat added reversibly Q (J)', '1/T  (1/K)');
+            sb.setTitle('replacement path: heat the water reversibly'); sb.setLabels('heat added reversibly Q (J)', '1/T  (1/K)');
             sb.setView([0, 100000], [0, 1.2 / T0]);
             sb.fn((q) => 1 / (T0 + q / Cw), { color: 'red', width: 2.4, domain: [0, 100000] });
             sb.between((q) => 1 / (T0 + q / Cw), () => 0, 0, W, { fill: 'red', fillAlpha: 0.2 });
@@ -702,6 +702,273 @@ independent of $K_h$ and $K_c$. For a broader class of **low-dissipation** engin
           const h = Th.value, c = Math.min(Tc.value, h - 20), eC = 1 - c / h, ca = 1 - Math.sqrt(c / h), eta = op.value * eC;
           const errs = PLANTS.map((p) => Math.abs(p.eta - (1 - Math.sqrt(p.Tc / p.Th))));
           return `computed maximum of the power curve at $\\eta^*$ = **${v.fix(peak.eta, 4)}** · $1 - \\sqrt{T_c/T_h}$ = ${v.fix(ca, 4)}, $\\eta_C/2$ = ${v.fix(eC / 2, 4)}, $\\eta_C/(2-\\eta_C)$ = ${v.fix(eC / (2 - eC), 4)}, $\\eta_C$ = ${v.fix(eC, 4)} · operating at $\\eta$ = ${v.fix(eta, 3)} gives ${v.fix(100 * (model.value === 'endo' ? endo(eta, h, c, ratio.value).P : ldEnv(eta, h, c, asym.value).P) / peak.P, 1)}% of maximum power · plants: median |observed − Curzon–Ahlborn| = ${v.fix(errs.sort((a, b) => a - b)[6], 3)}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.18
+    {
+      num: '2.18', kind: 'Paper', name: 'Réflexions sur la puissance motrice du feu',
+      paper: { authors: 'S. Carnot', year: 1824, title: 'Réflexions sur la puissance motrice du feu et sur les machines propres à développer cette puissance', venue: 'Paris: Bachelier (book)', url: 'https://fr.wikisource.org/wiki/R%C3%A9flexions_sur_la_puissance_motrice_du_feu' },
+      introduces: ['thermo-2.4', 'thermo-2.5'],
+      credit: 'Sadi Carnot, 1824',
+      statement: String.raw`Carnot's 118-page book founded the theory of heat engines. In modern terms it showed:
+
+- Work ("motive power") is obtained from heat only when heat passes from a hotter body to a colder one; a temperature difference is indispensable, as a difference of level is for a water wheel.
+- The greatest work is obtained by a cycle in which no body ever touches another of different temperature, so that every step could be run backwards — the four-step **Carnot cycle** (2.4), described for a gas in a cylinder alternately touching a hot body A and a cold body B, with expansions and compressions in between that change its temperature without contact.
+- **Carnot's theorem** (2.5): « La puissance motrice de la chaleur est indépendante des agens mis en œuvre pour la réaliser ; sa quantité est fixée uniquement par les températures des corps entre lesquels se fait en dernier résultat le transport du calorique ». The proof: a better engine, combined with a reversible one run backwards, would produce motive power from nothing.
+- The motive power of a given quantity of heat falling one degree is larger at low temperatures than at high ones; he computed it for air, water vapour and alcohol vapour.
+
+Scope: the reasoning is set in the caloric theory — heat as an indestructible fluid, so that all the heat taken from A arrives in B. That premise is false (an engine rejects less heat than it absorbs, the difference being the work), but the conclusions about reversibility, the maximum and its dependence on the temperatures alone survived.`,
+      idea: String.raw`In 1824 steam engines were improved by trial and error — Watt's condenser, high pressure, Woolf's compounding — with no theory of what limited them, and heat was widely regarded as a conserved substance, caloric. Carnot, a young military engineer, asked whether the motive power of heat is bounded and on what it depends. He compared heat to falling water: « on peut comparer avec assez de justesse la puissance motrice de la chaleur à celle d'une chute d'eau » — the power depends on the quantity of caloric and on the height of its fall, the temperature difference. Two ideas did the work: **reversibility** (any contact between bodies at different temperatures wastes a fall of caloric that could have produced work) and the impossibility of **perpetual motion**, which turns "no engine beats the reversible one" into a theorem. The book went almost unread until Clapeyron restated it with the pressure–volume diagram in 1834; Kelvin found it through Clapeyron, and in 1850 Clausius reconciled Carnot's theorem with Joule's equivalence of heat and work by dropping the conservation of caloric, which led to the second law (2.1) and to the absolute temperature scale (2.6).`,
+      caption: String.raw`**His cycle**: step through Carnot's own numbered operations 1°–7° (quoted from the 1824 text) on a re-drawing of his figure — the cylinder abcd, the piston positions cd, ef, gh, ik, and the bodies A (hot, here 100 °C) and B (cold, 0 °C) brought into contact with it; on the right the same operations on the $P$–$V$ diagram that Clapeyron introduced in 1834 (Carnot drew none). **The waterfall**: his analogy, with heat as caloric (conserved, all of it reaches the lower body) or as energy (part of it becomes work). The right panel shows the work per unit heat for a fall from the chosen temperature down to 0 °C. **His numbers**: the paper's own values for the motive power of 1000 units of heat falling one degree, against today's exact value $1000\ \text{kcal} \times 1\,\text{K}/T$.`,
+      deps: ['thermo-2.3', 'thermo-1.16'],
+      see: ['tech-7.10', 'thermo-2.7'],
+      refs: [],
+      tags: ['Carnot', 'history', 'engines'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Reflections_on_the_Motive_Power_of_Fire' },
+      viz(v) {
+        const TA = 373.15, TB = 273.15, K = (TA / TB) ** 2.5; // air: f = 5
+        const KCAL = 4186.8, UMP = 9806.65; // J per unit of heat (1 kg of water by 1 °C), J per unit of motive power (1 m³ of water raised 1 m)
+        const mode = v.select('view', [{ value: 'cycle', label: 'his cycle, operations 1°–7°' }, { value: 'fall', label: 'the waterfall' }, { value: 'num', label: 'his numbers' }], 'cycle');
+        const heatAs = v.select('heat as', [{ value: 'cal', label: 'caloric (1824)' }, { value: 'en', label: 'energy (1850)' }], 'cal');
+        const tA = v.slider('upper body at', 1, 1000, 100, { step: 1, fmt: (x) => x.toFixed(0) + ' °C' });
+        const sa = v.stage({ x: [0, 10], y: [0, 8], equal: true, height: 340, axes: false, weight: 1 });
+        const sb = v.stage({ x: [0, 1], y: [0, 1], height: 340, axes: 'box', weight: 1 });
+        const LV = { ik: 1 / K, cd: 1, ef: 2, gh: 2 * K };
+        const frames = [
+          { k: 1, a: 'cd', b: 'cd', body: 'A', T0: TA, T1: TA, note: String.raw`1° « Contact du corps A avec l'air renfermé dans la capacité abcd » — the air under the piston at cd takes the temperature of the hot body A.` },
+          { k: 2, a: 'cd', b: 'ef', body: 'A', T0: TA, T1: TA, note: String.raw`2° « Le piston s'élève graduellement, et vient prendre la position ef » — the air expands while touching A, which supplies the caloric that keeps its temperature constant.` },
+          { k: 3, a: 'ef', b: 'gh', body: null, T0: TA, T1: TB, note: String.raw`3° « Le corps A est éloigné, et l'air ne se trouve plus en contact avec aucun corps capable de lui fournir du calorique » — the piston rises on from ef to gh and the air cools until it reaches the temperature of B.` },
+          { k: 4, a: 'gh', b: 'cd', body: 'B', T0: TB, T1: TB, note: String.raw`4° « L'air est mis en contact avec le corps B ; il est comprimé par le retour du piston » — from gh back to cd, at the constant temperature of B, to which the air gives up caloric.` },
+          { k: 5, a: 'cd', b: 'ik', body: null, T0: TB, T1: TA, note: String.raw`5° « Le corps B est écarté, et l'on continue la compression de l'air » — isolated again, the air is compressed from cd to ik and heats up to the temperature of A.` },
+          { k: 6, a: 'ik', b: 'ef', body: 'A', T0: TA, T1: TA, note: String.raw`6° « L'air est remis en contact avec le corps A ; le piston retourne de la position ik à la position ef » — expansion at the constant temperature of A.` },
+          { k: 7, a: 'ef', b: 'ef', body: null, T0: TA, T1: TA, cycle: true, note: String.raw`7° « La période décrite sous le n° 3 se renouvelle, puis successivement les périodes 4, 5, 6, 3 »… — operations 3–6 form the closed cycle. The expansions happen at higher temperature and pressure than the compressions, so a surplus of motive power remains, produced, Carnot says, by the fall of caloric from A to B.` },
+        ];
+        const S = v.steps({ frames, start: 'end', still: 6, transition: 0.7, counter: 'operation' });
+        const yOf = (V) => 0.9 + 1.2 * V;
+        const Pof = (V, T) => (T / TA) / V;
+        const modern = (tUp) => 1000 * KCAL / (UMP * (tUp + 273.15));
+        const TABLE = [
+          { sub: 'air', fall: '1° → 0°', t: 1, c: 1.395, col: 'accent' },
+          { sub: 'water vapour (Clément–Desormes law)', fall: '1° → 0°', t: 1, c: 1.290, col: 'teal' },
+          { sub: 'water vapour', fall: '78° → 77°', t: 78, c: 1.212, col: 'teal' },
+          { sub: 'alcohol vapour', fall: '78.7° → 77.7°', t: 78.7, c: 1.230, col: 'purple' },
+          { sub: 'water vapour', fall: '100° → 99°', t: 100, c: 1.112, col: 'teal' },
+        ];
+        v.render(() => {
+          const m = mode.value, rp = tRamp(v);
+          S.el.hidden = m !== 'cycle'; if (S.noteEl) S.noteEl.hidden = m !== 'cycle';
+          heatAs.el.hidden = m !== 'fall'; tA.el.hidden = m !== 'fall';
+          if (m === 'cycle') {
+            const f = S.frame.k ? S.frame : frames[6], tw = S.tween ?? 1, prev = S.prev && S.prev.k ? S.prev : f;
+            const V = LV[f.a] * (LV[f.b] / LV[f.a]) ** tw, T = f.T0 === f.T1 ? f.T0 : (f.k === 3 ? TA * (LV.ef / V) ** 0.4 : TB * (LV.cd / V) ** 0.4);
+            // bodies A and B (slide in to touch the cylinder)
+            const home = { A: 0.5, B: 7.4 }, under = 3.9, posOf = (who, fr) => (fr.body === who ? under : home[who]);
+            for (const who of ['A', 'B']) { const x = lerp(posOf(who, prev), posOf(who, f), tw); const col = who === 'A' ? 'red' : 'blue'; sa.rect(x, 0.05, x + 2.2, 0.85, { fill: col, fillAlpha: 0.35, color: col, width: 1.6, radius: 4 }); sa.text(`${who}  ${who === 'A' ? '100 °C' : '0 °C'}`, x + 1.1, 0.45, { align: 'center', size: 12, weight: 700, color: col, halo: false }); }
+            // cylinder abcd with the piston positions
+            sa.rect(4, 0.9, 6, yOf(V), { fill: pick(rp, (T - TB) / (TA - TB)), fillAlpha: 0.45, stroke: false });
+            sa.line(4, 0.9, 4, 6.9, { color: 'ink', width: 2.4 }); sa.line(6, 0.9, 6, 6.9, { color: 'ink', width: 2.4 }); sa.line(4, 0.9, 6, 0.9, { color: 'ink', width: 2.4 });
+            for (const [name, l, r] of [['ik', 'i', 'k'], ['cd', 'c', 'd'], ['ef', 'e', 'f'], ['gh', 'g', 'h']]) { const y = yOf(LV[name]); sa.line(3.75, y, 4, y, { color: 'muted', width: 1.2 }); sa.line(6, y, 6.25, y, { color: 'muted', width: 1.2 }); sa.text(l, 3.6, y, { align: 'right', size: 14, math: true, color: 'muted' }); sa.text(r, 6.4, y, { size: 14, math: true, color: 'muted' }); }
+            sa.text('a', 3.6, 0.95, { align: 'right', size: 14, math: true, color: 'muted' }); sa.text('b', 6.4, 0.95, { size: 14, math: true, color: 'muted' });
+            sa.rect(4.05, yOf(V), 5.95, yOf(V) + 0.25, { fill: 'muted', fillAlpha: 0.9, color: 'ink', width: 1 }); sa.line(5, yOf(V) + 0.25, 5, 7.6, { color: 'muted', width: 4 });
+            sa.text(`air ${(T - 273.15).toFixed(0)} °C`, 5, Math.max(1.25, (0.9 + yOf(V)) / 2), { align: 'center', size: 11.5, weight: 650, plate: true });
+            if (f.body === 'A' && f.a !== f.b) { band(v, sa, [[3.2, 1.2], [3.95, 1.2]], 7, 'red'); sa.text('caloric in', 2.2, 1.6, { align: 'center', size: 11, color: 'red', weight: 650 }); }
+            if (f.body === 'B' && f.a !== f.b) { band(v, sa, [[6.05, 1.2], [6.8, 1.2]], 7, 'blue'); sa.text('caloric out', 7.8, 1.6, { align: 'center', size: 11, color: 'blue', weight: 650 }); }
+            sa.text(`operation ${f.k}°`, 0.2, 7.6, { size: 13, weight: 700 });
+            // Clapeyron's diagram
+            sb.setTitle('the same operations on Clapeyron’s $P$–$V$ diagram (1834)'); sb.setLabels('V / V(cd)', 'P (relative)');
+            sb.setTicks(null, null); sb.setView([0, LV.gh * 1.25], [0, Pof(LV.ik, TA) * 1.12]);
+            const strokes = frames.slice(1, 6);
+            const path = (fr, u) => { const n = 50, out = []; for (let i = 0; i <= Math.round(n * u); i++) { const VV = LV[fr.a] * (LV[fr.b] / LV[fr.a]) ** (i / n), TT = fr.T0 === fr.T1 ? fr.T0 : (fr.k === 3 ? TA * (LV.ef / VV) ** 0.4 : TB * (LV.cd / VV) ** 0.4); out.push([VV, Pof(VV, TT)]); } return out; };
+            const cyc = [...path(frames[2], 1), ...path(frames[3], 1), ...path(frames[4], 1), ...path(frames[5], 1)];
+            sb.poly(cyc, { fill: 'orange', fillAlpha: f.cycle ? 0.22 : 0.07, color: 'faint', width: 1 });
+            for (const fr of strokes) { if (fr.k > f.k) continue; const pts = path(fr, fr.k === f.k ? tw : 1); sb.path(pts, { color: fr.body === 'A' ? 'red' : fr.body === 'B' ? 'blue' : 'purple', width: 2.6, dash: fr.body ? null : [6, 4] }); }
+            sb.dot(V, Pof(V, T), { r: 6, color: 'gold' });
+            for (const [name, Tn, pos] of [['ef', TA, 'ne'], ['gh', TB, 'nw'], ['cd', TB, 'sw'], ['ik', TA, 'e']]) sb.dot(LV[name], Pof(LV[name], Tn), { r: 3.5, color: 'ink', label: name, labelPos: pos });
+            sb.dot(LV.cd, Pof(LV.cd, TA), { r: 3.5, color: 'muted', label: 'cd (1°)', labelPos: 'ne' });
+            v.legend([['red', 'touching A (isotherm)'], ['blue', 'touching B (isotherm)'], ['purple', 'no contact (adiabat)', { dash: true }], ['orange', 'net motive power of the cycle', { area: true }]]);
+          } else if (m === 'fall') {
+            const tU = tA.value, Th = tU + 273.15, Q = 1, cal = heatAs.value === 'cal';
+            const Wm = 1 - TB / Th, Wc = Math.log(Th / TB), Qout = cal ? Q : Q * TB / Th, W = cal ? Wc : Wm;
+            const yT = (t) => 1.2 + 5.8 * t / 1000;
+            sa.line(0.5, yT(0), 0.5, yT(1000), { color: 'muted', width: 1.4 }); for (const t of [0, 250, 500, 750, 1000]) { sa.line(0.4, yT(t), 0.6, yT(t), { color: 'muted', width: 1 }); sa.text(`${t} °C`, 0.7, yT(t), { size: 10, color: 'muted' }); }
+            sa.rect(1.6, yT(tU) - 0.1, 4.2, yT(tU) + 0.45, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1.4, radius: 4 }); sa.text(`A  ${tU.toFixed(0)} °C`, 2.9, yT(tU) + 0.18, { align: 'center', size: 11.5, weight: 700, color: 'red' });
+            sa.rect(6.4, 0.3, 9.4, yT(0) - 0.1, { fill: 'blue', fillAlpha: 0.3, color: 'blue', width: 1.4, radius: 4 }); sa.text('B  0 °C', 7.9, 0.75, { align: 'center', size: 11.5, weight: 700, color: 'blue' });
+            const wx = 5.3, wy = Math.max(2.3, (yT(tU) + yT(0)) / 2), rr = Math.min(1.0, Math.max(0.5, (yT(tU) - yT(0)) / 3));
+            const wQ = 4 + 22 * Q, wO = 4 + 22 * Qout;
+            band(v, sa, [[4.2, yT(tU) + 0.15], [wx - 0.1, yT(tU) + 0.15], [wx - 0.1, wy + rr * 0.4]], wQ, 'accent', { head: false, alpha: 0.6 });
+            band(v, sa, [[wx + 0.1, wy - rr * 0.4], [wx + 0.1, yT(0) + 0.3], [6.4, yT(0) + 0.3]], wO, 'accent', { alpha: 0.6 });
+            sa.circle(wx, wy, rr, { color: 'ink', width: 2 }); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4 + 0.3; sa.line(wx, wy, wx + rr * Math.cos(a), wy + rr * Math.sin(a), { color: 'ink', width: 1.4 }); }
+            band(v, sa, [[wx + rr, wy], [wx + rr + 2.6, wy]], 3 + 22 * Math.min(W, 1.6) / 1.2, 'orange');
+            sa.text(`work ${v.fix(W, 3)} per unit heat`, wx + rr + 0.1, wy, { dy: -18, size: 11, weight: 650, color: 'orange' });
+            sa.text(cal ? 'all the caloric reaches B' : `only ${v.fix(Qout, 3)} of it reaches B`, 7.9, yT(0) + 0.85, { align: 'center', size: 11, color: 'accent', weight: 650, plate: true });
+            sa.text(cal ? 'caloric view: heat falls like water and is not used up' : 'energy view: the wheel turns part of the heat into work', 5, 7.65, { align: 'center', size: 11.5, weight: 650 });
+            // work per unit heat against the height of the fall
+            sb.setTitle('work per unit of heat, falling from A down to 0 °C'); sb.setLabels('temperature of A (°C)', 'work / heat taken from A');
+            sb.setTicks(null, null); sb.setView([0, 1000], [0, 1.6]);
+            sb.hline(1, { color: 'red', width: 1.4, dash: [5, 4] }); sb.text('energy ceiling: work ≤ heat', 20, 1, { dy: -9, size: 11, color: 'red' });
+            sb.fn((t) => 1 - TB / (t + 273.15), { color: 'green', width: 2.6, domain: [0, 1000] });
+            sb.fn((t) => Math.log((t + 273.15) / TB), { color: 'orange', width: 2.2, dash: [6, 4], domain: [0, 1000] });
+            sb.fn((t) => 1.12 * UMP / (1000 * KCAL) * t, { color: 'purple', width: 1.8, dash: [2, 4], domain: [0, 1000] });
+            sb.dot(1000, 560 * UMP / (1000 * KCAL), { r: 6, color: 'purple', label: 'Carnot’s 1000° estimate', labelPos: 'w' });
+            sb.vline(tU, { color: 'ink', width: 1, dash: [3, 3] });
+            sb.text('energy: 1 − T_B/T_A', 560, 1 - TB / 833, { dy: 13, size: 11, color: 'green', weight: 650, plate: true });
+            sb.text('caloric with F = 1/T: ln(T_A/T_B)', 300, Math.log(573 / TB), { dx: -10, dy: -12, size: 11, align: 'right', color: 'orange', weight: 650, plate: true });
+            v.legend([['green', 'today (Carnot efficiency)'], ['orange', 'caloric conserved, Carnot’s function = 1/T', { dash: true }], ['purple', 'Carnot’s proportional rule (1.12 per 1000 per degree)', { dash: true }]]);
+          } else {
+            sa.text('motive power of 1000 units of heat falling 1°', 5, 7.55, { align: 'center', size: 12, weight: 700 });
+            sa.text('(units: m³ of water raised 1 m, per 1000 kg·°C of heat)', 5, 7.1, { align: 'center', size: 10.5, color: 'muted' });
+            const cols = [0.15, 5.9, 7.45, 8.9];
+            ['working substance, fall', 'Carnot', 'today', 'ratio'].forEach((h, i) => sa.text(h, cols[i], 6.4, { size: 11, weight: 700, color: 'muted', align: i ? 'center' : 'left' }));
+            sa.line(0.15, 6.1, 9.8, 6.1, { color: 'faint', width: 1 });
+            TABLE.forEach((r, k) => { const y = 5.5 - k * 1.05, md = modern(r.t); sa.text(r.sub, cols[0], y + 0.15, { size: 11, color: r.col, weight: 650 }); sa.text(r.fall, cols[0], y - 0.25, { size: 10.5, color: 'muted' }); sa.text(v.fix(r.c, 3), cols[1], y, { align: 'center', size: 12, weight: 700 }); sa.text(v.fix(md, 3), cols[2], y, { align: 'center', size: 12 }); sa.text(v.fix(r.c / md, 3), cols[3], y, { align: 'center', size: 12, color: Math.abs(r.c / md - 1) < 0.05 ? 'green' : 'red', weight: 650 }); });
+            sb.setTitle('Carnot’s values against today’s $1000\\ \\text{kcal}\\times 1\\,\\text{K}/T$'); sb.setLabels('temperature of the fall (°C)', 'motive power (units)');
+            sb.setTicks(null, null); sb.setView([-5, 110], [1.0, 1.65]);
+            sb.fn((t) => modern(t), { color: 'green', width: 2.6, domain: [-5, 110] });
+            TABLE.forEach((r) => sb.dot(r.t, r.c, { r: 6, color: r.col }));
+            sb.text('air', 1, 1.395, { dx: 9, size: 11, color: 'accent', weight: 650 }); sb.text('steam (Clément–Desormes)', 1, 1.29, { dx: 9, size: 11, color: 'teal', weight: 650 });
+            sb.text('alcohol', 78.7, 1.23, { dx: 9, dy: -8, size: 11, color: 'purple', weight: 650 }); sb.text('steam', 78, 1.212, { dx: 9, dy: 9, size: 11, color: 'teal', weight: 650 }); sb.text('steam', 100, 1.112, { dx: -9, align: 'right', size: 11, color: 'teal', weight: 650 });
+            sb.text('today: falls as 1/T', 40, modern(40), { dy: -12, size: 11, color: 'green', weight: 650 });
+            v.legend([['green', 'today: the Carnot efficiency of a one-degree fall'], ['accent', 'Carnot 1824: air', { dot: true }], ['teal', 'water vapour', { dot: true }], ['purple', 'alcohol vapour', { dot: true }]]);
+          }
+        });
+        v.readout(() => {
+          const m = mode.value;
+          if (m === 'cycle') { const QA = TA * Math.log(LV.ef / LV.ik), QB = TB * Math.log(LV.gh / LV.cd); return `per cycle (1 mol of air, $R$ = 8.314 J/(mol K)): heat from A ${v.fix(R * QA, 0)} J, heat to B ${v.fix(R * QB, 0)} J · Carnot assumed they were equal (caloric conserved); in fact $Q_B/Q_A = T_B/T_A$ = **${v.fix(QB / QA, 3)}**, and the missing ${v.fix(100 * (1 - QB / QA), 1)}% is the work — yet his maximum, $1 - T_B/T_A$, survived`; }
+          if (m === 'fall') { const Th = tA.value + 273.15; return `fall from ${tA.value.toFixed(0)} °C to 0 °C: today $W/Q_A = 1 - T_B/T_A$ = **${v.fix(1 - TB / Th, 3)}**; caloric kept and Carnot's function $1/T$: $\\ln(T_A/T_B)$ = ${v.fix(Math.log(Th / TB), 3)} (agree for small falls, to first order) · Carnot's own estimate for 1000° — 560 units of motive power per 1000 units of heat — is ${v.fix(560 * UMP / (1000 * KCAL), 2)} J of work per J of heat: impossible once heat is energy`; }
+          const r = TABLE[4], a = TABLE[0];
+          return `steam at 100 °C: Carnot **${r.c}** vs today ${v.fix(modern(r.t), 3)} (${v.fix(100 * (r.c / modern(r.t) - 1), 1)}%) · air at 0 °C: ${a.c} vs ${v.fix(modern(a.t), 3)} (${v.fix(100 * (a.c / modern(a.t) - 1), 1)}%, his specific heats of air were off) · his conclusion that a degree of fall is worth more at low temperature is right: today's value goes as $1/T$`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.19
+    {
+      num: '2.19', kind: 'Paper', name: 'Bequeme Formen der Hauptgleichungen der Wärmetheorie',
+      paper: { authors: 'R. Clausius', year: 1865, title: 'Ueber verschiedene für die Anwendung bequeme Formen der Hauptgleichungen der mechanischen Wärmetheorie', venue: 'Annalen der Physik 201 (7): 353–400', doi: '10.1002/andp.18652010702' },
+      introduces: ['thermo-2.9', 'thermo-2.10'],
+      credit: 'Rudolf Clausius, 1865 (read to the Naturforschende Gesellschaft in Zürich on 24 April 1865)',
+      statement: String.raw`Clausius rewrote the two main laws of the mechanical theory of heat in forms convenient for calculation. The first law: $dQ = dU + A\,dW$, with $U$ the energy of the body and $A$ the heat equivalent of work ($1/424$ in his units, after Joule). The second law, for any cycle: $\int dQ/T \le 0$, with equality when every change is reversible (his equation (I), $dQ$ the heat absorbed and $T$ the absolute temperature of the body). Hence for reversible changes $dQ = T\,dS$ for a quantity $S$ fixed by the state alone, $\int dQ/T = S - S_0$ (his equation (64)), which he named:
+
+« … so schlage ich vor, die Grösse $S$ nach dem griechischen Worte ἡ τροπή, die Verwandlung, die *Entropie* des Körpers zu nennen. » (p. 390) — chosen deliberately to resemble *Energie*, the two quantities being so closely related. In irreversible changes the uncompensated transformation $S - S_0 - \int dQ/T$ is positive. He closed by extending both quantities to the whole universe (p. 400):
+
+« 1) Die Energie der Welt ist constant. 2) Die Entropie der Welt strebt einem Maximum zu. »
+
+Scope: equilibrium states of bodies; the extension to "the world" is an extrapolation that assumes the universe is an isolated thermodynamic system.`,
+      idea: String.raw`Clausius had reconciled Carnot (2.18) with Joule in 1850 and in 1854 had found that around any reversible cycle the "equivalence values" $Q/T$ of the heat exchanged add up to zero. The 1865 paper drew the consequence: heat, whose differential equations "do not satisfy the condition of immediate integrability" (§10), has an integrating factor $1/T$, so $\int dQ/T$ defines a property of the state — the entropy (2.9) — which never decreases in an isolated system (2.10). He gave it a name meant to be usable unchanged in every language, worked out $S$ for gases and vapours, and showed what the new equations could do: from them he derived the difference between water's two specific heats from its measured expansion and compressibility. Entropy became the central quantity of thermodynamics; Boltzmann's $S = k\ln W$ (5.6) later explained what it counts.`,
+      caption: String.raw`**Loops**: entropy of 1 mol of air over the $p$–$V$ plane (colour and contours, which are the adiabats). **Draw any closed loop** with the mouse (a sample loop is shown first). The right panel follows the loop: $\int dQ/T$ (green) tracks $S - S_0$ (dashed) and returns to zero when the loop closes, while $\int dQ$ ends at the work done. Add **internal friction** (work turned into heat inside the gas, as in Clausius' irreversible processes): $\oint dQ/T$ becomes negative and the gap is his *uncompensated transformation*. **Water**: Clausius' own worked example (footnote, pp. 373–374): from Kopp's expansion and Grassi's compressibility data he computed $C - c$ for water at 0, 25 and 50 °C; compare his numbers with today's (IAPWS data via NIST, and Kell's formulas). **The world**: four bodies exchanging heat in isolation — energy stays constant, entropy climbs to its maximum.`,
+      deps: ['thermo-2.8', 'thermo-2.5', 'thermo-1.11', 'thermo-2.18'],
+      see: ['thermo-5.6', 'info-1.2', 'pchem-3.2'],
+      refs: [],
+      tags: ['entropy', 'history', 'Clausius'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Entropy#History' },
+      viz(v) {
+        const f = 5, cv = 2.5 * R;
+        const mode = v.select('view', [{ value: 'loops', label: 'loops in the p–V plane' }, { value: 'water', label: 'his example: water' }, { value: 'world', label: 'the world' }], 'loops');
+        const fr = v.slider('internal friction', 0, 6, 0, { step: 0.1, fmt: (x) => v.fix(x, 1) + ' kPa' });
+        const bSample = v.button('Sample loop', () => { loop = sample(); });
+        let seed = 3; const bWorld = v.button('Another world', () => { seed++; });
+        const sa = v.stage({ x: [0, 60], y: [0, 500], height: 330, axes: 'box', weight: 1.2 });
+        const sb = v.stage({ x: [0, 1], y: [-1, 1], height: 330, axes: 'box', weight: 1 });
+        const sample = () => Array.from({ length: 241 }, (_, i) => { const p = 2 * Math.PI * i / 240; return [30 + 16 * Math.cos(p) + 3 * Math.cos(3 * p), 250 - 150 * Math.sin(p) - 30 * Math.sin(2 * p)]; });
+        let loop = sample(), drawing = null;
+        sa.onDrag((x, y, phase) => {
+          if (mode.value !== 'loops') return;
+          const px = [clamp(x, 3, 58), clamp(y, 20, 490)];
+          if (phase === 'start') drawing = [px];
+          else if (phase === 'move' && drawing) { const q = drawing[drawing.length - 1]; if (Math.hypot(sa.X(px[0]) - sa.X(q[0]), sa.Y(px[1]) - sa.Y(q[1])) > 3) drawing.push(px); }
+          else if (phase === 'end' && drawing) { if (drawing.length > 12) { loop = drawing.concat([drawing[0]]); } drawing = null; }
+          v.invalidate();
+        });
+        const Sof = (V, p) => cv * Math.log(p * V / R) + R * Math.log(V);
+        let out = null;
+        v.render(() => {
+          const m = mode.value;
+          fr.el.hidden = m !== 'loops'; bSample.hidden = m !== 'loops'; bWorld.hidden = m !== 'world';
+          if (m === 'loops') {
+            sa.setTitle('entropy of 1 mol of air over the $p$–$V$ plane: draw a loop'); sa.setLabels('V (L)', 'p (kPa)'); sa.setTicks(null, null); sa.setView([0, 60], [0, 500]);
+            const S0 = Sof(30, 250);
+            sa.heat((V, p) => Sof(V, p), { range: [S0 - 50, S0 + 50], cmap: 'theme', color: 'teal', res: 4, key: 'S1865' });
+            const lv = []; for (let k = -8; k <= 8; k++) lv.push(S0 + 6 * k);
+            sa.contour((V, p) => Sof(V, p), lv, { color: 'teal', width: 0.9, alpha: 0.55, res: 90 }); sa.axes();
+            const L = drawing || loop, mu = drawing ? 0 : fr.value;
+            // walk the loop: dQ (absorbed from outside), T, S
+            let Q = 0, I = 0, N = 0; const trace = [{ u: 0, I: 0, S: 0, Q: 0 }], Sstart = Sof(L[0][0], L[0][1]);
+            let len = 0; for (let i = 1; i < L.length; i++) len += Math.hypot(L[i][0] - L[i - 1][0], (L[i][1] - L[i - 1][1]) / 8);
+            let acc = 0;
+            for (let i = 1; i < L.length; i++) {
+              const [V0, p0] = L[i - 1], [V1, p1] = L[i], sub = 24; let dqSeg = 0;
+              for (let j = 0; j < sub; j++) { // midpoint rule on sub-steps of each straight piece
+                const Va = V0 + (V1 - V0) * j / sub, pa = p0 + (p1 - p0) * j / sub, Vb = V0 + (V1 - V0) * (j + 1) / sub, pb = p0 + (p1 - p0) * (j + 1) / sub;
+                const Vm = (Va + Vb) / 2, pm = (pa + pb) / 2, T = Vm * pm / R, dq = (f / 2 + 1) * pm * (Vb - Va) + f / 2 * Vm * (pb - pa), dF = mu * Math.abs(Vb - Va);
+                Q += dq - dF; I += (dq - dF) / T; N += dF / T; dqSeg += dq;
+              }
+              acc += Math.hypot(V1 - V0, (p1 - p0) / 8);
+              trace.push({ u: acc / len, I, S: Sof(V1, p1) - Sstart, Q });
+              if (!drawing) sa.line(V0, p0, V1, p1, { color: dqSeg >= 0 ? 'red' : 'blue', width: 3.2 });
+            }
+            if (drawing) sa.path(drawing, { color: 'gold', width: 3 });
+            else { for (const k of [0.15, 0.4, 0.65, 0.9]) { const i = Math.floor(k * (L.length - 8)), j = i + Math.max(2, Math.round(L.length / 40)); sa.arrow(L[i][0], L[i][1], L[j][0], L[j][1], { color: 'ink', width: 2, head: 11 }); } sa.dot(L[0][0], L[0][1], { r: 5, color: 'ink', label: 'start', labelPos: 'ne' }); }
+            sa.text('contours: S = const (adiabats)', 59, 485, { align: 'right', size: 11, color: 'teal', weight: 650, plate: true });
+            const all = trace.flatMap((t) => [t.I, t.S]), lo = Math.min(...all, -1), hi = Math.max(...all, 1);
+            sb.setTitle('around the loop: $\\int dQ/T$ and $S - S_0$'); sb.setLabels('fraction of the loop', 'J/K'); sb.setTicks(null, null);
+            sb.setView([0, 1], [lo - 0.12 * (hi - lo), hi + 0.12 * (hi - lo)]);
+            sb.hline(0, { color: 'muted', width: 1 });
+            sb.path(trace.map((t) => [t.u, t.I]), { color: 'green', width: 3.2 });
+            sb.path(trace.map((t) => [t.u, t.S]), { color: 'ink', width: 1.8, dash: [6, 4] });
+            sb.dot(1, I, { r: 5, color: Math.abs(I) < 1e-6 ? 'green' : 'red' });
+            sb.text(Math.abs(N) < 1e-9 ? 'his eq. (64): ∫dQ/T = S − S₀' : `uncompensated transformation N = ${v.fix(N, 3)} J/K`, 0.5, hi + 0.06 * (hi - lo), { align: 'center', size: 11, weight: 650, color: Math.abs(N) < 1e-9 ? 'green' : 'red', plate: true });
+            out = { m, Q, I, N };
+            v.legend([['red', 'heat absorbed'], ['blue', 'heat given out'], ['green', '$\\int dQ/T$ along the loop'], ['ink', '$S - S_0$ of the state', { dash: true }]]);
+          } else if (m === 'water') {
+            const kellDiff = (t) => (t + 273.15) / kellRho(t) * kellAlpha(t) ** 2 / kellKappa(t) / 1000 / waterAt(0.01, 1); // in units of C(0 °C)
+            const CL = [[0, 0.0005], [25, 0.0098], [50, 0.0358]];
+            sa.setTitle('$C - c$ for water: Clausius 1865 against today'); sa.setLabels('t (°C)', 'C − c  (units of C at 0 °C)'); sa.setTicks(null, null); sa.setView([-3, 103], [-0.004, 0.115]);
+            sa.fn(kellDiff, { color: 'green', width: 2.6, domain: [0, 100] });
+            sa.dots(WATER.map(([t, cp, cvv]) => [t, (cp - cvv) / waterAt(0.01, 1)]), { r: 3.5, color: 'ink' });
+            for (const [t, d] of CL) sa.dot(t, d, { r: 7, color: 'red', label: `${d}`, labelPos: 'nw', labelColor: 'red' });
+            sa.text('today: T v α²/κ_T (Kell 1975)', 60, kellDiff(60), { dx: -8, dy: -12, align: 'right', size: 11, color: 'green', weight: 650, plate: true });
+            sa.text('Clausius 1865, from Kopp’s and Grassi’s data', 3, 0.1, { size: 11, color: 'red', weight: 650, plate: true });
+            sb.setTitle('the two specific heats themselves'); sb.setLabels('t (°C)', 'specific heat (units of C at 0 °C)'); sb.setTicks(null, null); sb.setView([-3, 103], [0.885, 1.012]);
+            const c0 = waterAt(0.01, 1);
+            sb.fn((t) => waterAt(t, 1) / c0, { color: 'red', width: 2.4, domain: [0.01, 99.9] }); sb.fn((t) => waterAt(t, 2) / c0, { color: 'blue', width: 2.4, domain: [0.01, 99.9] });
+            const CC = [[0, 1, 0.9995], [25, 1.0016, 0.9918], [50, 1.0042, 0.9684]];
+            for (const [t, C, c] of CC) { sb.dot(t, C, { r: 6, color: 'red', hollow: true }); sb.dot(t, c, { r: 6, color: 'blue', hollow: true }); }
+            sb.text('C = c_p today', 95, waterAt(95, 1) / c0, { dy: -10, align: 'right', size: 11, color: 'red', weight: 650 }); sb.text('c = c_v today', 95, waterAt(95, 2) / c0, { dy: 12, align: 'right', size: 11, color: 'blue', weight: 650 });
+            sb.text('rings: Clausius’ pairs (C from Regnault)', 2, 0.895, { size: 11, color: 'muted', plate: true });
+            out = { m, d25: kellDiff(25) };
+            v.legend([['red', 'Clausius 1865', { dot: true }], ['green', 'today, from density and compressibility'], ['ink', 'today, IAPWS-95 via NIST: $c_p - c_v$', { dot: true }]]);
+          } else {
+            // four bodies, all coupled, isolated from everything else
+            const R_ = v.rng(seed), Cs = [1, 2, 3, 4].map(() => 500 + 2500 * R_()), T0s = [1, 2, 3, 4].map(() => 250 + 300 * R_()), G = 4;
+            const tEnd = 6 * Math.max(...Cs) / G / 4, steps = 600, dt = tEnd / steps;
+            let T = T0s.slice(); const hist = [{ t: 0, T: T.slice() }];
+            for (let k = 0; k < steps; k++) {
+              const d = (TT) => TT.map((Ti, i) => TT.reduce((s, Tj) => s + G * (Tj - Ti), 0) / Cs[i]);
+              const k1 = d(T), k2 = d(T.map((x, i) => x + dt / 2 * k1[i])), k3 = d(T.map((x, i) => x + dt / 2 * k2[i])), k4 = d(T.map((x, i) => x + dt * k3[i]));
+              T = T.map((x, i) => x + dt / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i])); hist.push({ t: (k + 1) * dt, T: T.slice() });
+            }
+            const Us = hist.map((h) => h.T.reduce((s, x, i) => s + Cs[i] * (x - T0s[i]), 0)), Ss = hist.map((h) => h.T.reduce((s, x, i) => s + Cs[i] * Math.log(x / T0s[i]), 0));
+            const Tf = Cs.reduce((s, c, i) => s + c * T0s[i], 0) / Cs.reduce((s, c) => s + c, 0), Smax = Cs.reduce((s, c, i) => s + c * Math.log(Tf / T0s[i]), 0);
+            const cols = ['red', 'orange', 'purple', 'blue'];
+            sa.setTitle('four bodies exchanging heat, isolated from everything else'); sa.setLabels('time (s)', 'T (K)'); sa.setTicks(null, null); sa.setView([0, tEnd], [200, 600]);
+            const order = T0s.map((x, i) => i).sort((a, b) => T0s[b] - T0s[a]);
+            order.forEach((i, r) => { sa.path(hist.map((h) => [h.t, h.T[i]]), { color: cols[r], width: 2.4 }); sa.text(`C = ${(Cs[i] / 1000).toFixed(1)} kJ/K`, tEnd * 0.01, T0s[i], { dy: -9, size: 10.5, color: cols[r] }); });
+            sa.hline(Tf, { color: 'ink', dash: [5, 4], width: 1.2 });
+            sb.setTitle('the world’s energy and entropy'); sb.setLabels('time (s)', 'change (kJ, J/K)'); sb.setTicks(null, null); sb.setView([0, tEnd], [-0.15 * Smax, 1.3 * Smax]);
+            sb.hline(Smax, { color: 'green', width: 1.2, dash: [5, 4] });
+            sb.path(hist.map((h, k) => [h.t, Us[k] / 1000]), { color: 'ink', width: 2.6 });
+            sb.path(hist.map((h, k) => [h.t, Ss[k]]), { color: 'green', width: 2.6 });
+            sb.text('1) Die Energie der Welt ist constant.', tEnd * 0.98, 0, { dy: 12, align: 'right', size: 11.5, weight: 650, color: 'ink', plate: true });
+            sb.text('2) Die Entropie der Welt strebt einem Maximum zu.', tEnd * 0.98, Smax, { dy: -13, align: 'right', size: 11.5, weight: 650, color: 'green', plate: true });
+            out = { m, dU: Math.max(...Us.map(Math.abs)), S: Ss[Ss.length - 1], Smax, Tf };
+            v.legend([['red', 'body temperatures (hottest red … coldest blue)'], ['ink', 'total energy change (kJ)'], ['green', 'total entropy change (J/K)']]);
+          }
+        });
+        v.readout(() => {
+          if (!out) return '';
+          if (out.m === 'loops') return `around the loop: $\\oint dQ$ = ${v.fix(out.Q, 1)} J (= the work done) · $\\oint dQ/T$ = **${v.fix(out.I, 5)} J/K** ${out.N > 1e-9 ? `< 0, the uncompensated transformation $N = \\oint dF/T$ = ${v.fix(out.N, 4)} J/K` : '— zero, as for every reversible cycle (equation I with =)'}`;
+          if (out.m === 'water') return `$C - c$ at 25 °C: Clausius **0.0098** (with $A = 1/424$, $T = 298$) vs today ${v.fix(out.d25, 4)} (from Kell's density and compressibility) · at 50 °C: 0.0358 vs ${v.fix((323.15) / kellRho(50) * kellAlpha(50) ** 2 / kellKappa(50) / 1000 / waterAt(0.01, 1), 4)} · his $C$ (Regnault's values) rose with temperature, today's $c_p$ dips by 1% to a minimum near 35 °C — but $C - c$ needs only expansion and compressibility, and those were right to a few per cent`;
+          return `largest change of the total energy ${v.fix(out.dU, 6)} J (constant) · total entropy rose by ${v.fix(out.S, 2)} J/K toward the maximum ${v.fix(out.Smax, 2)} J/K, reached when every body is at ${v.fix(out.Tf, 1)} K`;
         });
       },
     },

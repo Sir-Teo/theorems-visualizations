@@ -296,7 +296,7 @@ export function ccei(obs) {
  * radius and sets the slope of the budget line through the bundle (prices normalised to p2 = 1). n is the maximum number;
  * the first init.length are shown. → {list(), count, setCount(k), load(init), handles}
  */
-export function obsEditor(v, s, init, { n = 6, colors, R = 1.5, box = [11.6, 11.6] } = {}) {
+export function obsEditor(v, s, init, { n = 6, colors, R = 1.5, box = [11.6, 11.6], onTouch } = {}) {
   const st = Array.from({ length: n }, (_, i) => ({ x: init[i]?.x?.slice() ?? [2 + i, 6 - 0.6 * i], k: init[i]?.k ?? 1 }));
   let count = init.length;
   const B = [], K = [];
@@ -308,6 +308,7 @@ export function obsEditor(v, s, init, { n = 6, colors, R = 1.5, box = [11.6, 11.
     const q = knobAt(i);
     K.push(s.handle(q[0], q[1], { color: colors[i], r: 5, constrain: (x, y) => { const dx = x - st[i].x[0], dy = y - st[i].x[1]; const ang = clamp(Math.atan2(-dy, dx), 0.06, 1.48); st[i].k = Math.tan(ang); return knobAt(i); } }));
   }
+  if (onTouch) for (let i = 0; i < n; i++) { B[i].onDrag = () => onTouch(i); K[i].onDrag = () => onTouch(i); }
   const sync = () => { for (let i = 0; i < n; i++) { const on = i < count; B[i].visible = on; K[i].visible = on; B[i].x = st[i].x[0]; B[i].y = st[i].x[1]; const q = knobAt(i); K[i].x = q[0]; K[i].y = q[1]; } };
   sync();
   return {

@@ -385,7 +385,7 @@ Rules:
 
 Higher-level building blocks on `v` for algorithms, networks, tables and step-by-step constructions — full
 reference, worked examples and the list of demos in **[docs/kits.md](docs/kits.md)** (live demos:
-`tools/harness.html?file=tools/demos/kits.js&id=demo-1.1` … `demo-1.13`). Create once, draw inside `v.render`.
+`tools/harness.html?file=tools/demos/kits.js&id=demo-1.1` … `demo-1.16`). Create once, draw inside `v.render`.
 
 | kit | |
 |---|---|
@@ -393,3 +393,4 @@ reference, worked examples and the list of demos in **[docs/kits.md](docs/kits.m
 | `v.graphs(name, …)` | generators to spread into a spec: `random grid complete cycle path star wheel bipartite tree hypercube petersen fromAdjacency`. |
 | `v.steps({frames, code})` → `S` | step-through player (⏮ ◀ ▶ ▶\|, scrubber, counter) with highlighted pseudocode, per-frame notes, `S.frame`, `S.reset()`, optional gliding transitions (`S.tween`). |
 | `v.table(stage, spec)` → `T` | grids of cells (DP, Cayley, payoff, truth, transition tables): TeX/pair values, fills, highlights, headers, `T.hit`, `T.arrow`/`T.pointer` back-pointers. |
+| `v.icons(stage, spec)` → `I` | icon arrays / natural frequencies (person pictograms or dots), waffles, **split blocks** for conditioning (`block: i → k`, `blockLabels`), **parliament hemicycles** (`layout: 'hemicycle'`); groups = consecutive runs `{n, color, label}`; every re-arrangement glides; hover shows group counts; `I.set` is free to call every frame; `I.legend()`, `I.pos(i)`, `I.bbox(k)`, `I.blocks()`, `I.hit`. Demos `demo-1.15`, `demo-1.16`. |

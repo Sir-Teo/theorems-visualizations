@@ -130,7 +130,7 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
             sc.text(`gas kT = ${v.fix(G.stats().T, 2)}`, X2 + 3.5, -1.05, { size: 11.5, align: 'right', color: 'ink' });
             // P–V
             sp.fn((V) => N / V, { color: 'blue', width: 1.4, dash: [6, 4], domain: [X1 * A * 0.9, 3400] });
-            sp.text('isotherm kT = 1', 3350, N / 3350, { dy: 13, align: 'right', size: 11, color: 'blue' });
+            sp.text('isotherm kT = 1', 3350, N / 3350, { dy: 14, align: 'right', size: 11, color: 'blue', plate: true });
             for (const p of pts) sp.dot(p.V, p.P, { r: p.c === cyc ? 3.4 : 2.6, color: p.bath ? 'red' : 'purple', alpha: p.c === cyc ? 0.95 : 0.25, ring: false });
             sp.vline(G.volume(), { color: 'faint', width: 1 });
             // ledger
@@ -143,7 +143,7 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
             if (cycles.length) { bar(sl, 5.5 - 0.17, mean('W'), 0.15, 'orange'); bar(sl, 5.5 + 0.17, mean('Q'), 0.15, mean('Q') >= 0 ? 'red' : 'blue'); }
             sl.vline(5, { color: 'faint', dash: [4, 4] });
             if (!cycles.length) sl.text('first cycle running…', 3, mx * 0.5, { align: 'center', color: 'muted', size: 12 });
-            sl.text('net work out > 0 would break the law', 3, mx * 0.88, { size: 11, color: 'red', align: 'center' });
+            sl.text('net work out > 0 would break the law', 4.9, mx * 0.88, { size: 11, color: 'red', align: 'right' });
             v.legend([['red', 'bath connected', { dot: true }], ['purple', 'insulated', { dot: true }], ['orange', 'work delivered by the gas $W_{\\text{by}}$', { area: true }], ['red', 'heat from bath $Q$ (blue: into bath)', { area: true }]]);
           } else {
             const add = cc(t, () => make()); stepC(add, cc.ms());
@@ -164,9 +164,9 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
             sl.path(hist.map((p) => [p.t, p.Q]), { color: 'red', width: 1, alpha: 0.3 }); sl.path(hist.map((p) => [p.t, p.S]), { color: 'green', width: 1, alpha: 0.3 });
             sl.path(sm.map((p) => [p.t, p.Q]), { color: 'red', width: 2.4 }); sl.path(sm.map((p) => [p.t, p.S]), { color: 'green', width: 2.4 });
             // net heat-flow arrow over the wall (from the smoothed slope)
-            const k0 = sm.length - 1, k1 = Math.max(0, k0 - 15), rate = k0 > k1 ? (sm[k0].Q - sm[k1].Q) / Math.max(1e-9, sm[k0].t - sm[k1].t) : 0;
-            if (Math.abs(rate) > 0.02) { const d = Math.sign(rate), w = clamp(1.5 + Math.abs(rate) * 6, 1.5, 7); sc.arrow(16 - 3 * d, L + 0.8, 16 + 3 * d, L + 0.8, { color: 'red', width: w, head: 10 }); }
-            else sc.text('no net flow', 16, L + 0.8, { align: 'center', size: 11.5, color: 'green', weight: 600 });
+            const Qn = sm[sm.length - 1].Q;   // net heat so far (running mean)
+            if (Math.abs(Qn) > 3) { const d = Math.sign(Qn), w = clamp(1.5 + Math.abs(Qn) / 8, 1.5, 7); sc.arrow(16 - 3 * d, L + 0.8, 16 + 3 * d, L + 0.8, { color: 'red', width: w, head: 10 }); sc.text('net heat so far', 16 + 3.6, L + 0.8, { size: 11, color: 'red' }); }
+            else sc.text('no net flow yet', 16, L + 0.8, { align: 'center', size: 11.5, color: 'green', weight: 600 });
             v.legend([['orange', 'left side'], ['teal', 'right side'], ['red', 'heat crossed left → right (running mean)'], ['green', '$\\Delta S_{\\text{total}}$ in units of $k$ (running mean)']]);
           }
         }, { still: 14 });
@@ -198,19 +198,20 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
       viz(v) {
         const TH = 500, TC = 300;
         const which = v.select('construction', [{ value: 'a', label: '(a) no Kelvin ⇒ no Clausius' }, { value: 'b', label: '(b) no Clausius ⇒ no Kelvin' }], 'a', { onChange: () => S.reset(frames(), { at: 'end' }) });
-        const honest = v.toggle('honest device instead of the violator', false);
+        const honest = v.toggle('honest device instead of the violator', false, { onChange: () => S.reset(frames(), { at: 'keep' }) });
         const Qa = v.slider('heat handled by device A', 40, 120, 90, { step: 1, fmt: (x) => x.toFixed(0) + ' J' });
         const kB = v.slider('refrigerator COP $Q_c/W$ (≤ 1.5)', 0.3, 1.5, 1.2, { step: 0.05, fmt: (x) => v.fix(x, 2) });
         const eB = v.slider('engine efficiency (≤ 0.40)', 0.08, 0.4, 0.3, { step: 0.01, fmt: (x) => v.fix(x, 2) });
         const s = v.stage({ x: [0, 14], y: [0, 7.1], equal: true, height: 330, axes: false, full: true });
         const frames = () => {
           const a = which.value === 'a';
-          return [
-            { k: 0, note: a ? String.raw`Suppose device **A** violates Kelvin–Planck: in each cycle it takes heat $Q$ from the hot reservoir and delivers all of it as work, rejecting nothing.` : String.raw`Suppose device **A** violates Clausius: in each cycle it moves heat from the cold reservoir to the hot one with no work at all.` },
-            { k: 1, note: a ? String.raw`Next to it put an ordinary refrigerator **B**: it uses work $W$ to lift heat $Q_c$ out of the cold reservoir and dumps $Q_c + W$ into the hot one (first law).` : String.raw`Next to it put an ordinary engine **B**: it takes $Q_h$ from the hot reservoir, delivers work $W$ and rejects $Q_c = Q_h - W$ into the cold one.` },
-            { k: 2, note: a ? String.raw`Connect the shaft: A's work runs B exactly. Size B so that it needs just $W = Q$.` : String.raw`Size A so that it carries back to the hot reservoir exactly the $Q_c$ that B rejects each cycle.` },
-            { k: 3, note: a ? String.raw`Draw a box around both. Net effect per cycle: the cold reservoir loses $Q_c$, the hot one gains $Q_c$, no work goes in — **heat flows uphill unaided, violating Clausius.**` : String.raw`Draw a box around both. Net effect per cycle: the cold reservoir is untouched, the hot one loses $Q_h - Q_c$ and exactly that much work comes out — **one reservoir's heat turned wholly into work, violating Kelvin–Planck.**` },
-          ];
+          const nA = () => honest.value ? (a ? String.raw`Device **A** is now an *honest* engine: it takes heat from the hot reservoir, delivers work $W$ and rejects the rest to the cold one.` : String.raw`Device **A** is now an *honest* refrigerator: lifting heat from cold to hot costs it work.`)
+            : (a ? String.raw`Suppose device **A** violates Kelvin–Planck: in each cycle it takes heat $Q$ from the hot reservoir and delivers all of it as work, rejecting nothing.` : String.raw`Suppose device **A** violates Clausius: in each cycle it moves heat from the cold reservoir to the hot one with no work at all.`);
+          const nB = () => a ? String.raw`Next to it put an ordinary refrigerator **B**: it uses work $W$ to lift heat $Q_c$ out of the cold reservoir and dumps $Q_c + W$ into the hot one (first law).` : String.raw`Next to it put an ordinary engine **B**: it takes $Q_h$ from the hot reservoir, delivers work $W$ and rejects $Q_c = Q_h - W$ into the cold one.`;
+          const nC = () => a ? String.raw`Connect the shaft: A's work runs B exactly.` : String.raw`Size A so that it carries back to the hot reservoir exactly the $Q_c$ that B rejects each cycle.`;
+          const nD = () => honest.value ? (a ? String.raw`Draw a box around both. With an honest engine the net effect is heat flowing *downhill* from hot to cold — nothing forbidden; Clausius' statement survives.` : String.raw`Draw a box around both. With an honest refrigerator the pair delivers no net work (or consumes some) — nothing forbidden; Kelvin's statement survives.`)
+            : (a ? String.raw`Draw a box around both. Net effect per cycle: the cold reservoir loses $Q_c$, the hot one gains $Q_c$, no work goes in — **heat flows uphill unaided, violating Clausius.**` : String.raw`Draw a box around both. Net effect per cycle: the cold reservoir is untouched, the hot one loses $Q_h - Q_c$ and exactly that much work comes out — **one reservoir's heat turned wholly into work, violating Kelvin–Planck.**`);
+          return [{ k: 0, note: nA }, { k: 1, note: nB }, { k: 2, note: nC }, { k: 3, note: nD }];
         };
         const S = v.steps({ frames: frames(), start: 'end', still: 3, transition: 0.35 });
         const W = (E, mx) => 3 + 30 * Math.abs(E) / mx;
@@ -282,7 +283,7 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
             s.text(`${netCold >= 0 ? '+' : '−'}${Math.abs(netCold).toFixed(0)} J`, xc - 0.25, 1.9, { align: 'right', size: 11.5, color: 'blue', weight: 650 });
             if (Math.abs(netW) > 0.5) s.text(`W ${netW > 0 ? 'out' : 'in'} ${Math.abs(netW).toFixed(0)} J`, xc + 0.7, y, { dy: -ww(netW) / 2 - 10, size: 11.5, color: 'orange', weight: 650 });
             const bad = a ? netHot > 0.5 && Math.abs(netW) < 0.5 : netW > 0.5 && Math.abs(netCold) < 0.5;
-            s.text(bad ? (a ? 'heat climbs unaided: Clausius broken' : 'heat → work from one reservoir: Kelvin broken') : 'nothing forbidden happens', 11.35, 0.32, { align: 'center', size: 11.5, weight: 700, color: bad ? 'red' : 'green' });
+            s.text(bad ? (a ? 'heat climbs unaided: Clausius broken' : 'all heat → work: Kelvin broken') : 'nothing forbidden happens', 11.35, 0.32, { align: 'center', size: 11.5, weight: 700, color: bad ? 'red' : 'green' });
           } else s.text('(appears in the last step)', 11.35, y, { align: 'center', size: 11.5, color: 'muted' });
         });
         v.readout(() => {
@@ -411,7 +412,7 @@ independent of the volumes and of the gas. On a $T$–$S$ diagram the cycle is a
           const q = C.at(uNow), s = q.stroke;
           // views
           const Pmax = C.at(0).P, Vmax = C.V3;
-          sp.setView([0, Vmax * 1.12], [0, Pmax * 1.15]);
+          sp.setView([-0.1 * Vmax, Vmax * 1.1], [-0.04 * Pmax, Pmax * 1.15]);
           const dS = C.dS; st.setView([-0.25 * dS, 1.25 * dS], [0, Math.max(1000, C.Th * 1.12)]);
           // P–V
           const pts = Array.from({ length: 401 }, (_, k) => C.at(4 * k / 400)).map((p) => [p.V, p.P]);
@@ -439,7 +440,7 @@ independent of the volumes and of the gas. On a $T$–$S$ diagram the cycle is a
           const exp = s <= 1;
           se.arrow(5.2, top + 1.2 + (exp ? -0.7 : 0.7), 5.2, top + 1.2 + (exp ? 0.7 : -0.7), { color: 'orange', width: 3, head: 10 });
           se.text(exp ? 'work out' : 'work in', 5.25, top + 2.15, { align: 'center', size: 11, color: 'orange', weight: 650 });
-          se.text(`T = ${q.T.toFixed(0)} K`, 3, (2.3 + top) / 2, { align: 'center', size: 12, weight: 650, color: 'ink', plate: true });
+          se.text(`T = ${q.T.toFixed(0)} K`, 3, Math.max(3.7, top - 0.45), { align: 'center', size: 12, weight: 650, color: 'ink', plate: true });
           se.text(names[s].replace(/\$T_h\$/, 'Th').replace(/\$T_c\$/, 'Tc'), 3, 9.75, { align: 'center', size: 11, weight: 650 });
           // bars
           const mx = C.Qh * 1.05, rows = [[q.qh, 'red', 'heat in  Qh'], [q.qc, 'blue', 'heat out  Qc'], [q.w, 'orange', 'net work by gas']];

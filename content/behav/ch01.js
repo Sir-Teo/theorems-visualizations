@@ -7,7 +7,7 @@
 // corollary's bounds U(w) − U(w − 2kl) ≥ 2Σ_{i=1}^{k}(g/l)^{i−1} r and U(w + mg) − U(w) ≤ Σ_{i=0}^{m−1}(l/g)^i r (r = U(w) − U(w − l));
 // computing them reproduces all 40 entries of Table I (entries rounded down to $10), and Table III's CARA coefficients
 // (.0000990, .0004760, .0009084, .0019917). J. W. Pratt 1964 (Econometrica 32: 122–136) for the risk premium.
-import { clamp, money, big, bernValue, bernPrice, spBanker, makePref, intoTri, indiffThrough, drawIndiff, drawTriangle } from './ch01.shared.js';
+import { clamp, money, usd, big, bernValue, bernPrice, spBanker, makePref, intoTri, indiffThrough, drawIndiff, drawTriangle } from './ch01.shared.js';
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
 const lse = (arr) => { const m = Math.max(...arr); if (!isFinite(m)) return m; let s = 0; for (const a of arr) s += Math.exp(a - m); return m + Math.log(s); };
@@ -161,13 +161,12 @@ A player who values a gamble by its expected payout should therefore pay any fin
           else run.text(`break-even near 4^${p} ≈ ${big(nStar, 2)} games →`, xmax, p, { dx: -4, dy: -9, align: 'right', size: 11, color: 'orange', weight: 600 });
           if (isFinite(ev)) { run.hline(ev, { color: 'green', width: 1.8, dash: [7, 4] }); run.text(`expected value ${v.fix(ev, 2)}`, xmax, ev, { dx: -4, dy: ev > p ? -9 : 11, align: 'right', size: 11.5, weight: 600, color: 'green' }); }
           if (S.pts.length) { run.clip(() => run.path(S.pts, { color: 'gold', width: 2.2 })); run.dot(n, S.avg, { r: 4.5, color: 'gold' }); }
-          if (S.top > ymax) run.text(`early spike off scale (up to ${v.fix(S.top, 0)}) ↑`, 0.35, ymax, { dx: 30, dy: 12, size: 10.5, color: 'gold', weight: 600 });
-          st = { S, p, ev, nStar, lg };
+          st = { S, p, ev, nStar, lg, off: S.top > ymax };
         });
         v.readout(() => {
-          const { S, p, ev, nStar } = st; if (!S) return '';
+          const { S, p, ev, nStar, off } = st; if (!S) return '';
           const net = S.avg - p;
-          return `**${money(n)} games** played: average payout **${v.fix(S.avg, 2)}** ducats against $\\tfrac12\\log_2 n = ${v.fix(0.5 * Math.log2(Math.max(n, 1)), 2)}$; longest game ${S.kmax} tosses. At your price of ${p} you are ${net >= 0 ? 'ahead' : 'behind'} by ${v.fix(Math.abs(net), 2)} per game. ` +
+          return `**${money(n)} games** played: average payout **${v.fix(S.avg, 2)}** ducats against $\\tfrac12\\log_2 n = ${v.fix(0.5 * Math.log2(Math.max(n, 1)), 2)}$; longest game ${S.kmax} tosses${off ? ` (one early long game pushed the average up to ${v.fix(S.top, 0)}, off the top of the chart)` : ''}. At your price of ${p} you are ${net >= 0 ? 'ahead' : 'behind'} by ${v.fix(Math.abs(net), 2)} per game. ` +
             (isFinite(ev) ? `With a banker worth ${big(S.B, 3)} ducats only the first ${spBanker(S.B).L} payouts can be paid in full, and the expected value is just **${v.fix(ev, 2)}** ducats.` : `Expected value: $\\tfrac12+\\tfrac12+\\cdots=\\infty$, so expected-value reasoning says pay any price.`) +
             ` A typical run's average reaches ${p} only after about $4^{${p}}\\approx$ ${big(nStar, 2)} games.`;
         });
@@ -216,7 +215,7 @@ to its owner: exactly 2 ducats at $w=0$, about 3.04 at $w=10$, 4.39 at $w=100$ a
           });
           if (g === 'sp') {
             const lim = u === 'log' ? bernValue(w) : u === 'sqrt' ? sqrtValue(w) : Infinity;
-            if (isFinite(lim) && lim < 21.5) { A.hline(lim, { color: COL[u], width: 1, dash: [3, 3] }); A.text(`limit ${v.fix(lim, 2)}`, NM, lim, { dx: -4, dy: -9, align: 'right', size: 11.5, color: COL[u], weight: 600 }); }
+            if (isFinite(lim) && lim < 21.5) { A.hline(lim, { color: COL[u], width: 1, dash: [3, 3] }); A.text(`limit ${v.fix(lim, 2)}`, NM, lim, { dx: -4, dy: 12, align: 'right', size: 11.5, color: COL[u], weight: 600 }); }
             A.text('expected payout N/2 → ∞', 23, 8.6, { size: 11.5, color: 'red', weight: 600 });
           } else A.text('every toss adds ½ to E[ln]: no limit', 40, 3e14, { align: 'right', size: 11.5, color: 'blue', weight: 600 });
           // ---- right panel: certainty equivalent against wealth
@@ -262,7 +261,7 @@ These hold exactly when $\succsim$ ranks lotteries by **expected utility** $\sum
         const T = v.stage({ x: [-0.13, 1.1], y: [-0.17, 1.1], equal: true, axes: false, height: 420, title: 'lotteries over prizes $x_1 < x_2 < x_3$' });
         const Rk = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, weight: 0.85, title: 'is the order kept after mixing?' });
         const hP = T.handle(0.15, 0.45, { color: 'accent', label: 'P', constrain: intoTri });
-        const hQ = T.handle(0.4, 0.68, { color: 'orange', label: 'Q', constrain: intoTri });
+        const hQ = T.handle(0.33, 0.62, { color: 'orange', label: 'Q', constrain: intoTri });
         const hR = T.handle(1, 0, { color: 'purple', label: 'R', labelPos: 'n', constrain: intoTri });
         v.button('Allais’s lotteries', () => { hP.set(0, 0); hQ.set(1 / 11, 10 / 11); hR.set(1, 0); al.set(0.11); m.set(0.91); });
         v.legend([['blue', 'indifference lines'], ['accent', 'P and P′', { dot: true }], ['orange', 'Q and Q′', { dot: true }], ['purple', 'R', { dot: true }], ['gold', 'as good as x₂ for sure', { dot: true }]]);
@@ -278,7 +277,7 @@ These hold exactly when $\succsim$ ranks lotteries by **expected utility** $\sum
             const seg = indiffThrough(pref, pt[0], pt[1]);
             if (seg) T.line(seg[0][0], seg[0][1], seg[1][0], seg[1][1], { color: col, width: 1.6, alpha: 0.85 });
           }
-          if (pref.F) { const F = pref.F; T.text(kind.value === 'out' ? '↙ lines meet far below-left' : 'lines meet far above-right ↗', kind.value === 'out' ? 0.02 : 1.02, kind.value === 'out' ? -0.1 : 0.98, { size: 11, color: 'blue', align: kind.value === 'out' ? 'left' : 'right', weight: 600 }); void F; }
+          if (pref.F) T.text(kind.value === 'out' ? 'the lines meet far below-left ↙' : 'the lines meet far above-right ↗', 1.08, 1.03, { size: 11, color: 'blue', align: 'right', weight: 600 });
           T.line(P[0], P[1], R[0], R[1], { color: 'muted', width: 1, dash: [3, 4] });
           T.line(Q[0], Q[1], R[0], R[1], { color: 'muted', width: 1, dash: [3, 4] });
           T.line(P[0], P[1], Q[0], Q[1], { color: 'ink', width: 1.6 });
@@ -332,11 +331,11 @@ These hold exactly when $\succsim$ ranks lotteries by **expected utility** $\sum
         const pre = v.select('utility', [{ value: 'concave', label: 'concave' }, { value: 'linear', label: 'linear' }, { value: 'convex', label: 'convex' }, { value: 'fs', label: 'Friedman–Savage' }], 'concave',
           { onChange: (k) => PRE[k].forEach((y, i) => H[i].set(XS[i], y)) });
         const pS = v.slider('chance of $b$', 0.05, 0.95, 0.5, { step: 0.01 });
-        const s = v.stage({ x: [-4, 104], y: [-0.08, 1.06], axes: 'box', height: 360, weight: 1.25, xlabel: 'wealth', ylabel: 'utility u', title: 'a gamble on the utility curve' });
-        const mp = v.stage({ x: [0, 100], y: [0, 100], equal: true, axes: 'box', height: 360, xlabel: 'outcome a', ylabel: 'outcome b', title: 'all gambles: disliked (green) or liked (red)' });
+        const s = v.stage({ x: [-10, 104], y: [-0.2, 1.06], axes: 'box', height: 360, weight: 1.25, xlabel: 'wealth', ylabel: 'utility u', title: 'a gamble on the utility curve' });
+        const mp = v.stage({ x: [-13, 101], y: [-9, 101], equal: true, axes: 'box', height: 360, xlabel: 'outcome a', ylabel: 'outcome b', title: 'all gambles: disliked (green) or liked (red)' });
         const c = () => H.map((h) => h.y);
         const H = XS.map((x, i) => s.handle(x, PRE.concave[i], {
-          color: 'faint', r: 6, constrain: (_, y) => { const cc = c(); const lo = i ? cc[i - 1] + 0.01 : 0, hi = i < 4 ? cc[i + 1] - 0.01 : 1; return [x, clamp(y, lo, Math.max(lo, hi))]; },
+          color: 'muted', r: 6, constrain: (_, y) => { const cc = c(); const lo = i ? cc[i - 1] + 0.01 : 0, hi = i < 4 ? cc[i + 1] - 0.01 : 1; return [x, clamp(y, lo, Math.max(lo, hi))]; },
         }));
         const hA = s.handle(18, 0, { color: 'accent', label: 'a', labelPos: 'n', constrain: (x) => [clamp(x, 0, 100), 0] });
         const hB = s.handle(82, 0, { color: 'accent', label: 'b', labelPos: 'n', constrain: (x) => [clamp(x, 0, 100), 0] });
@@ -359,26 +358,25 @@ These hold exactly when $\succsim$ ranks lotteries by **expected utility** $\sum
           s.dot(CE, EU, { r: 4.5, color: 'orange' });
           s.dot(EX, uEX, { r: 5, color: 'green' });
           s.dot(EX, EU, { r: 5.5, color: 'gold' });
-          s.rect(Math.min(CE, EX), -0.065, Math.max(CE, EX), -0.03, { fill: pi >= 0 ? 'orange' : 'red', fillAlpha: 0.75, stroke: false });
-          s.text(`π = ${v.fix(pi, 1)}`, (CE + EX) / 2, -0.0475, { dy: -12, align: 'center', size: 11.5, weight: 700, color: pi >= 0 ? 'orange' : 'red' });
-          s.text('E X', EX, 0, { dy: 10, align: 'center', size: 10.5, color: 'muted' });
+          s.rect(Math.min(CE, EX), -0.115, Math.max(CE, EX), -0.08, { fill: pi >= 0 ? 'orange' : 'red', fillAlpha: 0.75, stroke: false });
+          s.text(`risk premium π = ${v.fix(pi, 1)}`, Math.max(CE, EX), -0.0975, { dx: 6, size: 11.5, weight: 700, color: pi >= 0 ? 'orange' : 'red' });
           s.text('CE', CE, EU, { dx: -6, dy: -10, align: 'right', size: 11, weight: 700, color: 'orange' });
           // ---- map of all gambles with this p
           const key = cc.map((y) => y.toFixed(4)).join(',') + '|' + p.toFixed(3);
-          const scale = 6;
+          const scale = 8;
           mp.raster((x, y) => {
             const ea = u(x), eb = u(y), m = (1 - p) * x + p * y, pr = m - inv((1 - p) * ea + p * eb);
-            if (Math.abs(x - y) < 0.4) return null;
-            return v.diverge(clamp(pr / scale, -1, 1), 'red', 'green');
-          }, { key, res: 3 });
+            if (Math.abs(x - y) < 0.4 || Math.abs(pr) < 0.03) return null;
+            return v.diverge(Math.sign(pr) * (0.3 + 0.7 * Math.min(1, Math.abs(pr) / scale)), 'red', 'green');
+          }, { key, res: 3, rect: [0, 0, 100, 100] });
           mp.line(0, 0, 100, 100, { color: 'muted', width: 1.2, dash: [4, 4] });
           mp.text('a = b: no risk', 70, 70, { dx: 6, dy: 8, size: 11, color: 'muted' });
           mp.dot(a, b, { r: 6, color: 'accent' });
           // concavity check on the curve itself
-          let worst = Infinity; for (let i = 1; i < N; i++) worst = Math.min(worst, tab[i - 1] - 2 * tab[i] + tab[i + 1] <= 1e-12 ? Infinity : -1);
+          let concave = true; for (let i = 1; i < N; i++) if (tab[i - 1] - 2 * tab[i] + tab[i + 1] > 1e-12) { concave = false; break; }
           let liked = 0, tot = 0;
           for (let i = 0; i <= 40; i++) for (let j = 0; j <= 40; j++) { if (i === j) continue; const x = 2.5 * i, y = 2.5 * j; tot++; if ((1 - p) * x + p * y - inv((1 - p) * u(x) + p * u(y)) < -1e-3) liked++; }
-          st = { a, b, p, EX, CE, pi, EU, uEX, concave: worst === Infinity, liked, tot };
+          st = { a, b, p, EX, CE, pi, EU, uEX, concave, liked, tot };
         });
         v.readout(() => {
           const { a, b, p, EX, CE, pi, EU, uEX, concave, liked, tot } = st; if (EX == null) return '';
@@ -412,8 +410,8 @@ $A$ governs attitudes to gambles of a fixed dollar size, $R$ to gambles proporti
         const a2 = v.slider('orange: absolute risk aversion $a$', 0.005, 0.2, 0.04, { step: 0.001 });
         const W = v.slider('wealth $w$ (thousand dollars)', 10, 95, 30, { step: 0.5 });
         const Hs = v.slider('gamble size $h$', 1, 30, 15, { step: 0.5 });
-        const s1 = v.stage({ x: [0, 100], y: [-40, 30], axes: 'box', height: 300, xlabel: 'wealth', ylabel: 'u, rescaled at w', title: 'two utilities, matched at w' });
-        const s2 = v.stage({ x: [0, 100], y: [0, 0.2], axes: 'box', height: 300, xlabel: 'wealth', ylabel: 'A = −u″/u′', title: 'absolute risk aversion' });
+        const s1 = v.stage({ x: [-12, 100], y: [-40, 30], axes: 'box', height: 300, xlabel: 'wealth', ylabel: 'u, rescaled at w', title: 'two utilities, matched at w' });
+        const s2 = v.stage({ x: [-17, 100], y: [0, 0.2], axes: 'box', height: 300, xlabel: 'wealth', ylabel: 'A = −u″/u′', title: 'absolute risk aversion' });
         const s3 = v.stage({ x: [0, 30], y: [0, 10], axes: 'box', height: 300, xlabel: 'gamble size h', ylabel: 'risk premium', title: 'premium for w ± h' });
         const mk = (f, g, a) => (f.value === 'CRRA' ? crra(g.value) : cara(a.value));
         const lab = (f, g, a) => (f.value === 'CRRA' ? (Math.abs(g.value - 1) < 1e-9 ? 'log' : `CRRA γ = ${v.fix(g.value, 2)}`) : `CARA a = ${v.fix(a.value, 3)}`);
@@ -423,7 +421,7 @@ $A$ governs attitudes to gambles of a fixed dollar size, $R$ to gambles proporti
           g1.el.hidden = f1.value !== 'CRRA'; a1.el.hidden = f1.value !== 'CARA'; g2.el.hidden = f2.value !== 'CRRA'; a2.el.hidden = f2.value !== 'CARA';
           const U1 = mk(f1, g1, a1), U2 = mk(f2, g2, a2), w = W.value, hmax = Math.min(30, 0.95 * w), h = Math.min(Hs.value, hmax);
           const n1 = (x) => (U1.u(x) - U1.u(w)) / U1.up(w), n2 = (x) => (U2.u(x) - U2.u(w)) / U2.up(w);
-          s1.setView([0, 100], [-w - 12, 100 - w + 8]);
+          s1.setView([-12, 100], [-w - 12, 100 - w + 8]);
           s1.fn((x) => x - w, { color: 'muted', width: 1.2, dash: [5, 4], domain: [0, 100] });
           s1.fn(n1, { color: 'blue', width: 2.4, domain: [0.4, 100] });
           s1.fn(n2, { color: 'orange', width: 2.4, domain: [0.4, 100] });
@@ -435,28 +433,28 @@ $A$ governs attitudes to gambles of a fixed dollar size, $R$ to gambles proporti
           s1.vline(w, GUIDE); s1.dot(w, 0, { r: 4, color: 'ink' });
           // A(w)
           const Amax = Math.max(0.02, 1.6 * Math.max(U1.A(w), U2.A(w), U1.A(70), U2.A(70)));
-          s2.setView([0, 100], [0, Amax]);
+          s2.setView([-17, 100], [0, Amax]);
           s2.fn((x) => U1.A(x), { color: 'blue', width: 2.4, domain: [1, 100] });
           s2.fn((x) => U2.A(x), { color: 'orange', width: 2.4, domain: [1, 100] });
           s2.vline(w, GUIDE); s2.dot(w, U1.A(w), { r: 4.5, color: 'blue' }); s2.dot(w, U2.A(w), { r: 4.5, color: 'orange' });
-          let cross = null; for (let x = 1.5; x < 100; x += 0.5) { const d0 = U1.A(x - 0.5) - U2.A(x - 0.5), d1 = U1.A(x) - U2.A(x); if (d0 * d1 < 0) { cross = x - 0.5 * (d1 / (d1 - d0)); break; } }
+          let cross = null; for (let x = 1.5; x < 100; x += 0.5) { const d0 = U1.A(x - 0.5) - U2.A(x - 0.5), d1 = U1.A(x) - U2.A(x); if (d0 * d1 <= 0 && d0 !== d1 && d0 !== 0) { cross = x - 0.5 * (d1 / (d1 - d0)); break; } }
           if (cross) { s2.dot(cross, U1.A(cross), { r: 5, hollow: true, color: 'red', width: 2 }); s2.text(`cross at w = ${v.fix(cross, 1)}`, cross, U1.A(cross), { dx: 8, dy: -10, size: 11.5, color: 'red', weight: 600 }); }
           // premium vs h
           const pr1 = (x) => w - U1.ce(w, x), pr2 = (x) => w - U2.ce(w, x);
           const pmax = Math.max(0.5, 1.15 * Math.max(pr1(hmax), pr2(hmax)));
-          s3.setView([0, hmax], [0, pmax]);
+          s3.setView([-0.17 * hmax, hmax], [0, pmax]);
           s3.fn((x) => 0.5 * x * x * U1.A(w), { color: 'blue', width: 1, dash: [3, 3], domain: [0, hmax] });
           s3.fn((x) => 0.5 * x * x * U2.A(w), { color: 'orange', width: 1, dash: [3, 3], domain: [0, hmax] });
           s3.fn(pr1, { color: 'blue', width: 2.4, domain: [0, hmax] });
           s3.fn(pr2, { color: 'orange', width: 2.4, domain: [0, hmax] });
           s3.vline(h, GUIDE); s3.dot(h, pr1(h), { r: 4.5, color: 'blue' }); s3.dot(h, pr2(h), { r: 4.5, color: 'orange' });
-          s3.text('dotted: ½h²A(w)', 0, pmax, { dx: 6, dy: 12, size: 10.5, color: 'muted' });
+          s3.text('dotted: ½h²A(w)', 0, 0.82 * pmax, { dx: 4, size: 10.5, color: 'muted' });
           let always = 0; for (let x = 1; x <= 100; x += 0.5) always += Math.sign(U1.A(x) - U2.A(x));
           st = { w, h, A1: U1.A(w), A2: U2.A(w), p1: pr1(h), p2: pr2(h), cross, l1: lab(f1, g1, a1), l2: lab(f2, g2, a2), dom: Math.abs(always) === 199 ? Math.sign(always) : 0 };
         });
         v.readout(() => {
           const { w, h, A1, A2, p1, p2, cross, l1, l2, dom } = st; if (!w) return '';
-          const head = `At $w = ${v.fix(w, 1)}$: blue (${l1}) has $A = ${v.fix(A1, 4)}$, $R = ${v.fix(w * A1, 2)}$; orange (${l2}) has $A = ${v.fix(A2, 4)}$, $R = ${v.fix(w * A2, 2)}$. For the 50–50 gamble $\\pm${v.fix(h, 1)} the premia are **${v.fix(p1, 2)}** (blue) and **${v.fix(p2, 2)}** (orange).`;
+          const head = `At $w = ${v.fix(w, 1)}$: blue (${l1}) has $A = ${v.fix(A1, 4)}$, $R = ${v.fix(w * A1, 2)}$; orange (${l2}) has $A = ${v.fix(A2, 4)}$, $R = ${v.fix(w * A2, 2)}$. For the 50–50 gamble $\\pm ${v.fix(h, 1)}$ the premia are **${v.fix(p1, 2)}** (blue) and **${v.fix(p2, 2)}** (orange).`;
           const tail = dom ? ` The ${dom > 0 ? 'blue' : 'orange'} $A$ lies above the other at every wealth, so by Pratt's theorem its premium is larger for every gamble at every wealth (the other utility is a concave transform of it).` : cross ? ` The $A$ curves cross at $w = ${v.fix(cross, 1)}$, so neither is more risk averse overall: below the crossing ${A1 > A2 === w < cross ? 'blue' : 'orange'} demands more, above it the other.` : '';
           return head + tail;
         });
@@ -475,12 +473,12 @@ So for small risks the premium is proportional to the *variance*: halving the st
       viz(v) {
         const W0 = 50;
         const fam = v.select('utility', [{ value: 'crra', label: 'CRRA' }, { value: 'cara', label: 'CARA' }, { value: 'kink', label: 'kinked at $w$' }], 'crra');
-        const gS = v.slider('relative risk aversion $\\gamma$', 0.5, 8, 2, { step: 0.05 });
+        const gS = v.slider('relative risk aversion $\\gamma$', 0.5, 8, 4, { step: 0.05 });
         const aS = v.slider('absolute risk aversion $a$', 0.01, 0.3, 0.05, { step: 0.001 });
         const lS = v.slider('loss weight $\\lambda$ below $w$', 1, 3, 2, { step: 0.05 });
         const dist = v.select('risk', [{ value: 'bet', label: '50–50 bet ±σ' }, { value: 'unif', label: 'uniform' }], 'bet');
         const sS = v.slider('size $\\sigma$', 0.1, 28, 12, { log: true });
-        const s1 = v.stage({ x: [W0 - 32, W0 + 32], y: [0, 1], axes: 'box', height: 320, xlabel: 'wealth', ylabel: 'utility', title: 'the risk premium as a Jensen gap' });
+        const s1 = v.stage({ x: [W0 - 32, W0 + 32], y: [0, 1], axes: 'box', height: 320, xlabel: 'wealth', ylabel: 'utility, rescaled at w', title: 'the risk premium as a Jensen gap' });
         const s2 = v.stage({ x: [0.1, 28], xlog: true, y: [1e-5, 60], ylog: true, axes: 'box', height: 320, xlabel: 'σ (log scale)', ylabel: 'premium (log scale)', title: 'exact premium against ½σ²A(w)' });
         v.legend([['ink', 'utility'], ['orange', 'exact risk premium'], ['purple', '½σ²A(w)', { dash: true }]]);
         const util = () => {
@@ -500,21 +498,23 @@ So for small risks the premium is proportional to the *variance*: halving the st
         v.render(() => {
           gS.el.hidden = fam.value !== 'crra'; aS.el.hidden = fam.value !== 'cara'; lS.el.hidden = fam.value !== 'kink';
           const U = util(), sig = sS.value, c = dist.value === 'bet' ? sig : sig * Math.sqrt(3);
-          const lo = W0 - 32, hi = W0 + 32, y0 = U.u(lo + 1), y1 = U.u(hi);
-          s1.setView([lo, hi], [y0 - 0.12 * (y1 - y0), y1 + 0.06 * (y1 - y0)]);
-          const yb = y0 - 0.12 * (y1 - y0);
-          s1.fn(U.u, { domain: [lo + 0.5, hi], color: 'ink', width: 2.4 });
-          const eu = Eu(U, sig), pi = W0 - U.inv(eu), pa = 0.5 * sig * sig * U.A;
-          if (dist.value === 'bet') { s1.line(W0 - sig, U.u(W0 - sig), W0 + sig, U.u(W0 + sig), { color: 'accent', width: 1.8 }); s1.dot(W0 - sig, U.u(W0 - sig), { r: 4, color: 'accent' }); s1.dot(W0 + sig, U.u(W0 + sig), { r: 4, color: 'accent' }); }
+          const u0 = U.u(W0), slope = (U.u(W0 + 1e-4) - u0) / 1e-4, d = (x) => (U.u(x) - u0) / slope; // utility rescaled to money units at w
+          const lo = W0 - 32, hi = W0 + 32, y0 = d(lo + 1), y1 = d(hi);
+          const yb = y0 - 0.34 * (y1 - y0);
+          s1.setView([lo - 5, hi], [yb, y1 + 0.06 * (y1 - y0)]);
+          s1.fn(d, { domain: [lo + 0.5, hi], color: 'ink', width: 2.4 });
+          s1.fn((x) => x - W0, { domain: [lo + 0.5, hi], color: 'muted', width: 1, dash: [4, 4] });
+          const eu = Eu(U, sig), pi = W0 - U.inv(eu), pa = 0.5 * sig * sig * U.A, deu = (eu - u0) / slope;
+          if (dist.value === 'bet') { s1.line(W0 - sig, d(W0 - sig), W0 + sig, d(W0 + sig), { color: 'accent', width: 1.8 }); s1.dot(W0 - sig, d(W0 - sig), { r: 4, color: 'accent' }); s1.dot(W0 + sig, d(W0 + sig), { r: 4, color: 'accent' }); }
           else { s1.vband(W0 - c, W0 + c, { color: 'accent', alpha: 0.08 }); s1.text('uniform spread', W0, y1, { dy: 12, align: 'center', size: 11, color: 'accent' }); }
-          s1.line(W0, yb, W0, U.u(W0), GUIDE);
-          s1.dot(W0, eu, { r: 5, color: 'gold' }); s1.dot(W0, U.u(W0), { r: 4.5, color: 'green' });
-          s1.line(W0 - pi, eu, W0, eu, { color: 'orange', width: 1.4, dash: [5, 3] }); s1.dot(W0 - pi, eu, { r: 4, color: 'orange' });
-          const h = 0.035 * (y1 - y0);
-          s1.rect(W0 - pi, yb + 2.2 * h, W0, yb + 3.2 * h, { fill: 'orange', fillAlpha: 0.8, stroke: false });
-          s1.rect(W0 - pa, yb + 0.6 * h, W0, yb + 1.6 * h, { fill: 'purple', fillAlpha: 0.65, stroke: false });
-          s1.text(`exact π = ${v.fix(pi, 3)}`, W0, yb + 2.7 * h, { dx: 6, size: 11.5, weight: 700, color: 'orange' });
-          s1.text(`½σ²A = ${v.fix(pa, 3)}`, W0, yb + 1.1 * h, { dx: 6, size: 11.5, weight: 700, color: 'purple' });
+          s1.line(W0, yb, W0, 0, GUIDE);
+          s1.dot(W0, deu, { r: 5, color: 'gold' }); s1.dot(W0, 0, { r: 4.5, color: 'green' });
+          s1.line(W0 - pi, deu, W0, deu, { color: 'orange', width: 1.4, dash: [5, 3] }); s1.dot(W0 - pi, deu, { r: 4, color: 'orange' });
+          const h = 0.04 * (y1 - y0);
+          s1.rect(W0 - pi, yb + 4.6 * h, W0, yb + 5.6 * h, { fill: 'orange', fillAlpha: 0.8, stroke: false });
+          s1.rect(W0 - pa, yb + 3 * h, W0, yb + 4 * h, { fill: 'purple', fillAlpha: 0.65, stroke: false });
+          s1.text(`exact π = ${v.fix(pi, 3)}`, W0, yb + 5.1 * h, { dx: 6, size: 11.5, weight: 700, color: 'orange' });
+          s1.text(`½σ²A = ${v.fix(pa, 3)}`, W0, yb + 3.5 * h, { dx: 6, size: 11.5, weight: 700, color: 'purple' });
           // log–log panel
           const xs = Array.from({ length: 120 }, (_, i) => 0.1 * Math.pow(280, i / 119));
           const ex = xs.map((x) => [x, Math.max(prem(U, x), 1e-12)]), ap = xs.map((x) => [x, 0.5 * x * x * U.A]);
@@ -528,7 +528,8 @@ So for small risks the premium is proportional to the *variance*: halving the st
           const { sig, pi, pa, A, kink, small, smallA } = st; if (!sig) return '';
           const err = (100 * (pa - pi)) / pi;
           if (kink) return `Kinked utility: $A(w)$ is not defined at the kink (the slope drops by the factor $\\lambda$ = ${v.fix(lS.value, 2)}), and the premium is first order: **π = ${v.fix(pi, 3)}** for $\\sigma$ = ${v.fix(sig, 2)}, while the quadratic formula with the smooth part's $A = ${v.fix(A, 4)}$ gives only ${v.fix(pa, 4)}. At $\\sigma$ = 0.2 the ratio is ${v.fix(small / smallA, 0)} to 1: halving the risk only halves the premium.`;
-          return `$A(w) = ${v.fix(A, 4)}$, $\\sigma$ = ${v.fix(sig, 2)}: exact premium **${v.fix(pi, 4)}**, Pratt's $\\tfrac12\\sigma^2A$ = **${v.fix(pa, 4)}** (${err >= 0 ? '+' : '−'}${v.fix(Math.abs(err), 1)}%). At $\\sigma$ = 0.2 they agree to ${v.fix(Math.abs((100 * (smallA - small)) / small), 3)}%: the error is of higher order than $\\sigma^2$.`;
+          const exact = fam.value === 'crra' && Math.abs(gS.value - 2) < 1e-9 && dist.value === 'bet' ? ' (For $\\gamma = 2$ and a 50–50 bet the formula happens to be exact: the certainty equivalent is the harmonic mean, $w - \\sigma^2/w$.)' : '';
+          return `$A(w) = ${v.fix(A, 4)}$, $\\sigma$ = ${v.fix(sig, 2)}: exact premium **${v.fix(pi, 4)}**, Pratt's $\\tfrac12\\sigma^2A$ = **${v.fix(pa, 4)}** (${err >= 0 ? '+' : '−'}${v.fix(Math.abs(err), 1)}%). At $\\sigma$ = 0.2 they agree to ${v.fix(Math.abs((100 * (smallA - small)) / small), 3)}%: the error is of higher order than $\\sigma^2$.${exact}`;
         });
       },
     },
@@ -550,9 +551,9 @@ So for small risks the premium is proportional to the *variance*: halving the st
         const aS = v.slider('CARA: $a$ (per dollar)', 1e-6, 1e-3, 5e-5, { log: true, fmt: (x) => x.toExponential(1) });
         const gS = v.slider('CRRA: $\\gamma$', 1.5, 10, 3, { step: 0.1 });
         const wS = v.slider('wealth (dollars)', 2e3, 1e7, 1e5, { log: true, fmt: (x) => '$' + big(x, 3) });
-        const P1 = v.stage({ x: [2e3, 1e7], xlog: true, y: [1e2, 1e8], ylog: true, axes: 'box', height: 290, xlabel: 'wealth ($)', ylabel: 'dollars in stocks', title: 'amount invested' });
-        const P2 = v.stage({ x: [2e3, 1e7], xlog: true, y: [0, 1.6], axes: 'box', height: 290, xlabel: 'wealth ($)', ylabel: 'share of wealth', title: 'share invested' });
-        const P3 = v.stage({ x: [2e3, 1e7], xlog: true, y: [0, 100], axes: 'box', height: 290, xlabel: 'wealth ($)', ylabel: '% of the stake', title: 'risk premium of a 50–50 bet' });
+        const P1 = v.stage({ x: [5e2, 1e7], xlog: true, y: [1e2, 1e8], ylog: true, axes: 'box', height: 290, xlabel: 'wealth ($)', ylabel: 'dollars in stocks', title: 'amount invested' });
+        const P2 = v.stage({ x: [5e2, 1e7], xlog: true, y: [0, 1.6], axes: 'box', height: 290, xlabel: 'wealth ($)', ylabel: 'share of wealth', title: 'share invested' });
+        const P3 = v.stage({ x: [5e2, 1e7], xlog: true, y: [-7, 100], axes: 'box', height: 290, xlabel: 'wealth ($)', ylabel: '% of the stake', title: 'risk premium of a 50–50 bet' });
         v.legend([['blue', 'CARA'], ['orange', 'CRRA'], ['ink', '±$1,000 bet'], ['ink', '±10% of wealth bet', { dash: true }]]);
         // golden-section maximization of a concave function on [lo, hi]
         const argmax = (f, lo, hi) => { const r = (Math.sqrt(5) - 1) / 2; let a = lo, b = hi, c = b - r * (b - a), d = a + r * (b - a), fc = f(c), fd = f(d); for (let i = 0; i < 70; i++) { if (fc > fd) { b = d; d = c; fd = fc; c = b - r * (b - a); fc = f(c); } else { a = c; c = d; fc = fd; d = a + r * (b - a); fd = f(d); } } return (a + b) / 2; };
@@ -577,7 +578,7 @@ So for small risks the premium is proportional to the *variance*: halving the st
           P1.text('all wealth', 3e6, 3e6, { dx: -4, dy: -10, align: 'right', size: 10.5, color: 'muted' });
           P1.vline(w, GUIDE); P1.dot(w, S.caraDollars, { r: 4.5, color: 'blue' }); P1.dot(w, S.crraShare * w, { r: 4.5, color: 'orange' });
           // shares
-          P2.hline(1, { color: 'muted', width: 1, dash: [4, 4] }); P2.text('100% (beyond: borrowing)', 2e3, 1, { dx: 6, dy: -9, size: 10.5, color: 'muted' });
+          P2.hline(1, { color: 'muted', width: 1, dash: [4, 4] }); P2.text('100% (above: borrowing)', 1e7, 1, { dx: -6, dy: -9, align: 'right', size: 10.5, color: 'muted' });
           P2.clip(() => { P2.path(grid.map((x) => [x, S.caraDollars / x]), { color: 'blue', width: 2.6 }); });
           P2.path(grid.map((x) => [x, S.crraShare]), { color: 'orange', width: 2.6 });
           P2.vline(w, GUIDE); if (S.caraDollars / w < 1.6) P2.dot(w, S.caraDollars / w, { r: 4.5, color: 'blue' }); P2.dot(w, S.crraShare, { r: 4.5, color: 'orange' });
@@ -595,7 +596,7 @@ So for small risks the premium is proportional to the *variance*: halving the st
         });
         v.readout(() => {
           const { S, w, a, g, pc1, pr1, pc10, pr10 } = st; if (!S) return '';
-          return `At wealth $\\$${big(w, 3)}$: **CARA** ($a$ = ${a.toExponential(1)}) holds **$\\$${money(S.caraDollars)}$** in stocks at every wealth (formula $(\\mu-r)/(a\\sigma^2)$ = $\\$${money(0.059 / (a * 0.04))}$ for untruncated normal returns), ${v.fix((100 * S.caraDollars) / w, 1)}% of wealth here. **CRRA** ($\\gamma$ = ${v.fix(g, 1)}) holds **${v.fix(100 * S.crraShare, 1)}%** of wealth at every wealth (Merton: ${v.fix((100 * 0.059) / (g * 0.04), 1)}%), $\\$${money(S.crraShare * w)}$ here. Risk premium of a $\\pm\\$1{,}000$ bet: CARA ${v.fix(pc1, 2)}%, CRRA ${v.fix(pr1, 2)}% of the stake; of a $\\pm10\\%$ bet: CARA ${v.fix(pc10, 2)}%, CRRA ${v.fix(pr10, 2)}%.`;
+          return `At wealth ${usd(w)}: **CARA** ($a$ = ${a.toExponential(1)}) holds **${usd(S.caraDollars)}** in stocks at every wealth (formula $(\\mu-r)/(a\\sigma^2)$ = ${usd(0.059 / (a * 0.04))} for untruncated normal returns), ${v.fix((100 * S.caraDollars) / w, 1)}% of wealth here. **CRRA** ($\\gamma$ = ${v.fix(g, 1)}) holds **${v.fix(100 * S.crraShare, 1)}%** of wealth at every wealth (Merton: ${v.fix((100 * 0.059) / (g * 0.04), 1)}%), ${usd(S.crraShare * w)} here. Risk premium of a $\\pm\\$1{,}000$ bet: CARA ${v.fix(pc1, 2)}%, CRRA ${v.fix(pr1, 2)}% of the stake; of a $\\pm10\\%$ bet: CARA ${v.fix(pc10, 2)}%, CRRA ${v.fix(pr10, 2)}%.`;
         });
       },
     },
@@ -616,7 +617,7 @@ where $r=U(w)-U(w-l)$, so she also turns down "lose $L=2kl$, gain $G$" for every
         const ans = v.select('lose $\\$100$ or gain $\\$g$, 50–50: would you take it?', [{ value: 'q', label: 'not sure yet' }, { value: 'yes', label: 'take it' }, { value: 'no', label: 'turn it down' }], 'q');
         const gS = v.slider('gain $g$ (dollars)', 101, 150, 110, { step: 1 });
         const LS = v.slider('larger loss $L$ (dollars)', 200, 3000, 1000, { step: 200 });
-        const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 370, weight: 1.05, title: 'Table I: if you always turn down lose $100 / gain g, you turn down lose L / gain G' });
+        const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 370, weight: 1.05, title: 'Rabin’s Table I: the largest G you must also refuse' });
         const ut = v.stage({ x: [-3000, 3000], y: [-14, 14], axes: 'box', height: 370, xlabel: 'change in wealth ($)', ylabel: 'utility (units of r)', title: 'the least concave utility consistent with it' });
         const T = v.table(tb, { rows: RABIN_L.length, cols: 4, square: false, cellAspect: 2.1, maxCell: 30, size: 12.5, rowLabels: RABIN_L.map((x) => '$' + money(x)), colLabels: RABIN_g.map((g) => 'g = $' + g), cornerLabel: 'L \\ g', region: [0, 0, 1, 0.94] });
         v.legend([['blue', 'utility bound (concave)'], ['green', 'cap on any gain', { dash: true }], ['red', 'utility lost by losing L', { area: true }], ['accent', 'chord of lose L / gain G']]);
@@ -640,9 +641,10 @@ where $r=U(w)-U(w-l)$, so she also turns down "lose $L=2kl$, gain $G$" for every
           const gainPts = [[0, 0]]; let sum = 0; for (let j = 0; j < 400 && j * g < 3000; j++) { sum += Math.pow(r, j); gainPts.push([(j + 1) * g, sum]); }
           const lossPts = [[0, 0]]; let ls = 0; for (let i = 1; 2 * i * l <= 3000; i++) { ls += 2 * Math.pow(g / l, i - 1); lossPts.push([-2 * i * l, -ls]); }
           const ymin = Math.max(-40, -1.15 * Math.max(lossU, cap * 1.3)), ymax = cap * 1.35;
-          ut.setView([-Math.max(1.4 * L, 600), 3000], [ymin, ymax]);
+          const xmin = -Math.max(1.5 * L, 700);
+          ut.setView([xmin, 3000], [ymin, ymax]);
           ut.hline(cap, { color: 'green', width: 1.6, dash: [6, 4] });
-          ut.text(`no gain is worth more than g/(g−l) = ${v.fix(cap, 1)}`, 3000, cap, { dx: -4, dy: -9, align: 'right', size: 11, color: 'green', weight: 600 });
+          ut.text(`no gain is worth more than g/(g−l) = ${v.fix(cap, 1)}`, xmin, cap, { dx: 40, dy: -9, size: 11, color: 'green', weight: 600 });
           ut.hline(0, { color: 'muted', width: 1 }); ut.vline(0, { color: 'muted', width: 1 });
           ut.rect(-L, -lossU, 0, 0, { fill: 'red', fillAlpha: 0.1, stroke: false });
           ut.clip(() => { ut.path(lossPts.slice().reverse().concat(gainPts), { color: 'blue', width: 2.6 }); });
@@ -652,8 +654,9 @@ where $r=U(w)-U(w-l)$, so she also turns down "lose $L=2kl$, gain $G$" for every
           ut.line(-L, -lossU, Gx, uG, { color: 'accent', width: 1.8 });
           const mid = [(-L + Gx) / 2, (-lossU + uG) / 2];
           ut.dot(mid[0], mid[1], { r: 5, color: 'accent' });
-          ut.text(isFinite(G) ? `G = $${money(G)}${G > 3000 ? ' →' : ''}` : 'G = any amount →', Gx, uG, { dx: -6, dy: 12, align: 'right', size: 11, color: 'accent', weight: 600 });
-          ut.text('½U(w−L) + ½U(w+G) < U(w)', mid[0], mid[1], { dx: 0, dy: 14, align: 'center', size: 10.5, color: 'accent' });
+          if (isFinite(G) && G <= 3000) ut.text(`G = $${money(G)}`, Gx, uG, { dx: 8, dy: 13, size: 11, color: 'accent', weight: 600 });
+          else ut.text(isFinite(G) ? `G = $${money(G)} →` : 'G = any amount →', 3000, cap, { dx: -4, dy: -9, align: 'right', size: 11, color: 'accent', weight: 600 });
+          ut.text('½U(w−L) + ½U(w+G) < U(w)', mid[0], mid[1], { dx: 12, dy: 15, align: 'left', size: 10.5, color: 'accent' });
           // CARA cross-check: the coefficient that makes the small bet just acceptable
           let lo = 1e-9, hi = 0.1; for (let it = 0; it < 100; it++) { const m = (lo + hi) / 2; if (0.5 * Math.exp(m * l) + 0.5 * Math.exp(-m * g) - 1 > 0) hi = m; else lo = m; }
           st = { g, L, G, rej, a: lo, cap, lossU, agree };
@@ -662,7 +665,7 @@ where $r=U(w)-U(w-l)$, so she also turns down "lose $L=2kl$, gain $G$" for every
           const { g, L, G, rej, a, cap, lossU } = st; if (!g) return '';
           if (ans.value === 'q') return `Decide first: would you accept a 50–50 bet that loses $\\$100$ or wins $\\$${g}$? Its expected value is $+\\$${v.fix((g - 100) / 2, 1)}$. Then choose an answer above to see what expected-utility theory infers from it.`;
           if (ans.value === 'yes') return `Then expected utility is comfortable with you: accepting a favourable small bet is what a smooth concave utility predicts, since it is nearly linear over \\$200 (behav-1.6). Rabin's argument starts from the many people who say *no*: choose "turn it down" to see what that would imply.`;
-          return `If you turn down lose $\\$100$ / gain $\\$${g}$ **at every wealth**, expected utility forces marginal utility to fall by the factor ${v.fix(100 / g, 3)} every $\\$${g}$, so no gain can ever add more than ${v.fix(cap, 2)} units of $r$, while losing $\\$${money(L)}$ costs at least ${v.fix(lossU, 2)}. Hence you must also turn down lose $\\$${money(L)}$ / gain **${isFinite(G) ? '$\\$' + money(G) + '$' : 'any amount whatsoever'}**. A CARA utility rejecting the small bet has $a \\ge ${a.toFixed(7)}$ (Rabin's Table III) and refuses to risk $\\$${money(Math.log(2) / a)}$ against an infinite gain.`;
+          return `If you turn down lose $\\$100$ / gain $\\$${g}$ **at every wealth**, expected utility forces marginal utility to fall by the factor ${v.fix(100 / g, 3)} every $\\$${g}$, so no gain can ever add more than ${v.fix(cap, 2)} units of $r$, while losing ${usd(L)} costs at least ${v.fix(lossU, 2)}. Hence you must also turn down lose ${usd(L)} / gain **${isFinite(G) ? usd(G) : 'any amount whatsoever'}**. A CARA utility rejecting the small bet has $a \\ge ${a.toFixed(7)}$ (Rabin's Table III) and refuses to risk ${usd(Math.log(2) / a)} against an infinite gain.`;
         });
       },
     },

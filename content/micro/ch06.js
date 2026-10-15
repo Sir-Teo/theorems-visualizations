@@ -1,5 +1,15 @@
 // Microeconomics — Chapter 6: Income and substitution effects, revealed preference and welfare (items 6.1–6.6; 6.7–6.13 in ch06-b.js)
-import { clamp, GUIDE, LBL, SUP, sgn, showStage, prefs, demand, hicks, slutsky, drawLevel, trimArrow, budget, bline } from './ch06.shared.js';
+import { clamp, GUIDE, LBL, SUP, sgn, showStage, prefs, demand, hicks, slutsky, drawLevel, trimArrow, budget, bline, costAt, rpAnalyze, afriat, afriatSlack, afriatPlanes, plLevel, ccei, obsEditor, drawObs } from './ch06.shared.js';
+
+const OBS_COLS = ['blue', 'orange', 'teal', 'pink', 'gold', 'ink'];
+const SUPS = (i) => SUP(i + 1);
+/** Convex polygon pts clipped to the half-plane a·x ≤ c (Sutherland–Hodgman). */
+function clipHalf(pts, a, c) {
+  const out = [], f = (q) => c - a[0] * q[0] - a[1] * q[1];
+  for (let i = 0; i < pts.length; i++) { const P = pts[i], Q = pts[(i + 1) % pts.length], fp = f(P), fq = f(Q); if (fp >= 0) out.push(P); if ((fp >= 0) !== (fq >= 0)) { const t = fp / (fp - fq); out.push([P[0] + t * (Q[0] - P[0]), P[1] + t * (Q[1] - P[1])]); } }
+  return out;
+}
+const triOf = (o) => { const m = o.p[0] * o.x[0] + o.p[1] * o.x[1]; return [[0, 0], [m / o.p[0], 0], [0, m / o.p[1]]]; };
 
 export default {
   collection: 'micro',
@@ -93,7 +103,7 @@ There are two ways to hold purchasing power constant. **Slutsky** compensation c
           const { kf, k, P, A, B, C, mc, hk, sl } = st, f = (q) => v.fix(q, 2);
           const sub = B[0] - A[0], inc = C[0] - B[0], tot = C[0] - A[0];
           const head = `$p_1$: 1 → ${f(P)}. Substitution effect on $x_1$: ${sgn(sub)}; income effect: ${sgn(inc)}; total: ${sgn(sub)} ${inc >= 0 ? '+' : '−'} ${Math.abs(inc).toFixed(2)} = ${sgn(tot)} (from ${f(A[0])} to ${f(C[0])}).`;
-          const comp = k === 'slutsky' ? ` Slutsky compensation $x_1^A\\,\\Delta p_1 = ${f(sl - 10)}$ makes $A$ affordable again; Hicks compensation, just enough to reach $A$'s curve, would be ${f(hk - 10)}${Math.abs(P - 1) > 0.05 && kf !== 'comp' ? ', a little less, because at $B$ the consumer is better off than at $A$' : ''}.` : ` Hicks compensation $e(p', u_A) - m = ${f(mc - 10)}$ keeps the consumer on $A$'s curve; Slutsky's rule would give ${f(sl - 10)}.`;
+          const comp = k === 'slutsky' ? ` Slutsky compensation $x_1^A\\,\\Delta p_1 = ${f(sl - 10)}$ makes $A$ affordable again; Hicks compensation, just enough to reach $A$'s curve, would be ${f(hk - 10)}${Math.abs(P - 1) > 0.05 && kf !== 'comp' ? ', less, because at $B$ the consumer is better off than at $A$' : ''}.` : ` Hicks compensation $e(p', u_A) - m = ${f(mc - 10)}$ keeps the consumer on $A$'s curve; Slutsky's rule would give ${f(sl - 10)}.`;
           const note = { cd: '', ces: ' Good substitutes: a large substitution effect.', comp: ' Perfect complements: $B$ = $A$ under Hicks compensation, so the whole change is an income effect.', ql: ' Quasilinear: income changes go entirely to good 2, so $C$ is directly below $B$: no income effect on good 1.', inf: ' Good 1 is **inferior**: losing purchasing power makes the consumer buy *more* of it, so the income effect partly offsets the substitution effect.' }[kf];
           return head + comp + note;
         });
@@ -134,7 +144,7 @@ The total effect of a price change is the substitution effect (the slope of comp
         const q2 = v.slider('price $p_2$', 0.3, 3, 0.8, { step: 0.01 });
         const L = v.stage({ x: [0, 10], y: [0, 3.6], height: 330, axes: 'box', xlabel: 'x₁', ylabel: 'p₁', title: 'demand curves through $A$' });
         const R = v.stage({ x: [0.001, 1], y: [-5, 1], height: 330, axes: 'box', xlog: true, xlabel: 'price step Δp₁ (log scale)', ylabel: 'slope', title: 'finite-difference slopes converge' });
-        const B = v.stage({ x: [-5, 2], y: [0, 3], height: 120, axes: false, full: true, title: 'the decomposition at this step (filled) and in the limit (outlined)' });
+        const B = v.stage({ x: [-5, 2], y: [0, 3], height: 120, axes: false, full: true, title: 'substitution (orange) + income (teal) = total (green bracket): at this step and in the limit' });
         const T = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: false, title: 'Slutsky matrix $S_{ij} = \\partial x_i/\\partial p_j + x_j\\,\\partial x_i/\\partial m$' });
         const Q = v.stage({ x: [0, 180], y: [-1, 1], height: 300, axes: 'box', xlabel: 'direction θ of the price change z ⊥ p (degrees)', ylabel: 'zᵀSz', title: 'the quadratic form on directions with $z \\cdot p = 0$', xticks: [0, 45, 90, 135, 180] });
         const tab = v.table(T, { rows: 3, cols: 4, square: false, cellAspect: 1.45, maxCell: 70, size: 14, rowLabels: ['$x_1$', '$x_2$', '$x_3$'], colLabels: ['$p_1$', '$p_2$', '$p_3$', '$(Sp)_i$'], cornerLabel: '' });
@@ -183,11 +193,13 @@ The total effect of a price change is the substitution effect (the slope of comp
             const W = span, xl = blo - 0.73 * span;
             B.line(0, 0.2, 0, 2.9, { color: 'ink', width: 1.2 });
             // stacked: substitution then income, on the top row; total on the bottom row
-            const bar = (x0, x1, y, col, outline) => B.rect(x0, y - 0.3, x1, y + 0.3, outline ? { color: col, width: 2, fill: col, fillAlpha: 0.05, radius: 3 } : { fill: col, fillAlpha: 0.7, stroke: false, radius: 3 });
-            bar(0, sl.dh, 2.15, 'orange', true); bar(sl.dh, sl.dh + sl.inc, 2.15, 'teal', true); bar(0, sl.dx, 0.85, 'green', true);
-            bar(0, Ss, 2.15, 'orange'); bar(Ss, Ss + Ii, 2.15, 'teal'); bar(0, Tt, 0.85, 'green');
-            B.text(`substitution ${sgn(Ss, 3)}  +  income ${sgn(Ii, 3)}`, xl, 2.15, { color: 'ink', ...LBL, align: 'left' });
-            B.text(`=  total ${sgn(Tt, 3)}`, xl, 0.85, { color: 'green', ...LBL, align: 'left' });
+            const bar = (x0, x1, y, col, outline) => B.rect(x0, y - 0.28, x1, y + 0.28, outline ? { color: col, width: 2, fill: col, fillAlpha: 0.12, radius: 3 } : { fill: col, fillAlpha: 0.72, stroke: false, radius: 3 });
+            const tot = (t, y) => { B.line(0, y - 0.45, t, y - 0.45, { color: 'green', width: 3 }); B.line(t, y - 0.55, t, y + 0.32, { color: 'green', width: 2 }); };
+            bar(0, Ss, 2.2, 'orange'); bar(Ss, Ss + Ii, 2.2, 'teal'); tot(Tt, 2.2);
+            bar(0, sl.dh, 0.95, 'orange', true); bar(sl.dh, sl.dh + sl.inc, 0.95, 'teal', true); tot(sl.dx, 0.95);
+            const par = (q) => (q < 0 ? `(${v.fix(q, 3)})` : v.fix(q, 3));
+            B.text(`step ${v.fix(D, D < 0.01 ? 4 : 3)}:  ${v.fix(Ss, 3)} + ${par(Ii)} = ${v.fix(Tt, 3)}`, xl, 2.2, { color: 'ink', ...LBL, align: 'left' });
+            B.text(`limit:  ${v.fix(sl.dh, 3)} + ${par(sl.inc)} = ${v.fix(sl.dx, 3)}`, xl, 0.95, { color: 'ink', ...LBL, align: 'left' });
             st = { one, k, P, D, sl, Tt, Ss, Ii };
           }
           { // the matrix mode is drawn even while hidden (cheap), so its panels are never blank
@@ -262,7 +274,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           const C = need.value, F = FAMc(C), M = m.value, P = pa.value, P1 = pb.value;
           const A = demand(F, P, p2, M), uA = F.u(...A), C1 = demand(F, P1, p2, M), H = hicks(F, P1, p2, uA), Bx = H.x;
           // hunger region and calorie line
-          if (C > 0.05) { s.clip(() => s.poly([[0, 0], [C, 0], [0, C]], { fill: 'red', fillAlpha: 0.06, stroke: false })); s.clip(() => s.line(C, 0, 0, C, { color: 'red', width: 1.8, dash: [6, 4] })); if (C > 2) s.text(`calorie need x₁ + x₂ = ${v.fix(C, 1)}`, 0.15, C, { dy: -12, color: 'red', ...LBL, align: 'left', plate: true }); }
+          if (C > 0.05) { s.clip(() => s.poly([[0, 0], [C, 0], [0, C]], { fill: 'red', fillAlpha: 0.06, stroke: false })); s.clip(() => s.line(C, 0, 0, C, { color: 'red', width: 1.8, dash: [6, 4] })); if (C > 2) s.text(`below the dashed line: fewer calories than the need ${v.fix(C, 1)}`, 0.3, 0.55, { color: 'red', ...LBL, align: 'left', plate: true }); }
           // indifference map (faint)
           for (const t of [0.25, 0.5, 0.75]) { const q = demand(F, 0.5, p2, 3 + 7 * t); drawLevel(s, F, F.u(...q), { color: v.color('purple', 0.18), width: 1 }); }
           bline(s, P, p2, M, { color: 'muted', width: 1.8, dash: [7, 5] });
@@ -298,7 +310,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           const iM = clamp(Math.round(((M - 2) / 10) * 80), 0, 80); e.vline(M, GUIDE); if (isFinite(el[iM])) e.dot(M, el[iM], { r: 5.5, color: 'ink' });
           // the three regimes: rice only / subsistence (Giffen) / fed
           const only = ms.findIndex((q) => demand(F, P, p2, q)[1] > 1e-6), pos = el.map((z) => z > 0), g0 = pos.indexOf(true), g1 = pos.lastIndexOf(true);
-          const yl = e.bounds.y[0] + 0.12 * (e.bounds.y[1] - e.bounds.y[0]);
+          const yl = e.bounds.y[1] - 0.14 * (e.bounds.y[1] - e.bounds.y[0]);
           if (only > 6) e.text('rice only', (2 + ms[only]) / 2, yl, { color: 'muted', ...LBL, align: 'center', plate: true });
           if (g0 >= 0 && g1 - g0 > 6) e.text('subsistence: Giffen', (ms[g0] + ms[g1]) / 2, yl, { color: 'gold', ...LBL, align: 'center', plate: true });
           if (g1 >= 0 && g1 < 72) e.text('fed: ordinary', (ms[g1] + 12) / 2, yl, { color: 'muted', ...LBL, align: 'center', plate: true });
@@ -311,6 +323,219 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           const g = sl.dx > 0;
           const verdict = g ? `**Giffen**: the income effect ${sgn(sl.inc)} outweighs the substitution effect ${sgn(sl.dh)} (${v.fix(Math.abs(sl.inc / sl.dh), 1)} times larger), so $\\partial x_1/\\partial p_1 = ${sgn(sl.dx)} > 0$.` : `Not Giffen here: substitution effect ${sgn(sl.dh)}, income effect ${sgn(sl.inc)}, total $\\partial x_1/\\partial p_1 = ${sgn(sl.dx)}$.`;
           return `${regime} Slutsky terms at $p_1 = ${f(P)}$: ${verdict} For the price change to ${f(P1)}: substitution ${sgn(Bx[0] - A[0])}, income ${sgn(C1[0] - Bx[0])}, total ${sgn(C1[0] - A[0])} units of rice.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.4
+    {
+      num: '6.4', kind: 'Definition', name: 'Revealed preference',
+      statement: String.raw`A record of choices is a finite list of observations $(p^t, x^t)$, $t = 1, \dots, T$: at prices $p^t$ the consumer bought the bundle $x^t$, spending $p^t\cdot x^t$.
+- $x^t$ is **directly revealed preferred** to a bundle $y$, written $x^t\,R\,y$, if $y$ was affordable when $x^t$ was chosen: $p^t\cdot y \le p^t\cdot x^t$. It is **strictly** directly revealed preferred, $x^t\,P\,y$, if $p^t\cdot y < p^t\cdot x^t$.
+- $x^t$ is **indirectly revealed preferred** to $y$, written $x^t\,R^*\,y$, if there is a chain $x^t\,R\,x^{s}\,R\,\cdots\,R\,y$. So $R^*$ is the transitive closure of $R$.
+The bundles **revealed worse** than $x^t$ form the union of the budget sets of $x^t$ and of every observation that $x^t$ is revealed preferred to. If the choices maximize a locally non-satiated utility $u$, then $x\,R\,y$ implies $u(x) \ge u(y)$, $x\,P\,y$ implies $u(x) > u(y)$, and by transitivity $x\,R^*\,y$ implies $u(x) \ge u(y)$.`,
+      idea: String.raw`Revealed preference, introduced by Samuelson in 1938, reverses the direction of consumer theory. Instead of deriving choices from a utility function, it reads preferences off the choices: whatever the consumer could have bought but did not buy cannot be better than what she bought. The argument needs only that she optimizes on her budget set (5.1), plus local non-satiation for the strict version, since a bundle strictly inside the budget set leaves money that could buy something better. Chains matter because preferences are transitive. If $x^1$ was chosen when $x^2$ was affordable, and $x^2$ when $x^3$ was affordable, then $x^1$ is at least as good as $x^3$, even if the two were never on offer together. Bundles outside every revealed-worse set stay unranked: a finite record says nothing about them. Whether the revealed relation is consistent at all is the subject of 6.5 and 6.6.`,
+      caption: String.raw`Each observation is a chosen bundle $x^t$ (large handle) and a budget line through it; turn the line with the small knob. An arrow $x^t \to x^s$ means $x^s$ was affordable when $x^t$ was chosen, and a dashed arrow means the ranking only follows through a chain. Drag or click an observation: everything revealed worse than it is shaded in its colour, including the budget sets reached through chains. The table lists the cost of every bundle at every observation's prices (green: affordable, so revealed worse). Move the gold test bundle $z$ to see whether the record ranks it.`,
+      deps: ['micro-5.1'], refs: ['Varian Ch. 7'], tags: ['revealed preference'],
+      see: ['micro-4.3', 'micro-4.1'],
+      credit: 'Paul Samuelson, 1938; Hendrik Houthakker, 1950',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Revealed_preference' },
+      viz(v) {
+        const COLS = OBS_COLS;
+        const PRE = {
+          chain: [{ x: [2, 8], k: 1.6 }, { x: [4.5, 3.5], k: 0.6 }, { x: [8, 1.2], k: 0.25 }],
+          rich: [{ x: [5, 5], k: 1 }, { x: [2.2, 6.4], k: 2.4 }, { x: [7.4, 2.0], k: 0.45 }, { x: [3.4, 3.2], k: 1.4 }, { x: [1.6, 2.4], k: 0.8 }],
+          none: [{ x: [2, 9], k: 3 }, { x: [5.5, 5.5], k: 1 }, { x: [9, 2], k: 0.33 }],
+        };
+        let sel = 0, ed = null;
+        v.select('record', [{ value: 'chain', label: 'a chain' }, { value: 'rich', label: 'five observations' }, { value: 'none', label: 'nothing ranked' }], 'chain', { onChange: (k) => { ed.load(PRE[k]); sel = 0; } });
+        v.button('add an observation', () => { ed.setCount(ed.count + 1); sel = ed.count - 1; });
+        v.button('remove the last', () => { ed.setCount(ed.count - 1); sel = Math.min(sel, ed.count - 1); });
+        const s = v.stage({ x: [0, 12], y: [0, 12], equal: true, height: 410, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.3 });
+        const tS = v.stage({ x: [0, 1], y: [0, 1], height: 410, axes: false, weight: 0.85, minWidth: 250, title: 'cost $p^t\\cdot x^s$ of bundle $x^s$ at the prices of observation $t$' });
+        ed = obsEditor(v, s, PRE.chain, { n: 5, colors: COLS, onTouch: (i) => { sel = i; } });
+        const Z = s.handle(3.2, 2.2, { color: 'gold', r: 6, label: 'z', labelPos: 'se' });
+        s.onClick((x, y) => { const L = ed.list(); let best = -1, bd = 1e9; L.forEach((o, i) => { const d = Math.hypot(s.X(o.x[0]) - s.X(x), s.Y(o.x[1]) - s.Y(y)); if (d < bd) { bd = d; best = i; } }); if (bd < 60) sel = best; });
+        const tab = v.table(tS, { rows: 3, cols: 3, maxCell: 64, size: 13.5, rowLabels: (k) => `$p^{${k + 1}}$`, colLabels: (k) => `$x^{${k + 1}}$`, cornerLabel: '' });
+        v.legend([['ink', 'arrow xᵗ → xˢ: xˢ was affordable when xᵗ was chosen'], ['muted', 'revealed only through a chain', { dash: true }], ['gold', 'test bundle z', { dot: true }]]);
+        let st = {};
+        v.render(() => {
+          const L = ed.list(), T = L.length; sel = clamp(sel, 0, T - 1);
+          const A = rpAnalyze(L);
+          // revealed-worse set of the selected observation: union of budget sets
+          const worse = [sel, ...L.map((_, j) => j).filter((j) => A.Rs[sel][j] && j !== sel)];
+          const mm = worse.map((t) => [L[t].p[0], L[t].p[1], costAt(L, t, t)]), c = v.rgb(COLS[sel]);
+          s.raster((x, y) => (mm.some(([a, b, m]) => a * x + b * y <= m) ? [c[0], c[1], c[2], 58] : null), { key: JSON.stringify(mm) + c, res: 2 });
+          L.forEach((o, t) => drawObs(s, o, COLS[t], { fillAlpha: 0.04, width: t === sel ? 2.8 : 1.8 }));
+          // arrows of the revealed relation
+          for (let t = 0; t < T; t++) for (let j = 0; j < T; j++) {
+            if (t === j) continue;
+            const both = A.R[t][j] && A.R[j][t];
+            if (A.R[t][j]) trimArrow(s, L[t].x, L[j].x, { color: both ? 'red' : COLS[t], width: 2.4, head: 10 }, 12, 13);
+            else if (A.Rs[t][j]) trimArrow(s, L[t].x, L[j].x, { color: 'muted', width: 1.8, head: 9, dash: [6, 5] }, 12, 13);
+          }
+          // the test bundle
+          const z = [Z.x, Z.y];
+          const direct = L.map((o, t) => o.p[0] * z[0] + o.p[1] * z[1] <= costAt(L, t, t) + 1e-9);
+          const indirect = L.map((_, t) => !direct[t] && L.some((o, j) => A.Rs[t][j] && direct[j]));
+          tab.draw({
+            rows: T, cols: T,
+            value: (i, j) => v.fix(costAt(L, i, j), 2),
+            fill: (i, j) => (i === j ? [COLS[i], 0.3] : costAt(L, i, j) <= costAt(L, i, i) + 1e-9 ? ['green', 0.26] : null),
+            textColor: (i, j) => (i !== j && A.R[i][j] && A.R[j][i] ? 'red' : 'ink'),
+            weight: (i, j) => (i === j ? 700 : 500),
+            sub: (i, j) => (i !== j && A.Rs[i][j] && !A.R[i][j] ? 'R*' : null), subColor: 'muted',
+            rowLabelColor: (i) => COLS[i], colLabelColor: (j) => COLS[j],
+            highlight: [[sel, sel, COLS[sel]]],
+          });
+          st = { L, T, A, sel, worse, direct, indirect, z };
+        });
+        v.readout(() => {
+          const { L, T, A, sel, worse, direct, indirect } = st, X = (t) => `x^{${t + 1}}`;
+          const dir = [], ind = [];
+          for (let t = 0; t < T; t++) for (let j = 0; j < T; j++) if (t !== j) { if (A.R[t][j]) dir.push(`$${X(t)}\\,R\\,${X(j)}$`); else if (A.Rs[t][j]) ind.push(`$${X(t)}\\,R^*\\,${X(j)}$`); }
+          const head = dir.length ? `Directly revealed: ${dir.join(', ')}.` : 'No bundle was affordable when another was chosen: the record ranks none of them.';
+          const mid = ind.length ? ` Through chains: ${ind.join(', ')}.` : '';
+          const shade = ` Shaded: everything revealed worse than $${X(sel)}$ (${worse.length === 1 ? 'its own budget set' : `the union of ${worse.length} budget sets`}).`;
+          const d = direct.map((b, t) => (b ? t : -1)).filter((t) => t >= 0), i2 = indirect.map((b, t) => (b ? t : -1)).filter((t) => t >= 0);
+          const zt = d.length || i2.length ? ` The test bundle $z$ is revealed worse than ${[...d.map((t) => `$${X(t)}$`), ...i2.map((t) => `$${X(t)}$ (through a chain)`)].join(', ')}.` : ' The test bundle $z$ lies outside every revealed-worse set: the record does not rank it.';
+          const bad = A.warp.length ? ` Red: $${X(A.warp[0][0])}$ and $${X(A.warp[0][1])}$ each reveal the other worse, an inconsistency (6.5).` : '';
+          return head + mid + shade + zt + bad;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.5
+    {
+      num: '6.5', kind: 'Principle', name: 'Weak axiom of revealed preference',
+      statement: String.raw`Choices satisfy the **weak axiom of revealed preference** (WARP) if no two different chosen bundles are each directly revealed preferred to the other: whenever $x^t \ne x^s$ and $p^t\cdot x^s \le p^t\cdot x^t$, then $p^s\cdot x^t > p^s\cdot x^s$. In words: if $x^s$ was affordable when $x^t$ was chosen, then $x^t$ must not have been affordable when $x^s$ was chosen. Every consumer who maximizes a utility function with a *unique* best bundle on each budget (strictly convex preferences, for example) satisfies WARP. With weak preferences the right version is the weak generalized axiom: $x^t\,R\,x^s$ rules out $x^s\,P\,x^t$, which allows two bundles on each other's budget lines to be indifferent. WARP checks consistency only between pairs of observations; Afriat's theorem (6.6) handles chains.`,
+      idea: String.raw`Suppose $u$ is maximized with a unique optimum on each budget. If $x^s$ was affordable when $x^t$ was chosen and $x^s \ne x^t$, then $u(x^t) > u(x^s)$. If $x^t$ had also been affordable when $x^s$ was chosen, the same reasoning would give $u(x^s) > u(x^t)$, a contradiction. Geometrically, an indifference curve that supports a budget line at the chosen bundle lies on or above that line. When each chosen bundle lies inside the other's budget set, the curve through $x^1$ passes above $x^2$ and the curve through $x^2$ passes above $x^1$, so the two curves would have to cross, which indifference curves cannot do (4.5). Samuelson proposed WARP as the whole empirical content of consumer theory. With only two goods it nearly is: for finite data a pairwise check already detects every inconsistency (Rose 1958; Banerjee and Murphy 2006), while with three or more goods longer cycles matter.`,
+      caption: String.raw`Drag the two chosen bundles and turn their budget lines with the knobs. The ledger on the right compares, at each observation's prices, what was spent with what the other bundle would have cost. When only one of them was affordable at the other's prices the data are consistent, and the purple curves are indifference curves of a utility that explains both choices (built by Afriat's method, 6.6). Choose **violation**: each bundle lies inside the other's budget set (red hatching), and any indifference curves supporting the two choices would have to cross, as the two dashed curves do.`,
+      deps: ['micro-6.4'], refs: ['Varian Ch. 7'], tags: ['revealed preference'],
+      see: ['micro-4.5', 'micro-6.12'],
+      credit: 'Paul Samuelson, 1938',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Weak_axiom_of_revealed_preference' },
+      viz(v) {
+        const COLS = ['blue', 'orange'];
+        const PRE = {
+          ok: [{ x: [3, 7], k: 1.8 }, { x: [7.5, 3], k: 0.55 }],
+          one: [{ x: [3.5, 6.5], k: 1.2 }, { x: [6.5, 2.5], k: 0.5 }],
+          bad: [{ x: [2.6, 6.2], k: 0.5 }, { x: [6.2, 3.4], k: 1.6 }],
+        };
+        let ed = null;
+        v.select('start from', [{ value: 'ok', label: 'unranked' }, { value: 'one', label: 'one-way' }, { value: 'bad', label: 'violation' }], 'one', { onChange: (k) => ed.load(PRE[k]) });
+        const s = v.stage({ x: [0, 12], y: [0, 12], equal: true, height: 410, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.3 });
+        const g = v.stage({ x: [0, 1], y: [0, 1], height: 410, axes: false, weight: 0.8, minWidth: 250, title: 'the ledger: spent vs. what the other bundle cost' });
+        ed = obsEditor(v, s, PRE.one, { n: 2, colors: COLS });
+        v.legend([['blue', 'observation 1'], ['orange', 'observation 2'], ['purple', 'indifference curves that rationalize both'], ['red', 'both affordable in both budgets', { area: true }]]);
+        let st = {};
+        v.render(() => {
+          const L = ed.list(), A = rpAnalyze(L), R12 = A.R[0][1], R21 = A.R[1][0], bad = A.warp.length > 0 || A.viol.length > 0;
+          L.forEach((o, t) => drawObs(s, o, COLS[t], { fillAlpha: 0.07, width: 2.6 }));
+          if (bad) { const inter = clipHalf(triOf(L[0]), L[1].p, costAt(L, 1, 1)); if (inter.length > 2) s.clip(() => s.poly(inter, { fill: 'red', fillAlpha: 0.08, hatch: 'red', hatchAlpha: 0.5, color: 'red', width: 1 })); }
+          if (R12) trimArrow(s, L[0].x, L[1].x, { color: bad ? 'red' : COLS[0], width: 2.6, head: 10 }, 12, 13);
+          if (R21) trimArrow(s, L[1].x, L[0].x, { color: bad ? 'red' : COLS[1], width: 2.6, head: 10 }, 12, 13);
+          let cross = null;
+          if (!bad) {
+            const sol = afriat(L, A), planes = afriatPlanes(L, sol);
+            const lv = [...new Set(sol.u.map((u) => +u.toFixed(9)))];
+            for (const c of lv) for (const [P, Q] of plLevel(planes, c, 12, 12)) s.line(P[0], P[1], Q[0], Q[1], { color: 'purple', width: 2.4 });
+            st.sol = sol;
+          } else {
+            // Cobb–Douglas curves tangent to each budget at its chosen bundle: they must cross
+            const cd = L.map((o) => { const a = (o.p[0] * o.x[0]) / (o.p[0] * o.x[0] + o.p[1] * o.x[1]), c = o.x[0] ** a * o.x[1] ** (1 - a); return (x) => (c / x ** a) ** (1 / (1 - a)); });
+            cd.forEach((f, t) => s.clip(() => s.fn(f, { domain: [0.2, 12], color: COLS[t], width: 2, dash: [7, 5], n: 240 })));
+            const lo = Math.min(L[0].x[0], L[1].x[0]), hi = Math.max(L[0].x[0], L[1].x[0]);
+            const xc = (() => { const f = (x) => cd[0](x) - cd[1](x); let a = lo, b = hi; if (f(a) * f(b) > 0) return null; for (let i = 0; i < 60; i++) { const m = (a + b) / 2; if (f(a) * f(m) <= 0) b = m; else a = m; } return (a + b) / 2; })();
+            if (xc != null) { cross = [xc, cd[0](xc)]; s.dot(cross[0], cross[1], { r: 9, hollow: true, color: 'red', width: 2.6 }); s.text('curves would cross', cross[0], cross[1], { dx: 14, dy: -14, color: 'red', ...LBL, align: 'left', plate: true }); }
+          }
+          // the ledger
+          const own = [costAt(L, 0, 0), costAt(L, 1, 1)], oth = [costAt(L, 0, 1), costAt(L, 1, 0)], top = Math.max(...own, ...oth) * 1.12;
+          g.setView([-0.04 * top, top], [0, 1]);
+          [[0, 0.72], [1, 0.27]].forEach(([t, y]) => {
+            const o = 1 - t, aff = oth[t] <= own[t] + 1e-9, col = aff ? (bad ? 'red' : 'green') : 'muted';
+            g.text(`at prices p${SUPS(t)}`, 0, y + 0.17, { color: COLS[t], ...LBL, size: 12.5, align: 'left' });
+            g.rect(0, y + 0.02, own[t], y + 0.1, { fill: COLS[t], fillAlpha: 0.75, stroke: false, radius: 3 });
+            g.text(`x${SUPS(t)} cost ${v.fix(own[t], 2)} (spent)`, own[t], y + 0.06, { dx: 6, color: 'ink', size: 11.5, weight: 600, align: own[t] > 0.6 * top ? 'right' : 'left', ...(own[t] > 0.6 * top ? { dx: -6, color: 'panel' } : {}) });
+            g.rect(0, y - 0.1, oth[t], y - 0.02, { fill: col, fillAlpha: 0.25, color: col, width: 1.6, radius: 3 });
+            g.text(`x${SUPS(o)} would cost ${v.fix(oth[t], 2)}`, oth[t], y - 0.06, { dx: 6, color: 'ink', size: 11.5, weight: 600, align: oth[t] > 0.6 * top ? 'right' : 'left', ...(oth[t] > 0.6 * top ? { dx: -6 } : {}) });
+            g.text(aff ? `affordable: x${SUPS(t)} R x${SUPS(o)}` : `not affordable: no ranking`, 0, y - 0.15, { color: aff ? (bad ? 'red' : 'green') : 'muted', size: 11.5, weight: 700, align: 'left' });
+          });
+          st = { ...st, L, A, R12, R21, bad, own, oth, cross };
+        });
+        v.readout(() => {
+          const { R12, R21, bad, own, oth } = st, f = (q) => v.fix(q, 2);
+          if (bad) return `**WARP fails.** At prices $p^1$ the bundle $x^2$ cost ${f(oth[0])} $\\le$ ${f(own[0])}, so $x^1$ was chosen over it; at prices $p^2$ the bundle $x^1$ cost ${f(oth[1])} $\\le$ ${f(own[1])}, so $x^2$ was chosen over $x^1$. No utility function with a unique optimum can produce both choices: the curve through $x^1$ must pass above $x^2$ and the curve through $x^2$ above $x^1$, so they would cross.`;
+          if (R12 || R21) { const [a, b] = R12 ? [1, 2] : [2, 1]; return `Consistent: $x^${b}$ was affordable when $x^${a}$ was chosen (it cost ${f(R12 ? oth[0] : oth[1])} against ${f(R12 ? own[0] : own[1])}), so $x^${a}\\,R\\,x^${b}$; but $x^${a}$ was not affordable when $x^${b}$ was chosen. The purple curves come from Afriat's construction, $U(x) = \\min_t\\, u_t + \\lambda_t\\,p^t\\cdot(x - x^t)$ with $u_1 = ${f(st.sol.u[0])}$, $u_2 = ${f(st.sol.u[1])}$: each curve lies on or above its budget line and they do not cross.`; }
+          return `Consistent and uninformative: neither bundle was affordable when the other was chosen (${f(oth[0])} > ${f(own[0])} and ${f(oth[1])} > ${f(own[1])}). One indifference curve can pass through both bundles, as Afriat's construction (purple) shows: the data cannot tell which is better.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.6
+    {
+      num: '6.6', kind: 'Theorem', name: 'Afriat’s theorem (GARP)',
+      statement: String.raw`For a finite record $(p^t, x^t)_{t=1}^T$ with positive prices the following are equivalent:
+(a) the record can be rationalized by a locally non-satiated preference: each $x^t$ is at least as good as every bundle affordable at $p^t$;
+(b) the record satisfies the **generalized axiom of revealed preference** (GARP): if $x^t\,R^*\,x^s$ then not $x^s\,P\,x^t$, that is, there is no cycle of revealed preferences with at least one strict link;
+(c) there are numbers $u_t$ and $\lambda_t > 0$ satisfying **Afriat's inequalities** $u_s \le u_t + \lambda_t\,p^t\cdot(x^s - x^t)$ for all $s, t$;
+(d) the record can be rationalized by a continuous, concave, strictly increasing utility, for example $U(x) = \min_t\,\big(u_t + \lambda_t\,p^t\cdot(x - x^t)\big)$.
+So beyond GARP, a finite record has no testable implications of utility maximization: not even convexity or continuity of preferences can be refuted. Afriat's critical cost efficiency index, the largest $e \le 1$ for which the record passes GARP when every budget is shrunk to $e\,p^t\cdot x^t$, measures how close a violating record is to being rational.`,
+      idea: String.raw`(d) ⇒ (a) is immediate and (a) ⇒ (b) is the chain argument of 6.4: around a cycle the utilities would have to satisfy $u(x^t) \ge \dots \ge u(x^s) > u(x^t)$. The heart is (b) ⇒ (c). Rank the observations by the longest chain of strict revealed preferences above them, then define the $u_t$ and $\lambda_t$ rank by rank. Each $u_t$ is the largest number allowed by the inequalities of the observations already ranked above, and each $\lambda_t$ is large enough for its supporting plane to pass above everything ranked above it. GARP is used exactly once, to make observations of the same rank compatible. Then (c) ⇒ (d): $U$ is a minimum of increasing affine functions, so it is concave and increasing, $U(x^t) = u_t$, and on the budget $p^t\cdot y \le p^t\cdot x^t$ we get $U(y) \le u_t + \lambda_t\,p^t\cdot(y - x^t) \le u_t$. Checking (b) is fast: Warshall's transitive closure takes $O(T^3)$ steps.`,
+      caption: String.raw`Up to six observations: drag the chosen bundles, turn the budget lines with the knobs, add or remove observations, or generate a record from a Cobb–Douglas shopper whose choices carry a slider-controlled amount of **noise**. While GARP holds, the purple lines are the indifference curves of Afriat's utility through each chosen bundle: polygons that touch every budget line at its choice and stay above it. The table gives the numbers $u_t, \lambda_t$. When GARP fails, a shortest cycle is drawn in red and the dashed lines show every budget shrunk by Afriat's efficiency index, the smallest shrinkage that removes all violations.`,
+      deps: ['micro-6.5'], refs: ['Varian Ch. 7', 'Varian, Econometrica 50(4), 1982'], tags: ['revealed preference'],
+      see: ['opt-4.4', 'algo-9.13', 'micro-4.6'],
+      credit: 'Sidney Afriat, 1967; Hal Varian, 1982',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Afriat%27s_theorem' },
+      viz(v) {
+        const COLS = OBS_COLS;
+        const PRE = {
+          cd: [{ x: [2.4, 7.2], k: 2.2 }, { x: [4.6, 4.0], k: 1 }, { x: [7.6, 2.6], k: 0.45 }, { x: [3.2, 3.4], k: 1.25 }],
+          bad: [{ x: [2.4, 7.2], k: 2.2 }, { x: [4.6, 4.0], k: 1 }, { x: [7.6, 2.6], k: 0.45 }, { x: [5.6, 4.4], k: 2.6 }],
+        };
+        let seed = 3, ed = null;
+        const gen = (sd, noise) => {
+          const r = v.rng(sd), out = [];
+          for (let t = 0; t < 6; t++) { const k = Math.exp(r.uniform(-0.6, 0.6)), m = r.uniform(4.5, 8.5), s1 = clamp(0.5 + noise * r.uniform(-0.3, 0.3), 0.2, 0.8); out.push({ x: [(s1 * m) / k, (1 - s1) * m], k }); }
+          return out;
+        };
+        const src = v.select('record', [{ value: 'cd', label: 'four consistent choices' }, { value: 'bad', label: 'with a violation' }, { value: 'gen', label: 'noisy shopper' }], 'cd', { onChange: (k) => { noise.el.hidden = k !== 'gen'; again.hidden = k !== 'gen'; ed.load(k === 'gen' ? gen(seed, noise.value) : PRE[k]); } });
+        const noise = v.slider('noise in the shares spent', 0, 1, 0.5, { step: 0.01, onChange: () => ed.load(gen(seed, noise.value)) });
+        const again = v.button('new data', () => { seed++; ed.load(gen(seed, noise.value)); });
+        v.button('add an observation', () => ed.setCount(ed.count + 1));
+        v.button('remove the last', () => ed.setCount(ed.count - 1));
+        noise.el.hidden = true; again.hidden = true;
+        const s = v.stage({ x: [0, 12], y: [0, 12], equal: true, height: 420, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.35 });
+        const tS = v.stage({ x: [0, 1], y: [0, 1], height: 420, axes: false, weight: 0.75, minWidth: 230, title: 'Afriat numbers' });
+        ed = obsEditor(v, s, PRE.cd, { n: 6, colors: COLS });
+        const tabU = v.table(tS, { rows: 4, cols: 2, square: false, cellAspect: 1.5, maxCell: 54, size: 13.5, colLabels: ['$u_t$', '$\\lambda_t$'], rowLabels: (k) => `$t = ${k + 1}$` });
+        const tabC = v.table(tS, { rows: 4, cols: 4, maxCell: 54, size: 12.5, rowLabels: (k) => `$p^{${k + 1}}$`, colLabels: (k) => `$x^{${k + 1}}$` });
+        let st = {};
+        v.render(() => {
+          const L = ed.list(), T = L.length, A = rpAnalyze(L), ok = A.garp;
+          L.forEach((o, t) => drawObs(s, o, COLS[t], { fillAlpha: 0.035, width: 2 }));
+          let sol = null, slack = null, e = 1;
+          if (ok) {
+            sol = afriat(L, A); slack = afriatSlack(L, sol);
+            const planes = afriatPlanes(L, sol), lv = [...new Set(sol.u.map((u) => +u.toFixed(9)))].sort((a, b) => a - b);
+            const span = Math.max(1, lv[lv.length - 1] - lv[0]);
+            for (const c of [lv[0] - 0.6 * span, lv[lv.length - 1] + 0.6 * span]) for (const [P, Q] of plLevel(planes, c, 12, 12)) s.line(P[0], P[1], Q[0], Q[1], { color: 'purple', width: 1, alpha: 0.35 });
+            for (const c of lv) for (const [P, Q] of plLevel(planes, c, 12, 12)) s.line(P[0], P[1], Q[0], Q[1], { color: 'purple', width: 2.4 });
+            tS.setTitle('Afriat numbers: $U(x) = \\min_t\\, u_t + \\lambda_t\\,p^t\\cdot(x - x^t)$');
+            tabU.draw({ rows: T, value: (i, j) => v.fix(j ? sol.lam[i] : sol.u[i], 2), rowLabelColor: (i) => COLS[i], fill: (i) => [COLS[i], 0.12] });
+          } else {
+            e = ccei(L);
+            L.forEach((o, t) => { const m = e * costAt(L, t, t); s.clip(() => s.line(m / o.p[0], 0, 0, m / o.p[1], { color: COLS[t], width: 1.6, dash: [5, 4], alpha: 0.8 })); });
+            const cyc = A.cycle || [];
+            for (let i = 0; i < cyc.length; i++) { const a = cyc[i], b = cyc[(i + 1) % cyc.length]; trimArrow(s, L[a].x, L[b].x, { color: 'red', width: 3, head: 11 }, 12, 13); }
+            tS.setTitle('costs $p^t\\cdot x^s$; red: a violating pair');
+            const inV = (i, j) => A.viol.some(([a, b]) => (a === i && b === j) || (a === j && b === i));
+            tabC.draw({ rows: T, cols: T, value: (i, j) => v.fix(costAt(L, i, j), 1), fill: (i, j) => (i === j ? [COLS[i], 0.3] : inV(i, j) && costAt(L, i, j) <= costAt(L, i, i) + 1e-9 ? ['red', 0.3] : costAt(L, i, j) <= costAt(L, i, i) + 1e-9 ? ['green', 0.2] : null), rowLabelColor: (i) => COLS[i], colLabelColor: (j) => COLS[j] });
+          }
+          st = { L, T, A, ok, sol, slack, e };
+        });
+        v.readout(() => {
+          const { T, A, ok, slack, e } = st, X = (t) => `x^{${t + 1}}`;
+          if (ok) return `**GARP holds** for these ${T} observations, so Afriat's inequalities have a solution: the recursion of the proof gives the table, and all ${T * (T - 1)} inequalities $u_s \\le u_t + \\lambda_t\\,p^t\\cdot(x^s - x^t)$ hold (smallest slack ${v.fix(Math.max(slack, 0), 3)}). The concave utility $U$ drawn in purple rationalizes every choice.`;
+          const c = A.cycle || [], cyc = c.map((t) => `$${X(t)}$`).join(' → ');
+          return `**GARP fails**: ${cyc} → $${X(c[0])}$ is a cycle of revealed preferences with a strict link, so no locally non-satiated preference explains this record. ${c.length === 2 ? 'With two goods every violation already shows up in a pair of observations (Rose 1958). ' : ''}Afriat's efficiency index is $e^* = ${v.fix(e, 3)}$: shrinking every budget by ${v.fix(100 * (1 - e), 1)}% (dashed lines) removes all ${A.viol.length} violating pair${A.viol.length === 1 ? '' : 's'}, so the shopper wastes at most that share of spending relative to some consistent consumer.`;
         });
       },
     },

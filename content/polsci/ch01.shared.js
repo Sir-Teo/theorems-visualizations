@@ -211,9 +211,11 @@ export function winTag(v, c, X, Y, text = 'winner', color = 'gold') {
 /**
  * The profile editor: one row per bloc — its ballot as candidate chips (best → worst), then a bar whose length is
  * the bloc size. Drag a bar to resize the bloc; with o.rank, click a candidate to move it up one place.
- * o: { max (largest bloc, default 20), rank, dim(b, k, c) → true to fade a chip, ring(b, k, c) → colour,
- *      note(b, k, c) → small text under a chip, barColor(b) → colour, tag(b) → {text, color} after the count,
- *      alive (Set of candidates still on the ballot; others are struck through), hint (header text), onEdit(kind, i) }.
+ * o: { max (largest bloc, default 20; may be a function), rowMax (row height cap, px), rank, dim(b, k, c) → true to
+ *      fade a chip, ring(b, k, c) → colour, note(b, k, c) → small text under a chip, barColor(b) → colour,
+ *      tag(b) → {text, color} after the count, alive (Set, or a function returning one, of candidates still on the
+ *      ballot; others are struck through), hint (header text),
+ *      onEdit(kind, i, k): kind 'rank' (bloc i, the candidate moved up now sits at k − 1), 'size' or 'size-end' }.
  * Returns { draw(), hit(x, y) → row index or −1, geom }.
  */
 export function blocEditor(v, s, P, o = {}) {
@@ -238,7 +240,7 @@ export function blocEditor(v, s, P, o = {}) {
   s.onClick((x, y) => {
     if (!G || !o.rank) return; const px = s.X(x), py = s.Y(y), i = rowAt(py); if (i < 0 || px > G.bx0 - 10) return;
     const k = Math.round((px - G.cx0) / G.step); if (k < 1 || k >= G.m) return;
-    const r = P.blocs[i].r; [r[k - 1], r[k]] = [r[k], r[k - 1]]; o.onEdit?.('rank', i);
+    const r = P.blocs[i].r; [r[k - 1], r[k]] = [r[k], r[k - 1]]; o.onEdit?.('rank', i, k);
   });
   return {
     get geom() { return G; },

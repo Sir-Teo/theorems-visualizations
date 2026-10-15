@@ -15,6 +15,7 @@ import quantum from './quantum.js';
 import mol from './mol.js';
 import circuit from './circuit.js';
 import { scene3 } from './scene3.js';
+import icons, { seats as hemicycle } from './icons.js';
 
 export const KITS = {
   scene3,  // v.scene3(stage, opts) → rotatable 3D scene on a 2D stage with draggable 3D handles (free / plane / line)
@@ -36,6 +37,8 @@ export const KITS = {
   automata,  // v.automata(name, params) → presets: life, schelling, sir, fire, voter, sandpile, walkers, gas, boids, contagion
   curves,    // v.curves(stage, spec) → economics diagrams: draggable supply/demand with tax/ceiling/floor and integrated surplus areas, indifference curves + budget, PPF, Lorenz/Gini
   econ,      // v.econ(name, ...args) → market, utility, optimum, mrs, contour, lorenz, gini, costs, simpson, root, monotone
+  icons,     // v.icons(stage, spec) → icon arrays / waffles / split blocks (conditioning) / parliament hemicycles with gliding re-arrangement, hover counts
+  hemicycle, // v.hemicycle(n, inner) → parliament seat positions {seats: [{x, y, r, a}], d}
   tree,      // v.tree(stage, spec) → phylogenies, language families, syntax/decision trees: rect/radial/tidy/unrooted layouts, collapsing, paths
   trees,     // v.trees(name, ...args) → newick, toNewick, upgma, nj, patristic, mrca, path, distance, midpoint, leaves
 };
