@@ -385,6 +385,14 @@ class Stage {
   _paint(st, defStroke = true, defWidth = 2) {
     const c = this.ctx;
     if (st.fill) { c.fillStyle = withAlpha(st.fill === true ? (st.color || 'ink') : st.fill, st.fillAlpha ?? 0.18); c.fill(st.evenodd ? 'evenodd' : 'nonzero'); }
+    if (st.hatch) { // diagonal hatching inside the current path: hatch: true | colour, hatchGap px, hatchAngle degrees
+      c.save(); c.clip(st.evenodd ? 'evenodd' : 'nonzero');
+      const gap = st.hatchGap ?? 6, a = ((st.hatchAngle ?? 45) * Math.PI) / 180, L = Math.hypot(this.W, this.H);
+      c.strokeStyle = withAlpha(st.hatch === true ? (st.color || 'ink') : st.hatch, st.hatchAlpha ?? 0.55); c.lineWidth = st.hatchWidth ?? 1; c.setLineDash([]);
+      c.beginPath(); const ux = Math.cos(a), uy = -Math.sin(a), nx = -uy, ny = ux;
+      for (let k = -L; k <= L; k += gap) { const cx = this.W / 2 + nx * k, cy = this.H / 2 + ny * k; c.moveTo(cx - ux * L, cy - uy * L); c.lineTo(cx + ux * L, cy + uy * L); }
+      c.stroke(); c.restore();
+    }
     const doStroke = st.stroke !== false && (st.color != null || st.width != null || (defStroke && !st.fill));
     if (doStroke) {
       c.strokeStyle = withAlpha(st.color || 'ink', st.alpha);
@@ -493,7 +501,8 @@ class Stage {
   }
   rect(x0, y0, x1, y1, st = {}) {
     const c = this.ctx; const X0 = this._px(x0), X1 = this._px(x1), Y0 = this._py(y0), Y1 = this._py(y1);
-    c.beginPath(); c.rect(Math.min(X0, X1), Math.min(Y0, Y1), Math.abs(X1 - X0), Math.abs(Y1 - Y0)); this._paint(st); return this;
+    const x = Math.min(X0, X1), y = Math.min(Y0, Y1), w = Math.abs(X1 - X0), h = Math.abs(Y1 - Y0), r = Math.min(st.radius ?? 0, w / 2, h / 2);
+    c.beginPath(); if (r > 0 && c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); this._paint(st); return this;
   }
   /** Vertical strip a ≤ x ≤ b across the whole view (e.g. a δ-neighbourhood). */
   vband(a, b, st = {}) { const c = this.ctx; c.beginPath(); c.rect(this._px(a), 0, this._px(b) - this._px(a), this.H); c.fillStyle = withAlpha(st.color || 'accent', st.alpha ?? 0.12); c.fill(); if (st.edges) { this.vline(a, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); this.vline(b, { color: st.color || 'accent', width: 1, dash: true, alpha: 0.7 }); } return this; }

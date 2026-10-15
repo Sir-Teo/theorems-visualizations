@@ -376,7 +376,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
         const ord = v.select('order', [{ value: 'sl', label: 'shortlex' }, { value: 'dict', label: 'dictionary' }], 'sl', { onChange: () => S.reset() });
         const keys = keypad(v, ALPH, () => w, (x) => { w = x; }, { max: 7 });
         keys.c.hidden = true;
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 316, full: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, full: true });
         const depth = () => (kS.value === 1 ? 6 : 3);
         const frames = () => {
           const al = ALPH.slice(0, kS.value), dict = ord.value === 'dict' && kS.value > 1;
@@ -507,7 +507,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
             const upto = []; for (const [n, j] of order) { if (stepOf(n, j) > tgtStep) break; upto.push(visible(n, j) ? cellXY(n, j) : null); }
             P.path(seq, { color: 'faint', width: 1.3 });
             P.path(upto, { color: 'accent', width: 2.6 });
-            if (md === 'rows') { const [xe, ye] = cellXY(1, C - 1); P.arrow(xe + cw / 2 + 2, ye, P.W - 8, ye, { color: 'red', width: 2.4 }); P.sans('on to 13, 14, …', P.W - 10, ye - 14, { align: 'right', size: 11, color: 'red', weight: 600 }); P.sans('never returns', P.W - 10, ye + 15, { align: 'right', size: 11, color: 'red', weight: 600 }); }
+            if (md === 'rows') { const [xe, ye] = cellXY(1, C - 1); P.arrow(xe + cw / 2 + 2, ye, P.W - 8, ye, { color: 'red', width: 2.4 }); P.sans(`on to ${C + 1}, ${C + 2}, …`, P.W - 10, ye - 14, { align: 'right', size: 11, color: 'red', weight: 600 }); P.sans('never returns', P.W - 10, ye + 15, { align: 'right', size: 11, color: 'red', weight: 600 }); }
             for (let n = 0; n <= 5; n++) {
               const R = rowN(n, n === 0 ? 1 : C);
               R.forEach((tt, j) => {
@@ -706,7 +706,7 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
       tags: ['induction', 'proof method'],
       viz(v) {
         const X = 'ab';
-        const claim = v.select('claim', [{ value: 'revcat', label: '$(xy)^R = y^Rx^R$ with $x = \\mathtt{ab}$' }, { value: 'len', label: '$|w^R| = |w|$' }, { value: 'pal', label: '$w^R = w$ (false)' }], 'revcat', { onChange: () => S.reset() });
+        const claim = v.select('claim', [{ value: 'revcat', label: '$(xy)^R = y^Rx^R$ with $x = \\mathtt{ab}$' }, { value: 'len', label: '$|w^R| = |w|$' }, { value: 'pal', label: '$w^R = w$ (false)' }], 'revcat', { onChange: (c) => S.reset({ at: c === 'pal' ? 4 : 'end' }) });
         const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1.1 });
         const ds = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1 });
         const NODES = upTo(['a', 'b'], 3);
@@ -840,6 +840,7 @@ A **literal** is a variable or its negation, a **clause** is an $\lor$ of litera
             activeRow: selRow, highlight: f.row != null ? [[f.row, 4, 'red']] : [],
             textColor: (i, j) => (j >= 3 ? 'ink' : 'muted'), weight: (i, j) => (j >= 3 ? 700 : 500),
           });
+          T.box(selRow, 0, selRow, 4, { color: 'accent', width: 2.2 });
         });
         v.legend([['green', 'true (φ satisfied)', { dot: true }], ['red', 'false', { dot: true }], ['teal', 'CNF built so far is true', { dot: true }]]);
         v.readout(() => {

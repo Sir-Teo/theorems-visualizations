@@ -534,7 +534,7 @@ where $\ell$ is the angular momentum about the centre. In particular a planet mo
         v.readout(() => {
           if (!cur) return '';
           const { R, areas, done, mean, moved } = cur;
-          if (done < 2) return 'sweeping…';
+          if (done < 2) return String.raw`sweeping: each slice lasts $\Delta t = T/${R.N}$; expected area per slice $\pi ab/N = ${v.fix(mean, 5)}$` + (done === 1 ? String.raw`, first slice measured $${v.fix(areas[0], 5)}$` : '');
           const A = areas.slice(0, done), lo = Math.min(...A), hi = Math.max(...A), avg = A.reduce((x, y) => x + y, 0) / A.length;
           const ok = (hi - lo) / avg < 1e-4;
           let out = String.raw`${done} slices of $\Delta t = T/${R.N}$: areas from $${v.fix(lo, 5)}$ to $${v.fix(hi, 5)}$ (spread $${sci(v, (hi - lo) / avg)}$ of the mean) — ${ok ? '**equal**' : '**not equal**'}`;

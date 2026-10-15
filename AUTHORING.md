@@ -232,7 +232,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `line(x1,y1,x2,y2)`, `segment(p,q)`, `hline(y)`, `vline(x)` | lines. |
 | `arrow(x1,y1,x2,y2, {head, both})` | arrow. |
 | `dot(x,y, {r, hollow, label, labelPos:'ne'|'n'|…, tex})` | marker with pixel radius. `dots(pts, {r})` many at once. |
-| `circle(x,y,r)`, `ball(x,y,r,{p})` (ℓ^p ball), `rect(x0,y0,x1,y1)` | shapes (data units). |
+| `circle(x,y,r)`, `ball(x,y,r,{p})` (ℓ^p ball), `rect(x0,y0,x1,y1)` | shapes (data units). `rect` takes `radius` (px) for rounded boxes. Any filled shape takes `hatch: true \| colour` (with `hatchGap`, `hatchAngle`, `hatchAlpha`) for diagonal hatching, e.g. double-counted or excluded regions. |
 | `hband(y0,y1,{color, alpha, edges})`, `vband(x0,x1,…)` | ε- and δ-strips across the panel. |
 | `between(f, g, a, b, {fill})` | shade between two graphs. |
 | `interval(a,b,y,{open:[l,r], label})` | number-line interval with open/closed ends. |
@@ -311,7 +311,7 @@ one-sided `{freq, amp, phase}` (a cosine of amplitude A reads A).
 **Matrices** (arrays of rows): `zeros(m,n) trace outer kron matPow(A,k)` · `lu(A)` → `{L, U, P, perm,
 sign, singular}` (PA = LU), `luSolve(lu or A, b or B)` · `qr(A, {thin})` (Householder, R_ii ≥ 0) ·
 `eigSym(A)` (Jacobi) → `{values ↓, vectors (columns), vecs (list)}` · `eig(A)` (Hessenberg + shifted QR)
-→ `{values: [Cx] by |λ| ↓, vectors: [real unit vector | null], cvectors: [{re, im}]}` · complex matrices (entries number | `Cx` | [re, im]): `eigC(A)` → `{values: [Cx], vectors: [{re, im}]}`, `solveC(A, b)` · `solve(A, B)` also takes a matrix right-hand side · `svd(A)` (m×n,
+→ `{values: [Cx] by |λ| ↓, vectors: [real unit vector | null], cvectors: [{re, im}]}` · complex matrices (entries number | `Cx` | [re, im]): `eigC(A)` → `{values: [Cx], vectors: [{re, im}]}` (repeated eigenvalues come back as exactly equal copies), `solveC(A, b)`, `rrefC(A)`, `rankC(A)`, `nullspaceC(A)` → `[{re, im}]`, `charPolyC(A)` → ascending `Cx` coefficients, `clusterRoots(roots, tol)` → `[{value, mult}]` · `solve(A, B)` also takes a matrix right-hand side · `svd(A)` (m×n,
 one-sided Jacobi) → thin `{U, S ↓, V}`, A = U diag(S) Vᵀ · `pinv`, `lstsq(A, b)`, `rank(A, tol)`,
 `nullspace(A)` (orthonormal list), `rref(A)` → `{R, pivots}` · `expm(A)` (Padé + squaring) ·
 `charPoly(A)` → ascending coefficients for `polyEval`.

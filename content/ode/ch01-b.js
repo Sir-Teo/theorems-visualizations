@@ -12,7 +12,7 @@ function trace(f, t0, x0, t1, o = {}) {
   for (let i = 0; i < (o.max ?? 40000); i++) {
     const rem = (t1 - t) * dir; if (rem <= 1e-12) break;
     const sp = Math.abs(f(t, x));
-    const dt = Math.min(h, rem, ((o.rel ?? 0.04) * Math.abs(x) + 0.02) / (sp || 1e-300));
+    const dt = Math.min(h, rem, ((o.rel ?? 0.04) * Math.abs(x) + (o.abs ?? 0.02)) / (sp || 1e-300));
     const xn = rk4s(f, t, x, dir * dt);
     if (!isFinite(xn) || Math.abs(xn) > cap) { out.escape = t + dir * dt; break; }
     t += dir * dt; x = xn; out.push([t, x]);
@@ -466,7 +466,7 @@ The general Riccati equation has no solution by quadratures; a single particular
         let target = -1;
         const jump = v.button('Apply the Bernoulli substitution', () => pS.set(target));
         const sR = v.stage({ x: [-1, 1], y: [-1, 1], height: 320, weight: 1, minWidth: 260, xlabel: 'u', ylabel: 'u̇', title: 'the transformed equation' });
-        const X0 = sL.handle(0, -1.2, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(Math.abs(y) < 0.05 ? 0.05 * Math.sign(y || 1) : y, -2.9, 4.8)] });
+        const X0 = sL.handle(0, -0.9, { color: 'accent', label: '$x_0$', labelPos: 'ne', constrain: (x, y) => [0, v.M.clamp(Math.abs(y) < 0.05 ? 0.05 * Math.sign(y || 1) : y, -2.9, 4.8)] });
         const SQ = Math.sqrt(Math.PI / 2);
         let info = null;
         const legB = [['accent', 'solutions in the coordinate $u_p$'], ['orange', '$\\dot u_p$ against $u_p$'], ['muted', 'best straight line', { dash: true }]];
@@ -698,7 +698,7 @@ is a $C^1$ solution, and so is $x\equiv0$. The right-hand side is continuous but
           }
           C.visible = leaves;
           // RK4 from exactly 0 and from 1e-12
-          const z = trace((t, x) => f(x), 0, 0, 6, { h: 0.01 }), tiny = trace((t, x) => f(x), 0, 1e-12, 6, { h: 0.01, cap: 1e3 });
+          const z = trace((t, x) => f(x), 0, 0, 6, { h: 0.01 }), tiny = trace((t, x) => f(x), 0, 1e-12, 6, { h: 0.01, cap: 1e3, abs: 0 }); // purely relative steps resolve the take-off from 1e-12
           s.clip(() => s.dots(tiny.filter((p, i) => i % 25 === 0 && p[1] < 3.2), { r: 2.6, color: 'gold' }));
           const zMax = Math.max(...z.map((p) => Math.abs(p[1])));
           // integral check of the highlighted member: x(t) = ∫_c^t |x|^α

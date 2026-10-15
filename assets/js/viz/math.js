@@ -745,6 +745,31 @@ export function solveC(A, b) {
   return x;
 }
 /**
+ * Durand–Kerner converges slowly on a multiple root and leaves a ring of m roots ~1e-3 apart. For each tight cluster,
+ * Newton on the (m−1)-th derivative (which has a simple root there) finds the multiple root; the cluster is replaced
+ * by m equal copies only if p, p′, …, p^(m−1) all vanish there to working precision. Distinct close roots are kept.
+ */
+function polishMultiple(c, roots) {
+  const deriv = (a) => a.slice(1).map((z, k) => z.scale(k + 1));
+  const ev = (a, z) => a.reduceRight((acc, k) => acc.mul(z).add(k), new Cx(0, 0));
+  const mag = (a, z) => a.reduce((s, k, i) => s + k.abs() * z.abs() ** i, 0) || 1;
+  const out = roots.slice(), used = new Array(out.length).fill(false);
+  for (let i = 0; i < out.length; i++) {
+    if (used[i]) continue;
+    const grp = [i];
+    for (let j = i + 1; j < out.length; j++) if (!used[j] && out[j].sub(out[i]).abs() < 2e-2 * Math.max(1, out[i].abs())) grp.push(j);
+    if (grp.length < 2) continue;
+    // try the largest multiplicity first, then smaller sub-clusters are left as they are
+    const m = grp.length; const ds = [c]; for (let k = 1; k < m; k++) ds.push(deriv(ds[k - 1]));
+    let z = grp.reduce((s, k) => s.add(out[k]), new Cx(0, 0)).scale(1 / m);
+    const f = ds[m - 1], fp = deriv(f);
+    for (let it = 0; it < 60; it++) { const d = ev(fp, z); if (d.abs() < 1e-300) break; const st = ev(f, z).div(d); z = z.sub(st); if (st.abs() < 1e-15 * Math.max(1, z.abs())) break; }
+    const okAll = ds.slice(0, m - 1).every((a) => ev(a, z).abs() <= 1e-9 * mag(a, z));
+    if (okAll) for (const k of grp) { out[k] = z; used[k] = true; }
+  }
+  return out;
+}
+/**
  * Eigenvalues and eigenvectors of a small complex matrix (entries number | Cx | [re,im]).
  * Characteristic polynomial by Faddeev–LeVerrier, roots by polyRoots, eigenvectors by inverse iteration.
  * Returns {values: Cx[], vectors: [{re: [...], im: [...]}]} sorted by |λ| (largest first). Fine for n ≤ 8.
@@ -759,7 +784,7 @@ export function eigC(A, { vectors = true } = {}) {
     const AM = mm(Z, Mk); let tr = O(); for (let i = 0; i < n; i++) tr = tr.add(AM[i][i]);
     c[n - k] = tr.scale(-1 / k);
   }
-  const vals = polyRoots(c).sort((u, v) => (v.abs() - u.abs()) || (v.re - u.re) || (v.im - u.im));
+  const vals = polishMultiple(c, polyRoots(c)).sort((u, v) => (v.abs() - u.abs()) || (v.re - u.re) || (v.im - u.im));
   if (!vectors) return { values: vals };
   const scale = Math.max(1e-12, ...Z.flat().map((z) => z.abs()));
   const vecs = vals.map((lam) => {
@@ -899,6 +924,58 @@ export function charPoly(A) {
     c[n - k] = -trace(matMul(A, Mk)) / k;
   }
   return c;
+}
+
+/** Characteristic polynomial det(λI − A) of a complex matrix (entries number | Cx | [re,im]) → ascending Cx coefficients (Faddeev–LeVerrier). */
+export function charPolyC(A) {
+  const n = A.length, Z = A.map((r) => r.map(Cx.of)), O = () => new Cx(0, 0);
+  const mm = (X, Y) => X.map((r) => Y[0].map((_, j) => r.reduce((s, x, k) => s.add(x.mul(Y[k][j])), O())));
+  const c = Array(n + 1); c[n] = new Cx(1, 0); let Mk = Z.map((r) => r.map(O));
+  for (let k = 1; k <= n; k++) {
+    Mk = mm(Z, Mk); for (let i = 0; i < n; i++) Mk[i][i] = Mk[i][i].add(c[n - k + 1]);
+    const AM = mm(Z, Mk); let tr = O(); for (let i = 0; i < n; i++) tr = tr.add(AM[i][i]);
+    c[n - k] = tr.scale(-1 / k);
+  }
+  return c;
+}
+/** Reduced row echelon form of a complex matrix → {R: Cx[][], pivots}. Entries with |z| ≤ tol (default relative to the matrix size) become exact 0. */
+export function rrefC(A, tol) {
+  const R = A.map((r) => r.map(Cx.of)), m = R.length, n = m ? R[0].length : 0, pivots = [];
+  const t = tol ?? Math.max(m, n) * 1e-12 * Math.max(1e-300, ...R.map((r) => r.reduce((s, z) => s + z.abs(), 0)));
+  let row = 0;
+  for (let c = 0; c < n && row < m; c++) {
+    let p = row; for (let i = row + 1; i < m; i++) if (R[i][c].abs() > R[p][c].abs()) p = i;
+    if (R[p][c].abs() <= t) { for (let i = row; i < m; i++) R[i][c] = new Cx(0, 0); continue; }
+    [R[p], R[row]] = [R[row], R[p]];
+    const piv = R[row][c]; for (let k = c; k < n; k++) R[row][k] = R[row][k].div(piv);
+    for (let i = 0; i < m; i++) if (i !== row) { const f = R[i][c]; if (f.abs()) for (let k = c; k < n; k++) R[i][k] = R[i][k].sub(f.mul(R[row][k])); }
+    pivots.push(c); row++;
+  }
+  for (const r of R) for (let k = 0; k < n; k++) if (r[k].abs() <= t) r[k] = new Cx(0, 0);
+  return { R, pivots };
+}
+/** Numerical rank of a complex matrix (Gauss–Jordan; tol as in rrefC). For real matrices prefer rank (SVD-based). */
+export const rankC = (A, tol) => rrefC(A, tol).pivots.length;
+/** Basis of the null space {x : A x = 0} of a complex matrix, one vector per free column → [{re: [...], im: [...]}] (not orthonormalized). */
+export function nullspaceC(A, tol) {
+  const { R, pivots } = rrefC(A, tol), n = A[0].length, free = range(n).filter((j) => !pivots.includes(j));
+  return free.map((f) => {
+    const x = Array.from({ length: n }, () => new Cx(0, 0)); x[f] = new Cx(1, 0);
+    pivots.forEach((pc, i) => { x[pc] = R[i][f].scale(-1); });
+    return { re: x.map((z) => z.re), im: x.map((z) => z.im) };
+  });
+}
+/**
+ * Group nearly equal complex roots → [{value: Cx (cluster mean), mult}], largest multiplicity first.
+ * A defective eigenvalue of multiplicity m comes back from eigC/polyRoots as a ring of radius ≈ (1e-16)^(1/m)
+ * (1e-8 for m = 2, 5e-6 for m = 3, 1e-4 for m = 4); the mean of the ring is accurate. tol is relative to max(1, |z|).
+ */
+export function clusterRoots(roots, tol = 3e-4) {
+  const zs = roots.map(Cx.of), parent = zs.map((_, i) => i), find = (i) => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  for (let i = 0; i < zs.length; i++) for (let j = i + 1; j < zs.length; j++) if (zs[i].sub(zs[j]).abs() <= tol * Math.max(1, zs[i].abs(), zs[j].abs())) parent[find(i)] = find(j);
+  const groups = new Map(); zs.forEach((z, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(z); });
+  return [...groups.values()].map((g) => ({ value: g.reduce((s, z) => s.add(z), new Cx(0, 0)).scale(1 / g.length), mult: g.length }))
+    .sort((a, b) => b.mult - a.mult || b.value.abs() - a.value.abs());
 }
 
 // ================================================================== special functions for probability

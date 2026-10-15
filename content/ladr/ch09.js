@@ -23,6 +23,8 @@ const vtex = (p, d = 2) => `(${p.map((x) => tn(x, d)).join(',\\,')})`;
 const mark = (ok) => (ok ? '✓' : '✗');
 /** "a + b" in TeX with the sign of b folded in. */
 const plus = (b, d = 2) => (b < 0 ? `- ${tn(-b, d)}` : `+ ${tn(b, d)}`);
+/** a, snapped onto b when they agree to rounding error (so that equal quantities print equal). */
+const same = (a, b) => (Math.abs(a - b) <= 1e-9 * (1 + Math.abs(b)) ? b : a);
 
 // ---------- real vectors and matrices (matrices are arrays of rows) ----------
 const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
@@ -169,8 +171,8 @@ are linear functionals on $V$. The set of bilinear forms on $V$ is denoted $V^{(
         const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 370, title: 'levels of $x \\mapsto \\beta(u, x)$' });
         const S3 = v.stage3d({ range: 2.05, height: 370, yaw: -0.5, pitch: 0.45, labels: ['x₁', 'x₂', ''], title: 'its graph over $[-1.6, 1.6]^2$ (heights $\\times 0.3$)' });
         const uh = P.handle(0.8, 0.7, { color: 'accent', label: 'u', constrain: disc(1.5) });
-        const vh = P.handle(1.05, -0.5, { color: 'gold', label: 'v', constrain: disc(1.15) });
-        const wh = P.handle(-0.35, -1.0, { color: 'teal', label: 'w', constrain: disc(1.15) });
+        const vh = P.handle(0.9, 0.6, { color: 'gold', label: 'v', constrain: disc(1.15) });
+        const wh = P.handle(0.3, -1.05, { color: 'teal', label: 'w', constrain: disc(1.15) });
         let st = null, lastTitle = '';
         v.render(() => {
           const f0 = F[cand.value], u = [uh.x, uh.y], first = slot.value === 'first';
@@ -191,8 +193,13 @@ are linear functionals on $V$. The set of bilinear forms on $V$ is denoted $V^{(
           P.arrow(0, 0, ab[0], ab[1], { color: 'green', width: 2.6 }); tip(P, 'v + w', ab, 'green', { size: 14, off: 22 });
           P.arrow(0, 0, u[0], u[1], { color: 'accent', width: 3 });
           // the graph
-          const k = 0.3, R = 1.6, fa = f(...a), fb = f(...b), fab = f(...ab), f00 = f(0, 0);
-          S3.surface((x, y) => [x, y, k * f(x, y)], [-R, R], [-R, R], { n: 20, alpha: 0.72, colorFn: (x, y, p) => (p[2] >= 0 ? 'blue' : 'red') });
+          const k = 0.4, R = 1.6, fa = f(...a), fb = f(...b), fab = f(...ab), f00 = f(0, 0), zm = Math.max(0.3, k * fmax * 0.7);
+          S3.surface((x, y) => [x, y, k * f(x, y)], [-R, R], [-R, R], { n: 24, alpha: 0.7, colorFn: (x, y, p) => v.mix('panel', p[2] >= 0 ? 'blue' : 'red', 0.3 + 0.7 * Math.min(1, Math.abs(p[2]) / zm)) });
+          if (cand.value !== 'nrm') {
+            // the zero level of the frozen functional, drawn on the graph
+            const g = first ? mv(tp(A), u) : mv(A, u), d = unit(rot90(g)), c0 = cand.value === 'aff' ? -1 : 0, gg = dot(g, g);
+            if (gg > 1e-9) { const p0 = scl(g, c0 / gg), pts = []; for (let t = -3; t <= 3; t += 0.1) { const q = add(p0, scl(d, t)); if (Math.abs(q[0]) <= R && Math.abs(q[1]) <= R) pts.push([q[0], q[1], 0]); } S3.path(pts, { color: 'purple', width: 2.4 }); }
+          }
           const stick = (p, val, col, w = 2.6) => { S3.line([p[0], p[1], 0], [p[0], p[1], k * val], { color: col, width: w }); S3.dot([p[0], p[1], k * val], { r: 4.5, color: col }); };
           S3.line([a[0], a[1], 0], [0, 0, 0], { color: 'gold', width: 1, alpha: 0.6 });
           S3.line([b[0], b[1], 0], [0, 0, 0], { color: 'teal', width: 1, alpha: 0.6 });
@@ -242,7 +249,7 @@ When the basis has to be named, one writes $\mathcal M\big(\beta, (e_1, \dots, e
           const B = FORMS[form.value], E = [[e1.x, e1.y], [e2.x, e2.y]], dC = det2(E[0], E[1]), ok = Math.abs(dC) > 0.08;
           const Mb = gram(B, E), u = [uh.x, uh.y], w = [vh.x, vh.y];
           const Ci = ok ? inv2(fromCols(E)) : null, x = ok ? mv(Ci, u) : null, y = ok ? mv(Ci, w) : null;
-          const used = wrong.value ? B : Mb, sum = ok ? bil(used, x, y) : NaN, direct = bil(B, u, w);
+          const used = wrong.value ? B : Mb, direct = bil(B, u, w), sum = ok ? same(bil(used, x, y), direct) : NaN;
           // the plane
           if (ok) skewGrid(P, E[0], E[1], { alpha: 0.22 });
           const decomp = (p, c, col) => { const a = scl(E[0], c[0]); P.path([[0, 0], a, p], { color: col, width: 1.6, dash: [5, 4] }); };
@@ -273,7 +280,7 @@ When the basis has to be named, one writes $\mathcal M\big(\beta, (e_1, \dots, e
           if (!st) return '';
           if (!st.ok) return '$e_1, e_2$ are (almost) parallel, so they are not a basis: $u$ and $v$ have no coordinates, and a matrix with respect to them would not determine $\\beta$.';
           const good = Math.abs(st.sum - st.direct) < 1e-9;
-          return `$\\mathcal M\\big(\\beta, (e_1, e_2)\\big) = ${mtex(st.Mb)}$; with $u = ${tn(st.x[0])}e_1 ${plus(st.x[1])}e_2$, $v = ${tn(st.y[0])}e_1 ${plus(st.y[1])}e_2$: $\\ \\sum ${st.wrong ? 'B' : '\\mathcal M'}_{j,k}x_jy_k = ${tn(st.sum, 4)}$ and $\\beta(u, v) = ${tn(st.direct, 4)}$ ${mark(good)}` + (st.wrong ? (good ? ' — they agree only by accident here (try another basis).' : ` — the standard matrix $B = ${mtex(st.B)}$ belongs to the standard basis, so it must be fed standard coordinates.`) : '.');
+          return `With $u = ${tn(st.x[0])}e_1 ${plus(st.x[1])}e_2$ and $v = ${tn(st.y[0])}e_1 ${plus(st.y[1])}e_2$: $\\ \\sum_{j,k} ${st.wrong ? 'B' : '\\mathcal M(\\beta)'}_{j,k}\\,x_jy_k = ${tn(st.sum, 4)}$ and $\\beta(u, v) = ${tn(st.direct, 4)}$ ${mark(good)}` + (st.wrong ? (good ? ' — they agree only by accident here (try another basis).' : ` — the standard matrix $B = ${mtex(st.B)}$ belongs to the standard basis, so it must be fed standard coordinates.`) : '.');
         });
       },
     },
@@ -285,7 +292,7 @@ When the basis has to be named, one writes $\mathcal M\big(\beta, (e_1, \dots, e
       statement: String.raw`Suppose $e_1, \dots, e_n$ is a basis of $V$. Then the map $\beta \mapsto \mathcal M(\beta)$ is an isomorphism of $V^{(2)}$ onto $\mathbf F^{n,n}$. In particular,
 $$\dim V^{(2)} = (\dim V)^2.$$`,
       idea: String.raw`The map $\beta \mapsto \mathcal M(\beta)$ is clearly linear. Its inverse sends a matrix $A$ to the form $\beta_A\big(\sum_j x_je_j, \sum_k y_ke_k\big) = \sum_{j,k}A_{j,k}x_jy_k$: indeed $\mathcal M(\beta_A) = A$ by evaluating on basis pairs, and $\beta_{\mathcal M(\beta)} = \beta$ by the bilinear expansion behind 9.4. So the two spaces are isomorphic and have the same dimension, $\dim\mathbf F^{n,n} = n^2$ (3.40, 3.70). Concretely, the $n^2$ elementary forms $\beta_{jk}(u, v) = x_jy_k$ (the $j$-th coordinate of $u$ times the $k$-th coordinate of $v$) correspond to the matrix units, so they form a basis of $V^{(2)}$: every form is $\sum_{j,k}\beta(e_j, e_k)\,\beta_{jk}$, and none can be left out.`,
-      caption: String.raw`A bilinear form on $\mathbf R^2$ is pictured by its values $\beta(u, v)$ on all pairs of unit vectors: the square chart has the angle $\varphi$ of $u$ across and the angle $\theta$ of $v$ up (blue $> 0$, red $< 0$). Left: the four elementary forms $\beta_{jk}$, each weighted by its slider $c_{jk}$. Right: their sum, with the level lines of the target form dashed on top. Move the sliders until the dashed lines sit on the solid ones — the only way is $c_{jk} = \beta(e_j, e_k)$ (or press the button). Drop $\beta_{21}$ and some targets become unreachable: at the pair $(u, v) = (e_2, e_1)$ the other three forms all vanish.`,
+      caption: String.raw`A bilinear form on $\mathbf R^2$ is pictured by its values $\beta(u, v)$ on all pairs of unit vectors: the square chart has the angle $\varphi$ of $u$ across and the angle $\theta$ of $v$ up (blue $> 0$, red $< 0$). Left: the four elementary forms $\beta_{jk}$, each weighted by its slider $c_{jk}$. Right: their sum, with its level lines in black and those of the target form in gold. Move the sliders until the black lines run inside the gold ones — the only way is $c_{jk} = \beta(e_j, e_k)$ (or press the button). Drop $\beta_{21}$ and some targets become unreachable: at the pair $(u, v) = (e_2, e_1)$ the other three forms all vanish.`,
       deps: ['ladr-9.4', 'ladr-3.40', 'ladr-3.70'],
       tags: ['bilinear forms', 'dimension'],
       viz(v) {
@@ -295,7 +302,7 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
         const drop = v.toggle('drop $\\beta_{21}$', false, { onChange: (b) => { sl[2].el.hidden = b; } });
         v.button('read off $c_{jk} = \\beta(e_j, e_k)$', () => { const B = TG[tgt.value]; sl.forEach((s, i) => { if (!(drop.value && i === 2)) s.set(B[i >> 1][i & 1]); }); });
         const L = v.stage({ x: [0, 2.35], y: [0, 2.5], equal: true, axes: false, height: 370, weight: 0.85, minWidth: 260, title: 'elementary forms $c_{jk}\\,\\beta_{jk}$' });
-        const R = v.stage({ x: [0, TAU], y: [0, TAU], equal: true, axes: 'box', height: 370, weight: 1.15, xticks: PI_TICKS, yticks: PI_TICKS, xlabel: 'angle φ of u', ylabel: 'angle θ of v', title: '$\\sum c_{jk}\\beta_{jk}$ (colour, solid) vs target (dashed)' });
+        const R = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', height: 370, weight: 1.15, xticks: PI_TICKS, yticks: PI_TICKS, xlabel: 'angle φ of u', ylabel: 'angle θ of v', title: '$\\sum c_{jk}\\beta_{jk}$ (colour, black levels) vs target (gold levels)' });
         const TS = 0.95, tile = (j, k) => [0.12 + 1.15 * k, 0.08 + 1.2 * (1 - j)];
         let st = null;
         v.render(() => {
@@ -304,7 +311,7 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
           L.raster((x, y) => {
             for (let j = 0; j < 2; j++) for (let k = 0; k < 2; k++) {
               const [x0, y0] = tile(j, k);
-              if (x >= x0 && x <= x0 + TS && y >= y0 && y <= y0 + TS) return divCol(Cm[j][k] * elem(j, k, ((x - x0) / TS) * TAU, ((y - y0) / TS) * TAU), 2, P, N, BG);
+              if (x >= x0 && x <= x0 + TS && y >= y0 && y <= y0 + TS) return divCol(Cm[j][k] * elem(j, k, ((x - x0) / TS) * TAU, ((y - y0) / TS) * TAU), 1.4, P, N, BG, 0.9);
             }
             return null;
           }, { key: `${c}|${BG}`, res: 2 });
@@ -315,24 +322,24 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
             if (off) L.text('dropped', x0 + TS / 2, y0 + TS / 2, { align: 'center', color: 'red', size: 13, weight: 700 });
           }
           R.raster((x, y) => (x < 0 || y < 0 || x > TAU || y > TAU ? null : divCol(chartVal(Cm, x, y), 2.2, P, N, BG)), { key: `${c}|${BG}`, res: 2 });
-          const lv = [-2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2];
-          R.contour((x, y) => chartVal(Cm, x, y), lv, { color: 'ink', width: 0.9, res: 90 });
+          const lv = [-1.6, -0.8, 0.8, 1.6];
+          R.contour((x, y) => chartVal(B, x, y), lv, { color: 'gold', width: 2.6, res: 90 });
+          R.contour((x, y) => chartVal(B, x, y), [0], { color: 'gold', width: 4, res: 90 });
+          R.contour((x, y) => chartVal(Cm, x, y), lv, { color: 'ink', width: 1, res: 90 });
           R.contour((x, y) => chartVal(Cm, x, y), [0], { color: 'ink', width: 1.8, res: 90 });
-          R.contour((x, y) => chartVal(B, x, y), lv, { color: 'gold', width: 1.8, dash: [6, 5], res: 90 });
-          R.contour((x, y) => chartVal(B, x, y), [0], { color: 'gold', width: 2.8, dash: [6, 5], res: 90 });
           R.axes();
           let err = 0; for (let a = 0; a < 48; a++) for (let b = 0; b < 48; b++) { const ph = (TAU * a) / 48, th = (TAU * b) / 48; err = Math.max(err, Math.abs(chartVal(Cm, ph, th) - chartVal(B, ph, th))); }
           if (drop.value) R.dot(Math.PI / 2, 0, { r: 7, color: 'red', label: '(e₂, e₁)', labelPos: 'ne' });
           st = { err, Cm, B, drop: drop.value, floor: Math.abs(B[1][0]) };
         });
-        v.legend([['ink', 'your combination'], ['gold', 'target $\\beta$', { dash: true }], ['blue', 'value $> 0$', { area: true }], ['red', 'value $< 0$', { area: true }]]);
+        v.legend([['ink', 'levels of your combination'], ['gold', 'levels of the target $\\beta$'], ['blue', 'value $> 0$', { area: true }], ['red', 'value $< 0$', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const m = st.err < 0.01;
           let s = `$\\max_{\\varphi,\\theta}\\big|\\sum c_{jk}\\beta_{jk} - \\beta\\big| = ${tn(st.err, 3)}$, with $\\mathcal M\\big(\\sum c_{jk}\\beta_{jk}\\big) = ${mtex(st.Cm)}$. `;
           if (m) s += `**Match**: $\\mathcal M(\\beta) = ${mtex(st.B)}$, i.e. $c_{jk} = \\beta(e_j, e_k)$ — the four elementary forms span $V^{(2)}$, and they are independent, so $\\dim V^{(2)} = 2^2 = 4$.`;
           else if (st.drop && st.floor > 0.01) s += `Without $\\beta_{21}$ the error can never drop below $|\\beta(e_2, e_1)| = ${tn(st.floor)}$: at $(u, v) = (e_2, e_1)$ the remaining three forms are all $0$. Three forms do not span a 4-dimensional space.`;
-          else s += 'Adjust the sliders until the dashed and solid level lines coincide.';
+          else s += 'Adjust the sliders until the black level lines run inside the gold ones.';
           return s;
         });
       },

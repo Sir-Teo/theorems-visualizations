@@ -27,16 +27,16 @@ The rays from $E$ to all the points of an object form a cone with its apex at th
       tags: ['perspective', 'central projection'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-2.1, 2.1], y: [-1.5, 1.7], equal: true, axes: false, height: 390, weight: 1.25, title: 'eye, pane and objects' });
+        const S = v.stage({ x: [-1.75, 1.75], y: [-1.45, 0.95], equal: true, axes: false, height: 390, weight: 1.25, title: 'eye, pane and objects' });
         const P = v.stage({ x: [-0.82, 0.82], y: [-0.06, 1.3], equal: true, axes: false, height: 390, weight: 0.75, title: 'what is traced on the pane' });
-        const sc = v.scene3(S, { yaw: -0.95, pitch: 0.3, axes: false, lim: 2.2 });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.36, axes: false, lim: 2.2 });
         const G = -0.75, PW = 0.75, PH = 1.25; // ground height, pane half-width and height (scene units)
         const house = houseMesh([0.32, 0.85, G], [0.62, 0.7, 0.42], 0.27, 0.5);
         const cube = boxMesh([-0.55, 0.45, G], [0.34, 0.34, 0.34], -0.3);
         const solids = [{ mesh: house, color: 'accent' }, { mesh: cube, color: 'purple' }];
         let eye = null;
-        const pane = sc.handle([PW, -0.5, G + PH], { color: 'orange', label: 'pane', snap: (p) => [PW, M.clamp(p[1], (eye ? eye.p[1] : -1.4) + 0.25, 0.1), G + PH] });
-        eye = sc.handle([-0.25, -1.3, G + 0.7], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -1.1, 1.1), M.clamp(p[1], -1.9, pane.p[1] - 0.25), M.clamp(p[2], G + 0.08, G + 1.45)] });
+        const pane = sc.handle([PW, -0.3, G + PH], { color: 'orange', label: 'pane', snap: (p) => [PW, M.clamp(p[1], (eye ? eye.p[1] : -1.4) + 0.25, 0.1), G + PH] });
+        eye = sc.handle([-0.2, -1.35, G + 0.92], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -1.1, 1.1), M.clamp(p[1], -1.9, pane.p[1] - 0.25), M.clamp(p[2], G + 0.08, G + 1.45)] });
         const pyr = v.toggle('visual pyramid', true);
         const floor = gridLines(-1.2, 1.2, 0.0, 1.6, 0.2, G);
         const pierce = (Q) => {
@@ -117,13 +117,13 @@ So an object’s image shrinks in proportion to $1/y$: twice as far away, half a
         const M = v.M, H0 = 1.0; // eye height above the ground
         const side = v.stage({ x: [-0.3, 6.3], y: [-1.25, 2.05], equal: true, axes: false, height: 270, weight: 1.35, title: 'side view' });
         const pic = v.stage({ x: [-1.05, 1.05], y: [-1.05, 1.05], equal: true, axes: false, height: 270, weight: 0.72, minWidth: 220, title: 'the picture plane, face on' });
-        const top = v.stage({ x: [-0.3, 6.3], y: [-1.45, 1.45], equal: true, axes: false, height: 200, full: true, title: 'top view' });
+        const top = v.stage({ x: [-0.3, 6.3], y: [-1.45, 1.45], equal: true, axes: false, height: 180, full: true, title: 'top view (seen from above)' });
         const dS = v.slider('picture distance $d$', 0.5, 2.6, 1.5, { step: 0.01 });
         const Ps = side.handle(4, 1.2, { color: 'accent', label: 'P', constrain: (x, y) => [M.clamp(x, 0.6, 6.1), M.clamp(y, -H0 + 0.15, 1.95)] });
         const Pt = top.handle(4, 0.7, { color: 'accent', label: 'P', constrain: (x, y) => [M.clamp(x, 0.6, 6.1), M.clamp(y, -1.35, 1.35)] });
         Ps.onDrag = () => { Pt.x = Ps.x; };
         Pt.onDrag = () => { Ps.x = Pt.x; };
-        const view = (S, X, Y, d, lab, low) => {
+        const view = (S, X, Y, d, lab, low, eyePos) => {
           const Yp = (d * Y) / X;
           S.poly([[0, 0], [X, 0], [X, Y]], { fill: 'gold', fillAlpha: 0.13, stroke: false });
           S.poly([[0, 0], [d, 0], [d, Yp]], { fill: 'accent', fillAlpha: 0.28, stroke: false });
@@ -135,7 +135,7 @@ So an object’s image shrinks in proportion to $1/y$: twice as far away, half a
           S.tex('d', d / 2, 0, { baseline: low ? 'top' : 'bottom', dy: low ? 4 : -4, color: 'accent', size: 14 });
           S.tex('y', X / 2 + d / 2, 0, { baseline: Y >= 0 ? 'top' : 'bottom', dy: Y >= 0 ? 4 : -4, color: 'muted', size: 14 });
           S.tex(lab, X, Y / 2, { align: 'left', dx: 7, color: 'gold', size: 14 });
-          S.dot(0, 0, { r: 5, color: 'ink', label: 'eye', labelPos: 'w' });
+          S.dot(0, 0, { r: 5, color: 'ink', label: 'eye', labelPos: eyePos });
           return Yp;
         };
         v.render(() => {
@@ -147,10 +147,10 @@ So an object’s image shrinks in proportion to $1/y$: twice as far away, half a
           side.line(Y, -H0, Y, Z, { color: 'ink', width: 3 });
           side.line(0, 0, Y, -H0, { color: 'gold', width: 1, alpha: 0.6 });
           side.line(d, (-d * H0) / Y, d, (d * Z) / Y, { color: 'accent', width: 4 });
-          const Zp = view(side, Y, Z, d, 'z', Z > 0.25);
+          const Zp = view(side, Y, Z, d, 'z', Z > 0.25, 's');
           // top view
           top.line(d, -1.45, d, 1.45, { color: 'orange', width: 2.4 });
-          const Xp = view(top, Y, X, d, 'x', X > 0.25);
+          const Xp = view(top, Y, X, d, 'x', X > 0.25, 'w');
           // the picture
           pic.rect(-1, -1, 1, 1, { fill: 'orange', fillAlpha: 0.05, color: 'orange', width: 1.4 });
           pic.line(-1, 0, 1, 0, { color: 'muted', width: 1, dash: [5, 4] });
@@ -186,21 +186,21 @@ Brunelleschi’s second panel, of the Piazza della Signoria, had no hole: a pict
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Filippo_Brunelleschi' },
       viz(v) {
         const M = v.M, EH = 1.6, ST = [0, -1.75]; // eye height; station point three braccia (≈1.75 m) inside the door
-        const plan = v.stage({ x: [-30, 30], y: [-9, 50], equal: true, axes: false, height: 350, weight: 0.78, title: 'plan (schematic)' });
-        const view = v.stage({ x: [-1.0, 1.0], y: [-0.22, 1.2], equal: true, axes: false, height: 350, weight: 1.22, title: 'what the eye sees through the hole' });
+        const plan = v.stage({ x: [-30, 30], y: [-9, 57], equal: true, axes: false, height: 350, weight: 0.78, title: 'plan (schematic)' });
+        const view = v.stage({ x: [-0.8, 0.8], y: [-0.2, 0.82], equal: true, axes: false, height: 350, weight: 1.22, title: 'what the eye sees through the hole' });
         const mS = v.slider('mirror distance $m$ (× panel distance $D$)', 0.3, 0.8, 0.5, { step: 0.005 });
         const lowS = v.slider('lower the mirror', 0, 1, 0.5, { step: 0.01 });
         const eye = plan.handle(ST[0], ST[1], { color: 'accent', label: 'eye', labelPos: 'e', constrain: (x, y) => [M.clamp(x, -9, 9), M.clamp(y, -7, 14)] });
         v.button('Go to the station point', () => eye.set(ST[0], ST[1]));
         // schematic geometry (metres): octagonal Baptistery, flat face toward the cathedral
-        const BC = [0, 33], AP = 12.8, RV = AP / Math.cos(Math.PI / 8);
+        const BC = [0, 40], AP = 12.8, RV = AP / Math.cos(Math.PI / 8);
         const ring = (r, c = BC) => Array.from({ length: 8 }, (_, k) => { const a = -Math.PI / 2 + Math.PI / 8 + (k * Math.PI) / 4; return [c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]; });
         const oct = ring(RV), lan = ring(2.3);
         const solids = [
-          { mesh: prismMesh(oct, 0, 25), color: 'C', storeys: [10.5, 20.5] },
-          { mesh: pyramidMesh(oct, 25, [BC[0], BC[1], 30.5]), color: 'C' },
-          { mesh: prismMesh(lan, 29.6, 34), color: 'C' },
-          { mesh: pyramidMesh(lan, 34, [BC[0], BC[1], 36.2]), color: 'C' },
+          { mesh: prismMesh(oct, 0, 19.5), color: 'C', storeys: [8.2, 15.6] },
+          { mesh: pyramidMesh(oct, 19.5, [BC[0], BC[1], 25.5]), color: 'C' },
+          { mesh: prismMesh(lan, 24.6, 28.6), color: 'C' },
+          { mesh: pyramidMesh(lan, 28.6, [BC[0], BC[1], 30.8]), color: 'C' },
         ];
         const houses = [];
         for (const [x0, x1, sgn] of [[-38, -18, -1], [18, 38, 1]]) {
@@ -209,7 +209,7 @@ Brunelleschi’s second panel, of the Piazza della Signoria, had no hole: a pict
         }
         const all = [...houses, ...solids];
         const tanMap = (E) => (P) => { const dy = P[1] - E[1]; return dy > 0.3 ? [(P[0] - E[0]) / dy, (P[2] - EH) / dy] : null; };
-        const PANEL = [[-0.78, 0.78], [-0.2, 1.12]]; // the panel, in units of its construction distance D, hole at the origin
+        const PANEL = [[-0.62, 0.62], [-0.19, 0.78]]; // the panel, in units of its construction distance D, hole at the origin
         const draw = (S, map, eye3, col) => {
           drawSolids(S, map, eye3, all.map((s) => ({ mesh: s.mesh, color: col, alpha: 0.05, width: 1.3 })), { light: [-0.3, -0.8, 0.5] });
           const W = solids[0].mesh.V, n = 8; // storey lines on the visible wall faces
@@ -218,7 +218,7 @@ Brunelleschi’s second panel, of the Piazza della Signoria, had no hole: a pict
             const out = [-(b[1] - a[1]), b[0] - a[0]]; // outward normal of the face (counter-clockwise ring)
             if (((a[0] + b[0]) / 2 - eye3[0]) * out[0] + ((a[1] + b[1]) / 2 - eye3[1]) * out[1] >= 0) continue;
             for (const z of solids[0].storeys) { const A = map([a[0], a[1], z]), B = map([b[0], b[1], z]); if (A && B) S.line(A[0], A[1], B[0], B[1], { color: col, width: 1.1 }); }
-            const m1 = map([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0]), m2 = map([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 7.5]); // door / pilaster mark
+            const m1 = map([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0]), m2 = map([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 6]); // door / pilaster mark
             if (m1 && m2) S.line(m1[0], m1[1], m2[0], m2[1], { color: col, width: 1, alpha: 0.6 });
           }
         };
@@ -238,7 +238,7 @@ Brunelleschi’s second panel, of the Piazza della Signoria, had no hole: a pict
           // ---- plan
           plan.rect(-30, -9, 30, 0, { fill: 'faint', fillAlpha: 0.12, stroke: false });
           plan.line(-30, 0, -1.6, 0, { color: 'ink', width: 4 }); plan.line(1.6, 0, 30, 0, { color: 'ink', width: 4 });
-          plan.text('Santa Maria del Fiore (inside)', -28.5, -6.5, { align: 'left', size: 11, color: 'muted' });
+          plan.text('Santa Maria del Fiore (inside)', 28.5, -6.8, { align: 'right', size: 11, color: 'muted' });
           for (const h of houses) plan.rect(h.rect[0], h.rect[1], h.rect[2], h.rect[3], { fill: 'gray', fillAlpha: 0.12, color: 'gray', width: 1 });
           plan.poly(oct, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1.6 });
           plan.poly(lan, { color: 'accent', width: 1 });
@@ -246,8 +246,8 @@ Brunelleschi’s second panel, of the Piazza della Signoria, had no hole: a pict
           const fov = view.bounds.x[1];
           for (const s of [-1, 1]) plan.line(E3[0], E3[1], E3[0] + s * fov * 60, E3[1] + 60, { color: 'gold', width: 1, alpha: 0.6, dash: [4, 4] });
           plan.dot(ST[0], ST[1], { r: 4.5, color: 'green' });
-          plan.text('station point', ST[0] - 1.6, ST[1] - 2.2, { align: 'right', size: 11, color: 'green' });
-          plan.line(20, 46, 30, 46, { color: 'muted', width: 2 }); plan.text('10 m', 25, 47.4, { align: 'center', baseline: 'bottom', size: 10.5, color: 'muted' });
+          plan.text('station point', ST[0] - 2.4, ST[1] - 0.6, { align: 'right', size: 11, color: 'green' });
+          plan.line(19, 53, 29, 53, { color: 'muted', width: 2 }); plan.text('10 m', 24, 54.4, { align: 'center', baseline: 'bottom', size: 10.5, color: 'muted' });
           // ---- view: the real piazza
           const bx = view.bounds.x, by = view.bounds.y;
           view.rect(bx[0], 0, bx[1], by[1], { fill: 'blue', fillAlpha: 0.04, stroke: false });
@@ -271,7 +271,7 @@ Brunelleschi’s second panel, of the Piazza della Signoria, had no hole: a pict
             view.text('mirror edge', bx[0] + 0.03, edge + 0.025, { align: 'left', baseline: 'bottom', size: 11, color: 'orange' });
           }
           view.dot(0, 0, { r: 3.2, color: 'ink' });
-          view.text('hole', 0.03, -0.035, { align: 'left', baseline: 'top', size: 10.5, color: 'muted' });
+          view.text('hole', 0.025, -0.02, { align: 'left', baseline: 'top', size: 10.5, color: 'muted' });
         });
         v.legend([['gray', 'real Baptistery and houses'], ['accent', 'the painted panel, seen in the mirror'], ['orange', 'top edge of the mirror']]);
         v.readout(() => {
@@ -319,7 +319,7 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
           const bx = pic.bounds.x, by = pic.bounds.y;
           // ---- plan
           plan.line(bx[0], d, bx[1], d, { color: 'orange', width: 3 });
-          plan.text('picture plane', bx[1], d + 0.18, { align: 'right', baseline: 'bottom', size: 11, color: 'orange' });
+          plan.text('picture plane', bx[0] + 0.1, d - 0.2, { align: 'left', baseline: 'top', size: 11, color: 'orange' });
           plan.clip(() => {
             P.forEach((pr, j) => {
               const col = j ? 'purple' : 'accent';
@@ -333,11 +333,11 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
           // ---- picture
           pic.line(bx[0], 0, bx[1], 0, { color: 'muted', width: 1, dash: [5, 4] });
           pic.text('horizon', bx[0] + 0.05, 0.05, { align: 'left', baseline: 'bottom', size: 11, color: 'muted' });
-          for (const [a, b] of gridLines(-12, 12, 2, 40, 2)) seg3(pic, C, a, b, { color: 'faint', width: 0.8 });
+          for (const [a, b] of gridLines(-12, 12, 2, 30, 2)) seg3(pic, C, a, b, { color: 'faint', width: 0.8, alpha: 0.7 });
           const V = par ? null : C.vp(u);
           P.forEach((pr, j) => {
             const col = j ? 'purple' : 'accent', off = j ? -2.3 : 0;
-            for (let t = -12; t < 60; t += 0.7) { const c = [A.x + t * u[0] + off * n[0], A.y + t * u[1] + off * n[1], 0]; seg3(pic, C, [c[0] - 0.55 * n[0], c[1] - 0.55 * n[1], 0], [c[0] + 0.55 * n[0], c[1] + 0.55 * n[1], 0], { color: 'gray', width: 1.4, alpha: 0.7 }); }
+            for (let t = -12; t < 60; t += 0.7) { const c = [A.x + t * u[0] + off * n[0], A.y + t * u[1] + off * n[1], 0]; if (c[1] < d * 1.15) continue; seg3(pic, C, [c[0] - 0.55 * n[0], c[1] - 0.55 * n[1], 0], [c[0] + 0.55 * n[0], c[1] + 0.55 * n[1], 0], { color: 'gray', width: 1.4, alpha: 0.7 }); }
             for (const a of pr) {
               const s = seg3(pic, C, [a[0] - 12 * u[0], a[1] - 12 * u[1], 0], [a[0] + 60 * u[0], a[1] + 60 * u[1], 0], { color: col, width: 2.4 });
               if (s && V) pic.line(s[1][0], s[1][1], V[0], V[1], { color: col, width: 1.2, dash: [4, 4], alpha: 0.8 });
@@ -355,7 +355,8 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
           const img = (a) => [C.proj([a[0] + 3 * u[0], a[1] + 3 * u[1], 0]), C.proj([a[0] + 30 * u[0], a[1] + 30 * u[1], 0])];
           const L = P.map((pr) => pr.map(img)), X = meet(L[0][0][0], L[0][0][1], L[0][1][0], L[0][1][1]), F = C.vp(u);
           let gap = 0; if (L[1] && X) { const Y = meet(L[1][0][0], L[1][0][1], L[1][1][0], L[1][1][1]); if (Y) gap = Math.hypot(X[0] - Y[0], X[1] - Y[1]); }
-          return `rails turned $\\theta = ${v.fix(deg(th), 1)}°$ · their images meet at $(${v.fix(X[0], 4)},\\ ${v.fix(X[1], 4)})$ · predicted $d\\tan\\theta = ${v.fix(F[0], 4)}$ on the horizon` + (L[1] ? ` · second pair misses that point by $${v.fix(gap, 5)}$` : '');
+          const z = (x) => (Math.abs(x) < 5e-5 ? 0 : x);
+          return `rails turned $\\theta = ${v.fix(deg(th), 1)}°$ · their images meet at $(${v.fix(z(X[0]), 4)},\\ ${v.fix(z(X[1]), 4)})$ · predicted $d\\tan\\theta = ${v.fix(F[0], 4)}$ on the horizon` + (L[1] ? ` · second pair misses that point by $${v.fix(gap, 5)}$` : '');
         });
       },
     },

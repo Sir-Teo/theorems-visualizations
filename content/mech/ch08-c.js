@@ -352,10 +352,10 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
       viz(v) {
         const mr = v.slider('mass ratio $m_1/m_2$', 0.2, 5, 2.5, { log: true, step: 0.01 });
         const bS = v.slider('impact parameter $b/(R_1+R_2)$', 0, 0.98, 0.45, { step: 0.01 });
-        const sl = v.stage({ x: [-3, 3], y: [-1.6, 1.6], equal: true, axes: false, height: 210, title: 'laboratory frame' });
-        const sc = v.stage({ x: [-3, 3], y: [-1.6, 1.6], equal: true, axes: false, height: 210, title: 'centre-of-mass frame' });
-        const vd = v.stage({ x: [-0.3, 1.3], y: [-0.75, 0.75], equal: true, axes: false, height: 270, title: 'velocity diagram (units of $u$)' });
-        const cg = v.stage({ x: [0, 180], y: [0, 180], axes: 'box', height: 270, xlabel: 'CM angle χ (°)', ylabel: 'lab angle θ (°)', title: 'lab angle against CM angle' });
+        const sl = v.stage({ x: [-2.6, 2.6], y: [-1.5, 1.5], equal: true, axes: false, height: 220, minWidth: 390, title: 'laboratory frame (target at rest)' });
+        const sc = v.stage({ x: [-2.6, 2.6], y: [-1.5, 1.5], equal: true, axes: false, height: 220, minWidth: 390, title: 'centre-of-mass frame' });
+        const vd = v.stage({ x: [-0.3, 1.3], y: [-0.75, 0.75], equal: true, axes: false, height: 270, minWidth: 390, title: 'velocity diagram (units of the incoming speed $u$)' });
+        const cg = v.stage({ x: [0, 180], y: [0, 180], axes: 'box', height: 270, minWidth: 390, xlabel: 'CM angle χ (°)', ylabel: 'lab angle θ (°)', title: 'lab angle against CM angle' });
         const cache = memo(); let cur = null;
         const run = () => cache([mr.value, bS.value].join('|'), () => {
           const q = mr.value, m1 = q / (1 + q), m2 = 1 / (1 + q), R1 = 0.28 * Math.cbrt(m1 / 0.5), R2 = 0.28 * Math.cbrt(m2 / 0.5), Rs = R1 + R2, u = 1;
@@ -398,7 +398,9 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
           vd.tex('\\mathbf v_1^{\\rm lab}', D.v1[0], D.v1[1], { color: 'blue', dx: 16, dy: D.v1[1] > 0 ? -8 : 8, size: 14 });
           // θ(χ)
           cg.fn((x) => { const c = (x * Math.PI) / 180; return (Math.atan2(Math.sin(c), Math.cos(c) + D.q) * 180) / Math.PI; }, { color: 'accent', width: 2.4, domain: [0, 180] });
-          if (D.q > 1) { const tm = (Math.asin(1 / D.q) * 180) / Math.PI; cg.hline(tm, { color: 'red', dash: [4, 4], width: 1.2 }); cg.text('θ_max', 4, tm, { color: 'red', size: 11, dy: -9 }); }
+          const tmx = D.q > 1 ? (Math.asin(1 / D.q) * 180) / Math.PI : 180;
+          cg.setView([0, 180], [0, D.q > 1 ? Math.max(30, 1.7 * tmx) : 185]);
+          if (D.q > 1) { cg.hline(tmx, { color: 'red', dash: [4, 4], width: 1.2 }); cg.tex('\\theta_{\\max} = \\arcsin(m_2/m_1)', 6, tmx, { color: 'red', size: 13, align: 'left', dy: -12 }); }
           cg.fn((x) => x / 2, { color: 'faint', width: 1, dash: [3, 4] });
           cg.dot((D.chi * 180) / Math.PI, (D.thLab * 180) / Math.PI, { r: 6, color: 'gold' });
           cur = D;
@@ -561,7 +563,8 @@ at every point of the orbit. Consequently all satellites launched from the same 
           s.dot(r0 / RE, 0, { r: 5, color: 'gold' });
           s.corner(D.bound ? `all periods ${v.fix(D.Tp / 60, 1)} min` : 'v ≥ escape speed: unbound', 'tl', { color: D.bound ? 'green' : 'red', weight: 600 });
           // v against r
-          g.setView([0, Math.max(4, Math.min(16, lim + 1))], [0, Math.max(10, sp.value * 1.6)]);
+          let rTop = 4; for (const o of D.orbits) rTop = Math.max(rTop, Math.min(o.hi / RE, 30));
+          g.setView([0, D.bound ? 1.3 * rTop : 12], [0, Math.max(10, sp.value * 1.6)]);
           if (D.bound) g.fn((x) => { const r = x * RE, q = GM * (2 / r - 1 / D.a); return q > 0 ? Math.sqrt(q) / 1000 : NaN; }, { color: 'ink', width: 1.6, dash: [5, 4], domain: [0.3, 40] });
           else g.fn((x) => { const r = x * RE; return Math.sqrt(GM * (2 / r - 1 / D.a)) / 1000; }, { color: 'ink', width: 1.6, dash: [5, 4], domain: [0.3, 40] });
           g.fn((x) => Math.sqrt((2 * GM) / (x * RE)) / 1000, { color: 'red', width: 1, alpha: 0.6, domain: [0.3, 40] });

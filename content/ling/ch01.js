@@ -31,6 +31,7 @@ function resGain(F, BW, f) {
 /** Gain of the cascade of formant resonators (F, B arrays) at f. */
 function tractGain(F, B, f) { let g = 1; for (let k = 0; k < F.length; k++) g *= resGain(F[k], B[k], f); return g; }
 const dB = (x) => 20 * Math.log10(Math.max(x, 1e-12));
+const clampN = (x, a, b) => Math.max(a, Math.min(b, x));
 const BW5 = [70, 95, 130, 200, 280]; // default formant bandwidths (Hz)
 const FHI = [3500, 4500]; // F4, F5 (Hz)
 /** Glottal flow derivative over one cycle (phase φ in [0, 1)), open quotient oq: d/dφ of the KLGLOTT88 pulse 6.75·x²(1−x), x = φ/oq. */
@@ -183,7 +184,7 @@ const NASALZ = { bilabial: 1100, labiodental: 1200, alveolar: 1700, retroflex: 1
 /** Noise spectrum of a burst or fricative at a place: one resonance of the front cavity, c/4L (flat and weak when the cavity is tiny). */
 function noiseShape(pl) {
   const lf = pl.lf;
-  if (lf < 1.2) return { ff: lf < 0.2 ? 1800 : 6500, fb: lf < 0.2 ? 5000 : 6000, amp: lf < 0.2 ? 0.45 : 0.35 };
+  if (lf < 1.2) return { ff: lf < 0.2 ? 1800 : 6500, fb: lf < 0.2 ? 5000 : 6000, amp: lf < 0.2 ? 0.45 : 0.2 };
   const ff = Math.min(7000, C_TRACT / (4 * lf));
   return { ff, fb: Math.max(320, 0.3 * ff), amp: 1 };
 }
@@ -244,9 +245,9 @@ function speak(list, o = {}) {
       if (!glottal) { fill(tr.af, s.t1, s.t1 + 0.006, (s.pl.lf < 0.2 ? 0.25 : 0.6) * ns.amp); fill(tr.ff, s.t1, s.t1 + 0.006, ns.ff); fill(tr.fb, s.t1, s.t1 + 0.006, ns.fb); }
       if (vot > 0.004 && nx) { fill(tr.av, s.t1, s.t1 + vot, 0); fill(tr.ah, s.t1 + 0.005, s.t1 + vot, 0.55); fill(tr.b1, s.t1, s.t1 + vot, 320); }
     } else if (s.mn === 'nasal') {
-      fill(tr.av, s.t0, s.t1, 0.8); fill(tr.nz, s.t0, s.t1, NASALZ[s.plName] || 1700); fill(tr.b2, s.t0, s.t1, 300); fill(tr.b3, s.t0, s.t1, 400);
+      fill(tr.av, s.t0, s.t1, 0.38); fill(tr.nz, s.t0, s.t1, NASALZ[s.plName] || 1700); fill(tr.b2, s.t0, s.t1, 300); fill(tr.b3, s.t0, s.t1, 400);
     } else if (s.mn === 'fricative' || s.mn === 'latfric') {
-      if (s.pl.lf > 16) { fill(tr.av, s.t0, s.t1, s.vc ? 0.45 : 0); fill(tr.ah, s.t0, s.t1, s.vc ? 0.5 : 0.9); fill(tr.b1, s.t0, s.t1, 250); }
+      if (s.pl.lf > 16) { fill(tr.av, s.t0, s.t1, s.vc ? 0.4 : 0); fill(tr.ah, s.t0, s.t1, s.vc ? 0.35 : 0.5); fill(tr.b1, s.t0, s.t1, 250); }
       else {
         const sh = s.mn === 'latfric' ? { ff: 3300, fb: 1500, amp: 0.8 } : ns;
         fill(tr.av, s.t0, s.t1, s.vc ? 0.45 : 0); fill(tr.af, s.t0 + 0.01, s.t1 - 0.01, sh.amp * (s.vc ? 0.7 : 1)); fill(tr.ff, s.t0, s.t1, sh.ff); fill(tr.fb, s.t0, s.t1, sh.fb);
@@ -302,7 +303,6 @@ function catmull(pts, n = 7) {
   }
   out.push(pts[pts.length - 1]); return out;
 }
-const clampN = (x, a, b) => Math.max(a, Math.min(b, x));
 /** Jaw opening (0 closed … 1 open) for a tongue-body height hy. */
 const jawOf = (hy) => clampN((1.2 - hy) / 2.4, 0, 1);
 /**

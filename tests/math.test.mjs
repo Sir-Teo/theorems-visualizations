@@ -444,5 +444,21 @@ test('schrodinger1D, crankNicolson1D, wavelengthRGB', () => {
   eq(M.wavelengthRGB(300), [0, 0, 0]); ok(M.wavelengthRGB(530)[1] === 255 && M.wavelengthRGB(530)[2] === 0, 'green'); ok(M.wavelengthRGB(650)[0] > 200, 'red');
 });
 
+test('complex rref, rank, nullspace, charPolyC, clusterRoots', () => {
+  const C = (a, b = 0) => new M.Cx(a, b), i = C(0, 1);
+  // rank-1 complex matrix [[1, i], [i, -1]] (second row = i · first)
+  const A = [[C(1), i], [i, C(-1)]];
+  eq(M.rankC(A), 1); const N = M.nullspaceC(A); eq(N.length, 1);
+  const x = N[0].re.map((r, k) => C(r, N[0].im[k])); const Ax = A.map((row) => row.reduce((s, a, k) => s.add(a.mul(x[k])), C(0)));
+  ok(Ax.every((z) => z.abs() < 1e-12), 'A x = 0');
+  eq(M.rankC([[1, 2], [3, 4]]), 2); eq(M.rankC([[0, 0], [0, 0]]), 0);
+  // charPolyC of [[i, 1], [0, i]] is (λ − i)² = λ² − 2iλ − 1
+  const p = M.charPolyC([[i, C(1)], [C(0), i]]); close(p[0].re, -1, 1e-12); close(p[1].im, -2, 1e-12); close(p[2].re, 1, 1e-12);
+  // a Jordan block J₃(2) + J₁(5): eigC scatters the triple eigenvalue; clusterRoots recovers it
+  const J = [[2, 1, 0, 0], [0, 2, 1, 0], [0, 0, 2, 0], [0, 0, 0, 5]];
+  const cl = M.clusterRoots(M.eigC(J, { vectors: false }).values);
+  eq(cl.length, 2); eq(cl[0].mult, 3); close(cl[0].value.re, 2, 1e-9); close(cl[1].value.re, 5, 1e-9);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

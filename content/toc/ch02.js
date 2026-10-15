@@ -203,8 +203,7 @@ $\hat\delta(q,w)$ is the state reached from $q$ after reading $w$. $M$ **accepts
           P.tex(`y = ${tt(w.slice(split))}`, X((split + n) / 2), yl, { size: 14, color: 'orange' });
           // state labels and rows
           Q.forEach((q, i) => {
-            P.tex(D.states[i].label.replace(/\$/g, ''), 30, Y(i), { size: 16, color: isAcc(D, q) ? 'green' : 'ink' });
-            if (isAcc(D, q)) P.sans('accepting', 30, Y(i) + 17, { size: 9.5, color: 'green' });
+            P.tex((isAcc(D, q) ? '{*}' : '') + D.states[i].label.replace(/\$/g, ''), 34, Y(i), { size: 16, color: isAcc(D, q) ? 'green' : 'ink' });
             P.line(X(0), Y(i), X(n), Y(i), { color: 'grid', width: 1 });
           });
           // every transition between consecutive columns
@@ -492,7 +491,7 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
         const ACC = { or: (a, b) => a || b, and: (a, b) => a && b, minus: (a, b) => a && !b, xor: (a, b) => a !== b };
         let G1, G2, GP, PD;
         function rebuild() {
-          const n1 = M1.states.length, n2 = M2.states.length, X = (j) => 4.8 + j * (8.6 / Math.max(1, n2 - 1)), Y = (i) => 4.6 - i * (3.4 / Math.max(1, n1 - 1));
+          const n1 = M1.states.length, n2 = M2.states.length, X = (j) => 4.8 + j * (8.6 / Math.max(1, n2 - 1)), Y = (i) => 4.75 - i * (3.1 / Math.max(1, n1 - 1));
           M1.states.forEach((q, i) => { q.x = 1.2; q.y = Y(i); });
           M2.states.forEach((q, j) => { q.x = X(j); q.y = 6.75; });
           const states = [], delta = {};
@@ -501,7 +500,9 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
             states.push([id, X(j), Y(i), ACC[op.value](p.acc, q.acc), `$(${p.label.replace(/\$/g, '')},${q.label.replace(/\$/g, '')})$`]);
             delta[id] = {}; for (const c of ['a', 'b']) delta[id][c] = step(M1, p.id, c) + '|' + step(M2, q.id, c);
           }));
-          PD = dfa(['a', 'b'], states, M1.start + '|' + M2.start, delta, { startDir: 180 });
+          // self-loops of the product point away from the grid; the start arrow comes in from the left
+          const loops = {}; M1.states.forEach((p, i) => M2.states.forEach((q, j) => { loops[p.id + '|' + q.id] = i === 0 ? (j === 0 ? 135 : 90) : j === n2 - 1 ? 0 : 270; }));
+          PD = dfa(['a', 'b'], states, M1.start + '|' + M2.start, delta, { startDir: 180, loops });
           if (!G1) { G1 = dfaGraph(v, s, M1, { draggable: false, r: 15, texSize: 14 }); G2 = dfaGraph(v, s, M2, { draggable: false, r: 15, texSize: 14 }); GP = dfaGraph(v, s, PD, { draggable: false, r: 24, texSize: 12.5 }); }
           else { G1.sync(M1); G2.sync(M2); GP.sync(PD); }
           // arrows that would pass through another pair are bent
@@ -510,6 +511,12 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
             const a = GP.node(e.from), b = GP.node(e.to);
             const hits = PD.states.some((q) => { if (q.id === e.from || q.id === e.to) return false; const t = ((q.x - a.x) * (b.x - a.x) + (q.y - a.y) * (b.y - a.y)) / ((b.x - a.x) ** 2 + (b.y - a.y) ** 2); if (t <= 0 || t >= 1) return false; return Math.hypot(a.x + t * (b.x - a.x) - q.x, a.y + t * (b.y - a.y) - q.y) < 0.55; });
             if (hits) e.bend = 54;
+          }
+          // arrows that cross at their midpoints get opposite bends, so that their labels separate
+          const mids = GP.edges.filter((e) => e.from !== e.to).map((e) => { const a = GP.node(e.from), b = GP.node(e.to); return [e, (a.x + b.x) / 2, (a.y + b.y) / 2]; });
+          for (let i = 0; i < mids.length; i++) for (let j = i + 1; j < mids.length; j++) {
+            const [e1, x1, y1] = mids[i], [e2, x2, y2] = mids[j];
+            if (Math.hypot(x1 - x2, y1 - y2) < 0.3 && !(e1.from === e2.to && e1.to === e2.from)) { e1.bend = e1.bend ?? 26; e2.bend = e2.bend ?? 26; }
           }
           if (S) S.reset({ at: 'keep' });
         }
@@ -523,13 +530,13 @@ so that $\hat\delta((s_1,s_2),w)=(\hat\delta_1(s_1,w),\hat\delta_2(s_2,w))$; it 
           // guides from the product token to its two components
           const np = GP.node(pid), n1 = G1.node(f.p), n2 = G2.node(f.q);
           if (np && n1 && n2) { s.line(n1.x + 0.35, n1.y, np.x - 0.5, np.y, { color: 'gold', width: 1.4, dash: [5, 5], alpha: 0.8 }); s.line(n2.x, n2.y - 0.35, np.x, np.y + 0.5, { color: 'gold', width: 1.4, dash: [5, 5], alpha: 0.8 }); }
-          s.rect(3.4, 0.25, 14.8, 5.6, { color: 'faint', width: 1, dash: [4, 4] });
+          s.rect(3.4, 0.55, 14.8, 5.75, { color: 'faint', width: 1, dash: [4, 4] });
           const tok = (acc) => (last ? (acc ? 'green' : 'red') : 'gold');
           drawDFA(v, s, G1, M1, { fill: (id) => (id === f.p ? tok(a1) : null), startColor: 'muted' });
           drawDFA(v, s, G2, M2, { fill: (id) => (id === f.q ? tok(a2) : null), startColor: 'muted' });
           drawDFA(v, s, GP, PD, { fill: (id) => (id === pid ? tok(ap) : null), ring: () => 'accent' });
           s.tex('M_1', 2.3, 5.5, { size: 15, color: 'muted' }); s.tex('M_2', 3.0, 6.75, { size: 15, color: 'muted' });
-          s.text('product  M₁ × M₂', 14.6, 0.55, { align: 'right', size: 12, color: 'muted', weight: 600 });
+          s.tex('\\text{product } M_1\\times M_2', 14.8, 0.2, { align: 'right', size: 13, color: 'muted' });
         });
         v.legend([['gold', 'current states', { dot: true }], ['accent', 'accepting pairs (double ring)', { dot: true }], ['green', 'accept at the end', { dot: true }], ['red', 'reject at the end', { dot: true }]]);
         v.readout(() => {
