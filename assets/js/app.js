@@ -530,6 +530,7 @@ function pageAbout() {
       <li>The <b>lineage</b> view on each page shows prerequisites a chosen number of steps back (redundant shortcuts are hidden).</li>
       <li>The <a href="#/map">map</a> lays out every collection, field by field. Hover any node to light up its full ancestry (blue) and everything that depends on it (green). Faded nodes are planned but not yet written.</li>
       <li><b>Across the atlas</b> links connect the same idea in its different incarnations.</li>
+      <li><a href="#/bridges">Bridges</a> follow one idea across fields, step by step; the <a href="#/timeline">timeline</a> places every dated idea in history; and every page has a <b>plan a path</b> button that lists everything it rests on in learning order.</li>
     </ul>
     <h2>Caveats</h2>
     <p>This is an unofficial study aid, not affiliated with any author or publisher. All statements and explanations are written afresh, in our own words; nothing here replaces the books themselves. Numbering and dependency links were reconstructed and may contain mistakes; ${unverified} items are flagged as “number unverified”. Corrections are very welcome, and the <a href="#/audit">audit list</a> collects every flagged item.</p>
