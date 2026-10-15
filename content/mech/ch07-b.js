@@ -29,7 +29,7 @@ function series(s, ts, ys, upto, st) {
 const maxDev = (a, upto = a.length - 1, ref = a[0]) => { let d = 0; for (let k = 0; k <= upto; k++) d = Math.max(d, Math.abs(a[k] - ref)); return d; };
 const rangeOf = (a, upto = a.length - 1) => { let lo = Infinity, hi = -Infinity; for (let k = 0; k <= upto; k++) { lo = Math.min(lo, a[k]); hi = Math.max(hi, a[k]); } return [lo, hi]; };
 const sci = (v, x) => (Math.abs(x) < 1e-300 ? '0' : v.sci(x, 2));
-const num = (v, x, d = 4) => (x === 0 || Math.abs(x) >= 0.5 * 10 ** -d ? v.fix(x, d) : v.sci(x, 2));
+const num = (v, x, d = 4) => (Math.abs(x) < 1e-30 ? '0' : Math.abs(x) >= 0.5 * 10 ** -d ? v.fix(x, d) : v.sci(x, 2));
 function spring(s, p, q, st = {}) {
   const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, n = st.coils ?? 12, amp = st.amp ?? 0.08, pts = [p];
   const a0 = 0.1, a1 = 0.9;
@@ -110,7 +110,7 @@ Hence if $L$ does not depend explicitly on time — the system is invariant unde
           s3.hline(B.lo - 0.08 * B.band, { color: 'faint', width: 1 });
           series(s3, R.t, B.K.map(kmap), n, { color: 'purple', width: 1.2, alpha: 0.35 });
           series(s3, R.t, B.K.map(kmap), i, { color: 'purple', width: 1.6 });
-          s3.text('k(t)', 0, kmap(B.K[0]), { color: 'purple', size: 11, dx: 6, dy: -9, math: true, align: 'left' });
+          s3.text('k(t)', T, kmap(B.K[n]), { color: 'purple', size: 11, dx: -6, dy: -9, math: true, align: 'right' });
           s3.hline(B.h[0], { color: 'faint', dash: [3, 4] });
           series(s3, R.t, B.h, i, { color: 'blue', width: 3.2 });
           series(s3, R.t, B.pred, i, { color: 'orange', width: 1.8, dash: [7, 5] });
@@ -267,7 +267,7 @@ and its conservation, together with that of $\mathbf P$, says exactly that the c
           for (const [k, col] of [[0, 'blue'], [1, 'orange']]) {
             st.path(C.W.map((w, j) => [w[k], ts[j]]), { color: col, width: 1.2, alpha: 0.3 });
             st.path(C.W.slice(0, i + 1).map((w, j) => [w[k], ts[j]]), { color: col, width: 2.6 });
-            st.path(C.B.y.map((S, j) => [S[k], ts[j]]), { color: 'ink', width: 1, dash: [4, 4], alpha: 0.8 });
+            st.path(C.B.y.slice(0, i + 1).map((S, j) => [S[k], ts[j]]), { color: 'ink', width: 1.1, dash: [4, 4] });
           }
           st.path(C.X.slice(0, i + 1).map((x, j) => [x, ts[j]]), { color: 'green', width: 3 });
           st.hline(ts[i], { color: 'gold', width: 1.2, alpha: 0.7 });
@@ -345,9 +345,9 @@ is. With a wrong coefficient $h'$, $\frac{d}{dt}\big(L_z + \frac{h'}{2\pi}p_z\bi
           // unrolled
           su.field(() => [a, h / (2 * Math.PI)], { spacing: 46, color: 'muted', alpha: 0.3 });
           su.clip(() => {
-            for (let k = -6; k <= 6; k++) {
-              su.line(a * (c * -ZL + TAU * k), -ZL, a * (c * ZL + TAU * k), ZL, { color: 'orange', width: 2, alpha: 0.85 });
-              su.line(a * (c * -ZL + TAU * k + Math.PI), -ZL, a * (c * ZL + TAU * k + Math.PI), ZL, { color: 'orange', width: 1, dash: [3, 4], alpha: 0.5 });
+            for (let k = -9; k <= 9; k++) {
+              su.line(a * (c * -3 + TAU * k), -3, a * (c * 3 + TAU * k), 3, { color: 'orange', width: 2, alpha: 0.85 });
+              su.line(a * (c * -3 + TAU * k + Math.PI), -3, a * (c * 3 + TAU * k + Math.PI), 3, { color: 'orange', width: 1, dash: [3, 4], alpha: 0.5 });
             }
           });
           const wrap = (th) => a * (((th + Math.PI) % TAU + TAU) % TAU - Math.PI);
@@ -565,7 +565,7 @@ so $\theta$ oscillates between the two roots of $U_{\rm eff}(\theta) = E$ (energ
           st.corner(right ? 'predicted ring ✓' : 'predicted ring ✗', 'tl', { color: col, weight: 600 });
           // effective potential
           const samp = []; for (let k = 2; k <= 178; k++) samp.push(U(k));
-          const fin = samp.filter(isFinite), umin = Math.min(...fin), hi = E1 + Math.max(4, 0.8 * (E1 - umin)), lo = Math.min(umin, E1) - 0.15 * (hi - Math.min(umin, E1));
+          const fin = samp.filter(isFinite), umin = Math.max(Math.min(...fin, E1), E1 - 20), hi = E1 + Math.max(4, 0.8 * (E1 - umin)), lo = umin - 0.15 * (hi - umin);
           su.setView([0, 180], [lo, hi]);
           su.fn(Ub, { domain: [0, 180], color: 'muted', dash: [4, 4], width: 1.2 });
           su.fn((x) => (right ? cf(x) : -cf(x)) + lo + 0.02 * (hi - lo), { domain: [1, 179], color: 'purple', dash: [2, 3], width: 1.1, alpha: 0.7 });

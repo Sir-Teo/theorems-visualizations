@@ -36,7 +36,7 @@ const maxDev = (a, upto = a.length - 1, ref = a[0]) => { let d = 0; for (let k =
 /** TeX for a tiny number (use inside $…$). */
 const sci = (v, x) => (Math.abs(x) < 1e-300 ? '0' : v.sci(x, 2));
 /** Fixed decimals, or TeX scientific notation when that would print as zero (use inside $…$). */
-const num = (v, x, d = 4) => (x === 0 || Math.abs(x) >= 0.5 * 10 ** -d ? v.fix(x, d) : v.sci(x, 2));
+const num = (v, x, d = 4) => (Math.abs(x) < 1e-30 ? '0' : Math.abs(x) >= 0.5 * 10 ** -d ? v.fix(x, d) : v.sci(x, 2));
 /** Zigzag spring from p to q. */
 function spring(s, p, q, st = {}) {
   const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, n = st.coils ?? 12, amp = st.amp ?? 0.08, pts = [p];
@@ -97,7 +97,7 @@ so the conjugate (generalized) momentum $p_j$ is a constant of the motion. In ge
       refs: ['Taylor §7.6', 'Goldstein §2.6'],
       tags: ['cyclic coordinates', 'generalized momentum', 'Lagrangian'],
       viz(v) {
-        const Mc = 1, l = 1, g = 9.81, T = 8, DT = 0.002, EV = 5;
+        const Mc = 1, l = 1, g = 9.81, T = 8, DT = 0.001, EV = 10;
         const kS = v.slider('wall spring $k$ (N/m)', 0, 12, 0, { step: 0.25 });
         const mS = v.slider('bob mass $m$ (kg)', 0.2, 3, 1, { step: 0.05 });
         const thS = v.slider('release angle $\\theta_0$ (°)', 5, 100, 65, { step: 1 });
@@ -142,7 +142,7 @@ so the conjugate (generalized) momentum $p_j$ is a constant of the motion. In ge
           s.line(x, py, bx, by, { color: 'ink', width: 2 });
           s.circle(bx, by, 0.055 + 0.03 * Math.cbrt(m), { fill: 'orange', fillAlpha: 0.65, color: 'orange', width: 1.5 });
           s.dot(x, py, { r: 3, color: 'ink' });
-          if (Math.abs(xd) > 0.02) { s.arrow(x, 0.47, x + 0.9 * xd, 0.47, { color: 'orange', width: 2.2, head: 8 }); s.tex('\\dot x', x + 0.9 * xd, 0.47, { color: 'orange', align: xd > 0 ? 'left' : 'right', dx: xd > 0 ? 5 : -5, size: 13 }); }
+          if (Math.abs(xd) > 0.02) { s.arrow(x, 0.47, x + 0.45 * xd, 0.47, { color: 'orange', width: 2.2, head: 8 }); s.tex('\\dot x', x + 0.45 * xd, 0.47, { color: 'orange', align: xd > 0 ? 'left' : 'right', dx: xd > 0 ? 5 : -5, size: 13 }); }
           s.corner(k > 0 ? `L contains x through −½kx²` : 'x is absent from L: cyclic', 'tl', { color: k > 0 ? 'red' : 'green', weight: 600 });
           // momenta
           gp.setView([0, T], R.yr);
@@ -608,7 +608,7 @@ If $L = T_2 + T_1 + T_0 - U$ with $T_k$ homogeneous of degree $k$ in the velocit
           if (Math.abs(w) > 0.15 * (B.wr[1] - B.wr[0]) / 2) sL.tex('\\dot q\\,p', w, (icpt + L) / 2, { color: 'muted', align: w > 0 ? 'left' : 'right', dx: w > 0 ? 5 : -5, size: 13 });
           sL.dot(w, L, { r: 6, color: 'gold' });
           sL.dot(0, icpt, { r: 6, color: 'green' });
-          sL.tex('-h', 0, icpt, { color: 'green', align: w > 0 ? 'right' : 'left', dx: w > 0 ? -8 : 8, dy: 10, size: 14 });
+          sL.tex('-h', 0, icpt, { color: 'green', align: w > 0 ? 'right' : 'left', dx: w > 0 ? -9 : 9, dy: 14, size: 14 });
           sL.corner(`q = ${v.fix(q, 2)}, slope p = ∂L/∂q̇ = ${v.fix(p, 3)}`, 'tl', { color: 'muted' });
           sE.setView([0, T], B.er);
           series(sE, R.t, B.h, i, { color: 'blue', width: 3 });

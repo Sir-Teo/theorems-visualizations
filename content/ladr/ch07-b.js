@@ -591,7 +591,6 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
           P.tex('Tv', Tv[0], Tv[1], { color: 'accent', dx: 14, dy: -8, size: 14 });
           P.arrow(0, 0, vx, vy, { color: 'gold', width: 2.2 });
           const sa = Math.abs(s) < 1e-9, pos = Math.min(l1, l2) >= -1e-9, okPos = pos && sa;
-          P.corner(`q(v) = ⟨Tv, v⟩ = ${pn(vq, 3)}`, 'tl', { color: 'ink', weight: 700 });
           const kind = !pos ? 'saddle or dome: not positive' : !sa ? 'form ≥ 0, but T ≠ T*: not positive' : Math.min(l1, l2) > 1e-9 ? 'bowl: positive (and invertible)' : 'trough: positive, not invertible';
           S3.text(kind, [0, 0, -1.55], { color: okPos ? 'green' : 'red', size: 13.5 });
           let mn = Infinity; for (let k = 0; k < 720; k++) mn = Math.min(mn, Qd((Math.PI * k) / 720));
@@ -599,7 +598,7 @@ When $V$ is a complex vector space, the requirement that $T$ be self-adjoint can
           st = { T, l1, l2, mn, sa, okPos, vq };
         });
         v.legend([['green', '$q > 0$'], ['red', '$q < 0$'], ['purple', 'eigen-axes / zero set of $q$', { dash: true }], ['accent', '$Tv$']]);
-        v.readout(() => st && `$T = ${mtex(st.T)},\\quad \\min_{\\|v\\| = 1}\\langle Tv, v\\rangle = ${tn(st.mn, 3)},\\quad T ${st.sa ? '= T^*' : '\\ne T^*'}$` + (st.okPos ? ' — self-adjoint and the form is never negative: **positive**.' : st.mn < -1e-9 ? ` — the form takes negative values (in the red directions): **not positive**.` : ' — the form is never negative, but $T$ is not self-adjoint: **not positive** (the skew part is invisible in $\\langle Tv, v\\rangle$).'));
+        v.readout(() => st && `$q(v) = ${tn(st.vq, 3)},\\quad T = ${mtex(st.T)},\\quad \\min_{\\|v\\| = 1}\\langle Tv, v\\rangle = ${tn(st.mn, 3)},\\quad T ${st.sa ? '= T^*' : '\\ne T^*'}$` + (st.okPos ? ' — self-adjoint and the form is never negative: **positive**.' : st.mn < -1e-9 ? ` — the form takes negative values (in the red directions): **not positive**.` : ' — the form is never negative, but $T$ is not self-adjoint: **not positive** (the skew part is invisible in $\\langle Tv, v\\rangle$).'));
       },
     },
     // ------------------------------------------------------------------ 7.38
@@ -846,11 +845,11 @@ in other words, $S$ preserves norms.`,
       viz(v) {
         const KS = v.slider('$\\|Se_2\\|$', 0.4, 1.6, 1, { step: 0.05 });
         const AN = v.slider('angle of $Se_1, Se_2$ (°)', 40, 140, 90, { step: 1 });
-        const TW = v.slider('twist of $Se_2$ (°)', 0, 360, 40, { step: 1 });
+        const TW = v.slider('twist of $Se_2$ (°)', 0, 360, 110, { step: 1 });
         const D = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, height: 360, weight: 0.8, title: 'domain $\\mathbf R^2$' });
         const vh = D.handle(1, 0.45, { color: 'gold', label: 'v' });
         const wh = D.handle(-0.45, 0.85, { color: 'purple', label: 'w' });
-        const S = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 360, weight: 1.2, title: 'target $\\mathbf R^3$ and its unit sphere' });
+        const S = v.stage({ x: [-1.75, 1.75], y: [-1.7, 1.7], equal: true, axes: false, height: 360, weight: 1.2, title: 'target $\\mathbf R^3$ and its unit sphere' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.35, axis: 1.3, lim: 1.25 });
         const hn = sc.handle(unit([0.8, -0.3, 0.45]), { color: 'teal', label: 'Se₁', snap: (p) => (len(p) > 1e-3 ? unit(p) : [1, 0, 0]) });
         const ang = (a, b) => Math.acos(clamp(dot(a, b) / (len(a) * len(b) || 1), -1, 1)) * DEG;

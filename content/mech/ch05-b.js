@@ -400,7 +400,9 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
           pos[0] = [P1.x, P1.y]; pos[N] = [P2.x, P2.y];
           const cat = catenaryThrough(P1.x, P1.y, P2.x, P2.y, ellS.value), F = fit([cat.x0, cat.y0, cat.c]);
           s.hline(cat.y0, { color: 'purple', dash: [2, 4], width: 1.4 });
-          s.text(`λ = ${v.fix(cat.y0, 3)} m: tension ∝ height above this line`, -2.25, cat.y0, { color: 'purple', size: 11.5, baseline: 'bottom', dy: -3 });
+          const yb = s.bounds.y[0] + 0.08;
+          if (cat.y0 > yb + 0.12) s.text(`λ = ${v.fix(cat.y0, 3)} m: tension ∝ height above this line`, -2.25, cat.y0, { color: 'purple', size: 11.5, baseline: 'bottom', dy: -3 });
+          else s.text(`λ = ${v.fix(cat.y0, 3)} m (line below the panel): tension ∝ height above it`, -2.25, yb, { color: 'purple', size: 11.5, baseline: 'bottom' });
           let ymin = Infinity, xmin = 0; pos.forEach((p) => { if (p[1] < ymin) { ymin = p[1]; xmin = p[0]; } });
           let parDev = 0, parF = null;
           if (para.value) {

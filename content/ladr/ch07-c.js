@@ -883,7 +883,7 @@ $$S \text{ is an isometry} \iff \text{all singular values of } S \text{ equal } 
             P.line(-2.1 * u[0], -2.1 * u[1], 2.1 * u[0], 2.1 * u[1], { color: c, width: 1, alpha: 0.35 });
             for (const sg of [1, -1]) P.dot(sg * s[k] * u[0], sg * s[k] * u[1], { color: c, r: 4.5 });
             const lp = scl(u, Math.max(s[0], 1) + 0.38);
-            P.tex(`s_${k + 1} = ${tn(s[k])}`, lp[0], lp[1], { color: c, size: 14 });
+            P.tex(`s_${k + 1} = ${tn(s[k])}`, lp[0], lp[1], { color: c, size: 14, dy: -10 });
           }
           P.text('unit circle', 0, -1, { color: 'green', size: 11, dy: 12, align: 'center' });
           st = { A, s, iso, nv: len(vv), nSv: len(Sv), ev: v.M.eig2(A) };
@@ -995,7 +995,7 @@ $$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \q
           const out = add(scl(e[0], coef[0]), scl(e[1], coef[1])), direct = adj ? mv(tr(T), w) : mv(M.pinv(T), w);
           const oc = adj ? 'orange' : 'green';
           // W
-          if (m === 1) { W.line(-4 * f[0][0], -4 * f[0][1], 4 * f[0][0], 4 * f[0][1], { color: 'green', width: 6, alpha: 0.22 }); const lp = scl(f[0], f[0][1] >= 0 ? 2.1 : -2.1); W.tex('\\operatorname{range} T', lp[0], lp[1], { color: 'green', size: 13, dy: -12 }); }
+          if (m === 1) { W.line(-4 * f[0][0], -4 * f[0][1], 4 * f[0][0], 4 * f[0][1], { color: 'green', width: 6, alpha: 0.22 }); const lp = scl(f[0], f[0][1] >= 0 ? -2.0 : 2.0); W.tex('\\operatorname{range} T', lp[0], lp[1], { color: 'green', size: 13, dy: 16 }); }
           W.path(ellPts(T), { color: 'accent', width: 1, alpha: 0.5, dash: [3, 3] });
           f.forEach((u, k) => {
             const col = k ? 'purple' : 'blue', foot = scl(u, c[k]);
@@ -1029,7 +1029,8 @@ $$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \q
           V.dot(direct[0], direct[1], { color: oc, r: 10, hollow: true, width: 2 });
           V.arrow(0, 0, out[0], out[1], { color: oc, width: 3 });
           const bx = V.bounds, inside = out[0] > bx.x[0] && out[0] < bx.x[1] && out[1] > bx.y[0] && out[1] < bx.y[1];
-          if (inside) V.tex(adj ? 'T^*w' : 'T^\\dagger w', out[0], out[1], { color: oc, size: 15, dx: 16, dy: -12 });
+          const ol = sub(out, scl(perp(unit(out)), 0.36));
+          if (inside) V.tex(adj ? 'T^*w' : 'T^\\dagger w', ol[0], ol[1], { color: oc, size: 15 });
           else V.corner(`T†w has length ${pf(len(out), 1)}: off the panel (s₂ = ${pf(s[1], 3)} is tiny)`, 'tl', { color: 'red', weight: 700 });
           st = { T, s, m, adj, out, direct, c };
         });
@@ -1156,8 +1157,8 @@ for all $v \in V$. Equality holds for $v = e_1$ in a singular value decompositio
           for (const sg of [1, -1]) { S.dot(sg * e[0][0], sg * e[0][1], { color: 'blue', r: 4 }); S.dot(sg * s[0] * f[0][0], sg * s[0] * f[0][1], { color: 'green', r: 5.5 }); }
           const t1 = scl(f[0], s[0]);
           S.arrow(0, 0, t1[0], t1[1], { color: 'green', width: 2.2 });
-          const lp = scl(f[0], s[0] + 0.55), side = e[0][0] * f[0][1] - e[0][1] * f[0][0] > 0 ? -1 : 1, le = add(e[0], scl(perp(e[0]), 0.24 * side));
-          S.tex('s_1 f_1 = Te_1', lp[0], lp[1], { color: 'green', size: 14 });
+          const side = e[0][0] * f[0][1] - e[0][1] * f[0][0] > 0 ? -1 : 1, le = add(e[0], scl(perp(e[0]), 0.24 * side));
+          S.tex('s_1 f_1 = Te_1', t1[0], t1[1], { color: 'green', size: 14, align: f[0][0] >= 0 ? 'left' : 'right', dx: f[0][0] >= 0 ? 12 : -12, dy: 4 });
           S.tex('e_1', le[0], le[1], { color: 'blue', size: 14 });
           S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });
           S.arrow(0, 0, Tv[0], Tv[1], { color: 'purple', width: 2.6 });

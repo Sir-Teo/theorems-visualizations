@@ -145,14 +145,14 @@ export default {
 
 If $m$ grows in proportion to $n$, so that $\alpha=O(1)$, all dictionary operations take $O(1)$ expected time.`,
       idea: String.raw`(a) The searched key lands in a uniformly random bucket, whose expected length is $n/m=\alpha$. (b) With insertion at the head, finding the $i$-th inserted key scans it plus the keys inserted after it into the same bucket; by indicator variables and linearity of expectation (3.3) that is $1+\sum_{j>i}\frac1m$, and averaging over $i$ gives $1+\frac{n-1}{2m}$. The assumption is about the hash function *and* the keys together: a modulus sharing a factor with all the keys breaks it, which 5.15–5.17 address by choosing $h$ at random.`,
-      caption: String.raw`Measured average costs (dots) for $\alpha$ from 0.25 to 5, each from a table of about 1000 buckets with $\alpha m$ keys, against $1+\alpha$ and $1+\alpha/2$ (the cost counts the hash evaluation as 1). The slider picks one $\alpha$, whose chain-length histogram is compared with the Poisson law that uniform hashing predicts. Switch to keys that are multiples of 8 hashed mod 1000 to watch the guarantee fail — and a prime modulus repair it.`,
+      caption: String.raw`Measured average costs (dots) for $\alpha$ from 0.25 to 5, each from a table of about 1000 buckets with $\alpha m$ keys: an unsuccessful search costs 1 (the hash) plus the keys it examines, against $1+\alpha$; a successful one costs the keys it examines, the one found included, against $1+\alpha/2$. The slider picks one $\alpha$, whose chain-length histogram is compared with the Poisson law that uniform hashing predicts. Switch to keys that are multiples of 8 hashed mod 1000 to watch the guarantee fail — and a prime modulus repair it.`,
       deps: ['algo-5.11', 'algo-3.3'],
       refs: ['CLRS 4e §11.2'],
       tags: ['hashing'],
       viz(v) {
         const sc = v.select('keys and hash', [{ value: 'good', label: 'random keys, $k \\bmod 1000$' }, { value: 'bad', label: 'multiples of 8, $k \\bmod 1000$' }, { value: 'prime', label: 'multiples of 8, $k \\bmod 997$' }], 'good');
         const aS = v.slider('load factor $\\alpha$', 0.25, 5, 2, { step: 0.25 });
-        const P = v.stage({ x: [0, 5.15], y: [0, 9], axes: 'box', height: 320, minWidth: 300, title: 'average keys examined + 1 (dots: measured)', xlabel: 'α' });
+        const P = v.stage({ x: [0, 5.15], y: [0, 9], axes: 'box', height: 320, minWidth: 300, title: 'average search cost (dots: measured)', xlabel: 'α' });
         const Hs = v.stage({ x: [-0.7, 14.7], y: [0, 0.6], axes: 'box', height: 320, minWidth: 260, title: 'fraction of buckets with each chain length', xlabel: 'chain length' });
         const cache = {}, AL = Array.from({ length: 20 }, (_, i) => (i + 1) / 4);
         const sim = (kind) => {
@@ -164,7 +164,7 @@ If $m$ grows in proportion to $n$, so that $\alpha=O(1)$, all dictionary operati
             let suc = 0; for (let j = 0; j < m; j++) suc += (cnt[j] * (cnt[j] + 1)) / 2;
             let uns = 0; const S = 3000; for (let t = 0; t < S; t++) uns += 1 + cnt[key() % m];
             const hist = new Map(); let mx = 0; for (let j = 0; j < m; j++) { hist.set(cnt[j], (hist.get(cnt[j]) || 0) + 1); mx = Math.max(mx, cnt[j]); }
-            return { a, n, m, uns: uns / S, suc: 1 + suc / n - 1 + 0, sucExam: suc / n, hist, mx, used: [...cnt].filter((c) => c).length };
+            return { a, n, m, uns: uns / S, sucExam: suc / n, hist, mx, used: [...cnt].filter((c) => c).length };
           });
           return (cache[kind] = out);
         };
@@ -175,7 +175,7 @@ If $m$ grows in proportion to $n$, so that $\alpha=O(1)$, all dictionary operati
           P.fn((a) => 1 + a / 2, { color: 'teal', width: 2, dash: [7, 4], domain: [0, 5.15] });
           let off = false;
           for (const d of D) {
-            const su = 1 + d.sucExam; // hash + keys examined
+            const su = d.sucExam; // keys examined, the one found included
             if (d.uns <= YM) P.dot(d.a, d.uns, { r: 3.6, color: 'accent' }); else off = true;
             if (su <= YM) P.dot(d.a, su, { r: 3.6, color: 'purple' });
           }
@@ -193,7 +193,7 @@ If $m$ grows in proportion to $n$, so that $\alpha=O(1)$, all dictionary operati
         v.legend([['accent', 'unsuccessful (measured)', { dot: true }], ['purple', 'successful (measured)', { dot: true }], ['green', '$1+\\alpha$ / Poisson($\\alpha$)'], ['teal', '$1+\\alpha/2$', { dash: true }]]);
         v.readout(() => {
           const { cur } = info, a = cur.a, n = cur.n;
-          const base = `At $\\alpha = ${a}$ ($n = ${tnum(n)}$, $m = ${cur.m}$): unsuccessful **${v.fix(cur.uns, 2)}** vs $1+\\alpha = ${v.fix(1 + a, 2)}$ · successful **${v.fix(1 + cur.sucExam, 2)}** vs $1 + (1+\\frac{\\alpha}{2}-\\frac{\\alpha}{2n}) = ${v.fix(2 + a / 2 - a / (2 * n), 2)}$ · longest chain ${cur.mx}`;
+          const base = `At $\\alpha = ${a}$ ($n = ${tnum(n)}$, $m = ${cur.m}$): unsuccessful **${v.fix(cur.uns, 2)}** vs $1+\\alpha = ${v.fix(1 + a, 2)}$ · successful **${v.fix(cur.sucExam, 2)}** vs $1+\\frac{\\alpha}{2}-\\frac{\\alpha}{2n} = ${v.fix(1 + a / 2 - a / (2 * n), 2)}$ · longest chain ${cur.mx}`;
           return base + (sc.value === 'bad' ? ` · only ${cur.used} of 1000 buckets are ever used: every key is $\\equiv 0 \\pmod 8$ and so is $1000$, **the uniformity assumption fails** ✗` : ' ✓');
         });
       },
@@ -223,7 +223,7 @@ Deletion must leave a "deleted" marker, since emptying a slot would cut the prob
         const R = v.stage({ x: [-1.4, 1.4], y: [-1.4, 1.4], equal: true, axes: false, height: 370, minWidth: 330 });
         const B = v.stage({ x: [0.3, 28.7], y: [0, 14], axes: 'box', height: 370, minWidth: 240, title: 'probes used by each insertion', xlabel: 'key number' });
         const ang = (i) => Math.PI / 2 - (2 * Math.PI * i) / m, P = (i, rr = 1) => [rr * Math.cos(ang(i)), rr * Math.sin(ang(i))];
-        const runCol = (L) => (L >= 8 ? 'red' : L >= 5 ? 'orange' : L >= 3 ? 'accent' : 'teal');
+        const runCol = (L) => (L >= 8 ? 'red' : L >= 5 ? 'purple' : L >= 3 ? 'accent' : 'teal');
         let info = null;
         v.render(() => {
           const n = nS.value, keys = distinct(v.rng(seed * 13), 28, 0, 999), T = new Array(m).fill(null), costs = [], seqs = [];
@@ -258,7 +258,7 @@ Deletion must leave a "deleted" marker, since emptying a slot would cut the prob
           costs.forEach((c, t) => B.rect(t + 0.62, 0, t + 1.38, c, { fill: t === n - 1 ? 'gold' : pr.value === 'lin' ? 'orange' : 'teal', fillAlpha: 0.55, color: t === n - 1 ? 'gold' : pr.value === 'lin' ? 'orange' : 'teal', width: 1 }));
           info = { n, costs, runs, lastSeq, keys };
         });
-        v.legend([['gold', 'newest key', { area: true }], ['orange', 'its earlier probes'], ['teal', 'run of 1–2'], ['accent', '3–4'], ['orange', '5–7'], ['red', '8 or more occupied slots']]);
+        v.legend([['gold', 'newest key', { area: true }], ['orange', 'its earlier probes'], ['teal', 'run of 1–2'], ['accent', '3–4'], ['purple', '5–7'], ['red', '8 or more occupied slots']]);
         v.readout(() => {
           const { n, costs, runs, lastSeq } = info; if (!n) return 'Empty table.';
           const avg = costs.reduce((a, b) => a + b, 0) / n, longest = Math.max(0, ...runs.map((r) => r[1]));
@@ -449,7 +449,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const keysMod = Array.from({ length: n }, (_, i) => 3 + m * (5 + 7 * i));
         let keys = keysMod.slice();
         const ksel = v.select('keys', [{ value: 'mod', label: 'adversarial for $k \\bmod 16$' }, { value: 'rand', label: 'random' }], 'mod', { onChange: (x) => { mode = x; keys = x === 'mod' ? keysMod.slice() : Array.from({ length: n }, () => Math.floor(r() * p)); } });
-        v.button('Draw a new h', () => { a = 1 + Math.floor(r() * (p - 1)); b = Math.floor(r() * p); });
+        v.button('Draw a new h', () => { a = 1 + Math.floor(r() * (p - 1)); b = Math.floor(r() * p); if (mode === 'attack') mode = 'stale'; });
         v.button('Attack this h', () => { const h = uh(a, b, p, m), t = h(keys[0]), out = [keys[0]]; for (let x = 1; out.length < n && x < p; x++) if (h(x) === t && x !== keys[0]) out.push(x); keys = out; mode = 'attack'; });
         const A = v.stage({ x: [-0.7, 15.7], y: [0, 25], axes: 'box', height: 230, minWidth: 260, title: 'fixed $h(k) = k \\bmod 16$', xlabel: 'bucket' });
         const B = v.stage({ x: [-0.7, 15.7], y: [0, 25], axes: 'box', height: 230, minWidth: 260, title: 'random $h_{a,b}$ from the universal family', xlabel: 'bucket' });
@@ -475,7 +475,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         v.legend([['red', 'chains under a function the keys were chosen against', { area: true }], ['accent', 'chains under a fresh random $h$', { area: true }], ['green', 'load factor $\\alpha = 1.5$ / bound', { dash: true }]]);
         v.readout(() => {
           const { fl, rl, mean } = info;
-          return `$n = ${n}$, $m = ${m}$, $\\alpha = ${n / m}$ · longest chain: fixed function **${fl}**, current random $h$ **${rl}**${mode === 'attack' ? ' (the keys were picked after seeing this $h$ — draw a new one)' : ''} · average over 2000 draws of the keys sharing the first key's bucket **${v.fix(mean, 3)}** $\\le (n-1)/m = ${v.fix((n - 1) / m, 3)}$ ${mean <= (n - 1) / m * 1.04 ? '✓' : ''} · expected search cost $\\le 1 + \\alpha$`;
+          return `$n = ${n}$, $m = ${m}$, $\\alpha = ${n / m}$ · longest chain: fixed function **${fl}**, current random $h$ **${rl}**${mode === 'attack' ? ' (the keys were picked after seeing this $h$ — draw a new one)' : mode === 'stale' ? ' (keys chosen against the previous $h$: harmless now)' : ''} · average over 2000 draws of the keys sharing the first key's bucket **${v.fix(mean, 3)}** $\\le (n-1)/m = ${v.fix((n - 1) / m, 3)}$ ${mean <= (n - 1) / m * 1.04 ? '✓' : ''} · expected search cost $\\le 1 + \\alpha$`;
         });
       },
     },
@@ -512,7 +512,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const Q = v.stage({ x: [1, 6], y: [0, 0.5], axes: 'box', height: 380, minWidth: 220, title: '$\\sum_j b_j^2 / n$ over 3000 draws of $h$', xlabel: 'space / n' });
         s.onClick((x, y) => { const n = rows.length, j = Math.round(n - 1 - y); if (j < 0 || j >= n) return; const row = rows[j]; if (!row.slots) return; const w = cellW(); const i = Math.floor(x / w); if (i >= 0 && i < row.slots.length && row.slots[i] != null) look = row.slots[i]; });
         const cellW = () => { const mx = Math.max(1, ...rows.map((rw) => rw.keys.length ** 2)); return Math.min(1.6, 25 / mx); };
-        const hcache = new Map();
+        const hcache = new Map(); let info = null;
         v.render(() => {
           const n = rows.length, w = cellW();
           s.setView([-4.2, 29.5], [-0.75, n + 0.2]);

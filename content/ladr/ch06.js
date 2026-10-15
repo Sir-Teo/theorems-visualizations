@@ -756,7 +756,6 @@ with equality if and only if one of $u, v$ is a scalar multiple of the other. Fo
           R.tex(`|\\langle u,v\\rangle| = ${tn(a)}`, x0 + (k * a) / 2, y0, { color: 'green', size: 14, dy: 16 });
           if (b > 0.05 * h) R.tex(`\\|v\\|\\|w\\| = ${tn(b)}`, x0 + k * a, y0 + (k * b) / 2, { color: 'purple', size: 14, align: a < 0.55 * h ? 'left' : 'right', dx: a < 0.55 * h ? 8 : -8 });
           R.texPx(`\\text{hypotenuse } \\|u\\|\\,\\|v\\| = ${tn(h)}`, 12, 12, { color: 'accent', size: 14, align: 'left', baseline: 'top' });
-
           st = { a, b, h, nw };
         });
         v.legend([['accent', '$u$; hypotenuse $\\|u\\|\\|v\\|$'], ['orange', '$v$'], ['gold', 'projection $cv$'], ['purple', 'parallelogram, area $\\|v\\|\\|w\\|$', { area: true }], ['green', '$|\\langle u, v\\rangle|$']]);
@@ -782,7 +781,6 @@ with equality if and only if one of $u, v$ is a nonnegative real multiple of the
       tags: ['inequalities', 'norms'],
       viz(v) {
         const S = v.stage({ x: [-1.7, 3.1], y: [-1.4, 2.45], equal: true, height: 390, weight: 1.35, minWidth: 320 });
-
         const R = v.stage({ x: [0, 1], y: [0, 1], height: 390, minWidth: 250, axes: false, title: 'the proof, as lengths' });
         const uh = S.handle(1.5, 0.5, { color: 'accent', label: 'u' });
         const bh = S.handle(0.5, 1.7, {
@@ -873,7 +871,6 @@ the squared diagonals of a parallelogram add up to the sum of the squares of its
           arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 }); arrowTo(S, 0, 0, V[0], V[1], { color: 'orange', width: 2.6 });
           S.tex('u+v', s[0], s[1], { color: 'green', size: 14, dx: 12, dy: -8, align: 'left' });
           S.tex('u-v', 0.35 * U[0] + 0.65 * V[0], 0.35 * U[1] + 0.65 * V[1], { color: 'purple', size: 14, dx: -8, dy: -10, align: 'right' });
-
           // ratio as a function of the rotation angle
           const pts = []; let mn = Infinity, mx = -Infinity;
           for (let k = 0; k <= 360; k += 1) { const r = ratio(N, rot(u0, (k * Math.PI) / 180), rot(v0, (k * Math.PI) / 180)); pts.push([k, r]); mn = Math.min(mn, r); mx = Math.max(mx, r); }
@@ -1030,14 +1027,15 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
         const M = v.M;
         const Q = [unit3([1, -0.35, 0.15]), null, null];
         Q[1] = unit3(sub3([0.25, 1, 0.3], mul3(Q[0], dot3([0.25, 1, 0.3], Q[0])))); Q[2] = cross3(Q[0], Q[1]);
-        const sq = v.slider('squeeze $e_3$', 0, 1, 1, { step: 0.01 });
-        const A = [v.slider('$a_1$', -1.5, 1.5, 0.5, { step: 0.01 }), v.slider('$a_2$', -1.5, 1.5, 0.5, { step: 0.01 }), v.slider('$a_3$', -1.5, 1.5, -0.7071067811865476, { step: 0.0000001 })];
-
-        let F = null;
+        const sq = v.slider('squeeze $e_3$', 0, 1, 0, { step: 0.01 });
+        const A = [v.slider('$a_1$', -1.5, 1.5, 0.9, { step: 0.01 }), v.slider('$a_2$', -1.5, 1.5, 0.6, { step: 0.01 }), v.slider('$a_3$', -1.5, 1.5, -0.5, { step: 0.01 })];
+        let F = null, exact = null; // the search result, kept unrounded while the sliders still show it
+        const coeffs = () => { const a = A.map((s, i) => (exact && Math.abs(s.value - exact[i]) < 0.006 ? exact[i] : s.value)); if (exact && a.some((x, i) => x !== exact[i])) exact = null; return a; };
         v.button('search for a zero combination', () => {
-          const { S: Sg, V } = M.svd(M.transpose(F)), r = Math.hypot(...A.map((s) => s.value)) || 1, vmin = V.map((row) => row[2]);
-          const sgn = Math.sign(vmin.reduce((s, x, i) => s + x * A[i].value, 0)) || 1;
-          A.forEach((s, i) => s.set(Math.max(-1.5, Math.min(1.5, sgn * r * vmin[i]))));
+          const { V } = M.svd(M.transpose(F)), a = coeffs(), r = Math.min(1.5, Math.hypot(...a) || 1), vmin = V.map((row) => row[2]);
+          const sgn = Math.sign(vmin.reduce((s, x, i) => s + x * a[i], 0)) || 1;
+          exact = vmin.map((x) => sgn * r * x);
+          A.forEach((s, i) => s.set(exact[i]));
         });
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.65, 1.95], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.28, axis: 1.45, lim: 1.6 });
@@ -1047,7 +1045,7 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
           const s = sq.value, d = unit3(add3(Q[0], Q[1]));
           const E = [Q[0], Q[1], s >= 1 ? d : unit3(add3(mul3(Q[2], 1 - s), mul3(d, s)))];
           F = E; // rows e_k; the combination is Fᵀa
-          const a = A.map((x) => x.value), r = Math.hypot(...a), X = E.reduce((acc, e, k) => add3(acc, mul3(e, a[k])), ZERO);
+          const a = coeffs(), r = Math.hypot(...a), X = E.reduce((acc, e, k) => add3(acc, mul3(e, a[k])), ZERO);
           const { U, S: Sg } = M.svd(M.transpose(E)), axes = [0, 1, 2].map((i) => mul3([U[0][i], U[1][i], U[2][i]], Sg[i] * r));
           sc.begin();
           for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) sc.path(Array.from({ length: 73 }, (_, k) => add3(mul3(axes[i], Math.cos((TAU * k) / 72)), mul3(axes[j], Math.sin((TAU * k) / 72)))), { color: 'purple', width: 1, alpha: 0.45 });
@@ -1391,7 +1389,6 @@ $$\operatorname{span}(v_1, \dots, v_k) = \operatorname{span}(e_1, \dots, e_k) \q
           if (i >= 3 && i < 6 && ok[1]) { sc.arrow(ZERO, f2, { color: 'purple', width: 3 }); sc.tex('f_2', mul3(f2, 1.12), { color: 'purple', size: 15 }); if (ok[0]) rightMark3(sc, ZERO, f1, f2, 0.15, { color: 'green' }); }
           if (i === 5) { if (ok[2]) { sc.arrow(ZERO, f3, { color: 'pink', width: 3 }); sc.tex('f_3', mul3(f3, 1.12), { color: 'pink', size: 15 }); if (ok[1]) rightMark3(sc, ZERO, f2, f3, 0.15, { color: 'green' }); } else sc.dot(ZERO, { color: 'red', r: 7 }); }
           if (i >= 6) es.forEach((e, k) => { if (e) { sc.arrow(ZERO, e, { color: COL[k], width: 3.2 }); sc.tex(`e_${k + 1}`, mul3(e, 0.6), { color: COL[k], size: 15, dx: 11, dy: -9 }); } });
-
           if (i >= 7 && es.every(Boolean)) for (const [a, b] of [[0, 1], [0, 2], [1, 2]]) rightMark3(sc, ZERO, es[a], es[b], 0.14, { color: 'green' });
           sc.flush();
           const fail = !ok[1] ? 2 : !ok[2] ? 3 : 0;
@@ -1404,7 +1401,6 @@ $$\operatorname{span}(v_1, \dots, v_k) = \operatorname{span}(e_1, \dots, e_k) \q
           const { es, fs, fail, i } = st;
           if (fail) return `The list is linearly dependent ($v_${fail} \\in \\operatorname{span}$ of the earlier ones), so $f_${fail} = 0$: Gram–Schmidt needs independence.`;
           if (i < 6) return `So far: $\\langle f_1, f_2\\rangle = ${tn(dot3(fs[0], fs[1]), 6)}$, $\\langle f_1, f_3\\rangle = ${tn(dot3(fs[0], fs[2]), 6)}$, $\\langle f_2, f_3\\rangle = ${tn(dot3(fs[1], fs[2]), 6)}$; lengths $\\|f_k\\| = ${fs.map((f) => tn(len3(f), 3)).join(', ')}$ — orthogonal, not yet unit.`;
-
           const G = es.map((a) => es.map((b) => dot3(a, b)));
           return `Gram matrix of $e_1, e_2, e_3$: $${mtex(G, 3)}$ — the identity, so the output is orthonormal.`;
         });

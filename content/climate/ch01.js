@@ -117,7 +117,37 @@ function isoSegments(F, xs, ys, level) {
   }
   return out;
 }
-const SIGMA = 5.670374419e-8; // only for helper defaults; viz code reads v.M.CONST.sigma
+/**
+ * Mie scattering by a homogeneous sphere of real refractive index m at size parameter x = 2πr/λ (the Bohren–Huffman
+ * BHMIE recurrences). Returns {qsca, a, b}: the scattering efficiency and the coefficients a_n, b_n as [re, im].
+ */
+function mie(x, m) {
+  const nstop = Math.round(x + 4.05 * Math.cbrt(x) + 2), y = m * x, nmx = Math.round(Math.max(nstop, Math.abs(y)) + 16);
+  const D = new Float64Array(nmx + 1);
+  for (let n = nmx; n >= 2; n--) D[n - 1] = n / y - 1 / (D[n] + n / y);
+  let psi0 = Math.cos(x), psi1 = Math.sin(x), chi0 = -Math.sin(x), chi1 = Math.cos(x), q = 0;
+  const A = [], Bc = [];
+  const coef = (t, psi, chi) => { const re = t * psi - psi1, im = -(t * chi - chi1), d = re * re + im * im; return [(re * re) / d, (re * -im) / d]; }; // re/(re + i·im)
+  for (let n = 1; n <= nstop; n++) {
+    const psi = ((2 * n - 1) / x) * psi1 - psi0, chi = ((2 * n - 1) / x) * chi1 - chi0;
+    const an = coef(D[n] / m + n / x, psi, chi), bn = coef(m * D[n] + n / x, psi, chi);
+    A.push(an); Bc.push(bn);
+    q += (2 * n + 1) * (an[0] ** 2 + an[1] ** 2 + bn[0] ** 2 + bn[1] ** 2);
+    psi0 = psi1; psi1 = psi; chi0 = chi1; chi1 = chi;
+  }
+  return { qsca: (2 / (x * x)) * q, a: A, b: Bc };
+}
+/** Unpolarised scattered intensity (|S1|² + |S2|²)/2 at cos θ = mu from Mie coefficients. */
+function mieIntensity(r, mu) {
+  let pi0 = 0, pi1 = 1, s1r = 0, s1i = 0, s2r = 0, s2i = 0;
+  for (let n = 1; n <= r.a.length; n++) {
+    const tau = n * mu * pi1 - (n + 1) * pi0, f = (2 * n + 1) / (n * (n + 1)), [ar, ai] = r.a[n - 1], [br, bi] = r.b[n - 1];
+    s1r += f * (ar * pi1 + br * tau); s1i += f * (ai * pi1 + bi * tau);
+    s2r += f * (ar * tau + br * pi1); s2i += f * (ai * tau + bi * pi1);
+    const p = ((2 * n + 1) * mu * pi1 - (n + 1) * pi0) / n; pi0 = pi1; pi1 = p;
+  }
+  return (s1r * s1r + s1i * s1i + s2r * s2r + s2i * s2i) / 2;
+}
 
 export default {
   collection: 'climate',
@@ -495,7 +525,7 @@ $$\frac{S(1-\alpha)}{4} = \sigma T_e^4,\qquad T_e = \Big(\frac{S(1-\alpha)}{4\si
 $T_e$ is the **effective (emission) temperature**: the temperature of the blackbody that radiates what the planet absorbs. For Earth ($S = 1361$ W m⁻², $\alpha = 0.30$) the absorbed flux is 238 W m⁻² and $T_e \approx 255$ K ($-18$ °C), **33 K colder than the observed global-mean surface temperature of 288 K**. The equilibrium is stable: a planet warmer than $T_e$ emits more than it absorbs and cools, a colder one warms. The 33 K gap is what the greenhouse effect must explain; equivalently, Earth radiates to space only about 61 % of $\sigma T_s^4$ (an *effective emissivity* $\varepsilon \approx 0.61$).`,
       scope: String.raw`Holds for global, annual means in steady state with no internal heat source (it fails for Jupiter, which radiates about 1.7 times the sunlight it absorbs). $T_e$ is the temperature at which the planet radiates to space; it equals the surface temperature only for an airless planet of uniform temperature (1.7).`,
       idea: String.raw`Over a year the planet's heat content barely changes, so absorbed and emitted power must match. Sunlight is intercepted by the shadow disc $\pi R^2$ but the planet radiates from its whole surface $4\pi R^2$ — the area integral of $\max(0,\cos Z)$ over the sphere is exactly $\pi R^2$, hence the factor 4. Because $\sigma T^4$ rises steeply, $T_e \propto [S(1-\alpha)]^{1/4}$ is insensitive: 1 % more sunlight raises $T_e$ by 0.25 %, about 0.64 K, and the restoring slope $4\sigma T_e^3 \approx 3.8$ W m⁻² K⁻¹ makes the equilibrium stable.`,
-      caption: String.raw`Top left: the instantaneous sunlight on the globe, $S\max(0,\cos Z)$; drag the subsolar point anywhere — its area mean stays $S/4$. Top right: the planet catches a beam as wide as its disc but radiates from its whole sphere. Below: absorbed sunlight (gold) against emission (red), crossing at $T_e$; the purple band is the gap to Earth's observed 288 K. Drag the trial temperature along the red curve: below $T_e$ the planet gains energy and warms, above it loses energy and cools. Lower the emissivity to find the fraction of $\sigma T^4$ that Earth must send to space to sit at 288 K.`,
+      caption: String.raw`Top left: the instantaneous sunlight on the globe, $S\max(0,\cos Z)$; drag the subsolar point anywhere and the area mean in the corner stays at a quarter of $S$. Top right: the planet catches a beam as wide as its disc but radiates from its whole sphere. Below: absorbed sunlight (gold) against emission (red), crossing at $T_e$; the purple band is the gap to Earth's observed 288 K. Drag the trial temperature along the red curve: below $T_e$ the planet gains energy and warms, above it loses energy and cools. Lower the emissivity to find the fraction of $\sigma T^4$ that Earth must send to space to sit at 288 K.`,
       deps: ['climate-1.2', 'climate-1.5'],
       refs: ['Archer ch. 3', 'Pierrehumbert'],
       tags: ['energy balance', 'effective temperature'],
@@ -553,20 +583,20 @@ $T_e$ is the **effective (emission) temperature**: the temperature of the blackb
           sC.setView(null, [0, ymax]);
           if (Te < 288) { sC.vband(Te, 288, { color: 'purple', alpha: 0.12 }); sC.text(`gap ${v.fix(288 - Te, 1)} K`, (Te + 288) / 2, ymax * 0.93, { color: 'purple', size: 11.5, weight: 600, align: 'center' }); }
           sC.vline(288, { color: 'blue', dash: [5, 4], width: 1.4 });
-          sC.text('observed Earth 288 K', 288, ymax * 0.84, { color: 'blue', size: 11, align: 'left', dx: 6 });
+          sC.text('observed Earth 288 K', 288, ymax * 0.35, { color: 'blue', size: 11, align: 'left', dx: 6 });
           sC.fn((T) => sig * T ** 4, { color: 'red', width: e < 1 ? 1.3 : 2.6, dash: e < 1 ? [5, 4] : null, alpha: e < 1 ? 0.6 : 1 });
           if (e < 1) sC.fn((T) => e * sig * T ** 4, { color: 'red', width: 2.6 });
           sC.hline(ASR, { color: 'gold', width: 2.6 });
           sC.tex(String.raw`\text{absorbed } S(1-\alpha)/4`, 152, ASR, { color: 'gold', align: 'left', baseline: 'bottom', dy: -4, size: 13 });
-          const xr = Math.min(398, (ymax * 0.97 / (e * sig)) ** 0.25);
-          sC.tex(e < 1 ? String.raw`\varepsilon\sigma T^4` : String.raw`\sigma T^4`, xr, e * sig * xr ** 4, { color: 'red', align: 'right', baseline: 'middle', dx: -10, size: 14 });
+          const xr = Math.min(390, (ymax * 0.93 / (e * sig)) ** 0.25);
+          sC.tex(e < 1 ? String.raw`\varepsilon\sigma T^4` : String.raw`\sigma T^4`, xr, e * sig * xr ** 4, { color: 'red', align: 'left', baseline: 'middle', dx: 12, size: 14 });
           const T = M.clamp(trial.x, 152, 398), O = e * sig * T ** 4, N = ASR - O; trial.y = O;
           if (Math.abs(N) > 1) {
             sC.line(T, O, T, ASR, { color: N > 0 ? 'green' : 'red', width: 3, alpha: 0.75 });
             sC.arrow(T, ymax * 0.07, T + Math.sign(N) * Math.min(28, 4 + Math.abs(N) / 6), ymax * 0.07, { color: N > 0 ? 'green' : 'red', width: 2.4, head: 8 });
             sC.text(N > 0 ? 'gains energy: warms' : 'loses energy: cools', T, ymax * 0.07, { color: N > 0 ? 'green' : 'red', size: 11, align: N > 0 ? 'right' : 'left', dx: N > 0 ? -6 : 6 });
           }
-          if (Ts >= 150 && Ts <= 400) sC.dot(Ts, ASR, { color: 'green', r: 6.5, label: e < 1 ? `T_s = ${v.fix(Ts, 1)} K` : `T_e = ${v.fix(Te, 1)} K`, labelPos: 'se', labelColor: 'green' });
+          if (Ts >= 150 && Ts <= 400) sC.dot(Ts, ASR, { color: 'green', r: 6.5, label: e < 1 ? `$T_s = ${v.fix(Ts, 1)}\\text{ K}$` : `$T_e = ${v.fix(Te, 1)}\\text{ K}$`, labelPos: 'se', labelColor: 'green' });
           R = { ASR, Te, Ts, e, T, N, epsNeed: ASR / (sig * 288 ** 4) };
         });
         v.legend([['gold', 'absorbed sunlight'], ['red', 'emitted infrared'], ['green', 'equilibrium', { dot: true }], ['purple', 'greenhouse gap to 288 K', { dot: true }]]);
@@ -632,7 +662,7 @@ Venus is hot although it absorbs *less* sunlight than Earth — its clouds refle
             sA.text(`${d >= 0 ? '+' : '−'}${Math.round(Math.abs(d))} K`, (t.Te + b.Ts) / 2, y, { color: d >= 0 ? 'red' : 'blue', size: 11.5, weight: 600, align: 'center', baseline: 'bottom', dy: -9 });
           });
           // ── globe of the selected body
-          const b = B.find((x) => x.id === cur), t = temps(b, alb.value), Tmax = Math.max(t.Tss, b.Ts) * 1.02;
+          const b = B.find((x) => x.id === cur), t = temps(b, alb.value), Tmax = t.Tss * 1.05;
           sB.setTitle(`${b.name}: ${mode.value === 'u' ? `uniform ${Math.round(t.Te)} K` : 'local radiative equilibrium, no atmosphere'}`);
           G.draw({ land: false, graticule: false, shade: false });
           const u = vec([0, 0]);
