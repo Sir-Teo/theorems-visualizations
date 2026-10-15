@@ -353,7 +353,7 @@ $$\delta v_\infty=-\frac{g\,\theta}{a+bk_p},$$
 which shrinks as the gain grows but never vanishes; integral action removes it (5.2).`,
       scope: String.raw`small speed deviations about $v_0$ (drag linearised), a throttle that stays inside its limits, and a fixed gear; a steep hill that saturates the throttle leaves the linear model.`,
       idea: String.raw`Newton's law for the car is $m\dot v=F_{\max}u-k_dv^2-mg\sin\theta$; linearising about $v_0$ (2.2) gives the model. The closed-loop pole is $-(a+bk_p)$, so feedback speeds the car's response, since without control the only restoring effect is drag, with the long time constant $1/a$. At steady state the controller must supply the extra force $mg\theta$, and a proportional controller produces force only in proportion to an error, so an error of exactly $g\theta/(a+bk_p)$ remains. This is the closed-loop transfer function of 1.4 with the hill as a load disturbance (1.8): $S(0)=a/(a+bk_p)$.`,
-      caption: String.raw`A car cruising at 25 m/s meets a hill. Top: the road (vertical scale stretched by the factor shown) with the car where it is at the time you pick by dragging the gold handle in the speed panel. Left: speed from the full nonlinear car model (blue) and from the first-order model (green dashed); the grey curves are other gains. Right: the steady-state error against the gain, predicted by $g\theta/(a+bk_p)$ (curve) and measured in the simulation (dot). Raise $k_p$: the dip gets shallower and shorter. Switch on integral action: the error goes to zero, with an overshoot. Choose the small engine and a steep hill: the throttle saturates and the linear model stops applying.`,
+      caption: String.raw`A car cruising at 25 m/s meets a hill. Top: the road (vertical scale stretched by the factor shown) with the car where it is at the time you pick by dragging the gold handle in the speed panel. Left: speed from the full nonlinear car model (blue) and from the first-order model (green dashed); the grey curves are other gains. Right: the steady-state error against the gain, predicted by $g\theta/(a+bk_p)$ (curve) and measured in the simulation (dot). Raise $k_p$: the dip gets shallower and shorter. Switch on integral action: the error goes to zero, with an overshoot. Choose the small engine and a hill steeper than about 11 %: the throttle saturates and the linear model stops applying.`,
       deps: ['ctrl-1.4'],
       refs: ['Åström–Murray §4.1'],
       tags: ['cruise control', 'first-order system'],
@@ -366,7 +366,7 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
         const enS = v.select('engine', [{ value: 4500, label: 'strong (4.5 kN)' }, { value: 2000, label: 'small (2.0 kN)' }], 4500);
         const road = v.stage({ x: [0, 1150], y: [-12, 75], height: 160, axes: false, full: true });
         const sp = v.stage({ x: [0, TEND], y: [19.5, 26], height: 280, axes: 'box', xlabel: 't (s)', ylabel: 'speed (m/s)', weight: 1.4 });
-        const er = v.stage({ x: [0.02, 2], y: [0, 8], xlog: true, height: 280, axes: 'box', xlabel: 'gain k_p', ylabel: 'steady-state error (m/s)', weight: 1 });
+        const er = v.stage({ x: [0.02, 2], y: [-0.35, 8], xlog: true, height: 280, axes: 'box', xlabel: 'gain k_p', ylabel: 'steady-state error (m/s)', weight: 1 });
         const hT = sp.handle(16, 19.75, { color: 'gold', constrain: (x) => [clamp(x, 0, TEND), hT ? hT.y : 19.75] });
         const grade = (x) => (gS.value / 100) * clamp((x - X0) / RAMP, 0, 1);
         const elev = (x) => { const g = gS.value / 100; if (x <= X0) return 0; if (x <= X0 + RAMP) return (g * (x - X0) ** 2) / (2 * RAMP); return (g * RAMP) / 2 + g * (x - X0 - RAMP); };
@@ -428,15 +428,17 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
           sp.vline(hT.x, { color: 'gold', width: 1.2 });
           sp.dot(hT.x, R.vv[i], { r: 5, color: 'accent' });
           // ---- steady error vs gain
-          er.fn((k) => (CAR.g * sth) / (a + b * k), { color: 'green', width: 2.2 });
-          er.dot(kpS.value, clamp(c.meas, 0, 7.9), { r: 6.5, color: R.sat ? 'red' : 'accent' });
-          if (iT.value) er.text('integral action: error → 0', 0.025, 0.5, { size: 11.5, color: 'accent' });
+          er.hline(0, { color: 'faint' });
+          er.fn((k) => (CAR.g * sth) / (a + b * k), { color: 'green', width: 2.2, alpha: iT.value ? 0.4 : 1, dash: iT.value ? [6, 4] : null });
+          er.dot(kpS.value, clamp(c.meas, -0.3, 7.9), { r: 6.5, color: R.sat ? 'red' : 'accent' });
+          if (iT.value) er.text('with integral action the error goes to 0 (dashed: P only)', 0.025, 1.0, { size: 11.5, color: 'accent' });
         });
         v.legend([['accent', 'nonlinear car + controller'], ['green', 'first-order model / $g\\theta/(a+bk_p)$', { dash: true }], ['muted', `other gains ($k_p$ = ${FAM.join(', ')})`]]);
         v.readout(() => {
           const c = compute(), { a, b } = lin(), tau = 1 / (a + b * kpS.value);
           const base = `$a$ = ${v.fix(a, 4)} s⁻¹, $b$ = ${v.fix(b, 2)} m/s² · closed-loop time constant $\\tau=1/(a+bk_p)$ = ${v.fix(tau, 2)} s (open loop: ${v.fix(1 / a, 0)} s)`;
-          if (c.main.sat) return `${base} · **the throttle saturates**: the speed keeps falling well below the linear prediction, outside the model's range`;
+          if (c.main.sat) return `${base} · **the throttle saturates**: the speed falls far below the linear prediction, outside the model's range`;
+          if (iT.value) return `$a$ = ${v.fix(a, 4)} s⁻¹, $b$ = ${v.fix(b, 2)} m/s² · with integral action the loop is second order and the steady-state error vanishes: simulated ${v.fix(c.meas, 3)} m/s (P alone would leave ${v.fix((CAR.g * (gS.value / 100)) / (a + b * kpS.value), 3)} m/s)`;
           return `${base} · steady-state error: predicted ${v.fix(c.pred, 3)} m/s, simulated ${v.fix(c.meas, 3)} m/s`;
         });
       },

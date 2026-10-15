@@ -622,7 +622,7 @@ produces a vector $v$ with $\rho(v, v) \ne 0$. Its $\rho$-orthogonal space $U = 
           // step 1: v₁ and its ρ-orthogonal plane U₁ = (Av₁)^⊥
           const v1 = h1.p, q1 = bil(A, v1, v1), n1 = mv(A, v1), [a1, b1] = perpPair(n1);
           h2.a = a1; h2.b = b1;
-          { const nn = unit(n1); let p = sub(h2.p, scl(nn, dot(h2.p, nn))); if (len(p) < 0.25) p = scl(a1, 0.95); h2.p = p; }
+          { const nn = unit(n1); let p = sub(h2.p, scl(nn, dot(h2.p, nn))); if (len(p) < 0.25) p = scl(a1, 0.95); h2.p = p; h2.sync(); }
           // step 2: v₂ ∈ U₁ and U₂ = U₁ ∩ (Av₂)^⊥
           const v2 = h2.p, q2 = bil(A, v2, v2), n2 = mv(A, v2);
           let d3 = cross(n1, n2); const ok3 = len(d3) > 1e-6 * Math.max(1, len(n1) * len(n2));
