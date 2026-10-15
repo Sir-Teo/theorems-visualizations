@@ -1,4 +1,4 @@
-// Electromagnetism — Chapter 1: Charges, forces and Gauss's law (items 1.11–1.19; 1.1–1.10 in ch01.js)
+// Electromagnetism — Chapter 1: Charges, forces and Gauss's law (items 1.11–1.20; 1.1–1.10 in ch01.js)
 //
 // Units in the pictures: positions in cm, point charges in nC, line charges in nC/m, readouts in SI (v.M.si).
 
@@ -172,7 +172,7 @@ so an aligned dipole is pulled toward the region of stronger field. These are ex
             return [S[3], S[4], S[5], Fx / m - gT * S[3], Fy / m - gT * S[4], tq / I - gR * S[5]];
           };
           for (let k = 0; k <= 600; k++) {
-            if (k % 60 === 0) out.push([S[0] * 100, S[1] * 100, S[2]]);
+            if (k % 75 === 0) out.push([S[0] * 100, S[1] * 100, S[2]]);
             const k1 = der(S), k2 = der(S.map((v0, i) => v0 + (dt / 2) * k1[i])), k3 = der(S.map((v0, i) => v0 + (dt / 2) * k2[i])), k4 = der(S.map((v0, i) => v0 + dt * k3[i]));
             S = S.map((v0, i) => v0 + (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
             const X = S[0] * 100, Y = S[1] * 100;
@@ -183,7 +183,7 @@ so an aligned dipole is pulled toward the region of stronger field. These are ex
         const dumbbell = (x, y, a, alpha, ghost) => {
           const hx = (d / 2) * Math.cos(a), hy = (d / 2) * Math.sin(a);
           s.line(x - hx, y - hy, x + hx, y + hy, { color: 'muted', width: ghost ? 2 : 3, alpha });
-          s.dot(x + hx, y + hy, { r: ghost ? 4 : 7, color: 'red', alpha, ring: !ghost }); s.dot(x - hx, y - hy, { r: ghost ? 4 : 7, color: 'blue', alpha, ring: !ghost });
+          s.dot(x + hx, y + hy, { r: ghost ? 5 : 7, color: 'red', alpha, ring: !ghost }); s.dot(x - hx, y - hy, { r: ghost ? 5 : 7, color: 'blue', alpha, ring: !ghost });
         };
         let st = null;
         v.render(() => {
@@ -720,7 +720,7 @@ The cancellation inside depends on the force law being exactly inverse-square.`,
       kind: 'Phenomenon',
       name: 'Testing the inverse-square law',
       statement: String.raw`Because the field inside a charged conducting shell vanishes only for an exact inverse-square law (em-1.17), null experiments test the exponent with extraordinary sensitivity. Writing the force as $1/r^{2+\delta}$: if $\delta\neq0$, an inner sphere connected to a charged outer shell picks up a charge proportional to $\delta$; none is found. Cavendish (1773) obtained $|\delta|<1/50$; Maxwell (1873) $|\delta|<5\times10^{-5}$; Plimpton and Lawton (1936) $|\delta|<2\times10^{-9}$; Williams, Faller and Hill (1971) $|\delta|<3\times10^{-16}$. Equivalently, the photon mass is below about $10^{-50}$ kg.`,
-      idea: String.raw`For a $1/r^{2+\delta}$ law the potential inside a uniformly charged shell is not constant: it varies by an amount proportional to $\delta$ (em-1.17). Connect a concentric inner sphere to the outer one by a wire: the two must reach a common potential, and with $\delta\neq0$ that requires a charge on the inner sphere, $q_{\text{in}}\approx c\,\delta\,Q_{\text{out}}$ with $c$ of order 1 set by the radii. Disconnect, remove the outer shell, and test the inner sphere with an electrometer: the sensitivity of that measurement, compared with the charge on the outer shell, bounds $|\delta|$. Each generation of experimenters replaced pith balls by better electrometers and then by AC methods with lock-in detection, gaining thirteen orders of magnitude.`,
+      idea: String.raw`For a $1/r^{2+\delta}$ law the potential inside a uniformly charged shell is not constant: it varies by an amount proportional to $\delta$ (em-1.17). Connect a concentric inner sphere to the outer one by a wire: the two must reach a common potential, and with $\delta\neq0$ that requires a charge on the inner sphere, $q_{\text{in}}\approx c\,\delta\,Q_{\text{out}}$ with $c$ of order 1 set by the radii. Disconnect, remove the outer shell, and test the inner sphere with an electrometer: the sensitivity of that measurement, compared with the charge on the outer shell, bounds $|\delta|$. Each generation of experimenters replaced pith balls by better electrometers and then by AC methods with lock-in detection, gaining fourteen orders of magnitude.`,
       caption: String.raw`Step through Cavendish’s procedure with globes of radius 15 cm and 17 cm, the outer charged to 3 kV. The charge the inner globe acquires is computed from the potentials of the two shells for a force $1/r^{2\pm\delta}$; it is exactly zero for $\delta = 0$. In the last step the pith-ball electrometer swings only if the charge exceeds what Cavendish could detect. The right panel compares the $|\delta|$ you chose with the limits set by experiments since 1773: each one marked green would have seen it.`,
       scope: String.raw`Tests the static Coulomb law at laboratory distances (cm to m); geomagnetic and astrophysical limits on the photon mass probe much larger scales.`,
       credit: 'Cavendish, 1773 (published by Maxwell, 1879); Williams, Faller & Hill, 1971',
@@ -853,6 +853,90 @@ although $\nabla\cdot\mathbf E = 0$ pointwise at every $\mathbf r\neq\mathbf 0$.
         v.readout(() => {
           const { Ia, Ip, target, rho0, phi0 } = st;
           return `central density $\\rho(0)$ = ${isFinite(rho0) ? M.si(rho0, 'C/m³') : 'a surface charge'} · $\\varphi(0) = ${v.fix(phi0, 4)}$ · $-\\int\\mathbf E\\cdot\\nabla\\varphi\\,d\\tau$ = ${M.si(Ia, 'V·m', 6)} → $q\\varphi(0)/\\varepsilon_0$ = ${M.si(target, 'V·m', 6)} · for the true point charge the same integral gives ${M.si(Ip, 'V·m', 6)}, although $\\nabla\\cdot\\mathbf E = 0$ at every point except the origin`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.20
+    {
+      num: '1.20',
+      kind: 'Paper',
+      name: 'The Elementary Electrical Charge and the Avogadro Constant',
+      paper: { authors: 'R. A. Millikan', year: 1913, title: 'On the Elementary Electrical Charge and the Avogadro Constant', venue: 'Physical Review 2 (2): 109–143', doi: '10.1103/PhysRev.2.109' },
+      introduces: [],
+      statement: String.raw`Millikan timed single oil drops, each held for hours between charged plates, falling under gravity and rising in the field, and showed that every charge a drop carried — and every *change* of charge when it caught an ion — was an exact whole multiple of one unit. Measuring drops of many sizes at air pressures from atmospheric down to a few centimetres of mercury, he found that Stokes’s drag law needs a correction $1 + b/pa$ for drops comparable to the mean free path of the air ($p$ the pressure, $a$ the radius), and that the apparent unit $e_1$ obeys $e_1^{2/3} = e^{2/3}\,(1 + b/pa)$, a straight line in $1/pa$ whose intercept gives
+$$e = 4.774\times10^{-10}\ \text{esu} = 1.592\times10^{-19}\ \text{C}\quad(\pm0.2\%),$$
+and, with Faraday’s constant from electrolysis, Avogadro’s number $N = F/e = 6.062\times10^{23}$ per mole. The value is 0.6 % below today’s exact $e$, almost entirely because the viscosity of air he used was too small.`,
+      idea: String.raw`Before Millikan, $e$ was inferred from the fall of whole charged clouds (Townsend, J. J. Thomson, H. A. Wilson), good to perhaps 25 %, and whether electricity was granular at all was still argued — Ehrenhaft claimed to see "subelectrons". Millikan’s 1909–1910 work switched from clouds to single drops of non-evaporating oil; the 1913 paper is the precision version. Each drop gives its charge from two speeds through Stokes’s law (fluid-7.2) and the uniform field between plates (em-1.10); catching ions from an X-ray burst changes the charge in whole steps (em-1.1). The correction to Stokes’s law, tested by varying the pressure, removed the last systematic dependence on drop size. The result fixed $e$, and with it Avogadro’s number, the electron mass and (with spectroscopy) Planck’s constant, to a few parts in a thousand; Kellström’s better viscosity of air (1937) raised it to today’s value.`,
+      caption: String.raw`**Simulated** drops in Millikan’s chamber — plates 16 mm apart at 5 kV, clock oil, air at 23 °C, pressures 4–76 cm of mercury — generated from today’s $e$, today’s viscosity of air and a Stokes correction, then analysed the way the paper does (the paper’s own tables are not reproduced). Left: one drop timed again and again; press *X-ray burst* to change its charge — every charge is a whole number $n$ of units. Right: the paper’s central plot, $e_1^{2/3}$ against $1/pa$ for many drops; its straight-line intercept gives $e$. Switch to Millikan’s viscosity and you recover his low value; switch off the Stokes correction and the scatter of $e_1$ is left unexplained.`,
+      deps: ['em-1.1', 'em-1.10', 'fluid-7.2'],
+      refs: [],
+      tags: ['charge', 'history of physics'],
+      credit: 'R. A. Millikan, 1913',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Oil_drop_experiment' },
+      viz(v) {
+        const M = v.M, C = M.CONST, g = 9.80, RHO = 919.9 - 1.2, EF = 5000 / 0.016, DIST = 0.01, ETA_TRUE = 1.8325e-5, B_TRUE = 6.2e-4; // b in cm·cmHg
+        const sT = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: false, weight: 1, title: 'one drop, timed again and again' });
+        const sp = v.stage({ x: [0, 6], y: [1.3, 2], height: 330, axes: 'box', weight: 1.15, xlabel: '1/pa  (10³ per cm·cmHg)', title: '$e_1^{2/3}$ against $1/pa$ — the paper’s plot ($e_1$ in $10^{-19}$ C)' });
+        const visc = v.select('viscosity of air (23 °C)', [{ value: 'm', label: 'Millikan 1913: $1.824\\times10^{-5}$' }, { value: 'k', label: 'Kellström 1937: $1.8325\\times10^{-5}$' }], 'm');
+        const corr = v.toggle('correct Stokes’s law for small drops', true);
+        /** One timing of a drop of true radius a (m) with n charges at pressure p (cmHg): [t_g, t_F]. */
+        const timing = (a, n, p, r) => {
+          const cun = 1 + B_TRUE / (p * a * 100), mg = (4 / 3) * Math.PI * a ** 3 * RHO * g;
+          const vg = ((2 * a * a * RHO * g) / (9 * ETA_TRUE)) * cun, vF = ((n * C.e * EF - mg) / (6 * Math.PI * ETA_TRUE * a)) * cun;
+          return [(DIST / vg) * (1 + 0.0015 * r.normal()), (DIST / vF) * (1 + 0.0015 * r.normal())];
+        };
+        /** Millikan’s analysis of one timing with viscosity eta: apparent radius a1 and apparent unit e1 = e_n/n. */
+        const analyse = (tg, tF, n, eta) => {
+          const vg = DIST / tg, vF = DIST / tF, a1 = Math.sqrt((9 * eta * vg) / (2 * RHO * g));
+          return { a1, e1: ((6 * Math.PI * eta * a1) / EF) * (vg + vF) / n };
+        };
+        // the population of drops for the plot (seeded)
+        const drops = [];
+        for (let i = 0; i < 46; i++) {
+          const r = v.rng(911 + 31 * i), a = Math.exp(r.uniform(Math.log(0.55e-6), Math.log(3.2e-6))), p = Math.exp(r.uniform(Math.log(4), Math.log(76)));
+          const mg = (4 / 3) * Math.PI * a ** 3 * RHO * g; let n = r.int(3, 18); if (n * C.e * EF < 1.15 * mg) n = Math.ceil((1.15 * mg) / (C.e * EF)) + r.int(0, 4);
+          const [tg, tF] = timing(a, n, p, r); drops.push({ a, p, n, tg, tF });
+        }
+        // the drop in the log
+        const D0 = { a: 1.05e-6, p: 24 }; let log = [], rngL = v.rng(77), nNow = 9;
+        const addRow = (n) => { const [tg, tF] = timing(D0.a, n, D0.p, rngL); log.push({ n, tg, tF }); if (log.length > 8) log.shift(); };
+        [9, 9, 11, 10, 13, 12].forEach((n) => { nNow = n; addRow(n); });
+        v.button('X-ray burst (the drop catches ions)', () => { let dn = 0; while (!dn) dn = rngL.int(-3, 3); nNow = Math.max(4, Math.min(22, nNow + dn)); addRow(nNow); });
+        v.button('time it again', () => addRow(nNow));
+        const T = v.table(sT, { rows: 8, cols: 5, square: false, cellAspect: 2.1, maxCell: 34, size: 13, labelSize: 13, colLabels: ['$t_g\\ (\\mathrm{s})$', '$t_F\\ (\\mathrm{s})$', '$n$', '$e_1$', '$e$'], colWeights: [1.15, 1.15, 0.6, 1.1, 1.1] });
+        let st = null;
+        v.render(() => {
+          const eta = visc.value === 'm' ? 1.824e-5 : ETA_TRUE;
+          // Millikan’s reduction: e1^(2/3) against 1/pa, with the radius corrected by the fitted b (a few passes)
+          const an = drops.map((d) => analyse(d.tg, d.tF, d.n, eta));
+          const radius = (a1, p, b) => { let a = a1; for (let k = 0; k < 30; k++) a = a1 / Math.sqrt(1 + b / (p * a * 100)); return a; };
+          let bFit = 0, L = null, pts = [];
+          for (let pass = 0; pass < 30; pass++) {
+            pts = drops.map((d, i) => ({ x: 1 / (d.p * radius(an[i].a1, d.p, bFit) * 100) / 1e3, y: Math.pow(an[i].e1 / 1e-19, 2 / 3), e1: an[i].e1 }));
+            L = M.linreg(pts.map((q) => q.x), pts.map((q) => q.y)); bFit = 0.5 * (bFit + L.slope / L.intercept / 1e3); // b in cm·cmHg (x is in 10³/(cm·cmHg)); damped fixed point
+          }
+          const c = L.intercept, eFit = Math.pow(c, 1.5) * 1e-19, se = 1.5 * Math.sqrt(c) * L.seIntercept * 1e-19;
+          const mean1 = pts.reduce((s, q) => s + q.e1, 0) / pts.length, sd1 = Math.sqrt(pts.reduce((s, q) => s + (q.e1 - mean1) ** 2, 0) / (pts.length - 1));
+          // the plot
+          const xs = pts.map((q) => q.x), ys = pts.map((q) => q.y), xmax = Math.max(...xs) * 1.08, y0 = Math.min(...ys, c) - 0.2, y1 = Math.max(...ys) + 0.08;
+          sp.setView([0, xmax], [y0, y1]);
+          if (corr.value) { sp.fn((x) => c + L.slope * x, { color: 'green', width: 2.2, domain: [0, xmax] }); sp.dot(0, c, { r: 6, color: 'green' }); sp.tex(String.raw`\text{intercept } e^{2/3}`, xmax * 0.03, c, { color: 'green', size: 13, align: 'left', baseline: 'top', dy: 8 }); }
+          else sp.hline(Math.pow(mean1 / 1e-19, 2 / 3), { color: 'red', width: 1.6, dash: [6, 4] });
+          sp.dots(pts.map((q) => [q.x, q.y]), { r: 4, color: 'accent' });
+          const A0 = analyse(log[log.length - 1].tg, log[log.length - 1].tF, log[log.length - 1].n, eta), x0 = 1 / (D0.p * radius(A0.a1, D0.p, bFit) * 100) / 1e3;
+          sp.dot(x0, Math.pow(A0.e1 / 1e-19, 2 / 3), { r: 6, color: 'gold' });
+          // the log table
+          const rows = log.map((row) => { const A = analyse(row.tg, row.tF, row.n, eta), ec = A.e1 / Math.pow(1 + bFit / (D0.p * radius(A.a1, D0.p, bFit) * 100), 1.5); return [v.fix(row.tg, 2), v.fix(row.tF, 2), String(row.n), v.fix(A.e1 * 1e19, 4), corr.value ? v.fix(ec * 1e19, 4) : '—']; });
+          T.draw({ rows: rows.length, value: (i, j) => rows[i][j], fill: (i) => (i > 0 && log[i].n !== log[i - 1].n ? ['gold', 0.18] : null), sub: (i, j) => (j === 2 && i > 0 && log[i].n !== log[i - 1].n ? `${log[i].n > log[i - 1].n ? '+' : '−'}${Math.abs(log[i].n - log[i - 1].n)}` : null), subColor: 'gold' });
+          st = { eFit, se, bFit, mean1, sd1, eta };
+        });
+        v.legend([['accent', 'drops (simulated)', { dot: true }], ['gold', 'the drop in the table', { dot: true }], ['green', 'straight-line fit; intercept $= e^{2/3}$'], ['red', 'mean $e_1$ without the correction', { dash: true }]]);
+        v.readout(() => {
+          const { eFit, se, bFit, mean1, sd1 } = st, eMil = 1.5924e-19, NA = C.F / eFit;
+          const head = corr.value
+            ? `intercept: **e = (${v.fix(eFit * 1e19, 4)} ± ${v.fix(se * 1e19, 4)})×10⁻¹⁹ C**, correction constant $b = ${v.sci(bFit, 3)}$ cm·cmHg`
+            : `without the correction the apparent units scatter: $e_1$ = (${v.fix(mean1 * 1e19, 3)} ± ${v.fix(sd1 * 1e19, 3)})×10⁻¹⁹ C, growing for small drops at low pressure`;
+          return `${head} · paper: 1.5924×10⁻¹⁹ C (4.774×10⁻¹⁰ esu) · today: ${v.fix(C.e * 1e19, 9)}×10⁻¹⁹ C exact · $N_A = F/e$ = ${v.sci(corr.value ? NA : C.F / mean1, 4).includes('times') ? '$' + v.sci(corr.value ? NA : C.F / mean1, 4) + '$' : ''}/mol (paper: $6.062\\times10^{23}$, today $6.02214076\\times10^{23}$)` + (corr.value ? ` · your $e$ is ${v.fix((eFit / eMil - 1) * 100, 2)} % from Millikan’s and ${v.fix((eFit / C.e - 1) * 100, 2)} % from today’s` : '');
         });
       },
     },

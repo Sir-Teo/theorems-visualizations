@@ -67,6 +67,7 @@ For a sinusoidal disturbance of frequency $\omega$, in steady state the deviatio
       idea: String.raw`With the loop closed, $Y=P(U+D)$ and $U=-CY$ give $(1+PC)\,Y=P\,D$, so $Y=S\cdot(PD)$. The open-loop effect $PD$ is divided by the return difference $1+L$ (1.5). The controller can only push back with the help of an error, so the deviation that remains is the error needed to produce the corrective action, and large loop gain makes it small. The factor $|S(i\omega)|$ is the Bode magnitude of 1.6, which is why disturbance rejection is designed in the frequency domain.`,
       caption: String.raw`A sinusoidal disturbance of frequency $\omega$ enters at the plant output or at its input (load). Left: in steady state, the output deviation with no feedback (red) and with the loop closed (blue), both simulated. Right: the predicted factor $|S(i\omega)|$ (blue curve) with the measured amplitude ratio at the chosen $\omega$ (large gold ring) and at nine other frequencies (gold dots). Slide $\omega$: slow disturbances are crushed, fast ones pass, and around crossover the loop makes them worse. Switch integral action off to see $|S(0)|$ lift off zero; raise $K$ to widen the band of rejection and grow the peak.`,
       deps: ['ctrl-1.6'],
+      see: ['ctrl-5.2', 'ctrl-8.3'],
       refs: ['Åström–Murray §2.3'],
       tags: ['disturbance rejection', 'sensitivity'],
       viz(v) {
@@ -144,6 +145,7 @@ As $K$ rises the closed-loop response typically becomes faster, then oscillatory
       idea: String.raw`The closed-loop poles are the zeros of $1+KP(s)$ (1.4). They start at the open-loop poles when $K$ is small and move continuously as $K$ grows (6.9); for a plant with three or more lags (or a delay) some branches must head into the right half-plane. In frequency terms: at the frequency where the plant lags by $180^\circ$, the comparator's sign change makes the returning signal reinforce the original, and once the loop gain there reaches $1$, a self-sustained oscillation appears (the Nyquist criterion, 7.4). A delay adds lag $\omega\theta$ without reducing the gain, which is why dead time makes loops fragile (4.9, 7.11).`,
       caption: String.raw`Pick the plant and raise the gain $K$. Top: the closed-loop step response, simulated. Bottom left: the closed-loop poles (blue ×) on the paths they trace as $K$ goes from $0.1$ to $20$ (grey). For the delay plant there are infinitely many poles, and those in the window are found by Newton's method on $(s+1)e^{\theta s}+K=0$. Bottom right: the real part of the rightmost pole against $K$; it crosses zero at the critical gain $K_u$ (dashed). Lengthen the delay $\theta$ and watch $K_u$ fall.`,
       deps: ['ctrl-1.4'],
+      see: ['ctrl-4.9', 'ctrl-6.2', 'ctrl-7.4'],
       refs: ['Åström–Murray ch. 2', 'Franklin–Powell §1.2'],
       tags: ['stability', 'time delay'],
       viz(v) {
@@ -243,6 +245,7 @@ where $F$ is the feedforward compensator. Feedforward lies outside the loop and 
       idea: String.raw`The two strategies fail in opposite ways. A feedforward compensator built from the model is fast and needs no error, but whatever the model gets wrong, and every disturbance nobody measures, passes straight through (open loop, 1.1). Feedback sees everything that reaches the output, but it must wait for the error. Combining them, the feedforward removes most of the measured disturbance at once and feedback cleans up the rest, attenuating the residual by $S$ (1.8). This is the two-degree-of-freedom structure of modern controllers (5.11). In heating, the ideal compensator $-P_d/P$ contains the inverse of the radiator's lag, which is improper; a lead filter approximates it.`,
       caption: String.raw`A room heated by a radiator. At minute 20 the door opens for 15 minutes; a door switch measures it. At minute 80 a window opens, and nothing measures that. Three controllers run on identical rooms: feedback only (PI on the room thermometer, blue), feedforward only (orange; heat added from the door switch through a model with a lead filter for the radiator lag), and both (green). Set the error in the feedforward's model of the door's heat loss. The room picture animates the strategy you choose. Feedforward erases the measured disturbance, ignores the unmeasured one, and leaves its own model error behind; feedback catches everything, but late.`,
       deps: ['ctrl-1.1', 'ctrl-1.8'],
+      see: ['ctrl-5.11'],
       refs: ['Åström–Murray §1.2', 'Åström–Murray §12.4'],
       tags: ['feedforward', 'disturbance rejection'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Feed_forward_(control)' },
@@ -355,6 +358,7 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
       idea: String.raw`Newton's law for the car is $m\dot v=F_{\max}u-k_dv^2-mg\sin\theta$; linearising about $v_0$ (2.2) gives the model. The closed-loop pole is $-(a+bk_p)$, so feedback speeds the car's response, since without control the only restoring effect is drag, with the long time constant $1/a$. At steady state the controller must supply the extra force $mg\theta$, and a proportional controller produces force only in proportion to an error, so an error of exactly $g\theta/(a+bk_p)$ remains. This is the closed-loop transfer function of 1.4 with the hill as a load disturbance (1.8): $S(0)=a/(a+bk_p)$.`,
       caption: String.raw`A car cruising at 25 m/s meets a hill. Top: the road (vertical scale stretched by the factor shown) with the car where it is at the time you pick by dragging the gold handle in the speed panel. Left: speed from the full nonlinear car model (blue) and from the first-order model (green dashed); the grey curves are other gains. Right: the steady-state error against the gain, predicted by $g\theta/(a+bk_p)$ (curve) and measured in the simulation (dot). Raise $k_p$: the dip gets shallower and shorter. Switch on integral action: the error goes to zero, with an overshoot. Choose the small engine and a hill steeper than about 11 %: the throttle saturates and the linear model stops applying.`,
       deps: ['ctrl-1.4'],
+      see: ['ctrl-5.2'],
       refs: ['Åström–Murray §4.1'],
       tags: ['cruise control', 'first-order system'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cruise_control' },
@@ -456,12 +460,12 @@ For the saturating loop $\tau\dot x=-x+\tanh(kx+u)$ with feedback gain $k$ and i
 $$u^*=k\,x^*-\operatorname{artanh}x^*,\qquad x^*=\sqrt{1-1/k}.$$`,
       idea: String.raw`Equilibria are the intersections of the line $y=x$ with the curve $y=\tanh(kx+u)$. An equilibrium is stable when the curve crosses the line from above, that is, when its slope $k(1-x^2)$ is below one (linear stability, 1.4 with loop gain $k(1-x^2)$). With $k>1$ the curve is steeper than the line at the middle crossing, so that equilibrium is unstable and the outer two are stable. Changing $u$ slides the curve sideways; at $u=\pm u^*$ two equilibria merge and vanish (a saddle–node fold), and the state must jump to the far branch. This is the mechanism of latches and flip-flops, Schmitt triggers (circ-8.12), genetic toggle switches and snapping thermostats.`,
       caption: String.raw`Left: the line $y=x$ and the curve $y=\tanh(kx+u)$. Equilibria are where they cross (green = stable, red ring = unstable), and the arrows show which way $x$ moves. Right: the equilibria against the input $u$ (stable branches solid, unstable dashed) with the trajectory of the swept system in gold. Below: input and state against time. With the sweep on, $u$ runs slowly back and forth, and for $k>1$ the state jumps at the folds and traces a hysteresis loop. Turn the sweep off, set $u$ near 0 and *Nudge* the state: it flips and stays. Lower $k$ below 1, or make it negative: the S-curve straightens and the memory is gone.`,
-      deps: ['ctrl-1.4'],
+      deps: ['ctrl-1.4', 'ode-1.7'],
       refs: ['Åström–Murray §2.6'],
       tags: ['positive feedback', 'hysteresis'],
-      see: ['circ-8.12'],
+      see: ['circ-8.12', 'ode-8.3', 'ode-8.7'],
       viz(v) {
-        const PER = 60, UA = 1.05, SP = 6;
+        const PER = 120, UA = 1.05, SP = 12, TAUX = 0.15;
         const kS = v.slider('feedback gain $k$', -2, 3, 2, { step: 0.05, fmt: (x) => v.fix(x, 2) });
         const swT = v.toggle('sweep the input slowly', true);
         const uS = v.slider('input $u$', -1.2, 1.2, 0.05, { step: 0.01, fmt: (x) => v.fix(x, 2) });
@@ -473,14 +477,14 @@ $$u^*=k\,x^*-\operatorname{artanh}x^*,\qquad x^*=\sqrt{1-1/k}.$$`,
         const tp = v.stage({ x: [0, PER * 1.5], y: [-1.35, 1.35], height: 140, axes: 'box', xlabel: 't', full: true });
         const tri = (t) => { const p = ((t / PER) % 1 + 1) % 1; return UA * (p < 0.25 ? 4 * p : p < 0.75 ? 2 - 4 * p : 4 * p - 4); };
         const uNow = (t) => (swT.value ? tri(t) : uS.value);
-        const sim = clocked(0.02, () => ({ x: -0.9, seen: nudge, h: { t: [], u: [], x: [] }, k: 0, jumps: [] }), (st, t, dt) => {
+        const sim = clocked(0.01, () => ({ x: -0.9, seen: nudge, h: { t: [], u: [], x: [] }, k: 0, jumps: [] }), (st, t, dt) => {
           if (st.seen !== nudge) { st.x = clamp(st.x + (nudge - st.seen), -1.2, 1.2); st.seen = nudge; }
-          const k = kS.value, u = uNow(t), f = (x) => -x + Math.tanh(k * x + u);
+          const k = kS.value, u = uNow(t), f = (x) => (-x + Math.tanh(k * x + u)) / TAUX;
           const k1 = f(st.x), k2 = f(st.x + (dt / 2) * k1), k3 = f(st.x + (dt / 2) * k2), k4 = f(st.x + dt * k3);
           const xn = st.x + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
           if (Math.sign(xn) !== Math.sign(st.x) && st.x !== 0) st.jumps.push({ u, up: xn > st.x });
           st.x = xn;
-          if (st.k++ % 5 === 0) { const H = st.h; H.t.push(t + dt); H.u.push(u); H.x.push(st.x); if (H.t.length > 640) for (const key in H) H[key].shift(); }
+          if (st.k++ % 25 === 0) { const H = st.h; H.t.push(t + dt); H.u.push(u); H.x.push(st.x); if (H.t.length > 800) for (const key in H) H[key].shift(); }
         });
         const fold = (k) => { if (k <= 1) return null; const xs = Math.sqrt(1 - 1 / k); return { x: xs, u: k * xs - Math.atanh(xs) }; };
         const equilibria = (k, u) => {
@@ -539,7 +543,7 @@ $$u^*=k\,x^*-\operatorname{artanh}x^*,\qquad x^*=\sqrt{1-1/k}.$$`,
           const up = st.jumps.filter((j) => j.up).slice(-1)[0], dn = st.jumps.filter((j) => !j.up).slice(-1)[0];
           const head = `$k$ = ${v.fix(k, 2)}, $u$ = ${v.fix(u, 3)}: ${n} equilibri${n === 1 ? 'um' : 'a'}, state $x$ = ${v.fix(st.x, 3)}`;
           if (!F) return `${head} · ${k < 0 ? `negative feedback: one equilibrium, and near $x=0$ the response to $u$ is scaled by $1/(1-k)$ = ${v.fix(1 / (1 - k), 3)}` : 'loop gain below one: one equilibrium, no memory'}`;
-          const meas = swT.value && up && dn ? ` · measured in the sweep: jumps up at $u$ = ${v.fix(up.u, 3)}, down at $u$ = ${v.fix(dn.u, 3)}` : '';
+          const meas = swT.value && up && dn ? ` · in the sweep the state crossed 0 going up at $u$ = ${v.fix(up.u, 3)} and coming down at $u$ = ${v.fix(dn.u, 3)} (slightly past the folds, because the sweep is not infinitely slow)` : '';
           return `${head} · bistable for $|u|<u^*$ = ${v.fix(F.u, 4)} (folds at $x^*=\\pm$${v.fix(F.x, 3)})${meas}`;
         });
       },
@@ -561,6 +565,7 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
       idea: String.raw`The node equations are $x=G^{\mathsf T}x+b\,u$, so $y/u$ follows from Cramer's rule as a ratio of two determinants of $I-G^{\mathsf T}$. Expanding $\det(I-G)$ as a sum over permutations, each permutation splits into cycles. The cycles that use only branches of the graph are exactly its loops, so the surviving terms are products of disjoint (non-touching) loops with alternating signs: that is $\Delta$. The numerator determinant does the same with one column replaced, which forces a forward path and leaves the loops it does not touch, giving $\sum P_k\Delta_k$. Mason's rule (1953) lets one read the transfer function of a tangled diagram off the picture instead of reducing it block by block (1.4).`,
       caption: String.raw`Step through Mason's recipe on the graph. Forward paths light up green, loops in colour, and sets of loops that do not touch together; then $\Delta$ and each $\Delta_k$ are assembled from them. The last step compares the formula with the transfer function obtained by solving the node equations $(I-G^{\mathsf T})x=b$ directly. Click a branch gain to change it (shift-click to go back); the steps recompute and the two answers always agree. The second graph has three loops that do not touch one another, so a triple product appears in $\Delta$.`,
       deps: ['ctrl-1.4'],
+      see: ['sig-9.13'],
       refs: ['Franklin–Powell §3.2'],
       tags: ['signal-flow graph', 'block diagram'],
       credit: 'Samuel J. Mason, 1953',
@@ -684,10 +689,11 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
       introduces: ['ctrl-1.9', 'ctrl-3.3'],
       statement: String.raw`Maxwell gave the first mathematical theory of feedback regulators. He wrote the equations of motion of a machine with its governor, linearised them about steady running, and observed that a small disturbance then evolves as a sum of terms $e^{nt}$, the exponents $n$ being the roots of a polynomial built from the coefficients (the characteristic equation). Steady running is **stable** exactly when every root has a negative real part (the terms die away, oscillating if the roots are complex); a root with positive real part means a disturbance grows, for a complex pair as an oscillation of increasing amplitude, which is the hunting engineers had observed.
 
-For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coefficients he stated the condition: stability requires $a_2a_1>a_3a_0$, the product of the middle coefficients exceeding that of the outer ones. He distinguished *moderators*, which only reduce the speed change caused by a change of load, from true *governors*, whose integral action restores the original speed. He also noted that no general criterion was known for equations of higher degree, a question answered by Routh (1877) and Hurwitz (1895).`,
+For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coefficients he stated the condition: stability requires $a_2a_1>a_3a_0$, the product of the middle coefficients exceeding that of the outer ones. He distinguished *moderators*, which only reduce the speed change caused by a change of load, from true *governors*, whose integral action restores the original speed. He left the general problem for equations of higher degree open; Routh (1877) and Hurwitz (1895) solved it.`,
       idea: String.raw`By the 1860s tens of thousands of centrifugal governors (1.2) were in service, and engineers had found by trial that some designs hunted and that friction, oddly, helped. Maxwell, prompted by governors designed for experiments on electrical standards, replaced trial and error with an analysis. Linearise (2.2), find the characteristic equation, and locate its roots. That reduced stability to algebra (3.3, the Routh–Hurwitz problem 6.2) and explained why more governor gain is dangerous (1.9). Vyshnegradsky (1876) independently analysed the Watt governor on a steam engine, the third-order system recreated here, and drew its stability diagram. The paper is often taken as the beginning of control theory.`,
       caption: String.raw`Maxwell's analysis, recreated for a Watt governor on a steam engine (the model of 1.2). Drag the point in the plane of governor friction $\beta$ and linkage gain $K$. The bold curve is Maxwell's boundary $a_2a_1=a_3a_0$ for the linearised cubic; the shading shows how the roots, computed by the cubic formula, behave (blue: decaying oscillation, green: all roots real, slow creep, red: unstable). Right: the three roots in the complex plane, with the path they follow as $K$ varies at this friction. Below: the full nonlinear engine after an 8 % load increase, which settles, hunts with growing oscillations until the valve slams between its stops, or creeps back sluggishly. Raise the gain or remove friction and watch the pair of roots cross the imaginary axis exactly as the point crosses the curve.`,
       deps: ['ctrl-1.2', 'ctrl-2.2'],
+      see: ['ctrl-6.2'],
       refs: [],
       tags: ['stability', 'history of control'],
       credit: 'J. C. Maxwell, 1868',
@@ -695,9 +701,9 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
       viz(v) {
         const BX = [0, 3.2], KY = [0.02, 12], TEND = 170, TSTEP = 12;
         const pl = v.stage({ x: [BX[0], BX[1]], y: KY, ylog: true, height: 300, axes: 'box', xlabel: 'friction β', ylabel: 'linkage gain K', weight: 1.15, title: 'stability chart: $a_2a_1$ vs $a_3a_0$' });
-        const cp = v.stage({ x: [-2.2, 0.6], y: [-1.4, 1.4], equal: true, height: 300, axes: true, xlabel: 'Re', ylabel: 'Im', weight: 1, title: 'roots of the characteristic cubic' });
+        const cp = v.stage({ x: [-2.2, 0.6], y: [-1.4, 1.4], equal: true, height: 300, axes: 'box', xlabel: 'Re', ylabel: 'Im', weight: 1, title: 'roots of the characteristic cubic' });
         const ts = v.stage({ x: [0, TEND], y: [72, 128], height: 190, axes: 'box', xlabel: 't', ylabel: 'speed (% of design)', full: true, yticks: [80, 90, 100, 110, 120] });
-        const H = pl.handle(1.1, 1.4, { color: 'gold', constrain: (x, y) => [clamp(x, 0.03, BX[1] - 0.02), clamp(y, KY[0] * 1.05, KY[1] / 1.05)] });
+        const H = pl.handle(0.8, 2.0, { color: 'gold', constrain: (x, y) => [clamp(x, 0.03, BX[1] - 0.02), clamp(y, KY[0] * 1.05, KY[1] / 1.05)] });
         const kOf = (beta) => { // Maxwell's boundary a2·a1 = a3·a0 solved for K
           const { phi0 } = GOV, kap = Math.sin(phi0) ** 2 / Math.cos(phi0), a = 2 * GOV.w0 * Math.sin(phi0) * Math.cos(phi0), { J, c } = GOV;
           return ((J * beta + c) * (J * kap + c * beta) - J * c * kap) / (J * a * GOV.Ts * Math.sin(phi0));
@@ -721,6 +727,7 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
           // ---- roots and their path in K at this friction
           const r = cubicRoots(govCubic(p).coef);
           cp.vband(0, 2, { color: 'red', alpha: 0.07 });
+          cp.vline(0, { color: 'muted', width: 1 }); cp.hline(0, { color: 'faint', width: 1 });
           const path = [];
           for (let k = KY[0]; k <= KY[1]; k *= 1.03) for (const z of cubicRoots(govCubic({ K: k, beta }).coef)) path.push(z);
           cp.dots(path, { r: 1.5, color: 'muted', alpha: 0.6 });

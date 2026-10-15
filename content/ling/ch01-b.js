@@ -185,7 +185,7 @@ const NASALZ = { bilabial: 1100, labiodental: 1200, alveolar: 1700, retroflex: 1
 /** Noise spectrum of a burst or fricative at a place: one resonance of the front cavity, c/4L (flat and weak when the cavity is tiny). */
 function noiseShape(pl) {
   const lf = pl.lf;
-  if (lf < 1.2) return { ff: lf < 0.2 ? 1800 : 6500, fb: lf < 0.2 ? 5000 : 6000, amp: lf < 0.2 ? 0.45 : 0.2 };
+  if (lf < 1.2) return { ff: lf < 0.2 ? 1800 : 6500, fb: lf < 0.2 ? 5000 : 6000, amp: lf < 0.2 ? 0.45 : 0.1 };
   const ff = Math.min(7000, C_TRACT / (4 * lf));
   return { ff, fb: Math.max(320, 0.3 * ff), amp: 1 };
 }
@@ -304,6 +304,22 @@ function joinBufs(parts, gap) {
   const g = Math.round(gap * SR), out = new Float32Array(parts.reduce((a, p) => a + p.length + g, 0)); let o = 0;
   for (const p of parts) { out.set(p, o); o += p.length + g; }
   return out;
+}
+
+/**
+ * Formant frequencies (Hz, ascending) of a 20 ms stretch starting at t0, by linear prediction: pre-emphasis, Hamming window,
+ * autocorrelation and the Levinson–Durbin recursion for an order-p all-pole model, then the angles of its complex roots
+ * (bandwidths under 500 Hz only).
+ */
+function lpcFormants(M, buf, t0, p = 14, win = 0.02) {
+  const n = Math.round(win * SR), a0 = Math.round(t0 * SR), x = new Float64Array(n);
+  for (let j = 0; j < n; j++) x[j] = (buf[a0 + j] - 0.97 * (buf[a0 + j - 1] || 0)) * (0.54 - 0.46 * Math.cos((2 * Math.PI * j) / (n - 1)));
+  const r = new Float64Array(p + 1); for (let k = 0; k <= p; k++) { let s = 0; for (let j = k; j < n; j++) s += x[j] * x[j - k]; r[k] = s; }
+  r[0] *= 1.0001;
+  let a = new Float64Array(p + 1), e = r[0]; a[0] = 1;
+  for (let i = 1; i <= p; i++) { let acc = r[i]; for (let j = 1; j < i; j++) acc += a[j] * r[i - j]; const k = -acc / e, na = a.slice(); for (let j = 1; j < i; j++) na[j] = a[j] + k * a[i - j]; na[i] = k; a = na; e *= 1 - k * k; }
+  const coef = []; for (let j = p; j >= 0; j--) coef.push(a[j]); // ascending powers of z
+  return M.polyRoots(coef).filter((z) => z.im > 0).map((z) => ({ f: (Math.atan2(z.im, z.re) * SR) / (2 * Math.PI), bw: (-Math.log(z.abs()) * SR) / Math.PI })).filter((q) => q.f > 150 && q.bw < 500).map((q) => q.f).sort((u, v) => u - v);
 }
 
 export default {
@@ -466,7 +482,7 @@ export default {
           cache.set(k, out); return out;
         };
         const hs = M.range(14).map(() => sg.handle(0, FM * 0.93, { color: 'gold', r: 7 }));
-        const reset = () => { const d = get(), n = d.segs.length + 1; hs.forEach((h, i) => { h.visible = i < n; h.set(i < n ? 0.06 + ((d.dur - 0.12) * i) / (n - 1) : 0, FM * 0.93); }); };
+        const reset = () => { const d = get(), n = d.segs.length + 1; hs.forEach((h, i) => { h.visible = i < n; h.set(i < n ? d.dur * (0.22 + (0.56 * i) / (n - 1)) : 0, FM * 0.93); }); }; // start bunched in the middle: spread them out
         hs.forEach((h, i) => { h.constrain = (x) => { const d = get(), n = d.segs.length + 1, lo = i > 0 ? hs[i - 1].x + 0.012 : 0.0, hi = i < n - 1 ? hs[i + 1].x - 0.012 : d.dur; return [clampN(x, lo, hi), FM * 0.93]; }; });
         reset();
         const ph = playhead(v);
@@ -502,7 +518,7 @@ export default {
       name: 'Coarticulation and formant transitions',
       statement: String.raw`Speech sounds are not produced one after another like beads on a string: the gestures of neighbouring sounds overlap in time (**coarticulation**), so each consonant is realised differently before different vowels. The clearest trace is in the **formant transitions** at a consonant–vowel boundary: the second formant of [di], [da] and [du] starts at different frequencies, but the transitions all point back toward a common frequency, the consonant's **locus** (about 1800 Hz for [d], 720 Hz for [b] and, before front vowels, about 3000 Hz for [ɡ], according to Delattre, Liberman and Cooper, 1955). Measured across vowels, the F2 at the onset of voicing is close to a linear function of the F2 of the vowel, the **locus equation** $F2_{onset}=k\,F2_{vowel}+c$, whose slope $k$ (between 0 and 1) measures how strongly the vowel coarticulates with the consonant.`,
       idea: String.raw`At the release the tract still has the consonant's shape, which defines a starting resonance; the tongue body, already moving toward the vowel during the closure, makes that starting point vowel-dependent. If the consonant's own resonance (the locus $L$) were reached exactly at the release, all transitions would start at $L$ ($k=0$); if the vowel took over completely, there would be no transition at all ($k=1$). Real speech lies between, so the onsets lie on a line that crosses the diagonal $F2_{onset}=F2_{vowel}$ at $L=c/(1-k)$. Delattre and colleagues found the loci with painted spectrograms played on the Pattern Playback; Lindblom (1963) introduced the locus equation; the transitions are one of the main cues for place (ling-1.3) that a spectrogram reader uses (ling-1.11).`,
-      caption: String.raw`Choose a consonant and slide the coarticulation $k$. Left: spectrograms of [Ci e a o u] synthesized with the locus model, with the F2 track (gold) and dashed extensions of the first part of each transition. Right: F2 measured at the onset of voicing in each synthesized syllable (by FFT of its first periods) against the F2 of the vowel; the fitted line is the locus equation, and where it meets the diagonal is the measured locus (dot). With $k=0$ every transition starts at the locus; with $k=1$ there are none. [ɡ] needs two loci, one for front and one for back vowels. *Listen* plays the five syllables.`,
+      caption: String.raw`Choose a consonant and slide the coarticulation $k$. Left: spectrograms of [Ci e a o u] synthesized with the locus model, with the F2 track (gold) and dashed extensions of the first part of each transition. Right: F2 measured at the onset of voicing in each synthesized syllable (by linear prediction, LPC, on its first 20 ms of voicing) against the F2 of the vowel; the fitted line is the locus equation, and where it meets the diagonal is the measured locus (dot). With $k=0$ every transition starts at the locus; with $k=1$ there are none. (The measured slope exceeds $k$ because voicing begins after part of the transition is over.) [ɡ] needs two loci, one for front and one for back vowels. *Listen* plays the five syllables.`,
       deps: ['ling-1.11'],
       refs: ['Ladefoged & Johnson'],
       tags: ['coarticulation', 'transitions'],
@@ -513,22 +529,15 @@ export default {
         const cs = v.select('consonant', [{ value: 'b', label: '[b]' }, { value: 'd', label: '[d]' }, { value: 'g', label: '[ɡ]' }], 'd');
         const kS = v.slider('coarticulation $k$', 0, 1, 0.42, { step: 0.01 });
         const sg = v.stage({ x: [0, SEG * 5], y: [0, FM], height: 320, axes: 'box', minWidth: 330, weight: 1.35, xticks: VOWS.map((x, i) => [SEG * (i + 0.5), `[${'bdg'.includes(cs.value) ? cs.value.replace('g', 'ɡ') : ''}${x}]`]), yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
-        const le = v.stage({ x: [600, 3000], y: [600, 3000], height: 320, axes: 'box', minWidth: 250, title: 'locus equation (Hz)', xlabel: 'F2 of the vowel', ylabel: 'F2 at voicing onset' });
+        const le = v.stage({ x: [600, 3150], y: [600, 3150], height: 320, axes: 'box', minWidth: 250, title: 'locus equation (Hz)', xlabel: 'F2 of the vowel', ylabel: 'F2 at voicing onset' });
         const PLC = { b: { lf: 0, loc: [220, 720, 2200] }, d: { lf: 1.6, loc: [220, 1800, 2700] }, g: { lf: 6.0, loc: null } };
         const cache = new Map();
-        const measureF2 = (buf, t0) => { // F2 from the spectrum of 15 ms of signal starting at t0: highest spectral peak between 900 and 3300 Hz
-          const N = 2048, w = Math.round(0.015 * SR), a = Math.round(t0 * SR), re = new Float64Array(N), im = new Float64Array(N);
-          for (let j = 0; j < w; j++) re[j] = (buf[a + j] - 0.9 * (buf[a + j - 1] || 0)) * (0.5 - 0.5 * Math.cos((2 * Math.PI * j) / w));
-          M.fft(re, im); let best = 0, bf = 0;
-          for (let b = Math.round((900 * N) / SR); b < (3300 * N) / SR; b++) { const m = re[b] * re[b] + im[b] * im[b]; if (m > best) { best = m; bf = b; } }
-          return (bf * SR) / N;
-        };
         const get = () => {
           const key = cs.value + kS.value; if (cache.has(key)) return cache.get(key);
           const sy = VOWS.map((V) => {
             const r = speak([{ sym: cs.value, pl: PLC[cs.value], mn: 'plosive', vc: 1, k: kS.value }, [V, 0.19]], { lead: 0.04, tail: 0.02, vot: 0.012 });
             const tr = r.segs[0].t1, buf = new Float32Array(Math.round(SEG * SR)); buf.set(r.buf.slice(0, buf.length));
-            return { buf, tr, F2: r.F[1], vowel: VF[V][1], onset: measureF2(r.buf, tr + 0.014) };
+            return { buf, tr, F2: r.F[1], vowel: VF[V][1], onset: lpcFormants(M, r.buf, tr + 0.013)[1] };
           });
           const all = new Float32Array(sy.length * Math.round(SEG * SR)); sy.forEach((s, i) => all.set(s.buf, i * s.buf.length));
           const out = { sy, all, S: stft(M, all, { win: 0.005, fmax: FM }) }; cache.set(key, out); return out;
@@ -549,18 +558,18 @@ export default {
             const slope = (s.F2(s.tr + 0.012) - s.F2(s.tr)) / 0.012; sg.line(off + s.tr, s.F2(s.tr), off + s.tr - 0.045, s.F2(s.tr) - 0.045 * slope, { color: 'gold', dash: [4, 3], width: 1.5 });
           });
           // locus equation from the measured onsets
-          le.line(600, 600, 3000, 3000, { color: 'faint', width: 1.2, dash: [3, 3] });
+          le.line(600, 600, 3150, 3150, { color: 'faint', width: 1.2, dash: [3, 3] });
           le.text('no transition', 2650, 2780, { size: 10.5, color: 'muted', align: 'center' });
           const groups = c === 'g' ? [[0, 1], [2, 3, 4]] : [[0, 1, 2, 3, 4]], fits = [];
           for (const gi of groups) {
             const xs = gi.map((i) => d.sy[i].vowel), ys = gi.map((i) => d.sy[i].onset), f = M.linreg(xs, ys);
             const lo = Math.min(...xs) - 150, hi = Math.max(...xs) + 150; le.line(lo, f.predict(lo), hi, f.predict(hi), { color: 'accent', width: 2 });
             const L = f.slope < 0.97 ? f.intercept / (1 - f.slope) : null;
-            if (L && L > 600 && L < 3000) le.dot(L, L, { r: 6, color: 'red' });
+            if (L && L > 600 && L < 3150) le.dot(L, L, { r: 6, color: 'red' });
             fits.push({ k: f.slope, c: f.intercept, L });
           }
           if (locus) le.hline(locus, { color: 'red', dash: [6, 4], width: 1.2 }); else { le.hline(3000, { color: 'red', dash: [6, 4], width: 1.2 }); le.hline(1500, { color: 'red', dash: [6, 4], width: 1.2 }); }
-          d.sy.forEach((s, i) => { le.dot(s.vowel, s.onset, { r: 5, color: 'accent' }); le.text(`[${VOWS[i]}]`, s.vowel + (VOWS[i] === 'o' ? -40 : VOWS[i] === 'u' ? 40 : 0), s.onset + (VOWS[i] === 'o' ? -130 : 120), { size: 12, color: 'accent', align: VOWS[i] === 'o' ? 'right' : VOWS[i] === 'u' ? 'left' : 'center' }); });
+          d.sy.forEach((s, i) => { le.dot(s.vowel, s.onset, { r: 5, color: 'accent' }); le.text(`[${VOWS[i]}]`, s.vowel + (VOWS[i] === 'o' ? 45 : VOWS[i] === 'u' ? -45 : 0), s.onset + (VOWS[i] === 'o' ? -110 : 120), { size: 12, color: 'accent', align: VOWS[i] === 'o' ? 'left' : VOWS[i] === 'u' ? 'right' : 'center' }); });
           info = { fits, c };
         });
         v.readout(() => info && info.fits.map((f, j) => `${info.c === 'g' ? (j ? 'back vowels: ' : 'front vowels: ') : ''}measured locus equation $F2_{onset}$ = ${v.fix(f.k, 2)} $F2_{vowel}$ + ${Math.round(f.c)} Hz → locus ${f.L ? `**${Math.round(f.L)} Hz**` : 'undefined (slope ≈ 1)'}`).join(' · ') + ` · Delattre et al.: ${info.c === 'b' ? '720' : info.c === 'd' ? '1800' : '≈ 3000 (front)'} Hz`);
@@ -700,7 +709,7 @@ export default {
           const names = pts.map((p) => { let b = 0, bd = 1e9; card.forEach((c, i) => { if ('yøœɶ'.includes(c.s)) return; const d = Math.hypot(c.x - p[0], c.y - p[1]); if (d < bd) { bd = d; b = i; } }); return card[b].s; });
           hs.forEach((h, i) => { h.visible = i < pts.length; if (i < pts.length && !h.dragging) { h.x = pts[i][0]; h.y = pts[i][1]; } });
           pts.forEach((p, i) => st.text(names[i], p[0], p[1] + 0.42, { size: 15, color: 'accent', align: 'center', weight: 700 }));
-          const order = 'i y e ø ɛ œ a ɶ ɯ ɤ ʌ ɑ u o ɔ ɒ'.split(' ');
+          const order = 'i y e ø ɛ œ a ɶ ɯ ɤ ʌ ɑ ɒ ɔ o u'.split(' ');
           info = { n: pts.length, E, names: names.slice().sort((a, b) => order.indexOf(a) - order.indexOf(b)), common: COMMON[pts.length] };
         }, { still: 3 });
         v.readout(() => info && `$n$ = ${info.n}: energy $E$ = ${v.fix(info.E, 3)} · nearest cardinal vowels: **[${info.names.join(' ')}]**${info.common ? ` · most common ${info.n}-vowel system in the world's languages: [${info.common}]` : ''}`);

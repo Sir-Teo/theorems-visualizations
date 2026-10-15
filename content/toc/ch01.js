@@ -852,7 +852,7 @@ A **literal** is a variable or its negation, a **clause** is an $\lor$ of litera
         v.readout(() => {
           const f = S.frame, sat = [0, 1, 2, 3, 4, 5, 6, 7].filter((i) => evalF(F, env(i))), cl = f.bad.slice(0, f.k).map((r) => `(${lit(r).join(' \\lor ')})`);
           const agree = [0, 1, 2, 3, 4, 5, 6, 7].every((i) => cnfVal(i, f) === evalF(F, env(i)));
-          return String.raw`$\varphi = ${texF(F)}$ is ${sat.length ? `**satisfiable** (${sat.length} of 8 rows)` : '**unsatisfiable**'} · CNF so far: $${cl.join(' \\land ') || '\\top'}$ — ${agree ? 'equal to φ on all 8 rows ✓' : `${[0, 1, 2, 3, 4, 5, 6, 7].filter((i) => cnfVal(i, f) !== evalF(F, env(i))).length} rows still differ`}`;
+          return String.raw`$\varphi = ${texF(F)}$ is ${sat.length ? `**satisfiable** (${sat.length} of 8 rows)` : '**unsatisfiable**'} · CNF so far: $${cl.join(' \\land ') || '\\top'}$ — ${agree ? 'equal to φ on all 8 rows ✓' : ((d) => `${d} row${d === 1 ? ' still differs' : 's still differ'}`)([0, 1, 2, 3, 4, 5, 6, 7].filter((i) => cnfVal(i, f) !== evalF(F, env(i))).length)}`;
         });
       },
     },

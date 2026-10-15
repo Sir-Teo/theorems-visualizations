@@ -371,7 +371,7 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
             s.textPx(p.q > 0 ? '+' : p.q < 0 ? '−' : 'n', X, Y + 0.5, { align: 'center', size: p.q ? 12 : 10, weight: 700, color: p.q ? 'panel' : 'muted', halo: false });
           }
           // the history plot
-          const t1 = Math.max(30, T), t0 = t1 - 30;
+          const t1 = Math.max(24, T + 1), t0 = t1 - 24;
           let lo = -3, hi = 3; for (const h of hist) { lo = Math.min(lo, h[1], h[2]); hi = Math.max(hi, h[1], h[2]); }
           sp.setView([t0, t1], [lo - 1.5, hi + 1.5]);
           sp.hline(0, { color: 'faint', width: 1 });
@@ -383,7 +383,7 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
         v.legend([['blue', 'change of charge inside, $Q(t)-Q(0)$'], ['green', 'net charge carried in across the boundary', { dash: true }], ['gold', 'pair created / annihilated', { dot: true }], ['purple', 'neutron decay', { dot: true }]]);
         v.readout(() => {
           const q = Qin(), dq = q - Q0, ok = dq === inflow;
-          return `charge inside now $Q = ${q}e$ (it was $${Q0}e$) · change $\\Delta Q = ${dq >= 0 ? '+' : ''}${dq}e$ · net charge carried in across the boundary $${inflow >= 0 ? '+' : ''}${inflow}e$ · ${ev.pair} pairs created, ${ev.ann} annihilations, ${ev.dec} neutron decays` +
+          return `charge inside now $Q = ${q}e$ (it was $${Q0}e$) · change $\\Delta Q = ${dq > 0 ? '+' : ''}${dq}e$ · net charge carried in across the boundary $${inflow > 0 ? '+' : ''}${inflow}e$ · ${ev.pair} pairs created, ${ev.ann} annihilations, ${ev.dec} neutron decays` +
             (ok ? ' · **balance holds**' : ` · **unbalanced by ${dq - inflow}e**: ${ev.fake} decays made charge from nothing`);
         });
       },
@@ -625,13 +625,13 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
       refs: ['Griffiths §2.2', 'Purcell ch. 1'],
       tags: ['field lines', 'field'],
       viz(v) {
-        const M = v.M, D = 8;
+        const M = v.M, D = 10;
         const s = v.stage({ x: [-6.2, 6.2], y: [-3.7, 3.7], equal: true, height: 400, axes: false, full: true });
         const mode = v.select('', [{ value: '2d', label: 'line charges (exact in the plane)' }, { value: '3d', label: 'point charges (a slice of 3D)' }], '2d');
         const qs = [v.slider('$q_1$', -3, 3, 2, { step: 0.5 }), v.slider('$q_2$', -3, 3, -1, { step: 0.5 }), v.slider('$q_3$', -3, 3, 1, { step: 0.5 })];
         const shade = v.toggle('shade field strength $|\\mathbf E|$', true);
         const F = v.fields(s, { sources: [{ x: -2.5, y: 0.4, q: 2 }, { x: 2.2, y: -0.9, q: -1 }, { x: 0.2, y: 2.2, q: 1 }], lineDensity: D, heat: 'magnitude', heatStrength: 0.3, heatColor: 'orange' });
-        const P1 = s.handle(-0.4, 1.3, { color: 'gold', r: 6 }), P2 = s.handle(0.3, -1.9, { color: 'gold', r: 6 });
+        const P1 = s.handle(-0.5, 1.7, { color: 'gold', r: 6 }), P2 = s.handle(0.4, -2.4, { color: 'gold', r: 6 });
         let info = null;
         v.render(() => {
           F.o.law = mode.value;
@@ -664,7 +664,7 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
           const Ff = F.F(), flux = quad((t) => { const f = Ff(ax + t * ex, ay + t * ey); return f[1] * ex - f[0] * ey; }, 0, 1, 1e-10, 20, 16);
           info = { tot, net, pm, pe, em, flux };
         });
-        v.legend([['ink', 'field lines ($8$ per unit charge)'], ['gold', 'lines crossing the probe segment'], ['orange', '$|\\mathbf E|$ (log shading)', { area: true }]]);
+        v.legend([['ink', 'field lines ($10$ per unit charge)'], ['gold', 'lines crossing the probe segment'], ['orange', '$|\\mathbf E|$ (log shading)', { area: true }]]);
         v.readout(() => {
           const { tot, net, flux, pm, pe, em } = info, ends = `lines: ${pm} run from a $+$ charge to a $-$ charge, ${pe} leave the window from a $+$ charge, ${em} come in from outside to a $-$ charge`;
           if (mode.value === '2d') return `**${tot}** lines cross the probe (net ${net} along $\\hat{\\mathbf n}$) · flux through it × lines per unit flux $= ${v.fix(D * flux, 2)}$ — the count is the flux, to within one line · ${ends}`;
@@ -942,7 +942,7 @@ independent of the distance from the plane. Two parallel planes with charges $+\
           if (R > 10) s.corner(`disk edge at ${M.si(R * 0.01, 'm')}, far off-screen`, 'tr', { size: 11 });
           for (const [x, z, E] of grid) { const m = Math.hypot(...E); if (!isFinite(m) || m < ref * 0.003) continue; const L = Math.min(34, 24 * Math.sqrt(m / ref)); arrowPx(s, x - (E[0] / m) * (L / 2) / s.sx, z - (E[1] / m) * (L / 2) / s.sy, E[0], E[1], L, { color: 'accent', width: 1.6, head: Math.min(7, L * 0.45), alpha: 0.85 }); }
           const EP = field(P.x, P.y, Rs.value), EP2 = field(P.x, 2 * P.y, Rs.value);
-          arrowPx(s, P.x, P.y, EP[0], EP[1], Math.min(70, 40 * Math.sqrt(Math.hypot(...EP) / ref)), { color: 'gold', width: 3, head: 10 });
+          arrowPx(s, P.x, P.y, EP[0], EP[1], Math.min(80, 58 * Math.sqrt(Math.hypot(...EP) / ref)), { color: 'gold', width: 3, head: 10 });
           s.dot(P.x, 2 * P.y, { r: 3.5, color: 'gold', alpha: 0.6 });
           // profile
           const ymax = (two ? 2.4 : 1.4) * ref / 1e3; sp.setView([-6, 6], [-ymax, ymax]);

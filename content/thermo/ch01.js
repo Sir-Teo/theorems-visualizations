@@ -285,5 +285,496 @@ Different thermometric properties give scales that agree at the fixed points but
         });
       },
     },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4', kind: 'Law', name: 'Ideal gas law',
+      statement: String.raw`For a dilute gas of $N$ molecules in a volume $V$ at absolute temperature $T$, the pressure is
+$$PV = NkT = nRT,$$
+where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the amount in moles and $R = N_Ak = 8.314$ J/(mol·K) the gas constant. The pressure depends only on the number density $N/V$ and the temperature — not on the kind of molecule. It is a **limiting law**: every real gas obeys it better and better as its density goes to zero, and departs from it when the molecules' own size and their attractions start to matter.`,
+      idea: String.raw`The law gathers Boyle's ($PV$ fixed at fixed $T$), Charles's and Gay-Lussac's ($V$ or $P$ proportional to $T$) and Avogadro's (equal volumes hold equal numbers) observations into one equation; with the gas-thermometer scale of 1.3 it is, in fact, the *definition* of $T$. Kinetic theory (1.6–1.7) explains it: each molecule hits a wall at a rate proportional to its speed and delivers momentum proportional to its speed, so $P = (N/V)\,m\langle v_x^2\rangle$, and $m\langle v_x^2\rangle = kT$. The derivation assumes point molecules that do not interact; finite size crowds the molecules and raises the pressure (for hard spheres, the Carnahan–Starling formula), while attractions lower it.`,
+      caption: String.raw`An exact simulation of hard spheres (diameter $\sigma$) between an end wall and a piston; the slab repeats periodically up and down (dashed lines), so only the end wall and the piston are walls. The pressure is **measured**: the momentum delivered by every impact, summed over 6 time units. Each window adds a point. Left: measured $P$ against $NkT/V$ — the law is the diagonal, whatever $N$, $V$ and $T$ you choose. Right: $P/\rho kT$ against the packing fraction measured in the middle of the cylinder (molecules pile up against the walls); at liquid-like densities the points climb onto the hard-sphere curve, far above the ideal value 1. Drag the piston, or let it sweep.`,
+      deps: ['thermo-1.3'],
+      see: ['pchem-1.4', 'pchem-1.1'],
+      refs: ['Schroeder §1.2', 'Carnahan & Starling, J. Chem. Phys. 51, 635 (1969)'],
+      tags: ['gas laws', 'equation of state'],
+      credit: 'Clapeyron, 1834 (combining Boyle, Charles, Gay-Lussac and Avogadro)',
+      scope: String.raw`Holds for any gas in the limit of low density; for air at room temperature the error is below 0.1% at 1 atm. It fails at high density (molecular size), near condensation (attractions) and for quantum gases at very low temperature (chapter 8).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ideal_gas_law' },
+      viz(v) {
+        const L = 9, XMIN = 6.5, XMAX = 40, WIN = 6, A = L * L;
+        let G = null, win, pts = [], acc, tSim = 0;
+        const Ns = v.slider('molecules $N$', 40, 250, 170, { int: true, onChange: () => make() });
+        const Ts = v.slider('temperature $kT$', 0.4, 3, 1, { step: 0.01, onChange: (x) => { G.setT(x); fresh(); } });
+        const auto = v.toggle('automatic slow sweep', true);
+        v.button('Clear points', () => { pts = []; });
+        const sc = v.stage({ x: [-1.5, XMAX + 7.5], y: [-2.4, L + 1.4], equal: true, height: 200, axes: false, full: true });
+        const ph = sc.handle(XMAX + 0.55, L / 2, { color: 'orange', r: 8, constrain: (x) => [clamp(x, XMIN + 0.55, XMAX + 0.55), L / 2] });
+        ph.onDrag = () => { if (auto.value) auto.set(false); };
+        const sp = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: 'box', xlabel: 'NkT/V', ylabel: 'measured P', title: 'measured pressure against $NkT/V$' });
+        const sz = v.stage({ x: [0, 0.32], y: [0.8, 4.6], height: 290, axes: 'box', xlabel: 'packing fraction η (middle)', ylabel: 'P/ρkT', title: 'departure from the ideal gas' });
+        const fresh = () => { win = G.snap(); win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 }; };
+        const make = () => { G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true }); fresh(); };
+        make();
+        const sweep = (t) => { const u = (t % 360) / 360, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
+        const clock = simClock(6, 0.06);
+        const rp = ramp(v, 'teal', 'red', 24, 'purple');
+        v.animate((t) => {
+          const add = clock(t, () => { tSim = 0; pts = []; G = null; make(); });
+          runBudget(G, add, 0.1, 14, (h) => {
+            tSim += h;
+            const target = auto.value ? sweep(tSim) : ph.x - 0.55, X = G.pist.X, U = clamp((target - X) / 2, -0.25, 0.25);
+            if (Math.abs(U - G.pist.U) > 1e-3 || (U === 0 && G.pist.U !== 0)) G.setU(Math.abs(U) < 1e-3 ? 0 : U);
+            let c = 0; for (let i = 0; i < G.N; i++) if (G.x[i] > 2 && G.x[i] < X - 2) c++;
+            acc.T += G.stats().T; acc.c += c / ((X - 4) * A); acc.n++;
+            if (G.t - win.t >= WIN) {
+              const b = G.snap(), r = G.meas(win, b), T = acc.T / acc.n, rho = acc.c / acc.n, eta = rho * Math.PI / 6;
+              if (Math.abs(G.pist.X - win.X) < 0.08 * G.pist.X) pts.push({ id: G.N * T / r.V, P: r.pAll, eta, Z: r.pAll / (rho * T), err: r.pAll * Math.sqrt(1.273 / Math.max(1, r.hits)), V: r.V, T });
+              if (pts.length > 500) pts.shift();
+              win = b; win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 };
+            }
+          });
+          if (auto.value) ph.x = G.pist.X + 0.55;
+          drawGas(sc, G, { periodic: true, rod: 6, color: () => 'accent', fill: 'accent', fillAlpha: 0.05 });
+          const V = G.volume(), T = G.stats().T;
+          sc.text(`V = ${V.toFixed(0)} σ³   N = ${G.N}   kT = ${v.fix(T, 2)}`, 0, -1.3, { size: 12, color: 'muted' });
+          sc.text('end wall', 0, L + 0.8, { size: 11, color: 'muted' }); sc.text('piston: drag', G.pist.X + 0.6, L + 0.8, { size: 11, color: 'orange' });
+          // measured P vs NkT/V
+          const last = pts.slice(-160), mx = Math.max(0.12, ...last.map((p) => Math.max(p.P, p.id))) * 1.12;
+          sp.setView([0, mx], [0, mx]);
+          sp.line(0, 0, mx, mx, { color: 'ink', dash: [6, 4], width: 1.4 });
+          sp.text('P = NkT/V', mx * 0.6, mx * 0.6, { dy: 12, dx: 8, size: 12, color: 'ink' });
+          for (const p of last) sp.dot(p.id, p.P, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.75, ring: false });
+          // Z vs eta
+          sz.hline(1, { color: 'ink', dash: [6, 4], width: 1.4 });
+          sz.fn(carnahanStarling, { color: 'red', width: 2.2, domain: [0, 0.32] });
+          sz.text('hard spheres (Carnahan–Starling)', 0.315, carnahanStarling(0.3), { align: 'right', dy: -16, color: 'red', size: 11.5 });
+          sz.text('ideal gas', 0.31, 1, { align: 'right', dy: -9, color: 'ink', size: 11.5 });
+          for (const p of pts) sz.dot(p.eta, p.Z, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.75, ring: false });
+          const q = pts[pts.length - 1];
+          if (q) { sp.dot(q.id, q.P, { r: 6, hollow: true, color: 'ink' }); sz.dot(q.eta, q.Z, { r: 6, hollow: true, color: 'ink' }); }
+        }, { still: 8 });
+        v.legend([['teal', 'dilute'], ['red', 'dense (η ≈ 0.3)'], ['ink', 'ideal gas law', { dash: true }]]);
+        v.readout(() => {
+          const q = pts[pts.length - 1]; if (!q) return 'measuring…';
+          return `last window: $NkT/V$ = ${v.fix(q.id, 4)}, measured $P$ = ${v.fix(q.P, 4)} ± ${v.fix(q.err, 4)} $kT_0/\\sigma^3$ → $PV/NkT$ = ${v.fix(q.P / q.id, 3)} · density in the middle: η = ${v.fix(q.eta, 3)}, $P/\\rho kT$ = ${v.fix(q.Z, 3)} vs Carnahan–Starling ${v.fix(carnahanStarling(q.eta), 3)} · ${pts.length} windows measured`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5', kind: 'Law', name: 'Dalton’s law of partial pressures',
+      statement: String.raw`In a mixture of ideal gases occupying a volume $V$ at temperature $T$, the total pressure is the sum of the **partial pressures**, each being the pressure that component would exert if it filled the volume alone:
+$$P = \sum_i P_i,\qquad P_i = \frac{N_ikT}{V} = x_iP,$$
+with $x_i = N_i/N$ the mole fraction. Equivalently, each gas behaves as if the others were absent. The law holds exactly for ideal gases and approximately for real gases at low density.`,
+      idea: String.raw`In the kinetic picture the wall cannot tell the molecules apart: the momentum it receives per second is a sum over molecules, so it splits into one sum per species. Each species' share is $N_i m_i\langle v_x^2\rangle_i/V$, and since every species has $m_i\langle v_x^2\rangle_i = kT$ (1.7), the share is $N_ikT/V$ — independent of the other species and of the molecular masses. Once the molecules occupy a noticeable fraction of the volume (or attract each other), each species feels the others and the shares are no longer what it would exert alone.`,
+      caption: String.raw`Three kinds of hard spheres (light, medium, heavy — different masses and sizes) share a cylinder; switch kinds on and off. The impacts on the walls are tallied **by species**, giving measured partial pressures (left bar). Middle bar: what each kind would exert alone in the same volume (computed from its own density); right bar: $N_ikT/V$. In the large volume all three bars agree — Dalton's law. Shrink the volume: the measured total climbs far above the sum of the "alone" pressures, because each kind now has to dodge the others.`,
+      deps: ['thermo-1.4'],
+      refs: ['Schroeder §1.2', 'Mansoori, Carnahan, Starling & Leland, J. Chem. Phys. 54, 1523 (1971)'],
+      tags: ['gas laws', 'mixtures'],
+      credit: 'Dalton, 1801',
+      scope: String.raw`Exact for ideal gases; for real gases it holds to the extent that the second virial coefficients are negligible, i.e. at low density. In the crowded box here the departure comes from the molecules' size (the attractions of real molecules give departures of the opposite sign).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dalton%27s_law' },
+      viz(v) {
+        const L = 8, A = L * L, SPC = [{ m: 1, d: 0.9, col: 'teal', name: 'light' }, { m: 4, d: 1.15, col: 'purple', name: 'medium' }, { m: 16, d: 1.4, col: 'orange', name: 'heavy' }], NUM = [70, 50, 34];
+        let G, a0, acc;
+        const tg = SPC.map((sp, k) => v.toggle(`${sp.name} ($m$ = ${sp.m}, $d$ = ${sp.d}σ)`, true, { onChange: () => make() }));
+        const box = v.select('volume', [{ value: 'dilute', label: 'large (dilute)' }, { value: 'crowded', label: 'small (crowded)' }], 'dilute', { onChange: () => make() });
+        const sc = v.stage({ x: [-1, 37.5], y: [-1.6, L + 1.2], equal: true, height: 190, axes: false, full: true });
+        const sb = v.stage({ x: [0, 3.6], y: [0, 1], height: 300, axes: 'box', ylabel: 'pressure (kT/σ³)', xticks: [[0.7, 'measured, by species'], [1.8, 'each kind alone'], [2.9, 'Nᵢ kT / V']], title: 'partial pressures, stacked by species', weight: 1.3 });
+        const make = () => {
+          const counts = NUM.map((n, k) => (tg[k].value ? n : 0));
+          if (counts.every((c) => c === 0)) counts[0] = NUM[0];
+          G = hsGas({ species: SPC.map((q) => ({ m: q.m, d: q.d })), counts, Ly: L, Lz: L, T: 1, rng: v.rng(21), piston: { X: box.value === 'dilute' ? 36 : 8 }, periodic: true });
+          a0 = null; acc = { n: 0, T: 0, c: [0, 0, 0] };
+        };
+        make();
+        const clock = simClock(5, 0.06);
+        const alone = (rho, d, T) => { const eta = rho * Math.PI / 6 * d ** 3; return rho * T * carnahanStarling(eta); };
+        const bmcsl = (rhos, T) => { const xi = [0, 1, 2, 3].map((k) => Math.PI / 6 * rhos.reduce((s, r, i) => s + r * SPC[i].d ** k, 0)); const o = 1 - xi[3]; return T * 6 / Math.PI * (xi[0] / o + 3 * xi[1] * xi[2] / (o * o) + (3 - xi[3]) * xi[2] ** 3 / (o ** 3)); };
+        let res = null;
+        v.animate((t) => {
+          const add = clock(t, () => make());
+          runBudget(G, add, 0.1, 14, () => {
+            if (G.t > 8) {
+              if (!a0) a0 = G.snap();
+              const X = G.pist.X, c = [0, 0, 0]; for (let i = 0; i < G.N; i++) if (G.x[i] > 2 && G.x[i] < X - 2) c[G.S[i]]++;
+              for (let k = 0; k < 3; k++) acc.c[k] += c[k] / ((X - 4) * A);
+              acc.T += G.stats().T; acc.n++;
+            }
+          });
+          const cols = SPC.map((q) => q.col);
+          drawGas(sc, G, { periodic: true, piston: true, rod: 0, color: (i) => cols[G.S[i]], rScale: 1 });
+          sc.text(box.value === 'dilute' ? 'large volume' : 'small volume: molecules crowd each other', 0, -1, { size: 12, color: 'muted' });
+          if (a0 && acc.n > 5) {
+            const r = G.meas(a0, G.snap()), T = acc.T / acc.n, V = G.volume(), rho = acc.c.map((c) => c / acc.n);
+            const counts = [0, 0, 0]; for (let i = 0; i < G.N; i++) counts[G.S[i]]++;
+            const meas = r.impS.map((q) => q / r.Aint), al = rho.map((rr, k) => alone(rr, SPC[k].d, T)), id = counts.map((c) => c * T / V);
+            res = { meas, al, id, T, rho, tot: meas.reduce((s, q) => s + q, 0), mix: bmcsl(rho, T), hits: r.hits, dt: r.dt };
+            const top = Math.max(res.tot, al.reduce((s, q) => s + q, 0), id.reduce((s, q) => s + q, 0)) * 1.18;
+            sb.setView([0, 3.6], [0, top]);
+            [[0.7, meas], [1.8, al], [2.9, id]].forEach(([x, vals]) => {
+              let y = 0;
+              vals.forEach((q, k) => { if (q <= 0) return; sb.rect(x - 0.35, y, x + 0.35, y + q, { fill: SPC[k].col, fillAlpha: 0.7, color: SPC[k].col, width: 1 }); y += q; });
+              sb.text(v.fix(y, 4), x, y, { dy: -9, align: 'center', size: 11.5, weight: 600 });
+            });
+            sb.hline(res.mix, { color: 'red', dash: [5, 4], width: 1.4 });
+            sb.text('mixture theory (BMCSL)', 3.55, res.mix, { align: 'right', dy: -9, size: 11, color: 'red' });
+          } else sb.corner('collecting impacts…', 'tl');
+        }, { still: 8 });
+        v.legend(SPC.map((q) => [q.col, `${q.name} molecules`]).concat([['red', 'hard-sphere mixture theory', { dash: true }]]));
+        v.readout(() => {
+          if (!res) return 'collecting impacts…';
+          const sumA = res.al.reduce((s, q) => s + q, 0), sumI = res.id.reduce((s, q) => s + q, 0);
+          return `measured total ${v.fix(res.tot, 4)} (${res.hits} impacts in ${v.fix(res.dt, 0)} time units) = ${res.meas.map((q) => v.fix(q, 4)).join(' + ')} · sum of "alone" pressures ${v.fix(sumA, 4)} · $\\sum N_ikT/V$ = ${v.fix(sumI, 4)} · measured / Dalton = ${v.fix(res.tot / sumA, 3)} · hard-sphere mixture theory ${v.fix(res.mix, 4)}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6', kind: 'Model', name: 'Kinetic theory of pressure',
+      statement: String.raw`Model a gas as $N$ molecules of mass $m$ moving in straight lines between elastic collisions with the walls, their own size negligible. A molecule with velocity component $v_x$ hits the wall at $x = L$ every $2L/|v_x|$ and delivers momentum $2m|v_x|$ each time, an average force $mv_x^2/L$. Summing over molecules, the pressure on a wall of area $A$ ($V = AL$) is
+$$P = \frac{Nm\langle v_x^2\rangle}{V} = \frac{1}{3}\,\frac{Nm\langle v^2\rangle}{V} = \frac{2}{3}\,\frac{N}{V}\,\langle \tfrac12 mv^2\rangle .$$
+Collisions between molecules do not change the result: they conserve momentum and kinetic energy and only reshuffle the velocities.`,
+      idea: String.raw`Pressure is a momentum flux. The rate at which molecules with velocity $v_x > 0$ reach a unit area of wall is $n v_x$, and each reverses its momentum, so $P = \int 2mv_x\cdot n v_x\,f(v_x)\,dv_x = nm\langle v_x^2\rangle$ — the fast molecules count twice, once because they arrive more often and once because they hit harder. Isotropy gives $\langle v_x^2\rangle = \langle v^2\rangle/3$. Comparing with $PV = NkT$ (1.4) identifies $kT$ with $m\langle v_x^2\rangle$ (1.7). The picture rests on Newton's laws for the impacts (momentum and impulse, mech 2.1); it was first sketched by Daniel Bernoulli in 1738 and made quantitative by Krönig and Clausius in the 1850s.`,
+      caption: String.raw`The piston (right) is fixed and every impact on it is recorded. The middle panel plots the momentum the piston has received over the last 60 time units — a staircase, one step per impact — against the straight line predicted by $Nm\langle v_x^2\rangle/L$, computed from the molecules' velocities. With **one molecule** the steps are regular, every $2L/|v_x|$; with many they blur into the line. Turn collisions off: nothing changes. Bottom: the $v_x$ of all molecules (Gaussian) and of those striking the piston, weighted by $v_x$ because fast molecules arrive more often.`,
+      deps: ['mech-2.1', 'thermo-1.4'],
+      see: ['pchem-1.6'],
+      refs: ['Schroeder §1.2'],
+      tags: ['kinetic theory', 'pressure'],
+      credit: 'D. Bernoulli, 1738; Krönig, 1856; Clausius, 1857',
+      scope: String.raw`Assumes molecules much smaller than their spacing and forces only during brief collisions (a dilute gas), elastic walls, and classical motion. Molecular size and attractions add corrections (1.4, chapter 4).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kinetic_theory_of_gases' },
+      viz(v) {
+        const L = 8, X = 16, TW = 60;
+        let G, hits, t0, mv2, nmv;
+        const mode = v.select('gas', [{ value: 'one', label: 'one molecule' }, { value: 'many', label: 'many molecules' }], 'many', { onChange: () => make() });
+        const Ns = v.slider('molecules $N$', 10, 150, 80, { int: true, onChange: () => make() });
+        const col = v.toggle('molecules collide with each other', true, { onChange: () => make() });
+        const sc = v.stage({ x: [-1, X + 4], y: [-1.6, L + 1.4], equal: true, height: 260, axes: false, weight: 0.9 });
+        const st = v.stage({ x: [-TW, 0], y: [0, 1], height: 260, axes: 'box', xlabel: 'time (relative to now)', ylabel: 'momentum received', title: 'momentum delivered to the piston', weight: 1.2 });
+        const sh = v.stage({ x: [-4.2, 4.2], y: [0, 0.75], height: 220, axes: 'box', xlabel: 'v_x (units of √(kT/m))', ylabel: 'probability density', title: 'velocity of all molecules and of those hitting the piston', full: true });
+        const binsAll = new Float64Array(42), binsHit = new Float64Array(42), bw = 0.2;
+        const make = () => {
+          const one = mode.value === 'one';
+          Ns.el.hidden = one;
+          G = hsGas({ species: [{ m: 1, d: col.value && !one ? 1 : 0.02 }], counts: [one ? 1 : Ns.value], Ly: L, Lz: L, T: 1, rng: v.rng(31), piston: { X } });
+          if (one) { G.vx[0] = 1.45; G.vy[0] = 0.62; G.vz[0] = 0.35; G.repredict(); }
+          hits = []; t0 = G.t; mv2 = 0; nmv = 0; binsAll.fill(0); binsHit.fill(0);
+          G.onWall = (i, w, J) => { if (w === 1) { hits.push([G.t, J]); const b = Math.floor((J / (2 * G.m[i]) + 4.2) / bw); if (b >= 0 && b < 42) binsHit[b]++; } };
+        };
+        make();
+        const clock = simClock(8, 0.05);
+        v.animate((t) => {
+          const add = clock(t, () => make());
+          runBudget(G, add, 0.1, 12, (h) => {
+            let s = 0; for (let i = 0; i < G.N; i++) { s += G.m[i] * G.vx[i] * G.vx[i]; const b = Math.floor((G.vx[i] + 4.2) / bw); if (b >= 0 && b < 42) binsAll[b] += h; }
+            mv2 += s * h; nmv += h;
+          });
+          while (hits.length && hits[0][0] < G.t - TW - 5) hits.shift();
+          // cylinder
+          const one = mode.value === 'one';
+          drawGas(sc, G, { color: () => 'accent', rScale: one ? 4 : 1, pistonColor: 'orange' });
+          if (one) { const i = 0; sc.arrow(G.x[i], G.y[i], G.x[i] + 1.6 * G.vx[i], G.y[i], { color: 'red', width: 2, head: 7 }); sc.text('vₓ', G.x[i] + 1.6 * G.vx[i], G.y[i], { dy: -10, color: 'red', size: 12 }); }
+          const lastHit = hits.length ? hits[hits.length - 1][0] : -1e9;
+          if (G.t - lastHit < 0.6) sc.rect(X, -0.2, X + 1.1, L + 0.2, { fill: 'red', fillAlpha: 0.35, stroke: false });
+          sc.text('fixed piston: impacts recorded', X + 1.4, L + 0.75, { size: 11, color: 'orange', align: 'right' });
+          sc.text(`L = ${X} σ, ${G.N} molecule${G.N > 1 ? 's' : ''}`, 0, -1, { size: 11.5, color: 'muted' });
+          // staircase over the last TW
+          const tStart = G.t - TW, F = nmv > 0 ? mv2 / nmv / X : 0;
+          let cum = 0; const stair = [[-TW, 0]];
+          for (const [th, J] of hits) { if (th < tStart) continue; stair.push([th - G.t, cum]); cum += J; stair.push([th - G.t, cum]); }
+          stair.push([0, cum]);
+          const top = Math.max(cum, F * TW, 1) * 1.15;
+          st.setView([-TW, 0], [0, top]);
+          st.line(-TW, 0, 0, F * TW, { color: 'green', width: 2, dash: [7, 4] });
+          st.path(stair, { color: 'accent', width: 2.2 });
+          for (const [th, J] of hits) if (th >= tStart) st.line(th - G.t, 0, th - G.t, J * top / 30, { color: 'orange', width: 1.4, alpha: 0.8 });
+          st.text('slope = N m⟨vₓ²⟩ / L', -TW + 2, F * TW * 0.9 + top * 0.04, { size: 11.5, color: 'green' });
+          // histograms
+          const totA = binsAll.reduce((s, q) => s + q, 0), totH = binsHit.reduce((s, q) => s + q, 0);
+          if (totA > 0) sh.path(Array.from(binsAll).flatMap((q, k) => [[-4.2 + k * bw, q / totA / bw], [-4.2 + (k + 1) * bw, q / totA / bw]]), { color: 'accent', width: 1.6, fill: 'accent', fillAlpha: 0.12 });
+          if (totH > 0) sh.path(Array.from(binsHit).flatMap((q, k) => [[-4.2 + k * bw, q / totH / bw], [-4.2 + (k + 1) * bw, q / totH / bw]]), { color: 'orange', width: 1.8, fill: 'orange', fillAlpha: 0.16 });
+          sh.fn((u) => Math.exp(-u * u / 2) / Math.sqrt(2 * Math.PI), { color: 'accent', width: 1.6, dash: [5, 4] });
+          sh.fn((u) => (u > 0 ? u * Math.exp(-u * u / 2) : 0), { color: 'orange', width: 1.6, dash: [5, 4] });
+          sh.text('all molecules: e^(−vₓ²/2)', -1.3, 0.42, { align: 'right', color: 'accent', size: 11.5 });
+          sh.text('hitting the piston: vₓ e^(−vₓ²/2)', 1.7, 0.63, { align: 'left', color: 'orange', size: 11.5 });
+        }, { still: 7 });
+        v.legend([['accent', 'momentum received (staircase)'], ['green', 'prediction $Nm\\langle v_x^2\\rangle/L$', { dash: true }], ['orange', 'single impacts']]);
+        v.readout(() => {
+          const dt = G.t - t0, Fm = dt > 0 ? G.imp[1] / dt : 0, Fp = nmv > 0 ? mv2 / nmv / X : 0;
+          return `since the start (${v.fix(dt, 0)} time units, ${G.hits[1]} impacts): measured force on the piston $\\sum 2mv_x/\\Delta t$ = ${v.fix(Fm, 4)} · predicted $Nm\\langle v_x^2\\rangle/L$ = ${v.fix(Fp, 4)} · ratio ${v.fix(Fp > 0 ? Fm / Fp : 0, 3)} · pressure $F/A$ = ${v.fix(Fm / (L * L), 5)} vs $NkT/V$ = ${v.fix(G.N * G.stats().Ttr / G.volume(), 5)}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7', kind: 'Theorem', name: 'Temperature measures mean kinetic energy',
+      statement: String.raw`In a dilute gas in equilibrium at temperature $T$, the mean translational kinetic energy per molecule is
+$$\left\langle \tfrac12 mv^2\right\rangle = \tfrac32 kT,\qquad\text{equivalently}\qquad m\langle v_x^2\rangle = kT,$$
+the same for every kind of molecule, whatever its mass. In a mixture at a common temperature, heavier molecules therefore move more slowly: $v_{\text{rms}} = \sqrt{3kT/m}$, so $v_{\text{rms},1}/v_{\text{rms},2} = \sqrt{m_2/m_1}$.`,
+      idea: String.raw`Combine kinetic theory, $PV = \tfrac23 N\langle \tfrac12mv^2\rangle$ (1.6), with the ideal gas law $PV = NkT$ (1.4): the two agree only if $\langle\tfrac12mv^2\rangle = \tfrac32kT$. That it holds for each species separately is the content of equilibrium: collisions between unequal molecules transfer energy, on average, from the one with more kinetic energy to the one with less, until the averages agree — whereupon thermal contact with any other gas exchanges no net energy either, which is the zeroth law at the molecular level. So temperature, defined operationally by thermometers, measures the average energy of random molecular motion.`,
+      caption: String.raw`A light and a heavy kind of molecule share the cylinder, the light ones starting hot and the heavy ones cold. Watch their mean kinetic energies (middle) meet at the common value $\tfrac32kT$ set by the total energy, while the speed distributions (right) stay different: the heavy molecules are slower by $\sqrt{m_2/m_1}$. Make the end wall a **heat bath** and both kinds settle at $\tfrac32kT_b$, whatever their masses. Change the mass ratio to see that only the speeds care about mass.`,
+      deps: ['thermo-1.6'],
+      refs: ['Schroeder §1.2'],
+      tags: ['kinetic theory', 'temperature'],
+      credit: 'Clausius, 1857; Maxwell, 1860',
+      scope: String.raw`Holds for the translational motion of any classical gas or liquid in equilibrium (it is the equipartition theorem, 6.12, for the three translational degrees of freedom); quantum effects modify it only at very low temperature or high density.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kinetic_theory_of_gases#Temperature_and_kinetic_energy' },
+      viz(v) {
+        const L = 9, X = 22, NS = [60, 60], COL = ['teal', 'purple'];
+        let G, series, sp, tLast;
+        const mh = v.slider('mass ratio $m_2/m_1$', 2, 25, 9, { step: 1, onChange: () => make() });
+        const bath = v.toggle('end wall is a heat bath', false, { onChange: (on) => { G.thermal[0] = on ? 1 : 0; } });
+        const Tb = v.slider('bath temperature $kT_b$', 0.3, 3, 1.6, { step: 0.05, onChange: (x) => { G.Tb = x; } });
+        const sc = v.stage({ x: [-1.6, X + 1.6], y: [-1.6, L + 1.2], equal: true, height: 230, axes: false, full: true });
+        const sk = v.stage({ x: [0, 160], y: [0, 4.5], height: 260, axes: 'box', xlabel: 'time', ylabel: '⟨½mv²⟩', title: 'mean kinetic energy of each kind', weight: 1.1 });
+        const sv = v.stage({ x: [0, 4.5], y: [0, 1.6], height: 260, axes: 'box', xlabel: 'speed v', ylabel: 'probability density', title: 'speed distributions', weight: 1 });
+        const make = () => {
+          G = hsGas({ species: [{ m: 1, d: 1, T: 2.6 }, { m: mh.value, d: 1, T: 0.4 }], counts: NS, Ly: L, Lz: L, rng: v.rng(41), piston: { X }, thermal: [bath.value ? 1 : 0, 0, 0, 0, 0, 0], Tb: Tb.value });
+          series = []; sp = [[], []]; tLast = -1;
+        };
+        make();
+        const clock = simClock(10, 0.05);
+        const kin = () => { const K = [0, 0], n = [0, 0]; for (let i = 0; i < G.N; i++) { const s = G.S[i]; K[s] += 0.5 * G.m[i] * (G.vx[i] ** 2 + G.vy[i] ** 2 + G.vz[i] ** 2); n[s]++; } return [K[0] / n[0], K[1] / n[1]]; };
+        v.animate((t) => {
+          const add = clock(t, () => make());
+          runBudget(G, add, 0.25, 12, () => {
+            if (G.t - tLast >= 0.5) {
+              tLast = G.t; const k = kin(); series.push([G.t, k[0], k[1]]); if (series.length > 2000) series.shift();
+              if (G.t > 25) for (let i = 0; i < G.N; i++) { const s = G.S[i]; sp[s].push(Math.hypot(G.vx[i], G.vy[i], G.vz[i])); if (sp[s].length > 9000) sp[s].splice(0, 600); }
+            }
+          });
+          drawGas(sc, G, { color: (i) => COL[G.S[i]], rScale: 1, piston: false, len: X, leftColor: bath.value ? 'red' : 'ink', leftWidth: bath.value ? 5 : 2.4 });
+          if (bath.value) sc.text(`heat bath kT = ${v.fix(Tb.value, 2)}`, 0, -1, { size: 11.5, color: 'red' });
+          // energy plot
+          const st = G.stats(), Tc = bath.value ? G.Tb : null;
+          const tmax = Math.max(160, G.t);
+          sk.setView([Math.max(0, tmax - 160), tmax], [0, 4.5]);
+          const Eq = bath.value ? 1.5 * G.Tb : 1.5 * st.Ttr;
+          sk.hline(Eq, { color: 'green', dash: [6, 4], width: 1.4 });
+          sk.text(bath.value ? '3/2 kT_b' : '3/2 kT (shared)', tmax - 2, Eq, { align: 'right', dy: -10, color: 'green', size: 12 });
+          sk.path(series.map((p) => [p[0], p[1]]), { color: COL[0], width: 2 });
+          sk.path(series.map((p) => [p[0], p[2]]), { color: COL[1], width: 2 });
+          // speed histograms
+          const T = Tc ?? st.Ttr;
+          for (let s = 0; s < 2; s++) {
+            const m = G.SP[s].m;
+            if (sp[s].length > 200) sv.hist(sp[s], { bins: 30, range: [0, 4.5], density: true, color: COL[s], fillAlpha: 0.18 });
+            sv.fn((u) => 4 * Math.PI * u * u * (m / (2 * Math.PI * T)) ** 1.5 * Math.exp(-m * u * u / (2 * T)), { color: COL[s], width: 1.8, dash: [5, 4], domain: [0, 4.5] });
+          }
+        }, { still: 9 });
+        v.legend([['teal', 'light molecules ($m_1$ = 1)'], ['purple', 'heavy molecules ($m_2$)'], ['green', 'equilibrium value', { dash: true }]]);
+        v.readout(() => {
+          const k = kin(); let v2 = [0, 0], n = [0, 0];
+          for (let i = 0; i < G.N; i++) { const s = G.S[i]; v2[s] += G.vx[i] ** 2 + G.vy[i] ** 2 + G.vz[i] ** 2; n[s]++; }
+          const r = Math.sqrt(v2[0] / n[0]) / Math.sqrt(v2[1] / n[1]);
+          return `now: $\\langle\\tfrac12mv^2\\rangle$ light ${v.fix(k[0], 3)}, heavy ${v.fix(k[1], 3)} (equilibrium ${v.fix(bath.value ? 1.5 * G.Tb : 1.5 * G.stats().Ttr, 3)}) · $v_{\\rm rms}$ ratio light/heavy ${v.fix(r, 2)} vs $\\sqrt{m_2/m_1}$ = ${v.fix(Math.sqrt(mh.value), 2)} · energy is shared by kind, speed is not`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.8
+    {
+      num: '1.8', kind: 'Definition', name: 'Quasistatic, reversible and irreversible processes',
+      statement: String.raw`A process is **quasistatic** if it runs so slowly that the system passes through a continuous sequence of equilibrium states; only then does it trace a curve in the space of state variables (a path on the $P$–$V$ diagram), with the pressure on the piston equal to the gas's equilibrium pressure at every instant. A process is **reversible** if it can be retraced exactly, returning both system and surroundings to their initial states; reversible processes are quasistatic and free of friction and of heat flow across finite temperature differences. All real processes are **irreversible** to some degree: fast compression, free expansion, friction, mixing and heat conduction cannot be undone without leaving a change somewhere else.`,
+      idea: String.raw`A gas relaxes by molecular motion, so "slow" means slow compared with the time for pressure disturbances to cross it — the piston speed must be much smaller than the speed of sound. A piston pushed faster piles molecules up against its face, so it meets *more* than the equilibrium pressure on the way in and *less* on the way out; the work done on the gas over a closed cycle, $-\oint P_{\text{piston}}\,dV$, is then positive and ends up as internal energy. In the quasistatic limit the two curves merge into one equilibrium path and the net work vanishes: the cycle can be run backwards.`,
+      caption: String.raw`An insulated cylinder of hard spheres; the piston compresses the gas to a third of its volume and draws back, over and over, at the speed you choose (in units of the thermal speed; sound travels at about 1.3). The $P$–$V$ panel shows the pressure **measured on the piston face** — red going in, blue coming out — against the equilibrium adiabat (dashed). Slowly, red and blue lie on the adiabat and the gas returns to its starting temperature after each cycle. Fast, the curves split into a loop whose area is work turned into heat, and the density profile (right) shows molecules crowding the piston.`,
+      deps: ['thermo-1.1'],
+      refs: ['Callen ch. 4', 'Schroeder §1.5'],
+      tags: ['processes', 'reversibility'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Quasistatic_process' },
+      viz(v) {
+        const L = 12, A = L * L, N = 220, X1 = 33, X2 = 11, DX = 0.9;
+        let G, dir, cyc, pts, Tstart, Wstart, rec, lastSnap, prof, tCyc;
+        const us = v.slider('piston speed $u$', 0.03, 3, 0.1, { log: true, fmt: (x) => v.fix(x, 2) + ' √(kT₀/m)', onChange: () => make() });
+        const sc = v.stage({ x: [-1, X1 + 6], y: [-1.8, L + 1.2], equal: true, height: 200, axes: false, full: true });
+        const pv = v.stage({ x: [1200, 5200], y: [0, 0.5], height: 290, axes: 'box', xlabel: 'V (σ³)', ylabel: 'P on the piston', title: 'pressure on the piston during each stroke', weight: 1.2 });
+        const sd = v.stage({ x: [0, X1], y: [0, 3], height: 290, axes: 'box', xlabel: 'x (σ)', ylabel: 'density / mean', title: 'density along the cylinder', weight: 1 });
+        const make = () => {
+          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 } });
+          dir = -1; cyc = 0; pts = []; Tstart = G.stats().T; Wstart = 0; rec = [{ cyc: 0, T: Tstart, W: 0 }]; lastSnap = G.snap(); prof = new Float64Array(30); tCyc = 0;
+          G.setU(-us.value);
+        };
+        make();
+        const P0 = N * 1 / (X1 * A), V0 = X1 * A, adi = (V) => P0 * (V0 / V) ** (5 / 3);
+        const clock = simClock(1, 0.05);
+        v.animate((t) => {
+          const u = us.value, rate = clamp(2 * (X1 - X2) / u / 7, 6, 400);
+          const add = clock(t, () => make()) * rate;
+          runBudget(G, add, Math.min(0.25, 0.3 / u), 14, () => {
+            const X = G.pist.X;
+            if (dir < 0 && X <= X2 + 1e-9) { dir = 1; G.setU(u); lastSnap = G.snap(); }
+            else if (dir > 0 && X >= X1 - 1e-9) {
+              dir = -1; G.setU(-u); cyc++; lastSnap = G.snap();
+              rec.push({ cyc, T: G.stats().T, W: G.Wp });
+            }
+            if ((G.t - lastSnap.t) * u >= DX) {
+              const b = G.snap(), r = G.meas(lastSnap, b);
+              pts.push({ V: r.V, P: r.pPist, d: dir, c: cyc }); if (pts.length > 900) pts.shift(); lastSnap = b;
+            }
+          });
+          // instantaneous density profile (smoothed in time)
+          const X = G.pist.X, nb = prof.length, cnt = new Float64Array(nb);
+          for (let i = 0; i < G.N; i++) cnt[Math.min(nb - 1, Math.floor(G.x[i] / X * nb))]++;
+          for (let k = 0; k < nb; k++) prof[k] = prof[k] * 0.85 + 0.15 * cnt[k] / (G.N / nb);
+          drawGas(sc, G, { color: (i) => 'accent', rod: 5, pistonColor: dir < 0 ? 'red' : 'blue', fill: 'accent', fillAlpha: 0.04, len: X1 + 1.2 });
+          sc.arrow(X + 2.4, L + 0.6, X + 2.4 + 2.2 * dir, L + 0.6, { color: dir < 0 ? 'red' : 'blue', width: 2.2 });
+          sc.text(`stroke ${2 * cyc + (dir < 0 ? 1 : 2)} · insulated walls`, 0, -1.1, { size: 11.5, color: 'muted' });
+          // P–V
+          const pmax = adi(X2 * A) * (u > 0.6 ? 1.9 : 1.3);
+          pv.setView([X2 * A * 0.9, X1 * A * 1.03], [0, pmax]);
+          pv.fn(adi, { color: 'ink', dash: [6, 4], width: 1.6 });
+          pv.text('equilibrium adiabat PV^(5/3) = const', X2 * A * 1.05 + 400, adi(X2 * A * 1.05 + 400), { dx: 10, size: 11.5, color: 'ink' });
+          for (const p of pts) pv.dot(p.V, p.P, { r: 2.6, color: p.d < 0 ? 'red' : 'blue', alpha: p.c === cyc ? 0.95 : 0.3, ring: false });
+          pv.vline(X * A, { color: 'faint', width: 1 });
+          // density profile
+          sd.setView([0, X1], [0, 3]);
+          sd.hline(1, { color: 'ink', dash: [6, 4], width: 1.2 });
+          sd.path(Array.from(prof).flatMap((q, k) => [[k * X / nb, q], [(k + 1) * X / nb, q]]), { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.12 });
+          sd.vline(X, { color: dir < 0 ? 'red' : 'blue', width: 3, alpha: 0.7 });
+          sd.text('piston', X, 2.8, { dx: -5, align: 'right', size: 11, color: dir < 0 ? 'red' : 'blue' });
+        }, { still: 8 });
+        v.legend([['red', 'compression stroke'], ['blue', 'expansion stroke'], ['ink', 'quasistatic adiabat', { dash: true }]]);
+        v.readout(() => {
+          const r = rec[rec.length - 1], prev = rec.length > 1 ? rec[rec.length - 2] : null;
+          const T = G.stats().T;
+          const last = prev ? `last full cycle: work done on the gas $W$ = ${v.fix(r.W - prev.W, 2)} (= gain in internal energy ${v.fix(1.5 * N * (r.T - prev.T), 2)}), temperature ${v.fix(prev.T, 3)} → ${v.fix(r.T, 3)}` : 'first cycle running';
+          return `${cyc} cycle${cyc === 1 ? '' : 's'} completed · now $kT$ = ${v.fix(T, 3)} (started at ${v.fix(Tstart, 3)}) · ${last} · piston speed / sound speed = ${v.fix(us.value / Math.sqrt(5 / 3 * T), 2)}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.9
+    {
+      num: '1.9', kind: 'Definition', name: 'Work done on a gas',
+      statement: String.raw`When a piston of area $A$ moves a distance $dx$ against the pressure $P$ of the gas, the work done **on** the gas is $-P\,A\,dx = -P\,dV$. Along a quasistatic process from state 1 to state 2,
+$$W = -\int_{V_1}^{V_2} P\,dV,$$
+positive when the gas is compressed ($dV < 0$) and negative when it expands and pushes on its surroundings. On the $P$–$V$ diagram $|W|$ is the area under the path. Work is **not** a state function: it depends on the path, not only on the endpoints, so one writes $\delta W$ (an inexact differential) for a small amount of it. Around a closed cycle the net work is minus the enclosed area (counted positive for a clockwise cycle, which delivers work to the surroundings).`,
+      idea: String.raw`Work is force times displacement (mech 3.1): the gas pushes on the piston with force $PA$, so moving the piston by $dx$ transfers $PA\,dx = P\,dV$ from the gas to whatever holds the piston. Only for quasistatic processes is $P$ the gas's own equilibrium pressure; otherwise one must use the pressure actually acting on the piston (1.8). Because $P$ can be anything along the way — high while the gas expands, low while it is cooled — two paths between the same endpoints sweep different areas. This path dependence is what makes the first law (1.11) more than energy conservation in mechanics: work and heat are separately path dependent, and only their sum is not.`,
+      caption: String.raw`Drag the end states A and B, choose a path between them — or bend the curved path by dragging C — and slide the state along it. The orange area under the path is the work done by the gas (here $W = -\int P\,dV$ is the work done *on* it, kPa·L = J). The cylinder shows the same state: piston height ∝ volume, the gauge ∝ pressure. The readout compares the four paths between the same endpoints. Switch on the return leg to close a cycle: only the enclosed area survives.`,
+      deps: ['thermo-1.8', 'mech-3.1'],
+      refs: ['Schroeder §1.5'],
+      tags: ['work', 'PV diagram'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Work_(thermodynamics)' },
+      viz(v) {
+        const path = v.select('path', [{ value: 'PV', label: 'expand, then cool' }, { value: 'VP', label: 'cool, then expand' }, { value: 'line', label: 'straight' }, { value: 'curve', label: 'curved (drag C)' }], 'curve');
+        const sS = v.slider('state along the path', 0, 1, 0.65, { step: 0.005 });
+        const loop = v.toggle('return to A along the straight line', false);
+        const sp = v.stage({ x: [0, 12], y: [0, 420], height: 340, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1.5, title: 'the work is the area under the path' });
+        const sc = v.stage({ x: [0, 6], y: [-0.6, 9], height: 340, axes: false, weight: 0.75 });
+        const con = { x: [0.6, 11.6], y: [20, 410] };
+        const hA = sp.handle(2.5, 330, { color: 'accent', label: 'A', constrain: con });
+        const hB = sp.handle(10, 90, { color: 'accent', label: 'B', constrain: con });
+        const hC = sp.handle(3.2, 110, { color: 'purple', label: 'C', constrain: con });
+        const pts = (kind) => {
+          const A = [hA.x, hA.y], B = [hB.x, hB.y], n = 240, out = [];
+          for (let i = 0; i <= n; i++) {
+            const s = i / n;
+            if (kind === 'line') out.push([lerp(A[0], B[0], s), lerp(A[1], B[1], s)]);
+            else if (kind === 'curve') { const u = 1 - s; out.push([u * u * A[0] + 2 * u * s * hC.x + s * s * B[0], u * u * A[1] + 2 * u * s * hC.y + s * s * B[1]]); }
+            else { const K = kind === 'PV' ? [B[0], A[1]] : [A[0], B[1]]; out.push(s < 0.5 ? [lerp(A[0], K[0], 2 * s), lerp(A[1], K[1], 2 * s)] : [lerp(K[0], B[0], 2 * s - 1), lerp(K[1], B[1], 2 * s - 1)]); }
+          }
+          return out;
+        };
+        const work = (P, upto = 1) => { let W = 0; const m = Math.round(upto * (P.length - 1)); for (let i = 1; i <= m; i++) W -= 0.5 * (P[i][1] + P[i - 1][1]) * (P[i][0] - P[i - 1][0]); return W; };
+        v.render(() => {
+          hC.visible = path.value === 'curve';
+          const P = pts(path.value), m = Math.round(sS.value * (P.length - 1)), cur = P[m];
+          // area under the traversed part
+          for (let i = 1; i <= m; i++) { const a = P[i - 1], b = P[i]; if (Math.abs(b[0] - a[0]) < 1e-9) continue; sp.poly([[a[0], 0], a, b, [b[0], 0]], { fill: b[0] > a[0] ? 'orange' : 'red', fillAlpha: 0.3, stroke: false }); }
+          if (loop.value) { const back = pts('line').slice().reverse(); sp.poly(P.concat(back), { fill: 'purple', fillAlpha: 0.22, stroke: false }); sp.path(back, { color: 'purple', width: 2, dash: [6, 4] }); }
+          for (const k of ['PV', 'VP', 'line', 'curve']) if (k !== path.value) sp.path(pts(k), { color: 'faint', width: 1.2, dash: [3, 4] });
+          sp.path(P, { color: 'accent', width: 3 });
+          if (path.value === 'curve') { sp.line(hA.x, hA.y, hC.x, hC.y, { color: 'purple', width: 1, dash: [3, 3], alpha: 0.6 }); sp.line(hC.x, hC.y, hB.x, hB.y, { color: 'purple', width: 1, dash: [3, 3], alpha: 0.6 }); }
+          sp.dot(cur[0], cur[1], { r: 6, color: 'gold' });
+          const W = work(P, sS.value);
+          sp.text(`W so far = ${W.toFixed(0)} J`, cur[0], cur[1], { dx: 10, dy: -14, size: 12, weight: 600, color: 'ink' });
+          // cylinder: piston height ∝ V, gauge ∝ P
+          const hgt = 0.7 * cur[0];
+          sc.rect(1, 0, 3.6, 8.6, { color: 'ink', width: 2 });
+          sc.rect(1.05, 0.05, 3.55, hgt, { fill: 'accent', fillAlpha: 0.18, stroke: false });
+          sc.dots(scatter(36, 3, 1.15, 0.15, 3.45, Math.max(0.3, hgt - 0.15)), { r: 2.4, color: 'accent', alpha: 0.75 });
+          sc.rect(0.95, hgt, 3.65, hgt + 0.35, { fill: 'orange', fillAlpha: 0.7, color: 'orange', width: 1.2 });
+          sc.line(2.3, hgt + 0.35, 2.3, hgt + 1.1, { color: 'orange', width: 3 });
+          sc.arrow(2.3, hgt + 2.2, 2.3, hgt + 1.2, { color: 'red', width: 2.5 });
+          sc.text('F = PA', 2.6, hgt + 1.75, { size: 11.5, color: 'red' });
+          const gx = 4.9, gy = 2, gr = 0.75, ang = Math.PI * (1.25 - 1.5 * clamp(cur[1] / 420, 0, 1));
+          sc.circle(gx, gy, gr, { color: 'ink', width: 1.6, fill: 'panel', fillAlpha: 1 });
+          sc.line(gx, gy, gx + 0.65 * gr * Math.cos(ang), gy + 0.65 * gr * Math.sin(ang), { color: 'red', width: 2.2 });
+          sc.line(3.6, 1.4, gx - gr, 1.6, { color: 'muted', width: 1.4 });
+          sc.text(`${cur[1].toFixed(0)} kPa`, gx, gy - gr - 0.35, { align: 'center', size: 11.5 });
+          sc.text(`${cur[0].toFixed(2)} L`, 2.3, -0.35, { align: 'center', size: 11.5, color: 'accent' });
+        });
+        v.legend([['accent', 'chosen path'], ['orange', 'area under the path = work done by the gas', { area: true }], ['purple', 'net work of the closed cycle', { area: true }]]);
+        v.readout(() => {
+          const ws = { PV: work(pts('PV')), VP: work(pts('VP')), line: work(pts('line')), curve: work(pts('curve')) };
+          const cyc = loop.value ? ` · closed cycle: net work on the gas ${(ws[path.value] - ws.line).toFixed(0)} J (minus the purple area)` : '';
+          return `work done on the gas from A to B, $W = -\\int P\\,dV$: expand-then-cool ${ws.PV.toFixed(0)} J · cool-then-expand ${ws.VP.toFixed(0)} J · straight ${ws.line.toFixed(0)} J · curved ${ws.curve.toFixed(0)} J — same endpoints, different work${cyc}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.10
+    {
+      num: '1.10', kind: 'Definition', name: 'Heat',
+      statement: String.raw`**Heat** $Q$ is energy that crosses the boundary of a system because of a temperature difference, by microscopic means — molecular collisions at a wall (conduction), radiation, or the mixing of hot and cold fluid — without any macroscopic displacement of the boundary or other generalized coordinate. Energy transferred through a macroscopic displacement (a moving piston, a turning shaft) is **work**. Heat flows spontaneously from higher to lower temperature, and like work it is not a state function: a system *contains* internal energy, not heat, and one writes $\delta Q$ for a small amount of it. The SI unit is the joule; the old calorie (heat to warm 1 g of water by 1 K) is 4.184 J.`,
+      idea: String.raw`At a wall between a hot and a cold gas every molecular impact is a tiny mechanical event — a push that moves the wall's atoms a little — but the pushes from the two sides average out to no net motion of the wall. Fast molecules from the hot side leave energy in the wall's jiggling, slow molecules on the cold side pick it up. Classifying this as heat rather than work is a matter of bookkeeping that the macroscopic observer can make: nothing she can see moves, yet energy passes, and it passes only from hot to cold. Historically heat was thought to be a fluid ("caloric") until Rumford's cannon boring (1798) and Joule's experiments (1.12) showed it to be a form of energy.`,
+      caption: String.raw`A hot gas (left) and a cold gas (right) are separated by a loose plate that can rattle only within a slot one-third of a molecular diameter wide (colour = molecular speed). Every impact gives the plate a kick; the plate passes the energy across, but its average position never moves — so the energy that crosses is **heat**. The counter adds up the energy delivered to each side, impact by impact; watch it track the temperature changes. Make the plate heavier to slow the transfer, or fix it (insulating) to stop it.`,
+      deps: ['thermo-1.1'],
+      refs: ['Schroeder §1.4'],
+      tags: ['heat', 'energy transfer'],
+      credit: 'Black, 1760s (heat vs temperature); Rumford, 1798; Joule, 1840s',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Heat' },
+      viz(v) {
+        const L = 9, XP = 14, SLOT = 0.3, XR = XP + SLOT + 14;
+        let G, hist, Ul0, Ur0, xmin, xmax;
+        const Ms = v.slider('plate mass $M/m$', 1, 200, 6, { log: true, fmt: (x) => v.fix(x, 1), onChange: () => setMass() });
+        const ins = v.toggle('insulating wall (plate fixed)', false, { onChange: () => setMass() });
+        v.button('Start again', () => make());
+        const sc = v.stage({ x: [-1, XR + 1], y: [-1.8, L + 1.4], equal: true, height: 230, axes: false, full: true });
+        const sT = v.stage({ x: [0, 200], y: [0, 2.6], height: 260, axes: 'box', xlabel: 'time', ylabel: 'kT', title: 'temperatures of the two gases', weight: 1 });
+        const sQ = v.stage({ x: [0, 200], y: [-60, 60], height: 260, axes: 'box', xlabel: 'time', ylabel: 'energy', title: 'energy that crossed the plate vs energy change of each side', weight: 1 });
+        const setMass = () => { const P = G.plate; if (ins.value) { P.M = Infinity; P.U = 0; } else { P.M = Ms.value; } G.repredict(); };
+        const make = () => {
+          G = hsGas({ species: [{ m: 1, d: 1, T: 2.2 }, { m: 1, d: 1, T: 0.35 }], counts: [70, 70], side: [0, 1], Ly: L, Lz: L, rng: v.rng(61), piston: { X: XR }, plate: { X: XP + SLOT / 2, U: 0.02, M: ins.value ? Infinity : Ms.value, lo: XP, hi: XP + SLOT } });
+          if (ins.value) G.plate.U = 0;
+          G.repredict();
+          hist = []; Ul0 = G.stats(0).U; Ur0 = G.stats(1).U; xmin = Infinity; xmax = -Infinity;
+        };
+        make();
+        const clock = simClock(10, 0.05);
+        let tl = -1;
+        v.animate((t) => {
+          const add = clock(t, () => make());
+          runBudget(G, add, 0.25, 12, () => {
+            xmin = Math.min(xmin, G.plate.X); xmax = Math.max(xmax, G.plate.X);
+            if (G.t - tl >= 1) { tl = G.t; const a = G.stats(0), b = G.stats(1); hist.push([G.t, a.T, b.T, G.Ep[1], b.U - Ur0, -(a.U - Ul0)]); if (hist.length > 1500) hist.shift(); }
+          });
+          const rp = tRamp(v);
+          drawGas(sc, G, { color: (i) => pick(rp, Math.hypot(G.vx[i], G.vy[i], G.vz[i]) / 3.6), piston: false, len: XR, plateColor: ins.value ? 'muted' : 'orange' });
+          sc.rect(XP, -0.35, XP + SLOT, -0.1, { fill: 'muted', fillAlpha: 0.6, stroke: false }); sc.rect(XP, L + 0.1, XP + SLOT, L + 0.35, { fill: 'muted', fillAlpha: 0.6, stroke: false });
+          const a = G.stats(0), b = G.stats(1);
+          sc.text(`hot side  kT = ${v.fix(a.T, 2)}`, 0.2, -1.05, { size: 12, color: 'red', weight: 600 });
+          sc.text(`cold side  kT = ${v.fix(b.T, 2)}`, XR - 0.2, -1.05, { size: 12, color: 'blue', weight: 600, align: 'right' });
+          sc.text(ins.value ? 'fixed plate' : 'rattling plate', XP + SLOT / 2, L + 0.85, { size: 11, color: ins.value ? 'muted' : 'orange', align: 'center' });
+          const tmax = Math.max(200, G.t);
+          sT.setView([Math.max(0, tmax - 200), tmax], [0, 2.6]);
+          sT.path(hist.map((p) => [p[0], p[1]]), { color: 'red', width: 2.2 });
+          sT.path(hist.map((p) => [p[0], p[2]]), { color: 'blue', width: 2.2 });
+          const Tm = (a.U + b.U) / (a.f / 2 + b.f / 2);
+          sT.hline(Tm, { color: 'green', dash: [6, 4], width: 1.2 });
+          sT.text('common final T', tmax - 3, Tm, { align: 'right', dy: -9, color: 'green', size: 11.5 });
+          const qm = Math.max(30, ...hist.map((p) => Math.abs(p[3]))) * 1.15;
+          sQ.setView([Math.max(0, tmax - 200), tmax], [-0.12 * qm, qm]);
+          sQ.hline(0, { color: 'faint', width: 1 });
+          sQ.path(hist.map((p) => [p[0], p[4]]), { color: 'blue', width: 4, alpha: 0.35 });
+          sQ.path(hist.map((p) => [p[0], p[5]]), { color: 'red', width: 2, dash: [5, 3] });
+          sQ.path(hist.map((p) => [p[0], p[3]]), { color: 'ink', width: 1.6 });
+        }, { still: 9 });
+        v.legend([['ink', 'Q: energy handed over by the plate, impact by impact'], ['blue', 'gain of the cold gas'], ['red', 'loss of the hot gas', { dash: true }]]);
+        v.readout(() => {
+          const a = G.stats(0), b = G.stats(1), Q = G.Ep[1];
+          const ke = G.plate.M < Infinity ? 0.5 * G.plate.M * G.plate.U ** 2 : 0;
+          return `heat delivered to the cold side $Q$ = ${v.fix(Q, 2)} · its energy rose by ${v.fix(b.U - Ur0, 2)}; the hot side lost ${v.fix(Ul0 - a.U, 2)} (difference = plate's own kinetic energy ${v.fix(ke, 2)}) · plate stayed within ${isFinite(xmin) ? v.fix(xmax - xmin, 2) : '0'} σ of its slot — no macroscopic displacement, so no work · ${ins.value ? 'insulating: nothing crosses' : 'heat flows from hot to cold only'}`;
+        });
+      },
+    },
   ],
 };

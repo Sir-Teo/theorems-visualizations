@@ -31,7 +31,7 @@ export default {
       introduces: ['micro-1.7'],
       credit: 'Adam Smith, 1776',
       statement: String.raw`Smith argued that the wealth of a nation is the annual produce of its labour, and that the greatest improvement in the productive powers of labour comes from the **division of labour**. His example (Book I, ch. 1) is a pin manufactory: a workman doing everything himself "could scarce, perhaps, with his utmost industry, make one pin in a day, and certainly could not make twenty", whereas in a small shop where the trade was split into "about eighteen distinct operations" ten men made "about twelve pounds of pins in a day", upwards of 4,000 to the pound — over **48,000** pins, or **4,800** per person. He traced the gain to three causes: greater dexterity of each worker, the saving of the time lost in passing from one task to another, and the invention of machines by people focused on one operation; and he argued (ch. 3) that how far the division can go is limited by the extent of the market. The same logic extends to nations (Book IV, ch. 2): "If a foreign country can supply us with a commodity cheaper than we ourselves can make it, better buy it of them" — trade by **absolute advantage** (micro-1.7).`,
-      idea: String.raw`Before Smith, mercantilist writers identified national wealth with the stock of gold and silver and recommended export surpluses, protected monopolies and regulated trades. Smith moved attention to production: specialization raises output per worker, exchange lets specialists obtain what they do not make, and markets coordinate many specialists without central direction — the "invisible hand" of Book IV. The pin factory, drawn from contemporary descriptions of the French trade, became the emblem of the argument; the numbers are Smith's report of one small shop, not a measurement, and they bound the gain only loosely (at least 240-fold, perhaps 4,800-fold). Book IV's case for buying abroad whatever is cheaper there rests on **absolute** costs (micro-1.7); forty years later Ricardo showed that comparative costs are what matter (micro-1.13, micro-1.8). Economists now add learning-by-doing, scale economies and the coordination costs that limit the division of labour inside firms, but Smith's link between specialization, market size and productivity remains the starting point of growth and trade theory.`,
+      idea: String.raw`Before Smith, mercantilist writers identified national wealth with the stock of gold and silver and recommended export surpluses, protected monopolies and regulated trades. Smith moved attention to production: specialization raises output per worker, exchange lets specialists obtain what they do not make, and markets coordinate many specialists without central direction — the "invisible hand" of Book IV. The pin factory became the emblem of the argument; the numbers are Smith's report of one small shop, not a measurement, and they bound the gain only loosely (at least 240-fold, perhaps 4,800-fold). Book IV's case for buying abroad whatever is cheaper there rests on **absolute** costs (micro-1.7); forty years later Ricardo showed that comparative costs are what matter (micro-1.13, micro-1.8). Economists now add learning-by-doing, scale economies and the coordination costs that limit the division of labour inside firms, but Smith's link between specialization, market size and productivity remains the starting point of growth and trade theory.`,
       caption: String.raw`The shop: slide the number of workers and watch the eighteen operations (top row, numbered; the first eleven are the ones Smith names) shared out among them, while pins travel down the line and the counter runs through a ten-hour day. Right: pins per day against the number of workers on a log scale. The two gold points are **Smith's numbers** — a lone untrained worker (between 1 and 20 pins; set it with the slider) and his ten men with 48,000. The blue curve in between is an *illustrative* model, output $\propto n^{1+\gamma}$, calibrated to pass through Smith's two points; switch off his three causes one by one to see how much of the gain each carries in the model (Smith gives no split). The dashed line is the market: when it is small, there is no point in dividing the work finely.`,
       deps: [],
       see: ['micro-1.9', 'micro-1.13'],
@@ -73,7 +73,7 @@ export default {
           // pins moving down the line: more and faster when the shop is more productive
           const lg = Math.log10(out), np = clamp(Math.round(lg * 3), 2, 16), sp = 0.08 + lg * 0.05;
           for (let k = 0; k < np; k++) { const u = (((t * sp + k / np) % 1) + 1) % 1; F.dot(0.15 + u * 9.9, 0.55, { r: 3, color: 'gold' }); }
-          F.text(n === 1 ? 'one man does every operation' : `${n} men, ${groups.map(([a, b]) => b - a + 1).join(' + ')} operations`, 0, -0.45, { size: 11.5, color: 'ink' });
+          F.text(n === 1 ? 'one man does every operation' : `${n} men share the 18 operations`, 0, -0.45, { size: 11.5, color: 'ink' });
           F.text('1 draw out the wire · 2 straighten it · 3 cut it · 4 point it · 5 grind the top ·', 0, -1.05, { size: 10, color: 'muted' });
           F.text('6–8 make the head · 9 put it on · 10 whiten the pins · 11 put them into the paper', 0, -1.45, { size: 10, color: 'muted' });
           F.text(`hour ${v.fix(hour, 1)} of 10 · ${fmtInt(made)} pins`, 10.3, -0.45, { size: 11.5, color: 'ink', weight: 700, align: 'right' });
@@ -81,14 +81,14 @@ export default {
           const M = mkt.value;
           G.hband(M, 2e6, { color: 'red', alpha: 0.06 });
           G.hline(M, { color: 'red', width: 1.6, dash: [6, 4] });
-          G.text('market: more would not sell', 0.75, M * 1.5, { size: 10.5, color: 'red', align: 'left' });
+          G.text('market: more would not sell', 1.45, M * 1.5, { size: 10.5, color: 'red', align: 'left' });
           G.fn((x) => mo.L * x, { domain: [1, 10], color: 'muted', width: 1.4, dash: [3, 4] });
           const full = (x) => mo.L * x * x ** mo.gFull;
           G.fn(full, { domain: [1, 10], color: 'accent', width: 1, alpha: 0.4 });
           G.fn((x) => mo.out(x), { domain: [1, 10], color: 'accent', width: 2.4 });
           for (let k = 1; k <= 10; k++) G.dot(k, mo.out(k), { r: k === n ? 6 : 3, color: k === n ? 'accent' : 'accent', hollow: k !== n });
           G.dot(1, mo.L, { r: 6.5, color: 'gold' }); G.dot(10, 48000, { r: 6.5, color: 'gold' });
-          G.text('Smith: 10 men, 48,000', 9.7, 48000 / 2.4, { size: 10.5, color: 'gold', align: 'right', weight: 600 });
+          G.text('Smith: 10 men, 48,000', 10.45, 48000 / 4.6, { size: 10.5, color: 'gold', align: 'right', weight: 600 });
           G.text('Smith: one man', 1.25, mo.L * 0.5, { size: 10.5, color: 'gold', align: 'left', weight: 600 });
           G.text('no division gains', 10.4, mo.L * 10 * 0.55, { size: 10, color: 'muted', align: 'right' });
         }, { period: 9, still: 8.5 });

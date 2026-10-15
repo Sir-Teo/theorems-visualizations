@@ -73,7 +73,7 @@ On input $w=w_1\cdots w_n$ the machine computes $r_0=q_0$, $r_i=\delta(r_{i-1},w
         const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1 });
         const tp = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 64, full: true });
         const ls = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 148, full: true });
-        const G = dfaGraph(v, gs, D, { deadAt: [8.8, 0.9] });
+        const G = dfaGraph(v, gs, D, { deadAt: [8.3, 1.2] });
         const T = v.table(tb, { rows: 3, cols: 2, maxCell: 50, size: 15, square: false, cellAspect: 1.35, labelSize: 14 });
         G.onClick = ({ node }) => { if (node && node.id !== DEAD) { node.acc = !node.acc; refresh(); } return true; };
         tb.onClick((x, y) => {
@@ -84,7 +84,7 @@ On input $w=w_1\cdots w_n$ the machine computes $r_0=q_0$, $r_i=\delta(r_{i-1},w
         const freeSpot = () => {
           const cands = []; for (let x = 1; x <= 9; x += 1.6) for (let y = 1; y <= 6.4; y += 1.35) cands.push([x, y]);
           let best = cands[0], bd = -1;
-          for (const [x, y] of cands) { const d = Math.min(...D.states.map((s) => Math.hypot(s.x - x, s.y - y)), deadT.value ? Math.hypot(8.8 - x, 0.9 - y) : 99); if (d > bd) { bd = d; best = [x, y]; } }
+          for (const [x, y] of cands) { const d = Math.min(...D.states.map((s) => Math.hypot(s.x - x, s.y - y)), deadT.value ? Math.hypot(8.3 - x, 1.2 - y) : 99); if (d > bd) { bd = d; best = [x, y]; } }
           return best;
         };
         v.button('+ state', () => {
@@ -147,7 +147,7 @@ On input $w=w_1\cdots w_n$ the machine computes $r_0=q_0$, $r_i=\delta(r_{i-1},w
           if (!L) {
             const [q, c] = ch.multi[0];
             Pl.sans(`Not a DFA: δ(${plainName(D, q)}, ${c}) has ${tgt(D, q, c).length} values, so a run is not determined and no language is defined.`, Pl.W / 2, Pl.H / 2 - 10, { size: 13, color: 'red', weight: 600 });
-            Pl.sans('(Accepting when *some* run accepts is the nondeterministic automaton of Chapter 3.)', Pl.W / 2, Pl.H / 2 + 14, { size: 12, color: 'muted' });
+            Pl.sans('(Accepting when some run accepts gives the nondeterministic automaton of Chapter 3.)', Pl.W / 2, Pl.H / 2 + 14, { size: 12, color: 'muted' });
           } else drawLanguage(Pl, L, D.alpha, { rh: Math.min(24, (Pl.H - 10) / (nS.value + 1)) });
         });
         v.legend([['gold', 'current state / arrow just taken', { dot: true }], ['green', 'accepted', { dot: true }], ['red', 'rejected, or two targets', { dot: true }], ['orange', 'missing arrow → dead state', { dot: true }]]);

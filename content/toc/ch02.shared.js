@@ -98,7 +98,7 @@ export function dfaEdges(D, o = {}) {
   const map = new Map(), out = [];
   const add = (from, to, c, extra = {}) => {
     const k = from + '\u0001' + to;
-    if (!map.has(k)) { const e = { from, to, syms: [], ...extra }; if (from === to && D.loops?.[from] != null) e.angle = D.loops[from]; map.set(k, e); out.push(e); }
+    if (!map.has(k)) { const e = { from, to, syms: [], ...extra }; if (from === to && D.loops?.[from] != null) e.angle = D.loops[from]; if (from === DEAD && to === DEAD) e.angle = o.deadLoop ?? 0; map.set(k, e); out.push(e); }
     map.get(k).syms.push(c);
   };
   for (const s of D.states) for (const c of D.alpha) {

@@ -147,8 +147,11 @@ He explained this by supposing that a hybrid forms germ cells carrying either fo
           C.fn((x) => dist.pdf(x), { domain: [0.02, Math.min(obs, xmax)], fill: 'gold', fillAlpha: 0.35, color: 'gold', width: 0.01, n: 200 });
           C.vline(obs, { color: 'gold', width: 2.4 });
           C.text(`Mendel: ${v.fix(obs, 2)}`, obs, ymax * 0.93, { size: 11.5, color: 'gold', weight: 700, align: obs > xmax * 0.6 ? 'right' : 'left', dx: obs > xmax * 0.6 ? -6 : 6 });
-          C.text(`${df} df`, xmax * 0.97, ymax * 0.72, { size: 11, color: 'accent', align: 'right' });
-          if (fisher.value) C.corner('Fisher 1936, all 84 comparisons: χ² = 41.6, P(fit this good) = 0.00007', 'tr', { color: 'red', size: 11 });
+          C.text(`${df} df`, xmax * 0.97, ymax * 0.64, { size: 11, color: 'accent', align: 'right' });
+          if (fisher.value) {
+            C.text('Fisher 1936, all 84 comparisons:', xmax * 0.97, ymax * 0.82, { size: 11, color: 'red', align: 'right', weight: 600 });
+            C.text('χ² = 41.6, P(fit this good) = 0.00007', xmax * 0.97, ymax * 0.75, { size: 11, color: 'red', align: 'right' });
+          }
         });
         v.legend([['gold', 'Mendel’s count', { dot: true }], ['muted', 'simulated repeats', { dot: true }], ['accent', '$\\chi^2$ distribution'], ['gold', 'P(fit at least this good)', { area: true }]]);
         v.readout(() => {
@@ -177,7 +180,7 @@ He explained this by supposing that a hybrid forms germ cells carrying either fo
       statement: String.raw`In a letter to *Science* the mathematician G. H. Hardy showed that Mendelian inheritance does not by itself change the proportions of a character in a population. Let the numbers of pure dominants $AA$, heterozygotes $Aa$ and pure recessives $aa$ be as $p : 2q : r$, and suppose the population is large, mates at random, has the sexes evenly distributed over the three types and all equally fertile. Then the next generation is in the proportions
 $$p_1 : 2q_1 : r_1 = (p+q)^2 : 2(p+q)(q+r) : (q+r)^2,$$
 which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exactly when $q^2 = pr$. So from the second generation on nothing changes: a dominant character has no tendency to spread to $3:1$ and a recessive one none to die out. Hardy's example: pure brachydactylous and normal people mixed $1 : 10{,}000$ give $20{,}001 : 100{,}020{,}001$ brachydactylous in the next generation, practically $2 : 10{,}000$, and so it stays.`,
-      idea: String.raw`At a 1908 meeting the statistician Udny Yule had objected that if brachydactyly were a Mendelian dominant, one would expect, "in the course of time", three brachydactylous persons to one normal — confusing the $3:1$ of a cross between hybrids with the state of a whole population. R. C. Punnett, unable to answer, asked his cricket partner Hardy, who replied that "a little mathematics of the multiplication-table type" settles it: offspring proportions depend only on the gamete frequencies $p+q$ and $q+r$, which random mating does not alter. Hardy added that the equilibrium is "stable" only in a weak sense: chance deviations in each generation produce a new, slightly different equilibrium, not a return to the old one — the seed of genetic drift (ch. 2). Wilhelm Weinberg had derived the same law in a lecture in Stuttgart three months earlier (popgen-1.19); after Curt Stern pointed this out in 1943 the result became the Hardy–Weinberg law (popgen-1.5), the null model against which every force of evolution is measured.`,
+      idea: String.raw`In a discussion reported in the *Proceedings of the Royal Society of Medicine* the statistician Udny Yule had suggested that if brachydactyly were a Mendelian dominant, one would expect, "in the course of time", three brachydactylous persons to one normal — confusing the $3:1$ of a cross between hybrids with the state of a whole population. R. C. Punnett took the question to his cricket partner Hardy, who replied that "a little mathematics of the multiplication-table type" settles it: offspring proportions depend only on the gamete frequencies $p+q$ and $q+r$, which random mating does not alter. Hardy added that the equilibrium is "stable" only in a weak sense: chance deviations in each generation produce a new, slightly different equilibrium, not a return to the old one — the seed of genetic drift (ch. 2). Wilhelm Weinberg had derived the same law in a lecture in Stuttgart three months earlier (popgen-1.19); after Curt Stern pointed this out in 1943 the result became the Hardy–Weinberg law (popgen-1.5), the null model against which every force of evolution is measured.`,
       caption: String.raw`Left: Hardy's example, generation by generation (log scale). Slide the starting mixture of pure brachydactylous and pure normal people ($1 : 10{,}000$ is Hardy's); the share showing the trait doubles once if it is dominant and then stays flat, far from Yule's $3:1$ (red); if it is recessive it drops once (the few pure recessives mostly marry normal people) and then stays. Right: Hardy's notation as a plane of $p$ (share $AA$) and $r$ (share $aa$), with $2q = 1 - p - r$. Drag the starting population anywhere: one generation of random mating sends it onto the curve $q^2 = pr$ (green, $\sqrt p+\sqrt r = 1$), where it stays. Choose a finite population to see Hardy's last paragraph: each generation lands slightly off and starts a new equilibrium, so the point wanders along the curve.`,
       deps: ['popgen-1.2'],
       see: ['popgen-1.6', 'popgen-1.19'],
@@ -307,7 +310,7 @@ which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exact
           const ex = relatives(a, trait.value === 'dom'), vals = [ex.pop, ex.parents, ex.sibs, ex.kids], sim = simFam();
           vals.forEach((x, i) => {
             R.rect(i + 1 - 0.3, 0, i + 1 + 0.3, x, { fill: 'accent', fillAlpha: i === 0 ? 0.18 : 0.38, color: 'accent', width: 1.4 });
-            R.text(v.fix(x, 3), i + 1, x + 0.045, { size: 11, color: 'ink', align: 'center' });
+            R.text(v.fix(x, 3), i + 1 - 0.1, x + 0.045, { size: 11, color: 'ink', align: 'center' });
             const s = sim[i]; R.line(i + 1 + 0.15, s.p - 2 * s.se, i + 1 + 0.15, s.p + 2 * s.se, { color: 'gold', width: 2 }); R.dot(i + 1 + 0.15, s.p, { r: 4.5, color: 'gold' });
           });
         });

@@ -291,7 +291,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
         v.legend([['orange', 'Mealy output', { dot: true }], ['purple', 'Moore output (one tick later)', { dot: true }], ['gold', 'current state / tick', { dot: true }]]);
         v.readout(() => {
           const r = sim(), A = aS.value, B = bS.value, ok = r.S === A + B;
-          return `$A + B = ${A} + ${B} = ${A + B}$ · Mealy output read as a binary number (least significant first): ${r.out.slice().reverse().join('')}$_2 = ${r.S}$ ${ok ? '✓' : `✗ — the carry out of bit 7 was never emitted, so the result is ${A + B} − 256`} · the Moore row equals the Mealy row delayed by one tick ✓`;
+          return `$A + B = ${A} + ${B} = ${A + B}$ · the Mealy output bits $s_{${r.T - 1}}\cdots s_0 = ${r.out.slice().reverse().join('')}_2 = ${r.S}$ ${ok ? '✓' : `✗ — the carry out of bit 7 was never emitted, so the result is ${A + B} − 256`} · the Moore row equals the Mealy row delayed by one tick ✓`;
         });
       },
     },
@@ -323,7 +323,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           const n = nS.value;
           if (kind === 'cerny') delta = cerny(n);
           else if (kind === 'perm') delta = [Array.from({ length: n }, (_, i) => (i + 1) % n), Array.from({ length: n }, (_, i) => (i < 2 ? 1 - i : i))];
-          else { const r = v.rng(40 + n); do { delta = randomAut(n, 2, r); } while (!resetWord(delta)); }
+          else { const r = v.rng(40 + n); let w = null, tries = 0; do { delta = randomAut(n, 2, r); w = resetWord(delta); } while ((!w || w.length < n) && ++tries < 400); }
           best = resetWord(delta);
           const states = [], dl = {};
           for (let i = 0; i < n; i++) { const a = Math.PI / 2 - (2 * Math.PI * i) / n; states.push(['s' + i, Math.cos(a), Math.sin(a), 0, `$${i}$`]); dl['s' + i] = { a: 's' + delta[0][i], b: 's' + delta[1][i] }; }
@@ -331,6 +331,14 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           const D = dfa(['a', 'b'], states, 's0', dl, { loops });
           if (!G) G = dfaGraph(v, gs, D, { r: 16, texSize: 14 }); else G.sync(D);
           G.D = D;
+          // a single arrow whose midpoint coincides with another arrow's is bent aside, so labels do not pile up
+          const pos = Object.fromEntries(D.states.map((q) => [q.id, [q.x, q.y]])), E = G.edges.filter((e) => e.from !== e.to);
+          const mid = (e) => [(pos[e.from][0] + pos[e.to][0]) / 2, (pos[e.from][1] + pos[e.to][1]) / 2];
+          for (const e of E) {
+            if (E.some((f) => f.from === e.to && f.to === e.from)) continue;
+            const [mx, my] = mid(e);
+            if (E.some((f) => f !== e && Math.hypot(mid(f)[0] - mx, mid(f)[1] - my) < 0.2)) e.bend = 42;
+          }
         }
         rebuild();
         const frames = () => {

@@ -184,7 +184,7 @@ const NASALZ = { bilabial: 1100, labiodental: 1200, alveolar: 1700, retroflex: 1
 /** Noise spectrum of a burst or fricative at a place: one resonance of the front cavity, c/4L (flat and weak when the cavity is tiny). */
 function noiseShape(pl) {
   const lf = pl.lf;
-  if (lf < 1.2) return { ff: lf < 0.2 ? 1800 : 6500, fb: lf < 0.2 ? 5000 : 6000, amp: lf < 0.2 ? 0.45 : 0.2 };
+  if (lf < 1.2) return { ff: lf < 0.2 ? 1800 : 6500, fb: lf < 0.2 ? 5000 : 6000, amp: lf < 0.2 ? 0.45 : 0.1 };
   const ff = Math.min(7000, C_TRACT / (4 * lf));
   return { ff, fb: Math.max(320, 0.3 * ff), amp: 1 };
 }
@@ -1096,7 +1096,7 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
         const M = v.M, FM = 4000, GL = [100, 800], GD = 2.6;
         const vow = v.select('vowel', ['i', 'ɛ', 'a', 'ɔ', 'u'].map((x) => ({ value: x, label: `[${x}]` })), 'a');
         const f0S = v.slider('pitch $f_0$', 80, 1000, 120, { log: true, fmt: (x) => `${Math.round(SR / Math.round(SR / x))} Hz` });
-        const sp = v.stage({ x: [0, FM], y: [-45, 30], height: 300, axes: 'box', minWidth: 280, title: 'spectrum of one period (dB)', xticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
+        const sp = v.stage({ x: [0, FM], y: [-62, 30], height: 300, axes: 'box', minWidth: 280, title: 'spectrum of one period (dB)', xticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
         const sg = v.stage({ x: [0, GD], y: [0, FM], height: 300, axes: 'box', minWidth: 280, title: 'sung glide, narrow-band spectrogram', xlabel: 'time (s)', yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
         const Fof = () => [...VF[vow.value], ...FHI];
         const glideF0 = (t) => GL[0] * Math.pow(GL[1] / GL[0], Math.min(1, t / GD));
@@ -1119,7 +1119,7 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
           const tilt = (f) => { const k = f / f0, lo = Math.max(1, Math.floor(k)), hi = lo + 1; return hi < src.length ? src[lo] + (src[hi] - src[lo]) * Math.max(0, k - lo) : src[lo]; };
           sp.fn((f) => dB(tractGain(F, BW5, f)) + tilt(Math.max(f, f0)) - ref, { domain: [30, FM], n: 500, color: 'ink', dash: [5, 4], width: 1.4 });
           for (let k = 0; k < 3; k++) { sp.vline(F[k], { color: 'orange', dash: [3, 4], alpha: 0.8 }); sp.text(`F${k + 1}`, F[k], 27, { size: 11.5, color: 'orange', align: 'center', weight: 650 }); }
-          for (let k = 1; k * f0 < FM && k < h.length; k++) { sp.line(k * f0, -45, k * f0, h[k] - ref, { color: 'accent', width: 1.8 }); sp.dot(k * f0, h[k] - ref, { r: 3, color: 'accent' }); }
+          for (let k = 1; k * f0 < FM && k < h.length; k++) { sp.line(k * f0, -62, k * f0, h[k] - ref, { color: 'accent', width: 1.8 }); sp.dot(k * f0, h[k] - ref, { r: 3, color: 'accent' }); }
           // F1 as estimated from the harmonics: the strongest harmonic below 1.2 kHz, refined by a parabola through its neighbours
           const hf = h.map((x, k) => x - src[k]); // harmonics with the source's slope removed: samples of the filter gain
           let kb = 1; for (let k = 1; k * f0 < 1200 && k < hf.length; k++) if (hf[k] > hf[kb]) kb = k;

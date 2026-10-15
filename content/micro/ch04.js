@@ -37,10 +37,10 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Budget_constraint' },
       viz(v) {
         const W = 42;
-        const m = v.slider('income $m$', 20, 120, 60, { step: 1 });
+        const m = v.slider('income $m$', 20, 120, 72, { step: 1 });
         const p1 = v.slider('price $p_1$', 1, 12, 3, { step: 0.1 });
         const p2 = v.slider('price $p_2$', 1, 12, 2, { step: 0.1 });
-        let ref = { m: 60, p1: 2.4, p2: 2 };
+        let ref = { m: 72, p1: 2.4, p2: 2 };
         v.button('pin this line', () => { ref = { m: m.value, p1: p1.value, p2: p2.value }; });
         const s = v.stage({ x: [0, W], y: [0, W], height: 360, axes: 'box', xlabel: 'x₁ (good 1)', ylabel: 'x₂ (good 2)', title: 'the budget set $p_1x_1 + p_2x_2 \\le m$' });
         const b = v.stage({ x: [-20, 130], y: [0, 1.5], height: 92, axes: false, full: true, title: 'what bundle $A$ costs, against income' });
@@ -55,10 +55,11 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
           if (!same) s.line(R1, 0, 0, R2, { color: 'muted', width: 1.6, dash: [6, 5] });
           s.line(X1, 0, 0, X2, { color: 'accent', width: 3 });
           // intercepts
-          if (X1 <= W - 1) { s.dot(X1, 0, { r: 4.5, color: 'accent' }); s.tex(`m/p_1 = ${v.fix(X1, 1)}`, X1, 0, { dx: 6, dy: -24, align: 'left', baseline: 'bottom', color: 'accent', size: 14 }); }
-          else { const ye = X2 * (1 - W / X1); s.tex(`m/p_1 = ${v.fix(X1, 1)} \\rightarrow`, W, ye, { dx: -8, dy: -12, align: 'right', baseline: 'bottom', color: 'accent', size: 14 }); }
-          if (X2 <= W - 1) { s.dot(0, X2, { r: 4.5, color: 'accent' }); s.tex(`m/p_2 = ${v.fix(X2, 1)}`, 0, X2, { dx: 30, dy: X2 > W - 4 ? 10 : -4, align: 'left', baseline: X2 > W - 4 ? 'top' : 'bottom', color: 'accent', size: 14 }); }
-          else { const xe = X1 * (1 - W / X2); s.tex(`m/p_2 = ${v.fix(X2, 1)} \\uparrow`, xe, W, { dx: 10, dy: 6, align: 'left', baseline: 'top', color: 'accent', size: 14 }); }
+          const IL = { color: 'accent', size: 13, weight: 700 };
+          if (X1 <= W - 1) { s.dot(X1, 0, { r: 4.5, color: 'accent' }); s.text(`m/p₁ = ${v.fix(X1, 1)}`, X1, 0, { ...IL, dx: 6, dy: -30, align: 'left' }); }
+          else { const ye = X2 * (1 - W / X1); s.text(`m/p₁ = ${v.fix(X1, 1)} →`, W, ye, { ...IL, dx: -8, dy: -16, align: 'right' }); }
+          if (X2 <= W - 1) { s.dot(0, X2, { r: 4.5, color: 'accent' }); s.text(`m/p₂ = ${v.fix(X2, 1)}`, 0, X2, { ...IL, dx: 30, dy: X2 > W - 4 ? 14 : -12, align: 'left' }); }
+          else { const xe = X1 * (1 - W / X2); s.text(`m/p₂ = ${v.fix(X2, 1)} ↑`, xe, W, { ...IL, dx: 10, dy: 14, align: 'left' }); }
           // the rate of exchange
           const vis1 = Math.min(X1, W), vis2 = Math.min(X2, W);
           let xq = 0.34 * vis1, yq = X2 - k * xq;
@@ -112,15 +113,17 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
       see: ['micro-5.15', 'micro-3.10'],
       viz(v) {
         const m = 60, p1 = 2, X0 = m / p1;
+        const VIEW = { tax: [34, 68], disc: [50, 68], voucher: [46, 96], ration: [34, 68] };
         const pol = v.select('policy', [{ value: 'tax', label: 'tax beyond $\\bar x$' }, { value: 'disc', label: 'discount beyond $\\bar x$' }, { value: 'voucher', label: 'food voucher' }, { value: 'ration', label: 'ration $x_1 \\le \\bar x$' }], 'tax');
         const xb = v.slider('threshold $\\bar x$', 2, 28, 12, { step: 0.5 });
         const t = v.slider('tax on extra units', 0.1, 2, 0.75, { step: 0.05, fmt: (x) => `${Math.round(100 * x)}%` });
-        const dc = v.slider('discount on extra units', 0.1, 0.5, 0.4, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
-        const V = v.slider('voucher value $V$', 4, 40, 20, { step: 1 });
+        const dc = v.slider('discount on extra units', 0.1, 0.4, 0.35, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%` });
+        const V = v.slider('voucher value $V$', 4, 30, 20, { step: 1 });
         const show = v.toggle('show a consumer', true);
         const al = v.slider('taste for good 1, $\\alpha$', 0.1, 0.9, 0.45, { step: 0.01 });
-        const s = v.stage({ x: [0, 62], y: [0, 104], height: 380, axes: 'box', xlabel: 'x₁ (food)', ylabel: 'x₂ (other goods, $)' });
-        v.legend([['accent', 'budget set with the policy'], ['muted', 'ordinary budget line', { dash: true }], ['purple', 'indifference curve'], ['green', 'best bundle', { dot: true }]]);
+        const s = v.stage({ x: [0, 34], y: [0, 68], height: 370, axes: 'box', xlabel: 'x₁ (food)', ylabel: 'x₂ (other goods, $)', weight: 1.3, title: 'the budget set' });
+        const g = v.stage({ x: [0, 34], y: [0, 7.4], height: 370, axes: 'box', xlabel: 'x₁ (food)', ylabel: '$ per extra unit of food', title: 'marginal price against willingness to pay' });
+        v.legend([['accent', 'budget set / marginal price'], ['muted', 'ordinary budget line', { dash: true }], ['purple', 'indifference curve / MRS'], ['green', 'best bundle', { dot: true }]]);
         const front = (k) => {
           const X = xb.value;
           if (k === 'voucher') { const Vv = V.value; return { pts: [[0, m], [Vv / p1, m], [(m + Vv) / p1, 0]], kinks: [[Vv / p1, m]], prices: [0, p1] }; }
@@ -130,53 +133,72 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
           const q = p1 * (k === 'tax' ? 1 + t.value : 1 - dc.value);
           return { pts: [[0, m], [X, y], [X + y / q, 0]], kinks: [[X, y]], prices: [p1, q] };
         };
+        const height = (pts, x) => { for (let i = 0; i + 1 < pts.length; i++) { const [ax, ay] = pts[i], [bx, by] = pts[i + 1]; if (x <= bx + 1e-12 && bx > ax) return ay + ((by - ay) * (x - ax)) / (bx - ax); } return 0; };
         let st = {};
         v.render(() => {
-          const k = pol.value, F = front(k), pts = F.pts, last = pts[pts.length - 1];
+          const k = pol.value, F = front(k), pts = F.pts, last = pts[pts.length - 1], [XM, YM] = VIEW[k];
           xb.el.hidden = k === 'voucher'; t.el.hidden = k !== 'tax'; dc.el.hidden = k !== 'disc'; V.el.hidden = k !== 'voucher'; al.el.hidden = !show.value;
+          s.setView([0, XM], [0, YM]); g.setView([0, XM], [0, 7.4]);
           s.poly([[0, 0], ...pts], { fill: 'accent', fillAlpha: 0.14, stroke: false });
           const kink = F.kinks[0];
-          if (kink && k === 'tax') { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); s.text('lost to the tax', (kink[0] + X0 + last[0]) / 3 + 1, kink[1] / 3, { color: 'red', size: 11.5, weight: 600, align: 'left', dx: 6 }); }
-          if (kink && k === 'ration') { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); s.text('rationed away', kink[0] + 1, kink[1] / 3, { color: 'red', size: 11.5, weight: 600, align: 'left', dx: 6 }); }
-          if (kink && k === 'disc') { s.poly([kink, last, [X0, 0]], { fill: 'green', fillAlpha: 0.18, stroke: false }); s.text('gained from the discount', (X0 + last[0]) / 2, 3, { color: 'green', size: 11.5, weight: 600, align: 'center', baseline: 'bottom', dy: -14 }); }
+          if (kink && k === 'tax') { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); s.text('lost to the tax', X0, 0.16 * YM, { dx: 8, color: 'red', size: 11.5, weight: 600, align: 'left' }); }
+          if (kink && k === 'ration') { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); s.text('rationed away', kink[0], 0.12 * YM, { dx: 8, color: 'red', size: 11.5, weight: 600, align: 'left' }); }
+          if (kink && k === 'disc') { s.poly([kink, last, [X0, 0]], { fill: 'green', fillAlpha: 0.18, stroke: false }); s.text('gained from the discount', last[0], 0.16 * YM, { dx: -4, color: 'green', size: 11.5, weight: 600, align: 'right' }); }
           if (k === 'voucher') {
-            const Vv = V.value; s.poly([[0, m], [0, m + Vv], [Vv / p1, m]], { fill: 'orange', fillAlpha: 0.2, stroke: false });
+            const Vv = V.value; s.poly([[0, m], [0, m + Vv], [Vv / p1, m]], { fill: 'orange', fillAlpha: 0.22, stroke: false });
             s.line(0, m + Vv, (m + Vv) / p1, 0, { color: 'orange', width: 1.5, dash: [5, 4] });
-            s.text('the same money as cash would also buy these', 1.2, m + Vv * 0.62, { dx: 26, color: 'orange', size: 11.5, weight: 600, align: 'left' });
+            s.text('cash of the same value', (0.55 * Vv) / p1, m + 0.5 * Vv, { dx: 8, dy: -2, color: 'orange', size: 11.5, weight: 600, align: 'left' });
+            s.text('would also buy these', (0.55 * Vv) / p1, m + 0.5 * Vv, { dx: 8, dy: 13, color: 'orange', size: 11.5, weight: 600, align: 'left' });
           }
           s.line(X0, 0, 0, m, { color: 'muted', width: 1.5, dash: [6, 5] });
           s.path(pts, { color: 'accent', width: 3.2 });
-          // slopes of the pieces
-          for (let i = 0; i + 1 < pts.length; i++) {
-            const pr = F.prices[i], lab = pr === Infinity ? 'vertical: no more allowed' : pr === 0 ? 'slope 0: voucher pays' : `slope −${v.fix(pr, 2)}`;
-            segLabel(s, pts[i], pts[i + 1], lab, [0, 0], { color: 'accent', weight: 600 }, pr === Infinity ? 12 : 13);
+          for (let i = 0; i + 1 < pts.length; i++) { // slopes of the pieces, written inside the set
+            const pr = F.prices[i], lab = pr === Infinity ? 'no more allowed' : pr === 0 ? 'slope 0' : `slope −${v.fix(pr, 2)}`;
+            segLabel(s, pts[i], pts[i + 1], lab, [1e3, 1e3], { color: 'accent', weight: 600 }, 13);
           }
-          if (kink) s.dot(kink[0], kink[1], { r: 5, color: 'accent' });
-          let opt = null, base = null, cash = null, Fu = null;
+          if (kink) s.dot(kink[0], kink[1], { r: 5, color: 'accent', label: 'kink', labelPos: k === 'voucher' ? 'ne' : 'sw' });
+          // right: the marginal price of food along the boundary
+          for (let i = 0; i + 1 < pts.length; i++) {
+            const pr = F.prices[i], a = pts[i][0], b = pts[i + 1][0];
+            if (pr === Infinity) { g.vband(a, XM, { color: 'red', alpha: 0.1 }); g.vline(a, { color: 'red', width: 2.6 }); g.text('ration: no more food', a, 6.6, { dx: 8, color: 'red', size: 11.5, weight: 600, align: 'left' }); continue; }
+            g.line(a, pr, b, pr, { color: 'accent', width: 3 });
+            if (i > 0 && F.prices[i - 1] !== Infinity) g.line(a, F.prices[i - 1], a, pr, { color: 'accent', width: 1.4, dash: [4, 3] });
+            g.text(pr === 0 ? 'free: the voucher pays' : `${v.fix(pr, 2)}`, (a + Math.min(b, XM)) / 2, pr, { dy: pr > 6.6 ? 12 : -10, align: 'center', color: 'accent', size: 11.5, weight: 600 });
+          }
+          g.vline(last[0], { color: 'faint', width: 1, dash: [3, 3] });
+          let opt = null, base = null, cash = null, Fu = null, mrs = null;
           if (show.value) {
             const a = al.value; Fu = prefs('cd', { a });
             opt = bestOnPath(Fu.u, pts); base = { p: [(a * m) / p1, (1 - a) * m], u: Fu.u((a * m) / p1, (1 - a) * m) };
             if (k === 'voucher') { const M2 = m + V.value; cash = { p: [(a * M2) / p1, (1 - a) * M2] }; cash.u = Fu.u(...cash.p); }
-            drawLevel(s, Fu, opt.u, { color: 'purple', width: 2 });
+            s.clip(() => drawLevel(s, Fu, opt.u, { color: 'purple', width: 2 }));
             s.dot(base.p[0], base.p[1], { r: 5, hollow: true, color: 'muted', width: 2 });
-            if (cash) s.dot(cash.p[0], cash.p[1], { r: 5, hollow: true, color: 'orange', width: 2 });
+            if (cash && cash.p[1] < YM) s.dot(cash.p[0], cash.p[1], { r: 5, hollow: true, color: 'orange', width: 2 });
             s.line(opt.p[0], 0, opt.p[0], opt.p[1], GUIDE);
-            s.dot(opt.p[0], opt.p[1], { r: 6.5, color: 'green', label: 'x*', labelPos: k === 'voucher' ? 'n' : 'ne' });
+            s.dot(opt.p[0], opt.p[1], { r: 6.5, color: 'green', label: 'x*', labelPos: 'ne' });
+            // willingness to pay for one more unit of food at the boundary bundle with that much food
+            const W = (x) => { const y = height(pts, x); return y > 0 ? (a / (1 - a)) * (y / x) : NaN; };
+            g.clip(() => g.fn(W, { domain: [0.05, last[0] - 1e-6], color: 'purple', width: 2.4, n: 300 }));
+            const xs = opt.p[0]; mrs = (a / (1 - a)) * (opt.p[1] / Math.max(xs, 1e-9));
+            g.line(xs, 0, xs, Math.min(mrs, 7.4), GUIDE);
+            if (mrs < 7.2) g.dot(xs, mrs, { r: 6.5, color: 'green', label: 'x*', labelPos: 'ne' });
+            g.text('MRS', 0.06 * XM, Math.min(W(0.06 * XM), 7), { dx: 8, dy: 4, color: 'purple', size: 12, weight: 700, align: 'left', baseline: 'top' });
           }
           const area = Math.abs(v.M.polyArea([[0, 0], ...pts]));
-          st = { k, F, kink, opt, base, cash, area, Fu };
+          st = { k, F, kink, opt, base, cash, area, mrs };
         });
         v.readout(() => {
-          const { k, kink, opt, base, cash, area } = st, f = (x) => v.fix(x, 1), X = xb.value;
+          const { k, F, kink, opt, base, cash, area, mrs } = st, f = (x) => v.fix(x, 1), X = xb.value;
           const sz = `Budget set ${f(area)} square units (ordinary: ${f(0.5 * m * X0)}).`;
           let msg;
-          if (k === 'tax') msg = kink ? `The first ${f(X)} units of food cost 2 each, further units ${v.fix(p1 * (1 + t.value), 2)}: the boundary bends **inward** at $\\bar x$ and the set stays convex.` : 'The threshold lies beyond what income can buy: no kink.';
-          else if (k === 'disc') msg = kink ? `Beyond ${f(X)} units food costs only ${v.fix(p1 * (1 - dc.value), 2)}: the boundary bends **outward** and the set is no longer convex (the chord between its two corners leaves the set).` : 'The threshold lies beyond what income can buy: no kink.';
-          else if (k === 'voucher') msg = `The voucher pays for the first ${f(V.value / p1)} units of food: a flat stretch, since that food costs no other goods. Cash of the same value would add the orange corner.`;
+          if (k === 'tax') msg = kink ? `The first ${f(X)} units of food cost 2 each, further units ${v.fix(F.prices[1], 2)}: the boundary bends **inward** at $\\bar x$ and the set stays convex.` : 'The threshold lies beyond what income can buy: no kink.';
+          else if (k === 'disc') msg = kink ? `Beyond ${f(X)} units food costs only ${v.fix(F.prices[1], 2)}: the boundary bends **outward** and the set is not convex (the chord between its two corners leaves it).` : 'The threshold lies beyond what income can buy: no kink.';
+          else if (k === 'voucher') msg = `The voucher pays for the first ${f(V.value / p1)} units of food, so that stretch is flat: that food costs no other goods. Cash of the same value would add the orange corner.`;
           else msg = kink ? `At most ${f(X)} units may be bought: a vertical edge truncates the set.` : 'The ration is not binding.';
           if (!opt) return `${msg} ${sz}`;
-          const atK = kink && Math.hypot(opt.p[0] - kink[0], (opt.p[1] - kink[1]) / 3) < 0.08;
-          let who = `Best bundle $x^* = (${f(opt.p[0])}, ${f(opt.p[1])})$${atK ? ', **exactly at the kink**' : ''} (without the policy $(${f(base.p[0])}, ${f(base.p[1])})$).`;
+          const atK = kink && Math.abs(opt.p[0] - kink[0]) < 0.02 && Math.abs(opt.p[1] - kink[1]) < 0.05;
+          let who = `Best bundle $x^* = (${f(opt.p[0])}, ${f(opt.p[1])})$ (without the policy $(${f(base.p[0])}, ${f(base.p[1])})$), where the consumer would pay $\\mathrm{MRS} = ${v.fix(mrs, 2)}$ for one more unit of food.`;
+          if (atK) { const ps = F.prices.map((p) => (p === Infinity ? '∞' : v.fix(p, 2))); who += ` It sits **exactly at the kink**: the willingness to pay lies between the marginal prices ${ps[0]} and ${ps[1]}, so buying either more or less food would lose.`; }
           if (cash) who += cash.u > opt.u + 1e-6 ? ` This consumer would rather have the cash: it would reach $u = ${v.fix(cash.u, 2)}$ instead of $${v.fix(opt.u, 2)}$.` : ' Cash would not help this consumer: the voucher does not bind.';
           return `${msg} ${who} ${sz}`;
         });
@@ -298,7 +320,7 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
       num: '4.4', kind: 'Definition', name: 'Indifference curves',
       statement: String.raw`For a rational preference $\succsim$ on bundles $(x_1, x_2)$ and a bundle $a$, the **indifference curve** through $a$ is the set $I(a) = \{x : x \sim a\}$ of bundles exactly as good as $a$. It splits the plane into the **weakly preferred set** $\{x : x \succsim a\}$, whose boundary it is, and the **worse set** $\{x : a \succ x\}$. Because $\sim$ is an equivalence relation, the indifference curves partition the commodity space; the family of all of them is the **indifference map**, and it carries all the information in $\succsim$.`,
       idea: String.raw`Indifference is reflexive, symmetric and transitive (4.3), so its equivalence classes are disjoint and cover every bundle; that is what makes a map of curves possible at all. The shape of the curves encodes the tastes. When both goods are desirable the curves slope downward, since more of one good must be offset by less of the other, and the preferred set lies to the north-east. A bad good makes them slope upward, a neutral good makes them vertical, and satiation turns them into closed loops around a bliss point. Perfect substitutes give straight lines and perfect complements L-shapes.`,
-      caption: String.raw`Choose a preference and drag the reference bundle $A$: its indifference curve is the bold purple line, with the weakly preferred set in green and the worse set in red, over a faint map of other curves. Drag the gold test bundle $B$: it turns green, purple or red as it is better than, as good as, or worse than $A$ (for the first four preferences it snaps onto $A$'s curve when close).`,
+      caption: String.raw`Choose a preference and drag the reference bundle $A$: its indifference curve is the bold purple line, with the weakly preferred set in green and the worse set in red, over a faint map of other curves. Drag the test bundle $B$: it turns green, purple or red as it is better than, as good as, or worse than $A$ (for the first four preferences it snaps onto $A$'s curve when close). On the right each curve of the map is one rung of a ladder: the map is a ranking of curves.`,
       deps: ['micro-4.3'], refs: ['Varian Ch. 3', 'Mankiw Ch. 21'], tags: ['preferences'],
       see: ['alg-1.24a'],
       credit: 'Francis Y. Edgeworth, 1881; Vilfredo Pareto, 1906',
@@ -313,7 +335,8 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
           sat: { label: 'satiation', F: prefs('sat', { bx: 6, by: 5.5 }), levels: [-1, -4, -9, -16, -25, -36], eq: (L) => `(x_1 - 6)^2 + (x_2 - 5.5)^2 = ${v.fix(-L, 2)}`, note: 'Satiation: closed curves around a bliss point; beyond it, more is worse.' },
         };
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
-        const s = v.stage({ x: [0, 10], y: [0, 10], height: 400, axes: 'box', xlabel: 'x₁', ylabel: 'x₂' });
+        const s = v.stage({ x: [0, 10], y: [0, 10], height: 430, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1 });
+        const lad = v.stage({ x: [0, 1], y: [0, 1], height: 430, axes: false, weight: 0.42, minWidth: 170, title: 'the map as a ranking' });
         const box = (x, y) => [clamp(x, 0.05, 9.95), clamp(y, 0.05, 9.95)];
         const A = s.handle(3, 4, { color: 'accent', label: 'A', constrain: box });
         const Bh = s.handle(7, 6.5, { color: 'gold', label: 'B', labelPos: 'e', constrain: (x, y) => {
@@ -326,22 +349,34 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
         v.render(() => {
           const o = FAM[fam.value], F = o.F, uA = F.u(A.x, A.y);
           shadeSets(v, s, F.u, uA, fam.value, { a1: 0.17, a2: 0.09 });
-          for (const L of o.levels) drawLevel(s, F, L, { color: 'purple', width: 1.1, alpha: 0.32 });
+          for (const L of o.levels) drawLevel(s, F, L, { color: v.color('purple', 0.32), width: 1.1 });
           drawLevel(s, F, uA, { color: 'purple', width: 3 });
           if (F.bliss) s.dot(...F.bliss, { r: 4.5, color: 'green', label: 'bliss', labelPos: 's' });
+          s.setTitle(`the indifference curve through $A$: $${o.eq(uA)}$`);
           const far = (x, y) => Math.hypot(x - A.x, y - A.y) > 1.6 && Math.hypot(x - Bh.x, y - Bh.y) > 1.6;
           placeLabel(s, 'better than A', [[8.4, 9.3], [8.4, 0.8], [F.bliss ? F.bliss[0] : 6, F.bliss ? F.bliss[1] - 1.1 : 6], [5, 9.3], [1.6, 9.3]], (x, y) => F.u(x, y) > uA && far(x, y), { color: 'green' });
           placeLabel(s, 'worse than A', [[1.4, 0.8], [1.4, 9.3], [8.4, 9.3], [8.4, 0.8], [5, 0.8]], (x, y) => F.u(x, y) < uA && far(x, y), { color: 'red' });
-          s.tex(o.eq(uA), 10, 10, { dx: -10, dy: 10, align: 'right', baseline: 'top', color: 'purple', size: 14 });
           const uB = F.u(Bh.x, Bh.y), tol = 1e-6 * Math.max(1, Math.abs(uA));
           const rel = uB > uA + tol ? 1 : uB < uA - tol ? -1 : 0;
           Bh.color = rel > 0 ? 'green' : rel < 0 ? 'red' : 'purple';
+          // the ranking: each indifference curve is one rung, ordered from worse to better
+          const all = [...o.levels, uA, uB, ...(F.bliss ? [0] : [])], lo = Math.min(...all), hi = Math.max(...all), pd = 0.09 * (hi - lo || 1);
+          lad.setView([0, 1], [lo - pd, hi + 1.6 * pd]);
+          lad.hband(uA, hi + 2 * pd, { color: 'green', alpha: 0.13 }); lad.hband(lo - 2 * pd, uA, { color: 'red', alpha: 0.08 });
+          lad.arrow(0.16, lo - 0.6 * pd, 0.16, hi + 1.2 * pd, { color: 'muted', width: 1.4, head: 8 });
+          lad.text('better', 0.16, hi + 1.2 * pd, { dx: 8, dy: 4, color: 'muted', size: 11.5, align: 'left' });
+          for (const L of o.levels) lad.line(0.1, L, 0.5, L, { color: 'purple', width: 1.2, alpha: 0.45 });
+          if (F.bliss) { lad.dot(0.3, 0, { r: 4.5, color: 'green' }); lad.text('bliss', 0.3, 0, { dx: 9, color: 'green', size: 11.5, align: 'left' }); }
+          lad.line(0.06, uA, 0.94, uA, { color: 'purple', width: 3 });
+          lad.text('curve of A', 0.94, uA, { dy: -9, align: 'right', color: 'purple', size: 11.5, weight: 600 });
+          lad.dot(0.3, uA, { r: 6, color: 'accent' }); lad.text('A', 0.3, uA, { dx: -10, align: 'right', color: 'accent', size: 13, weight: 700 });
+          lad.dot(0.62, uB, { r: 6, color: Bh.color }); lad.text('B', 0.62, uB, { dx: 10, align: 'left', color: Bh.color, size: 13, weight: 700 });
           st = { o, uA, uB, rel };
         });
         v.readout(() => {
           const { o, uA, uB, rel } = st, f = (x) => v.fix(x, 1);
           const r = rel > 0 ? '$B \\succ A$: $B$ is in the preferred set' : rel < 0 ? '$A \\succ B$: $B$ is in the worse set' : '$B \\sim A$: $B$ is on the indifference curve of $A$';
-          return `${o.note} $A = (${f(A.x)}, ${f(A.y)})$, $B = (${f(Bh.x)}, ${f(Bh.y)})$ with $u(A) = ${v.fix(uA, 3)}$ and $u(B) = ${v.fix(uB, 3)}$: ${r}.`;
+          return `${o.note} $A = (${f(A.x)}, ${f(A.y)})$ and $B = (${f(Bh.x)}, ${f(Bh.y)})$; an index that labels each curve (here $u(A) = ${v.fix(uA, 3)}$, $u(B) = ${v.fix(uB, 3)}$) puts them on the rungs shown on the right: ${r}.`;
         });
       },
     },

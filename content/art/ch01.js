@@ -658,7 +658,7 @@ and the eye sees the two vanishing points at a right angle. As $\varphi\to 0$ on
           const bc = [0, 7, 0], bm = boxMesh(bc, [3, 3, 5], phi);
           // ground grid aligned with the building
           const cs = Math.cos(phi), sn = Math.sin(phi), loc = (a, b) => [bc[0] + a * cs + b * sn, bc[1] - a * sn + b * cs, 0];
-          for (let a = -3.5; a <= 3.5; a += 1) { seg3(pic, C, loc(a, -3.5), loc(a, 3.5), { color: 'faint', width: 0.8 }); seg3(pic, C, loc(-3.5, a), loc(3.5, a), { color: 'faint', width: 0.8 }); }
+          for (let a = -3; a <= 3; a += 1) { seg3(pic, C, loc(a, -3), loc(a, 3), { color: 'faint', width: 0.8 }); seg3(pic, C, loc(-3, a), loc(3, a), { color: 'faint', width: 0.8 }); }
           // storey lines extended to the vanishing points
           const V = bm.V;
           for (const z of [0, 1.25, 2.5, 3.75, 5]) for (const [p, q, tgt] of [[0, 1, [xl, 0]], [1, 2, [xr, 0]], [3, 0, [xr, 0]], [2, 3, [xl, 0]]]) {
