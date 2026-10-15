@@ -426,7 +426,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const H0 = hullOf(I3(), C0), H1 = hullOf(R, c1), Hn = hullOf(P.R, P.c);
           const allP = [...H0, ...H1]; let cx0 = 0, cy0 = 0; for (const q of allP) { cx0 += q[0] / allP.length; cy0 += q[1] / allP.length; }
           let rad = 0.5; for (const q of allP) rad = Math.max(rad, Math.hypot(q[0] - cx0, q[1] - cy0));
-          if (axisPt) { const q = pr(axisPt); rad = Math.max(rad, Math.hypot(q[0] - cx0, q[1] - cy0) + 0.2); }
+          if (axisPt) { const q = pr(axisPt); cx0 = q[0]; cy0 = q[1]; rad = 0.4; for (const r2 of allP) rad = Math.max(rad, Math.hypot(r2[0] - cx0, r2[1] - cy0)); rad *= 1.05; }
           sP.setView([cx0 - 1.15 * rad, cx0 + 1.15 * rad], [cy0 - 1.15 * rad, cy0 + 1.15 * rad]);
           sP.poly(H0, { color: 'muted', width: 1.2, dash: [4, 3] });
           sP.poly(H1, { color: 'ink', width: 1.8 });
@@ -436,7 +436,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
             [0, 3, 5, 6].forEach((j, k) => { const c0 = pr(add(C0, corners[j])); sP.circle(q[0], q[1], Math.hypot(c0[0] - q[0], c0[1] - q[1]), { color: ['blue', 'purple', 'teal', 'pink'][k], width: 1, alpha: 0.35 }); });
             sP.dot(q[0], q[1], { r: 6, color: 'green' }); sP.text('axis', q[0], q[1], { color: 'green', size: 11, dx: 8, dy: 10 });
           } else { const a0 = pr(C0), a1 = pr(c1); sP.arrow(a0[0], a0[1], a1[0], a1[1], { color: 'green', width: 2 }); }
-          sP.corner(axisPt ? `slide along the axis so far: ${v.fix(h * es, 3)} of ${v.fix(h, 3)}` : 'no fixed point: a translation', 'bl', { color: 'green' });
+          sP.corner(axisPt ? `slide along the axis so far: ${v.fix(h * es, 3)} of ${v.fix(h, 3)}` : 'no fixed point: a translation', 'tl', { color: 'green' });
           cur = { ang, h, axisPt, n, err, d, R, md };
         }, { period: 8, still: 3.6 });
         v.legend([['faint', 'start pose'], ['ink', 'target pose'], ['green', 'screw axis $\\ell$'], ['blue', 'corner paths (helices)']]);

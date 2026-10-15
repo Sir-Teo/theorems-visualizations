@@ -805,8 +805,8 @@ and the optimal tour has length $\min_j\big(D[\{1,\dots,n-1\},j]+d(j,0)\big)$. T
           T.draw({
             rows, cols: n - 1, rowLabels: (r) => setLab(subs[r]), colLabels: (c) => `j=${c + 1}`, cornerLabel: 'S',
             value: (r, c) => (big1 && r <= f.r && D[subs[r]][c + 1] != null ? r2(D[subs[r]][c + 1]) : null),
-            fill: (r, c) => { const Sm = subs[r], j = c + 1; if (D[Sm][j] == null) return ['faint', 0.22]; if (sel && sel[0] === Sm && sel[1] === j) return ['purple', 0.5]; if (tourCells.has(Sm * 10 + j)) return ['green', 0.5]; if (r === f.r && !f.done) return j === f.bj ? ['gold', 0.6] : ['gold', 0.25]; if (r > f.r) return null; return [v.ramp(0.15 + 0.7 * D[Sm][j] / mx, 'accent'), 0.9]; },
-            textColor: () => 'ink', activeRow: f.done ? undefined : f.r, size: big1 ? 12 : 9,
+            fill: (r, c) => { const Sm = subs[r], j = c + 1; if (D[Sm][j] == null) return ['faint', 0.22]; if (sel && sel[0] === Sm && sel[1] === j) return ['purple', 0.5]; if (tourCells.has(Sm * 10 + j)) return ['green', 0.5]; if (r === f.r && !f.done) return j === f.bj ? ['gold', 0.6] : ['gold', 0.25]; if (r > f.r) return null; return [...v.ramp(0.12 + 0.5 * D[Sm][j] / mx, 'accent'), 0.9]; },
+            activeRow: f.done ? undefined : f.r, size: big1 ? 12 : 9,
           });
           // map
           const d = (a, b) => Math.hypot(P[a][0] - P[b][0], P[a][1] - P[b][1]);

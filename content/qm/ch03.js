@@ -394,8 +394,8 @@ A localized wave packet first bounces back and forth like a classical particle, 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_revival' },
       tags: ['revivals', 'quantum carpet', 'interference'],
       viz(v) {
-        const M = v.M, L = 1, TR = (4 * L * L) / Math.PI, TMAX = 1.05 * TR, PER = 21, NXC = 240, NTC = 640, NXF = 600, X0 = 0.32, AIMP = 0.37;
-        const sig = v.slider('packet width $\\sigma/L$', 0.02, 0.12, 0.035, { step: 0.001 });
+        const M = v.M, L = 1, TR = (4 * L * L) / Math.PI, TMAX = 1.05 * TR, PER = 21, NXC = 240, NTC = 340, SUB = 8, NXF = 600, X0 = 0.32, AIMP = 0.37;
+        const sig = v.slider('packet width $\\sigma/L$', 0.025, 0.12, 0.05, { step: 0.001 });
         const k0s = v.slider('momentum $k_0L$', 0, 60, 0, { step: 0.5 });
         const al = v.slider('impurity strength $\\alpha$', 0, 1.5, 0, { step: 0.01 });
         const jump = (f) => () => { v.pause(); v.t = (PER * f) / 1.05; };
@@ -420,10 +420,10 @@ A localized wave packet first bounces back and forth like a classical particle, 
           // carpet
           const tab = []; for (let n = 0; n < N; n++) tab.push(Float64Array.from({ length: NXC }, (_, j) => Math.SQRT2 * Math.sin((n + 1) * Math.PI * ((j + 0.5) / NXC))));
           const car = new Float32Array(NTC * NXC), pr = new Float64Array(N), pi = new Float64Array(N);
-          for (let r = 0; r < NTC; r++) {
-            const tau = (TMAX * r) / (NTC - 1);
+          for (let r = 0; r < NTC; r++) for (let q = 0; q < SUB; q++) { // each row averages SUB instants across its time slot (no aliasing of the fast phases)
+            const tau = (TMAX * (r + (q + 0.5) / SUB - 0.5)) / (NTC - 1);
             for (let n = 0; n < N; n++) { const c = Math.cos(E[n] * tau), sn = -Math.sin(E[n] * tau); pr[n] = cr[n] * c - ci[n] * sn; pi[n] = cr[n] * sn + ci[n] * c; }
-            for (let j = 0; j < NXC; j++) { let a = 0, b = 0; for (let n = 0; n < N; n++) { a += pr[n] * tab[n][j]; b += pi[n] * tab[n][j]; } car[r * NXC + j] = a * a + b * b; }
+            for (let j = 0; j < NXC; j++) { let a = 0, b = 0; for (let n = 0; n < N; n++) { a += pr[n] * tab[n][j]; b += pi[n] * tab[n][j]; } car[r * NXC + j] += (a * a + b * b) / SUB; }
           }
           let peak = 0; for (let i = 0; i < NXF; i++) peak = Math.max(peak, re0[i] ** 2 + im0[i] ** 2);
           const ac = []; for (let r = 0; r <= 700; r++) { const tau = (TMAX * r) / 700; let a = 0, b = 0; for (let n = 0; n < N; n++) { const w = cr[n] ** 2 + ci[n] ** 2; a += w * Math.cos(E[n] * tau); b -= w * Math.sin(E[n] * tau); } ac.push([a * a + b * b, tau]); }
@@ -634,10 +634,10 @@ normalizable whenever $\phi\in L^2$; a band of width $\Delta k$ gives a packet o
         const det = v.slider('detuning $E-E_n$', -0.3, 0.3, 0, { step: 0.002 });
         const g = (u) => 1 / (1 + Math.exp(6 * (Math.abs(u) - 1)));
         const Vof = (e, d, w) => (X) => -(4 + e) * g(X + d) - (4 - e) * g(X - d) + (w && Math.abs(X) < 0.3 ? 2000 : 0);
-        const sA = v.stage({ x: [A, B], y: [-6.5, 1], height: 250, axes: 'box', weight: 1.3, xlabel: 'x', title: 'shot from the left (blue) and the right (purple) at $E$' });
-        const sW = v.stage({ x: [A, B], y: [-1, 1], height: 250, axes: 'box', weight: 0.7, xlabel: 'x', title: 'their Wronskian $W(x)$' });
-        const sS = v.stage({ x: [-EPS, EPS], y: [-6.5, 0], height: 240, axes: 'box', weight: 1.1, xlabel: 'ε', ylabel: 'E', title: 'levels against the asymmetry $\\varepsilon$' });
-        const sG = v.stage({ x: [-EPS, EPS], y: [1e-13, 10], ylog: true, height: 240, axes: 'box', weight: 0.9, xlabel: 'ε', title: 'gaps $E_{n+1}-E_n$ (log scale)' });
+        const sA = v.stage({ x: [A, B], y: [-6.5, 1], height: 250, axes: 'box', weight: 1.3, minWidth: 380, xlabel: 'x', title: 'shot from the left (blue) and the right (purple) at $E$' });
+        const sW = v.stage({ x: [A, B], y: [-1, 1], height: 250, axes: 'box', weight: 0.7, minWidth: 300, xlabel: 'x', title: 'their Wronskian $W(x)$' });
+        const sS = v.stage({ x: [-EPS, EPS], y: [-6.5, 0], height: 240, axes: 'box', weight: 1.1, minWidth: 380, xlabel: 'ε', ylabel: 'E', title: 'levels against the asymmetry $\\varepsilon$' });
+        const sG = v.stage({ x: [-EPS, EPS], y: [1e-13, 10], ylog: true, height: 240, axes: 'box', weight: 0.9, minWidth: 300, xlabel: 'ε', title: 'gaps $E_{n+1}-E_n$ (log scale)' });
         const levelsAt = (e, d, w) => M.schrodinger1D(Vof(e, d, w), [A, B], { n: NG, k: K }).E;
         const flowCache = {};
         /** Levels on an ε grid, with each local minimum of a gap refined by golden-section search (so true crossings show up). */
