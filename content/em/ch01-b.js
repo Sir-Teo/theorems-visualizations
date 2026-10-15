@@ -621,5 +621,241 @@ Without such symmetry Gauss’s law still holds but no longer determines $\mathb
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 1.17
+    {
+      num: '1.17',
+      kind: 'Theorem',
+      name: 'No field inside a charged shell',
+      statement: String.raw`A uniformly charged spherical shell of radius $R$ and total charge $Q$ produces **no electric field anywhere inside it**, and outside it produces the field of a point charge $Q$ at its centre:
+$$\mathbf E(\mathbf r) = \mathbf 0\quad(r<R),\qquad \mathbf E(\mathbf r) = \frac{Q}{4\pi\varepsilon_0 r^2}\,\hat{\mathbf r}\quad(r>R).$$
+The cancellation inside depends on the force law being exactly inverse-square.`,
+      idea: String.raw`Gauss’s law gives it at once (em-1.16): a concentric sphere inside encloses no charge, and by symmetry the field on it is radial and constant, so it must vanish. Newton’s geometric argument shows *why*: a thin double cone with its apex at any interior point $P$ cuts the shell in two patches. Their areas are in the ratio $r_1^2 : r_2^2$ of their distances (both patches meet the cone at the same angle, by the symmetry of a chord), while their fields at $P$ go like area$/r^2$ — so the near small patch and the far large patch pull equally in opposite directions. With a force law $1/r^{2+\delta}$ the far patch loses, the cancellation fails, and a field appears inside (em-1.18). The same theorem for gravity is Newton’s shell theorem (mech-8.1).`,
+      caption: String.raw`Drag $P$ anywhere inside the shell ($Q = 20$ nC, $R = 4$ cm) and turn and widen the double cone. The near (orange) and far (purple) patches are integrated numerically: their areas differ, their fields at $P$ are equal and opposite, and the field of the whole shell (summed over its surface) is zero to rounding. Move the exponent off 2 and both balances fail; the right panel shows a field appearing inside. An outside charge is *not* shielded by this insulating shell: its field passes straight through (a conductor would rearrange its charge, em-3.7).`,
+      deps: ['em-1.16', 'mech-8.1'],
+      refs: ['Purcell ch. 1', 'Feynman II ch. 5'],
+      tags: ['shell', 'gauss'],
+      viz(v) {
+        const M = v.M, C = M.CONST, R = 4, Q = 20e-9, sig = Q / (4 * Math.PI * (R * 0.01) ** 2), kS = C.ke * sig;
+        const s = v.stage({ x: [-5.6, 7.6], y: [-4.9, 4.9], equal: true, height: 360, axes: false, weight: 1.35 });
+        const sp = v.stage({ x: [0, 8], y: [-1, 1], height: 360, axes: 'box', weight: 1, xlabel: 'distance from the centre along OP (cm)', title: 'radial field $E_r$ (kN/C)' });
+        const psi = v.slider('cone direction', -180, 180, 25, { step: 1, fmt: (x) => `${x}°` });
+        const alp = v.slider('cone half-angle', 3, 30, 14, { step: 0.5, fmt: (x) => `${x}°` });
+        const nx = v.slider('force-law exponent $n$', 1.9, 2.1, 2, { step: 0.005, fmt: (x) => x.toFixed(3) });
+        const outQ = v.toggle('a charge outside the shell', false);
+        const P = s.handle(1.9, -1.1, { color: 'gold', r: 7, label: '$P$', labelPos: 'sw' });
+        const O = s.handle(6.4, 2.6, { color: 'purple', r: 8, label: '+5 nC', labelPos: 'n' });
+        const GLb = [[-0.9061798459, 0.2369268851], [-0.5384693101, 0.4786286705], [0, 0.5688888889], [0.5384693101, 0.4786286705], [0.9061798459, 0.2369268851]];
+        /** Field (N/C, 3D vector in the slice’s frame) and area (cm²) of the patch cut by the cone about unit axis u from P (z = 0). */
+        const patch = (px, py, ux, uy, al, n) => {
+          const e1 = [-uy, ux, 0], e2 = [0, 0, 1]; let E = [0, 0, 0], A = 0, tm = 0;
+          for (const [xb, wb] of GLb) for (let jg = 0; jg < 24; jg++) {
+            const b = (al / 2) * (xb + 1), g = (TAU * (jg + 0.5)) / 24, sb = Math.sin(b), cb = Math.cos(b);
+            const w = [cb * ux + sb * (Math.cos(g) * e1[0]), cb * uy + sb * (Math.cos(g) * e1[1]), sb * Math.sin(g)];
+            const pw = px * w[0] + py * w[1], t = -pw + Math.sqrt(pw * pw - (px * px + py * py) + R * R), cchi = (pw + t) / R;
+            const dO = wb * (al / 2) * sb * (TAU / 24);
+            const f = Math.pow(t, 2 - n) / cchi; // field factor (t in cm, normalised at 1 cm)
+            E = E.map((c, i) => c - kS * f * w[i] * dO); A += (t * t / cchi) * dO; tm += t * dO;
+            void e2;
+          }
+          return { E, A, t: tm / (TAU * (1 - Math.cos(al))) };
+        };
+        /** Radial field of the whole shell at distance r (cm) for exponent n: 1D integral over the polar angle (u = 1 − w²). */
+        const shellE = (r, n) => {
+          const w0 = Math.abs(r - R) / Math.sqrt(Math.max(r * R, 1e-12));
+          return kS * TAU * R * R * quadBreaks((w) => { const u = 1 - w * w, d2 = (r - R) ** 2 + 2 * r * R * w * w; return d2 < 1e-30 ? 0 : ((r - R * u) / Math.pow(d2, (n + 1) / 2)) * 2 * w; }, 0, Math.SQRT2, [w0 / 2, w0, 2 * w0], 1e-3, 24) / (R * R) * (R * R) / 1;
+        };
+        let st = null;
+        v.render(() => {
+          O.visible = outQ.value;
+          const n = nx.value, r = Math.hypot(P.x, P.y), inside = r < R - 1e-6;
+          // the shell
+          s.circle(0, 0, R, { color: 'red', width: 5, alpha: 0.55 });
+          for (let j = 0; j < 36; j++) { const t = (TAU * j) / 36; s.text('+', R * Math.cos(t), R * Math.sin(t), { align: 'center', size: 10, weight: 700, color: 'panel', halo: false }); }
+          let near = null, far = null;
+          if (inside) {
+            const ps = (psi.value * Math.PI) / 180, al = (alp.value * Math.PI) / 180, ux = Math.cos(ps), uy = Math.sin(ps);
+            const A1 = patch(P.x, P.y, ux, uy, al, n), A2 = patch(P.x, P.y, -ux, -uy, al, n);
+            [near, far] = A1.t < A2.t ? [{ ...A1, s: 1 }, { ...A2, s: -1 }] : [{ ...A2, s: -1 }, { ...A1, s: 1 }];
+            // wedges in the slice and the arcs they cut
+            const hit = (dx, dy) => { const pw = P.x * dx + P.y * dy, t = -pw + Math.sqrt(pw * pw - r * r + R * R); return [P.x + t * dx, P.y + t * dy]; };
+            for (const [P0, col] of [[near, 'orange'], [far, 'purple']]) {
+              const dir = P0.s, poly = [[P.x, P.y]], arc = [];
+              for (let k = 0; k <= 24; k++) { const a = ps + (k / 12 - 1) * al, q = hit(dir * Math.cos(a), dir * Math.sin(a)); poly.push(q); arc.push(q); }
+              s.poly(poly, { fill: col, fillAlpha: 0.16, color: col, width: 1, alpha: 0.6 });
+              s.path(arc, { color: col, width: 7, alpha: 0.85 });
+            }
+            const big = Math.max(Math.hypot(...near.E), Math.hypot(...far.E));
+            arrowPx(s, P.x, P.y, near.E[0], near.E[1], 70 * Math.hypot(...near.E) / big, { color: 'orange', width: 3, head: 10 });
+            arrowPx(s, P.x, P.y, far.E[0], far.E[1], 70 * Math.hypot(...far.E) / big, { color: 'purple', width: 3, head: 10 });
+          }
+          // total field at P: the shell (and the outside charge)
+          const Es = shellE(r, n), Er = r > 1e-9 ? [Es * P.x / r, Es * P.y / r] : [0, 0];
+          const Eo = outQ.value ? coul([{ x: O.x, y: O.y, q: 5 }], P.x, P.y).map((c) => c * C.ke * 1e-5) : [0, 0];
+          const Et = [Er[0] + Eo[0], Er[1] + Eo[1]], mt = Math.hypot(...Et);
+          if (mt > 50) arrowPx(s, P.x, P.y, Et[0], Et[1], Math.min(90, 24 + 18 * Math.log10(mt / 50)), { color: 'green', width: 2.6, head: 9 });
+          // radial profile
+          const prof = (nn) => { const out = []; for (let i = 1; i <= 160; i++) { const rr = (8 * i) / 160; if (Math.abs(rr - R) < 0.02) { out.push(null); continue; } out.push([rr, shellE(rr, nn) / 1e3]); } return out; };
+          const p2 = prof(2), pn = Math.abs(n - 2) > 1e-9 ? prof(n) : null;
+          const ym = (C.ke * Q) / (R * 0.01) ** 2 / 1e3 * 1.25; sp.setView([0, 8], [-ym * 0.25, ym]);
+          sp.hline(0, { color: 'faint', width: 1 }); sp.vband(0, R, { color: 'red', alpha: 0.06 }); sp.vline(R, { color: 'red', width: 1, dash: [3, 4], alpha: 0.7 });
+          sp.text('inside the shell', R / 2, ym * 0.92, { align: 'center', size: 11, color: 'red' });
+          sp.path(p2, { color: 'accent', width: 2.4 });
+          if (pn) sp.path(pn, { color: 'orange', width: 2.2, dash: [6, 4] });
+          sp.dot(r, Es / 1e3, { r: 6, color: 'gold' });
+          st = { near, far, Es, Et, inside, r };
+        });
+        v.legend([['orange', 'near patch'], ['purple', 'far patch'], ['green', 'total field at $P$'], ['accent', 'shell, $n = 2$'], ['orange', 'shell, your $n$', { dash: true }]]);
+        v.readout(() => {
+          const { near, far, Es, Et, inside } = st;
+          const tail = outQ.value ? ` · with the outside charge the total at $P$ is ${M.si(Math.hypot(...Et), 'N/C')}: the shell’s own contribution is still ${M.si(Math.abs(Es), 'N/C')}` : '';
+          if (!inside) return `$P$ is outside the shell: $E$ = ${M.si(Math.abs(Es), 'N/C')}, the same as a point charge $Q$ at the centre (${M.si((C.ke * Q) / (st.r * 0.01) ** 2, 'N/C')})${tail}`;
+          const nE = Math.hypot(...near.E), fE = Math.hypot(...far.E);
+          return `near patch: area ${v.fix(near.A, 3)} cm² at ${v.fix(near.t, 2)} cm, field ${M.si(nE, 'N/C')} · far patch: area ${v.fix(far.A, 3)} cm² at ${v.fix(far.t, 2)} cm, field ${M.si(fE, 'N/C')} · ratio of fields ${v.fix(fE / nE, 6)} · whole shell at $P$: **${M.si(Math.abs(Es), 'N/C')}**${Math.abs(nx.value - 2) < 1e-9 ? ' (zero to rounding)' : ' — a field inside: the exponent is not 2'}${tail}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.18
+    {
+      num: '1.18',
+      kind: 'Phenomenon',
+      name: 'Testing the inverse-square law',
+      statement: String.raw`Because the field inside a charged conducting shell vanishes only for an exact inverse-square law (em-1.17), null experiments test the exponent with extraordinary sensitivity. Writing the force as $1/r^{2+\delta}$: if $\delta\neq0$, an inner sphere connected to a charged outer shell picks up a charge proportional to $\delta$; none is found. Cavendish (1773) obtained $|\delta|<1/50$; Maxwell (1873) $|\delta|<5\times10^{-5}$; Plimpton and Lawton (1936) $|\delta|<2\times10^{-9}$; Williams, Faller and Hill (1971) $|\delta|<3\times10^{-16}$. Equivalently, the photon mass is below about $10^{-50}$ kg.`,
+      idea: String.raw`For a $1/r^{2+\delta}$ law the potential inside a uniformly charged shell is not constant: it varies by an amount proportional to $\delta$ (em-1.17). Connect a concentric inner sphere to the outer one by a wire: the two must reach a common potential, and with $\delta\neq0$ that requires a charge on the inner sphere, $q_{\text{in}}\approx c\,\delta\,Q_{\text{out}}$ with $c$ of order 1 set by the radii. Disconnect, remove the outer shell, and test the inner sphere with an electrometer: the sensitivity of that measurement, compared with the charge on the outer shell, bounds $|\delta|$. Each generation of experimenters replaced pith balls by better electrometers and then by AC methods with lock-in detection, gaining thirteen orders of magnitude.`,
+      caption: String.raw`Step through Cavendish’s procedure with globes of radius 15 cm and 17 cm, the outer charged to 3 kV. The charge the inner globe acquires is computed from the potentials of the two shells for a force $1/r^{2\pm\delta}$; it is exactly zero for $\delta = 0$. In the last step the pith-ball electrometer swings only if the charge exceeds what Cavendish could detect. The right panel compares the $|\delta|$ you chose with the limits set by experiments since 1773: each one marked green would have seen it.`,
+      scope: String.raw`Tests the static Coulomb law at laboratory distances (cm to m); geomagnetic and astrophysical limits on the photon mass probe much larger scales.`,
+      credit: 'Cavendish, 1773 (published by Maxwell, 1879); Williams, Faller & Hill, 1971',
+      deps: ['em-1.17'],
+      refs: ['Purcell ch. 1', 'Feynman II ch. 5'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Coulomb%27s_law#Tests' },
+      tags: ['inverse square', 'experiment'],
+      viz(v) {
+        const M = v.M, C = M.CONST, a = 15, b = 17, V0 = 3000;
+        const s = v.stage({ x: [-5.6, 5.6], y: [-4.4, 4.4], equal: true, height: 350, axes: false, weight: 1.15 });
+        const sp = v.stage({ x: [1750, 1990], y: [1e-18, 1], ylog: true, height: 350, axes: 'box', weight: 1, xlabel: 'year', title: 'limits on $|\\delta|$ from null experiments' });
+        const step = v.select('', [{ value: 1, label: '1 · charge the outer globe' }, { value: 2, label: '2 · withdraw the wire' }, { value: 3, label: '3 · remove the outer globe' }, { value: 4, label: '4 · test the inner globe' }], 4);
+        const law = v.select('force law', [{ value: 'p', label: '$1/r^{2+\\delta}$' }, { value: 'm', label: '$1/r^{2-\\delta}$' }, { value: 'z', label: 'exactly $1/r^2$' }], 'p');
+        const lg = v.slider('$\\log_{10}|\\delta|$', -17, -1, -1.5, { step: 0.1 });
+        /** Potential at distance r (cm) from the centre of a unit-charge shell of radius R, for a 1/r^{1+δ} potential law (units k·s₀^δ). */
+        const g = (r, R, d) => ((R + r) ** (1 - d) - Math.abs(R - r) ** (1 - d)) / (2 * R * r * (1 - d));
+        const g1 = (r, R) => { const g0 = (R + r - Math.abs(R - r)) / (2 * R * r), L = (x) => (x > 0 ? x * Math.log(x) : 0); return g0 - (L(R + r) - L(Math.abs(R - r))) / (2 * R * r); };
+        /** Charge ratio q_inner/Q_outer after connecting the globes (linear in δ for tiny δ to avoid round-off). */
+        const ratio = (d) => {
+          if (d === 0) return 0;
+          if (Math.abs(d) < 1e-4) return (d * (g1(b, b) - g1(a, b))) / (1 / a - 1 / b);
+          return (g(b, b, d) - g(a, b, d)) / (g(a, a, d) - g(b, a, d));
+        };
+        const DATA = [[1773, 2e-2, 'Cavendish'], [1873, 4.6e-5, 'Maxwell'], [1936, 2e-9, 'Plimpton & Lawton'], [1970, 1.3e-13, 'Bartlett et al.'], [1971, 3.1e-16, 'Williams, Faller & Hill']];
+        let st = null;
+        v.render(() => {
+          lg.el.hidden = law.value === 'z';
+          const d = law.value === 'z' ? 0 : (law.value === 'p' ? 1 : -1) * Math.pow(10, lg.value), k = step.value;
+          const Qb = 4 * Math.PI * C.eps0 * b * 0.01 * V0, qa = ratio(d) * Qb, qDirect = 4 * Math.PI * C.eps0 * a * 0.01 * V0, thr = qDirect / 60;
+          const ra = a / 5, rb = b / 5; // drawing scale: 1 unit = 5 cm
+          // inner globe
+          const qcol = Math.abs(qa) > thr ? sgnCol(qa) : 'muted';
+          s.circle(0, 0, ra, { fill: 'muted', fillAlpha: 0.12, color: 'ink', width: 1.8 });
+          if (Math.abs(qa) > 1e-30) { const nS = Math.max(0, Math.min(16, Math.round(16 * Math.log10(1 + Math.abs(qa) / thr) / 2))); for (let j = 0; j < nS; j++) { const t = (TAU * j) / Math.max(nS, 1); s.text(qa > 0 ? '+' : '−', (ra - 0.25) * Math.cos(t), (ra - 0.25) * Math.sin(t), { align: 'center', size: 12, weight: 700, color: qcol, halo: false }); } }
+          s.text('inner globe', 0, 0.25, { align: 'center', size: 11.5, color: 'muted' });
+          s.text(`q = ${M.si(qa, 'C')}`, 0, -0.3, { align: 'center', size: 12, color: qcol, weight: 600 });
+          // outer globe: two hemispheres
+          const sep = k >= 3 ? 1.1 : 0, discharged = k >= 3;
+          for (const sg of [-1, 1]) {
+            const pts = []; for (let j = 0; j <= 60; j++) { const t = -Math.PI / 2 + (Math.PI * j) / 60; pts.push([sg * (rb * Math.cos(t) + sep), rb * Math.sin(t)]); }
+            s.path(pts, { color: discharged ? 'faint' : 'red', width: 4, alpha: discharged ? 0.7 : 0.75 });
+            if (!discharged) for (let j = 1; j < 10; j++) { const t = -Math.PI / 2 + (Math.PI * j) / 10; s.text('+', sg * (rb + 0.28) * Math.cos(t), (rb + 0.28) * Math.sin(t), { align: 'center', size: 12, weight: 700, color: 'red' }); }
+          }
+          if (k === 1) { s.line(0, ra, 0, rb + 0.6, { color: 'gold', width: 2.5 }); s.text('wire', 0.15, rb + 0.45, { size: 11, color: 'gold' }); }
+          if (k === 2) { s.line(0.9, rb + 0.3, 0.9, rb + 1.2, { color: 'gold', width: 2.5, alpha: 0.6 }); s.text('wire withdrawn', 1.05, rb + 0.8, { size: 11, color: 'gold' }); }
+          s.corner(['', `outer globe at ${V0 / 1000} kV holds ${M.si(Qb, 'C')}; the wire joins the two`, 'the inner globe keeps its charge', 'outer hemispheres taken away and discharged', 'pith balls touch the inner globe'][k], 'tl', { size: 11.5 });
+          if (k === 4) {
+            const ang = Math.abs(qa) > thr ? Math.min(0.75, 0.2 + 0.18 * Math.log10(Math.abs(qa) / thr)) : 0;
+            const top = [-ra - 0.9, 1.4]; s.line(-ra, 0, top[0], 0, { color: 'ink', width: 2 }); s.line(top[0], 0, top[0], top[1], { color: 'ink', width: 2 });
+            for (const sg of [-1, 1]) { const x = top[0] + sg * 1.4 * Math.sin(ang), y = top[1] - 1.4 * Math.cos(ang); s.line(top[0], top[1], x, y, { color: 'muted', width: 1.2 }); s.dot(x, y, { r: 6, color: ang ? qcol : 'muted' }); }
+            s.text(ang ? 'balls diverge!' : 'no divergence', top[0], top[1] + 0.35, { align: 'center', size: 11.5, color: ang ? 'green' : 'muted', weight: 600 });
+          }
+          // limits panel
+          sp.hband(1e-18, Math.max(1e-18, Math.abs(d) || 1e-18), { color: 'gold', alpha: 0.0 });
+          if (d) { sp.hline(Math.abs(d), { color: 'gold', width: 2, dash: [6, 4] }); sp.text('your |δ|', 1985, Math.abs(d), { align: 'right', size: 11, color: 'gold', dy: -10 }); }
+          for (const [yr, lim, who] of DATA) {
+            const seen = Math.abs(d) > lim; sp.line(yr, lim, yr, 1e-18, { color: seen ? 'green' : 'faint', width: 1, alpha: 0.5 });
+            sp.dot(yr, lim, { r: 6, color: seen ? 'green' : 'muted' });
+            sp.text(who, yr, lim, { size: 11, color: seen ? 'green' : 'muted', align: yr > 1960 ? 'right' : 'left', dx: yr > 1960 ? -9 : 9, dy: yr === 1970 ? -9 : yr === 1971 ? 9 : -2 });
+          }
+          st = { d, qa, Qb, thr, r: ratio(d) };
+        });
+        v.readout(() => {
+          const { d, qa, Qb, thr, r } = st, n = Math.abs(qa) / C.e;
+          if (!d) return `exactly inverse-square: the potential inside the outer globe is constant, the wire carries no charge, $q_{\\text{inner}} = 0$ — every null experiment is consistent with this`;
+          return `$\\delta = ${v.sci(d, 2)}$ · after connecting: $q_{\\text{inner}}/Q_{\\text{outer}} = ${v.sci(r, 3)}$ (≈ ${v.fix(r / d, 3)} δ) · $q_{\\text{inner}}$ = ${M.si(qa, 'C')} ≈ ${n < 1e9 ? v.fmt(n, 3) : v.sci(n, 2)} electrons · Cavendish’s pith balls needed about ${M.si(thr, 'C')}: ${Math.abs(qa) > thr ? '**he would have seen it**' : 'below his threshold'}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.19
+    {
+      num: '1.19',
+      kind: 'Definition',
+      name: 'Point charge as a delta distribution',
+      statement: String.raw`The density of a point charge $q$ at the origin is the **delta distribution** $\rho = q\,\delta^3(\mathbf r)$: the linear functional that assigns to each smooth, compactly supported test function $\varphi$ the number $\langle\rho,\varphi\rangle = q\,\varphi(\mathbf 0)$. In this sense the Coulomb field satisfies Gauss’s law in differential form everywhere, including at the charge:
+$$\nabla\cdot\frac{\hat{\mathbf r}}{r^2} = 4\pi\,\delta^3(\mathbf r),\qquad\text{i.e.}\qquad -\int \mathbf E\cdot\nabla\varphi\,d\tau = \frac{q}{\varepsilon_0}\varphi(\mathbf 0)\ \text{ for every test function }\varphi,$$
+although $\nabla\cdot\mathbf E = 0$ pointwise at every $\mathbf r\neq\mathbf 0$. It is the limit of any family of smooth densities of total charge $q$ shrinking to the origin.`,
+      idea: String.raw`Distributional derivatives move the derivative onto the test function: $\langle\nabla\cdot\mathbf E,\varphi\rangle := -\int\mathbf E\cdot\nabla\varphi$ (fa-6.11, fa-6.12). For the Coulomb field, cut out a small ball around the origin; outside it $\nabla\cdot\mathbf E = 0$, and the divergence theorem leaves only the flux through the little sphere weighted by $\varphi$, which tends to $\varphi(\mathbf 0)\,q/\varepsilon_0$ — Gauss’s law at the smallest scale (em-1.15). For a charged ball of radius $a$ the pairing equals $\int\rho_a\varphi/\varepsilon_0$, and as $a\to0$ with $q$ fixed the density spikes like $1/a^3$ while the pairing converges to $q\varphi(\mathbf 0)/\varepsilon_0$, with an error of order $a^2\nabla^2\varphi$.`,
+      caption: String.raw`The test function $\varphi$ is a smooth bump (shaded, contours) of radius $\ell$ centred at the gold handle; the red disk is a ball of charge $q = 1$ nC and radius $a$. Shrink $a$: the readout shows the central density blowing up while $-\int\mathbf E\cdot\nabla\varphi\,d\tau$, computed by numerical integration, settles on $q\varphi(\mathbf 0)/\varepsilon_0$. The right panel shows the error for every $a$ at once — falling like $a^2$ for any shape of the shrinking charge (try the Gaussian and the thin shell). Move the bump off the origin and the limit follows $\varphi(\mathbf 0)$, down to zero.`,
+      deps: ['em-1.15', 'fa-6.11', 'fa-6.12'],
+      refs: ['Griffiths §1.5'],
+      tags: ['delta', 'distributions'],
+      viz(v) {
+        const M = v.M, C = M.CONST, q = 1e-9, kq = C.ke * q;
+        const s = v.stage({ x: [-3, 3], y: [-2.6, 2.6], equal: true, height: 330, axes: false, weight: 1.1, title: 'test function $\\varphi$ and the shrinking charge' });
+        const sp = v.stage({ x: [0.005, 2], y: [1e-8, 1], xlog: true, ylog: true, height: 330, axes: 'box', weight: 1, xlabel: 'size a of the charge (cm)', title: 'relative error of the pairing vs $q\\varphi(0)/\\varepsilon_0$' });
+        const shape = v.select('charge', [{ value: 'ball', label: 'uniform ball' }, { value: 'gauss', label: 'Gaussian' }, { value: 'shell', label: 'thin shell' }], 'ball');
+        const aS = v.slider('size $a$', 0.005, 2, 0.6, { log: true, fmt: (x) => `${x.toPrecision(2)} cm` });
+        const lS = v.slider('bump radius $\\ell$', 0.8, 2.4, 1.6, { step: 0.05, fmt: (x) => `${x.toFixed(2)} cm` });
+        const B = s.handle(0.45, 0.25, { color: 'gold', r: 6 });
+        const erf = M.erf;
+        const Menc = (r, a) => (shape.value === 'ball' ? Math.min(1, (r / a) ** 3) : shape.value === 'gauss' ? erf(r / (Math.SQRT2 * a)) - Math.sqrt(2 / Math.PI) * (r / a) * Math.exp(-(r * r) / (2 * a * a)) : r >= a ? 1 : 0);
+        const phi = (u) => (u < 1 ? Math.exp(1 - 1 / (1 - u)) : 0); // u = |x − c|²/ℓ², φ(c) = 1
+        const dphi = (u) => (u < 1 ? -phi(u) / (1 - u) ** 2 : 0);
+        /** −∫E·∇φ dτ for the radial field kq·M(r)/r² (V·m): 2D integral over r and w = cosθ (axis along the bump centre). */
+        const pairing = (a, c, l, Mf) => {
+          const r0 = Math.max(0, c - l), r1 = c + l, br = shape.value === 'shell' ? [a] : [a, Math.min(r1, 4 * a)];
+          const inner = (r) => {
+            if (r <= 0) return 0;
+            const wlo = c < 1e-9 ? -1 : Math.max(-1, Math.min(1, (r * r + c * c - l * l) / (2 * r * c)));
+            if (c < 1e-9 && r >= l) return 0;
+            return quad((w) => { const u = (r * r + c * c - 2 * r * c * w) / (l * l); return dphi(u) * (2 * (r - c * w)) / (l * l); }, wlo, 1, 1e-9, 14, 4);
+          };
+          return -TAU * kq * quadBreaks((r) => Mf(r, a) * inner(r), r0, r1, br, 1e-9, 18);
+        };
+        let st = null;
+        v.render(() => {
+          const a = aS.value, l = lS.value, c = Math.hypot(B.x, B.y), Pc = v.rgb('panel'), G = v.rgb('green');
+          s.raster((x, y) => { const f = phi(((x - B.x) ** 2 + (y - B.y) ** 2) / (l * l)), k = 0.5 * f; return [Pc[0] + (G[0] - Pc[0]) * k, Pc[1] + (G[1] - Pc[1]) * k, Pc[2] + (G[2] - Pc[2]) * k]; }, { res: 3, key: `${B.x}|${B.y}|${l}|${Pc.join(',')}` });
+          s.contour((x, y) => phi(((x - B.x) ** 2 + (y - B.y) ** 2) / (l * l)), [0.1, 0.3, 0.5, 0.7, 0.9], { color: v.color('green', 0.7), width: 1 });
+          s.circle(B.x, B.y, l, { color: 'green', width: 1.2, dash: [4, 4] });
+          // the charge
+          if (shape.value === 'shell') s.circle(0, 0, a, { color: 'red', width: 2.5 });
+          else if (shape.value === 'gauss') { for (const f of [2, 1.4, 1, 0.6]) s.circle(0, 0, a * f, { fill: 'red', fillAlpha: 0.18, stroke: false }); }
+          else s.circle(0, 0, a, { fill: 'red', fillAlpha: 0.55, color: 'red', width: 1.2 });
+          s.dot(0, 0, { r: 2.5, color: 'red' });
+          s.line(-0.15, 0, 0.15, 0, { color: 'ink', width: 1 }); s.line(0, -0.15, 0, 0.15, { color: 'ink', width: 1 });
+          const target = 4 * Math.PI * kq * phi((c * c) / (l * l)), Ia = pairing(a, c, l, Menc), Ip = pairing(a, c, l, () => 1);
+          // error for every a
+          const pts = []; for (let i = 0; i <= 36; i++) { const aa = 0.005 * Math.pow(400, i / 36), e = Math.abs(pairing(aa, c, l, Menc) - target) / (4 * Math.PI * kq); pts.push([aa, Math.max(e, 1e-12)]); }
+          const lo = Math.max(1e-11, Math.min(...pts.map((p) => p[1]))) / 3; sp.setView([0.005, 2], [lo, 3]);
+          const ref = pts.find((p) => p[0] > 0.1) || pts[0];
+          sp.fn((x) => ref[1] * (x / ref[0]) ** 2, { color: 'muted', dash: [4, 4], width: 1 });
+          sp.text('slope 2', 0.02, ref[1] * (0.02 / ref[0]) ** 2, { size: 11, color: 'muted', dy: -10 });
+          sp.path(pts, { color: 'accent', width: 2.4 });
+          sp.dot(a, Math.max(Math.abs(Ia - target) / (4 * Math.PI * kq), lo * 1.01), { r: 6, color: 'gold' });
+          const rho0 = shape.value === 'ball' ? q / ((4 / 3) * Math.PI * (a * 0.01) ** 3) : shape.value === 'gauss' ? q / ((TAU) ** 1.5 * (a * 0.01) ** 3) : Infinity;
+          st = { Ia, Ip, target, rho0, phi0: phi((c * c) / (l * l)) };
+        });
+        v.legend([['green', 'test function $\\varphi$ (contours 0.1 … 0.9)'], ['red', 'the charge $q = 1$ nC'], ['accent', 'error of the pairing']]);
+        v.readout(() => {
+          const { Ia, Ip, target, rho0, phi0 } = st;
+          return `central density $\\rho(0)$ = ${isFinite(rho0) ? M.si(rho0, 'C/m³') : 'a surface charge'} · $\\varphi(0) = ${v.fix(phi0, 4)}$ · $-\\int\\mathbf E\\cdot\\nabla\\varphi\\,d\\tau$ = ${M.si(Ia, 'V·m', 6)} → $q\\varphi(0)/\\varepsilon_0$ = ${M.si(target, 'V·m', 6)} · for the true point charge the same integral gives ${M.si(Ip, 'V·m', 6)}, although $\\nabla\\cdot\\mathbf E = 0$ at every point except the origin`;
+        });
+      },
+    },
   ],
 };

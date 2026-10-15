@@ -395,7 +395,7 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
           if (D.q > 1) { const tm = Math.asin(1 / D.q), L = 1.25; for (const sg of [1, -1]) vd.line(0, 0, L * Math.cos(tm), sg * L * Math.sin(tm), { color: 'red', width: 1.2, dash: [3, 3] }); }
           vd.dot(0, 0, { r: 3, color: 'ink', label: 'O', labelPos: 'sw' });
           vd.tex('\\mathbf V', D.V / 2, 0, { color: 'green', dy: 12, size: 14 });
-          vd.tex('\\mathbf v_1^{\\rm lab}', D.v1[0], D.v1[1], { color: 'blue', dx: 16, dy: D.v1[1] > 0 ? -8 : 8, size: 14 });
+          vd.tex('\\mathbf v_1^{\\rm lab}', D.v1[0], D.v1[1], { color: 'blue', dx: 4, dy: D.v1[1] > 0 ? 18 : -18, size: 14 });
           // θ(χ)
           cg.fn((x) => { const c = (x * Math.PI) / 180; return (Math.atan2(Math.sin(c), Math.cos(c) + D.q) * 180) / Math.PI; }, { color: 'accent', width: 2.4, domain: [0, 180] });
           const tmx = D.q > 1 ? (Math.asin(1 / D.q) * 180) / Math.PI : 180;

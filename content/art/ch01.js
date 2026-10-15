@@ -372,58 +372,57 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
       refs: ['Kemp ch. 1'],
       tags: ['perspective', 'horizon'],
       viz(v) {
-        const M = v.M, d = 1.6, FIG = 1.7;
-        const pic = v.stage({ x: [-2.3, 2.3], y: [-0.05, 3.1], equal: true, axes: false, height: 360, weight: 1.35, title: 'the picture (a pane 3 m tall, standing on the ground)' });
-        const side = v.stage({ x: [-0.6, 16.5], y: [-0.25, 4.3], axes: false, height: 360, weight: 0.65, minWidth: 230, title: 'side view (heights ×3)' });
-        const pitch = v.slider('roof pitch', 0, 60, 38, { step: 1, fmt: (x) => `${x}°` });
-        const eh = side.handle(0, 1.6, { color: 'accent', label: 'eye', labelPos: 'e', constrain: (x, y) => [0, M.clamp(y, 0.25, 3.0)] });
-        const figs = [[-0.8, 3.6], [1.25, 6.2], [-3.1, 11], [3.6, 15.5]];
-        const gy = 0.75; // the house's yaw
+        const M = v.M, d = 1.2, FIG = 1.7, GY = rad(45), BY = -0.3;
+        const pic = v.stage({ x: [-1.6, 1.6], y: [-0.05, 3.02], equal: true, axes: false, height: 360, weight: 1.35, title: 'the picture: a pane 3 m tall standing on the ground' });
+        const side = v.stage({ x: [-0.5, 14.5], y: [-0.2, 3.7], axes: false, height: 360, weight: 0.65, minWidth: 230, title: 'side view (vertical scale enlarged)' });
+        const pitch = v.slider('roof pitch', 0, 60, 35, { step: 1, fmt: (x) => `${x}°` });
+        const eh = side.handle(0, 1.6, { color: 'accent', label: 'eye', labelPos: 'ne', constrain: (x, y) => [0, M.clamp(y, 0.25, 3.0)] });
+        const figs = [[-0.6, 2.8], [0.65, 4.2], [-3.2, 6.5], [-2.4, 13]];
+        const box = boxMesh([-2.6, 3.6, 0], [1.1, 1.1, 1.1], BY);
+        const cs = Math.cos(GY), sn = Math.sin(GY);
+        const hz = [[cs, -sn, 0], [sn, cs, 0], [Math.cos(BY), -Math.sin(BY), 0], [Math.sin(BY), Math.cos(BY), 0]]; // horizontal edge directions
         v.render(() => {
           const h = eh.y, C = camera([0, 0, h], { d });
           const pane = (P) => { const q = C.proj(P); return q ? [q[0], q[1] + h] : null; };
           const rh = 1.5 * Math.tan(rad(pitch.value));
-          const house = houseMesh([2.1, 9.5, 0], [3, 4, 2.4], rh, gy), box = boxMesh([-2.4, 6.5, 0], [1.2, 1.2, 1.2], -0.3);
-          const bx = pic.bounds.x;
-          // ---- picture
-          pic.rect(bx[0], 0, bx[1], h, { fill: 'faint', fillAlpha: 0.1, stroke: false });
-          for (const [a, b] of gridLines(-12, 12, 2, 40, 1)) { const s = C.seg(a, b); if (s) pic.line(s[0][0], s[0][1] + h, s[1][0], s[1][1] + h, { color: 'faint', width: 0.8 }); }
-          pic.line(bx[0], h, bx[1], h, { color: 'accent', width: 1.8 });
-          pic.text('horizon = eye level', bx[0] + 0.05, h + 0.05, { align: 'left', baseline: 'bottom', size: 11.5, color: 'accent', weight: 600 });
+          const house = houseMesh([1.6, 7.0, 0], [3, 4, 2.4], rh, GY);
+          const bx = pic.bounds.x, by = pic.bounds.y;
+          // ---- picture: ground, horizon, objects (far to near)
+          pic.rect(bx[0], 0, bx[1], Math.min(h, by[1]), { fill: 'faint', fillAlpha: 0.1, stroke: false });
+          for (const [a, b] of gridLines(-10, 10, 2, 26, 1)) { const s2 = C.seg(a, b); if (s2) pic.line(s2[0][0], s2[0][1] + h, s2[1][0], s2[1][1] + h, { color: 'faint', width: 0.8 }); }
           const objs = figs.map(([x, y]) => ({ y, f: () => drawFigure(pic, pane, [x, y, 0], FIG, { color: 'ink', alpha: 0.6 }) }));
-          objs.push({ y: 9.5, f: () => drawSolids(pic, pane, [0, 0, h], [{ mesh: house, color: 'teal' }]) }, { y: 6.5, f: () => drawSolids(pic, pane, [0, 0, h], [{ mesh: box, color: 'purple' }]) });
-          objs.sort((a, b) => b.y - a.y).forEach((o) => o.f());
-          // vanishing points: horizontal edge families and the roof slopes
-          const cs = Math.cos(gy), sn = Math.sin(gy);
-          const hz = [[cs, -sn, 0], [sn, cs, 0], [Math.cos(-0.3), Math.sin(0.3), 0], [Math.sin(-0.3), Math.cos(-0.3), 0]];
-          const slopes = [[[cs * 1.5, -sn * 1.5, rh], [4, 7]], [[-cs * 1.5, sn * 1.5, rh], [5, 6]]]; // eave corners of each slope (front, back)
+          objs.push({ y: 7.0, f: () => drawSolids(pic, pane, [0, 0, h], [{ mesh: house, color: 'teal' }]) }, { y: 3.6, f: () => drawSolids(pic, pane, [0, 0, h], [{ mesh: box, color: 'purple' }]) });
+          objs.sort((p, q) => q.y - p.y).forEach((o) => o.f());
+          pic.line(bx[0], h, bx[1], h, { color: 'accent', width: 1.8 });
+          pic.text('horizon = eye level', bx[0] + 0.05, h + 0.04, { align: 'left', baseline: 'bottom', size: 11.5, color: 'accent', weight: 600 });
+          // vanishing points of the horizontal edges, and of the two roof slopes (above and below, on one vertical)
           for (const D of hz) { const V = C.vp(D); if (V && V[0] > bx[0] && V[0] < bx[1]) pic.dot(V[0], V[1] + h, { r: 4.5, color: 'green' }); }
           if (rh > 0.01) {
             const V0 = C.vp(hz[0]);
-            if (V0) pic.line(V0[0], -5, V0[0], 10, { color: 'orange', width: 1, alpha: 0.5, dash: [3, 4] });
-            for (const [D, ends] of slopes) {
+            pic.line(V0[0], by[0], V0[0], by[1], { color: 'orange', width: 1, alpha: 0.45, dash: [3, 4] });
+            for (const [D, ends] of [[[cs * 1.5, -sn * 1.5, rh], [4, 7]], [[-cs * 1.5, sn * 1.5, rh], [5, 6]]]) {
               const V = C.vp(D); if (!V) continue;
-              for (const i of ends) { const a = pane(house.V[i]); if (a) pic.line(a[0], a[1], V[0], V[1] + h, { color: 'orange', width: 1, dash: [4, 4], alpha: 0.75 }); }
-              if (V[1] + h > -0.05 && V[1] + h < 3.1 && V[0] > bx[0]) pic.dot(V[0], V[1] + h, { r: 4.5, color: 'orange' });
+              for (const i of ends) { const q = pane(house.V[i]); if (q) pic.line(q[0], q[1], V[0], V[1] + h, { color: 'orange', width: 1, dash: [4, 4], alpha: 0.8 }); }
+              if (V[1] + h > by[0] && V[1] + h < by[1]) pic.dot(V[0], V[1] + h, { r: 4.5, color: 'orange' });
             }
           }
-          // ---- side view (depth across, heights exaggerated)
-          side.line(-0.6, 0, 16.5, 0, { color: 'faint', width: 1.4 });
+          // ---- side view (depth across, heights enlarged)
+          side.line(-0.5, 0, 14.5, 0, { color: 'faint', width: 1.4 });
           side.line(d, 0, d, 3, { color: 'orange', width: 2.4 });
           side.text('pane', d + 0.2, 3.0, { align: 'left', baseline: 'top', size: 10.5, color: 'orange' });
-          side.line(0, h, 16.5, h, { color: 'accent', width: 1.4, dash: [6, 4] });
-          for (const [, y] of figs) { side.line(y, 0, y, FIG - 0.2, { color: 'ink', width: 3, alpha: 0.6 }); side.dot(y, FIG - 0.1, { r: 3.5, color: 'ink', alpha: 0.6 }); }
-          side.poly([[7.5, 0], [11.5, 0], [11.5, 2.4], [7.5, 2.4]], { fill: 'teal', fillAlpha: 0.15, color: 'teal', width: 1.2 });
-          side.poly([[7.5, 2.4], [11.5, 2.4], [11.5, 2.4 + rh], [7.5, 2.4 + rh]], { fill: 'teal', fillAlpha: 0.25, color: 'teal', width: 1.2 });
-          side.dot(0, h, { r: 3, color: 'accent' });
+          const ys = house.V.map((P) => P[1]), y0 = Math.min(...ys), y1 = Math.max(...ys);
+          side.poly([[y0, 0], [y1, 0], [y1, 2.4], [(y0 + y1) / 2, 2.4 + rh], [y0, 2.4]], { fill: 'teal', fillAlpha: 0.15, color: 'teal', width: 1.2 });
+          side.poly([[3.05, 0], [4.15, 0], [4.15, 1.1], [3.05, 1.1]], { fill: 'purple', fillAlpha: 0.15, color: 'purple', width: 1.2 });
+          for (const [, y] of figs) { side.line(y, 0, y, FIG - 0.17, { color: 'ink', width: 3, alpha: 0.6 }); side.dot(y, FIG - 0.08, { r: 3.5, color: 'ink', alpha: 0.6 }); }
+          side.line(0, h, 14.5, h, { color: 'accent', width: 1.4, dash: [6, 4] });
         });
         v.legend([['green', 'vanishing points of horizontal edges', { dot: true }], ['orange', 'vanishing points of the roof slopes', { dot: true }], ['accent', 'horizon']]);
         v.readout(() => {
           const h = eh.y, C = camera([0, 0, h], { d });
           const fr = figs.map(([x, y]) => { const f = C.proj([x, y, 0]), t = C.proj([x, y, FIG]); return (0 - f[1]) / (t[1] - f[1]); });
-          const rh = 1.5 * Math.tan(rad(pitch.value)), Vs = C.vp([Math.cos(gy) * 1.5, -Math.sin(gy) * 1.5, rh]);
-          const off = Math.max(...[[Math.cos(gy), -Math.sin(gy), 0], [Math.sin(gy), Math.cos(gy), 0]].map((D) => Math.abs(C.vp(D)[1])));
-          return `eye at $${v.fix(h, 2)}$ m, horizon drawn at $${v.fix(h, 2)}$ m on the pane · horizontal vanishing points off the horizon by $${v.fix(off, 4)}$ · roof slopes vanish $${v.fix(Math.abs(Vs[1]), 2)}$ above and below it · the horizon crosses the four figures at $${fr.map((x) => v.fix(100 * x, 1)).join('\\%,\\ ')}\\%$ of their height` + (h > FIG ? ' (eye above their heads)' : '');
+          const rh = 1.5 * Math.tan(rad(pitch.value)), Vs = C.vp([cs * 1.5, -sn * 1.5, rh]);
+          const off = Math.max(...hz.map((D) => Math.abs(C.vp(D)[1])));
+          return `eye at $${v.fix(h, 2)}$ m, horizon drawn at $${v.fix(h, 2)}$ m on the pane · horizontal vanishing points off the horizon by $${v.fix(off, 4)}$ · roof slopes vanish $${v.fix(Math.abs(Vs[1]), 2)}$ above and below it · the horizon crosses the four figures at $${fr.map((x) => v.fix(100 * x, 1)).join('\\%,\\ ')}\\%$ of their height` + (h > FIG ? ' (the eye is above their heads)' : '');
         });
       },
     },
@@ -447,32 +446,32 @@ An object turned away from this position breaks (a) and (b).`,
       refs: ['Kemp ch. 1'],
       tags: ['perspective', 'one-point'],
       viz(v) {
-        const M = v.M, h = 1.5, d = 1.25, WALL = 3, HI = 3.2, BACK = 18;
+        const M = v.M, h = 1.5, d = 1.7, WALL = 3, HI = 3.2, BACK = 11;
         const pic = v.stage({ x: [-2.4, 2.4], y: [-1.55, 1.4], equal: true, axes: false, height: 380, title: 'a room in one-point perspective' });
         const turn = v.slider('turn the blue box', -40, 40, 0, { step: 1, fmt: (x) => `${x}°` });
         const C = camera([0, 0, h], { d });
         const boxes = [
-          { x: -1.3, y: 4.2, s: [1.5, 1.0, 1.0], color: 'accent' },
-          { x: 1.5, y: 6.5, s: [0.8, 1.6, 1.0], color: 'orange' },
-          { x: -0.2, y: 10, s: [1.2, 1.2, 1.2], color: 'purple' },
+          { x: -1.25, y: 4.1, s: [1.5, 1.0, 1.0], color: 'accent' },
+          { x: 1.55, y: 5.6, s: [0.8, 1.6, 1.0], color: 'orange' },
+          { x: -0.1, y: 8.2, s: [1.2, 1.2, 1.2], color: 'purple' },
         ];
         const front = (b) => [b.x, b.y - b.s[1] / 2, 0];
         for (const b of boxes) {
           const f0 = C.proj(front(b));
           b.H = pic.handle(f0[0], f0[1], { color: b.color, constrain: (x, y) => {
             const g = C.ground(x, Math.min(y, -0.08));
-            if (g) { b.x = M.clamp(g[0], -WALL + b.s[0] / 2, WALL - b.s[0] / 2); b.y = M.clamp(g[1] + b.s[1] / 2, 2.6, BACK - 2); }
+            if (g) { b.x = M.clamp(g[0], -WALL + b.s[0] / 2, WALL - b.s[0] / 2); b.y = M.clamp(g[1] + b.s[1] / 2, 3.2, BACK - 1); }
             const q = C.proj(front(b)); return [q[0], q[1]];
           } });
         }
         const mesh = (b, i) => boxMesh([b.x, b.y, 0], b.s, i === 0 ? rad(turn.value) : 0);
         v.render(() => {
           // room: floor tiles, side walls, back wall
-          for (const [a, b] of gridLines(-WALL, WALL, 1.25, BACK, 1)) seg3(pic, C, a, b, { color: 'faint', width: 0.8 });
+          for (const [a, b] of gridLines(-WALL, WALL, 1, BACK, 1)) seg3(pic, C, a, b, { color: 'faint', width: 0.8 });
           for (const s of [-1, 1]) {
-            seg3(pic, C, [s * WALL, 1.25, 0], [s * WALL, BACK, 0], { color: 'muted', width: 1.2 });
-            seg3(pic, C, [s * WALL, 1.25, HI], [s * WALL, BACK, HI], { color: 'muted', width: 1.2 });
-            for (let y = 2; y <= BACK; y += 2) seg3(pic, C, [s * WALL, y, 0], [s * WALL, y, HI], { color: 'faint', width: 0.8 });
+            seg3(pic, C, [s * WALL, 1, 0], [s * WALL, BACK, 0], { color: 'muted', width: 1.2 });
+            seg3(pic, C, [s * WALL, 1, HI], [s * WALL, BACK, HI], { color: 'muted', width: 1.2 });
+            for (let y = 2; y <= BACK; y += 1.5) seg3(pic, C, [s * WALL, y, 0], [s * WALL, y, HI], { color: 'faint', width: 0.8 });
           }
           const bw = [[-WALL, BACK, 0], [WALL, BACK, 0], [WALL, BACK, HI], [-WALL, BACK, HI]].map((P) => C.proj(P));
           pic.poly(bw, { fill: 'faint', fillAlpha: 0.12, color: 'muted', width: 1.2 });
@@ -637,26 +636,26 @@ and the eye sees the two vanishing points at a right angle. As $\varphi\to 0$ on
           const xl = -dd / Math.tan(phi), xr = dd * Math.tan(phi), bx = pic.bounds.x, by = pic.bounds.y;
           if (!VL.dragging) VL.x = xl; if (!VR.dragging) VR.x = xr;
           VL.visible = xl > bx[0]; VR.visible = xr < bx[1];
-          const bc = [0, 8, 0], bm = boxMesh(bc, [3, 3, 4.2], phi);
+          const bc = [0, 7, 0], bm = boxMesh(bc, [3, 3, 5], phi);
           // ground grid aligned with the building
           const cs = Math.cos(phi), sn = Math.sin(phi), loc = (a, b) => [bc[0] + a * cs + b * sn, bc[1] - a * sn + b * cs, 0];
-          for (let a = -6; a <= 6; a += 1) { seg3(pic, C, loc(a, -6), loc(a, 6), { color: 'faint', width: 0.8 }); seg3(pic, C, loc(-6, a), loc(6, a), { color: 'faint', width: 0.8 }); }
+          for (let a = -3.5; a <= 3.5; a += 1) { seg3(pic, C, loc(a, -3.5), loc(a, 3.5), { color: 'faint', width: 0.8 }); seg3(pic, C, loc(-3.5, a), loc(3.5, a), { color: 'faint', width: 0.8 }); }
           // storey lines extended to the vanishing points
           const V = bm.V;
-          for (const z of [0, 1.4, 2.8, 4.2]) for (const [p, q, tgt] of [[0, 1, [xl, 0]], [1, 2, [xr, 0]], [3, 0, [xr, 0]], [2, 3, [xl, 0]]]) {
+          for (const z of [0, 1.25, 2.5, 3.75, 5]) for (const [p, q, tgt] of [[0, 1, [xl, 0]], [1, 2, [xr, 0]], [3, 0, [xr, 0]], [2, 3, [xl, 0]]]) {
             const a = pj([V[p][0], V[p][1], z]), b = pj([V[q][0], V[q][1], z]); if (!a || !b) continue;
             const end = Math.hypot(a[0] - tgt[0], a[1] - tgt[1]) < Math.hypot(b[0] - tgt[0], b[1] - tgt[1]) ? a : b;
             pic.line(end[0], end[1], tgt[0], tgt[1], { color: tgt[0] < 0 ? 'orange' : 'accent', width: 0.9, dash: [4, 4], alpha: 0.65 });
           }
           drawSolids(pic, pj, [0, 0, h], [{ mesh: bm, color: 'teal' }]);
-          for (const z of [1.4, 2.8]) for (const [p, q] of [[0, 1], [1, 2], [2, 3], [3, 0]]) {
+          for (const z of [1.25, 2.5, 3.75]) for (const [p, q] of [[0, 1], [1, 2], [2, 3], [3, 0]]) {
             const mid = [(V[p][0] + V[q][0]) / 2, (V[p][1] + V[q][1]) / 2], out = [mid[0] - bc[0], mid[1] - bc[1]];
             if ((mid[0] - 0) * out[0] + (mid[1] - 0) * out[1] >= 0) continue; // back face
             seg3(pic, C, [V[p][0], V[p][1], z], [V[q][0], V[q][1], z], { color: 'teal', width: 1.2 });
           }
           pic.line(bx[0], 0, bx[1], 0, { color: 'muted', width: 1.2 });
           pic.text('horizon', bx[0] + 0.15, 0.12, { align: 'left', baseline: 'bottom', size: 11, color: 'muted' });
-          pic.dot(0, 0, { r: 3.5, color: 'ink', label: 'P', labelPos: 's' });
+          pic.dot(0, 0, { r: 3.5, color: 'ink' }); pic.text('P', 0.12, -0.12, { align: 'left', baseline: 'top', math: true, size: 15 });
           // station point folded down: Thales circle on V_L V_R
           const cxm = (xl + xr) / 2, r = (xr - xl) / 2, Sy = -dd;
           pic.clip(() => {

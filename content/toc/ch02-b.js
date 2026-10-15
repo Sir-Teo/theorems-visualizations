@@ -431,7 +431,7 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
           const ratio = (arr) => arr.reduce((m, [x, y, n]) => ((n ?? Math.round(x)) >= 3 ? Math.max(m, y / ((n ?? Math.round(x)) - 1) ** 2) : m), 0);
           const rr = ratio(pts), hr = hunted.length ? ratio(hunted.map(([n, L]) => [n, L, n])) : null;
           const cOK = [2, 3, 4, 5, 6, 7, 8, 9, 10].every((n) => CL[n] === (n - 1) ** 2);
-          return `${pts.length} random synchronizing automata (${nonsync} not synchronizing, skipped): (shortest reset word)$/(n-1)^2$ is at most **${v.fix(rr, 2)}** for $n\ge 3$` + (hr != null ? ` · the hill climber's worst: **${v.fix(hr, 2)}** (${hunted.map(([n, L]) => `${L}/${(n - 1) ** 2}`).join(', ')})` : '') + ` · Černý family: exactly $(n-1)^2$ for $n\\le 10$ ${cOK ? '✓' : '✗'} · no counterexample, as expected`;
+          return `${pts.length} random synchronizing automata (${nonsync} not synchronizing, skipped): (shortest reset word)$/(n-1)^2$ is at most **${v.fix(rr, 2)}** for $n\\ge 3$` + (hr != null ? ` · the hill climber's worst: **${v.fix(hr, 2)}** (${hunted.map(([n, L]) => `${L}/${(n - 1) ** 2}`).join(', ')})` : '') + ` · Černý family: exactly $(n-1)^2$ for $n\\le 10$ ${cOK ? '✓' : '✗'} · no counterexample, as expected`;
         });
       },
     },

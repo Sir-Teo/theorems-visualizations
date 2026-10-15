@@ -35,10 +35,12 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 | phase | state |
 |---|---|
 | 0 · Engine | done: registry and schema v2, catalog split (index + lazy planned + per-collection shards), routes, field pages, OKLCH colours, map v2 with field regions and LOD, treemap overview, timeline, bridges, prerequisite planner, runtime numerics and 15 kits, CI, smoke and unit tests |
-| 1 · Pilots | in progress: LADR ch. 1–4 complete and ch. 5–7 in production; mechanics ch. 1–3, algorithms ch. 1–2, microeconomics ch. 1–2 done, further chapters in production; music ch. 1 in production |
-| 2 · Skeleton | done for 82 of 85 collections (≈ 10,600 planned items, researched from real tables of contents and course syllabi, sources in each file header); remaining: `alg` (Judson) and `graph` (Diestel) in extraction, `ml` (UML) queued. 142 cross-listings reconcile duplicates (`scripts/crosslist.mjs`, `scripts/dupes.mjs`) |
-| 3 · Wave A | started: `stat` ch. 1 and `qm` ch. 1 in production |
-| 7 · Connective tissue | 7 bridges (Fourier, spectral theorem, entropy, least action, random walk, contagion, symmetry) |
+| 1 · Pilots | LADR ch. 1–8 complete, ch. 9 in production (4 parts); mechanics ch. 1–8, algorithms ch. 1–5, microeconomics ch. 1–3 (ch. 4 in production), music ch. 1 (ch. 2 in production) |
+| 2 · Skeleton | done for all 85 collections (≈ 11,700 planned items from real tables of contents and syllabi, sources in each file header); cross-listings reconcile duplicates (`scripts/crosslist.mjs`, `scripts/dupes.mjs`) |
+| 3 · Wave A (first chapters) | done: stat, qm, climate, popgen, epi, sig, psych, phil (ch. 1–2), game, info, nt, macro, pchem · in production: toc, em, ling, ode, ecol, ctrl, art, thermo, comb |
+| Papers | 450 landmark papers across all 13 fields in the syllabi, every citation checked (Crossref, archive.org, PubMed…), each linked to the ideas it introduced; `#/papers` with live filter, era grouping and timeline; "First published in" on idea pages; papers written as interactive items as their chapters land, plus 20 flagship papers in production |
+| Search | one index over written and planned ideas, papers (title, authors, year), fields, collections, chapters, bridges; operators (kind:, field:, col:, year:, by:, is:), facets, typo tolerance; results on the map and timeline |
+| 7 · Connective tissue | 7 bridges (Fourier, spectral theorem, entropy, least action, random walk, contagion, symmetry); home-page chord diagram of cross-field dependencies |
 
 ### Where we started
 

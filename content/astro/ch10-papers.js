@@ -47,7 +47,7 @@ const HT = 977.8; // 1/H in Gyr for H in km/s/Mpc
 const HIST = [
   { y: 1929, H: 500, lo: 465, hi: 513, who: 'Hubble', pos: [8, 0, 'left'] },
   { y: 1952, H: 200, lo: 180, hi: 250, who: 'Baade', approx: true, pos: [8, 0, 'left'] },
-  { y: 1958, H: 75, lo: 50, hi: 100, who: 'Sandage', pos: [-8, 0, 'right'] },
+  { y: 1958, H: 75, lo: 50, hi: 100, who: 'Sandage', pos: [-6, -12, 'right'] },
   { y: 2001, H: 72, lo: 64, hi: 80, who: 'HST Key Project', pos: [-6, -12, 'right'] },
   { y: 2018, H: 67.4, lo: 66.9, hi: 67.9, who: 'Planck', pos: [-4, 13, 'right'], color: 'teal' },
   { y: 2022, H: 73.04, lo: 72.0, hi: 74.08, who: 'SH0ES', pos: [0, -13, 'right'], color: 'red' },
@@ -115,17 +115,17 @@ In modern terms this is the Hubble–Lemaître law $v = H_0 d$ (astro-10.2), the
           s.setView([0, xmax], [-450, today ? 1500 : 1300]);
           s.hline(0, { color: 'faint', width: 1 });
           // reference slopes: Hubble's K = 500, Planck and SH0ES
-          if (!today && (f1.value !== 1 || f2.value !== 1)) s.fn((r) => 500 * r, { color: 'muted', width: 1.2, dash: [3, 4] });
+          if (!today && (f1.value !== 1 || f2.value !== 1)) { s.fn((r) => 500 * r, { color: 'muted', width: 1.2, dash: [3, 4] }); s.text('Hubble’s K = 500', 1180 / 500, 1180, { color: 'muted', size: 11, weight: 600, align: 'left', dx: 6 }); }
           s.fn((r) => 67.4 * r, { color: 'teal', width: 1.4, dash: [7, 5] });
           s.fn((r) => 73.04 * r, { color: 'red', width: 1.4, dash: [7, 5] });
           s.fn((r) => F.K * r, { color: 'green', width: 2.8 });
           if (!today) { const rc = 1.4 * f1.value * f2.value, vc = 745; s.line(rc - 0.03 * xmax, vc, rc + 0.03 * xmax, vc, { color: 'ink', width: 2 }); s.line(rc, vc - 60, rc, vc + 60, { color: 'ink', width: 2 }); }
           for (const q of rows) s.dot(q.r, q.v - F.sun(q), { r: 5, color: GCOL[q.g] });
           // labels on the reference lines, at the right edge
-          const lab = (k, txt, col, dy) => { const x = Math.min(xmax * 0.97, 1450 / k); s.text(txt, x, k * x, { color: col, size: 11.5, weight: 600, align: 'right', dy, dx: -4 }); };
-          lab(F.K, `K = ${Math.round(F.K)}`, 'green', -12);
+          const lab = (k, txt, col, dy, fx = 0.97) => { const x = Math.min(xmax * fx, 1400 / k); s.text(txt, x, k * x, { color: col, size: 11.5, weight: 700, align: 'right', dy, dx: -4 }); };
+          lab(F.K, `K = ${Math.round(F.K)}`, 'green', 15, 0.93);
           if (today) { lab(67.4, 'Planck 67.4', 'teal', 14); lab(73.04, 'SH0ES 73.0', 'red', -12); }
-          else { const x = xmax * 0.97; s.text('Planck, SH0ES', x, 73.04 * x, { color: 'muted', size: 11, weight: 600, align: 'right', dy: -11 }); }
+          else lab(67.4, 'Planck, SH0ES', 'muted', 14);
           // hover: name of the nearest galaxy
           const P = s.pointer;
           if (P.inside) {

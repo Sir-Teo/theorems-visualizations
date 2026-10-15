@@ -1,7 +1,7 @@
 // Control Theory — Chapter 1: Feedback principles (part b: 1.8–1.14)
 import {
-  cadd, csub, cmul, cdiv, cabs, cexp, pmul, tf, tfAt, logspace, realize, fitSine, bdBlock, bdSum, bdWire,
-  GOV, govValve, govStep, govEquilibrium, govCubic, cubicRoots, clocked, trace, CAR, carAccel, carTrim, drawCar,
+  cadd, csub, cmul, cdiv, cabs, cexp, pmul, tf, tfAt, logspace, realize, fitSine, bdBlock, bdWire,
+  GOV, govStep, govEquilibrium, govCubic, cubicRoots, clocked, trace, CAR, carAccel, carTrim,
 } from './ch01.shared.js';
 
 // ---------- helpers for this file ----------
@@ -37,6 +37,14 @@ function blockStep(b, X, o, u, dX) {
   for (let j = 0; j < b.n; j++) { y += b.C[j] * X[o + j]; last -= b.a[j] * X[o + j]; }
   if (dX) { for (let j = 0; j < b.n - 1; j++) dX[o + j] = X[o + j + 1]; if (b.n) dX[o + b.n - 1] = last; }
   return y;
+}
+/** A car icon of fixed pixel size whose wheels touch (x, y), tilted by the on-screen angle ang (for stages without equal axes). */
+function carIcon(s, x, y, ang, st = {}) {
+  const k = st.px ?? 7, X = s.X(x), Y = s.Y(y), ca = Math.cos(ang), sa = Math.sin(ang), col = st.color || 'accent';
+  const P = (a, b) => [s.invX(X + k * (a * ca - b * sa)), s.invY(Y - k * (a * sa + b * ca))];
+  s.poly([[-2.25, 0.32], [2.25, 0.32], [2.3, 0.85], [1.35, 1.0], [0.75, 1.5], [-1.05, 1.5], [-1.65, 1.0], [-2.3, 0.92]].map(([a, b]) => P(a, b)), { fill: col, fillAlpha: 0.9, color: col, width: 1.4 });
+  s.poly([[0.62, 1.05], [0.45, 1.38], [-0.95, 1.38], [-1.35, 1.05]].map(([a, b]) => P(a, b)), { fill: 'panel', fillAlpha: 0.75, stroke: false });
+  for (const wx of [-1.4, 1.4]) { const c = P(wx, 0.36); s.dot(c[0], c[1], { r: 0.4 * k, color: 'ink' }); }
 }
 /** Marker × in data units at (x, y), size h. */
 function cross(s, x, y, h, st) { s.line(x - h, y - h, x + h, y + h, st); s.line(x - h, y + h, x + h, y - h, st); }
@@ -146,13 +154,13 @@ As $K$ rises the closed-loop response typically becomes faster, then oscillatory
         const st = v.stage({ x: [0, TEND], y: [-0.8, 2.6], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'y(t)', full: true, title: 'closed-loop step response' });
         const sp = v.stage({ x: [-4.5, 1.8], y: [-4.5, 4.5], height: 290, axes: true, xlabel: 'Re s', ylabel: 'Im s', weight: 1, title: 'closed-loop poles' });
         const gs = v.stage({ x: [0.1, 20], y: [-2.6, 1.4], xlog: true, height: 290, axes: 'box', xlabel: 'gain K', weight: 1.15, title: 'real part of the rightmost pole' });
-        const KS = logspace(0.1, 20, 90);
+        const KS = logspace(0.1, 20, 56);
         /** Roots of (s+1)e^{θs} + K in the window Re ∈ [−8, 4], 0 ≤ Im ≤ 30 by Newton from a grid of seeds, plus conjugates. */
         const delayRoots = (K, th) => {
           const out = [];
-          for (let im = 0; im <= 30; im += Math.PI / (2.5 * th)) for (const re of [-5, -2.5, -1, 0.5, 2]) {
+          for (let im = 0; im <= 30; im += Math.PI / (2.2 * th)) for (const re of [-3, -0.8, 1]) {
             let z = [re, im];
-            for (let it = 0; it < 60; it++) {
+            for (let it = 0; it < 40; it++) {
               const E = cexp([th * z[0], th * z[1]]), f = cadd(cmul([z[0] + 1, z[1]], E), [K, 0]), fp = cmul(E, [1 + th * (z[0] + 1), th * z[1]]);
               const dz = cdiv(f, fp); z = csub(z, dz);
               if (!isFinite(z[0]) || Math.abs(z[0]) > 40) break;
@@ -353,11 +361,11 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
         const kpS = v.slider('gain $k_p$ (throttle per m/s)', 0.02, 2, 0.2, { log: true, fmt: (x) => v.fix(x, 3) });
         const gS = v.slider('hill grade $\\theta$', 0, 12, 6, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} %` });
         const iT = v.toggle('integral action ($T_i=4$ s)', false);
-        const enS = v.select('engine', [{ value: 4500, label: 'strong (4.5 kN)' }, { value: 2400, label: 'small (2.4 kN)' }], 4500);
+        const enS = v.select('engine', [{ value: 4500, label: 'strong (4.5 kN)' }, { value: 2000, label: 'small (2.0 kN)' }], 4500);
         const road = v.stage({ x: [0, 1150], y: [-12, 75], height: 150, axes: false, full: true });
         const sp = v.stage({ x: [0, TEND], y: [19.5, 26], height: 280, axes: 'box', xlabel: 't (s)', ylabel: 'speed (m/s)', weight: 1.4 });
-        const er = v.stage({ x: [0.02, 2], y: [0, 6], xlog: true, height: 280, axes: 'box', xlabel: 'gain k_p', ylabel: 'steady-state error (m/s)', weight: 1 });
-        const hT = sp.handle(16, 19.7, { color: 'gold', constrain: (x) => [clamp(x, 0, TEND), 19.7] });
+        const er = v.stage({ x: [0.02, 2], y: [0, 8], xlog: true, height: 280, axes: 'box', xlabel: 'gain k_p', ylabel: 'steady-state error (m/s)', weight: 1 });
+        const hT = sp.handle(16, 19.75, { color: 'gold', constrain: (x) => [clamp(x, 0, TEND), hT ? hT.y : 19.75] });
         const grade = (x) => (gS.value / 100) * clamp((x - X0) / RAMP, 0, 1);
         const elev = (x) => { const g = gS.value / 100; if (x <= X0) return 0; if (x <= X0 + RAMP) return (g * (x - X0) ** 2) / (2 * RAMP); return (g * RAMP) / 2 + g * (x - X0 - RAMP); };
         const lin = () => { const F = +enS.value; return { a: (2 * CAR.kd * vr) / m, b: F / m }; };
@@ -402,11 +410,13 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
           road.path(pts, { color: 'ink', width: 2.4 });
           const i = clamp(Math.round((hT.x / TEND) * (R.tt.length - 1)), 0, R.tt.length - 1), xc = R.xx[i];
           const ang = Math.atan((5 * grade(xc) * road.sy) / road.sx);
-          drawCar(road, xc, 5 * elev(xc), ang, { color: 'accent', scale: 4.2 / Math.sqrt(road.sy / road.sx) / 1.0, alpha: 1 });
-          road.text(`${v.fix(R.vv[i], 2)} m/s, throttle ${v.fix(100 * R.uu[i], 0)} %`, xc, 5 * elev(xc) + 14, { size: 11.5, color: 'accent', align: 'center', weight: 600 });
+          carIcon(road, xc, 5 * elev(xc), ang, { color: 'accent', px: 7.5 });
+          road.text(`${v.fix(R.vv[i], 2)} m/s, throttle ${v.fix(100 * R.uu[i], 0)} %`, xc, 5 * elev(xc) + 22, { size: 11.5, color: 'accent', align: 'center', weight: 600 });
           road.text(`grade ${v.fix(gS.value, 1)} %`, X0 + RAMP + 180, 5 * elev(X0 + RAMP + 180) - 7, { size: 11, color: 'muted', align: 'left' });
           road.corner('heights exaggerated ×5', 'tr', { size: 10.5 });
-          // ---- speed
+          // ---- speed (the window widens when the throttle saturates and the car slows a lot)
+          const vmin = Math.min(...R.vv), lo = Math.min(19.5, Math.floor(vmin - 0.6));
+          sp.setView(null, [lo, 26]); hT.y = lo + 0.25;
           sp.hline(vr, { color: 'ink', dash: [5, 4], width: 1 });
           if (!iT.value) sp.hline(vr - c.pred, { color: 'green', dash: [2, 4], width: 1.2 });
           for (const f of c.fam) sp.clip(() => trace(sp, f.tt, f.vv, { color: 'muted', width: 1.1, alpha: 0.6 }));
@@ -415,7 +425,7 @@ which shrinks as the gain grows but never vanishes; integral action removes it (
           sp.dot(hT.x, R.vv[i], { r: 5, color: 'accent' });
           // ---- steady error vs gain
           er.fn((k) => (CAR.g * sth) / (a + b * k), { color: 'green', width: 2.2 });
-          er.dot(kpS.value, clamp(c.meas, 0, 5.9), { r: 6.5, color: R.sat ? 'red' : 'accent' });
+          er.dot(kpS.value, clamp(c.meas, 0, 7.9), { r: 6.5, color: R.sat ? 'red' : 'accent' });
           if (iT.value) er.text('integral action: error → 0', 0.025, 0.5, { size: 11.5, color: 'accent' });
         });
         v.legend([['accent', 'nonlinear car + controller'], ['green', 'first-order model / $g\\theta/(a+bk_p)$', { dash: true }], ['muted', `other gains ($k_p$ = ${FAM.join(', ')})`]]);
@@ -464,7 +474,7 @@ $$u^*=k\,x^*-\operatorname{artanh}x^*,\qquad x^*=\sqrt{1-1/k}.$$`,
           const xn = st.x + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
           if (Math.sign(xn) !== Math.sign(st.x) && st.x !== 0) st.jumps.push({ u, up: xn > st.x });
           st.x = xn;
-          if (st.k++ % 5 === 0) { const H = st.h; H.t.push(t + dt); H.u.push(u); H.x.push(st.x); if (H.t.length > 450) for (const key in H) H[key].shift(); }
+          if (st.k++ % 5 === 0) { const H = st.h; H.t.push(t + dt); H.u.push(u); H.x.push(st.x); if (H.t.length > 640) for (const key in H) H[key].shift(); }
         });
         const fold = (k) => { if (k <= 1) return null; const xs = Math.sqrt(1 - 1 / k); return { x: xs, u: k * xs - Math.atanh(xs) }; };
         const equilibria = (k, u) => {
@@ -695,7 +705,7 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
         v.render(() => {
           const beta = H.x, K = H.y, p = { K, beta };
           // ---- chart
-          pl.raster((x, y) => { if (x < 0 || y < 0) return null; const c = COLS[classify(x, y)], t = 0.2; return [panel[0] + (c[0] - panel[0]) * t, panel[1] + (c[1] - panel[1]) * t, panel[2] + (c[2] - panel[2]) * t]; }, { res: 3, key: 'chart' });
+          pl.raster((x, y) => { if (x < 0 || y < 0) return null; const c = COLS[classify(x, y)], t = 0.2; return [panel[0] + (c[0] - panel[0]) * t, panel[1] + (c[1] - panel[1]) * t, panel[2] + (c[2] - panel[2]) * t]; }, { res: 3, key: `chart|${v.color('panel')}` });
           pl.fn(kOf, { color: 'ink', width: 2.6, domain: [0, BX[1]] });
           pl.text('hunting (unstable)', 0.12, 6.3, { size: 12, color: 'red', weight: 600 });
           pl.text('decaying oscillation', 1.45, 3.0, { size: 12, color: 'blue', weight: 600, align: 'center' });
