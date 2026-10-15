@@ -20,15 +20,20 @@ export function setProb(p, i, val) {
 }
 /** Truncate or extend a distribution to n outcomes and renormalise. */
 export function resizeP(p, n) { const q = p.slice(0, n); while (q.length < n) q.push(0.6 / n); const s = sum(q); return s > 0 ? q.map((x) => x / s) : q.map(() => 1 / n); }
-/** Bars of stage s sit at x = 0, 1, …: pressing on a bar and dragging sets its height (the rest rescale). */
+/** Bars of stage s sit at x = 0, 1, …: pressing on a bar and dragging sets its height (the rest rescale). Returns {active, fit(p)}. */
 export function dragBars(s, getP, onEdit) {
+  const st = { active: false, top: 1.05 };
   let idx = -1;
   s.onDrag((x, y, phase) => {
     const p = getP(); if (!p) return;
     if (phase === 'start') { const i = Math.round(x); idx = i >= 0 && i < p.length && Math.abs(x - i) < 0.5 ? i : -1; }
     if (idx >= 0) { setProb(p, idx, y); onEdit?.(idx); }
+    st.active = idx >= 0 && phase !== 'end';
     if (phase === 'end') idx = -1;
   });
+  /** Top of the probability axis: fitted to the tallest bar, but frozen while a bar is being dragged. */
+  st.fit = (p, lo = 0.4) => { if (!st.active) st.top = Math.min(1.05, Math.max(lo, Math.ceil((Math.max(...p) * 1.18 + 0.02) * 10) / 10)); return st.top; };
+  return st;
 }
 /** FNV-1a: a 32-bit seed from a string. */
 export function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }

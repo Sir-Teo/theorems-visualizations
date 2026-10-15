@@ -64,7 +64,7 @@ function mdGas(o) {
   const forces = () => {
     fx.fill(0); fy.fill(0); fz.fill(0);
     if (G.mode === 'ideal') return;
-    const L = G.L, ncx = Math.max(1, Math.min(32, Math.floor(L[0] / rcMax))), ncy = Math.max(1, Math.min(32, Math.floor(L[1] / rcMax))), ncz = Math.max(1, Math.min(32, Math.floor(L[2] / rcMax)));
+    const L = G.L, ncx = Math.max(1, Math.min(10, Math.floor(L[0] / rcMax))), ncy = Math.max(1, Math.min(10, Math.floor(L[1] / rcMax))), ncz = Math.max(1, Math.min(10, Math.floor(L[2] / rcMax)));
     const nt = ncx * ncy * ncz; if (head.length < nt) head = new Int32Array(nt);
     head.fill(-1, 0, nt);
     for (let i = 0; i < N; i++) {
@@ -477,7 +477,8 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
       credit: 'Avogadro, 1811 (made the basis of atomic weights by Cannizzaro, 1860)',
       scope: String.raw`Holds in the low-pressure limit. At 1 bar and room temperature real gases depart from it by less than about 1% (more for easily condensed gases such as xenon, CO₂ or water vapour); at hundreds of bar the departures reach tens of percent.`,
       viz(v) {
-        const N = 100, T = 300, RATE = 15, GAS = [MOL.H2, MOL.N2, MOL.Xe], DT = [0.003, 0.012, 0.03], SETTLE = 15;
+        const N = 100, T = 300, RATE = 15, GAS = [MOL.H2, MOL.N2, MOL.Xe], SETTLE = 15;
+        const DT = () => (dens.value <= 30 ? [0.006, 0.02, 0.04] : [0.003, 0.012, 0.03]);   // time steps resolve the collisions
         const dens = v.slider('crowding $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
         v.button('Restart the gauges', () => make());
         const B = 10, GAP = 15.5, R = 4.2;
@@ -513,7 +514,8 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           const dT = Math.min(700, (t - tLast) * RATE); tLast = t;
           if (dT > 0) {
             const CH = 0.25;
-            for (let done = 0; done < dT - 1e-9; done += CH) { G.forEach((g, k) => g.run(CH, DT[k])); tSim += CH; if (!s0 && tSim >= SETTLE) s0 = G.map((g) => g.snap()); }
+            const dts = DT();
+            for (let done = 0; done < dT - 1e-9; done += CH) { G.forEach((g, k) => g.run(CH, dts[k])); tSim += CH; if (!s0 && tSim >= SETTLE) s0 = G.map((g) => g.snap()); }
           }
           RD = read();
           const pid = dens.value;

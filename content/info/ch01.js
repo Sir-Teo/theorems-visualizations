@@ -188,7 +188,7 @@ with the convention $0\log 0=0$, so outcomes of probability zero contribute noth
         const sB = v.stage({ x: [0, 1], y: [0, 6], height: 290, axes: 'box', title: 'surprisal profile: width $p_i$, height $-\\log_2 p_i$' });
         const sC = v.stage({ x: [1, 1e4], y: [0, 4], xlog: true, height: 210, axes: 'box', full: true });
         const tA = titler(sA), tC = titler(sC), lg = legender(v);
-        dragBars(sA, () => (src.value === 'own' ? p : null));
+        const DB = dragBars(sA, () => (src.value === 'own' ? p : null));
         let U = null, Useed = null;
         const unif = () => { if (Useed !== seed) { const r = v.rng(hashStr('info-1.2|' + seed)); U = new Float64Array(CAP); for (let i = 0; i < CAP; i++) U[i] = r(); Useed = seed; } return U; };
         // samples X_t = F⁻¹(U_t) from a fixed stream of uniforms, so dragging a bar moves the whole picture continuously
@@ -212,7 +212,7 @@ with the convention $0\log 0=0$, so outcomes of probability zero contribute noth
             const S = sim();
             sA.o.axes = 'box';
             tA('drag the bars: your distribution $p$');
-            viewPad(sA, [-0.6, n - 0.4], [0, 1.08]); sA.setTicks(p.map((_, i) => [i, LET[i]]), null);
+            viewPad(sA, [-0.6, n - 0.4], [0, DB.fit(p, 0.5)]); sA.setTicks(p.map((_, i) => [i, LET[i]]), null);
             p.forEach((pi, i) => {
               sA.rect(i - 0.36, 0, i + 0.36, pi, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1.5 });
               sA.text(pi > 0 ? v.fix(surpr(pi), 2) : '∞', i, pi, { dy: -10, align: 'center', size: 10.5, color: pi > 0 ? 'muted' : 'red', weight: 600 });

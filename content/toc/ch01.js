@@ -150,10 +150,10 @@ A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite
         });
         let alpha = 'ab';
         const view = v.select('', [{ value: 'pre', label: 'prefixes' }, { value: 'suf', label: 'suffixes' }, { value: 'rev', label: 'reversal' }], 'pre');
-        const lang = v.select('$L$', [{ value: 'sub', label: 'contains $w$' }, { value: 'pal', label: 'palindromes' }, { value: 'eq', label: '$\\#_a = \\#_b$' }, { value: 'eps', label: '$\\{\\varepsilon\\}$' }, { value: 'emp', label: '$\\varnothing$' }], 'sub');
+        const lang = v.select('$L$', [{ value: 'pal', label: 'palindromes' }, { value: 'sub', label: 'contains $w$' }, { value: 'eq', label: '$\\#_a = \\#_b$' }, { value: 'eps', label: '$\\{\\varepsilon\\}$' }, { value: 'emp', label: '$\\varnothing$' }], 'pal');
         Object.assign(keys, keypad(v, ['a', 'b', 'c'], () => w, (x) => { w = x; }, { max: 8 }));
         keys.c.hidden = true;
-        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 222, full: true });
+        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 214, full: true });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 206, full: true });
         const inL = (u) => {
           switch (lang.value) {
@@ -185,7 +185,7 @@ A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite
             tape(P, wr, x0, y1, cell, (i) => ({ color: LETTER[wr[i]], stroke: LETTER[wr[i]], fill: LETTER[wr[i]], alpha: 0.1 }));
             P.sans(wr === w ? 'wᴿ = w: a palindrome' : 'wᴿ ≠ w', x0 + Math.max(n, 1) * cell + 14, y1 + cell / 2, { align: 'left', size: 13, weight: 600, color: wr === w ? 'green' : 'muted' });
           } else {
-            const pre = view.value === 'pre', col = pre ? 'blue' : 'orange', dy = Math.min(15, (P.H - top - 6) / (n + 1));
+            const pre = view.value === 'pre', col = pre ? 'blue' : 'orange', dy = Math.min(17, (P.H - top - 8) / (n + 1));
             for (let i = 0; i <= n; i++) P.line(x0 + i * cell - 1, y0 + cell + 16, x0 + i * cell - 1, top + n * dy + 4, { color: 'grid', width: 1 });
             for (let k = 0; k <= n; k++) {
               const y = top + k * dy, a = pre ? 0 : k, b = pre ? k : n, xa = x0 + a * cell - 1, xb = x0 + b * cell - 1, str = w.slice(a, b);
@@ -193,7 +193,8 @@ A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite
               else { P.line(xa, y, xb, y, { color: col, width: 3.5 }); P.line(xa, y - 4, xa, y + 4, { color: col, width: 1.5 }); P.line(xb, y - 4, xb, y + 4, { color: col, width: 1.5 }); }
               P.text(sh(str), pre ? xb + 8 : xa - 8, y, { align: pre ? 'left' : 'right', size: 12, color: col, weight: 600 });
             }
-            P.sans(`${n + 1} ${pre ? 'prefixes' : 'suffixes'}`, pre ? 16 : P.W - 16, top + (n * dy) / 2, { align: pre ? 'left' : 'right', size: 13, weight: 600, color: col });
+            const lab = `${n + 1} ${pre ? 'prefixes' : 'suffixes'}`, lx = pre ? x0 - 30 : x0 + Math.max(n, 1) * cell + 26;
+            P.sans(lab, lx, top + (n * dy) / 2, { align: pre ? 'right' : 'left', size: 13, weight: 600, color: col });
           }
           // ---- bottom: Σ^{≤R} with the language highlighted
           const Q = pen(B, v), al = alpha.split(''), rows = R() + 1, rh = (Q.H - 10) / rows;

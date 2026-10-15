@@ -150,6 +150,8 @@ class Stage {
   }
   /** Replace the custom ticks (same format as the xticks/yticks options; null = automatic). */
   setTicks(xticks, yticks) { if (xticks !== undefined) this.o.xticks = xticks; if (yticks !== undefined) this.o.yticks = yticks; }
+  /** Change the axis labels (undefined = keep, null = none), e.g. per mode. */
+  setLabels(xlabel, ylabel) { if (xlabel !== undefined) this.o.xlabel = xlabel; if (ylabel !== undefined) this.o.ylabel = ylabel; this.rt.invalidate(); return this; }
   resize() {
     const W = Math.max(120, Math.round(this.box.clientWidth || this.el.clientWidth || 300));
     const o = this.o;

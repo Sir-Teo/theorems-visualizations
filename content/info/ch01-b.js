@@ -225,14 +225,14 @@ Then there is a constant $K>0$ with $H_n(p)=-K\sum_ip_i\log p_i$ for all $n$ and
         ];
         const P = [0.5, 0.3, 0.2], Q = [0.7, 0.3];
         const cs = v.select('candidate', CANDS.map((c) => ({ value: c.key, label: c.name })), 'gini');
-        const sP = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: 'box', weight: 0.85, minWidth: 240, title: 'test distribution $P$ (drag)' });
-        const sT = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: false, weight: 1.6, minWidth: 470, title: 'four tests, seven candidates (click a row)' });
+        const sP = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: 'box', weight: 0.85, minWidth: 240, title: 'test distribution $P$ (drag)' });
+        const sT = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: false, weight: 1.6, minWidth: 470, title: 'four tests, seven candidates (click a row)' });
         const sC = v.stage({ x: [0, 1], y: [0, 1], height: 210, axes: 'box', minWidth: 230 });
         const sA = v.stage({ x: [0, 1], y: [0, 1], height: 210, axes: 'box', minWidth: 230 });
         const sG = v.stage({ x: [0, 1], y: [0, 1], height: 210, axes: 'box', minWidth: 230 });
         const tC = titler(sC), tA = titler(sA), tG = titler(sG);
-        dragBars(sP, () => P);
-        const T = v.table(sT, { rows: 7, cols: 4, square: false, cellAspect: 2.3, maxCell: 31, size: 15, labelSize: 11.5, rowLabels: CANDS.map((c) => c.name), colLabels: ['continuous', 'monotone', 'additive', 'grouping'], subSize: 9 });
+        const DB = dragBars(sP, () => P);
+        const T = v.table(sT, { rows: 7, cols: 4, square: false, cellAspect: 2.2, maxCell: 35, size: 15, labelSize: 11.5, rowLabels: CANDS.map((c) => c.name), colLabels: ['continuous', 'monotone', 'additive', 'grouping'], subSize: 9 });
         sT.onClick((x, y) => { const h = T.hit(x, y); if (h && h.i >= 0 && h.i < 7) cs.set(CANDS[h.i].key); });
         const tests = (c) => {
           const f = c.f, jump = Math.abs(f([1e-9, 1 - 1e-9]) - f([0, 1]));
@@ -242,11 +242,11 @@ Then there is a constant $K>0$ with $H_n(p)=-K\sum_ip_i\log p_i$ for all $n$ and
           return { jump, pass: [jump < 1e-3, A.every((a, i) => i === 0 || a > A[i - 1] + 1e-12), Math.abs(addL - addR) < 1e-9, Math.abs(grL - grR) < 1e-9], A, addL, addR, grL, grR };
         };
         const cur = () => CANDS.findIndex((c) => c.key === cs.value);
-        const box = (s, vals) => { const lo = Math.min(0, ...vals), hi = Math.max(0, ...vals), pad = 0.12 * (hi - lo || 1); return [lo - (lo < 0 ? pad : 0), hi + pad]; };
+        const box = (s, vals, top = 0.12) => { const lo = Math.min(0, ...vals), hi = Math.max(0, ...vals), pad = 0.12 * (hi - lo || 1); return [lo - (lo < 0 ? pad : 0), hi + (top / 0.12) * pad]; };
         v.render(() => {
           const R = CANDS.map(tests), si = cur(), c = CANDS[si], r = R[si];
           // ── P
-          viewPad(sP, [-0.6, 2.6], [0, 1.08]); sP.setTicks([[0, 'p₁'], [1, 'p₂'], [2, 'p₃']], null);
+          viewPad(sP, [-0.6, 2.6], [0, DB.fit(P, 0.75)]); sP.setTicks([[0, 'p₁'], [1, 'p₂'], [2, 'p₃']], null);
           P.forEach((p, i) => sP.rect(i - 0.34, 0, i + 0.34, p, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1.5 }));
           const top = Math.max(P[0], P[1]) + 0.1;
           sP.path([[-0.34, top - 0.04], [-0.34, top], [1.34, top], [1.34, top - 0.04]], { color: 'orange', width: 1.6 });
@@ -264,7 +264,7 @@ Then there is a constant $K>0$ with $H_n(p)=-K\sum_ip_i\log p_i$ for all $n$ and
           const ft = (t) => c.f([t, 1 - t]), samp = []; for (let k = 1; k < 200; k++) samp.push(ft(k / 200));
           const end = ft(0), lim = ft(1e-9);
           tC(`continuity: $f(t, 1-t)$ for ${c.name}`);
-          viewPad(sC, [0, 1], box(sC, [...samp, end, lim]));
+          viewPad(sC, [0, 1.03], box(sC, [...samp, end, lim], r.pass[0] ? 0.12 : 0.32));
           sC.fn(ft, { domain: [1e-6, 1 - 1e-6], color: r.pass[0] ? 'accent' : 'red', width: 2.4, n: 300 });
           [0, 1].forEach((t) => { sC.dot(t, end, { r: 4.5, color: r.pass[0] ? 'accent' : 'red' }); if (!r.pass[0]) sC.dot(t, lim, { r: 4.5, color: 'red', hollow: true, width: 2 }); });
           if (!r.pass[0]) sC.corner('jumps at the ends', 'tr', { color: 'red', weight: 600 });
@@ -314,14 +314,14 @@ extended by continuity to $H_0(p)=\log_2|\supp p|$ (**max-entropy** or Hartley e
         v.select('distribution', [{ value: 'mod', label: 'moderate' }, { value: 'pw', label: 'one popular choice' }, { value: 'uni', label: 'uniform' }, { value: 'tiny', label: 'a rare outcome' }], 'mod', { onChange: (k) => { p = PRE[k].slice(); } });
         const sP = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', title: 'drag the bars of $p$ (orange: escort $p^\\alpha/\\sum p^\\alpha$)' });
         const sR = v.stage({ x: [0, 1], y: [0, 3], height: 320, axes: 'box', weight: 1.25, title: '$H_\\alpha(p)$ against $\\alpha$ (bits)' });
-        dragBars(sP, () => p);
+        const DB = dragBars(sP, () => p);
         const A = (u) => (u >= 1 ? Infinity : u / (1 - u)), U = (a) => (a === Infinity ? 1 : a / (1 + a));
         const hA = sR.handle(U(0.5), 0, { color: 'accent', label: 'α', labelPos: 'sw', constrain: (x) => { const u = clamp(x, 0, 1); return [u, renyi(p, A(u))]; } });
         v.legend([['accent', '$H_\\alpha$'], ['orange', '$H_0 = \\log_2|\\supp p|$', { dot: true }], ['green', '$H_1 = H$', { dot: true }], ['purple', '$H_2$ collision', { dot: true }], ['red', '$H_\\infty$ min-entropy', { dot: true }]]);
         v.render(() => {
           const n = p.length, a = A(hA.x);
-          viewPad(sP, [-0.6, n - 0.4], [0, 1.05]); sP.setTicks(p.map((_, i) => [i, LET[i]]), null);
           const esc = (() => { const q = p.map((x) => (x > 0 ? (a === Infinity ? 0 : Math.pow(x, a)) : 0)); if (a === Infinity) { const m = Math.max(...p); const k = p.filter((x) => x === m).length; return p.map((x) => (x === m ? 1 / k : 0)); } const s = sum(q); return q.map((x) => x / s); })();
+          viewPad(sP, [-0.6, n - 0.4], [0, DB.fit(p.concat(esc), 0.5)]); sP.setTicks(p.map((_, i) => [i, LET[i]]), null);
           p.forEach((x, i) => {
             sP.rect(i - 0.34, 0, i + 0.34, x, { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1.4 });
             sP.rect(i - 0.4, 0, i + 0.4, esc[i], { color: 'orange', width: 2.2 });

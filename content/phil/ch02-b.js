@@ -415,7 +415,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
               Lst.line(0, y, 1, y, { color: 'faint', width: 0.6, alpha: 0.5 });
               if ((b - a) * pxPer >= 1.5) Lst.line(Math.max(-0.04, a), y, Math.min(1.04, b), y, { color: k % 2 ? 'teal' : 'blue', width: Math.max(3, Math.min(8, rowH * 300)), cap: 'butt' });
               Lst.dot(q, y, { r: 2.2, color: 'ink' });
-              if (k < 3) Lst.tex(`\\varepsilon/${2 ** (k + 1)}`, Math.min(1.04, b) + 0.012, y, { align: 'left', size: 12, color: k % 2 ? 'teal' : 'blue' });
+              if (k < 3) { const rt = b > 0.88; Lst.tex(`\\varepsilon/${2 ** (k + 1)}`, rt ? Math.max(-0.04, a) - 0.012 : Math.min(1.04, b) + 0.012, y, { align: rt ? 'right' : 'left', size: 12, color: k % 2 ? 'teal' : 'blue' }); }
             }
             Lst.line(Math.max(0, a), -0.15, Math.min(1, b), -0.15, { color: 'blue', width: 8, cap: 'butt', alpha: 0.85 });
           });

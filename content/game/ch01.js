@@ -288,7 +288,7 @@ The players choose simultaneously, none seeing the others' choices, and the prof
 $$B_i(a_{-i}) = \{\, a_i\in A_i \;:\; u_i(a_i, a_{-i}) \ge u_i(a_i', a_{-i}) \text{ for all } a_i'\in A_i \,\}.$$
 $B_i(a_{-i})$ is nonempty when $A_i$ is finite (or compact with $u_i$ continuous in $a_i$), and it may contain several actions; when it is always a single action, $b_i(a_{-i})$ is called the **best-response function**. In a bimatrix, player 1's best responses to column $c$ are the rows holding the largest first entry of that column, and player 2's best responses to row $r$ are the columns holding the largest second entry of that row.`,
       idea: String.raw`A best response is a one-person decision problem: freeze everyone else and optimize. With finitely many actions it is a maximum over finitely many numbers, which always exists, and ties make $B_i$ a set. With a continuum of actions a maximizer exists when payoffs are continuous on a compact set, and for a smooth concave payoff it solves the first-order condition $\partial u_i/\partial a_i = 0$: for $u_i = a_i\,(c + b\,a_j - a_i)$ this gives the line $b_i(a_j) = (c + b\,a_j)/2$, clipped at the edges of the action set. Its slope says whether actions are *strategic complements* ($b > 0$: I do more when you do more) or *substitutes* ($b < 0$). A Nash equilibrium (game-1.3) is a point where the players' best responses are consistent with one another.`,
-      caption: String.raw`*Finite actions:* best replies are underlined — blue under the largest first number in each column, orange under the largest second number in each row. Click a cell to fix the opponents' actions: the bars show player 1's payoffs against that column and player 2's against that row, best replies solid; the sliders edit the gold cell (make a tie and $B_i$ has two elements). *Continuous actions:* drag the gold point $(a_1, a_2)$. Left: player 1's payoff against the current $a_2$, peaking at $b_1(a_2)$. Right: every row is shaded by $u_1$ relative to its own best value, so the dark ridge *is* the best-response curve; the arrows point to each player's best reply. Try $b < 0$.`,
+      caption: String.raw`*Finite actions:* best replies are underlined — blue under the largest first number in each column, orange under the largest second number in each row. Click a cell to fix the opponents' actions: the bars show player 1's payoffs against that column and player 2's against that row, best replies solid; the sliders edit the gold cell (make a tie and $B_i$ has two elements). *Continuous actions:* drag the gold point $(a_1, a_2)$. Left: player 1's payoff against the current $a_2$, peaking at $b_1(a_2)$. Right: every row is shaded by how little player 1 loses against her best reply in that row, so the dark ridge *is* the best-response curve; the arrows point to each player's best reply. Try $b < 0$.`,
       deps: ['game-1.1'],
       refs: ['Osborne §2.8'],
       tags: ['best response'],
@@ -343,7 +343,7 @@ $B_i(a_{-i})$ is nonempty when $A_i$ is finite (or compact with $u_i$ continuous
             const c = cS.value, b = bS.value, a1 = H.x, a2 = H.y, k1 = c + b * a2, best1 = bestR(a2), best2 = bestR(a1);
             // left: u1(·, a2)
             let lo = Infinity, hi = -Infinity; for (let x = 0; x <= 10; x += 0.1) { const y = u(x, a2); lo = Math.min(lo, y); hi = Math.max(hi, y); }
-            const pad = Math.max(2, (hi - lo) * 0.12); Cc.setView([0, 10], [lo - pad, hi + pad]);
+            lo = Math.max(lo, Math.min(-4, hi - 26)); const pad = Math.max(2, (hi - lo) * 0.12); Cc.setView([-0.4, 10.2], [lo - pad, hi + pad]);
             Cc.hline(0, { color: 'faint', width: 1 });
             Cc.fn((x) => u(x, a2), { domain: [0, 10], color: C1, width: 2.8 });
             Cc.vline(best1, { color: 'green', dash: [5, 4], width: 1.4 });
@@ -353,10 +353,11 @@ $B_i(a_{-i})$ is nonempty when $A_i$ is finite (or compact with $u_i$ continuous
             const sh = shade.value, base = v.rgb(sh === 1 ? C1 : C2), pnl = v.rgb('panel');
             D.raster((x, y) => {
               const own = sh === 1 ? x : y, oth = sh === 1 ? y : x, k = c + b * oth, bst = M.clamp(k / 2, 0, 10);
-              const top = bst * (k - bst), bot = Math.min(0, 10 * (k - 10)), t = (own * (k - own) - bot) / (top - bot || 1), a = 0.6 * Math.pow(M.clamp(t, 0, 1), 3);
+              const loss = bst * (k - bst) - own * (k - own), a = 0.62 * Math.exp(-loss / 3);
               return [pnl[0] + (base[0] - pnl[0]) * a, pnl[1] + (base[1] - pnl[1]) * a, pnl[2] + (base[2] - pnl[2]) * a];
             }, { res: 3, key: `${c}|${b}|${sh}|${v.color(C1)}|${v.color('panel')}` });
             D.axes();
+            D.curve((t) => [bestR(t), t], 0, 10, { color: 'panel', width: 6 }); D.curve((t) => [t, bestR(t)], 0, 10, { color: 'panel', width: 6 });
             D.curve((t) => [bestR(t), t], 0, 10, { color: C1, width: 2.8 });
             D.curve((t) => [t, bestR(t)], 0, 10, { color: C2, width: 2.8 });
             const as = c / (2 - b), inBox = as >= 0 && as <= 10;
@@ -555,7 +556,7 @@ then D is strictly better than C for each player whatever the other does, so (D,
 $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u_1(r',c') - u_1(r,c')\bigr]\bigl[u_2(r',c') - u_2(r',c)\bigr].$$`,
       scope: String.raw`Nash equilibrium says which conventions are self-enforcing, not which one is played; that depends on expectations and history outside the model. The basins drawn here assume populations that adjust gradually towards best replies.`,
       idea: String.raw`Equilibrium alone cannot choose between the two conventions; expectations do. A population picture makes this concrete: if a share $y$ of potential partners hunt stag, stag earns $4y$ and hare a sure 3, so stag is a best reply only when $y > 3/4$. If, round after round, some players switch to a best reply against the current mix on the other side, every starting mix flows to one of the two equilibria, and the shares at which each side is indifferent split the square of mixes into two **basins**. In symmetric games the risk-dominant equilibrium has the larger basin — here (Hare, Hare), although (Stag, Stag) pays more — which is why trust is fragile. In Bach or Stravinsky the basins are lopsided in a different way: each equilibrium is favoured by one side. The point where the basins meet is itself an equilibrium, in mixed strategies (game-2.2).`,
-      caption: String.raw`Pick a game, or click a cell and edit its payoffs. Right: a population of row players and one of column players; the horizontal axis is the share of row players choosing their first action, the vertical one the share of column players. Each round a fifth of each population switches to its best reply against the other side's current mix, so the gold path from the draggable start flows to an equilibrium corner. The background colours every start by where it ends up — the basins — divided at the indifference shares (dashed). In the Stag Hunt the hare basin is larger although stag pays more; raise the stag payoff and watch the basins trade places. Make the game a Prisoner's Dilemma and one basin swallows the square.`,
+      caption: String.raw`Pick a game, or click a cell and edit its payoffs. Right: a population of row players and one of column players; the horizontal axis is the share of row players choosing their first action, the vertical one the share of column players. Each round a tenth of each population switches to its best reply against the other side's current mix, so the gold path from the draggable start flows to an equilibrium corner. The background colours every start by where it ends up — the basins — divided at the indifference shares (dashed). In the Stag Hunt the hare basin is larger although stag pays more; raise the stag payoff and watch the basins trade places. Make the game a Prisoner's Dilemma and one basin swallows the square.`,
       deps: ['game-1.3'],
       refs: ['Osborne §2.3', 'Osborne §2.5'],
       tags: ['coordination', 'equilibrium selection'],
@@ -567,13 +568,13 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
         let g = mkGame(CLASSICS.stag.G.R, CLASSICS.stag.G.C, CLASSICS.stag.G.U), L = null;
         const pick = v.select('game', keys.map((k) => ({ value: k, label: CLASSICS[k].label })), 'stag', { onChange: (k) => { const p = CLASSICS[k].G; g = mkGame(p.R, p.C, p.U); ed.sync(); } });
         const ed = payoffEditor(v, A, { game: () => g, layout: () => L });
-        const H = Q.handle(0.62, 0.86, { color: 'gold', label: 'start', constrain: { x: [0, 1], y: [0, 1] } });
-        const LAM = 0.2;
+        const H = Q.handle(0.62, 0.86, { color: 'gold', label: 'start', labelPos: 'w', constrain: { x: [0, 1], y: [0, 1] } });
+        const LAM = 0.1;
         const diff1 = (U, y) => y * (U[0][0][0] - U[1][0][0]) + (1 - y) * (U[0][1][0] - U[1][1][0]);
         const diff2 = (U, x) => x * (U[0][0][1] - U[0][1][1]) + (1 - x) * (U[1][0][1] - U[1][1][1]);
         function flow(U, x, y, keep) {
           const path = keep ? [[x, y]] : null;
-          for (let t = 0; t < 140; t++) {
+          for (let t = 0; t < 400; t++) {
             const d1 = diff1(U, y), d2 = diff2(U, x), tx = d1 > EPS ? 1 : d1 < -EPS ? 0 : x, ty = d2 > EPS ? 1 : d2 < -EPS ? 0 : y;
             x += LAM * (tx - x); y += LAM * (ty - y);
             if (keep) path.push([x, y]);
@@ -634,14 +635,19 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
             rd = { e1, e2, p1, p2, pd: pareto(e1, e2) ? e1 : pareto(e2, e1) ? e2 : null };
           }
           st = { ne, fl, rd, okx, oky, xs, ys };
-          const lk = g.R.join() + g.C.join();
-          if (lk !== legKey) { legKey = lk; v.legend([['teal', `basin of ${prof(g, 0, 0)}`, { area: true }], ['purple', `basin of ${prof(g, 1, 1)}`, { area: true }], ['gold', 'adjustment path from the start'], ['green', 'pure equilibrium', { dot: true }]]); }
+          A.setTitle(`${ne.length} pure equilibri${ne.length === 1 ? 'um' : 'a'} (green)`);
+          const bnd = (shares.none || 0) > 0.001, lk = JSON.stringify(ne) + g.R.join() + g.C.join() + bnd;
+          if (lk !== legKey) {
+            legKey = lk;
+            const items = ne.map(([i, j]) => { const k = Object.keys(CELL).find((q) => CELL[q][0] === i && CELL[q][1] === j); return [CC[k], `basin of ${prof(g, i, j)}`, { area: true }]; });
+            v.legend([...items, ...(bnd ? [['faint', 'boundary: circles the tipping point', { area: true }]] : []), ['gold', 'adjustment path from the start'], ['green', 'pure equilibrium', { dot: true }]]);
+          }
         });
 
         v.readout(() => {
           if (!st) return '';
           const { ne, fl, rd } = st, cn = (k) => (k ? prof(g, CELL[k][0], CELL[k][1]) : 'nowhere (it keeps cycling)');
-          const bs = Object.entries(shares).filter(([, x]) => x > 0.001).map(([k, x]) => `${k === 'none' ? 'no limit' : prof(g, CELL[k][0], CELL[k][1])} ${Math.round(100 * x)}%`).join(', ');
+          const bs = Object.entries(shares).filter(([, x]) => x > 0.001).map(([k, x]) => `${k === 'none' ? 'on the boundary' : prof(g, CELL[k][0], CELL[k][1])} ${Math.round(100 * x)}%`).join(', ');
           let sel = '';
           if (rd) {
             const n1 = prof(g, ...rd.e1), n2 = prof(g, ...rd.e2), r = rd.p1 > rd.p2 ? n1 : rd.p2 > rd.p1 ? n2 : null;

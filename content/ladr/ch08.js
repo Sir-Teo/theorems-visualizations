@@ -356,7 +356,7 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
         let seed = 11;
         const btn = v.button('New random operators', () => { seed += 1; });
         const K = 11, NOPS = 24;
-        const G = v.stage({ x: [-0.5, K + 0.5], y: [-0.4, 9.4], height: 350, weight: 1.35, axes: 'box', xticks: [0, 2, 4, 6, 8, 10], yticks: [0, 2, 4, 6, 8], xlabel: 'k', title: '$\\dim\\operatorname{null}T^k$ against $k$' });
+        const G = v.stage({ x: [-0.6, K + 0.5], y: [-0.4, 9.4], height: 350, weight: 1.35, axes: 'box', xticks: [0, 2, 4, 6, 8, 10], yticks: [0, 2, 4, 6, 8], xlabel: 'k', title: '$\\dim\\operatorname{null}T^k$ against $k$' });
         const Y = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 350, weight: 0.65, minWidth: 210, title: 'chains of the highlighted operator' });
         const cache = new Map();
         const stair = (d, jit) => { const p = []; for (let k = 0; k <= K; k++) p.push([k, d[k] + jit], [Math.min(k + 1, K + 0.5), d[k] + jit]); return p; };
@@ -390,7 +390,8 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
           } else if (mode === 'worst') { hi = build(v.rng(5), n, [n], 0); list = [hi]; }
           else { list = ops(n); hi = list.reduce((a, o) => (o.stop > a.stop ? o : a), list[0]); }
           const top = mode === 'inf' ? K + 1 : n;
-          G.setView([-0.5, K + 0.5], [-0.4, Math.max(4, top) + 1.4]);
+          G.setView([-0.6, K + 0.5], [-0.4, Math.max(4, top) + 1.4]);
+          G.setTicks([0, 2, 4, 6, 8, 10], mode === 'inf' ? [0, 2, 4, 6, 8, 10, 12] : [0, 2, 4, 6, 8]);
           if (mode !== 'inf') {
             G.vband(n, K + 0.5, { color: 'orange', alpha: 0.06 });
             G.vline(n, { color: 'orange', width: 2, dash: [6, 4] });
@@ -453,7 +454,7 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
 $$V = \operatorname{null} T^{n} \oplus \operatorname{range} T^{n}.$$
 (In general $V \ne \operatorname{null}T \oplus \operatorname{range}T$; raising $T$ to the power $\dim V$ repairs this.)`,
       idea: String.raw`First the intersection is $\{0\}$: if $v = T^n u$ and $T^n v = 0$, then $T^{2n}u = 0$, so $u \in \operatorname{null}T^{2n} = \operatorname{null}T^{n}$ by 8.3, and $v = T^n u = 0$. Hence the sum is direct (1.46), and its dimension is $\dim\operatorname{null}T^n + \dim\operatorname{range}T^n$ (3.94), which equals $\dim V$ by the fundamental theorem of linear maps (3.21). A subspace of full dimension is the whole space (2.39).`,
-      caption: String.raw`The green subspace is $\operatorname{null}T^k$, the purple one $\operatorname{range}T^k$; red marks their intersection. Their dimensions always add up to 3 (3.21), but for $k = 1$ they overlap, so their sum misses part of $\mathbf R^3$ and the gold $v$ cannot be split. Raise $k$: by $k = 3 = \dim V$ the two are complementary and $v$ splits uniquely into a green and a purple part (the dashed parallelogram). The table tracks all three powers; try the nilpotent chain, where the overlap persists until $k = 3$.`,
+      caption: String.raw`The green subspace is $\operatorname{null}T^k$, the purple one $\operatorname{range}T^k$; red marks their intersection. Their dimensions always add up to 3 (3.21). At $k = 3 = \dim V$ the two are complementary, and the gold $v$ (drag it) splits uniquely into a green and a purple part (the dashed parallelogram). Lower $k$ to $1$: now they overlap, their sum misses part of $\mathbf R^3$, and $v$ cannot be split (red: its distance from the sum). The table tracks all three powers; with the nilpotent chain the overlap persists until $k = 3$.`,
       deps: ['ladr-8.3', 'ladr-1.46', 'ladr-3.94', 'ladr-3.21', 'ladr-2.39'],
       tags: ['generalized eigenvectors', 'direct sums'],
       viz(v) {
@@ -465,7 +466,7 @@ $$V = \operatorname{null} T^{n} \oplus \operatorname{range} T^{n}.$$
           shift: conjM(M, Sk, [[0, 1, 0], [0, 0, 1], [0, 0, 0]]),
         };
         const pre = v.select('$T$', [{ value: 'book', label: '$(4z_2,\\, 0,\\, 5z_3)$' }, { value: 'skew', label: 'same type, tilted' }, { value: 'shift', label: 'nilpotent chain' }], 'book');
-        const kS = v.slider('power $k$', 1, 3, 1, { int: true });
+        const kS = v.slider('power $k$', 1, 3, 3, { int: true });
         const S = v.stage({ x: [-2.05, 2.05], y: [-1.85, 1.95], equal: true, axes: false, height: 380, weight: 1.3, title: '$\\operatorname{null}T^k$ and $\\operatorname{range}T^k$ in $\\mathbf R^3$' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.32, axis: 1.5, lim: 1.3 });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.7, minWidth: 230, title: 'dimensions, and is the sum direct?' });
@@ -513,8 +514,9 @@ $$V = \operatorname{null} T^{n} \oplus \operatorname{range} T^{n}.$$
         v.readout(() => {
           if (!st) return '';
           const { k, I, direct, a, b, cap } = st;
-          let s = `$k = ${k}$: $\\dim\\operatorname{null}T^{${k}} + \\dim\\operatorname{range}T^{${k}} = ${I.N.length} + ${I.R.length} = 3$, intersection of dimension $${cap}$. `;
-          if (direct) s += `So $\\mathbf R^3 = \\operatorname{null}T^{${k}} \\oplus \\operatorname{range}T^{${k}}$, and $v = ${vtex(a)} + ${vtex(b)}$ uniquely.`;
+          const Tk = k === 1 ? 'T' : `T^{${k}}`;
+          let s = `$k = ${k}$: $\\dim\\operatorname{null}${Tk} + \\dim\\operatorname{range}${Tk} = ${I.N.length} + ${I.R.length} = 3$, intersection of dimension $${cap}$. `;
+          if (direct) s += `So $\\mathbf R^3 = \\operatorname{null}${Tk} \\oplus \\operatorname{range}${Tk}$, and $v = ${vtex(a)} + ${vtex(b)}$ uniquely.`;
           else s += `The sum is not direct and has dimension only $${I.sum.length}$: $v$ is at distance $${tn(normN(subN(st.x, st.p)), 3)}$ from it.`;
           if (k === 3) s += ' At $k = \\dim V$ this always works (8.4).';
           return s;
@@ -628,8 +630,9 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
             if (!ls.length) { levels.push({ stuck: true, U }); break; }
             const l = ls[0], K = mpow(shiftI(A, l), U.length), toV = (c) => U.reduce((s, b, i) => addN(s, sclN(b, c[i])), [0, 0, 0]);
             const G = orthN(nullO(M, K, 1e-7).map(toV)), R = orthN(rangeO(K).map(toV));
-            const Ev = E.find((e) => Math.abs(e.l - l) < 1e-3);
-            levels.push({ l, G, R, basis: orthN([...(Ev ? Ev.B : []), ...G], 1e-6).slice(0, G.length) });
+            // a basis of G adapted to null(T − λI) ⊆ null(T − λI)² ⊆ …, so that T is triangular on it
+            const flag = []; for (let j = 1; j <= 3; j++) flag.push(...nullO(M, mpow(shiftI(T, l), j), 1e-7));
+            levels.push({ l, G, R, basis: orthN(flag, 1e-6).slice(0, G.length) });
             U = R;
           }
           const ok = !levels.some((L) => L.stuck), basis = levels.filter((L) => !L.stuck).flatMap((L, i) => L.basis.map((b) => ({ b, l: L.l, i })));
@@ -650,7 +653,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           }
           if (f.t === 'lev') {
             const L = A.levels[f.i];
-            if (L.stuck) return `The purple subspace is invariant, but $T$ acts on it as a rotation: **no real eigenvalue**, so over $\\mathbf R$ the induction stops. Over $\\mathbf C$ it would go on with the eigenvalues $\\pm i$.`;
+            if (L.stuck) return `What is left (red) is invariant, but $T$ acts on it as a rotation: **no real eigenvalue**, so over $\\mathbf R$ the induction stops. Over $\\mathbf C$ it would go on with the eigenvalues $\\pm i$.`;
             return `Eigenvalue $\\lambda = ${tn(L.l)}$: the current space splits as $\\operatorname{null}(T - \\lambda I)^{m} \\oplus \\operatorname{range}(T - \\lambda I)^{m}$ with dimensions $${L.G.length} + ${L.R.length}$ (8.4).` + (L.R.length ? ' The range is invariant (5.18), so the proof repeats inside it.' : ' Nothing is left over.');
           }
           return `Join the pieces: **a basis of generalized eigenvectors** (the solid box has volume $${tn(Math.abs(M.det(fromCols(A.basis.map((q) => q.b)))), 3)} \\ne 0$).`;
@@ -858,7 +861,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           const r = cur.ranks[k], vol = cur.vols[k];
           if (k === 0) return 'The unit cube, volume $1$.';
           const shape = ['the single point $0$', 'a segment', 'a flat parallelogram', 'a solid'][r];
-          return `$${k === 1 ? 'N' : `N^{${k}}`}(\\text{cube})$ is ${shape} (rank $${r}$` + (r === 3 ? `, volume $|\\det N|^{${k}} = ${tn(vol, 3)}$)` : ')') + (r === 0 && k === cur.idx ? ': **$N^{' + k + '} = 0$**.' : '.');
+          return `$${k === 1 ? 'N' : `N^{${k}}`}(\\text{cube})$ is ${shape} (rank $${r}$` + (r === 3 ? `, volume $|\\det N|${k === 1 ? '' : `^{${k}}`} = ${tn(vol, 3)}$)` : ')') + (r === 0 && k === cur.idx ? ': **$N^{' + k + '} = 0$**.' : '.');
         };
         const ST = v.steps({ frames: [0, 1, 2, 3, 4].map((k) => ({ k, note: () => noteFor(k) })), transition: 0.7, speed: 0.7, start: 1, still: 1 });
         let st = null;
@@ -963,7 +966,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           if (!st) return '';
           const { n, chains, ranks } = st, mx = Math.max(...chains);
           if (brk.value) return `Chains $${chains.join(', ')}$ with $Tu = u$ at the bottom of the first: rank of $T^{${n}}$ is $${ranks[n]}$, of $T^{${n + 1}}$ is $${ranks[n + 1]}$ — the eigenvalue $1$ survives every power, so **no power of $T$ is $0$**.`;
-          return `Chains of lengths $${chains.join(', ')}$ in $\\mathbf F^{${n}}$. **$T^{${n}} = 0$**: all $${n * n}$ entries are exactly $0$. The first vanishing power is $T^{${mx}}$ (the longest chain)` + (mx === n ? `, so $T^{${n - 1}}$ (rank $${ranks[n - 1]}$) is not $0$: the exponent $\\dim V$ cannot be lowered in general.` : `, earlier than $T^{${n}}$ here.`);
+          return `${chains.length === 1 ? 'One chain of length' : 'Chains of lengths'} $${chains.join(', ')}$ in $\\mathbf F^{${n}}$. **$T^{${n}} = 0$**: all $${n * n}$ entries are exactly $0$. The first vanishing power is $T^{${mx}}$ (the longest chain)` + (mx === n ? `, so $T^{${n - 1}}$ (rank $${ranks[n - 1]}$) is not $0$: the exponent $\\dim V$ cannot be lowered in general.` : `, earlier than $T^{${n}}$ here.`);
         });
       },
     },

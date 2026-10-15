@@ -246,7 +246,11 @@ function polyFromMult(list) {
 }
 const cPolyEval = (c, z) => c.reduceRight((acc, a) => cadd(cmul(acc, z), a), [0, 0]);
 /** (z − λ)^d, factored, as TeX. */
-const factorT = (list, v = 'z') => list.map(({ z, d }) => { const s = czT(z); const b = s === '0' ? v : `(${v} ${s.startsWith('-') ? '+' : '-'} ${s.startsWith('-') ? s.slice(1) : (z[0] !== 0 && z[1] !== 0 ? `(${s})` : s)})`; return d > 1 ? `${b}^{${d}}` : b; }).join('');
+const factorT = (list, v = 'z') => list.map(({ z, d }) => {
+  const re = Number(z[0].toFixed(2)), im = Number(z[1].toFixed(2));
+  const b = im !== 0 ? `(${v} - (${czT(z)}))` : re === 0 ? v : `(${v} ${re > 0 ? '-' : '+'} ${tn(Math.abs(re))})`;
+  return d > 1 ? `${b}^{${d}}` : b;
+}).join('');
 function cPolyT(c, d = 2) {
   let s = '';
   for (let k = c.length - 1; k >= 0; k--) {
@@ -648,7 +652,7 @@ In particular $G(\lambda, T)$ is a subspace of $V$.`,
             parts.forEach((q) => { const d = q.basis.length; P.rect(1.3 + o * cw, 0.12 + w - (o + d) * cw, 1.3 + (o + d) * cw, 0.12 + w - o * cw, { color: q.color, width: 2.6 }); o += d; });
             P.tex('\\text{generalized eigenvectors}', 1.3 + w / 2, 1.15, { size: 13, color: 'green' });
           } else {
-            phasorTile(P, Bm, 1.3, 0.12 + w / 8, (w * cols.length) / 4, { sc: 1, color: 'red', frame: 'red' });
+            phasorTile(P, Bm, 1.3 + (w * (4 - cols.length)) / 8, 0.12, (w * cols.length) / 4, { sc: 1, color: 'red', frame: 'red' });
             P.tex(`\\text{the ${cols.length} eigenvectors: rank } ${cRank(M, Bm, 1e-9)} < 4`, 1.3 + w / 2, 1.15, { size: 13, color: 'red' });
           }
           let off = 0, nil = 0;
@@ -691,7 +695,7 @@ $$\dim G(\lambda, T) = \dim\operatorname{null}(T - \lambda I)^{\dim V}$$
         let A = PRE.defect.map((r) => r.slice());
         v.select('preset', [{ value: 'defect', label: '$1$ three times, few eigenvectors' }, { value: 'diag', label: '$1$ three times, more eigenvectors' }, { value: 'distinct', label: 'four distinct eigenvalues' }], 'defect', { onChange: (k) => { A = PRE[k].map((r) => r.slice()); } });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.85, minWidth: 240, title: 'an upper-triangular $\\mathcal M(T)$' });
-        const G = v.stage({ x: [0, 4], y: [-0.9, 5.1], height: 340, weight: 1.15, axes: false, title: '$\\dim\\operatorname{null}(T - \\lambda I)^k$, $k = 1, 2, 3, 4$, for each eigenvalue' });
+        const G = v.stage({ x: [-0.25, 4], y: [-0.9, 5.1], height: 340, weight: 1.15, axes: false, title: '$\\dim\\operatorname{null}(T - \\lambda I)^k$, $k = 1, 2, 3, 4$, for each eigenvalue' });
         const TT = v.table(Q, { rows: 4, cols: 4, region: [0.04, 0.04, 0.96, 0.96], maxCell: 58, size: 15 });
         editable(v, Q, TT, () => A, { step: 0.5, min: -3, max: 3, ok: (i, j) => i <= j });
         let st = null;
@@ -708,7 +712,7 @@ $$\dim G(\lambda, T) = \dim\operatorname{null}(T - \lambda I)^{\dim V}$$
             return { l, dims, times: diag.filter((x) => x === l).length };
           });
           const m = data.length, gw = 4 / m;
-          for (let y = 1; y <= 4; y++) { G.line(0.05, y, 3.95, y, { color: 'grid', width: 0.8 }); G.text(String(y), 0.02, y, { align: 'right', size: 10.5, color: 'muted' }); }
+          for (let y = 1; y <= 4; y++) { G.line(0.05, y, 3.95, y, { color: 'grid', width: 0.8 }); G.text(String(y), -0.03, y, { align: 'right', size: 10.5, color: 'muted' }); }
           G.line(0.05, 0, 3.95, 0, { color: 'muted', width: 1.2 });
           data.forEach((d, g) => {
             const x0 = g * gw + gw * 0.14, bw = (gw * 0.72) / 4, col = PAL[g % 8];
@@ -737,14 +741,13 @@ $$\dim G(\lambda, T) = \dim\operatorname{null}(T - \lambda I)^{\dim V}$$
       name: 'Sum of the multiplicities equals dim V',
       statement: String.raw`Suppose $\mathbf F = \mathbf C$ and $T \in \mathcal L(V)$. Then the sum of the multiplicities of all the eigenvalues of $T$ equals $\dim V$.`,
       idea: String.raw`By the generalized eigenspace decomposition (8.22), $V = G(\lambda_1, T) \oplus \cdots \oplus G(\lambda_m, T)$, and the dimension of a direct sum is the sum of the dimensions (3.94). The eigenspaces alone would not do: their dimensions add up to less than $\dim V$ whenever $T$ is not diagonalizable. Over $\mathbf R$ the theorem fails too, because a real operator may have too few real eigenvalues.`,
-      caption: String.raw`A random operator on $\mathbf C^n$ — choose $n$, and “repeated” to build in Jordan blocks. Its eigenvalues are computed and clustered, and the multiplicity of each is computed as $\dim\operatorname{null}(T - \lambda I)^k$ once the chain has frozen. Left: the eigenvalues, each disc's area proportional to its multiplicity. Right: the multiplicities stacked end to end always fill the bar of length $n$, while the eigenspace dimensions (lower bar) may fall short. For a random real matrix, count only the real eigenvalues, as over $\mathbf F = \mathbf R$: the conjugate pairs leave a red gap.`,
+      caption: String.raw`A random operator on $\mathbf C^n$ — choose $n$, and “repeated” to build in Jordan blocks. Its eigenvalues are computed and clustered, and the multiplicity of each is computed as $\dim\operatorname{null}(T - \lambda I)^k$ once the chain has frozen. Left: the eigenvalues, each disc's area proportional to its multiplicity. Right: the multiplicities stacked end to end always fill the bar of length $n$, while the eigenspace dimensions (lower bar) may fall short. Choose “over $\mathbf R$” to count only the real eigenvalues of a random real matrix: the non-real conjugate pairs leave a red gap.`,
       deps: ['ladr-8.22', 'ladr-3.94', 'ladr-8.23'],
       tags: ['generalized eigenvectors'],
       viz(v) {
         const M = v.M;
         const nS = v.slider('$n = \\dim V$', 2, 7, 5, { int: true });
-        const kind = v.select('$T$', [{ value: 'rep', label: 'repeated eigenvalues' }, { value: 'rand', label: 'random complex' }, { value: 'real', label: 'random real' }], 'rep');
-        const onlyR = v.toggle('count only real eigenvalues ($\\mathbf F = \\mathbf R$)', false);
+        const kind = v.select('$T$', [{ value: 'rep', label: 'repeated eigenvalues' }, { value: 'rand', label: 'random complex' }, { value: 'real', label: 'random real' }, { value: 'realR', label: 'random real, over $\\mathbf R$' }], 'rep');
         let seed = 3;
         v.button('New matrix', () => { seed += 1; });
         const Z = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, height: 340, weight: 0.9, minWidth: 230, xlabel: 'Re', ylabel: 'Im', title: 'eigenvalues, area ∝ multiplicity' });
@@ -761,9 +764,8 @@ $$\dim G(\lambda, T) = \dim\operatorname{null}(T - \lambda I)^{\dim V}$$
         };
         let st = null;
         v.render(() => {
-          const n = nS.value, k = kind.value, T = gen(n, k, seed), ed = eigenData(M, T);
-          onlyR.el.hidden = k !== 'real';
-          const realOnly = k === 'real' && onlyR.value, isReal = (e) => Math.abs(e.z[1]) < 1e-7;
+          const n = nS.value, k = kind.value === 'realR' ? 'real' : kind.value, T = gen(n, k, seed), ed = eigenData(M, T);
+          const realOnly = kind.value === 'realR', isReal = (e) => Math.abs(e.z[1]) < 1e-7;
           const R = Math.max(1.3, ...ed.map((e) => cabs(e.z) * 1.3));
           Z.setView([-R, R], [-R, R]);
           ed.forEach((e, i) => {
