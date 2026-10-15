@@ -4,7 +4,7 @@ import {
   TAU, DEG, clamp, memo, rk4, rk4rec, idxAt, span, sci, num, series, ellK,
   add, sub, scl, madd, dot, crs, nrm, unit, angle, perp, I3, mm, mv, mT, fro, rotAxis,
   qmul, qmat, qnormalize, eulerRHS, eulerPost, topRHS, topPost, topEnergy,
-  drawBox, circlePts, ellipsoidWire, tube, AXC,
+  drawBox, circlePts, ellipsoidWire, tube, AXC, spherePath, sphereFrame,
 } from './ch10.shared.js';
 
 /** Inertia tensor about the centre of mass of point masses → {I, c}. */
@@ -319,8 +319,8 @@ In vector form, $\mathsf I\dot{\boldsymbol\omega} + \boldsymbol\omega\times\math
           const tr = A.y.slice(Math.max(0, i - 120), i + 1).map((q) => scl(mv(qmat(q.slice(0, 4)), [q[4], q[5], q[6]]), 0.75));
           sc.path(tr, { color: 'accent', width: 1.2, alpha: 0.5 });
           sc.arrow([0, 0, 0], scl(ws, 0.75), { color: 'accent', width: 3 });
-          sc.arrow([0, 0, 0], scl(Ls, 1.6), { color: 'purple', width: 3 });
-          sc.tex('\\boldsymbol\\omega', scl(ws, 0.85), { color: 'accent', size: 15 }); sc.tex('\\mathbf L', scl(Ls, 1.75), { color: 'purple', size: 15 });
+          sc.arrow([0, 0, 0], scl(Ls, 2.6), { color: 'purple', width: 3 });
+          sc.tex('\\boldsymbol\\omega', scl(ws, 0.85), { color: 'accent', size: 15 }); sc.tex('\\mathbf L', scl(Ls, 2.85), { color: 'purple', size: 15 });
           if (tq.value !== 'none') { const ts = tq.value === 'body' ? mv(R, [1, 0, 0]) : [0, 0, 1]; sc.arrow([0, 0, 0], scl(ts, 0.6), { color: 'orange', width: 2.4 }); }
           sc.flush();
           sw.setView([0, TS], B.yr);
@@ -357,7 +357,7 @@ Rotation about the **intermediate** axis $\mathbf e_2$ is **unstable**. Perturba
 $$\lambda = \omega\sqrt{\frac{(I_2 - I_1)(I_3 - I_2)}{I_1 I_3}},$$
 and the body flips over periodically: $\omega_2$ reverses sign over and over while $\mathbf L$ stays fixed in space. On the sphere $|\mathbf L| = $ const in the body frame, the motion follows the curves cut out by the energy ellipsoids. Those around $\pm\mathbf e_1$ and $\pm\mathbf e_3$ are small loops, while the two great circles through $\pm\mathbf e_2$ are separatrices.`,
       idea: String.raw`Linearise Euler’s equations (10.11) about $\boldsymbol\omega = \omega\mathbf e_k$. The two transverse components satisfy $\ddot\omega_i = -\omega^2\frac{(I_k - I_i)(I_k - I_j)}{I_iI_j}\,\omega_i$. The product $(I_k - I_i)(I_k - I_j)$ is positive when $I_k$ is the largest or smallest moment (oscillation) and negative for the middle one (exponential growth). Globally, $L^2 = \sum I_i^2\omega_i^2$ and $2T = \sum I_i\omega_i^2$ are both conserved, so in body coordinates $\mathbf L$ moves on the intersection of a sphere with an ellipsoid (10.9). Near $\pm\mathbf e_1$ and $\pm\mathbf e_3$ the intersections are small closed curves; at the energy $L^2/2I_2$ they become two great circles crossing at $\pm\mathbf e_2$, and a body started near $\mathbf e_2$ is carried along them to $-\mathbf e_2$ and back.`,
-      caption: String.raw`A T-handle, like the wing nut that Vladimir Dzhanibekov saw flip on Salyut 7 in 1985, is spun about one principal axis with a small wobble added. Left: the T-handle in space. Middle: $\mathbf L$ seen from the body, on the sphere $|\mathbf L| = $ const, with the polhodes (faint), the two separatrices (red) and the actual path (gold). About $\mathbf e_1$ or $\mathbf e_3$ the path is a small loop; about $\mathbf e_2$ it runs along the separatrix to the opposite side and back, and the handle flips. Bottom: the body components of $\boldsymbol\omega$. Shrink the wobble: the flips come later but never stop.`,
+      caption: String.raw`A T-handle, like the wing nut that Vladimir Dzhanibekov saw flip on Salyut 7 in 1985, is spun about one principal axis with a small wobble added (transverse components $\varepsilon$ times the spin). Left: the T-handle in space. Middle: $\mathbf L$ seen from the body, on the sphere $|\mathbf L| = $ const, with the polhodes (faint), the two separatrices (red) and the actual path (gold). About $\mathbf e_1$ or $\mathbf e_3$ the path is a small loop; about $\mathbf e_2$ it runs along the separatrix to the opposite side and back, and the handle flips. Bottom: the body components of $\boldsymbol\omega$. Shrink the wobble: the flips come later but never stop.`,
       deps: ['mech-10.11', 'mech-10.9'],
       see: ['aero-10.3'],
       refs: ['Taylor §10.8', 'Tong §3.4'],
@@ -372,7 +372,7 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
         // body axes: principal axis k is the box axis order[k]
         const toP = (p) => order.map((k) => p[k]);
         const axisSel = v.select('spin about', [{ value: '0', label: 'e₁ (smallest I)' }, { value: '1', label: 'e₂ (intermediate)' }, { value: '2', label: 'e₃ (largest I)' }], '1');
-        const epsS = v.slider('wobble $\\varepsilon$ (transverse / spin)', 0.0005, 0.2, 0.01, { log: true });
+        const epsS = v.slider('wobble $\\varepsilon$', 0.0005, 0.2, 0.01, { log: true });
         const W = 6, TS = 16, N = 16000, EV = 10;
         const S = v.stage({ x: [-1.05, 1.05], y: [-1.05, 1.05], equal: true, axes: false, height: 300, title: 'the T-handle in space' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.35, axes: false, hint: false });
@@ -425,11 +425,11 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
           sc.flush();
           // the momentum sphere
           sp.begin();
-          for (const la of [-60, -30, 0, 30, 60]) sp.path(circlePts([0, 0, Math.sin(la * DEG)], [1, 0, 0], [0, 1, 0], Math.cos(la * DEG), 60), { color: 'faint', width: 0.7, alpha: 0.6 });
-          for (const P of polhodes()) sp.path(P, { color: 'muted', width: 1, alpha: 0.5 });
-          for (const s2 of separatrices(Id)) sp.path(circlePts([0, 0, 0], s2.a, s2.b, 1, 90), { color: 'red', width: 1.6, alpha: 0.85 });
+          sphereFrame(sp, 1, { lat: false });
+          for (const P of polhodes()) spherePath(sp, P, { color: 'muted', width: 1.1, alpha: 0.75, backAlpha: 0.15 });
+          for (const s2 of separatrices(Id)) spherePath(sp, circlePts([0, 0, 0], s2.a, s2.b, 1, 90), { color: 'red', width: 1.8, alpha: 0.9, backAlpha: 0.25 });
           const path = B.Lb.slice(0, i + 1).map((L) => scl(L, 1 / B.L0));
-          sp.path(path, { color: 'gold', width: 2.2 });
+          spherePath(sp, path, { color: 'gold', width: 2.4, backAlpha: 0.35 });
           sp.dot(scl(B.Lb[i], 1 / B.L0), { r: 5.5, color: 'gold' });
           [0, 1, 2].forEach((k) => { for (const sg of [1, -1]) { const e = [0, 0, 0]; e[k] = sg * 1.12; sp.dot(scl(e, 1 / 1.12), { r: 3.5, color: AXC[k] }); if (sg > 0) sp.tex(`\\mathbf e_${k + 1}`, e, { color: AXC[k], size: 14 }); } });
           sp.flush();

@@ -366,7 +366,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           a.clip(() => a.line(q - 0.9, vq - 0.9 * vp, q + 0.9, vq + 0.9 * vp, { color: 'green', width: 2.2 }));
           const vq1 = VV(q, M + D); a.line(q, vq, q, vq1, { color: 'gold', width: 3 }); a.text('Δv', q, (vq + vq1) / 2, { dx: -8, color: 'gold', ...LBL, align: 'right' });
           const del = bisect((t) => VV(q + t, M + D) - vq, 0, PB + 2 - q, 50);
-          if (del != null && q + del <= PB) { a.arrow(q, vq, q + del, vq, { color: 'teal', width: 2.6, head: 9 }); a.text(`δ = ${v.fix(del, 3)}`, q + del / 2, vq, { dy: -11, color: 'teal', ...LBL, align: 'center' }); }
+          if (del != null && q + del <= PB) { a.arrow(q, vq, q + del, vq, { color: 'teal', width: 2.6, head: 9 }); a.text(`δ = ${v.fix(del, 3)}`, q + del, vq, { dx: 8, dy: 9, color: 'teal', ...LBL, align: 'left' }); }
           // the demand curve and Roy's dots
           const xs = ps.map((p) => best(u, p, M).x1), xmax = Math.max(...xs.filter(isFinite));
           d.setView([PA, PB], [0, Math.min(xmax * 1.08, 40)]);

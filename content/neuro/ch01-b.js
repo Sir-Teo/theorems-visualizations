@@ -136,7 +136,7 @@ so the average of $N$ independent channels follows the deterministic relaxation 
         const Bs = v.slider('closing rate $\\beta$ after the step', 0.05, 2, 0.2, { log: true, sig: 2, fmt: (x) => `${v.fix(x, 2)} ms⁻¹` });
         let seed = 1;
         v.button('New run', () => { seed++; });
-        const st = v.stage({ x: [0, 40], y: [-0.3, 8.2], height: 220, axes: 'box', xlabel: 't (ms)', ylabel: 'single channels', full: true, yticks: [] });
+        const st = v.stage({ x: [0, 40], y: [-1.2, 8.2], height: 230, axes: 'box', xlabel: 't (ms)', ylabel: 'single channels', full: true, yticks: [] });
         const sa = v.stage({ x: [0, 40], y: [-0.05, 1.05], height: 260, axes: 'box', xlabel: 't (ms)', ylabel: 'fraction open', weight: 1.25 });
         const sn = v.stage({ x: [0.7, 1500], y: [0.005, 1], xlog: true, ylog: true, height: 260, axes: 'box', xlabel: 'N', ylabel: 'SD of the average', weight: 1 });
         const NMAX = 1000, DT = 0.05, TS = 5, TE = 40, TSIM = 200, A0 = 0.01, B0 = 1;

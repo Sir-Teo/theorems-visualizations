@@ -48,7 +48,7 @@ function cannonRun(sc, fb) {
   return out;
 }
 const CANNON = {
-  meal: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [40, 230], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68'], [53, 'symptoms 53', 1]] },
+  meal: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [40, 230], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68', 1]] },
   fast: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [20, 120], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68'], [53, 'symptoms 53', 1]] },
   cold: { name: 'core temperature', unit: '°C', range: [36.5, 37.5], view: [33, 38], tEnd: 6, tUnit: 'h', e: ['skin vasoconstriction', 'shivering'], lines: [[37.0, 'vasoconstriction 37.0'], [36.8, 'shivering 36.8', 1]] },
   bleed: { name: 'arterial pressure', unit: 'mmHg', range: [70, 105], view: [30, 110], tEnd: 180, tUnit: 'min', e: ['baroreflex (heart rate, vessels)', 'refill, ADH, renin'], lines: [] },

@@ -299,7 +299,7 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
       viz(v) {
         const nS = v.slider('$E_1$: tosses planned $n$', 6, 14, 12, { int: true });
         const rS = v.slider('$E_2$: toss until tail number $r$', 1, 5, 3, { int: true });
-        const pairS = v.select('pair', [{ value: 'prop', label: 'proportional likelihoods' }, { value: 'not', label: 'not proportional ($x_2$ one head more)' }], 'prop');
+        const pairS = v.select('pair', [{ value: 'prop', label: 'proportional likelihoods' }, { value: 'not', label: 'not proportional ($x_2$ one head more)' }], 'prop', { onChange: () => S.set(S.i) });
         const frames = [
           { line: 1, note: String.raw`Two experiments and two outcomes with proportional likelihoods: $L_1(p;x_1)=c\,L_2(p;x_2)$.` },
           { line: 2, note: String.raw`The mixture $E^*$: a fair coin $J$ picks which experiment is run; its outcomes are pairs $(j,x)$.` },

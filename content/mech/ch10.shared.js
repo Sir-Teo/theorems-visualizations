@@ -203,3 +203,21 @@ export function tube(sc, p, q, r, st = {}) {
   }
   for (const c of [p, q]) sc.path(circlePts(c, a, b, r, 24), { color: st.color || 'accent', width: st.width ?? 1, alpha: st.alpha ?? 0.8 });
 }
+/** A path on a sphere centred at c: the parts facing the viewer are drawn with st, the far side faintly (st.backAlpha). */
+export function spherePath(sc, pts, st = {}, c = [0, 0, 0]) {
+  const e = eyeDir(sc); let run = [], front = null;
+  const flush = () => { if (run.length > 1) sc.path(run, front ? st : { ...st, alpha: st.backAlpha ?? 0.18, width: (st.width ?? 1.2) * 0.8 }); };
+  for (let i = 0; i < pts.length; i++) {
+    const f = dot(sub(pts[i], c), e) >= 0;
+    if (front === null) front = f;
+    if (f !== front) { run.push(pts[i]); flush(); run = [pts[i - 1] || pts[i]]; front = f; }
+    run.push(pts[i]);
+  }
+  flush();
+}
+/** Outline (silhouette) of a sphere of radius r at c, plus faint latitude circles. */
+export function sphereFrame(sc, r = 1, st = {}, c = [0, 0, 0]) {
+  const e = eyeDir(sc), a = perp(e), b = crs(e, a);
+  sc.path(circlePts(c, a, b, r, 72), { color: st.color || 'muted', width: st.width ?? 1.2, alpha: st.alpha ?? 0.7, top: false, bias: -1e3 });
+  if (st.lat !== false) for (const la of [-60, -30, 0, 30, 60]) spherePath(sc, circlePts([c[0], c[1], c[2] + r * Math.sin(la * DEG)], [1, 0, 0], [0, 1, 0], r * Math.cos(la * DEG), 60), { color: 'faint', width: 0.8, alpha: 0.7, backAlpha: 0.2 }, c);
+}
