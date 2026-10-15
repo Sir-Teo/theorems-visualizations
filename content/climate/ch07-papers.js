@@ -224,7 +224,7 @@ $R$ is today called the Revelle factor (climate-7.4); it depends on temperature 
         const Tc = v.slider('temperature (°C)', 0, 30, 18, { step: 0.5 });
         const TA = v.slider('alkalinity (µmol/kg)', 2100, 2500, 2300, { step: 10 });
         const L = v.stage({ x: [1850, 2350], y: [0, 1600], axes: 'box', height: 360, weight: 1, xlabel: 'dissolved inorganic carbon (µmol/kg)', ylabel: 'pCO₂ of sea water (µatm)', title: 'the buffer: pressure climbs faster than carbon' });
-        const R = v.stage({ x: [0, 2000], y: [0, 100], axes: 'box', height: 360, weight: 1, xlabel: 'carbon added to the air (GtC)', ylabel: 'share left in the air (%)', title: 'where the added carbon ends up' });
+        const R = v.stage({ x: [0, 2000], y: [-10, 100], axes: 'box', yticks: [0, 20, 40, 60, 80, 100], height: 360, weight: 1, xlabel: 'carbon added to the air (GtC)', ylabel: 'share left in the air (%)', title: 'where the added carbon ends up' });
         const DEPTHS = [[75, 'blue'], [1000, 'teal'], [3700, 'purple']];
         let tab = null, tabKey = '';
         const table = () => { // ln pCO₂ → DIC, tabulated once per (T, TA)
@@ -248,7 +248,7 @@ $R$ is today called the Revelle factor (climate-7.4); it depends on temperature 
           L.fn((x) => seaSolve(x * 1e-6, ta, c).pCO2, { color: 'blue', width: 2.8, n: 120 });
           L.fn((x) => (280 * x) / D0, { color: 'muted', width: 1.8, dash: [6, 4] });
           L.hline(280, { color: 'faint', width: 1 }); L.vline(D0, { color: 'faint', width: 1 });
-          L.dot(D0, 280, { r: 6, color: 'ink' }); L.text('1850 ocean, 280 µatm', D0, 280, { dx: -10, dy: -14, size: 11.5, weight: 600, align: 'right' });
+          L.dot(D0, 280, { r: 6, color: 'ink' }); L.text('1850 ocean, 280 µatm', D0, 280, { dx: 12, dy: 18, size: 11.5, weight: 600, align: 'left' });
           if (E.value > 0) {
             L.line(D0, p1, D1, p1, { color: 'gold', width: 1.2, dash: [3, 3] }); L.line(D1, 0, D1, p1, { color: 'gold', width: 1.2, dash: [3, 3] });
             L.dot(D1, p1, { r: 7, color: 'gold' }); L.text(`after +${E.value} GtC: ${Math.round(p1)} µatm`, D1, p1, { dx: 10, dy: 2, size: 11.5, weight: 700, color: 'gold', align: 'left', plate: true });
@@ -260,11 +260,11 @@ $R$ is today called the Revelle factor (climate-7.4); it depends on temperature 
             for (let e = 20; e <= 2000; e += 40) { pts.push([e, (100 * (equil(Tb, dd, e, false) - 280) * GTC_PER_PPM) / e]); ptsN.push([e, (100 * (equil(Tb, dd, e, true) - 280) * GTC_PER_PPM) / e]); }
             R.path(pts, { color: col, width: sel ? 3 : 1.6, alpha: sel ? 1 : 0.55 });
             R.path(ptsN, { color: col, width: sel ? 2.2 : 1.2, dash: [6, 4], alpha: sel ? 1 : 0.55 });
-            R.text(dd === 75 ? 'mixed layer' : dd === 1000 ? 'upper 1 km' : 'whole ocean', 1980, pts[pts.length - 1][1], { align: 'right', dy: -10, size: 11.5, weight: 700, color: col });
+            R.text(dd === 75 ? 'mixed layer' : dd === 1000 ? 'upper 1 km' : 'whole ocean', 1980, pts[pts.length - 1][1], { align: 'right', dy: dd === 75 ? 13 : -10, size: 11.5, weight: 700, color: col });
           }
           const fa = E.value > 0 ? (100 * (p1 - 280) * GTC_PER_PPM) / E.value : null;
           if (fa != null) { R.vline(E.value, { color: 'gold', width: 1.2, dash: [3, 3] }); R.dot(E.value, fa, { r: 7, color: 'gold' }); }
-          R.hline(48, { color: 'red', width: 1.3, dash: [2, 3] }); R.text('observed 2014–2023: 48% stays in the air', 30, 48, { dy: -10, size: 11, color: 'red', weight: 600 });
+          R.hline(48, { color: 'red', width: 1.3, dash: [2, 3] }); R.text('↑ red dots: 48% stayed in the air in 2014–2023', 1060, 33, { size: 11, color: 'red', weight: 600, align: 'center' });
           const s0 = seaSolve(D0 * 1e-6, ta, c), s1 = seaSolve(D1 * 1e-6, ta, c);
           const rf = (DIC) => { const a = seaSolve(DIC, ta, c), b = seaSolve(DIC * 1.0005, ta, c); return (b.pCO2 / a.pCO2 - 1) / 0.0005; };
           st = { p1, D0, D1, fa, faN: (100 * (equil(Tb, d, Math.max(E.value, 1), true) - 280) * GTC_PER_PPM) / Math.max(E.value, 1), rf0: rf(D0 * 1e-6), rf1: rf(D1 * 1e-6), s0, s1, inv: massKg(d) * 12e-15 * D0 * 1e-6 };

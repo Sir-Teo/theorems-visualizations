@@ -10,6 +10,8 @@ export const GUIDE = { color: 'muted', width: 1, dash: [3, 3] };
 export const LBL = { size: 12, weight: 700 };
 export const SUP = (n) => String(n).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]).join('');
 export const SUB = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[+d]).join('');
+/** Show or hide a whole stage (panel). */
+export const showStage = (S, on) => { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; };
 /** Signed number with a real minus sign, e.g. +1.23 / −0.40. */
 export const sgn = (x, d = 2) => `${x >= 0 ? '+' : '−'}${Math.abs(x).toFixed(d)}`;
 
@@ -237,7 +239,7 @@ export function afriat(obs, A) {
   if (!A.garp) return null;
   const T = obs.length, RS = A.Rs.map((r, i) => r.map((v, j) => v && !A.Rs[j][i]));
   const rank = Array(T).fill(0);
-  const rk = (t, seen = new Set()) => { if (rank[t]) return rank[t]; let best = 0; for (let s = 0; s < T; s++) if (RS[s][t] && !seen.has(s)) { seen.add(s); best = Math.max(best, rk(s, seen)); } return (rank[t] = best + 1); };
+  const rk = (t) => { if (rank[t]) return rank[t]; let best = 0; for (let s = 0; s < T; s++) if (RS[s][t]) best = Math.max(best, rk(s)); return (rank[t] = best + 1); }; // RS is acyclic under GARP
   for (let t = 0; t < T; t++) rk(t);
   const order = [...Array(T).keys()].sort((a, b) => rank[a] - rank[b]), u = Array(T).fill(0), lam = Array(T).fill(1);
   const levels = [...new Set(order.map((t) => rank[t]))];

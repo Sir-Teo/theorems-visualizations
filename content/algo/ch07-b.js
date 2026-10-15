@@ -98,7 +98,7 @@ const CHAIN_CODE = [
   'm[i, i] ← 0',
   'for ℓ ← 2 to n:                              ▷ chain length, diagonal by diagonal',
   '  for i ← 1 to n − ℓ + 1:   j ← i + ℓ − 1',
-  '    m[i, j] ← min over i ≤ k < j of  m[i, k] + m[k+1, j] + p_{i−1} p_k p_j',
+  '    m[i, j] ← min over i ≤ k < j of  m[i, k] + m[k+1, j] + $p_{i-1}\\,p_k\\,p_j$',
   '    s[i, j] ← the best k               ▷ the last multiplication splits at k',
   'read the parenthesization from s[1, n]',
 ];
@@ -228,7 +228,7 @@ export default {
           F.push({ k: H.calls.length, done: true, line: 7, hold: 2, note: `All blocks solved: the points join into an optimal path of cost **${tot}**, found while storing only ${H.peak} numbers at a time.` });
           return F;
         };
-        const S = v.steps({ frames, code: HIRSCH_CODE, codeTitle: 'Hirschberg(x, y)', codePos: 'below', speed: 1, start: 2, still: 2 });
+        const S = v.steps({ frames, code: HIRSCH_CODE, codeTitle: 'Hirschberg(x, y)', codePos: 'below', speed: 1, start: 0, still: 0 });
         v.render(() => {
           const f = S.frame, x = X(), y = Y(), m = x.length, n = y.length, calls = H.calls, cur = calls[f.k];
           G.setView([-1.3, n + 0.6], [-m - 0.6, 1.05]);
@@ -268,8 +268,17 @@ export default {
             }
             Bs.setTicks(Array.from({ length: w + 1 }, (_, k) => cur.j0 + k), null);
           } else { Bs.setView([0, 10], [0, 10]); Bs.setTicks([], []); Bs.corner(f.done ? 'done: every block is solved' : 'base case: aligned directly, no split', 'tl', { color: 'muted' }); }
-          drawAlignment(Al, f.done ? H.cols : [], { minCols: Math.max(H.cols.length, 10), cost: f.done ? { ins: 1, del: 1, sub: 1 } : null });
-          if (!f.done) Al.text('the alignment appears when every block is solved', (Math.max(H.cols.length, 10) - 1) / 2, 0.6, { align: 'center', size: 12, color: 'muted' });
+          if (f.done) drawAlignment(Al, H.cols, { minCols: Math.max(H.cols.length, 10), cost: { ins: 1, del: 1, sub: 1 } });
+          else {
+            // the only memory in use: the two rows F and B of the current call
+            Al.setView([-2.4, n + 0.7], [-1.15, 1.85]);
+            if (cur && !cur.base) {
+              const tile = (val, j, y, col, best) => { Al.rect(j - 0.42, y - 0.3, j + 0.42, y + 0.3, { fill: best ? 'green' : col, fillAlpha: best ? 0.35 : 0.16, color: best ? 'green' : col, width: best ? 2 : 1, radius: 3 }); Al.text(String(val), j, y, { align: 'center', size: 12, weight: 700, halo: false }); };
+              for (let j = cur.j0; j <= cur.j1; j++) { tile(cur.F[j - cur.j0], j, 1.2, 'blue', j === cur.js); tile(cur.B[j - cur.j0], j, 0.35, 'orange', j === cur.js); }
+              Al.text('F', -1.3, 1.2, { align: 'center', size: 13, weight: 800, color: 'blue', math: true }); Al.text('B', -1.3, 0.35, { align: 'center', size: 13, weight: 800, color: 'orange', math: true });
+              Al.text(`stored right now: these 2 × ${cur.j1 - cur.j0 + 1} numbers (plus the recursion stack) — never the whole table`, -2.2, -0.62, { size: 11.5, weight: 600, color: 'muted' });
+            } else Al.text('base case: a single row of x is aligned directly', -2.2, 0.6, { size: 12, color: 'muted' });
+          }
         });
         v.legend([['gold', 'current block', { area: true }], ['blue', 'forward pass', { area: true }], ['orange', 'backward pass', { area: true }], ['green', 'points / pieces of the optimal path', { dot: true }]]);
         v.readout(() => {
@@ -303,7 +312,7 @@ The $(n+1)(W+1)$ table takes $\Theta(nW)$ time; item $i$ belongs to the traced-b
         const T = v.table(s, { square: false, maxCell: 40, cellAspect: 1.15, size: 14 });
         const TI = v.table(I, { rows: 5, cols: 3, square: false, maxCell: 32, cellAspect: 1.5, size: 14, colLabels: ['$w_i$', '$v_i$', '$v_i/w_i$'], rowLabels: (k) => `item ${k + 1}`, format: (val, i, j) => (j === 2 ? r2(val) : val) });
         let run;
-        const S = v.steps({ frames: () => (run = knapFrames(items, WS.value)).F, code: KNAP_CODE, codeTitle: '0/1-Knapsack(w, v, W)', codePos: 'below', speed: 6, start: 50, still: 50 });
+        const S = v.steps({ frames: () => (run = knapFrames(items, WS.value)).F, code: KNAP_CODE, codeTitle: '0/1-Knapsack(w, v, W)', codePos: 'below', speed: 6, start: 58, still: 58 });
         I.onClick((x, y, mod) => { const c = TI.hit(x, y); if (!c || c.i < 0 || c.j < 0 || c.j > 1) return; const it = items[c.i], key = c.j ? 'v' : 'w'; it[key] = clamp(it[key] + (mod.shift ? -1 : 1), 1, c.j ? 40 : 12); S.reset({ at: 'keep' }); });
         const COLS = ['blue', 'teal', 'purple', 'orange', 'pink'];
         v.render(() => {
@@ -312,7 +321,7 @@ The $(n+1)(W+1)$ table takes $\Theta(nW)$ time; item $i$ belongs to the traced-b
           const key = (i, c) => i * 100 + c, path = new Set((f.path || []).map(([i, c]) => key(i, c)));
           const cur = f.cur, it = cur ? items[cur[0] - 1] : null, takeDep = cur && it.w <= cur[1] ? [cur[0] - 1, cur[1] - it.w] : null;
           T.draw({
-            rows: n + 1, cols: W + 1, rowLabels: (i) => (i ? `${i}: w${sub(items[i - 1].w)} v${sub(items[i - 1].v)}` : '∅'), colLabels: (c) => String(c), cornerLabel: 'c →',
+            rows: n + 1, cols: W + 1, rowLabels: (i) => (i ? `${i}: w=${items[i - 1].w} v=${items[i - 1].v}` : 'none'), colLabels: (c) => String(c), cornerLabel: 'c →',
             value: (i, c) => (filled(i, c) ? K[i][c] : null),
             fill: (i, c) => (cur && cur[0] === i && cur[1] === c ? ['gold', 0.5] : takeDep && takeDep[0] === i && takeDep[1] === c ? ['green', 0.35] : cur && cur[0] - 1 === i && cur[1] === c ? ['orange', 0.35] : path.has(key(i, c)) ? ['green', 0.45] : filled(i, c) && i && take[i][c] ? ['green', 0.12] : null),
             weight: (i, c) => (path.has(key(i, c)) ? 800 : 500), highlight: cur ? [cur] : [], activeRow: cur?.[0],
@@ -372,7 +381,7 @@ The knapsack dynamic program (7.10) runs in $\Theta(nW)$ time: polynomial in $n$
           const k = kS.value;
           // bit rows
           const rows = [...items.map((it, i) => [`w${sub(i + 1)}`, it.w]), ['W', W0]], maxLen = bits(W0) + 20;
-          A.setView([-3.2, maxLen + 0.6], [-rows.length - 0.4, 0.8]);
+          A.setView([-3.2, maxLen + 0.6], [-rows.length - 1.1, 0.6]);
           rows.forEach(([lab, val], r) => {
             const s = (val * 2 ** k).toString(2), y = -r - 0.5;
             A.text(lab, -1.8, y, { align: 'center', size: 13, weight: 700, color: lab === 'W' ? 'ink' : 'muted', math: true });
@@ -410,7 +419,7 @@ The knapsack dynamic program (7.10) runs in $\Theta(nW)$ time: polynomial in $n$
           let check = '';
           if (k <= 12) { const { K, take } = knapTable(sc, W); check = ` · DP run on the scaled instance: value ${K[n][W]}, items {${knapPick(sc, take, n, W).join(', ')}} — the same answer as for $k = 0$ ✓`; }
           else check = ' · (too big to run here: same answer, $2^{' + k + '}$ times the work)';
-          return `$W = 11\\cdot 2^{${k}} = ${tbig(W)}$ · input ${Lbin(k)} bits (+${Lbin(k) - L0}) · table $(n+1)(W+1) = ${tbig(cells(k))}$ cells, ${tbig(cells(k) / C0)}× the $k=0$ table${check}`;
+          return `$W = 11\\cdot 2^{${k}} = ${tbig(W)}$ · input ${Lbin(k)} bits (+${Lbin(k) - L0}) · table $(n+1)(W+1) = ${tbig(cells(k))}$ cells, about $2^{${k}}$ = ${r2(cells(k) / C0)}× the $k=0$ table${check}`;
         });
       },
     },
@@ -571,7 +580,6 @@ where $k$ is the position of the last multiplication. Filling the table by incre
             sub: (r, c) => (c > r && filled(r + 1, c + 1) ? `k=${sp[r + 1][c + 1]}` : ''),
             highlight: cur ? [[cur[0] - 1, cur[1] - 1]] : [],
           });
-          if (cur) { T.arrow([cur[0] - 1, cur[1] - 1], [cur[0] - 1, bk - 1], { color: 'orange', width: 2, trim: 0.5 }); T.arrow([cur[0] - 1, cur[1] - 1], [bk, cur[1] - 1], { color: 'orange', width: 2, trim: 0.5 }); }
           // trees: best for the current interval, worst for the whole chain
           const [ci, cj] = cur || [1, n], bt = chainTree(sp, ci, cj), wt = chainTree(W.s, 1, n);
           tr.setView([0.2, n + 1.6 + n + 0.8], [-4.6, 0.95]);
@@ -603,9 +611,9 @@ because making $k_r$ the root pushes every other key of the interval one level d
       credit: 'Knuth, 1971',
       tags: ['dynamic programming', 'search trees'],
       viz(v) {
-        const f = [4, 2, 1, 8, 3, 6, 2], n = f.length;
+        const f = [9, 4, 9, 3, 1, 4, 4], n = f.length;
         const showT = v.select('tree shown', [{ value: 'opt', label: 'optimal' }, { value: 'bal', label: 'balanced' }, { value: 'greedy', label: 'greedy (heaviest at root)' }], 'opt');
-        const A = v.stage({ x: [0.3, n + 0.7], y: [-4.5, 3.6], axes: false, height: 330, weight: 1.15, minWidth: 340 });
+        const A = v.stage({ x: [0.3, n + 0.7], y: [-4.95, 3.6], axes: false, height: 330, weight: 1.15, minWidth: 340 });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 320 });
         const T = v.table(s, { rows: n, cols: n, maxCell: 46, size: 12.5, rowLabels: (r) => KEYS[r], colLabels: (c) => KEYS[c], cornerLabel: 'i \\ j', subColor: 'purple', subSize: 10 });
         const frames = () => {
@@ -638,13 +646,13 @@ because making $k_r$ the root pushes every other key of the interval one level d
           A.line(0.5, 0.4, n + 0.5, 0.4, { color: 'muted', width: 1 });
           // tree
           const which = showT.value, t = which === 'bal' ? bstBalanced(1, n) : which === 'greedy' ? bstGreedy(f, 1, n) : cur ? bstFromRoots(R.R, ci, cj) : bstFromRoots(R.R, 1, n);
-          const L = inorderLayout(t, (u) => u.key), dy = 3.9 / Math.max(L.depth, 3), Y = (y) => -0.4 + y * dy, fm = Math.max(1, ...f);
-          if (which === 'opt' && cur) A.rect(ci - 0.45, -4.45, cj + 0.45, -0.15, { fill: 'gold', fillAlpha: 0.06, color: 'gold', width: 1, dash: [4, 3], radius: 6 });
+          const L = inorderLayout(t, (u) => u.key), dy = 3.85 / Math.max(L.depth, 3), Y = (y) => -0.5 + y * dy, fm = Math.max(1, ...f);
+          if (which === 'opt' && cur) A.rect(ci - 0.45, -4.85, cj + 0.45, -0.12, { fill: 'gold', fillAlpha: 0.06, color: 'gold', width: 1, dash: [4, 3], radius: 6 });
           (function ed(u) { if (!u) return; const [x, y] = L.pos.get(u); for (const c of [u.l, u.r]) if (c) { const [a, b] = L.pos.get(c); A.line(x, Y(y), a, Y(b), { color: 'muted', width: 1.6 }); ed(c); } })(t);
           const col = which === 'opt' ? 'green' : which === 'bal' ? 'blue' : 'red';
           (function nd(u) { if (!u) return; const [x, y] = L.pos.get(u), r = 7 + 9 * Math.sqrt(f[u.key - 1] / fm); A.dot(x, Y(y), { r, color: col, alpha: 0.9 }); A.text(KEYS[u.key - 1], x, Y(y), { align: 'center', size: 12, weight: 800, color: 'panel', halo: false }); nd(u.l); nd(u.r); })(t);
           const tc = bstCost(t, f);
-          A.corner(`${which === 'opt' ? (cur ? `optimal tree for ${KEYS[ci - 1]}…${KEYS[cj - 1]}` : 'optimal tree') : which === 'bal' ? 'balanced tree' : 'greedy tree'}: cost ${tc}`, 'bl', { color: col, weight: 700 });
+          A.corner(`${which === 'opt' ? (cur ? `optimal tree for ${KEYS[ci - 1]}…${KEYS[cj - 1]}` : 'optimal tree') : which === 'bal' ? 'balanced tree' : 'greedy tree'}: cost ${tc}`, 'tr', { color: col, weight: 700 });
           // table
           T.draw({
             value: (r, c) => (c >= r && filled(r + 1, c + 1) ? R.C[r + 1][c + 1] : null),
@@ -678,14 +686,20 @@ and the answer is $\max(\mathrm{in}(r),\mathrm{out}(r))$ at the root $r$. This t
       tags: ['dynamic programming', 'trees'],
       viz(v) {
         const W = { 0: 3, 1: 5, 2: 2, 3: 4, 4: 6, 5: 1, 6: 4, 7: 3, 8: 2, 9: 5, 10: 1 }, par = { 1: 0, 2: 0, 3: 0, 4: 1, 5: 1, 6: 2, 7: 2, 8: 3, 9: 6, 10: 6 };
-        let nextId = 11;
+        let nextId = 11; const NAME = {}; const POOL = 'abcdefghijklmnopqrstuvwxyz';
+        Object.keys(W).forEach((k) => { NAME[k] = POOL[k]; });
+        const nm = (u) => NAME[u];
         const act = v.select('click a vertex to', [{ value: 'up', label: 'raise weight' }, { value: 'down', label: 'lower weight' }, { value: 'add', label: 'add a child' }, { value: 'del', label: 'remove subtree' }], 'up');
         const extra = v.toggle('extra edge (makes a cycle)', false);
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340 });
         const G = v.graph(s, { nodes: [], edges: [], layout: 'none', r: 15, draggable: false, fontSize: 13 });
         const ids = () => Object.keys(W).map(Number);
         const kids = (u) => ids().filter((k) => par[k] === u);
-        function rebuild() { G.set({ nodes: ids().map((id) => ({ id })), edges: ids().filter((k) => k in par).map((k) => ({ from: par[k], to: k })) }).layout('tree', { root: 0 }); }
+        function rebuild() {
+          G.set({ nodes: ids().map((id) => ({ id })), edges: ids().filter((k) => k in par).map((k) => ({ from: par[k], to: k })) }).layout('tree', { root: 0 });
+          const ys = G.nodes.map((q) => q.y), lo = Math.min(...ys), hi = Math.max(...ys); // leave room under the lowest row for the in | out labels
+          G.nodes.forEach((q) => { q.y = hi > lo ? 0.15 + 0.74 * (q.y - lo) / (hi - lo) : 0.6; });
+        }
         rebuild();
         const solve = () => {
           const inV = {}, outV = {}, order = [];
@@ -698,17 +712,18 @@ and the answer is $\max(\mathrm{in}(r),\mathrm{out}(r))$ at the root $r$. This t
           const R = solve(), F = [];
           R.order.forEach((u, k) => {
             const cs = kids(u);
-            F.push({ R, k, cur: u, line: [1, 2, 3], note: cs.length ? `Vertex ${u} (weight ${W[u]}): in = ${W[u]} + ${cs.map((c) => R.outV[c]).join(' + ')} = **${R.inV[u]}**; out = ${cs.map((c) => `max(${R.inV[c]}, ${R.outV[c]})`).join(' + ')} = **${R.outV[u]}**.` : `Leaf ${u}: in = its weight ${W[u]}, out = 0.` });
+            F.push({ R, k, cur: u, line: [1, 2, 3], note: cs.length ? `Vertex ${nm(u)} (weight ${W[u]}): in = ${W[u]} + ${cs.map((c) => R.outV[c]).join(' + ')} = **${R.inV[u]}**; out = ${cs.map((c) => `max(${R.inV[c]}, ${R.outV[c]})`).join(' + ')} = **${R.outV[u]}**.` : `Leaf ${nm(u)}: in = its weight ${W[u]}, out = 0.` });
           });
-          R.dec.forEach(([u, tk], t) => F.push({ R, k: R.order.length, dec: t, cur: u, line: t === 0 ? [4, 5] : 5, hold: 0.7, note: `${t === 0 ? `Root: best = max(${R.inV[0]}, ${R.outV[0]}) = **${Math.max(R.inV[0], R.outV[0])}**. ` : ''}Vertex ${u}: ${tk ? 'taken' : par[u] != null && R.chosen.has(par[u]) ? 'its parent is taken, so it is not' : `not taken (out ${R.outV[u]} > in ${R.inV[u]})`}.` }));
+          R.dec.forEach(([u, tk], t) => F.push({ R, k: R.order.length, dec: t, cur: u, line: t === 0 ? [4, 5] : 5, hold: 0.7, note: `${t === 0 ? `Root: best = max(${R.inV[0]}, ${R.outV[0]}) = **${Math.max(R.inV[0], R.outV[0])}**. ` : ''}Vertex ${nm(u)}: ${tk ? 'taken' : par[u] != null && R.chosen.has(par[u]) ? 'its parent is taken, so it is not' : `not taken (out ${R.outV[u]} > in ${R.inV[u]})`}.` }));
+          F.push({ R, k: R.order.length, dec: R.dec.length - 1, line: [4, 5], hold: 2, note: `Done: the green vertices {${[...R.chosen].map(nm).sort().join(', ')}} form an independent set of weight **${Math.max(R.inV[0], R.outV[0])}**, computed with two numbers per vertex in one postorder pass.` });
           return F;
         };
         const S = v.steps({ frames, code: TREE_IS_CODE, codeTitle: 'Tree-Independent-Set(T)', codePos: 'below', speed: 2, start: 'end', still: 'end' });
         G.onClick = ({ node }) => {
           if (!node) return true; const u = node.id, a = act.value;
           if (a === 'up') W[u] = Math.min(W[u] + 1, 20); else if (a === 'down') W[u] = Math.max(W[u] - 1, 0);
-          else if (a === 'add' && ids().length < 16) { W[nextId] = 3; par[nextId] = u; nextId++; rebuild(); }
-          else if (a === 'del' && u !== 0) { const gone = [u]; for (let q = 0; q < gone.length; q++) for (const c of kids(gone[q])) gone.push(c); gone.forEach((k) => { delete W[k]; delete par[k]; }); rebuild(); }
+          else if (a === 'add' && ids().length < 16) { W[nextId] = 3; par[nextId] = u; NAME[nextId] = [...POOL].find((ch) => !Object.values(NAME).includes(ch)); nextId++; rebuild(); }
+          else if (a === 'del' && u !== 0) { const gone = [u]; for (let q = 0; q < gone.length; q++) for (const c of kids(gone[q])) gone.push(c); gone.forEach((k) => { delete W[k]; delete par[k]; delete NAME[k]; }); rebuild(); }
           S.reset({ at: 'end' }); return true;
         };
         const extraEdge = (R) => {
@@ -735,6 +750,7 @@ and the answer is $\max(\mathrm{in}(r),\mathrm{out}(r))$ at the root $r$. This t
             nodeFill: (id) => (f.cur === id ? 'gold' : decided.get(id) ? 'green' : null),
             nodeColor: (id) => (decided.has(id) && !decided.get(id) ? 'muted' : kids(f.cur).includes(id) && !done ? 'orange' : 'accent'),
             edgeColor: (e) => (decided.get(e.from) && decided.get(e.to) ? 'red' : null),
+            nodeNote: (id) => nm(id), noteColor: 'muted', notePos: 'nw',
           });
           const r = 15;
           for (const nd of G.nodes) {
@@ -750,9 +766,9 @@ and the answer is $\max(\mathrm{in}(r),\mathrm{out}(r))$ at the root $r$. This t
         v.legend([['green', 'in(v): best with v / chosen', { dot: true }], ['orange', 'out(v): best without v', { dot: true }], ['gold', 'current vertex', { dot: true }], ['red', 'extra edge', { dash: true }]]);
         v.readout(() => {
           const { R, ex, bTree, bEx } = info, best = Math.max(R.inV[0], R.outV[0]), n = ids().length;
-          const head = `${n} vertices · tree DP: **${best}** with {${[...R.chosen].sort((a, b) => a - b).join(', ')}} · brute force over all $2^{${n}}$ subsets: ${bTree} ${bTree === best ? '✓' : '✗'}`;
+          const head = `${n} vertices · tree DP: **${best}** with {${[...R.chosen].map(nm).sort().join(', ')}} · brute force over all $2^{${n}}$ subsets: ${bTree} ${bTree === best ? '✓' : '✗'}`;
           if (!ex) return head + (extra.value ? ' · (no two non-adjacent chosen vertices to join)' : '');
-          return `${head} · with the extra edge ${ex[0]}–${ex[1]} both ends are chosen, so the DP's set is **not independent** ✗; the true optimum of the graph with a cycle is ${bEx}`;
+          return `${head} · with the extra edge ${nm(ex[0])}–${nm(ex[1])} both ends are chosen, so the DP's set is **not independent** ✗; the true optimum of the graph with a cycle is ${bEx}`;
         });
       },
     },
@@ -778,7 +794,7 @@ and the optimal tour has length $\min_j\big(D[\{1,\dots,n-1\},j]+d(j,0)\big)$. T
         const nS = v.slider('cities $n$', 4, NMAX, 5, { int: true, onChange: () => { sel = null; S.reset({ at: 'keep' }); } });
         const M = v.stage({ x: [0, 10], y: [0, 7], axes: false, equal: true, height: 330, weight: 1, minWidth: 300 });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 300 });
-        const C = v.stage({ x: [3, 20], y: [1, 1e20], ylog: true, axes: 'box', height: 230, full: true, xlabel: 'n (cities)', title: 'operations (log scale): brute force $(n-1)!\\cdot n$ vs Held–Karp $\\approx n^2 2^{n-2}$' });
+        const C = v.stage({ x: [3, 20], y: [1, 1e21], ylog: true, axes: 'box', height: 230, full: true, xlabel: 'n (cities)', title: 'operations (log scale): brute force $(n-1)!\\cdot n$ vs Held–Karp $\\approx (n-1)(n-2)\\,2^{n-3}$' });
         const H = init.map(([x, y], k) => M.handle(x, y, { color: k ? 'accent' : 'ink', r: 9, onDrag: () => { sel = null; S.reset({ at: 'end' }); } }));
         const T = v.table(s, { square: false, maxCell: 26, cellAspect: 2, size: 12, labelSize: 11 });
         let sel = null, run;
@@ -820,7 +836,7 @@ and the optimal tour has length $\min_j\big(D[\{1,\dots,n-1\},j]+d(j,0)\big)$. T
           // chart
           const bf = [], hk = []; for (let q = 3; q <= 20; q++) { bf.push([q, fact(q - 1) * q]); hk.push([q, hkOps(q)]); }
           const REF = [[1e9, '1 second'], [3.6e12, '1 hour'], [3.15e16, '1 year'], [3.15e19, '1000 years']];
-          REF.forEach(([y, lab]) => { C.hline(y, { color: 'muted', dash: [3, 4], width: 1, alpha: 0.7 }); C.text(lab, 3.2, y, { baseline: 'bottom', dy: -2, size: 10.5, color: 'muted', weight: 600 }); });
+          REF.forEach(([y, lab]) => { C.hline(y, { color: 'muted', dash: [3, 4], width: 1, alpha: 0.7 }); C.text(`${lab} at 10⁹ operations/s`, 8.2, y, { align: 'left', baseline: 'bottom', dy: -2, size: 10.5, color: 'muted', weight: 600 }); });
           C.path(bf, { color: 'red', width: 1.6, alpha: 0.6 }); C.dots(bf, { color: 'red', r: 3 });
           C.path(hk, { color: 'blue', width: 1.6, alpha: 0.6 }); C.dots(hk, { color: 'blue', r: 3 });
           C.vline(n, { color: 'gold', dash: [4, 3], width: 1.3 });

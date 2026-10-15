@@ -686,6 +686,31 @@ export function qr(A, { thin = false } = {}) {
   const k = Math.min(m, n); return { Q: Q.map((r) => r.slice(0, k)), R: R.slice(0, k) };
 }
 const signFix = (v) => { let j = 0; for (let i = 1; i < v.length; i++) if (Math.abs(v[i]) > Math.abs(v[j]) + 1e-12) j = i; return v[j] < 0 ? v.map((x) => -x) : v; };
+/** Cholesky factor of a symmetric positive-definite matrix: lower-triangular L with L Lᵀ = A (null if A is not positive definite). */
+export function cholesky(A) {
+  const n = A.length, L = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {
+    let s = A[i][j]; for (let k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+    if (i === j) { if (!(s > 0)) return null; L[i][i] = Math.sqrt(s); } else L[i][j] = s / L[j][j];
+  }
+  return L;
+}
+/**
+ * Generalized symmetric eigenproblem K a = λ M a with M positive definite (small oscillations: K stiffness, M mass, λ = ω²).
+ * → {values: λ ascending, vecs: mode vectors a_k normalized so a_kᵀ M a_k = 1 (largest component positive)}. Via Cholesky M = L Lᵀ.
+ */
+export function genEig(K, M) {
+  const n = K.length, L = cholesky(M); if (!L) return null;
+  const fwd = (b) => { const x = new Array(n); for (let i = 0; i < n; i++) { let s = b[i]; for (let k = 0; k < i; k++) s -= L[i][k] * x[k]; x[i] = s / L[i][i]; } return x; };
+  const bwd = (b) => { const x = new Array(n); for (let i = n - 1; i >= 0; i--) { let s = b[i]; for (let k = i + 1; k < n; k++) s -= L[k][i] * x[k]; x[i] = s / L[i][i]; } return x; };
+  const Y = K[0].map((_, j) => fwd(K.map((r) => r[j]))); // columns of L⁻¹K
+  const C = Array.from({ length: n }, (_, i) => fwd(Y.map((col) => col[i]))); // L⁻¹ K L⁻ᵀ (symmetric)
+  const E = eigSym(C), idx = E.values.map((_, i) => i).sort((a, b) => E.values[a] - E.values[b]);
+  return {
+    values: idx.map((i) => E.values[i]),
+    vecs: idx.map((i) => { const a = bwd(E.vecs[i]); let j = 0; for (let k = 1; k < n; k++) if (Math.abs(a[k]) > Math.abs(a[j]) + 1e-12) j = k; return a[j] < 0 ? a.map((x) => -x) : a; }),
+  };
+}
 /**
  * Symmetric eigen-decomposition by cyclic Jacobi rotations.
  * → {values (descending), vectors (n×n matrix whose COLUMNS are eigenvectors: A V = V diag(values)), vecs (vecs[i] = i-th eigenvector)}.

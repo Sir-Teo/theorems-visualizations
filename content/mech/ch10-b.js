@@ -279,7 +279,7 @@ So faster spin gives slower precession. For a horizontal axle this steady preces
 $$I_1\dot\omega_1 = (I_2 - I_3)\,\omega_2\omega_3 + \tau_1,\qquad I_2\dot\omega_2 = (I_3 - I_1)\,\omega_3\omega_1 + \tau_2,\qquad I_3\dot\omega_3 = (I_1 - I_2)\,\omega_1\omega_2 + \tau_3 .$$
 In vector form, $\mathsf I\dot{\boldsymbol\omega} + \boldsymbol\omega\times\mathsf I\boldsymbol\omega = \boldsymbol\tau$ in body components. Without torque, $|\mathbf L|^2 = \sum I_i^2\omega_i^2$ and $2T = \sum I_i\omega_i^2$ are conserved, and the body’s orientation then follows from $\dot{\mathsf R} = \mathsf R[\boldsymbol\omega]_\times$.`,
       idea: String.raw`In an inertial frame $d\mathbf L/dt = \boldsymbol\tau$ (2.9). The principal axes turn with the body at $\boldsymbol\omega$, so by the rule for derivatives in a rotating frame (9.5), $(d\mathbf L/dt)_{\rm space} = (d\mathbf L/dt)_{\rm body} + \boldsymbol\omega\times\mathbf L$. In the body frame the tensor is constant and diagonal (10.8), so $(d\mathbf L/dt)_{\rm body} = (I_1\dot\omega_1, I_2\dot\omega_2, I_3\dot\omega_3)$. Writing out $\boldsymbol\omega\times\mathbf L$ componentwise gives the three equations. Their right-hand sides are quadratic, which is the source of all the rich behaviour of free rotation (10.12–10.14).`,
-      caption: String.raw`A book with moments 1 : 2.3 : 2.9 tumbles. The body-frame components of $\boldsymbol\omega$ are integrated from Euler’s equations (solid curves). Separately, the orientation is integrated in the space frame from $\mathbf L$ and $\boldsymbol\omega = \mathsf R\mathsf I^{-1}\mathsf R^{\mathsf T}\mathbf L$, without Euler’s equations, and its $\boldsymbol\omega$ is converted to body components (dots). They agree to about $10^{-10}$. Without torque, $\mathbf L$ (purple) stays fixed in space while $\boldsymbol\omega$ (blue) wanders. Switch on a thruster fixed to the book or a push fixed in space and watch the components respond, still matched by the space-frame run.`,
+      caption: String.raw`A book with moments $1 : 2.25 : 2.85$ tumbles. The body-frame components of $\boldsymbol\omega$ are integrated from Euler’s equations (solid curves). Separately, the orientation is integrated in the space frame from $\mathbf L$ and $\boldsymbol\omega = \mathsf R\mathsf I^{-1}\mathsf R^{\mathsf T}\mathbf L$, without Euler’s equations, and its $\boldsymbol\omega$ is converted to body components (dots). They agree to $10^{-7}$ or better, the size of the integration error. Without torque, $\mathbf L$ (purple) stays fixed in space while $\boldsymbol\omega$ (blue) wanders. Switch on a thruster fixed to the book or a push fixed in space and watch the components respond, still matched by the space-frame run.`,
       deps: ['mech-10.8', 'mech-9.5', 'mech-2.9'],
       refs: ['Taylor §10.7', 'Goldstein §5.5'],
       tags: ['Euler equations', 'rigid body', 'rotation'],
@@ -575,7 +575,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
           const earth = mode.value === 'earth';
           rS.el.hidden = earth; aS.el.hidden = earth; kS.el.hidden = !earth;
           if (!earth) {
-            S.setTitle('body cone rolling on the space cone (drag to rotate)'); sb.setTitle('$(\\omega_1, \\omega_2)$ seen from the body'); sT.setTitle('$\\omega_1$ (rad/s) against $t$ (s)');
+            S.setTitle('body cone rolling on the space cone (drag to rotate)'); sb.setTitle('$(\\omega_1, \\omega_2)$ seen from the body'); sT.setTitle('$\\omega_1$ (rad/s) against $t$ (s)'); sT.setLabels('t (s)');
             const B = runTop(), R = B.R, i = idxAt(R, t % B.TSim), y = R.y[i], Q = qmat(y.slice(0, 4)), wb = [y[4], y[5], y[6]], ws = mv(Q, wb), e3 = mv(Q, [0, 0, 1]);
             const sz = 0.6 / Math.max(B.rc, B.hc / 2);
             sc.begin();
@@ -609,7 +609,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
             return;
           }
           // Earth
-          S.setTitle('Earth-fixed view: the rotation axis circles the figure axis'); sb.setTitle('path of the rotation pole over 7 years (m)'); sT.setTitle('pole displacement $x$ (m) against time (years)');
+          S.setTitle('Earth-fixed view: the rotation axis circles the figure axis'); sb.setTitle('path of the rotation pole over 7 years (m)'); sT.setTitle('pole displacement $x$ (m) against time (years)'); sT.setLabels('years');
           const Tc = TEsol / (1 - kS.value), AC = 0.15, AA = 0.09, ARC = 30.87, YRS = 7, days = (t * 120) % (YRS * 365.25);
           const pole = (d) => [ARC * (AC * Math.cos((TAU * d) / Tc) + AA * Math.cos((TAU * d) / 365.25 + 0.7)), ARC * (AC * Math.sin((TAU * d) / Tc) + AA * Math.sin((TAU * d) / 365.25 + 0.7))];
           v.legend([['accent', 'rotation axis $\\boldsymbol\\omega$ (Earth-fixed view)'], ['pink', 'figure axis'], ['gold', 'pole now', { dot: true }]]);
@@ -622,7 +622,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
           const cone = []; for (let k = 0; k <= 60; k++) { const a = (TAU * k) / 60; cone.push([1.15 * Math.sin(tilt) * Math.cos(a), 1.15 * Math.sin(tilt) * Math.sin(a), 1.15 * Math.cos(tilt)]); }
           sc.path(cone, { color: 'accent', width: 1.2, alpha: 0.6 });
           sc.arrow([0, 0, 0], scl(wdir, 1.15), { color: 'accent', width: 3 });
-          sc.tex('\\boldsymbol\\omega', scl(wdir, 1.27), { color: 'accent', size: 15, dx: -12 }); sc.tex('\\text{figure axis}', [0, 0, 1.25], { color: 'pink', size: 12, align: 'left', dx: 8 });
+          sc.tex('\\boldsymbol\\omega', scl(wdir, 1.27), { color: 'accent', size: 15, dx: -12 }); sc.tex('\\text{figure axis}', [0, 0, -1.12], { color: 'pink', size: 12, align: 'left', dx: 8 });
           sc.flush();
           S.corner('wobble angle exaggerated ~10⁵ times', 'bl', { size: 11 });
           // pole path

@@ -275,7 +275,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
         const hS = v.slider('flattening $H$ (× actual)', 0, 2, 1, { step: 0.01 });
         const sk = v.stage({ x: [-50, 50], y: [-50, 50], equal: true, axes: false, height: 360, title: 'the northern sky around the ecliptic pole' });
         const S3 = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 360, title: 'why: torque on the equatorial bulge (drag to rotate)' });
-        const sc = v.scene3(S3, { yaw: -0.4, pitch: 0.25, axes: false, hint: false });
+        const sc = v.scene3(S3, { yaw: -2.35, pitch: 0.45, axes: false, hint: false });
         // name, RA (h, m, s), Dec (°, ′, ″), V magnitude
         const STARS = [
           ['Polaris', 2, 31, 49.1, 89, 15, 51, 1.98], ['Kochab', 14, 50, 42.3, 74, 9, 20, 2.08], ['Pherkad', 15, 20, 43.7, 71, 50, 2, 3.05], ['Yildun', 17, 32, 13.0, 86, 35, 11, 4.35],
@@ -320,7 +320,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
             const r = 90 - s.b / DEG; if (r > 49) continue;
             const [x, y] = XY(s.lam, s.b);
             sk.dot(x, y, { r: clamp(4.6 - 0.95 * s.mag, 1.3, 5.2), color: 'ink' });
-            if (LABEL.has(s.name)) { const left = s.name === 'Polaris' || s.name === 'Thuban'; sk.text(s.name, x, y, { color: 'muted', size: 10.5, dx: left ? -6 : 6, dy: -6, align: left ? 'right' : 'left' }); }
+            if (LABEL.has(s.name)) { const o = { Polaris: [0, -13, 'center'], Thuban: [6, 9, 'left'] }[s.name] || [6, -6, 'left']; sk.text(s.name, x, y, { color: 'muted', size: 10.5, dx: o[0], dy: o[1], align: o[2] }); }
             const dd = Math.acos(clamp(Math.sin(s.b) * Math.sin(bp) + Math.cos(s.b) * Math.cos(bp) * Math.cos(s.lam - lp), -1, 1));
             if (s.mag < 3.5 && (!best || dd < best.d)) best = { ...s, d: dd };
           }
@@ -347,7 +347,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
             const pnt = scl(ey, 0.9 * sg), pull = [0, 0, -pnt[2]];
             if (k1 > 0.01 && Math.abs(pnt[2]) > 0.02) sc.arrow(pnt, madd(pnt, pull, 1.1 * k1), { color: 'gold', width: 2.2, head: 7 });
           }
-          sc.arrow([0, 0, 0], scl(zE, 1.35), { color: 'muted', width: 1.4 }); sc.tex('\\text{ecliptic pole}', scl(zE, 1.4), { color: 'muted', size: 11, align: 'right', dx: -8 });
+          sc.arrow([0, 0, 0], scl(zE, 1.35), { color: 'muted', width: 1.4 }); sc.tex('\\text{ecliptic pole}', scl(zE, 1.35), { color: 'muted', size: 11, align: 'right', dx: -6, dy: -14 });
           sc.arrow([0, 0, 0], scl(s, 1.25), { color: 'accent', width: 3 }); sc.tex('\\mathbf L', scl(s, 1.36), { color: 'accent', size: 15 });
           const tq = unit(crs(s, zE));
           if (k1 > 0.01) { sc.arrow([0, 0, 0], scl(tq, 0.55 + 0.3 * Math.min(k1, 1.5)), { color: 'orange', width: 2.8 }); sc.tex('\\boldsymbol\\tau', scl(tq, 0.7 + 0.3 * Math.min(k1, 1.5)), { color: 'orange', size: 15 }); }

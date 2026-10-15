@@ -69,7 +69,7 @@ The **pairwise tallies** $N(x, y) = \#\{i : x \succ_i y\}$ satisfy $N(x, y) + N(
         };
         let cur = '2d';
         const onLine = () => mode.value === '1d';
-        const cH = range(3).map((k) => Sp.handle(...conf['2d'].cand[k], { color: CC[k], r: 9, constrain: (x, y) => [x, onLine() ? 0 : y] }));
+        const cH = range(3).map((k) => Sp.handle(...conf['2d'].cand[k], { color: CC[k], r: 9, label: LET[k], labelPos: 'n', constrain: (x, y) => [x, onLine() ? 0 : y] }));
         const gH = range(3).map((k) => Sp.handle(...conf['2d'].grp[k], { color: 'gray', r: 7, constrain: (x, y) => [x, onLine() ? -0.34 : y] }));
         const mode = v.select('voters', [{ value: 'rank', label: 'ranked ballots' }, { value: '1d', label: 'on a line' }, { value: '2d', label: 'in a plane' }], 'rank', { onChange: sync });
         function sync() {
@@ -124,7 +124,6 @@ The **pairwise tallies** $N(x, y) = \#\{i : x \succ_i y\}$ satisfy $N(x, y) + N(
               c.beginPath(); c.arc(Sp.X(p[0]), Sp.Y(p[1]), 3.3, 0, 2 * Math.PI); c.fillStyle = v.color(CC[t], 0.8); c.fill();
             }
             gH.forEach((h, g) => Sp.text(`${SIZES[g]} voters`, h.x, h.y, { dy: 16, size: 10.5, color: 'muted', align: 'center', weight: 600 }));
-            cH.forEach((h, k) => { chip(v, c, Sp.X(h.x), Sp.Y(h.y) - (onLine() ? 22 : 20), k, { r: 8.5 }); });
           }
           const W = T.width, H = T.height;
           drawRepTriangle(v, T, c6, [0, 6, W, H * 0.64]);
@@ -244,7 +243,7 @@ The winner always has a majority in the final round. But the finalists are chose
             if (val > 0) chunks.push({ e, f, val });
           }
           const ymax = Math.max(n / 2 + 2, ...R.r2, ...R.r1) * 1.1;
-          const F = colFrame([36, 56, W - 12, H - 46], m, ymax), bw = Math.min(F.w * 0.58, 46);
+          const F = colFrame([36, 56, W - 12, H - 50], m, ymax), bw = Math.min(F.w * 0.58, 46);
           hlinePx(v, c, 36, W - 8, F.Y(n / 2), 'red', [6, 4]);
           txt(v, c, String(n / 2), 32, F.Y(n / 2), { size: 10.5, color: 'red', align: 'right', weight: 700 });
           hlinePx(v, c, 36, W - 8, F.base, 'muted', null, 1);
@@ -276,7 +275,7 @@ The winner always has a majority in the final round. But the finalists are chose
             const shown = t < T2 ? Math.round(R.r1[x] * p1) : !isFin && !R.majority ? R.r1[x] : t >= T3 ? R.r2[x] : R.r1[x];
             const yTop = t >= T3 && isFin && !R.majority ? R.r2[x] : R.r1[x] * (t < T2 ? p1 : 1);
             txt(v, c, String(shown), X, F.Y(yTop) - 9, { size: 12.5, weight: 700, halo: true, color: !isFin && t > T2 && !R.majority ? 'muted' : 'ink' });
-            if (t > T1 && !R.majority && isFin) txt(v, c, 'finalist', X, F.base + 31, { size: 9.5, weight: 700, color: 'green' });
+            if (t > T1 && !R.majority && isFin) txt(v, c, 'finalist', X, F.base + 37, { size: 9.5, weight: 700, color: 'green' });
             if (t >= T3 + 0.3 && R.win.length === 1 && R.win[0] === x) winTag(v, c, X, F.Y(yTop) - 28, R.majority ? 'majority in round 1' : `wins ${R.r2[x]}–${n - R.r2[x]}`);
           });
           const phase = t < T1 ? 'round 1: counting first preferences' : R.majority ? 'round 1: a majority — no second round' : t < T3 ? 'round 2: eliminated ballots move to the finalist ranked higher' : 'round 2: final count';
@@ -319,7 +318,7 @@ The winner always has a majority in the final round. But the finalists are chose
         // Burlington, Vermont, mayoral election, 3 March 2009: official IRV rounds (8,980 ballots)
         const BUR = (() => {
           const K = { id: 'K', label: 'Kiss', color: 'purple' }, M = { id: 'M', label: 'Montroll', color: 'blue' }, Wr = { id: 'W', label: 'Wright', color: 'orange' };
-          const O = { id: 'O', label: 'Smith + 2', color: 'teal' }, X = { id: 'X', label: 'exhausted', color: 'gray' };
+          const O = { id: 'O', label: 'Smith +2 others', color: 'teal' }, X = { id: 'X', label: 'exhausted', color: 'gray' };
           const col = (spec) => spec.map(([nd, val, extra]) => ({ ...nd, value: val, ...extra }));
           return {
             cols: [col([[K, 2585], [M, 2063], [Wr, 2951], [O, 1381, { text: 'red', out: true }]]), col([[K, 2981], [M, 2554, { text: 'red', out: true }], [Wr, 3294], [X, 151]]), col([[K, 4313, { text: 'green', win: true }], [Wr, 4061], [X, 606]])],
@@ -356,7 +355,7 @@ The winner always has a majority in the final round. But the finalists are chose
         v.render(() => {
           if (data.value !== 'bur') ed.draw();
           const M = model(), c = Sk.ctx, W = Sk.width, H = Sk.height, K = M.cols.length, k = S.frame.k || K;
-          const left = M.bur ? 100 : 46, right = M.bur ? 108 : 62;
+          const left = M.bur ? 156 : 46, right = M.bur ? 112 : 62;
           const box = [left, 30, W - right, H - 12];
           const colX = (j) => box[0] + (K === 1 ? 0 : (j * (box[2] - box[0] - 14)) / (K - 1));
           for (let j = 0; j < K; j++) txt(v, c, `round ${j + 1}`, colX(j) + 7, 13, { size: 11, weight: 600, color: j < k ? 'muted' : 'faint' });
@@ -464,7 +463,7 @@ Two classical Condorcet methods also decide when there is no Condorcet winner. *
 
 The majority relation is drawn as a *tournament*: a directed graph with an arrow $x \to y$ whenever $x$ beats $y$. The **Smith set** (top cycle) is the smallest set of candidates who all beat everyone outside it; a Condorcet winner exists exactly when the Smith set has one member.`,
       idea: String.raw`Condorcet’s idea is to treat an election as a collection of two-candidate elections, each settled by majority rule (polsci-3.1). Plurality, the runoff, IRV and Borda are not Condorcet-consistent: each can pass over a candidate who beats every rival, as with the centre squeeze in polsci-1.3 and Burlington 2009 in polsci-1.4. When majorities cycle there is no Condorcet winner, and a method must decide how to break the cycle. Copeland counts wins, minimax looks for the mildest worst defeat, and Kemeny’s rule (polsci-1.11) reverses the fewest individual preferences. Copeland is coarse: in a four-candidate tournament with no Condorcet winner the win counts are $(2, 2, 2, 0)$ or $(2, 2, 1, 1)$, so it always ties at the top.`,
-      caption: String.raw`In the tournament an arrow $x \to y$ means a majority ranks $x$ above $y$, labelled with the tally or the margin. A green ring marks the Condorcet winner. In the starting electorate it is E, whom only 3 voters rank first. Switch to *majority cycle*: now there is none. The red arrows run inside the top cycle, and Copeland (gold ring; win counts in the node notes) and minimax pick different candidates. Drag bars, click letters, or drag the nodes.`,
+      caption: String.raw`In the tournament an arrow $x \to y$ means a majority ranks $x$ above $y$, labelled with the tally or the margin. A green ring marks the Condorcet winner. In the starting electorate it is E, whom only 3 voters rank first. Switch to *a majority cycle*: now there is none. The red arrows trace one cycle of majorities, all five candidates are in the top cycle, and Copeland (gold ring; win counts in the node notes) and minimax pick different candidates — and plurality and Borda two more. Drag bars, click letters, or drag the nodes.`,
       deps: ['polsci-1.1'],
       see: ['polsci-2.1', 'polsci-3.1'],
       refs: ['T&P ch. 1'],
@@ -477,7 +476,7 @@ The majority relation is drawn as a *tournament*: a directed graph with an arrow
         const Ms = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 220, full: true, title: 'pairwise tallies and two Condorcet methods' });
         const PRE = {
           win: mkProfile(5, [[9, 'AEBCD'], [5, 'AECDB'], [7, 'BEDCA'], [3, 'CEBDA'], [4, 'DBCEA'], [3, 'EBCAD']]),
-          cyc: mkProfile(5, [[7, 'ABECD'], [4, 'BECDA'], [3, 'BAECD'], [4, 'CDABE'], [6, 'DEBAC'], [5, 'EDABC']]),
+          cyc: mkProfile(5, [[3, 'AECBD'], [8, 'BEADC'], [6, 'BDACE'], [5, 'CDABE'], [3, 'DECAB'], [4, 'EDACB']]),
         };
         const P = copyProfile(PRE.win);
         v.select('electorate', [{ value: 'win', label: 'a Condorcet winner' }, { value: 'cyc', label: 'a majority cycle' }], 'win', { onChange: (val) => setProfile(P, PRE[val]) });
@@ -488,13 +487,20 @@ The majority relation is drawn as a *tournament*: a directed graph with an arrow
         const G = v.graph(Gs, { nodes, edges: [], directed: true, layout: 'none', r: 15, fontSize: 13 });
         v.render(() => {
           ed.draw();
-          const N = pairwise(P), C = condorcet(P, N), smith = new Set(C.smith), cyc = C.smith.length > 1;
+          const N = pairwise(P), C = condorcet(P, N);
+          // one majority cycle (a 3-cycle exists whenever there is no Condorcet winner), through the Copeland leader if possible
+          let cyc3 = null;
+          if (C.winner < 0) {
+            const order = [C.copWin[0], ...range(5).filter((x) => x !== C.copWin[0])];
+            outer: for (const x of order) for (const y of range(5)) for (const z of range(5)) if (x !== y && y !== z && x !== z && C.beats(x, y) && C.beats(y, z) && C.beats(z, x)) { cyc3 = [x, y, z]; break outer; }
+          }
+          const onCyc = (a, b) => !!cyc3 && [0, 1, 2].some((k) => cyc3[k] === a && cyc3[(k + 1) % 3] === b);
           const edges = [];
           for (let x = 0; x < 5; x++) for (let y = x + 1; y < 5; y++) {
             const a = N[x][y], b = N[y][x];
             if (a === b) { edges.push({ from: x, to: y, directed: false, dash: [4, 3], label: `${a}–${b}` }); continue; }
             const [w, l, p, q] = a > b ? [x, y, a, b] : [y, x, b, a];
-            edges.push({ from: w, to: l, label: lab.value === 'tally' ? `${p}–${q}` : `+${p - q}`, inCycle: cyc && smith.has(w) && smith.has(l) });
+            edges.push({ from: w, to: l, label: lab.value === 'tally' ? `${p}–${q}` : `+${p - q}`, inCycle: onCyc(w, l) });
           }
           G.edges = edges;
           G.draw({
@@ -523,7 +529,7 @@ The majority relation is drawn as a *tournament*: a directed graph with an arrow
             txt(v, c, String(C.minimax[x]), x0 + 3.5 * cw, Y, { size: 12.5, weight: mm1 ? 800 : 500, color: mm1 ? 'gold' : 'ink' });
           });
         });
-        v.legend([['green', 'Condorcet winner', { dot: true }], ['gold', 'Copeland / minimax choice', { dot: true }], ['red', 'arrows inside the top cycle']]);
+        v.legend([['green', 'Condorcet winner', { dot: true }], ['gold', 'Copeland / minimax choice', { dot: true }], ['red', 'a majority cycle']]);
         v.readout(() => {
           const N = pairwise(P), C = condorcet(P, N), n = total(P), pl = plurality(P).win, bo = best(borda(P), range(5));
           if (C.winner >= 0) {

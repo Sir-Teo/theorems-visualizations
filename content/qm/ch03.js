@@ -245,7 +245,7 @@ Each $\psi_n$ is a whole number of half-wavelengths, $\lambda_n=2L/n$, with $n-1
         const s = v.stage({ x: [-0.18, 2.35], y: [-0.7, 10.4], height: 360, axes: 'box', weight: 1.35, xlabel: 'x (nm)', ylabel: 'E (eV)', title: 'an electron in a box of width $L$' });
         const s2 = v.stage({ x: [0.85, 13], y: [0.004, 300], xlog: true, ylog: true, height: 360, axes: 'box', weight: 0.85, xlabel: 'n', ylabel: 'Eₙ (eV)', title: '$E_n$ against $n$ (log–log)' });
         const hL = s.handle(1.2, -0.35, { color: 'gold', r: 8, label: 'L', labelPos: 'e', constrain: (X) => [M.clamp(X, 0.4, 2.1), -0.35] });
-        const nS = v.slider('level $n$', 1, 10, 3, { int: true });
+        const nS = v.slider('level $n$', 1, 10, 4, { int: true });
         v.button('Halve $L$', () => hL.set(Math.max(0.4, hL.x / 2), -0.35));
         v.button('Double $L$', () => hL.set(Math.min(2.1, hL.x * 2), -0.35));
         v.button('Make this $L$ the reference', () => { Lref = hL.x; });
@@ -387,22 +387,23 @@ so Parseval's identity $\sum_n|c_n|^2=\|f\|^2$ holds. The convergence is in $L^2
 $$T_{\rm rev}=\frac{2\pi\hbar}{E_1}=\frac{4mL^2}{\pi\hbar}.$$
 A localized wave packet first bounces back and forth like a classical particle, then spreads around the box into an irregular interference pattern, and at $t=T_{\rm rev}$ reassembles perfectly: $\Psi(x,T_{\rm rev})=\Psi(x,0)$. At $T_{\rm rev}/2$ it reappears as its mirror image, $\Psi(x,T_{\rm rev}/2)=-\Psi(L-x,0)$, and at rational fractions $\tfrac pq T_{\rm rev}$ as a superposition of a few copies (**fractional revivals**); plotted over $(x,t)$ the density forms a "quantum carpet". Exact revivals need energies in integer ratios; for a general spectrum they are only approximate.`,
       idea: String.raw`By 3.2, $\Psi(x,t)=\sum c_n e^{-iE_nt/\hbar}\psi_n(x)$, and $E_n=n^2E_1$. At $t=T_{\rm rev}$ every phase is $e^{-2\pi in^2}=1$, so the sum is back to $\Psi(x,0)$. At half that time the phase is $e^{-i\pi n^2}=(-1)^n$, and $(-1)^n\psi_n(x)=-\psi_n(L-x)$ gives the mirror image. At $t=\tfrac pqT_{\rm rev}$ the phases $e^{-2\pi ipn^2/q}$ repeat in $n$ with period $q$ (or $2q$), so they can be written as a finite Fourier sum and $\Psi$ becomes a few shifted copies of $\Psi(x,0)$, the Talbot effect of optics in time. A perturbation that makes the levels irregular dephases the terms and spoils the revival.`,
-      caption: String.raw`Top: $\Psi(x,t)$ in the box (height $|\Psi|$, colour phase), with the initial packet dashed. Left: the carpet $|\Psi(x,t)|^2$ with time running upward over one revival period; right, aligned with it, the return probability $|\langle\Psi(0)|\Psi(t)\rangle|^2$, which climbs back to exactly 1 at $T_{\rm rev}=4mL^2/\pi\hbar$. Use the buttons to jump to $T_{\rm rev}/4$ (two copies), $T_{\rm rev}/2$ (mirror image) and $T_{\rm rev}$. Change the packet's width and momentum: the carpet changes, $T_{\rm rev}$ does not. Turn up the **impurity**, which shifts the levels irregularly (first-order perturbation by a weak delta at $x=0.37L$): the revival fades.`,
+      caption: String.raw`Top: $\Psi(x,t)$ in the box (height $|\Psi|$, colour phase), with the initial packet dashed. Middle: the carpet $|\Psi(x,t)|^2$ over one revival period, time running to the right — the packet first zig-zags between the walls like a classical particle, then dissolves into a fine weave; below, on the same time axis, the return probability $|\langle\Psi(0)|\Psi(t)\rangle|^2$, which climbs back to exactly 1 at $T_{\rm rev}=4mL^2/\pi\hbar$. Use the buttons to jump to $T_{\rm rev}/4$ (two copies), $T_{\rm rev}/2$ (mirror image) and $T_{\rm rev}$. Change the packet's width and momentum: the carpet changes, $T_{\rm rev}$ does not. Turn up the **impurity**, which shifts the levels irregularly (first-order perturbation by a weak delta at $x=0.37L$): the revival fades.`,
       deps: ['qm-3.3', 'qm-3.2'],
       see: ['waves-8.9', 'qm-4.8'],
       refs: ['Griffiths §2.2'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_revival' },
       tags: ['revivals', 'quantum carpet', 'interference'],
       viz(v) {
-        const M = v.M, L = 1, TR = (4 * L * L) / Math.PI, TMAX = 1.05 * TR, PER = 21, NXC = 240, NTC = 340, SUB = 8, NXF = 600, X0 = 0.32, AIMP = 0.37;
-        const sig = v.slider('packet width $\\sigma/L$', 0.025, 0.12, 0.05, { step: 0.001 });
-        const k0s = v.slider('momentum $k_0L$', 0, 60, 0, { step: 0.5 });
+        const M = v.M, L = 1, TR = (4 * L * L) / Math.PI, TMAX = 1.05 * TR, PER = 21, NXC = 150, NTC = 860, SUB = 3, NXF = 600, X0 = 0.32, AIMP = 0.37;
+        const sig = v.slider('packet width $\\sigma/L$', 0.03, 0.12, 0.08, { step: 0.001 });
+        const k0s = v.slider('momentum $k_0L$', 0, 40, 10, { step: 0.5 });
         const al = v.slider('impurity strength $\\alpha$', 0, 1.5, 0, { step: 0.01 });
         const jump = (f) => () => { v.pause(); v.t = (PER * f) / 1.05; };
         v.button('$t=T_{\\rm rev}/4$', jump(0.25)); v.button('$T_{\\rm rev}/2$', jump(0.5)); v.button('$T_{\\rm rev}$', jump(1));
         const s1 = v.stage({ x: [-0.04, 1.04], y: [0, 1], height: 190, axes: 'box', full: true, xlabel: 'x / L', title: '$\\Psi(x,t)$ in the box' });
-        const s2 = v.stage({ x: [0, 1], y: [0, TMAX], height: 330, axes: 'box', weight: 1.35, xlabel: 'x / L', ylabel: 't', yticks: [[0, '0'], [TR / 4, '¼T'], [TR / 2, '½T'], [(3 * TR) / 4, '¾T'], [TR, 'T_rev']], title: 'quantum carpet $|\\Psi(x,t)|^2$' });
-        const s3 = v.stage({ x: [0, 1.05], y: [0, TMAX], height: 330, axes: 'box', weight: 0.65, xlabel: 'return prob.', yticks: [], title: '$|\\langle\\Psi(0)|\\Psi(t)\\rangle|^2$' });
+        const TT = [[0, '0'], [TR / 4, '¼ T_rev'], [TR / 2, '½ T_rev'], [(3 * TR) / 4, '¾ T_rev'], [TR, 'T_rev']];
+        const s2 = v.stage({ x: [0, TMAX], y: [0, 1], height: 230, axes: 'box', full: true, ylabel: 'x / L', xticks: TT, title: 'quantum carpet $|\\Psi(x,t)|^2$, time running to the right' });
+        const s3 = v.stage({ x: [0, TMAX], y: [0, 1.12], height: 130, axes: 'box', full: true, xlabel: 't', xticks: TT, yticks: [0, 0.5, 1], title: 'return probability $|\\langle\\Psi(0)|\\Psi(t)\\rangle|^2$' });
         const { x: xf, dx: dxf } = grid(0, L, NXF);
         let D = null;
         const data = () => {
@@ -426,8 +427,9 @@ A localized wave packet first bounces back and forth like a classical particle, 
             for (let j = 0; j < NXC; j++) { let a = 0, b = 0; for (let n = 0; n < N; n++) { a += pr[n] * tab[n][j]; b += pi[n] * tab[n][j]; } car[r * NXC + j] += (a * a + b * b) / SUB; }
           }
           let peak = 0; for (let i = 0; i < NXF; i++) peak = Math.max(peak, re0[i] ** 2 + im0[i] ** 2);
-          const ac = []; for (let r = 0; r <= 700; r++) { const tau = (TMAX * r) / 700; let a = 0, b = 0; for (let n = 0; n < N; n++) { const w = cr[n] ** 2 + ci[n] ** 2; a += w * Math.cos(E[n] * tau); b -= w * Math.sin(E[n] * tau); } ac.push([a * a + b * b, tau]); }
-          return (D = { key, N, cr, ci, E, phi, car, peak, ac, re0, im0 });
+          let W = 0; for (let n = 0; n < N; n++) W += cr[n] ** 2 + ci[n] ** 2; // weight kept by the truncation (≈ 1 − 10⁻⁵): the evolved state is the truncated one
+          const ac = []; for (let r = 0; r <= 900; r++) { const tau = (TMAX * r) / 900; let a = 0, b = 0; for (let n = 0; n < N; n++) { const w = cr[n] ** 2 + ci[n] ** 2; a += w * Math.cos(E[n] * tau); b -= w * Math.sin(E[n] * tau); } ac.push([(a * a + b * b) / (W * W), tau]); }
+          return (D = { key, N, cr, ci, E, phi, car, peak, ac, re0, im0, W });
         };
         const state = (D, tau) => {
           const re = new Float64Array(NXF), im = new Float64Array(NXF);
@@ -445,22 +447,23 @@ A localized wave packet first bounces back and forth like a classical particle, 
           // carpet
           const CA = v.rgb('accent'), CG = v.rgb('gold'), BG = v.rgb('panel');
           s2.raster((X, Y) => {
-            const r = Math.round((Y / TMAX) * (NTC - 1)), j = Math.floor(X * NXC); if (r < 0 || r >= NTC || j < 0 || j >= NXC) return null;
+            const r = Math.round((X / TMAX) * (NTC - 1)), j = Math.floor(Y * NXC); if (r < 0 || r >= NTC || j < 0 || j >= NXC) return null;
             const u = Math.min(1, Math.sqrt(D.car[r * NXC + j] / D.peak)), w = Math.max(0, (u - 0.55) / 0.45);
             const a = u * (1 - w), b = u * w;
             return [BG[0] + (CA[0] - BG[0]) * a + (CG[0] - BG[0]) * b, BG[1] + (CA[1] - BG[1]) * a + (CG[1] - BG[1]) * b, BG[2] + (CA[2] - BG[2]) * a + (CG[2] - BG[2]) * b];
           }, { res: 2, key: D.key });
-          for (const f of [0.25, 0.5, 0.75, 1]) s2.hline(f * TR, { color: 'ink', width: 0.8, dash: [2, 4], alpha: 0.4 });
-          s2.hline(tau, { color: 'red', width: 1.8 });
+          s2.axes();
+          for (const f of [0.25, 0.5, 0.75, 1]) s2.vline(f * TR, { color: 'ink', width: 0.8, dash: [2, 4], alpha: 0.4 });
+          s2.vline(tau, { color: 'red', width: 1.8 });
           // return probability
-          for (const f of [0.25, 0.5, 0.75, 1]) s3.hline(f * TR, { color: 'ink', width: 0.8, dash: [2, 4], alpha: 0.4 });
-          s3.path(D.ac.map(([p, q]) => [p, q]), { color: 'accent', width: 1.8 });
+          for (const f of [0.25, 0.5, 0.75, 1]) s3.vline(f * TR, { color: 'ink', width: 0.8, dash: [2, 4], alpha: 0.4 });
+          s3.path(D.ac.map(([p, q]) => [q, p]), { color: 'accent', width: 1.6 });
           let a = 0, b = 0; for (let n = 0; n < D.N; n++) { const w = D.cr[n] ** 2 + D.ci[n] ** 2; a += w * Math.cos(D.E[n] * tau); b -= w * Math.sin(D.E[n] * tau); }
-          const ret = a * a + b * b; s3.hline(tau, { color: 'red', width: 1.4 }); s3.dot(ret, tau, { r: 5.5, color: 'red' });
+          const ret = (a * a + b * b) / (D.W * D.W); s3.vline(tau, { color: 'red', width: 1.4 }); s3.dot(tau, ret, { r: 5.5, color: 'red' });
           let aR = 0, bR = 0; for (let n = 0; n < D.N; n++) { const w = D.cr[n] ** 2 + D.ci[n] ** 2; aR += w * Math.cos(D.E[n] * TR); bR -= w * Math.sin(D.E[n] * TR); }
           // mirror check at T/2: overlap with −Ψ(L − x, 0)
           let mr = 0, mi = 0; const Ph = state(D, TR / 2); for (let i = 0; i < NXF; i++) { const j = NXF - 1 - i; mr += -D.re0[j] * Ph.re[i] - D.im0[j] * Ph.im[i]; mi += -D.re0[j] * Ph.im[i] + D.im0[j] * Ph.re[i]; }
-          st = { tau, ret, retR: aR * aR + bR * bR, mirror: (mr * mr + mi * mi) * dxf * dxf, N: D.N };
+          st = { tau, ret, retR: (aR * aR + bR * bR) / (D.W * D.W), mirror: ((mr * mr + mi * mi) * dxf * dxf) / D.W, N: D.N };
         }, { period: PER, still: PER / 1.05 - 0.02 });
         v.legend([['accent', '|Ψ|² (carpet), return probability'], ['red', 'now'], ['ink', 'initial |Ψ|', { dash: true }]]);
         v.readout(() => st && `$T_{\\rm rev} = 4mL^2/\\pi\\hbar = ${v.fix(TR, 4)}$ ($\\hbar = m = L = 1$) · now $t = ${v.fix(st.tau / TR, 4)}\\,T_{\\rm rev}$, return probability **${v.fix(st.ret, 4)}** · at $T_{\\rm rev}$ it is **${v.fix(st.retR, 6)}**${al.value ? ' — the irregular level shifts spoil it' : ''} · at $T_{\\rm rev}/2$ the overlap with the mirror image $-\\Psi(L-x,0)$ is ${v.fix(st.mirror, 4)} · ${st.N} modes.`);
@@ -619,7 +622,7 @@ normalizable whenever $\phi\in L^2$; a band of width $\Delta k$ gives a packet o
       name: 'No degenerate bound states in one dimension',
       statement: String.raw`In one dimension, with $V$ locally bounded on a connected interval or the whole line, two normalizable solutions $\psi_1,\psi_2$ of $-\frac{\hbar^2}{2m}\psi''+V\psi=E\psi$ with the **same** energy $E$ are proportional: every bound-state energy is **nondegenerate**. Consequently, as a parameter of $V$ varies continuously, two bound levels never cross — they approach and repel (an **avoided crossing**), with a gap that shrinks as the states' overlap does. The hypothesis matters: an impenetrable wall that cuts the line into two pieces, or a periodic (ring) geometry, allows degeneracy.`,
       idea: String.raw`For two solutions at one energy the Wronskian $W=\psi_1\psi_2'-\psi_1'\psi_2$ satisfies $W'=\psi_1\psi_2''-\psi_1''\psi_2=\frac{2m}{\hbar^2}(V-E)(\psi_1\psi_2-\psi_1\psi_2)=0$, so it is constant (ode-3.10; Abel's identity). Bound states vanish at infinity, so the constant is zero. Then $(\psi_2/\psi_1)'=-W/\psi_1^2=0$ wherever $\psi_1\neq0$, and since the zeros of a nontrivial solution are isolated, $\psi_2=c\,\psi_1$ on the whole connected domain. A wall where both functions vanish on an interval breaks this last step: the ratio may jump across it. Without degeneracy, levels as functions of a parameter are simple eigenvalues of a real symmetric problem, and generic simple eigenvalues of such a one-parameter family repel.`,
-      caption: String.raw`Two wells, the left deeper by $2\varepsilon$, separated by a distance set by $d$. Bottom: the levels against the asymmetry $\varepsilon$ — they approach and swerve apart (zoom in with the readout: the gap at $\varepsilon=0$ is the tunnel splitting, never zero). Top left: the solutions shot in from the left (blue) and from the right (purple, dashed) at the energy $E$ of the chosen level plus a detuning; top right: their Wronskian across the whole grid — constant, and zero exactly when $E$ is an eigenvalue. Switch on the **wall**: the wells decouple, the levels cross, and at the crossing the two shot solutions have $W=0$ yet live on different sides — the proof's last step fails.`,
+      caption: String.raw`Two wells, the left deeper by $2\varepsilon$, separated by a distance set by $d$. Bottom left: the levels against the asymmetry $\varepsilon$ — they approach and swerve apart; bottom right: the gaps between neighbours on a log scale, which dip at each near-meeting but never reach zero (the dip at $\varepsilon=0$ is the tunnel splitting; shrink it by pulling the wells apart with $d$). Top left: the solutions shot in from the left (blue) and from the right (purple, dashed) at the energy $E$ of the chosen level plus a detuning; top right: their Wronskian across the whole grid — constant, and zero exactly when $E$ is an eigenvalue. Switch on the **wall**: the wells decouple, the gaps plunge to numerical zero where the levels cross, and at the crossing the two shot solutions have $W=0$ yet live on different sides — the proof's last step fails.`,
       deps: ['qm-3.1', 'ode-3.10'],
       see: ['ode-3.11', 'qm-3.17'],
       refs: ['Griffiths ch. 2'],

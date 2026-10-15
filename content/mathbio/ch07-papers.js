@@ -138,5 +138,87 @@ they proved:
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 7.15
+    // Data (verified): Ross, The Prevention of Malaria, 2nd ed. (1911), §27–28, pp. 155–164 (archive.org b21351508, OCR
+    // text): b = 1/4 of Anophelines succeed in biting, s = 1/3 in maturing the parasites, b again in biting a second
+    // person, i = 1/4 of the infected carry gametids, so b²si = 1/192; half the cases remain infected after three months,
+    // so r = 1 − ∛½ = 0.2063 per month; "a(1 − m) = 192 × 0.2063 = 39.59 = 40" (eq. 3); m_{n+1} = m_n + b²sai(1 − m_n)m_n −
+    // r m_n (eq. 4); with r = 0.2 and b²si = 0.005 (eq. 5) his tables for a village of 1,000, half infected: a = 100: 500,
+    // 525, 544, 560, 571 … 600; a = 60: 500, 475, 455, 438, 424 … 333; a = 40: 500, 450, 409, 376, 348 … 0; a = 1: 500,
+    // 401, 322, 259, 207; a = 0: 500, 400, 320, 256, 205; limit m = 1 − r/b²sai (eq. 7) = 1 − 40/a; "If the number of
+    // Anophelines is sufficiently low (say below 40 per person), the ultimate malaria rate will tend to zero".
+    // Today: WHO World Malaria Report 2024 (263 million cases, 597,000 deaths in 2023); Smith et al. (2007) PLoS Biol 5:
+    // e42, R₀ for 121 African populations from about 1 to more than 3,000.
+    {
+      num: '7.15',
+      kind: 'Paper',
+      name: 'The Prevention of Malaria',
+      paper: { authors: 'Ronald Ross', year: 1911, title: 'The Prevention of Malaria',
+               venue: 'London: John Murray (2nd edition)', url: 'https://archive.org/details/b21351508' },
+      introduces: ['mathbio-7.11'],
+      statement: String.raw`Ross set out, in a few lines of algebra, how the amount of malaria in a place is regulated. Let $m$ be the fraction of the $p$ people infected and $a$ the number of different Anopheline mosquitoes that bite each person in a month. Of the mosquitoes that bite the infected, a fraction $b$ succeed in biting, $s$ mature the parasite, $b$ bite again, and only the fraction $i$ of infected people carrying gametocytes infect them; new infections land on the healthy fraction $1-m$, while a fraction $r$ of cases recover each month. Month by month,
+$$m_{n+1}=m_n+b^2s\,a\,i\,(1-m_n)\,m_n-r\,m_n .$$
+Malaria therefore increases or decreases according as $a(1-m)$ exceeds or falls short of $r/b^2si$, and settles at
+$$m^*=1-\frac{r}{b^2s\,i\,a}\qquad\text{or at } 0 \text{ if } a<\frac{r}{b^2si}.$$
+With his estimates ($b=\tfrac14$, $s=\tfrac13$, $i=\tfrac14$, half the cases recovering in three months) the critical number is about **40 Anophelines per person per month**: below it malaria dies out, **without every mosquito having to be killed**.
+
+The model is a deterministic mass-action description of a single, closed, homogeneous population; Ross listed what it leaves out (births and deaths, immunity, seasons, mosquitoes biting many times) and used it, as he said, to give "precision to our ideas" rather than numbers.`,
+      idea: String.raw`Ross had shown in 1897–98 that mosquitoes carry the malaria parasite, and won the Nobel Prize for it in 1902. The obvious control, killing mosquitoes, was attacked as futile: one could never kill them all. His answer was this "mosquito theorem": because transmission needs two bites and the disease clears on its own, there is a threshold density below which each case fails to replace itself, so partial reduction suffices. It is the first threshold theorem of epidemiology, a quarter century before Kermack and McKendrick (mathbio-7.16), and the start of mathematical epidemiology as a quantitative science; Ross also wrote it as differential equations in the book's addendum on the "theory of happenings". Macdonald (1957) added mosquito survival through the parasite's development and made the threshold the basic reproduction number, the Ross–Macdonald model (mathbio-7.11), on which the WHO's eradication campaign was built. The update $m\mapsto m+(\text{new}-\text{recovered})$ is logistic growth (mathbio-1.2) with a death term, so its fate is decided by a transcritical bifurcation at $a=r/b^2si$.`,
+      caption: String.raw`**Right**: Ross's law as a phase diagram, mosquitoes per person per month across, malaria ratio up. Arrows show which way malaria moves; the green curve is his equilibrium $m^*=1-a^*/a$, zero below the critical number $a^*$ (red line, about 40). **Drag the gold point** to choose the mosquito number and the starting malaria ratio. **Left**: month by month from that start, by his recurrence (gold), beside his own worked tables for a village of 1,000 people, half infected, with 100, 60, 40, 1 and no Anophelines (dots: the numbers he printed; faint lines: recomputed). Change his factors, the share of bites that succeed ($b$), of mosquitoes that mature the parasite ($s$), of cases infective to them ($i$) and the monthly recovery ($r$), and the threshold moves.`,
+      deps: ['mathbio-1.2'],
+      refs: [],
+      tags: ['malaria', 'threshold', 'history'],
+      credit: 'Ronald Ross, 1911',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ross%E2%80%93Macdonald_model' },
+      viz(v) {
+        const bS = v.slider('$b$: bites that succeed', 0.1, 0.5, 0.25, { step: 0.01 });
+        const sS = v.slider('$s$: mosquitoes maturing the parasite', 0.1, 0.6, 1 / 3, { step: 0.01 });
+        const iS = v.slider('$i$: cases infective to mosquitoes', 0.05, 0.5, 0.25, { step: 0.01 });
+        const rS = v.slider('$r$: recoveries per month', 0.05, 0.5, 1 - 0.5 ** (1 / 3), { step: 0.001, decimals: 3 });
+        const Lt = v.stage({ x: [0, 24], y: [0, 100], axes: 'box', height: 350, weight: 1, xlabel: 'months', ylabel: 'malaria ratio m (% infected)', title: 'month by month (Ross’s recurrence)' });
+        const Ph = v.stage({ x: [0, 160], y: [0, 100], axes: 'box', height: 350, weight: 1, xlabel: 'Anophelines per person per month, a', ylabel: 'malaria ratio m (%)', title: 'the law of the amount of malaria' });
+        const H = Ph.handle(30, 50, { color: 'gold', r: 8, constrain: { x: [0, 160], y: [0.1, 100] } });
+        const TABLES = [[100, [500, 525, 544, 560, 571], 600], [60, [500, 475, 455, 438, 424], 333], [40, [500, 450, 409, 376, 348], 0], [1, [500, 401, 322, 259, 207], 0], [0, [500, 400, 320, 256, 205], 0]];
+        const step = (m, a, k, r) => Math.min(1, Math.max(0, m + k * a * (1 - m) * m - r * m));
+        const run = (m0, a, k, r, n) => { const out = [m0]; let m = m0; for (let t = 0; t < n; t++) { m = step(m, a, k, r); out.push(m); } return out; };
+        // Ross's own tables (r = 0.2, b²si = 1/200), rounded to whole cases as he printed them
+        const rossDev = Math.max(...TABLES.map(([a, rows]) => Math.max(...run(0.5, a, 0.005, 0.2, 4).map((m, t) => Math.abs(Math.round(1000 * m) - rows[t])))));
+        let st = null;
+        v.render(() => {
+          const k = bS.value ** 2 * sS.value * iS.value, r = rS.value, aStar = r / k, a = H.x, m0 = H.y / 100;
+          // ---- phase diagram
+          Ph.clip(() => Ph.between((x) => (x > aStar ? 100 * (1 - aStar / x) : 0), () => 0, 0.5, 160, { fill: 'green', fillAlpha: 0.08, n: 200 }));
+          for (let x = 8; x < 160; x += 12) for (let y = 8; y < 100; y += 12) {
+            const m = y / 100, dm = 100 * (k * x * (1 - m) * m - r * m), len = Math.max(-5, Math.min(5, dm * 0.6));
+            if (Math.abs(len) > 0.3) Ph.arrow(x, y, x, y + len, { color: dm > 0 ? 'red' : 'blue', width: 1.2, alpha: 0.5, head: 5 });
+          }
+          Ph.fn((x) => (x > aStar ? 100 * (1 - aStar / x) : 0), { color: 'green', width: 3, domain: [0, 160], n: 300 });
+          if (aStar < 160) { Ph.vline(aStar, { color: 'red', width: 1.6, dash: [5, 4] }); Ph.text(`a* = ${v.fix(aStar, 1)}`, aStar, 70, { dx: 6, size: 12, weight: 700, color: 'red', align: 'left', plate: true }); }
+          Ph.text('malaria grows', 150, 30, { size: 11.5, weight: 700, color: 'red', align: 'right' });
+          Ph.text('malaria declines', 150, 92, { size: 11.5, weight: 700, color: 'blue', align: 'right' });
+          const traj = run(m0, a, k, r, 24);
+          Ph.path(traj.map((m) => [a, 100 * m]), { color: 'gold', width: 2 });
+          Ph.dot(a, 100 * traj[24], { r: 5, color: 'gold', hollow: true });
+          // ---- time series
+          TABLES.forEach(([aa, rows], j) => {
+            const col = ['purple', 'teal', 'red', 'blue', 'muted'][j], rec = run(0.5, aa, 0.005, 0.2, 24);
+            Lt.path(rec.map((m, t) => [t, 100 * m]), { color: col, width: 1.3, alpha: 0.55 });
+            rows.forEach((c, t) => Lt.dot(t, c / 10, { r: 3.4, color: col }));
+            if (aa === 1) Lt.text('a = 1 and 0', 6, 100 * rec[6], { dx: 8, dy: -6, size: 11, weight: 700, color: col, align: 'left' });
+            else if (aa > 1) Lt.text(`a = ${aa}`, 24, 100 * rec[24], { dx: -4, dy: -9, size: 11, weight: 700, color: col, align: 'right' });
+          });
+          Lt.path(traj.map((m, t) => [t, 100 * m]), { color: 'gold', width: 3 });
+          Lt.dot(0, 100 * m0, { r: 6, color: 'gold' });
+          st = { k, r, aStar, a, m0, traj };
+        });
+        v.legend([['gold', 'your village (drag on the right)'], ['green', 'equilibrium $m^* = 1 - a^*/a$'], ['red', 'critical number $a^*$', { dash: true }], ['purple', 'Ross’s tables: a = 100, 60, 40, 1, 0 (dots printed)', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { k, r, aStar, a, m0, traj } = st, mStar = a > aStar ? 1 - aStar / a : 0;
+          const half = traj.findIndex((m) => m <= m0 / 2);
+          return `$b^2 s i = 1/${v.fix(1 / k, 0)}$, so the critical number is $a^* = r/b^2si$ = **${v.fix(aStar, 1)}** Anophelines per person per month (Ross: 192 × 0.2063 = 39.59 ≈ 40) · with $a = ${v.fix(a, 1)}$: $R_0 = a/a^* = ${v.fix(a / aStar, 2)}$, malaria ${a > aStar ? `settles at **${v.fix(100 * mStar, 1)}%** whether it starts with everyone or with one case` : `**dies out**${half > 0 ? ` (halved after ${half} months)` : ''} although mosquitoes remain`}; after 24 months ${v.fix(100 * traj[24], 1)}% · his printed tables (r = 0.2, $b^2si$ = 1/200) are reproduced to within ${rossDev} case${rossDev === 1 ? '' : 's'} in 1,000 · today: R₀ of falciparum malaria ranges from about 1 to more than 3,000 across 121 African populations (Smith et al. 2007), and 263 million cases and 597,000 deaths were estimated for 2023 (WHO)`;
+        });
+      },
+    },
   ],
 };

@@ -338,8 +338,8 @@ On the same ballots the two can elect different candidates: a mean rewards inten
       statement: String.raw`A **positional scoring rule** for $m$ candidates is given by a scoring vector $w = (w_1, w_2, \dots, w_m)$ with $w_1 \ge w_2 \ge \dots \ge w_m$ and $w_1 > w_m$: a candidate in position $k$ on a ballot receives $w_k$ points, and the highest total wins. Plurality is $(1, 0, \dots, 0)$, the Borda count $(m-1, m-2, \dots, 0)$, anti-plurality (veto) $(1, \dots, 1, 0)$, and “vote for $k$” gives a point to each of the top $k$. Replacing $w$ by $a w + b$ ($a > 0$) gives the same rule, so for three candidates every positional rule is
 $$w_s = (1, s, 0), \qquad 0 \le s \le 1,$$
 with $s = 0$ plurality, $s = \tfrac12$ Borda and $s = 1$ anti-plurality. A candidate’s score $t_1(x) + s\,t_2(x)$ ($t_k$ = number of $k$-th places) is linear in $s$, and the normalized tallies move along a straight segment, the *procedure line*, in the triangle of outcomes.`,
-      idea: String.raw`Because each score is a straight line in $s$, the ranking can change only where two lines cross, and each pair crosses at most once. So as $s$ runs from 0 to 1 a three-candidate profile passes through at most four strict rankings and three tied ones — seven outcomes in all. Saari showed that all seven can occur for a single profile. In the triangle of outcomes the three tie lines $x = y$ cut the triangle into the six ranking regions, and the procedure line, from the plurality point through Borda (one third of the way) to the anti-plurality point, can cross all three. The choice of weights, not the voters, then decides the winner. Saari’s further theorem (polsci-2.10) singles out Borda as the only positional rule whose rankings stay consistent when candidates are dropped.`,
-      caption: String.raw`Slide $s$, the weight of a second place. Left: each candidate’s score $t_1 + s\,t_2$ is a straight line; the thick upper envelope is the winner, and the strip along the bottom shows who wins for every $s$. Right: Saari’s triangle of outcomes. The dashed tie lines split it into six ranking regions, and the segment from the plurality point P through Borda B to anti-plurality AP is the procedure line, with the gold dot at the current $s$. The starting profile crosses all three tie lines: plurality, Borda and anti-plurality elect three different candidates. Edit the profile below.`,
+      idea: String.raw`Because each score is a straight line in $s$, the ranking can change only where two lines cross, and each pair crosses at most once. So as $s$ runs from 0 to 1 a three-candidate profile passes through at most four strict rankings and three tied ones — seven outcomes in all. Saari showed that all seven can occur for a single profile. In the triangle of outcomes the three tie lines $x = y$ cut the triangle into the six ranking regions, and the procedure line, from the plurality point through Borda (two thirds of the way along) to the anti-plurality point, can cross all three. The choice of weights, not the voters, then decides the winner. Saari’s further theorem (polsci-2.10) singles out Borda as the only positional rule whose rankings stay consistent when candidates are dropped.`,
+      caption: String.raw`Slide $s$, the weight of a second place. Left: each candidate’s score $t_1 + s\,t_2$ is a straight line; the thick upper envelope is the winner, and the strip along the top shows who wins for every $s$. Right: Saari’s triangle of outcomes, magnified about its centre. The dashed tie lines split it into six ranking regions, and the segment from the plurality point P through Borda B to anti-plurality AP is the procedure line, with the gold dot at the current $s$. The starting profile crosses all three tie lines: plurality, Borda and anti-plurality elect three different candidates. Edit the profile below.`,
       deps: ['polsci-1.5', 'polsci-1.2'],
       see: ['polsci-2.10'],
       refs: ['Saari, Chaotic Elections!', 'Saari, Basic Geometry of Voting (1995)'],
@@ -347,7 +347,7 @@ with $s = 0$ plurality, $s = \tfrac12$ Borda and $s = 1$ anti-plurality. A candi
       credit: 'Donald G. Saari, 1980s–1990s (geometry of positional rules)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Positional_voting' },
       viz(v) {
-        const L = v.stage({ x: [-0.03, 1.03], y: [-2, 22], axes: 'box', height: 300, minWidth: 380, weight: 1.1, title: 'scores $t_1 + s\\,t_2$ as the weight $s$ moves', xlabel: 'weight of a second place, s', xticks: [[0, '0 · plurality'], [0.5, '½ · Borda'], [1, '1 · anti-plurality']] });
+        const L = v.stage({ x: [-0.13, 1.13], y: [0, 22], axes: 'box', height: 300, minWidth: 380, weight: 1.1, title: 'scores $t_1 + s\\,t_2$ as the weight $s$ of a second place moves', xticks: [[0, 's = 0 plurality'], [0.5, '½ Borda'], [1, '1 anti-plurality']] });
         const Tr = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 330, title: 'Saari’s triangle of outcomes and the procedure line' });
         const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, title: 'the profile' });
         const R6 = perms(3);
@@ -370,14 +370,15 @@ with $s = 0$ plurality, $s = \tfrac12$ Borda and $s = 1$ anti-plurality. A candi
         v.render(() => {
           ed.draw();
           const { f, g } = ft(), n = total(P), s = sS.value, cs = crossings();
-          const ymax = Math.max(...range(3).map((x) => Math.max(f[x], f[x] + g[x]))) * 1.15 + 1;
-          L.setView([-0.03, 1.03], [-ymax * 0.1, ymax]);
-          // winner strip and envelope
+          const ymax = Math.max(...range(3).map((x) => Math.max(f[x], f[x] + g[x]))) * 1.28 + 1;
+          L.setView([-0.13, 1.13], [0, ymax]);
+          // winner strip (top) and envelope
           const pts = [0, ...cs.map((x) => x.s), 1];
           for (let k = 0; k + 1 < pts.length; k++) {
-            const mid = (pts[k] + pts[k + 1]) / 2, sc = scoreAt(mid), w = best(sc, [0, 1, 2]);
-            L.rect(pts[k], -ymax * 0.085, pts[k + 1], -ymax * 0.035, { fill: CC[w[0]], fillAlpha: 0.8, stroke: false });
+            const mid = (pts[k] + pts[k + 1]) / 2, w = best(scoreAt(mid), [0, 1, 2]);
+            L.rect(pts[k], ymax * 0.925, pts[k + 1], ymax * 0.975, { fill: CC[w[0]], fillAlpha: 0.8, stroke: false });
           }
+          L.text('winner', -0.12, ymax * 0.95, { size: 10, weight: 600, color: 'muted' });
           range(3).forEach((x) => L.line(0, f[x], 1, f[x] + g[x], { color: CC[x], width: 1.4, alpha: 0.55 }));
           for (let k = 0; k + 1 < pts.length; k++) {
             const mid = (pts[k] + pts[k + 1]) / 2, w = best(scoreAt(mid), [0, 1, 2])[0];
@@ -385,39 +386,56 @@ with $s = 0$ plurality, $s = \tfrac12$ Borda and $s = 1$ anti-plurality. A candi
           }
           for (const x of cs) { const y = f[x.a] + x.s * g[x.a]; L.dot(x.s, y, { r: 3.5, color: 'ink' }); L.text(`s = ${x.s.toFixed(2)}`, x.s, y, { dy: -12, size: 10, align: 'center', color: 'muted', weight: 600 }); }
           L.vline(s, { color: 'gold', width: 2 });
-          range(3).forEach((x) => { L.dot(s, f[x] + s * g[x], { r: 5, color: CC[x] }); chip(v, L.ctx, L.X(1) + 0, L.Y(f[x] + g[x]), x, { r: 8 }); });
-          // ---- triangle of outcomes
-          const c = Tr.ctx, W = Tr.width, H = Tr.height;
-          const side = Math.min(W - 70, (H - 64) / 0.866), cx = W / 2, top = 30 + (H - 64 - side * 0.866) / 2;
-          const V = [[cx, top], [cx - side / 2, top + side * 0.866], [cx + side / 2, top + side * 0.866]];
-          const at = (q) => [q[0] * V[0][0] + q[1] * V[1][0] + q[2] * V[2][0], q[0] * V[0][1] + q[1] * V[1][1] + q[2] * V[2][1]];
-          const mid = (a, b) => [(V[a][0] + V[b][0]) / 2, (V[a][1] + V[b][1]) / 2], G = at([1 / 3, 1 / 3, 1 / 3]);
-          const curR = rankingStr(scoreAt(s), [0, 1, 2]);
+          const ends = range(3).map((x) => ({ x, Y: L.Y(f[x] + g[x]), Y0: L.Y(f[x]) })).sort((p, q) => p.Y - q.Y);
+          for (let k = 1; k < 3; k++) if (ends[k].Y - ends[k - 1].Y < 19) ends[k].Y = ends[k - 1].Y + 19;
+          const st = range(3).map((x) => ({ x, Y: L.Y(f[x]) })).sort((p, q) => p.Y - q.Y);
+          for (let k = 1; k < 3; k++) if (st[k].Y - st[k - 1].Y < 19) st[k].Y = st[k - 1].Y + 19;
+          ends.forEach((e) => chip(v, L.ctx, L.X(1) + 14, e.Y, e.x, { r: 8 }));
+          st.forEach((e) => chip(v, L.ctx, L.X(0) - 14, e.Y, e.x, { r: 8 }));
+          range(3).forEach((x) => L.dot(s, f[x] + s * g[x], { r: 5, color: CC[x] }));
+          // ---- triangle of outcomes, zoomed about its centre (all tallies equal)
+          const c = Tr.ctx, W = Tr.width, H = Tr.height, D = Math.min(W, H - 24);
+          const side0 = 1, V0 = [[0, -0.577], [-0.5, 0.289], [0.5, 0.289]];
+          const at0 = (q) => [q[0] * V0[0][0] + q[1] * V0[1][0] + q[2] * V0[2][0], q[0] * V0[0][1] + q[1] * V0[1][1] + q[2] * V0[2][1]];
+          const q = (ss) => { const sc = scoreAt(ss), T = sum(sc) || 1; return sc.map((x) => x / T); };
+          const pa = at0(q(0)), pb = at0(q(1)), dmax = Math.max(Math.hypot(...pa), Math.hypot(...pb), 0.02);
+          const ZS = [1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 16], zRaw = 0.36 / (0.86 * dmax * side0);
+          const z = ZS.filter((zz) => zz <= Math.max(1, Math.min(zRaw, 16))).pop() || 1;
+          const sc0 = 0.86 * D, cx = W / 2, cy = 12 + (H - 24) / 2;
+          const Z = (p) => [cx + p[0] * sc0 * z, cy + p[1] * sc0 * z];
+          const mid0 = (a, b) => [(V0[a][0] + V0[b][0]) / 2, (V0[a][1] + V0[b][1]) / 2];
+          const curR = rankingStr(scoreAt(s), [0, 1, 2]), R0 = 0.42 * D;
+          c.save(); c.beginPath(); c.rect(0, 0, W, H); c.clip();
           R6.forEach((r) => {
-            const pts3 = [V[r[0]], mid(r[0], r[1]), G];
+            const pts3 = [V0[r[0]], mid0(r[0], r[1]), [0, 0]].map(Z);
             c.beginPath(); c.moveTo(...pts3[0]); c.lineTo(...pts3[1]); c.lineTo(...pts3[2]); c.closePath();
             const here = curR === rkStr(r);
             c.fillStyle = v.color(CC[r[0]], here ? 0.26 : 0.07); c.fill();
-            const cen = [(pts3[0][0] + pts3[1][0] + pts3[2][0]) / 3, (pts3[0][1] + pts3[1][1] + pts3[2][1]) / 3];
-            txt(v, c, rkStr(r, ''), cen[0], cen[1], { size: 10, weight: 700, color: here ? 'ink' : 'muted' });
+            const cen = [(V0[r[0]][0] + mid0(r[0], r[1])[0]) / 2, (V0[r[0]][1] + mid0(r[0], r[1])[1]) / 2], L0 = Math.hypot(...cen);
+            const lp = [cx + (cen[0] / L0) * Math.min(R0, L0 * sc0 * z * 0.75), cy + (cen[1] / L0) * Math.min(R0, L0 * sc0 * z * 0.75)];
+            txt(v, c, rkStr(r), lp[0], lp[1], { size: 10.5, weight: 700, color: here ? 'ink' : 'muted', halo: true });
           });
-          c.save(); c.setLineDash([4, 4]); c.strokeStyle = v.color('faint'); c.lineWidth = 1.2;
-          for (let k = 0; k < 3; k++) { const M = mid((k + 1) % 3, (k + 2) % 3); c.beginPath(); c.moveTo(...V[k]); c.lineTo(...M); c.stroke(); }
-          c.restore();
-          c.strokeStyle = v.color('muted'); c.lineWidth = 1.5; c.beginPath(); c.moveTo(...V[0]); c.lineTo(...V[1]); c.lineTo(...V[2]); c.closePath(); c.stroke();
-          chip(v, c, V[0][0], V[0][1] - 14, 0, { r: 10 }); chip(v, c, V[1][0] - 14, V[1][1] + 6, 1, { r: 10 }); chip(v, c, V[2][0] + 14, V[2][1] + 6, 2, { r: 10 });
-          const q = (ss) => { const sc = scoreAt(ss), T = sum(sc) || 1; return sc.map((x) => x / T); };
+          c.setLineDash([4, 4]); c.strokeStyle = v.color('faint'); c.lineWidth = 1.2;
+          for (let k = 0; k < 3; k++) { const A = Z(V0[k]), M = Z(mid0((k + 1) % 3, (k + 2) % 3)); c.beginPath(); c.moveTo(...A); c.lineTo(...M); c.stroke(); }
+          c.setLineDash([]); c.strokeStyle = v.color('muted'); c.lineWidth = 1.5; c.beginPath(); c.moveTo(...Z(V0[0])); c.lineTo(...Z(V0[1])); c.lineTo(...Z(V0[2])); c.closePath(); c.stroke();
           for (let k = 0; k + 1 < pts.length; k++) {
-            const a = at(q(pts[k])), b = at(q(pts[k + 1])), w = best(scoreAt((pts[k] + pts[k + 1]) / 2), [0, 1, 2])[0];
-            linePx(v, c, a[0], a[1], b[0], b[1], CC[w], 4);
+            const a2 = Z(at0(q(pts[k]))), b2 = Z(at0(q(pts[k + 1]))), w = best(scoreAt((pts[k] + pts[k + 1]) / 2), [0, 1, 2])[0];
+            linePx(v, c, a2[0], a2[1], b2[0], b2[1], CC[w], 4);
           }
-          for (const x of cs) { const p = at(q(x.s)); c.beginPath(); c.arc(p[0], p[1], 3.5, 0, 2 * Math.PI); c.fillStyle = v.color('ink'); c.fill(); }
+          for (const x of cs) { const p2 = Z(at0(q(x.s))); c.beginPath(); c.arc(p2[0], p2[1], 3.5, 0, 2 * Math.PI); c.fillStyle = v.color('ink'); c.fill(); }
           [[0, 'P'], [0.5, 'B'], [1, 'AP']].forEach(([ss, lab]) => {
-            const p = at(q(ss)); c.beginPath(); c.arc(p[0], p[1], 4.5, 0, 2 * Math.PI); c.fillStyle = v.color('panel'); c.fill(); c.strokeStyle = v.color('ink'); c.lineWidth = 1.6; c.stroke();
-            txt(v, c, lab, p[0] + 9, p[1] - 9, { size: 11, weight: 800, align: 'left', halo: true });
+            const p2 = Z(at0(q(ss))); c.beginPath(); c.arc(p2[0], p2[1], 4.5, 0, 2 * Math.PI); c.fillStyle = v.color('panel'); c.fill(); c.strokeStyle = v.color('ink'); c.lineWidth = 1.6; c.stroke();
+            txt(v, c, lab, p2[0] + 9, p2[1] - 9, { size: 11, weight: 800, align: 'left', halo: true });
           });
-          const pc = at(q(s)); c.beginPath(); c.arc(pc[0], pc[1], 6.5, 0, 2 * Math.PI); c.fillStyle = v.color('gold'); c.fill(); c.strokeStyle = v.color('panel'); c.lineWidth = 2; c.stroke();
-          txt(v, c, `${n} voters · ranking now ${curR}`, 10, H - 12, { size: 10.5, weight: 600, color: 'muted', align: 'left' });
+          const pc = Z(at0(q(s))); c.beginPath(); c.arc(pc[0], pc[1], 6.5, 0, 2 * Math.PI); c.fillStyle = v.color('gold'); c.fill(); c.strokeStyle = v.color('panel'); c.lineWidth = 2; c.stroke();
+          c.restore();
+          // candidate directions: chips at the vertices, or at the edge of the view towards them
+          V0.forEach((p0, k) => {
+            let p2 = Z(p0); const inside = p2[0] > 14 && p2[0] < W - 14 && p2[1] > 14 && p2[1] < H - 30;
+            if (!inside) { const d = Math.hypot(...p0); p2 = [cx + (p0[0] / d) * 0.46 * D, cy + (p0[1] / d) * 0.46 * D]; }
+            chip(v, c, p2[0], p2[1], k, { r: 10 });
+          });
+          txt(v, c, z > 1 ? `zoom ×${z} about the centre, where all tallies are equal` : 'the whole triangle', W - 8, H - 12, { size: 10, weight: 600, color: 'muted', align: 'right', halo: true });
         });
         v.readout(() => {
           const s = sS.value, sc = scoreAt(s), w = best(sc, [0, 1, 2]), seq = outcomes();
@@ -574,7 +592,8 @@ and **Kemeny’s rule** selects the ranking(s) with the smallest score — a med
             const mean = sum(d) / 5; let mask = 0; for (let k = 0; k < 5; k++) if (d[k] < mean) mask |= 1 << k; apGrid[j * GN + i] = mask;
           }
         }
-        const offsets = (s) => { const out = []; for (let j = 0; j < 5; j++) { const r = s * Math.sqrt(-2 * Math.log(1 - (j + 0.5) / 5)); for (let k = 0; k < 12; k++) { const a = (2 * Math.PI * k) / 12 + (j % 2 ? Math.PI / 12 : 0); out.push([r * Math.cos(a), r * Math.sin(a)]); } } return out; };
+        // a symmetric sample of 112 voters from a round normal cloud: 7 equal-mass rings × 16 directions
+        const offsets = (s) => { const out = []; for (let j = 0; j < 7; j++) { const r = s * Math.sqrt(-2 * Math.log(1 - (j + 0.5) / 7)); for (let k = 0; k < 16; k++) { const a = (2 * Math.PI * k) / 16 + (j % 2 ? Math.PI / 16 : 0); out.push([r * Math.cos(a), r * Math.sin(a)]); } } return out; };
         const cell = (x, y) => { const i = Math.floor(((x + GL) / (2 * GL)) * GN), j = Math.floor(((y + GL) / (2 * GL)) * GN); return i < 0 || j < 0 || i >= GN || j >= GN ? -1 : j * GN + i; };
         const cntBuf = new Float64Array(120);
         function winnerAt(x, y, rule, offs) {
@@ -611,7 +630,7 @@ and **Kemeny’s rule** selects the ranking(s) with the smallest score — a med
             const res = results(P), c = Rs.ctx, W = Rs.width, H = Rs.height, p = clamp(t / DUR, 0, 1), pe = ease(p);
             const cw = W / 3, chh = H / 2;
             res.forEach((R, idx) => {
-              const ox = (idx % 3) * cw, oy = Math.floor(idx / 3) * chh, x0 = ox + 10, x1 = ox + cw - 8, y0 = oy + 46, y1 = oy + chh - 30;
+              const ox = (idx % 3) * cw, oy = Math.floor(idx / 3) * chh, x0 = ox + 10, x1 = ox + cw - 8, y0 = oy + 60, y1 = oy + chh - 30;
               rr(c, ox + 3, oy + 3, cw - 6, chh - 6, 8); c.fillStyle = v.color('muted', 0.05); c.fill();
               txt(v, c, RULES[idx], ox + 12, oy + 16, { size: 12, weight: 700, align: 'left' });
               txt(v, c, R.note, ox + 12, oy + 31, { size: 9.5, weight: 600, color: 'muted', align: 'left' });
@@ -627,6 +646,7 @@ and **Kemeny’s rule** selects the ranking(s) with the smallest score — a med
                 else txt(v, c, 'tie', ox + cw - 24, oy + 22, { size: 11, weight: 700, color: 'muted' });
               }
             });
+            Sm.corner('spatial maps', 'tl'); // (hidden in this view)
           } else {
             const cs = cand.map((h) => [h.x, h.y]); buildGrid(cs);
             const dragging = cand.some((h) => h.dragging), offs = offsets(sig.value), rule = +bigR.value;

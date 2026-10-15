@@ -136,7 +136,7 @@ The other two eigenvalues are $e^{\pm i\theta}$. In particular, two rotations ab
             return String.raw`$\det\mathsf R = ${v.fix(det3(R), 6)}$ · axis $\mathbf n = ${f3(n)}$ (eigenvector for $\lambda = 1$), $\theta = \arccos\frac{\operatorname{tr}\mathsf R - 1}{2} = ${v.fix(th / DEG, 2)}°$ · $|\mathsf R\mathbf n - \mathbf n| = ${sci(v, err)}$ · one turn about $\mathbf n$ vs the two turns: $\|\mathsf R_{\mathbf n}(\theta) - \mathsf R_2\mathsf R_1\| = ${sci(v, rec)}$ · $\det(\mathsf R - \mathsf I) = ${sci(v, det3(msub(R, I3())))}$`;
           }
           const dMI = det3(msub(Mc, I3())), fixed = Math.abs(aa.th - Math.PI) < 1e-6;
-          return String.raw`$\det\mathsf M = ${v.fix(det3(Mc), 6)}$ · $\mathsf M\mathbf n' = -\mathbf n'$ for $\mathbf n' = ${f3(n)}$ · $\det(\mathsf M - \mathsf I) = ${num(v, dMI, 4)}$` + (fixed ? ' (here $\\mathsf M$ is a pure reflection and fixes a whole plane)' : String.raw` $\neq 0$: no direction is fixed, so no rotation about any axis gives this pose · $\mathsf M$ is a turn by ${v.fix(((th / DEG) % 360 + 360) % 360, 1)}° about $\mathbf n'$ followed by the reflection in the plane $\perp\mathbf n'$ — the green outline makes the turn, and its F reads backwards relative to the red pose`);
+          return String.raw`$\det\mathsf M = ${v.fix(det3(Mc), 6)}$ · $\mathsf M\mathbf n' = -\mathbf n'$ for $\mathbf n' = ${f3(n)}$ · $\det(\mathsf M - \mathsf I) = ${num(v, dMI, 4)}$` + (fixed ? ' (here $\\mathsf M$ is a pure reflection and fixes a whole plane)' : String.raw` $\neq 0$: no direction is fixed, so no rotation about any axis gives this pose · $\mathsf M$ is a turn by ${v.fix(((((th / DEG) + 180) % 360) + 360) % 360 - 180, 1)}° about $\mathbf n'$ followed by the reflection in the plane $\perp\mathbf n'$ — the green outline makes the turn, and its F reads backwards relative to the red pose`);
         });
       },
     },
@@ -245,7 +245,7 @@ So among all parallel axes, the one through the centre of mass has the smallest 
         const sE = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 330, title: 'contours of $I_P$ as the axis point moves' });
         const sP = v.stage({ x: [-1.7, 1.7], y: [0, 1], axes: 'box', gutter: true, height: 330, title: '$I$ (kg·m²) against $d$ (m) along the dashed line' });
         const P = sE.handle(0.95, 0.55, { color: 'gold', label: 'P', constrain: (x, y) => [clamp(x, -1.5, 1.5), clamp(y, -1.5, 1.5)] });
-        const A = sE.handle(-0.8, -0.6, { color: 'red', label: 'A', constrain: (x, y) => [clamp(x, -1.5, 1.5), clamp(y, -1.5, 1.5)] });
+        const A = sE.handle(-0.45, -0.4, { color: 'red', label: 'A', constrain: (x, y) => [clamp(x, -1.5, 1.5), clamp(y, -1.5, 1.5)] });
         const cache = memo(); let cur = null;
         const data = () => cache(shape.value, () => {
           const parts = SH[shape.value], mo = polyMoments(parts), C = cells(parts, N, B), sig = 1 / mo.A;
@@ -268,7 +268,8 @@ So among all parallel axes, the one through the centre of mass has the smallest 
           if (useA) { sE.line(A.x, A.y, P.x, P.y, { color: 'red', width: 1.2, dash: [3, 3] }); }
           // right: the parabola and directly summed samples
           const IP = sumI(C, P.x, P.y), IA = sumI(C, A.x, A.y);
-          const ys = [Icm, IP, Icm + 1.7 * 1.7]; const top = Math.max(...ys) * 1.08;
+          const naiveAt = (d) => IA + (cx + d * ux - A.x) ** 2 + (cy + d * uy - A.y) ** 2;
+          const ys = [Icm, IP, Icm + 1.7 * 1.7]; if (useA) ys.push(naiveAt(-1.7), naiveAt(1.7), naiveAt(0)); const top = Math.max(...ys) * 1.08;
           sP.setView([-1.7, 1.7], [0, top]);
           sP.fn((d) => Icm + d * d, { color: 'accent', width: 2.4 });
           sP.hline(Icm, { color: 'faint', dash: [4, 4] });
@@ -276,7 +277,7 @@ So among all parallel axes, the one through the centre of mass has the smallest 
           for (let j = -8; j <= 8; j++) { const d = (1.6 * j) / 8; sP.dot(d, sumI(C, cx + d * ux, cy + d * uy), { r: 3.4, color: 'ink' }); }
           if (useA) {
             // the naive formula along the same line, with A as the reference
-            sP.fn((d) => IA + (cx + d * ux - A.x) ** 2 + (cy + d * uy - A.y) ** 2, { color: 'red', width: 2, dash: [7, 4] });
+            sP.fn(naiveAt, { color: 'red', width: 2, dash: [7, 4] });
           }
           sP.dot(dP, IP, { r: 6, color: 'gold' });
           sP.vline(0, { color: 'faint', width: 1 });
@@ -431,7 +432,7 @@ As a function of $d$ the period is shortest at $d = k$. Every other value of $T$
           });
           for (const x0 of [0, PX]) { sW.line(x0 - 0.12, 0.07, x0 + 0.12, 0.07, { color: 'muted', width: 3 }); sW.poly([[x0, 0], [x0 - 0.06, 0.07], [x0 + 0.06, 0.07]], { fill: 'muted', fillAlpha: 0.6, color: 'muted' }); }
           sW.dot(0, 0, { r: 4, color: 'gold' }); sW.dot(PX, 0, { r: 3, color: 'green' });
-          sW.text('bar', 0, 0.07, { color: 'accent', size: 11, dy: -10, align: 'center' }); sW.text('simple pendulum', PX, 0.07, { color: 'green', size: 11, dy: -10, align: 'center' });
+          sW.text('bar', -0.15, 0.07, { color: 'accent', size: 11, align: 'right' }); sW.text('simple pendulum', PX, 0.07, { color: 'green', size: 11, dy: -10, align: 'center' });
           sW.corner(B.L > 1.05 ? `length ${v.fix(B.L, 2)} m: bob below the panel` : `length d + k²/d = ${v.fix(B.L, 3)} m`, 'br', { color: 'green' });
           // period curve
           sT.fn(Tof, { domain: [0.02, 0.8], color: 'accent', width: 2.4 });
@@ -556,7 +557,7 @@ The **inertia tensor** $\mathsf I$ is a symmetric $3\times3$ matrix. Its diagona
         const sc = v.scene3(S, { yaw: -0.2, pitch: 0.22, axis: 1.3, lim: 1.7, hint: false });
         const sD = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 360, title: 'looking down $\\boldsymbol\\omega$: the sideways part $\\mathbf L_\\perp$' });
         const W = sc.handle([0.25, -0.15, 1.15], { color: 'accent', label: '$\\boldsymbol\\omega$' });
-        const BH = [0.62, 0.4, 0.13], RT = rotAxis(unit([1, 2, 0.6]), 0.75);
+        const BH = [0.95, 0.62, 0.16], RT = rotAxis(unit([1, 2, 0.6]), 0.75);
         const BODY = {
           dumb: () => { const e = unit([Math.cos(0.6), 0.25, Math.sin(0.6)]); return { m: [1, 1], r: [scl(e, 0.85), scl(e, -0.85)], rods: [[0, 1]] }; },
           frame: () => { const r = [[-0.7, -0.35, -0.15], [0.55, -0.35, -0.15], [0.55, 0.45, -0.15], [0.55, 0.45, 0.7]], m = [1, 0.7, 0.7, 1.2]; const M = m.reduce((a, b) => a + b, 0); const c = [0, 1, 2].map((j) => r.reduce((s, p, i) => s + m[i] * p[j], 0) / M); return { m, r: r.map((p) => sub(p, c)), rods: [[0, 1], [1, 2], [2, 3]] }; },
@@ -595,7 +596,7 @@ The **inertia tensor** $\mathsf I$ is a symmetric $3\times3$ matrix. Its diagona
           const pa = (p) => [dot(p, a), dot(p, b)], Lq2 = pa(L), Lperp = Math.hypot(Lq2[0], Lq2[1]), KD = 0.85 / Math.max(0.35, nrm(L));
           sD.circle(0, 0, Lperp * KD, { color: 'purple', width: 1, dash: [4, 4], alpha: 0.7 });
           for (const [i, j] of B.rods) { const p = pa(mv(R, B.r[i])), q = pa(mv(R, B.r[j])); sD.line(p[0], p[1], q[0], q[1], { color: 'ink', width: 2, alpha: 0.6 }); }
-          if (body.value === 'book') { const C8 = drawBoxPts(mm(R, RT), BH).map(pa); sD.dots(C8, { r: 2, color: 'muted' }); }
+          if (body.value === 'book') sD.poly(v.M.hull(drawBoxPts(mm(R, RT), BH).map(pa)), { color: 'muted', width: 1.4, fill: 'accent', fillAlpha: 0.1 });
           B.r.forEach((p0, i) => { const q = pa(mv(R, p0)); if (body.value !== 'book') sD.dot(q[0], q[1], { r: 4 + 3 * B.m[i], color: 'ink' }); });
           sD.dot(0, 0, { r: 4, color: 'accent' });
           sD.arrow(0, 0, Lq2[0] * KD, Lq2[1] * KD, { color: 'purple', width: 2.8 });

@@ -501,5 +501,16 @@ test('nelderMead and hessian', () => {
   const H = M.hessian(q, s.x); close(H[0][0], 2, 1e-5); close(H[1][1], 4, 1e-5); close(H[2][2], 6, 1e-5); close(H[0][1], 1, 1e-5);
 });
 
+test('cholesky and genEig', () => {
+  const A = [[4, 2, 0], [2, 5, 1], [0, 1, 3]], L = M.cholesky(A);
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) close(L[i].reduce((s, x, k) => s + x * L[j][k], 0), A[i][j], 1e-12);
+  ok(M.cholesky([[1, 2], [2, 1]]) === null, 'not positive definite');
+  // two masses m1=1, m2=2, three unit springs: K=[[2,-1],[-1,2]], M=diag(1,2)
+  const G = M.genEig([[2, -1], [-1, 2]], [[1, 0], [0, 2]]);
+  const ref = [(6 - Math.sqrt(12)) / 4, (6 + Math.sqrt(12)) / 4]; close(G.values[0], ref[0], 1e-12); close(G.values[1], ref[1], 1e-12);
+  const a = G.vecs[0]; close(a[0] * a[0] + 2 * a[1] * a[1], 1, 1e-12); // M-normalized
+  close((2 * a[0] - a[1]) - G.values[0] * a[0], 0, 1e-12);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

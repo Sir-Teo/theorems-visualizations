@@ -438,5 +438,272 @@ lower than Otto at the same $r$, but diesels run at much higher $r$ because the 
         });
       },
     },
+    // ------------------------------------------------------------------ 2.15
+    {
+      num: '2.15', kind: 'Model', name: 'Stirling engine',
+      statement: String.raw`The ideal **Stirling cycle** takes a fixed mass of gas through two isotherms joined by two constant-volume steps: (1) isothermal expansion at $T_h$ from $V_{\min}$ to $V_{\max}$, absorbing $nRT_h\ln r$; (2) cooling at constant volume $V_{\max}$ from $T_h$ to $T_c$; (3) isothermal compression at $T_c$, rejecting $nRT_c\ln r$; (4) heating at constant volume back to $T_h$ ($r = V_{\max}/V_{\min}$). A **regenerator** — a porous matrix the gas shuttles through — stores the heat given up in step 2 and returns it in step 4. With a perfect regenerator the only external heat is taken in at $T_h$ and rejected at $T_c$, and
+$$\eta = 1 - \frac{T_c}{T_h},$$
+the Carnot efficiency. If the regenerator recovers only a fraction $\varepsilon$ of $Q_{\text{reg}} = nC_V(T_h - T_c)$, the rest must come from the flame and
+$$\eta = \frac{R(T_h - T_c)\ln r}{RT_h\ln r + (1 - \varepsilon)C_V(T_h - T_c)}.$$`,
+      idea: String.raw`The isochoric steps exchange heat across the whole temperature range, which would ruin the efficiency if it came from the hot reservoir and went to the cold one. The regenerator makes those exchanges internal: each slice of the matrix takes heat from the gas passing one way and gives it back, at the same temperature, when the gas passes back — so these exchanges are reversible and cost nothing. What remains is heat in at $T_h$ and out at $T_c$ only, which by 2.5 and 2.7 means Carnot's efficiency. Unlike Carnot's cycle, the Stirling cycle has fat isochoric corners, so it delivers far more work per cycle for the same pressure range.`,
+      caption: String.raw`An alpha-type Stirling engine running the ideal cycle: the hot cylinder (left, over the flame) and the cold cylinder (right, water-cooled) are joined through the regenerator. Watch the pistons: in step 1 the gas expands in the hot cylinder, in step 2 both pistons move together and push it through the regenerator into the cold side, and so on; the dots are proportional to how much gas is on each side. The regenerator's colour bar shows the heat it holds. Drag the **regenerator effectiveness** down to zero: the flame must now also reheat the gas in step 4, and the efficiency falls well below Carnot's.`,
+      deps: ['thermo-2.4'],
+      see: ['energy-2.12'],
+      refs: ['Schroeder §4.3'],
+      tags: ['engines', 'Stirling'],
+      credit: 'R. Stirling, patent 1816',
+      scope: String.raw`Ideal cycle: isothermal cylinders, no dead volume, a regenerator with no flow losses and discontinuous piston motion. Real Stirling engines move their pistons sinusoidally, have dead volume and imperfect heat exchangers, and typically reach about half of the Carnot efficiency.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stirling_engine' },
+      viz(v) {
+        const eps = v.slider('regenerator effectiveness ε', 0, 1, 1, { step: 0.01, fmt: (x) => v.fix(x, 2) });
+        const Th = v.slider('$T_h$', 450, 1000, 800, { step: 5, fmt: (x) => x.toFixed(0) + ' K' });
+        const Tc = v.slider('$T_c$', 280, 380, 300, { step: 5, fmt: (x) => x.toFixed(0) + ' K' });
+        const rr = v.slider('compression ratio $r$', 1.5, 4, 2.5, { step: 0.05, fmt: (x) => v.fix(x, 2) });
+        const se = v.stage({ x: [0, 12], y: [0.4, 6.8], equal: true, height: 260, axes: false, full: true });
+        const sp = v.stage({ x: [0, 4.5], y: [0, 500], height: 260, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1, title: 'ideal Stirling cycle (0.05 mol of helium)' });
+        const sb = v.stage({ x: [0, 1], y: [0, 5], height: 260, axes: false, weight: 1.15, title: 'heat and work per cycle' });
+        const n = 0.05, cv = 1.5 * R, PER = 7;
+        const R_ = v.rng(17), dots = Array.from({ length: 46 }, () => [R_(), R_()]);
+        let cur = null;
+        v.animate((t) => {
+          const h = Th.value, c = Math.min(Tc.value, h - 20), r = rr.value, e = eps.value, Vmin = 1, Vmax = r;
+          const u = ((t / PER) * 4) % 4, ph = Math.floor(u), q = u - ph, ease = q * q * (3 - 2 * q);
+          let Vh, Vc;
+          if (ph === 0) { Vh = Vmin + (Vmax - Vmin) * ease; Vc = 0; } else if (ph === 1) { Vh = Vmax * (1 - ease); Vc = Vmax * ease; } else if (ph === 2) { Vh = 0; Vc = Vmax - (Vmax - Vmin) * ease; } else { Vh = Vmin * ease; Vc = Vmin * (1 - ease); }
+          const P = n * R / (Vh / h + Vc / c), fh = (Vh / h) / (Vh / h + Vc / c), V = Vh + Vc;
+          const Qh = n * R * h * Math.log(r), Qc = n * R * c * Math.log(r), Qreg = n * cv * (h - c), W = Qh - Qc, Qin = Qh + (1 - e) * Qreg, Qout = Qc + (1 - e) * Qreg, eta = W / Qin, eC = 1 - c / h;
+          // regenerator heat content: rises in step 2, falls in step 4
+          const held = ph === 0 ? 0 : ph === 1 ? e * ease : ph === 2 ? e : e * (1 - ease);
+          // ---- engine
+          const y0 = 2.4, y1 = 4.6, L = 3.4, xh = 4.4, xc = 7.6, wH = L * Vh / Vmax, wC = L * Vc / Vmax;
+          se.rect(xh - wH, y0, xh, y1, { fill: 'red', fillAlpha: 0.28, stroke: false }); se.rect(xc, y0, xc + wC, y1, { fill: 'blue', fillAlpha: 0.22, stroke: false });
+          se.line(xh - L - 0.6, y0, xh, y0, { color: 'ink', width: 2.4 }); se.line(xh - L - 0.6, y1, xh, y1, { color: 'ink', width: 2.4 });
+          se.line(xc, y0, xc + L + 0.6, y0, { color: 'ink', width: 2.4 }); se.line(xc, y1, xc + L + 0.6, y1, { color: 'ink', width: 2.4 });
+          se.line(xh, y1, xh, 4.0, { color: 'ink', width: 2.4 }); se.line(xh, y0, xh, 3.0, { color: 'ink', width: 2.4 }); se.line(xc, y1, xc, 4.0, { color: 'ink', width: 2.4 }); se.line(xc, y0, xc, 3.0, { color: 'ink', width: 2.4 });
+          // regenerator matrix with a temperature gradient
+          for (let k = 0; k < 16; k++) { const x = xh + (xc - xh) * k / 16; se.rect(x, 3.0, x + (xc - xh) / 16, 4.0, { fill: pick(tRamp(v), 1 - k / 15), fillAlpha: 0.55, stroke: false }); }
+          se.rect(xh, 3.0, xc, 4.0, { color: 'ink', width: 1.2, hatch: 'ink', hatchGap: 5, hatchAlpha: 0.25 });
+          se.text('regenerator', (xh + xc) / 2, 2.7, { align: 'center', size: 11, color: 'muted' });
+          se.rect(xh + 0.3, 4.75, xc - 0.3, 5.05, { color: 'purple', width: 1 }); se.rect(xh + 0.3, 4.75, xh + 0.3 + (xc - xh - 0.6) * held, 5.05, { fill: 'purple', fillAlpha: 0.75, stroke: false });
+          se.text(`heat held ${v.fix(held * Qreg, 0)} J`, (xh + xc) / 2, 5.35, { align: 'center', size: 10.5, color: 'purple' });
+          // pistons and rods
+          se.rect(xh - wH - 0.35, y0 + 0.04, xh - wH, y1 - 0.04, { fill: 'muted', fillAlpha: 0.9, color: 'ink', width: 1 }); se.line(xh - wH - 0.35, 3.5, 0.2, 3.5, { color: 'muted', width: 4 });
+          se.rect(xc + wC, y0 + 0.04, xc + wC + 0.35, y1 - 0.04, { fill: 'muted', fillAlpha: 0.9, color: 'ink', width: 1 }); se.line(xc + wC + 0.35, 3.5, 11.8, 3.5, { color: 'muted', width: 4 });
+          // gas dots
+          const nh = Math.round(fh * dots.length);
+          dots.forEach(([a, b], i) => { if (i < nh) { if (wH > 0.05) se.dot(xh - wH * (0.05 + 0.9 * a), y0 + 0.15 + 1.9 * b, { r: 2.6, color: 'red', ring: false }); } else if (wC > 0.05) se.dot(xc + wC * (0.05 + 0.9 * a), y0 + 0.15 + 1.9 * b, { r: 2.6, color: 'blue', ring: false }); });
+          if ((ph === 1 || ph === 3) && q > 0.05 && q < 0.95) for (let k = 0; k < 6; k++) { const s = ((k / 6 + t * 0.9) % 1), x = ph === 1 ? xh + (xc - xh) * s : xc - (xc - xh) * s; se.dot(x, 3.5 + 0.25 * Math.sin(k * 2.1), { r: 2.6, color: pick(tRamp(v), 1 - (x - xh) / (xc - xh)), ring: false }); }
+          // flame and cooling
+          for (let k = 0; k < 5; k++) { const x = xh - L + 0.5 + k * 0.65, fl = ph === 0 || (ph === 3 && e < 0.999) ? 1 : 0.35; se.poly([[x - 0.2, 1.3], [x + 0.2, 1.3], [x, 1.3 + 0.75 * fl]], { fill: 'orange', fillAlpha: 0.8 * fl, color: 'red', width: 1 }); }
+          se.text('flame', xh - L / 2, 0.85, { align: 'center', size: 11, color: 'red' });
+          for (let k = 0; k < 5; k++) se.line(xc + 0.5 + k * 0.65, 1.2, xc + 0.5 + k * 0.65, 2.2, { color: 'blue', width: 2, alpha: ph === 2 ? 1 : 0.35 });
+          se.text('cooling water', xc + L / 2, 0.85, { align: 'center', size: 11, color: 'blue' });
+          if (ph === 0) band(v, se, [[xh - L / 2, 1.9], [xh - L / 2, 2.35]], 9, 'red');
+          if (ph === 3 && e < 0.999) band(v, se, [[xh - L / 2, 1.9], [xh - L / 2, 2.35]], 3 + 8 * (1 - e), 'red');
+          if (ph === 2) band(v, se, [[xc + L / 2, 2.35], [xc + L / 2, 1.9]], 9, 'blue');
+          const names = ['1: isothermal expansion at Th — heat from the flame', '2: constant volume — gas gives heat to the regenerator', '3: isothermal compression at Tc — heat to the cooling water', e < 0.999 ? '4: constant volume — regenerator (and flame) reheat the gas' : '4: constant volume — the regenerator reheats the gas'];
+          se.text(names[ph], 6, 6.45, { align: 'center', size: 12, weight: 650 });
+          // ---- P–V
+          const pmax = n * R * h / Vmin;
+          sp.setView([0, Vmax * 1.15], [0, pmax * 1.15]);
+          const iso = (T, a, b) => Array.from({ length: 61 }, (_, i) => { const VV = a + (b - a) * i / 60; return [VV, n * R * T / VV]; });
+          sp.poly([...iso(h, Vmin, Vmax), ...iso(c, Vmax, Vmin)], { fill: 'orange', fillAlpha: 0.15, stroke: false });
+          sp.path(iso(h, Vmin, Vmax), { color: 'red', width: ph === 0 ? 3.4 : 2 }); sp.path(iso(c, Vmax, Vmin), { color: 'blue', width: ph === 2 ? 3.4 : 2 });
+          sp.line(Vmax, n * R * h / Vmax, Vmax, n * R * c / Vmax, { color: 'purple', width: ph === 1 ? 3.4 : 2, dash: [6, 4] }); sp.line(Vmin, n * R * c / Vmin, Vmin, n * R * h / Vmin, { color: 'purple', width: ph === 3 ? 3.4 : 2, dash: [6, 4] });
+          sp.dot(V, P, { r: 7, color: 'gold' });
+          // ---- bars
+          const mx = Math.max(Qin, Qout) * 1.08, rows = [[Qin, 'red', 'heat from flame'], [e * Qreg, 'purple', 'recycled by regenerator'], [W, 'orange', 'work'], [Qout, 'blue', 'heat to cooling water']];
+          rows.forEach(([val, col, lab], k) => { const yy = 4.3 - k * 1.0; sb.rect(0.42, yy - 0.3, 0.42 + 0.5 * val / mx, yy + 0.3, { fill: col, fillAlpha: 0.75, color: col, width: 1 }); sb.text(lab, 0.4, yy, { align: 'right', size: 11, color: col, weight: 600 }); sb.text(`${val.toFixed(0)} J`, 0.43 + 0.5 * val / mx, yy, { size: 11 }); });
+          sb.text(`η = ${v.fix(eta, 3)}   Carnot ${v.fix(eC, 3)}`, 0.5, 0.35, { align: 'center', size: 12.5, weight: 700, color: Math.abs(eta - eC) < 1e-6 ? 'green' : 'ink' });
+          cur = { eta, eC, W, Qin, Qreg, e };
+        }, { still: 2.6 });
+        v.legend([['red', 'isotherm at $T_h$'], ['blue', 'isotherm at $T_c$'], ['purple', 'constant-volume steps (through the regenerator)', { dash: true }]]);
+        v.readout(() => cur ? `per cycle: work ${v.fix(cur.W, 1)} J, heat from the flame ${v.fix(cur.Qin, 1)} J (of which $(1-\\varepsilon)Q_{\\text{reg}}$ = ${v.fix((1 - cur.e) * cur.Qreg, 1)} J re-heats the gas in step 4) · $\\eta$ = **${v.fix(cur.eta, 4)}** vs Carnot $1 - T_c/T_h$ = ${v.fix(cur.eC, 4)} ${cur.e === 1 ? '— equal, with a perfect regenerator' : `— ${v.fix(100 * cur.eta / cur.eC, 1)}% of Carnot`}` : '');
+      },
+    },
+    // ------------------------------------------------------------------ 2.16
+    {
+      num: '2.16', kind: 'Theorem', name: 'Carathéodory’s principle',
+      statement: String.raw`**Principle (Carathéodory, 1909).** In every neighbourhood of any equilibrium state of a thermodynamic system there are states that cannot be reached from it by any adiabatic process.
+
+**Theorem.** For a simple system this principle is equivalent to the existence of an empirical entropy: the inexact differential of heat has an integrating factor, $\delta Q_{\text{rev}} = \tau\,d\sigma$, so that the reversible adiabats fill state space as the level surfaces $\sigma = $ const. Every adiabatic process leaves $\sigma$ unchanged or moves it in one direction only (by convention, upward), and the states with lower $\sigma$ are adiabatically inaccessible. Identifying $\tau$ with the absolute temperature makes $\sigma$ the entropy $S$, recovering 2.9 and 2.10 without heat engines.`,
+      idea: String.raw`The mathematics is a theorem on Pfaffian forms: if a form $\omega = \sum_i X_i\,dx_i$ in three or more variables had no integrating factor ($\omega \wedge d\omega \ne 0$ somewhere), curves tangent to $\omega = 0$ could join any two nearby points (Chow–Rashevskii), so every nearby state would be reachable adiabatically — contradicting the principle. In two variables every form is integrable, so the content appears with two or more work coordinates. Physically, irreversible adiabatic processes (stirring, free expansion, slamming a piston) only ever push the state to one side of the reversible adiabat through it, never to the other.`,
+      caption: String.raw`Left, one mole of monatomic gas on log–log $V$–$T$ axes: from the start state A, the reversible adiabat through it (a straight line of slope −2/3 here) divides the plane. Apply adiabatic processes with the buttons — stirring, free expansion, slamming the piston in or letting it fly out, slow compression or expansion — and the state moves, but never into the red region below the adiabat. *300 random routes* tries many combinations: every end point lands on or above the line. Right, the reason in three dimensions: two gas samples in thermal contact, with volumes $V_1$ and $V_2$. Drag the loop in the $(V_1, V_2)$ plane; the gas is taken around it quasistatically and adiabatically, and the bottom panel follows its temperature. For real gases $T$ returns exactly to its start — the adiabats are surfaces. Switch to the **fictitious substance** (whose heat form has no integrating factor) and each turn ratchets $T$ down (or up, run the other way): every nearby state becomes reachable, and no entropy could exist.`,
+      deps: ['thermo-2.10'],
+      see: ['mfd-4.12'],
+      refs: ['Tong ch. 4'],
+      tags: ['entropy', 'axiomatics'],
+      credit: 'C. Carathéodory, 1909 (Mathematische Annalen 67)',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Carath%C3%A9odory%27s_theorem_(thermodynamics)' },
+      viz(v) {
+        const A = { V: 20, T: 300 };
+        let cur = { ...A }, trail = [], cloud = [];
+        const SA = () => Math.log(A.T) * 1.5 + Math.log(A.V);
+        const Sf = (s) => 1.5 * Math.log(s.T) + Math.log(s.V);
+        const clampS = (s) => ({ V: clamp(s.V, 2.2, 95), T: clamp(s.T, 55, 1900) });
+        const moves = {
+          stir: (s, k = 1) => ({ V: s.V, T: s.T + 60 * k }),
+          free: (s, k = 1) => ({ V: s.V * (1 + 0.6 * k), T: s.T }),
+          slam: (s, k = 1) => { const x = 1 + 2 * k, Tf = (1.5 + x) / 2.5 * s.T; return { V: Tf / (x * s.T / s.V), T: Tf }; },
+          fly: (s, k = 1) => { const x = 1 - 0.7 * k, Tf = (1.5 + x) / 2.5 * s.T; return { V: Tf / (x * s.T / s.V), T: Tf }; },
+          squeeze: (s, k = 1) => { const f = 1 - 0.35 * k; return { V: s.V * f, T: s.T * f ** (-2 / 3) }; },
+          expand: (s, k = 1) => { const f = 1 + 0.5 * k; return { V: s.V * f, T: s.T * f ** (-2 / 3) }; },
+        };
+        const apply = (name) => { const nx = clampS(moves[name](cur)); trail.push({ a: cur, b: nx, rev: name === 'squeeze' || name === 'expand' }); cur = nx; };
+        const randomCloud = (seed) => { const R_ = v.rng(seed), keys = Object.keys(moves); cloud = []; for (let i = 0; i < 300; i++) { let s = { ...A }; for (let j = 0; j < 3; j++) s = clampS(moves[keys[Math.floor(R_() * keys.length)]](s, R_())); cloud.push(s); } };
+        for (const m of ['slam', 'expand', 'free', 'squeeze', 'fly']) apply(m); // an example route
+        randomCloud(7);
+        v.button('stir', () => apply('stir')); v.button('free expansion', () => apply('free')); v.button('slam piston in', () => apply('slam'));
+        v.button('let piston fly out', () => apply('fly')); v.button('slow squeeze', () => apply('squeeze')); v.button('slow expansion', () => apply('expand'));
+        v.button('300 random routes', () => randomCloud(Math.floor(performance.now()) % 100000 + 1));
+        v.button('back to A', () => { cur = { ...A }; trail = []; cloud = []; });
+        const sub = v.select('substance in the loop', [{ value: 'real', label: 'two real gases' }, { value: 'fict', label: 'fictitious substance' }], 'real');
+        const rev = v.toggle('run the loop the other way', false);
+        const sa = v.stage({ x: [2, 100], y: [50, 2000], xlog: true, ylog: true, height: 320, axes: 'box', xlabel: 'V (L)', ylabel: 'T (K)', weight: 1.15, title: 'what adiabatic processes can reach from A' });
+        const sl = v.stage({ x: [5, 40], y: [5, 40], height: 320, axes: 'box', xlabel: 'V₁ (L)', ylabel: 'V₂ (L)', weight: 0.85, title: 'a closed loop of the two volumes' });
+        const sT = v.stage({ x: [0, 3], y: [0, 1], height: 190, axes: 'box', xlabel: 'turns around the loop', ylabel: 'T (K)', full: true, title: 'temperature of the gas pair, taken around the loop three times adiabatically' });
+        const hc = sl.handle(20, 20, { color: 'ink', label: 'centre', constrain: { x: [12, 32], y: [12, 32] } });
+        const hr = sl.handle(28, 20, { color: 'accent', constrain: (x, y) => { const d = Math.hypot(x - hc.x, y - hc.y), rr = clamp(d, 2, Math.min(hc.x, hc.y) - 6); const a = Math.atan2(y - hc.y, x - hc.x); return [hc.x + rr * Math.cos(a), hc.y + rr * Math.sin(a)]; } });
+        hc.onDrag = () => { const rr = Math.min(Math.hypot(hr.x - hc.x, hr.y - hc.y), Math.min(hc.x, hc.y) - 6); hr.set(hc.x + rr, hc.y); };
+        // ratchet test (cached in the render)
+        const loopRun = (fict, dir) => {
+          const rad = Math.hypot(hr.x - hc.x, hr.y - hc.y), ph0 = Math.atan2(hr.y - hc.y, hr.x - hc.x), N = 600, out = [];
+          let T = 300;
+          const f = (ph, T_) => { const V1 = hc.x + rad * Math.cos(ph), V2 = hc.y + rad * Math.sin(ph), d1 = -rad * Math.sin(ph) * dir, d2 = rad * Math.cos(ph) * dir, g = fict ? 1 + (V1 / 20 - 1) : 1; return -(T_ / 3) * (d1 / V1 + g * d2 / V2); };
+          for (let k = 0; k <= 3 * N; k++) {
+            const ph = ph0 + dir * 2 * Math.PI * k / N; out.push([k / N, T]);
+            const hh = 2 * Math.PI / N, p = ph0 + 2 * Math.PI * k / N * dir;
+            const k1 = f(p, T), k2 = f(p + dir * hh / 2, T + hh / 2 * k1), k3 = f(p + dir * hh / 2, T + hh / 2 * k2), k4 = f(p + dir * hh, T + hh * k3);
+            T += hh / 6 * (k1 + 2 * k2 + 2 * k3 + k4); void ph;
+          }
+          return out;
+        };
+        let lr = null;
+        v.render(() => {
+          // ---- V–T panel
+          const sA = SA(), adT = (V) => Math.exp((sA - Math.log(V)) / 1.5);
+          const top = [[2, adT(2)], [100, adT(100)], [100, 2000], [2, 2000]], bot = [[2, 50], [100, 50], [100, adT(100)], [2, adT(2)]];
+          sa.poly(top, { fill: 'green', fillAlpha: 0.1, stroke: false }); sa.poly(bot, { fill: 'red', fillAlpha: 0.08, stroke: false, hatch: 'red', hatchAlpha: 0.22, hatchGap: 9 });
+          sa.fn(adT, { color: 'purple', width: 2.4 });
+          sa.text('adiabatically inaccessible from A', 2.4, 70, { size: 12, color: 'red', weight: 700, plate: true });
+          sa.text('reachable', 60, 1500, { size: 12, color: 'green', weight: 700, align: 'right', plate: true });
+          if (cloud.length) sa.dots(cloud.map((s) => [s.V, s.T]), { r: 2.4, color: 'green' });
+          for (const sg of trail) {
+            if (sg.rev) { const n = 20, pts = []; for (let i = 0; i <= n; i++) { const V = sg.a.V * (sg.b.V / sg.a.V) ** (i / n); pts.push([V, sg.a.T * (sg.a.V / V) ** (2 / 3)]); } sa.path(pts, { color: 'purple', width: 2.6 }); }
+            else sa.arrow(sg.a.V, sg.a.T, sg.b.V, sg.b.T, { color: 'ink', width: 1.8, dash: [5, 4], head: 9 });
+          }
+          sa.dot(A.V, A.T, { r: 6, color: 'ink', label: 'A', labelPos: 'sw' });
+          if (trail.length) sa.dot(cur.V, cur.T, { r: 6, color: 'gold' });
+          // ---- loop panel
+          const fict = sub.value === 'fict', dir = rev.value ? -1 : 1;
+          const rad = Math.hypot(hr.x - hc.x, hr.y - hc.y);
+          if (fict) sl.heat((x, y) => 1 + (x / 20 - 1), { range: [0, 2.5], cmap: 'theme', color: 'pink', res: 6, key: 'g' });
+          sl.circle(hc.x, hc.y, rad, { color: fict ? 'pink' : 'accent', width: 2.6 });
+          for (let k = 0; k < 4; k++) { const a = Math.PI / 2 * k + 0.4, b = a + 0.3 * dir; sl.arrow(hc.x + rad * Math.cos(a), hc.y + rad * Math.sin(a), hc.x + rad * Math.cos(b), hc.y + rad * Math.sin(b), { color: fict ? 'pink' : 'accent', width: 2, head: 10 }); }
+          if (fict) sl.text('pressure of gas 2 depends on V₁', 6, 38.5, { size: 11, color: 'pink', weight: 650, plate: true });
+          lr = loopRun(fict, dir);
+          const Ts = lr.map((p) => p[1]), lo = Math.min(...Ts), hi = Math.max(...Ts), pad = Math.max(5, 0.15 * (hi - lo));
+          sT.setView([0, 3], [lo - pad, hi + pad]);
+          sT.hline(300, { color: 'muted', width: 1, dash: [5, 4] });
+          for (let k = 1; k < 3; k++) sT.vline(k, { color: 'faint', width: 1 });
+          sT.path(lr, { color: fict ? 'pink' : 'accent', width: 2.4 });
+          for (let k = 1; k <= 3; k++) { const p = lr[Math.min(lr.length - 1, Math.round(k * 600))]; sT.dot(p[0], p[1], { r: 5, color: fict ? 'pink' : 'accent' }); }
+          sT.text('start: 300 K', 0.02, 300, { dy: -9, size: 11, color: 'muted' });
+        });
+        v.legend([['purple', 'reversible adiabat through A'], ['ink', 'irreversible adiabatic jump', { dash: true }], ['green', 'end points of random routes', { dot: true }]]);
+        v.readout(() => {
+          const sA = SA(), dS = Sf(cur) - sA, below = cloud.filter((s) => Sf(s) < sA - 1e-9).length;
+          const T1 = lr ? lr[600][1] : 300;
+          return `current state: $V$ = ${v.fix(cur.V, 1)} L, $T$ = ${v.fix(cur.T, 0)} K, $(S - S_A)/R$ = ${v.fix(dS, 3)} ≥ 0${cloud.length ? ` · random routes: ${cloud.length - below} of ${cloud.length} end on or above the adiabat, ${below} below` : ''} · loop: after one adiabatic turn $T$ = ${v.fix(T1, 6)} K (${sub.value === 'real' ? 'back to 300 K: states below are out of reach' : `changed by ${v.fix(T1 - 300, 2)} K: states below and above are both reachable`})`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.17
+    {
+      num: '2.17', kind: 'Model', name: 'Efficiency at maximum power',
+      statement: String.raw`A reversible engine has the Carnot efficiency but takes infinitely long per cycle, so it delivers no power. In the **endoreversible** model (Novikov 1957, Chambadal 1957, Curzon & Ahlborn 1975) a reversible engine runs between internal temperatures $T_{hw} < T_h$ and $T_{cw} > T_c$, and heat reaches it through finite conductances, $\dot Q_h = K_h(T_h - T_{hw})$ and $\dot Q_c = K_c(T_{cw} - T_c)$. The power $P = \dot Q_h - \dot Q_c$ vanishes both at $\eta = 0$ and at $\eta = \eta_C$, and is largest at
+$$\eta^* = 1 - \sqrt{\frac{T_c}{T_h}},$$
+independent of $K_h$ and $K_c$. For a broader class of **low-dissipation** engines (Esposito et al. 2010) the efficiency at maximum power is not universal but lies between $\eta_C/2$ and $\eta_C/(2 - \eta_C)$, both of which agree with $1 - \sqrt{T_c/T_h} = \eta_C/2 + \eta_C^2/8 + \dots$ to second order.`,
+      idea: String.raw`Running faster means larger temperature drops across the heat exchangers, which increases the heat flow but shrinks the temperature range $T_{hw} - T_{cw}$ the reversible core can use. With the reversible core imposing $\dot Q_h/T_{hw} = \dot Q_c/T_{cw}$ (2.7), the power as a function of $T_{hw}$ and $T_{cw}$ is maximized by setting the two drops in proportion to $\sqrt{K}$; the square root of the temperature ratio drops out of the algebra, and the conductances cancel. The result describes many real power plants better than the Carnot limit does, though it is neither a bound nor exact.`,
+      caption: String.raw`Drag the operating point (the engine's efficiency as a fraction of Carnot's). Left: the temperature ladder — heat flows from $T_h$ through a conductance down to the working fluid at $T_{hw}$, the reversible core works between $T_{hw}$ and $T_{cw}$, and heat leaks on to $T_c$; arrows are drawn to scale. Middle: power against efficiency, computed honestly from the model; the peak sits on $1 - \sqrt{T_c/T_h}$ whatever conductance ratio you choose. Switch to the **low-dissipation** model and the peak moves inside the band between $\eta_C/2$ and $\eta_C/(2-\eta_C)$ as you change the dissipation asymmetry. Bottom: observed efficiencies of 13 power plants against their Carnot efficiency (data as tabulated by Esposito et al. 2010); hover a dot. The three ringed plants are those Curzon and Ahlborn compared in 1975.`,
+      deps: ['thermo-2.7'],
+      see: ['energy-2.8'],
+      refs: ['Schroeder §4.1', 'Curzon & Ahlborn, Am. J. Phys. 43, 22 (1975)', 'Esposito, Kawai, Lindenberg & Van den Broeck, PRL 105, 150603 (2010)'],
+      tags: ['efficiency', 'finite-time thermodynamics'],
+      credit: 'Novikov, 1957; Chambadal, 1957; Curzon & Ahlborn, 1975',
+      scope: String.raw`A model, not a law: it assumes Newtonian heat transfer and a reversible core. Other loss mechanisms give other efficiencies at maximum power; for low-dissipation engines they lie between $\eta_C/2$ and $\eta_C/(2-\eta_C)$. Real plants are also optimized for cost, not purely for power.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Endoreversible_thermodynamics' },
+      viz(v) {
+        const model = v.select('model', [{ value: 'endo', label: 'endoreversible (Curzon–Ahlborn)' }, { value: 'ld', label: 'low-dissipation (Esposito et al.)' }], 'endo');
+        const op = v.slider('operating point: η as a fraction of η_C', 0.02, 0.98, 0.3, { step: 0.01, fmt: (x) => `${Math.round(x * 100)}%` });
+        const Th = v.slider('$T_h$', 400, 1000, 838, { step: 1, fmt: (x) => x.toFixed(0) + ' K' });
+        const Tc = v.slider('$T_c$', 250, 380, 298, { step: 1, fmt: (x) => x.toFixed(0) + ' K' });
+        const ratio = v.slider('conductance ratio $K_h/K_c$', 0.1, 10, 1, { log: true, fmt: (x) => v.fix(x, 2) });
+        const asym = v.slider('dissipation ratio $\\Sigma_c/\\Sigma_h$', 0.01, 100, 1, { log: true, fmt: (x) => v.fix(x, 2) });
+        v.button('go to maximum power', () => { op.set(clamp(peak.eta / (1 - Tc.value / Th.value), 0.02, 0.98)); });
+        const sl = v.stage({ x: [0, 4], y: [0, 1100], height: 300, axes: 'box', ylabel: 'T (K)', xticks: [], weight: 0.7, minWidth: 200, title: 'temperature ladder' });
+        const sp = v.stage({ x: [0, 1], y: [0, 1.12], height: 300, axes: 'box', xlabel: 'efficiency η', ylabel: 'power / maximum power', weight: 1.2, title: 'power against efficiency' });
+        const sx = v.stage({ x: [0.25, 0.75], y: [0, 0.75], height: 270, axes: 'box', xlabel: 'Carnot efficiency of the plant', ylabel: 'observed efficiency', full: true, hover: true, title: 'real power plants' });
+        let peak = { eta: 0 }, curve = [];
+        const endo = (eta, h, c, r) => { const Kh = 2 * r / (1 + r), Kc = 2 / (1 + r), x = (Kh * h + Kc * c / (1 - eta)) / (Kh + Kc); const Qh = Kh * (h - x); return { P: eta * Qh, Thw: x, Tcw: (1 - eta) * x, Qh, Qc: Qh * (1 - eta) }; };
+        const ldEnv = (eta, h, c, sc) => { // max power at given η over the hot contact time (ΔS = 1, Σ_h = 1, Σ_c = sc)
+          let best = { P: 0 };
+          for (let i = 0; i < 160; i++) { const th = 1.0001 * 10 ** (-0.2 + 3.4 * i / 159); const rhs = (1 - eta) * h * (1 - 1 / th) / c - 1; if (rhs <= 0) continue; const tc = sc / rhs, Qh = h * (1 - 1 / th), Qc = c * (1 + sc / tc), P = (Qh - Qc) / (th + tc); if (P > best.P) best = { P, Qh: Qh / (th + tc), Qc: Qc / (th + tc), th, tc }; }
+          return best;
+        };
+        v.render(() => {
+          const h = Th.value, c = Math.min(Tc.value, h - 20), eC = 1 - c / h, m = model.value;
+          ratio.el.hidden = m !== 'endo'; asym.el.hidden = m !== 'ld';
+          const at = (eta) => (m === 'endo' ? endo(eta, h, c, ratio.value) : ldEnv(eta, h, c, asym.value));
+          curve = []; let pk = { eta: 0, P: -1 };
+          for (let i = 1; i < 240; i++) { const eta = eC * i / 240, r = at(eta); curve.push([eta, r.P]); if (r.P > pk.P) pk = { eta, P: r.P }; }
+          let a = Math.max(0, pk.eta - eC / 240), b = Math.min(eC, pk.eta + eC / 240);
+          for (let k = 0; k < 40; k++) { const m1 = a + (b - a) * 0.382, m2 = a + (b - a) * 0.618; if (at(m1).P > at(m2).P) b = m2; else a = m1; }
+          peak = { eta: (a + b) / 2, P: at((a + b) / 2).P };
+          const eta = op.value * eC, s = at(eta), ca = 1 - Math.sqrt(c / h), lo = eC / 2, hi = eC / (2 - eC);
+          // ---- P–η
+          sp.setView([0, Math.min(1, eC * 1.12)], [0, 1.12]);
+          sp.vband(lo, hi, { color: 'green', alpha: 0.1 });
+          sp.vline(ca, { color: 'green', width: 2, dash: [6, 4] }); sp.vline(eC, { color: 'red', width: 1.6, dash: [3, 3] });
+          sp.text('η_CA = 1 − √(Tc/Th)', ca, 1.06, { dx: 5, size: 11, color: 'green', weight: 650 });
+          sp.text('Carnot:', eC, 0.86, { dx: 4, size: 11, color: 'red', weight: 650 }); sp.text('P = 0', eC, 0.78, { dx: 4, size: 11, color: 'red', weight: 650 });
+          sp.path(curve.map(([e, P]) => [e, P / peak.P]).concat([[eC, 0]]), { color: 'ink', width: 2.6 });
+          sp.dot(peak.eta, 1, { r: 5, hollow: true, color: 'ink' });
+          sp.dot(eta, s.P / peak.P, { r: 7, color: 'gold' });
+          // ---- ladder
+          sl.setView([0, 4], [0, Math.max(1100, h * 1.1)]);
+          sl.hline(h, { color: 'red', width: 2.4 }); sl.hline(c, { color: 'blue', width: 2.4 });
+          sl.text(`Th ${h.toFixed(0)} K`, 0.1, h, { dy: -9, size: 11, color: 'red', weight: 650 }); sl.text(`Tc ${c.toFixed(0)} K`, 0.1, c, { dy: 11, size: 11, color: 'blue', weight: 650 });
+          const sc_ = 3 + 26 * s.Qh / Math.max(1e-9, (m === 'endo' ? endo(0.001, h, c, ratio.value).Qh : s.Qh * 1.6));
+          if (m === 'endo') {
+            sl.rect(1.4, s.Tcw, 2.6, s.Thw, { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 1.6, radius: 6 });
+            sl.text('reversible core', 2, (s.Thw + s.Tcw) / 2, { align: 'center', size: 10.5, color: 'orange', weight: 650 });
+            sl.hline(s.Thw, { color: 'red', width: 1.2, dash: [4, 4] }); sl.hline(s.Tcw, { color: 'blue', width: 1.2, dash: [4, 4] });
+            sl.text(`Thw ${s.Thw.toFixed(0)}`, 3.95, s.Thw, { dy: -9, align: 'right', size: 10.5, color: 'red' }); sl.text(`Tcw ${s.Tcw.toFixed(0)}`, 3.95, s.Tcw, { dy: 11, align: 'right', size: 10.5, color: 'blue' });
+            band(v, sl, [[2, h], [2, s.Thw]], Math.min(26, sc_), 'red'); band(v, sl, [[2, s.Tcw], [2, c]], Math.min(26, sc_ * (1 - eta)), 'blue');
+            band(v, sl, [[2.6, (s.Thw + s.Tcw) / 2], [3.9, (s.Thw + s.Tcw) / 2]], Math.max(2, Math.min(26, sc_ * eta)), 'orange');
+          } else {
+            sl.rect(1.4, c + 0.12 * (h - c), 2.6, h - 0.12 * (h - c), { fill: 'orange', fillAlpha: 0.2, color: 'orange', width: 1.6, radius: 6 });
+            sl.text(`τh = ${v.fix(s.th || 0, 2)}`, 2, (h + c) / 2 + 40, { align: 'center', size: 10.5, color: 'red' }); sl.text(`τc = ${v.fix(s.tc || 0, 2)}`, 2, (h + c) / 2 - 40, { align: 'center', size: 10.5, color: 'blue' });
+            sl.text('contact times', 2, (h + c) / 2, { align: 'center', size: 10.5, color: 'orange', weight: 650 });
+          }
+          // ---- plants
+          sx.fn((e) => e, { color: 'red', width: 1.6, dash: [3, 3] }); sx.text('Carnot', 0.6, 0.6, { dx: -6, dy: -8, align: 'right', size: 11, color: 'red' });
+          sx.between((e) => e / (2 - e), (e) => e / 2, 0.25, 0.75, { fill: 'green', fillAlpha: 0.12 });
+          sx.fn((e) => 1 - Math.sqrt(1 - e), { color: 'green', width: 2.4 }); sx.text('1 − √(Tc/Th)', 0.74, 1 - Math.sqrt(0.26), { dy: -10, align: 'right', size: 11, color: 'green', weight: 650 });
+          sx.text('shaded band: η_C/2 … η_C/(2 − η_C)', 0.5, 0.08, { align: 'center', size: 10.5, color: 'green', plate: true });
+          const ptr = sx.pointer; let hov = null;
+          if (ptr.inside) { let best = 16 * 16; for (const p of PLANTS) { const ex = 1 - p.Tc / p.Th, d = (sx.X(ex) - sx.X(ptr.x)) ** 2 + (sx.Y(p.eta) - sx.Y(ptr.y)) ** 2; if (d < best) { best = d; hov = p; } } }
+          for (const p of PLANTS) { const ex = 1 - p.Tc / p.Th; sx.dot(ex, p.eta, { r: p === hov ? 7 : 5, color: 'accent' }); if (p.ca) { sx.dot(ex, p.eta, { r: 9, hollow: true, color: 'ink', width: 1.4 }); sx.text(p.name, ex, p.eta, { dx: 11, dy: p.name === 'CANDU' ? 10 : -8, size: 11, weight: 650, plate: true }); } }
+          if (hov) sx.text(`${hov.name} (${hov.kind}): observed ${hov.eta}, Curzon–Ahlborn ${v.fix(1 - Math.sqrt(hov.Tc / hov.Th), 3)}, Carnot ${v.fix(1 - hov.Tc / hov.Th, 3)}`, 0.26, 0.7, { size: 11.5, weight: 650, plate: true });
+        });
+        v.legend([['ink', 'power of the model engine'], ['gold', 'operating point', { dot: true }], ['green', 'Curzon–Ahlborn efficiency', { dash: true }], ['green', 'low-dissipation band', { area: true }]]);
+        v.readout(() => {
+          const h = Th.value, c = Math.min(Tc.value, h - 20), eC = 1 - c / h, ca = 1 - Math.sqrt(c / h), eta = op.value * eC;
+          const errs = PLANTS.map((p) => Math.abs(p.eta - (1 - Math.sqrt(p.Tc / p.Th))));
+          return `computed maximum of the power curve at $\\eta^*$ = **${v.fix(peak.eta, 4)}** · $1 - \\sqrt{T_c/T_h}$ = ${v.fix(ca, 4)}, $\\eta_C/2$ = ${v.fix(eC / 2, 4)}, $\\eta_C/(2-\\eta_C)$ = ${v.fix(eC / (2 - eC), 4)}, $\\eta_C$ = ${v.fix(eC, 4)} · operating at $\\eta$ = ${v.fix(eta, 3)} gives ${v.fix(100 * (model.value === 'endo' ? endo(eta, h, c, ratio.value).P : ldEnv(eta, h, c, asym.value).P) / peak.P, 1)}% of maximum power · plants: median |observed − Curzon–Ahlborn| = ${v.fix(errs.sort((a, b) => a - b)[6], 3)}`;
+        });
+      },
+    },
   ],
 };
