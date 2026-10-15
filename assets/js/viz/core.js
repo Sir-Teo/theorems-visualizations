@@ -131,6 +131,7 @@ class Stage {
     this.canvas = h('canvas');
     this.overlay = h('div', 'stage-overlay');
     this.box.append(this.canvas, this.overlay);
+    rt.ro?.observe(this.box); // re-measure when shown again or resized by a neighbour
     this.el.append(this.box);
     rt.stagesEl.append(this.el);
     this.ctx = this.canvas.getContext('2d');
@@ -814,6 +815,7 @@ class Stage3D {
     if (o.title) { const t = h('div', 'stage-title'); t.innerHTML = inlineHTML(o.title); this.el.append(t); }
     this.box = h('div', 'stage-box'); this.canvas = h('canvas'); this.overlay = h('div', 'stage-overlay');
     this.box.append(this.canvas, this.overlay); this.el.append(this.box); rt.stagesEl.append(this.el);
+    rt.ro?.observe(this.box); // re-measure when shown again or resized by a neighbour
     this.ctx = this.canvas.getContext('2d'); this.q = []; this._tex = []; this._texN = 0;
     this.W = 300; this.H = o.height;
     if (o.drag) this._bind();

@@ -237,7 +237,7 @@ function scene3(v, o = {}) {
     if (B.length === 0) return G.dot(ZERO, { r: 6, color: st.color || 'accent', noDim: true });
     if (B.length === 1) return G.lineSpan(B[0], { color: st.color || 'accent', ...st });
     if (B.length === 2) return G.disc(B, { color: st.color || 'accent', r: st.r ?? 2, ...st });
-    return G.cube(st.h ?? 1.6, { color: st.color || 'accent' });
+    return G.cube(st.h ?? 1.35, { color: st.color || 'accent' });
   };
   G.axes = () => {
     const L = o.axisLen ?? 2.2, lab = G.labels ?? o.labels ?? ['x', 'y', 'z'];
@@ -342,8 +342,8 @@ The span of the empty list $(\,)$ is defined to be $\{0\}$. If $\spn(v_1,\dots,v
           A.forEach((s, i) => { s.el.hidden = i >= k; });
           const vs = H.slice(0, k).map((h) => h.p), B = orth(vs), d = B.length;
           if (d === 2) { const ix = siftIdx(vs); G.disc(B, { color: 'accent', r: 2 }); G.lattice(vs[ix[0]], vs[ix[1]], 2, { color: 'accent', alpha: 0.28 }); }
-          else G.subspace(B, { color: 'accent', h: 1.5, len: 2.2 });
-          const lim = d === 3 ? 1.5 : 1.97;
+          else G.subspace(B, { color: 'accent', h: 1.4, len: 2.2 });
+          const lim = d === 3 ? 1.4 : 1.97;
           for (const c of CO) { const p = comb(c.slice(0, k), vs); if (d === 3 ? Math.max(...p.map(Math.abs)) < lim : len3(p) < lim) G.dot(p, { r: 1.8, color: 'gold', alpha: 0.75, ring: false }); }
           vs.forEach((p, i) => G.vec(p, { color: VC[i], label: `v_${i + 1}`, width: 2.7 }));
           let s = ZERO;
@@ -395,7 +395,7 @@ The span of the empty list $(\,)$ is defined to be $\{0\}$. If $\spn(v_1,\dots,v
           // the span and the candidate
           G.subspace(orth([v1, v2]), { color: 'accent', r: 1.9 });
           if (mode === 'plane') G.disc([u1, dirU], { color: 'orange', r: 2.1, fillAlpha: 0.1 });
-          else if (mode === 'space') G.cube(1.75, { color: 'orange' });
+          else if (mode === 'space') G.cube(1.35, { color: 'orange' });
           else { G.lineSpan(v1, { color: 'orange', width: 3, len: 2.4 }); G.lineSpan(v2, { color: 'orange', width: 3, len: 2.4 }); }
           let inside = 0;
           for (const [c1, c2] of CO) { const p = add3(mul3(v1, c1), mul3(v2, c2)), ok = inU(p); if (ok) inside++; if (len3(p) < 2.1) G.dot(p, { r: 2.6, color: ok ? 'green' : 'red', alpha: 0.85, ring: false }); }
@@ -485,7 +485,7 @@ The set of all polynomials with coefficients in $\mathbf F$ is denoted $\mathcal
         const G = scene3(v, { height: 340, range: 2.3, labels: ['a₀', 'a₁', 'a₂'], title: 'coefficient points $(a_0,a_1,a_2)$', minWidth: 280, ball: 1.7, hint: false });
         const lam = v.slider('$\\lambda$', -1.5, 1.5, 0.8, { step: 0.05 });
         const q10 = (p) => p.map((c) => Math.round(c * 10) / 10);
-        const hp = G.handle([1.2, 0.3, 0.8], { color: 'blue', constrain: q10 });
+        const hp = G.handle([1.2, -0.3, 0.9], { color: 'blue', constrain: q10 });
         const hq = G.handle([-0.4, -1.1, -0.5], { color: 'orange', constrain: q10 });
         const x0 = L.handle(0.9, 0, { color: 'gold', constrain: (x) => [Math.max(-1.5, Math.min(1.5, x)), 0] });
         const ev = (c, x) => c[0] + c[1] * x + c[2] * x * x;
@@ -669,7 +669,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
           const dep = firstDependent(M, all.slice(0, j)), k = dep ? dep.k : -1, removed = rem.value && k >= 0;
           const keep = all.slice(0, j).filter((_, i) => !(removed && i === k));
           const B = orth(keep), dimAll = orth(all.slice(0, j)).length;
-          if (B.length === 2) G.disc(B, { color: 'accent', r: 2.1 }); else G.subspace(B, { color: 'accent', h: 1.65 });
+          if (B.length === 2) G.disc(B, { color: 'accent', r: 2.1 }); else G.subspace(B, { color: 'accent', h: 1.35 });
           if (dep && k > 0) {
             let s = ZERO; dep.c.forEach((c, i) => { const nx = add3(s, mul3(all[i], c)); G.arrow(s, nx, { color: 'gold', width: 2.2, dash: [6, 4], head: 9 }); s = nx; });
           }
@@ -712,7 +712,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
         const nSel = v.select('spanning list', [{ value: '3', label: '$w_1,w_2,w_3$' }, { value: '4', label: '$w_1,\\dots,w_4$' }, { value: '5', label: '$w_1,\\dots,w_5$' }], '4');
         const mSel = v.select('independent list', [{ value: '2', label: '$u_1,u_2$' }, { value: '3', label: '$u_1,u_2,u_3$' }, { value: '4', label: '$u_1,\\dots,u_4$' }], '3');
         const HW = [[1.5, -0.5, -0.3], [-0.3, 1.4, 0.2], [0.5, -0.4, 1.4], [-1.2, 0.2, -0.6], [0.6, 0.4, -1.3]].map((p) => G.handle(p, { color: 'orange', r: 5.5 }));
-        const HU = [[1.1, 0.9, 0.6], [-1.2, 1.0, 0.4], [0.2, -1.2, -0.9], [-0.6, -1.4, 0.4]].map((p) => G.handle(p, { color: 'blue', r: 5.5 }));
+        const HU = [[0.84, -0.23, 1.21], [-1.2, 1.0, 0.4], [0.2, -1.2, -0.9], [-0.6, -1.4, 0.4]].map((p) => G.handle(p, { color: 'blue', r: 5.5 }));
         const CODE = [
           '$B \\leftarrow (w_1,\\dots,w_n)$   ▷ spans $V$',
           'for $k = 1$ to $m$:',
@@ -813,7 +813,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
           }
           cand.visible = U.length > 0;
           const B = orth(list), done = B.length === U.length;
-          if (U.length === 3) G.cube(1.7, { color: 'orange' }); else if (U.length === 2) G.disc(U, { color: 'orange', r: 2.25, fillAlpha: 0.08 }); else if (U.length === 1) G.lineSpan(U[0], { color: 'orange', width: 3, len: 2.4 });
+          if (U.length === 3) G.cube(1.35, { color: 'orange' }); else if (U.length === 2) G.disc(U, { color: 'orange', r: 2.25, fillAlpha: 0.08 }); else if (U.length === 1) G.lineSpan(U[0], { color: 'orange', width: 3, len: 2.4 });
           if (B.length === 2) G.disc(B, { color: 'accent', r: 1.6, fillAlpha: 0.2 }); else if (B.length === 1) G.lineSpan(B[0], { color: 'accent', width: 6, len: 1.9, alpha: 0.45 }); else if (B.length === 3) G.cube(1.25, { color: 'accent' });
           list.forEach((p, i) => G.vec(p, { color: VC[i], label: `u_${i + 1}`, width: 2.8 }));
           const inSpan = U.length && distTo(cand.p, B) < 1e-6 * Math.max(1, len3(cand.p));

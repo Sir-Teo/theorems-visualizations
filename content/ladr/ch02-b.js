@@ -237,7 +237,7 @@ function scene3(v, o = {}) {
     if (B.length === 0) return G.dot(ZERO, { r: 6, color: st.color || 'accent', noDim: true });
     if (B.length === 1) return G.lineSpan(B[0], { color: st.color || 'accent', ...st });
     if (B.length === 2) return G.disc(B, { color: st.color || 'accent', r: st.r ?? 2, ...st });
-    return G.cube(st.h ?? 1.6, { color: st.color || 'accent' });
+    return G.cube(st.h ?? 1.35, { color: st.color || 'accent' });
   };
   G.axes = () => {
     const L = o.axisLen ?? 2.2, lab = G.labels ?? o.labels ?? ['x', 'y', 'z'];
@@ -430,7 +430,7 @@ export default {
         v.legend([['orange', 'the space $V$', { area: true }], ['blue', 'the spanning list'], ['green', 'survivors: a basis of $V$'], ['faint', 'struck out', { dash: true }]]);
         G.render(() => {
           const U = UB[sp.value], { L } = messy(U, seed * 31 + +sp.value), kept = siftIdx(L), R = red.value;
-          if (U.length === 3) G.cube(1.6, { color: 'orange' }); else if (U.length === 2) G.disc(U, { color: 'orange', r: 2.05, fillAlpha: 0.1 }); else if (U.length === 1) G.lineSpan(U[0], { color: 'orange', width: 3, len: 2.2 });
+          if (U.length === 3) G.cube(1.35, { color: 'orange' }); else if (U.length === 2) G.disc(U, { color: 'orange', r: 2.05, fillAlpha: 0.1 }); else if (U.length === 1) G.lineSpan(U[0], { color: 'orange', width: 3, len: 2.2 });
           if (R && kept.length === 3) parallelepiped(G, L[kept[0]], L[kept[1]], L[kept[2]], { color: 'green', fillAlpha: 0.06, alpha: 0.35 });
           if (R && kept.length === 2) { const [a, b] = kept.map((i) => L[i]); G.poly([ZERO, a, add3(a, b), b], { fill: 'green', fillAlpha: 0.14, color: 'green', alpha: 0.5, occlude: false }); }
           L.forEach((p, i) => {
@@ -651,7 +651,7 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
           const { L, kept } = cur;
           if (kind === 'line') G.lineSpan(dirL, { color: 'orange', width: 3, len: 2.2 });
           else if (kind === 'plane') G.disc(orth([[1, 0, -0.32], [0, 1, 0.215]]), { color: 'orange', r: 2, fillAlpha: 0.1 });
-          else G.cube(1.6, { color: 'orange' });
+          else G.cube(1.35, { color: 'orange' });
           L.forEach((p, i) => { if (!kept.includes(i)) G.vec(p, { color: 'faint', width: 1.4, dash: [4, 4], head: 7 }); });
           kept.forEach((i, j) => G.vec(L[i], { color: 'green', width: 3, label: kind === 'P2' ? `p_${j + 1}` : `b_${j + 1}` }));
           if (kept.length === 3) parallelepiped(G, L[kept[0]], L[kept[1]], L[kept[2]], { color: 'green', fillAlpha: 0.05, alpha: 0.3 });
@@ -670,7 +670,8 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
           const { kind, L, kept, n } = st, d = kept.length;
           const name = { line: 'the line', plane: 'the plane', R3: '$\\mathbf R^3$', P2: '$\\mathcal P_2(\\mathbf R)$' }[kind];
           let extra = '';
-          if (kind === 'P2') extra = ' Basis found: ' + kept.map((i, j) => { const c = L[i]; return `$p_${j + 1} = ${combTeX([c[0], c[1], c[2]], ['1', 'x', 'x^2'])}$`; }).join(', ') + '.';
+          const polyTeX = (c) => { let t = ''; [[c[0], ''], [c[1], 'x'], [c[2], 'x^2']].forEach(([a, m]) => { if (Math.abs(a) < 0.005) return; const n = Math.abs(a).toFixed(2); t += (t ? (a < 0 ? ' - ' : ' + ') : a < 0 ? '-' : '') + (m && n === '1.00' ? '' : n) + m; }); return t || '0'; };
+          if (kind === 'P2') extra = ' Basis found: ' + kept.map((i, j) => `$p_${j + 1}(x) = ${polyTeX(L[i])}$`).join(', ') + '.';
           return `${n === 1 ? 'The basis' : `All ${n} bases`} of ${name} found so far ${n === 1 ? 'has' : 'have'} length ${d}, so $\\dim = ${d}$.${extra}`;
         });
       },
@@ -703,7 +704,7 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
           if (Vs.value !== lastV) { lastV = Vs.value; H.forEach((h) => { h.p = projOnto(h.p, VBv); if (len3(h.p) < 0.4) h.p = mul3(VBv[0], 1.2); }); }
           H.forEach((h, i) => { h.visible = i < k; });
           const vs = H.slice(0, k).map((h) => h.p), B = orth(vs), kept = siftIdx(vs);
-          if (VBv.length === 2) G.disc(VBv, { color: 'orange', r: 2.05, fillAlpha: 0.07 }); else G.cube(1.6, { color: 'orange' });
+          if (VBv.length === 2) G.disc(VBv, { color: 'orange', r: 2.05, fillAlpha: 0.07 }); else G.cube(1.35, { color: 'orange' });
           if (B.length === 2) G.disc(B, { color: 'accent', r: VBv.length === 2 ? 2.05 : 1.8, fillAlpha: 0.2 }); else if (B.length === 1) G.lineSpan(B[0], { color: 'accent', width: 6, alpha: 0.4 });
           vs.forEach((p, i) => G.vec(p, { color: kept.includes(i) ? VC[i] : 'faint', label: `v_${i + 1}`, width: kept.includes(i) ? 2.8 : 1.8, dash: kept.includes(i) ? undefined : [4, 4] }));
           G.corner(B.length === VBv.length ? `U = V: the vectors fill ${VBv.length === 3 ? 'ℝ³' : 'the plane W'}` : `U is ${['{0}', 'a line', 'a plane'][B.length]} inside V`, 'tl', { color: B.length === VBv.length ? 'green' : 'muted', weight: 600 });

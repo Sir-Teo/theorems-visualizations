@@ -293,6 +293,7 @@ main { flex: 1; }
 .viz { display: flex; flex-direction: column; gap: 10px; }
 .viz-stages { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
 .stage { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.stage[hidden] { display: none !important; }
 .stage-title { font-size: 13px; color: var(--ink-2); font-weight: 500; padding: 0 2px; }
 .stage-box { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; overflow: hidden; }
 .viz-card .stage-box { background: color-mix(in srgb, var(--panel-2) 45%, var(--panel)); }
