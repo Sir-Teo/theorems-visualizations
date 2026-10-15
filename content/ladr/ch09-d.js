@@ -140,20 +140,20 @@ export default {
       deps: ['ladr-9.36', 'ladr-9.28', 'ladr-3.114'],
       tags: ['multilinear', 'dimension'],
       viz(v) {
-        const S = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, axes: false, height: 370, minWidth: 280 });
+        const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 370, minWidth: 280 });
         const P = v.stage({ x: [-3, 3], y: [-3, 3], height: 370, minWidth: 280, xlabel: 'α(u, v)', ylabel: 'α′(u, v)', title: 'one dot per pair $(u, v)$' });
         const mode = v.select('', [{ value: 'r2', label: "two alternating 2-forms on $\\mathbf R^2$" }, { value: 'na', label: "$\\alpha'$ not alternating" }, { value: 'r3', label: 'two alternating 2-forms on $\\mathbf R^3$' }], 'r2');
         let seed = 4, T2 = [[1, 1], [-1, 1]], B2 = [[1, 2], [-1, 1]];
         const regen = () => {
           const r = v.rng(seed);
-          do { T2 = [[r.int(-2, 2), r.int(-2, 2)], [r.int(-2, 2), r.int(-2, 2)]]; } while (Math.abs(dett(T2)) < 1 || Math.abs(dett(T2)) > 3);
+          do { T2 = [[r.int(-1, 1), r.int(-2, 2)], [r.int(-1, 1), r.int(-1, 1)]]; } while (Math.abs(dett(T2)) < 1 || Math.abs(dett(T2)) > 2 || T2.flat().filter((x) => x).length < 3);
           do { B2 = [[r.int(-2, 2), r.int(-2, 2)], [r.int(-2, 2), r.int(-2, 2)]]; } while (B2[0][0] === 0 && B2[1][1] === 0);
         };
         regen();
         v.button("new $\\alpha'$", () => { seed++; regen(); });
         const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
-        const hu = S.handle(1.4, 0.4, { color: CC[0], label: 'u', constrain: snap });
-        const hv = S.handle(0.3, 1.3, { color: CC[1], label: 'v', constrain: snap });
+        const hu = S.handle(1.2, 0.3, { color: CC[0], label: 'u', constrain: snap });
+        const hv = S.handle(0.2, 1.0, { color: CC[1], label: 'v', constrain: snap });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.42, axis: 1.45, lim: 1.5 });
         const Hu = sc.handle([1.1, 0.3, 0.6], { color: CC[0], label: 'u' });
         const Hv = sc.handle([0.15, 1.0, 0.75], { color: CC[1], label: 'v' });
@@ -179,8 +179,8 @@ export default {
             sc.flush();
             S.corner('α = shadow on the xy-plane, α′ = shadow on the yz-plane', 'tl', { color: 'muted', weight: 600, size: 11.5 });
           } else {
-            for (let k = -2; k <= 2; k++) { S.line(k, -2.2, k, 2.2, { color: 'grid', width: 1 }); S.line(-2.2, k, 2.2, k, { color: 'grid', width: 1 }); }
-            S.line(-2.2, 0, 2.2, 0, { color: 'muted', width: 1 }); S.line(0, -2.2, 0, 2.2, { color: 'muted', width: 1 });
+            for (let k = -4; k <= 4; k++) { S.line(k, -5, k, 5, { color: 'grid', width: 1 }); S.line(-5, k, 5, k, { color: 'grid', width: 1 }); }
+            S.line(-5, 0, 5, 0, { color: 'muted', width: 1 }); S.line(0, -5, 0, 5, { color: 'muted', width: 1 });
             if (md === 'r2') { const Tu = mv(T2, u), Tw = mv(T2, w); S.poly([[0, 0], Tu, add(Tu, Tw), Tw], { color: 'orange', width: 1.6, dash: [6, 4], fill: 'orange', fillAlpha: 0.06 }); }
             S.poly([[0, 0], u, add(u, w), w], { fill: oriCol(cur[0], 1e-9), color: oriCol(cur[0], 1e-9), width: 1.6, fillAlpha: 0.2 });
             S.arrow(0, 0, u[0], u[1], { color: CC[0], width: 3 }); S.arrow(0, 0, w[0], w[1], { color: CC[1], width: 3 });
@@ -194,7 +194,7 @@ export default {
           if (md === 'r2') P.line(-Rr, -c * Rr, Rr, c * Rr, { color: 'green', width: 1.6, dash: [6, 4] });
           P.dots(pts, { r: 2.6, color: 'accent', alpha: 0.55 });
           P.dot(cur[0], cur[1], { r: 6.5, color: 'gold' });
-          P.corner(md === 'r2' ? `$\\alpha' = ${tn(c, 3)}\\,\\alpha$ on every pair` : 'no line through 0 fits', 'tl', { color: md === 'r2' ? 'green' : 'red', weight: 700, size: 13 });
+          P.corner(md === 'r2' ? `$\\alpha' = ${tn(c, 3)}\\,\\alpha$ on every pair` : 'no line through 0 fits', md === 'r2' && c < 0 ? 'tr' : 'tl', { color: md === 'r2' ? 'green' : 'red', weight: 700, size: 13 });
           st = { md, cos, c, cur, T2, B2 };
         });
         v.legend([['accent', '300 random pairs', { dot: true }], ['gold', 'your pair', { dot: true }], ['green', "the line $\\alpha' = c\\,\\alpha$", { dash: true }]]);
@@ -227,7 +227,7 @@ $$\alpha(e_1, \dots, e_n) \ne 0 \iff e_1, \dots, e_n \text{ is linearly independ
         const near = (x, y, d) => { const n2 = d[0] ** 2 + d[1] ** 2; if (n2 < 1e-9) return [x, y]; const t = (x * d[0] + y * d[1]) / n2, px = t * d[0], py = t * d[1]; return Math.hypot(x - px, y - py) < 0.12 ? [px, py] : [x, y]; };
         const h1 = L.handle(1.4, 0.5, { color: CC[0], label: 'v₁' });
         const h2 = L.handle(0.2, 1.4, { color: CC[1], label: 'v₂', constrain: (x, y) => near(x, y, [h1.x, h1.y]) });
-        const sc = v.scene3(R, { yaw: -0.6, pitch: 0.35, axis: 1.45, lim: 1.5 });
+        const sc = v.scene3(R, { yaw: -1.0, pitch: 0.38, axis: 1.45, lim: 1.5 });
         const planeOf = () => { const p = H1.p, d = unit([p[0], p[1], 0]); return { d, n: [-d[1], d[0], 0] }; };
         const H1 = sc.handle([1.0, 0.35, 0.3], { color: CC[0], label: 'v₁' });
         const H2 = sc.handle([0.2, 0.07, 1.05], {
@@ -238,23 +238,26 @@ $$\alpha(e_1, \dots, e_n) \ne 0 \iff e_1, \dots, e_n \text{ is linearly independ
         let st = null;
         v.render(() => {
           const c = cS.value, v1 = [h1.x, h1.y], v2 = [h2.x, h2.y], a12 = c * det2(v1, v2);
-          L.raster((x, y) => { const z = c * det2(v1, [x, y]); return Math.abs(z) < 1e-12 ? null : rgba(z > 0 ? 'blue' : 'red', Math.min(0.42, 0.1 * Math.abs(z))); }, { key: `${v1}|${c}`, res: 3 });
+          L.raster((x, y) => { const z = c * det2(v1, [x, y]); return Math.abs(z) < 1e-12 ? null : rgba(z > 0 ? 'blue' : 'red', Math.min(0.3, 0.08 * Math.abs(z))); }, { key: `${v1}|${c}`, res: 3 });
           if (Math.abs(c) > 1e-9 && len(v1) > 1e-9) { const d = scl(unit(v1), 4); L.line(-d[0], -d[1], d[0], d[1], { color: 'green', width: 3, alpha: 0.85 }); }
-          L.poly([[0, 0], v1, add(v1, v2), v2], { color: 'ink', width: 1.4, fill: oriCol(a12, 1e-9), fillAlpha: 0.12 });
+          L.poly([[0, 0], v1, add(v1, v2), v2], { color: oriCol(a12, 1e-9), width: 1.6, fill: oriCol(a12, 1e-9), fillAlpha: 0.15 });
           L.arrow(0, 0, v1[0], v1[1], { color: CC[0], width: 3 }); L.arrow(0, 0, v2[0], v2[1], { color: CC[1], width: 3 });
           const indep = Math.abs(det2(v1, v2)) > 1e-9;
-          L.corner(Math.abs(c) < 1e-9 ? 'α = 0: zero on every list' : `α(v₁, v₂) = ${pn(a12, 3)}: ${indep ? 'independent' : 'dependent'}`, 'tl', { color: Math.abs(c) < 1e-9 ? 'red' : indep ? 'blue' : 'green', weight: 700 });
+          L.corner(Math.abs(c) < 1e-9 ? 'α = 0: zero on every list' : `α(v₁, v₂) = ${pn(a12, 3)}: ${indep ? 'independent' : 'dependent'}`, 'tl', { color: Math.abs(c) < 1e-9 ? 'red' : 'ink', weight: 700 });
           // right: the shadow form on R³
           const p1 = H1.p, p2 = H2.p, b12 = p1[0] * p2[1] - p1[1] * p2[0], indep3 = len(cross(p1, p2)) > 1e-6, { d } = planeOf();
           sc.begin();
-          sc.disc(d, [0, 0, 1], 1.45, { fill: 'green', color: 'green', fillAlpha: 0.07, alpha: 0.35 });
+          const wall = (s1, t1) => add(scl(d, s1), [0, 0, t1]);
+          sc.poly([wall(-1.2, -0.4), wall(1.5, -0.4), wall(1.5, 1.45), wall(-1.2, 1.45)], { fill: 'green', color: 'green', fillAlpha: 0.08, alpha: 0.5 });
+          for (const s1 of [-0.6, 0, 0.6, 1.2]) sc.line(wall(s1, -0.4), wall(s1, 1.45), { color: 'green', width: 0.8, alpha: 0.35 }, 4);
+          for (const t1 of [0, 0.5, 1]) sc.line(wall(-1.2, t1), wall(1.5, t1), { color: 'green', width: 0.8, alpha: 0.35 }, 4);
           const fl = (p) => [p[0], p[1], 0];
           sc.poly([ZERO, p1, add(p1, p2), p2], { fill: 'muted', color: 'muted', fillAlpha: 0.12, alpha: 0.6 });
           sc.poly([ZERO, fl(p1), fl(add(p1, p2)), fl(p2)], { fill: oriCol(b12, 1e-6), color: oriCol(b12, 1e-6), fillAlpha: 0.3, alpha: 0.9, width: 2 });
           for (const p of [p1, p2, add(p1, p2)]) sc.line(p, fl(p), { color: 'faint', width: 1, dash: [3, 3] }, 1);
           sc.arrow(ZERO, p1, { color: CC[0], width: 3 }); sc.arrow(ZERO, p2, { color: CC[1], width: 3 });
           sc.flush();
-          R.corner(`α(v₁, v₂) = ${pn(b12, 3)}: ${indep3 ? 'independent' : 'dependent'}`, 'tl', { color: Math.abs(b12) < 1e-6 && indep3 ? 'red' : 'muted', weight: 700 });
+          R.corner(`α(v₁, v₂) = ${pn(Math.abs(b12) < 1e-12 ? 0 : b12, 3)}: ${indep3 ? 'independent' : 'dependent'}`, 'tl', { color: Math.abs(b12) < 1e-6 && indep3 ? 'red' : 'muted', weight: 700 });
           st = { c, a12, indep, b12, indep3 };
         });
         v.legend([['blue', '$\\alpha > 0$', { area: true }], ['red', '$\\alpha < 0$', { area: true }], ['green', 'zero set of $w \\mapsto \\alpha(v_1, w)$']]);
@@ -262,7 +265,7 @@ $$\alpha(e_1, \dots, e_n) \ne 0 \iff e_1, \dots, e_n \text{ is linearly independ
           if (!st) return '';
           const { c, a12, indep, b12, indep3 } = st;
           const left = Math.abs(c) < 1e-9 ? 'Left: $\\alpha = 0$, so $\\alpha(v_1, v_2) = 0$ even for independent $v_1, v_2$ — the hypothesis $\\alpha \\ne 0$ is needed.' : `Left: $\\alpha(v_1, v_2) = ${tn(a12, 3)}$ and $v_1, v_2$ ${indep ? 'are independent' : 'are dependent'} — ${(Math.abs(a12) > 1e-9) === indep ? 'as 9.39 predicts' : 'contradiction'}.`;
-          const right = indep3 && Math.abs(b12) < 1e-6 ? `Right: $\\alpha(v_1, v_2) = ${small(v, b12)}$ although $v_1, v_2$ are independent — with $n = 2 < \\dim \\mathbf R^3$ the theorem fails (Exercise 9B.7).` : `Right: $\\alpha(v_1, v_2) = ${tn(b12, 3)}$; drag $v_2$ into the green plane to make it $0$ while keeping $v_1, v_2$ independent.`;
+          const right = indep3 && Math.abs(b12) < 1e-6 ? `Right: $\\alpha(v_1, v_2) = ${zt(b12)}$ although $v_1, v_2$ are independent — with $n = 2 < \\dim \\mathbf R^3$ the theorem fails (Exercise 9B.7).` : `Right: $\\alpha(v_1, v_2) = ${tn(b12, 3)}$; drag $v_2$ into the green plane to make it $0$ while keeping $v_1, v_2$ independent.`;
           return `${left} ${right}`;
         });
       },
@@ -322,7 +325,9 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
           }
           I.poly([[0, 0], Fu, add(Fu, Fw), Fw], { fill: oriCol(aT, 1e-9), color: oriCol(aT, 1e-9), fillAlpha: 0.2, width: 1.6 });
           I.arrow(0, 0, Fu[0], Fu[1], { color: CC[0], width: 3 }); I.arrow(0, 0, Fw[0], Fw[1], { color: CC[1], width: 3 });
-          I.tex(nl ? 'Fu' : 'Tu', Fu[0], Fu[1], { color: CC[0], size: 14, dx: 14, dy: 12 }); I.tex(nl ? 'Fv' : 'Tv', Fw[0], Fw[1], { color: CC[1], size: 14, dx: -14, dy: -12 });
+          // labels at the middle of the arrows, pushed to the side away from the other vector
+          const side = (a, b, txt, col) => { const n = unit([-a[1], a[0]]), sgn = det2(a, b) > 0 ? -1 : 1; I.tex(txt, a[0] * 0.55, a[1] * 0.55, { color: col, size: 14, dx: 15 * sgn * n[0], dy: -15 * sgn * n[1] }); };
+          side(Fu, Fw, nl ? 'Fu' : 'Tu', CC[0]); side(Fw, Fu, nl ? 'Fv' : 'Tv', CC[1]);
           orientArc(I, Fu, Fw, 0.45, oriCol(aT, 1e-9));
           I.corner(nl ? 'F nonlinear: curves, no single factor' : `det T = ${pn(dT, 3)}`, 'tl', { color: nl ? 'red' : oriCol(dT, 1e-9), weight: 700, size: 13 });
           // the ratios
@@ -331,7 +336,7 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
           if (Rr !== view) { view = Rr; Rt.setView([-Rr, Rr], [0, 1]); }
           Rt.line(-Rr, 0.18, Rr, 0.18, { color: 'muted', width: 1 });
           const stp = Rr > 6 ? 2 : 1;
-          for (let k = -Math.floor(Rr / stp) * stp; k <= Rr; k += stp) { Rt.line(k, 0.14, k, 0.22, { color: 'muted', width: 1 }); Rt.text(pn(k, 0), k, 0.05, { align: 'center', size: 10.5, color: 'muted' }); }
+          for (let k = -Math.floor((Rr - 0.3) / stp) * stp; k <= Rr - 0.3; k += stp) { Rt.line(k, 0.14, k, 0.22, { color: 'muted', width: 1 }); Rt.text(pn(k, 0), k, 0.05, { align: 'center', size: 10.5, color: 'muted' }); }
           if (!nl) { Rt.line(dT, 0.18, dT, 0.95, { color: 'green', width: 2 }); Rt.text(`det T = ${pn(dT, 3)}`, dT, 0.9, { size: 12, weight: 700, color: 'green', dx: 8 }); }
           Rt.dots(pairs.map(([, , j], i) => [Math.max(-Rr, Math.min(Rr, rs[i])), 0.3 + 0.55 * j]), { r: 2.6, color: nl ? 'red' : 'accent', alpha: 0.6 });
           const lo = Math.min(...rs), hi = Math.max(...rs);
@@ -363,7 +368,7 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
         const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 400, weight: 1.35, minWidth: 320 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 250, title: 'the matrix $A$' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.32, axis: 1.5, lim: 1.6 });
-        const PRE = { gen: [[1.1, 0.2, -0.1], [0.3, 0.9, 0.3], [0.2, -0.3, 0.8]], shear: [[1, 0, 0], [0.8, 1, 0], [0.4, 0.5, 1]], refl: [[0, 1, 0], [1, 0, 0], [0, 0, 1]], sing: [[1, 0.2, 0], [0.2, 0.9, 0.3], [1.2, 1.1, 0.3]] };
+        const PRE = { gen: [[1.1, 0.2, -0.1], [0.2, 0.9, 0.5], [0.2, -0.3, 0.8]], shear: [[1, 0, 0], [0.8, 1, 0], [0.4, 0.5, 1]], refl: [[0, 1, 0], [1, 0, 0], [0, 0, 1]], sing: [[1, 0.2, 0], [0.2, 0.9, 0.3], [1.2, 1.1, 0.3]] };
         const g = (p) => p.map((x) => Math.round(x * 10) / 10);
         const H = PRE.gen.map((c, k) => sc.handle(c, { color: CC[k], label: `Ae${sb(k + 1)}`, snap: g }));
         const shape = v.select('', [{ value: 'sq', label: '$A$ is $3 \\times 3$' }, { value: 'ns', label: '$A$ is $3 \\times 2$ (not square)' }], 'sq');
@@ -413,21 +418,21 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
       kind: 'Theorem',
       name: 'Determinant is an alternating multilinear form',
       statement: String.raw`Suppose $n$ is a positive integer. The map that takes a list $v_1, \dots, v_n$ of vectors in $\mathbf F^n$ to $\det\begin{pmatrix} v_1 & \cdots & v_n \end{pmatrix}$ — the determinant of the matrix whose $k$th column is $v_k$ — is an alternating $n$-linear form on $\mathbf F^n$.`,
-      idea: String.raw`Let $T$ be the operator with $Te_k = v_k$, whose matrix is $\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix}$, and let $\alpha$ be the alternating $n$-form with $\alpha(e_1, \dots, e_n) = 1$ (9.37). Then $\det\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix} = \det T = (\det T)\,\alpha(e_1, \dots, e_n) = \alpha(Te_1, \dots, Te_n) = \alpha(v_1, \dots, v_n)$, using the definitions 9.43 and 9.41. So the determinant of the columns *is* the form $\alpha$. In particular a matrix with two equal columns has determinant $0$, and swapping two columns changes its sign (9.30). In $\mathbf R^2$: $\det(a, c)$ is the signed area $|c| \cdot h(a)$, where $h(a)$ is the signed height of $a$ above the line through $c$ — and $h$ is linear.`,
-      caption: String.raw`The columns of a $2 \times 2$ matrix are $a$ (blue) and $c$ (purple); $\det(a, c)$ is the signed area of their parallelogram, base $|c|$ times the signed height of $a$ above the dashed line through $c$. *Additive:* drag $a$ and $a'$ (orange); the blue and orange parallelograms, stacked, have the same total height as the green dashed one on $a + a'$ (right: the heights). *Homogeneous:* the slider scales $a$ by $\lambda$, and the area scales by $\lambda$ — sign included. *Equal columns:* $c$ snaps onto $a$ and the area is $0$. Toggle *unsigned area* to replace $\det$ by $|\det|$: it is still $0$ on equal columns, but additivity fails as soon as $a$ and $a'$ lie on opposite sides of the line, and homogeneity fails for $\lambda < 0$.`,
+      idea: String.raw`Let $T$ be the operator with $Te_k = v_k$, whose matrix is $\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix}$, and let $\alpha$ be the alternating $n$-form with $\alpha(e_1, \dots, e_n) = 1$ (9.37). Then $\det\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix} = \det T = (\det T)\,\alpha(e_1, \dots, e_n) = \alpha(Te_1, \dots, Te_n) = \alpha(v_1, \dots, v_n)$, using the definitions 9.43 and 9.41. So the determinant of the columns *is* the form $\alpha$. In particular a matrix with two equal columns has determinant $0$, and swapping two columns changes its sign (9.30). In $\mathbf R^2$: $\det(a, c)$ is the signed area $|c| \cdot h(a)$, where $h(a)$ is the signed distance of $a$ from the line through $c$ — and $h$ is linear.`,
+      caption: String.raw`The columns of a $2 \times 2$ matrix are $a$ (blue) and $c$ (purple); $\det(a, c)$ is the signed area of their parallelogram: base $|c|$ times the signed distance of $a$ from the dashed line through $c$ (positive on the clockwise side of $c$). *Additive:* drag $a$ and $a'$ (orange); the blue and orange parallelograms, stacked, reach exactly as far from the line as the green dashed one on $a + a'$ (right: the signed distances). *Homogeneous:* the slider scales $a$ by $\lambda$, and the area scales by $\lambda$ — sign included. *Equal columns:* $c$ snaps onto $a$ and the area is $0$. Toggle *unsigned area* to replace $\det$ by $|\det|$: it is still $0$ on equal columns, but additivity fails as soon as $a$ and $a'$ lie on opposite sides of the line, and homogeneity fails for $\lambda < 0$.`,
       deps: ['ladr-9.43', 'ladr-9.41', 'ladr-9.27'],
       see: ['pma-9.34'],
       tags: ['determinants', 'multilinear'],
       viz(v) {
         const S = v.stage({ x: [-2.4, 3.0], y: [-1.9, 2.9], equal: true, height: 370, weight: 1.45, minWidth: 320, ticks: false });
-        const Hs = v.stage({ x: [0, 1], y: [-1, 1], axes: false, height: 370, minWidth: 220, title: 'signed heights above the line $\\mathbf R c$' });
+        const Hs = v.stage({ x: [0, 1], y: [-1, 1], axes: false, height: 370, minWidth: 220, title: 'signed distances from the line $\\mathbf R c$' });
         const mode = v.select('', [{ value: 'add', label: 'additive in column 1' }, { value: 'hom', label: 'homogeneous in column 1' }, { value: 'alt', label: 'equal columns' }], 'add');
         const absT = v.toggle('unsigned area $|\\det|$ instead', false);
         const lam = v.slider('$\\lambda$', -2, 2, 1.6, { step: 0.05 });
         const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
-        const ha = S.handle(0.4, 1.1, { color: 'blue', label: 'a', constrain: snap });
-        const hb = S.handle(-0.5, 0.8, { color: 'orange', label: 'a′', constrain: snap });
-        const hc = S.handle(1.8, -0.4, { color: 'purple', label: 'c', constrain: (x, y) => { const p = snap(x, y); return mode.value === 'alt' && Math.hypot(p[0] - ha.x, p[1] - ha.y) < 0.35 ? [ha.x, ha.y] : p; } });
+        const ha = S.handle(1.3, 0.3, { color: 'blue', label: 'a', constrain: snap });
+        const hb = S.handle(-0.7, 0.9, { color: 'orange', label: 'a′', constrain: snap });
+        const hc = S.handle(0.3, 1.7, { color: 'purple', label: 'c', constrain: (x, y) => { const p = snap(x, y); return mode.value === 'alt' && Math.hypot(p[0] - ha.x, p[1] - ha.y) < 0.35 ? [ha.x, ha.y] : p; } });
         v.button('set $c = a$', () => { mode.set('alt'); hc.set(ha.x, ha.y); });
         let st = null, view = 0;
         v.render(() => {
@@ -472,10 +477,10 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
             Hs.text('a, then a′', 0.3, -Y * 1.04, { align: 'center', size: 12, color: 'muted' }); Hs.text('a + a′', 0.7, -Y * 1.04, { align: 'center', size: 12, color: 'muted' });
           } else if (md === 'hom') {
             bar(0.3, 0, lam.value * hts[0][1], 'blue'); bar(0.7, 0, hts[1][1], 'gold');
-            Hs.text('λ · (height of a)', 0.3, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' }); Hs.text('height of λa', 0.7, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' });
+            Hs.text('λ · (distance of a)', 0.3, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' }); Hs.text('distance of λa', 0.7, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' });
           } else {
             bar(0.5, 0, hts[0][1], 'green');
-            Hs.text('height of a', 0.5, -Y * 1.04, { align: 'center', size: 12, color: 'muted' });
+            Hs.text('distance of a', 0.5, -Y * 1.04, { align: 'center', size: 12, color: 'muted' });
           }
           const fn = A ? '|\\det|' : '\\det';
           S.corner(`$${fn}(a, c) = ${tn(D(a, c), 3)}$`, 'tl', { color: 'ink', weight: 700, size: 13 });
@@ -487,7 +492,7 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
           const { md, A, a, b, c, D, lamv } = st, fn = A ? '|\\det|' : '\\det';
           if (md === 'add') {
             const L = D(add(a, b), c), Rr = D(a, c) + D(b, c), ok = Math.abs(L - Rr) < 1e-9;
-            return `$${fn}(a + a', c) = ${tn(L, 3)}$ and $${fn}(a, c) + ${fn}(a', c) = ${zt(D(a, c))} + ${zt(D(b, c))} = ${tn(Rr, 3)}$: ${ok ? 'equal — linear in the first column' : '**not equal** — $|\\det|$ is not linear, because the heights of $a$ and $a\'$ have opposite signs'}.`;
+            return `$${fn}(a + a', c) = ${tn(L, 3)}$ and $${fn}(a, c) + ${fn}(a', c) = ${zt(D(a, c))} + ${zt(D(b, c))} = ${tn(Rr, 3)}$: ${ok ? 'equal — linear in the first column' : '**not equal** — $|\\det|$ is not linear, because $a$ and $a\'$ lie on opposite sides of the line'}.`;
           }
           if (md === 'hom') {
             const L = D(scl(a, lamv), c), Rr = lamv * D(a, c), ok = Math.abs(L - Rr) < 1e-9;
@@ -531,12 +536,17 @@ For instance $\det A = A_{1,1}A_{2,2} - A_{2,1}A_{1,2}$ when $n = 2$.`,
           const P = perms(n), terms = P.map((q) => term(B, q, s)), part = []; terms.reduce((acc, x, k) => (part[k] = acc + x), 0);
           const gold = new Set(p.map((j, k) => `${j - 1},${k}`));
           TM.draw({ rows: n, cols: n, value: (r, c) => B[r][c], fill: (r, c) => (gold.has(`${r},${c}`) ? ['gold', 0.45] : null), weight: (r, c) => (gold.has(`${r},${c}`) ? 700 : 500), textColor: (r, c) => (gold.has(`${r},${c}`) ? 'ink' : 'muted') });
-          for (const [k, l] of invPos(p)) { const a = TM.cellCenter(p[k] - 1, k), b = TM.cellCenter(p[l] - 1, l); Ms.line(a[0], a[1], b[0], b[1], { color: 'red', width: 2.6, alpha: 0.85 }); }
+          const rr = TM.geo ? 0.3 * TM.geo.cw : 12;
+          for (const [k, l] of invPos(p)) {
+            const a = TM.cellCenter(p[k] - 1, k), b = TM.cellCenter(p[l] - 1, l), A_ = [Ms.X(a[0]), Ms.Y(a[1])], B_ = [Ms.X(b[0]), Ms.Y(b[1])], Lp = Math.hypot(B_[0] - A_[0], B_[1] - A_[1]);
+            const e = [(B_[0] - A_[0]) / Lp, (B_[1] - A_[1]) / Lp], P1 = Ms.inv(A_[0] + e[0] * rr, A_[1] + e[1] * rr), P2 = Ms.inv(B_[0] - e[0] * rr, B_[1] - e[1] * rr);
+            Ms.line(P1[0], P1[1], P2[0], P2[1], { color: 'red', width: 2.6, alpha: 0.85 }); Ms.dot(P1[0], P1[1], { r: 3, color: 'red' }); Ms.dot(P2[0], P2[1], { r: 3, color: 'red' });
+          }
           const N = invPos(p).length;
-          Ms.tex(`${ptex(p)}:\\ ${N}\\text{ red},\\ \\operatorname{sign} = ${sign(p) > 0 ? '+1' : '-1'}`, 0.5, 0.11, { size: 15, color: sign(p) > 0 ? 'blue' : 'red' });
+          Ms.tex(`${ptex(p)}\\text{: } ${N}\\text{ red, so } \\operatorname{sign} = ${sign(p) > 0 ? '+1' : '-1'}`, 0.5, 0.11, { size: 15, color: sign(p) > 0 ? 'blue' : 'red' });
           // the bars and the running sum
           const det = M.det(B), Y = nice(1.12 * Math.max(1, ...terms.map(Math.abs), ...part.map(Math.abs), Math.abs(det)), [2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400]);
-          if (Y !== view) { view = Y; Bs.setView([0, 1], [-Y, Y]); }
+          if (Y !== view) { view = Y; Bs.setView([0, 1], [-1.08 * Y, 1.08 * Y]); }
           const m = P.length, x0 = 0.1, wd = 0.86 / m, X = (k) => x0 + wd * (k + 0.5);
           Bs.line(0.06, 0, 0.98, 0, { color: 'muted', width: 1 });
           Bs.line(0.06, -Y, 0.06, Y, { color: 'muted', width: 1 });
@@ -577,14 +587,14 @@ $$\det A = \lambda_1 \cdots \lambda_n.$$`,
       tags: ['determinants', 'triangular'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 400, weight: 1.3, minWidth: 310 });
+        const S = v.stage({ x: [-1.15, 2.45], y: [-1.3, 2.2], equal: true, axes: false, height: 400, weight: 1.3, minWidth: 310 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 270, title: 'the six terms of the formula 9.46' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.5, lim: 1.6 });
         const g = (p) => p.map((x) => Math.round(x * 20) / 20);
-        const H1 = sc.handle([1.2, 0, 0], { mode: 'line', d: [1, 0, 0], color: CC[0], label: 'Ae₁', snap: g });
-        const H1f = sc.handle([1.2, 0, 0], { color: CC[0], label: 'Ae₁', snap: g });
-        const H2 = sc.handle([0.55, 0.9, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: CC[1], label: 'Ae₂', snap: g });
-        const H3 = sc.handle([0.35, 0.4, 0.85], { color: CC[2], label: 'Ae₃', snap: g });
+        const H1 = sc.handle([1.05, 0, 0], { mode: 'line', d: [1, 0, 0], color: CC[0], label: 'Ae₁', snap: g });
+        const H1f = sc.handle([1.05, 0, 0], { color: CC[0], label: 'Ae₁', snap: g });
+        const H2 = sc.handle([0.45, 0.85, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: CC[1], label: 'Ae₂', snap: g });
+        const H3 = sc.handle([0.3, 0.3, 0.8], { color: CC[2], label: 'Ae₃', snap: g });
         H1f.visible = false;
         const free = v.toggle('let $Ae_1$ leave the $x$-axis (not upper triangular)', false, {
           onChange: (on) => { if (on) { H1f.set(H1.p); H1f.visible = true; H1.visible = false; } else { H1.set([H1f.p[0], 0, 0]); H1.visible = true; H1f.visible = false; } },
@@ -665,7 +675,7 @@ $$\det A = \lambda_1 \cdots \lambda_n.$$`,
           const map = (X, P) => P.map((p) => mv(X, p)), ST = mm(Sm, T), SpT = madd(Sm, T);
           const lbl = (S, P, txt, col) => { const c = P.reduce((s, p) => add(s, p), [0, 0]).map((x) => x / P.length); S.tex(txt, c[0], c[1], { color: col, size: 13 }); };
           // V
-          gridImage(A, (p) => p, 1);
+          gridImage(A, (p) => p, 3);
           A.poly(SQ, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1.5 });
           A.poly(blob, { fill: 'gold', fillAlpha: 0.35, color: 'gold', width: 1.4 });
           lbl(A, SQ, '1', 'accent');

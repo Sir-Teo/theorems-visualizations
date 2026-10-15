@@ -23,6 +23,7 @@ export function gammaHalf(R, dof) { let s = 0; for (let k = 0; k < dof; k++) { c
  *   piston: { X, U = 0, M = Infinity (driven by the program) or a mass, F = external force pushing in, lo, hi }
  *   plate:  { X, U = 0, M = Infinity (fixed) or a mass, lo, hi }   optional partition: side 0 left of it, side 1 right
  *   thermal: [x=0, –, y=0, y=Ly, z=0, z=Lz] booleans for heat-bath walls at temperature Tb
+ *   diffuse: same layout, walls that scatter molecules in random directions at unchanged speed (adiabatic but isotropizing)
  * }
  * Internal energy: in a molecule–molecule collision the energy of the normal relative motion and both molecules'
  * internal energies are pooled and re-split by a Dirichlet(1, dof_i/2, dof_j/2) draw. Colliding pairs carry that pool
@@ -43,7 +44,7 @@ export function hsGas(o) {
   const plate = o.plate ? Object.assign({ X: 10, U: 0, M: Infinity, lo: 0, hi: 1e9 }, o.plate) : null;
   const G = {
     N, x, y, z, vx, vy, vz, m, d, e, S, side, dof, SP, Ly: o.Ly ?? 10, Lz: o.Lz ?? 10, pist, plate, t: 0,
-    thermal: o.thermal || [0, 0, 0, 0, 0, 0], Tb: o.Tb ?? o.T ?? 1, exchange: o.exchange ?? 1,
+    thermal: o.thermal || [0, 0, 0, 0, 0, 0], diffuse: o.diffuse || [0, 0, 0, 0, 0, 0], Tb: o.Tb ?? o.T ?? 1, exchange: o.exchange ?? 1,
     imp: new Float64Array(8), hits: new Float64Array(8), impS: new Float64Array(SP.length),
     Wp: 0, Qb: 0, Ep: [0, 0], ncol: 0, Vint: 0, Aint: 0, tPist: Infinity, tPlate: Infinity, onWall: null,
   };
@@ -148,9 +149,20 @@ export function hsGas(o) {
     e[i] = T * gammaHalf(R, dof[i]);
     G.Qb += ke(i) + e[i] - E0;
   };
+  // diffuse elastic wall: the molecule leaves with the same speed in a random direction (Lambert's cosine law),
+  // which keeps the gas isotropic without adding or removing energy
+  const diffuse = (i, w) => {
+    const sp = Math.hypot(vx[i], vy[i], vz[i]), c = Math.sqrt(R()), sn = Math.sqrt(1 - c * c), ph = 2 * Math.PI * R();
+    const ax = w >> 1, sg = (w & 1) ? -1 : 1, t1 = sp * sn * Math.cos(ph), t2 = sp * sn * Math.sin(ph), vn = sg * sp * c;
+    if (ax === 0) { vx[i] = vn; vy[i] = t1; vz[i] = t2; } else if (ax === 1) { vy[i] = vn; vx[i] = t1; vz[i] = t2; } else { vz[i] = vn; vx[i] = t1; vy[i] = t2; }
+  };
   const hitWall = (i, w) => {
     const mi = m[i]; let J = 0;
-    if (w === 2 || w === 3) { J = 2 * mi * Math.abs(vy[i]); if (G.thermal[w]) bath(i, w); else vy[i] = -vy[i]; y[i] = w === 2 ? 0 : G.Ly; }
+    if (G.diffuse[w] && !G.thermal[w] && (w === 0 || w >= 2) && w <= 5) {
+      const ax = w >> 1, V = ax === 0 ? vx : ax === 1 ? vy : vz, vin = Math.abs(V[i]);
+      diffuse(i, w); J = mi * (vin + Math.abs(V[i]));
+      if (ax === 0) x[i] = 0; else if (ax === 1) y[i] = w === 2 ? 0 : G.Ly; else z[i] = w === 4 ? 0 : G.Lz;
+    } else if (w === 2 || w === 3) { J = 2 * mi * Math.abs(vy[i]); if (G.thermal[w]) bath(i, w); else vy[i] = -vy[i]; y[i] = w === 2 ? 0 : G.Ly; }
     else if (w === 4 || w === 5) { J = 2 * mi * Math.abs(vz[i]); if (G.thermal[w]) bath(i, w); else vz[i] = -vz[i]; z[i] = w === 4 ? 0 : G.Lz; }
     else if (w === 0) { J = 2 * mi * Math.abs(vx[i]); if (G.thermal[0]) bath(i, 0); else vx[i] = -vx[i]; x[i] = 0; }
     else {

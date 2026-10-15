@@ -421,7 +421,7 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
           const gap = Math.abs(Qy - Py) > 0.02 && Math.abs(P.x - X.x) > 0.05;
           if (gap && yLo < 10) {
             s.rect(P.x, yLo, 10, 10, { fill: 'green', fillAlpha: 0.07, color: 'green', width: 1, dash: [4, 3] });
-            if ((10 - P.x) * s.scale > 150 && yLo < 8.6) s.text(`≥ ${lo} in both goods`, 9.85, 9.55, { color: 'green', size: 11.5, weight: 600, align: 'right' });
+            if ((10 - P.x) * s.scale > 112 && yLo < 8.6) s.text(`≥ ${lo} in both goods`, 9.85, 9.55, { color: 'green', size: 11.5, weight: 600, align: 'right' });
             if (yHi < 10) s.arrow(P.x, yLo, P.x, yHi, { color: 'green', width: 2.2, head: 8 });
           }
           if (Qy < 10) s.dot(P.x, Qy, { r: 6, color: 'teal', label: 'Q', labelPos: Qy > Py ? 'ne' : 'se' });
@@ -446,7 +446,7 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
             line(2.2, '$X \\sim Q$: both on curve 2', 'teal');
             line(1.4, '$P \\sim Q$ by transitivity', 'purple');
             line(0.6, `$${hi} \\succ ${lo}$ by monotonicity (more of good 2)`, 'green');
-            g.text('contradiction', 5, 9.75, { color: 'red', size: 12.5, weight: 700, align: 'center' });
+            g.text(`✗  ${hi} ≻ ${lo} and P ∼ Q cannot both hold`, 5, 9.8, { color: 'red', size: 12.5, weight: 700, align: 'center' });
           } else {
             g.arrow(...trim(N.P, N.Q, 0.19), ...trim(N.P, N.Q, 0.81), { color: 'green', width: 2.4, head: 9 });
             g.tex('\\succ', 5, 5.95, { color: 'green', size: 20 });

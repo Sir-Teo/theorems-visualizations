@@ -691,7 +691,7 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
 
 For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coefficients he stated the condition: stability requires $a_2a_1>a_3a_0$, the product of the middle coefficients exceeding that of the outer ones. He distinguished *moderators*, which only reduce the speed change caused by a change of load, from true *governors*, whose integral action restores the original speed. He left the general problem for equations of higher degree open; Routh (1877) and Hurwitz (1895) solved it.`,
       idea: String.raw`By the 1860s tens of thousands of centrifugal governors (1.2) were in service, and engineers had found by trial that some designs hunted and that friction, oddly, helped. Maxwell, prompted by governors designed for experiments on electrical standards, replaced trial and error with an analysis. Linearise (2.2), find the characteristic equation, and locate its roots. That reduced stability to algebra (3.3, the Routh–Hurwitz problem 6.2) and explained why more governor gain is dangerous (1.9). Vyshnegradsky (1876) independently analysed the Watt governor on a steam engine, the third-order system recreated here, and drew its stability diagram. The paper is often taken as the beginning of control theory.`,
-      caption: String.raw`Maxwell's analysis, recreated for a Watt governor on a steam engine (the model of 1.2). Drag the point in the plane of governor friction $\beta$ and linkage gain $K$. The bold curve is Maxwell's boundary $a_2a_1=a_3a_0$ for the linearised cubic; the shading shows how the roots, computed by the cubic formula, behave (blue: decaying oscillation, green: all roots real, slow creep, red: unstable). Right: the three roots in the complex plane, with the path they follow as $K$ varies at this friction. Below: the full nonlinear engine after an 8 % load increase, which settles, hunts with growing oscillations until the valve slams between its stops, or creeps back sluggishly. Raise the gain or remove friction and watch the pair of roots cross the imaginary axis exactly as the point crosses the curve.`,
+      caption: String.raw`Maxwell's analysis, recreated for a Watt governor on a steam engine (the model of 1.2). Drag the point in the plane of governor friction $\beta$ and linkage gain $K$. The bold curve is Maxwell's boundary $a_2a_1=a_3a_0$ for the linearised cubic; the shading shows how the roots, computed by the cubic formula, behave (blue: decaying oscillation, green: all roots real, slow creep, red: unstable). Right: the three roots in the complex plane, with the path they follow as $K$ varies at this friction. Below: the full nonlinear engine after a 15 % load increase, which settles, hunts with growing oscillations until the valve slams between its stops, or creeps back sluggishly. Raise the gain or remove friction and watch the pair of roots cross the imaginary axis exactly as the point crosses the curve.`,
       deps: ['ctrl-1.2', 'ctrl-2.2'],
       see: ['ctrl-6.2'],
       refs: [],
@@ -737,13 +737,13 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
           if (rk !== key) {
             rk = key;
             const eq = govEquilibrium(p, GOV.TL0), x = [eq.w, eq.phi, 0], tt = [], ww = [];
-            for (let k = 0; k * 0.02 <= TEND; k++) { const t = k * 0.02; if (k % 10 === 0) { tt.push(t); ww.push((100 * x[0]) / GOV.w0); } govStep(p, x, 0.02, t >= TSTEP ? GOV.TL0 * 1.08 : GOV.TL0); }
-            resp = { tt, ww, eq2: govEquilibrium(p, GOV.TL0 * 1.08) };
+            for (let k = 0; k * 0.02 <= TEND; k++) { const t = k * 0.02; if (k % 10 === 0) { tt.push(t); ww.push((100 * x[0]) / GOV.w0); } govStep(p, x, 0.02, t >= TSTEP ? GOV.TL0 * 1.15 : GOV.TL0); }
+            resp = { tt, ww, eq2: govEquilibrium(p, GOV.TL0 * 1.15) };
           }
           ts.hline(100, { color: 'ink', dash: [5, 4], width: 1 });
           if (!resp.eq2.stop) ts.hline((100 * resp.eq2.w) / GOV.w0, { color: 'green', dash: [6, 4], width: 1.3 });
           ts.vline(TSTEP, { color: 'purple', dash: [3, 3], width: 1.2 });
-          ts.text('load +8 %', TSTEP + 1.5, 84, { size: 11, color: 'purple' });
+          ts.text('load +15 %', TSTEP + 1.5, 84, { size: 11, color: 'purple' });
           ts.clip(() => trace(ts, resp.tt, resp.ww, { color: classify(beta, K) === 2 ? 'red' : 'accent', width: 2.3 }));
         });
         v.legend([['blue', 'decaying oscillation', { area: true }], ['green', 'aperiodic (creep)', { area: true }], ['red', 'unstable (hunting)', { area: true }], ['muted', 'root paths as $K$ varies', { dot: true }]]);

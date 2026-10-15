@@ -548,9 +548,10 @@ and the series converges uniformly. Every mode oscillates independently at its o
         let ys = presetShape('pluck', K), ver = 0;
         const sel = v.select('shape', [{ value: 'pluck', label: 'pluck' }, { value: 'bump', label: 'smooth bump' }, { value: 'flat', label: 'flat top' }, { value: 'draw', label: 'drawn' }], 'pluck', { onChange: (x) => { if (x !== 'draw') { ys = presetShape(x, K); ver++; v.t = 0; } } });
         const nS = v.slider('modes kept $N$', 1, NB, 6, { int: true });
+        const scl = v.select('bars', [{ value: 'lin', label: 'linear' }, { value: 'db', label: 'decibels' }], 'lin');
         const s = v.stage({ x: [-0.04, 1.04], y: [-1.12, 1.12], height: 250, axes: false, full: true });
         const bs = v.stage({ x: [0.2, NB + 0.8], y: [-0.62, 0.72], height: 225, axes: 'box', xlabel: 'n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], weight: 1.25, title: 'sine coefficients $b_n$ and live amplitudes' });
-        const ms = v.stage({ x: [-0.18, 1.02], y: [0.4, 6.6], height: 225, axes: false, weight: 0.9, minWidth: 220, title: 'the first six modes' });
+        const ms = v.stage({ x: [-0.18, 1.3], y: [0.4, 6.6], height: 225, axes: false, weight: 0.9, minWidth: 220, title: 'the first six modes, each scaled to its lane' });
         shapePainter(s, () => ys, (phase) => { if (sel.value !== 'draw') sel.set('draw'); ver++; v.t = 0; if (phase === 'start') v.pause(); if (phase === 'end') v.play(); });
         let cKey = -1, b = null, norm2 = 1, eTot = 1;
         const coeffs = () => {
@@ -581,21 +582,38 @@ and the series converges uniformly. Every mode oscillates independently at its o
           s.corner(`sum of ${N} mode${N > 1 ? 's' : ''}`, 'tl', { color: 'accent', weight: 600 });
           s.corner(sel.value === 'draw' ? 'your shape' : 'drag across the panel to draw a shape', 'tr', { color: 'muted' });
           // ---- coefficients
-          const bm = Math.max(1e-9, ...Array.from(bb.subarray(0, NB), Math.abs)), sc = 0.6 / bm;
-          bs.setTicks(undefined, [[-0.6, v.fix(-bm, 2)], [0, '0'], [0.6, v.fix(bm, 2)]]);
-          bs.hline(0, { color: 'muted', width: 1 });
-          for (let n = 1; n <= NB; n++) {
-            const val = bb[n - 1] * sc, kept = n <= N;
-            bs.rect(n - 0.32, 0, n + 0.32, val, { fill: kept ? 'accent' : 'muted', fillAlpha: kept ? 0.6 : 0.18, stroke: false });
-            if (kept && Math.abs(val) > 0.004) bs.dot(n, val * Math.cos(n * Math.PI * tau), { r: 3.2, color: 'gold' });
+          const bm = Math.max(1e-9, ...Array.from(bb.subarray(0, NB), Math.abs));
+          if (scl.value === 'lin') {
+            const sc = 0.6 / bm;
+            bs.setView(null, [-0.62, 0.72]);
+            bs.setTicks(undefined, [[-0.6, v.fix(-bm, 2)], [0, '0'], [0.6, v.fix(bm, 2)]]);
+            bs.setTitle('sine coefficients $b_n$ and live amplitudes');
+            bs.hline(0, { color: 'muted', width: 1 });
+            for (let n = 1; n <= NB; n++) {
+              const val = bb[n - 1] * sc, kept = n <= N;
+              bs.rect(n - 0.32, 0, n + 0.32, val, { fill: kept ? 'accent' : 'muted', fillAlpha: kept ? 0.6 : 0.18, stroke: false });
+              if (kept && Math.abs(val) > 0.004) bs.dot(n, val * Math.cos(n * Math.PI * tau), { r: 3.2, color: 'gold' });
+            }
+          } else {
+            bs.setView(null, [-80, 6]);
+            bs.setTicks(undefined, [[-80, '−80 dB'], [-60, '−60'], [-40, '−40'], [-20, '−20'], [0, '0']]);
+            bs.setTitle('$20\\log_{10}|b_n/b_{\\max}|$: corners fall 12 dB per octave');
+            for (let n = 1; n <= NB; n++) {
+              const db = 20 * Math.log10(Math.abs(bb[n - 1]) / bm + 1e-12), kept = n <= N;
+              if (db > -80) bs.rect(n - 0.32, -80, n + 0.32, db, { fill: bb[n - 1] >= 0 ? (kept ? 'accent' : 'muted') : (kept ? 'red' : 'muted'), fillAlpha: kept ? 0.6 : 0.2, stroke: false });
+              else bs.text('×', n, -76, { align: 'center', color: 'red', size: 11 });
+            }
+            bs.fn((x) => -40 * Math.log10(x), { domain: [1, NB], color: 'ink', width: 1.2, dash: [5, 4], alpha: 0.6 });
+            bs.text('1/n²', 30, -40 * Math.log10(30) + 4, { align: 'center', color: 'muted', size: 11 });
           }
           bs.vline(N + 0.5, { color: 'accent', width: 1.4, dash: [4, 3] });
-          // ---- mode stack
+          // ---- mode stack (each lane scaled to fit; the coefficient on the right)
           for (let n = 1; n <= 6; n++) {
-            const y0 = 7 - n, a = (bb[n - 1] / bm) * 0.42, on = n <= N;
+            const y0 = 7 - n, bn = bb[n - 1], a = Math.abs(bn) > 1e-9 * bm ? 0.42 * Math.sign(bn) : 0, on = n <= N;
             ms.line(0, y0, 1, y0, { color: 'faint', width: 1 });
             ms.fn((x) => y0 + a * Math.sin(n * Math.PI * x) * Math.cos(n * Math.PI * tau), { domain: [0, 1], n: 120, color: on ? 'accent' : 'muted', width: on ? 2.2 : 1.2, alpha: on ? 1 : 0.6 });
             ms.text(`${n}`, -0.07, y0, { align: 'right', color: on ? 'ink' : 'faint', size: 12 });
+            ms.text(Math.abs(bn) < 5e-5 ? '0' : v.fix(bn, 3), 1.05, y0, { align: 'left', color: on ? 'accent' : 'faint', size: 11 });
           }
         }, { still: 0.5 / 0.25 });
         v.legend([['accent', 'sum of the first $N$ modes'], ['muted', 'exact motion (d’Alembert)', { dash: true }], ['gold', 'live amplitude $b_n\\cos(2\\pi n f_1 t)$', { dot: true }]]);
@@ -604,8 +622,8 @@ and the series converges uniformly. Every mode oscillates independently at its o
           let kept2 = 0, eN = 0; for (let n = 1; n <= N; n++) { kept2 += bb[n - 1] ** 2; eN += n * n * bb[n - 1] ** 2; }
           const rel = Math.sqrt(Math.max(0, 1 - kept2 / (2 * norm2)));
           let err = 0; for (let i = 0; i <= 200; i++) { const x = i / 200; err = Math.max(err, Math.abs(modal(bb, N, x, tau) - 0.5 * (Y(x - tau) + Y(x + tau)))); }
-          const b1 = bb[0], tail = Math.abs(bb[NB - 1] / (b1 || 1));
-          return `$N$ = ${N}: shape error (rms, by Parseval) ${v.fix(100 * rel, 2)}% of $\\lVert y_0\\rVert$, largest gap right now ${v.fix(err, 3)} · the first $N$ modes carry ${v.fix(100 * eN / eTot, 2)}% of the energy ($E_n\\propto n^2b_n^2$) · $b_1$ = ${v.fix(b1, 4)}, $|b_{40}/b_1| = ${v.sci(tail, 2)}$`;
+          let big = 0, at = 0; for (let n = N + 1; n <= NC; n++) if (Math.abs(bb[n - 1]) > big) { big = Math.abs(bb[n - 1]); at = n; }
+          return `$N$ = ${N}: shape error (rms, by Parseval) ${v.fix(100 * rel, 2)}% of $\\lVert y_0\\rVert$, largest gap right now ${v.fix(err, 3)} · the first $N$ modes carry ${v.fix(100 * eN / eTot, 2)}% of the energy ($E_n\\propto n^2b_n^2$) · largest dropped coefficient: $b_{${at}}$ = ${v.fix(bb[at - 1], 4)}`;
         });
       },
     },

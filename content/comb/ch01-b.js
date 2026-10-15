@@ -61,6 +61,16 @@ function drawTables(v, P, p, x, y, w, h, st = {}) {
 const sgnS1 = (c, n, k) => ((n - k) % 2 ? -1 : 1) * c[n][k];
 /** Symmetric log transform for plots that span many orders of magnitude around 0. */
 const slog = (y) => Math.sign(y) * Math.log10(1 + Math.abs(y));
+/** Split a panel of height H into a top and a bottom gallery so that the smaller item size is as large as possible. */
+function splitHeight(H, W, nTop, aspTop, nBot, aspBot, maxTop = Infinity, maxBot = Infinity, head = 30) {
+  if (!nTop) return 34; if (!nBot) return H - 34;
+  let best = H / 2, bs = -1;
+  for (let h = 60; h <= H - 60; h += 6) {
+    const score = Math.min(fitGrid(nTop, W, h - head, aspTop, 6, maxTop).h, fitGrid(nBot, W, H - h - head, aspBot, 8, maxBot).h);
+    if (score > bs + 1e-9) { bs = score; best = h; }
+  }
+  return best;
+}
 
 export default {
   collection: 'comb',
@@ -83,7 +93,7 @@ If every child must get at least one sweet ($x_i\ge 1$) the number is $\binom{n-
         const nS = v.slider('sweets $n$', 1, 8, 5, { int: true, onChange: () => reset() });
         const kS = v.slider('children $k$', 2, 4, 3, { int: true, onChange: () => reset() });
         const pos = v.toggle('everyone gets at least one', false, { onChange: () => reset() });
-        const A = v.stage({ x: [-0.8, 6.8], y: [-2.4, 1.75], axes: false, height: 236, full: true });
+        const A = v.stage({ x: [-0.8, 6.8], y: [-2.2, 1.75], axes: false, height: 220, full: true });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, title: 'every arrangement (click one)' });
         const cands = () => { const n = nS.value, k = kS.value; return pos.value ? Array.from({ length: Math.max(0, n - 1) }, (_, g) => g + 0.5) : Array.from({ length: n + k - 1 }, (_, i) => i); };
         const hs = Array.from({ length: 3 }, () => A.handle(0, 1, { color: 'ink', r: 9 }));
@@ -122,7 +132,7 @@ If every child must get at least one sweet ($x_i\ge 1$) the number is $\binom{n-
         });
         v.render(() => {
           const n = nS.value, k = kS.value, d = distOf(), S = pos.value ? n : n + k - 1;
-          A.setView([-0.8, S - 0.2], [-2.4, 1.75]);
+          A.setView([-0.8, S - 0.2], [-2.2, 1.75]);
           if (!d) {
             A.text(`with k = ${k} children and only n = ${n} sweets nobody can be left out of — impossible`, (S - 1) / 2, 0.2, { align: 'center', size: 13, color: 'red', weight: 600 });
           } else {
@@ -140,12 +150,12 @@ If every child must get at least one sweet ($x_i\ge 1$) the number is $\binom{n-
             bars.forEach((b) => A.line(b, 0.48, b, 1.55, { color: 'ink', width: 3.2 }));
             A.text(pos.value ? `${n} stars, bars in ${k - 1} of the ${n - 1} gaps` : `${S} slots: ${n} stars and ${k - 1} bars`, -0.6, 1.62, { size: 12, color: 'muted', weight: 600, baseline: 'top' });
             // children
-            const span = S - 0.6, bw = span / k;
+            const span = S + 0.2, bw = span / k;
             for (let c = 0; c < k; c++) {
               const x0 = -0.6 + c * bw + bw * 0.06, x1 = x0 + bw * 0.88;
-              A.rect(x0, -2.15, x1, -0.45, { fill: CAT[c % CAT.length], fillAlpha: 0.08, color: CAT[c % CAT.length], width: 1.5 });
+              A.rect(x0, -2.05, x1, -0.45, { fill: CAT[c % CAT.length], fillAlpha: 0.08, color: CAT[c % CAT.length], width: 1.5 });
               A.text(`child ${c + 1}: ${d[c]}`, (x0 + x1) / 2, -0.62, { align: 'center', size: 12, weight: 700, color: CAT[c % CAT.length], baseline: 'top' });
-              for (let t = 0; t < d[c]; t++) { const per = Math.max(1, Math.floor((x1 - x0) / 0.42)); A.text('★', x0 + 0.25 + (t % per) * 0.42, -1.45 - Math.floor(t / per) * 0.42, { size: 15, color: CAT[c % CAT.length], halo: false }); }
+              for (let t = 0; t < d[c]; t++) { const per = Math.max(1, Math.floor((x1 - x0 - 0.2) / 0.5)); A.text('★', x0 + 0.35 + (t % per) * 0.5, -1.35 - Math.floor(t / per) * 0.45, { size: 19, color: CAT[c % CAT.length], halo: false }); }
             }
           }
           // gallery
@@ -157,15 +167,15 @@ If every child must get at least one sweet ($x_i\ge 1$) the number is $\binom{n-
           const cur = hs.slice(0, k - 1).map((h) => (pos.value ? h.x - 0.5 : h.x)).sort((a, b) => a - b);
           items.forEach((bars, i) => {
             const [x, y] = g.at(i), X = x + 6, Y = y + 5, isCur = bars.every((b, j) => b === cur[j]);
-            P.rect(X, Y, g.w, g.h, { fill: isCur ? 'gold' : 'muted', fillAlpha: isCur ? 0.25 : 0.05, color: isCur ? 'gold' : null, width: 1.5, r: 3 });
+            P.rect(X, Y, g.w, g.h, { fill: isCur ? 'gold' : 'muted', fillAlpha: isCur ? 0.25 : 0.05, color: isCur ? 'gold' : 'faint', width: isCur ? 2 : 1, r: 3 });
             const step = g.w / (S + 0.4);
             if (pos.value) {
-              for (let t = 0; t < n; t++) P.dot(X + step * (t + 0.7), Y + g.h / 2, Math.max(1.4, step * 0.22), { fill: 'gold' });
+              for (let t = 0; t < n; t++) P.dot(X + step * (t + 0.7), Y + g.h / 2, Math.max(1.4, step * 0.22), { fill: CAT[bars.filter((b) => b < t).length % CAT.length] });
               bars.forEach((b) => P.line(X + step * (b + 1.2), Y + g.h * 0.18, X + step * (b + 1.2), Y + g.h * 0.82, { color: 'ink', width: 1.6 }));
             } else {
-              for (let t = 0; t < S; t++) {
-                if (bars.includes(t)) P.line(X + step * (t + 0.7), Y + g.h * 0.18, X + step * (t + 0.7), Y + g.h * 0.82, { color: 'ink', width: 1.6 });
-                else P.dot(X + step * (t + 0.7), Y + g.h / 2, Math.max(1.4, step * 0.22), { fill: 'gold' });
+              for (let t = 0, ch = 0; t < S; t++) {
+                if (bars.includes(t)) { ch++; P.line(X + step * (t + 0.7), Y + g.h * 0.18, X + step * (t + 0.7), Y + g.h * 0.82, { color: 'ink', width: 1.6 }); }
+                else P.dot(X + step * (t + 0.7), Y + g.h / 2, Math.max(1.4, step * 0.22), { fill: CAT[ch % CAT.length] });
               }
             }
           });
@@ -195,7 +205,7 @@ $$(x_1+\cdots+x_m)^n = \sum_{a_1+\cdots+a_m = n}\binom{n}{a_1,\dots,a_m}x_1^{a_1
       viz(v) {
         let sel = [2, 2, 2];
         const nS = v.slider('$n$', 1, 7, 6, { int: true, onChange: () => { const n = nS.value; let [a, b] = sel; a = Math.min(a, n); b = Math.min(b, n - a); sel = [a, b, n - a - b]; } });
-        const A = v.stage({ x: [-0.12, 1.12], y: [-0.16, 1.0], axes: false, equal: true, height: 360, weight: 1, title: 'coefficients of $(x+y+z)^n$' });
+        const A = v.stage({ x: [-0.2, 1.2], y: [-0.17, 0.99], axes: false, equal: true, height: 360, weight: 1, title: 'coefficients of $(x+y+z)^n$' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 1.25 });
         const cache = new Map();
         const tally = (n) => {
@@ -212,16 +222,16 @@ $$(x_1+\cdots+x_m)^n = \sum_{a_1+\cdots+a_m = n}\binom{n}{a_1,\dots,a_m}x_1^{a_1
         });
         const MISS = countArrangements('MISSISSIPPI');
         v.render(() => {
-          const n = nS.value, T = tally(n), [sa, sb, sc] = sel, r = Math.min(0.44 / n, 0.15);
+          const n = nS.value, T = tally(n), [sa, sb, sc] = sel, r = Math.min(0.37 / n, 0.12);
           A.poly([[0, 0], [1, 0], [0.5, Math.sqrt(3) / 2]], { fill: 'muted', fillAlpha: 0.04, color: 'faint', width: 1 });
           for (let c = 0; c <= n; c++) for (let b = 0; b <= n - c; b++) {
             const a = n - b - c, [x, y] = place(a, b, c, n), val = T.get(a + ',' + b) || 0, isSel = a === sa && b === sb;
             A.circle(x, y, r, { fill: isSel ? 'gold' : 'panel', fillAlpha: isSel ? 0.9 : 1, color: isSel ? 'gold' : 'muted', width: isSel ? 2 : 1 });
             A.text(String(val), x, y, { align: 'center', size: Math.min(13, r * A.scale * (val > 99 ? 0.62 : 0.8)), weight: isSel ? 700 : 500, color: isSel ? 'panel' : 'ink', halo: false });
           }
-          A.tex(`x^{${n}}`, 0, 0, { dx: -6, dy: 14, align: 'right', color: 'blue', size: 15 });
-          A.tex(`y^{${n}}`, 1, 0, { dx: 6, dy: 14, align: 'left', color: 'orange', size: 15 });
-          A.tex(`z^{${n}}`, 0.5, Math.sqrt(3) / 2, { dx: 0, dy: -16, align: 'center', color: 'green', size: 15 });
+          A.tex(`x^{${n}}`, -r, -r, { dx: -4, dy: 6, align: 'right', baseline: 'top', color: 'blue', size: 15 });
+          A.tex(`y^{${n}}`, 1 + r, -r, { dx: 4, dy: 6, align: 'left', baseline: 'top', color: 'orange', size: 15 });
+          A.tex(`z^{${n}}`, 0.5 + r, Math.sqrt(3) / 2 + r * 0.6, { dx: 6, align: 'left', baseline: 'bottom', color: 'green', size: 15 });
           // words
           const P = pen(v, B), W = P.W, H = P.H, words = wordsOf([sa, sb, sc]), COL = ['blue', 'orange', 'green'], L3 = ['x', 'y', 'z'];
           P.text(`${words.length} words with ${sa} x, ${sb} y, ${sc} z`, 10, 14, { size: 12.5, color: 'muted', weight: 600 });
@@ -274,7 +284,7 @@ $$S(n,k) = S(n-1,k-1) + k\,S(n-1,k)\qquad(n,k\ge1).$$`,
           join.sort((p, q) => (baseKey(p) < baseKey(q) ? -1 : baseKey(p) > baseKey(q) ? 1 : p[n - 1] - q[n - 1]));
           const groups = []; join.forEach((r) => { const key = baseKey(r); if (!groups.length || groups[groups.length - 1].key !== key) groups.push({ key, items: [] }); groups[groups.length - 1].items.push(r); });
           boxes = [];
-          const aspect = 0.62, hA = alone.length ? Math.max(70, Math.min(H * 0.5, (H * (alone.length + 2)) / (all.length + 4))) : 34;
+          const aspect = 0.62, hA = splitHeight(H, W - 16, alone.length, aspect, groups.length, aspect / k, 120, 120 * k);
           const ring = (i) => i === n - 1, isPick = (r) => pick && r.join('') === pick.join('');
           P.text(`${n} alone: ${alone.length} = S(${n - 1},${k - 1})`, 8, 12, { size: 12, color: 'orange', weight: 700 });
           if (alone.length) {
@@ -356,7 +366,7 @@ and can be generated by the **Bell triangle**: start with $1$; each row begins w
         v.readout(() => {
           const n = +nSel.value, terms = []; for (let k = 1; k <= n; k++) terms.push(S2[n][k]);
           const bell = tri.map((r) => r[0]);
-          return `$B(${n}) = \\sum_k S(${n},k) = ${terms.join(' + ')} = ${terms.reduce((a, b) => a + b, 0)}$ partitions drawn. Left edge of the triangle: ${bell.join(', ')}, …; recurrence check: $B(${n}) = \\sum_i\\binom{${n - 1}}{i}B(i) = ${Array.from({ length: n }, (_, i) => `${binom(n - 1, i)}\\cdot${bell[i]}`).join('+')}$.`;
+          return `$B(${n}) = \\sum_k S(${n},k) = ${terms.join(' + ')} = ${terms.reduce((a, b) => a + b, 0)}$ partitions drawn. Left edge of the triangle: ${bell.join(', ')}, …; recurrence check: $B(${n}) = \\sum_i\\binom{${n - 1}}{i}B(i) = ${Array.from({ length: n }, (_, i) => `${binom(n - 1, i)}\\cdot${bell[i]}`).join('+')} = ${bell[n]}$.`;
         });
       },
     },
@@ -385,8 +395,7 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
           const n = nS.value, all = perms(Array.from({ length: n }, (_, i) => i)).filter((p) => cyclesOf(p).length === k);
           const alone = all.filter((p) => p[n - 1] === n - 1), ins = all.filter((p) => p[n - 1] !== n - 1);
           const P = pen(v, A), W = P.W, H = P.H, ring = (g) => g === n - 1;
-          const hA = alone.length ? Math.max(70, Math.min(H * 0.55, (H * (alone.length + 1.5)) / (all.length + 3))) : 34;
-          const asp = 0.42 + 0.12 / k;
+          const asp = 0.42 + 0.12 / k, hA = splitHeight(H, W - 16, alone.length, asp, ins.length, asp, 46 * k + 30, 46 * k + 30);
           P.text(`${n} sits alone: ${alone.length} = c(${n - 1},${k - 1})`, 8, 12, { size: 12, color: 'orange', weight: 700 });
           if (alone.length) { const g = fitGrid(alone.length, W - 16, hA - 30, asp, 6, 46 * k + 30); alone.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + 24, g.w, g.h, { fill: 'orange', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + 24, g.w, g.h, { ring, arrows: true }); }); }
           else P.text('none', 8, 34, { size: 12, color: 'muted' });

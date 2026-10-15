@@ -468,7 +468,7 @@ Collisions between molecules do not change the result: they conserve momentum an
         const make = () => {
           const one = mode.value === 'one';
           Ns.el.hidden = one;
-          G = hsGas({ species: [{ m: 1, d: col.value && !one ? 1 : 0.02 }], counts: [one ? 1 : Ns.value], Ly: L, Lz: L, T: 1, rng: v.rng(31), piston: { X } });
+          G = hsGas({ species: [{ m: 1, d: col.value && !one ? 0.5 : 0.02 }], counts: [one ? 1 : Ns.value], Ly: L, Lz: L, T: 1, rng: v.rng(31), piston: { X } });
           if (one) { G.vx[0] = 1.45; G.vy[0] = 0.62; G.vz[0] = 0.35; G.repredict(); }
           hits = []; t0 = G.t; mv2 = 0; nmv = 0; binsAll.fill(0); binsHit.fill(0);
           G.onWall = (i, w, J) => { if (w === 1) { hits.push([G.t, J]); const b = Math.floor((J / (2 * G.m[i]) + 4.2) / bw); if (b >= 0 && b < 42) binsHit[b]++; } };
@@ -484,7 +484,7 @@ Collisions between molecules do not change the result: they conserve momentum an
           while (hits.length && hits[0][0] < G.t - TW - 5) hits.shift();
           // cylinder
           const one = mode.value === 'one';
-          drawGas(sc, G, { color: () => 'accent', rScale: one ? 4 : 1, pistonColor: 'orange' });
+          drawGas(sc, G, { color: () => 'accent', rScale: one ? 2 : 1, pistonColor: 'orange' });
           if (one) { const i = 0; sc.arrow(G.x[i], G.y[i], G.x[i] + 1.6 * G.vx[i], G.y[i], { color: 'red', width: 2, head: 7 }); sc.text('vₓ', G.x[i] + 1.6 * G.vx[i], G.y[i], { dy: -10, color: 'red', size: 12 }); }
           const lastHit = hits.length ? hits[hits.length - 1][0] : -1e9;
           if (G.t - lastHit < 0.6) sc.rect(X, -0.2, X + 1.1, L + 0.2, { fill: 'red', fillAlpha: 0.35, stroke: false });
@@ -499,7 +499,7 @@ Collisions between molecules do not change the result: they conserve momentum an
           st.setView([-TW, 0], [0, top]);
           st.line(x0, 0, 0, -F * x0, { color: 'green', width: 2, dash: [7, 4] });
           st.path(stair, { color: 'accent', width: 2.2 });
-          for (const [th, J] of hits) if (th >= tStart) st.line(th - G.t, 0, th - G.t, J * top / 30, { color: 'orange', width: 1.4, alpha: 0.8 });
+          for (const [th, J] of hits) if (th >= tStart) st.line(th - G.t, 0, th - G.t, J * top / (G.N > 20 ? 90 : 25), { color: 'orange', width: 1.2, alpha: 0.7 });
           st.text('slope = N m⟨vₓ²⟩ / L', -TW + 2, top * 0.9, { size: 11.5, color: 'green' });
           // histograms
           const totA = binsAll.reduce((s, q) => s + q, 0), totH = binsHit.reduce((s, q) => s + q, 0);
@@ -601,7 +601,7 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
         const pv = v.stage({ x: [1200, 5200], y: [0, 0.5], height: 290, axes: 'box', xlabel: 'V (σ³)', ylabel: 'P on the piston', title: 'pressure on the piston during each stroke', weight: 1.2 });
         const sd = v.stage({ x: [0, X1], y: [0, 3], height: 290, axes: 'box', xlabel: 'x (σ)', ylabel: 'density / mean', title: 'density along the cylinder', weight: 1 });
         const make = () => {
-          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 } });
+          G = hsGas({ species: [{ m: 1, d: 0.5 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 }, diffuse: [1, 0, 1, 1, 1, 1] });
           dir = -1; cyc = 0; pts = []; Tstart = G.stats().T; Wstart = 0; rec = [{ cyc: 0, T: Tstart, W: 0 }]; lastSnap = G.snap(); prof = new Float64Array(22).fill(1); tCyc = 0;
           G.setU(-us.value);
         };
@@ -633,7 +633,7 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
           sc.text(`stroke ${2 * cyc + (dir < 0 ? 1 : 2)} · insulated walls`, 0, -1.1, { size: 11.5, color: 'muted' });
           // P–V
           const pmax = adi(X2 * A) * (u > 0.6 ? 1.9 : 1.3);
-          pv.setView([X2 * A * 0.9, X1 * A * 1.03], [0, pmax]);
+          pv.setView([X2 * A * 0.92, X1 * A * 1.03], [0, pmax]);
           pv.fn(adi, { color: 'ink', dash: [6, 4], width: 1.6 });
           pv.text('equilibrium adiabat PV^(5/3) = const', X2 * A * 1.05 + 400, adi(X2 * A * 1.05 + 400), { dx: 10, size: 11.5, color: 'ink' });
           for (const p of pts) pv.dot(p.V, p.P, { r: 2.6, color: p.d < 0 ? 'red' : 'blue', alpha: p.c === cyc ? 0.95 : 0.3, ring: false });
