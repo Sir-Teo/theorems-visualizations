@@ -196,7 +196,7 @@ export default {
 $$n = 3N - k$$
 **degrees of freedom**: $n$ numbers are needed, and suffice, to pin down a configuration, and the state of motion at an instant is a point of $Q$ together with a velocity tangent to $Q$. A planar double pendulum has $2\cdot 2 - 2 = 2$ degrees of freedom; each angle lives on a circle, so its configuration space is the torus $T^2 = S^1\times S^1$, not a region of the plane.`,
       idea: String.raw`Each rigid rod is one equation between the coordinates of its ends, and where the constraints are independent (linearly independent gradients) the implicit function theorem (pma-9.28) lets $k$ of the $3N$ coordinates be solved for in terms of the others, so $Q$ has dimension $3N-k$. The global shape can still be curved or wrapped: an angle and the same angle plus $2\pi$ are one configuration, so two angles make a doughnut — or a square with opposite edges glued. Newton’s second law (mech-1.6) then moves a single point along a curve in $Q$; how many numbers it takes to describe that point is a property of the system, not of the coordinates chosen to describe it.`,
-      caption: String.raw`Press play. The double pendulum (top left) moves while its state point (gold) runs over its configuration space: the torus of the two angles (top right; the blue circle is $\theta_2 = 0$, the orange one $\theta_1 = 0$; drag to rotate) and the same torus cut open into a square (bottom left), where leaving one edge means re-entering at the opposite one. The faint red twin starts $10^{-6}$ rad away: on the *wild* swing the two separate exponentially (red curve, log scale) while the RK4 energy error (blue) stays near round-off — the divergence is chaos, not numerical drift. On the *gentle* swing the gap barely grows.`,
+      caption: String.raw`Press play. The double pendulum (top left) moves while its state point (gold) runs over its configuration space: the torus of the two angles (top right; the blue circle is $\theta_2 = 0$, the orange one $\theta_1 = 0$; drag to rotate) and the same torus cut open into a square (bottom left), where leaving one edge means re-entering at the opposite one. The faint red twin starts $10^{-6}$ rad away: on the *wild* swing the two separate exponentially (red curve, log scale) while the RK4 energy error (blue) stays below $10^{-8}$ — the divergence is chaos, not numerical drift. On the *gentle* swing the gap barely grows.`,
       deps: ['mech-1.1', 'mech-1.6', 'pma-9.28'],
       refs: ['Arnold §17', 'Tong §2.3'],
       tags: ['configuration space', 'degrees of freedom', 'chaos'],
@@ -327,7 +327,7 @@ a smooth one-to-one parametrisation (a chart) whose Jacobian has rank $n$. Any $
           for (const L of fam.levels) s.path(L, { color: 'faint', width: 1, alpha: 0.7 });
           s.path(fam.wire, { color: 'accent', width: 3.2 });
           s.dot(0, 0, { r: 4.5, color: 'red', hollow: true });
-          s.text('saddle of f (∇f = 0)', 0, -0.17, { color: 'red', size: 11, align: 'center', baseline: 'top' });
+          s.text('saddle of f (∇f = 0)', 0.16, 0, { color: 'red', size: 11, align: 'left' });
           const [gx, gy] = grad(bx, by), gn = Math.hypot(gx, gy);
           s.circle(bx, by, rho, { color: 'orange', dash: [5, 4], width: 1.5, fill: 'orange', fillAlpha: 0.07 });
           let tx = 1, ty = 0, nx = 0, ny = 1;
@@ -408,7 +408,7 @@ These two linear conditions on the velocities are not the time derivatives of an
         const cf = v.stage({ x: [-1.2, 1.2], y: [-2.55, 2.55], equal: true, height: 330, axes: false, weight: 0.6, minWidth: 170, title: 'the coins, face on' });
         let saved = null;
         const Bh = s.handle(2.05, 0.8, { color: 'ink', r: 7, label: 'B', labelPos: 'n', constrain: (x, y) => (rail.value ? [x, A[1]] : [x, y]) });
-        const lens = { a1: 1.5, b1: 1.5, a2: 5.2, b2: 5.0 };
+        const lens = { a1: 1.5, b1: 1.5, a2: 5.2, b2: 4.6 };
         const eB = () => (rail.value ? [1, 0] : [Math.cos(phB.value * DEG), Math.sin(phB.value * DEG)]);
         const H = [['a1', true, 'blue'], ['b1', false, 'blue'], ['a2', true, 'orange'], ['b2', false, 'orange']].map(([key, fromA, col]) => {
           const hd = s.handle(0, 0, { color: col, r: 6, constrain: (x, y) => {
@@ -475,10 +475,9 @@ These two linear conditions on the velocities are not the time derivatives of an
           s.arrow(A[0] - 0.35, A[1], A[0] + 0.05, A[1], { color: 'ink', width: 2, head: 8 }); s.dot(A[0], A[1], { r: 5, color: 'ink' });
           s.tex('A', A[0], A[1], { color: 'ink', dx: -10, dy: 14 });
           const e = eB(); s.arrow(Bh.x - 0.35 * e[0], Bh.y - 0.35 * e[1], Bh.x + 0.05 * e[0], Bh.y + 0.05 * e[1], { color: 'ink', width: 2, head: 8 });
-          cur = RT.map((r, j) => {
+          cur = RT.map((r, j) => [r, j]).reverse().map(([r, j]) => {
             const i = posAt(r, frac), p = r.pts[i], hh = r.hd[i], c = Math.cos(hh), sn = Math.sin(hh);
-            s.line(p[0] - R * c, p[1] - R * sn, p[0] + R * c, p[1] + R * sn, { color: cols[j], width: 8, alpha: 0.9 });
-            s.line(p[0] - R * c, p[1] - R * sn, p[0] + R * c, p[1] + R * sn, { color: 'panel', width: 2, alpha: 0.7 });
+            s.line(p[0] - R * c, p[1] - R * sn, p[0] + R * c, p[1] + R * sn, { color: cols[j], width: j ? 11 : 5, alpha: 0.95, cap: 'butt' });
             if (frac < 1) {
               s.arrow(p[0], p[1], p[0] + 0.55 * c, p[1] + 0.55 * sn, { color: 'green', width: 2, head: 7 });
               const fx = p[0] - 0.4 * sn, fy = p[1] + 0.4 * c;
@@ -486,7 +485,7 @@ These two linear conditions on the velocities are not the time derivatives of an
               s.text('×', fx, fy, { color: 'red', size: 15, align: 'center', weight: 700 });
             }
             return { psi: r.S[i] / R, psiEnd: r.L / R, len: r.len, L: r.L, p, i, r };
-          });
+          }).reverse();
           // coin faces
           cur.forEach((c, j) => {
             const cy = j === 0 ? 1.25 : -1.25, a = Math.PI / 2 - c.psi;
@@ -569,7 +568,7 @@ an equation from which the unknown constraint forces have disappeared. In equili
           const arr = (vec, col, lab, o = {}) => {
             const L = Math.hypot(vec[0], vec[1]); if (L < 1e-6) return;
             s.arrow(x, y, x + K * vec[0], y + K * vec[1], { color: col, width: 2.4, head: 8, ...o });
-            if (lab) s.tex(lab, x + K * vec[0], y + K * vec[1], { color: col, size: 13, dx: (12 * vec[0]) / L, dy: (-12 * vec[1]) / L });
+            if (lab && K * L > 0.32) s.tex(lab, x + K * vec[0], y + K * vec[1], { color: col, size: 13, dx: (12 * vec[0]) / L, dy: (-12 * vec[1]) / L });
           };
           arr(F.W, 'purple', 'm\\mathbf g');
           arr(F.N, 'orange', '\\mathbf N');
@@ -590,7 +589,7 @@ an equation from which the unknown constraint forces have disappeared. In equili
           bars.forEach(([c, lab, val], i) => {
             if (Math.abs(val) > 1e-9) b.rect(i + 0.22, 0, i + 0.78, Math.max(-11.5, Math.min(11.5, val)), { fill: c, fillAlpha: 0.55, color: c, width: 1.2 });
             b.tex(lab, i + 0.5, -11.3, { color: c, size: 11, baseline: 'bottom' });
-            b.text(v.fix(val, 2), i + 0.5, val >= 0 ? Math.min(val, 9.5) + 0.6 : Math.max(val, -9) - 0.6, { color: c, size: 10.5, align: 'center', baseline: val >= 0 ? 'bottom' : 'top' });
+            b.text(Math.abs(val) < 0.005 ? '0.00' : v.fix(val, 2), i + 0.5, val >= 0 ? Math.min(val, 9.5) + 0.6 : Math.max(val, -9) - 0.6, { color: c, size: 10.5, align: 'center', baseline: val >= 0 ? 'bottom' : 'top' });
           });
           // time plot
           p.hline(0, { color: 'faint' });
@@ -598,15 +597,16 @@ an equation from which the unknown constraint forces have disappeared. In equili
           series(p, R.S.t, R.res, k, { color: R.useF ? 'red' : 'green', width: 2.2 });
           p.vline(R.S.t[k], { color: 'gold', width: 1.2 });
           now = { WN, Wf, sum, Wg, k };
-        }, { period: T, still: 3.2 });
+        }, { period: T, still: 1.1 });
         v.legend([['purple', 'weight $m\\mathbf g$ (applied)'], ['orange', 'normal force $\\mathbf N$'], ['red', 'friction $\\mathbf f$'], ['ink', 'inertial force $-m\\ddot{\\mathbf r}$', { dash: true }], ['green', 'virtual displacement / d’Alembert sum']]);
         v.readout(() => {
           if (!now) return '';
           const R = sim();
           let mx = 0, mn = 0; for (let j = 2; j <= Math.max(2, now.k); j++) { mx = Math.max(mx, Math.abs(R.res[j])); mn = Math.max(mn, Math.abs(R.nt[j])); }
-          const head = String.raw`$\mathbf N\cdot\delta\mathbf r = ${v.fix(now.WN, 4)}$ J (largest $|\mathbf N\cdot\hat\tau|$ so far $${v.sci(Math.max(mn, 1e-16), 1)}$ N) · $(\mathbf F^{(a)} - m\ddot{\mathbf r})\cdot\delta\mathbf r = ${v.fix(now.sum, 4)}$ J`;
+          const z4 = (x) => v.fix(Math.abs(x) < 5e-5 ? 0 : x, 4);
+          const head = String.raw`$\mathbf N\cdot\delta\mathbf r = ${z4(now.WN)}$ J (largest $|\mathbf N\cdot\hat\tau|$ so far $${v.sci(Math.max(mn, 1e-16), 1)}$ N) · $(\mathbf F^{(a)} - m\ddot{\mathbf r})\cdot\delta\mathbf r = ${z4(now.sum)}$ J`;
           return R.useF
-            ? head + String.raw` · friction: $\mathbf f\cdot\delta\mathbf r = ${v.fix(now.Wf, 3)}$ J $\ne 0$, so the d’Alembert sum without friction fails (largest residual ${v.fix(mx, 2)} N per unit $\delta s$); with $\mathbf f$ counted as applied it is $${v.fix(now.sum + now.Wf, 4)}$`
+            ? head + String.raw` · friction: $\mathbf f\cdot\delta\mathbf r = ${v.fix(now.Wf, 3)}$ J $\ne 0$, so the d’Alembert sum without friction fails (largest residual ${v.fix(mx, 2)} N per unit $\delta s$); with $\mathbf f$ counted as applied it is $${z4(now.sum + now.Wf)}$`
             : head + String.raw` — zero to finite-difference accuracy (largest $${v.sci(Math.max(mx, 1e-16), 1)}$ N per unit $\delta s$): the workless normal force has dropped out`;
         });
       },
@@ -934,7 +934,7 @@ is the same Lagrangian written in the new variables, then $q(t)$ solves the Eule
           sq.path(Cv.S.y.slice(0, k + 1).map((z) => [z[0], z[1]]), { color: 'gold', width: 2.2 });
           if (Nv) { const kk = Math.min(k, Nv.S.y.length - 1); sq.path(Nv.S.y.slice(0, kk + 1).map((z) => [z[0], z[1]]), { color: 'red', width: 1.8 }); sq.dot(Nv.S.y[kk][0], Nv.S.y[kk][1], { r: 5, color: 'red' }); }
           const zc = Cv.S.y[Math.min(k, Cv.S.y.length - 1)]; sq.dot(zc[0], zc[1], { r: 6, color: 'gold' });
-          sq.corner(`horizontal: ${c.names[0]}, vertical: ${c.names[1]}`, 'tl', { color: 'muted' });
+          sq.corner(`horizontal: ${c.names[0]}, vertical: ${c.names[1]}`, 'tr', { color: 'muted' });
           now = { gap: Cv.gap, ngap: Nv ? Nv.gap : null, key };
         }, { period: T, still: 9.5 });
         v.legend([['ink', 'Cartesian solution'], ['gold', 'curvilinear Euler–Lagrange solution, mapped back', { dot: true }], ['red', 'naive $\\ddot q = -\\partial U/\\partial q$']]);
@@ -1019,7 +1019,7 @@ and the **generalized force** is $Q_j = \partial L/\partial q_j$ (for $L = T - U
           const R = sim(), k = now.k, sd = R.S.y[k][3];
           let dev = 0, lo = Infinity, hi = -Infinity, mis = 0;
           for (let j = 0; j < R.pX.length; j++) { dev = Math.max(dev, Math.abs(R.pX[j] - R.pX[0])); lo = Math.min(lo, R.MX[j]); hi = Math.max(hi, R.MX[j]); }
-          for (let j = 1; j < R.pS.length - 1; j++) mis = Math.max(mis, Math.abs(R.dS[j] - R.QS[j]) / (1 + Math.abs(R.QS[j])), Math.abs(R.dX[j] - R.QX[j]) / (1 + Math.abs(R.QX[j])));
+          for (let j = 2; j < R.pS.length - 2; j++) mis = Math.max(mis, Math.abs(R.dS[j] - R.QS[j]) / (1 + Math.abs(R.QS[j])), Math.abs(R.dX[j] - R.QX[j]) / (1 + Math.abs(R.QX[j])));
           const pxPart = R.K
             ? String.raw`$L$ contains $X$ through $\tfrac12 KX^2$: $p_X$ now swings by $${v.fix(dev, 3)}$ kg·m/s, at the rate $\dot p_X = Q_X = -KX$`
             : String.raw`$p_X = ${v.fix(R.pX[k], 4)}$ kg·m/s, constant to $${v.sci(Math.max(dev, 1e-16), 1)}$ ($X$ is cyclic), while $M\dot X$ alone ranges over $[${v.fix(lo, 2)}, ${v.fix(hi, 2)}]$`;
@@ -1048,7 +1048,7 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
         const m1 = v.slider('$m_1$ (kg)', 0.2, 5, 3, { step: 0.05, onChange: () => v.restart() });
         const m2 = v.slider('$m_2$ (kg)', 0.2, 5, 1, { step: 0.05, onChange: () => v.restart() });
         const m3 = v.slider('$m_3$ (kg)', 0.2, 5, 2, { step: 0.05, onChange: () => v.restart() });
-        const s = v.stage({ x: [-1.25, 1.55], y: [-3.6, 0.55], equal: true, height: 380, axes: false, weight: 1.05, title: 'the machine' });
+        const s = v.stage({ x: [-1.3, 1.6], y: [-3.6, 0.8], equal: true, height: 380, axes: false, weight: 1.05, title: 'the machine' });
         const c = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380, axes: 'box', weight: 1, xlabel: 'x', ylabel: 'y', title: 'configuration plane $(x, y)$' });
         // half-planes a·x + b·y ≤ c describing the allowed configurations
         const HP = [[-1, 0, -rA - GAP - Y1 - HB], [1, 0, Y1 - HB - FL], [1, 0, -rA - GAP - rB - YB], [0, -1, D2 - HB - rB - GAP], [-1, 1, YB - D2 - HB - FL], [0, 1, D3 - HB - rB - GAP], [-1, -1, YB - D3 - HB - FL]];
@@ -1083,8 +1083,8 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
           const y1 = Y1 - x, yB = YB + x, y2 = yB - D2 - y, y3 = yB - D3 + y, xB = rA, x2 = rA - rB, x3 = rA + rB;
           const [xa, ya] = Mo.acc, A = [-xa, xa - ya, xa + ya], ms = [m1.value, m2.value, m3.value];
           // ceiling, pulleys and ropes
-          s.line(-0.9, 0.42, 0.9, 0.42, { color: 'muted', width: 3 }); for (let q = -0.85; q < 0.9; q += 0.15) s.line(q, 0.42, q + 0.08, 0.5, { color: 'muted', width: 1 });
-          s.line(0, 0.42, 0, 0, { color: 'muted', width: 2 });
+          s.line(-0.9, 0.68, 0.9, 0.68, { color: 'muted', width: 3 }); for (let q = -0.85; q < 0.9; q += 0.15) s.line(q, 0.68, q + 0.08, 0.76, { color: 'muted', width: 1 });
+          s.line(0, 0.68, 0, 0, { color: 'muted', width: 2 });
           s.circle(0, 0, rA, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.12 }); s.dot(0, 0, { r: 3, color: 'ink' });
           s.curve((u) => [rA * Math.cos(u), rA * Math.sin(u)], 0, Math.PI, { color: 'ink', width: 1.6, n: 40 });
           s.line(-rA, 0, -rA, y1 + HB, { color: 'ink', width: 1.6 });
@@ -1100,6 +1100,7 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
             s.tex(lab, bx, by, { color: 'ink', size: 12 });
             const al = A[i] * 0.1, side = i === 2 ? 1 : -1, ax = bx + side * (w + 0.09);
             if (Math.abs(al) > 0.005) s.arrow(ax, by - al / 2, ax, by + al / 2, { color: 'green', width: 2.4, head: Math.min(8, 4 + 40 * Math.abs(al)) });
+            s.text(v.fix(Math.abs(A[i]), 2), ax, by - Math.abs(al) / 2 - 0.05, { color: 'green', size: 10, align: 'center', baseline: 'top' });
           });
           // tension arrows on the ropes (just above each block, and on the hook of pulley B)
           const tk = 0.02;
@@ -1115,10 +1116,9 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
           if (an > 1e-6) c.arrow(0, 0, (0.6 * xa) / an, (0.6 * ya) / an, { color: 'ink', width: 1.4, dash: [4, 3], head: 7 });
           c.path(Mo.S.y.slice(0, k + 1).map((z) => [z[0], z[1]]), { color: 'gold', width: 3 });
           c.dot(0, 0, { r: 4, color: 'ink' }); c.dot(x, y, { r: 6.5, color: 'gold' });
-          c.corner('allowed configurations (green)', 'bl', { color: 'green' });
           now = { k, Mo };
         }, { period: TMAX, speed: SLOW, still: 0.6 });
-        v.legend([['orange', 'rope tensions (Newton)'], ['green', 'accelerations'], ['gold', 'path in configuration space']]);
+        v.legend([['orange', 'rope tensions (Newton)'], ['green', 'accelerations (m/s²)'], ['gold', 'path in configuration space'], ['green', 'allowed configurations', { area: true }]]);
         v.readout(() => {
           if (!now) return '';
           const { Mo, k } = now, [xa, ya] = Mo.acc, L = [-xa, xa - ya, xa + ya], N = [Mo.Nw[0], Mo.Nw[2], Mo.Nw[3]];

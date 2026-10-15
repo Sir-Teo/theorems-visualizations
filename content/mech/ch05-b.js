@@ -185,7 +185,7 @@ and oscillates with period $4\pi\sqrt{R/g}$ independent of amplitude. Measured a
       viz(v) {
         const R = 1, HC = 0.6627434193, HM = 0.5277;
         const hS = v.slider('ring half-separation $h/R$', 0.2, 0.8, 0.58, { step: 0.005 });
-        let burst = false, pulling = false, r0 = 0.97, lastT = 0, hVal = 0.58;
+        let burst = false, pulling = false, r0 = 0.97, lastT = 0, hVal = 0.58, burstH = null;
         v.button('New film', () => { burst = false; pulling = false; r0 = 0.97; neck.y = r0; v.play(); });
         v.button('Pull apart', () => { pulling = true; if (burst) { burst = false; r0 = 0.97; } v.play(); });
         const s3 = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.3], equal: true, axes: false, height: 280, title: 'the film' });
@@ -209,7 +209,7 @@ and oscillates with period $4\pi\sqrt{R/g}$ independent of amplitude. Measured a
           const h = hVal, L = land(h);
           if (!neck.dragging && !burst && dt > 0) {
             for (let k = 0; k < 4; k++) { const d = 1e-4, g = (area(h, Math.min(0.9995, r0 + d)) - area(h, Math.max(1e-3, r0 - d))) / (2 * d); r0 = clamp(r0 - (1.2 * dt / 4) * g / Math.PI, 0.005, 0.995); }
-            if (r0 < 0.03) burst = true;
+            if (r0 < 0.03) { burst = true; burstH = h; }
           }
           neck.y = burst ? 0.01 : r0; neck.visible = true;
           const f = prof(h, Math.max(r0, 0.005));
@@ -248,14 +248,14 @@ and oscillates with period $4\pi\sqrt{R/g}$ independent of amplitude. Measured a
           L.cats.forEach((ct, i) => { const stable = i === L.cats.length - 1; sL.dot(ct.c, ct.A, { r: 6, color: stable ? 'green' : 'red' }); sL.text(stable ? 'stable catenoid' : 'unstable catenoid', ct.c, ct.A, { color: stable ? 'green' : 'red', size: 11.5, weight: 600, align: 'center', baseline: stable ? 'top' : 'bottom', dy: stable ? 9 : -9 }); });
           const Anow = burst ? 2 : area(h, r0) / Math.PI;
           sL.dot(burst ? 0 : r0, Anow, { r: 7, color: 'gold' });
-          cur = { h, r0, burst, cats: L.cats, Anow };
+          cur = { h, r0, burst, cats: L.cats, Anow, burstH };
           v.legend([['teal', 'the film (trial surface)'], ['green', 'stable catenoid', { dash: true }], ['red', 'unstable catenoid', { dash: true }], ['orange', 'Goldschmidt discs', { dash: true }]]);
         }, { still: 2 });
         v.readout(() => {
           if (!cur) return '';
           const c = cur, st = c.cats.length ? c.cats[c.cats.length - 1] : null;
           const regime = c.h > HC ? String.raw`$h/R = ${v.fix(c.h, 3)} > 0.6627$: no catenoid exists, only the discs` : c.h > HM ? String.raw`$0.5277 < h/R = ${v.fix(c.h, 3)} < 0.6627$: the catenoid is only metastable — the discs have less area` : String.raw`$h/R = ${v.fix(c.h, 3)} < 0.5277$: the stable catenoid is the global minimum`;
-          const film = c.burst ? 'the film has collapsed into two discs (area $2\\pi R^2$)' : String.raw`film neck $r_0 = ${v.fix(c.r0, 4)}R$, area $${v.fix(c.Anow, 4)}\,\pi R^2$` + (st ? String.raw` · stable catenoid predicted by $c\cosh(h/c) = R$: neck $c = ${v.fix(st.c, 4)}R$, area $${v.fix(st.A, 4)}\,\pi R^2$` : '');
+          const film = c.burst ? String.raw`the film collapsed into two discs (area $2\pi R^2$) when $h/R$ was $${v.fix(c.burstH ?? c.h, 3)}$` : String.raw`film neck $r_0 = ${v.fix(c.r0, 4)}R$, area $${v.fix(c.Anow, 4)}\,\pi R^2$` + (st ? String.raw` · stable catenoid predicted by $c\cosh(h/c) = R$: neck $c = ${v.fix(st.c, 4)}R$, area $${v.fix(st.A, 4)}\,\pi R^2$` : '');
           return `${regime} · ${film} · discs: $2\\pi R^2$`;
         });
       },
@@ -416,13 +416,13 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
           let dev = 0, len = 0; pos.forEach((p, i) => { dev = Math.max(dev, Math.abs(p[1] - cat.f(p[0]))); if (i) len += Math.hypot(p[0] - pos[i - 1][0], p[1] - pos[i - 1][1]); });
           let vmax = 0; for (let i = 1; i < N; i++) vmax = Math.max(vmax, Math.hypot(pos[i][0] - prev[i][0], pos[i][1] - prev[i][1]) / subDt);
           s.corner(vmax < 0.003 ? 'at rest' : `moving: fastest bead ${v.fix(100 * vmax, 1)} cm/s`, 'tr', { color: vmax < 0.003 ? 'green' : 'orange', weight: 600 });
-          cur = { cat, F, dev, len, parDev, para: para.value, sag: Math.min(P1.y, P2.y) - ymin };
+          cur = { cat, F, dev, len, parDev, para: para.value, sag: Math.min(P1.y, P2.y) - ymin, moving: vmax >= 0.003 };
           v.legend([['green', 'catenary predicted from supports and length', { dash: true }], ['teal', 'beads: low tension', { dot: true }], ['orange', 'high tension', { dot: true }], ...(para.value ? [['red', 'parabola, same sag', { dash: true }]] : [])]);
         }, { still: 1 });
         v.readout(() => {
           if (!cur) return '';
           const c = cur;
-          return String.raw`catenary parameter: fitted to the simulated beads $c = ${v.fix(c.F.c, 4)}$ m, predicted from supports and length $c = ${v.fix(c.cat.c, 4)}$ m · multiplier $\lambda = ${v.fix(c.cat.y0, 3)}$ m · largest bead offset from the prediction ${v.fix(1000 * c.dev, 1)} mm (simulated chain length ${v.fix(c.len, 4)} m vs ${v.fix(ellS.value, 2)} m)` + (c.para ? ` · parabola of equal sag misses by up to ${v.fix(1000 * c.parDev, 0)} mm` : '');
+          return (c.moving ? 'still moving — wait for it to settle · ' : '') + String.raw`catenary parameter: fitted to the simulated beads $c = ${v.fix(c.F.c, 4)}$ m, predicted from supports and length $c = ${v.fix(c.cat.c, 4)}$ m · multiplier $\lambda = ${v.fix(c.cat.y0, 3)}$ m · largest bead offset from the prediction ${v.fix(1000 * c.dev, 1)} mm (simulated chain length ${v.fix(c.len, 4)} m vs ${v.fix(ellS.value, 2)} m)` + (c.para ? ` · parabola of equal sag misses by up to ${v.fix(1000 * c.parDev, 0)} mm` : '');
         });
       },
     },
