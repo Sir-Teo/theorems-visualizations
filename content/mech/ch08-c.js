@@ -286,9 +286,9 @@ independent of the sign of the charges, steeply forward-peaked, and with infinit
           const T = TGT[tgt.value], E = En.value, d = (KE2 * 2 * T.Z) / E, Rn = 1.2 * Math.cbrt(T.A), sg = flip.value ? -1 : 1;
           // m = 1, E = 1 (v0 = √2): U = d/r for a point charge, U = (d/2R)(3 − r²/R²) inside a uniformly charged sphere; acc = −dU/dr
           const acc = (r) => sg * (finite.value && r < Rn ? (d * r) / Rn ** 3 : d / (r * r));
-          const v0 = Math.SQRT2, X0 = 60 * d;
+          const v0 = Math.SQRT2, X0 = 1000 * d;
           // deflection table on log-spaced b (fm)
-          const tab = []; for (let i = 0; i <= 500; i++) { const b = d * 10 ** (-3 + (5 * i) / 500); tab.push([b, Math.abs(deflect(acc, b, v0, X0).th)]); }
+          const tab = []; for (let i = 0; i <= 700; i++) { const b = d * 10 ** (-3 + (4 * i) / 700); tab.push([b, Math.abs(deflect(acc, b, v0, X0).th)]); }
           tab.unshift([0, Math.PI]);
           const bmax = 6 * d, r = v.rng(5), NMC = 400000, nb = 34, cnt = new Array(nb).fill(0);
           for (let i = 0; i < NMC; i++) { const b = bmax * Math.sqrt(r()), th = interp(tab, b); const k = Math.floor(((th * 180) / Math.PI - 10) / 5); if (k >= 0 && k < nb) cnt[k]++; }
@@ -428,13 +428,13 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
         const x1 = [-0.97000436, 0.24308753], v3 = [-0.93240737, -0.86473146];
         const LAGR = (() => { const R = 1 / Math.sqrt(3), w = Math.sqrt(3), x = [], vv = []; for (let i = 0; i < 3; i++) { const a = Math.PI / 2 + (i * TAU) / 3; x.push(R * Math.cos(a), R * Math.sin(a)); vv.push(-w * R * Math.sin(a), w * R * Math.cos(a)); } return { x, v: vv }; })();
         const CFG = {
-          eight: { label: 'figure-eight', m: [1, 1, 1], x: [x1[0], x1[1], -x1[0], -x1[1], 0, 0], v: [-v3[0] / 2, -v3[1] / 2, -v3[0] / 2, -v3[1] / 2, v3[0], v3[1]], T: 80, lim: 2.2, eta: 0.002, ej: 3.5, push: 0.15 },
+          eight: { label: 'figure-eight', m: [1, 1, 1], x: [x1[0], x1[1], -x1[0], -x1[1], 0, 0], v: [-v3[0] / 2, -v3[1] / 2, -v3[0] / 2, -v3[1] / 2, v3[0], v3[1]], T: 80, lim: 2.2, eta: 0.002, ej: 3.5, push: 0.18 },
           lagrange: { label: 'Lagrange triangle', m: [1, 1, 1], x: LAGR.x, v: LAGR.v, T: 60, lim: 2.4, eta: 0.002, ej: 3.5, push: 0 },
           pyth: { label: 'Pythagorean 3–4–5', m: [3, 4, 5], x: [1, 3, -2, -1, 1, -1], v: [0, 0, 0, 0, 0, 0], T: 70, lim: 6, eta: 0.0007, ej: 9, push: 0 },
         };
         let push = null;
         const cfg = v.select('configuration', Object.entries(CFG).map(([value, q]) => ({ value, label: q.label })), 'eight', { onChange: (k) => push.set(CFG[k].push) });
-        push = v.slider('push on body 1', 0, 0.3, 0.15, { step: 0.005 });
+        push = v.slider('push on body 1', 0, 0.3, 0.18, { step: 0.005 });
         const s = v.stage({ x: [-2.2, 2.2], y: [-1.6, 1.6], equal: true, axes: false, height: 320, weight: 1.3 });
         const ge = v.stage({ x: [0, 80], y: [1e-14, 1e-2], ylog: true, axes: 'box', height: 320, xlabel: 't', title: 'relative energy error $|\\Delta E/E|$' });
         const gd = v.stage({ x: [0, 80], y: [0, 6], axes: 'box', height: 190, full: true, xlabel: 't', title: 'distance of each body from the centre of mass' });
@@ -456,12 +456,22 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
           }
           let P = [0, 0], Lz = 0; for (let i = 0; i < 3; i++) { P[0] += m[i] * vel[2 * i]; P[1] += m[i] * vel[2 * i + 1]; Lz += m[i] * (x[2 * i] * vel[2 * i + 1] - x[2 * i + 1] * vel[2 * i]); }
           const dist = rec.x.map((X) => [0, 1, 2].map((i) => Math.hypot(X[2 * i], X[2 * i + 1])));
-          return { Q, rec, dist, dEmax, n, rClose, ej, P, E0, Lz };
+          // is the farthest body really escaping? its energy relative to the centre of mass of the other two
+          let esc = null;
+          if (ej) {
+            const i = ej.i, j = (i + 1) % 3, k = (i + 2) % 3, Mp = m[j] + m[k];
+            const cx = (m[j] * x[2 * j] + m[k] * x[2 * k]) / Mp, cy = (m[j] * x[2 * j + 1] + m[k] * x[2 * k + 1]) / Mp, cvx = (m[j] * vel[2 * j] + m[k] * vel[2 * k]) / Mp, cvy = (m[j] * vel[2 * j + 1] + m[k] * vel[2 * k + 1]) / Mp;
+            const mu = (m[i] * Mp) / (m[i] + Mp), Ei = 0.5 * mu * ((vel[2 * i] - cvx) ** 2 + (vel[2 * i + 1] - cvy) ** 2) - (m[i] * Mp) / Math.hypot(x[2 * i] - cx, x[2 * i + 1] - cy);
+            esc = Ei;
+          }
+          return { Q, rec, dist, dEmax, n, rClose, ej, esc, P, E0, Lz };
         });
         v.animate((t) => {
           const D = run(), Q = D.Q, N = D.rec.t.length - 1, simT = Math.min((t * Q.T) / 30, Q.T);
           let k = 0; { let lo = 0, hi = N; while (hi - lo > 1) { const mm = (lo + hi) >> 1; if (D.rec.t[mm] <= simT) lo = mm; else hi = mm; } k = lo; }
-          s.setView([-Q.lim, Q.lim], [-Q.lim * 0.73, Q.lim * 0.73]);
+          let far = Q.lim; { const X = D.rec.x[k]; for (let i = 0; i < 3; i++) far = Math.max(far, 1.15 * Math.abs(X[2 * i]), (1.15 * Math.abs(X[2 * i + 1])) / 0.73); }
+          far = Math.min(far, 4 * Q.lim);
+          s.setView([-far, far], [-far * 0.73, far * 0.73]);
           const tail = Math.round((cfg.value === 'pyth' ? 4 : 2.5) / 0.02);
           for (let i = 0; i < 3; i++) {
             s.path(D.rec.x.slice(0, k + 1).map((X) => [X[2 * i], X[2 * i + 1]]), { color: COL[i], width: 0.8, alpha: 0.18 });
@@ -487,9 +497,9 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
           if (!cur) return '';
           const { D } = cur;
           let out = String.raw`${D.n.toLocaleString('en')} adaptive steps; largest $|\Delta E/E| = ${sci(v, D.dEmax)}$ (closest approach ${v.fix(D.rClose, 4)}); total momentum $${sci(v, Math.hypot(...D.P))}$, angular momentum $L_z = ${v.fix(D.Lz, 6)}$ — conserved`;
-          if (D.ej) out += String.raw` · body ${D.ej.i + 1} ejected near $t \approx ${v.fix(D.ej.t, 1)}$`;
+          if (D.ej) out += String.raw` · body ${D.ej.i + 1} left the group near $t \approx ${v.fix(D.ej.t, 1)}$; its energy relative to the remaining pair is ${v.fix(D.esc, 3)}` + (D.esc > 0 ? ' > 0: it escapes for good' : ' < 0: it will fall back');
           else out += ' · no ejection within this run';
-          if (cfg.value === 'eight') out += push.value === 0 ? ' · unperturbed: the three bodies chase each other on one figure-eight, period 6.326' : ' · the figure-eight survives tiny pushes (it is linearly stable) but not this one';
+          if (cfg.value === 'eight') out += push.value === 0 ? ' · unperturbed: the three bodies chase each other on one figure-eight, period 6.326' : D.ej ? ' · the figure-eight survives tiny pushes (it is linearly stable) but not this one' : ' · try other pushes: whether and when a body is flung out depends sensitively on the push (chaos)';
           if (cfg.value === 'lagrange') out += ' · equal masses violate Routh’s condition $27\\sum m_im_j < M^2$, so the rotating triangle is unstable';
           if (cfg.value === 'pyth') out += ' · Burrau’s problem (1913); Szebehely and Peters (1967) found that the mass-3 body escapes and masses 4 and 5 form a binary';
           return out;

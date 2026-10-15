@@ -143,7 +143,7 @@ Sales of used goods and financial assets, and transfers such as pensions, are no
           const sales = A + (mg ? 0 : Fb) + Fh + Br, gdp = A + M + K, fin = Fh + Br;
           // ----- the production chain
           const nodes = [['farmer', 2, 17, 'teal'], ['miller', 28, 43, 'purple'], ['baker', 54, 69, 'orange'], ['households', 82, 98, 'blue']];
-          if (mg) rbox(v, D, 25.5, 0.8, 71.5, 28.6, { color: 'muted', dash: [5, 4], width: 1.3, r: 12 });
+          if (mg) rbox(v, D, 27, 0.8, 70, 28.6, { color: 'muted', dash: [5, 4], width: 1.3, r: 12 });
           for (const [n, x0, x1, col] of nodes) { rbox(v, D, x0, 14, x1, 26, { fill: col, fillAlpha: 0.16, color: col }); D.text(n, (x0 + x1) / 2, 20, { align: 'center', color: 'ink', size: 13, weight: 650 }); }
           const arr = (x0, x1, lab, col, dash) => { D.arrow(x0, 20, x1, 20, { color: col, width: 2.2, head: 8, dash }); D.text(lab, (x0 + x1) / 2, 23.6, { align: 'center', color: col, size: 11.5, weight: 600 }); };
           arr(17.4, 27.6, `wheat ${eur(A)}`, 'teal');
@@ -162,7 +162,7 @@ Sales of used goods and financial assets, and transfers such as pensions, are no
           D.text(`value added ${eur(K)}`, 61.5, 10.2, { align: 'center', color: 'orange', size: 11.5, weight: 600 });
           D.text(`sales ${eur(Br)} − flour ${eur(Fb)}`, 61.5, 6.6, { align: 'center', color: 'muted', size: 10.5 });
           D.text(`final purchases ${eur(fin)}`, 90, 10.2, { align: 'center', color: 'blue', size: 11.5, weight: 600 });
-          if (mg) D.text('mill + bakery = one firm', 48.5, 2.6, { align: 'center', color: 'muted', size: 10.5, weight: 600 });
+          if (mg) D.text(`one firm: value added ${eur(M + K)} = sales ${eur(Br + Fh)} − wheat ${eur(A)}`, 48.5, 2.6, { align: 'center', color: 'ink', size: 10.5, weight: 600 });
           // ----- three ways of adding up
           const hh = 0.27, rows = [2.95, 1.8, 0.65];
           const head = (y, txt) => B.text(txt, 2, y + 0.44, { color: 'ink', size: 12, weight: 650 });
@@ -557,8 +557,9 @@ national saving equals domestic investment plus net exports, i.e. **net capital 
           L.dots(nom.map((y, t) => [2015 + t, y]), { r: 2.6, color: 'ink' }); L.dots(real.map((y, t) => [2015 + t, y]), { r: 2.6, color: 'blue' });
           L.vline(2015 + b, { color: 'blue', width: 1, dash: [3, 3], alpha: 0.6 });
           L.dot(2015 + b, nom[b], { r: 5, color: 'blue', hollow: true });
-          L.text('nominal', 2025, nom[10], { dx: -4, dy: 18, align: 'right', color: 'ink', size: 11.5, weight: 700 });
-          L.text('real', 2025, real[10], { dx: -4, dy: -12, align: 'right', color: 'blue', size: 11.5, weight: 700 });
+          const up = real[10] > nom[10];
+          L.text('nominal', 2025, nom[10], { dx: -4, dy: up ? 16 : -12, align: 'right', color: 'ink', size: 11.5, weight: 700 });
+          L.text('real', 2025, real[10], { dx: -4, dy: up ? -12 : 16, align: 'right', color: 'blue', size: 11.5, weight: 700 });
           // growth rates
           const gr = (s, t) => 100 * (s[t] / s[t - 1] - 1);
           { let lo = -2, hi = 8; for (const sr of [real, chain, nom.map((x, t) => x / real[t])]) for (let t = 1; t <= 10; t++) { const g = gr(sr, t); lo = Math.min(lo, g); hi = Math.max(hi, g); } R.setView(null, [Math.floor(lo - 1), Math.ceil(hi * 1.12 + 1)]); }
@@ -781,6 +782,7 @@ a Laspeyres price index; its percentage change is the measured **inflation rate*
         S.onClick((x, y) => { let best = -1, bd = 1e9; C.forEach((c, i) => { for (const [cx, cy] of [[0, 7 - st.r0[i]], [1, 7 - st.r1[i]]]) { const d = Math.hypot(S.X(x) - S.X(cx), S.Y(y) - S.Y(cy)); if (d < bd) { bd = d; best = i; } } }); if (bd < 60) sel = best; });
         v.legend(C.map((c) => [c.col, c.name, { dot: true }]));
         v.render(() => {
+          eps.el.hidden = !tI.value;
           const A = C.map(adj), g = C.map((c) => c.y), a = A.map((q) => q.total), r0 = rankOf(g), r1 = rankOf(a);
           st = { A, r0, r1 };
           S.text('GDP per head', 0, 6.82, { align: 'center', color: 'muted', size: 11, weight: 650 }); S.text('adjusted', 1, 6.82, { align: 'center', color: 'muted', size: 11, weight: 650 });

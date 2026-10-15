@@ -314,5 +314,312 @@ For a flat patch of area $A$ in a uniform field it is $\Phi_E = EA\cos\theta$, $
         v.readout(() => `$\\Phi_E = \\int\\mathbf E\\cdot\\hat{\\mathbf n}\\,da$ = **${v.fix(st.Phi, 4)} N·m²/C** · ${st.cnt >= 0 ? '' : '−'}${Math.abs(st.cnt)} net lines cross the patch, each carrying ${v.fix(st.per, 3)} N·m²/C → ${v.fix(st.cnt * st.per, 3)} N·m²/C` + (flip.value ? ' · normal flipped: the sign reverses' : ''));
       },
     },
+    // ───────────────────────────────────────────────────────────── 1.14
+    {
+      num: '1.14',
+      kind: 'Law',
+      name: 'Gauss’s law',
+      statement: String.raw`The flux of the electric field out of any **closed** surface $S$ equals the total charge inside divided by $\varepsilon_0$:
+$$\oint_S \mathbf E\cdot d\mathbf a = \frac{Q_{\text{enc}}}{\varepsilon_0},$$
+whatever the shape and size of $S$ and wherever the charges outside it are — outside charges contribute zero net flux. A point charge lying exactly on a smooth surface contributes half its flux (the surface is then not a valid Gaussian surface for it). The law holds for time-dependent fields too, as the first of Maxwell’s equations.`,
+      idea: String.raw`For one point charge and a sphere centred on it, $E = q/4\pi\varepsilon_0r^2$ times the area $4\pi r^2$ gives $q/\varepsilon_0$, independent of $r$ — the inverse square (em-1.3) exactly cancels the growth of area. Any closed surface can be built from patches seen from the charge within small cones; each patch, tilted and at its own distance, carries the same flux as the matching piece of a sphere, because tilt and distance only change its area in the way that the field compensates. A charge outside sees every cone cross the surface twice, once in and once out, with equal and opposite flux. Superposition (em-1.4) adds the charges, and the divergence theorem turns this into a local law (em-1.15, vcalc-8.4). With any exponent other than 2 the cancellation fails and the flux depends on the surface.`,
+      caption: String.raw`The charges are long line charges seen end-on ($\lambda$ in nC/m) and the green curve is the cross-section of a closed cylinder, so the readout is the flux per metre — an exact slice of Gauss’s law in 3D; the last option uses true point charges and a sphere. Drag charges (click one to flip its sign, click empty space to add one) and the surface’s handles. The right panel slides the surface sideways: the flux is a staircase that jumps by $\lambda/\varepsilon_0$ exactly when a charge crosses the boundary. Open the surface and it stops being a staircase; move the exponent off 2 and the steps tilt, so the flux depends on where the surface is. Drop a charge onto the surface: it counts half.`,
+      scope: String.raw`Exact for electrostatic fields obeying an inverse-square law, in vacuum or (with $\mathbf D$ and free charge) in matter; for moving charges it remains true as one of Maxwell’s equations.`,
+      credit: 'Lagrange, 1773; Gauss, 1813 and 1839',
+      deps: ['em-1.13', 'em-1.3', 'em-1.4', 'vcalc-8.4'],
+      refs: ['Griffiths §2.2', 'Purcell ch. 1'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gauss%27s_law' },
+      tags: ['gauss', 'flux'],
+      viz(v) {
+        const M = v.M, C = M.CONST, KF = 1e-9 / C.eps0;
+        const s = v.stage({ x: [-6.2, 6.2], y: [-3.7, 3.7], equal: true, height: 380, axes: false, weight: 1.6 });
+        const sp = v.stage({ x: [-6, 6], y: [-1, 1], height: 380, axes: 'box', weight: 1, xlabel: 'sideways shift of the surface (cm)' });
+        const shape = v.select('surface', [{ value: 'circle', label: 'cylinder' }, { value: 'poly', label: 'prism: drag its corners' }, { value: 'open', label: 'open: one side missing' }, { value: 'sphere', label: 'sphere, point charges' }], 'poly');
+        const nexp = v.slider('force-law exponent $n$', 1.8, 2.2, 2, { step: 0.01 });
+        const init = [[-1.6, 0.5, 3], [1.0, -0.9, -2], [3.9, 1.5, 2], [-4.6, -1.9, -1], [9, 9, 0], [9, 9, 0]];
+        let Fk = null;
+        const three = () => shape.value === 'sphere';
+        /** Field in kit units: Σ q r̂ r^{1−n}/2π (line charges) or Σ q r̂ r^{−n}/4π (point charges); n = 2 gives flux = q. */
+        const fieldAt = (src, n, th) => (x, y) => {
+          let u = 0, w = 0;
+          for (const q of src) { const dx = x - q.x, dy = y - q.y, r2 = dx * dx + dy * dy; if (r2 < 1e-20) return [NaN, NaN]; const k = th ? (q.q / (2 * TAU)) * Math.pow(r2, -(n + 1) / 2) : (q.q / TAU) * Math.pow(r2, -n / 2); u += k * dx; w += k * dy; }
+          return [u, w];
+        };
+        Fk = v.fields(s, { sources: init.map(([x, y, q]) => ({ type: 'charge', x, y, q, label: '' })), F: (x, y) => fieldAt(Fk.live().filter((q) => q.q), nexp.value, three())(x, y), lineDensity: 4, lineAlpha: 0.45, lineWidth: 1.1 });
+        const H = Fk.handles;
+        const cc = s.handle(-0.6, -0.1, { color: 'green', r: 6 }), cr = s.handle(-0.6 + 2.6 * Math.cos(0.75), -0.1 + 2.6 * Math.sin(0.75), { color: 'green', r: 5 });
+        let lastC = [cc.x, cc.y]; cc.onDrag = () => { cr.x += cc.x - lastC[0]; cr.y += cc.y - lastC[1]; lastC = [cc.x, cc.y]; };
+        const ph = [[-3.3, -1.0], [-0.6, -2.5], [2.2, -1.6], [1.4, 1.9], [-1.4, 2.6], [-3.5, 1.4]].map(([x, y]) => s.handle(x, y, { color: 'green', r: 5 }));
+        s.onClick((x, y) => {
+          const X = s.X(x), Y = s.Y(y), near = (h) => h.visible !== false && Math.hypot(s.X(h.x) - X, s.Y(h.y) - Y) < 14;
+          for (let i = 0; i < H.length; i++) if (Fk.sources[i].q && near(H[i])) { Fk.setStrength(i, -Fk.sources[i].q); return; }
+          if ([cc, cr, ...ph].some(near)) return;
+          const j = Fk.sources.findIndex((q) => q.q === 0); if (j >= 0) { H[j].set(x, y); Fk.setStrength(j, 1); }
+        });
+        const fluxPoly = (pts, closed, F, src) => {
+          const sg = polyArea(pts) >= 0 ? 1 : -1, m = closed ? pts.length : pts.length - 1; let tot = 0;
+          for (let i = 0; i < m; i++) {
+            const p = pts[i], q = pts[(i + 1) % pts.length], ex = q[0] - p[0], ey = q[1] - p[1];
+            tot += sg * quadBreaks((t) => { const f = F(p[0] + t * ex, p[1] + t * ey); return f[0] * ey - f[1] * ex; }, 0, 1, src.map((c) => nearSeg(c.x, c.y, p, q).t), 1e-9);
+          }
+          return tot;
+        };
+        const fluxCircle = (cx, cy, r, F, src) => quadBreaks((a) => { const ca = Math.cos(a), sa = Math.sin(a), f = F(cx + r * ca, cy + r * sa); return (f[0] * ca + f[1] * sa) * r; }, 0, TAU, src.map((c) => { const a = Math.atan2(c.y - cy, c.x - cx); return a < 0 ? a + TAU : a; }), 1e-9);
+        /** Flux of point charges through a sphere (centre in the plane): an integral over the polar angle, u = 1 − w². */
+        const fluxSphere = (cx, cy, R, src, n) => {
+          let tot = 0;
+          for (const c of src) {
+            const D = Math.hypot(c.x - cx, c.y - cy), w0 = Math.abs(R - D) / Math.sqrt(Math.max(R * D, 1e-12));
+            const g = (w) => { const u = 1 - w * w, d2 = (R - D) ** 2 + 2 * R * D * w * w; return d2 <= 1e-30 ? 0 : ((R - D * u) / Math.pow(d2, (n + 1) / 2)) * 2 * w; };
+            tot += (c.q / 2) * R * R * quadBreaks(g, 0, Math.SQRT2, [w0 / 2, w0, 2 * w0], 1e-10, 24);
+          }
+          return tot;
+        };
+        let st = null, key = '', slide = null;
+        v.render(() => {
+          const mode = shape.value, circ = mode === 'circle' || mode === 'sphere', n = nexp.value;
+          cc.visible = cr.visible = circ; ph.forEach((h) => (h.visible = !circ));
+          H.forEach((h, i) => { h.visible = Fk.sources[i].q !== 0; h.label = Fk.sources[i].q ? `${Fk.sources[i].q > 0 ? '+' : '−'}${Math.abs(Fk.sources[i].q)}` : ''; });
+          const R = Math.max(0.3, Math.hypot(cr.x - cc.x, cr.y - cc.y)), pts = ph.map((h) => [h.x, h.y]);
+          // snap a charge that sits within 3 px of the surface exactly onto it
+          const src0 = Fk.live().filter((q) => q.q);
+          Fk.sources.forEach((q, i) => {
+            if (!q.q) return; const h = H[i], tol = 3 / s.sx;
+            if (circ) { const d = Math.hypot(h.x - cc.x, h.y - cc.y); if (Math.abs(d - R) < tol && d > 0) { h.x = cc.x + ((h.x - cc.x) * R) / d; h.y = cc.y + ((h.y - cc.y) * R) / d; } }
+            else { const m = mode === 'open' ? pts.length - 1 : pts.length; let best = null; for (let k = 0; k < m; k++) { const c = nearSeg(h.x, h.y, pts[k], pts[(k + 1) % pts.length]); if (!best || c.d < best.d) best = c; } if (best && best.d < tol) { h.x = best.x; h.y = best.y; } }
+          });
+          void src0;
+          const src = Fk.live().filter((q) => q.q), F = fieldAt(src, n, three());
+          Fk.draw();
+          // the surface, with arrows of E·n
+          const curvePts = circ ? Array.from({ length: 160 }, (_, k) => [cc.x + R * Math.cos((TAU * k) / 160), cc.y + R * Math.sin((TAU * k) / 160)]) : pts;
+          if (mode === 'open') { s.path(pts, { color: 'green', width: 2.6 }); s.line(pts[pts.length - 1][0], pts[pts.length - 1][1], pts[0][0], pts[0][1], { color: 'green', width: 1.2, dash: [3, 5], alpha: 0.6 }); }
+          else s.poly(curvePts, { color: 'green', width: 2.4, fill: 'green', fillAlpha: 0.07 });
+          const sg = polyArea(curvePts) >= 0 ? 1 : -1, samp = [];
+          const segs = mode === 'open' ? pts.length - 1 : curvePts.length;
+          let tot = 0; const lens = []; for (let k = 0; k < segs; k++) { const p = curvePts[k], q = curvePts[(k + 1) % curvePts.length]; lens.push(Math.hypot(q[0] - p[0], q[1] - p[1])); tot += lens[k]; }
+          const nA = Math.max(10, Math.min(34, Math.round((tot * s.sx) / 30)));
+          for (let j = 0; j < nA; j++) { let target = ((j + 0.5) * tot) / nA, k = 0; while (k < segs - 1 && target > lens[k]) { target -= lens[k]; k++; } const p = curvePts[k], q = curvePts[(k + 1) % curvePts.length], f = target / (lens[k] || 1); samp.push([p[0] + f * (q[0] - p[0]), p[1] + f * (q[1] - p[1]), (sg * (q[1] - p[1])) / (lens[k] || 1), (-sg * (q[0] - p[0])) / (lens[k] || 1)]); }
+          const vals = samp.map(([x, y, nx, ny]) => { const f = F(x, y); return f[0] * nx + f[1] * ny; }), mx = Math.max(1e-12, ...vals.filter(isFinite).map(Math.abs));
+          samp.forEach(([x, y, nx, ny], j) => { const val = vals[j]; if (!isFinite(val)) return; const L = 22 * Math.sqrt(Math.abs(val) / mx); if (L < 2) return; arrowPx(s, x, y, nx * Math.sign(val), ny * Math.sign(val), L, { color: val > 0 ? 'green' : 'red', width: 1.8, head: 6.5, alpha: 0.9 }); });
+          // flux and enclosed charge
+          const fl = (dx) => {
+            if (mode === 'sphere') return fluxSphere(cc.x + dx, cc.y, R, src, n);
+            if (mode === 'circle') return fluxCircle(cc.x + dx, cc.y, R, F, src);
+            return fluxPoly(pts.map((p) => [p[0] + dx, p[1]]), mode !== 'open', F, src);
+          };
+          const enc = (dx) => {
+            let qin = 0, on = 0;
+            for (const c of src) {
+              if (circ) { const d = Math.hypot(c.x - cc.x - dx, c.y - cc.y); if (Math.abs(d - R) < 1e-7) { qin += c.q / 2; on++; } else if (d < R) qin += c.q; }
+              else { const P = pts.map((p) => [p[0] + dx, p[1]]); let dm = Infinity; for (let k = 0; k < P.length; k++) dm = Math.min(dm, nearSeg(c.x, c.y, P[k], P[(k + 1) % P.length]).d); if (dm < 1e-7) { qin += c.q / 2; on++; } else if (inPoly(c.x, c.y, P)) qin += c.q; }
+            }
+            return { qin, on };
+          };
+          const Phi = fl(0), E0 = enc(0);
+          const k2 = [mode, n, R, cc.x, cc.y, ...pts.flat(), ...src.flatMap((c) => [c.x, c.y, c.q])].join('|');
+          if (k2 !== key) { key = k2; slide = []; for (let i = 0; i <= 96; i++) { const dx = -6 + (12 * i) / 96; slide.push([dx, fl(dx) * KF, mode === 'open' ? NaN : enc(dx).qin * KF]); } }
+          const unit = three() ? 'V·m' : 'V';
+          sp.setTitle(three() ? 'flux through the sphere (V·m) as it slides sideways' : 'flux per metre (V) as the surface slides sideways');
+          const all = slide.flatMap((g) => [g[1], g[2]]).filter(isFinite), lo = Math.min(0, ...all), hi = Math.max(0, ...all), pad = (hi - lo) * 0.15 + 1;
+          sp.setView([-6, 6], [lo - pad, hi + pad]);
+          sp.hline(0, { color: 'faint', width: 1 }); sp.vline(0, { color: 'gold', width: 1.2, dash: [4, 3] });
+          if (mode !== 'open') sp.path(slide.map((g) => [g[0], g[2]]), { color: 'green', width: 5, alpha: 0.3 });
+          sp.path(slide.map((g) => [g[0], g[1]]), { color: 'accent', width: 2.2 });
+          sp.dot(0, Phi * KF, { r: 6, color: 'gold' });
+          st = { Phi: Phi * KF, qin: E0.qin, on: E0.on, unit };
+        });
+        v.legend([['green', 'out of the surface ($\\mathbf E\\cdot\\hat{\\mathbf n}>0$)'], ['red', 'into it'], ['accent', 'flux, slid sideways'], ['green', '$Q_{\\text{enc}}/\\varepsilon_0$', { area: true }]]);
+        v.readout(() => {
+          const { Phi, qin, on, unit } = st, three_ = three(), qs = three_ ? 'q' : '\\lambda';
+          if (shape.value === 'open') return `flux through the open surface: ${M.si(Phi, unit)} per metre — an open surface encloses nothing, and its flux changes smoothly as charges move past the gap instead of jumping`;
+          const ok = Math.abs(Phi - qin * KF) <= 1e-6 * Math.max(1, Math.abs(Phi));
+          return `flux out of the ${three_ ? 'sphere' : 'surface'}: **${M.si(Phi, unit)}**${three_ ? '' : ' per metre'} · enclosed $${qs}_{\\text{enc}}/\\varepsilon_0$ = ${M.si(qin * KF, unit)} ($${qs}_{\\text{enc}} = ${v.fix(qin, 2)}$ ${three_ ? 'nC' : 'nC/m'})` +
+            (on ? ` · ${on} charge${on > 1 ? 's' : ''} exactly on the surface, counted as half` : '') +
+            (Math.abs(nexp.value - 2) > 1e-9 ? ` · exponent ${v.fix(nexp.value, 2)}: the two differ by ${M.si(Phi - qin * KF, unit)} — **Gauss’s law fails**` : ok ? ' · equal' : '');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.15
+    {
+      num: '1.15',
+      kind: 'Theorem',
+      name: 'Gauss’s law in differential form',
+      statement: String.raw`For a charge density $\rho$ that is continuous (or merely integrable), the electric field satisfies at every point
+$$\nabla\cdot\mathbf E = \frac{\rho}{\varepsilon_0}.$$
+Equivalently, the flux of $\mathbf E$ out of a small region around a point, divided by its volume, tends to $\rho/\varepsilon_0$ there as the region shrinks. Together with the divergence theorem this local statement is equivalent to the integral form of Gauss’s law.`,
+      idea: String.raw`Apply Gauss’s law (em-1.14) to a small box around the point: its flux is $Q_{\text{enc}}/\varepsilon_0 \approx \rho\,V/\varepsilon_0$, while by definition the flux per unit volume tends to the divergence (vcalc-3.6). Conversely, the divergence theorem (pma-10.51) turns $\int_V \nabla\cdot\mathbf E\,d\tau = \int_V \rho\,d\tau/\varepsilon_0$ for every region into the integral law. The error of the box estimate shrinks like the square of its size for a smooth density, since the first-order variation of $\rho$ across a symmetric box averages out.`,
+      caption: String.raw`Paint charge on the left (drag anywhere; choose the brush sign), or move the gold box and change its size. The density is a sum of smooth blobs, uniform along the third direction. The right map is $\varepsilon_0\nabla\cdot\mathbf E$ computed from the field alone by finite differences — it reproduces your painting. The readout compares the flux through the box divided by its area with $\rho/\varepsilon_0$ at its centre; the bottom panel shows the error falling like $h^2$ as the box shrinks.`,
+      deps: ['em-1.14', 'pma-10.51', 'vcalc-3.6'],
+      refs: ['Griffiths §2.2'],
+      tags: ['divergence', 'gauss'],
+      viz(v) {
+        const M = v.M, C = M.CONST, KD = 1e-5 / C.eps0, SIG = 0.42;
+        const sR = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, height: 290, axes: false, title: 'charge density $\\rho$ (paint here)' });
+        const sD = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, height: 290, axes: false, title: '$\\varepsilon_0\\,\\nabla\\cdot\\mathbf E$ from the field, with $\\mathbf E$' });
+        const sc = v.stage({ x: [0.02, 4], y: [1e-7, 1], xlog: true, ylog: true, height: 170, axes: 'box', full: true, xlabel: 'box side h (cm)', title: 'relative error of flux/area against $\\rho/\\varepsilon_0$ at the box centre' });
+        const brush = v.select('brush', [{ value: 'p', label: 'paint $+$' }, { value: 'm', label: 'paint $-$' }], 'p');
+        const hS = v.slider('box side $h$', 0.05, 3, 1.1, { log: true, fmt: (x) => `${x.toPrecision(2)} cm` });
+        const initBlobs = () => { const b = []; for (let k = 0; k < 9; k++) { const a = (TAU * k) / 9; b.push({ x: -1.2 + 1.5 * Math.cos(a), y: 0.1 + 1.5 * Math.sin(a), q: 1 }); } b.push({ x: 2.1, y: 0.6, q: -1.5 }, { x: 2.5, y: -0.1, q: -1.5 }, { x: 1.9, y: -0.8, q: -1.5 }); return b; };
+        let blobs = initBlobs(), ver = 0, last = null, resid = 0;
+        v.button('clear', () => { blobs = []; ver++; });
+        v.button('reset', () => { blobs = initBlobs(); ver++; });
+        const B = sR.handle(-1.2, 1.6, { color: 'gold', r: 6 });
+        sR.onDrag((x, y, phs) => {
+          if (phs === 'end') { last = null; return; }
+          if (!last || Math.hypot(x - last[0], y - last[1]) > 0.32) { if (blobs.length < 160) { blobs.push({ x, y, q: brush.value === 'p' ? 1 : -1 }); ver++; } last = [x, y]; }
+        });
+        const g2 = 2 * SIG * SIG;
+        const E = (x, y) => { let u = 0, w = 0; for (const b of blobs) { const dx = x - b.x, dy = y - b.y, r2 = dx * dx + dy * dy; const f = r2 < 1e-12 ? 1 / g2 : -Math.expm1(-r2 / g2) / r2; u += (b.q * f * dx) / TAU; w += (b.q * f * dy) / TAU; } return [u, w]; };
+        const rho = (x, y) => { let s = 0; for (const b of blobs) s += b.q * Math.exp(-((x - b.x) ** 2 + (y - b.y) ** 2) / g2); return s / (TAU * SIG * SIG); };
+        const div = (x, y, h = 0.01) => { const a = E(x + h, y), b = E(x - h, y), c = E(x, y + h), d = E(x, y - h); return (a[0] - b[0] + c[1] - d[1]) / (2 * h); };
+        const boxFlux = (cx, cy, h) => {
+          const hh = h / 2, edge = (x0, y0, x1, y1) => { const ex = x1 - x0, ey = y1 - y0; return quad((t) => { const f = E(x0 + t * ex, y0 + t * ey); return f[0] * ey - f[1] * ex; }, 0, 1, 1e-12, 16, 4); };
+          return edge(cx - hh, cy - hh, cx + hh, cy - hh) + edge(cx + hh, cy - hh, cx + hh, cy + hh) + edge(cx + hh, cy + hh, cx - hh, cy + hh) + edge(cx - hh, cy + hh, cx - hh, cy - hh);
+        };
+        let st = null;
+        v.render(() => {
+          const Pc = v.rgb('panel'), Rr = v.rgb('red'), Bb = v.rgb('blue');
+          let vmax = 1e-9; for (const b of blobs) vmax = Math.max(vmax, Math.abs(rho(b.x, b.y)));
+          const ramp = (t) => { const c = t >= 0 ? Rr : Bb, k = 0.85 * Math.min(1, Math.abs(t)); return [Pc[0] + (c[0] - Pc[0]) * k, Pc[1] + (c[1] - Pc[1]) * k, Pc[2] + (c[2] - Pc[2]) * k]; };
+          const keyT = `${ver}|${Pc.join(',')}`;
+          sR.raster((x, y) => ramp(rho(x, y) / vmax), { res: 4, key: keyT });
+          let rmax = 0;
+          sD.raster((x, y) => { const d = div(x, y); rmax = Math.max(rmax, Math.abs(d - rho(x, y))); resid = rmax / vmax; return ramp(d / vmax); }, { res: 4, key: keyT });
+          for (let x = -3.5; x <= 3.6; x += 0.7) for (let y = -2.5; y <= 2.6; y += 0.7) { const f = E(x, y), m = Math.hypot(...f); if (m > 1e-6) arrowMid(sD, x, y, f[0], f[1], Math.min(22, 7 + 60 * m), { color: 'ink', alpha: 0.45, width: 1.1, head: 5 }); }
+          const h = hS.value;
+          for (const S of [sR, sD]) S.rect(B.x - h / 2, B.y - h / 2, B.x + h / 2, B.y + h / 2, { color: 'gold', width: 2.2, fill: 'gold', fillAlpha: 0.08 });
+          const fA = boxFlux(B.x, B.y, h) / (h * h), r0 = rho(B.x, B.y);
+          // convergence
+          const pts = []; for (let k = 0; k <= 40; k++) { const hh = 0.02 * Math.pow(200, k / 40); pts.push([hh, Math.max(1e-12, Math.abs(boxFlux(B.x, B.y, hh) / (hh * hh) - r0) / vmax)]); }
+          const ref = pts.find((p) => p[0] > 0.3) || pts[0];
+          sc.fn((x) => ref[1] * (x / ref[0]) ** 2, { color: 'muted', dash: [4, 4], width: 1 });
+          sc.text('slope 2', 0.06, ref[1] * (0.06 / ref[0]) ** 2, { size: 11, color: 'muted', dy: -10 });
+          sc.path(pts, { color: 'accent', width: 2.4 });
+          sc.dot(h, Math.max(1e-12, Math.abs(fA - r0) / vmax), { r: 6, color: 'gold' });
+          st = { fA, r0, vmax };
+        });
+        v.readout(() => {
+          const { fA, r0 } = st;
+          return `flux through the box ÷ its area: ${M.si(fA * KD, 'V/m²')} · $\\rho/\\varepsilon_0$ at its centre: ${M.si(r0 * KD, 'V/m²')} ($\\rho$ = ${M.si(r0 * 1e-5, 'C/m³')}) · the finite-difference divergence matches $\\rho/\\varepsilon_0$ over the whole map to ${v.sci(Math.max(resid, 1e-12), 1).includes('times') ? '$' + v.sci(Math.max(resid, 1e-12), 1) + '$' : v.fix(resid, 5)} of the peak`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.16
+    {
+      num: '1.16',
+      kind: 'Method',
+      name: 'Gauss’s law with symmetry',
+      statement: String.raw`When symmetry forces $\mathbf E$ to be perpendicular to a surface and constant in size on it, Gauss’s law gives the field in one line: $E\cdot A = Q_{\text{enc}}/\varepsilon_0$. The three standard cases:
+(a) a spherically symmetric charge (a ball of radius $a$, total $Q$): $E = Q_{\text{enc}}(r)/4\pi\varepsilon_0r^2$, i.e. $Qr/4\pi\varepsilon_0a^3$ inside a uniform ball and $Q/4\pi\varepsilon_0r^2$ outside;
+(b) a long cylinder with charge $\lambda$ per length: $E = \lambda_{\text{enc}}(s)/2\pi\varepsilon_0 s$;
+(c) an infinite slab of thickness $2a$ and density $\rho$: $E = \rho\,\min(|z|,a)/\varepsilon_0$, away from the mid-plane.
+Without such symmetry Gauss’s law still holds but no longer determines $\mathbf E$.`,
+      idea: String.raw`Symmetry does the real work: rotating a ball about its centre leaves the charge unchanged, so the field must be radial and depend only on $r$ (a field with a tangential part would pick a direction). Then on a concentric sphere $\mathbf E\cdot\hat{\mathbf n} = E(r)$ is constant and comes out of the integral (em-1.14). Cylinders and slabs work the same way with coaxial cylinders and pillboxes, whose side walls carry no flux. Add a charge off-centre and the symmetry is gone: the flux through the sphere is still $Q_{\text{enc}}/\varepsilon_0$, but $E$ now varies over it, so dividing by the area gives only its average normal component.`,
+      caption: String.raw`Pick a ball, a long cylinder (seen in cross-section) or a slab (seen edge-on), and drag the green handle to resize the matching Gaussian surface. The arrows show the field on it, and the right panel plots $E(r)$ from Gauss’s law (green) against a **direct numerical integration of Coulomb’s law** over the charge (dots) — they agree. Now add an off-centre charge (purple, draggable): the flux still equals $Q_{\text{enc}}/\varepsilon_0$, but the orange bar shows how much $|\mathbf E|$ now varies over the surface — flux over area no longer tells you the field.`,
+      deps: ['em-1.14'],
+      refs: ['Griffiths §2.2', 'Feynman II ch. 5'],
+      tags: ['gauss', 'symmetry'],
+      viz(v) {
+        const M = v.M, C = M.CONST, k = C.ke, e0 = C.eps0;
+        const s = v.stage({ x: [-5, 5], y: [-3.7, 3.7], equal: true, height: 340, axes: false, weight: 1.15 });
+        const sp = v.stage({ x: [0, 5], y: [0, 1], height: 340, axes: 'box', weight: 1, xlabel: 'size r of the Gaussian surface (cm)', title: '$E$ on the Gaussian surface (kN/C)' });
+        const kind = v.select('', [{ value: 'ball', label: 'ball' }, { value: 'cyl', label: 'long cylinder' }, { value: 'slab', label: 'slab' }], 'ball');
+        const extra = v.toggle('add an off-centre charge', false);
+        const P = { ball: { a: 2.5, Q: 10e-9, qx: 4e-9 }, cyl: { a: 2, lam: 100e-9, lx: 60e-9 }, slab: { a: 1.4, rho: 2e-6, qx: 2e-10 } };
+        const rh = s.handle(1.6, 0, { color: 'green', r: 7, constrain: (x, y) => (kind.value === 'slab' ? [0, Math.max(0.1, Math.min(3.3, y))] : [Math.max(0.15, Math.min(4.7, x)), 0]) });
+        const xh = s.handle(2.6, 1.5, { color: 'purple', r: 7, label: "$q'$" });
+        const RP = 1.6; // pillbox radius (cm)
+        // ── symmetric fields: Gauss and direct integration (lengths in cm, results in N/C)
+        const gauss = (r) => {
+          if (kind.value === 'ball') { const { a, Q } = P.ball; return r < a ? (k * Q * r) / (a ** 3) * 1e4 : (k * Q) / (r * r) * 1e4; }
+          if (kind.value === 'cyl') { const { a, lam } = P.cyl; return r < a ? ((lam / (TAU * e0)) * r) / (a * a) * 100 : (lam / (TAU * e0 * r)) * 100; }
+          const { a, rho } = P.slab; return (rho * Math.min(r, a) * 0.01) / e0;
+        };
+        const direct = (r) => {
+          if (kind.value === 'ball') {
+            const { a, Q } = P.ball;
+            const J = (rp) => { const w0 = Math.abs(r - rp) / Math.sqrt(2 * r * rp + 1e-30); return quadBreaks((w) => { const u = 1 - w * w, d2 = (r - rp) ** 2 + 2 * r * rp * w * w; return d2 < 1e-30 ? 0 : ((r - rp * u) / Math.pow(d2, 1.5)) * 2 * w; }, 0, Math.SQRT2, [w0 / 2, w0, 2 * w0], 1e-8, 16); };
+            const I = TAU * quadBreaks((rp) => rp * rp * J(rp), 0, a, [r], 1e-7, 14);
+            return ((k * Q * I) / ((4 / 3) * Math.PI * a ** 3)) * 1e4;
+          }
+          if (kind.value === 'cyl') {
+            const { a, lam } = P.cyl, rhoS = lam / (Math.PI * (a * 0.01) ** 2);
+            const J = (rp) => { const w0 = Math.abs(r - rp) / Math.max(r, 1e-9); return 2 * quadBreaks((ph) => (r - rp * Math.cos(ph)) / (r * r + rp * rp - 2 * r * rp * Math.cos(ph)), 0, Math.PI, [w0 / 2, w0, 2 * w0], 1e-8, 16); };
+            return (rhoS / (TAU * e0)) * quadBreaks((rp) => rp * J(rp), 0, a, [r], 1e-7, 14) * 0.01;
+          }
+          const { a, rho } = P.slab; return (rho / (2 * e0)) * quadBreaks((zp) => Math.sign(r - zp), -a, a, [r], 1e-9) * 0.01;
+        };
+        // ── the extra charge’s field (N/C) at a 3D point (cm); for the cylinder a parallel line charge
+        const extraE = (p) => {
+          if (kind.value === 'cyl') { const dx = p[0] - xh.x, dy = p[1] - xh.y, r2 = (dx * dx + dy * dy) * 1e-4, c = (P.cyl.lx / (TAU * e0 * r2)) * 0.01; return [c * dx, c * dy, 0]; }
+          const qx = kind.value === 'ball' ? P.ball.qx : P.slab.qx, dx = p[0] - xh.x, dy = p[1] - xh.y, dz = p[2], r = Math.hypot(dx, dy, dz) * 0.01, c = ((k * qx) / (r * r * r)) * 0.01;
+          return [c * dx, c * dy, c * dz];
+        };
+        let cache = { key: '', pts: [] }, prevKind = kind.value, st = null;
+        v.render(() => {
+          const K = kind.value, slab = K === 'slab';
+          if (K !== prevKind) { const r0 = slab ? rh.x : rh.y; if (slab) rh.set(0, Math.min(3.2, Math.max(0.3, r0 || 1.8))); else rh.set(Math.min(4.6, Math.max(0.3, r0 || 1.6)), 0); prevKind = K; }
+          xh.visible = extra.value;
+          const r = slab ? rh.y : rh.x, a = P[K].a;
+          if (cache.key !== K) { cache = { key: K, pts: [] }; const rmax = slab ? 3.4 : 4.8; for (let i = 1; i <= 16; i++) { const rr = (rmax * i) / 16; cache.pts.push([rr, direct(rr) / 1e3]); } }
+          // drawing the charge distribution and the Gaussian surface
+          if (slab) {
+            s.rect(-5.2, -a, 5.2, a, { fill: 'red', fillAlpha: 0.2, stroke: false });
+            for (let x = -4.5; x <= 4.6; x += 0.9) for (const y of [-a / 2, 0, a / 2]) s.text('+', x, y, { align: 'center', size: 11, color: 'red', halo: false });
+            s.rect(-RP, -r, RP, r, { color: 'green', width: 2.2, dash: [6, 4], fill: 'green', fillAlpha: 0.06 });
+          } else {
+            s.circle(0, 0, a, { fill: 'red', fillAlpha: 0.2, color: 'red', width: 1.4 });
+            for (let rr = 0.6; rr < a; rr += 0.8) for (let j = 0; j < Math.round(rr * 4); j++) { const t = (TAU * j) / Math.round(rr * 4); s.text('+', rr * Math.cos(t), rr * Math.sin(t), { align: 'center', size: 11, color: 'red', halo: false }); }
+            s.circle(0, 0, r, { color: 'green', width: 2.2, dash: [6, 4] });
+            if (K === 'cyl') s.corner('cross-section of a long cylinder, λ = 100 nC/m', 'tl', { size: 11 }); else s.corner('ball: Q = 10 nC, radius 2.5 cm', 'tl', { size: 11 });
+          }
+          if (slab) s.corner('slab: ρ = 2 µC/m³, 2.8 cm thick (edge-on)', 'tl', { size: 11 });
+          // field on the surface: symmetric part + extra charge
+          const Es = gauss(r), surf = [];
+          if (slab) { for (const zs of [r, -r]) for (let j = -2; j <= 2; j++) surf.push({ p: [j * 0.75, zs, 0], n: [0, Math.sign(zs), 0] }); for (const xs of [RP, -RP]) for (const zz of [-0.5, 0.5]) surf.push({ p: [xs, zz * r, 0], n: [Math.sign(xs), 0, 0], side: true }); }
+          else for (let j = 0; j < 20; j++) { const t = (TAU * j) / 20; surf.push({ p: [r * Math.cos(t), r * Math.sin(t), 0], n: [Math.cos(t), Math.sin(t), 0] }); }
+          const tot = (q) => { const sym = slab ? [0, Math.sign(q.p[1]) * (q.side ? 0 : 1) * Es, 0] : q.n.map((c) => c * Es); if (slab && q.side) { const zz = q.p[1]; sym[1] = Math.sign(zz) * gauss(Math.abs(zz)); } const ex = extra.value ? extraE(q.p) : [0, 0, 0]; return [sym[0] + ex[0], sym[1] + ex[1], sym[2] + ex[2]]; };
+          const Eref = Math.max(...cache.pts.map((g) => g[1])) * 1e3;
+          for (const q of surf) { const f = tot(q), m = Math.hypot(f[0], f[1]); if (m > Eref * 1e-3) arrowPx(s, q.p[0], q.p[1], f[0], f[1], Math.min(48, 40 * Math.sqrt(m / Eref)), { color: (f[0] * q.n[0] + f[1] * q.n[1]) >= 0 ? 'green' : 'red', width: 2, head: 7 }); }
+          if (extra.value) s.text(kind.value === 'cyl' ? 'λ′ = 60 nC/m' : kind.value === 'ball' ? 'q′ = 4 nC' : 'q′ = 0.2 nC', xh.x, xh.y - 0.5, { align: 'center', size: 11, color: 'purple' });
+          // |E| over the whole Gaussian surface (3D samples) and the flux
+          let lo = Infinity, hi = 0, flux = 0, area = 0, qenc = 0;
+          if (K === 'ball') {
+            for (let i = 0; i < 24; i++) for (let j = 0; j < 48; j++) { const th = (Math.PI * (i + 0.5)) / 24, phi = (TAU * j) / 48, n3 = [Math.sin(th) * Math.cos(phi), Math.sin(th) * Math.sin(phi), Math.cos(th)], p = n3.map((c) => c * r), ex = extra.value ? extraE(p) : [0, 0, 0], m = Math.hypot(Es * n3[0] + ex[0], Es * n3[1] + ex[1], Es * n3[2] + ex[2]); lo = Math.min(lo, m); hi = Math.max(hi, m); }
+            area = 4 * Math.PI * (r * 0.01) ** 2; flux = Es * area; qenc = P.ball.Q * Math.min(1, (r / a) ** 3);
+            if (extra.value) { const D = Math.hypot(xh.x, xh.y), w0 = Math.abs(r - D) / Math.sqrt(Math.max(r * D, 1e-12)); flux += k * P.ball.qx * TAU * r * r * quadBreaks((w) => { const u = 1 - w * w, d2 = (r - D) ** 2 + 2 * r * D * w * w; return d2 < 1e-30 ? 0 : ((r - D * u) / Math.pow(d2, 1.5)) * 2 * w; }, 0, Math.SQRT2, [w0 / 2, w0, 2 * w0], 1e-10, 24); if (D < r) qenc += P.ball.qx; }
+          } else if (K === 'cyl') {
+            for (let j = 0; j < 180; j++) { const t = (TAU * j) / 180, n3 = [Math.cos(t), Math.sin(t), 0], ex = extra.value ? extraE(n3.map((c) => c * r)) : [0, 0, 0], m = Math.hypot(Es * n3[0] + ex[0], Es * n3[1] + ex[1]); lo = Math.min(lo, m); hi = Math.max(hi, m); }
+            area = TAU * r * 0.01; flux = Es * area; qenc = P.cyl.lam * Math.min(1, (r / a) ** 2);
+            if (extra.value) { flux += quad((t) => { const n3 = [Math.cos(t), Math.sin(t), 0], ex = extraE(n3.map((c) => c * r)); return (ex[0] * n3[0] + ex[1] * n3[1]) * r * 0.01; }, 0, TAU, 1e-6, 20, 32); if (Math.hypot(xh.x, xh.y) < r) qenc += P.cyl.lx; }
+          } else {
+            for (const zs of [r, -r]) for (let i = 0; i < 8; i++) for (let j = 0; j < 24; j++) { const rr = (RP * (i + 0.5)) / 8, t = (TAU * j) / 24, p = [rr * Math.cos(t), zs, rr * Math.sin(t)], ex = extra.value ? extraE([p[0], p[1], p[2]]) : [0, 0, 0], m = Math.hypot(ex[0], Math.sign(zs) * Es + ex[1], ex[2]); lo = Math.min(lo, m); hi = Math.max(hi, m); }
+            area = 2 * Math.PI * (RP * 0.01) ** 2; flux = Es * area; qenc = P.slab.rho * Math.PI * (RP * 0.01) ** 2 * 2 * Math.min(r, a) * 0.01;
+            if (extra.value) {
+              // the point charge’s flux out of the pillbox: two faces and the side wall, by nested quadrature
+              const face = (zs) => quad((rr) => quad((t) => { const p = [rr * Math.cos(t), zs, rr * Math.sin(t)], ex = extraE(p); return ex[1] * Math.sign(zs) * rr * 1e-4; }, 0, TAU, 1e-9, 12, 8), 0, RP, 1e-8, 12, 8);
+              const side = quad((zz) => quad((t) => { const p = [RP * Math.cos(t), zz, RP * Math.sin(t)], ex = extraE(p); return (ex[0] * Math.cos(t) + ex[2] * Math.sin(t)) * RP * 1e-4; }, 0, TAU, 1e-9, 12, 8), -r, r, 1e-8, 12, 8);
+              flux += face(r) + face(-r) + side; if (Math.abs(xh.x) < RP && Math.abs(xh.y) < r) qenc += P.slab.qx;
+            }
+          }
+          // the plot
+          const rmax = slab ? 3.4 : 4.8, ymax = Math.max(Eref, hi) / 1e3 * 1.25;
+          sp.setView([0, rmax], [0, ymax]);
+          sp.vline(a, { color: 'red', dash: [3, 4], width: 1, alpha: 0.6 }); sp.text('edge of the charge', a, ymax * 0.96, { size: 11, color: 'red', dx: 5, baseline: 'top' });
+          sp.fn((x) => gauss(x) / 1e3, { color: 'green', width: 2.4, domain: [0.01, rmax] });
+          sp.dots(cache.pts, { r: 4, color: 'accent' });
+          if (extra.value) { sp.line(r, lo / 1e3, r, hi / 1e3, { color: 'orange', width: 7, alpha: 0.55 }); }
+          sp.dot(r, flux / area / 1e3, { r: 6, color: 'gold' });
+          st = { r, Es, flux, qenc, lo, hi, area };
+        });
+        v.legend([['green', 'Gauss: $E = Q_{\\text{enc}}/\\varepsilon_0A$'], ['accent', 'direct integration of Coulomb’s law', { dot: true }], ['gold', 'flux ÷ area', { dot: true }], ['orange', 'range of $|\\mathbf E|$ over the surface', { area: true }]]);
+        v.readout(() => {
+          const { r, Es, flux, qenc, lo, hi, area } = st, unit = kind.value === 'cyl' ? 'V' : 'V·m';
+          const base = `$r = ${v.fix(r, 2)}$ cm: Gauss gives ${M.si(Es, 'N/C')}, direct integration ${M.si(direct(r), 'N/C')} · flux ${M.si(flux, unit)}${kind.value === 'cyl' ? ' per metre' : ''} $= Q_{\\text{enc}}/\\varepsilon_0$ = ${M.si(qenc / e0, unit)}`;
+          return extra.value ? `${base} · but $|\\mathbf E|$ on the surface now ranges from ${M.si(lo, 'N/C')} to ${M.si(hi, 'N/C')}: flux ÷ area = ${M.si(flux / area, 'N/C')} is only an average — **the shortcut fails without symmetry**` : base;
+        });
+      },
+    },
   ],
 };

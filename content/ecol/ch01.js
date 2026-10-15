@@ -48,11 +48,11 @@ A place is suitable only if its environment lies inside the hypervolume on **eve
         const M = v.M, rng = v.rng(11), N = 420, sites = [];
         for (let i = 0; i < N; i++) {
           const T = rng.uniform(-4, 34);
-          const W = M.clamp(72 - 1.25 * (T - 15) + 17 * rng.normal(), 3, 98);
+          const W = 100 / (1 + Math.exp(-(0.75 - 0.075 * (T - 15) + 0.85 * rng.normal())));
           const pH = M.clamp(7.7 - 0.028 * W + 0.7 * rng.normal(), 3.8, 9);
           sites.push({ T, W, pH });
         }
-        const A = v.stage({ x: [-5, 35], y: [0, 100], height: 350, axes: 'box', xlabel: 'temperature (°C)', ylabel: 'moisture (%)', title: 'two axes' });
+        const A = v.stage({ x: [-5, 35], y: [0, 100], height: 350, axes: 'box', title: 'two axes: temperature (°C, across) × moisture (%, up)' });
         const B = v.stage({ x: [-1.75, 1.75], y: [-1.6, 1.6], equal: true, axes: false, height: 350, title: 'three axes: soil pH added' });
         const sc = v.scene3(B, { yaw: -0.72, pitch: 0.36, axes: false });
         const h1 = A.handle(11, 30, { color: 'accent' }), h2 = A.handle(27, 78, { color: 'accent' });
@@ -123,22 +123,24 @@ where $S_i$ is the supply of resource $i$ and $f_i \le 1$ the growth that resour
         v.render(() => {
           const S = H.map((h) => h.y), G = growth(S), lim = M.argmin(S);
           // barrel
-          A.rect(-0.47, 0, 4.47, Math.min(G, Math.min(...S)), { fill: 'accent', fillAlpha: 0.32, stroke: false });
-          S.forEach((s, i) => A.rect(i - 0.42, 0, i + 0.42, s, { fill: i === lim ? 'red' : 'orange', fillAlpha: i === lim ? 0.28 : 0.2, color: i === lim ? 'red' : 'orange', width: 1.4 }));
-          A.rect(-0.47, 0, 4.47, Math.min(G, Math.min(...S)), { fill: 'accent', fillAlpha: 0.18, stroke: false });
+          S.forEach((s, i) => A.rect(i - 0.42, 0, i + 0.42, s, { fill: i === lim ? 'red' : 'orange', fillAlpha: i === lim ? 0.22 : 0.16, color: i === lim ? 'red' : 'orange', width: 1.4 }));
+          const wl = Math.min(G, Math.min(...S));
+          A.rect(-0.47, 0, 4.47, wl, { fill: 'accent', fillAlpha: 0.3, stroke: false });
+          A.line(-0.47, wl, 4.47, wl, { color: 'accent', width: 2 });
           A.hline(1, { color: 'muted', dash: [4, 4], width: 1 });
           A.text('need met', 4.5, 1, { color: 'muted', size: 10.5, align: 'right', dy: -8 });
           for (const y of [0.18, 0.62]) A.line(-0.47, y, 4.47, y, { color: 'ink', width: 1.6, alpha: 0.55 });
           A.line(-0.47, 0, 4.47, 0, { color: 'ink', width: 2 });
-          if (mode.value === 'min') A.arrow(lim + 0.05, S[lim] + 0.02, lim + 0.42, S[lim] - 0.17, { color: 'accent', width: 1.6, head: 6 });
+          if (mode.value === 'min') A.path([[lim - 0.3, S[lim]], [lim + 0.05, S[lim] + 0.03], [lim + 0.33, S[lim] + 0.005], [lim + 0.38, S[lim] - 0.2]], { color: 'accent', width: 3, alpha: 0.75 });
           NAMES.forEach((n, i) => A.text(n, i, -0.1, { align: 'center', color: i === lim ? 'red' : 'ink', weight: 600, size: 12.5 }));
-          A.text(`growth ${Math.round(100 * G)} %`, 2, Math.max(0.06, G / 2), { align: 'center', color: 'accent', weight: 700, size: 13 });
+          const tall = M.argmax(S);
+          A.text(`growth ${Math.round(100 * G)} %`, tall, Math.max(0.07, Math.min(wl, 1) / 2), { align: 'center', color: 'accent', weight: 700, size: 13 });
           // response to one resource
           const j = +vary.value, others = S.filter((_, i) => i !== j);
           const fL = (x) => liebig([x, ...others]), fM = (x) => mult([x, ...others]);
           B.fn(fM, { color: 'orange', width: mode.value === 'mult' ? 2.8 : 1.6, dash: mode.value === 'mult' ? null : [5, 4] });
           B.fn(fL, { color: 'accent', width: mode.value === 'min' ? 2.8 : 1.6, dash: mode.value === 'min' ? null : [5, 4] });
-          B.vline(S[j], { color: 'gold', dash: [3, 4] });
+          B.line(S[j], 0, S[j], growth(S), { color: 'gold', dash: [3, 4], width: 1.2 });
           B.dot(S[j], growth(S), { color: 'gold', r: 5 });
           const ceil = Math.min(1, ...others);
           B.text(`ceiling from ${FULL[S.indexOf(ceil)] || 'need'}: ${Math.round(100 * ceil)} %`, 1.58, ceil, { align: 'right', dy: -9, color: 'accent', size: 11 });
@@ -171,9 +173,9 @@ where $S_i$ is the supply of resource $i$ and $f_i \le 1$ the growth that resour
           { name: 'growth', color: 'orange', opt: 26, sd: 4.6, ct: 35.5 },
           { name: 'reproduction', color: 'purple', opt: 24.5, sd: 2.8, ct: 30.5 },
         ];
-        const A = v.stage({ x: [-6, 45], y: [-0.33, 1.1], axes: 'box', height: 340, xlabel: 'temperature (°C)', ylabel: 'performance', yticks: [0, 0.25, 0.5, 0.75, 1] });
-        const B = v.stage({ x: [0, 70], y: [-6, 36], axes: 'box', height: 340, xlabel: 'latitude (°)', ylabel: 'summer temperature (°C)' });
-        const thr = A.handle(-3, 0.5, { color: 'gold', constrain: (x, y) => [-3, v.M.clamp(y, 0.05, 0.95)] });
+        const A = v.stage({ x: [-6, 45], y: [-0.33, 1.1], axes: 'box', height: 340, yticks: [0, 0.25, 0.5, 0.75, 1], title: 'performance against temperature (°C)' });
+        const B = v.stage({ x: [0, 70], y: [-6, 36], axes: 'box', height: 340, title: 'summer temperature (°C) against latitude (°)' });
+        const thr = A.handle(42, 0.5, { color: 'gold', constrain: (x, y) => [42, v.M.clamp(y, 0.05, 0.95)] });
         const dT = v.slider('warming (°C)', 0, 4, 0, { step: 0.1 });
         const Tlat = (phi, w) => 31 - 0.42 * phi + w;
         const latOf = (T, w) => (31 + w - T) / 0.42;
@@ -181,12 +183,12 @@ where $S_i$ is the supply of resource $i$ and $f_i \le 1$ the growth that resour
         v.render(() => {
           const t = thr.y, R = PROC.map((p) => tpcRange(p, t));
           A.hline(t, { color: 'gold', dash: [5, 4], width: 1.4 });
-          A.text(`needed: ${t.toFixed(2)}`, -2, t, { color: 'gold', dx: 6, dy: -9, size: 11 });
+          A.text(`needed: ${t.toFixed(2)}`, 41, t, { color: 'gold', align: 'right', dy: -10, size: 11 });
           PROC.forEach((p, k) => {
             A.fn((T) => tpc(T, p), { color: p.color, width: 2.4, fill: p.color, fillAlpha: 0.06, base: 0 });
             const y = -0.08 - 0.08 * k, [a, b] = R[k];
             A.line(Math.max(a, -6), y, b, y, { color: p.color, width: 6, cap: 'butt' });
-            A.text(p.name, Math.min(b, 44) + 0.6, y, { color: p.color, size: 11, weight: 600 });
+            A.text(p.name, Math.max(a, -6) - 0.6, y, { color: p.color, size: 11, weight: 600, align: 'right' });
           });
           A.vband(R[2][0], R[2][1], { color: 'green', alpha: 0.08 });
           // latitude gradient
@@ -197,6 +199,7 @@ where $S_i$ is the supply of resource $i$ and $f_i \le 1$ the growth that resour
           for (let x = 0; x < 70; x += 0.5) { const T0 = Tlat(x, w), T1 = Tlat(x + 0.5, w), k = levelAt((T0 + T1) / 2); B.line(x, T0, x + 0.5, T1, { color: cols[k + 1], width: k < 0 ? 1.6 : 4.5, cap: 'butt' }); }
           const lat = (T) => v.M.clamp(latOf(T, w), 0, 70);
           const breed = [lat(R[2][1]), lat(R[2][0])], surv = [lat(R[0][1]), lat(R[0][0])];
+          if (surv[1] > breed[1] + 4) B.text('adults survive, cannot breed', (breed[1] + surv[1]) / 2, Tlat((breed[1] + surv[1]) / 2, w), { color: 'teal', size: 10.5, dx: 6, dy: -12, align: 'left' });
           if (breed[1] > breed[0]) {
             B.vband(breed[0], breed[1], { color: 'green', alpha: 0.12 });
             B.text('breeding range', (breed[0] + breed[1]) / 2, 33.5, { align: 'center', color: 'green', weight: 600, size: 11.5 });
@@ -241,7 +244,7 @@ On log–log axes the power law is a straight line whose slope is the **scaling 
         const trait = v.select('trait', [{ value: 'bmr', label: 'metabolic rate' }, { value: 'life', label: 'lifespan' }, { value: 'gest', label: 'gestation' }, { value: 'mat', label: 'maturity' }, { value: 'home', label: 'home range' }, { value: 'dens', label: 'density' }], 'bmr');
         const lin = v.toggle('linear axes', false);
         const s = v.stage({ x: [1e-3, 3e5], y: [1e-2, 1e3], xlog: true, ylog: true, height: 390, full: true, axes: 'box', hover: true, xlabel: 'body mass (kg)' });
-        const SHOW = ['Sorex araneus', 'Mus musculus', 'Homo sapiens', 'Elephas maximus', 'Balaenoptera musculus', 'Canis lupus'];
+        const SHOW = [['Sorex araneus', 'common shrew', 'nw'], ['Mus musculus', 'house mouse', 'se'], ['Homo sapiens', 'human', 'se'], ['Elephas maximus', 'Asian elephant', 'nw'], ['Balaenoptera musculus', 'blue whale', 'nw'], ['Canis lupus', 'wolf', 'se']];
         let info = null, lastKey = '';
         v.render(() => {
           const t = T[trait.value], recs = R.filter((r) => t.get(r)), P = recs.map((r) => t.get(r));
@@ -251,7 +254,7 @@ On log–log axes the power law is a straight line whose slope is the **scaling 
           if (key !== lastKey) {
             lastKey = key;
             if (lin.value) s.setScale({ xlog: false, ylog: false, x: [0, xhi * 1.04], y: [0, yhi * 1.06] });
-            else s.setScale({ xlog: true, ylog: true, x: [1e-3, 3e5], y: [ylo / 2.5, yhi * 2.5] });
+            else s.setScale({ xlog: true, ylog: true, x: [Math.min(...xs) / 2, xhi * 2.5], y: [ylo / 2.5, yhi * 2.5] });
             s.setLabels('body mass (kg)', t.lab);
           }
           const hits = scatterGroups(s, recs, (r) => t.get(r)[0], (r) => t.get(r)[1], { r: lin.value ? 2.2 : 2.6 });
@@ -262,9 +265,9 @@ On log–log axes the power law is a straight line whose slope is the **scaling 
             s.fn(F.f, { color: 'accent', width: 3, domain: [x0, x1] });
           });
           if (!lin.value) {
-            for (const nm of SHOW) {
+            for (const [nm, lab, pos] of SHOW) {
               const r = find(recs, nm); if (!r) continue; const [x, y] = t.get(r);
-              s.dot(x, y, { r: 3.6, color: 'ink', hollow: true, label: nm.split(' ')[0] === 'Homo' ? 'human' : nm, labelPos: 'se', labelColor: 'muted', math: false, labelSize: 10.5 });
+              s.dot(x, y, { r: 3.6, color: 'ink', hollow: true, label: lab, labelPos: pos, labelColor: 'ink', math: false, labelSize: 11 });
             }
             s.text(`slope ${F.slope.toFixed(3)}`, x1, F.f(x1), { color: 'accent', align: 'right', dy: t.ref < 0 ? 14 : -12, weight: 700, size: 12 });
           }
@@ -296,7 +299,7 @@ $$B \approx B_0\,M^{3/4},$$
 so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gram of a large animal burns far less than a gram of a small one ($B/M\propto M^{-1/4}$). For placental mammals $B_0$ is roughly 3.4 W at $M = 1$ kg (about 70 kcal per day). The rival "surface law" predicts the exponent $2/3$, from heat loss through a surface that grows as $M^{2/3}$.`,
       scope: String.raw`An empirical regularity across species of one broad group (mammals, birds, fish, …), each with its own $B_0$; within a species or over narrow size ranges the exponent varies widely. For mammals the fitted exponent depends on the data and the method: compilations give values between about 0.67 (White & Seymour 2003, 619 species) and 0.75, and the log–log relation is slightly curved, steeper for large mammals than for small ones.`,
       idea: String.raw`Kleiber (1932, ecol-1.13) found that $B/W^{3/4}$ was more nearly constant across animals from rats to steers than $B$ per unit body surface; Brody and others extended the "mouse-to-elephant curve". The 2/3 surface law assumes heat loss sets the rate, but metabolic rates measured in thermoneutral conditions are not set by heat loss; the 3/4 exponent was later explained (contentiously) by the geometry of resource-distribution networks (1.6). On this data set the overall exponent lies between the two candidates, and fitting small and large mammals separately gives different answers — evidence of curvature that a single power law hides.`,
-      caption: String.raw`Real data: basal metabolic rate of 573 mammal species from PanTHERIA (oxygen consumption converted at 20.1 J per mL O₂), plotted against the mass of the animals measured. Drag the two handles on the bottom edge to choose which masses are fitted: the blue line is the least-squares fit inside the window, and the dashed lines are the best lines with the slope forced to 2/3 (orange) and 3/4 (green). Fit only shrews and mice and the exponent drops near 2/3; fit only the large mammals and it climbs past 3/4. The right panel makes this systematic: the exponent fitted in a sliding window 1.5 decades wide, with its 95 % band. Toggle **per kilogram** to see the same law as a falling mass-specific rate.`,
+      caption: String.raw`Real data: basal metabolic rate of 572 mammal species from PanTHERIA (oxygen consumption converted at 20.1 J per mL O₂; one record that is evidently 1000× too high is left out), plotted against the mass of the animals measured. Drag the two handles on the bottom edge to choose which masses are fitted: the blue line is the least-squares fit inside the window, and the dashed lines are the best lines with the slope forced to 2/3 (orange) and 3/4 (green). Fit only shrews and mice and the exponent drops near 2/3; fit only the large mammals and it climbs past 3/4. The right panel makes this systematic: the exponent fitted in a sliding window 1.5 decades wide, with its 95 % band. Toggle **per kilogram** to see the same law as a falling mass-specific rate.`,
       deps: ['ecol-1.4'],
       see: ['physio-9.13', 'ecol-1.13'],
       refs: ['Brown et al. 2004'],
@@ -309,13 +312,13 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
         const A = v.stage({ x: [1.5e-3, 2e3], y: [0.03, 3000], xlog: true, ylog: true, height: 360, weight: 1.35, axes: 'box', hover: true, xlabel: 'body mass (kg)', ylabel: 'basal metabolic rate (W)' });
         const B = v.stage({ x: [5e-3, 300], y: [0.35, 1.15], xlog: true, height: 360, weight: 1, axes: 'box', xlabel: 'centre of a 1.5-decade window (kg)', ylabel: 'local exponent', title: 'exponent fitted in a sliding window' });
         const yb = () => (perkg.value ? 0.12 : 0.045);
-        const hL = A.handle(0.004, 0.045, { color: 'gold', constrain: (x) => [M.clamp(x, 2e-3, 1e3), yb()] });
+        const hL = A.handle(0.0035, 0.045, { color: 'gold', constrain: (x) => [M.clamp(x, 2e-3, 1e3), yb()] });
         const hR = A.handle(420, 0.045, { color: 'gold', constrain: (x) => [M.clamp(x, 2e-3, 1e3), yb()] });
         // sliding-window exponents (computed once)
         const LX = X.map(Math.log10), LY = Y.map(Math.log10), slide = [];
         for (let c = -2.2; c <= 2.45; c += 0.05) {
           const idx = LX.map((x, i) => (Math.abs(x - c) <= 0.75 ? i : -1)).filter((i) => i >= 0);
-          if (idx.length < 15) continue;
+          if (idx.length < 25) continue;
           const F = logFit(M, idx.map((i) => X[i]), idx.map((i) => Y[i]));
           slide.push([10 ** c, F.slope, F.lo, F.hi, idx.length]);
         }
@@ -325,7 +328,7 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
           if (pk !== lastPk) { lastPk = pk; A.setView(null, pk ? [0.4, 300] : [0.03, 3000]); A.setLabels(undefined, pk ? 'metabolic rate per kg (W/kg)' : 'basal metabolic rate (W)'); hL.set(hL.x, yb()); hR.set(hR.x, yb()); }
           const yv = (i) => (pk ? Y[i] / X[i] : Y[i]);
           const a = Math.min(hL.x, hR.x), b = Math.max(hL.x, hR.x);
-          A.vband(a, b, { color: 'gold', alpha: 0.07 });
+          A.vband(A.xr[0], a, { color: 'grid', alpha: 0.5 }); A.vband(b, A.xr[1], { color: 'grid', alpha: 0.5 });
           const inW = X.map((x, i) => (x >= a && x <= b ? i : -1)).filter((i) => i >= 0);
           const hits = scatterGroups(A, R, (r) => r.bm / 1000, (r) => (pk ? bmrW(r) / (r.bm / 1000) : bmrW(r)), { r: 2.4, alpha: 0.6 });
           let F = null, f23 = null, f34 = null;
@@ -370,9 +373,9 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
       statement: String.raw`Model an organism's circulatory system as a hierarchical branching network of $N$ levels, each vessel splitting into $n$ daughters, with three assumptions: (i) the network is **space-filling**, serving every part of the body, so lengths shrink by $\gamma = l_{k+1}/l_k = n^{-1/3}$; (ii) the terminal units (capillaries) are the same size in every organism; (iii) the energy spent pumping blood is minimized, which for large pulsatile vessels makes the network **area-preserving**, $\beta = r_{k+1}/r_k = n^{-1/2}$. Then the number of capillaries $N_c = n^N$, which sets the metabolic rate $B$, and the blood volume $V_b$, which is proportional to body mass $M$, satisfy
 $$N_c \propto V_b^{\,a},\qquad a = \frac{\ln n}{-\ln(\beta^2\gamma)} \;\longrightarrow\; \frac{\ln n}{\tfrac43\ln n} = \frac34\quad(N\to\infty),$$
 so $B \propto M^{3/4}$. With Poiseuille flow throughout (Murray's cube law, $\beta = n^{-1/3}$) the same calculation gives $a \to 1$.`,
-      scope: String.raw`A model, not a derivation from first principles: real networks mix area-preserving arteries with Murray-like small vessels, finite networks give exponents above 3/4 for small animals, and the assumptions (minimal energy, invariant capillaries, $V_b\propto M$) have been disputed. Plants and single cells need analogous but different networks.`,
+      scope: String.raw`A model, not a derivation from first principles: real networks mix area-preserving arteries with Murray-like small vessels, finite networks do not give exactly 3/4 (the pure model approaches it from below, a model with small Murray-like vessels from above), and the assumptions (minimal energy, invariant capillaries, $V_b\propto M$) have been disputed. Plants and single cells need analogous but different networks.`,
       idea: String.raw`Count from the capillaries up. Each level up multiplies the number of vessels by $1/n$, the volume of one vessel by $(\beta^2\gamma)^{-1}$, so the volume carried by a whole level changes by the factor $q^{-1}$ with $q = n\beta^2\gamma$. For the WBE ratios $q = n^{-1/3} < 1$, the big vessels dominate and $V_b \approx \text{const}\cdot N_c\,n^{N/3} = \text{const}\cdot N_c^{4/3}$: blood volume grows faster than the capillary count, so metabolism, set by the capillaries, grows as the 3/4 power of the volume. Blood volume really is proportional to body mass across mammals (Stahl 1967 found $65.6\,M^{1.02}$ mL), so $B\propto M^{3/4}$. If $q = 1$ (Murray's law, or no space-filling with $\gamma = 1$) every level holds the same volume, $V_b\propto N_c\,N$, and the exponent tends to 1.`,
-      caption: String.raw`Left: the network grown to the number of levels set by the slider, vessel widths drawn to scale (red: area-preserving levels, purple: Murray levels, green dots: capillaries). Right: capillary count against blood volume (in capillary volumes) for networks of every size up to 30 levels, on log–log axes, with the network on the left ringed. The readout gives the local exponent between neighbouring sizes; it creeps down toward 3/4 as the network grows. Switch the vessel rule to Murray's cube law, or switch off space-filling, and the exponent heads to 1 instead.`,
+      caption: String.raw`Left: the network grown to the number of levels set by the slider, vessel widths drawn to scale (red: area-preserving levels, purple: Murray levels, green dots: capillaries). Right: capillary count against blood volume (in capillary volumes) for networks of every size up to 30 levels, on log–log axes, with the network on the left ringed. The readout gives the local exponent between neighbouring sizes. In the pure area-preserving network it climbs toward 3/4 from below as the network grows; add three Murray-law levels next to the capillaries, as in real circulations, and it falls toward 3/4 from above instead — the opposite of the trend in the mammal data of 1.5, where small species have the smaller exponent. Switch to Murray's cube law throughout, or switch off space-filling, and the exponent heads to 1.`,
       deps: ['ecol-1.5', 'mathbio-10.11'],
       refs: ['Brown et al. 2004'],
       tags: ['metabolism', 'networks', 'scaling'],
@@ -407,7 +410,7 @@ so $B \propto M^{3/4}$. With Poiseuille flow throughout (Murray's cube law, $\be
             const len = T.l[k] * sc * (k === 0 ? 0.8 : 1), x2 = x + len * Math.sin(th), y2 = y + len * Math.cos(th);
             A.line(x, y, x2, y2, { color: T.mur[k] ? 'purple' : 'red', width: Math.max(0.7, wmax * T.r[k]), alpha: 0.9 });
             if (k === N) { tips.push([x2, y2]); return; }
-            const a = ang0 * 0.86 ** k;
+            const a = ang0 * 0.8 ** k;
             for (const s of spread) draw(k + 1, x2, y2, th + s * a);
           };
           draw(0, 0, -1, 0);
@@ -447,7 +450,7 @@ $$B = b_0\,M^{3/4}\,e^{-E/kT},$$
 with $T$ the body temperature in kelvin, $k = 8.617\times10^{-5}$ eV/K Boltzmann's constant and $E$ an average **activation energy** of metabolism. Plotting the mass-corrected rate $\ln(B\,M^{-3/4})$ against $1/kT$ gives a straight line of slope $-E$. Across unicells, plants, invertebrates, fish, amphibians, reptiles and (hibernating) endotherms, Gillooly et al. (2001) found a common slope near $E\approx 0.6$–$0.7$ eV (0.69 eV, 95 % CI 0.66–0.73, in the analysis reproduced by Brown et al. 2004). With $E = 0.65$ eV, warming from 20 to 30 °C multiplies metabolic rate by about 2.4 ($Q_{10}\approx 2.4$).`,
       scope: String.raw`Holds over the range of normal activity, roughly 0–40 °C; above the optimum rates collapse (1.3). Activation energies of individual traits and species vary widely (Dell et al. 2011 found a right-skewed distribution with median 0.55 eV across 1 072 thermal responses), so 0.65 eV is a central tendency, not a constant of nature.`,
       idea: String.raw`In the Arrhenius law (kin-2.1) a rate is proportional to the fraction of molecular encounters with energy above a barrier, $e^{-E/kT}$. Metabolism is a network of enzyme-catalysed reactions with a rate-limiting step whose barrier is a fraction of an electronvolt, so whole-organism rates inherit the Boltzmann factor. The model separates the two effects: dividing by $M^{3/4}$ removes body size, after which temperature alone explains most of the remaining variation. Because development, growth, mortality and population growth all run on metabolism, the same factor sets the "pace of life" of ectotherms in warm and cold places.`,
-      caption: String.raw`A **synthetic** data set generated from the published model ($E = 0.65$ eV, masses from 0.1 g to 10 kg, realistic scatter), not real measurements. Left: the Arrhenius plot; the slope of the least-squares line estimates $E$. Switch off **mass correction** and the same points scatter over many units because big and small animals are mixed — the fitted slope becomes meaningless. Narrow the temperature range with the sliders and the estimate becomes uncertain. Right: the predicted speed-up of metabolism relative to 20 °C; drag the gold point along the curve to read the $Q_{10}$ at any temperature, and compare activation energies with the slider.`,
+      caption: String.raw`A **synthetic** data set generated from the published model ($E = 0.65$ eV, masses from 0.1 g to 10 kg, realistic scatter), not real measurements. Left: the Arrhenius plot; the slope of the least-squares line estimates $E$. Switch off **mass correction** and the same points scatter over many units because big and small animals are mixed, and the estimate of $E$ becomes far less precise. Narrow the temperature range with the sliders and the estimate becomes uncertain. Right: the predicted speed-up of metabolism relative to 20 °C; drag the gold point along the curve to read the $Q_{10}$ at any temperature, and compare activation energies with the slider.`,
       deps: ['ecol-1.5', 'kin-2.1'],
       see: ['ecol-1.3'],
       refs: ['Brown et al. 2004'],
@@ -460,8 +463,8 @@ with $T$ the body temperature in kelvin, $k = 8.617\times10^{-5}$ eV/K Boltzmann
         const Es = v.slider(String.raw`activation energy $E$ for the right panel (eV)`, 0.2, 1.2, 0.65, { step: 0.01 });
         let seed = 7;
         v.button('new sample', () => { seed++; });
-        const A = v.stage({ x: [36.9, 42.6], y: [-10, 4], axes: 'box', height: 350, weight: 1.15, xlabel: '1/kT (1/eV)   — colder to the right →', ylabel: 'ln(B / M^3/4)' });
-        const Bs = v.stage({ x: [0, 40], y: [0, 3.6], axes: 'box', height: 350, weight: 1, xlabel: 'temperature (°C)', ylabel: 'rate ÷ rate at 20 °C' });
+        const A = v.stage({ x: [36.9, 42.6], y: [-10, 4], axes: 'box', height: 350, weight: 1.15, xlabel: '1/kT (1/eV), colder to the right', title: String.raw`Arrhenius plot of $\ln(B/M^{3/4})$` });
+        const Bs = v.stage({ x: [0, 40], y: [0, 3.6], axes: 'box', height: 350, weight: 1, xlabel: 'temperature (°C)', title: 'metabolic rate ÷ rate at 20 °C' });
         const hq = Bs.handle(30, 1, { color: 'gold', constrain: (x) => { const c = M.clamp(x, 0.5, 39.5); return [c, Math.exp(Es.value * (ikT(20) - ikT(c)))]; } });
         let info = null;
         v.render(() => {
@@ -475,10 +478,10 @@ with $T$ the body temperature in kelvin, $k = 8.617\times10^{-5}$ eV/K Boltzmann
           const yc = pts.map((p) => Math.log(p.B / p.m ** 0.75)), yr = pts.map((p) => Math.log(p.B));
           const Rc = M.linreg(pts.map((p) => p.x), yc), Rr = M.linreg(pts.map((p) => p.x), yr);
           const ys = corr.value ? yc : yr, Rg = corr.value ? Rc : Rr;
-          A.setView(null, corr.value ? [-6.5, 1.5] : [-13, 4]);
-          A.setLabels(undefined, corr.value ? 'ln(B / M^3/4)' : 'ln B (no mass correction)');
+          A.setView(null, corr.value ? [-4.6, 2] : [-11.5, 4.5]);
+          A.setTitle(corr.value ? String.raw`Arrhenius plot of $\ln(B/M^{3/4})$` : String.raw`Arrhenius plot of $\ln B$ (no mass correction)`);
           for (const c of [0, 10, 20, 30, 40]) { A.vline(ikT(c), { color: 'grid', width: 1 }); A.text(`${c} °C`, ikT(c), A.yr[1], { align: 'center', baseline: 'top', dy: 4, size: 10.5, color: 'muted' }); }
-          A.vband(ikT(hi), ikT(lo), { color: 'gold', alpha: 0.06 });
+          A.vband(A.xr[0], ikT(hi), { color: 'grid', alpha: 0.5 }); A.vband(ikT(lo), A.xr[1], { color: 'grid', alpha: 0.5 });
           const big = pts.map((p, i) => [p.x, ys[i], Math.log10(p.m)]);
           for (const [x, y, lm] of big) A.dot(x, y, { r: 2.2 + 0.55 * (lm + 4), color: corr.value ? 'teal' : 'orange', alpha: 0.55, ring: false });
           A.fn((x) => Rg.intercept + Rg.slope * x, { color: 'accent', width: 2.8, domain: [ikT(hi), ikT(lo)] });
@@ -489,7 +492,8 @@ with $T$ the body temperature in kelvin, $k = 8.617\times10^{-5}$ eV/K Boltzmann
           Bs.fn((c) => rel(c, 0.3), { color: 'faint', dash: [4, 4], width: 1.2 });
           Bs.fn((c) => rel(c, 1.0), { color: 'faint', dash: [4, 4], width: 1.2 });
           Bs.text('E = 0.3', 40, rel(40, 0.3), { align: 'right', dy: 10, size: 10.5, color: 'muted' });
-          Bs.text('E = 1.0', 31.5, Math.min(3.5, rel(31.5, 1.0)), { align: 'right', dy: -6, size: 10.5, color: 'muted' });
+          const c1 = 1 / (KB * (ikT(20) - Math.log(3.2))) - 273.15;
+          Bs.text('E = 1.0', c1, 3.2, { align: 'right', dx: -6, size: 10.5, color: 'muted' });
           Bs.fn((c) => rel(c, E), { color: 'green', width: 2.8 });
           Bs.hline(1, { color: 'grid' }); Bs.vline(20, { color: 'grid' });
           hq.set(hq.x, rel(hq.x, E));

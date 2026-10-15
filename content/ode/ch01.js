@@ -338,7 +338,7 @@ as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly mon
           },
           tx2: {
             label: '$t\\,x^2$', g: (t) => t, h: (x) => x * x, G: (t) => (t * t) / 2, H: (x) => -1 / x,
-            sing: [0], lost: [0], x: [-2.5, 3], t: [-3, 3], P: [-1.5, 0.6], t1: 0.8, lv: arange(-2.4, 2.9, 0.25), hy: [0, 12],
+            sing: [0], lost: [0], x: [-2.5, 3], t: [-3, 3], P: [-1.5, 0.6], t1: 0.8, lv: [...arange(-2.4, -0.3, 0.42), ...arange(0.25, 2.9, 0.25)], hy: [0, 12],
           },
           circ: {
             label: '$-t/x$', g: (t) => -t, h: (x) => 1 / x, G: (t) => (-t * t) / 2, H: (x) => (x * x) / 2,

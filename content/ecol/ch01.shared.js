@@ -5,7 +5,8 @@
 //    geography of extant and recently extinct mammals", Ecology 90: 2648; Ecological Archives E090-184), file
 //    PanTHERIA_1-0_WR05_Aug2008.txt. Kept: the 1 862 species with an adult body mass and at least one of basal
 //    metabolic rate (with the mass of the animals measured), maximum longevity, gestation length, age at sexual
-//    maturity, population density or home range. Values are stored as log10 × 100 + 400 in two base-36 digits
+//    maturity, population density or home range (one BMR record that is evidently 1000× too high is dropped in
+//    mammals()). Values are stored as log10 × 100 + 400 in two base-36 digits
 //    (precision 0.01 in log10, i.e. ±1.2 %); "__" = missing.
 //  • AVONET (J. A. Tobias et al. 2022, "AVONET: morphological, ecological and geographical data for all birds",
 //    Ecology Letters 25: 581–597, doi:10.1111/ele.13898), sheet AVONET1_BirdLife: body mass (g), bill length
@@ -32,7 +33,10 @@ export function mammals() {
   MAM = MAMMAL_DATA.split(';').map((rec) => {
     const k = rec.indexOf('|'), f = rec.slice(k + 1), x = [];
     for (let i = 0; i < 8; i++) x.push(dec(f.slice(2 + 2 * i, 4 + 2 * i)));
-    return { name: rec.slice(0, k), order: ORDERS[OC.indexOf(f[0])], troph: +f[1], m: x[0], b: x[1], bm: x[2], L: x[3], G: x[4], S: x[5], D: x[6], H: x[7] };
+    const name = rec.slice(0, k);
+    // One BMR entry is about 1000× too high (14 800 mL O2/h for the 14 g feathertail glider): dropped.
+    if (name === 'Acrobates pygmaeus') x[1] = x[2] = null;
+    return { name, order: ORDERS[OC.indexOf(f[0])], troph: +f[1], m: x[0], b: x[1], bm: x[2], L: x[3], G: x[4], S: x[5], D: x[6], H: x[7] };
   });
   return MAM;
 }

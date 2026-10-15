@@ -309,5 +309,261 @@ export default {
   collection: 'ling',
   chapter: 1,
   items: [
+    // ------------------------------------------------------------------ 1.9
+    {
+      num: '1.9',
+      kind: 'Concept',
+      name: 'The acoustic vowel space: F1 against F2',
+      statement: String.raw`Plotting each vowel as a point with its first formant F1 on the vertical axis (increasing downward) and its second formant F2 on the horizontal axis (increasing to the left) gives the **acoustic vowel space**, and it reproduces the layout of the articulatory vowel chart: high vowels such as [i] and [u] have low F1 and sit at the top, low vowels such as [æ] and [ɑ] have high F1 and sit at the bottom, front vowels have high F2 and sit on the left, back (and rounded) vowels have low F2 and sit on the right. The corner vowels [i], [æ], [ɑ], [u] span a roughly triangular or quadrilateral region inside which the other vowels of a language fall. The first two formants, measured from a recording, are enough to identify most vowels of a given speaker.`,
+      idea: String.raw`F1 is governed mainly by the size of the constriction formed by the tongue body (narrow for high vowels, low F1) and F2 mainly by how far forward it is (front constrictions shorten the front cavity and raise F2), as the tube perturbations of ling-1.7 and the articulatory dimensions of ling-1.6 show. So the two acoustic axes are close to the two articulatory ones, and the traditional chart, drawn by phoneticians from what they felt and heard, turned out to be largely a map of formant frequencies. Peterson and Barney's measurements of 76 speakers (1952) made this space the standard picture, and also showed the overlap between speakers that ling-1.10 addresses.`,
+      caption: String.raw`The symbols are Peterson and Barney's (1952) average formants of ten American English vowels (keywords *heed, hid, head, had, hod, hawed, hood, who'd, hud, heard*); the dashed outline joins the corner vowels. Drag the **gold** point anywhere: the right panel is the spectrum of a vowel synthesized with exactly that F1 and F2 (harmonics under the formant envelope, peaks marked), and *Listen* plays it in the selected speaker's voice; switch on *sound while dragging* to hear the vowel morph continuously. Compare the speaker groups: same pattern, shifted upward for shorter vocal tracts.`,
+      deps: ['ling-1.7', 'ling-1.6'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['vowels', 'formants'],
+      credit: 'G. E. Peterson & H. L. Barney, 1952',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Formant' },
+      viz(v) {
+        const M = v.M, LF = (f) => -Math.log(f);
+        const grp = v.select('speakers', [{ value: 0, label: 'men' }, { value: 1, label: 'women' }, { value: 2, label: 'children' }, { value: 3, label: 'all' }], 0, { onChange: () => voice.update(loopBuf) });
+        const live = v.toggle('sound while dragging', false, { onChange: (on) => { if (on) voice.start(loopBuf()); else voice.stop(); } });
+        const ch = v.stage({ x: [LF(3500), LF(700)], y: [LF(1150), LF(240)], height: 390, axes: 'box', minWidth: 300, weight: 1.3, xticks: [3000, 2500, 2000, 1500, 1200, 1000, 800].map((f) => [LF(f), `${f}`]), yticks: [300, 400, 500, 600, 800, 1000].map((f) => [LF(f), `${f}`]), title: 'F1 (Hz, downward) against F2 (Hz, leftward)' });
+        const sp = v.stage({ x: [0, 4000], y: [-45, 30], height: 390, axes: 'box', minWidth: 250, title: 'spectrum of the vowel at the gold point (dB)', xticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
+        const H = ch.handle(LF(1250), LF(620), { color: 'gold', r: 9 });
+        const voice = loopVoice(v);
+        const g = () => (+grp.value === 3 ? 0 : +grp.value);
+        const formants = () => { const F1 = Math.exp(-H.y), F2 = Math.exp(-H.x), gi = g(); return [F1, F2, Math.max(F2 + 450, [2450, 2850, 3250][gi]), ...GROUP_HI[gi]]; };
+        const f0of = () => [125, 215, 262][g()];
+        const loopBuf = () => normalise(vowelPeriod(formants(), BW5, Math.round(SR / f0of())), 0.8, 0);
+        H.onDrag = () => voice.update(loopBuf);
+        v.soundButton('Listen', (snd) => { live.set(false); const F = formants(), f0 = f0of(); snd.samples(normalise(synth((t) => ({ f0: f0 * (1.04 - 0.08 * t), av: 1, ah: 0, af: 0, F, B: BW5 }), 0.8), 0.85, 0.05), SR, { gain: 0.6 }); });
+        let info = null;
+        v.render(() => {
+          const show = +grp.value === 3 ? [0, 1, 2] : [+grp.value], F = formants(), gi = g();
+          for (const k of show) {
+            const pt = (row) => [LF(row[2 + k][2]), LF(row[2 + k][1])], corners = ['i', 'æ', 'ɑ', 'u'].map((s) => pt(PB.find((r) => r[0] === s)));
+            ch.path([...corners, corners[0]], { color: GROUP_COL[k], width: 1.2, alpha: 0.45, dash: [4, 4] });
+            for (const row of PB) { const [x, y] = pt(row); ch.text(row[0], x, y, { size: 17, color: GROUP_COL[k], align: 'center', weight: 600 }); }
+          }
+          if (show.length === 1) for (const row of PB) { const [x, y] = [LF(row[2 + gi][2]), LF(row[2 + gi][1])]; ch.text(row[1], x, y - 0.075, { size: 10, color: 'muted', align: 'center' }); }
+          // nearest vowel of the chosen group
+          let best = 0, bd = 1e9; PB.forEach((row, i) => { const d = Math.hypot(Math.log(F[0] / row[2 + gi][1]), Math.log(F[1] / row[2 + gi][2])); if (d < bd) { bd = d; best = i; } });
+          ch.line(H.x, H.y, LF(PB[best][2 + gi][2]), LF(PB[best][2 + gi][1]), { color: 'gold', dash: [3, 3], width: 1.2 });
+          // spectrum of the synthesized vowel
+          const P = Math.round(SR / f0of()), f0 = SR / P, h = harmonicsDb(M, vowelPeriod(F, BW5, P)), src = harmonicsDb(M, vowelPeriod([], [], P)), ref = src[1];
+          const tilt = (f) => { const k = f / f0, lo = Math.max(1, Math.floor(k)), hi = lo + 1; return hi < src.length ? src[lo] + (src[hi] - src[lo]) * Math.max(0, k - lo) : src[lo]; };
+          const env = (f) => dB(tractGain(F, BW5, f)) + tilt(Math.max(f, f0)) - ref;
+          sp.fn(env, { domain: [30, 4000], n: 500, color: 'ink', dash: [5, 4], width: 1.3 });
+          for (let k = 1; k * f0 < 4000 && k < h.length; k++) sp.line(k * f0, -45, k * f0, h[k] - ref, { color: GROUP_COL[gi], width: 1.8 });
+          for (const [k, lab] of [[0, 'F1'], [1, 'F2']]) { sp.vline(F[k], { color: 'gold', dash: [3, 3] }); sp.dot(F[k], env(F[k]), { r: 5, color: 'gold' }); sp.text(lab, F[k], env(F[k]) + 5, { size: 12, color: 'gold', align: 'center', weight: 650 }); }
+          info = { F, near: PB[best], gi, d: bd, f0 };
+        });
+        v.readout(() => info && `gold point: F1 = **${Math.round(info.F[0])} Hz**, F2 = **${Math.round(info.F[1])} Hz** (synthesized at $f_0$ = ${Math.round(info.f0)} Hz) · nearest ${GROUPS[info.gi].replace(/s$/, '')}'s vowel: **[${info.near[0]}]** as in *${info.near[1]}*${info.d > 0.25 ? ' (but far from every average: an unusual vowel)' : ''}`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.10
+    {
+      num: '1.10',
+      kind: 'Phenomenon',
+      name: 'Speaker normalisation of vowels',
+      statement: String.raw`The same vowel spoken by different people has very different formant frequencies: children's formants are up to 40–50 % higher than men's because their vocal tracts are shorter, and women's lie in between. In raw hertz the vowel categories of a population therefore overlap heavily (a child's [ʊ] can have the formants of a man's [ʌ]), yet listeners identify vowels across speakers almost effortlessly. They do so by **normalising**: judging each vowel relative to the speaker's own vowel space. Computational normalisations that rescale each speaker's formants, for example the log-mean method (Nearey), which subtracts the speaker's mean log formant, or **Lobanov's** z-scores, which standardise each formant by the speaker's mean and standard deviation, make the categories of different speakers line up and greatly reduce the overlap.`,
+      idea: String.raw`To a first approximation a shorter vocal tract multiplies all formants by the same factor (resonances scale as $1/L$, ling-1.8), so on a logarithmic scale a speaker's whole vowel space is shifted rigidly. Subtracting the speaker's mean log formant undoes that shift (Nearey 1978); Lobanov's (1971) z-scores also undo differences in the spread of the space. Listeners appear to use similar information, both from the other vowels they have heard from the speaker (extrinsic normalisation) and from cues within the vowel such as $f_0$ and F3 (intrinsic). The data here are simulated: each speaker's vowels are drawn around Peterson and Barney's group means (ling-1.9), scaled by a random vocal-tract factor and given random token-to-token variation.`,
+      caption: String.raw`Each symbol is one vowel token of one simulated speaker (8 men, 8 women, 8 children); ellipses enclose about 80 % of each vowel category. Switch the normalisation: in raw hertz the ellipses sprawl and overlap, after log-mean or Lobanov normalisation they shrink and separate. The readout scores each method by classifying every token with the category centres learned from the other speakers (nearest centre, leave one speaker out). Highlight a group to see its own vowel space; *New speakers* draws another population.`,
+      deps: ['ling-1.9'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['vowels', 'perception'],
+      credit: 'B. M. Lobanov 1971; T. M. Nearey 1978',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Normalization_(sociolinguistics)' },
+      viz(v) {
+        const M = v.M, VCOL = ['blue', 'orange', 'green', 'red', 'purple', 'teal', 'pink', 'gold', 'gray', 'ink'];
+        const norm = v.select('normalisation', [{ value: 'raw', label: 'raw Hz' }, { value: 'nearey', label: 'log-mean (Nearey)' }, { value: 'lobanov', label: 'Lobanov z-scores' }], 'raw');
+        const hl = v.select('highlight', [{ value: -1, label: 'all' }, { value: 0, label: 'men' }, { value: 1, label: 'women' }, { value: 2, label: 'children' }], -1);
+        let seed = 7, data = null;
+        v.button('New speakers', () => { seed++; data = null; });
+        const st = v.stage({ x: [0, 1], y: [0, 1], height: 420, axes: 'box', full: true });
+        const make = () => {
+          const R = v.rng(seed), toks = []; let sid = 0;
+          for (let gi = 0; gi < 3; gi++) for (let s = 0; s < 8; s++, sid++) {
+            const k = Math.exp(R.normal(0, 0.06)), k1 = Math.exp(R.normal(0, 0.03)), k2 = Math.exp(R.normal(0, 0.03));
+            PB.forEach((row, vi) => { const [, F1, F2] = row[2 + gi]; toks.push({ v: vi, g: gi, s: sid, F1: F1 * k * k1 * Math.exp(R.normal(0, 0.08)), F2: F2 * k * k2 * Math.exp(R.normal(0, 0.07)) }); });
+          }
+          // the three representations of every token
+          const by = new Map(); for (const t of toks) { if (!by.has(t.s)) by.set(t.s, []); by.get(t.s).push(t); }
+          for (const list of by.values()) {
+            const l1 = list.map((t) => Math.log(t.F1)), l2 = list.map((t) => Math.log(t.F2)), G = (M.mean(l1) + M.mean(l2)) / 2;
+            const m1 = M.mean(list.map((t) => t.F1)), s1 = M.stdev(list.map((t) => t.F1)), m2 = M.mean(list.map((t) => t.F2)), s2 = M.stdev(list.map((t) => t.F2));
+            for (const t of list) { t.raw = [t.F2, t.F1]; t.nearey = [Math.log(t.F2) - G, Math.log(t.F1) - G]; t.lobanov = [(t.F2 - m2) / s2, (t.F1 - m1) / s1]; }
+          }
+          // leave-one-speaker-out nearest-centre classification, in units scaled so both axes count equally
+          const score = (key) => {
+            const sx = M.stdev(toks.map((t) => t[key][0])), sy = M.stdev(toks.map((t) => t[key][1])); let ok = 0;
+            for (let s = 0; s < 24; s++) {
+              const cent = PB.map((_, vi) => { const own = toks.filter((t) => t.v === vi && t.s !== s); return [M.mean(own.map((t) => t[key][0])), M.mean(own.map((t) => t[key][1]))]; });
+              for (const t of toks.filter((q) => q.s === s)) { let b = 0, bd = 1e9; cent.forEach((c, vi) => { const d = Math.hypot((t[key][0] - c[0]) / sx, (t[key][1] - c[1]) / sy); if (d < bd) { bd = d; b = vi; } }); if (b === t.v) ok++; }
+            }
+            return ok / toks.length;
+          };
+          return { toks, acc: { raw: score('raw'), nearey: score('nearey'), lobanov: score('lobanov') } };
+        };
+        v.legend(PB.map((row, i) => [VCOL[i], `[${row[0]}] ${row[1]}`, { dot: true }]));
+        let info = null;
+        v.render(() => {
+          if (!data) data = make();
+          const key = norm.value, T = data.toks, H = +hl.value;
+          const xs = T.map((t) => t[key][0]), ys = T.map((t) => t[key][1]);
+          const pad = (a, b) => [a - 0.06 * (b - a), b + 0.06 * (b - a)];
+          const [x0, x1] = pad(Math.min(...xs), Math.max(...xs)), [y0, y1] = pad(Math.min(...ys), Math.max(...ys));
+          st.setView([-x1, -x0], [-y1, -y0]); // F2 grows to the left, F1 downward
+          const nice = (lo, hi, list) => list.filter((z) => z >= lo && z <= hi), reg = (lo, hi, step) => M.range(Math.floor((hi - lo) / step) + 2).map((i) => Math.ceil(lo / step) * step + i * step).filter((z) => z <= hi);
+          const xt = key === 'raw' ? nice(x0, x1, [800, 1000, 1500, 2000, 2500, 3000, 3500]) : reg(x0, x1, key === 'nearey' ? 0.2 : 0.5), yt = key === 'raw' ? nice(y0, y1, [300, 400, 500, 600, 800, 1000, 1200]) : reg(y0, y1, key === 'nearey' ? 0.2 : 0.5);
+          const fmt = (z) => (key === 'raw' ? `${z}` : v.fix(z, 1).replace('-', '−'));
+          st.setTicks(xt.map((z) => [-z, fmt(z)]), yt.map((z) => [-z, fmt(z)]));
+          st.setTitle(key === 'raw' ? 'F1 against F2 in hertz' : key === 'nearey' ? 'log formants minus the speaker’s mean log formant' : 'formants as z-scores within each speaker');
+          // category ellipses (1.8 σ) from all tokens
+          PB.forEach((_, vi) => {
+            const pts = T.filter((t) => t.v === vi).map((t) => [-t[key][0], -t[key][1]]), mx = M.mean(pts.map((p) => p[0])), my = M.mean(pts.map((p) => p[1]));
+            let sxx = 0, sxy = 0, syy = 0; for (const [x, y] of pts) { sxx += (x - mx) ** 2; sxy += (x - mx) * (y - my); syy += (y - my) ** 2; }
+            const n = pts.length - 1, e = M.eigSym2([[sxx / n, sxy / n], [sxy / n, syy / n]]), r = 1.8;
+            st.curve((u) => { const a = r * Math.sqrt(Math.max(e.values[0], 0)) * Math.cos(u), b = r * Math.sqrt(Math.max(e.values[1], 0)) * Math.sin(u); return [mx + a * e.vectors[0][0] + b * e.vectors[1][0], my + a * e.vectors[0][1] + b * e.vectors[1][1]]; }, 0, 2 * Math.PI, { color: VCOL[vi], width: 1.6, fill: VCOL[vi], fillAlpha: 0.06, n: 80 });
+          });
+          for (const t of T) { const faded = H >= 0 && t.g !== H; st.text(PB[t.v][0], -t[key][0], -t[key][1], { size: faded ? 11 : 13.5, color: VCOL[t.v], align: 'center', alpha: faded ? 0.25 : 0.9, weight: 600 }); }
+          info = data.acc;
+        });
+        v.readout(() => info && `classification of every token by the nearest category centre learned from the other speakers: raw hertz **${Math.round(100 * info.raw)} %** · log-mean **${Math.round(100 * info.nearey)} %** · Lobanov **${Math.round(100 * info.lobanov)} %** correct (chance 10 %)`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.11
+    {
+      num: '1.11',
+      kind: 'Method',
+      name: 'Reading speech spectrograms',
+      statement: String.raw`A **spectrogram** displays a sound's energy as darkness over time (horizontal) and frequency (vertical), computed by Fourier transforms of short overlapping windows. Its appearance depends on the window: a **wide-band** spectrogram (window of a few milliseconds, shorter than a glottal period) shows each glottal pulse as a vertical striation and the formants as dark horizontal bands; a **narrow-band** one (window of 20–40 ms) resolves the individual harmonics as horizontal lines. Speech sounds have characteristic signatures: vowels are voiced stretches with clear formant bands; stops are near-silent gaps (the closure, perhaps with a low voice bar) ended by a vertical burst spike, sometimes followed by aspiration noise; fricatives are aperiodic noise whose frequency range indicates the place ([s] high, [ʃ] lower, [f] weak and diffuse); nasals are weaker voiced stretches with a strong low-frequency murmur and faint upper formants; approximants look like vowels with moving formants. Segment boundaries are placed where these signatures change abruptly.`,
+      idea: String.raw`The short-time Fourier transform trades time resolution against frequency resolution (sig-8.13, and the uncertainty principle behind it): a window shorter than the pitch period cannot separate harmonics but follows the formant envelope and each pulse; a window several periods long separates the harmonics but blurs fast events such as bursts. Because the signatures follow directly from how each manner of articulation shapes the source and the filter (ling-1.4, ling-1.5), a trained reader can segment and partly identify unknown utterances. Boundaries are not instants in the articulation, though: gestures overlap (ling-1.12), so segmentation is a convention applied to the acoustics.`,
+      caption: String.raw`A short phrase is synthesized by rule and analysed with the FFT. Drag the **gold** boundary markers to where you think each sound begins and ends (the labels between them tell you what to look for), then switch on *show answer* to compare with the boundaries used in the synthesis; the readout scores your placement. Click inside any segment to hear it alone, or *Listen* to the whole phrase with a moving playhead. Switch between wide-band (5 ms window) and narrow-band (30 ms) analysis to see striations become harmonics.`,
+      deps: ['music-4.7', 'ling-1.5'],
+      refs: ['Ladefoged & Johnson', 'Jurafsky & Martin ch. 15'],
+      tags: ['spectrogram', 'acoustics'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Spectrogram' },
+      viz(v) {
+        const M = v.M, FM = 7000;
+        // phrases as phones with durations; 'j' marks the second half of a diphthong (no boundary before it)
+        const PHR = {
+          a: { text: 'she saw Bob', ph: [['ʃ', 0.14], ['i', 0.12], ['s', 0.13], ['ɔ', 0.2], ['b', 0.07], ['ɑ', 0.15], ['b', 0.07]] },
+          b: { text: 'my name is Anna', ph: [['m', 0.08], ['a', 0.11], ['ɪ', 0.08, 'j'], ['n', 0.06], ['e', 0.11], ['ɪ', 0.06, 'j'], ['m', 0.07], ['ɪ', 0.07], ['z', 0.1], ['æ', 0.14], ['n', 0.07], ['ə', 0.14]] },
+          c: { text: 'a cat ate fish', ph: [['ə', 0.08], ['k', 0.08], ['æ', 0.16], ['t', 0.07], ['e', 0.12], ['ɪ', 0.06, 'j'], ['t', 0.07], ['f', 0.13], ['ɪ', 0.1], ['ʃ', 0.16]] },
+        };
+        const phr = v.select('phrase', Object.entries(PHR).map(([k, p]) => ({ value: k, label: `“${p.text}”` })), 'a', { onChange: () => reset() });
+        const band = v.select('analysis', [{ value: 'w', label: 'wide-band' }, { value: 'n', label: 'narrow-band' }], 'w');
+        const ans = v.toggle('show answer', false);
+        const sg = v.stage({ x: [0, 1], y: [0, FM], height: 330, axes: 'box', full: true, yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4k'], [5000, '5k'], [6000, '6k'], [7000, '7 kHz']] });
+        const cache = new Map();
+        const get = () => {
+          const k = phr.value; if (cache.has(k)) return cache.get(k);
+          const P = PHR[k], r = speak(P.ph.map(([p, d]) => [p, d]), { lead: 0.06, tail: 0.06 });
+          // segments: diphthong halves merged
+          const segs = []; r.segs.forEach((sg0, i) => { if (P.ph[i][2] === 'j') { const last = segs[segs.length - 1]; last.t1 = sg0.t1; last.lab += P.ph[i][0]; } else segs.push({ t0: sg0.t0, t1: sg0.t1, lab: P.ph[i][0] }); });
+          const out = { buf: r.buf, dur: r.dur, segs, Sw: stft(M, r.buf, { win: 0.005, fmax: FM }), Sn: stft(M, r.buf, { win: 0.03, hop: 0.004, fmax: FM, nfft: 1024 }) };
+          cache.set(k, out); return out;
+        };
+        const hs = M.range(14).map(() => sg.handle(0, FM * 0.93, { color: 'gold', r: 7 }));
+        const reset = () => { const d = get(), n = d.segs.length + 1; hs.forEach((h, i) => { h.visible = i < n; h.set(i < n ? 0.06 + ((d.dur - 0.12) * i) / (n - 1) : 0, FM * 0.93); }); };
+        hs.forEach((h, i) => { h.constrain = (x) => { const d = get(), n = d.segs.length + 1, lo = i > 0 ? hs[i - 1].x + 0.012 : 0.0, hi = i < n - 1 ? hs[i + 1].x - 0.012 : d.dur; return [clampN(x, lo, hi), FM * 0.93]; }; });
+        reset();
+        const ph = playhead(v);
+        v.soundButton('Listen', (snd) => { const d = get(); snd.samples(normalise(d.buf.slice(), 0.85, 0.01), SR, { gain: 0.6 }); ph.start(d.dur); });
+        let played = null;
+        sg.onClick((x) => {
+          const d = get(), n = d.segs.length + 1; let i = -1; for (let k = 0; k < n - 1; k++) if (x >= hs[k].x && x < hs[k + 1].x) i = k; if (i < 0) return;
+          const a = Math.round(hs[i].x * SR), b = Math.round(hs[i + 1].x * SR), snd = v.sound(); snd.stop();
+          snd.samples(normalise(d.buf.slice(a, b), 0.85, 0.008), SR, { gain: 0.6 }); played = i;
+        });
+        let info = null;
+        v.render(() => {
+          const d = get(), n = d.segs.length + 1;
+          sg.setView([0, d.dur], [0, FM]);
+          drawSpec(sg, band.value === 'w' ? d.Sw : d.Sn, v.rgb('ink'), { key: phr.value + band.value, range: 52 });
+          // the reader's boundaries and the labels between them
+          for (let i = 0; i < n; i++) sg.line(hs[i].x, 0, hs[i].x, FM * 0.93, { color: 'gold', width: 1.4, alpha: 0.9 });
+          for (let i = 0; i < n - 1; i++) { const xm = (hs[i].x + hs[i + 1].x) / 2; if (played === i) sg.rect(hs[i].x, FM * 0.86, hs[i + 1].x, FM, { fill: 'gold', fillAlpha: 0.25, stroke: false }); sg.text(d.segs[i].lab, xm, FM * 0.975, { size: 14, color: 'gold', align: 'center', weight: 650 }); }
+          // the answer
+          const truth = [d.segs[0].t0, ...d.segs.map((s) => s.t1)];
+          if (ans.value) { truth.forEach((t) => sg.vline(t, { color: 'green', dash: [5, 4], width: 1.6 })); d.segs.forEach((s) => sg.text(s.lab, (s.t0 + s.t1) / 2, FM * 0.82, { size: 13, color: 'green', align: 'center', weight: 650 })); }
+          if (ph.t != null) sg.vline(Math.min(d.dur, ph.t), { color: 'accent', width: 2 });
+          const errs = truth.map((t, i) => Math.abs(hs[i].x - t) * 1000);
+          info = { mean: M.mean(errs), good: errs.filter((e) => e <= 15).length, n };
+        });
+        v.readout(() => info && `your boundaries are off by **${Math.round(info.mean)} ms** on average; ${info.good} of ${info.n} within 15 ms of the synthesis boundaries${info.good === info.n ? ' · all placed: well read!' : ''} · stops: gap then burst; fricatives: noise; nasals: weak low murmur; vowels: formant bands`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.12
+    {
+      num: '1.12',
+      kind: 'Phenomenon',
+      name: 'Coarticulation and formant transitions',
+      statement: String.raw`Speech sounds are not produced one after another like beads on a string: the gestures of neighbouring sounds overlap in time (**coarticulation**), so each consonant is realised differently before different vowels. The clearest trace is in the **formant transitions** at a consonant–vowel boundary: the second formant of [di], [da] and [du] starts at different frequencies, but the transitions all point back toward a common frequency, the consonant's **locus** (about 1800 Hz for [d], 720 Hz for [b] and, before front vowels, about 3000 Hz for [ɡ], according to Delattre, Liberman and Cooper, 1955). Measured across vowels, the F2 at the onset of voicing is close to a linear function of the F2 of the vowel, the **locus equation** $F2_{onset}=k\,F2_{vowel}+c$, whose slope $k$ (between 0 and 1) measures how strongly the vowel coarticulates with the consonant.`,
+      idea: String.raw`At the release the tract still has the consonant's shape, which defines a starting resonance; the tongue body, already moving toward the vowel during the closure, makes that starting point vowel-dependent. If the consonant's own resonance (the locus $L$) were reached exactly at the release, all transitions would start at $L$ ($k=0$); if the vowel took over completely, there would be no transition at all ($k=1$). Real speech lies between, so the onsets lie on a line that crosses the diagonal $F2_{onset}=F2_{vowel}$ at $L=c/(1-k)$. Delattre and colleagues found the loci with painted spectrograms played on the Pattern Playback; Lindblom (1963) introduced the locus equation; the transitions are one of the main cues for place (ling-1.3) that a spectrogram reader uses (ling-1.11).`,
+      caption: String.raw`Choose a consonant and slide the coarticulation $k$. Left: spectrograms of [Ci e a o u] synthesized with the locus model, with the F2 track (gold) and dashed extensions of the first part of each transition. Right: F2 measured at the onset of voicing in each synthesized syllable (by FFT of its first periods) against the F2 of the vowel; the fitted line is the locus equation, and where it meets the diagonal is the measured locus (dot). With $k=0$ every transition starts at the locus; with $k=1$ there are none. [ɡ] needs two loci, one for front and one for back vowels. *Listen* plays the five syllables.`,
+      deps: ['ling-1.11'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['coarticulation', 'transitions'],
+      credit: 'P. Delattre, A. Liberman & F. Cooper 1955; B. Lindblom 1963',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Coarticulation' },
+      viz(v) {
+        const M = v.M, VOWS = ['i', 'e', 'a', 'o', 'u'], SEG = 0.32, FM = 4000;
+        const cs = v.select('consonant', [{ value: 'b', label: '[b]' }, { value: 'd', label: '[d]' }, { value: 'g', label: '[ɡ]' }], 'd');
+        const kS = v.slider('coarticulation $k$', 0, 1, 0.42, { step: 0.01 });
+        const sg = v.stage({ x: [0, SEG * 5], y: [0, FM], height: 320, axes: 'box', minWidth: 330, weight: 1.35, xticks: VOWS.map((x, i) => [SEG * (i + 0.5), `[${'bdg'.includes(cs.value) ? cs.value.replace('g', 'ɡ') : ''}${x}]`]), yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4 kHz']] });
+        const le = v.stage({ x: [600, 3000], y: [600, 3000], height: 320, axes: 'box', minWidth: 250, title: 'locus equation (Hz)', xlabel: 'F2 of the vowel', ylabel: 'F2 at voicing onset' });
+        const PLC = { b: { lf: 0, loc: [220, 720, 2200] }, d: { lf: 1.6, loc: [220, 1800, 2700] }, g: { lf: 6.0, loc: null } };
+        const cache = new Map();
+        const measureF2 = (buf, t0) => { // F2 from the spectrum of 15 ms of signal starting at t0: highest spectral peak between 900 and 3300 Hz
+          const N = 2048, w = Math.round(0.015 * SR), a = Math.round(t0 * SR), re = new Float64Array(N), im = new Float64Array(N);
+          for (let j = 0; j < w; j++) re[j] = (buf[a + j] - 0.9 * (buf[a + j - 1] || 0)) * (0.5 - 0.5 * Math.cos((2 * Math.PI * j) / w));
+          M.fft(re, im); let best = 0, bf = 0;
+          for (let b = Math.round((900 * N) / SR); b < (3300 * N) / SR; b++) { const m = re[b] * re[b] + im[b] * im[b]; if (m > best) { best = m; bf = b; } }
+          return (bf * SR) / N;
+        };
+        const get = () => {
+          const key = cs.value + kS.value; if (cache.has(key)) return cache.get(key);
+          const sy = VOWS.map((V) => {
+            const r = speak([{ sym: cs.value, pl: PLC[cs.value], mn: 'plosive', vc: 1, k: kS.value }, [V, 0.19]], { lead: 0.04, tail: 0.02, vot: 0.012 });
+            const tr = r.segs[0].t1, buf = new Float32Array(Math.round(SEG * SR)); buf.set(r.buf.slice(0, buf.length));
+            return { buf, tr, F2: r.F[1], vowel: VF[V][1], onset: measureF2(r.buf, tr + 0.014) };
+          });
+          const all = new Float32Array(sy.length * Math.round(SEG * SR)); sy.forEach((s, i) => all.set(s.buf, i * s.buf.length));
+          const out = { sy, all, S: stft(M, all, { win: 0.005, fmax: FM }) }; cache.set(key, out); return out;
+        };
+        v.soundButton('Listen', (snd) => snd.samples(normalise(get().all.slice(), 0.85, 0.01), SR, { gain: 0.6 }));
+        v.legend([['gold', 'F2 track'], ['gold', 'transition extended back', { dash: true }], ['accent', 'measured onsets', { dot: true }], ['red', 'locus (Delattre et al.)', { dash: true }]]);
+        let info = null;
+        v.render(() => {
+          const d = get(), c = cs.value;
+          sg.setTicks(VOWS.map((x, i) => [SEG * (i + 0.5), `[${c === 'g' ? 'ɡ' : c}${x}]`]), null);
+          drawSpec(sg, d.S, v.rgb('ink'), { key: c + kS.value, range: 50 });
+          const locus = c === 'b' ? 720 : c === 'd' ? 1800 : null;
+          if (locus) sg.hline(locus, { color: 'red', dash: [6, 4], width: 1.4 });
+          else { sg.line(0, 3000, SEG * 2, 3000, { color: 'red', dash: [6, 4], width: 1.4 }); sg.line(SEG * 2, 1500, SEG * 5, 1500, { color: 'red', dash: [6, 4], width: 1.4 }); }
+          d.sy.forEach((s, i) => {
+            const off = i * SEG, pts = []; for (let t = s.tr; t < s.tr + 0.19; t += 0.004) pts.push([off + t, s.F2(t)]);
+            sg.path(pts, { color: 'gold', width: 2.2 });
+            const slope = (s.F2(s.tr + 0.012) - s.F2(s.tr)) / 0.012; sg.line(off + s.tr, s.F2(s.tr), off + s.tr - 0.045, s.F2(s.tr) - 0.045 * slope, { color: 'gold', dash: [4, 3], width: 1.5 });
+          });
+          // locus equation from the measured onsets
+          le.line(600, 600, 3000, 3000, { color: 'faint', width: 1.2, dash: [3, 3] });
+          le.text('no transition', 2650, 2780, { size: 10.5, color: 'muted', align: 'center' });
+          const groups = c === 'g' ? [[0, 1], [2, 3, 4]] : [[0, 1, 2, 3, 4]], fits = [];
+          for (const gi of groups) {
+            const xs = gi.map((i) => d.sy[i].vowel), ys = gi.map((i) => d.sy[i].onset), f = M.linreg(xs, ys);
+            const lo = Math.min(...xs) - 150, hi = Math.max(...xs) + 150; le.line(lo, f.predict(lo), hi, f.predict(hi), { color: 'accent', width: 2 });
+            const L = f.slope < 0.97 ? f.intercept / (1 - f.slope) : null;
+            if (L && L > 600 && L < 3000) le.dot(L, L, { r: 6, color: 'red' });
+            fits.push({ k: f.slope, c: f.intercept, L });
+          }
+          if (locus) le.hline(locus, { color: 'red', dash: [6, 4], width: 1.2 }); else { le.hline(3000, { color: 'red', dash: [6, 4], width: 1.2 }); le.hline(1500, { color: 'red', dash: [6, 4], width: 1.2 }); }
+          d.sy.forEach((s, i) => { le.dot(s.vowel, s.onset, { r: 5, color: 'accent' }); le.text(`[${VOWS[i]}]`, s.vowel, s.onset + 120, { size: 12, color: 'accent', align: 'center' }); });
+          info = { fits, c };
+        });
+        v.readout(() => info && info.fits.map((f, j) => `${info.c === 'g' ? (j ? 'back vowels: ' : 'front vowels: ') : ''}measured locus equation $F2_{onset}$ = ${v.fix(f.k, 2)} $F2_{vowel}$ + ${Math.round(f.c)} Hz → locus ${f.L ? `**${Math.round(f.L)} Hz**` : 'undefined (slope ≈ 1)'}`).join(' · ') + ` · Delattre et al.: ${info.c === 'b' ? '720' : info.c === 'd' ? '1800' : '≈ 3000 (front)'} Hz`);
+      },
+    },
   ],
 };

@@ -184,7 +184,7 @@ with equality only at fixed points: $V$ decreases strictly along non-constant so
         };
         const which = v.select('', Object.entries(POT).map(([value, o]) => ({ value, label: o.label })), 'dw', { onChange: (k) => { B.x = POT[k].x0; } });
         const hS = v.slider('tilt $h$', -0.6, 0.6, 0.15, { step: 0.01 });
-        const mS = v.slider('mass $m$', 0, 1.5, 0.35, { step: 0.01 });
+        const mS = v.slider('mass $m$', 0, 1.5, 0.8, { step: 0.01 });
         const TM = 10, PER = 8;
         const sV = v.stage({ x: [-1.62, 1.62], y: [-0.6, 1.2], height: 280, full: true, xlabel: 'x', title: 'the potential $V(x) = -\\int f$' });
         const sx = v.stage({ x: [0, TM], y: [-1.62, 1.62], height: 190, full: true, xlabel: 't', ylabel: 'x', title: 'position against time' });
@@ -232,7 +232,7 @@ with equality only at fixed points: $V$ decreases strictly along non-constant so
           put(xa, { color: 'orange' });
           B.visible = true;
           info = { E, h, m, x0, xa, zs, f, V };
-        }, { still: 2.2 });
+        }, { still: 0.4 });
         v.readout(() => {
           if (!info) return '';
           const { m, x0, f, V } = info, { first, incr, dev } = cache, xe = first[first.length - 1][1];
@@ -655,11 +655,11 @@ is a $C^1$ solution, and so is $x\equiv0$. The right-hand side is continuous but
             if (bucket) {
               sR.setScale({ xlog: false, ylog: false, x: [0, 1], y: [0, 1.15] }); sR.setTicks([], []); sR.setTitle('the bucket at time $\\tau$');
               s.setView([-0.3, 6], [-0.2, 4.4]); s.setTitle('water depth $h(t)$: all of these are empty at $t = 5$');
-              C.labelPos = 's'; C.label = '$T_e$'; C.set(3, 0); s.o.ylabel = 'h'; sR.o.xlabel = null;
+              C.labelPos = 'ne'; C.label = '$T_e$'; C.set(3, 0); s.o.ylabel = 'h'; sR.o.xlabel = null;
               v.legend([['accent', 'depth $h(t)$ for different emptying times'], ['gold', 'the highlighted bucket'], ['red', 'observation: $h(5) = 0$']]);
             } else {
               sR.setScale({ xlog: true, ylog: true, x: [1e-6, 1], y: [1e-2, 1e4] }); sR.setTicks(null, null); sR.setTitle('Lipschitz quotient $|f(x) - f(0)|/|x| = |x|^{\\alpha-1}$');
-              s.setView([-1, 6], [-2, 3]); s.setTitle('solutions with $x(0) = 0$'); C.label = '$c$'; s.o.ylabel = 'x'; sR.o.xlabel = 'x';
+              s.setView([-1, 6], [-2, 3]); s.setTitle('solutions with $x(0) = 0$'); C.label = '$c$'; C.labelPos = 's'; s.o.ylabel = 'x'; sR.o.xlabel = 'x';
               v.legend([['accent', 'solutions $x_c$ leaving $0$ at time $c$'], ...(md === 'abs' ? [['purple', 'solutions arriving at $0$']] : []), ['gold', 'RK4 from $x(0) = 10^{-12}$', { dot: true }]]);
             }
           }
@@ -745,7 +745,7 @@ Since $P$ is monotone, every solution that stays bounded converges to a periodic
         const NY = 6;
         const sL = v.stage({ x: [-0.4, NY], y: [-0.15, 1.3], height: 320, weight: 1.35, minWidth: 320, xlabel: 't', ylabel: 'x', title: 'population over six seasons' });
         const sP = v.stage({ x: [-0.1, 1.25], y: [-0.1, 1.25], height: 320, weight: 1, minWidth: 270, equal: true, xlabel: 'x(0)', ylabel: 'x(T)', title: 'period map $P(x_0) = x(T; x_0)$' });
-        const X0 = sP.handle(0.3, 0, { color: 'gold', label: '$x_0$', labelPos: 'se', constrain: (x) => [v.M.clamp(x, -0.05, 1.2), 0] });
+        const X0 = sP.handle(0.3, 0, { color: 'gold', label: '$x_0$', labelPos: 'nw', constrain: (x) => [v.M.clamp(x, -0.05, 1.2), 0] });
         let cache = { key: null }, info = null;
         v.legend([['accent', 'period map $P$'], ['green', 'stable periodic solution'], ['red', 'unstable periodic solution', { dash: true }], ['gold', 'yearly samples / cobweb'], ['teal', 'trapping interval', { area: true }]]);
         v.render(() => {

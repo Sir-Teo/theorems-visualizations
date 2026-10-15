@@ -4,6 +4,7 @@
 const GCOL = ['blue', 'purple', 'orange'];
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const fmtInt = (x) => Math.round(x).toLocaleString('en-US');
+const texInt = (x) => fmtInt(x).replace(/,/g, '{,}');
 /** One-slot cache: recompute only when the key changes. */
 function memo() { let key, val; return (k, f) => { if (k !== key) { key = k; val = f(); } return val; }; }
 /** Binomial draw: Bernoulli sum for small n, normal approximation with continuity rounding for large n·p·q. */
@@ -100,7 +101,7 @@ He explained this by supposing that a hybrid forms germ cells carrying either fo
         const fisher = v.toggle('Fisher 1936', false);
         v.button('Re-run the simulation', () => { seed++; });
         const L = v.stage({ x: [-3.7, 3.7], y: [-7.6, 0.6], axes: false, height: 400, weight: 1.35, minWidth: 330, title: 'deviation from Mendel’s expectation (standard deviations)' });
-        const C = v.stage({ x: [0, 25], y: [0, 0.2], axes: 'box', height: 400, weight: 1, minWidth: 260, xlabel: 'χ²', title: '$\\chi^2$ for the whole table' });
+        const C = v.stage({ x: [0, 25], y: [0, 0.2], axes: 'box', height: 400, weight: 1, minWidth: 260, yticks: [], xlabel: 'χ²', title: '$\\chi^2$ for the whole table (density)' });
         // rows of the chosen table: n, observed, expected probability (Mendel / Fisher) and the true probability of the procedure
         const rows = () => {
           const fz = fisher.value;
@@ -140,20 +141,21 @@ He explained this by supposing that a hybrid forms germ cells carrying either fo
           // χ² panel
           const obs = chiOf(R, R.map((x) => x.O)), chis = reps.map((x) => x.chi), xmax = Math.max(3 * df + 8, M.quantile(chis, 0.97) * 1.1, obs * 1.3);
           const dist = M.dist.chi2(df), ymax = Math.max(dist.pdf(Math.max(df - 2, 0.6)) * 1.35, 0.05);
-          C.setView([0, xmax], [0, ymax]);
+          C.setView([0, xmax], [-ymax * 0.06, ymax]);
           C.hist(chis.filter((x) => x < xmax), { bins: M.linspace(0, xmax, 31), density: true, color: 'muted', fillAlpha: 0.25 });
           C.fn((x) => dist.pdf(x), { domain: [0.02, xmax], color: 'accent', width: 2.2, n: 300 });
           C.fn((x) => dist.pdf(x), { domain: [0.02, Math.min(obs, xmax)], fill: 'gold', fillAlpha: 0.35, color: 'gold', width: 0.01, n: 200 });
           C.vline(obs, { color: 'gold', width: 2.4 });
           C.text(`Mendel: ${v.fix(obs, 2)}`, obs, ymax * 0.93, { size: 11.5, color: 'gold', weight: 700, align: obs > xmax * 0.6 ? 'right' : 'left', dx: obs > xmax * 0.6 ? -6 : 6 });
-          C.text(`${df} df`, xmax * 0.97, ymax * 0.8, { size: 11, color: 'accent', align: 'right' });
+          C.text(`${df} df`, xmax * 0.97, ymax * 0.72, { size: 11, color: 'accent', align: 'right' });
+          if (fisher.value) C.corner('Fisher 1936, all 84 comparisons: χ² = 41.6, P(fit this good) = 0.00007', 'tr', { color: 'red', size: 11 });
         });
         v.legend([['gold', 'Mendel’s count', { dot: true }], ['muted', 'simulated repeats', { dot: true }], ['accent', '$\\chi^2$ distribution'], ['gold', 'P(fit at least this good)', { area: true }]]);
         v.readout(() => {
           const R = rows(), row = R[Math.min(sel, R.length - 1)], df = table.value === 'di' ? 3 : R.length, reps = sims();
           const obs = chiOf(R, R.map((x) => x.O)), pGood = M.gammaP(df / 2, obs / 2), simGood = reps.filter((x) => x.chi <= obs).length / reps.length;
           const z = zOf(row.O, row.n, row.p);
-          let s = `**${row.label}** — expected ${v.fix(row.n * row.p, 1)}, $z = ${v.fix(z, 2)}$ · whole table: $\\chi^2 = ${v.fix(obs, 2)}$ on ${df} df; a fit at least this good has probability ${v.fix(pGood, 3)} (simulated ${v.fix(simGood, 3)})`;
+          let s = `**${row.label}**${table.value === 'di' ? '' : ` — expected ${v.fix(row.n * row.p, 1)}`}, $z = ${v.fix(z, 2)}$ · whole table: $\\chi^2 = ${v.fix(obs, 2)}$ on ${df} df; a fit at least this good has probability ${v.fix(pGood, 3)} (simulated ${v.fix(simGood, 3)})`;
           if (table.value === '31') s += ` · all seven: $14{,}949 : 5{,}010 = 2.98 : 1$`;
           if (table.value === '21') {
             const plants = M21.filter((t) => !t.seed), C0 = plants.reduce((a, t) => a + t.C, 0), N0 = plants.reduce((a, t) => a + t.C + t.H, 0), zz = (C0 - N0 * P10) / Math.sqrt(N0 * P10 * (1 - P10));
@@ -183,11 +185,11 @@ which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exact
       tags: ['Hardy–Weinberg', 'history'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hardy%E2%80%93Weinberg_principle' },
       viz(v) {
-        const Rs = v.slider('start: 1 brachydactylous to', 1, 1e6, 1e4, { log: true, fmt: (x) => fmtInt(x) + ' normal' });
+        const Rs = v.slider('pure brachydactylous : pure normal = 1 :', 1, 1e6, 1e4, { log: true, fmt: (x) => fmtInt(x) });
         const pop = v.select('population on the right', [{ value: 0, label: 'infinite' }, { value: 2000, label: '2,000' }, { value: 200, label: '200' }], 0);
         let seed = 3;
         v.button('New run', () => { seed++; });
-        const A = v.stage({ x: [0.6, 7.4], y: [1e-13, 3], ylog: true, axes: 'box', height: 340, weight: 1, minWidth: 280, xticks: [1, 2, 3, 4, 5, 6, 7], xlabel: 'generation (Hardy’s first = 1)', title: 'share of the population showing the trait' });
+        const A = v.stage({ x: [0.6, 7.4], y: [1e-13, 40], ylog: true, axes: 'box', height: 340, weight: 1, minWidth: 280, xticks: [1, 2, 3, 4, 5, 6, 7], xlabel: 'generation (Hardy’s first = 1)', title: 'share of the population showing the trait' });
         const H = v.stage({ x: [-0.08, 1.08], y: [-0.08, 1.08], equal: true, axes: false, height: 340, weight: 1, minWidth: 280, title: 'Hardy’s $p$ ($AA$) and $r$ ($aa$); $2q = 1-p-r$' });
         const h0 = H.handle(0.62, 0.3, { color: 'accent', label: 'start', labelPos: 'e', constrain: (x, y) => { x = clamp(x, 0, 1); y = clamp(y, 0, 1); if (x + y > 1) { const e = (x + y - 1) / 2; x -= e; y -= e; } return [clamp(x, 0, 1), clamp(y, 0, 1)]; } });
         const series = (R) => { // Hardy's recursion from p = 1, q = 0, r = R; returns [dominant share, recessive share] per generation
@@ -209,7 +211,7 @@ which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exact
         v.render(() => {
           const R = Rs.value, S = series(R);
           A.hline(0.75, { color: 'red', width: 1.8, dash: [6, 4] });
-          A.text('Yule’s expectation: 3 brachydactylous to 1 normal', 7.3, 0.75 * 2.3, { size: 11, color: 'red', align: 'right' });
+          A.text('Yule’s expectation: 3 brachydactylous to 1 normal', 7.3, 0.75 * 3, { size: 11, color: 'red', align: 'right' });
           A.path(S.map((x, k) => [k + 1, x[0]]), { color: 'accent', width: 2.4 }); A.dots(S.map((x, k) => [k + 1, x[0]]), { r: 4.5, color: 'accent' });
           A.path(S.map((x, k) => [k + 1, x[1]]), { color: 'orange', width: 2.4 }); A.dots(S.map((x, k) => [k + 1, x[1]]), { r: 4.5, color: 'orange' });
           A.text('if dominant', 4, S[3][0] * 2.6, { size: 11.5, color: 'accent', align: 'center' });
@@ -231,7 +233,7 @@ which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exact
           const R = Rs.value, Ri = Math.round(R), dom1 = 1 + 2 * Ri, tot1 = (1 + Ri) ** 2;
           const p = h0.x, r = h0.y, q = (1 - p - r) / 2, [p1, q1, r1] = hardyStep(p, q, r), P = path(), last = P[P.length - 1];
           const pa = (x) => Math.sqrt(x[0]) / (Math.sqrt(x[0]) + Math.sqrt(x[1]) || 1);
-          let s = `start $1 : ${fmtInt(Ri)}$ → next generation, dominant: $${fmtInt(dom1)} : ${fmtInt(tot1)}$ $\\approx ${v.fix((dom1 / tot1) * 1e4, 3)} : 10{,}000$; recessive: $1 : ${fmtInt(tot1)}$ — and no change afterwards · right: start $q^2 - pr = ${v.fix(q * q - p * r, 4)}$, after one generation $q_1^2 - p_1r_1 = ${v.fix(q1 * q1 - p1 * r1, 4)}$, $A$-allele share $p + q = ${v.fix(p + q, 3)}$`;
+          let s = `start $1 : ${texInt(Ri)}$ → next generation, dominant: $${texInt(dom1)} : ${texInt(tot1)}$ $\\approx ${v.fix((dom1 / tot1) * 1e4, 3)} : 10{,}000$; recessive: $1 : ${texInt(tot1)}$ — and no change afterwards · right: start $q^2 - pr = ${v.fix(q * q - p * r, 4)}$, after one generation $q_1^2 - p_1r_1 = ${v.fix(q1 * q1 - p1 * r1, 4)}$, $A$-allele share $p + q = ${v.fix(p + q, 3)}$`;
           if (+pop.value) s += ` · with ${fmtInt(+pop.value)} individuals the allele share wandered to ${v.fix(last[0] + (1 - last[0] - last[1]) / 2, 3)} in ${P.length - 1} generations, always near the curve`;
           return s;
         });
@@ -261,12 +263,12 @@ which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exact
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wilhelm_Weinberg' },
       viz(v) {
         const M = v.M;
-        const mS = v.slider('pure stocks: share that is $AA$', 0.02, 0.98, 0.3, { step: 0.01 });
-        const hS = v.slider('hybrids $AB$ in the founding mix', 0, 0.6, 0.2, { step: 0.01 });
+        const mS = v.slider('pure stocks: share that is $AA$', 0.02, 0.98, 0.15, { step: 0.01 });
+        const hS = v.slider('hybrids $AB$ in the founding mix', 0, 0.6, 0.1, { step: 0.01 });
         const trait = v.select('trait $A$ is', [{ value: 'rec', label: 'recessive' }, { value: 'dom', label: 'dominant' }], 'rec');
         v.button('Weinberg’s twinning estimate (m = ½, recessive)', () => { hS.set(0); mS.set(0.5); trait.set('rec'); });
         const L = v.stage({ x: [-0.55, 6.6], y: [-0.32, 2.62], axes: false, height: 340, weight: 1.15, minWidth: 300, title: 'genotype composition, generation by generation' });
-        const R = v.stage({ x: [0.3, 4.7], y: [0, 1.08], axes: 'box', height: 340, weight: 1, minWidth: 260, xticks: [[1, 'everyone'], [2, 'parents'], [3, 'siblings'], [4, 'children']], title: 'share of the trait among relatives of a bearer' });
+        const R = v.stage({ x: [0.3, 4.7], y: [-0.07, 1.08], axes: 'box', height: 340, weight: 1, minWidth: 260, xticks: [[1, 'everyone'], [2, 'parents'], [3, 'siblings'], [4, 'children']], title: 'share of the trait among relatives of a bearer' });
         const comp = () => {
           const m = mS.value * (1 - hS.value), h = hS.value, n = 1 - m - h, a = m + h / 2;
           const pan = [[m, h, n]], inb = [[m, h, n]];
@@ -304,7 +306,7 @@ which satisfy $q_1^2 = p_1r_1$; and a distribution is reproduced unchanged exact
           // relatives
           const ex = relatives(a, trait.value === 'dom'), vals = [ex.pop, ex.parents, ex.sibs, ex.kids], sim = simFam();
           vals.forEach((x, i) => {
-            R.rect(i + 1 - 0.3, 0, i + 1 + 0.3, x, { fill: i === 2 ? 'purple' : 'accent', fillAlpha: 0.35, color: i === 2 ? 'purple' : 'accent', width: 1.4 });
+            R.rect(i + 1 - 0.3, 0, i + 1 + 0.3, x, { fill: 'accent', fillAlpha: i === 0 ? 0.18 : 0.38, color: 'accent', width: 1.4 });
             R.text(v.fix(x, 3), i + 1, x + 0.045, { size: 11, color: 'ink', align: 'center' });
             const s = sim[i]; R.line(i + 1 + 0.15, s.p - 2 * s.se, i + 1 + 0.15, s.p + 2 * s.se, { color: 'gold', width: 2 }); R.dot(i + 1 + 0.15, s.p, { r: 4.5, color: 'gold' });
           });

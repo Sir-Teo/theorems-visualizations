@@ -70,15 +70,15 @@ export default {
 
 So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $\mathrm{INFINITE}_{\mathrm{DFA}}$ are decidable. Moreover a finite $L(M)$ contains only strings of length $<|Q|$, and if $L(M)$ is infinite it contains some string of length between $|Q|$ and $2|Q|-1$.`,
       idea: String.raw`Accepted strings are exactly the labels of paths from $q_0$ to $F$, so emptiness is plain reachability, solved by breadth-first search. A path from $q_0$ to $F$ can be made arbitrarily long only by going around a cycle, and that cycle must consist of states lying on such paths (useful states); conversely, a useful cycle $q\xrightarrow{y}q$ with $q_0\xrightarrow{x}q\xrightarrow{z}F$ yields $xy^kz\in L(M)$ for every $k$ — the germ of the pumping lemma (4.1).`,
-      caption: String.raw`Step through the algorithm: the forward search fills the reachable states (blue), the backward search rings the states that can still reach acceptance (green), and a cycle through such states is drawn in red. **Click a state** to toggle whether it accepts; **click an arrow** to cut it (or restore it) — a cut arrow leads to the implicit dead state. Watch an unreachable accepting state change nothing, and an accepting trap state turn a finite language infinite.`,
+      caption: String.raw`Step through the algorithm: the forward search fills the reachable states (blue), the backward search turns green the reachable states that can still reach acceptance, and a cycle through green states is drawn in red. **Click a state** to toggle whether it accepts; **click an arrow** to cut it (or restore it) — a cut arrow leads to the implicit dead state. Watch an unreachable accepting state change nothing, and an accepting trap state turn a finite language infinite.`,
       deps: ['toc-2.3', 'algo-8.4'],
       refs: ['Sipser §4.1'],
       credit: 'Rabin & Scott, 1959',
       tags: ['decidability', 'graph search'],
       viz(v) {
-        const BASE = () => dfa(['a', 'b'], [['q0', 1.2, 4, 0], ['q1', 3.8, 6, 0], ['q2', 3.8, 2, 0], ['q3', 6.6, 4, 1], ['q4', 9, 6.2, 1], ['q5', 9, 1.8, 0]], 'q0', {
+        const BASE = () => dfa(['a', 'b'], [['q0', 1.4, 3.6, 0], ['q1', 5, 5.3, 0], ['q2', 5, 1.9, 0], ['q3', 8.8, 3.6, 1], ['q4', 12.4, 5.3, 1], ['q5', 12.4, 1.9, 0]], 'q0', {
           q0: { a: 'q1', b: 'q2' }, q1: { a: 'q3', b: 'q2' }, q2: { a: 'q3', b: 'q5' }, q3: { a: 'q5', b: 'q5' }, q4: { a: 'q4', b: 'q3' }, q5: { a: 'q5', b: 'q5' },
-        }, { loops: { q4: 90, q5: 0 } });
+        }, { loops: { q4: 0, q5: 0 } });
         const PRE = {
           finite: () => BASE(),
           infinite: () => { const D = BASE(); D.delta.q1.b = ['q1']; D.loops.q1 = 90; return D; },
@@ -86,7 +86,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
         };
         let D0 = PRE.finite(), cut = new Set();
         v.select('machine', [{ value: 'finite', label: 'finite language' }, { value: 'infinite', label: 'with a useful cycle' }, { value: 'empty', label: 'empty language' }], 'finite', { onChange: (k) => { D0 = PRE[k](); cut = new Set(); G.sync(D0); S.reset({ at: 'end' }); } });
-        const s = v.stage({ x: [0, 10], y: [0, 7.6], axes: false, equal: true, height: 330 });
+        const s = v.stage({ x: [-0.2, 14.6], y: [0.1, 7.3], axes: false, equal: true, height: 300, full: true });
         const G = dfaGraph(v, s, D0);
         const live = () => { const D = cloneD(D0); for (const k of cut) { const [q, c] = k.split('|'); D.delta[q][c] = []; } return D; };
         let A = analyse(live());
@@ -97,24 +97,23 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           S.reset({ at: 'end' }); return true;
         };
         const S = v.steps({ frames: () => (A = analyse(live())).frames, speed: 1.3, start: 'end', still: 'end',
-          code: ['R ← states reachable from $q_0$   ▷ BFS', 'if R ∩ F = ∅: return EMPTY', 'U ← states of R that can reach F   ▷ BFS backwards', 'if the arrows inside U form a cycle: return INFINITE', 'return FINITE'], codeTitle: 'emptiness and finiteness' });
+          code: ['R ← states reachable from $q_0$   ▷ BFS', 'if R ∩ F = ∅: return EMPTY', 'U ← states of R that can reach F   ▷ BFS backwards', 'if the arrows inside U form a cycle: return INFINITE', 'return FINITE'], codeTitle: 'emptiness and finiteness', codePos: 'below' });
         v.render(() => {
           const f = S.frame, D = live(), cycE = new Set(); const cy = f.cyc || [];
           for (let i = 0; i + 1 < cy.length; i++) cycE.add(cy[i] + '|' + cy[i + 1]);
           for (const e of G.edges) e.dash = e.syms.every((c) => cut.has(e.from + '|' + c)) ? [3, 4] : undefined;
           drawDFA(v, s, G, D0, {
-            fill: (id) => (id === f.cur ? 'gold' : f.R?.has(id) ? 'accent' : null),
-            color: (id) => (f.C?.has(id) ? 'green' : f.R?.has(id) ? 'accent' : 'faint'),
+            fill: (id) => (id === f.cur ? 'gold' : f.C?.has(id) ? 'green' : f.R?.has(id) ? 'accent' : null),
+            color: (id) => (f.R?.has(id) ? 'accent' : 'faint'),
             labelColor: (id) => (f.R?.has(id) && id !== f.cur ? 'panel' : !f.R?.has(id) ? 'muted' : null),
-            ring: (id) => (f.C?.has(id) ? 'green' : 'ink'),
             edgeColor: (e) => (e.syms.every((c) => cut.has(e.from + '|' + c)) ? 'faint' : cycE.has(e.from + '|' + e.to) ? 'red' : null),
             edgeWidth: (e) => (cycE.has(e.from + '|' + e.to) ? 3.4 : null),
             dim: D0.states.filter((q) => f.phase >= 2 && !f.R?.has(q.id)).map((q) => q.id),
           });
           const vd = f.verdict;
-          s.corner(vd ? { empty: 'L(M) = ∅', finite: 'L(M) is finite', infinite: 'L(M) is infinite' }[vd] : ['', 'forward search', '', 'backward search', 'cycle test'][f.phase || 1], 'tr', { size: 13, weight: 700, color: vd === 'empty' ? 'red' : vd ? 'green' : 'muted' });
+          s.corner(vd ? { empty: 'verdict: L(M) = ∅', finite: 'verdict: L(M) is finite', infinite: 'verdict: L(M) is infinite' }[vd] : ['', 'forward search', '', 'backward search', 'cycle test'][f.phase || 1], 'tl', { size: 13, weight: 700, color: vd === 'empty' ? 'red' : vd ? 'green' : 'muted' });
         });
-        v.legend([['accent', 'reachable', { dot: true }], ['green', 'can reach acceptance', { dot: true }], ['red', 'useful cycle'], ['gold', 'being explored', { dot: true }]]);
+        v.legend([['accent', 'reachable', { dot: true }], ['green', 'useful: reachable and can reach acceptance', { dot: true }], ['red', 'useful cycle'], ['gold', 'being explored', { dot: true }]]);
         v.readout(() => {
           const D = live(), n = D.states.length, by = []; for (let L = 0; L < 2 * n; L++) by.push(layer(D.alpha, L).filter((u) => run(D, u).acc));
           const counts = by.map((x) => x.length);
@@ -142,20 +141,20 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
       viz(v) {
         const PAIRS = {
           ends: () => [
-            dfa(['a', 'b'], [['q0', 1.2, 7.6, 0], ['q1', 3.6, 9.2, 0], ['q2', 6, 7.6, 1]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q2' }, q2: { a: 'q1', b: 'q0' } }, { loops: { q0: 270, q1: 90 } }),
-            dfa(['a', 'b'], [['s0', 1.2, 3.4, 0], ['s1', 3.6, 4.8, 0], ['s2', 6, 3.4, 1], ['s3', 3.6, 1.2, 0]], 's0', { s0: { a: 's1', b: 's3' }, s1: { a: 's1', b: 's2' }, s2: { a: 's1', b: 's0' }, s3: { a: 's0', b: 's3' } }, { loops: { s1: 90, s3: 270 } }),
+            dfa(['a', 'b'], [['q0', 1.2, 8.3, 0], ['q1', 3.6, 9.5, 0], ['q2', 6, 8.3, 1]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q2' }, q2: { a: 'q1', b: 'q0' } }, { loops: { q0: 225, q1: 90 }, startDir: 150 }),
+            dfa(['a', 'b'], [['s0', 1.2, 3.9, 0], ['s1', 3.6, 5.1, 0], ['s2', 6, 3.9, 1], ['s3', 3.6, 1.6, 0]], 's0', { s0: { a: 's1', b: 's3' }, s1: { a: 's1', b: 's2' }, s2: { a: 's1', b: 's0' }, s3: { a: 's0', b: 's3' } }, { loops: { s1: 30, s3: 0 } }),
           ],
           even: () => [
-            dfa(['a', 'b'], [['q0', 1.6, 8.2, 1], ['q1', 5.4, 8.2, 0]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q0', b: 'q1' } }, { loops: { q0: 90, q1: 90 } }),
-            dfa(['a', 'b'], [['s0', 1.4, 4.4, 1], ['s1', 5.6, 4.4, 0], ['s2', 5.6, 1.2, 1], ['s3', 1.4, 1.2, 0]], 's0', { s0: { a: 's1', b: 's0' }, s1: { a: 's2', b: 's1' }, s2: { a: 's3', b: 's2' }, s3: { a: 's0', b: 's3' } }, { loops: { s0: 90, s1: 90, s2: 270, s3: 270 } }),
+            dfa(['a', 'b'], [['q0', 1.6, 8.8, 1], ['q1', 5.6, 8.8, 0]], 'q0', { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q0', b: 'q1' } }, { loops: { q0: 90, q1: 90 } }),
+            dfa(['a', 'b'], [['s0', 1.6, 4.9, 1], ['s1', 5.6, 4.9, 0], ['s2', 5.6, 1.9, 1], ['s3', 1.6, 1.9, 0]], 's0', { s0: { a: 's1', b: 's0' }, s1: { a: 's2', b: 's1' }, s2: { a: 's3', b: 's2' }, s3: { a: 's0', b: 's3' } }, { loops: { s0: 135, s1: 45, s2: 315, s3: 225 }, startDir: 200 }),
           ],
         };
         let [M1, M2] = PAIRS.ends();
         v.select('pair', [{ value: 'ends', label: 'ends in ab — two attempts' }, { value: 'even', label: 'even # of a — 2 vs 4 states' }], 'ends', { onChange: (k) => { [M1, M2] = PAIRS[k](); G1.sync(M1); G2.sync(M2); S.reset({ at: 'end' }); } });
-        const ms = v.stage({ x: [0, 7.2], y: [0, 10.4], axes: false, equal: true, height: 360, weight: 0.8 });
-        const bs = v.stage({ x: [0, 10], y: [0, 7], axes: false, height: 360, weight: 1.25 });
+        const ms = v.stage({ x: [0, 7.2], y: [0, 11.8], axes: false, equal: true, height: 410, weight: 0.85 });
+        const bs = v.stage({ x: [0, 10], y: [0, 7], axes: false, height: 410, weight: 1.2 });
         const G1 = dfaGraph(v, ms, M1, { r: 15, texSize: 13.5 }), G2 = dfaGraph(v, ms, M2, { r: 15, texSize: 13.5 });
-        const BT = v.graph(bs, { nodes: [], edges: [], layout: 'none', directed: true, r: 21, autoRadius: false, texSize: 11.5, draggable: false });
+        const BT = v.graph(bs, { nodes: [], edges: [], layout: 'none', directed: true, shape: 'box', r: 14, texSize: 12.5, draggable: false });
         G2.onClick = ({ node, edge }) => {
           if (node) { const st = M2.states.find((x) => x.id === node.id); st.acc = !st.acc; }
           else if (edge) { const c = edge.syms[0], ids = M2.states.map((x) => x.id), k = ids.indexOf(tgt(M2, edge.from, c)[0]); M2.delta[edge.from][c] = [ids[(k + 1) % ids.length]]; G2.sync(M2); }
@@ -198,15 +197,15 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
             nodeFill: (id) => (isAcc(M1, R.info[id].p) !== isAcc(M2, R.info[id].q) ? 'red' : id === f.cur ? 'gold' : null),
             nodeColor: (id) => (isAcc(M1, R.info[id].p) && isAcc(M2, R.info[id].q) ? 'green' : null),
             labelColor: (id) => (isAcc(M1, R.info[id].p) !== isAcc(M2, R.info[id].q) ? 'panel' : 'ink'),
-            edgeLabel: (e) => e.label, highlightPath: path, pathColor: 'red',
+            edgeLabel: (e) => e.label, highlightPath: path, pathColor: 'orange',
           });
           bs.corner(f.final ? (R.found ? `they differ on ${sh(R.info[R.found].via)}` : 'equivalent') : `${shown.length} pairs so far`, 'tr', { size: 13, weight: 700, color: f.final ? (R.found ? 'red' : 'green') : 'muted' });
           // the two machines, with the current pair lit
           const cp = R.info[f.cur] || R.info[R.order[0]];
           drawDFA(v, ms, G1, M1, { fill: (id) => (id === cp.p ? 'gold' : null) });
           drawDFA(v, ms, G2, M2, { fill: (id) => (id === cp.q ? 'gold' : null) });
-          ms.tex('M_1', 0.4, 9.9, { size: 15, color: 'muted' }); ms.tex('M_2', 0.4, 5.6, { size: 15, color: 'muted' });
-          ms.line(0.2, 6.2, 7, 6.2, { color: 'grid', width: 1 });
+          ms.tex('M_1', -0.6, 11.0, { size: 15, color: 'muted' }); ms.tex('M_2', -0.6, 6.4, { size: 15, color: 'muted' });
+          ms.line(-1, 7.0, 8.2, 7.0, { color: 'grid', width: 1 });
         });
         v.legend([['gold', 'current pair', { dot: true }], ['red', 'mixed pair: exactly one accepts', { dot: true }], ['green', 'both accept (ring)', { dot: true }]]);
         v.readout(() => {
@@ -225,7 +224,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
       statement: String.raw`A **finite-state transducer** reads input symbols and writes output symbols. A **Mealy machine** $(Q,\Sigma,\Gamma,\delta,\lambda,q_0)$ emits $\lambda(q,a)\in\Gamma$ on each transition $q\xrightarrow{a}\delta(q,a)$, so its $t$-th output depends on the current state and the current input. A **Moore machine** emits $\lambda(q)$ in each state, so its output depends on the state alone and reacts to an input one step later. The two models are equivalent up to that one-step delay: a Moore machine can be turned into a Mealy machine with the same states, and a Mealy machine into a Moore machine whose states are pairs (state, last output), at most $|Q|\,|\Gamma|$ of them.`,
       scope: String.raw`An idealised synchronous circuit: one input symbol per clock tick, a finite register as memory, no timing faults. Mealy outputs model combinational logic after the register; Moore outputs model outputs taken from the register itself.`,
       idea: String.raw`Adding binary numbers least significant bit first needs to remember only the carry, so a two-state Mealy machine does it: on input bits $(a,b)$ in carry state $c$ it outputs $a\oplus b\oplus c$ and moves to carry $\mathrm{maj}(a,b,c)$. A Moore machine cannot output before it has moved, so it stores the output in its state — four states (carry, sum bit) — and every sum bit appears one tick later. Sequential circuits are built exactly this way: a register for the state and logic for the outputs.`,
-      caption: String.raw`Choose two 8-bit numbers; their bits are fed least significant first, one pair per tick. Step through: the Mealy adder (left) emits each sum bit on its transition, the Moore adder (right) emits the bit stored in its state, and the timing chart shows the Moore row is the Mealy row shifted by one tick. Switch off the final $00$ input and sums of 256 or more lose their last carry.`,
+      caption: String.raw`Choose two 8-bit numbers; their bits are fed least significant first, one pair per tick. Step through: the Mealy adder (left, states = carry) emits each sum bit on its transition, the Moore adder (right; state $c_1/0$ means carry 1, output 0) emits the bit stored in its state, and the timing chart shows the Moore row is the Mealy row shifted by one tick. Switch off the final $00$ input and sums of 256 or more lose their last carry.`,
       deps: ['toc-2.1'],
       refs: ['Sipser §1.1'],
       credit: 'Mealy, 1955; Moore, 1956',
@@ -235,20 +234,20 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
         const bS = v.slider('$B$', 0, 255, 103, { int: true, onChange: () => S.reset({ at: 'keep' }) });
         const pad = v.toggle('feed a final 00 (flush the carry)', true, { onChange: () => S.reset({ at: 'keep' }) });
         const ml = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 240, weight: 1 });
-        const mo = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 240, weight: 1 });
-        const tc = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 178, full: true });
+        const mo = v.stage({ x: [0, 10], y: [0, 6.6], axes: false, equal: true, height: 240, weight: 1 });
+        const tc = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 176, full: true });
         // Mealy: carry states; Moore: (carry, sum) states
-        const MEALY = { nodes: [{ id: 'c0', x: 2.6, y: 2.6, label: '$c=0$' }, { id: 'c1', x: 7.4, y: 2.6, label: '$c=1$' }] };
+        const MEALY = { nodes: [{ id: 'c0', x: 2.6, y: 2.6, label: '$c_0$' }, { id: 'c1', x: 7.4, y: 2.6, label: '$c_1$' }] };
         MEALY.edges = [{ from: 'c0', to: 'c0', label: '00/0, 01/1, 10/1', angle: 90, directed: true }, { from: 'c0', to: 'c1', label: '11/0', directed: true }, { from: 'c1', to: 'c0', label: '00/1', directed: true }, { from: 'c1', to: 'c1', label: '01/0, 10/0, 11/1', angle: 90, directed: true }];
-        const GM = v.graph(ml, { ...MEALY, layout: 'none', r: 24, autoRadius: false, texSize: 13, draggable: false, edgeFontSize: 10.5 });
-        const mid = (c, s) => `m${c}${s}`, MOP = [[1.6, 4.6], [8.4, 4.6], [1.6, 1.2], [8.4, 1.2]];
-        const moNodes = [[0, 0], [0, 1], [1, 0], [1, 1]].map(([c, s], i) => ({ id: mid(c, s), x: MOP[i][0], y: MOP[i][1], label: `$c{=}${c}\\mid ${s}$` }));
+        const GM = v.graph(ml, { ...MEALY, layout: 'none', r: 22, autoRadius: false, texSize: 15, draggable: false, edgeFontSize: 10.5 });
+        const mid = (c, s) => `m${c}${s}`, MOP = [[1.6, 4.6], [8.4, 4.6], [1.6, 1.3], [8.4, 1.3]];
+        const moNodes = [[0, 0], [0, 1], [1, 0], [1, 1]].map(([c, s], i) => ({ id: mid(c, s), x: MOP[i][0], y: MOP[i][1], label: `$c_${c}/${s}$` }));
         const moEdges = [];
         for (const [c, s] of [[0, 0], [0, 1], [1, 0], [1, 1]]) {
           const tg = {}; for (const [a, b] of [[0, 0], [0, 1], [1, 0], [1, 1]]) { const c2 = (a + b + c) >= 2 ? 1 : 0, s2 = (a + b + c) % 2; (tg[mid(c2, s2)] ||= []).push(`${a}${b}`); }
           for (const [t, l] of Object.entries(tg)) moEdges.push({ from: mid(c, s), to: t, label: l.join(','), directed: true, angle: t === mid(c, s) ? (MOP[[0, 0, 1, 1].indexOf(c) + s][0] < 5 ? 180 : 0) : undefined });
         }
-        const GO = v.graph(mo, { nodes: moNodes, edges: moEdges, layout: 'none', r: 25, autoRadius: false, texSize: 12, draggable: false, edgeFontSize: 10 });
+        const GO = v.graph(mo, { nodes: moNodes, edges: moEdges, layout: 'none', r: 22, autoRadius: false, texSize: 14, draggable: false, edgeFontSize: 10 });
         const sim = () => {
           const T = pad.value ? 9 : 8, A = aS.value, B = bS.value, a = [], b = [], car = [0], out = [], moSt = [mid(0, 0)];
           for (let t = 0; t < T; t++) { a.push(A >> t & 1); b.push(B >> t & 1); const tot = a[t] + b[t] + car[t]; out.push(tot % 2); car.push(tot >= 2 ? 1 : 0); moSt.push(mid(car[t + 1], tot % 2)); }
@@ -265,7 +264,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
             edgeLabel: (e) => e.label,
           });
           startArrow(ml, GM, { start: 'c0', states: [{ id: 'c0', acc: false }], startDir: 270 });
-          ml.corner('Mealy: output on the arrows (in/out)', 'tl', { size: 12, color: 'muted', weight: 600 });
+          ml.corner('Mealy: arrows read in/out (carry state c)', 'tl', { size: 12, color: 'muted', weight: 600 });
           const ms = r.moSt[t], pms = t > 0 ? r.moSt[t - 1] : null;
           GO.draw({
             nodeFill: (id) => (id === ms ? 'gold' : null), labelColor: (id) => (id === ms ? 'ink' : null),
@@ -274,15 +273,15 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
             edgeLabel: (e) => e.label,
           });
           startArrow(mo, GO, { start: 'm00', states: [{ id: 'm00', acc: false }], startDir: 90 });
-          mo.corner('Moore: output = the bit in the state', 'tl', { size: 12, color: 'muted', weight: 600 });
+          mo.corner('Moore: state c/s outputs its bit s', 'tl', { size: 12, color: 'muted', weight: 600 });
           // timing chart
-          const P = pen(tc, v), x0 = 150, cw = Math.min(64, (P.W - x0 - 20) / (r.T + 1)), rowsY = [22, 48, 74, 108, 142];
+          const P = pen(tc, v), x0 = 150, cw = Math.min(64, (P.W - x0 - 20) / (r.T + 1)), rowsY = [32, 58, 84, 116, 148];
           const lab = ['input a (bit t of A)', 'input b (bit t of B)', 'carry state', 'Mealy output', 'Moore output'];
           lab.forEach((L, i) => P.sans(L, x0 - 12, rowsY[i], { align: 'right', size: 11.5, color: i >= 3 ? 'ink' : 'muted', weight: i >= 3 ? 600 : 500 }));
           for (let k = 0; k <= r.T; k++) {
             const x = x0 + k * cw;
-            if (k === t) P.box(x + 1, 6, cw - 2, P.H - 12, { r: 4, fill: 'gold', alpha: 0.12, stroke: false });
-            P.text(`t=${k}`, x + cw / 2, 6, { size: 9.5, color: 'muted', font: SANS, baseline: 'top' });
+            if (k === t) P.box(x + 1, 3, cw - 2, P.H - 6, { r: 4, fill: 'gold', alpha: 0.12, stroke: false });
+            P.text(`t = ${k}`, x + cw / 2, 12, { size: 10, color: k === t ? 'ink' : 'muted', font: SANS, weight: k === t ? 700 : 500 });
             const cell = (val, y, col, on) => { P.box(x + 4, y - 10, cw - 8, 20, { r: 3, fill: val ? col : null, alpha: on ? 0.75 : 0.15, stroke: on ? col : 'faint' }); P.text(String(val), x + cw / 2, y + 0.5, { size: 12, weight: 600, color: on ? (val ? 'panel' : 'ink') : 'muted' }); };
             if (k < r.T) { cell(r.a[k], rowsY[0], 'blue', k < t); cell(r.b[k], rowsY[1], 'blue', k < t); cell(r.car[k], rowsY[2], 'muted', k <= t); cell(r.out[k], rowsY[3], 'orange', k < t); }
             cell(k === 0 ? 0 : r.out[k - 1], rowsY[4], 'purple', k <= t);
@@ -316,8 +315,8 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
         v.button('b', () => { if (word.length < 60) { word.push(1); S.reset({ at: 'end' }); } });
         v.button('⌫', () => { word.pop(); S.reset({ at: 'end' }); });
         v.button('shortest reset word', () => { const w = resetWord(delta); if (w) { word = w; S.reset({ at: 0 }); } });
-        const gs = v.stage({ x: [-1.5, 1.5], y: [-1.38, 1.38], axes: false, equal: true, height: 320, weight: 1.2 });
-        const cs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 1 });
+        const gs = v.stage({ x: [-1.7, 1.7], y: [-1.72, 1.66], axes: false, equal: true, height: 330, weight: 1.2 });
+        const cs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1 });
         let delta = cerny(4), G = null, best = null;
         function rebuild() {
           const n = nS.value;
@@ -390,12 +389,12 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
       viz(v) {
         const NMAX = 10;
         const perN = v.slider('automata per $n$', 5, 60, 24, { int: true, onChange: () => sample() });
-        const kSel = v.select('letters', [{ value: 2, label: '2' }, { value: 3, label: '3' }], 2, { onChange: () => { sample(); hunted = []; } });
+        const kSel = v.select('letters', [{ value: 2, label: '2' }, { value: 3, label: '3' }], 2, { onChange: () => { sample(); hunt(); } });
         let seed = 1, pts = [], hunted = [], nonsync = 0;
         v.button('Resample', () => { seed++; sample(); });
         v.button('Hunt for long reset words', () => hunt());
         const showC = v.toggle('Černý family', true);
-        const s = v.stage({ x: [1.5, NMAX + 0.5], y: [0, 92], axes: 'box', height: 330, full: true, xlabel: 'number of states n', ylabel: 'shortest reset word', xticks: [2, 3, 4, 5, 6, 7, 8, 9, 10] });
+        const s = v.stage({ x: [1.5, NMAX + 0.5], y: [-9, 92], axes: 'box', height: 340, full: true, xlabel: 'number of states n', ylabel: 'length of the shortest reset word', xticks: [2, 3, 4, 5, 6, 7, 8, 9, 10], yticks: [0, 20, 40, 60, 80] });
         function sample() {
           const r = v.rng(1000 * seed + 17), k = +kSel.value; pts = []; nonsync = 0;
           for (let n = 2; n <= NMAX; n++) for (let i = 0; i < perN.value; i++) { const d = randomAut(n, k, r), w = resetWord(d); if (w) pts.push([n + (r() - 0.5) * 0.36, w.length, n]); else nonsync++; }
@@ -406,7 +405,7 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
             let best = null, bestL = -1;
             for (let restart = 0; restart < 3; restart++) {
               let d = randomAut(n, k, r), w = resetWord(d), L = w ? w.length : -1;
-              for (let it = 0; it < 260; it++) {
+              for (let it = 0; it < 220; it++) {
                 const d2 = d.map((row) => row.slice()); d2[r.int(0, k - 1)][r.int(0, n - 1)] = r.int(0, n - 1);
                 const w2 = resetWord(d2), L2 = w2 ? w2.length : -1;
                 if (L2 >= L) { d = d2; L = L2; }
@@ -416,7 +415,7 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
             hunted.push([n, bestL]);
           }
         }
-        sample();
+        sample(); hunt();
         const CL = {}; for (let n = 2; n <= NMAX; n++) CL[n] = resetWord(cerny(n)).length;
         v.render(() => {
           s.fn((n) => (n - 1) ** 2, { color: 'green', width: 2.2, domain: [1.5, NMAX + 0.5] });
@@ -429,10 +428,10 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
         });
         v.legend([['accent', 'random automata', { dot: true }], ['orange', 'worst found by hill climbing', { dot: true }], ['red', 'Černý automata $C_n$', { dot: true }], ['green', '$(n-1)^2$']]);
         v.readout(() => {
-          const ratio = (arr) => arr.reduce((m, [x, y, n]) => Math.max(m, y / ((n ?? Math.round(x)) - 1) ** 2), 0);
+          const ratio = (arr) => arr.reduce((m, [x, y, n]) => ((n ?? Math.round(x)) >= 3 ? Math.max(m, y / ((n ?? Math.round(x)) - 1) ** 2) : m), 0);
           const rr = ratio(pts), hr = hunted.length ? ratio(hunted.map(([n, L]) => [n, L, n])) : null;
           const cOK = [2, 3, 4, 5, 6, 7, 8, 9, 10].every((n) => CL[n] === (n - 1) ** 2);
-          return `${pts.length} random synchronizing automata (${nonsync} not synchronizing, skipped): longest reset word / $(n-1)^2$ at most **${v.fix(rr, 2)}**` + (hr != null ? ` · hill climbing: at most **${v.fix(hr, 2)}**` : '') + ` · Černý family: exactly $(n-1)^2$ for $n\\le 10$ ${cOK ? '✓' : '✗'} · no counterexample, as expected`;
+          return `${pts.length} random synchronizing automata (${nonsync} not synchronizing, skipped): (shortest reset word)$/(n-1)^2$ is at most **${v.fix(rr, 2)}** for $n\ge 3$` + (hr != null ? ` · the hill climber's worst: **${v.fix(hr, 2)}** (${hunted.map(([n, L]) => `${L}/${(n - 1) ** 2}`).join(', ')})` : '') + ` · Černý family: exactly $(n-1)^2$ for $n\\le 10$ ${cOK ? '✓' : '✗'} · no counterexample, as expected`;
         });
       },
     },
