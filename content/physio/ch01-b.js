@@ -151,7 +151,7 @@ export default {
 $$E = \frac{RT}{zF}\,\ln\frac{c_{\text{out}}}{c_{\text{in}}} \;\approx\; \frac{61.5\ \mathrm{mV}}{z}\,\log_{10}\frac{c_{\text{out}}}{c_{\text{in}}}\quad\text{at } 37^\circ\mathrm{C}.$$
 For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{Cl^-}$ 4/110 mM inside/outside) this gives $E_K \approx -89$ mV, $E_{Na} \approx +67$ mV and $E_{Cl} \approx -89$ mV. Only a tiny number of ions has to cross to charge the membrane capacitance to $E$, so the concentrations themselves barely change.`,
       idea: String.raw`Equilibrium means equal electrochemical potential on both sides: $RT\ln c_{\text{in}} + zF\phi_{\text{in}} = RT\ln c_{\text{out}} + zF\phi_{\text{out}}$, which rearranges to Nernst's formula. Equivalently, by the Boltzmann distribution (thermo-6.1) the concentration ratio of particles of charge $ze$ across a potential step $V$ is $e^{-zeV/kT}$. Kinetically, ions diffuse down their concentration gradient. Each one that crosses carries charge, which builds a voltage across the membrane capacitance (about $1\ \mu\mathrm{F/cm^2}$). That voltage drives a return drift until the two fluxes balance, the Nernst–Planck picture. To charge $1\ \mathrm{cm^2}$ to 90 mV takes only about $10^{-12}$ mol of $\mathrm{K^+}$, a negligible fraction of the cell's content. The same formula is the electrode potential of electrochemistry (pchem-8.6).`,
-      caption: String.raw`A membrane patch with three open channels; the cell is on the left. Each dot is a permeant ion doing a Brownian random walk. A crossing is accepted with the Boltzmann factor of the energy it costs against the membrane voltage, and that voltage is produced by the ions that have already crossed: their charges line up along the two faces of the membrane, the capacitor. The two arrows above compare the push of diffusion (the concentration gradient) with the pull of the voltage, and they balance at the Nernst potential. Right: the voltage over time, which fluctuates thermally because the patch is tiny, and its mean over the last 4 s, against the Nernst prediction (dashed). Change the ion or drag the concentrations.`,
+      caption: String.raw`A membrane patch with three open channels; the cell is on the left. Each dot is a permeant ion doing a Brownian random walk. A crossing is accepted with the Boltzmann factor of the energy it costs against the membrane voltage, and that voltage is produced by the ions that have already crossed: their charges line up along the two faces of the membrane, the capacitor. The two arrows above compare the push of diffusion (the concentration gradient) with the pull of the voltage, and they balance at the Nernst potential. Right: the voltage over time, which fluctuates thermally because the patch is tiny, and its mean over the last 8 s, against the Nernst prediction (dashed); the readout gives the statistical uncertainty of that mean. Change the ion or drag the concentrations.`,
       scope: String.raw`Holds at equilibrium for one permeant ion species (ideal dilute solutions, activities ≈ concentrations); with several permeant species the membrane sits at a weighted compromise (1.9) and no single ion is at equilibrium.`,
       deps: ['thermo-6.1', 'pchem-8.6'],
       see: ['neuro-1.3', 'pchem-5.16', 'pchem-10.8', 'thermo-3.2'],
@@ -166,7 +166,7 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
         const Tc = v.slider('temperature', 0, 40, 37, { step: 1, fmt: (x) => `${x} °C` });
         const sb = v.stage({ x: [-1.05, 1.05], y: [-0.08, 1.32], equal: true, axes: false, height: 320, weight: 1.15 });
         const sv = v.stage({ x: [0, 20], y: [-120, 120], height: 320, axes: 'box', xlabel: 't (s)', ylabel: 'V = φᵢₙ − φₒᵤₜ (mV)', weight: 1, yticks: [-120, -90, -60, -30, 0, 30, 60, 90, 120] });
-        const DEN = 4, DELTA = 2.5, SIG = 0.022, SPS = 700, GAPS = [[0.18, 0.26], [0.46, 0.54], [0.74, 0.82]], P0 = 0.7, TP = 20, WIN = 4;
+        const DEN = 4, DELTA = 2.5, SIG = 0.03, SPS = 900, GAPS = [[0.17, 0.27], [0.45, 0.55], [0.73, 0.83]], P0 = 1, TP = 20, WIN = 8;
         let key = '', sim = null;
         const make = () => {
           const k = ionSel.value, z = ION_Z[k], ci = cin.value, co = cout.value, vt = VT(Tc.value);
@@ -175,7 +175,7 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
             const nIn = Math.round(ci * DEN), nOut = Math.round(co * DEN);
             for (let i = 0; i < nIn; i++) P.push([-1 + r() * 0.97, r()]);
             for (let i = 0; i < nOut; i++) P.push([0.03 + r() * 0.97, r()]);
-            return { P, r, n: 0, hist: { t: [0], V: [0] }, acc: 0, accN: 0, steps: 0, out: 0, inn: 0 };
+            return { P, r, n: 0, hist: { t: [0], V: [0] }, steps: 0, out: 0, inn: 0, inT: [] };
           }, (S) => {
             const r = S.r, P = S.P, aOut = Math.min(1, Math.exp((-z * z * DELTA * (S.n + 0.5)) / vt)), aIn = Math.min(1, Math.exp((-z * z * DELTA * (0.5 - S.n)) / vt));
             for (const q of P) {
@@ -184,25 +184,25 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
               if ((q[0] < 0) !== (nx < 0)) {
                 const inGap = GAPS.some(([a, b]) => y > a && y < b);
                 const leaving = q[0] < 0;
-                if (inGap && r() < P0 * (leaving ? aOut : aIn)) { q[0] = nx; q[1] = y; if (leaving) { S.n++; S.out++; } else { S.n--; S.inn++; } }
+                if (inGap && r() < P0 * (leaving ? aOut : aIn)) { q[0] = nx; q[1] = y; if (leaving) { S.n++; S.out++; } else { S.n--; S.inn++; S.inT.push(S.steps); } }
                 else { q[1] = y; }
                 continue;
               }
               let x = nx; if (x < -1) x = -2 - x; if (x > 1) x = 2 - x;
               q[0] = x; q[1] = y;
             }
-            // reservoirs: hold the concentration in the outer strips (bulk solutions)
-            for (const [lo, hi, c] of [[-1, -0.85, ci], [0.85, 1, co]]) {
+            // reservoirs: hold the concentration exactly in the outer strips (the bulk solutions)
+            for (const [lo, hi, c] of [[-1, -0.7, ci], [0.7, 1, co]]) {
               const want = c * DEN * (hi - lo), have = [];
               for (let i = 0; i < P.length; i++) if (P[i][0] >= lo && P[i][0] <= hi) have.push(i);
               const target = Math.floor(want) + (r() < want - Math.floor(want) ? 1 : 0);
-              if (have.length > target + 1) { const i = have[Math.floor(r() * have.length)]; P[i] = P[P.length - 1]; P.pop(); }
-              else if (have.length < target - 1) P.push([lo + r() * (hi - lo), r()]);
+              let h = have.length;
+              if (h > target) { const kill = new Set(); while (h > target) { kill.add(have.splice(Math.floor(r() * have.length), 1)[0]); h--; } let w = 0; for (let i = 0; i < P.length; i++) if (!kill.has(i)) P[w++] = P[i]; P.length = w; }
+              while (h < target) { P.push([lo + r() * (hi - lo), r()]); h++; }
             }
             S.steps++;
             const V = -z * S.n * DELTA;
-            if (S.steps > SPS) { S.acc += V; S.accN++; }
-            if (S.steps % 14 === 0) { S.hist.t.push(S.steps / SPS); S.hist.V.push(V); }
+            if (S.steps % 18 === 0) { S.hist.t.push(S.steps / SPS); S.hist.V.push(V); }
           });
         };
         let S = null;
@@ -244,12 +244,12 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
           for (let i = 0; i < H.t.length; i++) { acc += H.V[i]; while (H.t[j0] < H.t[i] - WIN) { acc -= H.V[j0]; j0++; } if (H.t[i] >= WIN) mean.push([H.t[i], acc / (i - j0 + 1)]); }
           sv.path(mean, { color: 'accent', width: 2.4 });
           S.mean = mean.length ? mean[mean.length - 1][1] : NaN;
-        }, { period: TP, still: 14 });
-        v.legend([['orange', 'diffusion push (∝ ln of the ratio)'], ['accent', 'electrical pull / 4 s mean of V'], ['gold', 'instantaneous V'], ['green', 'Nernst potential', { dash: true }]]);
+        }, { period: TP, still: 17 });
+        v.legend([['orange', 'diffusion push (∝ ln of the ratio)'], ['accent', 'electrical pull / 8 s mean of V'], ['gold', 'instantaneous V'], ['green', 'Nernst potential', { dash: true }]]);
         v.readout(() => {
           if (!S) return '';
-          const z = ION_Z[ionSel.value], E = nernst(z, cout.value, cin.value, Tc.value), m = S.mean;
-          return `$E = \\frac{RT}{zF}\\ln\\frac{c_{out}}{c_{in}} = \\frac{${v.fix(VT(Tc.value), 2)}\\text{ mV}}{${z > 0 ? '' : '-'}1}\\ln\\frac{${v.fix(cout.value, 1)}}{${v.fix(cin.value, 1)}} = ${v.fix(E, 1)}$ mV · simulated $V$ averaged over the last ${WIN} s: $${isFinite(m) ? v.fix(m, 1) : '…'}$ mV, after ${S.out} outward and ${S.inn} inward crossings; net ${Math.abs(S.n)} ions (${v.fix((100 * Math.abs(S.n)) / Math.max(1, cin.value * DEN), 1)} % of the cell's) charge this tiny patch (a real 20 µm cell moves only about 0.002 % of its K⁺)`;
+          const z = ION_Z[ionSel.value], E = nernst(z, cout.value, cin.value, Tc.value), m = S.mean, nIn = S.inT.filter((k) => k > S.steps - WIN * SPS).length, se = (VT(Tc.value) * Math.sqrt(2 / Math.max(1, nIn))) / Math.abs(z);
+          return `$E = \\frac{RT}{zF}\\ln\\frac{c_{out}}{c_{in}} = \\frac{${v.fix(VT(Tc.value), 2)}\\text{ mV}}{${z > 0 ? '' : '-'}1}\\ln\\frac{${v.fix(cout.value, 1)}}{${v.fix(cin.value, 1)}} = ${v.fix(E, 1)}$ mV · simulated $V$ averaged over the last ${WIN} s: $${isFinite(m) ? v.fix(m, 1) : '…'} \\pm ${v.fix(se, 1)}$ mV (thermal noise), after ${S.out} outward and ${S.inn} inward crossings; net ${Math.abs(S.n)} ions (${v.fix((100 * Math.abs(S.n)) / Math.max(1, cin.value * DEN), 1)} % of the cell's) charge this tiny patch (a real 20 µm cell moves only about 0.002 % of its K⁺)`;
         });
       },
     },

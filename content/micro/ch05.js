@@ -61,8 +61,9 @@ has a solution: some affordable bundle $x^*$ has $u(x^*) \ge u(x)$ for every aff
           if (k === 'free') {
             s.rect(0, 0, H, 12.5, { fill: 'accent', fillAlpha: 0.1, stroke: false });
             s.line(H, 0, H, 12.5, { color: 'accent', width: 2.8 });
-            for (const xa of [0.06 * H, 0.42 * H]) s.arrow(xa, 11, xa, 12.4, { color: 'accent', width: 2, head: 9 });
-            s.text('the set goes on forever', 0.24 * H, 10.5, { color: 'accent', ...LBL, align: 'center' });
+            const Hv = Math.min(H, 12.4);
+            for (const xa of [0.15 * Hv, 0.38 * Hv]) s.arrow(xa, 11, xa, 12.4, { color: 'accent', width: 2, head: 9 });
+            s.text('the set goes on forever', 0.265 * Hv, 10.5, { color: 'accent', ...LBL, align: 'center' });
           } else {
             s.clip(() => s.poly([[0, 0], [H, 0], [0, m / P2]], { fill: 'accent', fillAlpha: 0.1, stroke: false }));
             s.clip(() => s.line(H, 0, 0, m / P2, { color: 'accent', width: k === 'open' ? 2 : 2.8, dash: k === 'open' ? [7, 6] : null }));
@@ -81,7 +82,7 @@ has a solution: some affordable bundle $x^*$ has $u(x^*) \ge u(x)$ for every aff
           vis.forEach((q, i) => { if (i < vis.length - 1) s.dot(q[0], q[1], { r: 3.4, color: 'gold' }); });
           const last = shown[n - 1];
           if (last[1] <= 12.4) s.dot(last[0], last[1], { r: 5.5, color: 'gold', label: `x${SUB(n)}`, labelPos: 'sw', math: false });
-          else s.text(`x${SUB(n)} = (${v.fix(last[0], 1)}, ${v.fix(last[1], 0)}) is off the chart ↑`, H, 11.7, { dx: -8, color: 'gold', ...LBL, align: 'right' });
+          else s.text(`x${SUB(n)} = (${v.fix(last[0], 1)}, ${v.fix(last[1], 0)}) is off the chart ↑`, Math.min(H, 12.4), 11.7, { dx: -8, color: 'gold', ...LBL, align: 'right' });
           let xs = null;
           if (k !== 'free') {
             xs = F.dem(P1, P2, m);
@@ -241,7 +242,7 @@ and a good that is not bought at all has $MU_i/p_i \le \lambda$. The common valu
             b.rect(i + 0.72, 0, i + 1.28, mu[i], { fill: COL[i], fillAlpha: 0.7, color: COL[i], width: 1.2, radius: 4 });
             b.text(v.fix(mu[i], 3), i + 1, mu[i], { dy: -10, align: 'center', color: COL[i], ...LBL });
           });
-          b.hline(lam, { color: 'green', width: 2, dash: [6, 4] }); b.text(`λ* = ${v.fix(lam, 3)}`, n + 0.66, lam, { dy: -10, align: 'right', color: 'green', ...LBL });
+          b.hline(lam, { color: 'green', width: 2, dash: [6, 4] }); b.corner(`λ* = ${v.fix(lam, 3)} (dashed)`, 'tr', { color: 'green', weight: 700 });
           // utility added by each step
           d.setView([0, M], [-0.16 * top, top]); d.line(0, 0, M, 0, { color: 'ink', width: 1 });
           hist.forEach(([i, gn], j) => d.rect(j * dl, 0, (j + 1) * dl, gn, { fill: COL[i], fillAlpha: 0.75, stroke: false }));

@@ -18,14 +18,14 @@ const GASES = {
   H2: { name: 'hydrogen', atoms: [['H', 2]], dens: 0.07321, mod: 2.016, col: 'pink' },
   O2: { name: 'oxygen', atoms: [['O', 2]], dens: 1.10359, mod: 31.998, avo: 15.074, dalton: 6, col: 'red' },
   N2: { name: 'nitrogen', atoms: [['N', 2]], dens: 0.96913, mod: 28.014, avo: 13.238, dalton: 5, col: 'blue' },
-  Cl2: { name: 'oxymuriatic gas (chlorine)', atoms: [['Cl', 2]], dens: 2.470, mod: 70.906, avo: 33.74, col: 'green' },
+  Cl2: { name: 'chlorine (oxymuriatic gas)', atoms: [['Cl', 2]], dens: 2.470, mod: 70.906, avo: 33.74, col: 'green' },
   H2O: { name: 'steam', atoms: [['H', 2], ['O', 1]], mod: 18.015 },
   NO: { name: 'nitrous gas', atoms: [['N', 1], ['O', 1]], dens: 1.03636, mod: 30.006, avo: 14.156, dalton: 11 },
   HCl: { name: 'muriatic acid gas', atoms: [['H', 1], ['Cl', 1]], dens: 1.278, mod: 36.461, avo: 17.45 },
   NH3: { name: 'ammonia', atoms: [['N', 1], ['H', 3]], mod: 17.031 },
   N2O: { name: 'nitrous oxide', atoms: [['N', 2], ['O', 1]], dens: 1.52092, mod: 44.013, avo: 20.775, dalton: 16 },
 };
-const ACOL = { H: 'pink', O: 'red', N: 'blue', Cl: 'green' };
+const ACOL = { H: 'gold', O: 'red', N: 'blue', Cl: 'green' };
 // combining volumes (Gay-Lussac 1809, as Avogadro uses them): reactants → products, in volumes
 const RXN = {
   water: { label: '2 H₂ + O₂ → 2 H₂O', a: ['H2', 2], b: ['O2', 1], p: ['H2O', 2], src: 'Humboldt & Gay-Lussac 1805: 100 oxygen to 200 hydrogen; steam has twice the volume of its oxygen' },
@@ -59,7 +59,7 @@ export default {
         const day = v.slider('day', 0, 12, 12, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} of 12` });
         const heat = v.slider('heating the calx', 0, 1, 1, { step: 0.01, fmt: (x) => `${Math.round(x * 100)}% done` });
         const sealed = v.select('apparatus', [{ value: 'sealed', label: 'sealed, gases weighed' }, { value: 'open', label: 'open vessel' }], 'sealed');
-        const A = v.stage({ x: [0, 6], y: [0, 4], equal: true, axes: false, height: 330, weight: 1.25, minWidth: 300, title: 'the apparatus' });
+        const A = v.stage({ x: [0, 6.8], y: [0, 4], equal: true, axes: false, height: 330, weight: 1.25, minWidth: 300, title: 'the apparatus' });
         const B = v.stage({ x: [0, 3], y: [0, 56], axes: 'box', height: 330, weight: 1, minWidth: 260, yticks: [0, 10, 20, 30, 40, 50], title: 'what the balance sees (grains)', xticks: [[0.85, 'start'], [2.15, 'now']] });
         const flame = (x, y, s) => { for (let k = 0; k < 3; k++) A.poly([[x - 0.18 * s + 0.18 * s * k, y], [x - 0.09 * s + 0.18 * s * k, y + 0.42 * s], [x + 0.18 * s * k, y]], { fill: k === 1 ? 'gold' : 'orange', fillAlpha: 0.85, stroke: false }); };
         let st = {};
@@ -75,7 +75,8 @@ export default {
             A.rect(0.4, 0.2, 2.2, 0.9, { fill: 'muted', fillAlpha: 0.35, color: 'muted', radius: 3 });
             if (day.value > 0) flame(1.3, 0.6, 1);
             A.circle(1.3, 1.6, 0.62, { color: 'ink', width: 1.6, fill: 'panel', fillAlpha: 0.3 });
-            A.rect(0.82, 1.06, 1.78, 1.28, { fill: 'muted', fillAlpha: 0.8, stroke: false });
+            const seg = (cx, cy, R, yTop) => { const a = Math.asin(Math.max(-1, Math.min(1, (yTop - cy) / R))), t0 = Math.PI - a, t1 = 2 * Math.PI + a, pts = []; for (let k = 0; k <= 30; k++) { const th = t0 + ((t1 - t0) * k) / 30; pts.push([cx + R * Math.cos(th), cy + R * Math.sin(th)]); } return pts; }; // circular segment below the chord y = yTop
+            A.poly(seg(1.3, 1.6, 0.6, 1.28), { fill: 'muted', fillAlpha: 0.8, stroke: false });
             const nSpeck = Math.round(28 * f), r = v.rng(4);
             for (let k = 0; k < nSpeck; k++) A.dot(0.88 + 0.84 * r(), 1.27 + 0.03 * r(), { r: 2 + 1.6 * r(), color: 'red' });
             if (open) {
@@ -109,9 +110,9 @@ export default {
               A.path([[3.3, 2.1], [4.4, 2.1], [4.4, 1.6]], { color: 'ink', width: 3, alpha: 0.6 });
               A.rect(3.9, 0.3, 5.7, 0.9, { fill: 'muted', fillAlpha: 0.55, color: 'ink', width: 1.2 });
               A.rect(4.1, 0.6, 5.2, 2.9, { color: 'ink', width: 1.6 });
-              const gTop = 0.6 + 2.3 * (7.5 * (1 - f)) / 9;
-              A.rect(4.1, 0.6, 5.2, 2.9, { fill: 'muted', fillAlpha: 0.65, stroke: false });
-              A.rect(4.1, 2.9 - (gTop - 0.6), 5.2, 2.9, { fill: 'teal', fillAlpha: 0.35, stroke: false });
+              const gasH = (2.3 * 7.5 * (1 - f)) / 9; // the gas collects at the top and pushes the mercury down
+              A.rect(4.1, 0.6, 5.2, 2.9 - gasH, { fill: 'muted', fillAlpha: 0.65, stroke: false });
+              if (gasH > 0.005) A.rect(4.1, 2.9 - gasH, 5.2, 2.9, { fill: 'teal', fillAlpha: 0.25, stroke: false });
               A.text(`vital air ${v.fix(7.5 * (1 - f), 1)} cu in`, 4.65, 3.1, { size: 10.5, align: 'center', color: 'teal', weight: 600 });
             }
             A.text(heat.value >= 1 ? 'the red calx has disappeared' : 'red calx heated to near red heat', 0.3, 3.8, { size: 11.5, color: 'ink', weight: 600 });
@@ -157,8 +158,8 @@ export default {
         const PER = 4;
         const rx = v.select('reaction', Object.entries(RXN).map(([k, r]) => ({ value: k, label: r.label })), 'water');
         const pic = v.select('picture of a gas', [{ value: 'avo', label: 'Avogadro: molecules can split' }, { value: 'dal', label: 'Dalton: single indivisible atoms' }], 'avo');
-        const A = v.stage({ x: [0, 12], y: [0, 4.4], equal: true, axes: false, height: 300, full: true, title: 'equal volumes, equal numbers of particles' });
-        const B = v.stage({ x: [0.4, 6.6], y: [0, 40], axes: 'box', height: 260, full: true, title: 'molecular mass relative to hydrogen, from gas densities', xticks: [[1, 'oxygen'], [2, 'nitrogen'], [3, 'nitrous gas'], [4, 'nitrous oxide'], [5, 'chlorine'], [6, 'muriatic acid']] });
+        const A = v.stage({ x: [0, 11], y: [0.2, 4.4], equal: true, axes: false, height: 270, full: true, title: 'equal volumes, equal numbers of particles' });
+        const B = v.stage({ x: [0.4, 6.6], y: [-4.5, 40], axes: 'box', height: 260, full: true, title: 'molecular mass relative to hydrogen, from gas densities', xticks: [], yticks: [0, 10, 20, 30] });
         /** draw one particle (list of atoms) centred at (x, y); fractional atoms are drawn as red half discs */
         const particle = (x, y, atoms, bad) => {
           const flat = []; atoms.forEach(([el, n]) => { for (let i = 0; i < Math.ceil(n); i++) flat.push([el, Math.min(1, n - i)]); });
@@ -198,12 +199,13 @@ export default {
           drawGas(nB, atomsB, `${gb.name}`, ACOL[gb.atoms[0][0]], false);
           A.arrow(x + 0.05, y0 + bh / 2, x + 0.75, y0 + bh / 2, { color: 'ink', width: 2, head: 9 }); x += 0.95;
           drawGas(nP, perP, `${gp.name}: ${R.p[1]} volumes measured`, frac ? 'red' : 'green', frac);
-          A.text(R.src, 6, 0.45, { align: 'center', size: 10.5, color: 'muted' });
-          A.text(frac ? `Dalton: each ${gp.name} particle would need ${perP.map(([e, n]) => `${Number.isInteger(n) ? n : v.fix(n, 1)} ${e}`).join(' + ')} — atoms would have to split` : `each ${gp.name} molecule: ${perP.map(([e, n]) => `${n} ${e}`).join(' + ')} — whole atoms, as observed`, 6, 4.15, { align: 'center', size: 12, color: frac ? 'red' : 'green', weight: 700 });
+          A.text(R.src, 5.5, 0.45, { align: 'center', size: 10.5, color: 'muted' });
+          A.text(frac ? `Dalton: each ${gp.name} particle would need ${perP.map(([e, n]) => `${Number.isInteger(n) ? n : v.fix(n, 1)} ${e}`).join(' + ')} — atoms would have to split` : `each ${gp.name} molecule: ${perP.map(([e, n]) => `${n} ${e}`).join(' + ')} — whole atoms, as observed`, 5.5, 4.15, { align: 'center', size: 12, color: frac ? 'red' : 'green', weight: 700 });
           // molecular masses
           const rows = ['O2', 'N2', 'NO', 'N2O', 'Cl2', 'HCl'];
           rows.forEach((k, i) => {
             const gg = GASES[k], x0 = i + 1, today = gg.mod / GASES.H2.mod;
+            B.text(gg.name.replace(' (oxymuriatic gas)', ''), x0, -2.3, { align: 'center', size: 11, color: 'ink' });
             B.rect(x0 - 0.36, 0, x0 - 0.04, gg.avo, { fill: 'gold', fillAlpha: 0.75, color: 'gold' });
             B.rect(x0 + 0.04, 0, x0 + 0.36, today, { fill: 'green', fillAlpha: 0.6, color: 'green' });
             if (gg.dalton) B.line(x0 - 0.4, gg.dalton, x0 + 0.4, gg.dalton, { color: 'purple', width: 2.4, dash: [5, 3] });

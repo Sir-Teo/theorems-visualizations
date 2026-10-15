@@ -38,7 +38,7 @@ Example: 9 heads and 3 tails, either from 12 planned tosses, $L_1=\binom{12}{9}p
       viz(v) {
         const hS = v.slider('heads observed $h$', 1, 20, 9, { int: true });
         const tS = v.slider('tails observed $t$', 1, 8, 3, { int: true });
-        const sL = v.stage({ x: [0, 1], y: [0, 1], height: 260, axes: 'box', weight: 1, title: 'likelihoods of the observed data' });
+        const sL = v.stage({ x: [0, 1], y: [0, 1], height: 260, axes: 'box', weight: 1, title: 'likelihoods of the observed data, as functions of $p$' });
         const sR = v.stage({ x: [0, 1], y: [0, 1], height: 260, axes: 'box', weight: 1.15, title: 'sampling distributions of the heads count at $p=\\frac12$' });
         const sT = v.stage({ x: [0, 1], y: [0, 1], height: 220, axes: false, full: true });
         const T = v.table(sT, { rows: 5, cols: 4, square: false, maxCell: 36, cellAspect: 6, colWeights: [1.6, 1.2, 1.2, 0.75], size: 14, margin: 4,
@@ -54,8 +54,7 @@ Example: 9 heads and 3 tails, either from 12 planned tosses, $L_1=\binom{12}{9}p
           sL.fn(L2, { domain: [0, 1], color: 'orange', width: 2.4 });
           sL.fn((p) => c * L2(p), { domain: [0, 1], color: 'orange', width: 2, dash: [6, 5] });
           sL.vline(ph, { color: 'muted', width: 1, dash: [3, 4] });
-          sL.text(`× c = ${v.fix(c, 3)}`, ph, L2(ph), { dx: 10, dy: -4, color: 'orange', size: 12, weight: 600 });
-          axisLabels(sL, 'p', null);
+          sL.text(`× c = ${v.fix(c, 3)}`, ph, L2(ph), { dx: -10, dy: -10, align: 'right', color: 'orange', size: 12, weight: 600 });
           // sampling distributions at p = 1/2
           const K = Math.max(n, Math.ceil(t + 6 * Math.sqrt(2 * t) + 6), h + 3);
           let ymax = 0; for (let k = 0; k <= K; k++) ymax = Math.max(ymax, binPmf(n, k, 0.5), nbPmf(t, k, 0.5));
@@ -69,18 +68,17 @@ Example: 9 heads and 3 tails, either from 12 planned tosses, $L_1=\binom{12}{9}p
           const p1 = binTail(n, h, 0.5), p2 = nbTail(t, h, 0.5);
           sR.text(`P(X ≥ ${h}) = ${p1.toFixed(4)}`, K + 0.6, ymax * 1.08, { align: 'right', color: 'accent', size: 12, weight: 700 });
           sR.text(`P(Y ≥ ${h}) = ${p2.toFixed(4)}`, K + 0.6, ymax * 0.96, { align: 'right', color: 'orange', size: 12, weight: 700 });
-          axisLabels(sR, '\\text{heads}', null);
           // what each experiment reports
           const root = (a, b, f) => { for (let i = 0; i < 80; i++) { const m = 0.5 * (a + b); if (f(a) * f(m) <= 0) b = m; else a = m; } return 0.5 * (a + b); };
           const ll = (p) => h * Math.log(p) + t * Math.log1p(-p) - (h * Math.log(ph) + t * Math.log1p(-ph)) + Math.log(8);
           const lo = root(1e-9, ph, ll), hi = ph < 1 ? root(ph, 1 - 1e-12, ll) : 1;
           const unbN = h / (h + t - 1);
           const rows = [
-            ['maximum likelihood $\\hat p$', ph.toFixed(3), ph.toFixed(3), true],
+            ['maximum likelihood p̂', ph.toFixed(3), ph.toFixed(3), true],
             ['1/8 likelihood interval', `[${lo.toFixed(3)}, ${hi.toFixed(3)}]`, `[${lo.toFixed(3)}, ${hi.toFixed(3)}]`, true],
             ['posterior mean (uniform prior)', ((h + 1) / (n + 2)).toFixed(3), ((h + 1) / (n + 2)).toFixed(3), true],
-            ['unbiased estimate of $p$', `${(h / n).toFixed(3)}  (h/n)`, `${unbN.toFixed(3)}  (h/(n−1))`, false],
-            ['p-value for $p=\\frac12$ vs $p>\\frac12$', p1.toFixed(4), p2.toFixed(4), false],
+            ['unbiased estimate of p', `${(h / n).toFixed(3)}  (h/n)`, `${unbN.toFixed(3)}  (h/(n−1))`, false],
+            ['p-value for p = ½ against p > ½', p1.toFixed(4), p2.toFixed(4), false],
           ];
           T.draw({ value: (i, j) => (j < 3 ? rows[i][j] : rows[i][3] ? 'yes' : 'no'), fill: (i, j) => (j === 3 ? [rows[i][3] ? 'green' : 'red', 0.22] : j > 0 && !rows[i][3] ? ['red', 0.07] : null), textColor: (i, j) => (j === 3 ? (rows[i][3] ? 'green' : 'red') : null), weight: (i, j) => (j === 3 ? 700 : 500) });
           lg([['accent', `binomial: $n=${n}$ tosses planned`], ['orange', `negative binomial: toss until tail number $${t}$`], ['orange', `negative binomial × $c$`, { dash: true }], ['red', 'as or more extreme than observed', { dash: true }]]);
@@ -167,7 +165,6 @@ significant at 5%. The data and the likelihood, $\propto p^9(1-p)^3$, are the sa
             const exT = rule === 'bin' ? binTail(12, 9, p) : nbTail(3, 9, p);
             tR(rule === 'bin' ? 'heads in 12 tosses, simulated (bars) and exact (ticks)' : 'heads before the 3rd tail, simulated (bars) and exact (ticks)');
             sR.text(`P(heads ≥ 9): ${(tail / N).toFixed(4)} simulated, ${exT.toFixed(4)} exact`, K + 0.6, top * 1.12, { align: 'right', color: 'red', size: 12, weight: 700 });
-            axisLabels(sR, '\\text{heads}', null);
             extra = { tail: tail / N, exT, N };
             lg([['green', 'observed sequence'], ['gold', 'simulated experiments', { dot: true }], ['accent', 'stop after 12 tosses'], ['orange', 'stop at the 3rd tail'], ['red', 'at least 9 heads', { area: true }], ['ink', 'exact law']]);
           } else {
@@ -178,7 +175,7 @@ significant at 5%. The data and the likelihood, $\propto p^9(1-p)^3$, are the sa
             sR.hline(0.05, { color: 'green', width: 1.6, dash: [6, 4] });
             sR.text('nominal 5%', 30.3, 0.05, { align: 'right', dy: -9, color: 'green', size: 11, weight: 600 });
             for (let n = 1; n <= 30; n++) sR.rect(n - 0.4, 0, n + 0.4, simCum[n], { fill: 'purple', fillAlpha: 0.4, stroke: false });
-            sR.path(ex.map((c, n) => [n, c]), { color: 'ink', width: 2 });
+            sR.path(ex.flatMap((c, n) => [[n - 0.5, c], [n + 0.5, c]]), { color: 'ink', width: 2 });
             tR(p === 0.5 ? 'share of null experiments declared significant by toss $n$' : 'share of experiments declared significant by toss $n$');
             axisLabels(sR, 'n', null);
             extra = { rej: simCum[30], ex: ex[30], N };
@@ -227,7 +224,7 @@ so that two statisticians who record the same data in different units (°C and �
           { id: 'mean', name: 'mean', col: 'accent', f: (xs) => mean(xs) },
           { id: 'med', name: 'median', col: 'green', f: (xs) => qSorted(sortNum(xs), 0.5) },
           { id: 'mid', name: 'midrange', col: 'teal', f: (xs) => (Math.min(...xs) + Math.max(...xs)) / 2 },
-          { id: 'shr', name: 'shrink to 0: $\\frac{n}{n+2}\\bar x$', col: 'red', f: (xs) => (n / (n + k)) * mean(xs) },
+          { id: 'shr', name: 'shrink to 0: $\\frac{n}{n+2}\\bar x$', short: 'shrinkage', col: 'red', f: (xs) => (n / (n + k)) * mean(xs) },
         ];
         const dc = memo();
         const data = () => dc(seed, () => { const r = v.rng(hashStr('eq|' + seed)), xs = []; for (let i = 0; i < n; i++) xs.push(Math.round((16 + 3 * r.normal()) * 10) / 10); return xs; });
@@ -273,7 +270,7 @@ so that two statisticians who record the same data in different units (°C and �
         v.readout(() => {
           if (!info) return '';
           const { e1, et, Rk, a, b } = info;
-          const parts = EST.map((E, q) => `${E.name.replace(/\$.*\$/, '').trim() || 'shrinkage'}: gap ${v.fix(Math.abs(e1[q] - et[q]), 3)}`).join(' · ');
+          const parts = EST.map((E, q) => `${E.short || E.name}: gap ${v.fix(Math.abs(e1[q] - et[q]), 3)}`).join(' · ');
           const spread = (q) => { const ys = Rk[q].map(([, r]) => r); return `${v.fix(Math.min(...ys), 3)}–${v.fix(Math.max(...ys), 3)}`; };
           return String.raw`$|\delta(a+bx)-(a+b\,\delta(x))|$ — ${parts} · the shrinkage estimate in the new units is ${v.fix(e1[3], 2)}, but converting its old answer gives ${v.fix(et[3], 2)} · simulated MSE over $\mu\in[-4,4]$: mean ${spread(0)} (exact $1/8$), median ${spread(1)}, midrange ${spread(2)}, shrinkage ${spread(3)} — constant risk only for the equivariant ones`;
         });
@@ -314,12 +311,11 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
         const sL = v.stage({ x: [0, 10], y: [-1.2, 11], height: 360, axes: false, weight: 1.15 });
         const sR = v.stage({ x: [0, 1], y: [0, 1], height: 360, axes: 'box', weight: 1, title: 'runs of $E^*$ landing on $x_1$ or $x_2$: share from $E_1$' });
         const lg = legender(v);
-        const PS = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
         const mc = new Map();
         const simAt = (n, r, h1, h2, p) => {
           const key = [n, r, h1, h2, p].join('|'); if (mc.has(key)) return mc.get(key);
           const rr = v.rng(hashStr('birn|' + key)); let a = 0, b = 0;
-          for (let i = 0; i < 30000; i++) {
+          for (let i = 0; i < 40000; i++) {
             if (rr() < 0.5) { let h = 0; for (let k = 0; k < n; k++) if (rr() < p) h++; if (h === h1) a++; }
             else { let h = 0, t = 0; while (t < r) { if (rr() < p) h++; else t++; if (h > 60) break; } if (h === h2) b++; }
           }
@@ -340,7 +336,7 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
           for (let h = 0; h <= maxH; h++) sL.dot(col2, Y(h), { r: h === h2 ? 7 : 3, color: 'orange', alpha: h > maxH - 1 ? 0.5 : 1 });
           sL.text(`x₁: ${h1} heads`, col1, Y(h1), { dx: -12, align: 'right', color: 'accent', size: 12, weight: 700 });
           sL.text(`x₂: ${h2} heads`, col2, Y(h2), { dx: 12, align: 'left', color: 'orange', size: 12, weight: 700 });
-          sL.text('heads →', col1, Y(n) + 0.45, { align: 'center', size: 10.5, color: 'muted' });
+          sL.text('heads ↑', col1, Y(n) + 0.45, { align: 'center', size: 10.5, color: 'muted' });
           if (step >= 2) {
             const yA = Y(h1), yB = Y(h2), ym = Math.max(yA, yB) + 1.1;
             sL.path([[col1 + 0.25, yA], [col1 + 0.9, ym], [col2 - 0.9, ym], [col2 - 0.25, yB]], { color: prop ? 'green' : 'red', width: 2.6 });
@@ -352,20 +348,21 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
           }
           if (step >= 4) sL.tex(prop ? '\\mathrm{Ev}(E_1,x_1)=\\mathrm{Ev}(E_2,x_2)' : '\\text{chain broken: S does not apply}', 5, 4.2, { color: prop ? 'green' : 'red', size: 19 });
           // ── right: the simulation of E*
+          const pc = h1 / n, pa = Math.max(0.08, pc - 0.3), pb = Math.min(0.95, pc + 0.18), PS = Array.from({ length: 7 }, (_, i) => +(pa + ((pb - pa) * i) / 6).toFixed(3));
           const pts = PS.map((p) => { const o = simAt(n, r, h1, h2, p), N = o.a + o.b, f = N ? o.a / N : NaN; return [p, f, N ? 2 * Math.sqrt(f * (1 - f) / N) : 0, N]; });
           const exact = (p) => { const a = binPmf(n, h1, p), b = nbPmf(r, h2, p); return a / (a + b); };
-          viewPad(sR, [0.15, 0.85], [0, 1.02], { left: 40 });
-          sR.fn(exact, { domain: [0.15, 0.85], color: prop ? 'green' : 'red', width: 2.4 });
+          viewPad(sR, [pa - 0.03, pb + 0.03], [0, 1.02], { left: 40 });
+          sR.fn(exact, { domain: [pa - 0.03, pb + 0.03], color: prop ? 'green' : 'red', width: 2.4 });
           for (const [p, f, e] of pts) if (isFinite(f)) { sR.line(p, f - e, p, f + e, { color: 'gold', width: 2 }); sR.dot(p, f, { r: 5, color: 'gold' }); }
           axisLabels(sR, 'p', null);
-          sR.corner(prop ? `flat at c/(1+c) = ${v.fix(c / (1 + c), 3)}: T is sufficient` : 'drifts with p: T is not sufficient', 'br', { color: prop ? 'green' : 'red', weight: 700 });
+          sR.corner(prop ? `flat at c/(1+c) = ${v.fix(c / (1 + c), 3)}: T is sufficient` : 'drifts with p: T is not sufficient', 'tr', { color: prop ? 'green' : 'red', weight: 700 });
           lg([['accent', '$E_1$ (binomial) outcomes', { dot: true }], ['orange', '$E_2$ (negative binomial) outcomes', { dot: true }], ['gold', 'simulated share ±2 SE', { dot: true }], [prop ? 'green' : 'red', 'exact $P(J=1\\mid T)$']]);
           info = { n, r, h1, h2, c, prop, pts };
         });
         v.readout(() => {
           if (!info) return '';
           const { n, r, h1, h2, c, prop, pts } = info, fs = pts.map((q) => q[1]).filter(isFinite);
-          return String.raw`$x_1$ = ${h1} heads in ${n} tosses, $x_2$ = ${h2} heads before tail ${r}: ` + (prop ? String.raw`$L_1/L_2=\binom{${n}}{${h1}}\big/\binom{${h2 + r - 1}}{${r - 1}}=${v.fix(c, 3)}$ for every $p$ · ` : 'likelihood ratio changes with $p$ · ') + `simulated share from $E_1$ ranges over ${v.fix(Math.min(...fs), 3)}–${v.fix(Math.max(...fs), 3)} for $p$ from 0.2 to 0.8 — ` + (prop ? '**constant**: sufficiency merges the two outcomes, conditionality splits them back into their own experiments, and the evidence must agree' : '**not constant**: merging these outcomes loses information about $p$, so neither S nor L says anything about them');
+          return String.raw`$x_1$ = ${h1} heads in ${n} tosses, $x_2$ = ${h2} heads before tail ${r}: ` + (prop ? String.raw`$L_1/L_2=\binom{${n}}{${h1}}\big/\binom{${h2 + r - 1}}{${r - 1}}=${v.fix(c, 3)}$ for every $p$ · ` : 'likelihood ratio changes with $p$ · ') + `simulated share from $E_1$ ranges over ${v.fix(Math.min(...fs), 3)}–${v.fix(Math.max(...fs), 3)} for $p$ from ${v.fix(pts[0][0], 2)} to ${v.fix(pts[pts.length - 1][0], 2)} — ` + (prop ? '**constant**: sufficiency merges the two outcomes, conditionality splits them back into their own experiments, and the evidence must agree' : '**not constant**: merging these outcomes loses information about $p$, so neither S nor L says anything about them');
         });
       },
     },
@@ -381,7 +378,7 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
 
 His motivating example (from his 1920 paper on Eddington's claim): for normal data, the spread can be estimated from the mean absolute deviation ($\sigma_1$) or from the root-mean-square deviation ($\sigma_2$); in large samples $\sigma_1$ has efficiency $1/(\pi-2)\approx0.876$, and once $\sigma_2$ is known the distribution of $\sigma_1$ no longer depends on $\sigma$. Scope: the efficiency of maximum likelihood was argued heuristically; regularity conditions and proofs came later (Cramér, Wald, Le Cam).`,
       idea: String.raw`Before 1922 estimation was a collection of recipes: Pearson's method of moments for frequency curves (stat-3.4), inverse probability with uniform priors, least squares; "likelihood" had been named only the year before. Fisher replaced the recipes by criteria: a statistic is judged by its sampling distribution (stat-1.2), and a good one should be consistent, efficient and, best of all, sufficient. The σ example made sufficiency concrete: given $\sigma_2$, the conditional law of $\sigma_1$ is free of $\sigma$, so $\sigma_1$ adds nothing. Maximum likelihood (stat-3.5) delivered efficient estimates in general, and the paper's comparison of moments and likelihood on the Pearson curves showed what was at stake. The paper introduced sufficiency (2.2), maximum likelihood as a method (stat-3.5) and efficiency (stat-5.3), and it set the agenda of mathematical statistics for the rest of the century.`,
-      caption: String.raw`The paper has no data set; its arguments are recreated by simulation. **Efficiency**: many normal samples of size $n$, the two unbiased estimates of $\sigma$ from the mean absolute deviation (orange) and the root-mean-square deviation (blue); the readout compares their variance ratio with Fisher's $1/(\pi-2)$. **Sufficiency**: samples under $\sigma=1$ and a second $\sigma$; within a thin slice of $\sigma_2$ (gold band) the histograms of $\sigma_1$ coincide, but within a slice of $\sigma_1$ (toggle) those of $\sigma_2$ do not. **Moments vs ML**: gamma (Pearson Type III) samples of size 50; drag the shape to make the curve skewed and watch the moment estimate lose to maximum likelihood.`,
+      caption: String.raw`The paper has no data set; its arguments are recreated by simulation. **Efficiency**: many normal samples of size $n$, the two unbiased estimates of $\sigma$ from the mean absolute deviation (orange) and the root-mean-square deviation (blue); the readout compares their variance ratio with Fisher's $1/(\pi-2)$. **Sufficiency**: samples under $\sigma=1$ and a second $\sigma$; within a thin slice of $\sigma_2$ (gold band) the histograms of $\sigma_1$ coincide, but within a slice of $\sigma_1$ (toggle) those of $\sigma_2$ do not. **Moments vs ML**: gamma (Pearson Type III) samples; drag the shape to make the curve skewed and watch the moment estimate lose to maximum likelihood (raise the sample size to approach the large-sample curve).`,
       deps: ['stat-3.4', 'stat-1.2'],
       refs: [],
       tags: ['history', 'sufficiency', 'Fisher'],
@@ -393,6 +390,7 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
         const s2S = v.slider('second $\\sigma$', 1.1, 2, 1.4, { step: 0.05 });
         const flipT = v.toggle('condition on $\\sigma_1$ instead', false);
         const aS = v.slider('gamma shape $\\alpha$', 0.3, 12, 1, { step: 0.05, log: true });
+        const ngS = v.slider('gamma sample size', 20, 400, 50, { int: true, log: true });
         const sL = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', weight: 1 });
         const sR = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', weight: 1 });
         const tL = titler(sL), tR = titler(sR), lg = legender(v);
@@ -401,10 +399,10 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
         const gammaML = (xs) => { const n = xs.length, m = mean(xs), lm = xs.reduce((s, x) => s + Math.log(x), 0) / n, s = Math.log(m) - lm; let a = (3 - s + Math.sqrt((s - 3) ** 2 + 24 * s)) / (12 * s); for (let i = 0; i < 8; i++) { const f = Math.log(a) - digamma(a) - s, d = 1 / a - trigamma(a); a = Math.max(1e-6, a - f / d); } return a; };
         const gammaMM = (xs) => { const n = xs.length, m = mean(xs); let v2 = 0; for (const x of xs) v2 += (x - m) ** 2; return (m * m) / (v2 / n); };
         const R = repeater(v, {
-          key: () => [modeS.value, nS.value, modeS.value === 'suff' ? s2S.value : '', modeS.value === 'mom' ? aS.value : ''].join('|'),
+          key: () => [modeS.value, nS.value, modeS.value === 'suff' ? s2S.value : '', modeS.value === 'mom' ? aS.value + '|' + ngS.value : ''].join('|'),
           sample: (r) => {
             const mode = modeS.value;
-            if (mode === 'mom') { const G = M.dist.gamma(aS.value, 1), xs = []; for (let i = 0; i < 50; i++) xs.push(G.sample(r)); return [gammaMM(xs), gammaML(xs)]; }
+            if (mode === 'mom') { const G = M.dist.gamma(aS.value, 1), xs = []; for (let i = 0; i < ngS.value; i++) xs.push(G.sample(r)); return [gammaMM(xs), gammaML(xs)]; }
             const n = nS.value, sg = mode === 'suff' && r() < 0.5 ? s2S.value : 1, xs = []; for (let i = 0; i < n; i++) xs.push(sg * r.normal());
             return [...sig12(xs), sg === 1 ? 0 : 1];
           },
@@ -414,29 +412,32 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
         v.render(() => {
           const S = R.sync(), mode = modeS.value, V = S.vals, N = V.length;
           sR.setScale({ xlog: mode === 'mom' });
-          nS.el.hidden = mode === 'mom'; s2S.el.hidden = mode !== 'suff'; flipT.el.hidden = mode !== 'suff'; aS.el.hidden = mode !== 'mom';
+          nS.el.hidden = mode === 'mom'; s2S.el.hidden = mode !== 'suff'; flipT.el.hidden = mode !== 'suff'; aS.el.hidden = mode !== 'mom'; ngS.el.hidden = mode !== 'mom';
           if (mode === 'eff') {
             const n = nS.value, a = moments(V, (p) => p[0]), b = moments(V, (p) => p[1]);
             const lo = Math.max(0, 1 - 4.2 * Math.sqrt(1 / (2 * n))), hi = 1 + 4.2 * Math.sqrt(1 / (2 * n)) + 0.1;
             const Ba = binned(V, lo, hi, 50, (p) => p[0]), Bb = binned(V, lo, hi, 50, (p) => p[1]);
             viewPad(sL, [lo, hi], [0, Math.max(Ba.max, Bb.max) * 1.15], { left: 36 });
-            sL.hist(Ba, { density: true, color: 'orange', fillAlpha: 0.25, width: 2 });
-            sL.hist(Bb, { density: true, color: 'accent', fillAlpha: 0.2, width: 2 });
+            sL.hist(Ba, { density: true, color: 'orange', fillAlpha: 0.22, width: 2 });
+            sL.hist(Bb, { density: true, color: 'accent', fillAlpha: 0, width: 2.2 });
             sL.vline(1, { color: 'green', width: 1.6, dash: [5, 4] });
             tL(`estimates of $\\sigma=1$ from ${commas(N)} samples of size ${n}`);
             axisLabels(sL, '\\hat\\sigma', null);
-            // right: variance ratio as n grows (simulated for this n, asymptotic line)
-            const eff = b.var / a.var, se = eff * Math.sqrt(2 / N) * 1.0;
-            viewPad(sR, [0, 62], [0.75, 1.02], { left: 40 });
+            // right: exact finite-n efficiency (variance of the mean deviation from Godwin, 1945), its limit, and the simulated value
+            const eff = b.var / a.var, se = eff * Math.sqrt(2 / N);
+            const effN = (m) => { const vd = (2 * (m - 1) / (Math.PI * m * m)) * (Math.PI / 2 + Math.sqrt(m * m - 2 * m) - m + Math.asin(1 / (m - 1))), ed2 = (2 * (m - 1)) / (Math.PI * m); return (1 / (c4(m) ** 2) - 1) / (vd / ed2); };
+            viewPad(sR, [0, 62], [0.8, 1.02], { left: 40 });
             sR.hline(1 / (Math.PI - 2), { color: 'green', width: 2, dash: [6, 4] });
-            sR.text('Fisher: 1/(π − 2) = 0.876', 61, 1 / (Math.PI - 2), { align: 'right', dy: -10, color: 'green', size: 12, weight: 700 });
+            sR.text('Fisher’s limit: 1/(π − 2) = 0.876', 61, 1 / (Math.PI - 2), { align: 'right', dy: 12, color: 'green', size: 12, weight: 700 });
+            const ex = []; for (let m = 3; m <= 60; m++) ex.push([m, effN(m)]);
+            sR.path(ex, { color: 'ink', width: 2 }); sR.dots(ex.filter(([m]) => m <= 12 || m % 6 === 0), { r: 2.4, color: 'ink' });
             sR.line(n, eff - 2 * se, n, eff + 2 * se, { color: 'ink', width: 1.6 });
             sR.dot(n, eff, { r: 6, color: 'orange' });
             sR.text(`n = ${n}: ${eff.toFixed(3)}`, n, eff, { dx: 10, dy: 12, color: 'orange', size: 12, weight: 700, align: 'left' });
             tR('efficiency of $\\sigma_1$: $\\operatorname{Var}\\sigma_2/\\operatorname{Var}\\sigma_1$');
             axisLabels(sR, 'n', null);
-            lg([['orange', '$\\sigma_1$ from the mean absolute deviation', { area: true }], ['accent', '$\\sigma_2$ from the root-mean-square deviation', { area: true }], ['green', 'true $\\sigma$ · Fisher’s large-sample efficiency', { dash: true }]]);
-            info = { mode, eff, se, a, b, n, N };
+            lg([['orange', '$\\sigma_1$ from the mean absolute deviation', { area: true }], ['accent', '$\\sigma_2$ from the root-mean-square deviation'], ['ink', 'exact efficiency at each $n$'], ['green', 'true $\\sigma$ · Fisher’s large-sample value', { dash: true }]]);
+            info = { mode, eff, se, a, b, n, N, effX: effN(n) };
           } else if (mode === 'suff') {
             const s2 = s2S.value, flip = flipT.value, ci = flip ? 0 : 1, oi = flip ? 1 : 0, c0 = Math.sqrt(s2), w = 0.04 * c0;
             // left: scatter of (σ2, σ1) for both σ
@@ -467,7 +468,7 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
             sL.hist(Bm, { density: true, color: 'red', fillAlpha: 0.2, width: 2 });
             sL.hist(Bl, { density: true, color: 'accent', fillAlpha: 0.2, width: 2 });
             sL.vline(a, { color: 'green', width: 1.8, dash: [5, 4] });
-            tL(`estimates of the shape $\\alpha=${v.fix(a, 2)}$ from ${commas(N)} samples of size 50`);
+            tL(`estimates of the shape $\\alpha=${v.fix(a, 2)}$ from ${commas(N)} samples of size ${ngS.value}`);
             axisLabels(sL, '\\hat\\alpha', null);
             // right: the curve and the efficiency against α (theory) with the simulated point
             const effT = (x) => 1 / (2 * (x + 1) * (x * trigamma(x) - 1)), effS = ml.var / mm.var;
@@ -484,9 +485,9 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
         v.readout(() => {
           if (!info) return '';
           const I = info;
-          if (I.mode === 'eff') return String.raw`${commas(I.N)} samples of size ${I.n}: SD of $\sigma_1$ = ${v.fix(I.a.sd, 4)}, of $\sigma_2$ = ${v.fix(I.b.sd, 4)} (both centred on 1: means ${v.fix(I.a.mean, 3)} and ${v.fix(I.b.mean, 3)}) · efficiency $\operatorname{Var}\sigma_2/\operatorname{Var}\sigma_1$ = **${v.fix(I.eff, 3)}** ± ${v.fix(2 * I.se, 3)} · Fisher (1920, restated 1922): **0.876** in large samples, $1/(\pi-2)$, the value accepted today — so $\sigma_1$ wastes about an eighth of the data`;
+          if (I.mode === 'eff') return String.raw`${commas(I.N)} samples of size ${I.n}: SD of $\sigma_1$ = ${v.fix(I.a.sd, 4)}, of $\sigma_2$ = ${v.fix(I.b.sd, 4)} (both centred on 1: means ${v.fix(I.a.mean, 3)} and ${v.fix(I.b.mean, 3)}) · efficiency $\operatorname{Var}\sigma_2/\operatorname{Var}\sigma_1$ = **${v.fix(I.eff, 3)}** ± ${v.fix(2 * I.se, 3)} (exact at $n=${I.n}$: ${v.fix(I.effX, 3)}) · Fisher (1920, restated 1922): **0.876** in large samples, $1/(\pi-2)$, the value accepted today — so $\sigma_1$ wastes about an eighth of the data`;
           if (I.mode === 'suff') { const d = Math.abs(I.ma.mean - I.mb.mean); return String.raw`within the slice: ${commas(I.nA)} samples from $\sigma=1$ and ${commas(I.nB)} from the second $\sigma$ · mean of the other estimate ${v.fix(I.ma.mean, 3)} vs ${v.fix(I.mb.mean, 3)} (difference ${v.fix(d, 3)}) — ` + (I.flip ? '**the slice of $\\sigma_1$ still tells the two values of $\\sigma$ apart: $\\sigma_1$ is not sufficient**' : '**the same law for both values of $\\sigma$: once $\\sigma_2$ is known, $\\sigma_1$ carries no further information** (Fisher’s criterion of sufficiency)'); }
-          return String.raw`${commas(I.N)} gamma samples of size 50 with shape ${v.fix(I.a, 2)}: SD of the moment estimate ${v.fix(I.mm.sd, 3)}, of maximum likelihood ${v.fix(I.ml.sd, 3)} · efficiency of moments: simulated **${v.fix(I.effS, 3)}**, large-sample theory ${v.fix(I.effT, 3)} — near 1 only when the curve is close to normal (large $\alpha$), as Fisher found for Pearson's curves`;
+          return String.raw`${commas(I.N)} gamma samples of size ${ngS.value} with shape ${v.fix(I.a, 2)}: SD of the moment estimate ${v.fix(I.mm.sd, 3)}, of maximum likelihood ${v.fix(I.ml.sd, 3)} · efficiency of moments: simulated **${v.fix(I.effS, 3)}**, large-sample theory ${v.fix(I.effT, 3)} — near 1 only when the curve is close to normal (large $\alpha$), as Fisher found for Pearson's curves`;
         });
       },
     },

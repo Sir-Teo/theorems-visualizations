@@ -107,7 +107,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           Z.corner(`bracket width ${pct(w, Math.min(9, d + 1))}`, 'tr', { color: 'orange', weight: 650 });
           // the account at the midpoint rate
           const rr = mid ?? (lo + hi) / 2, B = balances(c, rr);
-          A.setView([-0.6, c.length - 0.4], around(B.concat(c.map((x) => Math.min(x, 0))), 0.16));
+          A.setView([-0.6, c.length - 0.4], around(B.concat(B.map((b) => b * (1 + rr))), 0.16));
           A.setTicks(c.map((_, t) => [t, String(t)]), undefined);
           A.hline(0, { color: 'ink', width: 1 });
           B.forEach((b, t) => {
@@ -118,7 +118,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
               if (Math.abs(A.Y(b) - A.Y(gI)) > 6) A.arrow(t + 0.36, gI, t + 0.36, b, { color: c[t] > 0 ? 'blue' : 'red', width: 2, head: 7 });
             }
             A.rect(t - 0.28, 0, t + 0.28, b, { fill: col, fillAlpha: last ? 0.75 : 0.4, color: last ? col : null, width: last ? 2 : 0, stroke: last });
-            if (c[t] !== 0) A.text(`${c[t] > 0 ? '+' : '−'}${Math.abs(c[t])}`, t + 0.36, 0, { dy: b >= 0 ? 12 : -12, align: 'center', color: c[t] > 0 ? 'blue' : 'red', size: 10.5, weight: 650 });
+            if (c[t] !== 0) A.text(`${c[t] > 0 ? '+' : '−'}${Math.abs(c[t])}`, t ? t + 0.36 : t, 0, { dy: b >= 0 ? 12 : -12, align: 'center', color: c[t] > 0 ? 'blue' : 'red', size: 10.5, weight: 650 });
           });
           const fin = B[B.length - 1];
           A.text(`ends at ${moneyC(fin)}`, B.length - 1, fin, { dx: -24, dy: fin >= 0 ? -12 : 12, align: 'right', color: fin >= 0 ? 'green' : 'red', weight: 750, size: 12, plate: true });
@@ -130,7 +130,8 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           const roots = irrs(F, -0.9, 4);
           const exact = roots.length ? `the IRR is ${pct(roots[0], 6)}` : 'no IRR';
           if (fr.bad) return `No sign change on [${pct(lo, 2)}, ${pct(hi, 2)}]: bisection has nothing to work with. (For this project ${exact}.)`;
-          return `Bracket [${pct(lo, 6)}, ${pct(hi, 6)}], width ${pct(hi - lo, 6)} · at the ${fr.mid == null ? 'centre' : 'midpoint'} ${pct(rr, 5)} the account ends at ${money2(fin)} $= \\mathrm{NPV}(r)(1+r)^N$, so the IRR is ${fin > 0 ? 'higher' : 'lower'} · exact: ${exact} · error after $k$ steps $\\le$ (b − a)/2$^{k+1}$.`;
+          const dd = Math.max(2, Math.min(7, Math.ceil(-Math.log10(100 * (hi - lo))) + 3));
+          return `Bracket [${pct(lo, dd)}, ${pct(hi, dd)}], width ${pct(hi - lo, dd)} · at the ${fr.mid == null ? 'centre' : 'midpoint'} ${pct(rr, 5)} the account ends at ${money2(fin)} $= \\mathrm{NPV}(r)(1+r)^N$, so the IRR is ${fin > 0 ? 'higher' : 'lower'} · exact: ${exact} · error after $k$ steps $\\le$ (b − a)/2$^{k+1}$.`;
         });
       },
     },
@@ -174,7 +175,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           NM.hline(0, { color: 'ink', width: 1 });
           NM.fn(fm, { color: 'accent', width: 2.6 });
           const all = irrs(Fm, -0.9, 6), shown = all.filter((x) => x >= 0 && x <= R1);
-          shown.forEach((x, i) => { NM.dot(x, 0, { r: 5.5, hollow: true, color: 'ink', width: 2 }); NM.text(`IRR ${pct(x, 1)}`, x, 0, { dy: i % 2 ? 16 : -14, align: 'center', color: 'ink', weight: 700, size: 11.5, plate: true }); });
+          shown.forEach((x, i) => { const left = shown.length === 2 && i === 0; NM.dot(x, 0, { r: 5.5, hollow: true, color: 'ink', width: 2 }); NM.text(`IRR ${pct(x, 1)}`, x, 0, { dx: left ? -8 : 8, dy: -14, align: left ? 'right' : 'left', color: 'ink', weight: 700, size: 11.5, plate: true }); });
           NM.vline(r, { color: 'gold', width: 1.5, dash: [4, 3] });
           NM.dot(r, fm(r), { r: 5, color: 'gold' });
           NM.corner(shown.length === 2 ? 'two IRRs: which one is "the" return?' : shown.length === 0 ? 'no IRR at all — yet NPV is defined' : 'one IRR on this range', 'tr', { color: shown.length === 1 ? 'muted' : 'red', weight: 650 });
@@ -200,7 +201,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           NC.fn(fB, { color: 'purple', width: 2.5 });
           const cross = irrs([[0, 0], [1, 1300 - bS.value], ...[2, 3, 4, 5].map((t) => [t, -bS.value])], -0.5, 3).filter((x) => x > 0 && x < R2);
           cross.forEach((x) => { NC.dot(x, fA(x), { r: 5, color: 'gold' }); NC.text(`Fisher rate ${pct(x, 1)}`, x, fA(x), { dx: 8, dy: -12, color: 'gold', weight: 700, size: 11.5 }); });
-          [[iA, 'blue', 'A'], [iB, 'purple', 'B']].forEach(([x, col, nm]) => { if (x >= 0 && x <= R2) { NC.dot(x, 0, { r: 5, hollow: true, color: col, width: 2 }); NC.text(`IRR ${nm} ${pct(x, 1)}`, x, 0, { dy: nm === 'A' ? 15 : -14, align: 'center', color: col, weight: 700, size: 11, plate: true }); } });
+          [[iA, 'blue', 'A'], [iB, 'purple', 'B']].forEach(([x, col, nm]) => { if (x >= 0 && x <= R2) { NC.dot(x, 0, { r: 5, hollow: true, color: col, width: 2 }); NC.text(`IRR ${nm} ${pct(x, 1)}`, x, 0, { dx: nm === 'A' ? 6 : -6, dy: 16, align: nm === 'A' ? 'left' : 'right', color: col, weight: 700, size: 11, plate: true }); } });
           NC.vline(r, { color: 'gold', width: 1.5, dash: [4, 3] });
           NC.dot(r, fA(r), { r: 4.5, color: 'blue' }); NC.dot(r, fB(r), { r: 4.5, color: 'purple' });
           st = { r, all, shown, fmr: fm(r), iA, iB, nA: fA(r), nB: fB(r), cross, conf: conflict(r) };
@@ -238,8 +239,8 @@ while for $g\ge r$ the growing perpetuity has infinite value. The future value o
         const nS = v.slider('number of payments $n$', 1, NM, 20, { int: true });
         const perp = v.toggle('perpetuity ($n\\to\\infty$)', false);
         const xt = [0, 10, 20, 30, 40, 50, 60, 70, 80].map((t) => [t, String(t)]);
-        const T = v.stage({ x: [-1, NM + 1], y: [0, 120], height: 200, axes: 'box', full: true, xticks: xt, title: String.raw`payments (outlines) and their present values (filled), $\$$` });
-        const P = v.stage({ x: [-1, NM + 1], y: [0, 2000], height: 280, axes: 'box', full: true, xticks: xt, xlabel: 'n (payments)', title: String.raw`present value of the first $n$ payments, stacked, $\$$` });
+        const T = v.stage({ x: [-4, NM + 1], y: [0, 120], height: 200, axes: 'box', full: true, xticks: xt, title: String.raw`payments (outlines) and their present values (filled), $\$$` });
+        const P = v.stage({ x: [-4, NM + 1], y: [0, 2000], height: 280, axes: 'box', full: true, xticks: xt, xlabel: 'n (payments)', title: String.raw`present value of the first $n$ payments, stacked, $\$$` });
         v.legend([['blue', 'payment', { area: true }], ['teal', 'its present value', { area: true }], ['green', 'perpetuity $C/(r-g)$', { dash: true }], ['purple', 'tail: payments after $n$']]);
         let st = null;
         v.render(() => {
@@ -250,7 +251,7 @@ while for $g\ge r$ the growing perpetuity has infinite value. The future value o
           const cum = [0]; for (let t = 1; t <= NM; t++) cum.push(cum[t - 1] + pv(t));
           // top: payments and present values
           const top = Math.min(4.2 * C, Math.max(C, pay(Math.min(n, NM))) * 1.12);
-          T.setView([-1, NM + 1], [0, top]);
+          T.setView([-4, NM + 1], [-0.09 * top, top]);
           for (let t = 1; t <= NM; t++) {
             const on = t <= n, col = t % 2 ? 'teal' : 'blue';
             T.rect(t - 0.38, 0, t + 0.38, pay(t), { color: 'blue', width: 1, alpha: on ? 0.55 : 0.18, dash: on ? null : [2, 2] });
@@ -259,7 +260,7 @@ while for $g\ge r$ the growing perpetuity has infinite value. The future value o
           if (top < pay(NM)) T.corner('payments run off the top: they grow faster than the window', 'tr', { color: 'muted', size: 11 });
           // bottom: strips
           const yTop = conv ? Math.max(lim, cum[NM]) * 1.15 : cum[NM] * 1.1;
-          P.setView([-1, NM + 1], [0, yTop]);
+          P.setView([-4, NM + 1], [-0.07 * yTop, yTop]);
           let base = 0;
           for (let t = 1; t <= NM; t++) {
             const h = pv(t), col = t % 2 ? 'teal' : 'blue', on = t <= n;
@@ -271,7 +272,7 @@ while for $g\ge r$ the growing perpetuity has infinite value. The future value o
           P.path(stair, { color: 'ink', width: 1.4, alpha: 0.7 });
           if (conv) {
             P.hline(lim, { color: 'green', width: 2, dash: [8, 5] });
-            P.text(`perpetuity C/(r − g) = ${money(lim, 2)}`, 1, lim, { dy: -10, color: 'green', weight: 700, size: 12 });
+            P.text(`perpetuity C/(r − g) = ${money(lim, 2)}`, NM, lim, { dy: -10, align: 'right', color: 'green', weight: 700, size: 12 });
           } else P.corner(`g ≥ r: each discounted payment is at least the last — the sum grows without bound`, 'tl', { color: 'red', weight: 650 });
           const pvn = inf ? lim : cum[n];
           if (!inf) {
@@ -316,14 +317,14 @@ the payment that makes the loan the present value of an $n$-period annuity (fin 
         const B = v.stage({ x: [0, 360], y: [0, 400000], height: 230, axes: 'box', weight: 1, minWidth: 280, xlabel: 'month', title: String.raw`balance and interest paid so far, $\$$ thousands` });
         const TB = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: false, full: true });
         const T = v.table(TB, { rows: 10, cols: 6, square: false, maxCell: 26, cellAspect: 6, size: 12.5, colWeights: [0.7, 1, 1, 1, 1.25, 1.1], colLabels: ['year', 'paid', 'interest', 'principal + extra', 'interest share', 'balance at end'] });
-        const hm = A.handle(60, 0, { color: 'gold', label: 'k', labelPos: 'ne', constrain: (x) => [Math.round(x), 0] });
+        const hm = A.handle(60, 0, { color: 'gold', label: 'k', labelPos: 'ne', constrain: (x) => [Math.max(1, Math.round(x)), 0] });
         v.legend([['red', 'interest', { area: true }], ['blue', 'principal', { area: true }], ['green', 'extra principal', { area: true }], ['muted', 'without the extra payment', { dash: true }]]);
         let st = null;
         v.render(() => {
           const L = lS.value, y = yS.value, n = 12 * +tS.value, E = eS.value;
           const base = schedule(L, y, n, 0), cur = schedule(L, y, n, E), R = cur.rows, m = R.length;
           // payments
-          A.setView([0, n], [0, (base.pay + E) * 1.18]);
+          A.setView([-0.07 * n, n], [-0.08 * (base.pay + E) * 1.18, (base.pay + E) * 1.18]);
           A.setTicks(Array.from({ length: n / 60 + 1 }, (_, k) => [60 * k, String(60 * k)]), undefined);
           const area = (f0, f1) => { const top = [], bot = []; R.forEach((q, j) => { top.push([q.k - 1, f1(q)], [q.k, f1(q)]); bot.push([q.k - 1, f0(q)], [q.k, f0(q)]); }); return top.concat(bot.reverse()); };
           A.poly(area(() => 0, (q) => q.I), { fill: 'red', fillAlpha: 0.7, stroke: false });
@@ -335,13 +336,14 @@ the payment that makes the loan the present value of an $n$-period annuity (fin 
           // balance and cumulative interest
           const cI = []; let s = 0; R.forEach((q) => { s += q.I; cI.push(s); });
           const bI = []; let s2 = 0; base.rows.forEach((q) => { s2 += q.I; bI.push(s2); });
-          B.setView([0, n], [0, (Math.max(L, base.total) * 1.12) / 1000]);
+          const bTop = (Math.max(L, base.total) * 1.12) / 1000;
+          B.setView([-0.08 * n, n], [-0.08 * bTop, bTop]);
           B.setTicks(Array.from({ length: n / 60 + 1 }, (_, k2) => [60 * k2, String(60 * k2)]), undefined);
           B.path([[0, L / 1000], ...base.rows.map((q) => [q.k, q.B / 1000])], { color: 'muted', width: 1.5, dash: [5, 4] });
           B.path([[0, 0], ...base.rows.map((q, j) => [q.k, bI[j] / 1000])], { color: 'red', width: 1.4, dash: [5, 4], alpha: 0.6 });
           B.path([[0, L / 1000], ...R.map((q) => [q.k, q.B / 1000])], { color: 'accent', width: 2.4 });
           B.path([[0, 0], ...R.map((q, j) => [q.k, cI[j] / 1000])], { color: 'red', width: 2.4 });
-          B.text('balance', n * 0.08, L / 1000, { dy: -10, color: 'accent', weight: 700, size: 11.5 });
+          B.text('balance', n * 0.2, R[Math.round(n * 0.2)] ? R[Math.round(n * 0.2)].B / 1000 : L / 1000, { dx: 6, dy: 12, color: 'accent', weight: 700, size: 11.5 });
           B.text(`interest paid ${money(cur.total / 1000, 0)}k`, m, cI[m - 1] / 1000, { dy: -12, dx: -4, align: 'right', color: 'red', weight: 700, size: 11.5 });
           if (E > 0) B.text(`without extra ${money(base.total / 1000, 0)}k`, n, base.total / 1000, { dy: 12, dx: -4, align: 'right', color: 'muted', weight: 600, size: 11 });
           B.dot(k, R[k - 1].B / 1000, { r: 4.5, color: 'gold' });
@@ -386,7 +388,7 @@ the payment that makes the loan the present value of an $n$-period annuity (fin 
 $$P_0=\sum_{t=1}^\infty\frac{D_1(1+g)^{t-1}}{(1+r)^t}=\frac{D_1}{r-g}.$$
 Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g$. The price is extremely sensitive when $g$ is close to $r$: $\partial P_0/\partial g=D_1/(r-g)^2$, and $P_0\to\infty$ as $g\uparrow r$; for $g\ge r$ the sum diverges and the model gives no price.`,
       idea: String.raw`It is the growing perpetuity of fin 1.9: the discounted dividends form a geometric series with ratio $q=(1+g)/(1+r)$, which converges exactly when $g<r$. Because $1-q\approx r-g$ is small when $g$ is near $r$, most of the value then comes from dividends far in the future — the share has a very long "duration", and small changes in assumed long-run growth move the price a lot. Constant perpetual growth above the discount rate is impossible, which is the model's own warning against extrapolating high growth.`,
-      caption: String.raw`Left: the price $D_1/(r-g)$ of a share paying $\$2$ next year, as a function of the growth rate $g$. The orange box shows how far the price moves when $g$ is off by half a percentage point either way; push $g$ toward $r$ and the box explodes, past $r$ there is no price at all. Right: the present value of dividends received by year $t$, climbing to the price; the shaded part is the value of dividends after year 30, and the marker shows when half the value has been received.`,
+      caption: String.raw`Left: the price $D_1/(r-g)$ of a share paying $\$2$ next year, as a function of the growth rate $g$. The orange box shows how far the price moves when $g$ is off by one percentage point either way; push $g$ toward $r$ and the box explodes, past $r$ there is no price at all. Right: the present value of dividends received by year $t$, climbing to the price; the shaded part is the value of dividends after year 30, and the marker shows when half the value has been received.`,
       deps: ['fin-1.9'],
       see: ['fin-5.6', 'fin-5.11'],
       refs: ['BKM ch. 18'],
@@ -399,7 +401,7 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
         const gS = v.slider('dividend growth $g$', -0.03, 0.15, 0.05, { step: 0.0025, fmt: (x) => pct(x, 2) });
         const L = v.stage({ x: GX, y: [0, 220], height: 320, axes: 'box', weight: 1, minWidth: 300, ylabel: 'price ($)', xticks: pctTicks([0, 0.05, 0.1, 0.15]), xlabel: 'g', title: String.raw`price $P_0=D_1/(r-g)$ with $D_1=\$2$` });
         const R = v.stage({ x: [0, TM], y: [0, 60], height: 320, axes: 'box', weight: 1, minWidth: 300, xlabel: 'year t', title: 'present value of the dividends received by year t ($)' });
-        v.legend([['accent', 'price'], ['orange', 'price range for g ± 0.5 pt', { area: true }], ['red', 'g ≥ r: no finite price', { area: true }], ['green', 'value received by year t'], ['purple', 'value from after year 30', { area: true }]]);
+        v.legend([['accent', 'price'], ['orange', 'price range for g ± 1 point', { area: true }], ['red', 'g ≥ r: no finite price', { area: true }], ['green', 'value received by year t'], ['purple', 'value from after year 30', { area: true }]]);
         let st = null;
         v.render(() => {
           const r = rS.value, g = gS.value, ok = g < r - 1e-9, P = ok ? D1 / (r - g) : Infinity, YM = 220;
@@ -410,8 +412,11 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
           if (r < GX[1] - 0.02) L.text('no finite price', (r + GX[1]) / 2, YM * 0.5, { align: 'center', color: 'red', weight: 650, size: 11.5 });
           L.clip(() => L.fn((x) => (x < r ? D1 / (r - x) : NaN), { domain: [GX[0], r - 1e-6], color: 'accent', width: 2.6, n: 400 }));
           if (ok) {
-            const g0 = g - 0.005, g1 = Math.min(g + 0.005, r - 1e-6), p0 = D1 / (r - g0), p1 = g + 0.005 < r ? D1 / (r - g1) : Infinity;
+            const g0 = g - 0.01, g1 = Math.min(g + 0.01, r - 1e-6), p0 = D1 / (r - g0), p1 = g + 0.01 < r ? D1 / (r - g1) : Infinity;
             L.rect(g0, p0, g1, Math.min(p1, YM * 1.5), { fill: 'orange', fillAlpha: 0.18, color: 'orange', width: 1.2 });
+            L.line(GX[0], p0, g0, p0, { color: 'orange', width: 1, dash: [3, 3] });
+            if (p1 < YM) L.line(GX[0], p1, g0, p1, { color: 'orange', width: 1, dash: [3, 3] });
+            L.text(p1 < YM ? `g ± 1 pt: ${money(p0)} to ${money(p1)}` : `g + 1 pt: no finite price`, GX[0] + 0.013, Math.min(p1, YM * 0.92), { dy: -10, color: 'orange', weight: 700, size: 11.5 });
             L.dot(g, Math.min(P, YM), { r: 6, color: P > YM ? 'red' : 'accent' });
             const right = g > 0.08;
             L.text(P > YM ? `P = ${money(P)} (off the chart)` : `P = ${money(P, 2)}`, g, Math.min(P, YM), { dx: right ? -10 : 10, dy: P > YM * 0.9 ? 14 : -12, align: right ? 'right' : 'left', color: 'accent', weight: 750, size: 12, plate: true });
@@ -472,10 +477,10 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
           const shift = IMPACT * gap; PA += shift; const s = 1 - shift / PB; d = d.map((x) => x * s); msg = '';
         });
         v.button('Reset', () => reset());
-        const TB = v.stage({ x: [0, 1], y: [0, 1], height: 210, axes: false, full: true, title: 'cash flows of the trade ($): + received, − paid' });
+        const TB = v.stage({ x: [0, 1], y: [0, 1], height: 180, axes: false, full: true, title: 'cash flows of the trade ($): + received, − paid' });
         const H = v.stage({ x: [0, 10], y: [95, 110], height: 250, axes: 'box', weight: 1.4, minWidth: 330, xlabel: 'trades', ylabel: 'price ($)', title: 'the two prices, trade by trade' });
         const K = v.stage({ x: [0, 1], y: [0, 15], height: 250, axes: 'box', weight: 1, minWidth: 220, xticks: [], title: 'profit pocketed ($)' });
-        const T = v.table(TB, { rows: 3, cols: 5, square: false, maxCell: 40, cellAspect: 3.4, size: 13.5, colWeights: [2.2, 1, 1, 1, 1], colLabels: ['', 'today', 'year 1', 'year 2', 'year 3'] });
+        const T = v.table(TB, { rows: 3, cols: 5, square: false, maxCell: 38, cellAspect: 3.8, size: 13.5, margin: 6, colWeights: [2.2, 1, 1, 1, 1], colLabels: ['', 'today', 'year 1', 'year 2', 'year 3'] });
         v.legend([['blue', 'bond A'], ['purple', 'portfolio B (zero-coupon strips)'], ['green', 'riskless profit', { area: true }], ['red', 'open position', { area: true }]]);
         let st = null;
         v.render(() => {
@@ -489,24 +494,38 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
             fill: (i, j) => (i === 2 && j > 0 ? (j === 1 ? (Math.abs(net[0]) > 0.005 && same ? ['green', 0.3] : null) : Math.abs(net[j - 1]) > 0.005 ? ['red', 0.25] : ['green', 0.1]) : null),
             weight: (i) => (i === 2 ? 700 : 500),
           });
-          // price history
-          const pts = hist.concat([{ PA, PB }]), N = pts.length;
-          const lo = Math.min(...pts.map((p) => Math.min(p.PA, p.PB))), hi = Math.max(...pts.map((p) => Math.max(p.PA, p.PB))), pad = Math.max(0.6, 0.15 * (hi - lo));
-          H.setView([-0.4, Math.max(8, N + 0.6)], [lo - pad, hi + pad]);
-          for (let k = 0; k < N; k++) H.line(k, pts[k].PA, k, pts[k].PB, { color: same ? 'green' : 'red', width: 6, alpha: 0.25 });
-          H.path(pts.map((p, k) => [k, p.PA]), { color: 'blue', width: 2.2 }); H.dots(pts.map((p, k) => [k, p.PA]), { r: 3.5, color: 'blue' });
-          H.path(pts.map((p, k) => [k, p.PB]), { color: 'purple', width: 2.2 }); H.dots(pts.map((p, k) => [k, p.PB]), { r: 3.5, color: 'purple' });
-          H.text(`A ${money(PA, 2)}`, N - 1, PA, { dx: 8, dy: buyA ? 10 : -10, color: 'blue', weight: 700, size: 11.5 });
-          H.text(`B ${money(PB, 2)}`, N - 1, PB, { dx: 8, dy: buyA ? -10 : 10, color: 'purple', weight: 700, size: 11.5 });
+          // price history, and (dashed) where further trades would take the prices
+          const pts = hist.concat([{ PA, PB }]), N = pts.length, AH = 8, proj = [{ PA, PB }];
+          if (same) for (let k = 0; k < AH; k++) { const q = proj[proj.length - 1], sh = IMPACT * (q.PB - q.PA); proj.push({ PA: q.PA + sh, PB: q.PB - sh }); }
+          const every = pts.concat(proj);
+          const lo = Math.min(...every.map((p) => Math.min(p.PA, p.PB))), hi = Math.max(...every.map((p) => Math.max(p.PA, p.PB))), pad = Math.max(0.6, 0.18 * (hi - lo));
+          H.setView([-0.5, N - 1 + (same ? AH : 2) + 0.5], [lo - pad, hi + pad]);
+          for (let k = 0; k < N; k++) H.line(k, pts[k].PA, k, pts[k].PB, { color: same ? 'green' : 'red', width: 7, alpha: 0.3 });
+          if (same) {
+            const one = (PA + PB) / 2;
+            H.hline(one, { color: 'green', width: 1.2, dash: [2, 4] });
+            H.text(`one price ${money(one, 2)}`, N - 1 + AH, one, { align: 'right', dy: buyA ? -9 : 9, color: 'green', weight: 650, size: 11 });
+            H.path(proj.map((p, k) => [N - 1 + k, p.PA]), { color: 'blue', width: 1.4, dash: [4, 4], alpha: 0.6 });
+            H.path(proj.map((p, k) => [N - 1 + k, p.PB]), { color: 'purple', width: 1.4, dash: [4, 4], alpha: 0.6 });
+          }
+          H.path(pts.map((p, k) => [k, p.PA]), { color: 'blue', width: 2.4 }); H.dots(pts.map((p, k) => [k, p.PA]), { r: 4, color: 'blue' });
+          H.path(pts.map((p, k) => [k, p.PB]), { color: 'purple', width: 2.4 }); H.dots(pts.map((p, k) => [k, p.PB]), { r: 4, color: 'purple' });
+          H.text(`A ${money(PA, 2)}`, N - 1, PA, { dx: 4, dy: buyA ? 13 : -13, color: 'blue', weight: 700, size: 11.5 });
+          H.text(`B ${money(PB, 2)}`, N - 1, PB, { dx: 4, dy: buyA ? -13 : 13, color: 'purple', weight: 700, size: 11.5 });
           if (msg) H.corner(msg, 'tr', { color: 'red', weight: 650, size: 11.5 });
-          // pocket
+          // pocket: done trades solid, the trades still to come faint (a geometric series)
           const g0 = hist.length ? Math.abs(hist[0].PB - hist[0].PA) : Math.abs(gap), limit = g0 / (2 * IMPACT);
-          K.setView([0, 1], [0, Math.max(1, limit * 1.18)]);
+          K.setView([0, 1], [-0.05 * Math.max(1, limit * 1.2), Math.max(1, limit * 1.2)]);
           let base = 0;
-          pocket.forEach((p, k) => { K.rect(0.25, base, 0.75, base + p, { fill: 'green', fillAlpha: k % 2 ? 0.5 : 0.8, stroke: false }); base += p; });
-          K.rect(0.25, 0, 0.75, Math.max(base, 1e-9), { color: 'green', width: 1.4 });
-          if (same) { K.hline(limit, { color: 'green', width: 1.4, dash: [6, 4] }); K.text(`limit ${money(limit, 2)}`, 0.5, limit, { dy: -10, align: 'center', color: 'green', weight: 700, size: 11.5 }); }
-          K.text(`${pocket.length} trade${pocket.length === 1 ? '' : 's'}: ${money(base, 2)}`, 0.5, base, { dy: -12, align: 'center', color: 'ink', weight: 700, size: 11.5, plate: true });
+          pocket.forEach((p, k) => { K.rect(0.2, base, 0.8, base + p, { fill: 'green', fillAlpha: k % 2 ? 0.55 : 0.85, stroke: false }); base += p; });
+          if (same) {
+            let b2 = base, gq = Math.abs(gap);
+            for (let k = 0; k < 40 && gq > 1e-4; k++) { K.rect(0.2, b2, 0.8, b2 + gq, { fill: 'green', fillAlpha: k % 2 ? 0.06 : 0.14, color: 'green', width: 0.6, alpha: 0.35 }); b2 += gq; gq *= 1 - 2 * IMPACT; }
+            K.hline(limit, { color: 'green', width: 1.4, dash: [6, 4] });
+            K.text(`limit ${money(limit, 2)} = gap ÷ 0.3`, 0.5, limit, { dy: -10, align: 'center', color: 'green', weight: 700, size: 11 });
+          }
+          K.rect(0.2, 0, 0.8, Math.max(base, 1e-9), { color: 'green', width: 1.6 });
+          K.text(`${pocket.length} trade${pocket.length === 1 ? '' : 's'}: ${money(base, 2)}`, 0.5, Math.max(base, 0), { dy: base > 0.5 * limit ? 14 : -12, align: 'center', color: 'ink', weight: 700, size: 11.5, plate: true });
           st = { PA, PB, gap, same, buyA, base, n: pocket.length, last: pocket[pocket.length - 1], fair: d[2] * (qS.value - 106) };
         });
         v.readout(() => {

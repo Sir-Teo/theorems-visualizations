@@ -473,7 +473,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           comp: { label: 'perfect complements', F: prefs('comp', { a: 1, b: 1 }) },
         };
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
-        const t = v.slider('tax per unit of good 1, $t$', 0, 2, 1, { step: 0.01 });
+        const t = v.slider('tax per unit $t$', 0, 2, 1, { step: 0.01 });
         const s = v.stage({ x: [0, 13], y: [0, 13], height: 370, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.25 });
         const b = v.stage({ x: [0, 1], y: [0, 13], height: 370, axes: false, weight: 0.7, minWidth: 220, title: 'same revenue, different cost' });
         const c = v.stage({ x: [0, 2], y: [0, 1], height: 170, axes: 'box', full: true, xlabel: 'tax per unit t', ylabel: '$', title: 'revenue and excess burden of the quantity tax' });

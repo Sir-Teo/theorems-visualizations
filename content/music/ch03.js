@@ -376,5 +376,185 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
         });
       },
     },
+    // ------------------------------------------------------------------ 3.4
+    {
+      num: '3.4',
+      kind: 'Theorem',
+      name: 'Conical bores overblow at the octave',
+      statement: String.raw`In a conical tube sound travels as spherical waves centred on the apex, $p(r,t)=\dfrac{\sin k(r_2-r)}{r}\cos\omega t$ for a cone open at distance $r_2$ from the apex. A **complete cone** of length $L$, closed (and pointed) at its apex and open at its wide end, therefore resonates at
+$$f_n=\frac{n\,c}{2L},\qquad n=1,2,3,\dots,$$
+the **full harmonic series**, like an open cylinder of the same length and an octave above a closed cylinder (3.3), even though its narrow end is closed. A **truncated** cone closed at its narrow end, a distance $x_1$ from the (missing) apex, resonates where
+$$\tan kL=-k\,x_1 ,$$
+which moves continuously from the odd series $kL=(2n-1)\pi/2$ of a cylinder ($x_1\to\infty$) to the full series $kL=n\pi$ of the complete cone ($x_1\to0$). So reed instruments with conical bores (oboe, bassoon, saxophone) overblow at the **octave**, while the cylindrical clarinet overblows at the **twelfth**.`,
+      idea: String.raw`In a cone the wave equation for $rp$ is the one-dimensional wave equation, so $rp=A\sin k(r_2-r)$ vanishes at the open end as required. The closed end needs zero velocity, i.e. $\partial p/\partial r=0$ there; for the complete cone this holds automatically at $r=0$ (where $\sin(kr_2-kr)/r$ stays finite only if $\sin kr_2=0$), giving $kL=n\pi$. For a truncated cone, $\partial p/\partial r=0$ at $r=x_1$ gives $-kx_1\cos kL=\sin kL$, the equation above. The $1/r$ spreading is what changes the end condition: near the apex the pressure is almost uniform, so a closed tip behaves for the wave like an open end of a cylinder. Real conical instruments are truncated, but the reed and mouthpiece supply a cavity of about the volume of the missing tip, which restores the low resonances almost to the complete cone's (Benade's equivalent-volume rule).`,
+      caption: String.raw`Drag the **taper** from a cylinder to a complete cone. Top: the bore, closed at its narrow left end, with dashed lines running back to the virtual apex; its interior is coloured by the pressure of the chosen mode (red above, blue below atmospheric), and the strip underneath plots that pressure along the axis, $\sin k(r_2-r)/r$. Bottom left: the first five resonances, in units of $c/4L$, as the taper changes; they slide from the odd numbers $1,3,5,\dots$ to the even numbers $2,4,6,\dots$, i.e. from odd harmonics to all harmonics of a fundamental an octave higher. Bottom right: the overblowing interval $f_2/f_1$ drops from a twelfth to an octave. *Low note, then overblown* plays $f_1$ and $f_2$.`,
+      deps: ['music-3.3', 'music-3.2'],
+      see: ['music-11.4', 'pde-6.1'],
+      refs: ['Benson ch. 3'],
+      tags: ['pipes', 'woodwinds'],
+      credit: 'Daniel Bernoulli, 1762; Hermann von Helmholtz, 1863; Arthur Benade, 1959',
+      scope: String.raw`Spherical waves in a rigid cone with an ideal open end (no end correction or radiation loss), small amplitudes and no wall losses. Real oboes, bassoons and saxophones are truncated cones with tone holes, flares and a reed cavity; the cavity makes their resonances nearly harmonic in the low register, as the complete-cone limit here suggests.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Acoustic_resonance#Cones' },
+      viz(v) {
+        const M = v.M, L = 0.6, NR = 5, NT = 161;
+        const tS = v.slider('taper', 0, 1, 0.82, { step: 0.002, fmt: (x) => (x <= 0 ? 'cylinder' : x >= 1 ? 'complete cone' : `r₁/r₂ = ${v.fix(1 - x, 3)}`) });
+        const nS = v.slider('mode shown $n$', 1, 4, 2, { int: true });
+        const bore = v.stage({ x: [-0.3, 0.64], y: [-1.3, 1.4], height: 250, axes: false, full: true });
+        const rc = v.stage({ x: [-0.05, 1.05], y: [0, 11.3], height: 260, axes: 'box', xticks: [[0, 'cylinder'], [0.5, 'taper 0.5'], [1, 'cone']], yticks: M.range(10, 1), weight: 1.25, title: 'resonances as the bore tapers, in units of c/4L' });
+        const ob = v.stage({ x: [-0.05, 1.05], y: [1080, 2040], height: 260, axes: 'box', xticks: [[0, 'cylinder'], [1, 'cone']], yticks: [[1200, 'octave'], [1500, '1500 ¢'], [1702, 'minor 7th'], [1902, 'twelfth']], weight: 1, title: 'overblowing interval f₂/f₁ (cents)' });
+        // n-th root of (1 − ρ) sin u + ρ u cos u = 0 in ((n − ½)π, nπ], ρ = r₁/r₂ (tan kL = −k x₁ with x₁ = Lρ/(1 − ρ))
+        const root = (rho, n) => {
+          const G = (u) => (1 - rho) * Math.sin(u) + rho * u * Math.cos(u);
+          let a = (n - 0.5) * Math.PI, b = n * Math.PI; if (rho <= 0) return b; if (rho >= 1) return a;
+          let ga = G(a); for (let i = 0; i < 60; i++) { const m = 0.5 * (a + b), gm = G(m); if (ga * gm <= 0) b = m; else { a = m; ga = gm; } }
+          return 0.5 * (a + b);
+        };
+        const curves = M.range(NR, 1).map((n) => M.range(NT).map((i) => { const t = i / (NT - 1); return [t, (2 * root(1 - t, n)) / Math.PI]; }));
+        const obc = M.range(NT).map((i) => { const t = i / (NT - 1); return [t, 1200 * Math.log2(root(1 - t, 2) / root(1 - t, 1))]; });
+        const freqs = () => { const rho = 1 - tS.value; return M.range(NR, 1).map((n) => (root(rho, n) * C_AIR) / (TAU * L)); };
+        const tone = (f) => [[f, 1], [2 * f, 0.45], [3 * f, 0.3], [4 * f, 0.18], [5 * f, 0.12]];
+        v.soundButton('Low note, then overblown', (snd) => { const f = freqs(); snd.tone(tone(f[0]), { duration: 0.75, gain: 0.22, release: 0.1 }); snd.tone(tone(f[1]), { duration: 0.9, gain: 0.22, delay: 0.85 }); });
+        v.soundButton('resonances 1 → 5', (snd) => { freqs().forEach((f, i) => snd.tone(f, { duration: 0.45, gain: 0.25, delay: 0.52 * i, release: 0.1 })); });
+        v.animate((t) => {
+          const tp = tS.value, rho = 1 - tp, x1 = rho >= 1 ? 1e9 : (L * rho) / (1 - rho), n = nS.value;
+          const Y0 = 0.68, H2 = 0.58, rad = (x) => (rho >= 1 ? H2 : (H2 * (x1 + x)) / (x1 + L));
+          // ---- bore (interior coloured by the pressure of the mode) and virtual apex
+          const u = root(rho, n), k = u / L, pr = (x) => Math.sin(k * (L - x)) / (x1 + x + 1e-9);
+          let pm = 0; for (let i = 0; i <= 200; i++) pm = Math.max(pm, Math.abs(pr((i / 200) * L)));
+          const ph = Math.cos(TAU * 0.45 * t * Math.sqrt(u / Math.PI)), P = (x) => pr(x) / pm, sr = signedRamp(v), NB = 90;
+          for (let b = 0; b < NB; b++) { const xa = (b * L) / NB, xb = ((b + 1) * L) / NB; bore.poly([[xa, Y0 + rad(xa)], [xb + 1e-4, Y0 + rad(xb)], [xb + 1e-4, Y0 - rad(xb)], [xa, Y0 - rad(xa)]], { fill: sr.col(P((xa + xb) / 2) * ph), fillAlpha: 1, stroke: false }); }
+          if (x1 < 0.3) {
+            bore.line(-x1, Y0, 0, Y0 + rad(0), { color: 'muted', width: 1.2, dash: [4, 4] }); bore.line(-x1, Y0, 0, Y0 - rad(0), { color: 'muted', width: 1.2, dash: [4, 4] });
+            bore.dot(-x1, Y0, { r: 4, color: 'muted' });
+            bore.text('apex', -x1, Y0 - 0.2, { align: 'center', color: 'muted', size: 11 });
+          } else bore.text(rho >= 1 ? 'cylinder: no apex' : `apex ${v.fix(x1 * 100, 0)} cm to the left`, -0.02, Y0, { align: 'right', color: 'muted', size: 11 });
+          bore.line(0, Y0 + rad(0), L, Y0 + H2, { color: 'ink', width: 2.2 }); bore.line(0, Y0 - rad(0), L, Y0 - H2, { color: 'ink', width: 2.2 });
+          bore.rect(-0.012, Y0 - rad(0) - 0.03, 0, Y0 + rad(0) + 0.03, { fill: 'muted', fillAlpha: 0.9, stroke: false });
+          bore.text('closed', -0.004, Y0 + Math.max(rad(0), 0.12) + 0.14, { align: 'right', color: 'muted', size: 11 });
+          bore.text('open', L + 0.006, Y0, { align: 'left', color: 'muted', size: 11 });
+          // ---- pressure on the axis, aligned below
+          const G0 = -0.72, GA = 0.48;
+          bore.hline(G0, { color: 'faint', width: 1 });
+          bore.between((x) => G0 + GA * Math.abs(P(x)), (x) => G0 - GA * Math.abs(P(x)), 0, L, { fill: 'red', fillAlpha: 0.1, n: 240 });
+          bore.fn((x) => G0 + GA * P(x) * ph, { domain: [0, L], n: 240, color: 'red', width: 2.4 });
+          bore.text('pressure on the axis, sin k(r₂ − r)/r', 0.005, G0 + GA + 0.1, { align: 'left', color: 'red', size: 11 });
+          bore.corner(`mode ${n}: kL = ${v.fix(u, 4)} (${v.fix(u / Math.PI, 3)} π)`, 'tl', { color: 'red', weight: 600 });
+          // ---- resonance curves
+          for (let q = 1; q <= 10; q++) rc.hline(q, { color: q % 2 ? 'green' : 'teal', width: 1, alpha: 0.25 });
+          curves.forEach((c, i) => rc.path(c, { color: i + 1 === n ? 'red' : 'accent', width: i + 1 === n ? 2.6 : 1.8 }));
+          rc.vline(tp, { color: 'gold', width: 1.4, dash: [4, 3] });
+          M.range(NR, 1).forEach((q) => rc.dot(tp, (2 * root(rho, q)) / Math.PI, { r: 4.5, color: q === n ? 'red' : 'accent' }));
+          rc.text('odd: 1, 3, 5, …', 0.04, 10.75, { align: 'left', color: 'green', size: 11, weight: 600 });
+          rc.text('even: 2, 4, 6, …', 0.96, 10.75, { align: 'right', color: 'teal', size: 11, weight: 600 });
+          // ---- overblowing interval
+          ob.hline(1200, { color: 'teal', width: 1, dash: [4, 3] }); ob.hline(1902, { color: 'green', width: 1, dash: [4, 3] });
+          ob.path(obc, { color: 'accent', width: 2.2 });
+          const iv = 1200 * Math.log2(root(rho, 2) / root(rho, 1));
+          ob.dot(tp, iv, { r: 6, color: 'gold' });
+          ob.text('clarinet', 0.2, 1960, { align: 'left', color: 'green', size: 11 });
+          ob.text('oboe, saxophone', 0.97, 1145, { align: 'right', color: 'teal', size: 11 });
+        }, { still: 0.6 });
+        v.legend([['red', 'pressure of the chosen mode'], ['accent', 'resonances (roots of tan kL = −k x₁)'], ['gold', 'this bore', { dot: true }]]);
+        v.readout(() => {
+          const tp = tS.value, rho = 1 - tp, x1 = rho >= 1 ? Infinity : (L * rho) / (1 - rho), f = freqs(), iv = 1200 * Math.log2(f[1] / f[0]);
+          const name = Math.abs(iv - 1902) < 15 ? 'a twelfth, like the clarinet' : Math.abs(iv - 1200) < 15 ? 'an octave, like the oboe and saxophone' : `between a twelfth (1902 ¢) and an octave (1200 ¢)`;
+          return `$L$ = 60 cm, $r_1/r_2$ = ${v.fix(rho, 3)}, apex distance $x_1$ = ${isFinite(x1) ? v.fix(x1 * 100, 1) + ' cm' : '∞'} · resonances ${f.map((x) => v.fix(x, 1)).join(', ')} Hz, ratios $f_n/f_1$ = ${f.map((x) => v.fix(x / f[0], 3)).join(' : ')} · overblows by ${v.fix(iv, 0)} ¢: ${name} · lowest note ${noteOf(M, f[0])}, ${centsTxt(1200 * Math.log2(f[0] / (C_AIR / (4 * L))), 0)} from the closed cylinder's $c/4L$`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.5
+    {
+      num: '3.5',
+      kind: 'Model',
+      name: 'Brass instruments: flaring bell and mouthpiece',
+      statement: String.raw`A brass instrument is a long, mostly cylindrical tube closed at one end by the player's lips (a pressure-controlled valve, so a pressure antinode, as for a reed) and ending in a flaring **bell**, with a **mouthpiece** (a cup, a narrow throat and a conical backbore) at the lips. A plain closed cylinder of the same length would resonate at the odd series $1:3:5:7:\cdots$ (3.3). The bell and the mouthpiece move these resonances, which are the maxima of the input impedance $|Z_{\text{in}}(f)|$ at the lips, into an almost complete harmonic series $2f_0, 3f_0, 4f_0, \dots$ of a fundamental $f_0$ that is not itself a resonance: the lowest resonance lies far below $f_0$ and plays no part. The player selects a resonance with lip tension and buzzes at its frequency, so a valveless bugle or natural trumpet plays the notes $2f_0,3f_0,\dots,8f_0$ (bugle calls use $3f_0$ to $6f_0$). The **pedal note** $f_0$ can still be played, held up by the harmonics $2f_0,3f_0,\dots$ that fall on resonances.`,
+      idea: String.raw`A flare reflects a wave where its curvature becomes comparable to the wavelength: low frequencies turn back early, deep inside the bell, high frequencies travel almost to the rim. So the bell shortens the acoustic length most for the lowest resonances and raises them most, compressing the odd ladder from below (Webster's horn equation, solved here as a chain of short tubes). The mouthpiece adds a small volume of air (a compliance) behind a narrow throat (an inertance): a Helmholtz resonator, tuned near 700–900 Hz in a trumpet, that adds effective length to resonances near and below its own frequency, lowering the upper resonances into line. Together they turn $1:3:5:7:9$ into roughly $0.7:2:3:4:5:6:7:8$. Above the bell's cut-off (where the bell radius is about $c/2\pi f$) waves escape and the peaks fade: the trumpet's top register is held up by the player more than by the bore.`,
+      caption: String.raw`Grow the **bell** and the **mouthpiece** from a plain closed cylinder (both at 0) to a trumpet-like bore (both at 100 %). Top: the bore, straightened, with its radius magnified. Middle: the input impedance at the lips, computed by transfer matrices for 300 short tube segments with wall losses and a radiating bell; numbered peaks are the resonances, the grey dashed lines the plain cylinder's, and the green dashes the best harmonic series $nf_0$ through resonances 2–8. Bottom: how far each resonance lies from $nf_0$, in cents. Play the resonances, or the opening of *Taps* on resonances 3–6: it only sounds right once the resonances are harmonic.`,
+      deps: ['music-3.3', 'music-3.4', 'music-2.6'],
+      see: ['music-11.12', 'music-11.4', 'waves-1.10', 'music-11.3'],
+      refs: ['Benson ch. 3'],
+      tags: ['brass', 'pipes'],
+      credit: 'Henri Bouasse, 1929; Arthur Benade, 1973; impedance measurements: Backus, 1976',
+      scope: String.raw`A one-dimensional plane-wave model (the bell's mouth flares too fast for it to be exact), with visco-thermal wall losses $\alpha\approx2.96\times10^{-5}\sqrt f/r$ m⁻¹ and a baffled-piston load at the bell. The dimensions are typical of a B♭ trumpet (1.34 m of tubing, 11.6 mm bore, 12.4 cm bell, a Bessel-horn flare $r\propto(x_0-x)^{-1/2}$ over the last 55 cm) but this is not a measured instrument; valves, bends and the lips' own mechanics are left out.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Brass_instrument_acoustics' },
+      viz(v) {
+        const M = v.M, LT = 1.34, RC = 0.0058, RB = 0.062, LB = 0.55, GAM = 0.5, LMP = 0.088, LLP = 0.25, NSEG = 300, FA = 20, FB = 1400, NF = 560;
+        const pct = (x) => Math.round(x * 100) + ' %';
+        const bS = v.slider('flaring bell', 0, 1, 1, { step: 0.01, fmt: pct });
+        const mS = v.slider('mouthpiece and leadpipe', 0, 1, 1, { step: 0.01, fmt: pct });
+        v.button('closed cylinder', () => { bS.set(0); mS.set(0); });
+        v.button('trumpet-like bore', () => { bS.set(1); mS.set(1); });
+        const s0 = LB / (Math.pow(RB / RC, 1 / GAM) - 1);
+        const radius = (x, bell, mp) => {
+          let r = RC; const sb = x - (LT - LB);
+          if (sb > 0) r = RC + bell * (RC * Math.pow((s0 + LB) / (s0 + LB - sb), GAM) - RC);
+          if (x < LMP + LLP) {
+            let rm;
+            if (x < 0.008) rm = 0.0082; else if (x < 0.013) rm = 0.0082 + ((0.00185 - 0.0082) * (x - 0.008)) / 0.005; else if (x < 0.018) rm = 0.00185;
+            else if (x < LMP) rm = 0.00185 + ((0.0045 - 0.00185) * (x - 0.018)) / (LMP - 0.018); else rm = 0.0045 + ((RC - 0.0045) * (x - LMP)) / LLP;
+            r += mp * (rm - r);
+          }
+          return r;
+        };
+        const cache = new Map();
+        const analyse = (bell, mp) => {
+          const k = bell.toFixed(3) + '|' + mp.toFixed(3); if (cache.has(k)) return cache.get(k);
+          const xs = [], rs = [];
+          for (let i = 0; i <= NSEG; i++) { const t = i / NSEG, x = LT * (t < 0.12 ? t * t / 0.24 : t - 0.06) / 0.94; xs.push(x); rs.push(radius(x, bell, mp)); } // finer near the mouthpiece
+          const { F, A } = boreSweep(xs, rs, FA, FB, NF), P = peaksOf(F, A).slice(0, 10);
+          const fs = P.map((p) => p.f); let num = 0, den = 0; for (let q = 2; q <= Math.min(8, fs.length); q++) { num += fs[q - 1] * q; den += q * q; }
+          const f0 = den ? num / den : fs[0];
+          const out = { xs, rs, F, A, P, fs, f0, dev: fs.map((f, i) => 1200 * Math.log2(f / ((i + 1) * f0))) };
+          if (cache.size > 60) cache.clear(); cache.set(k, out); return out;
+        };
+        const base = analyse(0, 0);
+        const pr = v.stage({ x: [-0.03, 1.39], y: [-72, 72], height: 185, axes: 'box', xlabel: 'distance from the lips (m)', ylabel: 'radius (mm)', yticks: [-50, 0, 50], full: true, title: 'the bore, straightened (radius magnified)' });
+        const zp = v.stage({ x: [0, FB], y: [-25, 50], height: 250, axes: 'box', xlabel: 'frequency (Hz)', ylabel: '$|Z_{\\text{in}}|$ (dB re $\\rho c/S$)', yticks: [-20, 0, 20, 40], full: true, title: 'input impedance at the lips: its peaks are the notes the lips can lock onto' });
+        const dv = v.stage({ x: [0.4, 10.6], y: [-130, 130], height: 210, axes: 'box', xlabel: 'resonance number n', ylabel: 'cents from $n f_0$', xticks: M.range(10, 1), yticks: [-100, -50, 0, 50, 100], full: true });
+        const BRASS = (f) => M.range(10, 1).map((h) => [h * f, Math.pow(h, -0.75)]);
+        const ph = playhead(v); let playIdx = null;
+        v.soundButton('resonances 1 → 8', (snd) => { const R = analyse(bS.value, mS.value); R.fs.slice(0, 8).forEach((f, i) => snd.tone(BRASS(f), { duration: 0.42, gain: 0.2, delay: 0.5 * i, attack: 0.03, release: 0.08 })); playIdx = 'all'; ph.start(4, 'seq'); });
+        const TAPS = [[3, 0.45], [3, 0.15], [4, 1.0], [3, 0.45], [4, 0.15], [5, 1.0], [3, 0.45], [4, 0.15], [5, 0.65], [3, 0.45], [4, 0.15], [5, 0.65], [3, 0.45], [4, 0.15], [5, 1.2]];
+        v.soundButton('Taps on resonances 3–6', (snd) => {
+          const R = analyse(bS.value, mS.value); let t0 = 0;
+          for (const [q, d] of TAPS) { const f = R.fs[q - 1]; if (f) snd.tone(BRASS(f), { duration: d * 0.92, gain: 0.2, delay: t0, attack: 0.035, release: 0.06 }); t0 += d; }
+          playIdx = null; ph.start(t0, 'taps');
+        });
+        v.render(() => {
+          const R = analyse(bS.value, mS.value);
+          // ---- the bore
+          const top = R.xs.map((x, i) => [x, R.rs[i] * 1000]);
+          pr.poly([...top, ...top.slice().reverse().map(([x, y]) => [x, -y])], { fill: 'orange', fillAlpha: 0.22, color: 'orange', width: 1.6 });
+          pr.path(base.xs.map((x, i) => [x, base.rs[i] * 1000]), { color: 'muted', width: 1, dash: [4, 4] });
+          pr.rect(-0.012, -9, 0, 9, { fill: 'muted', fillAlpha: 0.9, stroke: false });
+          pr.text('lips', -0.004, 15, { align: 'left', color: 'muted', size: 11 });
+          if (mS.value > 0.15) pr.text('mouthpiece', 0.012, -20, { align: 'left', color: 'muted', size: 11 });
+          pr.text('cylindrical tubing', 0.6, 18, { align: 'center', color: 'muted', size: 11 });
+          if (bS.value > 0.15) pr.text('bell', 1.33, 52, { align: 'right', color: 'muted', size: 11 });
+          // ---- impedance curve
+          const Zc = (RHO * C_AIR) / (Math.PI * RC * RC), dB = (a) => 20 * Math.log10(a / Zc);
+          base.fs.forEach((f) => zp.line(f, -25, f, 50, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.55 }));
+          for (let q = 1; q * R.f0 <= FB; q++) zp.line(q * R.f0, -25, q * R.f0, 50, { color: 'green', width: 1.2, dash: [6, 4], alpha: 0.6 });
+          zp.path(Array.from(R.F, (f, j) => [f, M.clamp(dB(R.A[j]), -25, 50)]), { color: 'accent', width: 2 });
+          R.P.forEach((p, i) => { const y = Math.min(46, dB(p.a) + 3.5); zp.dot(p.f, dB(p.a), { r: 3.5, color: i === 0 && R.dev[0] < -60 ? 'red' : 'accent' }); zp.text(String(i + 1), p.f, y, { align: 'center', baseline: 'bottom', color: 'ink', size: 11, weight: 600 }); });
+          zp.corner(`f₀ = ${v.fix(R.f0, 1)} Hz (${noteOf(M, R.f0, true)})`, 'tr', { color: 'green', weight: 600 });
+          // ---- deviation from the harmonic series
+          dv.hband(-25, 25, { color: 'green', alpha: 0.1 });
+          dv.hline(0, { color: 'faint', width: 1 });
+          R.dev.forEach((d, i) => {
+            const n = i + 1, col = Math.abs(d) < 25 ? 'green' : Math.abs(d) < 60 ? 'orange' : 'red', y = M.clamp(d, -125, 125);
+            dv.rect(n - 0.3, 0, n + 0.3, y, { fill: col, fillAlpha: 0.7, stroke: false });
+            if (Math.abs(d) > 125) dv.text(`${d > 0 ? '+' : '−'}${Math.round(Math.abs(d))} ¢`, n, d > 0 ? 112 : -112, { align: 'center', color: 'red', size: 10.5, weight: 600, plate: true });
+          });
+          dv.corner('green band: within ±25 ¢', 'tr', { color: 'green', size: 11 });
+        });
+        v.legend([['accent', 'impedance peaks: resonances'], ['muted', 'plain closed cylinder', { dash: true }], ['green', 'harmonic series $n f_0$', { dash: true }], ['orange', 'the bore']]);
+        v.readout(() => {
+          const R = analyse(bS.value, mS.value), fs = R.fs, up = fs.slice(1, 8), rms = Math.sqrt(R.dev.slice(1, 8).reduce((a, d) => a + d * d, 0) / Math.max(1, up.length));
+          const cyl = base.fs.slice(0, 5).map((f) => v.fix(f / base.fs[0], 2)).join(' : ');
+          return `resonances ${fs.slice(0, 8).map((f) => v.fix(f, 0)).join(', ')} Hz · ratios to $f_0$ = ${v.fix(R.f0, 1)} Hz: ${fs.slice(0, 8).map((f) => v.fix(f / R.f0, 2)).join(' : ')} · resonances 2–8 lie within ${v.fix(Math.max(...R.dev.slice(1, 8).map(Math.abs)), 0)} ¢ of $nf_0$ (rms ${v.fix(rms, 0)} ¢) · the lowest resonance sits at ${v.fix(fs[0] / R.f0, 2)} $f_0$${Math.abs(R.dev[0]) > 60 ? ', off the series: the pedal note $f_0$ is held up by resonances 2, 3, 4 … instead' : ''} · the plain closed cylinder: ${cyl} (odd)`;
+        });
+      },
+    },
   ],
 };

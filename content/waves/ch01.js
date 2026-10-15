@@ -391,7 +391,7 @@ a solution of the wave equation whenever $\omega=ck$. Its **amplitude** is $A$, 
 
 With $+\omega t$ instead of $-\omega t$ the wave travels in the $-x$ direction. On a non-dispersive medium $v_p=c$ for every wavelength; in a dispersive one (chapter 3) $v_p$ depends on $k$.`,
       idea: String.raw`A crest is a place where the phase equals $2\pi n$; following it means keeping $kx-\omega t$ constant, so $dx/dt=\omega/k$. One wavelength passes a fixed observer in one period, which is the same statement as $v_p=\lambda/T$. A sinusoid is the special case of d'Alembert's solution (1.3) with $F(s)=A\cos(ks+\varphi)$; it matters because any shape can be built from sinusoids (2.3) and, in a linear medium, each one travels independently.`,
-      caption: String.raw`Set the wavelength and the period. The gold marker rides one crest and its measured speed is compared with $\lambda/T$. Drag the teal probe: it does not travel, it only bobs up and down, and its trace (below left) repeats every period $T$, wherever you put it. Below right: the same wave in space–time. Crests are the red stripes, and their slope is the phase velocity. Reverse the direction and the stripes tilt the other way.`,
+      caption: String.raw`Set the wavelength and the period. The gold marker rides one crest and its measured speed is compared with $\lambda/T$. Drag the teal probe: it does not travel, it only bobs up and down, and its trace (below left) repeats every period $T$, wherever you put it. Below right: the same wave in space–time, with *now* at the top. Crests are the red stripes, and the black triangle shows one of them moving a distance $\lambda$ in a time $T$: the slope of every stripe is the phase velocity. Reverse the direction and the stripes tilt the other way.`,
       deps: ['waves-1.3'],
       see: ['music-1.3', 'sig-1.5', 'sig-1.4'],
       refs: ['Hecht ch. 2'],
@@ -444,6 +444,12 @@ With $+\omega t$ instead of $-\omega t$ the wave travels in the $-x$ direction. 
           st.raster((x, u) => dv(y(x, u) / 1.4), { res: 3 });
           st.axes();
           st.clip(() => st.line(crest - d * vp * 4, t - 4, crest, t, { color: 'gold', width: 3 }));
+          // slope triangle on one crest: it moves λ in one period T
+          const ta = t - TW / 2 - T / 2, n = Math.round((XM / 2 - (d * L) / 2 - d * vp * ta) / L), xa = n * L + d * vp * ta, xb = xa + d * L;
+          st.path([[xa, ta], [xb, ta], [xb, ta + T]], { color: 'ink', width: 2 });
+          st.line(xa, ta, xb, ta + T, { color: 'ink', width: 2.6 });
+          st.text('λ', (xa + xb) / 2, ta, { color: 'ink', size: 14, math: true, align: 'center', baseline: 'top', dy: 4 });
+          st.text('T', xb, ta + T / 2, { color: 'ink', size: 14, math: true, align: d > 0 ? 'left' : 'right', dx: d > 0 ? 6 : -6 });
           st.dot(crest, t, { r: 6, color: 'gold' });
           st.text('now', XM, t, { color: 'ink', size: 11.5, align: 'right', baseline: 'top', dx: -6, dy: 4 });
           st.vline(probe.x, { color: 'teal', width: 1.6 });
