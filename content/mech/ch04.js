@@ -76,7 +76,7 @@ function steady(w, w0, beta, f0 = 1) {
 function lockIn(ts, xs, w, periods = 4) {
   const tEnd = ts[ts.length - 1], t0 = tEnd - periods * TAU / w; let a = 0, b = 0, n = 0;
   for (let i = 1; i < ts.length; i++) {
-    if (ts[i - 1] < t0 - 1e-12) continue;
+    if (ts[i - 1] < t0 - 1e-9 * tEnd) continue;
     const dt = ts[i] - ts[i - 1], tm = (ts[i] + ts[i - 1]) / 2, xm = (xs[i] + xs[i - 1]) / 2;
     a += xm * Math.cos(w * tm) * dt; b += xm * Math.sin(w * tm) * dt; n += dt;
   }
@@ -432,6 +432,9 @@ all traversed clockwise in the same time $2\pi/\omega$.`,
           const i = Math.min(r.pts.length - 1, Math.floor(t * TAU / hw) % (r.n + 1));
           sP.dot(r.pts[i][0], r.pts[i][1], { color: 'gold', r: 5.5 });
           // energy history
+          let lo = Infinity, hi = 0; for (const e of r.en) if (e > 0 && isFinite(e)) { lo = Math.min(lo, e); hi = Math.max(hi, e); }
+          if (hi / lo < 1.2) { const pd = Math.max(0.002, (hi / lo - 1) * 0.4); sE.setView(null, [lo / (1 + pd), hi * (1 + pd)]); }
+          else sE.setView(null, [Math.max(1e-3, Math.min(0.5, lo / 2)), Math.min(1e3, Math.max(2, hi * 2))]);
           sE.hline(1, { color: 'green', dash: [6, 5], width: 1.3 });
           sE.path(r.en.map((e, j) => [j * r.perStep, e]), { color: 'accent', width: 3.2 });
           if (meth.value === 'fe' || meth.value === 'be') {
@@ -446,7 +449,7 @@ all traversed clockwise in the same time $2\pi/\omega$.`,
           const after = `after ${NP} periods $E/E_0 = ${Math.abs(Math.log10(Ef)) > 3 ? v.sci(Ef, 3) : v.fix(Ef, 4)}$`;
           if (M === 'fe') return `forward Euler: every step multiplies $E$ by exactly $1+h^2\\omega^2 = ${v.fix(1 + hw * hw, 4)}$ — ${after}; the orbit spirals outward`;
           if (M === 'be') return `backward Euler: every step divides $E$ by $1+h^2\\omega^2 = ${v.fix(1 + hw * hw, 4)}$ — ${after}; artificial damping`;
-          if (M === 'lf') return hw < 2 ? `leapfrog: ${after}; the energy wobbles but never drifts, because every computed point lies on the ellipse $\\tfrac12v^2+\\tfrac12\\omega^2(1-\\tfrac14h^2\\omega^2)x^2 = $ const (largest deviation ${v.sci(r.dev, 1)})` : `leapfrog with $h\\omega = ${v.fix(hw, 2)} > 2$: the conserved quadratic form is no longer an ellipse, and the method is unstable — ${after}`;
+          if (M === 'lf') return hw < 2 ? `leapfrog: ${after}; the energy wobbles but never drifts, because every computed point lies on the ellipse $\\tfrac12v^2+\\tfrac12\\omega^2(1-\\tfrac14h^2\\omega^2)x^2 = $ const (largest deviation $${v.sci(Math.max(r.dev, 1e-16), 1)}$)` : `leapfrog with $h\\omega = ${v.fix(hw, 2)} > 2$: the conserved quadratic form is no longer an ellipse, and the method is unstable — ${after}`;
           return `RK4: ${after} — a tiny decay, about $(h\\omega)^6/72$ per step, but not exactly conservative`;
         });
       },
@@ -484,11 +487,11 @@ If $\omega_y/\omega_x = p/q$ is rational (in lowest terms) the orbit is closed, 
             xs[i] = x; ys[i] = y; const k = cell(x) * G + cell(y); if (!seen[k]) { seen[k] = 1; c++; } cov[i] = c;
           }
           let frac = null; for (let q = 1; q <= 40 && !frac; q++) { const p = Math.round(r * q); if (p > 0 && Math.abs(r - p / q) < 1e-9) frac = [p, q]; }
-          let near = null; if (!frac) for (let q = 1; q <= 12 && !near; q++) { const p = Math.round(r * q); if (p > 0 && Math.abs(r - p / q) < 0.012) near = [p, q]; }
+          let near = null; if (!frac) for (let q = 1; q <= 4 && !near; q++) { const p = Math.round(r * q); if (p > 0 && Math.abs(r - p / q) < 0.01) near = [p, q]; }
           return (D = { xs, ys, cov, frac, near });
         }
         v.animate((t) => {
-          const d = data(), tau = (2 * t) % NPER, i = Math.min(N, Math.floor(tau * PER));
+          const d = data(), tau = (3 * t) % NPER, i = Math.min(N, Math.floor(tau * PER));
           s.rect(-1, -1, 1, 1, { color: 'muted', dash: [4, 4], width: 1 });
           s.line(-1.12, 0, 1.12, 0, { color: 'faint', width: 1 }); s.line(0, -1.12, 0, 1.12, { color: 'faint', width: 1 });
           const pts = new Array(i + 1); for (let j = 0; j <= i; j++) pts[j] = [d.xs[j], d.ys[j]];
@@ -506,7 +509,7 @@ If $\omega_y/\omega_x = p/q$ is rational (in lowest terms) the orbit is closed, 
         });
         v.legend([['accent', 'orbit so far'], ['orange', '$x$ oscillation', { dot: true }], ['purple', '$y$ oscillation', { dot: true }]]);
         v.readout((t) => {
-          const d = data(), tau = (2 * t) % NPER, i = Math.min(N, Math.floor(tau * PER)), pc = v.fix(100 * d.cov[i] / (G * G), 0);
+          const d = data(), tau = (3 * t) % NPER, i = Math.min(N, Math.floor(tau * PER)), pc = v.fix(100 * d.cov[i] / (G * G), 0);
           if (d.frac) return `$\\omega_y/\\omega_x = ${d.frac[0]}/${d.frac[1]}$: the orbit closes after ${d.frac[1]} $x$-period${d.frac[1] > 1 ? 's' : ''} (${d.frac[0]} $y$-period${d.frac[0] > 1 ? 's' : ''}); it visits only ${v.fix(100 * d.cov[N] / (G * G), 0)} % of the $${G}\\times${G}$ cells, however long you wait`;
           const nearTxt = d.near ? ` It is close to ${d.near[0]}/${d.near[1]}, so the figure looks like a slowly rotating ${d.near[0]}:${d.near[1]} Lissajous curve.` : '';
           return `$\\omega_y/\\omega_x = ${v.fix(r, 6)}$ is not a fraction with a small denominator: the orbit has not closed after ${v.fix(tau, 1)} periods and has visited ${pc} % of the cells — and keeps filling the rectangle.${nearTxt}`;
@@ -639,7 +642,7 @@ The asymptotic decay rate $\sigma$ is maximal, equal to $\omega_0$, exactly at c
             sR.setView(null, [0, 3]); sR.setTitle('time to stay within $\\pm2\\%$, released from rest (s)');
             sR.vline(1, { color: 'green', dash: [5, 4], width: 1.2 });
             sR.path(S.out, { color: 'ink', width: 2 });
-            sR.dot(S.best[0], S.best[1], { color: 'green', r: 5.5, label: `min at β = ${v.fix(S.best[0], 2)} ω₀`, labelPos: 'n' });
+            sR.dot(S.best[0], S.best[1], { color: 'green', r: 5.5, label: `min at β = ${v.fix(S.best[0], 2)} ω₀`, labelPos: 'se' });
             const me = S.out[Math.round((zz - 0.05) / 2.95 * 300)];
             sR.dot(me[0], me[1], { color: 'accent', r: 6.5 });
           }
@@ -712,7 +715,7 @@ which oscillates at the driving frequency and lags it by $\delta\in(0,\pi)$, and
           sP.curve((a) => [0.35 * R * Math.cos(a), 0.35 * R * Math.sin(a)], -s.d, 0, { color: 'orange', width: 1.6 });
           sP.tex('\\delta', 0.42 * R * Math.cos(-s.d / 2), 0.42 * R * Math.sin(-s.d / 2), { color: 'orange', size: 14 });
           sP.arrow(0, 0, px, py, { color: 'accent', width: 2.6 });
-          sP.tex('Ae^{-i\\delta}', px, py, { color: 'accent', dx: px > 0 ? 22 : -22, dy: 12, size: 13 });
+          sP.tex('Ae^{-i\\delta}', px / 2, py / 2, { color: 'accent', dx: py < -0.3 * R ? (px > 0 ? 26 : -26) : 0, dy: py < -0.3 * R ? 0 : 16, size: 13 });
           // transient size
           let lo = Infinity, hi = 0; for (const p of s.env) { if (p[1] > 0) lo = Math.min(lo, p[1]); hi = Math.max(hi, p[1]); }
           sE.setView(null, [Math.max(1e-9, lo * 0.3), hi * 3]);
@@ -750,10 +753,11 @@ is largest at $\omega_R=\sqrt{\omega_0^2-2\beta^2}$ (when $\beta<\omega_0/\sqrt2
         const meas = {};
         function measure(x, z) { // long RK4 run from rest, then lock-in on the last drive periods
           const k = `${x}|${z}`; if (meas[k]) return meas[k];
-          const w = x * w0, b = z * w0, Td = TAU / w, tEnd = Math.max(9.5 / b, 12 * Td) + 4 * Td, h = Math.min(1, Td) / 50;
-          const n = Math.ceil(tEnd / h), hh = tEnd / n, f = (t, y) => [y[1], w0 * w0 * Math.cos(w * t) - 2 * b * y[1] - w0 * w0 * y[0]];
-          let y = [0, 0]; const ts = [], xs = [], keep = tEnd - 4.2 * Td;
-          for (let i = 0; i < n; i++) { y = rk4step(f, i * hh, y, hh); const t = (i + 1) * hh; if (t >= keep) { ts.push(t); xs.push(y[0]); } }
+          // a whole number K of drive periods, m steps each, so the lock-in window is exactly the last 4 periods
+          const w = x * w0, b = z * w0, Td = TAU / w, m = Math.max(50, Math.ceil(50 * Td)), hh = Td / m, K = Math.max(16, Math.ceil(9.5 / b / Td) + 4), n = K * m;
+          const f = (t, y) => [y[1], w0 * w0 * Math.cos(w * t) - 2 * b * y[1] - w0 * w0 * y[0]];
+          let y = [0, 0]; const ts = [], xs = [];
+          for (let i = 0; i < n; i++) { y = rk4step(f, i * hh, y, hh); if (i + 1 >= n - 4 * m) { ts.push((i + 1) * hh); xs.push(y[0]); } }
           const L = lockIn(ts, xs, w, 4);
           return (meas[k] = { A: L.A, d: ((L.d * 180 / Math.PI) + 360) % 360 });
         }

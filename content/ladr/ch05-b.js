@@ -318,9 +318,9 @@ $$p_T = s\cdot p_{T|_U}.$$`,
             const Q = orthN(Wvecs), C = Q.map((a) => Q.map((b) => dotN(a, mv(T, b))));      // compression P_W T|_W
             const q = minPoly(M, C), dv = pDiv(pT, q);
             wInfo = { q, f: factored(M, q), r: dv.r, Q };
-            const wx = 1.72, wy = 3;
-            box(D, wx, wy, BW, BH, { v, color: 'red', width: isW ? 3 : 1.6, dash: [5, 4], fill: 'red', fillAlpha: isW ? 0.14 : 0.06 });
-            D.tex(wInfo.f, wx, wy, { size: 13, color: 'red' });
+            const wx = 1.62, wy = 3;
+            box(D, wx, wy, BW + 30, BH, { v, color: 'red', width: isW ? 3 : 1.6, dash: [5, 4], fill: 'red', fillAlpha: isW ? 0.14 : 0.06 });
+            D.tex(wInfo.f, wx, wy, { size: 11.5, color: 'red' });
             D.textPx('W (not invariant)', D.X(wx), D.Y(wy) - BH / 2 - 7, { align: 'center', size: 11, color: 'red' });
             geo.push({ k: 'W', x: wx, y: wy });
           }
@@ -759,7 +759,11 @@ with $*$ standing for entries that are unknown or irrelevant.`,
           if (!st) return '';
           if (st.tri) return `$A_{2,1} = A_{3,1} = A_{3,2} = 0$: $\\mathcal M(T)$ is upper triangular (3 of its 9 entries forced to be $0$). Hence $Te_1 = ${tn(A[0][0], 1)}\\,e_1 \\in \\operatorname{span}(e_1)$ and $Te_2, Tw \\in \\operatorname{span}(e_1, e_2)$: $T$ maps the line into the line and the plane into the plane.`;
           const bad = [[1, 0], [2, 0], [2, 1]].filter(([i, j]) => A[i][j]).map(([i, j]) => `A_{${i + 1},${j + 1}} = ${tn(A[i][j], 1)}`);
-          return `$${bad.join(',\\ ')}$ below the diagonal: **not upper triangular**` + (st.leave.length ? ` — $${st.leave.map((k) => `Te_${k + 1}`).join(', ')}$ leave${st.leave.length === 1 ? 's' : ''} ${st.leave.includes(0) ? 'the line' : 'the plane'}` : '') + (st.offw > 1e-9 ? ', and $Tw$ leaves the plane.' : '.');
+          const out = [];
+          if (st.leave.includes(0)) out.push('$Te_1$ leaves the line');
+          const pl = [...(st.leave.includes(1) ? ['Te_2'] : []), ...(st.offw > 1e-9 ? ['Tw'] : [])];
+          if (pl.length) out.push(`$${pl.join('$ and $')}$ leave${pl.length === 1 ? 's' : ''} the plane`);
+          return `$${bad.join(',\\ ')}$ below the diagonal: **not upper triangular**` + (out.length ? ` — ${out.join('; ')}.` : '.');
         });
       },
     },
@@ -941,7 +945,7 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
         const unlock = v.toggle('allow entries below the diagonal', false, { onChange: (b) => { if (!b) for (let i = 0; i < 4; i++) for (let j = 0; j < i; j++) A[i][j] = 0; else if (A.every((r, i) => r.every((x, j) => j >= i || !x))) A[2][1] = -2; } });
         let seed = 1;
         v.button('Scramble the $*$ entries', () => { const r = v.rng(seed++ * 31 + 5); for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) A[i][j] = r.int(-6, 6) / 2; });
-        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 0.95, minWidth: 260, title: 'edit the matrix (entries $\\ge$ the diagonal)' });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 0.95, minWidth: 260, title: 'edit the diagonal and the $*$ entries above it' });
         const Z = v.stage({ x: [-3.4, 3.4], y: [-2.4, 2.4], equal: true, height: 350, weight: 1.05, xlabel: 'Re', ylabel: 'Im', title: 'diagonal entries (rings) and eigenvalues (dots) in $\\mathbf C$' });
         const TT = v.table(Q, { rows: 4, cols: 4, region: [0, 0.03, 1, 0.88], maxCell: 64, size: 15 });
         editable(v, Q, TT, () => A, { step: 0.5, min: -3, max: 3, ok: (i, j) => i <= j || unlock.value });
@@ -1036,7 +1040,8 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
         v.readout(() => {
           if (!st) return '';
           const { p, g, splits, z21, a11 } = st;
-          const head = `Minimal polynomial $${polyT(p)}$ $= ${factorTeX(g)}$ over $\\mathbf R$ — ${splits ? `**splits**${st.crit ? ' (a repeated zero: only one eigen-direction)' : ''}` : '**does not split**'}. `;
+          const ft = factorTeX(g), cz = g.filter((q) => q.im).map((q) => `${tn(q.re)} \\pm ${tn(q.im)}i`).join(',\\ ');
+          const head = `Minimal polynomial $${polyT(p)}${ft === polyT(p) ? '' : ` = ${ft}`}$ over $\\mathbf R$${cz ? ` (zeros $${cz}$)` : ''} — ${splits ? `**splits**${st.crit ? ' (a repeated zero: only one eigen-direction)' : ''}` : '**does not split**'}. `;
           if (!splits) return head + 'No direction $v_1$ is an eigenvector, so no basis of $\\mathbf R^2$ gives a triangular matrix (over $\\mathbf C$ one would).';
           return head + (z21 ? `Here $Tv_1 = ${tn(a11)}\\,v_1$: the basis $v_1, v_2$ makes $\\mathcal M(T)$ upper triangular.` : 'Turn $v_1$ to a green zero of the curve to make $\\mathcal M(T)$ upper triangular.');
         });
@@ -1051,6 +1056,7 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
       idea: String.raw`By the fundamental theorem of algebra (4.13) the minimal polynomial of $T$ factors completely as $(z - \lambda_1)\cdots(z - \lambda_m)$ over $\mathbf C$, so 5.44 applies. Concretely the basis can be built one vector at a time: an eigenvector $v_1$ (which exists by 5.19); then an eigenvector of the operator that $T$ induces on what is left (the lower-right block once $v_1$ is the first basis vector), giving $v_2$ with $\operatorname{span}(v_1, v_2)$ invariant; and so on. Over $\mathbf R$ the process can stall, when such a block has no real eigenvalue.`,
       caption: String.raw`Each entry of the complex $3\times3$ matrix is drawn as an arrow in its own small copy of $\mathbf C$ (the circle has radius $|$largest entry$|$). Step through: first an eigenvector $v_1$ is chosen and completed to an orthonormal basis — column 1 becomes $(\lambda_1, 0, 0)$; then an eigenvector of the lower-right $2\times2$ block gives $v_2$ — and the matrix is upper triangular. On the right, the diagonal entries (gold) land on the eigenvalues (rings). **New random $T$** repeats it; switch to a real $T$ whose minimal polynomial has a factor $z^2 + bz + c$ with $b^2 < 4c$, and over $\mathbf R$ the second step is impossible.`,
       deps: ['ladr-5.44', 'ladr-4.13'],
+      verify: true,
       tags: ['triangular'],
       viz(v) {
         const M = v.M;

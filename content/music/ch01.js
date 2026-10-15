@@ -114,7 +114,7 @@ For a plane wave let $\xi(x,t)$ be the displacement of the parcel whose resting 
 $$p=-B\,\frac{\partial\xi}{\partial x},\qquad \xi=\hat\xi\sin(\omega t-kx)\ \Longrightarrow\ p=\hat p\cos(\omega t-kx),\quad \hat p=\rho c\,\omega\,\hat\xi,$$
 where $B=\rho c^2$ is the adiabatic bulk modulus, $\rho$ the density and $c$ the speed of sound. The pressure peaks a quarter wavelength away from the displacement peaks. The swings are tiny: $\hat p=1$ Pa, a loud tone of about 91 dB, is a hundred-thousandth of atmospheric pressure and moves the air by less than a micrometre at 1 kHz.`,
       idea: String.raw`Apply Newton's second law to a thin slab of air: the pressure difference across it accelerates it, $\rho\,\partial^2\xi/\partial t^2=-\partial p/\partial x$. Its change of thickness changes its pressure, $p=-B\,\partial\xi/\partial x$. Together these give the wave equation $\partial^2\xi/\partial t^2=c^2\,\partial^2\xi/\partial x^2$ with $c=\sqrt{B/\rho}$ (the fluid model of waves-1.11), whose solutions are shapes sliding at speed $c$. Parcels crowd together where those behind have moved forward more than those ahead ($\partial\xi/\partial x<0$), which is where $\xi$ crosses zero going down, not where it is largest. Each parcel just oscillates, so its average position never changes.`,
-      caption: String.raw`Press play: the piston drives the air; each dot is a parcel, its displacement magnified about $10^5$ times and the motion slowed down. Follow a **gold** parcel: it only rocks about its rest mark while the crowding (shaded red) travels on. The graph below shows $\xi$ and $p$ along the tube; switch it to compare them, and note that compressions sit where $\xi$ crosses zero going down. Change $f$ and $\hat p$, then press *Listen* (your volume knob sets the absolute level; the ratios between settings are honest).`,
+      caption: String.raw`Press play: the piston drives the air; each dot is a parcel, its displacement magnified tens of thousands of times and the motion slowed down. Follow a **gold** parcel: it only rocks about its rest mark while the crowding (shaded red) travels on. The graph below shows $\xi$ and $p$ along the tube; switch it to compare them, and note that compressions sit where $\xi$ crosses zero going down. Change $f$ and $\hat p$, then press *Listen* (your volume knob sets the absolute level; the ratios between settings are honest).`,
       deps: ['waves-1.11'],
       refs: ['Benson ch. 1', 'Loy I ch. 4'],
       tags: ['waves', 'pressure'],
@@ -128,11 +128,11 @@ where $B=\rho c^2$ is the adiabatic bulk modulus, $\rho$ the density and $c$ the
         const shade = v.toggle('shade compressions', true);
         v.soundButton('Listen', (snd) => snd.tone(fq.value, { duration: 2, gain: (0.3 * pa.value) / 10, release: 0.25 }));
         const tube = v.stage({ x: [-0.24, L + 0.03], y: [-0.78, 0.7], height: 210, axes: false, full: true });
-        const gr = v.stage({ x: [-0.24, L + 0.03], y: [-1.45, 1.55], height: 170, axes: 'box', yticks: [], xlabel: 'x (m)', full: true });
+        const gr = v.stage({ x: [-0.24, L + 0.03], y: [-1.8, 1.55], height: 180, axes: 'box', yticks: [], xlabel: 'x (m)', full: true });
         const R = v.rng(11);
         const parcels = M.range(1150).map(() => [R.uniform(0.008, L - 0.008), R.uniform(-0.46, 0.46)]);
         const tracers = [[0.43, 0.2], [1.04, -0.22], [1.62, 0.04]];
-        let st = null;
+        let st = null, lastG = null;
         v.animate((t) => {
           const f = fq.value, lam = c / f, k = TAU / lam, w = TAU * f, ph = TAU * VIS_F * t;
           // drawn strain k·D grows with the amplitude (it never exceeds 0.5, so parcels never cross)
@@ -140,6 +140,10 @@ where $B=\rho c^2$ is the adiabatic bulk modulus, $\rho$ the density and $c$ the
           const xiReal = pa.value / (rho * c * w);
           st = { f, lam, xiReal, X: D / xiReal, u: pa.value / (rho * c), slow: VIS_F / f };
           const xi = (x) => D * Math.sin(ph - k * x);
+          if (graph.value !== lastG) {
+            lastG = graph.value;
+            v.legend([...(lastG !== 'p' ? [['accent', 'displacement $\\xi$ of the parcel resting at $x$']] : []), ...(lastG !== 'xi' ? [['red', 'excess pressure $p$']] : []), ['gold', 'tracer parcels and their rest marks', { dot: true }]]);
+          }
           // ---- tube
           if (shade.value) {
             const n = 180;
@@ -175,10 +179,9 @@ where $B=\rho c^2$ is the adiabatic bulk modulus, $\rho$ the density and $c$ the
             gr.vline(x0, { color: 'gold', dash: [3, 4], alpha: 0.8 });
             if (graph.value !== 'p') gr.dot(x0, Math.sin(ph - k * x0), { r: 4.5, color: 'gold' });
           }
-          if (graph.value !== 'p') gr.corner(`ξ̂ = ${M.si(xiReal, 'm')} (forward = up)`, 'tl', { color: 'accent', weight: 600 });
-          if (graph.value !== 'xi') gr.corner(`p̂ = ${v.fmt(pa.value, 3)} Pa (compression = up)`, 'tr', { color: 'red', weight: 600 });
+          if (graph.value !== 'p') gr.corner(`ξ: ±${M.si(xiReal, 'm')} (forward = up)`, 'tl', { color: 'accent', weight: 600 });
+          if (graph.value !== 'xi') gr.corner(`p: ±${v.fmt(pa.value, 3)} Pa (compression = up)`, 'tr', { color: 'red', weight: 600 });
         }, { still: 0.35 });
-        v.legend([['accent', 'displacement $\\xi$ of the parcel resting at $x$'], ['red', 'excess pressure $p$'], ['gold', 'tracer parcels and their rest marks', { dot: true }]]);
         v.readout(() => st && `$f$ = ${Math.round(st.f)} Hz, $\\lambda = c/f$ = ${M.si(st.lam, 'm')} with $c$ = ${v.fix(c, 1)} m/s (air, 20 °C) · $\\hat p$ = ${v.fmt(pa.value, 3)} Pa: SPL ${v.fix(splOf(pa.value / Math.SQRT2), 1)} dB, $\\hat p/p_{\\rm atm} = ${v.sci(pa.value / C.atm, 2)}$ · parcel speed $\\hat u=\\hat p/\\rho c$ = ${M.si(st.u, 'm/s')}, displacement $\\hat\\xi=\\hat u/\\omega$ = ${M.si(st.xiReal, 'm')} (drawn $\\times${v.sci(st.X, 1)}$) · slow motion: 1 s on screen = ${M.si(st.slow, 's')} of real time`);
       },
     },
@@ -246,7 +249,8 @@ with amplitude $a$ and phase $\varphi$ fixed by the initial position and velocit
           s.text('m', 1.75, xs, { align: 'center', math: true, color: 'ink', size: 15 });
           // time trace: the phasor's shadow (ideal) against the simulated mass
           s.line(X0, -1.18, X1, -1.18, { color: 'muted', width: 1 });
-          for (let ms = 0; ms <= 10; ms += 2) { s.line(xT(ms / 1e3), -1.22, xT(ms / 1e3), -1.14, { color: 'muted', width: 1 }); s.text(ms + (ms === 10 ? ' ms' : ''), xT(ms / 1e3), -1.33, { align: 'center', color: 'muted', size: 11 }); }
+          for (let ms = 0; ms <= 10; ms += 2) { s.line(xT(ms / 1e3), -1.22, xT(ms / 1e3), -1.14, { color: 'muted', width: 1 }); s.text(ms, xT(ms / 1e3), -1.33, { align: 'center', color: 'muted', size: 11 }); }
+          s.text('t (ms)', X0 - 0.12, -1.33, { align: 'right', color: 'muted', size: 11 });
           s.curve((u) => [xT(u), r * Math.sin(w0 * u + phi)], tc, WIN, { color: 'accent', width: 1.5, alpha: 0.35, n: 500 });
           s.curve((u) => [xT(u), r * Math.sin(w0 * u + phi)], 0, tc, { color: 'accent', width: 2.2, n: 500 });
           const step = Math.max(1, Math.round(run.n / 140)), trail = [];
@@ -292,7 +296,7 @@ where $c$ is the speed of the wave in the medium. A sinusoidal wave is $p=\hat p
         const fq = v.slider('frequency $f$', 20, 20000, 343, { log: true, fmt: (x) => M.si(x, 'Hz', 3) });
         const med = v.select('medium', Object.entries(MED).map(([value, o]) => ({ value, label: o.label })), 'air');
         v.soundButton('Listen', (snd) => snd.tone(fq.value, { duration: 1.6, gain: fq.value > 4000 ? 0.07 : 0.2 }));
-        const sp = v.stage({ x: [0, NL], y: [-1.5, 1.75], height: 190, axes: 'box', yticks: [], xlabel: 'x (m)', full: true, title: 'snapshot: pressure along the air at one instant' });
+        const sp = v.stage({ x: [0, NL], y: [-1.5, 1.75], height: 190, axes: 'box', yticks: [], xlabel: 'x (m)', full: true, title: 'snapshot: pressure along the medium at one instant' });
         const tp = v.stage({ x: [0, NL], y: [-1.5, 1.75], height: 185, axes: 'box', yticks: [], xlabel: 't (ms)', weight: 1, title: 'at the microphone: pressure against time' });
         const lr = v.stage({ x: [0.004, 800], y: [0, 1], xlog: true, height: 185, axes: 'box', yticks: [], xlabel: 'λ (m)', weight: 1.1, title: 'the wavelength on a log ruler' });
         const OBJ = [[0.024, 'coin'], [0.19, 'hand'], [1.75, 'person'], [12, 'bus'], [105, 'football pitch']];
@@ -326,17 +330,17 @@ where $c$ is the speed of the wave in the medium. A sinusoidal wave is $p=\hat p
           tp.dot(NL * T * 1e3, pm, { r: 6, color: 'gold' });
           // ---- log ruler
           lr.rect(c / 20000, 0, c / 20, 1, { fill: 'accent', fillAlpha: 0.08, stroke: false });
+          lr.line(lam, 0, lam, 0.66, { color: 'accent', width: 3 });
           lr.text(`audible band in ${MED[med.value].label}`, Math.sqrt((c / 20000) * (c / 20)), 0.93, { align: 'center', color: 'accent', size: 11 });
           OBJ.forEach(([x, lab], i) => {
             lr.line(x, 0, x, 0.22, { color: 'muted', width: 1.4 });
             lr.text(lab, x, 0.29 + (i % 2) * 0.12, { align: 'center', color: 'muted', size: 11 });
           });
-          lr.line(lam, 0, lam, 0.66, { color: 'accent', width: 3 });
           lr.dot(lam, 0.66, { r: 6, color: 'accent' });
           lr.text(M.si(lam, 'm'), lam, 0.77, { align: lam > 60 ? 'right' : lam < 0.02 ? 'left' : 'center', color: 'accent', size: 12.5, weight: 600 });
         }, { still: 0.3 });
         v.legend([['accent', 'pressure along $x$ at one instant'], ['gold', 'pressure at the microphone against time'], ['red', 'compression', { area: true }], ['blue', 'rarefaction', { area: true }]]);
-        v.readout(() => st && `$f$ = ${M.si(st.f, 'Hz')}, so the period is $T=1/f$ = ${M.si(st.T, 's')} · in ${MED[med.value].note}, $c$ = ${v.fix(st.c, 0)} m/s, so $\\lambda=c/f$ = ${M.si(st.lam, 'm')} · check: $\\lambda f$ = ${v.fix(st.lam * st.f, 1)} m/s $= c$ · $k=2\\pi/\\lambda$ = ${M.si(TAU / st.lam, 'rad/m')}, $\\omega=2\\pi f$ = ${M.si(TAU * st.f, 'rad/s')} · slow motion: 1 s on screen = ${M.si(VIS_F / st.f, 's')}`);
+        v.readout(() => st && `$f$ = ${M.si(st.f, 'Hz')}, so the period is $T=1/f$ = ${M.si(st.T, 's')} · in ${MED[med.value].note}, $c$ = ${v.fix(st.c, 0)} m/s, so $\\lambda=c/f$ = ${M.si(st.lam, 'm')} · check: $\\lambda f$ = ${v.fix(st.lam * st.f, 1)} m/s, which is $c$ · wavenumber $k=2\\pi/\\lambda$ = ${v.fmt(TAU / st.lam, 3)} rad/m, angular frequency $\\omega=2\\pi f$ = ${v.fmt(TAU * st.f, 4)} rad/s · slow motion: 1 s on screen = ${M.si(VIS_F / st.f, 's')}`);
       },
     },
     // ------------------------------------------------------------------ 1.4
@@ -366,7 +370,7 @@ Newton (1687) assumed the compressions were isothermal, which gives $\sqrt{p/\rh
         const cOf = (g, tC, mdl) => Math.sqrt(((mdl === 'newton' ? 1 : g.gamma) * C.R * (tC + C.T0)) / g.M);
         const gr = v.stage({ x: [-50, 130], y: [0, 500], height: 340, axes: 'box', grid: true, xlabel: 'T (°C)', ylabel: 'c (m/s)', weight: 1, title: 'speed against temperature' });
         const race = v.stage({ x: [-105, 435], y: [-0.85, 3.75], height: 340, axes: false, weight: 1.15, title: `a pulse races down four tubes (first ${TW} s, slowed ×10)` });
-        const h = gr.handle(20, cOf(GAS.air, 20, 'laplace'), { color: 'accent', label: 'T', constrain: (x) => { const T = M.clamp(x, -45, 125); return [T, cOf(GAS[gasSel.value], T, model.value)]; } });
+        const h = gr.handle(20, cOf(GAS.air, 20, 'laplace'), { color: 'accent', constrain: (x) => { const T = M.clamp(x, -45, 125); return [T, cOf(GAS[gasSel.value], T, model.value)]; } });
         const pipe = (g) => cOf(g, h.x, model.value) / (2 * LP);
         v.soundButton('pipe in air', (snd) => snd.tone(pipe(GAS.air), { harmonics: 6, rolloff: 1.6, duration: 1.1, gain: 0.22 }));
         v.soundButton('pipe in this gas', (snd) => snd.tone(pipe(GAS[gasSel.value]), { harmonics: 6, rolloff: 1.6, duration: 1.1, gain: 0.22 }));
@@ -380,9 +384,9 @@ Newton (1687) assumed the compressions were isothermal, which gives $\sqrt{p/\rh
           gr.text('Laplace  √(γRT/M)', 128, cOf(g, 128, 'laplace') + 0.035 * yl, { align: 'right', baseline: 'bottom', color: 'green', size: 12, weight: 600 });
           gr.text('Newton  √(RT/M)', 128, cOf(g, 128, 'newton') - 0.035 * yl, { align: 'right', baseline: 'top', color: 'red', size: 12, weight: 600 });
           const cL = cOf(g, T, 'laplace'), cN = cOf(g, T, 'newton');
-          gr.measure(T, cN, T, cL, `${v.fix(100 * (1 - cN / cL), 1)}% short`, { color: 'red', math: false, size: 12, offset: -14 });
+          gr.measure(T, cN, T, cL, `${v.fix(100 * (1 - cN / cL), 1)}% short`, { color: 'red', math: false, size: 12, offset: 34 });
           gr.dot(T, cOf(g, T, other), { r: 4, color: other === 'newton' ? 'red' : 'green' });
-          if (gasSel.value === 'air') gr.dot(0, 331.3, { r: 5, hollow: true, color: 'ink', label: 'measured, 0 °C', labelPos: 'se', math: false });
+          if (gasSel.value === 'air') gr.dot(0, 331.3, { r: 5, hollow: true, color: 'ink', label: 'measured, 0 °C', labelPos: 'nw', math: false });
           // ---- race
           const tc = t % 3.3, tp = (Math.min(tc, 2.5) / 2.5) * TW;
           for (let x = 0; x <= 400; x += 100) { race.line(x, -0.42, x, -0.34, { color: 'muted', width: 1 }); race.text(x + (x === 400 ? ' m' : ''), x, -0.6, { align: 'center', color: 'muted', size: 11 }); }
@@ -423,8 +427,8 @@ Newton (1687) assumed the compressions were isothermal, which gives $\sqrt{p/\rh
         const M = v.M, F_LO = 50, F_HI = 2000, KLO = 52, KHI = 1980, Y = 0.8, STEP = 0.5;
         const mode = v.select('spacing', [{ value: 'lin', label: 'equal differences $+\\Delta f$' }, { value: 'log', label: 'equal ratios $\\times r$' }, { value: 'oct', label: 'octaves $\\times 2$' }], 'lin');
         const nS = v.slider('number of tones', 3, 12, 8, { int: true });
-        const lin = v.stage({ x: [0, F_HI], y: [0, 1.08], height: 165, axes: 'box', yticks: [], xlabel: 'f (Hz)', full: true, title: 'a linear frequency axis' });
-        const lg = v.stage({ x: [F_LO, F_HI], y: [0, 1.08], xlog: true, height: 165, axes: 'box', yticks: [], xlabel: 'f (Hz)', full: true, title: 'a logarithmic frequency axis: the piano keyboard' });
+        const lin = v.stage({ x: [0, F_HI], y: [-0.2, 1.08], height: 175, axes: 'box', yticks: [], xlabel: 'f (Hz)', full: true, title: 'a linear frequency axis' });
+        const lg = v.stage({ x: [F_LO, F_HI], y: [-0.2, 1.08], xlog: true, height: 175, axes: 'box', yticks: [], xlabel: 'f (Hz)', full: true, title: 'a logarithmic frequency axis: the piano keyboard' });
         const hA = lg.handle(110, Y, { color: 'accent', constrain: (x) => [M.clamp(x, 55, hB.x / 1.6), Y] });
         const hB = lg.handle(1320, Y, { color: 'accent', constrain: (x) => [M.clamp(x, hA.x * 1.6, 1900), Y] });
         const ph = playhead(v);
@@ -458,7 +462,7 @@ Newton (1687) assumed the compressions were isothermal, which gives $\sqrt{p/\rh
             for (let a = 55, i = 0; a < F_HI; a *= 2, i++) {
               S.rect(Math.max(a, S === lin ? 0 : F_LO), 0.52, Math.min(2 * a, F_HI), 1.08, { fill: i % 2 ? 'accent' : 'orange', fillAlpha: 0.07, stroke: false });
               const xm = S === lin ? 1.5 * a : a * Math.SQRT2;
-              if (S.X(Math.min(2 * a, F_HI)) - S.X(a) > 70) S.text(`A${i + 1}–A${i + 2}`, xm, 1.0, { align: 'center', color: 'muted', size: 10.5 });
+              if (S.X(Math.min(2 * a, F_HI)) - S.X(a) > 70) S.text(`A${i + 1}–A${i + 2}`, xm, 0.59, { align: 'center', color: 'muted', size: 10.5 });
             }
             keyboard(S, M, KLO, KHI, 0.04, 0.5, marks);
             S.path(fs.map((f) => [f, Y]), { color: 'gold', width: 1.5, alpha: 0.6 });
@@ -503,7 +507,7 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
           '6/5': { p: 6, q: 5, color: 'teal' }, '2/1': { p: 2, q: 1, color: 'orange' },
         };
         const PRE = {
-          syn: { label: 'syntonic comma', a: ['3/2', '3/2', '3/2', '3/2', '-2/1', '-2/1'], b: ['5/4'] },
+          syn: { label: 'syntonic comma', a: ['3/2', '3/2', '3/2', '3/2'], b: ['2/1', '2/1', '5/4'] },
           pyth: { label: 'Pythagorean comma', a: Array(12).fill('3/2'), b: Array(7).fill('2/1') },
           dies: { label: 'diesis', a: ['5/4', '5/4', '5/4'], b: ['2/1'] },
           custom: { label: 'my chain', a: ['3/2', '4/3'], b: ['2/1'] },
@@ -513,7 +517,7 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
         const add = (e) => () => { toCustom(); if (PRE.custom.a.length < 24) PRE.custom.a.push(e); };
         v.button('$+\\tfrac32$', add('3/2')); v.button('$+\\tfrac54$', add('5/4')); v.button('$+\\tfrac65$', add('6/5')); v.button('$-$ octave', add('-2/1'));
         v.button('clear', () => { toCustom(); PRE.custom.a = []; PRE.custom.b = []; });
-        const f1S = v.slider('$f_1$', 110, 880, 440, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
+        const f1S = v.slider('$f_1$', 110, 880, 440, { step: 1, fmt: (x) => Math.round(x) + ' Hz' });
         const top = v.stage({ x: [-100, 1500], y: [0.35, 3.6], height: 255, axes: 'box', yticks: [], xlabel: '¢', full: true, title: 'stacking intervals: ratios multiply, cents add' });
         const bot = v.stage({ x: [-150, 150], y: [0, 1], height: 150, axes: 'box', yticks: [], xticks: [-150, -100, -50, 0, 50, 100, 150].map((c) => [c, (c > 0 ? '+' : c < 0 ? '−' : '') + Math.abs(c) + ' ¢']), full: true, title: 'two tones: $f_2$ against $f_1$' });
         const h2 = bot.handle(50, 0.45, { color: 'orange', label: 'f₂', labelPos: 'n', constrain: (x) => [M.clamp(x, -148, 148), 0.45] });
@@ -540,15 +544,23 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
         });
         const rowA = [1.75, 2.35], rowB = [0.75, 1.35];
         const drawRow = (ch, [y0, y1]) => {
+          // a run of steps in one direction per sub-row, so that steps down never hide steps up
+          const runs = [];
+          ch.forEach((e, i) => { if (!i || (e[0] === '-') !== (ch[i - 1][0] === '-')) runs.push([]); runs[runs.length - 1].push(e); });
+          const hh = (y1 - y0) / Math.max(1, runs.length), gap = runs.length > 1 ? 0.05 : 0;
           let c0 = 0;
-          for (const e of ch) {
-            const dc = centsOf(e), I = IV[e.replace('-', '')], down = e[0] === '-', a = Math.min(c0, c0 + dc), b = Math.max(c0, c0 + dc);
-            top.rect(a, y0, b, y1, { fill: I.color, fillAlpha: down ? 0.1 : 0.32, color: I.color, width: 1.2, dash: down ? [4, 3] : null });
-            const px = top.X(b) - top.X(a), lab = (down ? '÷' : '×') + (I.q === 1 ? I.p : `${I.p}/${I.q}`);
-            if (px > 30) top.text(lab, (a + b) / 2, (y0 + y1) / 2 + (px > 62 ? 0.09 : 0), { align: 'center', color: 'ink', size: 11.5, weight: 600 });
-            if (px > 62) top.text(`${dc > 0 ? '+' : '−'}${v.fix(Math.abs(dc), 1)}`, (a + b) / 2, (y0 + y1) / 2 - 0.13, { align: 'center', color: 'muted', size: 10 });
-            c0 += dc;
-          }
+          runs.forEach((run, r) => {
+            const yt = y1 - r * hh, yb = yt - hh + gap, ym = (yt + yb) / 2, hpx = top.Y(yb) - top.Y(yt);
+            if (r > 0) top.line(c0, yt + gap, c0, yt, { color: 'muted', width: 1.2 });
+            for (const e of run) {
+              const dc = centsOf(e), I = IV[e.replace('-', '')], down = e[0] === '-', a = Math.min(c0, c0 + dc), b = Math.max(c0, c0 + dc);
+              top.rect(a, yb, b, yt, { fill: I.color, fillAlpha: down ? 0.12 : 0.32, color: I.color, width: 1.2, dash: down ? [4, 3] : null });
+              const px = top.X(b) - top.X(a), lab = (down ? '÷' : '×') + (I.q === 1 ? I.p : `${I.p}/${I.q}`), two = px > 62 && hpx > 34;
+              if (px > 30 && hpx > 15) top.text(lab, (a + b) / 2, two ? ym + 0.09 : ym, { align: 'center', color: 'ink', size: 11.5, weight: 600 });
+              if (two) top.text(`${dc > 0 ? '+' : '−'}${v.fix(Math.abs(dc), 1)}`, (a + b) / 2, ym - 0.13, { align: 'center', color: 'muted', size: 10 });
+              c0 += dc;
+            }
+          });
           return c0;
         };
         v.render(() => {
@@ -584,7 +596,7 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
           bot.vband(-8, 8, { color: 'green', alpha: 0.1 });
           for (const c of [-100, 100]) { bot.vline(c, { color: 'muted', width: 1 }); bot.text(noteOf(M, f1S.value * Math.pow(2, c / 1200)), c, 0.9, { align: 'center', color: 'muted', size: 11 }); }
           for (let c = -140; c <= 140; c += 10) if (c % 50) bot.line(c, 0, c, 0.06, { color: 'faint', width: 1 });
-          bot.text('≈ smallest audible step', 0, 0.12, { align: 'center', color: 'green', size: 10.5 });
+          bot.text('≈ smallest audible step', 10, 0.2, { align: 'left', color: 'green', size: 10.5 });
           bot.dot(0, 0.45, { r: 6, color: 'accent', label: 'f₁', labelPos: 's', math: true });
           bot.measure(0, 0.72, h2.x, 0.72, `${v.fix(h2.x, 1)} ¢`, { color: 'orange', math: false, size: 12, offset: -11 });
         });

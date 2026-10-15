@@ -494,11 +494,12 @@ whether or not the $X_i$ are independent.
         const T = v.stage({ x: [0.3, 20.7], y: [0, 22], axes: false, height: 190, full: true, title: 'one interview order: candidate quality in arrival order' });
         const B = v.stage({ x: [0.3, 20.7], y: [-0.11, 1.08], axes: true, height: 230, full: true, xlabel: 'i', title: 'fraction of orders hiring at position $i$, against $E[X_i]=\\Pr[\\text{candidate } i \\text{ is the best so far}]=1/i$' });
         v.render(() => {
-          T.setView([0.3, n + 0.7], [0, n * 1.12]); B.setView([0.3, n + 0.7], [-0.11, 1.08]);
+          T.setView([0.3, n + 0.7], [0, n * 1.16]); B.setView([0.3, n + 0.7], [-0.11, 1.08]);
           const w = 0.36; let best = 0; const stair = [];
           last.forEach((q, i) => {
             const hire = q > best; if (hire) best = q;
             T.rect(i + 1 - w, 0, i + 1 + w, q, hire ? { fill: 'gold', fillAlpha: 0.75, color: 'gold', width: 1.2 } : { fill: 'muted', fillAlpha: 0.3, stroke: false });
+            if (hire && n <= 40) T.text('hire', i + 1, q, { align: 'center', baseline: 'bottom', dy: -3, size: 10.5, weight: 600, color: 'gold' });
             stair.push([i + 1 - 0.5, best], [i + 1 + 0.5, best]);
           });
           T.path(stair, { color: 'green', width: 2 });

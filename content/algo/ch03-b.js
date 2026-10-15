@@ -154,7 +154,7 @@ for every input order.`,
         const P = v.stage({ x: [1.5, 15.5], y: [-0.04, 1.06], axes: 'box', height: 360, weight: 1, minWidth: 270, title: 'frequency vs rank distance $d=j-i+1$', xlabel: 'd' });
         G.onClick((x, y) => { const j = Math.round(x), i = Math.round(-y); if (i >= 0 && j >= 0 && i < n && j < n && i !== j) sel = i < j ? [i, j] : [j, i]; });
         v.render(() => {
-          G.setView([-1.2, n + 3.5], [-n - 0.9, 1.4]); P.setView([1.5, n + 0.5], [-0.04, 1.06]);
+          G.setView([-1.2, n + 3.5], [-n - 0.9, 1.4]); P.setView([1, n + 0.5], [-0.06, 1.06]);
           for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
             if (i === j) { G.text(String(i + 1), j, -i, { align: 'center', size: n > 20 ? 8.5 : 11, weight: 700, color: 'muted' }); continue; }
             const a = Math.min(i, j), b = Math.max(i, j), val = i < j ? cnt[a * n + b] / runs : 2 / (b - a + 1);
@@ -176,7 +176,7 @@ for every input order.`,
         v.legend([['accent', 'simulated pair frequency', { dot: true }], ['green', '$2/(j-i+1)$'], ['red', 'selected pair', { dot: true }]]);
         v.readout(() => {
           const [i, j] = sel, f = cnt[i * n + j] / runs, exact = 2 * (n + 1) * harmonic(n) - 4 * n;
-          return `$z_{${i + 1}}, z_{${j + 1}}$ compared in **${v.fix(100 * f, 1)}%** of ${runs} runs; theory $2/(j-i+1) = ${v.fix(200 / (j - i + 1), 1)}\\%$ · mean comparisons **${v.fix(total / runs, 2)}** vs $2(n+1)H_n-4n = ${v.fix(exact, 2)}$ ($2n\\ln n = ${v.fix(2 * n * Math.log(n), 1)}$)`;
+          return `$z_{${i + 1}}, z_{${j + 1}}$ compared in **${v.fix(100 * f, 1)}%** of ${runs} runs; theory $2/(j-i+1) = ${v.fix(200 / (j - i + 1), 1)}\\%$ · mean comparisons **${v.fix(total / runs, 2)}** vs the exact $E[X] = 2(n+1)H_n-4n = ${v.fix(exact, 2)}$`;
         });
       },
     },
@@ -187,7 +187,7 @@ for every input order.`,
       name: 'Comparison sorting needs Ω(n log n) comparisons',
       statement: String.raw`Any deterministic algorithm that sorts $n$ distinct keys by comparing pairs of them (and gains no other information about the keys) must make at least $\lceil\log_2 n!\rceil$ comparisons on some input. Since $\log_2 n! = n\log_2 n - n\log_2 e + O(\log n)$, every comparison sort has worst-case running time $\Omega(n\log n)$; the same bound holds for the average over all $n!$ input orders.`,
       idea: String.raw`Unwind the algorithm into a **decision tree**: each internal node is a comparison $a_i : a_j$, its two branches are the outcomes, and each leaf is reached by exactly the inputs that produce one output order. Different input orders must end at different leaves (the same rearrangement cannot sort both), so the tree has at least $n!$ leaves. A binary tree of height $h$ has at most $2^h$ leaves, so $h\ge\log_2 n!$, and $\log_2 n! = \Theta(n\log n)$ (1.15). The average leaf depth is at least $\log_2 n!$ as well, by Kraft's inequality. Merge sort meets the bound up to lower-order terms, so it is asymptotically optimal.`,
-      caption: String.raw`The complete decision tree of a real sorting algorithm on 3 or 4 keys, built by running it on every input order. Each internal node $i{:}j$ compares $a_i$ with $a_j$ (left branch: $a_i<a_j$); each leaf is an input order, written as the ranks of $a_1\dots a_n$. Click a leaf (or step through the inputs) to light up its path. The red line is depth $\lceil\log_2 n!\rceil$: no algorithm can keep every leaf above it. Selection sort shows wasted comparisons as nodes with a single branch. Below: worst-case comparisons divided by $\lceil\log_2 n!\rceil$ for larger $n$.`,
+      caption: String.raw`The complete decision tree of a real sorting algorithm on 3 or 4 keys, built by running it on every input order. Each internal node $i{:}j$ compares $a_i$ with $a_j$ (left branch: $a_i<a_j$); each leaf is an input order, written as the ranks of $a_1\dots a_n$. Click a leaf (or step through the inputs) to light up its path. The red line is depth $\lceil\log_2 n!\rceil$: no algorithm can keep every leaf above it. Selection sort shows wasted comparisons as nodes with a single branch. Below: worst-case comparisons divided by $\lceil\log_2 n!\rceil$ for larger $n$; merge sort and merge insertion (Ford–Johnson) stay close to 1, nothing goes below it.`,
       deps: ['algo-3.1', 'algo-1.15'],
       refs: ['CLRS 4e §8.1'],
       tags: ['sorting', 'lower bounds'],
@@ -197,14 +197,14 @@ for every input order.`,
         let pick = 13, key = '', T = null;
         v.button('Next input', () => { pick = (pick + 1) % T.leaves.length; });
         const S = v.stage({ x: [-0.8, 23.8], y: [-6.8, 0.6], axes: false, height: 350, full: true });
-        const P = v.stage({ x: [2, 256], y: [0.9, 2.15], xlog: true, axes: 'box', height: 180, full: true, title: 'worst-case comparisons $\\div \\lceil\\log_2 n!\\rceil$ (never below 1)', xlabel: 'n' });
+        const P = v.stage({ x: [2, 256], y: [0.84, 2.15], xlog: true, axes: 'box', height: 180, full: true, title: 'worst-case comparisons $\\div \\lceil\\log_2 n!\\rceil$ (never below 1)', xlabel: 'n' });
         S.onClick((x, y) => { if (!T) return; let best = -1, bd = 18; T.leaves.forEach((L, k) => { const d = Math.hypot(S.X(L.x) - S.X(x), S.Y(-L.depth) - S.Y(y)); if (d < bd) { bd = d; best = k; } }); if (best >= 0) pick = best; });
-        const ser = { merge: [], insertion: [], binins: [] };
+        const ser = { merge: [], insertion: [], fj: [] };
         for (let k = 0; k <= 56; k++) {
           const m = Math.round(2 * 2 ** (k / 8)); if (ser.merge.length && ser.merge[ser.merge.length - 1][0] === m) continue;
           const lb = Math.ceil(log2fact(m) - 1e-9), L = Math.ceil(Math.log2(m) - 1e-12);
-          let bi = 0; for (let j = 2; j <= m; j++) bi += Math.ceil(Math.log2(j) - 1e-12);
-          ser.merge.push([m, (m * L - 2 ** L + 1) / lb]); ser.insertion.push([m, (m * (m - 1)) / 2 / lb]); ser.binins.push([m, bi / lb]);
+          let fj = 0; for (let j = 1; j <= m; j++) fj += Math.max(0, Math.ceil(Math.log2((3 * j) / 4) - 1e-12));
+          ser.merge.push([m, (m * L - 2 ** L + 1) / lb]); ser.insertion.push([m, (m * (m - 1)) / 2 / lb]); ser.fj.push([m, fj / lb]);
         }
         v.render(() => {
           const n = nSel.value;
@@ -213,7 +213,7 @@ for every input order.`,
           S.setView([-0.8, L - 0.2], [-H - 0.85, 0.55]);
           const leaf = T.leaves[pick], onPath = new Set(); for (let u = leaf; u; u = u.parent) onPath.add(u);
           S.hline(-lb, { color: 'red', width: 1.4, dash: [6, 4] });
-          S.text(`depth ⌈log₂ ${n}!⌉ = ${lb}`, L - 0.25, -lb + 0.12, { align: 'right', baseline: 'bottom', size: 11, color: 'red' });
+          S.corner(`red line: depth ⌈log₂ ${n}!⌉ = ${lb}`, 'tr', { color: 'red', size: 11.5 });
           const r = Math.max(9, Math.min(15, S.width / L * 0.42));
           for (const u of T.nodes) if (u.parent) {
             const on = onPath.has(u);
@@ -234,11 +234,11 @@ for every input order.`,
           }
           // ratio plot
           P.hline(1, { color: 'red', width: 1.4, dash: [6, 4] });
-          P.path(ser.insertion, { color: 'orange', width: 2 }); P.path(ser.binins, { color: 'purple', width: 2 }); P.path(ser.merge, { color: 'accent', width: 2 });
+          P.path(ser.insertion, { color: 'orange', width: 2 }); P.path(ser.fj, { color: 'purple', width: 2 }); P.path(ser.merge, { color: 'accent', width: 2 });
           P.text('insertion sort', 4.2, 1.95, { size: 11, color: 'orange' });
-          P.text('binary insertion', 190, 1.02, { size: 11, color: 'purple', align: 'right', baseline: 'top' });
-          P.text('merge sort', 190, 1.18, { size: 11, color: 'accent', align: 'right' });
-          P.text('lower bound', 2.3, 0.96, { size: 11, color: 'red' });
+          P.text('merge insertion (Ford–Johnson)', 240, 1.005, { size: 11, color: 'purple', align: 'right', baseline: 'bottom' });
+          P.text('merge sort', 240, 1.115, { size: 11, color: 'accent', align: 'right', baseline: 'bottom' });
+          P.text('lower bound', 2.2, 0.99, { size: 11, color: 'red', baseline: 'top' });
         });
         v.legend([['green', 'path of the chosen input'], ['orange', 'node with a single branch (a wasted comparison)', { dot: true }], ['red', '$\\lceil\\log_2 n!\\rceil$', { dash: true }]]);
         v.readout(() => {
@@ -297,8 +297,8 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
           P.fn((x) => 2 * N + 2 * x + 1, { color: 'accent', width: 2.2 });
           P.hline(N * Math.log2(N), { color: 'orange', width: 2, dash: [6, 4] });
           P.vline((N * Math.log2(N) - 2 * N - 1) / 2, { color: 'muted', width: 1, dash: [2, 4] });
-          P.text('counting sort: 2n + 2k + 1', 1.3, 3.2e3, { size: 11, color: 'accent' });
-          P.text('n log₂ n comparisons', 1.3, 1.35e4, { size: 11, color: 'orange' });
+          P.text('counting sort: 2n + 2k + 1', 2.5e4, 4e5, { size: 11, color: 'accent', align: 'right' });
+          P.text('n log₂ n comparisons', 8e6, 1.35e4, { size: 11, color: 'orange', align: 'right', baseline: 'bottom' });
           P.dot(k, 2 * N + 2 * k + 1, { r: 5.5, color: 'gold' });
         });
         v.legend([['gold', 'record being moved', { dot: true }], ['orange', 'counter touched', { dot: true }], ['red', 'equal keys out of order', { dot: true }]]);
@@ -328,7 +328,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
         const stable = v.toggle('stable passes', true, { onChange: () => S.reset({ at: 'end' }) });
         v.button('New numbers', () => { vals = distinct(rng, n, 0, 255); S.reset({ at: 'end' }); });
         const C = v.stage({ x: [-0.5, 3.5], y: [-n + 0.4, 1.35], axes: false, height: 330, full: true });
-        const P = v.stage({ x: [10, 1e8], y: [10, 1e10], xlog: true, ylog: true, axes: 'box', height: 190, full: true, title: 'work for sorting $n$ keys of 32 bits', xlabel: 'n' });
+        const P = v.stage({ x: [10, 1e8], y: [-2, 36], xlog: true, axes: true, height: 200, full: true, title: 'work $\\div\\, n$ for sorting $n$ keys of 32 bits', xlabel: 'n' });
         const digitsOf = (x, b, d) => { const out = []; for (let t = 0; t < d; t++) { out.unshift(x % b); x = Math.floor(x / b); } return out; };
         const passes = () => {
           const b = base.value, d = Math.ceil(Math.log(256) / Math.log(b) - 1e-9);
@@ -344,7 +344,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
         const S = v.steps({ frames: () => (R = passes()).frames, code: ['for t ← 1 to d          // least significant digit first', '  stably sort A on digit t   (counting sort, b buckets)'], codeTitle: 'Radix-Sort(A, d)', codePos: 'below', speed: 1, start: 'end' });
         v.render(() => {
           const { b, d, cols } = R, t = S.frame.t ?? d, ncol = d + 1;
-          C.setView([-0.55, ncol - 0.45], [-n + 0.35, 1.35]);
+          C.setView([-0.55, ncol - 0.45], [-n + 0.05, 1.3]);
           const colPx = C.width / (ncol + 0.1), dw = Math.min(13, (colPx * 0.66) / d), fs = Math.min(15, dw * 1.45), half = (dw * d) / 2 / C.scale;
           for (let c = 0; c <= t; c++) {
             const order = cols[c], X = C.X(c);
@@ -363,17 +363,18 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
               const prev = cols[c - 1], where = new Map(order.map((id, r) => [id, r]));
               prev.forEach((id, r0) => C.line(c - 1 + half + 0.06, -r0, c - half - 0.06, -where.get(id), { color: c === t ? 'accent' : 'faint', width: c === t ? 1.6 : 1.1, alpha: 0.8 }));
             }
-            if (c > 0 && c === t) C.text(sortedOK ? `sorted by the last ${c} digit${c === 1 ? '' : 's'} ✓` : 'invariant broken ✗', c, -n + 0.52, { align: 'center', size: 10.5, color: sortedOK ? 'green' : 'red' });
+            if (c > 0 && c === t) C.text(sortedOK ? `sorted by the last ${c} digit${c === 1 ? '' : 's'} ✓` : 'invariant broken ✗', c, -n + 0.42, { align: 'center', size: 10.5, color: sortedOK ? 'green' : 'red' });
           }
           // cost panel
           const bits = 32, passesFor = (bb) => Math.ceil(bits / Math.log2(bb) - 1e-9);
-          P.fn((m) => m * Math.log2(m), { color: 'orange', width: 2, dash: [6, 4] });
-          P.fn((m) => passesFor(b) * (m + b), { color: 'accent', width: 2.2 });
-          P.fn((m) => { const r = Math.max(1, Math.min(16, Math.round(Math.log2(m)))); return Math.ceil(bits / r) * (m + 2 ** r); }, { color: 'green', width: 1.8, dash: [3, 3] });
-          P.text(`base ${b}: ${passesFor(b)} passes`, 2e6, 3.6e6, { size: 11, color: 'accent', align: 'left' });
-          P.text('n log₂ n', 1.4e3, 4e4, { size: 11, color: 'orange', align: 'right' });
+          P.fn((m) => Math.log2(m), { color: 'orange', width: 2, dash: [6, 4] });
+          P.fn((m) => (passesFor(b) * (m + b)) / m, { color: 'accent', width: 2.4 });
+          P.fn((m) => { const r = Math.max(1, Math.min(16, Math.round(Math.log2(m)))); return (Math.ceil(bits / r) * (m + 2 ** r)) / m; }, { color: 'green', width: 1.8, dash: [3, 3] });
+          P.text(`radix, base ${b}: ${passesFor(b)} passes`, 3e7, passesFor(b) * (1 + b / 3e7) + 0.6, { size: 11, color: 'accent', align: 'right', baseline: 'bottom' });
+          P.text('comparison sort: log₂ n', 3e7, Math.log2(3e7) + 0.8, { size: 11, color: 'orange', align: 'right', baseline: 'bottom' });
+          P.text('best base b ≈ n', 3e7, 32 / 16 + 3.2, { size: 11, color: 'green', align: 'right', baseline: 'bottom' });
         });
-        v.legend([['green', 'digits already sorted on'], ['gold', 'digit of the current pass'], ['accent', 'radix sort, this base'], ['green', 'radix sort, best base $b \\approx n$', { dash: true }], ['orange', '$n\\log_2 n$', { dash: true }]]);
+        v.legend([['green', 'digits already sorted on'], ['gold', 'digit of the current pass'], ['accent', 'radix sort, this base: $d(n+b)/n$'], ['green', 'radix sort, best base $b \\approx n$', { dash: true }], ['orange', 'comparison sort: $n\\log_2 n / n$', { dash: true }]]);
         v.readout(() => {
           const { b, d, cols } = R, last = cols[d], ok = last.every((id, r) => r === 0 || vals[last[r - 1]] <= vals[id]);
           return `base $b = ${b}$: $d = ${d}$ passes · work $d(n+b) = ${d}\\cdot(${n}+${b}) = ${d * (n + b)}$ vs $n\\log_2 n \\approx ${Math.round(n * Math.log2(n))}$ here; at $n = 10^6$ with $b = 2^{16}$: $2(10^6 + 65536) \\approx 2.1\\cdot 10^6$ vs $n\\log_2 n \\approx 2\\cdot 10^7$ · final order ${ok ? '**sorted** ✓' : '**not sorted** ✗ — the passes must be stable'}`;
@@ -389,7 +390,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
 
 If the inputs are drawn independently and uniformly from $[0,1)$, the expected running time is $\Theta(n)$: with $n_i$ the load of bucket $i$, the cost is $\Theta\big(n+\sum_i n_i^2\big)$ and $E\big[\sum_i n_i^2\big]=2n-1$. Without that assumption the worst case is $\Theta(n^2)$.`,
       idea: String.raw`Insertion sort on a bucket of $n_i$ keys costs $O(n_i^2)$, so the total is $O(n+\sum n_i^2)$. Write $n_i$ as a sum of indicators $X_{ij}$ that key $j$ lands in bucket $i$ (3.3); then $E[n_i^2]=\sum_j E[X_{ij}]+\sum_{j\ne l}E[X_{ij}X_{il}]=1+n(n-1)/n^2=2-1/n$. Summing over the $n$ buckets gives $2n-1$. The argument uses the uniformity of the input; clustered inputs pile into few buckets and the quadratic cost returns.`,
-      caption: String.raw`The input values (top strip) drop into $n$ equal buckets and stack up; stacks are coloured by load. Switch the input distribution: uniform data spreads out with $\sum n_i^2\approx 2n$, while clustered or skewed data piles up and the sum, the true cost, blows up. **Resample** for a fresh draw. Below: $\sum n_i^2/n$ averaged over draws, as $n$ grows, for this distribution and for uniform data.`,
+      caption: String.raw`The input values (top strip) drop into $n$ equal buckets and stack up; stacks are coloured by load. Uniform data spreads out with $\sum n_i^2\approx 2n$. A clustered input with a bounded density stays linear, only with a larger constant; a density that blows up (skewed, $u^4$) or an adversarial input piles keys into few buckets, and $\sum n_i^2$, the true cost, grows faster than $n$. **Resample** for a fresh draw. Below: $\sum n_i^2/n$ averaged over draws as $n$ grows: flat means linear time.`,
       deps: ['algo-3.2', 'algo-3.3'],
       refs: ['CLRS 4e §8.4'],
       tags: ['sorting', 'randomized'],
@@ -408,7 +409,7 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
         v.button('Resample', draw);
         draw();
         const T = v.stage({ x: [0, 1], y: [-0.6, 10], axes: false, height: 300, full: true });
-        const P = v.stage({ x: [10, 10000], y: [1, 3000], xlog: true, ylog: true, axes: 'box', height: 190, full: true, title: '$\\sum_i n_i^2 / n$, averaged over 20 draws', xlabel: 'n' });
+        const P = v.stage({ x: [10, 10000], y: [0.6, 6000], xlog: true, ylog: true, axes: 'box', height: 200, full: true, title: '$\\sum_i n_i^2 / n$, averaged over 20 draws', xlabel: 'n' });
         const curves = {}, r2 = v.rng(5);
         const curve = (name) => {
           if (curves[name]) return curves[name];
@@ -425,7 +426,7 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
           const n = xs.length, B = Array.from({ length: n }, () => []);
           for (const x of xs) B[Math.min(n - 1, Math.floor(n * x))].push(x);
           B.forEach((q) => q.sort((a, b) => a - b));
-          const mx = Math.max(...B.map((q) => q.length)), top = Math.max(6, mx) + 2.3;
+          const mx = Math.max(...B.map((q) => q.length)), top = Math.max(5, mx) + 2;
           T.setView([0, 1], [-0.75, top]);
           for (let i = 0; i <= n; i++) T.line(i / n, 0, i / n, Math.max(1.2, mx + 0.3), { color: 'grid', width: 1 });
           T.line(0, 0, 1, 0, { color: 'muted', width: 1.4 });
@@ -453,7 +454,8 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
         v.readout(() => {
           if (!info) return '';
           const { n, s2, shifts, mx } = info;
-          return `$\\sum_i n_i^2 = ${s2}$ (uniform expectation $2n-1 = ${2 * n - 1}$) · insertion-sort shifts inside buckets: ${shifts} · largest bucket: ${mx} key${mx === 1 ? '' : 's'}` + (s2 > 4 * n ? ' · **far above linear: the uniformity assumption fails**' : '');
+          const verdict = { uniform: 'uniform: linear time, $E = 2n-1$', clustered: 'bounded density: still $\\Theta(n)$, with a larger constant', skewed: 'unbounded density: $\\sum n_i^2/n$ grows with $n$ (about $\\sqrt n$)', one: 'every key in one bucket: $\\Theta(n^2)$' }[dist.value];
+          return `$\\sum_i n_i^2 = ${s2} = ${v.fix(s2 / n, 2)}\\,n$ (uniform expectation $2n-1 = ${2 * n - 1}$) · insertion-sort shifts inside buckets: ${shifts} · largest bucket: ${mx} key${mx === 1 ? '' : 's'} · **${verdict}**`;
         });
       },
     },
@@ -473,7 +475,7 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
       viz(v) {
         let n = 8, beats = [], lost = [], cmps = 0, hist = [], pick = -1, last = null, msg = '', reveal = null, strat = null;
         const S = v.stage({ x: [-1.25, 1.25], y: [-1.15, 1.2], equal: true, axes: false, height: 320, weight: 1.3, minWidth: 300 });
-        const P = v.stage({ x: [0, 16], y: [0, 8.6], axes: 'box', height: 320, weight: 1, minWidth: 240, title: 'unbeaten keys vs comparisons', xlabel: 'comparisons' });
+        const P = v.stage({ x: [0, 16], y: [0, 8.6], axes: 'box', height: 320, weight: 1, minWidth: 240, title: 'unbeaten keys vs comparisons $k$', xlabel: 'k' });
         const G = v.graph(S, { nodes: [], edges: [], directed: true, layout: 'none', draggable: false, r: 16 });
         const unbeaten = () => range0(n).filter((i) => !lost[i]);
         const reset = () => {
@@ -532,7 +534,7 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
             edgeColor: (e) => (last && e.from === last[0] && e.to === last[1] ? 'orange' : 'muted'),
             edgeWidth: (e) => (last && e.from === last[0] && e.to === last[1] ? 3 : 1.5),
           });
-          P.setView([0, Math.max(2 * n, cmps + 1)], [0, n + 0.6]);
+          P.setView([0, Math.max(2 * n, cmps + 1)], [0, n + 1]);
           P.line(0, n, n - 1, 1, { color: 'red', width: 1.5, dash: [6, 4] });
           P.hline(1, { color: 'green', width: 1.2, dash: [3, 3] });
           const stair = []; hist.forEach(([k, c], i) => { if (i) stair.push([k, hist[i - 1][1]]); stair.push([k, c]); });
@@ -566,7 +568,7 @@ the maximum being near the median. The worst case, when every pivot is an extrem
         let seed = 21;
         v.button('New run', () => { seed++; S.reset({ at: 'end' }); });
         const F = v.stage({ x: [0.5, 400.5], y: [-8, 0.8], axes: false, height: 250, full: true, title: 'one run: the ranks still alive in each round' });
-        const Hs = v.stage({ x: [0, 6], y: [0, 1], axes: 'box', height: 200, full: true, title: 'comparisons $\\div\\, n$ over 2000 runs' });
+        const Hs = v.stage({ x: [0, 6], y: [0, 1], axes: true, height: 200, full: true, title: 'comparisons $\\div\\, n$ over 2000 runs' });
         const kOf = () => Math.max(1, Math.round(kS.value * nS.value));
         const trace = () => {
           const n = nS.value, k = kOf(), r = v.rng(seed), rounds = []; let lo = 1, hi = n, C = 0;
@@ -618,12 +620,12 @@ the maximum being near the median. The worst case, when every pivot is an extrem
           const lo = Math.min(...hist), hi = Math.max(...hist), bound = 2 + 2 * Math.LN2;
           const x0 = piv.value === 'first' ? Math.max(0, lo - 1) : 0, x1 = piv.value === 'first' ? hi + 1 : Math.max(6, hi * 1.02);
           const Hd = v.M.histogram(Array.from(hist), { bins: 60, range: [x0, x1] }), top = Math.max(...Hd.counts);
-          Hs.setView([x0, x1], [0, top * 1.22]);
+          Hs.setView([x0, x1], [-top * 0.13, top * 1.24]);
           Hs.hist(Hd, { color: 'accent', fillAlpha: 0.35 });
-          Hs.vline(exact, { color: 'green', width: 2 });
-          if (piv.value === 'random') { Hs.vline(bound, { color: 'red', width: 1.6, dash: [6, 4] }); Hs.text('(2 + 2 ln 2) n', bound, top * 1.12, { size: 11, color: 'red', dx: 5 }); }
-          Hs.text('exact E[C]/n', exact, top * 1.12, { size: 11, color: 'green', align: 'right', dx: -5 });
-          if (S.atEnd) Hs.vline(f.total / n, { color: 'gold', width: 2.2 });
+          if (S.atEnd) Hs.line(f.total / n, 0, f.total / n, top * 1.02, { color: 'gold', width: 2.2 });
+          Hs.line(exact, 0, exact, top * 1.24, { color: 'green', width: 2 });
+          if (piv.value === 'random') { Hs.line(bound, 0, bound, top * 1.24, { color: 'red', width: 1.6, dash: [6, 4] }); Hs.text('(2 + 2 ln 2) n', bound, top * 1.15, { size: 11, color: 'red', dx: 5 }); }
+          Hs.text('exact E[C]/n', exact, top * 1.15, { size: 11, color: 'green', align: 'right', dx: -5 });
         });
         v.legend([['accent', 'ranks alive / kept side'], ['gold', 'pivot · this run (histogram)'], ['green', 'target rank $k$ · exact expectation'], ['red', 'bound for the worst $k$', { dash: true }]]);
         v.readout(() => {
@@ -652,8 +654,8 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
         const gS = v.select('group size $g$', [{ value: 3, label: '3' }, { value: 5, label: '5' }, { value: 7, label: '7' }], 5, { onChange: () => { vals = distinct(rng, m * gS.value, 1, 99); S.reset({ at: 3 }); } });
         let vals = distinct(rng, m * 5, 1, 99);
         v.button('New keys', () => { vals = distinct(rng, m * gS.value, 1, 99); S.reset({ at: 3 }); });
-        const Gd = v.stage({ x: [-0.7, m - 0.3], y: [-1.1, 5.7], axes: false, height: 300, full: true });
-        const Lc = v.stage({ x: [-0.6, 10.6], y: [0, 1.15], axes: 'box', height: 200, weight: 1, minWidth: 250, title: 'recursion-tree level cost $\\div\\, n$', xlabel: 'level', yticks: [0.25, 0.5, 0.75, 1] });
+        const Gd = v.stage({ x: [-0.7, m - 0.3], y: [-1.15, 4.7], axes: false, height: 280, full: true });
+        const Lc = v.stage({ x: [-1.1, 10.6], y: [-0.12, 1.15], axes: 'box', height: 200, weight: 1, minWidth: 250, title: 'recursion-tree level cost $\\div\\, n$, by level', xticks: [], yticks: [0.25, 0.5, 0.75, 1] });
         const Wp = v.stage({ x: [100, 1e6], y: [0, 26], xlog: true, axes: 'box', height: 200, weight: 1.3, minWidth: 300, title: 'comparisons $\\div\\, n$', xlabel: 'n' });
         const build = () => {
           const g = gS.value, n = m * g, frames = [], pos = (layout) => { const o = {}; layout.forEach((col, c) => col.forEach((id, r) => { o[id] = [c, r]; })); return o; };
@@ -681,7 +683,7 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
         }
         v.render(() => {
           const f = S.frame, g = gS.value, p0 = S.prev.pos && Object.keys(S.prev.pos).length === Object.keys(f.pos).length ? S.prev.pos : f.pos, t = S.tween;
-          Gd.setView([-0.7, m - 0.3], [-1.15, g + 0.75]);
+          Gd.setView([-0.7, m - 0.3], [-1.15, g - 0.3]);
           const mid = (g - 1) >> 1;
           if (f.med) Gd.hband(mid - 0.45, mid + 0.45, { color: 'gold', alpha: 0.08 });
           if (f.blocks) {
@@ -704,7 +706,7 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
           if (f.blocks) Gd.text(`guaranteed: ≥ ${f.lowBlock.size + 1} keys ≤ x, ≥ ${f.highBlock.size + 1} keys ≥ x  (≈ ${g === 5 ? '3n/10' : g === 3 ? 'n/3' : '2n/7'} each)`, m - 0.5, -0.85, { size: 11.5, color: 'ink', align: 'right' });
           // level costs
           const h = Math.ceil(g / 2), q = 1 / g + (1 - h / (2 * g)), Lq = []; let sum = 0;
-          for (let l = 0; l <= 10; l++) { const c = q ** l; Lq.push(c); sum += c; Lc.rect(l - 0.34, 0, l + 0.34, c, { fill: g === 3 ? 'red' : 'accent', fillAlpha: 0.55, stroke: false }); }
+          for (let l = 0; l <= 10; l++) { const c = q ** l; Lq.push(c); sum += c; Lc.rect(l - 0.34, 0, l + 0.34, c, { fill: g === 3 ? 'red' : 'accent', fillAlpha: 0.55, stroke: false }); Lc.text(String(l), l, -0.06, { align: 'center', size: 10.5, color: 'muted' }); }
           Lc.text(`each level × ${v.fix(q, 3)} → total ${g === 3 ? '≈ (levels) · n' : `≤ ${v.fix(1 / (1 - q), 1)} n`}`, 10.4, 1.08, { align: 'right', size: 11, color: g === 3 ? 'red' : 'accent', weight: 600 });
           // worst-case recurrence and measurements
           const COL = { 3: 'red', 5: 'accent', 7: 'teal' };
@@ -713,7 +715,7 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
             Wp.text(`g = ${gg}`, 1e6, worst[gg][worst[gg].length - 1][1], { align: 'right', baseline: 'bottom', size: 11, color: COL[gg], dy: -3 });
           }
           Wp.dots(meas[g], { r: 3.5, color: COL[g] });
-          Wp.text('dots: real runs on random input', 120, 1.6, { size: 10.5, color: 'muted' });
+          Wp.text('lines: worst-case recurrence W(n)/n · dots: real runs on random input', 115, 24.6, { size: 10.5, color: 'muted' });
         });
         v.legend([['gold', 'median row / median of medians $x$'], ['green', 'surely $\\le x$'], ['red', 'surely $\\ge x$ · groups of 3 (bottom)'], ['accent', 'groups of 5'], ['teal', 'groups of 7']]);
         v.readout(() => {
@@ -739,7 +741,7 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
       viz(v) {
         let n = 8, won, lostA, val, cmps, hist, pick = -1, last = null, msg = '', stage = null;
         const B = v.stage({ x: [0, 2], y: [0, 2], axes: false, height: 330, weight: 1.35, minWidth: 330 });
-        const P = v.stage({ x: [0, 16], y: [0, 17], axes: 'box', height: 330, weight: 1, minWidth: 240, title: 'units left vs comparisons', xlabel: 'comparisons' });
+        const P = v.stage({ x: [0, 16], y: [0, 17], axes: 'box', height: 330, weight: 1, minWidth: 240, title: 'units left vs comparisons $k$', xlabel: 'k' });
         const units = () => { let u = 0; for (let i = 0; i < n; i++) u += (lostA[i] ? 0 : 1) + (won[i] ? 0 : 1); return u; };
         const lb = () => Math.ceil((3 * n) / 2) - 2;
         const reset = () => {

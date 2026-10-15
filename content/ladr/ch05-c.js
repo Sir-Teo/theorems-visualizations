@@ -961,14 +961,14 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         const SM = conj(M, QM, [[2, 0, 0], [0, 2, 0], [0, 0, -1]]), PERT = conj(M, QM, [[0, 0, 0.8], [0, 0, -0.5], [0.9, 0.6, 0]]);
         const PL = orthN([QB[0], QB[1]]), LN = [unit3(QB[2])];
         const lamSel = v.select('eigenvalue of $S$', [{ value: 2, label: '$\\lambda = 2$ (plane)' }, { value: -1, label: '$\\lambda = -1$ (line)' }], 2);
-        const tw = v.slider('twist of $T$ on the plane', 0, 1.5, 0, { step: 0.05 }), eps = v.slider('non-commuting part $\\varepsilon$', 0, 1, 0, { step: 0.05 });
+        const tw = v.slider('twist of $T$ on the plane', 0, 2, 0, { step: 0.05 }), eps = v.slider('non-commuting part $\\varepsilon$', 0, 1, 0, { step: 0.05 });
         const code = ['$S$ has an eigenvalue $\\lambda$: $E(\\lambda,S) \\ne \\{0\\}$   ▷ 5.19', '$E(\\lambda,S)$ is invariant under $T$   ▷ 5.75', '$T|_{E(\\lambda,S)}$ has an eigenvector $w$   ▷ 5.19', '$Sw = \\lambda w$ and $Tw = \\mu w$: common eigenvector'];
         const frames = [0, 1, 2, 3].map((k) => ({ k, line: k + 1 }));
-        const SP = v.steps({ frames, code, codeTitle: 'proof of 5.78', start: 3, note: false });
+        const SP = v.steps({ frames, code, codeTitle: 'proof of 5.78', codePos: 'below', start: 3, note: false });
         let st = null;
         v.render(() => {
           const k = SP.frame.k ?? 3, lam = +lamSel.value, E = lam === 2 ? PL : LN;
-          const T0 = conj(M, QM, [[1.4, 0.9, 0], [0.5 - tw.value, 0.2, 0], [0, 0, 0.7]]);
+          const T0 = conj(M, QM, [[1.2, 0.9, 0], [0.8 - tw.value, -0.3, 0], [0, 0, 0.7]]);
           const T = T0.map((r, i) => r.map((x, j) => x + eps.value * PERT[i][j]));
           const comm = maxAbs(msub(M.matMul(SM, T), M.matMul(T, SM)));
           const leak = Math.max(...E.map((e) => len3(sub3(ap(T, e), projOnto(ap(T, e), E)))));
@@ -980,7 +980,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
             else {
               const R = [[dot3(E[0], ap(T, E[0])), dot3(E[0], ap(T, E[1]))], [dot3(E[1], ap(T, E[0])), dot3(E[1], ap(T, E[1]))]];
               const es = eigenspaces(M, R); cplx = es.nonreal > 0;
-              ws = es.list.flatMap((e) => e.B.map((b) => ({ w: unit3(add3(mul3(E[0], b[0]), mul3(E[1], b[1]))), mu: e.lam })));
+              ws = es.list.flatMap((e) => e.B.map((b) => ({ w: unit3(add3(mul3(E[0], b[0]), mul3(E[1], b[1]))), mu: e.lam }))).sort((p, q) => Math.abs(q.mu) - Math.abs(p.mu));
             }
           }
           // all common eigenvectors (for the readout): eigenvectors of T that are also eigenvectors of S
@@ -1002,8 +1002,8 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           if (k >= 2 && w) ws.forEach((u, i) => { const s = sc.P(u.w)[1] >= 0 ? 1 : -1; sc.line(mul3(u.w, -1.6), mul3(u.w, 1.6), { color: 'gold', width: i ? 2 : 3.5, alpha: i ? 0.45 : 0.85 }, 12); });
           if (k >= 3 && w) {
             const ww = mul3(w.w, sc.P(w.w)[1] >= 0 ? 0.75 : -0.75), Sw = ap(SM, ww), Tw = ap(T, ww);
-            sc.arrow(ZERO, Sw, { color: 'blue', width: 2.6 }); sc.arrow(ZERO, Tw, { color: 'orange', width: 2.6 }); sc.arrow(ZERO, ww, { color: 'gold', width: 3.4 });
-            sc.tex('w', ww, { color: 'gold', size: 15, dx: 12, dy: 12 }); sc.tex('Sw', Sw, { color: 'blue', size: 14, dx: 14, dy: -10 }); sc.tex('Tw', Tw, { color: 'orange', size: 14, dx: -16, dy: -10 });
+            sc.arrow(ZERO, Sw, { color: 'blue', width: 7, head: 14, alpha: 0.45, bias: 0.02 }); sc.arrow(ZERO, Tw, { color: 'orange', width: 4, head: 11, bias: 0.01 }); sc.arrow(ZERO, ww, { color: 'gold', width: 2.4, head: 9 });
+            sc.tex('w', ww, { color: 'gold', size: 15, dx: 14, dy: 10 }); sc.tex('Sw', Sw, { color: 'blue', size: 14, dx: 16, dy: -8 }); sc.tex('Tw', Tw, { color: 'orange', size: 14, dx: -20, dy: -6 });
           }
           sc.flush();
           let msg, col;
@@ -1023,7 +1023,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           if (!inv) return head + `$E(${lam}, S)$ is not invariant, and computing all eigenvectors of both operators finds **${ncommon ? ncommon + ' common direction(s)' : 'no common eigenvector'}**.`;
           if (!w) return head + `$T|_{E(2,S)}$ has nonreal eigenvalues: no real eigenvector in this plane. Over $\\mathbf C$ the proof goes through; here the other eigenspace of $S$ still supplies a common eigenvector (${ncommon} found in all).`;
           const Sw = ap(SM, w.w), Tw = ap(T, w.w);
-          return head + `$w = (${w.w.map((x) => tn(x)).join(', ')})$: $Sw = ${tn(dot3(Sw, w.w))}\\,w$ and $Tw = ${tn(w.mu)}\\,w$ (residuals ${v.sci(len3(sub3(Sw, mul3(w.w, lam))), 1)} and ${v.sci(len3(sub3(Tw, mul3(w.w, w.mu))), 1)}) — a **common eigenvector**, with different eigenvalues $${lam}$ and $${tn(w.mu)}$.`;
+          return head + `$w = (${w.w.map((x) => tn(x)).join(', ')})$: $Sw = ${tn(dot3(Sw, w.w))}\\,w$ and $Tw = ${tn(w.mu)}\\,w$ (residuals $${v.sci(len3(sub3(Sw, mul3(w.w, lam))), 1)}$ and $${v.sci(len3(sub3(Tw, mul3(w.w, w.mu))), 1)}$) — a **common eigenvector**, with different eigenvalues $${lam}$ and $${tn(w.mu)}$.`;
         });
       },
     },
@@ -1055,15 +1055,12 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         };
         gen();
         v.button('Resample', () => { gen(); SP.reset({ at: 'keep' }); });
-        /** Common eigenvectors of A, B on Rⁿ (n ≤ 3): for each eigenspace of A, the eigenvectors of B inside it (via the restriction when invariant). */
+        /** Common eigenvectors of A, B on Rⁿ: bases of the intersections E(λ, A) ∩ E(μ, B) over all pairs of real eigenvalues. */
         const commonEig = (A, B) => {
-          const n = A.length, out = [];
-          for (const e of eigenspaces(M, A).list) {
-            const E = e.B, BE = E.map((u) => ap(B, u));
-            const leak = Math.max(...BE.map((y) => { const p = E.reduce((acc, u) => acc.map((c, i) => c + u[i] * y.reduce((s, x, k) => s + x * u[k], 0)), Array(n).fill(0)); return Math.hypot(...y.map((x, i) => x - p[i])); }));
-            if (leak > 1e-7) continue;
-            const Rm = E.map((u) => BE.map((y) => u.reduce((s, x, k) => s + x * y[k], 0)));
-            for (const f of eigenspaces(M, Rm).list) for (const c of f.B) out.push(E[0].map((_, i) => E.reduce((s, u, k) => s + c[k] * u[i], 0)));
+          const out = [], eA = eigenspaces(M, A).list, eB = eigenspaces(M, B).list;
+          for (const a of eA) for (const b of eB) {
+            const K = A.map((_, r) => [...a.B.map((u) => u[r]), ...b.B.map((u) => -u[r])]);
+            for (const z of M.nullspace(K, 1e-7)) { const w = A.map((_, r) => a.B.reduce((s, u, k) => s + z[k] * u[r], 0)); if (Math.hypot(...w) > 1e-6) out.push(w); }
           }
           return out;
         };
@@ -1080,7 +1077,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           if (!c2.length) { fr.push({ k: 2, fail: true, basis: B1, A, B, note: 'The compressions to $W$ have no common real eigenvector.' }); return fr; }
           const u = c2[0], v2 = unit3(add3(mul3(w2, u[0]), mul3(w3, u[1]))), v3 = unit3(cross3(v1, v2));
           const hc = maxAbs(msub(M.matMul(hA, hB), M.matMul(hB, hA)));
-          fr.push({ k: 2, basis: [v1, v2, v3], A, B, note: String.raw`$\hat S = PS|_W$ and $\hat T = PT|_W$ commute (their commutator is ${v.sci(hc, 1)}); their common eigenvector gives $v_2 \in W$. Column 2 is now zero below the diagonal.` });
+          fr.push({ k: 2, basis: [v1, v2, v3], A, B, note: String.raw`$\hat S = PS|_W$ and $\hat T = PT|_W$ commute (their commutator is $${v.sci(hc, 1)}$); their common eigenvector gives $v_2 \in W$. Column 2 is now zero below the diagonal.` });
           fr.push({ k: 3, basis: [v1, v2, v3], A, B, done: true, note: String.raw`Any $v_3$ completing the basis works: both matrices are upper triangular, and their diagonals list the eigenvalues (5.41).` });
           return fr;
         };
@@ -1100,7 +1097,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           const comm = maxAbs(msub(M.matMul(f.A, f.B), M.matMul(f.B, f.A)));
           R.text(comm < 1e-9 ? 'ST = TS' : `ST ≠ TS (largest entry of ST − TS: ${pn(comm, 2)})`, 0.5, 0.36, { align: 'center', size: 13, weight: 700, color: comm < 1e-9 ? 'green' : 'red' });
           R.text(f.fail ? 'no common eigenvector: the construction stops' : below < 1e-8 ? 'both upper triangular ✓' : 'red entries: not yet upper triangular', 0.5, 0.26, { align: 'center', size: 13, weight: 600, color: f.fail ? 'red' : below < 1e-8 ? 'green' : 'muted' });
-          R.text(`basis: ${f.k === 0 ? 'e₁, e₂, e₃' : f.k === 1 ? 'v₁, and two vectors of W' : 'v₁, v₂, v₃'}`, 0.5, 0.16, { align: 'center', size: 12, color: 'muted' });
+          R.text(`basis: ${kk === 0 ? 'e₁, e₂, e₃' : kk === 1 ? 'v₁, and two vectors w₂, w₃ of W' : 'v₁, v₂, v₃'}`, 0.5, 0.16, { align: 'center', size: 12, color: 'muted' });
           sc.begin();
           const [b1, b2, b3] = f.basis;
           if (f.k >= 1 && !f.fail) {
@@ -1108,8 +1105,9 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
             else sc.disc(b2, b3, 1.3, { fill: 'muted', color: 'muted', fillAlpha: 0.06, grid: false, alpha: 0.4 });
             sc.line(mul3(b1, -1.7), mul3(b1, 1.7), { color: 'gold', width: 4, alpha: 0.5 }, 12);
           }
-          const names = f.k === 0 ? ['e_1', 'e_2', 'e_3'] : f.k === 1 ? ['v_1', 'w_2', 'w_3'] : ['v_1', 'v_2', 'v_3'];
-          f.basis.forEach((b, i) => { const c = f.k >= 1 && i <= (f.k >= 2 ? 1 : 0) ? 'gold' : i === 0 ? 'blue' : 'muted'; sc.arrow(ZERO, mul3(b, 1.1), { color: f.k === 0 ? EC[i] : c, width: 2.6 }); sc.tex(names[i], mul3(b, 1.27), { color: f.k === 0 ? EC[i] : c, size: 14 }); });
+          const kk = f.fail ? (f.k === 1 ? 0 : 1) : f.k;
+          const names = kk === 0 ? ['e_1', 'e_2', 'e_3'] : kk === 1 ? ['v_1', 'w_2', 'w_3'] : ['v_1', 'v_2', 'v_3'];
+          f.basis.forEach((b, i) => { const c = kk >= 1 && i <= (kk >= 2 ? 1 : 0) ? 'gold' : 'muted'; sc.arrow(ZERO, mul3(b, 1.1), { color: kk === 0 ? EC[i] : c, width: 2.6 }); sc.tex(names[i], mul3(b, 1.27), { color: kk === 0 ? EC[i] : c, size: 14 }); });
           if (f.k >= 1 && !f.fail) {
             const u = mul3(b1, 0.8); sc.arrow(ZERO, ap(f.A, u), { color: 'blue', width: 1.6, head: 7 }); sc.arrow(ZERO, ap(f.B, u), { color: 'orange', width: 1.6, head: 7 });
           }
@@ -1119,7 +1117,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
           st = { MA, MB, below, f };
         });
         v.legend([['gold', 'the flag $\\operatorname{span}(v_1) \\subset \\operatorname{span}(v_1, v_2)$'], ['red', 'nonzero below the diagonal', { area: true }], ['green', 'zero below the diagonal', { area: true }]]);
-        v.readout(() => st && (st.f.fail ? 'The two operators do not commute: no common eigenvector, so no basis makes both matrices upper triangular.' : st.below < 1e-8 ? `Both matrices are upper triangular in $v_1, v_2, v_3$ (largest entry below the diagonal: ${v.sci(st.below, 1)}); their diagonals are $(${[0, 1, 2].map((i) => tn(st.MA[i][i])).join(', ')})$ and $(${[0, 1, 2].map((i) => tn(st.MB[i][i])).join(', ')})$.` : `Largest entry below the diagonal: ${tn(st.below, 3)}.`));
+        v.readout(() => st && (st.f.fail ? 'The two operators do not commute: no common eigenvector, so no basis makes both matrices upper triangular.' : st.below < 1e-8 ? `Both matrices are upper triangular in $v_1, v_2, v_3$ (largest entry below the diagonal: $${v.sci(st.below, 1)}$); their diagonals are $(${[0, 1, 2].map((i) => tn(st.MA[i][i])).join(', ')})$ and $(${[0, 1, 2].map((i) => tn(st.MB[i][i])).join(', ')})$.` : `Largest entry below the diagonal: ${tn(st.below, 3)}.`));
       },
     },
     // ------------------------------------------------------------------ 5.81
@@ -1166,7 +1164,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         v.readout(() => {
           if (!st) return '';
           const { ev, dists, comm, sum } = st, nm = sum ? 'S + T' : 'ST';
-          return `Eigenvalues of $${nm}$: ${ev.map((z) => `$${ctn(z.re, z.im)}$`).join(', ')}. Distance to the nearest candidate: ${dists.map((d) => (d < 1e-6 ? `$${v.sci(d, 0)}$` : `$${tn(d, 3)}$`)).join(', ')} — ${comm < 1e-9 ? '**on the candidates**, as 5.81 promises.' : `**off** them: with $\\|ST - TS\\| \\approx ${tn(comm, 2)}$ the theorem does not apply.`}`;
+          return `Eigenvalues of $${nm}$: ${ev.map((z) => `$${ctn(z.re, z.im)}$`).join(', ')}. Distance to the nearest candidate: ${dists.map((d) => (d < 1e-6 ? `$${v.sci(d, 1)}$` : `$${tn(d, 3)}$`)).join(', ')} — ${comm < 1e-9 ? '**on the candidates**, as 5.81 promises.' : `**off** them: with $\\|ST - TS\\| \\approx ${tn(comm, 2)}$ the theorem does not apply.`}`;
         });
       },
     },
