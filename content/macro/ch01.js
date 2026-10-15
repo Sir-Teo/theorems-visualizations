@@ -367,5 +367,266 @@ Each equals GDP. In published statistics the three are built from different sour
         });
       },
     },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4', kind: 'Definition', name: 'The expenditure identity Y = C + I + G + NX',
+      statement: String.raw`Splitting final spending by who buys gives the **expenditure identity**
+$$Y = C + I + G + NX, \qquad NX = X - M,$$
+where $Y$ is GDP; $C$ is household **consumption** of goods and services; $I$ is **investment** — business equipment and structures, new housing and the change in inventories; $G$ is **government purchases** of goods and services (transfers such as pensions are excluded); $X$ is exports and $M$ imports. Each of $C$, $I$, $G$ is measured *including* its imported content, so subtracting $M$ removes what was produced abroad. The identity holds for every period by construction, because unsold output is counted in $I$ as inventory investment.`,
+      idea: String.raw`The identity is the expenditure measure of 1.2 with final demand grouped by buyer. It is an accounting definition, not a theory: it says nothing about what causes what, but every macroeconomic model must respect it. Its traps are classification ones: buying an imported car raises $C$ and $M$ by the same amount and leaves $Y$ unchanged; a pension raises no component until it is spent; a used car is not current production; an unsold car is investment.`,
+      caption: String.raw`Top: U.S. spending as a share of GDP each year from the BEA national accounts — consumption, investment, government purchases and exports above the axis, imports below it; the black line is net exports. Click or drag on the chart to pick a year. Below: pick a single transaction and see which components it moves. Switch on **forget to subtract imports** to see how much a naive sum $C + I + G + X$ would overstate GDP.`,
+      deps: ['macro-1.2'], refs: ['Mankiw ch. 2'], tags: ['national accounts', 'GDP'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gross_domestic_product#Expenditure_approach' },
+      viz(v) {
+        const T = v.stage({ x: [1927.6, 2026.4], y: [-30, 126], height: 310, axes: 'box', full: true, ylabel: '% of GDP', yticks: [-20, 0, 20, 40, 60, 80, 100, 120], title: 'U.S. GDP by type of spending, 1929–2025 (BEA national accounts) — click a year' });
+        const B = v.stage({ x: [0.35, 6.65], y: [-38, 54], height: 210, axes: 'box', full: true, xticks: [[1, 'ΔC'], [2, 'ΔI'], [3, 'ΔG'], [4, 'ΔX'], [5, '−ΔM'], [6, 'ΔGDP']], yticks: [-30, 0, 30], ylabel: 'thousand dollars' });
+        const naive = v.toggle('forget to subtract imports', false);
+        const tx = v.select('one transaction of 30,000 dollars', [
+          { value: 'car', label: 'home-made car' }, { value: 'imp', label: 'imported car' }, { value: 'mach', label: 'new machine' }, { value: 'inv', label: 'unsold cars' },
+          { value: 'teach', label: 'teachers’ pay' }, { value: 'pens', label: 'pensions' }, { value: 'tour', label: 'foreign tourists' }, { value: 'used', label: 'used car' }], 'imp');
+        const EFF = {
+          car: [{ C: 30 }, 'A household buys a new car built at home: consumption and GDP rise by 30.'],
+          imp: [{ C: 30, M: 30 }, 'A household buys an imported car: C rises by 30, but the car was produced abroad, so M rises by 30 too and GDP does not change.'],
+          mach: [{ I: 30 }, 'A firm buys a machine built at home: business investment and GDP rise by 30.'],
+          inv: [{ I: 30 }, 'Cars built this year sit unsold on the lot: they count as inventory investment, so GDP still records the production.'],
+          teach: [{ G: 30 }, 'The government pays teachers for a year of teaching: government purchases rise by 30 (services valued at their cost).'],
+          pens: [{}, 'The government pays pensions: a transfer, not a purchase of output — no component moves until the money is spent.'],
+          tour: [{ X: 30 }, 'Foreign tourists spend 30 at hotels and restaurants here: an export of services.'],
+          used: [{}, 'A household buys a used car from a neighbour: nothing new was produced, so GDP is unchanged (a dealer’s margin would count).'],
+        };
+        const Y = { x: 2025 };
+        T.onDrag((x) => { Y.x = Math.round(clamp(x, 1929, 2025)); });
+        const COLS = ['blue', 'gold', 'purple', 'teal', 'red'];
+        let st = {};
+        v.legend([['blue', '$C$ consumption', { area: true }], ['gold', '$I$ investment', { area: true }], ['purple', '$G$ government', { area: true }], ['teal', '$X$ exports', { area: true }], ['red', '$M$ imports (below 0)', { area: true }], ['ink', 'net exports $X - M$'], ['muted', '100% of GDP', { dash: true }]]);
+        v.render(() => {
+          const sel = Y.x, i0 = sel - 1929;
+          T.vband(sel - 0.5, sel + 0.5, { color: 'accent', alpha: 0.12 });
+          const nx = [], cigx = [];
+          BEA.forEach((r, i) => {
+            const yr = 1929 + i, g = r[5], sh = r.slice(0, 5).map((x) => (100 * x) / g); let y = 0;
+            for (let k = 0; k < 4; k++) { T.rect(yr - 0.42, y, yr + 0.42, y + sh[k], { fill: COLS[k], fillAlpha: i === i0 ? 0.95 : 0.62, stroke: false }); y += sh[k]; }
+            T.rect(yr - 0.42, -sh[4], yr + 0.42, 0, { fill: 'red', fillAlpha: i === i0 ? 0.95 : 0.55, stroke: false });
+            nx.push([yr, sh[3] - sh[4]]); cigx.push([yr, sh[0] + sh[1] + sh[2] + sh[3]]);
+          });
+          T.hline(100, { color: 'muted', width: 1.4, dash: [5, 4] }); T.hline(0, { color: 'ink', width: 1 });
+          T.path(nx, { color: 'ink', width: 1.8 });
+          T.text('World War II', 1944, 104, { align: 'center', color: 'muted', size: 10.5, dy: -4 });
+          if (naive.value) { T.path(cigx, { color: 'red', width: 2, dash: [5, 3] }); T.text('C + I + G + X', 2024, cigx[cigx.length - 1][1], { align: 'right', dy: -10, color: 'red', size: 11, weight: 700 }); }
+          T.text(String(sel), sel, 121, { dx: sel > 2012 ? -8 : 8, align: sel > 2012 ? 'right' : 'left', color: 'accent', size: 11.5, weight: 700 });
+          // ----- one transaction
+          const [eff, note] = EFF[tx.value], d = { C: 0, I: 0, G: 0, X: 0, M: 0, ...eff };
+          const dY = d.C + d.I + d.G + d.X - (naive.value ? 0 : d.M), wrong = naive.value && d.M > 0;
+          const vals = [d.C, d.I, d.G, d.X, -d.M, dY], cols = [...COLS, wrong ? 'red' : 'green'];
+          B.hline(0, { color: 'ink', width: 1 });
+          vals.forEach((x, k) => {
+            if (k === 4 && naive.value) { B.rect(k + 1 - 0.28, -30, k + 1 + 0.28, 0, { color: 'red', width: 1.2, dash: [4, 3] }); B.text('ignored', k + 1, -15, { align: 'center', color: 'red', size: 10.5 }); if (!d.M) return; }
+            if (Math.abs(x) > 1e-9) { B.rect(k + 1 - 0.28, 0, k + 1 + 0.28, x, { fill: cols[k], fillAlpha: k === 4 && naive.value ? 0.15 : 0.7, color: cols[k], width: 1.2 }); B.text(`${x > 0 ? '+' : '−'}${Math.abs(x)}`, k + 1, x, { align: 'center', dy: x > 0 ? -10 : 10, color: cols[k], size: 12, weight: 700 }); }
+            else if (!(k === 4 && naive.value)) B.text('0', k + 1, 0, { align: 'center', dy: -10, color: 'muted', size: 11 });
+          });
+          if (wrong) B.text('overstated: foreign production counted as ours', 6, 30, { align: 'right', dy: -14, color: 'red', size: 11, weight: 700 });
+          st = { sel, r: BEA[i0], note, dY, wrong };
+        });
+        v.readout(() => {
+          const { sel, r, note, dY, wrong } = st, [C, I, G, X, M, Yb] = r, sumv = C + I + G + X - M, f = (x) => num(x, 1), sh = (x) => pctx(x / Yb);
+          const naiveTxt = naive.value ? ` Without subtracting imports the sum would be ${f(C + I + G + X)} — ${sh(M)} too high.` : '';
+          return `**${sel}** (billions of dollars): $C$ ${f(C)} + $I$ ${f(I)} + $G$ ${f(G)} + $X$ ${f(X)} − $M$ ${f(M)} = **${f(sumv)}**; BEA's GDP: ${f(Yb)} (shares ${sh(C)}, ${sh(I)}, ${sh(G)}, net exports ${sh(X - M)}).${naiveTxt} — ${note} ΔGDP = ${dY > 0 ? '+' : ''}${dY}${wrong ? ' (wrong!)' : ''}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5', kind: 'Theorem', name: 'Saving equals investment (and twin deficits)',
+      statement: String.raw`Let private saving be $S_p = Y - T - C$ (income after net taxes, not consumed) and public saving $S_g = T - G$ (the budget surplus). Then the expenditure identity $Y = C + I + G + NX$ (1.4) implies
+$$S_p + S_g \;=\; I + NX,$$
+national saving equals domestic investment plus net exports, i.e. **net capital outflow** (net lending to the rest of the world). In a closed economy $S = I$. Consequently, with output given, a rise in the budget deficit $G - T$ must be matched by a rise in private saving, a fall in investment ("crowding out"), a fall in net exports (a current-account deficit — the "twin deficits"), or some mix of these; the identity alone does not say which.`,
+      idea: String.raw`Write output twice: as spending, $Y = C + I + G + NX$, and as the uses of income, $Y = C + T + S_p$. Both start with the same $C$, so the rests are equal: $I + G + NX = T + S_p$; moving $G$ across gives $S_p + (T - G) = I + NX$. It is an identity, not a theory of interest rates or exchange rates; which term adjusts depends on behaviour — the loanable-funds market (2.3) and the open-economy model decide that. The United States in the 1980s and 2000s had budget and trade deficits together, but in the late 1990s a budget surplus coexisted with a trade deficit, so "twin" is a tendency, not a law.`,
+      caption: String.raw`Left: output drawn as spending (top bar) and as the uses of income (second bar); cancel the common $C$ and swap $G$ for $T$ to get the two lower bars, which always end at the same point. Raise government purchases (taxes fixed) and choose **what gives**: investment, net exports, consumption (so that private saving rises), or a mix. Right: every term against $G$ for that choice. Switch on **nothing gives** to break the identity: the bars no longer match, which is impossible when output is fixed.`,
+      deps: ['macro-1.4'], refs: ['Mankiw ch. 3', 'Mankiw ch. 6'], tags: ['national accounts', 'saving'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Twin_deficits_hypothesis' },
+      viz(v) {
+        const L = v.stage({ x: [-16, 112], y: [0, 10.8], height: 340, axes: false, weight: 1.5, minWidth: 380 });
+        const R = v.stage({ x: [10, 39.5], y: [-18, 30], height: 340, axes: 'box', weight: 1, minWidth: 260, xlabel: 'G', xticks: [10, 15, 20, 25, 30], title: 'each term as $G$ rises (output fixed at 100)' });
+        const Gs = v.slider('government purchases $G$ (taxes $T = 18$)', 10, 34, 26, { step: 0.5 });
+        const ch = v.select('what gives', [{ value: 'I', label: 'investment' }, { value: 'NX', label: 'net exports' }, { value: 'C', label: 'consumption (saving rises)' }, { value: 'mix', label: 'a mix' }], 'NX');
+        const brk = v.toggle('nothing gives (break the identity)', false);
+        const T0 = 18, Y0 = 100;
+        const model = (G) => {
+          const d = G - 20, k = brk.value ? null : ch.value; let C = 64, I = 18, NX = -2;
+          if (k === 'I') I -= d; else if (k === 'NX') NX -= d; else if (k === 'C') C -= d; else if (k === 'mix') { I -= d / 3; NX -= d / 3; C -= d / 3; }
+          const Sp = Y0 - T0 - C, Sg = T0 - G;
+          return { C, I, G, NX, T: T0, Sp, Sg, spend: C + I + G + NX };
+        };
+        const COL = { C: 'gray', I: 'orange', G: 'pink', NX: 'teal', T: 'gold', Sp: 'blue', Sg: 'purple' };
+        let st = {};
+        v.legend([['gray', '$C$', { area: true }], ['orange', '$I$', { area: true }], ['pink', '$G$', { area: true }], ['teal', '$NX$', { area: true }], ['gold', '$T$', { area: true }], ['blue', '$S_p$ private saving', { area: true }], ['purple', '$S_g = T - G$', { area: true }], ['green', 'national saving']]);
+        v.render(() => {
+          const m = model(Gs.value), hh = 0.5;
+          const row = (y, parts, title, p0 = 0) => {
+            L.text(title, -15, y + hh + 0.42, { color: 'ink', size: 11.5, weight: 650 });
+            let p = p0;
+            for (const [key, w] of parts) {
+              if (w >= 0) { hseg(L, p, w, y, hh, COL[key], w >= 3 ? `${key === 'Sp' ? 'Sₚ' : key === 'Sg' ? 'T−G' : key} ${num(w, w % 1 ? 1 : 0)}` : '', { min: 30 }); p += w; }
+              else { const a = p + w; hatch(v, L, a, y - hh * 0.8, p, y + hh * 0.8, COL[key], 0.95, 5); L.rect(a, y - hh * 0.8, p, y + hh * 0.8, { color: COL[key], width: 1.6 }); L.text(`${key === 'Sg' ? 'T−G' : key} −${num(-w, -w % 1 ? 1 : 0)}`, a + w / 2 - w, y - hh - 0.08, { align: 'center', baseline: 'top', color: COL[key], size: 10.5, weight: 700 }); p = a; }
+            }
+            L.line(p, y - hh - 0.12, p, y + hh + 0.12, { color: 'ink', width: 2.4 });
+            return p;
+          };
+          const e1 = row(9.1, [['C', m.C], ['I', m.I], ['G', m.G], ['NX', m.NX]], 'spending:  Y = C + I + G + NX');
+          const e2 = row(6.95, [['C', m.C], ['T', m.T], ['Sp', m.Sp]], 'uses of income:  Y = C + T + Sₚ');
+          L.line(Y0, 5.9, Y0, 10.5, { color: 'ink', width: 1, dash: [4, 3] }); L.text('Y = 100', Y0, 10.5, { dx: 4, color: 'ink', size: 11, weight: 600 });
+          if (Math.abs(e1 - Y0) > 1e-9) { L.rect(Y0, 9.1 - hh, e1, 9.1 + hh, { color: 'red', width: 2, dash: [4, 3] }); L.text(`spending ${num(e1)} > Y`, e1, 9.1, { dx: 6, color: 'red', size: 11, weight: 700 }); }
+          L.text('cancel the common C, then move G to the other side', 50, 5.15, { align: 'center', color: 'muted', size: 11 });
+          for (const y of [3.35, 1.2]) { L.rect(0, y - hh, m.C, y + hh, { color: 'muted', width: 1, dash: [4, 3] }); L.text('C cancels', m.C / 2, y, { align: 'center', color: 'muted', size: 11 }); }
+          const e3 = row(3.35, [['Sp', m.Sp], ['Sg', m.Sg]], 'national saving:  Sₚ + (T − G)', m.C);
+          const e4 = row(1.2, [['I', m.I], ['NX', m.NX]], 'investment + net exports:  I + NX', m.C);
+          const ok = Math.abs(e3 - e4) < 1e-9;
+          L.line(e3, 0.3, e3, 4.4, { color: ok ? 'green' : 'red', width: 1.6, dash: [5, 3] });
+          if (!ok) L.line(e4, 0.3, e4, 4.4, { color: 'red', width: 1.6, dash: [5, 3] });
+          L.text(ok ? `S = I + NX = ${num(e3 - m.C, 1)} ✓` : `${num(e3 - m.C, 1)} ≠ ${num(e4 - m.C, 1)}: impossible`, Math.max(e3, e4, m.C + m.Sp, m.C + m.I), 2.3, { dx: 10, color: ok ? 'green' : 'red', size: 12, weight: 700 });
+          // ----- right: every term against G
+          const Gx = []; for (let g = 10; g <= 34.0001; g += 0.5) Gx.push(g);
+          const ser = (f) => Gx.map((g) => [g, f(model(g))]);
+          R.hline(0, { color: 'ink', width: 1 });
+          const lines = [['Sp', 'Sₚ', 'blue'], ['Sg', 'T−G', 'purple'], ['I', 'I', 'orange'], ['NX', 'NX', 'teal']];
+          const labs = [];
+          for (const [k, lab, col] of lines) { const pts = ser((q) => q[k]); R.path(pts, { color: col, width: 2.2 }); labs.push([pts[pts.length - 1][1], lab, col]); }
+          const S = ser((q) => q.Sp + q.Sg), U = ser((q) => q.I + q.NX);
+          R.path(S, { color: 'green', width: 3.2 }); R.path(U, { color: ok ? 'ink' : 'red', width: 1.6, dash: [6, 4] });
+          labs.push([S[S.length - 1][1], ok ? 'S = I+NX' : 'S', 'green']); if (!ok) labs.push([U[U.length - 1][1], 'I+NX', 'red']);
+          labs.sort((a, b) => b[0] - a[0]); let ly = -Infinity;
+          for (const [y, lab, col] of labs) { let py = R.Y(y); if (py < ly + 14) py = ly + 14; ly = py; R.textPx(lab, R.X(34) + 6, py, { color: col, size: 11, weight: 700 }); }
+          R.vline(Gs.value, { color: 'accent', width: 1.2, dash: [4, 3] });
+          for (const [k, , col] of lines) R.dot(Gs.value, m[k], { r: 4, color: col });
+          R.dot(Gs.value, m.Sp + m.Sg, { r: 5, color: 'green' });
+          st = { m, ok, e3, e4 };
+        });
+        v.readout(() => {
+          const { m, ok } = st, f = (x) => num(x, x % 1 ? 1 : 0), p = (x) => (x < 0 ? `(${f(x)})` : f(x));
+          const def = m.G - m.T, gives = { I: 'investment is crowded out one for one', NX: 'net exports fall one for one — a twin (budget and trade) deficit', C: 'consumption falls, so private saving rises one for one', mix: 'investment, net exports and consumption each absorb a third' }[ch.value];
+          const head = `Budget deficit $G - T$ = ${f(def)}. $S_p + S_g$ = ${p(m.Sp)} + ${p(m.Sg)} = ${f(m.Sp + m.Sg)}; $I + NX$ = ${p(m.I)} + ${p(m.NX)} = ${f(m.I + m.NX)}`;
+          if (!ok) return `${head}. With $C$, $I$ and $NX$ held fixed, spending would be ${f(m.spend)} — more than the output of 100 — and national saving no longer equals investment plus net exports. The identity rules this out: when the government buys more, some other use of output must give.`;
+          return `${head} ✓. Relative to $G = 20$, ${gives}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6', kind: 'Definition', name: 'Real versus nominal GDP and the deflator',
+      statement: String.raw`**Nominal GDP** values each year's output at that year's prices, $\sum_i p_{i,t} q_{i,t}$. **Real GDP** values it at constant prices so that only quantities move: with a fixed base year $b$, $\sum_i p_{i,b}\, q_{i,t}$. The **GDP deflator** is the ratio $100 \times$ nominal / real. Real growth from $t-1$ to $t$ measured in base-year prices depends on the base year whenever relative prices change: base-year prices from the start of a comparison give a Laspeyres quantity index, from the end a Paasche index. **Chain-weighted** real GDP (used in the U.S. national accounts since 1996) instead multiplies year-to-year growth factors, each the geometric mean of the two (a Fisher index), so it no longer depends on the base year except for its level.`,
+      idea: String.raw`With fixed prices, a good whose relative price falls fast — computers — is valued at its old, high price long after it became cheap; since its quantity also grows fast, early base years overstate real growth in later years and late base years understate it in earlier ones. Updating the weights every year removes most of this drift: the Fisher growth factor lies between the Laspeyres and Paasche ones and is exact for many preferences. A uniform inflation that scales every price leaves all real measures unchanged and shows up entirely in the deflator. If relative prices never change, all the indices coincide.`,
+      caption: String.raw`A two-good economy, 2015–2025: computers get cheaper and more plentiful, haircuts do not. Left (log scale): nominal GDP (black) and real GDP (blue); the faint lines are real GDP for every other choice of base year, each meeting nominal GDP in its base year. Drag the **base** marker along the bottom. Right: real growth each year with this base (bars) against the chain-weighted index (green). Set the relative fall in computer prices to 0 and every method agrees; raise general inflation and only nominal GDP and the deflator move.`,
+      deps: ['macro-1.1'], refs: ['Mankiw ch. 2'], tags: ['real GDP', 'index numbers'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Real_gross_domestic_product' },
+      viz(v) {
+        const pi = v.slider('general inflation', 0, 0.1, 0.03, { step: 0.005, fmt: (x) => `${(100 * x).toFixed(1)}%/yr` });
+        const dl = v.slider('relative fall in computer prices', 0, 0.25, 0.15, { step: 0.01, fmt: (x) => `${Math.round(100 * x)}%/yr` });
+        const meth = v.select('real GDP', [{ value: 'fixed', label: 'fixed base year' }, { value: 'chain', label: 'chain-weighted (Fisher)' }], 'fixed');
+        const L = v.stage({ x: [2014.4, 2025.6], y: [700, 40000], ylog: true, height: 340, axes: 'box', xticks: [2015, 2017, 2019, 2021, 2023, 2025], title: 'GDP, dollars (log scale)' });
+        const R = v.stage({ x: [2015.3, 2025.7], y: [-2, 34], height: 340, axes: 'box', xticks: [2016, 2018, 2020, 2022, 2024], title: 'real GDP growth, % per year' });
+        const bh = L.handle(2015, 820, { color: 'blue', label: 'base', labelPos: 'n', constrain: (x) => [Math.round(clamp(x, 2015, 2025)), 820] });
+        const yrs = Array.from({ length: 11 }, (_, t) => t);
+        let st = {};
+        v.legend([['ink', 'nominal GDP'], ['blue', 'real GDP (chosen method)'], ['muted', 'real GDP, other base years'], ['green', 'chain-weighted growth'], ['orange', 'deflator inflation']]);
+        v.render(() => {
+          const P = pi.value, D = dl.value;
+          const p = (t) => [50 * (1 + P) ** t * (1 - D) ** t, 10 * (1 + P) ** t], q = (t) => [20 * (1.04 / (1 - D)) ** t, 100 * 1.01 ** t];
+          const val = (pt, qt) => pt[0] * qt[0] + pt[1] * qt[1];
+          const nom = yrs.map((t) => val(p(t), q(t)));
+          const fixed = (b) => yrs.map((t) => val(p(b), q(t)));
+          const fg = [1]; for (let t = 1; t <= 10; t++) { const La = val(p(t - 1), q(t)) / val(p(t - 1), q(t - 1)), Pa = val(p(t), q(t)) / val(p(t), q(t - 1)); fg.push(fg[t - 1] * Math.sqrt(La * Pa)); }
+          const b = bh.x - 2015, chain = yrs.map((t) => (nom[b] * fg[t]) / fg[b]);
+          const real = meth.value === 'chain' ? chain : fixed(b);
+          if (meth.value === 'fixed') for (let bb = 0; bb <= 10; bb++) if (bb !== b) L.path(fixed(bb).map((y, t) => [2015 + t, y]), { color: 'muted', width: 1, alpha: 0.45 });
+          L.path(nom.map((y, t) => [2015 + t, y]), { color: 'ink', width: 2.6 });
+          L.path(real.map((y, t) => [2015 + t, y]), { color: 'blue', width: 2.8 });
+          L.dots(nom.map((y, t) => [2015 + t, y]), { r: 2.6, color: 'ink' }); L.dots(real.map((y, t) => [2015 + t, y]), { r: 2.6, color: 'blue' });
+          L.vline(2015 + b, { color: 'blue', width: 1, dash: [3, 3], alpha: 0.6 });
+          L.dot(2015 + b, nom[b], { r: 5, color: 'blue', hollow: true });
+          L.text('nominal', 2025, nom[10], { dx: -4, dy: 12, align: 'right', color: 'ink', size: 11.5, weight: 700 });
+          L.text('real', 2025, real[10], { dx: -4, dy: -12, align: 'right', color: 'blue', size: 11.5, weight: 700 });
+          // growth rates
+          const gr = (s, t) => 100 * (s[t] / s[t - 1] - 1);
+          R.hline(0, { color: 'ink', width: 1 });
+          for (let t = 1; t <= 10; t++) {
+            const g = gr(real, t); R.rect(2015 + t - 0.32, 0, 2015 + t + 0.32, g, { fill: 'blue', fillAlpha: 0.5, color: 'blue', width: 1 });
+          }
+          const cg = yrs.slice(1).map((t) => [2015 + t, 100 * (fg[t] / fg[t - 1] - 1)]);
+          R.path(cg, { color: 'green', width: 2.4 }); R.dots(cg, { r: 3.4, color: 'green' });
+          const defl = yrs.map((t) => nom[t] / real[t]), di = yrs.slice(1).map((t) => [2015 + t, 100 * (defl[t] / defl[t - 1] - 1)]);
+          R.path(di, { color: 'orange', width: 2, dash: [5, 3] });
+          const avg = (s) => 100 * ((s[10] / s[0]) ** 0.1 - 1);
+          st = { b, a15: avg(fixed(0)), a25: avg(fixed(10)), ach: avg(chain), anom: avg(nom), adef: 100 * ((defl[10] / defl[0]) ** 0.1 - 1), D, method: meth.value };
+        });
+        v.readout(() => {
+          const { b, a15, a25, ach, anom, adef, D, method } = st, f = (x) => `${x.toFixed(2)}%`;
+          const kind = method === 'chain' ? `chain-weighted, referenced to ${2015 + b}` : b === 0 ? 'base 2015: a Laspeyres quantity index' : b === 10 ? 'base 2025: a Paasche quantity index' : `base year ${2015 + b}`;
+          const tail = D === 0 ? ' Relative prices never change, so every base year and the chain index give the same real growth.' : ` The answer depends on the base year by ${(a15 - a25).toFixed(1)} points a year because the relative price of computers changes.`;
+          return `Average real growth 2015–2025: base 2015 **${f(a15)}**, base 2025 **${f(a25)}**, chain-weighted **${f(ach)}**; nominal GDP ${f(anom)}. Shown: ${kind}, with deflator inflation ${f(adef)}/yr.${tail}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7', kind: 'Definition', name: 'The consumer price index',
+      statement: String.raw`The **consumer price index** (CPI) measures the cost of a fixed basket of goods and services bought by a typical household, relative to its cost in a base period:
+$$\mathrm{CPI}_t = 100 \times \frac{\sum_i p_{i,t}\, q_{i,0}}{\sum_i p_{i,0}\, q_{i,0}},$$
+a Laspeyres price index; its percentage change is the measured **inflation rate**. Because the basket is fixed, the CPI ignores that households substitute toward goods that have become relatively cheaper, and so **overstates** the rise in the cost of living (substitution bias; new goods and unmeasured quality change bias it the same way). It differs from the GDP deflator, a Paasche index over everything produced at home: the CPI includes imported consumer goods (petrol), excludes investment goods, and keeps its weights fixed.`,
+      idea: String.raw`The true cost-of-living index asks how much money buys the base-period level of well-being at today's prices. The old basket is one way of reaching that level, so it costs at least as much as the cheapest way — the Laspeyres index is an upper bound (micro 6.7), with equality only when no substitution is possible. Chained indices that update the weights each period (a Törnqvist or Fisher chain, as in the U.S. chained CPI since 2002) track the cost of living closely. A rise in import prices raises the CPI but not the deflator; falling prices of machines lower the deflator but not the CPI.`,
+      caption: String.raw`Beef gets dearer each year; chicken, petrol and rent rise slowly. Left: the base-year basket at year-$t$ prices (what the CPI prices) against the cheapest basket that leaves shoppers as well off (the true cost of living); the red-hatched gap is the substitution bias. Right: the four indices over ten years; drag the year marker. Set **switching** $\sigma = 0$ (no substitution) and the CPI is exact; turn on the **oil shock** and watch the CPI jump while the GDP deflator does not.`,
+      deps: ['macro-1.6', 'micro-6.7'], refs: ['Mankiw ch. 2', 'CORE Macro U4'], tags: ['inflation', 'index numbers'],
+      credit: 'Étienne Laspeyres, 1871; Boskin Commission on CPI bias, 1996',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Consumer_price_index' },
+      viz(v) {
+        const sg = v.slider('switching between beef and chicken $\\sigma$', 0, 3, 1.5, { step: 0.05 });
+        const gb = v.slider('beef price inflation', 0, 0.15, 0.08, { step: 0.005, fmt: (x) => `${(100 * x).toFixed(1)}%/yr` });
+        const oil = v.toggle('oil shock in 2020 (petrol +50%)', false);
+        const L = v.stage({ x: [-2, 182], y: [0, 3.5], height: 330, axes: 'box', yticks: [], weight: 1.15, minWidth: 330, xticks: [0, 50, 100, 150], title: 'what each index prices' });
+        const R = v.stage({ x: [2014.6, 2026.6], y: [88, 200], height: 330, axes: 'box', weight: 1, minWidth: 280, xticks: [2015, 2017, 2019, 2021, 2023, 2025], title: 'price indices, 2015 = 100' });
+        const yh = R.handle(2021, 92, { color: 'accent', label: '', constrain: (x) => [Math.round(clamp(x, 2015, 2025)), 92] });
+        const GOODS = ['beef', 'chicken', 'petrol', 'rent'], GC = ['pink', 'gold', 'gray', 'teal'], q0 = [15, 15, 15, 55];
+        let st = {};
+        v.legend([['red', 'CPI (fixed 2015 basket)'], ['green', 'true cost of living'], ['gold', 'chained CPI'], ['purple', 'GDP deflator']]);
+        v.render(() => {
+          const s = Math.abs(sg.value - 1) < 1e-4 ? 1 + 1e-4 : sg.value, g = gb.value;
+          const price = (t) => [(1 + g) ** t, 1.02 ** t, 1.03 ** t * (oil.value && t >= 5 ? 1.5 : 1), 1.03 ** t, 0.97 ** t]; // beef, chicken, petrol, rent, machines
+          const Pm = (p) => (0.5 * p[0] ** (1 - s) + 0.5 * p[1] ** (1 - s)) ** (1 / (1 - s));
+          const col = (p) => Pm(p) ** 0.3 * p[2] ** 0.15 * p[3] ** 0.55;
+          const qty = (p) => { const E = 100 * col(p), um = (0.3 * E) / Pm(p); return [um * 0.5 * (p[0] / Pm(p)) ** -s, um * 0.5 * (p[1] / Pm(p)) ** -s, (0.15 * E) / p[2], (0.55 * E) / p[3]]; };
+          const T = Array.from({ length: 11 }, (_, t) => t), P = T.map(price), Q = P.map(qty);
+          const cpi = P.map((p) => (100 * sum(q0.map((q, i) => q * p[i]))) / 100), cl = P.map((p) => 100 * col(p));
+          const sh = (t) => { const e = Q[t].map((q, i) => q * P[t][i]), E = sum(e); return e.map((x) => x / E); };
+          const ch = [100]; for (let t = 1; t <= 10; t++) { const a = sh(t - 1), b = sh(t); ch.push(ch[t - 1] * Math.exp(sum([0, 1, 2, 3].map((i) => 0.5 * (a[i] + b[i]) * Math.log(P[t][i] / P[t - 1][i]))))); }
+          const mach = (t) => 25 * 1.04 ** t, dom = [0, 1, 3];
+          const defl = T.map((t) => (100 * (sum(dom.map((i) => P[t][i] * Q[t][i])) + P[t][4] * mach(t))) / (sum(dom.map((i) => Q[t][i])) + mach(t)));
+          const ser = [[cpi, 'red', 'CPI'], [cl, 'green', 'cost of living'], [ch, 'gold', 'chained'], [defl, 'purple', 'deflator']];
+          const t = yh.x - 2015;
+          R.vline(yh.x, { color: 'accent', width: 1, dash: [4, 3] });
+          R.hline(100, { color: 'muted', width: 1, dash: [3, 3] });
+          if (oil.value) R.vband(2019.5, 2020.5, { color: 'gray', alpha: 0.12 });
+          ser.forEach(([s0, c]) => { R.path(s0.map((y, k) => [2015 + k, y]), { color: c, width: c === 'red' || c === 'green' ? 2.6 : 2 }); R.dot(yh.x, s0[t], { r: 4.5, color: c }); });
+          const ends = ser.map(([s0, c, n]) => [s0[10], c, n]).sort((a, b) => b[0] - a[0]);
+          let lastY = Infinity; ends.forEach(([y, c, n]) => { let py = R.Y(y); if (py < lastY + 13 && lastY !== Infinity) py = lastY + 13; lastY = py; R.textPx(n, R.X(2025) + 6, py, { color: c, size: 10.5, weight: 700 }); });
+          // ----- baskets at year-t prices
+          const rows = [[2.85, 'base year: 2015 basket at 2015 prices', P[0], q0], [1.75, `${yh.x}: the 2015 basket at ${yh.x} prices (CPI)`, P[t], q0], [0.65, `${yh.x}: cheapest basket as good as 2015's`, P[t], Q[t]]];
+          for (const [y, lab, p, q] of rows) {
+            L.text(lab, 0, y + 0.44, { color: 'ink', size: 11, weight: 650 });
+            let x = 0; q.forEach((qq, i) => { const w = qq * p[i]; hseg(L, x, w, y, 0.26, GC[i], w > 9 ? GOODS[i] : '', { size: 10.5, min: 40 }); x += w; });
+            L.text(num(x, 1), x, y, { dx: 6, color: 'ink', size: 12, weight: 700 });
+          }
+          hatch(v, L, cl[t], 1.75 - 0.26, cpi[t], 1.75 + 0.26, 'red', 0.8, 5);
+          if (cpi[t] - cl[t] > 0.05) L.rect(cl[t], 1.75 - 0.26, cpi[t], 1.75 + 0.26, { color: 'red', width: 1.4 });
+          L.vline(100, { color: 'muted', width: 1, dash: [3, 3] });
+          const rq = Q[t].map((x, i) => x / q0[i]);
+          L.text(`beef ×${rq[0].toFixed(2)}, chicken ×${rq[1].toFixed(2)} (quantities vs 2015)`, 0, 0.12, { color: 'muted', size: 10.5 });
+          st = { t, y: yh.x, cpi, cl, ch, defl, s: sg.value };
+        });
+        v.readout(() => {
+          const { t, y, cpi, cl, ch, defl, s } = st, f = (x) => x.toFixed(1), rate = (a) => (t > 0 ? `${(100 * (a[t] / a[t - 1] - 1)).toFixed(1)}%` : '—');
+          const bias = cpi[t] - cl[t], perYr = t > 0 ? 100 * ((cpi[t] / cl[t]) ** (1 / t) - 1) : 0;
+          return `**${y}**: CPI ${f(cpi[t])} (inflation this year ${rate(cpi)}), true cost of living ${f(cl[t])} (${rate(cl)}), chained CPI ${f(ch[t])}, GDP deflator ${f(defl[t])} (${rate(defl)}). The fixed basket overstates the cost of living by ${f(bias)} points — ${perYr.toFixed(2)} percentage points of inflation a year${s === 0 ? ': with $\\sigma = 0$ nobody switches, so there is no bias' : ', because shoppers switch from beef to chicken'}.${oil.value && t >= 5 ? ' Petrol is imported: the oil shock is in the CPI but not in the deflator, which prices only domestic output (including machines, whose prices fall).' : ''}`;
+        });
+      },
+    },
   ],
 };

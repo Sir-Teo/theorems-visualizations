@@ -66,6 +66,21 @@ function arrowPx(s, x, y, ux, uy, len, st) {
 }
 /** Length in px for a field arrow: logarithmic in |E|/ref, so 10× stronger is a fixed number of px longer. */
 const logLen = (E, ref, base = 34, perDecade = 22, min = 6, max = 90) => Math.max(min, Math.min(max, base + perDecade * Math.log10(E / ref)));
+/** Direction-field arrows on a pixel grid, length growing with log|F| between the 5th and 95th percentile. */
+function quiver(s, v, F, st = {}) {
+  const sp = st.spacing ?? 30, pts = [];
+  for (let px = sp / 2; px < s.W; px += sp) for (let py = sp / 2; py < s.H; py += sp) {
+    const [x, y] = s.inv(px, py), f = F(x, y), m = Math.hypot(f[0], f[1]);
+    if (isFinite(m) && m > 0) pts.push([x, y, f[0] / m, f[1] / m, Math.log10(m)]);
+  }
+  if (!pts.length) return;
+  const ls = pts.map((p) => p[4]).sort((a, b) => a - b), lo = ls[Math.floor(ls.length * 0.05)], hi = ls[Math.floor(ls.length * 0.95)];
+  for (const [x, y, ux, uy, g] of pts) {
+    const t = Math.max(0, Math.min(1, (g - lo) / (hi - lo || 1))), len = sp * (0.3 + 0.5 * t);
+    const x0 = x - ((ux * len) / 2) / s.sx, y0 = y - ((uy * len) / 2) / s.sy;
+    s.arrow(x0, y0, x0 + (ux * len) / s.sx, y0 + (uy * len) / s.sy, { color: st.color || 'accent', alpha: (st.alpha ?? 0.75) * (0.35 + 0.65 * t), width: 1.4, head: 6 });
+  }
+}
 const showStage = (S, on) => { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; };
 const sgnCol = (q) => (q > 0 ? 'red' : q < 0 ? 'blue' : 'muted');
 /** Signed charge in nC as text: '+4 nC'. */
@@ -96,11 +111,11 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
       viz(v) {
         const M = v.M, C = M.CONST, e = C.e, g = C.g0;
         const mode = v.select('', [{ value: 'balls', label: 'pith balls: rub, touch, ground' }, { value: 'drops', label: 'oil drops (Millikan)' }], 'balls');
-        const sB = v.stage({ x: [-11, 11], y: [-20.5, 1.4], equal: true, height: 350, axes: false, full: true });
+        const sB = v.stage({ x: [-13, 13], y: [-15.5, 1.2], equal: true, height: 330, axes: false, full: true });
         const sA = v.stage({ x: [-1.3, 1.3], y: [-1.55, 1.95], equal: true, height: 340, axes: false, weight: 0.75, title: 'the last drop, between the plates' });
-        const sH = v.stage({ x: [0, 13.5], y: [0, 10], height: 340, axes: 'box', weight: 1.35, xlabel: 'measured charge (10⁻¹⁹ C)', ylabel: 'drops' });
+        const sH = v.stage({ x: [0, 13.5], y: [0, 10], height: 340, axes: 'box', weight: 1.35, title: 'number of drops against measured charge (10⁻¹⁹ C)' });
         // ---------- pith balls (SI inside, cm for drawing)
-        const Lth = 0.15, piv = 0.025, rb = 0.005, mb = 5e-5, QMAX = 9e10;
+        const Lth = 0.1, piv = 0.025, rb = 0.004, mb = 1.5e-5, QMAX = 9e10;
         let nA = 31207553119, nB = 18724531871, note = 'Both balls were touched with a glass rod rubbed on silk, so both are positive and they repel.', seed = 3, sol;
         const solve = () => {
           const qA = nA * e, qB = nB * e; let tA = 0, tB = 0, F = [0, 0], contact = false, pA, pB;
@@ -151,10 +166,10 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
           const r = v.rng(4001 + 17 * i);
           let a, n, tries = 0;
           do {
-            a = r.uniform(0.5e-6, 1.45e-6);
+            a = r.uniform(0.4e-6, 1.35e-6);
             let u = r() * WS, k = 0; while (u > W[k]) { u -= W[k]; k++; }
             n = k + 1 + (cn ? r.uniform(-0.5, 0.5) : 0);
-          } while (n * e * EF < 1.25 * (4 / 3) * Math.PI * a ** 3 * RHO * g && ++tries < 50);
+          } while (n * e * EF < 1.08 * (4 / 3) * Math.PI * a ** 3 * RHO * g && ++tries < 50);
           const vf = (2 * a * a * RHO * g) / (9 * ETA), vr = (n * e * EF - (4 / 3) * Math.PI * a ** 3 * RHO * g) / (6 * Math.PI * ETA * a);
           const tf = (DIST / vf) * (1 + sg * r.normal()), tr = (DIST / vr) * (1 + sg * r.normal());
           const vf2 = DIST / tf, vr2 = DIST / tr, a2 = Math.sqrt((9 * ETA * vf2) / (2 * RHO * g));
@@ -181,24 +196,24 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
           b6.hidden = b7.hidden = balls;
           {
             const s = sB, cm = (p) => [p[0] * 100, p[1] * 100];
-            s.rect(-10, 0, 10, 0.7, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1 });
-            const fs = 4 / (mb * g); // cm of arrow per newton: the weight is a 4 cm arrow
+            s.rect(-7, 0, 7, 0.6, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1 });
+            const fs = 3 / (mb * g); // cm of arrow per newton: the weight is a 3 cm arrow
             const items = [[sol.pA, nA, 'A', -piv, sol.F, 'right'], [sol.pB, nB, 'B', piv, [-sol.F[0], -sol.F[1]], 'left']];
             for (const [p, n, lab, px, F, al] of items) {
               const [X, Y] = cm(p), col = sgnCol(n);
               s.line(px * 100, 0, X, Y, { color: 'muted', width: 1.2 });
-              s.arrow(X, Y, X, Y - 4, { color: 'faint', width: 2, head: 8 });
+              s.arrow(X, Y, X, Y - 3, { color: 'faint', width: 2, head: 8 });
               const fl = Math.hypot(F[0], F[1]) * fs;
               if (fl > 0.25) s.arrow(X, Y, X + F[0] * fs, Y + F[1] * fs, { color: 'orange', width: 2.4, head: 9 });
               s.circle(X, Y, rb * 100, { fill: col, fillAlpha: n ? 0.6 : 0.25, color: col, width: 1.6 });
               s.text(lab, X, Y, { align: 'center', size: 12, weight: 700, halo: false });
-              const dx = al === 'right' ? 0.9 : -0.9;
-              s.text(`${groupInt(n)} e`, X + dx, Y - 2.2, { align: al, size: 12.5, color: n ? col : 'muted', weight: 600 });
-              s.text(`${n ? (n > 0 ? '+' : '−') + v.fix(Math.abs(n * e) * 1e9, 3) : '0'} nC`, X + dx, Y - 3.5, { align: al, size: 11.5, color: 'muted' });
+              const dx = al === 'right' ? -1.1 : 1.1;
+              s.text(`${groupInt(n)} e`, X + dx, Y + 0.45, { align: al, size: 12.5, color: n ? col : 'muted', weight: 600 });
+              s.text(`${n ? (n > 0 ? '+' : '−') + v.fix(Math.abs(n * e) * 1e9, 3) : '0'} nC`, X + dx, Y - 0.75, { align: al, size: 11.5, color: 'muted' });
             }
-            s.text('weight', sol.pA[0] * 100 - 0.4, sol.pA[1] * 100 - 4.6, { align: 'right', size: 11, color: 'muted' });
-            if (Math.hypot(...sol.F) * fs > 0.25) s.text('Coulomb force', sol.pB[0] * 100 + 0.7, sol.pB[1] * 100 + 1.1, { size: 11, color: 'orange' });
-            s.corner('threads 15 cm, balls 0.05 g, hung 5 cm apart', 'tr', { size: 11 });
+            s.text('weight', sol.pA[0] * 100, sol.pA[1] * 100 - 3.6, { align: 'center', size: 11, color: 'muted' });
+            if (Math.hypot(...sol.F) * fs > 0.25) s.text('Coulomb force', sol.pB[0] * 100 + 0.9, sol.pB[1] * 100 - 1.9, { size: 11, color: 'orange' });
+            s.corner('threads 10 cm, pith balls 0.015 g, hung 5 cm apart', 'tr', { size: 11 });
           }
           {
             const D = data(), d = D[D.length - 1], s = sA;
@@ -228,14 +243,14 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
             s.corner(on ? `field on — rising: ${v.fix(clock, 1)} s` : `field off — falling: ${v.fix(clock, 1)} s`, 'bl', { color: on ? 'red' : 'ink', size: 12 });
             s.corner('weight · drag · electric force', 'tl', { size: 10.5 });
             // histogram
-            const h = sH, qs = D.map((x) => x.q * 1e19), H = M.histogram(qs, { bins: 135, range: [0, 13.5] });
+            const h = sH, qs = D.map((x) => x.q * 1e19), H = M.histogram(qs, { bins: 108, range: [0, 13.5] });
             const top = Math.max(4, ...H.counts) * 1.28; h.setView([0, 13.5], [0, top]);
             for (let k = 1; k * fit.e < 13.4; k++) {
               h.vline(k * fit.e, { color: 'green', dash: [4, 4], width: 1, alpha: fit.comb > 0.5 ? 0.8 : 0.35 });
               h.text(k === 1 ? 'e' : `${k}e`, k * fit.e, top * 0.965, { align: 'center', size: 11, color: 'green', baseline: 'top' });
             }
             h.hist(H, { color: 'accent', fillAlpha: 0.55, gap: 0 });
-            h.dot(d.q * 1e19, top * 0.06, { r: 4.5, color: 'gold' });
+            h.dot(d.q * 1e19, top * 0.04, { r: 4.5, color: 'gold' });
           }
         }, { period: 9, still: 2.2 });
         v.readout(() => {
@@ -247,7 +262,7 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
           const head = cont.value
             ? `comb strength ${v.fix(fit.comb, 2)} (1 = every drop on a multiple): **no common unit** — the fitted “e” = ${v.fix(fit.e, 3)}×10⁻¹⁹ C means nothing`
             : `fitted elementary charge **e = (${v.fix(fit.e, 4)} ± ${v.fix(fit.se, 4)})×10⁻¹⁹ C** from ${D.length} drops (comb strength ${v.fix(fit.comb, 2)}); today’s value ${v.fix(C.e * 1e19, 9)}×10⁻¹⁹ C, exact by definition`;
-          return `${head} · last drop: radius ${M.si(d.a, 'm')}, falls 5 mm in ${v.fix(d.tf, 1)} s, rises in ${v.fix(d.tr, 1)} s → $q = ${v.fix(d.q * 1e19, 3)}\\times10^{-19}$ C $= ${v.fix(d.q / C.e, 2)}\\,e$`;
+          return `${head} · last drop: radius ${M.si(d.a, 'm')}, falls 5 mm in ${v.fix(d.tf, 1)} s, rises in ${v.fix(d.tr, 1)} s → q = ${v.fix(d.q * 1e19, 3)}×10⁻¹⁹ C = ${v.fix(d.q / C.e, 2)} e`;
         });
       },
     },
@@ -267,23 +282,24 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Charge_conservation' },
       tags: ['charge', 'conservation'],
       viz(v) {
-        const M = v.M, W = 12, H = 7;
-        const s = v.stage({ x: [0, W], y: [0, H], equal: true, height: 340, axes: false, weight: 1.45 });
-        const sp = v.stage({ x: [0, 30], y: [-5, 5], height: 340, axes: 'box', weight: 1, xlabel: 'time (s)', ylabel: 'charge (units of e)', title: 'inside the dashed region' });
+        const M = v.M, W = 10, H = 7;
+        const s = v.stage({ x: [0, W], y: [0, H], equal: true, height: 320, axes: false, weight: 1.25 });
+        const sp = v.stage({ x: [0, 30], y: [-5, 5], height: 320, axes: 'box', weight: 1, xlabel: 'time (s)', ylabel: 'charge (units of e)', title: 'inside the dashed region' });
         const cheat = v.toggle('hypothetical decay n → p without an electron', false);
         const rate = v.slider('pair creation (per s)', 0, 2, 0.6, { step: 0.05 });
-        const hc = s.handle(4.4, 3.4, { color: 'green', r: 6 }), hk = s.handle(7.3, 5.3, { color: 'green', r: 5 });
+        const hc = s.handle(4.2, 3.4, { color: 'green', r: 6 }), hk = s.handle(6.8, 5.4, { color: 'green', r: 5 });
         let last = [hc.x, hc.y];
         hc.onDrag = () => { hk.x = M.clamp(hk.x + hc.x - last[0], 0, W); hk.y = M.clamp(hk.y + hc.y - last[1], 0, H); last = [hc.x, hc.y]; };
         const box = () => { const dx = Math.max(0.4, Math.abs(hk.x - hc.x)), dy = Math.max(0.4, Math.abs(hk.y - hc.y)); return [hc.x - dx, hc.y - dy, hc.x + dx, hc.y + dy]; };
         const inside = (p) => { const [a, b, c, d] = box(); return p.x > a && p.x < c && p.y > b && p.y < d; };
-        let P, T, Q0, inflow, hist, ev, flashes, rng, held = null;
+        let P, T, Q0, inflow, hist, ev, flashes, rng, held = null, simCheat = null, T0 = 0;
         const make = (x, y, q, age = 0) => { const p = { x, y, q, age }; p.in = inside(p); return p; };
         const reset = () => {
-          rng = v.rng(11); P = []; T = 0; inflow = 0; flashes = []; ev = { pair: 0, ann: 0, dec: 0, fake: 0 };
-          for (let i = 0; i < 30; i++) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), i < 15 ? 1 : i < 29 ? -1 : 1, 5));
-          for (let i = 0; i < 7; i++) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), 0, 5));
+          rng = v.rng(11); P = []; T = 0; inflow = 0; flashes = []; ev = { pair: 0, ann: 0, dec: 0, fake: 0 }; simCheat = cheat.value;
+          for (let i = 0; i < 26; i++) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), i < 13 ? 1 : i < 25 ? -1 : 1, 5));
+          for (let i = 0; i < 10; i++) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), 0, 5));
           Q0 = P.reduce((a, p) => a + (p.in ? p.q : 0), 0); hist = [[0, 0, 0]];
+          for (let k = 0; k < 20 * 60; k++) step(1 / 60); // warm start: the run has been going for 20 s
         };
         const Qin = () => P.reduce((a, p) => a + (inside(p) ? p.q : 0), 0);
         const tally = () => { for (const p of P) { const now = inside(p); if (now !== p.in) { inflow += p.q * (now ? 1 : -1); p.in = now; } } };
@@ -311,12 +327,12 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
           }
           for (let i = 0; i < P.length; i++) {
             const p = P[i];
-            if (p.q === 0 && p !== held && rng() < 0.05 * dt) {
+            if (p.q === 0 && p !== held && rng() < 0.07 * dt) {
               P.splice(i, 1, make(p.x, p.y, 1)); if (!cheat.value) P.push(make(p.x, p.y, -1)); else ev.fake++;
               flashes.push({ x: p.x, y: p.y, t: T, k: 'dec' }); ev.dec++;
             }
           }
-          if (P.filter((p) => p.q === 0).length < 7 && rng() < 0.35 * dt) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), 0, 5));
+          if (P.filter((p) => p.q === 0).length < 10 && rng() < 0.5 * dt) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), 0, 5));
           T += dt;
           if (T - hist[hist.length - 1][0] >= 0.1) hist.push([T, Qin() - Q0, inflow]);
         };
@@ -327,15 +343,15 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
           else if (ph === 'end') held = null;
         });
         v.animate((t) => {
-          if (t < T - 1e-6) reset();
-          let guard = 0; while (T + 1 / 60 <= t + 1e-9 && guard++ < 5000) step(1 / 60);
+          if (t < T - T0 - 1e-6 || simCheat !== cheat.value) { reset(); T0 = T - t; }
+          let guard = 0; while (T + 1 / 60 <= t + T0 + 1e-9 && guard++ < 5000) step(1 / 60);
           tally();
           const [a, b, c, d] = box();
           s.rect(0, 0, W, H, { color: 'muted', width: 1.2 });
           s.rect(a, b, c, d, { color: 'green', width: 2, dash: [7, 5], fill: 'green', fillAlpha: 0.07 });
           for (const f of flashes) {
             const age = T - f.t; if (age > 0.9) continue;
-            s.circle(f.x, f.y, 0.15 + age * 0.9, { color: f.k === 'dec' ? 'purple' : 'gold', width: 2.2, alpha: 1 - age / 0.9 });
+            s.circle(f.x, f.y, 0.12 + age * 0.45, { color: f.k === 'dec' ? 'purple' : 'gold', width: 2.2, alpha: 1 - age / 0.9 });
           }
           flashes = flashes.filter((f) => T - f.t < 1);
           const c2 = s.ctx;
@@ -457,7 +473,7 @@ where $\mathbf r_i$ runs from $q_i$ to $Q$. The presence of other charges does n
         const init = [[-2.7, 1.3, 4], [2.5, 1.7, -3], [0.7, -2.3, 2], [9, 9, 0], [9, 9, 0], [9, 9, 0]];
         const Fk = v.fields(s, { law: '3d', sources: init.map(([x, y, q]) => ({ type: 'charge', x, y, q, label: '' })), lineDensity: 3.2, lineAlpha: 0.5, lineWidth: 1.15 });
         const H = Fk.handles;
-        const test = s.handle(0.4, 0.15, { color: 'gold', r: 7, label: '$Q$', labelPos: 'se' });
+        const test = s.handle(-0.3, -0.7, { color: 'gold', r: 7, label: '$Q$', labelPos: 'se' });
         const live = () => Fk.live().filter((x) => x.q !== 0);
         s.onClick((x, y) => {
           const X = s.X(x), Y = s.Y(y);
@@ -529,8 +545,8 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
       viz(v) {
         const M = v.M, C = M.CONST, kE = C.ke * 1e-5;
         const s = v.stage({ x: [-6, 6], y: [-3.6, 3.6], equal: true, height: 350, axes: false, weight: 1.5 });
-        const sp = v.stage({ x: [1e-3, 50], y: [1e-6, 3], xlog: true, ylog: true, height: 350, axes: 'box', weight: 1, xlabel: 'test charge q (nC)', ylabel: '|F/q − E| / |E|' });
-        const qt = v.slider('test charge $q$', 0.001, 50, 6, { log: true, fmt: (x) => M.si(x * 1e-9, 'C') });
+        const sp = v.stage({ x: [1e-3, 15], y: [1e-6, 1], xlog: true, ylog: true, height: 350, axes: 'box', weight: 1, title: 'relative error $|\\mathbf F/q-\\mathbf E|/|\\mathbf E|$ against $q$ (nC)' });
+        const qt = v.slider('test charge $q$', 0.001, 15, 6, { log: true, fmt: (x) => M.si(x * 1e-9, 'C') });
         const free = v.toggle('sources free to move (on springs)', true);
         const KS = 0.25; // spring constant, N/m
         const anchors = [{ x: -2.2, y: 0.7, q: 6 }, { x: 2.3, y: -0.9, q: -4 }];
@@ -555,7 +571,7 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
         v.render(() => {
           const p0 = equil(0), E0 = coul(p0, test.x, test.y).map((c) => c * kE), R = err(qt.value, test.x, test.y, E0);
           st = { E0, R, p0 };
-          s.field((x, y) => coul(p0, x, y), { spacing: 30, color: 'accent', alpha: 0.45 });
+          quiver(s, v, (x, y) => coul(p0, x, y), { spacing: 32, color: 'accent', alpha: 0.6 });
           for (let i = 0; i < 2; i++) {
             const a = anchors[i], b = R.p[i], c = p0[i];
             if (free.value) {
@@ -575,12 +591,12 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
           arrowPx(s, test.x, test.y, R.E[0], R.E[1], logLen(m1, ref, 70, 30, 8, 130), { color: 'gold', width: 3, head: 11 });
           // error against q
           const curve = [];
-          for (let k = 0; k <= 48; k++) { const q = 1e-3 * Math.pow(5e4, k / 48); curve.push([q, err(q, test.x, test.y, E0).rel]); }
-          const ymin = 1e-7; sp.setView([1e-3, 50], [ymin, 3]);
+          for (let k = 0; k <= 48; k++) { const q = 1e-3 * Math.pow(1.5e4, k / 48); curve.push([q, err(q, test.x, test.y, E0).rel]); }
+          const ymin = 1e-6; sp.setView([1e-3, 15], [ymin, 1]);
           sp.path(curve.map(([q, e]) => [q, Math.max(e, ymin * 1.01)]), { color: free.value ? 'accent' : 'green', width: 2.4 });
           if (free.value) sp.fn((q) => curve[24][1] * (q / curve[24][0]), { color: 'muted', dash: [4, 4], width: 1 });
           sp.dot(qt.value, Math.max(R.rel, ymin * 1.01), { r: 6, color: 'gold' });
-          sp.corner(free.value ? 'dashed: slope 1' : 'pinned sources: F/q = E exactly', 'tl', { size: 11.5, color: free.value ? 'muted' : 'green' });
+          sp.corner(free.value ? 'dashed: slope 1' : 'pinned sources: F/q = E exactly', 'br', { size: 11.5, color: free.value ? 'muted' : 'green' });
         });
         v.legend([['accent', 'field of the sources (direction; longer = stronger)'], ['green', 'true field $\\mathbf E$ at the test point', { dash: true }], ['gold', 'measured $\\mathbf F/q$']]);
         v.readout(() => {

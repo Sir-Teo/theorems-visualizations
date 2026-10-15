@@ -336,9 +336,10 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
           if (!last[0] || !last[1]) return 'Collecting impacts…';
           const Vc = Lmol(G[0].L[0] * W * W, N), near = (k) => pts[k].slice(-60).filter((q) => Math.abs(Math.log(q.Vm / Vc)) < 0.12);
           const avg = (a, f) => a.reduce((s2, q) => s2 + f(q), 0) / a.length, A = near(0), B = near(1);
-          const zr = (k) => { const q = binMeans(pts[k], (r) => r.Vm, (r) => r.Z, 0.07, 0.66, 12); return q.length ? [Math.min(...q.map((r) => r[1])), Math.max(...q.map((r) => r[1]))] : [1, 1]; };
-          const z0 = zr(0), z1 = zr(1);
+          const bins = (k) => binMeans(pts[k], (r) => r.Vm, (r) => r.Z, 0.07, 0.66, 12), zr = (k) => { const q = bins(k); return [Math.min(...q.map((r) => r[1])), Math.max(...q.map((r) => r[1]))]; };
           const now = A.length && B.length ? `Around $V_m = ${v.fix(Vc, 3)}$ L/mol (${A.length} windows): perfect gas $\\bar p = ${v.fix(avg(A, (q) => q.p), 1)}$ bar against $nRT/V = ${v.fix(avg(A, (q) => q.pid), 1)}$ bar; xenon $\\bar p = ${v.fix(avg(B, (q) => q.p), 1)}$ bar, $pV/nRT = ${v.fix(avg(B, (q) => q.Z), 2)}$. ` : '';
+          if (bins(0).length < 4 || bins(1).length < 4) return now + 'Let the sweep run to compare the Boyle products over a range of volumes.';
+          const z0 = zr(0), z1 = zr(1);
           return now + `Over the whole sweep the averaged Boyle product stays within $${v.fix(z0[0], 2)}$–$${v.fix(z0[1], 2)}$ for the perfect gas but wanders over $${v.fix(z1[0], 2)}$–$${v.fix(z1[1], 2)}$ for xenon.`;
         });
       },
@@ -388,7 +389,9 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         reset();
         const fit = (S) => {
           if (S.pts.length < 4) return null;
-          const xs = S.pts.map((q) => q.th), ys = S.pts.map((q) => q.y), r = v.M.linreg(xs, ys), n = xs.length, mx = v.M.mean(xs), my = v.M.mean(ys);
+          const xs = S.pts.map((q) => q.th), ys = S.pts.map((q) => q.y);
+          if (Math.max(...xs) - Math.min(...xs) < 120) return null;   // need at least two well-separated temperature steps
+          const r = v.M.linreg(xs, ys), n = xs.length, mx = v.M.mean(xs), my = v.M.mean(ys);
           if (!(Math.abs(r.slope) > 0)) return null;
           const th0 = mx - my / r.slope, se = Math.sqrt((r.sigma * r.sigma / n) / (r.slope * r.slope) + (my * my) * r.seSlope * r.seSlope / r.slope ** 4);
           return { ...r, th0, se, lo: Math.min(...xs), hi: Math.max(...xs) };

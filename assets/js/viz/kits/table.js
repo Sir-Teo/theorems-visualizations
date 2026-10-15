@@ -54,7 +54,12 @@ class Table {
       const left = align === 'left' ? l + m : align === 'right' ? r - m - tw : (l + r - tw) / 2;
       X0 = left + lw; Y0 = (t + b - th) / 2 + lh;
     }
-    return this.geo = { rows, cols, X0, Y0, cw, ch, lw, lh, x0: s.invX(X0), y0: s.invY(Y0), w: cw / sx, h: ch / sy };
+    // column offsets: equal widths, or proportional to colWeights (same total width)
+    const wts = Array.isArray(o.colWeights) && o.colWeights.length === cols ? o.colWeights.map((w) => Math.max(0, +w || 0)) : null;
+    const tot = wts ? wts.reduce((a, b) => a + b, 0) || 1 : 1, xs = [0];
+    for (let j = 0; j < cols; j++) xs.push(xs[j] + (wts ? (cols * cw * wts[j]) / tot : cw));
+    const cws = xs.slice(1).map((x, j) => x - xs[j]);
+    return this.geo = { rows, cols, X0, Y0, cw, ch, lw, lh, xs, cws, x0: s.invX(X0), y0: s.invY(Y0), w: cw / sx, h: ch / sy };
   }
   _fillColor(f, o) {
     if (f == null || f === false) return null;
@@ -72,7 +77,7 @@ class Table {
   /** Draw (call inside v.render); overrides any spec key for this draw only. */
   draw(over = {}) {
     const o = { ...this.o, ...over }, s = this.s, c = s.ctx, A = this.api, g = this.layout(o);
-    const { rows, cols, X0, Y0, cw, ch, lw, lh } = g, W = cols * cw, H = rows * ch;
+    const { rows, cols, X0, Y0, cw, ch, lw, lh, xs, cws } = g, W = xs[cols], H = rows * ch;
     const ink = A.rgb('ink'), panel = A.rgb('panel');
     c.save();
     // header bands
@@ -85,23 +90,23 @@ class Table {
     for (let i = 0; i < rows; i++) {
       textCol.push([]);
       for (let j = 0; j < cols; j++) {
-        const x = X0 + j * cw, y = Y0 + i * ch;
-        c.fillStyle = A.color('panel'); c.fillRect(x, y, cw, ch);
+        const x = X0 + xs[j], y = Y0 + i * ch;
+        c.fillStyle = A.color('panel'); c.fillRect(x, y, cws[j], ch);
         let f = val(o.fill, i, j); if (f == null && o.heat) { const t = o.heat(i, j); if (t != null && isFinite(t)) f = cmap(Math.min(1, Math.max(0, t)), o.cmap || 'viridis'); }
         const F = this._fillColor(f, o); let tc = null;
         if (F) {
-          c.fillStyle = F[0]; c.fillRect(x, y, cw, ch);
+          c.fillStyle = F[0]; c.fillRect(x, y, cws[j], ch);
           if (F[1] >= 0.55) { const rgb = F[2].slice(0, 3).map((x, k) => panel[k] + (x - panel[k]) * F[1]), L = lum(rgb); tc = Math.abs(L - lum(ink)) >= Math.abs(L - lum(panel)) ? 'ink' : 'panel'; }
         }
         textCol[i].push(tc);
       }
     }
     if (o.activeRow != null) { c.fillStyle = A.color(o.activeColor ?? 'accent', 0.07); c.fillRect(X0 - lw, Y0 + o.activeRow * ch, W + lw, ch); }
-    if (o.activeCol != null) { c.fillStyle = A.color(o.activeColor ?? 'accent', 0.07); c.fillRect(X0 + o.activeCol * cw, Y0 - lh, cw, H + lh); }
+    if (o.activeCol != null) { c.fillStyle = A.color(o.activeColor ?? 'accent', 0.07); c.fillRect(X0 + xs[o.activeCol], Y0 - lh, cws[o.activeCol], H + lh); }
     // grid lines
     c.lineWidth = 1; c.strokeStyle = A.color('faint', o.gridAlpha ?? 0.5); c.beginPath();
     for (let i = 1; i < rows; i++) { const y = Math.round(Y0 + i * ch) + 0.5; c.moveTo(X0 - lw, y); c.lineTo(X0 + W, y); }
-    for (let j = 1; j < cols; j++) { const x = Math.round(X0 + j * cw) + 0.5; c.moveTo(x, Y0 - lh); c.lineTo(x, Y0 + H); }
+    for (let j = 1; j < cols; j++) { const x = Math.round(X0 + xs[j]) + 0.5; c.moveTo(x, Y0 - lh); c.lineTo(x, Y0 + H); }
     c.stroke();
     c.strokeStyle = A.color('muted', 0.55); c.lineWidth = 1.2; c.beginPath();
     if (lh) { c.moveTo(X0 - lw, Y0); c.lineTo(X0 + W, Y0); }
@@ -112,7 +117,7 @@ class Table {
     // highlighted cells
     for (const h of o.highlight || []) {
       const [i, j, col] = h; if (i < 0 || j < 0 || i >= rows || j >= cols) continue;
-      c.strokeStyle = A.color(col || o.highlightColor || 'accent'); c.lineWidth = 2.6; c.strokeRect(X0 + j * cw + 1.6, Y0 + i * ch + 1.6, cw - 3.2, ch - 3.2);
+      c.strokeStyle = A.color(col || o.highlightColor || 'accent'); c.lineWidth = 2.6; c.strokeRect(X0 + xs[j] + 1.6, Y0 + i * ch + 1.6, cws[j] - 3.2, ch - 3.2);
     }
     c.restore();
     // header labels
@@ -122,7 +127,7 @@ class Table {
       if (isTex(str)) s.texPx(str.slice(1, -1), X, Y, { color: col, size: ls + 2 });
       else s.textPx(str, X, Y, { align: 'center', color: col, size: ls, weight: 600, halo: false });
     };
-    for (let j = 0; j < cols && lh; j++) label(this._label(o.colLabels, j), X0 + (j + 0.5) * cw, Y0 - lh / 2, val(o.colLabelColor, j) ?? (o.activeCol === j ? o.activeColor ?? 'accent' : 'muted'));
+    for (let j = 0; j < cols && lh; j++) label(this._label(o.colLabels, j), X0 + xs[j] + cws[j] / 2, Y0 - lh / 2, val(o.colLabelColor, j) ?? (o.activeCol === j ? o.activeColor ?? 'accent' : 'muted'));
     for (let i = 0; i < rows && lw; i++) label(this._label(o.rowLabels, i), X0 - lw / 2, Y0 + (i + 0.5) * ch, val(o.rowLabelColor, i) ?? (o.activeRow === i ? o.activeColor ?? 'accent' : 'muted'));
     if (lw && lh && o.cornerLabel != null) label(o.cornerLabel, X0 - lw / 2, Y0 - lh / 2, 'muted');
     // values
@@ -130,18 +135,18 @@ class Table {
     for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) {
       const raw = o.value ? o.value(i, j) : o.data ? o.data[i]?.[j] : null;
       const v = this._fmt(raw, o, i, j); if (v == null || v === '') continue;
-      const X = X0 + (j + 0.5) * cw, Y = Y0 + (i + 0.5) * ch, col = val(o.textColor, i, j) ?? textCol[i][j] ?? 'ink';
-      if (Array.isArray(v)) { this._pair(v, X, Y, fs0, cw, o, i, j); continue; }
+      const X = X0 + xs[j] + cws[j] / 2, Y = Y0 + (i + 0.5) * ch, col = val(o.textColor, i, j) ?? textCol[i][j] ?? 'ink';
+      if (Array.isArray(v)) { this._pair(v, X, Y, fs0, cws[j], o, i, j); continue; }
       const str = String(v);
       if (isTex(str)) { s.texPx(str.slice(1, -1), X, Y, { color: col, size: Math.min(fs0 + 2, ch * 0.55) }); continue; }
-      const wt = val(o.weight, i, j) ?? 500; let fs = fs0; const tw = this._textW(str, fs, wt); if (tw > cw - 7) fs = Math.max(7, (fs * (cw - 7)) / tw);
+      const wt = val(o.weight, i, j) ?? 500; let fs = fs0; const tw = this._textW(str, fs, wt); if (tw > cws[j] - 7) fs = Math.max(7, (fs * (cws[j] - 7)) / tw);
       c.save(); c.font = FONT(fs, wt); c.fillStyle = A.color(col); c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(str, X, Y + 0.5); c.restore();
     }
     // small annotations in the bottom-right corner of cells
     if (o.sub) for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) {
       const t = o.sub(i, j); if (t == null || t === '') continue;
       c.save(); c.font = FONT(o.subSize ?? Math.max(7, Math.min(10, ch * 0.24)), 600); c.fillStyle = A.color(val(o.subColor, i, j) ?? 'muted'); c.textAlign = 'right'; c.textBaseline = 'bottom';
-      c.fillText(String(t), X0 + (j + 1) * cw - 3, Y0 + (i + 1) * ch - 2); c.restore();
+      c.fillText(String(t), X0 + xs[j + 1] - 3, Y0 + (i + 1) * ch - 2); c.restore();
     }
     return this;
   }
@@ -161,17 +166,18 @@ class Table {
   _g() { return this.geo || this.layout(); }
   /** Cell under data point (x, y): {i, j}; header cells give i = −1 or j = −1 (with header: 'col' | 'row'); null outside. */
   hit(x, y) {
-    const g = this._g(), px = this.s.X(x), py = this.s.Y(y), j = Math.floor((px - g.X0) / g.cw), i = Math.floor((py - g.Y0) / g.ch);
+    const g = this._g(), px = this.s.X(x), py = this.s.Y(y), i = Math.floor((py - g.Y0) / g.ch);
+    let j = px < g.X0 ? -1 : g.cols; for (let k = 0; k < g.cols; k++) if (px - g.X0 < g.xs[k + 1]) { j = px < g.X0 ? -1 : k; break; }
     if (i >= 0 && i < g.rows && j >= 0 && j < g.cols) return { i, j };
     if (i >= 0 && i < g.rows && px < g.X0 && px >= g.X0 - g.lw) return { i, j: -1, header: 'row' };
     if (j >= 0 && j < g.cols && py < g.Y0 && py >= g.Y0 - g.lh) return { i: -1, j, header: 'col' };
     return null;
   }
-  _pc(i, j) { const g = this._g(); return [g.X0 + (j + 0.5) * g.cw, g.Y0 + (i + 0.5) * g.ch]; }
+  _pc(i, j) { const g = this._g(); return [j < 0 ? g.X0 - g.lw / 2 : g.X0 + g.xs[j] + g.cws[j] / 2, g.Y0 + (i + 0.5) * g.ch]; }
   /** Centre of cell (i, j) in data coordinates (j = −1 / i = −1 address the header cells). */
   cellCenter(i, j) { const [X, Y] = this._pc(i, j); return [this.s.invX(X), this.s.invY(Y)]; }
   /** [x0, y0, x1, y1] of cell (i, j) in data coordinates. */
-  cellRect(i, j) { const g = this._g(), X = g.X0 + j * g.cw, Y = g.Y0 + i * g.ch; return [this.s.invX(X), this.s.invY(Y + g.ch), this.s.invX(X + g.cw), this.s.invY(Y)]; }
+  cellRect(i, j) { const g = this._g(), X = j < 0 ? g.X0 - g.lw : g.X0 + g.xs[j], Y = g.Y0 + i * g.ch, w = j < 0 ? g.lw : g.cws[j]; return [this.s.invX(X), this.s.invY(Y + g.ch), this.s.invX(X + w), this.s.invY(Y)]; }
   _arrowPx(ax, ay, bx, by, st) {
     const c = this.s.ctx, L = Math.hypot(bx - ax, by - ay); if (L < 2) return;
     const ux = (bx - ax) / L, uy = (by - ay) / L, hs = Math.min(st.head ?? 7, L * 0.5), col = this.api.color(st.color || 'accent', st.alpha);
@@ -196,7 +202,7 @@ class Table {
   /** Outline a rectangular block of cells [i0..i1] × [j0..j1]. */
   box(i0, j0, i1, j1, st = {}) {
     const g = this._g(), c = this.s.ctx; c.save(); c.strokeStyle = this.api.color(st.color || 'accent', st.alpha); c.lineWidth = st.width ?? 2.4; c.setLineDash(st.dash ? [5, 4] : []);
-    c.strokeRect(g.X0 + j0 * g.cw + 1.5, g.Y0 + i0 * g.ch + 1.5, (j1 - j0 + 1) * g.cw - 3, (i1 - i0 + 1) * g.ch - 3); c.restore(); return this;
+    c.strokeRect(g.X0 + g.xs[j0] + 1.5, g.Y0 + i0 * g.ch + 1.5, g.xs[j1 + 1] - g.xs[j0] - 3, (i1 - i0 + 1) * g.ch - 3); c.restore(); return this;
   }
 }
 

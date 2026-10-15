@@ -129,7 +129,7 @@ $$\operatorname{tr} A = A_{1,1} + A_{2,2} + \cdots + A_{n,n}.$$`,
           // the number line
           L.line(-R, 0, R, 0, { color: 'muted', width: 1.4 });
           const stp = R > 12 ? 5 : R > 6 ? 2 : 1;
-          for (let x = -Math.floor(R / stp) * stp; x <= R; x += stp) { L.line(x, -0.08, x, 0.08, { color: 'muted', width: 1 }); L.text(pn(x, 0), x, -0.35, { align: 'center', size: 11, color: 'muted' }); }
+          for (let x = -Math.floor((R - 0.5) / stp) * stp; x < R - 0.5; x += stp) { L.line(x, -0.08, x, 0.08, { color: 'muted', width: 1 }); L.text(pn(x, 0), x, -0.35, { align: 'center', size: 11, color: 'muted' }); }
           d.forEach((x, k) => {
             const y = 2.9 - 0.9 * k;
             L.line(ps[k], 0, ps[k], y, { color: 'faint', dash: [3, 4], width: 1 });
@@ -206,7 +206,7 @@ $$\operatorname{tr}(AB) = \operatorname{tr}(BA).$$
             const P = A.map((r, j) => r.map((a, k) => a * B[k][j]));
             const rs = P.map((r) => r.reduce((s, x) => s + x, 0)), cs = P[0].map((_, k) => P.reduce((s, r) => s + r[k], 0)), tot = rs.reduce((s, x) => s + x, 0);
             TG.draw({
-              rows: m + 1, cols: n + 1, region: [0.2, 0.04, 0.8, 0.82],
+              rows: m + 1, cols: n + 1, region: [0.2, 0.17, 0.8, 0.86],
               value: (i, j) => (i < m && j < n ? P[i][j] : i < m ? rs[i] : j < n ? cs[j] : tot),
               rowLabels: (i) => (i < m ? `$j = ${i + 1}$` : '$\\Sigma$'), colLabels: (j) => (j < n ? `$k = ${j + 1}$` : '$\\Sigma$'),
               fill: (i, j) => (i < m && j < n ? null : i < m ? ['blue', 0.25] : j < n ? ['orange', 0.25] : ['green', 0.35]),
@@ -215,7 +215,7 @@ $$\operatorname{tr}(AB) = \operatorname{tr}(BA).$$
             const g = TG.geo;
             S2.texPx('A_{j,k}\\,B_{k,j}', g.X0 - g.lw - 16, g.Y0 - g.lh / 2, { size: 14, align: 'right' });
             S2.texPx('\\text{row sums} = (AB)_{j,j}', g.X0 + (n + 1) * g.cw + 14, g.Y0 + (m / 2) * g.ch, { size: 13.5, color: 'blue', align: 'left' });
-            S2.texPx('\\text{column sums} = (BA)_{k,k}', g.X0 + (n / 2) * g.cw, g.Y0 + (m + 1) * g.ch + 18, { size: 13.5, color: 'orange' });
+            S2.texPx('\\text{column sums} = (BA)_{k,k}', g.X0 + (n / 2) * g.cw, g.Y0 + (m + 1) * g.ch + 17, { size: 13.5, color: 'orange' });
             S2.texPx(`\\text{total} = ${tot}`, g.X0 + (n + 1) * g.cw + 14, g.Y0 + (m + 0.5) * g.ch, { size: 13.5, color: 'green', align: 'left' });
             st = { two: true, m, n, tAB, tBA, same: maxAbs(AB.length === BA.length ? msub(AB, BA) : [[1]]) === 0 && AB.length === BA.length };
           } else {
@@ -262,7 +262,7 @@ The hypothesis that the *same* basis is used for the domain and the target matte
       tags: ['trace', 'change of basis'],
       viz(v) {
         const M = v.M;
-        const T = [[2, 1, 0], [-1, 1, 1], [0.5, 1, 1]], C0 = [[1.1, 0.2, 0.1], [0.3, 1, -0.2], [0.2, 0.4, 1.1]];
+        const T = [[2, 1, 0], [-1, 1, 1], [0.5, 1, 1]], C0 = [[1.1, -0.3, 0.1], [-0.6, 1, 0.3], [0.2, 0.3, 1.1]];
         const CC = ['blue', 'purple', 'teal'];
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.9], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 290 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 250 });
@@ -274,7 +274,7 @@ The hypothesis that the *same* basis is used for the domain and the target matte
         // a record of bases: a sweep (rotation × shear, never singular) ending at the starting basis, then the reader's drags
         const hist = [];
         for (let i = 0; i < 140; i++) {
-          const s = 1 - i / 139, Rm = rot3([1, 0.7, 0.4], 2.6 * s), Sh = [[1, 1.3 * Math.sin(3 * s), 0], [0, 1, 0.9 * Math.sin(2 * s)], [0, 0, 1]];
+          const s = 1 - i / 139, Rm = rot3([1, 0.7, 0.4], 4 * s), Sh = [[1, 2.2 * Math.sin(4 * s), 0], [0, 1, 1.6 * Math.sin(3 * s)], [0.8 * Math.sin(5 * s), 0, 1]];
           hist.push(mm(mm(Rm, Sh), transp(C0)).map((r) => r.slice()));
         }
         let st = null;
@@ -302,7 +302,7 @@ The hypothesis that the *same* basis is used for the domain and the target matte
           Hs.hline(0, { color: 'faint', width: 1 });
           for (let k = 0; k < 3; k++) Hs.path(recs.map((r, i) => [i, r[k]]), { color: CC[k], width: 1.4, alpha: 0.8 });
           Hs.path(recs.map((r, i) => [i, r[3]]), { color: other.value ? 'red' : 'green', width: 3.4 });
-          Hs.text(other.value ? 'sum: moves' : `sum = tr T = ${pn(tr(T), 2)}`, 197, recs[recs.length - 1][3], { dy: -12, align: 'right', size: 12, weight: 700, color: other.value ? 'red' : 'green' });
+          Hs.text(other.value ? 'sum: moves' : `sum = tr T = ${pn(tr(T), 2)}`, recs.length - 1, recs[recs.length - 1][3], { dy: -12, align: 'right', size: 12, weight: 700, color: other.value ? 'red' : 'green' });
           const sums = recs.map((r) => r[3]);
           st = { t, spread: Math.max(...sums) - Math.min(...sums), ok };
         });
@@ -402,7 +402,9 @@ $$\operatorname{tr} T = d_1\lambda_1 + \cdots + d_m\lambda_m.$$`,
         const OC = [[0, [1, 0.5], [-0.6, 0.3]], [[0.8, -0.4], 0, [0.5, 1]], [[-0.3, 0.7], [0.9, 0.2], 0]];
         const OR = [[0, 1.2, -0.7], [-1.5, 0, 0.6], [0.8, -1.1, 0]];
         const CC = ['blue', 'purple', 'teal'];
-        const S = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, height: 400, full: true, title: 'in $\\mathbb C$: diagonal entries (drag), eigenvalues, and their sums' });
+        const S = v.stage({ x: [-2.9, 3.6], y: [-2.3, 2.5], equal: true, height: 380, weight: 1.3, minWidth: 300, title: 'in $\\mathbb C$: diagonal entries (drag), eigenvalues, and their sums' });
+        const Pm = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.8, minWidth: 240 });
+        const TA = v.table(Pm, { rows: 3, cols: 3, region: [0.02, 0.4, 0.98, 0.9], maxCell: 64, size: 12 });
         const real = () => fld.value === 'R';
         const H = [[1, 1], [-0.8, -0.5], [1.6, -1]].map((p, k) => S.handle(p[0], p[1], { color: CC[k], label: `$A_{${k + 1}${k + 1}}$`, constrain: (x, y) => [Math.round(x * 20) / 20, real() ? 0 : Math.round(y * 20) / 20] }));
         const fld = v.select('', [{ value: 'C', label: 'complex matrix, all eigenvalues' }, { value: 'R', label: 'real matrix, real eigenvalues only' }], 'C', { onChange: (c) => { if (c === 'R') H.forEach((h) => h.set(h.x, 0)); } });
@@ -426,6 +428,10 @@ $$\operatorname{tr} T = d_1\lambda_1 + \cdots + d_m\lambda_m.$$`,
           const c3 = [t[0] / 3, t[1] / 3];
           S.poly(Array.from({ length: 10 }, (_, k) => { const r = (k % 2 ? 0.07 : 0.17) * (S.xr[1] - S.xr[0]) / 8, a = Math.PI / 2 + (k * Math.PI) / 5; return [c3[0] + r * Math.cos(a), c3[1] + r * Math.sin(a)]; }), { fill: 'gold', fillAlpha: 0.9, color: 'gold', width: 1 });
           S.corner(match ? 'Σ eigenvalues = tr A' : 'Σ real eigenvalues ≠ tr A', 'tl', { color: match ? 'green' : 'red', weight: 700 });
+          TA.draw({ value: (i, j) => cpn(A[i][j], 1), fill: (i, j) => (i === j ? [CC[i], 0.28] : null) });
+          ttl(Pm, TA, 'A', 'ink', false, 16);
+          const lines = [[`\\operatorname{tr} A = ${ctn(t, 2)}`, 'green'], [`\\textstyle\\sum \\text{${real() ? 'real ' : ''}eigenvalues} = ${ctn(es, 2)}`, match ? 'green' : 'red'], [`\\operatorname{tr} A / 3 = ${ctn([t[0] / 3, t[1] / 3], 2)}`, 'gold']];
+          lines.forEach(([tx, c], k) => Pm.texPx(tx, Pm.width / 2, Pm.height * (0.66 + 0.1 * k), { size: 14, color: c }));
           st = { t, ev, es, match, nc: ev.length - counted.length };
         });
         v.legend([['blue', 'diagonal entries, added head to tail', { dash: true }], ['pink', 'eigenvalues, added head to tail'], ['green', '$\\operatorname{tr} A$', { dot: true }], ['gold', 'centroid $= \\operatorname{tr} A/3$', { dot: true }]]);
@@ -461,8 +467,8 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
         const poly = v.select('polynomial', [{ value: 'q', label: 'characteristic $q$' }, { value: 'min', label: 'minimal' }], 'q');
         const S = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, height: 380, weight: 1.2, minWidth: 290, title: 'zeros of $q$, $q\'$, $q\'\'$, … closing in on $\\operatorname{tr} A / n$' });
         const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 260 });
-        const TE = v.table(E, { rows: 3, cols: 3, region: [0.04, 0.42, 0.96, 0.9], maxCell: 50, size: 15 });
-        const TC = v.table(E, { rows: 1, cols: 4, region: [0.02, 0.13, 0.98, 0.3], maxCell: 50, size: 13 });
+        const TE = v.table(E, { rows: 3, cols: 3, region: [0.04, 0.5, 0.96, 0.92], maxCell: 48, size: 15 });
+        const TC = v.table(E, { rows: 1, cols: 4, region: [0.02, 0.12, 0.98, 0.4], maxCell: 52, size: 13.5 });
         editable(E, TE, { bump: (i, j, k) => { A[i][j] = M.clamp(A[i][j] + k, -9, 9); } });
         /** Minimal polynomial from its definition: the first power A^k in span(I, …, A^{k−1}) (least squares). */
         const minPoly = (X) => {
@@ -492,7 +498,7 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
           S.dot(t / n, 0, { r: 13, hollow: true, color: 'green', width: 2.6 });
           S.text(`tr A / ${n} = ${pn(t / n, 3)}`, t / n, 0, { dy: 28, align: 'center', size: 12.5, color: 'green', weight: 700 });
           const hit = cabs([last[0] - t / n, last[1]]) < 1e-6;
-          S.corner(hit ? `zero of p^(${deg - 1}) = tr A / n` : `zero of p^(${deg - 1}) ≠ tr A / n`, 'tl', { color: hit ? 'green' : 'red', weight: 700 });
+          S.corner(hit ? `zero of p^(${deg - 1}) = tr A / n` : `zero of p^(${deg - 1}) ≠ tr A / n`, 'bl', { color: hit ? 'green' : 'red', weight: 700 });
           // editor and coefficients
           TE.draw({ rows: n, cols: n, value: (i, j) => A[i][j], fill: diagFill('green', 0.22) });
           ttl(E, TE, 'A', 'ink', false, 16);

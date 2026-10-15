@@ -235,7 +235,7 @@ function speak(list, o = {}) {
       if (s.vc && o.vot == null) { fill(tr.av, s.t0, s.t1, 0.55); fill(tr.lp, s.t0, s.t1, 0.93); }
       if (vot < 0) { fill(tr.av, s.t1 + vot, s.t1, 0.55); fill(tr.lp, s.t1 + vot, s.t1, 0.93); }
       s.tr = s.t1;
-      if (!glottal) { fill(tr.af, s.t1, s.t1 + 0.007, 1.6 * ns.amp); fill(tr.ff, s.t1, s.t1 + 0.007, ns.ff); fill(tr.fb, s.t1, s.t1 + 0.007, ns.fb); }
+      if (!glottal) { fill(tr.af, s.t1, s.t1 + 0.006, (s.pl.lf < 0.2 ? 0.25 : 0.6) * ns.amp); fill(tr.ff, s.t1, s.t1 + 0.006, ns.ff); fill(tr.fb, s.t1, s.t1 + 0.006, ns.fb); }
       if (vot > 0.004 && nx) { fill(tr.av, s.t1, s.t1 + vot, 0); fill(tr.ah, s.t1 + 0.005, s.t1 + vot, 0.55); fill(tr.b1, s.t1, s.t1 + vot, 320); }
     } else if (s.mn === 'nasal') {
       fill(tr.av, s.t0, s.t1, 0.8); fill(tr.nz, s.t0, s.t1, NASALZ[s.plName] || 1700); fill(tr.b2, s.t0, s.t1, 300); fill(tr.b3, s.t0, s.t1, 400);
@@ -352,70 +352,66 @@ function tubeFormants(A, dl, n = 4, openGlottis = false, fmax = 7000) {
   }
   return out;
 }
-/** Head outline (face to the left): forehead, nose, upper lip | lower lip, chin, neck; filled as tissue. */
-function headPoly(J) {
-  return [[-0.5, 4.6], [-0.9, 3.8], [-1.55, 3.0], [-2.25, 2.2], [-2.35, 1.9], [-2.0, 1.65], [-1.3, 1.55], [-1.0, 1.25], [-0.98, 0.85], [-1.05, 0.5], [-0.75, 0.28],
-    [-0.75, -0.25 - J], [-1.05, -0.45 - J], [-1.0, -1.0 - J], [-0.8, -1.7 - J], [-0.55, -2.6 - J], [0.2, -3.05 - J], [1.6, -3.4 - 0.8 * J], [3.6, -4.1 - 0.4 * J], [5.2, -5.2], [5.6, -6.6], [5.8, -9.6], [9.6, -9.6], [9.6, 4.6]];
-}
-const NASAL = [[-1.3, 1.55], [0.3, 1.35], [1.7, 1.25], [2.4, 1.75], [3.3, 2.1], [4.3, 2.25], [5.3, 2.1], [6.3, 2.05], [7.3, 1.75], [8.25, 1.2], [8.35, 2.3], [7.6, 3.2], [5.6, 3.65], [2.6, 3.6], [0.6, 3.25], [-0.75, 2.6]];
+/** Head above the nasal cavity and behind the pharynx (face to the left; the airways are left unfilled). */
+const HEAD_UP = [[-0.5, 6.8], [-0.9, 3.8], [-1.55, 3.0], [-2.25, 2.2], [-2.35, 1.9], [-2.0, 1.65], [-1.3, 1.55], [-0.75, 2.6], [0.6, 3.25], [2.6, 3.6], [5.6, 3.65], [7.6, 3.2], [8.35, 2.3], [8.3, 1.2], [8.2, 0.4],
+  [7.9, -1.0], [8.1, -2.5], [8.1, -4.5], [7.9, -6.5], [7.6, -8.0], [7.3, -8.9], [7.3, -10.5], [12.5, -10.5], [12.5, 6.8]];
+/** Nasal floor (upper surface of the palate), from the velum forward to the nostril. */
+const NASAL_FLOOR = [[5.3, 2.1], [4.3, 2.25], [3.3, 2.1], [2.4, 1.75], [1.7, 1.25], [0.3, 1.35], [-1.3, 1.55]];
+/** Velum outlines from the end of the hard palate: lower surface, uvula, back and upper surface (raised: sealed against the back wall). */
+const VELUM = {
+  up: [[6.1, 1.3], [6.8, 0.6], [7.4, -0.2], [7.8, 0.05], [8.18, 0.45], [7.5, 1.35], [6.4, 1.95]],
+  down: [[6.1, 1.2], [6.55, 0.35], [6.85, -0.45], [7.15, -0.15], [7.3, 0.7], [6.9, 1.6], [6.2, 2.0]],
+};
 /**
  * Draw the vocal tract. cfg: {hx, hy (tongue body), round, ctl (custom tongue control points), lipGap (cm between the lips,
  * for labials), teethGap (lower lip to upper teeth, for labiodentals), velum: 'up' | 'down', glottis: 'voiced' | 'voiceless' |
  * 'closed' | 'breathy', mark: {x, y, color}, noise: [x, y] (frication), labels}.
  */
 function drawTract(s, cfg) {
-  const hy = cfg.hy ?? 0.4, J = 1.05 * jawOf(hy) * (cfg.jaw ?? 1), ctl = cfg.ctl || tongueCtl(cfg.hx ?? 4.5, hy), tg = catmull(ctl, 7);
-  const rnd = cfg.round ? 1 : 0;
-  s.poly(headPoly(J), { fill: 'faint', fillAlpha: 0.32, color: 'muted', width: 1.2 });
-  // lips (upper fixed, lower follows the jaw; rounding pushes both forward)
-  const ulx = -0.75 - 0.45 * rnd, uly = 0.27 - 0.06 * rnd;
-  let llEdgeY = -0.2 - J + 0.25 * rnd, llEdgeX = -0.72 - 0.45 * rnd;
+  const hy = cfg.hy ?? 0.4, J = 1.05 * jawOf(hy), ctl = cfg.ctl || tongueCtl(cfg.hx ?? 4.5, hy), tg = catmull(ctl, 7);
+  const rnd = cfg.round ? 1 : 0, vel = cfg.velum === 'down' ? 'down' : 'up';
+  const ulx = -0.72 - 0.45 * rnd, uly = 0.27 - 0.06 * rnd;
+  let llEdgeY = -0.2 - J + 0.25 * rnd, llEdgeX = -0.7 - 0.45 * rnd;
   if (cfg.lipGap != null) { llEdgeY = uly - 0.03 - cfg.lipGap; llEdgeX = ulx + 0.1; }
   if (cfg.teethGap != null) { llEdgeY = 0.05 - cfg.teethGap; llEdgeX = 0.82; }
-  // airway: wall from the lips to the glottis, then back up the larynx, tongue, lower teeth and lower lip
-  const wall = WALL.slice(); if (cfg.velum === 'down') { wall[9] = [6.1, 1.2]; wall[10] = [6.55, 0.35]; wall[11] = [6.85, -0.45]; }
-  const lowInc = [[1.12, -0.05 - J], [0.95, -0.12 - J], [0.82, -0.7 - J]], lowLip = [[0.55, -0.55 - J], [0.05, llEdgeY - 0.05], [llEdgeX, llEdgeY]];
-  const air = [[-2.4, uly + 0.2], [ulx, uly], ...wall, ...tg.slice().reverse().filter((p) => p[1] > -9), ...lowInc.slice(0, 1), ...lowLip, [llEdgeX - 0.6, llEdgeY - 0.3], [-2.4, llEdgeY - 0.4]];
-  s.poly(air, { fill: 'panel', fillAlpha: 1, stroke: false });
-  s.poly(NASAL, { fill: 'panel', fillAlpha: 1, stroke: false });
-  s.poly([[7.0, 1.5], [8.3, 1.4], [8.05, -0.9], [7.2, -0.5]], { fill: 'panel', fillAlpha: 1, stroke: false });
-  s.path(NASAL.slice(1, 7), { color: 'muted', width: 1 }); s.path(NASAL.slice(9).concat([NASAL[0]]), { color: 'muted', width: 1 });
-  s.line(8.25, 1.2, 8.15, -1.2, { color: 'muted', width: 1 });
-  // velum: raised against the back wall (oral), or lowered (nasal port open)
-  const vel = cfg.velum === 'down' ? [[5.3, 1.75], [6.4, 1.7], [7.0, 0.9], [7.2, -0.3], [6.9, -0.6], [6.55, 0.35], [6.1, 1.2]] : [[5.3, 1.75], [6.3, 1.8], [7.4, 1.25], [8.2, 0.45], [7.95, -0.05], [7.4, -0.2], [6.8, 0.6], [6.1, 1.3]];
-  s.poly(vel, { fill: 'faint', fillAlpha: 0.45, color: 'muted', width: 1.1 });
+  const tissue = { fill: 'faint', fillAlpha: 0.34, color: 'muted', width: 1.1 };
+  // upper head, palate block (upper lip, teeth ridge, hard palate, velum) and lower jaw with the tongue
+  s.poly(HEAD_UP, tissue);
+  const upLip = [[-1.3, 1.55], [-1.0, 1.25], [-0.98, 0.85], [-1.05 - 0.4 * rnd, 0.5], [ulx - 0.05, uly + 0.05], [ulx, uly], [-0.35 - 0.3 * rnd, 0.2], [0.0, 0.25]];
+  const palate = [...upLip, ...WALL.slice(1, 9), ...VELUM[vel], ...NASAL_FLOOR.slice(0, -1)];
+  s.poly(palate, tissue);
+  s.poly([[5.3, 1.7], ...VELUM[vel], [5.3, 2.1]], { fill: 'pink', fillAlpha: 0.16, color: 'muted', width: 1.1 });
+  const lowLip = [[llEdgeX, llEdgeY], [0.05, llEdgeY - 0.05], [0.55, -0.55 - J], [0.82, -0.7 - J]];
+  const jawOut = [[6.9, -10.5], [5.8, -10.5], [5.8, -9.6], [5.6, -6.6], [5.2, -5.2], [3.6, -4.1 - 0.4 * J], [1.6, -3.4 - 0.8 * J], [0.2, -3.05 - J], [-0.55, -2.6 - J], [-0.8, -1.7 - J], [-1.0, -1.0 - J], [-1.05 - 0.35 * rnd, -0.45 - J], [llEdgeX - 0.1, llEdgeY - 0.15]];
+  s.poly([...lowLip, ...tg.filter((p) => p[1] > -9.0), ...jawOut], tissue);
   // tongue
-  const tongueBody = [...tg, [6.3, -6.2], [5.0, -4.3 - 0.3 * J], [3.2, -3.1 - 0.7 * J], [1.9, -2.2 - 0.9 * J], [1.4, -1.5 - J]];
-  s.poly(tongueBody, { fill: 'pink', fillAlpha: 0.42, stroke: false });
+  s.poly([...tg, [6.3, -6.2], [5.0, -4.3 - 0.3 * J], [3.2, -3.1 - 0.7 * J], [1.9, -2.2 - 0.9 * J], [1.4, -1.5 - J]], { fill: 'pink', fillAlpha: 0.45, stroke: false });
   s.path(tg, { color: 'red', width: 1.8 });
   // teeth
   s.poly([[0.62, 0.62], [1.3, 0.62], [1.25, 0.45], [0.95, 0.05], [0.68, 0.3]], { fill: 'panel', fillAlpha: 1, color: 'muted', width: 1.1 });
   s.poly([[0.95, -0.12 - J], [1.12, -0.05 - J], [1.25, -0.55 - J], [1.05, -0.9 - J], [0.8, -0.72 - J]], { fill: 'panel', fillAlpha: 1, color: 'muted', width: 1.1 });
-  // walls
-  s.path(wall, { color: 'ink', width: 1.7 });
-  s.path([[-0.85, uly + 0.03], [ulx, uly], [0.0, 0.25], [0.6, 0.35]], { color: 'ink', width: 1.7 });
-  s.path([[0.6, -0.4 - J], [0.05, llEdgeY - 0.05], [llEdgeX, llEdgeY], [llEdgeX - 0.25, llEdgeY - 0.25]], { color: 'ink', width: 1.7 });
-  s.path([[6.9, -8.9], [6.75, -7.4], [6.95, -6.1]], { color: 'ink', width: 1.4 });
+  // airway walls
+  s.path([[ulx, uly], [-0.35 - 0.3 * rnd, 0.2], ...WALL.slice(0, 9), ...VELUM[vel].slice(0, 3)], { color: 'ink', width: 1.7 });
+  s.path(WALL.slice(12), { color: 'ink', width: 1.7 });
+  s.path([[0.6, -0.42 - J], [0.05, llEdgeY - 0.05], [llEdgeX, llEdgeY]], { color: 'ink', width: 1.7 });
   // glottis: vocal folds seen in section, and a top-view inset
-  const gs = cfg.glottis || 'voiced', gy = -8.55, gap = gs === 'voiceless' ? 0.42 : gs === 'closed' ? 0 : gs === 'breathy' ? 0.2 : 0.08;
-  const midG = 7.13;
-  s.poly([[6.85, gy + 0.25], [midG - gap / 2, gy], [6.85, gy - 0.25]], { fill: 'muted', fillAlpha: 0.8, stroke: false });
-  s.poly([[7.45, gy + 0.25], [midG + gap / 2, gy], [7.45, gy - 0.25]], { fill: 'muted', fillAlpha: 0.8, stroke: false });
-  const ix = 1.0, iy = -7.5, R = 0.95; // top view of the glottis
-  s.circle(ix, iy, R, { color: 'muted', width: 1, fill: 'faint', fillAlpha: 0.25 });
-  const op = gs === 'voiceless' ? 0.42 : gs === 'closed' ? 0.0 : gs === 'breathy' ? 0.2 : 0.05;
+  const gs = cfg.glottis || 'voiced', gy = -8.55, gap = gs === 'voiceless' ? 0.36 : gs === 'closed' ? 0 : gs === 'breathy' ? 0.18 : 0.06, midG = 7.1;
+  s.poly([[6.85, gy + 0.22], [midG - gap / 2, gy], [6.85, gy - 0.22]], { fill: 'muted', fillAlpha: 0.9, stroke: false });
+  s.poly([[7.4, gy + 0.22], [midG + gap / 2, gy], [7.4, gy - 0.22]], { fill: 'muted', fillAlpha: 0.9, stroke: false });
+  const ix = 1.2, iy = -7.0, op = gs === 'voiceless' ? 0.42 : gs === 'closed' ? 0.0 : gs === 'breathy' ? 0.22 : 0.05;
+  s.circle(ix, iy, 0.95, { color: 'muted', width: 1, fill: 'faint', fillAlpha: 0.25 });
   for (const sg of [-1, 1]) {
-    if (gs === 'voiced' || gs === 'breathy') s.curve((u) => [ix + sg * (op * (1 + u) / 2 + 0.03 * Math.sin(u * 18)), iy + 0.75 - 1.5 * (u + 1) / 2], -1, 1, { color: 'ink', width: 2.2, n: 60 });
-    else s.line(ix, iy + 0.75, ix + sg * op, iy - 0.75, { color: 'ink', width: 2.6 });
+    if (gs === 'voiced' || gs === 'breathy') s.curve((u) => [ix + sg * ((op * (1 + u)) / 2 + 0.035 * Math.sin(u * 18)), iy + 0.72 - (1.44 * (u + 1)) / 2], -1, 1, { color: 'ink', width: 2.2, n: 60 });
+    else s.line(ix, iy + 0.72, ix + sg * op, iy - 0.72, { color: 'ink', width: 2.6 });
   }
-  s.text(gs === 'closed' ? 'glottis shut' : gs === 'voiceless' ? 'glottis open' : gs === 'breathy' ? 'breathy voice' : 'vocal folds vibrate', ix, iy - 1.25, { align: 'center', size: 11, color: 'muted' });
-  // noise and the marked articulator
-  if (cfg.noise) { const [nx, ny] = cfg.noise; for (let k = 0; k < 3; k++) s.curve((u) => [nx - 0.3 - 0.35 * k + 0.08 * Math.sin(u * 3), ny + (u - 0.5) * 0.5], 0, 1, { color: 'orange', width: 1.4, n: 20 }); }
-  if (cfg.velum === 'down' && cfg.nasalArrow !== false) s.arrow(4.0, 2.9, -0.4, 2.35, { color: 'teal', width: 1.8 });
-  if (cfg.mark) { s.dot(cfg.mark.x, cfg.mark.y, { r: 5, color: cfg.mark.color || 'gold' }); }
+  s.text(gs === 'closed' ? 'glottis shut' : gs === 'voiceless' ? 'glottis open' : gs === 'breathy' ? 'breathy voice' : 'vocal folds vibrate', ix, iy - 1.3, { align: 'center', size: 11, color: 'muted' });
+  s.text('glottis from above', ix, iy + 1.25, { align: 'center', size: 10, color: 'muted' });
+  if (cfg.noise) { const [nx, ny] = cfg.noise; for (let k = 0; k < 3; k++) s.curve((u) => [nx - 0.25 - 0.3 * k + 0.07 * Math.sin(u * 9), ny + (u - 0.5) * 0.45], 0, 1, { color: 'orange', width: 1.5, n: 24 }); }
+  if (vel === 'down' && cfg.nasalArrow !== false) s.arrow(5.0, 2.95, -0.6, 2.4, { color: 'teal', width: 2, head: 7 });
+  if (cfg.mark) s.dot(cfg.mark.x, cfg.mark.y, { r: 5, color: cfg.mark.color || 'gold' });
   if (cfg.labels) {
     const L = (t, x, y, al = 'center') => s.text(t, x, y, { size: 10.5, color: 'muted', align: al });
-    L('lips', -1.75, 0.0, 'center'); L('alveolar ridge', 1.6, 1.95); L('hard palate', 3.9, 2.45); L('velum', 6.0, 2.5); L('nasal cavity', 3.0, 3.0); L('pharynx', 9.0, -3.3, 'center'); L('larynx', 8.6, -7.8, 'left'); L('tongue', 3.6, -2.0 - 0.6 * J);
+    L('nasal cavity', 3.4, 2.95); L('velum', 6.6, 2.35); L('hard palate', 3.6, 1.15); L('pharynx', 8.75, -3.4, 'left'); L('larynx', 7.75, -8.0, 'left'); L('tongue', 3.6, -2.0 - 0.6 * J);
   }
 }
 
@@ -678,7 +674,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
             });
             for (let i = 0; i <= 8; i++) ch.line(0, rowY(i) - 0.5 + (i === 8 ? 0 : 0), 13, rowY(i) - 0.5, { color: 'grid', width: 1 });
             ch.line(0, 8, 13, 8, { color: 'grid', width: 1 });
-            PLACE_HEAD.forEach((lines, j) => lines.forEach((t, k) => ch.text(t, 2.5 + j, 8.95 - (lines.length - 1) * 0.22 + k * -0.42 + (lines.length - 1) * 0.42 - 0.2 * (lines.length - 1), { size: hs, align: 'center', color: j >= ca && j <= cb ? 'accent' : 'muted', weight: j >= ca && j <= cb ? 650 : 500 })));
+            PLACE_HEAD.forEach((lines, j) => lines.forEach((t, k) => ch.text(t, 2.5 + j, lines.length === 1 ? 8.75 : 8.98 - 0.45 * k, { size: hs, align: 'center', color: j >= ca && j <= cb ? 'accent' : 'muted', weight: j >= ca && j <= cb ? 650 : 500 })));
             const [place, mn, vc] = CONS[selC];
             drawTract(tr, consCfg(selC));
             info = { c: true, sym: selC, desc: `${vc ? 'voiced' : 'voiceless'} ${place === 'alveolar' && (where[selC][2] > where[selC][1]) ? 'alveolar' : place} ${MANNER_NAME[mn]}`, mn };
@@ -706,7 +702,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
           }
           const e = example(cur());
           sp.setView([0, e.dur], [0, 6000]);
-          drawSpec(sp, e.S, ink, { key: mode.value + cur(), range: 55 });
+          drawSpec(sp, e.S, ink, { key: mode.value + cur(), range: 48 });
           if (e.segs) for (const sg of e.segs) if (!sg.V) { sp.vline(sg.t0, { color: 'gold', dash: [4, 4], alpha: 0.8 }); sp.vline(sg.t1, { color: 'gold', dash: [4, 4], alpha: 0.8 }); }
           sp.corner(mode.value === 'c' ? `[a${cur()}a]` : `[${cur()}]`, 'tr', { color: 'accent', weight: 650, size: 14 });
         });

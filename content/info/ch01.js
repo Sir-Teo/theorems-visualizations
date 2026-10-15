@@ -119,19 +119,20 @@ For dependent events the discrepancy $I(A)+I(B)-I(A\cap B)=\log\frac{P(A\cap B)}
             sC.line(q, b.y[0], q, y, { color: col, width: 1.2, dash: [4, 4] }); sC.line(b.x[0], y, q, y, { color: col, width: 1.2, dash: [4, 4] });
           };
           guide(pa, 'accent'); guide(pb, 'orange');
-          if (pab > 0 && pab >= b.x[0] && I(pab) < b.y[1]) { guide(pab, 'green'); sC.dot(pab, I(pab), { r: 6, color: 'green' }); sC.text('A∩B', pab, I(pab), { dx: 9, dy: -10, color: 'green', size: 12, weight: 600 }); }
-          // the two columns: I(A) + I(B) stacked against I(A∩B)
-          const W = sC.width, X = (px) => sC.invX(px), IA = I(pa), IB = I(pb), IAB = I(pab);
+          if (pab > 0 && pab >= b.x[0] && I(pab) < b.y[1]) { guide(pab, 'green'); sC.dot(pab, I(pab), { r: 6, color: 'green' }); sC.text('A∩B', pab, I(pab), { dx: -9, dy: 10, align: 'right', color: 'green', size: 12, weight: 600 }); }
+          // the two columns, I(A) + I(B) stacked against I(A∩B), on an inset where the curve is out of the way
+          const W = sC.width, L0 = lx ? 42 : W - 104, X = (px) => sC.invX(px), IA = I(pa), IB = I(pb), IAB = I(pab);
           sC.ctx.save(); sC.ctx.fillStyle = v.color('panel'); sC.ctx.strokeStyle = v.color('faint'); sC.ctx.lineWidth = 1;
-          sC.ctx.beginPath(); sC.ctx.rect(W - 104, 6, 98, sC.Y(0) - 6); sC.ctx.fill(); sC.ctx.stroke(); sC.ctx.restore();
+          const T0 = Math.max(6, sC.Y(Math.min(ymax, Math.max(IA + IB, IAB === Infinity ? ymax : IAB))) - 30);
+          sC.ctx.beginPath(); sC.ctx.rect(L0, T0, 98, sC.Y(0) - T0); sC.ctx.fill(); sC.ctx.stroke(); sC.ctx.restore();
           sC.clip(() => {
-            sC.rect(X(W - 94), 0, X(W - 66), IA, { fill: 'accent', fillAlpha: 0.8, stroke: false });
-            sC.rect(X(W - 94), IA, X(W - 66), IA + IB, { fill: 'orange', fillAlpha: 0.8, stroke: false });
-            sC.rect(X(W - 48), 0, X(W - 20), Math.min(IAB, ymax * 2), { fill: 'green', fillAlpha: 0.8, stroke: false });
+            sC.rect(X(L0 + 10), 0, X(L0 + 38), IA, { fill: 'accent', fillAlpha: 0.8, stroke: false });
+            sC.rect(X(L0 + 10), IA, X(L0 + 38), IA + IB, { fill: 'orange', fillAlpha: 0.8, stroke: false });
+            if (IAB < Infinity) sC.rect(X(L0 + 56), 0, X(L0 + 84), IAB, { fill: 'green', fillAlpha: 0.8, stroke: false });
           });
-          const lab = (str, px, top, col) => sC.textPx(str, px, Math.max(12, sC.Y(Math.min(top, ymax)) - 9), { align: 'center', size: 11, weight: 700, color: col });
-          lab(IA + IB > ymax ? 'A + B ↑' : 'A + B', W - 80, IA + IB, 'ink');
-          lab(IAB === Infinity ? '∞' : IAB > ymax ? 'A∩B ↑' : 'A∩B', W - 34, IAB, 'green');
+          const lab = (str, px, top, col) => sC.textPx(str, px, Math.max(14, sC.Y(Math.min(top, ymax)) - 9), { align: 'center', size: 11, weight: 700, color: col });
+          lab(IA + IB > ymax ? 'A + B ↑' : 'A + B', L0 + 24, IA + IB, 'ink');
+          lab(IAB === Infinity ? 'A∩B: ∞' : IAB > ymax ? 'A∩B ↑' : 'A∩B', L0 + 70, IAB === Infinity ? 0 : IAB, IAB === Infinity ? 'red' : 'green');
           // the unit square: A is a vertical strip, B has height P(B|A) inside it and P(B|not A) outside
           const r = pa > 0 ? pab / pa : 0, s = pa < 1 ? clamp((pb - pab) / (1 - pa), 0, 1) : 0;
           sQ.rect(0, 0, pa, 1, { fill: 'accent', fillAlpha: 0.12, stroke: false });

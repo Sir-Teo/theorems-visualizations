@@ -678,8 +678,8 @@ and solving the problem means deciding membership in that language (strings that
           ps.fn(completeLen, { color: 'accent', width: 2 });
           ps.fn(cycleLen, { color: 'accent', width: 2, dash: [6, 4] });
           if (e.n >= 1) {
-            ps.dot(e.n, e.list.length, { r: 5, color: 'accent', label: 'list', labelPos: 'nw' });
             ps.dot(e.n, Math.max(1, e.mat.length), { r: 7, color: 'orange', hollow: true, width: 2.4, label: 'matrix', labelPos: 'se' });
+            ps.dot(e.n, e.list.length, { r: 4.5, color: 'accent', label: 'list', labelPos: 'nw' });
           }
         });
         v.legend([['orange', 'matrix encoding ($n^2+n-1$)'], ['accent', 'list encoding, complete graphs'], ['accent', 'list encoding, cycles', { dash: true }]]);
@@ -802,8 +802,8 @@ A **literal** is a variable or its negation, a **clause** is an $\lor$ of litera
         };
         let F = mkF(PRESETS.p1), selRow = 6;
         v.select('φ', [{ value: 'p1', label: '$(x\\lor y)\\land\\neg z$' }, { value: 'maj', label: 'majority' }, { value: 'par', label: 'parity' }, { value: 'uns', label: 'transitivity fails' }], 'p1', { onChange: (k) => { F = mkF(PRESETS[k]); rebuild(); S.reset(); } });
-        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, weight: 1.15 });
-        const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, weight: 1 });
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1.15 });
+        const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1 });
         const G = v.graph(ts, { nodes: [], edges: [], layout: 'none', shape: 'box', draggable: false, fontSize: 15, r: 14, notePos: 'e' });
         const T = v.table(tb, { rows: 8, cols: 5, maxCell: 32, size: 14, labelSize: 12, square: false, cellAspect: 1.35, colLabels: ['x', 'y', 'z', 'φ', 'CNF'] });
         const VARS = ['x', 'y', 'z'];
@@ -833,7 +833,7 @@ A **literal** is a variable or its negation, a **clause** is an $\lor$ of litera
         v.render(() => {
           const e = env(selRow), f = S.frame, val = {};
           (function ev(t) { if (t.a) ev(t.a); if (t.b) ev(t.b); val[t.id] = evalF(t, e); })(F);
-          G.draw({ nodeFill: (id) => (val[id] ? 'green' : 'red'), nodeNote: (id) => (val[id] ? '1' : '0'), noteColor: (id) => (val[id] ? 'green' : 'red') });
+          G.draw({ nodeFill: (id) => (val[id] ? 'green' : 'red'), nodeNote: (id) => (val[id] ? '1' : '0'), noteColor: (id) => (val[id] ? 'green' : 'red'), notePos: 'e' });
           T.draw({
             value: (i, j) => { const en = env(i); return j < 3 ? (en[VARS[j]] ? 1 : 0) : j === 3 ? (evalF(F, en) ? 1 : 0) : cnfVal(i, f) ? 1 : 0; },
             fill: (i, j) => (j === 3 ? (evalF(F, env(i)) ? ['green', 0.35] : null) : j === 4 ? (cnfVal(i, f) ? ['teal', 0.3] : f.row === i ? ['red', 0.3] : null) : null),
@@ -877,7 +877,7 @@ yields the smallest prime factor of $N$ by binary search on $k$ in about $\tfrac
         const reset = () => { N = N0; found = []; calls = 0; done = N === 1; restart(2); };
         v.select('$N$', [{ value: 'a', label: '391' }, { value: 'b', label: '9,991' }, { value: 'c', label: '1,000,003' }, { value: 'd', label: '600,851,475,143' }], 'd', { onChange: (k) => { N0 = NS[k]; reset(); kh.set(mid(), 0); } });
         const s = v.stage({ x: [1, 10], y: [-1.15, 1.1], axes: false, height: 170, full: true, xlog: true });
-        const bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 132, full: true });
+        const bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 118, full: true });
         const fmtI = (x) => Math.round(x).toLocaleString('en-US');
         const rootN = () => Math.floor(Math.sqrt(N));
         const mid = () => Math.max(2, Math.min(rootN(), Math.floor((lo + hi) / 2)));
@@ -896,7 +896,7 @@ yields the smallest prime factor of $N$ by binary search on $k$ in about $\tfrac
         reset(); while (!found.length) ask(mid()); for (let i = 0; i < 4; i++) ask(mid()); // start part-way through
         v.render(() => {
           const R = Math.max(3, rootN());
-          s.setView([1.6, R * 1.25], [-1, 1]);
+          s.setView([1.6, R * 1.25], [-1.15, 1.1]);
           if (done) { s.text('fully factored', Math.sqrt(1.6 * R * 1.25), 0, { align: 'center', size: 15, color: 'green', weight: 600 }); }
           else {
             s.line(2, 0, R, 0, { color: 'muted', width: 2 });

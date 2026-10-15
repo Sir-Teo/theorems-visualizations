@@ -61,6 +61,12 @@
     mount(document.getElementById('viz'), (v) => {
       for (const k of ['stage', 'stage3d']) { const f = v[k]; v[k] = (o = {}) => { if (o.hover) stats.hover++; return wrapStage(f(o)); }; }
       const an = v.animate; v.animate = (...a) => { stats.animate++; return an(...a); };
+      // kits that take their own pointer input (graph editing, onClick/onSelect callbacks) count as clicks
+      const KIT_INPUT = ['onClick', 'onSelect', 'onCursor', 'onChange', 'editable'];
+      for (const k of ['graph', 'tree', 'circuit', 'mol', 'globe', 'timeline', 'table', 'agents', 'curves', 'scene3']) {
+        const f = v[k]; if (typeof f !== 'function') continue;
+        v[k] = Object.assign((...a) => { if (a.some((x) => x && typeof x === 'object' && KIT_INPUT.some((key) => x[key]))) stats.clicks++; return f(...a); }, f);
+      }
       return item.viz(v);
     });
     window.__vizStats = stats;

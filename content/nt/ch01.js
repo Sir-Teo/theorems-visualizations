@@ -117,7 +117,7 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
           if (showRival) {
             R.rect(a, 0.3, (q + 1) * b, 0.82, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1.4 });
             const lab = `r − b = ${v.fmt(r - b)}`;
-            if (wpx(b - r) >= 80) R.text(lab, (a + (q + 1) * b) / 2, 0.56, { align: 'center', size: 11.5, weight: 650, color: 'red' });
+            if (wpx(b - r) >= 80) R.text(lab, (a + (q + 1) * b) / 2, 0.56, { align: 'center', size: 11.5, weight: 650, color: 'ink' });
             else R.text(lab, (q + 1) * b, 0.56, { align: 'left', size: 11.5, weight: 650, color: 'red', dx: 6 });
           }
           // the table of remainders
@@ -135,7 +135,7 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
         v.readout(() => {
           const a = A.value, b = B.value, q = Math.floor(a / b), r = a - q * b;
           let s = `$${a} = ${par(q)}\\cdot ${b} + ${r}$ with $0 \\le r = ${r} < b = ${b}$: ` + (r === 0 ? `the remainder is $0$, so $${b} \\mid ${a}$.` : `$${b} \\nmid ${a}$.`);
-          if (loose.value && r > 0) s += ` Without $0 \\le r$ there is a second pair: $${a} = ${par(q + 1)}\\cdot ${b} + (${r - b})$ with $|${r - b}| < ${b}$ — **two** pairs $(q, r)$, so uniqueness fails.`;
+          if (loose.value && r > 0) s += ` Without $0 \\le r$ there is a second pair: $${a} = ${par(q + 1)}\\cdot ${b} + (${r - b})$ with $\\lvert ${r - b}\\rvert < ${b}$ — **two** pairs $(q, r)$, so uniqueness fails.`;
           else if (loose.value) s += ' With $r = 0$ the rival $r - b = -b$ is not allowed even then, so this case stays unique.';
           if (a < 0 && r > 0) s += ` (A programming language's truncating remainder gives ${a % b} here; the division algorithm uses $q = \\lfloor a/b \\rfloor$.)`;
           return s;
@@ -325,7 +325,6 @@ and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stop
             const lastSq = f.squares[f.squares.length - 1];
             R.rect(lastSq.x, lastSq.y, lastSq.x + g, lastSq.y + g, { fill: 'gold', fillAlpha: 0.75, color: 'gold', width: 2 });
           }
-          if (f.infinite) R.corner('the squares never end', 'br', { color: 'red', weight: 650 });
           // the table
           const n = f.rows.length + (f.final || f.infinite ? 1 : 0), H = T.height, W = T.width;
           const rowH = Math.min(28, (H - 18) / Math.max(n, 1)), fs = Math.max(10.5, Math.min(15, rowH * 0.58));
@@ -456,8 +455,8 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
           mark(0, '0', 'muted', false);
           const sp = pos.value ? Math.min(a, b) : g;
           mark(sp, pos.value ? `smallest > 0: ${sp}` : `g = ${g}`, pos.value ? 'red' : 'green');
-          if (pos.value && g < sp) { N.dot(g, 0, { r: 4.5, hollow: true, color: 'green' }); N.text(`g = ${g} unreachable`, g, -0.82, { align: 'center', size: 11, color: 'green' }); }
-          if (sel != null && rows[sel] && rows[sel].r !== sp && rows[sel].r <= Mx && rows[sel].r > 0) mark(rows[sel].r, `r = ${rows[sel].r}`, 'gold', false);
+          if (pos.value && g < sp) { N.dot(g, 0, { r: 4.5, hollow: true, color: 'green' }); N.text(`g = ${g} unreachable`, g, 0.62, { align: 'left', size: 11, color: 'green', weight: 650, dx: 4 }); }
+          if (!pos.value && sel != null && rows[sel] && rows[sel].r !== sp && rows[sel].r <= Mx && rows[sel].r > 0) mark(rows[sel].r, `r = ${rows[sel].r}`, 'gold', false);
           N.corner(pos.value ? 'values ax + by with x, y ≥ 0 only' : 'all values ax + by (x, y any integers): exactly the multiples of g', 'tl', { size: 11 });
           st = { a, b, g, rows, n };
         });
@@ -601,7 +600,7 @@ and this factorization is unique apart from the order of the factors. Equivalent
             const walk = (nd, dep) => { nd.dep = dep; depth = Math.max(depth, dep); if (!nd.kids) { nd.x = leaf++; return; } walk(nd.kids[0], dep + 1); walk(nd.kids[1], dep + 1); nd.x = (nd.kids[0].x + nd.kids[1].x) / 2; };
             walk(t, 0);
             const W = S.width, H = S.height, top = 26, bot = 44;
-            const dx = (W - 30) / Math.max(1, leaf), dy = depth ? Math.min(62, (H - top - bot) / depth) : 0;
+            const dx = (W - 30) / Math.max(1, leaf), dy = depth ? Math.min(80, (H - top - bot) / depth) : 0;
             const X = (nd) => 15 + dx * (nd.x + 0.5), Y = (nd) => top + dy * nd.dep;
             const r = M.clamp(Math.min(dx * 0.46, dy ? dy * 0.42 : 30, 6 + 3.6 * String(N).length), 8, 22);
             geo[si] = [];
@@ -627,7 +626,7 @@ and this factorization is unique apart from the order of the factors. Equivalent
           if (!trees.length) return '';
           const s0 = leaves(trees[0]).sort((p, q) => p - q), s1 = leaves(trees[1]).sort((p, q) => p - q), same = s0.join() === s1.join();
           if (!even()) return M.isPrime(N) ? `$n = ${N}$ is prime: its factor tree is a single node.` : `$n = ${N} = ${facTex(M, N)}$. Both routes end in the same primes ${same ? '✓' : '✗'} — and so do all **${countTrees(N)}** different factor trees of $${N}$.`;
-          return `In $2\\mathbb Z$ the atoms are the even numbers that are not a product of two even numbers: $2, 6, 10, 14, 18, \\dots$ ($2\\times$odd). ` + (same ? `For $${N}$ these two routes agree (${s0.join('·')}) — try another split, or $n = 72$ or $180$.` : `Here $${N} = ${s0.join('\\cdot ')} = ${s1.join('\\cdot ')}$: **two different factorizations into atoms**. There is no Euclid’s lemma in $2\\mathbb Z$: the atom $${s0.find((p) => !s1.includes(p)) ?? s0[0]}$ divides a product of atoms without dividing any of them.`);
+          return `In $2\\mathbb Z$ the atoms are the even numbers that are not a product of two even numbers: $2, 6, 10, 14, 18, \\dots$ ($2\\times$odd). ` + (same ? `For $${N}$ these two routes agree (${s0.join('·')}) — try another split, or $n = 72$ or $180$.` : (() => { const u = s0.find((p) => !s1.includes(p)) ?? s0[0], w = s1.find((x) => x % u === 0 && x !== u); return `Here $${N} = ${s0.join('\\cdot ')} = ${s1.join('\\cdot ')}$: **two different factorizations into atoms**. There is no Euclid’s lemma in $2\\mathbb Z$: the atom $${u}$ divides $${N} = ${u}\\cdot ${N / u}$ inside $2\\mathbb Z$ (the cofactor is even), yet it divides none of the atoms $${s1.join(', ')}$ there` + (w ? ` — even $${w} = ${u}\\cdot ${w / u}$ does not count, since $${w / u}$ is odd.` : '.'); })());
         });
       },
     },
@@ -647,7 +646,7 @@ where $9$, $21$ and $49$ are all irreducible in $H$. Correspondingly Euclid’s 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hilbert_number' },
       viz(v) {
         const M = v.M, COLS = 15, ROWS = 12;
-        const mS = v.select('monoid', [2, 3, 4, 5, 6].map((m) => ({ value: m, label: m === 2 ? '$1 + 2\\mathbb N$ (odd)' : `$1 + ${m}\\mathbb N$` })), 4, { onChange: () => { sel = null; } });
+        const mS = v.select('monoid', [2, 3, 4, 5, 7].map((m) => ({ value: m, label: m === 2 ? '$1 + 2\\mathbb N$ (odd)' : `$1 + ${m}\\mathbb N$` })), 4, { onChange: () => { sel = null; } });
         const G = v.stage({ x: [-0.5, COLS - 0.5], y: [-ROWS + 0.5, 0.5], equal: true, axes: false, height: 400, weight: 1.15, minWidth: 330 });
         const P = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, weight: 1, minWidth: 300 });
         let sel = null, data = null;

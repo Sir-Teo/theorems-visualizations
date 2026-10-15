@@ -259,6 +259,7 @@ corner of cell (0, 0) in data units. Text uses the stage's canvas text, or KaTeX
 | `activeRow`, `activeCol`, `activeColor` | | tint a whole row/column and its header. |
 | `sub(i, j)`, `subColor`, `subSize` | | small annotation in the bottom-right corner of a cell. |
 | `fit` · `margin` · `square` · `maxCell` · `minCell` · `cellAspect` · `align` · `region` | `true` · 10 · `true` · 62 · 14 · 1 · `'center'` · whole stage | fitted geometry (`square: false` + `cellAspect` for wide cells; `region: [x0, y0, x1, y1]` data units). |
+| `colWeights` | equal | relative column widths, e.g. `[1, 1, 2.5]` for a wide formula column; the total width is unchanged (use with `square: false`). |
 | `cell: [w, h]`, `x0`, `y0`, `labelWidth`, `labelHeight` | | explicit geometry in data units. |
 
 | method | |

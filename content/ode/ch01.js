@@ -103,6 +103,8 @@ function spline(xs, ys) {
     const u = x - xs[j]; return ys[j] + u * (b[j] + u * (c[j] + u * d[j]));
   };
 }
+/** a, a + d, a + 2d, … up to b (inclusive, with a little slack). */
+function arange(a, b, d) { const out = []; for (let x = a; x <= b + d * 1e-6; x += d) out.push(+x.toFixed(10)); return out; }
 /** Composite Simpson integral of g over [a, b] (signed; n even). */
 function simpson(g, a, b, n = 400) {
   if (a === b) return 0;
@@ -143,10 +145,10 @@ An equation of order $k$, $x^{(k)} = F(t,x,\dot x,\dots,x^{(k-1)})$, is equivale
           ric: { label: '$t^2 - x^2$', f: (t, x) => t * t - x * x, exact: null, blow: true },
         };
         const which = v.select('$\\dot x = f(t,x) =$', Object.entries(RHS).map(([value, o]) => ({ value, label: o.label })), 'per');
-        const tau = v.slider('$\\tau$', -2, 6, 3.3, { step: 0.01 });
+        const tau = v.slider('$\\tau$', -2, 6, 2.0, { step: 0.01 });
         const s = v.stage({ x: [-2, 6], y: [-3, 3], height: 340, weight: 2.3, minWidth: 360, xlabel: 't', ylabel: 'x', title: 'solutions in the $(t,x)$ plane' });
-        const sv = v.stage({ x: [-4, 4], y: [-3, 3], height: 340, weight: 1, minWidth: 190, axes: 'box', xlabel: 'ẋ', title: 'velocity $f(\\tau,x)$ against state $x$' });
-        const P = s.handle(0.6, 0.7, { color: 'accent', label: '$(t_0,x_0)$', labelPos: 'nw' });
+        const sv = v.stage({ x: [-4, 4], y: [-3, 3], height: 340, weight: 1, minWidth: 190, xlabel: 'ẋ', ylabel: 'x', title: 'velocity $f(\\tau,x)$ against state $x$' });
+        const P = s.handle(0.6, 0.35, { color: 'accent', label: '$(t_0,x_0)$', labelPos: 'nw' });
         const pins = [[-1, -1.6], [0.8, 2.2]];
         const PIN = ['teal', 'purple', 'orange', 'pink', 'blue'];
         s.onClick((t, x) => {
@@ -231,13 +233,14 @@ An equation of order $k$, $x^{(k)} = F(t,x,\dot x,\dots,x^{(k-1)})$, is equivale
       tags: ['direction field', 'isoclines'],
       viz(v) {
         const FIELDS = {
-          funnel: { label: '$x^2 - t$', f: (t, x) => x * x - t, seeds: [[-3, -2.2], [-3, -0.9], [2.2, 0.6]], stroke: [-2.9, -1.6, 0.9, 0.55] },
-          line: { label: '$x - t$', f: (t, x) => x - t, seeds: [[-3, -2.5], [0, 0.6], [0, 1.4]], stroke: [-3, -1.2, 0.6, 0.6] },
-          bell: { label: '$-t\\,x$', f: (t, x) => -t * x, seeds: [[0, 2.6], [0, -1.5]], stroke: [-2.3, 0.15, 0.2, 0.7] },
+          funnel: { label: '$x^2 - t$', f: (t, x) => x * x - t, seeds: [[2.2, 0.6], [-1, -2.9], [3, 1.85]], stroke: { at: [1.8, 1.45], span: [-1.5, 4.8], bump: [0.9, 0.5] } },
+          line: { label: '$x - t$', f: (t, x) => x - t, seeds: [[-3, -2], [0, 0.6], [0, 1.4]], stroke: { at: [-3, -2.1], span: [-3, 2], bump: [-1.2, 0.5] } },
+          bell: { label: '$-t\\,x$', f: (t, x) => -t * x, seeds: [[0, 2.6], [0, -1.5]], stroke: { at: [-2.3, 0.15], span: [-2.3, 3], bump: [0.2, 0.7] } },
         };
         const mkStroke = (F) => {
-          const [ta, xa, tc, amp] = F.stroke, q = trace(F.f, ta, xa, 4.8, { h: 0.04, cap: 50 });
-          return q.filter(([t, x], i) => i % 2 === 0 && Math.abs(x) < 3.2).map(([t, x]) => [t, x + amp * Math.exp(-(((t - tc) / 0.55) ** 2))]);
+          const { at: [ts, xs], span: [ta, tb], bump: [tc, amp] } = F.stroke;
+          const q = trace(F.f, ts, xs, ta, { h: 0.04, cap: 50 }).reverse().concat(trace(F.f, ts, xs, tb, { h: 0.04, cap: 50 }).slice(1));
+          return q.filter(([, x], i) => i % 2 === 0 && Math.abs(x) < 3.2).map(([t, x]) => [t, x + amp * Math.exp(-(((t - tc) / 0.55) ** 2))]);
         };
         let stroke = [], prev = null, launched = [];
         const reset = (k) => { stroke = mkStroke(FIELDS[k]); launched = FIELDS[k].seeds.map((p) => p.slice()); };
@@ -331,15 +334,15 @@ as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly mon
         const EX = {
           logcos: {
             label: '$x(1-x)\\cos t$', g: Math.cos, h: (x) => x * (1 - x), G: Math.sin, H: (x) => Math.log(Math.abs(x / (1 - x))),
-            sing: [0, 1], lost: [0, 1], x: [-0.45, 1.45], t: [0, 12.6], P: [1.2, 0.22], t1: 7.5, levels: v.M.range(-4, 4.01, 0.5), hy: [-12, 12],
+            sing: [0, 1], lost: [0, 1], x: [-0.45, 1.45], t: [0, 12.6], P: [1.6, 0.5], t1: 4.4, levels: arange(-4, 4, 0.5), hy: [-12, 12],
           },
           tx2: {
             label: '$t\\,x^2$', g: (t) => t, h: (x) => x * x, G: (t) => (t * t) / 2, H: (x) => -1 / x,
-            sing: [0], lost: [0], x: [-2.5, 3], t: [-3, 3], P: [-1.5, 0.6], t1: 0.8, levels: v.M.range(-6, 6.01, 0.5), hy: [0, 12],
+            sing: [0], lost: [0], x: [-2.5, 3], t: [-3, 3], P: [-1.5, 0.6], t1: 0.8, levels: arange(-6, 6, 0.5), hy: [0, 12],
           },
           circ: {
             label: '$-t/x$', g: (t) => -t, h: (x) => 1 / x, G: (t) => (-t * t) / 2, H: (x) => (x * x) / 2,
-            sing: [0], lost: [], x: [-2.6, 2.6], t: [-6, 6], P: [-1, 1.6], t1: 1.2, levels: v.M.range(0.25, 8, 0.5), hy: [-2.8, 2.8],
+            sing: [0], lost: [], x: [-2.6, 2.6], t: [-6, 6], P: [-1, 1.6], t1: 1.2, levels: arange(0.25, 8, 0.5), hy: [-2.8, 2.8],
           },
         };
         const which = v.select('$\\dot x = g(t)h(x) =$', Object.entries(EX).map(([value, o]) => ({ value, label: o.label })), 'logcos', {
@@ -351,7 +354,7 @@ as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly mon
         const sh = v.stage({ x: EX.logcos.x, y: [-12, 12], height: 170, axes: true, xlabel: 'x', title: '$1/h(x)$ and $\\int_{x_0}^{x(t_1)} d\\xi/h$' });
         const P = s.handle(EX.logcos.P[0], EX.logcos.P[1], { color: 'accent', label: '$(t_0,x_0)$', labelPos: 'ne' });
         let info = null, lastK = null;
-        v.legend([['muted', 'level sets of $H(x)-G(t)$'], ['gold', 'RK4 solution', { dot: true }], ['red', 'constant solutions lost by dividing by $h$', { dash: true }], ['teal', 'equal signed areas', { area: true }]]);
+        v.legend([['faint', 'level sets of $H(x)-G(t)$'], ['gold', 'RK4 solution', { dot: true }], ['red', 'constant solutions lost by dividing by $h$', { dash: true }], ['teal', 'equal signed areas', { area: true }]]);
         v.render(() => {
           const E = EX[which.value], f = (t, x) => E.g(t) * E.h(x);
           if (lastK !== which.value) {
@@ -367,8 +370,8 @@ as long as $x(t)$ stays in the interval where $h\ne0$; since $H$ is strictly mon
           const t0 = P.x, x0 = P.y;
           const near = (x) => E.sing.some((z) => Math.abs(x - z) < 0.012 * (E.x[1] - E.x[0]));
           const Phi = (t, x) => (near(x) ? NaN : E.H(x) - E.G(t));
-          s.contour(Phi, E.levels, { color: 'muted', width: 1, res: 150 });
-          for (const z of E.lost) { s.hline(z, { color: 'red', width: 1.6, dash: [7, 5] }); s.text('h(x) = 0', tr[1], z, { color: 'red', size: 11, align: 'right', dx: -6, dy: z > 0.5 ? 10 : -10 }); }
+          s.contour(Phi, E.levels, { color: 'faint', width: 1.1, res: 150 });
+          for (const z of E.lost) { s.hline(z, { color: 'red', width: 1.6, dash: [7, 5] }); s.text('h(x) = 0', tr[1], z, { color: 'red', size: 11, align: 'right', dx: -6, dy: 10 }); }
           if (which.value === 'circ') s.hline(0, { color: 'orange', width: 1, dash: [2, 4] });
           // numerical solution, stopped near the singular lines (where the slope blows up for -t/x)
           const g2 = (t, x) => (near(x) && which.value === 'circ' ? NaN : f(t, x));
@@ -433,8 +436,8 @@ It is the sum of the solution $x_0e^{-A(t)}$ of the homogeneous equation and the
         const a0 = v.slider('$a_0$', -0.4, 2, 0.6, { step: 0.01 });
         const a1 = v.slider('$a_1$', 0, 1.5, 0.5, { step: 0.01 });
         const T = 12;
-        const s = v.stage({ x: [0, T], y: [-3, 4], height: 300, full: true, xlabel: 't', ylabel: 'x', title: 'solutions of $\\dot x + a(t)x = b(t)$' });
-        const sl = v.stage({ x: [0, T], y: [1e-5, 20], ylog: true, height: 175, full: true, xlabel: 't', title: 'distance to the particular solution, $|x(t) - x_p(t)|$ (log scale)' });
+        const s = v.stage({ x: [-0.4, T], y: [-3, 4], height: 300, full: true, xlabel: 't', ylabel: 'x', title: 'solutions of $\\dot x + a(t)x = b(t)$' });
+        const sl = v.stage({ x: [-0.4, T], y: [1e-5, 10], ylog: true, height: 175, full: true, xlabel: 't', title: 'distance to the particular solution, $|x(t) - x_p(t)|$ (log scale)' });
         const H = s.handle(0, 3, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, -2.9, 3.9)] });
         let info = null;
         v.legend([['accent', '$x = x_0e^{-A} + x_p$'], ['purple', 'homogeneous $x_0e^{-A(t)}$', { dash: true }], ['orange', 'particular $x_p$'], ['gold', 'RK4 check', { dot: true }], ['muted', 'other $x_0$']]);
@@ -451,8 +454,8 @@ It is the sum of the solution $x_0e^{-A(t)}$ of the homogeneous equation and the
           s.clip(() => {
             for (let c = -3; c <= 4; c += 1) s.path(curve((i) => sol(c, i)), { color: 'muted', width: 1.1, alpha: 0.5 });
             s.path(curve((i) => x0 * Math.exp(-Aint(ts[i]))), { color: 'purple', width: 2, dash: [6, 4] });
-            s.path(curve((i) => sol(0, i)), { color: 'orange', width: 2.4 });
-            s.path(curve((i) => sol(x0, i)), { color: 'accent', width: 2.8 });
+            s.path(curve((i) => sol(x0, i)), { color: 'accent', width: 3.4 });
+            s.path(curve((i) => sol(0, i)), { color: 'orange', width: 1.8 });
           });
           const F = (t, x) => b(t) - a(t) * x, num = trace(F, 0, x0, T, { h: 0.01, cap: 1e9 });
           s.clip(() => s.dots(num.filter((_, i) => i % 40 === 20), { r: 2.8, color: 'gold' }));
@@ -464,7 +467,7 @@ It is the sum of the solution $x_0e^{-A(t)}$ of the homogeneous equation and the
           const numD = num.filter((_, i) => i % 40 === 20).map(([t, x]) => { const i = Math.round(t / h); return [t, Math.abs(x - sol(0, i))]; });
           sl.dots(numD, { r: 2.8, color: 'gold' });
           sl.fn((t) => Math.exp(-A0 * t), { color: 'ink', width: 1.2, dash: [5, 4] });
-          sl.text(`e^{−a₀t}`, T - 0.2, Math.exp(-A0 * (T - 0.2)), { color: 'ink', size: 12, align: 'right', baseline: 'bottom', dy: -4 });
+          sl.tex('e^{-a_0t}', T - 0.25, Math.exp(-A0 * (T - 0.25)), { color: 'ink', size: 13, align: 'right', baseline: 'top', dy: 4 });
           const rate = (Aint(0) - Aint(T)) / T;
           info = { err, rate, A0, xpT: sol(0, N) };
         });
@@ -497,7 +500,7 @@ For $k>0$ it grows by a factor $2$ in every time interval of length $T_2 = \ln 2
         const k = v.slider('rate $k$', -1, 1, 0.35, { step: 0.01 });
         const lg = v.toggle('log axis', false);
         const T = 10;
-        const s = v.stage({ x: [0, T], y: [0, 8.4], height: 320, weight: 2.3, minWidth: 360, xlabel: 't', ylabel: 'x', title: 'solutions of $\\dot x = kx$' });
+        const s = v.stage({ x: [-0.4, T], y: [0, 8.4], height: 320, weight: 2.3, minWidth: 360, xlabel: 't', ylabel: 'x', title: 'solutions of $\\dot x = kx$' });
         const sp = v.stage({ x: [-2, 8.4], y: [-3, 3], height: 320, weight: 1, minWidth: 200, xlabel: 'x', ylabel: 'ẋ', title: 'phase line' });
         const H = s.handle(0, 1, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, 0.05, 8)] });
         let info = null, lastLog = null;
@@ -520,8 +523,9 @@ For $k>0$ it grows by a factor $2$ in every time interval of length $T_2 = \ln 2
               if (!isFinite(tc)) break;
               cross.push([tc, L]);
             }
-            const yb = s.bounds.y[0];
+            const yb = s.bounds.y[0], ytop = s.bounds.y[1];
             cross.forEach(([tc, L], i) => {
+              if (L > ytop || L < yb) return;
               const prevT = i ? cross[i - 1][0] : 0, prevL = i ? cross[i - 1][1] : x0;
               s.line(prevT, prevL, tc, prevL, { color: 'orange', width: 1.4, dash: [5, 4] });
               s.line(tc, prevL, tc, L, { color: 'orange', width: 1.4, dash: [5, 4] });
@@ -571,7 +575,7 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
         const r = v.slider('$r$', 0.3, 2, 0.9, { step: 0.01 });
         const K = v.slider('$K$', 0.6, 2, 1.6, { step: 0.01 });
         const TM = 12;
-        const s = v.stage({ x: [0, TM], y: [0, 2.6], height: 320, weight: 1.6, minWidth: 330, xlabel: 't', ylabel: 'x', title: 'population $x(t)$' });
+        const s = v.stage({ x: [-0.5, TM], y: [0, 2.6], height: 320, weight: 1.6, minWidth: 330, xlabel: 't', ylabel: 'x', title: 'population $x(t)$' });
         const sp = v.stage({ x: [0, 2.6], y: [-0.5, 1.15], height: 320, weight: 1, minWidth: 250, xlabel: 'x', ylabel: 'ẋ', title: 'phase line: $\\dot x = rx(1 - x/K)$' });
         const H = s.handle(0, 0.08, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, 0.02, 2.55)] });
         let cache = { key: null }, info = null;
@@ -585,7 +589,13 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
             // measured inflection: time of the largest speed f(x) along the numerical solution
             let im = 0, best = -Infinity; num.forEach(([, x], i) => { const q = f(0, x); if (q > best) { best = q; im = i; } });
             const fan = [0.03, 0.3, 0.6, 1.0, 1.4, 2.0, 2.5].map((c) => trace(f, 0, c, TM, { h: 0.02, cap: 1e6 }));
-            cache = { key, num, err, tInf: im > 0 && im < num.length - 1 ? num[im][0] : NaN, fan };
+            let tInf = NaN;
+            if (im > 0 && im < num.length - 1) { // refine the maximum of the speed by a parabola through three samples
+              const [ta, xa] = num[im - 1], [tb, xb] = num[im], [tc, xc] = num[im + 1], ya = f(0, xa), yb = f(0, xb), yc = f(0, xc);
+              const den = (ta - tb) * (ta - tc) * (tb - tc), A = (tc * (yb - ya) + tb * (ya - yc) + ta * (yc - yb)) / den, Bq = (tc * tc * (ya - yb) + tb * tb * (yc - ya) + ta * ta * (yb - yc)) / den;
+              tInf = A < 0 ? -Bq / (2 * A) : tb;
+            }
+            cache = { key, num, err, tInf, fan };
           }
           const { num, fan } = cache;
           s.hline(Kv, { color: 'green', width: 1.4, dash: [6, 4] });
@@ -601,12 +611,12 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
           s.vline(tau, { color: 'gold', width: 1, alpha: 0.4 });
           s.dot(tau, xt, { r: 6, color: 'gold' });
           // phase line
-          sp.setView(null, [-0.45 * Math.max(0.5, (R * Kv) / 4 / 0.3), Math.max(0.45, ((R * Kv) / 4) * 1.35)]);
+          sp.setView(null, [-0.6 * ((R * Kv) / 4), 1.35 * ((R * Kv) / 4)]);
           sp.fn((x) => f(0, x), { color: 'accent', width: 2.4 });
           sp.vline(Kv / 2, { color: 'orange', width: 1.2, dash: [4, 4] });
           phaseArrows(sp, (x) => f(0, x), [0, Kv], 0, 2.6, 0);
           fpGlyph(v, sp, 0, 0, 'unstable'); fpGlyph(v, sp, Kv, 0, 'stable');
-          sp.dot(Kv / 2, (R * Kv) / 4, { r: 3.5, color: 'orange', label: 'rK/4', labelPos: 'n' });
+          sp.dot(Kv / 2, (R * Kv) / 4, { r: 3.5, color: 'orange', label: 'rK/4', labelPos: 'ne' });
           sp.line(xt, 0, xt, f(0, xt), { color: 'gold', width: 2 });
           sp.dot(xt, f(0, xt), { r: 6, color: 'gold' });
           info = { R, Kv, x0, tPred, tau, xt };
@@ -636,7 +646,7 @@ which tends to $K$ as $t\to\infty$ for every $x_0>0$: $x = 0$ is an unstable fix
       viz(v) {
         const mode = v.select('', [{ value: 'shape', label: 'shape $f$ with handles' }, { value: 'zeros', label: 'drag the zeros' }], 'shape');
         const flip = v.toggle('flip $f \\to -f$', false);
-        const sf = v.stage({ x: [-3, 3], y: [-2.5, 2.5], height: 330, weight: 1.15, minWidth: 300, xlabel: 'x', ylabel: 'ẋ = f(x)', title: '$\\dot x = f(x)$ and its phase line' });
+        const sf = v.stage({ x: [-3.25, 3.25], y: [-2.5, 2.5], height: 330, weight: 1.15, minWidth: 300, xlabel: 'x', ylabel: 'ẋ = f(x)', title: '$\\dot x = f(x)$ and its phase line' });
         const sx = v.stage({ x: [-0.7, 6], y: [-3, 3], height: 330, weight: 1, minWidth: 260, xlabel: 't', ylabel: 'x', title: 'solutions $x(t)$' });
         const KX = [-3, -2, -1, 0, 1, 2, 3], KY = [1.6, -0.3, -1.2, 0.4, 1.3, 0.2, -1.6];
         const knots = KX.map((x, i) => sf.handle(x, KY[i], { color: 'accent', r: 6, constrain: (xx, yy) => [x, v.M.clamp(yy, -2.4, 2.4)] }));
@@ -715,7 +725,7 @@ In all cases $\frac{d}{dt}\ln|x(t)-x^*|\to\lambda$ as the perturbation tends to 
         const d0 = v.slider('$\\delta_0$', 0.001, 0.5, 0.25, { log: true });
         const zoom = v.toggle('zoom onto $x^*$', false);
         const sf = v.stage({ x: [-0.7, 1.7], y: [-1, 1], height: 320, weight: 1, minWidth: 270, xlabel: 'x', title: '$f$ and its tangent at $x^*$' });
-        const sl = v.stage({ x: [0, 8], y: [1e-4, 4], ylog: true, height: 320, weight: 1.2, minWidth: 300, axes: 'box', xlabel: 't', title: 'perturbation $|x(t)-x^*|$ (log scale)' });
+        const sl = v.stage({ x: [0, 8], y: [1e-5, 4], ylog: true, height: 320, weight: 1.2, minWidth: 300, axes: 'box', xlabel: 't', title: 'perturbation $|x(t)-x^*|$ (log scale)' });
         const P = sf.handle(1, 0, { color: 'accent', label: '$x^*$', labelPos: 's', constrain: (x) => { const zs = FS[which.value].zs; let b = zs[0]; for (const z of zs) if (Math.abs(z - x) < Math.abs(b - x)) b = z; return [b, 0]; } });
         let info = null;
         v.legend([['accent', '$x(0) = x^*+\\delta_0$'], ['purple', '$x(0) = x^*-\\delta_0$'], ['ink', 'linear prediction $\\delta_0e^{\\lambda t}$', { dash: true }], ['orange', 'tangent line']]);

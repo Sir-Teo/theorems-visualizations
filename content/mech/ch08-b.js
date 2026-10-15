@@ -479,7 +479,7 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const L = R.s[R.s.length - 1], rr = Math.hypot(L[0], L[1]), tx = R.t[R.t.length - 1];
           const ux = L[0] / rr, uy = L[1] / rr, dv2 = Math.hypot(L[2] - -uy * vc2, L[3] - ux * vc2);
           const an = conicXfer(mu, r1, r2, v1);
-          const fam = []; for (let k = 0; k <= 60; k++) { const f = 1 + (0.6 * k) / 60, c2 = conicXfer(mu, r1, r2, vc1 + f * dv1H); if (c2) fam.push([c2.t / Q.tu, (f * dv1H + c2.dv2) / 1000]); }
+          const fam = []; for (let k = 0; k <= 60; k++) { const f = 1 + 0.6 * (k / 60) ** 2, c2 = conicXfer(mu, r1, r2, vc1 + f * dv1H); if (c2) fam.push([c2.t / Q.tu, (f * dv1H + c2.dv2) / 1000]); }
           const Rr = r2 / r1;
           const bi = (Math.SQRT2 - 1) * (vc1 + vc2); // bi-elliptic via r_b → ∞
           const thArr = Math.atan2(L[1], L[0]);
@@ -584,19 +584,23 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
         const cache = memo(); let cur = null;
         const run = () => cache([bR, Vin.x, Vin.y].join('|'), () => {
           const rel = [(Vin.x - 13.07) * 1e3, Vin.y * 1e3], vinf = Math.hypot(...rel), ux = rel[0] / vinf, uy = rel[1] / vinf, nx = -uy, ny = ux;
-          const b = bR * L, D0 = 200 * L; // start far out on the incoming asymptote, offset b
-          const s0 = [-D0 * ux + b * nx, -D0 * uy + b * ny, rel[0], rel[1]];
+          // start 300 R_J out on the incoming branch of the hyperbola whose asymptote is the aiming line (offset b along n, direction u)
+          const b = Math.abs(bR) < 0.01 ? 0.01 * L : bR * L, D0 = 300 * L, aH = GMJ / (vinf * vinf), eH = Math.sqrt(1 + (b / aH) ** 2), pH = aH * (eH * eH - 1), hz = -b * vinf;
+          const nu0 = -Math.acos(clamp((pH / D0 - 1) / eH, -1, 1)), r0 = pH / (1 + eH * Math.cos(nu0)), kk = GMJ / Math.abs(hz), my = hz < 0 ? -1 : 1;
+          const P = [r0 * Math.cos(nu0), my * r0 * Math.sin(nu0)], Vv = [-kk * Math.sin(nu0), my * kk * (eH + Math.cos(nu0))];
+          const dIn = [Math.sqrt(1 - 1 / (eH * eH)), my * (eH - 1 / eH)], rot = Math.atan2(uy, ux) - Math.atan2(dIn[1], dIn[0]), cr = Math.cos(rot), sr = Math.sin(rot);
+          const s0 = [cr * P[0] - sr * P[1], sr * P[0] + cr * P[1], cr * Vv[0] - sr * Vv[1], sr * Vv[0] + cr * Vv[1]];
           const R = centralOrbit((r) => -GMJ / (r * r), s0, { T: (2.2 * D0) / vinf, eta: 0.002, rmin: 0.2 * RJ, maxSteps: 80000 });
-          const Lst = R.s[R.s.length - 1], vout = [Lst[2], Lst[3]];
+          const Lst = R.s[R.s.length - 1];
           let rmin = Infinity; for (const S of R.s) rmin = Math.min(rmin, Math.hypot(S[0], S[1]));
-          const sp0 = Math.hypot(rel[0], rel[1]), sp1 = Math.hypot(...vout);
-          // the asymptotic outgoing velocity: correct the residual gravity at the end point by energy conservation
-          const rEnd = Math.hypot(Lst[0], Lst[1]), vinfOut = Math.sqrt(Math.max(0, sp1 * sp1 - (2 * GMJ) / rEnd));
-          const turn = Math.atan2(rel[0] * vout[1] - rel[1] * vout[0], rel[0] * vout[0] + rel[1] * vout[1]);
+          // outgoing asymptote of the simulated end state (its osculating hyperbola): v∞ and direction
+          const el = kepEl(GMJ, ...Lst), sg = Math.sign(el.h) || 1, ex = el.ex / el.e, ey = el.ey / el.e, qx = -sg * ey, qy = sg * ex;
+          const vinfOut = Math.sqrt(Math.max(0, 2 * el.E)), sn = Math.sqrt(Math.max(0, 1 - 1 / (el.e * el.e))), k1 = GMJ / Math.abs(el.h);
+          const voutA = [k1 * (-sn * ex + (el.e - 1 / el.e) * qx), k1 * (-sn * ey + (el.e - 1 / el.e) * qy)];
+          const turn = Math.atan2(rel[0] * voutA[1] - rel[1] * voutA[0], rel[0] * voutA[0] + rel[1] * voutA[1]);
           const e = Math.sqrt(1 + (b * b * vinf ** 4) / GMJ ** 2), dTheory = 2 * Math.asin(1 / e);
-          const voutA = [vout[0] * (vinfOut / sp1), vout[1] * (vinfOut / sp1)];
           const hin = [VJ + rel[0], rel[1]], hout = [VJ + voutA[0], voutA[1]];
-          return { R, rel, vinf, vinfOut, turn, dTheory, hin, hout, rmin, crash: R.stop === 'centre' || rmin < RJ, b, sp0, e, T: R.t[R.t.length - 1] };
+          return { R, rel, vinf, vinfOut, turn, dTheory, hin, hout, rmin, crash: R.stop === 'centre' || rmin < RJ, b, e, eSim: el.e, T: R.t[R.t.length - 1] };
         });
         v.animate((t) => {
           { const p = aimAt(); if (!B.dragging && (Math.abs(p[0] - B.x) > 1e-9 || Math.abs(p[1] - B.y) > 1e-9)) { B.x = p[0]; B.y = p[1]; } }
@@ -612,7 +616,7 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const inV = D.R.s.findIndex((Q) => Math.hypot(Q[0], Q[1]) < 30 * L), outV = D.R.s.length - 1 - [...D.R.s].reverse().findIndex((Q) => Math.hypot(Q[0], Q[1]) < 30 * L), k = 7 / (D.vinf || 1);
           if (inV >= 0) { const a0 = D.R.s[inV]; s.arrow(a0[0] / L, a0[1] / L, a0[0] / L + k * a0[2], a0[1] / L + k * a0[3], { color: 'blue', width: 2.4 }); }
           if (!D.crash && outV < D.R.s.length) { const aN = D.R.s[outV]; s.arrow(aN[0] / L, aN[1] / L, aN[0] / L + k * aN[2], aN[1] / L + k * aN[3], { color: 'orange', width: 2.4 }); }
-          s.arrow(-6, -23.5, 6, -23.5, { color: 'green', width: 2 }); s.text('Jupiter moves this way (Sun frame)', 0, -23.5, { color: 'green', size: 10, dy: -9, align: 'center' });
+          s.arrow(-34, 22, -22, 22, { color: 'green', width: 2 }); s.text('Jupiter’s motion (Sun frame)', -34, 22, { color: 'green', size: 10, dy: -10, align: 'left' });
           if (D.crash) s.corner('hits Jupiter', 'tl', { color: 'red', weight: 600 });
           // velocity diagram (km/s)
           const kv = 1e-3;
@@ -647,7 +651,7 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const D = cur;
           if (D.crash) return String.raw`closest approach ${v.fix(D.rmin / RJ, 2)} $R_J$ — inside Jupiter: aim farther out`;
           const gin = Math.hypot(...D.hin) / 1e3, gout = Math.hypot(...D.hout) / 1e3;
-          return String.raw`Jupiter’s frame: $v_\infty$ in ${v.fix(D.vinf / 1e3, 4)} km/s, out ${v.fix(D.vinfOut / 1e3, 4)} km/s (equal), turned by ${v.fix((Math.abs(D.turn) * 180) / Math.PI, 2)}° (hyperbola, $e = ${v.fix(D.e, 3)}$: $2\arcsin(1/e) = ${v.fix((D.dTheory * 180) / Math.PI, 2)}°$), closest approach ${v.fix(D.rmin / RJ, 2)} $R_J$ · Sun’s frame: ${v.fix(gin, 2)} → ${v.fix(gout, 2)} km/s, **${gout >= gin ? 'gain' : 'loss'} of ${v.fix(Math.abs(gout - gin), 2)} km/s** (largest possible $2v_\infty\sin(\delta/2) = ${v.fix((2 * D.vinf * Math.sin(D.dTheory / 2)) / 1e3, 2)}$ km/s), i.e. ${v.fix(((gout ** 2 - gin ** 2) / 2), 1)} MJ per kg taken from Jupiter’s orbit`;
+          return String.raw`Jupiter’s frame: $v_\infty$ in ${v.fix(D.vinf / 1e3, 4)} km/s, out ${v.fix(D.vinfOut / 1e3, 4)} km/s (equal), turned by ${v.fix((Math.abs(D.turn) * 180) / Math.PI, 2)}° (predicted from $b$: $e = ${v.fix(D.e, 4)}$, $2\arcsin(1/e) = ${v.fix((D.dTheory * 180) / Math.PI, 2)}°$), closest approach ${v.fix(D.rmin / RJ, 2)} $R_J$ · Sun’s frame: ${v.fix(gin, 2)} → ${v.fix(gout, 2)} km/s, **${gout >= gin ? 'gain' : 'loss'} of ${v.fix(Math.abs(gout - gin), 2)} km/s** (the velocity vector changes by $2v_\infty\sin(\delta/2) = ${v.fix((2 * D.vinf * Math.sin(D.dTheory / 2)) / 1e3, 2)}$ km/s; the speed gains its component along the motion), i.e. ${v.fix((gout ** 2 - gin ** 2) / 2, 1)} MJ per kg taken from Jupiter’s orbit`;
         });
       },
     },
