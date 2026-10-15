@@ -156,8 +156,8 @@ and oscillates with period $4\pi\sqrt{R/g}$ independent of amplitude. Measured a
           curve[0].forEach(([h, T]) => sT.dot(h, T, { r: 3.5, color: 'green' }));
           curve[1].forEach(([h, T]) => sT.dot(h, T, { r: 3.5, color: 'red' }));
           Bd.hs.forEach((h, j) => { sT.dot(h, Bd.runs[0][j].Tb, { r: 6, color: COLS[j] }); sT.dot(h, Bd.runs[1][j].Tb, { r: 6, color: COLS[j], hollow: true }); });
-          sT.text('cycloid: π√(R/g) at every height', 0.51, T14, { align: 'right', baseline: 'top', dy: 5, color: 'green', size: 11.5 });
-          sT.text('circle: K(k)·√(4R/g)', 0.51, circPred(0.5), { align: 'right', baseline: 'top', dy: 8, color: 'red', size: 11.5 });
+          sT.text('cycloid: π√(R/g) at every height', 0.36, T14, { align: 'right', baseline: 'top', dy: 6, color: 'green', size: 11.5 });
+          sT.text('circle: K(k)·√(4R/g), rising with height', 0.36, circPred(0.36), { align: 'right', baseline: 'bottom', dy: -8, color: 'red', size: 11.5 });
           cur = Bd;
           v.legend([['green', 'cycloid (simulated)', { dot: true }], ['red', 'circle (simulated)', { dot: true }], ['green', 'predicted $\\pi\\sqrt{R/g}$', { dash: true }], ['red', 'predicted, elliptic integral', { dash: true }]]);
         }, { period: (8 * T14 * SLOW), still: T14 * SLOW });
@@ -292,7 +292,7 @@ with $\lambda$ fixed together with the integration constants by the boundary val
           const th = bisect((t) => (2 * t) / Math.sin(t) - ell, 1e-6, Math.PI / 2, 80), Rarc = 1 / Math.sin(th), Aarc = Rarc * Rarc * (th - Math.sin(th) * Math.cos(th));
           return { ell, curve, opt, lam: Math.hypot(...gA) / Math.hypot(...g), dAdl: (Ap - Am) / (2 * d), Rarc, Aarc, th };
         });
-        const hd = sQ.handle(0.3, 0.6, { color: 'gold', r: 7.5, constrain: (x, y) => { const th = Math.atan2(y, x), r = rAt(th, ellS.value); return [r * Math.cos(th), r * Math.sin(th)]; } });
+        const hd = sQ.handle(0.5, -0.45, { color: 'gold', r: 7.5, constrain: (x, y) => { const th = Math.atan2(y, x), r = rAt(th, ellS.value); return [r * Math.cos(th), r * Math.sin(th)]; } });
         let lastEll = null, cur = null;
         v.render(() => {
           const Bd = build();
@@ -311,7 +311,7 @@ with $\lambda$ fixed together with the integration constants by the boundary val
           sQ.tex(String.raw`\nabla A`, hd.x + gA[0] * sa, hd.y + gA[1] * sa, { color: 'purple', dx: 6, dy: -16, size: 14 });
           sQ.tex(String.raw`\nabla L`, hd.x + g[0] * sl, hd.y + g[1] * sl, { color: 'orange', dx: 16, dy: 12, size: 14 });
           const ang = Math.abs(Math.atan2(gA[0] * g[1] - gA[1] * g[0], gA[0] * g[0] + gA[1] * g[1]));
-          sQ.corner(`angle between the gradients: ${v.fix((ang * 180) / Math.PI, 1)}°`, 'tr', { color: ang < 0.01 ? 'green' : 'ink', weight: 600 });
+          sQ.corner(`angle between the gradients: ${v.fix((ang * 180) / Math.PI, 1)}°`, 'br', { color: ang < 0.01 ? 'green' : 'ink', weight: 600 });
           // the curve
           const y = (x) => hd.x * (1 - x * x) + 0.4 * hd.y * (1 - x * x) * (5 * x * x - 1);
           sY.hline(0, { color: 'ink', width: 1.5 });

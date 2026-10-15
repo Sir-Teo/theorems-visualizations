@@ -1085,7 +1085,7 @@ Since level $i\ge1$ has at least $2t^{i-1}$ nodes with at least $t-1$ keys each,
         v.button('Reset', () => { seq = []; root = null; S.reset([{ root: null, note: 'The empty B-tree.' }]); });
         // height curves
         const TS = [2, 3, 5, 10], COL = { 2: 'accent', 3: 'teal', 5: 'purple', 10: 'orange' }, curves = {};
-        for (const t of TS) { const r = v.rng(900 + t); let b = null; const pts = []; let last = -1; for (let n = 1; n <= 20000; n++) { b = btInsert(b, Math.floor(r() * 1e9), t); const h = btStats(b).h; if (h !== last) { if (pts.length) pts.push([n, last]); pts.push([n, h]); last = h; } } pts.push([20000, last]); curves[t] = pts; }
+        for (const t of TS) { const r = v.rng(900 + t); let b = null; const pts = []; let last = -1; for (let n = 1; n <= 20000; n++) { b = btInsert(b, Math.floor(r() * 1e9), t); let h = 0; for (let u = b; u.kids.length; u = u.kids[0]) h++; if (h !== last) { if (pts.length) pts.push([n, last]); pts.push([n, h]); last = h; } } pts.push([20000, last]); curves[t] = pts; }
         let info = null;
         v.render(() => {
           const f = S.frame, rt = f.root, t = +tS.value, cw = 1, gap = 0.7, lev = 1.75, boxes = []; let cur = 0;

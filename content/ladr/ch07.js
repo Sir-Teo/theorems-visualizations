@@ -522,7 +522,7 @@ If every entry of $A$ is real, $A^*$ is just the transpose $A^{t}$.`,
         };
         let st = null;
         v.animate((t) => {
-          const s = M.smoothstep((t - 0.5) / 2.2), A = [[0, 1, 2].map((j) => entry(H[j])), [0, 1, 2].map((j) => entry(H[3 + j]))];
+          const A = [[0, 1, 2].map((j) => entry(H[j])), [0, 1, 2].map((j) => entry(H[3 + j]))], sOf = (i) => M.smoothstep((t - 0.4 - 0.25 * i) / 1.6), s = sOf(0), sEnd = sOf(5);
           brackets(0.08, 1.02, 3.12, 2.98); brackets(3.98, 0.02, 6.02, 2.98);
           S.tex('A', 1.6, 3.22, { size: 18 }); S.tex('A^*', 5, 3.22, { size: 18 });
           S.line(0.2, 2.9, 2, 1.1, { color: 'muted', dash: [3, 4], width: 1 });
@@ -530,13 +530,13 @@ If every entry of $A$ is real, $A^*$ is just the transpose $A^{t}$.`,
           for (let k = 0; k < 2; k++) for (let j = 0; j < 3; j++) {
             const z = A[k][j], c = COLS[3 * k + j], p0 = src(k, j), p1 = dst(j, k);
             cell(p0, z, c);
-            if (s < 0.999) S.circle(p1[0], p1[1], RR, { color: 'faint', width: 1, dash: [3, 3] });
+            if (sOf(3 * k + j) < 0.999) S.circle(p1[0], p1[1], RR, { color: 'faint', width: 1, dash: [3, 3] });
           }
           for (let k = 0; k < 2; k++) for (let j = 0; j < 3; j++) {
-            const z = A[k][j], p0 = src(k, j), p1 = dst(j, k), p = [p0[0] + (p1[0] - p0[0]) * s, p0[1] + (p1[1] - p0[1]) * s + 0.45 * Math.sin(Math.PI * s)];
-            if (s > 0.001) cell(p, [z[0], (1 - 2 * s) * z[1]], COLS[3 * k + j], { text: s >= 0.999, guide: s >= 0.999 ? 'faint' : 'muted' });
+            const si = sOf(3 * k + j), z = A[k][j], p0 = src(k, j), p1 = dst(j, k), p = [p0[0] + (p1[0] - p0[0]) * si, p0[1] + (p1[1] - p0[1]) * si + 0.45 * Math.sin(Math.PI * si)];
+            if (si > 0.001) cell(p, [z[0], (1 - 2 * si) * z[1]], COLS[3 * k + j], { text: si >= 0.999, guide: si >= 0.999 ? 'faint' : 'muted' });
           }
-          if (s < 0.999) S.corner(s < 0.001 ? 'press play to form A*' : 'transposing and conjugating…', 'br', { color: 'muted' });
+          if (sEnd < 0.999) S.corner(s < 0.001 ? 'press play to form A*' : 'transposing and conjugating…', 'br', { color: 'muted' });
           st = { A, As: [0, 1, 2].map((j) => [0, 1].map((k) => cconj(A[k][j]))) };
         }, { period: 4.2, autoplay: false });
         v.t = 3.6;

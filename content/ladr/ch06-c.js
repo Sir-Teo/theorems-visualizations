@@ -423,8 +423,8 @@ export default {
         const bBest = v.button('Best', () => { snapBest = true; });
         // ---- R³ part
         const nrm = unit3([0.25, -0.35, 0.9]), [pa, pb] = perp(nrm);
-        const Vh = sc.handle([0.45, 0.55, 1.0], { color: 'gold', label: 'v' });
-        const Uh = sc.handle(add3(mul3(pa, 0.9), mul3(pb, -0.5)), { mode: 'plane', a: pa, b: pb, color: 'orange', label: 'u', snap: (p) => { const f = sub3(Vh.p, mul3(nrm, dot3(Vh.p, nrm))); return len3(sub3(p, f)) < 0.06 ? f : p; } });
+        const Vh = sc.handle(add3(add3(mul3(pa, 0.25), mul3(pb, 0.35)), mul3(nrm, 0.95)), { color: 'gold', label: 'v' });
+        const Uh = sc.handle(add3(mul3(pa, -0.75), mul3(pb, -0.55)), { mode: 'plane', a: pa, b: pb, color: 'orange', label: 'u', snap: (p) => { const f = sub3(Vh.p, mul3(nrm, dot3(Vh.p, nrm))); return len3(sub3(p, f)) < 0.06 ? f : p; } });
         // ---- function part: u interpolates handles at Chebyshev nodes of [−0.97π, 0.97π]
         let nodes = chebNodes(5, -0.97 * PI, 0.97 * PI), snapBest = false, best = Infinity, lastV = null;
         const H = [];
@@ -465,7 +465,7 @@ export default {
             if (!lastV || len3(sub3(lastV, p)) > 1e-9) { best = Infinity; lastV = p.slice(); }
             best = Math.min(best, dYou);
             sc.begin();
-            sc.disc(pa, pb, 1.4, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
+            sc.disc(pa, pb, 1.3, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
             sc.line(f, p, { color: 'green', width: 3 });
             if (leg > 1e-6) { sc.line(p, u, { color: 'red', width: 2.6 }); sc.line(f, u, { color: 'orange', width: 2, dash: [5, 4] }); if (leg > 0.06 && dBest > 0.06) corner3(sc, f, unit3(sub3(u, f)), nrm, 0.11, { color: 'ink' }); }
             sc.dot(f, { r: 5.5, color: 'green' }); sc.tex('P_Uv', f, { color: 'green', dx: -24, dy: 14, size: 13.5 });
@@ -475,7 +475,7 @@ export default {
             const sc2 = 0.62 / Math.max(1.2, dYou, dBest), y0 = 0.1;
             const bar = (x, h, col, lab, val) => { D.rect(x - 0.09, y0, x + 0.09, y0 + h * sc2, { fill: col, fillAlpha: 0.45, color: col, width: 1.5 }); D.tex(lab, x, y0 + h * sc2, { color: col, dy: -24, size: 13 }); D.text(pn(val, 3), x, y0 + h * sc2, { color: col, dy: -8, align: 'center', size: 12 }); };
             bar(0.27, dYou, 'red', '\\|v-u\\|', dYou); bar(0.73, dBest, 'green', '\\|v-P_Uv\\|', dBest);
-            if (isFinite(best)) { D.hline(y0 + best * sc2, { color: 'gold', width: 1.6, dash: [5, 4] }); D.text('your best', 0.5, y0 + best * sc2, { color: 'gold', dy: 9, align: 'center', size: 11 }); }
+            if (isFinite(best)) { D.hline(y0 + best * sc2, { color: 'gold', width: 1.6, dash: [5, 4] }); D.text('your best', 0.03, y0 + best * sc2, { color: 'gold', dy: -7, align: 'left', size: 11 }); }
             D.hline(y0, { color: 'muted', width: 1 });
             st = { m: 'R3', dBest, dYou, leg, best };
           } else {
@@ -538,7 +538,7 @@ export default {
       viz(v) {
         const M = v.M;
         const S3 = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, axes: false, height: 400, title: '$V=\\mathbf R^3$' });
-        const sc = v.scene3(S3, { yaw: -0.65, pitch: 0.32, axis: 1.4, lim: 1.4 });
+        const sc = v.scene3(S3, { yaw: -2.0, pitch: 0.32, axis: 1.4, lim: 1.4 });
         const SW = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400, minWidth: 260, title: '$W=\\mathbf R^2$' });
         const rS = v.select('$T$', [{ value: '2', label: 'rank 2' }, { value: '1', label: 'rank 1' }], '2', { onChange: () => { const p = onRange(Yh.x, Yh.y); Yh.x = p[0]; Yh.y = p[1]; } });
         const al = v.slider('tilt $X$ towards $\\operatorname{null}T$', 0, 90, 0, { step: 1, fmt: (x) => `${Math.round(x)}°` });
@@ -621,7 +621,7 @@ export default {
           const e = [T1.x / l, T1.y / l], t = x * e[0] + y * e[1], d = Math.abs(-x * e[1] + y * e[0]);
           return d < 0.12 ? [e[0] * t, e[1] * t] : [x, y];
         } });
-        const Wh = SW.handle(-0.7, 1.5, { color: 'gold', label: 'w' });
+        const Wh = SW.handle(0.9, 1.7, { color: 'gold', label: 'w' });
         v.legend([['teal', '$\\operatorname{range}T$'], ['red', '$\\operatorname{null}T$'], ['green', '$(\\operatorname{null}T)^\\perp$ and $T^\\dagger w$'], ['orange', 'all $v$ with $Tv=P_{\\operatorname{range}T}w$', { dash: true }]]);
         let st = null;
         v.render(() => {
@@ -661,7 +661,7 @@ export default {
         v.readout(() => {
           if (!st) return '';
           const { r, x, Pw, err, back } = st;
-          const head = `$T^\\dagger w = ${vt(x)}$, and $T(T^\\dagger w) = P_{\\operatorname{range}T}w = ${vt(Pw)}$ (difference $${zs(back)}$). The SVD-based pseudoinverse agrees to within $${zs(err)}$.`;
+          const head = `$T^\\dagger w = ${vt(x)}$, and $T(T^\\dagger w) = P_{\\operatorname{range}T}w = ${vt(Pw)}$ (difference $${zs(back)}$). The pseudoinverse computed from the SVD agrees to within $${zs(err)}$.`;
           if (r === 2) return head + ` Here $T$ is invertible: $\\operatorname{range}T = W$, $\\operatorname{null}T = \\{0\\}$, and $T^\\dagger = T^{-1}$.`;
           if (r === 1) return head + ` Of all the vectors on the orange line, $T^\\dagger w$ is the one orthogonal to $\\operatorname{null}T$ — and so the shortest, $\\|T^\\dagger w\\| = ${tn(Math.hypot(...x), 3)}$.`;
           return head;
@@ -690,8 +690,8 @@ export default {
         const C1 = scW.handle([0.95, 0.15, -0.1], { color: 'blue', label: 'Te₁' });
         const C2 = scW.handle([0.05, 0.8, 0.45], { color: 'purple', label: 'Te₂', snap: (p) => snapSpan(p, orth([C1.p]), 0.1) });
         const C3 = scW.handle(add3(mul3([0.95, 0.15, -0.1], 0.6), mul3([0.05, 0.8, 0.45], -0.7)), { color: 'teal', label: 'Te₃', snap: (p) => snapSpan(p, orth([C1.p, C2.p]), 0.12) });
-        const Wh = scW.handle([-0.3, 0.35, 1.05], { color: 'gold', label: 'w' });
-        const Xh = scV.handle([0.6, -0.5, 0.9], { color: 'gold', label: 'x' });
+        const Wh = scW.handle([0.65, -0.05, 0.9], { color: 'gold', label: 'w' });
+        const Xh = scV.handle([-0.2, 0.9, 0.9], { color: 'gold', label: 'x' });
         v.legend([['teal', '$\\operatorname{range}T$', { area: true }], ['red', '$\\operatorname{null}T$'], ['green', '$(\\operatorname{null}T)^\\perp$ and the images'], ['gold', '$w$, $x$', { dot: true }]]);
         let st = null;
         v.render(() => {
@@ -735,7 +735,7 @@ export default {
           const { r, dB, dC, dA, dS, idem, sym, TTd } = st;
           let s = `$\\operatorname{rank}T = ${r}$. (b) $\\max\\lvert TT^\\dagger - P_{\\operatorname{range}T}\\rvert = ${zs(dB)}$, and $TT^\\dagger = ${mtex(TTd)}$ is symmetric (${zs(sym)}) and idempotent (${zs(idem)}), as an orthogonal projection must be. (c) $\\max\\lvert T^\\dagger T - P_{(\\operatorname{null}T)^\\perp}\\rvert = ${zs(dC)}$. `;
           s += r === 3 ? `(a) $T$ is invertible and $\\max\\lvert T^\\dagger - T^{-1}\\rvert = ${zs(dA)}$.` : `$T$ is not invertible, so (a) says nothing; drag $Te_3$ out of the plane to see it.`;
-          return s + ` (The definition-based $T^\\dagger$ matches the SVD pseudoinverse to within $${zs(dS)}$.)`;
+          return s + ` ($T^\\dagger$ built from its definition matches the pseudoinverse computed from the SVD to within $${zs(dS)}$.)`;
         });
       },
     },
@@ -762,12 +762,14 @@ So $T^\dagger w$ is the best approximate solution of $Tv=w$, and among all best 
         };
         const W0 = { ind: [0.9, 0.7, -0.5], dep: [0.3, 1.1, 1.6] };
         let rows = ROWS.ind;
-        const LH = [0, 1, 2].map((k) => S.handle(0, 0, { color: VC[k], r: 6, constrain: (x, y) => { const a = rows[k], t = M.clamp(x * a[0] + y * a[1], -1.9, 1.9); return [a[0] * t, a[1] * t]; } }));
+        const OFF = { ind: [0, 0, 0], dep: [-1.7, -0.5, 1.0] };              // where each line's handle sits along the line
+        const at = (k, t) => { const a = rows[k], s = OFF[mS.value][k]; return [a[0] * t - a[1] * s, a[1] * t + a[0] * s]; };
+        const LH = [0, 1, 2].map((k) => S.handle(0, 0, { color: VC[k], r: 6, constrain: (x, y) => { const a = rows[k]; return at(k, M.clamp(x * a[0] + y * a[1], -1.9, 1.9)); } }));
         const Xh = S.handle(-1.6, -1.2, { color: 'gold', label: 'x' });
         let best = Infinity, lastKey = '';
         function setMode() {
           rows = ROWS[mS.value];
-          LH.forEach((h, k) => { const t = W0[mS.value][k]; h.x = rows[k][0] * t; h.y = rows[k][1] * t; });
+          LH.forEach((h, k) => { const p = at(k, W0[mS.value][k]); h.x = p[0]; h.y = p[1]; });
           if (mS.value === 'dep') { Xh.x = 1.9; Xh.y = -0.2; } else { Xh.x = -1.6; Xh.y = -1.2; }
           best = Infinity; v.invalidate();
         }
