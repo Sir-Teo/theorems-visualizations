@@ -47,7 +47,7 @@ export function finalize(t) {
     if (typeof x !== 'object' || x == null) return { name: String(x), children: [] };
     return { ...x, name: x.name ?? x.label ?? '', length: x.length ?? x.len ?? x.branch, children: (x.children || x.kids || []).map(conv) };
   };
-  const root = t && t.children && t.children.every((c) => c && c.children) && !Array.isArray(t) ? t : conv(t);
+  const root = conv(t); // always a fresh normalised copy (strings → leaves, arrays → unnamed internal nodes)
   let id = 0;
   const walk = (n, p, depth, dist) => { n.parent = p; n.id = id++; n.depth = depth; n.dist = dist; n.children ||= []; for (const c of n.children) walk(c, n, depth + 1, dist + (c.length ?? 1)); };
   walk(root, null, 0, 0); return root;
@@ -119,9 +119,16 @@ export function reroot(t, u, w, x) {
   const e = (adj.get(u).find(([q]) => q === w) || [null, 1])[1], root = { name: '', children: [] };
   const build = (n, from, len) => { const m = { ...n, children: [], length: len }; delete m.parent; for (const [q, l] of adj.get(n) || []) if (q !== from) m.children.push(build(q, n, l)); return m; };
   root.children.push(build(u, w, x), build(w, u, e - x));
-  for (const c of root.children) { /* drop a degree-2 old root */ }
   const t2 = finalize(collapseUnary(root)); return t2;
 }
+/** Non-trivial splits (bipartitions) of the leaf set, as sorted name strings, canonicalised to the side without the first leaf. */
+export function splits(t) {
+  const all = leaves(t).map((n) => n.name).sort(), first = all[0], out = new Set();
+  for (const n of nodes(t)) { if (!n.parent || !n.children.length) continue; let side = leaves(n).map((q) => q.name); if (side.includes(first)) side = all.filter((x) => !side.includes(x)); if (side.length > 1 && side.length < all.length - 1) out.add(side.sort().join('|')); }
+  return out;
+}
+/** Robinson–Foulds distance (unrooted): number of splits in one tree but not the other. */
+export function rf(a, b) { const A = splits(a), B = splits(b); let d = 0; for (const x of A) if (!B.has(x)) d++; for (const x of B) if (!A.has(x)) d++; return d; }
 function collapseUnary(n) { n.children = n.children.map(collapseUnary); if (n.parent !== undefined) delete n.parent; return n.children.length === 1 && !n.name && n.length != null ? Object.assign(n.children[0], { length: (n.children[0].length ?? 0) + n.length }) : n; }
 
 // ================================================================== layouts (pixel space)
@@ -189,6 +196,12 @@ class Tree {
     return this;
   }
   _text(str, X, Y, st = {}) { const c = this.s.ctx; c.save(); c.font = FONT(st.size || this.o.fontSize, st.weight || 500, st.italic); c.textAlign = st.align || 'left'; c.textBaseline = st.baseline || 'middle'; if (st.halo !== false) { c.lineWidth = 3.5; c.lineJoin = 'round'; c.strokeStyle = this.api.color('panel', 0.9); c.strokeText(str, X, Y); } c.fillStyle = this.api.color(st.color || 'ink', st.alpha); c.fillText(str, X, Y); c.restore(); }
+  /** Internal-node label, skipped if it would overlap one already drawn (greedy, in drawing order). */
+  _ilabel(str, X, Y, st, boxes) {
+    const w = measure(this.s.ctx, str, st.size, 500, true), a = st.align || 'left', x0 = a === 'right' ? X - w : a === 'center' ? X - w / 2 : X, b = [x0 - 2, Y - st.size / 2 - 1, x0 + w + 2, Y + st.size / 2 + 1];
+    if (b[0] < 0 || b[2] > this.s.width || boxes.some((q) => !(b[2] < q[0] || b[0] > q[2] || b[3] < q[1] || b[1] > q[3]))) return false;
+    boxes.push(b); this._text(str, X, Y, { ...st, italic: true }); return true;
+  }
   _seg(pts, color, w, alpha) { const c = this.s.ctx; c.save(); c.strokeStyle = this.api.color(color, alpha); c.lineWidth = w; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); pts.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); c.stroke(); c.restore(); }
   _dot(n, X, Y, op, color) {
     const c = this.s.ctx, internal = n.children.length > 0, show = op.nodes ?? (internal && this.o.collapsible);
@@ -243,7 +256,8 @@ class Tree {
         else { const w = measure(c, lab, fs), X = q[0], Y = orient === 'down' ? q[1] + off : q[1] - off; if (gap >= fs + 2 || X - w / 2 > lastShown + 4) { if (gap < w + 4) { c.save(); c.translate(X, Y); c.rotate(orient === 'down' ? Math.PI / 2 : -Math.PI / 2); this._text(lab, 0, 0, { ...opts, align: 'left' }); c.restore(); } else this._text(lab, X, Y, { ...opts, align: 'center', baseline: orient === 'down' ? 'top' : 'bottom' }); lastShown = X + w / 2; } }
       }
     });
-    for (const u of all) { const q = P(u); this._dot(u, q[0], q[1], op, cmap.get(u) || 'muted'); if (op.internalLabels && u.children.length && u.name && !u.collapsed) this._text(u.name, q[0] + (horiz ? -4 : 6), q[1] + (horiz ? -9 : 0), { size: Math.min(11, fs), color: cmap.get(u) || 'muted', align: horiz ? 'right' : 'left', italic: true }); }
+    const ib = [];
+    for (const u of all) { const q = P(u); this._dot(u, q[0], q[1], op, cmap.get(u) || 'muted'); if (op.internalLabels && u.children.length && u.name && !u.collapsed) this._ilabel(u.name, q[0] + (horiz ? -4 : 6), q[1] + (horiz ? -9 : 0), { size: Math.min(11, fs), color: cmap.get(u) || 'muted', align: horiz ? 'right' : 'left' }, ib); }
     if (useLen && op.scaleBar !== false) this._scaleBar(op, (along1 - along0) / maxD, horiz ? pad : W - pad, horiz ? H - 10 : H - 10, horiz ? 'left' : 'right');
     this.layoutInfo = { fontSize: fs, thinned: fit.thinned, leaves: n };
   }
@@ -275,7 +289,8 @@ class Tree {
       this._text(lab, 0, 0, { size: fs, align: left ? 'right' : 'left', color: hlOn ? 'accent' : color, weight: hlOn ? 700 : 500, italic: u.collapsed }); c.restore();
       const w = measure(c, lab, fs); const [X2, Y2] = XY(r + off + w, a); this._lab.push([u, [Math.min(X, X2) - 3, Math.min(Y, Y2) - 6, Math.max(X, X2) + 3, Math.max(Y, Y2) + 6]]);
     });
-    for (const u of all) { const [X, Y] = XY(rad(u), ang(u)); this._dot(u, X, Y, op, cmap.get(u) || 'muted'); if (op.internalLabels && u.children.length && u.name && !u.collapsed && u.parent) this._text(u.name, X, Y - 9, { size: Math.min(10.5, fs), color: cmap.get(u) || 'muted', align: 'center', italic: true }); }
+    const ib = [];
+    for (const u of all) { const [X, Y] = XY(rad(u), ang(u)); this._dot(u, X, Y, op, cmap.get(u) || 'muted'); if (op.internalLabels && u.children.length && u.name && !u.collapsed && u.parent) this._ilabel(u.name, X, Y - 9, { size: Math.min(10.5, fs), color: cmap.get(u) || 'muted', align: 'center' }, ib); }
     this.layoutInfo = { fontSize: fs, thinned: fit.thinned, leaves: n, radius: R };
   }
   _tidy(op, edgeCol, edgeW, cmap) {
@@ -333,9 +348,9 @@ class Tree {
 }
 
 export default function tree(api, rt, stage, spec) { return new Tree(api, rt, stage, spec); }
-export const TREES = { newick, toNewick, finalize, upgma, nj, patristic, mrca, path, distance, midpoint, reroot, leaves, nodes, find };
+export const TREES = { newick, toNewick, finalize, upgma, nj, patristic, mrca, path, distance, midpoint, reroot, leaves, nodes, find, splits, rf };
 Object.assign(tree, TREES);
-/** v.trees(name, ...args): newick, toNewick, upgma, nj, patristic, mrca, path, distance, midpoint, reroot, leaves, nodes, find; v.trees() → the table. */
+/** v.trees(name, ...args): newick, toNewick, upgma, nj, patristic, mrca, path, distance, midpoint, reroot, leaves, nodes, find, splits, rf; v.trees() → the table. */
 export function trees(api, rt, name, ...args) {
   if (name == null) return TREES;
   const f = TREES[name]; if (!f) throw new Error(`v.trees: unknown helper "${name}" (${Object.keys(TREES).join(', ')})`);

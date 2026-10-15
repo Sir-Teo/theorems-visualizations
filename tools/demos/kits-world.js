@@ -163,9 +163,9 @@ export default {
         };
         v.render(() => {
           A.draw(); A.plot(ts, { minWindow: 200 });
-          const M = mf(); for (const k of ['S', 'I', 'R']) ts.path(M[k], { color: { S: 'blue', I: 'red', R: 'faint' }[k], width: 1.3, dash: [5, 4], alpha: 0.8 });
+          const M = mf(); for (const k of ['S', 'I', 'R']) ts.path(M[k], { color: { S: 'blue', I: 'red', R: 'gray' }[k], width: 1.3, dash: [5, 4], alpha: 0.8 });
         });
-        v.legend([['blue', 'susceptible'], ['red', 'infected'], ['faint', 'recovered'], ['muted', 'mean-field model', { dash: true }]]);
+        v.legend([['blue', 'susceptible'], ['red', 'infected'], ['gray', 'recovered'], ['muted', 'mean-field model', { dash: true }]]);
         v.readout(() => { const I = A.history.I, peak = Math.max(...I), tp = A.history.t[I.indexOf(peak)], b = beta.value, g = gamma.value, T = b / (b + g - b * g); return `$T = ${v.fix(T, 2)}$ ${T > 0.25 ? '> 0.25' : '< 0.25'} · step ${A.t} · infected now ${v.fix(100 * A.stats.I, 1)}% · peak ${v.fix(100 * peak, 1)}% at step ${tp} · ever infected ${v.fix(100 * (A.stats.I + A.stats.R), 1)}%${A.model.done ? ' · **outbreak over**' : ''}`; });
       },
     },
@@ -253,6 +253,73 @@ export default {
         });
         function erf(x) { const t = 1 / (1 + 0.3275911 * Math.abs(x)), y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return Math.sign(x) * y; }
         v.readout(() => out);
+      },
+    },
+    // ---------------------------------------------------------------- tree
+    {
+      num: '3.12', kind: 'Method', name: 'Neighbour joining versus UPGMA',
+      statement: String.raw`Both methods build a tree from a matrix of pairwise distances. **UPGMA** repeatedly merges the closest pair and assumes a molecular clock (all lineages evolve at the same rate). **Neighbour joining** picks the pair minimising $Q_{ij} = (r-2)d_{ij} - \sum_k d_{ik} - \sum_k d_{jk}$, which corrects for unequal rates: on any additive (tree-like) matrix it recovers the true tree exactly.`,
+      caption: String.raw`The distances are measured on a true tree in which lineage $B$ evolves $r$ times faster. At $r = 1$ (a perfect clock) both methods agree; above $r = 5$ UPGMA separates $B$ from its sister $A$, while neighbour joining stays right. Click two leaves to highlight the path between them.`,
+      viz(v) {
+        const L = v.stage({ height: 320, title: 'neighbour joining (unrooted)' }), R = v.stage({ height: 320, title: 'UPGMA (clock-rooted dendrogram)' });
+        const rate = v.slider('rate of lineage $B$, $r$', 1, 8, 6.5, { step: 0.1 });
+        const truth = (r) => v.trees('newick', `((A:1,B:${r}):2,((C:1.5,D:1.5):0.5,E:2):1,F:3);`), names = ['A', 'B', 'C', 'D', 'E', 'F'];
+        const N = v.tree(L, { layout: 'unrooted', lengths: true }), U = v.tree(R, { layout: 'rect', lengths: true });
+        let Dm = null, rfN = 0, rfU = 0;
+        v.render(() => {
+          const T = truth(rate.value); Dm = v.trees('patristic', T, names);
+          const tn = v.trees('nj', Dm, names), tu = v.trees('upgma', Dm, names); N.set(tn); U.set(tu);
+          rfN = v.trees('rf', tn, T); rfU = v.trees('rf', tu, T);
+          N.draw({ colors: { B: 'red' } }); U.draw({ colors: { B: 'red' } });
+          L.setTitle(`neighbour joining (unrooted) — ${rfN ? '✗ wrong topology' : '✓ true topology'}`); R.setTitle(`UPGMA (clock-rooted dendrogram) — ${rfU ? '✗ wrong topology' : '✓ true topology'}`);
+        });
+        v.readout(() => `$d(A,B) = ${v.fix(Dm[0][1], 1)}$, $d(A,C) = ${v.fix(Dm[0][2], 1)}$, $d(C,D) = ${v.fix(Dm[2][3], 1)}$ · Robinson–Foulds distance to the true tree: NJ **${rfN}**, UPGMA **${rfU}**${N.selected.length === 2 ? ` · patristic $d(${N.selected[0].name}, ${N.selected[1].name}) = ${v.fix(N.distance(N.selected[0], N.selected[1]), 2)}$` : ''}`);
+      },
+    },
+    {
+      num: '3.13', kind: 'Concept', name: 'The Indo-European language family',
+      statement: String.raw`Most languages of Europe and South Asia descend from Proto-Indo-European, spoken roughly 6000 years ago. The comparative method groups them by shared innovations into about ten branches — Anatolian and Tocharian (both extinct), Indo-Iranian, Balto-Slavic, Germanic, Celtic, Italic, Hellenic, Armenian and Albanian.`,
+      caption: String.raw`A cladogram (branch lengths not to scale; † = extinct). Click a branch point to collapse or expand it, click two languages to trace their relationship; switch to the rectangular layout.`,
+      viz(v) {
+        const s = v.stage({ height: 520, full: true });
+        const lay = v.select('layout', [{ value: 'radial', label: 'radial' }, { value: 'rect', label: 'rectangular' }], 'radial');
+        const nw = `((Hittite†,Luwian†)Anatolian,(Tocharian_A†,Tocharian_B†)Tocharian,Armenian,Greek,Albanian,
+          (Oscan†,Umbrian†,(Latin†,Italian,French,Spanish,Portuguese,Catalan,Romanian)Romance)Italic,
+          ((Irish,Scottish_Gaelic,Manx)Goidelic,(Welsh,Breton,Cornish)Brythonic)Celtic,
+          ((English,Frisian,Dutch,German,Yiddish)West_Germanic,(Icelandic,Faroese,Norwegian,Swedish,Danish)North_Germanic,Gothic†)Germanic,
+          ((Lithuanian,Latvian,Old_Prussian†)Baltic,((Russian,Ukrainian,Belarusian)East_Slavic,(Polish,Czech,Slovak)West_Slavic,(Serbo-Croatian,Slovene,Bulgarian,Macedonian)South_Slavic)Slavic)Balto-Slavic,
+          ((Sanskrit†,Hindi-Urdu,Bengali,Punjabi,Marathi,Gujarati)Indo-Aryan,(Persian,Pashto,Kurdish,Ossetian)Iranian)Indo-Iranian)Proto-Indo-European;`;
+        const colors = { Anatolian: 'gray', Tocharian: 'gray', Italic: 'red', Celtic: 'green', Germanic: 'blue', 'Balto-Slavic': 'purple', 'Indo-Iranian': 'orange', Greek: 'teal', Armenian: 'pink', Albanian: 'gold' };
+        const T = v.tree(s, { data: nw, layout: 'radial', internalLabels: true, collapsed: ['Anatolian'] });
+        T.selected = [T.find('English'), T.find('Hindi-Urdu')];
+        v.render(() => T.draw({ layout: lay.value, colors }));
+        v.legend(Object.entries(colors).filter(([k]) => k !== 'Tocharian').map(([k, c]) => [c, k === 'Anatolian' ? 'Anatolian, Tocharian' : k]));
+        v.readout(() => {
+          const [a, b] = T.selected; if (!a || !b) return `${T.leaves.length} languages · click two languages to compare`;
+          const m = T.mrca(a, b), p = T.path(a, b).filter((n) => n.children.length).map((n) => n.name.replace(/ /g, ' '));
+          return `**${a.name}** and **${b.name}**: last common ancestor *${m.name || '—'}* · path through ${p.join(' → ')} · ${T.path(a, b).length - 1} branches apart`;
+        });
+      },
+    },
+    {
+      num: '3.14', kind: 'Concept', name: 'Syntax trees and decision trees',
+      statement: String.raw`A **constituency tree** shows how a sentence is built from phrases: *the old man saw a dog with a telescope* has two parses, depending on whether the prepositional phrase attaches to the verb phrase (he used a telescope) or to the noun phrase (the dog had one). A **decision tree** classifies by asking one question per internal node.`,
+      caption: String.raw`Tidy layouts: node boxes are sized to their labels and subtrees are packed as tightly as their contours allow. Click an internal node to collapse it.`,
+      viz(v) {
+        const s = v.stage({ height: 380, full: true });
+        const which = v.select('', [{ value: 'vp', label: 'PP attaches to VP' }, { value: 'np', label: 'PP attaches to NP' }, { value: 'dt', label: 'decision tree' }], 'vp');
+        const PP = { name: 'PP', children: [{ name: 'P', children: ['with'] }, { name: 'NP', children: [{ name: 'Det', children: ['a'] }, { name: 'N', children: ['telescope'] }] }] };
+        const NPsub = { name: 'NP', children: [{ name: 'Det', children: ['the'] }, { name: 'Adj', children: ['old'] }, { name: 'N', children: ['man'] }] };
+        const obj = { name: 'NP', children: [{ name: 'Det', children: ['a'] }, { name: 'N', children: ['dog'] }] };
+        const data = {
+          vp: { name: 'S', children: [NPsub, { name: 'VP', children: [{ name: 'V', children: ['saw'] }, obj, PP] }] },
+          np: { name: 'S', children: [NPsub, { name: 'VP', children: [{ name: 'V', children: ['saw'] }, { name: 'NP', children: [obj, PP] }] }] },
+          dt: { name: 'petal length < 2.5 cm?', children: [{ name: 'setosa', edge: 'yes' }, { name: 'petal width < 1.75 cm?', edge: 'no', children: [{ name: 'petal length < 4.95 cm?', edge: 'yes', children: [{ name: 'versicolor', edge: 'yes' }, { name: 'virginica', edge: 'no' }] }, { name: 'virginica', edge: 'no' }] }] },
+        };
+        const T = v.tree(s, { data: data.vp, layout: 'tidy', alignLeaves: true });
+        let cur = 'vp';
+        v.render(() => { if (which.value !== cur) { cur = which.value; T.set(JSON.parse(JSON.stringify(data[cur]))); T.o.alignLeaves = cur !== 'dt'; } T.draw({ edgeLabels: cur === 'dt', colors: cur === 'dt' ? {} : { PP: 'orange' } }); });
+        v.readout(() => cur === 'dt' ? 'Iris classification (Fisher’s data): each internal node tests one feature; leaves are predicted species.' : `Words at the leaves read the sentence left to right; the orange PP is attached to the ${cur === 'vp' ? 'verb phrase' : 'object noun phrase'}.`);
       },
     },
   ],

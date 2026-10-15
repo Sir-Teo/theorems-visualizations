@@ -38,7 +38,7 @@ export default {
       items: [
         { num: '1.1', kind: 'Theorem', name: 'The demographic balancing equation', deps: ['mathbio-1.1'], refs: ['PHG ch. 1'],
           pic: 'A country as a tank with taps for births and immigration and drains for deaths and emigration; set the flows and the population counter obeys P(t+1) = P(t) + B − D + I − E exactly.' },
-        { num: '1.2', kind: 'Definition', name: 'Person-years and occurrence–exposure rates', deps: ['psych-1.1', 'pma-6.1'], refs: ['PHG ch. 1'],
+        { num: '1.2', kind: 'Definition', name: 'Person-years and occurrence–exposure rates', deps: ['pma-6.1'], refs: ['PHG ch. 1'],
           pic: 'Lifelines of individuals entering and leaving observation; the shaded total length is the person-years at risk, and deaths divided by that area give the rate.' },
         { num: '1.3', kind: 'Definition', name: 'Crude birth, death and growth rates', deps: ['demo-1.1', 'demo-1.2'], refs: ['PHG ch. 1'],
           pic: 'Pick countries and years; the crude birth and death rates are drawn as two curves whose gap is the natural growth rate, with migration added as a separate band.' },

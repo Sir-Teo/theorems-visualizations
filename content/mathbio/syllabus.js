@@ -1,4 +1,20 @@
 // Syllabus — Mathematical Biology (curated course; see collection.js for references)
+//
+// Sources consulted (research pass, Oct 2026):
+//   - Murray, Mathematical Biology I & II (3rd ed.) chapter lists via Google Books
+//     https://books.google.com/books?vid=ISBN9780387952284  (chapter-level refs verified)
+//   - Edelstein-Keshet, Mathematical Models in Biology (SIAM 2005) part/chapter structure
+//     https://catalogo.biblio.unc.edu.ar/Record/ffyh.84401/TOC , https://old.maa.org/node/105061
+//   - Cambridge Part II "Mathematical Biology" schedule (Faculty of Mathematics schedules PDF)
+//     https://www.maths.cam.ac.uk/undergrad/course/schedules.pdf  → added ch. 11 (stochastic systems)
+//   - MIT 8.591J Systems Biology calendar https://ocw.mit.edu/courses/8-591j-systems-biology-fall-2014/pages/syllabus/
+//   - Wikipedia: Mathematical and theoretical biology; Theoretical ecology; Mathematical modelling of
+//     infectious diseases (→ Reed–Frost, major-outbreak probability, network R₀)
+// Deliberate omissions: Murray I ch. 4–5 (temperature-dependent sex determination, marital interaction)
+//   and Murray II ch. 7–8, 10 (teratologies, vascular networks, dermal wound healing) — idiosyncratic;
+//   evolutionary game theory lives in popgen; enzyme-level kinetics beyond Michaelis–Menten in kin.
+// Note: ch. 11 items marked refs: [] have no counterpart in the collection's two references; a stochastic
+//   text (e.g. Allen, An Introduction to Stochastic Processes with Applications to Biology) should be added.
 export default {
   collection: 'mathbio',
   chapters: [

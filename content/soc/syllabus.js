@@ -1,0 +1,279 @@
+// Syllabus — Networks & Collective Behavior (curated course; see collection.js for references)
+//
+// Sources consulted (research pass, Oct 2026):
+//   Reference TOCs
+//   - Easley & Kleinberg (E&K), Networks, Crowds, and Markets — full section-level TOC from the authors’ site:
+//     https://www.cs.cornell.edu/home/kleinber/networks-book/  (refs use its § numbers).
+//   - Schelling, Micromotives and Macrobehavior — ch. 1 Micromotives and Macrobehavior, 2 The Inescapable
+//     Mathematics of Musical Chairs, 3 Thermostats, Lemons, and Other Families of Models, 4 Sorting and
+//     Mixing: Race and Sex, 5 Sorting and Mixing: Age and Income, 6 Choosing Our Children’s Genes,
+//     7 Hockey Helmets, Daylight Saving, and Other Binary Choices (Open Library record
+//     https://www.openlibrary.org/works/OL2259853W ).
+//   - Newman, Networks, 2e (2018) — TOC only partly retrieved (chs 1–4); refs to later chapters are
+//     chapter-level from the book’s known structure (measures, random graphs, configuration model,
+//     network formation, community structure, percolation, epidemics).
+//   Courses
+//   - MIT 14.15J/6.207 Networks (Spring 2018) lecture list: graphs and metrics, Markov chains and
+//     centralities, Erdős–Rényi and giant components, network games, traffic and congestion, network
+//     effects, diffusion, social learning, network formation.
+//     https://ocw.mit.edu/courses/14-15j-networks-spring-2018/pages/lecture-notes/
+//   - Cornell INFO 2040 / E&K course structure (same TOC).
+//   Lists and encyclopedias
+//   - Ostrom’s eight design principles: https://wiki.p2pfoundation.net/Eight_Design_Principles_for_Common_Pool_Resource_Systems
+//     and Cox, Arnold & Villamayor Tomás (2010) review: https://www.ecologyandsociety.org/vol15/iss4/art38/
+//   - https://en.wikipedia.org/wiki/List_of_paradoxes (friendship, Braess)
+//
+// Gaps filled after the comparison: triadic closure and the local-bridge theorem, structural holes,
+// structural balance, DeGroot learning, Kleinberg navigability, power-law fitting and the scale-free
+// debate, MusicLab, complex contagion, information cascades, El Farol, opinion dynamics, the diversity
+// prediction theorem, Braess and the price of anarchy, crowd and traffic dynamics.
+// Hand-offs: PageRank and random walks on graphs are in `stoch`; SIR and Kuramoto ODEs in `ode`; logistic
+// growth and harvesting in `mathbio`/`ode`; the tragedy of the commons as a market failure in `micro`;
+// Condorcet’s jury theorem in `polsci`. These are cited and given their network/collective framing here.
+// NOTE: Dunbar’s number, Ostrom, the Bass model and crowd dynamics are not covered by the collection.js
+// references; those items have refs: [] until a reference is added.
+export default {
+  collection: 'soc',
+  chapters: [
+    // ───────────────────────────────────────────────────────────── 1
+    {
+      n: 1,
+      title: 'Micromotives and macrobehavior',
+      summary: String.raw`Collective outcomes often bear little resemblance to what any individual wants. Schelling’s segregation model is the classic demonstration: mild preferences for similar neighbours produce stark segregation. Tipping points and critical mass appear whenever people’s choices depend on how many others are already choosing the same thing, and Granovetter’s threshold model shows how fragile such cascades can be.`,
+      items: [
+        { num: '1.1', kind: 'Concept', name: 'Emergence: aggregate patterns from individual rules', deps: [], refs: ['Schelling ch. 1'],
+          pic: 'An auditorium fills seat by seat under simple seating rules you choose; the final pattern (back rows full, front empty) emerges though nobody wanted it.' },
+        { num: '1.2', kind: 'Model', name: 'Schelling’s segregation model', deps: ['soc-1.1'], refs: ['Schelling ch. 4', 'E&K §4.5'],
+          pic: 'Two kinds of agents on a grid move when fewer than a fraction T of their neighbours are like them; set T and watch the board sort itself, with a segregation index plotted over time.' },
+        { num: '1.3', kind: 'Phenomenon', name: 'Mild preferences, strong segregation', deps: ['soc-1.2'], refs: ['Schelling ch. 4'],
+          pic: 'Sweep the tolerance threshold from 0 to 0.8 across many runs: average like-neighbour share jumps to about 75% even at T = 1/3, and collapses into disorder when T is too demanding.' },
+        { num: '1.4', kind: 'Definition', name: 'Measuring segregation: dissimilarity and exposure', deps: ['soc-1.2'], refs: ['Schelling ch. 4'],
+          pic: 'A city map divided into tracts; the dissimilarity index (share who would have to move to even out) and exposure index update as you repaint tracts.' },
+        { num: '1.5', kind: 'Model', name: 'Bounded-neighbourhood tipping', deps: ['soc-1.2'], refs: ['Schelling ch. 4'],
+          pic: 'Tolerance schedules for two groups in one neighbourhood plotted together; the dynamics drift to all-one-group or a mixed equilibrium depending on where you start.' },
+        { num: '1.6', kind: 'Concept', name: 'Critical mass and tipping points', deps: ['soc-1.5'], refs: ['Schelling ch. 3'],
+          pic: 'Plot the share who will act as a function of the share already acting; equilibria are crossings of the 45° line, and an S-shaped curve has an unstable middle crossing — the tipping point.' },
+        { num: '1.7', kind: 'Model', name: 'Schelling’s binary-choice diagrams', deps: ['soc-1.6', 'micro-12.10'], refs: ['Schelling ch. 7'],
+          pic: 'Payoff lines for choosing left or right as functions of how many others choose right (hockey helmets, daylight saving); their crossings and slopes decide which collective outcomes are stable.' },
+        { num: '1.8', kind: 'Model', name: 'Granovetter’s threshold model of collective behaviour', deps: ['soc-1.6'], refs: ['E&K §19.6'],
+          pic: 'A crowd of 100 people with riot thresholds 0, 1, 2, …, 99: one instigator triggers everyone; draw the threshold histogram and iterate the cascade map to its fixed point.' },
+        { num: '1.9', kind: 'Phenomenon', name: 'Fragile cascades: one changed threshold stops the riot', deps: ['soc-1.8'], refs: ['E&K §19.6'],
+          pic: 'Change the person with threshold 1 to threshold 2: the riot stops after one person, though the two crowds look almost identical in their average radicalism.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 2
+    {
+      n: 2,
+      title: 'Social networks and ties',
+      summary: String.raw`Treating people as nodes and relationships as edges turns social structure into graph theory. Friends of friends tend to become friends (triadic closure), which forces the bridges between groups to be weak ties — the reason acquaintances, not close friends, bring new information such as jobs. Similar people cluster, by choice and by influence, and signed networks tend toward balance.`,
+      items: [
+        { num: '2.1', kind: 'Definition', name: 'Social networks as graphs', deps: [], refs: ['E&K §2.1', 'Newman ch. 4'],
+          pic: 'Load a small real network (a karate club) and drag its nodes; paths, connected components and degrees are highlighted as you click.' },
+        { num: '2.2', kind: 'Definition', name: 'Distance and breadth-first search', deps: ['soc-2.1', 'algo-8.5'], refs: ['E&K §2.3'],
+          pic: 'Pick a person and run BFS: rings of distance 1, 2, 3 expand outward, and the distance distribution of the whole network is plotted.' },
+        { num: '2.3', kind: 'Definition', name: 'Degree and degree distribution', deps: ['soc-2.1'], refs: ['Newman ch. 10'],
+          pic: 'Histogram of degrees for several real networks on linear and log axes; toggle to see which look Poisson and which have long tails.' },
+        { num: '2.4', kind: 'Paradox', name: 'The friendship paradox', deps: ['soc-2.3'], refs: ['Newman ch. 12'],
+          pic: 'Compare each person’s degree with the average degree of their friends: most points lie below the diagonal, and the gap equals variance over mean of the degree distribution.' },
+        { num: '2.5', kind: 'Concept', name: 'Triadic closure and the clustering coefficient', deps: ['soc-2.1'], refs: ['E&K §3.1'],
+          pic: 'Add edges one at a time and watch open triangles close; the clustering coefficient of a real network is compared with a random graph of the same density.' },
+        { num: '2.6', kind: 'Theorem', name: 'Strong triadic closure makes local bridges weak', deps: ['soc-2.5'], refs: ['E&K §3.2'],
+          pic: 'Label edges strong or weak; if a node with two strong ties always closes the triangle, the page proves on your graph that every local bridge must be weak.' },
+        { num: '2.7', kind: 'Phenomenon', name: 'The strength of weak ties (Granovetter)', deps: ['soc-2.6'], refs: ['E&K §3.2', 'E&K §3.3'],
+          pic: 'Simulate job information spreading through strong and weak ties; most new information arrives via weak ties, matching Granovetter’s survey and the large-scale phone-network study.' },
+        { num: '2.8', kind: 'Concept', name: 'Structural holes and betweenness', deps: ['soc-2.7'], refs: ['E&K §3.5', 'E&K §3.6'],
+          pic: 'Nodes coloured by betweenness centrality; the broker spanning two clusters lights up, and removing her disconnects the groups.' },
+        { num: '2.9', kind: 'Concept', name: 'Homophily', deps: ['soc-2.1'], refs: ['E&K §4.1'],
+          pic: 'A school friendship network coloured by grade or race; the observed share of cross-group ties is compared with what random mixing would produce.' },
+        { num: '2.10', kind: 'Concept', name: 'Selection versus social influence', deps: ['soc-2.9'], refs: ['E&K §4.2'],
+          pic: 'Two simulated worlds — people choose similar friends, or friends make people similar — produce identical snapshots; only the time series tells them apart, and the page shows why observational contagion claims are contested.' },
+        { num: '2.11', kind: 'Definition', name: 'Assortative mixing by degree', deps: ['soc-2.3'], refs: ['Newman ch. 7'],
+          pic: 'Scatter each edge’s endpoint degrees; social networks tilt positive (hubs link to hubs) while technological ones tilt negative, with the assortativity coefficient computed.' },
+        { num: '2.12', kind: 'Theorem', name: 'Structural balance theorem (Cartwright–Harary)', deps: ['soc-2.1'], refs: ['E&K §5.1', 'E&K §5.2'],
+          pic: 'Sign the edges of a complete graph as friend or enemy; if every triangle has an even number of enemies the page splits the nodes into two hostile camps, otherwise it flags the unbalanced triangles.' },
+        { num: '2.13', kind: 'Hypothesis', name: 'Dunbar’s number (contested)', deps: ['soc-2.3'], refs: [],
+          pic: 'Primate group size against neocortex ratio with the regression extrapolated to about 150 for humans, and the 2021 reanalysis whose 95% interval spans from a handful to over 500.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 3
+    {
+      n: 3,
+      title: 'Centrality, influence and power',
+      summary: String.raw`Who matters in a network depends on what “matters” means: having many ties, being close to everyone, sitting on many shortest paths, or being connected to other important people. Eigenvector-type centralities also describe how opinions settle when people repeatedly average their neighbours’ views. In exchange networks, power comes from position — from having alternatives your partners lack.`,
+      items: [
+        { num: '3.1', kind: 'Definition', name: 'Degree, closeness and betweenness centrality', deps: ['soc-2.2'], refs: ['Newman ch. 7'],
+          pic: 'One network with three node-size encodings you toggle; the top-ranked node changes from the hub to the broker as you switch measures.' },
+        { num: '3.2', kind: 'Definition', name: 'Eigenvector and Katz centrality', deps: ['soc-3.1', 'ladr-5.5'], refs: ['Newman ch. 7'],
+          pic: 'Iterate “your score is the sum of your neighbours’ scores” from uniform starting values; the scores converge to the leading eigenvector, and the Katz damping slider interpolates toward degree.' },
+        { num: '3.3', kind: 'Algorithm', name: 'Hubs and authorities (HITS)', deps: ['soc-3.2', 'stoch-4.15'], refs: ['E&K §14.2'],
+          pic: 'A small directed web graph: alternate hub and authority updates converge, and the top authorities are compared with PageRank on the same graph.' },
+        { num: '3.4', kind: 'Model', name: 'DeGroot learning: consensus by repeated averaging', deps: ['soc-3.2', 'stoch-4.1'], refs: ['E&K §14.6'],
+          pic: 'Each person repeatedly averages their friends’ opinions; the opinions converge to a consensus weighted by each person’s eigenvector centrality, read off live.' },
+        { num: '3.5', kind: 'Theorem', name: 'Wise crowds need no prominent groups (Golub–Jackson)', deps: ['soc-3.4'], refs: ['E&K §14.6'],
+          pic: 'Noisy private signals averaged through DeGroot updating: a star network converges to the hub’s error, while balanced networks approach the truth as they grow.' },
+        { num: '3.6', kind: 'Concept', name: 'Community structure and modularity', deps: ['soc-2.5'], refs: ['Newman ch. 14'],
+          pic: 'Run a modularity-maximizing split on the karate-club network and compare it with the real factional split after the club broke up.' },
+        { num: '3.7', kind: 'Phenomenon', name: 'Power from position in exchange networks', deps: ['soc-3.1'], refs: ['E&K §12.2', 'E&K §12.3'],
+          pic: 'Bargaining over a dollar on paths of 2, 3 and 4 nodes: lab results and the balanced-outcome predictions show the middle node of a 3-path taking almost everything.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 4
+    {
+      n: 4,
+      title: 'Random graphs, small worlds and power laws',
+      summary: String.raw`Random graphs are the baseline: a giant component appears suddenly once the average degree passes one, and distances grow only logarithmically. Real social networks are both clustered and small, which the Watts–Strogatz model reproduces, and Milgram’s letters showed people can find short paths without a map. Many networks have heavy-tailed degree distributions, which preferential attachment explains — though how often real networks are truly scale-free is disputed.`,
+      items: [
+        { num: '4.1', kind: 'Model', name: 'Erdős–Rényi random graph', deps: ['soc-2.3'], refs: ['Newman ch. 11'],
+          pic: 'Add random edges among 500 nodes with a probability slider; the degree histogram follows a Poisson curve and clustering stays near p.' },
+        { num: '4.2', kind: 'Theorem', name: 'The giant component appears at mean degree one', deps: ['soc-4.1', 'stoch-3.9'], refs: ['Newman ch. 11'],
+          pic: 'Plot the largest component’s share against mean degree for growing networks: it sharpens into a phase transition at c = 1, matching the branching-process prediction S = 1 − e^{−cS}.' },
+        { num: '4.3', kind: 'Event', name: 'Milgram’s small-world experiment', deps: ['soc-2.2'], refs: ['E&K §20.1'],
+          pic: 'Letters forwarded hop by hop from Nebraska toward a Boston stockbroker: completed chains have a median of about six steps, and the page shows how many chains were lost on the way.' },
+        { num: '4.4', kind: 'Phenomenon', name: 'Six degrees in online networks', deps: ['soc-4.3'], refs: ['E&K §20.4'],
+          pic: 'Distance distributions from the 2011–2016 Facebook studies (average about 4.7 then 3.6 hops) beside a random graph of the same size and density.' },
+        { num: '4.5', kind: 'Model', name: 'Watts–Strogatz small-world model', deps: ['soc-2.5', 'soc-4.1'], refs: ['E&K §20.2'],
+          pic: 'Start from a ring lattice and rewire a fraction p of edges; path length (blue) drops after a few rewirings while clustering (orange) stays high, plotted on a log-p axis.' },
+        { num: '4.6', kind: 'Theorem', name: 'Kleinberg’s navigability theorem', deps: ['soc-4.5'], refs: ['E&K §20.3'],
+          pic: 'Greedy routing on a grid with long-range links chosen with probability ∝ d^{−q}: delivery time is minimized only at q = 2 in two dimensions, measured across many messages.' },
+        { num: '4.7', kind: 'Definition', name: 'Power-law (heavy-tailed) distributions', deps: ['soc-2.3'], refs: ['E&K §18.2', 'Newman ch. 10'],
+          pic: 'Sample from a power law with exponent slider; the log–log histogram and CCDF are straight lines, and the sample mean wanders when the exponent is below 3.' },
+        { num: '4.8', kind: 'Method', name: 'Fitting power laws honestly (Clauset–Shalizi–Newman)', deps: ['soc-4.7', 'stat-3.5'], refs: ['Newman ch. 10'],
+          pic: 'Fit a straight line to a log–log histogram and by maximum likelihood on the same lognormal sample: the line fit “finds” a power law that the likelihood-ratio test rejects.' },
+        { num: '4.9', kind: 'Model', name: 'Preferential attachment (Price, Barabási–Albert)', deps: ['soc-4.7', 'stoch-12.10'], refs: ['E&K §18.3', 'Newman ch. 13'],
+          pic: 'Grow a network where new nodes link to existing ones with probability proportional to degree; hubs emerge among the oldest nodes and the degree CCDF straightens on log axes.' },
+        { num: '4.10', kind: 'Theorem', name: 'Preferential attachment gives degree exponent 3', deps: ['soc-4.9'], refs: ['E&K §18.7', 'Newman ch. 13'],
+          pic: 'The rate-equation solution P(k) ∝ k^{−3} is overlaid on simulated networks of increasing size; mixing in random attachment raises the exponent as predicted.' },
+        { num: '4.11', kind: 'Hypothesis', name: 'Are real networks scale-free? (debated)', deps: ['soc-4.8', 'soc-4.10'], refs: ['Newman ch. 10'],
+          pic: 'Degree distributions of a dozen real networks with power-law and lognormal fits; the likelihood-ratio results show strong power laws are rarer than often claimed, as in Broido–Clauset 2019.' },
+        { num: '4.12', kind: 'Phenomenon', name: 'Unpredictable success in cultural markets (MusicLab)', deps: ['soc-4.9'], refs: ['E&K §18.4'],
+          pic: 'Eight parallel worlds of listeners who see download counts: the same songs end up with very different rankings, while an independent world without social information is far more even.' },
+        { num: '4.13', kind: 'Phenomenon', name: 'Zipf’s law for city sizes', deps: ['soc-4.7'], refs: ['Newman ch. 10'],
+          pic: 'Rank–size plot of cities for several countries with slopes near −1; a Gibrat growth simulation (random proportional growth with a floor) reproduces the law.' },
+        { num: '4.14', kind: 'Model', name: 'The configuration model', deps: ['soc-4.1', 'soc-2.4'], refs: ['Newman ch. 12'],
+          pic: 'Give each node stubs according to any degree sequence and pair them at random; the excess-degree distribution of neighbours is computed and explains the friendship paradox in closed form.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 5
+    {
+      n: 5,
+      title: 'Diffusion, cascades and contagion',
+      summary: String.raw`Ideas, products and diseases spread through networks, but by different rules. Behaviours that need reinforcement from several neighbours spread as threshold cascades that tightly knit clusters can block, while diseases spread from single contacts and are helped by long-range ties and hubs. People also copy others because others’ choices carry information, which can lock a whole population into a wrong choice. Aggregate adoption often follows an S-curve that the Bass model describes.`,
+      items: [
+        { num: '5.1', kind: 'Model', name: 'Diffusion as a network coordination game', deps: ['soc-1.8'], refs: ['E&K §19.2'],
+          pic: 'Seed a few adopters of a new behaviour on a network; each node adopts when at least a fraction q of neighbours have, and the cascade either takes over or stalls as you vary q.' },
+        { num: '5.2', kind: 'Theorem', name: 'Dense clusters block cascades', deps: ['soc-5.1'], refs: ['E&K §19.3'],
+          pic: 'Paint a cluster where every node has more than 1 − q of its neighbours inside; the cascade stops at its edge, and the page proves the converse on graphs you draw.' },
+        { num: '5.3', kind: 'Concept', name: 'Simple versus complex contagion (Centola)', deps: ['soc-5.2', 'soc-4.5'], refs: ['E&K §19.4'],
+          pic: 'On a Watts–Strogatz network, a disease spreads faster as rewiring rises, while a two-neighbour-threshold behaviour spreads slower — two curves crossing over the rewiring axis.' },
+        { num: '5.4', kind: 'Model', name: 'Information cascades', deps: ['stat-10.1'], refs: ['E&K §16.5', 'E&K §16.6'],
+          pic: 'Agents in sequence get private signals and see predecessors’ choices; once two more choose one way than the other, everyone follows, and the page reports how often the cascade is wrong.' },
+        { num: '5.5', kind: 'Phenomenon', name: 'Herding in the urn experiment', deps: ['soc-5.4'], refs: ['E&K §16.2', 'E&K §16.4'],
+          pic: 'Guess which urn the balls come from after seeing your draw and others’ guesses; your choices are compared with the Bayesian posterior and the lab results of Anderson and Holt.' },
+        { num: '5.6', kind: 'Model', name: 'The Bass diffusion model', deps: ['soc-1.6', 'ode-1.6'], refs: [],
+          pic: 'Innovation (p) and imitation (q) sliders shape the adoption curve and the bell-shaped sales curve; fit p and q to historical TV or smartphone adoption.' },
+        { num: '5.7', kind: 'Concept', name: 'S-curves and adopter categories (Rogers)', deps: ['soc-5.6'], refs: [],
+          pic: 'Adoption times drawn as a normal curve split into innovators, early adopters, majorities and laggards, with the cumulative S-curve and the Bass fit overlaid.' },
+        { num: '5.8', kind: 'Model', name: 'Branching processes and the epidemic threshold', deps: ['stoch-3.9'], refs: ['E&K §21.2'],
+          pic: 'Each case infects a random number of others with mean R; outbreak trees die out or explode, and the extinction probability is computed as R crosses one.' },
+        { num: '5.9', kind: 'Model', name: 'SIR epidemics on networks', deps: ['ode-6.17', 'soc-5.8'], refs: ['E&K §21.3', 'Newman ch. 16'],
+          pic: 'Run SIR on a lattice, a small world and a random network with equal transmission: final size and peak timing differ, compared with the well-mixed ODE curve.' },
+        { num: '5.10', kind: 'Phenomenon', name: 'Hubs, superspreaders and the vanishing threshold', deps: ['soc-5.9', 'soc-4.10'], refs: ['Newman ch. 16'],
+          pic: 'Effective R on a network is ⟨k²⟩/⟨k⟩ times transmissibility; growing a scale-free network shows the epidemic threshold sliding toward zero, and targeting hubs for vaccination restores it.' },
+        { num: '5.11', kind: 'Phenomenon', name: 'Robustness and fragility: random failure versus targeted attack', deps: ['soc-4.2', 'soc-4.9'], refs: ['Newman ch. 15'],
+          pic: 'Remove nodes at random or highest-degree first from a heavy-tailed network; the giant component barely shrinks under random removal and shatters under attack.' },
+        { num: '5.12', kind: 'Model', name: 'Influence maximization (independent cascades)', deps: ['soc-5.8'], refs: ['E&K §19.7'],
+          pic: 'Choose k seed nodes to maximize expected spread; the greedy algorithm’s picks and spread are compared with picking the highest-degree nodes, with its (1 − 1/e) guarantee drawn.' },
+        { num: '5.13', kind: 'Phenomenon', name: 'Network effects and tipping in markets', deps: ['micro-12.12', 'soc-1.6'], refs: ['E&K §17.2', 'E&K §17.3'],
+          pic: 'Willingness to pay rises with the share of users; the demand curve crosses the price line twice, and a dynamic simulation shows the market dying below the tipping point and taking off above it.' },
+        { num: '5.14', kind: 'Model', name: 'The El Farol bar problem', deps: ['soc-5.13'], refs: ['E&K §17.7'],
+          pic: 'Agents with a toolbox of forecasting rules decide whether to go to a bar that is fun only if under 60% full; attendance fluctuates around 60 without anyone coordinating.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 6
+    {
+      n: 6,
+      title: 'Conformity, opinion dynamics and synchrony',
+      summary: String.raw`People conform to visible majorities, and simple models of opinion change reproduce consensus, persistent disagreement or polarization depending on whom people are willing to listen to. Whether online networks create echo chambers is an empirical question with mixed answers. Collective rhythm — clapping audiences, flashing fireflies — is another kind of coordination, explained by coupled oscillators.`,
+      items: [
+        { num: '6.1', kind: 'Phenomenon', name: 'Asch’s conformity experiment', deps: [], refs: ['E&K §16.1'],
+          pic: 'Judge line lengths after hearing several confederates give the same wrong answer; your conformity is compared with the original rates and with the effect of a single dissenter.' },
+        { num: '6.2', kind: 'Model', name: 'The voter model', deps: ['soc-2.1', 'stoch-12.1'], refs: ['Newman ch. 17'],
+          pic: 'Each step a random person copies a random neighbour’s opinion; on a lattice domains coarsen slowly, and the probability that an opinion wins equals its initial share.' },
+        { num: '6.3', kind: 'Model', name: 'Bounded-confidence opinion dynamics', deps: ['soc-3.4'], refs: ['Newman ch. 17'],
+          pic: 'People average only with those within a confidence bound ε; opinions over time split into one, two or several clusters as you vary ε (Hegselmann–Krause).' },
+        { num: '6.4', kind: 'Model', name: 'Axelrod’s culture model', deps: ['soc-6.3'], refs: ['Newman ch. 17'],
+          pic: 'Neighbours who share some cultural traits interact and become more alike; the grid freezes into regions, and the number of surviving cultures depends on traits and features.' },
+        { num: '6.5', kind: 'Phenomenon', name: 'Echo chambers and polarization (mixed evidence)', deps: ['soc-6.3', 'soc-2.10'], refs: ['E&K §4.2'],
+          pic: 'A bounded-confidence model with an unfollow rule produces separated clusters; beside it, survey and platform studies that find much more cross-cutting exposure than the model implies.' },
+        { num: '6.6', kind: 'Phenomenon', name: 'Pluralistic ignorance', deps: ['soc-1.8'], refs: ['E&K §19.6'],
+          pic: 'Everyone privately dislikes a norm but believes others support it; a threshold model with public versus private opinions shows the norm persisting until a few defections tip it.' },
+        { num: '6.7', kind: 'Phenomenon', name: 'Synchronized clapping and fireflies', deps: ['ode-8.17'], refs: ['E&K §21.5'],
+          pic: 'A population of clappers as coupled oscillators: raise the coupling past the critical value and the order parameter jumps, as in audiences that fall into unison.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 7
+    {
+      n: 7,
+      title: 'Collective intelligence',
+      summary: String.raw`Averages of many independent guesses can be remarkably accurate, as Galton found with a fairground ox, because individual errors cancel. The diversity prediction theorem makes this exact. The effect depends on independence: once people see each other’s guesses, errors correlate and the crowd’s advantage shrinks. Prediction markets are another way to aggregate scattered information.`,
+      items: [
+        { num: '7.1', kind: 'Phenomenon', name: 'Galton’s ox: vox populi', deps: ['polsci-5.4'], refs: ['E&K §22.3'],
+          pic: 'Guess the weight of an ox, then see your guess among 800 simulated fairgoers; the median lands within 1% of the true weight while most individuals are far off.' },
+        { num: '7.2', kind: 'Theorem', name: 'The diversity prediction theorem', deps: ['soc-7.1'], refs: ['E&K §22.3'],
+          pic: 'For any set of guesses, the squared error of the average equals the average squared error minus the variance of the guesses — three bars that always add up as you drag guesses.' },
+        { num: '7.3', kind: 'Phenomenon', name: 'Social influence undermines crowd wisdom', deps: ['soc-7.2', 'soc-5.4'], refs: ['E&K §16.7'],
+          pic: 'Let simulated guessers see the running average before answering; diversity collapses and the crowd error grows, as in the Lorenz et al. 2011 experiment.' },
+        { num: '7.4', kind: 'Model', name: 'Prediction markets aggregate beliefs', deps: ['soc-7.1'], refs: ['E&K §22.2', 'E&K §22.4'],
+          pic: 'Traders with private signals buy and sell a contract paying $1 if an event happens; the price settles near the aggregated probability, compared with poll averages.' },
+        { num: '7.5', kind: 'Theorem', name: 'Markets reward accuracy: wealth dynamics', deps: ['soc-7.4'], refs: ['E&K §22.10'],
+          pic: 'Bettors with different beliefs repeatedly bet on a horse race; wealth flows to the most accurate, and the market’s implied probability converges toward theirs.' },
+        { num: '7.6', kind: 'Hypothesis', name: '“Diversity trumps ability” (Hong–Page, contested)', deps: ['soc-7.2'], refs: ['E&K §22.3'],
+          pic: 'Agents with different heuristics search a rugged landscape; random diverse teams beat teams of the individually best, and a toggle applies the critics’ changes that remove the result.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 8
+    {
+      n: 8,
+      title: 'Cooperation and the commons',
+      summary: String.raw`When everyone would gain from cooperating but each gains more by free riding, collective action is hard; open-access resources tend to be overused. Yet many communities have managed commons for centuries, and Ostrom identified the institutional features they share. Repetition, reputation, punishment and network structure all help cooperation survive, while selfish routing shows the opposite problem: adding capacity can make everyone worse off.`,
+      items: [
+        { num: '8.1', kind: 'Concept', name: 'The collective action problem (Olson)', deps: ['micro-12.10'], refs: ['Schelling ch. 7'],
+          pic: 'Groups of different sizes choose whether to contribute to a shared project; the private benefit of contributing falls with group size, and contributions in the simulation fall with it.' },
+        { num: '8.2', kind: 'Model', name: 'The multi-person prisoner’s dilemma', deps: ['soc-8.1'], refs: ['Schelling ch. 7'],
+          pic: 'Schelling-style payoff lines for cooperators and defectors as functions of how many cooperate: defecting always pays more, yet everyone cooperating beats everyone defecting.' },
+        { num: '8.3', kind: 'Model', name: 'Tragedy of the commons as a harvesting game', deps: ['micro-12.11', 'mathbio-1.12', 'soc-8.2'], refs: ['E&K §24.2'],
+          pic: 'Herders add cows to a regrowing pasture; each herder’s best response overgrazes, and the stock crashes in the simulation, compared with the sustainable-yield optimum.' },
+        { num: '8.4', kind: 'Principle', name: 'Ostrom’s design principles for the commons', deps: ['soc-8.3'], refs: [],
+          pic: 'Switch on boundaries, local rules, participation, monitoring, graduated sanctions, conflict resolution, recognition and nesting in an agent model of a fishery and see which combinations prevent collapse.' },
+        { num: '8.5', kind: 'Phenomenon', name: 'Communication and sanctions in common-pool experiments', deps: ['soc-8.4'], refs: [],
+          pic: 'Lab common-pool appropriation over rounds: baseline overuse, then cheap talk, then sanctioning; group efficiency rises in each phase, as in Ostrom, Walker and Gardner (1992).' },
+        { num: '8.6', kind: 'Model', name: 'Evolution of cooperation: Axelrod’s tournaments', deps: ['soc-8.2'], refs: ['E&K §7.1'],
+          pic: 'Run a round-robin of repeated prisoner’s-dilemma strategies you choose (tit-for-tat, always defect, grudger…); tit-for-tat wins without ever beating any single opponent.' },
+        { num: '8.7', kind: 'Model', name: 'Hawk–dove and evolutionarily stable strategies', deps: ['soc-8.6'], refs: ['E&K §7.2', 'E&K §7.5'],
+          pic: 'Replicator dynamics on the share of hawks for adjustable resource value and fight cost; the population settles at the mixed ESS V/C whatever its starting point.' },
+        { num: '8.8', kind: 'Phenomenon', name: 'Spatial structure protects cooperators (Nowak–May)', deps: ['soc-8.6'], refs: ['E&K §7.1'],
+          pic: 'Cooperators and defectors on a grid copy their most successful neighbour; clusters of cooperators persist and form kaleidoscopic patterns for a range of temptation values.' },
+        { num: '8.9', kind: 'Paradox', name: 'Braess’s paradox', deps: ['soc-2.1'], refs: ['E&K §8.2'],
+          pic: 'Drivers choose routes selfishly on a four-road network; add a zero-cost shortcut and the equilibrium travel time for everyone rises from 65 to 80 minutes.' },
+        { num: '8.10', kind: 'Theorem', name: 'Price of anarchy for selfish routing', deps: ['soc-8.9'], refs: ['E&K §8.3'],
+          pic: 'Pigou’s two-road example with a slider: the ratio of equilibrium to optimal total travel time is computed and never exceeds 4/3 with linear delays.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 9
+    {
+      n: 9,
+      title: 'Crowds in motion',
+      summary: String.raw`Physical crowds, traffic and flocks are collective behaviour too, and simple local rules again reproduce striking global patterns: traffic jams that appear out of nowhere, lanes that self-organize among pedestrians, flocks that align without a leader. These models are used to design safer exits and better roads, and they show the same lesson as Schelling’s: the pattern is not in any individual’s intentions.`,
+      items: [
+        { num: '9.1', kind: 'Model', name: 'Phantom traffic jams (Nagel–Schreckenberg)', deps: ['soc-1.1'], refs: [],
+          pic: 'Cars on a ring road accelerate, brake to avoid collisions and sometimes dawdle at random; jams nucleate and travel backward through the traffic, shown on a space–time plot.' },
+        { num: '9.2', kind: 'Model', name: 'Social-force model of pedestrians: lane formation', deps: ['soc-1.1'], refs: [],
+          pic: 'Two streams of walkers in a corridor repelled by those ahead of them; lanes form spontaneously, and a density slider shows when they break down.' },
+        { num: '9.3', kind: 'Phenomenon', name: 'Faster is slower at a bottleneck', deps: ['soc-9.2'], refs: [],
+          pic: 'Raise the walkers’ desired speed through a narrow exit: clogging arches form and the evacuation time rises; placing a column in front of the door reduces it.' },
+        { num: '9.4', kind: 'Model', name: 'Flocking without a leader (Vicsek model)', deps: ['soc-1.1'], refs: [],
+          pic: 'Self-propelled particles align with neighbours plus noise; lower the noise or raise the density and an ordered flock appears, with the alignment order parameter plotted.' },
+      ],
+    },
+  ],
+};

@@ -293,7 +293,7 @@ export default {
         { num: '9.13', kind: 'Theorem', name: 'Threshold theorem', deps: ['qinfo-9.10', 'qinfo-9.3'], refs: ['Nielsen–Chuang §10.6.4'],
           pic: 'Concatenate a code k times with a physical-error slider: below the threshold the logical error p_th(p/p_th)^{2^k} plunges with each level, above it every level makes things worse.' },
         { num: '9.14', kind: 'Phenomenon', name: 'Surface-code threshold by simulation', deps: ['qinfo-9.9', 'qinfo-9.13'], refs: ['Nielsen–Chuang §10.6.4'],
-          pic: 'Monte Carlo runs with a matching decoder: logical error versus physical error for code distances 3, 5 and 7 cross near 10% for independent flips (about 1% with noisy measurements), and larger codes win below the crossing.' },
+          pic: 'Monte Carlo runs with a matching decoder: logical error versus physical error for code distances 3, 5 and 7 cross near 10% for independent flips with perfect syndromes (about 1% under full circuit-level noise), and larger codes win below the crossing.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10

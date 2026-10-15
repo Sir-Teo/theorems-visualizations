@@ -4,7 +4,7 @@
 //   const A = v.agents(stage, { ...v.automata('schelling', { tolerance: () => tol.value }), size: 50, seed: 3 });
 //   v.render(() => { A.draw(); A.plot(ts, { series: ['segregation'] }); });
 //
-// Grid models: `states` [{name, color}] (color null = transparent), `init(rng, i, j, model)` → state or `fill`
+// Grid models: `states` [{name, color, alpha}] (color null = transparent), `init(rng, i, j, model)` → state or `fill`
 // {stateName: fraction}, and either a synchronous `rule(state, counts, rng, i, j, model)` → new state (counts[k] = number
 // of neighbours in state k; Moore or von Neumann neighbourhood, wrapped or not) or a free-form `step(model, rng)`.
 // Continuous models: `agents: n` in a `box` [w, h] with motion 'walk' | 'ballistic' | 'boids', disc collisions and an
@@ -184,7 +184,7 @@ export const AUTOMATA = {
   }),
   /** SIR epidemic on a lattice: p.beta (per infected neighbour per step), p.gamma (recovery per step), p.seeds, p.waning (R→S). */
   sir: (p = {}) => ({
-    states: [{ name: 'S', color: p.colorS || 'blue' }, { name: 'I', color: p.colorI || 'red' }, { name: 'R', color: p.colorR || 'faint' }],
+    states: [{ name: 'S', color: p.colorS || 'blue', alpha: 0.32 }, { name: 'I', color: p.colorI || 'red' }, { name: 'R', color: p.colorR || 'gray', alpha: 0.75 }],
     neighborhood: p.neighborhood || 'moore',
     setup: (M, r) => { M.grid.fill(0); const n = p.seeds ?? 5; for (let q = 0; q < n; q++) M.grid[p.center ? ((M.h / 2) | 0) * M.w + ((M.w / 2) | 0) + q : r.int(0, M.N - 1)] = 1; },
     rule: (s, c, r) => {
@@ -286,8 +286,8 @@ class Agents {
       const theme = m.states.map((st) => (st.color ? this.api.color(st.color) : '')).join('|');
       if (!this._img || this._img.width !== m.w || this._img.height !== m.h) { this._img = document.createElement('canvas'); this._img.width = m.w; this._img.height = m.h; this._ver = -1; }
       if (this._ver !== m.version || this._theme !== theme || this._t !== m.t) {
-        const cols = m.states.map((st) => (st.color ? this.api.rgb(st.color) : null)), ctx = this._img.getContext('2d'), im = ctx.createImageData(m.w, m.h), d = im.data;
-        for (let k = 0; k < m.N; k++) { const c = cols[m.grid[k]]; if (!c) continue; const p = 4 * k; d[p] = c[0]; d[p + 1] = c[1]; d[p + 2] = c[2]; d[p + 3] = 255 * (c[3] ?? 1) * (o.alpha ?? 1); }
+        const cols = m.states.map((st) => (st.color ? [...this.api.rgb(st.color).slice(0, 3), (st.alpha ?? 1) * (o.alpha ?? 1)] : null)), ctx = this._img.getContext('2d'), im = ctx.createImageData(m.w, m.h), d = im.data;
+        for (let k = 0; k < m.N; k++) { const c = cols[m.grid[k]]; if (!c) continue; const p = 4 * k; d[p] = c[0]; d[p + 1] = c[1]; d[p + 2] = c[2]; d[p + 3] = 255 * c[3]; } // state.alpha softens large uniform states
         ctx.putImageData(im, 0, 0); this._ver = m.version; this._theme = theme; this._t = m.t;
       }
       const c = s.ctx, x0 = s.X(0), y0 = s.Y(m.h), w = s.X(m.w) - x0, h = s.Y(0) - y0;
