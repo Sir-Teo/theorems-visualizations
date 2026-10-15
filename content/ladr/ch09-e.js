@@ -138,7 +138,7 @@ function cOrthCols(A) {
 // ---------- drawing and editing ----------
 /** Two draggable handles for the columns Te₁, Te₂ of a 2-by-2 matrix; C.A reads the matrix, C.set(B) moves them. */
 function colHandles(S, A, cols = ['accent', 'orange'], names = ['$Te_1$', '$Te_2$']) {
-  const H = [0, 1].map((k) => S.handle(A[0][k], A[1][k], { color: cols[k], label: names[k] }));
+  const H = [0, 1].map((k) => S.handle(A[0][k], A[1][k], { color: cols[k], label: names[k], labelPos: k ? 'nw' : 'se' }));
   return { H, get A() { return [[H[0].x, H[1].x], [H[0].y, H[1].y]]; }, set(B) { H[0].set(B[0][0], B[1][0]); H[1].set(B[0][1], B[1][1]); } };
 }
 /** The image under T of the integer grid {|x|, |y| ≤ n}. */
@@ -261,8 +261,9 @@ A multilinear form gives $0$ when one of its inputs is $0$, so $Tv \ne 0$. Hence
             if (Math.abs(di) > 9) R.corner('area 1/|det T|: off the chart', 'bl', { color: 'muted', size: 11.5 });
           } else {
             R.corner('T⁻¹ does not exist', 'tl', { color: 'red', weight: 700 });
-            R.text('T squeezes the plane onto a line:', 0, 0.45, { align: 'center', color: 'muted', size: 12.5 });
-            R.text('nothing can undo that', 0, -0.05, { align: 'center', color: 'muted', size: 12.5 });
+            plate(R, R.width / 2 - 120, R.height / 2 - 26, 240, 46);
+            R.textPx('T squeezes the plane onto a line:', R.width / 2, R.height / 2 - 12, { align: 'center', color: 'ink', size: 12.5, halo: false });
+            R.textPx('nothing can undo that', R.width / 2, R.height / 2 + 8, { align: 'center', color: 'ink', size: 12.5, halo: false });
           }
           st = { d, di, sing, smin: sv[1], n: V[1], Tn: mv(T, V[1]), Tv: len(Tp), v: len(p) };
         });
@@ -457,7 +458,9 @@ In particular the right side is the same for every basis.`,
           P.hline(0, { color: 'faint', width: 1 });
           cols.forEach((c, k) => P.fn((x) => ev(c, x), { color: CC[k], width: 2.4 }));
           Tcols.forEach((c, k) => P.fn((x) => ev(c, x), { color: CC[k], width: 1.8, dash: [6, 5] }));
-          cols.forEach((c, k) => P.tex(`e_${k + 1}`, 1.6, ev(c, 1.45), { color: CC[k], size: 13, align: 'right', dx: -6, dy: -10 }));
+          const ly = cols.map((c, k) => ({ k, Y: M.clamp(P.Y(ev(c, 1.45)) - 10, 12, P.height - 12) })).sort((p, q) => p.Y - q.Y);
+          for (let q = 1; q < ly.length; q++) ly[q].Y = Math.max(ly[q].Y, ly[q - 1].Y + 16);
+          ly.forEach(({ k, Y }) => P.texPx(`e_${k + 1}`, P.width - 8, Y, { color: CC[k], size: 13, align: 'right' }));
           const Mt = matIn(E), dM = M.det(Mt), ok = Math.abs(dM - dT) < 1e-8 * (1 + Math.abs(dT));
           TB.draw({ value: (i, j) => pn(Mt[i][j], 2), fill: (i, j) => [CC[j], 0.14], textColor: () => (brk ? 'red' : 'ink') });
           ttl(R, TB, brk ? '\\mathcal M\\big(T, (e_k), (1, x, x^2)\\big)' : '\\mathcal M\\big(T, (e_1, e_2, e_3)\\big)', brk ? 'red' : 'ink', false, 14);
@@ -523,7 +526,7 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           });
           for (let k = 0; k + 1 < pp.length; k++) S.arrow(pp[k][0], pp[k][1], pp[k + 1][0], pp[k + 1][1], { color: 'gold', width: 2.6 });
           S.dot(dA[0], dA[1], { r: 12, hollow: true, color: 'green', width: 2.8 });
-          S.text(`det A = ${cpn(dA, 2)}`, dA[0], dA[1], { dx: 17, align: 'left', color: 'green', weight: 700, size: 12.5 });
+          S.text(`det A = ${cpn(dA, 2)}`, dA[0], dA[1], { dy: dA[1] >= 0 ? -25 : 25, align: 'center', color: 'green', weight: 700, size: 12.5 });
           pp.forEach((p, k) => S.dot(p[0], p[1], { r: 4.5, color: 'gold', label: k === 0 ? '1' : k > 1 && k < pp.length - 1 ? `P${sub(k)}` : null, labelPos: k === 0 ? 'se' : 'nw' }));
           cl.forEach((e) => {
             S.dot(e.lam[0], e.lam[1], { r: 8, hollow: true, color: 'accent', width: 2.4 });
@@ -556,7 +559,7 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
 
 (c) If $V$ is an inner product space and $T \in \mathcal L(V)$, then $\det(T^*) = \overline{\det T}$.`,
       idea: String.raw`(a) The function $\alpha(v_1, \dots, v_n) = \det\big((v_1 \ \cdots \ v_n)^{\mathrm t}\big)$, the determinant of the matrix with *rows* $v_1, \dots, v_n$, is $n$-linear by the formula 9.46. It is alternating: two equal rows make a matrix non-invertible. It also takes the value $1$ on the standard basis. Since the alternating $n$-forms on $\mathbf F^n$ form a $1$-dimensional space (9.37), $\alpha$ is the determinant of the matrix with columns $v_1, \dots, v_n$. (b) The matrix of $T'$ is the transpose of the matrix of $T$ (3.132), so (a) and 9.53 apply. (c) In an orthonormal basis the matrix of $T^*$ is the conjugate transpose of that of $T$ (7.9). Conjugating every entry conjugates the formula 9.46, and transposing changes nothing by (a).`,
-      caption: String.raw`Left: the parallelepiped spanned by the columns $c_1, c_2, c_3$ of a real $3$-by-$3$ matrix $A$. Right: the one spanned by its rows $r_1, r_2, r_3$. Drag any of the six vectors (drag the background to rotate). The other panel updates, since moving a column moves one entry of every row. The two solids look nothing alike, but their signed volumes $\det A$ and $\det A^{\mathrm t}$ always agree. Bottom: give $A$ an imaginary part $i\varphi B$ with the slider. Then $\det A^{\mathrm t}$ (orange ring) still sits on $\det A$, but $\det A^*$ (green) is its mirror image in the real axis. Forgetting the conjugation in the adjoint gives the wrong answer.`,
+      caption: String.raw`Left: the parallelepiped spanned by the columns $c_1, c_2, c_3$ of a real $3$-by-$3$ matrix $A$. Right: the one spanned by its rows $r_1, r_2, r_3$. Drag any of the six vectors (drag the background to rotate). The other panel updates, since moving a column moves one entry of every row. The two solids look nothing alike, but their signed volumes $\det A$ and $\det A^{\mathrm t}$ always agree. Bottom: the slider gives $A$ an imaginary part, making the complex matrix $C = A + i\varphi B$. Then $\det C^{\mathrm t}$ (orange ring) still sits on $\det C$, but $\det C^*$ (green) is its mirror image in the real axis. Forgetting the conjugation in the adjoint gives the wrong answer.`,
       deps: ['ladr-9.46', 'ladr-9.37', 'ladr-9.53', 'ladr-3.132', 'ladr-7.9'],
       tags: ['determinants'],
       viz(v) {
@@ -678,7 +681,8 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           L.texPx(log.length ? `\\det A_{${log.length}} = ${tn(F, 3)} \\cdot \\det A_0 = ${tn(pred, 3)}` : `\\det A_0 = ${tn(d0, 3)}`, L.width / 2, L.height - 18, { size: 14, color: ok ? 'green' : 'red' });
           // the columns' parallelepiped
           const cols = [0, 1, 2].map((k) => A.map((row) => row[k])), gcols = ghost ? [0, 1, 2].map((k) => ghost.map((row) => row[k])) : null;
-          const m = Math.max(1, ...cols.map(len), ...(gcols ? gcols.map(len) : [])), s = 2.1 / m;
+          const verts = (c) => [c[0], c[1], c[2], add(c[0], c[1]), add(c[0], c[2]), add(c[1], c[2]), add(add(c[0], c[1]), c[2])];
+          const m = Math.max(1, ...verts(cols).map(len), ...(gcols ? verts(gcols).map(len) : [])), s = 2.0 / m;
           sc.begin();
           if (gcols) ppEdges(sc, ...gcols.map((c) => scl(c, s)));
           ppiped(sc, ...cols.map((c) => scl(c, s)), { color: d >= 0 ? 'blue' : 'red', fillAlpha: 0.12 });
@@ -767,7 +771,7 @@ Over $\mathbf C$ there is a second view: every eigenvalue of a unitary operator 
           const { max, z, dev, n, e, re } = st, a = cabs(z);
           const head = `Over ${N} samples, $\\max\\big|\\,|\\det S| - 1\\big| = ${v.sci(Math.max(max, 1e-17), 1)}$.`;
           if (e) return `${head} With $\\varepsilon = ${tn(e, 2)}$ the matrices are no longer unitary ($\\|S^*S - I\\|_{\\max} = ${tn(dev, 3)}$ for the selected one), and $|\\det S| = ${tn(a, 4)}$.`;
-          return `${head} Selected: $\\det S = ${ctn(z, 4)}$, $\\overline{\\det S}\\cdot\\det S = ${tn(a * a, 12)} = \\det(S^*S)$; its ${n} eigenvalues all have modulus $1$ too.${re ? ' Over $\\mathbf R$ the determinant can only be $\\pm 1$.' : ''}`;
+          return `${head} Selected: $\\det S = ${ctn(z, 4)}$, $\\overline{\\det S}\\cdot\\det S = ${tn(a * a, 12)} = \\det(S^*S)$; its ${n} eigenvalues all have modulus $1$ too.${re ? ` Over $\\mathbf R$ the determinant can only be $\\pm 1$: here ${st.ds.filter((w) => w[0] > 0).length} samples have $+1$ and ${st.ds.filter((w) => w[0] < 0).length} have $-1$.` : ''}`;
         });
       },
     },

@@ -199,7 +199,7 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
           const me = measure(pts, c);
           pic.poly(pts, { fill: col, fillAlpha: strong ? 0.35 : 0.22, color: col, width: strong ? 2 : 1.3 });
           if (me.a / me.b > 1.02) pic.line(me.m[0] - me.e[0] * me.a, me.m[1] - me.e[1] * me.a, me.m[0] + me.e[0] * me.a, me.m[1] + me.e[1] * me.a, { color: col, width: 1, dash: [3, 3] });
-          if (circ.value) { const q = [(d * c[0]) / c[1], (d * c[2]) / c[1]]; pic.circle(q[0], q[1], me.b, { color: 'green', width: 1.6, dash: [5, 3] }); }
+          if (circ.value) { const q = [(d * c[0]) / c[1], (d * c[2]) / c[1]]; pic.circle(q[0], q[1], me.b, { color: 'purple', width: 1.8, dash: [5, 3] }); }
           return me;
         };
         v.render(() => {
@@ -226,7 +226,7 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
           top.dot(0, 0, { r: 4.5, color: 'ink', label: 'eye', labelPos: 's' });
           top.text('picture line', -half - 0.1, yp + 0.12, { align: 'left', baseline: 'bottom', size: 10.5, color: 'orange' });
         });
-        v.legend([['gold', 'the sphere you drag', { area: true }], ['green', 'chord of the centre sphere'], ['red', 'chord of the outer sphere']]);
+        v.legend([['gold', 'the sphere you drag', { area: true }], ['purple', 'painter’s circles', { dash: true }], ['green', 'chord of the centre sphere'], ['red', 'chord of the outer sphere']]);
         v.readout(() => {
           const F = rad(fov.value), d = 1 / Math.tan(F / 2), c = centreOf([gold.x, gold.y], d), pts = outline(c, d);
           const th = Math.acos(c[1] / L), me = measure(pts, c), al = Math.asin(sa);
@@ -264,7 +264,7 @@ which depends only on the four rays through $O$. So every line cutting those ray
         // colonnade mode: eye height 1.6, picture distance 2.4, horizon drawn at y = 0.7
         const HZ = 0.7, cam = camera([0, 0, 1.6], { d: 2.4 });
         const vpH = S.handle(3.0, HZ, { color: 'green', label: 'V', labelPos: 'n', constrain: (x) => [M.clamp(x, -5, 5), HZ] });
-        const b0 = S.handle(-2.4, -0.25, { color: 'accent', label: 'first column', labelPos: 'w', constrain: (x, y) => [x, Math.min(y, HZ - 0.25)] });
+        const b0 = S.handle(-3.1, -1.05, { color: 'accent', label: 'first column', labelPos: 'w', constrain: (x, y) => [x, Math.min(y, HZ - 0.25)] });
         const projHandles = [...P, O, m1, m2, n1, n2], colHandles = [vpH, b0];
         const onLine = (X, a, b) => meet([O.x, O.y], X, a, b);
         const tpar = (X, a, b) => { const L = Math.hypot(b[0] - a[0], b[1] - a[1]); return ((X[0] - a[0]) * (b[0] - a[0]) + (X[1] - a[1]) * (b[1] - a[1])) / L; };
@@ -295,7 +295,7 @@ which depends only on the four rays through $O$. So every line cutting those ray
             S.line(bx[0], HZ, bx[1], HZ, { color: 'muted', width: 1, dash: [5, 4] });
             if (cols.length > 1) { const a = cols[0].p; S.line(a[0], a[1], V[0], V[1], { color: 'accent', width: 1.2, dash: [4, 4] }); const t = cols[0].q; S.line(t[0], t[1], V[0], V[1], { color: 'accent', width: 1.2, dash: [4, 4] }); }
             cols.slice().reverse().forEach((c, k) => {
-              const i = cols.length - 1 - k, w = Math.max(2, Math.abs(c.q[1] - c.p[1]) * 0.07 * S.scale);
+              const i = cols.length - 1 - k, w = Math.max(2, Math.abs(c.q[1] - c.p[1]) * 0.09 * S.scale);
               S.line(c.p[0], c.p[1], c.q[0], c.q[1], { color: i < 4 ? 'accent' : i === 4 ? 'green' : 'gray', width: w });
             });
             // predicted 5th column from the cross-ratio of columns 2–4 (= 4/3)
@@ -345,7 +345,8 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
         const M = v.M;
         const S = v.stage({ x: [-4.6, 4.6], y: [-3.3, 3.6], equal: true, axes: false, height: 380, weight: 1.2, title: 'in the plane' });
         const T = v.stage({ x: [-2.2, 2.4], y: [-1.7, 1.9], equal: true, axes: false, height: 380, weight: 0.8, minWidth: 230, title: 'in space: two plane sections of one pyramid' });
-        const free = v.toggle('free A′', false);
+        let A2 = null;
+        const free = v.toggle('free A′', false, { onChange: (on) => { if (on && A2) { const dx = A.x - O.x, dy = A.y - O.y, L = Math.hypot(dx, dy) || 1; A2.set(A2.x - (0.75 * dy) / L, A2.y + (0.75 * dx) / L); } } });
         const tilt = v.slider('tilt of the second plane', -0.8, -0.3, -0.45, { step: 0.01 });
         const O = S.handle(-2.8, 3.2, { color: 'ink', label: 'O', labelPos: 'e' });
         const A = S.handle(0.1, -1.8, { color: 'accent', label: 'A', labelPos: 'sw' }), B = S.handle(2.3, -1.45, { color: 'accent', label: 'B', labelPos: 'e' }), C = S.handle(1.1, 1.15, { color: 'accent', label: 'C', labelPos: 'e' });
@@ -354,7 +355,7 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
           if (k === 'A' && free.value) return [x, y];
           const dx = X.x - O.x, dy = X.y - O.y, tt = M.clamp(((x - O.x) * dx + (y - O.y) * dy) / (dx * dx + dy * dy || 1), 0.12, 1.6); t[k] = tt; return [O.x + tt * dx, O.y + tt * dy];
         } });
-        const A2 = mk(A, 'A'), B2 = mk(B, 'B'), C2 = mk(C, 'C');
+        A2 = mk(A, 'A'); const B2 = mk(B, 'B'), C2 = mk(C, 'C');
         const pts = () => {
           for (const [H, X, k] of [[A2, A, 'A'], [B2, B, 'B'], [C2, C, 'C']]) if (!H.dragging && !(k === 'A' && free.value)) { H.x = O.x + t[k] * (X.x - O.x); H.y = O.y + t[k] * (X.y - O.y); }
           const a = [A.x, A.y], b = [B.x, B.y], c = [C.x, C.y], a2 = [A2.x, A2.y], b2 = [B2.x, B2.y], c2 = [C2.x, C2.y];
@@ -375,7 +376,7 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
             const dx = Q[0] - P[0], dy = Q[1] - P[1], L = Math.hypot(dx, dy) || 1;
             S.line(P[0] - (dx / L) * 30, P[1] - (dy / L) * 30, Q[0] + (dx / L) * 30, Q[1] + (dy / L) * 30, { color: 'green', width: 2 });
           }
-          const bad = free.value && P && Q && R && lineDist(R, P, Q) > 1e-3;
+          const bad = P && Q && R && lineDist(R, P, Q) > 1e-3;
           [[P, 'P'], [Q, 'Q'], [R, 'R']].forEach(([X, nm]) => { if (X) S.dot(X[0], X[1], { r: 5, color: nm === 'R' && bad ? 'red' : 'gold', label: nm, labelPos: 's' }); });
           // ---- spatial figure
           const k2 = tilt.value, z2 = (x) => 0.25 + k2 * x, xa = (0.25 + 0.75) / (0.18 - k2); // planes z1, z2 meet at x = xa
@@ -402,10 +403,10 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
         });
         v.legend([['accent', 'triangle $ABC$'], ['orange', "triangle $A'B'C'$"], ['gold', 'meeting points of corresponding sides', { dot: true }], ['green', 'the axis']]);
         v.readout(() => {
-          const { P, Q, R } = pts();
+          const { P, Q, R, a2 } = pts(), off = lineDist(a2, [O.x, O.y], [A.x, A.y]) > 1e-6;
           if (!P || !Q || !R) return 'two corresponding sides are parallel: their meeting point is at infinity, in the direction of the line through the other two';
           const L = Math.max(Math.hypot(P[0] - Q[0], P[1] - Q[1]), Math.hypot(P[0] - R[0], P[1] - R[1]), 1e-9), dv = lineDist(R, P, Q);
-          return `distance of $R$ from the line $PQ$: $${v.fix(dv, 6)}$ (relative $${v.sci(dv / L, 2)}$)` + (free.value ? ' — with $A\'$ off its ray the triangles are no longer in perspective from $O$' : ' — the triangles are in perspective from $O$, so $P$, $Q$, $R$ are collinear');
+          return `distance of $R$ from the line $PQ$: $${v.fix(dv, 6)}$ (relative $${v.sci(dv / L, 2)}$)` + (off ? ' — $A\'$ is off the ray $OA$, the triangles are no longer in perspective from a point, and $R$ leaves the line' : ' — the triangles are in perspective from $O$, so $P$, $Q$, $R$ are collinear');
         });
       },
     },
@@ -511,7 +512,7 @@ Each keeps some properties of what we see and gives up others; none of them is �
         const pic = v.stage({ x: [-2.3, 2.3], y: [-1.6, 1.45], equal: true, axes: false, height: 400 });
         const mode = v.select('light', [{ value: 'sun', label: 'sun' }, { value: 'lamp', label: 'lamp' }], 'sun');
         const refl = v.toggle('reflections in the pool', true);
-        const sun = pic.handle(-0.95, -1.4, { color: 'gold', constrain: (x, y) => [x, Math.abs(y) < 0.07 ? (y >= 0 ? 0.07 : -0.07) : y] });
+        const sun = pic.handle(0.3, -1.4, { color: 'gold', constrain: (x, y) => [x, Math.abs(y) < 0.07 ? (y >= 0 ? 0.07 : -0.07) : y] });
         let foot = null;
         const lamp = pic.handle(0.75, 0.95, { color: 'gold', label: 'lamp', labelPos: 'ne', constrain: (x, y) => [x, Math.max(y, (foot ? foot.y : -0.6) + 0.15)], onDrag: () => { foot.x = lamp.x; } });
         foot = pic.handle(0.75, -0.62, { color: 'orange', label: 'foot', labelPos: 'e', constrain: (x, y) => [lamp.x, M.clamp(y, -1.55, -0.15)] });

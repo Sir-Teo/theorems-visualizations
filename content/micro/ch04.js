@@ -414,7 +414,7 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
             const cp = v.rgb('purple'), ct = v.rgb('teal');
             s.raster((x, y) => { const w = uT(x, y), inP = Math.abs(w - uP) <= d, inQ = Math.abs(w - uQ) <= d; if (!inP && !inQ) return null; if (inP && inQ) return [(cp[0] + ct[0]) / 2, (cp[1] + ct[1]) / 2, (cp[2] + ct[2]) / 2, 95]; return inP ? [cp[0], cp[1], cp[2], 60] : [ct[0], ct[1], ct[2], 60]; }, { key: `${uP}|${uQ}|${d}|${cp}${ct}`, res: 2 });
             s.clip(() => { s.fn((x) => lvlY(uP, x), { domain: [0.05, 10], color: 'purple', width: 1.4, dash: [5, 4] }); s.fn((x) => lvlY(uQ, x), { domain: [0.05, 10], color: 'teal', width: 1.4, dash: [5, 4] }); });
-            s.text('indifferent to P', 9.8, Math.max(0.7, lvlY(uP - d, 9.8) - 0.45), { align: 'right', color: 'purple', size: 11.5, weight: 600 });
+            s.text('indifferent to P', (uP - d) ** 2 / 2.6 - 0.25, 2.6, { align: 'right', color: 'purple', size: 11.5, weight: 600 });
             s.text('indifferent to Q', lvlY(uQ + d, 8.8) + 0.25, 8.8, { align: 'left', color: 'teal', size: 11.5, weight: 600 });
           }
           const hi = Qy >= Py ? 'Q' : 'P', lo = hi === 'Q' ? 'P' : 'Q', yLo = Math.min(Py, Qy), yHi = Math.max(Py, Qy);
@@ -545,7 +545,7 @@ Monotonicity makes indifference curves slope downward and rules out thick curves
         v.readout(() => {
           const { k, uA, uC, minD, monoBad, tot, C } = st, f = (x) => v.fix(x, 2), tol = 1e-6 * Math.max(1, Math.abs(uA));
           const mono = monoBad === 0 ? 'monotone ✓ (every sampled bundle with more of both is strictly better)' : `**not monotone** ✗: ${monoBad} of ${tot} sampled bundles with more of both goods are ${k === 'thick' ? 'no better (a thick indifference set)' : 'worse (beyond the bliss point)'}`;
-          const conv = minD < -tol ? `**not convex** ✗: along the segment $u$ dips to ${f(uA + minD)} < u(A) = ${f(uA)}, so mixtures are worse than the extremes` : minD > tol ? `strictly convex ✓: every interior mixture beats the extremes (smallest gain ${f(minD)})` : 'convex but not strictly ✓: the mixtures are exactly as good as $A$ and $B$';
+          const conv = minD < -tol ? `**not convex** ✗: along the segment $u$ dips to $${f(uA + minD)} < u(A) = ${f(uA)}$, so mixtures are worse than the extremes` : minD > tol ? `strictly convex ✓: every interior mixture beats the extremes (smallest gain ${f(minD)})` : 'convex but not strictly ✓: the mixtures are exactly as good as $A$ and $B$';
           return `$C = (${f(C[0])}, ${f(C[1])})$ has $u(C) = ${f(uC)}$ against $u(A) = ${f(uA)}$. These preferences are ${mono}; and ${conv}.`;
         });
       },

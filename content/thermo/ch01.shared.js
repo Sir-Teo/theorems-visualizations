@@ -335,15 +335,18 @@ export function runBudget(G, T, ch, ms, each) {
 }
 /** Clock for animated simulations: returns the simulated time to add this frame (catching up after a jump, e.g. a still frame). */
 export function simClock(rate, cap = 0.25, warm = 0) {
-  let last = null;
+  let last = null, pending = 0;
   const clock = (t, reset) => {
     clock.big = false;
+    if (pending > 0 && last !== null && t >= last - 1e-6) { const p = pending; pending = 0; clock.big = true; last = t; return p; }
     if (last === null || t < last - 1e-6) { const first = last === null; last = t; reset?.(); clock.big = true; return Math.max(first ? warm : 0, Math.min(t, 8) * rate); }
     const dt = t - last; last = t;
     if (dt > 0.5) { clock.big = true; return Math.min(dt, 8) * rate; }
     return Math.min(dt, cap) * rate;
   };
   clock.big = false;
+  /** ask for a head start of `amount` simulated time on the next frame (after a reset, so plots are not empty) */
+  clock.kick = (amount) => { pending = amount; };
   /** wall-clock budget (ms) for this frame: generous when catching up */
   clock.ms = () => (clock.big ? 900 : 14);
   return clock;

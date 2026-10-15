@@ -579,7 +579,7 @@ An object turned away from this position breaks (a) and (b).`,
             win.path(P, { color: col, width: 2.6 });
             P.forEach((p) => win.dot(p[0], p[1], { r: 3, color: col }));
             if (!bot.value) {
-              if (cx + d <= win.bounds.x[1]) win.dot(cx + d, h, { r: 5, color: 'green', label: 'distance point', labelPos: 'n' });
+              if (cx + d <= win.bounds.x[1]) win.dot(cx + d, h, { r: 5, color: 'green', label: 'D', labelPos: 'n' });
               else win.text('to the distance point →', win.bounds.x[1] - 0.08, h + 0.2, { align: 'right', baseline: 'bottom', size: 10.5, color: 'green' });
             }
           }
@@ -606,12 +606,13 @@ An object turned away from this position breaks (a) and (b).`,
           } else small.corner('(used from step 5)', 'tl', { color: 'faint' });
           if (k >= 5) {
             small.line(d, 0, d, h + 0.4, { color: 'orange', width: 2.4 });
-            small.measure(0, -0.55, d, -0.55, `d = ${d}`, { color: 'orange' });
+            small.arrow(0, -0.5, d, -0.5, { color: 'orange', width: 1.4, both: true, head: 7 });
+            small.text(`d = ${d}`, d + 0.25, -0.5, { align: 'left', size: 11.5, color: 'orange' });
             for (let j = 1; j <= N; j++) small.dot(d, (h * j) / (d + j), { r: 2.6, color: 'orange' });
             small.text('picture plane', d + 0.15, h + 0.35, { align: 'left', baseline: 'top', size: 10.5, color: 'orange' });
           }
         });
-        v.legend([['accent', 'orthogonals to $C$'], ['orange', 'transversals'], ['green', 'diagonal check']]);
+        v.legend([['accent', 'orthogonals to $C$'], ['orange', 'transversals'], ['green', 'diagonal check, to the distance point $D$']]);
         v.readout(() => {
           const cx = C0.x, h = C0.y, d = dS.value, ys = heights(h, d);
           const P = Array.from({ length: Math.min(N, W) + 1 }, (_, j) => corner(cx, h, j, ys[j])).filter((p) => p[1] < h);

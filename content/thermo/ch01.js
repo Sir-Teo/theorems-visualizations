@@ -275,10 +275,12 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
         const sp = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: 'box', xlabel: 'NkT/V', ylabel: 'measured P', title: 'measured pressure against $NkT/V$' });
         const sz = v.stage({ x: [0, 0.32], y: [0.5, 4.6], height: 290, axes: 'box', xlabel: 'packing fraction η (middle)', ylabel: 'P/ρkT', title: 'departure from the ideal gas' });
         const fresh = () => { win = G.snap(); win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 }; };
-        const make = () => { G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true }); fresh(); };
-        make();
-        const sweep = (t) => { const u = (t % 260) / 260, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
+        const make = () => {
+          clock.kick(30);
+          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true }); fresh(); };
         const clock = simClock(12, 0.06, 40);
+        const sweep = (t) => { const u = (t % 260) / 260, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
+        make();
         const rp = ramp(v, 'teal', 'red', 24, 'purple');
         v.animate((t) => {
           const add = clock(t, () => { tSim = 0; pts = []; G = null; make(); });
@@ -343,22 +345,22 @@ with $x_i = N_i/N$ the mole fraction. Equivalently, each gas behaves as if the o
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Dalton%27s_law' },
       viz(v) {
         const L = 8, A = L * L, SPC = [{ m: 1, d: 0.9, col: 'teal', name: 'light' }, { m: 4, d: 1.15, col: 'purple', name: 'medium' }, { m: 16, d: 1.4, col: 'orange', name: 'heavy' }], NUM = [70, 50, 34];
-        let G, a0, acc;
+        let G, a0, acc, res = null;
         const tg = SPC.map((sp, k) => v.toggle(`${sp.name} ($m$ = ${sp.m}, $d$ = ${sp.d}σ)`, true, { onChange: () => make() }));
         const box = v.select('volume', [{ value: 'dilute', label: 'large (dilute)' }, { value: 'crowded', label: 'small (crowded)' }], 'dilute', { onChange: () => make() });
         const sc = v.stage({ x: [-1, 37.5], y: [-1.6, L + 1.2], equal: true, height: 190, axes: false, full: true });
         const sb = v.stage({ x: [0, 3.6], y: [0, 1], height: 300, axes: 'box', ylabel: 'pressure (kT/σ³)', xticks: [[0.7, 'measured, by species'], [1.8, 'each kind alone'], [2.9, 'Nᵢ kT / V']], title: 'partial pressures, stacked by species', weight: 1.3 });
         const make = () => {
+          clock.kick(80);
           const counts = NUM.map((n, k) => (tg[k].value ? n : 0));
           if (counts.every((c) => c === 0)) counts[0] = NUM[0];
           G = hsGas({ species: SPC.map((q) => ({ m: q.m, d: q.d })), counts, Ly: L, Lz: L, T: 1, rng: v.rng(21), piston: { X: box.value === 'dilute' ? 36 : 8 }, periodic: true });
-          a0 = null; acc = { n: 0, T: 0, c: [0, 0, 0] };
+          a0 = null; acc = { n: 0, T: 0, c: [0, 0, 0] }; res = null;
         };
-        make();
         const clock = simClock(5, 0.06, 30);
+        make();
         const alone = (rho, d, T) => { const eta = rho * Math.PI / 6 * d ** 3; return rho * T * carnahanStarling(eta); };
         const bmcsl = (rhos, T) => { const xi = [0, 1, 2, 3].map((k) => Math.PI / 6 * rhos.reduce((s, r, i) => s + r * SPC[i].d ** k, 0)); const o = 1 - xi[3]; return T * 6 / Math.PI * (xi[0] / o + 3 * xi[1] * xi[2] / (o * o) + (3 - xi[3]) * xi[2] ** 3 / (o ** 3)); };
-        let res = null;
         v.animate((t) => {
           const add = clock(t, () => make());
           runBudget(G, add, 0.1, clock.ms(), () => {
@@ -372,8 +374,9 @@ with $x_i = N_i/N$ the mole fraction. Equivalently, each gas behaves as if the o
           const cols = SPC.map((q) => q.col);
           drawGas(sc, G, { periodic: true, piston: true, rod: 0, color: (i) => cols[G.S[i]], rScale: 1 });
           sc.text(box.value === 'dilute' ? 'large volume' : 'small volume: molecules crowd each other', 0, -1, { size: 12, color: 'muted' });
-          if (a0 && acc.n > 5) {
-            const r = G.meas(a0, G.snap()), T = acc.T / acc.n, V = G.volume(), rho = acc.c.map((c) => c / acc.n);
+          const rr = a0 ? G.meas(a0, G.snap()) : null;
+          if (rr && rr.hits >= 150) {
+            const r = rr, T = acc.T / acc.n, V = G.volume(), rho = acc.c.map((c) => c / acc.n);
             const counts = [0, 0, 0]; for (let i = 0; i < G.N; i++) counts[G.S[i]]++;
             const meas = r.impS.map((q) => q / r.Aint), al = rho.map((rr, k) => alone(rr, SPC[k].d, T)), id = counts.map((c) => c * T / V);
             res = { meas, al, id, T, rho, tot: meas.reduce((s, q) => s + q, 0), mix: bmcsl(rho, T), hits: r.hits, dt: r.dt };
@@ -386,13 +389,13 @@ with $x_i = N_i/N$ the mole fraction. Equivalently, each gas behaves as if the o
             });
             sb.hline(res.mix, { color: 'red', dash: [5, 4], width: 1.4 });
             sb.text('mixture theory (BMCSL)', 3.55, res.mix, { align: 'right', dy: -9, size: 11, color: 'red' });
-          } else sb.corner('collecting impacts…', 'tl');
+          } else { res = null; sb.corner(`collecting impacts… (${rr ? rr.hits : 0} so far)`, 'tr'); }
         }, { still: 8 });
         v.legend(SPC.map((q) => [q.col, `${q.name} molecules`]).concat([['red', 'hard-sphere mixture theory', { dash: true }]]));
         v.readout(() => {
           if (!res) return 'collecting impacts…';
           const sumA = res.al.reduce((s, q) => s + q, 0), sumI = res.id.reduce((s, q) => s + q, 0);
-          return `measured total ${v.fix(res.tot, 4)} (${res.hits} impacts in ${v.fix(res.dt, 0)} time units) = ${res.meas.map((q) => v.fix(q, 4)).join(' + ')} · sum of "alone" pressures ${v.fix(sumA, 4)} · $\\sum N_ikT/V$ = ${v.fix(sumI, 4)} · measured / Dalton = ${v.fix(res.tot / sumA, 3)} · hard-sphere mixture theory ${v.fix(res.mix, 4)}`;
+          return `measured total ${v.fix(res.tot, 4)} ± ${v.fix(res.tot * Math.sqrt(1.27 / res.hits), 4)} (${res.hits} impacts in ${v.fix(res.dt, 0)} time units) = ${res.meas.map((q) => v.fix(q, 4)).join(' + ')} · sum of "alone" pressures ${v.fix(sumA, 4)} · $\\sum N_ikT/V$ = ${v.fix(sumI, 4)} · measured / Dalton = ${v.fix(res.tot / sumA, 3)} · hard-sphere mixture theory ${v.fix(res.mix, 4)}`;
         });
       },
     },
@@ -422,6 +425,7 @@ Collisions between molecules do not change the result: they conserve momentum an
         const sh = v.stage({ x: [-4.2, 4.2], y: [0, 0.75], height: 220, axes: 'box', xlabel: 'v_x (units of √(kT/m))', ylabel: 'probability density', title: 'velocity of all molecules and of those hitting the piston', full: true });
         const binsAll = new Float64Array(42), binsHit = new Float64Array(42), bw = 0.2;
         const make = () => {
+          clock.kick(50);
           const one = mode.value === 'one';
           Ns.el.hidden = one;
           G = hsGas({ species: [{ m: 1, d: col.value && !one ? 0.5 : 0.02 }], counts: [one ? 1 : Ns.value], Ly: L, Lz: L, T: 1, rng: v.rng(31), piston: { X } });
@@ -429,8 +433,8 @@ Collisions between molecules do not change the result: they conserve momentum an
           hits = []; t0 = G.t; mv2 = 0; nmv = 0; binsAll.fill(0); binsHit.fill(0);
           G.onWall = (i, w, J) => { if (w === 1) { hits.push([G.t, J]); const b = Math.floor((J / (2 * G.m[i]) + 4.2) / bw); if (b >= 0 && b < 42) binsHit[b]++; } };
         };
-        make();
         const clock = simClock(8, 0.05, 70);
+        make();
         v.animate((t) => {
           const add = clock(t, () => make());
           runBudget(G, add, 0.1, clock.ms(), (h) => {
@@ -497,11 +501,12 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
         const sk = v.stage({ x: [0, 160], y: [0, 4.5], height: 260, axes: 'box', xlabel: 'time', ylabel: '⟨½mv²⟩', title: 'mean kinetic energy of each kind', weight: 1.1 });
         const sv = v.stage({ x: [0, 4.5], y: [0, 1.6], height: 260, axes: 'box', xlabel: 'speed v', ylabel: 'probability density', title: 'speed distributions', weight: 1 });
         const make = () => {
+          clock.kick(30);
           G = hsGas({ species: [{ m: 1, d: 1, T: 2.6 }, { m: mh.value, d: 1, T: 0.4 }], counts: NS, Ly: L, Lz: L, rng: v.rng(41), piston: { X }, thermal: [bath.value ? 1 : 0, 0, 0, 0, 0, 0], Tb: Tb.value });
           series = []; sp = [[], []]; tLast = -1;
         };
-        make();
         const clock = simClock(10, 0.05, 0);
+        make();
         const kin = () => { const K = [0, 0], n = [0, 0]; for (let i = 0; i < G.N; i++) { const s = G.S[i]; K[s] += 0.5 * G.m[i] * (G.vx[i] ** 2 + G.vy[i] ** 2 + G.vz[i] ** 2); n[s]++; } return [K[0] / n[0], K[1] / n[1]]; };
         v.animate((t) => {
           const add = clock(t, () => make());
@@ -557,13 +562,14 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
         const pv = v.stage({ x: [1200, 5200], y: [0, 0.5], height: 290, axes: 'box', xlabel: 'V (σ³)', ylabel: 'P on the piston', title: 'pressure on the piston during each stroke', weight: 1.2 });
         const sd = v.stage({ x: [0, X1], y: [0, 3], height: 290, axes: 'box', xlabel: 'x (σ)', ylabel: 'density / mean', title: 'density along the cylinder', weight: 1 });
         const make = () => {
+          clock.kick(1.2);
           G = hsGas({ species: [{ m: 1, d: 0.5 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 }, diffuse: [1, 0, 1, 1, 1, 1] });
           dir = -1; cyc = 0; pts = []; Tstart = G.stats().T; Wstart = 0; rec = [{ cyc: 0, T: Tstart, W: 0 }]; lastSnap = G.snap(); prof = new Float64Array(22).fill(1); tCyc = 0;
           G.setU(-us.value);
         };
-        make();
-        const P0 = N * 1 / (X1 * A), V0 = X1 * A, adi = (V) => P0 * (V0 / V) ** (5 / 3);
         const clock = simClock(1, 0.05);
+        const P0 = N * 1 / (X1 * A), V0 = X1 * A, adi = (V) => P0 * (V0 / V) ** (5 / 3);
+        make();
         v.animate((t) => {
           const u = us.value, rate = clamp(2 * (X1 - X2) / u / 7, 6, 400);
           const add = clock(t, () => make()) * rate;
@@ -701,13 +707,14 @@ positive when the gas is compressed ($dV < 0$) and negative when it expands and 
         const sQ = v.stage({ x: [0, 200], y: [-60, 60], height: 260, axes: 'box', xlabel: 'time', ylabel: 'energy', title: 'energy that crossed the plate vs energy change of each side', weight: 1 });
         const setMass = () => { const P = G.plate; if (ins.value) { P.M = Infinity; P.U = 0; } else { P.M = Ms.value; } G.repredict(); };
         const make = () => {
+          clock.kick(30);
           G = hsGas({ species: [{ m: 1, d: 1, T: 2.2 }, { m: 1, d: 1, T: 0.35 }], counts: [70, 70], side: [0, 1], Ly: L, Lz: L, rng: v.rng(61), piston: { X: XR }, plate: { X: XP + SLOT / 2, U: 0.02, M: ins.value ? Infinity : Ms.value, lo: XP, hi: XP + SLOT } });
           if (ins.value) G.plate.U = 0;
           G.repredict();
           hist = []; Ul0 = G.stats(0).U; Ur0 = G.stats(1).U; xmin = Infinity; xmax = -Infinity;
         };
-        make();
         const clock = simClock(10, 0.05, 0);
+        make();
         let tl = -1;
         v.animate((t) => {
           const add = clock(t, () => make());

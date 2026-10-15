@@ -197,7 +197,7 @@ $$\hat\Gamma(v \otimes w) = \Gamma(v, w) \qquad \text{for all } (v, w) \in V \ti
         v.render(() => {
           const k = sel.value, Gf = G[k], vv = [hv.x, hv.y], w = [hw.x, hw.y];
           // ---- the plane picture
-          if (k === 'det') { const a = Gf(vv, w)[0], col = a >= 0 ? 'green' : 'red'; P.poly([[0, 0], vv, add(vv, w), w], { fill: col, fillAlpha: 0.18, color: col, width: 1.2 }); P.tex(`\\det = ${tn(a, 2)}`, (vv[0] + w[0]) / 2, (vv[1] + w[1]) / 2, { color: col, size: 13 }); }
+          if (k === 'det') { const a = Gf(vv, w)[0], col = a >= 0 ? 'green' : 'red'; P.poly([[0, 0], vv, add(vv, w), w], { fill: col, fillAlpha: 0.18, color: col, width: 1.2 }); P.tex(`\\det = ${tn(a, 2)}`, 0.42 * (vv[0] + w[0]), 0.42 * (vv[1] + w[1]), { color: col, size: 13 }); }
           if (k === 'dot') { const u = scl(vv, 1 / Math.max(len(vv), 1e-9)), pr = scl(u, dot(w, u)); P.line(-2.2 * u[0], -2.2 * u[1], 2.2 * u[0], 2.2 * u[1], { color: 'faint', width: 1 }); P.line(w[0], w[1], pr[0], pr[1], { color: 'muted', dash: [4, 4], width: 1.2 }); P.line(0, 0, pr[0], pr[1], { color: 'green', width: 5, alpha: 0.6 }); }
           if (k === 'cmul') { const z = Gf(vv, w); P.arrow(0, 0, z[0], z[1], { color: 'green', width: 2.8 }); P.tex('vw', z[0], z[1], { dx: 14, dy: -10, color: 'green', size: 15 }); P.circle(0, 0, 1, { color: 'faint', width: 1 }); }
           if (k === 'brk') { P.circle(0, 0, len(vv), { color: 'accent', width: 1, dash: [4, 4] }); P.circle(0, 0, len(w), { color: 'orange', width: 1, dash: [4, 4] }); }
@@ -291,7 +291,7 @@ In particular $\|v \otimes w\| = \|v\|\,\|w\|$.`,
           if (!st) return '';
           const { md, lhs, rhs, ivu, iwx, ok, L } = st;
           if (md === 'on') return `$\\langle v\\otimes w, u\\otimes x\\rangle = \\sum_{j,k} v_j w_k\\, u_j x_k = ${tn(lhs, 4)}$ and $\\langle v,u\\rangle\\langle w,x\\rangle = ${tp(ivu, 3)} \\times ${tp(iwx, 3)} = ${tn(rhs, 4)}$ ${mark(ok)}.`;
-          if (md === 'skew') return `In the skewed basis $b_1 = (1, 0)$, $b_2 = (0.8, 0.6)$ of $V$ the cell-by-cell sum of coefficients is $${tn(lhs, 3)}$, not $\\langle v,u\\rangle\\langle w,x\\rangle = ${tn(rhs, 3)}$ ${mark(ok)}: the construction in the proof needs **orthonormal** bases.`;
+          if (md === 'skew') return `In the skewed basis $b_1 = (1, 0)$, $b_2 = (0.8, 0.6)$ of $V$ the sum of products of coefficients is $${tn(lhs, 3)}$, not $\\langle v,u\\rangle\\langle w,x\\rangle = ${tn(rhs, 3)}$ ${mark(ok)}: the construction in the proof needs **orthonormal** bases.`;
           return `$\\lambda = ${tn(L, 2)}$: the tensor $(\\lambda v)\\otimes(w/\\lambda) = v \\otimes w$ has not changed, yet $\\langle\\lambda v, u\\rangle + \\langle w/\\lambda, x\\rangle = ${tn(lhs, 3)}$ moves with $\\lambda$ — so this "rule" does not define anything on $V \\otimes W$. The product rule gives $${tn(rhs, 3)}$ for every $\\lambda$.`;
         });
       },
@@ -381,7 +381,8 @@ $$\dim \mathcal B(V_1, \dots, V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
         let st = null;
         v.render(() => {
           const n = [s1.value, s2.value, s3.value], k = fn.value;
-          const r = v.rng(seed), u = Array.from({ length: n[0] }, () => r1(r.uniform(-1.2, 1.2))), vv = Array.from({ length: n[1] }, () => r1(r.uniform(-1.2, 1.2))), w = Array.from({ length: n[2] }, () => r1(r.uniform(-1.2, 1.2)));
+          const r = v.rng(seed), g = () => { const x = r1(r.uniform(-1.2, 1.2)); return Math.abs(x) < 0.25 ? (x < 0 ? -0.5 : 0.5) : x; };
+          const u = Array.from({ length: n[0] }, g), vv = Array.from({ length: n[1] }, g), w = Array.from({ length: n[2] }, g);
           const rr = v.rng(77 + n[0] * 9 + n[1] * 3 + n[2]), Rc = zeros3(3, 3, 3).map((P) => P.map((row) => row.map(() => r1(rr.uniform(-1, 1)))));
           const beta = (a, b, c) => {
             if (k === 'prod') return dot(PH[0].slice(0, n[0]), a) * dot(PH[1].slice(0, n[1]), b) * dot(PH[2].slice(0, n[2]), c);
@@ -682,7 +683,7 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
             const Wk = [0, 1, 2].map((i) => [0, 1, 2].map((j) => W3[i][j][k])), Pk = [0, 1, 2].map((i) => [0, 1, 2].map((j) => P3[i][j][k]));
             const g1 = grid(T, Wk, k * 1.95, 0.55, c, { scale: 1, dec: 0, size: 11.5, minPx: 18 });
             T.tex(`k = ${k + 1}`, g1.cx, -1.2, { size: 11.5, color: 'muted', baseline: 'top' });
-            const g2 = grid(T, Pk, 7.1 + k * 1.95, 0.55, c, { scale: Math.max(0.2, maxAbs(P3)), numbers: false });
+            const g2 = grid(T, Pk, 7.1 + k * 1.95, 0.55, c, { scale: Math.max(0.15, 0.7 * maxAbs(P3)), numbers: false, alpha: 0.85 });
             T.tex(`k = ${k + 1}`, g2.cx, -1.2, { size: 11.5, color: 'muted', baseline: 'top' });
           }
           T.tex(k0 === 'det' ? '\\varepsilon_{ijk} = \\det(e_i, e_j, e_k)' : '\\Gamma(e_i, e_j, e_k)', 2.7, 0.65, { size: 13.5, baseline: 'bottom' });

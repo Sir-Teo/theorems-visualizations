@@ -216,7 +216,7 @@ export default {
       name: 'Positive operators have nonnegative determinant',
       statement: String.raw`Suppose $V$ is an inner product space and $T \in \mathcal L(V)$ is a positive operator ($T$ is self-adjoint and $\langle Tv, v\rangle \ge 0$ for all $v \in V$). Then $\det T \ge 0$. The converse is false: a self-adjoint operator with an even number of negative eigenvalues has positive determinant without being positive.`,
       idea: String.raw`By the spectral theorem (7.29, 7.31), $V$ has an orthonormal basis $e_1, \dots, e_n$ of eigenvectors of $T$, so the matrix of $T$ in this basis is diagonal with the eigenvalues $\lambda_1, \dots, \lambda_n$ on the diagonal. By 9.53 and 9.48, $\det T = \lambda_1 \cdots \lambda_n$. Every eigenvalue of a positive operator is nonnegative (7.38), so the product is $\ge 0$. This fits the analogy that positive operators play the role of the nonnegative numbers.`,
-      caption: String.raw`Left: a self-adjoint operator $T$ on $\mathbf R^2$, built from its eigenvalues $\lambda_1, \lambda_2$ (sliders) and an orthonormal eigenbasis (drag $e_1$ around the circle). The background is the quadratic form $v \mapsto \langle Tv, v\rangle$: blue where it is positive, red where it is negative, with the zero lines dark. The rectangle spanned by $\lambda_1e_1$ and $\lambda_2e_2$ is $T$ applied to the unit square on $e_1, e_2$, so its signed area is $\det T = \lambda_1\lambda_2$. Right: many random self-adjoint $n$-by-$n$ matrices, plotted by their smallest eigenvalue against $\operatorname{sign}(\det)\,|\det|^{1/n}$. The positive ones, right of the axis, never fall in the red quadrant. Push $\lambda_2$ below $0$ to make a saddle: the determinant turns negative. With $n = 3$ or more, notice the orange points left of the axis with $\det > 0$: those are not positive.`,
+      caption: String.raw`Left: a self-adjoint operator $T$ on $\mathbf R^2$, built from its eigenvalues $\lambda_1, \lambda_2$ (sliders) and an orthonormal eigenbasis (drag $e_1$ around the circle). The background is the quadratic form $v \mapsto \langle Tv, v\rangle$: blue where it is positive, red where it is negative, with the zero lines dark. The rectangle spanned by $\lambda_1e_1$ and $\lambda_2e_2$ is $T$ applied to the unit square on $e_1, e_2$, so its signed area is $\det T = \lambda_1\lambda_2$. Right: many random self-adjoint $n$-by-$n$ matrices, plotted by their smallest eigenvalue against $\operatorname{sign}(\det)\,|\det|^{1/n}$. The positive ones, right of the axis, never fall in the red quadrant. Push $\lambda_2$ below $0$ to make a saddle: the determinant turns negative. The converse fails: the orange points left of the axis have $\det > 0$ (an even number of negative eigenvalues) but are not positive.`,
       deps: ['ladr-7.38', 'ladr-7.29', 'ladr-7.31', 'ladr-9.53', 'ladr-9.48'],
       tags: ['determinants', 'positivity'],
       viz(v) {
@@ -359,7 +359,7 @@ $$|\det T| = \sqrt{\det(T^*T)} = s_1 s_2 \cdots s_n.$$`,
 $$\operatorname{volume} T(\Omega) = |\det T|\,(\operatorname{volume} \Omega).$$
 The factor is the same for every region $\Omega$; this is why $|\det|$ of a derivative appears in the change of variables formula of multivariable calculus.`,
       idea: String.raw`If $T$ is invertible, 7.111 says that $T$ multiplies every volume by the product of its singular values, and 9.60 identifies that product with $|\det T|$. If $T$ is not invertible, $T(\Omega)$ lies in a proper subspace, which has volume $0$, and $\det T = 0$ (9.50). Linearity is what makes the factor independent of $\Omega$. For a nonlinear map the local factor $|\det|$ of the derivative changes from point to point.`,
-      caption: String.raw`Left: a region $\Omega$ (green) and its image (blue) under $F(x) = Tx + \beta\,g(x)$, where $g$ is a fixed quadratic map (drag the background to rotate). Both volumes are measured independently, as the volume enclosed by a triangulated surface (the divergence theorem: a sum of signed tetrahedra). Right: the measured ratio $\operatorname{vol} F(\Omega) / \operatorname{vol}\Omega$ as $\Omega$ slides along the $x$-axis. Move it with *position* and resize it with *size*. With $\beta = 0$ the map is linear, and the curve is flat at $|\det T|$ (green dashed) for every shape, position and size. Raise $\beta$ to break linearity: the ratio starts to depend on where $\Omega$ is.`,
+      caption: String.raw`Left: a region $\Omega$ (green) and its image (blue) under $F(x) = Tx + \beta\,g(x)$, where $g(x) = 0.35\,x_1x$ is a fixed quadratic map (drag the background to rotate). Both volumes are measured independently, as the volume enclosed by a triangulated surface (the divergence theorem: a sum of signed tetrahedra). Right: the measured ratio $\operatorname{vol} F(\Omega) / \operatorname{vol}\Omega$ as $\Omega$ slides along the $x$-axis. Move it with *position* and resize it with *size*. With $\beta = 0$ the map is linear, and the curve is flat at $|\det T|$ (green dashed) for every shape, position and size. Raise $\beta$ to break linearity: the ratio starts to depend on where $\Omega$ is.`,
       deps: ['ladr-7.111', 'ladr-9.60'],
       see: ['rca-2.23'],
       tags: ['determinants', 'geometry'],
@@ -373,7 +373,7 @@ The factor is the same for every region $\Omega$; this is why $|\det|$ of a deri
         v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'flip', label: '$\\det T < 0$' }, { value: 'flat', label: 'nearly singular' }], 'gen', { onChange: (k) => { T = PRE[k]; } });
         const shape = v.select('$\\Omega$', [{ value: 'blob', label: 'blob' }, { value: 'ball', label: 'ball' }, { value: 'cube', label: 'cube' }], 'blob');
         const pos = v.slider('position', -1, 1, 0.3, { step: 0.01 }), size = v.slider('size', 0.3, 0.9, 0.6, { step: 0.01 });
-        const beta = v.slider('bend $\\beta$ (break linearity)', 0, 1, 0, { step: 0.01 });
+        const beta = v.slider('bend $\\beta$ (break linearity)', 0, 0.6, 0, { step: 0.01 });
         const NU = 28, NV = 16;
         const radial = (kind, d) => (kind === 'ball' ? 1 : kind === 'cube' ? 1 / Math.max(...d.map(Math.abs)) : 1 + 0.22 * Math.sin(3 * Math.atan2(d[1], d[0])) * (1 - d[2] * d[2]) + 0.15 * d[2]);
         /** Surface grid of Ω (points P[i][j]), i over longitude, j over latitude including the poles. */
@@ -393,7 +393,7 @@ The factor is the same for every region $\Omega$; this is why $|\det|$ of a deri
           for (let i = 0; i < NU; i++) for (let j = 0; j < NV; j++) { const i1 = (i + 1) % NU, a = P[i][j], b = P[i1][j], c = P[i1][j + 1], d = P[i][j + 1]; tri(a, b, c); tri(a, c, d); }
           return s;
         };
-        const F = (x, b) => add(mv(T, x), scl([x[1] * x[1], x[2] * x[2], x[0] * x[0]], 0.5 * b));
+        const F = (x, b) => add(mv(T, x), scl(x, 0.35 * b * x[0]));
         const ratioAt = (p, kind, r, b) => { const P = mesh(kind, [p, 0, 0], r); return Math.abs(vol(P.map((row) => row.map((x) => F(x, b)))) / vol(P)); };
         let st = null;
         v.render(() => {
@@ -449,8 +449,8 @@ So the characteristic polynomial of 8.26 can be computed from any matrix of $T$ 
           cx: [[1, -2, 0, 2], [1, -3, 0, 4], [-1, 1, 0, -1], [0, -3, -1, 4]],
           nil: [[-1, 1, 0, 0], [-2, 0, -1, 2], [1, 0, 0, -1], [-1, 0, -1, 1]],
         };
-        let A = clone(PRE.jordan), st = null;
-        v.select('', [{ value: 'jordan', label: '$2, 2, 2, -1$, not diagonalizable' }, { value: 'diag', label: '$2, 2, 2, -1$, diagonalizable' }, { value: 'cx', label: '$\\pm i$ and $1, 1$' }, { value: 'nil', label: 'nilpotent' }], 'jordan', { onChange: (k) => { A = clone(PRE[k]); } });
+        let A = clone(PRE.jordan), st = null, reprobe = true;
+        v.select('', [{ value: 'jordan', label: '$2, 2, 2, -1$, not diagonalizable' }, { value: 'diag', label: '$2, 2, 2, -1$, diagonalizable' }, { value: 'cx', label: '$\\pm i$ and $1, 1$' }, { value: 'nil', label: 'nilpotent' }], 'jordan', { onChange: (k) => { A = clone(PRE[k]); reprobe = true; } });
         const D = v.stage({ x: [-3, 4], y: [-2.6, 2.6], equal: true, height: 360, weight: 1.3, minWidth: 300, title: 'phase portrait of $z \\mapsto \\det(zI - A)$' });
         const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, minWidth: 250 });
         const TA = v.table(E, { rows: 4, cols: 4, region: [0.08, 0.5, 0.92, 0.9], maxCell: 44, size: 13.5 });
@@ -463,6 +463,11 @@ So the characteristic polynomial of 8.26 can be computed from any matrix of $T$ 
         v.render(() => {
           last = [ctr.x, ctr.y];
           const n = A.length, { eig, cp } = spectrumInt(M, A), Ac = cM(A);
+          if (reprobe && eig.length) {
+            reprobe = false;
+            const e = eig.reduce((b, f) => (f.m > b.m ? f : b), eig[0]);
+            ctr.x = e.lam[0] + 0.2; ctr.y = e.lam[1] - 0.25; rim.x = ctr.x; rim.y = ctr.y - 0.85; last = [ctr.x, ctr.y];
+          }
           const key = JSON.stringify(A);
           D.domain((z) => { const w = detShift(A, [z.re, z.im]); return v.cx(w[0], w[1]); }, { key, res: 2, fade: 0.12 });
           D.axes();
@@ -505,10 +510,11 @@ So the characteristic polynomial of 8.26 can be computed from any matrix of $T$ 
         v.readout(() => {
           if (!st) return '';
           const { eig, cp, wind, dSum, near } = st;
-          const fac = eig.map((e) => { const l = e.lam, base = cabs(l) < 1e-9 ? 'z' : `(z ${Math.abs(l[1]) < 1e-9 ? plus(-l[0], 3) : `- (${ctn(l, 3)})`})`; return e.m > 1 ? `${base}^{${e.m}}` : base; }).join('');
+          const fac = eig.map((e) => { const l = e.lam, base = cabs(l) < 1e-9 ? 'z' : `(z ${Math.abs(l[1]) < 1e-9 ? plus(-l[0], 3) : Math.abs(l[0]) < 1e-9 ? `${l[1] < 0 ? '+' : '-'} ${ctn([0, Math.abs(l[1])], 3)}` : `- (${ctn(l, 3)})`})`; return e.m > 1 ? `${base}^{${e.m}}` : base; }).join('');
           const ok = eig.every((e) => e.dG === e.m);
           const probe = near ? 'Move the probe circle off the zeros.' : `Along the probe circle $\\det(zI - A)$ winds ${wind} time${Math.abs(wind) === 1 ? '' : 's'} around $0$, and the generalized eigenspaces inside have total dimension ${dSum}${wind === dSum ? ' — equal.' : '.'}`;
-          return `$\\det(zI - A) = ${polyTeX(cp, 'z', 0)} = ${fac}$; every exponent equals $\\dim G(\\lambda, A)$${ok ? '' : ' — check failed'}. ${probe}`;
+          const pt = polyTeX(cp, 'z', 0);
+          return `$\\det(zI - A) = ${pt}${pt === fac ? '' : ` = ${fac}`}$; every exponent equals $\\dim G(\\lambda, A)$${ok ? '' : ' — check failed'}. ${probe}`;
         });
       },
     },
@@ -558,7 +564,7 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           const real = ev.filter((z) => Math.abs(z[1]) < 1e-9).map((z) => z[0]).sort((a, b) => a - b);
           real.forEach((x) => P.dot(x, 0, { r: 7, color: 'green', hollow: true, width: 2.6 }));
           const dev = c ? Math.max(...grid.map((x, i) => Math.abs(pv(x) - vals[i]) / (1 + Math.abs(vals[i])))) : NaN;
-          P.corner(c ? `leading coefficient ${pn(c[n], 6)}` : 'two nodes coincide', 'tl', { color: c && Math.abs(c[n] - 1) < 1e-6 ? 'green' : 'red', weight: 700 });
+          plateCorner(P, c ? `leading coefficient ${pn(c[n], 6)}` : 'two nodes coincide', c && Math.abs(c[n] - 1) < 1e-6 ? 'green' : 'red');
           // editor
           TT.draw({ rows: n, cols: n, value: (i, j) => A[i][j], fill: (i, j) => (i === j ? ['gold', 0.14] : null) });
           ttl(E, TT, 'A', 'ink', false, 16);
@@ -566,7 +572,8 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           const R = nice(1.2 * Math.max(1.5, ...ev.map((z) => Math.max(Math.abs(z[0]), 1.5 * Math.abs(z[1])))), [2, 3, 4, 5, 6, 8, 10]);
           const Ry = Math.max(R / 1.5, 1.5 * Math.max(...ev.map((z) => Math.abs(z[1]))) + 0.4);
           Z.setView([-R, R], [-Ry, Ry]);
-          ev.forEach((z) => Z.dot(z[0], z[1], { r: 6, color: Math.abs(z[1]) < 1e-9 ? 'green' : 'red', label: cpn(z, 2), labelPos: z[1] < -1e-9 ? 's' : 'n' }));
+          ev.filter((z) => Math.abs(z[1]) >= 1e-9).forEach((z) => Z.dot(z[0], z[1], { r: 6, color: 'red', label: cpn(z, 2), labelPos: z[1] < 0 ? 's' : 'n' }));
+          real.forEach((x, k) => Z.dot(x, 0, { r: 6, color: 'green', label: pn(x, 2), labelPos: k % 2 ? 's' : 'n' }));
           st = { n, c, dev, real, ev, sgn };
         });
         v.legend([['gold', '$\\det(\\lambda I - A)$, computed pointwise', { dot: true }], ['orange', 'interpolation nodes', { dot: true }], ['accent', 'interpolating polynomial'], ['green', 'real zeros = eigenvalues', { dot: true }], ['red', 'non-real zeros', { dot: true }]]);
@@ -667,8 +674,13 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
             const ext = Math.max(1.5, ...zs.map((z) => Math.max(z * z, Math.abs(z)))), Rv = nice(1.2 * ext, [1.5, 2, 3, 4, 5, 6, 8, 10, 15, 20]), key = 'r' + Rv;
             if (key !== view) { view = key; Rt.setView([-Rv, Rv], [-Rv, Rv]); }
             zs.forEach((z, k) => {
-              const y = (k ? -0.12 : 0.12) * Rv, a = z * z, b = a + c1 * z, c = b + c0;
-              Rt.arrow(0, y, a, y, { color: 'blue', width: 2.4 }); Rt.arrow(a, y, b, y, { color: 'orange', width: 2.4 }); Rt.arrow(b, y, c, y, { color: 'purple', width: 2.4 });
+              const sg = k ? -1 : 1, y = (q) => sg * (0.32 + 0.14 * q) * Rv, a = z * z, b = a + c1 * z, c = b + c0;
+              Rt.arrow(0, y(0), a, y(0), { color: 'blue', width: 2.4 }); Rt.line(a, y(0), a, y(1), { color: 'muted', width: 1, dash: [2, 2] });
+              Rt.arrow(a, y(1), b, y(1), { color: 'orange', width: 2.4 }); Rt.line(b, y(1), b, y(2), { color: 'muted', width: 1, dash: [2, 2] });
+              Rt.arrow(b, y(2), c, y(2), { color: 'purple', width: 2.4 });
+              Rt.line(0, 0, 0, y(2), { color: 'faint', width: 1 });
+              Rt.dot(c, y(2), { r: 4.5, color: Math.abs(c) < 1e-9 * (1 + a * a) ? 'green' : 'red' });
+              Rt.tex(`\\lambda_${k + 1}^2 ${c1 < 0 ? '-' : '+'} ${tn(Math.abs(c1), 2)}\\lambda_${k + 1} ${c0 < 0 ? '-' : '+'} ${tn(Math.abs(c0), 2)}`, Rt.xr[0], y(2.9), { align: 'left', dx: 8, size: 12.5, color: 'muted' });
               Rt.dot(z, 0, { r: 7, hollow: true, color: 'accent', width: 2.4, label: `λ${sub(k + 1)}`, labelPos: k ? 'se' : 'ne' });
             });
             Rt.corner('real eigenvalues: no complexification needed', 'tl', { color: 'muted', weight: 600 });
@@ -682,7 +694,7 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           const { t, d, qT, lam, cx, c1, c0 } = st;
           const zero = maxAbs(qT) < 1e-9 * (1 + t * t + Math.abs(d));
           const name = own.value ? 'p' : 'q';
-          const poly = `${name}(z) = z^2 ${plus(c1, 3)}z ${plus(c0, 3)}`;
+          const poly = `${name}(z) = ${polyTeX([c0, c1, 1], 'z', 3)}`;
           const cxs = cx ? ` Over $\\mathbf R$, $T$ has no eigenvalue at all; its complexification has $\\lambda = ${ctn(lam, 3)}$ and $\\bar\\lambda$, and $${name}(\\lambda) = ${ctn(cadd(cadd(cmul(lam, lam), cscl(lam, c1)), [c0, 0]), 3)}$.` : '';
           return `$${poly}$ and, in real arithmetic, $${name}(T) = ${mtex(qT, 3)}$${zero ? ' — the zero matrix.' : '.'}${cxs}${own.value && !zero ? ' Since $p \\ne q$, the path does not close.' : ''}`;
         });
@@ -823,8 +835,9 @@ For real $A$: among all parallelepipeds with edges of lengths $\|v_1\|, \dots, \
           const bad = vol > prodL + 1e-9;
           bar(4.1, prodL, 'gold', 0.2, 0.36); bar(4.1, vol, bad ? 'red' : 'green', 0.7, 0.2);
           B.tex('\\text{volume}', 4.1, -0.045 * top, { size: 12, color: 'muted' });
-          B.text(`∏‖v‖ = ${pn(prodL, 3)}`, 4.1, prodL, { dy: -10, align: 'center', size: 11.5, color: 'gold', weight: 700 });
-          B.text(`|det| = ${pn(vol, 3)}`, 4.1, vol, { dy: vol > 0.88 * prodL ? 14 : -10, align: 'center', size: 11.5, color: bad ? 'red' : 'green', weight: 700 });
+          const close = Math.abs(B.Y(vol) - B.Y(prodL)) < 18;
+          B.text(`∏‖v‖ = ${pn(prodL, 3)}`, 4.1, prodL, { dy: bad && close ? 14 : -10, align: 'center', size: 11.5, color: 'gold', weight: 700 });
+          B.text(`|det| = ${pn(vol, 3)}`, 4.1, vol, { dy: !bad && close ? 14 : -10, align: 'center', size: 11.5, color: bad ? 'red' : 'green', weight: 700 });
           B.vline(3.35, { color: 'faint', width: 1 });
           st = { d, R, L, prodL, vol, bad, p, cosines: [dot(vs[0], vs[1]) / (len(vs[0]) * len(vs[1])), dot(vs[0], vs[2]) / (len(vs[0]) * len(vs[2])), dot(vs[1], vs[2]) / (len(vs[1]) * len(vs[2]))] };
         });
@@ -877,7 +890,7 @@ In particular it is invertible exactly when the $\beta_j$ are distinct.`,
           // Newton polynomials
           const ymax = nice(1.25 * Math.max(1.5, ...Cm.flat().map(Math.abs)), [1.5, 2, 3, 4, 6, 8, 10, 15, 20, 30, 50, 100]);
           P.setView([-2.4, 2.4], [-ymax, ymax]);
-          bs.forEach((b, k) => P.vline(b, { color: CC[k], width: 1, dash: [3, 4], alpha: 0.6 }));
+          bs.forEach((b) => P.vline(b, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 }));
           for (let k = 0; k < n; k++) P.fn((z) => N(k, z), { color: CC[k], width: 2.2 });
           for (let k = 0; k < n; k++) for (let j = 0; j < n; j++) P.dot(bs[j], Cm[j][k], { r: j < k ? 3 : 4, color: CC[k], hollow: j < k, width: 1.6 });
           // the matrix C

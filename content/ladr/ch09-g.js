@@ -270,7 +270,7 @@ $$\dim \mathcal B(V, W) = (\dim V)(\dim W).$$`,
           const { m, n, k, s, rank, re } = st;
           const cliff = `$\\sigma_{${rank}} = ${M.sci(s[rank - 1], 2)}$, then $\\sigma_{${rank + 1}} = ${M.sci(Math.max(s[rank] ?? 0, 1e-300), 2)}$`;
           if (k === 'bil') return `Numerical rank of the table: **${rank}** $= ${m}\\cdot${n} = (\\dim V)(\\dim W)$ (${cliff}). The ${m * n} elementary functionals alone already give rank ${re}: they are independent and span everything the random functionals reach — a basis of $\\mathcal B(V, W)$.`;
-          return `Linear functionals on $V \\times W$ give rank **${rank}** $= ${m} + ${n}$ (${cliff}) — the dimension of $(V \\times W)'$ (3.92, 3.111). ${m >= 2 && n >= 2 ? `For $m, n \\ge 2$ that is smaller than $mn = ${m * n}$.` : 'With a one-dimensional factor, $m + n$ is the larger count.'}`;
+          return `Linear functionals on $V \\times W$ give rank **${rank}** $= ${m} + ${n}$ (${cliff}) — the dimension of $(V \\times W)'$ (3.92, 3.111). ${m >= 2 && n >= 2 ? `For $m, n \\ge 2$ that is smaller than $mn = ${m * n}$.` : 'With a factor of dimension 1, $m + n$ is the larger count.'}`;
         });
       },
     },
@@ -358,7 +358,7 @@ $$\dim(V \otimes W) = (\dim V)(\dim W).$$`,
         };
         v.button('add a random element', () => { if (count < MAX) count++; else extra++; });
         v.button('start over', () => { count = 0; extra = 0; });
-        const Gs = v.stage({ x: [0, 20], y: [-1, 1], equal: true, axes: false, height: 175, full: true, title: 'the list, one tile per element (green frame, ↑ = raised the dimension of the span)' });
+        const Gs = v.stage({ x: [0, 20], y: [-1, 1], equal: true, axes: false, height: 150, full: true, title: 'the list, one tile per element (green frame, ↑ = raised the dimension of the span)' });
         const P = v.stage({ x: [0, 20.6], y: [0, 8], axes: 'box', height: 230, full: true, xlabel: 'number of elements in the list', ylabel: 'dim of span', xticks: [0, 4, 8, 12, 16, 20] });
         let st = null;
         v.render(() => {
@@ -531,7 +531,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           if (!st) return '';
           const { rk, rE, rF, res, rA } = st;
           const ok = rk === 6;
-          return `Rank of the list $\\{e_j \\otimes f_k\\}$: **${rk}** $= ${rE} \\cdot ${rF}$ (rank of the $e$'s times rank of the $f$'s). ${ok ? `A basis: the coefficients $a_{j,k}$ are unique and rebuild $A$ to within $${etx(M, res)}$ ✓.` : `Not a basis: the six arrays span a space of dimension only ${rk}, and the best combination misses $A$ by $${tn(res, 3)}$ ✗.`} ${rA > 1 ? `And $A$ has rank ${rA}, so it is a sum of basis tensors but not a single simple tensor $v \\otimes w$.` : 'This $A$ has rank 1: it happens to be a simple tensor.'}`;
+          return `Rank of the list $\\{e_j \\otimes f_k\\}$: **${rk}** $= ${rE} \\cdot ${rF}$ (rank of the $e$'s times rank of the $f$'s). ${ok ? `A basis: the coefficients $a_{j,k}$ are unique and rebuild $A$ to within $${etx(M, res)}$ ✓.` : `Not a basis: the six arrays span a space of dimension only ${rk}, and the best combination misses $A$ by $${tn(res, 3)}$ ✗.`} ${rA > 1 ? `And $A$ has rank ${rA}, so it is a sum of simple tensors but not a single simple tensor $v \\otimes w$.` : 'This $A$ has rank 1: it happens to be a simple tensor.'}`;
         });
       },
     },
@@ -554,7 +554,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
         const Q = v.stage({ x: [-0.1, 3.6], y: [-2.6, 2.5], equal: true, axes: false, height: 370, weight: 0.65, minWidth: 200 });
         const sc = v.scene3(S, { yaw: 0.65, pitch: 0.33, axis: 1.45, lim: 1.35 });
         const hu = sc.handle([0.5, -0.4, 1.0], { color: 'accent', label: '$u$' });
-        const hw = sc.handle([0.9, 0.55, 0.45], { color: 'orange', label: '$w$' });
+        const hw = sc.handle([1.1, -0.2, 0.2], { color: 'orange', label: '$w$' });
         const Gm = (a, b) => { const k = Gsel.value; return k === 'cross' ? cross(a, b) : k === 'sum' ? add(a, b) : k === 'scale' ? scl(b, len(a)) : scl(b, dot(a, b)); };
         const ta = [0.3, 0.8, -0.5], tb = [-0.6, 0.2, 0.7];
         let st = null;

@@ -155,8 +155,8 @@ On a string of length $L$ with fixed ends the same formula holds once $y_0$ is e
           s.setView(dom, [-1.12, 1.12]);
           if (wide) {
             for (const [a, c] of [[-1.02, 0], [1, 2.02]]) s.rect(a, -1.12, c, 1.12, { fill: 'muted', fillAlpha: 0.08, stroke: false });
-            s.text('mirror image: −y₀(−x)', -0.5, 1.0, { align: 'center', color: 'muted', size: 11.5 });
-            s.text('mirror image: −y₀(2L − x)', 1.5, 1.0, { align: 'center', color: 'muted', size: 11.5 });
+            s.text('mirror image: −y₀(−x)', -0.5, -1.0, { align: 'center', color: 'muted', size: 11.5 });
+            s.text('mirror image: −y₀(2L − x)', 1.5, -1.0, { align: 'center', color: 'muted', size: 11.5 });
             s.fn(Y, { domain: dom, n: 700, color: 'muted', width: 1, dash: [3, 4] });
           } else s.fn(f, { domain: [0, 1], n: 500, color: 'muted', width: 1, dash: [3, 4] });
           s.hline(0, { color: 'faint', width: 1 });
@@ -379,7 +379,8 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
           const a0 = ac(best - 1), a1 = ac(best), a2 = ac(best + 1), off = (a0 - a2) / (2 * (a0 - 2 * a1 + a2) || 1);
           return 1 / ((best + off) * dt);
         };
-        const pts = [];
+        // four measurements to start with: lengths varied, tension and string as set
+        const pts = [0.3, 0.45, 0.648, 1.0].map((L) => ({ L, T: T0, mu: muOf('s25'), f: measure(L, T0, muOf('s25')) }));
         v.button('Measure', () => { const L = Ls.value, T = Ts.value, mu = muOf(sS.value); pts.push({ L, T, mu, f: measure(L, T, mu) }); });
         v.button('Clear', () => { pts.length = 0; });
         const mono = v.stage({ x: [-0.1, 1.62], y: [-0.62, 0.45], height: 300, axes: false, weight: 1.3 });
@@ -476,7 +477,7 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
         v.soundButton('Harmonics 1 → 16', (snd) => { playing = 'seq'; M.range(NH, 1).forEach((n, i) => snd.tone(fq(n), { duration: 0.3, gain: 0.24, delay: 0.33 * i, release: 0.08 })); ph.start(NH * 0.33); });
         v.soundButton('4 : 5 : 6 : 7 together', (snd) => { playing = 'chord'; snd.chord(...[4, 5, 6, 7].map((n) => fq(n)), { duration: 2.6, gain: 0.32, harmonics: 3, rolloff: 1.6 }); ph.start(2.6); });
         const top = v.stage({ x: [55, 1500], y: [-0.44, 1.32], xlog: true, height: 215, axes: false, full: true });
-        const sf = v.stage({ x: [-1.6, NH + 0.7], y: [10.6, 46.4], height: 265, axes: false, full: true });
+        const sf = v.stage({ x: [-1.6, NH + 0.7], y: [10.6, 47.6], height: 265, axes: false, full: true });
         top.onClick((x) => { const n = Math.round(x / f1()); if (n >= 1 && n <= NH && Math.abs(Math.log2(x / (n * f1()))) < 0.09) hit(n); });
         sf.onClick((x) => { const n = Math.round(x); if (n >= 1 && n <= NH) hit(n); });
         v.render(() => {
@@ -511,11 +512,11 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
             ledg.forEach((d) => sf.line(n - 0.5, d, n + 0.5, d, { color: 'muted', width: 1.1 }));
             ctx.save(); ctx.beginPath(); ctx.ellipse(sf.X(n), sf.Y(S.d), rx, ry, -0.35, 0, TAU); ctx.fillStyle = v.color(c); ctx.fill(); ctx.restore();
             if (S.acc) sf.text(S.acc > 0 ? '♯' : '♭', n - 0.55, S.d + 0.3, { align: 'center', color: c, size: 16 });
-            sf.text(String(n), n, 45.4, { align: 'center', color: on ? 'gold' : 'muted', size: 11, weight: on ? 700 : 500 });
+            sf.text(String(n), n, 46.6, { align: 'center', color: on ? 'gold' : 'muted', size: 11, weight: on ? 700 : 500 });
             const cs = Math.round(S.cents);
             sf.text(cs === 0 ? '0' : (cs > 0 ? '+' : '−') + Math.abs(cs), n, 11.8, { align: 'center', color: Math.abs(cs) < 8 ? 'muted' : col(cs), size: 11, weight: Math.abs(cs) >= 25 ? 700 : 500 });
           }
-          sf.text('n', staffL, 45.4, { align: 'left', color: 'muted', size: 11, math: true });
+          sf.text('n', staffL, 46.6, { align: 'left', color: 'muted', size: 11, math: true });
           sf.text('¢', staffL, 11.8, { align: 'left', color: 'muted', size: 11 });
         });
         v.legend([['accent', 'within 8 ¢ of a piano key'], ['orange', '8–25 ¢ off'], ['red', 'more than 25 ¢ off'], ['gold', 'selected / sounding']]);
@@ -550,7 +551,7 @@ and the series converges uniformly. Every mode oscillates independently at its o
         const nS = v.slider('modes kept $N$', 1, NB, 6, { int: true });
         const scl = v.select('bars', [{ value: 'lin', label: 'linear' }, { value: 'db', label: 'decibels' }], 'lin');
         const s = v.stage({ x: [-0.04, 1.04], y: [-1.12, 1.12], height: 250, axes: false, full: true });
-        const bs = v.stage({ x: [0.2, NB + 0.8], y: [-0.62, 0.72], height: 225, axes: 'box', xlabel: 'n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], weight: 1.25, title: 'sine coefficients $b_n$ and live amplitudes' });
+        const bs = v.stage({ x: [-2.6, NB + 0.8], y: [-0.62, 0.72], height: 225, axes: 'box', xlabel: 'n', xticks: [1, 5, 10, 15, 20, 25, 30, 35, 40], weight: 1.25, title: 'sine coefficients $b_n$ and live amplitudes' });
         const ms = v.stage({ x: [-0.18, 1.3], y: [0.4, 6.6], height: 225, axes: false, weight: 0.9, minWidth: 220, title: 'the first six modes, each scaled to its lane' });
         shapePainter(s, () => ys, (phase) => { if (sel.value !== 'draw') sel.set('draw'); ver++; v.t = 0; if (phase === 'start') v.pause(); if (phase === 'end') v.play(); });
         let cKey = -1, b = null, norm2 = 1, eTot = 1;
@@ -595,13 +596,13 @@ and the series converges uniformly. Every mode oscillates independently at its o
               if (kept && Math.abs(val) > 0.004) bs.dot(n, val * Math.cos(n * Math.PI * tau), { r: 3.2, color: 'gold' });
             }
           } else {
-            bs.setView(null, [-80, 6]);
+            bs.setView(null, [-92, 6]);
             bs.setTicks(undefined, [[-80, '−80 dB'], [-60, '−60'], [-40, '−40'], [-20, '−20'], [0, '0']]);
             bs.setTitle('$20\\log_{10}|b_n/b_{\\max}|$: corners fall 12 dB per octave');
             for (let n = 1; n <= NB; n++) {
               const db = 20 * Math.log10(Math.abs(bb[n - 1]) / bm + 1e-12), kept = n <= N;
               if (db > -80) bs.rect(n - 0.32, -80, n + 0.32, db, { fill: bb[n - 1] >= 0 ? (kept ? 'accent' : 'muted') : (kept ? 'red' : 'muted'), fillAlpha: kept ? 0.6 : 0.2, stroke: false });
-              else bs.text('×', n, -76, { align: 'center', color: 'red', size: 11 });
+              else bs.text('×', n, -76, { align: 'center', color: 'red', size: 12, halo: false });
             }
             bs.fn((x) => -40 * Math.log10(x), { domain: [1, NB], color: 'ink', width: 1.2, dash: [5, 4], alpha: 0.6 });
             bs.text('1/n²', 30, -40 * Math.log10(30) + 4, { align: 'center', color: 'muted', size: 11 });

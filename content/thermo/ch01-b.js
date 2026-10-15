@@ -228,14 +228,15 @@ Per unit mass they are **specific heats**, per mole **molar heat capacities**. F
         const sT = v.stage({ x: [0, 560], y: [0.4, 2.4], height: 280, axes: 'box', xlabel: 'heat delivered Q (units of kT₀)', ylabel: 'translational kT', title: 'temperature against heat delivered', weight: 1.25 });
         const sb = v.stage({ x: [0, 2], y: [0, 1], height: 280, axes: 'box', ylabel: 'energy', xticks: [[0.5, 'fixed volume'], [1.5, 'constant pressure']], title: 'where the heat went', weight: 1 });
         const make = () => {
+          clock.kick(30);
           const dof = +gas.value, sp = [{ m: 1, d: 0.6, dof, T: T0 }];
           G = [hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(71 + dof), piston: { X: XV }, diffuse: [1, 0, 1, 1, 1, 1] }),
                hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(72 + dof), piston: { X: X0, M: 5, F: P0 * A, lo: 4, hi: 44 }, diffuse: [1, 0, 1, 1, 1, 1] })];
           tr = [[], []]; t0 = G[0].t;
           G.forEach((g) => { g.Qin = 0; g.U0 = g.stats().U; g.X0 = g.pist.X; g.W0 = g.Wp; g.Tacc = 0; g.nacc = 0; });
         };
-        make();
         const clock = simClock(16, 0.05, 0);
+        make();
         v.animate((t) => {
           const add = clock(t, () => make());
           const tStart = performance.now();
@@ -268,8 +269,8 @@ Per unit mass they are **specific heats**, per mole **molar heat capacities**. F
           sT.fn((Q) => T0 + Q / ((f / 2 + 1) * N), { color: 'blue', width: 1.4, dash: [6, 4], domain: [0, Qmax] });
           sT.path(tr[0].map((p) => [p[0], p[1]]), { color: 'red', width: 2.2 });
           sT.path(tr[1].map((p) => [p[0], p[1]]), { color: 'blue', width: 2.2 });
-          sT.text(`slope 1/C_V,  C_V = ${f}/2 Nk`, Qmax * 0.62, T0 + Qmax * 0.62 / (f / 2 * N), { dx: -8, dy: -12, align: 'right', color: 'red', size: 11.5 });
-          sT.text(`C_P = ${f + 2}/2 Nk`, Qmax * 0.8, T0 + Qmax * 0.8 / ((f / 2 + 1) * N), { dy: 14, color: 'blue', size: 11.5 });
+          sT.tex(`\\text{slope } 1/C_V,\\ C_V = \\tfrac{${f}}{2}Nk`, Qmax * 0.6, T0 + Qmax * 0.6 / (f / 2 * N), { align: 'right', baseline: 'bottom', dx: -10, dy: -6, color: 'red', size: 14 });
+          sT.tex(`C_P = \\tfrac{${f + 2}}{2}Nk`, Qmax * 0.8, T0 + Qmax * 0.8 / ((f / 2 + 1) * N), { align: 'left', baseline: 'top', dx: 4, dy: 8, color: 'blue', size: 14 });
           // where the heat went
           const s0 = G[0].stats(), s1 = G[1].stats();
           const dU0 = s0.U - G[0].U0, dU1 = s1.U - G[1].U0, Wby = -(G[1].Wp - G[1].W0);
@@ -286,10 +287,11 @@ Per unit mass they are **specific heats**, per mole **molar heat capacities**. F
         }, { still: 8 });
         v.legend([['red', 'fixed volume'], ['blue', 'constant pressure'], ['green', 'internal energy gained', { area: true }], ['orange', 'work done lifting the piston', { area: true }]]);
         v.readout(() => {
-          const fit = (k) => { const pts = tr[k].filter((p) => p[2] > 20 && p[2] <= TH); if (pts.length < 4) return NaN; return 1 / fitLine(pts.map((p) => p[0]), pts.map((p) => p[1])).b / N; };
-          const cv = fit(0), cp = fit(1), f = 3 + +gas.value;
-          if (!isFinite(cv) || !isFinite(cp)) return 'heating…';
-          return `measured (inverse slopes): $C_V/Nk$ = ${v.fix(cv, 2)}, $C_P/Nk$ = ${v.fix(cp, 2)} · expected ${f}/2 = ${v.fix(f / 2, 1)} and ${f + 2}/2 = ${v.fix(f / 2 + 1, 1)} · difference ${v.fix(cp - cv, 2)} (theory 1, see 1.15) · ratio $\\gamma$ = ${v.fix(cp / cv, 3)} (theory ${v.fix((f + 2) / f, 3)}) · ${G[0].t < TH ? 'heater on' : 'heater off'}`;
+          const fit = (k) => { const pts = tr[k].filter((p) => p[2] > 20 && p[2] <= TH + 2); if (pts.length < 6 || pts[pts.length - 1][0] - pts[0][0] < 30) return null; const r = v.M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])); return { c: 1 / r.slope / N, e: r.seSlope / (r.slope * r.slope) / N }; };
+          const a = fit(0), b = fit(1), f = 3 + +gas.value;
+          if (!a || !b) return 'heating… (the fit starts once some heat has gone in)';
+          const cv = a.c, cp = b.c;
+          return `measured (inverse slopes): $C_V/Nk$ = ${v.fix(cv, 2)} ± ${v.fix(a.e, 2)}, $C_P/Nk$ = ${v.fix(cp, 2)} ± ${v.fix(b.e, 2)} · expected ${f}/2 = ${v.fix(f / 2, 1)} and ${f + 2}/2 = ${v.fix(f / 2 + 1, 1)} · difference ${v.fix(cp - cv, 2)} (theory 1, see 1.15) · ratio $\\gamma$ = ${v.fix(cp / cv, 3)} (theory ${v.fix((f + 2) / f, 3)}) · ${G[0].t < TH ? 'heater on' : 'heater off'}`;
         });
       },
     },
@@ -440,13 +442,14 @@ so the gas heats when compressed and cools when it expands. On a $P$–$V$ diagr
         const sp = v.stage({ x: [1500, 5600], y: [0.025, 0.4], xlog: true, ylog: true, height: 300, axes: 'box', xlabel: 'V (σ³), log scale', ylabel: 'P, log scale', title: 'measured $P$ against $V$ on log–log axes', weight: 1.3 });
         const st = v.stage({ x: [1500, 5600], y: [0.5, 2.4], xlog: true, height: 300, axes: 'box', xlabel: 'V (σ³)', ylabel: 'kT', title: 'temperature of the gas', weight: 1 });
         const make = () => {
+          clock.kick(150);
           const ins = walls.value === 'ins', dof = +gas.value;
           G = hsGas({ species: [{ m: 1, d: 0.6, dof }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(81 + dof), piston: { X: X1 }, diffuse: ins ? [1, 0, 1, 1, 1, 1] : [0, 0, 0, 0, 0, 0], thermal: ins ? [0, 0, 0, 0, 0, 0] : [1, 0, 1, 1, 1, 1], Tb: 1 });
           dir = -1; pts = []; last = G.snap(); last.T = 0; last.n = 0; cyc = 0; T0 = 1;
           G.setU(-U);
         };
-        make();
         const clock = simClock(60, 0.05, 0);
+        make();
         let Tacc = 0, nacc = 0;
         v.animate((t) => {
           const add = clock(t, () => make());
@@ -639,7 +642,7 @@ with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 
             st.arrow(Tp - 7, zp, Tp - 7, zp + (sinks ? -2.4 : 2.4), { color: sinks ? 'blue' : 'red', width: 2 });
             st.text(sinks ? 'sinks' : 'rises', Tp - 10, zp + (sinks ? -1.3 : 1.3), { align: 'right', size: 11, color: sinks ? 'blue' : 'red', weight: 600 });
           }
-          sp.text(`H = RT/Mg = ${v.fix(R * T0 / (Mair * g0) / 1000, 2)} km`, 2.4, 2.5, { size: 11, color: 'blue' });
+          sp.text(`H = RT/Mg = ${v.fix(R * T0 / (Mair * g0) / 1000, 2)} km`, 2.4, 4.2, { size: 11, color: 'blue' });
           // density columns
           ['iso', 'adi', 'std'].forEach((k, i) => {
             const c = cols[k];
@@ -686,11 +689,12 @@ with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 
         const sh = v.stage({ x: [0, 160], y: [0, 1.6], height: 270, axes: 'box', xlabel: 'time', ylabel: 'kT  ·  P/P₀', title: 'simulated gas: temperature and pressure', weight: 1.1 });
         const sm = v.stage({ x: [0, 60], y: [-30, 2], height: 270, axes: 'box', xlabel: 'starting pressure (bar), 300 K', ylabel: 'ΔT (K)', title: 'real gases doubling their volume', weight: 1 });
         const make = () => {
+          clock.kick(30);
           G = hsGas({ species: [{ m: 1, d: 0.6 }], counts: [N], side: [0], Ly: L, Lz: L, T: 1, rng: v.rng(91), piston: { X }, plate: { X: XP }, diffuse: [1, 0, 1, 1, 1, 1] });
           G.setT(1); removed = false; tRem = null; hist = []; last = G.snap(); Tacc = 0; nacc = 0;
         };
-        make();
         const clock = simClock(10, 0.05, 6);
+        make();
         const area = () => 2 * L * L + (removed ? X : XP) * 4 * L;
         const P0 = N * 1 / (XP * L * L);
         v.animate((t) => {

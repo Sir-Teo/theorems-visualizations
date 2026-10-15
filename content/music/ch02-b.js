@@ -31,7 +31,7 @@ export default {
 $$b_n=\frac{2h}{\pi^2}\,\frac{L^2}{p\,(L-p)}\,\frac{\sin(n\pi p/L)}{n^2}.$$
 Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/q$ in lowest terms, the harmonics $q,2q,3q,\dots$ are missing and no others. Plucked at the middle the string sounds only odd harmonics; plucked at a third, harmonics $3,6,9,\dots$ are missing. Near an end ($p\ll L$) the first $L/p$ or so harmonics have nearly the $1/n^2$ amplitudes of the bound, so the tone is bright; the force on the bridge has amplitudes $\propto\sin(n\pi p/L)/n$.`,
       idea: String.raw`The pluck is a triangle with a single corner at $p$, so the corner formula of 2.7 gives $b_n$ as the slope jump $h/p+h/(L-p)$ times $2\sin(n\pi p/L)/(n\pi/L)^2/L$. A mode that has a node at $p$ cannot be excited by a shape whose only corner is there: its overlap integral with the triangle vanishes. Equivalently, the initial shape is symmetric about $p$ in the way that mode is antisymmetric. The factor $\sin(n\pi p/L)$ is a comb sampling the harmonics, with teeth every $L/p$ harmonics; moving the pluck towards the end spreads the teeth out and lets more upper harmonics through.`,
-      caption: String.raw`Drag the gold plucking point along the string; it clicks onto simple fractions. The bars are the levels of the harmonics (of the bridge force, or of the displacement), the orange curve is the comb $|\sin(n\pi p/L)|$ times the $1/n$ or $1/n^2$ bound (grey dashes), and red crosses mark the harmonics that vanish. The red dashed curve shows the lowest missing mode: it has a node exactly under the finger. *Listen*, and compare *near the bridge, then the middle*: bright, then hollow.`,
+      caption: String.raw`Drag the gold plucking point along the string; it clicks onto simple fractions. The bars are the levels of the harmonics (of the bridge force, or of the displacement), the orange curve is the comb $|\sin(n\pi p/L)|$ times the $1/n$ or $1/n^2$ bound (grey dashes), and red crosses mark the harmonics that vanish. The red dashed curve shows the lowest missing mode: it has a node exactly at the plucking point. *Listen*, and compare *near the bridge, then the middle*: bright, then hollow.`,
       deps: ['music-2.7'],
       see: ['music-2.13'],
       refs: ['Benson ch. 3', 'Loy I ch. 8'],
@@ -165,7 +165,7 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
       num: '2.10',
       kind: 'Model',
       name: 'The bowed string: Helmholtz motion',
-      statement: String.raw`A bow drawn steadily across a string makes it vibrate in **Helmholtz motion**: the string consists at every instant of two straight segments joined at a single corner, which travels round the string at the wave speed $c$, once per period $2L/c$, along the two parabolic arcs $y=\pm\frac{v_b}{\beta Lc}\,x(L-x)$ (about the string's mean position). Here $v_b$ is the bow speed and $\beta L$ the distance from bow to bridge. While the corner is on the far side the string **sticks** to the bow and moves with it at $v_b$, for a fraction $1-\beta$ of each period; when the corner passes the bow it **slips** back quickly, for the remaining fraction $\beta$. The force on the bridge is a sawtooth, so all harmonics are present with amplitudes $\propto1/n$.
+      statement: String.raw`A bow drawn steadily across a string makes it vibrate in **Helmholtz motion**: the string consists at every instant of two straight segments joined at a single corner, which travels round the string at the wave speed $c$, once per period $2L/c$, along the two parabolic arcs $y=\pm\frac{v_b}{\beta Lc}\,x(L-x)$ (about the midline of its swing, which the bow pushes aside). Here $v_b$ is the bow speed and $\beta L$ the distance from bow to bridge. While the corner is on the far side the string **sticks** to the bow and moves with it at $v_b$, for a fraction $1-\beta$ of each period; when the corner passes the bow it **slips** back quickly, for the remaining fraction $\beta$. The force on the bridge is a sawtooth, so all harmonics are present with amplitudes $\propto1/n$.
 
 Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as the bow moves away from the bridge (Schelleng): too much force and the string cannot release cleanly (raucous, scratchy sound), too little and it slips more than once per period (a "surface" or whistling sound).`,
       idea: String.raw`Any motion of an ideal string is a pair of travelling waves (2.2), so a single corner circulating at speed $c$ is an allowed free motion; it is the one whose displacement at the bow point rises at the constant speed $v_b$ and then falls back. Friction is high when the string is stuck and lower once it slides, so the bow can hold the string during the slow part and let it go when the corner arrives to trigger release, and the corner's return triggers the recapture. Schelleng's bounds follow from requiring the static friction to hold against the corner's tug, $F_N\lesssim\frac{2Zv_b}{\beta(\mu_s-\mu_d)}$, and the losses at the bridge not to trigger extra slips, $F_N\gtrsim\frac{Z^2v_b}{2R\beta^2(\mu_s-\mu_d)}$, where $Z=\sqrt{T\mu}$ is the string's impedance and $R$ the bridge's resistance.`,
@@ -183,7 +183,7 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
         const w10 = (TAU * 10 * F1) / SR, H10 = (1 - LP) / Math.hypot(1 - LP * Math.cos(w10), LP * Math.sin(w10)), R = (2 * Z) / (1 - G * H10);
         const vbS = v.slider('bow speed $v_b$', 0.05, 0.5, 0.1, { log: true, fmt: (x) => v.fix(x * 100, 1) + ' cm/s' });
         const s = v.stage({ x: [-0.03, 1.03], y: [-1.2, 1.2], height: 235, axes: false, full: true });
-        const tr = v.stage({ x: [0, 2], y: [-1.5, 2.2], height: 250, axes: 'box', xlabel: 'time (periods)', yticks: [], weight: 1.15, title: 'at the bow, and at the bridge' });
+        const tr = v.stage({ x: [0, 2], y: [-1.95, 2.2], height: 250, axes: 'box', xlabel: 'time (periods)', yticks: [], weight: 1.15, title: 'at the bow, and at the bridge' });
         const sch = v.stage({ x: [0.025, 0.3], y: [0.004, 12], xlog: true, ylog: true, height: 250, axes: 'box', xlabel: 'β = bow–bridge distance / L', ylabel: 'bow force (N)', weight: 1, title: 'Schelleng diagram (drag the point)' });
         const hd = sch.handle(0.1, 0.5, { color: 'gold', r: 8, constrain: (x, y) => [M.clamp(x, 0.03, 0.28), M.clamp(y, 0.005, 10)] });
         const Fmax = (b, vb) => (2 * Z * vb) / (b * DMU), Fmin = (b, vb) => (Z * Z * vb) / (2 * R * b * b * DMU);
@@ -209,7 +209,7 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
           for (const y of snaps) for (let i = 0; i <= N; i++) { mean[i] += y[i] / snaps.length; lo[i] = Math.min(lo[i], y[i]); hi[i] = Math.max(hi[i], y[i]); }
           let ymax = 1e-9; for (let i = 0; i <= N; i++) ymax = Math.max(ymax, Math.abs(lo[i]), Math.abs(hi[i]));
           const Kp = (vbS.value * L) / (hd.x * C); // Helmholtz half-width coefficient in metres for x̂(1 − x̂)
-          ymax = Math.max(ymax, ...Array.from(mean, (m, i) => Math.abs(m) + Kp * (i / N) * (1 - i / N)));
+          ymax = Math.max(ymax, ...Array.from(mean, (m, i) => Math.abs((hi[i] + lo[i]) / 2) + Kp * (i / N) * (1 - i / N)));
           const P = 2 * N, n = Rr.vbow.length, seg = (arr) => Array.from(arr.subarray(n - 2 * P, n));
           S = { Rr, cl, N, mean, lo, hi, ymax, Kp, vb: seg(Rr.vbow), st: seg(Rr.stick), fb: seg(Rr.out) };
           return S;
@@ -229,15 +229,15 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
           sch.fn((b) => Fmin(b, vb), { domain: [0.025, 0.3], color: 'orange', width: 1.6 });
           sch.text('raucous', 0.2, 6, { align: 'center', color: 'red', size: 12, weight: 600 });
           sch.text('Helmholtz', 0.16, Math.sqrt(Fmax(0.16, vb) * Fmin(0.16, vb)), { align: 'center', color: 'green', size: 12, weight: 600 });
-          sch.text('multiple slips', 0.06, 0.0065, { align: 'center', color: 'orange', size: 12, weight: 600 });
+          sch.text('multiple slips', 0.06, 0.012, { align: 'center', color: 'orange', size: 12, weight: 600 });
           sch.dot(hd.x, hd.y, { r: 13, color: cl.col, alpha: 0.35 });
           // ---- the string over one period, in slow motion
           const fr = Math.floor(M.mod(t * (P / 2.4), P)), y = R0.Rr.snaps[fr], X = (i) => i / N;
           s.hline(0, { color: 'faint', width: 1, dash: [3, 4] });
           s.poly([...M.range(N + 1).map((i) => [X(i), hi[i] * sc]), ...M.range(N + 1).map((i) => [X(N - i), lo[N - i] * sc])], { fill: 'accent', fillAlpha: 0.1, stroke: false });
-          for (const sg of [1, -1]) s.fn((x) => (mean[Math.round(x * N)] + sg * Kp * x * (1 - x)) * sc, { domain: [0, 1], n: N, color: 'green', width: 1.6, dash: [6, 4] });
+          for (const sg of [1, -1]) s.fn((x) => ((hi[Math.round(x * N)] + lo[Math.round(x * N)]) / 2 + sg * Kp * x * (1 - x)) * sc, { domain: [0, 1], n: N, color: 'green', width: 1.6, dash: [6, 4] });
           s.path(M.range(N + 1).map((i) => [X(i), y[i] * sc]), { color: 'accent', width: 2.8 });
-          let ic = 1, cm = 0; for (let i = 1; i < N; i++) { const c2 = Math.abs(y[i + 1] - 2 * y[i] + y[i - 1]); if (c2 > cm) { cm = c2; ic = i; } }
+          let ic = 1, cm = 0; for (let i = 3; i < N - 2; i++) { if (Math.abs(i - R0.Rr.ib) <= 3) continue; const c2 = Math.abs(y[i + 1] - 2 * y[i] + y[i - 1]); if (c2 > cm) { cm = c2; ic = i; } } // the moving corner (the bow point's own kink is excluded)
           s.dot(X(ic), y[ic] * sc, { r: 6, color: 'gold' });
           const xb = R0.Rr.ib / N, yb = y[R0.Rr.ib] * sc;
           s.rect(xb - 0.008, -1.15, xb + 0.008, 1.15, { fill: 'orange', fillAlpha: 0.25, stroke: false });
@@ -255,17 +255,18 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
           for (let k = 0; k < nT; k++) if (R0.st[k]) tr.rect(k / P, 0.5, (k + 1) / P, 2.1, { fill: 'green', fillAlpha: 0.12, stroke: false });
           tr.line(0, vs(vb), 2, vs(vb), { color: 'green', width: 1.2, dash: [5, 4] });
           tr.path(vbs.map((x, k) => [k / P, vs(x)]), { color: 'accent', width: 2 });
-          tr.path(Array.from(fb, (x, k) => [k / P, -0.55 + (0.85 * x) / fm]), { color: 'orange', width: 2 });
+          tr.path(Array.from(fb, (x, k) => [k / P, -0.75 + (0.8 * x) / fm]), { color: 'orange', width: 2 });
           tr.text('velocity at the bow', 0.02, 2.05, { align: 'left', color: 'accent', size: 11.5, weight: 600 });
           tr.text('bow speed', 1.98, vs(vb) + 0.12, { align: 'right', color: 'green', size: 10.5 });
-          tr.text('force on the bridge', 0.02, -1.35, { align: 'left', color: 'orange', size: 11.5, weight: 600 });
+          tr.text('force on the bridge', 0.02, 0.32, { align: 'left', color: 'orange', size: 11.5, weight: 600 });
           tr.vline((fr % P) / P, { color: 'gold', width: 1.5 });
           tr.vline((fr % P) / P + 1, { color: 'gold', width: 1.5, alpha: 0.4 });
         }, { still: 0.7 });
         v.legend([['accent', 'simulated string'], ['gold', 'the corner', { dot: true }], ['green', 'Helmholtz’s parabolas; sticking', { dash: true }], ['orange', 'bow; force on the bridge']]);
         v.readout(() => {
           const R0 = run(), { cl } = R0, b = hd.x, F = hd.y, vb = vbS.value;
-          return `bow at β = ${v.fix(b, 3)} (${v.fix(b * L * 100, 1)} cm from the bridge), force ${v.fmt(F, 3)} N, speed ${v.fix(vb * 100, 1)} cm/s · Schelleng's window here: ${v.fmt(Fmin(b, vb), 2)}–${v.fmt(Fmax(b, vb), 3)} N · simulated: ${cl.kind}; ${v.fix(cl.sp, 2)} slips per period, stuck ${v.fix(100 * cl.sf, 1)}% of the time (Helmholtz predicts $1-\\beta$ = ${v.fix(100 * (1 - b), 1)}%) · string: $L$ = 32.5 cm, $\\mu$ = 2.7 g/m, $Z=\\sqrt{T\\mu}$ = ${v.fix(Z, 3)} kg/s`;
+          const hw = (R0.hi[R0.N >> 1] - R0.lo[R0.N >> 1]) / 2 * 1e3, hp = (R0.Kp / 4) * 1e3;
+          return `bow at β = ${v.fix(b, 3)} (${v.fix(b * L * 100, 1)} cm from the bridge), force ${v.fmt(F, 3)} N, speed ${v.fix(vb * 100, 1)} cm/s · envelope half-width at mid-string: simulated ${v.fix(hw, 3)} mm, Helmholtz $\\frac{v_bL}{4\\beta c}$ = ${v.fix(hp, 3)} mm · Schelleng's window here: ${v.fmt(Fmin(b, vb), 2)}–${v.fmt(Fmax(b, vb), 3)} N · simulated: ${cl.kind}; ${v.fix(cl.sp, 2)} slips per period, stuck ${v.fix(100 * cl.sf, 1)}% of the time (Helmholtz predicts $1-\\beta$ = ${v.fix(100 * (1 - b), 1)}%) · string: $L$ = 32.5 cm, $\\mu$ = 2.7 g/m, $Z=\\sqrt{T\\mu}$ = ${v.fix(Z, 3)} kg/s`;
         });
       },
     },
@@ -329,7 +330,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           const cmax = Math.max(20, cents(NP) * 1.15);
           cp.setView(null, [-0.05 * cmax, cmax]);
           cp.hband(-5, 5, { color: 'green', alpha: 0.12 });
-          cp.text('±5 ¢', 10, 8 + 0.02 * cmax, { align: 'center', color: 'green', size: 10.5 });
+          cp.text('±5 ¢', 10, 6 + 0.06 * cmax, { align: 'center', color: 'green', size: 10.5 });
           cp.fn((n) => 1200 * Math.log2(Math.sqrt(1 + Bv * n * n) / Math.sqrt(1 + Bv)), { domain: [1, NP], color: 'accent', width: 1.6, alpha: 0.6 });
           for (let n = 1; n <= NP; n++) cp.dot(n, cents(n), { r: 4.5, color: 'accent' });
           // ---- waveforms
@@ -348,7 +349,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           const phys = P.d && Math.abs(Bv / Bof(P.d, P.L, P.T) - 1) < 1e-6 ? ` from $B=\\pi^3Ed^4/64TL^2$ with $d$ = ${P.d} mm, $L$ = ${P.L} m, $T$ = ${P.T} N, $E$ = 200 GPa${P.note ? ` (${P.note})` : ''}` : '';
           if (!Bv) return `ideal string: partials exactly at $n f_1$, deviation 0 ¢ for every $n$, and the waveform repeats exactly · ${F} Hz`;
           const beat = (n) => v.fix(F * (rel(n) - n), 2);
-          return `$B$ = $${v.sci(Bv, 2)}$${phys} · partial 2 is ${v.fix(cents(2), 2)} ¢ sharp of the octave, partial 4 ${v.fix(cents(4), 1)} ¢, partial 8 ${v.fix(cents(8), 1)} ¢, partial 16 ${v.fix(cents(16), 0)} ¢ · against a harmonic tone on the same ${v.fix(F, 2)} Hz fundamental they beat at ${beat(2)}, ${beat(4)} and ${beat(8)} Hz`;
+          return `$B$ = $${v.sci(Bv, 2)}$${phys} · partial 2 is ${v.fix(cents(2), 2)} ¢ sharp of the octave, partial 4 ${v.fix(cents(4), 1)} ¢, partial 8 ${v.fix(cents(8), 1)} ¢, partial 16 ${v.fix(cents(16), 0)} ¢ · against a harmonic tone on the same ${v.fix(F, 2)} Hz fundamental, partials 2, 4 and 8 are off by ${beat(2)}, ${beat(4)} and ${beat(8)} Hz (heard as beats when slow, as roughness when fast)`;
         });
       },
     },
@@ -359,7 +360,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
       name: 'Stretched tuning and the Railsback curve',
       statement: String.raw`Because piano strings are inharmonic (2.11), the second partial of every note is a few cents sharp of twice its fundamental. A tuner who makes each octave beatless, matching the upper note to a partial of the lower one, therefore tunes octaves slightly **wider than 2:1**, and the stretch accumulates from the middle of the keyboard outwards. Plotted against key number, the deviation of a well-tuned piano from equal temperament traces the **Railsback curve**: a gentle S, flat in the middle, falling to roughly 10–30 cents flat in the low bass and rising to some 20–40 cents sharp at the top. The size of the stretch depends on the instrument's inharmonicity (short pianos stretch more) and on which partials the tuner matches (2:1, 4:2, 6:3 octaves).`,
       idea: String.raw`If the lower note has first partial $f$ and inharmonicity $B$, its second partial is $2f\sqrt{(1+4B)/(1+B)}\approx2f(1+\tfrac32B)$, about $2600B$ cents above $2f$ (1.6). Making the octave beat-free puts the upper fundamental there, so each octave is stretched by that amount; tuning 4:2 octaves uses $\sqrt{(1+16B)/(1+4B)}$ instead and stretches more. In the treble $B$ grows quickly, so the stretch per octave grows and the curve bends up; in the bass, where the fundamentals are weak, tuners match higher partials of the low note, which pulls the bass flat. Without stretch the octaves beat audibly, at the rate given by the mismatch.`,
-      caption: String.raw`A model piano whose inharmonicity rises from about $10^{-4}$ in the tenor to $3\times10^{-4}$ at A0, $3.5\times10^{-4}$ at middle C and $10^{-2}$ at C8 (typical measured sizes, as in 2.11). The middle octave A3–A4 is set in equal temperament and every other note is tuned octave by octave from it, making the chosen partials coincide. Top: the resulting deviation from equal temperament (faint curves: the other octave types). Click a key to select an octave; the bottom panel shows how its partials line up and the readout gives the beat rates; *Hear this octave* plays it. Set **no stretch** or the inharmonicity to 0 to break the effect.`,
+      caption: String.raw`A model piano whose inharmonicity rises from about $10^{-4}$ in the tenor to $3\times10^{-4}$ at A0, $3.5\times10^{-4}$ at middle C and $10^{-2}$ at C8 (typical measured sizes, as in 2.11). The middle octave is set first (A4 = 440 Hz, A3 an octave below it by the same rule, equal steps between) and every other note is tuned octave by octave from it, making the chosen partials coincide. Top: the resulting deviation from equal temperament (faint curves: the other octave types). Click a key to select an octave; the bottom panel shows how its partials line up and the readout gives the beat rates; *Hear this octave* plays it. Set **no stretch** or the inharmonicity to 0 to break the effect.`,
       deps: ['music-2.11', 'music-1.6'],
       refs: ['Rossing ch. 14', 'Sethares ch. 6'],
       tags: ['piano', 'tuning'],
@@ -379,6 +380,9 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           for (let m = 21; m <= 108; m++) f.set(m, et(m));
           if (ty === 'none') return f;
           const { up: [a, b], dn: [c, d] } = SCH[ty];
+          // temperament octave: A4 = 440 Hz, A3 tuned from it by the octave rule, the eleven notes between in equal steps
+          { const B = Bm(57), X = Pj(440, Bm(69), d), f57 = (X * Math.sqrt(1 + B)) / (c * Math.sqrt(1 + B * c * c));
+            for (let m = 57; m <= 69; m++) f.set(m, f57 * Math.pow(440 / f57, (m - 57) / 12)); }
           for (let m = 70; m <= 108; m++) { const lo = m - 12, X = Pj(f.get(lo), Bm(lo), a), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (b * Math.sqrt(1 + B * b * b))); }
           for (let m = 56; m >= 21; m--) { const up = m + 12, X = Pj(f.get(up), Bm(up), d), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (c * Math.sqrt(1 + B * c * c))); }
           return f;
@@ -564,7 +568,7 @@ He then uses these laws for the **first estimate of the absolute frequency of a 
         const MU = Tn(0.5) / (2 * FT_MAX * PIED * 2) ** 2; // calibrated on "17½ feet, half a pound: 2 returns a second"
         const fOf = (ft, lb) => Math.sqrt(Tn(lb) / MU) / (2 * ft * PIED);
         const DATA = [
-          { ft: 17.5, lb: 0.5, f: 2, txt: '17½ ft, ½ lb: 2' }, { ft: 17.5, lb: 2, f: 4, txt: '2 lb: 4' }, { ft: 17.5, lb: 8, f: 8, txt: '8 lb: 8' },
+          { ft: 17.5, lb: 0.5, f: 2, txt: '½ lb: 2' }, { ft: 17.5, lb: 2, f: 4, txt: '2 lb: 4' }, { ft: 17.5, lb: 8, f: 8, txt: '8 lb: 8' },
           { ft: 10 / 12, lb: 4, f: 84, txt: '10 in, 4 lb' }, { ft: 20 / 12, lb: 8, f: 84, txt: '20 in, 8 lb' }, { ft: 5 / 12, lb: 0.5, f: 84, txt: '5 in, ½ lb' },
         ];
         const WCOL = { 0.5: 'accent', 2: 'teal', 4: 'purple', 8: 'orange' };
@@ -617,12 +621,13 @@ He then uses these laws for the **first estimate of the absolute frequency of a 
             lg.fn((x) => fOf(x, lb), { domain: [FT_MIN, FT_MAX], color: WCOL[lb], width: lb === w ? 2.6 : 1.3, alpha: lb === w ? 1 : 0.55 });
             lg.text(lbTxt(lb), 6, fOf(6, lb) * 1.13, { align: 'center', color: WCOL[lb], size: 10.5, weight: lb === w ? 700 : 500 });
           }
+          lg.text('17½ ft', FT_MAX, 13.5, { align: 'center', color: 'green', size: 10.5, weight: 600 });
           DATA.forEach((d) => {
             const pred = fOf(d.ft, d.lb), ok = Math.abs(Math.log(d.f / pred)) < 0.05;
             lg.dot(d.ft, d.f, { r: 6, color: ok ? 'green' : 'red', hollow: !ok, width: 2.4 });
             if (d.ft < 2) lg.text(d.txt, d.ft * 1.09, d.f * (d.lb === 4 ? 0.8 : d.lb === 8 ? 1.25 : 1.0), { align: 'left', color: ok ? 'green' : 'red', size: 10.5 });
             else lg.text(d.txt, d.ft * 1.08, d.f, { align: 'left', color: 'green', size: 10.5 });
-            if (!ok) { lg.line(d.ft, d.f, d.ft, pred, { color: 'red', width: 1, dash: [2, 3] }); lg.dot(d.ft, pred, { r: 3, color: 'red' }); lg.text(`law: ${v.fix(pred, 0)}`, d.ft * 0.93, pred * 1.03, { align: 'right', color: 'red', size: 10.5 }); }
+            if (!ok) { lg.line(d.ft, d.f, d.ft, pred, { color: 'red', width: 1, dash: [2, 3] }); lg.dot(d.ft, pred, { r: 3, color: 'red' }); lg.text(`law: ${v.fix(pred, 0)}`, d.ft * 0.93, pred * 0.97, { align: 'right', color: 'red', size: 10.5 }); }
           });
         }, { still: 1.3 });
         v.legend([['green', 'Mersenne’s measurements (p. 169)', { dot: true }], ['red', 'the one that misses his law', { dot: true }], ['accent', 'law for ½ livre (other colours: 2, 4, 8 livres)']]);

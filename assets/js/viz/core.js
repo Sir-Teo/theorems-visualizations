@@ -167,7 +167,7 @@ class Stage {
     this._fit();
   }
   /**
-   * Contour lines of f(x, y) by marching squares. levels: number or array. st: {color, width, dash, res (cells across), labels, fmt}.
+   * Contour lines of f(x, y) by marching squares. levels: number or array. st: {color, alpha, width, dash, res (cells across), labels, fmt}.
    * Saddle cells are resolved with the cell-centre value.
    */
   contour(f, levels, st = {}) {
@@ -176,7 +176,7 @@ class Stage {
     const [x0, x1] = this.xr, [y0, y1] = this.yr, dx = (x1 - x0) / nx, dy = (y1 - y0) / ny;
     const F = new Float64Array((nx + 1) * (ny + 1));
     for (let j = 0; j <= ny; j++) for (let i = 0; i <= nx; i++) F[j * (nx + 1) + i] = f(x0 + i * dx, y0 + j * dy);
-    const c = this.ctx; c.save(); c.strokeStyle = resolveColor(st.color || 'muted'); c.lineWidth = st.width ?? 1.2; c.setLineDash(st.dash || []);
+    const c = this.ctx; c.save(); c.strokeStyle = withAlpha(st.color || 'muted', st.alpha ?? 1); c.lineWidth = st.width ?? 1.2; c.setLineDash(st.dash || []);
     const fmt = st.fmt || ((v) => M.fix(v, 2));
     const SEG = { 1: [['s', 'w']], 2: [['s', 'e']], 3: [['w', 'e']], 4: [['e', 'n']], 6: [['s', 'n']], 7: [['w', 'n']], 8: [['w', 'n']], 9: [['s', 'n']], 11: [['e', 'n']], 12: [['w', 'e']], 13: [['s', 'e']], 14: [['s', 'w']] };
     for (const L of Ls) {

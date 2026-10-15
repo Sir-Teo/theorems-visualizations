@@ -234,7 +234,7 @@ the rate at which utility rises as the consumer gets more of good $i$ alone; for
           const t = TU(q), m = MU(q), w = 0.22 * X;
           T.clip(() => T.line(q - w, t - m * w, q + w, t + m * w, { color: 'green', width: 2.4 }));
           T.line(q, 0, q, t, GUIDE); T.line(0, t, q, t, GUIDE); T.dot(q, t, { r: 5.5, color: col });
-          T.text(`TU = ${v.fix(t, 1)}`, 0, t, { dx: 34, dy: t > 330 ? 11 : -9, color: col, size: 12, weight: 700, align: 'left' });
+          T.text(`TU = ${v.fix(t, 1)}`, 0, t, { dx: 34, dy: t > 330 ? 11 : t < 90 ? -26 : -9, color: col, size: 12, weight: 700, align: 'left' });
           Mg.between(MU, () => 0, 0, q, { fill: col, fillAlpha: 0.16 });
           Mg.rect(0, 0, q, m, { fill: 'gold', fillAlpha: 0.6, color: 'gold', width: 1 });
           Mg.fn(MU, { domain: [0, X], color: col, width: 2.6 });
@@ -304,7 +304,7 @@ The MRS does not depend on which utility function represents the preferences. Pr
             chord = (P.y - y2) / h;
             s.line(P.x, P.y, x2, P.y, { color: 'ink', width: 1.4 }); s.line(x2, P.y, x2, y2, { color: 'red', width: 2.4 });
             s.line(P.x, P.y, x2, y2, { color: 'gold', width: 2.4, dash: [5, 4] }); s.dot(x2, y2, { r: 4.5, color: 'gold' });
-            s.text(`+${v.fix(h, 2)}`, P.x + h / 2, P.y, { dy: 11, align: 'center', size: 11.5 });
+            s.text(`+${v.fix(h, 2)}`, P.x + h / 2, P.y, { dy: (P.y - y2) * s.scale > 34 ? 11 : -9, align: 'center', size: 11.5 });
             if ((P.y - y2) * s.scale > 16) s.text(`−${v.fix(P.y - y2, 2)}`, x2, (P.y + y2) / 2, { dx: 6, color: 'red', size: 11.5, align: 'left' });
           }
           // the MRS along the whole curve
@@ -385,7 +385,7 @@ Preferences are **homothetic** if the MRS is constant along every ray from the o
           const rawR = ys.map((y) => mrsAt(onRayAt(y)[0], y)), rawV = ys.map((y) => mrsAt(V.x, y));
           const prof = (raw) => raw.map((m, i) => { const c = clampM(m); return c == null ? null : [ys[i], c]; }).filter(Boolean); // kinks (NaN) are skipped, so jumps show
           const prR = prof(rawR), prV = prof(rawV);
-          r.hline(top, { color: 'faint', width: 1, dash: [3, 3] }); r.text('∞ or off the chart', 1.1, top, { dy: -9, color: 'muted', size: 10.5, align: 'left' });
+          r.hline(top, { color: 'faint', width: 1, dash: [3, 3] }); r.text('∞ or off the chart', 2.6, top, { dy: -9, color: 'muted', size: 10.5, align: 'left' });
           r.clip(() => { r.path(prR, { color: 'teal', width: 5 }); r.path(prV, { color: 'orange', width: 2.2 }); });
           const vals = (raw) => raw.filter((m) => !Number.isNaN(m));
           const spread = (arr) => { if (!arr.length) return 0; const mn = Math.min(...arr), mx = Math.max(...arr); return mx === mn ? 0 : !isFinite(mx) ? 1 : (mx - mn) / Math.max(Math.abs(mx), 1e-12); };
