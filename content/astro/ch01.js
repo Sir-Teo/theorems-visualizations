@@ -358,12 +358,12 @@ All satellites of one centre lie on a single line of slope $\tfrac32$ in $\log T
         v.render(() => {
           // isomass lines
           const LINES = [[1.46e22, 'Pluto+Charon'], [5.97e24, 'Earth'], [1.9e27, 'Jupiter'], [MS, 'Sun'], [1e3 * MS, '10³ M☉'], [4.3e6 * MS, '4.3×10⁶ M☉']];
-          for (const [M, lab] of LINES) {
+          LINES.forEach(([M, lab], k) => {
             s.fn((a) => Tof(a, M), { color: 'faint', width: 1, dash: [2, 4] });
-            const Ttop = 1.6e10, aTop = Math.cbrt((G * M * Ttop * Ttop) / (4 * Math.PI * Math.PI));
-            if (aTop < 2.5e14) s.text(lab, aTop, Ttop, { color: 'muted', size: 10, dx: 6, align: 'left' });
+            const Ttop = k % 2 ? 4e9 : 1.6e10, aTop = Math.cbrt((G * M * Ttop * Ttop) / (4 * Math.PI * Math.PI));
+            if (aTop < 1.2e14) s.text(lab, aTop, Ttop, { color: 'muted', size: 10, dx: 6, align: 'left' });
             else s.text(lab, 3.6e14, Tof(3.6e14, M), { color: 'muted', size: 10, dx: -4, dy: -9, align: 'right' });
-          }
+          });
           // every system's points
           let fit = null;
           for (const k of keys) {
@@ -404,7 +404,8 @@ All satellites of one centre lie on a single line of slope $\tfrac32$ in $\log T
           const { S0, fit } = cur;
           if (!fit) return 'no orbit left in the fit — click a hollow point to restore it';
           const inUnits = fit.M / S0.unit, acc = S0.M / S0.unit;
-          let out = String.raw`${S0.label}: ${fit.n} orbit${fit.n > 1 ? 's' : ''} ⇒ $M + m = 4\pi^2a^3/GT^2 = ${v.sci(fit.M, 4)}$ kg $= ${v.fix(inUnits, inUnits > 1e5 ? 0 : 4)}\,${S0.Mname}$ (accepted ${v.fix(acc, acc > 1e5 ? 0 : 4)}; off by ${v.fix(Math.abs(fit.M / S0.M - 1) * 100, 2)}%)`;
+          const big = (x) => (x > 1e5 ? v.sci(x, 3) : v.fix(x, 4));
+          let out = String.raw`${S0.label}: ${fit.n} orbit${fit.n > 1 ? 's' : ''} ⇒ $M + m = 4\pi^2a^3/GT^2 = ${v.sci(fit.M, 4)}$ kg $= ${big(inUnits)}\,${S0.Mname}$ (accepted $${big(acc)}$; off by ${v.fix(Math.abs(fit.M / S0.M - 1) * 100, 2)}%)`;
           if (fit.n > 1) out += String.raw`, scatter of the orbits ±${v.fix((10 ** fit.sd - 1) * 100, 2)}%`;
           if (which.value === 'pluto') out += String.raw` · this is Pluto **plus** Charon: Charon’s own orbit about Pluto has $a = a_P + a_C$, and the barycentric orbits ($a_P/a_C = m_C/m_P \approx 0.12$) split it into $m_P = 1.30\times10^{22}$ kg and $m_C = 1.59\times10^{21}$ kg`;
           if (which.value === 'sirius') out += String.raw` · $a = 7.50''$ at parallax $0.379''$ is 19.8 AU; the astrometric orbits of A and B about their barycentre split the total into $2.06 + 1.02\,M_\odot$ (Bond et al. 2017)`;

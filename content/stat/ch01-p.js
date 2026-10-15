@@ -193,7 +193,7 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
           }
           const { n, err, half } = st, ok = err.filter((e) => e != null), worst = ok.reduce((a, e) => (Math.abs(e) > Math.abs(a) ? e : a), 0), wi = err.indexOf(worst);
           const bad = err.map((e, i) => (e != null && Math.abs(e) > half + 0.01 ? `z = ${v.fix((i + 1) / 10, 1)}` : null)).filter(Boolean);
-          return `$n$ = ${n}: Student's ${ok.length} entries against the exact $P(t_{${n - 1}}\\le z\\sqrt{${n - 1}})$ — largest difference ${v.fix(worst, 2)}×10⁻⁴ at $z$ = ${v.fix((wi + 1) / 10, 1)} · ${bad.length ? `outside rounding: ${bad.join(', ')} ${n % 2 ? '; the odd-$n$ columns 5, 7 and 9 are all about 6×10⁻⁴ high at $z$ = 0.2' : ''}` : 'every entry is exact to the printed rounding'} · e.g. $z$ = 1: Student ${v.fix(STAB[n][9], n >= 9 ? 5 : 4)}, exact ${v.fix(M.dist.studentT(n - 1).cdf(Math.sqrt(n - 1)), 5)}`;
+          return `$n$ = ${n}: Student's ${ok.length} entries against the exact $P(t_{${n - 1}}\\le z\\sqrt{${n - 1}})$ — largest difference ${v.fix(worst, 2)}×10⁻⁴ at $z$ = ${v.fix((wi + 1) / 10, 1)} · ${bad.length ? `outside rounding: ${bad.join(', ')} ${n % 2 ? '; the odd-$n$ columns 5, 7 and 9 are all about 6×10⁻⁴ high at $z$ = 0.2 (as transcribed on Wikisource)' : ''}` : 'every entry is exact to the printed rounding'} · e.g. $z$ = 1: Student ${v.fix(STAB[n][9], n >= 9 ? 5 : 4)}, exact ${v.fix(M.dist.studentT(n - 1).cdf(Math.sqrt(n - 1)), 5)}`;
         });
       },
     },
