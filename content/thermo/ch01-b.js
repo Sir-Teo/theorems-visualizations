@@ -105,7 +105,7 @@ where $Q$ is the heat put into the system and $W$ the work done on it (engineers
           const tot = segs.reduce((s, L) => ({ Q: s.Q + L.Q, W: s.W + L.W, dU: s.dU + L.dU }), { Q: 0, W: 0, dU: 0 });
           res = { segs, tot, UA: f / 2 * hA.x * hA.y, UB: f / 2 * hB.x * hB.y };
           // ledger bars
-          const all = segs.concat([tot]), mx = Math.max(200, ...all.flatMap((L) => [Math.abs(L.Q), Math.abs(L.W), Math.abs(L.dU)])) * 1.18;
+          const all = segs.concat([tot]), mx = Math.max(200, ...all.flatMap((L) => [Math.abs(L.Q), Math.abs(L.W), Math.abs(L.dU)])) * 1.3;
           sl.setView([0, 5], [-mx, mx]);
           sl.hline(0, { color: 'muted', width: 1 });
           all.forEach((L, k) => {
@@ -138,7 +138,7 @@ where $Q$ is the heat put into the system and $W$ the work done on it (engineers
         const LB = 0.45359237, IN = 0.0254, H = 63.0 * IN, NF = 20, CW = 13.924 * LB * 4184, FALL = 1.15;
         const JOULE = { W: 772.692 * 7.842299 * 1.3558179, dT: 0.563209 * 5 / 9 };   // corrected work (J) and mean rise (K), Series 1
         const mode = v.select('energy source', [{ value: 'paddle', label: 'falling weights + paddle' }, { value: 'heater', label: 'electric heater' }], 'paddle');
-        const mw = v.slider('each weight', 10, 40, 29.011, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} lb (${v.fix(x * LB, 2)} kg)` });
+        const mw = v.slider('each weight', 10, 40, 29.011, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} lb` });
         const sa = v.stage({ x: [0, 10], y: [0, 7.4], height: 330, axes: false, equal: true, weight: 1.15 });
         const sp = v.stage({ x: [0, 9500], y: [0, 0.4], height: 330, axes: 'box', xlabel: 'work or electrical energy delivered (J)', ylabel: 'temperature rise (K)', title: 'temperature rise per joule', weight: 1 });
         let state = { n: 0, frac: 0, done: false };
@@ -149,7 +149,7 @@ where $Q$ is the heat put into the system and $W$ the work done on it (engineers
           const W = (n + frac) * per(), dT = W / CW, heater = mode.value === 'heater';
           // --- apparatus
           sa.rect(2.7, 0.35, 7.3, 4.05, { fill: 'orange', fillAlpha: 0.08, color: 'muted', width: 1.2 });
-          sa.text('insulating box', 7.25, 4.25, { size: 10.5, color: 'muted', align: 'right' });
+          sa.text('insulating box', 2.75, 4.25, { size: 10.5, color: 'muted' });
           sa.rect(3.1, 0.6, 6.9, 3.75, { color: 'orange', width: 2.4 });
           sa.rect(3.18, 0.68, 6.82, 3.3, { fill: 'blue', fillAlpha: 0.16, stroke: false });
           sa.line(3.18, 3.3, 6.82, 3.3, { color: 'blue', width: 1.2, alpha: 0.6 });
@@ -230,12 +230,12 @@ Per unit mass they are **specific heats**, per mole **molar heat capacities**. F
         const make = () => {
           const dof = +gas.value, sp = [{ m: 1, d: 0.6, dof, T: T0 }];
           G = [hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(71 + dof), piston: { X: XV }, diffuse: [1, 0, 1, 1, 1, 1] }),
-               hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(72 + dof), piston: { X: X0, M: 30, F: P0 * A, lo: 4, hi: 44 }, diffuse: [1, 0, 1, 1, 1, 1] })];
+               hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(72 + dof), piston: { X: X0, M: 5, F: P0 * A, lo: 4, hi: 44 }, diffuse: [1, 0, 1, 1, 1, 1] })];
           tr = [[], []]; t0 = G[0].t;
           G.forEach((g) => { g.Qin = 0; g.U0 = g.stats().U; g.X0 = g.pist.X; g.W0 = g.Wp; g.Tacc = 0; g.nacc = 0; });
         };
         make();
-        const clock = simClock(12, 0.05, 0);
+        const clock = simClock(16, 0.05, 0);
         v.animate((t) => {
           const add = clock(t, () => make());
           const tStart = performance.now();
@@ -274,7 +274,7 @@ Per unit mass they are **specific heats**, per mole **molar heat capacities**. F
           const s0 = G[0].stats(), s1 = G[1].stats();
           const dU0 = s0.U - G[0].U0, dU1 = s1.U - G[1].U0, Wby = -(G[1].Wp - G[1].W0);
           const top = Math.max(50, G[0].Qin) * 1.15;
-          sb.setView([0, 2], [0, top]);
+          sb.setView([0, 2], [-0.1 * top, top]);
           sb.rect(0.25, 0, 0.75, Math.max(0, dU0), { fill: 'green', fillAlpha: 0.7, color: 'green', width: 1 });
           sb.rect(1.25, 0, 1.75, Math.max(0, dU1), { fill: 'green', fillAlpha: 0.7, color: 'green', width: 1 });
           sb.rect(1.25, Math.max(0, dU1), 1.75, Math.max(0, dU1) + Math.max(0, Wby), { fill: 'orange', fillAlpha: 0.7, color: 'orange', width: 1 });
@@ -335,14 +335,14 @@ It is a state function. In a process at constant pressure in which the only work
           if (lock.value) { sc.line(2.8, yp + 0.15, 3.25, yp + 0.15, { color: 'ink', width: 4 }); sc.line(6.75, yp + 0.15, 7.2, yp + 0.15, { color: 'ink', width: 4 }); sc.text('locked', 7.3, yp + 0.15, { size: 11, color: 'ink' }); }
           else for (const xx of [4, 5, 6]) sc.arrow(xx, yp + 1.2, xx, yp + 0.4, { color: 'muted', width: 1.6, head: 7 });
           if (!lock.value) sc.text('atmosphere, 1 bar', 5, yp + 1.5, { align: 'center', size: 11, color: 'muted' });
-          sc.text(`gas: ${v.fix(ng, 2)} mol`, 5, 0.3, { align: 'center', size: 11.5, color: 'purple' });
+          sc.text(`gas: ${v.fix(ng, 2)} mol`, 3.05, 0.65 + hgt / 2, { align: 'right', size: 11.5, color: 'purple', weight: 600 });
           if (Math.abs(Q) > 0.5) {
             const d = Q < 0 ? 1 : -1, w = clamp(1.5 + Math.abs(Q) / 120, 1.5, 8);
             sc.arrow(d > 0 ? 7.0 : 9.2, 3.2, d > 0 ? 9.2 : 7.0, 3.2, { color: 'red', width: w });
             sc.text(Q < 0 ? `heat out ${v.fix(-Q, 1)} kJ` : `heat in ${v.fix(Q, 1)} kJ`, 8.1, 3.75, { align: 'center', size: 11, color: 'red', weight: 600 });
           }
           // ledger
-          const mx = Math.max(10, Math.abs(Q), Math.abs(W), Math.abs(dU), Math.abs(dH)) * 1.2;
+          const mx = Math.max(10, Math.abs(Q), Math.abs(W), Math.abs(dU), Math.abs(dH)) * 1.35;
           sb.setView([0, 4], [-mx, mx]);
           sb.hline(0, { color: 'muted', width: 1 });
           [[0.5, Q, Q >= 0 ? 'red' : 'blue'], [1.5, W, 'orange'], [2.5, dU, 'green'], [3.5, dH, 'purple']].forEach(([xx, val, c]) => {
@@ -375,12 +375,12 @@ at every temperature and for every kind of molecule (Mayer's relation). Their ra
       viz(v) {
         const gas = v.select('gas', Object.keys(GASES).map((g) => ({ value: g, label: `$${GASES[g].tex}$` })), 'N2');
         const sc = v.stage({ x: [10, 5000], y: [0, 7.6], xlog: true, height: 300, axes: 'box', xlabel: 'temperature (K)', ylabel: 'molar heat capacity / R', title: '$C_V$ and $C_P$ of an ideal gas', full: true });
-        const sg = v.stage({ x: [10, 5000], y: [1, 1.72], xlog: true, height: 220, axes: 'box', xlabel: 'temperature (K)', ylabel: 'γ = C_P/C_V', title: 'heat-capacity ratio', weight: 1.4 });
-        const sb = v.stage({ x: [0, 2], y: [0, 7.6], height: 220, axes: 'box', ylabel: 'per R', xticks: [[0.5, 'C_V'], [1.5, 'C_P']], title: 'where the heat goes', weight: 1 });
+        const sg = v.stage({ x: [10, 5000], y: [1, 1.8], xlog: true, height: 220, axes: 'box', xlabel: 'temperature (K)', ylabel: 'γ = C_P/C_V', title: 'heat-capacity ratio', weight: 1.4 });
+        const sb = v.stage({ x: [0, 2], y: [-0.9, 7.6], height: 220, axes: 'box', ylabel: 'per R', xticks: [[0.5, 'C_V'], [1.5, 'C_P']], title: 'where the heat goes', weight: 1 });
         const h = sc.handle(300, 0.4, { color: 'ink', r: 6, constrain: (x) => [clamp(x, 11, 4900), 0.4] });
         v.render(() => {
           const g = gas.value, G = GASES[g], T = h.x, p = cvParts(g, T);
-          if (G.bp > 10) { sc.rect(10, 0, G.bp, 7.6, { fill: 'faint', fillAlpha: 0.25, stroke: false }); sg.rect(10, 1, G.bp, 1.72, { fill: 'faint', fillAlpha: 0.25, stroke: false }); sc.text('condensed at 1 atm', Math.sqrt(10 * G.bp), 7.1, { align: 'center', size: 10.5, color: 'muted' }); }
+          if (G.bp > 10) { sc.rect(10, 0, G.bp, 7.6, { fill: 'faint', fillAlpha: 0.25, stroke: false }); sg.rect(10, 1, G.bp, 1.8, { fill: 'faint', fillAlpha: 0.25, stroke: false }); sc.text('condensed at 1 atm', Math.sqrt(10 * G.bp), 6.2, { align: 'center', size: 10.5, color: 'muted' }); }
           const cvF = (x) => cvParts(g, x).cv;
           sc.between((x) => cvF(x) + 1, cvF, 10, 5000, { fill: 'gold', fillAlpha: 0.3, n: 220 });
           sc.fn(cvF, { color: 'accent', width: 2.6, n: 300 });
@@ -389,8 +389,8 @@ at every temperature and for every kind of molecule (Mayer's relation). Their ra
           sc.vline(T, { color: 'ink', width: 1, alpha: 0.5 });
           sc.dot(T, p.cv, { r: 4.5, color: 'accent' }); sc.dot(T, p.cv + 1, { r: 4.5, color: 'red' });
           sc.measure(T * 1.12, p.cv, T * 1.12, p.cv + 1, '1', { color: 'ink', math: false, size: 12, offset: 10 });
-          sc.text('C_P', 4800, cvF(4800) + 1, { align: 'right', dy: -10, color: 'red', size: 12, weight: 600 });
-          sc.text('C_V', 4800, cvF(4800), { align: 'right', dy: 12, color: 'accent', size: 12, weight: 600 });
+          sc.tex('C_P', 4700, cvF(4700) + 1, { align: 'right', baseline: 'bottom', dy: -4, color: 'red', size: 15 });
+          sc.tex('C_V', 4700, cvF(4700), { align: 'right', baseline: 'top', dy: 4, color: 'accent', size: 15 });
           // gamma
           for (const k of Object.keys(GASES)) if (k !== g) sg.fn((x) => 1 + 1 / cvParts(k, x).cv, { color: GASES[k].col, width: 1, alpha: 0.45, n: 160 });
           sg.fn((x) => 1 + 1 / cvF(x), { color: G.col, width: 2.6, n: 260 });
@@ -432,7 +432,7 @@ so the gas heats when compressed and cools when it expands. On a $P$–$V$ diagr
       scope: String.raw`Holds for an ideal gas undergoing quasistatic processes: the piston must move slowly compared with the speed of sound (1.8), and for the isothermal case slowly compared with the time heat needs to reach the walls. Real compressions in engines and sound waves are close to adiabatic.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Adiabatic_process' },
       viz(v) {
-        const L = 12, A = L * L, N = 200, X1 = 36, X2 = 12, U = 0.07, DX = 1.0;
+        const L = 12, A = L * L, N = 200, X1 = 36, X2 = 12, U = 0.04, DX = 1.0;
         let G, dir, pts, last, cyc, T0;
         const walls = v.select('walls', [{ value: 'ins', label: 'insulating (adiabatic)' }, { value: 'con', label: 'conducting (heat bath)' }], 'ins', { onChange: () => make() });
         const gas = v.select('molecules', [{ value: 0, label: 'monatomic' }, { value: 2, label: 'diatomic' }], 0, { onChange: () => make() });
@@ -446,7 +446,7 @@ so the gas heats when compressed and cools when it expands. On a $P$–$V$ diagr
           G.setU(-U);
         };
         make();
-        const clock = simClock(40, 0.05, 0);
+        const clock = simClock(60, 0.05, 0);
         let Tacc = 0, nacc = 0;
         v.animate((t) => {
           const add = clock(t, () => make());
@@ -502,7 +502,7 @@ not at Newton's isothermal value $\sqrt{P/\rho}$: the compressions and rarefacti
         const gsel = v.select('gas', Object.entries(GAS).map(([value, q]) => ({ value, label: q.label })), 'air');
         const Ds = v.slider('heat diffusivity $D$', 1e-5, 3, 1e-4, { log: true, fmt: (x) => x.toExponential(1) });
         const sw = v.stage({ x: [0, 1], y: [-0.25, 1.08], height: 260, axes: 'box', xlabel: 'position along the tube', ylabel: 'disturbance', full: true, title: 'a pressure pulse in a heat-conducting gas (lengths in tube lengths, speeds in units of the isothermal speed)' });
-        const sd = v.stage({ x: [1e-8, 1e4], y: [0.96, 1.32], xlog: true, height: 240, axes: 'box', xlabel: 'Dk/c (heat-flow rate ÷ wave rate)', ylabel: 'speed / c_T', title: 'speed of sound', weight: 1 });
+        const sd = v.stage({ x: [1e-8, 1e4], y: [0.9, 1.3], xlog: true, height: 240, axes: 'box', xlabel: 'Dk/c (heat-flow rate ÷ wave rate)', ylabel: 'speed / c_T', title: 'speed of sound', weight: 1 });
         const sa = v.stage({ x: [1e-8, 1e4], y: [0, 0.5], xlog: true, height: 240, axes: 'box', xlabel: 'Dk/c', ylabel: 'amplitude lost per wavelength', title: 'absorption of sound', weight: 1 });
         // exact dispersion relation Ω³ + iεΩ² − γΩ − iε = 0 (Ω = ω/kc), right-moving acoustic root
         const disp = (g, eps, guess) => {
@@ -559,7 +559,7 @@ not at Newton's isothermal value $\sqrt{P/\rho}$: the compressions and rarefacti
           // dispersion panels
           const C = curveFor(g);
           for (const s of [sd, sa]) s.vband(3.7e-8, 3.7e-5, { color: 'green', alpha: 0.12 });
-          sd.text('audible sound in air', 1.2e-6, 1.3, { align: 'center', size: 10.5, color: 'green' });
+          sd.text('audible sound in air', 1.2e-6, 1.25, { align: 'center', size: 10.5, color: 'green' });
           sd.hline(cs, { color: 'green', dash: [5, 4], width: 1.2 }); sd.hline(1, { color: 'red', dash: [5, 4], width: 1.2 });
           sd.text(`adiabatic √γ = ${v.fix(cs, 3)}`, 3e3, cs, { align: 'right', dy: -9, size: 11, color: 'green' });
           sd.text('isothermal 1', 1e-7, 1, { dy: -9, size: 11, color: 'red' });
@@ -598,10 +598,10 @@ with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 
       viz(v) {
         const Gd = g0 / cpAir * 1000, ZMAX = 40, P0 = 1013.25;
         const T0s = v.slider('surface temperature $T_0$', 240, 320, 288.15, { step: 0.5, fmt: (x) => v.fix(x, 1) + ' K' });
-        const st = v.stage({ x: [150, 330], y: [0, ZMAX], height: 340, axes: 'box', xlabel: 'temperature (K)', ylabel: 'altitude (km)', title: 'temperature', weight: 1 });
-        const sp = v.stage({ x: [2, 1100], y: [0, ZMAX], xlog: true, height: 340, axes: 'box', xlabel: 'pressure (hPa)', ylabel: 'altitude (km)', title: 'pressure (log scale)', weight: 1 });
+        const st = v.stage({ x: [150, 330], y: [0, ZMAX], height: 340, axes: 'box', ylabel: 'altitude (km)', title: 'temperature (K)', weight: 1 });
+        const sp = v.stage({ x: [2, 1100], y: [0, ZMAX], xlog: true, height: 340, axes: 'box', ylabel: 'altitude (km)', title: 'pressure (hPa, log scale)', weight: 1 });
         const sc = v.stage({ x: [0, 3], y: [0, ZMAX], height: 340, axes: false, title: 'density', weight: 0.5 });
-        const hp = st.handle(288.15 - Gd * 3, 3, { color: 'gold', r: 7, constrain: (x, y) => { const z = clamp(y, 0, 16); return [T0s.value - Gd * z, z]; } });
+        const hp = st.handle(288.15 - Gd * 8, 8, { color: 'gold', r: 7, constrain: (x, y) => { const z = clamp(y, 0, 16); return [T0s.value - Gd * z, z]; } });
         const PROF = {
           iso: { T: (z, T0) => T0, col: 'blue', name: 'isothermal' },
           adi: { T: (z, T0) => T0 - Gd * z, col: 'red', name: 'dry adiabatic' },
@@ -628,18 +628,18 @@ with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 
             sp.path(c.map(([z, p]) => [p, z]), { color: P.col, width: 2.4 });
           }
           st.text('tropopause', 216.65, 11, { dx: 6, dy: -8, size: 10.5, color: 'muted' });
-          st.text(`−${v.fix(Gd, 2)} K/km`, T0 - Gd * 9, 9, { dx: -8, align: 'right', size: 11, color: 'red' });
-          st.text('−6.5 K/km', 288.15 - 6.5 * 6, 6, { dx: 8, size: 11, color: 'ink' });
+          st.text(`−${v.fix(Gd, 2)} K/km`, T0 - Gd * 4, 4, { dx: -8, align: 'right', size: 11, color: 'red' });
+          st.text('−6.5 K/km', 288.15 - 6.5 * 7, 7, { dx: 8, size: 11, color: 'ink' });
           // parcel vs environment (standard atmosphere)
           const Te = ussa(zp).T, Tp = T0 - Gd * zp;
           st.hline(zp, { color: 'gold', width: 1, dash: [3, 4] }); sp.hline(zp, { color: 'gold', width: 1, dash: [3, 4] });
           st.dot(Te, zp, { r: 4, color: 'ink' });
           if (zp > 0.3) {
             const sinks = Tp < Te;
-            st.arrow(Tp - 9, zp, Tp - 9, zp + (sinks ? -2.2 : 2.2), { color: sinks ? 'blue' : 'red', width: 2 });
-            st.text(sinks ? 'colder than the air around: sinks back' : 'warmer: keeps rising', Tp - 12, zp + 1.2, { align: 'right', size: 11, color: sinks ? 'blue' : 'red' });
+            st.arrow(Tp - 7, zp, Tp - 7, zp + (sinks ? -2.4 : 2.4), { color: sinks ? 'blue' : 'red', width: 2 });
+            st.text(sinks ? 'sinks' : 'rises', Tp - 10, zp + (sinks ? -1.3 : 1.3), { align: 'right', size: 11, color: sinks ? 'blue' : 'red', weight: 600 });
           }
-          sp.text(`H = RT/Mg = ${v.fix(R * T0 / (Mair * g0) / 1000, 2)} km`, 5, ZMAX * 0.93, { size: 11, color: 'blue' });
+          sp.text(`H = RT/Mg = ${v.fix(R * T0 / (Mair * g0) / 1000, 2)} km`, 2.4, 2.5, { size: 11, color: 'blue' });
           // density columns
           ['iso', 'adi', 'std'].forEach((k, i) => {
             const c = cols[k];
@@ -687,7 +687,7 @@ with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 
         const sm = v.stage({ x: [0, 60], y: [-30, 2], height: 270, axes: 'box', xlabel: 'starting pressure (bar), 300 K', ylabel: 'ΔT (K)', title: 'real gases doubling their volume', weight: 1 });
         const make = () => {
           G = hsGas({ species: [{ m: 1, d: 0.6 }], counts: [N], side: [0], Ly: L, Lz: L, T: 1, rng: v.rng(91), piston: { X }, plate: { X: XP }, diffuse: [1, 0, 1, 1, 1, 1] });
-          removed = false; tRem = null; hist = []; last = G.snap(); Tacc = 0; nacc = 0;
+          G.setT(1); removed = false; tRem = null; hist = []; last = G.snap(); Tacc = 0; nacc = 0;
         };
         make();
         const clock = simClock(10, 0.05, 6);
@@ -720,11 +720,11 @@ with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 
           // virial model
           const dT = (g, Pbar) => { const T = 300, Vi = R * T / (Pbar * 1e5) * 1e6, dB = (B2(g, T + 5) - B2(g, T - 5)) / 10; return -(R * T * T / (CV[g] * R)) * dB * (1 / Vi - 1 / (2 * Vi)); };
           sm.hline(0, { color: 'accent', width: 2.4 });
-          sm.text('hard spheres / ideal gas: no change', 59, 0, { align: 'right', dy: -9, size: 11, color: 'accent' });
+          sm.text('hard spheres / ideal gas: no change', 12, 0, { dy: -9, size: 11, color: 'accent' });
           for (const g of Object.keys(LJ)) {
             const sel = g === gsel.value;
             sm.fn((p) => dT(g, Math.max(p, 0.01)), { color: LJ[g].col, width: sel ? 2.8 : 1.4, alpha: sel ? 1 : 0.55, domain: [0, 60], n: 60 });
-            sm.text(g.replace('2', '₂'), 59, dT(g, 59), { align: 'right', dy: g === 'He' || g === 'H2' ? 12 : -9, size: 11, color: LJ[g].col, weight: sel ? 700 : 500 });
+            sm.text(g.replace('2', '₂'), 59, dT(g, 59), { align: 'right', dy: g === 'He' ? -9 : g === 'H2' ? 12 : -9, size: 11, color: LJ[g].col, weight: sel ? 700 : 500 });
           }
           sm.dot(Pi.value, dT(gsel.value, Pi.value), { r: 5.5, color: LJ[gsel.value].col });
         }, { still: 7 });

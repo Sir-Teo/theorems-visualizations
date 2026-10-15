@@ -41,7 +41,7 @@ export function hsGas(o) {
   const tW = new Float64Array(N), wW = new Int8Array(N);
   { let k = 0; counts.forEach((c, s) => { for (let q = 0; q < c; q++, k++) { S[k] = s; m[k] = SP[s].m ?? 1; d[k] = SP[s].d ?? 1; dof[k] = SP[s].dof ?? 0; side[k] = (o.side && o.side[s]) || 0; } }); }
   const pist = Object.assign({ X: 20, U: 0, M: Infinity, F: 0, lo: 1, hi: 1e9, rest: false }, o.piston || {});
-  const plate = o.plate ? Object.assign({ X: 10, U: 0, M: Infinity, lo: 0, hi: 1e9 }, o.plate) : null;
+  let plate = o.plate ? Object.assign({ X: 10, U: 0, M: Infinity, lo: 0, hi: 1e9 }, o.plate) : null;
   const G = {
     N, x, y, z, vx, vy, vz, m, d, e, S, side, dof, SP, Ly: o.Ly ?? 10, Lz: o.Lz ?? 10, pist, plate, t: 0,
     thermal: o.thermal || [0, 0, 0, 0, 0, 0], diffuse: o.diffuse || [0, 0, 0, 0, 0, 0], Tb: o.Tb ?? o.T ?? 1, exchange: o.exchange ?? 1,
@@ -248,7 +248,7 @@ export function hsGas(o) {
     speedCap(); G.repredict();
   };
   /** Remove the partition: both sides become one region (free expansion). */
-  G.removePlate = () => { if (!G.plate) return; G.plate = null; side.fill(0); G.repredict(); };
+  G.removePlate = () => { if (!plate) return; plate = null; G.plate = null; side.fill(0); G.repredict(); };
   G.volume = () => pist.X * G.Ly * G.Lz;
   G.snap = () => ({ t: G.t, imp: Array.from(G.imp), hits: Array.from(G.hits), impS: Array.from(G.impS), Wp: G.Wp, Qb: G.Qb, Ep: G.Ep.slice(), Vint: G.Vint, Aint: G.Aint, ncol: G.ncol });
   /** Window averages between two snapshots: piston pressure, pressure on all walls, mean volume, wall hits. */

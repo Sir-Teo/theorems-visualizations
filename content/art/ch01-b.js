@@ -507,14 +507,14 @@ Each keeps some properties of what we see and gives up others; none of them is â
       refs: ['Kemp ch. 3'],
       tags: ['perspective', 'shadows', 'reflections'],
       viz(v) {
-        const M = v.M, h = 1.6, d = 1.4, C = camera([0, 0, h], { d });
-        const pic = v.stage({ x: [-2.3, 2.3], y: [-1.6, 1.35], equal: true, axes: false, height: 390 });
+        const M = v.M, h = 1.6, d = 2.2, C = camera([0, 0, h], { d });
+        const pic = v.stage({ x: [-2.3, 2.3], y: [-1.6, 1.45], equal: true, axes: false, height: 400 });
         const mode = v.select('light', [{ value: 'sun', label: 'sun' }, { value: 'lamp', label: 'lamp' }], 'sun');
         const refl = v.toggle('reflections in the pool', true);
-        const sun = pic.handle(-0.75, -1.15, { color: 'gold', label: 'sun', labelPos: 'ne', constrain: (x, y) => [x, Math.abs(y) < 0.07 ? (y >= 0 ? 0.07 : -0.07) : y] });
+        const sun = pic.handle(-0.95, -1.4, { color: 'gold', constrain: (x, y) => [x, Math.abs(y) < 0.07 ? (y >= 0 ? 0.07 : -0.07) : y] });
         let foot = null;
-        const lamp = pic.handle(0.75, 0.42, { color: 'gold', label: 'lamp', labelPos: 'ne', constrain: (x, y) => [x, Math.max(y, (foot ? foot.y : -0.6) + 0.15)], onDrag: () => { foot.x = lamp.x; } });
-        foot = pic.handle(0.75, -0.62, { color: 'orange', label: 'foot', labelPos: 'e', constrain: (x, y) => [lamp.x, M.clamp(y, -1.5, -0.1)] });
+        const lamp = pic.handle(0.75, 0.95, { color: 'gold', label: 'lamp', labelPos: 'ne', constrain: (x, y) => [x, Math.max(y, (foot ? foot.y : -0.6) + 0.15)], onDrag: () => { foot.x = lamp.x; } });
+        foot = pic.handle(0.75, -0.62, { color: 'orange', label: 'foot', labelPos: 'e', constrain: (x, y) => [lamp.x, M.clamp(y, -1.55, -0.15)] });
         const posts = [[-1.9, 5.0, 2.4], [0.1, 8.5, 2.8], [2.9, 11.5, 3.2], [2.0, 6.2, 2.1]]; // x, y, height (the last one stands at the pool)
         const box = boxMesh([-0.4, 6.2, 0], [1.1, 1.1, 1.1], 0.45);
         const pool = [[0.7, 3.4, 0], [3.6, 3.4, 0], [3.6, 6.2, 0], [0.7, 6.2, 0]];
@@ -550,16 +550,16 @@ Each keeps some properties of what we see and gives up others; none of them is â
               const T = shadow(lt, [x, y, H]); if (!T) continue;
               const a = pj([x, y, 0]), t = pj(T), top = pj([x, y, H]); if (!t) continue;
               pic.line(a[0], a[1], t[0], t[1], { color: 'ink', width: 5, alpha: 0.28 });
-              pic.line(lt.src[0], lt.src[1], t[0], t[1], { color: 'gold', width: 1, dash: [4, 4], alpha: 0.85 });
+              const far = Math.hypot(top[0] - lt.src[0], top[1] - lt.src[1]) > Math.hypot(t[0] - lt.src[0], t[1] - lt.src[1]) ? top : t;
+              pic.line(lt.src[0], lt.src[1], far[0], far[1], { color: 'gold', width: 1, dash: [4, 4], alpha: 0.85 });
               pic.line(lt.vp[0], lt.vp[1], t[0], t[1], { color: 'orange', width: 1, dash: [4, 4], alpha: 0.85 });
-              void top;
             }
           }
           const objs = posts.map(([x, y, H]) => ({ y, f: () => { const a = pj([x, y, 0]), b = pj([x, y, H]); pic.line(a[0], a[1], b[0], b[1], { color: 'ink', width: 4 }); } }));
           objs.push({ y: 6.2, f: () => drawSolids(pic, pj, [0, 0, h], [{ mesh: box, color: 'teal' }]) });
           objs.sort((p, q) => q.y - p.y).forEach((o) => o.f());
           if (lt) {
-            if (lt.sun) { pic.dot(lt.vp[0], 0, { r: 5, color: 'orange' }); pic.text('shadow vanishing point', lt.vp[0], lt.src[1] > 0 ? -0.08 : 0.08, { align: 'center', baseline: lt.src[1] > 0 ? 'top' : 'bottom', size: 10.5, color: 'orange' }); if (lt.src[1] < 0) pic.text('(sun behind you: antisolar point)', lt.src[0], lt.src[1] - 0.12, { align: 'center', baseline: 'top', size: 10.5, color: 'gold' }); }
+            if (lt.sun) { pic.dot(lt.vp[0], 0, { r: 5, color: 'orange' }); pic.text('shadow vanishing point', lt.vp[0], lt.src[1] > 0 ? -0.08 : 0.08, { align: 'center', baseline: lt.src[1] > 0 ? 'top' : 'bottom', size: 10.5, color: 'orange' }); pic.text(lt.src[1] < 0 ? 'antisolar point (the sun is behind you)' : 'sun', lt.src[0] + 0.12, lt.src[1] + 0.1, { align: 'left', baseline: 'bottom', size: 11, color: 'gold', weight: 600 }); }
             else { pic.line(lamp.x, lamp.y, foot.x, foot.y, { color: 'muted', width: 2.5 }); }
           }
         });

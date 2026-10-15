@@ -461,7 +461,8 @@ $$(v_1 \otimes \cdots \otimes v_m)(\varphi_1, \dots, \varphi_m) = \varphi_1(v_1)
             L.tex('\\otimes', 2.7, 0, { size: 20 }); L.tex('\\otimes', 5.9, 0, { size: 20 });
           } else {
             L.tex(k === 'ghz' ? 'e_1\\otimes e_1\\otimes e_1 + e_2\\otimes e_2\\otimes e_2' : '\\begin{gathered} e_1\\otimes e_1\\otimes e_2 \\\\ +\\ e_1\\otimes e_2\\otimes e_1 \\\\ +\\ e_2\\otimes e_1\\otimes e_1\\end{gathered}', 4.4, 0.4, { size: 15 });
-            L.tex('\\text{no } v_1, v_2, v_3 \\text{ give this block}', 4.4, -1.7, { size: 13, color: 'red' });
+            L.tex('\\text{no } v_1, v_2, v_3 \\text{ give this block}', 4.4, -1.5, { size: 13, color: 'red' });
+            L.tex('\\text{three qubits: an entangled state}', 4.4, -2.0, { size: 12.5, color: 'muted' });
           }
           sc.begin(); block3(sc, T, { gap: 0.95, numbers: true, scale: prod ? Math.max(0.3, maxAbs(T)) : 1, names: ['i', 'j', 'k'] }); sc.flush();
           // evaluation on (φ₁, φ₂, φ₃), flattening ranks
@@ -585,7 +586,7 @@ $$\dim(V_1 \otimes \cdots \otimes V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
 $$\{e^1_{j_1} \otimes \cdots \otimes e^m_{j_m}\}_{j_1 = 1, \dots, n_1;\ \dots;\ j_m = 1, \dots, n_m}$$
 is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
       idea: String.raw`Follow 9.74. Dual functionals $\varphi^r_j$ with $\varphi^r_j(e^r_k) = \delta_{jk}$ (from the linear map lemma) satisfy $(e^1_{j_1} \otimes \cdots \otimes e^m_{j_m})(\varphi^1_{k_1}, \dots, \varphi^m_{k_m}) = 1$ if every $j_r = k_r$ and $0$ otherwise; applying a vanishing combination to these lists of functionals kills each coefficient, so the list is independent. It has $n_1 \cdots n_m$ elements, the dimension (9.89), so it is a basis (2.38). Consequently an element of $V_1 \otimes \cdots \otimes V_m$ is described by an array with $m$ indices — its coefficients — which is why tensors appear wherever multi-index arrays do. With bases other than the standard ones, the coefficient array is obtained by applying the inverse change-of-basis matrix along each index.`,
-      caption: String.raw`$\mathbf R^2 \otimes \mathbf R^2 \otimes \mathbf R^2$ and a fixed target tensor $T$ (dashed outlines in both blocks). Step through the eight basis tensors $b_i \otimes c_j \otimes d_k$: left, the current one, scaled by its coefficient $a_{ijk}$ (with standard bases it lights up a single cell; with skewed bases it fills the whole block); right, the running sum $\sum a_{ijk}\, b_i \otimes c_j \otimes d_k$, which reaches $T$ exactly at step 8. Drag either background to rotate. Choose *break* to replace the basis of the second factor by two parallel vectors: the eight tensors span only a 4-dimensional space and the sum never reaches $T$.`,
+      caption: String.raw`$\mathbf R^2 \otimes \mathbf R^2 \otimes \mathbf R^2$ and a fixed target tensor $T$ (its cells outlined in the right block). Step through the eight basis tensors $b_i \otimes c_j \otimes d_k$: left, the current one, scaled by its coefficient $a_{ijk}$ (with standard bases it lights up a single cell; with skewed bases it fills the whole block); right, the running sum $\sum a_{ijk}\, b_i \otimes c_j \otimes d_k$, which reaches $T$ exactly at step 8. Drag either background to rotate. Choose *break* to replace the basis of the second factor by two parallel vectors: the eight tensors span only a 4-dimensional space and the sum never reaches $T$.`,
       deps: ['ladr-9.88', 'ladr-9.74', 'ladr-9.89'],
       tags: ['tensors', 'bases'],
       viz(v) {
@@ -597,9 +598,9 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
           dep: [[[1, 0], [0, 1]], [[1, 0.5], [0.5, 0.25]], [[1, 0], [0, 1]]],
         };
         let S = null;
-        const sel = v.select('bases', [{ value: 'std', label: 'standard' }, { value: 'skew', label: 'skewed' }, { value: 'dep', label: 'break: $c_2 = \\tfrac12 c_1$' }], 'std', { onChange: () => S && S.reset() });
+        const sel = v.select('bases', [{ value: 'std', label: 'standard' }, { value: 'skew', label: 'skewed' }, { value: 'dep', label: 'break: $c_2 = \\tfrac12 c_1$' }], 'std', { onChange: () => S && S.reset({ at: 'end' }) });
         const L = v.stage({ x: [-1.75, 1.75], y: [-1.6, 1.8], equal: true, axes: false, height: 300, title: 'step’s basis tensor, times its coefficient' });
-        const R = v.stage({ x: [-1.75, 1.75], y: [-1.6, 1.8], equal: true, axes: false, height: 300, title: 'running sum, and the target $T$ (dashed)' });
+        const R = v.stage({ x: [-1.75, 1.75], y: [-1.6, 1.8], equal: true, axes: false, height: 300, title: 'running sum, and the target $T$ (outlines)' });
         const s1 = v.scene3(L, { yaw: 0.62, pitch: 0.4, axes: false }), s2 = v.scene3(R, { yaw: 0.62, pitch: 0.4, axes: false, hint: false });
         const frames = () => {
           const B = bases[sel.value], Bm = B.map((b) => fromCols(b)), Pinv = Bm.map((x) => M.pinv(x));
@@ -624,14 +625,14 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
           const f = S.frame; if (!f || !f.sum) return;
           const scale = Math.max(1, maxAbs(T));
           s1.begin(); block3(s1, f.cur || zeros3(2, 2, 2), { gap: 0.95, scale, numbers: f.cur ? 'nz' : false, hl: f.idx || undefined, names: ['i', 'j', 'k'] }); s1.flush();
-          s2.begin(); block3(s2, f.sum, { gap: 0.95, scale, ghost: T, numbers: true, names: ['i', 'j', 'k'] }); s2.flush();
+          s2.begin(); block3(s2, f.sum, { gap: 0.95, scale, ghost: T, numbers: 'nz', names: ['i', 'j', 'k'] }); s2.flush();
           R.corner(`‖T − sum‖ = ${pn(f.err, 3)}`, 'tl', { color: f.err < 1e-9 ? 'green' : S.atEnd ? 'red' : 'muted', weight: 700, size: 13 });
           L.corner(sel.value === 'std' ? 'standard bases' : sel.value === 'skew' ? 'skewed bases' : 'c₂ = ½ c₁', 'tl', { color: sel.value === 'dep' ? 'red' : 'muted', weight: 600, size: 12.5 });
         });
         v.readout(() => {
           const f = S.frame; if (!f || !f.sum) return '';
           const done = S.atEnd;
-          if (!done) return `Step ${S.i} of 8: distance from the running sum to $T$ is $${tn(f.err, 4)}$.`;
+          if (!done) return `${S.i} of the 8 basis tensors added: the running sum is still at distance $${tn(f.err, 4)}$ from $T$.`;
           return f.rank === 8 ? `After all 8 basis tensors the sum equals $T$ (distance $${etx(M, f.err)}$) ✓ — the list $\\{b_i\\otimes c_j\\otimes d_k\\}$ has rank ${f.rank} $= 2\\cdot2\\cdot2$, a basis, and the coefficients $a_{ijk}$ are unique.` : `With $c_2 = \\tfrac12 c_1$ the eight tensors have rank only ${f.rank} $= 2\\cdot1\\cdot2$: the best combination still misses $T$ by $${tn(f.err, 3)}$ ✗.`;
         });
       },

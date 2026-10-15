@@ -470,7 +470,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
         const felt = v.select('felt', Object.entries(FELT).map(([value, o]) => ({ value, label: o.label })), 'med');
         const s = v.stage({ x: [-0.03, 1.03], y: [-1.35, 1.25], height: 220, axes: false, full: true });
         const fp = v.stage({ x: [0, 6], y: [-0.05, 1.18], height: 230, axes: 'box', xlabel: 't (ms)', yticks: [], weight: 1, title: 'contact force, scaled to its peak' });
-        const sp = v.stage({ x: [0.3, 40.7], y: [-66, 6], height: 230, axes: 'box', xlabel: 'partial n', xticks: [1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], weight: 1.25, title: 'force on the bridge: partial levels' });
+        const sp = v.stage({ x: [-1.6, 40.7], y: [-72, 6], height: 230, axes: 'box', xlabel: 'partial n', xticks: [1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], weight: 1.25, title: 'force on the bridge: partial levels' });
         const hh = s.handle(0.12, -0.95, { color: 'orange', r: 8, constrain: (x) => [M.clamp(x, 0.03, 0.5), -0.95] });
         const SIN = M.range(NM).map((n) => Float64Array.from(M.range(NX), (i) => Math.sin(((n + 1) * Math.PI * i) / (NX - 1))));
         const cache = new Map();
@@ -509,8 +509,8 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           const uTop = Math.min(R.uh[k], yh + 1e-12) * sc; // felt surface (compressed where in contact)
           const contact = R.uh[k] > yh;
           s.rect(beta - 0.022, uTop - 0.22, beta + 0.022, uTop, { fill: 'orange', fillAlpha: contact ? 0.95 : 0.7, color: 'orange', width: 1, radius: 4 });
-          s.rect(beta - 0.012, uTop - 0.6, beta + 0.012, uTop - 0.22, { fill: 'muted', fillAlpha: 0.8, stroke: false });
-          s.text('hammer (drag)', beta + 0.035, uTop - 0.4, { align: 'left', color: 'orange', size: 11.5, weight: 600 });
+          s.rect(beta - 0.01, -0.95, beta + 0.01, uTop - 0.22, { fill: 'muted', fillAlpha: 0.75, stroke: false });
+          s.text('hammer (drag)', beta + 0.03, -0.95, { align: 'left', color: 'orange', size: 11.5, weight: 600 });
           hh.y = -0.95;
           s.corner(`t = ${v.fix(tr * 1e3, 2)} ms after impact${contact ? ' · in contact' : ''}`, 'tl', { color: contact ? 'orange' : 'ink', weight: 600 });
           s.corner(`strike point ${v.fix(beta, 3)} L ≈ 1/${v.fix(1 / beta, 1)} · displacement magnified, peak ${v.fix(S.ymax * 1e3, 2)} mm`, 'tr', { color: 'muted' });
@@ -520,14 +520,14 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           curve(simAt(5, beta, FELT[felt.value].K), 'red', 1.4, [4, 3]);
           curve(S, 'accent', 2.6);
           fp.vline(tr * 1e3, { color: 'gold', width: 1.5 });
-          fp.text('pp', 4.6, 0.6, { color: 'muted', size: 11.5, weight: 600 });
           // ---- spectrum
           const amps = S.parts.map((p) => Math.abs(p.a)), amax = Math.max(...amps);
           const env = (n) => S.Fhat(stiff(FC, BC, n)) * Math.sqrt(1 + BC * n * n) / Math.sqrt(1 + BC) ;
           let em = 0; for (let n = 1; n <= 40; n++) em = Math.max(em, env(n) * Math.abs(Math.sin(n * Math.PI * beta)));
           const kk = amax / em;
-          sp.fn((n) => 20 * Math.log10(Math.max(1e-12, (kk * env(n)) / amax)), { domain: [1, 40], n: 160, color: 'orange', width: 1.6, dash: [6, 4] });
-          for (let n = 1; n <= 40; n++) { const L = 20 * Math.log10(Math.max(1e-12, amps[n - 1] / amax)); if (L > -66) sp.rect(n - 0.3, -66, n + 0.3, L, { fill: 'accent', fillAlpha: 0.65, stroke: false }); }
+          sp.clip(() => sp.fn((n) => 20 * Math.log10(Math.max(1e-12, (kk * env(n)) / amax)), { domain: [1, 40], n: 160, color: 'orange', width: 1.6, dash: [6, 4] }), [0, 40.7], [-61, 6]);
+          sp.hline(-61, { color: 'muted', width: 1 });
+          for (let n = 1; n <= 40; n++) { const L = 20 * Math.log10(Math.max(1e-12, amps[n - 1] / amax)); if (L > -61) sp.rect(n - 0.3, -61, n + 0.3, L, { fill: 'accent', fillAlpha: 0.65, stroke: false }); }
           sp.vline(1 / beta, { color: 'red', width: 1, dash: [3, 3] });
           sp.text(`n = 1/β`, 1 / beta + 0.4, 2, { align: 'left', color: 'red', size: 10.5 });
         }, { still: 0.95 });
@@ -596,7 +596,7 @@ He then uses these laws for the **first estimate of the absolute frequency of a 
           s.line(ft + 0.49, -0.06, ft + 0.49, -0.5, { color: 'ink', width: 1.2 });
           const side = 0.16 + 0.06 * Math.cbrt(w);
           s.rect(ft + 0.49 - side, -0.5 - side * 1.4, ft + 0.49 + side, -0.5, { fill: WCOL[w], fillAlpha: 0.7, color: 'ink', width: 1 });
-          s.text(lbTxt(w), ft + 0.49 + side + 0.12, -0.5 - side * 0.7, { align: 'left', color: WCOL[w], size: 11.5, weight: 600 });
+          s.text(lbTxt(w), ft + 0.49, -0.62 - side * 1.4, { align: ft > 16 ? 'right' : 'center', color: WCOL[w], size: 11.5, weight: 600, dx: ft > 16 ? 14 : 0 });
           const countable = ff <= 10, visible = ff <= 21;
           if (countable) s.fn((x) => A * Math.sin((Math.PI * x) / ft) * Math.cos(TAU * ff * t), { domain: [0, ft], n: 200, color: 'accent', width: 2.6 });
           else {
@@ -608,21 +608,21 @@ He then uses these laws for the **first estimate of the absolute frequency of a 
           s.corner(`${v.fix(ff, ff < 10 ? 2 : 1)} returns per second${ff >= 20 ? ` · ${noteOf(M, ff)}` : ''}`, 'tr', { color: 'accent', weight: 700 });
           // ---- the log–log chart
           lg.hband(0.8, 10, { color: 'green', alpha: 0.06 });
-          lg.text('countable by eye (≤ 10 a second, Mersenne)', 0.33, 1.15, { align: 'left', color: 'green', size: 10.5 });
+          lg.text('countable by eye (≤ 10 a second, Mersenne)', 0.33, 6.3, { align: 'left', color: 'green', size: 10.5 });
           lg.hline(84, { color: 'green', width: 1.2, dash: [6, 4] });
           lg.text('unison with the 4-ft open pipe: 84', 24, 84 * 0.86, { align: 'right', color: 'green', size: 10.5, weight: 600 });
           lg.hline(125, { color: 'red', width: 1.2, dash: [2, 4] });
           lg.text('a 4-ft open pipe today: ≈ 125 Hz', 24, 125 * 1.17, { align: 'right', color: 'red', size: 10.5 });
           for (const lb of [0.5, 2, 4, 8]) {
             lg.fn((x) => fOf(x, lb), { domain: [FT_MIN, FT_MAX], color: WCOL[lb], width: lb === w ? 2.6 : 1.3, alpha: lb === w ? 1 : 0.55 });
-            lg.text(lbTxt(lb), FT_MAX * 1.06, fOf(FT_MAX, lb), { align: 'left', color: WCOL[lb], size: 10.5, weight: lb === w ? 700 : 500 });
+            lg.text(lbTxt(lb), 6, fOf(6, lb) * 1.13, { align: 'center', color: WCOL[lb], size: 10.5, weight: lb === w ? 700 : 500 });
           }
           DATA.forEach((d) => {
             const pred = fOf(d.ft, d.lb), ok = Math.abs(Math.log(d.f / pred)) < 0.05;
             lg.dot(d.ft, d.f, { r: 6, color: ok ? 'green' : 'red', hollow: !ok, width: 2.4 });
             if (d.ft < 2) lg.text(d.txt, d.ft * 1.09, d.f * (d.lb === 4 ? 0.8 : d.lb === 8 ? 1.25 : 1.0), { align: 'left', color: ok ? 'green' : 'red', size: 10.5 });
-            else lg.text(d.txt, d.ft * 0.94, d.f, { align: 'right', color: 'green', size: 10.5 });
-            if (!ok) { lg.line(d.ft, d.f, d.ft, pred, { color: 'red', width: 1, dash: [2, 3] }); lg.dot(d.ft, pred, { r: 3, color: 'red' }); lg.text(`law: ${v.fix(pred, 0)}`, d.ft * 1.09, pred, { align: 'left', color: 'red', size: 10.5 }); }
+            else lg.text(d.txt, d.ft * 1.08, d.f, { align: 'left', color: 'green', size: 10.5 });
+            if (!ok) { lg.line(d.ft, d.f, d.ft, pred, { color: 'red', width: 1, dash: [2, 3] }); lg.dot(d.ft, pred, { r: 3, color: 'red' }); lg.text(`law: ${v.fix(pred, 0)}`, d.ft * 0.93, pred * 1.03, { align: 'right', color: 'red', size: 10.5 }); }
           });
         }, { still: 1.3 });
         v.legend([['green', 'Mersenne’s measurements (p. 169)', { dot: true }], ['red', 'the one that misses his law', { dot: true }], ['accent', 'law for ½ livre (other colours: 2, 4, 8 livres)']]);
