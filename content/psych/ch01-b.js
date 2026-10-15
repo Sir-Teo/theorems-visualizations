@@ -700,7 +700,7 @@ for the hit rate $H$ (yes on signal trials) and the false-alarm rate $F$ (yes on
 $$p=\frac{H-F}{1-F}.$$
 In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p=(P_c-1/m)/(1-1/m)$. The model predicts that the corrected curves of an observer measured with different guessing rates coincide, and that hits and false alarms trade off along a straight line ($H = p + (1-p)F$). Real observers violate both predictions: their ROC curves are curved, which favours the Gaussian detection model of chapter 2 (psych-2.9).`,
       idea: String.raw`Split the signal trials by the hidden state. A fraction $p$ are detected and answered “yes”; of the remaining $1-p$, a fraction $g$ are guessed “yes”. Blank trials are never detected, so they reveal $g$ directly as the false-alarm rate. Subtracting the guesses and renormalising by the trials on which guessing was possible gives $(H-F)/(1-F)=p$, independent of $g$. If instead the internal evidence is continuous and the observer applies a criterion (signal detection theory), a more lenient criterion raises $H$ and $F$ together along a curve, the correction no longer cancels $g$, and the corrected “detection probability” depends on how willing the observer was.`,
-      caption: String.raw`Left: the trials as areas. In the signal column, green is detected, gold is undetected but guessed “yes”, grey is “no”; the blank column shows the guesses alone. Right: raw hit rates (orange), corrected values (green) and the false-alarm rate (red) of a simulated observer, against intensity; the dashed green curve is the true detection probability, and the faint green dashes the corrected values at a guessing rate of 5% for comparison. Raise the **guessing rate** $g$: the raw curve inflates, the corrected points stay on the true curve. Switch the **true observer** to a Gaussian (signal-detection) observer and the correction fails. Drag the **gold** handle to choose the intensity drawn on the left.`,
+      caption: String.raw`Left: the trials as areas. In the signal column, green is detected, gold is undetected but guessed “yes”, grey is “no”; the blank column shows the guesses alone. Right: raw hit rates (orange), corrected values (green) and the false-alarm rate (red) of a simulated observer, against intensity; the dashed green curve is the true detection probability, and the faint green dashes the corrected values at a guessing rate of 5% for comparison. Raise the **guessing rate** $g$: the raw curve inflates, the corrected points stay on the true curve. Switch the **true observer** to a Gaussian (signal-detection) observer, built to give exactly the same corrected curve at $g$ = 5%, and raise $g$: now the corrected points drift off it, so the correction fails. Drag the **gold** handle to choose the intensity drawn on the left.`,
       deps: ['psych-1.3'],
       refs: ['Gescheider ch. 4'],
       tags: ['threshold theory', 'guessing'],
@@ -729,10 +729,10 @@ In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p
           const F = U.b.filter((u) => u < HF(0, g).F).length / NB;
           return { F, pts: LEV.map((x, i) => { const H = U.s[i].filter((u) => u < HF(x, g).H).length / NT; return { x, H, c: F < 1 ? (H - F) / (1 - F) : NaN }; }) };
         };
-        v.legend([['orange', 'raw hit rate $H$', { dot: true }], ['green', 'corrected $(H-F)/(1-F)$', { dot: true }], ['red', 'false-alarm rate $F$', { dash: true }], ['green', 'true detection probability (high-threshold observer)', { dash: true }]]);
-        let st = null;
+        let st = null, lastKind = '';
         v.render(() => {
           const g = gS.value, S = sample(g), R5 = sample(GREF), x = hd.x, { H, F } = HF(x, g);
+          if (kind.value !== lastKind) { lastKind = kind.value; v.legend([['orange', 'raw hit rate $H$', { dot: true }], ['green', 'corrected $(H-F)/(1-F)$', { dot: true }], ['red', 'false-alarm rate $F$', { dash: true }], ['green', kind.value === 'ht' ? 'true detection probability' : 'the high-threshold curve, which this observer matches at $g$ = 5%', { dash: true }]]); }
           hd.y = H;
           // ---- the mosaic
           const ht = kind.value === 'ht', p = ht ? pTrue(x) : NaN;
@@ -913,7 +913,7 @@ The law inherits Weber's range of validity and rests on the equal-JND postulate,
           { line: 5, note: 'In the limit the staircase becomes the measurement formula $\\gamma = K\\ln(\\beta/b)$: sensation grows as a logarithm.' },
           { line: 6, note: 'Today: asked to judge ratios directly, observers give power functions $\\psi\\propto\\beta^{\\,n}$ (Stevens), scaled here to agree at the top.' },
         ];
-        const S = v.steps({ frames: FR, codeTitle: 'Fechner’s argument (his notation: stimulus β, threshold b, sensation γ)', codePos: 'below', start: 'end', still: 5, speed: 0.5, code: [
+        const S = v.steps({ frames: FR, codeTitle: 'Fechner’s argument, in his notation', codePos: 'below', start: 'end', still: 5, speed: 0.5, code: [
           'measure the JND $\\Delta\\beta$ at many standards $\\beta$  ▷ limits, right and wrong cases, average error',
           'Weber: $\\Delta\\beta/\\beta = k$, the same at every $\\beta$',
           'postulate: each JND is one equal step $\\Delta\\gamma$ of sensation',
@@ -922,7 +922,7 @@ The law inherits Weber's range of validity and rests on the equal-JND postulate,
           'today: magnitude estimation gives $\\psi \\propto \\beta^{\\,n}$  ▷ Stevens, 1957',
         ] });
         const mn = v.stage({ x: [0, BMAX + 2], y: [0, 10], height: 320, axes: 'box', weight: 1.35, xlabel: 'stimulus β / threshold b', title: 'the argument' });
-        const lf = v.stage({ x: [-0.4, 8.4], y: [0.42, 1.04], height: 320, axes: 'box', weight: 0.75, minWidth: 230, xlabel: 'increment D (units of b)', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'right and wrong cases' });
+        const lf = v.stage({ x: [-0.4, 8.4], y: [0.42, 1.04], height: 320, axes: 'box', weight: 0.75, minWidth: 230, xlabel: 'increment D (units of b)', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'right and wrong cases: D = 4% and 8%' });
         const U = (() => { const R = v.rng(1860); return STD.map(() => DF.map(() => M.range(NL).map(() => R()))); })();
         const Zq = (p) => M.dist.normal(0, 1).quantile(p);
         const measure = (k) => STD.map((b, i) => {
@@ -932,7 +932,7 @@ The law inherits Weber's range of validity and rests on the equal-JND postulate,
         });
         const Sfe = (beta, k) => Math.log(beta) / k;
         let st = null;
-        v.legend([['ink', 'JND from the lifting data', { dot: true }], ['green', 'Weber’s line, then Fechner’s logarithm'], ['accent', 'stacked JNDs'], ['purple', 'Stevens’ power law', { dash: true }]]);
+        v.legend([['ink', 'JNDs from the lifting data (colours: the five standards)', { dot: true }], ['green', 'Weber’s line, then Fechner’s logarithm'], ['accent', 'stacked JNDs'], ['purple', 'Stevens’ power law', { dash: true }]]);
         v.render(() => {
           const k = kS.value, n = nS.value, i = S.i, data = measure(k);
           const good = data.filter((d) => isFinite(d.jnd)), kHat = good.length ? 10 ** M.mean(good.map((d) => Math.log10(d.jnd / d.b))) : NaN;
@@ -942,29 +942,31 @@ The law inherits Weber's range of validity and rests on the equal-JND postulate,
             lf.fn((D) => Phi(M, (C * D) / (k * d.b)), { domain: [0, 8.4], color: SCOL[s], width: 1.6, alpha: 0.75 });
             for (const c of d.cells) { const [a, bb] = wilson(c.r, c.n); lf.line(c.D, a, c.D, bb, { color: SCOL[s], width: 1.2, alpha: 0.5 }); lf.dot(c.D, c.r / c.n, { r: 4.2, color: SCOL[s] }); }
           });
-          lf.text('standards 10 … 95 b: D = 4% and 8% of each', 8.2, 0.47, { align: 'right', color: 'muted', size: 11 });
           // ---- left panel: the step of the argument
           if (i <= 1) {
             const ym = 1.45 * k * BMAX;
-            mn.setView(null, [-0.12 * ym, ym]); mn.o.ylabel = 'JND Δβ (units of b)';
+            mn.setView([0, BMAX + 2], [-0.12 * ym, ym]); mn.o.ylabel = 'JND Δβ (units of b)';
             if (i === 1 && isFinite(kHat)) { mn.fn((x) => kHat * x, { domain: [0, BMAX + 2], color: 'green', width: 2.6 }); mn.text(`Δβ = ${v.fix(kHat, 3)} β`, 0.62 * BMAX, kHat * 0.62 * BMAX, { dx: -8, dy: -12, align: 'right', color: 'green', weight: 700, size: 12.5 }); }
             data.forEach((d, s) => { if (isFinite(d.jnd)) mn.dot(d.b, d.jnd, { r: 5.5, color: SCOL[s] }); });
           } else {
             const steps = [1]; while (steps[steps.length - 1] < BMAX && steps.length < 4000) steps.push(steps[steps.length - 1] * (1 + k));
             const nAll = steps.length - 1, top = Math.max(nAll, Sfe(BMAX, k)) * 1.15;
-            mn.setView(null, [-0.1 * top, top]); mn.o.ylabel = 'sensation γ (JNDs above threshold)';
             const shown = i === 2 ? Math.min(6, nAll) : nAll, pts = [[1, 0]];
+            if (i === 2) { const xr = Math.min(steps[shown], BMAX); mn.setView([1 - 0.12 * (xr - 1), xr + 0.6 * (xr - 1)], [-0.9, 8]); }
+            else mn.setView([0, BMAX + 2], [-0.1 * top, top]);
+            mn.o.ylabel = 'sensation γ (JNDs above threshold)';
             for (let m = 1; m <= shown; m++) { const x = Math.min(steps[m], BMAX); pts.push([x, m - 1]); if (steps[m] > BMAX) break; pts.push([x, m]); }
             mn.path(pts, { color: 'accent', width: i === 2 ? 2.4 : 1.6 });
             if (i === 2) {
               for (let m = 1; m <= shown; m++) mn.dot(steps[m], m, { r: 3, color: 'accent' });
-              mn.text(`each step: ×${v.fix(1 + k, 3)} in β, +1 in γ`, Math.min(steps[shown], BMAX), shown, { dx: 10, align: 'left', color: 'accent', weight: 600, size: 12 });
+              mn.text(`each step: ×${v.fix(1 + k, 3)} in β, +1 in γ (zoomed in)`, Math.min(steps[shown], BMAX), shown, { dx: -6, dy: -16, align: 'right', color: 'accent', weight: 600, size: 12 });
+              mn.dot(1, 0, { r: 5, color: 'gold', label: 'threshold b', labelPos: 's', math: false });
             }
-            if (i >= 4) { mn.fn((x) => Sfe(x, k), { domain: [1, BMAX], color: 'green', width: 2.8 }); mn.text('γ = (1/k) ln(β/b)', 0.55 * BMAX, Sfe(0.55 * BMAX, k), { dy: 18, align: 'left', color: 'green', weight: 700, size: 12.5 }); }
+            if (i >= 4) { mn.fn((x) => Sfe(x, k), { domain: [1, BMAX], color: 'green', width: 2.8 }); mn.text('γ = (1/k) ln(β/b)', 0.55 * BMAX, Sfe(0.55 * BMAX, k), { dx: -6, dy: -16, align: 'right', color: 'green', weight: 700, size: 12.5 }); }
             if (i >= 5) {
               const a = Sfe(BMAX, k) / (Math.pow(BMAX, n) - 1);
               mn.fn((x) => a * (Math.pow(x, n) - 1), { domain: [1, BMAX], color: 'purple', width: 2.4, dash: [7, 5] });
-              const xs = 0.3 * BMAX; mn.text(`ψ ∝ β^${v.fix(n, 2)}`, xs, a * (Math.pow(xs, n) - 1), { dx: n > 1 ? 8 : -8, dy: n > 1 ? 14 : -12, align: n > 1 ? 'left' : 'right', color: 'purple', weight: 700, size: 12.5 });
+              const xs = 0.3 * BMAX; mn.tex(`\\psi\\propto\\beta^{${v.fix(n, 2)}}`, xs, a * (Math.pow(xs, n) - 1), { dx: 8, dy: 16, align: 'left', color: 'purple', size: 15 });
             }
           }
           st = { k, n, i, data, kHat };

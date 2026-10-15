@@ -208,7 +208,7 @@ export default {
 
 **The modern answer** (the *at-at theory*, Russell): motion is nothing more than being at different places at different times. Velocity at an instant is not a property visible in a snapshot. It is the limit of average velocities $\dfrac{x(t_0+h)-x(t_0)}{h}$ over shrinking intervals around $t_0$, a derivative, which can be non-zero even though the arrow covers no distance *in* the instant itself. Whether this captures what motion really is remains disputed.`,
       idea: String.raw`In a single instant the displacement is $0$ and the elapsed time is $0$, so the instantaneous ratio is $0/0$, not $0$. Zeno’s inference from “no distance covered in an instant” to “at rest at that instant” fails, because being at rest at $t_0$ means having zero velocity, a derivative (pma 5.1), and that depends on where the arrow is at neighbouring times. A snapshot of a moving arrow and of a resting arrow can be identical, while their difference quotients converge to different limits. Some philosophers (Tooley, Lange and others) object that velocity should be an intrinsic state of the arrow at the instant, the cause of where it goes next, rather than a relation to other times. On that view the at-at theory leaves something out, and the debate continues.`,
-      caption: String.raw`Slide the instant $t_0$: the snapshot of the flying arrow is identical to that of an arrow at rest in the same place, and only the faint ghosts at nearby instants reveal the motion. In the position–time graph, shrink $h$: the secant through $t_0$ and $t_0+h$ turns into the tangent, and with **zoom with h** the curve straightens out under magnification. The right panel plots the difference quotient against $h$ on a log scale: it converges to the velocity, while at $h = 0$ itself there is only $0/0$. Toggle the arrow at rest to compare.`,
+      caption: String.raw`Slide the instant $t_0$. In the gold frame the snapshot of the flying arrow is identical to that of an arrow at rest in the same place; only the neighbouring frames, at earlier and later instants, reveal the motion. In the position–time graph, shrink $h$: the secant through $t_0$ and $t_0+h$ turns into the tangent, and with **zoom with h** the curve straightens out under magnification. The right panel plots the difference quotient against $h$ on a log scale: it converges to the velocity, while at $h = 0$ itself there is only $0/0$. Toggle the arrow at rest to compare.`,
       deps: ['pma-5.1'],
       refs: ['Sainsbury ch. 1', 'SEP “Zeno’s Paradoxes”'],
       credit: 'Zeno of Elea, c. 450 BC; at-at theory: Bertrand Russell, 1903',
@@ -219,7 +219,7 @@ export default {
         const zoom = v.toggle('zoom with h', false);
         const rest = v.toggle('the arrow is at rest', false);
         const xm = (t) => 0.6 + 1.1 * t - 0.12 * t * t, vm = (t) => 1.1 - 0.24 * t;
-        const strip = v.stage({ x: [-0.05, 10.05], y: [-1.0, 1.55], axes: false, height: 170, full: true });
+        const strip = v.stage({ x: [-0.05, 10.05], y: [-1.12, 1.55], axes: false, height: 180, full: true });
         const G = v.stage({ x: [0, 4], y: [0, 3.4], axes: 'box', height: 300, xlabel: 't', ylabel: 'x', weight: 1.1 });
         const Q = v.stage({ x: [2.5e-5, 1], y: [-0.15, 1.3], xlog: true, axes: 'box', height: 300, xlabel: 'h', title: 'difference quotient $\\frac{x(t_0+h)-x(t_0)}{h}$', weight: 1 });
         let st = null;
@@ -239,7 +239,7 @@ export default {
           }
           strip.text('flying', 0.12, 1.03, { size: 10.5, weight: 600, color: 'blue' });
           strip.text('at rest', 0.12, 0.1, { size: 10.5, weight: 600, color: 'purple' });
-          strip.text('in the gold frame the two snapshots are identical; only comparing frames reveals the motion', 5, -0.92, { align: 'center', size: 11, color: 'muted' });
+          strip.text('in the gold frame the two snapshots are identical; only comparing frames reveals the motion', 5, -0.96, { align: 'center', size: 11, color: 'muted' });
           // ---- position-time graph with secant and tangent
           if (zoom.value) { const w = Math.max(2.5 * h, 0.004); G.setView([t0 - w, t0 + w], [X(t0) - w * 1.3, X(t0) + w * 1.3]); } else G.setView([0, 4], [0, 3.4]);
           G.fn(X, { color: 'blue', width: 2.6 });
@@ -288,7 +288,12 @@ The paradox has teeth on an **atomistic** view of space and time. Suppose time c
         v.render(() => {
           const atom = mode.value === 'atom', t = atom ? Math.round(tS.value) : tS.value;
           if (atom && t >= 1) for (const [R, y, col, pos] of ROWS) if (R !== 'A') for (let i = 1; i <= 4; i++) { const x = pos(i, t - 1); S.rect(x + 0.04, y - 0.3, x + 0.96, y + 0.3, { color: col, width: 1.2, dash: [4, 4], alpha: 0.55 }); }
-          if (atom && t >= 1) S.text(`dashed: positions at atom ${t - 1}`, 6.5, -0.38, { align: 'right', size: 10.5, color: 'muted' });
+          if (atom && t >= 1) {
+            const j = 2 * t - 1, sub = '₀₁₂₃₄';
+            S.arrow(posB(1, t - 1) + 0.5, 2.82, posB(1, t) + 0.5, 2.82, { color: 'red', width: 2, head: 7 });
+            S.arrow(posC(j, t - 1) + 0.5, -0.12, posC(j, t) + 0.5, -0.12, { color: 'red', width: 2, head: 7 });
+            S.text(`B₁ and C${sub[j]} swap sides between atom ${t - 1} and atom ${t}, with no instant at which they are side by side`, 6.5, -0.42, { align: 'right', size: 10.5, weight: 600, color: 'red' });
+          }
           for (const [R, y, col, pos, lab] of ROWS) {
             S.text(`row ${R}`, -2.5, y + 0.36, { size: 11.5, weight: 600, color: col === 'muted' ? 'ink' : col });
             S.text(lab, -2.5, y - 0.08, { size: 10.5, color: 'muted' });
@@ -345,7 +350,7 @@ The sequence of states, on, off, on, off, …, has **no limit**, so continuity c
         const uS = v.slider('halvings $u$ (time $= 2^{-u}$ min before noon)', -1, 16, 6.4, { step: 0.01 });
         const noon = v.select('state at noon (you decide)', [{ value: 1, label: 'on' }, { value: 0, label: 'off' }], 1);
         const L = v.stage({ x: [-1.6, 1.6], y: [-1.75, 1.6], equal: true, axes: false, height: 260, weight: 0.55 });
-        const W = v.stage({ x: [-2.9, 18.7], y: [-0.55, 1.45], axes: false, height: 260, weight: 1.45 });
+        const W = v.stage({ x: [-2.9, 19.05], y: [-0.55, 1.45], axes: false, height: 260, weight: 1.45 });
         const stateAt = (u) => (u < 0 ? 0 : Math.floor(u) % 2 === 0 ? 1 : 0);
         let st = null;
         v.render(() => {

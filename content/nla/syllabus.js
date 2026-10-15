@@ -124,6 +124,10 @@ export default {
           pic: 'Tilt b toward or away from the range of A; the sensitivity of the solution involves κ when b is close to the range and κ²·tan θ when the residual is large, read out as θ changes.' },
         { num: '3.14', kind: 'Phenomenon', name: 'Instability of the normal equations', deps: ['nla-3.13', 'nla-2.9', 'nla-3.10'], refs: ['Trefethen–Bau Lec. 19'],
           pic: 'Solve the same fitting problem by Householder QR, modified Gram–Schmidt and the normal equations; errors versus κ are plotted, and the normal equations lose twice as many digits.' },
+        { num: '3.15', kind: 'Paper', name: 'Numerical inverting of matrices of high order',
+          paper: { authors: 'John von Neumann and H. H. Goldstine', year: 1947, title: 'Numerical inverting of matrices of high order', venue: 'Bulletin of the American Mathematical Society 53 (11): 1021–1099', doi: '10.1090/S0002-9904-1947-08909-6' },
+          introduces: ['nla-3.2'], deps: ['nla-4.1', 'nla-1.4', 'nla-3.1'], refs: [],
+          pic: 'Elimination in simulated low-precision arithmetic on matrices of growing order: the reader compares the error of the computed inverse for well-conditioned matrices and for Hilbert matrices, sees it scale like (condition number) × (unit roundoff) as the paper’s estimates predict, and sets it against the 4ⁿ error growth the paper refuted.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -226,6 +230,10 @@ export default {
           pic: 'Alternate left and right Householder reflections to reduce a matrix to bidiagonal form, then iterate; the singular values emerge on the diagonal and match those computed from AᵀA only for well-conditioned inputs.' },
         { num: '6.15', kind: 'Model', name: 'PageRank as a power iteration', deps: ['nla-6.2'], refs: ['Trefethen–Bau Lec. 27'],
           pic: 'Edit a small web graph; power iteration on the damped link matrix converges to the ranking vector, and lowering the damping factor speeds convergence as |λ₂| shrinks.' },
+        { num: '6.16', kind: 'Paper', name: 'The QR transformation',
+          paper: { authors: 'J. G. F. Francis', year: 1961, title: 'The QR Transformation: A Unitary Analogue to the LR Transformation — Part 1', venue: 'The Computer Journal 4 (3): 265–271', doi: '10.1093/comjnl/4.3.265' },
+          introduces: ['nla-6.7', 'nla-6.9'], deps: ['nla-2.2', 'nla-5.12'], refs: [],
+          pic: 'Iterate A ← RQ on a small matrix: the reader watches the subdiagonal entries decay like (λᵢ₊₁/λᵢ)ᵏ and the diagonal settle on the eigenvalues; turning on shifts collapses the iteration count and deflation peels off one eigenvalue at a time.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -282,6 +290,10 @@ export default {
           pic: 'Run steepest descent with exact line search on SPD systems of growing κ; the error decreases by a factor (κ − 1)/(κ + 1) per step, far slower than CG on the same plot.' },
         { num: '8.10', kind: 'Theorem', name: 'Convergence of Lanczos for extreme eigenvalues', deps: ['nla-8.1', 'nla-8.6'], refs: ['Golub–Van Loan ch. 10'],
           pic: 'For a large symmetric matrix, the error of the largest Ritz value is plotted per step against the Kaniel–Paige Chebyshev bound, which depends on the gap to the next eigenvalue.' },
+        { num: '8.11', kind: 'Paper', name: 'Methods of conjugate gradients for solving linear systems',
+          paper: { authors: 'Magnus R. Hestenes and Eduard Stiefel', year: 1952, title: 'Methods of conjugate gradients for solving linear systems', venue: 'Journal of Research of the National Bureau of Standards 49 (6): 409–436', doi: '10.6028/jres.049.044' },
+          introduces: ['nla-8.4', 'nla-8.5', 'nla-8.7'], deps: ['nla-8.9', 'nla-7.2'], refs: [],
+          pic: 'Conjugate gradients on the level ellipses of ½xᵀAx − bᵀx: the reader drags the starting point and compares steepest descent’s zigzag with CG’s two A-conjugate steps that land exactly on the minimum, then in n dimensions watches the residual vanish in at most n steps in exact arithmetic and much sooner for clustered eigenvalues.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9

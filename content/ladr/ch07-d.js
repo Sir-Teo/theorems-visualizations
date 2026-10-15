@@ -729,7 +729,7 @@ by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \f
         const scV = v.scene3(SV, { yaw: -0.6, pitch: 0.3, axis: 1.25, lim: 1.3, hint: false });
         const scW = v.scene3(SW, { yaw: -0.6, pitch: 0.3, axis: 1.5, lim: 2 });
         const usv = (R1, s, R2) => mm(R1, mm(DIAG3(s), tr(R2)));
-        const PRE = { gen: usv(mm(rot3([0, 0, 1], 0.7), rot3([1, 0, 0], 0.25)), [1.7, 1.05, 0.55], rot3([0.2, 1, -0.5], 1.1)), shear: [[1, 0.9, 0], [0, 1, 0.6], [0, 0, 1]], diag: [[1.6, 0, 0], [0, 1, 0], [0, 0, 0.5]] };
+        const PRE = { gen: usv(rot3([0.84, -0.48, 0.26], 0.8), [1.7, 1.05, 0.55], rot3([0.2, 1, -0.5], 1.1)), shear: [[1, 0.9, 0], [0, 1, 0.6], [0, 0, 1]], diag: [[1.6, 0, 0], [0, 1, 0], [0, 0, 0.5]] };
         let T0 = PRE.gen;
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'diag', label: 'diagonal' }], 'gen', { onChange: (k) => { T0 = PRE[k]; } });
         const ep = v.slider('flatten: $T(I - \\varepsilon\\, e_3e_3^*)$, $\\varepsilon$', 0, 1, 0, { step: 0.01 });
@@ -930,7 +930,7 @@ $$T\big(u + P(v_1, \dots, v_n)\big) = Tu + P(Tv_1, \dots, Tv_n).$$`,
         const uh = V.handle(-1.3, -1.1, { color: 'orange', label: 'u', constrain: snap, onDrag: () => { h1.set(uh.x + Ed[0][0], uh.y + Ed[0][1]); h2.set(uh.x + Ed[1][0], uh.y + Ed[1][1]); } });
         const h1 = V.handle(0.6, -0.7, { color: 'blue', label: 'u+v₁', constrain: snap });
         const h2 = V.handle(-0.6, 0.4, { color: 'purple', label: 'u+v₂', constrain: snap });
-        const xh = V.handle(0.15, 0.05, { color: 'gold', label: 'x' });
+        const xh = V.handle(0.5, 0.2, { color: 'gold', label: 'x' });
         const PRE = { gen: [[1.1, -0.5], [0.4, 0.9]], shear: [[1, 0.9], [0, 1]], refl: [[-0.6, 1.0], [1.0, 0.5]], sing: [[1, 0.5], [0.6, 0.3]] };
         const H = colHandles(W, PRE.gen);
         v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: 'orientation-reversing' }, { value: 'sing', label: 'not invertible' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
@@ -956,7 +956,7 @@ $$T\big(u + P(v_1, \dots, v_n)\big) = Tu + P(Tv_1, \dots, Tv_n).$$`,
           W.arrow(Tu[0], Tu[1], C[1][0], C[1][1], { color: 'blue', width: 2.6 });
           W.arrow(Tu[0], Tu[1], C[3][0], C[3][1], { color: 'purple', width: 2.6 });
           const lab = (txt, p, q, c) => { const m = add(p, scl(sub(q, p), 1.08)); W.tex(txt, m[0], m[1], { color: c, size: 14, dx: 8, dy: -8 }); };
-          lab('Tv_1', Tu, C[1], 'blue'); lab('Tv_2', Tu, C[3], 'purple');
+          if (inv) { lab('Tv_1', Tu, C[1], 'blue'); lab('Tv_2', Tu, C[3], 'purple'); }
           W.tex('Tu', Tu[0], Tu[1], { color: 'orange', size: 14, dx: -14, dy: 12 });
           // the point x and its image
           const x = [xh.x, xh.y], a = basisV ? mv(inv2(fromCols(Ed)), sub(x, u)) : null, inside = !!a && a.every((t) => t > 0 && t < 1);

@@ -151,16 +151,16 @@ function cOrth(vs, tol = 1e-7) {
   return B;
 }
 /** Complex rank (via the realified matrix and its singular values, relative tolerance). */
-function cRank(M, A, tol = 1e-8) {
-  if (cMaxAbs(A) < 1e-14) return 0;
-  const S = M.svd(realify(A)).S, t = tol * S[0];
+function cRank(M, A, tol = 1e-8, floor = 1e-14) {
+  if (cMaxAbs(A) < floor) return 0;
+  const S = M.svd(realify(A)).S, t = Math.max(tol * S[0], floor);
   return Math.round(S.filter((s) => s > t).length / 2);
 }
 /** Orthonormal basis of the complex null space of A. */
-function cNullO(M, A, tol = 1e-8) {
+function cNullO(M, A, tol = 1e-8, floor = 1e-14) {
   const m = A[0].length;
-  if (cMaxAbs(A) < 1e-14) return cIdent(m);
-  const R = realify(A), S = M.svd(R).S, N = M.nullspace(R, tol * S[0]);
+  if (cMaxAbs(A) < floor) return cIdent(m);
+  const R = realify(A), S = M.svd(R).S, N = M.nullspace(R, Math.max(tol * S[0], floor));
   return cOrth(N.map((v) => Array.from({ length: m }, (_, i) => [v[i], v[i + m]])), 1e-6);
 }
 /** Group nearby eigenvalues (as [re, im]); each cluster is replaced by its mean (accurate even for defective ones). */
@@ -171,23 +171,46 @@ function clusters(vals, tol = 1e-3) {
 }
 /** dim null (T − μI)^k for k = 0, 1, … until two consecutive agree (by 8.2 they then stay equal). Last entry = dim G(μ, T). */
 function genDims(M, T, mu) {
-  const n = T.length, A = cShift(T, mu), d = [0]; let P = A;
-  for (let k = 1; k <= n; k++) { d.push(n - cRank(M, P)); if (d[k] === d[k - 1]) break; P = cMM(P, A); }
+  // null (T − μI)^k = {x : (T − μI)x ∈ null (T − μI)^{k−1}} = null of P⊥(T − μI), with P⊥ the orthogonal projection onto
+  // the complement of the previous null space — no high powers, so no loss of accuracy
+  const n = T.length, A = cShift(T, mu), d = [0], floor = 1e-9 * Math.max(1, Math.sqrt(A.flat().reduce((s, z) => s + z[0] * z[0] + z[1] * z[1], 0)));
+  let B = [];
+  for (let k = 1; k <= n; k++) {
+    const C = A.map((r) => r.slice());
+    for (const b of B) { // C ← (I − b b*) C
+      const w = C[0].map((_, j) => b.reduce((s, z, i) => cadd(s, cmul(cconj(z), C[i][j])), [0, 0]));
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) C[i][j] = csub(C[i][j], cmul(b[i], w[j]));
+    }
+    B = cNullO(M, C, 1e-9, floor);
+    d.push(B.length);
+    if (d[k] === d[k - 1]) break;
+  }
   return d;
 }
+/** tr((zI − T)⁻¹) by Gauss–Jordan elimination with partial pivoting. */
+function traceResolvent(T, z) {
+  const n = T.length, A = T.map((r, i) => [...r.map((x, k) => (i === k ? csub(z, x) : csc(x, -1))), ...ident(n)[i].map((x) => [x, 0])]);
+  for (let c = 0; c < n; c++) {
+    let p = c; for (let i = c + 1; i < n; i++) if (cabs(A[i][c]) > cabs(A[p][c])) p = i;
+    [A[c], A[p]] = [A[p], A[c]];
+    const iv = cdiv([1, 0], A[c][c]); A[c] = A[c].map((w) => cmul(w, iv));
+    for (let i = 0; i < n; i++) if (i !== c) { const f = A[i][c]; if (f[0] || f[1]) A[i] = A[i].map((w, k) => csub(w, cmul(f, A[c][k]))); }
+  }
+  let tr = [0, 0]; for (let i = 0; i < n; i++) tr = cadd(tr, A[i][n + i]);
+  return tr;
+}
 /**
- * Sharpen a clustered eigenvalue μ₀ (c computed roots close together): take the c-dimensional subspace on which
- * (T − μ₀I)^c is smallest (its right singular vectors) and return the mean eigenvalue of T on it, tr(B*TB)/c.
+ * Mean of the eigenvalues inside the circle |z − c| = r, by the argument principle: with R(z) = (zI − T)⁻¹,
+ * (1/2πi)∮ tr R(z) dz counts them and (1/2πi)∮ z tr R(z) dz adds them up (trapezoid rule, N nodes).
+ * Accurate even for a defective eigenvalue, whose computed roots form a small ring.
  */
-function refineEig(M, T, mu, c) {
-  const n = T.length, A = cShift(T, mu); let P = A;
-  for (let k = 1; k < c; k++) P = cMM(P, A);
-  const { V } = M.svd(realify(P)), m = V[0].length, zs = [];
-  for (let i = m - 1; i >= Math.max(0, m - 2 * c); i--) zs.push(Array.from({ length: n }, (_, k) => [V[k][i], V[k + n][i]]));
-  const B = cOrth(zs, 1e-6).slice(0, c);
-  if (B.length < c) return mu;
-  const tr = B.reduce((s, b) => cadd(s, cIP(cMV(T, b), b)), [0, 0]);
-  return csc(tr, 1 / c);
+function contourMean(T, c, r, N = 32) {
+  let s0 = [0, 0], s1 = [0, 0];
+  for (let j = 0; j < N; j++) {
+    const th = (2 * Math.PI * j) / N, w = [r * Math.cos(th), r * Math.sin(th)], z = cadd(c, w), f = traceResolvent(T, z);
+    s0 = cadd(s0, cmul(f, w)); s1 = cadd(s1, cmul(cmul(z, f), w));
+  }
+  return { count: Math.round(s0[0] / N), mean: cdiv(s1, s0) };
 }
 /** Eigenvalues of a complex matrix, clustered and sharpened, with algebraic (dim G) and geometric (dim E) multiplicities, all computed. */
 function eigenData(M, T) {
@@ -196,10 +219,10 @@ function eigenData(M, T) {
   const vals = M.eigC(T, { vectors: false }).values.map((z) => [z.re, z.im]);
   let best = null;
   for (const tol of [0.06, 1e-2, 1e-3, 1e-5]) {
-    const out = clusters(vals, tol).map((c) => {
-      let z = c.z;
-      for (let it = 0; it < 4; it++) { const z1 = refineEig(M, T, z, c.count), moved = cabs(csub(z1, z)); z = z1; if (moved < 1e-14) break; }
-      const d = genDims(M, T, z); return { z, count: c.count, alg: d[d.length - 1], geo: d[1] ?? 0, dims: d }; });
+    const cl = clusters(vals, tol);
+    const out = cl.map((c) => {
+      const gap = Math.min(1.25, ...cl.filter((o) => o !== c).map((o) => cabs(csub(o.z, c.z))));
+      const z = contourMean(T, c.z, 0.4 * gap).mean, d = genDims(M, T, z); return { z, count: c.count, alg: d[d.length - 1], geo: d[1] ?? 0, dims: d }; });
     if (!best) best = out;
     if (out.every((e) => e.alg === e.count)) { best = out; break; }
   }
@@ -207,6 +230,8 @@ function eigenData(M, T) {
 }
 /** Random complex matrix close to the identity (well conditioned), from a seeded rng. */
 const randS = (r, n, amp = 0.55) => Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => [(i === j ? 1 : 0) + r.uniform(-amp, amp), r.uniform(-amp, amp)]));
+/** Random unitary matrix (Gram–Schmidt on random complex vectors). */
+const randU = (r, n) => fromCols(cOrth(Array.from({ length: n }, () => Array.from({ length: n }, () => [r.uniform(-1, 1), r.uniform(-1, 1)]))));
 /** Complex matrix with Jordan blocks: blocks = [[λ, size], …]. */
 function jordanC(blocks) {
   const n = blocks.reduce((s, b) => s + b[1], 0), J = zerosM(n).map((r) => r.map(() => [0, 0])); let o = 0;
@@ -593,7 +618,7 @@ In particular $G(\lambda, T)$ is a subspace of $V$.`,
         H.push(Z.handle(-0.1, -0.85, { color: 'teal', label: '$\\lambda_3$', constrain: snapTo(() => [H[0], H[1]]) }));
         let st = null;
         v.render(() => {
-          const ls = H.map((h) => [h.x, h.y]), r = v.rng(seed * 17 + 3), S0 = randS(r, 4, 0.5);
+          const ls = H.map((h) => [h.x, h.y]), r = v.rng(seed * 17 + 3), S0 = randU(r, 4);
           const blocks = shape.value === 'def' ? [[ls[0], 2], [ls[1], 1], [ls[2], 1]] : [[ls[0], 1], [ls[0], 1], [ls[1], 1], [ls[2], 1]];
           const T = cMM(cMM(S0, jordanC(blocks)), cInv(M, S0));
           const ed = eigenData(M, T);
@@ -833,12 +858,12 @@ $$(z - \lambda_1)^{d_1} \cdots (z - \lambda_m)^{d_m}.$$`,
       tags: ['characteristic polynomial'],
       viz(v) {
         const M = v.M;
-        const nS = v.slider('$n = \\dim V$', 1, 7, 5, { int: true });
+        const nS = v.slider('$n = \\dim V$', 1, 7, 6, { int: true });
         const kind = v.select('eigenvalues', [{ value: 'rep', label: 'repeated' }, { value: 'gen', label: 'generic' }], 'rep');
         const geo = v.toggle('use eigenspace dimensions instead of multiplicities', false);
         let seed = 6;
         v.button('New operator', () => { seed += 1; });
-        const S3 = v.stage3d({ range: 1.3, height: 370, yaw: -0.65, pitch: 0.62, axes: false, weight: 1.15, minWidth: 280, title: '$\\log_{10}|q(z)|$ over the complex plane' });
+        const S3 = v.stage3d({ range: 1.75, height: 370, yaw: -0.6, pitch: 0.5, axes: false, weight: 1.15, minWidth: 280, title: '$\\log_{10}|q(z)|$ over the complex plane' });
         const W = v.stage({ x: [0.05, 30], xlog: true, y: [-0.4, 8], height: 370, weight: 0.85, minWidth: 240, axes: 'box', xlabel: 'r', title: 'zeros of $q$ inside $|z| = r$' });
         const gen = (n, k, sd) => {
           const r = v.rng(sd * 53 + n * 7 + (k === 'rep' ? 1 : 0));
@@ -861,17 +886,20 @@ $$(z - \lambda_1)^{d_1} \cdots (z - \lambda_m)^{d_m}.$$`,
               for (let j = 0; j <= 400; j++) { const t = (2 * Math.PI * j) / 400, w = cPolyEval(q, [rr * Math.cos(t), rr * Math.sin(t)]), a = Math.atan2(w[1], w[0]); if (prev != null) { let da = a - prev; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI; tot += da; } prev = a; }
               rs.push(rr); wn.push(Math.round(tot / (2 * Math.PI)));
             }
-            const L = Math.max(1, ...ed.map((e) => cabs(e.z))) * 1.25;
+            const L = Math.max(0.8, ...ed.map((e) => Math.max(Math.abs(e.z[0]), Math.abs(e.z[1])))) * 1.2;
             Object.assign(cache, { key, T, ed, list, q, rs, wn, L });
           }
           const { ed, list, q, rs, wn, L } = cache;
-          const lo = -2.5, hi = Math.max(0.5, Math.log10(Math.pow(L * 1.5, n)) * 0.8);
-          const hgt = (x, y) => { const w = cPolyEval(q, [x, y]); return M.clamp(Math.log10(Math.max(1e-30, cabs(w))), lo, hi); };
-          const zs = (h) => -0.9 + (1.6 * (h - lo)) / (hi - lo);
-          S3.surface((a, b) => [a, b, zs(hgt(a * L, b * L))], [-1, 1], [-1, 1], { n: 44, colorFn: (a, b, P) => M.cmap((P[2] + 0.9) / 1.6, 'viridis'), alpha: 0.92 });
-          S3.line([-1, -1, -0.9], [1, -1, -0.9], { color: 'faint', width: 1 }); S3.line([-1, -1, -0.9], [-1, 1, -0.9], { color: 'faint', width: 1 });
-          S3.text('Re', [1.12, -1, -0.9], { color: 'muted', math: true }); S3.text('Im', [-1, 1.12, -0.9], { color: 'muted', math: true });
-          list.forEach((e) => { S3.dot([e.z[0] / L, e.z[1] / L, -0.92], { r: 5.5, color: 'red', bias: 0.3 }); if (e.d > 1) S3.text(`×${e.d}`, [e.z[0] / L, e.z[1] / L, -0.92], { color: 'red', size: 12, dy: -12 }); });
+          const raw = (x, y) => Math.log10(Math.max(1e-30, cabs(cPolyEval(q, [x, y]))));
+          const smp = []; for (let i = 0; i <= 12; i++) for (let j = 0; j <= 12; j++) smp.push(raw(L * (i / 6 - 1), L * (j / 6 - 1)));
+          smp.sort((a, b) => a - b);
+          const hi = smp[Math.floor(0.85 * smp.length)], lo = hi - 3.5;
+          const hgt = (x, y) => M.clamp(raw(x, y), lo, hi);
+          const zs = (h) => -0.7 + (1.1 * (h - lo)) / (hi - lo);
+          S3.surface((a, b) => [a, b, zs(hgt(a * L, b * L))], [-1, 1], [-1, 1], { n: 44, colorFn: (a, b, P) => M.cmap((P[2] + 0.7) / 1.1, 'viridis'), alpha: 0.92 });
+          S3.path([[-1, -1, -0.72], [1, -1, -0.72], [1, 1, -0.72], [-1, 1, -0.72]], { color: 'faint', width: 1, close: true });
+          S3.text('Re', [1.15, -1, -0.72], { color: 'muted', math: true }); S3.text('Im', [-1, 1.15, -0.72], { color: 'muted', math: true });
+          list.forEach((e) => { S3.dot([e.z[0] / L, e.z[1] / L, -0.74], { r: 5.5, color: 'red', bias: 0.3 }); if (e.d > 1) S3.text(`×${e.d}`, [e.z[0] / L, e.z[1] / L, -0.74], { color: 'red', size: 12, dx: 14, dy: 8 }); });
           // winding staircase
           const deg = q.length - 1;
           W.setView([0.05, 30], [-0.4, Math.max(deg, n) + 1]);

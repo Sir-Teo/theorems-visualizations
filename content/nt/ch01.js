@@ -127,7 +127,7 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
           }
           for (let aa = 0; aa <= 72; aa += 6) T.text(String(aa), aa, -0.55, { align: 'center', size: 10.5, color: 'muted' });
           for (const bb of [1, 3, 6, 9, 12, 15, 18]) T.text(String(bb), -1.4, bb, { align: 'right', size: 10.5, color: 'muted' });
-          T.text('a →', 72.5, -1.6, { align: 'right', size: 11, color: 'muted', math: true });
+          T.text('a', -1.4, -0.55, { align: 'right', size: 13, color: 'muted', math: true });
           T.text('b', -3.6, 18.4, { align: 'center', size: 13, color: 'muted', math: true });
           if (b <= 18) T.rect(-0.5, b - 0.5, 72.5, b + 0.5, { color: 'ink', width: 1, alpha: 0.45 });
           if (a >= 0 && a <= 72 && b <= 18) T.rect(a - 0.5, b - 0.5, a + 0.5, b + 0.5, { color: 'ink', width: 2.4 });
@@ -366,7 +366,7 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
         const B = v.slider('$b$', 1, 99, 22, { int: true });
         const tab = v.select('table', [{ value: 'fwd', label: 'extended Euclid' }, { value: 'back', label: 'back-substitution' }], 'fwd');
         const pos = v.toggle('only $x, y \\ge 0$', false);
-        const R = v.stage({ x: [0, 170], y: [-1.2, 5], axes: false, height: 330, weight: 1.3, minWidth: 330, title: 'two rulers: multiples of $a$ above, of $b$ below — each remainder is a gap between marks' });
+        const R = v.stage({ x: [0, 170], y: [-1.2, 5], axes: false, height: 330, weight: 1.3, minWidth: 330, title: 'two rulers: multiples of $a$ (above) and of $b$ (below)' });
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 300 });
         const N = v.stage({ x: [-100, 100], y: [-1, 1.4], axes: false, height: 96, full: true });
         let sel = null, st = null, lanes = [], tgeo = null, lastKey = '';
@@ -386,11 +386,11 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
           const usedA = new Set(lanes.map((l) => l.XA)), usedB = new Set(lanes.map((l) => l.XB));
           for (let m = 0; m * a <= Xmax; m++) {
             R.line(m * a, 0, m * a, 0.34, { color: 'blue', width: usedA.has(m * a) ? 2.4 : 1.4 });
-            if (usedA.has(m * a) || m * a * R.scale >= 0 && a * R.scale >= 26) R.text(m === 1 ? 'a' : `${m}a`, m * a, 0.52, { align: 'center', size: 10.5, color: 'blue', weight: usedA.has(m * a) ? 650 : 500 });
+            if (usedA.has(m * a) || a * R.scale >= 26) R.text(m === 0 ? '0' : m === 1 ? 'a' : `${m}a`, m * a, 0.52, { align: 'center', size: 10.5, color: 'blue', weight: usedA.has(m * a) ? 650 : 500 });
           }
           for (let m = 0; m * b <= Xmax; m++) {
             R.line(m * b, 0, m * b, -0.34, { color: 'orange', width: usedB.has(m * b) ? 2.4 : 1.4 });
-            if (usedB.has(m * b) || b * R.scale >= 26) R.text(m === 1 ? 'b' : `${m}b`, m * b, -0.55, { align: 'center', size: 10.5, color: 'orange', weight: usedB.has(m * b) ? 650 : 500 });
+            if (usedB.has(m * b) || b * R.scale >= 26) R.text(m === 0 ? '0' : m === 1 ? 'b' : `${m}b`, m * b, -0.55, { align: 'center', size: 10.5, color: 'orange', weight: usedB.has(m * b) ? 650 : 500 });
           }
           if (!L) R.corner(n <= 1 ? `b divides a: g = b = 0·a + 1·b` : 'no gaps to show', 'tr', { size: 12, color: 'green', weight: 650 });
           for (const ln of lanes) {
@@ -402,7 +402,7 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
             const minW = 9 / R.scale; if (hi - lo < minW) { const c = (lo + hi) / 2; lo = c - minW / 2; hi = c + minW / 2; }
             R.line(lo, ln.y, hi, ln.y, { color: col, width: isSel ? 4 : 2.6 });
             R.line(lo, ln.y - 0.17, lo, ln.y + 0.17, { color: col, width: 2 }); R.line(hi, ln.y - 0.17, hi, ln.y + 0.17, { color: col, width: 2 });
-            const tex = `${r.r} = ${lin(r.x, a, r.y, b)}`, wEst = 7.6 * (String(r.r).length + String(Math.abs(r.x)).length + String(Math.abs(r.y)).length + 10);
+            const tex = `${r.r} = ${lin(r.x, a, r.y, b)}`, wEst = 9.6 * (String(r.r).length + String(Math.abs(r.x)).length + String(Math.abs(r.y)).length + 10);
             const right = R.X(hi) + 10 + wEst < R.width;
             R.tex(tex, right ? hi : lo, ln.y, { align: right ? 'left' : 'right', dx: right ? 10 : -10, size: 13.5, color: isG ? 'green' : 'ink' });
           }
@@ -492,7 +492,8 @@ The hypothesis that $p$ is prime cannot be dropped: $6\mid 4\cdot 3$, yet $6\nmi
       viz(v) {
         const M = v.M, NMAX = 30;
         const n = v.slider('$n$', 2, 30, 7, { int: true });
-        const S = v.stage({ x: [-1.6, NMAX + 0.6], y: [-1.4, NMAX + 0.6], equal: true, axes: false, height: 440 });
+        const S = v.stage({ x: [-1.6, NMAX + 0.6], y: [-1.4, NMAX + 0.6], equal: true, axes: false, height: 440, weight: 1.15, minWidth: 330, title: 'cells with $n \\mid ab$' });
+        const Rw = v.stage({ x: [-0.8, 7], y: [-1.4, NMAX + 0.6], axes: false, height: 440, weight: 0.85, minWidth: 250 });
         let sel = [10, 21];
         S.onClick((x, y) => { const a = Math.round(x), b = Math.round(y); if (a >= 1 && a <= NMAX && b >= 1 && b <= NMAX) sel = [a, b]; });
         v.legend([['blue', '$n \\mid a$', { area: true }], ['orange', '$n \\mid b$', { area: true }], ['green', 'both', { area: true }], ['red', '$n \\mid ab$ although $n \\nmid a$ and $n \\nmid b$', { area: true }]]);
@@ -511,9 +512,22 @@ The hypothesis that $p$ is prime cannot be dropped: $6\mid 4\cdot 3$, yet $6\nmi
           for (let k = 0; k <= NMAX; k += 5) { S.line(k + 0.5, 0.5, k + 0.5, NMAX + 0.5, { color: 'grid', width: 1 }); S.line(0.5, k + 0.5, NMAX + 0.5, k + 0.5, { color: 'grid', width: 1 }); }
           S.rect(0.5, 0.5, NMAX + 0.5, NMAX + 0.5, { color: 'muted', width: 1 });
           for (let k = 5; k <= NMAX; k += 5) { S.text(String(k), k, -0.2, { align: 'center', size: 10.5, color: 'muted' }); S.text(String(k), -0.2, k, { align: 'right', size: 10.5, color: 'muted' }); }
-          S.text('a', NMAX / 2, -1.0, { math: true, color: 'muted', align: 'center' }); S.text('b', -1.2, NMAX / 2, { math: true, color: 'muted', align: 'center' });
+          S.text('a', NMAX / 2, -1.0, { math: true, color: 'muted', align: 'center' }); S.text('b', -1.3, 17.5, { math: true, color: 'muted', align: 'center' });
           const [a, b] = sel; S.rect(a - 0.5, b - 0.5, a + 0.5, b + 0.5, { color: 'ink', width: 2.6 });
-          S.corner(M.isPrime(N) ? `n = ${N} is prime: no red cells` : `n = ${N} = ${M.primeFactors(N).join('·')}: ${rogue} red cells`, 'tr', { color: M.isPrime(N) ? 'green' : 'red', weight: 650, size: 12 });
+          S.setTitle(M.isPrime(N) ? `cells with $n \\mid ab$ — $n = ${N}$ is prime: **no red cells**` : `cells with $n \\mid ab$ — $n = ${N} = ${M.primeFactors(N).join('\\cdot ')}$: **${rogue} red cells**`);
+          // the selected row a, sliced: remainders of ab mod n, aligned with the rows b of the grid
+          const yb = S.bounds.y; Rw.setView([-0.12 * N - 0.6, N + 0.4], yb);
+          Rw.setTitle(`row $a = ${a}$: remainders $ab \\bmod ${N}$`);
+          for (let bb = 1; bb <= NMAX; bb++) {
+            const rem = (a * bb) % N, rogueCell = rem === 0 && a % N !== 0 && bb % N !== 0;
+            if (rem) Rw.rect(0, bb - 0.36, rem, bb + 0.36, { fill: 'accent', fillAlpha: 0.32, color: 'accent', width: 1 });
+            else Rw.rect(-0.09 * N - 0.3, bb - 0.36, 0, bb + 0.36, { fill: rogueCell ? 'red' : a % N === 0 ? (bb % N === 0 ? 'green' : 'blue') : 'orange', fillAlpha: 0.8, stroke: false });
+            if (bb === b) Rw.rect(-0.12 * N - 0.5, bb - 0.5, N + 0.3, bb + 0.5, { color: 'ink', width: 1.6 });
+          }
+          Rw.line(0, 0.5, 0, NMAX + 0.5, { color: 'muted', width: 1.2 });
+          Rw.text('0', 0, -0.2, { align: 'center', size: 10.5, color: 'muted' });
+          const zeros = []; for (let bb = 1; bb <= NMAX; bb++) if ((a * bb) % N === 0) zeros.push(bb);
+          Rw.corner(a % N === 0 ? 'n | a: every b works' : M.gcd(a, N) === 1 ? `zero only at multiples of ${N}` : `extra zeros: gcd(${a}, ${N}) = ${M.gcd(a, N)}`, 'br', { size: 11, color: a % N !== 0 && M.gcd(a, N) > 1 ? 'red' : 'muted', weight: 600 });
         });
         v.readout(() => {
           const N = n.value, [a, b] = sel, ab = a * b, prime = M.isPrime(N);
@@ -556,6 +570,7 @@ and this factorization is unique apart from the order of the factors. Equivalent
         const splits = (m) => { const out = []; for (let d = 2; d * d <= m; d++) if (m % d === 0 && (!even() || (d % 2 === 0 && (m / d) % 2 === 0))) out.push(d); return out; };
         const grow = (m, pick) => { const sp = splits(m); if (!sp.length) return { n: m, sp, i: -1, kids: null }; const i = pick(sp, m); return { n: m, sp, i, kids: [grow(sp[i], pick), grow(m / sp[i], pick)] }; };
         const near = (sp) => sp.length - 1, small = () => 0;
+        const LEAF = ['green', 'orange', 'purple', 'pink', 'teal', 'gold', 'red'];
         let N = 0, trees = [];
         const leaves = (t) => (t.kids ? leaves(t.kids[0]).concat(leaves(t.kids[1])) : [t.n]);
         const cnt = new Map();
@@ -578,6 +593,7 @@ and this factorization is unique apart from the order of the factors. Equivalent
           const k = `${uni.value}|${n}`;
           if (k !== key) { key = k; N = n; cnt.clear(); trees = [grow(N, near), grow(N, small)]; }
           const sorted = trees.map((t) => leaves(t).sort((p, q) => p - q));
+          const atoms = [...new Set(sorted.flat())].sort((p, q) => p - q);
           const same = sorted[0].join() === sorted[1].join();
           stages.forEach((S, si) => {
             const t = trees[si];
@@ -594,8 +610,7 @@ and this factorization is unique apart from the order of the factors. Equivalent
             };
             draw(t);
             const nodesDraw = (nd) => {
-              const leafCol = even() ? (M.isPrime(nd.n) ? 'green' : 'purple') : 'green';
-              const col = nd.kids ? 'blue' : leafCol, X0 = X(nd), Y0 = Y(nd);
+              const col = nd.kids ? 'blue' : LEAF[atoms.indexOf(nd.n) % LEAF.length], X0 = X(nd), Y0 = Y(nd);
               pdisc(v, S, X0, Y0, r, { fill: col, fillAlpha: nd.kids ? 0.18 : 0.35, stroke: col, width: nd.kids && nd.sp.length > 1 ? 2 : 1.5, dash: nd.kids && nd.sp.length > 1 ? null : null });
               const s = String(nd.n), fs = Math.min(13, (r * 2.1) / Math.max(1.6, s.length * 0.62));
               S.textPx(s, X0, Y0 + 0.5, { align: 'center', size: fs, weight: 650, halo: false, color: 'ink' });
@@ -607,11 +622,11 @@ and this factorization is unique apart from the order of the factors. Equivalent
             S.textPx(txt.length > 70 ? txt.slice(0, 68) + '…' : txt, W / 2, H - 16, { align: 'center', size: 12.5, weight: 650, color: same ? 'green' : 'red' });
           });
         });
-        v.legend([['blue', 'composite — click to split another way', { dot: true }], ['green', 'prime', { dot: true }], ['purple', 'atom of $2\\mathbb Z$ (not a prime)', { dot: true }]]);
+        v.legend([['blue', 'composite — click to split another way', { dot: true }], ['green', 'leaves (atoms), one colour per value', { dot: true }]]);
         v.readout(() => {
           if (!trees.length) return '';
           const s0 = leaves(trees[0]).sort((p, q) => p - q), s1 = leaves(trees[1]).sort((p, q) => p - q), same = s0.join() === s1.join();
-          if (!even()) return `$n = ${N} = ${facTex(M, N)}$. Both routes end in the same primes, ${same ? '✓' : '✗'} — and so does each of the **${countTrees(N)}** different factor trees of $${N}$.` + (M.isPrime(N) ? ' (A prime is its own one-node tree.)' : '');
+          if (!even()) return M.isPrime(N) ? `$n = ${N}$ is prime: its factor tree is a single node.` : `$n = ${N} = ${facTex(M, N)}$. Both routes end in the same primes ${same ? '✓' : '✗'} — and so do all **${countTrees(N)}** different factor trees of $${N}$.`;
           return `In $2\\mathbb Z$ the atoms are the even numbers that are not a product of two even numbers: $2, 6, 10, 14, 18, \\dots$ ($2\\times$odd). ` + (same ? `For $${N}$ these two routes agree (${s0.join('·')}) — try another split, or $n = 72$ or $180$.` : `Here $${N} = ${s0.join('\\cdot ')} = ${s1.join('\\cdot ')}$: **two different factorizations into atoms**. There is no Euclid’s lemma in $2\\mathbb Z$: the atom $${s0.find((p) => !s1.includes(p)) ?? s0[0]}$ divides a product of atoms without dividing any of them.`);
         });
       },
@@ -676,21 +691,22 @@ where $9$, $21$ and $49$ are all irreducible in $H$. Correspondingly Euclid’s 
             P.textPx(`≡${res}`, x0 + (i + 0.5) * cw, cy + 22, { align: 'center', size: 10, color: col, halo: false });
           });
           P.textPx(`primes in ℤ, with residues mod ${m}`, W / 2, cy + 38, { align: 'center', size: 10.5, color: 'muted' });
-          // one lane per factorization: brackets grouping the primes
-          const fl = info.facts.slice(0, 4), laneH = Math.min(62, (H - cy - 70) / Math.max(1, fl.length));
+          // one row per factorization: the same primes, grouped into irreducible factors of the monoid
+          const fl = info.facts.slice(0, 4), laneH = Math.min(70, (H - cy - 64) / Math.max(1, fl.length));
           fl.forEach((fac, j) => {
-            const Y = cy + 64 + laneH * j, used = new Array(zf.length).fill(false), col = PALETTE[j % 4];
+            const Y = cy + 66 + laneH * j;
             P.texPx(`${sel} = ${fac.length ? fac.join('\\cdot ') : '1'}`, 12, Y, { align: 'left', size: 14, color: info.facts.length > 1 ? 'red' : 'ink' });
-            fac.forEach((h, fi) => {
-              const idx = []; for (const p of M.primeFactors(h)) { const k = zf.findIndex((q, ii) => q === p && !used[ii]); used[k] = true; idx.push(k); }
-              const lo = Math.min(...idx), hi = Math.max(...idx), yy = Y + 18 + (fi % 2) * 5;
-              const shade = PALETTE[(j * 3 + fi) % 6];
-              P.ctx.save(); P.ctx.strokeStyle = v.color(shade); P.ctx.lineWidth = 2.4; P.ctx.beginPath();
-              P.ctx.moveTo(x0 + (lo + 0.5) * cw - 8, yy - 7); P.ctx.lineTo(x0 + (lo + 0.5) * cw - 8, yy); P.ctx.lineTo(x0 + (hi + 0.5) * cw + 8, yy); P.ctx.lineTo(x0 + (hi + 0.5) * cw + 8, yy - 7); P.ctx.stroke(); P.ctx.restore();
-              for (const k of idx) P.dot(P.invX(x0 + (k + 0.5) * cw), P.invY(yy), { r: 3, color: shade });
-              P.textPx(String(h), x0 + ((lo + hi) / 2 + 0.5) * cw, yy + 10, { align: 'center', size: 11, weight: 650, color: shade });
+            const groups = fac.map((h) => M.primeFactors(h)), total = groups.reduce((t, gp) => t + gp.length, 0);
+            const gw = Math.min(30, (W - 40 - 12 * groups.length) / Math.max(1, total)), rowW = total * gw + 12 * (groups.length - 1);
+            let X = W / 2 - rowW / 2;
+            const Yc = Y + laneH * 0.48;
+            groups.forEach((gp, gi) => {
+              const shade = PALETTE[(j * 2 + gi) % 6];
+              rbox(v, P, X - 3, Yc - 13, gp.length * gw + 6, 26, 8, { fill: shade, fillAlpha: 0.12, stroke: shade, width: 1.8 });
+              gp.forEach((p, pi) => { const ok = p % m === 1 % m; P.textPx(String(p), X + (pi + 0.5) * gw, Yc, { align: 'center', size: 12.5, weight: 650, color: ok ? 'green' : 'orange', halo: false }); });
+              P.textPx(String(fac[gi]), X + (gp.length * gw) / 2, Yc + 21, { align: 'center', size: 10.5, weight: 650, color: shade });
+              X += gp.length * gw + 12;
             });
-            void col;
           });
           if (info.facts.length > 4) P.textPx(`… ${info.facts.length - 4} more`, 12, H - 12, { size: 11, color: 'muted' });
         });

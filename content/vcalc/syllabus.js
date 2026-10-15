@@ -145,6 +145,10 @@ export default {
           pic: 'Paint a density onto a lamina; the centre of mass is integrated numerically and the shape balances on a pin there, while spinning it about axes shows the moment of inertia changing.' },
         { num: '4.10', kind: 'Theorem', name: 'Pappus’s centroid theorems', deps: ['vcalc-4.9'], refs: ['Marsden–Tromba ch. 6'],
           pic: 'Revolve a draggable planar region around an axis; the solid’s volume (integrated) equals the area times the distance travelled by the centroid, for any shape you draw.' },
+        { num: '4.11', kind: 'Paper', name: 'Intégrale, longueur, aire',
+          paper: { authors: 'H. Lebesgue', year: 1902, title: 'Intégrale, Longueur, Aire', venue: 'Annali di Matematica Pura ed Applicata (3) 7: 231–359', doi: '10.1007/BF02420592' },
+          introduces: ['pma-11.21', 'rca-2.21', 'pma-11.32a'], deps: ['pma-6.1', 'vcalc-4.1'], refs: [],
+          pic: 'Riemann versus Lebesgue: the reader integrates a function by slicing the domain into vertical strips or the range into horizontal bands, measuring each set {f > y}; for wildly oscillating functions and the indicator of the rationals only range-slicing converges, and a uniformly bounded sequence of functions converging pointwise has its integrals converge too.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -228,6 +232,10 @@ export default {
           pic: 'For a divergence-free planar flow, the stream function is built by integrating the flux across curves from a base point; its contours are the streamlines and the gap between two contours is the volume flux between them.' },
         { num: '7.10', kind: 'Concept', name: 'Complex potentials for planar potential flow', deps: ['vcalc-7.9', 'vcalc-7.7'], refs: ['Marsden–Tromba ch. 8'],
           pic: 'Type a holomorphic function w(z); its real part (velocity potential) and imaginary part (stream function) are drawn as orthogonal contour families describing flow past a cylinder, around a corner, or from a source.' },
+        { num: '7.11', kind: 'Paper', name: 'Mémoire sur les intégrales définies … limites imaginaires',
+          paper: { authors: 'Augustin-Louis Cauchy', year: 1825, title: 'Mémoire sur les intégrales définies, prises entre des limites imaginaires', venue: 'Paris: De Bure frères', url: 'https://archive.org/details/mmoiresurlesin00cauc' },
+          introduces: ['rca-10.14'], deps: ['vcalc-5.5', 'pma-1.24'], refs: [],
+          pic: 'Integrate f(z) between two fixed complex endpoints along paths the reader drags: for 1/z, z² or e^z the integrals agree as long as no singularity lies between the paths, and jump by 2πi times the residue (the term Cauchy coined the following year) the moment a pole is crossed.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -287,6 +295,10 @@ export default {
           pic: 'Draw a vector field by hand; it is split numerically into a curl-free part (from a scalar potential) and a divergence-free part (from a vector potential), displayed side by side and summing back to the original.' },
         { num: '9.12', kind: 'Law', name: 'Maxwell’s equations in integral and differential form', deps: ['vcalc-8.1', 'vcalc-8.3', 'vcalc-8.6'], refs: ['Schey ch. I', 'Marsden–Tromba §8.4'],
           pic: 'Toggle between the four integral laws on a draggable surface or loop and their pointwise versions; the readouts show flux and circulation matching enclosed charge and current, computed both ways.' },
+        { num: '9.13', kind: 'Paper', name: 'An essay on the application of mathematical analysis…',
+          paper: { authors: 'George Green', year: 1828, title: 'An Essay on the Application of Mathematical Analysis to the Theories of Electricity and Magnetism', venue: 'Nottingham: printed for the author by T. Wheelhouse (transcribed from the Crelle reprint as arXiv:0807.0088)', url: 'https://arxiv.org/abs/0807.0088' },
+          introduces: ['vcalc-8.9', 'vcalc-9.10', 'pde-5.12', 'pde-5.13'], deps: ['vcalc-9.4', 'vcalc-8.3'], refs: [],
+          pic: 'Green’s function and Green’s identity: the reader places a unit charge inside a grounded conductor (a disc or a box), sees the induced surface charge and the potential built from Green’s representation formula, swaps source and observation points to confirm G(x, y) = G(y, x), and checks ∫(uΔv − vΔu) = ∮(u ∂v/∂n − v ∂u/∂n) numerically on drawn regions.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10

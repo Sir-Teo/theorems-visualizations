@@ -232,7 +232,7 @@ export default {
         { num: '4.16', kind: 'Paper', name: 'Machine Calculation of Complex Fourier Series',
           paper: { authors: 'James W. Cooley and John W. Tukey', year: 1965, title: 'An Algorithm for the Machine Calculation of Complex Fourier Series',
                    venue: 'Mathematics of Computation 19 (90): 297–301', doi: '10.1090/S0025-5718-1965-0178586-1' },
-          introduces: ['algo-4.11', 'sig-8.8'], deps: ['algo-4.10', 'algo-4.8'], refs: [],
+          introduces: ['algo-4.11', 'sig-8.8', 'nla-10.7'], deps: ['algo-4.10', 'algo-4.8'], refs: [],
           pic: 'The butterfly diagram for N = 8 or 16 lights up stage by stage on the reader’s signal, with the N log₂ N operation count plotted against the N² of the direct sum, and a factorization N = r₁r₂ showing the paper’s mixed-radix split.' },
       ],
     },

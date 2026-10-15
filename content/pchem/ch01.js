@@ -351,7 +351,7 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
 (b) at fixed volume the pressure is a linear function of the temperature, $p = p_0\,(1 + \theta/273.15\,{}^\circ\mathrm C)$ (Gay-Lussac's or Amontons's law).
 For every gas and every fixed pressure or volume the straight lines extrapolate to zero at the same temperature, $\theta = -273.15\,{}^\circ$C. Measuring temperature from that point, $T = \theta + 273.15$ K, both laws read $V \propto T$ and $p \propto T$. Like Boyle's law they are limiting laws, exact as the pressure goes to zero.`,
       idea: String.raw`Temperature measures the mean kinetic energy of the molecules, $\tfrac12 m\langle v^2\rangle = \tfrac32 kT$ (1.6). At fixed volume, heating makes each impact on the wall harder and the impacts more frequent — each grows like $\sqrt T$ — so the pressure grows like $T$. To hold the pressure at a fixed value instead, the gas must spread over a proportionally larger volume. The common intercept is the temperature at which the molecules of a perfect gas would stop moving: it does not depend on the gas because the kinetic energy per molecule does not. Real gases condense before reaching it, and their attractions bend the lines near condensation.`,
-      caption: String.raw`A cylinder of 160 molecules sits in a bath that cycles between $-100$ °C and $300$ °C (or set the bath yourself). Weights on a free piston hold the pressure fixed; in constant-volume mode pins hold the piston where the weights left it at 20 °C and the wall pressure is measured instead. Each window adds a dot: the gas's own temperature (from the kinetic energy of its molecules) against its volume or pressure. After every ramp a new weight starts a new line; extended (dashed), every line hits zero near $-273$ °C. Switch to xenon: near condensation the cold end curls below its line and the intercept moves.`,
+      caption: String.raw`A cylinder of 160 molecules sits in a bath that steps between $-100$ °C and $300$ °C (or set the bath yourself). Weights on a free piston hold the pressure fixed; in constant-volume mode pins hold the piston where the weights left it at 20 °C and the wall pressure is measured instead. Each window adds a dot: the gas's own temperature (from the kinetic energy of its molecules) against its volume or pressure. After every ramp a new weight starts a new line; extended (dashed), every line hits zero near $-273$ °C. Switch to xenon: near condensation the cold end curls below its line and the intercept moves.`,
       deps: [],
       refs: ['Atkins 1A'],
       tags: ['gas laws', 'absolute zero'],
@@ -481,8 +481,8 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         const dens = v.slider('crowding $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
         v.button('Restart the gauges', () => make());
         const B = 10, GAP = 15.5, R = 4.2;
-        const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.2, B + R + 3.4], equal: true, height: 310, axes: false, weight: 1.6 });
-        const sr = v.stage({ x: [-0.3, 3], y: [0.1, 10], ylog: true, height: 310, axes: false, weight: 0.85, minWidth: 230, title: 'relative to the three-gas average (log scale)' });
+        const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.0, B + R + 2.6], equal: true, height: 290, axes: false, weight: 1.6 });
+        const sr = v.stage({ x: [-0.3, 3], y: [0.1, 10], ylog: true, height: 290, axes: false, weight: 0.85, minWidth: 230, title: 'relative to the three-gas average (log scale)' });
         let G = [], s0 = [], tLast = 0, tSim = 0, L = 1;
         const make = () => {
           L = Math.cbrt(N * T / (dens.value / BAR));
@@ -540,7 +540,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
               const x = k + 0.5, rr = RD[k].rate / ref.rate, ri = RD[k].imp / ref.imp, rp = RD[k].p / ref.p, e = 2 * RD[k].dp / RD[k].p;
               sr.rect(x - 0.34, 1, x - 0.06, rr, { fill: sp.col, fillAlpha: 0.75, stroke: false });
               sr.rect(x - 0.03, 1, x + 0.25, ri, { fill: sp.col, fillAlpha: 0.25, color: sp.col, width: 1.2 });
-              sr.line(x + 0.36, rp * (1 - e), x + 0.36, rp * (1 + e), { color: 'green', width: 2 });
+              sr.line(x + 0.36, Math.max(0.105, rp * (1 - e)), x + 0.36, Math.min(9.5, rp * (1 + e)), { color: 'green', width: 2 });
               sr.dot(x + 0.36, rp, { r: 4.5, color: 'green' });
               sr.tex(sp.tex, x, 0.135, { color: sp.col, size: 14 });
             });
@@ -683,10 +683,10 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
         v.animate((t) => {
           if (t < tLast - 1e-6) make();
           const dT = Math.min(600, (t - tLast) * RATE); tLast = t;
-          if (dT > 0) { G.advance(dT); }
+          const A6 = 6 * L * L, sample = () => { const el = G.t - acc.t0; if (el > 0 && (!track.length || el - track[track.length - 1][0] > 0.15)) track.push([el, acc.imp / (A6 * el) * BAR, Math.sqrt(acc.j2) / (A6 * el) * BAR]); };
+          for (let done = 0; done < dT - 1e-9; done += 1) { G.advance(Math.min(1, dT - done)); sample(); }
           const Mo = model(), el = G.t - acc.t0, A = Mo.A, pm = el > 0 ? acc.imp / (A * el) : 0, dp = el > 0 ? Math.sqrt(acc.j2) / (A * el) : 0;
           R = { Mo, el, pm, dp, eta: Math.PI / 6 * (Mo.N[0] * SPN.d ** 3 + Mo.N[1] * SPH.d ** 3) / Mo.V };
-          if (el > 0 && (!track.length || el - track[track.length - 1][0] > 0.15)) track.push([el, pm * BAR, dp * BAR]);
           // --- the box (unit cube on screen) ---
           const sc = 1 / L, D = 1;
           boxBack(sb, P3, 0, 1, 0, 1, D, { color: 'muted', fill: 'muted', fillAlpha: 0.06, back: 'muted', backAlpha: 0.04 });
@@ -717,11 +717,10 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
           sbar.setView([0, 2], [0, ymax]);
           let y0 = 0;
           [0, 1].forEach((s) => { const h = el > 0 ? acc.impS[s] / (A * el) * BAR : 0; if (h > 0) sbar.rect(0.15, y0, 0.9, y0 + h, { fill: s ? 'teal' : 'blue', fillAlpha: 0.7, stroke: false }); y0 += h; });
-          sbar.line(0.15, y0 + 2 * dp * BAR, 0.9, y0 + 2 * dp * BAR, { color: 'ink', width: 1 }); sbar.line(0.15, y0 - 2 * dp * BAR, 0.9, y0 - 2 * dp * BAR, { color: 'ink', width: 1 });
+          if (el > 0) { sbar.line(0.15, y0 + 2 * dp * BAR, 0.9, y0 + 2 * dp * BAR, { color: 'ink', width: 1 }); sbar.line(0.15, y0 - 2 * dp * BAR, 0.9, y0 - 2 * dp * BAR, { color: 'ink', width: 1 }); }
           let y1 = 0;
           [0, 1].forEach((s) => { const h = Mo.pS[s] * BAR; if (h > 0) sbar.rect(1.1, y1, 1.85, y1 + h, { fill: s ? 'teal' : 'blue', fillAlpha: 0.18, color: s ? 'teal' : 'blue', width: 1.4 }); y1 += h; });
-          sbar.text(`${v.fix(pm * BAR, 1)}`, 0.52, y0 + 2 * dp * BAR, { size: 11, align: 'center', dy: -10, color: 'ink' });
-          sbar.text('±2σ', 0.52, y0 - 2 * dp * BAR, { size: 9.5, align: 'center', dy: 8, color: 'panel', halo: false });
+          if (el > 0) { sbar.text(`${v.fix(pm * BAR, 1)}`, 0.52, y0 + 2 * dp * BAR, { size: 11, align: 'center', dy: -10, color: 'ink' }); sbar.text('±2σ', 0.52, y0 - 2 * dp * BAR, { size: 9.5, align: 'center', dy: 8, color: 'panel', halo: false }); }
           sbar.text(`${v.fix(ps, 1)}`, 1.48, y1, { size: 11, align: 'center', dy: -10, color: 'ink' });
         }, { still: 25 });
         v.legend([['accent', 'measured: Σ impulse / (area × time), ±2σ'], ['ink', 'kinetic model $Nm\\langle v^2\\rangle/3V$', { dash: true }], ['gold', 'impacts (flashes and ticks)'], ['blue', '$\\mathrm{N_2}$', { dot: true }], ['teal', 'He', { dot: true }]]);
@@ -730,7 +729,7 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
           const { Mo, el, pm, dp, eta } = R, ns = el * T0 * 1e9, rateM = acc.hits / ns, rateP = Mo.rate / (T0 * 1e9);
           let s = `After ${acc.hits} impacts: measured $p = ${v.fix(pm * BAR, 2)} \\pm ${v.fix(2 * dp * BAR, 2)}$ bar, kinetic model $Nm\\langle v^2\\rangle/3V = ${v.fix(Mo.p * BAR, 2)}$ bar (ratio $${v.fix(pm / Mo.p, 3)}$). Impacts per ns: $${v.fix(rateM, 0)}$ measured, $\\tfrac14\\mathcal N\\bar vA = ${v.fix(rateP, 0)}$ predicted.`;
           if (mix.value) s += ` Partial pressures: $\\mathrm{N_2}$ ${v.fix(acc.impS[0] / (Mo.A * el) * BAR, 2)} vs ${v.fix(Mo.pS[0] * BAR, 2)} bar, He ${v.fix(acc.impS[1] / (Mo.A * el) * BAR, 2)} vs ${v.fix(Mo.pS[1] * BAR, 2)} bar — they add up to the total (Dalton).`;
-          s += eta > 0.03 ? ` The molecules fill ${v.fix(100 * eta, 1)}% of the box: hard spheres push the pressure above the model by about $1 + 4\\eta = ${v.fix(1 + 4 * eta, 3)}$.` : ` The molecules fill only ${v.fix(100 * eta, 2)}% of the box, so the model's point-molecule assumption holds.`;
+          s += ` The molecules fill $\\eta = ${v.fix(100 * eta, eta < 0.1 ? 2 : 1)}\\%$ of the box; finite size raises both the impact rate and the pressure above the point-molecule model by about $1 + 4\\eta = ${v.fix(1 + 4 * eta, 3)}$${eta < 0.005 ? ' — negligible here' : eta > 0.05 ? ' — the model fails' : ''}.`;
           return s;
         });
       },
@@ -899,9 +898,10 @@ The scale height $H$ is about 8.4 km for air at 288 K. In a mixture left undistu
         v.legend([['teal', 'He (4 g/mol)', { dot: true }], ['blue', 'N₂ (28 g/mol)', { dot: true }], ['red', 'CO₂ (44 g/mol)', { dot: true }], ['ink', 'predicted $e^{-h/H}$, $H = RT/Mg$', { dash: true }]]);
         v.readout(() => {
           if (!wsum) return `Molecules leaving the ground — the profile is recorded once the atmosphere has settled (${v.fix(Math.max(0, SETTLE - (tSim - tH)), 0)} s of simulated time to go).`;
-          const g = +gsel.value, rows = SPEC.map((s, j) => { const H = 8.314462618 * Tsl.value / (s.M * 1e-3 * g) / 1000, Hm = fitH(j); return `${s.name}: $H = ${isFinite(Hm) ? v.fix(Hm, 1) : '\\infty'}$ km measured, $RT/Mg = ${v.fix(H, 1)}$ km`; });
-          const top = NB - 3, he = (b) => hist[0][b] / Math.max(1e-9, hist[1][b]);
-          return rows.join(' · ') + `. Helium-to-nitrogen ratio near the ground ${v.fix(he(0), 2)}, near 50 km ${v.fix(he(top) || 0, 2)}${stir.value ? ' — stirred: the same mixture at every height.' : ' — unstirred: the light gas takes over aloft.'}`;
+          const g = +gsel.value, top = NB - 3, he = (b) => hist[0][b] / Math.max(1e-9, hist[1][b]), Hs = SPEC.map((s, j) => fitH(j));
+          if (stir.value) return `Stirred: the three gases share one profile (fitted $H$ = ${Hs.map((H) => (isFinite(H) ? v.fix(H, 1) : '∞')).join(', ')} km — no longer $RT/Mg$), and the helium-to-nitrogen ratio is ${v.fix(he(0), 2)} near the ground and ${v.fix(he(top) || 0, 2)} near 50 km: the same mixture at every height, as below Earth's turbopause. (These collision-free molecules show only the mixing of composition; in a real, collision-dominated air column the shared profile has the scale height of the mean molar mass, about 8 km.)`;
+          const rows = SPEC.map((s, j) => { const H = 8.314462618 * Tsl.value / (s.M * 1e-3 * g) / 1000; return `${s.name}: $H = ${isFinite(Hs[j]) ? v.fix(Hs[j], 1) : '\\infty'}$ km measured, $RT/Mg = ${v.fix(H, 1)}$ km`; });
+          return rows.join(' · ') + `. Helium-to-nitrogen ratio near the ground ${v.fix(he(0), 2)}, near 50 km ${v.fix(he(top) || 0, 2)} — unstirred, the gases sort by mass and the light one takes over aloft.`;
         });
       },
     },

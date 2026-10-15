@@ -190,6 +190,10 @@ export default {
           pic: 'For a system of strict linear inequalities, either a solution region is shaded or a nonnegative combination of the inequalities producing a contradiction is displayed.' },
         { num: '5.16', kind: 'Theorem', name: 'Fenchel duality', deps: ['opt-3.8', 'opt-5.3'], refs: ['Boyd–Vandenberghe §5.7'],
           pic: 'For min f(x) + g(x), the graphs of f and −g are drawn with parallel supporting lines; the largest vertical gap between such lines is the dual value, equal to the primal minimum for convex f and g.' },
+        { num: '5.17', kind: 'Paper', name: 'Nonlinear programming',
+          paper: { authors: 'H. W. Kuhn and A. W. Tucker', year: 1951, title: 'Nonlinear Programming', venue: 'Proceedings of the Second Berkeley Symposium on Mathematical Statistics and Probability, 481–492', doi: '10.1525/9780520411586-036' },
+          introduces: ['opt-5.9', 'opt-5.11'], deps: ['opt-1.9', 'opt-5.14'], refs: [],
+          pic: 'At a constrained optimum −∇f must lie in the cone of the active constraint gradients: the reader drags constraints in the plane and watches the multipliers appear; then the paper’s own counterexample, maximise x subject to y ≤ (1 − x)³ and y ≥ 0, shows the optimum (1, 0) where the constraint gradients line up and no multipliers exist.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -218,6 +222,10 @@ export default {
           pic: 'Edit supplies, demands and shipping costs between depots and stores; the optimal flows are drawn as arrows of varying width and the solution is integral when the data are.' },
         { num: '6.10', kind: 'Model', name: 'Shadow prices in production planning', deps: ['opt-6.4', 'opt-5.12'], refs: ['Nocedal–Wright ch. 13'],
           pic: 'A factory allocates scarce resources to products; the dual price of each resource is read out and predicts exactly how profit changes when a little more of that resource is supplied.' },
+        { num: '6.11', kind: 'Paper', name: 'Maximizing a linear function subject to linear inequalities',
+          paper: { authors: 'George B. Dantzig', year: 1951, title: 'Maximization of a linear function of variables subject to linear inequalities', venue: 'In T. C. Koopmans (ed.), Activity Analysis of Production and Allocation, Cowles Commission Monograph 13, New York: Wiley, 339–347', url: 'https://archive.org/details/activityanalysis0000cowl' },
+          introduces: ['opt-6.3'], deps: ['opt-1.7', 'opt-2.12', 'opt-6.1'], refs: [],
+          pic: 'The simplex method on a three-variable production-planning problem: pivots move from vertex to vertex of the feasible polytope along improving edges, the tableau updating beside the 3-D picture; the reader chooses entering variables by different rules and sees the path and the number of pivots change.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -252,6 +260,10 @@ export default {
           pic: 'A triangle of trial points reflects, expands and contracts across a contour map without using gradients, each move animated, and on a known counterexample it collapses to a non-stationary point.' },
         { num: '7.13', kind: 'Theorem', name: 'Gradient descent as a discretized gradient flow', deps: ['opt-7.4', 'ode-5.13', 'num-7.1'], refs: ['Boyd–Vandenberghe §9.3'],
           pic: 'Gradient descent with step h is overlaid on the continuous gradient flow ẋ = −∇f; for small h the iterates track the flow, and the stability limit h < 2/L is Euler’s stability condition.' },
+        { num: '7.14', kind: 'Paper', name: 'A stochastic approximation method',
+          paper: { authors: 'Herbert Robbins and Sutton Monro', year: 1951, title: 'A Stochastic Approximation Method', venue: 'The Annals of Mathematical Statistics 22 (3): 400–407', doi: '10.1214/aoms/1177729586' },
+          introduces: ['opt-7.10'], deps: ['opt-7.4', 'prob-2.2.3'], refs: [],
+          pic: 'Find the level α of an unknown increasing response seen only through noisy measurements: with steps aₙ = a/n the iterates xₙ₊₁ = xₙ − aₙ(Yₙ − α) home in on the root, and the reader switches to steps that shrink too fast (stalling short) or not at all (wandering forever) to see why Σaₙ = ∞ and Σaₙ² < ∞ are the right conditions.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -356,6 +368,10 @@ export default {
           pic: 'An ellipse containing the solution is cut in half by a separating line through its centre and replaced by the smallest ellipse covering the kept half; its volume shrinks by a fixed factor each step.' },
         { num: '10.12', kind: 'Phenomenon', name: 'Interior-point iteration counts barely grow with size', deps: ['opt-10.6'], refs: ['Boyd–Vandenberghe §11.3'],
           pic: 'Solve random LPs with 10 to 10⁴ constraints; the number of Newton iterations stays between about 20 and 50, while simplex pivot counts grow with size.' },
+        { num: '10.13', kind: 'Paper', name: 'A new polynomial-time algorithm for linear programming',
+          paper: { authors: 'N. Karmarkar', year: 1984, title: 'A new polynomial-time algorithm for linear programming', venue: 'Combinatorica 4 (4): 373–395', doi: '10.1007/BF02579150' },
+          introduces: ['opt-10.9'], deps: ['opt-6.3', 'opt-10.1'], refs: [],
+          pic: 'Karmarkar’s projective step on the simplex: each interior step moves toward lower cost and a projective transformation recentres the current point, so the path cuts through the interior while the simplex method walks the edges; iteration counts of both are plotted as the reader grows the problem.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11

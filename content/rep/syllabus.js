@@ -113,6 +113,10 @@ export default {
           pic: 'A character table is assembled for a chosen group, row by row, with orthogonality checks lighting green; missing rows are deduced from column orthogonality.' },
         { num: '3.15', kind: 'Proposition', name: 'Burnside’s lemma: counting orbits', deps: ['rep-3.6', 'rep-1.2'], refs: ['Serre §2.3'], see: ['comb-10.3'],
           pic: 'Count colourings of a necklace or a cube up to symmetry: the average number of fixed colourings, which is ⟨χ_perm, 1⟩, matches a brute-force orbit count.' },
+        { num: '3.16', kind: 'Paper', name: 'Über Gruppencharaktere',
+          paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://archive.org/details/sitzungsberichte1896deutsch' },
+          introduces: ['rep-3.1', 'rep-3.5', 'rep-3.14'], deps: ['nt-11.1', 'ladr-9.43'], refs: [],
+          pic: 'Dedekind’s group determinant, the question that led Frobenius to characters: for S₃, Q₈ or A₄ the |G| × |G| matrix (x_{gh⁻¹}) factors into irreducible polynomials whose degrees and multiplicities are the character degrees, and the resulting character table is checked for row and column orthogonality as the reader picks the group.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -271,6 +275,10 @@ export default {
           pic: 'Spherical harmonics of degree ℓ on a sphere: rotate the sphere and each is carried into a combination of the 2ℓ + 1 harmonics of the same degree, with the rotation matrix shown.' },
         { num: '8.11', kind: 'Concept', name: 'Spin ½: representations of SU(2) that are not of SO(3)', deps: ['rep-8.7', 'mfd-5.10'], refs: ['Fulton–Harris §11.1'], see: ['qm-7.8'],
           pic: 'The 2-dimensional representation of SU(2) sends −1 to −1, so a rotation by 2π acts on spinors by a sign; following a spinor along a full turn shows the sign flip and its disappearance after 4π.' },
+        { num: '8.12', kind: 'Paper', name: 'Die Vollständigkeit der primitiven Darstellungen…',
+          paper: { authors: 'F. Peter and H. Weyl', year: 1927, title: 'Die Vollständigkeit der primitiven Darstellungen einer geschlossenen kontinuierlichen Gruppe', venue: 'Mathematische Annalen 97: 737–755', doi: '10.1007/BF01447892' },
+          introduces: ['rep-8.6'], deps: ['rep-8.2', 'rep-3.13', 'rep-8.4'], refs: [],
+          pic: 'Fourier analysis on a compact group: the reader picks a function on the sphere (or on SU(2)) and watches its expansion in the matrix coefficients of the irreducible representations — spherical harmonics and Wigner functions — converge in L² as the cut-off j grows, the compact-group version of Fourier series.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9

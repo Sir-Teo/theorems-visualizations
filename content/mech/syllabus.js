@@ -112,7 +112,7 @@ export default {
         { num: '1.19', kind: 'Paper', name: 'Philosophiæ Naturalis Principia Mathematica',
           paper: { authors: 'Isaac Newton', year: 1687, title: 'Philosophiæ Naturalis Principia Mathematica', venue: 'London: Royal Society, printed by Joseph Streater (book, 3 vols. in 1)', url: 'https://archive.org/details/philosophiaenat00newt' },
           introduces: ['mech-1.5', 'mech-1.6', 'mech-1.7', 'mech-1.17', 'mech-8.1'], deps: ['mech-1.8', 'mech-1.3'], refs: [],
-          pic: 'Recreate Newton’s cannon from Book III: fire a ball from a mountaintop with a speed slider and watch falling arcs lengthen into a circular orbit near 7.9 km/s and then ellipses, and check the Moon test — at 60 Earth radii it falls 1/3600 as far per second as the apple, one inverse-square law for both.' },
+          pic: 'Recreate the mountain-top projectile of Definition V: fire a lead ball from a peak with a speed slider and watch falling arcs lengthen into a circular orbit near 7.9 km/s and then ellipses, and check the Moon test — at 60 Earth radii it falls 1/3600 as far per second as the apple, one inverse-square law for both.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2

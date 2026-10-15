@@ -208,7 +208,7 @@ $B$ is negative at low temperature and positive at high temperature. At the **Bo
             s1.fn(u, { color: 'muted', width: 1.6, dash: [5, 4], domain: [0.9, 3] });
           });
           s1.text('u/kT', 2.5, u(2.5), { size: 11, color: 'muted', dy: -10 });
-          s1.text('core: B > 0', 0.64, -1.05, { size: 11, color: 'red', align: 'left' });
+          s1.text('core: B > 0', 0.74, -1.3, { size: 11, color: 'red', align: 'left' });
           s1.text('well: B < 0', 1.35, Math.min(2.7, 0.5 + Math.max(0, f(1.2))), { size: 11, color: 'blue', align: 'left' });
           // middle: B(T)
           const Tlo = Math.max(10, 0.6 * g.eps), Bs = [B2cm3(g, Tlo), B2cm3(g, 3000), ...(BDATA[gs.value] || []).map((q) => q[1])];
@@ -385,7 +385,7 @@ Above $T_c$ no pressure liquefies the substance: there is a single **supercritic
 $$p_r = \frac{p}{p_c}, \qquad V_r = \frac{V_m}{V_c}, \qquad T_r = \frac{T}{T_c},$$
 all gases obey approximately the same equation of state: gases at the same reduced temperature and reduced pressure have the same compression factor $Z$, and the same reduced volume. The van der Waals equation is an example: in reduced variables it becomes $p_r = 8T_r/(3V_r - 1) - 3/V_r^2$, with no reference to $a$ or $b$. The law works well for simple, nearly spherical, nonpolar molecules (Ar, Kr, Xe, CH₄, N₂, O₂), less well for elongated or polar ones (CO₂, NH₃, H₂O) and for the quantum gases He and H₂; a third parameter such as Pitzer's acentric factor $\omega$ restores much of the agreement.`,
       idea: String.raw`If every molecule interacts through the same law with only an energy scale $\varepsilon$ and a length scale $\sigma$ — as for a Lennard-Jones potential — then measuring temperature in units of $\varepsilon/k$, pressure in units of $\varepsilon/\sigma^3$ and volume in units of $\sigma^3$ removes every trace of the particular gas from the classical statistical mechanics. The critical point is one point of the universal equation, so $T_c$, $p_c$, $V_c$ are proportional to those scales and dividing by them does the same job (1.15). Molecules whose interactions are not of one shape — dipoles, hydrogen bonds, rod-like shapes, or quantum zero-point motion — break the scaling.`,
-      caption: String.raw`$Z$ against pressure on a log scale for nine gases, each at the same reduced temperature $T_r$ (so at very different absolute temperatures), computed from the Peng–Robinson equation with each gas's measured $T_c$, $p_c$ and acentric factor. Slide **rescale** from 0 to 1: every curve slides along the axis by its own $\log p_c$ and the simple gases collapse onto one curve, which the van der Waals universal curve (dashed) follows at moderate pressure but not beyond. Water, ammonia and CO₂ stay apart, and helium and hydrogen deviate the other way. Right: the measured critical compression factors, a direct test with data.`,
+      caption: String.raw`$Z$ against pressure on a log scale for nine gases, each at the same reduced temperature $T_r$ (so at very different absolute temperatures), computed from the Peng–Robinson equation with each gas's measured $T_c$, $p_c$ and acentric factor. Slide **rescale** from 0 to 1: every curve slides along the axis by its own $\log p_c$ and the simple gases collapse onto one curve, which the van der Waals universal curve (dashed) follows at moderate pressure but not beyond. Water, ammonia and CO₂ (elongated or polar, larger $\omega$) stay apart, and so do the quantum gases helium and hydrogen. Right: the measured critical compression factors, a direct test with data.`,
       deps: ['pchem-1.15'],
       see: ['thermo-4.2'],
       refs: ['Atkins 1C', 'M–S ch. 16'],
@@ -414,8 +414,8 @@ all gases obey approximately the same equation of state: gases at the same reduc
             const pts = pr.map((q) => [Math.log10(q) + sh, zStable(g, TT, q * g.pc, 'pr').Z]);
             s.path(pts, { color: g.col, width: SIMPLE.includes(nm) ? 2.4 : 1.8, alpha: SIMPLE.includes(nm) ? 1 : 0.9, dash: nm === 'He' || nm === 'H2' ? [5, 3] : null });
             at2[nm] = zStable(g, TT, 2 * g.pc, 'pr').Z;
-            const end = pts[pts.length - 1];
-            if (L < 0.9) s.text(g.name, end[0], end[1], { size: 10.5, color: g.col, dx: -4, dy: -8, align: 'right' });
+            const low = pts.reduce((m2, q) => (q[1] < m2[1] ? q : m2), pts[0]);
+            if (L < 0.9) s.text(g.name, low[0], low[1], { size: 10.5, color: g.col, dy: 12, align: 'center', weight: 600 });
           }
           if (L > 0.9) {
             const zv = (q) => { const roots = cubicRoots(-(q + 8 * T) / (3 * q), 3 / q, -1 / q).filter((x) => x > 1 / 3); const V = roots[roots.length - 1]; return q * V / (8 * T / 3); };
@@ -429,7 +429,7 @@ all gases obey approximately the same equation of state: gases at the same reduc
           sz.line(0, 0.375, 9, 0.375, { color: 'ink', width: 1.2, dash: [5, 4] }); sz.text('van der Waals 3/8', 8.9, 0.375, { size: 10, color: 'ink', align: 'right', dy: -8 });
           zs.forEach(([nm, z], k) => { const g = GAS[nm]; sz.rect(k + 0.15, 0, k + 0.85, z, { fill: g.col, fillAlpha: 0.7, stroke: false }); sz.text(g.name, k + 0.5, 0.012, { size: 10, color: 'panel', align: 'center', halo: false, weight: 600 }); sz.text(v.fix(z, 3), k + 0.5, z, { size: 9.5, color: 'ink', align: 'center', dy: -7 }); });
         });
-        v.legend(ORDER.slice(0, 7).map((nm) => [GAS[nm].col, GAS[nm].name]).concat([['teal', 'He, H₂ (quantum)', { dash: true }], ['ink', 'van der Waals', { dash: true }]]));
+        v.legend(ORDER.slice(0, 7).map((nm) => [GAS[nm].col, GAS[nm].name]).concat([['teal', 'He', { dash: true }], ['pink', 'H₂', { dash: true }], ['ink', 'van der Waals (reduced view)', { dash: true }]]));
         v.readout(() => {
           if (!st) return '';
           const z = st.at2, simple = SIMPLE.map((n) => z[n]), spread = Math.max(...simple) - Math.min(...simple);

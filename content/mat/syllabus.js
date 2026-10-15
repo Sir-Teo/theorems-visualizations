@@ -169,10 +169,7 @@ export default {
           pic: 'Plot steady creep rate against stress on log axes for several temperatures: lines of slope n shifted by an Arrhenius factor, collapsed onto one master curve by the Larson–Miller parameter.' },
         { num: '5.12', kind: 'Method', name: 'Deformation-mechanism maps', deps: ['mat-5.11', 'mat-3.5'], refs: ['Callister §8.13'],
           pic: 'Drag a point over a stress–homologous-temperature map for nickel: regions of dislocation glide, power-law creep and diffusional creep are coloured with contours of strain rate, and grain size moves the boundaries.' },
-        { num: '5.13', kind: 'Paper', name: 'The Phenomena of Rupture and Flow in Solids',
-          paper: { authors: 'A. A. Griffith', year: 1921, title: 'The Phenomena of Rupture and Flow in Solids', venue: 'Philosophical Transactions of the Royal Society of London A 221: 163–198', doi: '10.1098/rsta.1921.0006' },
-          introduces: ['mat-5.3'], deps: ['mat-5.2', 'mat-3.1'], refs: [],
-          pic: 'Scratch a crack of chosen length into a glass plate and load it: the elastic energy released is set against the energy of the new surfaces, so the breaking stress falls as 1/√a, and the reader compares cracked tubes with the thin, nearly flawless glass fibres whose strength approached the theoretical value.' },
+        { num: '5.13', alias: 'solid-11.12', name: 'The Phenomena of Rupture and Flow in Solids' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -297,10 +294,7 @@ export default {
           pic: 'Cool a metal through its critical temperature: resistance drops to exactly zero and magnetic field lines are expelled from the interior, levitating a magnet above it, until a critical field restores normal conduction.' },
         { num: '9.14', kind: 'Phenomenon', name: 'Ferroelectricity in perovskites', deps: ['xtal-3.12', 'xtal-1.9'], refs: ['Callister §18.24'],
           pic: 'Displace the titanium ion in a BaTiO₃ cell: a double-well energy gives two polarization states, cycling the field traces a polarization hysteresis loop, and heating above the Curie point restores the cubic cell.' },
-        { num: '9.15', kind: 'Paper', name: 'The Transistor, A Semi-Conductor Triode',
-          paper: { authors: 'J. Bardeen and W. H. Brattain', year: 1948, title: 'The Transistor, A Semi-Conductor Triode', venue: 'Physical Review 74 (2): 230–231', doi: '10.1103/PhysRev.74.230' },
-          introduces: ['mat-9.9'], deps: ['mat-9.5', 'cm-4.7'], refs: [],
-          pic: 'Press two closely spaced point contacts onto n-type germanium: a small forward current into the emitter changes the collector current, and the reader measures the voltage and power gain of the point-contact triode against the characteristic curves the letter reported.' },
+        { num: '9.15', alias: 'circ-4.14', name: 'The Transistor, A Semi-Conductor Triode' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10

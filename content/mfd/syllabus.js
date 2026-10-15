@@ -287,6 +287,10 @@ export default {
           pic: 'An inner product at the identity of SU(2) is spread by left translation; if it is also Ad-invariant the result is the round metric on S³, otherwise a squashed Berger sphere.' },
         { num: '8.12', kind: 'Theorem', name: 'Nash embedding theorem', deps: ['mfd-8.6'], refs: ['Lee SM Ch. 13'],
           pic: 'Every Riemannian manifold sits isometrically in some Euclidean space; the C¹ corrugation scheme for the flat torus is animated, adding wrinkles at finer and finer scales while lengths converge to the flat ones.' },
+        { num: '8.13', kind: 'Paper', name: 'Ueber die Hypothesen, welche der Geometrie zu Grunde liegen',
+          paper: { authors: 'Bernhard Riemann', year: 1867, title: 'Ueber die Hypothesen, welche der Geometrie zu Grunde liegen', venue: 'Abhandlungen der Königlichen Gesellschaft der Wissenschaften zu Göttingen 13 (Habilitation lecture of 10 June 1854, published by Dedekind)', url: 'https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Geom/' },
+          introduces: ['mfd-8.1', 'mfd-8.5', 'mfd-10.5'], deps: ['dg-8.3', 'dg-5.1'], refs: [],
+          pic: 'Riemann’s constant-curvature metric ds = √(Σdx²) / (1 + (α/4)Σx²) as a live geometry on the plane: the reader slides α from positive (sphere) through zero (flat) to negative (hyperbolic) and watches unit circles, geodesics and the angle sums of triangles change, with the curvature read off from the circumference of small geodesic circles.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -317,6 +321,10 @@ export default {
           pic: 'On complete examples every geodesic runs forever and any two points are joined by a minimizing geodesic; remove a point and both properties fail together, as the tool demonstrates.' },
         { num: '9.11', kind: 'Definition', name: 'Cut points and injectivity radius', deps: ['mfd-9.7'], refs: ['Lee RM Ch. 10'],
           pic: 'Fan geodesics from a point on a torus or an ellipsoid; where they stop minimizing, a cut locus tree is traced, and the injectivity radius is the distance to its nearest point.' },
+        { num: '9.12', kind: 'Paper', name: 'Nozione di parallelismo in una varietà qualunque',
+          paper: { authors: 'T. Levi-Civita', year: 1916, title: 'Nozione di parallelismo in una varietà qualunque e conseguente specificazione geometrica della curvatura riemanniana', venue: 'Rendiconti del Circolo Matematico di Palermo 42: 173–204', doi: '10.1007/BF03014898' },
+          introduces: ['mfd-9.2', 'mfd-10.2', 'dg-8.10'], deps: ['mfd-9.4', 'mfd-10.1'], refs: [],
+          pic: 'Levi-Civita’s construction: carry a tangent vector along a curve by moving it parallel in the ambient Euclidean space and projecting back onto each tangent plane; the reader draws loops on a sphere, a torus or a saddle and watches the vector come home rotated by the enclosed curvature — the geometric meaning of Riemann curvature the title promises.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -385,6 +393,10 @@ export default {
           pic: 'Pinching ratios of sectional curvature are computed for spheres, projective spaces and products; complete simply connected manifolds with pinching above 1/4 are diffeomorphic to spheres, and ℂP² sits exactly at 1/4.' },
         { num: '11.15', kind: 'Theorem', name: 'Ricci flow and the geometrization of 3-manifolds', deps: ['mfd-10.6'], refs: ['Lee RM Ch. 12'],
           pic: 'Ricci flow on rotationally symmetric metrics: a 2-sphere becomes round, while a 3-dimensional dumbbell develops a neck pinch, simulated from the profile equation.' },
+        { num: '11.16', kind: 'Paper', name: 'The entropy formula for the Ricci flow',
+          paper: { authors: 'Grisha Perelman', year: 2002, title: 'The entropy formula for the Ricci flow and its geometric applications', venue: 'arXiv preprint math/0211159', url: 'https://arxiv.org/abs/math/0211159' },
+          introduces: ['mfd-11.15'], deps: ['mfd-10.6', 'mfd-11.14', 'top-8.7'], refs: [],
+          pic: 'Ricci flow ∂g/∂t = −2 Ric on a rotationally symmetric sphere the reader sculpts into a dumbbell: bumps smooth out, the neck pinches, and Perelman’s 𝒲-entropy is plotted alongside, never decreasing; surgery (sketched here, carried out in the 2003 sequels) cuts the neck and the pieces round off into spheres.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12

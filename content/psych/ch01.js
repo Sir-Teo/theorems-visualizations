@@ -486,7 +486,7 @@ The standard error of the threshold shrinks like $1/\sqrt{N}$ in the total numbe
           }
           const resp = last.u < psi(M, OB, L[last.i]);
           pl.text(resp ? 'yes' : 'no', L[last.i], 1.04, { align: 'center', color: 'gold', weight: 700, size: 12 });
-          pl.corner(`N = ${N} trials, ${Math.floor(N / 7)}–${Math.ceil(N / 7)} per level`, 'tl', { color: 'ink', weight: 600 });
+          pl.textPx(`N = ${N} trials, ${N % 7 ? `${Math.floor(N / 7)}–${Math.ceil(N / 7)}` : N / 7} per level`, 46, 17, { color: 'ink', weight: 600, size: 12 });
           // ---- right: SE against N
           const key = L.map((x) => x.toFixed(3)).join() + '|' + seed;
           if (key !== seKey) {

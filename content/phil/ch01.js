@@ -409,7 +409,7 @@ Both fallacies have the same counterexample, the situation where $P$ is false an
         const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1.4 });
         const R = v.stage({ x: [-0.17, 1.05], y: [-0.2, 1.12], axes: false, height: 350, weight: 1 });
         const REG = [[0.01, 0.52, 0.49, 0.9], [0.51, 0.52, 0.99, 0.9], [0.01, 0.03, 0.49, 0.41], [0.51, 0.03, 0.99, 0.41]];
-        const TT = FORMS4.map((f, k) => v.table(L, { rows: 4, cols: 3, square: false, cellAspect: 2.35, maxCell: 23, size: 13, region: REG[k], cornerLabel: 'P Q',
+        const TT = FORMS4.map((f, k) => v.table(L, { rows: 4, cols: 3, square: false, cellAspect: 2.35, maxCell: 23, size: 13, labelSize: 11.5, region: REG[k], cornerLabel: 'P Q',
           rowLabels: ['T T', 'T F', 'F T', 'F F'], colLabels: ['$P\\to Q$', `$${f.p2[0]}$`, `$\\therefore ${f.c[0]}$`] }));
         let world = 2; // P false, Q true
         L.onClick((x, y) => { TT.forEach((T) => { const c = T.hit(x, y); if (c && c.i >= 0) world = c.i; }); });
@@ -479,7 +479,7 @@ When the same logical structure is about a familiar social rule, such as “if s
       idea: String.raw`A conditional $p\to q$ is false only when $p$ is true and $q$ false (1.3). So a card matters only if what is hidden could complete that combination: a vowel card might hide an odd number, and an odd card might hide a vowel. Turning the 4 cannot refute the rule, since a consonant behind it is allowed, so choosing it looks like seeking confirmation. Several explanations compete. Cosmides argued that people have a specialised ability to detect cheaters on social contracts. Cheng and Holyoak proposed learned schemas for permission and obligation. Oaksford and Chater reread the abstract task as choosing data to decide whether the rule is true at all: when vowels and even numbers are rare, turning the 4 is expected to be more informative than turning the 7, which reproduces the popular choice order. On that reading the typical answer is not simply an error, and whether it is remains debated.`,
       caption: String.raw`Click cards to select the ones you would turn, then press **Check my choice**: each card shows whether anything on its hidden side could falsify the rule, and your choices are marked needed, wasted or missed. The left chart shows roughly how often people pick each combination. The right chart computes Oaksford and Chater’s expected information gain for each card. Raise $\Pr(p)$ and $\Pr(q)$ (the rule’s terms become common) and the 7 overtakes the 4. Switch to the drinking-age rule to see the content effect.`,
       deps: ['phil-1.3'],
-      refs: ['SEP “Fallacies”', 'Wason 1966, 1968', 'Griggs & Cox 1982', 'Oaksford & Chater 1994'],
+      refs: ['SEP “Fallacies”', 'Wason 1968', 'Johnson-Laird & Wason 1970', 'Griggs & Cox 1982', 'Oaksford & Chater 1994'],
       credit: 'Peter Wason, 1966',
       tags: ['reasoning', 'psychology'],
       viz(v) {
@@ -581,7 +581,7 @@ When the same logical structure is about a familiar social rule, such as “if s
 
 To weigh a map one needs a model of how strengths combine. A simple probabilistic model: linked premises multiply their probabilities, an inference passes on a fixed fraction of its reason’s probability (its **inductive strength**), independent lines combine as $1-\prod(1-s_i)$, and an accepted objection defeats its target with its own probability.`,
       idea: String.raw`The structure decides how robust a conclusion is. A linked argument is only as strong as the product of its premises, so one doubtful premise ruins it. Convergent reasons back each other up, and losing one line costs little when others remain. Removing each basic premise in turn and recomputing the conclusion’s probability is a sensitivity analysis: the premise whose loss costs most is the critical link, and if its loss leaves nothing at all, the argument has a single point of failure. Objections and rebuttals form chains, and an answered objection loses most of its force. The numbers depend on the model chosen. Independence, noisy-OR combination and multiplicative defeat are simplifications, and the quantitative theory of argument strength (Bayesian, abstract argumentation semantics, and others) is an open research area. The structural lessons do not depend on these choices.`,
-      caption: String.raw`The map reconstructs the *Crito*, where Socrates argues against escaping from prison. Click a basic premise to cycle its credence (0.1 → 0.95; shift-click goes down). Click an arrow to switch it between **support** (green, labelled with its inductive strength), **attack** (red) and **off**. Drag boxes to rearrange. The bars show each claim’s computed probability, and the gold ring marks the premise whose failure would hurt the conclusion most. Switch off the “harm to the city” line and the conclusion hangs on a single link.`,
+      caption: String.raw`The map reconstructs the *Crito*, where Socrates argues against escaping from prison. Click a basic premise to cycle its credence (0.1 → 0.95; shift-click goes down). Click an arrow to switch it between **support** (green, labelled with its inductive strength), **attack** (red) and **off**. Drag boxes to rearrange. The bars show each claim’s computed probability, and the gold ring marks the premise whose failure would hurt the conclusion most. The scenarios switch arrows for you: drop the city argument and the conclusion hangs on a single link.`,
       deps: ['phil-1.1'],
       refs: ['SEP “Fallacies”', 'Plato, Crito'],
       tags: ['arguments', 'reasoning'],
@@ -721,7 +721,7 @@ The moral usually drawn is that a **rule of inference** cannot be replaced by a 
             const yd = yz - 0.85;
             Ls.text('derivation by rules (the C’s are never used):', 0.3, yd, { size: 11.5, weight: 600, color: 'green' });
             Ls.text('1.', 0.45, yd - 0.62, { size: 12, color: 'muted' });
-            Ls.tex('(x{=}z \wedge y{=}z)\to x{=}y', 1.0, yd - 0.62, { align: 'left', size: 14 });
+            Ls.tex('(x{=}z \\wedge y{=}z)\\to x{=}y', 1.0, yd - 0.62, { align: 'left', size: 14 });
             Ls.text('from A, by instantiation', 9.8, yd - 0.62, { align: 'right', size: 11.5, color: 'muted' });
             Ls.text('2.', 0.45, yd - 1.24, { size: 12, color: 'muted' });
             Ls.tex('Z', 1.0, yd - 1.24, { align: 'left', size: 14, color: 'green' });

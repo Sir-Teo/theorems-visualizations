@@ -1,6 +1,6 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
-import { buildIndex, runSearch, highlight } from './search.js';
+import { buildIndex, runSearch, highlight, norm } from './search.js';
 import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
@@ -751,23 +751,59 @@ async function pageSearch(params) {
 async function pagePapers(params) {
   await ensurePlanned().catch(() => {});
   setTitle('Landmark papers'); setNav('papers'); curCol = null;
-  const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper').sort((a, b) => (a.yr ?? 9999) - (b.yr ?? 9999));
+  const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper').sort((a, b) => (a.yr ?? 9999) - (b.yr ?? 9999) || a.name.localeCompare(b.name));
   const fieldOf = (it) => G.colById.get(it.col)?.field;
-  const fsel = params.get('field');
-  const byField = G.fields.map((F) => ({ F, ps: papers.filter((p) => fieldOf(p) === F.id) })).filter((x) => x.ps.length);
+  const introNames = (p) => (p.intro || []).map((id) => G.byId.get(G.alias?.get(id) || id)).filter(Boolean);
+  // one normalized haystack per paper: title, authors, year, collection and the ideas it introduced
+  const hay = new Map(papers.map((p) => [p.id, norm([p.name, p.au, p.yr, G.colById.get(p.col)?.short, G.colById.get(p.col)?.title, ...introNames(p).map((x) => x.name)].join(' '))]));
+  const state = { field: params.get('field') || '', q: params.get('q') || '', by: params.get('by') === 'era' ? 'era' : 'field' };
+  const byField = G.fields.map((F) => ({ F, n: papers.filter((p) => fieldOf(p) === F.id).length })).filter((x) => x.n);
+  const ERAS = [[-1e9, 1600, 'Before 1600'], [1600, 1800, '1600–1799'], [1800, 1900, 'The nineteenth century'], [1900, 1945, '1900–1944'], [1945, 1970, '1945–1969'], [1970, 2000, '1970–1999'], [2000, 1e9, 'Since 2000']];
   const el = h(`<div class="wrap">
     <div class="page-head"><h1>Landmark papers</h1>
       <p class="sub">The papers that changed their fields, each linked to the ideas it first put forward and, as they are written, with an interactive recreation of its central result.</p>
-      <div class="stats-row"><span><b>${papers.length}</b> papers</span><span><b>${papers.filter((p) => !p.planned).length}</b> written</span><span><b>${byField.length}</b> fields</span><a class="btn" href="#/search?q=${encodeURIComponent('is:paper')}">Search papers</a></div>
-      <div class="chip-list field-chips"><a class="chip${fsel ? '' : ' on'}" href="#/papers">All</a>${byField.map(({ F, ps }) => `<a class="chip${fsel === F.id ? ' on' : ''}" href="#/papers?field=${F.id}" data-field="${F.id}"><span class="col-dot" style="--bc:var(--f-${F.id})"></span>${escapeHTML(F.short)} <span class="count">${ps.length}</span></a>`).join('')}</div>
+      <div class="stats-row"><span><b>${papers.length}</b> papers</span><span><b>${papers.filter((p) => !p.planned).length}</b> written</span><span><b>${byField.length}</b> fields</span></div>
+      <div class="chip-list field-chips"><button class="chip" data-field="">All</button>${byField.map(({ F, n }) => `<button class="chip" data-field="${F.id}"><span class="col-dot" style="--bc:var(--f-${F.id})"></span>${escapeHTML(F.short)} <span class="count">${n}</span></button>`).join('')}</div>
+      <div class="papers-tools">
+        <label class="papers-q"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" placeholder="Filter by title, author, year or idea…" aria-label="Filter papers" value="${escapeHTML(state.q)}"></label>
+        <div class="seg" role="group" aria-label="Group papers"><button data-by="field">By field</button><button data-by="era">By era</button></div>
+        <span class="papers-count muted"></span>
+      </div>
     </div>
     ${papers.length ? `<div class="card papers-timeline" id="ptl"></div>` : '<div class="card empty-shelf"><p>The landmark papers are being researched and will appear here shortly.</p></div>'}
-    ${byField.filter(({ F }) => !fsel || F.id === fsel).map(({ F, ps }) => `<div class="section-title" data-field="${F.id}"><h2 style="color:var(--fc)">${escapeHTML(F.title)}</h2><span class="muted">${ps.length} paper${ps.length === 1 ? '' : 's'}</span></div>
-      <div class="papers-list">${ps.map((p) => `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${inlineHTML(p.name)}</div><div class="au">${escapeHTML(p.au || '')} · ${escapeHTML(G.colById.get(p.col).short)}</div></span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`).join('')}</div>`).join('')}
+    <div class="papers-groups"></div>
   </div>`);
   app.replaceChildren(el);
+  const groupsEl = el.querySelector('.papers-groups'), countEl = el.querySelector('.papers-count'), input = el.querySelector('.papers-q input');
   const host = el.querySelector('#ptl');
-  if (host) { const view = new TimelineView(host, G, { items: fsel ? papers.filter((p) => fieldOf(p) === fsel) : papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) }); cleanup = () => view.destroy(); }
+  let view = null;
+  if (host) { view = new TimelineView(host, G, { items: papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) }); cleanup = () => view.destroy(); }
+  const row = (p, Q) => {
+    const C = G.colById.get(p.col), ideas = introNames(p);
+    const intro = ideas.length ? `<div class="pi">introduced ${ideas.slice(0, 3).map((x) => `<span>${highlight(inlineHTML(x.name), Q)}</span>`).join(', ')}${ideas.length > 3 ? ` and ${ideas.length - 3} more` : ''}</div>` : '';
+    return `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${highlight(inlineHTML(p.name), Q)}</div><div class="au">${highlight(escapeHTML(p.au || ''), Q)} · ${escapeHTML(C.short)}</div>${intro}</span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`;
+  };
+  const render = () => {
+    const words = norm(state.q).split(/\s+/).filter(Boolean);
+    const Q = { words, phrases: [] };
+    const shown = papers.filter((p) => (!state.field || fieldOf(p) === state.field) && words.every((w) => hay.get(p.id).includes(w)));
+    let groups;
+    if (state.by === 'era') groups = ERAS.map(([a, b, t]) => ({ title: t, color: 'var(--ink)', ps: shown.filter((p) => (p.yr ?? 9999) >= a && (p.yr ?? 9999) < b) }));
+    else groups = G.fields.map((F) => ({ title: F.title, color: `var(--f-${F.id})`, ps: shown.filter((p) => fieldOf(p) === F.id) }));
+    groups = groups.filter((g) => g.ps.length);
+    groupsEl.innerHTML = groups.length ? groups.map((g) => `<div class="section-title"><h2 style="color:${g.color}">${escapeHTML(g.title)}</h2><span class="muted">${g.ps.length} paper${g.ps.length === 1 ? '' : 's'}</span></div><div class="papers-list">${g.ps.map((p) => row(p, Q)).join('')}</div>`).join('')
+      : `<div class="card empty-shelf"><p>No paper matches “${escapeHTML(state.q)}”. <a href="#/search?q=${encodeURIComponent(state.q)}">Search all ideas instead</a>.</p></div>`;
+    countEl.textContent = shown.length === papers.length ? '' : `${shown.length} of ${papers.length}`;
+    for (const b of el.querySelectorAll('.field-chips .chip')) b.classList.toggle('on', b.dataset.field === state.field);
+    for (const b of el.querySelectorAll('.seg button')) b.classList.toggle('on', b.dataset.by === state.by);
+    view?.setHighlight(state.field || words.length ? new Set(shown.map((p) => p.id)) : null);
+    const qs = new URLSearchParams(); if (state.field) qs.set('field', state.field); if (state.q) qs.set('q', state.q); if (state.by === 'era') qs.set('by', 'era');
+    history.replaceState(null, '', '#/papers' + (qs.toString() ? '?' + qs : ''));
+  };
+  el.querySelector('.field-chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; state.field = b.dataset.field; render(); });
+  el.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state.by = b.dataset.by; render(); });
+  let t = 0; input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { state.q = input.value; render(); }, 120); });
+  render();
 }
 
 // ------------------------------------------------------------ theme

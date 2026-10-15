@@ -40,7 +40,7 @@ export default {
 - remove a ball chosen uniformly at random: with probability 1 every ball is eventually removed, and the urn is **empty** (Ross 1976).
 
 So the count at noon is not the limit of the counts. Whether the set-theoretic answer correctly describes the urn at noon is itself disputed: some hold that the story does not determine the state at noon at all, as with Thomson’s lamp.`,
-      idea: String.raw`Ask, for each ball, *when* it leaves. If ball $b$ is removed at a finite stage, it is absent from the urn at noon. If it is never removed, it is present. With the first rule ball $b$ leaves at stage $b$, so the set of balls left at noon is the limit of the sets of balls in the urn, which is empty, even though the sizes of those sets tend to infinity. Cardinality is not continuous under such limits, and countable sets (pma 2.4) can be emptied one element at a time. In the random version ball $b$ survives stage $j$ with probability $1-\tfrac{1}{9j+1}$, and the product of these factors tends to $0$, because $\sum \tfrac1{9j+1}$ diverges. It does so very slowly, like $n^{-1/9}$, so most early balls are still present after millions of stages. Countable additivity then makes “every ball eventually removed” an event of probability 1. Critics (e.g. van Bendegem; Allis and Koetsier defend the set-theoretic answer) dispute whether the limit of the sets is the state of the urn at noon, or whether a supertask fixes any noon state at all (2.5).`,
+      idea: String.raw`Ask, for each ball, *when* it leaves. If ball $b$ is removed at a finite stage, it is absent from the urn at noon. If it is never removed, it is present. With the first rule ball $b$ leaves at stage $b$, so the set of balls left at noon is the limit of the sets of balls in the urn, which is empty, even though the sizes of those sets tend to infinity. Cardinality is not continuous under such limits, and countable sets (pma 2.4) can be emptied one element at a time. In the random version ball $b$ survives stage $j$ with probability $1-\tfrac{1}{9j+1}$, and the product of these factors tends to $0$, because $\sum \tfrac1{9j+1}$ diverges. It does so very slowly, like $n^{-1/9}$, so most early balls are still present after millions of stages. Countable additivity then makes “every ball eventually removed” an event of probability 1. Allis and Koetsier defend the set-theoretic answer. Others dispute that the limit of the sets is the state of the urn at noon, or that a supertask fixes any noon state at all (compare Thomson’s lamp, 2.5).`,
       caption: String.raw`Choose a removal rule and step through the stages. In the grid each row is one stage’s ten balls: blue balls are in the urn, crossed-out balls have been removed, and the gold ring marks the ball taken out at the current stage. Under every rule the urn holds $9m$ balls after stage $m$. The right panel answers the real question: when does each ball leave? Under the first rule every ball has a finite removal stage, under the second most balls never leave, and in the random version the survival probability of every ball decays to 0, slowly.`,
       deps: ['phil-2.5', 'pma-2.4'],
       refs: ['SEP “Supertasks”', 'Littlewood 1953', 'Ross 1976'],
@@ -49,8 +49,8 @@ So the count at noon is not the limit of the counts. Whether the set-theoretic a
       viz(v) {
         const strat = v.select('removal rule', [{ value: 'low', label: 'remove ball $n$ at stage $n$' }, { value: 'ten', label: 'remove ball $10n$' }, { value: 'rnd', label: 'remove a random ball' }], 'low');
         const mS = v.slider('stage $m$', 0, 10, 6, { int: true });
-        const G = v.stage({ x: [-1.9, 10.4], y: [0.3, 11.3], axes: false, height: 370, weight: 1.05 });
-        const R = v.stage({ x: [-8, 104], y: [-9, 112], axes: 'box', height: 370, weight: 1 });
+        const G = v.stage({ x: [-1.9, 10.4], y: [-0.28, 11.3], axes: false, height: 390, weight: 1.05 });
+        const R = v.stage({ x: [-8, 104], y: [-9, 116], axes: 'box', height: 390, weight: 1 });
         // one seeded random run: removal stage of every ball that ever enters (up to 400 stages)
         const SIM = 400, remRnd = new Map(), alive = [];
         { const r = v.rng(7); const urn = []; for (let s = 1; s <= SIM; s++) { for (let b = 10 * s - 9; b <= 10 * s; b++) urn.push(b); const i = r.int(0, urn.length - 1); remRnd.set(urn[i], s); urn.splice(i, 1); alive.push(urn.filter((b) => b <= 100).length); } }
@@ -80,15 +80,15 @@ So the count at noon is not the limit of the counts. Whether the set-theoretic a
           G.text(`after stage ${m}: ${10 * m} in, ${m} out, ${inUrn} in the urn`, 4.95, 10.9, { align: 'center', size: 12.5, weight: 700, color: 'ink' });
           // ---- right panel
           if (k !== 'rnd') {
-            R.setView([-8, 104], [-9, 112]); R.setTicks([0, 20, 40, 60, 80, 100], [0, 20, 40, 60, 80, 100]);
+            R.setView([-8, 104], [-9, 116]); R.setTicks([0, 20, 40, 60, 80, 100], [0, 20, 40, 60, 80, 100]);
             R.setTitle('stage at which ball $b$ is removed');
             R.hband(0, m, { color: 'red', alpha: 0.07 });
             for (let b = 1; b <= 100; b++) {
               const rs = remStage(b, k);
               if (isFinite(rs)) R.dot(b, rs, { r: 3, color: rs <= m ? 'red' : 'blue' });
-              else R.line(b, 101, b, 108, { color: 'blue', width: 1.6, alpha: 0.8 });
+              else R.line(b, 101, b, 105, { color: 'blue', width: 1.6, alpha: 0.8 });
             }
-            R.text(k === 'low' ? 'ball b leaves at stage b: every removal stage is finite' : 'never removed (∞): every ball not divisible by 10', k === 'low' ? 2 : 50, k === 'low' ? 95 : 104.5, { align: k === 'low' ? 'left' : 'center', size: 11, weight: 600, color: k === 'low' ? 'red' : 'blue' });
+            R.text(k === 'low' ? 'ball b leaves at stage b: every removal stage is finite' : 'never removed (∞): every ball not divisible by 10', k === 'low' ? 2 : 50, k === 'low' ? 95 : 110, { align: k === 'low' ? 'left' : 'center', size: 11, weight: 600, color: k === 'low' ? 'red' : 'blue' });
             R.text(`removed by stage ${m}`, 60, m + 4, { size: 10.5, color: 'red' });
           } else {
             R.setView([-0.7, 12.4], [-0.09, 1.12]); R.setTicks([[0, '1'], [2, '100'], [4, '10⁴'], [6, '10⁶'], [8, '10⁸'], [10, '10¹⁰'], [12, '10¹²']], [0, 0.25, 0.5, 0.75, 1]);
@@ -179,7 +179,7 @@ With finitely many reapers there is no puzzle: the earliest one strikes. With in
             S.text('∞ more', -11.25, 1.98, { align: 'center', size: 11, weight: 700, color: 'ink' });
             S.text('✗', -11.25, -0.62, { align: 'center', size: 15, weight: 700, color: 'red' });
             S.text(tailAll ? 'all should hold back' : 'all should strike', -11.25, -1.0, { align: 'center', size: 8.5, color: 'red' });
-          } else S.text('midnight side: no more reapers', -11.0, 1.1, { align: 'center', size: 10.5, color: 'muted' });
+          } else { S.text('no reapers', -11.35, 1.25, { align: 'center', size: 10.5, color: 'muted' }); S.text('earlier', -11.35, 0.98, { align: 'center', size: 10.5, color: 'muted' }); }
           S.text('← toward midnight          (minutes and seconds after midnight)          strike times →', -5.5, 2.35, { align: 'center', size: 10.5, color: 'muted' });
           st = { c, good, goodSet, finite, strikers, tailAll };
         });
@@ -351,7 +351,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           S3.text('y = 1/x' + (Math.abs(p - 1) < 0.005 ? '' : `^${v.fix(p, 2)}`) + ' rotated', [-4.2, 0, 1.6], { size: 11.5, color: 'muted' });
           // ---- running volume and area
           const Vinf = p > 0.5 ? Math.PI / (2 * p - 1) : Infinity;
-          if (isFinite(Vinf) && Vinf < 1e5) { G.hline(Vinf, { color: 'blue', dash: [6, 4], width: 1.3 }); G.text(`volume limit π/(2p−1) = ${v.fix(Vinf, 3)}`, 40, Vinf, { dy: -9, size: 11, weight: 600, color: 'blue' }); }
+          if (isFinite(Vinf) && Vinf < 1e5) { G.hline(Vinf, { color: 'blue', dash: [6, 4], width: 1.3 }); G.text(`volume limit π/(2p−1) = ${v.fix(Vinf, 3)}`, 2.5e4, Vinf, { dy: -9, size: 11, weight: 600, color: 'blue' }); }
           G.fn((x) => vol(p, x), { color: 'blue', width: 2.6 });
           G.fn((x) => areaAt(x), { color: 'orange', width: 2.6 });
           if (Math.abs(p - 1) < 0.005) G.fn((x) => 2 * Math.PI * Math.log(x), { color: 'orange', width: 1.2, dash: [3, 4], alpha: 0.7 });
@@ -377,7 +377,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
       statement: String.raw`**Zeno:** a line segment can be divided into infinitely many parts. If the ultimate parts have no size, the segment, being the sum of them, has no size either; if they all have some positive size, the segment is infinitely large. Either way the segment’s length is absurd.
 
 **The modern answer** has three ingredients. (a) Length (Lebesgue measure) is **countably** additive: the length of a countable union of disjoint sets is the sum of their lengths. (b) A point has length $0$, so every **countable** set has length $0$. Indeed, it can be covered by intervals of lengths $\varepsilon/2, \varepsilon/4, \dots$, total at most $\varepsilon$. (c) The segment $[0,1]$ is **uncountable** (Cantor), so it is not a countable union of points, and additivity says nothing about an uncountable “sum” of zeros. Its length is $1$. The second horn also fails: a sum of uncountably many positive sizes is indeed infinite, but the points do not have positive size.`,
-      idea: String.raw`The covering argument shows directly that any listed set $q_1, q_2, \dots$ has outer measure at most $\sum_k \varepsilon 2^{-k} = \varepsilon$ for every $\varepsilon>0$, which is why the rationals, dense as they are, have length 0 (rca 2.20). If $[0,1]$ could be listed the same way, its length would be 0 instead of 1, so it cannot be listed. Cantor’s diagonal argument (pma 2.14, pma 2.43a) shows this constructively: from any list of decimals it builds a number whose $k$-th digit differs from the $k$-th digit of the $k$-th entry, so the number differs from every entry. Zeno’s argument fails because it assumes that additivity extends to arbitrary collections of parts. It holds for countable collections only. Some philosophers (Grünbaum; more recently Skyrms, and Pruss on non-measurable sets) have asked whether this is a solution or just a careful restriction that leaves the intuition unexplained.`,
+      idea: String.raw`The covering argument shows directly that any listed set $q_1, q_2, \dots$ has outer measure at most $\sum_k \varepsilon 2^{-k} = \varepsilon$ for every $\varepsilon>0$, which is why the rationals, dense as they are, have length 0 (rca 2.20). If $[0,1]$ could be listed the same way, its length would be 0 instead of 1, so it cannot be listed. Cantor’s diagonal argument (pma 2.14, pma 2.43a) shows this constructively: from any list of decimals it builds a number whose $k$-th digit differs from the $k$-th digit of the $k$-th entry, so the number differs from every entry. Zeno’s argument fails because it assumes that additivity extends to arbitrary collections of parts. It holds for countable collections only. Philosophers, from Grünbaum in the 1950s and 60s to Skyrms in 1983, have asked whether this is a solution or just a careful restriction that leaves the intuition unexplained.`,
       caption: String.raw`Left: the first $K$ points of a list each get an interval of length $\varepsilon/2^k$ (row $k$; the bottom line shows their union). However dense the points, the total stays below $\varepsilon$, far short of the segment’s length 1. Right: write any list of decimals by clicking digits (each click adds 1). The gold diagonal digits are changed (to 5, or to 4 if the digit is 5) to build a number $d$ that differs from row $k$ in its $k$-th digit, so it is missing from your list. Switch the left panel to **your list** to cover your numbers and see $d$ on the segment.`,
       deps: ['rca-2.20', 'pma-2.43a', 'pma-2.14'],
       refs: ['SEP “Zeno’s Paradoxes”'],

@@ -37,7 +37,7 @@ for (const it of all) {
 for (const it of ghosts) it.deps = (it.deps || []).filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
 for (const it of [...all, ...ghosts]) if (it.introduces) it.introduces = it.introduces.filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
 // short author string for lists and search: "Shannon", "Watson & Crick", "Kahneman, Tversky et al."
-const surname = (x) => { const w = x.trim().split(/\s+/); let i = w.length - 1; while (i > 0 && /^(von|van|de|der|den|del|della|di|du|da|le|la|ter|ten|zu|al|bin|ibn)$/i.test(w[i - 1])) i--; return w.slice(i).join(' '); };
+const surname = (x) => { const w = x.trim().split(/\s+/); let i = w.length - 1; while (i > 0 && /^(von|van|de|der|den|del|della|di|du|da|le|la|ter|ten|zu|al|bin|ibn|'t|’t)$/i.test(w[i - 1])) i--; return w.slice(i).join(' '); };
 const shortAuthors = (a) => {
   let t = String(a).replace(/\([^)]*\)/g, ' '); // drop "(LIGO Scientific Collaboration …)"
   const etal = /\bet\s+al\.?|\band\s+others\b/i.test(t); t = t.replace(/\bet\s+al\.?|\band\s+others\b/gi, ' ');

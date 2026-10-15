@@ -298,6 +298,10 @@ export default {
           pic: 'Split the curvature vector of a curve on a surface into normal and tangential parts; the tangential part, the geodesic curvature, is plotted and vanishes along great circles.' },
         { num: '8.12', kind: 'Phenomenon', name: 'Foucault’s pendulum as parallel transport', deps: ['dg-8.10'], refs: ['do Carmo §4-4'], see: ['mech-9.10'],
           pic: 'Set the latitude: the swing plane is parallel-transported around the latitude circle each day, and its precession relative to the ground matches 2π·sin(latitude) per sidereal day.' },
+        { num: '8.13', kind: 'Paper', name: 'Disquisitiones generales circa superficies curvas',
+          paper: { authors: 'Carl Friedrich Gauss', year: 1828, title: 'Disquisitiones generales circa superficies curvas', venue: 'Commentationes Societatis Regiae Scientiarum Gottingensis Recentiores 6: 99–146', url: 'https://archive.org/details/disquisitionesg00gausgoog' },
+          introduces: ['dg-5.1', 'dg-6.1', 'dg-6.7', 'dg-6.8', 'dg-8.3', 'dg-10.2'], deps: ['dg-6.6', 'dg-6.4'], refs: [],
+          pic: 'Gauss’s two pictures side by side: a patch of surface and its image under the normal map on the unit sphere, the area ratio giving K; the reader bends the surface without stretching (a sheet into a cylinder, a catenoid into a helicoid) and K computed from E, F, G alone stays fixed — the Theorema Egregium — while a geodesic triangle reports angle sum − π against ∬K dA.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -398,6 +402,10 @@ export default {
           pic: 'Grow a hyperbolic circle of radius r: circumference 2π sinh r and area 2π(cosh r − 1) are plotted on log axes against their Euclidean counterparts.' },
         { num: '11.11', kind: 'Definition', name: 'Hyperbolic tilings', deps: ['dg-11.5'], refs: ['Pressley Ch. 11'],
           pic: 'Choose p and q with 1/p + 1/q < 1/2: a regular {p, q} tiling of the Poincaré disc is drawn, and dragging translates the view while every tile stays congruent.' },
+        { num: '11.12', kind: 'Paper', name: 'Saggio di interpretazione della geometria non-euclidea',
+          paper: { authors: 'Eugenio Beltrami', year: 1868, title: 'Saggio di interpretazione della geometria non-euclidea', venue: 'Giornale di Matematiche 6: 284–312', url: 'https://eudml.org/doc/203338' },
+          introduces: ['dg-11.7', 'dg-11.9'], deps: ['dg-7.13', 'dg-8.8', 'dg-9.14'], refs: [],
+          pic: 'Beltrami’s disc: geodesics of a surface of constant negative curvature appear as straight chords, so the reader can drag a point off a line and see infinitely many chords through it that never meet the line (Lobachevsky’s parallels), then wrap a strip of the disc onto the pseudosphere and see the same triangles realised on a surface in space.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12
