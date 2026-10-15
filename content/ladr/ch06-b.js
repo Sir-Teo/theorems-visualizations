@@ -157,6 +157,86 @@ function unitary3(x) {
   return fromCols(B);
 }
 
+// ---- stages that come and go with a mode select
+/** Show exactly the stages flagged true and resize the visible ones (call from onChange and once at setup). */
+function layout(v, list) {
+  for (const [S, on] of list) { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; }
+  for (const [S, on] of list) if (on && typeof S.resize === 'function') S.resize();
+  v.invalidate();
+}
+// ---- level lines of a functional φ(p) = c·p on R² (alternate strips tinted, values along one edge)
+const kfmt = (x) => String(+x.toFixed(3)).replace('-', '−');
+function niceStep(x) { const p = 10 ** Math.floor(Math.log10(x)); for (const m of [1, 2, 5, 10]) if (m * p >= x - 1e-12) return m * p; return 10 * p; }
+const box2 = (S) => { const B = S.bounds; return [[B.x[0], B.y[0]], [B.x[1], B.y[0]], [B.x[1], B.y[1]], [B.x[0], B.y[1]]]; };
+function clipHalf(poly, c, k, s) {
+  const out = [];
+  for (let i = 0; i < poly.length; i++) {
+    const P = poly[i], Q = poly[(i + 1) % poly.length];
+    const fp = s * (dot2(c, P) - k), fq = s * (dot2(c, Q) - k);
+    if (fp >= 0) out.push(P);
+    if ((fp >= 0) !== (fq >= 0)) { const t = fp / (fp - fq); out.push([P[0] + t * (Q[0] - P[0]), P[1] + t * (Q[1] - P[1])]); }
+  }
+  return out;
+}
+function seg2(S, c, k) {
+  const box = box2(S), pts = [];
+  for (let i = 0; i < 4; i++) {
+    const P = box[i], Q = box[(i + 1) % 4], fp = dot2(c, P) - k, fq = dot2(c, Q) - k;
+    if (fp === 0) pts.push(P); else if (fp * fq < 0) { const t = fp / (fp - fq); pts.push([P[0] + t * (Q[0] - P[0]), P[1] + t * (Q[1] - P[1])]); }
+  }
+  return pts.length >= 2 ? [pts[0], pts[1]] : null;
+}
+function levels(S, c, st = {}) {
+  const n2 = dot2(c, c); if (n2 < 1e-14) return 0;
+  const color = st.color || 'accent', box = box2(S), ph = box.map((p) => dot2(c, p));
+  const lo = Math.min(...ph), hi = Math.max(...ph);
+  let step = st.step || 1;
+  const maxN = st.max || 22; if ((hi - lo) / step > maxN) step *= niceStep((hi - lo) / step / maxN);
+  const k0 = Math.ceil(lo / step - 1e-9), k1 = Math.floor(hi / step + 1e-9);
+  for (let k = k0 - 1; k <= k1; k++) if (((k % 2) + 2) % 2 === 0) {
+    const P = clipHalf(clipHalf(box, c, k * step, 1), c, (k + 1) * step, -1);
+    if (P.length > 2) S.poly(P, { fill: color, fillAlpha: st.fillAlpha ?? 0.07, stroke: false });
+  }
+  const d = [-c[1], c[0]], u = Math.abs(S.X(1) - S.X(0)), w = st.width ?? 1.3;
+  let last = null;
+  for (let k = k0; k <= k1; k++) {
+    const sg = seg2(S, c, k * step); if (!sg) continue;
+    S.line(sg[0][0], sg[0][1], sg[1][0], sg[1][1], { color, width: k === 0 ? w * 1.9 : w, alpha: st.alpha ?? 0.8 });
+    const [p, q] = dot2(sg[0], d) >= dot2(sg[1], d) ? sg : [sg[1], sg[0]];
+    const L = Math.hypot(q[0] - p[0], q[1] - p[1]) * u; if (L < 40) continue;
+    const t = 13 / L, x = p[0] + (q[0] - p[0]) * t, y = p[1] + (q[1] - p[1]) * t;
+    if (last && Math.hypot(x - last[0], y - last[1]) * u < 19) continue;
+    last = [x, y];
+    S.text(kfmt(k * step), x, y, { size: 11, color, align: 'center', baseline: 'middle' });
+  }
+  return step;
+}
+/** Arrow p → q in a 2D stage with a TeX label just beyond the tip. */
+function arr(S, p, q, color, label, st = {}) {
+  S.arrow(p[0], p[1], q[0], q[1], { color, width: st.width ?? 2.6, head: st.head ?? 10, alpha: st.alpha, dash: st.dash });
+  if (!label) return;
+  const dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1;
+  S.tex(label, q[0], q[1], { color, dx: (st.off ?? 15) * dx / l, dy: -(st.off ?? 15) * dy / l, align: 'center', baseline: 'middle', size: st.size });
+}
+// ---- orthonormal polynomials on [−1, 1] (⟨p, q⟩ = ∫ pq) by Gram–Schmidt on the moments
+function legendreON(n) {
+  const m = []; for (let k = 0; k <= 2 * n; k++) m.push(k % 2 ? 0 : 2 / (k + 1));
+  const ip = (p, q) => { let s = 0; for (let i = 0; i < p.length; i++) if (p[i]) for (let j = 0; j < q.length; j++) s += p[i] * m[i + j] * q[j]; return s; };
+  const E = [];
+  for (let j = 0; j <= n; j++) {
+    let f = Array.from({ length: n + 1 }, (_, i) => +(i === j));
+    for (let pass = 0; pass < 2; pass++) for (const e of E) { const c = ip(f, e); f = f.map((x, i) => x - c * e[i]); }
+    const l = Math.sqrt(ip(f, f)); E.push(f.map((x) => x / l));
+  }
+  return E;
+}
+const chebNodes = (n, a = -1, b = 1) => Array.from({ length: n + 1 }, (_, j) => (a + b) / 2 - ((b - a) / 2) * Math.cos(((2 * j + 1) * Math.PI) / (2 * (n + 1))));
+/** Coefficients (ascending) of the interpolating polynomial through (xs, ys). */
+function interpCoef(M, xs, ys) {
+  const V = xs.map((x) => xs.map((_, j) => x ** j));
+  return M.solve(V, ys) || ys.map(() => 0);
+}
+
 export default {
   collection: 'ladr',
   chapter: 6,

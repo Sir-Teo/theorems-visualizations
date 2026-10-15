@@ -224,7 +224,7 @@ An admissible $y_*$ is a **(local) minimum** of $J$ if $J[y_*]\le J[y]$ for ever
 $$n_1\sin\theta_1=n_2\sin\theta_2\qquad\Big(\text{equivalently}\ \frac{\sin\theta_1}{v_1}=\frac{\sin\theta_2}{v_2}\Big).$$
 Through a stack of parallel layers the quantity $n\sin\theta$ is the same in every layer.`,
       idea: String.raw`In each uniform medium the quickest path is straight, so a candidate path from $S$ to $P$ is fixed by its crossing point $x$ and $T(x)=\big(n_1\sqrt{(x-x_S)^2+h_1^2}+n_2\sqrt{(x_P-x)^2+h_2^2}\big)/c$. This is a convex function of one variable, and its minimum is where $T'(x)=0$ (pma-5.8): $T'(x)=\big(n_1\sin\theta_1-n_2\sin\theta_2\big)/c$, which is Snell's law. With many layers the same computation at every interface makes $n\sin\theta$ the same everywhere — the discrete form of the first integral that bends light in a mirage.`,
-      caption: String.raw`*Two media*: drag the blue crossing point along the interface (or move $S$ and $P$). The right panel plots the travel time of every such path; your path is the blue dot and the green dot is the true minimum found numerically — it sits exactly where $n_1\sin\theta_1=n_2\sin\theta_2$ (dashed line). *Stack of layers*: drag the crossing points on all four interfaces; the bars show $n\sin\theta$ in each layer, and *Least-time path* relaxes them — at the minimum all bars have the same height.`,
+      caption: String.raw`*Two media*: drag the blue crossing point along the interface (or move $S$ and $P$). The right panel plots the travel time of every such path; your path is the gold dot and the green dot is the true minimum found numerically — it sits exactly where $n_1\sin\theta_1=n_2\sin\theta_2$ (dashed line). *Stack of layers*: drag the crossing points on all four interfaces; the bars show $n\sin\theta$ in each layer, and *Least-time path* relaxes them — at the minimum all bars have the same height.`,
       scope: String.raw`Geometrical optics: wavelengths much smaller than the objects and interfaces involved. Near caustics and for long paths in graded media the stationary path can be a saddle or a maximum rather than a minimum.`,
       deps: ['mech-5.1', 'pma-5.8'],
       refs: ['Taylor §6.1'],
@@ -238,7 +238,7 @@ Through a stack of parallel layers the quantity $n\sin\theta$ is the same in eve
         });
         const n2s = v.slider('index of the lower medium $n_2$', 1, 2.5, 1.33, { step: 0.01 });
         const sR = v.stage({ x: [-2.6, 2.6], y: [-1.9, 1.9], equal: true, axes: false, height: 340, title: 'light from S to P' });
-        sT = v.stage({ x: [-2.6, 2.6], y: [0, 1], axes: 'box', height: 340, xlabel: 'crossing point x', ylabel: 'travel time cT' });
+        sT = v.stage({ x: [-2.6, 2.6], y: [0, 1], axes: 'box', height: 340, xlabel: 'crossing point x', ylabel: 'travel time cT', title: 'every candidate path, scored' });
         const inTop = (y) => (mode.value === 'two' ? clamp(y, 0.15, 1.8) : clamp(y, 1.0, 1.8));
         const inBot = (y) => (mode.value === 'two' ? clamp(y, -1.8, -0.15) : clamp(y, -1.8, -1.0));
         const S = sR.handle(-1.6, 1.35, { color: 'orange', label: 'S', labelPos: 'nw', constrain: (x, y) => [clamp(x, -2.4, 2.4), inTop(y)] });
@@ -279,7 +279,7 @@ Through a stack of parallel layers the quantity $n\sin\theta$ is the same in eve
           S.y = inTop(S.y); P.y = inBot(P.y);
           if (two) {
             const n2 = n2s.value;
-            sR.rect(-3, -2, 3, 0, { fill: 'accent', fillAlpha: 0.06 + 0.1 * (n2 - 1), stroke: false });
+            sR.rect(-9, -9, 9, 0, { fill: 'accent', fillAlpha: 0.06 + 0.1 * (n2 - 1), stroke: false });
             sR.hline(0, { color: 'accent', width: 1.4 });
             sR.text('n₁ = 1 (air)', 2.45, 0.12, { align: 'right', baseline: 'bottom', color: 'muted', size: 12 });
             sR.text(`n₂ = ${v.fix(n2, 2)}`, 2.45, -0.12, { align: 'right', baseline: 'top', color: 'accent', size: 12 });
@@ -304,7 +304,7 @@ Through a stack of parallel layers the quantity $n\sin\theta$ is the same in eve
             cur = { two, T: twoT(X.x), Tm, xm, xsn, s1, s2, n2 };
             v.legend([['gold', 'your path'], ['green', 'least-time path', { dash: true }], ['accent', 'travel time vs crossing point']]);
           } else {
-            NK.forEach((n, k) => { const yt = k === 0 ? 2 : IF[k - 1], yb = k === NL - 1 ? -2 : IF[k]; sR.rect(-3, yb, 3, yt, { fill: 'accent', fillAlpha: 0.03 + 0.11 * (n - 1), stroke: false }); sR.text(`n = ${n}`, 2.5, (Math.max(yb, -1.9) + Math.min(yt, 1.9)) / 2, { align: 'right', color: 'muted', size: 11.5 }); });
+            NK.forEach((n, k) => { const yt = k === 0 ? 9 : IF[k - 1], yb = k === NL - 1 ? -9 : IF[k]; sR.rect(-9, yb, 9, yt, { fill: 'accent', fillAlpha: 0.03 + 0.11 * (n - 1), stroke: false }); sR.text(`n = ${n}`, 2.5, (Math.max(yb, -1.9) + Math.min(yt, 1.9)) / 2, { align: 'right', color: 'muted', size: 11.5 }); });
             IF.forEach((y) => sR.hline(y, { color: 'accent', width: 1, alpha: 0.6 }));
             const O = optStack(), xs = XK.map((h) => h.x);
             sR.path(pathPts(O.xs), { color: 'green', width: 1.5, dash: [6, 5], alpha: 0.85 });
