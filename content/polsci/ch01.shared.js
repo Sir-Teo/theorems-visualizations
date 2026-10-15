@@ -218,7 +218,7 @@ export function winTag(v, c, X, Y, text = 'winner', color = 'gold') {
  */
 export function blocEditor(v, s, P, o = {}) {
   let G = null, drag = -1;
-  const max = () => o.max ?? 20;
+  const max = () => (typeof o.max === 'function' ? o.max() : o.max ?? 20);
   const geom = () => {
     const W = s.width, H = s.height, nb = P.blocs.length, m = P.m;
     const head = 24, rowH = Math.min(38, (H - head - 6) / nb);
@@ -244,7 +244,7 @@ export function blocEditor(v, s, P, o = {}) {
     get geom() { return G; },
     hit(x, y) { return G ? rowAt(s.Y(y)) : -1; },
     draw() {
-      G = geom(); const c = s.ctx, mx = max();
+      G = geom(); const c = s.ctx, mx = max(), alive = typeof o.alive === 'function' ? o.alive() : o.alive;
       txt(v, c, o.hint ?? (o.rank ? 'ballot (best → worst) · click a letter to move it up' : 'ballot (best → worst)'), 12, 12, { size: 11, weight: 500, color: 'muted', align: 'left' });
       txt(v, c, 'voters', G.bx1 + 34, 12, { size: 11, weight: 500, color: 'muted', align: 'right' });
       // scale ticks
@@ -256,7 +256,7 @@ export function blocEditor(v, s, P, o = {}) {
         if (i % 2 === 0) { c.fillStyle = v.color('muted', 0.05); c.fillRect(4, G.top + i * G.rowH, G.W - 8, G.rowH); }
         b.r.forEach((cand, k) => {
           const X = G.cx0 + k * G.step;
-          const dead = o.alive && !o.alive.has(cand);
+          const dead = alive && !alive.has(cand);
           chip(v, c, X, Y, cand, { r: G.cr, alpha: dead ? 0.22 : o.dim?.(b, k, cand) ? 0.3 : 1, ring: o.ring?.(b, k, cand), strike: dead });
           if (k < G.m - 1) txt(v, c, '›', X + G.step / 2, Y, { size: 12, color: 'faint' });
           const nt = o.note?.(b, k, cand); if (nt != null && nt !== '') txt(v, c, nt, X, Y + G.cr + 6, { size: 9.5, weight: 700, color: 'muted' });

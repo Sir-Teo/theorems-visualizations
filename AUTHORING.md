@@ -294,7 +294,7 @@ without Web Audio (headless checks) every call is a silent no-op; all sound stop
 `clamp lerp invLerp remap smoothstep ease sign fract mod range linspace sum mean argmin argmax
 dist fmt fix` · `rng(seed)` → `r()`, `r.uniform(a,b)`, `r.int(a,b)`, `r.normal()`, `r.pick`,
 `r.shuffle` · calculus: `integrate(f,a,b,n)` (Simpson), `riemann(f, partition, 'left'|'right'|
-'mid'|'lower'|'upper')`, `cellValue`, `deriv`, `deriv2`, `bisect`, `newton`, `newtonPath`,
+'mid'|'lower'|'upper')`, `cellValue`, `deriv`, `deriv2`, `bisect`, `newton`, `newtonPath`, `nelderMead(f, x0, {step, tol, maxIt})` → `{x, fx, it}` (derivative-free n-dim minimizer for likelihood fits), `hessian(f, x)` (numerical; invert at an MLE for standard errors),
 `iterate(g,x0,n)`, `partialSums(term,n,start)`, `rk4(F,t0,y0,t1,n)` · special: `factorial binom
 gamma gaussian bump cantorFn cantorIntervals(level)` · Fourier: `dirichlet(N,x) fejer(N,x)
 poisson(r,t) fourierCoeffs(f,N) fourierEval(c,t,fejer) trigCoeffs(f,N) trigEval` ·

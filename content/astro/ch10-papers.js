@@ -293,15 +293,15 @@ This is the Friedmann equation (astro-10.7) for closed space; the negatively cur
       viz(v) {
         const kSel = v.select('space', [{ value: '1', label: 'closed (1922)' }, { value: '0', label: 'flat' }, { value: '-1', label: 'open (1924)' }], '1', { onChange: () => snap() });
         const preset = v.select('preset', [{ value: 'per', label: 'periodic' }, { value: 'm1', label: 'monotonic I' }, { value: 'm2', label: 'monotonic II' }, { value: 'E', label: 'Einstein static' }], 'per', {
-          onChange: (p) => { kSel.set('1'); const P = { per: [0.55, 0], m1: [0.9, 1.6], m2: [2.6, 0.55], E: [1.5, 1] }[p]; H.set(P[0], P[1]); snap(); },
+          onChange: (p) => { kSel.set('1'); const P = { per: [0.75, 0], m1: [0.9, 1.6], m2: [3.7, 0.55], E: [1.5, 1] }[p]; H.set(P[0], P[1]); snap(); },
         });
         const mass = v.slider('world mass M (10²¹ suns)', 1, 50, 5, { log: true, sig: 2 });
         const YE = 4 / 27; // λ_E/3c² for A = 1
         const kk = () => +kSel.value;
         const Yb = (x, k = kk()) => (k * x - 1) / x ** 3 / YE; // boundary curve, in units of λ_E
-        const L = v.stage({ x: [0, 4.2], y: [-1.6, 2.6], axes: 'box', height: 360, weight: 0.9, minWidth: 260, xlabel: 'R / A', ylabel: 'λ / λ_E', title: 'Friedmann’s figure: where a world can be' });
+        const L = v.stage({ x: [0, 4.2], y: [-1.6, 2.6], axes: 'box', height: 360, weight: 0.9, minWidth: 260, xlabel: 'R / A', ylabel: 'λ ÷ Einstein’s λ', title: 'Friedmann’s figure: where a world can be' });
         const Rt = v.stage({ x: [-2, 4], y: [0, 2], axes: 'box', height: 360, weight: 1.1, xlabel: 'time from now (Gyr)', ylabel: 'R (billion light years)', title: 'R(t): the radius of the world' });
-        const H = L.handle(0.55, 0, { color: 'gold', r: 8, label: 'now', labelPos: 'ne', constrain: (x, y) => { const X = Math.min(4.1, Math.max(0.12, x)), Y = Math.min(2.5, Math.max(-1.5, y)); return [X, Math.max(Y, Yb(X) + 1e-6)]; } });
+        const H = L.handle(0.75, 0, { color: 'gold', r: 8, label: 'now', labelPos: 'ne', constrain: (x, y) => { const X = Math.min(4.1, Math.max(0.12, x)), Y = Math.min(2.5, Math.max(-1.5, y)); return [X, Math.max(Y, Yb(X) + 1e-6)]; } });
         const snap = () => { const X = H.x, Y = Math.max(H.y, Yb(X) + 1e-6); if (Y !== H.y) H.set(X, Y); };
         let st = null;
         v.render(() => {
@@ -313,13 +313,13 @@ This is the Friedmann equation (astro-10.7) for closed space; the negatively cur
           if (k === 1) {
             L.hline(1, { color: 'ink', width: 1.1, dash: [5, 4] });
             L.dot(1.5, 1, { r: 5, color: 'ink' });
-            L.text('Einstein 1917', 1.5, 1, { dy: -14, size: 11.5, weight: 600, color: 'ink', align: 'center' });
-            L.text('periodic', 0.62, 0.55, { size: 12, weight: 700, color: 'blue' });
+            L.text('Einstein 1917', 1.5, 1, { dy: -13, dx: -8, size: 11.5, weight: 600, color: 'ink', align: 'right' });
+            L.text('periodic', 0.22, 0.64, { size: 12, weight: 700, color: 'blue' });
             L.text('monotonic, 1st kind', 2.45, 2.15, { size: 12, weight: 700, color: 'green' });
-            L.text('2nd kind', 3.3, 0.78, { size: 12, weight: 700, color: 'teal' });
+            L.text('2nd kind', 2.35, 0.86, { size: 12, weight: 700, color: 'teal' });
           } else {
-            L.text(k === 0 ? 'expands for ever' : 'expands for ever', 2.4, 1.4, { size: 12, weight: 700, color: 'green' });
-            L.text('recollapses', 2.4, -0.45, { size: 12, weight: 700, color: 'blue' });
+            L.text('expands for ever', 2.4, 1.4, { size: 12, weight: 700, color: 'green' });
+            L.text('recollapses', 0.75, -0.55, { size: 12, weight: 700, color: 'blue' });
           }
           L.text('no world', 2.9, k === 1 ? -0.9 : -1.25, { size: 12, weight: 700, color: 'red' });
           L.hline(Y, { color: 'gold', width: 1.2, alpha: 0.8 });
@@ -339,14 +339,14 @@ This is the Friedmann equation (astro-10.7) for closed space; the negatively cur
             const ts = W.pts.map((p) => toT(p[0])), Rs = W.pts.map((p) => toR(p[1]));
             const t0 = Math.min(...ts), t1 = Math.max(...ts), pad = 0.05 * (t1 - t0 || 1);
             const RE = toR(1.5);
-            const rmax = Math.max(...Rs, k === 1 ? RE : 0, toR(x0)) * 1.12;
+            const rmax = Math.max(...Rs, k === 1 ? RE : 0, toR(x0)) * 1.16;
             Rt.setView([t0 - pad, t1 + pad], [0, rmax]);
             if (k === 1) { Rt.hline(RE, { color: 'ink', width: 1.2, dash: [2, 4] }); Rt.text('Einstein’s radius 3A/2', t1 + pad, RE, { align: 'right', dy: -9, dx: -4, size: 11, color: 'muted', weight: 600 }); }
             if (W0 && Math.abs(y) > 1e-6) Rt.path(W0.pts.map((p) => [toT(p[0]), toR(p[1])]), { color: 'muted', width: 1.6, dash: [6, 4] });
             Rt.path(W.pts.map((p, i) => [ts[i], Rs[i]]), { color: col, width: 3 });
             Rt.vline(0, { color: 'faint', width: 1 });
             Rt.dot(0, toR(x0), { r: 6, color: 'gold' });
-            if (W.tBegin != null) { Rt.dot(toT(W.tBegin), 0, { r: 5, color: col, hollow: true }); Rt.text('R = 0', toT(W.tBegin), 0, { dy: -12, dx: 4, size: 11, align: 'left', color: col, weight: 600 }); }
+            if (W.tBegin != null) { Rt.dot(toT(W.tBegin), 0, { r: 5, color: col, hollow: true }); Rt.text('R = 0', toT(W.tBegin), 0, { dy: -20, dx: 6, size: 11, align: 'left', color: col, weight: 600, plate: true }); }
             if (W.tEnd != null) Rt.dot(toT(W.tEnd), 0, { r: 5, color: col, hollow: true });
             if (W.turnPast && W.tBegin == null && k === 1) Rt.text('grows from x₀′', toT(W.turnPast[0]), toR(W.turnPast[1]), { dy: 14, size: 11, color: col, weight: 600, align: 'center' });
           }

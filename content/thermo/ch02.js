@@ -1,5 +1,5 @@
 // Thermodynamics & Statistical Mechanics — Chapter 2: The second law, engines and entropy
-import { clamp, lerp, hsGas, pick, drawGas, simClock, tRamp, R, carnot, segHeat, band, packets, reservoir, device, cylinder, along } from './ch02.shared.js';
+import { clamp, lerp, hsGas, pick, drawGas, simClock, tRamp, R, carnot, segHeat, band, packets, reservoir, device, cylinder, along, PLANTS } from './ch02.shared.js';
 
 // ---------- helpers for this file ----------
 /** Rounded "ledger" bar from 0 to val at x (data units), half-width hw. */

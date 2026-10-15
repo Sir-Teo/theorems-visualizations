@@ -169,13 +169,15 @@ Two consequences recur throughout this collection.
           }
           if (n > 0) { const q = seq[n - 1], r = Math.floor(q / SEATS), s = q % SEATS; Hs.rect(s + 0.02, r + 0.06, s + 0.98, r + 0.94, { color: 'red', width: 2.4, radius: 4 }); }
           // row profile
-          const lvl = n / CAP;
-          for (let r = 0; r < ROWS; r++) Bs.rect(0, r + 0.18, rowCount[r] / SEATS, r + 0.82, { fill: rowCount[r] ? 'purple' : 'grid', fillAlpha: rowCount[r] ? 0.75 : 1, stroke: false, radius: 2 });
-          Bs.line(lvl, -0.1, lvl, ROWS + 0.1, { color: 'muted', dash: [5, 4], width: 1.4 });
+          const lvl = n / CAP, KB = 0.84;
+          for (let r = 0; r < ROWS; r++) Bs.rect(0, r + 0.18, (KB * rowCount[r]) / SEATS, r + 0.82, { fill: rowCount[r] ? 'purple' : 'grid', fillAlpha: rowCount[r] ? 0.75 : 1, stroke: false, radius: 2 });
+          Bs.line(KB * lvl, -0.1, KB * lvl, ROWS + 0.1, { color: 'muted', dash: [5, 4], width: 1.4 });
+          Bs.line(KB, -0.1, KB, ROWS + 0.1, { color: 'faint', width: 1, dash: [2, 3] });
           Bs.line(0, -0.1, 0, ROWS + 0.1, { color: 'faint', width: 1 });
           Bs.text('back', 1.06, ROWS - 0.5, { color: 'muted', size: 11, align: 'right' });
           Bs.text('front', 1.06, 0.5, { color: 'muted', size: 11, align: 'right' });
-          Bs.text(`random: ${pc(lvl)}`, Math.min(Math.max(lvl, 0.3), 0.75), -0.7, { color: 'muted', size: 11, align: 'center' });
+          Bs.text(`random: ${pc(lvl)}`, Math.min(Math.max(KB * lvl, 0.3), 0.7), -0.7, { color: 'muted', size: 11, align: 'center' });
+          Bs.text('full', KB, -0.7, { color: 'faint', size: 10.5, align: 'left', dx: 4 });
           let empty = 0; while (empty < ROWS && rowCount[empty] === 0) empty++;
           const front4 = rowCount.slice(0, 4).reduce((x, y) => x + y, 0), back4 = rowCount.slice(ROWS - 4).reduce((x, y) => x + y, 0);
           st = { n, empty, front: n ? front4 / n : 0, back: n ? back4 / n : 0, elbow: n ? elbow / n : 0, meanRow: n ? rowCount.reduce((x, y, r) => x + y * (r + 1), 0) / n : 0 };
@@ -186,7 +188,7 @@ Two consequences recur throughout this collection.
           if (!n) return 'The hall is empty: drag **people arrived**.';
           const why = bS.value === 0 && cS.value > 0 ? ' — although nobody here has any preference among rows: the front empties only because each newcomer wants somebody just ahead' : bS.value > 0 && cS.value === 0 && aS.value === 0 ? ' — a mild individual preference, sharpened into a hard edge by the order of arrival' : aS.value > 0 && bS.value === 0 && cS.value === 0 ? ' — everyone wanted a free seat beside them, but once the alternate seats are gone the latecomers must sit at someone’s elbow' : '';
           const rnd = Math.min(1, 4 / ROWS);
-          return `${n} of ${CAP} seats taken · the front 4 rows hold **${pc(front)}** of the audience and the back 4 rows **${pc(back)}** (random seating: ${pc(rnd)} each)${empty ? ` · the first ${empty} row${empty === 1 ? ' is' : 's are'} completely empty` : ''} · mean row ${v.fix(meanRow, 1)} of ${ROWS} · ${pc(elbow)} have someone at their elbow${why}.`;
+          return `${n} of ${CAP} seats taken · the front 4 rows hold **${pc(front)}** of the audience and the back 4 rows **${pc(back)}** (random seating: ${pc(rnd)} each)${empty ? (empty === 1 ? ' · the front row is completely empty' : ` · the first ${empty} rows are completely empty`) : ''} · mean row ${v.fix(meanRow, 1)} of ${ROWS} · ${pc(elbow)} have someone at their elbow${why}.`;
         });
       },
     },

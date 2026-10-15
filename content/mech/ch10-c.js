@@ -31,7 +31,7 @@ export default {
 $$\mathsf R = \mathsf R_z(\varphi)\,\mathsf R_x(\theta)\,\mathsf R_z(\psi), \qquad 0 \le \varphi, \psi < 2\pi,\ \ 0 \le \theta \le \pi$$
 (the $z$-$x$-$z$ convention). Read from the body’s point of view: turn about the vertical $z$ by $\varphi$, which carries the $x$-axis to the **line of nodes** $\mathbf N$; tilt about $\mathbf N$ by $\theta$, which carries $z$ to the body’s symmetry axis $\mathbf e_3$; spin about $\mathbf e_3$ by $\psi$. The angular velocity is $\boldsymbol\omega = \dot\varphi\,\hat{\mathbf z} + \dot\theta\,\mathbf N + \dot\psi\,\mathbf e_3$, with body components
 $$\omega_1 = \dot\varphi\sin\theta\sin\psi + \dot\theta\cos\psi,\quad \omega_2 = \dot\varphi\sin\theta\cos\psi - \dot\theta\sin\psi,\quad \omega_3 = \dot\varphi\cos\theta + \dot\psi .$$
-The coordinates are singular at $\theta = 0$ and $\theta = \pi$ (**gimbal lock**). There $\hat{\mathbf z}$ and $\mathbf e_3$ coincide, only $\varphi + \psi$ (or $\varphi - \psi$) is determined, and the three rates span only a plane, because $\det(\hat{\mathbf z}, \mathbf N, \mathbf e_3) = \sin\theta$.`,
+The coordinates are singular at $\theta = 0$ and $\theta = \pi$ (**gimbal lock**). There $\hat{\mathbf z}$ and $\mathbf e_3$ coincide, only $\varphi + \psi$ (or $\varphi - \psi$) is determined, and the three rates span only a plane, because $\det(\mathbf N, \hat{\mathbf z}, \mathbf e_3) = \sin\theta$.`,
       idea: String.raw`By Euler’s theorem (10.1) an orientation is a rotation; to build it, first place the body’s axis $\mathbf e_3 = \mathsf R\hat{\mathbf z}$. Its polar angle from $z$ is $\theta$, and the azimuth of $\mathbf N = \hat{\mathbf z}\times\mathbf e_3$ fixes $\varphi$. What remains is a rotation fixing $\mathbf e_3$, which is a turn by some $\psi$ about it. Differentiating the product and adding the angular velocities of the three turns, as vectors (9.4), gives $\boldsymbol\omega$. When $\mathbf e_3 = \pm\hat{\mathbf z}$ the line of nodes is undefined and the first and last turns are about the same axis. That is a defect of the coordinates, not of the motion: no three angles can cover $SO(3)$ without such a singularity.`,
       caption: String.raw`The body sits in three nested gimbals. The orange outer ring turns about the fixed vertical by $\varphi$, the teal middle ring about the line of nodes $\mathbf N$ by $\theta$, and the pink inner ring about the body axis $\mathbf e_3$ by $\psi$. Tick *show the three steps* to see the intermediate axes. Right: for the current tilt $\theta$, every other pair $(\varphi', \psi')$ shaded by how far its orientation is from the current one. Dark means the same orientation. Normally that happens at a single point. Drag $\theta$ to $0$: the outer and middle rings become coplanar, the dark point stretches into the whole line $\varphi' + \psi' = $ const, and a degree of freedom is lost.`,
       deps: ['mech-10.1', 'mech-9.4'],
@@ -40,12 +40,12 @@ The coordinates are singular at $\theta = 0$ and $\theta = \pi$ (**gimbal lock**
       tags: ['Euler angles', 'gimbal lock', 'rotation'],
       credit: 'Euler, 1765',
       viz(v) {
-        const phS = v.slider('$\\varphi$ (outer ring, about $z$) (°)', -180, 180, 35, { step: 1 });
-        const thS = v.slider('$\\theta$ (middle ring, about $\\mathbf N$) (°)', 0, 180, 50, { step: 0.5 });
-        const psS = v.slider('$\\psi$ (inner ring, about $\\mathbf e_3$) (°)', -180, 180, 25, { step: 1 });
+        const phS = v.slider('$\\varphi$ (°)', -180, 180, 35, { step: 1 });
+        const thS = v.slider('$\\theta$ (°)', 0, 180, 50, { step: 0.5 });
+        const psS = v.slider('$\\psi$ (°)', -180, 180, 25, { step: 1 });
         const steps = v.toggle('show the three steps', false);
         const S = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 360, title: 'gimbals and the body (drag to rotate)' });
-        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.3, axes: false, hint: false });
+        const sc = v.scene3(S, { yaw: 0.3, pitch: 0.3, axes: false, hint: false });
         const sm = v.stage({ x: [-180, 180], y: [-180, 180], equal: true, axes: 'box', height: 360, xticks: [-180, -90, 0, 90, 180], yticks: [-180, -90, 0, 90, 180], title: "$\\|\\mathsf R(\\varphi', \\theta, \\psi') - \\mathsf R\\|$ across $(\\varphi', \\psi')$" });
         let cur = null;
         v.render(() => {
@@ -86,14 +86,14 @@ The coordinates are singular at $\theta = 0$ and $\theta = \pi$ (**gimbal lock**
             for (let k = -3; k <= 3; k++) { const c0 = cst + 360 * k; sm.line(c0 - sgn * -200, -200, c0 - sgn * 200, 200, { color: 'green', width: 2, dash: [6, 4] }); }
           }
           sm.dot(phS.value, psS.value, { r: 6, color: 'green' });
-          sm.text("φ' (across), ψ' (up)", -175, -172, { color: 'ink', size: 11, plate: true, baseline: 'bottom' });
+          sm.text("φ' across, ψ' up", -172, 172, { color: 'ink', size: 11, plate: true, baseline: 'top' });
           cur = { th, z, N, e3 };
         });
         v.legend([['orange', 'outer ring: $\\varphi$ about $z$'], ['teal', 'middle ring: $\\theta$ about $\\mathbf N$'], ['pink', 'inner ring: $\\psi$ about $\\mathbf e_3$'], ['green', 'orientations equal to the current one']]);
         v.readout(() => {
           if (!cur) return '';
-          const { th, z, N, e3 } = cur, d = dot(crs(z, N), e3);
-          const base = String.raw`$\det(\hat{\mathbf z}, \mathbf N, \mathbf e_3) = ${v.fix(d, 4)}$ $= \sin\theta = ${v.fix(Math.sin(th), 4)}$ · the three rates $\dot\varphi, \dot\theta, \dot\psi$ produce angular velocities along $\hat{\mathbf z}, \mathbf N, \mathbf e_3$`;
+          const { th, z, N, e3 } = cur, d = dot(crs(N, z), e3);
+          const base = String.raw`$\det(\mathbf N, \hat{\mathbf z}, \mathbf e_3) = ${v.fix(d, 4)}$, and $\sin\theta = ${v.fix(Math.sin(th), 4)}$ · the three rates $\dot\varphi, \dot\theta, \dot\psi$ produce angular velocities along $\hat{\mathbf z}, \mathbf N, \mathbf e_3$`;
           if (Math.abs(Math.sin(th)) < 0.03) return base + String.raw` — **gimbal lock**: $\hat{\mathbf z}$ and $\mathbf e_3$ (nearly) coincide, so these span only a plane, and every $(\varphi', \psi')$ with $\varphi' ${Math.cos(th) > 0 ? '+' : '-'} \psi' = ${v.fix(phS.value + (Math.cos(th) > 0 ? 1 : -1) * psS.value, 0)}°$ gives the same orientation`;
           return base + ', which span all of space: near this orientation the three angles are good coordinates';
         });
@@ -118,7 +118,7 @@ with $E' = E - L_3^2/2I_3$. So $\theta$ **nutates** periodically between the two
         const wS = v.slider('spin $\\omega_3$ (rad/s)', 30, 160, 55, { step: 0.5 });
         const kS = v.slider('initial $\\dot\\varphi$ / steady rate', -1.5, 2.5, 0, { step: 0.01 });
         v.select('preset', [{ value: 'loops', label: 'loops' }, { value: 'cusps', label: 'cusps' }, { value: 'waves', label: 'waves' }, { value: 'steady', label: 'steady' }], 'cusps', { onChange: (p) => kS.set({ loops: -0.8, cusps: 0, waves: 0.45, steady: 1 }[p]) });
-        const S = v.stage({ x: [-1.35, 1.35], y: [-0.9, 1.5], equal: true, axes: false, height: 350, title: 'the trace of the axis on a sphere (drag to rotate)' });
+        const S = v.stage({ x: [-1.38, 1.38], y: [-1.3, 1.42], equal: true, axes: false, height: 350, title: 'the trace of the axis on a sphere (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.42, axes: false, hint: false });
         const sU = v.stage({ x: [20, 90], y: [0, 1], axes: 'box', height: 350, xlabel: 'θ (°)', title: '$U_{\\rm eff}(\\theta)$ and the energy $E\'$ (J)' });
         const steadyRate = (w3) => { const a = I1v * Math.cos(TH0), b = I3v * w3; return (b - Math.sqrt(b * b - 4 * a * mgl)) / (2 * a); };
@@ -201,7 +201,7 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
         const tauS = v.slider('spin-down time (s)', 3, 100, 9, { log: true });
         const S = v.stage({ x: [-0.95, 0.95], y: [-0.35, 1.05], equal: true, axes: false, height: 300, title: 'the top (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axes: false, hint: false });
-        const sF = v.stage({ x: [0, 2.5], y: [-0.4, 2.2], axes: 'box', height: 300, xlabel: 'ω₃ / ω_c', title: 'linear modes: frequency / growth rate (units of $\\omega_c$)' });
+        const sF = v.stage({ x: [0, 2.5], y: [-0.4, 2.2], axes: 'box', height: 300, title: 'linear modes against $\\omega_3/\\omega_c$ (rates in units of $\\omega_c$)' });
         const sT = v.stage({ x: [0, TS], y: [0.1, 180], ylog: true, axes: 'box', height: 170, full: true, xlabel: 't (s)', title: 'tilt of the axis (degrees, log scale)' });
         const cache = memo(); let cur = null;
         const run = () => cache(w0S.value + '|' + tauS.value, () => {
@@ -217,14 +217,14 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
           const B = run(), R = B.R, i = idxAt(R, t % TS), y = R.y[i], n = [y[0], y[1], y[2]], u = [y[3], y[4], y[5]], ws = B.spin[i] / wc;
           sc.begin();
           sc.disc([1, 0, 0], [0, 1, 0], 0.7, { fill: 'faint', fillAlpha: 0.2, color: 'faint', grid: true }, [0, 0, 0]);
-          const tr = R.y.slice(Math.max(0, i - 300), i + 1).map((q) => [q[0] * 0.95, q[1] * 0.95, q[2] * 0.95]);
+          const tr = R.y.slice(Math.max(0, i - 300), i + 1).map((q) => [q[0] * 0.66, q[1] * 0.66, q[2] * 0.66]);
           sc.path(tr, { color: 'gold', width: 1.8 });
           drawTop(sc, n, u, l * DSP, rd * DSP);
           sc.dot([0, 0, 0], { r: 3, color: 'ink' });
           sc.flush();
-          S.corner(`ω₃ = ${v.fix(ws, 3)} ω_c · tilt ${v.fix(B.tilt[i], 2)}°`, 'tl', { color: ws > 1 ? 'green' : 'red' });
+          S.corner(`$\\omega_3 = ${v.fix(ws, 3)}\\,\\omega_c$ · tilt ${v.fix(B.tilt[i], 2)}°`, 'tl', { color: ws > 1 ? 'green' : 'red' });
           // linear modes
-          sF.hline(0, { color: 'faint' }); sF.vline(1, { color: 'muted', dash: [5, 4] }); sF.text('ω_c', 1, 2.1, { color: 'muted', dx: 5, math: true });
+          sF.hline(0, { color: 'faint' }); sF.vline(1, { color: 'muted', dash: [5, 4] }); sF.tex('\\omega_c', 1, 2.08, { color: 'muted', dx: 6, align: 'left', size: 14 });
           const lam = (x, sg) => { const d = x * x - 1; return d >= 0 ? (I3v * wc * (x + sg * Math.sqrt(d))) / (2 * I1v) / wc : NaN; };
           sF.fn((x) => lam(x, 1), { domain: [1, 2.5], color: 'accent', width: 2.4 });
           sF.fn((x) => lam(x, -1), { domain: [1, 2.5], color: 'accent', width: 2.4 });
@@ -235,7 +235,7 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
           else sF.dot(ws, (I3v * wc * Math.sqrt(1 - ws * ws)) / (2 * I1v) / wc, { r: 5, color: 'red' });
           // tilt vs time
           sT.hline(0.5, { color: 'faint', dash: [3, 4] });
-          if (B.tc > 0 && B.tc < TS) { sT.vline(B.tc, { color: 'muted', dash: [6, 4] }); sT.text('ω₃ = ω_c', B.tc, 100, { color: 'muted', dx: 5, size: 11 }); }
+          if (B.tc > 0 && B.tc < TS) { sT.vline(B.tc, { color: 'muted', dash: [6, 4] }); sT.tex('\\omega_3 = \\omega_c', B.tc, 90, { color: 'muted', dx: 6, align: 'left', size: 13 }); }
           series(sT, R.t, B.tilt, R.t.length, { color: 'accent', width: 1.2, alpha: 0.3 });
           series(sT, R.t, B.tilt, i, { color: 'accent', width: 2.2 });
           sT.dot(R.t[i], B.tilt[i], { r: 4.5, color: 'gold' });
@@ -294,7 +294,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
           const b = Math.asin(Math.sin(de) * Math.cos(EPS) - Math.cos(de) * Math.sin(EPS) * Math.sin(ra)), lam = Math.atan2(Math.sin(ra) * Math.cos(EPS) + Math.tan(de) * Math.sin(EPS), Math.cos(ra));
           return { name, lam, b, mag };
         });
-        const LABEL = new Set(['Polaris', 'Kochab', 'Thuban', 'Vega', 'Deneb', 'Alderamin', 'Errai', 'Eltanin', 'Dubhe', 'Capella', 'Alkaid', 'ι Her']);
+        const LABEL = new Set(['Polaris', 'Kochab', 'Thuban', 'Vega', 'Deneb', 'Alderamin', 'Eltanin', 'Dubhe', 'Capella']);
         // map: azimuthal equidistant about the north ecliptic pole, as seen from Earth (longitude increases clockwise)
         const XY = (lam, b) => { const r = 90 - b / DEG, a = Math.PI - lam; return [r * Math.cos(a), r * Math.sin(a)]; };
         const rates = () => {
@@ -310,10 +310,10 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
           for (const r of [10, 20, 30, 40]) sk.circle(0, 0, r, { color: 'faint', width: 0.6, alpha: 0.5 });
           sk.circle(0, 0, EPS / DEG, { color: 'gold', width: 1.4, dash: [4, 4], alpha: 0.8 });
           const p0 = 50.29 / 3600 * DEG;
-          for (const yy of [-12000, -8000, -4000, 0, 4000, 8000, 12000]) {
-            const a = Math.PI / 2 - p0 * (yy - 2000), [x, y] = XY(a, bp);
+          for (const [yy, lab] of [[-7999, '8000 BC'], [-3999, '4000 BC'], [1, 'AD 1'], [4000, 'AD 4000'], [8000, 'AD 8000'], [12000, 'AD 12,000']]) {
+            const a = Math.PI / 2 - p0 * (yy - 2000), [x, y] = XY(a, bp), rr = Math.hypot(x, y), [xo, yo] = [(x * (rr + 4.5)) / rr, (y * (rr + 4.5)) / rr];
             sk.dot(x, y, { r: 2.5, color: 'gold' });
-            sk.text(yy <= 0 ? `${1 - yy} BC` : `AD ${yy}`, x, y, { color: 'muted', size: 10, dx: x >= 0 ? 6 : -6, align: x >= 0 ? 'left' : 'right', dy: y >= 0 ? -6 : 8 });
+            sk.text(lab, xo, yo, { color: 'gold', size: 10, align: 'center', alpha: 0.95 });
           }
           let best = null;
           for (const s of STARS) {
@@ -334,24 +334,24 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
           const ex = unit(crs(s, [0, 0, 1])), ey = crs(s, ex);   // equatorial plane basis
           sc.begin();
           sc.disc([1, 0, 0], [0, 1, 0], 1.5, { fill: 'gold', fillAlpha: 0.06, color: 'gold', width: 1, grid: false });
-          sc.text ? null : null;
           sc.path(circlePts([0, 0, 0], [1, 0, 0], [0, 1, 0], 1.5, 72), { color: 'gold', width: 1, alpha: 0.5 });
           const cone = circlePts([0, 0, 1.25 * Math.cos(EPS)], [1, 0, 0], [0, 1, 0], 1.25 * Math.sin(EPS), 72);
           sc.path(cone, { color: 'accent', width: 1.2, dash: [4, 4], alpha: 0.7 });
           // Earth with an exaggerated bulge
-          for (let k = -2; k <= 2; k++) { const la = (k * 30) * DEG; sc.path(circlePts(scl(s, 0.62 * Math.sin(la)), ex, ey, 0.62 * Math.cos(la) * (1 + 0.12 * Math.cos(la) ** 2), 60), { color: 'teal', width: 1, alpha: 0.6 }); }
-          sc.path(circlePts([0, 0, 0], ex, ey, 0.72, 72), { color: 'teal', width: 3.2, alpha: 0.85 });
+          sphereFrame(sc, 0.78, { lat: false, color: 'teal', alpha: 0.6 });
+          for (let k = -2; k <= 2; k++) { const la = (k * 30) * DEG; spherePath(sc, circlePts(scl(s, 0.78 * Math.sin(la)), ex, ey, 0.78 * Math.cos(la), 60), { color: 'teal', width: 1, alpha: 0.6, backAlpha: 0.15 }); }
+          sc.path(circlePts([0, 0, 0], ex, ey, 0.9, 72), { color: 'teal', width: 3.4, alpha: 0.9 });
           // the Sun’s differential pull on the two sides of the bulge (toward the ecliptic plane)
           const k1 = Math.max(0, hS.value);
           for (const sg of [1, -1]) {
-            const pnt = scl(ey, 0.72 * sg), pull = [0, 0, -pnt[2]];
+            const pnt = scl(ey, 0.9 * sg), pull = [0, 0, -pnt[2]];
             if (k1 > 0.01 && Math.abs(pnt[2]) > 0.02) sc.arrow(pnt, madd(pnt, pull, 1.1 * k1), { color: 'gold', width: 2.2, head: 7 });
           }
-          sc.arrow([0, 0, 0], scl(zE, 1.35), { color: 'muted', width: 1.4 }); sc.tex('\\text{ecliptic pole}', scl(zE, 1.45), { color: 'muted', size: 11 });
+          sc.arrow([0, 0, 0], scl(zE, 1.35), { color: 'muted', width: 1.4 }); sc.tex('\\text{ecliptic pole}', scl(zE, 1.4), { color: 'muted', size: 11, align: 'right', dx: -8 });
           sc.arrow([0, 0, 0], scl(s, 1.25), { color: 'accent', width: 3 }); sc.tex('\\mathbf L', scl(s, 1.36), { color: 'accent', size: 15 });
           const tq = unit(crs(s, zE));
           if (k1 > 0.01) { sc.arrow([0, 0, 0], scl(tq, 0.55 + 0.3 * Math.min(k1, 1.5)), { color: 'orange', width: 2.8 }); sc.tex('\\boldsymbol\\tau', scl(tq, 0.7 + 0.3 * Math.min(k1, 1.5)), { color: 'orange', size: 15 }); }
-          sc.arrow([1.9, 0, 0], [1.55, 0, 0], { color: 'gold', width: 2 }); sc.tex('\\text{to the Sun}', [1.75, 0, 0.12], { color: 'gold', size: 11 });
+          sc.arrow([0.95, 0, 0], [1.45, 0, 0], { color: 'gold', width: 2 }); sc.tex('\\text{to the Sun}', [1.3, 0, 0.14], { color: 'gold', size: 11 });
           sc.flush();
           cur = { Rt, best, lp, Y };
         });
@@ -390,7 +390,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
         let cur = null;
         v.animate((t) => {
           const md = mode.value; thS.el.hidden = md === 'tran'; A.visible = md === 'gen';
-          if (md !== 'gen' && D.p[2] !== C0[2] && md === 'plan' && !D.dragging) D.set([D.p[0], D.p[1], C0[2]]);
+          if (md === 'plan' && Math.abs(D.p[2] - C0[2]) > 1e-9 && !D.dragging) D.set([D.p[0], D.p[1], C0[2]]);
           const a = md === 'plan' ? [0, 0, 1] : unit(A.p), th = md === 'tran' ? 0 : thS.value * DEG;
           const c1 = md === 'plan' ? [D.p[0], D.p[1], C0[2]] : D.p;
           const R = rotAxis(a, th), d = sub(c1, mv(R, C0));
@@ -516,7 +516,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
       name: 'Falling cat: turning with zero angular momentum',
       statement: String.raw`A body made of several parts that move relative to one another can change its orientation without any external torque and with its total angular momentum exactly zero throughout. After a closed cycle of shape changes it ends in its original shape but rotated. A falling cat dropped upside down with no spin lands on its feet this way. Gravity acts at the centre of mass and exerts no torque about it, so $\mathbf L = 0$ is conserved (2.11), and still the cat turns by $180°$ in about a third of a second. The net rotation depends only on the **loop traced in shape space**, not on how fast it is traced. For small loops it is proportional to the area enclosed, it reverses when the loop is run backwards, and a back-and-forth motion along a line (zero area) gives no net rotation. Two classic two-cylinder models explain the cat. In **tuck and turn**, one half pulls in its legs, so its moment of inertia shrinks, and twists a long way while the other half counter-rotates a little; then the roles swap. In **bend and twist** (Kane & Scher, 1969) the spine bends, the bend is swept around the body, and the halves turn without twisting relative to each other.`,
       idea: String.raw`With the shape given as a function of time, $\mathbf L = \mathsf I_{\rm lock}\boldsymbol\Omega + \sum m\,\mathbf r\times\dot{\mathbf r}_{\rm shape} = 0$ fixes the angular velocity of the whole, $\boldsymbol\Omega = -\mathsf I_{\rm lock}^{-1}\sum m\,\mathbf r\times\dot{\mathbf r}_{\rm shape}$, using the inertia tensor of 10.7. This is linear in the shape velocity, so the rotation is a line integral over the path in shape space, a connection. Time drops out, and by Stokes’ theorem the net rotation for a small loop is the enclosed area times the curvature. In the tuck-and-turn model the halves turn about a common axis, and $L = I_f\dot\theta_f + I_r\dot\theta_r = 0$ gives $d\theta_r = -\frac{I_f}{I_f + I_r}\,d\beta$ in terms of the twist $\beta = \theta_f - \theta_r$, so the net turn is $-\oint\frac{I_f}{I_f+I_r}\,d\beta$. That integral vanishes for every loop unless the ratio changes during it, which is what tucking the legs does.`,
-      caption: String.raw`A two-cylinder cat (front teal, rear orange), released upside down with zero angular momentum. Right: shape space. Drag the corners of the loop; the gold dot runs once around it while the cat (left) changes shape. **Tuck and turn:** across is the twist between the halves, up is which half has its legs tucked. **Bend and twist:** the point is the bend of the spine, its direction and size. The readout checks that $\mathbf L$, summed directly over about 90 moving masses, stays zero, and reports the net turn. In tuck and turn it is compared with $-\oint\frac{I_f}{I_f+I_r}d\beta$. Shrink the loop to a line and the turn vanishes; reverse its direction and the turn changes sign.`,
+      caption: String.raw`A two-cylinder cat (front teal, rear orange), released upside down with zero angular momentum. Right: shape space. Drag the corners of the loop; the gold dot runs once around it while the cat (left) changes shape. **Tuck and turn:** across is the twist between the halves, up is which half has its legs tucked. **Bend and twist:** the point is the bend of the spine, its direction and size. The readout checks that $\mathbf L$, summed directly over 84 moving masses, stays zero, and reports the net turn. In tuck and turn it is compared with $-\oint\frac{I_f}{I_f+I_r}d\beta$. Shrink the loop to a line and the turn vanishes; reverse its direction and the turn changes sign.`,
       deps: ['mech-2.11', 'mech-10.7'],
       see: ['fluid-7.5', 'dg-10.4'],
       refs: ['Tong §3.7'],
@@ -526,15 +526,15 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
         const mode = v.select('mechanism', [{ value: 'tuck', label: 'tuck and turn' }, { value: 'bend', label: 'bend and twist (Kane–Scher)' }], 'tuck');
         const S = v.stage({ x: [-1.05, 1.05], y: [-0.95, 0.95], equal: true, axes: false, height: 340, title: 'the cat, $\\mathbf L = 0$ throughout (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.3, pitch: 0.22, axes: false, hint: false });
-        const sS = v.stage({ x: [-200, 200], y: [-1.3, 1.3], axes: 'box', height: 340, title: ' ' });
+        const sS = v.stage({ x: [-300, 300], y: [-1.3, 1.3], axes: 'box', height: 340, title: ' ' });
         const sT = v.stage({ x: [0, 1], y: [-30, 200], axes: 'box', height: 160, full: true, xlabel: 'fraction of the loop', title: 'roll of each half (°): 0 = feet up, 180 = feet down' });
         const LH = 0.48, RC = 0.11, NL = 4;
-        const LOOPS = { tuck: [[0, 1], [200, 1], [200, -1], [0, -1]], bend: Array.from({ length: 8 }, (_, k) => [62 * Math.cos((TAU * k) / 8), 62 * Math.sin((TAU * k) / 8)]) };
-        const Hs = { tuck: LOOPS.tuck.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => [clamp(a, -200, 200), clamp(b, -1, 1)] })), bend: LOOPS.bend.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => { const r = Math.hypot(a, b), k = r > 85 ? 85 / r : 1; return [a * k, b * k]; } })) };
+        const LOOPS = { tuck: [[0, 1], [270, 1], [270, -1], [0, -1]], bend: Array.from({ length: 8 }, (_, k) => [62 * Math.cos((TAU * k) / 8), 62 * Math.sin((TAU * k) / 8)]) };
+        const Hs = { tuck: LOOPS.tuck.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => [clamp(a, -300, 300), clamp(b, -1, 1)] })), bend: LOOPS.bend.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => { const r = Math.hypot(a, b), k = r > 85 ? 85 / r : 1; return [a * k, b * k]; } })) };
         // mass points of a half in its own frame (axis along +x from the joint for the front, −x for the rear): discs of points
         const half = (sg) => { const P = []; for (let i = 0; i < 5; i++) { const x = sg * LH * (i + 0.5) / 5; for (let k = 0; k < 8; k++) { const a = (TAU * k) / 8; P.push([x, (RC / Math.SQRT2) * Math.cos(a), (RC / Math.SQRT2) * Math.sin(a)]); } } return P; };
-        const HF = half(1), HR = half(-1), MC = 1 / 40, ML = 0.06;
-        const legs = (sg, ext) => [-1, 1].map((sd) => { const a = -Math.PI / 2 + sd * 0.38, rr = RC + 0.04 + ext * 0.3; return { root: [sg * 0.36, RC * Math.cos(a), RC * Math.sin(a)], foot: [sg * 0.36, rr * Math.cos(a), rr * Math.sin(a)] }; });
+        const HF = half(1), HR = half(-1), MC = 1 / 40, ML = 0.08;
+        const legs = (sg, ext) => [-1, 1].map((sd) => { const a = -Math.PI / 2 + sd * 0.38, rr = RC + 0.04 + ext * 0.36; return { root: [sg * 0.36, RC * Math.cos(a), RC * Math.sin(a)], foot: [sg * 0.36, rr * Math.cos(a), rr * Math.sin(a)] }; });
         /** Shape → rotations of the halves (in the reference frame) and leg extensions. */
         const shapeOf = (md, p) => {
           if (md === 'tuck') return { Rf: Rx(p[0] * DEG), Rr: I3(), ef: (1 - p[1]) / 2, er: (1 + p[1]) / 2 };
@@ -554,7 +554,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           return { ps: ps.map((q) => sub(q, c)), ms, c, sh };
         };
         const loopPt = (verts, u) => {   // closed polygon, uniform in arc length (in scaled units)
-          const sx = mode.value === 'tuck' ? 1 / 200 : 1 / 85, sy = mode.value === 'tuck' ? 1 : 1 / 85;
+          const sx = mode.value === 'tuck' ? 1 / 300 : 1 / 85, sy = mode.value === 'tuck' ? 1 : 1 / 85;
           const seg = verts.map((a, i) => { const b = verts[(i + 1) % verts.length]; return Math.hypot((b[0] - a[0]) * sx, (b[1] - a[1]) * sy); }), tot = seg.reduce((a, b) => a + b, 0) || 1;
           let d = (((u % 1) + 1) % 1) * tot;
           for (let i = 0; i < verts.length; i++) { if (d <= seg[i] || i === verts.length - 1) { const f = seg[i] ? d / seg[i] : 0, a = verts[i], b = verts[(i + 1) % verts.length]; return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]; } d -= seg[i]; }
@@ -626,14 +626,14 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           sc.flush();
           S.corner(`${v.fix(u * 100, 0)}% of the loop`, 'tl');
           // shape space
-          if (md === 'tuck') { sS.setView([-200, 200], [-1.3, 1.3]); sS.setTitle('shape space: twist $\\beta$ (°) across, tuck (front ↔ rear) up'); }
+          if (md === 'tuck') { sS.setView([-300, 300], [-1.3, 1.3]); sS.setTitle('shape space: twist $\\beta$ (°) across, tuck (front ↔ rear) up'); }
           else { sS.setView([-95, 95], [-95, 95]); sS.setTitle('shape space: bend of the spine (°), direction and size'); }
           sS.hline(0, { color: 'faint' }); sS.vline(0, { color: 'faint' });
           const V = B.verts;
           sS.poly(V, { color: 'accent', width: 2, fill: B.area >= 0 ? 'green' : 'orange', fillAlpha: 0.12 });
           V.forEach((a, i) => { const b = V[(i + 1) % V.length], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], d2 = [(b[0] - a[0]) * 0.08, (b[1] - a[1]) * 0.08]; sS.arrow(m[0] - d2[0], m[1] - d2[1], m[0] + d2[0], m[1] + d2[1], { color: 'accent', width: 2, head: 9 }); });
           const pc = loopPt(V, u); sS.dot(pc[0], pc[1], { r: 6, color: 'gold' });
-          if (md === 'tuck') { sS.text('front tucked', -195, 1.17, { color: 'teal', size: 11 }); sS.text('rear tucked', -195, -1.17, { color: 'orange', size: 11 }); }
+          if (md === 'tuck') { sS.text('front legs tucked', -292, 1.17, { color: 'teal', size: 11 }); sS.text('rear legs tucked', -292, -1.17, { color: 'orange', size: 11 }); }
           // roll vs fraction of the loop
           const us = B.rec.map((r) => r.u), lo = Math.min(-30, ...B.rr, ...B.rf), hi = Math.max(200, ...B.rr, ...B.rf);
           sT.setView([0, 1], [lo, hi]);

@@ -285,7 +285,7 @@ so the phase portrait in $(\varphi, a)$ has a separatrix: inside it $\varphi$ **
 $$n_I - 3n_E + 2n_G = 0,$$
 and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \lambda_I - 3\lambda_E + 2\lambda_G$ librates about $180^\circ$ with an amplitude of only a few hundredths of a degree (period about 2000 days). Their periods are close to 1 : 2 : 4, but not exactly: $n_I - 2n_E$ and $n_E - 2n_G$ are both equal to about $0.7395^\circ$/day, the common regression rate of the pericentres. A consequence is that **triple conjunctions never occur**: whenever Io and Europa line up, Ganymede is $90^\circ$ away, and when Europa and Ganymede line up, Io is on the far side of Jupiter.`,
       idea: String.raw`Io–Europa and Europa–Ganymede are each in a 2:1 mean-motion resonance (2.8), with resonant angles $\lambda_I - 2\lambda_E + \varpi$ and $\lambda_E - 2\lambda_G + \varpi'$; the pericentres involved precess together, so subtracting the two angles eliminates them and leaves the three-body angle $\Phi_L$. Tidal friction (which pushes Io outward) is thought to have driven the moons into this chain and keeps their eccentricities forced. At a triple conjunction all three mean longitudes would be equal, giving $\Phi_L = 0$, which the libration about $180^\circ$ excludes.`,
-      caption: String.raw`The three moons orbiting Jupiter with their real mean motions (Sampson’s theory, as tabulated by the Bureau des Longitudes: $203.488992^\circ$, $101.374762^\circ$, $50.317646^\circ$ per day) and the observed $\Phi_L = 180^\circ$; radii to scale. Coloured lines flash at conjunctions (green Io–Europa, pink Europa–Ganymede). Right: the Laplace angle over ten years, and the smallest arc that ever contains all three moons. Perturb Ganymede’s mean motion: the angle starts to drift and, within a few years, all three moons line up.`,
+      caption: String.raw`The three moons orbiting Jupiter with their real mean motions (Sampson’s theory, as tabulated by the Bureau des Longitudes: $203.488992^\circ$, $101.374762^\circ$, $50.317646^\circ$ per day) and the observed $\Phi_L = 180^\circ$; radii to scale. Coloured lines flash at conjunctions (green Io–Europa, pink Europa–Ganymede). Right, over ten years: the Laplace angle; the position of Ganymede relative to Io and Europa at each of their conjunctions (green dots, always 90° ahead or behind) and of Io at each Europa–Ganymede conjunction (pink, always 180°); and the smallest arc that has ever contained all three moons. Perturb Ganymede’s mean motion: the angle and the dots start to drift and, within a few years, all three moons line up.`,
       deps: ['astro-2.8'],
       see: ['astro-1.3'],
       refs: ['Murray–Dermott §8.17'],
@@ -343,7 +343,7 @@ and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \la
         v.readout(() => {
           if (!cur) return '';
           const { H } = cur, n = H.n;
-          return String.raw`$n_I - 3n_E + 2n_G = ${v.fix(n[0] - 3 * n[1] + 2 * n[2], 9)}$ °/day, while $n_I - 2n_E = ${v.fix(n[0] - 2 * n[1], 5)}$ and $n_E - 2n_G = ${v.fix(n[1] - 2 * n[2], 5)}$ °/day (pericentre regression) · in ten years the three moons are never within ${v.fix(H.mn, 2)}° of each other${dn.value === 0 ? ' — exactly 60° is the closest a $\\Phi_L = 180^\\circ$ configuration allows (Io and Ganymede together, Europa 60° away); at every Io–Europa conjunction Ganymede is 90° away, at every Europa–Ganymede conjunction Io is opposite' : H.mn < 5 ? ` — with the perturbation they all line up (day ${v.fix(H.tmin, 0)}): a triple conjunction` : ''}`;
+          return String.raw`$n_I - 3n_E + 2n_G = ${v.fix(n[0] - 3 * n[1] + 2 * n[2], 9)}$ °/day, while $n_I - 2n_E = ${v.fix(n[0] - 2 * n[1], 5)}$ and $n_E - 2n_G = ${v.fix(n[1] - 2 * n[2], 5)}$ °/day (pericentre regression) · in ten years the three moons are never within ${v.fix(H.mn, 2)}° of each other${dn.value === 0 ? ' — exactly 60° is the closest a $\\Phi_L = 180^\\circ$ configuration allows (Io and Ganymede together, Europa 60° away); at every Io–Europa conjunction Ganymede is 90° away (alternately ahead and behind), at every Europa–Ganymede conjunction Io is opposite' : H.mn < 5 ? ` — with the perturbation they all line up (day ${v.fix(H.tmin, 0)}): a triple conjunction` : ''}`;
         });
       },
     },
@@ -366,7 +366,7 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
         const iS = v.slider('initial inclination $i_0$', 0, 90, 65, { step: 0.5, fmt: (x) => `${v.fix(x, 1)}°` });
         const gS = v.slider('extra apsidal precession (units of $1/t_{KL}$)', 0, 3, 0, { step: 0.05 });
         const E = v.stage({ x: [0, 20], y: [0, 1], axes: 'box', height: 290, weight: 1, xlabel: 'time ($t_{KL}$)', ylabel: 'eccentricity e', title: 'eccentricity' });
-        const I = v.stage({ x: [0, 20], y: [0, 90], axes: 'box', height: 290, weight: 1, xlabel: 'time ($t_{KL}$)', ylabel: 'inclination i (°)', title: 'inclination', yticks: [0, 30, 39.2, 60, 90] });
+        const I = v.stage({ x: [0, 20], y: [0, 90], axes: 'box', height: 290, weight: 1, xlabel: 'time ($t_{KL}$)', ylabel: 'inclination i (°)', title: 'inclination', yticks: [0, 30, 60, 90] });
         const W = v.stage({ x: [0, 360], y: [0, 1], axes: 'box', height: 290, weight: 1.15, xlabel: 'argument of pericentre ω (°)', ylabel: 'e', title: 'phase portrait at fixed Θ', xticks: [0, 90, 180, 270, 360] });
         const Hh = W.handle(90, 0.05, { color: 'gold', r: 7, constrain: (x, y) => [clamp(x, 0, 360), clamp(y, 0.002, 0.95)] });
         const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
@@ -426,7 +426,7 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
           let emaxM = 0, thDev = 0; for (const r of out) { emaxM = Math.max(emaxM, r[1]); thDev = Math.max(thDev, Math.abs(r[4] - D.Th)); }
           const iMin = Math.min(...out.map((r) => r[2])) / DEG;
           let s = String.raw`$\Theta = \sqrt{1-e^2}\cos i = ${v.fix(D.Th, 5)}$, constant to $${sci(v, thDev)}$ · largest $e$ = ${v.fix(emaxM, 4)}`;
-          if (isFinite(emx) && gS.value === 0) s += String.raw` (prediction from $e_0 \to 0$: $\sqrt{1 - \tfrac53\cos^2 i_0} = ${v.fix(emx, 4)}$), inclination drops to ${v.fix(iMin, 1)}° (where $\cos^2 i = 3/5$ at $e_{\max}$ is ${v.fix(Math.acos(Math.sqrt(0.6)) / DEG, 1)}°)`;
+          if (isFinite(emx) && gS.value === 0) s += String.raw` (prediction from $e_0 \to 0$: $\sqrt{1 - \tfrac53\cos^2 i_0} = ${v.fix(emx, 4)}$), inclination falls to ${v.fix(iMin, 1)}°, the critical angle where $\cos^2 i = 3/5$ (reached exactly at $e_{\max}$ when $e_0 \to 0$, since $\Theta^2 = \tfrac35(1-e_{\max}^2)$)`;
           else if (!isFinite(emx)) s += ' — below 39.2°: the circular orbit is stable and e stays small';
           if (gS.value > 0) s += ' · extra precession detunes the resonance between ω and the tidal torque: oscillations shrink';
           return s;
@@ -440,18 +440,19 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
       name: 'Chaos and the long-term stability of the solar system',
       statement: String.raw`Orbits in the solar system can be **chaotic**: nearby trajectories separate exponentially, $\delta(t)\approx\delta_0 e^{t/T_L}$, with Lyapunov time $T_L$. Asteroids in or near overlapping resonances with Jupiter have $T_L$ of thousands of years or less. For the planets themselves, numerical integrations of the averaged equations (Laskar 1989) and of the full equations (Sussman & Wisdom 1992) give $T_L \approx 5$ Myr for the inner planets, so an error of 15 m in the Earth’s position today grows to about 1 AU after roughly 100 Myr: the precise configuration of the solar system cannot be predicted beyond that horizon. Chaos does not mean imminent instability — the planets’ semi-major axes stay nearly fixed — but in about 1% of possible futures Mercury’s eccentricity grows enough within 5 Gyr to cause collisions (Laskar & Gastineau 2009).`,
       idea: String.raw`Where resonances (2.8) are close enough that their separatrices overlap, a trajectory can wander between them; the separatrix regions become chaotic layers and the motion acquires a positive Lyapunov exponent (mech 13.4). The rate of divergence is measured by following two nearby orbits and repeatedly renormalising their separation (Benettin’s method). In the inner solar system the overlap involves secular resonances among the precession frequencies of Earth and Mars and of Mercury, Venus and Jupiter, so the chaos is slow, and secular theory (2.7) on its own would miss it.`,
-      caption: String.raw`Left: drag the gold point to choose an asteroid’s initial semi-major axis and eccentricity (Jupiter’s main resonances marked). Middle: the separation of two copies of that asteroid, started $10^{-9}$ AU apart and integrated for 20 000 years with Jupiter on its real eccentric orbit, on a log scale (grey: a regular reference orbit at 2.75 AU, whose separation grows only linearly). A straight line means exponential divergence; its slope gives the Lyapunov time. Right: what $T_L = 5$ Myr means for the Earth — the growth of an initial position error; set the starting error and read off the prediction horizon.`,
+      caption: String.raw`Left: drag the gold point to choose an asteroid’s initial semi-major axis and eccentricity (Jupiter’s main resonances marked). Middle: the separation of two copies of that asteroid, started $10^{-9}$ AU apart and integrated for 20 000 years with Jupiter on its real eccentric orbit, on a log scale (the pair is pulled back together whenever it drifts apart and the growth factors are accumulated, so the curve can rise past physical sizes) (grey: a regular reference orbit at 2.75 AU, whose separation grows only linearly). A straight line means exponential divergence; its slope gives the Lyapunov time. Right: what $T_L = 5$ Myr means for the Earth — the growth of an initial position error; set the starting error and read off the prediction horizon.`,
       deps: ['astro-2.8', 'mech-13.4'],
       see: ['astro-2.9', 'astro-2.7'],
       refs: ['Murray–Dermott §9.2', 'Murray–Dermott §9.10'],
       tags: ['chaos', 'Lyapunov', 'solar system'],
       credit: 'Laskar, 1989; Sussman & Wisdom, 1992',
       viz(v) {
-        const d0S = v.slider('initial error in the Earth’s position', -2, 4, Math.log10(15), { step: 0.05, fmt: (x) => { const m = 10 ** x; return m < 1 ? `${v.fix(m * 100, 0)} cm` : m < 1000 ? `${v.fix(m, m < 10 ? 1 : 0)} m` : `${v.fix(m / 1000, 1)} km`; } });
-        const A = v.stage({ x: [2.2, 4.3], y: [0, 0.35], axes: 'box', height: 300, weight: 0.9, xlabel: 'a (AU)', ylabel: 'e', title: 'choose an asteroid' });
-        const L = v.stage({ x: [0, 20], y: [-9, 3], axes: 'box', height: 300, weight: 1.1, xlabel: 'time (thousand years)', ylabel: 'log₁₀ separation (AU)', title: 'divergence of two nearby orbits' });
-        const Ss = v.stage({ x: [0, 200], y: [-2, 13], axes: 'box', height: 300, weight: 1, xlabel: 'time from now (Myr)', ylabel: 'log₁₀ error (m)', title: 'the inner solar system, T_L ≈ 5 Myr' });
-        const Hp = A.handle(3.85, 0.15, { color: 'gold', r: 7, constrain: (x, y) => [clamp(x, 2.2, 4.25), clamp(y, 0, 0.34)] });
+        const fmtLen = (x) => { const m = 10 ** x; return m < 1 ? `${v.fix(m * 100, 0)} cm` : m < 1000 ? `${v.fix(m, m < 10 ? 1 : 0)} m` : `${v.fix(m / 1000, 1)} km`; };
+        const d0S = v.slider('initial error in the Earth’s position', -2, 4, Math.log10(15), { step: 0.05, fmt: fmtLen });
+        const A = v.stage({ x: [2.2, 4.3], y: [0, 0.45], axes: 'box', height: 300, weight: 0.9, xlabel: 'a (AU)', ylabel: 'e', title: 'choose an asteroid' });
+        const L = v.stage({ x: [0, 20], y: [-9, 3], axes: 'box', height: 300, weight: 1.1, xlabel: 'time (thousand years)', ylabel: 'log₁₀ separation growth (AU)', title: 'divergence of two nearby orbits' });
+        const Ss = v.stage({ x: [0, 200], y: [-2, 14], axes: 'box', height: 300, weight: 1, xlabel: 'time from now (Myr)', ylabel: 'log₁₀ error (m)', title: 'the inner solar system, $T_L \\approx 5$ Myr' });
+        const Hp = A.handle(3.85, 0.15, { color: 'gold', r: 7, constrain: (x, y) => [clamp(x, 2.2, 4.25), clamp(y, 0, 0.44)] });
         const gm = GSUN, mp = 9.5479e-4, ep = 0.0489, YEARS = 20000, DT = 0.2;
         const lyap = (a, e) => {
           const P = new Float64Array(8), dead = new Uint8Array(2), H = fromElements(gm, a, e, 0, 0, 1.0, 0.5), d0 = 1e-9;
@@ -475,10 +476,11 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
         let cur = null;
         v.render(() => {
           // (a, e) chooser with resonances and Jupiter-/Mars-crossing limits
-          for (const [p, q] of [[3, 1], [5, 2], [7, 3], [2, 1], [3, 2]]) { const a = AJ * Math.pow(q / p, 2 / 3); A.vline(a, { color: 'red', width: 1, dash: [3, 3], alpha: 0.7 }); A.text(`${p}:${q}`, a, 0.335, { color: 'red', size: 10, align: 'center' }); }
+          for (const [p, q] of [[3, 1], [5, 2], [7, 3], [2, 1], [3, 2]]) { const a = AJ * Math.pow(q / p, 2 / 3); A.vline(a, { color: 'red', width: 1, dash: [3, 3], alpha: 0.7 }); A.text(`${p}:${q}`, a, p === 7 ? 0.405 : 0.43, { color: 'red', size: 10, align: 'center' }); }
           A.fn((a) => 1 - 1.52 / a, { color: 'muted', width: 1.2, dash: [5, 4] });
-          A.text('Mars-crossing', 2.3, 1 - 1.52 / 2.3, { color: 'muted', size: 10, dy: -8, align: 'left' });
-          A.fn((a) => 4.9 / a - 1, { color: 'orange', width: 1.2, dash: [5, 4], domain: [3.8, 4.3] });
+          A.text('Mars-crossing', 2.42, 1 - 1.52 / 2.42, { color: 'muted', size: 10, dx: 6, align: 'left' });
+          A.fn((a) => 4.9 / a - 1, { color: 'orange', width: 1.2, dash: [5, 4], domain: [3.45, 4.3] });
+          A.text('near Jupiter', 4.25, 4.9 / 4.25 - 1, { color: 'orange', size: 10, dy: -9, align: 'right' });
           A.dot(2.75, 0.05, { r: 4, color: 'muted' });
           const ref = cacheR(1, () => lyap(2.75, 0.05));
           let C = null;
@@ -497,13 +499,13 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
           // the solar system extrapolation (T_L = 5 Myr)
           const TL = 5, lg0 = d0S.value, AUm = Math.log10(1.496e11);
           Ss.hline(AUm, { color: 'red', width: 1.4, dash: [5, 4] });
-          Ss.text('1 AU: Earth’s position unknown', 4, AUm, { color: 'red', size: 10.5, dy: -9, align: 'left' });
+          Ss.text('1 AU: Earth’s position unknown', 196, AUm, { color: 'red', size: 10.5, dy: 11, align: 'right' });
           Ss.hline(Math.log10(6.371e6), { color: 'faint', width: 1, dash: [3, 4] });
           Ss.text('Earth radius', 4, Math.log10(6.371e6), { color: 'muted', size: 10, dy: -8, align: 'left' });
           Ss.fn((t) => lg0 + t / (TL * Math.LN10), { color: 'accent', width: 2.2 });
           const hz = TL * Math.LN10 * (AUm - lg0);
           Ss.vline(hz, { color: 'green', width: 1.2, dash: [3, 3] });
-          Ss.text(`${v.fix(hz, 0)} Myr`, hz, -1.5, { color: 'green', size: 11, dx: 5, align: 'left' });
+          Ss.text(`horizon ${v.fix(hz, 0)} Myr`, hz, 0.5, { color: 'green', size: 11, dx: 5, align: 'left' });
           cur = { C, ref, hz };
         });
         v.legend([['red', 'chaotic orbit'], ['accent', 'regular orbit / error growth'], ['muted', 'regular reference']]);
@@ -515,7 +517,7 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
           else if (C.fate !== 'ok') s = String.raw`$a = ${v.fix(Hp.x, 2)}$ AU, $e = ${v.fix(Hp.y, 2)}$: ${C.fate} after ${v.fix(C.out[C.out.length - 1][0] * 1000, 0)} yr${isFinite(C.TL) ? `; Lyapunov time before that ≈ ${v.fix(C.TL, 0)} yr` : ''}`;
           else if (isFinite(C.TL) && C.TL < 4000) s = String.raw`$a = ${v.fix(Hp.x, 2)}$ AU, $e = ${v.fix(Hp.y, 2)}$: separation grows by $10^{${v.fix(C.out[C.out.length - 1][1] + 9, 1)}}$ in 20 000 yr — chaotic, Lyapunov time $T_L \approx ${v.fix(C.TL, 0)}$ yr (${v.fix(C.TL / PJ, 0)} Jupiter orbits)`;
           else s = String.raw`$a = ${v.fix(Hp.x, 2)}$ AU, $e = ${v.fix(Hp.y, 2)}$: separation grows only by $10^{${v.fix(C.out[C.out.length - 1][1] + 9, 1)}}$ — like the regular reference ($10^{${v.fix(ref.out[ref.out.length - 1][1] + 9, 1)}}$), roughly linear in time: no measurable chaos in 20 000 yr`;
-          return s + String.raw` · Earth: an error of $10^{${v.fix(d0S.value, 2)}}$ m reaches 1 AU after $T_L\ln(1\,\text{AU}/\delta_0) \approx ${v.fix(hz, 0)}$ Myr`;
+          return s + String.raw` · Earth: an error of ${fmtLen(d0S.value)} reaches 1 AU after $T_L\ln(1\,\text{AU}/\delta_0) \approx ${v.fix(hz, 0)}$ Myr (Laskar 1989: an error of 15 m becomes about 150 m after 10 Myr and 150 million km after 100 Myr)`;
         });
       },
     },

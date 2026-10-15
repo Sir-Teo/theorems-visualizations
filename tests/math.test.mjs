@@ -494,5 +494,12 @@ test('negative binomial, digamma, trigamma', () => {
   close(M.trigamma(1), Math.PI ** 2 / 6, 1e-12); close(M.trigamma(0.5), Math.PI ** 2 / 2, 1e-11); close(M.digamma(-0.5), 0.03648997397857652, 1e-10);
 });
 
+test('nelderMead and hessian', () => {
+  const ros = ([x, y]) => (1 - x) ** 2 + 100 * (y - x * x) ** 2;
+  const r = M.nelderMead(ros, [-1.2, 1], { tol: 1e-14, maxIt: 5000 }); close(r.x[0], 1, 1e-4); close(r.x[1], 1, 1e-4);
+  const q = ([x, y, z]) => (x - 1) ** 2 + 2 * (y + 2) ** 2 + 3 * (z - 0.5) ** 2 + x * y; const s = M.nelderMead(q, [0, 0, 0], { tol: 1e-15 });
+  const H = M.hessian(q, s.x); close(H[0][0], 2, 1e-5); close(H[1][1], 4, 1e-5); close(H[2][2], 6, 1e-5); close(H[0][1], 1, 1e-5);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

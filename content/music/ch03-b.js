@@ -81,6 +81,46 @@ function plateModes(M, N, nu) {
   return e.values.map((val, q) => ({ Om: Math.sqrt(Math.max(0, val)), c: e.vectors.map((r) => r[q]) })).sort((p, q) => p.Om - q.Om).filter((md) => md.Om > 1);
 }
 
+// ---------------------------------------------------------------- free–free bar of variable thickness (3.11)
+/**
+ * Euler–Bernoulli bar on [0, 1] with uniform width and thickness h(x) (h = 1 for the uncut bar): (h³ w'')'' = λ h w, λ = β⁴.
+ * Shooting: integrate y = [w, w', M = h³w'', V = M'] by RK4 from the free end x = 0 (M = V = 0) for the two starts w = 1 and w' = 1;
+ * β is an eigenvalue when the 2×2 determinant of [M, V] at x = 1 vanishes (free end there too).
+ */
+function barShoot(h, lam, n = 80, keep = false) {
+  const H = 1 / n, out = [];
+  const F = (x, y) => { const q = h(x); return [y[1], y[2] / (q * q * q), y[3], lam * q * y[0]]; };
+  for (const y0 of [[1, 0, 0, 0], [0, 1, 0, 0]]) {
+    let y = y0.slice(); const path = keep ? [y[0]] : null;
+    for (let i = 0; i < n; i++) {
+      const x = i * H, k1 = F(x, y), k2 = F(x + H / 2, y.map((u, j) => u + (H / 2) * k1[j])), k3 = F(x + H / 2, y.map((u, j) => u + (H / 2) * k2[j])), k4 = F(x + H, y.map((u, j) => u + H * k3[j]));
+      y = y.map((u, j) => u + (H / 6) * (k1[j] + 2 * k2[j] + 2 * k3[j] + k4[j]));
+      if (keep) path.push(y[0]);
+    }
+    out.push(keep ? { end: y, path } : y);
+  }
+  if (keep) return out;
+  return out[0][2] * out[1][3] - out[0][3] * out[1][2];
+}
+/** The lowest k values of β (ω ∝ β²) for thickness profile h: scan β upward from 0.6, then bisect each sign change. */
+function barModes(h, k = 4) {
+  const D = (b) => barShoot(h, b ** 4), out = []; let a = 0.6, da = D(a);
+  for (let b = a + 0.1; out.length < k && b < 30; b += 0.1) {
+    const db = D(b);
+    if (da * db < 0) { let lo = b - 0.1, hi = b, dl = da; for (let i = 0; i < 34; i++) { const m = 0.5 * (lo + hi), dm = D(m); if (dl * dm <= 0) hi = m; else { lo = m; dl = dm; } } out.push(0.5 * (lo + hi)); }
+    da = db;
+  }
+  return out;
+}
+/** Mode shape at β, sampled on n + 1 points and scaled to max |w| = 1. */
+function barShape(h, beta, n = 120) {
+  const [A, B] = barShoot(h, beta ** 4, n, true), cA = B.end[2], cB = -A.end[2]; // the combination with M(1) = 0
+  const w = A.path.map((u, i) => cA * u + cB * B.path[i]); const mx = Math.max(...w.map(Math.abs)) || 1;
+  return w.map((u) => u / mx);
+}
+/** Arch-shaped undercut: thickness 1 − d(1 − |s|³) over |s| < 1, s = (x − ½)/(w/2). */
+const archProfile = (d, w) => (x) => { const s = Math.abs(x - 0.5) / (w / 2); return s < 1 ? 1 - d * (1 - s * s * s) : 1; };
+
 /** Theme-aware [r, g, b] for a signed value u ∈ [−1, 1] (blue … panel … red), via signedRamp. */
 const colOf = (sr, u) => sr.col(Math.max(-1, Math.min(1, u)));
 
@@ -445,6 +485,99 @@ with the boundary conditions of its edges (for free edges: no bending moment and
           const md = modes[kk], fk = md.Om * FS, pm = Math.max(...PHI.map(Math.abs)), ex = Math.abs(PHI[kk]) / pm, conv = Math.max(...coarse.map((c, i) => c.Om / all[i].Om - 1));
           const level = 20 * Math.log10(Math.max(1e-9, rmsNow));
           return `driving at ${v.fix(f, 1)} Hz, response ${v.fix(level, 1)} dB re the strongest resonance · nearest mode: no. ${kk + 1} at ${v.fix(fk, 1)} Hz ($\\Omega=\\omega a^2\\sqrt{\\rho h/D}$ = ${v.fix(md.Om, 2)}), ${Math.abs(1200 * Math.log2(f / fk)) < 8 ? 'on resonance' : `${centsTxt(1200 * Math.log2(f / fk), 0)} away`}; its shape at the drive point is ${v.fix(100 * ex, 0)}% of the largest${ex < 0.05 ? ': it has a node there and cannot be excited' : ''} · first modes $\\Omega$ = ${modes.slice(0, 5).map((q) => v.fix(q.Om, 2)).join(', ')} (Ritz upper bounds; the 6×6 basis gives values at most ${v.fix(100 * conv, 2)}% higher) · plate: 24 cm, 1.5 mm aluminium, $f=\\Omega\\cdot$${v.fix(FS, 3)} Hz`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.11
+    {
+      num: '3.11',
+      kind: 'Model',
+      name: 'Bars: xylophone and marimba tuning',
+      statement: String.raw`A uniform bar of length $L$ and thickness $t$, free at both ends, vibrates in bending (Euler–Bernoulli, $EI\,w^{(4)}=\rho A\,\omega^2w$) at
+$$f_n=\frac{(\beta_nL)^2}{2\pi L^2}\,t\sqrt{\frac{E}{12\rho}},\qquad \beta_nL=4.730,\ 7.853,\ 10.996,\ 14.137,\ \dots$$
+the roots of $\cos\beta L\cosh\beta L=1$, so its partials stand in the ratios $1 : 2.756 : 5.404 : 8.933$: far from harmonic, which is why an uncut bar sounds clangy. Makers of marimbas, vibraphones and xylophones carve an **arch** under the middle of each bar. Thinning the middle lowers the fundamental, whose bending is concentrated there, much more than the upper modes, so the depth and the length of the arch can be chosen to put the overtones where the maker wants them: in a marimba or vibraphone the first two overtones at **4** and **10** times the fundamental (two octaves, and three octaves and a major third), in a xylophone the first overtone at **3** times (a twelfth).`,
+      idea: String.raw`For a bar of variable thickness $t(x)$ the bending stiffness goes as $t^3$ and the mass as $t$: $(Et^3w'')''=12\rho t\,\omega^2 w$. By the Rayleigh quotient, $\omega^2$ is the ratio of the bending energy $\int Et^3w''^2$ to the kinetic energy $\int12\rho t\,w^2$, so removing material where a mode bends most lowers that mode's frequency. The fundamental bends most in the middle; the second mode bends most about a quarter of the way in, the third in three places. An arch cut in the middle therefore lowers $f_1$ a lot, $f_2$ less and $f_3$ less still: the ratios $f_2/f_1$ and $f_3/f_1$ rise, and with two shape parameters (depth and length of the arch) both can be set at once. The ear then hears a nearly harmonic tone with a strong fundamental, the stiff-string inharmonicity of 2.11 tamed by design.`,
+      caption: String.raw`The bar is drawn side-on with its thickness exaggerated. Drag the two orange handles to set the **depth** and the **length** of the arch; the modes are recomputed by integrating the bar equation (shooting method) as you drag. Lower left: the first three mode shapes, with their nodes (the cords that hold a marimba bar run through the nodes of the fundamental). Lower right: the partials of a bar tuned to A3 on a keyboard, against the marimba targets $4f_1$, $10f_1$ (green) and the xylophone's $3f_1$ (teal); grey marks show the uncut bar. *Tune the arch* finds the cut for the chosen target by Newton's method. Drag the gold mallet and *strike*: at the centre the second mode, which has a node there, falls silent.`,
+      deps: ['music-2.11'],
+      see: ['music-6.7', 'pde-7.6', 'mech-11.9'],
+      refs: ['Benson ch. 3', 'Sethares ch. 6'],
+      tags: ['bars', 'percussion'],
+      credit: 'Euler & Daniel Bernoulli, 1735–1744 (the free bar); arch-cut tuning of marimba bars: 20th century (Deagan)',
+      scope: String.raw`One-dimensional Euler–Bernoulli bending of a slender bar of uniform width, with an arch of the form $1-d(1-|s|^3)$; torsional and lateral modes, rotary inertia and shear (which lower the upper partials of thick bars), the resonator tubes and the cords are left out. Measured marimba bars are usually tuned to $1:4$ exactly, with the third partial between about 9.2 and 10.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Marimba#Bars' },
+      viz(v) {
+        const M = v.M, TH = 0.2, F1 = 220, U = barModes(() => 1, 4);
+        let d = 0.45, w = 0.6, key = '', S = null;
+        const target = v.select('target', [{ value: 'marimba', label: 'marimba 1 : 4 : 10' }, { value: 'xylo', label: 'xylophone 1 : 3' }], 'marimba');
+        const bar = v.stage({ x: [-0.04, 1.04], y: [-0.34, 0.21], height: 190, axes: false, full: true });
+        const ms = v.stage({ x: [-0.02, 1.02], y: [0.45, 3.65], height: 250, axes: false, weight: 1, minWidth: 280, title: 'mode shapes and their nodes' });
+        const ks = v.stage({ x: [150, 3600], y: [-0.4, 1.32], xlog: true, height: 250, axes: 'box', yticks: [], xlabel: 'frequency (Hz)', weight: 1.25, minWidth: 300, title: 'partials of the bar, fundamental tuned to A3' });
+        const hD = bar.handle(0.5, -TH * (1 - d), { color: 'orange', r: 8, constrain: (x, y) => [0.5, M.clamp(y, -TH, -TH * 0.12)], onDrag: (h) => { d = 1 + h.y / TH; } });
+        const hW = bar.handle(0.5 + w / 2, -TH, { color: 'orange', r: 8, constrain: (x) => [M.clamp(x, 0.6, 0.99), -TH], onDrag: (h) => { w = 2 * (h.x - 0.5); } });
+        const hS = bar.handle(0.3, 0.07, { color: 'gold', r: 8, label: 'mallet', labelPos: 'e', constrain: (x) => [M.clamp(x, 0.02, 0.98), 0.07] });
+        const run = () => {
+          const k = d.toFixed(4) + ',' + w.toFixed(4); if (k === key) return S; key = k;
+          const h = archProfile(d, w), B = barModes(h, 4), shapes = B.slice(0, 3).map((b) => barShape(h, b));
+          const nodes = shapes.map((sh) => { const z = []; for (let i = 1; i < sh.length; i++) if (sh[i - 1] * sh[i] < 0) z.push((i - 1 + sh[i - 1] / (sh[i - 1] - sh[i])) / (sh.length - 1)); return z; });
+          S = { h, B, shapes, nodes, r: B.map((b) => (b * b) / (B[0] * B[0])), drop: (B[0] * B[0]) / (U[0] * U[0]) };
+          return S;
+        };
+        const ratiosAt = (dd, ww) => { const B = barModes(archProfile(dd, ww), 3); return [(B[1] / B[0]) ** 2, (B[2] / B[0]) ** 2]; };
+        v.button('Tune the arch', () => {
+          let dd = d, ww = w;
+          if (target.value === 'marimba') {
+            if (dd < 0.3) { dd = 0.65; ww = 0.68; }
+            for (let it = 0; it < 14; it++) {
+              const r0 = ratiosAt(dd, ww), e = 1e-4, rd = ratiosAt(dd + e, ww), rw = ratiosAt(dd, ww + e);
+              const J = [[(rd[0] - r0[0]) / e, (rw[0] - r0[0]) / e], [(rd[1] - r0[1]) / e, (rw[1] - r0[1]) / e]], F = [r0[0] - 4, r0[1] - 10], det = J[0][0] * J[1][1] - J[0][1] * J[1][0];
+              const sd = (J[1][1] * F[0] - J[0][1] * F[1]) / det, sw = (-J[1][0] * F[0] + J[0][0] * F[1]) / det, sc = Math.min(1, 0.08 / Math.max(Math.abs(sd), Math.abs(sw), 1e-12));
+              dd = M.clamp(dd - sc * sd, 0.05, 0.88); ww = M.clamp(ww - sc * sw, 0.2, 0.98); if (Math.abs(F[0]) + Math.abs(F[1]) < 2e-6) break;
+            }
+          } else { // depth only, so that f2/f1 = 3 (secant method)
+            let a = 0.05, b = Math.max(0.2, Math.min(0.6, dd)), fa = ratiosAt(a, ww)[0] - 3, fb = ratiosAt(b, ww)[0] - 3;
+            for (let it = 0; it < 14 && Math.abs(fb) > 1e-6; it++) { const c = M.clamp(b - (fb * (b - a)) / (fb - fa), 0.02, 0.88); a = b; fa = fb; b = c; fb = ratiosAt(b, ww)[0] - 3; }
+            dd = b;
+          }
+          d = dd; w = ww; hD.set(0.5, -TH * (1 - d)); hW.set(0.5 + w / 2, -TH);
+        });
+        v.button('uncut bar', () => { d = 0; hD.set(0.5, -TH); });
+        const partsOf = (R, xs) => R.r.map((q, i) => ({ f: F1 * q, a: i < 3 ? Math.abs(R.shapes[i][Math.round(xs * 120)]) : 0.15, d: 1.2 + 0.004 * F1 * q }));
+        v.soundButton('Strike', (snd) => snd.samples(finish(synth(partsOf(run(), hS.x), 2.2), 0.8), SR, { gain: 0.6 }));
+        v.soundButton('uncut bar, then this bar', (snd) => {
+          const u = { r: U.map((b) => (b / U[0]) ** 2), shapes: [0, 1, 2].map((i) => barShape(() => 1, U[i])) };
+          snd.samples(join([finish(synth(partsOf(u, hS.x), 1.8), 0.8), finish(synth(partsOf(run(), hS.x), 2), 0.8)], 0.3), SR, { gain: 0.6 });
+        });
+        v.render(() => {
+          const R = run(), h = R.h;
+          if (!hD.dragging) hD.set(0.5, -TH * (1 - d)); if (!hW.dragging) hW.set(0.5 + w / 2, -TH);
+          // ---- the bar, the wood removed, the cords
+          const prof = M.range(201).map((i) => [i / 200, -TH * h(i / 200)]);
+          if (d > 0.005) bar.poly([...prof.filter(([x]) => Math.abs(x - 0.5) <= w / 2), [0.5 + w / 2, -TH], [0.5 - w / 2, -TH]], { fill: 'red', fillAlpha: 0.06, stroke: false, hatch: 'red', hatchAlpha: 0.35, hatchGap: 7 });
+          bar.poly([[0, 0], [1, 0], ...prof.slice().reverse()], { fill: 'orange', fillAlpha: 0.32, color: 'orange', width: 1.6 });
+          R.nodes[0].forEach((x) => { bar.circle(x, -TH - 0.035, 0.012, { fill: 'ink', fillAlpha: 0.9, stroke: false }); bar.line(x, -TH - 0.05, x, -0.34, { color: 'muted', width: 1, dash: [2, 3] }); });
+          bar.text('cords at the nodes of the fundamental', R.nodes[0][0] - 0.015, -0.31, { align: 'right', color: 'muted', size: 10.5 });
+          bar.text(`arch: depth ${v.fix(100 * d, 0)}% of the thickness, length ${v.fix(100 * w, 0)}% of the bar`, 0.98, 0.17, { align: 'right', color: 'orange', size: 11.5, weight: 600 });
+          bar.corner('thickness exaggerated', 'br', { color: 'muted', size: 10.5 });
+          // ---- mode shapes
+          R.shapes.forEach((sh, k) => {
+            const y0 = 3 - k * 1.05, col = ['accent', 'purple', 'teal'][k];
+            ms.hline(y0, { color: 'faint', width: 1 });
+            ms.path(sh.map((u, i) => [i / 120, y0 + 0.36 * u]), { color: col, width: 2.4 });
+            R.nodes[k].forEach((x) => ms.dot(x, y0, { r: 3.5, color: 'ink' }));
+            ms.text(`mode ${k + 1}: ${k ? v.fix(R.r[k], 2) + ' f₁' : 'f₁'}`, 0.0, y0 + 0.47, { align: 'left', color: col, size: 11, weight: 600 });
+          });
+          ms.vline(hS.x, { color: 'gold', width: 1.3, dash: [4, 3] });
+          // ---- partials on the keyboard
+          const marks = new Map(); R.r.slice(0, 4).forEach((q, i) => marks.set(Math.round(M.freqToMidi(F1 * q)), ['accent', 'purple', 'teal', 'muted'][i]));
+          keyboard(ks, M, 150, 3600, -0.38, -0.08, marks);
+          for (const [q, col] of [[4, 'green'], [10, 'green'], [3, 'teal']]) { ks.line(F1 * q, 0, F1 * q, 1.12, { color: col, width: 1.4, dash: [5, 4] }); ks.text(String(q), F1 * q, 1.22, { align: 'center', color: col, size: 10.5, weight: 600 }); }
+          U.slice(1, 4).forEach((b) => { const x = F1 * (b / U[0]) ** 2; if (x < 3600) ks.line(x, 0, x, 0.5, { color: 'muted', width: 2, alpha: 0.5 }); });
+          R.r.forEach((q, i) => { const x = F1 * q; if (x > 3600) return; const hh = 0.95 - 0.17 * i; ks.line(x, 0, x, hh, { color: ['accent', 'purple', 'teal', 'muted'][i], width: 3 }); ks.text(v.fix(q, 2), x, hh + 0.07, { align: 'center', color: 'ink', size: 10.5 }); });
+        });
+        v.legend([['orange', 'the bar; arch handles'], ['red', 'wood removed', { area: true }], ['green', 'marimba targets 4, 10', { dash: true }], ['teal', 'xylophone target 3', { dash: true }]]);
+        v.readout(() => {
+          const R = run(), c2 = 1200 * Math.log2(R.r[1] / 4), c3 = 1200 * Math.log2(R.r[2] / 10), cx = 1200 * Math.log2(R.r[1] / 3);
+          return `partials $f_n/f_1$ = ${R.r.map((q) => v.fix(q, 3)).join(' : ')} (uncut: ${U.map((b) => v.fix((b / U[0]) ** 2, 3)).join(' : ')} from the computed $\\beta L$ = ${U.map((b) => v.fix(b, 3)).join(', ')}) · ${target.value === 'marimba' ? `distance from 4 and 10: ${centsTxt(c2, 0)}, ${centsTxt(c3, 0)}` : `distance from 3: ${centsTxt(cx, 0)}`} · the arch lowers the fundamental to ${v.fix(R.drop, 3)} of the uncut bar's (${v.fix(-12 * Math.log2(R.drop), 1)} semitones) · nodes of the fundamental at ${R.nodes[0].map((x) => v.fix(x, 3)).join(' and ')} of the length (uncut: 0.224 and 0.776)`;
         });
       },
     },

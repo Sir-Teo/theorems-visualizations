@@ -464,3 +464,24 @@ export function cylinder(v, s, x0, y0, w, h, frac, col, o = {}) {
   }
   return top;
 }
+
+/**
+ * Observed efficiencies of thermal power plants with their hot and cold temperatures (K), as tabulated by
+ * Esposito, Kawai, Lindenberg & Van den Broeck, Phys. Rev. Lett. 105, 150603 (2010), Table I, compiled from
+ * Curzon & Ahlborn, Am. J. Phys. 43, 22 (1975) (via Callen 1985) and Bejan, Advanced Engineering Thermodynamics (1997).
+ */
+export const PLANTS = [
+  { name: 'Doel 4', kind: 'nuclear, Belgium', Th: 566, Tc: 283, eta: 0.35 },
+  { name: 'Almaraz II', kind: 'nuclear, Spain', Th: 600, Tc: 290, eta: 0.34 },
+  { name: 'Sizewell B', kind: 'nuclear, UK', Th: 581, Tc: 288, eta: 0.36 },
+  { name: 'Cofrentes', kind: 'nuclear, Spain', Th: 562, Tc: 289, eta: 0.34 },
+  { name: 'Heysham', kind: 'nuclear, UK', Th: 727, Tc: 288, eta: 0.40 },
+  { name: 'West Thurrock', kind: 'coal, UK', Th: 838, Tc: 298, eta: 0.36, ca: true },
+  { name: 'CANDU', kind: 'nuclear, Canada', Th: 573, Tc: 298, eta: 0.30, ca: true },
+  { name: 'Larderello', kind: 'geothermal, Italy', Th: 523, Tc: 353, eta: 0.16, ca: true },
+  { name: 'Calder Hall', kind: 'nuclear, UK', Th: 583, Tc: 298, eta: 0.19 },
+  { name: 'steam/mercury plant', kind: 'US', Th: 783, Tc: 298, eta: 0.34 },
+  { name: 'steam plant', kind: 'UK', Th: 698, Tc: 298, eta: 0.28 },
+  { name: 'gas turbine', kind: 'Switzerland', Th: 963, Tc: 298, eta: 0.32 },
+  { name: 'gas turbine', kind: 'France', Th: 953, Tc: 298, eta: 0.34 },
+];

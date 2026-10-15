@@ -168,12 +168,9 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
 
           // angle arcs: Ω in the ecliptic, ω in the orbit plane, i between the planes
           const arc = (A, Bv, ang, r, col) => { const q = []; for (let k = 0; k <= 30; k++) { const t = (ang * k) / 30; q.push(vlin(r * Math.cos(t), A, r * Math.sin(t), Bv)); } sc.path(q, { color: col, width: 2.2 }); return q[15]; };
-          const mO = arc([1, 0, 0], [0, 1, 0], st.Om, 0.42, 'orange');
-          const mW = arc(F.n, F.m, st.w, 0.55, 'green');
-          const mI = arc(F.u, ez, st.inc, 0.75, 'purple');
-          sc.tex('\\Omega', vlin(1.3, mO, 0, mO), { color: 'orange', size: 14 });
-          sc.tex('\\omega', vlin(1.25, mW, 0, mW), { color: 'green', size: 14 });
-          sc.tex('i', vlin(1.18, mI, 0, mI), { color: 'purple', size: 14 });
+          arc([1, 0, 0], [0, 1, 0], st.Om, 0.42, 'orange');
+          arc(F.n, F.m, st.w, 0.55, 'green');
+          arc(F.u, ez, st.inc, 0.75, 'purple');
           sc.line([0, 0, 0], vlin(R, F.u, 0, F.u), { color: 'purple', width: 1, alpha: 0.45, dash: [2, 3] });
           sc.line([0, 0, 0], hI.p, { color: 'purple', width: 1, alpha: 0.45, dash: [2, 3] });
           sc.line([0, 0, 0], hW.p, { color: 'green', width: 1, alpha: 0.45, dash: [2, 3] });

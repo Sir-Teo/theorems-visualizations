@@ -108,6 +108,42 @@ export function newton(f, x0, steps = 30, df) {
   for (let i = 0; i < steps; i++) { const d = df ? df(x) : deriv(f, x); if (!d) break; x -= f(x) / d; }
   return x;
 }
+/**
+ * Minimize f: ℝⁿ → ℝ by Nelder–Mead (adaptive coefficients for dimension n). x0: start; opts: {step (initial simplex size,
+ * number or array), tol (spread in f), maxIt}. Returns {x, fx, it}. Derivative-free: good for likelihood fits of a few parameters.
+ */
+export function nelderMead(f, x0, { step = 0.1, tol = 1e-10, maxIt = 2000 } = {}) {
+  const n = x0.length, a = 1, g = 1 + 2 / n, c = 0.75 - 1 / (2 * n), sh = 1 - 1 / n;
+  const P = [x0.slice()]; for (let k = 0; k < n; k++) { const v = x0.slice(); v[k] += Array.isArray(step) ? step[k] : step || 0.1; P.push(v); }
+  let F = P.map((v) => f(v)), it = 0;
+  const lerp = (u, w, t) => u.map((ui, k) => ui + t * (w[k] - ui));
+  for (; it < maxIt; it++) {
+    const ord = F.map((v, k) => k).sort((p, q) => F[p] - F[q]); const Ps = ord.map((k) => P[k]), Fs = ord.map((k) => F[k]);
+    P.splice(0, P.length, ...Ps); F = Fs;
+    if (Math.abs(F[n] - F[0]) <= tol * (Math.abs(F[0]) + 1e-12)) break;
+    const cen = new Array(n).fill(0); for (let k = 0; k < n; k++) for (let j = 0; j < n; j++) cen[j] += P[k][j] / n;
+    const xr = lerp(cen, P[n], -a), fr = f(xr);
+    if (fr < F[0]) { const xe = lerp(cen, P[n], -g), fe = f(xe); if (fe < fr) { P[n] = xe; F[n] = fe; } else { P[n] = xr; F[n] = fr; } continue; }
+    if (fr < F[n - 1]) { P[n] = xr; F[n] = fr; continue; }
+    const out = fr < F[n], xc = out ? lerp(cen, xr, c) : lerp(cen, P[n], c), fc = f(xc);
+    if (fc < (out ? fr : F[n])) { P[n] = xc; F[n] = fc; continue; }
+    for (let k = 1; k <= n; k++) { P[k] = lerp(P[0], P[k], sh); F[k] = f(P[k]); }
+  }
+  let b = 0; for (let k = 1; k <= n; k++) if (F[k] < F[b]) b = k;
+  return { x: P[b], fx: F[b], it };
+}
+/** Numerical Hessian of f at x (central differences, step h relative to |x|) → n×n matrix; invert it for standard errors at an MLE of −log L. */
+export function hessian(f, x, h = 1e-4) {
+  const n = x.length, H = Array.from({ length: n }, () => new Array(n).fill(0)), e = (k) => h * Math.max(1, Math.abs(x[k]));
+  const fx = f(x), at = (d) => f(x.map((v, k) => v + (d[k] || 0)));
+  for (let i = 0; i < n; i++) for (let j = i; j < n; j++) {
+    const hi = e(i), hj = e(j); let v;
+    if (i === j) { const d1 = []; d1[i] = hi; const d2 = []; d2[i] = -hi; v = (at(d1) - 2 * fx + at(d2)) / (hi * hi); }
+    else { const pp = [], pm = [], mp = [], mm = []; pp[i] = hi; pp[j] = hj; pm[i] = hi; pm[j] = -hj; mp[i] = -hi; mp[j] = hj; mm[i] = -hi; mm[j] = -hj; v = (at(pp) - at(pm) - at(mp) + at(mm)) / (4 * hi * hj); }
+    H[i][j] = H[j][i] = v;
+  }
+  return H;
+}
 /** Newton iterates as a list (for visualising the iteration). */
 export function newtonPath(f, x0, steps = 6, df) {
   const out = [x0]; let x = x0;
