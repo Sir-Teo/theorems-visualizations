@@ -261,10 +261,10 @@ which depends only on the four rays through $O$. So every line cutting those ray
         const O = S.handle(-1.2, 3.0, { color: 'ink', label: 'O', labelPos: 'n' });
         const m1 = S.handle(-4.6, 1.6, { color: 'orange' }), m2 = S.handle(4.4, -0.4, { color: 'orange' });
         const n1 = S.handle(-4.4, -1.55, { color: 'purple' }), n2 = S.handle(4.6, 0.15, { color: 'purple' });
-        // colonnade mode: eye height 1.6, picture distance 2.4, horizon drawn at y = 1.4
-        const HZ = 1.4, cam = camera([0, 0, 1.6], { d: 2.4 });
+        // colonnade mode: eye height 1.6, picture distance 2.4, horizon drawn at y = 0.7
+        const HZ = 0.7, cam = camera([0, 0, 1.6], { d: 2.4 });
         const vpH = S.handle(3.0, HZ, { color: 'green', label: 'V', labelPos: 'n', constrain: (x) => [M.clamp(x, -5, 5), HZ] });
-        const b0 = S.handle(-2.4, -0.75, { color: 'accent', label: 'first column', labelPos: 'w', constrain: (x, y) => [x, Math.min(y, HZ - 0.25)] });
+        const b0 = S.handle(-2.4, -0.25, { color: 'accent', label: 'first column', labelPos: 'w', constrain: (x, y) => [x, Math.min(y, HZ - 0.25)] });
         const projHandles = [...P, O, m1, m2, n1, n2], colHandles = [vpH, b0];
         const onLine = (X, a, b) => meet([O.x, O.y], X, a, b);
         const tpar = (X, a, b) => { const L = Math.hypot(b[0] - a[0], b[1] - a[1]); return ((X[0] - a[0]) * (b[0] - a[0]) + (X[1] - a[1]) * (b[1] - a[1])) / L; };

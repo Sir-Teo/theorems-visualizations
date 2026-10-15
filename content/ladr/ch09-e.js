@@ -398,7 +398,7 @@ So $S^{-1}TS$ multiplies every $\tau$ by $\det T$, which by the definition 9.41 
           if (!cong && sing) return `$\\det T = ${tn(dT, 3)}$, but $S$ squashes $W$ onto a line ($\\det$ of its matrix is $${tn(dS, 3)}$): $S^{-1}$ does not exist, so neither does $S^{-1}TS$.`;
           const base = `$\\det T = ${tn(dT, 4)}$, and $T$ multiplies the area of the purple cell by $${tn(ratio, 4)}$ — the same factor for every cell.`;
           if (!cong) return `${base} On $W$: $\\det(S^{-1}TS) = ${tn(dB, 4)}$ ${ok ? '— **equal**, whatever $S$ is.' : '— check failed.'}`;
-          return `${base} But $\\det(S^{\\mathrm t}TS) = ${tn(dB, 4)} = (${tn(dS, 3)})^2 \\cdot ${tn(dT, 3)}$: congruence by $S^{\\mathrm t}$ instead of $S^{-1}$ rescales the determinant by $(\\det S)^2${ok ? ' (which happens to be 1 here)' : ''}.`;
+          return `${base} But $\\det(S^{\\mathrm t}TS) = ${tn(dB, 4)} = (${tn(dS, 3)})^2 \\cdot ${tn(dT, 3)}$: congruence by $S^{\\mathrm t}$ instead of $S^{-1}$ rescales the determinant by $(\\det S)^2$${ok ? ' (which happens to be 1 here)' : ''}.`;
         });
       },
     },

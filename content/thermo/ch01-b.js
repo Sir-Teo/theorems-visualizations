@@ -219,7 +219,7 @@ Per unit mass they are **specific heats**, per mole **molar heat capacities**. F
       credit: 'Black, 1760s; Delaroche & Bérard (gases), 1813',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heat_capacity' },
       viz(v) {
-        const L = 9, A = L * L, N = 100, XV = 25, X0 = 12, T0 = 0.6, POW = 2.4, TH = 230;
+        const L = 9, A = L * L, N = 100, XV = 25, X0 = 12, T0 = 0.6, POW = 1.2, TH = 230;
         const P0 = N * T0 / (X0 * A);
         let G, tr, t0;
         const gas = v.select('molecules', [{ value: 0, label: 'monatomic' }, { value: 2, label: 'diatomic (rotating)' }], 0, { onChange: () => make() });
