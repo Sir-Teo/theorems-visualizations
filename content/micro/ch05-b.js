@@ -190,7 +190,7 @@ Without local non-satiation this fails: a satiated consumer may leave money unsp
         const FAM = {
           cd: { label: 'Cobb–Douglas', F: prefs('cd', { a: 0.4 }) },
           ces: { label: 'CES, $\\sigma = \\tfrac12$', F: prefs('ces', { a: 0.5, r: -1 }) },
-          sat: { label: 'satiation (bliss point)', F: prefs('sat', { bx: 4, by: 4.5 }) },
+          sat: { label: 'satiation (bliss point)', F: prefs('sat', { bx: 3.5, by: 3.8 }) },
         };
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const p1 = v.slider('price $p_1$', 0.5, 3, 1.2, { step: 0.01 });
@@ -221,7 +221,7 @@ Without local non-satiation this fails: a satiated consumer may leave money unsp
           tl.el.hidden = link.value; set.hidden = link.value;
           const A = ump(k, F, P, M), U = link.value ? A.u : target(k, F, tl.value), H = emp(k, F, P, U); eLast = H.e;
           const lev = sat(k) ? [-1, -4, -9, -16] : [1.5, 3, 4.5, 6, 7.5].map((t) => F.u(t, t));
-          for (const S of [s, r]) { for (const q of lev) drawLevel(S, F, q, { color: v.color('purple', 0.2), width: 1 }); if (F.bliss) S.dot(...F.bliss, { r: 4.5, color: 'ink', label: 'bliss', labelPos: 'n', math: false }); }
+          for (const S of [s, r]) { for (const q of lev) drawLevel(S, F, q, { color: v.color('purple', 0.2), width: 1 }); if (F.bliss) S.dot(...F.bliss, { r: 4.5, color: 'ink', label: 'bliss', labelPos: 'sw', math: false }); }
           // utility maximization
           budget(s, P, p2, M);
           if (!(sat(k) && A.u === 0)) drawLevel(s, F, A.u, { color: 'purple', width: 2.4 });
@@ -248,7 +248,7 @@ Without local non-satiation this fails: a satiated consumer may leave money unsp
         });
         v.readout(() => {
           const { k, M, A, U, H, ok, linked } = st, f = (q) => v.fix(q, 3);
-          if (sat(k) && A.u === 0 && linked) return `The bliss point $(4, 4.5)$ costs $${f(p1.value * 4 + 4.5)} < m = ${f(M)}$, so the best affordable bundle is the bliss point and ${f(M - p1.value * 4 - 4.5)} of income is left unspent. The cheapest way to reach the same utility costs only $e(p, v(p, m)) = ${f(H.e)} < m$: without local non-satiation the loop does not close.`;
+          if (sat(k) && A.u === 0 && linked) return `The bliss point $(3.5, 3.8)$ costs $${f(p1.value * 3.5 + 3.8)} < m = ${f(M)}$, so the best affordable bundle is the bliss point and ${f(M - p1.value * 3.5 - 3.8)} of income is left unspent. The cheapest way to reach the same utility costs only $e(p, v(p, m)) = ${f(H.e)} < m$: without local non-satiation the loop does not close.`;
           if (ok) return `Maximizing utility with income ${f(M)} gives $x(p, m) = (${v.fix(A.x[0], 2)}, ${v.fix(A.x[1], 2)})$ and $v(p, m) = ${f(A.u)}$. Minimizing the cost of reaching ${linked ? 'that utility' : `$\\bar u = ${f(U)}$`} gives the same bundle, at cost exactly $m$: the two problems are solved by one tangency.`;
           return `The target $\\bar u = ${f(U)}$ differs from $v(p, m) = ${f(A.u)}$, so the cheapest way to reach it, $h = (${v.fix(H.x[0], 2)}, ${v.fix(H.x[1], 2)})$ at cost $e = ${f(H.e)}$, is not the utility-maximizing bundle at income ${f(M)}. Press **set $m = e(p, \\bar u)$**: then $x(p, e(p, \\bar u)) = h(p, \\bar u)$ and $v(p, e(p, \\bar u)) = \\bar u$, part (b) of the proposition.`;
         });

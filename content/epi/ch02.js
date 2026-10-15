@@ -228,8 +228,8 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
         const prevS = v.slider('prevalence', 0.0001, 0.3, 0.001, { log: true, fmt: (x) => (x < 0.01 ? `1 in ${int(1 / x)}` : pcs(x)) });
         const seS = v.slider('sensitivity', 0.5, 1, 0.99, { step: 0.001, fmt: (x) => pc(x) });
         const spS = v.slider('specificity', 0.5, 0.9999, 0.99, { step: 0.0001, fmt: (x) => pc(x, 2) });
-        const roundS = v.select('testing', [{ value: 1, label: 'one test' }, { value: 2, label: 'retest the positives' }, { value: 3, label: 'test a third time' }], 1);
-        const rhoS = v.slider('share of false positives that repeat on retest', 0, 1, 0, { step: 0.01, fmt: (x) => pc(x, 0) });
+        const roundS = v.select('testing', [{ value: 1, label: 'one test' }, { value: 2, label: 'retest the positives' }, { value: 3, label: 'test a third time' }], 3);
+        const rhoS = v.slider('share of false positives that repeat on retest', 0, 1, 0.3, { step: 0.01, fmt: (x) => pc(x, 0) });
         v.button('99%-accurate test, 1 in 1 000', () => { prevS.set(0.001); seS.set(0.99); spS.set(0.99); });
         v.button('Casscells question (1978)', () => { prevS.set(0.001); seS.set(1); spS.set(0.95); });
         const perm = permutation(M, 31, N);

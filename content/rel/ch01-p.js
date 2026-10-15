@@ -61,7 +61,6 @@ and its consequences: events simultaneous in one frame are not in another (rel-1
           // the train: rear A at x′ = 0, front B at x′ = L0
           const wl = (xp) => [LTinv(b, -1, xp), LTinv(b, TMAX * 1.2, xp)].map(([t, x]) => [x, t]);
           D.clip(() => { D.path(wl(0), { color: 'accent', width: 1.4, alpha: 0.6 }); D.path(wl(L0), { color: 'accent', width: 1.4, alpha: 0.6 }); });
-          D.clip(() => { const a = wl(0)[0], q = wl(L0)[0]; });
           // Einstein's synchronisation: emission at A (t′ = 0), reflection at B (t′ = L0), return at A (t′ = 2 L0)
           const e0 = LTinv(b, 0, 0), e1 = LTinv(b, L0, L0), e2 = LTinv(b, 2 * L0, 0);
           D.path([[e0[1], e0[0]], [e1[1], e1[0]], [e2[1], e2[0]]], { color: 'gold', width: 2.4 });
@@ -87,14 +86,14 @@ and its consequences: events simultaneous in one frame are not in another (rel-1
           Kl.dot(0.6, yTop + tri(now, per0) * H * 1.6, { r: 4.5, color: 'gold' });
           Kl.text(`ticks: ${Math.floor(now / per0)}`, 1.05, yTop + 0.4, { size: 11, color: 'ink' });
           // train clock moving at b (wraps across the panel)
-          const span = 3.4, x0 = 0.3, xc = x0 + (((b * now) % span) + span) % span;
+          const span = 3.4, x0 = 0.3, xc = x0 + M.mod(b * now, span);
           Kl.line(xc - 0.3, yBot, xc + 0.3, yBot, { color: 'accent', width: 3 }); Kl.line(xc - 0.3, yBot + H * 1.6, xc + 0.3, yBot + H * 1.6, { color: 'accent', width: 3 });
-          const trail = [];
-          for (let k = 0; k <= 80; k++) { const t = Math.max(0, now - (k / 80) * perT); const xx = x0 + (((b * t) % span) + span) % span; trail.push(Math.abs(xx - xc) < span / 2 + 0.01 && (k === 0 || Math.abs(xx - trail[trail.length - 1]?.[0] ?? xx) < 0.5) ? [xx, yBot + tri(t, perT) * H * 1.6] : null); }
+          const trail = []; let prevX = null;
+          for (let k = 0; k <= 90; k++) { const t = now - (k / 90) * perT; if (t < 0) break; const xx = x0 + M.mod(b * t, span); if (prevX != null && Math.abs(xx - prevX) > 0.5) trail.push(null); trail.push([xx, yBot + tri(t, perT) * H * 1.6]); prevX = xx; }
           Kl.path(trail, { color: 'gold', width: 1.4, alpha: 0.7 });
           Kl.dot(xc, yBot + tri(now, perT) * H * 1.6, { r: 4.5, color: 'gold' });
           Kl.text(`ticks: ${Math.floor(now / perT)}`, 3.95, yBot + 0.4, { size: 11, color: 'accent', align: 'right' });
-          Kl.text(`platform time ${v.fix(now, 2)}: one platform tick = ${v.fix(per0, 2)}, one train tick = γ × ${v.fix(per0, 2)} = ${v.fix(perT, 2)}`, 2, 2.15, { align: 'center', size: 10.5, color: 'muted' });
+          Kl.text(`platform time ${v.fix(now, 2)}: one platform tick = ${v.fix(per0, 2)}, one train tick = γ × ${v.fix(per0, 2)} = ${v.fix(perT, 2)}`, 2, 1.1, { align: 'center', size: 10.5, color: 'muted' });
           st = { b, g, tp, xp, e1 };
         }, { period: 2 * TMAX, still: 2 * 3.1 });
         v.legend([['accent', 'train axes, worldlines of A and B'], ['gold', 'light signal (Einstein’s synchronisation)'], ['teal', 'ticks of the train’s clock A', { dot: true }], ['purple', 'event E projected onto both frames', { dash: true }]]);
