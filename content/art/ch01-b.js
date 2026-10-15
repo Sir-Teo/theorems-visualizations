@@ -594,9 +594,9 @@ Each keeps some properties of what we see and gives up others; none of them is â
       links: { wikipedia: 'https://en.wikipedia.org/wiki/De_pictura' },
       viz(v) {
         const M = v.M, HW = 4, VH = 6, N = 8, VY = -1.2, G = -2.6; // veil half-width and height (braccia), rows of tiles, veil plane, ground
-        const S = v.stage({ x: [-6.6, 6.6], y: [-5.2, 4.4], equal: true, axes: false, height: 390, weight: 1.15, title: 'the window, the veil and the visual pyramid' });
+        const S = v.stage({ x: [-7.6, 7.2], y: [-4.6, 4.2], equal: true, axes: false, height: 390, weight: 1.15, title: 'the window, the veil and the visual pyramid' });
         const P = v.stage({ x: [-4.3, 5.8], y: [-0.35, 6.3], equal: true, axes: false, height: 390, weight: 0.85, minWidth: 240, title: 'the painting, by the costruzione legittima' });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axes: false, lim: 14 });
+        const sc = v.scene3(S, { yaw: -0.78, pitch: 0.2, axes: false, lim: 14 });
         const eye = sc.handle([0.6, VY - 4.5, G + 3], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -2.5, 2.5), M.clamp(p[1], VY - 11, VY - 2.5), M.clamp(p[2], G + 0.8, G + 4.4)] });
         const veil = v.toggle('veil threads in the painting', true);
         const man = [-2.6, VY + 1.5];
@@ -612,7 +612,7 @@ Each keeps some properties of what we see and gives up others; none of them is â
           sc.line([-HW, VY, G], [-HW + N, VY + N, G], { color: 'green', width: 2, bias: 1 }, 8);
           // the veil: window with threads every braccio
           const vp = [[-HW, VY, G], [HW, VY, G], [HW, VY, G + VH], [-HW, VY, G + VH]];
-          sc.poly(vp, { fill: 'orange', fillAlpha: 0.1, color: 'orange', width: 2 });
+          sc.poly(vp, { fill: 'orange', fillAlpha: 0.16, color: 'orange', width: 2 });
           for (let i = -HW + 1; i < HW; i++) sc.line([i, VY, G], [i, VY, G + VH], { color: 'orange', width: 0.6, alpha: 0.45 }, 4);
           for (let z = 1; z < VH; z++) sc.line([-HW, VY, G + z], [HW, VY, G + z], { color: 'orange', width: 0.6, alpha: 0.45 }, 4);
           // the visual pyramid over the floor, and rays to the far row and the diagonal
@@ -642,10 +642,10 @@ Each keeps some properties of what we see and gives up others; none of them is â
           P.dot(ex, h, { r: 4.5, color: 'accent', label: 'centric point', labelPos: 'n', labelSize: 11 });
           for (let k = 0; k <= N; k++) for (let i = -HW; i <= HW; i++) { const q = pierce([i, VY + k, G]); if (q[1] <= VH) P.dot(q[0], q[1], { r: 1.8, color: 'gold' }); }
           const Dx = ex + d;
-          if (Dx < P.bounds.x[1]) P.dot(Dx, h, { r: 4.5, color: 'green', label: 'distance point', labelPos: 'n', labelSize: 11 });
+          if (Dx < P.bounds.x[1]) P.dot(Dx, h, { r: 4.5, color: 'green', label: 'D', labelPos: 'n' });
           else P.text('to the distance point â†’', P.bounds.x[1] - 0.05, h + 0.15, { align: 'right', baseline: 'bottom', size: 10.5, color: 'green' });
         });
-        v.legend([['orange', 'window and veil (1 braccio squares)'], ['gold', 'rays and their exact pierce points'], ['accent', 'Albertiâ€™s construction'], ['green', 'diagonal test']]);
+        v.legend([['orange', 'window and veil (1 braccio squares)'], ['gold', 'rays and their exact pierce points'], ['accent', 'Albertiâ€™s construction'], ['green', 'diagonal test, to the distance point $D$']]);
         v.readout(() => {
           const { d, h } = geo(), ys = alberti(h, d);
           let err = 0; for (let k = 0; k <= N; k++) err = Math.max(err, Math.abs(pierce([0, VY + k, G])[1] - ys[k]));

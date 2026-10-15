@@ -124,18 +124,18 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
           return T;
         }
         const CODE_M = () => (abbr.value
-          ? ['$\\mathfrak{b}$   None   P0              $\\mathfrak{b}$', '$\\mathfrak{b}$   0        R, R, P1   $\\mathfrak{b}$', '$\\mathfrak{b}$   1        R, R, P0   $\\mathfrak{b}$']
-          : rows.map((r, i) => `$${MC[i]}$   None   ${r.p >= 0 ? `P${r.p}, R` : 'R'}${r.p >= 0 ? '' : '      '}     $${MC[r.next]}$`));
+          ? ['$\\mathfrak{b}$ · scanning None: P0 → $\\mathfrak{b}$', '$\\mathfrak{b}$ · scanning 0: R, R, P1 → $\\mathfrak{b}$', '$\\mathfrak{b}$ · scanning 1: R, R, P0 → $\\mathfrak{b}$']
+          : rows.map((r, i) => `$${MC[i]}$ · scanning None: ${r.p >= 0 ? `P${r.p}, R` : 'R'} → $${MC[r.next]}$`));
         const CODE_D = ['list the machines by D.N', 'mark each D.N s (circle-free) or u (circular)', 'diagonal: $\\varphi_n(n)$ for the $n$-th satisfactory machine', '$\\beta$: flip the diagonal ▷ the naive argument', 'suppose a machine $\\mathcal D$ decides s / u', '$\\mathcal H$ = $\\mathcal D$ + $\\mathcal U$ computes $\\beta\'$, section by section', 'section $K$ = D.N of $\\mathcal H$: no verdict possible', 'so no $\\mathcal D$; no $\\mathcal E$ for "ever prints 0"'];
         let S = null;
         const framesFor = () => (part.value === 'm' ? machineFrames() : diagFrames());
         function resetSteps(at) { if (!S) return; S.setCode(part.value === 'm' ? CODE_M() : CODE_D, part.value === 'm' ? (abbr.value ? 'Turing’s abbreviated table' : 'the table: m-config · symbol · operations · final') : 'Turing §8, step by step'); S.reset(framesFor(), { at: at === 'keep' ? Math.min(S.i, part.value === 'm' ? NMOVE : 7) : at }); }
         S = v.steps({ frames: framesFor(), code: CODE_M(), codeTitle: 'the table: m-config · symbol · operations · final', codePos: 'below', start: 9, still: 9, speed: 2 });
         // ---- table editing (standard 4-line table only)
-        const ROWY = (i) => 7.9 - i * 1.25, COLS = [0.3, 2.2, 4.2, 7.4, 9.7];
+        const ROWY = (i) => 8.0 - i * 1.1, COLS = [0.3, 2.2, 4.2, 7.4, 9.7];
         tab.onClick((x, y) => {
           if (part.value !== 'm' || abbr.value) return;
-          const i = Math.round((7.9 - y) / 1.25); if (i < 0 || i >= rows.length || Math.abs(7.9 - i * 1.25 - y) > 0.6) return;
+          const i = Math.round((8.0 - y) / 1.1); if (i < 0 || i >= rows.length || Math.abs(8.0 - i * 1.1 - y) > 0.55) return;
           if (x > COLS[2] && x < COLS[3]) rows[i].p = rows[i].p === 0 ? 1 : rows[i].p === 1 ? -1 : 0;
           else if (x > COLS[3] && x < COLS[4]) rows[i].next = (rows[i].next + 1) % rows.length;
           else return;
@@ -168,7 +168,7 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
           const trows = abbr.value && isM ? [['None', 'P0', 0], ['0', 'R, R, P1', 0], ['1', 'R, R, P0', 0]] : rows.map((r) => ['None', r.p >= 0 ? `P${r.p}, R` : 'R', r.next]);
           trows.forEach(([sym, op, nx], i) => {
             const y = ROWY(i), on = isM && f.line === i + 1;
-            if (on) tab.rect(0.15, y - 0.55, 9.85, y + 0.55, { fill: 'accent', fillAlpha: 0.14, stroke: false });
+            if (on) tab.rect(0.15, y - 0.5, 9.85, y + 0.5, { fill: 'accent', fillAlpha: 0.14, stroke: false });
             tab.tex(abbr.value && isM ? MC[0] : MC[i], COLS[0] + 0.5, y, { size: 17, align: 'left' });
             tab.text(sym, COLS[1] + 0.1, y, { size: 13 });
             tab.text(op, COLS[2] + 0.1, y, { size: 13, weight: 600, color: !isT && !(abbr.value && isM) && op !== (TURING_I[i].p >= 0 ? `P${TURING_I[i].p}, R` : 'R') ? 'orange' : 'ink' });
@@ -176,11 +176,11 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
           });
           // S.D and D.N
           const wrapDN = (s, n) => { const out = []; for (let i = 0; i < s.length; i += n) out.push(s.slice(i, i + n)); return out; };
-          const y0 = 2.5;
+          const y0 = 3.0;
           tab.text(abbr.value && isM ? 'standard description (of table I, in standard form):' : `standard description${isT ? ' (as printed in §5)' : ''}:`, 0.3, y0 + 0.9, { size: 11, weight: 700, color: 'muted' });
-          wrapDN(describe(abbr.value && isM ? TURING_I : rows).sd, 40).forEach((ln, k) => tab.text(ln, 0.3, y0 + 0.2 - k * 0.6, { size: 11, color: 'ink' }));
-          tab.text(`description number (${describe(abbr.value && isM ? TURING_I : rows).dn.length} digits):`, 0.3, 1.2, { size: 11, weight: 700, color: 'muted' });
-          wrapDN(describe(abbr.value && isM ? TURING_I : rows).dn, 40).forEach((ln, k) => tab.text(ln, 0.3, 0.6 - k * 0.6, { size: 11, color: A.free ? 'green' : 'red', weight: 600 }));
+          wrapDN(describe(abbr.value && isM ? TURING_I : rows).sd, 36).forEach((ln, k) => tab.text(ln, 0.3, y0 + 0.25 - k * 0.55, { size: 11, color: 'ink' }));
+          tab.text(`description number (${describe(abbr.value && isM ? TURING_I : rows).dn.length} digits):`, 0.3, 1.45, { size: 11, weight: 700, color: 'muted' });
+          wrapDN(describe(abbr.value && isM ? TURING_I : rows).dn, 36).forEach((ln, k) => tab.text(ln, 0.3, 0.9 - k * 0.55, { size: 11, color: A.free ? 'green' : 'red', weight: 600 }));
           // ---- enumeration table
           const L = enumeration(), stg = isM ? 3 : f.stage, n = L.length;
           const top = 9.3, rh = Math.min(0.9, 7.4 / (n + 2)), cx = (j) => 4.6 + j * 0.62, NF = 8;
@@ -192,7 +192,7 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
             const y = top - (k + 1) * rh, dim = stg >= 2 && !m.free;
             if (m.mine) dg.rect(0.05, y - rh / 2, 9.95, y + rh / 2, { fill: 'accent', fillAlpha: 0.1, stroke: false });
             dg.text(m.name.length > 17 ? m.name.slice(0, 16) + '…' : m.name, 0.15, y, { size: 11, color: dim ? 'faint' : 'ink', weight: m.mine ? 700 : 500 });
-            dg.text(m.dn.length > 8 ? `${m.dn.slice(0, 6)}…(${m.dn.length})` : m.dn, 2.4, y, { size: 10.5, color: dim ? 'faint' : 'muted' });
+            dg.text(m.dn.length > 8 ? `${m.dn.slice(0, 4)}…(${m.dn.length})` : m.dn, 2.35, y, { size: 10, color: dim ? 'faint' : 'muted' });
             if (stg >= 2) dg.text(m.free ? 's' : 'u', 4.0, y, { size: 12.5, weight: 700, color: m.free ? 'green' : 'red', align: 'center' });
             for (let j = 0; j < NF; j++) {
               const val = m.figs[j];

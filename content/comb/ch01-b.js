@@ -394,13 +394,13 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
           const n = nS.value, all = perms(Array.from({ length: n }, (_, i) => i)).filter((p) => cyclesOf(p).length === k);
           const alone = all.filter((p) => p[n - 1] === n - 1), ins = all.filter((p) => p[n - 1] !== n - 1);
           const P = pen(v, A), W = P.W, H = P.H, ring = (g) => g === n - 1;
-          const asp = 0.42 + 0.12 / k, hA = splitHeight(H, W - 16, alone.length, asp, ins.length, asp, 46 * k + 30, 46 * k + 30);
+          const asp = 0.42 + 0.12 / k, hA = splitHeight(H, W - 16, alone.length, asp, ins.length, asp, 56 * k + 36, 56 * k + 36);
           P.text(`${n} sits alone: ${alone.length} = c(${n - 1},${k - 1})`, 8, 12, { size: 12, color: 'orange', weight: 700 });
-          if (alone.length) { const g = fitGrid(alone.length, W - 16, hA - 30, asp, 6, 46 * k + 30, 'top'); alone.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + 24, g.w, g.h, { fill: 'orange', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + 24, g.w, g.h, { ring, arrows: true }); }); }
+          if (alone.length) { const g = fitGrid(alone.length, W - 16, hA - 30, asp, 6, 56 * k + 36, 'top'); alone.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + 24, g.w, g.h, { fill: 'orange', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + 24, g.w, g.h, { ring, arrows: true }); }); }
           else P.text('none', 8, 34, { size: 12, color: 'muted' });
           P.line(6, hA, W - 6, hA, { color: 'faint', width: 1, dash: [4, 4] });
           P.text(`${n} sits to the left of one of the ${n - 1} others: ${ins.length} = ${n - 1} × c(${n - 1},${k})`, 8, hA + 14, { size: 12, color: 'teal', weight: 700 });
-          if (ins.length) { const g = fitGrid(ins.length, W - 16, H - hA - 30, asp, 6, 46 * k + 30, 'top'); ins.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + hA + 26, g.w, g.h, { fill: 'teal', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + hA + 26, g.w, g.h, { ring, arrows: true }); }); }
+          if (ins.length) { const g = fitGrid(ins.length, W - 16, H - hA - 30, asp, 6, 56 * k + 36, 'top'); ins.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + hA + 26, g.w, g.h, { fill: 'teal', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + hA + 26, g.w, g.h, { ring, arrows: true }); }); }
           else P.text('none', 8, hA + 36, { size: 12, color: 'muted' });
           // bars
           const ymax = Math.max(...C[n].slice(1, n + 1)) * 1.2;
