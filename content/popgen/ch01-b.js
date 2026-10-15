@@ -496,14 +496,14 @@ falling linearly on a log scale with slope $B \approx \sum_i p_iq_is_i(1-2h_i)/\
 $$H' = \alpha\,\tfrac12 H + (1-\alpha)\,2pq, \qquad p' = p,$$
 so with complete assortment ($\alpha = 1$) the heterozygote frequency halves every generation and the population splits into the two homozygotes, while partial assortment settles at $H^* = 2pq\,\dfrac{1-\alpha}{1-\alpha/2}$. With dominance ($AA$ and $Aa$ look alike) heterozygotes still decline, but more slowly. Allele frequencies do not change in either case: assortative mating, like inbreeding, only rearranges alleles into genotypes — but only at loci affecting the trait used to choose mates.`,
       idea: String.raw`Mating like with like is selfing at the level of the genotype: $AA\times AA$ and $aa\times aa$ breed true, and $Aa\times Aa$ gives back only half heterozygotes (1.2), so the assortative part of the population contributes $\tfrac12H$ and the random part $2pq$ (1.5). No genotype leaves more offspring than another, so $p$ is unchanged. The fixed point of the linear recursion gives $H^*$. With dominance, dominant-phenotype parents still produce some heterozygotes, and the deficit grows more slowly; unlike inbreeding, loci unrelated to the mating trait are unaffected.`,
-      caption: String.raw`Two copies of the same population (1000 individuals, Hardy–Weinberg at $p = 0.3$) breed side by side — left at random, right assortatively; colours are genotypes. Press play: the purple heterozygotes vanish on the right while the left stays put, and the plot shows heterozygosity (solid: simulation, dashed: the recursion) with both allele frequencies flat. Lower $\alpha$ to see the deficit level off at $H^*$; switch to dominance to see a slower decline.`,
+      caption: String.raw`Two copies of the same population (1440 individuals, Hardy–Weinberg at $p = 0.3$) breed side by side — left at random, right assortatively; colours are genotypes. Press play: the purple heterozygotes vanish on the right while the left stays put, and the plot shows heterozygosity (solid: simulation, dashed: the recursion) with both allele frequencies flat. Lower $\alpha$ to see the deficit level off at $H^*$; switch to dominance to see a slower decline.`,
       deps: ['popgen-1.12', 'popgen-1.5'],
       refs: ['Ewens §2.8'],
       credit: 'Jennings, 1916; Wright, 1921',
       scope: String.raw`Assumes non-overlapping generations, mate choice on a phenotype determined by this one locus, no selection (every individual gets a mate) and a large population. Real assortment acts on polygenic traits, is partial, and creates correlations between loci rather than large single-locus deficits.`,
       tags: ['mating systems', 'heterozygosity'],
       viz(v) {
-        const M = v.M, W = 40, HH = 25, G = 12, RATE = 1.2;
+        const M = v.M, W = 48, HH = 30, G = 12, RATE = 1.2;
         let seed = 5;
         const alpha = v.slider('share of assortative matings $\\alpha$', 0, 1, 1, { step: 0.05, onChange: () => reset() });
         const dom = v.select('phenotypes', [{ value: 'co', label: 'codominant' }, { value: 'dom', label: '$A$ dominant' }], 'co', { onChange: () => reset() });

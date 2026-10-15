@@ -643,7 +643,7 @@ To weigh a map one needs a model of how strengths combine. A simple probabilisti
           const py = s.height / (s.bounds.y[1] - s.bounds.y[0]);
           for (const n of G.nodes) {
             if (n.id === 'J') continue;
-            const hh = (2 * 11.5 * 0.62 + 5) / py, y = n.id === 'C' ? n.y + hh + 11 / py : n.y - hh - 13 / py, w = 1.0, x0 = n.id === 'C' ? n.x - 0.85 : n.x + 0.08;
+            const hh = (2 * 11.5 * 0.62 + 5) / py, y = n.id === 'C' ? n.y + hh + 11 / py : n.y - hh - 13 / py, w = 1.0, x0 = n.id === 'C' ? n.x - 0.85 : n.x > 7.5 ? n.x - 1.45 : n.x + 0.08;
             s.rect(x0, y - 3 / py, x0 + w, y + 3 / py, { fill: 'faint', fillAlpha: 0.35, stroke: false });
             s.rect(x0, y - 3 / py, x0 + w * a[n.id], y + 3 / py, { fill: a[n.id] >= 0.5 ? 'green' : 'orange', fillAlpha: 0.9, stroke: false });
             s.text(v.fix(a[n.id], 2) + (base[n.id] != null && Math.abs(a[n.id] - base[n.id]) > 1e-9 ? ` (credence ${v.fix(base[n.id], 2)})` : base[n.id] != null ? ' credence' : ''), x0 + w + 0.08, y, { size: 10.5, weight: 600, color: 'muted' });
@@ -728,7 +728,7 @@ The moral usually drawn is that a **rule of inference** cannot be replaced by a 
             Ls.text('from B and 1, by modus ponens', 9.8, yd - 1.24, { align: 'right', size: 11.5, color: 'muted' });
           } else {
             Ls.text('Tortoise: “Write that down too, please.”', 5, yz - 0.8, { align: 'center', size: 12.5, color: 'red' });
-            Ls.text(`gap between the premises and Z after ${k} new premise${k === 1 ? '' : 's'}: one inference step, as at the start`, 5, yz - 1.45, { align: 'center', size: 11.5, color: 'muted' });
+            Ls.text(`after ${k} new premise${k === 1 ? '' : 's'}, Z is still one unlicensed step away`, 5, yz - 1.45, { align: 'center', size: 11.5, color: 'muted' });
           }
           // ---- letters per premise, log scale
           for (let j = 1; j <= KMAX; j++) {

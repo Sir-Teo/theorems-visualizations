@@ -123,7 +123,7 @@ It is a proportion between $0$ and $1$, has no units, and means nothing without 
         v.readout(() => {
           if (!st) return '';
           const { tau, k, T, md, L, dead, lost, hidden, rT, r1, trueR, model } = st, f = (x) => v.fix(x, 3);
-          let s = `after $t = ${v.fix(tau, 1)}$ y: **${k}** of 1000 have fallen ill → cumulative incidence $${k}/1000 = ${f(k / N)}$ (model ${f(model)}) · the same rate gives a risk of ${f(r1)} over 1 year but **${f(rT)}** over $T = ${T}$ years`;
+          let s = `after $t = ${v.fix(tau, 1)}$ y: **${k}** of 1000 have fallen ill → cumulative incidence $${k}/1000 = ${f(k / N)}$ (model ${f(model)} ± ${f(Math.sqrt((model * (1 - model)) / N))} sampling sd) · the same rate gives a risk of ${f(r1)} over 1 year but **${f(rT)}** over $T = ${T}$ years`;
           if (md === 'compete') s += ` · ${dead} died of another cause first and can no longer become cases, so the risk is lower than $1 - e^{-\\lambda T} = ${f(1 - Math.exp(-L * T))}$ — it depends on the competing hazard too`;
           if (md === 'lost') s += ` · ${lost} were lost to follow-up, ${hidden} of whom fell ill unseen: the observed ${f(rT)} **underestimates** the true risk ${f(trueR)} (which the simulation knows but a study would not)`;
           return s;
@@ -148,11 +148,11 @@ measured in cases per person-year (often quoted per $100$ or $100\,000$ person-y
       viz(v) {
         const M = v.M, NMAX = 1000, LOSS = 0.07, DIE = 0.015;
         const s = v.stage({ x: [1999.6, 2012.4], y: [0, 50], height: 410, axes: 'box', yticks: [], weight: 1.65 });
-        const g = v.stage({ x: [2001, 2012], y: [0, 40], height: 410, axes: 'box', xlabel: 'study end', ylabel: 'per 100', weight: 1, minWidth: 230, title: 'as follow-up lengthens' });
+        const g = v.stage({ x: [2002, 2012], y: [0, 40], height: 410, axes: 'box', xlabel: 'study end', ylabel: 'per 100', weight: 1, minWidth: 230, title: 'as follow-up lengthens' });
         const lamS = v.slider('true rate $\\lambda$ (per 100 person-years)', 1, 25, 6, { step: 0.5 });
         const nSel = v.select('cohort', [{ value: 40, label: '40 people' }, { value: 200, label: '200' }, { value: 1000, label: '1 000' }], 40);
         const axis = v.select('time axis', [{ value: 'cal', label: 'calendar time' }, { value: 'fu', label: 'time since entry' }], 'cal');
-        let seed = 3; v.button('New cohort', () => { seed++; });
+        let seed = 4; v.button('New cohort', () => { seed++; });
         let yH = -2;
         const H = s.handle(2010, yH, { color: 'gold', constrain: (x) => [M.clamp(x, 2001, 2012), yH] });
         const pop = memo(), curve = memo();
@@ -192,12 +192,12 @@ measured in cases per person-year (often quoted per $100$ or $100\,000$ person-y
           let acc = 0; const ticks = [];
           rows.forEach((p, k) => { const d = p.end - p.entry, a = xa + acc * scale; acc += d; s.line(a, yl, xa + acc * scale, yl, { color: k % 2 ? 'accent' : 'blue', width: 7, alpha: k % 2 ? 0.75 : 0.4, cap: 'butt' }); if (p.why === 'case') ticks.push(xa + acc * scale); });
           for (const x of ticks) s.line(x, yl - 0.035 * n - 0.7, x, yl + 0.035 * n + 0.7, { color: 'red', width: n <= 200 ? 2 : 1.2 });
-          s.text(`all follow-up laid end to end: Σ = ${v.fix(PT, 1)} person-years, ${cases} cases (red ticks)`, xa, yl, { dy: -17, align: 'left', color: 'ink', size: 11.5, weight: 600 });
+          s.text(`all follow-up laid end to end: Σ = ${v.fix(PT, 1)} person-years, ${cases} cases (red ticks)`, xa, yl, { dy: -22, align: 'left', color: 'ink', size: 11.5, weight: 600 });
           // ----- right: rate and naive proportion as the study end moves
           const C = curve(`${seed}|${n}|${lam}`, () => {
             const out = { rate: [], lo: [], hi: [], naive: [] };
             for (let k = 0; k <= 110; k++) {
-              const e = 2001 + (11 * k) / 110; let pt = 0, c = 0, en = 0;
+              const e = 2002 + (10 * k) / 110; let pt = 0, c = 0, en = 0;
               for (let i = 0; i < n; i++) { const f = follow(U, i, lam, e); if (!f) continue; en++; pt += f.end - f.entry; if (f.why === 'case') c++; }
               const ci = poisCI(M, c);
               out.rate.push([e, pt > 0 ? (100 * c) / pt : NaN]); out.lo.push([e, pt > 0 ? (100 * ci[0]) / pt : NaN]); out.hi.push([e, pt > 0 ? (100 * ci[1]) / pt : NaN]); out.naive.push([e, en ? (100 * c) / en : NaN]);
@@ -205,14 +205,14 @@ measured in cases per person-year (often quoted per $100$ or $100\,000$ person-y
             return out;
           });
           const ymax = Math.max(12, 1.15 * Math.max(lamS.value * 1.9, ...C.naive.map((p) => p[1] || 0)));
-          g.setView(null, [0, ymax]);
+          g.setView(null, [-0.05 * ymax, ymax]);
           g.clip(() => g.poly([...C.hi.filter((p) => isFinite(p[1])).map((p) => [p[0], Math.min(p[1], ymax * 2)]), ...C.lo.filter((p) => isFinite(p[1])).reverse()], { fill: 'accent', fillAlpha: 0.1, stroke: false }));
           g.hline(lamS.value, { color: 'green', dash: [6, 4], width: 1.6 });
           g.text('true λ', 2011.9, lamS.value, { dy: -9, align: 'right', color: 'green', size: 11.5, math: true });
           g.path(C.naive, { color: 'orange', width: 2.2 });
           g.path(C.rate, { color: 'accent', width: 2.4 });
           g.vline(E, { color: 'gold', width: 1.2, dash: [4, 4] });
-          const at = (arr) => arr[Math.round(((E - 2001) / 11) * 110)][1];
+          const at = (arr) => arr[Math.round(((M.clamp(E, 2002, 2012) - 2002) / 10) * 110)][1];
           g.dot(E, at(C.rate), { r: 4.5, color: 'accent' }); g.dot(E, at(C.naive), { r: 4.5, color: 'orange' });
           const ci = poisCI(M, cases);
           st = { E, n: rows.length, PT, cases, rate: PT > 0 ? (100 * cases) / PT : NaN, lo: PT > 0 ? (100 * ci[0]) / PT : NaN, hi: PT > 0 ? (100 * ci[1]) / PT : NaN, naive: rows.length ? (100 * cases) / rows.length : NaN, cal };
@@ -290,7 +290,7 @@ The **period prevalence** over an interval $[a, b]$ is the proportion who have t
           if (per) s.line(b, 0, b, 100, { color: 'orange', width: 1.6 });
           const pa = S.curve[Math.round((a / 3) * 900)][1];
           s.dot(a, Y(pa), { r: 5, color: 'red' });
-          s.text('prevalence of the 400', 0.33, Y(top), { dy: -3, align: 'left', baseline: 'bottom', color: 'muted', size: 11 });
+          s.text('prevalence of the 400', 3.0, Y(top), { dy: -3, align: 'right', baseline: 'bottom', color: 'muted', size: 11 });
           const nA = status.filter((x) => x === 1).length, nNew = status.filter((x) => x === 2).length;
           st = { a, b, per, nA, nNew, pa, days: Math.round((b - a) * 365) };
         });
@@ -380,14 +380,14 @@ Only the mean duration matters, not the shape of the duration distribution. (If 
           ts.path(pts('ill', 2), { color: 'red', width: 2 });
           ts.dot(now, P, { r: 4.5, color: 'red' });
           const since = (A.model.t - (A.model.data.changed || 0)) * DT, relax = 1 / (I + 1 / D);
-          st = { Pm, ID, ex, inflow, outflow, steady: since > 4 * relax, since, relax };
+          st = { Pm, ID, ex, inflow, outflow, steady: since > 3 * relax, since, relax, fresh: !A.model.data.changed };
         });
         v.legend([['red', 'measured prevalence'], ['green', 'steady state $ID/(1+ID)$', { dash: true }], ['orange', 'rare-disease product $I\\times D$', { dash: true }], ['teal', 'outflow (recoveries)']]);
         v.readout(() => {
           if (!st) return '';
-          const { Pm, ID, ex, inflow, outflow, steady, since, relax } = st;
+          const { Pm, ID, ex, inflow, outflow, steady, since, relax, fresh } = st;
           return `measured prevalence **${pc(Pm)}** (mean over the last year) · steady state $\\frac{ID}{1+ID} = ${pc(ex)}$ · product $I\\times D = ${v.fix(ID, 3)}$ (${ID > 0.1 ? `off by ${pc(ID / ex - 1, 0)}: not a rare condition` : 'close: a rare condition'}) · inflow ${v.fix(inflow, 3)} vs outflow ${v.fix(outflow, 3)} per person-year` +
-            (steady ? ' → **steady state**: inflow = outflow' : ` → **not yet in steady state** (last change ${v.fix(since, 1)} y ago; it takes a few times $1/(I + 1/D) = ${v.fix(relax, 1)}$ y)`);
+            (steady ? ' → **steady state**: inflow = outflow' : ` → **not yet in steady state** (${fresh ? 'started' : 'last change'} ${v.fix(since, 1)} y ago; it takes a few times $1/(I + 1/D) = ${v.fix(relax, 1)}$ y)`);
         });
       },
     },
@@ -395,7 +395,7 @@ Only the mean duration matters, not the shape of the duration distribution. (If 
     {
       num: '1.5',
       kind: 'Theorem',
-      name: 'Risk from a constant rate: R = 1 − e^{−λt}',
+      name: String.raw`Risk from a constant rate: $R = 1 - e^{-\lambda t}$`,
       statement: String.raw`In a closed cohort with no competing risks and no losses, suppose every disease-free person falls ill at the same constant rate $\lambda$. Then the risk over a period of length $t$ is
 $$R(t) = 1 - e^{-\lambda t}.$$
 For small $\lambda t$ this is $R(t) \approx \lambda t$ ("risk ≈ rate × time"), with relative error close to $\lambda t/2$. The approximation always overstates the risk and breaks down as $\lambda t$ approaches $1$, where it would even exceed $1$. For a rate that varies over time, $R(t) = 1 - \exp\bigl(-\int_0^t \lambda(s)\,ds\bigr)$.`,
@@ -478,7 +478,7 @@ counted once every case's outcome is known. When deaths follow onset within the 
         const delS = v.slider('mean onset-to-death delay (days)', 5, 30, 16, { step: 1 });
         const DIS = [
           { id: 'A', name: 'mild, widespread', color: 'teal', at: [6000, 0.06] },
-          { id: 'B', name: 'rare, deadly', color: 'purple', at: [3, 60] },
+          { id: 'B', name: 'rare, deadly', color: 'purple', at: [4, 45] },
           { id: 'C', name: 'moderate', color: 'orange', at: [60, 4] },
         ];
         DIS.forEach((d, i) => { d.h = sL.handle(...d.at, { color: d.color, label: d.id, labelPos: 'ne' }); d.u = uniforms(M, 61 + i, 2); });
@@ -562,7 +562,7 @@ counted once every case's outcome is known. When deaths follow onset within the 
           if (st.cmp && st.rows) {
             const { rows, byM, byC } = st, nm = (k) => rows[k].id;
             const swap = byM.join() !== byC.join();
-            return `mortality = incidence × case fatality: ${rows.map((r) => `${r.id} ${v.fix(r.inc, r.inc < 10 ? 1 : 0)} × ${pc(r.cfr, r.cfr < 0.01 ? 2 : 1)} = ${v.fix((r.inc * r.cfr), 2)} (simulated ${v.fix(r.mort, 2)})`).join(' · ')} per 100 000 · deadliest for the population: **${byM.map(nm).join(' > ')}**; for the patient: **${byC.map(nm).join(' > ')}**${swap ? ' — the two measures rank them differently' : ''}`;
+            return `mortality = incidence × case fatality: ${rows.map((r) => `${r.id} ${v.fix(r.inc, r.inc < 10 ? 1 : 0)} × ${pc(r.cfr, r.cfr < 0.01 ? 2 : 1)} = ${v.fix((r.inc * r.cfr), 2)} (simulated ${v.fix(r.mort, 2)})`).join(' · ')} per 100 000 · deadliest for the population: **${byM.map(nm).join(' > ')}**; for the patient: **${byC.map(nm).join(' > ')}**${swap ? ' — the two measures rank them differently' : ''} · proportionate mortality (if all causes kill 900 per 100 000 a year): ${rows.map((r) => `${r.id} ${pc(r.mort / 900, 2)}`).join(', ')} of all deaths`;
           }
           const { day, cases, deaths, rec, nv, rv, cfr, final } = st;
           return `day ${day + 1}: ${int(cases)} cases, ${int(deaths)} deaths, ${int(rec)} recovered → deaths ÷ cases = **${pc(nv)}** (too low: recent cases have not had time to die) · deaths ÷ resolved cases = ${pc(rv)} · true case fatality ${pc(cfr, 0)}, reached only when every case has an outcome (day ${DAYS}: ${pc(final)})`;
@@ -589,7 +589,7 @@ $$\text{SMR} = \frac{O}{E}$$
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Standardized_mortality_ratio' },
       viz(v) {
         const M = v.M, AG = ['0–14', '15–29', '30–44', '45–59', '60–74', '75+'], REF = [0.4, 0.6, 1.5, 5, 18, 80], STD = [0.17, 0.19, 0.2, 0.2, 0.15, 0.09], AGE_B = -0.5;
-        const sP = v.stage({ x: [-50, 50], y: [-0.55, 6.6], height: 270, axes: false, weight: 1, minWidth: 250, title: 'age structure (% of each town)' });
+        const sP = v.stage({ x: [-56, 56], y: [-0.55, 6.6], height: 270, axes: false, weight: 1, minWidth: 250, title: 'age structure (% of each town)' });
         const sR = v.stage({ x: [-0.45, 5.45], y: [0.1, 400], ylog: true, height: 270, axes: 'box', weight: 1, minWidth: 250, title: 'deaths per 1 000 per year, by age', xticks: AG.map((a, i) => [i, a]) });
         const sT = v.stage({ x: [0, 100], y: [0, 10], height: 255, axes: false, full: true });
         const ageA = v.slider('Seaside: age structure (young ↔ old)', -0.8, 0.8, 0.55, { step: 0.01 });
@@ -763,7 +763,7 @@ the area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the
 - a **birth cohort** is a diagonal band between two lines of slope $1$.
 The rate for any such region is the number of events in it divided by the person-time inside it (1.2). Because age $=$ period $-$ year of birth, the three time scales are tied together: an influence acting at a moment in history appears as a vertical stripe, one carried by a generation as a diagonal stripe.`,
       idea: String.raw`Every death has three coordinates — when it happened, how old the person was, and when they were born — but only two are free, which is exactly what a plane with diagonal lifelines encodes. Tabulating deaths and person-years in squares of the diagram gives an age-by-period table of rates; reading it along rows, columns or diagonals answers different questions (how risk varies with age in one year, how one age group's risk changed over history, how one generation fared as it aged). Distinguishing effects of age, period and cohort is possible only when a pattern clearly follows one direction; in general the three cannot be separated (the identification problem, demo 1.6).`,
-      caption: String.raw`The background colours are death rates per 1 000 person-years in each 5-year × 5-year square, computed from a simulated population with 20 000 births in every year since 1800 (white: a sample of individual lifelines, red dots = deaths). Add a 1918 pandemic or extra mortality in the generation born 1920–34 and look for a vertical or a diagonal stripe. Choose how to read the diagram and drag the gold point: the highlighted band's rates are plotted on the right, against the other bands of the same kind in grey.`,
+      caption: String.raw`The background colours are death rates per 1 000 person-years in each 5-year × 5-year square, computed from a simulated population with 20 000 births in every year since 1800 (thin lines: a sample of individual lifelines, red dots = deaths). Add a 1918 pandemic or extra mortality in the generation born 1920–34 and look for a vertical or a diagonal stripe. Choose how to read the diagram and drag the gold point: the highlighted band's rates are plotted on the right, against the other bands of the same kind in grey.`,
       deps: ['epi-1.2'],
       see: ['demo-1.5', 'demo-1.6'],
       refs: ['Rothman ch. 3'],
@@ -771,7 +771,7 @@ The rate for any such region is the number of events in it divided by the person
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lexis_diagram' },
       viz(v) {
         const M = v.M, P0 = 1900, P1 = 2020, AMAX = 100, C = 5, NP = 24, NA = 20, B0 = 1800, NCB = 44, BIRTHS = 20000;
-        const s = v.stage({ x: [1893, 2052], y: [0, AMAX], equal: true, height: 410, axes: 'box', weight: 1.55, ylabel: 'age', xticks: [1900, 1920, 1940, 1960, 1980, 2000, 2020] });
+        const s = v.stage({ x: [1893, 2052], y: [0, AMAX], equal: true, height: 410, axes: 'box', weight: 1.55, ylabel: 'age', xticks: [1900, 1920, 1940, 1960, 1980, 2000, 2020], yticks: [0, 20, 40, 60, 80, 100] });
         const g = v.stage({ x: [P0, P1], y: [0.2, 600], ylog: true, height: 410, axes: 'box', weight: 1, minWidth: 250 });
         const eff = v.select('extra mortality', [{ value: 'none', label: 'none' }, { value: 'period', label: '1918 pandemic' }, { value: 'cohort', label: 'born 1920–34' }], 'cohort');
         const dir = v.select('read along', [{ value: 'age', label: 'an age band' }, { value: 'period', label: 'a period' }, { value: 'cohort', label: 'a birth cohort' }], 'age');

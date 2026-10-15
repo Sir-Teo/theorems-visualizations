@@ -143,17 +143,45 @@ function heightOf(P, w, tol = 1e-8) {
   for (let j = 1; j < P.length; j++) if (normN(mv(P[j], w)) < tol * s) return j;
   return Infinity;
 }
-/** Small integer matrix tile: heat-coloured cells (blue > 0, red < 0), numbers when there is room. */
-function intTile(S, B, x0, y0, w, { frame = 'muted', frameW = 1.1, numbers = true, size } = {}) {
-  const n = B.length, cw = w / n, mx = Math.max(1, ...B.flat().map(Math.abs));
+/** Small matrix tile: heat-coloured cells (blue > 0, red < 0), numbers (fmt) when there is room. */
+function intTile(S, B, x0, y0, w, { frame = 'muted', frameW = 1.1, numbers = true, size, fmt = (b) => String(b).replace('-', '−'), scale } = {}) {
+  const n = B.length, cw = w / n, mx = scale ?? Math.max(1, ...B.flat().map(Math.abs));
   const px = Math.abs(S.X(cw) - S.X(0)), fs = size ?? Math.max(8, Math.min(13, px * 0.42));
   for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
     const b = B[i][j], x = x0 + j * cw, y = y0 + w - (i + 1) * cw;
     if (b) S.rect(x, y, x + cw, y + cw, { fill: b > 0 ? 'blue' : 'red', fillAlpha: 0.12 + (0.45 * Math.abs(b)) / mx, stroke: false });
-    if (numbers && px > 15) S.text(String(b).replace('-', '−'), x + cw / 2, y + cw / 2, { size: fs, align: 'center', baseline: 'middle', color: b ? 'ink' : 'faint', halo: false });
+    if (numbers && px > 15) S.text(fmt(b), x + cw / 2, y + cw / 2, { size: fs, align: 'center', baseline: 'middle', color: b ? 'ink' : 'faint', halo: false });
   }
   for (let k = 1; k < n; k++) { S.line(x0 + k * cw, y0, x0 + k * cw, y0 + w, { color: 'grid', width: 0.6 }); S.line(x0, y0 + k * cw, x0 + w, y0 + k * cw, { color: 'grid', width: 0.6 }); }
   S.rect(x0, y0, x0 + w, y0 + w, { color: frame, width: frameW });
+}
+
+/** Parallelepiped with vertex o and edges a, b, c in a scene3 (faces translucent). */
+function box3(sc, o, a, b, c, st = {}) {
+  const P = (i, j, k) => [0, 1, 2].map((t) => o[t] + i * a[t] + j * b[t] + k * c[t]);
+  const faces = [[[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]], [[0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]], [[0, 0, 0], [1, 0, 0], [1, 0, 1], [0, 0, 1]],
+    [[0, 1, 0], [1, 1, 0], [1, 1, 1], [0, 1, 1]], [[0, 0, 0], [0, 1, 0], [0, 1, 1], [0, 0, 1]], [[1, 0, 0], [1, 1, 0], [1, 1, 1], [1, 0, 1]]];
+  for (const f of faces) sc.poly(f.map((q) => P(...q)), { fill: st.fill || 'accent', color: st.color || st.fill || 'accent', fillAlpha: st.fillAlpha ?? 0.1, alpha: st.alpha ?? 0.7, width: st.width ?? 1.2 });
+}
+
+// ---------- complex numbers [re, im] and complex matrices ----------
+const cadd = (z, w) => [z[0] + w[0], z[1] + w[1]];
+const csub = (z, w) => [z[0] - w[0], z[1] - w[1]];
+const cmul = (z, w) => [z[0] * w[0] - z[1] * w[1], z[0] * w[1] + z[1] * w[0]];
+const csc = (z, k) => [z[0] * k, z[1] * k];
+const cabs = (z) => Math.hypot(z[0], z[1]);
+const cNorm = (x) => Math.sqrt(x.reduce((s, z) => s + z[0] * z[0] + z[1] * z[1], 0));
+const cMV = (A, x) => A.map((r) => r.reduce((s, z, k) => cadd(s, cmul(z, x[k])), [0, 0]));
+const cMM = (A, B) => A.map((r) => B[0].map((_, j) => r.reduce((s, z, k) => cadd(s, cmul(z, B[k][j])), [0, 0])));
+/** Inverse of a complex matrix, column by column with the runtime's solveC. */
+function cInv(M, A) { const n = A.length; const cols = ident(n).map((e) => M.solveC(A, e).map((z) => [z.re, z.im])); return A.map((_, i) => cols.map((c) => c[i])); }
+/** a + bi as TeX. */
+function czT(z, d = 2) {
+  const a = Number(z[0].toFixed(d)), b = Number(z[1].toFixed(d));
+  if (b === 0) return tn(a, d);
+  const bb = Math.abs(b) === 1 ? '' : tn(Math.abs(b), d);
+  if (a === 0) return `${b < 0 ? '-' : ''}${bb}i`;
+  return `${tn(a, d)} ${b < 0 ? '-' : '+'} ${bb}i`;
 }
 
 export default {
@@ -551,12 +579,379 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
           if (!st) return '';
           const { mode, ch, zeroAt } = st, v0 = normN(ch[0]) < 1e-9;
           if (v0) return '$v = 0$ is excluded by definition: drag it away from the origin.';
-          const pw = ch.slice(1, 4).map((w, k) => `(T - I)^{${k + 1}}v = ${vtex(w)}`).join(',\\ ');
+          const pw = ch.slice(1, 4).map((w, k) => `(T - I)${k ? `^{${k + 1}}` : ''}v = ${vtex(w)}`).join(',\\ ');
           let s = `$${pw}$. `;
           if (zeroAt === 1) s += '**$v$ is an eigenvector** (so also a generalized eigenvector, with $k = 1$).';
           else if (zeroAt > 1) s += `**$v$ is a generalized eigenvector for $\\lambda = 1$ ($k = ${zeroAt}$) but not an eigenvector**, since $(T - I)v \\ne 0$.`;
           else s += `The lengths shrink by the factor $0.65$ each time but never reach $0$: off the eigen-line, $v$ is **not** a generalized eigenvector for $\\lambda = 1$ (it mixes in the other eigenvalue $0.35$).`;
           return s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.9
+    {
+      num: '8.9',
+      kind: 'Theorem',
+      name: 'A basis of generalized eigenvectors',
+      statement: String.raw`Suppose $\mathbf F = \mathbf C$ and $T \in \mathcal L(V)$. Then $V$ has a basis consisting of generalized eigenvectors of $T$.`,
+      idea: String.raw`Induction on $n = \dim V$. Pick an eigenvalue $\lambda$ of $T$ — this is where $\mathbf F = \mathbf C$ is used (5.19). By 8.4 applied to $T - \lambda I$, $V = \operatorname{null}(T - \lambda I)^n \oplus \operatorname{range}(T - \lambda I)^n$. Every nonzero vector of the first summand is a generalized eigenvector for $\lambda$, and that summand is not $\{0\}$ because $\lambda$ is an eigenvalue. The second summand is invariant under $T$ (5.18) and has smaller dimension, so by induction it has a basis of generalized eigenvectors of the restriction of $T$ — which are generalized eigenvectors of $T$. Join the two bases.`,
+      caption: String.raw`Step through the proof for an operator on $\mathbf R^3 \subseteq \mathbf C^3$ (drag the background to rotate). First the eigenvectors: for the defective $T$ they fill just two lines, spanning only a plane. Then an eigenvalue $\lambda$ splits $V$ into $\operatorname{null}(T - \lambda I)^3$ (green) and the invariant $\operatorname{range}(T - \lambda I)^3$ (purple), and the proof repeats inside the purple part. The last step collects a basis of generalized eigenvectors — a solid parallelepiped — and gives the gold $v$ coordinates in it. Choose the rotation to see the proof stall over $\mathbf R$: the purple plane has no real eigenvalue.`,
+      deps: ['ladr-8.4', 'ladr-5.18', 'ladr-5.19', 'ladr-8.8'],
+      tags: ['generalized eigenvectors'],
+      viz(v) {
+        const M = v.M;
+        const S0 = fromCols([[1, 0.15, -0.2], [0.3, 1, 0.2], [-0.25, 0.35, 1]]);
+        const PRE = {
+          defect: [[2, 1, 0], [0, 2, 0], [0, 0, -1]],
+          triple: [[1, 1, 0], [0, 1, 1], [0, 0, 1]],
+          diag: [[2, 0, 0], [0, 0.5, 0], [0, 0, -1]],
+          rot: [[0, -1, 0], [1, 0, 0], [0, 0, 2]],
+        };
+        const pre = v.select('$T$', [{ value: 'defect', label: 'defective: $2, 2, -1$' }, { value: 'triple', label: 'one eigenvalue, one eigen-line' }, { value: 'diag', label: 'diagonalizable' }, { value: 'rot', label: 'rotation, over $\\mathbf R$' }], 'defect', { onChange: () => ST.reset(undefined, { at: 'end' }) });
+        const S = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.95], equal: true, axes: false, height: 390, title: 'the proof of 8.9, one step at a time' });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.45, lim: 1.3 });
+        const hv = sc.handle([0.4, -0.9, 0.95], { color: 'gold', label: 'v' });
+        const LC = ['green', 'blue', 'pink'];
+        const realEigs = (A) => {
+          const vals = M.eig(A, { vectors: false }).values.filter((z) => Math.abs(z.im) < 1e-4).map((z) => z.re).sort((a, b) => b - a), out = [];
+          for (const x of vals) { const g = out.find((q) => Math.abs(q.s / q.c - x) < 1e-3); if (g) { g.s += x; g.c++; } else out.push({ s: x, c: 1 }); }
+          return out.map((q) => q.s / q.c);
+        };
+        const analyse = (key) => {
+          const T = conjM(M, S0, PRE[key]);
+          const E = realEigs(T).map((l) => ({ l, B: nullO(M, shiftI(T, l), 1e-7) })), eSpan = orthN(E.flatMap((e) => e.B), 1e-6);
+          const levels = []; let U = ident(3);
+          while (U.length) {
+            const A = U.map((bi) => U.map((bj) => dotN(bi, mv(T, bj))));
+            const ls = realEigs(A);
+            if (!ls.length) { levels.push({ stuck: true, U }); break; }
+            const l = ls[0], K = mpow(shiftI(A, l), U.length), toV = (c) => U.reduce((s, b, i) => addN(s, sclN(b, c[i])), [0, 0, 0]);
+            const G = orthN(nullO(M, K, 1e-7).map(toV)), R = orthN(rangeO(K).map(toV));
+            const Ev = E.find((e) => Math.abs(e.l - l) < 1e-3);
+            levels.push({ l, G, R, basis: orthN([...(Ev ? Ev.B : []), ...G], 1e-6).slice(0, G.length) });
+            U = R;
+          }
+          const ok = !levels.some((L) => L.stuck), basis = levels.filter((L) => !L.stuck).flatMap((L, i) => L.basis.map((b) => ({ b, l: L.l, i })));
+          return { T, E, eSpan, levels, ok, basis };
+        };
+        let A = analyse('defect');
+        const frames = () => {
+          A = analyse(pre.value);
+          const fr = [{ t: 'eig' }];
+          A.levels.forEach((L, i) => fr.push({ t: 'lev', i }));
+          if (A.ok) fr.push({ t: 'basis' });
+          return fr.map((f) => ({ ...f, note: () => noteFor(f) }));
+        };
+        const noteFor = (f) => {
+          if (f.t === 'eig') {
+            const d = A.eSpan.length;
+            return `The eigenvectors of $T$ fill ${A.E.length === 1 ? 'one line' : `${A.E.length} lines`} (teal), spanning a subspace of dimension $${d}$` + (d < 3 ? ' — **too few for a basis**.' : ' — here they already give a basis.');
+          }
+          if (f.t === 'lev') {
+            const L = A.levels[f.i];
+            if (L.stuck) return `The purple subspace is invariant, but $T$ acts on it as a rotation: **no real eigenvalue**, so over $\\mathbf R$ the induction stops. Over $\\mathbf C$ it would go on with the eigenvalues $\\pm i$.`;
+            return `Eigenvalue $\\lambda = ${tn(L.l)}$: the current space splits as $\\operatorname{null}(T - \\lambda I)^{m} \\oplus \\operatorname{range}(T - \\lambda I)^{m}$ with dimensions $${L.G.length} + ${L.R.length}$ (8.4).` + (L.R.length ? ' The range is invariant (5.18), so the proof repeats inside it.' : ' Nothing is left over.');
+          }
+          return `Join the pieces: **a basis of generalized eigenvectors** (the solid box has volume $${tn(Math.abs(M.det(fromCols(A.basis.map((q) => q.b)))), 3)} \\ne 0$).`;
+        };
+        const ST = v.steps({ frames, speed: 0.7, start: 'end', still: 'end' });
+        let st = null;
+        v.render(() => {
+          const f = ST.frame || {}, last = f.t === 'basis';
+          hv.visible = last;
+          sc.begin();
+          if (f.t === 'eig' || !f.t) {
+            if (A.eSpan.length === 2) drawSpan(sc, A.eSpan, { color: 'teal', fillAlpha: 0.08, r: 1.6 });
+            A.E.forEach((e) => { if (e.B.length === 1) sc.line(sclN(e.B[0], -1.8), sclN(e.B[0], 1.8), { color: 'teal', width: 4, alpha: 0.85 }, 14); else drawSpan(sc, e.B, { color: 'teal', r: 1.5 }); sc.tex(`E(${tn(e.l)})`, sclN(e.B[0], 1.75), { color: 'teal', size: 13, dx: 8, dy: -10 }); });
+          } else if (f.t === 'lev') {
+            for (let j = 0; j < f.i; j++) { const L = A.levels[j]; drawSpan(sc, L.G, { color: LC[j], fillAlpha: 0.05, alpha: 0.35, r: 1.4, grid: false }); }
+            const L = A.levels[f.i];
+            if (L.stuck) {
+              drawSpan(sc, L.U, { color: 'red', fillAlpha: 0.12, r: 1.55 });
+              const e = L.U[0], w = mv(A.T, e);
+              sc.arrow([0, 0, 0], e, { color: 'red', width: 2 }); sc.arrow([0, 0, 0], w, { color: 'red', width: 2, dash: [5, 3] });
+              sc.tex('u', e, { color: 'red', size: 13, dx: 10, dy: -8 }); sc.tex('Tu', w, { color: 'red', size: 13, dx: 10, dy: -8 });
+            } else {
+              drawSpan(sc, L.G, { color: LC[f.i], r: 1.6, width: 4.5 });
+              if (L.R.length) drawSpan(sc, L.R, { color: 'purple', r: 1.45, width: 4, fillAlpha: 0.1 });
+              const tip = L.G.length === 1 ? sclN(L.G[0], 1.7) : L.G.length === 2 ? sclN(addN(L.G[0], L.G[1]), 1.1) : [1.1, 1.1, 1.1];
+              sc.tex(`\\operatorname{null}(T - ${tn(L.l)}I)^{m}`, tip, { color: LC[f.i], size: 13, dy: -12 });
+            }
+          } else if (last) {
+            A.levels.forEach((L, j) => { if (!L.stuck) drawSpan(sc, L.G, { color: LC[j], fillAlpha: 0.04, alpha: 0.3, r: 1.4, grid: false }); });
+            const B = A.basis.map((q) => q.b);
+            box3(sc, [0, 0, 0], B[0], B[1], B[2], { fill: 'gold', fillAlpha: 0.07, alpha: 0.45 });
+            A.basis.forEach((q, j) => { sc.arrow([0, 0, 0], q.b, { color: LC[q.i], width: 2.8 }); sc.tex(`g_${j + 1}`, q.b, { color: LC[q.i], size: 14, dx: 10, dy: -10 }); });
+            sc.arrow([0, 0, 0], hv.p, { color: 'gold', width: 2.4 });
+          }
+          sc.flush();
+          let coords = null;
+          if (last) coords = M.solve(fromCols(A.basis.map((q) => q.b)), hv.p);
+          st = { f, coords };
+        });
+        v.legend([['teal', 'eigenvectors'], ['green', 'first generalized eigenspace', { area: true }], ['purple', 'invariant remainder', { area: true }], ['gold', 'basis box and $v$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { f, coords } = st;
+          if (f.t === 'basis' && coords) {
+            const parts = A.basis.map((q, j) => `${tn(coords[j])}\\,g_{${j + 1}}`).join(' + ').replace(/\+ -/g, '- ');
+            const lam = A.basis.map((q, j) => `g_{${j + 1}} \\in G(${tn(q.l)}, T)`).join(',\\ ');
+            return `$v = ${parts}$, where $${lam}$: every vector is a combination of generalized eigenvectors.`;
+          }
+          if (!A.ok) return 'Over $\\mathbf R$ this operator has only one real eigenvalue, $2$, and its generalized eigenvectors fill a single line: there is no basis of real generalized eigenvectors. Over $\\mathbf C$ the eigenvalues $\\pm i$ supply the missing two.';
+          return `Eigenvalues: $${A.E.map((e) => tn(e.l)).join(',\\ ')}$; eigenvectors span dimension $${A.eSpan.length}$, generalized eigenvectors span dimension $3$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.11
+    {
+      num: '8.11',
+      kind: 'Theorem',
+      name: 'Generalized eigenvector corresponds to one eigenvalue',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$. Then each generalized eigenvector of $T$ corresponds to only one eigenvalue of $T$: if $v \ne 0$, $(T - \alpha I)^j v = 0$ and $(T - \lambda I)^k v = 0$ for some positive integers $j, k$, then $\alpha = \lambda$.`,
+      idea: String.raw`Let $m$ be the least integer with $(T - \alpha I)^m v = 0$, and $n = \dim V$, so that $(T - \lambda I)^n v = 0$ (8.1, 8.3). Expand $(T - \lambda I)^n = \big((T - \alpha I) + (\alpha - \lambda)I\big)^n$ by the binomial theorem — the two terms commute — and apply $(T - \alpha I)^{m-1}$: every term containing a factor $(T - \alpha I)$ now has $(T - \alpha I)^{\ge m}$ and dies, leaving $0 = (\alpha - \lambda)^n (T - \alpha I)^{m-1}v$. As $(T - \alpha I)^{m-1}v \ne 0$, $\alpha = \lambda$. Equivalently: on the generalized eigenspace of $\lambda$, $T - \alpha I$ is invertible for every $\alpha \ne \lambda$.`,
+      caption: String.raw`An operator on $\mathbf C^3$ with eigenvalues $\lambda$ (a $2\times2$ Jordan block) and $\mu$. The plane is the complex $\alpha$-plane, shaded by $\log_{10}\|(T - \alpha I)^3v\|$ (green = small, contour lines at each power of 10). Drag $\alpha$ (it snaps to eigenvalues): the bars show $\|(T - \alpha I)^k v\|$ for $k = 0, \dots, 6$ on a log scale. For $v$ in $G(\lambda, T)$ the only zero in the whole plane is at $\alpha = \lambda$ — even at $\alpha = \mu$ the bars never reach $0$. Choose a mixed $v$: it is no generalized eigenvector, and no $\alpha$ at all kills it.`,
+      deps: ['ladr-8.8', 'ladr-8.3'],
+      tags: ['generalized eigenvectors'],
+      viz(v) {
+        const M = v.M;
+        const lam = [0.55, 0.55], mu = [-0.8, -0.45];
+        const S0 = [[[1, 0], [0.2, 0.3], [0.3, -0.1]], [[0.1, -0.2], [1, 0], [-0.2, 0.2]], [[-0.3, 0.1], [0.25, 0.1], [1, 0]]];
+        const J = [[lam, [1, 0], [0, 0]], [[0, 0], lam, [0, 0]], [[0, 0], [0, 0], mu]];
+        const T = cMM(cMM(S0, J), cInv(M, S0)), s = [0, 1, 2].map((j) => S0.map((r) => r[j]));
+        const mode = v.select('$v$', [{ value: 'gl', label: '$v \\in G(\\lambda, T)$' }, { value: 'gm', label: '$v \\in G(\\mu, T)$' }, { value: 'mix', label: 'mixed: not a generalized eigenvector' }], 'gl');
+        const th = v.slider('which $v$ in $G(\\lambda, T)$: $v = \\cos\\theta\\, u_1 + \\sin\\theta\\, u_2$, $\\theta$', 0, 3.14, 1.1, { step: 0.01 });
+        const Z = v.stage({ x: [-1.65, 1.65], y: [-1.3, 1.3], equal: true, height: 360, weight: 1.2, xlabel: 'Re', ylabel: 'Im', title: 'the $\\alpha$-plane, shaded by $\\|(T - \\alpha I)^3 v\\|$' });
+        const B = v.stage({ x: [-0.6, 6.6], y: [1e-4, 30], ylog: true, height: 360, weight: 0.8, minWidth: 220, axes: 'box', xticks: [0, 1, 2, 3, 4, 5, 6], xlabel: 'k', title: '$\\|(T - \\alpha I)^k v\\| \\,/\\, \\|v\\|$' });
+        const ah = Z.handle(-0.2, 0.75, { color: 'gold', label: 'α', constrain: (x, y) => { for (const e of [lam, mu]) if (Math.hypot(x - e[0], y - e[1]) < 0.08) return [e[0], e[1]]; return [x, y]; } });
+        const gr = v.rgb('green'), pa = v.rgb('panel'), ink = v.rgb('ink');
+        const vec = () => {
+          if (mode.value === 'gm') return s[2];
+          if (mode.value === 'mix') return s[1].map((z, i) => cadd(z, csc(s[2][i], 0.7)));
+          const c = Math.cos(th.value), d = Math.sin(th.value);
+          return s[0].map((z, i) => cadd(csc(z, c), csc(s[1][i], d)));
+        };
+        const powNorms = (x, a, K) => { const out = [cNorm(x)]; let w = x; for (let k = 1; k <= K; k++) { w = cMV(T, w).map((z, i) => csub(z, cmul(a, w[i]))); out.push(cNorm(w)); } return out; };
+        let st = null;
+        v.render(() => {
+          th.el.hidden = mode.value !== 'gl';
+          const x = vec(), nx = cNorm(x);
+          Z.raster((re, im) => {
+            const a = [re, im]; let w = x;
+            for (let k = 0; k < 3; k++) w = cMV(T, w).map((z, i) => csub(z, cmul(a, w[i])));
+            const L = Math.log10(Math.max(1e-12, cNorm(w) / nx)), t = M.clamp((L + 3) / 4, 0, 1);
+            const f = Math.abs(L - Math.round(L)) < 0.045 ? 0.82 : 1, g = 1 - t;
+            return [0, 1, 2].map((c) => (gr[c] * g + pa[c] * (1 - g)) * f + ink[c] * (1 - f)).concat(255);
+          }, { res: 3, key: `${mode.value}|${th.value}` });
+          Z.axes();
+          for (const [e, name] of [[lam, '\\lambda'], [mu, '\\mu']]) { Z.dot(e[0], e[1], { r: 9, hollow: true, color: 'ink', width: 2 }); Z.tex(name, e[0], e[1], { size: 15, dx: 14, dy: 14 }); }
+          const a = [ah.x, ah.y], ns = powNorms(x, a, 6).map((t) => t / nx);
+          ns.forEach((t, k) => {
+            if (t < 1e-12) { B.dot(k, 1.6e-4, { r: 6, color: 'green' }); B.text('0', k, 2.8e-4, { align: 'center', color: 'green', size: 12, weight: 700 }); }
+            else B.rect(k - 0.32, 1e-4, k + 0.32, Math.min(t, 30), { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1 });
+          });
+          st = { a, ns, onL: a[0] === lam[0] && a[1] === lam[1], onM: a[0] === mu[0] && a[1] === mu[1] };
+        });
+        v.legend([['green', 'small $\\|(T - \\alpha I)^3 v\\|$', { area: true }], ['gold', '$\\alpha$ (drag)', { dot: true }], ['ink', 'eigenvalues $\\lambda, \\mu$', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { a, ns, onL, onM } = st, md = mode.value, z = ns.findIndex((t) => t < 1e-12);
+          let s = `$\\alpha = ${czT(a)}$: $\\|(T - \\alpha I)^k v\\|/\\|v\\| = ${ns.slice(0, 5).map((t) => (t < 1e-12 ? '0' : tn(t, 3))).join(',\\ ')},\\ \\dots$ `;
+          if (z > 0) s += `— **zero from $k = ${z}$ on**: $v$ is a generalized eigenvector for $${onL ? '\\lambda' : '\\mu'}$.`;
+          else if (md === 'mix') s += '— never zero, for any $\\alpha$: a mixture of vectors from $G(\\lambda, T)$ and $G(\\mu, T)$ is not a generalized eigenvector.';
+          else s += `— never zero${onL || onM ? `, even though $\\alpha$ is the eigenvalue $${onL ? '\\lambda' : '\\mu'}$` : ''}: $T - \\alpha I$ is injective on $G(${md === 'gl' ? '\\lambda' : '\\mu'}, T)$, so only $\\alpha = ${md === 'gl' ? '\\lambda' : '\\mu'}$ works.`;
+          return s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.12
+    {
+      num: '8.12',
+      kind: 'Theorem',
+      name: 'Linearly independent generalized eigenvectors',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$. Then every list of generalized eigenvectors of $T$ corresponding to distinct eigenvalues of $T$ is linearly independent.`,
+      idea: String.raw`Suppose not, and take a shortest dependent list $v_1, \dots, v_m$ (eigenvalues $\lambda_1, \dots, \lambda_m$ distinct), with $a_1v_1 + \cdots + a_mv_m = 0$ and all $a_k \ne 0$. Apply $(T - \lambda_m I)^n$, $n = \dim V$: it kills $v_m$, while for $k < m$ the vector $(T - \lambda_m I)^n v_k$ is nonzero (else $v_k$ would belong to two eigenvalues, against 8.11) and is still a generalized eigenvector for $\lambda_k$, since the operators commute. That gives a shorter dependent list — a contradiction. The argument copies 5.11 for eigenvectors.`,
+      caption: String.raw`A function-space instance: $T = d/dt$ acting on $V = \operatorname{span}(e^{at}, te^{at}, e^{bt}, e^{ct})$ with $a = 0$. Here $v_1 = (\cos\varphi + \sin\varphi\,t)e^{at}$ is a generalized eigenvector for $a$ (an eigenvector only when $\sin\varphi = 0$), and $v_2 = e^{bt}$, $v_3 = e^{ct}$ are eigenvectors for $b$ and $c$. Left: the three functions, and in gold the combination $c_1v_1 + c_2v_2 + c_3v_3$ with $|c| = 1$ that comes closest to $0$; its size $\sigma$ is the smallest singular value. Right: $\sigma$ as $b$ sweeps $[-2, 2]$ — it touches $0$ only where $b$ collides with another eigenvalue. Move $b$ onto $c$ (or onto $a$ with $\varphi = 0$) to break the hypothesis.`,
+      deps: ['ladr-8.11', 'ladr-5.11'],
+      tags: ['generalized eigenvectors', 'independence'],
+      viz(v) {
+        const M = v.M, a = 0, L = 2, NS = 120;
+        const phS = v.slider('$\\varphi$ in $v_1 = (\\cos\\varphi + \\sin\\varphi\\, t)\\,e^{at}$', 0, 3.14, 0.9, { step: 0.01 });
+        const bS = v.slider('$b$, the eigenvalue of $v_2 = e^{bt}$', -2, 2, 0.8, { step: 0.01 });
+        const cS = v.slider('$c$, the eigenvalue of $v_3 = e^{ct}$', -2, 2, -1.1, { step: 0.01 });
+        const F = v.stage({ x: [0, L], y: [-2.6, 2.6], height: 340, weight: 1.1, axes: 'box', xlabel: 't', title: '$v_1, v_2, v_3$ scaled to norm 1 on $[0, 2]$; gold: closest to a dependency' });
+        const Sg = v.stage({ x: [-2, 2], y: [0, 0.8], height: 340, weight: 0.9, axes: 'box', xlabel: 'b', title: '$\\sigma = \\min_{|c| = 1}\\|c_1v_1 + c_2v_2 + c_3v_3\\|$ against $b$' });
+        const ts = Array.from({ length: NS + 1 }, (_, i) => (L * i) / NS), W = ts.map((_, i) => ((i === 0 || i === NS ? 1 : i % 2 ? 4 : 2) * (L / NS)) / 3);
+        const ip = (x, y) => x.reduce((s, xi, i) => s + W[i] * xi * y[i], 0);
+        const funcs = (ph, b, c) => [ts.map((t) => (Math.cos(ph) + Math.sin(ph) * t) * Math.exp(a * t)), ts.map((t) => Math.exp(b * t)), ts.map((t) => Math.exp(c * t))].map((f) => { const r = Math.sqrt(ip(f, f)); return f.map((y) => y / r); });
+        const sigma = (fs) => {
+          const G = fs.map((f) => fs.map((g) => ip(f, g))), E = M.eigSym(G), k = E.values.length - 1;
+          return { s: Math.sqrt(Math.max(0, E.values[k])), c: E.vecs[k], det: Math.max(0, M.det(G)) };
+        };
+        let st = null;
+        v.render(() => {
+          const ph = phS.value, b = bS.value, c = cS.value, fs = funcs(ph, b, c), r = sigma(fs);
+          const g = ts.map((_, i) => fs.reduce((s, f, k) => s + r.c[k] * f[i], 0));
+          F.hline(0, { color: 'muted', width: 1 });
+          [['purple', 0], ['teal', 1], ['pink', 2]].forEach(([col, k]) => F.path(ts.map((t, i) => [t, fs[k][i]]), { color: col, width: 2.2 }));
+          F.path(ts.map((t, i) => [t, g[i]]), { color: 'gold', width: 3.6 });
+          F.tex('v_1', ts[NS], fs[0][NS], { color: 'purple', size: 14, dx: -14, dy: -10 });
+          F.tex('v_2', ts[NS], fs[1][NS], { color: 'teal', size: 14, dx: -14, dy: -10 });
+          F.tex('v_3', ts[NS], fs[2][NS], { color: 'pink', size: 14, dx: -14, dy: 12 });
+          F.corner(`c = (${r.c.map((x) => pn(x, 2)).join(', ')}),  σ = ${pn(r.s, 4)}`, 'tl', { color: 'gold', weight: 700 });
+          // σ as b varies
+          const pts = [];
+          for (let i = 0; i <= 200; i++) { const bb = -2 + (4 * i) / 200; pts.push([bb, sigma(funcs(ph, bb, c)).s]); }
+          const top = Math.max(0.2, ...pts.map((p) => p[1])) * 1.15;
+          Sg.setView([-2, 2], [0, top]);
+          for (const [x0, name] of [[a, 'b = a'], [c, 'b = c']]) { Sg.vline(x0, { color: 'red', dash: [5, 4], width: 1.4, alpha: 0.7 }); Sg.text(name, x0, top * 0.94, { align: 'center', color: 'red', size: 12, weight: 700 }); }
+          Sg.path(pts, { color: 'accent', width: 2.4 });
+          Sg.dot(b, r.s, { r: 6, color: r.s < 1e-6 ? 'red' : 'gold' });
+          st = { r, b, c, ph };
+        });
+        v.legend([['purple', '$v_1 \\in G(a, T)$'], ['teal', '$v_2 \\in E(b, T)$'], ['pink', '$v_3 \\in E(c, T)$'], ['gold', 'best combination']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { r, b, c, ph } = st, dep = r.s < 1e-6;
+          const distinct = Math.abs(b - c) > 1e-9 && Math.abs(b - a) > 1e-9 && Math.abs(c - a) > 1e-9;
+          let s = `Eigenvalues $a = 0$, $b = ${tn(b)}$, $c = ${tn(c)}$; Gram determinant (squared volume of the box spanned by the scaled functions) $= ${v.sci(r.det, 2)}$, $\\sigma = ${tn(r.s, 5)}$. `;
+          if (dep) s += `**The list is dependent** — but ${Math.abs(b - c) < 1e-9 ? '$b = c$' : '$b = a$ and $v_1 = e^{at}$'}: two of the eigenvalues coincide, so 8.12 says nothing.`;
+          else if (distinct) s += 'Distinct eigenvalues: $\\sigma > 0$, **linearly independent**, as 8.12 promises.';
+          else s += `Two eigenvalues coincide, yet the list happens to be independent (here $v_1 = (\\cos\\varphi + \\sin\\varphi\\,t)$ is not a multiple of $v_2 = 1$): repeated eigenvalues allow dependence but do not force it.`;
+          return s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.14
+    {
+      num: '8.14',
+      kind: 'Definition',
+      name: 'Nilpotent operator',
+      statement: String.raw`An operator $T \in \mathcal L(V)$ is **nilpotent** if some power of it is $0$: $T^m = 0$ for some positive integer $m$. Equivalently, every nonzero vector of $V$ is a generalized eigenvector of $T$ corresponding to the eigenvalue $0$.`,
+      idea: String.raw`Typical examples: $T(z_1, z_2, z_3, z_4) = (0, 0, z_1, z_2)$, with $T^2 = 0$; differentiation on $\mathcal P_m(\mathbf R)$, whose $(m+1)$-st power kills every polynomial; and every strictly upper-triangular matrix, which pushes each standard basis vector into the span of the earlier ones, so that each application loses one dimension. The name is Latin: *nil* (nothing) and *potens* (having power).`,
+      caption: String.raw`$N$ is strictly upper triangular with entries $a, b, c$ above the diagonal. Step through the powers: $N$ squashes the unit cube into a parallelogram in the plane $\operatorname{span}(e_1, e_2)$, $N^2$ into a segment on the $e_1$-axis, and $N^3$ into the single point $0$. On the right the nonzero entries of $N^k$ retreat to the top-right corner and vanish. Switch on the entry $\varepsilon$ below the diagonal: the cube keeps a nonzero volume $|\det N|^k$ at every step and never collapses — that $N$ is not nilpotent.`,
+      deps: ['ladr-5.1'],
+      tags: ['nilpotent'],
+      viz(v) {
+        const M = v.M;
+        const aS = v.slider('$a$', -1.2, 1.2, 0.9, { step: 0.05 }), bS = v.slider('$b$', -1.2, 1.2, 0.5, { step: 0.05 }), cS = v.slider('$c$', -1.2, 1.2, 0.8, { step: 0.05 });
+        const brk = v.toggle('break it: an entry $\\varepsilon = 0.6$ below the diagonal', false);
+        const S = v.stage({ x: [-1.75, 1.75], y: [-1.35, 1.95], equal: true, axes: false, height: 380, weight: 1.3, title: 'the unit cube and its images under $N, N^2, N^3, N^4$' });
+        const sc = v.scene3(S, { yaw: -0.78, pitch: 0.42, axis: 1.35, lim: 1.3 });
+        const R = v.stage({ x: [0, 1], y: [0, 1.5], equal: true, axes: false, height: 380, weight: 0.7, minWidth: 210, title: 'the matrices $N^k$' });
+        const corners = []; for (let i = 0; i < 8; i++) corners.push([i & 1, (i >> 1) & 1, (i >> 2) & 1]);
+        let cur = null;
+        const noteFor = (k) => {
+          if (!cur) return '';
+          const r = cur.ranks[k], vol = cur.vols[k];
+          if (k === 0) return 'The unit cube, volume $1$.';
+          const shape = ['the single point $0$', 'a segment', 'a flat parallelogram', 'a solid'][r];
+          return `$N^{${k}}(\\text{cube})$ is ${shape} (rank $${r}$` + (r === 3 ? `, volume $|\\det N|^{${k}} = ${tn(vol, 3)}$)` : ')') + (r === 0 && k === cur.idx ? ': **$N^{' + k + '} = 0$**.' : '.');
+        };
+        const ST = v.steps({ frames: [0, 1, 2, 3, 4].map((k) => ({ k, note: () => noteFor(k) })), transition: 0.7, speed: 0.7, start: 1, still: 1 });
+        let st = null;
+        v.render(() => {
+          const a = aS.value, b = bS.value, c = cS.value, eps = brk.value ? 0.6 : 0;
+          const N = [[0, a, b], [0, 0, c], [eps, 0, 0]], P = [ident(3)]; for (let k = 1; k <= 4; k++) P.push(mm(P[k - 1], N));
+          const ranks = P.map((X) => (maxAbs(X) < 1e-12 ? 0 : M.rank(X, 1e-9))), vols = P.map((X) => Math.abs(M.det(X)));
+          const idx = P.findIndex((X) => maxAbs(X) < 1e-12);
+          cur = { ranks, vols, idx };
+          const k = ST.frame.k ?? 1, kp = ST.prev && ST.prev.k != null ? ST.prev.k : k, tw = ST.tween;
+          const img = (X) => corners.map((q) => mv(X, q)), V0 = img(P[kp]), V1 = img(P[k]), V = V0.map((p, i) => lerpN(p, V1[i], tw));
+          const Pt = P[kp].map((r, i) => r.map((x, j) => x + (P[k][i][j] - x) * tw));
+          sc.begin();
+          // the original cube, dashed
+          for (let i = 0; i < 8; i++) for (let d = 0; d < 3; d++) if (!((i >> d) & 1)) { const j = i | (1 << d); sc.line(corners[i], corners[j], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 }); }
+          box3(sc, [0, 0, 0], colOf(Pt, 0), colOf(Pt, 1), colOf(Pt, 2), { fill: brk.value ? 'red' : 'accent', fillAlpha: 0.12, alpha: 0.85, width: 1.6 });
+          ['blue', 'purple', 'teal'].forEach((col, j) => { const e = colOf(Pt, j); if (normN(e) > 0.03) { sc.arrow([0, 0, 0], e, { color: col, width: 2.4 }); sc.tex(`N^{${k}}e_${j + 1}`, e, { color: col, size: 12.5, dx: 12, dy: -9 }); } });
+          if (V.every((p) => normN(p) < 0.02)) sc.dot([0, 0, 0], { r: 7, color: 'green' });
+          sc.flush();
+          // tiles of N, N², N³
+          for (let j = 1; j <= 3; j++) {
+            const y0 = 1.5 - j * 0.47, on = j === k;
+            intTile(R, P[j], 0.33, y0, 0.36, { frame: on ? 'gold' : maxAbs(P[j]) < 1e-12 ? 'green' : 'muted', frameW: on ? 2.6 : 1.2, fmt: (x) => pn(x, 2), scale: 1.2, size: 11 });
+            R.tex(`N^{${j}}`, 0.29, y0 + 0.18, { size: 15, align: 'right', color: on ? 'gold' : 'ink' });
+            R.text(maxAbs(P[j]) < 1e-12 ? '= 0' : `rank ${ranks[j]}`, 0.73, y0 + 0.18, { size: 12, color: maxAbs(P[j]) < 1e-12 ? 'green' : 'muted', weight: 700 });
+          }
+          st = { ranks, vols, idx, eps };
+        });
+        v.legend([['accent', '$N^k(\\text{cube})$', { area: true }], ['muted', 'unit cube', { dash: true }], ['blue', '$N^ke_1$'], ['purple', '$N^ke_2$'], ['teal', '$N^ke_3$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { ranks, vols, idx, eps } = st;
+          const rk = `ranks of $N, N^2, N^3, N^4$: $${ranks.slice(1).join(',\\ ')}$`;
+          if (idx > 0) return `${rk}. The first power that is $0$ is $N^{${idx}}$: **$N$ is nilpotent**` + (idx < 3 ? ' (some entries are 0, so it dies early).' : '.');
+          return `${rk}; $|\\det N| = ${tn(vols[1], 3)} \\ne 0$, so every power is invertible: **no power of $N$ is $0$**, and $N$ is not nilpotent.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.16
+    {
+      num: '8.16',
+      kind: 'Theorem',
+      name: 'Nilpotent operator raised to dim V is 0',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ is nilpotent. Then $T^{\dim V} = 0$.`,
+      idea: String.raw`Some power vanishes, say $T^k = 0$; then $\operatorname{null}T^k = V$. The null spaces of the powers increase (8.1) and stop growing by step $\dim V$ (8.3), so $\operatorname{null}T^{\dim V} = \operatorname{null}T^{\max(k, \dim V)} = V$, i.e. $T^{\dim V} = 0$. In chain language: $T$ moves every vector one step down its chain, and no chain is longer than $\dim V$.`,
+      caption: String.raw`A nilpotent operator built from chains (left: each arrow is one application of $T$, the bottom cells go to $0$), disguised by a random integer change of basis — on the right are its powers $T, T^2, \dots, T^n$ in the standard basis, computed exactly. The dashed water line sits at height $k$: everything below it is killed by $T^k$. Raise $k$: by $k = n$ every chain is under water and the tile $T^n$ is entirely $0$, while $T^{n-1} \ne 0$ exactly when there is a chain of full length $n$. Switch on the eigenvalue $1$ and no power of $T$ ever vanishes.`,
+      deps: ['ladr-8.14', 'ladr-8.1', 'ladr-8.3'],
+      tags: ['nilpotent'],
+      viz(v) {
+        const M = v.M;
+        const nS = v.slider('$n = \\dim V$', 2, 6, 5, { int: true });
+        const shape = v.select('chains', [{ value: 'one', label: 'one chain of length $n$' }, { value: 'rand', label: 'random chains' }], 'one');
+        const brk = v.toggle('not nilpotent: the first chain ends in the eigenvalue $1$', false);
+        let seed = 3;
+        v.button('New disguise', () => { seed += 1; });
+        const kS = v.slider('water line: apply $T^k$, $k$', 0, 6, 3, { int: true });
+        const C = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 370, weight: 0.72, minWidth: 210, title: 'the chains of $T$' });
+        const P = v.stage({ x: [0, 3.3], y: [0, 2.35], equal: true, axes: false, height: 370, weight: 1.28, title: 'its powers in the standard basis (exact integers)' });
+        const partition = (r, n) => { for (let t = 0; t < 30; t++) { const p = []; let left = n; while (left > 0) { const c = r.int(1, Math.min(left, n - 1 || 1)); p.push(c); left -= c; } if (p.length > 1 || n === 1) return p.sort((x, y) => y - x); } return [n - 1, 1]; };
+        let st = null;
+        v.render(() => {
+          const n = nS.value, k = Math.min(kS.value, n + 1), r = v.rng(seed * 31 + n * 7 + (shape.value === 'rand' ? 1 : 0));
+          const chains = shape.value === 'one' ? [n] : partition(r, n);
+          const J = Array.from({ length: n }, () => new Array(n).fill(0)); let o = 0;
+          for (const c of chains) { for (let i = 0; i + 1 < c; i++) J[o + i][o + i + 1] = 1; o += c; }
+          if (brk.value) J[0][0] = 1;
+          const S0 = unimodular(r, n, 1), T = conjInt(M, S0, J), pw = [ident(n)];
+          for (let j = 1; j <= n + 1; j++) pw.push(mm(pw[j - 1], T));
+          const ranks = pw.map((X) => rankInt(X));
+          // ---- chains with the water line
+          const b = C.bounds, Wd = b.x[1] - b.x[0], Hd = b.y[1] - b.y[0], cols = chains.length;
+          const cell = Math.min((0.7 * Wd) / (cols * 1.4), (0.66 * Hd) / (n * 1.35 + 0.6)), gx = cell * 1.4, gy = cell * 1.35;
+          const x0 = b.x[0] + Wd / 2 - (cols * gx - 0.4 * cell) / 2 + 0.04 * Wd, y0 = b.y[0] + 0.12 * Hd + 0.6 * cell;
+          const xr = x0 + (cols - 1) * gx + cell;
+          C.line(x0 - 0.3 * cell, y0 - 0.5 * cell, xr + 0.3 * cell, y0 - 0.5 * cell, { color: 'ink', width: 1.6 });
+          C.tex('0', x0 - 0.5 * cell, y0 - 0.5 * cell, { size: 14, align: 'right' });
+          chains.forEach((c, i) => {
+            const x = x0 + i * gx;
+            for (let j = 0; j < c; j++) {
+              const y = y0 + j * gy, dead = j < k && !(brk.value && i === 0), keep = brk.value && i === 0;
+              C.rect(x, y, x + cell, y + cell, { fill: keep ? 'red' : dead ? 'faint' : 'accent', fillAlpha: dead ? 0.35 : 0.5, color: keep ? 'red' : dead ? 'muted' : 'accent', width: 1.2 });
+              if (j > 0 || !keep) C.arrow(x + cell / 2, y - 0.04 * cell, x + cell / 2, j ? y - 0.3 * cell : y0 - 0.46 * cell, { color: 'ink', width: 1.1, head: 5, alpha: 0.6 });
+            }
+            if (brk.value && i === 0) C.text('↺ Tu = u', x + cell * 1.15, y0 + cell / 2, { color: 'red', size: 11, weight: 700 });
+          });
+          const wl = y0 + Math.min(k, n + 0.6) * gy - 0.15 * cell;
+          C.line(x0 - 0.45 * cell, wl, xr + 0.45 * cell, wl, { color: 'blue', width: 2, dash: [6, 4] });
+          C.text(`k = ${k}`, xr + 0.5 * cell, wl, { color: 'blue', size: 12, weight: 700 });
+          // ---- tiles T^1 … T^n
+          const per = 3, tw = 0.82;
+          for (let j = 1; j <= n; j++) {
+            const row = Math.floor((j - 1) / per), colI = (j - 1) % per, x = 0.18 + colI * 1.06, y = 2.35 - 0.2 - (row + 1) * 1.08;
+            const zero = ranks[j] === 0, on = j === k;
+            intTile(P, pw[j], x, y + 0.14, tw, { frame: on ? 'blue' : zero ? 'green' : 'muted', frameW: on || zero ? 2.6 : 1.1, numbers: n <= 4, size: 11 });
+            P.tex(`T^{${j}}`, x + tw / 2, y + 0.14 + tw + 0.06, { size: 14, color: on ? 'blue' : 'ink', baseline: 'bottom' });
+            P.text(zero ? '= 0' : `rank ${ranks[j]}`, x + tw / 2, y + 0.06, { align: 'center', size: 12, color: zero ? 'green' : 'muted', weight: 700 });
+          }
+          st = { n, chains, ranks, k, T };
+        });
+        v.legend([['accent', 'not yet killed by $T^k$', { area: true }], ['faint', 'killed by $T^k$', { area: true }], ['blue', 'the water line / the tile $T^k$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { n, chains, ranks } = st, mx = Math.max(...chains);
+          if (brk.value) return `Chains $${chains.join(', ')}$ with $Tu = u$ at the bottom of the first: rank of $T^{${n}}$ is $${ranks[n]}$, of $T^{${n + 1}}$ is $${ranks[n + 1]}$ — the eigenvalue $1$ survives every power, so **no power of $T$ is $0$**.`;
+          return `Chains of lengths $${chains.join(', ')}$ in $\\mathbf F^{${n}}$. **$T^{${n}} = 0$**: all $${n * n}$ entries are exactly $0$. The first vanishing power is $T^{${mx}}$ (the longest chain)` + (mx === n ? `, so $T^{${n - 1}}$ (rank $${ranks[n - 1]}$) is not $0$: the exponent $\\dim V$ cannot be lowered in general.` : `, earlier than $T^{${n}}$ here.`);
         });
       },
     },

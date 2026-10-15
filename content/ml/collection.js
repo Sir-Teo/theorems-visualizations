@@ -14,5 +14,6 @@ export default {
     license: "free PDF from the authors",
     url: "https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/"
   },
+  chapterLabels: { 32: "Appendix A", 33: "Appendix B", 34: "Appendix C" },
   blurb: String.raw`Why learning works: PAC learning, uniform convergence, VC dimension, the bias–complexity trade-off, linear predictors, boosting, convex learning and stochastic gradient descent, kernels and SVMs.`
 };

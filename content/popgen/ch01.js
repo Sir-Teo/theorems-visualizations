@@ -554,14 +554,18 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
           sT.dot(hx, hy, { r: 7, hollow: true, color: 'green', width: 2.4 });
           if (Math.hypot(mx - hp.x, my - hp.y) > 0.02) sT.arrow(hp.x, hp.y, mx, my, { color: 'gold', width: 1.8, head: 8 });
           sT.dot(mx, my, { r: 5, color: 'gold' });
-          // χ² panel
-          const edges = M.linspace(0, 12, 25), bw = edges[1] - edges[0], big = Rn.filter((o) => o.chi2 >= 12).length;
-          const hh = M.histogram(Rn.map((o) => o.chi2).filter((x) => x < 12), { bins: edges });
-          sH.hist({ edges, counts: hh.counts.map((c) => c / (R * bw)) }, { color: 'gold', fillAlpha: 0.45 }); // density relative to all runs
-          sH.clip(() => sH.fn((x) => M.dist.chi2(1).pdf(x), { domain: [0.03, 12], color: 'green', width: 2 }));
+          // χ² panel: the axis stretches when the runs' statistics move far beyond the 5% cut-off
+          const chis = Rn.map((o) => o.chi2), xmax = Math.min(400, Math.max(12, M.quantile(chis, 0.9) * 1.25));
+          const edges = M.linspace(0, xmax, 25), bw = edges[1] - edges[0], big = chis.filter((x) => x >= xmax).length;
+          const dens = M.histogram(chis.filter((x) => x < xmax), { bins: edges }).counts.map((c) => c / (R * bw)); // density relative to all runs
+          const ytop = xmax <= 12 ? 1.3 : Math.max(0.12, Math.max(...dens) * 1.3);
+          sH.setView([0, xmax], [0, ytop]);
+          sH.hist({ edges, counts: dens }, { color: 'gold', fillAlpha: 0.45 });
+          sH.clip(() => sH.fn((x) => M.dist.chi2(1).pdf(x), { domain: [0.03, xmax], color: 'green', width: 2 }));
           sH.vline(3.84, { color: 'red', dash: [5, 4], width: 1.4 });
-          sH.text('5% cut-off', 3.95, 1.2, { size: 10.5, color: 'red' });
-          if (big) sH.text(`${big} runs beyond 12 →`, 11.8, 0.25, { align: 'right', size: 11, color: 'gold', weight: 600 });
+          sH.text('5% cut-off', 3.84, ytop * 0.93, { dx: 5, size: 10.5, color: 'red' });
+          if (xmax > 12) sH.text('the axis has stretched: χ² far beyond the cut-off', xmax * 0.97, ytop * 0.8, { align: 'right', size: 11, color: 'gold', weight: 600 });
+          if (big) sH.text(`${big} runs beyond ${Math.round(xmax)} →`, xmax * 0.97, ytop * 0.7, { align: 'right', size: 11, color: 'gold', weight: 600 });
         });
         v.legend([['green', 'Hardy–Weinberg parabola'], ['gold', 'one simulated generation', { dot: true }], ['green', 'HW point for the parents’ $p$', { dot: true }], ['green', '$\\chi^2_1$ density (right)']]);
         v.readout(() => {

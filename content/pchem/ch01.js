@@ -127,6 +127,89 @@ function mdGas(o) {
   return G;
 }
 
+/**
+ * Event-driven hard spheres (exact): molecules fly in straight lines and collide elastically; the next event is
+ * found exactly, so collisions are never missed or smeared. Walls (0: x=0 … 5: z=Lz) reflect centres specularly,
+ * so the volume open to the centres is Lx·Ly·Lz; with periodic: true there are no walls (a piece of bulk gas).
+ * Species {d, m}: diameter (Å), mass (u). Callbacks onWall(i, wall, impulse) and onCol(i, j) see every event.
+ */
+function hsGas(o) {
+  const N = o.N, R = o.rng, L = o.L.slice(), per = !!o.periodic;
+  const x = new Float64Array(N), y = new Float64Array(N), z = new Float64Array(N), vx = new Float64Array(N), vy = new Float64Array(N), vz = new Float64Array(N);
+  const d = new Float64Array(N), m = new Float64Array(N), S = new Int8Array(N), evT = new Float64Array(N), evJ = new Int32Array(N), evC = new Int32Array(N), cc = new Int32Array(N);
+  { let k = 0; (o.counts || [N]).forEach((c, s) => { for (let j = 0; j < c && k < N; j++, k++) { S[k] = s; d[k] = o.species[s].d; m[k] = o.species[s].m; } }); }
+  const G = { N, x, y, z, vx, vy, vz, d, m, S, L, per, t: 0, imp: new Float64Array(6), hits: new Float64Array(6), impS: new Float64Array(o.species.length), j2: 0, ncol: 0, onWall: null, onCol: null, ux: 0, uy: 0, uz: 0, tag: o.tag ?? -1 };
+  const dmax = Math.max(...o.species.map((s) => s.d));
+  const mi = (q, a) => (per ? q - L[a] * Math.round(q / L[a]) : q);
+  for (let i = 0; i < N; i++) {
+    for (let tries = 0; tries < 20000; tries++) {
+      x[i] = R() * L[0]; y[i] = R() * L[1]; z[i] = R() * L[2];
+      let ok = true;
+      for (let j = 0; j < i && ok; j++) { const dd = (d[i] + d[j]) / 2 * 1.001, dx = mi(x[i] - x[j], 0), dy = mi(y[i] - y[j], 1), dz = mi(z[i] - z[j], 2); if (dx * dx + dy * dy + dz * dz < dd * dd) ok = false; }
+      if (ok) break;
+    }
+    const sd = Math.sqrt(o.T / m[i]); vx[i] = sd * R.normal(); vy[i] = sd * R.normal(); vz[i] = sd * R.normal();
+  }
+  let vcap = 0;
+  const speedCap = () => { vcap = 0; for (let i = 0; i < N; i++) vcap = Math.max(vcap, Math.hypot(vx[i], vy[i], vz[i])); vcap *= 1.1; };
+  speedCap();
+  const pairT = (i, j) => {
+    const dx = mi(x[i] - x[j], 0), dy = mi(y[i] - y[j], 1), dz = mi(z[i] - z[j], 2), ux = vx[i] - vx[j], uy = vy[i] - vy[j], uz = vz[i] - vz[j];
+    const b = dx * ux + dy * uy + dz * uz; if (b >= 0) return Infinity;
+    const u2 = ux * ux + uy * uy + uz * uz, dd = (d[i] + d[j]) / 2, c = dx * dx + dy * dy + dz * dz - dd * dd, disc = b * b - u2 * c;
+    if (disc <= 0) return Infinity;
+    return c <= 0 ? 0 : (-b - Math.sqrt(disc)) / u2;
+  };
+  const predict = (i) => {
+    let tb = Infinity, jb = -100;
+    if (per) tb = Math.max(1e-6, (Math.min(L[0], L[1], L[2]) / 2 - dmax) / (Math.hypot(vx[i], vy[i], vz[i]) + vcap));
+    else { const P = [x[i], y[i], z[i]], V = [vx[i], vy[i], vz[i]]; for (let a = 0; a < 3; a++) { if (V[a] > 0) { const t = (L[a] - P[a]) / V[a]; if (t < tb) { tb = t; jb = -1 - (2 * a + 1); } } else if (V[a] < 0) { const t = -P[a] / V[a]; if (t < tb) { tb = t; jb = -1 - 2 * a; } } } tb = Math.max(0, tb); }
+    for (let j = 0; j < N; j++) { if (j === i) continue; const t = pairT(i, j); if (t < tb) { tb = t; jb = j; } }
+    evT[i] = G.t + tb; evJ[i] = jb; evC[i] = jb >= 0 ? cc[jb] : 0;
+  };
+  G.repredict = () => { for (let i = 0; i < N; i++) predict(i); };
+  G.repredict();
+  const drift = (dt) => {
+    if (dt <= 0) return;
+    for (let i = 0; i < N; i++) {
+      x[i] += vx[i] * dt; y[i] += vy[i] * dt; z[i] += vz[i] * dt;
+      if (per) { x[i] -= L[0] * Math.floor(x[i] / L[0]); y[i] -= L[1] * Math.floor(y[i] / L[1]); z[i] -= L[2] * Math.floor(z[i] / L[2]); }
+    }
+    if (G.tag >= 0) { G.ux += vx[G.tag] * dt; G.uy += vy[G.tag] * dt; G.uz += vz[G.tag] * dt; }
+    G.t += dt;
+  };
+  G.advance = (T) => {
+    const tEnd = G.t + T;
+    for (let guard = 0; guard < 2e6; guard++) {
+      let i = -1, tm = Infinity;
+      for (let k = 0; k < N; k++) if (evT[k] < tm) { tm = evT[k]; i = k; }
+      if (tm > tEnd) break;
+      const j = evJ[i];
+      drift(tm - G.t);
+      if (j === -100 || (j >= 0 && evC[i] !== cc[j])) { predict(i); continue; }
+      if (j >= 0) {
+        const dx = mi(x[i] - x[j], 0), dy = mi(y[i] - y[j], 1), dz = mi(z[i] - z[j], 2), r = Math.hypot(dx, dy, dz);
+        const nx = dx / r, ny = dy / r, nz = dz / r, un = (vx[i] - vx[j]) * nx + (vy[i] - vy[j]) * ny + (vz[i] - vz[j]) * nz, J = 2 * m[i] * m[j] / (m[i] + m[j]) * un;
+        G.onCol?.(i, j);
+        vx[i] -= J / m[i] * nx; vy[i] -= J / m[i] * ny; vz[i] -= J / m[i] * nz; vx[j] += J / m[j] * nx; vy[j] += J / m[j] * ny; vz[j] += J / m[j] * nz;
+        cc[i]++; cc[j]++; G.ncol++;
+        if (per && (Math.hypot(vx[i], vy[i], vz[i]) > vcap || Math.hypot(vx[j], vy[j], vz[j]) > vcap)) { speedCap(); G.repredict(); continue; }
+        predict(i); predict(j);
+      } else {
+        const w = -1 - j, a = w >> 1, V = a === 0 ? vx : a === 1 ? vy : vz, Jw = 2 * m[i] * Math.abs(V[i]);
+        V[i] = -V[i]; G.imp[w] += Jw; G.hits[w]++; G.impS[S[i]] += Jw; G.j2 += Jw * Jw; cc[i]++;
+        G.onWall?.(i, w, Jw);
+        predict(i);
+      }
+    }
+    drift(tEnd - G.t);
+  };
+  /** Change the temperature by rescaling every velocity (instant heating or cooling). */
+  G.setT = (T) => { const f = Math.sqrt(T / G.kinT()); for (let i = 0; i < N; i++) { vx[i] *= f; vy[i] *= f; vz[i] *= f; } speedCap(); G.repredict(); };
+  G.kinT = () => { let ke = 0; for (let i = 0; i < N; i++) ke += m[i] * (vx[i] * vx[i] + vy[i] * vy[i] + vz[i] * vz[i]); return ke / (3 * N); };
+  return G;
+}
+
 /** Oblique ("cabinet") projection: depth z is drawn up and to the right. Returns P(x, y, z) → [X, Y]. */
 function oblique(k = 0.38, ang = 0.62) { const cx = k * Math.cos(ang), cy = k * Math.sin(ang); const P = (x, y, z) => [x + cx * z, y + cy * z]; P.cx = cx; P.cy = cy; return P; }
 /** Back half of a box [x0,x1]×[y0,y1]×[0,D] (faces behind the molecules), with an optional tint of the inside. */
@@ -394,8 +477,8 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         const dens = v.slider('crowding $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
         v.button('Restart the gauges', () => make());
         const B = 10, GAP = 15.5, R = 4.2;
-        const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.2, B + R + 3.4], equal: true, height: 330, axes: false, weight: 1.6 });
-        const sr = v.stage({ x: [-0.3, 3], y: [0.1, 10], ylog: true, height: 330, axes: false, weight: 0.85, minWidth: 230, title: 'relative to the three-gas average (log scale)' });
+        const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.2, B + R + 3.4], equal: true, height: 310, axes: false, weight: 1.6 });
+        const sr = v.stage({ x: [-0.3, 3], y: [0.1, 10], ylog: true, height: 310, axes: false, weight: 0.85, minWidth: 230, title: 'relative to the three-gas average (log scale)' });
         let G = [], s0 = [], tLast = 0, tSim = 0, L = 1;
         const make = () => {
           L = Math.cbrt(N * T / (dens.value / BAR));
@@ -409,8 +492,8 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           sa.curve((t) => [cx + R * Math.cos(t), cy + R * Math.sin(t)], 0, Math.PI, { color: 'muted', width: 1.5 });
           sa.line(cx - R, cy, cx + R, cy, { color: 'muted', width: 1 });
           for (let k = 0; k <= 8; k++) { const a = Math.PI * (1 - k / 8), r0 = k % 2 ? 0.88 : 0.8; sa.line(cx + R * r0 * Math.cos(a), cy + R * r0 * Math.sin(a), cx + R * Math.cos(a), cy + R * Math.sin(a), { color: 'muted', width: 1 }); }
-          sa.text('0', cx - R, cy - 0.55, { size: 10, color: 'muted', align: 'center' });
-          sa.text(v.fix(hi, hi < 10 ? 1 : 0), cx + R, cy - 0.55, { size: 10, color: 'muted', align: 'center' });
+          sa.text('0', cx - R - 0.25, cy + 0.15, { size: 10, color: 'muted', align: 'right' });
+          sa.text(v.fix(hi, hi < 10 ? 1 : 0), cx + R + 0.25, cy + 0.15, { size: 10, color: 'muted', align: 'left' });
           const ag = ang(pid); sa.line(cx + 0.72 * R * Math.cos(ag), cy + 0.72 * R * Math.sin(ag), cx + 1.06 * R * Math.cos(ag), cy + 1.06 * R * Math.sin(ag), { color: 'green', width: 3 });
           if (rd) {
             const a0 = ang(rd.p - 2 * rd.dp), a1 = ang(rd.p + 2 * rd.dp);
@@ -447,8 +530,8 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           if (RD) {
             const gm = (f) => Math.cbrt(f(RD[0]) * f(RD[1]) * f(RD[2]));
             const ref = { rate: gm((r) => r.rate), imp: gm((r) => r.imp), p: gm((r) => r.p) };
-            for (const yv of [0.2, 0.5, 2, 5]) { sr.hline(yv, { color: 'grid', width: 1 }); sr.text(String(yv), -0.27, yv, { size: 10, color: 'muted', align: 'left' }); }
-            sr.hline(1, { color: 'ink', width: 1.2 }); sr.text('1', -0.27, 1, { size: 10, color: 'ink', align: 'left' });
+            for (const yv of [0.2, 0.5, 2, 5]) { sr.line(0, yv, 3, yv, { color: 'grid', width: 1 }); sr.text(String(yv), -0.06, yv, { size: 10, color: 'muted', align: 'right' }); }
+            sr.line(0, 1, 3, 1, { color: 'ink', width: 1.2 }); sr.text('1', -0.06, 1, { size: 10, color: 'ink', align: 'right' });
             GAS.forEach((sp, k) => {
               const x = k + 0.5, rr = RD[k].rate / ref.rate, ri = RD[k].imp / ref.imp, rp = RD[k].p / ref.p, e = 2 * RD[k].dp / RD[k].p;
               sr.rect(x - 0.34, 1, x - 0.06, rr, { fill: sp.col, fillAlpha: 0.75, stroke: false });
@@ -467,6 +550,184 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           const pm = RD.map((r) => r.p), spread = (Math.max(...pm) - Math.min(...pm)) / v.M.mean(pm), err = Math.max(...RD.map((r) => 2 * r.dp / r.p));
           const verdict = spread <= err * 1.2 ? `the three gauges agree within their error bars (spread ${v.fix(100 * spread, 1)}%, ±2σ up to ${v.fix(100 * err, 1)}%)` : `the gauges disagree by ${v.fix(100 * spread, 0)}% — more than the ±${v.fix(100 * err, 1)}% statistical error: at this crowding the gases are no longer perfect`;
           return `Same $N$, $V$, $T$: measured $p(\\mathrm{H_2}) = ${v.fix(pm[0], 2)}$, $p(\\mathrm{N_2}) = ${v.fix(pm[1], 2)}$, $p(\\mathrm{Xe}) = ${v.fix(pm[2], 2)}$ bar against $nRT/V = ${v.fix(dens.value, 2)}$ bar — ${verdict}. Hydrogen strikes ${v.fix(RD[0].rate / RD[2].rate, 1)}× as often as xenon, xenon ${v.fix(RD[2].imp / RD[0].imp, 1)}× as hard ($\\sqrt{65} = 8.1$).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4', kind: 'Law', name: 'Perfect gas equation pV = nRT',
+      statement: String.raw`The pressure $p$, volume $V$, amount $n$ and absolute temperature $T$ of a perfect gas are related by
+$$pV = nRT, \qquad R = 8.314\,462\,618\ \mathrm{J\,K^{-1}\,mol^{-1}} = N_A k_B .$$
+The states of a fixed amount of gas therefore form a surface $p = nRT/V$ over the $(V, T)$ plane. Its sections at constant $T$ are Boyle's hyperbolas (1.1), at constant $p$ and constant $V$ the straight lines of Charles and Gay-Lussac (1.2), and Avogadro's principle (1.3) puts $n$ in front. Every real gas obeys the equation in the limit $p \to 0$; a perfect gas is one that obeys it exactly.`,
+      idea: String.raw`Boyle gives $pV = f(T)$ for fixed $n$; Charles and Gay-Lussac make $f$ proportional to the absolute temperature; Avogadro makes it proportional to the amount, so $pV = nRT$ with one constant $R$ for every gas. Measuring $R$ in the low-pressure limit and dividing by Avogadro's constant gives Boltzmann's constant, $k_B = R/N_A$: per molecule the law reads $pV = Nk_BT$, which the kinetic model (1.6) derives from molecular impacts. The equation fails exactly where those three laws do — at high density and near condensation (1.11).`,
+      caption: String.raw`The surface of states $p(V, T)$ for one mole. Drag the gold state point over it (drag the background to turn the view): the orange isotherm, green isobar and purple isochore through it are Boyle's, Charles's and Gay-Lussac's laws, and the right panel shows the same point among the $p$–$V$ isotherms. Switch on **real CO₂** to lay the van der Waals surface of carbon dioxide over the ideal one: it agrees in the dilute far corner and sags below it at small volume and low temperature, where $pV/nRT$ falls well below 1.`,
+      deps: ['pchem-1.1', 'pchem-1.2', 'pchem-1.3'],
+      refs: ['Atkins 1A', 'M–S ch. 16'],
+      tags: ['equation of state', 'gas laws'],
+      credit: 'Clapeyron, 1834',
+      scope: String.raw`Holds for real gases in the limit of low pressure (in practice to about 1% for permanent gases below a few tens of bar at room temperature). It fails at high density, where molecular size and attractions matter, and near condensation (1.11–1.15).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ideal_gas_law' },
+      viz(v) {
+        const V0 = 0.4, V1 = 8, Tlo = 250, Thi = 650, PM = RBAR * Thi / V0, A = 3.658, Bv = 0.04286;
+        const X = (V) => -1.3 + 2.6 * (V - V0) / (V1 - V0), Y = (T) => -1.3 + 2.6 * (T - Tlo) / (Thi - Tlo), Zp = (p) => -1.05 + 2.3 * p / PM;
+        const iV = (x) => V0 + (x + 1.3) / 2.6 * (V1 - V0), iT = (y) => Tlo + (y + 1.3) / 2.6 * (Thi - Tlo);
+        const pid = (V, T) => RBAR * T / V, pvw = (V, T) => RBAR * T / (V - Bv) - A / (V * V);
+        const real = v.toggle('real CO₂ (van der Waals surface)', false);
+        const S = v.stage({ x: [-2.1, 2.1], y: [-1.9, 2.0], equal: true, axes: false, height: 400, weight: 1.25 });
+        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.38, axes: false });
+        const s2 = v.stage({ x: [0, 8], y: [0, 140], height: 400, axes: 'box', weight: 1, title: '$p$ (bar) against $V$ (L) for $n = 1$ mol' });
+        const P3 = (V, T, p) => [X(V), Y(T), Zp(p)];
+        const snap = (q) => { const V = Math.max(V0, Math.min(V1, iV(q[0]))), T = Math.max(Tlo, Math.min(Thi, iT(q[1]))); return P3(V, T, pid(V, T)); };
+        const H = sc.handle(P3(1.2, 330, pid(1.2, 330)), { mode: 'free', snap, color: 'gold', label: 'state', lim: 2 });
+        const col = (p) => v.mix('teal', 'accent', Math.min(1, p / 70));
+        let st = null;
+        v.render(() => {
+          sc.begin();
+          const V = iV(H.p[0]), T = iT(H.p[1]), p = pid(V, T);
+          st = { V, T, p, pr: pvw(V, T) };
+          // base frame with ticks
+          const base = [P3(V0, Tlo, 0), P3(V1, Tlo, 0), P3(V1, Thi, 0), P3(V0, Thi, 0)];
+          sc.path(base, { color: 'faint', width: 1, close: true });
+          sc.line(P3(V0, Thi, 0), P3(V0, Thi, PM), { color: 'faint', width: 1 }, 4);
+          for (const vv of [2, 4, 6, 8]) sc.tex(`${vv}`, P3(vv, Tlo, 0), { color: 'muted', size: 11, dy: 12 });
+          sc.tex('V/\\mathrm L', P3(5, Tlo, 0), { color: 'muted', size: 12, dy: 30 });
+          for (const tt of [300, 400, 500, 600]) sc.tex(`${tt}`, P3(V1, tt, 0), { color: 'muted', size: 11, dx: 14, dy: 6 });
+          sc.tex('T/\\mathrm K', P3(V1, 450, 0), { color: 'muted', size: 12, dx: 40, dy: 14 });
+          for (const pp of [50, 100]) sc.tex(`${pp}`, P3(V0, Thi, pp), { color: 'muted', size: 11, dx: -14 });
+          sc.tex('p/\\mathrm{bar}', P3(V0, Thi, PM), { color: 'muted', size: 12, dy: -12 });
+          // the ideal surface, coloured by pressure
+          const nv = 22, nt = 16, Vs = (i) => V0 * (V1 / V0) ** (i / nv), Ts = (j) => Tlo + (Thi - Tlo) * j / nt;
+          for (let i = 0; i < nv; i++) for (let j = 0; j < nt; j++) {
+            const q = [[Vs(i), Ts(j)], [Vs(i + 1), Ts(j)], [Vs(i + 1), Ts(j + 1)], [Vs(i), Ts(j + 1)]];
+            sc.poly(q.map(([a, b]) => P3(a, b, pid(a, b))), { fill: col(pid(Vs(i + 0.5), Ts(j + 0.5))), fillAlpha: real.value ? 0.32 : 0.55, edge: false });
+          }
+          for (let j = 0; j <= nt; j += 4) sc.path(Array.from({ length: 41 }, (_, k) => { const vv = V0 * (V1 / V0) ** (k / 40); return P3(vv, Ts(j), pid(vv, Ts(j))); }), { color: 'panel', width: 0.8, alpha: 0.7 });
+          if (real.value) {
+            for (let j = 0; j <= nt; j += 2) sc.path(Array.from({ length: 41 }, (_, k) => { const vv = V0 * (V1 / V0) ** (k / 40); return P3(vv, Ts(j), pvw(vv, Ts(j))); }), { color: 'red', width: 1.2, alpha: 0.85, bias: -0.02 });
+            for (let i = 0; i <= nv; i += 3) sc.path(Array.from({ length: 21 }, (_, k) => P3(Vs(i), Ts(k * nt / 20), pvw(Vs(i), Ts(k * nt / 20)))), { color: 'red', width: 1, alpha: 0.6, bias: -0.02 });
+          }
+          // the three laws through the state point
+          sc.path(Array.from({ length: 61 }, (_, k) => { const vv = V0 * (V1 / V0) ** (k / 60); return P3(vv, T, pid(vv, T)); }), { color: 'orange', width: 3, bias: -0.05 });
+          sc.path(Array.from({ length: 31 }, (_, k) => { const tt = Tlo + (Thi - Tlo) * k / 30, vv = RBAR * tt / p; return vv >= V0 && vv <= V1 ? P3(vv, tt, p) : null; }).filter(Boolean), { color: 'green', width: 3, bias: -0.05 });
+          sc.path(Array.from({ length: 31 }, (_, k) => { const tt = Tlo + (Thi - Tlo) * k / 30; return P3(V, tt, pid(V, tt)); }), { color: 'purple', width: 3, bias: -0.05 });
+          sc.line(P3(V, T, 0), P3(V, T, p), { color: 'gold', width: 1.2, dash: [3, 3] });
+          if (real.value) { sc.line(P3(V, T, st.pr), P3(V, T, p), { color: 'red', width: 3, bias: -0.1 }, 1); sc.dot(P3(V, T, st.pr), { r: 5, color: 'red' }); }
+          sc.dot(P3(V, T, 0), { r: 3, color: 'gold' });
+          sc.flush();
+          // p–V plane
+          for (const tt of [250, 350, 450, 550, 650]) s2.fn((vv) => pid(vv, tt), { color: 'faint', width: 1, domain: [0.3, 8] });
+          s2.fn((vv) => pid(vv, T), { color: 'orange', width: 2.6, domain: [0.3, 8] });
+          s2.text(`T = ${v.fix(T, 0)} K`, Math.min(7.6, V + 1.2), pid(Math.min(7.6, V + 1.2), T), { size: 11.5, color: 'orange', dy: -12, weight: 600 });
+          if (real.value) s2.fn((vv) => pvw(vv, T), { color: 'red', width: 2, dash: [6, 4], domain: [0.2, 8] });
+          s2.hline(p, { color: 'green', width: 1.4, dash: [5, 4] }); s2.vline(V, { color: 'purple', width: 1.4, dash: [5, 4] });
+          s2.dot(V, p, { r: 6, color: 'gold' });
+          if (real.value) s2.dot(V, st.pr, { r: 5, color: 'red' });
+        });
+        v.legend([['orange', 'isotherm (Boyle)'], ['green', 'isobar (Charles)'], ['purple', 'isochore (Gay-Lussac)'], ['red', 'CO₂, van der Waals', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { V, T, p, pr } = st;
+          const base = `$V = ${v.fix(V, 2)}$ L, $T = ${v.fix(T, 0)}$ K: $p = nRT/V = ${v.fix(p, 2)}$ bar, and on the perfect-gas surface $pV/nRT = ${v.fix(p * V / (RBAR * T), 4)}$ at every point.`;
+          return real.value ? base + ` Real CO₂ in the same state (van der Waals, $a = 3.658$ bar L²/mol², $b = 0.0429$ L/mol): $p = ${v.fix(pr, 2)}$ bar, $pV/nRT = ${v.fix(pr * V / (RBAR * T), 3)}$ — ${pr * V / (RBAR * T) > 0.97 ? 'nearly perfect here' : 'far from perfect'}${T < 304.2 && V < 1.6 ? ' (and below 304 K real CO₂ would condense here)' : ''}.` : base;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6', kind: 'Model', name: 'Kinetic model of gases: pressure from collisions',
+      statement: String.raw`Model a gas as $N$ molecules of mass $m$ in a container of volume $V$, in ceaseless random motion, whose size is negligible compared with the distances between them, which interact only in brief elastic collisions, and which bounce elastically off the walls. The momentum they deliver to the walls per unit area and time is a pressure
+$$p = \frac{N m \langle v^2\rangle}{3V} = \frac{nM\,v_{\rm rms}^2}{3V}, \qquad v_{\rm rms} = \sqrt{\langle v^2\rangle}.$$
+Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\tfrac12 m\langle v^2\rangle = \tfrac32 k_BT$ and $v_{\rm rms} = \sqrt{3RT/M}$. The number of impacts on area $A$ per unit time is $\tfrac14 \mathcal N \bar v A$, with $\mathcal N = N/V$ and $\bar v$ the mean speed. For a mixture each species contributes its own share — Dalton's partial pressures.`,
+      idea: String.raw`A molecule with velocity component $v_x$ that hits a wall perpendicular to $x$ reverses $v_x$ and gives the wall impulse $2mv_x$ (mech-2.1). The molecules with that $v_x$ that reach area $A$ in time $\Delta t$ fill a slanted prism of volume $Av_x\Delta t$, so half of $\mathcal N A v_x\Delta t$ of them arrive; the momentum delivered per unit area and time is $\mathcal N m\langle v_x^2\rangle$, and isotropy gives $\langle v_x^2\rangle = \tfrac13\langle v^2\rangle$. Collisions between molecules only exchange momentum among them, so they do not change the wall pressure — as long as the molecules are small. When they fill a noticeable fraction of the box, momentum is passed across a molecular diameter at each collision and the pressure rises above the formula (1.11).`,
+      caption: String.raw`80 nitrogen molecules (real diameter 0.37 nm) bounce in a box; every wall impact flashes. Left: the running pressure — total impulse delivered to the walls divided by area and elapsed time, with a ±2σ band — homing in on the kinetic-model value $Nm\langle v^2\rangle/3V$ (dashed); the ticks along the top are individual impacts, length ∝ impulse. Shrink the box: impacts come faster, exactly as $\tfrac14\mathcal N\bar vA$ predicts, until the molecules fill a sizeable part of the box and the pressure overshoots. Heat it, or add helium and read off Dalton's partial pressures.`,
+      deps: ['pchem-1.4', 'mech-2.1'],
+      see: ['thermo-1.6', 'thermo-1.5'],
+      refs: ['Atkins Focus 1', 'M–S ch. 27'],
+      tags: ['kinetic theory', 'pressure'],
+      credit: 'D. Bernoulli, 1738; Krönig, 1856; Clausius, 1857',
+      scope: String.raw`Assumes molecules much smaller than their spacing and forces only during collisions: accurate for gases at low and moderate pressure. At high density the excluded volume raises the pressure (by the factor $1 + \tfrac{2\pi}{3}\mathcal N d^3 + \dots$ for hard spheres of diameter $d$) and attractions lower it (1.11–1.13).`,
+      viz(v) {
+        const RATE = 12, SPN = { d: 3.70, m: 28.014, col: 'blue', tex: '\\mathrm{N_2}' }, SPH = { d: 2.60, m: 4.003, col: 'teal', tex: '\\mathrm{He}' };
+        const Lsl = v.slider('box edge', 2, 12, 6, { log: true, step: 0.01, fmt: (x) => `${x.toFixed(1)} nm`, onChange: () => make() });
+        const Tsl = v.slider('temperature', 100, 600, 300, { step: 1, fmt: (x) => `${x.toFixed(0)} K`, onChange: () => { G.setT(Tsl.value); restart(); } });
+        const mix = v.toggle('add 40 helium atoms (Dalton)', false, { onChange: () => make() });
+        const P3 = oblique(0.4, 0.6);
+        const sb = v.stage({ x: [-0.08, 1.33], y: [-0.08, 1.3], equal: true, height: 320, axes: false, weight: 0.9, minWidth: 250 });
+        const sg = v.stage({ x: [0, 100], y: [0, 50], height: 320, axes: 'box', weight: 1.25, title: 'running pressure on the walls (bar) against time (ps)' });
+        const sbar = v.stage({ x: [0, 2], y: [0, 50], height: 320, axes: false, weight: 0.45, minWidth: 130, title: 'measured · model' });
+        let G, L, tLast = 0, acc, flashes = [], track = [];
+        const restart = () => { acc = { t0: G.t, imp: 0, impS: [0, 0], j2: 0, hits: 0 }; track = []; flashes = []; };
+        const make = () => {
+          L = Lsl.value * 10;
+          const counts = mix.value ? [80, 40] : [80];
+          G = hsGas({ N: counts.reduce((a, b) => a + b), counts, species: [SPN, SPH], L: [L, L, L], T: Tsl.value, rng: v.rng(61) });
+          G.onWall = (i, w, J) => {
+            acc.imp += J; acc.hits++; acc.impS[G.S[i]] += J; acc.j2 += J * J;
+            flashes.push({ i: G.S[i], w, x: G.x[i], y: G.y[i], z: G.z[i], t: G.t, J });
+            if (flashes.length > 400) flashes.shift();
+          };
+          restart();
+        };
+        make();
+        const model = () => {
+          const V = L * L * L, A = 6 * L * L, out = { V, A, p: 0, pS: [0, 0], rate: 0, N: [0, 0] };
+          for (let i = 0; i < G.N; i++) { const v2 = G.vx[i] ** 2 + G.vy[i] ** 2 + G.vz[i] ** 2, s = G.S[i]; out.pS[s] += G.m[i] * v2 / (3 * V); out.rate += Math.sqrt(v2) / 4 / V * A; out.N[s]++; }
+          out.p = out.pS[0] + out.pS[1];
+          return out;
+        };
+        let R = null;
+        v.animate((t) => {
+          if (t < tLast - 1e-6) make();
+          const dT = Math.min(600, (t - tLast) * RATE); tLast = t;
+          if (dT > 0) { G.advance(dT); }
+          const Mo = model(), el = G.t - acc.t0, A = Mo.A, pm = el > 0 ? acc.imp / (A * el) : 0, dp = el > 0 ? Math.sqrt(acc.j2) / (A * el) : 0;
+          R = { Mo, el, pm, dp, eta: Math.PI / 6 * (Mo.N[0] * SPN.d ** 3 + Mo.N[1] * SPH.d ** 3) / Mo.V };
+          if (el > 0 && (!track.length || el - track[track.length - 1][0] > 0.15)) track.push([el, pm * BAR, dp * BAR]);
+          // --- the box (unit cube on screen) ---
+          const sc = 1 / L, D = 1;
+          boxBack(sb, P3, 0, 1, 0, 1, D, { color: 'muted', fill: 'muted', fillAlpha: 0.06, back: 'muted', backAlpha: 0.04 });
+          const fade = 3;
+          for (const f of flashes) {
+            const age = G.t - f.t; if (age > fade) continue;
+            const q = P3(f.x * sc, f.y * sc, f.z * sc), a = 1 - age / fade;
+            sb.circle(q[0], q[1], (2 + 7 * (1 - a)) / sb.scale, { color: f.i ? 'teal' : 'gold', width: 1.8, alpha: 0.9 * a });
+          }
+          const idx = Array.from({ length: G.N }, (_, i) => i).sort((a, b) => G.z[b] - G.z[a]);
+          for (const i of idx) { const sp = G.S[i] ? SPH : SPN, q = P3(G.x[i] * sc, G.y[i] * sc, G.z[i] * sc); sb.dot(q[0], q[1], { r: Math.max(1.5, sp.d / 2 * sc * sb.scale), color: sp.col, alpha: 0.4 + 0.55 * (1 - G.z[i] / L), ring: false }); }
+          boxFront(sb, P3, 0, 1, 0, 1);
+          sb.corner(`${G.N} molecules · V = ${v.fix((L / 10) ** 3, 1)} nm³ · ${v.fix(G.t * T0 * 1e12, 0)} ps`, 'tl', { size: 11 });
+          // --- running pressure ---
+          const ps = Mo.p * BAR, tmax = Math.max(40, el * T0 * 1e12 * 1.08), ymax = Math.max(ps * 2, 1e-6);
+          sg.setView([0, tmax], [0, ymax]);
+          const tp = (u) => u * T0 * 1e12;
+          if (track.length > 1) {
+            const up = track.filter((q) => q[0] > 2).map((q) => [tp(q[0]), q[1] + 2 * q[2]]), lo = track.filter((q) => q[0] > 2).map((q) => [tp(q[0]), q[1] - 2 * q[2]]);
+            if (up.length > 1) sg.poly(up.concat(lo.reverse()), { fill: 'accent', fillAlpha: 0.15, stroke: false });
+            sg.path(track.map((q) => [tp(q[0]), q[1]]), { color: 'accent', width: 2.2 });
+          }
+          sg.hline(ps, { color: 'ink', width: 1.6, dash: [6, 4] });
+          sg.text('Nm⟨v²⟩/3V', tmax * 0.98, ps, { color: 'ink', size: 12, align: 'right', dy: -11 });
+          const Jref = SPN.m * Math.sqrt(2 * Math.PI * Tsl.value / SPN.m);
+          for (const f of flashes) { const x = tp(f.t - acc.t0); if (x >= 0) sg.line(x, ymax, x, ymax * (1 - 0.07 * f.J / Jref), { color: f.i ? 'teal' : 'gold', width: 1, alpha: 0.7 }); }
+          // --- bars: measured (stacked by species) and model ---
+          sbar.setView([0, 2], [0, ymax]);
+          let y0 = 0;
+          [0, 1].forEach((s) => { const h = el > 0 ? acc.impS[s] / (A * el) * BAR : 0; if (h > 0) sbar.rect(0.15, y0, 0.9, y0 + h, { fill: s ? 'teal' : 'blue', fillAlpha: 0.7, stroke: false }); y0 += h; });
+          sbar.line(0.15, y0 + 2 * dp * BAR, 0.9, y0 + 2 * dp * BAR, { color: 'ink', width: 1 }); sbar.line(0.15, y0 - 2 * dp * BAR, 0.9, y0 - 2 * dp * BAR, { color: 'ink', width: 1 });
+          let y1 = 0;
+          [0, 1].forEach((s) => { const h = Mo.pS[s] * BAR; if (h > 0) sbar.rect(1.1, y1, 1.85, y1 + h, { fill: s ? 'teal' : 'blue', fillAlpha: 0.18, color: s ? 'teal' : 'blue', width: 1.4 }); y1 += h; });
+          sbar.text(`${v.fix(pm * BAR, 1)}`, 0.52, y0 + 2 * dp * BAR, { size: 11, align: 'center', dy: -10, color: 'ink' });
+          sbar.text('±2σ', 0.52, y0 - 2 * dp * BAR, { size: 9.5, align: 'center', dy: 8, color: 'panel', halo: false });
+          sbar.text(`${v.fix(ps, 1)}`, 1.48, y1, { size: 11, align: 'center', dy: -10, color: 'ink' });
+        }, { still: 25 });
+        v.legend([['accent', 'measured: Σ impulse / (area × time), ±2σ'], ['ink', 'kinetic model $Nm\\langle v^2\\rangle/3V$', { dash: true }], ['gold', 'impacts (flashes and ticks)'], ['blue', '$\\mathrm{N_2}$', { dot: true }], ['teal', 'He', { dot: true }]]);
+        v.readout(() => {
+          if (!R || R.el <= 0) return '';
+          const { Mo, el, pm, dp, eta } = R, ns = el * T0 * 1e9, rateM = acc.hits / ns, rateP = Mo.rate / (T0 * 1e9);
+          let s = `After ${acc.hits} impacts: measured $p = ${v.fix(pm * BAR, 2)} \\pm ${v.fix(2 * dp * BAR, 2)}$ bar, kinetic model $Nm\\langle v^2\\rangle/3V = ${v.fix(Mo.p * BAR, 2)}$ bar (ratio $${v.fix(pm / Mo.p, 3)}$). Impacts per ns: $${v.fix(rateM, 0)}$ measured, $\\tfrac14\\mathcal N\\bar vA = ${v.fix(rateP, 0)}$ predicted.`;
+          if (mix.value) s += ` Partial pressures: $\\mathrm{N_2}$ ${v.fix(acc.impS[0] / (Mo.A * el) * BAR, 2)} vs ${v.fix(Mo.pS[0] * BAR, 2)} bar, He ${v.fix(acc.impS[1] / (Mo.A * el) * BAR, 2)} vs ${v.fix(Mo.pS[1] * BAR, 2)} bar — they add up to the total (Dalton).`;
+          s += eta > 0.03 ? ` The molecules fill ${v.fix(100 * eta, 1)}% of the box: hard spheres push the pressure above the model by about $1 + 4\\eta = ${v.fix(1 + 4 * eta, 3)}$.` : ` The molecules fill only ${v.fix(100 * eta, 2)}% of the box, so the model's point-molecule assumption holds.`;
+          return s;
         });
       },
     },

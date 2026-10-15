@@ -107,6 +107,12 @@ function ppedEdges(sc, o, a, b, c, st) {
   const V = [ZERO, a, b, c, add(a, b), add(a, c), add(b, c), add(add(a, b), c)].map((p) => add(o, p));
   for (const [i, j] of [[0, 1], [0, 2], [0, 3], [1, 4], [1, 5], [2, 4], [2, 6], [3, 5], [3, 6], [4, 7], [5, 7], [6, 7]]) sc.line(V[i], V[j], st, 1);
 }
+/** A right-angle mark at `at` between the directions a and b in R³. */
+function rightMark3(sc, a, b, r = 0.15, color = 'green', at = ZERO) {
+  const u = scl(unit(a), r), w = scl(unit(b), r);
+  sc.path([add(at, u), add(at, add(u, w)), add(at, w)], { color, width: 1.6, alpha: 0.9 });
+}
+const EYE3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 /** Three faint great circles of the sphere of radius r. */
 function sphereWire(sc, r = 1, st = {}) {
   for (const [a, b] of [[[1, 0, 0], [0, 1, 0]], [[1, 0, 0], [0, 0, 1]], [[0, 1, 0], [0, 0, 1]]]) {
@@ -195,7 +201,7 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
       tags: ['norms'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Operator_norm' },
       viz(v) {
-        const D = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, height: 340, minWidth: 260, title: 'in $V$: the unit disk, shaded by $\\|Tv\\|$' });
+        const D = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, height: 340, minWidth: 260, ticks: false, title: 'in $V$: the unit disk, shaded by $\\|Tv\\|$' });
         const W = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 340, minWidth: 260, title: 'in $W$: $T(\\text{disk})$ and the radius $\\|T\\|$' });
         const PRE = { gen: [[1.3, 0.6], [0.5, -0.9]], rot: [[0.8, -0.6], [0.6, 0.8]], r1: [[1.2, 0.6], [0.8, 0.4]], zero: [[0, 0], [0, 0]] };
         const H = colHandles(W, PRE.gen);
@@ -233,9 +239,10 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
           else W.dot(0, 0, { color: 'accent', r: 5 });
           if (s1 > 1e-9) {
             for (const sg of [1, -1]) W.dot(sg * s1 * f[0][0], sg * s1 * f[0][1], { color: 'green', r: 5.5, hollow: op });
-            const q = scl(f[0], -s1);
-            W.line(0, 0, q[0], q[1], { color: 'green', width: 1.4 });
-            W.tex(`\\|T\\| = ${tn(s1)}`, q[0], q[1], { color: 'green', size: 14, align: q[0] >= 0 ? 'left' : 'right', dx: q[0] >= 0 ? 9 : -9, dy: q[1] >= 0 ? -10 : 10 });
+            let u = unit(sub(f[1], f[0])); if (u[1] < 0) u = scl(u, -1);
+            const q = scl(u, s1), m = add(scl(q, 0.6), scl(perp(u), u[0] >= 0 ? 0.3 : -0.3));
+            W.line(0, 0, q[0], q[1], { color: 'green', width: 1.6 });
+            W.tex(`\\|T\\| = ${tn(s1)}`, m[0], m[1], { color: 'green', size: 14 });
           }
           if (len(Tv) > 0.02) { W.arrow(0, 0, Tv[0], Tv[1], { color: 'gold', width: 2.6 }); W.tex('Tv', Tv[0], Tv[1], { color: 'gold', size: 15, dx: 12 * Math.sign(Tv[0] || 1), dy: -10 }); }
           W.corner(s1 < 1e-9 ? 'T = 0: the image is {0} and ‖T‖ = 0' : op ? 'open disk: ‖Tv‖ comes close to ‖T‖, never reaches it' : 'the maximum is attained at v = ±e₁', 'bl', { color: op ? 'red' : 'muted', weight: 600, size: 11.5 });
@@ -269,16 +276,16 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
       deps: ['ladr-7.86', 'ladr-6.9', 'ladr-6.17'],
       tags: ['norms'],
       viz(v) {
-        const mk = (title) => v.stage({ x: [-2.9, 2.9], y: [-2.9, 2.9], equal: true, height: 300, minWidth: 250, title });
+        const mk = (title) => v.stage({ x: [-2.9, 2.9], y: [-2.9, 2.9], equal: true, height: 300, minWidth: 250, ticks: false, title });
         const PS = mk('$S$'), PT = mk('$T$ and $\\lambda T$'), PU = mk('$S + T$');
-        const S0 = [[1.2, -0.3], [0.4, 0.7]], T0 = [[-0.2, 0.9], [0.8, 0.3]];
+        const S0 = [[1.3, 0.4], [0.3, -0.8]], T0 = [[-0.3, 1.1], [1.0, 0.4]];
         const HS = colHandles(PS, S0, { l1: 'S(1,0)', l2: 'S(0,1)' });
         const HT = colHandles(PT, T0);
         v.select('', [{ value: 'gen', label: 'generic $T$' }, { value: 'same', label: '$T = S$' }, { value: 'opp', label: '$T = -S$' }, { value: 'zero', label: '$T = 0$' }], 'gen', {
           onChange: (k) => HT.set(k === 'gen' ? T0 : k === 'zero' ? [[0, 0], [0, 0]] : mscl(HS.A, k === 'opp' ? -1 : 1)),
         });
         const lam = v.slider('$\\lambda$', -2, 2, -0.6, { step: 0.05 });
-        const vh = PS.handle(Math.cos(1.2), Math.sin(1.2), { color: 'gold', label: 'v', constrain: (x, y) => (Math.hypot(x, y) > 1e-9 ? unit([x, y]) : [1, 0]) });
+        const vh = PS.handle(Math.cos(2.4), Math.sin(2.4), { color: 'gold', label: 'v', constrain: (x, y) => (Math.hypot(x, y) > 1e-9 ? unit([x, y]) : [1, 0]) });
         v.button('v = best for S + T', () => { const e1 = svd22(madd(HS.A, HT.A)).e[0]; vh.set(e1[0], e1[1]); });
         let st = null;
         v.render(() => {
@@ -286,7 +293,7 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
           const nS = svd22(S).s[0], nT = svd22(T).s[0], nU = svd22(U).s[0], nL = svd22(LT).s[0];
           const u = [vh.x, vh.y], Su = mv(S, u), Tu = mv(T, u), Uu = add(Su, Tu);
           for (const P of [PS, PT, PU]) P.circle(0, 0, 1, { color: 'muted', width: 1, dash: [3, 4] });
-          const lab = (P, txt, p, c) => { if (len(p) > 0.15) P.tex(txt, p[0], p[1], { color: c, size: 14, dx: 12 * Math.sign(p[0] || 1), dy: -10 }); };
+          const lab = (P, txt, p, c, o = 0.32) => { if (len(p) > 0.15) { const q = add(p, scl(unit(p), o)); P.tex(txt, q[0], q[1], { color: c, size: 14 }); } };
           // S
           PS.circle(0, 0, nS, { color: 'blue', width: 1.4, dash: [6, 4] });
           PS.path(ellPts(S), { fill: 'blue', fillAlpha: 0.14, color: 'blue', width: 1.8 });
@@ -305,7 +312,7 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
           PU.path(ellPts(U), { fill: 'green', fillAlpha: 0.16, color: 'green', width: 1.8 });
           PU.arrow(0, 0, Su[0], Su[1], { color: 'blue', width: 2.2 });
           PU.arrow(Su[0], Su[1], Uu[0], Uu[1], { color: 'orange', width: 2.2 });
-          PU.arrow(0, 0, Uu[0], Uu[1], { color: 'green', width: 2.8 }); lab(PU, '(S+T)v', Uu, 'green');
+          PU.arrow(0, 0, Uu[0], Uu[1], { color: 'green', width: 2.8 }); lab(PU, '(S+T)v', Uu, 'green', 0.55);
           const eq = nS + nT - nU < 1e-6;
           PU.corner(`‖S + T‖ = ${pf(nU)} ${eq ? '=' : '<'} ‖S‖ + ‖T‖ = ${pf(nS + nT)}`, 'tl', { color: eq ? 'green' : 'ink', weight: 700, size: 11.5 });
           st = { nS, nT, nU, nL, L, isZero: maxAbs(T) < 1e-12, nSu: len(Su), nTu: len(Tu), nUu: len(Uu), eq };
@@ -333,17 +340,19 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
       tags: ['norms', 'singular values'],
       viz(v) {
         const M = v.M, XC = 1.6, XR = 1.75;
-        const G = v.stage({ x: [0, XR], y: [0, 3.6], height: 360, minWidth: 270, axes: 'box', xlabel: '‖v‖', ylabel: '‖Tv‖', title: 'one dot $(\\|v\\|, \\|Tv\\|)$ per sample $v$' });
+        const G = v.stage({ x: [0, XR], y: [0, 3.5], height: 360, minWidth: 270, axes: 'box', xlabel: '‖v‖', title: 'one dot $(\\|v\\|, \\|Tv\\|)$ per sample $v$' });
         const S = v.stage({ x: [-2.25, 2.25], y: [-2.05, 2.45], equal: true, axes: false, height: 360, minWidth: 290, weight: 1.15, title: 'unit vectors $u$ go to $Tu$; sphere of radius $c$' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.25, lim: 2 });
-        const PRE = { gen: [[1.1, 0.5, -0.2], [0.2, 0.8, 0.6], [-0.3, 0.1, 0.9]], sym: [[1.3, 0.4, 0], [0.4, 0.8, 0.2], [0, 0.2, 0.45]], thin: [[1.2, 1.0, 0.15], [0.5, 0.45, 0.1], [0.3, 0.2, 0.1]], rot: rot3([1, 1, 1], 1) };
+        const usv = (R1, s, R2) => mm(R1, mm(DIAG3(s), tr(R2)));
+        const R1 = rot3([1, 2, 0.5], 0.8), R2 = rot3([0.3, -1, 1], 0.9), R3 = rot3([1, 1, 0], 0.7);
+        const PRE = { gen: usv(R1, [1.8, 0.95, 0.45], R2), sym: usv(R3, [1.6, 0.8, 0.4], R3), thin: usv(R2, [1.7, 0.25, 0.1], R1), rot: rot3([1, 1, 1], 1) };
         let T = PRE.gen, seed = 7, samples = [];
         const resample = () => { const r = v.rng(seed++); samples = Array.from({ length: 240 }, () => scl(unit([r.normal(), r.normal(), r.normal()]), 0.06 + 1.6 * r())); };
         resample();
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'sym', label: 'symmetric' }, { value: 'thin', label: 'nearly rank 1' }, { value: 'rot', label: 'a rotation' }], 'gen', { onChange: (k) => { T = PRE[k]; } });
         v.button('Resample', resample);
         let s1now = 1;
-        const ch = G.handle(XC, XC * 1.0, { color: 'orange', label: 'c', labelPos: 'w', constrain: (x, y) => { let c = Math.max(0.05, y / XC); if (Math.abs(c - s1now) < 0.04) c = s1now; return [XC, c * XC]; } });
+        const ch = G.handle(XC, XC * 1.2, { color: 'orange', label: 'c', labelPos: 'w', constrain: (x, y) => { let c = Math.max(0.05, y / XC); if (Math.abs(c - s1now) < 0.04) c = s1now; return [XC, c * XC]; } });
         let st = null;
         v.render(() => {
           const sv = svd3(M, T), s1 = (s1now = sv.s[0]), c = ch.y / XC;
@@ -358,7 +367,7 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
             G.line(0, 0, XR, XR * c, { color: 'orange', width: 2.2 });
           });
           G.vline(1, { color: 'muted', width: 1, dash: [4, 4] });
-          G.dot(1, s1, { color: 'green', r: 5.5, label: `(b) max at ‖v‖ = 1: ${pf(s1)}`, labelPos: 'nw', labelColor: 'green' });
+          G.dot(1, s1, { color: 'green', r: 5.5, label: `(b) max at ‖v‖ = 1: ${pf(s1)}`, labelPos: 'nw', labelColor: 'green', math: false });
           G.corner(bad.length ? `c = ${pf(c)}: ${bad.length} samples break ‖Tv‖ ≤ c‖v‖` : `c = ${pf(c)}: ‖Tv‖ ≤ c‖v‖ for every sample`, 'tl', { color: bad.length ? 'red' : 'green', weight: 700, size: 11.5 });
           // right: T(unit sphere) against the sphere of radius c
           sc.begin();
@@ -370,8 +379,8 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
           sc.line(scl(t1, -1), t1, { color: 'green', width: 1.2, dash: [4, 4] });
           sc.arrow(ZERO, t1, { color: 'green', width: 2.8 });
           sc.tex('s_1f_1', scl(sv.f[0], s1 + 0.25), { color: 'green', size: 14 });
-          sc.dots(good.map((d) => d.dir), { color: 'accent', r: 2.2, alpha: 0.75 });
-          sc.dots(bad.map((d) => d.dir), { color: 'red', r: 3 });
+          sc.dots(good.map((d) => d.dir), { color: 'accent', r: 1.9, alpha: 0.7 });
+          sc.dots(bad.map((d) => d.dir), { color: 'red', r: 2.4 });
           sc.flush();
           // (b) by brute force over a grid on the unit sphere
           let mx = 0;
@@ -402,7 +411,7 @@ so $\|T^*w\| \le \|T\|\,\|w\|$ and $\|T^*\| \le \|T\|$ by 7.88(c). Applying this
       tags: ['norms', 'adjoint'],
       viz(v) {
         const S = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 360, minWidth: 290, weight: 1.1 });
-        const G = v.stage({ x: [0, Math.PI], y: [0, 3], height: 360, minWidth: 260, axes: 'box', xlabel: 'direction of the unit vector u', xticks: PI_TICKS, title: '$\\|Tu\\|$ and $\\|T^*u\\|$ for unit $u$' });
+        const G = v.stage({ x: [0, Math.PI], y: [0, 3], height: 360, minWidth: 260, axes: 'box', xlabel: 'direction of u', xticks: PI_TICKS, title: '$\\|Tu\\|$ and $\\|T^*u\\|$ for unit $u$' });
         const H = colHandles(S, [[1.2, 1.1], [-0.2, 0.6]]);
         const mode = v.select('', [{ value: 'adj', label: 'the adjoint $T^*$' }, { value: 'skew', label: 'transpose in a skewed basis' }], 'adj');
         const al = v.slider('angle between $b_1$ and $b_2$', 0.4, 1.5708, 0.7, { step: 0.01 });
@@ -478,7 +487,7 @@ Moreover, if $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\ran
             return uAt(t);
           },
         });
-        const bh = W.handle(0.3, 1.4, { color: 'orange', label: 'b' });
+        const bh = W.handle(-0.7, 1.1, { color: 'orange', label: 'b' });
         v.button('best b for this a', () => { const b = mv(T, [ah.x, ah.y]); bh.set(b[0], b[1]); });
         v.button('S = T₁', () => { const { s, e, f } = svd22(T); ah.set(e[0][0], e[0][1]); bh.set(s[0] * f[0][0], s[0] * f[0][1]); });
         let st = null;
@@ -489,10 +498,11 @@ Moreover, if $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\ran
           // V: the direction a, the null space of S and the witness z
           V.circle(0, 0, 1, { color: 'muted', width: 1.2 });
           e.forEach((u, k) => { V.line(-1.6 * u[0], -1.6 * u[1], 1.6 * u[0], 1.6 * u[1], { color: k ? 'purple' : 'blue', width: 1, alpha: 0.4, dash: [4, 4] }); const lp = scl(u, u[1] >= 0 ? 1.35 : -1.35); V.tex(`e_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 14, dx: 10 }); });
-          if (live) { V.line(-2 * z[0], -2 * z[1], 2 * z[0], 2 * z[1], { color: 'red', width: 6, alpha: 0.22 }); const lp = scl(z, z[1] >= 0 ? -1.3 : 1.3); V.tex('\\operatorname{null} S', lp[0], lp[1], { color: 'red', size: 13, dx: 24 }); rightMark(V, a, z, 0.13, 'muted'); }
+          if (live) { V.line(-2 * z[0], -2 * z[1], 2 * z[0], 2 * z[1], { color: 'red', width: 6, alpha: 0.22 }); const lp = add(scl(z, 1.5), scl(a, -0.2)); V.tex('\\operatorname{null} S', lp[0], lp[1], { color: 'red', size: 13 }); rightMark(V, a, z, 0.13, 'muted'); }
           V.arrow(0, 0, a[0], a[1], { color: 'orange', width: 2.4 });
           V.arrow(0, 0, z[0], z[1], { color: 'gold', width: 2.8 });
-          V.tex('z', z[0] * 1.15 + 0.08, z[1] * 1.15 + 0.08, { color: 'gold', size: 15 });
+          const zl = add(scl(z, 1.12), scl(a, -0.16));
+          V.tex('z', zl[0], zl[1], { color: 'gold', size: 15 });
           // W: T, S, and the error T − S against the circle of radius s₂
           W.circle(0, 0, s[1], { color: 'green', width: 2, fill: 'green', fillAlpha: 0.08 });
           W.path(ellPts(T), { color: 'accent', width: 1.3, alpha: 0.6, dash: [4, 3] });
@@ -500,7 +510,7 @@ Moreover, if $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\ran
           W.circle(0, 0, nE, { color: 'purple', width: 1.2, dash: [6, 4] });
           W.line(-b[0], -b[1], b[0], b[1], { color: 'orange', width: 4, alpha: 0.55 });
           W.arrow(0, 0, Tz[0], Tz[1], { color: 'gold', width: 2.8 });
-          const tl = scl(unit(Tz), len(Tz) + 0.25);
+          const tl = add(scl(unit(Tz), len(Tz) + 0.2), scl(perp(unit(Tz)), 0.18));
           W.tex('Tz', tl[0], tl[1], { color: 'gold', size: 14 });
           const opt = nE - s[1] < 1e-6;
           W.corner(`‖T − S‖ = ${pf(nE, 3)} ${opt ? '=' : '>'} s₂ = ${pf(s[1], 3)}`, 'tl', { color: opt ? 'green' : 'purple', weight: 700, size: 11.5 });
@@ -517,7 +527,7 @@ Moreover, if $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\ran
           const yE = Math.min(nE, ymax * 0.98);
           G.line(ta, best(ta), ta, yE, { color: 'orange', width: 1.4, dash: [3, 3] });
           G.dot(ta, best(ta), { color: 'accent', r: 4 });
-          G.dot(ta, yE, { color: 'orange', r: 5.5, label: 'your S', labelPos: ta > 2.6 ? 'w' : 'e', labelColor: 'orange' });
+          G.dot(ta, yE, { color: 'orange', r: 5.5, label: 'your S', labelPos: 'n', labelColor: 'orange', math: false });
           st = { s, nE, nTz: len(Tz), bestA: best(angOf(a)), opt, live };
         });
         v.legend([['purple', '$(T - S)(\\text{circle})$, radius $\\|T - S\\|$', { area: true }], ['orange', '$S(\\text{circle})$ and $a$'], ['green', 'radius $s_2$', { area: true }], ['gold', 'witness $z$ and $(T - S)z = Tz$'], ['accent', '$T(\\text{circle})$ / best error', { dash: true }]]);
@@ -543,9 +553,10 @@ $$T = S\sqrt{T^*T}.$$`,
       tags: ['factorization', 'positivity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Polar_decomposition' },
       viz(v) {
-        const S = v.stage({ x: [-3.2, 3.2], y: [-2.45, 2.45], equal: true, height: 390, full: true });
+        const S = v.stage({ x: [-2.5, 2.5], y: [-2.3, 2.3], equal: true, height: 390, minWidth: 330, weight: 1.6 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, minWidth: 230, title: 'the two factors' });
         const TL = v.stage({ x: [0, 10], y: [0, 1], height: 56, full: true, axes: false });
-        const PRE = { gen: [[1.3, 0.9], [-0.5, 1.0]], ref: [[0.5, 1.3], [1.2, -0.3]], r1: [[1.2, 0.6], [0.8, 0.4]], cx: [[1.1, -0.8], [0.8, 1.1]] };
+        const PRE = { gen: [[0.9, -1.2], [1.4, 0.2]], ref: [[0.5, 1.4], [1.3, -0.2]], r1: [[1.4, 0.7], [0.6, 0.3]], cx: [[1.1, -0.8], [0.8, 1.1]] };
         const H = colHandles(S, PRE.gen);
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'ref', label: '$\\det T < 0$' }, { value: 'r1', label: 'rank 1' }, { value: 'cx', label: 'normal (a complex number)' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         const which = v.select('positive factor', [{ value: 'r', label: '$\\sqrt{T^*T}$' }, { value: 'w', label: '$\\sqrt{TT^*}$ (wrong)' }], 'r');
@@ -578,7 +589,7 @@ $$T = S\sqrt{T^*T}.$$`,
           if (t >= 0.5 && t < 4.2) axes.forEach((d, k) => {
             const c = k ? 'purple' : 'blue';
             S.line(-3.5 * d[0], -3.5 * d[1], 3.5 * d[0], 3.5 * d[1], { color: 'orange', width: 1.2, dash: [6, 4], alpha: 0.7 });
-            const lp = scl(d, (1 + (s[k] - 1) * u1) + 0.55);
+            const lp = scl(d, d[1] < -1e-9 || (Math.abs(d[1]) < 1e-9 && d[0] < 0) ? -2.05 : 2.05);
             S.text(`×${pf(1 + (s[k] - 1) * u1)}`, lp[0], lp[1], { color: 'orange', size: 12.5, weight: 700, align: 'center' });
           });
           if (t >= 4.2 && t < 7.4) {
@@ -602,13 +613,22 @@ $$T = S\sqrt{T^*T}.$$`,
           for (const [a, b, lab, c] of PH) { TL.rect(a, 0.28, b, 0.72, { fill: c, fillAlpha: 0.22, stroke: false }); TL.text(lab, (a + b) / 2, 0.5, { align: 'center', size: 11.5 }); }
           TL.text(miss ? 'result ≠ T' : 'result = T', 8.6, 0.5, { align: 'center', size: 11.5, color: miss ? 'red' : 'green', weight: 700 });
           TL.line(t, 0.08, t, 0.92, { color: 'gold', width: 3 });
+          // the factors as matrices
+          for (const y of [0.74, 0.47, 0.2]) R.line(0.05, y, 0.95, y, { color: 'grid', width: 1 });
+          R.tex(`T = ${mtex(T)}`, 0.5, 0.87, { size: 15 });
+          R.tex(`${wrong ? '\\sqrt{TT^*}' : '\\sqrt{T^*T}'} = ${mtex(Pos)}`, 0.5, 0.65, { size: 14.5, color: 'orange' });
+          R.text(`positive: eigenvalues ${pf(s[0])}, ${pf(s[1])} on ${wrong ? 'f₁, f₂' : 'e₁, e₂'}`, 0.5, 0.535, { size: 11.5, color: 'muted', align: 'center' });
+          R.tex(`S = ${mtex(U)}`, 0.5, 0.38, { size: 14.5, color: 'purple' });
+          R.text(`unitary: S*S = I, ${dU > 0 ? `rotation by ${pf(phi * DEG, 0)}°` : 'a reflection'}`, 0.5, 0.265, { size: 11.5, color: 'muted', align: 'center' });
+          R.tex(`S${wrong ? '\\sqrt{TT^*}' : '\\sqrt{T^*T}'} = ${mtex(final)}`, 0.5, 0.12, { size: 14.5, color: miss ? 'red' : 'green' });
+          R.text(miss ? '≠ T' : '= T', 0.5, 0.03, { size: 12.5, color: miss ? 'red' : 'green', weight: 700, align: 'center' });
           st = { T, P, Q, U, dU, err, wrong, s, errQ: maxAbs(msub(mm(Q, U), T)), normal: maxAbs(msub(P, Q)) < 1e-6, fl: flip.value };
         }, { period: 10, still: 5.8 });
         v.legend([['blue', 'image of $e_1$'], ['purple', 'image of $e_2$'], ['orange', 'stretch axes', { dash: true }], ['muted', 'target $T(\\text{picture})$', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { T, P, Q, U, dU, err, wrong, s, errQ, normal, fl } = st;
-          const head = `$T = ${mtex(T)}$, $\\sqrt{T^*T} = ${mtex(P)}$ (eigenvalues $${tn(s[0])}, ${tn(s[1])}$), $S = ${mtex(U)}$ — ${dU > 0 ? 'a rotation' : 'a reflection'}, $S^*S = I$. `;
+          const head = `$S$ is ${dU > 0 ? 'a rotation' : 'a reflection'} ($\\det S = ${dU > 0 ? 1 : -1}$, $S^*S = I$) and $\\sqrt{T^*T}$ has eigenvalues $s_1 = ${tn(s[0])}$, $s_2 = ${tn(s[1])}$ on $e_1, e_2$. `;
           if (wrong) return head + (normal ? `$T$ is normal, so $\\sqrt{TT^*} = \\sqrt{T^*T}$ and this order works too.` : `$S\\sqrt{TT^*}$ misses $T$ by $${tn(err, 3)}$: $\\sqrt{TT^*}$ belongs on the other side, $\\sqrt{TT^*}\\,S = T$ (difference $${v.sci(errQ, 1)}$).`);
           if (fl) return head + (s[1] > 1e-9 ? `Flipping $f_2$ breaks it ($\\|S\\sqrt{T^*T} - T\\|_{\\max} = ${tn(err, 3)}$): for invertible $T$ the unitary factor is unique.` : `With $s_2 = 0$ the flipped $S$ works as well (difference $${v.sci(err, 1)}$): for non-invertible $T$, $S$ is **not unique**.`);
           return head + `$S\\sqrt{T^*T} = T$ up to $${v.sci(err, 1)}$.`;
