@@ -126,14 +126,15 @@ Continued at Mauna Loa, the record (climate-7.10) has risen from 316 ppm (annual
             s.text('South Pole', 1959.55, 314.9, { color: 'teal', size: 12, weight: 700, align: 'left' });
             s.text('Little America', 1958.55, 313.75, { color: 'purple', size: 12, weight: 700, align: 'left' });
           } else {
-            s.setView([1950, 2028], [305, 440]); s.setTicks(null, null);
+            s.setView([1950, 2028], [296, 440]); s.setTicks(null, null);
             const w0 = win.value - 3, w1 = win.value + 3;
             s.vband(w0, w1, { color: 'orange', alpha: 0.16, edges: true });
             s.path(mlo, { color: 'blue', width: 1.1 });
             for (const p of kml) s.dot(p[0], p[1], { r: 2.6, color: 'gold' });
             const pts = mlo.filter((p) => p[0] >= w0 && p[0] < w1), F = fitCycle(M, pts, win.value, 2, true);
             if (fitT.value) s.fn(F.f, { domain: [w0, w1], color: 'red', width: 1.6 });
-            s.text(`${v.fix(F.slope, 2)} ppm/yr`, win.value, F.trend(w0) - 18, { color: 'orange', weight: 700, size: 12.5, align: 'center' });
+            if (win.value > 2005) s.text(`${v.fix(F.slope, 2)} ppm/yr`, w0 - 0.6, F.trend(w0) + 12, { color: 'orange', weight: 700, size: 12.5, align: 'right' });
+            else s.text(`${v.fix(F.slope, 2)} ppm/yr`, w1 + 0.6, F.trend(w1) - 12, { color: 'orange', weight: 700, size: 12.5, align: 'left' });
             st = { F, pts };
           }
           // ---- seasonal cycle panel

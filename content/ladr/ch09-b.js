@@ -250,5 +250,277 @@ Conversely, if swapping the inputs always flips the sign, take $u = w = v$: then
         });
       },
     },
+
+    // ------------------------------------------------------------------ 9.17
+    {
+      num: '9.17',
+      kind: 'Theorem',
+      name: 'Bilinear forms = symmetric ⊕ alternating',
+      statement: String.raw`The sets $V^{(2)}_{\mathrm{sym}}$ and $V^{(2)}_{\mathrm{alt}}$ are subspaces of $V^{(2)}$, and
+$$V^{(2)} = V^{(2)}_{\mathrm{sym}} \oplus V^{(2)}_{\mathrm{alt}}.$$`,
+      idea: String.raw`Both sets are closed under addition and scalar multiplication and contain $0$. Every $\beta \in V^{(2)}$ splits as $\beta = \rho + \alpha$ with
+$$\rho(u, w) = \tfrac12\big(\beta(u, w) + \beta(w, u)\big), \qquad \alpha(u, w) = \tfrac12\big(\beta(u, w) - \beta(w, u)\big),$$
+where $\rho$ is symmetric and $\alpha$ is alternating by 9.16. The sum is direct (1.46) because a form that is both satisfies $\beta(u, w) = -\beta(w, u) = -\beta(u, w)$, hence is $0$. In a basis this is the splitting of a square matrix into its symmetric and skew-symmetric parts, $A = \frac12(A + A^{t}) + \frac12(A - A^{t})$, which is therefore the only one; counting entries, $\dim V^{(2)}_{\mathrm{sym}} = \frac{n(n+1)}2$ and $\dim V^{(2)}_{\mathrm{alt}} = \frac{n(n-1)}2$.`,
+      caption: String.raw`Top row: a bilinear form on $\mathbf R^3$ given by its matrix $A$ (Axler's example 9.2 to start; click the top or bottom half of an entry, or drag it, to edit), split into its symmetric part $S$ and skew part $K$ — green frames mean "symmetric" and "skew" respectively. Bottom row: try another split $A = (S + tX) + (K - tX)$ with the slider; cells that break symmetry or skewness are outlined in red, and the right panel plots how far each part is from its type. Only $t = 0$ works — a symmetric $X$ repairs one part and breaks the other, and so does a skew one.`,
+      deps: ['ladr-9.16', 'ladr-1.46', 'ladr-9.9', 'ladr-9.14'],
+      tags: ['bilinear forms', 'direct sums'],
+      viz(v) {
+        const A0 = [[0, 1, 0], [0, 0, -5], [2, 0, 0]], A = A0.map((r) => r.slice());
+        let seed = 3, X = null;
+        const makeX = () => {
+          const r = v.rng(seed * 7 + 1);
+          for (let tries = 0; tries < 20; tries++) {
+            let Y = [0, 1, 2].map(() => [0, 1, 2].map(() => Math.round(r.uniform(-2, 2) * 2) / 2));
+            if (kind.value === 'sym') Y = symPart(Y); else if (kind.value === 'skew') Y = skewPart(Y);
+            if (fro(Y) > 1) return Y;
+          }
+          return kind.value === 'skew' ? [[0, 1, 0], [-1, 0, 0], [0, 0, 0]] : [[1, 0, 0], [0, 0, 0], [0, 0, 0]];
+        };
+        const kind = v.select('direction $X$ of the other split', [{ value: 'any', label: 'random' }, { value: 'sym', label: 'symmetric' }, { value: 'skew', label: 'skew' }], 'any', { onChange: () => { X = makeX(); } });
+        const ts = v.slider('$t$', -1, 1, 0.4, { step: 0.01 });
+        v.button('new $X$', () => { seed++; X = makeX(); });
+        v.button('reset $A$', () => A.forEach((r, i) => r.forEach((_, j) => { r[j] = A0[i][j]; })));
+        X = makeX();
+        const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 410, weight: 1.35, minWidth: 380 });
+        const R = v.stage({ x: [-1, 1], y: [0, 5], axes: 'box', height: 410, weight: 0.65, minWidth: 230, xlabel: 't', title: 'distance of each part from its type' });
+        let boxA = null, drag = null, st = null;
+        L.onDrag((x, y, ph) => {
+          const px = L.X(x), py = L.Y(y);
+          if (ph === 'start') { const c = boxA && boxA.hit(px, py); drag = c ? { c, Y: py, a: A[c[0]][c[1]], moved: false } : null; return; }
+          if (!drag) return;
+          const dy = drag.Y - py, [i, j] = drag.c;
+          if (ph === 'move' && (drag.moved || Math.abs(dy) > 5)) { drag.moved = true; A[i][j] = Math.max(-9, Math.min(9, drag.a + Math.round(dy / 14))); }
+          if (ph === 'end') { if (!drag.moved) A[i][j] = Math.max(-9, Math.min(9, drag.a + (py < boxA.Y + (i + 0.5) * boxA.ch ? 1 : -1))); drag = null; }
+        });
+        const asym = (M) => fro(msub(M, tp(M))), askew = (M) => fro(madd(M, tp(M)));
+        v.render(() => {
+          const t = ts.value, Sm = symPart(A), Km = skewPart(A), S2 = madd(Sm, mscl(X, t)), K2 = msub(Km, mscl(X, t));
+          const W = L.width, cw = Math.max(30, Math.min(44, (W - 120) / 9)), ch = Math.min(28, cw * 0.72), gap = 30, tot = 9 * cw + 2 * gap, X0 = (W - tot) / 2;
+          const mx = Math.max(1, maxAbs(A));
+          const heat = (M) => (i, j) => (Math.abs(M[i][j]) > 1e-9 ? [M[i][j] > 0 ? 'blue' : 'red', 0.08 + (0.3 * Math.min(1, Math.abs(M[i][j]) / mx))] : null);
+          const bad = (M, sign) => { const c = []; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (Math.abs(M[i][j] - sign * M[j][i]) > 1e-9) c.push([i, j, 'red']); return c; };
+          const row = (Y, Ms, labels, frames, cells) => {
+            const boxes = [];
+            Ms.forEach((M, k) => {
+              const x = X0 + k * (3 * cw + gap);
+              boxes.push(matPx(v, L, M, x, Y, { cw, ch, d: 2, fill: heat(M), frame: frames[k], frameW: frames[k] === 'ink' ? 1.5 : 2.4, cells: cells[k], label: labels[k], labelSize: 13 }));
+              if (k < 2) L.textPx(k ? '+' : '=', x + 3 * cw + gap / 2, Y + 1.5 * ch, { align: 'center', size: 20, color: 'muted' });
+            });
+            return boxes;
+          };
+          const Y1 = 50, Y2 = Y1 + 3 * ch + 86;
+          boxA = row(Y1, [A, Sm, Km], ['A', 'S = \\tfrac12(A + A^{t})', 'K = \\tfrac12(A - A^{t})'], ['ink', 'green', 'green'], [[], [], []])[0];
+          L.textPx('click or drag an entry of A', X0 + 1.5 * cw, Y1 + 3 * ch + 16, { align: 'center', size: 11, color: 'muted' });
+          const okS = asym(S2) < 1e-9, okK = askew(K2) < 1e-9;
+          row(Y2, [A, S2, K2], ['A', `S + ${tn(t, 2)}X`, `K - ${tn(t, 2)}X`], ['ink', okS ? 'green' : 'red', okK ? 'green' : 'red'], [[], bad(S2, 1), bad(K2, -1)]);
+          L.texPx(`\\|S' - S'^{t}\\| = ${tn(asym(S2), 2)}, \\quad \\|K' + K'^{t}\\| = ${tn(askew(K2), 2)}`, W / 2, Y2 + 3 * ch + 30, { size: 14, color: okS && okK ? 'green' : 'red' });
+          // the defects along the family
+          const dS = (tt) => asym(madd(Sm, mscl(X, tt))), dK = (tt) => askew(msub(Km, mscl(X, tt)));
+          const ym = Math.max(1, dS(1), dK(1), dS(-1), dK(-1)) * 1.15;
+          R.setView([-1, 1], [0, ym]);
+          R.fn(dS, { color: 'red', width: 2.6 }); R.fn(dK, { color: 'purple', width: 2.6, dash: [7, 4] });
+          R.vline(t, { color: 'gold', width: 1.4 }); R.dot(t, dS(t), { r: 5, color: 'red' }); R.dot(t, dK(t), { r: 5, color: 'purple' });
+          R.dot(0, 0, { r: 6, color: 'green', label: 't = 0', labelPos: 'ne' });
+          const u = [1, 2, -1], w = [2, 0, 1];
+          st = { b: bil(A, u, w), r: bil(Sm, u, w), a: bil(Km, u, w), okS, okK, t, kind: kind.value };
+        });
+        v.legend([['green', 'symmetric / skew'], ['red', '$\\|S\' - S\'^{t}\\|$'], ['purple', '$\\|K\' + K\'^{t}\\|$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const head = `For $u = (1, 2, -1)$, $w = (2, 0, 1)$: $\\ \\beta(u, w) = ${tn(st.b, 2)} = \\rho(u, w) + \\alpha(u, w) = ${tn(st.r, 2)} ${plus(st.a, 2)}$, with $\\rho = \\frac12\\big(\\beta(u, w) + \\beta(w, u)\\big)$ symmetric and $\\alpha = \\frac12\\big(\\beta(u, w) - \\beta(w, u)\\big)$ alternating. `;
+          if (st.okS && st.okK) return head + (Math.abs(st.t) < 1e-9 ? 'At $t = 0$ the other split *is* the first one.' : 'Both parts are fine only because $X = 0$.');
+          return head + `The other split fails: ${st.okS ? '' : '$S + tX$ is not symmetric'}${!st.okS && !st.okK ? ' and ' : ''}${st.okK ? '' : '$K - tX$ is not skew'} — the only matrix that is both symmetric and skew is $0$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.18
+    {
+      num: '9.18',
+      kind: 'Definition',
+      name: 'Quadratic form',
+      statement: String.raw`For a bilinear form $\beta$ on $V$, define $q_\beta \colon V \to \mathbf F$ by
+$$q_\beta(v) = \beta(v, v).$$
+A function $q \colon V \to \mathbf F$ is called a **quadratic form** on $V$ if there exists a bilinear form $\beta$ on $V$ with $q = q_\beta$.`,
+      idea: String.raw`A quadratic form is a bilinear form fed the same vector twice — its values on the "diagonal" pairs $(v, v)$. Much of $\beta$ is forgotten: $q_\beta = 0$ exactly when $\beta$ is alternating (9.14), so adding an alternating form to $\beta$ does not change $q_\beta$; by 9.21 what survives is precisely the symmetric part of $\beta$. Since $\beta(\lambda v, \lambda v) = \lambda^2\beta(v, v)$, every quadratic form is homogeneous of degree $2$, and along each line through $0$ its graph is a parabola. Example: $\beta(x, y) = x_1y_1 - 4x_1y_2 + 8x_1y_3 - 3x_3y_3$ on $\mathbf R^3$ gives $q_\beta(x) = x_1^2 - 4x_1x_2 + 8x_1x_3 - 3x_3^2$. Writing $\beta(u, v) = \langle u, Av\rangle$, $q(v) = \langle v, Av\rangle$ is $\|v\|$ times the component of $Av$ along $v$.`,
+      caption: String.raw`Drag $v$ (gold). Left: $Av$ (blue) and its component along $v$ — green when $q(v) > 0$, red when $q(v) < 0$; $q(v) = \beta(v, v)$ is $\|v\|$ times that component. The background and purple lines show the sign and level curves of $q$, and the dashed gold curve is the level set through $v$. Right: the graph of $q$ (drag to rotate) with the parabola $t \mapsto q(tv)$ along the line of $v$. Add an alternating part: the matrix changes, $Av$ swings, but its component along $v$ — and hence the whole picture of $q$ — stays put. For an alternating $\beta$, $Av \perp v$ always and $q = 0$.`,
+      deps: ['ladr-9.1'],
+      see: ['ladr-9.14'],
+      tags: ['quadratic forms'],
+      viz(v) {
+        const PRE = { gen: [[1, 1.5], [-0.5, -0.6]], ip: [[1.2, 0.3], [0.3, 0.7]], alt: [[0, 1], [-1, 0]] };
+        const pre = v.select('$\\beta(u, v) = \\langle u, Av\\rangle$', [{ value: 'gen', label: 'a general $\\beta$' }, { value: 'ip', label: 'an inner product' }, { value: 'alt', label: 'an alternating $\\beta$' }], 'gen');
+        const sk = v.slider('add the alternating form $s\\,(u_1v_2 - u_2v_1)$', -1.5, 1.5, 0, { step: 0.05 });
+        const P = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380, title: '$q(v) = \\beta(v, v) = \\langle v, Av\\rangle$' });
+        const S3 = v.stage3d({ range: 1.9, height: 380, yaw: -0.6, pitch: 0.42, labels: ['x₁', 'x₂', 'q'], title: 'graph of $q$ over $\\|v\\| \\le 1.4$ (heights $\\times 0.5$)' });
+        const vh = P.handle(1.1, 0.55, { color: 'gold', label: 'v', constrain: disc(1.4) });
+        let st = null;
+        v.render(() => {
+          const B0 = PRE[pre.value], s = sk.value, A = [[B0[0][0], B0[0][1] + s], [B0[1][0] - s, B0[1][1]]];
+          const q = (x, y) => bil(A, [x, y], [x, y]);
+          signHeat(v, P, q, `${A.flat()}`, 2.2, 0.4);
+          P.contour(q, [-2.5, -2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2, 2.5], { color: 'purple', width: 1, res: 100 });
+          P.contour(q, [0], { color: 'purple', width: 2.2, res: 100 });
+          P.axes();
+          const w = [vh.x, vh.y], Aw = mv(A, w), qv = dot(w, Aw), u = unit(w), foot = scl(u, dot(Aw, u));
+          if (Math.abs(qv) > 1e-4) P.clip(() => P.path(conic(A, qv), { color: 'gold', width: 1.8, dash: [6, 4] }));
+          P.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: 'gold', width: 1, alpha: 0.4 });
+          P.line(Aw[0], Aw[1], foot[0], foot[1], { color: 'muted', width: 1.2, dash: [4, 4] });
+          P.line(0, 0, foot[0], foot[1], { color: qv >= 0 ? 'green' : 'red', width: 7, alpha: 0.55 });
+          P.arrow(0, 0, Aw[0], Aw[1], { color: 'accent', width: 2.6 }); tip(P, 'Av', Aw, 'accent', { size: 14 });
+          P.arrow(0, 0, w[0], w[1], { color: 'gold', width: 2.6 });
+          // the graph
+          const k = 0.5, zm = 0.9;
+          S3.surface((r, t) => { const x = r * Math.cos(t), y = r * Math.sin(t); return [x, y, k * q(x, y)]; }, [0, 1.4], [0, TAU], { nu: 14, nv: 56, alpha: 0.8, colorFn: (r, t, p) => v.mix('panel', p[2] >= 0 ? 'blue' : 'red', 0.12 + 0.75 * Math.min(1, Math.abs(p[2]) / zm)) });
+          const rim = []; for (let j = 0; j <= 80; j++) { const t = (TAU * j) / 80; rim.push([1.4 * Math.cos(t), 1.4 * Math.sin(t), 0]); }
+          S3.path(rim, { color: 'muted', width: 1 });
+          const par = []; for (let j = -28; j <= 28; j++) { const t = (1.4 * j) / 28; par.push([t * u[0], t * u[1], k * q(t * u[0], t * u[1])]); }
+          S3.path(par, { color: 'gold', width: 3, bias: -0.3 });
+          S3.line([-1.4 * u[0], -1.4 * u[1], 0], [1.4 * u[0], 1.4 * u[1], 0], { color: 'gold', width: 1, alpha: 0.5 });
+          S3.line([w[0], w[1], 0], [w[0], w[1], k * qv], { color: 'gold', width: 2 });
+          S3.dot([w[0], w[1], k * qv], { r: 5.5, color: 'gold' });
+          st = { A, qv, q2: q(2 * w[0], 2 * w[1]), Sym: symPart(A), comp: dot(Aw, u), nv: len(w), alt: pre.value === 'alt' };
+        });
+        v.legend([['gold', '$v$, the line through $v$, $t \\mapsto q(tv)$'], ['accent', '$Av$'], ['green', 'component of $Av$ along $v$ ($q > 0$)'], ['purple', 'level curves of $q$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const head = `$A = ${mtex(st.A)}$: $\\ q(v) = \\beta(v, v) = \\|v\\| \\cdot (\\text{component of } Av \\text{ along } v) = ${tn(st.nv, 3)} \\cdot ${tn(st.comp, 3)} = ${tn(st.qv, 3)}$; $\\ q(2v) = ${tn(st.q2, 3)} = 4q(v)$ ${mark(Math.abs(st.q2 - 4 * st.qv) < 1e-9)}. `;
+          if (st.alt && Math.abs(st.A[0][0]) + Math.abs(st.A[1][1]) < 1e-12) return head + 'This $\\beta$ is alternating: $Av \\perp v$ for every $v$, so $q_\\beta = 0$ although $\\beta \\ne 0$.';
+          return head + `$q$ depends only on the symmetric part $\\frac12(A + A^{t}) = ${mtex(st.Sym)}$ — the alternating part added by $s$ changes $\\beta$ but not $q_\\beta$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.20
+    {
+      num: '9.20',
+      kind: 'Theorem',
+      name: 'Quadratic forms on Fⁿ',
+      statement: String.raw`Suppose $n$ is a positive integer and $q$ is a function from $\mathbf F^n$ to $\mathbf F$. Then $q$ is a quadratic form on $\mathbf F^n$ if and only if there exist numbers $A_{j,k} \in \mathbf F$, for $j, k \in \{1, \dots, n\}$, such that
+$$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{for all } (x_1, \dots, x_n) \in \mathbf F^n.$$`,
+      idea: String.raw`If $q = q_\beta$, let $A$ be the matrix of $\beta$ in the standard basis (9.4); expanding $\beta(x, x)$ gives the formula. Conversely, given the numbers $A_{j,k}$, the formula $\sum A_{j,k}x_jy_k$ defines a bilinear form $\beta$ with $q_\beta = q$. So quadratic forms on $\mathbf F^n$ are exactly the homogeneous polynomials of degree $2$. The numbers are not determined by $q$: only the diagonal entries and the sums $A_{j,k} + A_{k,j}$ — the coefficients of $x_j^2$ and of $x_jx_k$ — matter. The matrices that represent a given $q$ form a translate of the space of skew matrices, which meets the symmetric matrices exactly once (9.21).`,
+      caption: String.raw`Choose a target $q$; its curves $q = 1$ (blue) and $q = -1$ (orange) are drawn wide and pale. The diagonal of $A$ is fixed by $q$; drag the gold point on the right to choose the off-diagonal entries $A_{1,2}, A_{2,1}$. The thin curves are drawn from your matrix: anywhere on the blue line $A_{1,2} + A_{2,1} = b$ they sit exactly on the target, because only the sum enters $q$; the green dot is the one symmetric choice. Leave the line and the curves change. A linear term $\ell x_1$ makes a function that no matrix produces: its level sets are no longer symmetric about $0$ (compare $q(v)$ and $q(-v)$ at the teal points).`,
+      deps: ['ladr-9.18', 'ladr-9.4'],
+      tags: ['quadratic forms'],
+      viz(v) {
+        const TG = { hyp: [1, 3, 2], ell: [2, -2, 1.5], xy: [0, 1, 0] };
+        const tg = v.select('target $q$', [{ value: 'hyp', label: '$x_1^2 + 3x_1x_2 + 2x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'xy', label: '$x_1x_2$' }], 'hyp', { onChange: (k) => { const b = TG[k][1]; oh.set(b / 2 + 1.1, b / 2 - 1.1); } });
+        const lin = v.slider('add a linear term $\\ell\\,x_1$', -1, 1, 0, { step: 0.05 });
+        const P = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 390, title: '$q = \\pm1$: target (wide) and from your $A$ (thin)' });
+        const R = v.stage({ x: [-3, 4.5], y: [-3, 4.5], equal: true, height: 390, xlabel: 'A₁₂', ylabel: 'A₂₁', title: 'off-diagonal entries $(A_{1,2}, A_{2,1})$' });
+        const oh = R.handle(2.6, 0.4, {
+          color: 'gold', label: 'A', constrain: (x, y) => {
+            const b = TG[tg.value][1], d = (x + y - b) / 2;
+            if (Math.abs(d) * Math.SQRT2 < 0.12) { x -= d; y -= d; }
+            return [Math.round(x * 20) / 20, Math.round(y * 20) / 20];
+          },
+        });
+        const vh = P.handle(0.75, -0.55, { color: 'teal', label: 'v', constrain: disc(2) });
+        let st = null;
+        v.render(() => {
+          const [a, b, c] = TG[tg.value], l = lin.value, A = [[a, oh.x], [oh.y, c]], Ts = [[a, b / 2], [b / 2, c]];
+          const qA = (x, y) => bil(A, [x, y], [x, y]) + l * x;
+          P.clip(() => { P.path(conic(Ts, 1), { color: 'accent', width: 9, alpha: 0.25 }); P.path(conic(Ts, -1), { color: 'orange', width: 9, alpha: 0.25 }); });
+          P.contour(qA, [1], { color: 'accent', width: 2, res: 160 }); P.contour(qA, [-1], { color: 'orange', width: 2, res: 160 });
+          const w = [vh.x, vh.y];
+          P.line(w[0], w[1], -w[0], -w[1], { color: 'teal', width: 1, dash: [4, 4] });
+          P.dot(-w[0], -w[1], { r: 5, color: 'teal', hollow: true, label: '−v', labelPos: 'sw' });
+          // the plane of off-diagonal entries
+          R.line(-6, b + 6, 9, b - 9, { color: 'accent', width: 2.6 });
+          R.line(-6, -6, 9, 9, { color: 'muted', width: 1.2, dash: [6, 5] });
+          R.dot(b / 2, b / 2, { r: 6, color: 'green', label: 'symmetric', labelPos: 'se' });
+          const lx = Math.min(4.2, Math.max(-2.6, b + 2.4)), ly = b - lx;
+          R.tex(`A_{1,2} + A_{2,1} = ${tn(b)}`, lx, ly, { color: 'accent', size: 13, dx: 8, dy: -14, align: 'left' });
+          R.text('A₁₂ = A₂₁', 3.6, 3.6, { color: 'muted', size: 11, align: 'right', dy: -10 });
+          const on = Math.abs(oh.x + oh.y - b) < 1e-9;
+          R.corner(on ? 'on the line: same q' : 'off the line: a different q', 'tl', { color: on ? 'green' : 'red', weight: 700 });
+          st = { a, b, c, l, A, on, qv: qA(...w), qm: qA(-w[0], -w[1]), s12: oh.x + oh.y };
+        });
+        v.legend([['accent', '$q = 1$'], ['orange', '$q = -1$'], ['green', 'the symmetric matrix', { dot: true }], ['teal', '$v$ and $-v$', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const mine = `$A = ${mtex(st.A)}$ gives $\\sum_{j,k} A_{j,k}x_jx_k = ${polyTex(st.a, st.s12, st.c)}$${Math.abs(st.l) > 1e-9 ? ` and the function is $${polyTex(st.a, st.s12, st.c)} ${plus(st.l)}x_1$` : ''}; the target is $${polyTex(st.a, st.b, st.c)}$. `;
+          if (Math.abs(st.l) > 1e-9) return mine + `Now $q(v) = ${tn(st.qv, 3)}$ but $q(-v) = ${tn(st.qm, 3)}$: every $\\sum A_{j,k}x_jx_k$ takes equal values at $v$ and $-v$, so **no** choice of numbers $A_{j,k}$ produces this function — it is not a quadratic form.`;
+          if (st.on) return mine + `**The same quadratic form** ${mark(true)}: only $A_{1,2} + A_{2,1} = ${tn(st.b)}$ matters, so every point of the blue line represents it; the symmetric one is $${mtex([[st.a, st.b / 2], [st.b / 2, st.c]])}$.`;
+          return mine + `The coefficient of $x_1x_2$ is $${tn(st.s12)} \\ne ${tn(st.b)}$: a different quadratic form.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.21
+    {
+      num: '9.21',
+      kind: 'Theorem',
+      name: 'Characterizations of quadratic forms',
+      statement: String.raw`Suppose $q \colon V \to \mathbf F$ is a function. The following are equivalent:
+(a) $q$ is a quadratic form;
+(b) there exists a unique symmetric bilinear form $\rho$ on $V$ such that $q = q_\rho$;
+(c) $q(\lambda v) = \lambda^2q(v)$ for all $\lambda \in \mathbf F$ and $v \in V$, and the function $(u, w) \mapsto q(u + w) - q(u) - q(w)$ is a symmetric bilinear form on $V$;
+(d) $q(2v) = 4q(v)$ for all $v \in V$, and the function $(u, w) \mapsto q(u + w) - q(u) - q(w)$ is a symmetric bilinear form on $V$.`,
+      idea: String.raw`(a)⇒(b): if $q = q_\beta$, split $\beta = \rho + \alpha$ into symmetric and alternating parts (9.17); since $q_\alpha = 0$, $q = q_\rho$. If also $q = q_{\rho'}$ with $\rho'$ symmetric, then $\rho' - \rho$ is symmetric and has $q_{\rho' - \rho} = 0$, so it is also alternating, hence $0$. (b)⇒(c): $q(\lambda v) = \rho(\lambda v, \lambda v) = \lambda^2q(v)$, and $q(u + w) - q(u) - q(w) = 2\rho(u, w)$ — the **polarization identity**. (c)⇒(d) is the case $\lambda = 2$. (d)⇒(a): put $\rho(u, w) = \frac12\big(q(u + w) - q(u) - q(w)\big)$, a symmetric bilinear form by hypothesis; then $\rho(v, v) = \frac12\big(q(2v) - 2q(v)\big) = q(v)$. So the symmetric form behind a quadratic form is recovered from $q$ alone by polarization.`,
+      caption: String.raw`Pick a candidate $q$ and drag $u$ (blue) and $w$ (gold). Right: $\lambda \mapsto q(\lambda u)$ (blue) against $\lambda^2q(u)$ (dashed); at $\lambda = 2$ the dot must land in the ring. Left, switch to the levels of $x \mapsto q(x + w) - q(x) - q(w)$: for a quadratic form they are straight, parallel, equally spaced lines (a linear functional of $x$), and half of it is $\rho(x, w)$. The squared $\ell^1$ norm passes the scaling tests but its polarization has bent levels; the log-periodic wiggle passes $q(2v) = 4q(v)$ yet fails everything else; $x_1^3 + x_2^2$ fails from the start. The readout runs all the tests on random vectors.`,
+      deps: ['ladr-9.17', 'ladr-9.18'],
+      tags: ['quadratic forms'],
+      viz(v) {
+        const CAND = {
+          quad: { f: (x, y) => x * x + 1.5 * x * y - 0.5 * y * y, tex: 'x_1^2 + 1.5x_1x_2 - 0.5x_2^2' },
+          l1: { f: (x, y) => (Math.abs(x) + Math.abs(y)) ** 2, tex: '(|x_1| + |x_2|)^2' },
+          wig: { f: (x, y) => { const r2 = x * x + y * y; return r2 < 1e-300 ? 0 : r2 * (1 + 0.3 * Math.sin(Math.PI * Math.log2(r2))); }, tex: '\\|x\\|^2\\big(1 + 0.3\\sin(2\\pi\\log_2\\|x\\|)\\big)' },
+          cub: { f: (x, y) => x * x * x + y * y, tex: 'x_1^3 + x_2^2' },
+        };
+        const cand = v.select('$q(x) =$', [{ value: 'quad', label: '$x_1^2 + 1.5x_1x_2 - 0.5x_2^2$' }, { value: 'l1', label: '$(|x_1| + |x_2|)^2$' }, { value: 'wig', label: 'log-periodic wiggle' }, { value: 'cub', label: '$x_1^3 + x_2^2$' }], 'quad');
+        const show = v.select('left panel shows levels of', [{ value: 'q', label: '$q$' }, { value: 'P', label: '$x \\mapsto q(x + w) - q(x) - q(w)$' }], 'q');
+        const L = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380 });
+        const G = v.stage({ x: [-2.5, 2.5], y: [-2, 6], axes: 'box', height: 380, xlabel: 'λ', title: '$\\lambda \\mapsto q(\\lambda u)$ vs $\\lambda^2 q(u)$' });
+        const uh = L.handle(0.7, 0.35, { color: 'accent', label: 'u', constrain: disc(1.2) });
+        const wh = L.handle(-0.35, 0.8, { color: 'gold', label: 'w', constrain: disc(1.2) });
+        // a fixed random sample for the tests
+        const r = v.rng(11), smp = Array.from({ length: 36 }, () => [r.uniform(-1.5, 1.5), r.uniform(-1.5, 1.5)]);
+        let st = null, lastT = '';
+        v.render(() => {
+          const f = CAND[cand.value].f, q = (p) => f(p[0], p[1]), u = [uh.x, uh.y], w = [wh.x, wh.y];
+          const Pol = (a, b) => q(add(a, b)) - q(a) - q(b);
+          const g = show.value === 'q' ? (x, y) => f(x, y) : (x, y) => Pol([x, y], w);
+          const ttl = show.value === 'q' ? `levels of $q(x) = ${CAND[cand.value].tex}$` : 'levels of $x \\mapsto q(x + w) - q(x) - q(w)$';
+          if (ttl !== lastT) { L.setTitle(ttl); lastT = ttl; }
+          let gm = 0.5; for (const p of [[2, 2], [2, -2], [-2, 2], [-2, -2], [2, 0], [0, 2], [-2, 0], [0, -2]]) gm = Math.max(gm, Math.abs(g(...p)));
+          signHeat(v, L, g, `${cand.value}|${show.value}|${show.value === 'P' ? w : ''}`, gm, 0.4);
+          const dl = niceStep(gm / 6), lv = []; for (let k = -14; k <= 14; k++) if (k) lv.push(k * dl);
+          L.contour(g, lv, { color: 'purple', width: 1, res: 110 }); L.contour(g, [0], { color: 'purple', width: 2.2, res: 110 });
+          L.axes();
+          L.poly([[0, 0], u, add(u, w), w], { fill: 'green', fillAlpha: 0.05, color: 'muted', width: 1, dash: [4, 4] });
+          L.arrow(0, 0, u[0], u[1], { color: 'accent', width: 2.6 }); L.arrow(0, 0, w[0], w[1], { color: 'gold', width: 2.6 });
+          const uw = add(u, w); L.arrow(0, 0, uw[0], uw[1], { color: 'green', width: 2 }); tip(L, 'u + w', uw, 'green', { size: 13, off: 20 });
+          // homogeneity graph
+          const hq = (lam) => q(scl(u, lam)), qu = q(u);
+          let ym = 1; for (let k = -50; k <= 50; k++) { const lam = (2.5 * k) / 50; ym = Math.max(ym, Math.abs(hq(lam)), Math.abs(lam * lam * qu)); }
+          const lo = Math.min(-0.15 * ym, ...Array.from({ length: 51 }, (_, k) => Math.min(hq(-2.5 + k / 10), (-2.5 + k / 10) ** 2 * qu)));
+          G.setView([-2.5, 2.5], [Math.min(-0.3, lo * 1.1), ym * 1.12]);
+          G.hline(0, { color: 'muted', width: 1 });
+          G.vline(2, { color: 'faint', width: 1, dash: [4, 4] });
+          G.fn((lam) => lam * lam * qu, { color: 'ink', width: 1.6, dash: [6, 5] });
+          G.fn(hq, { color: 'accent', width: 2.8 });
+          G.dot(2, 4 * qu, { r: 9, hollow: true, color: 'ink', width: 2 });
+          G.dot(2, hq(2), { r: 5, color: 'accent' });
+          G.dot(1, qu, { r: 4, color: 'accent' });
+          // the tests on the random sample
+          const rel = (a, b) => Math.abs(a - b) / (1 + Math.abs(b));
+          let t2 = 0, tl = 0, tb = 0;
+          for (let i = 0; i < smp.length; i++) {
+            const x = smp[i], x2 = smp[(i + 7) % smp.length], y = smp[(i + 13) % smp.length];
+            t2 = Math.max(t2, rel(q(scl(x, 2)), 4 * q(x)));
+            for (const lam of [-1.3, 0.6, 1.7]) tl = Math.max(tl, rel(q(scl(x, lam)), lam * lam * q(x)));
+            tb = Math.max(tb, rel(Pol(add(x, x2), y), Pol(x, y) + Pol(x2, y)), rel(Pol(scl(x, 0.7), y), 0.7 * Pol(x, y)));
+          }
+          const e1 = [1, 0], e2 = [0, 1], rho = [[q(e1), Pol(e1, e2) / 2], [Pol(e1, e2) / 2, q(e2)]];
+          st = { t2, tl, tb, rho, quad: t2 < 1e-9 && tl < 1e-9 && tb < 1e-9, Puw: Pol(u, w), qu, quw: q(uw), qw: q(w), rv: bil(rho, u, u) };
+        });
+        v.legend([['accent', '$q(\\lambda u)$'], ['ink', '$\\lambda^2 q(u)$', { dash: true }], ['purple', 'level lines'], ['green', '$u + w$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const tests = `Tests on 36 random vectors: (d) $q(2v) = 4q(v)$ ${mark(st.t2 < 1e-9)} $\\cdot$ (c) $q(\\lambda v) = \\lambda^2q(v)$ ${mark(st.tl < 1e-9)} $\\cdot$ $(u, w) \\mapsto q(u + w) - q(u) - q(w)$ bilinear ${mark(st.tb < 1e-9)} (worst relative error $${v.sci(Math.max(st.tb, 1e-17), 2)}$). `;
+          const pol = `Polarization at $u, w$: $\\frac12\\big(q(u + w) - q(u) - q(w)\\big) = \\frac12(${tn(st.quw, 3)} ${plus(-st.qu, 3)} ${plus(-st.qw, 3)}) = ${tn(st.Puw / 2, 3)}$`;
+          if (st.quad) return tests + pol + ` $= \\rho(u, w)$, where $\\rho$ has matrix $${mtex(st.rho, 3)}$ and $\\rho(u, u) = ${tn(st.rv, 4)} = q(u)$ ${mark(Math.abs(st.rv - st.qu) < 1e-9)}: a quadratic form, with its unique symmetric $\\rho$.`;
+          return tests + pol + ' — but this is not a bilinear function of $(u, w)$, so $q$ is **not** a quadratic form.';
+        });
+      },
+    },
   ],
 };

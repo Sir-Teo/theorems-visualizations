@@ -744,7 +744,7 @@ $$\binom{a+b}{a} = \binom{a+b}{b}.$$`,
       refs: ['Aigner ch. 1'],
       tags: ['lattice paths', 'bijections'],
       viz(v) {
-        const AX = 9, BY = 6;
+        const AX = 11, BY = 7;
         let seed = 4; const blocked = new Set();
         const s = v.stage({ x: [-0.8, AX + 0.8], y: [-0.8, BY + 0.8], axes: false, equal: true, height: 370 });
         const corner = s.handle(6, 4, { color: 'accent', r: 8, constrain: (x, y) => [v.M.clamp(Math.round(x), 1, AX), v.M.clamp(Math.round(y), 1, BY)] });

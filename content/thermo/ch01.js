@@ -298,7 +298,7 @@ Different thermometric properties give scales that agree at the fixed points but
 $$PV = NkT = nRT,$$
 where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the amount in moles and $R = N_Ak = 8.314$ J/(mol·K) the gas constant. The pressure depends only on the number density $N/V$ and the temperature — not on the kind of molecule. It is a **limiting law**: every real gas obeys it better and better as its density goes to zero, and departs from it when the molecules' own size and their attractions start to matter.`,
       idea: String.raw`The law gathers Boyle's ($PV$ fixed at fixed $T$), Charles's and Gay-Lussac's ($V$ or $P$ proportional to $T$) and Avogadro's (equal volumes hold equal numbers) observations into one equation; with the gas-thermometer scale of 1.3 it is, in fact, the *definition* of $T$. Kinetic theory (1.6–1.7) explains it: each molecule hits a wall at a rate proportional to its speed and delivers momentum proportional to its speed, so $P = (N/V)\,m\langle v_x^2\rangle$, and $m\langle v_x^2\rangle = kT$. The derivation assumes point molecules that do not interact; finite size crowds the molecules and raises the pressure (for hard spheres, the Carnahan–Starling formula), while attractions lower it.`,
-      caption: String.raw`An exact simulation of hard spheres (diameter $\sigma$) between an end wall and a piston; the slab repeats periodically up and down (dashed lines), so only the end wall and the piston are walls. The pressure is **measured**: the momentum delivered by every impact, summed over 6 time units. Each window adds a point. Left: measured $P$ against $NkT/V$ — the law is the diagonal, whatever $N$, $V$ and $T$ you choose. Right: $P/\rho kT$ against the packing fraction measured in the middle of the cylinder (molecules pile up against the walls); at liquid-like densities the points climb onto the hard-sphere curve, far above the ideal value 1. Drag the piston, or let it sweep.`,
+      caption: String.raw`An exact simulation of hard spheres (diameter $\sigma$) between an end wall and a piston; the slab repeats periodically up and down (dashed lines), so only the end wall and the piston are walls. The pressure is **measured**: the momentum delivered by every impact, summed over 10 time units. Each window adds a point (purple: averages of nearby points). Left: measured $P$ against $NkT/V$ — the law is the diagonal, whatever $N$, $V$ and $T$ you choose. Right: $P/\rho kT$ against the packing fraction measured in the middle of the cylinder (molecules pile up against the walls); at liquid-like densities the points climb onto the hard-sphere curve, far above the ideal value 1. Drag the piston, or let it sweep.`,
       deps: ['thermo-1.3'],
       see: ['pchem-1.4', 'pchem-1.1'],
       refs: ['Schroeder §1.2', 'Carnahan & Starling, J. Chem. Phys. 51, 635 (1969)'],
@@ -307,7 +307,7 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
       scope: String.raw`Holds for any gas in the limit of low density; for air at room temperature the error is below 0.1% at 1 atm. It fails at high density (molecular size), near condensation (attractions) and for quantum gases at very low temperature (chapter 8).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ideal_gas_law' },
       viz(v) {
-        const L = 9, XMIN = 6.5, XMAX = 40, WIN = 6, A = L * L;
+        const L = 9, XMIN = 6.5, XMAX = 40, WIN = 10, A = L * L;
         let G = null, win, pts = [], acc, tSim = 0;
         const Ns = v.slider('molecules $N$', 40, 250, 170, { int: true, onChange: () => make() });
         const Ts = v.slider('temperature $kT$', 0.4, 3, 1, { step: 0.01, onChange: (x) => { G.setT(x); fresh(); } });
@@ -321,8 +321,8 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
         const fresh = () => { win = G.snap(); win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 }; };
         const make = () => { G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true }); fresh(); };
         make();
-        const sweep = (t) => { const u = (t % 360) / 360, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
-        const clock = simClock(6, 0.06, 36);
+        const sweep = (t) => { const u = (t % 260) / 260, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
+        const clock = simClock(12, 0.06, 40);
         const rp = ramp(v, 'teal', 'red', 24, 'purple');
         v.animate((t) => {
           const add = clock(t, () => { tSim = 0; pts = []; G = null; make(); });
@@ -349,17 +349,22 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
           sp.setView([0, mx], [0, mx]);
           sp.line(0, 0, mx, mx, { color: 'ink', dash: [6, 4], width: 1.4 });
           sp.text('P = NkT/V', mx * 0.6, mx * 0.6, { dy: 12, dx: 8, size: 12, color: 'ink' });
-          for (const p of last) sp.dot(p.id, p.P, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.75, ring: false });
+          for (const p of last) sp.dot(p.id, p.P, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.5, ring: false });
+          const binned = (arr, fx, fy, w) => { const m = new Map(); for (const p of arr) { const k = Math.floor(fx(p) / w); const e = m.get(k) || [0, 0, 0]; e[0] += fx(p); e[1] += fy(p); e[2]++; m.set(k, e); } return [...m.entries()].sort((a, b) => a[0] - b[0]).filter((e) => e[1][2] >= 2).map((e) => [e[1][0] / e[1][2], e[1][1] / e[1][2]]); };
+          const bl = binned(pts, (p) => p.id, (p) => p.P, mx / 14);
+          sp.path(bl, { color: 'purple', width: 2.4 }); sp.dots(bl, { r: 3.5, color: 'purple' });
           // Z vs eta
           sz.hline(1, { color: 'ink', dash: [6, 4], width: 1.4 });
           sz.fn(carnahanStarling, { color: 'red', width: 2.2, domain: [0, 0.32] });
           sz.text('hard spheres (Carnahan–Starling)', 0.315, carnahanStarling(0.3), { align: 'right', dy: -16, color: 'red', size: 11.5 });
           sz.text('ideal gas: P = ρkT', 0.01, 1, { align: 'left', dy: -10, color: 'ink', size: 11.5 });
-          for (const p of pts) sz.dot(p.eta, p.Z, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.75, ring: false });
+          for (const p of pts) sz.dot(p.eta, p.Z, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.5, ring: false });
+          const bz = binned(pts, (p) => p.eta, (p) => p.Z, 0.02);
+          sz.path(bz, { color: 'purple', width: 2.4 }); sz.dots(bz, { r: 3.5, color: 'purple' });
           const q = pts[pts.length - 1];
           if (q) { sp.dot(q.id, q.P, { r: 6, hollow: true, color: 'ink' }); sz.dot(q.eta, q.Z, { r: 6, hollow: true, color: 'ink' }); }
         }, { still: 8 });
-        v.legend([['teal', 'dilute'], ['red', 'dense (η ≈ 0.3)'], ['ink', 'ideal gas law', { dash: true }]]);
+        v.legend([['teal', 'one window, dilute'], ['red', 'one window, dense (η ≈ 0.3)'], ['purple', 'average of nearby windows'], ['ink', 'ideal gas law', { dash: true }]]);
         v.readout(() => {
           const q = pts[pts.length - 1]; if (!q) return 'measuring…';
           return `last window: $NkT/V$ = ${v.fix(q.id, 4)}, measured $P$ = ${v.fix(q.P, 4)} ± ${v.fix(q.err, 4)} $kT_0/\\sigma^3$ → $PV/NkT$ = ${v.fix(q.P / q.id, 3)} · density in the middle: η = ${v.fix(q.eta, 3)}, $P/\\rho kT$ = ${v.fix(q.Z, 3)} vs Carnahan–Starling ${v.fix(carnahanStarling(q.eta), 3)} · ${pts.length} windows measured`;

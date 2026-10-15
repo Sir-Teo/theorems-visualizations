@@ -402,7 +402,7 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
         v.button('Resample', () => { seed++; sample(); });
         v.button('Hunt for long reset words', () => hunt());
         const showC = v.toggle('Černý family', true);
-        const s = v.stage({ x: [1.5, NMAX + 0.5], y: [-9, 92], axes: 'box', height: 340, full: true, xlabel: 'number of states n', ylabel: 'length of the shortest reset word', xticks: [2, 3, 4, 5, 6, 7, 8, 9, 10], yticks: [0, 20, 40, 60, 80] });
+        const s = v.stage({ x: [1.5, NMAX + 0.5], y: [-16, 92], axes: 'box', height: 350, full: true, xlabel: 'number of states n', ylabel: 'length of the shortest reset word', xticks: [2, 3, 4, 5, 6, 7, 8, 9, 10], yticks: [0, 20, 40, 60, 80] });
         function sample() {
           const r = v.rng(1000 * seed + 17), k = +kSel.value; pts = []; nonsync = 0;
           for (let n = 2; n <= NMAX; n++) for (let i = 0; i < perN.value; i++) { const d = randomAut(n, k, r), w = resetWord(d); if (w) pts.push([n + (r() - 0.5) * 0.36, w.length, n]); else nonsync++; }
@@ -436,10 +436,10 @@ The bound would be sharp: the Černý automata $C_n$ (2.11) need exactly $(n-1)^
         });
         v.legend([['accent', 'random automata', { dot: true }], ['orange', 'worst found by hill climbing', { dot: true }], ['red', 'Černý automata $C_n$', { dot: true }], ['green', '$(n-1)^2$']]);
         v.readout(() => {
-          const ratio = (arr) => arr.reduce((m, [x, y, n]) => ((n ?? Math.round(x)) >= 3 ? Math.max(m, y / ((n ?? Math.round(x)) - 1) ** 2) : m), 0);
-          const rr = ratio(pts), hr = hunted.length ? ratio(hunted.map(([n, L]) => [n, L, n])) : null;
+          const ratio = (arr, n0) => arr.reduce((m, [x, y, n]) => ((n ?? Math.round(x)) >= n0 ? Math.max(m, y / ((n ?? Math.round(x)) - 1) ** 2) : m), 0);
+          const rr = ratio(pts, 5), hr = hunted.length ? ratio(hunted.map(([n, L]) => [n, L, n]), 3) : null;
           const cOK = [2, 3, 4, 5, 6, 7, 8, 9, 10].every((n) => CL[n] === (n - 1) ** 2);
-          return `${pts.length} random synchronizing automata (${nonsync} not synchronizing, skipped): (shortest reset word)$/(n-1)^2$ is at most **${v.fix(rr, 2)}** for $n\\ge 3$` + (hr != null ? ` · the hill climber's worst: **${v.fix(hr, 2)}** (${hunted.map(([n, L]) => `${L}/${(n - 1) ** 2}`).join(', ')})` : '') + ` · Černý family: exactly $(n-1)^2$ for $n\\le 10$ ${cOK ? '✓' : '✗'} · no counterexample, as expected`;
+          return `${pts.length} random synchronizing automata (${nonsync} not synchronizing, skipped): (shortest reset word)$/(n-1)^2$ is at most **${v.fix(rr, 2)}** for $n\\ge 5$` + (hr != null ? ` · the hill climber's worst: **${v.fix(hr, 2)}** (${hunted.map(([n, L]) => `${L}/${(n - 1) ** 2}`).join(', ')})` : '') + ` · Černý family: exactly $(n-1)^2$ for $n\\le 10$ ${cOK ? '✓' : '✗'} · no counterexample, as expected`;
         });
       },
     },
