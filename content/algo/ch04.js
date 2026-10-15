@@ -276,7 +276,7 @@ $$xy = ac\cdot10^{2m}+(ad+bc)\cdot10^m+bd .$$
         v.readout(() => {
           const f = S.frame, n = nS.value, M = costs(1).M[n], lo = n ** LG(3), hi = 3 ** Math.ceil(LG(n));
           let s = `one-digit products so far **${f.mults}**; in all $M(${n}) = ${M}$` + (S.atEnd ? (run.mults === M ? ' ✓' : ' ✗') : '') + `, and $n^{\\lg 3} = ${v.fix(lo, 1)} \\le ${M} \\le 3^{\\lceil\\lg n\\rceil} = ${hi}$ against schoolbook $n^2 = ${n * n}$`;
-          if (S.atEnd) s += ` · $${X}\\times${Y} = ${run.root.res}$ ${run.root.res === X * Y ? '✓' : '✗'} (exact big-integer check)`;
+          if (S.atEnd) s += ` · result $${X}\\times${Y} = ${run.root.res}$ ${run.root.res === X * Y ? '✓' : '✗'} (exact big-integer check)`;
           if (mode.value === 'ops') s += cross ? ` · with cut-off $n_0 = ${cut.value}$ Karatsuba needs fewer digit operations for every $n \\ge ${cross}$ (up to ${NMAX})` : ` · with cut-off $n_0 = ${cut.value}$ Karatsuba never catches up below ${NMAX}`;
           return s;
         });
@@ -381,7 +381,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
             Pl.path(series((n) => n ** 3), { color: 'red', width: 2 }); Pl.dots(series((n) => n ** 3), { r: 3, color: 'red' });
             Pl.path(series((n) => n ** LG(7)), { color: 'blue', width: 2 }); Pl.dots(series((n) => n ** LG(7)), { r: 3, color: 'blue' });
             Pl.text('definition: 8ᵏ = n³', 64, 64 ** 3, { color: 'red', size: 11, dx: -6, dy: -10, align: 'right' });
-            Pl.text('Strassen: 7ᵏ = n^lg 7', 512, 512 ** LG(7), { color: 'blue', size: 11, dx: 6, dy: 12 });
+            Pl.tex('\\text{Strassen: } 7^k = n^{\\lg 7}', 512, 512 ** LG(7), { color: 'blue', size: 12.5, dx: 8, dy: 14, align: 'left' });
             Pl.text(`at n = 4096: ${v.fix(4096 ** 3 / 4096 ** LG(7), 1)}× fewer`, 4096, 3e4, { color: 'muted', size: 11, align: 'right', dx: -8 });
             info.cross = null;
           } else {

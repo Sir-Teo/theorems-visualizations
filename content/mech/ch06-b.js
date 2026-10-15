@@ -246,7 +246,7 @@ with frequency $\omega\sin\theta^*$: a supercritical pitchfork bifurcation.`,
         v.button('Nudge the bead', () => { st = [st[0], st[1] + 4]; });
         const s3 = v.stage3d({ range: 0.72, height: 290, yaw: -0.55, pitch: 0.22, axes: false, title: 'the spinning hoop' });
         const sU = v.stage({ x: [-Math.PI, Math.PI], y: [-2, 1.4], height: 290, axes: 'box', xlabel: 'θ', xticks: [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']], title: 'effective potential $U_{\\rm eff}/mgR$' });
-        const sP = v.stage({ x: [0, 2.5], y: [-3.4, 3.4], height: 210, full: true, axes: 'box', xlabel: 'ω/ω_c', yticks: [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']], title: 'equilibria $\\theta$ against spin: the pitchfork' });
+        const sP = v.stage({ x: [0, 2.5], y: [-3.85, 3.5], height: 220, full: true, axes: 'box', xlabel: 'ω/ωc', yticks: [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']], title: 'equilibria $\\theta$ against spin: the pitchfork' });
         const rhs = (w, b) => (t, y) => [y[1], Math.sin(y[0]) * (w * w * Math.cos(y[0]) - G / R) - b * y[1]];
         const P3 = (th, ph) => [R * Math.sin(th) * Math.cos(ph), R * Math.sin(th) * Math.sin(ph), -R * Math.cos(th)];
         const ueff = (th, x) => -Math.cos(th) - 0.5 * x * x * Math.sin(th) ** 2;
@@ -374,7 +374,7 @@ $\varphi$ is cyclic, so $p_\varphi = m\ell^2\sin^2\theta\,\dot\varphi$ (the vert
           const tail = Math.abs(fr.value) < 0.005 ? 'planar swing: $p_\\varphi = 0$, the path is a line through the centre and nothing precesses'
             : Math.abs(Math.abs(fr.value) - 1) < 0.01 ? String.raw`conical pendulum: the bob circles at $\dot\varphi = \sqrt{g/\ell\cos\theta_0} = ${v.fix(R.wc, 3)}$ rad/s and $\theta$ stays put`
               : String.raw`apsidal advance between successive maxima: measured $${v.fix(avg / DEG, 2)}°$ (average of ${n}), small-amplitude prediction $\tfrac{3\pi}{8}ab/\ell^2 = ${v.fix(R.pred / DEG, 2)}°$ with $a = ${v.fix(R.aMax, 3)}$, $b = ${v.fix(R.bMin, 3)}$`;
-          return String.raw`$p_\varphi = m(x\dot y - y\dot x) = ${v.fix(R.pphi[k], 5)}$ (per unit mass), constant to $${v.sci(Math.max(dp, 1e-16), 1)}$ · energy constant to $${v.sci(Math.max(dE, 1e-16), 1)}$ · rod-length error $${v.sci(Math.max(dr, 1e-16), 1)}$ · ${tail}`;
+          return String.raw`$p_\varphi/m = x\dot y - y\dot x = ${v.fix(R.pphi[k], 5)}$ m²/s, constant to $${v.sci(Math.max(dp, 1e-16), 1)}$ · energy constant to $${v.sci(Math.max(dE, 1e-16), 1)}$ · rod-length error $${v.sci(Math.max(dr, 1e-16), 1)}$ · ${tail}`;
         });
       },
     },
@@ -494,7 +494,7 @@ whose Euler–Lagrange equations are exactly the Lorentz-force law $m\ddot{\math
         const cache = memo();
         const sim = () => cache(`${sel.value}|${Ef.value}`, () => {
           const E = Ef.value, mk = (A) => (q, qd) => { const a = A(q[0], q[1]); return 0.5 * (qd[0] * qd[0] + qd[1] * qd[1]) + E * q[0] + qd[0] * a[0] + qd[1] * a[1]; };
-          const run = (L) => integrate((t, z) => { const a = lagrangeAccel(L, [z[0], z[1]], [z[2], z[3]], t); return [z[2], z[3], a[0], a[1]]; }, [0, 1, 1.2, 0], T, DT, EV);
+          const run = (L) => integrate((t, z) => { const a = lagrangeAccel(L, [z[0], z[1]], [z[2], z[3]], t); return [z[2], z[3], a[0], a[1]]; }, [0.5, 1, 1.2, 0], T, DT, EV);
           const S1 = run(mk(As)), S2 = run(mk(GA[sel.value].A));
           const py1 = S1.y.map((z) => z[3] + As(z[0], z[1])[1]), py2 = S2.y.map((z) => z[3] + GA[sel.value].A(z[0], z[1])[1]), mv = S1.y.map((z) => z[3]);
           let gap = 0; for (let k = 0; k < S1.y.length; k++) gap = Math.max(gap, Math.hypot(S1.y[k][0] - S2.y[k][0], S1.y[k][1] - S2.y[k][1]));
@@ -510,6 +510,7 @@ whose Euler–Lagrange equations are exactly the Lorentz-force law $m\ddot{\math
             s.arrow(x - (sc * a[0]) / 2, y - (sc * a[1]) / 2, x + (sc * a[0]) / 2, y + (sc * a[1]) / 2, { color: 'orange', width: 1.1, alpha: 0.45, head: 5 });
           }
           s.text('B ⊙', b.x[1], b.y[1], { color: 'muted', size: 12, align: 'right', dx: -8, dy: 12 });
+          s.path(R.S1.y.map((z) => [z[0], z[1]]), { color: 'blue', width: 1.2, alpha: 0.2 });
           s.path(R.S1.y.slice(0, k + 1).map((z) => [z[0], z[1]]), { color: 'blue', width: 3, alpha: 0.75 });
           s.path(R.S2.y.slice(0, k + 1).map((z) => [z[0], z[1]]), { color: 'gold', width: 1.8, dash: [6, 5] });
           const z = R.S1.y[k]; s.dot(z[0], z[1], { r: 6.5, color: 'blue' });
@@ -546,8 +547,8 @@ and Lagrange’s equations become $\tfrac{d}{dt}\partial L/\partial\dot q_j - \p
       tags: ['dissipation', 'damping', 'energy'],
       viz(v) {
         const k1 = 6, k2 = 4, m1 = 1, m2 = 1, T = 14, DT = 0.002, EV = 5;
-        const b1 = v.slider('dashpot to the wall $b_1$', 0, 1.5, 0.4, { step: 0.01 });
-        const b2 = v.slider('dashpot between the masses $b_2$', 0, 1.5, 0.6, { step: 0.01 });
+        const b1 = v.slider('dashpot to the wall $b_1$', 0, 1, 0.15, { step: 0.01 });
+        const b2 = v.slider('dashpot between the masses $b_2$', 0, 1, 0.12, { step: 0.01 });
         const law = v.select('damping law', [{ value: 1, label: 'linear: $\\mathcal F = \\tfrac12 b v^2$' }, { value: 2, label: 'quadratic: $\\mathcal F = \\tfrac13 b|v|^3$' }], 1);
         const s = v.stage({ x: [-0.2, 4.4], y: [-0.55, 0.65], equal: true, height: 160, full: true, axes: false });
         const pw = v.stage({ x: [0, T], y: [0, 1], height: 230, axes: 'box', xlabel: 't (s)', title: 'power lost: $-dE/dt$ (dots) vs $n\\mathcal F$' });
@@ -571,8 +572,8 @@ and Lagrange’s equations become $\tfrac{d}{dt}\partial L/\partial\dot q_j - \p
           s.line(-0.2, -0.5, 4.4, -0.5, { color: 'muted', width: 1.5 });
           spring(s, [0, 0.2], [p1 - hb, 0.2], { coils: 8, amp: 0.06 }); spring(s, [p1 + hb, 0.2], [p2 - hb, 0.2], { coils: 8, amp: 0.06 });
           dashpot(s, 0, p1 - hb, -0.18, 'orange'); dashpot(s, p1 + hb, p2 - hb, -0.18, 'purple');
-          s.rect(p1 - hb, -0.4, p1 + hb, 0.4, { fill: 'blue', fillAlpha: 0.35, color: 'blue', width: 1.6 }); s.tex('m_1', p1, 0, { size: 13 });
-          s.rect(p2 - hb, -0.4, p2 + hb, 0.4, { fill: 'blue', fillAlpha: 0.35, color: 'blue', width: 1.6 }); s.tex('m_2', p2, 0, { size: 13 });
+          s.rect(p1 - hb, -0.34, p1 + hb, 0.34, { fill: 'blue', fillAlpha: 0.35, color: 'blue', width: 1.6 }); s.tex('m_1', p1, 0, { size: 13 });
+          s.rect(p2 - hb, -0.34, p2 + hb, 0.34, { fill: 'blue', fillAlpha: 0.35, color: 'blue', width: 1.6 }); s.tex('m_2', p2, 0, { size: 13 });
           s.text('b₁', (p1 - hb) / 2, -0.38, { color: 'orange', size: 11, align: 'center' }); s.text('b₂', (p1 + p2) / 2, -0.38, { color: 'purple', size: 11, align: 'center' });
           const nF = R.F.map((x) => R.n * x), lim = Math.max(...nF, ...R.dE.slice(2, -2)) * 1.1 || 1;
           pw.setView(null, [-0.04 * lim, lim]);
@@ -641,11 +642,12 @@ which is the same for all competing paths. The converse also holds locally: if $
           const R = sim(), k = frameAt(R.SA, t);
           sq.hline(0, { color: 'faint' });
           sq.vband(0, TW, { color: 'accent', alpha: 0.06 });
-          if (R.SC) series(sq, R.SC.t, R.SC.y.map((z) => z[0]), k, { color: 'red', width: 2 });
+          sq.path(R.SA.y.map((z, i) => [R.SA.t[i], z[0]]), { color: 'blue', width: 1.2, alpha: 0.22 });
+          if (R.SC) { sq.path(R.SC.y.map((z, i) => [R.SC.t[i], z[0]]), { color: 'red', width: 1.2, alpha: 0.22 }); series(sq, R.SC.t, R.SC.y.map((z) => z[0]), k, { color: 'red', width: 2 }); }
           series(sq, R.SA.t, R.SA.y.map((z) => z[0]), k, { color: 'blue', width: 3.2, alpha: 0.75 });
           series(sq, R.SB.t, R.SB.y.map((z) => z[0]), k, { color: 'gold', width: 1.8, dash: [6, 5] });
           sq.dot(R.SA.t[k], R.SA.y[k][0], { r: 5.5, color: 'blue' });
-          sq.text('window for the actions →', TW + 0.1, -1.45, { color: 'muted', size: 10.5 });
+          sq.text('← window used for the actions', TW + 0.12, 1.42, { color: 'muted', size: 10.5 });
           const arrs = [R.S0, R.S1]; if (R.S2) arrs.push(R.S2);
           sa.setView(null, span(arrs, 0.1, 0.3));
           const P = (A) => R.es.map((e, i) => [e, A[i]]);
@@ -719,7 +721,7 @@ of that metric: the motion has constant speed ($T$ is conserved) and runs along 
         });
         v.animate((t) => {
           const D = sim(), S = D.S, k = Math.min(frameAt(D.R, t), D.P.length - 1), P = D.P[k];
-          s3.surface((a, b) => S.X([a, b]), S.rng[0], S.rng[1], { nu: 30, nv: 30, color: 'accent', alpha: 0.32, wire: true });
+          s3.surface((a, b) => S.X([a, b]), S.rng[0], S.rng[1], { nu: 32, nv: 22, color: 'accent', alpha: 0.2, wire: true });
           s3.path(D.P.slice(0, k + 1), { color: 'gold', width: 2.4, bias: -0.04 });
           if (k >= 2 && k < D.P.length - 2) { const a = D.acc[k], al = Math.hypot(...a), sc = Math.min(0.5, 0.35 / (al || 1)) * al; if (al > 1e-6) s3.arrow(P, [P[0] + (sc * a[0]) / al, P[1] + (sc * a[1]) / al, P[2] + (sc * a[2]) / al], { color: 'red', width: 2.4, bias: -0.1 }); }
           const z = D.R.y[k], J = S.J([z[0], z[1]]), vv = [0, 1, 2].map((i) => 0.35 * (J[i][0] * z[2] + J[i][1] * z[3]));

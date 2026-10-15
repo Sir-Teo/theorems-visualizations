@@ -662,9 +662,9 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
         v.render(() => {
           const f = S.frame, b = run.b, n = nS.value, xs = String(X), ys = String(Y), prod = X * Y, ps = String(prod), D = 2 * n + 1;
           Sh.setView([-D - 3.2, 1.2], [-1.7, 7.2]);
-          const blockCol = (p) => (Math.floor(p / b) % 2 ? 'teal' : 'blue');
+          const blockCol = (p) => (Math.floor(p / b) % 2 ? 'gold' : 'blue');
           const digits = (str, y, colF, alphaF) => { for (let p = 0; p < str.length; p++) { const ch = str[str.length - 1 - p]; Sh.text(ch, -p, y, { align: 'center', size: 14, weight: 600, color: colF(p), alpha: alphaF ? alphaF(p) : 1, halo: false }); } };
-          const blockBands = (len, y) => { for (let k = 0; k * b < len; k++) { const p0 = k * b, p1 = Math.min(len, (k + 1) * b) - 1; Sh.rect(-p1 - 0.45, y - 0.32, -p0 + 0.45, y + 0.32, { fill: blockCol(p0), fillAlpha: f.step === 'split' || f.step === 'conv' ? 0.18 : 0.1, stroke: false }); } };
+          const blockBands = (len, y) => { for (let k = 0; k * b < len; k++) { const p0 = k * b, p1 = Math.min(len, (k + 1) * b) - 1; Sh.rect(-p1 - 0.45, y - 0.32, -p0 + 0.45, y + 0.32, { fill: blockCol(p0), fillAlpha: f.step === 'split' || f.step === 'conv' ? 0.26 : 0.16, stroke: false }); } };
           Sh.text('x', -D - 2.9, 6.4, { size: 15, math: true, color: 'blue' }); Sh.text('y', -D - 2.9, 5.5, { size: 15, math: true, color: 'blue' });
           blockBands(xs.length, 6.4); blockBands(ys.length, 5.5);
           digits(xs, 6.4, () => 'ink'); digits(ys, 5.5, () => 'ink');
@@ -690,7 +690,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
           if (S.atEnd) { Sh.text('exact', -D - 2.9, -0.6, { size: 11, color: 'muted' }); digits(ps, -0.6, () => 'muted'); }
           // rounding errors
           const myErr = []; for (let bb = 1; bb <= 8; bb++) { const xb = toBlocks(X, bb), yb = toBlocks(Y, bb), raw = fftConv(v.M, xb, yb); let exact = new Array(xb.length + yb.length - 1).fill(0n); for (let i = 0; i < xb.length; i++) for (let j = 0; j < yb.length; j++) exact[i + j] += BigInt(xb[i]) * BigInt(yb[j]); myErr.push(Math.max(1e-17, ...raw.map((r, k) => Math.abs(r - Number(exact[k]))))); }
-          Pe.hband(0.5, 1e4, { color: 'red', alpha: 0.08 }); Pe.hline(0.5, { color: 'red', dash: [5, 4], width: 1.4 }); Pe.text('½: rounding fails above', 0.6, 0.5, { size: 10.5, color: 'red', dy: -9, weight: 600 });
+          Pe.hband(0.5, 1e4, { color: 'red', alpha: 0.08 }); Pe.hline(0.5, { color: 'red', dash: [5, 4], width: 1.4 }); Pe.text('½: rounding fails above', 1.4, 0.5, { size: 10.5, color: 'red', dy: -9, weight: 600 });
           Pe.vband(b - 0.45, b + 0.45, { color: 'gold', alpha: 0.12 });
           Pe.path(myErr.map((e, q) => [q + 1, Math.max(e, 1e-16)]), { color: 'blue', width: 1.8 }); myErr.forEach((e, q) => Pe.dot(q + 1, Math.max(e, 1e-16), { r: 4, color: e > 0.5 ? 'red' : 'blue' }));
           Pe.path(bigErr.map((e, q) => [q + 1, Math.max(e, 1e-16)]), { color: 'orange', width: 1.8 }); bigErr.forEach((e, q) => Pe.dot(q + 1, Math.max(e, 1e-16), { r: 4, color: e > 0.5 ? 'red' : 'orange' }));

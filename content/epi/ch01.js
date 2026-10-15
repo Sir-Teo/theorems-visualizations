@@ -29,6 +29,8 @@ function iconArray(s, n, cols, styleOf) {
   for (const [x, y, st] of hollow) s.dot(x, y, { r: st.r ?? 3, color: st.color, hollow: true, width: 1.4 });
   for (const [x, y, st] of rings) s.circle(x, y, 0.47, { color: st.ring, width: 1.6 });
 }
+/** Tick list [[y, '5%'], …] for a prevalence axis from 0 to top (y = map(p), default identity). */
+function pctTicks(top, map = (p) => p) { const step = top <= 0.13 ? 0.02 : top <= 0.32 ? 0.05 : top <= 0.65 ? 0.1 : 0.2, out = []; for (let q = 0; q <= top + 1e-9; q += step) out.push([map(q), `${Math.round(q * 100)}%`]); return out; }
 /** Calendar date of t years after 1 January 2021 (plain text, e.g. "14 Feb 2022"). */
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function dateOf(t) { const y = Math.floor(t), d = (t - y) * 365, ml = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; let m = 0, r = d; while (m < 11 && r >= ml[m]) { r -= ml[m]; m++; } return `${Math.floor(r) + 1} ${MONTHS[m]} ${2021 + y}`; }
@@ -319,7 +321,7 @@ Only the mean duration matters, not the shape of the duration distribution. (If 
         const M = v.M, DT = 1 / 26;
         const sg = v.stage({ height: 290, weight: 1, minWidth: 240, title: '2 500 people · red = ill now' });
         const sb = v.stage({ x: [0, 10], y: [0, 10], height: 290, axes: false, weight: 1.05, minWidth: 260, title: 'prevalence as a bathtub' });
-        const ts = v.stage({ x: [0, 25], y: [0, 0.3], height: 220, axes: 'box', full: true, xlabel: 'years', ylabel: 'prevalence', title: 'measured prevalence and the steady-state formula' });
+        const ts = v.stage({ x: [0, 25], y: [0, 0.3], height: 220, axes: 'box', full: true, xlabel: 'years', ylabel: '', title: 'measured prevalence and the steady-state formula' });
         let A = null;
         const changed = () => { if (A) { A.model.data.changed = A.model.t; A.resume(); } };
         const inc = v.slider('incidence rate $I$ (per person-year, among the healthy)', 0.01, 0.6, 0.05, { log: true, fmt: (x) => x.toFixed(3), onChange: changed });
@@ -340,35 +342,36 @@ Only the mean duration matters, not the shape of the duration distribution. (If 
           },
           stats: (m) => { const I = inc.value, D = dur.value; return { ID: I * D, exact: (I * D) / (1 + I * D), inflow: m.data.on / (m.N * DT), outflow: m.data.off / (m.N * DT) }; },
         });
-        A.step(70);
+        A.step(150);
         let st = null;
         v.render(() => {
           A.draw();
           const H = A.history, n = H.t.length, now = H.t[n - 1] * DT, P = A.stats.ill, I = inc.value, D = dur.value, ID = I * D, ex = ID / (1 + ID);
           const avg = (key, k = 26) => { let s = 0, c = 0; for (let j = Math.max(1, n - k); j < n; j++) { s += H[key][j]; c++; } return c ? s / c : H[key][n - 1]; };
           const Pm = avg('ill'), inflow = avg('inflow'), outflow = avg('outflow');
-          // ----- bathtub: walls x 2.4…7.6, floor y = 1, top y = 8 ↔ prevalence 0…100%
-          const Yp = (p) => 1 + 7 * p, x0 = 2.4, x1 = 7.6, sc = Math.max(I, 0.02), wIn = Math.min(30, 2 + (26 * inflow) / sc), wOut = Math.min(30, 2 + (26 * outflow) / sc);
-          for (const q of [0, 0.25, 0.5, 0.75, 1]) { sb.line(x0 - 0.12, Yp(q), x0, Yp(q), { color: 'muted', width: 1 }); sb.text(pc(q, 0), x0 - 0.2, Yp(q), { align: 'right', color: 'muted', size: 10.5 }); }
+          // ----- bathtub: walls x 2.4…7.6, floor y = 1.7, rim y = 8.2 ↔ prevalence 0…cap (25%, 50% or 100%)
+          const need = Math.max(P, ex, Math.min(ID, 1)), cap = need < 0.21 ? 0.25 : need < 0.43 ? 0.5 : 1;
+          const Yp = (p) => 1.7 + (6.5 * Math.min(p, cap * 1.05)) / cap, x0 = 2.4, x1 = 7.6, sc = Math.max(I, 0.02), wIn = Math.min(24, 2 + (20 * inflow) / sc), wOut = Math.min(24, 2 + (20 * outflow) / sc);
+          for (const [y, lab] of pctTicks(cap, Yp)) { sb.line(x0 - 0.12, y, x0, y, { color: 'muted', width: 1 }); sb.text(lab, x0 - 0.2, y, { align: 'right', color: 'muted', size: 10.5 }); }
           sb.line(0.3, 9.35, 3.35, 9.35, { color: 'gray', width: 9, cap: 'butt' }); sb.line(3.35, 9.35, 3.35, 8.75, { color: 'gray', width: 9, cap: 'butt' });
-          sb.line(3.35, 8.7, 3.35, Yp(P), { color: 'red', width: wIn, alpha: 0.5, cap: 'butt' });
-          sb.rect(x0, 1, x1, Yp(P), { fill: 'red', fillAlpha: 0.28, stroke: false });
+          sb.line(3.35, 8.7, 3.35, Yp(P), { color: 'red', width: wIn, alpha: 0.45, cap: 'butt' });
+          sb.rect(x0, 1.7, x1, Yp(P), { fill: 'red', fillAlpha: 0.28, stroke: false });
           sb.line(x0, Yp(P), x1, Yp(P), { color: 'red', width: 2 });
-          sb.path([[6.9, 1], [6.9, 0.42], [9.8, 0.42]], { color: 'teal', width: wOut, alpha: 0.55, cap: 'butt' });
-          sb.path([[x0, 8.3], [x0, 1], [x1, 1], [x1, 8.3]], { color: 'ink', width: 2.6 });
+          sb.path([[6.9, 1.7], [6.9, 1.0], [9.8, 1.0]], { color: 'teal', width: wOut, alpha: 0.55, cap: 'butt' });
+          sb.path([[x0, 8.4], [x0, 1.7], [x1, 1.7], [x1, 8.4]], { color: 'ink', width: 2.6 });
           sb.line(x0, Yp(ex), x1, Yp(ex), { color: 'green', width: 2, dash: [6, 4] });
           sb.text('steady state', x1, Yp(ex), { dx: 5, align: 'left', color: 'green', size: 11, weight: 600 });
-          if (ID <= 1.04) { sb.line(x0, Yp(ID), x1, Yp(ID), { color: 'orange', width: 2, dash: [3, 4] }); sb.text('I × D', x1, Yp(ID), { dx: 5, dy: Math.abs(ID - ex) < 0.04 ? -11 : 0, align: 'left', color: 'orange', size: 11, weight: 600 }); }
-          else { sb.arrow(x1 - 0.5, 7.4, x1 - 0.5, 8.4, { color: 'orange', width: 2, head: 7 }); sb.text(`I × D = ${v.fix(ID, 2)} > 100%`, x1 - 0.8, 8.15, { align: 'right', color: 'orange', size: 11, weight: 600 }); }
-          sb.text(`in: ${v.fix(inflow, 3)}/yr`, 3.55, 9.0, { align: 'left', color: 'red', size: 11, weight: 600 });
+          if (ID <= cap * 1.02) { sb.line(x0, Yp(ID), x1, Yp(ID), { color: 'orange', width: 2, dash: [3, 4] }); sb.text('I × D', x1, Yp(ID), { dx: 5, dy: Math.abs(Yp(ID) - Yp(ex)) < 0.45 ? -11 : 0, align: 'left', color: 'orange', size: 11, weight: 600 }); }
+          else { sb.arrow(x1 - 0.5, 7.6, x1 - 0.5, 8.6, { color: 'orange', width: 2, head: 7 }); sb.text(`I × D = ${ID > 1 ? v.fix(ID, 2) + ' > 100%' : pc(ID, 0)}`, x1 - 0.8, 8.35, { align: 'right', color: 'orange', size: 11, weight: 600 }); }
+          sb.text(`in: ${v.fix(inflow, 3)}/yr`, 3.55 + wIn / 2 / sb.scale, 9.0, { dx: 3, align: 'left', color: 'red', size: 11, weight: 600 });
           sb.text('new cases I(1 − P)', 0.3, 9.85, { align: 'left', color: 'muted', size: 10.5 });
-          sb.text(`out: ${v.fix(outflow, 3)}/yr`, 9.8, 0.42, { dy: -12, align: 'right', color: 'teal', size: 11, weight: 600 });
-          sb.text('recoveries P/D', 9.8, 0.42, { dy: 12, align: 'right', color: 'muted', size: 10.5 });
+          sb.text(`out: ${v.fix(outflow, 3)}/yr`, 9.8, 1.0, { dy: -10 - wOut / 2, align: 'right', color: 'teal', size: 11, weight: 600 });
+          sb.text('recoveries P/D', 9.8, 1.0, { dy: 8 + wOut / 2, align: 'right', color: 'muted', size: 10.5 });
           // ----- time series in years
-          const t1 = Math.max(25, now), t0 = t1 - 25, pts = (key, cap) => { const out = []; for (let j = 0; j < n; j++) { const t = H.t[j] * DT; if (t >= t0) out.push([t, Math.min(H[key][j], cap)]); } return out; };
+          const t1 = Math.max(15, now), t0 = t1 - 15, pts = (key, cap) => { const out = []; for (let j = 0; j < n; j++) { const t = H.t[j] * DT; if (t >= t0) out.push([t, Math.min(H[key][j], cap)]); } return out; };
           let top = Math.max(ex, Math.min(ID, 1)); for (let j = 0; j < n; j++) if (H.t[j] * DT >= t0) top = Math.max(top, H.ill[j], H.exact[j], Math.min(H.ID[j], 1));
           top = Math.min(1.05, Math.max(0.08, top * 1.18));
-          ts.setView([t0, t1], [0, top]);
+          ts.setView([t0, t1], [0, top]); ts.setTicks(undefined, pctTicks(top));
           ts.path(pts('ID', top * 1.5), { color: 'orange', width: 1.8, dash: [3, 4] });
           ts.path(pts('exact', 2), { color: 'green', width: 2, dash: [6, 4] });
           ts.path(pts('ill', 2), { color: 'red', width: 2 });
@@ -402,7 +405,7 @@ For small $\lambda t$ this is $R(t) \approx \lambda t$ ("risk ≈ rate × time")
       viz(v) {
         const M = v.M, N = 2000, TMAX = 10;
         const s = v.stage({ x: [0, TMAX], y: [0, 1.12], height: 330, axes: 'box', xlabel: 'years', ylabel: 'risk', weight: 1.15, title: 'risk over a period of length $t$' });
-        const g = v.stage({ x: [0, 4], y: [0, 1], height: 330, axes: 'box', xlabel: 'years', ylabel: 'still at risk', weight: 1, title: 'cutting $[0, t]$ into $n$ pieces' });
+        const g = v.stage({ x: [0, 4], y: [0, 1.1], height: 330, axes: 'box', xlabel: 'years', weight: 1, title: 'still at risk, cutting $[0, t]$ into $n$ pieces' });
         const lamS = v.slider('rate $\\lambda$ (per person-year)', 0.01, 1, 0.15, { log: true, fmt: (x) => x.toFixed(3) });
         const nS = v.slider('pieces $n$', 1, 40, 3, { int: true });
         const U = uniforms(M, 51, N);
@@ -414,7 +417,7 @@ For small $\lambda t$ this is $R(t) \approx \lambda t$ ("risk ≈ rate × time")
           P.y = R(t);
           // ----- left
           s.hline(1, { color: 'muted', dash: [3, 4], width: 1 });
-          s.text('a risk can never exceed 1', 0.15, 1, { dy: -9, align: 'left', color: 'muted', size: 11 });
+          s.text('a risk can never exceed 1', 0, 1, { dx: 30, dy: -9, align: 'left', color: 'muted', size: 11 });
           s.between((x) => Math.min(lam * x, 1.12), R, 0, t, { fill: 'orange', fillAlpha: 0.22 });
           s.fn((x) => lam * x, { color: 'orange', width: 2, dash: [6, 4] });
           s.fn(R, { color: 'green', width: 2.6 });
@@ -428,7 +431,7 @@ For small $\lambda t$ this is $R(t) \approx \lambda t$ ("risk ≈ rate × time")
           s.tex('\\lambda t', lx, Math.min(lam * lx, 1.08), { dx: -6, dy: -4, align: 'right', baseline: 'bottom', color: 'orange', size: 14 });
           s.tex('1 - e^{-\\lambda t}', TMAX * 0.97, R(TMAX * 0.97), { dy: 7, align: 'right', baseline: 'top', color: 'green', size: 14 });
           // ----- right: the n-piece staircase
-          g.setView([0, t], [0, 1.02]);
+          g.setView([0, t], [0, 1.1]);
           g.fn((x) => Math.exp(-lam * x), { color: 'blue', width: 2.4 });
           const stair = [[0, 1]]; let S = 1;
           for (let j = 0; j < n; j++) {
@@ -472,7 +475,7 @@ counted once every case's outcome is known. When deaths follow onset within the 
         const delS = v.slider('mean onset-to-death delay (days)', 5, 30, 16, { step: 1 });
         const DIS = [
           { id: 'A', name: 'mild, widespread', color: 'teal', at: [6000, 0.06] },
-          { id: 'B', name: 'rare, deadly', color: 'purple', at: [1.5, 90] },
+          { id: 'B', name: 'rare, deadly', color: 'purple', at: [3, 60] },
           { id: 'C', name: 'moderate', color: 'orange', at: [60, 4] },
         ];
         DIS.forEach((d, i) => { d.h = sL.handle(...d.at, { color: d.color, label: d.id, labelPos: 'ne' }); d.u = uniforms(M, 61 + i, 2); });
@@ -481,20 +484,20 @@ counted once every case's outcome is known. When deaths follow onset within the 
         const count = (mean, sd, u, exact) => (mean < 60 ? exact().quantile(u) : Math.max(0, Math.round(mean + sd * M.dist.normal(0, 1).quantile(u))));
         // outbreak: onset days and standardized delays (fixed), outcome draws fixed
         const ob = (() => { const r = M.rng(77), G = M.dist.gamma(5, 5), g4 = M.dist.gamma(4, 0.25); return Array.from({ length: NC }, () => ({ on: G.sample(r), u: r(), gd: g4.sample(r), gr: g4.sample(r) })); })();
-        let st = null;
+        let st = null, lastMode = null;
         v.render(() => {
           const cmp = mode.value === 'compare';
           cfrS.el.hidden = delS.el.hidden = cmp;
+          if (cmp !== lastMode) { lastMode = cmp; v.legend(cmp ? [['gray', 'equal mortality'], ['green', 'highest deaths per 100 000', { area: true }], ['red', 'highest case fatality', { area: true }]] : [['orange', 'new cases', { area: true }], ['red', 'deaths', { area: true }], ['red', 'deaths ÷ cases so far'], ['purple', 'deaths ÷ resolved cases'], ['green', 'true case fatality', { dash: true }]]); }
           DIS.forEach((d) => (d.h.visible = cmp));
           if (cmp) {
             Object.assign(sL.o, { xlog: true, ylog: true, xlabel: 'incidence per 100 000 per year', ylabel: 'case fatality %', axes: true });
-            sL.setView([0.1, 1e5], [0.01, 100]); sL.setTitle('incidence × case fatality = mortality');
+            sL.setView([0.1, 1e5], [0.01, 100]); sL.setTitle('grey diagonals: equal deaths per 100 000 per year');
             Object.assign(sR.o, { axes: false }); sR.setView([0, 1], [0, 1]); sR.setTitle('one simulated year in a population of 1 000 000');
             for (const m of [0.001, 0.01, 0.1, 1, 10, 100, 1000]) {
               sL.fn((x) => (100 * m) / x, { color: 'gray', width: 1, alpha: 0.55 });
               const xl = (100 * m) / 45; if (xl > 0.15 && xl < 6e4) sL.text(m >= 1 ? String(m) : String(m), xl, 45, { dx: 4, align: 'left', color: 'muted', size: 10.5 });
             }
-            sL.text('deaths per 100 000 per year along each diagonal:', 0.13, 80, { align: 'left', color: 'muted', size: 10.5 });
             const rows = DIS.map((d) => {
               const inc = d.h.x, cfr = d.h.y / 100, mu = (inc * POP) / 1e5;
               const cases = count(mu, Math.sqrt(mu), d.u[0], () => M.dist.poisson(mu));
@@ -549,7 +552,6 @@ counted once every case's outcome is known. When deaths follow onset within the 
           }
           if (st && st.hd) st.hd.visible = !cmp;
         });
-        v.legend([['gray', 'equal mortality'], ['green', 'leader by mortality / true CFR'], ['red', 'leader by CFR / deaths ÷ cases so far'], ['purple', 'deaths ÷ resolved cases'], ['orange', 'new cases']]);
         v.readout(() => {
           if (!st) return '';
           if (st.cmp && st.rows) {

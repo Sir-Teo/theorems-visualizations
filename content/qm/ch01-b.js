@@ -56,19 +56,20 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Franck%E2%80%93Hertz_experiment' },
       tags: ['energy levels', 'collisions'],
       viz(v) {
-        const M = v.M, C = M.CONST, NE = 300, PEXC = 0.3;
-        const GAS = { hg: { label: 'mercury', E1: 4.89, Vmax: 30, dV: 0.1, glowNm: 253.7, glow: 'purple' }, ne: { label: 'neon', E1: 18.7, Vmax: 80, dV: 0.25, glowNm: 585.2, glow: wlRGB(600) } };
-        const gas = v.select('vapour', Object.entries(GAS).map(([value, G]) => ({ value, label: `${G.label} ($E_1 = ${G.E1}$ eV)` })), 'hg');
-        const dens = v.slider('vapour density (grid distance / mean free path)', 20, 400, 100, { log: true, fmt: (x) => Math.round(x) + '' });
+        const M = v.M, C = M.CONST, NE = 300, PEXC = 0.35, EW = 0.6, TS = 6;
+        const GAS = { hg: { label: 'mercury', E1: 4.887, Vmax: 30, dV: 0.1, glow: 'purple' }, ne: { label: 'neon', E1: 18.7, Vmax: 80, dV: 0.25, glow: wlRGB(600) } };
+        const gas = v.select('vapour', Object.entries(GAS).map(([value, G]) => ({ value, label: `${G.label} ($E_1 = ${v.fix(G.E1, 2)}$ eV)` })), 'hg');
+        const dens = v.slider('vapour density $L/\\ell$', 20, 400, 100, { log: true, fmt: (x) => Math.round(x) + '' });
         const Vr = v.slider('retarding voltage', 0, 3, 1.5, { step: 0.05, fmt: (x) => `${x.toFixed(2)} V` });
         const cls = v.toggle('atoms absorb any amount (classical)', false);
         const tube = v.stage({ x: [-0.14, 1.36], y: [-0.55, 0.62], height: 230, axes: false, weight: 1, title: 'the tube: where atoms are excited' });
-        const iv = v.stage({ x: [0, 30], y: [0, 1], height: 230, axes: 'box', ylabel: 'collected current (arb.)', xlabel: 'U (V)', weight: 1.2, title: 'current against accelerating voltage' });
+        const iv = v.stage({ x: [0, 30], y: [0, 1], height: 230, axes: 'box', xlabel: 'U (V)', weight: 1.2, title: 'collected current (arb. units) against accelerating voltage' });
         const hv = iv.handle(0, 0, { color: 'gold', r: 7, constrain: 'x' });
-        hv.onDrag = (H) => { v.pause(); v.t = H.x / GAS[gas.value].Vmax * 10; };
-        // one electron from cathode (x = 0) to grid (x = 1) at voltage U: returns {K at grid, list of excitation positions}
+        hv.onDrag = (H) => { v.pause(); v.t = H.x / GAS[gas.value].Vmax * TS; };
+        // one electron from cathode (x = 0) to grid (x = 1) at voltage U; returns its kinetic energy (eV) at the grid.
+        // Free flights are exponential with mean ℓ = L/density; above E₁ a collision excites with probability PEXC·min(1, (E − E₁)/EW).
         const run = (U, r, G, lam, classical, exc) => {
-          let K = -0.1 * Math.log(r() || 1e-12), x = 0;
+          let K = -0.15 * Math.log(r() || 1e-12), x = 0;
           if (U < 1e-6) return K;
           for (let it = 0; it < 400; it++) {
             if (classical) {
@@ -79,9 +80,9 @@ export default {
             }
             const xs = x + Math.max(0, G.E1 - K) / U;
             if (xs >= 1) return K + U * (1 - x);
-            const xe = xs - Math.log(r() || 1e-12) * lam / PEXC;
-            if (xe >= 1) return K + U * (1 - x);
-            K = K + U * (xe - x) - G.E1; x = xe; if (exc) exc.push(x);
+            K += U * (xs - x); x = xs; let hit = false;
+            while (!hit) { const xe = x - Math.log(r() || 1e-12) * lam; if (xe >= 1) return K + U * (1 - x); K += U * (xe - x); x = xe; if (r() < PEXC * Math.min(1, (K - G.E1) / EW)) hit = true; }
+            K -= G.E1; if (exc) exc.push(x);
           }
           return K;
         };
@@ -107,13 +108,13 @@ export default {
         };
         let st = null;
         v.animate((t) => {
-          const G = GAS[gas.value], cv = getCurve(), U = Math.min(G.Vmax, G.Vmax * t / 10);
+          const G = GAS[gas.value], cv = getCurve(), U = Math.min(G.Vmax, G.Vmax * t / TS);
           if (!hv.dragging) hv.x = U;
           const Uc = hv.dragging ? hv.x : U;
           iv.setView([0, G.Vmax], [-0.05 * cv.ymax, cv.ymax]); hv.y = 0;
           iv.path(cv.pts, { color: 'faint', width: 1.2 });
           iv.path(cv.pts.filter((p) => p[0] <= Uc + 1e-9), { color: 'accent', width: 2.6 });
-          if (!cls.value) cv.peaks.forEach((p, i) => { if (p <= Uc) { iv.vline(p, { color: 'green', dash: [4, 4], width: 1.1 }); iv.text(`${v.fix(p, 1)}`, p, cv.ymax * 0.96, { color: 'green', size: 11, align: 'center' }); } });
+          if (!cls.value) cv.peaks.forEach((p, i) => { if (p <= Uc) { iv.vline(p, { color: 'green', dash: [4, 4], width: 1.1 }); iv.text(`${v.fix(p, 1)}`, p, cv.ymax * 1.0, { color: 'green', size: 11, align: 'center', dy: 4 }); } });
           // the tube: excitation density at the current voltage
           const lam = 1 / dens.value, r = hrand(12345), exc = [];
           for (let j = 0; j < 800; j++) run(Uc, r, G, lam, cls.value, exc);
@@ -135,7 +136,7 @@ export default {
           tube.dots(dots, { r: 2.6, color: 'accent' });
           const nexc = exc.length / 800;
           st = { G, U: Uc, peaks: cv.peaks, nexc };
-        }, { still: 11, period: 13 });
+        }, { still: 7.5, period: 9 });
         v.legend([['accent', 'current recorded so far'], ['faint', 'full sweep'], ['green', 'current maxima', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
@@ -179,17 +180,17 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
         const lv = v.stage({ x: [0.1, 3e8], y: [1e-37, 1e-3], height: 290, axes: 'box', xlog: true, ylog: true, xlabel: 'v (m/s)', ylabel: 'λ (m)', weight: 1.1, title: 'λ = h/(γmv)' });
         const hd = orb.handle(6.5, 0, { color: 'gold', r: 8, constrain: (x, y) => [M.clamp(Math.hypot(x, y), 0.5, 17.5), 0] });
         const lamOf = (m, s) => { const g = 1 / Math.sqrt(1 - (s / C.c) ** 2); return C.h / (g * m * s); };
-        const MARKS = [[1.6e-35, 'Planck length'], [8.4e-16, 'proton'], [1e-10, 'atom'], [5.5e-7, 'visible light'], [2e-6, 'bacterium'], [8e-5, 'hair'], [0.072, 'cricket ball']];
+        const MARKS = [[1.6e-35, 'Planck length', 'left'], [8.4e-16, 'proton'], [1e-10, 'atom'], [5.5e-7, 'visible light'], [8e-5, 'hair'], [0.072, 'cricket ball']];
         let st = null;
         v.render(() => {
           const P = PART[part.value], s = speed(P, spd.value), lam = lamOf(P.m, s), g = 1 / Math.sqrt(1 - (s / C.c) ** 2);
           // ruler
-          ru.rect(1e-11, 0.22, 1e-9, 0.62, { fill: 'green', fillAlpha: 0.16, stroke: false });
-          ru.text('atomic spacings', 1e-10, 0.68, { align: 'center', color: 'green', size: 10.5 });
-          ru.line(1e-36, 0.3, 10, 0.3, { color: 'muted', width: 1.4 });
-          MARKS.forEach(([L, name], i) => { ru.line(L, 0.24, L, 0.36, { color: 'ink', width: 1.4 }); ru.text(name, L, i % 2 ? 0.14 : 0.45, { align: 'center', color: 'muted', size: 11 }); });
-          ru.arrow(lam, 0.92, lam, 0.38, { color: 'gold', width: 3, head: 10 });
-          ru.text(`λ = ${M.si(lam, 'm', 3)}`, lam, 0.92, { color: 'gold', size: 12.5, weight: 600, align: lam > 1e-6 ? 'right' : 'left', dx: lam > 1e-6 ? -8 : 8 });
+          ru.rect(1e-11, 0.36, 1e-9, 0.62, { fill: 'green', fillAlpha: 0.16, stroke: false });
+          ru.text('atomic spacings', 1e-11, 0.56, { align: 'right', color: 'green', size: 10.5, dx: -4 });
+          ru.line(1e-36, 0.45, 10, 0.45, { color: 'muted', width: 1.4 });
+          MARKS.forEach(([L, name, al], i) => { ru.line(L, 0.4, L, 0.5, { color: 'ink', width: 1.4 }); ru.text(name, L, i % 2 ? 0.3 : 0.6, { align: al || 'center', color: 'muted', size: 11, dx: al ? -4 : 0 }); });
+          ru.arrow(lam, 0.95, lam, 0.5, { color: 'gold', width: 3, head: 10 });
+          ru.text(`λ = ${M.si(lam, 'm', 3)}`, lam, 0.88, { color: 'gold', size: 12.5, weight: 600, align: lam > 1e-6 ? 'right' : 'left', dx: lam > 1e-6 ? -8 : 8 });
           // orbit wave
           const r = hd.x, N = Math.sqrt(r), A = 0.9 + 0.06 * r;
           for (let n = 1; n <= 4; n++) { orb.circle(0, 0, n * n, { color: 'faint', dash: [4, 4], width: 1 }); orb.text(`n=${n}`, 0, n * n, { color: 'muted', size: 10.5, align: 'center', dy: -8 }); }
@@ -202,7 +203,7 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
           lv.rect(0.1, 1e-11, 3e8, 1e-9, { fill: 'green', fillAlpha: 0.14, stroke: false });
           for (const [k, Q] of Object.entries(PART)) {
             lv.fn((x) => (x >= Q.vmin && x <= Q.vmax ? lamOf(Q.m, x) : NaN), { color: Q.color, width: k === part.value ? 3 : 1.4, alpha: k === part.value ? 1 : 0.6 });
-            lv.text(Q.label, Q.vmin, lamOf(Q.m, Q.vmin), { color: Q.color, size: 11, dx: 4, dy: -9 });
+            lv.text(Q.label, Q.vmax, lamOf(Q.m, Q.vmax), { color: Q.color, size: 11, dx: k === 'e' ? -60 : 4, dy: k === 'e' ? 14 : -9 });
           }
           lv.dot(s, lam, { r: 6, color: 'gold' });
           const ve = Math.sqrt(C.e * C.e / (4 * Math.PI * C.eps0 * C.me * r * C.a0)), lame = C.h / (C.me * ve);
@@ -240,7 +241,8 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
           let re = 0, im = 0, w = 0; for (let l = 0; l < NL; l++) { const att = Math.exp(-l / 1.6); re += att * Math.cos(b * l); im += att * Math.sin(b * l); w += att; }
           return r2 * (re * re + im * im) / (w * w);
         };
-        const inten = (lam, th, p) => 0.3 + 0.35 * Math.cos(th) + (p ? 0 : 1.05 * coh(lam, th) * Math.cos(th) ** 0.5);
+        const inten = (lam, th, p) => 0.3 + 0.35 * Math.cos(th) + (p ? 0 : 0.5 * coh(lam, th) * Math.cos(th) ** 0.5);
+        const peaksOf = (lam) => { const out = []; let a = coh(lam, 0.25), b = coh(lam, 0.26); for (let i = 2; i <= 600; i++) { const th = (14.3 + 70.7 * i / 600) * Math.PI / 180, c = coh(lam, th); if (b > a && b >= c && b > 0.12) out.push({ th: th - 70.7 / 600 * Math.PI / 180, c: b }); a = b; b = c; } return out; };
         const peakAngle = (lam) => { let best = 0, bt = 0; for (let i = 0; i <= 700; i++) { const th = (15 + 74 * i / 700) * Math.PI / 180, c = coh(lam, th); if (c > best) { best = c; bt = th; } } return { th: bt, c: best }; };
         const RINGS = [[1, 1, 1, 8], [2, 0, 0, 6], [2, 2, 0, 12], [3, 1, 1, 24], [2, 2, 2, 8], [4, 0, 0, 6]];
         let st = null, rcache = null;
@@ -263,12 +265,16 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
             const thd = Math.atan2(det.x, det.y), Id = inten(lam, Math.abs(thd), p) / imax;
             A.line(0, 0, det.x, det.y, { color: 'gold', width: 1.2, dash: [2, 3] });
             // wavelength measured from the peak at each voltage
-            B.o.xlabel = 'V (volts)'; B.o.ylabel = 'λ (pm)'; B.setView([20, 150], [80, 290]); B.setTitle('wavelength: from the peak angle vs $h/p$');
+            B.o.xlabel = 'V (volts)'; B.o.ylabel = 'd sin θ (pm)'; B.setView([20, 150], [70, 300]); B.setTitle('peak positions $d\\sin\\theta$ vs $h/p$ and $2h/p$');
             B.fn((x) => electronLambda(C, x) * 1e12, { color: 'green', width: 2.2 });
-            if (!p) for (let VV = 20; VV <= 150; VV += 2.5) { const pk = peakAngle(electronLambda(C, VV)); if (pk.c > 0.12 && pk.th < 88 * Math.PI / 180) B.dot(VV, D * Math.sin(pk.th) * 1e12, { r: 2.2 + 3 * Math.min(1, pk.c), color: 'accent', alpha: 0.35 + 0.65 * Math.min(1, pk.c) }); }
+            B.fn((x) => 2 * electronLambda(C, x) * 1e12, { color: 'green', width: 1.4, dash: [5, 4] });
+            B.text('first order: λ', 140, electronLambda(C, 140) * 1e12, { color: 'green', size: 11, align: 'right', dy: -10 });
+            B.text('second order: 2λ', 148, 2 * electronLambda(C, 148) * 1e12, { color: 'green', size: 11, align: 'right', dy: 12 });
+            if (!p) for (let VV = 20; VV <= 150; VV += 2.5) for (const pk of peaksOf(electronLambda(C, VV))) B.dot(VV, D * Math.sin(pk.th) * 1e12, { r: 2 + 3 * Math.min(1, pk.c), color: 'accent', alpha: 0.35 + 0.65 * Math.min(1, pk.c) });
             B.dot(54, D * Math.sin(50 * Math.PI / 180) * 1e12, { r: 6, color: 'ink', hollow: true, label: '1927', labelPos: 'ne' });
             const pk = peakAngle(lam);
             if (!p) B.dot(V, D * Math.sin(pk.th) * 1e12, { r: 6, color: 'gold' });
+            v.legend([['accent', 'computed scattering; peaks found in it'], ['green', 'de Broglie $\\lambda = h/p$ (and $2\\lambda$)'], ['gold', 'detector / this voltage', { dot: true }], ['ink', 'Davisson & Germer 1927', { dot: true }]]);
             st = { dg, V, lam, pk, thd, Id, p, ratio: pk.c };
           } else {
             const Vk = Vkv.value, lam = electronLambda(C, Vk * 1e3), p = part.value;
@@ -285,10 +291,10 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
             B.fn((x) => LSCR * Math.tan(2 * Math.asin(lam * x / (2 * AU))) * 1e3, { color: 'green', width: 2 });
             const pairs = []; if (!p) meas.forEach((R) => { let bi = -1, bd = 1e9; rings.forEach((g, i) => { if (Math.abs(g.R - R) < bd) { bd = Math.abs(g.R - R); bi = i; } }); if (bi >= 0 && bd < 0.5) { pairs.push([Math.sqrt(rings[bi].N), R, rings[bi]]); B.dot(Math.sqrt(rings[bi].N), R, { r: 5, color: 'accent' }); } });
             const lamMeas = pairs.length ? M.mean(pairs.map(([sN, R]) => 2 * AU / sN * Math.sin(0.5 * Math.atan(R / 1e3 / LSCR)))) : NaN;
+            v.legend([['green', 'screen glow / Bragg’s law with $\\lambda = h/p$'], ['accent', 'ring radii measured on the screen', { dot: true }]]);
             st = { dg, Vk, lam, lamMeas, pairs, p };
           }
         });
-        v.legend([['accent', 'computed scattering / measured values'], ['green', 'de Broglie $\\lambda = h/p$ (Bragg prediction)'], ['gold', 'detector / current setting', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           if (st.dg) {
@@ -345,7 +351,7 @@ with fringe spacing $\lambda L/d$ given by the de Broglie wavelength $\lambda=h/
           scr.rect(-W, 0, W, 1, { fill: 'gray', fillAlpha: 0.05, stroke: false });
           scr.dots(pts, { r: N > 3000 ? 1.1 : N > 500 ? 1.5 : 2.2, color: 'ink', alpha: N > 3000 ? 0.45 : 0.7 });
           for (let i = Math.max(0, N - 3); i < N; i++) scr.dot(m.Y[i], 0.06 + 0.88 * U2[i], { r: 5, color: 'gold' });
-          scr.corner(`${N} electrons`, 'tl', { color: 'ink', weight: 600 });
+          scr.corner(`${N} electron${N === 1 ? '' : 's'}`, 'tl', { color: 'ink', weight: 600 });
           // histogram + predictions
           const counts = new Float64Array(NB), yc = Float64Array.from({ length: NB }, (_, b) => -W + (b + 0.5) * dy);
           for (let i = 0; i < N; i++) { const b = Math.floor((m.Y[i] + W) / dy); if (b >= 0 && b < NB) counts[b]++; }
@@ -360,7 +366,7 @@ with fringe spacing $\lambda L/d$ given by the de Broglie wavelength $\lambda=h/
           st = { N, m, pg, both };
         }, { still: 20, period: 30 });
         v.legend([['ink', 'individual hits', { dot: true }], ['accent', 'histogram of hits', { area: true }], ['green', 'predicted $N\\,|\\psi_1+\\psi_2|^2$'], ['red', 'particles without waves: $P_1+P_2$', { dash: true }]]);
-        v.readout(() => st && `${st.N} electrons, one at a time; each landed at a single random point. $\\lambda = h/p =$ ${M.si(st.m.lam, 'm', 3)}, $d =$ ${M.si(st.m.d, 'm', 3)}, $L = 1$ m. ` + (st.pg.power > 25 && st.N > 30
+        v.readout(() => st && `${st.N} electron${st.N === 1 ? '' : 's'}, one at a time; each landed at a single random point. $\\lambda = h/p =$ ${M.si(st.m.lam, 'm', 3)}, $d =$ ${M.si(st.m.d, 'm', 3)}, $L = 1$ m. ` + (st.pg.power > 25 && st.N > 30
           ? `Strongest periodicity in the hits: **${v.fix(st.pg.period, 2)} μm**; $\\lambda L/d = ${v.fix(st.m.spacing, 2)}$ μm.`
           : st.both ? 'Too few hits yet to see a periodicity — keep going.' : `No periodicity (peak power ${v.fix(st.pg.power, 1)}, noise level ≈ 1–6): one slit gives a single smooth bump of width $\\approx 2\\lambda L/a = ${v.fix(2 * st.m.env, 0)}$ μm.`) + (st.both ? ' Note the dark fringes, where $P_1+P_2$ would still give plenty of hits.' : ''));
       },
@@ -453,7 +459,7 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
       credit: 'Stern & Gerlach, 1922',
       statement: String.raw`A beam of neutral silver atoms passing through an inhomogeneous magnetic field is deflected by the force $F_z=\mu_z\,\partial B_z/\partial z$ on each atom's magnetic moment. If the moments were classical arrows pointing in random directions, $\mu_z$ would take every value between $-\mu$ and $\mu$ and the beam would spread into a continuous band. Instead the beam splits into **two** separate spots, symmetric about the undeflected position, corresponding to $\mu_z=\pm\mu_B$ (the Bohr magneton, $9.27\times10^{-24}$ J/T) — whichever direction the field gradient is turned to. The component of the moment along any axis is quantized and takes just two values: the silver atom has angular momentum $\hbar/2$ (spin ½, recognized in 1925–27).`,
       idea: String.raw`The gradient force on a dipole (em-7.18) pushes an atom up or down in proportion to $\mu_z$, and the deflection at the plate is $z=\mu_z\,G\,L^2/2mv^2$ for a magnet of length $L$ and gradient $G$; averaged over the thermal speeds of an oven at temperature $T$ it is $\bar z=\mu_zGL^2/4kT$. Two spots mean $\mu_z$ has two values only. Stern and Gerlach set out to test Bohr–Sommerfeld "space quantization" (1.5, 1.7) for an orbital angular momentum $\hbar$, which they believed would give two spots as well; in fact silver's ground state has zero orbital angular momentum, and the two spots come from the electron's spin, with $g\approx2$ making the moment one full magneton.`,
-      caption: String.raw`Silver atoms from a 1320 K oven fly through a 3.5 cm magnet onto a plate (atoms accumulate as you watch). Left: side view of sampled trajectories, deflections magnified about 100×. Middle: the plate — the gradient is strongest at the centre of the slit, so the two traces bulge into the famous "lips" of their 1922 postcard. Bottom: deflections of atoms near the slit centre, compared with $\pm\bar z$. Rotate the magnet: still two spots, along the new axis. **Break it:** switch to classical moments and the gap fills in.`,
+      caption: String.raw`Silver atoms from a 1320 K oven fly through a 3.5 cm magnet onto a plate (atoms accumulate as you watch). Left: side view of sampled trajectories, with the vertical scale stretched about 150× (atoms that hit a pole piece are lost). Middle: the plate — the gradient is strongest at the centre of the slit, so the two traces bulge into the famous "lips" of their 1922 postcard. Bottom: deflections of atoms near the slit centre, compared with $\pm\bar z$. Rotate the magnet: still two spots, along the new axis. **Break it:** switch to classical moments and the gap fills in.`,
       deps: ['em-7.18', 'qm-1.5'],
       refs: ['Sakurai ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stern%E2%80%93Gerlach_experiment' },
@@ -463,9 +469,9 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
         const model = v.select('magnetic moments', [{ value: 'q', label: 'quantum (observed)' }, { value: 'c', label: 'classical arrows' }], 'q');
         const ang = v.slider('magnet orientation', 0, 180, 0, { step: 1, fmt: (x) => `${Math.round(x)}°` });
         const Gs = v.slider('field gradient $\\partial B_z/\\partial z$', 100, 1500, 1000, { step: 10, fmt: (x) => `${Math.round(x)} T/m` });
-        const side = v.stage({ x: [0, 1], y: [-1, 1], height: 260, axes: false, weight: 1.25, title: 'side view (deflections × 200)' });
+        const side = v.stage({ x: [0, 1], y: [-1, 1], height: 260, axes: false, weight: 1.25, title: 'side view (vertical scale stretched ×150)' });
         const plate = v.stage({ x: [-0.62, 0.62], y: [-0.62, 0.62], equal: true, height: 260, axes: false, weight: 0.85, title: 'the plate (mm)' });
-        const hz = v.stage({ x: [-0.6, 0.6], y: [0, 1], height: 160, axes: 'box', xlabel: 'deflection along the gradient (mm)', yticks: [], full: true });
+        const hz = v.stage({ x: [-0.6, 0.6], y: [0, 1], height: 160, axes: 'box', yticks: [], full: true, title: 'deflection along the gradient (mm), atoms near the slit centre' });
         const rng = v.rng(1922), alpha = Math.sqrt(2 * C.kB * TOV / MAG);
         const atoms = Array.from({ length: NMAX }, () => { const v0 = alpha * Math.sqrt(-Math.log((rng() || 1e-12) * (rng() || 1e-12))), s = 2 * rng() - 1, z0 = SIG0 * Math.sqrt(-2 * Math.log(rng() || 1e-12)) * Math.cos(2 * Math.PI * rng()), u = rng(); return { v0, s, z0, u }; });
         let st = null;
@@ -474,23 +480,23 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
           const gax = [Math.sin(phi), Math.cos(phi)], sax = [Math.cos(phi), -Math.sin(phi)];
           const defl = (a) => { const mz = q ? (a.u < 0.5 ? 1 : -1) : 2 * a.u - 1; return mz * C.muB * G * (1 - a.s * a.s) * LM * LM / (2 * MAG * a.v0 * a.v0) * 1e3; }; // mm
           // ---- side view (along the gradient axis, magnified)
-          const X0 = 0.08, XM0 = 0.4, XM1 = 0.88, XP = 0.9, MAGN = 200 * (XM1 - XM0) / 35; // stage units per mm of deflection (×200)
+          const X0 = 0.08, XM0 = 0.4, XM1 = 0.88, XP = 0.9, MAGN = 2, TOP = 0.62, BOT = -0.7; // MAGN: stage units per mm of deflection
           side.rect(0.0, -0.18, 0.07, 0.18, { fill: 'orange', fillAlpha: 0.7, stroke: false }); side.text('oven', 0.035, -0.28, { align: 'center', size: 11, color: 'ink' });
           for (const x of [0.17, 0.27]) { side.line(x, 0.08, x, 0.6, { color: 'ink', width: 3 }); side.line(x, -0.08, x, -0.6, { color: 'ink', width: 3 }); }
-          side.poly([[XM0, 0.95], [XM1, 0.95], [XM1, 0.22], [(XM0 + XM1) / 2 + 0.06, 0.1], [(XM0 + XM1) / 2 - 0.06, 0.1], [XM0, 0.22]], { fill: 'muted', fillAlpha: 0.45, stroke: false });
-          side.poly([[XM0, -0.95], [XM1, -0.95], [XM1, -0.25], [XM0, -0.25]], { fill: 'muted', fillAlpha: 0.45, stroke: false });
-          side.text('N', (XM0 + XM1) / 2, 0.6, { align: 'center', color: 'panel', size: 14, weight: 700 }); side.text('S', (XM0 + XM1) / 2, -0.6, { align: 'center', color: 'panel', size: 14, weight: 700 });
+          side.poly([[XM0, 0.98], [XM1, 0.98], [XM1, TOP], [XM0, TOP]], { fill: 'muted', fillAlpha: 0.45, stroke: false });
+          side.poly([[XM0, -0.98], [XM1, -0.98], [XM1, BOT], [XM0, BOT]], { fill: 'muted', fillAlpha: 0.45, stroke: false });
+          side.text('N (knife edge)', (XM0 + XM1) / 2, 0.8, { align: 'center', color: 'ink', size: 11.5, weight: 600 }); side.text('S (groove)', (XM0 + XM1) / 2, -0.84, { align: 'center', color: 'ink', size: 11.5, weight: 600 });
           side.line(XP, -0.95, XP, 0.95, { color: 'ink', width: 3 }); side.text('plate', XP, 0.98, { align: 'center', size: 11, color: 'ink', baseline: 'top' });
           for (let i = 0; i < 46; i++) {
             const a = atoms[i], zt = defl(a) * MAGN, path = [];
-            for (let k = 0; k <= 50; k++) { const x = X0 + (XP - X0) * k / 50, f = M.clamp((x - XM0) / (XM1 - XM0), 0, 1); path.push([x, zt * f * f + a.z0 * MAGN]); }
+            for (let k = 0; k <= 50; k++) { const x = X0 + (XP - X0) * k / 50, f = M.clamp((x - XM0) / (XM1 - XM0), 0, 1), z = zt * f * f + a.z0 * MAGN; path.push([x, z]); if (z > TOP || z < BOT) break; }
             side.path(path, { color: q ? (a.u < 0.5 ? 'accent' : 'red') : 'purple', width: 1, alpha: 0.5 });
           }
           side.corner(`view along the gradient axis (turned ${Math.round(ang.value)}°)`, 'bl', { color: 'muted', size: 11 });
           // ---- plate
           plate.circle(0, 0, 0.6, { color: 'faint', width: 1 });
           plate.line(-0.6 * gax[0], -0.6 * gax[1], 0.6 * gax[0], 0.6 * gax[1], { color: 'faint', dash: [4, 4], width: 1 });
-          plate.text('+μ_B', 0.52 * gax[0], 0.52 * gax[1], { color: 'muted', size: 10.5, align: 'center' });
+          plate.tex('+\\mu_B', 0.5 * gax[0], 0.5 * gax[1], { color: 'muted', size: 12 }); plate.tex('-\\mu_B', -0.5 * gax[0], -0.5 * gax[1], { color: 'muted', size: 12 });
           const hits = [], cen = [];
           for (let i = 0; i < N; i++) { const a = atoms[i], z = defl(a) + a.z0, sx = a.s * WS; hits.push([sx * sax[0] + z * gax[0], sx * sax[1] + z * gax[1]]); if (Math.abs(a.s) < 0.25) cen.push(z); }
           plate.dots(hits, { r: N > 2500 ? 1.1 : 1.6, color: 'ink', alpha: 0.5 });
@@ -578,12 +584,12 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
           const extra = [{ v: axes[1].map((c) => 1.25 * c), color: 'orange', label: '\\hat n' }];
           if (Math.hypot(...after1) > 0.5) extra.push({ v: after1, color: 'accent', label: '1' });
           Q.bloch(s3, after2, { labels: false, color: 'green', extra, project: false });
-          s3.tex('+z', [0, 0, 1.38], { color: 'muted', size: 12 }); s3.tex('+x', [1.4, 0, 0], { color: 'muted', size: 12 }); s3.tex('-z', [0, 0, -1.38], { color: 'muted', size: 12 });
+          s3.tex('+z', [0, 0, 1.38], { color: 'muted', size: 12 }); s3.tex('+x', [1.25, 0, -0.22], { color: 'muted', size: 12 }); s3.tex('-z', [0, 0, -1.38], { color: 'muted', size: 12 });
           // ---- final counts
           const n3 = cnt['3+'] + cnt['3-'], e3 = exp['3+'] + exp['3-'];
-          bar.setView([0.3, 2.7], [0, Math.max(10, 1.25 * Math.max(cnt['3+'], cnt['3-'], exp['3+'], exp['3-']))]);
+          const top = Math.max(10, 1.25 * Math.max(cnt['3+'], cnt['3-'], n3 / 2)); bar.setView([0.3, 2.7], [-0.07 * top, top]);
           bar.bars([cnt['3+'], cnt['3-']], { x0: 1, color: (c, i) => (i ? 'red' : 'accent'), fillAlpha: 0.6 });
-          [['3+', 1], ['3-', 2]].forEach(([k, x]) => { const p = e3 ? exp[k] / e3 : 0, E = exp[k], sd = Math.sqrt(Math.max(0, n3 * p * (1 - p))); bar.line(x - 0.3, E, x + 0.3, E, { color: 'green', width: 2.4 }); bar.line(x, E - sd, x, E + sd, { color: 'green', width: 1.4 }); bar.text(`${cnt[k]}`, x, cnt[k], { align: 'center', dy: -10, size: 12, color: 'ink', weight: 600 }); });
+          [['3+', 1], ['3-', 2]].forEach(([k, x]) => { const p = e3 ? exp[k] / e3 : 0, E = n3 * p, sd = Math.sqrt(Math.max(0, n3 * p * (1 - p))); bar.line(x - 0.3, E, x + 0.3, E, { color: 'green', width: 2.4 }); bar.line(x, E - sd, x, E + sd, { color: 'green', width: 1.4 }); bar.text(`${cnt[k]}`, x, cnt[k], { align: 'center', dy: -10, size: 12, color: 'ink', weight: 600 }); });
           st = { cnt, exp, th: th.value, n3, a3: +ax3.value };
         });
         v.legend([['accent', 'beam (width ∝ √atoms)'], ['red', 'block'], ['green', 'state after SG₂ / predicted counts'], ['orange', 'SG₂ axis $\\hat n$']]);
@@ -591,7 +597,7 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
           if (!st) return '';
           const { cnt, exp, th: t } = st, c2 = Math.cos(t * Math.PI / 360) ** 2;
           const frac = (a, b) => (a + b ? v.fix(a / (a + b), 3) : '—');
-          return `SG₁ ($z$): ${cnt['1+']} up, ${cnt['1-']} down of ${NA} (½ each). SG₂ at $\\theta = ${t}^\\circ$: ${cnt['2+']} + / ${cnt['2-']} − (fraction + = ${frac(cnt['2+'], cnt['2-'])}; for a $z+$ input $\\cos^2(\\theta/2) = ${v.fix(c2, 3)}$). SG₃ (${st.a3 ? 'x' : 'z'}): **${cnt['3+']} + / ${cnt['3-']} −**, predicted ${v.fix(exp['3+'], 0)} / ${v.fix(exp['3-'], 0)}.` + (!st.a3 && cnt['3-'] > 0 && cnt['1-'] > 0 && block['1-'] ? ' The $z-$ atoms that SG₁ removed are back: the middle measurement erased the $z$ information.' : !st.a3 && cnt['3-'] === 0 && cnt['3+'] > 0 ? ' Nothing comes out $z-$: with $\\theta = 0$ (or the middle magnet removed from play) a repeated $z$ measurement repeats its answer.' : '');
+          return `SG₁ ($z$): ${cnt['1+']} up, ${cnt['1-']} down of ${NA} (½ each). SG₂ at $\\theta = ${t}^\\circ$: ${cnt['2+']} + / ${cnt['2-']} − (fraction + = ${frac(cnt['2+'], cnt['2-'])}; for a $z+$ input $\\cos^2(\\theta/2) = ${v.fix(c2, 3)}$). SG₃ (${st.a3 ? 'x' : 'z'}): **${cnt['3+']} + / ${cnt['3-']} −**; for the ${st.n3} atoms that reached it the prediction is ${st.n3 ? v.fix(st.n3 * exp['3+'] / (exp['3+'] + exp['3-'] || 1), 0) : 0} / ${st.n3 ? v.fix(st.n3 * exp['3-'] / (exp['3+'] + exp['3-'] || 1), 0) : 0}.` + (!st.a3 && cnt['3-'] > 0 && cnt['1-'] > 0 && block['1-'] ? ' The $z-$ atoms that SG₁ removed are back: the middle measurement erased the $z$ information.' : !st.a3 && cnt['3-'] === 0 && cnt['3+'] > 0 ? ' Nothing comes out $z-$: with $\\theta = 0$ (or the middle magnet removed from play) a repeated $z$ measurement repeats its answer.' : '');
         });
       },
     },

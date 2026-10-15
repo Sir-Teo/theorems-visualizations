@@ -214,7 +214,7 @@ In particular $X_{(n)}$ has cdf $F^n$, $X_{(1)}$ has cdf $1-(1-F)^n$, and for un
         const exC = memo(), exact = () => { const P = pop(M, popSel.value), n = nS.value, k = Math.min(kS.value, n); return exC([P.key, n, k].join('|'), () => (P.key === 'uniform' ? { m: k / (n + 1), sd: Math.sqrt((k * (n - k + 1)) / ((n + 1) ** 2 * (n + 2))) } : momentsOf(M, dens(P, n, k), P.q(1e-9), P.q(1 - 1e-9)))); };
         v.render(() => {
           const S = R.sync(), P = pop(M, popSel.value), n = nS.value, k = Math.min(kS.value, n), [lo, hi] = P.view;
-          sT.setView([lo, hi], [-1, 1]);
+          viewPad(sT, [lo, hi], [-1, 1]); // same x-scale as the histogram below
           sT.line(lo, 0, hi, 0, { color: 'faint', width: 1.2 });
           let lastPx = -1e9;
           if (S.last) S.last.forEach((x, i) => {
@@ -460,7 +460,7 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
           const top = Math.max(B.max, 1e-9) * 1.25;
           viewPad(sR, [xl, xr], [0, top]);
           sR.hist(B, { density: true, color: 'accent', fillAlpha: 0.33 });
-          const degen = dn(c) > 4 * top;
+          const degen = Math.abs(a) * s < 1e-9 || dn(c) > 4 * top;
           sR.clip(() => { sR.fn(so, { color: 'purple', width: 2, dash: [6, 4], n: 600 }); if (!degen) sR.fn(dn, { color: 'green', width: 2.4, n: 600 }); });
           if (degen) sR.corner("g′(μ) ≈ 0: the delta-method normal degenerates", 'tl', { color: 'red', weight: 600 });
           sR.vline(c, { color: 'faint', width: 1, dash: [2, 3] });
@@ -574,7 +574,7 @@ Bernoulli, binomial, Poisson, normal, gamma and beta families are exponential fa
           const wq = 0.22 * (f.eta[1] - f.eta[0]);
           sL.fn((x) => A + A1 * (x - e) + 0.5 * A2 * (x - e) ** 2, { domain: [e - wq, e + wq], color: 'purple', width: 2, dash: [6, 4] });
           sL.fn((x) => A + A1 * (x - e), { color: 'orange', width: 2 });
-          tL(`$A(\\eta)$: slope $A'(\\eta) = ${v.fix(A1, 3)}$ (mean), curvature $A''(\\eta) = ${v.fix(A2, 3)}$ (variance)`);
+          tL(`$A'(\\eta) = ${v.fix(A1, 3)}$ (mean), $A''(\\eta) = ${v.fix(A2, 3)}$ (variance)`);
           const [lo, hi] = f.view(e), m = moments(S.vals); let yb;
           tR(`4,000 draws from $p_\\eta$: $${f.par(e)}$`);
           if (f.disc) {
@@ -621,7 +621,7 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
         const M = v.M;
         const famSel = v.select('family', popOpts(['normal', 'cauchy', 'expo', 'uniform']).map((o) => ({ ...o, label: { normal: 'normal', cauchy: 'Cauchy', expo: 'exponential', uniform: 'uniform' }[o.value] })), 'normal');
         const refSel = v.select('Q–Q reference', [{ value: 'same', label: 'same family' }, { value: 'normal', label: 'normal' }], 'same');
-        const nS = v.slider('sample size $n$', 10, 500, 100, { int: true, log: true });
+        const nS = v.slider('sample size $n$', 10, 500, 200, { int: true, log: true });
         let seed = 2; v.button('New sample', () => { seed++; });
         const sL = v.stage({ x: [-6, 8], y: [0, 0.85], height: 320, axes: 'box', title: 'standard member (dashed) and the member $\\tfrac1\\sigma f\\big(\\tfrac{x-\\mu}\\sigma\\big)$' });
         const sR = v.stage({ x: [-3, 3], y: [-3, 3], height: 320, axes: 'box' });

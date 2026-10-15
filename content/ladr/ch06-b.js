@@ -989,8 +989,9 @@ export default {
           const n = nS.value; for (let j = 0; j < n; j++) A[k - 1][j] = M.clamp(A[0][j] + A[1][j], -9, 9);
         });
         v.button('Randomize', () => { for (const row of A) for (let j = 0; j < 6; j++) row[j] = r.int(-3, 3); });
-        const TU = v.table(S, { rows: 2, cols: 5, region: [0.0, 0.3, 0.47, 0.9], maxCell: 44, size: 13 });
-        const TW = v.table(S, { rows: 3, cols: 5, region: [0.53, 0.3, 1.0, 0.9], maxCell: 44, size: 11 });
+        const TU = v.table(S, { rows: 2, cols: 5, region: [0.0, 0.4, 0.47, 0.93], maxCell: 44, size: 13 });
+        const TW = v.table(S, { rows: 3, cols: 5, region: [0.53, 0.4, 1.0, 0.93], maxCell: 44, size: 11 });
+        const TX = v.table(S, { rows: 2, cols: 3, region: [0.62, 0.0, 0.98, 0.3], maxCell: 30, size: 10.5 });
         let drag = null;
         S.onDrag((x, y, ph) => {
           if (ph === 'start') { const c = TU.hit(x, y); drag = c && c.i >= 0 && c.j >= 0 ? { ...c, Y: S.Y(y), a: A[c.i][c.j], moved: false } : null; return; }
@@ -1011,21 +1012,28 @@ export default {
             TU.set({ rows: k, cols: n });
             TU.draw({ value: (i, j) => rows[i][j], rowLabels: (i) => `$u_{${i + 1}}$`, colLabels: xs, fill: () => ['blue', 0.1], textColor: () => 'blue' });
             ttl(S, TU, '\\text{rows spanning } U', 'blue', false, 14);
-          } else S.tex('U=\\{0\\}\\ (\\text{no rows})', 0.235, 0.62, { color: 'blue', size: 16 });
+          } else S.tex('U=\\{0\\}\\ (\\text{no rows})', 0.235, 0.68, { color: 'blue', size: 16 });
           if (W.length) {
             TW.set({ rows: W.length, cols: n });
             TW.draw({ value: (i, j) => W[i][j], format: (x) => pn(x, 2), rowLabels: (i) => `$f_{${i + 1}}$`, colLabels: xs, fill: () => ['green', 0.1], textColor: () => 'green' });
             ttl(S, TW, '\\text{orthonormal basis of } U^\\perp', 'green', false, 14);
-          } else S.tex('U^\\perp=\\{0\\}', 0.765, 0.62, { color: 'green', size: 16 });
+          } else S.tex('U^\\perp=\\{0\\}', 0.765, 0.68, { color: 'green', size: 16 });
+          // the cross inner products u_i · f_j: all zero
+          if (k && W.length) {
+            const X = rows.map((u) => W.map((f) => f.reduce((t, x, j) => t + x * u[j], 0)));
+            TX.set({ rows: k, cols: W.length });
+            TX.draw({ value: (i, j) => X[i][j], format: (x) => (Math.abs(x) < 5e-13 ? '0' : pn(x, 2)), rowLabels: (i) => `$u_{${i + 1}}$`, colLabels: (j) => `$f_{${j + 1}}$`, fill: (i, j) => (Math.abs(X[i][j]) < 1e-9 ? ['green', 0.18] : ['red', 0.25]) });
+            ttl(S, TX, 'u_i\\cdot f_j', 'ink', false, 13);
+          }
           // dimension bar
-          const x0 = 0.18, x1 = 0.82, y0 = 0.07, y1 = 0.17, cw = (x1 - x0) / n;
+          const x0 = 0.04, x1 = 0.48, y0 = 0.07, y1 = 0.17, cw = (x1 - x0) / n;
           for (let j = 0; j < n; j++) {
             const col = j < rk ? 'blue' : 'green';
             S.rect(x0 + j * cw + 0.004, y0, x0 + (j + 1) * cw - 0.004, y1, { fill: col, fillAlpha: 0.35, color: col, width: 1.5 });
           }
-          if (rk) S.tex(`\\dim U = ${rk}`, x0 + (rk * cw) / 2, y1, { color: 'blue', dy: -13, size: 14 });
-          if (n - rk) S.tex(`\\dim U^\\perp = ${n - rk}`, x0 + rk * cw + ((n - rk) * cw) / 2, y1, { color: 'green', dy: -13, size: 14 });
-          S.tex(`n = ${n}`, x1, (y0 + y1) / 2, { color: 'ink', dx: 30, size: 14 });
+          if (rk) S.tex(`\\dim U = ${rk}`, x0 + (rk * cw) / 2, y1, { color: 'blue', dy: -13, size: 13.5 });
+          if (n - rk) S.tex(`\\dim U^\\perp = ${n - rk}`, x0 + rk * cw + ((n - rk) * cw) / 2, y1, { color: 'green', dy: -13, size: 13.5 });
+          S.tex(`n = ${n}`, x1, (y0 + y1) / 2, { color: 'ink', dx: 28, size: 14 });
           let cr = 0; rows.forEach((u) => W.forEach((f) => { cr = Math.max(cr, Math.abs(f.reduce((s, x, j) => s + x * u[j], 0))); }));
           let od = 0; W.forEach((f, i) => W.forEach((g, j) => { od = Math.max(od, Math.abs(f.reduce((s, x, t) => s + x * g[t], 0) - (i === j ? 1 : 0))); }));
           st = { n, k, rk, dW: W.length, cr, od };

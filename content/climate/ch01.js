@@ -239,7 +239,7 @@ $$F = \int_0^\infty \pi B_\lambda(T)\,d\lambda = \sigma T^4,\qquad \sigma = \fra
 In particular $dF/F = 4\,dT/T$: a 1 % rise in temperature increases the emission by about 4 %, and near Earth's emission temperature (255 K) the emission grows by $4\sigma T^3 \approx 3.8$ W m⁻² per kelvin.`,
       scope: String.raw`Holds for a blackbody. A grey body of emissivity $\varepsilon$ emits $\varepsilon\sigma T^4$; a body whose emissivity varies with wavelength emits the Planck-weighted average, which itself changes with $T$.`,
       idea: String.raw`Substituting $x = hc/\lambda k_BT$ in Planck's law (1.1) turns the integral into $T^4$ times the pure number $\int_0^\infty x^3/(e^x-1)\,dx = \pi^4/15$: the temperature comes out of the integral as a fourth power because the spectrum stretches as $1/T$ in wavelength while its height grows as $T^5$. Boltzmann obtained the same $T^4$ from thermodynamics alone, using the radiation pressure $u/3$ of an isotropic photon gas (thermo-9.6).`,
-      caption: String.raw`Left: the spectrum at temperature $T$ cut into strips whose areas are summed (the midpoint rule); the dashed curve is the same body warmed by the chosen percentage, and the orange area between them is the extra emission. Right: total emission against temperature on log–log axes, where $\sigma T^4$ is a straight line of slope 4; the gold dots are numerical integrals of the Planck curve. Raise the strip count and watch the sum converge to $\sigma T^4$.`,
+      caption: String.raw`Left: the spectrum at temperature $T$ cut into strips whose areas are summed (the midpoint rule); the dashed curve is the same body warmed by the chosen percentage, and the orange area between them is the extra emission. Right: total emission against temperature on log–log axes, where $\sigma T^4$ is a straight line of slope 4; the gold dots are numerical integrals of the Planck curve. Raise the strip count and watch the sum converge to $\sigma T^4$. Switch to the classical (Rayleigh–Jeans) spectrum, $\pi B_\lambda \approx 2\pi c k_BT/\lambda^4$: the curve blows up at short wavelengths and the strip sum grows without limit as the strips get finer — without Planck's cutoff there is no $T^4$ law at all.`,
       deps: ['climate-1.1', 'thermo-9.6'],
       refs: ['Archer ch. 2'],
       tags: ['radiation', 'blackbody'],
@@ -248,6 +248,7 @@ In particular $dF/F = 4\,dT/T$: a 1 % rise in temperature increases the emission
         const T = logSlider(v, 'temperature $T$ (K)', 150, 6000, 288);
         const dT = v.slider('warm it by (%)', 0, 10, 1, { step: 0.1 });
         const N = v.slider('strips', 4, 60, 12, { int: true });
+        const rj = v.toggle('classical (Rayleigh–Jeans) spectrum', false);
         const sA = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', height: 330, weight: 1.15, xlabel: 'λ (µm)', title: String.raw`spectrum $\pi B_\lambda$ (scaled to its peak at $T$)` });
         const sB = v.stage({ x: [100, 10000], y: [1, 2e9], xlog: true, ylog: true, axes: 'box', height: 330, xlabel: 'T (K)', title: String.raw`total emission $F$ (W/m²)` });
         const SAMPLES = [150, 200, 255, 288, 400, 600, 1000, 1500, 2500, 4000, 5772, 8000];
@@ -255,16 +256,19 @@ In particular $dF/F = 4\,dT/T$: a 1 % rise in temperature increases the emission
         let R = null;
         v.render(() => {
           const t = T.value, t2 = t * (1 + dT.value / 100), lp = 2897.77 / t, L = 8 * lp, pk = planck(P, lp, t), n = N.value;
-          sA.setView([0, L], [0, Math.max(1.12, 1.08 * planck(P, 2897.77 / t2, t2) / pk)]);
+          sA.setView([0, L], [0, Math.max(rj.value ? 1.6 : 1.12, 1.08 * planck(P, 2897.77 / t2, t2) / pk)]);
           const f = (l) => planck(P, l, t) / pk, f2 = (l) => planck(P, l, t2) / pk;
           if (dT.value > 0) sA.between(f2, f, 1e-4, L, { fill: 'orange', fillAlpha: 0.35, n: 300 });
+          const g = rj.value ? (l) => (P.c1 * t) / (P.c2 * l ** 4) / pk : f; // the classical limit x ≪ 1 of Planck's law
           let sum = 0; const h = L / n;
-          for (let i = 0; i < n; i++) { const m = (i + 0.5) * h, y = f(m); sum += y * h; sA.rect(i * h, 0, (i + 1) * h, y, { fill: 'accent', fillAlpha: 0.16, color: 'accent', width: 0.8, alpha: 0.55 }); }
+          for (let i = 0; i < n; i++) { const m = (i + 0.5) * h, y = g(m); sum += y * h; sA.rect(i * h, 0, (i + 1) * h, Math.min(y, 50), { fill: rj.value ? 'red' : 'accent', fillAlpha: 0.16, color: rj.value ? 'red' : 'accent', width: 0.8, alpha: 0.55 }); }
+          if (rj.value) sA.fn(g, { color: 'red', width: 2.4, domain: [L / 400, L] });
           sA.fn(f, { color: 'accent', width: 2.6, domain: [1e-4, L] });
           if (dT.value > 0) sA.fn(f2, { color: 'orange', width: 2, dash: [6, 4], domain: [1e-4, L] });
           sA.dot(lp, 1, { color: 'accent', r: 4 });
           const stripSum = sum * pk, tail = (1 - fracBelow(P, L, t)) * sig * t ** 4, full = planckTotal(P, t), full2 = planckTotal(P, t2);
-          sA.corner(`strip sum ${v.M.si(stripSum, 'W/m²', 4)} + tail beyond ${v.fix(L, L < 10 ? 2 : 0)} µm ${v.M.si(tail, 'W/m²', 2)}`, 'tr', { color: 'accent', weight: 600 });
+          if (rj.value) sA.corner(`classical strip sum ${v.M.si(stripSum, 'W/m²', 3)} — ${v.fix(stripSum / (sig * t ** 4), 1)} × σT⁴ and growing`, 'tr', { color: 'red', weight: 600 });
+          else sA.corner(`strip sum ${v.M.si(stripSum, 'W/m²', 4)} + tail beyond ${v.fix(L, L < 10 ? 2 : 0)} µm ${v.M.si(tail, 'W/m²', 2)}`, 'tr', { color: 'accent', weight: 600 });
           // right: F(T) on log–log axes
           sB.fn((x) => sig * x ** 4, { color: 'ink', width: 2 });
           for (const [x, F] of dots) sB.dot(x, F, { color: 'gold', r: 4.5 });
@@ -275,12 +279,13 @@ In particular $dF/F = 4\,dT/T$: a 1 % rise in temperature increases the emission
           sB.text('Earth 255 K', 255, sig * 255 ** 4, { color: 'muted', size: 11, align: 'left', dx: 9, dy: 9 });
           sB.text('Sun 5772 K', 5772, sig * 5772 ** 4, { color: 'muted', size: 11, align: 'right', dx: -10, dy: -10 });
           sB.dot(t, full, { color: 'accent', r: 6, label: v.M.si(full, 'W/m²', 3), labelPos: 'nw', labelColor: 'accent', math: false });
-          R = { t, t2, stripSum, tail, full, full2, sb: sig * t ** 4 };
+          R = { t, t2, stripSum, tail, full, full2, sb: sig * t ** 4, rj: rj.value, n };
         });
         v.legend([['accent', 'Planck spectrum at $T$, and midpoint strips'], ['orange', 'warmed spectrum (extra area shaded)', { dash: true }], ['ink', String.raw`$\sigma T^4$`], ['gold', 'numerical integrals', { dot: true }]]);
         v.readout(() => {
           if (!R) return '';
           const d = dT.value / 100;
+          if (R.rj) return String.raw`classical spectrum: ${R.n} strips give ${v.M.si(R.stripSum, 'W/m²', 3)}; the first strip alone grows as $n^3$ because $\int_{\lambda_0}^\infty 2\pi c k_BT\lambda^{-4}\,d\lambda = 2\pi c k_BT/3\lambda_0^3 	o \infty$ as $\lambda_0 	o 0$ — the ultraviolet catastrophe · Planck's law gives the finite ${v.M.si(R.full, 'W/m²', 5)} = $\sigma T^4$`;
           return String.raw`strips + tail: ${v.M.si(R.stripSum + R.tail, 'W/m²', 5)} · Simpson over all λ: ${v.M.si(R.full, 'W/m²', 6)} · $\sigma T^4$ = ${v.M.si(R.sb, 'W/m²', 6)} (ratio ${v.fix(R.full / R.sb, 6)}) · warming by ${v.fix(dT.value, 1)} %: emission ×${v.fix(R.full2 / R.full, 4)} by integration, $(1+\delta)^4$ = ${v.fix((1 + d) ** 4, 4)}, $1+4\delta$ = ${v.fix(1 + 4 * d, 4)} · slope $dF/dT = 4\sigma T^3$ = ${v.fix(4 * P.sigma * R.t ** 3, R.t < 1000 ? 2 : 0)} W m⁻² K⁻¹`;
         });
       },
@@ -738,7 +743,7 @@ where $\delta$ is the Sun's declination ($\sin\delta = \sin\varepsilon\,\sin\lam
           sB.colorbar([0, T.hi], 'magma', { pos: 'right', label: 'W/m²', length: 0.72 });
           // ── globe on that day (subsolar point at longitude 0)
           G.draw();
-          G.smallCircle([180, -dd], 89.9, { fill: [8, 12, 34], fillAlpha: 0.42, color: 'muted', alpha: 0.7, width: 1 }); // night side
+          G.smallCircle([180, -dd], 89.9, { fill: [8, 12, 34], fillAlpha: 0.55, color: 'muted', alpha: 0.7, width: 1 }); // night side
           const par = (f) => M.range(181).map((i) => [-180 + 2 * i, f]);
           const e = obl.value;
           if (e > 0.5 && e < 89.5) { for (const f of [e, -e]) G.path(par(f), { geodesic: false, color: 'orange', width: 1.3, dash: [5, 4] }); for (const f of [90 - e, e - 90]) G.path(par(f), { geodesic: false, color: 'teal', width: 1.3, dash: [5, 4] }); }

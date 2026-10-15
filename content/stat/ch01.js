@@ -345,7 +345,7 @@ The model is **identifiable** if $\theta\mapsto P_\theta$ is one-to-one, and **c
           const S = R.sync(), P = pop(M, popSel.value), n = nS.value, st = stSel.value, [lo, hi] = P.view;
           const pk = peakOf(P.pdf, lo, hi);
           tP(`population ${P.label} $${P.tex}$ and the last sample of size $n=${n}$`);
-          sP.setView([lo, hi], [-0.3 * pk, 1.3 * pk]);
+          viewPad(sP, [lo, hi], [-0.3 * pk, 1.3 * pk]); // same x-scale as the histogram below
           sP.fn(P.pdf, { color: 'muted', width: 1.8, fill: 'muted', fillAlpha: 0.14, n: 500 });
           sP.hline(-0.02 * pk, { color: 'faint', width: 1 });
           if (S.last) {
@@ -823,7 +823,7 @@ mean $k$ and variance $2k$. Independent $\chi^2$ variables add: $\chi^2_j+\chi^2
         const xmaxOf = (k) => k + 6 * Math.sqrt(2 * k) + 4;
         v.render(() => {
           const S = R.sync(), k = kS.value, xmax = xmaxOf(k), chi = M.dist.chi2(k);
-          sT.setView([0, xmax], [-1, 1]);
+          viewPad(sT, [0, xmax], [-1, 1]); // same x-scale as the histogram below
           sT.line(0, -0.55, xmax, -0.55, { color: 'faint', width: 1 });
           if (S.last) {
             let c = 0; const cols = ['blue', 'teal'];

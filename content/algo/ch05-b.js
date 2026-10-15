@@ -253,7 +253,7 @@ Deletion must leave a "deleted" marker, since emptying a slot would cut the prob
             R.arrow(0.25 * mx + 0.75 * x1 - (x1 - mx) * 0.02, 0.25 * my + 0.75 * y1, x1, y1, { color: 'orange', width: 2, head: 7 });
             R.text(String(t + 1), mx, my, { align: 'center', size: 10.5, weight: 700, color: 'orange' });
           }
-          if (n) { const k = keys[n - 1]; R.text(`key ${k}`, 0, 0.2, { align: 'center', size: 13, weight: 700, color: 'gold' }); R.text(pr.value === 'lin' ? `h₁ = ${k % m}, step 1` : `h₁ = ${k % m}, step h₂ = ${1 + (k % (m - 1))}`, 0, 0, { align: 'center', size: 11.5, color: 'muted' }); R.text(`${plural(lastSeq.length, 'probe')}`, 0, -0.2, { align: 'center', size: 12, weight: 700, color: 'orange' }); }
+          if (n) { const k = keys[n - 1]; R.corner(`newest key ${k}`, 'tl', { color: 'gold', weight: 700, size: 13 }); R.corner(pr.value === 'lin' ? `h₁ = ${k % m}, step 1` : `h₁ = ${k % m}, step h₂ = ${1 + (k % (m - 1))}`, 'bl', { color: 'muted', size: 12 }); R.corner(plural(lastSeq.length, 'probe'), 'tr', { color: 'orange', weight: 700, size: 13 }); }
           const ym = Math.max(10, ...costs) + 1; B.setView([-1.6, 28.7], [-0.07 * ym, ym]);
           costs.forEach((c, t) => B.rect(t + 0.62, 0, t + 1.38, c, { fill: t === n - 1 ? 'gold' : pr.value === 'lin' ? 'orange' : 'teal', fillAlpha: 0.55, color: t === n - 1 ? 'gold' : pr.value === 'lin' ? 'orange' : 'teal', width: 1 }));
           info = { n, costs, runs, lastSeq, keys };
@@ -307,14 +307,14 @@ Linear probing does worse, about $\frac12\bigl(1+\frac1{(1-\alpha)^2}\bigr)$ and
           for (const [c, q] of cnt) Hs.rect(c - 0.4, 0, c + 0.4, q / N, { fill: COL[sch.value], fillAlpha: 0.45, color: COL[sch.value], width: 1 });
           if (k === 'uns') { const g = []; for (let i = 1; i <= 30; i++) g.push([i, a ** (i - 1) * (1 - a)]); Hs.path(g, { color: 'green', width: 1.8 }); g.forEach(([x, y]) => Hs.dot(x, y, { r: 2.5, color: 'green' })); }
           if (tail) Hs.text(`${v.fix((100 * tail) / N, 1)}% need more than 30 →`, 30.4, Math.max(0.12, fmax * 1.12) * 0.92, { align: 'right', size: 11.5, weight: 700, color: COL[sch.value] });
-          const mean = xs.reduce((s1, c) => s1 + c, 0) / N;
-          info = { a: d.a, mean, k, s: sch.value, ge: xs.filter((c) => c >= 3).length / N };
+          const mean = xs.reduce((s1, c) => s1 + c, 0) / N, se = Math.sqrt(Math.max(0, xs.reduce((s1, c) => s1 + c * c, 0) / N - mean * mean) / N);
+          info = { a: d.a, mean, se, k, s: sch.value, ge: xs.filter((c) => c >= 3).length / N };
         });
         v.legend([['accent', 'uniform', { dot: true }], ['teal', 'double hashing', { dot: true }], ['orange', 'linear probing', { dot: true }], ['green', 'uniform-hashing bound / geometric law'], ['red', 'Knuth: linear probing', { dash: true }]]);
         v.readout(() => {
-          const { a, mean, k, s, ge } = info, U = OA_THEORY.uniform[k](a), L = OA_THEORY.linear[k](a);
+          const { a, mean, se, k, s, ge } = info, U = OA_THEORY.uniform[k](a), L = OA_THEORY.linear[k](a);
           const name = { uniform: 'uniform probing', double: 'double hashing', linear: 'linear probing' }[s];
-          return `$\\alpha = ${v.fix(a, 2)}$, ${name}: mean ${k === 'uns' ? 'unsuccessful' : 'successful'} probes **${v.fix(mean, 2)}** · bound ${k === 'uns' ? '$\\frac1{1-\\alpha}$' : '$\\frac1\\alpha\\ln\\frac1{1-\\alpha}$'} $= ${v.fix(U, 2)}$ ${s === 'linear' ? (mean > U ? '— exceeded: clustering breaks uniform hashing' : '') : mean <= U * 1.05 ? '✓' : ''} · linear-probing formula ${v.fix(L, 2)}` + (k === 'uns' ? ` · $\\Pr[X \\ge 3] = ${v.fix(ge, 3)}$ vs $\\alpha^2 = ${v.fix(a * a, 3)}$` : '');
+          return `$\\alpha = ${v.fix(a, 2)}$, ${name}: mean ${k === 'uns' ? 'unsuccessful' : 'successful'} probes **${v.fix(mean, 2)}** ± ${v.fix(se, 2)} · bound ${k === 'uns' ? '$\\frac1{1-\\alpha}$' : '$\\frac1\\alpha\\ln\\frac1{1-\\alpha}$'} $= ${v.fix(U, 2)}$ ${s === 'linear' ? (mean > U + 2 * se ? '— exceeded: clustering breaks uniform hashing' : '') : mean <= U + 2 * se ? (mean <= U ? '✓' : '✓ (within sampling error)') : '✗'} · linear-probing formula ${v.fix(L, 2)}` + (k === 'uns' ? ` · $\\Pr[X \\ge 3] = ${v.fix(ge, 3)}$ vs $\\alpha^2 = ${v.fix(a * a, 3)}$` : '');
         });
       },
     },
@@ -451,8 +451,8 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const ksel = v.select('keys', [{ value: 'mod', label: 'adversarial for $k \\bmod 16$' }, { value: 'rand', label: 'random' }], 'mod', { onChange: (x) => { mode = x; keys = x === 'mod' ? keysMod.slice() : Array.from({ length: n }, () => Math.floor(r() * p)); } });
         v.button('Draw a new h', () => { a = 1 + Math.floor(r() * (p - 1)); b = Math.floor(r() * p); if (mode === 'attack') mode = 'stale'; });
         v.button('Attack this h', () => { const h = uh(a, b, p, m), t = h(keys[0]), out = [keys[0]]; for (let x = 1; out.length < n && x < p; x++) if (h(x) === t && x !== keys[0]) out.push(x); keys = out; mode = 'attack'; });
-        const A = v.stage({ x: [-2, 15.7], y: [-2, 26], axes: 'box', height: 230, minWidth: 260, title: 'fixed $h(k) = k \\bmod 16$', xlabel: 'bucket' });
-        const B = v.stage({ x: [-2, 15.7], y: [-2, 26], axes: 'box', height: 230, minWidth: 260, title: 'random $h_{a,b}$ from the universal family', xlabel: 'bucket' });
+        const A = v.stage({ x: [-2, 15.7], y: [-2, 26], axes: 'box', height: 230, minWidth: 260, title: 'buckets of the fixed $h(k) = k \\bmod 16$' });
+        const B = v.stage({ x: [-2, 15.7], y: [-2, 26], axes: 'box', height: 230, minWidth: 260, title: 'buckets of a random $h_{a,b}$ from the universal family' });
         const C = v.stage({ x: [-0.7, 23.7], y: [0, 0.4], axes: 'box', height: 200, full: true, title: 'other keys in the first key’s bucket, over 2000 random draws of $h$', xlabel: 'keys sharing the bucket' });
         let info = null;
         v.render(() => {
@@ -460,7 +460,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
           for (const k of keys) { fixed[k % m]++; rnd[h(k)]++; }
           const bar = (S, arr, col) => arr.forEach((c, j) => { if (c) { S.rect(j - 0.38, 0, j + 0.38, c, { fill: col, fillAlpha: 0.55, color: col, width: 1 }); S.text(String(c), j, c, { align: 'center', baseline: 'bottom', dy: -2, size: 10.5, weight: 700, color: col }); } });
           for (const S of [A, B]) S.hline(n / m, { color: 'green', width: 1.5, dash: [6, 4] });
-          bar(A, fixed, 'red'); bar(B, rnd, mode === 'attack' ? 'red' : 'accent');
+          bar(A, fixed, mode === 'rand' ? 'accent' : 'red'); bar(B, rnd, mode === 'attack' ? 'red' : 'accent');
           B.corner(`a = ${a}, b = ${b}`, 'tr', { color: 'muted' });
           // many draws
           const rr = v.rng(4242 + keys[1]), cnt = new Array(n).fill(0); let sum = 0; const D = 2000;

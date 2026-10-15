@@ -250,7 +250,7 @@ export default {
           [0, 3, 5, 6].forEach((i) => sc.line(pts[i], sh[i], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.8 }));
           faces.forEach((f) => sc.poly(f.map((i) => pts[i]), { fill: 'gold', color: 'gold', fillAlpha: 0.13, alpha: 0.85, width: 1.3 }));
           const u = P(c), w = sub3(c, u), perpOK = Math.abs(dot3(w, a)) < 1e-9 && Math.abs(dot3(w, b)) < 1e-9;
-          sc.arrow(ZERO, u, { color: 'blue', width: 3, head: 10 }); sc.tex(obl ? 'Pv' : 'P_Uv', u, { color: 'blue', dx: -22, dy: 16, size: 14 });
+          sc.arrow(ZERO, u, { color: 'blue', width: 3, head: 10 }); sc.tex(obl ? 'Pv' : 'P_Uv', u, { color: 'blue', dx: 4, dy: 24, size: 14 });
           if (obl) { const t = sub3(c, mul3(n, dot3(c, n))); sc.dot(t, { r: 5, color: 'green' }); sc.line(c, t, { color: 'green', width: 1.2, alpha: 0.6, dash: [2, 3] }); sc.tex('P_Uv', t, { color: 'green', dx: 18, dy: 12, size: 12.5 }); }
           sc.line(c, u, { color: perpOK ? 'green' : 'red', width: 2.4, dash: perpOK ? null : [5, 3] });
           if (!obl && len3(w) > 0.08 && len3(u) > 0.08) corner3(sc, u, unit3(mul3(u, -1)), unit3(w), 0.12, { color: 'ink' });
