@@ -448,5 +448,188 @@ With the relativistic relation $\hbar\omega=\sqrt{m^2c^4+\hbar^2k^2c^2}$ (de Bro
         v.readout(() => st && `$v = p/m = ${v.fix(st.rel ? st.vg : st.k0, 3)}$${st.rel ? ` (momentum $${v.fix(st.k0, 2)}\\,mc$)` : ''} · measured crest speed **${v.fix(st.vcrest, 3)}** vs $v_p=\\omega/k = ${v.fix(st.vp, 3)}$${st.rel ? ` $= c^2/v$ (faster than light)` : ` $= v/2$ (the small excess is the Gouy phase of the spreading packet, $\\tfrac{d}{dt}\\tfrac{\\arctan(t/\\tau)}{2k_0}\\le ${v.fix(1 / (2 * st.k0 * st.tau), 3)}$)`} · measured envelope speed **${v.fix(st.venv, 3)}** vs $v_g = d\\omega/dk = ${v.fix(st.vg, 3)}$ = the classical velocity.`);
       },
     },
+    // ------------------------------------------------------------------ 2.14
+    {
+      num: '2.14',
+      kind: 'Paper',
+      name: 'Quantisierung als Eigenwertproblem',
+      paper: { authors: 'E. Schrödinger', year: 1926, title: 'Quantisierung als Eigenwertproblem (Erste Mitteilung)', venue: 'Annalen der Physik 384 (4): 361–376', doi: '10.1002/andp.19263840404' },
+      introduces: ['qm-2.4'],
+      credit: 'Erwin Schrödinger, 1926',
+      statement: String.raw`Schrödinger showed that the energy levels of hydrogen follow from a wave equation with **no quantum rule added**. Starting from the Hamilton–Jacobi equation of the Kepler problem, he set $S=K\log\psi$ and, instead of solving for $S$, required a quadratic integral of $\psi$ to be stationary; the resulting Euler–Lagrange equation is the (time-independent) wave equation
+$$\nabla^2\psi+\frac{2m}{K^2}\Big(E+\frac{e^2}{r}\Big)\psi=0 .$$
+Demanding that $\psi$ be real, single-valued, **finite** and twice differentiable throughout space, he found solutions for **every** $E>0$ (a continuous spectrum: the unbound electron) but, for $E<0$, only when $me^2/K\sqrt{-2mE}$ is a whole number $n$:
+$$E_n=-\frac{2\pi^2me^4}{h^2n^2}\qquad\text{if }K=\frac{h}{2\pi},$$
+exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way the number of nodes of a vibrating string does, as eigenvalues of a boundary-value problem. Today's form uses $\hbar$ and the reduced mass; this first communication treated only the stationary equation for hydrogen (the time-dependent equation 2.4 came in the fourth, June 1926).`,
+      idea: String.raw`In 1925 quantum numbers were rules imposed on classical orbits (Bohr–Sommerfeld) and Heisenberg had just replaced orbits by matrices. Schrödinger took de Broglie's matter waves (qm-1.17, 1.9) seriously and borrowed the optical–mechanical analogy of the Hamilton–Jacobi equation (mech-12.16): if classical mechanics is the ray limit, there should be a wave equation behind it. Separating his equation in spherical coordinates, the radial part has two kinds of solution at large $r$, one decaying like $e^{-r/na_0}$ and one growing like $e^{+r/na_0}$; for a generic energy the solution regular at the nucleus picks up the growing one, and only at the eigenvalues does it decay. The paper launched wave mechanics: within months Schrödinger treated the oscillator and rotator, built perturbation theory, wrote the time-dependent equation and showed its equivalence with matrix mechanics; Born then reinterpreted $\psi$ (2.15).`,
+      caption: String.raw`**Recreation of the paper's central calculation**, by shooting. Left: the radial function $u=rR$ integrated outward from the nucleus at the energy $E$ set by the slider (Rydberg units, reduced mass); the dashed line is the classical turning point. For almost every $E$ it **runs off to $\pm\infty$** — not a finite $\psi$. **Drag the energy** slowly: the runaway flips sign at isolated energies, where the solution decays instead. Right: the sign of the runaway against energy; its zero crossings are the eigenvalues, landing on Bohr's $-13.6\ \text{eV}/n^2$ ticks for every $l$ (choose $s$, $p$, $d$). Switch to **$E>0$**: every energy gives a finite, oscillating solution. Bottom: Balmer lines from the computed eigenvalues, from Bohr's formula and as measured (NIST).`,
+      deps: ['qm-1.9', 'qm-1.5', 'mech-12.16', 'qm-1.17'],
+      see: ['qm-8.6', 'qm-1.4', 'qm-1.16'],
+      refs: [],
+      tags: ['schrödinger equation', 'hydrogen', 'history'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation#Historical_background_and_development' },
+      viz(v) {
+        const M = v.M, C = M.CONST, MU = 1 / (1 + C.me / C.mp), RYE = (C.h * C.c * C.Ry) / C.eV, RYH = RYE * MU; // Rydberg energy (eV), reduced-mass corrected
+        const MEAS = [656.461, 486.272, 434.169, 410.294], NAMES = ['Hα', 'Hβ', 'Hγ', 'Hδ'], NSTEP = 3000;
+        const rng = v.select('energy range', [{ value: 'bound', label: 'bound: $E<0$' }, { value: 'free', label: 'free: $E>0$' }], 'bound', { onChange: () => sync() });
+        const lsel = v.select('angular momentum', [{ value: 0, label: '$s$ ($l=0$)' }, { value: 1, label: '$p$ ($l=1$)' }, { value: 2, label: '$d$ ($l=2$)' }], 0);
+        const nu = v.slider('energy $E=-13.6\\text{ eV}/\\nu^2$', 0.7, 6.2, 1.86, { step: 0.0005, fmt: (q) => `${v.fix(-RYH / (q * q), 4)} eV` });
+        const Ef = v.slider('energy $E$', 0.05, 10, 1.5, { log: true, fmt: (q) => `+${v.fix(q, 2)} eV` });
+        const snap = v.button('Snap to the nearest eigenvalue', () => { const ev = eig(+lsel.value); let best = ev[0]; for (const e of ev) if (Math.abs(e - nu.value) < Math.abs(best - nu.value)) best = e; nu.set(best); });
+        const sync = () => { const b = rng.value === 'bound'; nu.el.hidden = !b; snap.hidden = !b; Ef.el.hidden = b; };
+        const s1 = v.stage({ x: [0, 20], y: [-1.75, 1.75], height: 280, axes: 'box', weight: 1.15, xlabel: 'r / a₀', yticks: [], title: 'radial solution $u(r)=rR(r)$, integrated outward' });
+        const s2 = v.stage({ x: [0.7, 8], y: [-1.25, 1.25], height: 280, axes: 'box', weight: 1, xlabel: 'E (eV)', yticks: [[-1, '−∞'], [0, '0'], [1, '+∞']], xticks: [[1, '−13.6'], [2, '−3.40'], [3, '−1.51'], [4, '−0.85'], [6.6, '0'], [8, '+10']], title: 'where $u$ runs off to, against energy' });
+        const s3 = v.stage({ x: [395, 670], y: [0, 3], height: 120, axes: false, full: true, title: 'Balmer lines (nm): computed from the eigenvalues, Bohr’s formula, measured' });
+        const Rof = (q) => Math.min(110, 4.4 * q * q + 7);
+        const shoot = (eps, l, R) => numerov(eps, l, R, NSTEP);
+        const tail = (eps, l, R) => { // u(R) relative to the largest |u| inside the classically allowed region
+          const { u, h } = shoot(eps, l, R); const rt = eps < 0 ? (1 + Math.sqrt(Math.max(0, 1 + eps * l * (l + 1)))) / -eps : R;
+          let mx = 1e-300; const lim = Math.min(u.length - 1, Math.floor(Math.min(R, 1.15 * rt) / h)); for (let i = 1; i <= lim; i++) mx = Math.max(mx, Math.abs(u[i]));
+          return { u, h, rt, mx, end: u[u.length - 1] / mx };
+        };
+        const cacheE = {}, cacheL = {};
+        function eig(l) { // eigenvalues ν_n by bisection on the sign of u(R)
+          if (cacheE[l]) return cacheE[l];
+          const out = [], f = (q) => Math.sign(shoot(-1 / (q * q), l, Rof(q)).u[NSTEP]);
+          let q0 = l + 0.55, f0 = f(q0);
+          for (let k = 1; k <= 520 && out.length < 6; k++) {
+            const q1 = l + 0.55 + k * 0.011, f1 = f(q1);
+            if (f1 !== f0) { let a = q0, b = q1, fa = f0; for (let it = 0; it < 50; it++) { const m = (a + b) / 2, fm = f(m); if (fm === fa) { a = m; } else b = m; } out.push((a + b) / 2); }
+            q0 = q1; f0 = f1;
+          }
+          return (cacheE[l] = out);
+        }
+        const land = (l) => { if (cacheL[l]) return cacheL[l]; const pts = []; for (let k = 0; k <= 330; k++) { const q = 0.7 + 5.5 * k / 330, T = tail(-1 / (q * q), l, Rof(q)); pts.push([q, (2 / Math.PI) * Math.atan(T.end / 2)]); } return (cacheL[l] = pts); };
+        const DARK = [14, 15, 22];
+        let st = null;
+        v.render(() => {
+          const l = +lsel.value, bound = rng.value === 'bound', q = nu.value;
+          const eps = bound ? -1 / (q * q) : Ef.value / RYH, R = bound ? Rof(q) : 40, T = tail(eps, l, R), ev = eig(l);
+          // ---- radial solution
+          s1.setView([0, R], [-1.75, 1.75]);
+          s1.hline(0, { color: 'faint' });
+          if (bound && T.rt < R) { s1.vband(T.rt, R, { color: 'muted', alpha: 0.07 }); s1.vline(T.rt, { color: 'muted', dash: [4, 4] }); s1.text('classically forbidden →', T.rt, 1.62, { color: 'muted', size: 11, dx: 6, baseline: 'top' }); }
+          const finite = !bound || Math.abs(T.end) < 0.02, pts = [];
+          for (let i = 0; i < T.u.length; i += 3) { const y = T.u[i] / T.mx; pts.push([i * T.h, Math.max(-1.7, Math.min(1.7, y))]); }
+          s1.path(pts, { color: finite ? 'green' : 'red', width: 2.6 });
+          if (!finite) { const up = T.end > 0; s1.arrow(R * 0.955, up ? 1.25 : -1.25, R * 0.955, up ? 1.68 : -1.68, { color: 'red', width: 2.4, head: 9 }); s1.text(up ? '→ +∞' : '→ −∞', R * 0.94, up ? 1.45 : -1.45, { color: 'red', size: 12.5, align: 'right', weight: 700 }); }
+          // exact eigenfunction nearest in energy, for comparison
+          s1.corner(bound ? (finite ? 'finite everywhere: an eigenvalue' : 'not finite: no state at this energy') : 'E > 0: finite and oscillating — allowed', 'tr', { color: finite ? 'green' : 'red', weight: 600 });
+          // ---- landscape
+          const Lp = land(l);
+          s2.hline(0, { color: 'faint' });
+          s2.rect(6.6, -1.25, 8, 1.25, { fill: 'green', fillAlpha: 0.06, hatch: 'green', hatchAlpha: 0.3, stroke: false });
+          s2.text('E > 0: all allowed', 7.3, 1.08, { color: 'green', size: 11, align: 'center' });
+          s2.text('…', 6.4, 0, { color: 'muted', size: 14, align: 'center' });
+          for (let n = 1; n <= 6; n++) if (n > l) { s2.vline(n, { color: 'muted', dash: [2, 4], width: 1 }); s2.text(`n=${n}`, n, -1.12, { color: 'muted', size: 10.5, align: 'center' }); }
+          s2.path(Lp, { color: 'accent', width: 2.2 });
+          s2.dots(ev.map((e) => [e, 0]), { r: 5, color: 'green' });
+          const X = bound ? q : 6.6 + 1.4 * (Ef.value / 10);
+          s2.vline(X, { color: 'gold', width: 2 });
+          s2.dot(X, bound ? (2 / Math.PI) * Math.atan(T.end / 2) : 0, { r: 6, color: 'gold' });
+          // ---- spectrum (s-state eigenvalues)
+          const e0 = eig(0), lamC = [], lamB = [];
+          for (let k = 0; k < 4; k++) { const n = k + 3; lamC.push(1e9 / (C.Ry * MU * (1 / e0[1] ** 2 - 1 / e0[n - 1] ** 2))); lamB.push(1e9 / (C.Ry * MU * (1 / 4 - 1 / (n * n)))); }
+          s3.rect(395, 0, 670, 3, { fill: DARK, fillAlpha: 1, stroke: false });
+          const rows = [[lamC, 2, 'Schrödinger (computed)'], [lamB, 1, 'Bohr’s formula'], [MEAS, 0, 'measured']];
+          for (const [L, y, lab] of rows) {
+            for (let k = 0; k < 4; k++) s3.line(L[k], y + 0.12, L[k], y + 0.88, { color: M.wavelengthRGB(L[k]), width: 3.2 });
+            s3.text(lab, 398, y + 0.5, { color: [220, 220, 230], size: 11, baseline: 'middle' });
+          }
+          for (let k = 0; k < 4; k++) s3.text(NAMES[k], MEAS[k], 2.9, { color: [220, 220, 230], size: 10.5, align: 'center', baseline: 'top', dx: k === 3 ? 0 : 0 });
+          st = { l, bound, E: bound ? -RYH / (q * q) : Ef.value, end: T.end, finite, ev, lamC, lamB, R };
+        });
+        sync();
+        v.legend([['red', 'u(r) runs off: not a state'], ['green', 'u(r) finite: eigenvalue / continuum'], ['accent', 'runaway sign against E'], ['green', 'computed eigenvalues', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const E = st.ev.map((q) => -RYH / (q * q)), Bohr = st.ev.map((q, i) => -RYH / (i + 1 + st.l) ** 2);
+          let dmax = 0; E.forEach((e, i) => { dmax = Math.max(dmax, Math.abs(e - Bohr[i])); });
+          return `$E = ${v.fix(st.E, 4)}$ eV: ` + (st.bound ? (st.finite ? `the solution stays finite — eigenvalue` : `$u$ at $r = ${v.fix(st.R, 0)}\\,a_0$ is ${st.end > 0 ? '+' : '−'}$${v.sci(Math.abs(st.end), 1)}$ × its inner peak and still growing`) : 'oscillating and finite (continuous spectrum)') +
+            ` · computed eigenvalues for $l = ${st.l}$: ${E.slice(0, 4).map((e) => v.fix(e, 4)).join(', ')} eV; Bohr's $-13.598\\,\\text{eV}/n^2$ (reduced mass): ${Bohr.slice(0, 4).map((e) => v.fix(e, 4)).join(', ')} eV (largest difference $${v.sci(dmax || 1e-12, 1)}$ eV, numerical) · Hα: computed ${v.fix(st.lamC[0], 3)} nm, Bohr ${v.fix(st.lamB[0], 3)} nm, measured 656.461 nm (vacuum) — the last 0.01 nm is fine structure and the Lamb shift, beyond this equation.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 2.15
+    {
+      num: '2.15',
+      kind: 'Paper',
+      name: 'Zur Quantenmechanik der Stoßvorgänge',
+      paper: { authors: 'Max Born', year: 1926, title: 'Zur Quantenmechanik der Stoßvorgänge', venue: 'Zeitschrift für Physik 37: 863–867', doi: '10.1007/BF01397477' },
+      introduces: ['qm-2.2', 'qm-13.22'],
+      credit: 'Max Born, 1926',
+      statement: String.raw`Born solved Schrödinger's equation for a collision: an electron arriving as a plane wave $\sin(2\pi z/\lambda)$ on an atom in state $n$, with interaction $V$. To first order in $V$ (what is now the **Born approximation**, 13.22) the outgoing wave far away is a superposition of waves leaving in each direction $(\alpha,\beta,\gamma)$ with amplitudes $\Phi_{nm}(\alpha,\beta,\gamma)$, the atom ending in state $m$ and the electron's energy changing by $h\nu^0_{nm}$. Reading this corpuscularly, $\Phi_{nm}$ "determines the probability" that the electron is thrown into that direction with that energy change; a **note added in proof** corrects this: *a more precise consideration shows that the probability is proportional to the square of $\Phi_{nm}$*. Quantum mechanics thus answers "how probable is a given outcome of the collision", not "what is the state after it", and Born wrote that he himself inclined to give up determinism in the atomic world. The note contains no data; it is a preliminary communication of a longer paper (Z. Phys. 38, 1926).`,
+      idea: String.raw`Schrödinger read $\psi$ as a real charge cloud, but a scattered wave spreads in all directions while every electron is detected whole, in one counter. Born's resolution: the wave guides probabilities, the particle is found in one place, and the counting rate in a direction is fixed by the outgoing amplitude there. Why the square: it is $|\psi|^2$ that the Schrödinger equation conserves and that flows with the current $\mathbf j$ (2.5, 2.6); the outgoing current through a sphere of radius $r$ is $\frac{\hbar k}{m}|f(\theta)|^2/r^2$ per unit area, so the number of electrons per unit solid angle, $\frac{\hbar k}{m}|f|^2$, is independent of $r$ — the differential cross-section $|f|^2$ (13.16). The paper gave quantum mechanics its probabilistic interpretation (2.2) and its method for collisions (13.22); Born received the 1954 Nobel Prize for it.`,
+      caption: String.raw`**Recreation:** elastic scattering of an electron by a hydrogen atom, with the amplitude given by Born's first-order method, $f=2a_0(8+Q^2a_0^2)/(4+Q^2a_0^2)^2$, $Q=2k\sin\frac\theta2$ (the 1926 note itself has no numbers). Left: the outgoing wave $f(\theta)e^{ikr}/r$ (colour = phase, intensity = amplitude), moving outward; detectors on the ring click one at a time at random (gold). Right: clicks per unit solid angle against angle, building up $|f|^2$ (green). Raise the **energy** and the pattern narrows forward. Switch to the main text's rule **probability ∝ $|\Phi|$**: the clicks follow the red curve instead — and the readout shows why this cannot be right: the flux through the detector sphere would grow with its radius.`,
+      deps: ['qm-2.4', 'qm-13.16', 'qm-2.14'],
+      see: ['mech-8.17', 'qm-2.6', 'qm-1.11'],
+      refs: [],
+      tags: ['born rule', 'scattering', 'history'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Born_rule#History' },
+      viz(v) {
+        const M = v.M, NB = 36;
+        const Es = v.slider('electron energy', 10, 1000, 100, { log: true, fmt: (q) => `${q < 100 ? v.fix(q, 1) : Math.round(q)} eV` });
+        const rule = v.select('probability ∝', [{ value: 'sq', label: '$|\\Phi|^2$ (note added in proof)' }, { value: 'abs', label: '$|\\Phi|$ (main text)' }], 'sq');
+        const Rd = v.slider('detector radius $R$', 3, 9, 7, { step: 0.1, fmt: (q) => `${v.fix(q, 1)} a₀` });
+        let extra = 0;
+        v.button('+10,000 electrons', () => { extra += 10000; });
+        v.button('Reset counts', () => { extra = 0; v.restart(); });
+        const s1 = v.stage({ x: [-10, 10], y: [-10, 10], equal: true, height: 330, axes: false, weight: 1, title: 'outgoing wave $f(\\theta)\\,e^{ikr}/r$ and detector clicks' });
+        const s2 = v.stage({ x: [0, 180], y: [1e-5, 3], ylog: true, height: 330, axes: 'box', weight: 1.15, xlabel: 'scattering angle θ (degrees)', ylabel: 'per solid angle (a₀²)', xticks: [0, 30, 60, 90, 120, 150, 180], title: 'clicks per unit solid angle against $|f(\\theta)|^2$' });
+        const ka = () => Math.sqrt(Es.value / 13.6057);
+        const fB = (th, k) => { const Q2 = 4 * k * k * Math.sin(th / 2) ** 2; return 2 * (8 + Q2) / (4 + Q2) ** 2; };
+        // uniform random numbers shared by every click (extended as needed): click i uses U[2i], U[2i+1]
+        const U = [], r0 = v.rng(1926); const u = (i) => { while (U.length <= i) U.push(r0()); return U[i]; };
+        let skey = null, S = null;
+        const setup = () => {
+          const k = ka(), sq = rule.value === 'sq', NT = 1200, th = [], dens = [];
+          for (let i = 0; i <= NT; i++) { const a = (Math.PI * i) / NT, f = fB(a, k); th.push(a); dens.push((sq ? f * f : f) * Math.sin(a)); }
+          const draw = sampler(th, dens);
+          // cross-sections: σ = ∫|f|² dΩ, and the |f| rule normalized to the same total
+          const sig = M.integrate((a) => 2 * Math.PI * fB(a, k) ** 2 * Math.sin(a), 0, Math.PI, 2000), sAbs = M.integrate((a) => 2 * Math.PI * fB(a, k) * Math.sin(a), 0, Math.PI, 2000);
+          const sigF = Math.PI * (7 * k ** 4 + 18 * k * k + 12) / (3 * (1 + k * k) ** 3);
+          const back = 1 - draw.cdf(Math.PI / 2);
+          return { k, sq, draw, sig, sAbs, sigF, back };
+        };
+        let st = null;
+        v.animate((t) => {
+          const key = `${Es.value}|${rule.value}`; if (key !== skey) { skey = key; S = setup(); }
+          const { k, draw } = S, col = phaseLUT(v), lut = col.lut.map((c) => c.match(/\d+/g).map(Number));
+          const nAnim = Math.floor(3 * t + 2.2 * t * t), N = nAnim + extra;
+          // ---- the wave
+          const w = 2.2 * t, R = Rd.value;
+          s1.raster((X, Y) => {
+            const r = Math.hypot(X, Y); if (r > 10) return null;
+            if (r < 0.9) return null;
+            const th = Math.atan2(Math.abs(Y), X), a = fB(th, k) / r, ph = k * r - w, L = lut.length;
+            const c = lut[((Math.round((ph / TAU) * L) % L) + L) % L], al = Math.min(1, Math.pow(a / 0.5, 0.6));
+            return [c[0], c[1], c[2], Math.round(235 * al)];
+          }, { res: 3, key: `${key}|${Math.round(w * 30)}` });
+          s1.circle(0, 0, 0.75, { fill: 'red', fillAlpha: 0.35, color: 'red', width: 1 });
+          s1.text('H', 0, 0, { color: 'ink', size: 11, align: 'center', baseline: 'middle', weight: 700 });
+          s1.arrow(-9.6, 0, -2.2, 0, { color: 'ink', width: 1.8, head: 9 });
+          s1.text('incident e⁻', -9.4, 0.7, { color: 'ink', size: 11 });
+          s1.circle(0, 0, R, { color: 'muted', width: 1.2, dash: [3, 4] });
+          const showN = Math.min(N, 400);
+          for (let i = N - showN; i < N; i++) {
+            const th = draw(u(2 * i)), sgn = u(2 * i + 1) < 0.5 ? 1 : -1, age = i < nAnim ? (nAnim - i) / (3 + 4.4 * t) : 5;
+            s1.dot(R * Math.cos(th), sgn * R * Math.sin(th), { r: age < 0.25 ? 5 : 2.4, color: 'gold', alpha: age < 0.25 ? 1 : 0.55 });
+          }
+          // ---- histogram per solid angle
+          const counts = new Array(NB).fill(0);
+          for (let i = 0; i < N; i++) { const b = Math.min(NB - 1, Math.floor((draw(u(2 * i)) / Math.PI) * NB)); counts[b]++; }
+          const edges = Array.from({ length: NB + 1 }, (_, i) => (180 * i) / NB), sigR = S.sq ? S.sig : S.sAbs;
+          const per = counts.map((c, i) => { const dO = 2 * Math.PI * (Math.cos(edges[i] * D2R) - Math.cos(edges[i + 1] * D2R)); return c ? (sigR * c) / Math.max(N, 1) / dO * (S.sq ? 1 : S.sig / S.sAbs) : 0; });
+          if (N) s2.hist({ edges, counts: per }, { color: 'gold', fillAlpha: 0.35, base: 1e-6 });
+          s2.fn((d) => fB(d * D2R, k) ** 2, { color: 'green', width: 2.6, n: 300 });
+          s2.fn((d) => (fB(d * D2R, k) * S.sig) / S.sAbs, { color: 'red', width: 1.8, dash: [6, 4], n: 300 });
+          s2.corner(`${big(N)} electrons detected`, 'tr', { color: 'muted' });
+          let back = 0; for (let i = 0; i < N; i++) if (draw(u(2 * i)) > Math.PI / 2) back++;
+          st = { N, back: N ? back / N : 0, pBack: S.back, k, sig: S.sig, sigF: S.sigF, R, sq: S.sq, sAbs: S.sAbs };
+        }, { period: 12, still: 9 });
+        v.legend([['green', 'Born rule: |f(θ)|²'], ['red', 'if probability ∝ |f| (same total)', { dash: true }], ['gold', 'clicks (histogram)', { area: true }]]);
+        v.readout(() => st && `$ka_0 = ${v.fix(st.k, 3)}$ · ${big(st.N)} electrons, fraction scattered beyond 90°: **${v.fix(100 * st.back, 2)} %** (predicted by the chosen rule: ${v.fix(100 * st.pBack, 2)} %) · total cross-section $\\int|f|^2d\\Omega = ${v.fix(st.sig / Math.PI, 4)}\\,\\pi a_0^2$ (closed form ${v.fix(st.sigF / Math.PI, 4)}\\,$\\pi a_0^2$) · outgoing flux through the detector sphere, per unit incident flux: with $|\\psi|^2$, $\\oint|f|^2/R^2\\,R^2d\\Omega = ${v.fix(st.sig, 3)}\\,a_0^2$ at any $R$; if probability went with $|\\psi|$ it would be $R\\oint|f|\\,d\\Omega = ${v.fix(st.R * st.sAbs, 2)}\\,a_0^2$ at $R = ${v.fix(st.R, 1)}\\,a_0$, growing with the radius — electrons from nowhere.`);
+      },
+    },
   ],
 };

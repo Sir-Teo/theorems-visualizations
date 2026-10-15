@@ -98,8 +98,8 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
         const abar = (NA - 1) / 2, pbar = (NP - 1) / 2, cbar = pbar - abar + (NA - 1);
         const slope = (arr) => { const n = arr.length, xm = (n - 1) / 2, ym = sum(arr) / n; let a = 0, b = 0; arr.forEach((y, i) => { a += (i - xm) * (y - ym); b += (i - xm) ** 2; }); return a / b; };
         const sP = slope(PI), sC = slope(GAMMA);
-        const Hs = v.stage({ x: [1949, 2049], y: [37, 93], equal: true, height: 410, axes: 'box', weight: 1.2, minWidth: 300, ylabel: 'age', xticks: [1960, 1980, 2000, 2020], yticks: [40, 50, 60, 70, 80, 90], title: 'the table of death rates' });
-        const E = v.stage({ x: [0, 1], y: [0, 3], height: 410, axes: false, weight: 1, minWidth: 260, title: 'the three effects (log rate)' });
+        const Hs = v.stage({ x: [1951, 2041], y: [37.5, 91.5], equal: true, height: 450, axes: 'box', weight: 1.2, minWidth: 300, ylabel: 'age', xticks: [1960, 1980, 2000, 2020], yticks: [40, 50, 60, 70, 80, 90], title: 'the table of death rates' });
+        const E = v.stage({ x: [0, 1], y: [0, 3], height: 450, axes: false, weight: 1, minWidth: 260, title: 'the three effects (log rate)' });
         const th = v.slider('tilt θ (change in log rate per 5 years)', -0.25, 0.15, 0, { step: 0.005, fmt: (x) => sg(x, 3) });
         const col = v.select('colour the table by', [{ value: 'rel', label: 'rate ÷ its age group’s average' }, { value: 'abs', label: 'death rate' }], 'rel');
         v.button('as generated', () => th.set(0));

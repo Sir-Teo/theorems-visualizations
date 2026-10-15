@@ -29,9 +29,9 @@ Serial testing gains specificity (and positive predictive value) at the cost of 
       tags: ['diagnostic tests', 'screening', 'independence'],
       viz(v) {
         const M = v.M;
-        const sDz = v.stage({ x: [-0.06, 1.06], y: [-0.3, 1.1], equal: true, axes: false, height: 290, weight: 1, minWidth: 260, title: 'people **with** the disease' });
-        const sHz = v.stage({ x: [-0.06, 1.06], y: [-0.3, 1.1], equal: true, axes: false, height: 290, weight: 1, minWidth: 260, title: 'people **without** it' });
-        const sR = v.stage({ x: [-0.13, 1.03], y: [-0.1, 1.04], height: 280, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0.2, 0.4, 0.6, 0.8, 1], yticks: [0.2, 0.4, 0.6, 0.8, 1], weight: 0.9, minWidth: 250, title: 'single and combined tests in ROC space' });
+        const sDz = v.stage({ x: [-0.06, 1.06], y: [-0.3, 1.1], equal: true, axes: false, height: 290, weight: 1, minWidth: 340, title: 'people **with** the disease' });
+        const sHz = v.stage({ x: [-0.06, 1.06], y: [-0.3, 1.1], equal: true, axes: false, height: 290, weight: 1, minWidth: 340, title: 'people **without** it' });
+        const sR = v.stage({ x: [-0.06, 0.56], y: [0.43, 1.02], height: 280, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5], yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], weight: 0.9, minWidth: 250, title: 'single and combined tests in ROC space (top-left corner)' });
         const sT = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: false, weight: 1.2, minWidth: 300 });
         const seA = v.slider('test A sensitivity', 0.5, 0.995, 0.9, { step: 0.005, fmt: (x) => pc(x) });
         const spA = v.slider('test A specificity', 0.5, 0.995, 0.85, { step: 0.005, fmt: (x) => pc(x) });
@@ -41,7 +41,7 @@ Serial testing gains specificity (and positive predictive value) at the cost of 
         const prevS = v.slider('prevalence', 0.002, 0.5, 0.02, { log: true, fmt: (x) => pcs(x) });
         const TB = v.table(sT, { rows: 4, cols: 5, square: false, cellAspect: 1.45, maxCell: 40, size: 12.5, labelSize: 12, region: [0, 0.08, 1, 1], rowLabels: ['test A', 'test B', 'serial: A and B', 'parallel: A or B'], rowLabelColor: (i) => ['orange', 'teal', 'purple', 'gold'][i], colLabels: ['Se', 'Sp', 'PPV', 'NPV', 'tests'], colWeights: [1, 1, 1, 1, 1.15] });
         /** Draw one group's square: a, b = probabilities of A+ and B+ in the group, pab = both. */
-        const square = (s, a, b, pab, lab) => {
+        const square = (s, a, b, pab, what) => {
           const h1 = a > 0 ? pab / a : 0, h2 = a < 1 ? (b - pab) / (1 - a) : 0;
           s.rect(0, 0, 1, 1, { fill: 'gray', fillAlpha: 0.06, color: 'muted', width: 1 });
           s.rect(0, h1, a, 1, { fill: 'orange', fillAlpha: 0.35, stroke: false });
@@ -54,15 +54,14 @@ Serial testing gains specificity (and positive predictive value) at the cost of 
           if (1 - a > 0.12) s.text('A−', (1 + a) / 2, 1.05, { align: 'center', color: 'muted', size: 11 });
           const big = (w, hh) => w * s.sx > 52 && hh * s.sy > 18;
           if (big(a, h1)) s.text(`both ${pcs(pab)}`, a / 2, h1 / 2, { align: 'center', color: 'ink', size: 11, weight: 700 });
-          s.text(`serial (both +): ${pcs(pab)}`, 0, -0.1, { align: 'left', color: 'purple', size: 11.5, weight: 700 });
-          s.text(`parallel (either +): ${pcs(a + b - pab)}`, 0, -0.22, { align: 'left', color: 'gold', size: 11.5, weight: 700 });
-          s.text(lab, 1, -0.1, { align: 'right', color: 'muted', size: 10.5 });
+          s.text(`serial ${what} (both +): ${pcs(pab)}`, 0, -0.1, { align: 'left', color: 'purple', size: 11.5, weight: 700 });
+          s.text(`parallel ${what} (either +): ${pcs(a + b - pab)}`, 0, -0.22, { align: 'left', color: 'gold', size: 11.5, weight: 700 });
         };
         let st = null;
         v.render(() => {
           const a = seA.value, b = seB.value, fa = 1 - spA.value, fb = 1 - spB.value, rho = rhoS.value, p = prevS.value;
           const dAB = both(a, b, rho), hAB = both(fa, fb, rho);
-          square(sDz, a, b, dAB, 'Se of each rule'); square(sHz, fa, fb, hAB, 'false-positive rate');
+          square(sDz, a, b, dAB, 'sensitivity'); square(sHz, fa, fb, hAB, 'false-positive rate');
           const rows = [
             { se: a, sp: 1 - fa, n: 1000 }, { se: b, sp: 1 - fb, n: 1000 },
             { se: dAB, sp: 1 - hAB, n: 1000 + 1000 * (p * a + (1 - p) * fa), seI: a * b, spI: 1 - fa * fb },
@@ -70,8 +69,8 @@ Serial testing gains specificity (and positive predictive value) at the cost of 
           ];
           rows.forEach((r) => { r.ppv = ppv(p, r.se, r.sp); r.npv = npv(p, r.se, r.sp); });
           // ----- ROC space
-          sR.rect(0, 0, 1, 1, { color: 'grid', width: 1 });
           sR.line(0, 0, 1, 1, { color: 'faint', width: 1.2, dash: [4, 4] });
+          sR.line(0, 1, 1, 1, { color: 'grid', width: 1 }); sR.line(0, 0, 0, 1, { color: 'grid', width: 1 });
           const col = ['orange', 'teal', 'purple', 'gold'], nm = ['A', 'B', 'serial', 'parallel'], pos = ['e', 'e', 'e', 'e'];
           sR.path([[1 - rows[2].sp, rows[2].se], [1 - rows[0].sp, rows[0].se], [1 - rows[3].sp, rows[3].se], [1 - rows[1].sp, rows[1].se], [1 - rows[2].sp, rows[2].se]], { color: 'muted', width: 1, dash: [2, 3] });
           rows.forEach((r, i) => {

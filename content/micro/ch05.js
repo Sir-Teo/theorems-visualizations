@@ -198,7 +198,7 @@ and a good that is not bought at all has $MU_i/p_i \le \lambda$. The common valu
       viz(v) {
         const A = [4, 2, 3], COL = ['orange', 'teal', 'pink'];
         const goods = v.select('goods', [{ value: 2, label: 'two goods' }, { value: 3, label: 'three goods' }], 3);
-        const step = v.select('spend in steps of', [{ value: 2, label: '$2' }, { value: 1, label: '$1' }, { value: 0.25, label: '25¢' }], 1);
+        const step = v.select('spend in steps of', [{ value: 2, label: '$\\$2$' }, { value: 1, label: '$\\$1$' }, { value: 0.25, label: '25¢' }], 1);
         const m = v.slider('income $m$', 6, 40, 24, { step: 1 });
         const ps = [v.slider('price $p_1$', 0.5, 4, 2, { step: 0.1 }), v.slider('price $p_2$', 0.5, 4, 1, { step: 0.1 }), v.slider('price $p_3$', 0.5, 6, 2.5, { step: 0.1 })];
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 330, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.05, title: 'goods 1 and 2' });
@@ -253,10 +253,10 @@ and a good that is not bought at all has $MU_i/p_i \le \lambda$. The common valu
         v.readout(() => {
           const { n, M, K, dl, x, xs, lam, mu, done, ug, us, a, P } = st, f = (q) => v.fix(q, 2);
           const ratios = mu.map((q, i) => `$MU_${i + 1}/p_${i + 1} = ${v.fix(q, 3)}$`).join(', ');
-          if (!done) return `Spent $${f(K * dl)} of $${M}; bundle (${x.map(f).join(', ')}). Now ${ratios}: the next dollar goes to the good with the tallest bar.`;
+          if (!done) return `Spent $\\$${f(K * dl)}$ of $\\$${M}$; bundle (${x.map(f).join(', ')}). Now ${ratios}: the next dollar goes to the good with the tallest bar.`;
           const skip = xs.map((q, i) => (q === 0 ? i : -1)).filter((i) => i >= 0);
           const corner = skip.length ? ` Good ${skip.map((i) => i + 1).join(', ')} is not bought: even its first dollar earns only $a_${skip[0] + 1}/p_${skip[0] + 1} = ${v.fix(a[skip[0]] / P[skip[0]], 3)} < \\lambda^*$.` : '';
-          return `All $${M} spent in steps of $${dl}: greedy bundle (${x.map(f).join(', ')}), with ${ratios}, all close to $\\lambda^* = ${v.fix(lam, 3)}$. The exact optimum of $u = ${a.map((ai, i) => `${ai}\\ln(1+x_${i + 1})`).join(' + ')}$ is $x^* = (${xs.map(f).join(', ')})$, with $MU_i/p_i = \\lambda^*$ for every good bought; utility ${v.fix(ug, 3)} (greedy) against ${v.fix(us, 3)} (exact).${corner}${n === 2 ? '' : ` In the map, goods 1 and 2 still satisfy the tangency condition $\\mathrm{MRS} = p_1/p_2$ on the line of what they receive.`}`;
+          return `All $\\$${M}$ spent in steps of $\\$${dl}$: greedy bundle (${x.map(f).join(', ')}), with ${ratios}, all close to $\\lambda^* = ${v.fix(lam, 3)}$. The exact optimum of $u = ${a.map((ai, i) => `${ai}\\ln(1+x_${i + 1})`).join(' + ')}$ is $x^* = (${xs.map(f).join(', ')})$, with $MU_i/p_i = \\lambda^*$ for every good bought; utility ${v.fix(ug, 3)} (greedy) against ${v.fix(us, 3)} (exact).${corner}${n === 2 ? '' : ` In the map, goods 1 and 2 still satisfy the tangency condition $\\mathrm{MRS} = p_1/p_2$ on the line of what they receive.`}`;
         });
       },
     },
@@ -421,7 +421,7 @@ so even at the corner the consumer would trade more of good 2 for good 1 at mark
 $$x_i(tp_1, tp_2, tm) = x_i(p_1, p_2, m) \quad\text{for all } t > 0,$$
 so scaling every price and income by the same factor, a change of currency or a perfectly balanced inflation, changes nothing real. If preferences are locally non-satiated, demand also satisfies **Walras' law**, $p_1x_1 + p_2x_2 = m$. Consequently demand depends only on relative prices and real income: $x_i(p_1, p_2, m) = x_i(p_1/p_2, 1, m/p_2)$.`,
       idea: String.raw`The budget set $\{x \ge 0 : tp \cdot x \le tm\}$ is the same set as $\{x \ge 0 : p \cdot x \le m\}$; dividing the inequality by $t > 0$ changes nothing (4.1). The preferences have not changed either, so the best bundle in the set is the same. Homogeneity is therefore a statement about the budget constraint and holds for every preference. What breaks it is a nominal quantity that does not scale with the rest, such as a fixed fee in dollars, a tax bracket that is not indexed, or a consumer whose tastes depend on nominal prices ("money illusion").`,
-      caption: String.raw`Move the scale factor $t$. With **prices and income** scaled together the budget line does not move (the dashed line is the original one), the best bundle stays put, and on the right both demands are flat in $t$, even though the price tags in the corner change. Scale **prices only** or **income only** and the line and the bundle move. Switch on the **fixed fee**, a charge that stays at \$2 whatever $t$ is, and even balanced scaling moves the bundle.`,
+      caption: String.raw`Move the scale factor $t$. With **prices and income** scaled together the budget line does not move (the dashed line is the original one), the best bundle stays put, and on the right both demands are flat in $t$, even though the price tags in the corner change. Scale **prices only** or **income only** and the line and the bundle move. Switch on the **fixed fee**, a charge that stays at $\$2$ whatever $t$ is, and even balanced scaling moves the bundle.`,
       deps: ['micro-5.1', 'micro-4.1'], refs: ['Varian Ch. 6'], tags: ['demand'],
       see: ['micro-2.1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Marshallian_demand_function' },
@@ -430,7 +430,7 @@ so scaling every price and income by the same factor, a change of currency or a 
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const what = v.select('scale by $t$', [{ value: 'all', label: 'prices and income' }, { value: 'p', label: 'prices only' }, { value: 'm', label: 'income only' }], 'all');
         const t = v.slider('scale factor $t$', 0.25, 4, 2, { log: true, sig: 3 });
-        const fee = v.toggle('a fixed fee of $2 that is not scaled', false);
+        const fee = v.toggle('a fixed fee of $\\$2$ that is not scaled', false);
         const B0 = { p1: 2, p2: 1.5, m: 14 };
         const s = v.stage({ x: [0, 13], y: [0, 13], height: 360, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.1 });
         const g = v.stage({ x: [0.25, 4], y: [0, 9], xlog: true, height: 360, axes: 'box', xlabel: 'scale factor t', ylabel: 'quantity demanded', title: 'demand as the scale factor varies' });
@@ -463,9 +463,9 @@ so scaling every price and income by the same factor, a change of currency or a 
         });
         v.readout(() => {
           const { k, T, fz, base, cur, same } = st, f = (q) => v.fix(q, 2);
-          const head = `$t = ${f(T)}$: prices $(${f(cur.P1)}, ${f(cur.P2)})$ and income ${f(cur.M + (fz ? 2 : 0))}${fz ? ' minus the \\$2 fee' : ''}; best bundle $(${f(cur.x[0])}, ${f(cur.x[1])})$ against $(${f(base.x[0])}, ${f(base.x[1])})$ at $t = 1$.`;
+          const head = `$t = ${f(T)}$: prices $(${f(cur.P1)}, ${f(cur.P2)})$ and income ${f(cur.M + (fz ? 2 : 0))}${fz ? ' minus the $\\$2$ fee' : ''}; best bundle $(${f(cur.x[0])}, ${f(cur.x[1])})$ against $(${f(base.x[0])}, ${f(base.x[1])})$ at $t = 1$.`;
           if (k === 'all' && !fz) return `${head} Every nominal number has been multiplied by ${f(T)}, the budget set is the same set, and the bundle has **not moved**: $x(tp, tm) = x(p, m)$, homogeneity of degree zero. Spending is ${f(cur.P1 * cur.x[0] + cur.P2 * cur.x[1])} = $tm$ (Walras' law).`;
-          if (k === 'all') return `${head} The fee stays at \\$2 while everything else is scaled, so real income $(tm - 2)/t = ${f((T * B0.m - 2) / T)}$ changes with $t$ and so does demand${same ? '' : ' (the bundle moved)'}. Homogeneity needs *every* nominal quantity to scale.`;
+          if (k === 'all') return `${head} The fee stays at $\\$2$ while everything else is scaled, so real income $(tm - 2)/t = ${f((T * B0.m - 2) / T)}$ changes with $t$ and so does demand${same ? '' : ' (the bundle moved)'}. Homogeneity needs *every* nominal quantity to scale.`;
           if (k === 'p') return `${head} Scaling only prices by $t$ is the same as dividing income by $t$: the line shifts in parallel ${T > 1 ? 'inward' : 'outward'} and the bundle moves along the income offer curve.`;
           return `${head} Scaling only income shifts the line in parallel ${T > 1 ? 'outward' : 'inward'}; demand moves along the income offer curve (5.8).`;
         });
