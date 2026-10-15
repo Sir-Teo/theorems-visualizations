@@ -437,7 +437,7 @@ export default {
           introduces: [], deps: ['astro-8.7', 'astro-1.4'], refs: [],
           pic: 'Fit the 59-millisecond pulsar’s Doppler-shifted period over its 7.75-hour orbit, as in the discovery paper, to recover the eccentric orbit of PSR 1913+16 — then run the clock forward with the quadrupole formula and watch the orbit shrink along the cumulative periastron-time curve that later timing traced point by point.' },
         { num: '11.15', kind: 'Paper', name: 'Gravitational Waves from a Binary Black Hole Merger',
-          paper: { authors: 'B. P. Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration)', year: 2016, title: 'Observation of Gravitational Waves from a Binary Black Hole Merger', venue: 'Physical Review Letters 116 (6): 061102', doi: '10.1103/PhysRevLett.116.061102' },
+          paper: { authors: 'B. P. Abbott, R. Abbott, T. D. Abbott, et al. (LIGO Scientific Collaboration and Virgo Collaboration)', year: 2016, title: 'Observation of Gravitational Waves from a Binary Black Hole Merger', venue: 'Physical Review Letters 116 (6): 061102', doi: '10.1103/PhysRevLett.116.061102' },
           introduces: ['rel-11.10'], deps: ['rel-11.7', 'rel-11.9', 'rel-10.9', 'rel-8.12'], refs: [],
           pic: 'Overlay the Hanford and Livingston strain records of GW150914, offset by about 7 ms, and fit a chirp template: sliding the two masses until the sweep from 35 to 250 Hz matches recovers black holes of about 36 and 29 solar masses and the three solar masses of energy radiated in a fraction of a second.' },
       ],

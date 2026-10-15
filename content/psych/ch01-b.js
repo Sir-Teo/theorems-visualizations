@@ -876,5 +876,111 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
         });
       },
     },
+    // ------------------------------------------------------------------ 1.14
+    {
+      num: '1.14',
+      kind: 'Paper',
+      name: 'Elemente der Psychophysik',
+      paper: { authors: 'Gustav Theodor Fechner', year: 1860, title: 'Elemente der Psychophysik', venue: 'Leipzig: Breitkopf und Härtel (2 vols)', url: 'https://archive.org/details/elementederpsych001fech' },
+      introduces: ['psych-1.11', 'psych-1.4', 'psych-1.5', 'psych-1.6'],
+      statement: String.raw`Fechner's two-volume *Elements of Psychophysics* proposed an exact science of the functional relations between physical stimuli and sensations, and claimed that sensation can be **measured**, indirectly, by counting just-noticeable differences. In modern terms its central argument runs:
+
+(a) **Measure** the JND at many intensities. Fechner set out three methods for doing so: the method of just-noticeable differences (the method of limits, 1.5), the method of right and wrong cases (constant stimuli, 1.4, analysed with Gauss's normal error integral), and the method of average error (adjustment, 1.6), and reported his own long series with them, including tens of thousands of comparisons of lifted weights.
+
+(b) Take **Weber's law** (1.9, a name Fechner gave it), $\Delta I/I=k$, and **postulate** that every JND is the same increment of sensation. Then the *fundamental formula* $dS = K\,dI/I$ integrates, from the absolute threshold $I_0$ where $S=0$, to the *measurement formula*
+$$S = K\,\ln\frac{I}{I_0}\qquad\text{(Fechner's law, 1.11)} .$$
+
+The law inherits Weber's range of validity and rests on the equal-JND postulate, which is an assumption, not a measurement. Direct ratio judgements give power functions $S\propto I^{\,n}$ instead (Stevens' law, psych-3.2), and Fechner's speculative “inner psychophysics” of brain and mind has not survived; his methods and the idea of statistical thresholds have.`,
+      idea: String.raw`Kant had argued that psychology could never be an exact science because mental quantities cannot be measured, and Herbart's mathematical psychology had no measurements. Weber (1834) had found that the noticeable difference in lifted weights is a fixed fraction of the weight. Fechner's step, which he dated to the morning of 22 October 1850 (now “Fechner Day”), was to treat the JND as a unit of sensation, add the units up, and pass to the limit: Weber's law then becomes a differential equation whose solution is a logarithm (pma-8.6). To make the units observable he systematised the classical methods and introduced the normal distribution into the analysis of judgements. The book founded experimental psychology (Wundt's Leipzig laboratory of 1879 was built on its methods) and started the debate over what a sensation scale means, from Plateau's and Delboeuf's objections to Stevens' 1961 paper “To honor Fechner and repeal his law”.`,
+      caption: String.raw`Step through Fechner's argument with the player (it opens on the last step; ⏮ goes back to the start). Right: his method of right and wrong cases for a simulated lifter, who compares each of five standards with standard + 4% and standard + 8%, 400 times each (Fechner's own tables are not reproduced here); the normal integral turns each proportion right into a JND. Left, step by step: the JNDs against the standard, Weber's line, the JNDs stacked as equal steps of sensation, the logarithm they trace, and today's alternative, Stevens' power law. Pick a **continuum** to load typical values, or set the **Weber fraction** and the **Stevens exponent** yourself.`,
+      deps: ['psych-1.9', 'pma-8.6'],
+      refs: [],
+      tags: ['history', 'Fechner'],
+      credit: 'Fechner, 1860',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gustav_Fechner' },
+      viz(v) {
+        const M = v.M, BMAX = 100, STD = [10, 25, 45, 70, 95], NL = 400, DF = [0.04, 0.08], C = 0.6745;
+        const SCOL = ['blue', 'teal', 'purple', 'orange', 'pink'];
+        const PRE = { weight: { k: 0.02, n: 1.45, name: 'heaviness' }, bright: { k: 0.08, n: 0.33, name: 'brightness' }, loud: { k: 0.1, n: 0.3, name: 'loudness' } };
+        const cont = v.select('continuum', [{ value: 'weight', label: 'lifted weights' }, { value: 'bright', label: 'brightness' }, { value: 'loud', label: 'loudness' }], 'weight', { onChange: (c) => { kS.set(PRE[c].k); nS.set(PRE[c].n); } });
+        const kS = v.slider('Weber fraction $k$', 0.01, 0.3, 0.02, { step: 0.005 });
+        const nS = v.slider('Stevens exponent $n$', 0.2, 3.5, 1.45, { step: 0.01 });
+        const FR = [
+          { line: 1, note: 'Measure the JND at five standards, here by the method of right and wrong cases (right panel).' },
+          { line: 2, note: 'Weber: the JNDs fall on a straight line through the origin, $\\Delta\\beta = k\\,\\beta$.' },
+          { line: 3, note: 'Fechner’s postulate: every JND is the same step of sensation. Stack them, starting at the threshold $b$.' },
+          { line: 4, note: 'Each step multiplies the stimulus by $1+k$ and adds one unit: $d\\gamma = K\\,d\\beta/\\beta$, the fundamental formula.' },
+          { line: 5, note: 'In the limit the staircase becomes the measurement formula $\\gamma = K\\ln(\\beta/b)$: sensation grows as a logarithm.' },
+          { line: 6, note: 'Today: asked to judge ratios directly, observers give power functions $\\psi\\propto\\beta^{\\,n}$ (Stevens), scaled here to agree at the top.' },
+        ];
+        const S = v.steps({ frames: FR, codeTitle: 'Fechner’s argument (his notation: stimulus β, threshold b, sensation γ)', codePos: 'below', start: 'end', still: 5, speed: 0.5, code: [
+          'measure the JND $\\Delta\\beta$ at many standards $\\beta$  ▷ limits, right and wrong cases, average error',
+          'Weber: $\\Delta\\beta/\\beta = k$, the same at every $\\beta$',
+          'postulate: each JND is one equal step $\\Delta\\gamma$ of sensation',
+          'fundamental formula: $d\\gamma = K\\, d\\beta/\\beta$',
+          'integrate from the threshold: $\\gamma = K\\ln(\\beta/b)$  ▷ the measurement formula',
+          'today: magnitude estimation gives $\\psi \\propto \\beta^{\\,n}$  ▷ Stevens, 1957',
+        ] });
+        const mn = v.stage({ x: [0, BMAX + 2], y: [0, 10], height: 320, axes: 'box', weight: 1.35, xlabel: 'stimulus β / threshold b', title: 'the argument' });
+        const lf = v.stage({ x: [-0.4, 8.4], y: [0.42, 1.04], height: 320, axes: 'box', weight: 0.75, minWidth: 230, xlabel: 'increment D (units of b)', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'right and wrong cases' });
+        const U = (() => { const R = v.rng(1860); return STD.map(() => DF.map(() => M.range(NL).map(() => R()))); })();
+        const Zq = (p) => M.dist.normal(0, 1).quantile(p);
+        const measure = (k) => STD.map((b, i) => {
+          const cells = DF.map((f, j) => { const D = f * b, p = Phi(M, (C * D) / (k * b)), r = U[i][j].filter((u) => u < p).length; return { D, r, n: NL, p }; });
+          const est = cells.filter((c) => c.r / c.n > 0.5 && c.r < c.n).map((c) => (C * c.D) / Zq(c.r / c.n));
+          return { b, cells, jnd: est.length ? M.mean(est) : NaN };
+        });
+        const Sfe = (beta, k) => Math.log(beta) / k;
+        let st = null;
+        v.legend([['ink', 'JND from the lifting data', { dot: true }], ['green', 'Weber’s line, then Fechner’s logarithm'], ['accent', 'stacked JNDs'], ['purple', 'Stevens’ power law', { dash: true }]]);
+        v.render(() => {
+          const k = kS.value, n = nS.value, i = S.i, data = measure(k);
+          const good = data.filter((d) => isFinite(d.jnd)), kHat = good.length ? 10 ** M.mean(good.map((d) => Math.log10(d.jnd / d.b))) : NaN;
+          // ---- right panel: the method of right and wrong cases
+          lf.hline(0.5, { color: 'muted', dash: [4, 4], width: 1 });
+          data.forEach((d, s) => {
+            lf.fn((D) => Phi(M, (C * D) / (k * d.b)), { domain: [0, 8.4], color: SCOL[s], width: 1.6, alpha: 0.75 });
+            for (const c of d.cells) { const [a, bb] = wilson(c.r, c.n); lf.line(c.D, a, c.D, bb, { color: SCOL[s], width: 1.2, alpha: 0.5 }); lf.dot(c.D, c.r / c.n, { r: 4.2, color: SCOL[s] }); }
+          });
+          lf.text('standards 10 … 95 b: D = 4% and 8% of each', 8.2, 0.47, { align: 'right', color: 'muted', size: 11 });
+          // ---- left panel: the step of the argument
+          if (i <= 1) {
+            const ym = 1.45 * k * BMAX;
+            mn.setView(null, [-0.12 * ym, ym]); mn.o.ylabel = 'JND Δβ (units of b)';
+            if (i === 1 && isFinite(kHat)) { mn.fn((x) => kHat * x, { domain: [0, BMAX + 2], color: 'green', width: 2.6 }); mn.text(`Δβ = ${v.fix(kHat, 3)} β`, 0.62 * BMAX, kHat * 0.62 * BMAX, { dx: -8, dy: -12, align: 'right', color: 'green', weight: 700, size: 12.5 }); }
+            data.forEach((d, s) => { if (isFinite(d.jnd)) mn.dot(d.b, d.jnd, { r: 5.5, color: SCOL[s] }); });
+          } else {
+            const steps = [1]; while (steps[steps.length - 1] < BMAX && steps.length < 4000) steps.push(steps[steps.length - 1] * (1 + k));
+            const nAll = steps.length - 1, top = Math.max(nAll, Sfe(BMAX, k)) * 1.15;
+            mn.setView(null, [-0.1 * top, top]); mn.o.ylabel = 'sensation γ (JNDs above threshold)';
+            const shown = i === 2 ? Math.min(6, nAll) : nAll, pts = [[1, 0]];
+            for (let m = 1; m <= shown; m++) { const x = Math.min(steps[m], BMAX); pts.push([x, m - 1]); if (steps[m] > BMAX) break; pts.push([x, m]); }
+            mn.path(pts, { color: 'accent', width: i === 2 ? 2.4 : 1.6 });
+            if (i === 2) {
+              for (let m = 1; m <= shown; m++) mn.dot(steps[m], m, { r: 3, color: 'accent' });
+              mn.text(`each step: ×${v.fix(1 + k, 3)} in β, +1 in γ`, Math.min(steps[shown], BMAX), shown, { dx: 10, align: 'left', color: 'accent', weight: 600, size: 12 });
+            }
+            if (i >= 4) { mn.fn((x) => Sfe(x, k), { domain: [1, BMAX], color: 'green', width: 2.8 }); mn.text('γ = (1/k) ln(β/b)', 0.55 * BMAX, Sfe(0.55 * BMAX, k), { dy: 18, align: 'left', color: 'green', weight: 700, size: 12.5 }); }
+            if (i >= 5) {
+              const a = Sfe(BMAX, k) / (Math.pow(BMAX, n) - 1);
+              mn.fn((x) => a * (Math.pow(x, n) - 1), { domain: [1, BMAX], color: 'purple', width: 2.4, dash: [7, 5] });
+              const xs = 0.3 * BMAX; mn.text(`ψ ∝ β^${v.fix(n, 2)}`, xs, a * (Math.pow(xs, n) - 1), { dx: n > 1 ? 8 : -8, dy: n > 1 ? 14 : -12, align: n > 1 ? 'left' : 'right', color: 'purple', weight: 700, size: 12.5 });
+            }
+          }
+          st = { k, n, i, data, kHat };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { k, n, i, data, kHat } = st;
+          if (i === 0) return `JNDs from the proportions right (normal integral, ${NL} liftings per point): ${data.map((d) => `${v.fix(d.jnd, 2)} at ${d.b}`).join(', ')} (units of $b$) · they grow with the standard`;
+          if (i === 1) return `JND/standard at the five standards: ${data.map((d) => v.fix(d.jnd / d.b, 4)).join(', ')} · estimated Weber fraction $\\hat k$ = ${v.fix(kHat, 4)} (simulated lifter: ${v.fix(k, 3)})`;
+          const nJ = Math.log(BMAX) / Math.log(1 + k);
+          if (i <= 3) return `from the threshold to ${BMAX}× the threshold: $\\ln ${BMAX}/\\ln(1+k)$ = ${v.fix(nJ, 1)} JNDs; equal steps of sensation sit at stimulus ratios of $1+k$ = ${v.fix(1 + k, 3)}`;
+          if (i === 4) return `the staircase holds ${v.fix(nJ, 1)} JNDs, the integral $\\ln(${BMAX})/k$ = ${v.fix(Math.log(BMAX) / k, 1)}: the same logarithm (they agree as $k\\to0$) · Fechner's law: multiplying β by 10 always adds ${v.fix(Math.log(10) / k, 1)} JNDs`;
+          const b0 = 10, fech = b0 * b0, stev = b0 * Math.pow(2, 1 / n);
+          return `to double the sensation of a stimulus at 10 b: Fechner's law needs β = 100 b (doubling a logarithm squares the ratio), Stevens' law with $n$ = ${v.fix(n, 2)} needs β = ${v.fix(stev, 1)} b (×${v.fix(stev / b0, 2)}) · today's view: Fechner's methods and statistical thresholds are standard practice and his law describes JND-based (discrimination) scales well, but direct ratio judgements give power laws with exponents from about 0.3 (brightness, loudness against intensity) to 3.5 (electric shock), 1.45 for lifted weights; the two agree only if JNDs are not equal steps of sensation (psych-3.5)`;
+        });
+      },
+    },
   ],
 };

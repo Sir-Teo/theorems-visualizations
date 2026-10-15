@@ -1,120 +1,6 @@
 // Classical Mechanics — Chapter 8: Central forces and orbits
 
-// ── shared helpers ────────────────────────────────────────────────────────────
-const TAU = 2 * Math.PI;
-const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
-
-/** One-slot cache: recompute only when the key changes. */
-function memo() { let key, val; return (k, f) => { if (k !== key) { key = k; val = f(); } return val; }; }
-
-/** One classical RK4 step of an autonomous system y' = f(y). */
-function rk4(f, y, h) {
-  const k1 = f(y), y2 = y.map((c, i) => c + (h / 2) * k1[i]), k2 = f(y2);
-  const y3 = y.map((c, i) => c + (h / 2) * k2[i]), k3 = f(y3), y4 = y.map((c, i) => c + h * k3[i]), k4 = f(y4);
-  return y.map((c, i) => c + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
-}
-
-/**
- * Planar motion (unit mass) under a radial acceleration acc(r) (negative = attractive), RK4 with the step
- * h = eta·min(r/|v|, √(r/|a|)) adapted to the local time scale. s0 = [x, y, vx, vy].
- * o: {T (may be negative), eta, rmax, rmin, maxSteps, revs (stop after |Δθ| ≥ revs·2π), hmax}.
- * Returns {t: [], s: [[x, y, vx, vy]], stop: 'time' | 'escape' | 'centre' | 'revs' | 'steps'}.
- */
-function centralOrbit(acc, s0, o = {}) {
-  const f = (S) => { const r = Math.hypot(S[0], S[1]), a = acc(r) / r; return [S[2], S[3], a * S[0], a * S[1]]; };
-  const T = o.T ?? 50, dir = T < 0 ? -1 : 1, eta = o.eta ?? 0.02, rmax = o.rmax ?? Infinity, rmin = o.rmin ?? 1e-3, maxN = o.maxSteps ?? 30000;
-  let S = s0.slice(), t = 0, th = Math.atan2(S[1], S[0]), turn = 0, stop = 'steps';
-  const out = { t: [0], s: [S.slice()], stop };
-  for (let n = 0; n < maxN; n++) {
-    const r = Math.hypot(S[0], S[1]), v = Math.hypot(S[2], S[3]), a = Math.abs(acc(r));
-    let h = eta * Math.min(r / (v || 1e-12), Math.sqrt(r / (a || 1e-12)));
-    if (o.hmax) h = Math.min(h, o.hmax);
-    const left = Math.abs(T) - Math.abs(t);
-    if (left <= 1e-12) { stop = 'time'; break; }
-    if (h > left) h = left;
-    S = rk4(f, S, dir * h); t += dir * h;
-    const th2 = Math.atan2(S[1], S[0]); let d = th2 - th; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; turn += d; th = th2;
-    out.t.push(t); out.s.push(S);
-    const r2 = Math.hypot(S[0], S[1]);
-    if (r2 > rmax) { stop = 'escape'; break; }
-    if (r2 < rmin) { stop = 'centre'; break; }
-    if (o.revs && Math.abs(turn) >= o.revs * TAU) { stop = 'revs'; break; }
-  }
-  out.stop = stop; out.turn = turn;
-  return out;
-}
-
-/** State [x, y, vx, vy] of an orbit record at time t (binary search + Hermite interpolation). */
-function stateAt(R, t) {
-  const ts = R.t, n = ts.length - 1, sg = ts[n] < 0 ? -1 : 1;
-  const tt = sg * t;
-  if (tt <= sg * ts[0]) return R.s[0];
-  if (tt >= sg * ts[n]) return R.s[n];
-  let lo = 0, hi = n;
-  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (sg * ts[m] <= tt) lo = m; else hi = m; }
-  const h = ts[hi] - ts[lo], u = (t - ts[lo]) / h, A = R.s[lo], B = R.s[hi];
-  // cubic Hermite for the positions (their derivatives are the stored velocities), linear for the velocities
-  const h00 = 2 * u ** 3 - 3 * u * u + 1, h10 = u ** 3 - 2 * u * u + u, h01 = -2 * u ** 3 + 3 * u * u, h11 = u ** 3 - u * u;
-  const out = A.map((c, i) => c + u * (B[i] - c));
-  out[0] = h00 * A[0] + h10 * h * A[2] + h01 * B[0] + h11 * h * B[2];
-  out[1] = h00 * A[1] + h10 * h * A[3] + h01 * B[1] + h11 * h * B[3];
-  return out;
-}
-
-/** Kepler elements of a state (unit mass, GM = mu): energy, angular momentum, eccentricity vector, a, p, period. */
-function kepEl(mu, x, y, vx, vy) {
-  const r = Math.hypot(x, y), v2 = vx * vx + vy * vy, h = x * vy - y * vx, E = v2 / 2 - mu / r, rv = x * vx + y * vy;
-  const ex = (v2 / mu - 1 / r) * x - (rv / mu) * vx, ey = (v2 / mu - 1 / r) * y - (rv / mu) * vy;
-  const e = Math.hypot(ex, ey), a = -mu / (2 * E);
-  return { r, h, E, ex, ey, e, a, p: (h * h) / mu, w: Math.atan2(ey, ex), T: E < 0 ? TAU * Math.sqrt(a * a * a / mu) : Infinity };
-}
-
-/** Points of the conic r = p/(1 + e cos(θ − w)) with the focus at (fx, fy); null breaks beyond rmax. */
-function conicPts(p, e, w, rmax = 1e6, n = 720, fx = 0, fy = 0) {
-  const pts = [];
-  for (let i = 0; i <= n; i++) {
-    const th = w - Math.PI + (TAU * i) / n, d = 1 + e * Math.cos(th - w);
-    if (d <= 1e-9) { pts.push(null); continue; }
-    const r = p / d;
-    if (r > rmax) { pts.push(null); continue; }
-    pts.push([fx + r * Math.cos(th), fy + r * Math.sin(th)]);
-  }
-  return pts;
-}
-
-/** Roots of g(r) = 0 on [a, b] found by scanning n cells and bisecting sign changes. */
-function roots(g, a, b, n = 600) {
-  const out = []; let x0 = a, g0 = g(a);
-  for (let i = 1; i <= n; i++) {
-    const x1 = a + ((b - a) * i) / n, g1 = g(x1);
-    if (isFinite(g0) && isFinite(g1) && g0 * g1 < 0) {
-      let lo = x0, hi = x1, glo = g0;
-      for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2, gm = g(m); if (gm * glo <= 0) hi = m; else { lo = m; glo = gm; } }
-      out.push((lo + hi) / 2);
-    }
-    x0 = x1; g0 = g1;
-  }
-  return out;
-}
-
-/** Range [lo, hi] of several arrays, padded, with a minimum span. */
-function span(arrs, pad = 0.1, minSpan = 1) {
-  let lo = Infinity, hi = -Infinity;
-  for (const a of arrs) for (const y of a) { if (!isFinite(y)) continue; if (y < lo) lo = y; if (y > hi) hi = y; }
-  if (!isFinite(lo)) { lo = -1; hi = 1; }
-  if (hi - lo < minSpan) { const c = (hi + lo) / 2; lo = c - minSpan / 2; hi = c + minSpan / 2; }
-  const p = (hi - lo) * pad; return [lo - p, hi + p];
-}
-/** TeX for a number that may be tiny (use inside $…$). */
-const sci = (v, x, d = 2) => (Math.abs(x) < 1e-300 ? '0' : v.sci(x, d));
-/** Fixed decimals, or TeX scientific notation when that would print as zero (use inside $…$). */
-const num = (v, x, d = 4) => (Math.abs(x) < 1e-30 ? '0' : Math.abs(x) >= 0.5 * 10 ** -d ? v.fix(x, d) : v.sci(x, 2));
-
-/** A small sun / star glyph. */
-function sun(s, x, y, o = {}) {
-  s.circle(x, y, o.r ?? 0.07, { fill: o.color || 'gold', fillAlpha: 0.9, color: o.color || 'gold', width: 1 });
-  if (o.label) s.text(o.label, x, y, { color: o.color || 'gold', size: 11, dy: o.dy ?? 14, align: 'center' });
-}
+import { TAU, clamp, memo, rk4, centralOrbit, stateAt, kepEl, conicPts, roots, span, sci, num, sun, BODIES } from './ch08.shared.js';
 
 // ── shell theorem helpers ─────────────────────────────────────────────────────
 /** Thin spherical shell (mass 1, radius R) summed ring by ring (θ = πu², so rings crowd near the pole facing P):
@@ -156,22 +42,6 @@ function cubeField(px, py, n, ux = 1, uy = 0, bins = null) {
   }
   return [gx, gy];
 }
-
-// ── solar-system data (NASA planetary fact sheets; J2000 elements, rounded) ─────
-// a (AU), sidereal period (yr), e, longitude of perihelion ϖ (°), mean anomaly at J2000 (°)
-const BODIES = [
-  { n: 'Mercury', a: 0.387098, T: 0.240846, e: 0.205630, w: 77.46, M0: 174.8, c: 'muted' },
-  { n: 'Venus', a: 0.723332, T: 0.615198, e: 0.006772, w: 131.6, M0: 50.1, c: 'gold' },
-  { n: 'Earth', a: 1.000001, T: 1.000017, e: 0.016709, w: 102.9, M0: 357.5, c: 'blue' },
-  { n: 'Mars', a: 1.523679, T: 1.88082, e: 0.093400, w: 336.1, M0: 19.4, c: 'red' },
-  { n: 'Ceres', a: 2.7691, T: 4.6, e: 0.0758, w: 153.9, M0: 77.4, c: 'faint' },
-  { n: 'Jupiter', a: 5.2044, T: 11.862, e: 0.048900, w: 14.75, M0: 20.0, c: 'orange' },
-  { n: 'Saturn', a: 9.5826, T: 29.457, e: 0.056500, w: 92.43, M0: 317.0, c: 'gold' },
-  { n: 'Uranus', a: 19.2184, T: 84.0205, e: 0.045700, w: 170.96, M0: 142.2, c: 'teal' },
-  { n: 'Neptune', a: 30.07, T: 164.8, e: 0.011300, w: 44.97, M0: 256.2, c: 'blue' },
-  { n: 'Pluto', a: 39.482, T: 247.94, e: 0.2488, w: 224.07, M0: 14.5, c: 'purple' },
-  { n: 'Halley', a: 17.834, T: 75.32, e: 0.96714, w: 169.75, M0: 67, c: 'pink', retro: true },
-];
 
 export default {
   collection: 'mech',
@@ -880,7 +750,7 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
 $$T^2 = \frac{4\pi^2\mu}{k}\,a^3,\qquad\text{for planets}\qquad T^2 = \frac{4\pi^2}{G(M_\odot + m)}\,a^3 .$$
 Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so on a log–log plot of period against semi-major axis they fall on one line of slope $3/2$. For a power-law force $F\propto -r^{-n}$ the circular orbits instead obey $T\propto a^{(n+1)/2}$, and eccentric orbits no longer share a single law.`,
       idea: String.raw`By the area law (8.5) the radius sweeps area at the constant rate $\ell/2\mu$, so one period sweeps the whole ellipse: $T = \pi ab\cdot 2\mu/\ell$. For the conic orbit (8.7) the semi-latus rectum $p = b^2/a = \ell^2/\mu k$ gives $\ell = b\sqrt{\mu k/a}$, and therefore $T = 2\pi\sqrt{\mu/k}\;a^{3/2}$: the semi-minor axis cancels, which is why eccentricity drops out. With the reduced mass of 8.2, $\mu/k = 1/G(M + m)$, so Jupiter’s period is about $0.05\%$ shorter than $a^{3/2}$ years.`,
-      caption: String.raw`Left: eleven bodies on orbits integrated numerically from their real perihelion distances and speeds (AU, years, $GM_\odot$ from the built-in constants); pick the inner or outer system. Right, on log–log axes: the measured periods (filled) against the catalogue values (open circles) and the line $T = 2\pi\sqrt{a^3/GM_\odot}$. Halley’s comet ($e = 0.97$) and the circular Venus sit on the same line. Change the force exponent: each body is relaunched so that it keeps its real perihelion and aphelion, but the periods (now perihelion to perihelion) leave the catalogue — the slope changes, the orbits become rosettes and the eccentric bodies scatter off the line.`,
+      caption: String.raw`Left: eleven bodies on orbits integrated numerically from their real perihelion distances and speeds (AU, years, $GM_\odot$ from the built-in constants); pick the inner or outer system. Right, on log–log axes: the measured periods (filled) against the catalogue values (open circles) and the line $T = 2\pi\sqrt{a^3/GM_\odot}$. Halley’s comet ($e = 0.97$) and the circular Venus sit on the same line. Change the force exponent: each body is relaunched so that it keeps its real perihelion and aphelion, but the periods (time to go once around) leave the catalogue — the slope changes, the orbits become rosettes and the eccentric bodies scatter off the line.`,
       deps: ['mech-8.7', 'mech-8.5'],
       refs: ['Taylor §8.6', 'Goldstein §3.8'],
       tags: ['Kepler', 'solar system', 'scaling'],
@@ -891,7 +761,7 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
         const zoom = v.select('show', [{ value: 'inner', label: 'inner system' }, { value: 'outer', label: 'outer system' }], 'inner');
         const pw = v.slider('force exponent $n$ ($F \\propto -1/r^n$)', 1.5, 2.8, 2, { step: 0.01, onChange: (x) => { if (Math.abs(x - 2) < 0.015 && x !== 2) pw.set(2); } });
         const s = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 340, weight: 1 });
-        const g = v.stage({ x: [0.25, 60], y: [0.1, 400], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.1, xlabel: 'semi-major axis a (AU)', ylabel: 'period T (yr)', title: 'Kepler’s third law (log–log)' });
+        const g = v.stage({ x: [0.25, 60], y: [0.1, 1500], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.1, xlabel: 'semi-major axis a (AU)', ylabel: 'period T (yr)', title: 'Kepler’s third law (log–log)' });
         const cache = memo(); let cur = null;
         const run = () => cache(pw.value, () => {
           const n = pw.value, acc = (r) => -MU / r ** n, U = (r) => (-MU * r ** (1 - n)) / (n - 1);
@@ -901,11 +771,15 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
             const vp = Math.sqrt((2 * (U(ra) - U(rp))) / (1 - (rp / ra) ** 2)) * (B.retro ? -1 : 1);
             const s0 = [rp * Math.cos(w), rp * Math.sin(w), -vp * Math.sin(w), vp * Math.cos(w)];
             const R = centralOrbit(acc, s0, { T: 1e5, eta: B.e > 0.5 ? 0.003 : 0.01, revs: 4.2, rmax: 400, rmin: 0.01, maxSteps: 90000 });
-            // period: perihelion to perihelion (r·v changes sign from − to +, interpolated); a from the radial extremes
-            const peri = [];
-            for (let i = 1; i < R.s.length; i++) { const A = R.s[i - 1], C2 = R.s[i], a0 = A[0] * A[2] + A[1] * A[3], a1 = C2[0] * C2[2] + C2[1] * C2[3]; if (a0 < 0 && a1 >= 0) peri.push(R.t[i - 1] + (-a0 / (a1 - a0)) * (R.t[i] - R.t[i - 1])); }
+            // period: time for the angle to advance by 2π (interpolated), a from the radial extremes
+            const turns = []; let th = 0;
+            for (let i = 1; i < R.s.length; i++) {
+              const A = R.s[i - 1], C2 = R.s[i]; let d = Math.atan2(C2[1], C2[0]) - Math.atan2(A[1], A[0]); if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU;
+              const k = Math.floor((Math.abs(th) + Math.abs(d)) / TAU); if (k > turns.length) turns.push(R.t[i - 1] + ((turns.length + 1) * TAU - Math.abs(th)) / Math.abs(d) * (R.t[i] - R.t[i - 1]));
+              th += d;
+            }
             let lo = Infinity, hi = 0; for (const S of R.s) { const r = Math.hypot(S[0], S[1]); lo = Math.min(lo, r); hi = Math.max(hi, r); }
-            return { B, R, Tm: peri.length ? peri[0] : NaN, wrap: peri.length ? peri[peri.length - 1] : NaN, am: (lo + hi) / 2 };
+            return { B, R, Tm: turns.length ? turns[0] : NaN, wrap: turns.length ? turns[turns.length - 1] : NaN, am: (lo + hi) / 2 };
           });
         });
         v.animate((t) => {

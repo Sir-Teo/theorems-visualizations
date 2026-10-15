@@ -137,9 +137,9 @@ export default {
           introduces: ['climate-3.7', 'climate-2.8', 'climate-4.2'], deps: ['climate-2.3', 'climate-1.6', 'climate-2.15'], refs: [],
           pic: 'Recreate Arrhenius’s Table VII: for each latitude band and season, compute the warming when carbonic acid is multiplied by 0.67, 1.5, 2, 2.5 and 3 from Langley’s infrared measurements of the Moon, and see doubling give about 5–6 °C, with successive doublings adding roughly equal steps.' },
         { num: '3.12', kind: 'Paper', name: 'Carbon Dioxide and Climate: A Scientific Assessment',
-          paper: { authors: 'J. G. Charney et al. (Ad Hoc Study Group on Carbon Dioxide and Climate)', year: 1979, title: 'Carbon Dioxide and Climate: A Scientific Assessment', venue: 'National Academy of Sciences, Washington, DC (report)', doi: '10.17226/12181' },
+          paper: { authors: 'J. G. Charney, A. Arakawa, D. J. Baker, et al. (Ad Hoc Study Group on Carbon Dioxide and Climate)', year: 1979, title: 'Carbon Dioxide and Climate: A Scientific Assessment', venue: 'National Academy of Sciences, Washington, DC (report)', doi: '10.17226/12181' },
           introduces: [], deps: ['climate-3.5', 'climate-4.5', 'climate-9.5', 'climate-2.16'], refs: [],
-          pic: 'Weigh the evidence as the panel did: set the water-vapour, snow–ice and cloud feedbacks of the general circulation models it compared, see where their doubled-CO₂ warmings fall (about 2 K to 3.5 K), then widen the band for cloud uncertainty to the report’s 3 ± 1.5 °C.' },
+          pic: 'Weigh the evidence as the panel did: set the water-vapour, snow–ice and cloud feedbacks of the general circulation models it compared, see where their doubled-CO₂ warmings fall (about 2–3 K in Manabe’s models, nearly 4 K in Hansen’s), then widen the band for cloud uncertainty to the report’s 3 ± 1.5 °C.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

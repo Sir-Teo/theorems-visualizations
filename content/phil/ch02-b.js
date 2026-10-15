@@ -327,7 +327,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
       viz(v) {
         const LS = v.slider('length $L$', 1.05, 1e6, 1000, { log: true });
         const pS = v.slider('exponent $p$ in $y = x^{-p}$', 0.4, 1.6, 1, { step: 0.01 });
-        const S3 = v.stage3d({ range: 4.6, height: 330, yaw: -0.22, pitch: 0.3, axes: false, weight: 0.95, persp: 0 });
+        const S3 = v.stage3d({ range: 5.3, height: 330, yaw: -0.22, pitch: 0.3, axes: false, weight: 0.95, persp: 0 });
         const G = v.stage({ x: [1, 1e6], y: [0.03, 1e5], xlog: true, ylog: true, axes: 'box', height: 330, weight: 1.15, title: 'running totals up to $x = L$ (log–log)', xlabel: 'L' });
         const LN = Math.log(1e6), DU = 0.005, NU = Math.ceil(LN / DU);
         let cache = { p: null, A: null };
@@ -351,7 +351,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           S3.text('y = 1/x' + (Math.abs(p - 1) < 0.005 ? '' : `^${v.fix(p, 2)}`) + ' rotated', [-4.2, 0, 1.6], { size: 11.5, color: 'muted' });
           // ---- running volume and area
           const Vinf = p > 0.5 ? Math.PI / (2 * p - 1) : Infinity;
-          if (isFinite(Vinf) && Vinf < 1e5) { G.hline(Vinf, { color: 'blue', dash: [6, 4], width: 1.3 }); G.text(`volume limit π/(2p−1) = ${v.fix(Vinf, 3)}`, 1.4, Vinf, { dy: -9, size: 11, weight: 600, color: 'blue' }); }
+          if (isFinite(Vinf) && Vinf < 1e5) { G.hline(Vinf, { color: 'blue', dash: [6, 4], width: 1.3 }); G.text(`volume limit π/(2p−1) = ${v.fix(Vinf, 3)}`, 40, Vinf, { dy: -9, size: 11, weight: 600, color: 'blue' }); }
           G.fn((x) => vol(p, x), { color: 'blue', width: 2.6 });
           G.fn((x) => areaAt(x), { color: 'orange', width: 2.6 });
           if (Math.abs(p - 1) < 0.005) G.fn((x) => 2 * Math.PI * Math.log(x), { color: 'orange', width: 1.2, dash: [3, 4], alpha: 0.7 });
@@ -420,7 +420,7 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
             Lst.line(Math.max(0, a), -0.15, Math.min(1, b), -0.15, { color: 'blue', width: 8, cap: 'butt', alpha: 0.85 });
           });
           if (K > rows) Lst.text(`rows ${rows + 1}–${K} too thin to draw; their intervals are in the union below`, 0.5, 1.0 - (rows + 0.6) * rowH, { align: 'center', size: 10, color: 'muted' });
-          if (mine) { Lst.line(dVal, -0.22, dVal, 1.0, { color: 'green', width: 1.6, dash: [4, 4] }); Lst.dot(dVal, -0.15, { r: 6, color: 'green', label: 'd', labelPos: 'ne' }); }
+          if (mine) { Lst.line(dVal, -0.22, dVal, 1.0, { color: 'green', width: 1.6, dash: [4, 4] }); Lst.dot(dVal, -0.15, { r: 6, color: 'green', label: 'd', labelPos: 'se' }); }
           Lst.text('their union on [0, 1] (true widths)', 0.5, -0.07, { align: 'center', size: 10.5, color: 'blue' });
           const U = unionLength(iv), Ssum = eps * (1 - 2 ** -K);
           Lst.text(`total length ≤ ${v.fix(Ssum, 4)} (union ${v.fix(U, 4)})  vs  length of [0, 1] = 1`, 0.5, -0.36, { align: 'center', size: 12, weight: 700, color: 'ink' });

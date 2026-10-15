@@ -184,8 +184,8 @@ $B$ is negative at low temperature and positive at high temperature. At the **Bo
         const NAMES = ['N2', 'Ar', 'CH4', 'Xe', 'CO2', 'He'], TBs = boyleTs();
         const gs = v.select('gas', NAMES.map((n) => ({ value: n, label: `$${GAS[n].tex}$` })), 'N2');
         const Tsl = v.slider('temperature', 30, 1500, 300, { log: true, step: 0.001, fmt: (x) => `${x.toFixed(0)} K` });
-        const s1 = v.stage({ x: [0.6, 3], y: [-1.5, 3], height: 330, axes: 'box', xlabel: 'r/σ', title: 'integrand of $B$: $(e^{-u/kT}-1)\\,r^2$ (solid), $u/kT$ (dashed)' });
-        const s2 = v.stage({ x: [30, 3000], xlog: true, y: [-200, 60], height: 330, axes: 'box', title: '$B(T)$ in cm³/mol against $T$ (K)' });
+        const s1 = v.stage({ x: [0.6, 3], y: [-1.5, 3], height: 330, axes: 'box', xlabel: 'r/σ', title: 'Mayer integrand $(e^{-u/kT}-1)\\,r^2$' });
+        const s2 = v.stage({ x: [10, 3000], xlog: true, y: [-200, 60], height: 330, axes: 'box', title: '$B(T)$ in cm³/mol against $T$ (K)' });
         const s3 = v.stage({ x: [0, 100], y: [0.8, 1.1], height: 330, axes: 'box', xlabel: 'p (bar)', title: '$Z \\approx 1 + Bp/RT$' });
         let st = null;
         v.render(() => {
@@ -211,12 +211,14 @@ $B$ is negative at low temperature and positive at high temperature. At the **Bo
           s1.text('core: B > 0', 0.64, -1.05, { size: 11, color: 'red', align: 'left' });
           s1.text('well: B < 0', 1.35, Math.min(2.7, 0.5 + Math.max(0, f(1.2))), { size: 11, color: 'blue', align: 'left' });
           // middle: B(T)
-          const Bmin = Math.min(-200, B2cm3(g, 30 * Math.max(1, g.eps / 40)) * 0), lo = Math.max(-400, Math.min(-150, B2cm3(g, Math.max(30, 0.8 * g.eps)) * 1.1)), hi = Math.max(40, B2cm3(g, 3000) * 1.4);
-          s2.setView([30, 3000], [lo, hi]);
+          const Tlo = Math.max(10, 0.6 * g.eps), Bs = [B2cm3(g, Tlo), B2cm3(g, 3000), ...(BDATA[gs.value] || []).map((q) => q[1])];
+          for (let k = 0; k <= 20; k++) Bs.push(B2cm3(g, Tlo * (3000 / Tlo) ** (k / 20)));
+          const bmin = Math.min(...Bs), bmax = Math.max(...Bs), lo = Math.max(-400, bmin - 0.12 * (bmax - bmin)), hi = bmax + 0.15 * (bmax - bmin);
+          s2.setView([10, 3000], [lo, hi]);
           s2.hline(0, { color: 'ink', width: 1 });
-          s2.fn((TT) => B2cm3(g, TT), { color: g.col, width: 2.4, domain: [Math.max(30, 0.6 * g.eps), 3000] });
+          s2.fn((TT) => B2cm3(g, TT), { color: g.col, width: 2.4, domain: [Tlo, 3000] });
           (BDATA[gs.value] || []).forEach(([TT, Bv]) => s2.dot(TT, Bv, { r: 5, hollow: true, color: 'ink' }));
-          if (TB > 30) { s2.vline(TB, { color: 'green', width: 1.6, dash: [5, 4] }); s2.text(`T_B = ${TB.toFixed(0)} K`, TB, lo + 0.1 * (hi - lo), { size: 11, color: 'green', dx: 5, align: 'left' }); }
+          if (TB > 10) { s2.vline(TB, { color: 'green', width: 1.6, dash: [5, 4] }); s2.text(`T_B = ${TB.toFixed(0)} K`, TB, lo + 0.1 * (hi - lo), { size: 11, color: 'green', dx: 5, align: 'left' }); }
           if (g.TB) { s2.line(g.TB, -0.04 * (hi - lo), g.TB, 0.04 * (hi - lo), { color: 'ink', width: 2.5 }); s2.text('measured T_B', g.TB, -0.05 * (hi - lo), { size: 10, color: 'ink', align: 'left', dx: 5, dy: 6 }); }
           s2.vline(T, { color: 'gold', width: 1.2 });
           s2.dot(T, B, { r: 6, color: 'gold' });
@@ -252,10 +254,10 @@ The constant $b$ is the volume excluded per mole by the molecules themselves (fo
       scope: String.raw`Qualitatively right everywhere — it predicts condensation, a critical point and corresponding states — but quantitatively only a first correction: it is good to a few percent at moderate densities and poor near the critical point and in the liquid (it predicts $Z_c = 3/8$ against about 0.29 for real fluids).`,
       viz(v) {
         const PICK = ['N2', 'CO2', 'Xe', 'H2O'];
-        const gs = v.select('constants of', PICK.map((n) => ({ value: n, label: `$${GAS[n].tex}$` })), 'CO2', { onChange: (n) => { aS.set(GAS[n].a); bS.set(GAS[n].b); } });
+        const gs = v.select('constants of', PICK.map((n) => ({ value: n, label: `$${GAS[n].tex}$` })), 'CO2', { onChange: (n) => { aS.set(GAS[n].a); bS.set(GAS[n].b); Tsl.set(Math.round(0.92 * 8 * GAS[n].a / (27 * R * GAS[n].b))); } });
         const aS = v.slider('attraction $a$', 0, 6, GAS.CO2.a, { step: 0.001, fmt: (x) => `${x.toFixed(2)} bar·L²/mol²` });
         const bS = v.slider('excluded volume $b$', 0, 0.08, GAS.CO2.b, { step: 0.0001, fmt: (x) => `${(1000 * x).toFixed(1)} mL/mol` });
-        const Tsl = v.slider('temperature', 150, 700, 280, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
+        const Tsl = v.slider('temperature', 80, 700, 280, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
         const s = v.stage({ x: [0, 0.5], y: [-100, 300], height: 380, axes: 'box', weight: 1.55, xlabel: 'Vₘ (L/mol)', title: 'pressure (bar) against molar volume' });
         const sb = v.stage({ x: [0, 4], y: [-200, 600], height: 380, axes: false, weight: 0.65, minWidth: 190, title: 'pressure at the state point (bar)' });
         const H = s.handle(0.2, 0, { color: 'gold', r: 7, constrain: (x) => [Math.max(0.01, Math.min(0.5, x)), 0] });
@@ -266,7 +268,7 @@ The constant $b$ is the volume excluded per mole by the molecules themselves (fo
           if (b > 0) s.rect(0, -100, b, 300, { fill: 'gray', fillAlpha: 0.18, stroke: false });
           if (b > 0.012) s.text('V < b', b / 2, 284, { size: 10.5, color: 'muted', align: 'center' });
           s.hline(0, { color: 'faint', width: 1 });
-          if (isFinite(Tc)) for (const f of [0.85, 0.95, 1, 1.1, 1.25]) { const TT = f * Tc; s.fn((V) => (V > b ? R * TT / (V - b) - a / (V * V) : NaN), { color: f === 1 ? 'muted' : 'faint', width: f === 1 ? 1.4 : 1, domain: [b * 1.02, 0.5] }); } if (isFinite(Tc)) s.text(`faint: 0.85–1.25 T_c,  T_c = ${Tc.toFixed(0)} K`, 0.495, Math.min(280, R * 1.25 * Tc / (0.49 - b) - a / 0.2401 + 14), { size: 10.5, color: 'muted', align: 'right' });
+          if (isFinite(Tc)) for (const f of [0.85, 0.95, 1, 1.1, 1.25]) { const TT = f * Tc; s.fn((V) => (V > b ? R * TT / (V - b) - a / (V * V) : NaN), { color: f === 1 ? 'muted' : 'faint', width: f === 1 ? 1.4 : 1, domain: [b * 1.02, 0.5] }); } s.corner(isFinite(Tc) ? `faint: isotherms at 0.85–1.25 T_c,  T_c = 8a/27Rb = ${Tc.toFixed(0)} K` : 'no critical point without a and b', 'tr', { size: 11 });
           s.fn((V) => R * T / V, { color: 'ink', width: 1.6, dash: [6, 4], domain: [0.01, 0.5] });
           // the isotherm, red where dp/dV > 0
           const N = 500, pts = [], bad = [];
@@ -278,7 +280,7 @@ The constant $b$ is the volume excluded per mole by the molecules themselves (fo
           s.dot(V, Math.max(-100, Math.min(300, Pid)), { r: 4.5, color: 'ink', hollow: true });
           st = { a, b, T, Tc, V, P, Pid, rep: V > b ? R * T / (V - b) : NaN, att: a / (V * V), loop: T < Tc };
           // bars: perfect gas, kinetic with excluded volume, attraction, total
-          const top = Math.max(300, (st.rep || 0) * 1.1, Pid * 1.1), bot = Math.min(-150, -st.att * 1.1);
+          const top = Math.max(300, (st.rep || 0) * 1.15, Pid * 1.15), bot = Math.min(-150, -st.att * 1.25);
           sb.setView([0, 4], [bot, top]);
           sb.line(0, 0, 4, 0, { color: 'ink', width: 1 });
           const bar = (i, val, col, lab, base = 0) => { if (!isFinite(val)) return; sb.rect(i + 0.15, base, i + 0.85, base + val, { fill: col, fillAlpha: 0.65, stroke: false }); sb.text(lab, i + 0.5, val >= 0 ? base + val : base + val, { size: 10.5, color: col, align: 'center', dy: val >= 0 ? -9 : 10 }); };

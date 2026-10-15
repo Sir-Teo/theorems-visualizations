@@ -38,7 +38,12 @@ for (const it of ghosts) it.deps = (it.deps || []).filter((d) => d !== it.id && 
 for (const it of [...all, ...ghosts]) if (it.introduces) it.introduces = it.introduces.filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
 // short author string for lists and search: "Shannon", "Watson & Crick", "Kahneman, Tversky et al."
 const surname = (x) => { const w = x.trim().split(/\s+/); let i = w.length - 1; while (i > 0 && /^(von|van|de|der|den|del|della|di|du|da|le|la|ter|ten|zu|al|bin|ibn)$/i.test(w[i - 1])) i--; return w.slice(i).join(' '); };
-const shortAuthors = (a) => { const xs = String(a).split(/\s*(?:,|;|\band\b|&)\s*/).filter((x) => x && !/^(jr\.?|sr\.?|ii|iii)$/i.test(x.trim())).map(surname); return xs.length > 2 ? `${xs[0]} et al.` : xs.join(' & '); };
+const shortAuthors = (a) => {
+  let t = String(a).replace(/\([^)]*\)/g, ' '); // drop "(LIGO Scientific Collaboration …)"
+  const etal = /\bet\s+al\.?|\band\s+others\b/i.test(t); t = t.replace(/\bet\s+al\.?|\band\s+others\b/gi, ' ');
+  const xs = t.split(/\s*(?:,|;|\band\b|&)\s*/).filter((x) => x.trim() && !/^(jr\.?|sr\.?|ii|iii)$/i.test(x.trim())).map(surname);
+  return xs.length > 2 || (etal && xs.length) ? `${xs[0]} et al.` : xs.join(' & ');
+};
 const paperYear = (it) => (it.kind === 'Paper' && Number.isInteger(it.paper?.year) ? it.paper.year : undefined);
 
 // ---------- graph statistics (written items only) ----------

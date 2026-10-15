@@ -630,8 +630,8 @@ $$T = S\sqrt{T^*T}.$$`,
           if (!st) return '';
           const { T, P, Q, U, dU, err, wrong, s, errQ, normal, fl } = st;
           const head = `$S$ is ${dU > 0 ? 'a rotation' : 'a reflection'} ($\\det S = ${dU > 0 ? 1 : -1}$, $S^*S = I$) and $\\sqrt{T^*T}$ has eigenvalues $s_1 = ${tn(s[0])}$, $s_2 = ${tn(s[1])}$ on $e_1, e_2$. `;
-          if (wrong) return head + (normal ? `$T$ is normal, so $\\sqrt{TT^*} = \\sqrt{T^*T}$ and this order works too.` : `$S\\sqrt{TT^*}$ misses $T$ by $${tn(err, 3)}$: $\\sqrt{TT^*}$ belongs on the other side, $\\sqrt{TT^*}\\,S = T$ (difference $${v.sci(errQ, 1)}$).`);
-          if (fl) return head + (s[1] > 1e-9 ? `Flipping $f_2$ breaks it ($\\|S\\sqrt{T^*T} - T\\|_{\\max} = ${tn(err, 3)}$): for invertible $T$ the unitary factor is unique.` : `With $s_2 = 0$ the flipped $S$ works as well (difference $${v.sci(err, 1)}$): for non-invertible $T$, $S$ is **not unique**.`);
+          if (wrong) return head + (normal ? `$T$ is normal, so $\\sqrt{TT^*} = \\sqrt{T^*T}$ and this order works too.` : `$S\\sqrt{TT^*}$ misses $T$ by up to $${tn(err, 3)}$ in an entry: $\\sqrt{TT^*}$ belongs on the other side, $\\sqrt{TT^*}\\,S = T$ (difference $${v.sci(errQ, 1)}$).`);
+          if (fl) return head + (s[1] > 1e-9 ? `Flipping $f_2$ breaks it ($S\\sqrt{T^*T}$ now misses $T$ by up to $${tn(err, 3)}$ in an entry): for invertible $T$ the unitary factor is unique.` : `With $s_2 = 0$ the flipped $S$ works as well (difference $${v.sci(err, 1)}$): for non-invertible $T$, $S$ is **not unique**.`);
           return head + `$S\\sqrt{T^*T} = T$ up to $${v.sci(err, 1)}$.`;
         });
       },

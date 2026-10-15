@@ -16,7 +16,7 @@ function rbox(v, S, X, Y, W, H, r, st = {}) {
 /** Disc of pixel radius r centred at pixel (X, Y): opaque panel underneath, then a tint and an outline. */
 function pdisc(v, S, X, Y, r, st = {}) {
   const c = S.ctx; c.save(); c.beginPath(); c.arc(X, Y, r, 0, 2 * Math.PI);
-  c.fillStyle = v.color('panel'); c.fill();
+  if (st.base !== false) { c.fillStyle = v.color('panel'); c.fill(); }
   if (st.fill) { c.fillStyle = v.color(st.fill, st.fillAlpha ?? 0.25); c.fill(); }
   if (st.stroke) { c.lineWidth = st.width ?? 1.6; c.strokeStyle = v.color(st.stroke, st.alpha ?? 1); c.setLineDash(st.dash || []); c.stroke(); }
   c.restore();
@@ -231,8 +231,8 @@ The gcd is characterised by divisibility alone: it is the unique $g\ge0$ that di
           const fsz = M.clamp(rad * 0.82, 8.5, 13);
           for (const nd of nodes) {
             const X = S.X(nd.x), Y = S.Y(nd.y), col = memb(nd.d);
+            if (nd.d === g) pdisc(v, S, X, Y, rad + 4, { stroke: 'gold', width: 3.2 });
             pdisc(v, S, X, Y, rad, { fill: col, fillAlpha: nd.d === sel ? 0.6 : 0.22, stroke: col, width: nd.d === sel ? 2.6 : 1.6 });
-            if (nd.d === g) pdisc(v, S, X, Y, rad + 4, { stroke: 'gold', width: 3 });
             S.textPx(String(nd.d), X, Y + 0.5, { align: 'center', size: nd.d >= 100 ? fsz * 0.86 : fsz, weight: 650, halo: false });
           }
           const tag = (d, txt, col, pos) => { const nd = byD.get(d); if (nd) S.text(txt, nd.x, nd.y, { color: col, size: 12.5, weight: 650, align: pos === 'l' ? 'right' : 'left', dx: pos === 'l' ? -(rad + 7) : rad + 7, dy: -rad * 0.7 }); };
@@ -272,8 +272,8 @@ and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stop
         const mode = v.select('', [{ value: 'int', label: 'integer sides' }, { value: 'phi', label: 'golden rectangle $\\varphi : 1$' }, { value: 'r2', label: '$\\sqrt2 : 1$' }], 'int');
         const A = v.slider('$a$', 1, 1200, 1071, { int: true });
         const B = v.slider('$b$', 1, 1200, 462, { int: true });
-        const R = v.stage({ x: [0, 1071], y: [0, 462], equal: true, axes: false, height: 330, weight: 1.35 });
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 250, title: 'division with remainder, line by line' });
+        const R = v.stage({ x: [0, 1071], y: [0, 462], equal: true, axes: false, height: 310, weight: 1.75 });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, weight: 0.9, minWidth: 250, title: 'division with remainder, line by line' });
         const num = (x, real) => (real ? x.toFixed(2) : String(x));
         const build = () => {
           const m = mode.value, real = m !== 'int';
@@ -299,7 +299,7 @@ and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stop
           else frames.push({ ...frames[frames.length - 1], cur: -1, final: true, g: last.b, a, b, note: `The last square has side $g = ${last.b}$. It fits a whole number of times into every earlier square, so the grid of $g\\times g$ cells tiles the whole rectangle: $g \\mid ${a}$ and $g \\mid ${b}$. Any common divisor of $${a}$ and $${b}$ divides every remainder, hence divides $g$. So $\\gcd(${a}, ${b}) = ${last.b}$.` });
           return frames;
         };
-        const S = v.steps({ frames: build, speed: 0.8, start: 'end', still: 'end' });
+        const S = v.steps({ frames: build, speed: 0.8, start: 'end', still: 'end', counter: 'frame' });
         let key = '';
         v.render(() => {
           const m = mode.value, real = m !== 'int';
@@ -319,8 +319,8 @@ and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stop
           if (f.final) {
             const g = f.g, sp = g * R.scale;
             if (sp >= 3.5) {
-              for (let x = g; x < f.W - 1e-9; x += g) R.line(x, 0, x, f.H, { color: 'gold', width: 0.8, alpha: 0.75 });
-              for (let y = g; y < f.H - 1e-9; y += g) R.line(0, y, f.W, y, { color: 'gold', width: 0.8, alpha: 0.75 });
+              for (let x = g; x < f.W - 1e-9; x += g) R.line(x, 0, x, f.H, { color: 'gold', width: 0.7, alpha: 0.55 });
+              for (let y = g; y < f.H - 1e-9; y += g) R.line(0, y, f.W, y, { color: 'gold', width: 0.7, alpha: 0.55 });
             } else R.corner(`the ${g}×${g} grid is too fine to draw here`, 'br', { size: 11 });
             const lastSq = f.squares[f.squares.length - 1];
             R.rect(lastSq.x, lastSq.y, lastSq.x + g, lastSq.y + g, { fill: 'gold', fillAlpha: 0.75, color: 'gold', width: 2 });
@@ -342,7 +342,7 @@ and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stop
           const f = S.frame; if (!f.rows) return '';
           if (f.real) return `Ratio $a/b = ${(f.W / f.H).toFixed(6)}\\ldots$; quotients so far ${f.rows.map((r) => r.q).join(', ')}, … — the continued fraction of $a/b$, which never ends for an irrational ratio.`;
           const rows = build().slice(-2)[0].rows, g = rows[rows.length - 1].b;
-          return `$\\gcd(${Math.max(A.value, B.value)}, ${Math.min(A.value, B.value)}) = ${g}$ after ${rows.length} division step${rows.length === 1 ? '' : 's'}; quotients ${rows.map((r) => r.q).join(', ')}. Showing step ${Math.min(S.i, rows.length)} of ${rows.length}.`;
+          return `$\\gcd(${Math.max(A.value, B.value)}, ${Math.min(A.value, B.value)}) = ${g}$ after ${rows.length} division step${rows.length === 1 ? '' : 's'}; quotients ${rows.map((r) => r.q).join(', ')}. On screen: ${S.i === 0 ? 'the uncut rectangle' : S.i > rows.length ? 'the finished tiling with the gcd grid' : `division step ${S.i} of ${rows.length}`}.`;
         });
       },
     },
@@ -355,7 +355,7 @@ and $\gcd(a,b)=r_{n-1}$. The remainders strictly decrease, so the algorithm stop
 $$ax+by=g .$$
 More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a$ and $b$ is exactly the set $g\Z$ of multiples of $g$; in particular $g$ is its smallest positive element, and every common divisor of $a$ and $b$ divides $g$.`,
       idea: String.raw`Run Euclid’s algorithm (1.3) and carry along, for each remainder, a way of writing it as $ax+by$: $a=a\cdot1+b\cdot0$, $b=a\cdot0+b\cdot1$, and if $r_{k+1}=r_{k-1}-q_kr_k$ then the coefficients obey the same recursion. The last nonzero remainder is $g$, with its coefficients (equivalently, back-substitute the division lines from the bottom up). Conversely $g$ divides $a$ and $b$, hence every $ax+by$; so the combinations are exactly $g\Z$, and a common divisor $d$ of $a,b$ divides $ax+by=g$. The coefficients must be allowed to be negative: with $x,y\ge0$ the smallest positive value is $\min(a,b)$.`,
-      caption: String.raw`Left: the coefficient pairs $(x_k,y_k)$ produced by the extended algorithm, each labelled with its value $r_k=ax_k+by_k$; they close in on the line $ax+by=0$ (dashed) and the last one before it — green — is the Bézout pair. Drag the lattice point $(x,y)$ and read $ax+by$ live: it is always a multiple of $g$, as the number line below shows. Switch the table to *back-substitution* to climb up the division lines instead, and allow only $x,y\ge0$ to watch Bézout fail.`,
+      caption: String.raw`Two rulers are marked at the multiples of $a$ (blue, above) and of $b$ (orange, below). Every remainder of the extended algorithm is a gap between an $a$-mark and a $b$-mark — $r_k = a x_k + b y_k$ with $x_k, y_k$ of opposite signs — and the gaps shrink down to $g$ (green): the Bézout pair can be read off the two marks. Click a gap or a table row; switch the table to *back-substitution* to climb the division lines instead. The strip below shows all values $ax+by$ — the multiples of $g$ — and what is left when only $x,y\ge0$ are allowed.`,
       deps: ['nt-1.3'],
       tags: ['gcd', 'linear combinations'],
       credit: 'Bachet, 1624 (integers); Bézout, 1779 (polynomials)',
@@ -366,57 +366,68 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
         const B = v.slider('$b$', 1, 99, 22, { int: true });
         const tab = v.select('table', [{ value: 'fwd', label: 'extended Euclid' }, { value: 'back', label: 'back-substitution' }], 'fwd');
         const pos = v.toggle('only $x, y \\ge 0$', false);
-        const P = v.stage({ x: [-12, 4], y: [-8, 27], equal: true, height: 380, weight: 1, minWidth: 300, title: 'coefficient plane: the point $(x, y)$ has value $ax + by$' });
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1.15, minWidth: 330 });
-        const N = v.stage({ x: [-100, 100], y: [-1, 1.4], axes: false, height: 100, full: true });
-        const H = P.handle(1, 1, { color: 'accent', label: '(x, y)', labelPos: 'ne', constrain: (x, y) => [Math.round(x), Math.round(y)] });
-        let st = null;
+        const R = v.stage({ x: [0, 170], y: [-1.2, 5], axes: false, height: 330, weight: 1.3, minWidth: 330, title: 'two rulers: multiples of $a$ above, of $b$ below — each remainder is a gap between marks' });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 300 });
+        const N = v.stage({ x: [-100, 100], y: [-1, 1.4], axes: false, height: 96, full: true });
+        let sel = null, st = null, lanes = [], tgeo = null, lastKey = '';
+        R.onClick((x, y) => { let best = null, bd = 0.5; for (const ln of lanes) { const d = Math.abs(ln.y - y); if (d < bd) { bd = d; best = ln.k; } } if (best != null) sel = best; });
+        T.onClick((x, y) => { if (!tgeo) return; const k = Math.round((T.Y(y) - tgeo.y0) / tgeo.h); if (k >= 0 && k < tgeo.n) sel = k; });
         v.render(() => {
-          const a = A.value, b = B.value, g = M.gcd(a, b), rows = extRows(a, b), n = rows.length - 2; // rows[n] holds g
-          const bz = rows[n];
-          // ---- coefficient plane
-          const xs = rows.map((r) => r.x).concat([0]), ys = rows.map((r) => r.y).concat([0]);
-          const x0 = Math.min(...xs) - 1.6, x1 = Math.max(...xs) + 1.6, y0 = Math.min(...ys) - 1.6, y1 = Math.max(...ys) + 1.6;
-          P.setView([x0, x1], [y0, y1]);
-          const bx = P.bounds;
-          H.x = M.clamp(Math.round(H.x), Math.ceil(bx.x[0]), Math.floor(bx.x[1])); H.y = M.clamp(Math.round(H.y), Math.ceil(bx.y[0]), Math.floor(bx.y[1]));
-          if (pos.value) P.rect(0, 0, bx.x[1], bx.y[1], { fill: 'green', fillAlpha: 0.08, stroke: false });
-          if (P.scale >= 7) {
-            const pts = []; for (let x = Math.ceil(bx.x[0]); x <= bx.x[1]; x++) for (let y = Math.ceil(bx.y[0]); y <= bx.y[1]; y++) pts.push([x, y]);
-            P.dots(pts, { r: P.scale >= 14 ? 1.8 : 1.2, color: 'muted', alpha: 0.5 });
+          const a = A.value, b = B.value, g = M.gcd(a, b), rows = extRows(a, b), n = rows.length - 2; // rows[n].r = g
+          const key = `${a}|${b}`; if (key !== lastKey) { lastKey = key; sel = n; }
+          // ---- the two rulers and the remainder gaps
+          lanes = [];
+          for (let k = 2; k <= n; k++) if (rows[k].x * rows[k].y < 0) lanes.push({ k, XA: Math.abs(rows[k].x) * a, XB: Math.abs(rows[k].y) * b });
+          const Xmax = Math.max(2 * Math.max(a, b), ...lanes.map((l) => Math.max(l.XA, l.XB))) * 1.05;
+          const L = lanes.length, top = 0.95 + Math.max(0, L - 1) + 0.75;
+          lanes.forEach((ln, i) => { ln.y = 0.95 + (L - 1 - i); });
+          R.setView([-Xmax * 0.03, Xmax * 1.02], [-1.25, Math.max(top, 2.2)]);
+          R.line(0, 0, Xmax, 0, { color: 'muted', width: 1.2 });
+          const usedA = new Set(lanes.map((l) => l.XA)), usedB = new Set(lanes.map((l) => l.XB));
+          for (let m = 0; m * a <= Xmax; m++) {
+            R.line(m * a, 0, m * a, 0.34, { color: 'blue', width: usedA.has(m * a) ? 2.4 : 1.4 });
+            if (usedA.has(m * a) || m * a * R.scale >= 0 && a * R.scale >= 26) R.text(m === 1 ? 'a' : `${m}a`, m * a, 0.52, { align: 'center', size: 10.5, color: 'blue', weight: usedA.has(m * a) ? 650 : 500 });
           }
-          const far = 4 * (Math.abs(x1 - x0) + Math.abs(y1 - y0));
-          const L = Math.hypot(a, b);
-          P.clip(() => {
-            P.line(-far * b / L, far * a / L, far * b / L, -far * a / L, { color: 'muted', width: 1.4, dash: [6, 5] });
-            P.line(bz.x - far * b / L, bz.y + far * a / L, bz.x + far * b / L, bz.y - far * a / L, { color: 'green', width: 1, alpha: 0.5 });
-          });
-          P.path(rows.map((r) => [r.x, r.y]), { color: 'gold', width: 2, alpha: 0.8 });
-          rows.forEach((r, k) => {
-            const last = k === rows.length - 1, isB = k === n;
-            P.dot(r.x, r.y, { r: isB ? 7 : 4.5, color: isB ? (pos.value && (r.x < 0 || r.y < 0) ? 'red' : 'green') : last ? 'muted' : 'gold' });
-            P.text(String(r.r), r.x, r.y, { size: 11.5, weight: 650, color: isB ? 'green' : last ? 'muted' : 'ink', dx: 9, dy: -9, align: 'left' });
-          });
-          P.tex(`(${bz.x}, ${bz.y})`, bz.x, bz.y, { color: 'green', size: 13, dx: 0, dy: 18 });
-          // ---- table
+          for (let m = 0; m * b <= Xmax; m++) {
+            R.line(m * b, 0, m * b, -0.34, { color: 'orange', width: usedB.has(m * b) ? 2.4 : 1.4 });
+            if (usedB.has(m * b) || b * R.scale >= 26) R.text(m === 1 ? 'b' : `${m}b`, m * b, -0.55, { align: 'center', size: 10.5, color: 'orange', weight: usedB.has(m * b) ? 650 : 500 });
+          }
+          if (!L) R.corner(n <= 1 ? `b divides a: g = b = 0·a + 1·b` : 'no gaps to show', 'tr', { size: 12, color: 'green', weight: 650 });
+          for (const ln of lanes) {
+            const r = rows[ln.k], isG = ln.k === n, isSel = ln.k === sel, col = isG ? 'green' : 'gold';
+            if (isSel) R.hband(ln.y - 0.38, ln.y + 0.38, { color: col, alpha: 0.1 });
+            R.line(ln.XA, 0.34, ln.XA, ln.y, { color: 'blue', width: 1, dash: [3, 3], alpha: 0.6 });
+            R.line(ln.XB, 0, ln.XB, ln.y, { color: 'orange', width: 1, dash: [3, 3], alpha: 0.6 });
+            let lo = Math.min(ln.XA, ln.XB), hi = Math.max(ln.XA, ln.XB);
+            const minW = 9 / R.scale; if (hi - lo < minW) { const c = (lo + hi) / 2; lo = c - minW / 2; hi = c + minW / 2; }
+            R.line(lo, ln.y, hi, ln.y, { color: col, width: isSel ? 4 : 2.6 });
+            R.line(lo, ln.y - 0.17, lo, ln.y + 0.17, { color: col, width: 2 }); R.line(hi, ln.y - 0.17, hi, ln.y + 0.17, { color: col, width: 2 });
+            const tex = `${r.r} = ${lin(r.x, a, r.y, b)}`, wEst = 7.6 * (String(r.r).length + String(Math.abs(r.x)).length + String(Math.abs(r.y)).length + 10);
+            const right = R.X(hi) + 10 + wEst < R.width;
+            R.tex(tex, right ? hi : lo, ln.y, { align: right ? 'left' : 'right', dx: right ? 10 : -10, size: 13.5, color: isG ? 'green' : 'ink' });
+          }
+          // ---- the table
           const W = T.width, Ht = T.height;
+          tgeo = null;
           if (tab.value === 'fwd') {
             T.setTitle('extended Euclid: every remainder as $a x_k + b y_k$');
             const cols = [0.07, 0.2, 0.33, 0.47, 0.61, 0.83].map((t) => t * W);
             const heads = ['k', 'r_k', 'q_k', 'x_k', 'y_k', `${a}x_k + ${b}y_k`];
             const rowH = Math.min(30, (Ht - 40) / (rows.length + 1)), fs = Math.max(10.5, Math.min(14.5, rowH * 0.56));
+            tgeo = { y0: 16 + rowH, h: rowH, n: rows.length };
             heads.forEach((h, j) => T.texPx(h, cols[j], 16, { size: fs, color: 'muted' }));
             rows.forEach((r, k) => {
               const Y = 16 + rowH * (k + 1);
               if (k === n) rbox(v, T, 4, Y - rowH / 2 + 1, W - 8, rowH - 2, 6, { fill: 'green', fillAlpha: 0.16 });
+              if (k === sel) rbox(v, T, 4, Y - rowH / 2 + 1, W - 8, rowH - 2, 6, { stroke: k === n ? 'green' : 'gold', width: 2 });
               const col = k === rows.length - 1 ? 'muted' : 'ink';
               [k, r.r, r.q ?? '', r.x, r.y, a * r.x + b * r.y].forEach((val, j) => { if (val !== '') T.texPx(String(val), cols[j], Y, { size: fs, color: j === 5 ? (k === n ? 'green' : 'teal') : col }); });
             });
-            T.textPx('each row: (row two above) − q × (row above)', W / 2, Ht - 10, { align: 'center', size: 11, color: 'muted' });
+            T.textPx('each row = (row two above) − q × (row above) · click a row', W / 2, Ht - 10, { align: 'center', size: 11, color: 'muted' });
           } else {
             T.setTitle('back-substitution: climb the division lines from the bottom');
             const lines = [];
-            if (n === 1) lines.push({ eq: `${g} = ${lin(0, a, 1, b)}`, why: `$${b} \\mid ${a}$, so $g = b$` });
+            if (n <= 1) lines.push({ eq: `${g} = ${lin(0, a, 1, b)}`, why: `$${b} \\mid ${a}$, so $g = b$` });
             else {
               let s = 1, t = -rows[n - 1].q; // g = s·r_{n-2} + t·r_{n-1}
               lines.push({ eq: `${g} = ${lin(s, rows[n - 2].r, t, rows[n - 1].r)}`, why: `line ${n - 1}: $${rows[n - 2].r} = ${rows[n - 1].q}\\cdot${rows[n - 1].r} + ${g}$` });
@@ -433,7 +444,7 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
               T.texPx(ln.why, 22, Y + fs * 0.75, { align: 'left', size: fs * 0.78, color: 'muted', rich: true });
             });
           }
-          // ---- number line of values ax + by
+          // ---- number line of the values ax + by
           const Mx = Math.max(a, b) * 1.5;
           N.setView([pos.value ? -Mx * 0.08 : -Mx, Mx], [-1, 1.4]);
           N.line(N.bounds.x[0], 0, Mx, 0, { color: 'muted', width: 1 });
@@ -446,16 +457,20 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
           const sp = pos.value ? Math.min(a, b) : g;
           mark(sp, pos.value ? `smallest > 0: ${sp}` : `g = ${g}`, pos.value ? 'red' : 'green');
           if (pos.value && g < sp) { N.dot(g, 0, { r: 4.5, hollow: true, color: 'green' }); N.text(`g = ${g} unreachable`, g, -0.82, { align: 'center', size: 11, color: 'green' }); }
-          const hv = a * H.x + b * H.y;
-          if (Math.abs(hv) <= Mx) mark(hv, 'ax + by', 'accent', false);
-          N.corner(pos.value ? 'values ax + by with x, y ≥ 0' : 'all values ax + by: the multiples of g', 'tl', { size: 11 });
-          st = { a, b, g, bz, hv };
+          if (sel != null && rows[sel] && rows[sel].r !== sp && rows[sel].r <= Mx && rows[sel].r > 0) mark(rows[sel].r, `r = ${rows[sel].r}`, 'gold', false);
+          N.corner(pos.value ? 'values ax + by with x, y ≥ 0 only' : 'all values ax + by (x, y any integers): exactly the multiples of g', 'tl', { size: 11 });
+          st = { a, b, g, rows, n };
         });
         v.readout(() => {
           if (!st) return '';
-          const { a, b, g, bz, hv } = st;
-          let s = `$\\gcd(${a}, ${b}) = ${g} = ${a}\\cdot ${par(bz.x)} + ${b}\\cdot ${par(bz.y)}$ ✓. Your point: $${a}\\cdot ${par(H.x)} + ${b}\\cdot ${par(H.y)} = ${hv} = ${hv / g}\\cdot ${g}$` + (hv === g ? ' — **a Bézout pair**.' : ', a multiple of $g$ as always.');
-          if (pos.value) s += ` With $x, y \\ge 0$ the smallest positive value is $\\min(a, b) = ${Math.min(a, b)}$` + (Math.min(a, b) > g ? `, not $g$: negative coefficients are essential.` : ' (here $g$ itself, because one number divides the other).');
+          const { a, b, g, rows, n } = st, bz = rows[n], r = rows[sel] ?? bz;
+          let s = `$\\gcd(${a}, ${b}) = ${g} = ${a}\\cdot ${par(bz.x)} + ${b}\\cdot ${par(bz.y)}$ ✓.`;
+          if (sel != null && rows[sel]) {
+            s += ` Row ${sel}: $r_{${sel}} = ${r.r} = ${a}\\cdot ${par(r.x)} + ${b}\\cdot ${par(r.y)}$`;
+            if (r.x * r.y < 0) s += ` — on the rulers, the marks $${Math.abs(r.x)}a = ${Math.abs(r.x) * a}$ and $${Math.abs(r.y)}b = ${Math.abs(r.y) * b}$ are ${r.r} apart.`;
+            else s += '.';
+          }
+          if (pos.value) s += ` With $x, y \\ge 0$ the smallest positive value is $\\min(a, b) = ${Math.min(a, b)}$` + (Math.min(a, b) > g ? ', not $g$: a gap between two marks needs a minus sign, so negative coefficients are essential.' : ' (here $g$ itself, because one number divides the other).');
           return s;
         });
       },

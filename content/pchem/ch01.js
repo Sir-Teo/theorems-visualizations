@@ -379,7 +379,11 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
           if (law.value === 'p') G.piston = { k: 3, M: fast() ? 200 : 2000, pext: pe, gamma: fast() ? 20 : 100 };
           win = G.snap(); tStep = tChange = tSim;
         };
-        const newSeries = () => { series.push({ law: law.value, k: load.value, gas: gas.value, pts: [], col: COLS[(series.length ? COLS.indexOf(series[series.length - 1].col) + 1 : 0) % 3] }); if (series.length > 3) series.shift(); last = null; };
+        const newSeries = () => {
+          if (series.length && series[series.length - 1].pts.length < 4) series.pop();   // drop a series that never got going
+          const used = series.map((S) => S.col), col = COLS.find((c) => !used.includes(c)) || COLS[series.length % 3];
+          series.push({ law: law.value, k: load.value, gas: gas.value, pts: [], col }); if (series.length > 3) series.shift(); last = null;
+        };
         const reset = () => { tSim = 0; step = 0; dir = 1; series = []; load.value = 1; make(); newSeries(); };
         reset();
         const fit = (S) => {
@@ -787,7 +791,7 @@ At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\
             for (const sx of [-1, 0, 1]) for (const sy of [-1, 0, 1]) {
               const sh2 = pts.map((q) => [q[0] + sx, q[1] + sy]);
               sa.path(sh2, { color: 'gold', width: 2.2 });
-              sh2.slice(1, -1).forEach((q) => sa.dot(q[0], q[1], { r: 3.2, color: 'red', ring: false }));
+              sh2.slice(1, -1).forEach((q) => sa.dot(q[0], q[1], { r: 3.2, color: 'ink', ring: false }));
             }
           }, [0, 1], [0, 1]);
           sa.dot(G.x[0] * sc, G.y[0] * sc, { r: Math.max(3, sp.d / 2 * sc * sa.scale), color: 'gold' });
@@ -804,7 +808,7 @@ At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\
           if (cnt) { sh.vline(R.lm / 10, { color: sp.col, width: 2.2 }); sh.text('measured mean', R.lm / 10, 1.08 * 10 / lp, { size: 11, color: sp.col, dx: 5, align: 'left' }); }
           sh.text('λ predicted', lp / 10, 0.94 * 10 / lp, { size: 11, color: 'ink', dx: 5, align: 'left' });
         }, { still: 20 });
-        v.legend([['gold', 'path of the tagged molecule'], ['red', 'its collisions', { dot: true }], ['muted', 'free paths of all molecules', { area: true }], ['ink', 'exponential law, mean $k_BT/\\sqrt2\\sigma p$', { dash: true }]]);
+        v.legend([['gold', 'path of the tagged molecule'], ['ink', 'its collisions', { dot: true }], ['muted', 'free paths of all molecules', { area: true }], ['ink', 'exponential law, mean $k_BT/\\sqrt2\\sigma p$', { dash: true }]]);
         v.readout(() => {
           if (!R || !R.cnt) return 'Waiting for collisions…';
           const { lp, lm, zP, zM, eta, chi, cnt } = R;
