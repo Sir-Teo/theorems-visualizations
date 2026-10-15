@@ -731,6 +731,52 @@ function inverseIteration(A, lr, li, against = []) {
  * Eigenvectors come from inverse iteration (largest component made real positive). For a defective eigenvalue the
  * repeated copies get the same (only) eigenvector. {vectors: false} skips them.
  */
+/** Solve A x = b for a complex matrix A (entries number | Cx | [re,im]) and vector b; null if singular. Returns Cx[]. */
+export function solveC(A, b) {
+  const n = A.length; const M = A.map((r, i) => [...r.map(Cx.of), Cx.of(b[i])]);
+  for (let k = 0; k < n; k++) {
+    let p = k; for (let i = k + 1; i < n; i++) if (M[i][k].abs() > M[p][k].abs()) p = i;
+    if (M[p][k].abs() < 1e-300) return null;
+    [M[k], M[p]] = [M[p], M[k]];
+    for (let i = k + 1; i < n; i++) { const f = M[i][k].div(M[k][k]); for (let j = k; j <= n; j++) M[i][j] = M[i][j].sub(f.mul(M[k][j])); }
+  }
+  const x = Array(n);
+  for (let i = n - 1; i >= 0; i--) { let s = M[i][n]; for (let j = i + 1; j < n; j++) s = s.sub(M[i][j].mul(x[j])); x[i] = s.div(M[i][i]); }
+  return x;
+}
+/**
+ * Eigenvalues and eigenvectors of a small complex matrix (entries number | Cx | [re,im]).
+ * Characteristic polynomial by Faddeev–LeVerrier, roots by polyRoots, eigenvectors by inverse iteration.
+ * Returns {values: Cx[], vectors: [{re: [...], im: [...]}]} sorted by |λ| (largest first). Fine for n ≤ 8.
+ */
+export function eigC(A, { vectors = true } = {}) {
+  const n = A.length; if (!n) return { values: [], vectors: [] };
+  const Z = A.map((r) => r.map(Cx.of)), O = () => new Cx(0, 0);
+  const mm = (X, Y) => X.map((r) => Y[0].map((_, j) => r.reduce((s, x, k) => s.add(x.mul(Y[k][j])), O())));
+  const c = Array(n + 1); c[n] = new Cx(1, 0); let Mk = Z.map((r) => r.map(O));
+  for (let k = 1; k <= n; k++) {
+    Mk = mm(Z, Mk); for (let i = 0; i < n; i++) Mk[i][i] = Mk[i][i].add(c[n - k + 1]);
+    const AM = mm(Z, Mk); let tr = O(); for (let i = 0; i < n; i++) tr = tr.add(AM[i][i]);
+    c[n - k] = tr.scale(-1 / k);
+  }
+  const vals = polyRoots(c).sort((u, v) => (v.abs() - u.abs()) || (v.re - u.re) || (v.im - u.im));
+  if (!vectors) return { values: vals };
+  const scale = Math.max(1e-12, ...Z.flat().map((z) => z.abs()));
+  const vecs = vals.map((lam) => {
+    const shift = lam.add(new Cx(scale * 1e-9, scale * 1e-9)); // keep A − σI invertible
+    const S = Z.map((r, i) => r.map((z, j) => (i === j ? z.sub(shift) : z)));
+    let x = Array.from({ length: n }, (_, i) => new Cx(1 + 0.1 * i, 0.05 * i));
+    for (let it = 0; it < 4; it++) {
+      const y = solveC(S, x); if (!y) break;
+      const nr = Math.sqrt(y.reduce((s, z) => s + z.abs2(), 0)) || 1; x = y.map((z) => z.scale(1 / nr));
+    }
+    // fix the phase: largest component real and positive
+    let m = 0; for (let i = 1; i < n; i++) if (x[i].abs() > x[m].abs()) m = i;
+    const ph = x[m].abs() ? x[m].conj().scale(1 / x[m].abs()) : new Cx(1, 0); x = x.map((z) => z.mul(ph));
+    return { re: x.map((z) => z.re), im: x.map((z) => z.im) };
+  });
+  return { values: vals, vectors: vecs };
+}
 export function eig(A, { vectors = true } = {}) {
   const n = A.length; if (!n) return { values: [], vectors: [], cvectors: [] };
   const [wr, wi] = hqrEig(A);

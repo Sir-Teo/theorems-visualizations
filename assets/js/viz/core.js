@@ -55,6 +55,7 @@ export const MACROS = {
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
 export const escapeHTML = (s) => String(s).replace(/[&<>"]/g, (c) => ESC[c]);
 export function katexHTML(tex, display = false) {
+  tex = String(tex).replace(/(?<!\\)%/g, '\\%'); // a bare % would start a TeX comment and swallow the rest of the line
   const K = typeof window !== 'undefined' && window.katex;
   if (!K) return `<span class="tex-fallback">${escapeHTML(tex)}</span>`;
   if (window.__texStrict) {

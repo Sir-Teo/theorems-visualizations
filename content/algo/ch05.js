@@ -198,6 +198,221 @@ const ROT_CODE = {
   left: ['Left-Rotate(T, x):         ▷ y = x.right', '  y ← x.right', '  x.right ← y.left          ▷ subtree B changes parent', '  y.p ← x.p;  put y where x was (or T.root ← y)', '  y.left ← x;  x.p ← y', '  ▷ three child links change: O(1) time'],
 };
 
+// ---------- 5.6–5.8: red–black trees (nodes carry c: 'R' | 'B')
+/** CLRS black height of every node (NIL counts as a black leaf, the node itself does not), or NaN where the two sides disagree. */
+function rbCheck(t) {
+  const bh = new Map(), bad = new Set(), redred = new Set();
+  (function go(u) {
+    if (!u) return 0;
+    const a = go(u.l), b = go(u.r), ca = a + (!u.l || u.l.c === 'B' ? 1 : 0), cb = b + (!u.r || u.r.c === 'B' ? 1 : 0);
+    if (u.c === 'R') for (const ch of [u.l, u.r]) if (ch && ch.c === 'R') redred.add(ch.k);
+    if (!(ca === cb) || isNaN(ca)) { bad.add(u.k); bh.set(u.k, NaN); return NaN; }
+    bh.set(u.k, ca); return ca;
+  })(t);
+  return { bh, bad, redred, rootRed: !!t && t.c === 'R' };
+}
+/** Feasible (black height, colour) pairs of every node of a tree shape, and one valid colouring if there is any. */
+function rbColourings(t) {
+  const F = new Map(); // node → Map("b|c" → true)
+  const opts = (ch) => { if (!ch) return [[1, 'B']]; const out = []; for (const key of F.get(ch).keys()) { const [b, c] = key.split('|'); out.push([+b + (c === 'B' ? 1 : 0), c]); } return out; };
+  (function go(u) {
+    if (!u) return; go(u.l); go(u.r);
+    const m = new Map(), L = opts(u.l), R = opts(u.r);
+    for (const c of ['B', 'R']) for (const [x, cl] of L) for (const [y, cr] of R) if (x === y && (c === 'B' || (cl === 'B' && cr === 'B'))) m.set(x + '|' + c, true);
+    F.set(u, m);
+  })(t);
+  if (!t) return { ok: true, col: new Map(), bhs: [] };
+  const bhs = [...F.get(t).keys()].filter((s) => s.endsWith('|B')).map((s) => +s.split('|')[0]).sort((a, b) => b - a);
+  if (!bhs.length) return { ok: false, bhs };
+  const col = new Map();
+  (function put(u, b, c) {
+    if (!u) return; col.set(u.k, c);
+    for (const ch of [u.l, u.r]) {
+      if (!ch) continue;
+      const m = F.get(ch);
+      if (m.has(b - 1 + '|B')) put(ch, b - 1, 'B'); else put(ch, b, 'R');
+    }
+  })(t, bhs[0], 'B');
+  return { ok: true, col, bhs };
+}
+/** Tallest legal red–black trees: best[n] = max number of internal nodes on a root–NIL path, with a witness tree. */
+function rbTallest(NMAX) {
+  const BM = 11, NEG = -1e9, T = [], CH = [];
+  // T[n][b][c] (c: 0 black, 1 red); CB(m, x, pc) = best child of m nodes contributing x to a parent of colour pc
+  const CB = (m, x, pc) => { if (m === 0) return x === 1 ? 0 : NEG; let best = x - 1 >= 1 ? T[m][x - 1][0] : NEG; if (pc === 0) best = Math.max(best, T[m][x][1]); return best; };
+  for (let n = 0; n <= NMAX; n++) {
+    T.push([]); CH.push([]);
+    for (let b = 0; b <= BM; b++) {
+      T[n].push([NEG, NEG]); CH[n].push([null, null]);
+      if (n === 0) continue;
+      for (const c of [0, 1]) {
+        let best = NEG, arg = null;
+        for (let nl = 0; nl < n; nl++) {
+          const a = CB(nl, b, c), bb = CB(n - 1 - nl, b, c); if (a < 0 || bb < 0) continue;
+          const h = 1 + Math.max(a, bb); if (h > best) { best = h; arg = nl; }
+        }
+        T[n][b][c] = best; CH[n][b][c] = arg;
+      }
+    }
+  }
+  const best = [0], bOf = [0];
+  for (let n = 1; n <= NMAX; n++) { let h = NEG, bb = 0; for (let b = 1; b <= BM; b++) if (T[n][b][0] > h) { h = T[n][b][0]; bb = b; } best.push(h); bOf.push(bb); }
+  let key = 0;
+  const build = (n, b, c) => {
+    if (n === 0) return null;
+    const nl = CH[n][b][c], kid = (m) => {
+      if (m === 0) return null;
+      const blk = b - 1 >= 1 ? T[m][b - 1][0] : NEG, red = c === 0 ? T[m][b][1] : NEG;
+      return blk >= red ? build(m, b - 1, 0) : build(m, b, 1);
+    };
+    const l = kid(nl), u = { k: 0, c: c ? 'R' : 'B', l, r: null }; u.k = ++key; u.r = kid(n - 1 - nl); return u;
+  };
+  const tree = (n) => { key = 0; return n ? build(n, bOf[n], 0) : null; };
+  return { best, tree };
+}
+const RB_CODE = [
+  'RB-Insert(T, k):  BST-insert z;  z.color ← RED',
+  'while z.p.color = RED              ▷ the only violation',
+  '  y ← uncle of z  (sibling of z.p)',
+  '  if y.color = RED:                ▷ case 1: recolour',
+  '    z.p.color, y.color ← BLACK;  z.p.p.color ← RED',
+  '    z ← z.p.p                      ▷ violation climbs 2 levels',
+  '  else:',
+  '    if z is an inner grandchild:   ▷ case 2: triangle',
+  '      z ← z.p;  rotate at z, outward',
+  '    z.p.color ← BLACK;  z.p.p.color ← RED   ▷ case 3: line',
+  '    rotate at z.p.p;  the loop ends',
+  'T.root.color ← BLACK',
+];
+const rbClone = (t, p = null) => { if (!t) return null; const u = { k: t.k, c: t.c, l: null, r: null, p }; u.l = rbClone(t.l, u); u.r = rbClone(t.r, u); return u; };
+const rbPlain = (u) => (u ? { k: u.k, c: u.c, l: rbPlain(u.l), r: rbPlain(u.r) } : null);
+function rbInsertFrames(t0, k) {
+  let root = rbClone(t0); const F = [], stat = { rot: 0, rec: 0, cases: [] };
+  const snap = (o) => F.push({ L: layT(rbPlain(root)), rot: stat.rot, cases: stat.cases.slice(), k, ...o });
+  const rotate = (x, dir) => {
+    const y = dir === 'left' ? x.r : x.l, inner = dir === 'left' ? 'l' : 'r', outer = dir === 'left' ? 'r' : 'l';
+    x[outer] = y[inner]; if (y[inner]) y[inner].p = x; y.p = x.p;
+    if (!x.p) root = y; else if (x === x.p.l) x.p.l = y; else x.p.r = y;
+    y[inner] = x; x.p = y; stat.rot++;
+  };
+  let y = null, x = root; const path = [];
+  while (x) { path.push(x.k); if (k === x.k) { snap({ path, cur: k, line: 1, note: `${k} is already in the tree.` }); return { F, root: t0 }; } y = x; x = k < x.k ? x.l : x.r; }
+  const z0 = { k, c: 'R', l: null, r: null, p: y };
+  if (!y) root = z0; else if (k < y.k) y.l = z0; else y.r = z0;
+  let z = z0;
+  snap({ path, z: k, line: 1, note: `Insert ${k} as in a BST (${plural(path.length, 'comparison')}) and colour it **red**: black heights are untouched, but ${y && y.c === 'R' ? `its parent ${y.k} is red too — a red–red violation` : y ? `its parent ${y.k} is black, so the tree is already valid` : 'it is the root, which must be black'}.` });
+  while (z.p && z.p.c === 'R') {
+    const p = z.p, g = p.p, left = p === g.l, u = left ? g.r : g.l;
+    if (u && u.c === 'R') {
+      p.c = 'B'; u.c = 'B'; g.c = 'R'; stat.rec += 3; stat.cases.push(1); z = g;
+      snap({ z: g.k, line: [4, 5, 6], case: 1, note: `**Case 1** — the uncle ${u.k} is red: recolour parent and uncle black and the grandparent ${g.k} red. Black heights are unchanged; the possible violation moves up to ${g.k}.` });
+      continue;
+    }
+    if (z === (left ? p.r : p.l)) {
+      stat.cases.push(2); z = p; rotate(z, left ? 'left' : 'right');
+      snap({ z: z.k, line: [8, 9], case: 2, note: `**Case 2** — uncle ${u ? u.k : 'nil'} is black and ${z.p.k}, ${z.k} form a triangle: rotate at ${z.k} to straighten it into a line (rotation ${stat.rot}).` });
+    }
+    stat.cases.push(3); const gp = z.p.p; z.p.c = 'B'; gp.c = 'R'; stat.rec += 2; rotate(gp, left ? 'right' : 'left');
+    snap({ z: z.k, line: [10, 11], case: 3, note: `**Case 3** — a black-uncle line: colour ${z.p.k} black and ${gp.k} red, then rotate at ${gp.k}. The violation is gone (rotation ${stat.rot}).` });
+  }
+  if (root.c === 'R') { root.c = 'B'; stat.rec++; snap({ line: 12, note: `The root ${root.k} is red: colour it black, which adds one to every black height.` }); }
+  const cs = stat.cases.length ? stat.cases.join(' → ') : 'none';
+  snap({ line: 12, done: true, note: `Done: fix-up cases ${cs}, **${plural(stat.rot, 'rotation')}** (at most 2), ${stat.rec} recolourings.` });
+  return { F, root: rbPlain(root) };
+}
+function rbBuild(keys) { let t = null; for (const k of keys) t = rbInsertFrames(t, k).root; return t; }
+
+// ---------- 5.9: AVL trees (nodes carry h = number of levels of their subtree)
+const Hh = (u) => (u ? u.h : 0);
+const fixH = (u) => { u.h = 1 + Math.max(Hh(u.l), Hh(u.r)); };
+function rotUpIn(root, ck) {
+  let gp = null, p = null, c = root;
+  while (c.k !== ck) { gp = p; p = c; c = ck < c.k ? c.l : c.r; }
+  if (p.l === c) { p.l = c.r; c.r = p; } else { p.r = c.l; c.l = p; }
+  fixH(p); fixH(c);
+  if (!gp) return c; if (gp.l === p) gp.l = c; else gp.r = c; return root;
+}
+const AVL_CODE = [
+  'AVL-Insert(T, k):  insert k as a leaf (BST insertion)',
+  'for each ancestor a of the leaf, bottom-up:',
+  '  update a.h;  bf(a) ← h(a.left) − h(a.right)',
+  '  if bf(a) = ±2:                    ▷ a is out of balance',
+  '    outer grandchild:  single rotation at a     ▷ LL / RR',
+  '    inner grandchild:  double rotation          ▷ LR / RL',
+  '    stop     ▷ the subtree has its old height again',
+];
+function avlInsertFrames(t0, k, on) {
+  let root = cloneT(t0); const F = [], st = { single: 0, double: 0 };
+  const snap = (o) => F.push({ L: snapT(root), k, ...o });
+  const anc = []; let u = root;
+  while (u) { anc.push(u); if (k === u.k) { snap({ cur: k, line: 1, note: `${k} is already in the tree.` }); return { F, root: t0, st }; } u = k < u.k ? u.l : u.r; }
+  const z = nd(k, { h: 1 });
+  if (!anc.length) root = z; else { const p = anc[anc.length - 1]; if (k < p.k) p.l = z; else p.r = z; }
+  for (let i = anc.length - 1; i >= 0; i--) fixH(anc[i]);
+  const badA = on ? anc.slice().reverse().find((a) => Math.abs(Hh(a.l) - Hh(a.r)) > 1) : null;
+  const allBad = anc.filter((a) => Math.abs(Hh(a.l) - Hh(a.r)) > 1).map((a) => a.k);
+  snap({ newk: k, path: anc.map((a) => a.k), line: [1, 2, 3], badSet: allBad, note: `Insert ${k} as a leaf and update the heights on the way back up. ` + (badA ? `The lowest ancestor out of balance is ${badA.k}.` : allBad.length ? `Rebalancing is off: ${allBad.length} ancestor${allBad.length > 1 ? 's are' : ' is'} out of balance and stay${allBad.length > 1 ? '' : 's'} so.` : 'Every balance factor is still −1, 0 or +1.') });
+  if (badA) {
+    const idx = anc.indexOf(badA), refix = () => { for (let j = idx - 1; j >= 0; j--) fixH(anc[j]); };
+    const bf = Hh(badA.l) - Hh(badA.r), lh = bf > 0, ch = lh ? badA.l : badA.r, bc = Hh(ch.l) - Hh(ch.r);
+    snap({ bad: badA.k, line: 4, note: `${badA.k} has balance factor ${bf > 0 ? '+' : ''}${bf}: its ${lh ? 'left' : 'right'} subtree is two levels taller. The new key went into the ${(lh ? bc < 0 : bc > 0) ? 'inner' : 'outer'} grandchild subtree.` });
+    if (lh ? bc < 0 : bc > 0) {
+      const g = lh ? ch.r : ch.l;
+      root = rotUpIn(root, g.k); snap({ rotated: g.k, line: 6, note: `Double rotation, part 1: rotate ${g.k} above ${ch.k}.` });
+      root = rotUpIn(root, g.k); st.double++; refix(); snap({ rotated: g.k, line: [6, 7], note: `Part 2: rotate ${g.k} above ${badA.k}. Now ${g.k} roots the subtree with balance 0, at its height before the insertion.` });
+    } else { root = rotUpIn(root, ch.k); st.single++; refix(); snap({ rotated: ch.k, line: [5, 7], note: `Single rotation: ${ch.k} moves above ${badA.k}; the subtree is back to its height before the insertion.` }); }
+  }
+  return { F, root, st };
+}
+function heightsOf(t) { const m = new Map(); (function go(u) { if (!u) return 0; const h = 1 + Math.max(go(u.l), go(u.r)); m.set(u.k, h); return h; })(t); return m; }
+function fibTree(h) { let key = 0; const go = (hh) => { if (hh <= 0) return null; const l = go(hh - 1), u = nd(0, { h: hh }); u.k = ++key; u.l = l; u.r = go(hh - 2); fixH(u); return u; }; return go(h); }
+const bfsKeys = (t) => { const out = [], q = t ? [t] : []; while (q.length) { const u = q.shift(); out.push(u.k); if (u.l) q.push(u.l); if (u.r) q.push(u.r); } return out; };
+
+// ---------- 5.10: B-trees of minimum degree t (CLRS: split full nodes on the way down)
+const btClone = (u) => (u ? { keys: u.keys.slice(), kids: u.kids.map(btClone), hl: u.hl } : null);
+function btSplit(x, i, t) {
+  const y = x.kids[i], z = { keys: y.keys.slice(t), kids: y.kids.slice(t) }, m = y.keys[t - 1];
+  y.keys = y.keys.slice(0, t - 1); y.kids = y.kids.slice(0, t);
+  x.keys.splice(i, 0, m); x.kids.splice(i + 1, 0, z); return { m, y, z };
+}
+function btHas(u, k) { while (u) { let i = 0; while (i < u.keys.length && k > u.keys[i]) i++; if (u.keys[i] === k) return true; u = u.kids[i]; } return false; }
+/** Insert k (frames when F is an array). Returns the new root. */
+function btInsert(root, k, t, F) {
+  const full = (u) => u.keys.length === 2 * t - 1;
+  const snap = F ? (o, marks = []) => { for (const [u, h] of marks) u.hl = h; F.push({ root: btClone(root), k, ...o }); for (const [u] of marks) u.hl = null; } : () => {};
+  if (!root) { root = { keys: [k], kids: [] }; snap({ line: 1, note: `The tree was empty: ${k} becomes the root, a leaf.` }, [[root, 'new']]); return root; }
+  if (btHas(root, k)) { snap({ line: 1, note: `${k} is already in the tree.` }); return root; }
+  if (full(root)) {
+    const s = { keys: [], kids: [root] }; root = s; const { m, y, z } = btSplit(s, 0, t);
+    snap({ line: [2, 3], mk: m, note: `The root is full (${2 * t - 1} keys): split it around its median ${m}, which becomes a new root. This is the **only** way the height grows, and it lifts every leaf at once.` }, [[s, 'up'], [y, 'split'], [z, 'split']]);
+  }
+  let x = root;
+  for (;;) {
+    let i = 0; while (i < x.keys.length && k > x.keys[i]) i++;
+    if (!x.kids.length) { x.keys.splice(i, 0, k); snap({ line: 7, newk: k, note: `${k} goes into this leaf, which had room because full nodes were split on the way down.` }, [[x, 'cur']]); return root; }
+    if (full(x.kids[i])) {
+      const { m, y, z } = btSplit(x, i, t);
+      snap({ line: [5, 6], mk: m, note: `The child on the way down is full: split it, moving its median ${m} up into the parent (which has room).` }, [[x, 'up'], [y, 'split'], [z, 'split']]);
+      if (k > x.keys[i]) i++;
+    } else snap({ line: 4, note: `Visit a node with ${plural(x.keys.length, 'key')}: ${k} belongs to child ${i + 1} of ${x.kids.length}.` }, [[x, 'cur']]);
+    x = x.kids[i];
+  }
+}
+function btStats(root) {
+  let h = -1, leafD = new Set(), n = 0, minK = Infinity, maxK = 0;
+  (function go(u, d, isRoot) { n += u.keys.length; if (!isRoot) { minK = Math.min(minK, u.keys.length); } maxK = Math.max(maxK, u.keys.length); if (!u.kids.length) { leafD.add(d); h = Math.max(h, d); } u.kids.forEach((c) => go(c, d + 1, false)); })(root, 0, true);
+  return { h, leafD, n, minK, maxK };
+}
+const BT_CODE = [
+  'B-Tree-Insert(T, k):',
+  '  if the root is full:',
+  '    split it; its median becomes the new root   ▷ height + 1',
+  '  x ← root;  while x is not a leaf:',
+  '    if the child c that k belongs in is full:',
+  '      split c, moving its median up into x',
+  '  insert k into the leaf x, keeping keys sorted',
+];
+
 export default {
   collection: 'algo',
   chapter: 5,

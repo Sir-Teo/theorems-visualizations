@@ -403,5 +403,21 @@ test('polyRoots & polyFromRoots', () => {
   eq(M.polyRoots([5]), []); eq(M.polyRoots([1, 1, 0, 0]).length, 1, 'trailing zero coefficients dropped');
 });
 
+// ------------------------------------------------------------ complex eigenproblems
+test('eigC & solveC', () => {
+  const C = (a, b) => new M.Cx(a, b);
+  const x = M.solveC([[C(1, 1), 2], [0, C(0, 1)]], [C(3, 1), C(0, 2)]); // y = 2, x = (3+i-4)/(1+i)
+  close(x[1].re, 2, 1e-12); close(x[1].im, 0, 1e-12); const x0 = C(-1, 1).div(C(1, 1)); close(x[0].re, x0.re, 1e-12); close(x[0].im, x0.im, 1e-12);
+  ok(M.solveC([[1, 2], [2, 4]], [1, 1]) === null, 'singular → null');
+  const A = [[C(2, 1), 1, 0], [0, C(-1, 0.5), C(0, 2)], [0, 0, 3]]; // upper triangular: eigenvalues on the diagonal
+  const { values, vectors } = M.eigC(A);
+  for (const d of [C(2, 1), C(-1, 0.5), C(3, 0)]) ok(values.some((z) => z.sub(d).abs() < 1e-8), `eigenvalue ${d}`);
+  values.forEach((lam, k) => { // A v = λ v
+    const v = vectors[k].re.map((r, i) => C(r, vectors[k].im[i]));
+    for (let i = 0; i < 3; i++) { const Av = A[i].reduce((s, a, j) => s.add(M.Cx.of(a).mul(v[j])), C(0, 0)); ok(Av.sub(lam.mul(v[i])).abs() < 1e-6, 'Av = λv'); }
+  });
+  const R = M.eigC([[0, -1], [1, 0]]).values; ok(R.some((z) => z.sub(C(0, 1)).abs() < 1e-9) && R.some((z) => z.sub(C(0, -1)).abs() < 1e-9), 'rotation ±i');
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

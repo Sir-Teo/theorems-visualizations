@@ -396,18 +396,18 @@ where $K$ is the complete elliptic integral of the first kind and AGM the arithm
 
 The period of the motion diverges logarithmically as $E\to1$ from either side.`,
       idea: String.raw`Energy is conserved, so orbits lie on level curves of $E$ (4.5). The level $E=1$ passes through the saddle $(\pi,0)$, where the potential has its maximum: below it the energy cannot carry the bob over the top, above it the speed never vanishes. Near the saddle the motion is like $\ddot u = u$, so getting within distance $\varepsilon$ of it takes time $\sim\ln(1/\varepsilon)$: this is why the period (4.14) blows up at the separatrix. In closed form $T = 4K(k)$ for librations and $T=2K(1/k)/k$ per turn for rotations, with $k^2 = (E+1)/2$.`,
-      caption: String.raw`**Drag the initial state** in the flat chart (left). Below the separatrix (green/red curves through the saddles) it swings back and forth; drag it across and the pendulum starts to go over the top. The same orbits are wrapped on the cylinder at the right (drag to rotate) — there a rotation is a closed loop around the cylinder. Watch the period in the readout blow up as you approach the separatrix from either side.`,
+      caption: String.raw`**Drag the initial state** in the flat chart (left). Below the separatrix (green/red curves through the saddles) it swings back and forth; drag it across and the pendulum starts to go over the top. The same orbit is wrapped on the cylinder at the right (drag to rotate; the red curves are the separatrix) — there a rotation is a closed loop around the cylinder. Watch the period in the readout blow up as you approach the separatrix from either side.`,
       deps: ['mech-4.14', 'mech-4.5'],
       refs: ['Arnold §4', 'Taylor §12.7'],
       tags: ['phase space', 'pendulum', 'separatrix'],
       viz(v) {
         const s = v.stage({ x: [-Math.PI, Math.PI], y: [-3.2, 3.2], height: 360, axes: 'box', xlabel: 'θ', ylabel: 'θ̇', xticks: piTicks, yticks: [-3, -2, -1, 0, 1, 2, 3], weight: 1.15 });
-        const s3 = v.stage3d({ height: 360, range: 1.55, axes: false, yaw: -0.5, pitch: 0.35, weight: 0.85 });
+        const s3 = v.stage3d({ height: 360, range: 1.5, axes: false, yaw: 0.5, pitch: 0.42, weight: 0.85 });
         const pp = v.phasePlane(s, {
-          f: (x, y) => [y, -Math.sin(x)], field: 'stream', nullclines: false, separatrices: true, fixedPoints: true,
+          f: (x, y) => [y, -Math.sin(x)], field: 'none', nullclines: false, separatrices: true, fixedPoints: true,
           H: (x, y) => y * y / 2 - Math.cos(x), contours: [-0.75, -0.3, 0.3, 1.6, 2.6], seeds: [], click: false,
         });
-        const h0 = s.handle(1.9, 1.2, { color: 'accent', label: 'start', constrain: (x, y) => [clamp(x, -Math.PI + 0.01, Math.PI - 0.01), clamp(y, -3.1, 3.1)] });
+        const h0 = s.handle(1.5, 1.0, { color: 'accent', label: 'start', constrain: (x, y) => [clamp(x, -Math.PI + 0.01, Math.PI - 0.01), clamp(y, -3.1, 3.1)] });
         const P = (th, om) => [Math.sin(th), -Math.cos(th), om * 0.36];
         let O = null, key = '';
         function orbit() {
@@ -434,16 +434,16 @@ The period of the motion diverges logarithmically as $E\to1$ from either side.`,
           s.path(flat, { color: o.lib ? 'accent' : 'orange', width: 2.8 });
           const T = isFinite(o.Tm) ? o.Tm : o.ts[o.ts.length - 1], i = Math.min(o.pts.length - 1, Math.round((t * 1.5 % T) / o.h)), cur = o.pts[i];
           s.dot(wrapA(cur[0]), cur[1], { color: 'gold', r: 6 });
-          s.corner(o.lib ? 'libration' : 'rotation (over the top)', 'tl', { color: o.lib ? 'accent' : 'orange', weight: 600 });
+          s.corner(o.lib ? 'libration' : 'rotation (over the top)', 'tr', { color: o.lib ? 'accent' : 'orange', weight: 600 });
           // cylinder
-          for (const om of [-3, -2, -1, 0, 1, 2, 3]) s3.curve((a) => P(a, om), 0, TAU, { color: 'grid', width: 1, n: 64 });
-          for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; s3.line(P(a, -3.3), P(a, 3.3), { color: 'grid', width: 1 }); }
-          for (const sg of [1, -1]) s3.curve((a) => P(a, sg * 2 * Math.cos(a / 2)), -Math.PI, Math.PI, { color: sg > 0 ? 'green' : 'red', width: 1.8, n: 120 });
-          for (const E of [-0.75, -0.3, 0.3]) { const am = Math.acos(-E); for (const sg of [1, -1]) s3.curve((a) => P(a, sg * Math.sqrt(Math.max(0, 2 * (E + Math.cos(a))))), -am, am, { color: 'muted', width: 1, n: 80 }); }
-          for (const E of [1.6, 2.6]) for (const sg of [1, -1]) s3.curve((a) => P(a, sg * Math.sqrt(2 * (E + Math.cos(a)))), -Math.PI, Math.PI, { color: 'muted', width: 1, n: 80 });
-          s3.path(o.pts.map(([th, om]) => P(th, om)), { color: o.lib ? 'accent' : 'orange', width: 2.8 });
-          s3.dot(P(0, 0), { color: 'green', r: 5 }); s3.dot(P(Math.PI, 0), { color: 'red', r: 5 });
-          s3.text('hanging (θ = 0)', P(0, -3.75), { color: 'green', size: 11 }); s3.text('upright (θ = π)', P(Math.PI, 3.75), { color: 'red', size: 11 });
+          s3.surface((a, z) => [Math.sin(a), -Math.cos(a), z], [0, TAU], [-1.2, 1.2], { nu: 40, nv: 4, color: 'muted', alpha: 0.1 });
+          for (const om of [-3.3, 3.3]) s3.curve((a) => P(a, om), 0, TAU, { color: 'muted', width: 1.2, n: 72 });
+          s3.curve((a) => P(a, 0), 0, TAU, { color: 'muted', width: 1, dash: [3, 4], n: 72 });
+          s3.line(P(0, -3.3), P(0, 3.3), { color: 'muted', width: 1, dash: [3, 4] }); s3.line(P(Math.PI, -3.3), P(Math.PI, 3.3), { color: 'muted', width: 1, dash: [3, 4] });
+          for (const sg of [1, -1]) s3.curve((a) => P(a, sg * 2 * Math.cos(a / 2)), -Math.PI, Math.PI, { color: 'red', width: 1.8, n: 120 });
+          s3.path(o.pts.map(([th, om]) => P(th, om)), { color: o.lib ? 'accent' : 'orange', width: 3 });
+          s3.dot(P(0, 0), { color: 'teal', r: 5 }); s3.dot(P(Math.PI, 0), { color: 'ink', r: 5 });
+          s3.text('θ = 0 (hanging)', P(0, -3.75), { color: 'muted', size: 11 }); s3.text('θ = π (upright)', P(Math.PI, -3.75), { color: 'muted', size: 11 });
           s3.dot(P(cur[0], cur[1]), { color: 'gold', r: 6 });
         });
         pp.legend([['accent', 'your orbit: libration'], ['orange', 'your orbit: rotation']]);
@@ -471,8 +471,8 @@ The resonance peak leans toward higher frequency for a hardening spring ($\epsil
       credit: 'Georg Duffing, 1918',
       viz(v) {
         const ep = v.slider('cubic stiffness $\\epsilon/\\omega_0^2$', -0.2, 1, 0.5, { step: 0.01 });
-        const F0 = v.slider('drive $f_0/\\omega_0^2$', 0.02, 0.2, 0.1, { step: 0.005 });
-        const zr = v.slider('damping $\\beta/\\omega_0$', 0.03, 0.15, 0.05, { step: 0.005 });
+        const F0 = v.slider('drive $f_0/\\omega_0^2$', 0.02, 0.2, 0.12, { step: 0.005 });
+        const zr = v.slider('damping $\\beta/\\omega_0$', 0.03, 0.15, 0.04, { step: 0.005 });
         const s = v.stage({ x: [0.4, 2], y: [0, 1.4], height: 380, full: true, axes: 'box', xlabel: 'ω/ω₀', ylabel: 'amplitude A' });
         let S = null, key = '';
         function compute() {
@@ -488,25 +488,34 @@ The resonance peak leans toward higher frequency for a hardening spring ($\epsil
             cols.push({ w, rs });
             if (i > 0 && (rs.length === 3) !== (prevN === 3)) folds.push(w); prevN = rs.length;
           }
-          // slow sweep up then down: RK4, 40 steps per drive cycle, frequency constant within each cycle (phase continuous)
-          const NC = 420, up = [], down = []; let y = [0, 0], ph = 0;
+          // slow sweep up then down: RK4 (inline), 40 steps per drive cycle, frequency constant within each cycle, phase continuous
+          const NC = 900, up = [], down = []; let x = 0, u = 0, ph = 0;
           const runCycle = (w, out) => {
             const h = TAU / (w * 40); let mx = 0;
-            const fn = (t, s) => [s[1], F * Math.cos(s[2]) - 2 * b * s[1] - s[0] - e * s[0] ** 3, w];
-            let st = [y[0], y[1], ph];
-            for (let k = 0; k < 40; k++) { st = rk4step(fn, 0, st, h); mx = Math.max(mx, Math.abs(st[0])); }
-            y = [st[0], st[1]]; ph = st[2] % TAU; out.push([w, mx]);
+            const ac = (x, u, p) => F * Math.cos(p) - 2 * b * u - x - e * x * x * x;
+            for (let k = 0; k < 40; k++) {
+              const k1x = u, k1u = ac(x, u, ph), k2x = u + h / 2 * k1u, k2u = ac(x + h / 2 * k1x, u + h / 2 * k1u, ph + w * h / 2);
+              const k3x = u + h / 2 * k2u, k3u = ac(x + h / 2 * k2x, u + h / 2 * k2u, ph + w * h / 2), k4x = u + h * k3u, k4u = ac(x + h * k3x, u + h * k3u, ph + w * h);
+              x += h / 6 * (k1x + 2 * k2x + 2 * k3x + k4x); u += h / 6 * (k1u + 2 * k2u + 2 * k3u + k4u); ph += w * h; mx = Math.max(mx, Math.abs(x));
+            }
+            ph %= TAU; if (out) out.push([w, mx]);
           };
-          for (let k = 0; k < 40; k++) runCycle(wLo, []); // settle at the start
+          for (let k = 0; k < 60; k++) runCycle(wLo, null); // settle at the start
           for (let k = 0; k <= NC; k++) runCycle(wLo + (wHi - wLo) * k / NC, up);
           for (let k = 0; k <= NC; k++) runCycle(wHi - (wHi - wLo) * k / NC, down);
-          const jump = (arr, sgn) => { let best = 0, at = NaN; for (let k = 1; k < arr.length; k++) { const d = sgn * (arr[k][1] - arr[k - 1][1]); if (d > best) { best = d; at = (arr[k][0] + arr[k - 1][0]) / 2; } } return { d: best, at }; };
+          // a jump = the largest change over 20 cycles; located at the steepest single-cycle step inside that window
+          const jump = (arr, sgn) => {
+            let best = 0, k0 = -1; for (let k = 0; k + 20 < arr.length; k++) { const d = sgn * (arr[k + 20][1] - arr[k][1]); if (d > best) { best = d; k0 = k; } }
+            if (k0 < 0) return { d: 0, at: NaN };
+            let st = 0, at = NaN; for (let k = k0; k < k0 + 20; k++) { const d = sgn * (arr[k + 1][1] - arr[k][1]); if (d > st) { st = d; at = (arr[k][0] + arr[k + 1][0]) / 2; } }
+            return { d: best, at };
+          };
           const jd = jump(up, -1), ju = jump(down, 1);
           let Amax = 0.3; for (const p of up.concat(down)) Amax = Math.max(Amax, p[1]); for (const col of cols) for (const r of col.rs) Amax = Math.max(Amax, Math.min(r, 3 * Abb));
           return (S = { cols, folds, up, down, jd, ju, wLo, wHi, Amax, e, Abb, c });
         }
         v.animate((t) => {
-          const R = compute(), n = R.up.length, prog = (t * 70) % (2 * n), Ay = 1.15 * R.Amax;
+          const R = compute(), n = R.up.length, prog = (t * 150) % (2 * n), Ay = 1.15 * R.Amax;
           s.setView([R.wLo, R.wHi], [0, Ay]);
           if (R.folds.length >= 2) s.vband(R.folds[0], R.folds[R.folds.length - 1], { color: 'orange', alpha: 0.07 });
           if (Math.abs(R.c) > 1e-9) s.curve((a) => [Math.sqrt(Math.max(0, 1 + R.c * a * a)), a], 0, Ay, { color: 'faint', dash: [2, 4], width: 1.2 });
@@ -531,7 +540,7 @@ The resonance peak leans toward higher frequency for a hardening spring ($\epsil
         });
         v.legend([['ink', 'harmonic balance: stable'], ['ink', 'unstable (middle) branch', { dash: true }], ['red', 'simulated, frequency rising', { dot: true }], ['blue', 'simulated, frequency falling', { dot: true }], ['faint', 'backbone $\\omega^2=\\omega_0^2+\\frac34\\epsilon A^2$', { dash: true }]]);
         v.readout(() => {
-          const R = compute(), big = 0.12 * R.Amax;
+          const R = compute(), big = 0.25 * R.Amax;
           const hb = R.folds.length >= 2 ? `harmonic balance folds at $\\omega = ${v.fix(R.folds[0], 3)}$ and $${v.fix(R.folds[R.folds.length - 1], 3)}\\,\\omega_0$` : 'harmonic balance: a single branch (no fold)';
           const sim = R.jd.d > big && R.ju.d > big ? `simulation: falls off the peak at $\\omega = ${v.fix(R.jd.at, 3)}\\,\\omega_0$ going up, jumps back at $${v.fix(R.ju.at, 3)}\\,\\omega_0$ going down — a hysteresis loop $${v.fix(Math.abs(R.jd.at - R.ju.at), 3)}\\,\\omega_0$ wide` : 'simulation: no jumps — up- and down-sweeps retrace the same curve';
           return `${sim} · ${hb}`;

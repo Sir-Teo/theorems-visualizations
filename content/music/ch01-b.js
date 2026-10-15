@@ -118,7 +118,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
           if (wall.value && lis.x > WX - 0.8) lis.x = WX - 0.8;
           const theme = v.color('panel');
           fp.heat((x, y) => (wall.value && x > WX ? NaN : dB(Iat(x, y))), { range: [55, 105], cmap: 'viridis', res: 3, key: `${wall.value}|${Rw.value}|${theme}` });
-          fp.colorbar([55, 105], 'viridis', { pos: 'bottom', label: 'dB', length: 0.42 });
+          fp.colorbar([55, 105], 'viridis', { pos: 'right', label: 'dB', length: 0.5 });
           // expanding shells (slowed: 5 m per 0.9 s on screen)
           const D = 5, fr = (t / 0.9) % 1;
           for (let n = 0; n < 12; n++) {
@@ -136,7 +136,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
             fp.line(2 * WX, 0, lis.x, lis.y, { color: 'red', width: 1, dash: [3, 4], alpha: 0.8 });
             const yw = (lis.y * (2 * WX - WX)) / (2 * WX - lis.x); // where the reflected ray meets the wall
             fp.path([[0, 0], [WX, yw], [lis.x, lis.y]], { color: 'red', width: 1.8 });
-            fp.text(`echo +${Math.round(g.delay * 1000)} ms`, WX - 1, yw + (yw > 0 ? 1.8 : -1.8), { align: 'right', color: 'red', size: 12, weight: 600 });
+            fp.text(`echo +${Math.round(g.delay * 1000)} ms`, WX + 1, yw, { align: 'left', color: 'red', size: 12, weight: 700 });
           }
           // the beam through a 2 m patch at r and its 4 m image at 2r
           const r1 = Math.hypot(lis.x, lis.y), ux = lis.x / r1, uy = lis.y / r1, nx = -uy, ny = ux;
@@ -146,7 +146,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
           fp.line(lis.x + 2 * nx, lis.y + 2 * ny, lis.x - 2 * nx, lis.y - 2 * ny, { color: 'gold', width: 4 });
           if (okFar) {
             fp.line(far * ux + 4 * nx, far * uy + 4 * ny, far * ux - 4 * nx, far * uy - 4 * ny, { color: 'orange', width: 4 });
-            fp.dot(far * ux, far * uy, { r: 5, hollow: true, color: 'orange', label: '2r: ¼ of the intensity', labelPos: uy > 0 ? 'se' : 'ne', math: false });
+            fp.dot(far * ux, far * uy, { r: 5, hollow: true, color: 'orange', label: '2r: I/4', labelPos: uy > 0 ? 'se' : 'ne', math: false });
           }
           fp.dot(0, 0, { r: 7, color: 'accent', label: 'source', labelPos: 's', math: false });
           // ---- log–log graph
@@ -515,21 +515,22 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Diffraction' },
       viz(v) {
         const M = v.M, C = M.CONST, c = cAir(C), TAU = 2 * Math.PI;
-        const DX = 0.025, NX = 240, NY = 112, CN = 0.5, DT = (CN * DX) / c, IW = 72, IS = 6, YC = 1.4, KM = (CN - 1) / (CN + 1);
-        const fq = v.slider('frequency $f$', 100, 1600, 1400, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
+        const DX = 0.025, NX = 240, NY = 112, CN = 0.5, DT = (CN * DX) / c, IW = 72, IS = 6, YC = 1.4, KM = (CN - 1) / (CN + 1), WARM = 760;
+        const view = v.select('show', [{ value: 'p', label: 'pressure (slowed down)' }, { value: 'L', label: 'level in dB' }], 'p');
+        const fq = v.slider('frequency $f$', 100, 1600, 400, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
         const wS = v.slider('doorway width $w$', 0.3, 1.2, 0.8, { step: 0.025, fmt: (x) => v.fix(x, 2) + ' m' });
         const s = v.stage({ x: [-0.04, 6.04], y: [-0.04, 2.84], equal: true, height: 380, axes: false, full: true, title: 'ripple tank: the 2D wave equation, solved live (6 m × 2.8 m)' });
         const lis = s.handle(4.2, 0.45, { color: 'gold', label: 'listener', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, (IW + 3) * DX, 5.9), M.clamp(y, 0.1, 2.7)] });
         const N = NX * NY;
         let p = new Float32Array(N), pp = new Float32Array(N), pn = new Float32Array(N);
         const wall = new Uint8Array(N);
-        let key = null, n = 0, S = 0, wd = 0, ms = 0, lamv = 0;
+        let key = null, n = 0, S = 0, wd = 0, cw = 1, sw2 = 1, lamv = 0, pending = 0, ms = 0.5;
         const reset = () => {
-          p.fill(0); pp.fill(0); pn.fill(0); n = 0; ms = 0;
+          p.fill(0); pp.fill(0); pn.fill(0); n = 0;
           const half = wS.value / 2;
           for (let j = 0; j < NY; j++) { const y = (j + 0.5) * DX, door = Math.abs(y - YC) < half; for (let i = 0; i < NX; i++) wall[j * NX + i] = i >= IW && i < IW + 2 && !door ? 1 : 0; }
-          wd = TAU * fq.value * DT;
-          const kd = 2 * Math.asin(Math.min(1, Math.sin(wd / 2) / CN)); // discrete dispersion: unit-amplitude plane wave from a line source
+          wd = TAU * fq.value * DT; cw = Math.cos(wd); sw2 = Math.sin(wd) ** 2;
+          const kd = 2 * Math.asin(Math.min(1, Math.sin(wd / 2) / CN)); // discrete dispersion: unit-amplitude plane wave from the line source
           S = 2 * CN * CN * Math.sin(kd);
           lamv = c / fq.value;
         };
@@ -540,13 +541,13 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
             for (let i = 0; i < NX; i++) {
               const id = row + i;
               if (wall[id]) { pn[id] = 0; continue; }
-              const pc = p[id];
+              const pc = p[id]; // rigid wall and duct sides: zero normal gradient (mirror the centre value)
               const l = i > 0 && !wall[id - 1] ? p[id - 1] : pc, r = i < NX - 1 && !wall[id + 1] ? p[id + 1] : pc;
               const d = j > 0 && !wall[id - NX] ? p[id - NX] : pc, u = j < NY - 1 && !wall[id + NX] ? p[id + NX] : pc;
               pn[id] = 2 * pc - pp[id] + C2 * (l + r + d + u - 4 * pc);
             }
             if (!wall[row + IS]) pn[row + IS] += src;
-            // first-order Mur absorbing edges: left and right
+            // first-order Mur absorbing edges, left and right
             pn[row] = p[row + 1] + KM * (pn[row + 1] - p[row]);
             pn[row + NX - 1] = p[row + NX - 2] + KM * (pn[row + NX - 2] - p[row + NX - 1]);
           }
@@ -555,35 +556,46 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
             const t = (NY - 1) * NX + i; pn[t] = p[t - NX] + KM * (pn[t - NX] - p[t]);
           }
           const tmp = pp; pp = p; p = pn; pn = tmp; n++;
-          const li = Math.min(NX - 1, Math.floor(lis.x / DX)), lj = Math.min(NY - 1, Math.floor(lis.y / DX)), pv = p[lj * NX + li];
-          const tau = Math.max(4 / fq.value, 0.01) / DT;
-          ms += (pv * pv - ms) / tau;
         };
+        // steady state at frequency f: two successive samples give the amplitude exactly, A² = (p² + p'² − 2pp' cos ωΔt)/sin² ωΔt
+        const amp2 = (id) => Math.max(0, (p[id] * p[id] + pp[id] * pp[id] - 2 * p[id] * pp[id] * cw) / sw2);
         const ramp = signedRamp(v);
+        const lisId = () => Math.min(NY - 1, Math.floor(lis.y / DX)) * NX + Math.min(NX - 1, Math.floor(lis.x / DX));
         let lastLis = '';
         v.soundButton('Listen at the listener', (snd) => snd.tone(fq.value, { duration: 1.6, gain: 0.25 * Math.min(1.6, Math.sqrt(2 * ms)) }));
         v.soundButton('Incoming wave', (snd) => snd.tone(fq.value, { duration: 1.6, gain: 0.25 }));
         v.animate(() => {
           const kk = `${fq.value}|${wS.value}`;
-          if (kk !== key) { key = kk; reset(); for (let q = 0; q < 760; q++) step(); }
-          const lk = `${lis.x},${lis.y}`;
-          if (lk !== lastLis) { lastLis = lk; ms = 0.5; } // restart the meter when the listener moves (it settles in a few periods)
-          const T = 1 / fq.value, spf = M.clamp(Math.round(T / (12 * DT)), 1, 10);
+          if (kk !== key) { const first = key === null; key = kk; reset(); if (first) { for (let q = 0; q < WARM; q++) step(); } else pending = WARM; }
+          const T = 1 / fq.value, spf = M.clamp(Math.round(T / (12 * DT)), 1, 10) + Math.min(pending, 40);
+          pending = Math.max(0, pending - 40);
           for (let q = 0; q < spf; q++) step();
-          const ink = v.rgb('ink');
-          s.raster((x, y) => {
-            const i = Math.floor(x / DX), j = Math.floor(y / DX);
-            if (i < 0 || j < 0 || i >= NX || j >= NY) return null;
-            const id = j * NX + i;
-            return wall[id] ? ink : ramp(Math.tanh(0.9 * p[id]));
-          }, { res: 2, key: `${n}|${v.color('panel')}` });
-          const half = wS.value / 2, xw0 = IW * DX, xw1 = (IW + 2) * DX;
+          const est = amp2(lisId()) / 2, lk = `${lis.x},${lis.y}`;
+          if (lk !== lastLis || pending > 0) { lastLis = lk; ms = est; } else ms += 0.25 * (est - ms);
+          const ink = v.rgb('ink'), panel = v.color('panel');
+          if (view.value === 'p') {
+            s.raster((x, y) => {
+              const i = Math.floor(x / DX), j = Math.floor(y / DX);
+              if (i < 0 || j < 0 || i >= NX || j >= NY) return null;
+              const id = j * NX + i;
+              return wall[id] ? ink : ramp(Math.tanh(0.9 * p[id]));
+            }, { res: 2, key: `${n}|${panel}` });
+          } else {
+            s.raster((x, y) => {
+              const i = Math.floor(x / DX), j = Math.floor(y / DX);
+              if (i < 0 || j < 0 || i >= NX || j >= NY) return null;
+              const id = j * NX + i;
+              return wall[id] ? ink : M.cmap((10 * Math.log10(amp2(id) + 1e-9) + 30) / 36, 'magma');
+            }, { res: 2, key: `L${n}|${panel}` });
+            s.colorbar([-30, 6], 'magma', { pos: 'right', label: 'dB vs incoming', length: 0.55 });
+          }
+          const half = wS.value / 2, xw0 = IW * DX, xw1 = (IW + 2) * DX, lc = view.value === 'p' ? 'ink' : 'panel';
           s.rect(xw0, 0, xw1, YC - half, { fill: 'ink', fillAlpha: 1, stroke: false });
           s.rect(xw0, YC + half, xw1, NY * DX, { fill: 'ink', fillAlpha: 1, stroke: false });
-          s.line(xw1, YC + half, NX * DX, YC + half, { color: 'ink', width: 1.2, dash: [6, 4], alpha: 0.75 });
-          s.line(xw1, YC - half, NX * DX, YC - half, { color: 'ink', width: 1.2, dash: [6, 4], alpha: 0.75 });
-          s.text('geometric shadow', 5.9, 0.12, { align: 'right', color: 'ink', size: 11.5 });
-          s.text('geometric shadow', 5.9, 2.68, { align: 'right', color: 'ink', size: 11.5 });
+          s.line(xw1, YC + half, NX * DX, YC + half, { color: lc, width: 1.2, dash: [6, 4], alpha: 0.75 });
+          s.line(xw1, YC - half, NX * DX, YC - half, { color: lc, width: 1.2, dash: [6, 4], alpha: 0.75 });
+          s.text('geometric shadow', view.value === 'p' ? 5.9 : 4.9, 0.12, { align: 'right', color: 'ink', size: 11.5 });
+          s.text('geometric shadow', view.value === 'p' ? 5.9 : 4.9, 2.68, { align: 'right', color: 'ink', size: 11.5 });
           s.text('plane wave →', 0.12, 2.68, { align: 'left', color: 'ink', size: 12, weight: 600 });
           s.rect(0, 0, NX * DX, NY * DX, { color: 'muted', width: 1 });
           if (lamv < 3) s.measure(0.25, 0.25, 0.25 + lamv, 0.25, `λ = ${M.si(lamv, 'm')}`, { color: 'ink', math: false, size: 12, offset: -11 });
@@ -593,8 +605,8 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         v.legend([['red', 'compression', { area: true }], ['blue', 'rarefaction', { area: true }], ['ink', 'rigid wall'], ['gold', 'listener', { dot: true }]]);
         v.readout(() => {
           const lam = c / fq.value, wv = wS.value, lvl = 10 * Math.log10(Math.max(1e-9, 2 * ms)), inShadow = Math.abs(lis.y - YC) > wv / 2;
-          const beam = lam < wv ? `the beam's first null at $\\theta=\\arcsin(\\lambda/w)$ = ${v.fix((Math.asin(lam / wv) * 180) / Math.PI, 0)}°` : 'λ > w: the doorway radiates like a new source and the sound floods round the corners';
-          return `$f$ = ${Math.round(fq.value)} Hz, $\\lambda = c/f$ = ${M.si(lam, 'm')}, doorway $w$ = ${v.fix(wv, 2)} m, $\\lambda/w$ = ${v.fix(lam / wv, 2)}: ${beam} · listener ${inShadow ? 'in the geometric shadow' : 'in the direct beam'}: measured level ${lvl >= 0 ? '+' : '−'}${v.fix(Math.abs(lvl), 1)} dB relative to the incoming wave`;
+          const beam = lam < wv ? `the beam's first null at $\\theta=\\arcsin(\\lambda/w)$ = ${v.fix((Math.asin(lam / wv) * 180) / Math.PI, 0)}°` : '$\\lambda > w$: the doorway radiates like a new source and the sound floods round the corners';
+          return `$f$ = ${Math.round(fq.value)} Hz, $\\lambda = c/f$ = ${M.si(lam, 'm')}, doorway $w$ = ${v.fix(wv, 2)} m, $\\lambda/w$ = ${v.fix(lam / wv, 2)}: ${beam} · listener ${inShadow ? 'in the geometric shadow' : 'in the direct beam'}: level ${lvl >= 0 ? '+' : '−'}${v.fix(Math.abs(lvl), 1)} dB relative to the incoming wave (amplitude from the simulated field)`;
         });
       },
     },

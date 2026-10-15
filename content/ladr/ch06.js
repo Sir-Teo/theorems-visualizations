@@ -599,7 +599,7 @@ $$\|u + v\|^2 = \|u\|^2 + \|v\|^2.$$`,
         const S = v.stage({ x: [-3.3, 3.9], y: [-2.6, 3.4], equal: true, height: 420, weight: 1.45, minWidth: 330 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, minWidth: 220, title: 'areas' });
         const uh = S.handle(1.6, 0.35, { color: 'accent', label: 'u' });
-        const bh = S.handle(1.15, 2.4, {
+        const bh = S.handle(1.145, 2.43, {
           color: 'orange', label: 'u+v', constrain: (x, y) => {
             const u = [uh.x, uh.y], d = [x - u[0], y - u[1]], lu = len2(u), ld = len2(d);
             if (lu > 0.2 && ld > 0.2 && Math.abs(dot2(u, d)) / (lu * ld) < 0.07) { const n = [-u[1] / lu, u[0] / lu], t = dot2(d, n); return [u[0] + t * n[0], u[1] + t * n[1]]; }
@@ -621,14 +621,14 @@ $$\|u + v\|^2 = \|u\|^2 + \|v\|^2.$$`,
           if (right) rightMark(S, U, [-U[0], -U[1]], V, 0.22, { color: 'green', width: 2 });
           arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 });
           arrowTo(S, U[0], U[1], B[0], B[1], { color: 'orange', width: 2.6 });
-          S.arrow(0, 0, B[0], B[1], { color: right ? 'green' : 'red', width: 2.2 });
+          arrowTo(S, 0, 0, B[0], B[1], { color: right ? 'green' : 'red', width: 2.2 });
           S.tex(`${tn(nu2)}`, cU[0], cU[1], { color: 'accent', size: 15 }); S.tex(`${tn(nv2)}`, cV[0], cV[1], { color: 'orange', size: 15 }); S.tex(`${tn(ns2)}`, cS[0], cS[1], { color: right ? 'green' : 'red', size: 15 });
           // bars
           const mx = Math.max(nu2 + nv2, ns2) * 1.08, X = (t) => 0.08 + (0.84 * t) / mx, y1 = 0.62, y2 = 0.32, hh = 0.09;
           R.rect(X(0), y1, X(nu2), y1 + hh, { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1.2 });
           R.rect(X(nu2), y1, X(nu2 + nv2), y1 + hh, { fill: 'orange', fillAlpha: 0.45, color: 'orange', width: 1.2 });
           R.rect(X(0), y2, X(ns2), y2 + hh, { fill: right ? 'green' : 'red', fillAlpha: 0.35, color: right ? 'green' : 'red', width: 1.2 });
-          if (!right) { const a = Math.min(nu2 + nv2, ns2), b = Math.max(nu2 + nv2, ns2); R.rect(X(a), y2 - 0.035, X(b), y1 + hh + 0.035, { fill: 'red', fillAlpha: 0.12, stroke: false }); R.tex(`|2\\langle u,v\\rangle| = ${tn(Math.abs(2 * ip))}`, (X(a) + X(b)) / 2, y2 - 0.07, { color: 'red', size: 13 }); }
+          if (!right) { const a = Math.min(nu2 + nv2, ns2), b = Math.max(nu2 + nv2, ns2); R.rect(X(a), y2 - 0.035, X(b), y1 + hh + 0.035, { fill: 'red', fillAlpha: 0.12, stroke: false }); R.tex(`\\text{gap } |2\\langle u,v\\rangle| = ${tn(Math.abs(2 * ip))}`, 0.08, y2 - 0.09, { color: 'red', size: 14, align: 'left' }); }
           R.tex('\\|u\\|^2 + \\|v\\|^2', 0.08, y1 + hh + 0.06, { align: 'left', size: 14 });
           R.tex('\\|u + v\\|^2', 0.08, y2 + hh + 0.06, { align: 'left', size: 14 });
           R.corner(right ? 'u ⊥ v: equal' : 'not a right angle', 'tl', { color: right ? 'green' : 'red', weight: 700 });
@@ -722,8 +722,8 @@ with equality if and only if one of $u, v$ is a scalar multiple of the other. Fo
         const S = v.stage({ x: [-2.1, 2.1], y: [-1.9, 2.1], equal: true, axes: false, height: 410, weight: 1.35, minWidth: 320 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 410, minWidth: 250, title: '$\\|u\\|^2\\|v\\|^2 = |\\langle u,v\\rangle|^2 + (\\|v\\|\\|w\\|)^2$' });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.33, axis: 1.5, lim: 1.5 });
-        const vh = sc.handle([0.5, 1.25, 0.25], { color: 'orange', label: 'v' });
-        const uh = sc.handle([1.2, 0.2, 0.9], {
+        const vh = sc.handle([1.1, 0.2, -0.25], { color: 'orange', label: 'v' });
+        const uh = sc.handle([0.6, 0.4, 1.0], {
           color: 'accent', label: 'u', snap: (p) => {
             const V = vh.p, L = len3(p), lv = len3(V); if (L < 0.15 || lv < 0.15) return p;
             const cs = dot3(p, V) / (L * lv); if (Math.abs(cs) > 0.985) return mul3(V, (Math.sign(cs) * L) / lv);
@@ -755,7 +755,8 @@ with equality if and only if one of $u, v$ is a scalar multiple of the other. Fo
           if (b > 0.02 * h && a > 0.02 * h) R.path([[x0 + k * a - 0.03, y0], [x0 + k * a - 0.03, y0 + 0.03], [x0 + k * a, y0 + 0.03]], { color: 'muted', width: 1.2 });
           R.tex(`|\\langle u,v\\rangle| = ${tn(a)}`, x0 + (k * a) / 2, y0, { color: 'green', size: 14, dy: 16 });
           if (b > 0.05 * h) R.tex(`\\|v\\|\\|w\\| = ${tn(b)}`, x0 + k * a, y0 + (k * b) / 2, { color: 'purple', size: 14, align: a < 0.55 * h ? 'left' : 'right', dx: a < 0.55 * h ? 8 : -8 });
-          R.tex(`\\|u\\|\\|v\\| = ${tn(h)}`, x0 + (k * a) / 2, y0 + (k * b) / 2, { color: 'accent', size: 14, align: 'right', dx: -10, dy: -12 });
+          R.texPx(`\\text{hypotenuse } \\|u\\|\\,\\|v\\| = ${tn(h)}`, 12, 12, { color: 'accent', size: 14, align: 'left', baseline: 'top' });
+
           st = { a, b, h, nw };
         });
         v.legend([['accent', '$u$; hypotenuse $\\|u\\|\\|v\\|$'], ['orange', '$v$'], ['gold', 'projection $cv$'], ['purple', 'parallelogram, area $\\|v\\|\\|w\\|$', { area: true }], ['green', '$|\\langle u, v\\rangle|$']]);
@@ -775,15 +776,15 @@ with equality if and only if one of $u, v$ is a scalar multiple of the other. Fo
 $$\|u + v\| \le \|u\| + \|v\|,$$
 with equality if and only if one of $u, v$ is a nonnegative real multiple of the other.`,
       idea: String.raw`Expand the square: $\|u + v\|^2 = \|u\|^2 + \|v\|^2 + 2\operatorname{Re}\langle u, v\rangle$. Two estimates follow: $\operatorname{Re}\langle u, v\rangle \le |\langle u, v\rangle|$ (6.18, from 4.4) and $|\langle u, v\rangle| \le \|u\|\,\|v\|$ (6.19, Cauchy–Schwarz). Together they give $\|u + v\|^2 \le (\|u\| + \|v\|)^2$. Equality needs both to be tight: Cauchy–Schwarz forces $u, v$ to be parallel, and the first step forces $\langle u, v\rangle$ to be real and nonnegative, so they point the same way.`,
-      caption: String.raw`Drag the corner $u$ and the end point $u + v$. The bent path $u$ then $v$ is never shorter than the green shortcut. The dashed ellipse holds every corner giving a bent path of the same length — it always encloses the shortcut, and flattens onto it only at equality. The ruler below lays the lengths end to end and marks the two steps of the proof. Hunt for equality: line $v$ up with $u$ (it snaps). Pointing $v$ backwards closes the Cauchy–Schwarz gap 6.19 but opens 6.18.`,
+      caption: String.raw`Drag the corner $u$ and the end point $u + v$. The bent path $u$ then $v$ is never shorter than the green shortcut. The dashed ellipse holds every corner giving a bent path of the same length — it always encloses the shortcut, and flattens onto it only at equality. On the right, the columns $\|u + v\| \le \sqrt{\|u\|^2 + \|v\|^2 + 2|\langle u, v\rangle|} \le \|u\| + \|v\|$ show the two steps of the proof. Hunt for equality: line $v$ up with $u$ (it snaps). Pointing $v$ backwards closes the Cauchy–Schwarz gap 6.19 but opens 6.18.`,
       deps: ['ladr-6.14', 'ladr-4.4'],
       see: ['rca-4.3'],
       tags: ['inequalities', 'norms'],
       viz(v) {
-        const S = v.stage({ x: [-2.2, 3.6], y: [-1.6, 2.4], equal: true, height: 330, full: true });
-        const R = v.stage({ x: [-0.3, 5], y: [0, 3], height: 165, full: true, axes: false, title: 'the lengths, end to end' });
-        const uh = S.handle(1.3, 0.9, { color: 'accent', label: 'u' });
-        const bh = S.handle(2.6, -0.2, {
+        const S = v.stage({ x: [-1.7, 3.1], y: [-1.5, 2.6], equal: true, height: 390, weight: 1.35, minWidth: 320 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], height: 390, minWidth: 250, axes: false, title: 'the proof, as lengths' });
+        const uh = S.handle(1.5, 0.5, { color: 'accent', label: 'u' });
+        const bh = S.handle(0.5, 1.7, {
           color: 'orange', label: 'u+v', constrain: (x, y) => {
             const U = [uh.x, uh.y], d = [x - U[0], y - U[1]], lu = len2(U), ld = len2(d);
             if (lu > 0.2 && ld > 0.2 && Math.abs(U[0] * d[1] - U[1] * d[0]) / (lu * ld) < 0.06) { const t = dot2(d, U) / lu; return [U[0] + (t * U[0]) / lu, U[1] + (t * U[1]) / lu]; }
@@ -793,7 +794,7 @@ with equality if and only if one of $u, v$ is a nonnegative real multiple of the
         let st = null;
         v.render(() => {
           const U = [uh.x, uh.y], B = [bh.x, bh.y], V = [B[0] - U[0], B[1] - U[1]];
-          const nu = len2(U), nv = len2(V), ns = len2(B), ip = dot2(U, V), mid = Math.sqrt(Math.max(0, nu * nu + nv * nv + 2 * Math.abs(ip))), L = nu + nv;
+          const nu = len2(U), nv = len2(V), ns = len2(B), ip = dot2(U, V), mid = Math.sqrt(Math.max(0, nu * nu + nv * nv + 2 * Math.abs(ip))), L = nu + nv, eq = L - ns < 1e-9;
           // ellipse of corners with the same path length
           const a = L / 2, f = ns / 2, bmin = Math.sqrt(Math.max(0, a * a - f * f)), C = [B[0] / 2, B[1] / 2], e = ns > 1e-9 ? [B[0] / ns, B[1] / ns] : [1, 0];
           S.curve((t) => [C[0] + a * Math.cos(t) * e[0] - bmin * Math.sin(t) * e[1], C[1] + a * Math.cos(t) * e[1] + bmin * Math.sin(t) * e[0]], 0, TAU, { color: 'muted', width: 1.2, dash: [5, 5], n: 200 });
@@ -801,20 +802,23 @@ with equality if and only if one of $u, v$ is a nonnegative real multiple of the
           S.arrow(0, 0, B[0], B[1], { color: 'green', width: 3 });
           arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 });
           arrowTo(S, U[0], U[1], B[0], B[1], { color: 'orange', width: 2.6 });
-          const eq = L - ns < 1e-9;
           S.corner(eq ? 'equality: v is a nonnegative multiple of u' : `bent path longer by ${pn(L - ns, 3)}`, 'tl', { color: eq ? 'green' : 'muted', weight: 700 });
-          // ruler
-          R.setView([-0.05 * L - 0.25, 1.08 * L + 0.2], [0, 3]);
-          R.line(0, 2.25, nu, 2.25, { color: 'accent', width: 7, cap: 'butt' }); R.line(nu, 2.25, L, 2.25, { color: 'orange', width: 7, cap: 'butt' });
-          R.line(0, 1.25, ns, 1.25, { color: 'green', width: 7, cap: 'butt' });
-          R.tex('\\|u\\|', nu / 2, 2.25, { color: 'accent', size: 14, dy: -15 }); R.tex('\\|v\\|', nu + nv / 2, 2.25, { color: 'orange', size: 14, dy: -15 });
-          R.tex('\\|u + v\\|', Math.min(ns / 2, L * 0.4), 1.25, { color: 'green', size: 14, dy: -15 });
-          for (const [x, col] of [[ns, 'green'], [mid, 'purple'], [L, 'ink']]) R.line(x, 0.55, x, 2.55, { color: col, width: 1.2, dash: [3, 3] });
-          const gap = (x0, x1, lbl, col) => { if (x1 - x0 > 0.03 * L) { R.line(x0, 0.75, x1, 0.75, { color: col, width: 2.5 }); R.tex(lbl, (x0 + x1) / 2, 0.75, { color: col, size: 12, dy: 13 }); } };
+          // three columns: ‖u + v‖ ≤ √(‖u‖² + ‖v‖² + 2|⟨u, v⟩|) ≤ ‖u‖ + ‖v‖
+          const k = 0.78 / Math.max(L, 1e-6), y0 = 0.13, Y = (t) => y0 + k * t, wd = 0.15;
+          for (const [t, col] of [[ns, 'green'], [mid, 'purple'], [L, 'ink']]) R.line(0.06, Y(t), 0.8, Y(t), { color: col, width: 1, dash: [3, 3], alpha: 0.7 });
+          R.rect(0.12, y0, 0.12 + wd, Y(ns), { fill: 'green', fillAlpha: 0.35, color: 'green', width: 1.4 });
+          R.rect(0.38, y0, 0.38 + wd, Y(mid), { fill: 'purple', fillAlpha: 0.25, color: 'purple', width: 1.4 });
+          R.rect(0.64, y0, 0.64 + wd, Y(nu), { fill: 'accent', fillAlpha: 0.35, color: 'accent', width: 1.4 });
+          R.rect(0.64, Y(nu), 0.64 + wd, Y(L), { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1.4 });
+          R.tex('\\|u{+}v\\|', 0.12 + wd / 2, y0, { color: 'green', size: 13, dy: 13 });
+          R.tex('\\sqrt{\\cdots}', 0.38 + wd / 2, y0, { color: 'purple', size: 13, dy: 14 });
+          R.tex('\\|u\\|{+}\\|v\\|', 0.64 + wd / 2, y0, { color: 'ink', size: 13, dy: 13 });
+          const gap = (t0, t1, lbl, col) => { if (t1 - t0 > 0.02 * L) { R.arrow(0.86, Y(t0), 0.86, Y(t1), { color: col, width: 2, head: 7, both: true }); R.text(lbl, 0.885, (Y(t0) + Y(t1)) / 2, { color: col, size: 12, weight: 700 }); } };
           gap(ns, mid, '6.18', 'purple'); gap(mid, L, '6.19', 'red');
+          if (eq) R.corner('both gaps closed', 'tl', { color: 'green', weight: 700 });
           st = { nu, nv, ns, L, mid, ip, eq };
         });
-        v.legend([['accent', '$u$'], ['orange', '$v$'], ['green', '$u + v$'], ['muted', 'corners with the same path length', { dash: true }], ['purple', 'gap 6.18: $\\operatorname{Re}\\langle u,v\\rangle \\le |\\langle u,v\\rangle|$'], ['red', 'gap 6.19: Cauchy–Schwarz']]);
+        v.legend([['accent', '$u$'], ['orange', '$v$'], ['green', '$u + v$'], ['muted', 'corners with the same path length', { dash: true }], ['purple', '6.18: $\\operatorname{Re}\\langle u,v\\rangle \\le |\\langle u,v\\rangle|$'], ['red', '6.19: Cauchy–Schwarz']]);
         v.readout(() => {
           if (!st) return '';
           const { nu, nv, ns, L, mid, ip } = st;
@@ -867,12 +871,13 @@ the squared diagonals of a parallelogram add up to the sum of the squares of its
           S.arrow(0, 0, s[0], s[1], { color: 'green', width: 2.6 });
           arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 }); arrowTo(S, 0, 0, V[0], V[1], { color: 'orange', width: 2.6 });
           S.tex('u+v', s[0], s[1], { color: 'green', size: 14, dx: 12, dy: -8, align: 'left' });
-          S.tex('u-v', (U[0] + V[0]) / 2, (U[1] + V[1]) / 2, { color: 'purple', size: 14, dx: 10, dy: 10, align: 'left' });
+          S.tex('u-v', 0.35 * U[0] + 0.65 * V[0], 0.35 * U[1] + 0.65 * V[1], { color: 'purple', size: 14, dx: -8, dy: -10, align: 'right' });
+
           // ratio as a function of the rotation angle
           const pts = []; let mn = Infinity, mx = -Infinity;
           for (let k = 0; k <= 360; k += 1) { const r = ratio(N, rot(u0, (k * Math.PI) / 180), rot(v0, (k * Math.PI) / 180)); pts.push([k, r]); mn = Math.min(mn, r); mx = Math.max(mx, r); }
           const spread = Math.max(0.12, 1.25 * Math.max(Math.abs(mx - 1), Math.abs(1 - mn)));
-          G.setView([0, 360], [1 - spread, 1 + spread]);
+          G.setView([-10, 370], [1 - spread, 1 + spread]);
           G.hline(1, { color: 'green', width: 5, alpha: 0.3 });
           G.path(pts, { color: 'accent', width: 2.2 });
           const r0 = ratio(N, U, V);

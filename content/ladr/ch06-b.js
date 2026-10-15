@@ -230,6 +230,24 @@ function legendreON(n) {
   }
   return E;
 }
+/** Gauss–Legendre nodes and weights on [−1, 1] (Newton on P_N); exact for polynomials of degree < 2N. */
+function glRule(N) {
+  const x = [], w = [];
+  for (let i = 1; i <= N; i++) {
+    let z = Math.cos((Math.PI * (i - 0.25)) / (N + 0.5)), dp = 1;
+    for (let it = 0; it < 100; it++) {
+      let p0 = 1, p1 = z;
+      for (let k = 2; k <= N; k++) { const p2 = ((2 * k - 1) * z * p1 - (k - 1) * p0) / k; p0 = p1; p1 = p2; }
+      dp = (N * (z * p1 - p0)) / (z * z - 1);
+      const dz = p1 / dp; z -= dz; if (Math.abs(dz) < 1e-15) break;
+    }
+    x.push(z); w.push(2 / ((1 - z * z) * dp * dp));
+  }
+  return { x, w };
+}
+const GL = glRule(24);
+/** ∫_a^b f by 24-point Gauss–Legendre. */
+const gint = (f, a = -1, b = 1) => { const h = (b - a) / 2, m = (a + b) / 2; let s = 0; for (let i = 0; i < GL.x.length; i++) s += GL.w[i] * f(m + h * GL.x[i]); return s * h; };
 const chebNodes = (n, a = -1, b = 1) => Array.from({ length: n + 1 }, (_, j) => (a + b) / 2 - ((b - a) / 2) * Math.cos(((2 * j + 1) * Math.PI) / (2 * (n + 1))));
 /** Coefficients (ascending) of the interpolating polynomial through (xs, ys). */
 function interpCoef(M, xs, ys) {
@@ -635,13 +653,13 @@ export default {
       viz(v) {
         const M = v.M;
         const mode = v.select('$V$', [{ value: 'R2', label: '$\\mathbf R^2$' }, { value: 'P', label: '$\\mathcal P_n(\\mathbf R)$, $\\langle p,q\\rangle=\\int_{-1}^1pq$' }], 'R2', { onChange: (m) => show(m) });
-        const S2 = v.stage({ x: [-3.2, 3.2], y: [-2.25, 2.25], equal: true, height: 400 });
-        const F = v.stage({ x: [-1.08, 1.08], y: [-1.6, 1.6], height: 270, full: true, title: '$p$ (drag the handles), $\\cos\\pi t$ and the representing polynomial $q$' });
+        const S2 = v.stage({ x: [-2.8, 2.8], y: [-2.0, 2.0], equal: true, height: 400 });
+        const F = v.stage({ x: [-1.08, 1.08], y: [-1.75, 1.6], height: 270, full: true, title: '$p$ (drag the handles), $\\cos\\pi t$ and the representing polynomial $q$' });
         const G = v.stage({ x: [-1.08, 1.08], y: [-1.6, 1.6], height: 190, full: true, title: 'integrands: $p(t)\\cos\\pi t$ and $p(t)\\,q(t)$ — equal signed areas' });
         const th = v.slider('basis angle $\\theta$', 0, 360, 25, { step: 1, fmt: (x) => `${Math.round(x)}°` });
         const nS = v.slider('$n$', 1, 8, 2, { int: true, onChange: () => renode() });
-        const Ph = S2.handle(0.55, 0.42, { color: 'accent', label: 'φ = 1', constrain: (x, y) => { const l = Math.hypot(x, y); return l < 0.3 ? (l < 1e-9 ? [0.3, 0] : [(0.3 * x) / l, (0.3 * y) / l]) : [x, y]; } });
-        const Uh = S2.handle(1.6, -1.0, { color: 'gold', label: 'u' });
+        const Ph = S2.handle(0.74, 0.52, { color: 'accent', label: 'φ = 1', constrain: (x, y) => { const l = Math.hypot(x, y); return l < 0.3 ? (l < 1e-9 ? [0.3, 0] : [(0.3 * x) / l, (0.3 * y) / l]) : [x, y]; } });
+        const Uh = S2.handle(1.5, -0.95, { color: 'gold', label: 'u' });
         // P_n mode: p interpolates handles at Chebyshev nodes
         let nodes = chebNodes(2), pc = [0.55, 0.5, -0.9];
         const H = [];
@@ -659,7 +677,7 @@ export default {
           renode();
         }
         show('R2');
-        const phiP = (p) => M.integrate((t) => pev(p, t) * Math.cos(Math.PI * t), -1, 1, 600);
+        const phiP = (p) => gint((t) => pev(p, t) * Math.cos(Math.PI * t));
         let st = null, cacheN = -1, E = null, q = null;
         v.render(() => {
           if (mode.value === 'R2') {
@@ -669,7 +687,9 @@ export default {
             levels(S2, c, { color: 'accent' });
             const t = (th.value * Math.PI) / 180, e1 = [Math.cos(t), Math.sin(t)], e2 = [-Math.sin(t), Math.cos(t)];
             const a1 = phi(e1), a2 = phi(e2), p1 = [a1 * e1[0], a1 * e1[1]], p2 = [a2 * e2[0], a2 * e2[1]], vv = [p1[0] + p2[0], p1[1] + p2[1]];
-            arr(S2, [0, 0], e1, 'muted', 'e_1', { width: 1.6, head: 7, size: 13 }); arr(S2, [0, 0], e2, 'muted', 'e_2', { width: 1.6, head: 7, size: 13 });
+            arr(S2, [0, 0], e1, 'muted', null, { width: 1.6, head: 7 }); arr(S2, [0, 0], e2, 'muted', null, { width: 1.6, head: 7 });
+            S2.tex('e_1', e1[0] - 0.24 * e2[0], e1[1] - 0.24 * e2[1], { color: 'muted', size: 13 });
+            S2.tex('e_2', e2[0] - 0.24 * e1[0], e2[1] - 0.24 * e1[1], { color: 'muted', size: 13 });
             S2.line(-4 * e1[0], -4 * e1[1], 4 * e1[0], 4 * e1[1], { color: 'muted', width: 0.8, alpha: 0.35 });
             S2.line(-4 * e2[0], -4 * e2[1], 4 * e2[0], 4 * e2[1], { color: 'muted', width: 0.8, alpha: 0.35 });
             arr(S2, [0, 0], p1, 'purple', null, { width: 2, head: 8, dash: [5, 4] });
@@ -682,7 +702,7 @@ export default {
             S2.dot(0, 0, { r: 3, color: 'ink' });
             st = { m: 'R2', a1, a2, vv, phiU: phi(u), ipU: dot2(u, vv), sp: 1 / Math.hypot(...c) };
           } else {
-            v.legend([['blue', '$p$'], ['muted', '$\\cos\\pi t$ (not in $\\mathcal P_n$)', { dash: true }], ['green', 'representer $q$'], ['orange', '$p\\cos\\pi t$', { area: true }]]);
+            v.legend([['blue', '$p$'], ['muted', '$\\cos\\pi t$ (not in $\\mathcal P_n$)', { dash: true }], ['green', 'representer $q$'], ['orange', '$p\\cos\\pi t$', { area: true }], ['green', '$p\\,q$', { area: true }]]);
             const n = nS.value;
             if (cacheN !== n) { cacheN = n; E = legendreON(n); const w = E.map((e) => phiP(e)); q = new Array(n + 1).fill(0); E.forEach((e, k) => e.forEach((x, i) => { q[i] += w[k] * x; })); }
             const xs = nodes.slice(0, n + 1), ys = H.slice(0, n + 1).map((h) => h.y);
@@ -691,15 +711,14 @@ export default {
             F.fn((t) => Math.cos(Math.PI * t), { domain: [-1, 1], color: 'muted', width: 2, dash: [6, 4] });
             F.fn((t) => pev(q, t), { domain: [-1, 1], color: 'green', width: 3 });
             F.clip(() => F.fn((t) => pev(pc, t), { domain: [-1, 1], color: 'blue', width: 2.4 }));
-            F.tex('q', 1, pev(q, 1), { color: 'green', dx: 12, size: 14, align: 'left' });
             G.hline(0, { color: 'muted', width: 0.8, alpha: 0.5 });
             const g1 = (t) => pev(pc, t) * Math.cos(Math.PI * t), g2 = (t) => pev(pc, t) * pev(q, t);
             let mx = 0.5; for (let i = 0; i <= 100; i++) { const t = -1 + i / 50; mx = Math.max(mx, Math.abs(g1(t)), Math.abs(g2(t))); }
             G.setView([-1.08, 1.08], [-mx * 1.15, mx * 1.15]);
             G.fn(g1, { domain: [-1, 1], color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.2 });
             G.fn(g2, { domain: [-1, 1], color: 'green', width: 2, fill: 'green', fillAlpha: 0.16 });
-            const lhs = M.integrate(g1, -1, 1, 600), rhs = M.integrate(g2, -1, 1, 600);
-            const dist = Math.sqrt(Math.max(0, M.integrate((t) => (Math.cos(Math.PI * t) - pev(q, t)) ** 2, -1, 1, 600)));
+            const lhs = gint(g1), rhs = gint(g2);
+            const dist = Math.sqrt(Math.max(0, gint((t) => (Math.cos(Math.PI * t) - pev(q, t)) ** 2)));
             st = { m: 'P', n, q, lhs, rhs, dist };
           }
         });
@@ -729,10 +748,10 @@ export default {
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.32, axis: 1.45, lim: 1.4 });
         const kS = v.select('$U$', [{ value: '1', label: '$\\{u_1\\}$' }, { value: '2', label: '$\\{u_1,u_2\\}$' }, { value: '3', label: '$\\{u_1,u_2,u_3\\}$' }], '1');
-        const U1 = sc.handle([0.45, 0.35, 0.95], { color: 'blue', label: 'u₁' });
-        const U2 = sc.handle([0.9, -0.55, 0.15], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
-        const U3 = sc.handle([-0.6, -0.8, 0.4], { color: 'blue', label: 'u₃', snap: (p) => snapSpan(p, orth([U1.p, U2.p]), 0.1) });
-        const X = sc.handle([-0.7, 0.9, 0.3], { color: 'gold', label: 'x', snap: (p) => { const k = +kS.value, B = orth([U1.p, U2.p, U3.p].slice(0, k)), W = compl(B); return snapSpan(p, W, 0.12); } });
+        const U1 = sc.handle([0.42, 0.02, 0.95], { color: 'blue', label: 'u₁' });
+        const U2 = sc.handle([-0.38, -0.97, 0.06], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
+        const U3 = sc.handle([0.9, -0.35, -0.35], { color: 'blue', label: 'u₃', snap: (p) => snapSpan(p, orth([U1.p, U2.p]), 0.1) });
+        const X = sc.handle([-0.9, 0.75, 0.55], { color: 'gold', label: 'x', snap: (p) => { const k = +kS.value, B = orth([U1.p, U2.p, U3.p].slice(0, k)), W = compl(B); return snapSpan(p, W, 0.12); } });
         v.legend([['blue', 'the set $U$'], ['green', '$U^\\perp$'], ['gold', 'test vector $x$']]);
         let st = null;
         v.render(() => {
@@ -756,7 +775,7 @@ export default {
           const { ips, inn, dU, dW, k } = st;
           const list = ips.map((a, i) => `$\\langle u_${i + 1}, x\\rangle = ${tn(a, 3)}$`).join(', ');
           const what = ['only the zero vector', 'a line', 'a plane', 'all of $\\mathbf R^3$'][dW];
-          return `${list}: ${inn ? '**$x \\in U^\\perp$**' : '$x\\notin U^\\perp$'}. Here $U$ has ${k} vector${k > 1 ? 's' : ''} spanning a ${dU}-dimensional subspace, and $U^\\perp$ is ${what}${dU < k ? ' — a redundant vector of $U$ adds no new condition' : ''}.`;
+          return `${list}: ${inn ? '**$x \\in U^\\perp$**' : '$x\\notin U^\\perp$'}. Here $U$ has ${k} vector${k > 1 ? 's' : ''} spanning a subspace of dimension ${dU}, and $U^\\perp$ is ${what}${dU < k ? ' — a redundant vector of $U$ adds no new condition' : ''}.`;
         });
       },
     },
@@ -776,15 +795,15 @@ export default {
       tags: ['orthogonality'],
       viz(v) {
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.45, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.45, axis: 1.45, lim: 1.4 });
         const mS = v.select('show', [{ value: 'a', label: '(a), (d): $U^\\perp$ of one vector' }, { value: 'e', label: '(b), (c), (e): a growing set' }], 'a');
         const kS = v.select('set', [{ value: '0', label: '$\\{0\\}$' }, { value: '1', label: '$+\\,g_1$' }, { value: '2', label: '$+\\,g_2$' }, { value: '3', label: '$+\\,g_3$' }], '2');
         const lam = v.slider('$\\lambda$', -2, 2, -0.8, { step: 0.05 });
-        const Uh = sc.handle([0.35, 0.3, 0.95], { color: 'blue', label: 'u', snap: (p) => (len3(p) < 0.15 ? [0, 0, 0] : p) });
+        const Uh = sc.handle([0.48, -0.06, 0.98], { color: 'blue', label: 'u', snap: (p) => (len3(p) < 0.15 ? [0, 0, 0] : p) });
         const inPlane = (p) => { const n = unit3(Uh.p); return len3(n) < 0.5 ? p : sub3(p, mul3(n, dot3(p, n))); };
-        const Xh = sc.handle(inPlane([0.9, -0.2, 0]), { color: 'orange', label: 'x', snap: inPlane });
-        const Yh = sc.handle(inPlane([-0.3, 0.8, 0]), { color: 'purple', label: 'y', snap: inPlane });
-        const Gh = [sc.handle([0.2, 0.25, 1.0], { color: 'blue', label: 'g₁' }), sc.handle([0.95, -0.35, 0.1], { color: 'purple', label: 'g₂' }), sc.handle([-0.3, -0.9, 0.35], { color: 'teal', label: 'g₃' })];
+        const Xh = sc.handle(inPlane([0.8, -0.45, -0.28]), { color: 'orange', label: 'x', snap: inPlane });
+        const Yh = sc.handle(inPlane([0.4, 0.95, -0.15]), { color: 'purple', label: 'y', snap: inPlane });
+        const Gh = [sc.handle([0.48, -0.06, 0.98], { color: 'blue', label: 'g₁' }), sc.handle([0.8, -0.45, -0.28], { color: 'purple', label: 'g₂' }), sc.handle([-0.3, -0.9, 0.35], { color: 'teal', label: 'g₃' })];
         let st = null;
         v.render(() => {
           const md = mS.value;
@@ -806,7 +825,7 @@ export default {
               sc.arrow(ZERO, lx, { color: 'orange', width: 1.8, head: 8, alpha: 0.75, dash: [5, 3] });
               sc.tex('\\lambda x', lx, { color: 'orange', dx: 12, dy: 10, size: 13 });
               sc.arrow(ZERO, x, { color: 'orange', width: 2.6 }); sc.arrow(ZERO, y, { color: 'purple', width: 2.6 });
-              sc.arrow(ZERO, s, { color: 'teal', width: 3 }); sc.tex('x+y', s, { color: 'teal', dx: 16, dy: -10, size: 13 });
+              sc.arrow(ZERO, s, { color: 'teal', width: 3 }); sc.tex('x+y', s, { color: 'teal', dx: 20, dy: -14, size: 13 });
               sc.arrow(ZERO, u, { color: 'blue', width: 3.2 });
               corner3(sc, ZERO, unit3(u), unit3(a), 0.15, { color: 'muted' });
             }
@@ -862,25 +881,26 @@ export default {
         const M = v.M;
         const mode = v.select('$V$', [{ value: 'R3', label: '$\\mathbf R^3$' }, { value: 'F', label: '$\\mathcal P_5(\\mathbf R)$: even $\\oplus$ odd' }], 'R3', { onChange: (m) => show(m) });
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.45, lim: 1.4 });
-        const F = v.stage({ x: [-1.08, 1.08], y: [-1.7, 1.7], height: 400, full: true, title: '$f = f_{\\text{even}} + f_{\\text{odd}}$ with $\\int_{-1}^1 f_{\\text{even}}\\,f_{\\text{odd}} = 0$' });
-        const U1 = sc.handle([1.0, 0.1, 0.15], { color: 'blue', label: 'u₁' });
-        const U2 = sc.handle([0.1, 1.0, -0.25], { color: 'blue', label: 'u₂' });
-        const Vh = sc.handle([0.35, 0.55, 1.05], { color: 'gold', label: 'v' });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.33, axis: 1.45, lim: 1.4 });
+        const F = v.stage({ x: [-1.08, 1.08], y: [-1.3, 1.3], height: 300, full: true, title: '$f$ (drag the handles) $= f_{\\text{even}} + f_{\\text{odd}}$' });
+        const G2 = v.stage({ x: [-1.08, 1.08], y: [-0.5, 0.5], height: 150, full: true, title: '$f_{\\text{even}}\\,f_{\\text{odd}}$ is odd: its signed areas on the two sides cancel, so $\\langle f_{\\text{even}}, f_{\\text{odd}}\\rangle = 0$' });
+        const U1 = sc.handle([1.0, 0.2, -0.105], { color: 'blue', label: 'u₁' });
+        const U2 = sc.handle([-0.733, 0.746, 0.312], { color: 'blue', label: 'u₂' });
+        const Vh = sc.handle([0.545, 0.086, 0.944], { color: 'gold', label: 'v' });
         let base = orth([U1.p, U2.p]);
         const inU = (p) => { const B = orth([U1.p, U2.p]); if (B.length < 2) return p; let q = projOnto(p, B); const f = projOnto(Vh.p, B); return len3(sub3(q, f)) < 0.1 ? f : q; };
         const Up = sc.handle([0.9, -0.5, 0.05], { color: 'orange', label: "u'", snap: inU });
         const XS = [-0.92, -0.6, -0.25, 0.25, 0.6, 0.92];
         const init = (x) => 0.35 + 0.9 * x - 0.6 * x * x - 0.5 * x ** 3;
-        const H = XS.map((x) => F.handle(x, init(x), { color: 'gold', r: 6, constrain: (xx, y) => [x, M.clamp(y, -1.6, 1.6)] }));
+        const H = XS.map((x) => F.handle(x, init(x), { color: 'gold', r: 6, constrain: (xx, y) => [x, M.clamp(y, -1.2, 1.2)] }));
         function show(m) {
-          layout(v, [[S, m === 'R3'], [F, m === 'F']]);
+          layout(v, [[S, m === 'R3'], [F, m === 'F'], [G2, m === 'F']]);
           [U1, U2, Vh, Up].forEach((h) => { h.visible = m === 'R3'; });
           H.forEach((h) => { h.visible = m === 'F'; });
         }
         show('R3');
         const EV = legendreON(5).filter((_, k) => k % 2 === 0);   // orthonormal basis of the even polynomials in P₅
-        const ipF = (f, g) => M.integrate((t) => f(t) * g(t), -1, 1, 400);
+        const ipF = (f, g) => gint((t) => f(t) * g(t));
         let st = null;
         v.render(() => {
           if (mode.value === 'R3') {
@@ -919,6 +939,13 @@ export default {
               F.fn(fo, { domain: [-1, 1], color: 'green', width: 2.6 });
               F.fn(f, { domain: [-1, 1], color: 'gold', width: 3 });
             });
+            const pr = (t) => fe(t) * fo(t);
+            let mx = 0.05; for (let i = 0; i <= 100; i++) mx = Math.max(mx, Math.abs(pr(-1 + i / 50)));
+            G2.setView([-1.08, 1.08], [-mx * 1.55, mx * 1.55]);
+            G2.hline(0, { color: 'muted', width: 0.8, alpha: 0.5 }); G2.vline(0, { color: 'muted', width: 0.8, alpha: 0.5 });
+            G2.fn(pr, { domain: [-1, 0], color: 'purple', width: 2, fill: 'purple', fillAlpha: 0.22 });
+            G2.fn(pr, { domain: [0, 1], color: 'teal', width: 2, fill: 'teal', fillAlpha: 0.22 });
+            G2.corner(`left: ${pn(gint(pr, -1, 0), 4)}   right: ${pn(gint(pr, 0, 1), 4)}`, 'tl', { color: 'muted' });
             let dPU = 0; for (let i = 0; i <= 50; i++) { const t = -1 + i / 25; dPU = Math.max(dPU, Math.abs(PU(t) - fe(t))); }
             st = { m: 'F', ip: ipF(fe, fo), dPU, nf: Math.sqrt(ipF(f, f)), ne: Math.sqrt(ipF(fe, fe)), no: Math.sqrt(ipF(fo, fo)) };
           }
@@ -1020,8 +1047,8 @@ export default {
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -0.68, pitch: 0.3, axis: 1.45, lim: 1.4 });
         const uS = v.select('$U$', [{ value: 'line', label: 'a line' }, { value: 'plane', label: 'a plane' }, { value: 'set', label: 'a set of two vectors' }], 'line', { onChange: () => St.set(St.n - 1) });
-        const U1 = sc.handle([0.55, 0.45, 0.9], { color: 'blue', label: 'u₁' });
-        const U2 = sc.handle([0.95, -0.5, 0.2], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
+        const U1 = sc.handle([0.25, -0.26, 1.0], { color: 'blue', label: 'u₁' });
+        const U2 = sc.handle([0.95, -0.1, -0.23], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
         const St = v.steps({
           frames: [
             { k: 0, note: String.raw`Start with $U$.` },
@@ -1063,7 +1090,7 @@ export default {
           if (k === 0) return `$U$ is ${md === 'set' ? 'a set of two vectors' : nm(dU)}.`;
           if (k === 1) return `$U^\\perp$ is ${nm(dW)} ($\\dim U^\\perp = 3 - ${dU}$).`;
           if (md === 'set') return `$(U^\\perp)^\\perp$ is ${nm(dWW)}: it contains the two vectors of $U$ but also every combination of them, so $U\\subsetneq(U^\\perp)^\\perp=\\operatorname{span}U$. Equality needs $U$ to be a subspace.`;
-          return `$(U^\\perp)^\\perp$ is ${nm(dWW)} again, and it is $U$ itself: the orthogonal projections onto $U$ and onto $(U^\\perp)^\\perp$ agree to within $${zs(d)}$ in every matrix entry.`;
+          return `$(U^\\perp)^\\perp$ is ${nm(dWW)} again, and it is $U$ itself: the matrices of the orthogonal projections onto $U$ and onto $(U^\\perp)^\\perp$ differ by at most $${zs(d)}$ in any entry.`;
         });
       },
     },

@@ -307,7 +307,7 @@ one-sided `{freq, amp, phase}` (a cosine of amplitude A reads A).
 **Matrices** (arrays of rows): `zeros(m,n) trace outer kron matPow(A,k)` · `lu(A)` → `{L, U, P, perm,
 sign, singular}` (PA = LU), `luSolve(lu or A, b or B)` · `qr(A, {thin})` (Householder, R_ii ≥ 0) ·
 `eigSym(A)` (Jacobi) → `{values ↓, vectors (columns), vecs (list)}` · `eig(A)` (Hessenberg + shifted QR)
-→ `{values: [Cx] by |λ| ↓, vectors: [real unit vector | null], cvectors: [{re, im}]}` · `svd(A)` (m×n,
+→ `{values: [Cx] by |λ| ↓, vectors: [real unit vector | null], cvectors: [{re, im}]}` · complex matrices (entries number | `Cx` | [re, im]): `eigC(A)` → `{values: [Cx], vectors: [{re, im}]}`, `solveC(A, b)` · `solve(A, B)` also takes a matrix right-hand side · `svd(A)` (m×n,
 one-sided Jacobi) → thin `{U, S ↓, V}`, A = U diag(S) Vᵀ · `pinv`, `lstsq(A, b)`, `rank(A, tol)`,
 `nullspace(A)` (orthonormal list), `rref(A)` → `{R, pivots}` · `expm(A)` (Padé + squaring) ·
 `charPoly(A)` → ascending coefficients for `polyEval`.
