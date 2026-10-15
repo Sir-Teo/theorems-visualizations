@@ -177,7 +177,7 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
         const Vs = v.slider('anode voltage $V$', -5, 3, -0.5, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} V` });
         const tube = v.stage({ x: [-0.3, 1.3], y: [-0.76, 0.8], height: 245, axes: false, full: true });
         const iv = v.stage({ x: [-5, 3], y: [0, 1], height: 250, axes: 'box', ylabel: 'I (nA)', weight: 1.15, title: 'photocurrent against anode voltage $V$ (volts)' });
-        const mk = v.stage({ x: [0, 1.7], y: [0, 5.2], height: 250, axes: 'box', xlabel: 'f (10¹⁵ Hz)', ylabel: 'V_s (volts)', weight: 1, title: 'stopping voltage against frequency' });
+        const mk = v.stage({ x: [0, 1.7], y: [0, 5.2], height: 250, axes: 'box', xlabel: 'f (10¹⁵ Hz)', ylabel: 'Vₛ (volts)', weight: 1, title: 'stopping voltage against frequency' });
         const rng = v.rng(11), NS = 4000, U = Array.from({ length: NS }, () => rng()).sort((a, b) => a - b);
         const frac = (K, V) => { if (K <= 0) return 0; if (V >= 0) return 1; const q = -V / K; let lo = 0, hi = NS; while (lo < hi) { const mid = (lo + hi) >> 1; if (U[mid] <= q) lo = mid + 1; else hi = mid; } return (NS - lo) / NS; };
         const LAMP = [0.5, 0.6], DT = 0.05, FLY = 0.35;
@@ -230,7 +230,7 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
             iv.text('2×', 1.2, Math.min(Isat(irr.value * 2), Imax * 0.95), { color: 'muted', size: 11, dy: -9 });
             iv.text('½×', 1.2, Isat(irr.value / 2), { color: 'muted', size: 11, dy: -9 });
             iv.vline(-Vsm, { color: 'green', dash: [5, 4], width: 1.6 });
-            iv.text(`−V_s = −${v.fix(Vsm, 2)} V`, -Vsm, Imax * 0.9, { color: 'green', size: 12, align: Vsm > 3.5 ? 'left' : 'right', dx: Vsm > 3.5 ? 6 : -6 });
+            iv.text(`−Vₛ = −${v.fix(Vsm, 2)} V`, -Vsm, Imax * 0.9, { color: 'green', size: 12, align: Vsm > 3.5 ? 'left' : 'right', dx: Vsm > 3.5 ? 6 : -6 });
           }
           iv.dot(V, cur, { r: 5.5, color: 'gold' });
           // ---- Millikan plot
@@ -453,7 +453,7 @@ Then the radii, speeds and energies are
 $$r_n=\frac{n^2}{Z}a_0,\qquad v_n=\frac{Z\alpha c}{n},\qquad E_n=-\frac{Z^2}{n^2}\,\frac{m_ee^4}{8\varepsilon_0^2h^2}=-\frac{13.606\ \text{eV}\,Z^2}{n^2},$$
 with $a_0=\varepsilon_0h^2/\pi m_ee^2=0.0529$ nm. The photon wavelengths reproduce the Rydberg formula (1.4) with $R_\infty=m_ee^4/8\varepsilon_0^2h^3c$; replacing $m_e$ by the reduced mass $\mu=m_eM/(m_e+M)$ accounts for the nucleus' recoil and gives $R_{\rm H}$.`,
       idea: String.raw`Rutherford scattering (mech-8.18) had shown a tiny massive nucleus, and the Coulomb force is central, so angular momentum is conserved (mech-2.10) and circular orbits have $mv^2/r=Zke^2/r^2$. Classically such an electron radiates and spirals in within $10^{-11}$ s (em-12.17); Bohr simply forbade this for the orbits with $L=n\hbar$. Combining $mvr=n\hbar$ with the force balance gives $r_n\propto n^2$ and $E_n=-Zke^2/2r_n\propto-1/n^2$, so photon energies are differences of terms $\propto1/n^2$ — exactly Rydberg's empirical formula, now with $R$ computed from $m_e,e,\varepsilon_0,h,c$. The tiny remaining mismatch (0.05 %) disappears with the reduced mass, which also explained the He⁺ lines Pickering had found in stars.`,
-      caption: String.raw`**Click a transition arrow** in the level diagram: the electron jumps between the drawn-to-scale orbits, the emitted photon flies off in its true colour, and its line lights up in the spectrum below at the wavelength the model predicts; the small triangle marks the measured hydrogen line. Toggle the reduced-mass correction to see the 0.05 % shift, and try He⁺ and Li²⁺ (energies × $Z^2$). **Break it:** switch to a *classical electron*: it radiates, spirals into the nucleus in about $10^{-11}$ s (turns not to scale) and paints a continuous smear instead of lines.`,
+      caption: String.raw`**Click a transition arrow** in the level diagram: the electron jumps between the drawn-to-scale orbits, the emitted photon flies off in its true colour, and its line lights up in the spectrum below at the wavelength the model predicts; the small triangle marks the measured hydrogen line. Toggle the reduced-mass correction to see the 0.05 % shift, and try He⁺ and Li²⁺ (energies × $Z^2$). **Break it:** switch to a *classical electron*: it radiates, spirals into the nucleus (in 16 ps from the $n=1$ radius; turns not to scale) and paints a continuous smear instead of lines.`,
       scope: String.raw`Works for one-electron atoms and ions (H, He⁺, Li²⁺, …) and for the gross structure of their spectra. It fails for atoms with two or more electrons, cannot give line intensities, fine structure or the Zeeman pattern, and wrongly assigns the ground state the angular momentum $\hbar$ (it is 0). Superseded by the Schrödinger equation, which reproduces the same energies.`,
       deps: ['qm-1.4', 'em-12.17', 'mech-8.18', 'mech-2.10'],
       refs: ['Hall ch. 1'],
@@ -601,7 +601,7 @@ Each allowed orbit therefore occupies an annulus of area $h$ in phase space. It 
           quart: { label: 'quartic $x^4$', V: (x) => x ** 4, X: 2.6 },
           vee: { label: 'V-shaped $|x|$', V: (x) => Math.abs(x), X: 8 },
         };
-        const pot = v.select('potential', Object.entries(POT).map(([value, P]) => ({ value, label: P.label })), 'quart');
+        const pot = v.select('potential', Object.entries(POT).map(([value, P]) => ({ value, label: P.label })), 'ho');
         const rule = v.select('rule', [{ value: 0, label: '$\\oint p\\,dq = nh$ (1913–16)' }, { value: 0.5, label: '$(n+\\frac12)h$ (WKB, 1926)' }], 0);
         const ph = v.stage({ x: [-3, 3], y: [-5, 5], height: 340, axes: true, xlabel: 'x', ylabel: 'p', weight: 1.3, title: 'phase space' });
         const lv = v.stage({ x: [-3, 3], y: [0, 10], height: 340, axes: 'box', xlabel: 'x', ylabel: 'E', weight: 0.9, title: 'levels: predicted vs exact' });
@@ -636,7 +636,7 @@ Each allowed orbit therefore occupies an annulus of area $h$ in phase space. It 
           if (P.hard) { lv.line(-A, 0, -A, Etop, { color: 'ink', width: 3 }); lv.line(A, 0, A, Etop, { color: 'ink', width: 3 }); lv.line(-A, 0, A, 0, { color: 'ink', width: 2 }); }
           else lv.fn(P.V, { color: 'ink', width: 2.2 });
           ex.forEach((Ee) => { const x2 = turn(P, Ee); lv.line(-x2, Ee, x2, Ee, { color: 'green', width: 2.6 }); });
-          bs.forEach((Eb, i) => { const x2 = Math.min(turn(P, Eb) * 1.08, xT * 0.93); lv.line(-x2, Eb, x2, Eb, { color: 'accent', width: 1.6, dash: [5, 4] }); lv.text(`n=${ns[i]}`, x2, Eb, { color: 'accent', size: 10.5, dx: 3, align: 'left' }); });
+          bs.forEach((Eb, i) => { const x2 = Math.min(turn(P, Eb) * 1.08, xT * 0.97); lv.line(-x2, Eb, x2, Eb, { color: 'accent', width: 1.6, dash: [5, 4] }); lv.text(`n=${ns[i]}`, x2, Eb, { color: 'accent', size: 10.5, dy: -8, align: 'right' }); });
           lv.hline(E, { color: 'gold', width: 1.2, alpha: 0.8 });
           const errs = bs.map((Eb, i) => (Eb - ex[i]) / ex[i]);
           st = { E, J, ex, bs, errs, ns, mu, key };

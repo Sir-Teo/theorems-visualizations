@@ -1,5 +1,6 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
+import { buildIndex, runSearch, highlight } from './search.js';
 import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
@@ -462,7 +463,15 @@ async function pageMap(params) {
   await ensurePlanned().catch(() => {});
   const host = document.createElement('div');
   app.replaceChildren(host);
-  const view = new MapView(host, G, { onOpen: (id) => go(`#/t/${id}`), focus: params.get('focus'), loadShard });
+  const q0 = params.get('q') || '';
+  const apply = (q, fit) => {
+    if (!q.trim()) { view.setHighlight(null); history.replaceState(null, '', '#/map'); return; }
+    if (!SIDX.some((e) => e.planned)) buildSearch();
+    const R = runSearch(SIDX, q, G, { limit: 1e6 }); view.setHighlight(new Set(R.all.map((it) => it.id)), { fit });
+    history.replaceState(null, '', `#/map?q=${encodeURIComponent(q)}`);
+  };
+  const view = new MapView(host, G, { onOpen: (id) => go(`#/t/${id}`), focus: params.get('focus'), loadShard, onQuery: apply, query: q0 });
+  if (q0) apply(q0, true);
   cleanup = () => { view.dead = true; view.destroy(); };
 }
 
@@ -545,12 +554,16 @@ async function pageBridge(slug) {
   app.replaceChildren(el);
 }
 
-function pageTimeline() {
+async function pageTimeline(params) {
   setTitle('Timeline'); setNav('timeline'); curCol = null;
-  const host = document.createElement('div');
-  app.replaceChildren(host);
-  if (!G.items.some((it) => it.yr != null)) { app.replaceChildren(h(`<div class="wrap page-head"><h1>Timeline</h1><p class="sub">No dated ideas yet: items gain a place on the timeline when they carry a <code>credit</code> with a year.</p></div>`)); return; }
-  const view = new TimelineView(host, G, { onOpen: (id) => go(`#/t/${id}`) });
+  await ensurePlanned().catch(() => {});
+  const items = [...G.items, ...G.planned].filter((it) => it.yr != null);
+  if (!items.length) { app.replaceChildren(h(`<div class="wrap page-head"><h1>Timeline</h1><p class="sub">No dated ideas yet: items gain a place on the timeline when they carry a <code>credit</code> with a year.</p></div>`)); return; }
+  const q = params?.get('q') || '';
+  const host = document.createElement('div'); app.replaceChildren(host);
+  let hl = null;
+  if (q) { buildSearch(); const R = runSearch(SIDX, q, G, { limit: 1e6 }); hl = new Set(R.all.map((it) => it.id)); }
+  const view = new TimelineView(host, G, { items, highlight: hl, what: q ? `dated ideas · highlighting “${escapeHTML(q)}” (${hl.size})` : 'dated ideas and papers (hollow: planned)', onOpen: (id) => go(`#/t/${id}`) });
   cleanup = () => view.destroy();
 }
 
@@ -635,7 +648,9 @@ async function route() {
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
     else if (parts[0] === 'map') await pageMap(params);
     else if (parts[0] === 'status') pageStatus();
-    else if (parts[0] === 'timeline') pageTimeline();
+    else if (parts[0] === 'timeline') await pageTimeline(params);
+    else if (parts[0] === 'search') await pageSearch(params);
+    else if (parts[0] === 'papers') await pagePapers(params);
     else if (parts[0] === 'bridges') pageBridges();
     else if (parts[0] === 'path' && parts[1]) await pagePath(decodeURIComponent(parts[1]));
     else if (parts[0] === 'bridge' && parts[1]) await pageBridge(parts[1]);
@@ -651,60 +666,105 @@ async function route() {
 
 // ------------------------------------------------------------ search
 let SIDX = [];
-const plain = (s) => (s || '').replace(/\$[^$]*\$/g, ' ').replace(/[\\{}^_]/g, ' ').toLowerCase();
-function buildSearch() {
-  SIDX = G.items.map((it) => {
-    const C = G.colById.get(it.col);
-    return { it, num: it.num, name: plain(it.name) + ' ' + it.name.toLowerCase(), body: `${plain(it.st)} ${(it.tags || []).join(' ')} ${it.kind.toLowerCase()} ${C.short.toLowerCase()} ${C.title.toLowerCase()} ${it.credit ? it.credit.toLowerCase() : ''}` };
-  });
+function buildSearch() { SIDX = buildIndex({ G, chapterOf }); }
+const searchHref = (q) => `#/search?q=${encodeURIComponent(q)}`;
+/** One result row (dropdown and results page share it). */
+function resultRow(it, Q, i, sel) {
+  const C = G.colById.get(it.col);
+  const sub = it.kind === 'Paper' ? `${escapeHTML(it.au || '')}${it.yr != null ? ` · ${it.yr}` : ''}` : `${escapeHTML(fullLabel(it))} · ${escapeHTML(chapterOf(it.col, it.c)?.title || '')}`;
+  return `<div class="sr-item${i === sel ? ' sel' : ''}${it.planned ? ' planned' : ''}" role="option" data-href="#/t/${it.id}" data-col="${it.col}"><span class="sr-num"><span class="col-dot"></span> ${escapeHTML(C.short)} ${displayNum(it)}</span><span class="sr-name">${highlight(inlineHTML(it.name), Q)}${it.planned ? ' <span class="sr-tag">planned</span>' : ''}${it.kind === 'Paper' ? ' <span class="sr-tag paper">paper</span>' : ''}</span><span class="sr-sub">${sub}</span></div>`;
 }
-function search(q) {
-  q = q.trim().toLowerCase(); if (!q) return [];
-  const toks = q.split(/\s+/).filter(Boolean);
-  const colTok = toks.find((t) => G.colById.has(t) || G.collections.some((C) => C.short.toLowerCase() === t));
-  const colId = colTok && (G.colById.has(colTok) ? colTok : G.collections.find((C) => C.short.toLowerCase() === colTok).id);
-  const fieldTok = toks.find((t) => t !== colTok && (G.fieldById.has(t.replace(/:$/, '')) || G.fields.some((F) => F.short.toLowerCase() === t.replace(/:$/, ''))));
-  const fieldId = fieldTok && (G.fieldById.get(fieldTok.replace(/:$/, ''))?.id || G.fields.find((F) => F.short.toLowerCase() === fieldTok.replace(/:$/, '')).id);
-  const numTok = toks.find((t) => /^\d+(\.\d+){1,2}[a-z]?$/.test(t));
-  const words = toks.filter((t) => t !== colTok && t !== fieldTok && t !== numTok);
-  const out = [];
-  for (const e of SIDX) {
-    if (colId && e.it.col !== colId) continue;
-    if (fieldId && G.colById.get(e.it.col).field !== fieldId) continue;
-    let s = 0;
-    if (numTok) { if (e.num === numTok) s += 100; else if (e.num.startsWith(numTok)) s += 30; else continue; }
-    let ok = true;
-    for (const w of words) {
-      if (e.name.includes(w)) s += e.name.startsWith(w) || e.name.includes(' ' + w) ? 14 : 9;
-      else if (e.body.includes(w)) s += 3;
-      else { ok = false; break; }
-    }
-    if (!ok) continue;
-    if (!words.length && !numTok && (colId || fieldId)) s += 1;
-    if (s > 0) out.push([s + (e.it.kind === 'Definition' ? 0 : 0.5) + Math.min(2, (e.it.desc || 0) / 40), e.it]);
-  }
-  return out.sort((a, b) => b[0] - a[0]).slice(0, 14).map((x) => x[1]);
+function pageRow(e, Q, i, sel) {
+  const [href, label, title] = e.t === 'field' ? [`#/f/${e.F.id}`, 'Field', e.F.title] : e.t === 'col' ? [`#/c/${e.C.id}`, e.C.short, e.C.title] : e.t === 'ch' ? [`#/c/${e.C.id}/${e.Ch.n}`, `${e.C.short} ${chapterLabel(e.C.id, e.Ch.n)}`, e.Ch.title] : [`#/bridge/${e.B.slug}`, 'Bridge', e.B.title];
+  return `<div class="sr-item sr-page${i === sel ? ' sel' : ''}" role="option" data-href="${href}" ${e.C ? `data-col="${e.C.id}"` : e.F ? `data-field="${e.F.id}"` : ''}><span class="sr-num">${escapeHTML(label)}</span><span class="sr-name">${highlight(escapeHTML(title), Q)}</span><span class="sr-sub">${e.t === 'col' ? escapeHTML(G.fieldById.get(e.C.field)?.short || '') : e.t === 'ch' ? escapeHTML(e.C.title) : ''}</span></div>`;
 }
 const sInput = document.getElementById('search'), sBox = document.getElementById('search-results');
-let sSel = 0, sRes = [];
+let sSel = 0, sHrefs = [];
 function renderSearch() {
-  sRes = search(sInput.value); sSel = Math.min(sSel, Math.max(0, sRes.length - 1));
-  if (!sInput.value.trim()) { closeSearch(); return; }
-  sBox.innerHTML = sRes.length ? sRes.map((it, i) => `<div class="sr-item${i === sSel ? ' sel' : ''}" role="option" data-id="${it.id}" data-col="${it.col}"><span class="sr-num"><span class="col-dot"></span> ${escapeHTML(colShort(it.col))} ${displayNum(it)}</span><span class="sr-name">${inlineHTML(it.name)}</span><span class="sr-sub">${escapeHTML(fullLabel(it))} · ${escapeHTML(chapterOf(it.col, it.c)?.title || '')}</span></div>`).join('') : '<div class="sr-item"><span></span><span class="faint">No matches</span></div>';
+  const q = sInput.value; if (!q.trim()) { closeSearch(); return; }
+  const R = runSearch(SIDX, q, G, { limit: 8 });
+  const pages = R.pages.slice(0, 3);
+  sHrefs = [...pages.map((e) => null), ...R.items.map((it) => `#/t/${it.id}`), searchHref(q)];
+  sSel = Math.min(sSel, sHrefs.length - 1);
+  let i = 0;
+  const rows = [...pages.map((e) => pageRow(e, R.Q, i++, sSel)), ...R.items.map((it) => resultRow(it, R.Q, i++, sSel))];
+  sBox.innerHTML = (rows.length ? rows.join('') : '<div class="sr-item"><span></span><span class="faint">No matches. Try fewer words, or kind:, field:, year:, by:</span></div>')
+    + `<div class="sr-item sr-all${i === sSel ? ' sel' : ''}" role="option" data-href="${searchHref(q)}"><span></span><span>${R.total > R.items.length ? `All ${R.total.toLocaleString('en')} results` : 'Open the results page'} · map · timeline →</span></div>`;
+  sHrefs = [...sBox.querySelectorAll('[data-href]')].map((el) => el.dataset.href);
   sBox.classList.add('open');
 }
 function closeSearch() { sBox.classList.remove('open'); }
+function goSearch(href) { go(href); sInput.value = ''; sInput.blur(); closeSearch(); }
 sInput.addEventListener('input', () => { sSel = 0; renderSearch(); });
-sInput.addEventListener('focus', () => { if (sInput.value.trim()) renderSearch(); });
+sInput.addEventListener('focus', () => { ensurePlanned().then(() => { if (!SIDX.some((e) => e.planned)) buildSearch(); if (sInput.value.trim()) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
 sInput.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowDown') { sSel = Math.min(sRes.length - 1, sSel + 1); renderSearch(); e.preventDefault(); }
+  if (e.key === 'ArrowDown') { sSel = Math.min(sHrefs.length - 1, sSel + 1); renderSearch(); e.preventDefault(); }
   else if (e.key === 'ArrowUp') { sSel = Math.max(0, sSel - 1); renderSearch(); e.preventDefault(); }
-  else if (e.key === 'Enter' && sRes[sSel]) { go(`#/t/${sRes[sSel].id}`); sInput.value = ''; sInput.blur(); closeSearch(); }
+  else if (e.key === 'Enter') { const href = (e.metaKey || e.ctrlKey) ? searchHref(sInput.value) : sHrefs[sSel]; if (href) goSearch(href); }
   else if (e.key === 'Escape') { sInput.blur(); closeSearch(); }
 });
-sBox.addEventListener('mousedown', (e) => { const r = e.target.closest('[data-id]'); if (r) { e.preventDefault(); go(`#/t/${r.dataset.id}`); sInput.value = ''; sInput.blur(); closeSearch(); } });
+sBox.addEventListener('mousedown', (e) => { const r = e.target.closest('[data-href]'); if (r) { e.preventDefault(); goSearch(r.dataset.href); } });
 document.addEventListener('click', (e) => { if (!e.target.closest('.search')) closeSearch(); });
 window.addEventListener('keydown', (e) => { if (e.key === '/' && !e.target.closest('input, textarea')) { e.preventDefault(); sInput.focus(); } });
+
+/** Full results page: facets, results, and the matches shown on the map and timeline. */
+async function pageSearch(params) {
+  await ensurePlanned().catch(() => {}); buildSearch();
+  const q = params.get('q') || '';
+  setTitle(q ? `Search: ${q}` : 'Search'); setNav(''); curCol = null;
+  const R = runSearch(SIDX, q, G, { limit: 100000 });
+  const facet = (title, counts, key, label) => { const es = Object.entries(counts).filter(([, n]) => n).sort((a, b) => b[1] - a[1]); return es.length ? `<div class="facet"><div class="eyebrow">${title}</div>${es.map(([k, n]) => `<a class="facet-row" href="${searchHref(`${q} ${key}:${k}`.trim())}"${key === 'field' ? ` data-field="${k}"` : ''}><span>${key === 'field' ? `<span class="col-dot" style="--bc:var(--f-${k})"></span>` : ''}${escapeHTML(label(k))}</span><b>${n.toLocaleString('en')}</b></a>`).join('')}</div>` : ''; };
+  const PAGE = 60; let shown = 0;
+  const el = h(`<div class="wrap search-page">
+    <div class="page-head"><h1>Search</h1>
+      <form class="search-big" role="search"><input type="search" name="q" value="${escapeHTML(q)}" placeholder="entropy · kind:paper field:physics · year:1900-1950 · by:noether · is:planned" aria-label="Search the atlas" autofocus><button class="btn" type="submit">Search</button></form>
+      <p class="sub search-help">Words match names and descriptions (prefix, one typo allowed). Filters: <code>kind:theorem</code> <code>field:biology</code> <code>col:mech</code> <code>year:1900-1950</code> <code>year:&lt;1700</code> <code>by:shannon</code> <code>is:planned</code> <code>is:paper</code> <code>"exact phrase"</code></p>
+      ${q ? `<div class="stats-row"><span><b>${R.total.toLocaleString('en')}</b> ideas</span><span><b>${R.facets.status.written.toLocaleString('en')}</b> written</span><span><b>${R.facets.status.planned.toLocaleString('en')}</b> planned</span>${R.total ? `<a class="btn" href="#/map?q=${encodeURIComponent(q)}">Show on the map</a><a class="btn" href="#/timeline?q=${encodeURIComponent(q)}">Show on the timeline</a>` : ''}</div>` : ''}
+    </div>
+    ${q ? `<div class="search-layout">
+      <aside class="facets card">${facet('Field', R.facets.field, 'field', (k) => G.fieldById.get(k)?.short || k)}${facet('Kind', R.facets.kind, 'kind', (k) => k)}${facet('Status', R.facets.status, 'is', (k) => k)}</aside>
+      <div>
+        ${R.pages.length ? `<div class="sr-list sr-pages">${R.pages.map((e, i) => pageRow(e, R.Q, i, -1)).join('')}</div>` : ''}
+        <div class="sr-list" id="sr-list"></div>
+        <div style="margin-top:14px" id="sr-more"></div>
+        ${!R.total && !R.pages.length ? '<p class="empty-note">Nothing matches. Try fewer words, a shorter prefix, or remove a filter.</p>' : ''}
+      </div></div>` : ''}
+  </div>`);
+  app.replaceChildren(el);
+  el.querySelector('form').addEventListener('submit', (e) => { e.preventDefault(); go(searchHref(new FormData(e.target).get('q'))); });
+  el.addEventListener('click', (e) => { const r = e.target.closest('.sr-item[data-href]'); if (r) go(r.dataset.href); });
+  const list = el.querySelector('#sr-list'), more = el.querySelector('#sr-more');
+  const showMore = () => {
+    const next = R.all.slice(shown, shown + PAGE); shown += next.length;
+    list.insertAdjacentHTML('beforeend', next.map((it) => resultRow(it, R.Q, -1, -2)).join(''));
+    more.innerHTML = shown < R.all.length ? `<button class="btn" type="button">Show ${Math.min(PAGE, R.all.length - shown)} more (${(R.all.length - shown).toLocaleString('en')} left)</button>` : '';
+    more.querySelector('button')?.addEventListener('click', showMore);
+  };
+  if (list) showMore();
+}
+
+/** Landmark papers across all fields: timeline strip + lists by field. */
+async function pagePapers(params) {
+  await ensurePlanned().catch(() => {});
+  setTitle('Landmark papers'); setNav('papers'); curCol = null;
+  const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper').sort((a, b) => (a.yr ?? 9999) - (b.yr ?? 9999));
+  const fieldOf = (it) => G.colById.get(it.col)?.field;
+  const fsel = params.get('field');
+  const byField = G.fields.map((F) => ({ F, ps: papers.filter((p) => fieldOf(p) === F.id) })).filter((x) => x.ps.length);
+  const el = h(`<div class="wrap">
+    <div class="page-head"><h1>Landmark papers</h1>
+      <p class="sub">The papers that changed their fields, each linked to the ideas it first put forward and, as they are written, with an interactive recreation of its central result.</p>
+      <div class="stats-row"><span><b>${papers.length}</b> papers</span><span><b>${papers.filter((p) => !p.planned).length}</b> written</span><span><b>${byField.length}</b> fields</span><a class="btn" href="#/search?q=${encodeURIComponent('is:paper')}">Search papers</a></div>
+      <div class="chip-list field-chips"><a class="chip${fsel ? '' : ' on'}" href="#/papers">All</a>${byField.map(({ F, ps }) => `<a class="chip${fsel === F.id ? ' on' : ''}" href="#/papers?field=${F.id}" data-field="${F.id}"><span class="col-dot" style="--bc:var(--f-${F.id})"></span>${escapeHTML(F.short)} <span class="count">${ps.length}</span></a>`).join('')}</div>
+    </div>
+    ${papers.length ? `<div class="card papers-timeline" id="ptl"></div>` : '<div class="card empty-shelf"><p>The landmark papers are being researched and will appear here shortly.</p></div>'}
+    ${byField.filter(({ F }) => !fsel || F.id === fsel).map(({ F, ps }) => `<div class="section-title" data-field="${F.id}"><h2 style="color:var(--fc)">${escapeHTML(F.title)}</h2><span class="muted">${ps.length} paper${ps.length === 1 ? '' : 's'}</span></div>
+      <div class="papers-list">${ps.map((p) => `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${inlineHTML(p.name)}</div><div class="au">${escapeHTML(p.au || '')} · ${escapeHTML(G.colById.get(p.col).short)}</div></span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`).join('')}</div>`).join('')}
+  </div>`);
+  app.replaceChildren(el);
+  const host = el.querySelector('#ptl');
+  if (host) { const view = new TimelineView(host, G, { items: fsel ? papers.filter((p) => fieldOf(p) === fsel) : papers, what: 'papers', onOpen: (id) => go(`#/t/${id}`) }); cleanup = () => view.destroy(); }
+}
 
 // ------------------------------------------------------------ theme
 function applyTheme(t) {

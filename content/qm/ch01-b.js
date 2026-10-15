@@ -49,7 +49,7 @@ export default {
       credit: 'Franck & Hertz, 1914',
       statement: String.raw`Electrons accelerated through a dilute vapour of mercury by a voltage $U$ and collected behind a small retarding voltage give a current that rises with $U$ but drops sharply at regularly spaced voltages, $4.9$ V apart. Electrons collide elastically with the atoms (losing almost nothing) until their kinetic energy reaches $E_1=4.89$ eV; then they can give up exactly that amount, exciting the atom from its ground state to its first excited state, which re-emits it as ultraviolet light of wavelength $hc/E_1=253.7$ nm. Atoms therefore absorb energy from collisions only in fixed amounts: their energy levels are discrete, independently of any spectroscopy.`,
       idea: String.raw`An electron gains energy steadily in the field. As soon as it has $E_1$ it soon hits an atom and loses $E_1$, then starts gaining again; so the losses happen at the places where the potential has risen by $E_1, 2E_1, \dots$ — visible in neon as glowing layers. The current dips whenever the last excitation happens just before the grid, leaving the electron too little energy to climb the retarding voltage; adding $E_1$ to $U$ adds one more excitation, which is why the dips repeat every $E_1/e$ volts. Bohr (1.5) read this as direct proof of stationary states; the energy matches the 253.7 nm line, as the photon picture (1.3) requires.`,
-      caption: String.raw`Press play to ramp the accelerating voltage (or pause and drag the gold marker on the curve). The current is a Monte Carlo of 300 electrons per voltage: free flights of random length, an excitation costing exactly $E_1$ whenever an electron with enough energy hits an atom. The tube shows where excitations happen — one more glowing zone for every $E_1$ of voltage. The readout measures the spacing of the current maxima. Raise the vapour density to sharpen them; switch to neon (18.7 eV). **Break it:** let atoms absorb *any* amount of energy and the dips disappear.`,
+      caption: String.raw`Press play to ramp the accelerating voltage (or pause and drag the gold marker on the curve). The current is a Monte Carlo of 300 electrons per voltage: free flights of random length, and an excitation costing exactly $E_1$ (with a probability that rises just above threshold) when an electron with enough energy hits an atom. The tube shows where excitations happen — one more glowing zone for every $E_1$ of voltage. The readout measures the spacing of the current maxima. Raise the vapour density to sharpen them; switch to neon (18.7 eV). **Break it:** let atoms absorb *any* amount of energy and the dips disappear.`,
       scope: String.raw`Needs a vapour dilute enough that electrons gain several eV between collisions, yet dense enough that an electron with $E\ge E_1$ soon collides. The first maximum is shifted by the contact potential between cathode and grid (≈ 2 V in real tubes, absent here); only the spacing measures $E_1$. Excitation of higher levels blurs the pattern at large voltages.`,
       deps: ['qm-1.5'],
       refs: ['Hall ch. 1'],
@@ -203,7 +203,7 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
           lv.rect(0.1, 1e-11, 3e8, 1e-9, { fill: 'green', fillAlpha: 0.14, stroke: false });
           for (const [k, Q] of Object.entries(PART)) {
             lv.fn((x) => (x >= Q.vmin && x <= Q.vmax ? lamOf(Q.m, x) : NaN), { color: Q.color, width: k === part.value ? 3 : 1.4, alpha: k === part.value ? 1 : 0.6 });
-            lv.text(Q.label, Q.vmax, lamOf(Q.m, Q.vmax), { color: Q.color, size: 11, dx: k === 'e' ? -60 : 4, dy: k === 'e' ? 14 : -9 });
+            const ex = k === 'e' ? Q.vmin : Q.vmax; lv.text(Q.label, ex, lamOf(Q.m, ex), { color: Q.color, size: 11, dx: 4, dy: -10 });
           }
           lv.dot(s, lam, { r: 6, color: 'gold' });
           const ve = Math.sqrt(C.e * C.e / (4 * Math.PI * C.eps0 * C.me * r * C.a0)), lame = C.h / (C.me * ve);
@@ -221,7 +221,7 @@ the same relations as for photons (1.3). For a particle of mass $m$ at speed $v$
       credit: 'Davisson & Germer, 1927; G. P. Thomson, 1927',
       statement: String.raw`Electrons diffract from crystals exactly as X-rays of wavelength $\lambda=h/p$ would. Davisson and Germer fired 54 eV electrons perpendicularly at a nickel crystal and found a sharp peak of scattered electrons at $50^\circ$ from the beam, where the rows of surface atoms, $d=0.215$ nm apart, act as a reflection grating: $d\sin\theta=\lambda$ gives $\lambda=0.165$ nm, against $h/p=0.167$ nm. The peak moves with the accelerating voltage as $\lambda\propto V^{-1/2}$ requires, and is strongest where the layers below also reinforce it (Bragg's condition). G. P. Thomson, sending 10–60 keV electrons through thin polycrystalline foils, found concentric rings whose radii obey Bragg's law for the lattice planes, $2d_{hkl}\sin\theta=\lambda$.`,
       idea: String.raw`Each atom scatters a wavelet; in directions where the path differences between rows are whole wavelengths, the wavelets add (waves-7.10). With $\lambda=h/p$ from de Broglie (1.9) and $p=\sqrt{2meV}$, the condition $d\sin\theta=n\lambda$ fixes an angle for each voltage. A finite crystal of a few layers turns the condition into peaks of finite width, and the layer spacing modulates their height. In Thomson's foils the crystallites point every way, so each set of planes reflects into a cone: rings of radius $R\approx L\lambda/d_{hkl}$ on the screen. Particles without a wave would scatter into a smooth distribution with no preferred angles.`,
-      caption: String.raw`**Davisson–Germer:** sweep the voltage and drag the detector (gold) around the arc, as they did. The polar curve is computed by adding the waves scattered from 16 rows × 5 layers of a simplified nickel lattice, plus a smooth diffuse background; the spur is the diffraction peak. Right: the wavelength measured from the peak angle at each voltage (dots) against $h/p$ (green). **Thomson:** the ring pattern from a gold foil, with ring radii measured from the computed screen and compared with Bragg's law. **Break it:** treat the electrons as particles only — the spur and the rings vanish.`,
+      caption: String.raw`**Davisson–Germer:** sweep the voltage and drag the detector (gold) around the arc, as they did. The polar curve is computed by adding the waves scattered from 16 rows × 5 layers of a simplified nickel lattice, plus a smooth diffuse background; the spur is the diffraction peak. Right: the positions $d\sin\theta$ of the peaks found in the computed pattern at each voltage (dots) fall on $h/p$ — and, above about 100 V, also on $2h/p$ (second order). **Thomson:** the ring pattern from a gold foil, with ring radii measured from the computed screen and compared with Bragg's law. **Break it:** treat the electrons as particles only — the spur and the rings vanish.`,
       deps: ['qm-1.9', 'waves-7.10'],
       refs: ['Hall ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Davisson%E2%80%93Germer_experiment' },
@@ -365,7 +365,7 @@ with fringe spacing $\lambda L/d$ given by the de Broglie wavelength $\lambda=h/
           const pg = periodogram(yc, counts, 0.04 * m.env, 0.6 * m.env);
           st = { N, m, pg, both };
         }, { still: 20, period: 30 });
-        v.legend([['ink', 'individual hits', { dot: true }], ['accent', 'histogram of hits', { area: true }], ['green', 'predicted $N\\,|\\psi_1+\\psi_2|^2$'], ['red', 'particles without waves: $P_1+P_2$', { dash: true }]]);
+        v.legend([['ink', 'individual hits', { dot: true }], ['accent', 'histogram of hits', { area: true }], ['green', 'predicted $N|\\psi|^2$ for the open slit(s)'], ['red', 'particles without waves: $P_1+P_2$', { dash: true }]]);
         v.readout(() => st && `${st.N} electron${st.N === 1 ? '' : 's'}, one at a time; each landed at a single random point. $\\lambda = h/p =$ ${M.si(st.m.lam, 'm', 3)}, $d =$ ${M.si(st.m.d, 'm', 3)}, $L = 1$ m. ` + (st.pg.power > 25 && st.N > 30
           ? `Strongest periodicity in the hits: **${v.fix(st.pg.period, 2)} μm**; $\\lambda L/d = ${v.fix(st.m.spacing, 2)}$ μm.`
           : st.both ? 'Too few hits yet to see a periodicity — keep going.' : `No periodicity (peak power ${v.fix(st.pg.power, 1)}, noise level ≈ 1–6): one slit gives a single smooth bump of width $\\approx 2\\lambda L/a = ${v.fix(2 * st.m.env, 0)}$ μm.`) + (st.both ? ' Note the dark fringes, where $P_1+P_2$ would still give plenty of hits.' : ''));
@@ -497,8 +497,11 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
           plate.circle(0, 0, 0.6, { color: 'faint', width: 1 });
           plate.line(-0.6 * gax[0], -0.6 * gax[1], 0.6 * gax[0], 0.6 * gax[1], { color: 'faint', dash: [4, 4], width: 1 });
           plate.tex('+\\mu_B', 0.5 * gax[0], 0.5 * gax[1], { color: 'muted', size: 12 }); plate.tex('-\\mu_B', -0.5 * gax[0], -0.5 * gax[1], { color: 'muted', size: 12 });
-          const hits = [], cen = [];
-          for (let i = 0; i < N; i++) { const a = atoms[i], z = defl(a) + a.z0, sx = a.s * WS; hits.push([sx * sax[0] + z * gax[0], sx * sax[1] + z * gax[1]]); if (Math.abs(a.s) < 0.25) cen.push(z); }
+          const hits = [], cen = []; let near = 0, nearC = 0;
+          for (let i = 0; i < N; i++) {
+            const a = atoms[i], z = defl(a) + a.z0, sx = a.s * WS; hits.push([sx * sax[0] + z * gax[0], sx * sax[1] + z * gax[1]]);
+            if (Math.abs(a.s) < 0.25) { cen.push(z); if (Math.abs(z) < 0.025) near++; const zc = (2 * a.u - 1) * C.muB * G * (1 - a.s * a.s) * LM * LM / (2 * MAG * a.v0 * a.v0) * 1e3 + a.z0; if (Math.abs(zc) < 0.025) nearC++; }
+          }
           plate.dots(hits, { r: N > 2500 ? 1.1 : 1.6, color: 'ink', alpha: 0.5 });
           plate.corner(`${N} atoms`, 'tl', { color: 'ink', weight: 600 });
           // ---- histogram of central deflections
@@ -508,12 +511,11 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
           hz.hist({ edges: Hd.edges, counts: Hd.counts.map((c) => c / hmax * 0.9) }, { color: q ? 'accent' : 'purple', fillAlpha: 0.35 });
           for (const sgn of [-1, 1]) { hz.vline(sgn * zbar, { color: 'green', dash: [5, 4], width: 1.6 }); hz.text(sgn > 0 ? '+z̄' : '−z̄', sgn * zbar, 0.95, { color: 'green', size: 11, align: 'center' }); }
           const up = cen.filter((z) => z > 0), dn = cen.filter((z) => z < 0);
-          const split = up.length && dn.length ? M.mean(up) - M.mean(dn) : NaN;
-          const near0 = cen.length ? cen.filter((z) => Math.abs(z) < zbar / 3).length / cen.length : NaN;
-          st = { N, split, zbar, near0, q, ncen: cen.length };
+          const split = up.length > 2 && dn.length > 2 ? M.mean(up) - M.mean(dn) : NaN, se = up.length > 2 && dn.length > 2 ? Math.sqrt(M.variance(up) / up.length + M.variance(dn) / dn.length) : NaN;
+          st = { N, split, se, zbar, near: cen.length ? near / cen.length : NaN, nearC: cen.length ? nearC / cen.length : NaN, q, ncen: cen.length };
         }, { still: 12, period: 16 });
         v.legend([['accent', 'atoms with $\\mu_z = +\\mu_B$'], ['red', '$\\mu_z = -\\mu_B$'], ['purple', 'classical moments'], ['green', 'predicted $\\pm\\bar z = \\pm\\mu_BGL^2/4kT$', { dash: true }]]);
-        v.readout(() => st && `Near the slit centre (${st.ncen} atoms): separation of the two halves' mean deflections **${M.si(st.split * 1e-3, 'm', 3)}** vs $2\\bar z =$ ${M.si(2 * st.zbar * 1e-3, 'm', 3)} — inferred $|\\mu_z| = ${v.fix(st.split / (2 * st.zbar), 3)}\\,\\mu_B$ ($\\mu_B = ${v.sci(C.muB, 4)}$ J/T). ` + `Atoms landing within $\\bar z/3$ of the centre line: **${v.fix(100 * st.near0, 1)} %**` + (st.q ? ' — the gap between the spots is real (only the very fastest atoms fall near it).' : ' — the classical band fills the middle; Stern and Gerlach saw a gap.'));
+        v.readout(() => st && `Near the slit centre (${st.ncen} atoms): separation of the mean deflections of the two halves **${v.fix(st.split * 1e3, 0)} ± ${v.fix(st.se * 1e3, 0)} μm** vs $2\\bar z = ${v.fix(2 * st.zbar * 1e3, 0)}$ μm` + (st.q ? ` → $|\\mu_z| = (${v.fix(st.split / (2 * st.zbar), 2)} \\pm ${v.fix(st.se / (2 * st.zbar), 2)})\\,\\mu_B$, $\\mu_B = ${v.sci(C.muB, 4)}$ J/T. ` : ' (for classical arrows this mean has no sharp meaning). ') + `Landing within ±25 μm of the centre line: **${v.fix(100 * st.near, 1)} %**` + (st.q ? ` — classical arrows would put ${v.fix(100 * st.nearC, 1)} % there.` : ' — the classical band fills the middle, where Stern and Gerlach saw a gap.'));
       },
     },
     // ------------------------------------------------------------------ 1.14
@@ -589,7 +591,7 @@ full path knowledge ($\mathcal D=1$) destroys the fringes completely, however ge
           const n3 = cnt['3+'] + cnt['3-'], e3 = exp['3+'] + exp['3-'];
           const top = Math.max(10, 1.25 * Math.max(cnt['3+'], cnt['3-'], n3 / 2)); bar.setView([0.3, 2.7], [-0.07 * top, top]);
           bar.bars([cnt['3+'], cnt['3-']], { x0: 1, color: (c, i) => (i ? 'red' : 'accent'), fillAlpha: 0.6 });
-          [['3+', 1], ['3-', 2]].forEach(([k, x]) => { const p = e3 ? exp[k] / e3 : 0, E = n3 * p, sd = Math.sqrt(Math.max(0, n3 * p * (1 - p))); bar.line(x - 0.3, E, x + 0.3, E, { color: 'green', width: 2.4 }); bar.line(x, E - sd, x, E + sd, { color: 'green', width: 1.4 }); bar.text(`${cnt[k]}`, x, cnt[k], { align: 'center', dy: -10, size: 12, color: 'ink', weight: 600 }); });
+          [['3+', 1], ['3-', 2]].forEach(([k, x]) => { const p = e3 ? exp[k] / e3 : 0, E = n3 * p, sd = Math.sqrt(Math.max(0, n3 * p * (1 - p))); bar.line(x - 0.3, E, x + 0.3, E, { color: 'green', width: 2.4 }); bar.line(x, E - sd, x, E + sd, { color: 'green', width: 1.4 }); bar.text(`${cnt[k]}`, x, Math.max(cnt[k], E + sd), { align: 'center', dy: -12, size: 12, color: 'ink', weight: 600 }); });
           st = { cnt, exp, th: th.value, n3, a3: +ax3.value };
         });
         v.legend([['accent', 'beam (width ∝ √atoms)'], ['red', 'block'], ['green', 'state after SG₂ / predicted counts'], ['orange', 'SG₂ axis $\\hat n$']]);

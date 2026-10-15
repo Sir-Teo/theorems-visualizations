@@ -455,13 +455,14 @@ export default {
         const flags = []; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (i !== j) flags.push([i, j]);
         let fk = 0;
         const S = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, axes: false, height: 410, weight: 1.15 });
-        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.33, axis: 1.45, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -1.3, pitch: 0.33, axis: 1.45, lim: 1.4 });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 410, weight: 0.85, minWidth: 250 });
         const tS = v.select('$T$', [{ value: 'A', label: 'real eigenvalues' }, { value: 'R', label: 'a rotation of $\\mathbf R^3$' }], 'A', { onChange: () => place() });
         const t = v.slider('straighten $t$', 0, 1, 1, { step: 0.01 });
         const B1 = sc.handle(mul3(ev[0], 1.0), { mode: 'line', d: ev[0], color: 'blue', label: 'v₁' });
         const B2 = sc.handle([0, 0, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'purple', label: 'v₂' });
-        const B3 = sc.handle([0.35, -0.75, 0.85], { color: 'teal', label: 'v₃' });
+        const f2 = unit3(sub3(ev[1], mul3(ev[0], dot3(ev[1], ev[0])))), f3 = unit3(cross(ev[0], f2));
+        const B3 = sc.handle(sub3(f3, mul3(f2, 0.55)), { color: 'teal', label: 'v₃' });
         const nextB = v.button('Next flag', () => { fk = (fk + 1) % flags.length; place(); });
         function place() {
           if (tS.value === 'A') {
@@ -1059,7 +1060,7 @@ export default {
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -0.68, pitch: 0.3, axis: 1.45, lim: 1.4 });
         const uS = v.select('$U$', [{ value: 'line', label: 'a line' }, { value: 'plane', label: 'a plane' }, { value: 'set', label: 'a set of two vectors' }], 'line', { onChange: () => St.set(St.n - 1) });
-        const U1 = sc.handle([0.25, -0.26, 1.0], { color: 'blue', label: 'u₁' });
+        const U1 = sc.handle([0.55, -0.1, 0.85], { color: 'blue', label: 'u₁' });
         const U2 = sc.handle([0.95, -0.1, -0.23], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
         const St = v.steps({
           frames: [

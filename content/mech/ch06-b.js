@@ -185,10 +185,6 @@ faster than the fixed-support value $\sqrt{g/\ell}$.`,
         v.animate((t) => {
           const R = sim(), k = frameAt(R.S, t), y = R.S.y[k], X = y[0], th = y[1];
           s.line(-2.4, 0, 2.4, 0, { color: 'muted', width: 2 }); s.line(-2.4, -0.012, 2.4, -0.012, { color: 'muted', width: 1, alpha: 0.5 });
-          if (R.drift < 1e-6) {
-            const ax = (1 - R.mu) * L, amax = Math.min(Math.PI, R.a0 * 1.05);
-            s.curve((u) => [R.xc[0] + ax * Math.sin(u), -L * Math.cos(u)], -amax, amax, { color: 'purple', width: 1.4, dash: [5, 4], n: 120 });
-          }
           s.line(R.xc[k], -1.25, R.xc[k], 0.45, { color: 'green', width: 1.4, dash: [5, 4] });
           s.text('centre of mass', R.xc[k], 0.36, { color: 'green', size: 11, align: 'center' });
           for (let g = 4; g >= 1; g--) {
@@ -197,12 +193,16 @@ faster than the fixed-support value $\sqrt{g/\ell}$.`,
             cart(yy[0], al); s.line(yy[0], 0, bx, by, { color: 'ink', width: 1.5, alpha: al }); s.dot(bx, by, { r: 8, color: 'orange', alpha: al, ring: false });
           }
           const tr = []; for (let j = Math.max(0, k - 250); j <= k; j++) tr.push([R.xb[j], -L * Math.cos(R.S.y[j][1])]);
-          s.path(tr, { color: 'gold', width: 1.6, alpha: 0.8 });
+          s.path(tr, { color: 'gold', width: 3, alpha: 0.45 });
+          if (R.drift < 1e-6) {
+            const ax = (1 - R.mu) * L, amax = Math.min(Math.PI, R.a0 * 1.05);
+            s.curve((u) => [R.xc[0] + ax * Math.sin(u), -L * Math.cos(u)], -amax, amax, { color: 'purple', width: 1.6, dash: [5, 4], n: 120 });
+          }
           cart(X, 1);
           const bx = X + L * Math.sin(th), by = -L * Math.cos(th);
           s.line(X, 0, bx, by, { color: 'ink', width: 2.6 }); s.dot(X, 0, { r: 3.5, color: 'ink' });
           s.dot(bx, by, { r: 7 + 4 * Math.sqrt(R.m), color: 'orange' });
-          if (clamp.value) s.text('clamped', X, 0.32, { color: 'red', size: 11, align: 'center', weight: 600 });
+          if (clamp.value) s.text('clamped', X - 0.3, 0.15, { color: 'red', size: 11, align: 'right', weight: 600 });
           // plot
           p.setView(null, span([R.X, R.xb, R.xc], 0.12, 0.4));
           p.hline(0, { color: 'faint' });
@@ -214,7 +214,7 @@ faster than the fixed-support value $\sqrt{g/\ell}$.`,
         v.legend([['blue', 'cart $X$'], ['orange', 'bob'], ['green', 'horizontal centre of mass'], ['purple', 'predicted bob path (ellipse)', { dash: true }]]);
         v.readout(() => {
           const R = sim();
-          const head = String.raw`period: measured $${v.fix(R.Tm, 4)}$ s · energy-integral prediction $${v.fix(R.Tq, 4)}$ s · small-swing formula $2\pi\sqrt{\ell M/g(M+m)} = ${v.fix(R.Ts, 4)}$ s · fixed support $2\pi\sqrt{\ell/g} = ${v.fix(R.Tf, 4)}$ s`;
+          const head = String.raw`period: measured $${v.fix(R.Tm, 4)}$ s · energy-integral prediction $${v.fix(R.Tq, 4)}$ s · small-swing formula ${clamp.value ? '$2\\pi\\sqrt{\\ell/g}' : '$2\\pi\\sqrt{\\ell M/g(M+m)}'} = ${v.fix(R.Ts, 4)}$ s · fixed support $2\pi\sqrt{\ell/g} = ${v.fix(R.Tf, 4)}$ s`;
           return head + (clamp.value
             ? String.raw` · clamped: the rail pushes sideways and the centre of mass swings by $\pm${v.fix(R.drift / 2, 3)}$ m`
             : String.raw` · horizontal centre of mass constant to $${v.sci(Math.max(R.drift, 1e-17), 1)}$ m ($p_X$ conserved)`);
@@ -287,7 +287,7 @@ with frequency $\omega\sin\theta^*$: a supercritical pitchfork bifurcation.`,
           sP.vline(x, { color: 'gold', width: 1.2 });
           sP.dot(x, wrap(th), { r: 6.5, color: 'gold' });
           info = { x, w, th, hJ };
-        });
+        }, { still: 7 });
         v.legend([['green', 'stable equilibrium'], ['red', 'unstable', { dash: true }], ['gold', 'bead (and its Jacobi level)'], ['accent', '$U_{\\rm eff}$']]);
         v.readout(() => {
           if (!info) return '';
@@ -298,7 +298,7 @@ with frequency $\omega\sin\theta^*$: a supercritical pitchfork bifurcation.`,
           // measured period from successive maxima of θ in the last 12 s
           const pk = [];
           for (let i = 1; i < hist.length - 1; i++) if (hist[i][1] > hist[i - 1][1] && hist[i][1] >= hist[i + 1][1]) pk.push(hist[i][0]);
-          const meas = pk.length >= 3 ? (pk[pk.length - 1] - pk[0]) / (pk.length - 1) : NaN;
+          const pl = pk.slice(-4), meas = pl.length >= 3 ? (pl[pl.length - 1] - pl[0]) / (pl.length - 1) : NaN;
           const settled = Math.abs(st[1]) < 0.01;
           let s = String.raw`$\omega = ${v.fix(x, 2)}\,\omega_c$ · predicted stable equilibria: ` + (x <= 1 ? String.raw`the bottom only` : String.raw`$\theta^* = \pm\arccos(g/R\omega^2) = \pm${v.fix(thS / DEG, 2)}°$ (bottom unstable)`);
           s += String.raw` · bead at $\theta = ${v.fix(wrap(th) / DEG, 2)}°$` + (settled ? ' (settled)' : '');
@@ -360,9 +360,9 @@ $\varphi$ is cyclic, so $p_\varphi = m\ell^2\sin^2\theta\,\dot\varphi$ (the vert
           // top view
           sT.circle(0, 0, Lr, { color: 'faint', width: 1, dash: [3, 4] });
           sT.line(-1.05, 0, 1.05, 0, { color: 'faint', width: 1 }); sT.line(0, -1.05, 0, 1.05, { color: 'faint', width: 1 });
-          const tp = []; for (let j = Math.max(0, k - 2200); j <= k; j++) tp.push([R.S.y[j][0], R.S.y[j][1]]);
+          const tp = []; for (let j = Math.max(0, k - 800); j <= k; j++) tp.push([R.S.y[j][0], R.S.y[j][1]]);
           sT.path(tp, { color: 'gold', width: 1.4, alpha: 0.8 });
-          for (const mx of R.maxima) if (mx.k <= k && mx.k > k - 2200) { sT.line(0, 0, mx.x, mx.y, { color: 'red', width: 1, alpha: 0.35 }); sT.dot(mx.x, mx.y, { r: 3.5, color: 'red' }); }
+          for (const mx of R.maxima) if (mx.k <= k && mx.k > k - 800) { sT.line(0, 0, mx.x, mx.y, { color: 'red', width: 1, alpha: 0.35 }); sT.dot(mx.x, mx.y, { r: 3.5, color: 'red' }); }
           sT.dot(x, y, { r: 6.5, color: 'orange' });
         }, { period: T, still: 26 });
         v.legend([['gold', 'path of the bob'], ['red', 'maxima of the horizontal radius (apsides)'], ['orange', 'bob']]);
@@ -392,11 +392,11 @@ $n+1$ equations for the $n$ coordinates and $\lambda(t)$; the generalized force 
       refs: ['Taylor §7.10', 'Goldstein §2.4'],
       tags: ['constraint forces', 'Lagrange multiplier'],
       viz(v) {
-        const R = 1, KF = 0.06;
+        const R = 1;
         const th0 = v.slider('start angle $\\theta_0$', 0.5, 40, 3, { step: 0.5, fmt: (x) => `${v.fix(x, 1)}°` });
         const v0 = v.slider('start speed $v_0/\\sqrt{gR}$', 0, 1.2, 0, { step: 0.01 });
         const mode = v.select('', [{ value: 'one', label: 'smooth hemisphere (one-sided)' }, { value: 'two', label: 'bead on a wire (two-sided)' }], 'one');
-        const s = v.stage({ x: [-1.8, 2.6], y: [-0.25, 1.75], equal: true, height: 300, axes: false, weight: 1.25, title: 'the multiplier is the normal force' });
+        const s = v.stage({ x: [-1.4, 2.3], y: [-0.2, 1.7], equal: true, height: 300, axes: false, weight: 1.25, title: 'the multiplier is the normal force' });
         const pl = v.stage({ x: [0, 100], y: [-3, 1.2], height: 300, axes: 'box', weight: 1, xlabel: 'θ (°)', title: '$\\lambda/mg$ along the motion' });
         const cache = memo();
         const sim = () => cache(`${th0.value}|${v0.value}|${mode.value}`, () => {
@@ -427,17 +427,21 @@ $n+1$ equations for the $n$ coordinates and $\lambda(t)$; the generalized force 
         v.animate((t) => {
           const S = sim(), tEnd = S.t[S.t.length - 1], k = idx(S, Math.min(t, tEnd)), y = S.y[k], two = S.two;
           // scene
-          s.line(-1.9, 0, 2.7, 0, { color: 'muted', width: 2 });
+          s.setView(two ? [-1.6, 1.6] : [-1.4, 2.3], two ? [-1.25, 1.55] : [-0.2, 1.7]);
+          const kf = two ? 0.16 : 0.3;
+          if (!two) s.line(-2, 0, 2.8, 0, { color: 'muted', width: 2 });
           if (two) s.circle(0, 0, R, { color: 'ink', width: 2.4 });
           else { s.poly(Array.from({ length: 61 }, (_, i) => [R * Math.cos((Math.PI * i) / 60), R * Math.sin((Math.PI * i) / 60)]), { fill: 'blue', fillAlpha: 0.18, color: 'blue', width: 2 }); }
           const path = []; for (let j = 0; j <= k; j++) path.push(pos(S.y[j]));
           s.path(path, { color: 'gold', width: 2, alpha: 0.9 });
-          for (let j = 0; j <= k; j += Math.max(1, Math.round(0.12 / 0.001))) {
-            if (!S.on[j]) continue; const p = pos(S.y[j]), n = [Math.sin(S.y[j][1]), Math.cos(S.y[j][1])], L = S.lam[j] / G;
-            if (Math.abs(L) > 0.02) s.arrow(p[0], p[1], p[0] + KF * 5 * L * n[0], p[1] + KF * 5 * L * n[1], { color: 'orange', width: 1.4, alpha: 0.55, head: 6 });
+          let nextA = Math.ceil(S.y[0][1] / (8 * DEG)) * 8 * DEG;
+          for (let j = 0; j <= k; j++) {
+            if (!S.on[j] || S.y[j][1] < nextA) continue; nextA += 8 * DEG;
+            const p = pos(S.y[j]), n = [Math.sin(S.y[j][1]), Math.cos(S.y[j][1])], L = S.lam[j] / G;
+            if (Math.abs(L) > 0.02) s.arrow(p[0], p[1], p[0] + kf * L * n[0], p[1] + kf * L * n[1], { color: 'orange', width: 1.4, alpha: 0.55, head: 6 });
           }
           const p = pos(y);
-          if (S.on[k]) { const n = [Math.sin(y[1]), Math.cos(y[1])], L = S.lam[k] / G; if (Math.abs(L) > 0.01) s.arrow(p[0], p[1], p[0] + KF * 5 * L * n[0], p[1] + KF * 5 * L * n[1], { color: 'orange', width: 2.6, head: 9 }); }
+          if (S.on[k]) { const n = [Math.sin(y[1]), Math.cos(y[1])], L = S.lam[k] / G; if (Math.abs(L) > 0.01) s.arrow(p[0], p[1], p[0] + kf * L * n[0], p[1] + kf * L * n[1], { color: 'orange', width: 2.6, head: 9 }); }
           if (S.yDep) { const q = pos(S.yDep); s.dot(q[0], q[1], { r: 4, color: 'red' }); s.line(0, 0, q[0], q[1], { color: 'red', width: 1, dash: [4, 4] }); s.text('leaves here', q[0], q[1], { color: 'red', size: 11, dx: 8, dy: -10 }); }
           s.dot(p[0], p[1], { r: 7, color: 'gold' });
           // λ plot against θ (degrees)
@@ -604,7 +608,7 @@ and Lagrange’s equations become $\tfrac{d}{dt}\partial L/\partial\dot q_j - \p
 $$S'[q] = S[q] + F(q_b,t_b) - F(q_a,t_a),$$
 which is the same for all competing paths. The converse also holds locally: if $L' - L$ has identically vanishing Euler–Lagrange expressions, it is a total derivative.`,
       idea: String.raw`Integrate: $\int_{t_a}^{t_b}\tfrac{dF}{dt}\,dt = F(q_b,t_b) - F(q_a,t_a)$ by the fundamental theorem of calculus. Since Hamilton’s principle (6.5) compares paths with fixed endpoints, adding a constant to every action cannot change which path is stationary. One can also check directly that the Euler–Lagrange expression of $\dot F = F_q\dot q + F_t$ vanishes: $\tfrac{d}{dt}F_q - (F_{qq}\dot q + F_{qt}) = 0$, using the equality of mixed partials. Gauge transformations of the electromagnetic Lagrangian (6.14) and the generating functions of canonical transformations (12.11) are instances.`,
-      caption: String.raw`An anharmonic oscillator, $L = \tfrac12\dot q^2 - \tfrac12 q^2 - \tfrac14 q^4$. Pick a function $F$ and its strength $a$; the motion is integrated from $L$ (blue) and from $L' = L + dF/dt$ (gold dashes) by the same finite-difference Lagrange machine — the curves coincide. Right: the action of a family of paths with fixed endpoints, $q^* + \varepsilon\sin(\pi t/T)$; $S'(\varepsilon)$ is $S(\varepsilon)$ shifted rigidly by $F(q_b,T) - F(q_a,0)$, so both are stationary at the true path $\varepsilon = 0$. Switch on *not a total derivative* (adds $a\,q\dot q^2$): the motion changes (red) and the minimum moves away from $\varepsilon = 0$.`,
+      caption: String.raw`An anharmonic oscillator, $L = \tfrac12\dot q^2 - \tfrac12 q^2 - \tfrac14 q^4$. Pick a function $F$ and its strength $a$; the motion is integrated from $L$ (blue) and from $L' = L + dF/dt$ (gold dashes) by the same finite-difference Lagrange machine — the curves coincide. Right: the action of a family of paths with fixed endpoints, $q^* + \varepsilon\sin(\pi t/T)$; $S'(\varepsilon)$ is $S(\varepsilon)$ shifted rigidly by $F(q_b,T) - F(q_a,0)$, so both are stationary at the true path $\varepsilon = 0$. Switch on *not a total derivative* (adds $\tfrac a2 q^2$, a change of spring constant): the motion changes (red) and the minimum moves away from $\varepsilon = 0$.`,
       deps: ['mech-6.5'],
       refs: ['Goldstein Deriv. 1.8'],
       tags: ['action', 'gauge', 'Lagrangian'],
@@ -617,7 +621,7 @@ which is the same for all competing paths. The converse also holds locally: if $
         };
         const sel = v.select('', Object.entries(FS).map(([value, f]) => ({ value, label: f.label })), 'qt');
         const aS = v.slider('strength $a$', -2, 2, 1.2, { step: 0.05 });
-        const brk = v.toggle('not a total derivative: add $a\\,q\\dot q^2$', false);
+        const brk = v.toggle('not a total derivative: add $\\tfrac a2 q^2$', false);
         const sq = v.stage({ x: [0, T], y: [-1.6, 1.6], height: 280, axes: 'box', weight: 1.25, xlabel: 't', title: 'the motion from $L$ and from $L\'$' });
         const sa = v.stage({ x: [-1, 1], y: [0, 1], height: 280, axes: 'box', weight: 1, xlabel: 'ε', title: 'actions of paths with fixed endpoints' });
         const L0 = (q, qd) => 0.5 * qd[0] * qd[0] - 0.5 * q[0] * q[0] - 0.25 * q[0] ** 4;
@@ -625,7 +629,7 @@ which is the same for all competing paths. The converse also holds locally: if $
         const sim = () => cache(`${sel.value}|${aS.value}|${brk.value}`, () => {
           const a = aS.value, Fn = FS[sel.value];
           const L1 = (q, qd, t) => L0(q, qd) + a * (Fn.Fq(q[0], t) * qd[0] + Fn.Ft(q[0], t));
-          const Lb = (q, qd) => L0(q, qd) + a * q[0] * qd[0] * qd[0];
+          const Lb = (q, qd) => L0(q, qd) + 0.5 * a * q[0] * q[0];
           const run = (L) => integrate((t, z) => [z[1], lagrangeAccel(L, [z[0]], [z[1]], t)[0]], [1.2, 0], T, DT, EV);
           const SA = run(L0), SB = run(L1), SC = brk.value ? run(Lb) : null;
           let gap = 0; for (let k = 0; k < SA.y.length; k++) gap = Math.max(gap, Math.abs(SA.y[k][0] - SB.y[k][0]));
@@ -658,11 +662,11 @@ which is the same for all competing paths. The converse also holds locally: if $
           const i0 = 40; sa.dot(0, R.S0[i0], { r: 5, color: 'blue' }); sa.dot(0, R.S1[i0], { r: 5, color: 'gold' });
           if (Math.abs(R.shift) > 0.02) sa.arrow(0.55, R.S0[62], 0.55, R.S0[62] + R.shift, { color: 'green', width: 1.8, head: 7 });
         }, { period: T, still: 9 });
-        v.legend([['blue', '$L$'], ['gold', '$L\' = L + dF/dt$', { dash: true }], ['red', '$L + a\\,q\\dot q^2$ (not a total derivative)'], ['green', 'endpoint term $F(q_b,T)-F(q_a,0)$']]);
+        v.legend([['blue', '$L$'], ['gold', '$L\' = L + dF/dt$', { dash: true }], ['red', '$L + \\tfrac a2 q^2$ (not a total derivative)'], ['green', 'endpoint term $F(q_b,T)-F(q_a,0)$']]);
         v.readout(() => {
           const R = sim(), d = [0, 40, 80].map((i) => R.S1[i] - R.S0[i]);
           let s = String.raw`largest difference between the motions from $L$ and $L'$: $${v.sci(Math.max(R.gap, 1e-16), 2)}$ · $S' - S$ at $\varepsilon = -1, 0, 1$: $${d.map((x) => v.fix(x, 6)).join(',\\ ')}$ — all equal to $F(q_b,T) - F(q_a,0) = ${v.fix(R.shift, 6)}$`;
-          if (R.S2) { let im = 0; R.S2.forEach((x, i) => { if (x < R.S2[im]) im = i; }); let g2 = 0; for (let k = 0; k < R.SA.y.length; k++) g2 = Math.max(g2, Math.abs(R.SA.y[k][0] - R.SC.y[k][0])); s += String.raw` · with $a\,q\dot q^2$ the motion changes by up to $${v.fix(g2, 3)}$ and the action’s minimum moves to $\varepsilon \approx ${v.fix(R.es[im], 3)}$`; }
+          if (R.S2) { let im = 0; R.S2.forEach((x, i) => { if (x < R.S2[im]) im = i; }); let g2 = 0; for (let k = 0; k < R.SA.y.length; k++) g2 = Math.max(g2, Math.abs(R.SA.y[k][0] - R.SC.y[k][0])); s += String.raw` · with $\tfrac a2 q^2$ added the motion changes by up to $${v.fix(g2, 3)}$ and the action’s minimum moves to $\varepsilon \approx ${v.fix(R.es[im], 3)}$`; }
           return s;
         });
       },
@@ -689,9 +693,9 @@ of that metric: the motion has constant speed ($T$ is conserved) and runs along 
           torus: { label: 'torus', rev: true, X: ([u, w]) => [(1 + 0.45 * Math.cos(w)) * Math.cos(u), (1 + 0.45 * Math.cos(w)) * Math.sin(u), 0.45 * Math.sin(w)], J: ([u, w]) => [[-(1 + 0.45 * Math.cos(w)) * Math.sin(u), -0.45 * Math.sin(w) * Math.cos(u)], [(1 + 0.45 * Math.cos(w)) * Math.cos(u), -0.45 * Math.sin(w) * Math.sin(u)], [0, 0.45 * Math.cos(w)]],
             q0: [0, 0], v0: (psi) => [Math.sin(psi) / 1.45, Math.cos(psi) / 0.45], dom: [[-1e9, 1e9], [-1e9, 1e9]], rng: [[0, TAU], [0, TAU]], phiIdx: 0 },
           saddle: { label: 'saddle', rev: false, X: ([x, y]) => [x, y, 0.35 * (x * x - y * y)], J: ([x, y]) => [[1, 0], [0, 1], [0.7 * x, -0.7 * y]],
-            q0: [-1.1, -0.35], v0: (psi) => [Math.cos(psi), Math.sin(psi)], dom: [[-1.35, 1.35], [-1.35, 1.35]], rng: [[-1.3, 1.3], [-1.3, 1.3]] },
+            q0: [-1.1, -0.35], v0: (psi) => [0.4 * Math.cos(psi), 0.4 * Math.sin(psi)], dom: [[-1.35, 1.35], [-1.35, 1.35]], rng: [[-1.3, 1.3], [-1.3, 1.3]] },
           vase: { label: 'vase', rev: true, X: ([z, p]) => { const r = 0.55 + 0.22 * Math.sin(2.2 * z); return [r * Math.cos(p), r * Math.sin(p), z]; }, J: ([z, p]) => { const r = 0.55 + 0.22 * Math.sin(2.2 * z), dr = 0.484 * Math.cos(2.2 * z); return [[dr * Math.cos(p), -r * Math.sin(p)], [dr * Math.sin(p), r * Math.cos(p)], [1, 0]]; },
-            q0: [0, 0], v0: (psi) => { const dr = 0.484; return [Math.cos(psi) / Math.sqrt(1 + dr * dr), Math.sin(psi) / 0.55]; }, dom: [[-1.25, 1.25], [-1e9, 1e9]], rng: [[-1.2, 1.2], [0, TAU]], phiIdx: 1 },
+            q0: [Math.PI / 4.4, 0], v0: (psi) => [Math.cos(psi), Math.sin(psi) / 0.77], dom: [[-1.3, 1.5], [-1e9, 1e9]], rng: [[-1.25, 1.45], [0, TAU]], phiIdx: 1 },
         };
         const sel = v.select('surface', Object.entries(SF).map(([value, f]) => ({ value, label: f.label })), 'torus');
         const psiS = v.slider('launch angle $\\psi_0$', 15, 165, 55, { step: 1, fmt: deg });
@@ -721,7 +725,7 @@ of that metric: the motion has constant speed ($T$ is conserved) and runs along 
         });
         v.animate((t) => {
           const D = sim(), S = D.S, k = Math.min(frameAt(D.R, t), D.P.length - 1), P = D.P[k];
-          s3.surface((a, b) => S.X([a, b]), S.rng[0], S.rng[1], { nu: 32, nv: 22, color: 'accent', alpha: 0.2, wire: true });
+          s3.surface((a, b) => S.X([a, b]), S.rng[0], S.rng[1], { nu: 28, nv: 18, color: 'accent', alpha: 0.2, wire: true });
           s3.path(D.P.slice(0, k + 1), { color: 'gold', width: 2.4, bias: -0.04 });
           if (k >= 2 && k < D.P.length - 2) { const a = D.acc[k], al = Math.hypot(...a), sc = Math.min(0.5, 0.35 / (al || 1)) * al; if (al > 1e-6) s3.arrow(P, [P[0] + (sc * a[0]) / al, P[1] + (sc * a[1]) / al, P[2] + (sc * a[2]) / al], { color: 'red', width: 2.4, bias: -0.1 }); }
           const z = D.R.y[k], J = S.J([z[0], z[1]]), vv = [0, 1, 2].map((i) => 0.35 * (J[i][0] * z[2] + J[i][1] * z[3]));
@@ -733,7 +737,7 @@ of that metric: the motion has constant speed ($T$ is conserved) and runs along 
           series(pl, D.R.t, D.speed, k, { color: 'green', width: 2.4 });
           if (S.rev) series(pl, D.R.t, D.clair, k, { color: 'purple', width: 2.4 });
           pl.vline(D.R.t[Math.min(k, D.R.t.length - 1)], { color: 'gold', width: 1.2 });
-          if (D.P.length < D.R.t.length || D.R.t[D.R.t.length - 1] < T - 1e-6) pl.corner('left the patch shown', 'br', { color: 'muted' });
+          if (D.P.length < D.R.t.length || D.R.t[D.R.t.length - 1] < T - 1e-6) pl.corner('the path left the patch shown', 'tr', { color: 'muted' });
         }, { period: T, still: 9 });
         v.legend([['gold', 'path'], ['green', 'velocity / speed'], ['red', 'acceleration (normal to the surface)'], ['purple', 'Clairaut $\\rho\\sin\\psi$']]);
         v.readout((t) => {

@@ -462,7 +462,6 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
           sR.hist(B, { density: true, color: 'accent', fillAlpha: 0.33 });
           const degen = Math.abs(a) * s < 1e-9 || dn(c) > 4 * top;
           sR.clip(() => { sR.fn(so, { color: 'purple', width: 2, dash: [6, 4], n: 600 }); if (!degen) sR.fn(dn, { color: 'green', width: 2.4, n: 600 }); });
-          if (degen) sR.corner("g′(μ) ≈ 0: the delta-method normal degenerates", 'tl', { color: 'red', weight: 600 });
           sR.vline(c, { color: 'faint', width: 1, dash: [2, 3] });
           v.legend([['gold', 'repeats $(\\bar X, g(\\bar X))$', { dot: true }], ['orange', 'tangent at $\\mu$', { dash: true }], ['green', 'delta method $N\\big(g(\\mu),\\,g\'(\\mu)^2\\sigma^2/n\\big)$'], ['purple', 'second-order approximation', { dash: true }]]);
         });
@@ -470,7 +469,7 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
           const g = G[gSel.value], mu = mus[gSel.value], n = nS.value, s = SIG / Math.sqrt(n), a = g.d(mu), Y = summ(); if (Y.m.n < 2) return 'Press Draw to start.';
           const pred = Math.abs(a) * s, D = pred > 1e-12 ? ksDist(Y.sorted, (y) => 0.5 * M.erfc(-(y - g.f(mu)) / (pred * Math.SQRT2))) : 1;
           let out = String.raw`$\mu = ${v.fix(mu, 3)}$, $g'(\mu) = ${v.fix(a, 3)}$ · SD of $g(\bar X)$: measured **${v.fix(Y.m.sd, 4)}**, delta method $|g'(\mu)|\sigma/\sqrt n = ${v.fix(pred, 4)}$ · Kolmogorov distance to the delta normal ${v.fix(D, 3)}`;
-          if (Math.abs(a) < 0.15) out += String.raw` · $g'(\mu)\approx0$: the first-order term vanishes and $n\,(g(\bar X)-g(\mu))\to\tfrac12\sigma^2 g''(\mu)\chi^2_1$`;
+          if (Math.abs(a) < 0.15) out += String.raw` · $g'(\mu)\approx0$: the delta-method normal collapses to a spike (not drawn); the first-order term vanishes and $n\,(g(\bar X)-g(\mu))\to\tfrac12\sigma^2 g''(\mu)\chi^2_1$ (purple)`;
           if (Y.bad) out += ` · ${commas(Y.bad)} draws had $\\bar X \\le 0$ (log undefined)`;
           return out;
         });
@@ -621,7 +620,7 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
         const M = v.M;
         const famSel = v.select('family', popOpts(['normal', 'cauchy', 'expo', 'uniform']).map((o) => ({ ...o, label: { normal: 'normal', cauchy: 'Cauchy', expo: 'exponential', uniform: 'uniform' }[o.value] })), 'normal');
         const refSel = v.select('Q–Q reference', [{ value: 'same', label: 'same family' }, { value: 'normal', label: 'normal' }], 'same');
-        const nS = v.slider('sample size $n$', 10, 500, 200, { int: true, log: true });
+        const nS = v.slider('sample size $n$', 10, 500, 100, { int: true, log: true });
         let seed = 2; v.button('New sample', () => { seed++; });
         const sL = v.stage({ x: [-6, 8], y: [0, 0.85], height: 320, axes: 'box', title: 'standard member (dashed) and the member $\\tfrac1\\sigma f\\big(\\tfrac{x-\\mu}\\sigma\\big)$' });
         const sR = v.stage({ x: [-3, 3], y: [-3, 3], height: 320, axes: 'box' });

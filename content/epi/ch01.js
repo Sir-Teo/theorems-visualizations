@@ -167,12 +167,12 @@ measured in cases per person-year (often quoted per $100$ or $100\,000$ person-y
           // ----- layout: rows 0 … n−1, a ledger bar above, the handle below
           const top = n * 1.13 + 2.5, bot = -0.13 * n - 5; yH = -0.045 * n - 1.6; H.y = yH; H.visible = cal;
           s.setView(cal ? [1999.6, 2012.4] : [-0.4, 12.4], [bot, top + 0.11 * n + 3.6]);
+          s.setTitle(cal ? 'each person’s follow-up on the calendar' : 'the same follow-up, aligned at entry (years since entry)');
           const rows = [];
           for (let i = 0; i < n; i++) { const f = follow(U, i, lam, E); if (f) rows.push(f); }
           rows.sort(cal ? (a, b) => a.entry - b.entry : (a, b) => (b.end - b.entry) - (a.end - a.entry));
           const w = n <= 40 ? 2.6 : n <= 200 ? 1.1 : 0.5, r = n <= 40 ? 4.6 : n <= 200 ? 2.3 : 1.3;
           if (cal) { s.vband(2000, 2006, { color: 'accent', alpha: 0.05 }); s.text('recruitment window', 2003, n + 0.4, { dy: -2, align: 'center', baseline: 'bottom', color: 'muted', size: 11 }); }
-          else s.text('years since entry', 12.3, bot, { dy: -22, align: 'right', color: 'muted', size: 11.5 });
           let PT = 0, cases = 0;
           rows.forEach((p, k) => {
             const y = n - 1 - k, x0 = cal ? p.entry : 0, x1 = cal ? p.end : p.end - p.entry;
@@ -239,7 +239,7 @@ The **period prevalence** over an interval $[a, b]$ is the proportion who have t
       viz(v) {
         const M = v.M, N = 400, NL = 20, COLS = 20, YH = 47.5;
         const sI = v.stage({ x: [0, COLS], y: [-1.6, 20], equal: true, axes: false, height: 330, weight: 0.78, minWidth: 220, title: 'the population at the snapshot' });
-        const s = v.stage({ x: [-0.05, 3.05], y: [0, 100], height: 330, axes: 'box', weight: 1.5, xticks: [[0, '2021'], [0.5, 'Jul'], [1, '2022'], [1.5, 'Jul'], [2, '2023'], [2.5, 'Jul'], [3, '2024']] });
+        const s = v.stage({ x: [-0.3, 3.04], y: [0, 100], height: 330, axes: 'box', weight: 1.5, xticks: [[0, '2021'], [0.5, 'Jul'], [1, '2022'], [1.5, 'Jul'], [2, '2023'], [2.5, 'Jul'], [3, '2024']] });
         const cond = v.select('condition', [{ value: 'acute', label: 'acute winter illness' }, { value: 'chronic', label: 'long-lasting condition' }], 'acute');
         const kind = v.select('measure', [{ value: 'point', label: 'point prevalence' }, { value: 'period', label: 'period prevalence' }], 'point');
         const A = s.handle(1.12, YH, { color: 'gold', constrain: (x) => [M.clamp(x, 0, 2.98), YH] });
@@ -371,7 +371,7 @@ Only the mean duration matters, not the shape of the duration distribution. (If 
           const t1 = Math.max(15, now), t0 = t1 - 15, pts = (key, cap) => { const out = []; for (let j = 0; j < n; j++) { const t = H.t[j] * DT; if (t >= t0) out.push([t, Math.min(H[key][j], cap)]); } return out; };
           let top = Math.max(ex, Math.min(ID, 1)); for (let j = 0; j < n; j++) if (H.t[j] * DT >= t0) top = Math.max(top, H.ill[j], H.exact[j], Math.min(H.ID[j], 1));
           top = Math.min(1.05, Math.max(0.08, top * 1.18));
-          ts.setView([t0, t1], [0, top]); ts.setTicks(undefined, pctTicks(top));
+          ts.setView([t0, t1], [-0.06 * top, top]); ts.setTicks(undefined, pctTicks(top));
           ts.path(pts('ID', top * 1.5), { color: 'orange', width: 1.8, dash: [3, 4] });
           ts.path(pts('exact', 2), { color: 'green', width: 2, dash: [6, 4] });
           ts.path(pts('ill', 2), { color: 'red', width: 2 });
@@ -493,7 +493,7 @@ counted once every case's outcome is known. When deaths follow onset within the 
           if (cmp) {
             Object.assign(sL.o, { xlog: true, ylog: true, xlabel: 'incidence per 100 000 per year', ylabel: 'case fatality %', axes: true });
             sL.setView([0.1, 1e5], [0.01, 100]); sL.setTitle('grey diagonals: equal deaths per 100 000 per year');
-            Object.assign(sR.o, { axes: false }); sR.setView([0, 1], [0, 1]); sR.setTitle('one simulated year in a population of 1 000 000');
+            Object.assign(sR.o, { axes: false }); sR.setTicks(undefined, null); sR.setView([0, 1], [0, 1]); sR.setTitle('one simulated year in a population of 1 000 000');
             for (const m of [0.001, 0.01, 0.1, 1, 10, 100, 1000]) {
               sL.fn((x) => (100 * m) / x, { color: 'gray', width: 1, alpha: 0.55 });
               const xl = (100 * m) / 45; if (xl > 0.15 && xl < 6e4) sL.text(m >= 1 ? String(m) : String(m), xl, 45, { dx: 4, align: 'left', color: 'muted', size: 10.5 });
@@ -532,18 +532,20 @@ counted once every case's outcome is known. When deaths follow onset within the 
             const CC = cum(cd), CD = cum(dd), CR = cum(rd);
             const ymax = Math.max(...cd) * 1.15;
             Object.assign(sL.o, { xlog: false, ylog: false, xlabel: 'day', ylabel: 'per day', axes: 'box' });
-            sL.setView([0, DAYS], [0, ymax]); sL.setTitle('new cases and deaths per day');
+            sL.setView([0, DAYS], [-0.07 * ymax, ymax]); sL.setTitle('new cases and deaths per day');
             Object.assign(sR.o, { axes: 'box', xlabel: 'report day', ylabel: '' });
-            sR.setView([0, DAYS], [0, Math.min(1, Math.max(0.3, 2.2 * cfr))]); sR.setTitle('case fatality as it would be reported');
+            const rtop = Math.min(1, Math.max(0.3, 2.2 * cfr));
+            sR.setView([0, DAYS], [-0.07 * rtop, rtop]); sR.setTicks(undefined, pctTicks(rtop)); sR.setTitle('case fatality as it would be reported');
             for (let d = 0; d <= DAYS; d++) { sL.rect(d + 0.1, 0, d + 0.9, cd[d], { fill: 'orange', fillAlpha: 0.45, stroke: false }); sL.rect(d + 0.25, 0, d + 0.75, dd[d], { fill: 'red', fillAlpha: 0.9, stroke: false }); }
-            if (!st || !st.hd) st = { hd: sL.handle(25, 0, { color: 'gold', constrain: (x) => [M.clamp(Math.round(x), 3, DAYS), sL.bounds.y[0]] }) };
-            const H = st.hd; H.visible = true; H.y = sL.bounds.y[0];
+            if (!st || !st.hd) st = { hd: sL.handle(25, 0, { color: 'gold', constrain: (x) => [M.clamp(Math.round(x), 3, DAYS - 1), sL.bounds.y[1] * 0.93] }) };
+            const H = st.hd; H.visible = true; H.y = sL.bounds.y[1] * 0.93;
+            sL.text('report day', H.x, H.y, { dx: 11, align: 'left', color: 'gold', size: 11.5, weight: 600 });
             const day = Math.round(H.x);
             sL.vline(day + 1, { color: 'gold', width: 1.4, dash: [4, 4] });
             const naive = [], res = [];
             for (let d = 3; d <= DAYS; d++) { if (CC[d] > 0) naive.push([d + 1, CD[d] / CC[d]]); if (CD[d] + CR[d] > 0) res.push([d + 1, CD[d] / (CD[d] + CR[d])]); }
             sR.hline(cfr, { color: 'green', width: 1.8, dash: [6, 4] });
-            sR.text(`true ${pc(cfr, 0)}`, 2, cfr, { dy: -9, align: 'left', color: 'green', size: 11.5, weight: 600 });
+            sR.text(`true ${pc(cfr, 0)}`, DAYS - 1, cfr, { dy: -9, align: 'right', color: 'green', size: 11.5, weight: 600 });
             sR.path(res, { color: 'purple', width: 2.2 }); sR.path(naive, { color: 'red', width: 2.4 });
             sR.vline(day + 1, { color: 'gold', width: 1.4, dash: [4, 4] });
             const nv = CD[day] / Math.max(1, CC[day]), rv = CD[day] / Math.max(1, CD[day] + CR[day]);
@@ -561,6 +563,188 @@ counted once every case's outcome is known. When deaths follow onset within the 
           }
           const { day, cases, deaths, rec, nv, rv, cfr, final } = st;
           return `day ${day + 1}: ${int(cases)} cases, ${int(deaths)} deaths, ${int(rec)} recovered → deaths ÷ cases = **${pc(nv)}** (too low: recent cases have not had time to die) · deaths ÷ resolved cases = ${pc(rv)} · true case fatality ${pc(cfr, 0)}, reached only when every case has an outcome (day ${DAYS}: ${pc(final)})`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.8
+    {
+      num: '1.8',
+      kind: 'Method',
+      name: 'Indirect standardization and the SMR',
+      statement: String.raw`To compare a study population with a reference population whose age-specific death rates $R_x$ are known, compute the **expected** number of deaths — the deaths the study population would have had at the reference rates, given its own age structure:
+$$E = \sum_x n_x R_x,$$
+where $n_x$ is the study population's person-time in age group $x$. The **standardized mortality ratio** is observed over expected,
+$$\text{SMR} = \frac{O}{E}$$
+(often quoted $\times 100$); SMR $> 1$ means more deaths than the reference rates predict for people of those ages. Only the total $O$ is needed, not the study group's own age-specific rates, so the method suits small groups; an exact $95\%$ interval treats $O$ as Poisson. **Direct** standardization (demo 1.7) instead applies each population's own rates to one common standard population. Because indirect standardization weights by each study group's *own* age structure, two SMRs are strictly comparable with each other only when the rate ratio is similar across ages.`,
+      idea: String.raw`A crude death rate is an average of age-specific rates weighted by the age structure, so an old population has a high crude rate even if each of its age groups is healthy — age confounds the comparison. Both standardizations remove the weighting by age. Direct: fix the weights (a standard population) and average each population's own rates. Indirect: ask how many deaths the reference rates would produce in *this* age structure; any excess over that cannot be explained by age. If every age-specific rate of the study group is $\theta$ times the reference rate, then $O \approx \theta E$ and the SMR estimates $\theta$ exactly; the Poisson interval comes from the count $O$ (1.2).`,
+      caption: String.raw`Seaside is an old town with low death rates at every age; Milltown is young with high ones. Left: their age pyramids (dashed: the national standard). Middle: their age-specific death rates (dots: observed deaths ÷ persons, with 95% intervals) against the national rates. Below: the expected-deaths table that defines the SMR, and the three comparisons. Slide Seaside younger, or change the death rates, and watch the crude rates flip which town "looks worse" while the standardized measures stay with the truth. Shrink the towns and the intervals widen.`,
+      deps: ['demo-1.7', 'epi-1.2'],
+      see: ['causal-4.4', 'demo-1.8'],
+      refs: ['Gordis ch. 4'],
+      tags: ['standardization', 'mortality'],
+      scope: String.raw`Valid as a comparison of each study group with the reference. Comparing two SMRs with each other assumes the ratio of study to reference rates is roughly constant across age groups (otherwise use direct standardization, which needs stable age-specific rates and hence larger groups).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Standardized_mortality_ratio' },
+      viz(v) {
+        const M = v.M, AG = ['0–14', '15–29', '30–44', '45–59', '60–74', '75+'], REF = [0.4, 0.6, 1.5, 5, 18, 80], STD = [0.17, 0.19, 0.2, 0.2, 0.15, 0.09], AGE_B = -0.5;
+        const sP = v.stage({ x: [-50, 50], y: [-0.55, 6.6], height: 270, axes: false, weight: 1, minWidth: 250, title: 'age structure (% of each town)' });
+        const sR = v.stage({ x: [-0.45, 5.45], y: [0.1, 400], ylog: true, height: 270, axes: 'box', weight: 1, minWidth: 250, title: 'deaths per 1 000 per year, by age', xticks: AG.map((a, i) => [i, a]) });
+        const sT = v.stage({ x: [0, 100], y: [0, 10], height: 255, axes: false, full: true });
+        const ageA = v.slider('Seaside: age structure (young ↔ old)', -0.8, 0.8, 0.55, { step: 0.01 });
+        const thA = v.slider('Seaside: death rates × national', 0.5, 2, 0.85, { step: 0.01, fmt: (x) => `× ${x.toFixed(2)}` });
+        const thB = v.slider('Milltown: death rates × national', 0.5, 2, 1.3, { step: 0.01, fmt: (x) => `× ${x.toFixed(2)}` });
+        const size = v.slider('town size', 2000, 200000, 20000, { log: true, fmt: (x) => int(Math.round(x / 100) * 100) });
+        let seed = 1; v.button('New draw of deaths', () => { seed++; });
+        const share = (a) => { const w = STD.map((p, i) => p * Math.exp(a * (i - 2.5))), t = w.reduce((x, y) => x + y, 0); return w.map((x) => x / t); };
+        const TB = v.table(sT, { rows: 7, cols: 6, square: false, cellAspect: 1.65, maxCell: 30, size: 11.5, labelSize: 11.5, region: [0, 0, 47, 8.35], rowLabels: [...AG, 'total'], colLabels: ['persons', '$E$', '$O$', 'persons', '$E$', '$O$'], cornerLabel: 'age' });
+        const uni = memo();
+        let st = null;
+        v.render(() => {
+          const N = Math.round(size.value / 100) * 100, U = uni(seed, () => uniforms(M, 300 + seed, 12));
+          const town = (a, th, off, name, color) => {
+            const sh = share(a), n = sh.map((p) => p * N), mean = n.map((x, i) => (x * th * REF[i]) / 1000);
+            const O = mean.map((mu, i) => (mu < 60 ? M.dist.poisson(mu).quantile(U[off + i]) : Math.max(0, Math.round(mu + Math.sqrt(mu) * M.dist.normal(0, 1).quantile(U[off + i])))));
+            const E = n.map((x, i) => (x * REF[i]) / 1000), Ot = O.reduce((x, y) => x + y, 0), Et = E.reduce((x, y) => x + y, 0);
+            const crude = (1000 * Ot) / N, direct = 1000 * STD.reduce((s, w, i) => s + (w * O[i]) / n[i], 0), dse = 1000 * Math.sqrt(STD.reduce((s, w, i) => s + (w * w * O[i]) / (n[i] * n[i]), 0));
+            const ci = poisCI(M, Ot), cse = (1000 * Math.sqrt(Ot)) / N;
+            return { name, color, sh, n, O, E, Ot, Et, crude, cse, direct, dse, smr: Ot / Et, lo: ci[0] / Et, hi: ci[1] / Et, th };
+          };
+          const A = town(ageA.value, thA.value, 0, 'Seaside', 'purple'), B = town(AGE_B, thB.value, 6, 'Milltown', 'teal');
+          // ----- pyramids
+          const g = 6.5;
+          AG.forEach((lab, i) => {
+            sP.rect(-g, i - 0.36, -g - 100 * A.sh[i], i + 0.36, { fill: 'purple', fillAlpha: 0.55, stroke: false });
+            sP.rect(g, i - 0.36, g + 100 * B.sh[i], i + 0.36, { fill: 'teal', fillAlpha: 0.55, stroke: false });
+            sP.rect(-g, i - 0.36, -g - 100 * STD[i], i + 0.36, { color: 'muted', width: 1, dash: [3, 3] });
+            sP.rect(g, i - 0.36, g + 100 * STD[i], i + 0.36, { color: 'muted', width: 1, dash: [3, 3] });
+            sP.text(lab, 0, i, { align: 'center', color: 'ink', size: 11 });
+            sP.text(`${Math.round(100 * A.sh[i])}%`, -g - 100 * A.sh[i], i, { dx: -4, align: 'right', color: 'purple', size: 10.5 });
+            sP.text(`${Math.round(100 * B.sh[i])}%`, g + 100 * B.sh[i], i, { dx: 4, align: 'left', color: 'teal', size: 10.5 });
+          });
+          sP.text('Seaside', -g - 2, 6.15, { align: 'right', color: 'purple', size: 12.5, weight: 700 });
+          sP.text('Milltown', g + 2, 6.15, { align: 'left', color: 'teal', size: 12.5, weight: 700 });
+          // ----- age-specific rates (log)
+          sR.path(REF.map((r, i) => [i, r]), { color: 'gray', width: 1.6, dash: [5, 4] });
+          for (const T of [A, B]) {
+            const dx = T === A ? -0.1 : 0.1;
+            sR.path(REF.map((r, i) => [i + dx, r * T.th]), { color: T.color, width: 1.4, alpha: 0.6 });
+            T.O.forEach((o, i) => { const c = poisCI(M, o), y = (1000 * o) / T.n[i]; sR.line(i + dx, Math.max(0.1, (1000 * c[0]) / T.n[i]), i + dx, (1000 * c[1]) / T.n[i], { color: T.color, width: 1.6 }); if (o > 0) sR.dot(i + dx, y, { r: 3.8, color: T.color }); });
+          }
+          sR.text('national', 1.1, REF[1], { dy: 14, align: 'left', color: 'muted', size: 11 });
+          // ----- expected-deaths table
+          const f1 = (x) => (x < 10 ? v.fix(x, 1) : int(x));
+          TB.draw({
+            value: (i, j) => { const T = j < 3 ? A : B, k = j % 3; if (i < 6) return [int(T.n[i]), f1(T.E[i]), String(T.O[i])][k]; return [int(N), f1(T.Et), String(T.Ot)][k]; },
+            fill: (i, j) => (i === 6 ? [j < 3 ? 'purple' : 'teal', 0.18] : j % 3 === 1 ? ['gold', 0.1] : null),
+            weight: (i) => (i === 6 ? 700 : 500),
+          });
+          const [xa] = TB.cellRect(0, 0), [, , xb] = TB.cellRect(0, 2), [xc] = TB.cellRect(0, 3), [, , xd] = TB.cellRect(0, 5);
+          sT.text('Seaside', (xa + xb) / 2, 8.75, { align: 'center', color: 'purple', size: 12, weight: 700 });
+          sT.text('Milltown', (xc + xd) / 2, 8.75, { align: 'center', color: 'teal', size: 12, weight: 700 });
+          sT.line(xa + 0.4, 8.42, xb - 0.4, 8.42, { color: 'purple', width: 1.5 }); sT.line(xc + 0.4, 8.42, xd - 0.4, 8.42, { color: 'teal', width: 1.5 });
+          sT.text('E = expected deaths = persons × national rate · O = observed deaths', (xa + xd) / 2, 9.55, { align: 'center', color: 'muted', size: 11 });
+          // ----- three comparisons
+          const X0 = 55, X1 = 82, rows = [
+            { key: 'crude', title: 'crude death rate (per 1 000)', lo: 0, hi: 1.12 * Math.max(A.crude + 2 * A.cse, B.crude + 2 * B.cse, 1), get: (T) => [T.crude, T.crude - 1.96 * T.cse, T.crude + 1.96 * T.cse] },
+            { key: 'direct', title: 'age-standardized rate, direct (per 1 000)', lo: 0, hi: 1.12 * Math.max(A.direct + 2 * A.dse, B.direct + 2 * B.dse, 1), get: (T) => [T.direct, T.direct - 1.96 * T.dse, T.direct + 1.96 * T.dse] },
+            { key: 'smr', title: 'SMR = observed ÷ expected (indirect)', log: true, lo: 0.3, hi: 3.3, get: (T) => [T.smr, T.lo, T.hi] },
+          ];
+          const verdicts = {};
+          rows.forEach((R, k) => {
+            const y = 8.1 - k * 3.05, X = (val) => X0 + ((X1 - X0) * (R.log ? Math.log(Math.max(val, R.lo) / R.lo) / Math.log(R.hi / R.lo) : (Math.max(val, R.lo) - R.lo) / (R.hi - R.lo)));
+            sT.text(R.title, X0, y + 1.05, { align: 'left', color: 'ink', size: 11.5, weight: 600 });
+            sT.line(X0, y, X1, y, { color: 'faint', width: 1.2 });
+            const tk = R.log ? [0.5, 1, 2] : [R.lo, (R.lo + R.hi) / 2, R.hi];
+            for (const t of tk) { sT.line(X(t), y - 0.15, X(t), y + 0.15, { color: 'faint', width: 1 }); sT.text(R.log ? String(t) : v.fix(t, t < 10 ? 1 : 0), X(t), y - 0.25, { baseline: 'top', align: 'center', color: 'muted', size: 10 }); }
+            if (R.log) sT.line(X(1), y - 0.45, X(1), y + 0.45, { color: 'muted', width: 1.2, dash: [2, 2] });
+            [A, B].forEach((T, m) => { const [c, l, h] = R.get(T), yy = y + (m ? -0.32 : 0.32); sT.line(X(l), yy, X(h), yy, { color: T.color, width: 2 }); sT.dot(X(c), yy, { r: 4.5, color: T.color }); });
+            const worse = R.get(A)[0] > R.get(B)[0] ? A : B; verdicts[R.key] = worse;
+            sT.text(`${worse.name} looks worse`, X1 + 2, y, { align: 'left', color: worse.color, size: 12, weight: 700 });
+          });
+          st = { A, B, verdicts };
+        });
+        v.legend([['purple', 'Seaside (old)'], ['teal', 'Milltown (young)'], ['gray', 'national rates / standard population', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { A, B, verdicts: V } = st, r = (x) => v.fix(x, 1), s2 = (T) => `${v.fix(T.smr, 2)} (${v.fix(T.lo, 2)}–${v.fix(T.hi, 2)})`;
+          const flip = V.crude !== V.smr;
+          return `crude: Seaside ${r(A.crude)} vs Milltown ${r(B.crude)} per 1 000 → **${V.crude.name}** looks worse · age-standardized (direct): ${r(A.direct)} vs ${r(B.direct)} → **${V.direct.name}** · SMR: Seaside $${A.Ot}/${v.fix(A.Et, 1)}$ = ${s2(A)}, Milltown $${B.Ot}/${v.fix(B.Et, 1)}$ = ${s2(B)} → **${V.smr.name}** (true rate ratios ${v.fix(A.th, 2)} and ${v.fix(B.th, 2)})` + (flip ? ' · the crude ranking is reversed by age structure alone' : ' · here crude and standardized comparisons agree');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.9
+    {
+      num: '1.9',
+      kind: 'Concept',
+      name: 'Period life tables and life expectancy',
+      credit: 'Graunt, 1662; Halley, 1693',
+      statement: String.raw`A **period life table** follows a hypothetical (synthetic) cohort of newborns through the age-specific death rates $m_x$ observed in one calendar period. From $m_x$ it derives the probability of dying within each year of age $q_x$, the survivors $l_x$ (with $l_0 = 1$), the deaths $d_x = l_x - l_{x+1}$, the person-years lived $L_x$ and their tail sums $T_x$. **Life expectancy** at age $x$ is
+$$e_x = \frac{T_x}{l_x} = \frac{1}{l_x}\int_x^\infty l(a)\,da,$$
+the area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the mean age at death in the synthetic cohort. It summarizes current mortality; it is not a forecast for anyone born today, whose rates will change as they age.`,
+      idea: String.raw`Each year of age converts a death rate into a probability of surviving the year ($e^{-m_x}$ for a constant rate, as in 1.5), and multiplying these gives $l_x$. A newborn lives $\int_0^\infty l$ years on average — every person counted in $l(a)$ contributes one person-year at age $a$ — so life expectancy is an area. Deaths in infancy remove almost a whole lifetime of area each, which is why historical life expectancies of 35–45 years coexisted with many people living to 70: lowering infant mortality raises $e_0$ a great deal and leaves $e_{20}$, which only counts those who already survived childhood, nearly unchanged.`,
+      caption: String.raw`Set infant mortality and the adult death rate. Left: the survivorship curve with its area shaded — the area *is* $e_0$; drag the point to any age $a$ to see the remaining area per survivor, $e_a$, and the expected age at death $a + e_a$. Right: the ages at death of 2 000 simulated newborns (bars) against the life table's $d_x$, or the death rates on a log scale. *Keep as baseline* freezes the current table (dashed) so you can compare: cut infant mortality from 150 to 10 per 1 000 and compare the gains in $e_0$ and $e_{20}$.`,
+      deps: ['epi-1.6', 'mathbio-4.1'],
+      see: ['demo-2.3', 'demo-2.4'],
+      refs: ['Gordis ch. 4'],
+      tags: ['life table', 'life expectancy', 'mortality'],
+      scope: String.raw`A period life table assumes today's age-specific rates hold throughout the synthetic cohort's life. With mortality falling, real cohorts live longer than the period $e_0$ suggests.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Life_table' },
+      viz(v) {
+        const M = v.M, AMAX = 110, NS = 2000;
+        const sS = v.stage({ x: [0, 105], y: [0, 1.06], height: 330, axes: 'box', xlabel: 'age', weight: 1.2, title: 'survivorship $l(x)$ — its area is $e_0$' });
+        const sD = v.stage({ x: [0, 105], y: [0, 0.05], height: 330, axes: 'box', xlabel: 'age', weight: 1, minWidth: 250 });
+        const q0S = v.slider('infant mortality $q_0$ (per 1 000 births)', 2, 300, 150, { log: true, fmt: (x) => x.toFixed(0) });
+        const m60S = v.slider('death rate at age 60 (per 1 000 per year)', 3, 50, 25, { log: true, fmt: (x) => x.toFixed(1) });
+        const view = v.select('right panel', [{ value: 'deaths', label: 'ages at death' }, { value: 'rates', label: 'death rates (log)' }], 'deaths');
+        const sched = () => { const m0 = -Math.log(1 - q0S.value / 1000), m60 = m60S.value / 1000; return Array.from({ length: AMAX + 1 }, (_, x) => (x === 0 ? m0 : m0 * 0.07 * Math.exp(-0.55 * (x - 1)) + 0.12 * m60 + m60 * Math.exp(0.09 * (x - 60)))); };
+        let base = null; v.button('Keep as baseline', () => { base = sched(); });
+        base = sched();
+        const U = uniforms(M, 91, NS);
+        const H = s0();
+        function s0() { return sS.handle(20, 0.8, { color: 'accent', constrain: (x) => { const a = M.clamp(x, 0, 100); const m = sched(); return [a, lAt(lifeTable(m), m, a)]; } }); }
+        let st = null;
+        v.render(() => {
+          const m = sched(), lt = lifeTable(m), bt = lifeTable(base), a = H.x, la = lAt(lt, m, a), ea = eAt(lt, m, a);
+          H.y = la;
+          const L = (x) => lAt(lt, m, x);
+          // ----- left: survivorship and its area
+          sS.fn(L, { domain: [0, 105], fill: 'accent', fillAlpha: 0.13, color: 'accent', width: 0.01 });
+          sS.fn(L, { domain: [a, 105], fill: 'accent', fillAlpha: 0.22, color: 'accent', width: 0.01 });
+          sS.fn((x) => lAt(bt, base, x), { domain: [0, 105], color: 'gray', width: 1.6, dash: [5, 4] });
+          sS.fn(L, { domain: [0, 105], color: 'accent', width: 2.6 });
+          sS.text(`area = e₀ = ${v.fix(lt.e[0], 1)} years`, 9, 0.22, { align: 'left', color: 'accent', size: 12.5, weight: 700 });
+          sS.line(a, 0, a, la, { color: 'accent', width: 1, dash: [3, 3] });
+          const ad = Math.min(104, a + ea);
+          sS.arrow(a, 0.06, ad, 0.06, { color: 'gold', width: 2, head: 7 });
+          sS.dot(ad, 0.06, { r: 4, color: 'gold' });
+          sS.text(`a + eₐ = ${v.fix(a + ea, 1)}`, ad, 0.06, { dy: -12, align: ad > 80 ? 'right' : 'center', color: 'gold', size: 11.5, weight: 600 });
+          sS.text(`e(${Math.round(a)}) = ${v.fix(ea, 1)} y`, a, la, { dx: 10, dy: -12, align: 'left', color: 'accent', size: 11.5, weight: 600 });
+          // ----- right: ages at death, or rates
+          const deaths = Array.from(U, (u) => { let k = 0; while (k < lt.n && lt.l[k + 1] > u) k++; return k >= lt.n ? AMAX : k + Math.log(lt.l[k] / u) / Math.max(m[k], 1e-9); });
+          const mean = deaths.reduce((x, y) => x + y, 0) / NS;
+          let mode = 10; for (let x = 10; x < AMAX; x++) if (lt.l[x] - lt.l[x + 1] > lt.l[mode] - lt.l[mode + 1]) mode = x;
+          if (view.value === 'deaths') {
+            Object.assign(sD.o, { ylog: false }); sD.setView([0, 105], [-0.003, 0.05]); sD.setTitle('ages at death: 2 000 simulated newborns vs $d_x$');
+            const hs = M.histogram(deaths, { bins: 105, range: [0, 105] });
+            sD.hist({ edges: hs.edges, counts: hs.counts.map((c) => Math.min(c / NS, 0.0495)) }, { color: 'red', fillAlpha: 0.3, width: 1 });
+            sD.path(Array.from({ length: 105 }, (_, x) => [x + 0.5, Math.min(lt.l[x] - lt.l[x + 1], 0.0495)]), { color: 'ink', width: 1.8 });
+            const d0 = lt.l[0] - lt.l[1];
+            if (d0 > 0.05) sD.text(`infant deaths: ${Math.round(1000 * d0)} per 1 000 ↑`, 2, 0.0465, { align: 'left', color: 'red', size: 11.5, weight: 600 });
+            sD.vline(lt.e[0], { color: 'accent', width: 1.6, dash: [5, 4] });
+            sD.text(`mean = e₀`, lt.e[0], 0.04, { dx: lt.e[0] > 60 ? -5 : 5, align: lt.e[0] > 60 ? 'right' : 'left', color: 'accent', size: 11.5, weight: 600 });
+            sD.dot(mode + 0.5, Math.min(lt.l[mode] - lt.l[mode + 1], 0.0495), { r: 4, color: 'ink' });
+            sD.corner(`most common adult age at death: ${mode}`, 'tr', { color: 'ink', size: 11.5 });
+          } else {
+            Object.assign(sD.o, { ylog: true }); sD.setView([0, 105], [1e-4, 1]); sD.setTitle('death rates $m_x$ per year (log scale)');
+            sD.path(base.slice(0, 106).map((y, x) => [x + 0.5, y]), { color: 'gray', width: 1.6, dash: [5, 4] });
+            sD.path(m.slice(0, 106).map((y, x) => [x + 0.5, y]), { color: 'red', width: 2.4 });
+          }
+          st = { e0: lt.e[0], e20: eAt(lt, m, 20), b0: bt.e[0], b20: eAt(bt, base, 20), a, ea, mean, mode, l20: lAt(lt, m, 20) };
+        });
+        v.legend([['accent', 'survivorship $l(x)$, area = life expectancy'], ['gray', 'baseline', { dash: true }], ['red', 'simulated ages at death / death rates'], ['ink', 'life-table deaths $d_x$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { e0, e20, b0, b20, a, ea, mean, mode, l20 } = st, d = (x) => `${x >= 0 ? '+' : '−'}${v.fix(Math.abs(x), 1)}`;
+          return `$e_0 = ${v.fix(e0, 1)}$ years (2 000 simulated newborns: mean age at death ${v.fix(mean, 1)}) · ${pc(l20, 0)} reach 20, and then expect $e_{20} = ${v.fix(e20, 1)}$ more years · at age ${v.fix(a, 0)}: $e_a = ${v.fix(ea, 1)}$ → expected age at death ${v.fix(a + ea, 1)} · vs baseline: $e_0$ **${d(e0 - b0)}** y, $e_{20}$ **${d(e20 - b20)}** y · most common adult age at death ${mode}, whatever $e_0$ says`;
         });
       },
     },

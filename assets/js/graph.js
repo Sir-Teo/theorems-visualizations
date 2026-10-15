@@ -296,8 +296,8 @@ export function collectionFlow(G, groups, { includePlanned = true } = {}) {
 
 // ------------------------------------------------------------ global map (canvas)
 export class MapView {
-  constructor(host, G, { onOpen, focus, loadShard } = {}) {
-    this.host = host; this.G = G; this.onOpen = onOpen; this.loadShard = loadShard;
+  constructor(host, G, { onOpen, focus, loadShard, onQuery, query = '' } = {}) {
+    this.host = host; this.G = G; this.onOpen = onOpen; this.loadShard = loadShard; this.hl = null;
     host.classList.add('map-page');
     this.fieldOf = new Map(G.collections.map((C) => [C.id, C.field]));
     this.nodes = [
@@ -313,6 +313,7 @@ export class MapView {
           <label><input type="checkbox" data-defs checked> definitions</label>
           ${G.planned.length ? '<label><input type="checkbox" data-planned checked> planned</label>' : ''}
         </div>
+        ${onQuery ? `<div class="card map-q"><input type="search" placeholder="Highlight: entropy, kind:paper, year:1900-1950…" aria-label="Highlight matching ideas on the map" value="${escapeHTML(query)}"><span class="map-q-n"></span></div>` : ''}
         <button class="btn" data-fit type="button">Fit</button>
       </div>
       <div class="map-tip"></div>
@@ -331,6 +332,8 @@ export class MapView {
     host.querySelector('input[data-defs]').addEventListener('change', (e) => { this.show.defs = e.target.checked; this.draw(); });
     host.querySelector('input[data-planned]')?.addEventListener('change', (e) => { this.show.planned = e.target.checked; this.draw(); });
     host.querySelector('[data-fit]').addEventListener('click', () => this.fit(true));
+    const qi = host.querySelector('.map-q input');
+    if (qi) { let t = null; qi.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => onQuery(qi.value, true), 220); }); qi.addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(t); onQuery(qi.value, true); } }); }
     this.k = 1; this.tx = 0; this.ty = 0; this.hover = null; this.sel = null;
     this.byId = new Map(this.nodes.map((n) => [n.it.id, n]));
     this.edges = [];
@@ -356,13 +359,19 @@ export class MapView {
   }
   destroy() { this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); }
   visible(n) { return this.show.fields.has(this.fieldOf.get(n.it.col)) && (this.show.defs || n.it.kind !== 'Definition') && (this.show.planned || !n.ghost); }
+  /** Emphasize a set of ids (null clears); fit = zoom to them. */
+  setHighlight(ids, { fit = false, label = '' } = {}) {
+    this.hl = ids && ids.size ? ids : null;
+    const n = this.host.querySelector('.map-q-n'); if (n) n.textContent = ids ? (ids.size ? `${ids.size.toLocaleString('en')} match${ids.size === 1 ? '' : 'es'}` : 'no matches') : label;
+    if (fit && this.hl) this.fit(true); else this.draw();
+  }
   resize() {
     const r = this.host.getBoundingClientRect(); const d = Math.min(2, devicePixelRatio || 1);
     this.W = r.width; this.H = r.height; this.canvas.width = this.W * d; this.canvas.height = this.H * d;
     this.canvas.style.width = this.W + 'px'; this.canvas.style.height = this.H + 'px'; this.dpr = d;
   }
   bounds() {
-    const vis = this.nodes.filter((n) => this.visible(n)); const ns = vis.length ? vis : this.nodes;
+    const vis = this.nodes.filter((n) => this.visible(n) && (!this.hl || this.hl.has(n.it.id))); const ns = vis.length ? vis : this.nodes;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (const n of ns) { if (n.x < x0) x0 = n.x; if (n.x > x1) x1 = n.x; if (n.y < y0) y0 = n.y; if (n.y > y1) y1 = n.y; }
     return [x0 - 60, y0 - 170, x1 + 60, y1 + 40];
@@ -533,12 +542,12 @@ export class MapView {
         const mx = (x1 + x2) / 2, my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.18;
         c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(mx, my, x2, y2);
         const t = Math.sqrt(n / this.maxBundle); // thin, faint strands for a few links; bold ones for the main roads
-        c.strokeStyle = withAlpha(e.a, 0.06 + 0.32 * t); c.lineWidth = 0.6 + 7 * t; c.lineCap = 'round'; c.stroke();
+        c.strokeStyle = withAlpha(e.a, (0.06 + 0.32 * t) * (this.hl ? 0.25 : 1)); c.lineWidth = 0.6 + 7 * t; c.lineCap = 'round'; c.stroke();
       }
     } else if (!fc) {
       const byCol = new Map();
       for (const e of vis) { if (e[0].ghost || e[1].ghost) continue; const key = e[0].it.col; if (!byCol.has(key)) byCol.set(key, []); byCol.get(key).push(e); }
-      for (const [col, list] of byCol) drawEdges(list, withAlpha(col, 0.16), Math.max(0.6, Math.min(1.3, k)));
+      for (const [col, list] of byCol) drawEdges(list, withAlpha(col, this.hl ? 0.05 : 0.16), Math.max(0.6, Math.min(1.3, k)));
       if (this.show.planned) drawEdges(vis.filter(([a, b]) => a.ghost || b.ghost), withAlpha('muted', 0.12), 0.7, [3, 3]);
     } else {
       drawEdges(vis, withAlpha('ink', 0.05), 0.7);
@@ -552,19 +561,22 @@ export class MapView {
       for (const n of this.nodes) {
         if (!this.visible(n)) continue;
         const x = this.sx(n.x), y = this.sy(n.y); if (x < -4 || x > this.W + 4 || y < -4 || y > this.H + 4) continue;
-        const r = n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
-        c.fillStyle = withAlpha(n.it.col, n.ghost ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
+        const on = !this.hl || this.hl.has(n.it.id);
+        const r = this.hl && on ? 2.6 : n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
+        c.fillStyle = withAlpha(n.it.col, !on ? 0.07 : n.ghost && !this.hl ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
       }
     } else for (const n of this.nodes) {
       if (!this.visible(n)) continue;
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -20 || x > this.W + 20 || y < -20 || y > this.H + 20) continue;
       let alpha = 1;
       if (fc && n !== focus && !fc.anc.has(n.it.id) && !fc.desc.has(n.it.id)) alpha = 0.14;
+      const hit = this.hl && this.hl.has(n.it.id); if (this.hl && !hit && !fc) alpha = 0.1;
       const r = Math.max(n.ghost ? 1.4 : 1.6, n.r * rk);
       c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2);
       if (n.ghost) { c.lineWidth = 1; c.strokeStyle = withAlpha(n.it.col, alpha * 0.45); c.stroke(); }
       else if (n.it.kind === 'Definition') { c.fillStyle = withAlpha('panel', alpha); c.fill(); c.lineWidth = 1.4; c.strokeStyle = withAlpha(n.it.col, alpha); c.stroke(); }
       else { c.fillStyle = withAlpha(n.it.col, alpha); c.fill(); }
+      if (hit) { c.beginPath(); c.arc(x, y, r + 2.5, 0, Math.PI * 2); c.lineWidth = 1.6; c.strokeStyle = withAlpha('accent', 0.9); c.stroke(); }
       if (n === focus || n === this.sel) { c.beginPath(); c.arc(x, y, r + 4, 0, Math.PI * 2); c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); }
     }
     // labels
@@ -583,6 +595,7 @@ export class MapView {
     };
     if (focus) label(focus, true);
     if (this.sel && this.sel !== focus) label(this.sel, true);
+    if (this.hl && !fc) { let m = 0; for (const n of this.nodes) { if (!this.hl.has(n.it.id)) continue; label(n, false); if (++m > 160) break; } return; }
     if (k >= 1.15) for (const n of this.nodes) { if (fc && n !== focus && !fc.anc.has(n.it.id) && !fc.desc.has(n.it.id)) continue; label(n, false); }
     else if (k >= 0.35) for (const n of this.top) { if (fc && !fc.anc.has(n.it.id) && !fc.desc.has(n.it.id)) continue; label(n, false); }
   }

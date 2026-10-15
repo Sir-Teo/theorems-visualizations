@@ -239,11 +239,11 @@ The model is **identifiable** if $\theta\mapsto P_\theta$ is one-to-one, and **c
             cnt.forEach((c, k) => { if (c) sL.rect(k - 0.35, 0, k + 0.35, c / d.n, { fill: 'gold', fillAlpha: 0.45, color: 'gold', width: 1 }); });
             for (let k = 0; k <= 16; k++) { const y = poisPmf(cand.lam, k); sL.line(k, 0, k, y, { color: 'accent', width: 2 }); sL.dot(k, y, { r: 3.5, color: 'accent' }); }
             if (show) for (let k = 0; k <= 16; k++) sL.dot(k, tr.pmf(k), { r: 4.5, color: 'green', hollow: true });
-            if (!hL.dragging) { hL.x = cand.lam; hL.y = 0.33; }
-            sL.text('drag λ', hL.x, 0.33, { dx: 12, color: 'accent', size: 11.5, math: false });
+            if (!hL.dragging) { hL.x = cand.lam; hL.y = 0; }
+            sL.tex('\\lambda', hL.x, 0, { dx: 10, dy: -12, align: 'left', color: 'accent', size: 14 });
           } else {
             viewPad(sL, [-1.6, 4.6], [0, 0.95]);
-            const nb = clamp(Math.round(Math.sqrt(d.n) * 1.5), 8, 40);
+            const nb = clamp(Math.round(Math.sqrt(d.n) * 2), 12, 48);
             sL.hist(binned(d.xs, -1.6, 4.6, nb), { density: true, color: 'gold', fillAlpha: 0.4 });
             sL.fn((x) => phi((x - cand.mu) / cand.sd) / cand.sd, { color: 'accent', width: 2.4, n: 300 });
             if (show) sL.fn(tr.pdf, { color: 'green', width: 2, dash: [6, 4], n: 300 });
@@ -266,8 +266,8 @@ The model is **identifiable** if $\theta\mapsto P_\theta$ is one-to-one, and **c
             const ok = d.curve.filter(([, p]) => p > 0.05);
             for (const [l, p] of ok) sR.line(l, 0, l, p, { color: 'green', width: 3.2, alpha: 0.35 });
             sR.path(d.curve, { color: 'accent', width: 2.2 });
-            sR.text('rejected below 0.05', 0.5, 0.075, { dx: 6, color: 'red', size: 11, math: false });
-            axisLabels(sR, '\\lambda', '\\text{p-value}');
+            sR.text('rejected below 0.05', 12, 0.075, { align: 'right', dx: -6, color: 'red', size: 11, math: false });
+            axisLabels(sR, null, '\\text{p-value}');
             if (show && d.tk === 'din') { sR.vline(4.2, { color: 'green', dash: [5, 4], width: 1.6 }); sR.text('truth', 4.2, 1.0, { dx: 5, color: 'green', size: 12, math: false }); }
             if (show && d.tk === 'dout') sR.corner('the true law is not in Θ', 'tr', { color: 'red', weight: 600 });
             if (!hR.dragging) { hR.x = cand.lam; hR.y = d.pv(cand.lam); }

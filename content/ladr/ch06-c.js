@@ -373,7 +373,7 @@ export default {
         const Fh = sc.handle([0.49, -0.163, 0.653], { color: 'accent', label: 'φ = 1', snap: (p) => (len3(p) < 0.4 ? mul3(unit3(p.some((c) => c) ? p : [0, 0, 1]), 0.4) : p) });
         const cOf = () => { const p = Fh.p, r2 = dot3(p, p); return mul3(p, 1 / r2); };
         const Wh = sc.handle(mul3(unit3(cOf()), -0.7), { mode: 'line', d: unit3(cOf()), color: 'purple', label: 'w', snap: (p) => { const d = unit3(cOf()), t = dot3(p, d); return Math.abs(t) < 0.25 ? mul3(d, t < 0 ? -0.25 : 0.25) : p; } });
-        const Uh = sc.handle([1.0, 0.1, 0.5], { color: 'gold', label: 'u' });
+        const Uh = sc.handle([1.05, -0.2, 0.55], { color: 'gold', label: 'u' });
         v.legend([['orange', '$\\operatorname{null}\\varphi$', { area: true }], ['accent', 'level plane $\\varphi=1$', { area: true }], ['green', '$v$ on the line $(\\operatorname{null}\\varphi)^\\perp$'], ['purple', 'any $w\\ne0$ on it']]);
         let st = null;
         v.render(() => {

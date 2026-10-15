@@ -285,7 +285,7 @@ In particular $dF/F = 4\,dT/T$: a 1 % rise in temperature increases the emission
         v.readout(() => {
           if (!R) return '';
           const d = dT.value / 100;
-          if (R.rj) return String.raw`classical spectrum: ${R.n} strips give ${v.M.si(R.stripSum, 'W/m²', 3)}; the first strip alone grows as $n^3$ because $\int_{\lambda_0}^\infty 2\pi c k_BT\lambda^{-4}\,d\lambda = 2\pi c k_BT/3\lambda_0^3 	o \infty$ as $\lambda_0 	o 0$ — the ultraviolet catastrophe · Planck's law gives the finite ${v.M.si(R.full, 'W/m²', 5)} = $\sigma T^4$`;
+          if (R.rj) return String.raw`classical spectrum: ${R.n} strips give ${v.M.si(R.stripSum, 'W/m²', 3)}; the first strip alone grows as $n^3$ because $\int_{\lambda_0}^\infty 2\pi c k_BT\lambda^{-4}\,d\lambda = 2\pi c k_BT/3\lambda_0^3 \to \infty$ as $\lambda_0 \to 0$ — the ultraviolet catastrophe · Planck's law gives the finite ${v.M.si(R.full, 'W/m²', 5)} = $\sigma T^4$`;
           return String.raw`strips + tail: ${v.M.si(R.stripSum + R.tail, 'W/m²', 5)} · Simpson over all λ: ${v.M.si(R.full, 'W/m²', 6)} · $\sigma T^4$ = ${v.M.si(R.sb, 'W/m²', 6)} (ratio ${v.fix(R.full / R.sb, 6)}) · warming by ${v.fix(dT.value, 1)} %: emission ×${v.fix(R.full2 / R.full, 4)} by integration, $(1+\delta)^4$ = ${v.fix((1 + d) ** 4, 4)}, $1+4\delta$ = ${v.fix(1 + 4 * d, 4)} · slope $dF/dT = 4\sigma T^3$ = ${v.fix(4 * P.sigma * R.t ** 3, R.t < 1000 ? 2 : 0)} W m⁻² K⁻¹`;
         });
       },
@@ -394,9 +394,11 @@ The body emits $\varepsilon_\lambda\,\pi B_\lambda(T)$, a fraction $\varepsilon_
           const emitted = (T) => { const f = fracBelow(P, lamC, T); return sig * T ** 4 * (pass[0] * e[0] * f + pass[1] * e[1] * (1 - f)); };
           const Teq = bisect((T) => emitted(T) - absorbed, 20, 4000, 60);
           const rate = (T) => (2 * (absorbed - emitted(T))) / CAP; // two faces
+          const eEff = pass[0] * e[0] * fw + pass[1] * e[1] * (1 - fw), kRate = (8 * eEff * sig * Tw ** 3) / CAP; // linearised relaxation rate
+          const tEnd = Math.min(20000, Math.max(300, Math.ceil(7 / kRate / 100) * 100));
           const ts = [0], Ts = [h0.y]; let T = h0.y;
-          for (let i = 1; i <= 300; i++) { const h = 2, k1 = rate(T), k2 = rate(T + (h / 2) * k1), k3 = rate(T + (h / 2) * k2), k4 = rate(T + h * k3); T += (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4); ts.push(i * h); Ts.push(T); }
-          R = { a, e, pass, absorbed, emitted, Teq, ts, Ts, emitW: emitted(Tw) };
+          for (let i = 1; i <= 300; i++) { const h = tEnd / 300, k1 = rate(T), k2 = rate(T + (h / 2) * k1), k3 = rate(T + (h / 2) * k2), k4 = rate(T + h * k3); T += (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4); ts.push(i * h); Ts.push(T); }
+          R = { a, e, pass, absorbed, emitted, Teq, ts, Ts, emitW: emitted(Tw), tEnd };
           return R;
         };
         v.render(() => {
@@ -436,10 +438,10 @@ The body emits $\varepsilon_\lambda\,\pi B_\lambda(T)$, a fraction $\varepsilon_
           sB.text('long', lamC, 1.05, { color: 'red', size: 11, align: 'left', dx: 30, weight: 600 });
           // ── relaxation
           const lo = Math.min(Tw, m.Teq, h0.y, ...m.Ts), hi = Math.max(Tw, m.Teq, h0.y, ...m.Ts), pad = Math.max(25, (hi - lo) * 0.18);
-          sC.setView(null, [lo - pad, hi + pad]);
+          sC.setView([-0.03 * m.tEnd, m.tEnd], [lo - pad, hi + pad]);
           sC.hline(Tw, { color: 'orange', dash: [6, 4], width: 1.5 });
-          sC.text('walls', 600, Tw, { color: 'orange', size: 11, align: 'right', baseline: 'bottom', dy: -3, dx: -6 });
-          if (Math.abs(dT) > 0.5) { sC.hline(m.Teq, { color: hot ? 'red' : 'blue', dash: [3, 3], width: 1.2 }); sC.text(`equilibrium ${v.fix(m.Teq, 1)} K`, 600, m.Teq, { color: hot ? 'red' : 'blue', size: 11, align: 'right', baseline: dT > 0 ? 'bottom' : 'top', dy: dT > 0 ? -3 : 3, dx: -6 }); }
+          sC.text('walls', m.tEnd, Tw, { color: 'orange', size: 11, align: 'right', baseline: 'bottom', dy: -3, dx: -6 });
+          if (Math.abs(dT) > 0.5) { sC.hline(m.Teq, { color: hot ? 'red' : 'blue', dash: [3, 3], width: 1.2 }); sC.text(`equilibrium ${v.fix(m.Teq, 1)} K`, m.tEnd, m.Teq, { color: hot ? 'red' : 'blue', size: 11, align: 'right', baseline: dT > 0 ? 'bottom' : 'top', dy: dT > 0 ? -3 : 3, dx: -6 }); }
           sC.path(m.ts.map((t, i) => [t, m.Ts[i]]), { color: 'accent', width: 2.6 });
         });
         v.legend([['orange', "walls' blackbody spectrum", { dash: true }], ['accent', 'absorbed: $a(\\lambda)$ × walls'], ['red', 'emitted by the plate at its temperature'], ['teal', 'filter', { dash: true }]]);
@@ -509,8 +511,9 @@ $$\frac{S(1-\alpha)}{4}\approx 238\ \text{W m}^{-2}\ \text{for Earth.}$$`,
           sB.rect(xr, yb - 0.11, x1, yb + 0.11, { fill: 'gold', fillAlpha: 0.75, stroke: false });
           sB.rect(x0, yb - 0.11, x1, yb + 0.11, { color: 'ink', width: 1 });
           sB.text(`S/4 = ${v.fix(S / 4, 1)} W/m² arrives on an average m²`, 0, yb + 0.24, { size: 11.5, align: 'center', color: 'ink' });
-          if (a > 0.12) sB.text(`reflected ${v.fix((a * S) / 4, 0)}`, x0 + (w * a) / 2, yb, { size: 10.5, align: 'center', color: 'ink', halo: false });
-          if (a < 0.86) sB.text(`absorbed ${v.fix(((1 - a) * S) / 4, 0)}`, xr + (x1 - xr) / 2, yb, { size: 10.5, align: 'center', color: 'ink', halo: false });
+          const lab = (str, xc, wide) => sB.text(str, xc, wide ? yb : yb - 0.2, { size: 10.5, align: 'center', color: 'ink', halo: !wide });
+          if (a > 0.005) lab(`reflected ${v.fix((a * S) / 4, 0)}`, Math.max(x0 + 0.4, x0 + (w * a) / 2), a > 0.24);
+          if (a < 0.995) lab(`absorbed ${v.fix(((1 - a) * S) / 4, 0)}`, Math.min(x1 - 0.4, xr + (x1 - xr) / 2), a < 0.76);
         });
         v.legend([['gold', String.raw`$S \propto 1/d^2$`], ['orange', 'doubling the distance', { dash: true }], ['faint', 'reflected', { dot: true }], ['gold', 'absorbed', { dot: true }]]);
         v.readout(() => {

@@ -684,7 +684,7 @@ $$A(x_0)=a_0+x_0\bigl(a_1+x_0(a_2+\dots+x_0(a_{n-1}+x_0a_n)\cdots)\bigr).$$
         const nS = v.slider('degree $n$', 2, 8, 5, { int: true, onChange: () => S.reset({ at: 'end' }) });
         v.button('New polynomial', () => { a = a.map((_, j) => +(rng.uniform(-1.6, 1.6) / (1 + 0.6 * j)).toFixed(2)); S.reset({ at: 'end' }); });
         const G = v.stage({ x: [-2.2, 2.2], y: [-4, 4], height: 330, weight: 1.2, title: 'tails $q_k(x) = a_k + a_{k+1}x + \\dots$ and $b_k = q_k(x_0)$' });
-        const C = v.stage({ x: [0.5, 16.5], y: [0, 140], axes: 'box', height: 330, weight: 0.85, minWidth: 240, xlabel: 'degree n', title: 'multiplications' });
+        const C = v.stage({ x: [0.5, 16.5], y: [0, 140], axes: 'box', height: 330, weight: 0.85, minWidth: 240, title: 'multiplications against the degree $n$' });
         const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true });
         const TT = v.table(Ts, { rows: 3, cols: 6, square: false, cellAspect: 1.45, maxCell: 42, size: 13.5, rowLabels: ['$a_k$', '$+\\;b_{k+1}x_0$', '$b_k$'] });
         const xh = G.handle(0.9, -3.65, { constrain: 'x', color: 'accent', label: 'x₀', labelPos: 'e' });

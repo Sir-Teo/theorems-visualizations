@@ -25,7 +25,8 @@ function gof(M, O, e) {
   const df = Math.max(0, k - 1);
   return { chi2: x2, df, pval: df ? M.gammaQ(df / 2, x2 / 2) : 1 };
 }
-const pText = (v, p) => (p < 1e-4 ? '< 0.0001' : p < 0.01 ? v.fix(p, 4) : v.fix(p, 3));
+/** p-value with its relation sign: '= 0.123' or '< 0.0001'. */
+const pText = (v, p) => (p < 1e-4 ? '< 0.0001' : '= ' + (p < 0.01 ? v.fix(p, 4) : v.fix(p, 3)));
 
 /** Capsule outline centred at (cx, cy) with half-width hw and half-height hh (equal-aspect stage). */
 function stadium(cx, cy, hw, hh) {
@@ -241,7 +242,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
           for (let g = 0; g < 3; g++) {
             if (E[g] <= 0 || E[g] >= 1) continue;
             const se = (m) => 2 * Math.sqrt((E[g] * (1 - E[g])) / m);
-            sC.between((m) => Math.min(1.02, E[g] + se(m)), (m) => Math.max(-0.02, E[g] - se(m)), 1, NMAX, { fill: GCOL[g], fillAlpha: 0.07 });
+            sC.clip(() => { sC.fn((m) => E[g] + se(m), { color: GCOL[g], width: 1, alpha: 0.45 }); sC.fn((m) => E[g] - se(m), { color: GCOL[g], width: 1, alpha: 0.45 }); });
           }
           if (Math.abs(kS.value - 0.5) > 1e-9) E0.forEach((e, g) => { if (e > 0) sC.hline(e, { color: 'muted', width: 1.2, dash: [2, 4] }); });
           E.forEach((e, g) => { if (e > 0) sC.hline(e, { color: GCOL[g], width: 1.5, dash: [6, 4] }); });
@@ -262,7 +263,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
           if (cross.value === 'AA×aa') return String.raw`$n = ${n}$ offspring, **all** $Aa$ (${cnt[1]} of ${n}): every gamete of parent 1 carries $A$ and every gamete of parent 2 carries $a$ — the uniform $F_1$ generation.`;
           const T = gof(M, cnt, E0), ratio = cross.value === 'Aa×Aa' ? `${v.fix(4 * cnt[0] / Math.max(1, n), 2)} : ${v.fix(4 * cnt[1] / Math.max(1, n), 2)} : ${v.fix(4 * cnt[2] / Math.max(1, n), 2)}` : `${v.fix(2 * cnt[1] / Math.max(1, n), 2)} : ${v.fix(2 * cnt[2] / Math.max(1, n), 2)}`;
           const mendel = cross.value === 'Aa×Aa' ? '1 : 2 : 1' : '1 : 1';
-          return String.raw`$n = ${n}$ offspring: $AA$ ${cnt[0]} · $Aa$ ${cnt[1]} · $aa$ ${cnt[2]} → ratio ${ratio} (Mendel ${mendel}) · $\chi^2 = ${v.fix(T.chi2, 2)}$ on ${T.df} df against Mendel, $p = ${pText(v, T.pval)}$${Math.abs(k - 0.5) > 1e-9 ? ` · drive: heterozygotes pass on $A$ with probability ${v.fix(k, 2)}` : ''}`;
+          return String.raw`$n = ${n}$ offspring: $AA$ ${cnt[0]} · $Aa$ ${cnt[1]} · $aa$ ${cnt[2]} → ratio ${ratio} (Mendel ${mendel}) · $\chi^2 = ${v.fix(T.chi2, 2)}$ on ${T.df} df against Mendel, $p ${pText(v, T.pval)}$${Math.abs(k - 0.5) > 1e-9 ? ` · drive: heterozygotes pass on $A$ with probability ${v.fix(k, 2)}` : ''}`;
         });
       },
     },
@@ -338,7 +339,7 @@ Genotype frequencies determine allele frequencies but not conversely: for $0<p<1
         v.readout(() => {
           const E = expected(), O = observed(), n = O.reduce((s, x) => s + x, 0), Tm = gof(M, O, E), T9 = gof(M, O, [9, 3, 3, 1].map((x) => x / 16));
           const ratio = E.map((e) => v.fix(16 * e, 2)).join(' : ');
-          return String.raw`expected for $r = ${v.fix(rS.value, 2)}$: ${ratio} (sixteenths) · observed ${O.join(' : ')} of ${n} · against this expectation $\chi^2 = ${v.fix(Tm.chi2, 2)}$ (3 df), $p = ${pText(v, Tm.pval)}$ · against $9:3:3:1$: $\chi^2 = ${v.fix(T9.chi2, 2)}$, $p = ${pText(v, T9.pval)}$`;
+          return String.raw`expected for $r = ${v.fix(rS.value, 2)}$: ${ratio} (sixteenths) · observed ${O.join(' : ')} of ${n} · against this expectation $\chi^2 = ${v.fix(Tm.chi2, 2)}$ (3 df), $p ${pText(v, Tm.pval)}$ · against $9:3:3:1$: $\chi^2 = ${v.fix(T9.chi2, 2)}$, $p ${pText(v, T9.pval)}$`;
         });
       },
     },
@@ -423,7 +424,7 @@ whatever the genotype mixture $(P,H,Q)$ of the parents was.`,
           const { nAA, nAa, naa } = parents(), S = sim(), p = S.p, q = 1 - p, n = nS.value, c = S.cnt, e = [p * p, 2 * p * q, q * q], T = gof(M, c, e);
           const P = nAA / NP, H = nAa / NP, Q = naa / NP;
           const self = mode.value === 'self' ? String.raw` · selfing predicts $P+\tfrac H4 : \tfrac H2 : Q+\tfrac H4 = ${v.fix(P + H / 4, 3)} : ${v.fix(H / 2, 3)} : ${v.fix(Q + H / 4, 3)}$` : '';
-          return String.raw`parents $P:H:Q = ${v.fix(P, 2)}:${v.fix(H, 2)}:${v.fix(Q, 2)}$, so $p = ${v.fix(p, 3)}$ · ${n} offspring $= ${v.fix(c[0] / n, 3)} : ${v.fix(c[1] / n, 3)} : ${v.fix(c[2] / n, 3)}$ against the products $p^2 : 2pq : q^2 = ${v.fix(e[0], 3)} : ${v.fix(e[1], 3)} : ${v.fix(e[2], 3)}$ · $\chi^2 = ${v.fix(T.chi2, 1)}$ (2 df), $p\text{-value} = ${pText(v, T.pval)}$${self}`;
+          return String.raw`parents $P:H:Q = ${v.fix(P, 2)}:${v.fix(H, 2)}:${v.fix(Q, 2)}$, so $p = ${v.fix(p, 3)}$ · ${n} offspring $= ${v.fix(c[0] / n, 3)} : ${v.fix(c[1] / n, 3)} : ${v.fix(c[2] / n, 3)}$ against the products $p^2 : 2pq : q^2 = ${v.fix(e[0], 3)} : ${v.fix(e[1], 3)} : ${v.fix(e[2], 3)}$ · $\chi^2 = ${v.fix(T.chi2, 1)}$ (2 df), $p\text{-value} ${pText(v, T.pval)}$${self}`;
         });
       },
     },
@@ -436,7 +437,7 @@ whatever the genotype mixture $(P,H,Q)$ of the parents was.`,
 $$P' = p^2,\qquad H' = 2pq,\qquad Q' = q^2 \qquad (p = P + \tfrac12H,\; q = 1-p),$$
 the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg proportions** then persist in every later generation.`,
       idea: String.raw`By random union of gametes (1.4) the offspring frequencies are the products $p^2, 2pq, q^2$ of the gamete frequencies, which depend on the parents only through $p$. The new allele frequency is $p' = p^2 + \tfrac12\cdot 2pq = p(p+q) = p$, so the next generation draws from the same gamete pool and lands on the same proportions: the map $(P,H,Q)\mapsto(p^2,2pq,q^2)$ is idempotent. If the sexes start with different allele frequencies $p_f \neq p_m$, the first offspring have $p_fp_m, \dots$ instead, and equilibrium arrives one generation later at $p = \tfrac12(p_f+p_m)$.`,
-      caption: String.raw`A population of 960 individuals (one square each: blue $AA$, purple $Aa$, orange $aa$) mates at random, generation after generation. The lines are the genotype frequencies; the rings mark $p^2, 2pq, q^2$ computed from the *parents’* allele frequency. However generation 0 is made up, generation 1 already sits on the rings and stays there, while $p$ moves only by sampling noise. Choose the start in which all females are $AA$ and all males $aa$: generation 1 is all heterozygotes, off the rings — equal allele frequencies in the two sexes is a real hypothesis — and Hardy–Weinberg arrives in generation 2.`,
+      caption: String.raw`A population of 1008 individuals (one square each: blue $AA$, purple $Aa$, orange $aa$) mates at random, generation after generation. The lines are the genotype frequencies; the rings mark $p^2, 2pq, q^2$ computed from the *parents’* allele frequency. However generation 0 is made up, generation 1 already sits on the rings and stays there, while $p$ moves only by sampling noise. Choose the start in which all females are $AA$ and all males $aa$: generation 1 is all heterozygotes, off the rings — equal allele frequencies in the two sexes is a real hypothesis — and Hardy–Weinberg arrives in generation 2.`,
       deps: ['popgen-1.4'],
       refs: ['Ewens §1.2', 'Gillespie'],
       credit: 'Hardy, 1908; Weinberg, 1908',
@@ -444,7 +445,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
       tags: ['Hardy–Weinberg', 'random mating'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hardy%E2%80%93Weinberg_principle' },
       viz(v) {
-        const M = v.M, W = 40, HH = 24, G = 14, RATE = 1.35;
+        const M = v.M, W = 36, HH = 28, G = 14, RATE = 1.35;
         let seed = 3;
         const start = v.select('generation 0', [{ value: 'homo', label: 'only $AA$ and $aa$' }, { value: 'het', label: 'only $Aa$' }, { value: 'sex', label: '♀ all $AA$, ♂ all $aa$' }], 'homo', { onChange: () => { p0.el.hidden = start.value !== 'homo'; reset(); } });
         const p0 = v.slider('starting $p$', 0.05, 0.95, 0.7, { step: 0.01, onChange: () => reset() });
@@ -486,7 +487,7 @@ the allele frequency is unchanged, $p' = p$, and these **Hardy–Weinberg propor
           const Hs = A.history, i = Hs.t.length - 1, P = Hs.AA[i], H = Hs.Aa[i], Q = Hs.aa[i], N = W * HH;
           if (i === 0) return String.raw`generation 0: $P:H:Q = ${v.fix(P, 3)}:${v.fix(H, 3)}:${v.fix(Q, 3)}$ with $p = ${v.fix(Hs.p[0], 3)}$ — Hardy–Weinberg would have $2pq = ${v.fix(2 * Hs.p[0] * (1 - Hs.p[0]), 3)}$ heterozygotes. Press play.`;
           const pp = Hs.p[i - 1], T = hwTest(M, Math.round(P * N), Math.round(H * N), Math.round(Q * N));
-          return String.raw`generation ${Hs.t[i]}: observed $P:H:Q = ${v.fix(P, 3)}:${v.fix(H, 3)}:${v.fix(Q, 3)}$ · from the parents’ $p = ${v.fix(pp, 3)}$: $p^2:2pq:q^2 = ${v.fix(pp * pp, 3)}:${v.fix(2 * pp * (1 - pp), 3)}:${v.fix((1 - pp) ** 2, 3)}$ · allele frequency ${v.fix(Hs.p[0], 3)} → ${v.fix(Hs.p[i], 3)} (sampling noise only) · HW test on this generation: $\chi^2 = ${v.fix(T.chi2, 2)}$, $p = ${pText(v, T.pval)}$`;
+          return String.raw`generation ${Hs.t[i]}: observed $P:H:Q = ${v.fix(P, 3)}:${v.fix(H, 3)}:${v.fix(Q, 3)}$ · from the parents’ $p = ${v.fix(pp, 3)}$: $p^2:2pq:q^2 = ${v.fix(pp * pp, 3)}:${v.fix(2 * pp * (1 - pp), 3)}:${v.fix((1 - pp) ** 2, 3)}$ · allele frequency ${v.fix(Hs.p[0], 3)} → ${v.fix(Hs.p[i], 3)} (sampling noise only) · HW test on this generation: $\chi^2 = ${v.fix(T.chi2, 2)}$, $p ${pText(v, T.pval)}$`;
         });
       },
     },
@@ -642,7 +643,7 @@ and the $p$-value is the total probability of the outcomes no more likely than t
           const c = counts(), A = analyse(), T = A.T, n = A.n;
           if (!A.dist) return `n = ${n}: only one allele present, so there is no test.`;
           const se = Math.sqrt((T.p * T.q) / (2 * n)), note = which.value === 'custom' ? '' : `${DATA[which.value].note} · `;
-          return String.raw`${note}$\hat p_M = \frac{2\cdot${c[0]}+${c[1]}}{${2 * n}} = ${v.fix(T.p, 4)} \pm ${v.fix(se, 4)}$ · $X^2 = ${v.fix(T.chi2, 3)}$ → $p = ${pText(v, T.pval)}$ from $\chi^2_1$ · exact test $p = ${pText(v, A.exact)}$ · re-pairing simulation $p = ${pText(v, A.mc)}$`;
+          return String.raw`${note}$\hat p_M = \frac{2\cdot${c[0]}+${c[1]}}{${2 * n}} = ${v.fix(T.p, 4)} \pm ${v.fix(se, 4)}$ · $X^2 = ${v.fix(T.chi2, 3)}$ → $p ${pText(v, T.pval)}$ from $\chi^2_1$ · exact test $p ${pText(v, A.exact)}$ · re-pairing simulation $p ${pText(v, A.mc)}$`;
         });
       },
     },
@@ -723,7 +724,7 @@ the terms of the expansion of $(p_1+\dots+p_k)^2$, and they persist thereafter w
           const O = [], E = [];
           for (let i = 0; i < k; i++) for (let j = i; j < k; j++) { O.push(S.cnt[i][j]); E.push(i === j ? p[i] * p[i] : 2 * p[i] * p[j]); }
           const G = gof(M, O, E);
-          return String.raw`$k = ${k}$ alleles, ${(k * (k + 1)) / 2} genotypes · $p = (${p.map((x) => v.fix(x, 3)).join(', ')})$ · predicted heterozygosity $1-\sum p_i^2 = ${v.fix(1 - s2, 3)}$ (maximum $1-1/k = ${v.fix(1 - 1 / k, 3)}$) · observed ${n - hom} of ${n} $= ${v.fix((n - hom) / n, 3)}$ · goodness of fit over all genotypes $\chi^2 = ${v.fix(G.chi2, 1)}$ on ${G.df} df, $p = ${pText(v, G.pval)}$`;
+          return String.raw`$k = ${k}$ alleles, ${(k * (k + 1)) / 2} genotypes · $p = (${p.map((x) => v.fix(x, 3)).join(', ')})$ · predicted heterozygosity $1-\sum p_i^2 = ${v.fix(1 - s2, 3)}$ (maximum $1-1/k = ${v.fix(1 - 1 / k, 3)}$) · observed ${n - hom} of ${n} $= ${v.fix((n - hom) / n, 3)}$ · goodness of fit over all genotypes $\chi^2 = ${v.fix(G.chi2, 1)}$ on ${G.df} df, $p ${pText(v, G.pval)}$`;
         });
       },
     },
