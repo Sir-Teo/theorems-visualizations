@@ -315,7 +315,7 @@ Present value is linear: the value of a sum of streams is the sum of their value
         };
         const rS = v.slider('discount rate $r$', 0, 0.25, 0.08, { step: 0.0025, fmt: (x) => pct(x, 2) });
         const xt = Array.from({ length: 11 }, (_, k) => [k, k ? String(k) : 'today']);
-        const T = v.stage({ x: [X0, X1], y: [-128, 128], height: 340, axes: 'box', full: true, xticks: xt, title: 'cash flows over time (top) and their present values stacked at today (left)' });
+        const T = v.stage({ x: [X0, X1], y: [-140, 128], height: 350, axes: 'box', full: true, xticks: xt, title: 'cash flows over time (top) and their present values stacked at today (left)' });
         const D = v.stage({ x: [X0, X1], y: [0, 1.2], height: 150, axes: 'box', full: true, xticks: xt, xlabel: 'years from today', ylabel: 'd(t)' });
         const snap = (x, y) => [M.clamp(Math.round(x * 4) / 4, 0, 10), M.clamp(Math.round(y), -120, 120)];
         const pool = Array.from({ length: NMAX }, () => { const h = T.handle(0, 0, { color: 'blue', r: 6, constrain: snap }); h.visible = false; return h; });
@@ -338,7 +338,7 @@ Present value is linear: the value of a sum of streams is the sum of their value
           const F = act().map((h) => { const t = h.x, c = h.y, d = Math.pow(1 + r, -t); h.color = c >= 0 ? 'blue' : 'red'; return { t, c, d, pv: c * d, col: h.color }; }).sort((a, b) => a.t - b.t);
           T.hline(0, { color: 'ink', width: 1.1 });
           T.vline(0, { color: 'muted', width: 1, dash: [4, 4] });
-          T.rect(X0 + 0.75, -126, -0.2, 126, { fill: 'muted', fillAlpha: 0.06, stroke: false, radius: 6 });
+          T.rect(X0 + 0.75, -138, -0.2, 126, { fill: 'muted', fillAlpha: 0.06, stroke: false, radius: 6 });
           T.text('present values, stacked', -1.65, 126, { dy: 10, align: 'center', color: 'muted', size: 11, weight: 600 });
           const few = F.length <= 6;
           for (const q of F) {
@@ -402,8 +402,8 @@ Present value is linear: the value of a sum of streams is the sum of their value
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Net_present_value' },
       viz(v) {
         const M = v.M, RMAX = 0.4;
-        const c0S = v.slider('cost today $c_0$', 0, 2000, 1000, { step: 10, fmt: (x) => money(-x) });
-        const cf = v.input('cash flow $c(t)$, years $t=1..N$', '150 + 40 t', { vars: ['t'], width: 150 });
+        const c0S = v.slider('cost $c_0$', 0, 2000, 1000, { step: 10, fmt: (x) => money(-x) });
+        const cf = v.input('$c(t)$ for $t=1..N$', '150 + 40 t', { vars: ['t'], width: 120 });
         const nS = v.slider('years $N$', 1, 15, 5, { int: true });
         const fin = v.toggle('borrow against the project', true);
         const L = v.stage({ x: [-1.1, 5.7], y: [-1200, 1200], height: 330, axes: 'box', weight: 1.2, minWidth: 320, xlabel: 'year', title: 'the project, and a loan that turns it into cash today' });
@@ -414,7 +414,7 @@ Present value is linear: the value of a sum of streams is the sum of their value
           return out;
         };
         const hr = R.handle(0.08, 0, { color: 'gold', label: 'r', labelPos: 'ne', constrain: (x) => { const r = M.clamp(Math.round(x * 400) / 400, 0, RMAX); return [r, npv(flows(), r)]; } });
-        v.legend([['blue', 'project inflow', { area: true }], ['red', 'project outflow', { area: true }], ['orange', 'loan: proceeds today, repaid by the project', { area: true }], ['green', 'net to you']]);
+        v.legend([['blue', 'project inflow (solid: its present value when the loan is off)', { area: true }], ['red', 'project outflow', { area: true }], ['orange', 'loan: proceeds today, repaid by the project', { area: true }], ['green', 'net to you']]);
         let st = null;
         v.render(() => {
           const N = nS.value, F = flows(), r = hr.x, on = fin.value;
@@ -428,8 +428,8 @@ Present value is linear: the value of a sum of streams is the sum of their value
           const bw = on ? 0.11 : 0.2;
           for (const [t, c] of F) {
             const col = c >= 0 ? 'blue' : 'red', xp = on ? t - 0.24 : t;
-            L.rect(xp - bw, 0, xp + bw, c, { fill: col, fillAlpha: 0.8, stroke: false });
-            if (!on && t > 0) L.rect(xp - bw, 0, xp + bw, c * Math.pow(1 + r, -t), { color: col, width: 1.3, dash: [3, 2] });
+            L.rect(xp - bw, 0, xp + bw, c, { fill: col, fillAlpha: !on && t > 0 ? 0.25 : 0.8, stroke: false, color: col });
+            if (!on && t > 0) L.rect(xp - 0.55 * bw, 0, xp + 0.55 * bw, c * Math.pow(1 + r, -t), { fill: col, fillAlpha: 0.85, stroke: false });
             if (on) {
               const fl = t === 0 ? futPV : -c;
               hatchRect(L, t - bw, 0, t + bw, fl, 'orange', 0.25);
@@ -462,7 +462,7 @@ Present value is linear: the value of a sum of streams is the sum of their value
         v.readout(() => {
           if (!st) return '';
           const { r, F, futPV, NPV, roots, on } = st;
-          return `At $r$ = ${pct(r, 2)}: the future cash flows are worth ${usd(futPV)} today against a cost of ${usd(-F[0][1])}, so **NPV = ${usd(NPV)}** → **${NPV > 0 ? 'accept' : 'reject'}**.` + (on ? ` Borrow ${usd(futPV)} now at ${pct(r, 2)} and let the project's own cash flows repay it: you pocket ${usd(NPV)} today and owe nothing later.` : '') + (roots.length === 1 ? ` The curve crosses zero at the IRR, ${pct(roots[0], 2)}: the rule accepts for every $r$ below it.` : roots.length ? ` The curve crosses zero ${roots.length} times (fin 1.8).` : ' The curve never crosses zero on this range.');
+          return `At $r$ = ${pct(r, 2)}: the future cash flows are worth ${usd(futPV)} today against a cost of ${usd(-F[0][1])}, so **NPV = ${usd(NPV)}** → **${NPV > 0 ? 'accept' : 'reject'}**.` + (on ? (NPV >= 0 ? ` Borrow ${usd(futPV)} now at ${pct(r, 2)} and let the project's own cash flows repay it: you pocket ${usd(NPV)} today and owe nothing later.` : ` The project's cash flows can repay a loan of only ${usd(futPV)}, less than the cost: undertaking it would take ${usd(-NPV)} out of your pocket today.`) : '') + (roots.length === 1 ? ` The curve crosses zero at the IRR, ${pct(roots[0], 2)}: the rule accepts for every $r$ below it.` : roots.length ? ` The curve crosses zero ${roots.length} times (fin 1.8).` : ' The curve never crosses zero on this range.');
         });
       },
     },

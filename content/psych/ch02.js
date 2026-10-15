@@ -504,9 +504,9 @@ steep near $(0,0)$ and flat near $(1,1)$. The ROC depends only on how the two di
           ro.clip(() => ro.line(F - L, H - beta * L, F + L, H + beta * L, { color: 'purple', width: 2, dash: [5, 3] }));
           ro.line(F, 0, F, H, { color: OC.fa, width: 1, dash: [2, 3] }); ro.line(0, H, F, H, { color: OC.hit, width: 1, dash: [2, 3] });
           ro.dot(F, H, { r: 6, color: 'purple' });
-          ro.text(`slope β = ${v.fmt(beta, 3)}`, F, H, { dx: 10, dy: 14, align: 'left', color: 'purple', size: 11.5, weight: 700 });
+          ro.text(`slope β = ${v.fmt(beta, 3)}`, F, H, { dx: F > 0.55 ? -10 : 10, dy: 15, align: F > 0.55 ? 'right' : 'left', color: 'purple', size: 11.5, weight: 700 });
           st = { d, k, H, F, beta };
-        }, { period: PER, still: 6.4 });
+        }, { period: PER, still: 2.4 });
         v.readout(() => {
           if (!st) return '';
           const { d, k, H, F, beta } = st, e = 1e-4;
@@ -577,7 +577,7 @@ so a single session yields $m-1$ points of the **empirical ROC** instead of one.
           // ---- bars
           const pN = nC.map((x) => (Nn ? x / Nn : 0)), pS = sC.map((x) => (Ns ? x / Ns : 0));
           const ex = fit ? ratingProbs(M, fit) : null, ym = Math.max(0.3, ...pN, ...pS, ...(ex ? [...ex.pN, ...ex.pS] : [])) * 1.15;
-          ba.setView(null, [0, ym]);
+          ba.setView(null, [-0.07 * ym, ym]);
           for (let r = 0; r < MR; r++) {
             const x = r + 1;
             ba.rect(x - 0.36, 0, x - 0.02, pN[r], { fill: 'muted', fillAlpha: 0.45, color: 'muted', width: 1 });
@@ -613,22 +613,22 @@ with slope $1/\sigma_S=\sigma_N/\sigma_S$ and intercept $\mu/\sigma_S$. A z-ROC 
 $$d_a=\mu\sqrt{\frac{2}{1+\sigma_S^2}},\qquad A_z=\Phi\big(d_a/\sqrt2\big)=\Phi\Big(\frac{\mu}{\sqrt{1+\sigma_S^2}}\Big),$$
 the second being the area under the binormal ROC. A z-ROC that is curved rather than straight shows that the evidence is not binormal, for instance when some signal trials are detected outright, as dual-process models of recognition memory propose (Yonelinas, 1994).`,
       idea: String.raw`$F=\Phi(-k)$ gives $k=-z(F)$, and $H=\Phi\big((\mu-k)/\sigma_S\big)$ gives $z(H)=(\mu+z(F))/\sigma_S$, a linear function of $z(F)$ for every $\mu$ and $\sigma_S$: the z-transform straightens any binormal ROC. A slope below 1 makes the ROC rise steeply at the left and run close to the top edge at the right. If instead a fraction $R$ of signal trials is detected outright (a threshold process), $H=R+(1-R)\,\Phi((\mu-k)/\sigma_S)$ never falls below $R$, so $z(H)$ levels off at $z(R)$ on the left and the line bends; tests of z-ROC curvature are how threshold-like and dual-process accounts of memory are confronted with data.`,
-      caption: String.raw`Widen the signal distribution with $\sigma_S$: the ROC (middle) leans away from the dotted line it was symmetric about, while the z-ROC (right) stays straight with slope $1/\sigma_S$. The points come from a simulated rating experiment with five criteria (seeded); the gold line is the maximum-likelihood binormal fit to them (2.7), straight on z-coordinates, and the faint dashed line has slope 1. Set $\sigma_S$ = 1.25 for the typical recognition-memory slope of 0.8. Switch the **signal trials** so that 30% of them are **detected outright** (always rated “sure yes”, as in dual-process models of recognition memory): the ROC no longer starts at the origin and the z-ROC bends away from the straight fit.`,
+      caption: String.raw`Widen the signal distribution with $\sigma_S$: the ROC (middle) leans away from the dotted line it was symmetric about, while the z-ROC (right) stays straight with slope $1/\sigma_S$. The points come from a simulated rating experiment with five criteria (seeded); the gold line is the maximum-likelihood binormal fit to them (2.7), straight on z-coordinates, and the faint dashed line has slope 1. Set $\sigma_S$ = 1.25 for the typical recognition-memory slope of 0.8. Switch the **signal trials** so that 40% of them are **detected outright** (always rated “sure yes”, as in dual-process models of recognition memory): the ROC no longer starts at the origin and the z-ROC bends away from the straight fit.`,
       deps: ['psych-2.7'],
       refs: ['M&C ch. 3'],
       tags: ['ROC', 'unequal variance'],
       credit: 'Egan, 1958 (recognition memory); Ratcliff, Sheu & Gronlund, 1992',
       viz(v) {
-        const M = v.M, NMAX = 3000, BND = [-0.6, 0.2, 0.9, 1.6, 2.4], MIX = 0.3, LO = -3.4, HI = 7.4;
+        const M = v.M, NMAX = 3000, BND = [-0.6, 0.2, 0.9, 1.6, 2.4], MIX = 0.4, LO = -3.4, HI = 7.4;
         const mS = v.slider('signal mean $\\mu$', 0, 3.5, 1.5, { step: 0.01 });
         const sS = v.slider('signal SD $\\sigma_S$', 0.5, 2.5, 1.25, { step: 0.01 });
-        const shape = v.select('signal trials', [{ value: 'g', label: 'all Gaussian' }, { value: 'mix', label: '30% detected outright' }], 'g');
-        const nT = v.slider('trials per type', 50, NMAX, 1000, { int: true, log: true });
-        let seed = 88, Z = null, zSeed = -1, fit = null, fKey = '';
+        const shape = v.select('signal trials', [{ value: 'g', label: 'all Gaussian' }, { value: 'mix', label: '40% detected outright' }], 'g');
+        const nT = v.slider('trials per type', 50, NMAX, 2000, { int: true, log: true });
+        let seed = 86, Z = null, zSeed = -1, fit = null, fKey = '';
         v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
         const ev = v.stage({ x: [LO, HI], y: [-0.075, 0.47], height: 280, axes: 'box', weight: 1.1, xlabel: 'evidence $x$', yticks: [], title: 'the two distributions and five criteria' });
         const ro = v.stage({ ...ROCOPT, height: 280, weight: 0.85, minWidth: 220, title: 'ROC' });
-        const zr = v.stage({ x: [-2.7, 2.7], y: [-2.7, 2.7], equal: true, height: 280, weight: 0.85, minWidth: 220, xlabel: '$z(F)$', ylabel: '$z(H)$', xticks: [-2, -1, 1, 2], yticks: [-2, -1, 1, 2], title: 'z-ROC' });
+        const zr = v.stage({ x: [-3, 2.6], y: [-2.4, 3.2], equal: true, height: 280, weight: 0.85, minWidth: 220, xlabel: '$z(F)$', ylabel: '$z(H)$', xticks: [-2, -1, 1, 2], yticks: [-2, -1, 1, 2], title: 'z-ROC' });
         const mix = () => shape.value === 'mix';
         const Hof = (k) => { const g = Phi(M, (mS.value - k) / sS.value); return mix() ? MIX + (1 - MIX) * g : g; };
         v.legend([['accent', 'model'], ['ink', 'simulated rating data, 95% intervals', { dot: true }], ['gold', 'maximum-likelihood binormal fit (a line on z-coordinates)'], ['muted', 'slope 1 (equal variances)', { dash: true }]]);
@@ -646,8 +646,8 @@ the second being the area under the binormal ROC. A z-ROC that is curved rather 
           ev.fn((x) => phi(x), { domain: [LO, HI], color: 'muted', width: 2.2 });
           ev.fn(fS, { domain: [LO, HI], color: 'accent', width: 2.6, n: 300 });
           ev.text('noise', -1.2, phi(1.2), { dx: -6, align: 'right', color: 'muted', size: 12, weight: 600 });
-          const xs = mu + 1.2 * sg; ev.text(isMix ? 'signal (70%)' : 'signal', xs, fS(xs), { dx: 6, dy: -4, align: 'left', color: 'accent', size: 12, weight: 600 });
-          if (isMix) { ev.arrow(HI - 1.3, 0.12, HI - 0.25, 0.12, { color: 'accent', width: 2.2, head: 8 }); ev.text('30%: sure “yes”', HI - 0.2, 0.12, { dy: -12, align: 'right', color: 'accent', size: 11.5, weight: 700 }); }
+          const xs = mu + 1.2 * sg; ev.text(isMix ? 'signal (60%)' : 'signal', xs, fS(xs), { dx: 6, dy: -4, align: 'left', color: 'accent', size: 12, weight: 600 });
+          if (isMix) { ev.arrow(HI - 1.3, 0.12, HI - 0.25, 0.12, { color: 'accent', width: 2.2, head: 8 }); ev.text('40%: sure “yes”', HI - 0.2, 0.12, { dy: -12, align: 'right', color: 'accent', size: 11.5, weight: 700 }); }
           ev.text('criteria', BND[4], 0.44, { dx: 5, align: 'left', color: 'purple', size: 11 });
           // ---- ROC
           rocFrame(ro, M);
@@ -662,24 +662,25 @@ the second being the area under the binormal ROC. A z-ROC that is curved rather 
           if (key !== fKey) { fKey = key; fit = fitRating(M, nC, sC, { se: true }); }
           const L = fit ? { slope: 1 / fit.sig, intercept: fit.mu / fit.sig, predict: (x) => (fit.mu + x) / fit.sig } : null;
           const a0 = L ? L.predict(0) : mu / sg;
-          zr.clip(() => zr.line(-2.7, a0 - 2.7, 2.7, a0 + 2.7, { color: 'muted', dash: [5, 4], width: 1.2 }));
-          if (L) zr.clip(() => zr.line(-2.7, L.predict(-2.7), 2.7, L.predict(2.7), { color: 'gold', width: 2 }));
+          zr.clip(() => zr.line(-3, a0 - 3, 3, a0 + 3, { color: 'muted', dash: [5, 4], width: 1.2 }));
+          if (L) zr.clip(() => zr.line(-3, L.predict(-3), 3, L.predict(3), { color: 'gold', width: 2 }));
           for (const [x, y, p] of zp) {
             const sx = Math.sqrt((p.F * (1 - p.F)) / p.Nn) / phi(x), sy = Math.sqrt((p.H * (1 - p.H)) / p.Ns) / phi(y);
             zr.line(x - 1.96 * sx, y, x + 1.96 * sx, y, { color: 'ink', width: 1.1, alpha: 0.45 }); zr.line(x, y - 1.96 * sy, x, y + 1.96 * sy, { color: 'ink', width: 1.1, alpha: 0.45 });
             zr.dot(x, y, { r: 4, color: 'ink' });
           }
           // curvature: largest deviation of the points from the straight line, and the model's yes/no d′ at the strictest and laxest criteria
-          const dev = L ? Math.max(...zp.map(([x, y]) => Math.abs(y - L.predict(x)))) : NaN;
+          let dev = NaN, pG = NaN; // goodness of fit of the binormal model: G² on 12 cells, 3 degrees of freedom
+          if (fit) { const e = ratingProbs(M, fit), obs = [...nC, ...sC], ex = [...e.pN.map((q) => q * n), ...e.pS.map((q) => q * n)]; dev = 0; obs.forEach((o, i) => { if (o > 0) dev += 2 * o * Math.log(o / Math.max(1e-300, ex[i])); }); pG = 1 - M.dist.chi2(3).cdf(dev); }
           const dpr = (k) => zq(M, Hof(k)) - zq(M, Phi(M, -k));
-          st = { mu, sg, L, dev, d1: dpr(BND[4]), d5: dpr(BND[0]), isMix, n, fit };
+          st = { mu, sg, L, dev, pG, d1: dpr(BND[4]), d5: dpr(BND[0]), isMix, n, fit };
         });
         v.readout(() => {
           if (!st) return '';
-          const { mu, sg, L, dev, d1, d5, isMix, n, fit } = st, da = mu * Math.sqrt(2 / (1 + sg * sg));
+          const { mu, sg, L, dev, pG, d1, d5, isMix, n, fit } = st, da = mu * Math.sqrt(2 / (1 + sg * sg));
           const ci = fit && isFinite(fit.seLs) ? ` ± ${v.fix(1.96 * L.slope * fit.seLs, 3)}` : '';
-          const fitTxt = L ? `maximum-likelihood binormal fit to ${n} + ${n} simulated trials: z-ROC slope ${v.fix(L.slope, 3)}${ci} (95%), intercept ${v.fix(L.intercept, 3)}, largest distance of a point from the line ${v.fix(dev, 3)} z-units` : 'too few trials for a fit';
-          const model = isMix ? 'with 30% of signal trials detected outright the ROC starts at (0, 0.3) and the z-ROC is curved, so no single slope describes it' : `model slope $1/\\sigma_S$ = ${v.fix(1 / sg, 3)}, intercept $\\mu/\\sigma_S$ = ${v.fix(mu / sg, 3)}, $d_a$ = ${v.fix(da, 3)}, $A_z$ = ${v.fix(Phi(M, mu / Math.sqrt(1 + sg * sg)), 3)}`;
+          const fitTxt = L ? `maximum-likelihood binormal fit to ${n} + ${n} simulated trials: z-ROC slope ${v.fix(L.slope, 3)}${ci} (95%), intercept ${v.fix(L.intercept, 3)}; goodness of fit $G^2$ = ${v.fix(dev, 1)} on 3 degrees of freedom, p = ${pG < 0.001 ? '< 0.001' : v.fix(pG, 3)}${pG < 0.01 ? ' — the binormal line is rejected' : ''}` : 'too few trials for a fit';
+          const model = isMix ? 'with 40% of signal trials detected outright the ROC starts at (0, 0.4) and the z-ROC is curved, so no single slope describes it' : `model slope $1/\\sigma_S$ = ${v.fix(1 / sg, 3)}, intercept $\\mu/\\sigma_S$ = ${v.fix(mu / sg, 3)}, $d_a$ = ${v.fix(da, 3)}, $A_z$ = ${v.fix(Phi(M, mu / Math.sqrt(1 + sg * sg)), 3)}`;
           return `${model} · ${fitTxt} · yes/no $z(H)-z(F)$ at the strictest criterion ${v.fix(d1, 2)}, at the laxest ${v.fix(d5, 2)}${Math.abs(d1 - d5) > 0.05 ? ': it depends on the criterion' : ': the same, as with equal variances'}`;
         });
       },

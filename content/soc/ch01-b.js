@@ -102,10 +102,10 @@ If a parameter $c$ shifts the curve, the low (or the high) equilibrium can merge
           const web = [[h.x, 0]]; let x = h.x;
           for (let k = 0; k < 60; k++) { const y = F(x); web.push([x, y], [y, y]); if (Math.abs(y - x) < 1e-5) break; x = y; }
           L.path(web, { color: 'gold', width: 1.8 });
-          fx.forEach(([xs, k]) => { L.dot(xs, xs, { r: 6, color: k === 'stable' ? 'green' : 'red', hollow: k !== 'stable' }); });
+          L.dot(state, state, { r: 10, hollow: true, color: 'ink', width: 2.2 });
+          fx.forEach(([xs, k]) => { L.dot(xs, xs, { r: k === 'stable' ? 5 : 6, color: k === 'stable' ? 'green' : 'red', hollow: k !== 'stable' }); });
           const tip = fx.find((f) => f[1] === 'unstable');
           if (tip) L.text(`tipping point ${v.fix(tip[0], 2)}`, tip[0], tip[0], { color: 'red', size: 11.5, dx: 10, dy: 10, weight: 600, plate: true });
-          L.dot(state, state, { r: 8, hollow: true, color: 'ink', width: 2.2 });
           // ---- right: bifurcation curve c(x) = 1/2 − x + σ Φ⁻¹(x)
           const cx = (u) => 0.5 - u + s * PhiInv(u);
           const seg = { stable: [], unstable: [] }; let cur = null, run = [];
@@ -115,13 +115,16 @@ If a parameter $c$ shifts the curve, the low (or the high) equilibrium can merge
             run.push([cx(u), u]);
           }
           if (run.length) seg[cur].push(run);
-          seg.stable.forEach((p) => Rr.path(p, { color: 'green', width: 2.6 }));
+          Rr.path(trail.slice(-3000), { color: 'gold', width: 5, alpha: 0.45 });
+          seg.stable.forEach((p) => Rr.path(p, { color: 'green', width: 2.4 }));
           seg.unstable.forEach((p) => Rr.path(p, { color: 'red', width: 2, dash: [6, 4] }));
           let folds = [];
-          if (s < 1 / Math.sqrt(2 * Math.PI)) { const z = Math.sqrt(-2 * Math.log(s * Math.sqrt(2 * Math.PI))); folds = [[cx(Phi(-z)), Phi(-z)], [cx(Phi(z)), Phi(z)]]; folds.forEach(([a, b]) => { Rr.dot(a, b, { r: 4, color: 'red' }); }); Rr.text(`fold c = ${v.fix(folds[0][0], 3)}`, folds[0][0], folds[0][1], { color: 'red', size: 11, align: 'right', dx: -8, dy: 2 }); Rr.text(`fold c = ${v.fix(folds[1][0], 3)}`, folds[1][0], folds[1][1], { color: 'red', size: 11, align: 'left', dx: 8, dy: -2 }); }
-          Rr.path(trail.slice(-3000), { color: 'gold', width: 2, alpha: 0.75 });
+          if (s < 1 / Math.sqrt(2 * Math.PI)) { const z = Math.sqrt(-2 * Math.log(s * Math.sqrt(2 * Math.PI))); folds = [[cx(Phi(-z)), Phi(-z)], [cx(Phi(z)), Phi(z)]]; folds.forEach(([a, b]) => { Rr.dot(a, b, { r: 4, color: 'red' }); }); Rr.text(`fold c = ${v.fix(folds[0][0], 3)}`, folds[0][0], folds[0][1], { color: 'red', size: 11, align: 'right', dx: -8, dy: 2 }); Rr.text(`fold c = ${v.fix(folds[1][0], 3)}`, folds[1][0], folds[1][1], { color: 'red', size: 11, align: 'left', dx: 8, dy: -2 });
+            const up = folds[0][0], dn = folds[1][0];
+            Rr.arrow(up, 0.42, up, 0.58, { color: 'gold', width: 2.4, head: 10 }); Rr.arrow(dn, 0.58, dn, 0.42, { color: 'gold', width: 2.4, head: 10 });
+            Rr.text('jumps up', up, 0.5, { color: 'gold', size: 11, align: 'left', dx: 8, weight: 600 }); Rr.text('jumps down', dn, 0.5, { color: 'gold', size: 11, align: 'right', dx: -8, weight: 600 }); }
           Rr.vline(c, { color: 'ink', width: 1, dash: [3, 4], alpha: 0.7 });
-          Rr.dot(c, state, { r: 7, hollow: true, color: 'ink', width: 2.2 });
+          Rr.dot(c, state, { r: 8, hollow: true, color: 'ink', width: 2.2 }); Rr.dot(c, state, { r: 3, color: 'ink' });
           info = { fx, folds, tip, web: x };
         });
         v.readout(() => {
@@ -181,20 +184,21 @@ In the **multi-person prisoner's dilemma** $L$ lies above $R$ at every $x$ and b
           let best = 0, bx = 0; for (let x = 0; x <= n; x += 0.25) { const a = A(x); if (x === 0 || a > best) { best = a; bx = x; } }
           S.fn(A, { domain: [0, n], color: 'purple', width: 1.8, dash: [6, 4] });
           S.dot(bx, best, { r: 5, color: 'purple' });
-          S.text(`best average ${v.fix(best, 2)}`, bx, best, { color: 'purple', size: 11, align: bx > 70 ? 'right' : 'left', dx: bx > 70 ? -8 : 8, dy: -12, weight: 600, plate: true });
+          S.text('best', bx, best, { color: 'purple', size: 11, align: 'center', dy: -15, weight: 700 });
           S.line(0, L0.y, n, L1.y, { color: 'blue', width: 2.8 }); S.line(0, R0.y, n, R1.y, { color: 'orange', width: 2.8 });
-          S.text(`L: ${P.l}`, n, L1.y, { color: 'blue', size: 12, dx: 10, dy: L1.y >= R1.y ? -10 : 10, weight: 600, align: 'right' });
-          S.text(`R: ${P.r}`, n, R1.y, { color: 'orange', size: 12, dx: 10, dy: R1.y > L1.y ? -10 : 10, weight: 600, align: 'right' });
+          const xl = 0.22 * n, xr = 0.78 * n;
+          S.text(`Left: ${P.l}`, xl, Lf(xl), { color: 'blue', size: 12, dy: Lf(xl) >= Rf(xl) ? -15 : 15, weight: 600, align: 'center', plate: true });
+          S.text(`Right: ${P.r}`, xr, Rf(xr), { color: 'orange', size: 12, dy: Rf(xr) > Lf(xr) ? -15 : 15, weight: 600, align: 'center', plate: true });
           // equilibria
           const eq = [];
-          if (D(0) < 0) eq.push([0, 'stable']); else if (D(0) > 0) eq.push([0, 'unstable']);
+          if (D(0) <= 0) eq.push([0, D(0) < 0 ? 'stable' : 'unstable']);
           if (xc > 0 && xc < n) eq.push([xc, D(0) > 0 ? 'stable' : 'unstable']);
-          if (D(n) > 0) eq.push([n, 'stable']); else if (D(n) < 0) eq.push([n, 'unstable']);
+          if (D(n) >= 0) eq.push([n, D(n) > 0 ? 'stable' : 'unstable']);
           const pay = (x) => (x <= 0 ? Lf(0) : x >= n ? Rf(n) : Lf(x));
-          eq.forEach(([x, k]) => { if (k === 'stable' || (x > 0 && x < n)) S.dot(x, pay(x), { r: 6.5, color: k === 'stable' ? 'green' : 'red', hollow: k !== 'stable' }); });
+          eq.forEach(([x, k]) => { if (x > 0 && x < n) S.dot(x, pay(x), { r: 6.5, color: k === 'stable' ? 'green' : 'red', hollow: k !== 'stable' }); else if (k === 'stable') S.dot(x, pay(x), { r: 14, color: 'green', alpha: 0.45 }); });
           // minimum coalition k: R(k) = L(0)
           let kk = null; if (Math.abs(R1.y - R0.y) > 1e-9) { const k = ((L0.y - R0.y) * n) / (R1.y - R0.y); if (k > 0 && k <= n && R1.y > R0.y && D(n / 2) < 0 && D(0) < 0 && D(n) < 0) kk = k; }
-          if (kk != null) { S.line(0, L0.y, kk, L0.y, { color: 'muted', dash: [2, 3], width: 1.2 }); S.line(kk, 0, kk, Rf(kk), { color: 'muted', dash: [2, 3], width: 1.2 }); S.dot(kk, Rf(kk), { r: 3.5, color: 'ink' }); S.text(`k = ${Math.ceil(kk - 1e-9)}`, kk, 0, { color: 'ink', size: 12, dy: 13, weight: 600, align: 'center', plate: true }); }
+          if (kk != null) { S.line(0, L0.y, kk, L0.y, { color: 'muted', dash: [2, 3], width: 1.2 }); S.line(kk, 0, kk, Rf(kk), { color: 'muted', dash: [2, 3], width: 1.2 }); S.dot(kk, Rf(kk), { r: 3.5, color: 'ink' }); S.text(`k = ${Math.ceil(kk - 1e-9)}`, kk, 0, { color: 'ink', size: 12, dy: -13, weight: 600, align: 'center', plate: true }); }
           // from the start: follow the sign of R − L
           let x = X0.x; const g0 = D(x); if (Math.abs(g0) > 1e-9) { for (let s = 0; s < 4000; s++) { const g = D(x); if (Math.abs(g) < 1e-6) break; const nx = x + 0.05 * Math.sign(g); if (nx <= 0 || nx >= n) { x = nx <= 0 ? 0 : n; break; } if (Math.sign(D(nx)) !== Math.sign(g)) { x = xc; break; } x = nx; } }
           // the people strip
@@ -238,7 +242,7 @@ Starting from nobody, the number acting evolves by $$r(t+1) = F\big(r(t)\big), \
         const PRE = { uniform: () => Array.from({ length: 100 }, (_, i) => i), n15: () => normalCrowd(100, 25, 15), n10: () => normalCrowd(100, 25, 10), camps };
         let th = PRE.n15();
         const pre = v.select('crowd', [{ value: 'n15', label: 'normal: mean 25, sd 15' }, { value: 'n10', label: 'normal: mean 25, sd 10' }, { value: 'uniform', label: 'uniform 0, 1, …, 99' }, { value: 'camps', label: 'radicals and moderates' }, { value: 'own', label: 'your own' }], 'n15',
-          { onChange: (k) => { if (PRE[k]) th = PRE[k](); v.restart(); } });
+          { onChange: (k) => { if (PRE[k]) th = PRE[k](); v.restart(); v.play(); } });
         const C = v.stage({ x: [0, 10], y: [0, 10], height: 330, weight: 1, axes: false, equal: true, title: 'the crowd, by threshold' });
         const Fs = v.stage({ x: [-5, 104], y: [-5, 104], height: 330, weight: 1, axes: 'box', title: 'cumulative thresholds $F(x)$ and the 45° line' });
         const Hs = v.stage({ x: [-1, 101], y: [-1.5, 22], height: 150, axes: 'box', full: true, title: 'thresholds: people per bin (drag to draw)' });
@@ -246,7 +250,7 @@ Starting from nobody, the number acting evolves by $$r(t+1) = F\big(r(t)\big), \
           const b = Math.floor(x / BW); if (b < 0 || b >= NB) return; const k = clamp(Math.round(y), 0, 30);
           th = th.filter((t) => Math.floor(t / BW) !== b); for (let j = 0; j < k; j++) th.push(b * BW + Math.floor((BW * j) / k));
           if (!th.length) th.push(0);
-          pre.set('own'); v.restart();
+          pre.set('own'); v.restart(); v.play();
         });
         v.legend([['red', 'rioting', { dot: true }], ['gold', 'joined this round', { dot: true }], ['blue', 'not (yet) rioting', { dot: true }], ['ink', 'cumulative $F(x)$'], ['gold', 'cascade (cobweb)']]);
         let info = null;
@@ -275,7 +279,7 @@ Starting from nobody, the number acting evolves by $$r(t+1) = F\big(r(t)\big), \
           // ---- histogram
           const cnt = new Array(NB).fill(0), hot = new Array(NB).fill(0);
           sorted.forEach((x, i) => { const b = clamp(Math.floor(x / BW), 0, NB - 1); cnt[b]++; if (i < now) hot[b]++; });
-          const ymax = Math.max(12, ...cnt) * 1.15; Hs.setView([-1, 101], [-ymax * 0.1, ymax]);
+          const ymax = Math.max(12, ...cnt) * 1.15; Hs.setView([-4.5, 101], [-ymax * 0.16, ymax]);
           for (let b = 0; b < NB; b++) { if (hot[b]) Hs.rect(b * BW + 0.3, 0, (b + 1) * BW - 0.3, hot[b], { fill: 'red', fillAlpha: 0.75, stroke: false }); if (cnt[b] > hot[b]) Hs.rect(b * BW + 0.3, hot[b], (b + 1) * BW - 0.3, cnt[b], { fill: 'blue', fillAlpha: 0.45, stroke: false }); }
           if (round === rs.length - 1 && final < N) { Hs.vline(final, { color: 'green', width: 1.6, dash: [4, 3] }); Hs.text(`stops at ${final}`, final, ymax * 0.88, { color: 'green', size: 11, dx: 6, weight: 600, plate: true }); }
           info = { N, rs, F, round, now, final, mean: sorted.reduce((a, b) => a + b, 0) / N };
@@ -307,12 +311,12 @@ Near a critical parameter value the same fragility appears in random crowds: amo
       credit: 'Granovetter, 1978',
       viz(v) {
         const chg = v.toggle('change one person', true);
-        const who = v.slider('person whose threshold is', 0, 99, 1, { int: true, step: 1 });
-        const to = v.slider('changes it to', 0, 99, 2, { int: true, step: 1 });
+        const who = v.slider('the person with threshold', 0, 99, 1, { int: true, step: 1 });
+        const to = v.slider('moves to threshold', 0, 99, 2, { int: true, step: 1 });
         const zoom = v.select('view', [{ value: '20', label: 'first 20 people' }, { value: '100', label: 'all 100' }], '20');
         const sig = v.slider('spread $\\sigma$ of the random crowds', 4, 22, 12, { step: 0.5 });
-        const Lt = v.stage({ x: [-0.5, 20.5], y: [-1, 21], height: 350, weight: 1, axes: 'box', title: 'sorted thresholds against the number already rioting' });
-        const Rt = v.stage({ x: [-1, 46], y: [-8, 108], height: 350, weight: 1.15, axes: 'box', title: 'final riot size (up) against average threshold (across)' });
+        const Lt = v.stage({ x: [-1.5, 20.5], y: [-1.5, 21], height: 350, weight: 1, axes: 'box', title: 'sorted thresholds against the number already rioting' });
+        const Rt = v.stage({ x: [-4, 46], y: [-9, 112], height: 350, weight: 1.15, axes: 'box', title: 'final riot size (up) against average threshold (across)' });
         const cache = new Map();
         const crowds = (s) => {
           if (!cache.has(s)) {
@@ -332,15 +336,16 @@ Near a critical parameter value the same fragility appears in random crowds: amo
           // ---- left: the uniform crowd, possibly with one change
           const th = Array.from({ length: 100 }, (_, i) => i); if (chg.value) th[who.value] = to.value;
           const sorted = th.slice().sort((a, b) => a - b), { final } = cascade(sorted);
-          const Z = +zoom.value; Lt.setView([-0.04 * Z - 0.5, Z + 0.5], [-0.06 * Z - 0.5, Z * 1.05 + 0.5]);
-          for (let k = 0; k < Math.min(100, Z + 1); k++) { const y = sorted[k], col = k < final ? 'red' : k === final ? 'gold' : 'blue'; Lt.rect(k + 0.12, 0, k + 0.88, Math.max(y, 0.12), { fill: col, fillAlpha: k === final ? 0.95 : 0.6, stroke: false }); }
-          Lt.line(0, 0, Z + 0.5, Z + 0.5, { color: 'ink', width: 1.6, dash: [5, 4] });
+          const Z = +zoom.value; Lt.setView([-0.07 * Z - 0.6, Z + 0.6], [-0.07 * Z - 0.6, Z * 1.05 + 0.5]);
+          const bw = Z > 40 ? 0.42 : 0.36;
+          for (let k = 0; k < Math.min(100, Z + 1); k++) { const y = sorted[k], col = k < final ? 'red' : k === final ? 'gold' : 'blue'; Lt.rect(k - bw, 0, k + bw, Math.max(y, Z * 0.012), { fill: col, fillAlpha: k === final ? 0.95 : 0.6, stroke: false }); if (Z <= 40) Lt.dot(k, y, { r: 2.6, color: col }); }
+          Lt.line(-0.5, -0.5, Z + 0.5, Z + 0.5, { color: 'ink', width: 1.6, dash: [5, 4] });
           Lt.text('already rioting = rank', Z * 0.97, Z * 0.97, { color: 'ink', size: 11, align: 'right', dx: -6, dy: -12 });
-          if (final < 100 && final <= Z) { Lt.text(`needs ${sorted[final]}, sees ${final}`, final + 0.5, sorted[final], { color: 'gold', size: 12, weight: 700, dx: 6, dy: -12, align: 'left', plate: true }); }
+          if (final < 100 && final <= Z) { Lt.text(`needs ${sorted[final]}, sees ${final}`, final, sorted[final], { color: 'gold', size: 12, weight: 700, dx: 8, dy: -16, align: 'left', plate: true }); }
           const mean = th.reduce((a, b) => a + b, 0) / 100;
           // ---- right: random crowds
           const s = sig.value, D = crowds(s);
-          if (D.band) { Rt.rect(D.band[0], -8, D.band[1], 108, { fill: 'gold', fillAlpha: 0.13, stroke: false }); Rt.text('fragile', (D.band[0] + D.band[1]) / 2, 104, { color: 'gold', size: 12, align: 'center', weight: 700 }); }
+          if (D.band) { Rt.rect(D.band[0], -9, D.band[1], 112, { fill: 'gold', fillAlpha: 0.13, stroke: false }); Rt.text('fragile', (D.band[0] + D.band[1]) / 2, 108, { color: 'gold', size: 12, align: 'center', weight: 700 }); }
           Rt.dots(D.pts.filter((p) => p[1] <= 50).map((p) => [p[0], p[1] + p[2]]), { r: 2, color: 'blue', alpha: 0.45 });
           Rt.dots(D.pts.filter((p) => p[1] > 50).map((p) => [p[0], p[1] + p[2]]), { r: 2, color: 'red', alpha: 0.45 });
           Rt.path(D.theory, { color: 'ink', width: 1.6, dash: [6, 4] });
@@ -382,7 +387,7 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Threshold_model' },
       viz(v) {
         const mode = v.select('exhibit', [{ value: 'fig2', label: 'Fig. 2: normal thresholds' }, { value: 'riot', label: 'the riot of 100' }, { value: 'sample', label: 'sampled crowds' }], 'fig2', { onChange: () => show() });
-        const sig = v.slider('standard deviation $\\sigma$', 1, 40, 11.5, { step: 0.05 });
+        const sig = v.slider('standard deviation $\\sigma$', 1, 40, 12.1, { step: 0.05 });
         const mu = v.slider('mean threshold', 10, 40, 25, { step: 0.5 });
         let crowdSeed = 3;
         const again = v.button('Draw another crowd', () => { crowdSeed++; });
@@ -397,7 +402,6 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
           if (!samp) { const R = rng32(1431), hist = new Array(101).fill(0), M = 4000; for (let k = 0; k < M; k++) { const th = []; for (let i = 0; i < 100; i++) th.push(Math.floor(R() * 100)); hist[cascade(th).final]++; } samp = { hist: hist.map((c) => c / M), M }; }
           return samp;
         };
-        v.legend([['ink', 'cumulative distribution $F$'], ['gold', 'cascade from nobody'], ['green', 'equilibrium', { dot: true }], ['red', 'paper’s value', { dash: true }]]);
         let info = null;
         v.render(() => {
           const m = mode.value;
@@ -408,6 +412,16 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
             Lf.fn(F, { domain: [0, 100], color: 'ink', width: 2.2 });
             const web = [[0, 0]]; let r = 0; for (let k = 0; k < 400; k++) { const y = F(r); web.push([r, y], [y, y]); if (Math.abs(y - r) < 0.02) break; r = y; }
             Lf.path(web, { color: 'gold', width: 1.8 });
+            // inset: the low corner magnified, where the curve nearly touches the 45° line
+            const Zc = 12, ox = 56, oy = 3, wd = 42, hd = (wd * (Lf.X(1) - Lf.X(0))) / (Lf.Y(0) - Lf.Y(1)), I = (x, y) => [ox + (x / Zc) * wd, oy + (y / Zc) * hd];
+            Lf.rect(ox, oy, ox + wd, oy + hd, { fill: 'panel', fillAlpha: 1, color: 'faint', width: 1 });
+            Lf.path([I(0, 0), I(Zc, Zc)], { color: 'muted', dash: [5, 4], width: 1.2 });
+            const cpts = []; for (let i = 0; i <= 120; i++) { const x = (Zc * i) / 120, y = F(x); cpts.push(y <= Zc ? I(x, y) : null); }
+            Lf.path(cpts, { color: 'ink', width: 2 });
+            const wz = []; for (const [a, b] of web) { if (a > Zc || b > Zc) { wz.push(I(Math.min(a, Zc), Math.min(b, Zc))); break; } wz.push(I(a, b)); }
+            Lf.path(wz, { color: 'gold', width: 1.6 });
+            if (re <= Zc) Lf.dot(...I(re, re), { r: 4.5, color: 'green' });
+            Lf.text(`zoom: 0–${Zc}`, ox + 2, oy + hd - 2, { color: 'muted', size: 10.5, dy: 8 });
             Lf.dot(re, re, { r: 6, color: 'green' });
             Lf.text(`r = ${v.fix(re, 1)}`, re, re, { color: 'green', size: 12, weight: 700, dx: re > 60 ? -10 : 10, dy: re > 60 ? 14 : -12, align: re > 60 ? 'right' : 'left', plate: true });
             // right: Fig. 2
@@ -418,6 +432,7 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
             const pts = C.pts; const jump = pts.findIndex((p, i) => i > 0 && p[1] - pts[i - 1][1] > 20);
             if (jump > 0) { Rf.path(pts.slice(0, jump), { color: 'purple', width: 2.6 }); Rf.path(pts.slice(jump), { color: 'purple', width: 2.6 }); Rf.line(pts[jump - 1][0], pts[jump - 1][1], pts[jump][0], pts[jump][1], { color: 'purple', width: 1, dash: [2, 3] }); } else Rf.path(pts, { color: 'purple', width: 2.6 });
             Rf.dot(s, re, { r: 6, color: 'green' });
+            v.legend([['ink', 'cumulative distribution $F$'], ['gold', 'cascade from nobody'], ['green', 'equilibrium', { dot: true }], ['purple', 'equilibrium against $\\sigma$'], ['red', 'critical $\\sigma_c$', { dash: true }]]);
             info = { m, s, M, re, C };
           } else if (m === 'riot') {
             const uni = Array.from({ length: 100 }, (_, i) => i), per = uni.slice(); per[1] = 2;
@@ -425,14 +440,17 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
             Lf.setView([-0.6, Z], [-0.6, Z]); Lf.setTitle('the first dozen of 100: uniform (blue) and perturbed (red)');
             Lf.line(0, 0, Z, Z, { color: 'muted', dash: [5, 4], width: 1.3 });
             Lf.path(stepPts(A.F, Z), { color: 'blue', width: 3.4, alpha: 0.55 }); Lf.path(stepPts(B.F, Z), { color: 'red', width: 2 });
-            Lf.path(cobweb(A.rs.slice(0, Z + 1)), { color: 'blue', width: 1.4, dash: [3, 3] }); Lf.path(cobweb(B.rs), { color: 'red', width: 2.2 });
+            Lf.path(cobweb(B.rs), { color: 'gold', width: 2.2 });
             Lf.dot(1, 1, { r: 6, color: 'red' }); Lf.text('perturbed crowd stops: F(1) = 1', 1, 1, { color: 'red', size: 11.5, dx: 10, dy: 14, weight: 600, plate: true });
-            Lf.text('uniform: F(x) = x + 1, one step ahead of the line all the way to 100', Z * 0.98, Z * 0.94, { color: 'blue', size: 11, align: 'right', plate: true });
+            Lf.text('uniform: F(x) = x + 1, always one step', Z * 0.97, Z * 0.3, { color: 'blue', size: 11, align: 'right', plate: true });
+            Lf.text('ahead of the line, all the way to 100', Z * 0.97, Z * 0.3, { color: 'blue', size: 11, align: 'right', dy: 18, plate: true });
             Rf.setView([-3, 104], [-6, 106]); Rf.setTitle('rioters after each round $t$ (across)'); Rf.setLabels(null, null);
             Rf.path(A.rs.map((r, t) => [t, r]), { color: 'blue', width: 2.6 }); Rf.path([[0, 0], [1, 1], [100, 1]], { color: 'red', width: 2.6 });
             Rf.dot(A.rs.length - 1, 100, { r: 6, color: 'green' }); Rf.dot(100, 1, { r: 6, color: 'green' });
             Rf.text('“A crowd of radicals engaged in riotous behavior”', 50, 76, { color: 'blue', size: 11.5, align: 'center', plate: true });
-            Rf.text('“A demented troublemaker broke a window while a group of solid citizens looked on”', 52, 12, { color: 'red', size: 11, align: 'center', plate: true });
+            Rf.text('“A demented troublemaker broke a window', 55, 26, { color: 'red', size: 11.5, align: 'center', plate: true });
+            Rf.text('while a group of solid citizens looked on”', 55, 26, { color: 'red', size: 11.5, align: 'center', dy: 19, plate: true });
+            v.legend([['blue', 'uniform crowd 0, 1, …, 99'], ['red', 'threshold 1 replaced by 2'], ['gold', 'cascade of the perturbed crowd'], ['green', 'equilibrium', { dot: true }]]);
             info = { m, A, B };
           } else {
             const S = sampled(), R = rng32(crowdSeed * 7919 + 1), th = []; for (let i = 0; i < 100; i++) th.push(Math.floor(R() * 100));
@@ -441,10 +459,11 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
             Lf.line(0, 0, 100, 100, { color: 'muted', dash: [5, 4], width: 1.3 });
             Lf.path(stepPts(one.F, 100), { color: 'ink', width: 2 }); Lf.path(cobweb(one.rs), { color: 'gold', width: 2 });
             Lf.dot(one.final, one.final, { r: 6, color: 'green' }); Lf.text(`stops at ${one.final}`, one.final, one.final, { color: 'green', size: 12, weight: 700, dx: one.final > 60 ? -10 : 10, dy: one.final > 60 ? 14 : -12, align: one.final > 60 ? 'right' : 'left', plate: true });
-            Rf.setView([-3, 104], [-0.03, 0.42]); Rf.setTitle(`share of ${S.M.toLocaleString('en-US')} sampled crowds by final number of rioters`); Rf.setLabels(null, null);
+            Rf.setView([-10, 104], [-0.035, 0.42]); Rf.setTitle(`share of ${S.M.toLocaleString('en-US')} sampled crowds by final number of rioters`); Rf.setLabels(null, null);
             S.hist.forEach((p, k) => { if (p) Rf.rect(k - 0.45, 0, k + 0.45, p, { fill: k <= 1 ? 'red' : k >= 90 ? 'green' : 'blue', fillAlpha: 0.8, stroke: false }); });
             Rf.line(-1.5, 0.37, 1.5, 0.37, { color: 'red', width: 2 }); Rf.text('paper .37', 1.5, 0.37, { color: 'red', size: 11, dx: 6, weight: 600 });
             Rf.line(-0.5, 0.14, 2.5, 0.14, { color: 'red', width: 2 }); Rf.text('paper .14', 2.5, 0.14, { color: 'red', size: 11, dx: 6, weight: 600 });
+            v.legend([['ink', 'one crowd’s cumulative thresholds'], ['gold', 'its cascade'], ['red', 'ends with 0 or 1 rioter', { area: true }], ['green', 'ends with 90 or more', { area: true }], ['red', 'paper’s probabilities']]);
             info = { m, S, one };
           }
         });

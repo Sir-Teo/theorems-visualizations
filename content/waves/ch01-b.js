@@ -30,7 +30,7 @@ $$R=r^2,\qquad \mathcal T=\frac{Z_2}{Z_1}\,\tau^2,\qquad R+\mathcal T=1 .$$`,
       idea: String.raw`On each side the solution is a d'Alembert sum (1.3) with only outgoing waves added to the incident one. Two conditions hold at the joint: the string does not break, so $y$ is continuous (giving $1+r=\tau$), and the massless joint feels no net force, so $Ty_x$ is continuous. Using $F=Z\dot y$ for each travelling wave (1.8), the second condition becomes $Z_1(1-r)=Z_2\tau$. Solving the two linear equations gives $r$ and $\tau$. The energy fractions follow from the flux $P=Z\dot y^{2}$ (1.7): $Z_1r^2+Z_2\tau^2=Z_1$.`,
       caption: String.raw`A skewed pulse, with a steep front and a long tail, runs into a joint. Drag the gold handle along the bottom-left graph to change the impedance ratio $Z_2/Z_1$; the right-hand string is drawn thicker when it is heavier. The simulation is a beaded string with no junction rule built in. The dashed green curves are the predictions $r\,f$ and $\tau f$; bottom right, the energy ledger is measured from the beads. Watch the reflected pulse flip over as $Z_2$ passes $Z_1$, and note that the steep front still leads in both directions. Use the buttons for a fixed end (inverted) and a free end (upright, doubled at the moment of reflection).`,
       deps: ['waves-1.8', 'waves-1.3'],
-      see: ['circ-9.4', 'pde-2.7', 'em-11.9', 'qm-3.13', 'imaging-5.2', 'music-11.3'],
+      see: ['circ-9.4', 'pde-2.7', 'em-11.9', 'qm-3.13', 'imaging-5.2', 'music-11.3', 'music-2.3'],
       refs: ['Crawford ch. 5'],
       tags: ['reflection', 'impedance', 'energy'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Reflection_coefficient' },
@@ -124,7 +124,7 @@ $$R=r^2,\qquad \mathcal T=\frac{Z_2}{Z_1}\,\tau^2,\qquad R+\mathcal T=1 .$$`,
 (a) **Quarter-wave matching.** A layer of impedance $Z_2=\sqrt{Z_1Z_3}$ and thickness $d=\lambda_2/4$ (a quarter of the wavelength *inside* the layer) reflects nothing at that frequency. In general the layer's input impedance is $Z_{\rm in}=Z_2\,\frac{Z_3+iZ_2\tan k_2d}{Z_2+iZ_3\tan k_2d}$, and at $k_2d=\pi/2$ it equals $Z_2^2/Z_3=Z_1$. The match is perfect only near the design frequency.
 (b) **Tapering.** If the impedance changes gradually, over a length $\ell$ much longer than the wavelength, reflection is small at all frequencies above about $c/\ell$. For an exponential taper the reflected energy falls off rapidly once $\ell\gtrsim\lambda/2$.`,
       idea: String.raw`At a quarter-wave layer the wave reflected from the second joint makes a round trip of half a wavelength, so it returns half a cycle out of step with the reflection from the first joint. If the two reflections have equal strength, which is what $Z_2=\sqrt{Z_1Z_3}$ arranges, they cancel, and by energy conservation (1.9) everything is transmitted. A taper splits one big reflection into many tiny ones spread over the length $\ell$. Their phases wind through many cycles and mostly cancel, so what is left comes only from the abrupt ends of the taper. The same ideas underlie lens coatings, horn loudspeakers, transformers and the middle ear.`,
-      caption: String.raw`A tone burst on a light string runs into a string 9 times heavier in impedance (drawn thicker and darker). With an abrupt joint 64 % of the energy comes back. Choose **quarter-wave layer** and drag the gold handle on the bottom-left graph to set the layer thickness. The reflected burst shrinks to almost nothing at $d=\lambda_2/4$, and grows again at $\lambda_2/2$. The curve is the transfer-matrix prediction averaged over the burst's spectrum; the dot is measured from the beaded-string simulation once the echo has separated. Choose **tapered** and lengthen the taper: the echo fades for every taper longer than about half a wavelength. Bottom right: the impedance profile along the string.`,
+      caption: String.raw`A tone burst on a light string runs into a string 9 times heavier in impedance (drawn thicker and darker). With an abrupt joint 64 % of the energy comes back. Choose **quarter-wave layer** and drag the gold handle on the bottom-left graph to set the layer thickness. The reflected burst shrinks to a few per cent of the energy at $d=\lambda_2/4$ (what remains comes from the burst's spread of frequencies), and grows again at $\lambda_2/2$. The curve is the transfer-matrix prediction averaged over the burst's spectrum; the dot is measured from the beaded-string simulation once the echo has separated. Choose **tapered** and lengthen the taper: the echo fades for every taper longer than about half a wavelength. Bottom right: the impedance profile along the string.`,
       deps: ['waves-1.9'],
       see: ['circ-9.7', 'circ-7.14', 'music-5.1', 'music-11.4'],
       refs: ['Crawford ch. 5'],
@@ -140,7 +140,7 @@ $$R=r^2,\qquad \mathcal T=\frac{Z_2}{Z_1}\,\tau^2,\qquad R+\mathcal T=1 .$$`,
         const gp = v.stage({ x: [0, 1.25], y: [0, 0.72], height: 230, axes: 'box', xlabel: 'layer thickness d / λ₂', ylabel: 'reflected energy', title: 'reflected fraction of the energy', weight: 1.5 });
         const zp = v.stage({ x: [-1, 2.2], y: [0.7, 20], ylog: true, height: 230, axes: 'box', xlabel: 'x', ylabel: 'Z / Z₁', title: 'impedance along the string', weight: 1 });
         const gTop = () => Math.max(0.2, (((z3S.value - 1) / (z3S.value + 1)) ** 2) * 1.12);
-        const hd = gp.handle(0.25, 0.6, { color: 'gold', constrain: (x) => [M.clamp(x, 0, 1.25), 0.94 * gTop()] });
+        const hd = gp.handle(0.25, 0.6, { color: "gold", constrain: (x) => [M.clamp(x, 0, 1.25), 0.8 * gTop()] });
         // impedance profile (T = 1, so Z = √μ and c = 1/Z); the section starts at x = 0 and has length len
         const Zat = (x, len) => {
           const z3 = z3S.value, m = mode.value;
@@ -203,7 +203,7 @@ $$R=r^2,\qquad \mathcal T=\frac{Z_2}{Z_1}\,\tau^2,\qquad R+\mathcal T=1 .$$`,
           const m = mode.value;
           gp.setLabels(m === 'taper' ? 'taper length ℓ / λ₁' : 'layer thickness d / λ₂', undefined);
           const cv = predCurve(), abr = ((z3S.value - 1) / (z3S.value + 1)) ** 2;
-          gp.setView([0, 1.25], [0, gTop()]); hd.y = 0.94 * gTop();
+          gp.setView([0, 1.25], [0, gTop()]); hd.y = 0.8 * gTop();
           gp.hline(abr, { color: 'red', width: 1.2, dash: [4, 4] });
           gp.text('abrupt joint', 1.22, abr, { color: 'red', size: 11.5, align: 'right', baseline: 'bottom', dy: -3 });
           hd.visible = m !== 'abrupt';
@@ -426,7 +426,7 @@ In three dimensions the listener at distance $r$ hears exactly the emitted signa
         const s1 = v.stage({ x: [-R, R], y: [-1.25, 1.25], height: 240, axes: false, title: '1D: a string', minWidth: 220 });
         const s2 = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 240, axes: false, title: '2D: a membrane', minWidth: 220 });
         const s3 = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 240, axes: false, title: '3D: a slice through the source', minWidth: 220 });
-        const pr = v.stage({ x: [0, TM], y: [-0.75, 1.2], height: 230, axes: 'box', xlabel: 'time t (distances in units of c·t)', full: true, title: `what a probe at distance ${R0} records (each curve scaled to its peak)` });
+        const pr = v.stage({ x: [0, TM], y: [-1.15, 1.2], height: 240, axes: 'box', xlabel: 'time t (distances in units of c·t)', full: true, title: `what a probe at distance ${R0} records (each curve scaled to its peak)` });
         const g = (u) => Math.exp(-0.5 * u * u);
         const sig = (tt) => { const u = (tt - T0) / W; return kind.value === 'bump' ? g(u) : -u * g(u); };
         const dsig = (tt) => { const u = (tt - T0) / W; return kind.value === 'bump' ? (-u / W) * g(u) : (-(1 - u * u) / W) * g(u); };

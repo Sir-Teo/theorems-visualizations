@@ -81,7 +81,18 @@ export function katexHTML(tex, display = false) {
 export function richHTML(src, { lists = true, lineWrap = true } = {}) {
   if (src == null) return '';
   const maths = [];
-  let s = String(src).replace(/\$\$([\s\S]+?)\$\$|\$((?:\\.|[^$\\])+?)\$/g, (_, d, i) => {
+  // \$ outside math is a literal dollar sign (inside math it is KaTeX's own \$)
+  let raw = String(src), esc = '';
+  if (raw.includes('\\$')) {
+    for (let i = 0, inMath = false; i < raw.length; i++) {
+      if (raw[i] === '\\' && raw[i + 1] === '$') { esc += inMath ? '\\$' : '\u0002'; i++; continue; }
+      if (raw[i] === '\\') { esc += raw[i] + (raw[i + 1] ?? ''); i++; continue; }
+      if (raw[i] === '$') { if (raw[i + 1] === '$') { esc += '$$'; i++; } else esc += '$'; inMath = !inMath; continue; }
+      esc += raw[i];
+    }
+    raw = esc;
+  }
+  let s = raw.replace(/\$\$([\s\S]+?)\$\$|\$((?:\\.|[^$\\])+?)\$/g, (_, d, i) => {
     maths.push(d != null ? katexHTML(d.trim(), true) : katexHTML(i, false));
     return `\u0000${maths.length - 1}\u0000`;
   });
@@ -99,7 +110,7 @@ export function richHTML(src, { lists = true, lineWrap = true } = {}) {
     flush();
     return `<p>${html.join('')}</p>`;
   }).join('');
-  return paras.replace(/\u0000(\d+)\u0000/g, (_, k) => maths[+k]);
+  return paras.replace(/\u0000(\d+)\u0000/g, (_, k) => maths[+k]).replace(/\u0002/g, '$');
 }
 export function renderRich(el, src) { el.innerHTML = richHTML(src); }
 /** Inline-only variant (no <p> wrapper), for labels. */

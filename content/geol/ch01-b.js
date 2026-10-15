@@ -18,7 +18,8 @@
 //   1.10 Hutton (1788), Trans. R. Soc. Edinb. 1(2): 209–304, read 7 March (by Joseph Black) and 4 April 1785; Siccar Point
 //        visited by boat in 1788 with John Playfair and Sir James Hall: near-vertical early Silurian (Llandovery)
 //        greywackes, c. 435 Ma, under Upper Old Red Sandstone (late Devonian, c. 370 Ma) dipping about 15° seaward;
-//        gap ≈ 60–65 Myr (BGS excursion guide; Wikipedia, Siccar Point).
+//        gap ≈ 60–65 Myr (Wikipedia, Siccar Point; Geological Society of Glasgow); the BGS excursion guide (Earthwise)
+//        confirms the Llandovery and Upper Old Red Sandstone ages but quotes a shorter gap estimate (~20 Myr).
 
 import { TAU, clamp, LITH, rgbMix, lithPoly, classify, surfaceAt, drawSection, FOSSILS, fossil, fmtYr } from './ch01.shared.js';
 
@@ -321,10 +322,10 @@ The time an unconformity represents is at least the thickness removed divided by
           for (let i = 0; i < W_NX; i++) {
             let y = 0, run = null;
             for (const sgm of cols[i]) {
-              if (run && run.f === sgm.f && !sgm.eroded) run.h += sgm.h; else { if (run) S.rect(i, run.y, i + 1.02, run.y + run.h, { fill: fc[run.f], fillAlpha: 1, stroke: false }); run = { f: sgm.f, y, h: sgm.h }; }
+              if (run && run.f === sgm.f && !sgm.eroded) run.h += sgm.h; else { if (run) S.rect(i - 0.06, run.y, i + 1.12, run.y + run.h, { fill: fc[run.f], fillAlpha: 1, stroke: false }); run = { f: sgm.f, y, h: sgm.h }; }
               y += sgm.h;
             }
-            if (run) S.rect(i, run.y, i + 1.02, run.y + run.h, { fill: fc[run.f], fillAlpha: 1, stroke: false });
+            if (run) S.rect(i - 0.06, run.y, i + 1.12, run.y + run.h, { fill: fc[run.f], fillAlpha: 1, stroke: false });
             cols[i].top = y; hmax = Math.max(hmax, y);
           }
           // time lines every 10 steps, erosion surfaces
@@ -338,7 +339,7 @@ The time an unconformity represents is at least the thickness removed divided by
           const sea = W_NT + 4;
           S.rect(s, -6, W_NX, sea, { fill: 'blue', fillAlpha: 0.06, stroke: false }); S.line(s, sea, W_NX, sea, { color: 'blue', width: 1.5 });
           S.line(0, sea, s, sea, { color: 'orange', width: 3 }); S.text('land', Math.max(2, s / 2), sea + 3.5, { align: 'center', size: 11.5, color: 'orange', weight: 600 });
-          for (let f = 0; f < 3; f++) { const a = s + [0, 16, 40][f], b = Math.min(W_NX, s + [16, 40, 999][f]); if (a >= W_NX) continue; S.rect(a, sea - 2.2, b, sea, { fill: LITH[WF[f].lith].color, fillAlpha: 0.9, stroke: false }); if (b - a > 9) S.text(WF[f].name, (a + b) / 2, sea + 3.5, { align: 'center', size: 11, color: LITH[WF[f].lith].color, weight: 700 }); }
+          for (let f = 0; f < 3; f++) { const a = s + [0, 16, 40][f], b = Math.min(W_NX, s + [16, 40, 999][f]); if (a >= W_NX) continue; S.rect(a, sea - 2.2, b, sea, { fill: LITH[WF[f].lith].color, fillAlpha: 0.9, stroke: false }); S.ctx.font = '700 11px Inter, system-ui, sans-serif'; if (S.X(b) - S.X(a) > S.ctx.measureText(WF[f].name).width + 8) S.text(WF[f].name, (a + b) / 2, sea + 3.5, { align: 'center', size: 11, color: LITH[WF[f].lith].color, weight: 700 }); }
           S.dot(s, sea, { r: 5, color: 'orange' });
           // the well
           const wi = clamp(Math.floor(well.x), 0, W_NX - 1);
@@ -380,7 +381,7 @@ $$T(z,t) = T_0\,\operatorname{erf}\!\Big(\frac{z}{2\sqrt{\kappa t}}\Big),\qquad 
 so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. With $T_0\approx7000$ °F (≈ 3900 °C, the melting of rock), $G \approx 1$ °F per 50 ft (≈ 36 °C/km) and $\kappa\approx1.2\times10^{-6}$ m²/s, he found about **98 million years**, with limits of 20 and 400 million; later he narrowed it to 20–40 million. Geologists needed far more, and radiometric dating gives **4.54 billion years**. The paradox is resolved because the Earth is not a rigid conductor: the mantle **convects** (Perry, 1895), carrying heat from deep inside to a thin conducting lid, so the surface heat flow can stay near today's value for billions of years.`,
       scope: String.raw`Kelvin's mathematics is correct for a conducting half-space; it fails for the Earth because its interior transports heat by solid-state convection. Contrary to a popular story, radioactivity, discovered in 1896, does not by itself rescue the age: spread through the mantle as it actually is, it changes the surface gradient Kelvin's model predicts by only a few per cent (England, Molnar & Richter, 2007).`,
       idea: String.raw`Heat diffuses only about $\sqrt{\kappa t}$ in time $t$, some 60 km in 100 million years, so in Kelvin's Earth today's heat flow comes from cooling of the outermost hundred kilometres, which cannot sustain it for long: the gradient falls as $t^{-1/2}$ (the half-space solution of the heat equation, thermo-7.4, by reflection, pde-3.8). John Perry, Kelvin's former assistant, pointed out that a fluid or partly fluid interior would act as if it had huge conductivity, so heat from the whole mantle can reach the base of a thin lid; then the gradient decays on a time scale $RL/3\kappa$ of billions of years. Radiogenic heat matters only where it sits: in the outer tens of kilometres it adds a steady gradient, but spread through the mantle it hardly reaches the surface in a conducting Earth.`,
-      caption: String.raw`**Left**: temperature against depth at the chosen **age**, computed by a numerical solution of the heat equation (solid), with Kelvin's erf formula dashed and the measured surface gradient in gold. **Right**: the surface gradient against time on log–log axes; where the curve meets the measured gradient is the age the model infers, and the green line marks 4.54 Gyr. Choose Kelvin's 1862 inputs or today's (heat flux 40–80 mW m⁻², shaded); add **radiogenic heat** (today's total, about 20 TW, spread through the mantle or crammed into the top 20 km), and switch on Perry's **convecting interior** (a conducting lid of thickness $L$ over an interior $f$ times more conductive) to watch the curve flatten across billions of years.`,
+      caption: String.raw`**Left**: temperature against depth at the chosen **age**, computed by a numerical solution of the heat equation (solid), with Kelvin's erf formula dashed and the measured surface gradient in gold. **Right**: the surface gradient against time on log–log axes; where the curve meets the measured gradient is the age the model infers, and the green line marks 4.54 Gyr. Choose Kelvin's 1862 inputs (shaded: ±20% around his gradient) or today's (shaded: heat flux 40–80 mW m⁻²); the readout gives the range of ages the shaded band allows; add **radiogenic heat** (today's total, about 20 TW, spread through the mantle or crammed into the top 20 km), and switch on Perry's **convecting interior** (a conducting lid of thickness $L$ over an interior $f$ times more conductive) to watch the curve flatten across billions of years.`,
       deps: ['thermo-7.4', 'pde-3.8', 'thermo-7.3'],
       see: ['geol-4.3', 'geol-4.2', 'geol-4.7', 'geol-2.9', 'geol-1.6'],
       refs: ['Turcotte–Schubert ch. 4'],
@@ -411,7 +412,9 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           Ls.el.hidden = fs.el.hidden = !perry.value;
           const { R, kap, T0, A } = model(), G = Gs.value, mod = preset.value === 'modern';
           // gradient vs time
-          if (mod) Q.hband(40 / K, 80 / K, { color: 'gold', alpha: 0.18, edges: true });
+          const band = mod ? [40 / K, 80 / K] : [G / 1.2, G * 1.2];
+          Q.hband(band[0], band[1], { color: 'gold', alpha: mod ? 0.18 : 0.1, edges: true });
+          if (!mod) Q.text('±20%', 3e6, band[1], { dy: -8, size: 10.5, color: 'gold', weight: 600 });
           Q.hline(G, { color: 'gold', width: 2.2 });
           Q.vline(4.54e9, { color: 'green', width: 2 }); Q.text('4.54 Gyr', 4.54e9, 600, { dx: -5, align: 'right', size: 11.5, color: 'green', weight: 700 });
           if (!perry.value && !A) Q.fn((t) => (T0 / Math.sqrt(Math.PI * kap * t * YR)) * 1000, { color: 'ink', width: 1.3, dash: [6, 4] });
@@ -441,7 +444,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           let s = tAge ? `the model's surface gradient equals the measured ${v.fix(G, 1)} °C/km at **${fmtYr(tAge)}**` : `the model's gradient never falls to ${v.fix(G, 1)} °C/km within 6.5 Gyr: no age can be read from it`;
           if (!perry.value && !A && tAge) s += ` (numerical solution vs $T_0/\\sqrt{\\pi\\kappa t}$: ${v.fix((100 * Math.abs(G - gan)) / gan, 2)}% apart)`;
           if (preset.value === 'kelvin' && !perry.value && !A) s += ' · Kelvin 1862: 98 Myr, limits 20–400 Myr';
-          if (mod) { const lo = crossings(R, 80 / K), hi = crossings(R, 40 / K); s += ` · heat flux 40–80 mW m⁻² (K = 3 W/m/K) fits ages ${lo.length ? fmtYr(lo[lo.length - 1]) : '< 0.1 Myr'} – ${hi.length ? fmtYr(hi[hi.length - 1]) : '> 6.5 Gyr'}`; }
+          { const b0 = mod ? 40 / K : G / 1.2, b1 = mod ? 80 / K : G * 1.2, lo = crossings(R, b1), hi = crossings(R, b0); s += ` · ${mod ? 'heat flux 40–80 mW m⁻² (K = 3 W/m/K)' : 'within ±20% of the measured gradient, the model'} fits ages **${lo.length ? fmtYr(lo[lo.length - 1]) : '< 1 Myr'} – ${hi.length ? fmtYr(hi[hi.length - 1]) : '> 6.5 Gyr'}**`; }
           s += ` · at 4.54 Gyr this Earth would have **${v.fix(G454, 1)} °C/km**`;
           if (A) s += ` · radiogenic heat ${v.fix(A * 1e6, rad.value === 'crust' ? 2 : 3)} µW m⁻³ (20 TW in all)`;
           return s;

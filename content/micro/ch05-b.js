@@ -166,7 +166,7 @@ Its solution $h(p, \bar u) = (h_1, h_2)$ is the **Hicksian** (compensated) deman
           const S = st, f = (q) => v.fix(q, 2);
           if (S.emp) {
             const where = S.touch ? `The line of cost ${f(S.E)} **just touches** the target: no cheaper bundle reaches $\\bar u$.` : S.E < S.H.e ? `A spending of ${f(S.E)} cannot reach the target: every bundle on the line is below the curve.` : `A spending of ${f(S.E)} is more than needed: the gold arc of the target curve costs less.`;
-            return `${where} The cheapest bundle reaching $\\bar u = ${f(S.L)}$ at $p_1 = ${f(S.P)}$ is $h = (${f(S.H.x[0])}, ${f(S.H.x[1])})$, at cost $e(p, \\bar u) = ${f(S.H.e)}$. Raise $p_1$: the touching point slides along the same curve toward less good 1, so $h_1$ never rises with its own price.`;
+            return `${where} The cheapest bundle reaching $\\bar u = ${f(S.L)}$ at $p_1 = ${f(S.P)}$ is $h = (${f(S.H.x[0])}, ${f(S.H.x[1])})$, at cost $e(p, \\bar u) = ${f(S.H.e)}$. ${S.k === 'comp' ? 'With perfect complements the corner of the curve is the cheapest bundle at every price, so Hicksian demand is a vertical line: there is no substitution effect.' : 'Raise $p_1$: the touching point slides along the same curve toward less good 1, so $h_1$ never rises with its own price.'}`;
           }
           const note = { cd: '', ces: '', comp: ' With perfect complements the old curve has a corner and $B = A$: there is no substitution effect, only an income effect.', ql: ' With quasilinear tastes extra income goes entirely to good 2, so $C$ is directly above or below $B$: no income effect on good 1, and Marshallian and Hicksian demand coincide.' }[S.k];
           return `Price of good 1 from 1 to ${f(S.P)} with income ${f(S.M)}: $A = (${f(S.A[0])}, ${f(S.A[1])})$, compensated $B = h(p', u_A) = (${f(S.B[0])}, ${f(S.B[1])})$, new $C = (${f(S.C[0])}, ${f(S.C[1])})$. Substitution effect ${f(S.sub)} + income effect ${f(S.inc)} = total ${f(S.tot)}.${note}`;
@@ -274,7 +274,7 @@ Where $e$ is differentiable, $\partial e/\partial p_i = h_i(p, \bar u)$ (**Sheph
           cd: { label: 'Cobb–Douglas', F: powU(prefs('cd', { a: 0.5 }), 0.7), tex: 'u = (x_1x_2)^{0.35}' },
           ces: { label: 'CES, $\\sigma = \\tfrac12$', F: powU(prefs('ces', { a: 0.5, r: -1 }), 0.7), tex: 'u = \\left(\\tfrac{2x_1x_2}{x_1 + x_2}\\right)^{0.7}' },
           comp: { label: 'perfect complements', F: powU(prefs('comp', { a: 1, b: 1 }), 0.7), tex: 'u = \\min(x_1, x_2)^{0.7}' },
-          subs: { label: 'perfect substitutes', F: powU(prefs('subs', { a: 1, b: 1.25 }), 0.7), tex: 'u = (x_1 + 1.25\\,x_2)^{0.7}' },
+          subs: { label: 'perfect substitutes', F: powU(prefs('subs', { a: 4 / 9, b: 5 / 9 }), 0.7), tex: 'u = \\left(\\tfrac49 x_1 + \\tfrac59 x_2\\right)^{0.7}' },
         };
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const p1 = v.slider('price $p_1$', 0.4, 3, 1.4, { step: 0.01 });
@@ -320,7 +320,7 @@ Where $e$ is differentiable, $\partial e/\partial p_i = h_i(p, \bar u)$ (**Sheph
         });
         v.readout(() => {
           const { k, M, U, V, H, eV, vE, slope } = st, f = (q) => v.fix(q, 3);
-          const extra = k === 'comp' ? ' With perfect complements there is nothing to substitute, so $e$ is linear in $p_1$ and coincides with the gold line.' : k === 'subs' ? ' With perfect substitutes $e = \\bar u^{1/0.7}\\min(p_1, p_2/1.25)$ has a kink where the consumer switches goods; it is still concave.' : '';
+          const extra = k === 'comp' ? ' With perfect complements there is nothing to substitute, so $e$ is linear in $p_1$ and coincides with the gold line.' : k === 'subs' ? ' With perfect substitutes $e = \\bar u^{1/0.7}\\min(\\tfrac94 p_1, \\tfrac95 p_2)$ has a kink at $p_1 = 0.8\\,p_2$, where the consumer switches goods; it is still concave.' : '';
           return `$v(p, m) = ${f(V)}$ and $e(p, v(p, m)) = ${f(eV)}$ (income was ${f(M)}); $e(p, \\bar u) = ${f(H.e)}$ and $v(p, e(p, \\bar u)) = ${f(vE)}$ (target ${f(U)}): each function undoes the other. Shephard's lemma: $\\partial e/\\partial p_1 = ${f(slope)}$ by a finite difference, and $h_1 = ${f(H.x[0])}$.${extra}`;
         });
       },
@@ -406,7 +406,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
         const p1 = v.slider('price $p_1$', 0.5, 2.5, 1, { step: 0.01 });
         const s = v.stage({ x: [0, 13], y: [0, 13], height: 360, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.15 });
         const e = v.stage({ x: [0, MMAX], y: [0, 12], height: 360, axes: 'box', xlabel: 'income m', ylabel: 'quantity', title: 'Engel curves' });
-        const sh = v.stage({ x: [0, MMAX], y: [0, 1], height: 150, axes: 'box', full: true, xlabel: 'income m', ylabel: 'share s₁', title: 'the budget share of good 1 against income' });
+        const sh = v.stage({ x: [0, MMAX], y: [0, 1.1], height: 150, axes: 'box', full: true, xlabel: 'income m', ylabel: 'share s₁', title: 'the budget share of good 1 against income' });
         v.legend([['green', 'income expansion path'], ['purple', 'indifference curve now'], ['gold', 'curve at the base income m₀, scaled by m/m₀', { dash: true }], ['orange', 'x₁(m)'], ['teal', 'x₂(m)']]);
         let st = {};
         v.render(() => {

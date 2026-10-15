@@ -19,7 +19,7 @@ function fitHT(nC, sC) {
 /** G² = 2 Σ obs ln(obs/exp) over cells (empty cells contribute 0). */
 function G2(obs, ex) { let g = 0; for (let i = 0; i < obs.length; i++) if (obs[i] > 0) g += 2 * obs[i] * Math.log(obs[i] / Math.max(1e-300, ex[i])); return g; }
 /** p-value formatted. */
-const pv = (p) => (p < 0.001 ? '< 0.001' : p.toFixed(3));
+const pv = (p) => (p < 0.001 ? '< 0.001' : '= ' + p.toFixed(3));
 
 export default {
   collection: 'psych',
@@ -97,7 +97,7 @@ On z-coordinates the roles swap: the Gaussian ROC is a straight line, while the 
           if (!cache) return '';
           const { fg, fh, gG, gH, pG, pH } = cache, n = nT.value;
           const win = Math.abs(gG - gH) < 2 ? 'the data cannot tell the models apart yet' : gG < gH ? '**the Gaussian model fits better**' : '**the high-threshold model fits better**';
-          return `${n} noise and ${n} signal trials · Gaussian fit: $d'$ = ${v.fix(fg.mu, 2)}, $G^2$ = ${v.fix(gG, 1)} (p = ${pv(pG)}) · high-threshold fit: $p$ = ${v.fix(fh.p, 3)}, $G^2$ = ${v.fix(gH, 1)} (p = ${pv(pH)}) · both have 6 parameters, so the difference in $G^2$, ${v.fix(gH - gG, 1)}, compares them directly: ${win}`;
+          return `${n} noise and ${n} signal trials · Gaussian fit: $d'$ = ${v.fix(fg.mu, 2)}, $G^2$ = ${v.fix(gG, 1)} (p ${pv(pG)}) · high-threshold fit: $p$ = ${v.fix(fh.p, 3)}, $G^2$ = ${v.fix(gH, 1)} (p ${pv(pH)}) · both have 6 parameters, so the difference in $G^2$, ${v.fix(gH - gG, 1)}, compares them directly: ${win}`;
         });
       },
     },
@@ -632,7 +632,7 @@ In experiments on the detection of brief flashes of light on a uniform backgroun
         v.readout(() => {
           if (!cache) return '';
           const { blocks, dG, pH, gG, gH, pG, pHv } = cache, cs = blocks.map((b) => (b.H - b.F) / (1 - b.F));
-          return `rates by block (P(signal) 0.1 … 0.9): ${blocks.map((b) => `(${v.fix(b.F, 2)}, ${v.fix(b.H, 2)})`).join(' ')} · one-$d'$ Gaussian fit: $d'$ = **${v.fix(dG, 2)}** (true ${v.fix(dS.value, 2)}), $G^2$ = ${v.fix(gG, 1)}, p = ${pv(pG)} · high-threshold fit: $p$ = ${v.fix(pH, 2)}, $G^2$ = ${v.fix(gH, 1)}, p = ${pv(pHv)} · corrected detection probability ranges ${v.fix(Math.min(...cs), 2)}–${v.fix(Math.max(...cs), 2)} · today's view agrees with the paper's conclusion: yes/no and rating ROCs for near-threshold flashes and tones are curved and ordered by $d'$, and $d'$, not the corrected hit rate, is the standard sensitivity measure; equal variances are the exception rather than the rule outside simple detection (z-ROC slopes near 0.8 in recognition memory)`;
+          return `rates by block (P(signal) 0.1 … 0.9): ${blocks.map((b) => `(${v.fix(b.F, 2)}, ${v.fix(b.H, 2)})`).join(' ')} · one-$d'$ Gaussian fit: $d'$ = **${v.fix(dG, 2)}** (true ${v.fix(dS.value, 2)}), $G^2$ = ${v.fix(gG, 1)}, p ${pv(pG)} · high-threshold fit: $p$ = ${v.fix(pH, 2)}, $G^2$ = ${v.fix(gH, 1)}, p ${pv(pHv)} · corrected detection probability ranges ${v.fix(Math.min(...cs), 2)}–${v.fix(Math.max(...cs), 2)} · today's view agrees with the paper's conclusion: yes/no and rating ROCs for near-threshold flashes and tones are curved and ordered by $d'$, and $d'$, not the corrected hit rate, is the standard sensitivity measure; equal variances are the exception rather than the rule outside simple detection (z-ROC slopes near 0.8 in recognition memory)`;
         });
       },
     },

@@ -91,13 +91,13 @@ are an amplifier (it uses $x(t_0)$ only), a delay (one earlier value), a moving 
         };
         let yNow = null;
         const curY = (t) => (yNow ? yNow[iOf(t)] : 0);
-        const probe = sOut.handle(1.2, 0, { color: 'gold', r: 6.5, constrain: (x) => { const t = M.clamp(Math.round(x / 0.05) * 0.05, -4.9, 4.9); const y = curY(t); return [t, isFinite(y) ? M.clamp(y, -1.6, 1.85) : 0]; } });
+        const probe = sOut.handle(1.2, 0, { color: 'gold', r: 6.5, constrain: (x) => { const t = M.clamp(Math.round(x / 0.05) * 0.05, -4.9, 4.9); const y = curY(t); return [t, isFinite(y) ? M.clamp(y, -30, 30) : 0]; } });
         let info = null;
         v.render(() => {
           fx.el.hidden = sel.value !== 'custom';
           const { sys, x, y, D } = compute(); yNow = y;
           const t0 = probe.x, i0 = iOf(t0), y0 = y[i0];
-          probe.y = isFinite(y0) ? M.clamp(y0, -1.6, 1.85) : 0;
+          probe.y = isFinite(y0) ? M.clamp(y0, -30, 30) : 0;
           // footprint weights and the intervals where they matter
           const w = D.map((d) => d[i0 - I0]), wm = Math.max(...w.filter(isFinite), 0);
           const ivs = [];
@@ -126,13 +126,14 @@ are an amplifier (it uses $x(t_0)$ only), a delay (one earlier value), a moving 
           sBox.arrow(13.9, YB, 19.6, YB, { color: 'purple', width: 2, head: 9 });
           sBox.text('y(t)', 18.4, YB + 0.42, { math: true, color: 'purple', size: 16, align: 'center' });
           // ---- output panel
+          let lo = -1.7, hi = 1.95; for (let i = I0; i <= I1; i++) if (isFinite(y[i])) { lo = Math.min(lo, 1.12 * y[i]); hi = Math.max(hi, 1.15 * y[i]); }
+          sOut.setView(null, [Math.max(-30, lo), Math.min(30, hi)]);
           sOut.hline(0, { color: 'faint', width: 1 });
           sOut.path(pts(x, -5.2, 5.2), { color: 'muted', width: 1.2, dash: [4, 4], alpha: 0.7 });
           sOut.clip(() => sOut.path(pts(y, -5.2, 5.2), { color: 'purple', width: 2.4 }));
           sOut.vline(t0, { color: 'gold', width: 1.2, dash: [4, 4] });
-          const lab = isFinite(y0) ? `y(t₀) = ${v.fix(y0, 3)}` : 'y(t₀) undefined';
-          sOut.text(lab, t0, 1.78, { color: 'gold', size: 12.5, weight: 700, align: t0 > 3.2 ? 'right' : t0 < -3.2 ? 'left' : 'center' });
-          if (maxAbs(y) > 1.95) sOut.corner('output leaves the frame', 'br', { color: 'muted', size: 11.5 });
+          const lab = isFinite(y0) ? `y(t₀) = ${v.fix(y0, 3)}` : 'y(t₀) undefined', yb = sOut.bounds.y;
+          sOut.text(lab, t0, yb[1] - 0.05 * (yb[1] - yb[0]), { color: 'gold', size: 12.5, weight: 700, align: t0 > 3.2 ? 'right' : t0 < -3.2 ? 'left' : 'center' });
           info = { sys, t0, y0, edges, wm };
         });
         v.legend([['accent', 'input $x(t)$'], ['purple', 'output $y(t)$'], ['gold', 'footprint of $y(t_0)$: where nudging $x$ moves it', { area: true }], ['muted', 'input, for comparison', { dash: true }]]);
@@ -165,6 +166,7 @@ Equivalently, $S$ is **additive**, $S\{x_1+x_2\}=S\{x_1\}+S\{x_2\}$, and **homog
       deps: ['sig-2.1', 'circ-3.1'],
       refs: ['Oppenheim–Willsky §1.6', 'Lathi ch. 1'],
       tags: ['linearity', 'superposition'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Linear_system' },
       viz(v) {
         const M = v.M;
         const sel = v.select('system', menu(['gain', 'square', 'delay', 'reverse', 'mavg', 'accum', 'mod', 'clip', 'rc', 'affine', 'custom']), 'clip');
@@ -240,6 +242,7 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
       deps: ['sig-2.1', 'sig-1.2'],
       refs: ['Oppenheim–Willsky §1.6', 'Lathi ch. 1'],
       tags: ['time invariance', 'time shift'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Time-invariant_system' },
       viz(v) {
         const M = v.M;
         const sel = v.select('system', menu(['gain', 'square', 'delay', 'reverse', 'mavg', 'accum', 'mod', 'rc', 'tx', 'compress', 'custom']), 'tx');
@@ -316,6 +319,7 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
       deps: ['sig-2.1'],
       refs: ['Oppenheim–Willsky §1.6', 'Lathi ch. 1'],
       tags: ['causality'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Causal_system' },
       viz(v) {
         const M = v.M;
         const sel = v.select('system', menu(['square', 'delay', 'mavg', 'accum', 'rc', 'cavg', 'advance', 'reverse', 'compress', 'custom']), 'cavg');
@@ -353,7 +357,7 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
           // ---- differences
           const D = Math.max(0.6, 1.15 * Math.max(maxAbs(dX), maxAbs(dY)) || 0.6);
           sD.setView(null, [-D, D]);
-          sD.path(pts(dX, -5.2, 5.2), { color: 'purple', width: 1.6, fill: 'purple', fillAlpha: 0.12 });
+          const PX = pts(dX, -5.2, 5.2); sD.poly([[-5.2, 0], ...PX, [5.2, 0]], { fill: 'purple', fillAlpha: 0.12, stroke: false }); sD.path(PX, { color: 'purple', width: 1.6 });
           sD.clip(() => sD.path(pts(dY, -5.2, 5.2), { color: 'red', width: 2.3 }));
           if (first != null && first <= t0) {
             for (const S of [sOut, sD]) S.rect(first, -50, t0, 50, { fill: 'red', fillAlpha: 0.1, stroke: false });
@@ -423,10 +427,13 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
           sOut.clip(() => sOut.path(pts(y, -5.2, 5.2), { color: 'purple', width: 2.6 }));
           if (y2) sOut.clip(() => sOut.path(pts(y2, -5.2, 5.2), { color: 'red', width: 1.8, dash: [6, 4] }));
           // ---- trace
-          const P = pts(x, -5.2, 5.2, 2).map((p, k) => (p ? [p[1], y[iOf(p[0])]] : null));
+          const P0 = pts(x, -5.2, 5.2, 1).map((p) => (p ? [p[1], y[iOf(p[0])]] : null));
           const xm = Math.max(1, 1.15 * maxAbs(x)), ym = Math.max(Math.abs(yr[0]), yr[1]);
           sTr.setView([-xm, xm], [yr[0] - 0.12 * (yr[1] - yr[0]), yr[1]]);
           if (F[sys.id]) sTr.fn(F[sys.id], { color: 'muted', width: 1.2, dash: [4, 4] });
+          // a jump of x(t) or y(t) between two samples is a discontinuity, not a stretch of values actually taken: break the trace there
+          const jx = 0.04 * 2 * xm, jy = 0.04 * (yr[1] - yr[0]), P = [];
+          for (let k = 0; k < P0.length; k++) { const p = P0[k], q = P0[k - 1]; if (p && q && (Math.abs(p[0] - q[0]) > jx || Math.abs(p[1] - q[1]) > jy)) P.push(null); P.push(p); }
           sTr.clip(() => sTr.path(P, { color: 'purple', width: 1.8 }));
           const cx = M.clamp(H.x, -xm, xm), cy = M.clamp(H.y, yr[0], yr[1]);
           if (cx !== H.x || cy !== H.y) H.set(cx, cy);
@@ -479,6 +486,7 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
       deps: ['sig-2.1', 'ode-1.4'],
       refs: ['Oppenheim–Willsky §1.6', 'Lathi ch. 2'],
       tags: ['stability', 'BIBO'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/BIBO_stability' },
       viz(v) {
         const M = v.M, TE = 100, h = 0.02, N = Math.round(TE / h);
         const LIST = { accum: 'accumulator', rc: 'RC filter', fo: "$y'=py+x$", mavg: 'average', clip: 'clipper', square: '$x^2$', tx: '$t\\,x(t)$' };
@@ -511,12 +519,14 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
           const id = sel.value; pS.el.hidden = id !== 'fo';
           const { p, B, x, y, run1, C, g } = simulate(), step = 4;
           // ---- input
-          sX.setView(null, [-1.75 * Math.max(B, 1), 1.45 * Math.max(B, 1)]);
+          sX.setView(null, [-1.95 * Math.max(B, 1), 1.6 * Math.max(B, 1)]);
           sX.hband(-B, B, { color: 'green', alpha: 0.1, edges: true });
           const XP = []; for (let i = 0; i <= N; i += 2) XP.push([i * h, x[i]]); sX.path(XP, { color: 'accent', width: 1.4 });
           // ---- output
-          const top = run1[N], R = Math.max(1.3 * (C ?? 0), 1.12 * top, 0.5);
-          sY.setView(null, [-R, R]);
+          const top = run1[N]; let ylo = 0, yhi = 0; for (let i = 0; i <= N; i += 2) { ylo = Math.min(ylo, y[i]); yhi = Math.max(yhi, y[i]); }
+          if (C != null) { ylo = Math.min(ylo, -C); yhi = Math.max(yhi, C); }
+          const pad = 0.12 * Math.max(0.5, yhi - ylo);
+          sY.setView(null, [ylo - pad, yhi + pad * (C != null ? 1.8 : 1)]);
           sY.hline(0, { color: 'faint', width: 1 });
           if (C != null) sY.hband(-C, C, { color: 'green', alpha: 0.1, edges: true });
           const YP = []; for (let i = 0; i <= N; i += step) YP.push([i * h, y[i]]); sY.path(YP, { color: 'purple', width: 1.8 });

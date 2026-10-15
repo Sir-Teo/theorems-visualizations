@@ -344,7 +344,7 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
       statement: String.raw`When a membrane permeable to water but not to a solute separates pure water from a dilute solution of that solute, water flows into the solution. It stops when the solution side is at a higher hydrostatic pressure by the **osmotic pressure**
 $$\Pi = R\,T\,c$$
 (van 't Hoff), where $c$ is the total concentration of impermeant solute particles (osmolarity, in $\mathrm{mol/m^3}$). Across a membrane separating two solutions, the volume flux is $J_v = L_p\,(\Delta P - \sigma\,RT\,\Delta c)$. Here $L_p$ is the hydraulic conductivity and $\sigma$ the reflection coefficient: $\sigma = 1$ for an impermeant solute and $\sigma = 0$ for one that crosses as freely as water.`,
-      idea: String.raw`Water moves toward lower water chemical potential. Dissolved solute lowers that potential by $RT$ times the solute mole fraction (dilute ideal solution: entropy of mixing, thermo-4.12), and raising the pressure by $\Delta P$ raises it by $\bar V_w\Delta P$. Equilibrium requires the two effects to cancel, and since $x_s/\bar V_w \approx c$ this gives $\Pi = RTc$, formally the ideal-gas law for the solute particles (thermo-4.14, pchem-5.13). The numbers are large: 1 mM at body temperature is 2.6 kPa, about 26 cm of water, and plasma at about 290 mOsm/L would support some 7.5 atm. In a U-tube the inflow also dilutes the solution, so the final column is a little lower than $RTc_0/\rho g$.`,
+      idea: String.raw`Water moves toward lower water chemical potential. Dissolved solute lowers that potential by $RT$ times the solute mole fraction (dilute ideal solution: entropy of mixing, thermo-4.12), and raising the pressure by $\Delta P$ raises it by $\bar V_w\Delta P$. Equilibrium requires the two effects to cancel, and since $x_s/\bar V_w \approx c$ this gives $\Pi = RTc$, formally the ideal-gas law for the solute particles (thermo-4.14, pchem-5.13). The numbers are large: 1 mM at body temperature is 2.6 kPa, about 26 cm of water, and plasma at about 290 mOsm/L would support some 7.4 atm. In a U-tube the inflow also dilutes the solution, so the final column is a little lower than $RTc_0/\rho g$.`,
       caption: String.raw`Left arm: pure water. Right arm: a solution of an impermeant solute (orange dots). They are separated by a membrane at the bottom of the U. Water crosses (blue arrow, width ∝ flow) until the column difference $\Delta h$ supplies $\rho g\,\Delta h = RTc$. The flow has been sped up for display. Change the concentration or the temperature and the final height scales with $c$ and with $T$. Then make the membrane **leaky** to the solute ($\sigma < 1$): the column rises, but as solute leaks across the osmotic pressure difference fades and the levels return together.`,
       scope: String.raw`Holds for dilute ideal solutions (activity coefficients near 1); concentrated or ionic solutions need an osmotic coefficient ($\approx 0.93$ for NaCl in saline). Only solutes that cannot cross the membrane count ($\sigma = 1$); permeant solutes exert only transient osmotic effects (1.5).`,
       deps: ['thermo-4.14'],
@@ -440,7 +440,7 @@ where $\pi_0$ is the isotonic osmolality. **Hypotonic** solutions swell cells an
       tags: ['osmosis', 'cell volume'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tonicity' },
       viz(v) {
-        const nacl = v.slider('NaCl outside', 0.2, 2, 0.9, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} %` });
+        const nacl = v.slider('NaCl outside', 0.2, 2, 0.6, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} %` });
         const urea = v.slider('urea outside (permeant)', 0, 600, 0, { step: 10, fmt: (x) => `${Math.round(x)} mM` });
         const bs = v.slider('osmotically inactive fraction $b$', 0.3, 0.6, 0.4, { step: 0.01 });
         const scell = v.stage({ x: [-6.2, 6.2], y: [-4.2, 4.2], equal: true, axes: false, height: 270, weight: 1 });
@@ -486,8 +486,8 @@ where $\pi_0$ is the isotonic osmolality. **Hypotonic** solutions swell cells an
           // water arrows
           const flow = Math.log(st.x), mag = clamp(Math.abs(flow) / 0.7, 0, 1);
           if (mag > 0.05) for (let k = 0; k < 8; k++) {
-            const a = (k / 8) * 2 * Math.PI + 0.2, r0 = 4.9, r1 = 4.9 - 1.1 * mag, [p, q] = flow > 0 ? [r0, r1] : [r1, r0];
-            scell.arrow(p * Math.cos(a) * 1.15, p * Math.sin(a) * 0.82, q * Math.cos(a) * 1.15, q * Math.sin(a) * 0.82, { color: 'blue', width: 1.2 + 1.6 * mag, head: 7 });
+            const a = (k / 8) * 2 * Math.PI + 0.2, r0 = 4.6, r1 = 4.6 - 1.0 * mag, [p, q] = flow > 0 ? [r0, r1] : [r1, r0];
+            scell.arrow(p * Math.cos(a) * 1.18, p * Math.sin(a) * 0.68, q * Math.cos(a) * 1.18, q * Math.sin(a) * 0.68, { color: 'blue', width: 1.2 + 1.6 * mag, head: 7 });
           }
           const tag = lysed ? 'hypotonic: swelling past the sphere' : st.x > 1.04 ? 'hypotonic: the cell swells' : st.x < 0.96 ? 'hypertonic: the cell crenates' : 'isotonic: biconcave disc';
           scell.text(tag, 0, 3.85, { size: 11.5, color: lysed ? 'red' : 'ink', align: 'center', weight: 600 });
@@ -504,7 +504,7 @@ where $\pi_0$ is the isotonic osmolality. **Hypotonic** solutions swell cells an
           const curve = [];
           for (let k = 0; k <= 140; k++) { const pct = 0.2 + (0.7 * k) / 140, xr = pi0 / (pct * osmPerPct), vr = b + (1 - b) * xr; let n = 0; for (const c of pop) if (vr > c) n++; curve.push([pct, n / pop.length]); }
           sf.vband(0.3, 0.45, { color: 'green', alpha: 0.1 });
-          sf.text('normal clinical range: onset ≈ 0.45 %, complete ≈ 0.30–0.33 %', 0.455, 0.55, { size: 10.5, color: 'green', align: 'left' });
+          sf.text('normal clinical range: onset ≈ 0.45 %, complete ≈ 0.30–0.33 %', 0.455, 0.85, { size: 10.5, color: 'green', align: 'left' });
           sf.path(curve, { color: 'red', width: 2.2 });
           const pc = nacl.value; if (pc <= 0.9) sf.vline(pc, { color: 'gold', width: 1.4 });
         });

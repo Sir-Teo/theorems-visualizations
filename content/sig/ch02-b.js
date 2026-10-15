@@ -35,6 +35,7 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
       see: ['ctrl-1.3', 'ctrl-1.4'],
       refs: ['Oppenheim–Willsky §1.5', 'Lathi ch. 1'],
       tags: ['block diagrams', 'feedback'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Block_diagram' },
       viz(v) {
         const M = v.M, TE = 12, h = 0.005, N = Math.round(TE / h);
         const conn = v.select('connection', [{ value: 'series', label: 'series' }, { value: 'parallel', label: 'parallel' }, { value: 'neg', label: 'negative feedback' }, { value: 'pos', label: 'positive feedback' }], 'neg');
@@ -44,7 +45,7 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
         const inp = v.select('input', [{ value: 'step', label: 'step' }, { value: 'pulse', label: 'pulse' }, { value: 'sine', label: 'sinusoid' }], 'step');
         const sD = v.stage({ x: [-3.6, 23.6], y: [0, 7], equal: true, height: 230, axes: false, full: true });
         const sP = v.stage({ x: [0, TE], y: [-1, 2], height: 230, axes: 'box', xlabel: 't', full: true, title: 'the signals of the diagram' });
-        const TF = { gain: (i) => `k_${i}`, int: (i) => `\\frac{k_${i}}{s}`, delay: (i) => `k_${i}e^{-s}`, lag: (i) => `\\frac{k_${i}}{s+1}` };
+        const TF = { gain: (i) => `k_${i}`, int: (i) => `\\dfrac{k_${i}}{s}`, delay: (i) => `k_${i}e^{-s}`, lag: (i) => `\\dfrac{k_${i}}{s+1}` };
         const SUB = { gain: 'gain', int: 'integrator', delay: 'delay by 1', lag: 'first-order lag' };
         const DC = (type, k) => (type === 'int' ? (k === 0 ? 0 : Infinity) : k);
         const mk = (type, k) => {
@@ -98,8 +99,8 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
           if (c === 'series') {
             const Y = 3.6, P1 = [[0, Y], [4.3, Y]], P2 = [[8.7, Y], [11.3, Y]], P3 = [[15.7, Y], [20, Y]];
             for (const [P, arr] of [[P1, R.x], [P2, R.m1], [P3, R.y]]) { bdWire(sD, P, { color: 'ink' }); dots(P, arr); }
-            bdBlock(sD, 6.5, Y, W, Hb, TF[b1.value](1), { color: 'accent', sub: SUB[b1.value] });
-            bdBlock(sD, 13.5, Y, W, Hb, TF[b2.value](2), { color: 'accent', sub: SUB[b2.value] });
+            bdBlock(sD, 6.5, Y, W, Hb, TF[b1.value](1), { color: 'accent', sub: SUB[b1.value], size: 15 });
+            bdBlock(sD, 13.5, Y, W, Hb, TF[b2.value](2), { color: 'accent', sub: SUB[b2.value], size: 15 });
             lab('x', R.x, 2, Y + 0.55, 'accent'); lab('v', R.m1, 10, Y + 0.55, 'orange'); lab('y', R.y, 17.9, Y + 0.55, 'purple');
           } else if (c === 'parallel') {
             const Y = 3.5, ya = 5.6, yb = 1.4, P0 = [[0, Y], [3, Y]], Pa = [[3, Y], [3, ya], [7.3, ya]], Pb = [[3, Y], [3, yb], [7.3, yb]];
@@ -107,8 +108,8 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
             bdWire(sD, P0, { color: 'ink', arrow: false }); dots(P0, R.x);
             for (const [P, arr] of [[Pa, R.x], [Pb, R.x], [Qa, R.m1], [Qb, R.m2], [Po, R.y]]) { bdWire(sD, P, { color: 'ink' }); dots(P, arr); }
             sD.dot(3, Y, { r: 3.5, color: 'ink' });
-            bdBlock(sD, 9.5, ya, W, Hb, TF[b1.value](1), { color: 'accent', sub: SUB[b1.value] });
-            bdBlock(sD, 9.5, yb, W, Hb, TF[b2.value](2), { color: 'accent', sub: SUB[b2.value] });
+            bdBlock(sD, 9.5, ya, W, Hb, TF[b1.value](1), { color: 'accent', sub: SUB[b1.value], size: 15 });
+            bdBlock(sD, 9.5, yb, W, Hb, TF[b2.value](2), { color: 'accent', sub: SUB[b2.value], size: 15 });
             bdSum(sD, 16, Y, rPx, { n: '+', s: '+' });
             lab('x', R.x, 1.3, Y + 0.55, 'accent'); lab('v₁', R.m1, 14, ya + 0.55, 'orange'); lab('v₂', R.m2, 14, yb + 0.55, 'teal'); lab('y', R.y, 18.6, Y + 0.55, 'purple');
           } else {
@@ -116,8 +117,8 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
             const Pf = [[15.5, Y], [15.5, yf], [11.7, yf]], Pr = [[7.3, yf], [4, yf], [4, Y - rD]];
             for (const [P, arr] of [[P0, R.x], [Pe, R.m1], [Py, R.y], [Pf, R.y], [Pr, R.m2]]) { bdWire(sD, P, { color: 'ink' }); dots(P, arr); }
             sD.dot(15.5, Y, { r: 3.5, color: 'ink' });
-            bdBlock(sD, 9.5, Y, W, Hb, TF[b1.value](1), { color: 'accent', sub: SUB[b1.value] });
-            bdBlock(sD, 9.5, yf, W, Hb, TF[b2.value](2), { color: 'teal', sub: SUB[b2.value] });
+            bdBlock(sD, 9.5, Y, W, Hb, TF[b1.value](1), { color: 'accent', sub: SUB[b1.value], size: 15 });
+            bdBlock(sD, 9.5, yf, W, Hb, TF[b2.value](2), { color: 'teal', sub: SUB[b2.value], size: 15 });
             bdSum(sD, 4, Y, rPx, { w: '+', s: sg > 0 ? '−' : '+' });
             lab('x', R.x, 1.6, Y + 0.55, 'accent'); lab('e', R.m1, 5.9, Y + 0.55, 'orange'); lab('y', R.y, 18, Y + 0.55, 'purple'); lab('f', R.m2, 5.9, yf + 0.55, 'teal');
           }
@@ -125,11 +126,11 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
           if (R.status !== 'ok') sD.corner(R.status === 'illposed' ? 'ill-posed loop: 1 ± D₁D₂ = 0' : `diverged at t = ${v.fix(R.stopAt, 1)}`, 'br', { color: 'red', size: 12.5, weight: 600 });
           // ---- plot
           let lo = 0, hi = 0; for (const a of [R.x, R.m1, R.m2, R.y]) for (let n = 0; n <= N; n += 4) if (isFinite(a[n])) { lo = Math.min(lo, a[n]); hi = Math.max(hi, a[n]); }
-          const span = Math.max(1, hi - lo);
-          sP.setView(null, [Math.max(-60, lo - 0.12 * span), Math.min(60, hi + 0.12 * span)]);
+          lo = Math.max(-50, lo); hi = Math.min(50, hi); const span = Math.max(1, hi - lo);
+          sP.setView(null, [lo - 0.12 * span, hi + 0.12 * span]);
           sP.hline(0, { color: 'faint', width: 1 });
           if (R.settled && inp.value === 'step' && isFinite(R.H0)) sP.hline(R.H0, { color: 'green', width: 1.2, dash: [6, 4] });
-          const draw = (arr, col, w) => { const done = [], rest = []; for (let n = 0; n <= N; n += 2) { const p = isFinite(arr[n]) ? [n * h, arr[n]] : null; (n <= np ? done : rest).push(p); } rest.unshift(done[done.length - 1] ?? null); sP.clip(() => { sP.path(rest, { color: col, width: w, alpha: 0.22 }); sP.path(done, { color: col, width: w }); }); };
+          const draw = (arr, col, w) => { const done = [], rest = []; for (let n = 0; n <= N; n += 2) { const p = isFinite(arr[n]) ? [n * h, arr[n]] : null; (n <= np ? done : rest).push(p); } rest.unshift(done[done.length - 1] ?? null); sP.clip(() => { sP.path(rest, { color: col, width: w, alpha: 0.32 }); sP.path(done, { color: col, width: w }); }); };
           draw(R.x, 'accent', 1.8); draw(R.m1, 'orange', 1.5); if (c !== 'series') draw(R.m2, 'teal', 1.5); draw(R.y, 'purple', 2.6);
           sP.vline(tp, { color: 'gold', width: 1.4 });
         }, { period: 10, still: 9.6 });
@@ -137,12 +138,13 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
         v.readout(() => {
           const R = run; if (!R.y) return '';
           const c = R.c, t1 = TF[b1.value](1), t2 = TF[b2.value](2), sg = c === 'neg' ? '+' : '-';
-          const rule = c === 'series' ? `$H=H_1H_2=${t1}\\cdot${t2}$` : c === 'parallel' ? `$H=H_1+H_2=${t1}+${t2}$` : `$H=\\dfrac{H_1}{1${sg}H_1H_2}$ with $H_1=${t1}$, $H_2=${t2}$`;
+          const rule = c === 'series' ? `$H=H_1H_2=${t1}\\cdot ${t2}$` : c === 'parallel' ? `$H=H_1+H_2=${t1}+${t2}$` : `$H=\\dfrac{H_1}{1${sg}H_1H_2}$ with $H_1=${t1}$, $H_2=${t2}$`;
           const h0 = !isFinite(R.H0) ? '$H(0)=\\infty$' : `$H(0)$ = ${v.fix(R.H0, 4)}`;
           let cmp;
           if (R.status === 'illposed') cmp = `the loop is **ill-posed**: with instantaneous gains $D_1D_2=1$ the loop equation $y=k_1(x+k_2y)$ has no solution`;
           else if (R.status === 'diverged') cmp = `the simulated output **diverges** (passed $10^6$ at $t$ = ${v.fix(R.stopAt, 1)}): the connected system is unstable, so ${h0} is not a final value`;
           else if (inp.value !== 'step') cmp = `with a step input the final value would be ${h0}`;
+          else if (!R.settled && Math.abs(R.yEnd) > 50 * Math.max(1, isFinite(R.H0) ? Math.abs(R.H0) : 1)) cmp = `the output is **running away** ($y(12)$ = ${num(R.yEnd)}): this connection is unstable, so ${h0} is not a final value`;
           else if (R.settled) cmp = `simulated $y(12)$ = ${v.fix(R.yEnd, 4)}, predicted ${h0}${isFinite(R.H0) && Math.abs(R.yEnd - R.H0) < 2e-3 * Math.max(1, Math.abs(R.H0)) ? ' ✓' : ''}`;
           else cmp = !isFinite(R.H0) ? `the step response keeps growing (${h0}: a pole at $s=0$), $y(12)$ = ${v.fix(R.yEnd, 2)}` : `the output has not settled by $t=12$ ($y(12)$ = ${v.fix(R.yEnd, 3)}); ${h0} is the limit only if the connection is stable`;
           let extra = '';
@@ -168,7 +170,7 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
         const M = v.M;
         const ROWS = ['gain', 'square', 'delay', 'reverse', 'mavg', 'accum', 'mod', 'clip', 'rc', 'affine', 'tx', 'compress', 'advance', 'cavg', 'gate', 'custom'];
         const NAMES = { gain: 'amplifier  2x', square: 'squarer  x²', delay: 'delay  x(t−1)', reverse: 'reversal  x(−t)', mavg: 'moving average', accum: 'accumulator  ∫x', mod: 'modulator  x·cos 2πt', clip: 'clipper ±1', rc: 'RC filter', affine: 'affine  2x+1', tx: 'gain  t·x(t)', compress: 'compressor  x(2t)', advance: 'advance  x(t+1)', cavg: 'centred average', gate: 'chopper  x·g(t)' };
-        const SHORT = { gain: '2x', square: 'x²', delay: 'delay', reverse: 'x(−t)', mavg: 'average', accum: 'accum.', mod: 'modul.', clip: 'clipper', rc: 'RC', affine: '2x+1', tx: 't·x', compress: 'x(2t)', advance: 'x(t+1)', cavg: 'c. avg', gate: 'chopper', custom: 'yours' };
+        const SHORT = { gain: '2x', square: 'x²', delay: 'delay', reverse: 'x(−t)', mavg: 'average', accum: 'accum.', mod: 'mod.', clip: 'clipper', rc: 'RC', affine: '2x+1', tx: 't·x', compress: 'x(2t)', advance: 'x(t+1)', cavg: 'c. avg', gate: 'chopper', custom: 'yours' };
         const PREF = ['delay', 'square', 'affine', 'mod', 'advance', 'accum', 'gate', 'reverse', 'tx', 'clip', 'mavg', 'rc', 'compress', 'cavg', 'gain', 'custom'];
         const fx = v.input('your system $y(t)=$', 'x^2 + t', { vars: ['x', 't', 'xd', 'xa'], width: 190, placeholder: 'e.g. x xd, t x, sin(x), xa - x' });
         let seed = 1, R = ROWS.map(() => Array(6).fill(null)), cust = { src: null, sys: null }, sel = [6, 1], sepPick = {};
@@ -309,17 +311,18 @@ so the circuit is a linear, time-invariant, causal, BIBO-stable system with memo
       see: ['circ-5.6'],
       refs: ['Oppenheim–Willsky §1.5', 'Lathi ch. 1'],
       tags: ['RC circuit', 'first-order system'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/RC_circuit' },
       viz(v) {
         const M = v.M, V0 = 5, TE = 0.06, hS = 5e-5, NT = Math.round(TE / hS);
         const inp = v.select('source', [{ value: 'step', label: 'step' }, { value: 'square', label: 'square wave' }, { value: 'ramp', label: 'ramp' }, { value: 'draw', label: 'draw it' }], 'step');
         const chk = v.select('check', [{ value: 'none', label: 'none' }, { value: 'lin', label: 'double $v_{in}$' }, { value: 'ti', label: 'delay $v_{in}$ by 8 ms' }, { value: 'causal', label: 'change $v_{in}$ after 30 ms' }], 'none');
         const sC = v.stage({ x: [-2.2, 6.6], y: [-1.5, 4.1], equal: true, height: 275, axes: false, weight: 0.85 });
         const sP = v.stage({ x: [0, 60], y: [-0.7, 6.4], height: 275, axes: 'box', xlabel: 't (ms)', yticks: [0, 1, 2, 3, 4, 5, 6], weight: 1.35, title: 'source $v_{in}$ and capacitor voltage $v_C$ (volts)' });
-        const sig = drawable(sP, 0, 60, 240, (t) => (t >= 5 && t < 25 ? 4 : t >= 25 && t < 40 ? 1.5 + 2.5 * Math.sin((TAU * (t - 25)) / 15) : 0), [-0.5, 6], { enabled: () => inp.value === 'draw' });
+        const sig = drawable(sP, 0, 60, 240, (t) => (t >= 5 && t < 25 ? 4 : t >= 25 && t < 40 ? 2 + 1.5 * Math.sin((TAU * (t - 25)) / 15) : 0), [-0.5, 6], { enabled: () => inp.value === 'draw' });
         const vin0 = (ms) => {
           switch (inp.value) {
-            case 'step': return ms >= 5 ? V0 : 0;
-            case 'square': return ms >= 5 && (ms - 5) % 20 < 10 ? V0 : 0;
+            case 'step': return ms >= 5.025 ? V0 : 0; // edges sit between solver samples, so shifted copies switch on exactly 160 samples later
+            case 'square': return ms >= 5.025 && (ms - 5.025) % 20 < 10 ? V0 : 0;
             case 'ramp': return V0 * M.clamp((ms - 5) / 20, 0, 1);
             default: return sig.f(ms);
           }
@@ -369,7 +372,7 @@ so the circuit is a linear, time-invariant, causal, BIBO-stable system with memo
           // ---- plot
           sP.hline(0, { color: 'faint', width: 1 });
           if (inp.value === 'step') {
-            const t1 = 5 + tau * 1e3, lvl = V0 * (1 - Math.exp(-1));
+            const t1 = 5.025 + tau * 1e3, lvl = V0 * (1 - Math.exp(-1));
             if (t1 < 60) { sP.vline(t1, { color: 'muted', width: 1, dash: [4, 4] }); sP.text('τ', t1, 6.1, { dx: 5, color: 'muted', size: 12, align: 'left', math: true }); }
             sP.hline(lvl, { color: 'muted', width: 1, dash: [2, 3] }); sP.text('63.2%', 60, lvl, { dx: -5, dy: -9, color: 'muted', size: 11, align: 'right' });
           }
@@ -480,7 +483,7 @@ Two basic cases. The **$M$-point moving average** $y[n]=\frac1M\big(x[n]+x[n-1]+
           sH.hline(0, { color: 'faint', width: 1 });
           stems(sH, hv, { color: 'teal' });
           const iir = k === 'acc' || k === 'leaky';
-          if (iir && Math.abs(hh[HN]) > 1e-3) sH.text('… forever', HN, hv[hv.length - 1][1], { dx: -2, dy: -14, color: 'teal', size: 11.5, align: 'right', weight: 600 });
+          if (iir && Math.abs(hh[HN]) > 1e-3) sH.text('… forever', HN + 0.6, Math.min(hv[hv.length - 1][1], 0.6 * hm) * 0.5, { color: 'teal', size: 11.5, align: 'right', weight: 600 });
           const sumAbs = k === 'ma' ? 1 : k === 'diff' ? 2 : k === 'acc' || al >= 1 ? Infinity : 1 / (1 - al);
           sH.corner(`Σ|h| = ${isFinite(sumAbs) ? v.fix(sumAbs, 3) : '∞'}`, 'tr', { color: isFinite(sumAbs) ? 'green' : 'red', size: 12.5, weight: 600 });
           // ---- diagram
@@ -495,7 +498,7 @@ Two basic cases. The **$M$-point moving average** $y[n]=\frac1M\big(x[n]+x[n-1]+
               if (j === null) return;
               sD.dot(xq + 0.25, yT, { r: 3, color: 'ink' });
               bdWire(sD, [[xq + 0.25, yT], [xq + 0.25, 2.7]], { color: 'ink' });
-              bdBlock(sD, xq + 0.25, 2.3, 1.2, 0.75, k === 'diff' ? (j === 0 ? '+1' : '-1') : '\\tfrac1M', { color: 'teal', size: 12 });
+              bdBlock(sD, xq + 0.25, 2.3, 1.2, 0.75, k === 'diff' ? (j === 0 ? '+1' : '-1') : '1/M', { color: 'teal', size: 12 });
               bdWire(sD, [[xq + 0.25, 1.92], [xq + 0.25, yS + 0.08]], { color: 'ink', arrow: false });
               sD.text(`${v.fix(val(n - j, x), 2)}`, xq + 0.25, yT + 0.75, { size: 11.5, color: 'accent', align: 'center', weight: 600 });
               sD.text(j === 0 ? 'x[n]' : `x[n−${j}]`, xq + 0.25, yT + 1.25, { size: 11, color: 'muted', align: 'center', math: false });
@@ -556,9 +559,9 @@ Unless $y_0=0$ this system is not linear: zero input gives a nonzero output, and
       tags: ['incremental linearity', 'initial conditions'],
       viz(v) {
         const M = v.M, TE = 0.06, hS = 5e-5;
-        const v0S = v.slider('initial charge $v_C(0)$', -4, 5, 3.5, { step: 0.1, fmt: (u) => `${v.fix(u, 1)} V` });
+        const v0S = v.slider('charge $v_C(0)$', -4, 5, 3.5, { step: 0.1, fmt: (u) => `${v.fix(u, 1)} V` });
         const inp = v.select('source $v_{in}$', [{ value: 'step', label: 'step' }, { value: 'pulse', label: 'pulse' }, { value: 'sine', label: 'sinusoid' }, { value: 'none', label: 'none' }], 'sine');
-        const aS = v.slider('test with $a$ =', -1, 3, 2, { step: 0.05 });
+        const aS = v.slider('test with $a$', -1, 3, 2, { step: 0.05 });
         const sC = v.stage({ x: [-2.2, 6.6], y: [-1.4, 4.1], equal: true, height: 255, axes: false, weight: 0.8 });
         const sP = v.stage({ x: [0, 60], y: [-5, 6], height: 255, axes: 'box', xlabel: 't (ms)', weight: 1.4, title: 'total response = zero-input + zero-state (volts)' });
         const sL = v.stage({ x: [0, 60], y: [-5, 6], height: 200, axes: 'box', xlabel: 't (ms)', full: true, title: 'is $x\\mapsto v_C$ linear? $S\\{ax\\}$ against $aS\\{x\\}$' });

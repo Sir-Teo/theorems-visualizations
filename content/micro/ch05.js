@@ -135,7 +135,7 @@ The rate at which the consumer is willing to trade the goods equals the rate at 
         const p2 = v.slider('price $p_2$', 0.6, 3, 1, { step: 0.05 });
         const s = v.stage({ x: [0, 14], y: [0, 14], height: 360, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.1 });
         const g = v.stage({ x: [0, 1], y: [0, 1], height: 360, axes: 'box', xlabel: 'x₁ (moving along the budget line)', ylabel: 'u', title: 'utility along the budget line' });
-        const r = v.stage({ x: [0, 1], y: [0, 3], height: 175, axes: 'box', full: true, xlabel: 'x₁ (moving along the budget line)', ylabel: 'rate', title: 'the MRS at each point of the line, against the price ratio $p_1/p_2$' });
+        const r = v.stage({ x: [0, 1], y: [0, 3], height: 175, axes: 'box', full: true, ylabel: 'rate', title: 'the MRS at each point of the line (horizontal axis: $x_1$), against the price ratio $p_1/p_2$' });
         let tB = 0.22;
         const B = s.handle(2, 9, { color: 'gold', label: 'B', labelPos: 'sw', constrain: (x, y) => { const q = nearestOnSegment(s, [0, m / p2.value], [m / p1.value, 0], x, y); tB = clamp(q[2], 0.01, 0.99); return [q[0], q[1]]; } });
         v.legend([['accent', 'budget line'], ['purple', 'indifference curve through B'], ['purple', 'its tangent, slope −MRS', { dash: true }], ['green', 'best bundle', { dot: true }]]);

@@ -254,14 +254,14 @@ Linearising about $L_4$ gives the characteristic equation $\lambda^4 + \lambda^2
       viz(v) {
         const MUR = 0.5 * (1 - Math.sqrt(23 / 27));
         const ev = v.stage({ x: [-0.45, 0.45], y: [-1.15, 1.15], axes: true, height: 300, weight: 0.75, title: 'roots λ (units of n)', xlabel: 'Re λ', ylabel: 'Im λ' });
-        const z = v.stage({ x: [-0.3, 0.3], y: [-0.3, 0.3], equal: true, axes: false, height: 300, weight: 1, title: 'near L4 (rotating frame)' });
+        const z = v.stage({ x: [-0.1, 0.1], y: [-0.1, 0.1], equal: true, axes: false, height: 300, weight: 1, title: 'near L4 (rotating frame)' });
         const gr = v.stage({ x: [0, 25], y: [-4, 1], axes: 'box', height: 300, weight: 1, xlabel: 'time (orbits)', ylabel: 'log₁₀ |displacement|', title: 'growth or libration' });
         const m = v.stage({ x: [1e-4, 0.5], y: [0, 1], xlog: true, axes: false, height: 92, full: true, title: 'mass ratio μ = m₂/(m₁ + m₂) — drag the handle' });
         const MH = m.handle(MU_EM, 0.45, { color: 'accent', constrain: 'x', r: 8 });
-        let off = [0.03, 0.02];
+        let off = [0.006, 0.004];
         const L4of = () => [0.5 - MH.x, Math.sqrt(3) / 2];
-        const Pn = z.handle(0.5 - MU_EM + 0.03, Math.sqrt(3) / 2 + 0.02, { color: 'gold', label: 'nudge', labelPos: 'ne',
-          constrain: (x, y) => { const L4 = L4of(); off = [clamp(x - L4[0], -0.09, 0.09), clamp(y - L4[1], -0.09, 0.09)]; return [L4[0] + off[0], L4[1] + off[1]]; } });
+        const Pn = z.handle(0.5 - MU_EM + 0.006, Math.sqrt(3) / 2 + 0.004, { color: 'gold', label: 'nudge', labelPos: 'ne',
+          constrain: (x, y) => { const L4 = L4of(); off = [clamp(x - L4[0], -0.02, 0.02), clamp(y - L4[1], -0.02, 0.02)]; return [L4[0] + off[0], L4[1] + off[1]]; } });
         const roots = (mu) => {
           const d = 1 - 27 * mu * (1 - mu);
           if (d >= 0) { const a = Math.sqrt((1 + Math.sqrt(d)) / 2), b = Math.sqrt((1 - Math.sqrt(d)) / 2); return [[0, a], [0, -a], [0, b], [0, -b]]; }
@@ -276,7 +276,7 @@ Linearising about $L_4$ gives the characteristic equation $\lambda^4 + \lambda^2
         v.render(() => {
           const mu = MH.x, rts = roots(mu), stable = 27 * mu * (1 - mu) < 1, L4 = [0.5 - mu, Math.sqrt(3) / 2];
           // eigenvalue plane
-          for (let j = 0; j < 4; j++) ev.path(locus.map((r) => r[j]), { color: 'faint', width: 1 });
+          for (let j = 0; j < 4; j++) ev.dots(locus.map((r) => r[j]), { r: 1.1, color: 'faint' });
           ev.vband(0, 0.45, { color: 'red', alpha: 0.06 });
           rts.forEach((r) => ev.dot(r[0], r[1], { r: 5.5, color: r[0] > 1e-9 ? 'red' : 'green' }));
           ev.text('unstable', 0.43, -1.05, { color: 'red', size: 10.5, align: 'right' });
@@ -289,11 +289,13 @@ Linearising about $L_4$ gives the characteristic equation $\lambda^4 + \lambda^2
             return { R, lg };
           });
           // zoomed rotating view (auto-expanding)
-          let ext = 0.3; for (const q of D.R.s) ext = Math.max(ext, Math.min(1.1, 1.08 * Math.max(Math.abs(q[0] - L4[0]), Math.abs(q[1] - L4[1]))));
+          let ext = 0.06; for (const q of D.R.s) ext = Math.max(ext, Math.min(1.1, 1.1 * Math.max(Math.abs(q[0] - L4[0]), Math.abs(q[1] - L4[1]))));
           z.setView([L4[0] - ext, L4[0] + ext], [L4[1] - ext, L4[1] + ext]);
           z.clip(() => { z.path(D.R.s.map((q) => [q[0], q[1]]), { color: stable ? 'accent' : 'red', width: 1.2, alpha: 0.9 }); primaries(z, mu); });
-          z.line(L4[0] - 0.02, L4[1], L4[0] + 0.02, L4[1], { color: 'ink', width: 1.5 }); z.line(L4[0], L4[1] - 0.02, L4[0], L4[1] + 0.02, { color: 'ink', width: 1.5 });
-          z.text('L4', L4[0], L4[1], { color: 'ink', size: 11, dx: 6, dy: -9, align: 'left' });
+          const cr = ext * 0.05;
+          z.line(L4[0] - cr, L4[1], L4[0] + cr, L4[1], { color: 'ink', width: 1.5 }); z.line(L4[0], L4[1] - cr, L4[0], L4[1] + cr, { color: 'ink', width: 1.5 });
+          z.text('L4', L4[0], L4[1], { color: 'ink', size: 11, dx: -6, dy: 10, align: 'right' });
+          z.corner(`window ±${v.fix(ext, 3)} (separation = 1)`, 'bl', { color: 'faint', size: 10.5 });
           // growth panel
           const reL = Math.max(...rts.map((r) => r[0])), lg0 = D.lg[0][1];
           gr.setView([0, 25], [Math.min(-3, lg0 - 1), 1]);
@@ -338,12 +340,13 @@ $S$ has minima at $\phi = \pm 60^\circ$ ($L_4$, $L_5$) and a maximum at $180^\ci
         const PRE = {
           jup: { mu: MU_SJ, P: 11.862 * 365.25, name: 'Jupiter', unitA: 5.2026, unit: 'AU', full: true, start: [85, 0] },
           earth: { mu: 3.003e-6, P: 365.256, name: 'Earth', unitA: 1, unit: 'AU', full: true, start: [180, 1.5] },
-          je: { mu: (1.898e18 + 5.266e17) / 5.683e26, P: 0.6945, name: 'Janus–Epimetheus', unitA: 151460, unit: 'km', full: false, start: [180, 4.79] },
+          je: { mu: (1.898e18 + 5.266e17) / 5.683e26, P: 0.6945, name: 'Janus', unitA: 151460, unit: 'km', full: false, start: [180, 4.79] },
         };
         const pre = v.select('co-orbitals of', [{ value: 'jup', label: 'Jupiter (Trojans)' }, { value: 'earth', label: 'the Earth' }, { value: 'je', label: 'Janus & Epimetheus' }], 'jup', { onChange: (k) => { H.x = PRE[k].start[0]; H.y = PRE[k].start[1]; } });
         const L = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 360, weight: 1, title: 'frame rotating with the planet' });
         const R = v.stage({ x: [0, 360], y: [-4, 4], axes: 'box', height: 360, weight: 1.25, xlabel: 'longitude from the planet φ (°)', ylabel: 'δa / (a√μ)', title: 'averaged co-orbital phase portrait', xticks: [0, 60, 120, 180, 240, 300, 360] });
-        const H = R.handle(85, 0, { color: 'gold', r: 7, label: 'start', labelPos: 'ne', constrain: (x, y) => [clamp(x, 8, 352), clamp(y, -3.9, 3.9)] });
+        const ylim = () => (pre.value === 'je' ? 6 : 4);
+        const H = R.handle(85, 0, { color: 'gold', r: 7, label: 'start', labelPos: 'ne', constrain: (x, y) => [clamp(x, 8, 352), clamp(y, -ylim() + 0.1, ylim() - 0.1)] });
         const cacheA = memo(), cacheF = memo();
         let cur = null;
         v.render(() => {
@@ -351,12 +354,13 @@ $S$ has minima at $\phi = \pm 60^\circ$ ($L_4$, $L_5$) and a maximum at $180^\ci
           // averaged model
           const A = cacheA(`${phi0}|${x0}`, () => coorbital(phi0, x0));
           // phase portrait
-          const lev = [0.55, 0.65, 0.8, 1.0, 1.25, 1.75, 2.2, 3, 4.5];
+          R.setView([0, 360], [-ylim(), ylim()]);
+          const lev = pre.value === 'je' ? [0.55, 0.8, 1.1, 1.75, 2.5, 4, 6, 9, 13] : [0.55, 0.65, 0.8, 1.0, 1.25, 1.75, 2.2, 3, 4.5];
           R.contour((x, y) => 0.375 * y * y + Sco(x * DEG), lev, { color: 'faint', width: 1, res: 160 });
           R.contour((x, y) => 0.375 * y * y + Sco(x * DEG), [1.5], { color: 'ink', width: 2, res: 240 });
           R.vband(0, 8, { color: 'red', alpha: 0.08 }); R.vband(352, 360, { color: 'red', alpha: 0.08 });
           for (const [x, lab] of [[60, 'L4'], [180, 'L3'], [300, 'L5']]) { R.dot(x, 0, { r: 3.5, color: 'red' }); R.text(lab, x, 0, { color: 'red', size: 10.5, dy: 12, align: 'center' }); }
-          R.text('planet', 4, 3.6, { color: 'red', size: 10, align: 'left' });
+          R.text('planet', 4, -ylim() * 0.9, { color: 'red', size: 10, align: 'left' });
           // full integration (not for Janus–Epimetheus); skip while dragging
           let F = null;
           if (P.full && !H.dragging) {
@@ -372,7 +376,7 @@ $S$ has minima at $\phi = \pm 60^\circ$ ($L_4$, $L_5$) and a maximum at $180^\ci
               let xm = 0; for (const q of pts) xm = Math.max(xm, Math.abs(q[1]));
               const th = 0.3 * xm, turns = []; let side = 0;
               for (let k = 0; k < pts.length; k++) { const y = pts[k][1]; if (y > th && side !== 1) { if (side) turns.push(r.t[k]); side = 1; } else if (y < -th && side !== -1) { if (side) turns.push(r.t[k]); side = -1; } }
-              const Tm = turns.length >= 3 ? turns[2] - turns[0] : NaN;
+              const Tm = turns.length >= 3 ? turns[2] - turns[0] : turns.length === 2 ? 2 * (turns[1] - turns[0]) : NaN; // the two halves take equal times (time-reversal symmetry)
               return { r, pts, Tm };
             });
             R.dots(F.pts.map((q) => [q[0], q[1]]), { r: 1.6, color: 'accent', alpha: 0.6 });
@@ -415,7 +419,7 @@ $S$ has minima at $\phi = \pm 60^\circ$ ($L_4$, $L_5$) and a maximum at $180^\ci
 $$r_H = a\Big(\frac{m}{3M}\Big)^{1/3}$$
 around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to leading order in $(m/M)^{1/3}$. Inside it the planet’s gravity dominates the tidal pull of the star, and the zero-velocity curve through $L_1$ encloses a lobe about the planet of roughly this size. Satellites must orbit well inside: numerically, circular prograde orbits survive out to about $0.5\,r_H$, retrograde ones considerably farther. Earth: $r_H = 1.5\times10^6$ km (the Moon is at $0.26\,r_H$); Jupiter: $0.35$ AU.`,
       idea: String.raw`Near the planet, the restricted problem reduces to Hill’s problem: the planet’s pull $Gm/r^2$ against the tidal-plus-centrifugal acceleration $3GMr/a^3$ of the frame rotating with the planet (mech 9.12). They balance at $r^3 = ma^3/3M$, which is where $L_1$, $L_2$ sit; inside the Jacobi lobe through $L_1$ (2.2) a particle cannot leave. Lengths scale as $r_H$ and times as the orbital period, so in units of $r_H$ the picture is the same for every planet. Retrograde satellites are more robust because the Coriolis force on them points inward.`,
-      caption: String.raw`Left: the neighbourhood of the planet in units of $r_H$, in the frame rotating with it (the star is far to the left). Ten test moons start on circular orbits at 0.3–1.2 $r_H$ and are followed for ten planetary orbits: green if they stay bound, red if they escape. The dashed lobe is the zero-velocity curve through $L_1$. Drag the gold moon to launch your own. Right: how long moons survive against starting distance, for prograde and retrograde orbits — the result hardly depends on the planet, as Hill’s scaling predicts.`,
+      caption: String.raw`Left: the neighbourhood of the planet in units of $r_H$, in the frame rotating with it (the star is far to the left). Ten test moons start on circular orbits at 0.3–1.2 $r_H$ and are followed for ten planetary orbits: green if they stay bound, red if they escape. The purple lobe is the zero-velocity curve through $L_1$; the dashed circle is $r_H$. Drag the gold moon to launch your own. Right: how long moons survive against starting distance, for prograde and retrograde orbits — the result hardly depends on the planet, as Hill’s scaling predicts.`,
       deps: ['mech-9.12', 'astro-2.2'],
       refs: ['Murray–Dermott §3.13'],
       tags: ['three-body', 'satellites', 'stability'],
@@ -425,7 +429,7 @@ around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to lea
         const pl = v.select('planet', [{ value: 'earth', label: 'Earth' }, { value: 'jup', label: 'Jupiter' }, { value: 'nep', label: 'Neptune' }], 'earth');
         const retro = v.toggle('retrograde moons', false);
         const s = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 360, weight: 1, title: 'around the planet (units of r_H)' });
-        const g = v.stage({ x: [0.1, 1.35], y: [0, 10.8], axes: 'box', height: 360, weight: 1, xlabel: 'starting distance (r_H)', ylabel: 'time bound (planet orbits, max 10)', title: 'survival of circular moons' });
+        const g = v.stage({ x: [0.1, 1.35], y: [-1.4, 10.8], axes: 'box', height: 360, weight: 1, xlabel: 'starting distance (r_H)', ylabel: 'time bound (planet orbits, max 10)', title: 'survival of circular moons' });
         const Hm = s.handle(0.42, 0, { color: 'gold', r: 7, label: 'your moon', labelPos: 'n', constrain: (x, y) => [clamp(x, 0.12, 1.5), 0] });
         const NOR = 10, Tend = NOR * TAU;
         const moon = (mu, d, sgn, rec) => {
@@ -452,11 +456,11 @@ around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to lea
           const mine = cacheU(`${pl.value}|${sg}|${Hm.x.toFixed(3)}`, () => moon(mu, Hm.x, sg, true));
           // left panel: positions relative to the planet in units of r_H
           const rel = (q) => [(q[0] - xp) / rH, q[1] / rH];
-          s.contour((x, y) => omega2(mu, xp + x * rH, y * rH), [lagrange(mu).C.L1], { color: 'ink', width: 1.4, dash: [5, 4], res: 160 });
+          s.contour((x, y) => omega2(mu, xp + x * rH, y * rH), [lagrange(mu).C.L1], { color: 'purple', width: 1.8, res: 160 });
           s.circle(0, 0, 1, { color: 'muted', width: 1, dash: [2, 4] });
           s.clip(() => {
             for (const T of tr) s.path(T.R.s.map(rel), { color: isFinite(T.tEsc) ? 'red' : 'green', width: 1, alpha: 0.75 });
-            s.path(mine.R.s.map(rel), { color: 'gold', width: 2, alpha: 0.95 });
+            s.path(mine.R.s.map(rel), { color: 'gold', width: 1.4, alpha: 0.95 });
           });
           const L = lagrange(mu);
           for (const k of ['L1', 'L2']) { const x = (L[k][0] - xp) / rH; s.dot(x, 0, { r: 3.5, color: 'red' }); s.text(k, x, 0, { color: 'red', size: 10.5, dy: 12, align: 'center' }); }
@@ -467,11 +471,11 @@ around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to lea
           g.vline(1, { color: 'muted', width: 1, dash: [2, 4] });
           g.path(surv.pro, { color: 'blue', width: 2.2 }); g.dots(surv.pro, { r: 3, color: 'blue' });
           g.path(surv.ret, { color: 'orange', width: 2.2 }); g.dots(surv.ret, { r: 3, color: 'orange' });
-          if (pl.value === 'earth') { g.vline(384400 / (rH * 1.496e8), { color: 'teal', width: 1.4, dash: [4, 3] }); g.text('Moon', 384400 / (rH * 1.496e8), 10.3, { color: 'teal', size: 10.5, dx: 4, align: 'left' }); }
+          if (pl.value === 'earth') { g.vline(384400 / (rH * 1.496e8), { color: 'teal', width: 1.4, dash: [4, 3] }); g.text('Moon', 384400 / (rH * 1.496e8), 8.8, { color: 'teal', size: 10.5, dx: 4, align: 'left' }); }
           g.dot(Hm.x, isFinite(mine.tEsc) ? mine.tEsc / TAU : NOR, { r: 6, color: 'gold' });
           cur = { P, rH, surv, mine };
         });
-        v.legend([['green', 'stays bound'], ['red', 'escapes'], ['blue', 'prograde (right)'], ['orange', 'retrograde (right)'], ['ink', 'zero-velocity lobe through L1', { dash: true }]]);
+        v.legend([['green', 'stays bound'], ['red', 'escapes'], ['blue', 'prograde (right)'], ['orange', 'retrograde (right)'], ['purple', 'zero-velocity curve through L1']]);
         v.readout(() => {
           if (!cur) return '';
           const { P, rH, surv, mine } = cur;
@@ -505,26 +509,28 @@ is approximately conserved through any encounter with that planet, even one that
         const iS = v.slider('initial $i$', 0, 30, 5, { step: 0.5, fmt: (x) => `${x}°` });
         const dS = v.slider('encounter offset (Jupiter’s lead, °)', -4, 4, -1, { step: 0.05 });
         const s = v.stage({ x: [-8, 8], y: [-8, 8], equal: true, axes: false, height: 360, weight: 1, title: 'inertial frame (AU)' });
-        const g = v.stage({ x: [0, 40], y: [0, 3.4], axes: 'box', height: 360, weight: 1.2, xlabel: 'time (years)', ylabel: 'osculating elements', title: 'a, e, i change; T_J does not' });
+        const g = v.stage({ x: [0, 40], y: [-0.25, 3.4], axes: 'box', height: 360, weight: 1.2, xlabel: 'time (years)', ylabel: 'osculating elements', title: 'a, e, i change; T_J does not' });
         const Tis = (el) => 1 / el.a + 2 * Math.sqrt(Math.max(0, el.a * (1 - el.e * el.e))) * Math.cos(el.i);
         const cache = memo();
         const run = () => cache([aS.value, eS.value, iS.value, dS.value].join('|'), () => {
           const a = aS.value / AJ, e = eS.value, p = a * (1 - e * e), cnu = (p - 1) / e;
           if (Math.abs(cnu) > 1) return { none: true, q: a * (1 - e) * AJ, Q: a * (1 + e) * AJ };
           const nuc = Math.acos(cnu), Ec = 2 * Math.atan2(Math.sqrt(1 - e) * Math.sin(nuc / 2), Math.sqrt(1 + e) * Math.cos(nuc / 2)), tc = (Ec - e * Math.sin(Ec)) / Math.sqrt((1 - mu) / a ** 3);
-          const Hs = fromElements(1 - mu, a, e, iS.value * DEG, tc + dS.value * DEG, -nuc, 0);
+          // phase Jupiter so that the encounter happens on the comet's second outbound crossing (one undisturbed orbit first)
+          const tc2 = tc + TAU * Math.sqrt(a ** 3 / (1 - mu));
+          const Hs = fromElements(1 - mu, a, e, iS.value * DEG, tc2 + dS.value * DEG, -nuc, 0);
           const s0 = helioToRotating(mu, Hs, 0);
-          const T = tc + 40;
+          const T = tc2 + 40;
           const R = cr3bp(mu, s0, { T, eta: 0.01, hmax: 0.05, every: 0.04, maxSteps: 300000, stop: (q) => Math.hypot(q[0] + mu, q[1], q[2]) < 0.01 || Math.hypot(q[0], q[1], q[2]) > 30 });
           const rec = R.s.map((q, k) => { const t = R.t[k], el = helio(mu, q, t), I = toInertial(q, t); return { t, el, T: Tis(el), X: (I[0] + mu * Math.cos(t)) * AJ, Y: (I[1] + mu * Math.sin(t)) * AJ, d: Math.hypot(q[0] - 1 + mu, q[1], q[2]) }; });
           let kmin = 0; rec.forEach((r, k) => { if (r.d < rec[kmin].d) kmin = k; });
           const C0 = jacobi(mu, R.s[0]), C1 = jacobi(mu, R.s[R.s.length - 1]);
-          return { rec, kmin, tc, C0, C1, stop: R.stop };
+          return { rec, kmin, tc: tc2, C0, C1, stop: R.stop };
         });
         let cur = null;
         v.render(() => {
           const D = run(), yr = 11.862 / TAU;
-          s.circle(0, 0, AJ, { color: 'orange', width: 1, dash: [4, 4], alpha: 0.7 });
+          s.circle(0, 0, AJ, { color: 'muted', width: 1, dash: [4, 4], alpha: 0.8 });
           s.dot(0, 0, { r: 6, color: 'gold' });
           if (D.none) { s.corner(`no crossing: q = ${v.fix(D.q, 2)}, Q = ${v.fix(D.Q, 2)} AU`, 'tl', { color: 'red', weight: 600 }); g.text('the orbit does not cross Jupiter’s', 20, 1.7, { color: 'red', align: 'center' }); cur = D; return; }
           const k0 = D.kmin;
@@ -534,11 +540,12 @@ is approximately conserved through any encounter with that planet, even one that
             s.path(D.rec.slice(0, k0 + 1).map((r) => [r.X, r.Y]), { color: 'blue', width: 1.6 });
             s.path(D.rec.slice(k0).map((r) => [r.X, r.Y]), { color: 'orange', width: 1.6 });
           });
-          const tE = D.rec[k0].t; s.dot(AJ * Math.cos(tE), AJ * Math.sin(tE), { r: 5, color: 'red', label: 'Jupiter at encounter', labelPos: 'e' });
+          const tE = D.rec[k0].t, jx = AJ * Math.cos(tE), jy = AJ * Math.sin(tE);
+          s.dot(jx, jy, { r: 5, color: 'red', label: 'Jupiter at encounter', labelPos: jx > 0 ? (jy > 0 ? 'ne' : 'se') : jy > 0 ? 'nw' : 'sw' });
           s.dot(D.rec[k0].X, D.rec[k0].Y, { r: 3, color: 'ink' });
           // time series
           const tmax = D.rec[D.rec.length - 1].t * yr;
-          g.setView([0, tmax], [0, 3.4]);
+          g.setView([0, tmax], [-0.25, 3.4]);
           g.vline(tE * yr, { color: 'red', width: 1, dash: [3, 3], alpha: 0.7 });
           const ser = (f, c, w, dash) => g.path(D.rec.map((r) => [r.t * yr, f(r)]).filter((q) => isFinite(q[1]) && q[1] > -1 && q[1] < 4), { color: c, width: w, dash });
           ser((r) => (r.el.a > 0 ? r.el.a : NaN), 'blue', 1.8);
@@ -549,7 +556,7 @@ is approximately conserved through any encounter with that planet, even one that
           g.text('T_J', tmax, lastR.T, { color: 'green', size: 11, dx: -4, dy: -9, align: 'right' });
           g.text('a/a_J', tmax, lastR.el.a, { color: 'blue', size: 10.5, dx: -4, dy: -8, align: 'right' });
           g.text('e', tmax, lastR.el.e, { color: 'orange', size: 10.5, dx: -4, dy: -8, align: 'right' });
-          g.text('i/30°', tmax, lastR.el.i / (30 * DEG), { color: 'purple', size: 10.5, dx: -4, dy: 9, align: 'right' });
+          g.text('i/30°', tmax, lastR.el.i / (30 * DEG), { color: 'purple', size: 10.5, dx: -4, dy: -9, align: 'right' });
           cur = D;
         });
         v.legend([['blue', 'before / $a/a_J$'], ['orange', 'after / $e$'], ['purple', '$i$ (in units of 30°)'], ['green', 'Tisserand parameter $T_J$']]);

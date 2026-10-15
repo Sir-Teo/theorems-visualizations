@@ -95,7 +95,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           if (mid != null) { L.vline(mid, { color: 'gold', width: 1.4, dash: [4, 3] }); L.dot(mid, f(mid), { r: 5.5, color: 'gold' }); }
           ha.y = hb.y = 0;
           // zoom
-          const w = Math.max(hi - lo, 1e-12), zx = [lo - 0.18 * w, hi + 0.18 * w];
+          const w = Math.max(hi - lo, 1e-12), zx = [lo - 0.26 * w, hi + 0.26 * w];
           const d = Math.max(1, Math.min(8, Math.ceil(-Math.log10(100 * w)) + 2));
           Z.setTicks([[lo, pct(lo, d)], [hi, pct(hi, d)]], undefined);
           Z.setView(zx, around(M.linspace(zx[0], zx[1], 60).map(f), 0.15));
@@ -153,14 +153,14 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
         const M = v.M, R1 = 0.7, R2 = 0.4;
         const kS = v.slider('clean-up $K$', 0, 3000, 2200, { step: 50, fmt: (x) => money(x) });
         const bS = v.slider('B pays a year', 250, 450, 350, { step: 5, fmt: (x) => money(x) });
-        const rS = v.slider('cost of capital $r$', 0, 0.4, 0.1, { step: 0.0025, fmt: (x) => pct(x, 2) });
+        const rS = v.slider('rate $r$', 0, 0.4, 0.1, { step: 0.0025, fmt: (x) => pct(x, 2) });
         const FM = v.stage({ x: [-0.6, 6.6], y: [-3700, 1300], height: 140, axes: 'box', weight: 1, minWidth: 300, yticks: [], xticks: [0, 1, 2, 3, 4, 5, 6].map((t) => [t, String(t)]), title: 'the mine: cash flows by year' });
         const FC = v.stage({ x: [-0.6, 5.6], y: [-1500, 1700], height: 140, axes: 'box', weight: 1, minWidth: 300, yticks: [], xticks: [0, 1, 2, 3, 4, 5].map((t) => [t, String(t)]), title: 'projects A (blue) and B (purple)' });
         const NM = v.stage({ x: [0, R1], y: [-400, 200], height: 280, axes: 'box', weight: 1, minWidth: 300, ylabel: 'NPV ($)', xticks: pctTicks([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]), title: 'the mine: NPV(r)' });
         const NC = v.stage({ x: [0, R2], y: [-400, 800], height: 280, axes: 'box', weight: 1, minWidth: 300, ylabel: 'NPV ($)', xticks: pctTicks([0, 0.1, 0.2, 0.3, 0.4]), title: 'A versus B: NPV(r)' });
         const mine = () => [-1000, 600, 600, 600, 600, 600, -kS.value];
         const projA = () => [-1000, 1300], projB = () => [-1000, ...Array(5).fill(bS.value)];
-        v.legend([['accent', 'mine NPV'], ['blue', 'project A'], ['purple', 'project B'], ['green', 'NPV > 0', { area: true }], ['red', 'IRR and NPV rankings disagree', { area: true }]]);
+        v.legend([['teal', 'mine NPV'], ['blue', 'project A'], ['purple', 'project B'], ['green', 'NPV > 0', { area: true }], ['red', 'IRR and NPV rankings disagree', { area: true }]]);
         let st = null;
         v.render(() => {
           const r = rS.value, cm = mine(), Fm = dated(cm), fm = (x) => npv(Fm, x);
@@ -173,7 +173,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           NM.setView([0, R1], [Math.max(y0, -1600), Math.min(y1, 2600)]);
           NM.clip(() => NM.fn(fm, { fill: 'green', fillAlpha: 0.22, stroke: false }), [0, R1], [0, NM.bounds.y[1]]);
           NM.hline(0, { color: 'ink', width: 1 });
-          NM.fn(fm, { color: 'accent', width: 2.6 });
+          NM.fn(fm, { color: 'teal', width: 2.6 });
           const all = irrs(Fm, -0.9, 6), shown = all.filter((x) => x >= 0 && x <= R1);
           shown.forEach((x, i) => { const below = shown.length === 2 && i === 0; NM.dot(x, 0, { r: 5.5, hollow: true, color: 'ink', width: 2 }); NM.text(`IRR ${pct(x, 1)}`, x, 0, { dx: 8, dy: below ? 16 : -14, align: 'left', color: 'ink', weight: 700, size: 11.5, plate: true }); });
           NM.vline(r, { color: 'gold', width: 1.5, dash: [4, 3] });
@@ -325,7 +325,8 @@ the payment that makes the loan the present value of an $n$-period annuity (fin 
           const base = schedule(L, y, n, 0), cur = schedule(L, y, n, E), R = cur.rows, m = R.length;
           // payments
           A.setView([-0.07 * n, n], [-0.08 * (base.pay + E) * 1.18, (base.pay + E) * 1.18]);
-          A.setTicks(Array.from({ length: n / 60 + 1 }, (_, k) => [60 * k, String(60 * k)]), undefined);
+          const tk = n > 200 ? 60 : 30;
+          A.setTicks(Array.from({ length: n / tk + 1 }, (_, k2) => [tk * k2, String(tk * k2)]), undefined);
           const area = (f0, f1) => { const top = [], bot = []; R.forEach((q, j) => { top.push([q.k - 1, f1(q)], [q.k, f1(q)]); bot.push([q.k - 1, f0(q)], [q.k, f0(q)]); }); return top.concat(bot.reverse()); };
           A.poly(area(() => 0, (q) => q.I), { fill: 'red', fillAlpha: 0.7, stroke: false });
           A.poly(area((q) => q.I, (q) => q.I + q.P), { fill: 'blue', fillAlpha: 0.6, stroke: false });
@@ -338,13 +339,14 @@ the payment that makes the loan the present value of an $n$-period annuity (fin 
           const bI = []; let s2 = 0; base.rows.forEach((q) => { s2 += q.I; bI.push(s2); });
           const bTop = (Math.max(L, base.total) * 1.12) / 1000;
           B.setView([-0.08 * n, n], [-0.08 * bTop, bTop]);
-          B.setTicks(Array.from({ length: n / 60 + 1 }, (_, k2) => [60 * k2, String(60 * k2)]), undefined);
+          B.setTicks(Array.from({ length: n / tk + 1 }, (_, k2) => [tk * k2, String(tk * k2)]), undefined);
           B.path([[0, L / 1000], ...base.rows.map((q) => [q.k, q.B / 1000])], { color: 'muted', width: 1.5, dash: [5, 4] });
           B.path([[0, 0], ...base.rows.map((q, j) => [q.k, bI[j] / 1000])], { color: 'red', width: 1.4, dash: [5, 4], alpha: 0.6 });
           B.path([[0, L / 1000], ...R.map((q) => [q.k, q.B / 1000])], { color: 'accent', width: 2.4 });
           B.path([[0, 0], ...R.map((q, j) => [q.k, cI[j] / 1000])], { color: 'red', width: 2.4 });
           B.text('balance', n * 0.2, R[Math.round(n * 0.2)] ? R[Math.round(n * 0.2)].B / 1000 : L / 1000, { dx: 6, dy: 12, color: 'accent', weight: 700, size: 11.5 });
-          B.text(`interest paid ${money(cur.total / 1000, 0)}k`, m, cI[m - 1] / 1000, { dy: -12, dx: -4, align: 'right', color: 'red', weight: 700, size: 11.5 });
+          const mh = Math.max(1, Math.round(0.5 * m));
+          B.text(`interest paid: ${money(cur.total / 1000, 0)}k in all`, mh, cI[mh - 1] / 1000, { dy: 14, dx: 8, color: 'red', weight: 700, size: 11.5 });
           if (E > 0) B.text(`without extra ${money(base.total / 1000, 0)}k`, n, base.total / 1000, { dy: 12, dx: -4, align: 'right', color: 'muted', weight: 600, size: 11 });
           B.dot(k, R[k - 1].B / 1000, { r: 4.5, color: 'gold' });
           // yearly table
@@ -420,7 +422,7 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
             L.dot(g, Math.min(P, YM), { r: 6, color: P > YM ? 'red' : 'accent' });
             const right = g > 0.08;
             L.text(P > YM ? `P = ${money(P)} (off the chart)` : `P = ${money(P, 2)}`, g, Math.min(P, YM), { dx: right ? -10 : 10, dy: P > YM * 0.9 ? 14 : -12, align: right ? 'right' : 'left', color: 'accent', weight: 750, size: 12, plate: true });
-          } else L.dot(g, YM * 0.97, { r: 6, color: 'red', hollow: true, width: 2.4 });
+          } else { L.dot(g, YM * 0.8, { r: 6, color: 'red', hollow: true, width: 2.4 }); L.text(`g = ${pct(g, 1)}: P = ∞`, g, YM * 0.8, { dy: -14, align: g > 0.12 ? 'right' : 'center', color: 'red', weight: 700, size: 11.5, plate: true }); }
           // right: cumulative value of dividends
           const q = (1 + g) / (1 + r), cum = [0];
           for (let t = 1; t <= TM; t++) cum.push(cum[t - 1] + (D1 * Math.pow(1 + g, t - 1)) / Math.pow(1 + r, t));
@@ -478,7 +480,7 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
         });
         v.button('Reset', () => reset());
         const TB = v.stage({ x: [0, 1], y: [0, 1], height: 180, axes: false, full: true, title: 'cash flows of the trade ($): + received, − paid' });
-        const H = v.stage({ x: [0, 10], y: [95, 110], height: 250, axes: 'box', weight: 1.4, minWidth: 330, xlabel: 'trades', ylabel: 'price ($)', title: 'the two prices, trade by trade' });
+        const H = v.stage({ x: [0, 10], y: [95, 110], height: 250, axes: 'box', weight: 1.4, minWidth: 330, xlabel: 'trades', title: 'the two prices ($), trade by trade' });
         const K = v.stage({ x: [0, 1], y: [0, 15], height: 250, axes: 'box', weight: 1, minWidth: 220, xticks: [], title: 'profit pocketed ($)' });
         const T = v.table(TB, { rows: 3, cols: 5, square: false, maxCell: 38, cellAspect: 3.8, size: 13.5, margin: 6, colWeights: [2.2, 1, 1, 1, 1], colLabels: ['', 'today', 'year 1', 'year 2', 'year 3'] });
         v.legend([['blue', 'bond A'], ['purple', 'portfolio B (zero-coupon strips)'], ['green', 'riskless profit', { area: true }], ['red', 'open position', { area: true }]]);
@@ -504,7 +506,7 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
           if (same) {
             const one = (PA + PB) / 2;
             H.hline(one, { color: 'green', width: 1.2, dash: [2, 4] });
-            H.text(`one price ${money(one, 2)}`, N - 1 + AH, one, { align: 'right', dy: buyA ? -9 : 9, color: 'green', weight: 650, size: 11 });
+            H.text(`one price ${money(one, 2)}`, N - 1 + 0.4 * AH, one, { align: 'center', dy: -9, color: 'green', weight: 650, size: 11 });
             H.path(proj.map((p, k) => [N - 1 + k, p.PA]), { color: 'blue', width: 1.4, dash: [4, 4], alpha: 0.6 });
             H.path(proj.map((p, k) => [N - 1 + k, p.PB]), { color: 'purple', width: 1.4, dash: [4, 4], alpha: 0.6 });
           }
@@ -512,7 +514,6 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
           H.path(pts.map((p, k) => [k, p.PB]), { color: 'purple', width: 2.4 }); H.dots(pts.map((p, k) => [k, p.PB]), { r: 4, color: 'purple' });
           H.text(`A ${money(PA, 2)}`, N - 1, PA, { dx: 4, dy: buyA ? 13 : -13, color: 'blue', weight: 700, size: 11.5 });
           H.text(`B ${money(PB, 2)}`, N - 1, PB, { dx: 4, dy: buyA ? -13 : 13, color: 'purple', weight: 700, size: 11.5 });
-          if (msg) H.corner(msg, 'tr', { color: 'red', weight: 650, size: 11.5 });
           // pocket: done trades solid, the trades still to come faint (a geometric series)
           const g0 = hist.length ? Math.abs(hist[0].PB - hist[0].PA) : Math.abs(gap), limit = g0 / (2 * IMPACT);
           K.setView([0, 1], [-0.05 * Math.max(1, limit * 1.2), Math.max(1, limit * 1.2)]);
@@ -531,8 +532,9 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
         v.readout(() => {
           if (!st) return '';
           const { PA, PB, gap, same, buyA, base, n, last, fair } = st;
-          if (!same) return `B now pays ${usd(qS.value)} at year 3, not ${usd(106)}: the cash flows differ, so the law of one price says nothing directly. Of the price gap ${usd(gap, 2)}, ${usd(fair, 2)} is the present value of the extra payment, $0.88\\times(${qS.value}-106)$; buying one and selling the other leaves an open position of ${usd(106 - qS.value)} at year 3 — not an arbitrage.`;
-          return `Identical cash flows, prices ${usd(PA, 2)} (A) and ${usd(PB, 2)} (B): ${Math.abs(gap) < 0.005 ? 'one price — no arbitrage left.' : `**${buyA ? 'buy A, sell B' : 'sell A, buy B'}** for ${usd(Math.abs(gap), 2)} today with every future flow cancelling.`}` + (n ? ` After ${n} trade${n > 1 ? 's' : ''} you have pocketed **${usd(base, 2)}** (last trade ${usd(last, 2)}); each trade closes 30% of the gap, so the profits form a geometric series that converges.` : ' Press Trade.');
+          const pre = msg ? `**Trade refused: ${msg}.** ` : '';
+          if (!same) return pre + `B now pays ${usd(qS.value)} at year 3, not ${usd(106)}: the cash flows differ, so the law of one price says nothing directly. Of the price gap ${usd(gap, 2)}, ${usd(fair, 2)} is the present value of the extra payment, $0.88\\times(${qS.value}-106)$; buying one and selling the other leaves an open position of ${usd(106 - qS.value)} at year 3 — not an arbitrage.`;
+          return pre + `Identical cash flows, prices ${usd(PA, 2)} (A) and ${usd(PB, 2)} (B): ${Math.abs(gap) < 0.005 ? 'one price — no arbitrage left.' : `**${buyA ? 'buy A, sell B' : 'sell A, buy B'}** for ${usd(Math.abs(gap), 2)} today with every future flow cancelling.`}` + (n ? ` After ${n} trade${n > 1 ? 's' : ''} you have pocketed **${usd(base, 2)}** (last trade ${usd(last, 2)}); each trade closes 30% of the gap, so the profits form a geometric series that converges.` : ' Press Trade.');
         });
       },
     },

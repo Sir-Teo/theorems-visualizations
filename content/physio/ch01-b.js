@@ -16,11 +16,11 @@ function cannonRun(sc, fb) {
   const out = { t: [], x: [], e1: [], e2: [] };
   if (sc === 'meal' || sc === 'fast') {
     // glucose (mg/dL) and relative insulin; counter-regulation switches on below 68 mg/dL (Schwartz et al. 1987)
-    const U0 = 1.0, kI = 0.012, H0 = U0 + kI * 90, Hcr = 2.6, tauI = 15;
+    const U0 = 1.0, kI = 0.012, H0 = U0 + kI * 90, Hcr = 2.0, tauI = 15;
     const meal = (t) => (sc === 'meal' && t > 30 ? (150 * (t - 30)) / 625 * Math.exp(-(t - 30) / 25) : 0);
-    const ex = (t) => (sc === 'fast' && t > 30 && t < 240 ? 1.15 : 0);
-    const sec = (G) => Math.max(0, (G - 70) / 20), cr = (G) => clamp((68 - G) / 12, 0, 1);
-    const f = (y, t) => { const [G, I] = y; return [meal(t) + H0 + (fb ? Hcr * cr(G) : 0) - kI * I * G - U0 - ex(t), ((fb ? sec(G) : 1) - I) / tauI]; };
+    const ex = (t, G) => (sc === 'fast' && t > 30 && t < 240 ? 0.024 * G : 0); // insulin-independent muscle uptake during exercise
+    const sec = (G) => Math.max(0, (G - 70) / 20), cr = (G) => clamp((68 - G) / 25, 0, 1);
+    const f = (y, t) => { const [G, I] = y; return [meal(t) + H0 + (fb ? Hcr * cr(G) : 0) - kI * I * G - U0 - ex(t, G), ((fb ? sec(G) : 1) - I) / tauI]; };
     let y = [90, 1];
     for (let k = 0, dt = 0.5; k <= 720; k++) { const t = k * dt; out.t.push(t); out.x.push(y[0]); out.e1.push(clamp(y[1] / 2.5, 0, 1)); out.e2.push(fb ? cr(y[0]) : 0); y = rk4(f, y, t, dt); y[0] = Math.max(y[0], 20); }
     return out;
@@ -64,7 +64,7 @@ export default {
       kind: 'Model',
       name: 'Na⁺/K⁺-ATPase: three sodium out, two potassium in',
       statement: String.raw`The sodium–potassium pump of the plasma membrane hydrolyses one ATP per cycle to export **3 Na⁺** and import **2 K⁺** against their electrochemical gradients. In the Post–Albers scheme the protein alternates between an inward-facing state $E_1$, with high affinity for Na⁺, and an outward-facing phosphorylated state $E_2P$, with high affinity for K⁺, occluding the ions in between. Each cycle moves one net positive charge outward, so the pump is **electrogenic**. The pump rate rises steeply with internal Na⁺ (three sites) and is blocked from outside by cardiac glycosides such as ouabain. When it is blocked, the Na⁺ and K⁺ gradients run down by passive leak over minutes to hours.`,
-      idea: String.raw`The pump is a carrier (1.6) whose conformational change is driven by phosphorylation, so the cycle can run uphill. Coupling is enforced by the order of events: phosphorylation requires bound Na⁺, and dephosphorylation requires bound K⁺. The free energy of ATP hydrolysis (about 50–60 kJ/mol in cells) exceeds the roughly 40 kJ/mol needed to move 3 Na⁺ out and 2 K⁺ in against the resting gradients and voltage. At steady state the pump fluxes exactly balance the passive leaks, 3 pump cycles per 3 leaking Na⁺ and 2 leaking K⁺. That balance sets the gradients, which in turn set the Nernst potentials (1.8) and the resting potential (1.9, 1.11). The cost is large: about 20–30 % of the ATP-coupled oxygen use of a resting mammal and half or more of the brain's (Rolfe and Brown 1997). Each pump turns over at roughly 100 cycles per second.`,
+      idea: String.raw`The pump is a carrier (1.6) whose conformational change is driven by phosphorylation, so the cycle can run uphill. Coupling is enforced by the order of events: phosphorylation requires bound Na⁺, and dephosphorylation requires bound K⁺. The free energy of ATP hydrolysis (about 50–60 kJ/mol in cells) exceeds the roughly 43 kJ/mol needed to move 3 Na⁺ out and 2 K⁺ in against the resting gradients and voltage. At steady state the pump fluxes exactly balance the passive leaks, 3 pump cycles per 3 leaking Na⁺ and 2 leaking K⁺. That balance sets the gradients, which in turn set the Nernst potentials (1.8) and the resting potential (1.9, 1.11). The cost is large: about 20–30 % of the ATP-coupled oxygen use of a resting mammal and half or more of the brain's (Rolfe and Brown 1997). Each pump turns over at up to about 70–80 cycles per second (neuronal isoforms).`,
       caption: String.raw`Step through the Post–Albers cycle with the player, or press play. Na⁺ is orange, K⁺ purple and phosphate gold, and the gates open and close. Count what one turn achieves: 3 Na⁺ out, 2 K⁺ in, 1 ATP spent, one positive charge exported. Right: a model neuron, using the pump–leak model of 1.11 at fixed volume, with its internal Na⁺ and K⁺ and its membrane potential below. Toggle **ouabain** to block the pump at $t = 5$ min. The voltage loses the pump's few millivolts at once, then the gradients run down by passive leak over the next hour and the cell slowly depolarizes. Raise the leak and the run-down speeds up.`,
       scope: String.raw`The 3:2:1 stoichiometry holds under physiological conditions; the kinetic rates in the model are illustrative (fitted to give a −70 mV resting potential with 12 mM internal Na⁺).`,
       deps: ['physio-1.6'],
@@ -89,9 +89,9 @@ export default {
         const leak = v.slider('Na⁺ leak ×', 0.5, 3, 1, { step: 0.1 });
         const sp = v.stage({ x: [-4.2, 4.2], y: [-3.5, 3.6], equal: true, axes: false, height: 300, weight: 1 });
         const sc = v.stage({ x: [0, 90], y: [0, 160], height: 300, axes: 'box', xlabel: 't (min)', ylabel: 'internal concentration (mM)', weight: 1 });
-        const sv = v.stage({ x: [0, 90], y: [-80, -20], height: 150, axes: 'box', xlabel: 't (min)', ylabel: 'V (mV)', full: true, yticks: [-80, -70, -60, -50, -40, -30, -20] });
+        const sv = v.stage({ x: [0, 90], y: [-80, -10], height: 150, axes: 'box', xlabel: 't (min)', ylabel: 'V (mV)', full: true, yticks: [-80, -60, -40, -20] });
         let key = '', run = null;
-        const get = () => { const k = `${ouab.value}|${leak.value}`; if (k !== key) { key = k; run = pumpLeak({ tEnd: 90, dt: 0.1, fixedVolume: true, leak: leak.value, pumpOn: (t) => (ouab.value && t >= 5 ? 0 : 1) }); } return run; };
+        const get = () => { const k = `${ouab.value}|${leak.value}`; if (k !== key) { key = k; run = pumpLeak({ tEnd: 90, dt: 0.1, fixedVolume: true, speed: 0.4, leak: leak.value, pumpOn: (t) => (ouab.value && t >= 5 ? 0 : 1) }); } return run; };
         v.render(() => {
           const f = S.frame, p = S.prev && S.prev.na ? S.prev : f, u = S.tween;
           // compartments and membrane

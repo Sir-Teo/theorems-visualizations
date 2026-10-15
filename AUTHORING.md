@@ -368,7 +368,7 @@ labels, nothing drawn off-screen, sensible ranges, readable readouts. Check a fe
 Rules:
 - Edit only your own chapter files. Do not modify `assets/`, `scripts/`, other chapters, or run
   git. If the runtime is missing something, work around it and mention it in your report.
-- A literal dollar sign in any rich string (statement, caption, readout, labels) must be written `\$` inside math, e.g. `$\$20$`; a bare `$` opens TeX.
+- A literal dollar sign in any rich string (statement, caption, readout, labels) is written `\$` (e.g. `String.raw`costs \$20``); a bare `$` opens TeX. `s.contour` ignores `dash` (each cell segment restarts the pattern), so use `alpha` or `width` to de-emphasize contours.
 - No `import` statements in content files except one: `v` provides everything. Helpers shared by
   several items in a file go at the top of the module as plain functions; helpers shared by the part
   files of one chapter go in `content/<col>/chNN.shared.js` (named exports) and are imported with

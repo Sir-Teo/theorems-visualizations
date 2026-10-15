@@ -382,7 +382,8 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
         const cacheP = memo(), cache = memo(); let cur = null;
         const polhodes = () => cacheP('p', () => {
           const out = [];
-          for (const [k, angs] of [[0, [12, 25, 40, 55, 70]], [2, [12, 25, 40, 55, 70]]]) for (const a of angs) {
+          const sepA = Math.atan(Math.sqrt((1 / Id[0] - 1 / Id[1]) / (1 / Id[1] - 1 / Id[2]))) / DEG;   // separatrix angle from e₁ in the e₁e₃-plane
+          for (const [k, angs] of [[0, [0.22, 0.45, 0.68, 0.88].map((f) => f * sepA)], [2, [0.3, 0.6, 0.86].map((f) => f * (90 - sepA))]]) for (const a of angs) {
             const d = k === 0 ? [Math.cos(a * DEG), 0, Math.sin(a * DEG)] : [Math.sin(a * DEG), 0, Math.cos(a * DEG)];
             const w0 = [d[0] / Id[0], d[1] / Id[1], d[2] / Id[2]], wn = 3 / nrm(w0), ww = scl(w0, wn);
             const T = freePeriod(Id, dot(ww.map((x, i) => Id[i] * x), ww.map((x, i) => Id[i] * x)), 0.5 * (Id[0] * ww[0] ** 2 + Id[1] * ww[1] ** 2 + Id[2] * ww[2] ** 2));
@@ -466,8 +467,9 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
         const Id = [1, 2, 3], TS = 40, N = 16000, EV = 8;
         const start = v.select('ω starts', [{ value: 'a1', label: 'near e₁' }, { value: 'sep', label: 'near the separatrix' }, { value: 'a3', label: 'near e₃' }], 'sep');
         const tqT = v.toggle('apply a small torque', false);
-        const S = v.stage({ x: [-1.55, 1.55], y: [-1.25, 1.35], equal: true, axes: false, height: 390, title: 'the Poinsot ellipsoid rolling on the invariable plane (drag to rotate)' });
+        const S = v.stage({ x: [-1.3, 1.3], y: [-1.1, 1.3], equal: true, axes: false, height: 360, title: 'the ellipsoid rolling on the invariable plane (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.7, pitch: 0.28, axes: false, hint: false });
+        const sh = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 360, weight: 0.8, minWidth: 240, title: 'the plane seen from above: the herpolhode' });
         const W0 = { a1: [1.6, 0.25, 0.3], sep: [0.9, 0.25, 0.55], a3: [0.25, 0.3, 1.1] };
         const cache = memo(); let cur = null;
         const run = () => cache(start.value + '|' + tqT.value, () => {
@@ -505,6 +507,13 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
           sc.tex('\\boldsymbol\\omega', scl(r.xs, 1.38), { color: 'accent', size: 15 });
           sc.dot(r.xs, { r: 5.5, color: 'gold' });
           sc.flush();
+          // top view of the plane
+          let R0 = 0.2; for (const q of rec) R0 = Math.max(R0, Math.hypot(q.xs[0], q.xs[1]));
+          sh.setView([-1.15 * R0, 1.15 * R0], [-1.15 * R0, 1.15 * R0]);
+          sh.circle(0, 0, R0, { color: 'faint', width: 1, dash: [3, 4] });
+          sh.path(rec.map((q) => [q.xs[0], q.xs[1]]), { color: 'gold', width: 1, alpha: 0.3 });
+          sh.path(rec.slice(0, i + 1).map((q) => [q.xs[0], q.xs[1]]), { color: 'gold', width: 1.8 });
+          sh.dot(r.xs[0], r.xs[1], { r: 5, color: 'gold' }); sh.dot(0, 0, { r: 3.5, color: 'purple', label: 'foot of L', labelPos: 's', math: false });
           cur = { B, r, i };
         }, { period: TS, still: 22 });
         v.legend([['accent', 'ellipsoid $\\mathbf x\\cdot\\mathsf I\\mathbf x = 1$ and $\\boldsymbol\\omega$'], ['green', 'polhode (on the body)'], ['gold', 'herpolhode (on the plane)'], ['purple', '$\\mathbf L$']]);
@@ -512,8 +521,10 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
           if (!cur) return '';
           const { B, r } = cur, Ib = r.xb.map((x, k) => Id[k] * x);
           let hmin = Infinity, hmax = -Infinity, amax = 0; for (const q of B.rec) { hmin = Math.min(hmin, q.h); hmax = Math.max(hmax, q.h); amax = Math.max(amax, angle(q.Ls, B.rec[0].Ls)); }
-          const onE = dot(r.xb, Ib);
-          const head = String.raw`contact point $\mathbf x = \boldsymbol\omega/\sqrt{2T}$: $\mathbf x\cdot\mathsf I\mathbf x = ${v.fix(onE, 10)}$ (on the ellipsoid) · normal $\mathsf I\mathbf x$ vs $\mathbf L$: ${sci(v, angle(Ib, r.w.map((x, k) => Id[k] * x)) / DEG)}° · velocity of the material point at the contact, $|\boldsymbol\omega\times\mathbf x| = ${sci(v, nrm(crs(r.w, r.xb)))}$`;
+          const onE = dot(r.xb, Ib), i0 = Math.max(1, Math.min(B.rec.length - 2, cur.i)), dt = TS / (B.rec.length - 1);
+          // velocity of the material point now at the contact: (Q(t+dt) − Q(t−dt)) x_b / 2dt
+          const vel = scl(sub(mv(B.rec[i0 + 1].Q, B.rec[i0].xb), mv(B.rec[i0 - 1].Q, B.rec[i0].xb)), 1 / (2 * dt)), vref = nrm(B.rec[i0].w) * nrm(B.rec[i0].xb);
+          const head = String.raw`contact point $\mathbf x = \boldsymbol\omega/\sqrt{2T}$: $\mathbf x\cdot\mathsf I\mathbf x = ${v.fix(onE, 10)}$ (on the ellipsoid) · angle between the normal $\mathsf R\,\mathsf I\mathbf x$ and the initial $\mathbf L$: ${num(v, angle(mv(r.Q, Ib), B.rec[0].Ls) / DEG, 3)}° · speed of the material point at the contact (finite difference) $${sci(v, nrm(vel))}$, against $|\boldsymbol\omega||\mathbf x| = ${v.fix(vref, 3)}$ for a point as far out at right angles: rolling without slipping`;
           if (!tqT.value) return head + String.raw` · distance of the tangent plane $\sqrt{2T}/|\mathbf L|$: from ${v.fix(hmin, 8)} to ${v.fix(hmax, 8)} over ${TS} s — the plane is invariable`;
           return head + String.raw` · with the torque, $\mathbf L$ turns by up to ${v.fix(amax / DEG, 1)}° and the plane’s distance ranges from ${v.fix(hmin, 4)} to ${v.fix(hmax, 4)}: no invariable plane`;
         });
@@ -528,7 +539,7 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
 $$\Omega_b = \frac{I_3 - I_1}{I_1}\,\omega_3 ,$$
 in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a prolate one. In space, $\mathbf e_3$ and $\boldsymbol\omega$ precess together about the fixed $\mathbf L$ at the rate $|\mathbf L|/I_1$. The cone traced by $\boldsymbol\omega$ in the body (body cone, around $\mathbf e_3$) rolls without slipping on the cone it traces in space (space cone, around $\mathbf L$). **Earth** is slightly oblate, with dynamical flattening $H = (C - A)/C = 0.0032738$. Euler (1765) predicted that, if it were rigid, its rotation pole would wander around the figure axis with period $A/(C - A) = 304.5$ sidereal days, about 304 solar days (often quoted as ten months, or 305 days). Chandler (1891) found the wobble in latitude records, with a period near 427 days; the modern value is about **433 days**. The difference is due to Earth not being rigid. Its elastic mantle partly re-forms the equatorial bulge around the instantaneous axis, and the oceans and the fluid core also respond, all of which weakens the restoring torque.`,
       idea: String.raw`With $I_1 = I_2$, the third Euler equation (10.11) gives $\dot\omega_3 = 0$, and the first two become $\dot\omega_1 = -\Omega_b\omega_2$, $\dot\omega_2 = \Omega_b\omega_1$, uniform rotation of $(\omega_1, \omega_2)$. In space $\mathbf L = I_1\boldsymbol\omega + (I_3 - I_1)\omega_3\mathbf e_3$, so $\mathbf L$, $\boldsymbol\omega$ and $\mathbf e_3$ are coplanar, and $\dot{\mathbf e}_3 = \boldsymbol\omega\times\mathbf e_3 = (\mathbf L/I_1)\times\mathbf e_3$, a precession about $\mathbf L$. For Earth, $\omega_3$ is one turn per sidereal day and $(C - A)/A = H/(1 - H)$. A simple model of elastic yielding replaces $C - A$ by $(C - A)(1 - k/k_s)$, where $k$ is the effective Love number and $k_s \approx 0.94$ is its fluid limit. The observed 433 days needs $k/k_s \approx 0.30$, the same order as the elastic Love number measured from tides.`,
-      caption: String.raw`**Symmetric top:** choose the shape (oblate disc to prolate cigar) and the initial tilt of $\boldsymbol\omega$ from the symmetry axis. Left: the body with its body cone (pink, carried by the body) rolling on the space cone (purple, fixed around $\mathbf L$); $\boldsymbol\omega$ lies along their line of contact. Right: $(\omega_1, \omega_2)$ as seen from the body, circling at the measured rate. **Earth:** the right panel becomes the path of the rotation pole across the ground over 7 years, the sum of the free Chandler wobble and a yearly wobble driven by the seasons (typical sizes 0.15″ and 0.09″; 1″ is about 31 m at the pole). Slide the elastic yielding from rigid (Euler’s 304-day period) up to the value that gives the observed 433 days, and watch the 6.4-year beat between the two wobbles appear.`,
+      caption: String.raw`**Symmetric top:** choose the shape (oblate disc to prolate cigar) and the initial tilt of $\boldsymbol\omega$ from the symmetry axis. Left: the body with its body cone (pink, carried by the body) rolling on the space cone (purple, fixed around $\mathbf L$); $\boldsymbol\omega$ lies along their line of contact. Right: $(\omega_1, \omega_2)$ as seen from the body, circling at the measured rate. **Earth:** the right panel becomes the path of the rotation pole across the ground over 7 years, the sum of the free Chandler wobble and a yearly wobble driven by the seasons (typical sizes 0.15″ and 0.09″; 1″ is about 31 m at the pole). The elastic yielding starts at the value that gives the observed 433 days, with its 6.4-year beat between the two wobbles; slide it to zero for Euler’s rigid Earth, whose 304-day wobble would beat every 4.9 years.`,
       deps: ['mech-10.11'],
       refs: ['Taylor §10.8', 'Tong §3.4'],
       tags: ['symmetric top', 'Chandler wobble', 'Earth rotation'],
@@ -539,7 +550,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
         const mode = v.select('body', [{ value: 'top', label: 'symmetric top' }, { value: 'earth', label: 'Earth' }], 'top');
         const rS = v.slider('shape $I_3/I_1$ (<1 prolate, >1 oblate)', 0.3, 1.9, 1.5, { step: 0.01 });
         const aS = v.slider('tilt of $\\boldsymbol\\omega$ from $\\mathbf e_3$ (°)', 2, 40, 18, { step: 0.5 });
-        const kS = v.slider('elastic yielding $k/k_s$', 0, 0.4, 0, { step: 0.001 });
+        const kS = v.slider('elastic yielding $k/k_s$', 0, 0.4, 0.299, { step: 0.001 });
         const S = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 340, title: ' ' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.25, axes: false, hint: false });
         const sb = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 340, title: ' ' });
@@ -566,12 +577,12 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
           if (!earth) {
             S.setTitle('body cone rolling on the space cone (drag to rotate)'); sb.setTitle('$(\\omega_1, \\omega_2)$ seen from the body'); sT.setTitle('$\\omega_1$ (rad/s) against $t$ (s)');
             const B = runTop(), R = B.R, i = idxAt(R, t % B.TSim), y = R.y[i], Q = qmat(y.slice(0, 4)), wb = [y[4], y[5], y[6]], ws = mv(Q, wb), e3 = mv(Q, [0, 0, 1]);
-            const sz = 0.9 / Math.max(B.rc, B.hc / 2);
+            const sz = 0.6 / Math.max(B.rc, B.hc / 2);
             sc.begin();
             // body: a cylinder of radius rc, height hc (scaled)
             const a1 = mv(Q, [1, 0, 0]), a2 = mv(Q, [0, 1, 0]), hh = (B.hc / 2) * sz, rr = B.rc * sz;
-            for (const sg of [-1, 1]) sc.disc(a1, a2, rr, { fill: 'accent', fillAlpha: 0.16, color: 'accent', width: 1.2 }, scl(e3, sg * hh));
-            for (let k = 0; k < 16; k++) { const ang = (TAU * k) / 16, p = add(scl(a1, rr * Math.cos(ang)), scl(a2, rr * Math.sin(ang))); sc.line(madd(p, e3, -hh), madd(p, e3, hh), { color: 'accent', width: 0.8, alpha: 0.5 }); }
+            for (const sg of [-1, 1]) sc.disc(a1, a2, rr, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.2 }, scl(e3, sg * hh));
+            for (let k = 0; k < 16; k++) { const ang = (TAU * k) / 16, p = add(scl(a1, rr * Math.cos(ang)), scl(a2, rr * Math.sin(ang))); sc.line(madd(p, e3, -hh), madd(p, e3, hh), { color: 'accent', width: 0.8, alpha: k % 4 ? 0.3 : 0.8 }); }
             // cones
             const Lh = B.Lh, wh = unit(ws), CL = 1.35;
             const ab = angle(wb, [0, 0, 1]), as = angle(ws, Lh);
@@ -593,6 +604,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
             sT.setView([0, B.TSim], [-wp, wp]); sT.hline(0, { color: 'faint' });
             series(sT, R.t, R.y.map((q) => q[4]), R.y.length, { color: 'accent', width: 1.6, alpha: 0.4 });
             series(sT, R.t, R.y.map((q) => q[4]), i, { color: 'accent', width: 2.2 });
+            v.legend([['accent', '$\\boldsymbol\\omega$'], ['purple', '$\\mathbf L$ and the space cone'], ['pink', 'symmetry axis $\\mathbf e_3$ and the body cone']]);
             cur = { earth, B };
             return;
           }
@@ -600,22 +612,23 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
           S.setTitle('Earth-fixed view: the rotation axis circles the figure axis'); sb.setTitle('path of the rotation pole over 7 years (m)'); sT.setTitle('pole displacement $x$ (m) against time (years)');
           const Tc = TEsol / (1 - kS.value), AC = 0.15, AA = 0.09, ARC = 30.87, YRS = 7, days = (t * 120) % (YRS * 365.25);
           const pole = (d) => [ARC * (AC * Math.cos((TAU * d) / Tc) + AA * Math.cos((TAU * d) / 365.25 + 0.7)), ARC * (AC * Math.sin((TAU * d) / Tc) + AA * Math.sin((TAU * d) / 365.25 + 0.7))];
+          v.legend([['accent', 'rotation axis $\\boldsymbol\\omega$ (Earth-fixed view)'], ['pink', 'figure axis'], ['gold', 'pole now', { dot: true }]]);
           sc.begin();
           const fl = 0.06;   // flattening exaggerated ×20
-          ellipsoidWire(sc, I3(), [1, 1, 1 - fl], { color: 'teal', alpha: 0.35, lat: 9, lon: 12 });
+          ellipsoidWire(sc, I3(), [0.85, 0.85, 0.85 * (1 - fl)], { color: 'teal', alpha: 0.35, lat: 9, lon: 12 });
           const wob = (TAU * days) / Tc, tilt = 0.12;
           const wdir = [Math.sin(tilt) * Math.cos(wob), Math.sin(tilt) * Math.sin(wob), Math.cos(tilt)];
-          sc.line([0, 0, -1.3], [0, 0, 1.4], { color: 'pink', width: 1.6, dash: [5, 4] });
-          const cone = []; for (let k = 0; k <= 60; k++) { const a = (TAU * k) / 60; cone.push([1.35 * Math.sin(tilt) * Math.cos(a), 1.35 * Math.sin(tilt) * Math.sin(a), 1.35 * Math.cos(tilt)]); }
+          sc.line([0, 0, -1.15], [0, 0, 1.25], { color: 'pink', width: 1.6, dash: [5, 4] });
+          const cone = []; for (let k = 0; k <= 60; k++) { const a = (TAU * k) / 60; cone.push([1.15 * Math.sin(tilt) * Math.cos(a), 1.15 * Math.sin(tilt) * Math.sin(a), 1.15 * Math.cos(tilt)]); }
           sc.path(cone, { color: 'accent', width: 1.2, alpha: 0.6 });
-          sc.arrow([0, 0, 0], scl(wdir, 1.35), { color: 'accent', width: 3 });
-          sc.tex('\\boldsymbol\\omega', scl(wdir, 1.5), { color: 'accent', size: 15 }); sc.tex('\\text{figure axis}', [0, 0, -1.42], { color: 'pink', size: 12 });
+          sc.arrow([0, 0, 0], scl(wdir, 1.15), { color: 'accent', width: 3 });
+          sc.tex('\\boldsymbol\\omega', scl(wdir, 1.27), { color: 'accent', size: 15, dx: -12 }); sc.tex('\\text{figure axis}', [0, 0, 1.25], { color: 'pink', size: 12, align: 'left', dx: 8 });
           sc.flush();
           S.corner('wobble angle exaggerated ~10⁵ times', 'bl', { size: 11 });
           // pole path
           const lim = ARC * (AC + AA) * 1.2;
           sb.setView([-lim, lim], [-lim, lim]);
-          for (const rr of [2, 4, 6, 8]) if (rr < lim) sb.circle(0, 0, rr, { color: 'faint', width: 0.8 });
+          for (const rr of [2, 4, 6, 8]) if (rr < lim) { sb.circle(0, 0, rr, { color: 'faint', width: 0.8 }); sb.text(`${rr} m`, rr * 0.71, -rr * 0.71, { color: 'muted', size: 10, dx: 3, dy: 6 }); }
           sb.line(-lim, 0, lim, 0, { color: 'faint', width: 0.8 }); sb.line(0, -lim, 0, lim, { color: 'faint', width: 0.8 });
           const pts = []; for (let d = 0; d <= days; d += 3) pts.push(pole(d));
           sb.path(pts, { color: 'accent', width: 1.6 });
@@ -627,7 +640,6 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
           const beat = 1 / Math.abs(1 / 365.25 - 1 / Tc);
           cur = { earth, Tc, beat };
         }, { period: 1e6, still: 6 });
-        v.legend([['accent', '$\\boldsymbol\\omega$'], ['purple', '$\\mathbf L$ and the space cone'], ['pink', 'symmetry (figure) axis and the body cone']]);
         v.readout(() => {
           if (!cur) return '';
           if (cur.earth) {
@@ -635,7 +647,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
             return String.raw`$H = (C - A)/C = ${H}$ · rigid Earth (Euler): $A/(C-A) = (1-H)/H = ${v.fix(TE, 1)}$ sidereal days $= ${v.fix(TEsol, 1)}$ solar days · with elastic yielding $k/k_s = ${v.fix(kS.value, 3)}$: $T = ${v.fix(Tc, 1)}$ days (observed Chandler period ≈ 433 days, reached at $k/k_s = ${v.fix(1 - TEsol / 433, 3)}$) · beat with the annual wobble every $1/|1/365.25 - 1/T| = ${v.fix(beat / 365.25, 2)}$ years`;
           }
           const B = cur.B;
-          return String.raw`$I_3/I_1 = ${v.fix(B.ratio, 3)}$, $\omega_3 = ${v.fix(B.w0[2], 4)}$ rad/s · body frame: measured turning rate of $(\omega_1,\omega_2)$ $${v.fix(B.ObM, 4)}$ rad/s vs $(I_3 - I_1)\omega_3/I_1 = ${v.fix(B.Ob, 4)}$ · space frame: $\mathbf e_3$ precesses about $\mathbf L$ at ${v.fix(B.OsM, 4)} rad/s vs $|\mathbf L|/I_1 = ${v.fix(B.Os, 4)}$ · $\omega_3$ constant to $${sci(v, Math.max(...B.R.y.map((q) => Math.abs(q[6] - B.w0[2]))))}$`;
+          return String.raw`$I_3/I_1 = ${v.fix(B.ratio, 3)}$, $\omega_3 = ${v.fix(B.w0[2], 4)}$ rad/s · body frame: measured turning rate of $(\omega_1,\omega_2)$ $${v.fix(B.ObM, 4)}$ rad/s vs $(I_3 - I_1)\omega_3/I_1 = ${v.fix(B.Ob, 4)}$ · space frame: $\mathbf e_3$ precesses about $\mathbf L$ at ${v.fix(B.OsM, 4)} rad/s vs $|\mathbf L|/I_1 = ${v.fix(B.Os, 4)}$ · largest change of $\omega_3$: $${sci(v, Math.max(...B.R.y.map((q) => Math.abs(q[6] - B.w0[2]))))}$ (exactly constant when $I_1 = I_2$)`;
         });
       },
     },

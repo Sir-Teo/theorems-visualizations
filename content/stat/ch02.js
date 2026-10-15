@@ -405,7 +405,7 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
           } else {
             const xs = d.xs, disc = f === 'bern' || f === 'pois';
             const lo = Math.min(...xs, f === 'cauchy' ? Math.min(...d.ys) : Infinity), hi = Math.max(...xs, f === 'cauchy' ? Math.max(...d.ys) : -Infinity);
-            const a = f === 'cauchy' ? Math.max(-12, lo) : disc ? -0.6 : 0, b = f === 'cauchy' ? Math.min(12, hi) : disc ? Math.max(1.6, hi + 0.6) : hi * 1.08;
+            const a = f === 'cauchy' ? Math.max(-15, lo - 0.5) : disc ? -0.6 : 0, b = f === 'cauchy' ? Math.min(15, hi + 0.5) : disc ? Math.max(1.6, hi + 0.6) : hi * 1.08;
             viewPad(sL, [a, b], [0, 1], { left: 12 }); sL.setTicks(undefined, []);
             const row1 = (vals, y, col) => { if (disc) { const cnt = new Map(); vals.forEach((x) => { const c = cnt.get(x) || 0; cnt.set(x, c + 1); sL.dot(x, y + 0.035 * c, { r: 3.4, color: col }); }); } else vals.forEach((x, i) => sL.dot(x, y + 0.11 * (((i * 0.618034) % 1) - 0.5), { r: 3.2, color: col, alpha: 0.85 })); };
             if (f === 'cauchy') {
@@ -445,7 +445,7 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
             if (f === 'cauchy') { fT = xsG.map((t) => L.full(d.ys, t)); mT = Math.max(...fT); }
             else { const T = L.T(d.xs); fT = xsG.map((t) => L.fromT(n, T, t)); mT = Math.max(...fT.filter(isFinite)); extra = f === 'unif' ? `$\\max_i x_i=${v.fix(T, 3)}$` : `$\\sum T(x_i)=${Number.isInteger(T) ? T : v.fix(T, 3)}$`; }
             const rF = fF.map((u) => u - mF), rT = fT.map((u) => u - mT);
-            for (let i = 0; i <= N; i++) if (isFinite(rF[i]) && isFinite(rT[i])) maxDiff = Math.max(maxDiff, Math.abs(rF[i] - rT[i]));
+            for (let i = 0; i <= N; i++) if (isFinite(rF[i]) && isFinite(rT[i]) && Math.max(rF[i], rT[i]) > -6) maxDiff = Math.max(maxDiff, Math.abs(rF[i] - rT[i]));
             viewPad(sR, [a, b], [-12, 1.2], { left: 34 });
             sR.hline(0, { color: 'faint', width: 1 });
             sR.clip(() => {
@@ -462,7 +462,7 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
         v.readout(() => {
           if (!info) return '';
           const { f, n, maxDiff, extra } = info;
-          if (f === 'cauchy') return String.raw`samples A and B share $\sum x_i$ and $\sum x_i^2$, yet their relative log-likelihoods differ by up to **${v.fix(maxDiff, 2)}** — no fixed-dimension summary is sufficient for the Cauchy family; only the ${n} order statistics are`;
+          if (f === 'cauchy') return String.raw`samples A and B share $\sum x_i$ and $\sum x_i^2$, yet where the likelihoods are not negligible (within 6 log-units of the top) their relative log-likelihoods differ by up to **${v.fix(maxDiff, 2)}** — no fixed-dimension summary is sufficient for the Cauchy family; only the ${n} order statistics are`;
           const k = f === 'norm' || f === 'gam' || f === 'beta' ? 2 : 1;
           return String.raw`${n} observations compressed to ${k} number${k > 1 ? 's' : ''}: ${extra} · largest gap between the full-data and the rebuilt relative log-likelihood: $${v.sci(Math.max(maxDiff, 1e-16), 1)}$ (rounding error) — **the sufficient statistic carries the whole likelihood**` + (f === 'unif' ? ' · sufficient of dimension 1, yet not an exponential family: its support moves with $\\theta$' : '');
         });
@@ -547,7 +547,7 @@ A minimal sufficient statistic exists for any dominated family on a nice sample 
             if (Md.axis === 'p') sR.path(pts, { color: first ? col : 'ink', width: first ? 5 : 1.4, alpha: first ? 0.75 : 0.9, dash: first ? null : [6, 4] });
             else { pts.forEach(([x, y], q) => { sR.line(x + (k - (members.length - 1) / 2) * 0.06, 0, x + (k - (members.length - 1) / 2) * 0.06, y, { color: col, width: 2.2, alpha: 0.85 }); }); sR.dots(pts.map(([x, y]) => [x + (k - (members.length - 1) / 2) * 0.06, y]), { r: 3.2, color: col }); }
           });
-          tR(`normalised likelihoods of the ${members.length} point${members.length > 1 ? 's' : ''} with candidate value ${cand.value === 'ord' ? `{${tSel.split('').join(',')}}` : tSel}` + (Md.axis ? '' : mod === 'two' ? ' (two values of θ)' : ' (14 random laws θ)'));
+          tR(`normalised likelihoods of the ${members.length} point${members.length > 1 ? 's' : ''} with value ${cand.value === 'ord' ? `{${tSel.split('').join(',')}}` : tSel}` + (Md.axis ? '' : mod === 'two' ? '' : ' at 14 random laws'));
           if (Md.axis) axisLabels(sR, Md.axis, null);
           sR.corner(seen.size === 1 ? `${members.length} curve${members.length > 1 ? 's' : ''} drawn on top of each other: one shape` : `${seen.size} different shapes`, 'tr', { color: seen.size === 1 ? 'green' : 'red', weight: 600 });
           info = { mod, cand: cand.value, L, nMem: members.length, nCls: seen.size };
@@ -654,7 +654,7 @@ Examples for a sample of size $n$: $\bar X$ for $N(\mu,1)$; $(\bar X,S^2)$ for $
           if (!info) return '';
           const { mod, isFlat, spread, same } = info;
           const nm = { n1: '$\\bar x$', n2: '$(\\bar x,s^2)$', unif: '$x_{(4)}$', cauchy: 'the order statistics' }[mod];
-          const sp = isFinite(spread) ? v.fix(spread, 4) : '∞';
+          const sp = !isFinite(spread) ? '∞' : spread < 1e-9 ? '0' : v.fix(spread, spread < 0.1 ? 4 : 2);
           return String.raw`log-likelihood ratio varies by ${sp} over the window: **${isFlat ? 'flat' : 'not flat'}** · ${nm}: ${same ? '**equal** for $x$ and $y$' : 'different for $x$ and $y$'} · ` + (isFlat === same ? `flatness and equality go together, as the criterion says: ${nm} ${mod === 'cauchy' ? 'are' : 'is'} minimal sufficient` : 'equal only up to the drag tolerance: press match');
         });
       },

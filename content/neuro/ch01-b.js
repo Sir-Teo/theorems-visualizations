@@ -66,7 +66,7 @@ export default {
           { type: 'W', at: [0, 2, 1.5, 2] },
           { type: 'OA', id: 'Amp', at: [3, 2.5], gain: 1000, label: 'amplifier' },
           { type: 'R', id: 'Rs', value: 0.5, at: [4.5, 2.5, 7, 2.5], label: 'electrode' },
-          { type: 'C', id: 'Cm', value: 1, at: [7, 2.5, 7, 0], label: 'membrane' },
+          { type: 'C', id: 'Cm', value: 1, at: [7, 2.5, 7, 0], label: 'membrane', labelSide: 1 },
           { type: 'W', at: [7, 2.5, 9.9, 2.5] },
           { type: 'I', id: 'Iion', value: 0, at: [9.9, 2.5, 9.9, 0], label: '' },
           { type: 'W', at: [9.9, 0, 0, 0] }, { type: 'GND', at: [4, 0] },
@@ -84,7 +84,7 @@ export default {
           const nm = C.net.termNode.get('Cm').a;
           sc.tex('V_m', 7.25, 3.25, { size: 14, color: 'ink', align: 'left' });
           sc.text(`${v.fix(res.V(nm), 1)} mV`, 8.1, 3.25, { size: 11, color: 'ink', align: 'left', baseline: 'middle', weight: 600 });
-          sc.text(`ionic current ${v.fix(Iion, 0)} µA/cm² (${Iion < 0 ? 'inward' : 'outward'})`, 3.5, 0.55, { size: 11, color: Iion < 0 ? ION_COL.Na : ION_COL.K, align: 'center', baseline: 'middle', weight: 700 });
+          sc.text(`ionic current ${v.fix(Iion, 0)} µA/cm² (${Iion < 0 ? 'inward' : 'outward'})`, 7.6, -0.5, { size: 11, color: Iion < 0 ? ION_COL.Na : ION_COL.K, align: 'center', baseline: 'middle', weight: 700 });
           // traces
           sv.hline(-65, { color: 'faint', width: 1 });
           trace(sv, R.t, R.Vc, { color: 'ink', dash: [5, 4], width: 1.4 });

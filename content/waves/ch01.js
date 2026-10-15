@@ -102,11 +102,12 @@ so all components with $ka\ll1$ travel at the same speed $c$, while short waves 
         const errCurve = () => {
           const k = shp.value + wS.value; if (k === eKey) return curve; eKey = k;
           const F = periodic(shp.value, wS.value, X0), Ns = [...new Set(M.range(36).map((i) => Math.round(4 * 128 ** (i / 35))))];
-          let norm2 = 0; for (let j = 0; j < 4000; j++) norm2 += F(j / 4000) ** 2; norm2 /= 4000;
+          const NF = 4000; let norm2 = 0; for (let j = 0; j < NF; j++) norm2 += F(j / NF) ** 2; norm2 /= NF;
           curve = Ns.map((N) => {
+            // compare the chain (joined by straight segments) with the continuum on a fine grid, in the L² norm
             const y = ringChain(M, N, F, 1); let e = 0;
-            for (let j = 0; j < N; j++) { const Y = F(j / N); e += (y[j] - Y) ** 2; }
-            return [N, Math.sqrt(e / N / norm2)];
+            for (let j = 0; j < NF; j++) { const u = (j / NF) * N, i = Math.floor(u), f = u - i, yc = y[i] * (1 - f) + y[(i + 1) % N] * f; e += (yc - F(j / NF)) ** 2; }
+            return [N, Math.sqrt(e / NF / norm2)];
           });
           return curve;
         };
@@ -134,7 +135,7 @@ so all components with $ka\ll1$ travel at the same speed $c$, while short waves 
           dp.fn((q) => (q <= qe ? (N / Math.PI) * Math.sin((Math.PI * q) / N) : NaN), { domain: [0, qe], n: 400, color: 'accent', width: 2.4 });
           dp.vline(qe, { color: 'red', dash: [3, 4], width: 1.2 });
           dp.text('zone edge k = π/a', qe, QM * 0.93, { color: 'red', size: 11.5, align: 'right', dx: -5 });
-          dp.text('chain: ω = (2c/a) sin(ka/2)', qe, N / Math.PI, { color: 'accent', size: 11.5, align: 'right', baseline: 'top', dx: -4, dy: 8 });
+          dp.text('chain: ω = (2c/a) sin(ka/2)', qe, N / Math.PI - 0.22 * QM, { color: 'accent', size: 11.5, align: 'right', baseline: 'top', dx: -6 });
           // ---- convergence
           const cv = errCurve();
           ep.path(cv, { color: 'accent', width: 2 });
@@ -145,7 +146,7 @@ so all components with $ka\ll1$ travel at the same speed $c$, while short waves 
             ep.line(48, g(48), 512, g(512), { color: 'muted', dash: [4, 4], width: 1.2 });
             ep.text('slope −2 (error ∝ 1/N²)', 150, g(150), { color: 'muted', size: 11.5, align: 'right', baseline: 'top', dx: -6, dy: 4 });
           }
-          ep.corner(`fitted slope for large N: ${v.fix(fit.slope, 2)}`, 'bl', { color: 'accent', weight: 600 });
+          ep.text(`fitted slope for large N: ${v.fix(fit.slope, 2)}`, N < 45 ? 60 : 5, 3e-4, { color: 'accent', size: 12, weight: 600, baseline: 'bottom' });
           const cur = cv.reduce((b, p) => (Math.abs(Math.log(p[0] / N)) < Math.abs(Math.log(b[0] / N)) ? p : b), cv[0]);
           ep.vline(N, { color: 'gold', width: 1.5 });
           ep.dot(cur[0], cur[1], { r: 5, color: 'gold' });
@@ -391,7 +392,7 @@ a solution of the wave equation whenever $\omega=ck$. Its **amplitude** is $A$, 
 
 With $+\omega t$ instead of $-\omega t$ the wave travels in the $-x$ direction. On a non-dispersive medium $v_p=c$ for every wavelength; in a dispersive one (chapter 3) $v_p$ depends on $k$.`,
       idea: String.raw`A crest is a place where the phase equals $2\pi n$; following it means keeping $kx-\omega t$ constant, so $dx/dt=\omega/k$. One wavelength passes a fixed observer in one period, which is the same statement as $v_p=\lambda/T$. A sinusoid is the special case of d'Alembert's solution (1.3) with $F(s)=A\cos(ks+\varphi)$; it matters because any shape can be built from sinusoids (2.3) and, in a linear medium, each one travels independently.`,
-      caption: String.raw`Set the wavelength and the period. The gold marker rides one crest and its measured speed is compared with $\lambda/T$. Drag the teal probe: it does not travel, it only bobs up and down, and its trace (below left) repeats every period $T$, wherever you put it. Below right: the same wave in space–time, with *now* at the top. Crests are the red stripes, and the black triangle shows one of them moving a distance $\lambda$ in a time $T$: the slope of every stripe is the phase velocity. Reverse the direction and the stripes tilt the other way.`,
+      caption: String.raw`Set the wavelength and the period. The gold marker rides one crest and its measured speed is compared with $\lambda/T$. Drag the teal probe: it does not travel, it only bobs up and down, and its trace (below left) repeats every period $T$, wherever you put it. Below right: the same wave in space–time, with *now* at the top. Crests are the red stripes, and the triangle shows one of them moving a distance $\lambda$ in a time $T$: the slope of every stripe is the phase velocity. Reverse the direction and the stripes tilt the other way.`,
       deps: ['waves-1.3'],
       see: ['music-1.3', 'sig-1.5', 'sig-1.4'],
       refs: ['Hecht ch. 2'],
@@ -560,7 +561,7 @@ The principle holds exactly only for linear media. For a medium whose restoring 
       idea: String.raw`The wave operator $L u=u_{tt}-c^2u_{xx}$ is linear: $L(au_1+bu_2)=aLu_1+bLu_2$, and initial data add in the same way, so by uniqueness (pde-2.5) the solution for $u_1(0)+u_2(0)$ is $u_1+u_2$. D'Alembert's formula (1.3) makes this concrete: the right-moving parts add, the left-moving parts add, and each moves at $c$ regardless of the other. With a term like $\beta u_x^2u_x$ the operator is no longer linear: the cross terms $3\beta(u_{1x}^2u_{2x}+u_{1x}u_{2x}^2)$ appear only where both waves are present, and they are the interaction.`,
       caption: String.raw`Three simulations run side by side: wave A alone, wave B alone, and A and B together. The blue string is the simulation with both; the dashed green curve is A alone plus B alone. With $\beta=0$ they coincide at every moment, and the **superposition defect** (red, below left) stays at zero, even when two opposite pulses cancel to a momentarily flat string. Raise the nonlinear stiffness $\beta$ and the defect appears where the waves overlap and stays after they part. Choose *wave trains* to add two sinusoids of nearby wavelength: the probe trace (below right) beats at the difference frequency.`,
       deps: ['waves-1.3'],
-      see: ['music-1.11', 'pde-1.1', 'em-1.4', 'waves-3.1'],
+      see: ['music-1.11', 'music-2.3', 'pde-1.1', 'em-1.4', 'waves-3.1', 'waves-2.1'],
       refs: ['Crawford ch. 4', 'Hecht ch. 2'],
       tags: ['superposition', 'linearity', 'beats'],
       scope: String.raw`Exact for linear wave equations. For real media it holds while the amplitude is small enough that the restoring force is proportional to the displacement (small slopes for strings, small pressure changes for sound, moderate fields for light in matter).`,
@@ -742,7 +743,7 @@ They satisfy the local conservation law $\partial_t(\mathcal K+\mathcal U)+\part
           let dm = 0, km = 1e-12; for (let i = 0; i <= 400; i++) { const x = (XM * i) / 400, a = Kd(x, tp), b = Ud(x, tp); dm = Math.max(dm, Math.abs(a - b)); km = Math.max(km, a, b); }
           sums = { K, U, E0, Epass, dm: dm / km, pc: Pw(xp, tp), ce: C * (Kd(xp, tp) + Ud(xp, tp)) };
           ps.corner(`energy past the probe so far: ${v.fix(1000 * Epass, 1)} mJ`, 'tr', { color: 'teal', weight: 600 });
-        }, { period: 6, still: 1.9 });
+        }, { period: 6, still: 4.5 });
         v.legend([['orange', 'kinetic $\\tfrac12\\mu y_t^2$', { area: true }], ['purple', 'potential $\\tfrac12Ty_x^2$', { area: true }], ['teal', 'power through the probe']]);
         v.readout(() => {
           if (!sums) return '';
@@ -832,7 +833,7 @@ So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of
           fv.setView([-vm, vm], [-0.7, 0.7]);
           fv.hline(0, { color: 'faint', width: 1 }); fv.vline(0, { color: 'faint', width: 1 });
           fv.line(-vm, -Z * vm, vm, Z * vm, { color: 'green', width: 2, dash: [7, 5] });
-          fv.text(`slope Z = √(Tμ) = ${v.fix(Z, 3)} kg/s`, 0.95 * vm, -0.45, { color: 'green', size: 11.5, align: 'right' });
+          fv.text(`slope Z = √(Tμ) = ${v.fix(Z, 3)} kg/s`, 0.95 * vm, -0.33, { color: 'green', size: 11.5, align: 'right' });
           const last = rec.filter((r) => r[0] > tn - 0.024);
           fv.path(last.map((r) => [r[2], r[1]]), { color: 'gold', width: 2.2 });
           if (last.length) fv.dot(last[last.length - 1][2], last[last.length - 1][1], { r: 5, color: 'gold' });

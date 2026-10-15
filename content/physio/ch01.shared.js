@@ -176,14 +176,14 @@ export function plVoltage(c, P, pump) {
   return bisect(f, -160, 120, 50);
 }
 /**
- * Integrate the pump–leak cell. opts: {tEnd (min), dt, pumpOn: t => 0…1, leak (× P_Na), fixedVolume, y0}.
+ * Integrate the pump–leak cell. opts: {tEnd (min), dt, pumpOn: t => 0…1, leak (× P_Na), speed (× all rates), fixedVolume, y0}.
  * Returns {t, Na, K, Cl, V, w, pump} arrays.
  */
 export function pumpLeak(o = {}) {
-  const tEnd = o.tEnd ?? 60, dt = o.dt ?? 0.05, leak = o.leak ?? 1, pumpOn = o.pumpOn || (() => 1);
-  const P = { K: PL.PK, Na: PL.PNa * leak, Cl: PL.PCl };
+  const tEnd = o.tEnd ?? 60, dt = o.dt ?? 0.05, leak = o.leak ?? 1, sp = o.speed ?? 1, pumpOn = o.pumpOn || (() => 1);
+  const P = { K: PL.PK * sp, Na: PL.PNa * leak * sp, Cl: PL.PCl * sp };
   const conc = (y) => { const w = o.fixedVolume ? 1 : (y[0] + y[1] + y[2] + PL.X) / PL.osmE; return { Na: y[0] / w, K: y[1] / w, Cl: y[2] / w, w }; };
-  const rate = (c, t) => pumpOn(t) * PL.pmax * (c.Na / (c.Na + PL.Kp)) ** 3;
+  const rate = (c, t) => sp * pumpOn(t) * PL.pmax * (c.Na / (c.Na + PL.Kp)) ** 3;
   const f = (y, t) => {
     const c = conc(y), p = rate(c, t), V = plVoltage(c, P, p);
     return [-P.Na * ghkFlux(1, c.Na, PL.out.Na, V, PL.T) - 3 * p, -P.K * ghkFlux(1, c.K, PL.out.K, V, PL.T) + 2 * p, -P.Cl * ghkFlux(-1, c.Cl, PL.out.Cl, V, PL.T)];

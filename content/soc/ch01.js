@@ -129,7 +129,7 @@ Two consequences recur throughout this collection.
 
 (b) Quite different individual motives can produce the same aggregate, so the motives cannot be read off the pattern; and a small change in the rules can change the pattern completely.`,
       idea: String.raw`Schelling opened *Micromotives and Macrobehavior* with a lecture audience that seated itself leaving the front rows of the hall empty. Nobody need have wanted the front empty. If each newcomer merely prefers someone seated in the rows just ahead, the first few arrivals scatter at random, each later arrival settles just behind somebody, clusters grow backwards, and the front stays empty until the back is full — when the latecomers must take the seats nobody chose. A mild taste for the back produces a similar picture for a different reason, and a dislike of sitting at a stranger's elbow produces a different one (alternate seats) that the late arrivals then destroy. The pattern lives in the interaction, which is why the following items simulate it: segregation from neighbourhood preferences (soc-1.2), tipping (soc-1.6), cascades of joiners (soc-1.8).`,
-      caption: String.raw`People enter one at a time and each picks among the empty seats, favouring seats that suit the chosen motive (with some idiosyncratic randomness). Colour shows arrival order, from the first (purple) to the last (yellow); the latest arrival has a red ring. Drag **people arrived** to replay the filling, pick a motive above or mix them with the sliders, and compare the row profile on the right with the dashed level of a randomly seated audience. With *someone just ahead* no rule mentions rows, yet the front empties.`,
+      caption: String.raw`People enter one at a time and each picks among the empty seats, favouring seats that suit the chosen motive (with some idiosyncratic randomness). Colour shows arrival order, from the first (purple) to the last (yellow); the latest arrival has a red ring. Drag **people arrived** to replay the filling, pick a motive above or mix them with the sliders, and compare the row profile on the right with the dashed level of a randomly seated audience. With *someone just ahead* (a newcomer prefers a seat with somebody in the two rows in front, within two seats to either side) no rule mentions rows, yet the front empties.`,
       deps: [],
       see: ['soc-1.10', 'soc-9.1', 'soc-9.4'],
       refs: ['Schelling ch. 1'],
@@ -141,9 +141,9 @@ Two consequences recur throughout this collection.
         const pre = v.select('everyone wants', [{ value: 'cover', label: 'someone just ahead' }, { value: 'back', label: 'to sit a bit back' }, { value: 'gap', label: 'a free seat beside' }, { value: 'none', label: 'nothing in particular' }], 'cover',
           { onChange: (k) => { const [b, c, a] = PRE[k]; bS.set(b); cS.set(c); aS.set(a); } });
         const nS = v.slider('people arrived', 0, CAP, 185, { int: true, step: 1 });
-        const bS = v.slider('taste for the back rows', 0, 2, 0, { step: 0.05 });
-        const cS = v.slider('wants someone in the 2 rows ahead', 0, 3, 1.5, { step: 0.05 });
-        const aS = v.slider('dislikes a neighbour at the elbow', 0, 3, 0, { step: 0.05 });
+        const bS = v.slider('taste for the back', 0, 2, 0, { step: 0.05 });
+        const cS = v.slider('wants someone just ahead', 0, 3, 1.5, { step: 0.05 });
+        const aS = v.slider('dislikes an elbow neighbour', 0, 3, 0, { step: 0.05 });
         let seed = 1988;
         v.button('New audience', () => { seed += 1; });
         const Hs = v.stage({ x: [-0.4, SEATS + 0.4], y: [-2.2, ROWS + 0.3], height: 370, weight: 1.5, axes: false, title: 'the hall, seen from above' });
@@ -228,7 +228,7 @@ The model's output is a spatial pattern and its degree of segregation, measured 
           size: N, seed: 12, speed: 3, still: 9,
           states: [{ name: 'vacant', color: null }, { name: 'blue', color: 'blue' }, { name: 'orange', color: 'orange' }],
           init: (r) => (r() < 1 - vac.value ? (r() < shA.value ? 1 : 2) : 0),
-          setup: (M) => { M.data.h0 = null; },
+          setup: (M) => { M.data.h0 = histOf(M); },
           step: (M) => { const r = cityStep(city(M), T.value, rule.value); M.data.moved = r.moved; },
           stats: (M) => { const st = cityStats(city(M), T.value); return { segregation: st.like, unhappy: st.unhappy }; },
           stopWhen: (M) => M.stats.unhappy === 0 || M.data.moved === 0,
@@ -239,7 +239,6 @@ The model's output is a spatial pattern and its degree of segregation, measured 
         let info = null;
         v.render(() => {
           const M = A.model;
-          if (!M.data.h0) M.data.h0 = histOf(M);
           A.draw();
           // inspected neighbourhood
           if (sel >= 0 && M.grid[sel]) {
@@ -435,7 +434,7 @@ Discontented residents leave, least tolerant first, and outsiders who would be c
 For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$) the curves are parabolas, $T_W(w) = R_W\,w\,(1 - w/m_W)$. In Schelling's first example, 100 blues and 50 oranges with $R_W = R_B = 2$, the only stable outcomes are all-blue and all-orange: the mixed equilibrium near $(21.7, 34.0)$ is a saddle, a **tipping point**. With 100 of each and $R = 5$ a stable mixture appears at $(80, 80)$, but it is flanked by two saddles, so a large enough shock still tips the area.`,
       scope: String.raw`One bounded area with free entry and exit; residents care only about the ratio of the two groups present; the residents present are always the most tolerant ones (Schelling's simplifying assumption, which Dokumacı and Sandholm, 2007, replace by an explicit best-response dynamic with the same equilibria — the dynamic drawn here).`,
       idea: String.raw`With few blues present only the most tolerant are there, and they accept a high ratio but number few; with many, the area includes the intolerant, who accept few oranges. The number of oranges a blue population will put up with therefore peaks in the middle, which is why $T_W$ is hump-shaped. Linearising at a crossing, the mixed equilibrium is stable only when both groups are on the falling side of their humps — each extra member is less tolerant than those already present, which is self-correcting — and the curves cut steeply enough (the product of their slopes exceeds 1). In the first example the blues at the crossing are on the rising side: an extra blue makes room for more blues, one fewer drives out more, and the area tips (soc-1.6 isolates this geometry). The separatrices through the saddles are the "tipping" boundaries.`,
-      caption: String.raw`Left: the state of the area, blues present across and oranges present up. The blue curve is $b = T_W(w)$ (blues enter below it), the orange curve $w = T_B(b)$ (oranges enter to its left); arrows show the flow and faint shading the basin of each outcome. Drag the starting mix and follow the trajectory. Right: the two tolerance schedules, with the current ratio — the residents above it are content. Load Schelling's examples or change the populations and tolerances.`,
+      caption: String.raw`Left: the state of the area, blues present across and oranges present up. The blue curve is $b = T_W(w)$ (blues enter below it), the orange curve $w = T_B(b)$ (oranges enter to its left); arrows show the flow and faint shading the basin of each outcome. Drag the starting mix and follow the trajectory. Right: the two tolerance schedules, with the current ratio — the residents above it are content. Load Schelling's examples or change the number of oranges (there are always 100 blues) and the top tolerances $R_W$ (oranges per blue that the most tolerant blue accepts) and $R_B$.`,
       deps: ['soc-1.2', 'ode-6.1'],
       see: ['ode-6.9', 'soc-1.10'],
       refs: ['Schelling ch. 4'],
@@ -445,9 +444,9 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
         const EX = { one: [50, 2, 2], two: [100, 5, 5], three: [60, 3, 1.5] };
         const ex = v.select('example', [{ value: 'one', label: 'Schelling 1: 100 vs 50, up to 2 : 1' }, { value: 'two', label: 'Schelling 2: 100 vs 100, up to 5 : 1' }, { value: 'three', label: 'tolerant blues, wary oranges' }], 'one',
           { onChange: (k) => { const [m, a, b] = EX[k]; mB.set(m); RW.set(a); RB.set(b); place(); } });
-        const mB = v.slider('oranges in the city ($m_B$; blues $m_W$ = 100)', 10, 150, 50, { int: true, step: 1, onChange: () => place() });
-        const RW = v.slider('most tolerant blue accepts this many oranges per blue', 0.2, 6, 2, { step: 0.05 });
-        const RB = v.slider('most tolerant orange accepts this many blues per orange', 0.2, 6, 2, { step: 0.05 });
+        const mB = v.slider('oranges in the city $m_B$', 10, 150, 50, { int: true, step: 1, onChange: () => place() });
+        const RW = v.slider('top blue tolerance $R_W$', 0.2, 6, 2, { step: 0.05 });
+        const RB = v.slider('top orange tolerance $R_B$', 0.2, 6, 2, { step: 0.05 });
         const mW = 100;
         const P = v.stage({ x: [0, 100], y: [0, 50], height: 370, weight: 1.3, axes: 'box', title: 'blues present $w$ (across), oranges present $b$ (up)' });
         const Q = v.stage({ x: [0, 100], y: [0, 2.2], height: 370, weight: 0.8, minWidth: 230, axes: 'box', ylabel: 'tolerated ratio', title: 'tolerance schedules (most tolerant first)' });
@@ -471,7 +470,7 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
             P.rect((i / basin.nx) * mW, (j / basin.ny) * m, ((i + 1) / basin.nx) * mW, ((j + 1) / basin.ny) * m, { fill: col, fillAlpha: 0.09, stroke: false });
           }
           const kx = P.X(1) - P.X(0), ky = P.Y(0) - P.Y(1);
-          P.field((x, y) => { const [u, w] = T.f(x, y); const L = Math.hypot(u * kx, w * ky); return L > 1e-9 ? [u / L, w / L] : [0, 0]; }, { spacing: 38, color: 'muted', alpha: 0.5 });
+          P.clip(() => P.field((x, y) => { const [u, w] = T.f(x, y); const L = Math.hypot(u * kx, w * ky); return L > 1e-9 ? [u / L, w / L] : [0, 0]; }, { spacing: 38, color: 'muted', alpha: 0.5 }), [0, mW], [0, m]);
           P.fn((x) => T.TW(x), { domain: [0, mW], color: 'blue', width: 2.6 });
           P.curve((t) => [T.TB(t * m), t * m], 0, 1, { color: 'orange', width: 2.6 });
           // trajectory
@@ -480,8 +479,8 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
           for (const f of [0.08, 0.25, 0.5]) { const q = Math.floor(f * (path.length - 2)); if (q > 0 && q + 1 < path.length) P.arrow(path[q][0], path[q][1], path[q + 1][0], path[q + 1][1], { color: 'ink', head: 10, width: 0.01 }); }
           T.eq.forEach(([x, y], q) => P.dot(x, y, { r: 6, color: T.kind[q] === 'stable' ? 'green' : 'red', hollow: T.kind[q] !== 'stable' }));
           P.dot(end[0], end[1], { r: 3.5, color: 'ink' });
-          P.text('all blue', mW, 0, { color: 'blue', size: 11.5, align: 'right', dx: -6, dy: 14, weight: 600 });
-          P.text('all orange', 0, m, { color: 'orange', size: 11.5, align: 'left', dx: 10, dy: -12, weight: 600 });
+          P.text('all blue', mW, 0, { color: 'blue', size: 11.5, align: 'right', dx: -12, dy: -14, weight: 600, plate: true });
+          P.text('all orange', 0, m, { color: 'orange', size: 11.5, align: 'left', dx: 12, dy: -12, weight: 600, plate: true });
           // schedules and who is content at the starting mix
           const top = Math.max(Rw, Rb) * 1.12, xm = Math.max(mW, m);
           Q.setView([-0.04 * xm, xm * 1.03], [-0.07 * top, top]);
