@@ -158,7 +158,7 @@ class Stage {
   /** Replace the custom ticks (same format as the xticks/yticks options; null = automatic). */
   setTicks(xticks, yticks) { if (xticks !== undefined) this.o.xticks = xticks; if (yticks !== undefined) this.o.yticks = yticks; }
   /** Change the axis labels (undefined = keep, null = none), e.g. per mode. */
-  setLabels(xlabel, ylabel) { if (xlabel !== undefined) this.o.xlabel = xlabel; if (ylabel !== undefined) this.o.ylabel = ylabel; this.rt.invalidate(); return this; }
+  setLabels(xlabel, ylabel) { let ch = false; if (xlabel !== undefined && xlabel !== this.o.xlabel) { this.o.xlabel = xlabel; ch = true; } if (ylabel !== undefined && ylabel !== this.o.ylabel) { this.o.ylabel = ylabel; ch = true; } if (ch) this.rt.invalidate(); return this; }
   resize() {
     const W = Math.max(120, Math.round(this.box.clientWidth || this.el.clientWidth || 300));
     const o = this.o;
@@ -216,10 +216,10 @@ class Stage {
     if (same(x, this.view.x) && same(y, this.view.y)) return;
     if (x) this.view.x = [...x]; if (y) this.view.y = [...y]; this._fit(); this.rt.invalidate();
   }
-  /** Switch either axis between linear and log in place, optionally with a new window: s.setScale({ylog: true, y: [1e-6, 1]}). */
-  setScale({ xlog, ylog, x, y } = {}) {
-    const same = (xlog === undefined || !!xlog === !!this.o.xlog) && (ylog === undefined || !!ylog === !!this.o.ylog);
-    if (xlog !== undefined) this.o.xlog = !!xlog; if (ylog !== undefined) this.o.ylog = !!ylog;
+  /** Switch either axis between linear and log (and equal/unequal aspect) in place, optionally with a new window: s.setScale({ylog: true, y: [1e-6, 1]}), s.setScale({equal: true}). Cheap to call every frame. */
+  setScale({ xlog, ylog, x, y, equal } = {}) {
+    const same = (xlog === undefined || !!xlog === !!this.o.xlog) && (ylog === undefined || !!ylog === !!this.o.ylog) && (equal === undefined || !!equal === !!this.o.equal);
+    if (xlog !== undefined) this.o.xlog = !!xlog; if (ylog !== undefined) this.o.ylog = !!ylog; if (equal !== undefined) this.o.equal = !!equal;
     if (same) { if (x || y) this.setView(x, y); return this; }
     if (x) this.view.x = [...x]; if (y) this.view.y = [...y];
     for (const [k, on] of [['x', this.o.xlog], ['y', this.o.ylog]]) if (on && !(this.view[k][0] > 0 && this.view[k][1] > 0)) {

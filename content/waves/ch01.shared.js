@@ -33,7 +33,7 @@ export function dpulse(name, u) {
  * 'driven' (massless ring pushed by a force: y_0 = y_1 + F h_0/T at every instant). `damp(x)` (1/s) adds a sponge.
  */
 export function makeChain({ x0, x1, mu, T = 1, delta, breaks = [], left = 'fixed', right = 'fixed', damp = null }) {
-  const B = [x0, ...breaks.filter((b) => b > x0 && b < x1).sort((a, b) => a - b), x1];
+  const B = [x0, ...[...new Set(breaks)].filter((b) => b > x0 + 1e-9 && b < x1 - 1e-9).sort((a, b) => a - b), x1];
   const xs = [x0];
   for (let k = 0; k + 1 < B.length; k++) {
     const a = B[k], b = B[k + 1], S = 2000;

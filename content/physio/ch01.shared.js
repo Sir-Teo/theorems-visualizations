@@ -165,10 +165,10 @@ export const PL = (() => {
   const T = 37, out = { Na: 145, K: 5, Cl: 110 }, osmE = 304; // plus 40 mM impermeant anions and ~4 mM glucose outside
   const Vss = -70, Na = 12, K = 140, Cl = out.Cl * Math.exp(Vss / VT(T)); // chloride is passively distributed at rest
   const X = Na + K - Cl; // electroneutrality
-  const PK = 0.1; // min⁻¹ (sets the time scale: potassium leaks out at ~1.5 mM/min when the pump stops)
+  const PK = 0.2; // min⁻¹ (sets the time scale: potassium leaks out at ~3 mM/min when the pump stops)
   const jK = ghkFlux(1, K, out.K, Vss, T), jNa = ghkFlux(1, Na, out.Na, Vss, T);
   const pss = (PK * jK) / 2, PNa = (3 * pss) / -jNa, Kp = 10, pmax = pss / (Na / (Na + Kp)) ** 3;
-  return { T, out, osmE, Vss, Na, K, Cl, X, PK, PNa, PCl: 0.2 * PK, Kp, pmax, pss };
+  return { T, out, osmE, Vss, Na, K, Cl, X, PK, PNa, PCl: 0.45 * PK, Kp, pmax, pss };
 })();
 /** Zero-current voltage of the pump–leak cell (mV). */
 export function plVoltage(c, P, pump) {

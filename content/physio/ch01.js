@@ -111,11 +111,11 @@ A disturbance that would shift $x$ by $\Delta x_{\text{open}}$ with the loop ope
           // ---- loop diagram
           const heat = u > 1, cool = u < -1, effCol = heat ? 'orange' : cool ? 'blue' : 'muted';
           const amt = Math.min(1, Math.abs(u) / 300), phase = t * 1.2;
-          const wSet = [[0.2, 4.6], [1.58, 4.6]], wE = [[2.22, 4.6], [3.05, 4.6]], wU = [[5.55, 4.6], [6.65, 4.6]], wEff = [[9.25, 4.08], [9.25, 2.33]];
-          const wT = [[6.65, 1.8], [5.55, 1.8]], wFb = [[3.05, 1.8], [1.9, 1.8], [1.9, 4.28]];
+          const wSet = [[0.2, 4.6], [1.9, 4.6]], wE = [[2.54, 4.6], [3.05, 4.6]], wU = [[5.55, 4.6], [6.65, 4.6]], wEff = [[9.25, 4.08], [9.25, 2.33]];
+          const wT = [[6.65, 1.8], [5.55, 1.8]], wFb = [[3.05, 1.8], [2.22, 1.8], [2.22, 4.28]];
           for (const w of [wSet, wE, wU, wEff, wT, wFb]) wire(sd, w, { color: 'muted' });
           for (const w of [wE, wU, wEff, wT, wFb]) flowDots(sd, w, phase, 0.38, { color: 'gold', r: 2 });
-          sumJ(sd, 1.9, 4.6, 0.32, { w: '+', s: '−' });
+          sumJ(sd, 2.22, 4.6, 0.32, { w: '+', s: '−' });
           box(sd, 4.3, 4.6, 2.5, 1.0, 'hypothalamus', { math: false, color: 'accent', sub: 'controller', note: `error e = ${e >= 0 ? '+' : ''}${v.fix(e, 2)} K` });
           box(sd, 8.15, 4.6, 3.0, 1.0, heat ? 'shivering' : cool ? 'sweating' : 'idle', { math: false, color: effCol, fill: effCol, fillAlpha: 0.06 + 0.3 * amt, active: amt > 0.05, sub: 'effectors', note: `${heat ? 'heat +' : cool ? 'heat −' : ''}${Math.round(Math.abs(u))} W`, noteDx: -0.35, noteColor: effCol === 'muted' ? 'ink' : effCol });
           box(sd, 8.15, 1.8, 3.0, 1.0, 'body heat store', { math: false, color: 'ink', sub: 'plant' });
@@ -147,7 +147,8 @@ A disturbance that would shift $x$ by $\Delta x_{\text{open}}$ with the loop ope
           const dOpen = dist.value === 'cold' ? -20 : dist.value === 'heat' ? 20 : 500 / TH.k;
           const pred = dOpen / (1 + G / TH.k), uNeed = -G * pred, sat = uNeed > TH.umax || uNeed < TH.umin;
           const fmt = (x) => (x > 45 ? '> 45' : x < 25 ? '< 25' : v.fix(x, 2));
-          return `at $t = ${v.fix(th, 2)}$ h: feedback $${fmt(R.neg.T[i])}$ °C · no feedback $${fmt(R.off.T[i])}$ °C · reversed $${fmt(R.pos.T[i])}$ °C · open-loop shift $\\Delta T_{\\text{open}} = ${v.fix(dOpen, 1)}$ K; loop gain $G/k = ${v.fix(G / TH.k, 1)}$, so the predicted closed-loop error is $\\Delta T_{\\text{open}}/(1 + G/k) = ${v.fix(pred, 2)}$ K${sat ? ' — but that needs more than the effectors can deliver: **saturated**' : ''}; simulated at 8 h: $${v.fix(R.neg.T.at(-1) - TH.Tset, 2)}$ K`;
+          const iEnd = dist.value === 'ex' ? idxAt(R.neg.t, 3.45) : R.neg.t.length - 1;
+          return `at $t = ${v.fix(th, 2)}$ h: feedback $${fmt(R.neg.T[i])}$ °C · no feedback $${fmt(R.off.T[i])}$ °C · reversed $${fmt(R.pos.T[i])}$ °C · open-loop shift $\\Delta T_{\\text{open}} = ${v.fix(dOpen, 1)}$ K; loop gain $G/k = ${v.fix(G / TH.k, 1)}$, so the predicted closed-loop error is $\\Delta T_{\\text{open}}/(1 + G/k) = ${v.fix(pred, 2)}$ K${sat ? ' — but that needs more than the effectors can deliver: **saturated**' : ''}; simulated at ${dist.value === 'ex' ? 'the end of exercise' : '8 h'}: $${v.fix(R.neg.T[iEnd] - TH.Tset, 2)}$ K`;
         });
       },
     },

@@ -216,3 +216,31 @@ export function fmtYr(y, sig = 2) {
   if (a < 1e9) return `${f(y / 1e6)} Myr`;
   return `${f(y / 1e9)} Gyr`;
 }
+
+/** Present position of a point that sat at (x, z) just after event k (the later tilts, uplifts, folds and faults applied forward). */
+export function forward(E, k, x, z) {
+  for (let i = k + 1; i < E.length; i++) {
+    const e = E[i], p = e.p ?? 1;
+    switch (e.type) {
+      case 'tilt': { const a = e.ang * p, c = Math.cos(a), s = Math.sin(a), dx = x - e.cx, dz = z - e.cz; x = e.cx + c * dx - s * dz; z = e.cz + s * dx + c * dz; break; }
+      case 'uplift': z += e.dz * p; break;
+      case 'fold': z += e.amp * p * Math.sin((TAU * x) / e.wl + (e.ph || 0)); break;
+      case 'fault': { const t = 1 / Math.tan(e.dip); if (x > e.x0 - z * t) { const sl = e.slip * p; x += sl * Math.cos(e.dip); z -= sl * Math.sin(e.dip); } break; }
+      default: break;
+    }
+  }
+  return [x, z];
+}
+
+/**
+ * The buried part of the erosion surface of event k, in present coordinates: polylines (null = break) along which
+ * rock older than the erosion lies below and rock younger than it lies above — the unconformity.
+ */
+export function unconformity(E, k, x0, x1, step = 0.04, d = 0.035) {
+  const e = E[k], pts = [];
+  for (let x = x0; x <= x1; x += step) {
+    const [X, Z] = forward(E, k, x, erodeZ(e, x)), lo = classify(E, X, Z - d), hi = classify(E, X, Z + d);
+    pts.push(lo && hi && lo.k < k && hi.k > k ? [X, Z] : null);
+  }
+  return pts;
+}

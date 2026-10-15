@@ -30,26 +30,27 @@ function cannonRun(sc, fb) {
     const C = 245e3, M0 = 80, k = 80 / 12;
     const av = (T) => (fb ? clamp((37 - T) / 0.25, 0, 1) : 0), sh = (T) => (fb ? clamp((36.8 - T) / 0.5, 0, 1) : 0);
     const Ta = (t) => (t < 0.5 ? 25 : 5);
-    const f = (y, t) => [(3600 * (M0 + 320 * sh(y[0]) - k * (1 - 0.45 * av(y[0])) * (y[0] - Ta(t)))) / C];
+    const f = (y, t) => [(3600 * (M0 + 320 * sh(y[0]) - k * (1 - 0.3 * av(y[0])) * (y[0] - Ta(t)))) / C];
     let y = [37];
     for (let i = 0, dt = 0.01; i <= 600; i++) { const t = i * dt; out.t.push(t); out.x.push(y[0]); out.e1.push(av(y[0])); out.e2.push(sh(y[0])); y = rk4(f, y, t, dt); }
     return out;
   }
   // haemorrhage: mean arterial pressure (mmHg), minutes; baroreflex gain 2 (Guyton), refill time constant 90 min
   const K = 2, taub = 0.3, taur = 90;
-  const f = (y, t) => { const [dv, b] = y, map = 93 - 50 * dv + b; return [t > 10 && fb ? -dv / taur : 0, fb ? (-K * (map - 93) - b) / taub : -b / taub]; };
+  // 1 L lost at 100 mL/min from t = 10 to 20 min
+  const f = (y, t) => { const [dv, b] = y, map = 93 - 50 * dv + b; return [(t >= 10 && t < 20 ? 0.1 : 0) + (t > 10 && fb ? -dv / taur : 0), fb ? (-K * (map - 93) - b) / taub : -b / taub]; };
   let y = [0, 0];
   for (let i = 0, dt = 0.05; i <= 3600; i++) {
-    const t = i * dt; if (i > 0 && Math.abs(t - 10) < dt / 2) y[0] += 1.0;
+    const t = i * dt;
     const map = 93 - 50 * y[0] + y[1]; out.t.push(t); out.x.push(map); out.e1.push(clamp(y[1] / 40, 0, 1)); out.e2.push(fb && t > 10 ? clamp(y[0] / 1.0, 0, 1) : 0);
     y = rk4(f, y, t, dt);
   }
   return out;
 }
 const CANNON = {
-  meal: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [40, 230], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68'], [53, 'symptoms 53']] },
-  fast: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [20, 120], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68'], [53, 'symptoms 53']] },
-  cold: { name: 'core temperature', unit: '°C', range: [36.5, 37.5], view: [32, 38], tEnd: 6, tUnit: 'h', e: ['skin vasoconstriction', 'shivering'], lines: [[37.0, 'vasoconstriction 37.0'], [36.8, 'shivering 36.8']] },
+  meal: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [40, 230], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68'], [53, 'symptoms 53', 1]] },
+  fast: { name: 'blood glucose', unit: 'mg/dL', range: [70, 110], view: [20, 120], tEnd: 360, tUnit: 'min', e: ['insulin secretion', 'glucagon + adrenaline'], lines: [[68, 'counter-regulation 68'], [53, 'symptoms 53', 1]] },
+  cold: { name: 'core temperature', unit: '°C', range: [36.5, 37.5], view: [33, 38], tEnd: 6, tUnit: 'h', e: ['skin vasoconstriction', 'shivering'], lines: [[37.0, 'vasoconstriction 37.0'], [36.8, 'shivering 36.8', 1]] },
   bleed: { name: 'arterial pressure', unit: 'mmHg', range: [70, 105], view: [30, 110], tEnd: 180, tUnit: 'min', e: ['baroreflex (heart rate, vessels)', 'refill, ADH, renin'], lines: [] },
 };
 
@@ -84,7 +85,7 @@ export default {
           { na: NA0, k: IN_K, inner: 1, outer: 0, P: 0, atp: 'ATP', note: String.raw`**Back to $E_1$.** ATP binding (not yet hydrolysed) speeds the return to the inward-facing state, which releases the two K⁺ into the cytoplasm. Net per cycle: 3 Na⁺ out, 2 K⁺ in, one ATP, **one positive charge exported**.` },
         ];
         const S = v.steps({ frames, transition: 0.6, loop: true, speed: 0.7, still: 2 });
-        const ouab = v.toggle('ouabain at 5 min', false);
+        const ouab = v.toggle('ouabain at 5 min', true);
         const leak = v.slider('Na⁺ leak ×', 0.5, 3, 1, { step: 0.1 });
         const sp = v.stage({ x: [-4.2, 4.2], y: [-3.5, 3.6], equal: true, axes: false, height: 300, weight: 1 });
         const sc = v.stage({ x: [0, 90], y: [0, 160], height: 300, axes: 'box', xlabel: 't (min)', ylabel: 'internal concentration (mM)', weight: 1 });
@@ -94,9 +95,9 @@ export default {
         v.render(() => {
           const f = S.frame, p = S.prev && S.prev.na ? S.prev : f, u = S.tween;
           // compartments and membrane
-          sp.rect(-4.2, 1.0, 4.2, 3.6, { fill: 'blue', fillAlpha: 0.05, stroke: false });
-          sp.rect(-4.2, -3.5, 4.2, -1.0, { fill: 'gold', fillAlpha: 0.05, stroke: false });
-          bilayer(sp, -4.2, 4.2, -1.0, 1.0, { vertical: false, spacing: 9, gaps: [[-1.25, 1.25]] });
+          sp.rect(-9, 1.0, 9, 4, { fill: 'blue', fillAlpha: 0.05, stroke: false });
+          sp.rect(-9, -4, 9, -1.0, { fill: 'gold', fillAlpha: 0.05, stroke: false });
+          bilayer(sp, -9, 9, -1.0, 1.0, { vertical: false, spacing: 9, gaps: [[-1.25, 1.25]] });
           sp.text('outside: Na⁺ 145, K⁺ 5 mM', -4.1, 3.5, { size: 10.5, color: 'muted', align: 'left', baseline: 'top' });
           sp.text('cytoplasm: Na⁺ 12, K⁺ 140 mM', -4.1, -3.4, { size: 10.5, color: 'muted', align: 'left', baseline: 'bottom' });
           // the pump: two subunits around a central pathway; gates as bars
@@ -104,8 +105,10 @@ export default {
           const L = [[-1.2, -1.5], [-0.62 - 0.18 * ig, -1.5], [-0.55, 0], [-0.62 - 0.18 * og, 1.5], [-1.2, 1.5]];
           sp.poly(L, { fill: 'teal', fillAlpha: 0.45, color: 'teal', width: 1.6 });
           sp.poly(L.map(([x, y]) => [-x, y]), { fill: 'teal', fillAlpha: 0.45, color: 'teal', width: 1.6 });
-          sp.line(-0.62 + 0.64 * og, 1.18, 0.62 - 0.64 * og, 1.18, { color: 'ink', width: 3 });
-          sp.line(-0.62 + 0.64 * ig, -1.18, 0.62 - 0.64 * ig, -1.18, { color: 'ink', width: 3 });
+          if (og < 0.95) sp.line(-0.62, 1.18, 0.62, 1.18, { color: 'ink', width: 3, alpha: 1 - og });
+          if (ig < 0.95) sp.line(-0.62, -1.18, 0.62, -1.18, { color: 'ink', width: 3, alpha: 1 - ig });
+          sp.text('outer gate', -1.3, 1.35, { size: 9.5, color: 'muted', align: 'right', baseline: 'middle' });
+          sp.text('inner gate', -1.3, -1.35, { size: 9.5, color: 'muted', align: 'right', baseline: 'middle' });
           // phosphate on the cytoplasmic domain
           const Pa = lerp(p.P, f.P, u);
           if (Pa > 0.02) { sp.circle(1.05, -1.75, 0.2, { fill: 'gold', fillAlpha: 0.9 * Pa, color: 'gold', alpha: Pa }); sp.text('P', 1.05, -1.75, { size: 10, color: 'ink', align: 'center', baseline: 'middle', weight: 700 }); }
@@ -118,12 +121,13 @@ export default {
           sp.text('+1 charge out per cycle', 4.1, 1.35, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom', weight: 600 });
           // run-down after ouabain
           const R = get();
-          if (ouab.value) { sc.vline(5, { color: 'red', dash: [3, 3] }); sv.vline(5, { color: 'red', dash: [3, 3] }); sc.text('ouabain', 6, 155, { size: 10.5, color: 'red', align: 'left', baseline: 'top' }); }
+          if (ouab.value) { sc.vline(5, { color: 'red', dash: [3, 3] }); sv.vline(5, { color: 'red', dash: [3, 3] }); sc.text('ouabain', 6, 4, { size: 10.5, color: 'red', align: 'left', baseline: 'bottom' }); }
           trace(sc, R.t, R.K, { color: ION_COL.K, width: 2.4 });
           trace(sc, R.t, R.Na, { color: ION_COL.Na, width: 2.4 });
           trace(sc, R.t, R.Cl, { color: ION_COL.Cl, width: 1.6, dash: [5, 3] });
-          sc.text('K⁺ᵢ', 88, R.K.at(-1), { size: 11, color: ION_COL.K, align: 'right', baseline: 'bottom', dy: -3, weight: 700 });
-          sc.text('Na⁺ᵢ', 88, R.Na.at(-1), { size: 11, color: ION_COL.Na, align: 'right', baseline: 'bottom', dy: -3, weight: 700 });
+          const i45 = idxAt(R.t, 45);
+          sc.text('K⁺ᵢ', 45, R.K[i45], { size: 11.5, color: ION_COL.K, align: 'center', baseline: 'bottom', dy: -4, weight: 700 });
+          sc.text('Na⁺ᵢ', 45, R.Na[i45], { size: 11.5, color: ION_COL.Na, align: 'center', baseline: 'bottom', dy: -4, weight: 700 });
           trace(sv, R.t, R.V, { color: 'accent', width: 2.2 });
           sv.hline(nernst(1, PL.out.K, R.K.at(-1), PL.T), { color: ION_COL.K, dash: [2, 3], width: 1 });
         });
@@ -144,10 +148,10 @@ export default {
       kind: 'Law',
       name: 'Nernst equation',
       statement: String.raw`If a membrane is permeable to a single ion species of valence $z$, present at concentrations $c_{\text{in}}$ and $c_{\text{out}}$, there is no net flux of that ion exactly when the membrane potential $V = \phi_{\text{in}} - \phi_{\text{out}}$ equals its **equilibrium (Nernst) potential**
-$$E = \frac{RT}{zF}\,\ln\frac{c_{\text{out}}}{c_{\text{in}}} \;\approx\; \frac{61.5\ \mathrm{mV}}{z}\,\log_{10}\frac{c_{\text{out}}}{c_{\text{in}}}\quad\text{at } 37\,^\circ\mathrm{C}.$$
+$$E = \frac{RT}{zF}\,\ln\frac{c_{\text{out}}}{c_{\text{in}}} \;\approx\; \frac{61.5\ \mathrm{mV}}{z}\,\log_{10}\frac{c_{\text{out}}}{c_{\text{in}}}\quad\text{at } 37^\circ\mathrm{C}.$$
 For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{Cl^-}$ 4/110 mM inside/outside) this gives $E_K \approx -89$ mV, $E_{Na} \approx +67$ mV and $E_{Cl} \approx -89$ mV. Only a tiny number of ions has to cross to charge the membrane capacitance to $E$, so the concentrations themselves barely change.`,
       idea: String.raw`Equilibrium means equal electrochemical potential on both sides: $RT\ln c_{\text{in}} + zF\phi_{\text{in}} = RT\ln c_{\text{out}} + zF\phi_{\text{out}}$, which rearranges to Nernst's formula. Equivalently, by the Boltzmann distribution (thermo-6.1) the concentration ratio of particles of charge $ze$ across a potential step $V$ is $e^{-zeV/kT}$. Kinetically, ions diffuse down their concentration gradient. Each one that crosses carries charge, which builds a voltage across the membrane capacitance (about $1\ \mu\mathrm{F/cm^2}$). That voltage drives a return drift until the two fluxes balance, the Nernst–Planck picture. To charge $1\ \mathrm{cm^2}$ to 90 mV takes only about $10^{-12}$ mol of $\mathrm{K^+}$, a negligible fraction of the cell's content. The same formula is the electrode potential of electrochemistry (pchem-8.6).`,
-      caption: String.raw`A membrane patch with three open channels; the cell is on the left. Each dot is a permeant ion doing a Brownian random walk. A crossing is accepted with the Boltzmann factor of the energy it costs against the membrane voltage, and that voltage is produced by the ions that have already crossed: their charges line up along the two faces of the membrane, the capacitor. The two arrows above compare the push of diffusion (the concentration gradient) with the pull of the voltage, and they balance at the Nernst potential. Right: the voltage over time (thermal fluctuations of a small patch) and its running mean, against the Nernst prediction (dashed). Change the ion or drag the concentrations.`,
+      caption: String.raw`A membrane patch with three open channels; the cell is on the left. Each dot is a permeant ion doing a Brownian random walk. A crossing is accepted with the Boltzmann factor of the energy it costs against the membrane voltage, and that voltage is produced by the ions that have already crossed: their charges line up along the two faces of the membrane, the capacitor. The two arrows above compare the push of diffusion (the concentration gradient) with the pull of the voltage, and they balance at the Nernst potential. Right: the voltage over time, which fluctuates thermally because the patch is tiny, and its mean over the last 4 s, against the Nernst prediction (dashed). Change the ion or drag the concentrations.`,
       scope: String.raw`Holds at equilibrium for one permeant ion species (ideal dilute solutions, activities ≈ concentrations); with several permeant species the membrane sits at a weighted compromise (1.9) and no single ion is at equilibrium.`,
       deps: ['thermo-6.1', 'pchem-8.6'],
       see: ['neuro-1.3', 'pchem-5.16', 'pchem-10.8', 'thermo-3.2'],
@@ -161,8 +165,8 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
         const cout = v.slider('$c_{\\text{out}}$', 2, 150, NEURON.K.o, { log: true, fmt: (x) => `${v.fix(x, 1)} mM` });
         const Tc = v.slider('temperature', 0, 40, 37, { step: 1, fmt: (x) => `${x} °C` });
         const sb = v.stage({ x: [-1.05, 1.05], y: [-0.08, 1.32], equal: true, axes: false, height: 320, weight: 1.15 });
-        const sv = v.stage({ x: [0, 20], y: [-120, 120], height: 320, axes: 'box', xlabel: 't (s)', ylabel: 'V = φ_in − φ_out (mV)', weight: 1, yticks: [-120, -90, -60, -30, 0, 30, 60, 90, 120] });
-        const DEN = 4, DELTA = 2.5, SIG = 0.022, SPS = 700, GAPS = [[0.18, 0.26], [0.46, 0.54], [0.74, 0.82]], P0 = 0.25, TP = 20;
+        const sv = v.stage({ x: [0, 20], y: [-120, 120], height: 320, axes: 'box', xlabel: 't (s)', ylabel: 'V = φᵢₙ − φₒᵤₜ (mV)', weight: 1, yticks: [-120, -90, -60, -30, 0, 30, 60, 90, 120] });
+        const DEN = 4, DELTA = 2.5, SIG = 0.022, SPS = 700, GAPS = [[0.18, 0.26], [0.46, 0.54], [0.74, 0.82]], P0 = 0.7, TP = 20, WIN = 4;
         let key = '', sim = null;
         const make = () => {
           const k = ionSel.value, z = ION_Z[k], ci = cin.value, co = cout.value, vt = VT(Tc.value);
@@ -175,7 +179,7 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
           }, (S) => {
             const r = S.r, P = S.P, aOut = Math.min(1, Math.exp((-z * z * DELTA * (S.n + 0.5)) / vt)), aIn = Math.min(1, Math.exp((-z * z * DELTA * (0.5 - S.n)) / vt));
             for (const q of P) {
-              const nx = q[0] + SIG * r.normal(), ny = q[1] + SIG * r.normal();
+              const nx = q[0] + SIG * 1.732 * (2 * r() - 1), ny = q[1] + SIG * 1.732 * (2 * r() - 1);
               let y = ny < 0 ? -ny : ny > 1 ? 2 - ny : ny;
               if ((q[0] < 0) !== (nx < 0)) {
                 const inGap = GAPS.some(([a, b]) => y > a && y < b);
@@ -222,7 +226,6 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
           sb.text('inside (cell)', -0.98, -0.02, { size: 11, color: 'muted', align: 'left', baseline: 'top' });
           sb.text('outside', 0.98, -0.02, { size: 11, color: 'muted', align: 'right', baseline: 'top' });
           // force arrows: diffusion push (chemical) vs electrical pull, in mV of driving force for this ion
-          const chem = (vtE) => vtE; void chem;
           const sc = 0.0042, dif = -E, ele = V; // outward-positive "push" on the ion (per unit charge sign handled by z below)
           const yA = 1.12, yB = 1.24;
           // outward push from diffusion = z(V − E) sign convention: drift ∝ −zV (outward when inside positive for cations)
@@ -236,14 +239,17 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
           sv.text(`Nernst E = ${v.fix(E, 1)} mV`, 19.7, E, { size: 11, color: 'green', align: 'right', baseline: E > 80 ? 'top' : 'bottom', dy: E > 80 ? 3 : -3, weight: 600 });
           sv.hline(0, { color: 'faint', width: 1 });
           trace(sv, S.hist.t, S.hist.V, { color: 'gold', width: 1 });
-          const mean = []; let acc = 0, cnt = 0; for (let i = 0; i < S.hist.t.length; i++) { if (S.hist.t[i] > 1) { acc += S.hist.V[i]; cnt++; mean.push([S.hist.t[i], acc / cnt]); } }
+          // trailing mean over the last WIN seconds
+          const mean = [], H = S.hist; let acc = 0, j0 = 0;
+          for (let i = 0; i < H.t.length; i++) { acc += H.V[i]; while (H.t[j0] < H.t[i] - WIN) { acc -= H.V[j0]; j0++; } if (H.t[i] >= WIN) mean.push([H.t[i], acc / (i - j0 + 1)]); }
           sv.path(mean, { color: 'accent', width: 2.4 });
+          S.mean = mean.length ? mean[mean.length - 1][1] : NaN;
         }, { period: TP, still: 14 });
-        v.legend([['orange', 'diffusion push (∝ ln of the ratio)'], ['accent', 'electrical pull / running mean of V'], ['gold', 'instantaneous V'], ['green', 'Nernst potential', { dash: true }]]);
+        v.legend([['orange', 'diffusion push (∝ ln of the ratio)'], ['accent', 'electrical pull / 4 s mean of V'], ['gold', 'instantaneous V'], ['green', 'Nernst potential', { dash: true }]]);
         v.readout(() => {
           if (!S) return '';
-          const z = ION_Z[ionSel.value], E = nernst(z, cout.value, cin.value, Tc.value), m = S.accN ? S.acc / S.accN : NaN;
-          return `$E = \\frac{RT}{zF}\\ln\\frac{c_{out}}{c_{in}} = \\frac{${v.fix(VT(Tc.value), 2)}\\text{ mV}}{${z > 0 ? '' : '-'}1}\\ln\\frac{${v.fix(cout.value, 1)}}{${v.fix(cin.value, 1)}} = ${v.fix(E, 1)}$ mV · simulated mean $V = ${isFinite(m) ? v.fix(m, 1) : '…'}$ mV after ${S.out} outward and ${S.inn} inward crossings; net ${Math.abs(S.n)} ions (${v.fix((100 * Math.abs(S.n)) / Math.max(1, cin.value * DEN), 1)} % of the cell's) charge the membrane`;
+          const z = ION_Z[ionSel.value], E = nernst(z, cout.value, cin.value, Tc.value), m = S.mean;
+          return `$E = \\frac{RT}{zF}\\ln\\frac{c_{out}}{c_{in}} = \\frac{${v.fix(VT(Tc.value), 2)}\\text{ mV}}{${z > 0 ? '' : '-'}1}\\ln\\frac{${v.fix(cout.value, 1)}}{${v.fix(cin.value, 1)}} = ${v.fix(E, 1)}$ mV · simulated $V$ averaged over the last ${WIN} s: $${isFinite(m) ? v.fix(m, 1) : '…'}$ mV, after ${S.out} outward and ${S.inn} inward crossings; net ${Math.abs(S.n)} ions (${v.fix((100 * Math.abs(S.n)) / Math.max(1, cin.value * DEN), 1)} % of the cell's) charge this tiny patch (a real 20 µm cell moves only about 0.002 % of its K⁺)`;
         });
       },
     },
@@ -268,36 +274,35 @@ The permeabilities $P$ weight each ion, and the anion's concentrations enter ups
       viz(v) {
         const cell = v.select('cell', [{ value: 'neuron', label: 'mammalian neuron, 37 °C' }, { value: 'squid', label: 'squid axon, 20 °C' }], 'neuron', { onChange: (c) => Ko.set(c === 'squid' ? SQUID.K.o : NEURON.K.o) });
         const state = v.select('permeabilities', [{ value: 'rest', label: 'rest 1 : 0.04 : 0.45' }, { value: 'peak', label: 'spike peak 1 : 20 : 0.45' }], 'rest', { onChange: (s) => { const P = s === 'peak' ? HK_PEAK : HK_REST; pNa.set(P.Na); pCl.set(P.Cl); } });
-        const pNa = v.slider('$P_{Na}/P_K$', 0.001, 30, 0.04, { log: true, sig: 2 });
+        const pNa = v.slider('$P_{Na}/P_K$', 0.001, 30, 0.04, { log: true, sig: 2, fmt: (x) => (x < 0.1 ? x.toFixed(3) : x < 1 ? x.toFixed(2) : x.toFixed(1)) });
         const pCl = v.slider('$P_{Cl}/P_K$', 0, 2, 0.45, { step: 0.01 });
         const Ko = v.slider('$[\\mathrm{K^+}]_o$', 1, 150, 5, { log: true, fmt: (x) => `${v.fix(x, 1)} mM` });
         const si = v.stage({ x: [-110, 80], y: [-3, 3], height: 320, axes: true, xlabel: 'V (mV)', ylabel: 'outward current (rel.)', weight: 1.1, ticks: true });
-        const sk = v.stage({ x: [1, 200], y: [-110, 40], xlog: true, height: 320, axes: 'box', xlabel: '[K⁺]ₒ (mM)', ylabel: 'resting potential (mV)', weight: 1 });
+        const sk = v.stage({ x: [1, 200], y: [-110, 70], xlog: true, height: 320, axes: 'box', xlabel: '[K⁺]ₒ (mM)', ylabel: 'resting potential (mV)', weight: 1 });
         const conc = () => { const base = cell.value === 'squid' ? SQUID : NEURON; return { K: { i: base.K.i, o: Ko.value }, Na: base.Na, Cl: base.Cl }; };
         const T = () => (cell.value === 'squid' ? 20 : 37);
         const P = () => ({ K: 1, Na: pNa.value, Cl: pCl.value });
         v.render(() => {
           const c = conc(), Tc = T(), p = P(), Vr = ghkV(p, c, Tc), norm = cell.value === 'squid' ? 1 / 300 : 1 / 120;
           const I = (k, V) => p[k] * ghkCurrent(ION_Z[k], c[k].i, c[k].o, V, Tc) * norm;
-          let ymax = 0.5; for (let V = -110; V <= 80; V += 10) for (const k of ['K', 'Na', 'Cl']) ymax = Math.max(ymax, Math.abs(I(k, V)));
           const tot = (V) => I('K', V) + I('Na', V) + I('Cl', V);
-          ymax = Math.min(ymax, 4 * Math.max(0.5, Math.abs(tot(-110)), Math.abs(tot(80))));
+          let ymax = 0.3; for (let V = -110; V <= 10; V += 5) { ymax = Math.max(ymax, Math.abs(tot(V))); for (const k of ['K', 'Na', 'Cl']) ymax = Math.max(ymax, Math.abs(I(k, V))); }
           si.setView([-110, 80], [-ymax * 1.1, ymax * 1.1]);
           for (const k of ['K', 'Na', 'Cl']) {
             const E = nernst(ION_Z[k], c[k].o, c[k].i, Tc);
             si.fn((V) => I(k, V), { color: ION_COL[k], width: 1.8 });
-            if (E > -110 && E < 80) { si.dot(E, 0, { r: 3.5, color: ION_COL[k], hollow: true }); si.text(`E_${k}`, E, -ymax * 0.08, { size: 10.5, color: ION_COL[k], align: 'center', baseline: 'top', dy: k === 'Cl' ? 13 : 0, weight: 600 }); }
+            if (E > -110 && E < 80) { si.dot(E, 0, { r: 3.5, color: ION_COL[k], hollow: true }); si.tex(`E_{\\mathrm{${k}}}`, E, k === 'K' ? ymax * 0.07 : -ymax * 0.07, { size: 13, color: ION_COL[k], align: 'center', baseline: k === 'K' ? 'bottom' : 'top', dy: k === 'Na' ? 14 : 0 }); }
           }
           si.fn(tot, { color: 'ink', width: 2.6 });
           si.vline(Vr, { color: 'accent', dash: [4, 3] });
           si.dot(Vr, 0, { r: 6, color: 'accent' });
-          si.text(`V_rest = ${v.fix(Vr, 1)} mV`, Vr, ymax * 0.98, { size: 11.5, color: 'accent', align: Vr > 20 ? 'right' : 'left', baseline: 'top', dx: Vr > 20 ? -5 : 5, weight: 700 });
+          si.text(`zero-current V = ${v.fix(Vr, 1)} mV`, Vr, ymax * 0.98, { size: 11.5, color: 'accent', align: Vr > 20 ? 'right' : 'left', baseline: 'top', dx: Vr > 20 ? -5 : 5, weight: 700 });
           // V vs [K]o
           const ek = (k) => nernst(1, k, c.K.i, Tc);
           sk.fn(ek, { color: ION_COL.K, dash: [6, 4], width: 1.6 });
           sk.fn((k) => ghkV(p, { ...c, K: { i: c.K.i, o: k } }, Tc), { color: 'accent', width: 2.4 });
           sk.dot(Ko.value, Vr, { r: 5.5, color: 'accent' });
-          sk.text('E_K (Nernst)', 160, ek(160), { size: 11, color: ION_COL.K, align: 'right', baseline: 'bottom', dx: -4, dy: -4 });
+          sk.tex('E_K\\text{ (Nernst)}', 150, ek(150), { size: 13, color: ION_COL.K, align: 'right', baseline: 'bottom', dx: -4, dy: -4 });
           sk.vband(3.5, 5, { color: 'green', alpha: 0.08 });
         });
         v.legend([[ION_COL.K, 'K⁺'], [ION_COL.Na, 'Na⁺'], [ION_COL.Cl, 'Cl⁻'], ['ink', 'total current'], ['accent', 'GHK resting potential'], ['green', 'normal plasma K⁺ 3.5–5 mM', { area: true }]]);
@@ -330,7 +335,7 @@ with electroneutrality $[\mathrm K^+]_1 = [\mathrm{Cl}^-]_1 + a$ in compartment 
         const As = v.slider('protein charge $a$ in compartment 1', 0, 150, 80, { step: 1, fmt: (x) => `${Math.round(x)} mM` });
         const Cs = v.slider('KCl $c_0$ (both sides)', 10, 150, 50, { step: 1, fmt: (x) => `${Math.round(x)} mM` });
         const sb = v.stage({ x: [-1.05, 1.05], y: [-0.12, 1.08], equal: true, axes: false, height: 300, weight: 1.1 });
-        const sg = v.stage({ x: [0, 4.4], y: [0, 300], height: 300, axes: 'box', ylabel: 'mM (charge)', weight: 1, xticks: [[1, 'cmpt 1'], [3.2, 'cmpt 2']] });
+        const sg = v.stage({ x: [0, 4.4], y: [0, 300], height: 300, axes: 'box', ylabel: 'mM (charge)', weight: 1, xticks: [] });
         const ZP = 10, PERM = 0.5, Tc = 37, TE = 12;
         let key = '', run = null;
         const simulate = () => {
@@ -365,7 +370,10 @@ with electroneutrality $[\mathrm K^+]_1 = [\mathrm{Cl}^-]_1 + a$ in compartment 
           // charge balance bars
           const bar = (x, w, y0, h, col, lab) => { if (h <= 0.01) return; sg.rect(x, y0, x + w, y0 + h, { fill: col, fillAlpha: 0.55, color: col, width: 1 }); if (h > 14) sg.text(lab, x + w / 2, y0 + h / 2, { size: 10.5, color: 'ink', align: 'center', baseline: 'middle', weight: 600 }); };
           const ymax = Math.max(120, (K1 + Cl1 + a / ZP) * 1.15, (K2 + Cl2) * 1.15);
-          sg.setView([0, 4.4], [0, ymax]);
+          sg.setView([0, 4.4], [-0.09 * ymax, ymax]);
+          sg.hline(0, { color: 'muted', width: 1 });
+          sg.text('compartment 1', 1.2, -0.045 * ymax, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
+          sg.text('compartment 2', 3.4, -0.045 * ymax, { size: 11, color: 'ink', align: 'center', baseline: 'middle', weight: 600 });
           bar(0.3, 0.6, 0, K1, ION_COL.K, 'K⁺'); bar(1.1, 0.6, 0, Cl1, ION_COL.Cl, 'Cl⁻'); bar(1.1, 0.6, Cl1, a, 'muted', 'protein');
           bar(2.5, 0.6, 0, K2, ION_COL.K, 'K⁺'); bar(3.3, 0.6, 0, Cl2, ION_COL.Cl, 'Cl⁻');
           sg.text('+', 0.6, K1, { size: 12, color: 'muted', align: 'center', baseline: 'bottom' }); sg.text('−', 1.4, Cl1 + a, { size: 12, color: 'muted', align: 'center', baseline: 'bottom' });
@@ -400,7 +408,7 @@ with electroneutrality $[\mathrm K^+]_1 = [\mathrm{Cl}^-]_1 + a$ in compartment 
 
 At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodium pumped out balances sodium leaking in. That offsets the Donnan excess of its trapped anions (1.10), so the cell keeps a finite volume and a resting potential near $-70$ mV. If the pump stops, the cell runs toward a Donnan state it can never reach: it gains Na⁺ and Cl⁻, loses K⁺, depolarizes and swells.`,
       idea: String.raw`Without a pump the only steady state is Donnan equilibrium, which is hypertonic inside (1.10), so water would enter for ever. Pumping 3 Na⁺ out for each 2 K⁺ in exports net solute and net charge. Sodium then behaves as if it were impermeant outside the cell and balances the impermeant anions inside, which is the "double Donnan" picture of Tosteson and Hoffman (1960). The resting potential is the GHK potential, shifted a few millivolts negative by the pump current. Chloride usually ends up passively distributed at $E_{Cl} = V$. Turning the pump off reveals the time scales: the voltage loses the electrogenic component instantly, the gradients decay over the leak time, and the volume rises as Na⁺ and Cl⁻ accumulate. This is cytotoxic oedema, the swelling of cells in ischaemia when ATP fails.`,
-      caption: String.raw`The cell's membrane potential, volume and ion contents, integrated together (RK4, with $V$ solved from zero net current at each step). The pump stops at $t = 5$ min and restarts at the time you choose. Watch the cell swell and depolarize, and then recover with a brief hyperpolarization: the pump runs fast while internal Na⁺ is high. Raise the Na⁺ leak and the steady state needs more pumping and sits more depolarized. With *never*, the cell keeps swelling with no end in sight.`,
+      caption: String.raw`The cell's membrane potential, volume and ion contents, integrated together (RK4, with $V$ solved from zero net current at each step). The pump stops at $t = 5$ min and restarts at the time you choose. Watch the cell swell (the disc's area is drawn proportional to its volume; the dashed circle is the starting size) and depolarize, and then recover with a brief hyperpolarization: the pump runs fast while internal Na⁺ is high. Raise the Na⁺ leak and the steady state needs more pumping and sits more depolarized. With *never*, the cell keeps swelling with no end in sight.`,
       scope: String.raw`A lumped, well-mixed cell with fixed external concentrations and instantaneous water balance; parameters are chosen to give a neuron-like resting state (Na⁺ᵢ 12, K⁺ᵢ 140 mM, −70 mV) and minute-scale leak times, not fitted to a particular cell type.`,
       deps: ['physio-1.7', 'physio-1.9', 'physio-1.5'],
       see: ['physio-1.10', 'neuro-1.4'],
@@ -408,10 +416,10 @@ At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodi
       tags: ['membrane potential', 'cell volume'],
       credit: 'D. C. Tosteson and J. F. Hoffman, 1960',
       viz(v) {
-        const restart = v.slider('pump back on at', 15, 120, 45, { step: 1, fmt: (x) => (x >= 120 ? 'never' : `${Math.round(x)} min`) });
+        const restart = v.slider('pump back on at', 15, 120, 60, { step: 1, fmt: (x) => (x >= 120 ? 'never' : `${Math.round(x)} min`) });
         const leak = v.slider('Na⁺ leak ×', 0.5, 3, 1, { step: 0.1 });
         const sc = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, axes: false, height: 300, weight: 0.85 });
-        const sv = v.stage({ x: [0, 120], y: [-80, -10], height: 300, axes: 'box', xlabel: 't (min)', ylabel: 'V (mV)', weight: 1.15 });
+        const sv = v.stage({ x: [0, 120], y: [-95, -15], height: 300, axes: 'box', xlabel: 't (min)', ylabel: 'V (mV)', weight: 1.15 });
         const sn = v.stage({ x: [0, 120], y: [0, 160], height: 210, axes: 'box', xlabel: 't (min)', ylabel: 'mM  ·  volume (% of initial)', full: true });
         const TEND = 120;
         let key = '', run = null;
@@ -419,7 +427,7 @@ At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodi
         let cur = 0;
         v.animate((t) => {
           const R = get(), tm = Math.min(TEND, ((t % 17) / 14) * TEND), i = idxAt(R.t, tm); cur = i;
-          const w = R.w[i], rad = 1.25 * Math.cbrt(w), on = R.pump[i] > 1e-9, V = R.V[i];
+          const w = R.w[i], rad = 1.25 * Math.sqrt(w), on = R.pump[i] > 1e-9, V = R.V[i];
           // the cell: tint by voltage, pumps and leak channels on the rim
           const depol = clamp((V + 75) / 60, 0, 1);
           sc.circle(0, 0, 1.25, { color: 'faint', dash: [4, 4], width: 1 });
@@ -446,7 +454,7 @@ At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodi
           sv.dot(R.t[i], V, { r: 4.5, color: 'accent' });
           const Ek = R.K.map((k) => nernst(1, PL.out.K, k, PL.T));
           trace(sv, R.t, Ek, { color: ION_COL.K, dash: [5, 3], width: 1.3 });
-          sv.text('E_K', 119, Ek.at(-1), { size: 10.5, color: ION_COL.K, align: 'right', baseline: 'bottom', dy: -2 });
+          const i100 = idxAt(R.t, 100); sv.tex('E_K', 100, Ek[i100], { size: 13, color: ION_COL.K, align: 'center', baseline: 'bottom', dy: -3 });
           const ser = [['K', ION_COL.K], ['Na', ION_COL.Na], ['Cl', ION_COL.Cl]];
           for (const [k, col] of ser) { trace(sn, R.t, R[k], { color: col, width: 1.2, alpha: 0.3 }); trace(sn, R.t.slice(0, i + 1), R[k].slice(0, i + 1), { color: col, width: 2.2 }); }
           const vol = R.w.map((x) => 100 * x);
@@ -457,7 +465,7 @@ At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodi
         v.readout(() => {
           const R = get(), i = cur, Na = R.Na[i], K = R.K[i], Cl = R.Cl[i], X = PL.X / R.w[i];
           const neutral = Na + K - Cl - X, osm = Na + K + Cl + X;
-          return `$t = ${v.fix(R.t[i], 1)}$ min: Na⁺ᵢ ${v.fix(Na, 1)}, K⁺ᵢ ${v.fix(K, 1)}, Cl⁻ᵢ ${v.fix(Cl, 1)}, $X$ ${v.fix(X, 1)} mM · electroneutral to ${v.sci(Math.abs(neutral) + 1e-16, 1)} mM, osmolarity ${v.fix(osm, 1)} = outside ${PL.osmE} mOsm · $E_{Cl} = ${v.fix(nernst(-1, PL.out.Cl, Cl, PL.T), 1)}$ vs $V = ${v.fix(R.V[i], 1)}$ mV · pump ${v.fix(R.pump[i], 2)} mM/min (resting ${v.fix(PL.pss, 2)})`;
+          return `$t = ${v.fix(R.t[i], 1)}$ min: Na⁺ᵢ ${v.fix(Na, 1)}, K⁺ᵢ ${v.fix(K, 1)}, Cl⁻ᵢ ${v.fix(Cl, 1)}, $X$ ${v.fix(X, 1)} mM · electroneutral to $${v.sci(Math.abs(neutral) + 1e-16, 1)}$ mM, osmolarity ${v.fix(osm, 1)} = outside ${PL.osmE} mOsm · $E_{Cl} = ${v.fix(nernst(-1, PL.out.Cl, Cl, PL.T), 1)}$ vs $V = ${v.fix(R.V[i], 1)}$ mV · pump ${v.fix(R.pump[i], 2)} mM/min (resting ${v.fix(PL.pss, 2)})`;
         });
       },
     },
@@ -514,7 +522,7 @@ At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodi
           sx.setView([0, C.tEnd], C.view); se.setView([0, C.tEnd], [0, 1.05]);
           sx.setLabels(`t (${C.tUnit})`, `${C.name} (${C.unit})`); se.setLabels(`t (${C.tUnit})`, undefined);
           sx.hband(C.range[0], C.range[1], { color: 'green', alpha: 0.1 });
-          for (const [y, lab] of C.lines) { sx.hline(y, { color: 'faint', dash: [3, 3] }); sx.text(lab, C.tEnd * 0.99, y, { size: 10, color: 'muted', align: 'right', baseline: 'bottom', dy: -1 }); }
+          for (const [y, lab, below] of C.lines) { sx.hline(y, { color: 'faint', dash: [3, 3] }); sx.text(lab, C.unit === 'mg/dL' ? C.tEnd * 0.01 : C.tEnd * 0.99, y, { size: 10, color: 'muted', align: C.unit === 'mg/dL' ? 'left' : 'right', baseline: below ? 'top' : 'bottom', dy: below ? 2 : -1 }); }
           const other = fbT.value ? R.off : R.on;
           sx.clip(() => {
             trace(sx, other.t, other.x, { color: fbT.value ? 'red' : 'green', width: 1.4, alpha: 0.45, dash: [5, 4] });

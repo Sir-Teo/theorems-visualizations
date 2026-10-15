@@ -222,8 +222,8 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Base_rate_fallacy' },
       viz(v) {
         const M = v.M, N = 10000, G = 100;
-        const sP = v.stage({ x: [0, G], y: [0, G], equal: true, axes: false, height: 330, weight: 1, minWidth: 280, title: '10 000 people tested' });
-        const sZ = v.stage({ x: [0, 12], y: [0, 12], equal: true, axes: false, height: 330, weight: 1, minWidth: 280 });
+        const sP = v.stage({ x: [0, G], y: [0, G], equal: true, axes: false, height: 350, weight: 1, minWidth: 280, title: '10 000 people tested' });
+        const sZ = v.stage({ x: [0, 12], y: [0, 12], equal: true, axes: false, height: 350, weight: 1, minWidth: 280 });
         const sL = v.stage({ x: [0, 100], y: [0, 10], axes: false, height: 210, full: true });
         const prevS = v.slider('prevalence', 0.0001, 0.3, 0.001, { log: true, fmt: (x) => (x < 0.01 ? `1 in ${int(1 / x)}` : pcs(x)) });
         const seS = v.slider('sensitivity', 0.5, 1, 0.99, { step: 0.001, fmt: (x) => pc(x) });
@@ -239,7 +239,8 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
           const TP = [D, Math.round(D * se)], FPr = [H - Fp, FP1 - Fp];
           for (let k = 2; k <= 3; k++) { TP.push(Math.round(TP[k - 1] * se)); FPr.push(Math.round(FPr[k - 1] * f)); }
           const FP = FPr.map((x, k) => (k === 0 ? H : x + Fp));
-          const post = TP.map((t, k) => (t + FP[k] ? t / (t + FP[k]) : NaN));
+          // exact (unrounded) probability of disease after k positive results
+          const post = [0, 1, 2, 3].map((k) => { if (k === 0) return p; const tp = p * se ** k, fp = (1 - p) * (1 - sp) * (rho + (1 - rho) * f ** (k - 1)); return tp + fp > 0 ? tp / (tp + fp) : NaN; });
           return { D, H, TP, FP, Fp, FPr, post };
         };
         let st = null;
@@ -294,6 +295,7 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
             sL.text(`1978: ${a} of 60`, x0 + Wd((100 * a) / 60), y + 0.4, { dx: 5, align: 'left', color: 'muted', size: 10.5 });
             sL.text(`2014: ${b} of 61`, x0 + Wd((100 * b) / 61), y - 0.7, { dx: 5, align: 'left', color: 'muted', size: 10.5 });
           });
+          sZ.text(K > 1 ? `positive again after test ${K}: ${int(R.TP[K])} diseased, ${int(R.FP[K])} healthy` : `${int(R.TP[1])} diseased, ${int(R.FP[1])} healthy`, cols / 2, -0.32 - 0.02 * rows, { align: 'center', color: 'ink', size: 11.5, weight: 600 });
           st = { p, se, sp, rho, K, R, R0, pos1 };
         });
         v.legend([['red', 'has the disease', { dot: true }], ['blue', 'healthy', { dot: true }], ['gold', 'tested positive (this round)', { area: true }]]);
@@ -327,19 +329,19 @@ Ratios above $10$ or below $0.1$ change the probability of disease substantially
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Likelihood_ratios_in_diagnostic_testing' },
       viz(v) {
         const M = v.M, YR = 7.7, P0 = 0.001, P1 = 0.999;
-        const sN = v.stage({ x: [-1.05, 3.05], y: [-YR, YR + 0.5], height: 440, axes: false, weight: 1.05, minWidth: 300, title: 'Fagan nomogram' });
-        const sO = v.stage({ x: [0, 1], y: [0, 1], height: 440, axes: false, weight: 1, minWidth: 290, title: 'the same evidence as odds' });
+        const sN = v.stage({ x: [-0.75, 2.75], y: [-YR, YR + 0.5], height: 470, axes: false, weight: 1.05, minWidth: 300, title: 'Fagan nomogram' });
+        const sO = v.stage({ x: [0, 1], y: [0, 1], height: 470, axes: false, weight: 1, minWidth: 290, title: 'the same evidence as odds' });
         const twoT = v.toggle('chain a second test', true);
         const yL = (p) => -logit(p), yM = (lr) => Math.log(lr) / 2, pL = (y) => expit(-y), lrM = (y) => Math.exp(2 * y);
         const REF = [
-          { lr: BCSC.se / (1 - BCSC.sp), name: 'positive mammogram' }, { lr: (1 - BCSC.se) / BCSC.sp, name: 'negative mammogram' },
-          { lr: PSA_POINTS[3][1] / (1 - PSA_POINTS[3][2]), name: 'PSA ≥ 4.1 ng/mL' }, { lr: (1 - PSA_POINTS[3][1]) / PSA_POINTS[3][2], name: 'PSA < 4.1 ng/mL' },
+          { lr: BCSC.se / (1 - BCSC.sp), name: 'positive mammogram', short: 'mammogram +' }, { lr: (1 - BCSC.se) / BCSC.sp, name: 'negative mammogram', short: 'mammogram −' },
+          { lr: PSA_POINTS[3][1] / (1 - PSA_POINTS[3][2]), name: 'PSA ≥ 4.1 ng/mL', short: 'PSA ≥ 4.1' }, { lr: (1 - PSA_POINTS[3][1]) / PSA_POINTS[3][2], name: 'PSA < 4.1 ng/mL', short: 'PSA < 4.1' },
         ];
         const snapLR = (y) => { for (const R of REF) if (Math.abs(y - yM(R.lr)) < 0.13) return yM(R.lr); return M.clamp(y, yM(0.001), yM(1000)); };
         const P = sN.handle(0, yL(BCSC.prev), { color: 'accent', constrain: (x, y) => [0, Math.abs(y - yL(BCSC.prev)) < 0.12 ? yL(BCSC.prev) : M.clamp(y, yL(P1), yL(P0))] });
         const L1 = sN.handle(1, yM(REF[0].lr), { color: 'orange', constrain: (x, y) => [1, snapLR(y)] });
-        const L2 = sN.handle(1, yM(10), { color: 'purple', constrain: (x, y) => [1, snapLR(y)] });
-        const pct = (q) => (q >= 0.1 && q <= 0.9 ? `${Math.round(q * 100)}` : `${+(q * 100).toPrecision(2)}`);
+        const L2 = sN.handle(1, yM(25), { color: 'purple', constrain: (x, y) => [1, snapLR(y)] });
+        const pct = (q) => (q > 0.9 ? `${+(q * 100).toFixed(1)}` : q >= 0.1 ? `${Math.round(q * 100)}` : `${+(q * 100).toPrecision(2)}`);
         let st = null;
         v.render(() => {
           const two = twoT.value; L2.visible = two;
@@ -351,20 +353,21 @@ Ratios above $10$ or below $0.1$ change the probability of disease substantially
             sN.line(-0.05, yL(q), 0, yL(q), { color: 'ink', width: 1 }); sN.text(pct(q), -0.08, yL(q), { align: 'right', color: 'muted', size: 10.5 });
             sN.line(2, -yL(q), 2.05, -yL(q), { color: 'ink', width: 1 }); sN.text(pct(q), 2.08, -yL(q), { align: 'left', color: 'muted', size: 10.5 });
           }
-          for (const q of [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]) { sN.line(0.95, yM(q), 1, yM(q), { color: 'ink', width: 1 }); sN.text(String(q), 0.92, yM(q), { align: 'right', color: 'muted', size: 10 }); }
-          for (const R of REF) { sN.line(1, yM(R.lr), 1.06, yM(R.lr), { color: 'gold', width: 2 }); sN.text(R.name, 1.09, yM(R.lr), { align: 'left', color: 'gold', size: 10, weight: 600 }); }
+          for (const q of [0.002, 0.005, 0.02, 0.1, 0.5, 2, 10, 50, 200, 500]) sN.line(0.97, yM(q), 1, yM(q), { color: 'ink', width: 1 });
+          for (const q of [0.001, 0.01, 0.05, 0.2, 1, 5, 20, 100, 1000]) { sN.line(0.94, yM(q), 1, yM(q), { color: 'ink', width: 1.2 }); sN.text(String(q), 0.91, yM(q), { align: 'right', color: 'muted', size: 10.5 }); }
+          for (const R of REF) { sN.line(1, yM(R.lr), 1.07, yM(R.lr), { color: 'gold', width: 2.2 }); sN.text(R.short, 1.1, yM(R.lr), { align: 'left', color: 'gold', size: 10, weight: 700 }); }
           sN.text('pre-test %', 0, YR + 0.05, { align: 'center', color: 'accent', size: 11.5, weight: 700 });
           sN.text('likelihood ratio', 1, YR + 0.05, { align: 'center', color: 'orange', size: 11.5, weight: 700 });
           sN.text('post-test %', 2, YR + 0.05, { align: 'center', color: 'red', size: 11.5, weight: 700 });
           sN.line(1, yM(1), 1.06, yM(1), { color: 'ink', width: 2 });
-          sN.dot(0, yL(BCSC.prev), { r: 2.5, color: 'gold' }); sN.text('screening prevalence', -0.08, yL(BCSC.prev), { dy: -11, align: 'right', color: 'gold', size: 9.5, weight: 600 });
+          sN.dot(0, yL(BCSC.prev), { r: 2.5, color: 'gold' }); sN.text('screening prevalence', 0.07, yL(BCSC.prev), { dy: -11, align: 'left', color: 'gold', size: 10, weight: 600 });
           // ----- lines
           const ext = (pA, lr) => [[-0.04, yL(pA) - 0.04 * (yM(lr) - yL(pA))], [2.04, yL(pA) + 2.04 * (yM(lr) - yL(pA))]];
           sN.clip(() => { const [a, b] = ext(p0, lr1); sN.line(a[0], a[1], b[0], b[1], { color: 'orange', width: 2.4 }); });
           sN.dot(2, -yL(p1), { r: 5, color: 'orange' }); sN.text(pcs(p1), 2, -yL(p1), { dx: -9, align: 'right', color: 'orange', size: 12, weight: 700 });
           if (two) {
             sN.clip(() => { const [a, b] = ext(p1, lr2); sN.line(a[0], a[1], b[0], b[1], { color: 'purple', width: 2.4 }); });
-            sN.dot(0, yL(p1), { r: 4.5, color: 'purple', hollow: true, width: 2 }); sN.text('start again from test 1’s result', 0.07, yL(p1), { dy: 12, align: 'left', color: 'purple', size: 10 });
+            sN.dot(0, yL(p1), { r: 4.5, color: 'purple', hollow: true, width: 2 }); sN.text('test 2 starts here', 0.07, yL(p1), { dy: 12, align: 'left', color: 'purple', size: 10.5, weight: 600 });
             sN.dot(2, -yL(p2), { r: 5, color: 'purple' }); sN.text(pcs(p2), 2, -yL(p2), { dx: -9, dy: Math.abs(yL(p2) - yL(p1)) < 0.5 ? 12 : 0, align: 'right', color: 'purple', size: 12, weight: 700 });
           }
           // ----- odds bars
@@ -392,7 +395,7 @@ Ratios above $10$ or below $0.1$ change the probability of disease substantially
           REF.forEach((R, k) => {
             const y = 0.17 - k * 0.04, a = XL(0), b = XL(Math.log(R.lr));
             sO.rect(Math.min(a, b), y - 0.012, Math.max(a, b), y + 0.012, { fill: 'gold', fillAlpha: 0.8, stroke: false });
-            sO.text(`${R.name}  × ${sig3(R.lr)}`, R.lr >= 1 ? b : a, y, { dx: R.lr >= 1 ? 6 : -6, align: R.lr >= 1 ? 'left' : 'right', color: 'ink', size: 10 });
+            sO.text(`${R.name}  × ${sig3(R.lr)}`, b, y, { dx: R.lr >= 1 ? 6 : -6, align: R.lr >= 1 ? 'left' : 'right', color: 'ink', size: 10 });
           });
           sO.line(XL(0), 0.03, XL(0), 0.2, { color: 'muted', width: 1, dash: [2, 2] });
           st = { p0, lr1, lr2, p1, p2, two };
@@ -433,8 +436,8 @@ the point at which a line of that slope (an iso-cost line) touches the curve. Yo
         const sC = v.stage({ x: [-3.6, 6.6], y: [0, 1], height: 330, axes: 'box', xlabel: 'cut-off', weight: 1.05, minWidth: 280, title: 'expected cost per 1 000 people tested' });
         const mk = v.select('test', [{ value: 'gen', label: 'generic score' }, { value: 'psa', label: 'PSA (PCPT)' }], 'gen');
         const dS = v.slider("separation $d'$", 0.3, 3.5, 1.5, { step: 0.05 });
-        const prevS = v.slider('prevalence $p$', 0.005, 0.6, 0.1, { log: true, fmt: (x) => pcs(x) });
-        const costS = v.slider('cost of a missed case ÷ cost of a false alarm', 0.1, 100, 5, { log: true, fmt: (x) => `${sig3(x)} : 1` });
+        const prevS = v.slider('prevalence $p$', 0.005, 0.6, 0.05, { log: true, fmt: (x) => pcs(x) });
+        const costS = v.slider('cost of a missed case (a false alarm costs 1)', 0.1, 100, 4, { log: true, fmt: (x) => sig3(x) });
         const model = () => (mk.value === 'psa' ? scoreModel(M, 'lognormal', PSA.mu0, PSA.s0, PSA.mu1, PSA.s1, 0.15, 40) : scoreModel(M, 'normal', 0, 1, dS.value, 1, -3.6, 6.6));
         const grid = (S) => Array.from({ length: NG + 1 }, (_, k) => S.at(k / NG));
         const nearest = (x, y) => { const S = model(); let best = null, bd = Infinity; for (const c of grid(S)) { const d = (1 - S.sp(c) - x) ** 2 + (S.se(c) - y) ** 2; if (d < bd) { bd = d; best = c; } } return best; };
@@ -457,7 +460,11 @@ the point at which a line of that slope (an iso-cost line) touches the curve. Yo
           const pk = psa ? 1 / (Math.sqrt(2 * Math.PI) * PSA.s0) : 1 / Math.sqrt(2 * Math.PI);
           sD.setView(null, [0, pk * 1.25]);
           sD.fn(S.f0, { color: 'blue', width: 2, fill: 'blue', fillAlpha: 0.12 }); sD.fn(S.f1, { color: 'red', width: 2, fill: 'red', fillAlpha: 0.12 });
-          for (const [c, col, lab] of [[cJ, 'green', 'Youden'], [cE, 'purple', 'least cost']]) { sD.line(c, 0, c, pk * 1.1, { color: col, width: 1.8, dash: [5, 4] }); sD.text(lab, c, pk * 1.12, { align: 'center', baseline: 'bottom', color: col, size: 11, weight: 700 }); }
+          const near = Math.abs(sD.X(cJ) - sD.X(cE)) < 80, eRight = cE >= cJ;
+          for (const [c, col, lab, side] of [[cJ, 'green', 'Youden', eRight ? -1 : 1], [cE, 'purple', 'least cost', eRight ? 1 : -1]]) {
+            sD.line(c, 0, c, pk * 1.1, { color: col, width: 1.8, dash: [5, 4] });
+            sD.text(lab, c, pk * 1.12, { dx: near ? side * 4 : 0, align: near ? (side < 0 ? 'right' : 'left') : 'center', baseline: 'bottom', color: col, size: 11, weight: 700 });
+          }
           sD.line(cut, 0, cut, pk * 0.95, { color: 'gold', width: 2 });
           // ----- ROC
           const roc = rocPoints(S);

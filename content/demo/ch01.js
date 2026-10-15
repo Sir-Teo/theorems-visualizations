@@ -146,8 +146,8 @@ where $B$ and $D$ are the births and deaths occurring in the territory during th
           bars.forEach(([, col, a, b, x], k) => {
             T.rect(x - 0.3, yo + a * u, x + 0.3, yo + b * u, { fill: col, fillAlpha: 0.72, color: col, width: 1.2 });
             if (k < 2) T.line(x + 0.3, yo + b * u, bars[k + 1][4] - 0.3, yo + b * u, { color: 'muted', width: 1, dash: [2, 3] });
-            const val = b - a;
-            T.text(`${val >= 0 ? '+' : '−'}${kf(val)}`, x + 0.38, yo + ((a + b) / 2) * u, { color: col, size: 11, weight: 700 });
+            const val = b - a, up = b >= a;
+            T.text(`${val >= 0 ? '+' : '−'}${kf(val)}`, x, yo + b * u, { align: 'center', baseline: up ? 'bottom' : 'top', dy: up ? -4 : 4, color: col, size: 11.5, weight: 700 });
           });
           T.path([[xl, yt], [xl, yb], [xr, yb], [xr, yt]], { color: 'ink', width: 2.6 });
           // level labels at the left of the tank, kept apart
@@ -212,7 +212,7 @@ where $B$ and $D$ are the births and deaths occurring in the territory during th
             return `**${S.name}, 1 Jan 1950 → 1 Jan ${t + 1}:** births ${fx(sB / 1000, 2)} M − deaths ${fx(sD / 1000, 2)} M = natural increase **${sg((sB - sD) / 1000, 2)} M**; net migration **${sg(sM / 1000, 2)} M**; together ${sg((sB - sD + sM) / 1000, 2)} M = the change in the count, ${fx(S.P[i + 1] / 1000, 2)} − ${fx(S.P[0] / 1000, 2)} = ${sg(tot / 1000, 2)} M (difference ${int((sB - sD + sM - tot) * 1000)} people). Migration's share of the growth: ${Math.abs(tot) > 1e-9 ? Math.round((100 * sM) / tot) : 0}%.`;
           }
           const lhs = P0 + B - D + Mg;
-          return `**${S.name}, ${t}:** ${ppl(P0)} on 1 January + ${ppl(B)} births − ${ppl(D)} deaths ${Mg >= 0 ? '+' : '−'} ${ppl(Math.abs(Mg))} net migrants = **${ppl(lhs)}**; the UN's population for 1 January ${t + 1}: **${ppl(P1)}** (difference ${int((lhs - P1) * 1000)} people, rounding). Natural increase ${sg((1000 * (B - D)) / pm, 1)} per 1 000, net migration ${sg((1000 * Mg) / pm, 1)} per 1 000 → growth ${sg((100 * (P1 - P0)) / pm, 2)}% in the year.`;
+          return `**${S.name}, ${t}:** ${ppl(P0)} on 1 January + ${ppl(B)} births − ${ppl(D)} deaths ${Mg >= 0 ? '+' : '−'} ${ppl(Math.abs(Mg))} net migrants = **${ppl(lhs)}**; the UN's population for 1 January ${t + 1}: **${ppl(P1)}** (${Math.abs(lhs - P1) < 0.05 ? 'identical' : `difference ${int((lhs - P1) * 1000)} people, from rounding`}). Natural increase ${sg((1000 * (B - D)) / pm, 1)} per 1 000, net migration ${sg((1000 * Mg) / pm, 1)} per 1 000 → growth ${sg((100 * (P1 - P0)) / pm, 2)}% in the year.`;
         });
       },
     },
@@ -290,7 +290,8 @@ The same recipe gives the rate for any subpopulation — an age group, a sex, a 
           area += n * (T1 - last); steps.push([T1, n]);
           const Nat = (t) => { let k = 0; for (const p of P) if (p.t0 <= t && t < p.t1) k++; return k; };
           const Nmid = Nat(T0 + 2.5), N0 = Nat(T0), N1 = P.filter((p) => p.t1 >= T1 - 1e-9).length;
-          N.setView(null, [0, nmax * 1.25]);
+          N.setView(null, [-0.1 * nmax * 1.25, nmax * 1.25]);
+          N.hline(0, { color: 'ink', width: 1 });
           N.poly([...steps, [T1, 0]], { fill: 'accent', fillAlpha: 0.22, stroke: false });
           N.path(steps, { color: 'accent', width: 2 });
           N.rect(T0, 0, T1, Nmid, { color: 'orange', width: 1.6, dash: [6, 4] });
@@ -338,7 +339,7 @@ the balancing equation (1.1) divided by $PY$; for one year it is very close to t
         v.render(() => {
           const S = CRS[cs.value], W = CRS.World, t = Math.round(yr.value), i = t - Y0, n = S.CBR.length;
           const hi = Math.max(...S.CBR, ...S.CDR, 12) * 1.12;
-          A.setView(null, [0, hi]);
+          A.setView(null, [-0.045 * hi, hi]);
           A.setTitle(`${S.name}: crude birth and death rates, 1950–2023`);
           // natural-increase band, coloured by sign
           for (let k = 0; k < n - 1; k++) {
@@ -406,7 +407,7 @@ which with $r$ in percent is the **rule of 70**: $T_2 \approx 70/r$. If growth i
       viz(v) {
         const L = v.stage({ x: [0, 103], y: [0, 10], height: 330, axes: 'box', weight: 1.25, minWidth: 300, xlabel: 'years', ylabel: 'P(t) / P(0)' });
         const R = v.stage({ x: [0, 25], y: [-12, 5], height: 330, axes: 'box', weight: 1, minWidth: 250, xlabel: 'growth rate (% a year)', ylabel: 'error (%)', title: 'how wrong are the rules?' });
-        const W = v.stage({ x: [1948, 2025], y: [0, 100], height: 250, axes: 'box', full: true, ylabel: 'years to double', xticks: DECADES, title: 'world population 1950–2023: doubling time at each year’s rate vs the time it actually took' });
+        const W = v.stage({ x: [1948, 2025], y: [10, 96], height: 250, axes: 'box', full: true, ylabel: 'years to double', xticks: DECADES, title: 'world population 1950–2023: doubling time at each year’s rate vs the time it actually took' });
         const rS = v.slider('growth rate $r$ (% a year)', -3, 10, 2, { step: 0.1, fmt: (x) => `${fx(x, 1)}%` });
         v.select('vertical axis', ['linear', 'log'], 'linear', { onChange: (x) => L.setScale({ ylog: x === 'log', y: x === 'log' ? [0.5, 10] : [0, 10] }) });
         const comp = v.select('compounding', [{ value: 'cont', label: 'continuous $e^{rt}$' }, { value: 'year', label: 'once a year $(1+r)^t$' }], 'cont');
@@ -487,9 +488,9 @@ For any such set, the events in it divided by the person-years lived in it — t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lexis_diagram' },
       viz(v) {
         const M = v.M, X0 = 2010, X1 = 2022, AM = 6;
-        const s = v.stage({ x: [X0, X1], y: [0, AM], equal: true, height: 420, axes: 'box', grid: true, full: true, ylabel: 'age', xticks: [2010, 2012, 2014, 2016, 2018, 2020, 2022], yticks: [0, 1, 2, 3, 4, 5, 6] });
-        const reg = v.select('region', [{ value: 'age', label: 'age group' }, { value: 'period', label: 'period' }, { value: 'cohort', label: 'birth cohort' }, { value: 'square', label: 'Lexis square' }, { value: 'tri', label: 'two triangles' }, { value: 'ca', label: 'cohort × age' }, { value: 'cp', label: 'cohort × period' }], 'square');
-        const H = s.handle(2018.62, 3.3, { color: 'gold', constrain: (x, y) => [clamp(x, X0 + 0.02, X1 - 0.02), clamp(y, 0.02, AM - 0.02)] });
+        const s = v.stage({ x: [X0 - 0.35, X1 + 0.35], y: [-0.42, AM + 0.25], equal: true, height: 440, axes: 'box', grid: true, full: true, ylabel: 'age', xticks: [2010, 2012, 2014, 2016, 2018, 2020, 2022], yticks: [0, 1, 2, 3, 4, 5, 6] });
+        const reg = v.select('region', [{ value: 'age', label: 'age group' }, { value: 'period', label: 'period' }, { value: 'cohort', label: 'birth cohort' }, { value: 'square', label: 'Lexis square' }, { value: 'tri', label: 'two triangles' }, { value: 'ca', label: 'cohort × age' }, { value: 'cp', label: 'cohort × period' }], 'tri');
+        const H = s.handle(2015.55, 0.42, { color: 'gold', constrain: (x, y) => [clamp(x, X0 + 0.02, X1 - 0.02), clamp(y, 0.02, AM - 0.02)] });
         // cumulative hazard of a high-mortality schedule: μ(a) = 0.25 e^{−2a} + 0.03
         const Hz = (a) => 0.125 * (1 - Math.exp(-2 * a)) + 0.03 * a;
         const people = (() => {
@@ -537,6 +538,7 @@ For any such set, the events in it divided by the person-years lived in it — t
             s.poly(r.P, { fill: col, fillAlpha: k === 0 ? 0.3 : 0.26, color: col, width: 2 });
           }
           for (const g of segs) s.line(g.p0[0], g.p0[1], g.p1[0], g.p1[1], { color: 'accent', width: 1.3, alpha: 0.6 });
+          s.rect(X0, 0, X1, AM, { color: 'ink', width: 1.2 });
           for (const r of R) {
             const col = r.col || 'gold'; let py = 0, dn = 0;
             for (const g of segs) {

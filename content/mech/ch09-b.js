@@ -99,7 +99,7 @@ It is perpendicular to the velocity, so it changes the direction of motion but n
           sD.path(ex, { color: 'accent', width: 2.4 });
           shots.forEach((S, i) => { if (S.sp >= 2 && S.sp <= 20) sD.dot(S.sp, Math.abs(S.miss), { r: 5, color: COLS[i] }); });
           cur = { w, sp, S: shots[1] };
-        }, { period: 3.6, still: 1.05 });
+        }, { period: 3.6, still: 0.62 });
         v.legend([['accent', 'chosen speed (exact)'], ['teal', '0.6×'], ['pink', '1.7×'], ['purple', 'Coriolis $-2m\\boldsymbol\\omega\\times\\mathbf v$'], ['orange', 'centrifugal'], ['ink', 'estimate $\\omega D^2/v$', { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
@@ -148,10 +148,10 @@ the same eastward direction in both hemispheres and largest at the equator. A so
         v.animate((tA) => {
           const F = fall(), D = DROPS.find((q) => q.key === pre.value), match = D && Math.abs(D.h - F.h) < 0.05 && Math.abs(D.lat - F.lat) < 0.02;
           const dm = Math.max(F.east, F.pred, match ? D.d + D.err : 0, 1e-6);
-          sT.setView([-0.28 * dm, 1.5 * dm], [-0.13 * F.h, 1.1 * F.h]);
+          sT.setView([-0.28 * dm, 1.75 * dm], [-0.13 * F.h, 1.1 * F.h]);
           sT.vline(0, { color: 'muted', width: 1.4, dash: [6, 4] });
-          sT.text('plumb line', 0, 0.55 * F.h, { color: 'muted', size: 11, dx: 6, align: 'left' });
-          sT.rect(-0.28 * dm - 1, -0.2 * F.h, 1.5 * dm + 1, 0, { fill: 'green', fillAlpha: 0.1, stroke: false });
+          sT.text('plumb line', 0, 0.2 * F.h, { color: 'muted', size: 11, dx: 6, align: 'left' });
+          sT.rect(-0.28 * dm - 1, -0.2 * F.h, 1.75 * dm + 1, 0, { fill: 'green', fillAlpha: 0.1, stroke: false });
           sT.hline(0, { color: 'green', width: 2 });
           const fc = []; for (let j = 0; j <= 100; j++) { const z = F.h * (1 - j / 100); fc.push([formula(F.h - z, F.lat) * 1000, z]); }
           sT.path(fc, { color: 'green', width: 7, alpha: 0.25 });
@@ -161,7 +161,7 @@ the same eastward direction in both hemispheres and largest at the equator. A so
           if (match) {
             sT.line(D.d - D.err, 0, D.d + D.err, 0, { color: 'red', width: 3 });
             sT.dot(D.d, 0, { r: 5.5, color: 'red' });
-            sT.text(`${D.who}: ${D.d}${D.err ? ' ± ' + D.err : ''} mm`, D.d, 0, { color: 'red', size: 11.5, dx: 12, dy: -16, align: 'left' });
+            sT.text(`${D.who.split(' ')[0]}: ${D.d}${D.err ? ' ± ' + D.err : ''} mm`, D.d, 0, { color: 'red', size: 11.5, dx: 10, dy: -15, align: 'left' });
           }
           const p = F.path[k]; sT.dot(p[0], p[1], { r: 7, color: 'gold' });
           sT.dot(0, F.h, { r: 3, color: 'ink' });
@@ -413,7 +413,7 @@ This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \ap
         let muS = null;
         const SYS = { sj: ['Sun–Jupiter', 9.537e-4], em: ['Earth–Moon', 0.01215], over: ['μ = 0.045 (past Routh)', 0.045] };
         const sys = v.select('system', Object.entries(SYS).map(([value, [label]]) => ({ value, label })), 'sj', {
-          onChange: (k) => { const mu = SYS[k][1]; muS.set(mu); if (k === 'sj') setStart(Math.cos(85 * DEG) - mu, Math.sin(85 * DEG)); else setStart(0.5 - mu + (k === 'em' ? 0.03 : 0.005), Math.sqrt(3) / 2); },
+          onChange: (k) => { const mu = SYS[k][1]; muS.set(mu); if (k === 'sj') setStart(Math.cos(85 * DEG) - mu, Math.sin(85 * DEG)); else setStart(0.5 - mu + (k === 'em' ? 0.008 : 0.005), Math.sqrt(3) / 2); },
         });
         muS = v.slider('mass ratio $\\mu$', 1e-4, 0.5, 9.537e-4, { log: true, sig: 4 });
         const view = v.select('left panel', [{ value: 'zoom', label: 'unrolled along the orbit' }, { value: 'whole', label: 'whole frame' }], 'zoom');

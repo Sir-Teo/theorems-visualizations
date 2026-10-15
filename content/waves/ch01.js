@@ -632,8 +632,9 @@ The principle holds exactly only for linear media. For a medium whose restoring 
           pr.path(hist.map(([tt, y]) => [tt - tSim, y]), { color: 'teal', width: 1.6 });
           if (sc.value === 'trains') {
             const dw = (K2 - K1) / 2;
-            pr.fn((u) => 2 * AT * Math.abs(Math.cos(dw * (probe.x - (tSim + u)))), { color: 'muted', width: 1.4, dash: [5, 4] });
-            pr.fn((u) => -2 * AT * Math.abs(Math.cos(dw * (probe.x - (tSim + u)))), { color: 'muted', width: 1.4, dash: [5, 4] });
+            // the trains were set up at t = −HIST (pre-roll), so their common phase is x − (t + HIST)
+            pr.fn((u) => 2 * AT * Math.abs(Math.cos(dw * (probe.x - (tSim + u + HIST)))), { color: 'muted', width: 1.4, dash: [5, 4] });
+            pr.fn((u) => -2 * AT * Math.abs(Math.cos(dw * (probe.x - (tSim + u + HIST)))), { color: 'muted', width: 1.4, dash: [5, 4] });
           }
         }, { period: 8, still: 1.85 });
         v.legend([['accent', 'simulation with A and B together'], ['green', 'A alone + B alone', { dash: true }], ['orange', 'A alone'], ['purple', 'B alone'], ['red', 'defect']]);
@@ -726,7 +727,7 @@ They satisfy the local conservation law $\partial_t(\mathcal K+\mathcal U)+\part
           if (!sums) return '';
           const { K, U, E0, Epass, dm, pc, ce } = sums, mJ = (x) => v.fix(1000 * x, 2);
           const one = sc.value === 'one';
-          return `$\\int\\mathcal K\\,dx$ = ${mJ(K)} mJ, $\\int\\mathcal U\\,dx$ = ${mJ(U)} mJ, total ${mJ(K + U)} mJ (at $t=0$: ${mJ(E0)} mJ) · largest $|\\mathcal K-\\mathcal U|$ along the string: ${v.fix(100 * dm, dm < 1e-3 ? 4 : 1)} % of the peak density${one ? '' : ' (the pulses overlap: the mirror breaks)'} · at the probe $P$ = ${v.fix(pc, 3)} W, $c(\\mathcal K+\\mathcal U)$ = ${v.fix(ce, 3)} W · energy past the probe ${mJ(Epass)} mJ${one ? ` of the pulse's ${mJ(E0)} mJ` : ' (right-going energy counts +, left-going −)'}`;
+          return `$\\int\\mathcal K\\,dx$ = ${mJ(K)} mJ, $\\int\\mathcal U\\,dx$ = ${mJ(U)} mJ, total ${mJ(K + U)} mJ (at $t=0$: ${mJ(E0)} mJ) · largest $|\\mathcal K-\\mathcal U|$ along the string: ${v.fix(100 * dm, dm < 1e-3 ? 4 : 1)} % of the peak density${dm > 1e-3 ? ' (the pulses overlap: the mirror breaks)' : ''} · at the probe $P$ = ${v.fix(pc, 3)} W, $c(\\mathcal K+\\mathcal U)$ = ${v.fix(ce, 3)} W · energy past the probe ${mJ(Epass)} mJ${one ? ` of the pulse's ${mJ(E0)} mJ` : ' (right-going energy counts +, left-going −)'}`;
         });
       },
     },

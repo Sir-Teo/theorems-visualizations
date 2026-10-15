@@ -223,6 +223,12 @@ export function hsGas(o) {
     }
     drift(tEnd - G.t);
   };
+  /** Friction on a free piston over a time h (drag coefficient gamma); the heat it makes is returned to the gas. */
+  G.pistonFriction = (gamma, h) => {
+    if (!(pist.M < Infinity) || !pist.U) return 0;
+    const f = Math.exp(-gamma * h / pist.M), dE = 0.5 * pist.M * pist.U * pist.U * (1 - f * f);
+    pist.U *= f; G.Wf = (G.Wf || 0) + dE; G.heat(dE); return dE;
+  };
   /** Driven piston: set its velocity (the program moves it; molecules bounce off it in its own frame). */
   G.setU = (U) => { pist.U = U; rewall(); };
   /** Move a driven piston instantly to X (only outward or into empty space is safe; molecules beyond X are pushed back). */

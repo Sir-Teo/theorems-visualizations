@@ -212,86 +212,97 @@ at constant pressure the system also does work $P\,dV$ on its surroundings, so
 $$C_P = \left(\frac{\partial U}{\partial T}\right)_P + P\left(\frac{\partial V}{\partial T}\right)_P = \left(\frac{\partial H}{\partial T}\right)_P .$$
 Per unit mass they are **specific heats**, per mole **molar heat capacities**. For an ideal gas with $f$ quadratic degrees of freedom per molecule, $U = \tfrac f2 NkT$ gives $C_V = \tfrac f2 Nk$ (3/2 for a monatomic gas, 5/2 for a diatomic one at room temperature).`,
       idea: String.raw`By the first law (1.11) the heat put in is $dU - \delta W = dU + P\,dV$. Holding $V$ fixed sends all of it into internal energy. Letting the gas expand against a constant pressure diverts part of it into lifting the piston, so more heat is needed for the same temperature rise and $C_P > C_V$. For molecules that can rotate, collisions share the added energy between translation (which is what the temperature measures) and rotation, which is why diatomic gases need more heat per degree than monatomic ones.`,
-      caption: String.raw`Two cylinders of the same simulated gas receive heat at the same steady rate: the top one has a fixed lid, the bottom one a free piston held by a constant outside pressure. The temperature is read from the molecules' translational kinetic energy only, as a thermometer would. Watch the bottom piston rise and its temperature lag behind; the plot of $T$ against heat delivered gives each heat capacity as an inverse slope. Switch to **diatomic** molecules, which carry extra (rotational) energy: both slopes flatten, from 3/2 and 5/2 to 5/2 and 7/2 (in units of $Nk$).`,
+      caption: String.raw`Two cylinders of the same simulated gas receive heat at the same steady rate: the top one has a fixed lid, the bottom one a free piston held by a constant outside pressure (a little friction, whose heat goes back into the gas, keeps it from ringing). The temperature is read from the molecules' translational kinetic energy only, as a thermometer would, and averaged over three identical copies of each cylinder to tame the thermal noise of 100 molecules. Watch the bottom piston rise and its temperature lag behind; the plot of $T$ against heat delivered gives each heat capacity as an inverse slope. Switch to **diatomic** molecules, which carry extra (rotational) energy: both slopes flatten, from 3/2 and 5/2 to 5/2 and 7/2 (in units of $Nk$).`,
       deps: ['thermo-1.11'],
       refs: ['Schroeder §1.6'],
       tags: ['heat capacity', 'first law'],
       credit: 'Black, 1760s; Delaroche & Bérard (gases), 1813',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heat_capacity' },
       viz(v) {
-        const L = 9, A = L * L, N = 100, XV = 25, X0 = 12, T0 = 0.6, POW = 1.2, TH = 230;
+        // K identical copies of each cylinder run side by side (copy 0 is drawn); averaging them beats down the thermal
+        // noise of these small 100-molecule systems, and their spread gives an honest error bar
+        const L = 9, A = L * L, N = 100, XV = 25, X0 = 12, T0 = 0.6, POW = 1.2, TH = 230, K = 3, FRICTION = 1.5;
         const P0 = N * T0 / (X0 * A);
-        let G, tr, t0;
+        let GV, GP, tr;
         const gas = v.select('molecules', [{ value: 0, label: 'monatomic' }, { value: 2, label: 'diatomic (rotating)' }], 0, { onChange: () => make() });
         v.button('Start again', () => make());
         const sc = v.stage({ x: [-1.5, 47], y: [-2.2, 22.4], equal: true, height: 300, axes: false, full: true });
         const sT = v.stage({ x: [0, 560], y: [0.4, 2.4], height: 280, axes: 'box', xlabel: 'heat delivered Q (units of kT₀)', ylabel: 'translational kT', title: 'temperature against heat delivered', weight: 1.25 });
-        const sb = v.stage({ x: [0, 2], y: [0, 1], height: 280, axes: 'box', ylabel: 'energy', xticks: [[0.5, 'fixed volume'], [1.5, 'constant pressure']], title: 'where the heat went', weight: 1 });
+        const sb = v.stage({ x: [0, 2], y: [0, 1], height: 280, axes: 'box', ylabel: 'energy', xticks: [[0.5, 'fixed volume'], [1.5, 'constant pressure']], title: 'where the heat went (drawn cylinders)', weight: 1 });
         const make = () => {
           clock.kick(30);
           const dof = +gas.value, sp = [{ m: 1, d: 0.6, dof, T: T0 }];
-          G = [hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(71 + dof), piston: { X: XV }, diffuse: [1, 0, 1, 1, 1, 1] }),
-               hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(72 + dof), piston: { X: X0, M: 5, F: P0 * A, lo: 4, hi: 44 }, diffuse: [1, 0, 1, 1, 1, 1] })];
-          tr = [[], []]; t0 = G[0].t;
-          G.forEach((g) => { g.Qin = 0; g.U0 = g.stats().U; g.X0 = g.pist.X; g.W0 = g.Wp; g.Tacc = 0; g.nacc = 0; });
+          GV = []; GP = [];
+          for (let k = 0; k < K; k++) {
+            GV.push(hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(71 + dof + 10 * k), piston: { X: XV } }));
+            GP.push(hsGas({ species: sp, counts: [N], Ly: L, Lz: L, rng: v.rng(72 + dof + 10 * k), piston: { X: X0, M: 10, F: P0 * A, lo: 4, hi: 44 } }));
+          }
+          for (const g of [...GV, ...GP]) { g.setT(T0); g.Qin = 0; g.U0 = g.stats().U; g.W0 = g.Wp; g.Tacc = 0; g.nacc = 0; g.tr = []; }
+          tr = [[], []];
         };
         const clock = simClock(16, 0.05, 0);
         make();
+        const fitC = (g) => { const pts = g.tr.filter((p) => p[2] > 20 && p[2] <= TH + 2); if (pts.length < 6 || pts[pts.length - 1][0] - pts[0][0] < 30) return NaN; return 1 / fitLine(pts.map((p) => p[0]), pts.map((p) => p[1])).b / N; };
         v.animate((t) => {
           const add = clock(t, () => make());
           const tStart = performance.now();
           let done = 0;
           while (done < add - 1e-9) {
             const h = Math.min(0.25, add - done);
-            for (const g of G) {
+            for (const g of [...GV, ...GP]) {
               if (g.t < TH) { const q = POW * h; g.heat(q); g.Qin += q; }
               g.advance(h);
-              const st = g.stats(); g.Tacc += st.Ttr * h; g.nacc += h;
+              if (g.pist.M < Infinity) g.pistonFriction(FRICTION, h);
+              g.Tacc += g.stats().Ttr * h; g.nacc += h;
             }
             done += h;
-            if (G[0].t - (tr[0].length ? tr[0][tr[0].length - 1][2] : -9) >= 2) G.forEach((g, k) => { tr[k].push([g.Qin, g.Tacc / g.nacc, g.t]); g.Tacc = 0; g.nacc = 0; });
+            const g0 = GV[0];
+            if (g0.t - (g0.tr.length ? g0.tr[g0.tr.length - 1][2] : -9) >= 2) {
+              for (const g of [...GV, ...GP]) { g.tr.push([g.Qin, g.Tacc / g.nacc, g.t]); g.Tacc = 0; g.nacc = 0; }
+              [GV, GP].forEach((set, j) => tr[j].push([set[0].Qin, set.reduce((s2, g) => s2 + g.tr[g.tr.length - 1][1], 0) / K]));
+            }
             if (performance.now() - tStart > clock.ms()) break;
           }
           const rp = tRamp(v), colOf = (g) => (i) => pick(rp, Math.hypot(g.vx[i], g.vy[i], g.vz[i]) / 3.4);
-          drawGas(sc, G[0], { x0: 0, y0: 12.2, piston: false, len: XV, color: colOf(G[0]), leftColor: 'red', leftWidth: 2.4 });
-          drawGas(sc, G[1], { x0: 0, y0: 0, rod: 0, len: 44, color: colOf(G[1]) });
-          const Xp = G[1].pist.X;
+          drawGas(sc, GV[0], { x0: 0, y0: 12.2, piston: false, len: XV, color: colOf(GV[0]), leftColor: 'red', leftWidth: 2.4 });
+          drawGas(sc, GP[0], { x0: 0, y0: 0, rod: 0, len: 44, color: colOf(GP[0]) });
+          const Xp = GP[0].pist.X;
           for (const yy of [2.2, 4.5, 6.8]) sc.arrow(Xp + 4.2, yy, Xp + 1.6, yy, { color: 'muted', width: 1.6, head: 7 });
           sc.text('constant outside pressure', Xp + 2, L + 0.8, { size: 11, color: 'muted' });
           sc.text('fixed volume', 0, 12.2 + L + 0.8, { size: 11.5, color: 'ink', weight: 600 });
-          sc.text('constant pressure (free piston)', 0, -1.2, { size: 11.5, color: 'ink', weight: 600 });
-          const heating = G[0].t < TH;
+          sc.text(`constant pressure (free piston) · one of ${K} identical copies of each cylinder`, 0, -1.2, { size: 11.5, color: 'ink', weight: 600 });
+          const heating = GV[0].t < TH;
           sc.text(heating ? 'heater on' : 'heater off', XV + 1, 12.2 + L / 2, { size: 11.5, color: heating ? 'red' : 'muted', weight: 600 });
-          // T vs Q
+          // T vs Q (average of the copies)
           const f = 3 + +gas.value, Qmax = POW * TH;
           sT.setView([0, Qmax * 1.04], [0.4, f === 3 ? 2.6 : 2.0]);
           sT.fn((Q) => T0 + Q / (f / 2 * N), { color: 'red', width: 1.4, dash: [6, 4], domain: [0, Qmax] });
           sT.fn((Q) => T0 + Q / ((f / 2 + 1) * N), { color: 'blue', width: 1.4, dash: [6, 4], domain: [0, Qmax] });
-          sT.path(tr[0].map((p) => [p[0], p[1]]), { color: 'red', width: 2.2 });
-          sT.path(tr[1].map((p) => [p[0], p[1]]), { color: 'blue', width: 2.2 });
+          sT.path(tr[0], { color: 'red', width: 2.2 });
+          sT.path(tr[1], { color: 'blue', width: 2.2 });
           sT.tex(`\\text{slope } 1/C_V,\\ C_V = \\tfrac{${f}}{2}Nk`, Qmax * 0.6, T0 + Qmax * 0.6 / (f / 2 * N), { align: 'right', baseline: 'bottom', dx: -10, dy: -6, color: 'red', size: 14 });
           sT.tex(`C_P = \\tfrac{${f + 2}}{2}Nk`, Qmax * 0.8, T0 + Qmax * 0.8 / ((f / 2 + 1) * N), { align: 'left', baseline: 'top', dx: 4, dy: 8, color: 'blue', size: 14 });
-          // where the heat went
-          const s0 = G[0].stats(), s1 = G[1].stats();
-          const dU0 = s0.U - G[0].U0, dU1 = s1.U - G[1].U0, Wby = -(G[1].Wp - G[1].W0);
-          const top = Math.max(50, G[0].Qin) * 1.15;
+          // where the heat went, for the two drawn cylinders (exact ledgers: heat in = ΔU + work)
+          const a = GV[0], b = GP[0];
+          const dU0 = a.stats().U - a.U0, dU1 = b.stats().U - b.U0, Wby = -(b.Wp - b.W0) - (b.Wf || 0); // net work done by the gas (piston friction heat returns to it)
+          const top = Math.max(50, a.Qin) * 1.15;
           sb.setView([0, 2], [-0.1 * top, top]);
           sb.rect(0.25, 0, 0.75, Math.max(0, dU0), { fill: 'green', fillAlpha: 0.7, color: 'green', width: 1 });
           sb.rect(1.25, 0, 1.75, Math.max(0, dU1), { fill: 'green', fillAlpha: 0.7, color: 'green', width: 1 });
           sb.rect(1.25, Math.max(0, dU1), 1.75, Math.max(0, dU1) + Math.max(0, Wby), { fill: 'orange', fillAlpha: 0.7, color: 'orange', width: 1 });
-          sb.hline(G[0].Qin, { color: 'red', dash: [5, 4], width: 1.4 });
-          sb.text(`heat in ${v.fix(G[0].Qin, 0)}`, 1.98, G[0].Qin, { align: 'right', dy: -9, size: 11, color: 'red' });
+          sb.hline(a.Qin, { color: 'red', dash: [5, 4], width: 1.4 });
+          sb.text(`heat in ${v.fix(a.Qin, 0)}`, 1.98, a.Qin, { align: 'right', dy: -9, size: 11, color: 'red' });
           if (dU1 > 8) sb.text('ΔU', 1.5, dU1 / 2, { align: 'center', size: 11.5, color: 'panel', halo: false, weight: 600 });
           if (Wby > 8) sb.text('work', 1.5, dU1 + Wby / 2, { align: 'center', size: 11.5, color: 'panel', halo: false, weight: 600 });
           if (dU0 > 8) sb.text('ΔU', 0.5, dU0 / 2, { align: 'center', size: 11.5, color: 'panel', halo: false, weight: 600 });
         }, { still: 8 });
-        v.legend([['red', 'fixed volume'], ['blue', 'constant pressure'], ['green', 'internal energy gained', { area: true }], ['orange', 'work done lifting the piston', { area: true }]]);
+        v.legend([['red', 'fixed volume (average of the copies)'], ['blue', 'constant pressure (average)'], ['green', 'internal energy gained', { area: true }], ['orange', 'work done on the piston and the outside', { area: true }]]);
         v.readout(() => {
-          const fit = (k) => { const pts = tr[k].filter((p) => p[2] > 20 && p[2] <= TH + 2); if (pts.length < 6 || pts[pts.length - 1][0] - pts[0][0] < 30) return null; const r = v.M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])); return { c: 1 / r.slope / N, e: r.seSlope / (r.slope * r.slope) / N }; };
-          const a = fit(0), b = fit(1), f = 3 + +gas.value;
+          const stat = (set) => { const c = set.map(fitC).filter(isFinite); if (c.length < K) return null; const m = c.reduce((s2, x) => s2 + x, 0) / c.length, sd = Math.sqrt(c.reduce((s2, x) => s2 + (x - m) ** 2, 0) / (c.length - 1)); return { c: m, e: sd / Math.sqrt(c.length) }; };
+          const a = stat(GV), b = stat(GP), f = 3 + +gas.value;
           if (!a || !b) return 'heating… (the fit starts once some heat has gone in)';
           const cv = a.c, cp = b.c;
-          return `measured (inverse slopes): $C_V/Nk$ = ${v.fix(cv, 2)} ± ${v.fix(a.e, 2)}, $C_P/Nk$ = ${v.fix(cp, 2)} ± ${v.fix(b.e, 2)} · expected ${f}/2 = ${v.fix(f / 2, 1)} and ${f + 2}/2 = ${v.fix(f / 2 + 1, 1)} · difference ${v.fix(cp - cv, 2)} (theory 1, see 1.15) · ratio $\\gamma$ = ${v.fix(cp / cv, 3)} (theory ${v.fix((f + 2) / f, 3)}) · ${G[0].t < TH ? 'heater on' : 'heater off'}`;
+          return `measured (inverse slopes, mean ± standard error of ${K} copies): $C_V/Nk$ = ${v.fix(cv, 2)} ± ${v.fix(a.e, 2)}, $C_P/Nk$ = ${v.fix(cp, 2)} ± ${v.fix(b.e, 2)} · expected ${f}/2 = ${v.fix(f / 2, 1)} and ${f + 2}/2 = ${v.fix(f / 2 + 1, 1)} · difference ${v.fix(cp - cv, 2)} (theory 1, see 1.15) · ratio $\\gamma$ = ${v.fix(cp / cv, 3)} (theory ${v.fix((f + 2) / f, 3)}) · ${GV[0].t < TH ? 'heater on' : 'heater off'}`;
         });
       },
     },
