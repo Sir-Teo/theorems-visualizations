@@ -176,7 +176,7 @@ The set of alternating bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{alt}}$
           const ang = (p) => ((Math.atan2(p[1], p[0]) % Math.PI) + Math.PI) % Math.PI;
           R.dot(ang(u), g(ang(u)), { r: 6, color: 'accent', label: 'u/|u|', labelPos: 'ne' });
           R.dot(ang(w), g(ang(w)), { r: 6, color: 'gold', label: 'w/|w|', labelPos: 'se' });
-          R.corner(okAlt ? 'α(x, x) = 0 at every angle: alternating' : `max |α(x, x)| = ${pn(mx, 3)}: not alternating`, 'tl', { color: okAlt ? 'green' : 'red', weight: 700 });
+          R.corner(okAlt ? 'α(x, x) = 0 at every angle: alternating' : `max |α(x, x)| = ${pn(mx, 3)}: not alternating`, 'tr', { color: okAlt ? 'green' : 'red', weight: 700 });
           st = { A, a, area, c, s, auu: bil(A, u, u), aww: bil(A, w, w), mx, okAlt };
         });
         v.legend([['blue', '$\\alpha(u, w) > 0$', { area: true }], ['red', '$\\alpha(u, w) < 0$', { area: true }], ['green', '$\\alpha(x, x)$ (alternating)'], ['red', '$\\alpha(x, x)$ (not alternating)'], ['accent', '$\\alpha(u/\\|u\\|, x)$', { dash: true }]]);

@@ -130,7 +130,7 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
         let S = null;
         const framesFor = () => (part.value === 'm' ? machineFrames() : diagFrames());
         function resetSteps(at) { if (!S) return; S.setCode(part.value === 'm' ? CODE_M() : CODE_D, part.value === 'm' ? (abbr.value ? 'Turing’s abbreviated table' : 'the table: m-config · symbol · operations · final') : 'Turing §8, step by step'); S.reset(framesFor(), { at: at === 'keep' ? Math.min(S.i, part.value === 'm' ? NMOVE : 7) : at }); }
-        S = v.steps({ frames: framesFor(), code: CODE_M(), codeTitle: 'the table: m-config · symbol · operations · final', codePos: 'below', start: 9, still: 9, speed: 2 });
+        S = v.steps({ frames: framesFor(), code: part.value === 'm' ? CODE_M() : CODE_D, codeTitle: part.value === 'm' ? 'the table: m-config · symbol · operations · final' : 'Turing §8, step by step', codePos: 'below', start: 9, still: 9, speed: 2 });
         // ---- table editing (standard 4-line table only)
         const ROWY = (i) => 8.0 - i * 1.1, COLS = [0.3, 2.2, 4.2, 7.4, 9.7];
         tab.onClick((x, y) => {
@@ -203,15 +203,15 @@ The claims rest on the thesis, argued at length in §9, that his machines captur
           });
           let yb = top - (n + 1) * rh;
           if (stg >= 4 && stg !== 6) { dg.text(stg >= 5 ? 'β (flipped)' : 'β = 1 − φₙ(n)', 0.15, yb, { size: 11, weight: 700, color: 'red' }); diag.forEach((d, j) => dg.text(String(1 - d), cx(j), yb, { size: 12.5, align: 'center', weight: 800, color: 'red' })); yb -= rh; }
-          if (stg >= 6) { dg.text('β′ = φₙ(n), by 𝓗', 0.15, yb, { size: 11, weight: 700, color: 'green' }); diag.forEach((d, j) => dg.text(String(d), cx(j), yb, { size: 12.5, align: 'center', weight: 800, color: 'green' })); yb -= rh; }
+          if (stg >= 6) { dg.text('β′ = φₙ(n), by H', 0.15, yb, { size: 11, weight: 700, color: 'green' }); diag.forEach((d, j) => dg.text(String(d), cx(j), yb, { size: 12.5, align: 'center', weight: 800, color: 'green' })); yb -= rh; }
           if (stg >= 7) {
             const RK = diag.length + 1;
             dg.rect(0.05, yb - rh / 2, 9.95, yb + rh / 2, { fill: 'red', fillAlpha: 0.08, stroke: false });
-            dg.text('𝓗 itself, D.N = K', 0.15, yb, { size: 11, weight: 700, color: 'red' });
+            dg.text('H itself, D.N = K', 0.15, yb, { size: 11, weight: 700, color: 'red' });
             for (let j = 0; j < NF; j++) dg.text(j < RK - 1 ? String(diag[j]) : j === RK - 1 ? '?' : '', cx(j), yb, { size: j === RK - 1 ? 15 : 12, align: 'center', weight: 800, color: j === RK - 1 ? 'red' : 'muted' });
           }
-          if (stg >= 5 && stg <= 7) dg.corner(stg === 5 ? 'suppose 𝓓 marks every D.N s or u' : stg === 6 ? '𝓗 = 𝓓 + universal machine 𝓤' : 'R(K)-th figure of 𝓗: never found', 'br', { size: 11.5, color: stg === 7 ? 'red' : 'muted', weight: 700 });
-          if (stg === 8) dg.corner('no machine 𝓓 · no machine 𝓔 · no decision procedure', 'br', { size: 11.5, color: 'red', weight: 700 });
+          if (stg >= 5 && stg <= 7) dg.corner(stg === 5 ? 'suppose D marks every D.N s or u' : stg === 6 ? 'H = D + universal machine U' : 'R(K)-th figure of H: never found', 'br', { size: 11.5, color: stg === 7 ? 'red' : 'muted', weight: 700 });
+          if (stg === 8) dg.corner('no machine D · no machine E · no decision procedure', 'br', { size: 11.5, color: 'red', weight: 700 });
           st = { D, A, isT, L };
         });
         v.readout(() => {

@@ -594,9 +594,9 @@ Each keeps some properties of what we see and gives up others; none of them is â
       links: { wikipedia: 'https://en.wikipedia.org/wiki/De_pictura' },
       viz(v) {
         const M = v.M, HW = 4, VH = 6, N = 8, VY = -1.2, G = -2.6; // veil half-width and height (braccia), rows of tiles, veil plane, ground
-        const S = v.stage({ x: [-7.6, 7.2], y: [-4.6, 4.2], equal: true, axes: false, height: 390, weight: 1.15, title: 'the window, the veil and the visual pyramid' });
+        const S = v.stage({ x: [-6.2, 6.2], y: [-4.5, 3.7], equal: true, axes: false, height: 390, weight: 1.15, title: 'the window, the veil and the visual pyramid' });
         const P = v.stage({ x: [-4.3, 5.8], y: [-0.35, 6.3], equal: true, axes: false, height: 390, weight: 0.85, minWidth: 240, title: 'the painting, by the costruzione legittima' });
-        const sc = v.scene3(S, { yaw: -0.78, pitch: 0.2, axes: false, lim: 14 });
+        const sc = v.scene3(S, { yaw: -0.38, pitch: 0.72, axes: false, lim: 14 });
         const eye = sc.handle([0.6, VY - 4.5, G + 3], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -2.5, 2.5), M.clamp(p[1], VY - 11, VY - 2.5), M.clamp(p[2], G + 0.8, G + 4.4)] });
         const veil = v.toggle('veil threads in the painting', true);
         const man = [-2.6, VY + 1.5];

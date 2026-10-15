@@ -462,13 +462,13 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
               P.rect(X, Y, g.w, g.h, { fill: isP ? 'gold' : 'muted', fillAlpha: isP ? 0.25 : 0.05, r: 4 });
               const colorOf = (r, c) => (f === 'k' ? ((conj.value ? r === 0 : c === 0) ? 'orange' : 'blue') : f === 'odd' ? 'green' : f === 'dist' ? 'purple' : 'blue');
               drawFerrers(P, d, X + 4, Y + 4, q, { colorOf, dotScale: 0.38 });
-              if (lab) P.text(d.join('+'), X + g.w / 2, Y + g.h - 7, { align: 'center', size: Math.min(10.5, (g.w / (d.join('+').length + 1)) * 1.6), color: 'muted', halo: false });
+              if (lab) P.text(d.join('+'), X + g.w / 2, Math.min(Y + g.h - 7, Y + 4 + mR * q + 9), { align: 'center', size: Math.min(10.5, (g.w / (d.join('+').length + 1)) * 1.6), color: 'muted', halo: false });
               boxes.push([X, Y, g.w, g.h, lam]);
             });
           }
           // big diagram and its conjugate
           const Q = pen(v, B), BW = Q.W, BH = Q.H, lam = pick, lc = conjugate(lam);
-          const q = Math.min((BW - 50) / (lam[0] + lc[0]), (BH - 90) / Math.max(lam.length, lc.length), 30);
+          const q = Math.min((BW - 50) / (lam[0] + lc[0]), (BH - 90) / Math.max(lam.length, lc.length), 42);
           const x1 = 16, x2 = 16 + q * lam[0] + 26, y0 = 52;
           Q.text('λ', x1, 20, { size: 15, math: true, weight: 600 }); Q.text(`= (${lam.join(', ')})`, x1 + 12, 20, { size: 12.5 });
           Q.text('λ′', x2, 20, { size: 15, math: true, weight: 600 }); Q.text(`= (${lc.join(', ')})`, x2 + 16, 20, { size: 12.5 });
@@ -575,7 +575,7 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
             const area = [X + 6, Y + 32, w - 12, h - 38];
             if (!list.length) { P.text(c === 1 ? `none: more balls (${n}) than boxes (${x})` : `none: more boxes (${x}) than balls (${n})`, X + w / 2, Y + h / 2 + 10, { align: 'center', size: 11.5, color: 'muted' }); continue; }
             const cap = 40, shown = list.length > cap ? cap - 1 : list.length;
-            const g = fitGrid(shown + (list.length > cap ? 1 : 0), area[2], area[3], 1.15 / x, 3, 16 * x);
+            const g = fitGrid(shown + (list.length > cap ? 1 : 0), area[2], area[3], 1.15 / x, 4, 24 * x);
             for (let i = 0; i < shown; i++) { const [gx, gy] = g.at(i); glyph(P, list[i], area[0] + gx, area[1] + gy, g.w, g.h, r === 0 || r === 2, r < 2, false); }
             if (list.length > cap) { const [gx, gy] = g.at(shown); P.text(`+${list.length - shown}`, area[0] + gx + g.w / 2, area[1] + gy + g.h / 2, { align: 'center', size: 11, color: 'muted', weight: 700 }); }
           }

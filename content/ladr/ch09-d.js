@@ -329,8 +329,8 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
           }
           I.poly([[0, 0], Fu, add(Fu, Fw), Fw], { fill: oriCol(aT, 1e-9), color: oriCol(aT, 1e-9), fillAlpha: 0.2, width: 1.6 });
           I.arrow(0, 0, Fu[0], Fu[1], { color: CC[0], width: 3 }); I.arrow(0, 0, Fw[0], Fw[1], { color: CC[1], width: 3 });
-          // labels at the middle of the arrows, pushed to the side away from the other vector
-          const side = (a, b, txt, col) => { const n = unit([-a[1], a[0]]), sgn = det2(a, b) > 0 ? -1 : 1; I.tex(txt, a[0] * 0.55, a[1] * 0.55, { color: col, size: 14, dx: 15 * sgn * n[0], dy: -15 * sgn * n[1] }); };
+          // labels at the middle of the arrows, pushed inside the parallelogram (towards the other vector), clear of the handles
+          const side = (a, b, txt, col) => { const n = unit([-a[1], a[0]]), sgn = det2(a, b) > 0 ? 1 : -1; I.tex(txt, a[0] * 0.6, a[1] * 0.6, { color: col, size: 14, dx: 16 * sgn * n[0], dy: -16 * sgn * n[1] }); };
           side(Fu, Fw, nl ? 'Fu' : 'Tu', CC[0]); side(Fw, Fu, nl ? 'Fv' : 'Tv', CC[1]);
           orientArc(I, Fu, Fw, 0.45, oriCol(aT, 1e-9));
           I.corner(nl ? 'F nonlinear: curves, no single factor' : `det T = ${pn(dT, 3)}`, 'tl', { color: nl ? 'red' : oriCol(dT, 1e-9), weight: 700, size: 13 });
