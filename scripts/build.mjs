@@ -123,25 +123,37 @@ for (const Col of collections) {
     blocks.push({ col: Col.id, field: Col.field, label: g.label ? `${Col.title} · ${g.label}` : Col.title, pts, bands, w: x - CH_GAP + COL, h: hi - lo + 70, lo });
   }
 }
-// pack blocks: fields left→right, each field a set of masonry columns of at most `H` height
-const area = blocks.reduce((s, b) => s + (b.w + COLUMN_GAP) * (b.h + ROW_GAP), 0);
-const H = Math.max(2400, Math.sqrt(area / 1.7));
+// pack blocks: each field becomes a region of masonry columns (roughly square), then the field
+// regions are shelf-packed into rows so the whole atlas has a landscape aspect ratio
 const pos = new Map(); const rowsOut = []; const fieldBoxes = [];
-let fx = 0;
+const regions = [];
 for (const F of fields) {
   const fb = blocks.filter((b) => b.field === F.id);
   if (!fb.length) continue;
-  const fx0 = fx; let cx = fx, cy = 0, colW = 0, maxY = 0;
+  const fArea = fb.reduce((s, b) => s + (b.w + COLUMN_GAP) * (b.h + ROW_GAP), 0);
+  const Hf = Math.max(Math.max(...fb.map((b) => b.h)), Math.sqrt(fArea * 0.8));
+  let cx = 0, cy = 0, colW = 0, maxY = 0; const placed = [];
   for (const b of fb) {
-    if (cy > 0 && cy + b.h > H) { cx += colW + COLUMN_GAP; cy = 0; colW = 0; }
-    const dy = cy + 46 - b.lo; // 46 px header for chapter labels
-    for (const [id, p] of b.pts) pos.set(id, { x: cx + p.x, y: p.y + dy });
-    for (const band of b.bands) { band.x0 += cx; band.x1 += cx; band.y0 = cy; band.y1 = cy + b.h; }
-    rowsOut.push({ col: b.col, field: b.field, label: b.label, x: cx - COL / 2, y: cy, x1: cx + b.w, y1: cy + b.h, bands: b.bands });
+    if (cy > 0 && cy + b.h > Hf) { cx += colW + COLUMN_GAP; cy = 0; colW = 0; }
+    placed.push({ b, x: cx, y: cy });
     colW = Math.max(colW, b.w); cy += b.h + ROW_GAP; maxY = Math.max(maxY, cy);
   }
-  fieldBoxes.push({ field: F.id, title: F.title, x0: fx0 - COL, y0: -50, x1: cx + colW, y1: maxY - ROW_GAP + 20 });
-  fx = cx + colW + FIELD_GAP;
+  regions.push({ F, placed, w: cx + colW, h: maxY - ROW_GAP });
+}
+const totalArea = regions.reduce((s, r) => s + (r.w + FIELD_GAP) * (r.h + FIELD_GAP), 0);
+const targetW = Math.max(Math.max(0, ...regions.map((r) => r.w)), Math.sqrt(totalArea * 1.7));
+let sx = 0, sy = 0, shelfH = 0;
+for (const R of regions) {
+  if (sx > 0 && sx + R.w > targetW) { sx = 0; sy += shelfH + FIELD_GAP + 160; shelfH = 0; }
+  for (const { b, x, y } of R.placed) {
+    const ox = sx + x, oy = sy + y;
+    const dy = oy + 46 - b.lo; // 46 px header for chapter labels
+    for (const [id, p] of b.pts) pos.set(id, { x: ox + p.x, y: p.y + dy });
+    for (const band of b.bands) { band.x0 += ox; band.x1 += ox; band.y0 = oy; band.y1 = oy + b.h; }
+    rowsOut.push({ col: b.col, field: b.field, label: b.label, x: ox - COL / 2, y: oy, x1: ox + b.w, y1: oy + b.h, bands: b.bands });
+  }
+  fieldBoxes.push({ field: R.F.id, title: R.F.title, x0: sx - COL, y0: sy - 70, x1: sx + R.w, y1: sy + R.h + 20 });
+  sx += R.w + FIELD_GAP; shelfH = Math.max(shelfH, R.h);
 }
 const bandOf = new Map(rowsOut.flatMap((r) => r.bands.map((b) => [`${b.col}/${b.chapter}`, b])));
 

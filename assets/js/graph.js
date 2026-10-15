@@ -336,6 +336,17 @@ export class MapView {
     this.edges = [];
     for (const n of this.nodes) for (const d of depsOf(n.it)) { const m = this.byId.get(d); if (m) this.edges.push([m, n]); }
     this.top = this.nodes.filter((n) => !n.ghost).sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 80);
+    // level of detail: when zoomed far out, edges are bundled per pair of collections
+    const centers = new Map();
+    for (const R of G.map?.rows || []) { const c = centers.get(R.col) || { x: 0, y: 0, n: 0 }; c.x += (R.x + R.x1) / 2; c.y += (R.y + R.y1) / 2; c.n++; centers.set(R.col, c); }
+    for (const c of centers.values()) { c.x /= c.n; c.y /= c.n; }
+    const bundles = new Map();
+    for (const [a, b] of this.edges) {
+      if (a.it.col === b.it.col) continue;
+      const k = `${a.it.col}>${b.it.col}`; const e = bundles.get(k) || { a: a.it.col, b: b.it.col, n: 0, written: 0 }; e.n++; if (!a.ghost && !b.ghost) e.written++; bundles.set(k, e);
+    }
+    this.centers = centers; this.bundles = [...bundles.values()];
+    this.maxBundle = Math.max(1, ...this.bundles.map((e) => e.n));
     this._bind();
     this.ro = new ResizeObserver(() => { this.resize(); if (!this.userMoved && !this.sel) this.fit(false); else this.draw(); });
     this.ro.observe(host);
@@ -467,8 +478,8 @@ export class MapView {
       const x0 = this.sx(F.x0), y0 = this.sy(F.y0), x1 = this.sx(F.x1), y1 = this.sy(F.y1);
       if (off(x0, y0, x1, y1)) continue;
       c.fillStyle = withAlpha('field-' + F.field, 0.035); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 18 * Math.min(1, k * 4)); c.fill();
-      c.font = `600 ${Math.max(12, Math.min(30, 44 * k))}px Inter, system-ui, sans-serif`; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
-      c.save(); c.letterSpacing = '0.08em'; c.fillText(F.title.toUpperCase(), x0 + 4, y0 - 6); c.restore();
+      c.font = `600 ${Math.max(13, Math.min(30, 60 * k))}px Inter, system-ui, sans-serif`; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
+      c.save(); c.letterSpacing = '0.08em'; c.fillText(F.title.toUpperCase(), x0 + 4, y0 - 4); c.restore();
     }
     // chapter bands
     c.font = '600 11px Inter, system-ui, sans-serif';
@@ -487,7 +498,7 @@ export class MapView {
         c.save(); c.beginPath(); c.rect(x0, y0, wpx, 30); c.clip(); c.fillText(label, x0 + 6, y0 + 7); c.restore();
       });
     }
-    for (const R of this.G.map?.rows || []) {
+    for (const R of k < 0.13 ? [] : this.G.map?.rows || []) {
       if (!this.show.fields.has(this.fieldOf.get(R.col))) continue;
       const fs = Math.max(13, Math.min(28, 26 * k));
       const x = this.sx(R.x), y = this.sy(R.y); if (off(x, y - fs - 8, x + 600, y)) continue;
@@ -506,8 +517,20 @@ export class MapView {
       }
       c.strokeStyle = style; c.lineWidth = width; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
     };
-    const vis = this.edges.filter(([a, b]) => this.visible(a) && this.visible(b));
-    if (!fc) {
+    const far = k < 0.13;
+    const vis = far && !fc ? [] : this.edges.filter(([a, b]) => this.visible(a) && this.visible(b));
+    if (far && !fc) {
+      // bundled collection-to-collection edges
+      for (const e of this.bundles) {
+        if (!this.show.fields.has(this.fieldOf.get(e.a)) || !this.show.fields.has(this.fieldOf.get(e.b))) continue;
+        const n = this.show.planned ? e.n : e.written; if (!n) continue;
+        const A = this.centers.get(e.a), B = this.centers.get(e.b); if (!A || !B) continue;
+        const x1 = this.sx(A.x), y1 = this.sy(A.y), x2 = this.sx(B.x), y2 = this.sy(B.y);
+        const mx = (x1 + x2) / 2, my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.18;
+        c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(mx, my, x2, y2);
+        c.strokeStyle = withAlpha(e.a, 0.28); c.lineWidth = 0.8 + 7 * Math.sqrt(n / this.maxBundle); c.lineCap = 'round'; c.stroke();
+      }
+    } else if (!fc) {
       const byCol = new Map();
       for (const e of vis) { if (e[0].ghost || e[1].ghost) continue; const key = e[0].it.col; if (!byCol.has(key)) byCol.set(key, []); byCol.get(key).push(e); }
       for (const [col, list] of byCol) drawEdges(list, withAlpha(col, 0.16), Math.max(0.6, Math.min(1.3, k)));
@@ -520,7 +543,14 @@ export class MapView {
     }
     // nodes
     const rk = Math.max(0.55, Math.min(1.5, k));
-    for (const n of this.nodes) {
+    if (far && !fc) {
+      for (const n of this.nodes) {
+        if (!this.visible(n)) continue;
+        const x = this.sx(n.x), y = this.sy(n.y); if (x < -4 || x > this.W + 4 || y < -4 || y > this.H + 4) continue;
+        const r = n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
+        c.fillStyle = withAlpha(n.it.col, n.ghost ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
+      }
+    } else for (const n of this.nodes) {
       if (!this.visible(n)) continue;
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -20 || x > this.W + 20 || y < -20 || y > this.H + 20) continue;
       let alpha = 1;
