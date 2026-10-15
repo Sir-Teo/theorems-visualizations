@@ -99,20 +99,20 @@ A player who values a gamble by its expected payout should therefore pay any fin
         const fin = v.toggle('the banker’s fortune is finite', false);
         const Bs = v.slider('banker’s fortune $B$ (ducats)', 100, 1e12, 1e6, { log: true, fmt: (x) => big(x, 2) });
         const coin = v.stage({ x: [0, 100], y: [0, 1], axes: false, height: 58, full: true });
-        const bars = v.stage({ x: [0.5, 26.5], y: [0, 1.25], axes: 'box', height: 310, xlabel: 'toss k on which heads first came', ylabel: 'ducats per game', title: 'where the average payout comes from' });
-        const run = v.stage({ x: [1, 1e4], xlog: true, y: [0, 12], axes: 'box', height: 310, weight: 1.25, xlabel: 'games played n', ylabel: 'average payout (ducats)', title: 'running average payout' });
+        const bars = v.stage({ x: [-1.4, 26.5], y: [-0.1, 1.25], axes: 'box', height: 310, xlabel: 'toss k on which heads first came', ylabel: 'ducats per game', title: 'average payout by toss k (theory: ½ from every k)' });
+        const run = v.stage({ x: [0.35, 1e4], xlog: true, y: [0, 12], axes: 'box', height: 310, weight: 1.25, xlabel: 'games played n', ylabel: 'average payout (ducats)', title: 'running average payout' });
         v.legend([['gold', 'what your games paid'], ['muted', 'theory: ½ per toss / ½ log₂ n', { dash: true }], ['orange', 'your price'], ['green', 'expected value, finite banker', { dash: true }]]);
         const stats = () => {
           const B = fin.value ? Bs.value : Infinity, key = `${n}|${B}`;
           if (cache && cache.key === key) return cache;
-          const cnt = new Float64Array(64); let sum = 0, mark = 1, top = 0; const pts = [];
+          const cnt = new Float64Array(64); let sum = 0, mark = 1, top = 0, tail = 0; const pts = [];
           for (let i = 0; i < n; i++) {
             const k = K[i]; cnt[Math.min(k, 63)]++; sum += Math.min(Math.pow(2, k - 1), B);
-            if (i + 1 >= mark) { const a = sum / (i + 1); pts.push([i + 1, a]); top = Math.max(top, a); mark = Math.max(mark + 1, mark * 1.012); }
+            if (i + 1 >= mark) { const a = sum / (i + 1); pts.push([i + 1, a]); top = Math.max(top, a); if (i + 1 >= Math.min(64, n)) tail = Math.max(tail, a); mark = Math.max(mark + 1, mark * 1.012); }
           }
           if (n && pts[pts.length - 1][0] !== n) pts.push([n, sum / n]);
           let kmax = 0; for (let k = 63; k > 0; k--) if (cnt[k]) { kmax = k; break; }
-          cache = { key, B, cnt, avg: n ? sum / n : 0, pts, top: Math.max(top, n ? sum / n : 0), kmax };
+          cache = { key, B, cnt, avg: n ? sum / n : 0, pts, top: Math.max(top, n ? sum / n : 0), tail: Math.max(tail, n ? sum / n : 0), kmax };
           return cache;
         };
         let st = {};
@@ -145,21 +145,23 @@ A player who values a gamble by its expected payout should therefore pay any fin
             bars.line(k - 0.48, e, k + 0.48, e, { color: 'muted', width: 1.6, dash: [4, 3] });
           }
           if (lg < 25) { bars.vline(lg + 0.5, GUIDE); bars.text(`k ≈ log₂ n = ${v.fix(lg, 1)}`, lg + 0.5, 1.12, { dx: 5, size: 11, color: 'muted' }); }
-          bars.text(fin.value ? 'expected: ½ per toss until 2ᵏ⁻¹ exceeds the bank' : 'expected: ½ ducat from every toss, forever', 26, 0.62, { align: 'right', size: 11.5, color: 'muted', weight: 600 });
+          bars.setTitle(fin.value ? 'average payout by toss k (theory: ½ until the bank runs out)' : 'average payout by toss k (theory: ½ from every k)');
           // ---- running average
           const xmax = Math.max(1e4, Math.pow(10, Math.ceil(Math.log10(Math.max(n, 2)) + 1e-9)));
           const ev = fin.value ? spBanker(B).ev : Infinity;
-          const ymax = Math.ceil(Math.max(p + 2, 0.5 * Math.log2(xmax) + 2.5, S.top * 1.08, isFinite(ev) ? ev + 1.5 : 0));
-          run.setView([1, xmax], [0, ymax]);
+          const ymax = Math.ceil(Math.max(p + 2, 0.5 * Math.log2(xmax) + 3, S.tail * 1.15, isFinite(ev) ? ev + 1.5 : 0));
+          run.setView([0.35, xmax], [0, ymax]);
           run.fn((x) => 0.5 * Math.log2(x), { color: 'muted', width: 1.4, dash: [6, 4], domain: [1, xmax] });
-          run.text('½ log₂ n', xmax, 0.5 * Math.log2(xmax), { dx: -4, dy: -10, align: 'right', size: 11, color: 'muted' });
+          const xl = Math.pow(xmax, 0.72);
+          run.text('½ log₂ n', xl, 0.5 * Math.log2(xl), { dy: 12, dx: 8, align: 'left', size: 11, color: 'muted', weight: 600 });
           run.hline(p, { color: 'orange', width: 2 });
-          run.text(`your price: ${p}`, 1, p, { dx: 6, dy: -9, size: 11.5, weight: 600, color: 'orange' });
+          run.text(`your price: ${p}`, 0.35, p, { dx: 30, dy: -9, size: 11.5, weight: 600, color: 'orange' });
           const nStar = Math.pow(4, p);
           if (nStar < xmax) { run.line(nStar, 0, nStar, p, { color: 'orange', width: 1, dash: [3, 3] }); run.dot(nStar, p, { r: 4, color: 'orange' }); }
-          else run.text(`break-even near 4^${p} ≈ ${big(nStar, 2)} games →`, xmax, p, { dx: -4, dy: 10, align: 'right', size: 11, color: 'orange' });
-          if (isFinite(ev)) { run.hline(ev, { color: 'green', width: 1.8, dash: [7, 4] }); run.text(`expected value ${v.fix(ev, 2)}`, xmax, ev, { dx: -4, dy: -9, align: 'right', size: 11.5, weight: 600, color: 'green' }); }
-          if (S.pts.length) { run.path(S.pts, { color: 'gold', width: 2.2 }); run.dot(n, S.avg, { r: 4.5, color: 'gold' }); }
+          else run.text(`break-even near 4^${p} ≈ ${big(nStar, 2)} games →`, xmax, p, { dx: -4, dy: -9, align: 'right', size: 11, color: 'orange', weight: 600 });
+          if (isFinite(ev)) { run.hline(ev, { color: 'green', width: 1.8, dash: [7, 4] }); run.text(`expected value ${v.fix(ev, 2)}`, xmax, ev, { dx: -4, dy: ev > p ? -9 : 11, align: 'right', size: 11.5, weight: 600, color: 'green' }); }
+          if (S.pts.length) { run.clip(() => run.path(S.pts, { color: 'gold', width: 2.2 })); run.dot(n, S.avg, { r: 4.5, color: 'gold' }); }
+          if (S.top > ymax) run.text(`early spike off scale (up to ${v.fix(S.top, 0)}) ↑`, 0.35, ymax, { dx: 30, dy: 12, size: 10.5, color: 'gold', weight: 600 });
           st = { S, p, ev, nStar, lg };
         });
         v.readout(() => {
@@ -188,8 +190,8 @@ to its owner: exactly 2 ducats at $w=0$, about 3.04 at $w=10$, 4.39 at $w=100$ a
         const U = v.select('utility of wealth', [{ value: 'lin', label: 'money (linear)' }, { value: 'sqrt', label: '$\\sqrt{w}$ (Cramer)' }, { value: 'log', label: '$\\ln w$ (Bernoulli)' }], 'log');
         const G = v.select('game', [{ value: 'sp', label: 'St Petersburg' }, { value: 'menger', label: 'Menger’s super-game' }], 'sp');
         const W = v.slider('your wealth $w$ (ducats)', 1, 1e6, 100, { log: true, fmt: (x) => money(x) });
-        const A = v.stage({ x: [0.5, 40.5], y: [0, 22], axes: 'box', height: 320, xlabel: 'tosses allowed N', ylabel: 'ducats', title: 'the game stopped after N tosses' });
-        const B = v.stage({ x: [1, 1e6], xlog: true, y: [0, 14], axes: 'box', height: 320, xlabel: 'wealth w (ducats)', ylabel: 'certainty equivalent (ducats)', title: 'what the full game is worth' });
+        const A = v.stage({ x: [-2.5, 40.5], y: [0, 22], axes: 'box', height: 320, xlabel: 'tosses allowed N', ylabel: 'ducats', title: 'the game stopped after N tosses' });
+        const B = v.stage({ x: [0.3, 1e6], xlog: true, y: [-1.3, 14], axes: 'box', height: 320, xlabel: 'wealth w (ducats)', ylabel: 'certainty equivalent (ducats)', title: 'what the full game is worth' });
         const grid = Array.from({ length: 161 }, (_, i) => Math.pow(10, (6 * i) / 160));
         const curves = { D: grid.map((w) => [w, bernValue(w)]), P: grid.map((w) => [w, bernPrice(w)]), S: grid.map((w) => [w, sqrtValue(w)]) };
         const COL = { lin: 'red', sqrt: 'purple', log: 'blue' }, NAME = { lin: 'money', sqrt: '√w', log: 'ln w' };
@@ -197,12 +199,12 @@ to its owner: exactly 2 ducats at $w=0$, about 3.04 at $w=10$, 4.39 at $w=100$ a
         let st = {};
         v.render(() => {
           const w = W.value, g = G.value, u = U.value, NM = 40;
-          if (g === 'sp') { A.setScale({ ylog: false }); A.setView([0.5, NM + 0.5], [0, 22]); A.setLabels(undefined, 'ducats'); }
-          else { A.setScale({ ylog: true }); A.setView([0.5, NM + 0.5], [0.1, 1e16]); A.setLabels(undefined, 'ducats (log scale)'); }
+          if (g === 'sp') { A.setScale({ ylog: false }); A.setView([-2.5, NM + 0.5], [-1, 22]); A.setLabels(undefined, 'ducats'); }
+          else { A.setScale({ ylog: true }); A.setView([-2.5, NM + 0.5], [1, 1e16]); A.setLabels(undefined, 'ducats (log scale)'); }
           const lines = {};
           for (const k of ['lin', 'sqrt', 'log']) {
             const pts = [];
-            for (let N = 1; N <= NM; N++) { let c = ceStopped(k, g, w, N); if (!isFinite(c) || c > 1e18) c = 1e18; pts.push([N, Math.max(c, g === 'sp' ? 0 : 0.1)]); }
+            for (let N = 1; N <= NM; N++) { let c = ceStopped(k, g, w, N); if (!isFinite(c) || c > 1e18) c = 1e18; pts.push([N, Math.max(c, g === 'sp' ? 0 : 1)]); }
             lines[k] = pts;
           }
           A.clip(() => {
@@ -214,8 +216,8 @@ to its owner: exactly 2 ducats at $w=0$, about 3.04 at $w=10$, 4.39 at $w=100$ a
           });
           if (g === 'sp') {
             const lim = u === 'log' ? bernValue(w) : u === 'sqrt' ? sqrtValue(w) : Infinity;
-            if (isFinite(lim) && lim < 21.5) { A.hline(lim, { color: COL[u], width: 1, dash: [3, 3] }); A.text(`limit ${v.fix(lim, 2)}`, 1, lim, { dx: 6, dy: -9, size: 11.5, color: COL[u], weight: 600 }); }
-            A.text('expected payout N/2 → ∞', 21, 10.5, { size: 11.5, color: 'red', weight: 600, align: 'center', dx: -10, dy: -14 });
+            if (isFinite(lim) && lim < 21.5) { A.hline(lim, { color: COL[u], width: 1, dash: [3, 3] }); A.text(`limit ${v.fix(lim, 2)}`, NM, lim, { dx: -4, dy: -9, align: 'right', size: 11.5, color: COL[u], weight: 600 }); }
+            A.text('expected payout N/2 → ∞', 23, 8.6, { size: 11.5, color: 'red', weight: 600 });
           } else A.text('every toss adds ½ to E[ln]: no limit', 40, 3e14, { align: 'right', size: 11.5, color: 'blue', weight: 600 });
           // ---- right panel: certainty equivalent against wealth
           const off = g === 'menger';
@@ -223,7 +225,6 @@ to its owner: exactly 2 ducats at $w=0$, about 3.04 at $w=10$, 4.39 at $w=100$ a
           B.path(curves.D, { color: 'blue', width: u === 'log' ? 3 : 1.6, alpha: off ? 0.25 : 1 });
           B.path(curves.P, { color: 'blue', width: 1.4, dash: [6, 4], alpha: off ? 0.25 : 0.9 });
           for (const [a, val] of [[10, 3], [100, 4], [1000, 6]]) { B.dot(a, val, { r: 6, hollow: true, color: 'gold', width: 2.2 }); B.text(`≈${val}`, a, val, { dx: -9, dy: -12, size: 11.5, weight: 700, color: 'gold', align: 'right' }); }
-          B.text('w = 0: exactly 2', 1, 2, { dx: 6, dy: 14, size: 11, color: 'muted' });
           B.vline(w, GUIDE);
           const dw = u === 'log' ? bernValue(w) : u === 'sqrt' ? sqrtValue(w) : NaN;
           if (!off && isFinite(dw)) B.dot(w, dw, { r: 5, color: COL[u] });

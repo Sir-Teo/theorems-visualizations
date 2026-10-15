@@ -68,11 +68,11 @@ Eratosthenes, as Cleomedes tells it, used Syene (Aswan), where the summer-solsti
         const th = v.slider('shadow angle $\\theta$', 2, 20, 7.2, { step: 0.1, fmt: (x) => x.toFixed(1) + '°' });
         const dd = v.slider('distance $d$ (stadia)', 2000, 9000, 5000, { step: 50, fmt: (x) => comma(x) });
         const st = v.slider('stadion length', 150, 210, 157.5, { step: 0.5, fmt: (x) => x.toFixed(1) + ' m' });
-        const A = v.stage({ x: [-1.32, 1.32], y: [-1.2, 1.62], equal: true, axes: false, height: 360, weight: 1.35 });
+        const A = v.stage({ x: [-1.32, 1.32], y: [-0.32, 1.64], equal: true, axes: false, height: 360, weight: 1.35 });
         const L = v.stage({ x: [-1.25, 1.25], y: [-0.62, 1.5], equal: true, axes: false, height: 360, weight: 0.85, minWidth: 220, title: 'what each city sees at noon' });
         const B = v.stage({ x: [150, 210], y: [30000, 60000], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'length of one stadion (m)', ylabel: 'circumference (km)' });
         let s3 = 3.4; // third observer, in units of d north of Syene
-        const XS = 0.95, YG = -0.95, HS = 2.2; // flat picture: Sun above Syene at height HS (drawing units)
+        const XS = 0.95, YG = -0.04, HS = 1.5, GH = 0.22; // flat picture: Sun above Syene at height HS, gnomons GH (drawing units)
         const s3max = () => (flat.value ? (XS + 1.22) / (HS * Math.tan(th.value * D2R)) : Math.min(12, 50 / th.value));
         const obs = A.handle(0, 1, {
           color: 'purple', r: 6.5,
@@ -103,8 +103,8 @@ Eratosthenes, as Cleomedes tells it, used Syene (Aswan), where the summer-solsti
           // ---------------- main picture
           if (!flat.value) {
             A.circle(0, 0, 1, { fill: 'blue', fillAlpha: 0.08, color: 'blue', width: 1.5 });
-            A.text('sunlight: parallel rays', -1.28, 1.52, { color: 'gold', size: 12, weight: 600 });
-            for (const x of [-0.62, -0.42, 0.18, 0.38, 0.58]) A.arrow(x, 1.5, x, Math.sqrt(1 - x * x) + 0.01, { color: 'gold', width: 1.4, head: 6, alpha: 0.75 });
+            A.text('sunlight: parallel rays', A.xr[0] + 0.05, 1.54, { color: 'gold', size: 12, weight: 600 });
+            for (const x of [0.2, 0.4, 0.6, 0.8, -0.9]) A.arrow(x, 1.5, x, Math.sqrt(1 - x * x) + 0.01, { color: 'gold', width: 1.4, head: 6, alpha: 0.75 });
             A.arrow(0, 1.5, 0, 1.0, { color: 'gold', width: 1.4, head: 6 });
             const aA = (90 + t) * D2R, a3 = (90 + s3 * t) * D2R;
             // verticals to the centre and the central angle
@@ -122,21 +122,21 @@ Eratosthenes, as Cleomedes tells it, used Syene (Aswan), where the summer-solsti
             A.path(arcPts(tip[0], tip[1], 0.2, -Math.PI / 2, aA - Math.PI, 10), { color: 'red', width: 1.8 });
             A.dot(0, 1, { color: 'gold', r: 5, label: 'Syene', labelPos: 'e', labelColor: 'ink', math: false });
             A.dot(Math.cos(aA), Math.sin(aA), { color: 'ink', r: 4 });
-            A.text('Alexandria', tip[0] - 0.04, tip[1] + 0.07, { size: 12, align: 'right', weight: 600 });
-            A.text(`d = ${comma(d)} stadia`, 0.06, 1.12, { size: 12, color: 'orange', weight: 600 });
+            A.text('Alexandria', tip[0], tip[1] + 0.13, { size: 12, align: 'center', weight: 600 });
+            A.text(`d = ${comma(d)} stadia`, 0.07, 1.13, { size: 12, color: 'orange', weight: 600 });
             const ang3 = s3 * t;
             A.text('3', Math.cos(a3) * 0.88, Math.sin(a3) * 0.88, { size: 12, color: 'purple', weight: 700, align: 'center' });
-            A.text(`observer 3: globe ${ang3.toFixed(1)}°`, -1.28, -1.1, { size: 12, color: 'purple', weight: 600 });
-            A.text('north ←', 1.28, -1.1, { size: 11, color: 'muted', align: 'right' });
+            A.text(`observer 3: globe ${ang3.toFixed(1)}°`, A.xr[0] + 0.05, -0.22, { size: 12, color: 'purple', weight: 600 });
+            A.text('north ←', A.xr[1] - 0.05, -0.22, { size: 11, color: 'muted', align: 'right' });
           } else {
             const dD = HS * tanT, xA = XS - dD, x3 = XS - s3 * dD, sun = [XS, YG + HS];
-            A.rect(-1.32, -1.2, 1.32, YG, { fill: 'gold', fillAlpha: 0.12, stroke: false });
-            A.line(-1.32, YG, 1.32, YG, { color: 'ink', width: 1.6 });
-            A.text('flat ground', -1.28, YG - 0.12, { size: 11, color: 'muted' });
+            A.rect(A.xr[0], A.yr[0], A.xr[1], YG, { fill: 'gold', fillAlpha: 0.12, stroke: false });
+            A.line(A.xr[0], YG, A.xr[1], YG, { color: 'ink', width: 1.6 });
+            A.text('flat ground', A.xr[0] + 0.05, YG - 0.12, { size: 11, color: 'muted' });
             A.line(XS, YG, XS, sun[1], { color: 'muted', dash: [4, 3], width: 1 });
             A.tex('h', XS + 0.06, YG + HS * 0.55, { align: 'left', size: 15, color: 'muted' });
             const gn = (x, col) => { // vertical gnomon at x, ray from the Sun through its tip
-              const tip = [x, YG + 0.26], u = [tip[0] - sun[0], tip[1] - sun[1]], k = (YG - sun[1]) / u[1];
+              const tip = [x, YG + GH], u = [tip[0] - sun[0], tip[1] - sun[1]], k = (YG - sun[1]) / u[1];
               A.line(x, YG, tip[0], tip[1], { color: 'ink', width: 2.4 });
               A.arrow(sun[0], sun[1], sun[0] + u[0] * k, YG + 0.005, { color: 'gold', width: 1.3, head: 6, alpha: 0.85 });
               A.line(x, YG, sun[0] + u[0] * k, YG, { color: col, width: 4.5 });
@@ -144,15 +144,18 @@ Eratosthenes, as Cleomedes tells it, used Syene (Aswan), where the summer-solsti
             };
             gn(XS, 'ink'); const tipA = gn(xA, 'ink'); gn(x3, 'purple');
             const ra = Math.atan2(sun[1] - tipA[1], sun[0] - tipA[0]);
-            A.path(arcPts(tipA[0], tipA[1], 0.16, Math.PI / 2, ra, 10), { color: 'red', width: 1.6 });
+            A.line(tipA[0], tipA[1], tipA[0], tipA[1] + 0.42, { color: 'muted', width: 1, dash: [3, 3] });
+            A.path(arcPts(tipA[0], tipA[1], 0.34, Math.PI / 2, ra, 10), { color: 'red', width: 1.8 });
+            A.tex('\\theta', tipA[0] + 0.48 * Math.cos((Math.PI / 2 + ra) / 2), tipA[1] + 0.48 * Math.sin((Math.PI / 2 + ra) / 2), { color: 'red', size: 14 });
             A.dot(sun[0], sun[1], { color: 'gold', r: 11 });
             A.text('a nearby Sun', sun[0] - 0.17, sun[1] + 0.02, { size: 12, color: 'gold', weight: 600, align: 'right' });
-            A.measure(XS, YG - 0.1, xA, YG - 0.1, 'd', { color: 'orange' });
-            A.text('Syene', XS + 0.05, YG + 0.16, { size: 12, align: 'left', weight: 600 });
-            A.text('Alexandria', xA, YG + 0.36, { size: 12, align: 'center', weight: 600 });
+            A.arrow(xA, YG - 0.13, XS, YG - 0.13, { color: 'orange', width: 1.4, head: 6, both: true });
+            A.tex('d', XS + 0.05, YG - 0.13, { color: 'orange', size: 14, align: 'left' });
+            A.text('Syene', XS + 0.05, YG + 0.14, { size: 12, align: 'left', weight: 600 });
+            A.text('Alexandria', xA, YG + GH + 0.1, { size: 12, align: 'center', weight: 600 });
             const ang3 = Math.atan(s3 * tanT) * R2D;
-            A.text('3', x3, YG - 0.14, { size: 12, color: 'purple', weight: 700, align: 'center' });
-            A.text(`observer 3: flat ${ang3.toFixed(1)}°`, -1.28, 1.52, { size: 12, color: 'purple', weight: 600 });
+            A.text('3', x3, YG - 0.15, { size: 12, color: 'purple', weight: 700, align: 'center' });
+            A.text(`observer 3: flat ${ang3.toFixed(1)}°`, A.xr[0] + 0.05, 1.54, { size: 12, color: 'purple', weight: 600 });
           }
           // ---------------- local views (identical on both models)
           L.rect(-1.25, -0.62, 1.25, 0, { fill: 'gold', fillAlpha: 0.12, stroke: false });

@@ -394,8 +394,8 @@ The knapsack dynamic program (7.10) runs in $\Theta(nW)$ time: polynomial in $n$
           A.corner(`L = ${Lbin(k)} bits in all (${Lbin(0)} for k = 0)`, 'bl', { color: 'ink', weight: 600 });
           // tiled table: 2^k copies of the k = 0 table
           const copies = 2 ** k, cols = 2 ** Math.ceil(k / 2), rws = 2 ** Math.floor(k / 2);
-          const ar = (W0 + 1) / (n + 1), side = Math.max(cols * ar, rws);
-          B.setView([-0.04 * side, side * 1.04], [-side * 1.04, side * 0.04]);
+          const ar = (W0 + 1) / (n + 1), tw = cols * ar, th = rws, scl = Math.min(B.width / (tw * 1.08), (B.height - 30) / (th * 1.08));
+          B.setView([-0.04 * tw, B.width / scl - 0.04 * tw], [0.04 * th - B.height / scl, 0.04 * th]);
           const bw = ar, bh = 1;
           if (copies <= 1024) {
             for (let r = 0; r < rws; r++) for (let c = 0; c < cols; c++) B.rect(c * bw, -r * bh, (c + 1) * bw, -(r + 1) * bh, { fill: r === 0 && c === 0 ? 'accent' : 'orange', fillAlpha: r === 0 && c === 0 ? 0.5 : 0.28, color: copies <= 64 ? 'panel' : null, width: copies <= 64 ? 1 : 0, stroke: copies <= 64 });

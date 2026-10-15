@@ -104,22 +104,23 @@ export function drawIndiff(s, pref, { n = 13, color = 'blue', width = 1.1, alpha
   }
 }
 
-/** The triangle frame with axes, ticks and vertex labels. labels = [x1, x2, x3] prize names. */
-export function drawTriangle(s, labels, { fill = true, ticks = true, size = 12 } = {}) {
+/** The triangle frame with axes, ticks and vertex labels (placed outside the triangle). labels = [x1, x2, x3] prize names. */
+export function drawTriangle(s, labels, { fill = true, ticks = true, size = 11.5 } = {}) {
   if (fill) s.poly([[0, 0], [1, 0], [0, 1]], { fill: 'grid', fillAlpha: 0.35, stroke: false });
   s.path([[0, 0], [1, 0], [0, 1], [0, 0]], { color: 'ink', width: 1.4 });
   if (ticks) {
     for (const t of [0.25, 0.5, 0.75]) {
       s.line(t, 0, t, -0.015, { color: 'muted', width: 1 }); s.line(0, t, -0.015, t, { color: 'muted', width: 1 });
     }
-    for (const t of [0, 0.5, 1]) {
-      s.text(String(t), t, 0, { dy: 12, align: 'center', size: 10.5, color: 'muted' });
-      s.text(String(t), 0, t, { dx: -8, align: 'right', size: 10.5, color: 'muted' });
-    }
-    s.text('p₁ = P(' + labels[0] + ') →', 0.5, 0, { dy: 27, align: 'center', size: 11.5, color: 'muted' });
-    s.text('↑ p₃ = P(' + labels[2] + ')', 0, 1, { dx: 6, dy: -2, align: 'left', size: 11.5, color: 'muted' });
+    s.text('0.5', 0.5, 0, { dy: 11, align: 'center', size: 10.5, color: 'muted' });
+    s.text('0.5', 0, 0.5, { dx: -7, align: 'right', size: 10.5, color: 'muted' });
+    s.text('p₁ = P(' + labels[0] + ') →', 0.5, 0, { dy: 27, align: 'center', size: 11, color: 'muted' });
+    s.text('↑ p₃ = P(' + labels[2] + ')', 0, 1, { dx: -6, dy: -17, align: 'left', size: 11, color: 'muted' });
   }
-  s.text(labels[1] + ' for sure', 0, 0, { dx: 6, dy: -10, size, color: 'ink', weight: 600 });
-  s.text(labels[0] + ' for sure', 1, 0, { dx: 0, dy: -12, size, align: 'right', color: 'ink', weight: 600 });
-  s.text(labels[2] + ' for sure', 0, 1, { dx: 10, dy: 12, size, color: 'ink', weight: 600 });
+  s.text(labels[1] + ' for sure', 0, 0, { dx: -6, dy: 12, size, color: 'ink', weight: 600 });
+  s.text(labels[0] + ' for sure', 1, 0, { dx: 6, dy: 12, size, align: 'right', color: 'ink', weight: 600 });
+  s.text(labels[2] + ' for sure', 0, 1, { dx: 12, dy: 1, size, color: 'ink', weight: 600 });
 }
+
+/** A dollar amount for rich text: "$\$12{,}345$" (no stray spaces after the thousands commas). */
+export const usd = (x, d = 0) => '$\\$' + money(x, d).replace(/,/g, '{,}') + '$';

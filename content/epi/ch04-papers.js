@@ -155,7 +155,62 @@ function walkTo(N, ps, D, s) {
   return { d, node };
 }
 
+// ═══════════ Semmelweis (1861), Doll & Hill (1950), Bradford Hill (1965) ═══════════
+// Data (verified):
+// - Semmelweis (1861) as given in Carter's translation and tabulated on Wikipedia, "Historical mortality rates of
+//   puerperal fever" (figures exactly as reported; rates recomputed): First Clinic monthly births and deaths, Jan 1841 –
+//   May 1847 (his Table 3), Jun–Dec 1847 (Table 6), 1848 (Table 7), Jan–Mar 1849 (text); December 1841 not reported.
+//   Both clinics by year 1833–1858 (Tables 1, 11, 12). The monthly table covers only the First Clinic; for the Second
+//   only yearly totals are printed. Monthly and yearly totals disagree in places (e.g. 1846 births), as Semmelweis's
+//   sources did. Chlorinated-lime washing from mid-May 1847; Semmelweis's appointment ended 20 March 1849.
+//   Today: global maternal mortality 197 per 100,000 live births in 2023 (UN MMEIG, April 2025); sepsis 10.7% of
+//   maternal deaths in 2003–09 (Say et al. 2014, Lancet Glob Health 2: e323).
+// - Doll & Hill (1950), BMJ 2: 739–748, read from the PMC page scans: Table IV, men 649 cases / 2 non-smokers and 649
+//   controls / 27 non-smokers, "P (exact method) = 0.00000064"; women 60 / 19 and 60 / 32, χ² = 5.76; Table V, most
+//   recent daily amount (1–4, 5–14, 15–24, 25–49, 50+ cigarettes) men cases 33, 250, 196, 136, 32 and controls 55, 293,
+//   190, 71, 13 (χ² = 36.95, n = 4), women cases 7, 19, 9, 6, 0 and controls 12, 10, 6, 0, 0; Table XIV, age-averaged
+//   relative risks (ages 45–74) 6, 19, 26, 49, 65 at 3, 10, 20, 35 and "say, 60" a day. Today: Thun et al. (2013),
+//   NEJM 368: 351, lung-cancer death RR for current smokers in 2000–2010 cohorts 24.97 (men), 25.66 (women); 12.22 for
+//   men in the 1959–65 cohort.
+// - Hill (1965), Proc. R. Soc. Med. 58: 295–300 (PMC scans): the nine viewpoints and his examples — chimney sweeps'
+//   scrotal cancer "some 200 times"; lung cancer 9–10× in smokers and 20–30× in heavy smokers; coronary thrombosis "no
+//   more than twice"; British doctors 0.07, 0.57, 1.39, 2.27 per 1,000 per year (ratios 8, 20, 32); Snow's 71 against 5
+//   deaths per 10,000 houses (14×); 29 retrospective and 7 prospective inquiries; South Wales nickel refiners, 16 lung
+//   (1 expected) and 11 nasal cancers (a fraction expected) in 1929–38, 48 and 13 against 10 and 0.1 in 1948–56, none in
+//   men who entered after 1923; "none of my nine viewpoints ... can be required as a sine qua non". Hormone therapy:
+//   observational studies "suggesting a 40% to 50% reduction" in coronary risk against the WHI trial's CHD hazard ratio
+//   1.29 (1.02–1.63) (Writing Group for the WHI, JAMA 2002; 288: 321). Storks: Matthews (2000), Teaching Statistics 22:
+//   36, a "significant" (p = 0.008) correlation of stork pairs with births across 17 European countries. E-value:
+//   RR + √(RR(RR − 1)), VanderWeele & Ding (2017), Ann. Intern. Med. 167: 268.
+const SEMM_MONTHLY = [[254, 37], [239, 18], [277, 12], [255, 4], [255, 2], [200, 10], [190, 16], [222, 3], [213, 4], [236, 26], [235, 53], null, [307, 64], [311, 38], [264, 27], [242, 26], [310, 10], [273, 18], [231, 48], [216, 55], [223, 41], [242, 71], [209, 48], [239, 75], [272, 52], [263, 42], [266, 33], [285, 34], [246, 15], [196, 8], [191, 1], [193, 3], [221, 5], [250, 44], [252, 18], [236, 19], [244, 37], [257, 29], [276, 47], [208, 36], [240, 14], [224, 6], [206, 9], [269, 17], [245, 3], [248, 8], [245, 27], [256, 27], [303, 23], [274, 13], [292, 13], [260, 11], [296, 13], [280, 20], [245, 15], [251, 9], [237, 25], [283, 42], [265, 29], [267, 28], [336, 45], [293, 53], [311, 48], [253, 48], [305, 41], [266, 27], [252, 33], [216, 39], [271, 39], [254, 38], [297, 32], [298, 16], [311, 10], [312, 6], [305, 11], [312, 57], [294, 36], [268, 6], [250, 3], [264, 5], [262, 12], [278, 11], [246, 11], [273, 8], [283, 10], [291, 2], [276, 0], [305, 2], [313, 3], [264, 3], [269, 1], [261, 0], [312, 3], [299, 7], [310, 9], [373, 5], [403, 9], [389, 12], [406, 20]]; // First Clinic, Jan 1841 – Mar 1849: [births, deaths]
+const SEMM_YEARLY = [[1833, 3737, 197, 353, 8], [1834, 2657, 205, 1744, 150], [1835, 2573, 143, 1682, 84], [1836, 2677, 200, 1670, 131], [1837, 2765, 251, 1784, 124], [1838, 2987, 91, 1779, 88], [1839, 2781, 151, 2010, 91], [1840, 2889, 267, 2073, 55], [1841, 3036, 237, 2442, 86], [1842, 3287, 518, 2659, 202], [1843, 3060, 274, 2739, 164], [1844, 3157, 260, 2956, 68], [1845, 3492, 241, 3241, 66], [1846, 4010, 459, 3754, 105], [1847, 3490, 176, 3306, 32], [1848, 3556, 45, 3319, 43], [1849, 3858, 103, 3371, 87], [1850, 3745, 74, 3261, 54], [1851, 4194, 75, 3395, 121], [1852, 4471, 181, 3360, 192], [1853, 4221, 94, 3480, 67], [1854, 4393, 400, 3396, 210], [1855, 3659, 198, 2938, 174], [1856, 3925, 156, 3070, 125], [1857, 4220, 124, 3795, 83], [1858, 4203, 86, 4179, 60]]; // [year, births I, deaths I, births II, deaths II]
+const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/** Births and deaths summed over months [a, b) of the First Clinic table. */
+function semmSum(a, b) { let B = 0, D = 0; for (let i = Math.max(0, a); i < Math.min(b, SEMM_MONTHLY.length); i++) { const r = SEMM_MONTHLY[i]; if (r) { B += r[0]; D += r[1]; } } return [B, D]; }
+/** Binomial log-likelihood at the maximum. */
+const binLL = (B, D) => { if (B <= 0) return 0; const p = D / B; return (D ? D * Math.log(p) : 0) + (B - D ? (B - D) * Math.log(1 - p) : 0); };
+/** Ratio of two proportions with a 95% interval on the log scale. */
+function riskRatio(d1, n1, d2, n2) { const rr = d1 / n1 / (d2 / n2), se = Math.sqrt(1 / d1 - 1 / n1 + 1 / d2 - 1 / n2); return [rr, rr * Math.exp(-1.96 * se), rr * Math.exp(1.96 * se)]; }
+
+const DH_IV = { men: [[2, 647], [27, 622]], women: [[19, 41], [32, 28]] }; // [non-smokers, smokers] for cases, controls
+const DH_V = { men: [[33, 250, 196, 136, 32], [55, 293, 190, 71, 13]], women: [[7, 19, 9, 6, 0], [12, 10, 6, 0, 0]] };
+const DH_DOSE = [3, 10, 20, 35, 60], DH_XIV = [6, 19, 26, 49, 65];
+
+const HILL_VIEW = ['strength', 'consistency', 'specificity', 'temporality', 'biological gradient', 'plausibility', 'coherence', 'experiment', 'analogy'];
+// ratings: 2 supports, 1 partly, 0 against or absent, -1 not known / not applicable (suggested, editable)
+const HILL_CASES = [
+  { name: 'cigarettes → lung cancer', rr: 10, r: [2, 2, 1, 2, 2, 2, 2, 2, 1], note: 'death rate 9–10× in smokers, 20–30× in heavy smokers; doctors 0.07 → 2.27 per 1,000 (×8, ×20, ×32); 29 + 7 inquiries agree; carcinogens isolated from smoke' },
+  { name: 'soot → sweeps’ scrotal cancer', rr: 200, r: [2, 1, 2, 2, -1, 0, 1, -1, -1], note: 'Pott (1775): mortality some 200× that of men not exposed to tar or mineral oils; no biology to support it at the time' },
+  { name: 'nickel refining → nasal cancer', rr: 130, r: [2, 0, 2, 2, 1, -1, 1, 2, 1], note: '13 nasal cancers against 0.1 expected (1948–56), 48 lung cancers against 10; a unique event, never repeated; none after the 1923 change of process' },
+  { name: 'S&V water → cholera', rr: 14, r: [2, 2, 2, 2, -1, 0, 1, 2, 1], note: 'Snow: 71 deaths per 10,000 houses against 5 for Lambeth (14×); Koch found the vibrio 30 years later' },
+  { name: 'cigarettes → coronary thrombosis', rr: 2, r: [0, 2, 0, 2, 1, 1, 1, -1, -1], note: 'no more than twice the non-smokers’ rate: easy to imagine a confounder going hand in hand with smoking (Hill)' },
+  { name: 'hormone therapy → less heart disease', rr: 0.55, r: [1, 2, 0, 2, 1, 2, 2, 0, 1], note: 'observational studies: 40–50% fewer coronary events; the WHI trial (2002) found more (HR 1.29, 1.02–1.63)' },
+  { name: 'storks → babies', rr: null, r: [1, 0, 0, -1, 0, 0, 0, 0, 0], note: 'birth rates correlate with stork pairs across 17 countries, p = 0.008 (Matthews 2000): significant and absurd' },
+];
+const eValue = (rr) => { const R = rr < 1 ? 1 / rr : rr; return R + Math.sqrt(R * (R - 1)); };
+
 export default {
+
   collection: 'epi',
   chapter: 4,
   items: [

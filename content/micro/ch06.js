@@ -27,7 +27,7 @@ There are two ways to hold purchasing power constant. **Slutsky** compensation c
           ces: { label: 'CES, $\\sigma = 2$', F: prefs('ces', { a: 0.5, r: 0.5 }) },
           comp: { label: 'perfect complements', F: prefs('comp', { a: 1, b: 1 }) },
           ql: { label: 'quasilinear', F: prefs('ql', { a: 3 }) },
-          inf: { label: 'inferior good 1', F: prefs('inf', { A: 6, k: 6 }) },
+          inf: { label: 'inferior good 1', F: prefs('inf', { A: 12, k: 8 }) },
         };
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const cmp = v.select('compensation', [{ value: 'slutsky', label: 'Slutsky: old bundle affordable' }, { value: 'hicks', label: 'Hicks: old utility' }], 'slutsky');
@@ -61,7 +61,11 @@ There are two ways to hold purchasing power constant. **Slutsky** compensation c
           drawLevel(s, F, F.u(...C), { color: v.color('purple', 0.6), width: 1.5 });
           // compensation bracket on the x2 axis
           const y0 = M / p2, y1 = mc / p2;
-          if (Math.abs(y1 - y0) * (s.height / 13) > 14 && Math.max(y0, y1) < 12.9) { s.measure(0.35, y0, 0.35, y1, null, { color: 'orange' }); s.text(`Δm = ${sgn(mc - M)}`, 0.5, (y0 + y1) / 2, { dx: 6, color: 'orange', ...LBL, align: 'left' }); }
+          if (Math.abs(y1 - y0) * (s.height / 13) > 12) {
+            const top = 12.85, ya = Math.min(y1, top);
+            if (y1 <= top) s.measure(0.3, y0, 0.3, y1, null, { color: 'orange' }); else s.arrow(0.3, y0, 0.3, top, { color: 'orange', width: 1.4, head: 7 });
+            s.text(`Δm = ${sgn(mc - M)}${y1 > top ? ' (line leaves the chart)' : ''}`, 0.45, (y0 + ya) / 2, { dx: 6, color: 'orange', ...LBL, align: 'left', plate: true });
+          }
           // arrows and points
           trimArrow(s, A, B, { color: 'orange', width: 3.2, head: 11 });
           trimArrow(s, B, C, { color: 'teal', width: 3.2, head: 11 });
@@ -113,7 +117,7 @@ The total effect of a price change is the substitution effect (the slope of comp
           cd: { label: 'Cobb–Douglas', F: prefs('cd', { a: 0.45 }) },
           ces2: { label: 'CES, $\\sigma = 2$', F: prefs('ces', { a: 0.5, r: 0.5 }) },
           cesh: { label: 'CES, $\\sigma = \\tfrac12$', F: prefs('ces', { a: 0.5, r: -1 }) },
-          inf: { label: 'inferior good 1', F: prefs('inf', { A: 6, k: 6 }) },
+          inf: { label: 'inferior good 1', F: prefs('inf', { A: 12, k: 8 }) },
         };
         const SYS = {
           cd: { label: 'Cobb–Douglas', sh: (p) => [0.2, 0.3, 0.5] },
@@ -128,7 +132,7 @@ The total effect of a price change is the substitution effect (the slope of comp
         const dp = v.slider('price step $\\Delta p_1$', 0.001, 1, 0.5, { log: true });
         const q1 = v.slider('price $p_1$ (good 3 costs 1)', 0.3, 3, 1.6, { step: 0.01 });
         const q2 = v.slider('price $p_2$', 0.3, 3, 0.8, { step: 0.01 });
-        const L = v.stage({ x: [0, 10], y: [0, 3.6], height: 330, axes: 'box', xlabel: 'x₁', ylabel: 'price p₁', title: 'demand curves through $A$' });
+        const L = v.stage({ x: [0, 10], y: [0, 3.6], height: 330, axes: 'box', xlabel: 'x₁', ylabel: 'p₁', title: 'demand curves through $A$' });
         const R = v.stage({ x: [0.001, 1], y: [-5, 1], height: 330, axes: 'box', xlog: true, xlabel: 'price step Δp₁ (log scale)', ylabel: 'slope', title: 'finite-difference slopes converge' });
         const B = v.stage({ x: [-5, 2], y: [0, 3], height: 120, axes: false, full: true, title: 'the decomposition at this step (filled) and in the limit (outlined)' });
         const T = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: false, title: 'Slutsky matrix $S_{ij} = \\partial x_i/\\partial p_j + x_j\\,\\partial x_i/\\partial m$' });
@@ -165,7 +169,7 @@ The total effect of a price change is the substitution effect (the slope of comp
             const hs = []; for (let i = 0; i <= 60; i++) hs.push(10 ** (-3 + (3 * i) / 60));
             const rr = hs.map(ratios);
             const all = [...rr.flatMap((q) => q.slice(0, 3)), sl.dx, sl.dh, sl.inc].filter(isFinite), lo = Math.min(...all), hi = Math.max(...all), pd = 0.12 * (hi - lo || 1);
-            R.setView([0.001, 1], [lo - pd, hi + pd]);
+            R.setView([0.001, 1], [lo - 1.8 * pd, hi + pd]);
             R.hline(0, { color: 'faint', width: 1 });
             [[sl.dx, 'green'], [sl.dh, 'orange'], [sl.inc, 'teal']].forEach(([y, c]) => R.hline(y, { color: c, width: 1.3, dash: [6, 4], alpha: 0.8 }));
             [[0, 'green'], [1, 'orange'], [2, 'teal']].forEach(([j, c]) => R.path(hs.map((h, i) => [h, rr[i][j]]), { color: c, width: 2.6 }));
@@ -174,17 +178,19 @@ The total effect of a price change is the substitution effect (the slope of comp
             const lbl = [[sl.dx, 'green', '∂x₁/∂p₁'], [sl.dh, 'orange', '∂h₁/∂p₁'], [sl.inc, 'teal', '−x₁ ∂x₁/∂m']].sort((a, b) => b[0] - a[0]);
             let lastY = -1e9; lbl.forEach(([y, c, t]) => { let Y = R.Y(y) - 9; if (Y - lastY < 15) Y = lastY + 15; lastY = Y; R.textPx(t, 62, Y, { color: c, size: 11.5, weight: 700, align: 'left' }); });
             // bars
-            const W = Math.max(1, Math.abs(Ss), Math.abs(Ii), Math.abs(Tt), Math.abs(sl.dh), Math.abs(sl.inc), Math.abs(sl.dx)) * 1.15;
-            B.setView([-W * 1.25, W * 1.25], [0, 3]);
+            const ends = [0, Ss, Ss + Ii, Tt, sl.dh, sl.dh + sl.inc, sl.dx], blo = Math.min(...ends), bhi = Math.max(...ends), span = bhi - blo || 1;
+            B.setView([blo - 0.75 * span, bhi + 0.06 * span], [0, 3]);
+            const W = span, xl = blo - 0.73 * span;
             B.line(0, 0.2, 0, 2.9, { color: 'ink', width: 1.2 });
             // stacked: substitution then income, on the top row; total on the bottom row
             const bar = (x0, x1, y, col, outline) => B.rect(x0, y - 0.3, x1, y + 0.3, outline ? { color: col, width: 2, fill: col, fillAlpha: 0.05, radius: 3 } : { fill: col, fillAlpha: 0.7, stroke: false, radius: 3 });
             bar(0, sl.dh, 2.15, 'orange', true); bar(sl.dh, sl.dh + sl.inc, 2.15, 'teal', true); bar(0, sl.dx, 0.85, 'green', true);
             bar(0, Ss, 2.15, 'orange'); bar(Ss, Ss + Ii, 2.15, 'teal'); bar(0, Tt, 0.85, 'green');
-            B.text(`substitution ${sgn(Ss, 3)}  +  income ${sgn(Ii, 3)}`, -W * 1.22, 2.15, { color: 'ink', ...LBL, align: 'left' });
-            B.text(`=  total ${sgn(Tt, 3)}`, -W * 1.22, 0.85, { color: 'green', ...LBL, align: 'left' });
+            B.text(`substitution ${sgn(Ss, 3)}  +  income ${sgn(Ii, 3)}`, xl, 2.15, { color: 'ink', ...LBL, align: 'left' });
+            B.text(`=  total ${sgn(Tt, 3)}`, xl, 0.85, { color: 'green', ...LBL, align: 'left' });
             st = { one, k, P, D, sl, Tt, Ss, Ii };
-          } else {
+          }
+          { // the matrix mode is drawn even while hidden (cheap), so its panels are never blank
             const key = sys.value, p = [q1.value, q2.value, 1], m = M, h = 1e-5, x = sysDemand(key, p, m);
             const dm = sysDemand(key, p, m + h).map((z, i) => (z - sysDemand(key, p, m - h)[i]) / (2 * h));
             const S = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
@@ -194,7 +200,7 @@ The total effect of a price change is the substitution effect (the slope of comp
             let asym = 0; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) asym = Math.max(asym, Math.abs(S[i][j] - S[j][i]));
             const sym = S.map((r, i) => r.map((z, j) => (z + S[j][i]) / 2)), ev = v.M.eigSym(sym).values;
             tab.draw({
-              value: (i, j) => (j < 3 ? v.fix(S[i][j], 3) : v.fix(Sp[i], 4)),
+              value: (i, j) => (j < 3 ? v.fix(S[i][j], 3) : v.fix(Math.abs(Sp[i]) < 5e-5 ? 0 : Sp[i], 4)),
               fill: (i, j) => (j === 3 ? ['muted', 0.12] : [S[i][j] < 0 ? 'blue' : 'red', 0.12 + 0.5 * Math.abs(S[i][j]) / big]),
               textColor: (i, j) => (j < 3 && i !== j && Math.abs(S[i][j] - S[j][i]) > 1e-3 * big ? 'red' : 'ink'),
               weight: (i, j) => (i === j ? 700 : 500),
@@ -210,18 +216,19 @@ The total effect of a price change is the substitution effect (the slope of comp
             Q.between((d) => Math.max(0, qf(d)), () => 0, 0, 180, { fill: 'red', fillAlpha: 0.3, n: 180 });
             Q.hline(0, { color: 'ink', width: 1.2 });
             Q.fn(qf, { domain: [0, 180], color: qhi > 1e-9 ? 'red' : 'green', width: 2.6, n: 180 });
-            st = { one, key, p, S, Sp, asym, ev, qhi, qlo, big };
+            if (!one) st = { one, key, p, S, Sp, asym, ev, qhi, qlo, big, qmax: Math.max(...qs) };
           }
         });
         v.readout(() => {
           const S = st, f3 = (q) => v.fix(q, 3);
           if (S.one) {
             const err = S.sl.dx - S.sl.dh - S.sl.inc;
-            return `At $p_1 = ${v.fix(S.P, 2)}$: $\\partial x_1/\\partial p_1 = ${f3(S.sl.dx)}$, $\\partial h_1/\\partial p_1 = ${f3(S.sl.dh)}$ and $-x_1\\,\\partial x_1/\\partial m = ${v.fix(-S.sl.x[0], 3)} \\times ${f3(S.sl.dm)} = ${f3(S.sl.inc)}$, each computed separately by finite differences. Their sum is ${f3(S.sl.dh + S.sl.inc)}, and the Slutsky identity holds to $${v.sci(Math.abs(err) + 1e-16, 1)}$. With the finite step $\\Delta p_1 = ${v.fix(S.D, S.D < 0.01 ? 4 : 3)}$ the slopes are ${f3(S.Ss)} + ${f3(S.Ii)} = ${f3(S.Tt)}: off by ${v.fix(Math.abs(S.Tt - S.sl.dx), 4)}, an error proportional to the step.`;
+            const par = (q) => (q < 0 ? `(${f3(q)})` : f3(q));
+            return `At $p_1 = ${v.fix(S.P, 2)}$: $\\partial x_1/\\partial p_1 = ${f3(S.sl.dx)}$, $\\partial h_1/\\partial p_1 = ${f3(S.sl.dh)}$ and $-x_1\\,\\partial x_1/\\partial m = ${v.fix(-S.sl.x[0], 3)} \\times ${par(S.sl.dm)} = ${f3(S.sl.inc)}$, each computed separately by finite differences. Their sum is ${f3(S.sl.dh + S.sl.inc)}, and the Slutsky identity holds to $${v.sci(Math.abs(err) + 1e-16, 1)}$. With the finite step $\\Delta p_1 = ${v.fix(S.D, S.D < 0.01 ? 4 : 3)}$ the slopes are ${f3(S.Ss)} + ${par(S.Ii)} = ${f3(S.Tt)}: off by ${v.fix(Math.abs(S.Tt - S.sl.dx), 4)}, an error proportional to the step.`;
           }
           const evs = S.ev.map((z) => v.fix(Math.abs(z) < 5e-6 ? 0 : z, 3)).join(', ');
           const symTxt = S.asym < 1e-5 * S.big ? 'symmetric (largest $|S_{ij} - S_{ji}|$ is $< 10^{-5}$)' : `**not symmetric**: $|S_{ij} - S_{ji}|$ reaches ${f3(S.asym)} (red entries), so no utility function generates this demand, although it is homogeneous and spends exactly $m$`;
-          const nsd = S.qhi > 1e-6 * S.big ? `**not negative semidefinite**: $z^\\top S z$ reaches ${f3(S.qhi)} > 0, so for some compensated price change demand moves *with* prices` : `negative semidefinite: $z^\\top S z \\le 0$ in every direction (largest ${v.fix(S.qhi, 4)})`;
+          const nsd = S.qhi > 1e-6 * S.big ? `**not negative semidefinite**: $z^\\top S z$ reaches ${f3(S.qhi)} > 0, so for some compensated price change demand moves *with* prices` : `negative semidefinite: $z^\\top S z \\le 0$ in every direction (largest ${v.fix(S.qmax, 3)})`;
           return `With prices $(${v.fix(S.p[0], 2)}, ${v.fix(S.p[1], 2)}, 1)$ and $m = 10$ the matrix is ${symTxt}; $Sp = 0$ to $10^{-6}$ (last column), and it is ${nsd}. Eigenvalues of $\\tfrac12(S + S^\\top)$: ${evs} (one is zero because $Sp = 0$).`;
         });
       },
@@ -255,7 +262,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           const C = need.value, F = FAMc(C), M = m.value, P = pa.value, P1 = pb.value;
           const A = demand(F, P, p2, M), uA = F.u(...A), C1 = demand(F, P1, p2, M), H = hicks(F, P1, p2, uA), Bx = H.x;
           // hunger region and calorie line
-          if (C > 0.05) { s.clip(() => s.poly([[0, 0], [C, 0], [0, C]], { fill: 'red', fillAlpha: 0.06, stroke: false })); s.clip(() => s.line(C, 0, 0, C, { color: 'red', width: 1.8, dash: [6, 4] })); if (C > 2) s.text('calorie need', C * 0.16, C * 0.84, { dx: 8, color: 'red', ...LBL, align: 'left' }); }
+          if (C > 0.05) { s.clip(() => s.poly([[0, 0], [C, 0], [0, C]], { fill: 'red', fillAlpha: 0.06, stroke: false })); s.clip(() => s.line(C, 0, 0, C, { color: 'red', width: 1.8, dash: [6, 4] })); if (C > 2) s.text(`calorie need x₁ + x₂ = ${v.fix(C, 1)}`, 0.15, C, { dy: -12, color: 'red', ...LBL, align: 'left', plate: true }); }
           // indifference map (faint)
           for (const t of [0.25, 0.5, 0.75]) { const q = demand(F, 0.5, p2, 3 + 7 * t); drawLevel(s, F, F.u(...q), { color: v.color('purple', 0.18), width: 1 }); }
           bline(s, P, p2, M, { color: 'muted', width: 1.8, dash: [7, 5] });
@@ -271,7 +278,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           // demand curve with the upward stretches in gold
           const ps = []; for (let i = 0; i <= 140; i++) ps.push(0.2 + (0.75 * i) / 140);
           const xs = ps.map((q) => demand(F, q, p2, M)[0]);
-          const xmax = Math.max(...xs); d.setView([0, Math.max(9, xmax * 1.08)], [0.2, 0.95]);
+          const xmax = Math.max(...xs), xmin = Math.min(...xs), xr = Math.max(3, xmax - xmin); d.setView([Math.max(0, xmin - 0.25 * xr), xmax + 0.25 * xr], [0.2, 0.95]);
           d.path(ps.map((q, i) => [xs[i], q]), { color: 'accent', width: 2.6 });
           let up = 0;
           for (let i = 1; i < ps.length; i++) if (xs[i] > xs[i - 1] + 1e-9) { d.line(xs[i - 1], ps[i - 1], xs[i], ps[i], { color: 'gold', width: 6, alpha: 0.85 }); up++; }
@@ -279,7 +286,7 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           d.hline(P, { color: 'muted', width: 1, dash: [3, 3] }); d.hline(P1, { color: 'muted', width: 1, dash: [3, 3] });
           d.dot(A[0], P, { r: 6, color: 'ink', label: 'A', labelPos: 'nw' }); d.dot(C1[0], P1, { r: 6.5, color: 'green', label: 'C', labelPos: 'nw' });
           const giff = C1[0] > A[0] + 1e-6 === P1 > P;
-          if (up) { const j = xs.findIndex((z, i) => i > 0 && z > xs[i - 1]); const jj = xs.findLastIndex((z, i) => i > 0 && z > xs[i - 1]); const mid = Math.round((j + jj) / 2); d.text('Giffen range', xs[mid], ps[mid], { dx: -10, color: 'gold', ...LBL, align: 'right' }); }
+          if (up) { const j = xs.findIndex((z, i) => i > 0 && z > xs[i - 1]); const jj = xs.findLastIndex((z, i) => i > 0 && z > xs[i - 1]); const mid = Math.round((j + jj) / 2); d.text('Giffen range', xs[mid], ps[mid], { dx: 12, color: 'gold', ...LBL, align: 'left', plate: true }); }
           // elasticity across incomes, at the price before
           const ms = []; for (let i = 0; i <= 80; i++) ms.push(2 + (10 * i) / 80);
           const h = 1e-4, el = ms.map((q) => { const a = demand(F, P + h, p2, q)[0], b = demand(F, P - h, p2, q)[0], x0 = demand(F, P, p2, q)[0]; return x0 > 1e-9 ? ((a - b) / (2 * h)) * (P / x0) : NaN; });
@@ -289,12 +296,18 @@ Evidence: Marshall (1895) attributed the idea to Robert Giffen and illustrated i
           e.hline(0, { color: 'ink', width: 1.2 });
           e.clip(() => e.path(ms.map((q, i) => [q, el[i]]), { color: 'accent', width: 2.6 }));
           const iM = clamp(Math.round(((M - 2) / 10) * 80), 0, 80); e.vline(M, GUIDE); if (isFinite(el[iM])) e.dot(M, el[iM], { r: 5.5, color: 'ink' });
+          // the three regimes: rice only / subsistence (Giffen) / fed
+          const only = ms.findIndex((q) => demand(F, P, p2, q)[1] > 1e-6), pos = el.map((z) => z > 0), g0 = pos.indexOf(true), g1 = pos.lastIndexOf(true);
+          const yl = e.bounds.y[0] + 0.12 * (e.bounds.y[1] - e.bounds.y[0]);
+          if (only > 6) e.text('rice only', (2 + ms[only]) / 2, yl, { color: 'muted', ...LBL, align: 'center', plate: true });
+          if (g0 >= 0 && g1 - g0 > 6) e.text('subsistence: Giffen', (ms[g0] + ms[g1]) / 2, yl, { color: 'gold', ...LBL, align: 'center', plate: true });
+          if (g1 >= 0 && g1 < 72) e.text('fed: ordinary', (ms[g1] + 12) / 2, yl, { color: 'muted', ...LBL, align: 'center', plate: true });
           const sl = slutsky(F, P, p2, M);
           st = { C, M, P, P1, A, Bx, C1, sl, giff, cal: A[0] + A[1], up };
         });
         v.readout(() => {
           const { C, M, P, P1, A, Bx, C1, sl, cal } = st, f = (q) => v.fix(q, 2);
-          const regime = A[1] < 1e-6 ? `This household is so poor that it eats only rice (${f(A[0])} units, ${f(cal)} calories against a need of ${f(C)}); a dearer staple forces it to buy less, the ordinary way.` : C > 0.05 && cal < C + 2 ? `It eats ${f(A[0])} rice and ${f(A[1])} meat, close to its calorie need of ${f(C)}: the subsistence zone.` : `With ${f(cal)} calories it is well above its need of ${f(C)}, so rice behaves like an ordinary good.`;
+          const regime = A[1] < 1e-6 ? `This household is so poor that it eats only rice (${f(A[0])} units, ${f(cal)} calories against a need of ${f(C)}); a dearer staple forces it to buy less, the ordinary way.` : sl.dm < 0 ? `It eats ${f(A[0])} rice and ${f(A[1])} meat (${f(cal)} calories, need ${f(C)}). Rice is **inferior** here: extra income buys meat and *less* rice ($\\partial x_1/\\partial m = ${v.fix(sl.dm, 2)}$), the subsistence zone.` : `It eats ${f(A[0])} rice and ${f(A[1])} meat (${f(cal)} calories, need ${f(C)}): calories are no longer the worry and rice is a normal good ($\\partial x_1/\\partial m = ${v.fix(sl.dm, 2)}$).`;
           const g = sl.dx > 0;
           const verdict = g ? `**Giffen**: the income effect ${sgn(sl.inc)} outweighs the substitution effect ${sgn(sl.dh)} (${v.fix(Math.abs(sl.inc / sl.dh), 1)} times larger), so $\\partial x_1/\\partial p_1 = ${sgn(sl.dx)} > 0$.` : `Not Giffen here: substitution effect ${sgn(sl.dh)}, income effect ${sgn(sl.inc)}, total $\\partial x_1/\\partial p_1 = ${sgn(sl.dx)}$.`;
           return `${regime} Slutsky terms at $p_1 = ${f(P)}$: ${verdict} For the price change to ${f(P1)}: substitution ${sgn(Bx[0] - A[0])}, income ${sgn(C1[0] - Bx[0])}, total ${sgn(C1[0] - A[0])} units of rice.`;

@@ -343,11 +343,11 @@ plus the cost of the lookups. For Fibonacci numbers $F_n=F_{n-1}+F_{n-2}$, the n
             { st: 0, lay: 'full', line: [1, 2, 3], note: `The naive call tree of Fib(${n}) has **${tr.length}** calls: every call above the base cases starts two more.` },
             { st: 1, lay: 'full', line: 3, note: `Only ${n + 1} different arguments occur, so **${reps}** of the ${tr.length} calls (red) recompute a value that some earlier call already found.` },
             { st: 2, lay: 'memo', line: [6, 7, 8], note: `With a memo table the first call for each argument computes and stores it; the ${hits} later calls (gold squares) return at once — a table lookup, or a base case — and start no subtree: **${2 * n - 1}** calls in all.` },
-            { st: 3, lay: 'dag', line: 7, note: `Merge equal calls: the tree collapses into the DAG of the ${n + 1} subproblems, with ${2 * n - 2} dependency arrows — exactly the memo table. Grey numbers: how often the naive tree calls each one.` },
+            { st: 3, lay: 'dag', line: 7, note: `Merge equal calls: the tree collapses into the DAG of the ${n + 1} subproblems, with ${2 * n - 2} dependency arrows — exactly the memo table. Red numbers: how often the naive tree calls each one.` },
           ];
         };
         const S = v.steps({ frames, code: FIB_CODE, codeTitle: 'Fibonacci, naive and memoized', codePos: 'below', transition: 0.8, speed: 0.45, start: 1, still: 1 });
-        const X0 = 12, XW = 84;
+        const X0 = 12, XW = 82;
         const at = (L, id) => {
           if (L === 'dag') return [X0 + XW * tr[id].k / n, -(n - 1) / 2];
           const l = lay[L]; return [l.leaves > 1 ? X0 + XW * l.X[id] / (l.leaves - 1) : X0 + XW / 2, -l.Y[id]];
@@ -403,7 +403,7 @@ plus the cost of the lookups. For Fibonacci numbers $F_n=F_{n-1}+F_{n-2}$, the n
           }
           // the memo table (and, under the DAG, how often the naive tree calls each subproblem)
           if (st >= 2) {
-            const yM = yB - 1.05, w = Math.min(XW / n * 0.42, 5.5), hh = 0.27;
+            const yM = yB - 1.05, w = Math.min(XW / n * 0.3, 3.6), hh = 0.27;
             T.text('memo[k]', 0.5, yM, { size: 12, weight: 700, color: 'muted' });
             if (st === 3) T.text('naive calls', 0.5, yM - 0.62, { size: 11, weight: 600, color: 'red' });
             for (let k = 0; k <= n; k++) {
@@ -545,7 +545,7 @@ It can fail. For the **longest (most valuable) simple path**, the piece of an op
             s.rect(j + 0.04, -i - 0.96, j + 0.96, -i - 0.04, { fill: 'orange', fillAlpha: 0.05 + 0.3 * (cost[k] - 1) / 8, color: 'faint', width: 1, radius: 4 });
             if (overlap.includes(k)) { s.rect(j + 0.07, -i - 0.93, j + 0.93, -i - 0.07, { color: 'red', width: 2, radius: 4, dash: [5, 3] }); s.text('2×', j + 0.86, -i - 0.8, { align: 'right', size: 11, weight: 800, color: 'red' }); }
           }
-          s.path(opt.path.map(ctr), { color: 'green', width: 12, alpha: 0.28 });
+          s.path(opt.path.map(ctr), { color: 'green', width: 12, alpha: 0.34 });
           s.path(offPath(A.path, -4), { color: 'blue', width: 2.8 });
           s.path(offPath(B.path, 4), { color: 'orange', width: 2.8 });
           for (let k = 0; k < N; k++) { const [x, y] = ctr(k); s.dot(x, y, { r: 13, color: 'panel', ring: false }); s.dot(x, y, { r: 13, hollow: true, color: 'faint', width: 1 }); s.text(String(cost[k]), x, y, { align: 'center', size: 16, weight: 700, color: 'ink', halo: false }); }
