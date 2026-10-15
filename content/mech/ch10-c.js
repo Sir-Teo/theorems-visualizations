@@ -501,7 +501,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const { qs, Rc, len, jmax } = cur, q = qs[NS], md = mode.value;
           const qt = String.raw`$q_{\rm cube} = ${v.fix(q[0], 3)} ${q[3] >= 0 ? '+' : '-'} ${v.fix(Math.abs(q[3]), 3)}\,k$` + (Math.abs(q[1]) > 1e-9 ? String.raw` $+ ${v.fix(q[1], 3)}\,i$` : '');
           const same = fro(qmat(q), qmat(q.map((c) => -c)));
-          const tail = String.raw` · the same rotation for $\pm q$: $\|\mathsf R(q) - \mathsf R(-q)\| = ${sci(v, same)}$ · length of the lifted path ${v.fix(len, 3)} (the $j$-component stays ${sci(v, jmax)})`;
+          const tail = String.raw` · the same rotation for $\pm q$: $\|\mathsf R(q) - \mathsf R(-q)\| = ${sci(v, same)}$ · length of the lifted path ${v.fix(len, 3)} (the $j$-component stays $${sci(v, jmax)}$)`;
           if (md === 'turn') { const a = aS.value; return String.raw`cube turned by ${a}° · ` + qt + (a === 360 ? ' — the cube is back where it started, yet the lift ends at $-1$' : a === 720 ? ' — back at $+1$: the lift is a closed loop' : '') + tail; }
           if (md === 'untangle') return String.raw`deformation ${v.fix(lS.value, 3)} of 2 · the cube does not turn (${qt}) · the closed loop of frames shrinks${lS.value >= 2 ? ' to the point $+1$: ribbons untangled' : ''}` + tail;
           return String.raw`the axis of the full turn is moved around (deformation ${v.fix(lS.value, 3)}) · ${qt}: the end of the lift is stuck at $-1$, so this loop in $SO(3)$ can never be shrunk` + tail;

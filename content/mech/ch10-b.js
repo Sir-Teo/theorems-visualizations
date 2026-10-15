@@ -524,7 +524,7 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
           const onE = dot(r.xb, Ib), i0 = Math.max(1, Math.min(B.rec.length - 2, cur.i)), dt = TS / (B.rec.length - 1);
           // velocity of the material point now at the contact: (Q(t+dt) − Q(t−dt)) x_b / 2dt
           const vel = scl(sub(mv(B.rec[i0 + 1].Q, B.rec[i0].xb), mv(B.rec[i0 - 1].Q, B.rec[i0].xb)), 1 / (2 * dt)), vref = nrm(B.rec[i0].w) * nrm(B.rec[i0].xb);
-          const head = String.raw`contact point $\mathbf x = \boldsymbol\omega/\sqrt{2T}$: $\mathbf x\cdot\mathsf I\mathbf x = ${v.fix(onE, 10)}$ (on the ellipsoid) · angle between the normal $\mathsf R\,\mathsf I\mathbf x$ and the initial $\mathbf L$: ${num(v, angle(mv(r.Q, Ib), B.rec[0].Ls) / DEG, 3)}° · speed of the material point at the contact (finite difference) $${sci(v, nrm(vel))}$, against $|\boldsymbol\omega||\mathbf x| = ${v.fix(vref, 3)}$ for a point as far out at right angles: rolling without slipping`;
+          const head = String.raw`contact point $\mathbf x = \boldsymbol\omega/\sqrt{2T}$: $\mathbf x\cdot\mathsf I\mathbf x = ${v.fix(onE, 10)}$ (on the ellipsoid) · angle between the normal $\mathsf R\,\mathsf I\mathbf x$ and the initial $\mathbf L$: $${num(v, angle(mv(r.Q, Ib), B.rec[0].Ls) / DEG, 3)}°$ · speed of the material point at the contact (finite difference) $${sci(v, nrm(vel))}$, against $|\boldsymbol\omega||\mathbf x| = ${v.fix(vref, 3)}$ for a point as far out at right angles: rolling without slipping`;
           if (!tqT.value) return head + String.raw` · distance of the tangent plane $\sqrt{2T}/|\mathbf L|$: from ${v.fix(hmin, 8)} to ${v.fix(hmax, 8)} over ${TS} s — the plane is invariable`;
           return head + String.raw` · with the torque, $\mathbf L$ turns by up to ${v.fix(amax / DEG, 1)}° and the plane’s distance ranges from ${v.fix(hmin, 4)} to ${v.fix(hmax, 4)}: no invariable plane`;
         });
@@ -584,15 +584,15 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
             for (const sg of [-1, 1]) sc.disc(a1, a2, rr, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.2 }, scl(e3, sg * hh));
             for (let k = 0; k < 16; k++) { const ang = (TAU * k) / 16, p = add(scl(a1, rr * Math.cos(ang)), scl(a2, rr * Math.sin(ang))); sc.line(madd(p, e3, -hh), madd(p, e3, hh), { color: 'accent', width: 0.8, alpha: k % 4 ? 0.3 : 0.8 }); }
             // cones
-            const Lh = B.Lh, wh = unit(ws), CL = 1.35;
+            const Lh = B.Lh, wh = unit(ws), CL = 1.15;
             const ab = angle(wb, [0, 0, 1]), as = angle(ws, Lh);
             const bodyCone = circlePts(scl(e3, CL * Math.cos(ab)), a1, a2, CL * Math.sin(ab), 48);
             const la = perp(Lh), lb = crs(Lh, la), spaceCone = circlePts(scl(Lh, CL * Math.cos(as)), la, lb, CL * Math.sin(as), 48);
             sc.path(bodyCone, { color: 'pink', width: 1.6 }); sc.path(spaceCone, { color: 'purple', width: 1.6 });
             for (let k = 0; k < 48; k += 6) { sc.line([0, 0, 0], bodyCone[k], { color: 'pink', width: 0.7, alpha: 0.6 }); sc.line([0, 0, 0], spaceCone[k], { color: 'purple', width: 0.7, alpha: 0.6 }); }
-            sc.line(scl(e3, -1.3), scl(e3, 1.5), { color: 'pink', width: 1.4, dash: [5, 4] });
+            sc.line(scl(e3, -1.2), scl(e3, 1.3), { color: 'pink', width: 1.4, dash: [5, 4] });
             sc.arrow([0, 0, 0], scl(wh, CL), { color: 'accent', width: 3 }); sc.arrow([0, 0, 0], scl(Lh, 1.05), { color: 'purple', width: 3 });
-            sc.tex('\\boldsymbol\\omega', scl(wh, CL + 0.12), { color: 'accent', size: 15 }); sc.tex('\\mathbf L', scl(Lh, 1.17), { color: 'purple', size: 15 }); sc.tex('\\mathbf e_3', scl(e3, 1.62), { color: 'pink', size: 15 });
+            sc.tex('\\boldsymbol\\omega', scl(wh, CL + 0.12), { color: 'accent', size: 15 }); sc.tex('\\mathbf L', scl(Lh, 1.17), { color: 'purple', size: 15 }); sc.tex('\\mathbf e_3', scl(e3, 1.3), { color: 'pink', size: 15, dx: 14 });
             sc.flush();
             // body-frame view of (ω1, ω2)
             const wp = Math.hypot(B.w0[0], B.w0[1]) * 1.25;
