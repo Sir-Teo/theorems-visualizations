@@ -165,11 +165,16 @@ export default {
           // ---- slot 1: a function on the plane
           const f1 = (x, y) => beta([x, y], w);
           signedHeat(v, L, f1, 3, `${k}|${w.map((t) => t.toFixed(3))}`);
-          L.contour(f1, [-3, -2, -1, 1, 2, 3].filter((c) => k !== 'sq' || c > 0), { color: 'muted', width: 1, labels: true, fmt: (c) => pn(c, 0) });
+          L.contour(f1, [-2.5, -1.5, -0.5, 0.5, 1.5, 2.5].filter((c) => k !== 'sq' || c > 0), { color: 'faint', width: 0.8 });
+          L.contour(f1, [-3, -2, -1, 1, 2, 3].filter((c) => k !== 'sq' || c > 0), { color: 'muted', width: 1.1, labels: true, fmt: (c) => pn(c, 0) });
           L.contour(k === 'sq' ? (x, y) => q([x, y], w) : f1, [0], { color: 'ink', width: 2.2 });
           L.axes();
           const g = k === 'bil' || k === 'aff' ? mv(C, w) : k === 'lin' ? [1, 0] : null;
-          if (g && len(g) > 0.05) { L.arrow(0, 0, g[0], g[1], { color: 'orange', width: 2.4, head: 9 }); L.tex(k === 'lin' ? '\\nabla' : 'Cw', g[0], g[1], { dx: g[0] >= 0 ? 16 : -16, dy: -10, color: 'orange', size: 14 }); }
+          if (g && len(g) > 0.05) {
+            let nx = -g[1] / len(g), ny = g[0] / len(g); if (nx * vv[0] + ny * vv[1] > 0) { nx = -nx; ny = -ny; }
+            L.arrow(0, 0, g[0], g[1], { color: 'orange', width: 2.4, head: 9 });
+            L.tex(k === 'lin' ? '\\nabla\\beta(\\cdot, w)' : 'Cw', 0.75 * g[0] + 0.28 * nx, 0.75 * g[1] + 0.28 * ny, { color: 'orange', size: 14 });
+          }
           L.arrow(0, 0, vv[0], vv[1], { color: 'accent', width: 2.6, head: 9 });
           // ---- slot 2: level planes of w ↦ β(v, w) in R³
           const n = k === 'lin' ? [1, 0, 0] : mv(Ct, vv), nn = len(n);
@@ -189,7 +194,7 @@ export default {
           if (k !== 'sq' && nn > 0.05) sc.arrow([0, 0, 0], scl(n, Math.min(1, 1.3 / nn)), { color: 'accent', width: 2.4 });
           sc.arrow([0, 0, 0], w, { color: 'orange', width: 2.6 });
           sc.flush();
-          if (k !== 'sq' && nn > 0.05) { const P = sc.P(scl(n, Math.min(1, 1.3 / nn))); R.tex(k === 'lin' ? 'e_1' : 'C^{\\mathsf T}v', P[0], P[1], { dx: 18, dy: -6, color: 'accent', size: 14 }); }
+          if (k !== 'sq' && nn > 0.05) { const P = sc.P(scl(n, 1.22 * Math.min(1, 1.3 / nn))); R.tex(k === 'lin' ? 'e_1' : 'C^{\\mathsf T}v', P[0], P[1], { color: 'accent', size: 14 }); }
           if (nn <= 1e-6) R.corner('β(0, ·) is the zero functional', 'tl', { color: 'muted' });
           // ---- tests: additivity and homogeneity in each slot
           const d1 = Math.max(Math.abs(beta(add(vv, ta), w) - beta(vv, w) - beta(ta, w)), Math.abs(beta(scl(vv, 2), w) - 2 * beta(vv, w)));
@@ -228,7 +233,7 @@ $$\dim \mathcal B(V, W) = (\dim V)(\dim W).$$`,
         const sn = v.slider('$n = \\dim W$', 1, 4, 3, { int: true });
         const fam = v.select('', [{ value: 'bil', label: 'bilinear functionals on $V \\times W$' }, { value: 'lin', label: 'linear functionals on $V \\times W$ (compare)' }], 'bil');
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 0.85, minWidth: 260 });
-        const B = v.stage({ x: [0.2, 24.8], y: [1e-18, 1e3], ylog: true, axes: 'box', height: 320, weight: 1.15, minWidth: 300, xticks: [1, 4, 8, 12, 16, 20, 24], xlabel: 'index $i$', ylabel: '$\\sigma_i$', title: 'singular values of 24 functionals × 24 random pairs' });
+        const B = v.stage({ x: [-2.6, 24.8], y: [1e-20, 1e3], ylog: true, axes: 'box', height: 320, weight: 1.15, minWidth: 300, xticks: [1, 4, 8, 12, 16, 20, 24], xlabel: 'index i', ylabel: 'σᵢ', title: 'singular values of 24 functionals × 24 random pairs' });
         const T = v.table(A, { rows: 2, cols: 3, maxCell: 62, size: 14, region: [0.05, 0.22, 0.95, 0.84] });
         let memo = null;
         const run = (m, n, k) => {
@@ -251,7 +256,7 @@ $$\dim \mathcal B(V, W) = (\dim V)(\dim W).$$`,
           if (gm) A.texPx(k === 'bil' ? '\\varepsilon_{j,k}(v, w) = v_j\\, w_k' : '(v, w) \\mapsto v_j \\ \\text{or}\\ w_k', gm.X0 + (gm.cols * gm.cw) / 2, gm.Y0 - 18, { size: 14 });
           A.texPx(k === 'bil' ? `m \\cdot n = ${m} \\cdot ${n} = ${m * n}` : `m + n = ${m} + ${n} = ${m + n}`, A.width / 2, A.height - 26, { size: 17, color: k === 'bil' ? 'blue' : 'orange' });
           // ---- right: the singular-value cliff
-          B.hband(1e-18, 1e-12, { color: 'faint', alpha: 0.18 });
+          B.hband(1e-20, 1e-12, { color: 'faint', alpha: 0.18 });
           Rr.s.forEach((s, i) => B.rect(i + 1 - 0.36, 1e-18, i + 1 + 0.36, Math.max(s, 2e-18), { fill: i < Rr.rank ? (k === 'bil' ? 'blue' : 'orange') : 'muted', fillAlpha: i < Rr.rank ? 0.75 : 0.35, stroke: false }));
           B.vline(Rr.rank + 0.5, { color: 'green', width: 2, dash: [6, 4] });
           B.text(`rank = ${Rr.rank}`, Rr.rank + 0.9, 3e1, { color: 'green', size: 13, weight: 700 });

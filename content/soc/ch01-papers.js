@@ -135,7 +135,7 @@ The models are abstract: neighbourhoods are cells of a board, everyone moves myo
         let seed = 1971;
         v.button('New board', () => { seed++; reset(); });
         const showCtl = () => { const L = lineOn.value; [size, vacS, shS, demS].forEach((c) => (c.el.hidden = L)); };
-        const A = v.stage({ x: [0, 16], y: [0, 13], equal: true, axes: false, height: 360, weight: 1.15, title: 'the board' });
+        const A = v.stage({ x: [0, 16], y: [0, 13], axes: false, height: 360, weight: 1.15, title: 'the board, or the line' });
         const T = v.stage({ x: [0, 40], y: [0, 100], axes: 'box', height: 360, weight: 0.85, minWidth: 250, xlabel: 'moves', ylabel: '%', title: 'Schelling’s measures' });
         let B = null, LS = null, lastT = 0, hist = [];
         function reset() {
@@ -162,16 +162,18 @@ The models are abstract: neighbourhoods are cells of a board, everyone moves myo
           else { while (B.moves < target && !B.done && guard++ < 400) { if (boardStep(B, demand)) record(); } }
           // ---- left
           if (lineOn.value) {
-            const rows = [FIG1, ...LS.ends], cur = LS.L, n = 70, rowH = 1;
-            A.setView([-0.5, n - 0.5], [-1, 14]);
-            const drawRow = (str, y, faded) => { for (let i = 0; i < n; i++) { const k = typeof str === 'string' ? str[i] : str[i].k; if (k === '+') star(A, i, y, 0.42, faded ? 'faint' : 'orange'); else A.circle(i, y, 0.33, { color: faded ? 'faint' : 'blue', width: 1.6 }); } };
-            A.text('now', -0.4, 12.6, { size: 11.5, weight: 700, color: 'muted', dy: -12 });
-            drawRow(cur, 12, false);
-            cur.forEach((c, i) => { if (!lineContent(cur, i)) A.dot(i, 12.9, { r: 2.4, color: 'ink', ring: false }); if (c.id === LS.moved) A.rect(i - 0.5, 11.4, i + 0.5, 12.6, { color: 'gold', width: 2 }); });
-            rows.slice(-7).forEach((str, k, arr) => { const y = 9.5 - k * 1.45 * rowH; drawRow(str, y, false); A.text(k === 0 && rows.length <= 7 ? 'Fig. 1' : `after round ${rows.length - arr.length + k}`, -0.4, y + 0.6, { size: 10.5, color: 'muted', dy: -6 }); });
+            // each state of the line as a barcode: orange bar = star, blue bar = zero (70 people, left to right)
+            const rows = [FIG1, ...LS.ends].slice(-6), cur = LS.L, n = 70, first = LS.ends.length + 1 - rows.length;
+            A.setView([-9, n + 0.5], [-0.6, 15.2]);
+            const bar = (k, i, y, h = 1.05) => A.rect(i + 0.08, y - h / 2, i + 0.92, y + h / 2, { fill: k === '+' ? 'orange' : 'blue', fillAlpha: 0.95, stroke: false });
+            A.text('now', -0.6, 13.4, { size: 12, weight: 700, color: 'ink', align: 'right' });
+            cur.forEach((c, i) => { bar(c.k, i, 13.4, 1.5); if (!lineContent(cur, i)) A.dot(i + 0.5, 14.6, { r: 2.2, color: 'ink', ring: false }); if (c.id === LS.moved) A.rect(i, 12.45, i + 1, 14.35, { color: 'gold', width: 2.2 }); });
+            A.hline(11.6, { color: 'faint', width: 1 });
+            rows.forEach((str, k) => { const y = 10.4 - k * 1.95; for (let i = 0; i < n; i++) bar(str[i], i, y); A.text(first + k === 0 ? 'Fig. 1' : `round ${first + k}`, -0.6, y, { size: 11, color: 'muted', align: 'right' }); });
           } else {
             const { rows, cols, g } = B;
-            A.setView([0, cols], [0, rows]);
+            const sc = Math.min(A.width / cols, A.height / rows), wx = A.width / sc, wy = A.height / sc;
+            A.setView([(cols - wx) / 2, (cols + wx) / 2], [(rows - wy) / 2, (rows + wy) / 2]);
             const rad = 0.36;
             for (let i = 0; i < g.length; i++) {
               const r = Math.floor(i / cols), c = i % cols, x = c + 0.5, y = rows - r - 0.5;

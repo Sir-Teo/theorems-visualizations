@@ -747,7 +747,8 @@ class Stage {
   raster(fn, st = {}) {
     const res = st.res || 2; const w = Math.ceil(this.W / res), hh = Math.ceil(this.H / res);
     const id = st.id || 'r';
-    const key = st.key != null ? `${w}x${hh}|${this.xr}|${this.yr}|${st.key}` : null;
+    const theme = typeof document !== 'undefined' ? document.documentElement.dataset.theme || (matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : '';
+    const key = st.key != null ? `${w}x${hh}|${this.xr}|${this.yr}|${theme}|${st.key}` : null; // colours resolved from the theme must not survive a theme switch
     let ent = this._raster.get(id);
     if (!ent || key == null || ent.key !== key) {
       const off = ent?.canvas || document.createElement('canvas');

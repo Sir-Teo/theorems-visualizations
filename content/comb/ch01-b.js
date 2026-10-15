@@ -39,23 +39,22 @@ function drawBlobs(v, P, rgs, cx, cy, R, st = {}) {
 }
 /** Seating chart of a permutation: one round table per cycle, guests clockwise in cycle order. */
 function drawTables(v, P, p, x, y, w, h, st = {}) {
-  const cyc = cyclesOf(p), n = p.length, gap = w * 0.04;
-  const wts = cyc.map((c) => 0.8 + c.length * 0.45), tot = wts.reduce((a, b) => a + b, 0);
-  let cx = x + gap / 2;
+  const cyc = cyclesOf(p), rho = (m) => (m === 1 ? 0 : m === 2 ? 1.3 : 1.22 / Math.sin(Math.PI / m));
+  const half = cyc.map((c) => Math.max(rho(c.length) + 1, 1.6)), gapF = 0.5;
+  const pr = Math.min((w * 0.94) / (2 * half.reduce((a, b) => a + b, 0) + gapF * (cyc.length - 1)), (h * 0.9) / (2 * Math.max(...half)));
+  let cx = x + (w - pr * (2 * half.reduce((a, b) => a + b, 0) + gapF * (cyc.length - 1))) / 2;
   cyc.forEach((c, t) => {
-    const cw = ((w - gap * cyc.length) * wts[t]) / tot, R = Math.min(cw / 2, h / 2) * 0.62, ox = cx + cw / 2, oy = y + h / 2;
-    P.circle(ox, oy, R * (c.length === 1 ? 0.55 : 0.78), { fill: 'muted', fillAlpha: 0.12, color: 'faint', width: 1 });
-    const pr = Math.max(2.2, Math.min(R * 0.42, (Math.PI * R) / Math.max(2, c.length) * 0.7));
+    const m = c.length, R = rho(m) * pr, ox = cx + half[t] * pr, oy = y + h / 2;
+    P.circle(ox, oy, m === 1 ? pr * 1.55 : Math.max(pr * 0.9, R - pr * 0.35), { fill: 'muted', fillAlpha: 0.14, color: 'faint', width: 1 });
+    if (m >= 3 && st.arrows) { const ra = Math.max(pr * 0.5, R - pr * 1.25); P.arc(ox, oy, ra, -Math.PI / 2 + 0.5, -Math.PI / 2 + (2 * Math.PI) / m - 0.5, { color: 'muted', width: 1.2 }); const a1 = -Math.PI / 2 + (2 * Math.PI) / m - 0.5; P.arrow(ox + ra * Math.cos(a1 - 0.25), oy + ra * Math.sin(a1 - 0.25), ox + ra * Math.cos(a1), oy + ra * Math.sin(a1), { color: 'muted', width: 1.2, head: Math.max(4, pr * 0.6) }); }
     c.forEach((g, i) => {
-      const a = -Math.PI / 2 + (2 * Math.PI * i) / c.length, gx = ox + (c.length === 1 ? 0 : R * Math.cos(a)), gy = oy + (c.length === 1 ? -R * 0.55 - pr * 0.2 : R * Math.sin(a));
-      if (c.length >= 3 && st.arrows) { const a2 = a + (2 * Math.PI) / c.length; P.arc(ox, oy, R * 0.55, a + 0.35, a2 - 0.35, { color: 'muted', width: 1 }); }
+      const a = -Math.PI / 2 + (2 * Math.PI * i) / m, gx = ox + R * Math.cos(a), gy = oy + R * Math.sin(a);
       P.dot(gx, gy, pr, { fill: CAT[g % CAT.length] });
       if (st.ring && st.ring(g)) P.circle(gx, gy, pr + 2, { color: 'ink', width: 1.4 });
-      if (pr >= 6) P.text(String(g + 1), gx, gy, { align: 'center', size: pr * 1.15, color: 'panel', weight: 700, halo: false });
+      if (pr >= 5.5) P.text(String(g + 1), gx, gy, { align: 'center', size: pr * 1.15, color: 'panel', weight: 700, halo: false });
     });
-    cx += cw + gap;
+    cx += 2 * half[t] * pr + gapF * pr;
   });
-  return n;
 }
 /** Signed Stirling numbers of the first kind s(n,k) = (−1)^{n−k} c(n,k). */
 const sgnS1 = (c, n, k) => ((n - k) % 2 ? -1 : 1) * c[n][k];
@@ -406,7 +405,7 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
           // bars
           const ymax = Math.max(...C[n].slice(1, n + 1)) * 1.2;
           B.setView([0.3, n + 0.7], [-ymax * 0.09, ymax]);
-          B.setTicks(Array.from({ length: n }, (_, i) => [i + 1, `x^${i + 1}`.replace('x^1', 'x')]), null);
+          B.setTicks(Array.from({ length: n }, (_, i) => [i + 1, i ? 'x' + '⁰¹²³⁴⁵⁶⁷⁸⁹'[i + 1] : 'x']), null);
           B.hline(0, { color: 'muted', width: 1 });
           for (let kk = 1; kk <= n; kk++) {
             const val = C[n][kk], on = kk === k;

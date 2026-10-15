@@ -34,7 +34,7 @@ Conversely, three points forming a right or obtuse triangle cannot be the vanish
         const M = v.M;
         const pic = v.stage({ x: [-7.2, 7.2], y: [-5.2, 7.4], equal: true, axes: false, height: 430, title: 'looking up at a tower' });
         const fromCam = (pitch) => {
-          const C = camera([0, 0, 0], { yaw: rad(35), pitch: rad(pitch), d: 3 });
+          const C = camera([0, 0, 0], { yaw: rad(35), pitch: rad(pitch), d: 3.4 });
           return [C.vp([0, 1, 0]), C.vp([1, 0, 0]), C.vp([0, 0, 1])];
         };
         const P0 = fromCam(28);
@@ -60,13 +60,13 @@ Conversely, three points forming a right or obtuse triangle cannot be the vanish
             // ground below the horizon V1V2
             const yl = V1[1] + ((bx[0] - V1[0]) * (V2[1] - V1[1])) / (V2[0] - V1[0]), yr = V1[1] + ((bx[1] - V1[0]) * (V2[1] - V1[1])) / (V2[0] - V1[0]);
             pic.poly([[bx[0], yl], [bx[1], yr], [bx[1], by[0] - 5], [bx[0], by[0] - 5]], { fill: 'faint', fillAlpha: 0.13, stroke: false });
-            const f = [R[0][1], R[1][1]], fn = Math.hypot(f[0], f[1]) || 1, c0 = [(12 * f[0]) / fn, (12 * f[1]) / fn];
-            for (let k = -6; k <= 6; k++) {
-              for (const [p, q] of [[W(c0[0] + k, c0[1] - 6, -1.6), W(c0[0] + k, c0[1] + 6, -1.6)], [W(c0[0] - 6, c0[1] + k, -1.6), W(c0[0] + 6, c0[1] + k, -1.6)]]) {
+            const f = [R[0][1], R[1][1]], fn = Math.hypot(f[0], f[1]) || 1, c0 = [(11 * f[0]) / fn, (11 * f[1]) / fn];
+            for (let k = -10; k <= 10; k += 2) {
+              for (const [p, q] of [[W(c0[0] + k, c0[1] - 10, -1.6), W(c0[0] + k, c0[1] + 10, -1.6)], [W(c0[0] - 10, c0[1] + k, -1.6), W(c0[0] + 10, c0[1] + k, -1.6)]]) {
                 const A = map(p), B = map(q); if (A && B) pic.line(A[0], A[1], B[0], B[1], { color: 'faint', width: 0.8 });
               }
             }
-            const box = boxMesh([0, 0, 0], [4, 4, 26]);
+            const box = boxMesh([0, 0, 0], [5.5, 5.5, 26]);
             const mesh = { ...box, V: box.V.map(([a, b, c]) => W(c0[0] + a, c0[1] + b, c - 1.6)) };
             drawSolids(pic, map, [0, 0, 0], [{ mesh, color: 'teal', alpha: 0.06 }]);
             for (const [i, j] of [[0, 1], [1, 2], [2, 3], [3, 0]]) { // storeys on the faces turned toward the eye
@@ -79,7 +79,7 @@ Conversely, three points forming a right or obtuse triangle cannot be the vanish
             pic.dot(H[0], H[1], { r: 5, color: 'green', label: 'H', labelPos: 'sw' });
           }
           pic.poly([V1, V2, V3], { color: s.ok ? 'ink' : 'red', width: s.ok ? 1.2 : 2.2, fill: s.ok ? null : 'red', fillAlpha: 0.06 });
-          pic.text('horizon', (V1[0] + V2[0]) / 2, (V1[1] + V2[1]) / 2 - 0.15, { align: 'center', baseline: 'top', size: 11, color: 'muted' });
+          pic.text('horizon', V2[0] + 0.3, V2[1] - 0.1, { align: 'left', baseline: 'top', size: 11, color: 'muted' });
           if (!s.ok) pic.corner('obtuse triangle: no eye sees these three directions at right angles', 'tl', { color: 'red', weight: 600, size: 12 });
         });
         v.legend([['green', 'principal point $H$ = orthocentre', { dot: true }], ['muted', 'altitudes', { dash: true }], ['teal', 'tower']]);

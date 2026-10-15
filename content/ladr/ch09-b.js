@@ -522,5 +522,153 @@ $$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{
         });
       },
     },
+
+    // ------------------------------------------------------------------ 9.23
+    {
+      num: '9.23',
+      kind: 'Theorem',
+      name: 'Diagonalization of quadratic form',
+      statement: String.raw`Suppose $q$ is a quadratic form on $V$.
+(a) There exist a basis $e_1, \dots, e_n$ of $V$ and $\lambda_1, \dots, \lambda_n \in \mathbf F$ such that
+$$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\text{for all } x_1, \dots, x_n \in \mathbf F.$$
+(b) If $\mathbf F = \mathbf R$ and $V$ is an inner product space, then the basis in (a) can be chosen to be orthonormal.`,
+      idea: String.raw`By 9.21, $q = q_\rho$ for a symmetric bilinear form $\rho$, and by 9.12 some basis $e_1, \dots, e_n$ makes $\mathcal M(\rho)$ diagonal, with entries $\lambda_j = \rho(e_j, e_j)$. Expanding $\rho\big(\sum_j x_je_j, \sum_k x_ke_k\big) = \sum_{j,k}x_jx_k\,\rho(e_j, e_k)$ kills every cross term. Part (b) is 9.13. The $\lambda_j$ are far from unique — replacing $e_j$ by $te_j$ multiplies $\lambda_j$ by $t^2$, and different bases give different values. But over $\mathbf R$ the numbers of positive, negative and zero $\lambda_j$ are the same for every such basis (Sylvester's law of inertia), so the shape of the level sets of $q$ is intrinsic. On $\mathbf R^2$, completing the square, $ax_1^2 + bx_1x_2 + cx_2^2 = a\big(x_1 + \frac b{2a}x_2\big)^2 + \big(c - \frac{b^2}{4a}\big)x_2^2$, is one diagonalization; the principal axes, with the eigenvalues as $\lambda$'s, are another.`,
+      caption: String.raw`Pick $q$; its level sets $q = 1$ (blue) and $q = -1$ (orange) are an ellipse, a hyperbola, a pair of lines or nothing. In *your own* mode drag $e_1$; $e_2$ slides along the dashed line of vectors $\rho$-orthogonal to $e_1$, so $q(x_1e_1 + x_2e_2) = \lambda_1x_1^2 + \lambda_2x_2^2$ with $\lambda_j = q(e_j)$. Right: the point $(\lambda_1, \lambda_2)$ for your basis (gold, with its trail), for the principal axes (green; orthonormal, $\lambda$'s are the eigenvalues) and for completing the square (orange). However you drag, the gold point never leaves its quadrant: the signs of the $\lambda$'s are fixed by $q$. Release $e_2$ from the dashed line and a cross term $x_1x_2$ appears.`,
+      deps: ['ladr-9.21', 'ladr-9.12', 'ladr-9.13'],
+      see: ['dg-6.13'],
+      tags: ['quadratic forms', 'diagonalization'],
+      viz(v) {
+        const PRE = { hyp: [1, 3, 2], ell: [2, -2, 1.5], deg: [1, 2, 1], neg: [-1, 1, -1.2] };
+        const pre = v.select('$q$', [{ value: 'hyp', label: '$x_1^2 + 3x_1x_2 + 2x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'deg', label: '$(x_1 + x_2)^2$' }, { value: 'neg', label: '$-x_1^2 + x_1x_2 - 1.2x_2^2$' }], 'hyp', { onChange: () => { trail.length = 0; } });
+        const mode = v.select('basis', [{ value: 'own', label: 'your own' }, { value: 'pr', label: 'principal axes (orthonormal)' }, { value: 'sq', label: 'completing the square' }], 'own');
+        const conj = v.toggle('keep $e_2$ $\\rho$-orthogonal to $e_1$', true);
+        const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400 });
+        const R = v.stage({ x: [-1.12, 1.12], y: [-1.12, 1.12], equal: true, axes: false, height: 400, title: 'the coefficients $(\\lambda_1, \\lambda_2)$ (compressed scale)' });
+        const Smat = () => { const [a, b, c] = PRE[pre.value]; return [[a, b / 2], [b / 2, c]]; };
+        const conjDir = (e) => { const n = mv(Smat(), e); return len(n) < 1e-9 ? unit(rot90(e)) : unit(rot90(n)); };
+        const e1h = P.handle(1.1, -0.25, { color: 'teal', label: 'e₁' });
+        const e2h = P.handle(-0.6, 0.8, { color: 'pink', label: 'e₂', constrain: (x, y) => { if (!conj.value) return [x, y]; const d = conjDir([e1h.x, e1h.y]), t = x * d[0] + y * d[1]; return [t * d[0], t * d[1]]; } });
+        const trail = [], LM = 20, C = (l) => Math.max(-1.08, Math.min(1.08, slog(l) / slog(LM)));
+        let st = null;
+        v.render(() => {
+          const [a, b, c] = PRE[pre.value], Sm = Smat(), q = (p) => bil(Sm, p, p);
+          const E = esym2(Sm), pr = { e: [E.u[0], E.u[1]], l: E.l };
+          const sq = Math.abs(a) > 1e-9 ? { e: [[1, 0], [-b / (2 * a), 1]], l: [a, c - (b * b) / (4 * a)] } : Math.abs(c) > 1e-9 ? { e: [[1, -b / (2 * c)], [0, 1]], l: [-(b * b) / (4 * c), c] } : { e: [[1, 1], [1, -1]], l: [b, -b] };
+          const own = mode.value === 'own';
+          e1h.visible = own; e2h.visible = own; conj.el.hidden = !own;
+          if (own && conj.value) { const d = conjDir([e1h.x, e1h.y]); let t = e2h.x * d[0] + e2h.y * d[1]; if (Math.abs(t) < 0.25) t = t < 0 ? -0.9 : 0.9; e2h.x = t * d[0]; e2h.y = t * d[1]; }
+          const ow = { e: [[e1h.x, e1h.y], [e2h.x, e2h.y]] }; ow.l = ow.e.map(q); ow.cross = 2 * bil(Sm, ow.e[0], ow.e[1]);
+          const cur = mode.value === 'pr' ? pr : mode.value === 'sq' ? sq : ow, [f1, f2] = cur.e, isB = Math.abs(det2(f1, f2)) > 0.05;
+          const diagOwn = Math.abs(ow.cross) < 1e-9 && Math.abs(det2(...ow.e)) > 0.05;
+          // the plane
+          if (isB) skewGrid(P, f1, f2, { alpha: 0.2 });
+          P.clip(() => { P.path(conic(Sm, 1), { color: 'accent', width: 2.8 }); P.path(conic(Sm, -1), { color: 'orange', width: 2.8 }); });
+          if (own && conj.value) { const d = conjDir(f1); P.line(-4 * d[0], -4 * d[1], 4 * d[0], 4 * d[1], { color: 'pink', width: 1.2, dash: [6, 5], alpha: 0.8 }); }
+          P.arrow(0, 0, f1[0], f1[1], { color: 'teal', width: 3 }); P.arrow(0, 0, f2[0], f2[1], { color: 'pink', width: 3 });
+          if (!own) { tip(P, 'e_1', f1, 'teal', { off: 16 }); tip(P, 'e_2', f2, 'pink', { off: 16 }); }
+          const sg = signature(pr.l, 1e-9), key = sg.join('');
+          const TYPE = { '200': 'q = 1: an ellipse', '110': 'q = 1: a hyperbola', '020': 'q = 1: no points (q = −1: an ellipse)', '101': 'q = 1: two parallel lines', '011': 'q = 1: no points', '002': 'q = 0 everywhere' };
+          P.corner(TYPE[key] || '', 'tl', { color: 'ink', weight: 700 });
+          // the (λ₁, λ₂) plane
+          const Q = [[0, 0, 1.12, 1.12, 'blue'], [-1.12, -1.12, 0, 0, 'red'], [-1.12, 0, 0, 1.12, 'purple'], [0, -1.12, 1.12, 0, 'purple']];
+          for (const [x0, y0, x1, y1, col] of Q) R.rect(x0, y0, x1, y1, { fill: col, fillAlpha: 0.07, stroke: false });
+          R.line(-1.12, 0, 1.12, 0, { color: 'ink', width: 1.2 }); R.line(0, -1.12, 0, 1.12, { color: 'ink', width: 1.2 });
+          for (const t of [1, 3, 10]) for (const sgn of [-1, 1]) {
+            const z = C(sgn * t);
+            R.line(z, -0.025, z, 0.025, { color: 'ink', width: 1 }); R.line(-0.025, z, 0.025, z, { color: 'ink', width: 1 });
+            R.text(pn(sgn * t, 0), z, 0, { align: 'center', size: 10, color: 'muted', dy: 11 }); R.text(pn(sgn * t, 0), 0, z, { align: 'right', size: 10, color: 'muted', dx: -6 });
+          }
+          R.tex('\\lambda_1', 1.1, 0, { size: 14, dy: -12, align: 'right' }); R.tex('\\lambda_2', 0, 1.1, { size: 14, dx: 12, align: 'left' });
+          R.text('ellipse', 0.62, 0.95, { align: 'center', size: 12, color: 'blue', weight: 700 });
+          R.text('hyperbola', -0.62, 0.95, { align: 'center', size: 12, color: 'purple', weight: 700 });
+          R.text('hyperbola', 0.62, -0.95, { align: 'center', size: 12, color: 'purple', weight: 700 });
+          R.text('no points', -0.62, -0.95, { align: 'center', size: 12, color: 'red', weight: 700 });
+          if (own && diagOwn) { const p = [C(ow.l[0]), C(ow.l[1])]; const lp = trail[trail.length - 1]; if (!lp || Math.hypot(lp[0] - p[0], lp[1] - p[1]) > 0.01) { trail.push(p); if (trail.length > 400) trail.shift(); } }
+          R.dots(trail, { r: 2, color: 'gold', alpha: 0.35 });
+          R.dot(C(pr.l[0]), C(pr.l[1]), { r: 7, color: 'green', label: 'principal', labelPos: 'ne' });
+          R.dot(C(sq.l[0]), C(sq.l[1]), { r: 7, color: 'orange', label: 'square', labelPos: 'sw' });
+          if (diagOwn) R.dot(C(ow.l[0]), C(ow.l[1]), { r: 7, color: 'gold', label: 'yours', labelPos: 'se' });
+          st = { pr, sq, ow, own, diagOwn, cur, sg, sgs: signature(sq.l, 1e-9), sgo: signature(ow.l, 1e-9), conj: conj.value, type: TYPE[key] };
+        });
+        v.legend([['accent', '$q = 1$'], ['orange', '$q = -1$'], ['teal', '$e_1$'], ['pink', '$e_2$'], ['gold', 'your $(\\lambda_1, \\lambda_2)$ and its trail', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const L = (o) => `(${tn(o.l[0])}, ${tn(o.l[1])})`;
+          if (st.own && !st.diagOwn) return `$q(x_1e_1 + x_2e_2) = ${polyTex(st.ow.l[0], st.ow.cross, st.ow.l[1])}$ — $e_2$ is not $\\rho$-orthogonal to $e_1$, so the cross term $2\\rho(e_1, e_2)\\,x_1x_2$ survives and this basis does not diagonalize $q$.`;
+          const c = st.cur;
+          return `In this basis $q(x_1e_1 + x_2e_2) = ${polyTex(c.l[0], 0, c.l[1])}$. Principal axes: $\\lambda = ${L(st.pr)}$ (the eigenvalues); completing the square: $${L(st.sq)}$${st.own ? `; yours: $${L(st.ow)}$` : ''}. Signs $(n_+, n_-, n_0) = (${st.sg.join(', ')})$ ${mark(st.sg.join() === st.sgs.join() && (!st.own || st.sg.join() === st.sgo.join()))} in every case (Sylvester's law of inertia) — and so ${st.type.replace('q = 1:', '$q = 1$ is')}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.25
+    {
+      num: '9.25',
+      kind: 'Definition',
+      name: 'Multilinear form',
+      statement: String.raw`For a positive integer $m$, write $V^m = V \times \cdots \times V$ ($m$ times).
+- An **$m$-linear form** on $V$ is a function $\beta \colon V^m \to \mathbf F$ that is linear in each slot when the other slots are held fixed: for each $k \in \{1, \dots, m\}$ and all $u_1, \dots, u_m \in V$, the function $v \mapsto \beta(u_1, \dots, u_{k-1}, v, u_{k+1}, \dots, u_m)$ is a linear map from $V$ to $\mathbf F$.
+- The set of $m$-linear forms on $V$ is denoted $V^{(m)}$; it is a vector space under the usual operations.
+- A function $\beta$ is a **multilinear form** on $V$ if it is an $m$-linear form on $V$ for some positive integer $m$.`,
+      idea: String.raw`A 1-linear form is a linear functional and a 2-linear form is a bilinear form (9.1). Further examples: $\alpha(v_1, v_2)\,\rho(v_3, v_4)$ for $\alpha, \rho \in V^{(2)}$ is 4-linear; $\operatorname{tr}(T_1T_2\cdots T_m)$ is an $m$-linear form on $\mathcal L(V)$; and on $\mathbf R^3$ the signed volume $\det(u, v, w)$ of the parallelepiped on $u, v, w$ is a 3-linear form — the one that, in its alternating incarnation, will become the determinant (9.27 onward). Linearity in each slot separately is not linearity on $V^m$: $\beta(2u, 2v, 2w) = 8\,\beta(u, v, w)$. In a basis, expanding every slot shows that an $m$-linear form is determined by its $(\dim V)^m$ values on lists of basis vectors.`,
+      caption: String.raw`Drag $u$, $v$, $w$ (the three inputs) and the test vector $y$ (gold) in $\mathbf R^3$; drag the background to rotate. On the right, each slot $k$ in turn is fed $x_k + t\,y$ while the other two stay frozen, and $\beta$ is plotted against $t$ (solid), together with the straight line $\beta(\ldots x_k \ldots) + t\,\beta(\ldots y \ldots)$ that linearity predicts (dashed). For $\det$ and for $\langle u, v\rangle w_3$ all three solid curves are straight and lie on their dashed lines. For $\langle u, v\rangle\langle v, w\rangle$ the second slot bends into a parabola: $v$ appears twice, so the function is linear in slots 1 and 3 but not in slot 2. The dashed gold line in 3D is the test line of the chosen slot.`,
+      deps: ['ladr-3.110'],
+      see: ['ladr-9.1', 'mfd-6.5'],
+      tags: ['multilinear'],
+      viz(v) {
+        const FORMS = {
+          det: { f: (a, b, c) => det3(a, b, c), tex: '\\det(u, v, w)' },
+          dc: { f: (a, b, c) => dot(a, b) * c[2], tex: '\\langle u, v\\rangle\\, w_3' },
+          bad: { f: (a, b, c) => dot(a, b) * dot(b, c), tex: '\\langle u, v\\rangle\\langle v, w\\rangle' },
+        };
+        const form = v.select('$\\beta(u, v, w) =$', [{ value: 'det', label: '$\\det(u, v, w)$' }, { value: 'dc', label: '$\\langle u, v\\rangle\\,w_3$' }, { value: 'bad', label: '$\\langle u, v\\rangle\\langle v, w\\rangle$' }], 'det');
+        const slot = v.select('test line in slot', [{ value: 0, label: '1' }, { value: 1, label: '2' }, { value: 2, label: '3' }], 1);
+        const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 400, weight: 1.1 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.4, lim: 1.4 });
+        const G = v.stage({ x: [-1.5, 1.5], y: [-2, 2], axes: 'box', height: 400, weight: 0.9, minWidth: 260, xlabel: 't', title: 'slot $k$ fed $x_k + t\\,y$, the others frozen' });
+        const COL = ['accent', 'orange', 'purple'], NAME = ['u', 'v', 'w'];
+        const hs = [sc.handle([1, 0.15, 0.2], { color: 'accent', label: 'u' }), sc.handle([0.2, 1, 0.15], { color: 'orange', label: 'v' }), sc.handle([0.15, 0.35, 1], { color: 'purple', label: 'w' })];
+        const yh = sc.handle([0.7, -0.6, 0.45], { color: 'gold', label: 'y' });
+        let st = null;
+        v.render(() => {
+          const F = FORMS[form.value].f, X = hs.map((h) => h.p), y = yh.p, k0 = slot.value;
+          const repl = (k, z) => { const Lst = X.slice(); Lst[k] = z; return F(...Lst); };
+          sc.begin();
+          if (form.value === 'det') {
+            const [a, b, c] = X, P = (i, j, k) => [0, 1, 2].map((t) => i * a[t] + j * b[t] + k * c[t]), d = det3(a, b, c), col = d >= 0 ? 'blue' : 'red';
+            const faces = [[[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]], [[0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]], [[0, 0, 0], [1, 0, 0], [1, 0, 1], [0, 0, 1]], [[0, 1, 0], [1, 1, 0], [1, 1, 1], [0, 1, 1]], [[0, 0, 0], [0, 1, 0], [0, 1, 1], [0, 0, 1]], [[1, 0, 0], [1, 1, 0], [1, 1, 1], [1, 0, 1]]];
+            for (const f of faces) sc.poly(f.map((q) => P(...q)), { fill: col, color: col, fillAlpha: 0.06, alpha: 0.35, width: 1 });
+          }
+          const p0 = X[k0];
+          sc.line(add(p0, scl(y, -1.5)), add(p0, scl(y, 1.5)), { color: 'gold', width: 1.6, dash: [5, 4] });
+          sc.dot(add(p0, y), { r: 4, color: 'gold' });
+          X.forEach((p, k) => sc.arrow([0, 0, 0], p, { color: COL[k], width: k === k0 ? 3.4 : 2.6 }));
+          sc.arrow([0, 0, 0], y, { color: 'gold', width: 2 });
+          sc.flush();
+          // the three slot graphs
+          const fk = X.map((_, k) => (t) => repl(k, add(X[k], scl(y, t)))), lk = X.map((_, k) => { const b0 = repl(k, X[k]), b1 = repl(k, y); return (t) => b0 + t * b1; });
+          let ym = 0.8; for (let k = 0; k < 3; k++) for (let j = 0; j <= 30; j++) { const t = -1.5 + j / 10; ym = Math.max(ym, Math.abs(fk[k](t)), Math.abs(lk[k](t))); }
+          G.setView([-1.5, 1.5], [-ym * 1.12, ym * 1.12]);
+          G.hline(0, { color: 'muted', width: 1 }); G.vline(0, { color: 'muted', width: 1 });
+          for (let k = 0; k < 3; k++) {
+            const em = k === k0;
+            G.fn(lk[k], { color: COL[k], width: em ? 1.8 : 1.2, dash: [6, 5], alpha: em ? 1 : 0.55 });
+            G.fn(fk[k], { color: COL[k], width: em ? 3.2 : 1.8, alpha: em ? 1 : 0.55 });
+          }
+          G.dot(0, repl(0, X[0]), { r: 5, color: 'ink' });
+          const defect = X.map((_, k) => repl(k, add(X[k], y)) - repl(k, X[k]) - repl(k, y));
+          st = { b: F(...X), defect, b8: F(...X.map((p) => scl(p, 2))), k0, name: form.value };
+        });
+        v.legend([['accent', 'slot 1 ($u$)'], ['orange', 'slot 2 ($v$)'], ['purple', 'slot 3 ($w$)'], ['ink', 'prediction from linearity', { dash: true }], ['gold', 'test vector $y$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const lab = ['\\beta(u + y, v, w) - \\beta(u, v, w) - \\beta(y, v, w)', '\\beta(u, v + y, w) - \\beta(u, v, w) - \\beta(u, y, w)', '\\beta(u, v, w + y) - \\beta(u, v, w) - \\beta(u, v, y)'];
+          const k = st.k0, ok = st.defect.map((d) => Math.abs(d) < 1e-9);
+          let s = `$\\beta(u, v, w) = ${tn(st.b, 3)}$. Slot ${k + 1}: $${lab[k]} = ${tn(st.defect[k], 3)}$ ${mark(ok[k])}; additivity in the three slots: ${ok.map(mark).join(' ')}. `;
+          if (ok.every((x) => x)) s += `A 3-linear form — but not a linear map on $V^3$: $\\beta(2u, 2v, 2w) = ${tn(st.b8, 3)} = 8\\beta(u, v, w)$.`;
+          else s += 'Linear in slots 1 and 3, not in slot 2 (where $v$ enters twice): **not** a 3-linear form.';
+          return s;
+        });
+      },
+    },
   ],
 };

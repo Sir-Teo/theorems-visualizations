@@ -420,7 +420,7 @@ whatever the shape and size of $S$ and wherever the charges outside it are — o
           const k2 = [mode, n, R, cc.x, cc.y, ...pts.flat(), ...src.flatMap((c) => [c.x, c.y, c.q])].join('|');
           if (k2 !== key) { key = k2; slide = []; for (let i = 0; i <= 160; i++) { const dx = -6 + (12 * i) / 160; slide.push([dx, fl(dx) * KF, mode === 'open' ? NaN : enc(dx).qin * KF]); } }
           const unit = 'V·m';
-          sp.setTitle(three() ? 'flux through the sphere (V·m) as it slides sideways' : 'flux per metre of length (V·m) as the surface slides sideways');
+          sp.setTitle(three() ? 'flux (V·m) as the sphere slides sideways' : 'flux (V·m per metre) as the surface slides');
           const all = slide.flatMap((g) => [g[1], g[2]]).filter(isFinite), lo = Math.min(0, ...all), hi = Math.max(0, ...all), pad = (hi - lo) * 0.15 + 1;
           sp.setView([-6, 6], [lo - pad, hi + pad]);
           sp.hline(0, { color: 'faint', width: 1 }); sp.vline(0, { color: 'gold', width: 1.2, dash: [4, 3] });
