@@ -82,11 +82,11 @@ export function lanes(boxes, maxLanes = 6, gap = 6) {
   for (const i of order) { const b = boxes[i]; for (let L = 0; L < maxLanes; L++) if (used[L].every(([a, c]) => b.x1 + gap <= a || b.x0 >= c + gap)) { used[L].push([b.x0, b.x1]); out[i] = L; break; } }
   return out;
 }
-// International Chronostratigraphic Chart (ICS), Ma. Rows: eons, eras, periods (Phanerozoic).
+// International Chronostratigraphic Chart (ICS v2024/12, stratigraphy.org), Ma. Rows: eons, eras, periods (Phanerozoic).
 const ICS = {
   eon: [['Hadean', 4567, 4031], ['Archean', 4031, 2500], ['Proterozoic', 2500, 538.8], ['Phanerozoic', 538.8, 0]],
   era: [['Eoarchean', 4031, 3600], ['Paleoarchean', 3600, 3200], ['Mesoarchean', 3200, 2800], ['Neoarchean', 2800, 2500], ['Paleoproterozoic', 2500, 1600], ['Mesoproterozoic', 1600, 1000], ['Neoproterozoic', 1000, 538.8], ['Paleozoic', 538.8, 251.902], ['Mesozoic', 251.902, 66], ['Cenozoic', 66, 0]],
-  period: [['Cambrian', 538.8, 485.4], ['Ordovician', 485.4, 443.8], ['Silurian', 443.8, 419.2], ['Devonian', 419.2, 358.9], ['Carboniferous', 358.9, 298.9], ['Permian', 298.9, 251.902], ['Triassic', 251.902, 201.4], ['Jurassic', 201.4, 145], ['Cretaceous', 145, 66], ['Paleogene', 66, 23.03], ['Neogene', 23.03, 2.58], ['Quaternary', 2.58, 0]],
+  period: [['Cambrian', 538.8, 486.85], ['Ordovician', 486.85, 443.1], ['Silurian', 443.1, 419.62], ['Devonian', 419.62, 358.86], ['Carboniferous', 358.86, 298.9], ['Permian', 298.9, 251.902], ['Triassic', 251.902, 201.4], ['Jurassic', 201.4, 143.1], ['Cretaceous', 143.1, 66], ['Paleogene', 66, 23.04], ['Neogene', 23.04, 2.58], ['Quaternary', 2.58, 0]],
 };
 const ICSCOL = { Hadean: 'pink', Archean: 'red', Proterozoic: 'orange', Phanerozoic: 'blue', Paleozoic: 'teal', Mesozoic: 'green', Cenozoic: 'gold' };
 /** Geologic time scale as spans: GEOLOGIC(levels = ['eon', 'era', 'period']) → [{from, to, label, track, color}] (track = row). */

@@ -321,7 +321,7 @@ one-sided Jacobi) → thin `{U, S ↓, V}`, A = U diag(S) Vᵀ · `pinv`, `lstsq
 
 **Quanta & light**: `schrodinger1D(V, [x0, x1], {n, k, mass, hbar})` → `{x, E, psi}` (lowest k bound states, ψ = 0 at the ends, ∫|ψ|² = 1) · `crankNicolson1D(re, im, Vgrid, dx, dt, {mass, hbar})` (one unitary time step, in place: wavepackets, tunnelling) · `splitStep1D(V, dx, dt, {m, hbar, Vi})` → `step(re, im)` (split-step Fourier on a periodic power-of-two grid: spectrally accurate momentum, so Ehrenfest/⟨p⟩ checks hold to ~1e-4; `Vi` = absorbing imaginary potential) · `gridSampler(xs, ps)` → `u ↦ x` inverse-CDF sampler for a tabulated density (Born-rule detection clicks), with `.cdf` · `tridiagEig(d, e, k)` · `wavelengthRGB(nm)` → `[r, g, b]` for spectral colours (pass the array as a colour).
 
-**More distributions** in `dist`: `cauchy(x0, γ)`, `lognormal(μ, σ)`, `F(d1, d2)`, `mixture([[dist, w], …])`, `kolmogorov()` (limit law of √n·Dₙ).
+**More distributions** in `dist`: `cauchy(x0, γ)`, `lognormal(μ, σ)`, `F(d1, d2)`, `mixture([[dist, w], …])`, `kolmogorov()` (limit law of √n·Dₙ), `negbinom(r, p)` (failures before the r-th success; r may be fractional). Special functions: `digamma(x)`, `trigamma(x)` alongside `lgamma`, `betaI`.
 
 **Probability**: `dist.normal(μ,σ) dist.binomial(n,p) dist.poisson(λ) dist.exponential(rate)
 dist.uniform(a,b) dist.gamma(k,θ) dist.beta(a,b) dist.chi2(k) dist.studentT(ν) dist.geometric(p)`

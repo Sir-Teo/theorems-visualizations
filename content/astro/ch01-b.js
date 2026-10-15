@@ -239,7 +239,7 @@ of the starlight (modified by limb darkening), and the shape of the transit fixe
             const k = 1.2 * RJ / (Pp.Rs * RS);
             tr.fn((h) => -depthAt(h, k, 0, true, Pp.P, Pp.aR), { color: 'muted', width: 1.4, dash: [5, 4], domain: [-6, 6], n: 200 });
             tr.text('no transit is seen: the orbit is not edge-on', 0, -3600, { color: 'red', size: 12, align: 'center' });
-            tr.text('dashed: the dip a 1.2 R_J planet would cause if it were', 0, -4600, { color: 'muted', size: 10.5, align: 'center' });
+            tr.text('dashed: the dip a planet of 1.2 Jupiter radii would cause if it did', 0, -4600, { color: 'muted', size: 10.5, align: 'center' });
           }
           kS.el.hidden = bS.el.hidden = ldT.el.hidden = fitB.hidden = !Pp.transit;
           cur = { Pp, D, msini, T };

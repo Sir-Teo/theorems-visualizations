@@ -486,5 +486,13 @@ test('splitStep1D and gridSampler', () => {
   let m = 0; for (let k = 0; k < 20000; k++) m += smp(r()); close(m / 20000, 2 / 3, 0.01); close(smp.cdf(0.5), 0.25, 1e-3);
 });
 
+test('negative binomial, digamma, trigamma', () => {
+  const N = M.dist.negbinom(3, 0.4); close(N.mean, 4.5, 1e-12); close(N.variance, 11.25, 1e-12);
+  let tot = 0; for (let k = 0; k < 400; k++) tot += N.pmf(k); close(tot, 1, 1e-10); close(N.cdf(4), [0, 1, 2, 3, 4].reduce((s, k) => s + N.pmf(k), 0), 1e-10);
+  const xs = N.sample(M.rng(9), 30000); close(xs.reduce((a, b) => a + b, 0) / xs.length, 4.5, 0.08);
+  close(M.digamma(1), -0.5772156649015329, 1e-12); close(M.digamma(0.5), -1.9635100260214235, 1e-12); close(M.digamma(10), 2.251752589066721, 1e-12);
+  close(M.trigamma(1), Math.PI ** 2 / 6, 1e-12); close(M.trigamma(0.5), Math.PI ** 2 / 2, 1e-11); close(M.digamma(-0.5), 0.03648997397857652, 1e-10);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

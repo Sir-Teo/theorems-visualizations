@@ -1187,6 +1187,34 @@ function binomialD(n, p) {
     _draw: (r) => { if (n <= 40) { let s = 0; for (let i = 0; i < n; i++) if (r() < p) s++; return s; } return p === 0 ? 0 : p === 1 ? n : invertFromMode(r(), Math.floor((n + 1) * p), pmf, cdf, (k) => ((n - k) / (k + 1)) * (p / (1 - p)), 0, n); },
   });
 }
+/** Negative binomial: number of failures before the r-th success (success probability p; r may be fractional). Gamma–Poisson mixture sampler. */
+function negbinomD(r, p) {
+  const lr = lgamma(r), lp = Math.log(p), lq = Math.log1p(-p);
+  const pmf = (k) => (!Number.isInteger(k) || k < 0 ? 0 : Math.exp(lgamma(k + r) - lgamma(k + 1) - lr + r * lp + k * lq));
+  const cdf = (k) => { k = Math.floor(k); return k < 0 ? 0 : betaI(r, k + 1, p); };
+  const mean = (r * (1 - p)) / p, variance = mean / p;
+  const quantile = (q) => { if (q <= 0) return 0; let hi = Math.ceil(mean + 10 * Math.sqrt(variance) + 10); while (cdf(hi) < q && hi < 1e15) hi *= 2; return discreteQuantile(cdf, Math.min(q, 1), 0, hi); };
+  return mkDist({
+    name: 'negbinom', discrete: true, support: [0, Infinity], mean, variance, pmf, pdf: pmf, cdf, quantile,
+    _draw: (rng) => poissonD(sampleGamma(r, rng) * (1 - p) / p)._draw(rng),
+  });
+}
+/** Digamma ψ(x) = Γ′(x)/Γ(x) (recurrence up to x ≥ 12, then the asymptotic series; reflection for x < 0). */
+export function digamma(x) {
+  if (x <= 0 && Number.isInteger(x)) return NaN;
+  if (x < 0) return digamma(1 - x) - Math.PI / Math.tan(Math.PI * x);
+  let r = 0; while (x < 12) { r -= 1 / x; x += 1; }
+  const f = 1 / (x * x);
+  return r + Math.log(x) - 0.5 / x - f * (1 / 12 - f * (1 / 120 - f * (1 / 252 - f * (1 / 240 - f / 132))));
+}
+/** Trigamma ψ′(x) (recurrence up to x ≥ 12, then the asymptotic series; reflection for x < 0). */
+export function trigamma(x) {
+  if (x <= 0 && Number.isInteger(x)) return NaN;
+  if (x < 0) { const s = Math.PI / Math.sin(Math.PI * x); return -trigamma(1 - x) + s * s; }
+  let r = 0; while (x < 12) { r += 1 / (x * x); x += 1; }
+  const f = 1 / (x * x);
+  return r + 1 / x + f / 2 + (f / x) * (1 / 6 - f * (1 / 30 - f * (1 / 42 - f / 30)));
+}
 function poissonD(lam) {
   const pmf = (k) => (!Number.isInteger(k) || k < 0 ? 0 : lam === 0 ? +(k === 0) : Math.exp(k * Math.log(lam) - lam - lgamma(k + 1)));
   const cdf = (k) => { k = Math.floor(k); return k < 0 ? 0 : gammaQ(k + 1, lam); };
@@ -1311,7 +1339,7 @@ function kolmogorovD() {
   return mkDist({ name: 'kolmogorov', discrete: false, support: [0, Infinity], mean: Math.sqrt(Math.PI / 2) * Math.LN2, variance: Math.PI * Math.PI / 12 - Math.PI / 2 * Math.LN2 ** 2, pdf, cdf, quantile, _draw: (r) => quantile(U01(r)) });
 }
 // The distributions hang off `dist` (which stays the Euclidean distance function dist(p, q)).
-Object.assign(dist, { normal: normalD, binomial: binomialD, poisson: poissonD, exponential: exponentialD, uniform: uniformD, gamma: gammaD, beta: betaD, chi2: chi2D, studentT: studentTD, geometric: geometricD, cauchy: cauchyD, lognormal: lognormalD, F: fD, mixture: mixtureD, kolmogorov: kolmogorovD });
+Object.assign(dist, { normal: normalD, binomial: binomialD, negbinom: negbinomD, poisson: poissonD, exponential: exponentialD, uniform: uniformD, gamma: gammaD, beta: betaD, chi2: chi2D, studentT: studentTD, geometric: geometricD, cauchy: cauchyD, lognormal: lognormalD, F: fD, mixture: mixtureD, kolmogorov: kolmogorovD });
 
 // ================================================================== descriptive statistics
 const finiteSorted = (arr) => Array.from(arr).filter((x) => isFinite(x)).sort((a, b) => a - b);

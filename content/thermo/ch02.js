@@ -216,6 +216,7 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
         const W = (E, mx) => 3 + 30 * Math.abs(E) / mx;
         v.render(() => {
           const a = which.value === 'a', k = S.frame.k ?? 3, tw = S.tween ?? 1, hon = honest.value, xA = 2.5, xB = 6.4, y = 3.55, r = 0.72;
+          eB.el.hidden = a && !hon; kB.el.hidden = !a && !hon;
           reservoir(s, 0.3, 5.95, 8.7, 6.85, 'red', `hot reservoir, ${TH} K`);
           reservoir(s, 0.3, 0.2, 8.7, 1.1, 'blue', `cold reservoir, ${TC} K`);
           // flows of A
@@ -258,8 +259,8 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
           }
           // flow labels
           const lab = (x, yy, E, col, side) => { if (E > 0.5) s.text(`${E.toFixed(0)} J`, x + (side === 'l' ? -0.2 : 0.2), yy, { align: side === 'l' ? 'right' : 'left', size: 11.5, color: col, weight: 600 }); };
-          lab(xA, 4.95, A.hotIn || A.hotOut, 'red', 'l'); lab(xA, 2.1, A.coldIn || A.coldOut, 'blue', 'l');
-          if (showB) { lab(xB, 4.95, B.hotIn || B.hotOut, 'red', 'r'); lab(xB, 2.1, B.coldIn || B.coldOut, 'blue', 'r'); }
+          lab(xA, 5.38, A.hotIn || A.hotOut, 'red', 'l'); lab(xA, 1.6, A.coldIn || A.coldOut, 'blue', 'l');
+          if (showB) { lab(xB, 5.38, B.hotIn || B.hotOut, 'red', 'r'); lab(xB, 1.6, B.coldIn || B.coldOut, 'blue', 'r'); }
           device(s, xA, y, r, 'A', vio ? 'red' : 'green', { dash: vio ? [5, 4] : null, tint: true });
           s.text(a ? (hon ? 'honest engine' : 'perfect engine?') : (hon ? 'honest refrigerator' : 'perfect heat pump?'), xA, y - r - 0.2, { align: 'center', baseline: 'top', size: 11, color: vio ? 'red' : 'green', dy: 2, plate: true });
           if (showB) { device(s, xB, y, r, 'B', 'ink', { tint: false }); s.text(a ? 'ordinary refrigerator' : 'ordinary engine', xB, y - r - 0.2, { align: 'center', baseline: 'top', size: 11, color: 'ink', dy: 2, plate: true }); }
@@ -277,8 +278,8 @@ The word *sole* matters: an ideal gas expanding isothermally does turn all the h
             if (netHot > 0.5) band(v, s, [[xc, y + 0.62], [xc, 5.95]], ww(netHot), 'red'); else if (netHot < -0.5) band(v, s, [[xc, 5.95], [xc, y + 0.62]], ww(netHot), 'red');
             if (netCold > 0.5) band(v, s, [[xc, y - 0.62], [xc, 1.1]], ww(netCold), 'blue'); else if (netCold < -0.5) band(v, s, [[xc, 1.1], [xc, y - 0.62]], ww(netCold), 'blue');
             if (netW > 0.5) band(v, s, [[xc + 0.62, y], [xc + 1.75, y]], ww(netW), 'orange'); else if (netW < -0.5) band(v, s, [[xc + 1.75, y], [xc + 0.62, y]], ww(netW), 'orange');
-            s.text(`${netHot >= 0 ? '+' : '−'}${Math.abs(netHot).toFixed(0)} J`, xc - 0.25, 4.95, { align: 'right', size: 11.5, color: 'red', weight: 650 });
-            s.text(`${netCold >= 0 ? '+' : '−'}${Math.abs(netCold).toFixed(0)} J`, xc - 0.25, 2.1, { align: 'right', size: 11.5, color: 'blue', weight: 650 });
+            s.text(`${netHot >= 0 ? '+' : '−'}${Math.abs(netHot).toFixed(0)} J`, xc - 0.25, 5.1, { align: 'right', size: 11.5, color: 'red', weight: 650 });
+            s.text(`${netCold >= 0 ? '+' : '−'}${Math.abs(netCold).toFixed(0)} J`, xc - 0.25, 1.9, { align: 'right', size: 11.5, color: 'blue', weight: 650 });
             if (Math.abs(netW) > 0.5) s.text(`W ${netW > 0 ? 'out' : 'in'} ${Math.abs(netW).toFixed(0)} J`, xc + 0.7, y, { dy: -ww(netW) / 2 - 10, size: 11.5, color: 'orange', weight: 650 });
             const bad = a ? netHot > 0.5 && Math.abs(netW) < 0.5 : netW > 0.5 && Math.abs(netCold) < 0.5;
             s.text(bad ? (a ? 'heat climbs unaided: Clausius broken' : 'heat → work from one reservoir: Kelvin broken') : 'nothing forbidden happens', 11.35, 0.32, { align: 'center', size: 11.5, weight: 700, color: bad ? 'red' : 'green' });
@@ -303,7 +304,7 @@ Its **efficiency** is the fraction of the absorbed heat turned into work,
 $$\eta = \frac{W}{Q_h} = 1 - \frac{Q_c}{Q_h}.$$
 On a $P$–$V$ diagram $W = \oint P\,dV$ is the area enclosed by the cycle, positive for clockwise traversal; run backwards the cycle consumes work and becomes a refrigerator or heat pump (2.13).`,
       idea: String.raw`Only the first law (1.11) is involved: the books of a cycle must balance, so the work out can be at most the heat in, and $\eta \le 1$. The second law (2.1) says more — $Q_c$ can never be zero, so $\eta < 1$ — and Carnot's theorem (2.5) will bound $\eta$ by the extreme temperatures the substance reaches. Note that $Q_h$ counts *all* heat absorbed around the cycle and $Q_c$ all heat rejected, even when both happen at many different temperatures.`,
-      caption: String.raw`Drag the four corners of a cycle of 1 mol of ideal gas. Each leg is coloured where heat flows in (red) and out (blue) — a leg can switch colour midway, where it is tangent to an adiabat. The flow diagram on the right is drawn to scale: heat absorbed $Q_h$ enters from the top, the work $W$ leaves to the right and the waste heat $Q_c$ leaves at the bottom. The gauge compares $\eta = W/Q_h$ with the Carnot bound $1 - T_{\min}/T_{\max}$ for the hottest and coldest points on the cycle (ringed). Drag a corner across the opposite side to reverse the cycle: the work becomes negative and the device a heat pump.`,
+      caption: String.raw`Drag the four corners of a cycle of 2 mol of ideal gas. Each leg is coloured where heat flows in (red) and out (blue) — a leg can switch colour midway, where it is tangent to an adiabat. The flow diagram on the right is drawn to scale: heat absorbed $Q_h$ enters from the top, the work $W$ leaves to the right and the waste heat $Q_c$ leaves at the bottom. The gauge compares $\eta = W/Q_h$ with the Carnot bound $1 - T_{\min}/T_{\max}$ for the hottest and coldest points on the cycle (ringed). Drag a corner across the opposite side to reverse the cycle: the work becomes negative and the device a heat pump.`,
       deps: ['thermo-1.11'],
       see: ['energy-2.1'],
       refs: ['Schroeder §4.1'],
@@ -311,7 +312,8 @@ On a $P$–$V$ diagram $W = \oint P\,dV$ is the area enclosed by the cycle, posi
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heat_engine' },
       viz(v) {
         const gas = v.select('gas', [{ value: 3, label: 'monatomic ($f$ = 3)' }, { value: 5, label: 'diatomic ($f$ = 5)' }], 3);
-        const sp = v.stage({ x: [0, 60], y: [0, 600], height: 340, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1.3, title: 'cycle of 1 mol of ideal gas' });
+        const nM = 2;
+        const sp = v.stage({ x: [0, 60], y: [0, 600], height: 340, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1.3, title: 'cycle of 2 mol of ideal gas' });
         const sf = v.stage({ x: [0, 10], y: [0, 10], equal: true, height: 340, axes: false, weight: 1, title: 'energy flow per cycle, to scale' });
         const con = { x: [3, 58], y: [30, 580] };
         const H = [sp.handle(12, 470, { color: 'ink', label: 'A', constrain: con }), sp.handle(38, 380, { color: 'ink', label: 'B', constrain: con }), sp.handle(50, 110, { color: 'ink', label: 'C', constrain: con }), sp.handle(16, 150, { color: 'ink', label: 'D', constrain: con })];
@@ -320,16 +322,16 @@ On a $P$–$V$ diagram $W = \oint P\,dV$ is the area enclosed by the cycle, posi
           const f = +gas.value, P = H.map((h) => [h.x, h.y]);
           let qin = 0, qout = 0, wsum = 0, Tmax = -1, Tmin = 1e9, pmax, pmin;
           for (let k = 0; k < 4; k++) {
-            const a = P[k], b = P[(k + 1) % 4], L = segHeat(a, b, f, 80);
+            const a = P[k], b = P[(k + 1) % 4], L = segHeat(a, b, f, 80); // heats in J (kPa·L), independent of n
             qin += L.qin; qout += L.qout; wsum += L.w;
             for (const pc of L.pieces) sp.path(pc.pts, { color: pc.sign > 0 ? 'red' : 'blue', width: 3.4 });
-            for (let i = 0; i <= 40; i++) { const V = lerp(a[0], b[0], i / 40), p = lerp(a[1], b[1], i / 40), T = V * p / R; if (T > Tmax) { Tmax = T; pmax = [V, p]; } if (T < Tmin) { Tmin = T; pmin = [V, p]; } }
+            for (let i = 0; i <= 40; i++) { const V = lerp(a[0], b[0], i / 40), p = lerp(a[1], b[1], i / 40), T = V * p / (nM * R); if (T > Tmax) { Tmax = T; pmax = [V, p]; } if (T < Tmin) { Tmin = T; pmin = [V, p]; } }
           }
           const area = 0.5 * P.reduce((s, p, i) => { const q = P[(i + 1) % 4]; return s + p[0] * q[1] - q[0] * p[1]; }, 0); // counter-clockwise positive
           sp.poly(P, { fill: wsum >= 0 ? 'orange' : 'purple', fillAlpha: 0.12, stroke: false });
           sp.dot(pmax[0], pmax[1], { r: 9, hollow: true, color: 'red', width: 2 }); sp.dot(pmin[0], pmin[1], { r: 9, hollow: true, color: 'blue', width: 2 });
-          sp.text(`T max ${Tmax.toFixed(0)} K`, pmax[0], pmax[1], { dx: 12, dy: -12, size: 11, color: 'red' });
-          sp.text(`T min ${Tmin.toFixed(0)} K`, pmin[0], pmin[1], { dx: 12, dy: 12, size: 11, color: 'blue' });
+          sp.text(`T max ${Tmax.toFixed(0)} K`, pmax[0], pmax[1], { dx: 14, dy: 16, size: 11, color: 'red', plate: true });
+          sp.text(`T min ${Tmin.toFixed(0)} K`, pmin[0], pmin[1], { dx: 14, dy: 16, size: 11, color: 'blue', plate: true });
           // direction arrows at leg midpoints
           for (let k = 0; k < 4; k++) { const a = P[k], b = P[(k + 1) % 4], m = [lerp(a[0], b[0], 0.55), lerp(a[1], b[1], 0.55)], m0 = [lerp(a[0], b[0], 0.45), lerp(a[1], b[1], 0.45)]; sp.arrow(m0[0], m0[1], m[0], m[1], { color: 'ink', width: 1.5, head: 9 }); }
           res = { qin, qout, W: wsum, area: -area, Tmax, Tmin };
@@ -342,8 +344,8 @@ On a $P$–$V$ diagram $W = \oint P\,dV$ is the area enclosed by the cycle, posi
           band(v, sf, [[4, 3.8], [4, 1.4]], wpx(qout), 'blue');
           if (eng) band(v, sf, [[5.2, 5], [9.6, 5]], wpx(wsum), 'orange'); else band(v, sf, [[9.6, 5], [5.2, 5]], wpx(wsum), 'purple');
           device(sf, 4, 5, 1.2, eng ? 'engine' : 'heat pump', eng ? 'ink' : 'purple', { size: 12 });
-          sf.text(`$Q_h$ = ${qin.toFixed(0)} J`, 4.5, 7.4, { size: 12.5, color: 'red' });
-          sf.text(`$Q_c$ = ${qout.toFixed(0)} J`, 4.5, 2.6, { size: 12.5, color: 'blue' });
+          sf.text(`$Q_h$ = ${qin.toFixed(0)} J`, 4.85, 7.6, { size: 12.5, color: 'red' });
+          sf.text(`$Q_c$ = ${qout.toFixed(0)} J`, 4.85, 2.5, { size: 12.5, color: 'blue' });
           sf.text(`$W$ = ${wsum.toFixed(0)} J ${eng ? 'out' : 'in'}`, 9.6, 5.85, { size: 12.5, color: eng ? 'orange' : 'purple', align: 'right' });
           // efficiency gauge on the left edge
           const gx = 0.45, g0 = 1.8, g1 = 8.2, eta = eng ? wsum / qin : 0, ec = 1 - Tmin / Tmax;
@@ -351,7 +353,7 @@ On a $P$–$V$ diagram $W = \oint P\,dV$ is the area enclosed by the cycle, posi
           sf.rect(gx - 0.18, g0, gx + 0.18, g0 + (g1 - g0) * clamp(eta, 0, 1), { fill: 'orange', fillAlpha: 0.85, stroke: false });
           sf.line(gx - 0.32, g0 + (g1 - g0) * ec, gx + 0.32, g0 + (g1 - g0) * ec, { color: 'green', width: 2.5 });
           sf.text('η', gx, g1 + 0.35, { align: 'center', math: true, size: 15 });
-          sf.text('Carnot bound', gx + 0.4, g0 + (g1 - g0) * ec, { size: 10.5, color: 'green' });
+          sf.text('Carnot', gx + 0.4, g0 + (g1 - g0) * ec, { size: 10.5, color: 'green' });
         });
         v.legend([['red', 'heat flowing in'], ['blue', 'heat flowing out'], ['orange', 'enclosed area = net work', { area: true }]]);
         v.readout(() => {
@@ -416,7 +418,7 @@ independent of the volumes and of the gas. On a $T$–$S$ diagram the cycle is a
           sp.poly(pts, { fill: 'orange', fillAlpha: 0.12, stroke: false });
           const strokeCol = ['red', 'purple', 'blue', 'purple'];
           for (let k = 0; k < 4; k++) sp.path(Array.from({ length: 101 }, (_, i) => C.at(k + i / 100 * 0.9999)).map((p) => [p.V, p.P]), { color: strokeCol[k], width: k === s ? 3.6 : 2, alpha: k === s ? 1 : 0.7, dash: k % 2 ? [7, 4] : null });
-          ['1', '2', '3', '4'].forEach((lb, k) => { const p = C.at(k); sp.dot(p.V, p.P, { r: 4, color: 'ink', label: lb, labelPos: k === 0 ? 'ne' : k === 1 ? 'ne' : k === 2 ? 'sw' : 'sw' }); });
+          ['1', '2', '3', '4'].forEach((lb, k) => { const p = C.at(k); sp.dot(p.V, p.P, { r: 4, color: 'ink', label: lb, labelPos: ['ne', 'ne', 'n', 'sw'][k] }); });
           // T–S
           st.rect(0, 0, dS, C.Tc, { fill: 'blue', fillAlpha: 0.12, stroke: false });
           st.rect(0, C.Tc, dS, C.Th, { fill: 'orange', fillAlpha: 0.22, stroke: false });
@@ -424,16 +426,16 @@ independent of the volumes and of the gas. On a $T$–$S$ diagram the cycle is a
           st.line(dS, C.Tc, 0, C.Tc, { color: 'blue', width: s === 2 ? 3.6 : 2.2 }); st.line(0, C.Tc, 0, C.Th, { color: 'purple', width: s === 3 ? 3.6 : 2, dash: [7, 4] });
           st.text('W', dS / 2, (C.Th + C.Tc) / 2, { align: 'center', math: true, size: 17, color: 'orange' });
           st.text('Qc', dS / 2, C.Tc / 2, { align: 'center', math: true, size: 17, color: 'blue' });
-          st.text(`T_h = ${C.Th.toFixed(0)} K`, dS * 1.03, C.Th, { dy: -10, size: 11, color: 'red' });
-          st.text(`T_c = ${C.Tc.toFixed(0)} K`, dS * 1.03, C.Tc, { dy: 12, size: 11, color: 'blue' });
+          st.text(`Th = ${C.Th.toFixed(0)} K`, 0.02 * dS, C.Th, { dy: -11, size: 11, color: 'red', weight: 600 });
+          st.text(`Tc = ${C.Tc.toFixed(0)} K`, 0.02 * dS, C.Tc, { dy: -11, size: 11, color: 'blue', weight: 600 });
           if (!hp.dragging) hp.set(q.V, q.P); if (!ht.dragging) ht.set(q.S, q.T);
           // engine picture
           const frac = 0.16 + 0.8 * (Math.log(q.V) - Math.log(C.V1)) / (Math.log(C.V3) - Math.log(C.V1));
           const tc = pick(tRamp(v), (q.T - C.Tc) / Math.max(1, C.Th - C.Tc));
           const stand = s === 0 ? 'hot' : s === 2 ? 'cold' : 'ins';
           const top = cylinder(v, se, 1.4, 2.3, 3.2, 5.6, frac, tc, { stand, standLabel: s === 0 ? `hot ${C.Th.toFixed(0)} K` : s === 2 ? `cold ${C.Tc.toFixed(0)} K` : 'insulator' });
-          if (s === 0) band(v, se, [[3, 0.6], [3, 2.3]], 10, 'red');
-          if (s === 2) band(v, se, [[3, 2.3], [3, 0.6]], 10, 'blue');
+          for (const xx of [2.05, 3.95]) { if (s === 0) se.arrow(xx, 2.35, xx, 3.35, { color: 'red', width: 3.5, head: 9 }); if (s === 2) se.arrow(xx, 3.35, xx, 2.35, { color: 'blue', width: 3.5, head: 9 }); }
+          if (s === 0 || s === 2) se.text(s === 0 ? 'heat in' : 'heat out', 3, 0.95, { align: 'center', size: 11, weight: 650, color: s === 0 ? 'red' : 'blue' });
           const exp = s <= 1;
           se.arrow(5.2, top + 1.2 + (exp ? -0.7 : 0.7), 5.2, top + 1.2 + (exp ? 0.7 : -0.7), { color: 'orange', width: 3, head: 10 });
           se.text(exp ? 'work out' : 'work in', 5.25, top + 2.15, { align: 'center', size: 11, color: 'orange', weight: 650 });
@@ -505,14 +507,16 @@ independent of the volumes and of the gas. On a $T$–$S$ diagram the cycle is a
           ss.text('Carnot, reversed', xC, y - r - 0.15, { align: 'center', baseline: 'top', size: 11, color: 'green', plate: true });
           // net arrow
           const xn = 8.6;
-          ss.text('net', xn, 5.45, { align: 'center', size: 11.5, weight: 650 });
-          if (Math.abs(net) > 0.5) band(v, ss, net > 0 ? [[xn, bot + 0.2], [xn, top - 0.2]] : [[xn, top - 0.2], [xn, bot + 0.2]], 3 + 30 * Math.abs(net) / mx, net > 0 ? 'red' : 'green');
-          ss.text(Math.abs(net) < 0.5 ? '0 J' : `${Math.abs(net).toFixed(0)} J ${net > 0 ? 'uphill!' : 'downhill'}`, xn, 0.75, { align: 'center', size: 11, weight: 650, color: Math.abs(net) < 0.5 ? 'green' : net > 0 ? 'red' : 'green', dy: 30 });
+          ss.text('net effect', xn, 5.6, { align: 'center', size: 11.5, weight: 650 });
+          if (Math.abs(net) > 0.5) band(v, ss, net > 0 ? [[xn, bot + 0.25], [xn, top - 0.6]] : [[xn, top - 0.6], [xn, bot + 0.25]], 3 + 30 * Math.abs(net) / mx, net > 0 ? 'red' : 'green');
+          ss.text(Math.abs(net) < 0.5 ? '0 J' : `${Math.abs(net).toFixed(0)} J ${net > 0 ? 'uphill!' : 'downhill'}`, xn, 3.3, { align: 'center', size: 11, weight: 700, color: Math.abs(net) < 0.5 ? 'green' : net > 0 ? 'red' : 'green', plate: true });
           // graph
           sg.setView([0, 1], [-100, Math.max(100, 100 * (1 / eC - 1) * 0.6)]);
           const ymax = sg.bounds.y[1];
           sg.rect(eC, -100, 1, ymax, { fill: 'red', fillAlpha: 0.1, stroke: false, hatch: 'red', hatchAlpha: 0.25, hatchGap: 9 });
-          sg.text('forbidden: heat would flow uphill unaided', (eC + 1) / 2, ymax * 0.88, { align: 'center', size: 11, color: 'red', weight: 650 });
+          sg.text('forbidden:', (eC + 1) / 2, -38, { align: 'center', size: 11.5, color: 'red', weight: 700, plate: true });
+          sg.text('heat would flow', (eC + 1) / 2, -54, { align: 'center', size: 11, color: 'red', plate: true });
+          sg.text('uphill unaided', (eC + 1) / 2, -68, { align: 'center', size: 11, color: 'red', plate: true });
           sg.hline(0, { color: 'muted', width: 1 });
           sg.fn((e) => 100 * (e / eC - 1), { color: 'ink', width: 2.2, domain: [0, 1] });
           sg.vline(eC, { color: 'green', width: 2, dash: [6, 4] });

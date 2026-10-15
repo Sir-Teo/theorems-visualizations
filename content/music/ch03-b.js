@@ -54,6 +54,33 @@ function airMode(m, n) {
   return { m, n, j, jp, load, inner: load(0) };
 }
 
+
+// ---------------------------------------------------------------- free square plate by Rayleigh–Ritz (3.10)
+const BEAM_ROOTS = [4.730040745, 7.853204624, 10.99560784, 14.13716549, 17.27875966, 20.42035225, 23.5619449, 26.70353756];
+/** Free–free beam functions on [0, 1], orthonormal: 1, √3(2x − 1), then the elastic modes (written stably, no cosh − sinh cancellation). */
+function beamFn(i) {
+  if (i === 0) return { f: () => 1, d1: () => 0, d2: () => 0 };
+  if (i === 1) { const q = Math.sqrt(3); return { f: (x) => q * (2 * x - 1), d1: () => 2 * q, d2: () => 0 }; }
+  const b = BEAM_ROOTS[i - 2], oms = (-Math.exp(-b) - Math.sin(b) + Math.cos(b)) / (Math.sinh(b) - Math.sin(b)), ops = 2 - oms, sg = 1 - oms; // 1 − σ, 1 + σ, σ
+  const hyp = (x) => 0.5 * (oms * Math.exp(b * x) + ops * Math.exp(-b * x)), hyd = (x) => 0.5 * (oms * Math.exp(b * x) - ops * Math.exp(-b * x));
+  return { f: (x) => hyp(x) + Math.cos(b * x) - sg * Math.sin(b * x), d1: (x) => b * (hyd(x) - Math.sin(b * x) - sg * Math.cos(b * x)), d2: (x) => b * b * (hyp(x) - Math.cos(b * x) + sg * Math.sin(b * x)) };
+}
+/**
+ * Modes of a free square plate (side 1, Poisson ratio nu) by Rayleigh–Ritz in the basis φ_i(x)φ_j(y), i, j < N, of beam functions.
+ * Bending energy ∫∫ w_xx² + w_yy² + 2ν w_xx w_yy + 2(1 − ν) w_xy²; the mass matrix is the identity. Returns modes sorted by
+ * frequency parameter Ω = ωa²√(ρh/D), rigid-body modes removed: [{Om, c (N×N coefficients)}].
+ */
+function plateModes(M, N, nu) {
+  const fns = M.range(N).map(beamFn), G = 600, xs = M.range(G + 1).map((k) => k / G), wq = xs.map((_, k) => (k === 0 || k === G ? 1 : k % 2 ? 4 : 2) / (3 * G));
+  const V0 = fns.map((F) => xs.map(F.f)), V1 = fns.map((F) => xs.map(F.d1)), V2 = fns.map((F) => xs.map(F.d2));
+  const I = (a, b) => a.reduce((s, ai, k) => s + ai * b[k] * wq[k], 0), mat = (P, Q) => fns.map((_, i) => fns.map((_, k) => I(P[i], Q[k])));
+  const Mo = mat(V0, V0), A = mat(V2, V2), B = mat(V0, V2), C = mat(V1, V1), n = N * N, K = M.zeros(n, n);
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) for (let k = 0; k < N; k++) for (let l = 0; l < N; l++)
+    K[i * N + j][k * N + l] = A[i][k] * Mo[j][l] + Mo[i][k] * A[j][l] + nu * (B[k][i] * B[j][l] + B[i][k] * B[l][j]) + 2 * (1 - nu) * C[i][k] * C[j][l];
+  const e = M.eigSym(K);
+  return e.values.map((val, q) => ({ Om: Math.sqrt(Math.max(0, val)), c: e.vectors.map((r) => r[q]) })).sort((p, q) => p.Om - q.Om).filter((md) => md.Om > 1);
+}
+
 /** Theme-aware [r, g, b] for a signed value u ∈ [−1, 1] (blue … panel … red), via signedRamp. */
 const colOf = (sr, u) => sr.col(Math.max(-1, Math.min(1, u)));
 
@@ -320,6 +347,104 @@ close to $2:3:4:5:6$, the harmonics 2 to 6 of a pitch an octave below the $(1,1)
           const sol = state(), f11 = sol[0].f, r = (q) => sol[q].f / f11, vac = [2, 3, 4, 5].map((m) => besselZero(m, 1) / MODES[0].j);
           const cents = [1.5, 2, 2.5, 3].map((h, i) => 1200 * Math.log2(r(i + 1) / h)), tau = (e) => 1 / (e.drad + e.dint);
           return `(1,1) at ${v.fix(f11, 1)} Hz (${noteOf(M, f11)}), tension ${v.fix(T, 0)} N/m · ratios (2,1) … (5,1): ${[1, 2, 3, 4].map((q) => v.fix(r(q), 3)).join(', ')} (vacuum ${vac.map((x) => v.fix(x, 2)).join(', ')}; measured 1.50, 1.97, 2.44, 2.91) · distance from 3/2, 2, 5/2, 3: ${cents.map((c) => centsTxt(c, 0)).join(', ')} · amplitude decay times in the model (radiation from the baffled head plus illustrative internal losses): (0,1) ${v.fix(tau(sol[5]), 2)} s, (1,1) ${v.fix(tau(sol[0]), 2)} s, (2,1) ${v.fix(tau(sol[1]), 2)} s`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.10
+    {
+      num: '3.10',
+      kind: 'Phenomenon',
+      name: 'Chladni figures',
+      statement: String.raw`Sand sprinkled on a horizontal plate driven at one of its resonant frequencies is thrown off the vibrating regions and collects along the **nodal lines**, the curves where the plate stays still, drawing a figure characteristic of the mode. The modes of a thin plate solve the biharmonic eigenvalue problem
+$$D\,\Delta^2w=\rho h\,\omega^2w\qquad\Big(D=\frac{Eh^3}{12(1-\nu^2)}\Big)$$
+with the boundary conditions of its edges (for free edges: no bending moment and no shear force), so $\omega\propto h\sqrt{E/\rho}/a^2$ and the frequencies are far from harmonic. On a free square plate most figures are not grids: symmetry pairs modes of nearly or exactly equal frequency, and the observed figures are their combinations, such as the diagonal cross and the ring-like curves. Between resonances the plate barely moves and the sand stays where it is; a mode with a node at the driving point cannot be excited at all.`,
+      idea: String.raw`A grain bounces whenever the plate's acceleration exceeds gravity, and each bounce scatters it a little; only where the vibration amplitude is below that threshold can it rest, so sand random-walks until it reaches a nodal line and stays. The plate equation has the Laplacian squared because bending stiffness resists curvature; a membrane (3.6) resists slope. Driven at frequency $f$ at a point $p$, the plate's response is the sum of its modes, each weighted by $w_k(p)/(f_k^2-f^2+i f f_k/Q)$: near a resonance one mode, or a degenerate pair (mixed in proportions set by $p$), dominates and its nodal lines appear. Chladni held his plates at the centre and bowed the edge, which picks out modes with an antinode at the bow and a node at the clamp.`,
+      caption: String.raw`A 24 cm aluminium plate, 1.5 mm thick, with free edges, driven by a shaker at the gold point. Its modes are computed by the Rayleigh–Ritz method (64 products of free-beam functions). Slide the **frequency**, or switch on **sweep**, and watch the sand: it sits still between resonances and runs to the nodal lines (dashed) at each peak of the response curve below. The arrow buttons jump to the next resonance. Drag the **drive point**: from the centre, only a few modes (gold ticks) can be excited; from a corner, many more. *Hold the note* plays the driving tone, louder at resonances.`,
+      deps: ['music-3.6'],
+      see: ['pde-7.4', 'pde-7.5', 'music-3.12'],
+      refs: ['Benson ch. 3', 'Loy I ch. 8'],
+      tags: ['plates', 'modes'],
+      credit: 'Ernst Chladni, 1787; Sophie Germain, 1816 (plate equation); Kirchhoff, 1850; Ritz, 1909',
+      scope: String.raw`Kirchhoff–Love thin-plate theory (thickness much less than the side and the bending wavelength, small amplitudes) with free edges, a point drive and a uniform loss factor ($Q=40$). The Ritz frequencies are upper bounds, within about 1% of the converged values for these modes; higher modes need a larger basis. The sand is a random walk with step size proportional to the local amplitude, not a simulation of bouncing grains.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ernst_Chladni#Chladni_figures' },
+      viz(v) {
+        const M = v.M, NB = 8, NU = 0.33, NG = 61, Q = 40, NS = 2400, FMIN = 60, FMAX = 1500;
+        const E = 69e9, RHO = 2700, H = 1.5e-3, SIDE = 0.24, D = (E * H ** 3) / (12 * (1 - NU * NU)), FS = Math.sqrt(D / (RHO * H)) / (TAU * SIDE * SIDE);
+        const all = plateModes(M, NB, NU), modes = all.filter((md) => md.Om * FS < FMAX * 1.15), K = modes.length;
+        const coarse = plateModes(M, 6, NU).slice(0, 8);
+        const fns = M.range(NB).map(beamFn), gx = M.range(NG).map((g) => g / (NG - 1)), PT = fns.map((F) => gx.map(F.f));
+        const grids = modes.map((md) => { // mode shape on the NG × NG grid
+          const tmp = M.range(NB).map((i) => gx.map((_, g) => { let s2 = 0; for (let j = 0; j < NB; j++) s2 += md.c[i * NB + j] * PT[j][g]; return s2; }));
+          const W = new Float64Array(NG * NG); for (let a = 0; a < NG; a++) for (let b = 0; b < NG; b++) { let s2 = 0; for (let i = 0; i < NB; i++) s2 += PT[i][a] * tmp[i][b]; W[a * NG + b] = s2; }
+          return W;
+        });
+        const at = (md, x, y) => { let s2 = 0; for (let i = 0; i < NB; i++) { const fx = fns[i].f(x); for (let j = 0; j < NB; j++) s2 += md.c[i * NB + j] * fx * fns[j].f(y); } return s2; };
+        const lerp2 = (G, x, y) => { const u = M.clamp(x, 0, 1) * (NG - 1), w = M.clamp(y, 0, 1) * (NG - 1), i = Math.min(NG - 2, Math.floor(u)), j = Math.min(NG - 2, Math.floor(w)), fu = u - i, fw = w - j; return (G[i * NG + j] * (1 - fu) + G[(i + 1) * NG + j] * fu) * (1 - fw) + (G[i * NG + j + 1] * (1 - fu) + G[(i + 1) * NG + j + 1] * fu) * fw; };
+        let voice = null;
+        const fS = v.slider('frequency', FMIN, FMAX, modes[7].Om * FS, { log: true, fmt: (x) => v.fix(x, 0) + ' Hz', onChange: () => sync() });
+        const sweep = v.toggle('sweep', false);
+        const showA = v.toggle('show the amplitude', false);
+        const hold = v.toggle('hold the note', false, { onChange: (on) => { if (on) { voice = v.sound().tone(fS.value, { sustain: true, gain: 0.22, attack: 0.05 }); sync(); } else if (voice) { voice.stop(); voice = null; } } });
+        const jump = (dir) => { const f = fS.value, list = modes.map((md) => md.Om * FS).filter((x) => x >= FMIN && x <= FMAX); const nx = dir > 0 ? list.find((x) => x > f * 1.003) : list.slice().reverse().find((x) => x < f / 1.003); if (nx) { fS.set(nx); sync(); } };
+        v.button('◀ resonance', () => jump(-1));
+        v.button('resonance ▶', () => jump(1));
+        v.button('scatter the sand', () => { const r = v.rng(Math.floor(performance.now())); for (let k = 0; k < NS; k++) { SX[k] = r(); SY[k] = r(); } });
+        const pl = v.stage({ x: [-0.04, 1.04], y: [-0.04, 1.04], equal: true, height: 330, axes: false, weight: 1, minWidth: 300 });
+        const rc = v.stage({ x: [FMIN, FMAX], y: [-46, 6], xlog: true, height: 330, axes: 'box', xlabel: 'driving frequency (Hz)', yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], weight: 1.1, minWidth: 300, title: 'response of the plate (rms amplitude)' });
+        const drv = pl.handle(0.5, 0.5, { color: 'gold', r: 8, label: 'drive', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, 0, 1), M.clamp(y, 0, 1)] });
+        // driven response: complex modal amplitudes and the field on the grid
+        const ampl = (f, p) => modes.map((md, k) => { const Om = f / FS, w2 = md.Om * md.Om - Om * Om, g = (Om * md.Om) / Q, d = w2 * w2 + g * g, ph = p[k]; return [(ph * w2) / d, (-ph * g) / d]; });
+        let dKey = '', PHI = null, curve = null, ref = 1;
+        const driveData = () => {
+          const k = drv.x.toFixed(3) + ',' + drv.y.toFixed(3); if (k === dKey) return; dKey = k;
+          PHI = modes.map((md) => at(md, drv.x, drv.y));
+          curve = []; let mx = 1e-30;
+          for (let i = 0; i <= 500; i++) { const f = FMIN * (FMAX / FMIN) ** (i / 500), A = ampl(f, PHI); const rms = Math.sqrt(A.reduce((s2, [a, b]) => s2 + a * a + b * b, 0)); curve.push([f, rms]); mx = Math.max(mx, rms); }
+          ref = mx; curve = curve.map(([f, r2]) => [f, 20 * Math.log10(r2 / mx)]);
+        };
+        let fKey = '', WR = null, WI = null, AG = null, rmsNow = 0;
+        const field = () => {
+          driveData(); const k = dKey + '|' + fS.value; if (k === fKey) return; fKey = k;
+          const A = ampl(fS.value, PHI); WR = new Float64Array(NG * NG); WI = new Float64Array(NG * NG); AG = new Float64Array(NG * NG);
+          A.forEach(([a, b], q) => { const G = grids[q]; for (let i = 0; i < NG * NG; i++) { WR[i] += a * G[i]; WI[i] += b * G[i]; } });
+          for (let i = 0; i < NG * NG; i++) AG[i] = Math.hypot(WR[i], WI[i]) / ref;
+          rmsNow = Math.sqrt(A.reduce((s2, [a, b]) => s2 + a * a + b * b, 0)) / ref;
+        };
+        function sync() { if (voice && voice.playing) { voice.setFreq(fS.value); field(); voice.setGain(Math.min(1, 0.08 + 1.4 * rmsNow)); } }
+        // sand: a random walk whose step is proportional to the local amplitude (grains only rest where the plate hardly moves)
+        const SX = new Float64Array(NS), SY = new Float64Array(NS), rr = v.rng(7);
+        for (let k = 0; k < NS; k++) { SX[k] = rr(); SY[k] = rr(); }
+        const stepSand = (n) => { for (let it = 0; it < n; it++) for (let k = 0; k < NS; k++) { const s2 = 0.05 * Math.min(1.2, 1.6 * lerp2(AG, SX[k], SY[k])); if (s2 < 1e-4) continue; let x = SX[k] + s2 * rr.normal(), y = SY[k] + s2 * rr.normal(); if (x < 0) x = -x; if (x > 1) x = 2 - x; if (y < 0) y = -y; if (y > 1) y = 2 - y; SX[k] = M.clamp(x, 0, 1); SY[k] = M.clamp(y, 0, 1); } };
+        field(); stepSand(160);
+        let lastT = 0;
+        v.animate((t) => {
+          if (sweep.value) { let f = fS.value * Math.exp(0.07 * Math.max(0, Math.min(0.1, t - lastT))); if (f > FMAX) f = FMIN; fS.set(f); sync(); }
+          lastT = t;
+          field(); stepSand(2);
+          // ---- plate, amplitude, nodal lines, sand
+          pl.rect(0, 0, 1, 1, { fill: 'muted', fillAlpha: 0.16, stroke: false });
+          if (showA.value) pl.heat((x, y) => (x >= 0 && x <= 1 && y >= 0 && y <= 1 ? lerp2(AG, x, y) : NaN), { range: [0, Math.max(1e-6, Math.max(...AG))], cmap: 'theme', color: 'accent', res: 3, alpha: 0.7, key: fKey });
+          let sxx = 0, sxy = 0; for (let i = 0; i < NG * NG; i++) { sxx += WR[i] * WR[i] - WI[i] * WI[i]; sxy += 2 * WR[i] * WI[i]; }
+          const psi = 0.5 * Math.atan2(sxy, sxx), cp = Math.cos(psi), sp2 = Math.sin(psi);
+          const RE = new Float64Array(NG * NG); for (let i = 0; i < NG * NG; i++) RE[i] = WR[i] * cp + WI[i] * sp2;
+          if (rmsNow > 0.02) pl.clip(() => pl.contour((x, y) => lerp2(RE, x, y), 0, { color: 'accent', width: 1.3, dash: [4, 3], res: 90 }), [0, 1], [0, 1]);
+          const pts = []; for (let k = 0; k < NS; k++) pts.push([SX[k], SY[k]]);
+          pl.dots(pts, { r: 1.25, color: 'ink', alpha: 0.85 });
+          pl.rect(0, 0, 1, 1, { color: 'ink', width: 2 });
+          // ---- response curve and mode ticks
+          rc.path(curve.map(([f, d]) => [f, Math.max(-46, d)]), { color: 'accent', width: 2 });
+          const pm = Math.max(...PHI.map(Math.abs));
+          modes.forEach((md, k) => { const f = md.Om * FS; if (f < FMIN || f > FMAX) return; const on = Math.abs(PHI[k]) > 0.2 * pm; rc.line(f, -46, f, -41, { color: on ? 'gold' : 'faint', width: on ? 2.6 : 1.6 }); });
+          const fl = 20 * Math.log10(Math.max(1e-9, rmsNow));
+          rc.vline(fS.value, { color: 'ink', width: 1.2, dash: [4, 3] });
+          rc.dot(fS.value, Math.max(-45, fl), { r: 6, color: 'gold' });
+        }, { still: 0.1 });
+        v.legend([['ink', 'sand', { dot: true }], ['accent', 'nodal lines (computed); response curve', { dash: true }], ['gold', 'modes excitable from the drive point']]);
+        v.readout(() => {
+          field(); const f = fS.value; let kk = 0; modes.forEach((md, k) => { if (Math.abs(Math.log(md.Om * FS / f)) < Math.abs(Math.log(modes[kk].Om * FS / f))) kk = k; });
+          const md = modes[kk], fk = md.Om * FS, pm = Math.max(...PHI.map(Math.abs)), ex = Math.abs(PHI[kk]) / pm, conv = Math.max(...coarse.map((c, i) => c.Om / all[i].Om - 1));
+          const level = 20 * Math.log10(Math.max(1e-9, rmsNow));
+          return `driving at ${v.fix(f, 1)} Hz, response ${v.fix(level, 1)} dB re the strongest resonance · nearest mode: no. ${kk + 1} at ${v.fix(fk, 1)} Hz ($\\Omega=\\omega a^2\\sqrt{\\rho h/D}$ = ${v.fix(md.Om, 2)}), ${Math.abs(1200 * Math.log2(f / fk)) < 8 ? 'on resonance' : `${centsTxt(1200 * Math.log2(f / fk), 0)} away`}; its shape at the drive point is ${v.fix(100 * ex, 0)}% of the largest${ex < 0.05 ? ': it has a node there and cannot be excited' : ''} · first modes $\\Omega$ = ${modes.slice(0, 5).map((q) => v.fix(q.Om, 2)).join(', ')} (Ritz upper bounds; the 6×6 basis gives values at most ${v.fix(100 * conv, 2)}% higher) · plate: 24 cm, 1.5 mm aluminium, $f=\\Omega\\cdot$${v.fix(FS, 3)} Hz`;
         });
       },
     },

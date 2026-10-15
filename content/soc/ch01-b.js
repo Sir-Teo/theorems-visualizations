@@ -310,7 +310,7 @@ Near a critical parameter value the same fragility appears in random crowds: amo
       tags: ['thresholds', 'cascades', 'fragility'],
       credit: 'Granovetter, 1978',
       viz(v) {
-        const chg = v.toggle('change one person', true);
+        const chg = v.toggle('change one person', true, { onChange: (on) => { who.el.hidden = !on; to.el.hidden = !on; } });
         const who = v.slider('the person with threshold', 0, 99, 1, { int: true, step: 1 });
         const to = v.slider('moves to threshold', 0, 99, 2, { int: true, step: 1 });
         const zoom = v.select('view', [{ value: '20', label: 'first 20 people' }, { value: '100', label: 'all 100' }], '20');

@@ -151,7 +151,7 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
             L.setScale({ ylog: false, x: [-3.6, 3.6], y: [0, 0.86] }); L.setTitle(`750 values of $z=(\\bar x-\\mu)/s$, samples of 4 (${D.label}; density)`);
             L.setTicks(null, null); L.setLabels('z', null);
             for (let i = 1; i < 14; i++) { const a = ZEDGE[i], b = ZEDGE[i + 1], h = zc[i] / 750 / (b - a); L.rect(a, 0, b, h, { fill: paper ? 'gold' : 'accent', fillAlpha: 0.35, color: paper ? 'gold' : 'accent', width: 1 }); }
-            L.text(`${zc[0]} below −3.05`, -3.5, 0.81, { size: 10.5, color: 'muted' }); L.text(`${zc[14]} above 3.05`, 3.5, 0.81, { size: 10.5, color: 'muted', align: 'right' });
+            L.text(`${zc[0]} below −3.05`, -3.35, 0.74, { size: 10.5, color: 'muted' }); L.text(`${zc[14]} above 3.05`, 3.5, 0.74, { size: 10.5, color: 'muted', align: 'right' });
             L.fn((z) => (2 / Math.PI) / (1 + z * z) ** 2, { color: 'green', width: 2.4, n: 300 });
             L.fn((z) => M.dist.normal(0, 0.5).pdf(z), { color: 'orange', width: 2, dash: [6, 4], n: 300 });
             R.setScale({ ylog: false, x: [0, 2.05], y: [0, 1.5] }); R.setTitle('750 values of $s/\\sigma$, samples of 4 (density)'); R.setLabels('s / σ', null); R.setTicks(null, null);
@@ -188,8 +188,8 @@ Scope: exact for normal populations; Student argued, and later work confirmed, t
             const { D, paper, cz, cs, S } = st;
             const his = `Student 1908, ${D.label}: $z$ fit $\\chi^2$ = ${D.chi.z[0]}, P = ${D.chi.z[1]}; $s$ fit $\\chi^2$ = ${D.chi.s[0]}, P = ${D.chi.s[1]}`;
             if (paper) return `${his} · recomputed here from his printed counts: $z$: $\\chi^2$ = ${v.fix(cz.chi, 2)}, P = ${v.fix(cz.P, 2)}; $s$: $\\chi^2$ = ${v.fix(cs.chi, 2)}, P = ${v.fmt(cs.P, 2)} · the $z$ curve fits; the $s$ curve fits poorly for height because heights were grouped by whole inches (31 samples had $s$ exactly 1.30 groups)`;
-            const sdz = Math.sqrt(meanOf(S.zs.filter((z) => Math.abs(z) < 6).map((z) => z * z)));
-            return `this shuffle (seed ${seed}): $z$ fit $\\chi^2$ = ${v.fix(cz.chi, 2)}, P = ${v.fix(cz.P, 2)}; $s$ fit $\\chi^2$ = ${v.fix(cs.chi, 2)}, P = ${v.fmt(cs.P, 2)}; ${S.zs.filter((z) => Math.abs(z) >= 6).length} samples with $s = 0$; SD of the finite $z$'s ${v.fix(sdz, 3)} (Student: 1.039 height, 0.982 finger; theory 1) · ${his}`;
+            const sdz = Math.sqrt(meanOf(S.zs.map((z) => z * z)));
+            return `this shuffle (seed ${seed}): $z$ fit $\\chi^2$ = ${v.fix(cz.chi, 2)}, P = ${v.fix(cz.P, 2)}; $s$ fit $\\chi^2$ = ${v.fix(cs.chi, 2)}, P = ${v.fmt(cs.P, 2)}; ${S.zs.filter((z) => Math.abs(z) >= 6).length} samples with $s = 0$; SD of $z$ (with $s = 0$ cases set to ±6, as Student did) ${v.fix(sdz, 3)} (Student: 1.039 height, 0.982 finger; theory 1) · ${his}`;
           }
           const { n, err, half } = st, ok = err.filter((e) => e != null), worst = ok.reduce((a, e) => (Math.abs(e) > Math.abs(a) ? e : a), 0), wi = err.indexOf(worst);
           const bad = err.map((e, i) => (e != null && Math.abs(e) > half + 0.01 ? `z = ${v.fix((i + 1) / 10, 1)}` : null)).filter(Boolean);

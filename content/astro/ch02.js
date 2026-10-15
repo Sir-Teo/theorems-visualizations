@@ -138,7 +138,7 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
           si.text('Moon’s orbit', 0, -(1 - mu), { color: 'faint', size: 10.5, dy: 12, align: 'center' });
           s.arrow(P.x, P.y, Vt.x, Vt.y, { color: 'orange', width: 2.2 });
           if (D.R.stop === 'collision') s.corner('collided — move the start', 'tl', { color: 'red', weight: 600 });
-          else s.corner(`C_J = ${v.fix(D.C0, 4)}`, 'tl', { color: 'green', weight: 600 });
+          else s.corner(`$C_J = ${v.fix(D.C0, 4)}$`, 'tl', { color: 'green', weight: 600 });
           // time series
           const span = Math.max(0.05, D.dE, D.dh) * 1.15;
           g.setView([0, 40], [-span, span]);
@@ -223,7 +223,7 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
           for (const k of ['L1', 'L2', 'L3']) { const x = L[k][0]; p.dot(x, L.C[k], { r: 4, color: 'red' }); p.text(k, x, L.C[k], { color: 'red', size: 10.5, dy: 12, align: 'center' }); }
           p.hline(L.C.L4, { color: 'red', width: 1, dash: [3, 3], alpha: 0.6 });
           p.text('C at L4, L5', 1.55, L.C.L4, { color: 'red', size: 10, dy: -8, align: 'right' });
-          p.text('C_J', -1.55, C, { color: 'green', size: 11, dy: -9, align: 'left' });
+          p.tex('C_J', -1.55, C, { color: 'green', size: 13, dy: -11, align: 'left' });
           cur = { mu, C, L, worst, R, v2 };
         });
         v.legend([['ink', 'forbidden: $2\\Omega < C_J$', { area: true }], ['red', 'Lagrange points'], ['accent', 'orbit with this $C_J$'], ['green', '$C_J$ level (right)']]);
@@ -428,8 +428,8 @@ around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to lea
         const PL = { earth: { mu: 3.003e-6, a: 1, name: 'Earth', km: 1.496e8 }, jup: { mu: MU_SJ, a: 5.2026, name: 'Jupiter', km: 1.496e8 }, nep: { mu: 5.15e-5, a: 30.07, name: 'Neptune', km: 1.496e8 } };
         const pl = v.select('planet', [{ value: 'earth', label: 'Earth' }, { value: 'jup', label: 'Jupiter' }, { value: 'nep', label: 'Neptune' }], 'earth');
         const retro = v.toggle('retrograde moons', false);
-        const s = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 360, weight: 1, title: 'around the planet (units of r_H)' });
-        const g = v.stage({ x: [0.1, 1.35], y: [-1.4, 10.8], axes: 'box', height: 360, weight: 1, xlabel: 'starting distance (r_H)', ylabel: 'time bound (planet orbits, max 10)', title: 'survival of circular moons' });
+        const s = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 360, weight: 1, title: 'around the planet (units of $r_H$)' });
+        const g = v.stage({ x: [0.1, 1.35], y: [-1.4, 10.8], axes: 'box', height: 360, weight: 1, xlabel: 'starting distance ($r_H$)', ylabel: 'time bound (planet orbits, max 10)', title: 'survival of circular moons' });
         const Hm = s.handle(0.42, 0, { color: 'gold', r: 7, label: 'your moon', labelPos: 'n', constrain: (x, y) => [clamp(x, 0.12, 1.5), 0] });
         const NOR = 10, Tend = NOR * TAU;
         const moon = (mu, d, sgn, rec) => {
@@ -466,7 +466,7 @@ around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to lea
           for (const k of ['L1', 'L2']) { const x = (L[k][0] - xp) / rH; s.dot(x, 0, { r: 3.5, color: 'red' }); s.text(k, x, 0, { color: 'red', size: 10.5, dy: 12, align: 'center' }); }
           s.dot(0, 0, { r: 6, color: 'blue' });
           s.arrow(-1.25, 1.3, -1.6, 1.3, { color: 'gold', width: 1.6, head: 7 }); s.text('to the star', -1.22, 1.3, { color: 'gold', size: 10.5, align: 'left' });
-          s.text('r_H', 0.71, 0.71, { color: 'muted', size: 10.5, dx: 4, align: 'left' });
+          s.tex('r_H', 0.71, 0.71, { color: 'muted', size: 12, dx: 6, align: 'left' });
           // right panel
           g.vline(1, { color: 'muted', width: 1, dash: [2, 4] });
           g.path(surv.pro, { color: 'blue', width: 2.2 }); g.dots(surv.pro, { r: 3, color: 'blue' });
@@ -509,7 +509,7 @@ is approximately conserved through any encounter with that planet, even one that
         const iS = v.slider('initial $i$', 0, 30, 5, { step: 0.5, fmt: (x) => `${x}°` });
         const dS = v.slider('encounter offset (Jupiter’s lead, °)', -4, 4, -1, { step: 0.05 });
         const s = v.stage({ x: [-8, 8], y: [-8, 8], equal: true, axes: false, height: 360, weight: 1, title: 'inertial frame (AU)' });
-        const g = v.stage({ x: [0, 40], y: [-0.25, 3.4], axes: 'box', height: 360, weight: 1.2, xlabel: 'time (years)', ylabel: 'osculating elements', title: 'a, e, i change; T_J does not' });
+        const g = v.stage({ x: [0, 40], y: [-0.25, 3.4], axes: 'box', height: 360, weight: 1.2, xlabel: 'time (years)', ylabel: 'osculating elements', title: '$a, e, i$ change; $T_J$ does not' });
         const Tis = (el) => 1 / el.a + 2 * Math.sqrt(Math.max(0, el.a * (1 - el.e * el.e))) * Math.cos(el.i);
         const cache = memo();
         const run = () => cache([aS.value, eS.value, iS.value, dS.value].join('|'), () => {
@@ -553,8 +553,8 @@ is approximately conserved through any encounter with that planet, even one that
           ser((r) => r.el.i / (30 * DEG), 'purple', 1.8);
           ser((r) => r.T, 'green', 2.6);
           const lastR = D.rec[D.rec.length - 1];
-          g.text('T_J', tmax, lastR.T, { color: 'green', size: 11, dx: -4, dy: -9, align: 'right' });
-          g.text('a/a_J', tmax, lastR.el.a, { color: 'blue', size: 10.5, dx: -4, dy: -8, align: 'right' });
+          g.tex('T_J', tmax, lastR.T, { color: 'green', size: 13, dx: -4, dy: -11, align: 'right' });
+          g.tex('a/a_J', tmax, lastR.el.a, { color: 'blue', size: 12, dx: -4, dy: -10, align: 'right' });
           g.text('e', tmax, lastR.el.e, { color: 'orange', size: 10.5, dx: -4, dy: -8, align: 'right' });
           g.text('i/30°', tmax, lastR.el.i / (30 * DEG), { color: 'purple', size: 10.5, dx: -4, dy: -9, align: 'right' });
           cur = D;

@@ -72,7 +72,9 @@ with $A_{jj} = \frac{n_j}{4}\sum_{l\ne j}\frac{m_l}{M_\odot}\,\alpha_{jl}\bar\al
           const inv = (b) => [(Xm[1][1] * b[0] - Xm[0][1] * b[1]) / dX, (-Xm[1][0] * b[0] + Xm[0][0] * b[1]) / dX];
           const u = inv(h), w = inv(k); // S_i sin β_i, S_i cos β_i
           const gm = [meanRate(R.out, 1, 2), meanRate(R.out, 4, 5)];
-          const amd = R.out.map((r) => m[0] * Math.sqrt(r[3]) * (1 - Math.sqrt(1 - (r[1] ** 2 + r[2] ** 2))) + m[1] * Math.sqrt(r[6]) * (1 - Math.sqrt(1 - (r[4] ** 2 + r[5] ** 2))));
+          // angular-momentum deficit (≈ ½ Σ m √a e²) of the elements averaged over 1900 yr, which removes the 900-yr great-inequality wiggles
+          const amd = [], Wn = 19;
+          for (let k = 0; k + Wn <= R.out.length; k += 3) { const s = [0, 0, 0, 0, 0, 0, 0]; for (let j = k; j < k + Wn; j++) for (let c = 1; c < 7; c++) s[c] += R.out[j][c] / Wn; amd.push(m[0] * Math.sqrt(s[3]) * (1 - Math.sqrt(1 - s[1] ** 2 - s[2] ** 2)) + m[1] * Math.sqrt(s[6]) * (1 - Math.sqrt(1 - s[4] ** 2 - s[5] ** 2))); }
           return { R, A, g, Xm, u, w, gm, amd, m };
         });
         const theory = (D, gg, t) => {
@@ -87,35 +89,36 @@ with $A_{jj} = \frac{n_j}{4}\sum_{l\ne j}\frac{m_l}{M_\odot}\,\alpha_{jl}\bar\al
           // e(t)
           let emax = 0.07; for (const r of out) emax = Math.max(emax, Math.hypot(r[1], r[2]), Math.hypot(r[4], r[5]));
           et.setView([0, 100], [0, emax * 1.15]);
-          Tc.y = emax * 0.02;
+          Tc.y = emax * 1.1;
           et.path(out.map((r) => [r[0] / 1000, Math.hypot(r[1], r[2])]), { color: 'orange', width: 1.8 });
-          et.path(out.map((r) => [r[0] / 1000, Math.hypot(r[4], r[5])]), { color: 'gold', width: 1.8 });
+          et.path(out.map((r) => [r[0] / 1000, Math.hypot(r[4], r[5])]), { color: 'blue', width: 1.6 });
           const thJ = [], thS = [];
           for (let t = 0; t <= 100000; t += 250) { const T = theory(D, gg, t); thJ.push([t / 1000, Math.hypot(T[0][0], T[0][1])]); thS.push([t / 1000, Math.hypot(T[1][0], T[1][1])]); }
           et.path(thJ, { color: 'red', width: 1.4, dash: [5, 4] });
           et.path(thS, { color: 'purple', width: 1.4, dash: [5, 4] });
           et.vline(tk, { color: 'gold', width: 1, alpha: 0.6 });
-          et.text('Jupiter', 1, Math.hypot(out[0][1], out[0][2]), { color: 'orange', size: 10.5, dy: -9, align: 'left' });
-          et.text('Saturn', 1, Math.hypot(out[0][4], out[0][5]), { color: 'gold', size: 10.5, dy: 10, align: 'left' });
+          const lr = out[out.length - 1];
+          et.text('Jupiter', 99, Math.hypot(lr[1], lr[2]), { color: 'orange', size: 10.5, dy: -10, align: 'right' });
+          et.text('Saturn', 99, Math.hypot(lr[4], lr[5]), { color: 'blue', size: 10.5, dy: 12, align: 'right' });
           // (k, h) plane
           const L = emax * 1.15;
           kh.setView([-L, L], [-L, L]);
           kh.dots(out.map((r) => [r[2], r[1]]), { r: 1.3, color: 'orange', alpha: 0.5 });
-          kh.dots(out.map((r) => [r[5], r[4]]), { r: 1.3, color: 'gold', alpha: 0.5 });
+          kh.dots(out.map((r) => [r[5], r[4]]), { r: 1.3, color: 'blue', alpha: 0.45 });
           const pJ = [], pS = []; for (let t = 0; t <= 100000; t += 200) { const T = theory(D, gg, t); pJ.push([T[0][1], T[0][0]]); pS.push([T[1][1], T[1][0]]); }
           kh.path(pJ, { color: 'red', width: 1, dash: [4, 3], alpha: 0.8 }); kh.path(pS, { color: 'purple', width: 1, dash: [4, 3], alpha: 0.8 });
           const r = out[idx], T = theory(D, gg, r[0]);
-          kh.arrow(0, 0, r[2], r[1], { color: 'orange', width: 2.2 }); kh.arrow(0, 0, r[5], r[4], { color: 'gold', width: 2.2 });
+          kh.arrow(0, 0, r[2], r[1], { color: 'orange', width: 2.2 }); kh.arrow(0, 0, r[5], r[4], { color: 'blue', width: 2.2 });
           kh.dot(T[0][1], T[0][0], { r: 4, hollow: true, color: 'red' }); kh.dot(T[1][1], T[1][0], { r: 4, hollow: true, color: 'purple' });
           kh.corner(`t = ${v.fix(r[0] / 1000, 1)} kyr`, 'tl', { color: 'gold' });
           cur = { D, gg, idx };
         });
-        v.legend([['orange', 'Jupiter, N-body'], ['gold', 'Saturn, N-body'], ['red', 'Jupiter, theory', { dash: true }], ['purple', 'Saturn, theory', { dash: true }]]);
+        v.legend([['orange', 'Jupiter, N-body'], ['blue', 'Saturn, N-body'], ['red', 'Jupiter, theory', { dash: true }], ['purple', 'Saturn, theory', { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const { D } = cur, f = (x) => v.fix(x * AS, 2), amdR = (Math.max(...D.amd) - Math.min(...D.amd)) / D.amd[0];
           const eJ = D.R.out.map((r) => Math.hypot(r[1], r[2])), eS = D.R.out.map((r) => Math.hypot(r[4], r[5]));
-          return String.raw`Laplace–Lagrange eigenfrequencies $g_1 = ${f(D.g[0])}$, $g_2 = ${f(D.g[1])}$ ″/yr (exchange period $2\pi/(g_2 - g_1) = ${v.fix(TAU / (D.g[1] - D.g[0]) / 1000, 1)}$ kyr); N-body precession rates ${f(D.gm[0])} and ${f(D.gm[1])} ″/yr (${v.fix(TAU / (D.gm[1] - D.gm[0]) / 1000, 1)} kyr) — the difference is the 5:2 near-resonance · N-body: $e_J$ ${v.fix(Math.min(...eJ), 3)}–${v.fix(Math.max(...eJ), 3)}, $e_S$ ${v.fix(Math.min(...eS), 3)}–${v.fix(Math.max(...eS), 3)}; angular-momentum deficit constant to ${v.fix(amdR * 100, 1)}%`;
+          return String.raw`Laplace–Lagrange eigenfrequencies $g_1 = ${f(D.g[0])}$, $g_2 = ${f(D.g[1])}$ ″/yr (exchange period $2\pi/(g_2 - g_1) = ${v.fix(TAU / (D.g[1] - D.g[0]) / 1000, 1)}$ kyr); N-body precession rates ${f(D.gm[0])} and ${f(D.gm[1])} ″/yr (${v.fix(TAU / (D.gm[1] - D.gm[0]) / 1000, 1)} kyr) — the difference is the 5:2 near-resonance · N-body: $e_J$ ${v.fix(Math.min(...eJ), 3)}–${v.fix(Math.max(...eJ), 3)}, $e_S$ ${v.fix(Math.min(...eS), 3)}–${v.fix(Math.max(...eS), 3)}; angular-momentum deficit (averaged over the great-inequality wiggles) constant to ${v.fix(amdR * 100, 1)}% while $e_J^2$ and $e_S^2$ each change by a factor of several`;
         });
       },
     },
@@ -136,7 +139,7 @@ so the phase portrait in $(\varphi, a)$ has a separatrix: inside it $\varphi$ **
       viz(v) {
         const mu = MU_SJ, ares = Math.pow(0.5, 2 / 3) * Math.cbrt(1 - mu); // exact 2:1 commensurability (units of a_J)
         const eS = v.slider('asteroid eccentricity $e$', 0.03, 0.3, 0.15, { step: 0.005 });
-        const ph = v.stage({ x: [-180, 180], y: [3.08, 3.48], axes: 'box', height: 360, weight: 1.3, xlabel: 'resonant angle φ = 2λ_J − λ − ϖ (°)', ylabel: 'semi-major axis (AU)', title: 'pendulum model and the true motion', xticks: [-180, -90, 0, 90, 180] });
+        const ph = v.stage({ x: [-180, 180], y: [3.08, 3.48], axes: 'box', height: 360, weight: 1.3, xlabel: 'resonant angle $\\varphi = 2\\lambda_J - \\lambda - \\varpi$ (°)', ylabel: 'semi-major axis (AU)', title: 'pendulum model and the true motion', xticks: [-180, -90, 0, 90, 180] });
         const rot = v.stage({ x: [-1.15, 1.15], y: [-1.15, 1.15], equal: true, axes: false, height: 360, weight: 1, title: 'frame rotating with Jupiter' });
         const H = ph.handle(0, 3.33, { color: 'gold', r: 7, label: 'start', labelPos: 'ne' });
         const cacheR = memo(), cacheI = memo();
@@ -319,13 +322,13 @@ and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \la
           conj(0, 1, 'green'); conj(1, 2, 'pink');
           for (let k = 0; k < 3; k++) { s.dot(P[k][0], P[k][1], { r: 6, color: COL[k] }); s.text(NAMES[k], P[k][0], P[k][1], { color: COL[k], size: 10.5, dy: -11, align: 'center' }); }
           const PhL = ((lam[0] - 3 * lam[1] + 2 * lam[2]) / DEG % 360 + 360) % 360;
-          s.corner(`day ${v.fix(day % 3650, 1)}   Φ_L = ${v.fix(PhL, 2)}°`, 'tl', { color: 'muted', size: 12 });
+          s.corner(`day ${v.fix(day % 3650, 1)} · $\\Phi_L = ${v.fix(PhL, 2)}^\\circ$`, 'tl', { color: 'muted', size: 12 });
           // time panel
           g.hline(180, { color: 'faint', width: 1, dash: [4, 4] });
           g.path(H.out.filter((q, k, a) => k === 0 || Math.abs(q[1] - a[k - 1][1]) < 180), { color: 'accent', width: 2 });
           g.path(H.minS, { color: 'red', width: 1.8 });
           g.vline(day % 3650, { color: 'gold', width: 1.2 });
-          g.text('Φ_L', 60, H.out[0][1], { color: 'accent', size: 11, dy: -9, align: 'left' });
+          g.tex('\\Phi_L', 60, H.out[0][1], { color: 'accent', size: 14, dy: -12, align: 'left' });
           g.text('smallest arc holding all three so far', 3600, H.minS[H.minS.length - 1][1], { color: 'red', size: 10.5, dy: -9, align: 'right' });
           cur = { H, PhL };
         }, { period: 1e9, still: 7.3 });
@@ -355,8 +358,8 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
       viz(v) {
         const iS = v.slider('initial inclination $i_0$', 0, 90, 65, { step: 0.5, fmt: (x) => `${v.fix(x, 1)}°` });
         const gS = v.slider('extra apsidal precession (units of $1/t_{KL}$)', 0, 3, 0, { step: 0.05 });
-        const E = v.stage({ x: [0, 20], y: [0, 1], axes: 'box', height: 290, weight: 1, xlabel: 'time (t_KL)', ylabel: 'eccentricity e', title: 'eccentricity' });
-        const I = v.stage({ x: [0, 20], y: [0, 90], axes: 'box', height: 290, weight: 1, xlabel: 'time (t_KL)', ylabel: 'inclination i (°)', title: 'inclination', yticks: [0, 30, 39.2, 60, 90] });
+        const E = v.stage({ x: [0, 20], y: [0, 1], axes: 'box', height: 290, weight: 1, xlabel: 'time ($t_{KL}$)', ylabel: 'eccentricity e', title: 'eccentricity' });
+        const I = v.stage({ x: [0, 20], y: [0, 90], axes: 'box', height: 290, weight: 1, xlabel: 'time ($t_{KL}$)', ylabel: 'inclination i (°)', title: 'inclination', yticks: [0, 30, 39.2, 60, 90] });
         const W = v.stage({ x: [0, 360], y: [0, 1], axes: 'box', height: 290, weight: 1.15, xlabel: 'argument of pericentre ω (°)', ylabel: 'e', title: 'phase portrait at fixed Θ', xticks: [0, 90, 180, 270, 360] });
         const Hh = W.handle(90, 0.05, { color: 'gold', r: 7, constrain: (x, y) => [clamp(x, 0, 360), clamp(y, 0.002, 0.95)] });
         const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];

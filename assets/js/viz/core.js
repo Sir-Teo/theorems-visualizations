@@ -167,7 +167,7 @@ class Stage {
     if (this.titleEl._src !== s) { this.titleEl.innerHTML = inlineHTML(s); this.titleEl._src = s; }
   }
   /** Replace the custom ticks (same format as the xticks/yticks options; null = automatic). */
-  setTicks(xticks, yticks) { if (xticks !== undefined) this.o.xticks = xticks; if (yticks !== undefined) this.o.yticks = yticks; }
+  setTicks(xticks, yticks) { const k = (t) => JSON.stringify(t ?? null); let ch = false; if (xticks !== undefined && k(xticks) !== k(this.o.xticks)) { this.o.xticks = xticks; ch = true; } if (yticks !== undefined && k(yticks) !== k(this.o.yticks)) { this.o.yticks = yticks; ch = true; } if (ch) this.rt.invalidate(); return this; }
   /** Change the axis labels (undefined = keep, null = none), e.g. per mode. */
   setLabels(xlabel, ylabel) { let ch = false; if (xlabel !== undefined && xlabel !== this.o.xlabel) { this.o.xlabel = xlabel; ch = true; } if (ylabel !== undefined && ylabel !== this.o.ylabel) { this.o.ylabel = ylabel; ch = true; } if (ch) this.rt.invalidate(); return this; }
   resize() {
@@ -875,7 +875,7 @@ class Stage {
       const [px, py] = pos(e);
       this.pointer.down = true;
       const hd = this._hit(px, py, e.pointerType === 'touch' ? 24 : 14);
-      this._downAt = [px, py, performance.now()];
+      this._downAt = hd ? null : [px, py, performance.now()]; // a press on a handle is a drag, never a click
       if (hd) {
         this._active = hd; hd.dragging = true; this._off = [this.X(hd.x) - px, this.Y(hd.y) - py];
         cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.style.cursor = 'grabbing'; this.rt.invalidate(); return;
