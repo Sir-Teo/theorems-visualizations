@@ -64,11 +64,11 @@ export default {
       items: [
         { num: '2.1', kind: 'Model', name: 'Wright–Fisher model', deps: ['popgen-1.1', 'stoch-14.1'], refs: ['Ewens ch. 3', 'Gillespie'],
           pic: 'Twenty replicate populations of size N each draw 2N gene copies binomially every generation; their frequency paths wander apart and hit 0 or 1, faster as N shrinks.' },
-        { num: '2.2', kind: 'Theorem', name: 'Allele frequency is a martingale under drift', deps: ['popgen-2.1'], refs: ['Ewens ch. 3'],
+        { num: '2.2', kind: 'Theorem', name: 'Allele frequency is a martingale under drift', deps: ['popgen-2.1', 'prob-4.2.11'], refs: ['Ewens ch. 3'],
           pic: 'Average thousands of Wright–Fisher paths: individual runs scatter to the boundaries but the mean stays flat at the starting frequency, plotted with a confidence band.' },
         { num: '2.3', kind: 'Theorem', name: 'Heterozygosity decays as (1 − 1/2N)ᵗ', deps: ['popgen-2.1', 'popgen-1.10'], refs: ['Ewens ch. 3', 'Gillespie'],
           pic: 'Average heterozygosity across replicates is plotted on a log scale; it falls on a straight line with slope ln(1 − 1/2N), which you change by dragging N.' },
-        { num: '2.4', kind: 'Theorem', name: 'Neutral fixation probability equals initial frequency', deps: ['popgen-2.2', 'stoch-14.2'], refs: ['Ewens §4.3'],
+        { num: '2.4', kind: 'Theorem', name: 'Neutral fixation probability equals initial frequency', deps: ['popgen-2.2', 'stoch-14.2', 'prob-4.4.1'], refs: ['Ewens §4.3'],
           pic: 'Run many populations to absorption from a chosen starting frequency; the fraction that fix lands on the diagonal of a fixation-probability plot.' },
         { num: '2.5', kind: 'Model', name: 'Moran model', deps: ['popgen-2.1', 'stoch-14.3'], refs: ['Ewens ch. 3', 'Ewens §9.3.2'],
           pic: 'One individual reproduces and one dies at each step; the Moran path is drawn beside a Wright–Fisher path with time rescaled by N/2, and their absorption-time distributions match.' },
@@ -184,7 +184,7 @@ export default {
       title: 'Selection and drift together',
       summary: String.raw`In a finite population even a beneficial mutation is usually lost by chance. Branching processes give Haldane’s 2s and Kimura’s diffusion formula gives the full fixation probability, which shows that selection is effectively invisible when |Ns| is small. That idea underlies the nearly neutral and drift-barrier hypotheses; adaptation then proceeds by origin and fixation of mutations, which interfere in asexual populations and accumulate deleterious load through Muller’s ratchet.`,
       items: [
-        { num: '6.1', kind: 'Model', name: 'Branching-process approximation for a new mutant', deps: ['popgen-4.2', 'mathbio-11.2', 'stoch-3.9'], refs: ['Ewens §1.4'],
+        { num: '6.1', kind: 'Model', name: 'Branching-process approximation for a new mutant', deps: ['popgen-4.2', 'mathbio-11.2', 'stoch-3.9', 'prob-4.3.8a'], refs: ['Ewens §1.4'],
           pic: 'A single new beneficial mutant founds a lineage whose offspring numbers are Poisson with mean 1 + s; most lineages die within a few generations even when s is large.' },
         { num: '6.2', kind: 'Theorem', name: 'Haldane’s fixation probability ≈ 2s', deps: ['popgen-6.1'], refs: ['Ewens §1.4'],
           pic: 'Count surviving lineages out of thousands of simulated mutants for several values of s; the survival fraction falls on the line 2s, and the exact branching-process root is also plotted.' },
@@ -273,7 +273,7 @@ export default {
       title: 'Quantitative genetics and the Price equation',
       summary: String.raw`Most traits are shaped by many genes of small effect, and Fisher showed in 1918 that Mendelian inheritance then produces normal distributions and predictable resemblance between relatives. Heritability and the breeder’s equation turn this into a forecast of response to selection; Fisher’s fundamental theorem and the Price equation express the same idea as exact accounting identities, and Lande’s multivariate form shows how genetic correlations deflect evolution.`,
       items: [
-        { num: '9.1', kind: 'Model', name: 'Infinitesimal model: many loci make a normal trait', deps: ['popgen-1.5'], refs: ['Ewens §7.3'],
+        { num: '9.1', kind: 'Model', name: 'Infinitesimal model: many loci make a normal trait', deps: ['popgen-1.5', 'prob-3.4.1'], refs: ['Ewens §7.3'],
           pic: 'Add loci of small additive effect one at a time; the trait histogram goes from three bars to a smooth bell curve, illustrating the central limit theorem behind Fisher’s reconciliation.' },
         { num: '9.2', kind: 'Concept', name: 'Additive and dominance variance; heritability', deps: ['popgen-9.1'], refs: ['Ewens §7.3', 'Gillespie'],
           pic: 'Regress genotypic values on allele counts at one locus; the regression line gives additive effects, the residuals dominance deviations, and the variance bars split accordingly as dominance is varied.' },

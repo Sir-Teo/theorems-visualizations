@@ -6,6 +6,7 @@
 //   const sc = v.scene3(S, { yaw: -0.6, pitch: 0.35, axis: 1.5, lim: 1.45, labels: ['x', 'y', 'z'] });
 //   const u = sc.handle([1, 0.5, 0.2], { color: 'accent', label: 'u' });        // free
 //   const w = sc.handle([0, 1, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0] }); // stays in the xy-plane
+//   handle options also take onDrag(H); H.visible = false hides a handle, H.dragging is true while it is held
 //   v.render(() => { sc.begin(); sc.arrow([0, 0, 0], u.p, { color: 'accent' }); sc.flush(); });
 //
 // Drawing (queued, depth-sorted, then drawn by flush): line, path, poly, disc, arrow, dot, dots, tex, axes.
@@ -106,7 +107,10 @@ export function scene3(v, rt, S, o = {}) {
       if (H.mode === 'line') H.t = M.dot(p, H.d) / M.dot(H.d, H.d);
       return p;
     };
-    H.h = S.handle(0, 0, { color: st.color || 'accent', r: st.r ?? 6.5, label: st.label, labelPos: st.labelPos, constrain: (x, y) => { H.p = H.solve(x, y); const A = P(H.p); return [A[0], A[1]]; } });
+    H.h = S.handle(0, 0, { color: st.color || 'accent', r: st.r ?? 6.5, label: st.label, labelPos: st.labelPos, constrain: (x, y) => { H.p = H.solve(x, y); const A = P(H.p); return [A[0], A[1]]; }, onDrag: st.onDrag ? () => st.onDrag(H) : undefined });
+    // forward the 2D handle's state: H.visible = false hides it, H.dragging is true while held
+    Object.defineProperty(H, 'visible', { get: () => H.h.visible !== false, set: (b) => { H.h.visible = !!b; v.invalidate(); }, enumerable: true });
+    Object.defineProperty(H, 'dragging', { get: () => !!H.h.dragging, enumerable: true });
     H.sync = () => { if (H.mode === 'line') H.p = H.d.map((c) => c * H.t); const A = P(H.p); H.h.x = A[0]; H.h.y = A[1]; };
     H.set = (p) => { H.p = p.slice(); if (H.mode === 'line') H.t = M.dot(p, H.d) / M.dot(H.d, H.d); H.sync(); v.invalidate(); };
     sc.hs.push(H);

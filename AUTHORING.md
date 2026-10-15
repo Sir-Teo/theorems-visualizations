@@ -248,6 +248,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `colorbar([lo,hi], cmap, {pos:'right'|'left'|'top'|'bottom', label, tex, ticks, fmt, length})` | colour bar on a small panel inside the edge, for a `heat` map (`cmap`: name or `t => [r,g,b]`). |
 | `polarGrid({rings, spokes:12, rmax, center, angles:'deg'|'rad'|false, labelAngle, labels})` | polar grid (`rings`: count or radii); use with `equal: true, axes: false`. |
 | `setView([x0,x1], [y0,y1])` | change the window (fine to call inside render). |
+| `clip(fn, [x0,x1]?, [y0,y1]?)` | run `fn` with drawing clipped to a data rectangle (default: the window), e.g. `s.clip(() => s.curve(f))`. |
 | `setTitle(rich)` | change (or add) the stage title. |
 | `setTicks(xticks, yticks)` | change custom ticks per mode (`null` = automatic). |
 | `axes()`, `grid()` | redraw the axes/grid on top (e.g. after a full-panel `raster`/`domain`). |

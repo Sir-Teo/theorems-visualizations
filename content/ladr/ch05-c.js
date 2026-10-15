@@ -115,7 +115,8 @@ function drawSub(sc, B, color, o = {}) {
 function subLabelAt(sc, B, o = {}) {
   const sg = o.low ? -1 : 1;
   if (B.length === 1) { const u = sc.P(B[0])[1] * sg >= 0 ? B[0] : mul3(B[0], -1); return mul3(u, o.len ?? 1.8); }
-  const P0 = sc.P(B[0]), P1 = sc.P(B[1]), t = Math.atan2(sg * P1[1], sg * P0[1]), r = o.r ?? 1.5;
+  const ax = o.side ? 0 : 1, sx = o.side === 'left' ? -1 : o.side ? 1 : sg;
+  const P0 = sc.P(B[0]), P1 = sc.P(B[1]), t = Math.atan2(sx * P1[ax], sx * P0[ax]), r = o.r ?? 1.5;
   return add3(mul3(B[0], r * Math.cos(t)), mul3(B[1], r * Math.sin(t)));
 }
 
@@ -552,6 +553,321 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           const dsum = st.rev.reduce((a, e) => a + e.B.length, 0);
           return `Minimal polynomial of $T$: $${factT(zsT)}$; of $T|_U$: $${factT(zsU)}$, a divisor of it (5.31). ${zsU.every((z) => z.m === 1) ? 'Distinct factors' : 'A repeated factor'}, so $T|_U$ is ${dsum === 2 ? '**diagonalizable** (5.62)' : '**not diagonalizable** — possible only because $T$ itself is not'}.`;
         });
+      },
+    },
+    // ------------------------------------------------------------------ 5.66
+    {
+      num: '5.66',
+      kind: 'Definition',
+      name: 'Gershgorin disks',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ and $v_1, \dots, v_n$ is a basis of $V$, and let $A = \mathcal M\bigl(T, (v_1, \dots, v_n)\bigr)$. For $j \in \{1, \dots, n\}$, the $j$th **Gershgorin disk** of $T$ with respect to this basis is
+$$\Bigl\{ z \in \mathbf F : |z - A_{j,j}| \le \sum_{k \ne j} |A_{j,k}| \Bigr\}.$$
+So $T$ has $n$ Gershgorin disks. When $\mathbf F = \mathbf C$ the $j$th one is the closed disk centred at the diagonal entry $A_{j,j}$ whose radius is the sum of the absolute values of the other entries in row $j$; when $\mathbf F = \mathbf R$ it is a closed interval.`,
+      idea: String.raw`Each row of the matrix is read as "a diagonal entry plus a perturbation": the centre is the diagonal entry and the radius measures how big the rest of the row is. If $A$ is diagonal, every radius is $0$ and each disk shrinks to the point $A_{j,j}$, which is an eigenvalue; the disk theorem (5.67) says the eigenvalues can never escape the disks once the off-diagonal entries are switched on. The disks depend on the basis, since the matrix does.`,
+      caption: String.raw`Left: drag the centres $A_{1,1}, A_{2,2}, A_{3,3}$ in $\mathbf C$. Right: each off-diagonal entry $A_{j,k}$ is a dot in its own little complex plane; drag it, and its length $|A_{j,k}|$ (the dashed circle) becomes one piece of the radius of disk $j$, drawn as a chain of segments from the centre. Switch to a real matrix: all entries move onto the real axis and the disks become intervals of $\mathbf R$.`,
+      deps: ['ladr-5.35'],
+      tags: ['eigenvalues'],
+      credit: 'Gershgorin, 1931',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gershgorin_circle_theorem' },
+      viz(v) {
+        const S = v.stage({ x: [-3.4, 4.6], y: [-2.6, 2.6], equal: true, height: 400, weight: 1.35, minWidth: 320, title: 'Gershgorin disks in $\\mathbf C$' });
+        const G = v.stage({ x: [0, 3], y: [0, 3], equal: true, axes: false, height: 400, minWidth: 260, title: 'the matrix $A$ (one little $\\mathbf C$ per entry)' });
+        const real = v.toggle('real matrix ($\\mathbf F = \\mathbf R$)', false);
+        const D0 = [[-1.4, 0.8], [1.3, -0.9], [2.7, 1.1]];
+        const OFF0 = { '0,1': [0.5, 0.35], '0,2': [-0.45, 0.4], '1,0': [0.3, -0.55], '1,2': [0.7, 0.25], '2,0': [-0.2, -0.3], '2,1': [0.4, 0.5] };
+        const SC = 0.34, RM = 1.25, cellC = (i, j) => [j + 0.5, 2.5 - i];
+        const dh = D0.map((p, j) => S.handle(p[0], p[1], { color: EC[j], constrain: (x, y) => [x, real.value ? 0 : y] }));
+        const oh = {};
+        for (const [key, z] of Object.entries(OFF0)) {
+          const [i, j] = key.split(',').map(Number), c = cellC(i, j);
+          oh[key] = G.handle(c[0] + SC * z[0], c[1] + SC * z[1], {
+            color: EC[i], r: 6, constrain: (x, y) => {
+              let a = (x - c[0]) / SC, b = real.value ? 0 : (y - c[1]) / SC; const m = Math.hypot(a, b);
+              if (m > RM) { a *= RM / m; b *= RM / m; }
+              return [c[0] + SC * a, c[1] + SC * b];
+            },
+          });
+        }
+        const entry = (i, j) => { if (i === j) return [dh[i].x, dh[i].y]; const h = oh[`${i},${j}`], c = cellC(i, j); return [(h.x - c[0]) / SC, (h.y - c[1]) / SC]; };
+        let st = null;
+        v.render(() => {
+          if (real.value) { dh.forEach((h) => { h.y = 0; }); for (const k in oh) { const [i, j] = k.split(',').map(Number); oh[k].y = cellC(i, j)[1]; } }
+          const A = [0, 1, 2].map((i) => [0, 1, 2].map((j) => entry(i, j)));
+          const rad = A.map((r, j) => r.reduce((s, z, k) => s + (k === j ? 0 : Math.hypot(z[0], z[1])), 0));
+          // the disks
+          A.forEach((r, j) => {
+            const [cx, cy] = r[j];
+            S.circle(cx, cy, rad[j], { color: EC[j], width: 1.8, fill: EC[j], fillAlpha: real.value ? 0.05 : 0.13, alpha: real.value ? 0.45 : 1 });
+            // the radius as a chain of |A_jk|
+            const th = [2.3, -0.75, 0.5][j];
+            let s0 = 0;
+            r.forEach((z, k) => {
+              if (k === j) return;
+              const m = Math.hypot(z[0], z[1]), a = [cx + s0 * Math.cos(th), cy + s0 * Math.sin(th)], b = [cx + (s0 + m) * Math.cos(th), cy + (s0 + m) * Math.sin(th)];
+              S.line(a[0], a[1], b[0], b[1], { color: EC[j], width: 3, dash: s0 > 0 ? [5, 3] : false });
+              S.dot(b[0], b[1], { r: 3, color: EC[j] });
+              s0 += m;
+            });
+            if (real.value) {
+              const y = -0.32 - 0.28 * j;
+              S.line(cx - rad[j], y, cx + rad[j], y, { color: EC[j], width: 4 });
+              for (const e of [-1, 1]) { S.line(cx + e * rad[j], y - 0.09, cx + e * rad[j], y + 0.09, { color: EC[j], width: 2 }); S.line(cx + e * rad[j], y, cx + e * rad[j], 0, { color: EC[j], width: 1, dash: [2, 3], alpha: 0.6 }); }
+            }
+            S.tex(`D_${j + 1}`, cx + rad[j] * Math.cos(th + 0.9) * 0.62, cy + rad[j] * Math.sin(th + 0.9) * 0.62, { color: EC[j], size: 15 });
+          });
+          // the matrix: little complex planes
+          for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+            const [cx, cy] = cellC(i, j);
+            G.rect(j + 0.03, 2.03 - i, j + 0.97, 2.97 - i, { color: EC[i], width: 1, alpha: 0.5, fill: EC[i], fillAlpha: i === j ? 0.16 : 0.04 });
+            const z = A[i][j];
+            if (i === j) {
+              G.tex(`A_{${i + 1}${j + 1}}`, cx, cy + 0.2, { color: EC[i], size: 14 });
+              G.tex(ctn(z[0], z[1], 1), cx, cy - 0.12, { color: 'ink', size: 13 });
+              G.text('centre', cx, cy - 0.36, { align: 'center', size: 10, color: 'muted' });
+              continue;
+            }
+            G.line(cx - 0.42, cy, cx + 0.42, cy, { color: 'faint', width: 0.8 }); G.line(cx, cy - 0.34, cx, cy + 0.34, { color: 'faint', width: 0.8 });
+            G.tex(`A_{${i + 1}${j + 1}}`, j + 0.06, 2.94 - i, { color: EC[i], size: 11, align: 'left', baseline: 'top' });
+            const m = Math.hypot(z[0], z[1]);
+            G.circle(cx, cy, m * SC, { color: EC[i], width: 1, dash: [3, 3], alpha: 0.7 });
+            G.line(cx, cy, cx + SC * z[0], cy + SC * z[1], { color: EC[i], width: 2 });
+            G.text(`|A${'₁₂₃'[i]}${'₁₂₃'[j]}| = ${pn(m)}`, cx, cy - 0.43, { align: 'center', size: 10, color: 'muted' });
+          }
+          st = { A, rad };
+        });
+        v.legend([['blue', 'row 1 → disk $D_1$', { area: true }], ['purple', 'row 2 → $D_2$', { area: true }], ['teal', 'row 3 → $D_3$', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { A, rad } = st;
+          return A.map((r, j) => `$D_{${j + 1}}$: centre $${ctn(r[j][0], r[j][1])}$, radius $${r.map((z, k) => (k === j ? null : tn(Math.hypot(z[0], z[1])))).filter((x) => x != null).join(' + ')} = ${tn(rad[j])}$`).join(';  ');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.67
+    {
+      num: '5.67',
+      kind: 'Theorem',
+      name: 'Gershgorin disk theorem',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ and $v_1, \dots, v_n$ is a basis of $V$. Then every eigenvalue of $T$ lies in at least one of the Gershgorin disks of $T$ with respect to $v_1, \dots, v_n$.`,
+      idea: String.raw`Let $\lambda$ be an eigenvalue with eigenvector $w = c_1 v_1 + \cdots + c_n v_n$, and pick $j$ with $|c_j|$ as large as possible (so $c_j \ne 0$). Comparing the $v_j$-coefficients of $Tw = \lambda w$ gives $\lambda c_j = \sum_k A_{j,k} c_k$, hence
+$$|\lambda - A_{j,j}| = \Bigl|\sum_{k \ne j} A_{j,k} \frac{c_k}{c_j}\Bigr| \le \sum_{k \ne j} |A_{j,k}|,$$
+because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ — the disk of the eigenvector's largest coordinate.`,
+      caption: String.raw`A $4 \times 4$ complex matrix: drag the diagonal entries (the disk centres) and slide the size $t$ of the off-diagonal part. The gold dots are the eigenvalues, computed from the matrix; click one to select it. The bar chart shows the sizes $|c_k|$ of the coordinates of its eigenvector: the tallest bar picks the disk (outlined) that must contain it. At $t = 0$ the eigenvalues sit on the centres; as $t$ grows they wander, but never leave the union of the disks. The column version (Exercise 23) works too.`,
+      deps: ['ladr-5.66', 'ladr-5.8'],
+      tags: ['eigenvalues'],
+      credit: 'Gershgorin, 1931',
+      viz(v) {
+        const M = v.M, Cx = M.Cx;
+        const S = v.stage({ x: [-3.7, 4.3], y: [-3.1, 3.3], equal: true, height: 410, weight: 1.45, minWidth: 330, title: 'disks and eigenvalues in $\\mathbf C$' });
+        const B = v.stage({ x: [0.3, 4.7], y: [-0.18, 1.18], axes: false, height: 400, minWidth: 220, title: 'eigenvector coordinates $|c_k|$' });
+        const tS = v.slider('off-diagonal size $t$', 0, 2.5, 1.3, { step: 0.02 });
+        const mode = v.select('radii from', [{ value: 'r', label: 'rows' }, { value: 'c', label: 'columns' }], 'r');
+        let seed = 12, OFF = null;
+        const gen = () => { const r = v.rng(seed++); OFF = [0, 1, 2, 3].map(() => [0, 1, 2, 3].map(() => Cx.polar(r.uniform(0.2, 0.75), r.uniform(0, 2 * Math.PI)))); };
+        gen();
+        v.button('Resample', gen);
+        const C4 = ['blue', 'purple', 'teal', 'pink'];
+        const dh = [[-1.2, 0.3], [0.2, 1.0], [0.5, -0.8], [1.8, 0.2]].map((p, j) => S.handle(p[0], p[1], { color: C4[j], r: 5.5 }));
+        let sel = 0, lams = [];
+        S.onClick((x, y) => { let b = -1, bd = 0.35; lams.forEach((z, i) => { const d = Math.hypot(z.re - x, z.im - y); if (d < bd) { bd = d; b = i; } }); if (b >= 0) sel = b; });
+        let st = null;
+        v.render(() => {
+          const t = tS.value, cols = mode.value === 'c';
+          const A = [0, 1, 2, 3].map((i) => [0, 1, 2, 3].map((j) => (i === j ? new Cx(dh[i].x, dh[i].y) : OFF[i][j].scale(t))));
+          const At = A[0].map((_, j) => A.map((r) => r[j])), W = cols ? At : A; // the column version: disks of Aᵗ, same eigenvalues
+          const rad = W.map((r, j) => r.reduce((s, z, k) => s + (k === j ? 0 : z.abs()), 0));
+          lams = cEigvals(M, A).sort((a, b) => a.re - b.re);
+          sel = Math.min(sel, lams.length - 1);
+          const lam = lams[sel], w = cNullVec(Cx, W, lam), mags = w.map((z) => z.abs()), jj = mags.indexOf(Math.max(...mags));
+          W.forEach((r, j) => S.circle(r[j].re, r[j].im, rad[j], { color: C4[j], width: j === jj ? 3 : 1.4, fill: C4[j], fillAlpha: 0.1 }));
+          S.line(W[jj][jj].re, W[jj][jj].im, lam.re, lam.im, { color: 'ink', width: 1.4, dash: [4, 3] });
+          const inAll = lams.map((z) => W.some((r, j) => Math.hypot(z.re - r[j].re, z.im - r[j].im) <= rad[j] + 1e-9));
+          S.dot(lam.re, lam.im, { r: 12, hollow: true, color: 'ink', width: 1.6 });
+          lams.forEach((z, i) => S.dot(z.re, z.im, { r: i === sel ? 7 : 5, color: inAll[i] ? 'gold' : 'red' }));
+          S.tex('\\lambda', lam.re, lam.im, { size: 15, dx: 14, dy: -13 });
+          // bar chart of |c_k|
+          const mx = Math.max(...mags);
+          mags.forEach((m, k) => {
+            const h = m / mx;
+            B.rect(k + 0.62, 0, k + 1.38, h, { fill: C4[k], fillAlpha: k === jj ? 0.55 : 0.2, color: C4[k], width: k === jj ? 2.4 : 1 });
+            B.tex(`|c_${k + 1}|`, k + 1, -0.08, { size: 13, color: C4[k] });
+            B.text(pn(h, 2), k + 1, h + 0.05, { align: 'center', size: 11, color: k === jj ? 'ink' : 'muted', weight: k === jj ? 700 : 500 });
+          });
+          B.line(0.45, 0, 4.55, 0, { color: 'muted', width: 1 });
+          B.text(`largest: k = ${jj + 1} → disk ${jj + 1}`, 2.5, 1.12, { align: 'center', size: 12.5, weight: 700, color: C4[jj] });
+          st = { lam, jj, d: Math.hypot(lam.re - W[jj][jj].re, lam.im - W[jj][jj].im), r: rad[jj], ok: inAll.every(Boolean), n: lams.length, cols, lams };
+        });
+        v.legend([['gold', 'eigenvalues (click one)', { dot: true }], ['ink', 'selected $\\lambda$ to the centre of its disk', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { lam, jj, d, r, ok, cols, lams } = st;
+          return `Eigenvalues ${lams.map((z) => `$${ctn(z.re, z.im)}$`).join(', ')} — ${ok ? 'all inside the union of the disks ✓' : '**one is outside!**'}. Selected $\\lambda = ${ctn(lam.re, lam.im)}$: ${cols ? 'its eigenvector for $A^{\\mathrm t}$' : 'its eigenvector'} has largest coordinate $c_{${jj + 1}}$, so $|\\lambda - A_{${jj + 1},${jj + 1}}| = ${tn(d, 3)} \\le ${tn(r, 3)} = $ radius of disk ${jj + 1}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.71
+    {
+      num: '5.71',
+      kind: 'Definition',
+      name: 'Commuting operators and matrices',
+      statement: String.raw`Two operators $S, T$ on the same vector space **commute** if $ST = TS$. Two square matrices $A, B$ of the same size **commute** if $AB = BA$.`,
+      idea: String.raw`$ST$ means "first $T$, then $S$", so commuting means the order of the two actions does not matter. Some pairs always commute: $\lambda I$ commutes with every operator, and any two polynomials $p(T), q(T)$ in one operator commute (5.17). But commuting is rare — a random pair of matrices almost never commutes; Axler reports that only about $0.3\%$ of the pairs of $2 \times 2$ matrices with integer entries in $[-5, 5]$ do.`,
+      caption: String.raw`A commutative square. The F in the top-left corner is moved along the top and right edges (first $S$, then $T$: the blue F is $TS(\mathrm F)$) and along the left and bottom edges (first $T$, then $S$: the orange outline is $ST(\mathrm F)$). Pick $S$ and $T$, and the angle $\theta$ for rotations: the two F's in the bottom-right corner coincide exactly when $ST = TS$. Try two rotations, a rotation with a scaling, and a rotation with a reflection.`,
+      deps: ['ladr-5.1'],
+      tags: ['commuting'],
+      viz(v) {
+        const M = v.M;
+        const MAPS = {
+          rot: { label: 'rotate by $\\theta$' }, refl: { label: 'reflect', A: [[1, 0], [0, -1]] }, str: { label: 'stretch', A: [[1.6, 0], [0, 1]] },
+          shear: { label: 'shear', A: [[1, 0.8], [0, 1]] }, sc: { label: 'scale by 1.4', A: [[1.4, 0], [0, 1.4]] },
+        };
+        const opts = Object.entries(MAPS).map(([value, m]) => ({ value, label: m.label }));
+        const sS = v.select('$S$', opts, 'rot'), tS = v.select('$T$', opts, 'str');
+        const th = v.slider('$\\theta$', -180, 180, 90, { step: 5, fmt: (x) => `${x}°` });
+        const P = v.stage({ x: [0, 12], y: [-0.05, 6.45], equal: true, axes: false, height: 450, full: true });
+        const mat = (k) => { if (k !== 'rot') return MAPS[k].A; const a = (th.value * Math.PI) / 180; return [[Math.cos(a), -Math.sin(a)], [Math.sin(a), Math.cos(a)]]; };
+        const BX = { tl: [2.2, 4.85], tr: [9.8, 4.85], bl: [2.2, 1.35], br: [9.8, 1.35] }, H = 1.25, K = H / 2.3, FB = FSH.map(([x, y]) => [1.3 * x, 1.3 * y]);
+        const loc = (b, p) => [BX[b][0] + K * p[0], BX[b][1] + K * p[1]];
+        const clip = (b, f) => {
+          const [cx, cy] = BX[b], c = P.ctx; c.save(); c.beginPath();
+          c.rect(P.X(cx - H), P.Y(cy + H), P.X(cx + H) - P.X(cx - H), P.Y(cy - H) - P.Y(cy + H)); c.clip(); f(); c.restore();
+        };
+        const box = (b, title) => {
+          const [cx, cy] = BX[b];
+          clip(b, () => { for (let k = -2; k <= 2; k++) { P.line(...loc(b, [k, -2.5]), ...loc(b, [k, 2.5]), { color: 'grid', width: k ? 0.8 : 1.4 }); P.line(...loc(b, [-2.5, k]), ...loc(b, [2.5, k]), { color: 'grid', width: k ? 0.8 : 1.4 }); } });
+          P.rect(cx - H, cy - H, cx + H, cy + H, { color: 'muted', width: 1 });
+          P.tex(title, cx, cy + H + 0.17, { size: 13, color: 'muted' });
+        };
+        const shape = (b, A, st) => clip(b, () => P.poly(FB.map((p) => loc(b, ap2(A, p))), st));
+        let st = null;
+        v.render(() => {
+          const A = mat(sS.value), B = mat(tS.value), I2 = [[1, 0], [0, 1]];
+          const TS = M.matMul(B, A), ST = M.matMul(A, B), diff = maxAbs(msub(ST, TS)), eq = diff < 1e-9;
+          th.el.hidden = sS.value !== 'rot' && tS.value !== 'rot';
+          box('tl', '\\mathrm F'); box('tr', 'S(\\mathrm F)'); box('bl', 'T(\\mathrm F)'); box('br', 'TS(\\mathrm F) \\text{ and } ST(\\mathrm F)');
+          shape('tl', I2, { color: 'ink', width: 1.5, fill: 'muted', fillAlpha: 0.2 });
+          shape('tr', A, { color: 'accent', width: 1.5, fill: 'accent', fillAlpha: 0.12 });
+          shape('bl', B, { color: 'orange', width: 1.5, fill: 'orange', fillAlpha: 0.12 });
+          shape('br', TS, { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.2 });
+          shape('br', ST, { color: eq ? 'green' : 'orange', width: 2.4, dash: [6, 4] });
+          // arrows of the square
+          const arr = (p, q, lab, col, side) => { P.arrow(p[0], p[1], q[0], q[1], { color: col, width: 2, head: 9 }); P.tex(lab, (p[0] + q[0]) / 2, (p[1] + q[1]) / 2, { color: col, size: 17, dx: side[0], dy: side[1] }); };
+          arr([BX.tl[0] + H + 0.15, BX.tl[1]], [BX.tr[0] - H - 0.15, BX.tr[1]], 'S', 'accent', [0, -14]);
+          arr([BX.tr[0], BX.tr[1] - H - 0.1], [BX.br[0], BX.br[1] + H + 0.42], 'T', 'accent', [16, 0]);
+          arr([BX.tl[0], BX.tl[1] - H - 0.1], [BX.bl[0], BX.bl[1] + H + 0.42], 'T', 'orange', [-16, 0]);
+          arr([BX.bl[0] + H + 0.15, BX.bl[1]], [BX.br[0] - H - 0.15, BX.br[1]], 'S', 'orange', [0, 14]);
+          P.tex(`TS = ${mtex(TS)}`, 6, 3.75, { size: 15, color: 'accent' });
+          P.tex(`ST = ${mtex(ST)}`, 6, 2.45, { size: 15, color: eq ? 'green' : 'orange' });
+          P.text(eq ? 'ST = TS: they commute' : 'ST ≠ TS: they do not commute', 6, 3.1, { align: 'center', size: 13.5, weight: 700, color: eq ? 'green' : 'red' });
+          st = { diff, eq };
+        });
+        v.legend([['accent', '$TS(\\mathrm F)$: $S$ first', { area: true }], ['orange', '$ST(\\mathrm F)$: $T$ first', { dash: true }]]);
+        v.readout(() => st && (st.eq ? `$ST - TS = 0$: the two routes around the square end at the same F.` : `$ST - TS \\ne 0$ (largest entry ${tn(st.diff, 3)}): the order of the two maps matters.`));
+      },
+    },
+    // ------------------------------------------------------------------ 5.74
+    {
+      num: '5.74',
+      kind: 'Theorem',
+      name: 'Commuting operators ⟺ commuting matrices',
+      statement: String.raw`Suppose $S, T \in \mathcal L(V)$ and $v_1, \dots, v_n$ is a basis of $V$. Then $S$ and $T$ commute if and only if $\mathcal M\bigl(S, (v_1, \dots, v_n)\bigr)$ and $\mathcal M\bigl(T, (v_1, \dots, v_n)\bigr)$ commute.`,
+      idea: String.raw`Taking matrices in a fixed basis is an injective, linear and multiplicative operation: $\mathcal M(ST) = \mathcal M(S)\mathcal M(T)$ (3.43), and $\mathcal M$ is an isomorphism from $\mathcal L(V)$ onto $\mathbf F^{n,n}$ (3.71). So $ST = TS \iff \mathcal M(ST) = \mathcal M(TS) \iff \mathcal M(S)\mathcal M(T) = \mathcal M(T)\mathcal M(S)$. In particular, whether the matrices commute does not depend on the basis — although the matrices themselves do.`,
+      caption: String.raw`Drag the basis vectors $v_1, v_2$ of $\mathbf R^2$. The two operators $S, T$ stay fixed (their action on the F, left, does not care about the basis), but their matrices on the right change with every move. The bottom matrix is $\mathcal M(S)\mathcal M(T) - \mathcal M(T)\mathcal M(S)$, the matrix of $ST - TS$: for a commuting pair it is $0$ in every basis; for a non-commuting pair its entries change but it is never $0$. Make $v_1, v_2$ parallel and there is no basis at all.`,
+      deps: ['ladr-5.71', 'ladr-3.43', 'ladr-3.71'],
+      tags: ['commuting'],
+      viz(v) {
+        const M = v.M;
+        const S0 = [[0.9, -0.6], [0.5, 0.8]], S2 = M.matMul(S0, S0);
+        const PAIRS = { c: { S: S0, T: S2.map((r, i) => r.map((x, j) => x - 0.5 * S0[i][j] + (i === j ? 0.4 : 0))) }, n: { S: S0, T: [[0.9, 0.7], [0.1, -0.6]] } };
+        const FB = FSH.map(([x, y]) => [1.4 * x, 1.4 * y]);
+        const pair = v.select('', [{ value: 'c', label: 'commuting: $T = S^2 - 0.5S + 0.4I$' }, { value: 'n', label: 'not commuting' }], 'c');
+        const P = v.stage({ x: [-2.6, 2.6], y: [-2.4, 2.4], equal: true, axes: false, height: 400, weight: 1.15, minWidth: 300, title: 'the basis grid; the F moved by $ST$ and by $TS$' });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 280 });
+        const h1 = P.handle(1, 0.25, { color: 'blue', label: 'v₁' }), h2 = P.handle(0.35, 1, { color: 'purple', label: 'v₂' });
+        const TA = v.table(Q, { rows: 2, cols: 2, region: [0, 0.52, 0.5, 0.92], maxCell: 50, size: 13.5 }), TB = v.table(Q, { rows: 2, cols: 2, region: [0.5, 0.52, 1, 0.92], maxCell: 50, size: 13.5 });
+        const TC = v.table(Q, { rows: 2, cols: 2, region: [0.15, 0.02, 0.85, 0.4], maxCell: 54, size: 14 });
+        const ttl = (T, tex, col) => { const g = T.geo; if (g) Q.texPx(tex, g.X0 + (g.cols * g.cw) / 2, g.Y0 - 15, { color: col, size: 13.5 }); };
+        let st = null;
+        v.render(() => {
+          const { S, T } = PAIRS[pair.value], b1 = [h1.x, h1.y], b2 = [h2.x, h2.y], Pm = [[b1[0], b2[0]], [b1[1], b2[1]]], dt = M.det(Pm);
+          for (let k = -6; k <= 6; k++) {
+            P.line(k * b1[0] - 6 * b2[0], k * b1[1] - 6 * b2[1], k * b1[0] + 6 * b2[0], k * b1[1] + 6 * b2[1], { color: k ? 'blue' : 'purple', width: k ? 1 : 1.6, alpha: k ? 0.2 : 0.45 });
+            P.line(-6 * b1[0] + k * b2[0], -6 * b1[1] + k * b2[1], 6 * b1[0] + k * b2[0], 6 * b1[1] + k * b2[1], { color: k ? 'purple' : 'blue', width: k ? 1 : 1.6, alpha: k ? 0.2 : 0.45 });
+          }
+          const ST = M.matMul(S, T), TS = M.matMul(T, S);
+          P.poly(FB, { color: 'muted', width: 1, fill: 'muted', fillAlpha: 0.12 });
+          P.poly(FB.map((p) => ap2(ST, p)), { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.18 });
+          P.poly(FB.map((p) => ap2(TS, p)), { color: 'orange', width: 2.2, dash: [6, 4] });
+          P.arrow(0, 0, b1[0], b1[1], { color: 'blue', width: 2.6 }); P.arrow(0, 0, b2[0], b2[1], { color: 'purple', width: 2.6 });
+          const ok = Math.abs(dt) > 0.04;
+          if (ok) {
+            const Pi = M.inverse(Pm), MS = M.matMul(Pi, M.matMul(S, Pm)), MT = M.matMul(Pi, M.matMul(T, Pm)), C = msub(M.matMul(MS, MT), M.matMul(MT, MS));
+            const zero = maxAbs(C) < 1e-9;
+            TA.draw({ value: (i, j) => MS[i][j], format: (x) => pn(x) }); TB.draw({ value: (i, j) => MT[i][j], format: (x) => pn(x) });
+            TC.draw({ value: (i, j) => C[i][j], format: (x) => pn(Math.abs(x) < 5e-10 ? 0 : x), fill: () => [zero ? 'green' : 'red', 0.14] });
+            ttl(TA, '\\mathcal M(S)', 'ink'); ttl(TB, '\\mathcal M(T)', 'ink'); ttl(TC, '\\mathcal M(S)\\mathcal M(T) - \\mathcal M(T)\\mathcal M(S)', zero ? 'green' : 'red');
+            st = { ok, zero, C, MS, MT };
+          } else {
+            Q.text('v₁, v₂ are not a basis:', 0.5, 0.55, { align: 'center', size: 13.5, color: 'red', weight: 600 });
+            Q.text('no matrices at all', 0.5, 0.47, { align: 'center', size: 13.5, color: 'red', weight: 600 });
+            st = { ok };
+          }
+        });
+        v.legend([['muted', 'F', { area: true }], ['accent', '$ST(\\mathrm F)$', { area: true }], ['orange', '$TS(\\mathrm F)$', { dash: true }], ['blue', 'basis $v_1, v_2$ and its grid']]);
+        v.readout(() => {
+          if (!st) return '';
+          if (!st.ok) return 'The two vectors are (nearly) parallel: they are not a basis, so the matrices are undefined.';
+          return st.zero ? `In this basis $\\mathcal M(S)\\mathcal M(T) - \\mathcal M(T)\\mathcal M(S) = 0$, and it stays $0$ wherever you drag the basis: it is the matrix of $ST - TS = 0$.` : `In this basis the commutator matrix is $${mtex(st.C)}$; drag the basis and it changes (it is $P^{-1}(ST - TS)P$ for the change of basis $P$), but it can never become $0$ because $ST - TS \\ne 0$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.75
+    {
+      num: '5.75',
+      kind: 'Theorem',
+      name: 'Eigenspace is invariant under a commuting operator',
+      statement: String.raw`Suppose $S, T \in \mathcal L(V)$ commute and $\lambda \in \mathbf F$. Then $E(\lambda, S)$ is invariant under $T$.`,
+      idea: String.raw`If $Sv = \lambda v$, then $S(Tv) = (ST)v = (TS)v = T(Sv) = T(\lambda v) = \lambda\,Tv$, so $Tv$ is again in $E(\lambda, S)$. This one-line computation is the reason commuting operators behave so well together: each eigenspace of one is a stage on which the other acts by itself (5.76, 5.78).`,
+      caption: String.raw`$S$ has the eigenspace $E(2, S)$ (a plane) and $E(-1, S)$ (a line) in $\mathbf R^3$. Drag the gold vector $v$ inside the chosen eigenspace: for an operator $T$ that commutes with $S$, the arrow $Tv$ (green) stays in that eigenspace, and so does the image of a whole circle of the plane (the green curve). Raise $\varepsilon$ to add a non-commuting part to $T$: $Tv$ tilts out (red), with the drop to the eigenspace showing by how much.`,
+      deps: ['ladr-5.71', 'ladr-5.52', 'ladr-5.2'],
+      tags: ['commuting', 'invariant subspaces'],
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.1, 2.2], equal: true, axes: false, height: 420, minWidth: 340 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.6 });
+        const SM = conj(M, QM, [[2, 0, 0], [0, 2, 0], [0, 0, -1]]);
+        const T0 = conj(M, QM, [[0.6, -0.9, 0], [0.8, 1.1, 0], [0, 0, 1.3]]), PERT = conj(M, QM, [[0, 0, 0.8], [0, 0, -0.5], [0.9, 0.6, 0]]);
+        const PL = orthN([QB[0], QB[1]]), LN = [unit3(QB[2])];
+        const which = v.select('eigenspace', [{ value: 'p', label: '$E(2, S)$, a plane' }, { value: 'l', label: '$E(-1, S)$, a line' }], 'p');
+        const eps = v.slider('non-commuting part $\\varepsilon$', 0, 1, 0, { step: 0.02 });
+        const hp = sc.handle(add3(mul3(PL[0], 0.9), mul3(PL[1], 0.6)), { mode: 'plane', a: PL[0], b: PL[1], color: 'gold', label: 'v', lim: 1.3 });
+        const hl = sc.handle(mul3(LN[0], 0.7), { mode: 'line', d: LN[0], color: 'gold', label: 'v', labelPos: 'w', lim: 1.2 });
+        let st = null;
+        v.render(() => {
+          const T = T0.map((r, i) => r.map((x, j) => x + eps.value * PERT[i][j])), lamS = which.value === 'p' ? 2 : -1, E = which.value === 'p' ? PL : LN;
+          hp.h.visible = which.value === 'p'; hl.h.visible = which.value === 'l';
+          const x = which.value === 'p' ? hp.p : hl.p, Tx = ap(T, x), pr = projOnto(Tx, E), dist = len3(sub3(Tx, pr)), inv = dist < 1e-9;
+          const comm = maxAbs(msub(M.matMul(SM, T), M.matMul(T, SM)));
+          sc.begin();
+          drawSub(sc, PL, 'blue', { r: 1.45, fillAlpha: which.value === 'p' ? 0.15 : 0.05, edge: which.value === 'p' ? 0.6 : 0.25 });
+          drawSub(sc, LN, 'purple', { len: 1.7, alpha: which.value === 'l' ? 0.55 : 0.25 });
+          if (which.value === 'p') {
+            const rim = []; for (let i = 0; i <= 72; i++) { const t = (2 * Math.PI * i) / 72; rim.push(ap(T, add3(mul3(PL[0], 0.55 * Math.cos(t)), mul3(PL[1], 0.55 * Math.sin(t))))); }
+            sc.path(rim, { color: inv ? 'green' : 'red', width: 1.8, dash: [5, 4] });
+          }
+          if (!inv) { sc.line(Tx, pr, { color: 'red', width: 1.4, dash: [3, 3] }); sc.dot(pr, { r: 3, color: 'red' }); }
+          sc.arrow(ZERO, Tx, { color: inv ? 'green' : 'red', width: 3 });
+          sc.arrow(ZERO, x, { color: 'gold', width: 3 });
+          sc.tex('Tv', Tx, { color: inv ? 'green' : 'red', size: 15, dx: 16, dy: -10 });
+          sc.tex('E(2,S)', subLabelAt(sc, PL, { r: 1.45, side: 'left' }), { color: 'blue', size: 14, dx: -30 });
+          sc.tex('E(-1,S)', subLabelAt(sc, LN, { len: 1.7, low: true }), { color: 'purple', size: 14, dy: 14 });
+          sc.flush();
+          S.corner(comm < 1e-9 ? 'ST = TS' : `ST ≠ TS (largest entry of ST − TS: ${pn(comm, 2)})`, 'tl', { color: comm < 1e-9 ? 'green' : 'red', weight: 700 });
+          const STx = ap(SM, Tx);
+          st = { dist, comm, lamS, err: len3(sub3(STx, mul3(Tx, lamS))) };
+        });
+        v.legend([['gold', '$v \\in E(\\lambda, S)$'], ['green', '$Tv$, inside the eigenspace'], ['red', '$Tv$ leaving it (non-commuting $T$)']]);
+        v.readout(() => st && `With $\\lambda = ${st.lamS}$: $S(Tv) - \\lambda\\,Tv$ has length $${st.comm < 1e-9 ? v.sci(st.err, 1) : tn(st.err, 3)}$ and $Tv$ is at distance $${st.dist < 1e-9 ? '0' : tn(st.dist, 3)}$ from $E(${st.lamS}, S)$: ${st.comm < 1e-9 ? 'since $ST = TS$, $S(Tv) = T(Sv) = \\lambda\\,Tv$ — **invariant**.' : 'without commutativity the eigenspace is **not** invariant.'}`);
       },
     },
   ],

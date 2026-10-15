@@ -163,6 +163,13 @@ class Stage {
     this.box.style.height = H + 'px';
     this._fit();
   }
+  /** Run fn with drawing clipped to a data rectangle (default: the current window), e.g. s.clip(() => s.curve(f)). */
+  clip(fn, x = this.xr, y = this.yr) {
+    const c = this.ctx, a = this._px(x[0]), b = this._px(x[1]), p = this._py(y[0]), q = this._py(y[1]);
+    c.save(); c.beginPath(); c.rect(Math.min(a, b), Math.min(p, q), Math.abs(b - a), Math.abs(q - p)); c.clip();
+    try { fn(); } finally { c.restore(); }
+    return this;
+  }
   /** Change the visible window (data coordinates). */
   setView(x, y) {
     const same = (a, b) => !a || (Math.abs(a[0] - b[0]) < 1e-12 && Math.abs(a[1] - b[1]) < 1e-12);
@@ -307,13 +314,15 @@ class Stage {
         c.textBaseline = below ? 'top' : 'bottom'; c.fillText(lab, x, below ? ax + 5 : ax - 5);
       }
       c.textAlign = 'right'; c.textBaseline = 'middle';
-      const left = ay - 26 > 0;
+      const left = ay - 26 > 0; let yLabW = 0;
       const yMax = (this.lx || this.ly) && !below ? this.H - 22 : this.H - 8; // log axes: keep the bottom-left corner for the x labels
       for (const [v, lab] of this._ticks('y')) {
         const y = this.Y(v); if (Math.abs(v - y0) < 1e-12 && !box) continue; if (y < 8 || y > yMax) continue;
         c.beginPath(); c.moveTo(ay - 3, y); c.lineTo(ay + 3, y); c.stroke();
         c.textAlign = left ? 'right' : 'left'; c.fillText(lab, left ? ay - 6 : ay + 6, y);
+        if (!left) yLabW = Math.max(yLabW, c.measureText(lab).width);
       }
+      this._labOff = { x: below ? 0 : 15, y: left ? 0 : yLabW + 6 }; // tick labels inside the panel push the axis labels inward
       if ((this.lx && !o.xticks) || (this.ly && !o.yticks)) { // unlabelled minor ticks on log axes
         c.beginPath();
         if (this.lx && !o.xticks) for (const v of this._logTicks('x').minor) { const x = this.X(v); if (x > 2 && x < this.W - 2) { c.moveTo(x, ax - 2); c.lineTo(x, ax + 2); } }
@@ -322,8 +331,9 @@ class Stage {
       }
     }
     c.font = 'italic 15px Newsreader, "Times New Roman", serif'; c.fillStyle = resolveColor('muted');
-    if (o.xlabel) { c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText(o.xlabel, this.W - 6, ax - 5); }
-    if (o.ylabel) { c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(o.ylabel, ay + 7, 5); }
+    const off = o.ticks ? this._labOff || { x: 0, y: 0 } : { x: 0, y: 0 };
+    if (o.xlabel) { c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText(o.xlabel, this.W - 6, ax - 5 - off.x); }
+    if (o.ylabel) { c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(o.ylabel, ay + 7 + off.y, 5); }
     c.restore();
   }
 

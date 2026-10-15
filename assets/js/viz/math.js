@@ -275,7 +275,8 @@ export function inverse(A) {
   return M.map((r) => r.slice(n));
 }
 /** Solve A x = b. */
-export const solve = (A, b) => { const Ai = inverse(A); return Ai ? matVec(Ai, b) : null; };
+/** Solve A x = b; b may be a vector or a matrix (several right-hand sides as columns). null if A is singular. */
+export const solve = (A, b) => { const Ai = inverse(A); return !Ai ? null : Array.isArray(b[0]) ? matMul(Ai, b) : matVec(Ai, b); };
 /** Eigen-decomposition of a symmetric 2×2 matrix [[a,b],[b,d]] → {values:[l1,l2], vectors:[[x,y],[x,y]]} with l1 ≥ l2. */
 export function eigSym2([[a, b], [, d]]) {
   const tr = a + d, disc = Math.sqrt(((a - d) / 2) ** 2 + b * b);

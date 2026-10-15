@@ -37,7 +37,10 @@ export default {
 node scripts/build.mjs                                   # must report 0 errors
 node scripts/check.mjs <col>/<n> --shots --modes    # every item ✓, no quality warnings
 node scripts/check.mjs <col>/<n> --shots --dark     # then look at the dark screenshots
+node scripts/check.mjs <col>/<n> --shots --still    # animations and step players: shows the frame set by their `still` option
 ```
+Without `--still`, screenshots catch animations about 1.5 s in; give animated items (`v.animate`, `v.steps`) a `still` frame and review it with `--still`. Stage helpers worth knowing: `s.clip(fn)` clips drawing to the window; `M.solve(A, B)` accepts a matrix right-hand side; scene3 handles take `onDrag(H)` and expose `H.visible` / `H.dragging`.
+
 **Open and look at every screenshot** (Read the PNGs in shots/: `<id>.png`, `<id>~k.png` for modes, `<id>.dark.png`). Fix overlapping labels, things drawn off-canvas, unreadable readouts, empty-looking panels, wrong numbers. Iterate until every picture is something you would be proud to show a student.
 
 ## Rules

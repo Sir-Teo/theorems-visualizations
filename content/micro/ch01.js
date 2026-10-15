@@ -46,7 +46,7 @@ export default {
           const lim = !free.value, rest = lim ? H - P.x - P.y : B.r, tc = v.rgb('teal');
           s.raster((x, y) => { if (lim && x + y > H) return null; const t = total(x, y, lim ? H - x - y : B.r) / 3; return [tc[0], tc[1], tc[2], 255 * (0.03 + 0.45 * t ** 5)]; }, { key: lim ? 'lim' : 'free', res: 3 });
           if (lim) {
-            for (const r of [10, 20, 30, 40, 50]) { s.line(0, H - r, H - r, 0, { color: 'faint', width: 1, dash: [3, 4] }); s.text(`rest ${r}`, (H - r) * 0.86, (H - r) * 0.14, { color: 'muted', size: 10.5, align: 'center', dy: -2 }); }
+            for (const r of [10, 20, 30, 40, 50]) { s.line(0, H - r, H - r, 0, { color: 'faint', width: 1, dash: [3, 4] }); s.text(`rest ${r}`, (H - r) * 0.7, (H - r) * 0.3, { color: 'muted', size: 10.5, align: 'center', dy: -2 }); }
             s.line(0, H, H, 0, { color: 'green', width: 2.4 }); s.text('all 60 h used', 44, 18, { color: 'green', size: 12, dx: 6 });
           } else s.corner('no time constraint', 'tr', { color: 'muted' });
           const bs = lim ? best.s : B.s, bw = lim ? best.w : B.w;

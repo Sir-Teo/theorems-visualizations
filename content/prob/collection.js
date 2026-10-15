@@ -14,5 +14,6 @@ export default {
     license: "free PDF from the author",
     url: "https://services.math.duke.edu/~rtd/PTE/pte.html"
   },
+  chapterLabels: { 10: "Appendix A" },
   blurb: String.raw`Measure-theoretic probability: laws of large numbers, central limit theorems, random walks, martingales, Markov chains, ergodic theorems and Brownian motion.`
 };

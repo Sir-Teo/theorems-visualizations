@@ -477,7 +477,7 @@ $$a=\frac{m_1-m_2}{m_1+m_2}\,g,\qquad T=\frac{2m_1m_2}{m_1+m_2}\,g,$$
 with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2$ to the denominator of $a$, and then the tensions on the two sides differ: $T_1-T_2=Ia/R^2$.`,
       scope: String.raw`Assumes an inextensible string that does not slip on the pulley, a frictionless axle and negligible air resistance. Atwood built it to slow free fall down to a measurable rate.`,
       idea: String.raw`Apply the second law (1.6) to each mass along the string, $m_1a=m_1g-T_1$ and $m_2a=T_2-m_2g$; the string constraint (1.14) makes the accelerations equal and opposite, and the pulley's rotation gives $I\,a/R=R(T_1-T_2)$. Adding eliminates the tensions. The weight difference drives the whole system's inertia, which is why $a$ can be made as small as one likes.`,
-      caption: String.raw`Choose the masses and the pulley's mass. The string is simulated honestly as a very stiff, slightly damped spring (no constraint is imposed), so the tension *emerges* from the dynamics. The measured acceleration (a least-squares fit of the simulated motion) and the mean tensions agree with the formulas, and the tension stays between the two weights.`,
+      caption: String.raw`Choose the masses and the pulley's mass. The string is simulated honestly as a very stiff, slightly damped spring (no constraint is imposed), so the tension *emerges* from the dynamics: released with the rope just taut, it overshoots, rings and settles. After the ringing, the measured acceleration (a least-squares fit of the simulated motion) and the mean tensions agree with the formulas, and the tension sits between the two weights.`,
       deps: ['mech-1.6', 'mech-1.14'],
       refs: ['Goldstein §1.6'],
       tags: ['forces', 'constraints'],
@@ -534,7 +534,7 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
           s.tex('m_1', -R, y1, { color: 'panel', align: 'center', baseline: 'middle', size: 13 });
           s.tex('m_2', R, y2, { color: 'panel', align: 'center', baseline: 'middle', size: 13 });
           // tensions over time
-          const top = Math.max(m1, m2) * G0 * 1.25;
+          const top = Math.max(Math.max(m1, m2) * G0 * 1.15, Math.max(...sim.T1, ...sim.T2) * 1.05);
           pl.setView([0, Math.max(tEnd, 0.3)], [0, top]);
           pl.hline(m1 * G0, { color: 'blue', dash: [6, 4], width: 1.2 }); pl.hline(m2 * G0, { color: 'purple', dash: [6, 4], width: 1.2 });
           pl.text('m₁g', Math.max(tEnd, 0.3), m1 * G0, { color: 'blue', size: 12, align: 'right', dy: -10 });

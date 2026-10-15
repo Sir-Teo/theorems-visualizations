@@ -280,7 +280,7 @@ export default {
       title: 'Diffusion and travelling waves',
       summary: String.raw`Random movement of many individuals becomes diffusion, and diffusion combined with local growth makes reaction–diffusion equations. Their solutions spread as travelling fronts whose speed is fixed by growth and motility alone — the Fisher–KPP speed 2√(rD) — or, with an Allee effect, by the whole nonlinearity. Chemotaxis, critical patch sizes, rabies fronts and fat-tailed dispersal show how space changes population biology, and Reid’s paradox shows where simple diffusion fails.`,
       items: [
-        { num: '8.1', kind: 'Model', name: 'Random walk and its diffusion limit', deps: ['stoch-13.2'], refs: ['Edelstein-Keshet ch. 9'],
+        { num: '8.1', kind: 'Model', name: 'Random walk and its diffusion limit', deps: ['stoch-13.2', 'prob-3.4.1'], refs: ['Edelstein-Keshet ch. 9'],
           pic: 'Release a thousand random walkers from one point; their histogram flattens into a Gaussian whose variance grows linearly in time, plotted against the theoretical 2Dt.' },
         { num: '8.2', alias: 'pchem-10.2', name: 'Fick’s law and the diffusion equation' },
         { num: '8.3', kind: 'Theorem', name: 'Fundamental solution: the spreading Gaussian', deps: ['mathbio-8.2', 'fa-7.6', 'pde-3.3'], refs: ['Murray I ch. 11'],
