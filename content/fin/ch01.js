@@ -59,7 +59,7 @@ a geometric sequence. For $r>0$ and every whole number of periods $t\ge 2$ the c
           L.fn((t) => 1 + r * t, { domain: [0, TM], color: 'orange', width: 2.2 });
           L.fn(g, { domain: [0, TM], color: 'accent', width: 2.6 });
           L.text('compound', TM, top, { align: 'right', dx: -10, dy: -2, color: 'accent', weight: 700, size: 12 });
-          L.text('simple', 0.72 * TM, 1 + r * 0.72 * TM, { align: 'center', dy: -12, color: 'orange', weight: 700, size: 12 });
+          L.text('simple', 0.62 * TM, 1 + r * 0.62 * TM, { align: 'center', dy: 13, color: 'orange', weight: 700, size: 12 });
           const sk = 1 + r * k, ck = g(k);
           if (Math.abs(L.Y(sk) - L.Y(ck)) > 34) {
             L.arrow(k + 1.2, sk, k + 1.2, ck, { both: true, color: 'gold', width: 1.5, head: 6 });
@@ -142,7 +142,7 @@ The limit is **continuous compounding**: the balance $A(t)=A(0)\,e^{rt}$ grows a
           const { r, T, E, sel, gap } = st;
           const list = FREQ.map((m) => `$m=${m}$: ${bal(r, m, T).toFixed(5)}`).join(' · ');
           const m = sel === 'inf' ? 365 : +sel;
-          return `${list} · limit $e^{rt}$ = **${E.toFixed(5)}** · shortfall × $m$: ${(gap(m) * m).toFixed(4)} at $m=${m}$, ${(gap(1e4) * 1e4).toFixed(4)} at $m=10^4$, tending to $r^2te^{rt}/2$ = ${((r * r * T * E) / 2).toFixed(4)}` + (Math.abs(r - 1) < 1e-9 && Math.abs(T - 1) < 1e-9 ? ' · with $r=100\\%$ for one year the limit is $e = 2.71828\\ldots$, Bernoulli\'s answer.' : ` · continuous compounding adds ${pct((E - bal(r, 1, T)) / bal(r, 1, T), 3)} to annual compounding here.`);
+          return `${list} · limit $e^{rt}$ = **${E.toFixed(5)}** · shortfall × $m$: ${(gap(m) * m).toFixed(4)} at $m=${m}$, ${(gap(1e4) * 1e4).toFixed(4)} at $m=10^4$, tending to $r^2te^{rt}/2$ = ${((r * r * T * E) / 2).toFixed(4)}` + (Math.abs(r - 1) < 1e-9 && Math.abs(T - 1) < 1e-9 ? ' · Bernoulli\'s answer: at $r=100\\%$ for one year the limit is $e = 2.71828\\ldots$' : ` · continuous compounding adds ${pct((E - bal(r, 1, T)) / bal(r, 1, T), 3)} to annual compounding here.`);
         });
       },
     },
@@ -278,7 +278,7 @@ The rule is within about 2% of the exact doubling time for rates between roughly
           R.text(`72 is exact at ${pct(r72, 2)}`, r72, 72, { dx: 8, dy: 13, color: 'green', weight: 700, size: 11.5 });
           R.vline(r, { color: 'gold', width: 1.2, dash: [3, 3] });
           R.dot(r, N(r, c), { r: 6, color: 'gold' });
-          R.text(`N = ${fx(N(r, c), 2)}`, r, N(r, c), r < 0.045 ? { dx: 8, dy: 14, color: 'gold', weight: 700, size: 12 } : { dx: -8, dy: -12, align: 'right', color: 'gold', weight: 700, size: 12 });
+          R.text(`N = ${fx(N(r, c), 2)}`, r, N(r, c), r < 0.045 || N(r, c) < 70.6 ? { dx: 8, dy: 14, color: 'gold', weight: 700, size: 12 } : { dx: -8, dy: -12, align: 'right', color: 'gold', weight: 700, size: 12 });
           st = { r, c, T, rp };
         });
         v.readout(() => {
@@ -314,7 +314,7 @@ Present value is linear: the value of a sum of streams is the sum of their value
           loan: [[0, 100], [1, -26], [2, -26], [3, -26], [4, -26], [5, -26]],
         };
         const rS = v.slider('discount rate $r$', 0, 0.25, 0.08, { step: 0.0025, fmt: (x) => pct(x, 2) });
-        const xt = Array.from({ length: 11 }, (_, k) => [k, String(k)]);
+        const xt = Array.from({ length: 11 }, (_, k) => [k, k ? String(k) : 'today']);
         const T = v.stage({ x: [X0, X1], y: [-128, 128], height: 340, axes: 'box', full: true, xticks: xt, title: 'cash flows over time (top) and their present values stacked at today (left)' });
         const D = v.stage({ x: [X0, X1], y: [0, 1.2], height: 150, axes: 'box', full: true, xticks: xt, xlabel: 'years from today', ylabel: 'd(t)' });
         const snap = (x, y) => [M.clamp(Math.round(x * 4) / 4, 0, 10), M.clamp(Math.round(y), -120, 120)];
@@ -331,14 +331,13 @@ Present value is linear: the value of a sum of streams is the sum of their value
           const h = pool.find((q) => !q.visible); if (!h) return;
           h.x = sx; h.y = sy; h.visible = true;
         });
-        v.legend([['blue', 'money received'], ['red', 'money paid'], ['muted', 'path back to today, shrinking by $(1+r)^{-t}$', { dash: true }], ['green', 'net present value']]);
+        v.legend([['blue', 'money received'], ['red', 'money paid'], ['blue', 'its present value', { area: true }], ['muted', 'path back to today, shrinking by $(1+r)^{-t}$', { dash: true }], ['green', 'net present value']]);
         let st = null;
         v.render(() => {
           const r = rS.value;
           const F = act().map((h) => { const t = h.x, c = h.y, d = Math.pow(1 + r, -t); h.color = c >= 0 ? 'blue' : 'red'; return { t, c, d, pv: c * d, col: h.color }; }).sort((a, b) => a.t - b.t);
           T.hline(0, { color: 'ink', width: 1.1 });
           T.vline(0, { color: 'muted', width: 1, dash: [4, 4] });
-          T.text('today', 0, 128, { dy: 9, dx: 4, color: 'muted', size: 11, weight: 600 });
           T.rect(X0 + 0.75, -126, -0.2, 126, { fill: 'muted', fillAlpha: 0.06, stroke: false, radius: 6 });
           T.text('present values, stacked', -1.65, 126, { dy: 10, align: 'center', color: 'muted', size: 11, weight: 600 });
           const few = F.length <= 6;
@@ -347,7 +346,7 @@ Present value is linear: the value of a sum of streams is the sum of their value
             T.rect(q.t - 0.15, 0, q.t + 0.15, q.pv, { fill: q.col, fillAlpha: 0.2, color: q.col, alpha: 0.45, width: 1 });
             T.arrow(q.t, 0, q.t, q.c, { color: q.col, width: 2.6, head: 10 });
             T.text(`${q.c > 0 ? '+' : '−'}${Math.abs(q.c)}`, q.t, q.c, { dy: q.c >= 0 ? -16 : 16, align: 'center', color: q.col, weight: 700, size: 11.5 });
-            if (few && q.t > 0 && Math.abs(T.Y(q.pv) - T.Y(0)) > 26) T.text(`PV ${fx(q.pv, 1)}`, q.t + 0.2, q.pv / 2, { color: q.col, size: 10.5, weight: 600, alpha: 0.85 });
+            if (few && q.t > 0 && Math.abs(T.Y(q.pv) - T.Y(0)) > 26) T.text(fx(q.pv, 1), q.t + 0.18, q.pv / 2, { color: q.col, size: 10, weight: 650, alpha: 0.9 });
           }
           // the present values stacked head to tail, then the net
           const n = F.length, xa = -2.6, xb = -1.25, w = n > 1 ? Math.min(0.34, (xb - xa) / (n - 1)) : 0;

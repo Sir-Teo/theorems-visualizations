@@ -18,7 +18,7 @@ function ertbpInertial(mu, ep, s0, T, o = {}) {
     const [px, py] = prim(t), r1 = Math.hypot(X + mu * px, Y + mu * py), r2 = Math.hypot(X - (1 - mu) * px, Y - (1 - mu) * py);
     const E = 0.5 * (U * U + W * W) - (1 - mu) / r1 - mu / r2, h = X * W - Y * U, f = Math.atan2(py, px);
     const c = Math.cos(f), s = Math.sin(f);
-    return { t, x: c * X + s * Y, y: -s * X + c * Y, E, h, C: -2 * (E - h), f, sep: Math.hypot(px, py) };
+    return { t, X, Y, x: c * X + s * Y, y: -s * X + c * Y, E, h, C: -2 * (E - h), f, sep: Math.hypot(px, py) };
   };
   let [X, Y, U, W] = s0, t = 0, stop = 'time';
   const out = [rec(0, X, Y, U, W)], A = [0, 0, 0, 0], B = [0, 0, 0, 0], Cc = [0, 0, 0, 0], D = [0, 0, 0, 0];
@@ -93,7 +93,7 @@ export default {
 $$C_J = 2\Omega(x,y,z) - (\dot x^2 + \dot y^2 + \dot z^2),\qquad \Omega = \tfrac12(x^2+y^2) + \frac{1-\mu}{r_1} + \frac{\mu}{r_2},$$
 computed in the frame rotating with the primaries, is conserved. Equivalently, in the inertial frame neither the particle’s energy $E$ nor its angular momentum $h$ (per unit mass) is conserved, but the combination $E - n h = -C_J/2$ is. It is the only known integral of the problem, and it requires the primaries’ orbit to be circular.`,
       idea: String.raw`In the rotating frame the equations of motion are $\ddot{\mathbf r} + 2\,\hat{\mathbf z}\times\dot{\mathbf r} = \nabla\Omega$ (mech 9.6), with the centrifugal force absorbed into $\Omega$ (mech 9.12) and no explicit time dependence. Dotting with $\dot{\mathbf r}$ kills the Coriolis term, which does no work, leaving $\frac{d}{dt}\big(\tfrac12|\dot{\mathbf r}|^2 - \Omega\big) = 0$. In the inertial frame the potential is time-dependent, so $E$ changes; but it depends on time only through rotation at rate $n$, so $dE/dt = n\,dh/dt$. If the primaries move on ellipses the rotating-frame potential pulsates in time and the argument fails.`,
-      caption: String.raw`Earth–Moon system ($\mu = 0.01215$). Drag the **start** point and the tip of the **velocity** arrow (rotating frame) to launch a particle; it is integrated for 40 time units (6.4 months). Below: the changes in its inertial energy $\Delta E$ and angular momentum $\Delta h$ swing widely — here $E$ even turns positive for a while — but they swing *together*, so $\Delta C_J$ (green) stays flat to integrator precision. Give the primaries an eccentric orbit and the Jacobi “constant” starts to wander.`,
+      caption: String.raw`Earth–Moon system ($\mu = 0.01215$). Drag the **start** point and the tip of the **velocity** arrow (rotating frame, left) to launch a particle; it is integrated for 40 time units (6.4 months) and also shown in the inertial frame (right). Below: the changes in its inertial energy $\Delta E$ and angular momentum $\Delta h$ jump at every lunar fly-by, but they jump *together*, so $\Delta C_J$ (green) stays flat to integrator precision. Give the primaries an eccentric orbit and the Jacobi “constant” starts to wander.`,
       deps: ['mech-9.12', 'mech-9.6'],
       see: ['mech-8.20'],
       refs: ['Murray–Dermott §3.3'],
@@ -102,11 +102,12 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
       viz(v) {
         const mu = MU_EM, K = 0.5; // velocity drawn K length units per unit speed
         const ep = v.slider('eccentricity of the primaries’ orbit $e\'$', 0, 0.1, 0, { step: 0.005 });
-        const s = v.stage({ x: [-1.45, 1.45], y: [-1.15, 1.15], equal: true, axes: false, height: 330, weight: 1, title: 'rotating frame (Earth left, Moon right)' });
+        const s = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 1.1, title: 'rotating frame (Earth left, Moon right)' });
+        const si = v.stage({ x: [-1.45, 1.45], y: [-1.3, 1.3], equal: true, axes: false, height: 330, weight: 1, title: 'the same orbit, inertial frame' });
         const g = v.stage({ x: [0, 40], y: [-1, 1], axes: 'box', height: 210, full: true, xlabel: 'time (units of 1/n; 2π = one lunar month)', ylabel: 'change since t = 0', title: 'energy and angular momentum change, their combination does not' });
-        let vel = [0, 0.38];
-        const P = s.handle(0.85, 0, { color: 'accent', label: 'start', labelPos: 'sw' });
-        const Vt = s.handle(0.85 + K * vel[0], K * vel[1], { color: 'orange', label: 'v', labelPos: 'ne' });
+        let vel = [0, 0.5];
+        const P = s.handle(0.8, 0, { color: 'accent', label: 'start', labelPos: 'sw' });
+        const Vt = s.handle(0.8 + K * vel[0], K * vel[1], { color: 'orange', label: 'v', labelPos: 'ne' });
         P.onDrag = () => { Vt.x = P.x + K * vel[0]; Vt.y = P.y + K * vel[1]; };
         Vt.onDrag = () => { vel = [(Vt.x - P.x) / K, (Vt.y - P.y) / K]; };
         const cache = memo();
@@ -127,6 +128,14 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
           primaries(s, mu, { labels: ['Earth', 'Moon'] });
           const last = D.R[D.R.length - 1];
           s.dot(last.x, last.y, { r: 4, color: 'accent' });
+          // inertial frame
+          si.circle(0, 0, 1 - mu, { color: 'faint', width: 1, dash: [3, 4] });
+          si.path(D.R.map((q) => [q.X, q.Y]), { color: 'accent', width: 1.2, alpha: 0.85 });
+          si.dot(0, 0, { r: 7, color: 'blue' });
+          const fl = last.f, sl = last.sep;
+          si.dot((1 - mu) * sl * Math.cos(fl), (1 - mu) * sl * Math.sin(fl), { r: 4.5, color: 'muted' });
+          si.dot(last.X, last.Y, { r: 4, color: 'accent' });
+          si.text('Moon’s orbit', 0, -(1 - mu), { color: 'faint', size: 10.5, dy: 12, align: 'center' });
           s.arrow(P.x, P.y, Vt.x, Vt.y, { color: 'orange', width: 2.2 });
           if (D.R.stop === 'collision') s.corner('collided — move the start', 'tl', { color: 'red', weight: 600 });
           else s.corner(`C_J = ${v.fix(D.C0, 4)}`, 'tl', { color: 'green', weight: 600 });
@@ -173,10 +182,10 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
         const sys = v.select('system', [{ value: 'em', label: 'Earth–Moon (μ = 0.012)' }, { value: 'pc', label: 'Pluto–Charon (μ = 0.11)' }, { value: 'sj', label: 'Sun–Jupiter (μ = 0.00095)' }], 'em');
         const range = () => { const L = lagrange(SYS[sys.value].mu); return [L.C.L4 - 0.04, L.C.L1 + 0.12, L]; };
         const Cof = (u) => { const [lo, hi] = range(); return lo + u * (hi - lo); };
-        const uS = v.slider('Jacobi constant $C_J$', 0, 1, 0.78, { step: 0.001, fmt: (u) => v.fix(Cof(u), 4) });
+        const uS = v.slider('Jacobi constant $C_J$', 0, 1, 0.64, { step: 0.001, fmt: (u) => v.fix(Cof(u), 4) });
         const s = v.stage({ x: [-1.6, 1.6], y: [-1.3, 1.3], equal: true, axes: false, height: 380, weight: 1.35, title: 'forbidden region (shaded) and an orbit with this C' });
         const p = v.stage({ x: [-1.6, 1.6], y: [2.9, 3.6], axes: 'box', height: 380, weight: 1, xlabel: 'x (y = 0)', ylabel: '2Ω', title: 'profile along the x-axis' });
-        const H = s.handle(0.5, 0.0, { color: 'accent', label: 'launch', labelPos: 'sw' });
+        const H = s.handle(0.5, 0.0, { color: 'accent', label: 'launch', labelPos: 'se' });
         const Dh = s.handle(0.5, 0.25, { color: 'orange', r: 6 });
         let ang = Math.PI / 2;
         H.onDrag = () => { Dh.x = H.x + 0.25 * Math.cos(ang); Dh.y = H.y + 0.25 * Math.sin(ang); };
@@ -223,7 +232,7 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
           const { C, L, worst, R, v2 } = cur, Cs = L.C;
           const phase = C > Cs.L1 ? 'all necks closed: three separate regions — a particle near one body is trapped there' : C > Cs.L2 ? 'neck at L1 open: the two inner regions merge, but nothing can escape' : C > Cs.L3 ? 'L2 neck open too: escape to infinity past the secondary is allowed' : C > Cs.L4 ? 'L3 open as well: only tadpole-shaped zones around L4 and L5 remain forbidden' : 'below C at L4/L5: nothing in the plane is forbidden';
           let out = String.raw`$C_J = ${v.fix(C, 4)}$ ($C_{L1} = ${v.fix(Cs.L1, 4)}$, $C_{L2} = ${v.fix(Cs.L2, 4)}$, $C_{L3} = ${v.fix(Cs.L3, 4)}$, $C_{L4,5} = ${v.fix(Cs.L4, 4)}$): ${phase}`;
-          if (R && v2 > 0) out += String.raw` · along the orbit, $\max(C_J - 2\Omega) = ${sci(v, worst)}$ ≤ 0: it never enters the shading${R.stop === 'stop' ? ' (stopped at a collision or escape)' : ''}`;
+          if (R && v2 > 0) out += String.raw` · along the orbit the smallest $v^2 = 2\Omega - C_J$ is ${v.fix(-worst, 4)} ≥ 0: it never enters the shading${R.stop === 'stop' ? ' (stopped at a collision or escape)' : ''}`;
           return out;
         });
       },

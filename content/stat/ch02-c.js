@@ -303,9 +303,9 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
         const frames = [
           { line: 1, note: String.raw`Two experiments and two outcomes with proportional likelihoods: $L_1(p;x_1)=c\,L_2(p;x_2)$.` },
           { line: 2, note: String.raw`The mixture $E^*$: a fair coin $J$ picks which experiment is run; its outcomes are pairs $(j,x)$.` },
-          { line: 3, note: String.raw`(S) In $E^*$ the statistic $T$ that merges $(1,x_1)$ with $(2,x_2)$ is sufficient: given $T$, $P(J=1)=c/(1+c)$ for every $p$ (right).` },
+          { line: 3, note: () => (pairS.value === 'prop' ? String.raw`(S) In $E^*$ the statistic $T$ that merges $(1,x_1)$ with $(2,x_2)$ is sufficient: given $T$, $P(J=1)=c/(1+c)$ for every $p$ (right).` : String.raw`(S) fails: these two outcomes have likelihoods of different shapes, so given the merged value $P(J=1)$ moves with $p$ (right).`) },
           { line: 4, note: String.raw`(C) Within $E^*$, the outcome $(j,x_j)$ carries the evidence of $x_j$ in $E_j$ alone.` },
-          { line: 5, note: String.raw`Chain: $\mathrm{Ev}(E_1,x_1)\overset{C}{=}\mathrm{Ev}(E^*,(1,x_1))\overset{S}{=}\mathrm{Ev}(E^*,(2,x_2))\overset{C}{=}\mathrm{Ev}(E_2,x_2)$.` },
+          { line: 5, note: () => (pairS.value === 'prop' ? String.raw`Chain: $\mathrm{Ev}(E_1,x_1)\overset{C}{=}\mathrm{Ev}(E^*,(1,x_1))\overset{S}{=}\mathrm{Ev}(E^*,(2,x_2))\overset{C}{=}\mathrm{Ev}(E_2,x_2)$.` : String.raw`Without the middle (S) link the two (C) links connect nothing: no conclusion about these outcomes.`) },
         ];
         const S = v.steps({ frames, start: 0, still: 4, codePos: 'below', code: ['$x_1\\in E_1$, $x_2\\in E_2$ with $L_1\\propto L_2$', 'mixture $E^*$: fair coin $J$, then run $E_J$', '(S) merge $(1,x_1)$ and $(2,x_2)$ in $E^*$', '(C) $\\mathrm{Ev}(E^*,(j,x_j))=\\mathrm{Ev}(E_j,x_j)$', 'therefore $\\mathrm{Ev}(E_1,x_1)=\\mathrm{Ev}(E_2,x_2)$'] });
         const sL = v.stage({ x: [0, 10], y: [-1.2, 11], height: 360, axes: false, weight: 1.15 });
@@ -327,8 +327,8 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
           const c = Math.exp(lchoose(n, h1) - lchoose(h2 + r - 1, r - 1)), prop = h2 === h1;
           // ── left: the diagram
           const maxH = Math.max(n, h2 + 3), Y = (h) => 0.4 + (9.2 * h) / maxH;
-          const col1 = 2.2, col2 = 7.8;
-          if (step >= 1) { sL.rect(0.5, -0.9, 9.5, 10.6, { color: 'purple', width: 2, dash: [7, 5], radius: 12, fill: 'purple', fillAlpha: 0.04 }); sL.text('mixture E*: fair coin J picks E₁ or E₂', 5, 10.25, { align: 'center', color: 'purple', size: 12.5, weight: 700 }); }
+          const col1 = 2.7, col2 = 7.3;
+          if (step >= 1) { sL.rect(0.15, -0.9, 9.85, 10.6, { color: 'purple', width: 2, dash: [7, 5], radius: 12, fill: 'purple', fillAlpha: 0.04 }); sL.text('mixture E*: fair coin J picks E₁ or E₂', 5, 10.25, { align: 'center', color: 'purple', size: 12.5, weight: 700 }); }
           sL.text(`E₁: ${n} tosses planned`, col1, -0.45, { align: 'center', color: 'accent', size: 12, weight: 700 });
           sL.text(`E₂: until tail number ${r}`, col2, -0.45, { align: 'center', color: 'orange', size: 12, weight: 700 });
           sL.line(col1, Y(0), col1, Y(n), { color: 'accent', width: 1.2, alpha: 0.5 }); sL.line(col2, Y(0), col2, Y(maxH), { color: 'orange', width: 1.2, alpha: 0.5 });
@@ -336,17 +336,17 @@ So anyone who accepts sufficiency and conditionality, as most frequentists do, i
           for (let h = 0; h <= maxH; h++) sL.dot(col2, Y(h), { r: h === h2 ? 7 : 3, color: 'orange', alpha: h > maxH - 1 ? 0.5 : 1 });
           sL.text(`x₁: ${h1} heads`, col1, Y(h1), { dx: -12, align: 'right', color: 'accent', size: 12, weight: 700 });
           sL.text(`x₂: ${h2} heads`, col2, Y(h2), { dx: 12, align: 'left', color: 'orange', size: 12, weight: 700 });
-          sL.text('heads ↑', col1, Y(n) + 0.45, { align: 'center', size: 10.5, color: 'muted' });
+          sL.text('h = 0', col1, Y(0), { dx: 9, align: 'left', size: 10.5, color: 'muted' }); sL.text('h = 0', col2, Y(0), { dx: -9, align: 'right', size: 10.5, color: 'muted' });
           if (step >= 2) {
             const yA = Y(h1), yB = Y(h2), ym = Math.max(yA, yB) + 1.1;
             sL.path([[col1 + 0.25, yA], [col1 + 0.9, ym], [col2 - 0.9, ym], [col2 - 0.25, yB]], { color: prop ? 'green' : 'red', width: 2.6 });
             sL.text(prop ? `T merges them: P(J = 1 | T) = ${v.fix(c / (1 + c), 3)} for every p` : 'likelihoods not proportional: merging is not sufficient', 5, ym + 0.42, { align: 'center', color: prop ? 'green' : 'red', size: 11.5, weight: 700 });
           }
           if (step >= 3) {
-            sL.text('C: Ev(E*, (1, x₁)) = Ev(E₁, x₁)', col1 - 1.5, Y(h1) - 1.0, { align: 'left', color: 'purple', size: 11, weight: 600 });
-            sL.text('C: Ev(E*, (2, x₂)) = Ev(E₂, x₂)', col2 + 1.5, Y(h2) - 1.0, { align: 'right', color: 'purple', size: 11, weight: 600 });
+            sL.text('C: Ev(E*, (1, x₁)) = Ev(E₁, x₁)', col1 + 0.25, Y(h1) - 0.85, { align: 'left', color: 'purple', size: 11, weight: 600 });
+            sL.text('C: Ev(E*, (2, x₂)) = Ev(E₂, x₂)', col2 - 0.25, Y(h1) - 1.6, { align: 'right', color: 'purple', size: 11, weight: 600 });
           }
-          if (step >= 4) sL.tex(prop ? '\\mathrm{Ev}(E_1,x_1)=\\mathrm{Ev}(E_2,x_2)' : '\\text{chain broken: S does not apply}', 5, 4.2, { color: prop ? 'green' : 'red', size: 19 });
+          if (step >= 4) { sL.rect(1.0, 2.5, 9.0, 4.1, { fill: 'panel', fillAlpha: 0.96, color: prop ? 'green' : 'red', width: 2, radius: 8 }); sL.tex(prop ? '\\mathrm{Ev}(E_1,x_1)=\\mathrm{Ev}(E_2,x_2)' : '\\text{chain broken: S does not apply}', 5, 3.3, { color: prop ? 'green' : 'red', size: prop ? 18 : 15 }); }
           // ── right: the simulation of E*
           const pc = h1 / n, pa = Math.max(0.08, pc - 0.3), pb = Math.min(0.95, pc + 0.18), PS = Array.from({ length: 7 }, (_, i) => +(pa + ((pb - pa) * i) / 6).toFixed(3));
           const pts = PS.map((p) => { const o = simAt(n, r, h1, h2, p), N = o.a + o.b, f = N ? o.a / N : NaN; return [p, f, N ? 2 * Math.sqrt(f * (1 - f) / N) : 0, N]; });

@@ -1840,6 +1840,41 @@ export function schrodinger1D(V, [x0, x1], { n = 400, k = 6, mass = 1, hbar = 1 
   return { x, E: values, psi };
 }
 /**
+ * Split-step Fourier propagator for iħψ_t = −(ħ²/2m)ψ_xx + Vψ on a periodic grid of length n (a power of two):
+ * returns step(re, im) advancing (re, im) in place by dt (Strang splitting: ½V, full kinetic in k-space, ½V).
+ * opts: {m = 1, hbar = 1, Vi} — Vi (optional array) is an imaginary potential: V − iVi absorbs where Vi > 0.
+ * Unitary to rounding when Vi is absent; spectrally accurate in space, second order in dt.
+ */
+export function splitStep1D(V, dx, dt, { m = 1, hbar = 1, Vi = null } = {}) {
+  const n = V.length, kc = new Float64Array(n), ks = new Float64Array(n), vc = new Float64Array(n), vs = new Float64Array(n), va = new Float64Array(n);
+  for (let j = 0; j < n; j++) {
+    const k = (TAU * (j < n / 2 ? j : j - n)) / (n * dx), a = (-hbar * k * k * dt) / (2 * m);
+    kc[j] = Math.cos(a); ks[j] = Math.sin(a);
+    const b = (-V[j] * dt) / (2 * hbar); vc[j] = Math.cos(b); vs[j] = Math.sin(b);
+    va[j] = Vi ? Math.exp((-Vi[j] * dt) / (2 * hbar)) : 1;
+  }
+  const R = new Float64Array(n), I = new Float64Array(n);
+  const half = (re, im) => { for (let j = 0; j < n; j++) { const r = re[j], q = im[j], g = va[j]; re[j] = g * (r * vc[j] - q * vs[j]); im[j] = g * (r * vs[j] + q * vc[j]); } };
+  return (re, im) => {
+    half(re, im);
+    for (let j = 0; j < n; j++) { R[j] = re[j]; I[j] = im[j]; }
+    fft(R, I);
+    for (let j = 0; j < n; j++) { const r = R[j], q = I[j]; R[j] = r * kc[j] - q * ks[j]; I[j] = r * ks[j] + q * kc[j]; }
+    ifft(R, I);
+    for (let j = 0; j < n; j++) { re[j] = R[j]; im[j] = I[j]; }
+    half(re, im);
+  };
+}
+/** Inverse-CDF sampler for a density tabulated at grid points xs (trapezoid rule, linear interpolation): u ∈ [0,1) ↦ x. Also .cdf(x) and .total. */
+export function gridSampler(xs, ps) {
+  const n = xs.length, cdf = new Float64Array(n); let s = 0;
+  for (let i = 1; i < n; i++) { s += 0.5 * (ps[i] + ps[i - 1]) * (xs[i] - xs[i - 1]); cdf[i] = s; }
+  const f = (u) => { const t = u * s; let lo = 0, hi = n - 1; while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (cdf[mid] < t) lo = mid; else hi = mid; } const w = (t - cdf[lo]) / (cdf[hi] - cdf[lo] || 1); return xs[lo] + w * (xs[hi] - xs[lo]); };
+  f.cdf = (x) => { if (x <= xs[0]) return 0; if (x >= xs[n - 1]) return 1; let lo = 0, hi = n - 1; while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (xs[mid] < x) lo = mid; else hi = mid; } const w = (x - xs[lo]) / (xs[hi] - xs[lo]); return (cdf[lo] + w * (cdf[hi] - cdf[lo])) / s; };
+  f.total = s;
+  return f;
+}
+/**
  * One Crank–Nicolson step of iħψ_t = −(ħ²/2m)ψ'' + Vψ on a uniform grid (ψ = 0 at the ends). Unitary: ∫|ψ|² is conserved.
  * re, im: Float64Arrays (updated in place); V: array of potential values on the grid; dx, dt.
  */

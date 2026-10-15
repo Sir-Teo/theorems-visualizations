@@ -216,7 +216,7 @@ The time an unconformity represents is at least the thickness removed divided by
       credit: 'James Hutton, 1788; Charles Lyell, 1830',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Unconformity' },
       viz(v) {
-        const kind = v.select('kind', Object.entries(UNC).map(([value, U]) => ({ value, label: U.label })), 'angular', { onChange: () => v.restart() });
+        const kind = v.select('kind', Object.entries(UNC).map(([value, U]) => ({ value, label: U.label })), 'angular');
         const dep = v.slider('deposition rate (m/Myr)', 5, 500, 50, { log: true, sig: 2 });
         const ero = v.slider('erosion rate (m/Myr)', 5, 500, 54, { log: true, sig: 2 });
         const S = v.stage({ x: [0, 12], y: [-0.1, 5.6], axes: false, equal: true, height: 340, weight: 1.45 });
@@ -299,7 +299,7 @@ The time an unconformity represents is at least the thickness removed divided by
       credit: 'Johannes Walther, 1894',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Walther%27s_law' },
       viz(v) {
-        const mode = v.select('sea level', Object.entries(W_MODES).map(([value, M]) => ({ value, label: M.label })), 'trans', { onChange: () => v.restart() });
+        const mode = v.select('sea level', Object.entries(W_MODES).map(([value, M]) => ({ value, label: M.label })), 'trans');
         const lines = v.toggle('time lines', true);
         const S = v.stage({ x: [0, W_NX], y: [-6, W_NT + 22], axes: false, height: 360, weight: 1.45 });
         const R = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 360, weight: 0.7, minWidth: 240 });

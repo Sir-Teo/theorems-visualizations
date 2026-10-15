@@ -469,5 +469,22 @@ test('compileExpr: safe formula parser', () => {
   ok(M.compileExpr('alert(1)', ['x']).error, 'no arbitrary code');
 });
 
+test('splitStep1D and gridSampler', () => {
+  const n = 512, L = 40, dx = L / n, X = Array.from({ length: n }, (_, i) => -L / 2 + i * dx);
+  // harmonic ground state is stationary up to phase −E t (E = ½), norm conserved
+  const V = X.map((x) => x * x / 2), re = Float64Array.from(X, (x) => Math.exp(-x * x / 2) / Math.PI ** 0.25), im = new Float64Array(n);
+  const step = M.splitStep1D(V, dx, 0.01), n0 = re.reduce((s, r) => s + r * r, 0) * dx;
+  for (let k = 0; k < 200; k++) step(re, im);
+  close(re.reduce((s, r, i) => s + r * r + im[i] * im[i], 0) * dx, n0, 1e-10);
+  close(Math.atan2(im[n / 2], re[n / 2]), -1, 1e-4);
+  // absorber removes norm
+  const re2 = Float64Array.from(X, (x) => Math.exp(-((x - 10) ** 2))), im2 = new Float64Array(n);
+  const s2 = M.splitStep1D(X.map(() => 0), dx, 0.01, { Vi: X.map((x) => (x > 8 ? 2 : 0)) }); const a0 = re2.reduce((s, r) => s + r * r, 0);
+  for (let k = 0; k < 50; k++) s2(re2, im2); ok(re2.reduce((s, r, i) => s + r * r + im2[i] * im2[i], 0) < 0.5 * a0, 'absorbed');
+  // sampler reproduces a triangle density's mean
+  const xs = Array.from({ length: 101 }, (_, i) => i / 100), ps = xs.map((x) => x), smp = M.gridSampler(xs, ps), r = M.rng(5);
+  let m = 0; for (let k = 0; k < 20000; k++) m += smp(r()); close(m / 20000, 2 / 3, 0.01); close(smp.cdf(0.5), 0.25, 1e-3);
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

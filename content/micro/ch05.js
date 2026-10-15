@@ -204,7 +204,7 @@ and a good that is not bought at all has $MU_i/p_i \le \lambda$. The common valu
         const ps = [v.slider('price $p_1$', 0.5, 4, 2, { step: 0.1 }), v.slider('price $p_2$', 0.5, 4, 1, { step: 0.1 }), v.slider('price $p_3$', 0.5, 6, 2.5, { step: 0.1 })];
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 330, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.05, title: 'goods 1 and 2' });
         const b = v.stage({ x: [0.3, 3.7], y: [0, 1], height: 330, axes: 'box', ylabel: 'MUᵢ / pᵢ', xticks: [[1, 'good 1'], [2, 'good 2'], [3, 'good 3']], title: 'marginal utility per dollar now' });
-        const d = v.stage({ x: [0, 24], y: [0, 1], height: 180, axes: 'box', full: true, xlabel: 'dollars spent so far', ylabel: 'utility per $', title: 'what each successive dollar added' });
+        const d = v.stage({ x: [0, 24], y: [0, 1], height: 180, axes: 'box', full: true, ylabel: 'utility per $', title: 'what each successive dollar added (horizontal axis: dollars spent)' });
         v.legend([['orange', 'good 1', { area: true }], ['teal', 'good 2', { area: true }], ['pink', 'good 3', { area: true }], ['green', 'λ* (exact)', { dash: true }]]);
         const PER = 6; // seconds to spend everything
         let st = {};

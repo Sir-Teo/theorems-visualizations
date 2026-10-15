@@ -166,7 +166,7 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
         const Tc = v.slider('temperature', 0, 40, 37, { step: 1, fmt: (x) => `${x} °C` });
         const sb = v.stage({ x: [-1.05, 1.05], y: [-0.08, 1.32], equal: true, axes: false, height: 320, weight: 1.15 });
         const sv = v.stage({ x: [0, 20], y: [-120, 120], height: 320, axes: 'box', xlabel: 't (s)', ylabel: 'V = φᵢₙ − φₒᵤₜ (mV)', weight: 1, yticks: [-120, -90, -60, -30, 0, 30, 60, 90, 120] });
-        const DEN = 4, DELTA = 2.5, SIG = 0.03, SPS = 900, GAPS = [[0.17, 0.27], [0.45, 0.55], [0.73, 0.83]], P0 = 1, TP = 20, WIN = 8;
+        const DEN = 5, DELTA = 2.5, SIG = 0.03, SPS = 900, GAPS = [[0.17, 0.27], [0.45, 0.55], [0.73, 0.83]], P0 = 1, TP = 20, WIN = 8;
         let key = '', sim = null;
         const make = () => {
           const k = ionSel.value, z = ION_Z[k], ci = cin.value, co = cout.value, vt = VT(Tc.value);
@@ -248,8 +248,11 @@ For a mammalian neuron ($\mathrm{K^+}$ 140/5, $\mathrm{Na^+}$ 12/145, $\mathrm{C
         v.legend([['orange', 'diffusion push (∝ ln of the ratio)'], ['accent', 'electrical pull / 8 s mean of V'], ['gold', 'instantaneous V'], ['green', 'Nernst potential', { dash: true }]]);
         v.readout(() => {
           if (!S) return '';
-          const z = ION_Z[ionSel.value], E = nernst(z, cout.value, cin.value, Tc.value), m = S.mean, nIn = S.inT.filter((k) => k > S.steps - WIN * SPS).length, se = (VT(Tc.value) * Math.sqrt(2 / Math.max(1, nIn))) / Math.abs(z);
-          return `$E = \\frac{RT}{zF}\\ln\\frac{c_{out}}{c_{in}} = \\frac{${v.fix(VT(Tc.value), 2)}\\text{ mV}}{${z > 0 ? '' : '-'}1}\\ln\\frac{${v.fix(cout.value, 1)}}{${v.fix(cin.value, 1)}} = ${v.fix(E, 1)}$ mV · simulated $V$ averaged over the last ${WIN} s: $${isFinite(m) ? v.fix(m, 1) : '…'} \\pm ${v.fix(se, 1)}$ mV (thermal noise), after ${S.out} outward and ${S.inn} inward crossings; net ${Math.abs(S.n)} ions (${v.fix((100 * Math.abs(S.n)) / Math.max(1, cin.value * DEN), 1)} % of the cell's) charge this tiny patch (a real 20 µm cell moves only about 0.002 % of its K⁺)`;
+          const z = ION_Z[ionSel.value], E = nernst(z, cout.value, cin.value, Tc.value), m = S.mean, H = S.hist, tEnd = H.t[H.t.length - 1];
+          // standard error by batch means: four 2 s batches of the trailing window (the voltage is strongly correlated in time)
+          const bm = [0, 1, 2, 3].map((b) => { let a = 0, c = 0; for (let i = 0; i < H.t.length; i++) { const u = H.t[i] - (tEnd - WIN); if (u >= b * WIN / 4 && u < (b + 1) * WIN / 4) { a += H.V[i]; c++; } } return c ? a / c : NaN; });
+          const bmean = bm.reduce((a, b) => a + b, 0) / 4, se = Math.sqrt(bm.reduce((a, b) => a + (b - bmean) ** 2, 0) / 3 / 4);
+          return `$E = \\frac{RT}{zF}\\ln\\frac{c_{out}}{c_{in}} = \\frac{${v.fix(VT(Tc.value), 2)}\\text{ mV}}{${z > 0 ? '' : '-'}1}\\ln\\frac{${v.fix(cout.value, 1)}}{${v.fix(cin.value, 1)}} = ${v.fix(E, 1)}$ mV · simulated $V$ averaged over the last ${WIN} s: $${isFinite(m) && tEnd > WIN ? `${v.fix(m, 1)} \\pm ${v.fix(se, 1)}` : '…'}$ mV (± one standard error from batch means), after ${S.out} outward and ${S.inn} inward crossings; net ${Math.abs(S.n)} ions (${v.fix((100 * Math.abs(S.n)) / Math.max(1, cin.value * DEN), 1)} % of the cell's) charge this tiny patch (a real 20 µm cell moves only about 0.002 % of its K⁺)`;
         });
       },
     },
@@ -454,13 +457,13 @@ At steady state the pump makes the cell *effectively* impermeable to Na⁺: sodi
           sv.dot(R.t[i], V, { r: 4.5, color: 'accent' });
           const Ek = R.K.map((k) => nernst(1, PL.out.K, k, PL.T));
           trace(sv, R.t, Ek, { color: ION_COL.K, dash: [5, 3], width: 1.3 });
-          const i100 = idxAt(R.t, 100); sv.tex('E_K', 100, Ek[i100], { size: 13, color: ION_COL.K, align: 'center', baseline: 'bottom', dy: -3 });
+          const i25 = idxAt(R.t, 25); sv.tex('E_K', 25, Ek[i25], { size: 13, color: ION_COL.K, align: 'left', baseline: 'top', dx: 6, dy: 2 });
           const ser = [['K', ION_COL.K], ['Na', ION_COL.Na], ['Cl', ION_COL.Cl]];
           for (const [k, col] of ser) { trace(sn, R.t, R[k], { color: col, width: 1.2, alpha: 0.3 }); trace(sn, R.t.slice(0, i + 1), R[k].slice(0, i + 1), { color: col, width: 2.2 }); }
           const vol = R.w.map((x) => 100 * x);
           trace(sn, R.t, vol, { color: 'ink', width: 1.2, alpha: 0.3, dash: [6, 4] }); trace(sn, R.t.slice(0, i + 1), vol.slice(0, i + 1), { color: 'ink', width: 2.2, dash: [6, 4] });
           sn.vline(tm, { color: 'gold', width: 1.2 }); sv.vline(tm, { color: 'gold', width: 1.2 });
-        }, { period: 17, still: 9 });
+        }, { period: 17, still: 6.4 });
         v.legend([['accent', 'membrane potential'], [ION_COL.K, 'K⁺ᵢ / $E_K$'], [ION_COL.Na, 'Na⁺ᵢ'], [ION_COL.Cl, 'Cl⁻ᵢ'], ['ink', 'cell volume (%)', { dash: true }], ['red', 'pump off', { area: true }]]);
         v.readout(() => {
           const R = get(), i = cur, Na = R.Na[i], K = R.K[i], Cl = R.Cl[i], X = PL.X / R.w[i];

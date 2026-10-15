@@ -151,8 +151,8 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Internal_rate_of_return#Multiple_IRRs' },
       viz(v) {
         const M = v.M, R1 = 0.7, R2 = 0.4;
-        const kS = v.slider('clean-up cost $K$', 0, 3000, 2200, { step: 50, fmt: (x) => money(x) });
-        const bS = v.slider('B pays each year (5 years)', 250, 450, 350, { step: 5, fmt: (x) => money(x) });
+        const kS = v.slider('clean-up $K$', 0, 3000, 2200, { step: 50, fmt: (x) => money(x) });
+        const bS = v.slider('B pays a year', 250, 450, 350, { step: 5, fmt: (x) => money(x) });
         const rS = v.slider('cost of capital $r$', 0, 0.4, 0.1, { step: 0.0025, fmt: (x) => pct(x, 2) });
         const FM = v.stage({ x: [-0.6, 6.6], y: [-3700, 1300], height: 140, axes: 'box', weight: 1, minWidth: 300, yticks: [], xticks: [0, 1, 2, 3, 4, 5, 6].map((t) => [t, String(t)]), title: 'the mine: cash flows by year' });
         const FC = v.stage({ x: [-0.6, 5.6], y: [-1500, 1700], height: 140, axes: 'box', weight: 1, minWidth: 300, yticks: [], xticks: [0, 1, 2, 3, 4, 5].map((t) => [t, String(t)]), title: 'projects A (blue) and B (purple)' });
@@ -175,7 +175,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           NM.hline(0, { color: 'ink', width: 1 });
           NM.fn(fm, { color: 'accent', width: 2.6 });
           const all = irrs(Fm, -0.9, 6), shown = all.filter((x) => x >= 0 && x <= R1);
-          shown.forEach((x, i) => { const left = shown.length === 2 && i === 0; NM.dot(x, 0, { r: 5.5, hollow: true, color: 'ink', width: 2 }); NM.text(`IRR ${pct(x, 1)}`, x, 0, { dx: left ? -8 : 8, dy: -14, align: left ? 'right' : 'left', color: 'ink', weight: 700, size: 11.5, plate: true }); });
+          shown.forEach((x, i) => { const below = shown.length === 2 && i === 0; NM.dot(x, 0, { r: 5.5, hollow: true, color: 'ink', width: 2 }); NM.text(`IRR ${pct(x, 1)}`, x, 0, { dx: 8, dy: below ? 16 : -14, align: 'left', color: 'ink', weight: 700, size: 11.5, plate: true }); });
           NM.vline(r, { color: 'gold', width: 1.5, dash: [4, 3] });
           NM.dot(r, fm(r), { r: 5, color: 'gold' });
           NM.corner(shown.length === 2 ? 'two IRRs: which one is "the" return?' : shown.length === 0 ? 'no IRR at all — yet NPV is defined' : 'one IRR on this range', 'tr', { color: shown.length === 1 ? 'muted' : 'red', weight: 650 });

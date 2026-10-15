@@ -74,7 +74,7 @@ const struveH1 = (z) => (z < 1e-6 ? (2 * z * z) / (3 * Math.PI) : 2 / Math.PI - 
 function pistonZ(ka) { const z = 2 * ka; return ka < 1e-6 ? [0, 0] : [1 - (2 * J1x(z)) / z, (2 * struveH1(z)) / z]; }
 /**
  * |Z_in| at the narrow end of a bore given by radii rs at positions xs (m), as a staircase of short cylinders. Plane waves with
- * visco-thermal wall loss k = ω/c − iα, α = (ω/2)^{1/2}... ≈ 2.96·10⁻⁵ √f / r (1/m, r in m); a baffled-piston load at the open end.
+ * visco-thermal wall loss k = ω/c − iα with α = (1/rc)·√(ωη/2ρ)·(1 + (γ−1)/√Pr) ≈ 2.96·10⁻⁵ √f / r (1/m, r in m); a baffled-piston load at the open end.
  * Returns {F, A} for nf frequencies between f0 and f1 (Hz).
  */
 function boreSweep(xs, rs, f0, f1, nf) {
@@ -400,8 +400,8 @@ which moves continuously from the odd series $kL=(2n-1)\pi/2$ of a cylinder ($x_
         const tS = v.slider('taper', 0, 1, 0.82, { step: 0.002, fmt: (x) => (x <= 0 ? 'cylinder' : x >= 1 ? 'complete cone' : `r₁/r₂ = ${v.fix(1 - x, 3)}`) });
         const nS = v.slider('mode shown $n$', 1, 4, 2, { int: true });
         const bore = v.stage({ x: [-0.3, 0.64], y: [-1.3, 1.4], height: 250, axes: false, full: true });
-        const rc = v.stage({ x: [-0.05, 1.05], y: [0, 11.3], height: 260, axes: 'box', xticks: [[0, 'cylinder'], [0.5, 'taper 0.5'], [1, 'cone']], yticks: M.range(10, 1), weight: 1.25, title: 'resonances as the bore tapers, in units of c/4L' });
-        const ob = v.stage({ x: [-0.05, 1.05], y: [1080, 2040], height: 260, axes: 'box', xticks: [[0, 'cylinder'], [1, 'cone']], yticks: [[1200, 'octave'], [1500, '1500 ¢'], [1702, 'minor 7th'], [1902, 'twelfth']], weight: 1, title: 'overblowing interval f₂/f₁ (cents)' });
+        const rc = v.stage({ x: [-0.09, 1.05], y: [0, 11.3], height: 260, axes: 'box', xticks: [[0, 'cylinder'], [0.5, 'taper 0.5'], [1, 'cone']], yticks: M.range(10, 1), weight: 1.25, title: 'resonances as the bore tapers, in units of c/4L' });
+        const ob = v.stage({ x: [-0.09, 1.05], y: [1080, 2040], height: 260, axes: 'box', xticks: [[0, 'cylinder'], [1, 'cone']], yticks: [[1200, 'octave'], [1500, '1500 ¢'], [1702, 'minor 7th'], [1902, 'twelfth']], weight: 1, title: 'overblowing interval f₂/f₁ (cents)' });
         // n-th root of (1 − ρ) sin u + ρ u cos u = 0 in ((n − ½)π, nπ], ρ = r₁/r₂ (tan kL = −k x₁ with x₁ = Lρ/(1 − ρ))
         const root = (rho, n) => {
           const G = (u) => (1 - rho) * Math.sin(u) + rho * u * Math.cos(u);

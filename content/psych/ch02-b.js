@@ -208,7 +208,7 @@ so the same observer looks $\sqrt2$ times as sensitive in 2AFC as in yes/no, and
         const dS = v.slider("yes/no $d'$", 0, 3, 1.2, { step: 0.01 });
         const rS = v.slider('noise correlation $\\rho$', -0.5, 0.9, 0, { step: 0.01 });
         const nT = v.slider('trials', 100, NMAX, 800, { int: true, log: true });
-        let seed = 3, Z = null, zSeed = -1;
+        let seed = 5, Z = null, zSeed = -1;
         v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
         const sc = v.stage({ x: [-3.2, 5.2], y: [-3.2, 5.2], equal: true, height: 330, weight: 1, axes: true, xlabel: '$x_1$', ylabel: '$x_2$', title: 'each trial is a point (interval 1, interval 2)' });
         const hs = v.stage({ x: [-7, 7], y: [0, 1], height: 330, weight: 1.05, axes: 'box', yticks: [], title: 'the decision variable D = x₂ − x₁' });
@@ -348,7 +348,7 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
         const mk = (f) => { const a = new Float64Array(NP * NP); for (let j = 0; j < NP; j++) for (let i = 0; i < NP; i++) a[j * NP + i] = f(i - (NP - 1) / 2, j - (NP - 1) / 2); return a; };
         const S = mk(gab), TPL = { exact: S, shift: mk((x, y) => gab(x - 2, y)), rot: mk((x, y) => gab(y, x)), blob: mk((x, y) => Math.exp(-(x * x + y * y) / (2 * 2.8 * 2.8))) };
         const dot = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }, nS = Math.sqrt(dot(S, S));
-        let phase = 'idle', tid = 0, cur = null, you = [], seed = 5, sim = null, simKey = '', idx = 0;
+        let phase = 'idle', tid = 0, cur = null, you = [], seed = 27, sim = null, simKey = '', idx = 0;
         const who = v.select('subject', OBS, 'sim', { onChange: () => { after.clear(); phase = 'idle'; } });
         const tplS = v.select('template used', [{ value: 'exact', label: 'the signal (ideal)' }, { value: 'shift', label: 'shifted 2 px' }, { value: 'rot', label: 'rotated 90°' }, { value: 'blob', label: 'a blob' }], 'exact');
         const dI = v.slider("signal strength (ideal $d'$)", 0.5, 6, 3, { step: 0.05 });
@@ -426,8 +426,8 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
           const { isYou, cosT, dT, obs, ideal, n, mN, mS } = stt;
           const head = `ideal $d'=\\lVert s\\rVert/\\sigma$ = ${v.fix(dI.value, 2)} · this template: $\\cos\\theta$ = ${v.fix(cosT, 3)}, so $d'$ = ${v.fix(dT, 2)}${n ? `; measured on these ${n} images: mean response difference ${v.fix(mS - mN, 2)}` : ''}`;
           if (!obs) return head + (isYou ? ' · no answers yet: press **▶ Flash** (you need both kinds of image before $d\'$ can be computed)' : '');
-          const eff = Math.pow(Math.max(0, obs.d) / Math.max(1e-9, ideal.d), 2);
-          return `${head} · ideal observer's yes/no $d'$ on the same images ${v.fix(ideal.d, 2)} · ${isYou ? 'your' : 'simulated human’s'} $d'$ = **${v.fix(obs.d, 2)}** (H = ${v.fix(obs.H, 2)}, F = ${v.fix(obs.F, 2)}) · efficiency $\\eta=(d'_{\\rm obs}/d'_{\\rm ideal})^2$ = **${pc(eff)}**${isYou ? '' : ` (built in: ${pc(ETA)})`}`;
+          const eff = Math.pow(Math.max(0, obs.d) / Math.max(1e-9, ideal.d), 2), seE = eff * 2 * Math.sqrt((obs.seD / Math.max(0.05, obs.d)) ** 2 + (ideal.seD / Math.max(0.05, ideal.d)) ** 2);
+          return `${head} · ideal observer's yes/no $d'$ on the same images ${v.fix(ideal.d, 2)} · ${isYou ? 'your' : 'simulated human’s'} $d'$ = **${v.fix(obs.d, 2)}** (H = ${v.fix(obs.H, 2)}, F = ${v.fix(obs.F, 2)}) · efficiency $\\eta=(d'_{\\rm obs}/d'_{\\rm ideal})^2$ = **${pc(eff)}** ± ${pc(1.96 * seE)}${isYou ? '' : ` (built in: ${pc(ETA)})`}`;
         });
       },
     },
@@ -611,10 +611,10 @@ In experiments on the detection of brief flashes of light on a uniform backgroun
           // ---- distributions with five criteria
           de.fn((x) => phi(x), { domain: [LO, HI], color: 'muted', width: 2.2, fill: 'muted', fillAlpha: 0.06 });
           de.fn((x) => phi(x - d), { domain: [LO, HI], color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.08 });
-          de.text('noise', -1, phi(1), { dx: -7, align: 'right', color: 'muted', size: 12, weight: 600 });
-          de.text('flash', d + 1, phi(1), { dx: 7, align: 'left', color: 'accent', size: 12, weight: 600 });
-          blocks.forEach((b, i) => { if (b.k > LO && b.k < HI) { de.line(b.k, -0.08, b.k, 0.44, { color: COL[i], width: 1.8 }); de.text(String(b.p), b.k, 0.44, { dy: -8 - (i % 2) * 12, align: 'center', color: COL[i], size: 11, weight: 700 }); } });
-          if (ht) de.corner('(the high-threshold observer has no criterion on x: it guesses)', 'bl', { size: 10.5 });
+          de.text('noise', -1.9, phi(1.9), { dx: -5, dy: -6, align: 'right', color: 'muted', size: 12, weight: 600 });
+          de.text('flash', d + 1.9, phi(1.9), { dx: 5, dy: -6, align: 'left', color: 'accent', size: 12, weight: 600 });
+          de.setTitle(ht ? 'high threshold: no criterion, only guessing' : 'one criterion per prior probability');
+          blocks.forEach((b, i) => { if (b.k > LO && b.k < HI) { de.line(b.k, -0.08, b.k, 0.44, { color: COL[i], width: 1.8, alpha: ht ? 0.3 : 1, dash: ht ? [4, 4] : null }); de.text(String(b.p), b.k, 0.44, { dy: -8 - (i % 2) * 12, align: 'center', color: COL[i], size: 11, weight: 700 }); } });
           // ---- ROC
           rocFrame(ro, M);
           ro.path(rocPts(M, dG), { color: 'accent', width: 2.4 });

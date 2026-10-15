@@ -131,17 +131,17 @@ Angular momentum is parallel to angular velocity exactly when $\boldsymbol\omega
 $$T = \tfrac12\,\boldsymbol\omega\cdot\mathsf I\boldsymbol\omega = \tfrac12\,\boldsymbol\omega\cdot\mathbf L = \tfrac12\sum_i I_i\omega_i^2 .$$
 At fixed energy, the possible angular velocities fill the **energy (inertia) ellipsoid** $\boldsymbol\omega\cdot\mathsf I\boldsymbol\omega = 2T$, fixed in the body. Its axes are the principal axes, with semi-axes $\sqrt{2T/I_i}$, so it is longest along the axis of smallest moment. Since $\nabla_{\boldsymbol\omega}T = \mathsf I\boldsymbol\omega = \mathbf L$, the angular momentum is **normal to the ellipsoid** at the tip of $\boldsymbol\omega$. (Poinsot’s version, $\mathbf x\cdot\mathsf I\mathbf x = 1$, is the same ellipsoid scaled by $1/\sqrt{2T}$.) The moment about an axis $\hat{\mathbf n}$ is read off from the radius in that direction: $I_{\hat{\mathbf n}} = 2T/\rho(\hat{\mathbf n})^2$.`,
       idea: String.raw`Every mass element has velocity $\boldsymbol\omega\times\mathbf r$, so $T = \tfrac12\sum m|\boldsymbol\omega\times\mathbf r|^2$. Expanding with $|\mathbf a\times\mathbf b|^2 = a^2b^2 - (\mathbf a\cdot\mathbf b)^2$ gives $\tfrac12\boldsymbol\omega\cdot\mathsf I\boldsymbol\omega$ with the tensor of 10.7. In principal coordinates (10.8) it is $\tfrac12\sum I_i\omega_i^2$, and a level set of a positive definite quadratic form is an ellipsoid. The gradient of a quadratic form $\tfrac12\boldsymbol\omega\cdot\mathsf I\boldsymbol\omega$ is $\mathsf I\boldsymbol\omega$, and gradients are normal to level sets. König’s theorem (3.7) adds $\tfrac12Mv_{\rm cm}^2$ when the centre of mass also moves.`,
-      caption: String.raw`Set the three side lengths of a 1 kg box; the ellipsoid of all $\boldsymbol\omega$ with $T = \tfrac12$ J is drawn around it, in $\boldsymbol\omega$-space with the body’s axes. Drag the tip of $\boldsymbol\omega$ (blue); it stays on the ellipsoid. $\mathbf L$ (purple) is normal to the ellipsoid there: it is perpendicular to the small tangent patch. The right panel cuts the ellipsoid by the plane containing $\boldsymbol\omega$ and $\mathbf L$, and the right angle between $\mathbf L$ and the tangent line shows up undistorted. Lengthen one side and the ellipsoid shrinks along the axes perpendicular to it.`,
+      caption: String.raw`Set the three side lengths $a, b, c$ (along $x, y, z$) of a 1 kg box; the ellipsoid of all $\boldsymbol\omega$ with $T = \tfrac12$ J is drawn around it, in $\boldsymbol\omega$-space with the body’s axes. Drag the tip of $\boldsymbol\omega$ (blue); it stays on the ellipsoid. $\mathbf L$ (purple) is normal to the ellipsoid there: it is perpendicular to the small tangent patch. The right panel cuts the ellipsoid by the plane containing $\boldsymbol\omega$ and $\mathbf L$, and the right angle between $\mathbf L$ and the tangent line shows up undistorted. Lengthen one side and the ellipsoid shrinks along the axes perpendicular to it.`,
       deps: ['mech-10.8', 'mech-3.7'],
       refs: ['Arnold §28', 'Goldstein §5.6'],
       tags: ['kinetic energy', 'inertia ellipsoid', 'quadratic form'],
       viz(v) {
-        const aS = v.slider('side $a$ (along $\\mathbf e_x$, m)', 0.2, 2, 1.6, { step: 0.01 });
-        const bS = v.slider('side $b$ (along $\\mathbf e_y$, m)', 0.2, 2, 1.0, { step: 0.01 });
-        const cS = v.slider('side $c$ (along $\\mathbf e_z$, m)', 0.2, 2, 0.45, { step: 0.01 });
+        const aS = v.slider('side $a$ (m)', 0.2, 2, 1.6, { step: 0.01 });
+        const bS = v.slider('side $b$ (m)', 0.2, 2, 1.0, { step: 0.01 });
+        const cS = v.slider('side $c$ (m)', 0.2, 2, 0.45, { step: 0.01 });
         const T2 = 1;
         const S = v.stage({ x: [-3.6, 3.6], y: [-3.6, 3.6], equal: true, axes: false, height: 360, title: '$\\boldsymbol\\omega\\cdot\\mathsf I\\boldsymbol\\omega = 2T$ (drag to rotate)' });
-        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.3, axis: 3.4, lim: 4, labels: ['ωx', 'ωy', 'ωz'], hint: false });
+        const sc = v.scene3(S, { yaw: -0.85, pitch: 0.3, axis: 2.9, lim: 4, labels: ['ωx', 'ωy', 'ωz'], hint: false });
         const sX = v.stage({ x: [-4, 4], y: [-4, 4], equal: true, axes: false, height: 360, weight: 0.8, minWidth: 240, title: 'the cut through $\\boldsymbol\\omega$ and $\\mathbf L$' });
         const Id = () => boxI(1, aS.value, bS.value, cS.value);
         const onE = (p) => { const I = Id(), q = I[0] * p[0] ** 2 + I[1] * p[1] ** 2 + I[2] * p[2] ** 2; return q > 1e-12 ? scl(p, Math.sqrt(T2 / q)) : p; };
@@ -182,12 +182,12 @@ At fixed energy, the possible angular velocities fill the **energy (inertia) ell
           const wr = nrm(w), Lc = [dot(n, u), dot(n, q)], tg = [-Lc[1], Lc[0]];
           sX.line(wr - 0.6 * R0 * tg[0], -0.6 * R0 * tg[1], wr + 0.6 * R0 * tg[0], 0.6 * R0 * tg[1], { color: 'purple', width: 1.4, dash: [6, 4] });
           sX.arrow(0, 0, wr, 0, { color: 'accent', width: 2.6 });
-          sX.arrow(wr, 0, wr + 0.45 * R0 * Lc[0], 0.45 * R0 * Lc[1], { color: 'purple', width: 2.6 });
+          sX.arrow(wr, 0, wr + 0.32 * R0 * Lc[0], 0.32 * R0 * Lc[1], { color: 'purple', width: 2.6 });
           const sq = 0.08 * R0, A1 = [wr + sq * Lc[0], sq * Lc[1]], A2 = [wr + sq * (Lc[0] + tg[0]), sq * (Lc[1] + tg[1])], A3 = [wr + sq * tg[0], sq * tg[1]];
           sX.path([A1, A2, A3], { color: 'purple', width: 1.4 });
           sX.dot(0, 0, { r: 3, color: 'muted' });
           sX.tex('\\boldsymbol\\omega', wr / 2, 0, { color: 'accent', dy: 12, size: 15 });
-          sX.tex('\\mathbf L', wr + 0.5 * R0 * Lc[0], 0.5 * R0 * Lc[1], { color: 'purple', size: 15, dx: 6, dy: -6 });
+          sX.tex('\\mathbf L', wr + 0.32 * R0 * Lc[0], 0.32 * R0 * Lc[1], { color: 'purple', size: 15, dy: -14 });
           cur = { I, ax, w, L, g, Tm, wL };
         });
         v.legend([['accent', '$\\boldsymbol\\omega$ and the energy ellipsoid'], ['purple', '$\\mathbf L = \\mathsf I\\boldsymbol\\omega$, normal to it'], ['teal', 'semi-axis $\\sqrt{2T/I_1}$', { dot: true }], ['gold', '$\\sqrt{2T/I_2}$', { dot: true }], ['pink', '$\\sqrt{2T/I_3}$', { dot: true }]]);
@@ -218,8 +218,8 @@ So faster spin gives slower precession. For a horizontal axle this steady preces
         const g = 9.81, Mw = 1, rw = 0.3, l = 0.5, I3w = 0.5 * Mw * rw * rw, I1w = 0.25 * Mw * rw * rw + Mw * l * l, mgl = Mw * g * l, TS = 12;
         const wS = v.slider('spin $\\omega_3$ (rad/s)', 6, 250, 90, { log: true });
         const mode = v.select('start', [{ value: 'rest', label: 'released from rest' }, { value: 'steady', label: 'launched with Ω' }], 'rest');
-        const S = v.stage({ x: [-1.05, 1.05], y: [-1.05, 1.05], equal: true, axes: false, height: 350, title: 'a gyroscope on a post (drag to rotate)' });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.32, axes: false, hint: false });
+        const S = v.stage({ x: [-0.95, 0.95], y: [-0.85, 1.05], equal: true, axes: false, height: 350, title: 'a gyroscope on a post (drag to rotate)' });
+        const sc = v.scene3(S, { yaw: -1.0, pitch: 0.3, axes: false, hint: false });
         const sp = v.stage({ x: [5, 300], y: [0.01, 30], xlog: true, ylog: true, axes: 'box', height: 350, xlabel: 'spin ω₃ (rad/s)', title: 'precession rate $\\Omega$ (rad/s)' });
         const sim = (w3, steady) => {
           const W0 = steady ? mgl / (I3w * w3) : 0, n0 = [1, 0, 0];
@@ -237,8 +237,8 @@ So faster spin gives slower precession. For a horizontal axle this steady preces
           const B = run(), R = B.R, i = idxAt(R, t % TS), y = R.y[i], n = [y[0], y[1], y[2]], L = [y[6], y[7], y[8]];
           const cw = scl(n, l), e1 = unit(crs([0, 0, 1], n)), e2 = crs(n, e1);
           sc.begin();
-          sc.disc([1, 0, 0], [0, 1, 0], 0.95, { fill: 'faint', fillAlpha: 0.18, color: 'faint', grid: true }, [0, 0, -0.95]);
-          tube(sc, [0, 0, -0.95], [0, 0, -0.03], 0.025, { color: 'muted' });
+          sc.disc([1, 0, 0], [0, 1, 0], 0.7, { fill: 'faint', fillAlpha: 0.18, color: 'faint', grid: true }, [0, 0, -0.8]);
+          tube(sc, [0, 0, -0.8], [0, 0, -0.03], 0.025, { color: 'muted' });
           const trail = R.y.slice(Math.max(0, i - 400), i + 1).map((q) => [q[0] * l * 1.25, q[1] * l * 1.25, q[2] * l * 1.25]);
           sc.path(trail, { color: 'gold', width: 1.8 });
           sc.line([0, 0, 0], scl(n, l * 1.25), { color: 'ink', width: 3 });

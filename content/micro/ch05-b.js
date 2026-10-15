@@ -90,7 +90,7 @@ Its solution $h(p, \bar u) = (h_1, h_2)$ is the **Hicksian** (compensated) deman
         };
         const mode = v.select('show', [{ value: 'emp', label: 'minimize expenditure' }, { value: 'slu', label: 'Hicks vs Marshall' }], 'emp');
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
-        const lvl = v.slider('target: the curve through $(t, t)$', 1.5, 7, 4, { step: 0.05 });
+        const lvl = v.slider('target $\\bar u = u(t, t)$', 1.5, 7, 4, { step: 0.05 });
         const p1 = v.slider('price $p_1$', 0.5, 3, 1.6, { step: 0.01 });
         const e = v.slider('expenditure $e$', 2, 26, 15, { step: 0.05 });
         const m = v.slider('income $m$', 4, 14, 10, { step: 0.1 });

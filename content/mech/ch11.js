@@ -142,7 +142,7 @@ Each oscillator swings at the mean frequency inside a slowly varying envelope: t
         const dS = v.slider('detuning $\\omega_b/\\omega_a - 1$', -0.2, 0.2, 0, { step: 0.001 });
         const aS = v.slider('starting angle of pendulum 1 (°)', 2, 45, 12, { step: 0.5 });
         const sP = v.stage({ x: [-1.32, 1.32], y: [-1.28, 0.16], equal: true, axes: false, height: 290, weight: 0.85 });
-        const sE = v.stage({ x: [0, 100], y: [0, 1.08], axes: 'box', height: 290, weight: 1.2, xlabel: 't (units of $1/\\omega_a$)', title: 'energy of each pendulum, as a fraction of the total' });
+        const sE = v.stage({ x: [0, 100], y: [0, 1.1], axes: 'box', height: 290, weight: 1.2, title: 'energy of each pendulum ÷ total, against t (units of $1/\\omega_a$)' });
         const sW = v.stage({ x: [0, 100], y: [-50, 50], axes: 'box', height: 150, full: true, ylabel: 'angle (°)' });
         const cache = memo(); let cur = null;
         const run = () => cache([cS.value, dS.value, aS.value].join('|'), () => {
@@ -177,9 +177,9 @@ Each oscillator swings at the mean frequency inside a slowly varying envelope: t
           }
           sP.corner(`t = ${v.fix(tau, 0)}`, 'tl');
           // energy shares
-          sE.setView([0, B.Tw], [0, 1.08]);
+          sE.setView([0, B.Tw], [0, 1.1]);
           for (let m = 1; m * Math.PI / B.dw < B.Tw; m += 2) { const tm = m * Math.PI / B.dw; sE.vline(tm, { color: 'green', width: 1, dash: [3, 4] }); }
-          sE.text('predicted transfer time π/Δω', Math.PI / B.dw, 1.04, { color: 'green', size: 11, align: 'center' });
+          sE.text('predicted full transfer, t = π/Δω', Math.PI / B.dw, 1.055, { color: 'green', size: 11, align: 'left', dx: 4 });
           const ph = (tt) => Math.sin((B.dw * tt) / 2) ** 2;
           sE.fn((tt) => 1 - B.s2 * ph(tt), { color: 'purple', dash: [5, 4], width: 1.3, alpha: 0.8 });
           sE.fn((tt) => B.s2 * ph(tt), { color: 'teal', dash: [5, 4], width: 1.3, alpha: 0.8 });
@@ -226,8 +226,8 @@ The neglected terms are of third order, so solutions of the true and linearised 
         const pick = v.select('potential', [{ value: 'pend', label: 'two coupled pendulums' }, { value: 'hh', label: 'Hénon–Heiles' }], 'pend', { onChange: (k) => { const P = POT[k]; hd.set(P.start[0], P.start[1]); } });
         const s3 = v.stage3d({ range: 1.55, height: 300, yaw: -0.7, pitch: 0.5, labels: ['q₁', 'q₂', 'V'], axes: false });
         const sC = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 300, axes: true, xlabel: '$\\eta_1$', ylabel: '$\\eta_2$' });
-        const sX = v.stage({ x: [0, T], y: [-1, 1], axes: 'box', height: 210, weight: 1.3, xlabel: 't', title: '$\\eta_1(t)$: true (blue) and linearised (orange)' });
-        const sL = v.stage({ x: [0.01, 2], y: [1e-6, 10], xlog: true, ylog: true, axes: 'box', height: 210, weight: 1, xlabel: 'starting amplitude ε', title: 'max deviation over the run ÷ ε' });
+        const sX = v.stage({ x: [0, T], y: [-1, 1], axes: 'box', height: 210, weight: 1.2, minWidth: 380, xlabel: 't', title: '$\\eta_1(t)$: true (blue) and linearised (orange)' });
+        const sL = v.stage({ x: [0.01, 2], y: [1e-6, 10], xlog: true, ylog: true, axes: 'box', height: 210, weight: 1, minWidth: 380, xlabel: 'amplitude ε', title: 'max deviation over the run ÷ ε' });
         const hd = sC.handle(0.55, 0.12, { color: 'gold', label: 'start', constrain: (x, y) => { const R = POT[pick.value].R * 0.98; return [clamp(x, -R, R), clamp(y, -R, R)]; } });
         const hess = (P) => { const h = 1e-4, V = P.V; return [[(V(h, 0) - 2 * V(0, 0) + V(-h, 0)) / (h * h), (V(h, h) - V(h, -h) - V(-h, h) + V(-h, -h)) / (4 * h * h)], [(V(h, h) - V(-h, h) - V(h, -h) + V(-h, -h)) / (4 * h * h), (V(0, h) - 2 * V(0, 0) + V(0, -h)) / (h * h)]]; };
         const sim = (P, G, x0) => {
@@ -255,7 +255,7 @@ The neglected terms are of third order, so solutions of the true and linearised 
           });
           // 3D: surface and osculating bowl, both clipped at zmax
           const zs = 1.5 / P.zmax, sc = 1.5 / R0, zc = (z) => Math.min(z, P.zmax) * zs - 0.75;
-          s3.surface((u, w) => [u * sc, w * sc, zc(P.V(u, w))], [-R0, R0], [-R0, R0], { n: 30, colorFn: (u, w) => v.ramp(0.25 + 0.7 * Math.min(1, P.V(u, w) / P.zmax), 'blue'), alpha: 0.9 });
+          s3.surface((u, w) => (P.V(u, w) <= P.zmax ? [u * sc, w * sc, zc(P.V(u, w))] : null), [-R0, R0], [-R0, R0], { n: 34, colorFn: (u, w) => v.ramp(0.25 + 0.7 * Math.min(1, P.V(u, w) / P.zmax), 'blue'), alpha: 0.9 });
           s3.surface((u, w) => (Q(u, w) <= P.zmax ? [u * sc, w * sc, zc(Q(u, w)) + 0.005] : null), [-R0, R0], [-R0, R0], { n: 22, color: 'orange', alpha: 0.12, wire: true, wireColor: 'orange', shade: false });
           const lift = (pts, f) => pts.map((p) => [p[0] * sc, p[1] * sc, zc(f(p[0], p[1])) + 0.02]);
           s3.path(lift(S.R.y, P.V), { color: 'blue', width: 2.2 });
@@ -277,7 +277,7 @@ The neglected terms are of third order, so solutions of the true and linearised 
           const pts = sw.out.filter((p) => isFinite(p[1]) && p[1] > 0);
           if (pts.length) {
             const [e0, d0] = pts[0];
-            for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) { sL.fn((e) => d0 * (e / e0) ** pw, { color: 'faint', dash: [4, 4], width: 1.2 }); sL.text(lab, 0.5, d0 * (0.5 / e0) ** pw, { color: 'muted', size: 11, dx: 4, dy: -8 }); }
+            for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) { sL.fn((e) => d0 * (e / e0) ** pw, { color: 'faint', dash: [4, 4], width: 1.2 }); sL.text(lab, 0.04, d0 * (0.04 / e0) ** pw, { color: 'muted', size: 11, dx: 4, dy: -9 }); }
             sL.path(pts, { color: 'blue', width: 2 }); sL.dots(pts, { r: 3, color: 'blue' });
           }
           if (isFinite(S.dev) && S.dev > 0) sL.dot(eps, S.dev / eps, { r: 6, color: 'gold' });

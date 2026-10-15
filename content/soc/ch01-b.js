@@ -92,7 +92,7 @@ If a parameter $c$ shifts the curve, the low (or the high) equilibrium can merge
           const s = sig.value, c = cS.value;
           // ---- left: response curve, fixed points, cobweb, phase line
           L.line(0, 0, 1, 1, { color: 'muted', dash: [5, 4], width: 1.3 });
-          L.text('45°: $F(x) = x$'.replace(/\$/g, ''), 0.93, 0.93, { color: 'muted', size: 11, align: 'right', dx: -4, dy: 12 });
+          L.text('45° line', 0.97, 0.97, { color: 'muted', size: 11, align: 'right', dx: -4, dy: 14 });
           L.fn(F, { domain: [0, 1], color: 'blue', width: 2.6 });
           const fx = []; const n = 2000; let prev = F(0) - 0;
           for (let i = 1; i <= n; i++) { const x = i / n, g = F(x) - x; if (Math.sign(g) !== Math.sign(prev) && prev !== 0) { let lo = (i - 1) / n, hi = x; for (let k = 0; k < 50; k++) { const m = (lo + hi) / 2; if (Math.sign(F(m) - m) === Math.sign(prev)) lo = m; else hi = m; } const xs = (lo + hi) / 2; fx.push([xs, prev > 0 ? 'stable' : 'unstable']); } prev = g; }
@@ -193,7 +193,7 @@ In the **multi-person prisoner's dilemma** $L$ lies above $R$ at every $x$ and b
           const pay = (x) => (x <= 0 ? Lf(0) : x >= n ? Rf(n) : Lf(x));
           eq.forEach(([x, k]) => { if (k === 'stable' || (x > 0 && x < n)) S.dot(x, pay(x), { r: 6.5, color: k === 'stable' ? 'green' : 'red', hollow: k !== 'stable' }); });
           // minimum coalition k: R(k) = L(0)
-          let kk = null; if (Math.abs(R1.y - R0.y) > 1e-9) { const k = ((L0.y - R0.y) * n) / (R1.y - R0.y); if (k > 0 && k <= n && D(n / 2) < 0 && D(0) < 0 && D(n) < 0) kk = k; }
+          let kk = null; if (Math.abs(R1.y - R0.y) > 1e-9) { const k = ((L0.y - R0.y) * n) / (R1.y - R0.y); if (k > 0 && k <= n && R1.y > R0.y && D(n / 2) < 0 && D(0) < 0 && D(n) < 0) kk = k; }
           if (kk != null) { S.line(0, L0.y, kk, L0.y, { color: 'muted', dash: [2, 3], width: 1.2 }); S.line(kk, 0, kk, Rf(kk), { color: 'muted', dash: [2, 3], width: 1.2 }); S.dot(kk, Rf(kk), { r: 3.5, color: 'ink' }); S.text(`k = ${Math.ceil(kk - 1e-9)}`, kk, 0, { color: 'ink', size: 12, dy: 13, weight: 600, align: 'center', plate: true }); }
           // from the start: follow the sign of R − L
           let x = X0.x; const g0 = D(x); if (Math.abs(g0) > 1e-9) { for (let s = 0; s < 4000; s++) { const g = D(x); if (Math.abs(g) < 1e-6) break; const nx = x + 0.05 * Math.sign(g); if (nx <= 0 || nx >= n) { x = nx <= 0 ? 0 : n; break; } if (Math.sign(D(nx)) !== Math.sign(g)) { x = xc; break; } x = nx; } }
@@ -312,7 +312,7 @@ Near a critical parameter value the same fragility appears in random crowds: amo
         const zoom = v.select('view', [{ value: '20', label: 'first 20 people' }, { value: '100', label: 'all 100' }], '20');
         const sig = v.slider('spread $\\sigma$ of the random crowds', 4, 22, 12, { step: 0.5 });
         const Lt = v.stage({ x: [-0.5, 20.5], y: [-1, 21], height: 350, weight: 1, axes: 'box', title: 'sorted thresholds against the number already rioting' });
-        const Rt = v.stage({ x: [-1, 46], y: [-8, 108], height: 350, weight: 1.15, axes: 'box', xlabel: 'average threshold of the crowd', title: 'final riot size of random crowds' });
+        const Rt = v.stage({ x: [-1, 46], y: [-8, 108], height: 350, weight: 1.15, axes: 'box', title: 'final riot size (up) against average threshold (across)' });
         const cache = new Map();
         const crowds = (s) => {
           if (!cache.has(s)) {
@@ -428,7 +428,7 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
             Lf.path(cobweb(A.rs.slice(0, Z + 1)), { color: 'blue', width: 1.4, dash: [3, 3] }); Lf.path(cobweb(B.rs), { color: 'red', width: 2.2 });
             Lf.dot(1, 1, { r: 6, color: 'red' }); Lf.text('perturbed crowd stops: F(1) = 1', 1, 1, { color: 'red', size: 11.5, dx: 10, dy: 14, weight: 600, plate: true });
             Lf.text('uniform: F(x) = x + 1, one step ahead of the line all the way to 100', Z * 0.98, Z * 0.94, { color: 'blue', size: 11, align: 'right', plate: true });
-            Rf.setView([-3, 104], [-6, 106]); Rf.setTitle('rioters after each round'); Rf.setLabels('round $t$', null);
+            Rf.setView([-3, 104], [-6, 106]); Rf.setTitle('rioters after each round $t$ (across)'); Rf.setLabels(null, null);
             Rf.path(A.rs.map((r, t) => [t, r]), { color: 'blue', width: 2.6 }); Rf.path([[0, 0], [1, 1], [100, 1]], { color: 'red', width: 2.6 });
             Rf.dot(A.rs.length - 1, 100, { r: 6, color: 'green' }); Rf.dot(100, 1, { r: 6, color: 'green' });
             Rf.text('“A crowd of radicals engaged in riotous behavior”', 50, 76, { color: 'blue', size: 11.5, align: 'center', plate: true });
@@ -441,7 +441,7 @@ Hence it is hazardous to infer individual dispositions, or shared norms, from ag
             Lf.line(0, 0, 100, 100, { color: 'muted', dash: [5, 4], width: 1.3 });
             Lf.path(stepPts(one.F, 100), { color: 'ink', width: 2 }); Lf.path(cobweb(one.rs), { color: 'gold', width: 2 });
             Lf.dot(one.final, one.final, { r: 6, color: 'green' }); Lf.text(`stops at ${one.final}`, one.final, one.final, { color: 'green', size: 12, weight: 700, dx: one.final > 60 ? -10 : 10, dy: one.final > 60 ? 14 : -12, align: one.final > 60 ? 'right' : 'left', plate: true });
-            Rf.setView([-3, 104], [-0.03, 0.42]); Rf.setTitle(`final riot size in ${S.M.toLocaleString('en-US')} sampled crowds`); Rf.setLabels('rioters at equilibrium', null);
+            Rf.setView([-3, 104], [-0.03, 0.42]); Rf.setTitle(`share of ${S.M.toLocaleString('en-US')} sampled crowds by final number of rioters`); Rf.setLabels(null, null);
             S.hist.forEach((p, k) => { if (p) Rf.rect(k - 0.45, 0, k + 0.45, p, { fill: k <= 1 ? 'red' : k >= 90 ? 'green' : 'blue', fillAlpha: 0.8, stroke: false }); });
             Rf.line(-1.5, 0.37, 1.5, 0.37, { color: 'red', width: 2 }); Rf.text('paper .37', 1.5, 0.37, { color: 'red', size: 11, dx: 6, weight: 600 });
             Rf.line(-0.5, 0.14, 2.5, 0.14, { color: 'red', width: 2 }); Rf.text('paper .14', 2.5, 0.14, { color: 'red', size: 11, dx: 6, weight: 600 });

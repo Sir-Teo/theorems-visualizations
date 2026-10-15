@@ -39,11 +39,11 @@ function assemble(list) {
 }
 const S3 = Math.sqrt(3) / 2;
 const SIL = {
-  iso: { label: 'isolated', long: 'isolated tetrahedra (nesosilicates)', k: 0, max: 4, def: 3, ex: 'olivine (Mg,Fe)₂SiO₄', anion: '\\mathrm{SiO_4^{4-}}', cleave: 'none',
+  iso: { label: 'isolated', long: 'isolated tetrahedra (nesosilicates)', k: 0, max: 4, def: 3, ex: 'olivine (Mg,Fe)₂SiO₄', anion: '\\mathrm{SiO_4^{4-}}', cleave: 'none', cl: 'no good cleavage: olivine breaks with a conchoidal fracture',
     build(n) { const L = []; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const up = (i + j) % 2 ? -1 : 1; L.push(tetra(tri(i * 1.9, j * 1.9, (-up * H3) / 2, up > 0 ? Math.PI / 2 : 0.4 - Math.PI / 2), up)); } return L; } },
-  pair: { label: 'pairs', long: 'pairs sharing one corner (sorosilicates)', k: 1, max: 4, def: 3, ex: 'åkermanite Ca₂MgSi₂O₇', anion: '\\mathrm{Si_2O_7^{6-}}', cleave: 'none',
+  pair: { label: 'pairs', long: 'pairs sharing one corner (sorosilicates)', k: 1, max: 4, def: 3, ex: 'åkermanite Ca₂MgSi₂O₇', anion: '\\mathrm{Si_2O_7^{6-}}', cleave: 'none', cl: 'cleavage weak: the anions are held only by cations',
     build(n) { const L = []; for (let i = 0; i < n; i++) { const x = i * 2.1, y = (i % 2) * 0.9; L.push(tetra(tri(x, y, H3, Math.PI / 2), -1), tetra(tri(x, y, -H3, -Math.PI / 2), 1)); } return L; } },
-  ring: { label: 'rings', long: 'six-membered rings (cyclosilicates)', k: 2, max: 3, def: 1, ex: 'beryl Be₃Al₂Si₆O₁₈', anion: '\\mathrm{Si_6O_{18}^{12-}}', cleave: 'none',
+  ring: { label: 'rings', long: 'six-membered rings (cyclosilicates)', k: 2, max: 3, def: 1, ex: 'beryl Be₃Al₂Si₆O₁₈', anion: '\\mathrm{Si_6O_{18}^{12-}}', cleave: 'none', cl: 'beryl has only an imperfect basal cleavage',
     build(n) {
       const L = [], s3 = Math.sqrt(3);
       for (let r = 0; r < n; r++) for (let k = 0; k < 6; k++) {
@@ -112,8 +112,8 @@ function cleavageInset(v, s, kind, box) {
     }
     c.setLineDash([]);
     const ang = (2 * Math.atan(A / B) * 180) / Math.PI, gx = cxp + 0.5 * B * k;
-    s.textPx(`${Math.round(ang)}°`, gx + 9, cyp, { size: 11.5, weight: 700, color: 'red' });
-    s.textPx(`${Math.round(180 - ang)}°`, gx, cyp - 11, { size: 11.5, weight: 700, color: 'red', align: 'center' });
+    s.textPx(`${Math.round(ang)}°`, gx + 15, cyp, { size: 11.5, weight: 700, color: 'red' });
+    s.textPx(`${Math.round(180 - ang)}°`, gx, cyp - 15, { size: 11.5, weight: 700, color: 'red', align: 'center' });
   } else if (kind === 'mica') {
     for (let j = -2; j <= 2; j++) {
       const Y = cyp + j * 22;
@@ -122,13 +122,20 @@ function cleavageInset(v, s, kind, box) {
       c.fillStyle = v.color('gold'); for (let x = X0 + 14; x < X1 - 8; x += 13) { c.beginPath(); c.arc(x, Y + 11, 2, 0, TAU); c.fill(); }
     }
     c.strokeStyle = v.color('red'); c.lineWidth = 1.6; c.setLineDash([5, 3]); c.beginPath(); c.moveTo(X0 + 4, cyp + 11); c.lineTo(X1 - 4, cyp + 11); c.stroke(); c.setLineDash([]);
-  } else {
+  } else if (kind === 'none3') {
     c.strokeStyle = v.color('accent', 0.7); c.lineWidth = 1;
     const g = 15; for (let j = -4; j <= 4; j++) for (let i = -6; i <= 6; i++) { const X = cxp + (i + (j % 2) * 0.5) * g, Y = cyp + j * g * 0.87; c.beginPath(); c.moveTo(X, Y); c.lineTo(X + g, Y); c.moveTo(X, Y); c.lineTo(X + g / 2, Y + g * 0.87); c.stroke(); }
-    if (kind === 'none') { c.fillStyle = v.color('panel', 0.75); c.fillRect(X0, Y0, W, Hh); }
+  } else { // isolated anions (triangles: tetrahedra seen from above) held together by cations
+    const g = 26;
+    for (let j = -2; j <= 2; j++) for (let i = -4; i <= 4; i++) {
+      const X = cxp + (i + (j % 2) * 0.5) * g, Y = cyp + j * g * 0.8, r = 7, up = (i + j) % 2 ? 1 : -1;
+      c.beginPath(); for (let q = 0; q < 3; q++) { const a = (up * Math.PI) / 2 + (q * TAU) / 3; q ? c.lineTo(X + r * Math.cos(a), Y - r * Math.sin(a)) : c.moveTo(X + r * Math.cos(a), Y - r * Math.sin(a)); } c.closePath();
+      c.fillStyle = v.color('accent', 0.3); c.fill(); c.strokeStyle = v.color('accent'); c.lineWidth = 1; c.stroke();
+      c.fillStyle = v.color('gold'); c.beginPath(); c.arc(X + g / 2, Y, 2.6, 0, TAU); c.fill();
+    }
   }
   c.restore();
-  const title = { px: 'pyroxene chains end-on', am: 'amphibole double chains end-on', mica: 'mica sheets edge-on', none3: 'framework: bonds in every direction', none: 'isolated anions' }[kind];
+  const title = { px: 'pyroxene chains, end-on', am: 'amphibole chains, end-on', mica: 'mica sheets, edge-on', none3: 'framework', none: 'anions + cations (gold)' }[kind];
   s.textPx(title, X0 + 8, Y0 + 10, { size: 11, weight: 600, color: 'muted' });
 }
 
@@ -215,6 +222,7 @@ const ST_DEFAULT = () => [
   { type: 'dep', lith: 'sand', top: 3.25 },
   { type: 'tilt', ang: (18 * Math.PI) / 180, cx: 6, cz: 0 },
   { type: 'dike', lith: 'basalt', x0: 4.3, w: 0.34, ang: 0.12 },
+  { type: 'dike', lith: 'basalt', x0: 9.0, w: 0.3, ang: -0.1 },
   { type: 'erode', level: 2.75, amp: 0.07, wl: 3.1, ph: 0.6 },
   { type: 'dep', lith: 'cong', top: 3.2 },
   { type: 'dep', lith: 'shale', top: 3.85 },
@@ -232,7 +240,9 @@ const TAXA = [
 // beds [t0, t1, lith, thickness per time unit]
 const SITE_A = [[0, 10, 'sand', 0.9], [10, 22, 'shale', 0.75], [22, 34, 'shale', 0.8], [34, 48, 'lime', 0.9], [48, 60, 'sand', 0.7], [60, 74, 'shale', 0.85], [74, 88, 'lime', 0.75], [88, 100, 'sand', 0.8]];
 const SITE_B = [[4, 18, 'lime', 0.6], [18, 30, 'sand', 0.9], [30, 40, 'shale', 1.0], [58, 68, 'lime', 1.2], [68, 80, 'sand', 0.9], [80, 92, 'shale', 0.8], [92, 100, 'lime', 1.0]];
-function stackSite(beds) { let h = 0; return beds.map(([t0, t1, lith, rate]) => { const b = { t0, t1, lith, h0: h, h1: h + (t1 - t0) * rate }; h = b.h1; b.taxa = TAXA.map((T, i) => (T.r[0] < t1 && T.r[1] > t0 ? i : -1)).filter((i) => i >= 0); const lo = Math.max(...b.taxa.map((i) => TAXA[i].r[0])), hi = Math.min(...b.taxa.map((i) => TAXA[i].r[1])); b.win = [lo, hi]; return b; }); }
+function stackSite(beds) { let h = 0; return beds.map(([t0, t1, lith, rate]) => { const b = { t0, t1, lith, h0: h, h1: h + (t1 - t0) * rate }; h = b.h1; b.taxa = TAXA.map((T, i) => (T.r[0] < t1 && T.r[1] > t0 ? i : -1)).filter((i) => i >= 0); let lo = Math.max(...b.taxa.map((i) => TAXA[i].r[0])), hi = Math.min(...b.taxa.map((i) => TAXA[i].r[1]));
+    TAXA.forEach((T, i) => { if (b.taxa.includes(i) || T.r[1] <= lo || T.r[0] >= hi) return; if (T.r[0] > lo) hi = Math.min(hi, T.r[0]); else lo = Math.max(lo, T.r[1]); }); // an absent species was not yet, or no longer, alive
+    b.win = [lo, hi]; return b; }); }
 
 export default {
   collection: 'geol',
@@ -295,7 +305,7 @@ Each shared oxygen is counted half for each of its two tetrahedra, so the ratio 
         v.readout(() => {
           if (!st) return '';
           const { S, A } = st, inf = 4 - S.k / 2;
-          let cl = { none: 'no good cleavage (olivine: conchoidal fracture)', none3: 'no cleavage: every plane cuts Si–O bonds, so quartz breaks with a conchoidal fracture', mica: 'one perfect basal cleavage between the sheets' }[S.cleave];
+          let cl = { none: S.cl, none3: 'no cleavage: every plane cuts Si–O bonds, so quartz breaks with a conchoidal fracture', mica: 'one perfect basal cleavage between the sheets' }[S.cleave];
           if (S.cleave === 'px' || S.cleave === 'am') {
             const { A: a, B: b, name } = BEAMS[S.cleave], ang = (2 * Math.atan(a / b) * 180) / Math.PI;
             cl = `two prismatic cleavages; from the ${name} cell, $2\\arctan(a\\sin\\beta/b) = ${v.fix(ang, 1)}^\\circ$, so the traces meet at **${v.fix(Math.min(ang, 180 - ang), 0)}° and ${v.fix(Math.max(ang, 180 - ang), 0)}°**`;
@@ -518,7 +528,7 @@ If the early crystals are removed from the melt (they settle, or the melt is squ
             P.text('En + silica', 61, 1500, { size: 12, color: 'muted' });
             P.text('silica +', 71.6, 1598, { size: 11, color: 'muted', align: 'right' }); P.text('liquid', 71.6, 1582, { size: 11, color: 'muted', align: 'right' });
             P.text('En', FO.wEn, 1935, { dx: 4, dy: 9, size: 11.5, color: 'muted' });
-            P.dot(FO.wP, FO.TP, { r: 3.5, color: 'ink' }); P.text('peritectic 1557 °C', FO.wP, FO.TP, { dx: -8, dy: 13, size: 11, color: 'ink', align: 'right' });
+            P.dot(FO.wP, FO.TP, { r: 3.5, color: 'ink' }); P.text('peritectic 1557 °C', FO.wP, FO.TP, { dx: -26, dy: 13, size: 11, color: 'ink', align: 'right' });
             P.dot(FO.wE, FO.TE, { r: 3.5, color: 'ink' }); P.text('eutectic 1543 °C', FO.wE, FO.TE, { dx: 4, dy: 12, size: 11, color: 'ink' });
             P.text('Fo melts at 1890 °C', FO.wFo, FO.TFo, { dx: 6, dy: 4, size: 11, color: 'ink' });
             // bulk and path
@@ -567,8 +577,8 @@ If the early crystals are removed from the melt (they settle, or the melt is squ
             P.text('liquid', 20, 1500, { size: 13, color: 'red', weight: 600 });
             P.text('crystals + liquid', 52, 1370, { size: 12, color: 'muted', align: 'center' });
             P.text('plagioclase crystals', 68, 1180, { size: 12, color: 'muted', align: 'center' });
-            P.text('liquidus', 33, 1330, { size: 11, color: 'ink' }); P.text('solidus', 50, 1250, { size: 11, color: 'ink' });
-            P.text('albite 1118 °C', 0, 1118, { dx: 6, dy: 12, size: 11 }); P.text('anorthite 1553 °C', 100, 1553, { dx: -6, dy: -12, size: 11, align: 'right' });
+            P.text('liquidus', 82, plagTliq(0.82), { dx: -6, dy: -10, size: 11, color: 'ink', align: 'right' }); P.text('solidus', 30, plagTsol(0.3), { dx: 6, dy: 12, size: 11, color: 'ink' });
+            P.text('albite 1118 °C', 0, 1118, { dx: 8, dy: -10, size: 11 }); P.text('anorthite 1553 °C', 100, 1553, { dx: -10, dy: 6, size: 11, align: 'right' });
             P.line(100 * x0, 1080, 100 * x0, 1600, { color: 'muted', width: 1, dash: [3, 4] });
             if (fr && S.zones?.length) { P.path(S.zones.map((r) => [100 * r.xl, r.T]), { color: 'red', width: 3, alpha: 0.65 }); P.path(S.zones.map((r) => [100 * r.xs, r.T]), { color: 'blue', width: 3, alpha: 0.45 }); }
             if (S.xl != null && S.xs != null) { P.line(100 * S.xl, S.T, 100 * S.xs, S.T, { color: 'blue', width: 1.8 }); P.dot(100 * S.xs, S.T, { r: 6, color: 'blue' }); P.dot(100 * S.xl, S.T, { r: 6.5, color: 'red' }); }
@@ -578,8 +588,8 @@ If the early crystals are removed from the melt (they settle, or the melt is squ
             C.rect(-0.85, -0.95, 0.85, 0.9, { fill: 'red', fillAlpha: 0.04 + 0.16 * S.F, color: 'muted', width: 1.6, radius: 10 });
             const solid = 1 - S.F, anCol = (x) => v.mix('teal', 'blue', clamp(x, 0, 1));
             if (solid > 0.003) for (let i = 0; i < 16; i++) {
-              const x = -0.62 + 1.24 * hash(i, 5, 2), y = -0.72 + 1.44 * hash(i, 6, 2), a = hash(i, 7, 2) * Math.PI, ca = Math.cos(a), sa = Math.sin(a);
-              const lath = (f) => { const hw = 0.2 * Math.sqrt(f) + 0.004, hh = 0.07 * Math.sqrt(f) + 0.002; return [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].map(([u, w]) => [x + u * ca - w * sa, y + u * sa + w * ca]); };
+              const x = -0.57 + (i % 4) * 0.38 + (hash(i, 5, 2) - 0.5) * 0.1, y = -0.66 + Math.floor(i / 4) * 0.42 + (hash(i, 6, 2) - 0.5) * 0.1, a = hash(i, 7, 2) * Math.PI, ca = Math.cos(a), sa = Math.sin(a);
+              const lath = (f) => { const hw = 0.17 * Math.sqrt(f) + 0.004, hh = 0.06 * Math.sqrt(f) + 0.002; return [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].map(([u, w]) => [x + u * ca - w * sa, y + u * sa + w * ca]); };
               if (fr && S.zones.length) {
                 const Z = S.zones, n = 6;
                 for (let j = n; j >= 1; j--) { const idx = Math.floor((Z.length - 1) * (j / n)), f = (1 - Z[idx].F); if (f <= 0) continue; C.poly(lath(f), { fill: anCol(Z[idx].xs), fillAlpha: 0.85, color: 'ink', width: 0.6 }); }
@@ -744,12 +754,13 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
           else if (q) S.corner('click the oldest unit not yet placed', 'tl', { size: 12, weight: 600, color: 'muted' });
           // the graph of proven relations
           const show = (id) => !q || placed.includes(+id);
+          for (const n of G.nodes) n.hidden = !show(n.id); // in the quiz, unplaced units stay hidden (their position would give the order away)
           G.draw({
             nodeFill: (id) => (show(id) ? (LITH[hist[+id].lith] || LITH.sand).color : null),
             nodeColor: (id) => (LITH[hist[+id].lith] || LITH.sand).color,
             nodeLabel: (id) => (q ? a.letter.get(+id) : String(a.order.get(+id))),
             edgeColor: (e) => e.color,
-            dim: q ? [...G.edges.filter((e) => !(show(e.from) && show(e.to))), ...G.nodes.filter((n) => !show(n.id)).map((n) => n.id)] : [],
+            dim: [],
           });
           st = { a, q };
         });
@@ -775,7 +786,7 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
       statement: String.raw`Fossil species succeed one another in the rock record in a definite and recognizable order: each appears at some level, persists through a range of strata and disappears, never to reappear. Rocks containing the same fossil **assemblage** were therefore deposited during the same interval of time, wherever they are found and whatever their rock type. Matching assemblages between separate sections (**biostratigraphic correlation**) extends Steno's local ordering to whole regions and continents; the time window of a bed is the interval in which all the species it contains coexisted.`,
       scope: String.raw`Correlation is as fine as the ranges are short: long-ranging species say little, short-lived, widespread, abundant species (index fossils) say most. First and last appearances are diachronous where species migrated, facies-bound species follow their environments rather than time, and reworked fossils can be found above their true range.`,
       idea: String.raw`Species originate and go extinct once (evolution is not reversible and extinction is final), so the sequence of appearances is the same everywhere. William Smith, surveying canals in England, found that each formation carried its own fossils in a constant order, and used them to trace strata across the country for his 1815 geological map; Cuvier and Brongniart found the same in the Paris Basin. Rock type is a poor guide: the same sandstone forms at different times in different places as environments shift (geol-1.7), and a gap in deposition (geol-1.6) removes zones from one section but not another.`,
-      caption: String.raw`Drag from a bed in site A to a bed in site B to correlate them (click a tie to delete it); click a bed to see its fossils on the range chart and the window where they all coexisted. A tie turns **green** if the two beds really overlap in time and **red** if not; crossing ties are impossible by superposition. Switch the mode to let the computer correlate **by fossils** (overlapping windows) or **by rock type**, and turn on **true time lines** to see the isochrons, which converge on the gap in site B.`,
+      caption: String.raw`Drag from a bed in site A to a bed in site B to correlate them (click a tie to delete it); click a bed to see its fossils on the range chart and the window of time they allow (every species it contains alive, every one it lacks not yet or no longer alive). A tie turns **green** if the two beds really overlap in time and **red** if not; crossing ties are impossible by superposition. Switch the mode to let the computer correlate **by fossils** (overlapping windows) or **by rock type**, and turn on **true time lines** to see the isochrons, which converge on the gap in site B.`,
       deps: ['geol-1.4'],
       see: ['geol-1.7', 'geol-1.9'],
       refs: ['Press–Siever'],
@@ -867,7 +878,7 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
           if (!st) return '';
           const { T, good, cross, b } = st;
           const m = { you: 'your correlation', fos: 'correlation by fossil assemblages', rock: 'correlation by rock type' }[mode.value];
-          const sb = b ? ` · selected bed: ${b.taxa.map((i) => TAXA[i].k.replace('fishtooth', 'fish tooth')).join(', ')} → all coexisted only in **${v.fix(b.win[0], 0)}–${v.fix(b.win[1], 0)}**${truth.value ? ` (true age ${b.t0}–${b.t1})` : ''}` : '';
+          const sb = b ? ` · selected bed: ${b.taxa.map((i) => TAXA[i].k.replace('fishtooth', 'fish tooth')).join(', ')} → possible only in **${v.fix(b.win[0], 0)}–${v.fix(b.win[1], 0)}**${truth.value ? ` (true age ${b.t0}–${b.t1})` : ''}` : '';
           return `${m}: **${good} of ${T.length}** ties join beds of overlapping age${cross ? `, ${cross} cross another tie (impossible by superposition)` : ''}${sb}`;
         });
       },
