@@ -981,19 +981,19 @@ provided the internal forces obey the **strong** form of the third law: $\mathbf
 $$\mathbf L = \underbrace{\mathbf R\times M\mathbf V}_{\text{orbital}} + \underbrace{\sum_i \mathbf r_i'\times m_i\mathbf v_i'}_{\text{spin about the CM}} .$$
 Moreover the spin obeys $d\mathbf L_{\rm spin}/dt = \boldsymbol\tau_{\rm ext}'$, the external torque about the centre of mass — even though the centre of mass may accelerate. In uniform gravity that torque is zero, so the spin is constant while the orbital part changes at the rate $\mathbf R\times M\mathbf g$.`,
       idea: String.raw`Expand $\sum m_i(\mathbf R+\mathbf r_i')\times(\mathbf V+\mathbf v_i')$: the cross terms contain $\sum m_i\mathbf r_i' = 0$ and $\sum m_i\mathbf v_i' = 0$ (definition of the centre of mass, 2.3) and drop out. Differentiating the spin part, the fictitious force $-m_i\ddot{\mathbf R}$ of the accelerating CM frame has total torque $-(\sum m_i\mathbf r_i')\times\ddot{\mathbf R} = 0$, and internal torques cancel (2.11). Uniform gravity acts at the centre of mass, so it exerts no torque about it.`,
-      caption: String.raw`A spinning dumbbell is thrown. The bars split its angular momentum about $O$ into the orbital part $\mathbf R\times M\mathbf V$ (blue) and the spin about the centre of mass (purple); stacked, they always match the directly computed total $\sum m_i\mathbf r_i\times\mathbf v_i$ (green). With gravity the spin bar is frozen while the orbital bar moves; set $g = 0$ and everything is constant. Drag $O$ to change the orbital part.`,
+      caption: String.raw`A spinning dumbbell is thrown. The bars split its angular momentum about $O$ into the orbital part $\mathbf R\times M\mathbf V$ (blue) and the spin about the centre of mass (purple); added head to tail in the *sum* column, they land exactly on the directly computed total $\sum m_i\mathbf r_i\times\mathbf v_i$ (green line and bar). With gravity the spin bar is frozen while the orbital bar moves; set $g = 0$ and everything is constant. Drag $O$ to change the orbital part.`,
       deps: ['mech-2.11', 'mech-2.3'],
       refs: ['Taylor §10.1', 'Goldstein §1.2'],
       tags: ['angular momentum', 'centre of mass'],
       viz(v) {
         const M = v.M;
         const m2s = v.slider('$m_2$ (kg)', 0.3, 3, 2, { step: 0.1 });
-        const ws = v.slider('spin $\\omega$ (rad/s)', -15, 15, 9, { step: 0.5 });
+        const ws = v.slider('spin $\\omega$ (rad/s)', -15, 15, 12, { step: 0.5 });
         const gs = v.slider('$g$ (m/s²)', 0, 9.8, 9.8, { step: 0.1 });
-        const s = v.stage({ x: [-1.3, 5.3], y: [-0.5, 8.6], equal: true, height: 360, title: 'thrown dumbbell ($m_1 = 1$ kg, rod 0.7 m)' });
+        const s = v.stage({ x: [-1.3, 5.3], y: [-0.5, 8.6], equal: true, height: 360, title: 'thrown dumbbell ($m_1 = 1$ kg, rod 1 m)' });
         const sb = v.stage({ x: [0, 4], y: [-3, 3], axes: false, height: 360, weight: 0.8, title: 'angular momentum about O (kg·m²/s)' });
-        const O = s.handle(0, 0, { color: 'red', label: 'O', labelPos: 'sw' });
-        const T = 1.3, ELL = 0.7, KS = 2e4, Vc = [3, 5.5], R0 = [0, 1];
+        const O = s.handle(2, 0, { color: 'red', label: 'O', labelPos: 'se' });
+        const T = 1.3, ELL = 1, KS = 2e4, Vc = [3, 5.5], R0 = [0, 1];
         const cache = memo(); let cur = null;
         const build = () => cache([m2s.value, ws.value, gs.value].join('|'), () => {
           const m = [1, m2s.value], Mt = m[0] + m[1], w = ws.value, g = gs.value;
@@ -1005,7 +1005,9 @@ Moreover the spin obeys $d\mathbf L_{\rm spin}/dt = \boldsymbol\tau_{\rm ext}'$,
             F[0][1] -= m[0] * g; F[1][1] -= m[1] * g;
           };
           const sim = nbody({ m, x, v: vel, force, dt: 1e-4, T, every: 50 });
-          return { m, Mt, sim, cm: sim.x.map((X) => cmOf(m, X)), g };
+          let x0 = -0.5, x1 = 3, y1 = 2;
+          sim.x.forEach((X) => X.forEach((p) => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); }));
+          return { m, Mt, sim, cm: sim.x.map((X) => cmOf(m, X)), g, view: [[x0 - 0.6, x1 + 0.6], [-0.5, y1 + 0.5]] };
         });
         const parts = (B, X, V, o) => {
           const R = cmOf(B.m, X), Vv = cmOf(B.m, V);
@@ -1016,6 +1018,7 @@ Moreover the spin obeys $d\mathbf L_{\rm spin}/dt = \boldsymbol\tau_{\rm ext}'$,
         v.animate((t) => {
           const B = build(), tt = M.clamp(t * 0.26, 0, T), f = at(B.sim, tt), X = f.x, V = f.v, o = [O.x, O.y];
           const all = B.sim.x.map((Xk, k) => parts(B, Xk, B.sim.v[k], o)), pr = parts(B, X, V, o);
+          s.setView(...B.view);
           s.hband(-5, 0, { color: 'faint', alpha: 0.25 });
           s.path(B.cm, { color: 'green', alpha: 0.25, width: 1.2, dash: [4, 4] });
           [0, 1].forEach((j) => s.path(B.sim.x.slice(0, f.i + 1).map((Xk) => Xk[j]), { color: COLS[j], width: 1.3, alpha: 0.6 }));
@@ -1031,7 +1034,9 @@ Moreover the spin obeys $d\mathbf L_{\rm spin}/dt = \boldsymbol\tau_{\rm ext}'$,
           sb.hline(0, { color: 'muted' });
           const bar = (x0, y0, y1, col) => sb.rect(x0, Math.min(y0, y1), x0 + 0.7, Math.max(y0, y1), { fill: col, fillAlpha: 0.45, color: col, width: 1.4 });
           bar(0.25, 0, pr.orb, 'blue'); bar(1.2, 0, pr.spin, 'purple');
-          bar(2.15, 0, pr.orb, 'blue'); bar(2.15, pr.orb, pr.orb + pr.spin, 'purple');
+          sb.rect(2.15, Math.min(0, pr.orb), 2.5, Math.max(0, pr.orb), { fill: 'blue', fillAlpha: 0.45, color: 'blue', width: 1.4 });
+          sb.rect(2.5, Math.min(pr.orb, pr.orb + pr.spin), 2.85, Math.max(pr.orb, pr.orb + pr.spin), { fill: 'purple', fillAlpha: 0.45, color: 'purple', width: 1.4 });
+          sb.line(2.15, pr.orb + pr.spin, 3.8, pr.orb + pr.spin, { color: 'green', width: 2.4 });
           bar(3.1, 0, pr.tot, 'green');
           const a0 = all[0];
           [[0.25, a0.orb], [1.2, a0.spin], [3.1, a0.tot]].forEach(([x0, y]) => sb.line(x0 - 0.08, y, x0 + 0.78, y, { color: 'ink', dash: [3, 3], width: 1.2 }));

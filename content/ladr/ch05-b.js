@@ -65,6 +65,17 @@ function pDiv(p, s) {
   for (let e = p.length - 1 - m; e >= 0; e--) { const c = r[e + m] / s[m]; q[e] = c; for (let k = 0; k <= m; k++) r[e + k] -= c * s[k]; r[e + m] = 0; }
   return { q, r: r.slice(0, Math.max(1, m)) };
 }
+/** Polynomial in an operator T as TeX, the constant term written as a multiple of I. */
+function polyOpT(c, d = 2) {
+  let s = '';
+  for (let k = c.length - 1; k >= 0; k--) {
+    const a = Number(c[k].toFixed(d)); if (a === 0) continue;
+    const mag = Math.abs(a) === 1 ? '' : tn(Math.abs(a), d);
+    const mon = k === 0 ? 'I' : k === 1 ? 'T' : `T^{${k}}`;
+    s += s ? ` ${a < 0 ? '-' : '+'} ${mag}${mon}` : `${a < 0 ? '-' : ''}${mag}${mon}`;
+  }
+  return s || '0';
+}
 const pVal = (c, x) => c.reduceRight((acc, a) => acc * x + a, 0);
 /** Polynomial with ascending coefficients c as TeX in the variable v. */
 function polyT(c, v = 'z', d = 2) {
@@ -182,7 +193,6 @@ function box(S, x, y, wPx, hPx, st = {}) {
   c.moveTo(x0 + r, y0); c.arcTo(x0 + wPx, y0, x0 + wPx, y0 + hPx, r); c.arcTo(x0 + wPx, y0 + hPx, x0, y0 + hPx, r);
   c.arcTo(x0, y0 + hPx, x0, y0, r); c.arcTo(x0, y0, x0 + wPx, y0, r); c.closePath();
   if (st.fill) { c.fillStyle = st.v.color(st.fill, st.fillAlpha ?? 0.15); c.fill(); }
-  c.fillStyle = st.v.color('panel', 0.0);
   if (st.color) { c.lineWidth = st.width ?? 1.5; c.strokeStyle = st.v.color(st.color, st.alpha ?? 1); if (st.dash) c.setLineDash(st.dash); c.stroke(); }
   c.restore();
 }
@@ -256,7 +266,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         const showW = v.toggle('add the non-invariant plane $W$', false, { onChange: (b) => { if (!b && sel === 'W') sel = PRE[pre.value].sel; } });
         const D = v.stage({ x: [-2.45, 2.45], y: [-0.5, 3.5], axes: false, height: 380, weight: 1.25, title: 'invariant subspaces of $T$ and the minimal polynomial of $T|_U$' });
         const S3 = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, axes: false, height: 380, weight: 0.95, minWidth: 260 });
-        const sc = v.scene3(S3, { yaw: -0.75, pitch: 0.32, axis: 1.6, lim: 1.25, labels: ['x', 'y', 'z'] });
+        const sc = v.scene3(S3, { yaw: -0.75, pitch: 0.55, axis: 1.6, lim: 1.25, labels: ['x', 'y', 'z'] });
         const hu = sc.handle([0.6, 0.2, 0.1], { color: 'accent', label: 'u', mode: 'plane', a: [1, 0, 0], b: [0, 1, 0] });
         let sel = PRE.jordan.sel, reset = true, curKey = '', st = null, geo = [];
         const BW = 116, BH = 30;
@@ -281,14 +291,17 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           const isW = sel === 'W' && showW.value, sIdx = isW ? -1 : Math.min(sel, info.length - 1);
           const above = new Set(info.map((b, j) => (sIdx >= 0 && (j === sIdx || contains(info[sIdx], b)) ? j : -1)).filter((j) => j >= 0));
           // ---- the diagram
-          const half = (BH / 2) / D.scale ? 0 : 0;
           for (const [i, j] of edges) {
             const a = info[i], b = info[j], on = above.has(i) && above.has(j);
-            const y0 = D.invY(D.Y(a.y) - BH / 2), y1 = D.invY(D.Y(b.y) + BH / 2 + 13);
+            const y0 = D.invY(D.Y(a.y) - BH / 2 - 17), y1 = D.invY(D.Y(b.y) + BH / 2 + 1);
             D.line(a.x, y0, b.x, y1, { color: on ? 'green' : 'faint', width: on ? 2.6 : 1.4 });
             if (on) {
-              const q = pDiv(b.p, a.p).q, mx = (a.x + b.x) / 2, my = (y0 + y1) / 2;
-              D.tex(`\\times ${(() => { const f = factored(M, q); return f === '1' ? '1' : f.startsWith('(') || q.length === 2 ? f : `(${f})`; })()}`, mx, my, { color: 'green', size: 12.5, dx: a.x === b.x ? 34 : a.x < b.x ? -30 : 30 });
+              const f = factored(M, pDiv(b.p, a.p).q), lab = f === '1' || f.startsWith('(') || !/[+-]/.test(f) ? f : `(${f})`;
+              let ex = D.X(b.x) - D.X(a.x), ey = D.Y(y1) - D.Y(y0); const l = Math.hypot(ex, ey); ex /= l; ey /= l;
+              let nx = -ey, ny = ex; if (nx < 0 || (Math.abs(nx) < 1e-6 && ny > 0)) { nx = -nx; ny = -ny; }
+              if (a.x > b.x + 1e-6) { nx = -nx; ny = -ny; }
+              const mx = (D.X(a.x) + D.X(b.x)) / 2 + nx * 24, my = (D.Y(y0) + D.Y(y1)) / 2 + ny * 24;
+              D.texPx(`\\times ${lab}`, mx, my, { color: 'green', size: 12.5 });
             }
           }
           geo = [];
@@ -318,7 +331,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           if (key !== curKey || reset) {
             curKey = key; reset = false;
             if (U.length === 1) { hu.mode = 'line'; hu.d = U[0]; hu.set(mul3(U[0], 0.75)); }
-            else if (U.length === 2) { hu.mode = 'plane'; hu.a = U[0]; hu.b = U[1]; hu.set(add3(mul3(U[0], 0.6), mul3(U[1], 0.35))); }
+            else if (U.length === 2) { hu.mode = 'plane'; hu.a = U[0]; hu.b = U[1]; hu.set(add3(mul3(U[0], 0.25), mul3(U[1], 0.75))); }
             else if (U.length === 3) { hu.mode = 'free'; hu.set([0.5, 0.45, 0.35]); }
           }
           hu.h.visible = U.length > 0;
@@ -429,7 +442,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
           const { p, c0, singNow, invErr, nul } = st;
           const head = `$p(z) = ${polyT(p)}$, constant term $p(0) = ${tn(c0, 3)}$. `;
           if (singNow) return head + `Since $p(0) = 0$, the number $0$ is a zero of $p$, hence an eigenvalue: **$T$ is not invertible** — it kills $v = ${vtex(nul, 2)}$.`;
-          return head + `$p(0) \\ne 0$, so $T$ is invertible, and $p(T) = 0$ solved for $I$ gives $T^{-1} = -\\tfrac{1}{${tn(c0, 3)}}\\bigl(${polyT(p.slice(1), 'T').replace(/(^|[^\\w])(-?\\s?[\\d.]+)$/, '$1$2I')}\\bigr)$: $\\max|T\\,T^{-1} - I| = ${v.sci(invErr, 1)}$.`;
+          return head + `$p(0) \\ne 0$, so $T$ is invertible, and $p(T) = 0$ solved for $I$ gives $T^{-1} = -\\tfrac{1}{${tn(c0, 3)}}\\bigl(${polyOpT(p.slice(1))}\\bigr)$: $\\max|T\\,T^{-1} - I| = ${v.sci(invErr, 1)}$.`;
         });
       },
     },

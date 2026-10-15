@@ -131,8 +131,8 @@ sending each linear map to its matrix with respect to these bases, is an isomorp
       viz(v) {
         const sD = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 300, minWidth: 220, title: String.raw`$V=\mathbf R^2$, basis $v_1,v_2$` });
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 170, weight: 0.65, title: String.raw`$\mathcal M(T)\in\mathbf F^{3,2}$` });
-        const sW = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, axes: false, height: 300, minWidth: 250, title: String.raw`$W=\mathbf R^3$` });
-        const sc = v.scene3(sW, { yaw: -0.55, pitch: 0.5, axis: 1.3, lim: 1.5 });
+        const sW = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 300, minWidth: 250, title: String.raw`$W=\mathbf R^3$` });
+        const sc = v.scene3(sW, { yaw: 2.1, pitch: 0.55, axis: 1.3, lim: 1.5 });
         const PRE = {
           tilt: [[1, 0], [0, 1], [0.6, -0.5]], swap: [[0, -1], [1.2, 0], [0, 0.8]],
           rank1: [[1, 0.5], [0.6, 0.3], [0.4, 0.2]], zero: [[0, 0], [0, 0], [0, 0]],
@@ -695,7 +695,7 @@ $$(u_1,\dots,u_m)+(v_1,\dots,v_m)=(u_1+v_1,\dots,u_m+v_m),\qquad\lambda(v_1,\dot
       deps: ['ladr-3.87'],
       tags: ['products'],
       viz(v) {
-        const sP = v.stage({ x: [-2, 2], y: [-3, 3], height: 300, minWidth: 250, title: String.raw`first component, in $\mathcal P_1(\mathbf R)$` });
+        const sP = v.stage({ x: [-2, 2], y: [-3.5, 3.5], height: 300, minWidth: 250, title: String.raw`first component, in $\mathcal P_1(\mathbf R)$` });
         const sA = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 300, minWidth: 250, title: String.raw`second component, in $\mathbf R^2$` });
         const AX = [
           ['comm', 'u+v=v+u'], ['assoc', '(u+v)+w=u+(v+w)'], ['zero', 'u+0=u'], ['inv', 'u+(-u)=0'],
@@ -705,14 +705,14 @@ $$(u_1,\dots,u_m)+(v_1,\dots,v_m)=(u_1+v_1,\dots,u_m+v_m),\qquad\lambda(v_1,\dot
         const ax = v.select('axiom', AX.map(([value]) => ({ value, label: SHORT[value] })), 'dist1');
         let seed = 4;
         v.button('Resample', () => seed++);
-        const p0 = sP.handle(-1, 0.4, { color: 'gold', constrain: 'y', label: 'u' }), p1 = sP.handle(1, 1.6, { color: 'gold', constrain: 'y' });
+        const p0 = sP.handle(-1, -0.2, { color: 'gold', constrain: 'y', label: 'u' }), p1 = sP.handle(1, 0.8, { color: 'gold', constrain: 'y' });
         const ua = sA.handle(1.2, 0.6, { color: 'gold', label: 'u' });
         const add = (e, f) => ({ p: [e.p[0] + f.p[0], e.p[1] + f.p[1]], a: add2(e.a, f.a) });
         const mul = (k, e) => ({ p: [k * e.p[0], k * e.p[1]], a: sc2(e.a, k) });
         const Z = { p: [0, 0], a: [0, 0] };
         let st = null;
         v.render(() => {
-          const r = v.M.rng(seed), rnd = () => ({ p: [r.uniform(-1.2, 1.2), r.uniform(-1, 1)], a: [r.uniform(-1.5, 1.5), r.uniform(-1.5, 1.5)] });
+          const r = v.M.rng(seed), rnd = () => ({ p: [r.uniform(-0.8, 0.8), r.uniform(-0.6, 0.6)], a: [r.uniform(-1.5, 1.5), r.uniform(-1.5, 1.5)] });
           const u = { p: [(p0.y + p1.y) / 2, (p1.y - p0.y) / 2], a: hp(ua) }, vv = rnd(), w = rnd(), a = r.pick([-1.5, -0.8, 1.4, 1.8, 2]), b = r.pick([-1.2, -0.6, 0.7, 1.3]);
           const k = ax.value;
           const sides = {

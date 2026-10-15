@@ -525,10 +525,10 @@ The cases do not cover everything: $f(n)=n^{\log_b a}/\lg n$ falls in the gap be
           else { cs = 0; g = (n) => n ** e; pred = `n^{${fe(e)}}`; }
           const col = ['red', 'blue', 'green', 'orange'][cs];
           // plane
-          const m = Math.max(4, e + 0.6, d + 0.6); P.setView([0, m], [0, m]);
-          P.poly([[0, 0], [m, m], [m, 0]], { fill: 'blue', fillAlpha: 0.1, stroke: false });
-          P.poly([[0, 0], [0, m], [m, m]], { fill: 'orange', fillAlpha: 0.1, stroke: false });
-          P.line(0, 0, m, m, { color: 'green', width: 3 });
+          const m = Math.max(4, e + 0.6, d + 0.6), o = -0.2; P.setView([o, m], [o, m]);
+          P.poly([[o, o], [m, m], [m, o]], { fill: 'blue', fillAlpha: 0.1, stroke: false });
+          P.poly([[o, o], [o, m], [m, m]], { fill: 'orange', fillAlpha: 0.1, stroke: false });
+          P.line(o, o, m, m, { color: 'green', width: 3 });
           P.text('case 1: leaves dominate', m * 0.97, m * 0.13, { align: 'right', size: 11.5, color: 'blue', weight: 600 });
           P.text('case 3: root dominates', m * 0.06, m * 0.9, { size: 11.5, color: 'orange', weight: 600 });
           P.text('case 2', m * 0.6, m * 0.6, { size: 11.5, color: 'green', weight: 600, dx: -8, dy: -12, align: 'right' });

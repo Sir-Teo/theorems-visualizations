@@ -531,7 +531,6 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
         v.readout(() => {
           if (!st) return '';
           if (!st.inv) return `$U$ is not invariant, so $T|_U$ is not an operator on $U$. Drag $n$ until the plane snaps: the invariant planes are exactly those whose normal is an eigenvector of $T^{\\mathrm t}$.`;
-          const pT = factT(zerosMult(M_ => null, [0]) || []);
           const zsT = zerosMult(v.M, minPoly(v.M, st.T)), zsU = zerosMult(v.M, minPoly(v.M, st.RU));
           const dsum = st.rev.reduce((a, e) => a + e.B.length, 0);
           return `Minimal polynomial of $T$: $${factT(zsT)}$; of $T|_U$: $${factT(zsU)}$, a divisor of it (5.31). ${zsU.every((z) => z.m === 1) ? 'Distinct factors' : 'A repeated factor'}, so $T|_U$ is ${dsum === 2 ? '**diagonalizable** (5.62)' : '**not diagonalizable** — possible only because $T$ itself is not'}.`;

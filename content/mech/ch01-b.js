@@ -330,14 +330,13 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
         let cen = [0, 0], st = null;
         v.render(() => {
           const th = ths.value * D2R, rope = mode.value === 'rope';
-          const sdn = [Math.cos(th), -Math.sin(th)].map((c) => -c), nrm = [Math.sin(th) * -1, Math.cos(th)];
-          // incline: foot at (-2.2, -0.8), rising to the left? we make it rise to the left so "downhill" points right-down
+          // incline rising to the left, so "downhill" points down and to the right
           const base = [-2.3, -0.8], Lx = 4.4, top = [base[0], base[1] + Lx * Math.tan(th)];
           const down = [Math.cos(th), -Math.sin(th)], out = [Math.sin(th), Math.cos(th)];
           // block sits at arc length 1.9 from the top corner
           const sb = Math.min(1.9, 0.6 * Lx / Math.cos(th)), foot = [top[0] + down[0] * sb, top[1] + down[1] * sb], bs = 0.42;
           cen = [foot[0] + out[0] * bs / 2, foot[1] + out[1] * bs / 2];
-          const P = [pushOff[0] / kF / 20, pushOff[1] / kF / 20].map((c) => c); // N  (1 data unit of handle offset = 1/(20 kF) N)
+          const P = [pushOff[0] / kF, pushOff[1] / kF]; // N: the handle sits at the tip of the drawn push arrow
           hp.x = cen[0] + pushOff[0]; hp.y = cen[1] + pushOff[1];
           const W = [0, -m * G0], Pn = P[0] * out[0] + P[1] * out[1], Ps = P[0] * down[0] + P[1] * down[1];
           let N = m * G0 * Math.cos(th) - Pn, an = 0, lift = false;
@@ -634,11 +633,10 @@ whatever the sign of the charge.`,
           if (kk !== key) { key = kk; sim = run(v0, E); }
           // measured period: spacing of upward zero crossings of v_x (finite differences of x)
           const xs = sim.xs, n = xs.length, ups = [];
-          for (let i = 2; i < n - 1; i++) { const a = xs[i][0] - xs[i - 1][0] - E * 0, b = xs[i + 1][0] - xs[i][0]; if (a < 0 && b >= 0) ups.push(sim.ts[i] + dt * (-a / (b - a + 1e-30)) - dt / 2); }
+          for (let i = 2; i < n - 1; i++) { const a = xs[i][0] - xs[i - 1][0], b = xs[i + 1][0] - xs[i][0]; if (a < 0 && b >= 0) ups.push(sim.ts[i] + dt * (-a / (b - a + 1e-30)) - dt / 2); }
           const Tm = ups.length >= 2 ? (ups[ups.length - 1] - ups[0]) / (ups.length - 1) : NaN;
           const drift = (xs[n - 1][1] - xs[0][1]) / sim.ts[n - 1];
           const vperp = Math.hypot(v0[0], v0[1] + E), rad = vperp; // speed across B in the drift frame, r_L = v⊥/ω_c
-          let rx = 0; for (const p of xs) rx = Math.max(rx, Math.abs(p[0] - (-v0[1] - E) * 0)); // extent in x (no drift along x)
           const xmin = Math.min(...xs.map((p) => p[0])), xmax = Math.max(...xs.map((p) => p[0]));
           st = { Tm, drift, E, rL: (xmax - xmin) / 2, rad, sp: M.norm(v0) };
           // centre the drawing on the trajectory's mean position

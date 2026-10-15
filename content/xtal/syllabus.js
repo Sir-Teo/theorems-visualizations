@@ -57,8 +57,7 @@ export default {
       title: 'Symmetry in two dimensions',
       summary: String.raw`The plane is the best place to learn symmetry. Translations restrict which rotations a pattern can have — only 2-, 3-, 4- and 6-fold — and that crystallographic restriction leaves five lattices, ten point groups, seven frieze groups and seventeen wallpaper groups. Glide reflections are the genuinely new ingredient that patterns can have but finite objects cannot.`,
       items: [
-        { num: '2.1', kind: 'Definition', name: 'Isometries of the plane', deps: ['ladr-7.44'], refs: ['Hammond ch. 2'],
-          pic: 'Apply translations, rotations, reflections and glides to a motif and compose them: every composite is again one of these four types, identified live from its fixed points and orientation.' },
+        { num: '2.1', alias: 'art-9.1', name: 'Isometries of the plane' },
         { num: '2.2', kind: 'Theorem', name: 'Crystallographic restriction theorem', deps: ['xtal-2.1', 'xtal-1.1'], refs: ['Hammond ch. 2', 'Giacovazzo ch. 1'],
           pic: 'Rotate two lattice points about each other by 360°/n: for n = 5 or 7 the new points fall closer than the shortest lattice vector, contradicting the lattice, while n = 1, 2, 3, 4, 6 close up perfectly.' },
         { num: '2.3', kind: 'Theorem', name: 'The five plane lattices', deps: ['xtal-2.2'], refs: ['Hammond ch. 2'],
@@ -67,10 +66,8 @@ export default {
           pic: 'Toggle rotation orders and mirror lines on a single motif: only the ten combinations compatible with a lattice survive, and each is shown repeating a sample flower pattern.' },
         { num: '2.5', kind: 'Definition', name: 'Glide reflections', deps: ['xtal-2.1'], refs: ['Hammond ch. 2'],
           pic: 'Leave footprints along a path: a glide maps each left foot onto the next right foot, and shortening the glide translation to zero turns it into an ordinary mirror.' },
-        { num: '2.6', kind: 'Theorem', name: 'The seven frieze groups', deps: ['xtal-2.5'], refs: ['Hammond ch. 2'],
-          pic: 'Decorate a strip with a motif and toggle horizontal and vertical mirrors, half-turns and glides: the app classifies the strip into one of exactly seven patterns, with examples from architecture.' },
-        { num: '2.7', kind: 'Theorem', name: 'The seventeen wallpaper groups', deps: ['xtal-2.3', 'xtal-2.4', 'xtal-2.5'], refs: ['Hammond ch. 2'],
-          pic: 'Draw a stroke in one cell and watch it replicated by the chosen plane group; a decision tree identifies the group of any tiling you build, including Escher-style and Alhambra patterns.' },
+        { num: '2.6', alias: 'art-9.6', name: 'The seven frieze groups' },
+        { num: '2.7', alias: 'art-9.9', name: 'The seventeen wallpaper groups' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3

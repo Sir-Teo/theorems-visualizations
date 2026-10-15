@@ -348,8 +348,8 @@ Multiplication is in general **not** commutative: $ST$ and $TS$ can differ even 
           let lab = 'x';
           for (let i = 1; i <= 2; i++) {
             lab = steps[i - 1] + lab;
-            house(P, (p) => mv(Ms[i], p), { color: 'muted', alpha: 0.5, fillAlpha: 0.06 });
-            const top = mv(Ms[i], [0, 0.75]); P.tex(lab, top[0], top[1], { color: 'muted', size: 12, dy: -10 });
+            P.poly(HOUSE.map((p) => mv(Ms[i], p)), { color: 'muted', width: 1.3, dash: [4, 3], alpha: 0.8 });
+            const at = mv(Ms[i], i === 1 ? [-0.6, -0.6] : [0.6, -0.6]); P.tex(lab, at[0], at[1], { color: 'muted', size: 12, dy: 11, dx: i === 1 ? -12 : 12 });
           }
           if (ref) house(P, (p) => mv(ref, p), { color: 'green', dash: [5, 4], width: 1.6 });
           house(P, (p) => mv(Ms[3], p), { color: final });
@@ -676,7 +676,7 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 350, title: 'target $\\R^3$' });
         const scD = v.scene3(D, { yaw: -0.6, pitch: 0.33 }), scW = v.scene3(S, { yaw: -0.6, pitch: 0.33 });
         const v1 = scD.handle([0.9, 0.1, 0.4], { color: 'blue', label: 'v₁', lim: 1.2 }), v2 = scD.handle([-0.2, 0.8, 0.5], { color: 'purple', label: 'v₂', lim: 1.2 });
-        const c1 = [0.8, 0.15, -0.3], c2 = [0.25, 0.7, 0.45], A2 = ofCols(c1, c2, sub(c1, scl(c2, 0.8)));
+        const c1 = [0.8, 0.15, -0.3], c2 = [0.25, 0.7, 0.45], A2 = ofCols(c1, c2, sub(c2, scl(c1, 0.6)));
         const A1 = [[0.6], [0.5], [0.35]].map((r) => [r[0], -0.7 * r[0], 0.9 * r[0]]), b = [0.35, -0.55, 0.75];
         let info = {};
         v.render(() => {
@@ -728,7 +728,7 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
         const sc = v.scene3(D, { yaw: -0.6, pitch: 0.33 });
         const th = [];
         P.r2.forEach((p, k) => th.push(W.handle(p[0], p[1], { color: 'orange', label: `Te${'₁₂₃'[k]}`, constrain: (x, y) => snapTo(disc(1.4)(x, y), th.filter((_, j) => j !== k).map((h) => [h.x, h.y]), 0.12) })));
-        const yh = W.handle(-0.9, 1.1, { color: 'gold', label: 'y', constrain: (x, y) => {
+        const yh = W.handle(0.9, -0.9, { color: 'gold', label: 'y', constrain: (x, y) => {
           const A = [[th[0].x, th[1].x, th[2].x], [th[0].y, th[1].y, th[2].y]], B = colBasis(M, A);
           if (B.length === 1) { const q = proj([x, y], B); if (len(sub([x, y], q)) < 0.15) return q; }
           if (B.length === 0 && Math.hypot(x, y) < 0.15) return [0, 0];

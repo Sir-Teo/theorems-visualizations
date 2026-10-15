@@ -649,7 +649,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
             TC.draw({ value: (i, k) => Cm[i][k], fill: () => ['green', 0.2] });
             TR.draw({ value: (i, k) => R[i][k], format: (x) => fr(x), fill: (i, k) => (kept.includes(k) ? ['green', 0.1] : ['purple', 0.12]), highlight: [...Array(c).keys()].map((i) => [i, j, 'purple']) });
             Q.tex('\\cdot', 5.5 + c, 1.5, { size: 20 });
-            Q.tex(`C\;(3\\times${c})`, 5 + c / 2, -0.45, { size: 14, color: 'green' }); Q.tex(`R\;(${c}\\times4)`, 8 + c, 1.5 - c / 2 - 0.45, { size: 14 });
+            Q.tex(`C\\ \\ (3\\times${c})`, 5 + c / 2, -0.45, { size: 14, color: 'green' }); Q.tex(`R\\ \\ (${c}\\times4)`, 8 + c, 1.5 - c / 2 - 0.45, { size: 14 });
           } else Q.tex('\\text{column rank } 0:\\ A = 0', 7.5, 1.5, { size: 15, color: 'muted' });
           // the column space and the chosen column rebuilt from C
           sc.begin();

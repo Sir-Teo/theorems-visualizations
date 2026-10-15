@@ -43,9 +43,9 @@ The collision is perfectly inelastic: a fraction $M/(m+M)$ of the bullet’s kin
       viz(v) {
         const u = v.slider('bullet speed $u$ (m/s)', 100, 500, 350, { step: 5 });
         const Mb = v.slider('block mass $M$ (kg)', 1, 5, 2, { step: 0.1 });
-        const m = 0.01, L = 1.5, g = 9.81, TI = 1;
-        const s = v.stage({ x: [-2.3, 2.3], y: [-1.95, 0.3], equal: true, height: 320, axes: false, weight: 1.35 });
-        const b = v.stage({ x: [0, 4], y: [0.05, 5000], ylog: true, height: 320, axes: 'box', weight: 0.85, title: 'energy (J, log scale)', xticks: [] });
+        const m = 0.01, L = 1.5, g = 9.81, TI = 0.6;
+        const s = v.stage({ x: [-2.1, 2.1], y: [-1.8, 0.12], equal: true, height: 320, axes: false, weight: 1.35 });
+        const b = v.stage({ x: [-0.55, 4], y: [0.05, 5000], ylog: true, height: 320, axes: 'box', weight: 0.85, title: 'energy (J, log scale)', xticks: [] });
         let sim = null, key = '', ph = null;
         const solve = () => {
           const M = Mb.value, V = m * u.value / (m + M), out = []; let y = [0, V / L];
@@ -61,10 +61,11 @@ The collision is perfectly inelastic: a fraction $M/(m+M)$ of the bullet’s kin
           s.hline(0, { color: 'muted', width: 3 });
           s.curve((a) => [L * Math.sin(a), -L * Math.cos(a)], -th, th, { color: 'green', dash: [4, 4], width: 1.2 });
           s.hline(-L + h, { color: 'green', dash: [2, 4], width: 1 });
-          s.measure(0.95, -L - 0.25, 0.95, -L - 0.25 + h, 'h');
+          s.hline(-L, { color: 'faint', dash: [2, 4], width: 1 });
+          { const xm = L * Math.sin(th) + 0.3; s.line(xm, -L, xm, -L + h, { color: 'green', width: 1.6 }); s.line(xm - 0.06, -L, xm + 0.06, -L, { color: 'green', width: 1.6 }); s.line(xm - 0.06, -L + h, xm + 0.06, -L + h, { color: 'green', width: 1.6 }); s.text('h', xm + 0.1, -L + h / 2, { color: 'green', size: 13, math: true, baseline: 'middle' }); }
           s.line(0, 0, L * Math.sin(theta), -L * Math.cos(theta), { color: 'ink', width: 1.5 });
           s.poly(block(theta, w, hh), { fill: 'orange', fillAlpha: 0.6, color: 'orange', width: 1.5 });
-          if (t < TI) { const x = -2.25 + (2.25 - w) * t / TI; s.line(x - 0.12, -L, x, -L, { color: 'gold', width: 4 }); s.corner('slow motion: bullet in flight', 'tl'); }
+          if (t < TI) { const x = -2.05 + (2.05 - w) * t / TI; s.line(x - 0.12, -L, x, -L, { color: 'gold', width: 4 }); s.corner('slow motion: bullet in flight', 'tl'); }
           else { const c = [L * Math.sin(theta), -L * Math.cos(theta)]; s.dot(c[0] - 0.6 * w * Math.cos(theta), c[1] - 0.6 * w * Math.sin(theta), { color: 'gold', r: 3 }); s.corner(`swing: θ = ${v.fix(theta * 180 / Math.PI, 1)}°`, 'tl'); }
           s.dot(0, 0, { color: 'ink', r: 3 });
           // energy bars
@@ -93,18 +94,18 @@ The collision is perfectly inelastic: a fraction $M/(m+M)$ of the bullet’s kin
       tags: ['energy', 'one-dimensional motion'],
       viz(v) {
         const POTS = {
-          dbl: { label: 'double well', U: (x) => (x * x - 1) ** 2, dU: (x) => 4 * x * (x * x - 1), x: [-2, 2], y: [-0.5, 2.6], h: [-1.55, 0.8] },
+          dbl: { label: 'double well', U: (x) => (x * x - 1) ** 2, dU: (x) => 4 * x * (x * x - 1), x: [-2, 2], y: [-0.5, 2.6], h: [-1, 0.8] },
           morse: { label: 'Morse (diatomic molecule)', U: (x) => (1 - Math.exp(-(x - 1.2))) ** 2, dU: (x) => { const e = Math.exp(-(x - 1.2)); return 2 * (1 - e) * e; }, x: [0.35, 6], y: [-0.3, 2.2], h: [0.8, 0.6] },
-          cubic: { label: 'metastable well', U: (x) => x * x - x * x * x / 3, dU: (x) => 2 * x - x * x, x: [-1.6, 3.7], y: [-1.6, 2.4], h: [-0.9, 1.1] },
+          cubic: { label: 'metastable well', U: (x) => x * x - x * x * x / 3, dU: (x) => 2 * x - x * x, x: [-1.6, 3.7], y: [-1.6, 2.4], h: [-0.3, 1.1] },
         };
         const which = v.select('potential', Object.entries(POTS).map(([value, p]) => ({ value, label: p.label })), 'dbl', { onChange: (k) => { const P = POTS[k]; hd.set(P.h[0], P.h[1]); } });
         const cur = () => POTS[which.value];
         const s = v.stage({ x: [-2, 2], y: [-0.5, 2.6], height: 320, axes: 'box', xlabel: 'x', weight: 1.2, title: 'energy diagram' });
         const ph = v.stage({ x: [-2, 2], y: [-2.5, 2.5], height: 320, axes: 'box', xlabel: 'x', weight: 1, title: 'phase plane $(x, \\dot x)$' });
-        const hd = s.handle(-1.55, 0.8, { color: 'gold', label: 'E', labelPos: 'ne', constrain: (x, y) => { const P = cur(), xx = clamp(x, P.x[0] + 0.05, P.x[1] - 0.05); return [xx, clamp(Math.max(y, P.U(xx) + 1e-3), P.y[0], P.y[1] - 0.05)]; } });
+        const hd = s.handle(-1, 0.8, { color: 'gold', label: 'E', labelPos: 'ne', constrain: (x, y) => { const P = cur(), xx = clamp(x, P.x[0] + 0.05, P.x[1] - 0.05); return [xx, clamp(Math.max(y, P.U(xx) + 1e-3), P.y[0], P.y[1] - 0.05)]; } });
         let st = null, key = '', simT = 0, first = true, R = null;
         v.animate((t) => {
-          const P = cur(), E = hd.y, x0 = hd.x;
+          const P = cur(); if (hd.y < P.U(hd.x) + 1e-3) hd.y = P.U(hd.x) + 1e-3; const E = hd.y, x0 = hd.x;
           s.setView(P.x, P.y); const vm = Math.sqrt(2 * (P.y[1] - Math.min(...Array.from({ length: 50 }, (_, i) => P.U(P.x[0] + (P.x[1] - P.x[0]) * i / 49))))); ph.setView(P.x, [-vm, vm]);
           const kk = `${which.value}|${x0.toFixed(4)}|${E.toFixed(4)}`;
           if (kk !== key || t < simT - 1e-9) { key = kk; st = { x: x0, v: Math.sqrt(Math.max(0, 2 * (E - P.U(x0)))), out: false }; simT = first ? 0 : t; first = false; }

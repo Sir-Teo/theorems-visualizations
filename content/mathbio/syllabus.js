@@ -183,8 +183,7 @@ export default {
       title: 'Biochemical kinetics',
       summary: String.raw`Molecules meet and react at rates set by mass action, and separating fast binding from slow catalysis produces the Michaelis–Menten law. This chapter treats that reduction honestly — when it is valid and how it can mislead in a linearized plot — and builds the toolkit of inhibition, cooperativity and allostery. Zero-order ultrasensitivity and autocatalysis show how simple chemistry produces switch-like and oscillatory behaviour that later chapters use.`,
       items: [
-        { num: '5.1', kind: 'Law', name: 'Law of mass action', deps: ['kin-1.3'], refs: ['Murray I ch. 6', 'Edelstein-Keshet ch. 7'],
-          pic: 'Simulated molecules collide in a box; the measured reaction rate is plotted against the product of concentrations and falls on a straight line through the origin.' },
+        { num: '5.1', alias: 'pchem-7.4', name: 'Law of mass action' },
         { num: '5.2', kind: 'Model', name: 'Ligand binding and the Langmuir isotherm', deps: ['mathbio-5.1'], refs: ['Edelstein-Keshet ch. 7'],
           pic: 'Add ligand to receptors and watch the fraction occupied rise hyperbolically; it is exactly one half at the dissociation constant K_d, marked on both linear and log axes.' },
         { num: '5.3', kind: 'Model', name: 'Michaelis–Menten mechanism', deps: ['mathbio-5.1'], refs: ['Murray I ch. 6', 'Edelstein-Keshet ch. 7'],
@@ -238,8 +237,7 @@ export default {
           pic: 'Map the new phase against old phase for weak and strong pulses; at a critical strength and timing the pulse lands in the “black hole” near the unstable focus and the rhythm stops, as Winfree found for circadian clocks.' },
         { num: '6.11', kind: 'Phenomenon', name: 'Entrainment and Arnold tongues', deps: ['mathbio-6.9'], refs: ['Murray I ch. 9'],
           pic: 'Force an oscillator periodically and scan forcing frequency and amplitude; regions of 1:1, 1:2 and 2:3 locking appear as tongues computed from the circle map, with quasi-periodic gaps between them.' },
-        { num: '6.12', kind: 'Model', name: 'Kuramoto model of synchronization', deps: ['mathbio-6.9'], refs: ['Murray I ch. 9'],
-          pic: 'Hundreds of fireflies with scattered natural frequencies blink on a ring; raise the coupling and the order parameter jumps from near zero to near one once coupling passes the critical value set by the frequency spread.' },
+        { num: '6.12', alias: 'ode-8.17', name: 'Kuramoto model of synchronization' },
       ],
     },
     {
@@ -284,8 +282,7 @@ export default {
       items: [
         { num: '8.1', kind: 'Model', name: 'Random walk and its diffusion limit', deps: ['stoch-13.2'], refs: ['Edelstein-Keshet ch. 9'],
           pic: 'Release a thousand random walkers from one point; their histogram flattens into a Gaussian whose variance grows linearly in time, plotted against the theoretical 2Dt.' },
-        { num: '8.2', kind: 'Law', name: 'Fick’s law and the diffusion equation', deps: ['mathbio-8.1', 'pma-10.51', 'pde-1.4'], refs: ['Edelstein-Keshet ch. 9', 'Murray I ch. 11'],
-          pic: 'Draw any initial concentration profile; flux arrows point down the gradient with length proportional to its slope, and the profile evolves under the conservation law with total mass held constant.' },
+        { num: '8.2', alias: 'pchem-10.2', name: 'Fick’s law and the diffusion equation' },
         { num: '8.3', kind: 'Theorem', name: 'Fundamental solution: the spreading Gaussian', deps: ['mathbio-8.2', 'fa-7.6', 'pde-3.3'], refs: ['Murray I ch. 11'],
           pic: 'A point release spreads as a Gaussian whose width grows like √t; the numerically solved profile and the exact heat kernel are overlaid at several times.' },
         { num: '8.4', kind: 'Phenomenon', name: 'Diffusion time grows as length squared', deps: ['mathbio-8.3'], refs: ['Edelstein-Keshet ch. 9'],
