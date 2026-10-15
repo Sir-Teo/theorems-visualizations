@@ -21,7 +21,8 @@
 // Gaps filled after comparing: Birnbaum’s theorem, unbiased (UMPU) tests, Welch’s test, the
 // multivariate normal and partial correlation, accept–reject sampling, improper priors, minimaxity
 // of the sample mean, overdispersion, Mallows’ Cp. KL divergence and Gibbs’ inequality are cited
-// from `info` rather than duplicated.
+// from `info` rather than duplicated; the MCMC items here are the Bayesian uses of the samplers
+// defined in `stoch` ch. 7.
 // Deliberate omissions: LLN/CLT and convergence modes (belong to `prob`); PCA (in `ladr` via the
 // SVD and best low-rank approximation); classification/LDA (`ml`); survival analysis (in `causal`,
 // ch. 8, where its reference covers it); union–intersection tests, pivoting the CDF, Hájek–Le Cam
@@ -361,7 +362,7 @@ export default {
           pic: 'For Uniform(0, θ) the bootstrap distribution of the maximum puts an atom of mass about 1 − 1/e ≈ 0.63 on the observed maximum while the true sampling law is continuous; the parametric bootstrap repairs it.' },
         { num: '9.10', kind: 'Phenomenon', name: 'Bootstrap failure under infinite variance', deps: ['stat-9.8'], refs: ['Wasserman §8'],
           pic: 'With Pareto data of tail index 1.5, bootstrap intervals for the mean keep under-covering as n grows, while the identical code on finite-variance data reaches 95%.' },
-        { num: '9.11', kind: 'Method', name: 'Block bootstrap for dependent data', deps: ['stat-9.3'], refs: ['Wasserman §8'],
+        { num: '9.11', kind: 'Method', name: 'Block bootstrap for dependent data', deps: ['stat-9.3', 'stoch-14.12'], refs: ['Wasserman §8'],
           pic: 'Resample an AR(1) series point by point and in blocks of adjustable length: the iid bootstrap underestimates the standard error of the mean by a factor that grows with the autocorrelation, and long enough blocks recover it.' },
         { num: '9.12', kind: 'Algorithm', name: 'Accept–reject sampling', deps: ['stat-9.1'], refs: ['Casella–Berger §5.6'],
           pic: 'Darts are thrown uniformly under M times an envelope density; those landing under the target are kept, the kept histogram matches the target exactly, and the acceptance-rate readout equals 1/M as the envelope is loosened or tightened.' },
@@ -405,9 +406,9 @@ export default {
           pic: 'Eight schools with noisy effect estimates: slide the between-school standard deviation from zero to infinity to move from complete pooling to no pooling, with the marginal likelihood showing which values the data support.' },
         { num: '10.16', kind: 'Algorithm', name: 'Importance sampling', deps: ['stat-9.1', 'rca-6.10'], refs: ['Wasserman §24.3'],
           pic: 'Estimate a far-tail probability by sampling from a shifted proposal and reweighting: the variance readout shows large gains for a good proposal and the effective sample size collapsing when the proposal’s tails are lighter than the target’s.' },
-        { num: '10.17', kind: 'Algorithm', name: 'Metropolis–Hastings algorithm', deps: ['stat-10.1', 'stat-9.1'], refs: ['Wasserman §24.4'],
+        { num: '10.17', kind: 'Algorithm', name: 'Metropolis–Hastings sampling of posteriors', deps: ['stat-10.1', 'stoch-7.2'], refs: ['Wasserman §24.4'],
           pic: 'A random-walk chain explores a banana-shaped posterior with accepted and rejected proposals marked; the proposal-scale slider produces sticky chains when too large and slow diffusion when too small, while the running histogram converges to the target.' },
-        { num: '10.18', kind: 'Algorithm', name: 'Gibbs sampler', deps: ['stat-10.17', 'stat-2.1'], refs: ['Wasserman §24.5'],
+        { num: '10.18', kind: 'Algorithm', name: 'Gibbs sampling of posteriors', deps: ['stat-10.17', 'stat-2.1', 'stoch-7.3'], refs: ['Wasserman §24.5'],
           pic: 'Alternating draws from the two full conditionals of a bivariate normal trace an axis-parallel staircase; raising the correlation to 0.99 shrinks the steps and slows mixing, quantified by the autocorrelation readout.' },
         { num: '10.19', kind: 'Concept', name: 'Improper priors and posterior propriety', deps: ['stat-10.10'], refs: ['Wasserman §11.6'],
           pic: 'A flat prior on a normal mean gives a proper posterior after a single observation, but a flat prior on the log of a group-level standard deviation in a hierarchical model does not: the running integral of the unnormalized posterior keeps growing as the integration range is widened.' },
