@@ -111,19 +111,20 @@ A disturbance that would shift $x$ by $\Delta x_{\text{open}}$ with the loop ope
           // ---- loop diagram
           const heat = u > 1, cool = u < -1, effCol = heat ? 'orange' : cool ? 'blue' : 'muted';
           const amt = Math.min(1, Math.abs(u) / 300), phase = t * 1.2;
-          const wSet = [[0.25, 4.6], [1.18, 4.6]], wE = [[1.82, 4.6], [3.05, 4.6]], wU = [[5.55, 4.6], [6.65, 4.6]], wEff = [[8.15, 4.05], [8.15, 2.35]];
-          const wT = [[6.65, 1.8], [5.55, 1.8]], wFb = [[3.05, 1.8], [1.5, 1.8], [1.5, 4.28]];
+          const wSet = [[0.2, 4.6], [1.58, 4.6]], wE = [[2.22, 4.6], [3.05, 4.6]], wU = [[5.55, 4.6], [6.65, 4.6]], wEff = [[9.25, 4.08], [9.25, 2.33]];
+          const wT = [[6.65, 1.8], [5.55, 1.8]], wFb = [[3.05, 1.8], [1.9, 1.8], [1.9, 4.28]];
           for (const w of [wSet, wE, wU, wEff, wT, wFb]) wire(sd, w, { color: 'muted' });
           for (const w of [wE, wU, wEff, wT, wFb]) flowDots(sd, w, phase, 0.38, { color: 'gold', r: 2 });
-          sumJ(sd, 1.5, 4.6, 0.32, { n: '+', w: '', s: '−' });
+          sumJ(sd, 1.9, 4.6, 0.32, { w: '+', s: '−' });
           box(sd, 4.3, 4.6, 2.5, 1.0, 'hypothalamus', { math: false, color: 'accent', sub: 'controller', note: `error e = ${e >= 0 ? '+' : ''}${v.fix(e, 2)} K` });
-          box(sd, 8.15, 4.6, 3.0, 1.0, heat ? 'shivering' : cool ? 'sweating' : 'idle', { math: false, color: effCol, fill: effCol, fillAlpha: 0.06 + 0.3 * amt, active: amt > 0.05, sub: 'effectors', note: `${heat ? 'heat +' : cool ? 'heat −' : ''}${Math.round(Math.abs(u))} W`, noteColor: effCol === 'muted' ? 'ink' : effCol });
+          box(sd, 8.15, 4.6, 3.0, 1.0, heat ? 'shivering' : cool ? 'sweating' : 'idle', { math: false, color: effCol, fill: effCol, fillAlpha: 0.06 + 0.3 * amt, active: amt > 0.05, sub: 'effectors', note: `${heat ? 'heat +' : cool ? 'heat −' : ''}${Math.round(Math.abs(u))} W`, noteDx: -0.35, noteColor: effCol === 'muted' ? 'ink' : effCol });
           box(sd, 8.15, 1.8, 3.0, 1.0, 'body heat store', { math: false, color: 'ink', sub: 'plant' });
           box(sd, 4.3, 1.8, 2.5, 1.0, 'thermoreceptors', { math: false, color: 'teal', sub: 'sensor', note: `T = ${v.fix(T, 2)} °C` });
-          sd.text('set point 37 °C', 0.2, 4.3, { size: 10.5, color: 'muted', align: 'left', baseline: 'top' });
+          sd.text('set point', 0.15, 4.72, { size: 10.5, color: 'muted', align: 'left', baseline: 'bottom' });
+          sd.text('37 °C', 0.15, 4.48, { size: 10.5, color: 'ink', align: 'left', baseline: 'top', weight: 600 });
           const dLab = dist.value === 'cold' ? (th >= TH.t0 ? 'air 5 °C' : 'air 25 °C') : dist.value === 'heat' ? (th >= TH.t0 ? 'air 45 °C' : 'air 25 °C') : th >= TH.t0 && th < 3.5 ? 'exercise +500 W' : 'at rest';
           wire(sd, [[8.15, 0.45], [8.15, 1.25]], { color: 'red', width: 2 });
-          sd.text(`disturbance: ${dLab}`, 8.35, 0.62, { size: 10.5, color: 'red', align: 'left', baseline: 'middle', weight: 600 });
+          sd.text(`disturbance: ${dLab}`, 7.95, 0.62, { size: 10.5, color: 'red', align: 'right', baseline: 'middle', weight: 600 });
           // ---- time traces
           sp.hband(36.5, 37.5, { color: 'green', alpha: 0.08 });
           sp.vline(TH.t0, { color: 'red', dash: [3, 3], width: 1 });

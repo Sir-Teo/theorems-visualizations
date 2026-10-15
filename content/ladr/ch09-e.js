@@ -178,16 +178,16 @@ function ttl(s, T, tex, color = 'ink', below = false, size = 15) {
 /** A panel-coloured plate in pixel coordinates, to keep a label legible over a busy background. */
 function plate(S, X0, Y0, w, h) { S.rect(S.invX(X0), S.invY(Y0), S.invX(X0 + w), S.invY(Y0 + h), { fill: 'panel', fillAlpha: 0.88, stroke: false, radius: 6 }); }
 /** The six faces of the parallelepiped spanned by a, b, c in a scene3. */
-function ppiped(sc, a, b, c, st = {}) {
+function ppiped(sc, a, b, c, st = {}, at = [0, 0, 0]) {
   const o = [0, 0, 0], ab = add(a, b), ac = add(a, c), bc = add(b, c), abc = add(ab, c);
   for (const f of [[o, a, ab, b], [c, ac, abc, bc], [o, a, ac, c], [b, ab, abc, bc], [o, b, bc, c], [a, ab, abc, ac]]) {
-    sc.poly(f, { fill: st.color || 'accent', fillAlpha: st.fillAlpha ?? 0.1, color: st.color || 'accent', width: st.width ?? 1, alpha: st.alpha ?? 0.55, edge: st.edge });
+    sc.poly(f.map((p) => add(p, at)), { fill: st.color || 'accent', fillAlpha: st.fillAlpha ?? 0.1, color: st.color || 'accent', width: st.width ?? 1, alpha: st.alpha ?? 0.55, edge: st.edge });
   }
 }
 /** Dashed edges only (a ghost of an earlier parallelepiped). */
-function ppEdges(sc, a, b, c, st = {}) {
+function ppEdges(sc, a, b, c, st = {}, at = [0, 0, 0]) {
   const o = [0, 0, 0], ab = add(a, b), ac = add(a, c), bc = add(b, c), abc = add(ab, c);
-  for (const [p, q] of [[o, a], [o, b], [o, c], [a, ab], [a, ac], [b, ab], [b, bc], [c, ac], [c, bc], [ab, abc], [ac, abc], [bc, abc]]) sc.line(p, q, { dash: [4, 4], width: 1.1, color: 'muted', alpha: 0.7, ...st }, 1);
+  for (const [p, q] of [[o, a], [o, b], [o, c], [a, ab], [a, ac], [b, ab], [b, bc], [c, ac], [c, bc], [ab, abc], [ac, abc], [bc, abc]]) sc.line(add(p, at), add(q, at), { dash: [4, 4], width: 1.1, color: 'muted', alpha: 0.7, ...st }, 1);
 }
 
 export default {
@@ -637,7 +637,7 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
         const kS = v.slider('$k$', -3, 3, -2, { step: 0.5 });
         const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 260 });
         const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2.4], equal: true, axes: false, height: 340, minWidth: 280, title: 'parallelepiped of the columns' });
-        const sc = v.scene3(S, { yaw: 0.7, pitch: 0.3, axis: 1.8, lim: 2.2 });
+        const sc = v.scene3(S, { yaw: 0.7, pitch: 0.3, axis: 1.8, lim: 2.2, axes: false });
         const TB = v.table(L, { rows: 3, cols: 3, region: [0.02, 0.4, 0.46, 0.86], maxCell: 46, size: 13.5 });
         const get = (B, r, t) => (r === 'r' ? B[t].slice() : B.map((row) => row[t]));
         const put = (B, r, t, x) => { if (r === 'r') B[t] = x; else B.forEach((row, q) => { row[t] = x[q]; }); };
@@ -681,13 +681,17 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           L.texPx(log.length ? `\\det A_{${log.length}} = ${tn(F, 3)} \\cdot \\det A_0 = ${tn(pred, 3)}` : `\\det A_0 = ${tn(d0, 3)}`, L.width / 2, L.height - 18, { size: 14, color: ok ? 'green' : 'red' });
           // the columns' parallelepiped
           const cols = [0, 1, 2].map((k) => A.map((row) => row[k])), gcols = ghost ? [0, 1, 2].map((k) => ghost.map((row) => row[k])) : null;
-          const verts = (c) => [c[0], c[1], c[2], add(c[0], c[1]), add(c[0], c[2]), add(c[1], c[2]), add(add(c[0], c[1]), c[2])];
-          const m = Math.max(1, ...verts(cols).map(len), ...(gcols ? verts(gcols).map(len) : [])), s = 2.0 / m;
+          // drawn centred on the current solid (its corner is the origin of the columns), at a common scale
+          const ctr = scl(add(add(cols[0], cols[1]), cols[2]), 0.5);
+          const verts = (c) => [[0, 0, 0], c[0], c[1], c[2], add(c[0], c[1]), add(c[0], c[2]), add(c[1], c[2]), add(add(c[0], c[1]), c[2])].map((p) => subv(p, ctr));
+          const m = Math.max(0.5, ...verts(cols).map(len), ...(gcols ? verts(gcols).map(len) : [])), s = 1.9 / m;
+          const P = (p) => scl(subv(p, ctr), s), O = P([0, 0, 0]);
           sc.begin();
-          if (gcols) ppEdges(sc, ...gcols.map((c) => scl(c, s)));
-          ppiped(sc, ...cols.map((c) => scl(c, s)), { color: d >= 0 ? 'blue' : 'red', fillAlpha: 0.12 });
-          cols.forEach((c, k) => sc.arrow([0, 0, 0], scl(c, s), { color: ['blue', 'pink', 'teal'][k], width: 2.4 }));
-          cols.forEach((c, k) => sc.tex(`c_${k + 1}`, scl(c, s * 1.12), { color: ['blue', 'pink', 'teal'][k], size: 13 }));
+          if (gcols) ppEdges(sc, ...gcols.map((c) => scl(c, s)), {}, O); // the earlier solid, from the same corner
+          ppiped(sc, ...cols.map((c) => scl(c, s)), { color: d >= 0 ? 'blue' : 'red', fillAlpha: 0.12 }, O);
+          cols.forEach((c, k) => sc.arrow(O, P(c), { color: ['blue', 'pink', 'teal'][k], width: 2.4 }));
+          cols.forEach((c, k) => sc.tex(`c_${k + 1}`, add(O, scl(c, s * 1.1)), { color: ['blue', 'pink', 'teal'][k], size: 13 }));
+          sc.dot(O, { r: 3.5, color: 'ink' });
           sc.flush();
           S.corner(`det = ${pn(d, 3)}${tri ? ' (triangular)' : ''}`, 'tl', { color: d >= 0 ? 'blue' : 'red', weight: 700 });
           S.corner(`drawn at scale ${pn(s, 2)}`, 'bl', { color: 'faint', size: 11 });

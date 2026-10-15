@@ -93,7 +93,7 @@ export function box(s, x, y, w, h, label, st = {}) {
     else s.tex(label, x, y, { size: st.size || 14, color: st.labelColor || 'ink' });
   }
   if (st.sub) s.text(st.sub, x, y + h / 2, { size: 10.5, color: st.subColor || 'muted', align: 'center', baseline: 'bottom', dy: -3 });
-  if (st.note) s.text(st.note, x, y - h / 2, { size: 11, color: st.noteColor || 'ink', align: 'center', baseline: 'top', dy: 4, weight: 600 });
+  if (st.note) s.text(st.note, x + (st.noteDx || 0), y - h / 2, { size: 11, color: st.noteColor || 'ink', align: 'center', baseline: 'top', dy: 4, weight: 600 });
 }
 /** Summing junction with signs placed at {w, n, s, e}. */
 export function sumJ(s, x, y, r, signs = {}) {

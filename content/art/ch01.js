@@ -83,7 +83,6 @@ The rays from $E$ to all the points of an object form a cone with its apex at th
               }
             }
           }
-          sc.tex('E', [E[0], E[1], E[2] - 0.13], { color: 'accent', size: 15 });
           sc.flush();
           // the flat picture
           P.rect(-PW, 0, PW, PH, { fill: 'orange', fillAlpha: 0.05, color: 'orange', width: 1.6 });

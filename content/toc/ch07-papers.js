@@ -52,7 +52,7 @@ export default {
       kind: 'Paper',
       name: 'On Computable Numbers',
       paper: { authors: 'A. M. Turing', year: 1936, title: 'On Computable Numbers, with an Application to the Entscheidungsproblem', venue: 'Proceedings of the London Mathematical Society s2-42 (1): 230–265', doi: '10.1112/plms/s2-42.1.230' },
-      introduces: ['toc-7.1', 'toc-7.9', 'toc-8.13'],
+      introduces: ['toc-7.1', 'toc-7.9', 'toc-8.13', 'toc-9.7'],
       statement: String.raw`Turing analysed what a human computer does with pencil and paper and modelled it by a machine with finitely many **m-configurations**, an unbounded tape of squares, and a table that, for each m-configuration and scanned symbol, prescribes what to print, whether to move one square left or right, and the next m-configuration. A real number is **computable** if some such machine, started on a blank tape, prints its binary digits forever ("circle-free"). He showed:
 
 (a) every machine has a finite **standard description** and so a **description number**; the computable numbers are therefore countable, and most real numbers are not computable;

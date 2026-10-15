@@ -1,5 +1,5 @@
 // Music Theory & Acoustics — Chapter 2: Vibrating strings and the harmonic series
-import { TAU, SR, noteOf, playhead, finish, synth, decayOf, polyCoeffs, triCoeffs, lerpGrid, oddExt, modal, bridgeParts, presetShape, shapePainter, posts, keyboard } from './ch02.shared.js';
+import { TAU, SR, noteOf, playhead, finish, synth, decayOf, polyCoeffs, triCoeffs, lerpGrid, oddExt, modal, bridgeParts, presetShape, shapePainter, posts, keyboard, signedRamp } from './ch02.shared.js';
 
 /** The reference string of the chapter: a 65 cm string tuned to G3. */
 const F1 = 196, LEN = 0.65, CW = 2 * LEN * F1;
@@ -168,7 +168,8 @@ On a string of length $L$ with fixed ends the same formula holds once $y_0$ is e
           s.corner(`ct/L = ${v.fix(tau, 2)}`, 'tl', { color: 'ink', weight: 600 });
           s.corner(sel.value === 'draw' ? 'your shape' : 'drag across the panel to draw a shape', 'tr', { color: 'muted' });
           // ---- space–time
-          st.heat((x, y) => dal(x, y), { range: [-amp, amp], cmap: 'diverging', key: ver, res: 2 });
+          const sr = signedRamp(v);
+          st.raster((x, y) => sr.col(dal(x, y) / amp), { key: `${ver}|${sr.key}`, res: 2 });
           st.axes();
           st.path(M.range(201).map((i) => [refl(x0 + i / 100), i / 100]), { color: 'orange', width: 1.6, dash: [5, 4] });
           st.path(M.range(201).map((i) => [refl(x0 - i / 100), i / 100]), { color: 'purple', width: 1.6, dash: [5, 4] });
@@ -238,7 +239,8 @@ If the two waves differ in frequency, the pattern is not standing: the nodes dri
           s.corner(d ? 'not a standing wave: the nodes drift and the ends move' : `mode ${n}: ${n} half-wavelength${n > 1 ? 's' : ''} between the ends`, 'tl', { color: d ? 'red' : 'green', weight: 600 });
           if (ph.t != null) s.corner('♪ playing', 'tr', { color: 'gold', weight: 600 });
           // ---- space–time
-          st.heat((x, y) => W.R(x, y) + W.L(x, y), { range: [-1.05, 1.05], cmap: 'diverging', key: `${n}|${d}`, res: 2 });
+          const sr = signedRamp(v);
+          st.raster((x, y) => sr.col((W.R(x, y) + W.L(x, y)) / 1.05), { key: `${n}|${d}|${sr.key}`, res: 2 });
           st.axes();
           for (let j = -2 * n - 10; j <= 2 * n + 10; j++) {
             const xa = (TAU * j) / (W.k + W.k2), xb = (TAU * j - (W.w2 - W.w) * 4) / (W.k + W.k2);

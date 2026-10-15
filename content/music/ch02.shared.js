@@ -248,3 +248,13 @@ export function hammerSim(o) {
   }
   return { F, dtRec, tc, Fmax, q, qd, w, snaps, dtSnap, uh, vOut: -ud, NM };
 }
+
+/**
+ * Theme-aware colours for a signed quantity in a raster: u in [−1, 1] → blue (−) … panel colour (0) … red (+).
+ * Returns {col(u), key}; put key into the raster key so a theme change redraws it.
+ */
+export function signedRamp(v) {
+  const p = v.rgb('panel'), r = v.rgb('red'), b = v.rgb('blue');
+  const col = (u) => { const t = Math.min(1, Math.abs(u)), q = u >= 0 ? r : b, w = Math.pow(t, 0.85); return [0, 1, 2].map((i) => p[i] + (q[i] - p[i]) * w); };
+  return { col, key: p.join() };
+}

@@ -162,7 +162,7 @@ export default {
       statement: String.raw`$e^{-t}$ and $t^{-2}$ on one stage; toggle the axes in place.`,
       caption: String.raw`Toggle each axis. On semi-log $y$ the exponential is a straight line; on log–log the power law is.`,
       viz(v) {
-        const s = v.stage({ x: [0.1, 10], y: [1e-4, 10], height: 300, axes: 'box', xlabel: 't', ylabel: 'y', ylog: true });
+        const s = v.stage({ x: [0.1, 10], y: [1e-4, 10], height: 300, axes: 'box', xlabel: '$t$ (s)', ylabel: '$e^{-t}$, $t^{-2}$', ylog: true });
         const lx = v.toggle('log t', false), ly = v.toggle('log y', true);
         v.render(() => {
           s.setScale({ xlog: lx.value, ylog: ly.value, x: [0.1, 10], y: ly.value ? [1e-4, 10] : [0, 10] });

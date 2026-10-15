@@ -176,7 +176,7 @@ where $Q$ is the heat put into the system and $W$ the work done on it (engineers
             const pts = []; for (let k = 0; k <= 16; k++) pts.push([4.2 + k * 0.1, 1.2 + (k % 2 ? 0.35 : 0)]);
             sa.path(pts, { color: 'red', width: 2.6, alpha: state.done ? 0.4 : 0.95 });
             sa.line(4.2, 1.2, 4.2, 4.6, { color: 'red', width: 1.4 }); sa.line(5.8, 1.2, 5.8, 4.6, { color: 'red', width: 1.4 });
-            sa.text('I²R heating', 5, 4.85, { align: 'center', size: 11, color: 'red', weight: 600 });
+            sa.text('electric heater (I²R)', 5, 0.95, { align: 'center', size: 10.5, color: 'red', weight: 600 });
           }
           // thermometer
           const yb = 1.4, ytop = 6.3, ys = (d) => yb + 0.3 + (ytop - yb - 0.4) * clamp(d / 0.4, 0, 1);
@@ -320,14 +320,14 @@ It is a state function. In a process at constant pressure in which the only work
         const xi = v.slider('extent of reaction ξ', 0, 1, 1, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} mol` });
         const lock = v.toggle('lock the piston (constant volume)', false);
         const sc = v.stage({ x: [0, 10], y: [-0.4, 9], height: 330, axes: false, equal: true, weight: 1 });
-        const sb = v.stage({ x: [0, 4], y: [-1, 1], height: 330, axes: 'box', ylabel: 'kJ (per mol of reaction)', weight: 1.2, title: 'energy ledger at 25 °C', xticks: [[0.5, 'heat Q'], [1.5, 'work W'], [2.5, 'ΔU'], [3.5, 'ΔH']] });
+        const sb = v.stage({ x: [-0.45, 4], y: [-1, 1], height: 330, axes: 'box', ylabel: 'kJ (per mol of reaction)', weight: 1.2, title: 'energy ledger at 25 °C', xticks: [[0.5, 'heat Q'], [1.5, 'work W'], [2.5, 'ΔU'], [3.5, 'ΔH']] });
         v.render(() => {
           const r = RX[rx.value], x = xi.value, ng0 = r.n0 + (r.dn < 0 ? 0 : 0.0), ng = ng0 + r.dn * x;
           const dU = x * (r.dH - r.dn * RT), W = lock.value ? 0 : -r.dn * RT * x, Q = dU - W, dH = x * r.dH;
           // vessel: height of gas ∝ moles of gas (constant P), or fixed (locked)
           const vol = (n) => 0.9 + 1.25 * n, hgt = lock.value ? vol(Math.max(ng0, ng0 + r.dn)) : vol(ng);
           sc.rect(0.3, 0.2, 9.7, 7.6, { fill: 'blue', fillAlpha: 0.08, color: 'blue', width: 1.2 });
-          sc.text('water bath at 25 °C', 0.5, 7.35, { size: 11, color: 'blue' });
+          sc.text('water bath at 25 °C', 0.5, 0.45, { size: 11, color: 'blue' });
           sc.rect(3.2, 0.6, 6.8, 7.3, { color: 'ink', width: 2 });
           sc.rect(3.25, 0.65, 6.75, 0.65 + hgt, { fill: 'purple', fillAlpha: 0.12, stroke: false });
           sc.dots(scatter(Math.round(10 * Math.max(0.1, ng)), 5, 3.35, 0.9, 6.65, 0.65 + hgt - 0.1), { r: 2.4, color: 'purple', alpha: 0.8 });
@@ -345,13 +345,13 @@ It is a state function. In a process at constant pressure in which the only work
           }
           // ledger
           const mx = Math.max(10, Math.abs(Q), Math.abs(W), Math.abs(dU), Math.abs(dH)) * 1.35;
-          sb.setView([0, 4], [-mx, mx]);
+          sb.setView([-0.45, 4], [-mx, mx]);
           sb.hline(0, { color: 'muted', width: 1 });
           [[0.5, Q, Q >= 0 ? 'red' : 'blue'], [1.5, W, 'orange'], [2.5, dU, 'green'], [3.5, dH, 'purple']].forEach(([xx, val, c]) => {
             sb.rect(xx - 0.3, 0, xx + 0.3, val, { fill: c, fillAlpha: 0.72, color: c, width: 1 });
             sb.text(v.fix(val, 1), xx, val, { align: 'center', dy: val >= 0 ? -10 : 11, size: 11.5, weight: 600 });
           });
-          sb.text(lock.value ? 'Q_V = ΔU' : 'Q_P = ΔH', 3.95, mx * 0.88, { align: 'right', size: 12, weight: 600, color: 'ink' });
+          sb.tex(lock.value ? 'Q_V = \\Delta U' : 'Q_P = \\Delta H', 3.95, mx * 0.88, { align: 'right', size: 16, color: 'ink' });
         });
         v.legend([['red', 'heat into the system', { area: true }], ['blue', 'heat out', { area: true }], ['orange', 'work on the system $-P\\Delta V$', { area: true }], ['green', '$\\Delta U$', { area: true }], ['purple', '$\\Delta H = \\Delta U + \\Delta(PV)$', { area: true }]]);
         v.readout(() => {
@@ -377,8 +377,8 @@ at every temperature and for every kind of molecule (Mayer's relation). Their ra
       viz(v) {
         const gas = v.select('gas', Object.keys(GASES).map((g) => ({ value: g, label: `$${GASES[g].tex}$` })), 'N2');
         const sc = v.stage({ x: [10, 5000], y: [0, 7.6], xlog: true, height: 300, axes: 'box', xlabel: 'temperature (K)', ylabel: 'molar heat capacity / R', title: '$C_V$ and $C_P$ of an ideal gas', full: true });
-        const sg = v.stage({ x: [10, 5000], y: [1, 1.8], xlog: true, height: 220, axes: 'box', xlabel: 'temperature (K)', ylabel: 'γ = C_P/C_V', title: 'heat-capacity ratio', weight: 1.4 });
-        const sb = v.stage({ x: [0, 2], y: [-0.9, 7.6], height: 220, axes: 'box', ylabel: 'per R', xticks: [[0.5, 'C_V'], [1.5, 'C_P']], title: 'where the heat goes', weight: 1 });
+        const sg = v.stage({ x: [10, 5000], y: [1, 1.8], xlog: true, height: 220, axes: 'box', xlabel: 'temperature (K)', ylabel: 'γ', title: 'heat-capacity ratio $\\gamma = C_P/C_V$', weight: 1.4 });
+        const sb = v.stage({ x: [0, 2], y: [-0.9, 7.6], height: 220, axes: 'box', ylabel: 'per R', xticks: [[0.5, 'constant V'], [1.5, 'constant P']], title: 'where the heat goes', weight: 1 });
         const h = sc.handle(300, 0.4, { color: 'ink', r: 6, constrain: (x) => [clamp(x, 11, 4900), 0.4] });
         v.render(() => {
           const g = gas.value, G = GASES[g], T = h.x, p = cvParts(g, T);
@@ -590,7 +590,7 @@ A **convectively mixed** atmosphere, in which rising and sinking air expands and
 $$\Gamma_d = -\frac{dT}{dz} = \frac{g}{c_P} \approx 9.8\ \text{K/km},$$
 with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 6.5 K/km on average (moisture releases latent heat), so a dry parcel lifted from the ground ends up colder than its surroundings and sinks back: it is stable.`,
       idea: String.raw`Stack thin layers: each one must carry the weight of everything above it, so pressure falls by $\rho g\,dz$ per layer, and with $\rho \propto P/T$ the fall is proportional to $P$ itself — exponential if $T$ is constant. For the lapse rate, follow a parcel that rises without exchanging heat: its enthalpy per unit mass changes by $c_P\,dT = dP/\rho$ (first law at constant composition, with $\delta Q = 0$), and the surrounding pressure falls by $dP = -\rho g\,dz$, so $c_P\,dT = -g\,dz$. If the atmosphere cools faster than this with height, a displaced parcel keeps rising (convection); if slower, it returns — convection stirs the lower atmosphere until the lapse rate is close to the adiabatic one.`,
-      caption: String.raw`Three columns of air in hydrostatic balance, integrated layer by layer from the ground: isothermal (blue), dry adiabatic (red) and the U.S. Standard Atmosphere 1976 (black, with its tropopause at 11 km). Left: temperature; middle: pressure on a log scale, where the isothermal column is a straight line; right: the columns shaded by density. Drag the gold parcel up from the ground: it cools along the dry adiabat, 9.8 K per km, faster than the standard atmosphere, so it is colder and denser than its surroundings and would sink back. Change the surface temperature.`,
+      caption: String.raw`Three columns of air in hydrostatic balance, integrated layer by layer from the ground: isothermal (blue), dry adiabatic (red) and the U.S. Standard Atmosphere 1976 (with its tropopause at 11 km). Left: temperature; middle: pressure on a log scale, where the isothermal column is a straight line; right: the columns shaded by density. Drag the gold parcel up from the ground: it cools along the dry adiabat, 9.8 K per km, faster than the standard atmosphere, so it is colder and denser than its surroundings and would sink back. Change the surface temperature.`,
       deps: ['thermo-1.16', 'thermo-1.4'],
       see: ['pchem-1.10', 'geo-1.2', 'fluid-2.4'],
       refs: ['Schroeder §1.5', 'U.S. Standard Atmosphere, 1976 (NOAA/NASA/USAF)'],

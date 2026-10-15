@@ -101,12 +101,12 @@ The extra term $\mathbf F_{\rm in} = -m\mathbf A$ is an **inertial (fictitious) 
             s.line(PV[0] + off, PV[1], bx, by, { color: 'ink', width: 1.4 });
             s.dot(PV[0] + off, PV[1], { r: 3, color: 'ink' });
             if (s === sC) { s.line(PV[0], PV[1], PV[0] + 1.15 * Math.sin(B.eq), PV[1] - 1.15 * Math.cos(B.eq), { color: 'green', width: 1.2, dash: [4, 4] }); s.line(PV[0], PV[1], PV[0], PV[1] - 1.15, { color: 'faint', width: 1, dash: [2, 4] }); }
+            s.dot(bx, by, { r: 6.5, color: 'gold' });
             farrow(s, bx, by, Wt[0], Wt[1], KF, 'ink', 'm\\mathbf g', { ldx: 14 });
             farrow(s, bx, by, Ten[0], Ten[1], KF, 'blue', '\\mathbf T', { ldx: 12, ldy: 8 });
             if (s === sC) farrow(s, bx, by, -A, 0, KF, 'orange', '-m\\mathbf A', { ldy: -10 });
             const nt = s === sR ? net : rel;
             farrow(s, bx, by, nt[0], nt[1], KF, 'green', s === sR ? 'm\\ddot{\\mathbf r}' : "m\\ddot{\\mathbf r}'", { width: 3, ldy: 12 });
-            s.dot(bx, by, { r: 7.5, color: 'gold' });
           }
           sR.corner(`t = ${v.fix(tt, 1)} s · car at ${v.fix(A * tt * 3.6, 0)} km/h`, 'tl');
           sC.corner(`string at ${v.fix(-ph / DEG, 1)}° behind the vertical`, 'tl');
@@ -353,7 +353,7 @@ where $\mathbf d$ is the body’s position. It stretches the Earth along the lin
           const { L, hs, range, RG } = cur, d = L[0].d, mu = MU_M;
           const near = mu / (d - 1) ** 2 - mu / d ** 2, far = mu / d ** 2 - mu / (d + 1) ** 2, quad = (2 * mu) / d ** 3;
           const rr = (a) => (Math.max(...a) - Math.min(...a)) * RE;
-          let out = String.raw`Moon’s tidal pull (m/s²): near side $${sci(v, near * gE)}$, far side $${sci(v, far * gE)}$, quadrupole $2GM R/d^3 = ${sci(v, quad * gE)}$ (near/far $= ${v.fix(near / far, 3)}$) · Moon’s range ${v.fix(rr(hs[0]), 3)} m`;
+          let out = String.raw`Moon’s tidal pull (m/s²): near side $${sci(v, near * gE, 3)}$, far side $${sci(v, far * gE, 3)}$, quadrupole $2GMR/d^3 = ${sci(v, quad * gE, 3)}$ (near/far $= ${v.fix(near / far, 3)}$) · Moon’s range ${v.fix(rr(hs[0]), 3)} m`;
           if (L[1]) {
             const sr = rr(hs[1]), mr = rr(hs[0]), smax = Math.max(...RG.map((q) => q[1])), smin = Math.min(...RG.map((q) => q[1]));
             out += String.raw`, Sun’s ${v.fix(sr, 3)} m (ratio ${v.fix(sr / mr, 3)}) · now ${v.fix(range, 3)} m; spring ${v.fix(smax, 3)} m, neap ${v.fix(smin, 3)} m, ratio ${v.fix(smax / smin, 2)}`;
@@ -455,12 +455,12 @@ In particular, a vector fixed in the rotating frame changes in the inertial fram
       tags: ['rotating frame', 'derivative', 'kinematics'],
       viz(v) {
         const wS = v.slider('turntable rate $\\omega$ (rad/s)', -1.5, 1.5, 0.7, { step: 0.01 });
-        const T = 6, RT = 2.15, KA = 1.1;
+        const T = 4, RT = 2.15, KA = 1.1;
         const sI = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, axes: false, height: 330, title: 'inertial frame: the turntable turns' });
         const sR = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, axes: false, height: 330, title: 'rotating frame: the turntable is at rest' });
         const inDisc = (x, y) => { const r = Math.hypot(x, y); return r > 2 ? [(2 * x) / r, (2 * y) / r] : [x, y]; };
-        const H0 = sR.handle(1.55, -0.55, { color: 'accent', constrain: inDisc });
-        const H1 = sR.handle(-0.35, 1.75, { color: 'teal', constrain: inDisc });
+        const H0 = sR.handle(1.9, 0.6, { color: 'accent', constrain: inDisc });
+        const H1 = sR.handle(0.15, 0.4, { color: 'teal', constrain: inDisc });
         let cur = null;
         v.animate((tA) => {
           const w = wS.value, t = Math.min((tA * T) / 5, T), u = [(H1.x - H0.x) / T, (H1.y - H0.y) / T];
@@ -478,9 +478,21 @@ In particular, a vector fixed in the rotating frame changes in the inertial fram
           const done = []; for (let j = 0; j <= 200 && (T * j) / 200 <= t; j++) done.push(Qi((T * j) / 200)); done.push(qi);
           sI.path(done, { color: 'accent', width: 2, alpha: 0.7 });
           sI.arrow(0, 0, qi[0], qi[1], { color: 'blue', width: 3 });
-          farrow(sI, qi[0], qi[1], uI[0], uI[1], KA, 'blue', "(\\dot{\\mathbf Q})_{S'}", { width: 2.4 });
-          farrow(sI, qi[0] + KA * uI[0], qi[1] + KA * uI[1], wxQ[0], wxQ[1], KA, 'orange', '\\boldsymbol\\omega\\times\\mathbf Q', { width: 2.4 });
-          farrow(sI, qi[0], qi[1], fd[0], fd[1], KA, 'green', '(\\dot{\\mathbf Q})_S', { width: 3 });
+          farrow(sI, qi[0], qi[1], uI[0], uI[1], KA, 'blue', null, { width: 2.4 });
+          farrow(sI, qi[0] + KA * uI[0], qi[1] + KA * uI[1], wxQ[0], wxQ[1], KA, 'orange', null, { width: 2.4 });
+          farrow(sI, qi[0], qi[1], fd[0], fd[1], KA, 'green', null, { width: 3 });
+          { // labels at the midpoints of the triangle’s sides, pushed away from its centroid
+            const A = qi, Bv = [qi[0] + KA * uI[0], qi[1] + KA * uI[1]], Cv = [Bv[0] + KA * wxQ[0], Bv[1] + KA * wxQ[1]];
+            const G = [(A[0] + Bv[0] + Cv[0]) / 3, (A[1] + Bv[1] + Cv[1]) / 3];
+            const lab = (P, Q, tex, color) => {
+              const M = [(P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2], ex = sI.X(Q[0]) - sI.X(P[0]), ey = sI.Y(Q[1]) - sI.Y(P[1]), el = Math.hypot(ex, ey);
+              if (el < 12) return;
+              let dx = sI.X(M[0]) - sI.X(G[0]), dy = sI.Y(M[1]) - sI.Y(G[1]), L = Math.hypot(dx, dy);
+              if (L < 4) { dx = -ey; dy = ex; L = el; }
+              sI.texPx(tex, sI.X(M[0]) + (20 * dx) / L, sI.Y(M[1]) + (20 * dy) / L, { color, size: 13 });
+            };
+            lab(A, Bv, "(\\dot{\\mathbf Q})_{S'}", 'blue'); lab(Bv, Cv, '\\boldsymbol\\omega\\times\\mathbf Q', 'orange'); lab(A, Cv, '(\\dot{\\mathbf Q})_S', 'green');
+          }
           sI.dot(0, 0, { r: 3, color: 'ink' });
           sI.corner(`turntable turned ${v.fix(ang / DEG, 0)}°`, 'tl');
           // rotating panel
@@ -496,7 +508,7 @@ In particular, a vector fixed in the rotating frame changes in the inertial fram
           sR.text('end', H1.x, H1.y, { color: 'teal', size: 11, dy: -16, align: 'center' });
           sR.corner(`t = ${v.fix(t, 2)} s`, 'tl');
           cur = { w, q, qi, fd, pred, u, ws: Math.hypot(...wxQ) };
-        }, { period: 6.5, still: 2.6 });
+        }, { period: 6.5, still: 2.2 });
         v.legend([['blue', '$\\mathbf Q$ and its rate in the rotating frame'], ['orange', '$\\boldsymbol\\omega\\times\\mathbf Q$'], ['green', 'rate in the inertial frame (measured)'], ['teal', 'line painted on the turntable', { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
@@ -580,7 +592,7 @@ where $\mathbf r$, $\dot{\mathbf r}$ and $\ddot{\mathbf r}$ are measured in the 
           const sm = [wm * wm * q1[0] + com[0] + eum[0], wm * wm * q1[1] + com[1] + eum[1]];
           sR.corner(`ω = ${v.fix(w, 2)} rad/s`, 'tl');
           cur = { B, cf, co, eu, am, sm, t };
-        }, { period: 11, still: 0.95 });
+        }, { period: 11, still: 1.75 });
         v.legend([['orange', 'centrifugal $m\\omega^2\\boldsymbol\\rho$'], ['purple', 'Coriolis $-2m\\boldsymbol\\omega\\times\\dot{\\mathbf r}$ / path on the table'], ['teal', 'Euler $-m\\dot{\\boldsymbol\\omega}\\times\\mathbf r$'], ['green', 'sum'], ['ink', 'integrated with the fictitious forces', { dot: true }]]);
         v.readout(() => {
           if (!cur) return '';
@@ -611,7 +623,7 @@ a paraboloid that rises by $\omega^2R^2/2g$ from the centre to a wall of radius 
         const S = v.stage({ x: [-1.75, 1.75], y: [-1.6, 1.9], equal: true, axes: false, height: 340, title: 'the bucket (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.4, pitch: 0.42, axis: 1.3, lim: 1.5, hint: false, axes: false });
         const X = v.stage({ x: [-0.19, 0.19], y: [-0.02, 0.33], equal: true, axes: false, height: 340, title: 'section through the axis (metres)' });
-        const E = v.stage({ x: [0, 90], y: [0, 7], axes: 'box', height: 150, full: true, xlabel: 'latitude (°)', title: 'on the Earth: plumb line versus the direction to the centre (arc minutes)', xticks: [0, 15, 30, 45, 60, 75, 90] });
+        const E = v.stage({ x: [0, 90], y: [0, 7.2], axes: 'box', height: 150, full: true, title: 'on the Earth: angle between a plumb line and the direction to the centre (arc minutes) against latitude (°)', xticks: [0, 15, 30, 45, 60, 75, 90] });
         const g = 9.81, RB = 0.15, HB = 0.3, H0 = 0.1, SC = 1 / RB; // bucket radius, height, water depth (m); scene units per metre
         const surfC = memo();
         const surface = (w) => surfC(w, () => {
@@ -677,7 +689,7 @@ a paraboloid that rises by $\omega^2R^2/2g$ from the centre to a wall of radius 
           else {
             out = sf.rd > 0
               ? String.raw`the centre is dry out to $\rho = ${v.fix(sf.rd * 100, 2)}$ cm; rise from there to the wall ${v.fix(rise * 100, 3)} cm, $\omega^2(R^2-\rho_0^2)/2g = ${v.fix(pred * 100, 3)}$ cm`
-              : String.raw`rise from the centre to the wall ${v.fix(rise * 100, 3)} cm, $\omega^2R^2/2g = ${v.fix(pred * 100, 3)}$ cm (volume held to a relative error of $${sci(v, Math.abs(sf.vol - 1) + 1e-300)}$)`;
+              : String.raw`rise from the centre to the wall ${v.fix(rise * 100, 3)} cm, $\omega^2R^2/2g = ${v.fix(pred * 100, 3)}$ cm (the level is fixed by keeping the volume of water unchanged)`;
             out += String.raw` · slope $dz/d\rho = \omega^2\rho/g$, so $\mathbf g_{\rm eff}$ is normal to the surface`;
             if (wB === 0) out += ' · the bucket is at rest, yet the water is curved: the shape measures rotation relative to the inertial frames, not relative to the bucket';
           }

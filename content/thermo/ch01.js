@@ -254,7 +254,7 @@ Different thermometric properties give scales that agree at the fixed points but
 $$PV = NkT = nRT,$$
 where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the amount in moles and $R = N_Ak = 8.314$ J/(mol·K) the gas constant. The pressure depends only on the number density $N/V$ and the temperature — not on the kind of molecule. It is a **limiting law**: every real gas obeys it better and better as its density goes to zero, and departs from it when the molecules' own size and their attractions start to matter.`,
       idea: String.raw`The law gathers Boyle's ($PV$ fixed at fixed $T$), Charles's and Gay-Lussac's ($V$ or $P$ proportional to $T$) and Avogadro's (equal volumes hold equal numbers) observations into one equation; with the gas-thermometer scale of 1.3 it is, in fact, the *definition* of $T$. Kinetic theory (1.6–1.7) explains it: each molecule hits a wall at a rate proportional to its speed and delivers momentum proportional to its speed, so $P = (N/V)\,m\langle v_x^2\rangle$, and $m\langle v_x^2\rangle = kT$. The derivation assumes point molecules that do not interact; finite size crowds the molecules and raises the pressure (for hard spheres, the Carnahan–Starling formula), while attractions lower it.`,
-      caption: String.raw`An exact simulation of hard spheres (diameter $\sigma$) between an end wall and a piston; the slab repeats periodically up and down (dashed lines), so only the end wall and the piston are walls. The pressure is **measured**: the momentum delivered by every impact, summed over 10 time units. Each window adds a point (purple: averages of nearby points). Left: measured $P$ against $NkT/V$ — the law is the diagonal, whatever $N$, $V$ and $T$ you choose. Right: $P/\rho kT$ against the packing fraction measured in the middle of the cylinder (molecules pile up against the walls); at liquid-like densities the points climb onto the hard-sphere curve, far above the ideal value 1. Drag the piston, or let it sweep.`,
+      caption: String.raw`An exact simulation of hard spheres (diameter $\sigma$) between an end wall and a piston; the slab repeats periodically up and down (dashed lines), so only the end wall and the piston are walls. The pressure is **measured**: the momentum delivered by every impact, summed over 10 time units while the piston is still; the end wall is kept at temperature $T$. Each window adds a point (purple: averages of nearby points). Left: measured $P$ against $NkT/V$ — the law is the diagonal, whatever $N$, $V$ and $T$ you choose. Right: $P/\rho kT$ against the packing fraction measured in the middle of the cylinder (molecules pile up against the walls); at liquid-like densities the points climb onto the hard-sphere curve, far above the ideal value 1. Drag the piston, or let it sweep.`,
       deps: ['thermo-1.3'],
       see: ['pchem-1.4', 'pchem-1.1'],
       refs: ['Schroeder §1.2', 'Carnahan & Starling, J. Chem. Phys. 51, 635 (1969)'],
@@ -266,35 +266,38 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
         const L = 9, XMIN = 6.5, XMAX = 40, WIN = 10, A = L * L;
         let G = null, win, pts = [], acc, tSim = 0;
         const Ns = v.slider('molecules $N$', 40, 250, 170, { int: true, onChange: () => make() });
-        const Ts = v.slider('temperature $kT$', 0.4, 3, 1, { step: 0.01, onChange: (x) => { G.setT(x); fresh(); } });
-        const auto = v.toggle('automatic slow sweep', true);
+        const Ts = v.slider('temperature $kT$', 0.4, 3, 1, { step: 0.01, onChange: (x) => { G.Tb = x; G.setT(x); fresh(); } });
+        const auto = v.toggle('automatic sweep, volume by volume', true);
         v.button('Clear points', () => { pts = []; });
         const sc = v.stage({ x: [-1.5, XMAX + 7.5], y: [-2.4, L + 1.4], equal: true, height: 200, axes: false, full: true });
         const ph = sc.handle(XMAX + 0.55, L / 2, { color: 'orange', r: 8, constrain: (x) => [clamp(x, XMIN + 0.55, XMAX + 0.55), L / 2] });
         ph.onDrag = () => { if (auto.value) auto.set(false); };
         const sp = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: 'box', xlabel: 'NkT/V', ylabel: 'measured P', title: 'measured pressure against $NkT/V$' });
         const sz = v.stage({ x: [0, 0.32], y: [0.5, 4.6], height: 290, axes: 'box', xlabel: 'packing fraction η (middle)', ylabel: 'P/ρkT', title: 'departure from the ideal gas' });
-        const fresh = () => { win = G.snap(); win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 }; };
+        const fresh = () => { win = G.snap(); win.moved = false; acc = { T: 0, n: 0, c: 0 }; };
         const make = () => {
           clock.kick(30);
-          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true }); fresh(); };
+          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true, thermal: [1, 0, 0, 0, 0, 0], Tb: Ts.value }); fresh(); };
         const clock = simClock(12, 0.06, 40);
-        const sweep = (t) => { const u = (t % 260) / 260, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
+        // the automatic sweep visits 14 volumes, holding each one still for long enough to measure two windows
+        const sweep = (t) => { const k = Math.floor(t / 34) % 26, idx = k < 14 ? k : 26 - k; return XMAX * (XMIN / XMAX) ** (idx / 13); };
         make();
         const rp = ramp(v, 'teal', 'red', 24, 'purple');
         v.animate((t) => {
           const add = clock(t, () => { tSim = 0; pts = []; G = null; make(); });
           runBudget(G, add, 0.1, clock.ms(), (h) => {
             tSim += h;
-            const target = auto.value ? sweep(tSim) : ph.x - 0.55, X = G.pist.X, U = clamp((target - X) / 2, -0.25, 0.25);
-            if (Math.abs(U - G.pist.U) > 1e-3 || (U === 0 && G.pist.U !== 0)) G.setU(Math.abs(U) < 1e-3 ? 0 : U);
+            const target = auto.value ? sweep(tSim) : ph.x - 0.55, X = G.pist.X;
+            let U = Math.abs(target - X) < 0.02 ? 0 : clamp((target - X) / 1.5, -0.5, 0.5);
+            if (U !== G.pist.U) G.setU(U);
+            if (U !== 0) win.moved = true;
             let c = 0; for (let i = 0; i < G.N; i++) if (G.x[i] > 2 && G.x[i] < X - 2) c++;
             acc.T += G.stats().T; acc.c += c / ((X - 4) * A); acc.n++;
             if (G.t - win.t >= WIN) {
               const b = G.snap(), r = G.meas(win, b), T = acc.T / acc.n, rho = acc.c / acc.n, eta = rho * Math.PI / 6;
-              if (Math.abs(G.pist.X - win.X) < 0.08 * G.pist.X) pts.push({ id: G.N * T / r.V, P: r.pAll, eta, Z: r.pAll / (rho * T), err: r.pAll * Math.sqrt(1.273 / Math.max(1, r.hits)), V: r.V, T });
+              if (!win.moved) pts.push({ id: G.N * T / r.V, P: r.pAll, eta, Z: r.pAll / (rho * T), err: r.pAll * Math.sqrt(1.273 / Math.max(1, r.hits)), V: r.V, T });
               if (pts.length > 500) pts.shift();
-              win = b; win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 };
+              win = b; win.moved = false; acc = { T: 0, n: 0, c: 0 };
             }
           });
           if (auto.value) ph.x = G.pist.X + 0.55;

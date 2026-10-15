@@ -435,5 +435,204 @@ With $+\omega t$ instead of $-\omega t$ the wave travels in the $-x$ direction. 
         });
       },
     },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Method',
+      name: 'Complex representation of waves',
+      statement: String.raw`Write a harmonic wave as the real part of a complex one,
+$$y(x,t)=\Re\big[\tilde A\,e^{i(kx-\omega t)}\big],\qquad \tilde A=A\,e^{i\varphi}\in\C ,$$
+so that one complex number, the **complex amplitude** (or **phasor**) $\tilde A$, carries both the amplitude $A=|\tilde A|$ and the phase $\varphi=\arg\tilde A$. At each $x$ the complex wave is an arrow of length $A$ turning clockwise at angular speed $\omega$; the physical displacement is its shadow on the real axis. Because taking the real part commutes with every *linear* operation with real coefficients:
+(a) waves of the same $k$ and $\omega$ add by adding their phasors: $\Re[\tilde A_1e^{i\theta}]+\Re[\tilde A_2e^{i\theta}]=\Re[(\tilde A_1+\tilde A_2)e^{i\theta}]$;
+(b) derivatives become multiplications: $\partial_t\mapsto-i\omega$, $\partial_x\mapsto ik$, so the wave equation becomes the algebraic relation $\omega^2=c^2k^2$.
+Products do not commute with $\Re$: quadratic quantities need care, e.g. the time average of $y^2$ is $\tfrac12|\tilde A|^2$.`,
+      idea: String.raw`Euler's formula (rca-0.7) puts $e^{i\theta}$ on the unit circle with real part $\cos\theta$, so $\Re[Ae^{i\varphi}e^{i(kx-\omega t)}]=A\cos(kx-\omega t+\varphi)$. Real parts add, and $\Re$ commutes with $\partial_t$ and $\partial_x$, which act on the exponential as multiplication by $-i\omega$ and $ik$. So all the algebra of sinusoids, such as phase shifts, sums and derivatives, reduces to arithmetic with complex numbers. Adding two phasors is vector addition in the plane, and $|\tilde A_1+\tilde A_2|^2=A_1^2+A_2^2+2A_1A_2\cos(\varphi_1-\varphi_2)$ is the interference formula that will run through the optics chapters.`,
+      caption: String.raw`Left: the phasors at $x=0$, turning clockwise; their shadows on the real axis are the displacements there. Drag the tips to set the complex amplitudes $\tilde A_1$ (blue) and $\tilde A_2$ (orange); dragging pauses the rotation. Right: the complex wave $\tilde A\,e^{i(kx-\omega t)}$ for the sum is a helix along $x$; its shadow on the back wall is the physical wave. Below: adding the two real waves as curves (ink) gives exactly the real part of the summed phasor (dashed green). Drag the 3D view to rotate it.`,
+      deps: ['waves-1.4', 'rca-0.7'],
+      see: ['sig-1.5', 'circ-7.2', 'em-9.19'],
+      refs: ['Hecht ch. 2'],
+      tags: ['phasor', 'complex exponential', 'superposition'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Phasor' },
+      viz(v) {
+        const M = v.M, Cx = v.Cx, OM = TAU / 5, K3 = TAU / 1.5, SC = 0.42, YW = 1.25, ZF = -1.15;
+        let A1 = new Cx(0.9, 0.35), A2 = new Cx(-0.15, 0.7);
+        const two = v.toggle('second wave $\\tilde A_2$', true);
+        const cp = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, height: 320, axes: true, xlabel: 'Re', ylabel: 'Im', title: 'phasors at x = 0' });
+        const s3 = v.stage3d({ range: 1.75, height: 320, yaw: -0.5, pitch: 0.32, axes: false, title: 'the complex wave and its real shadow', weight: 1.2 });
+        const wv = v.stage({ x: [0, 3], y: [-2.1, 2.1], height: 200, axes: 'box', xlabel: 'x  (two wavelengths)', yticks: [-1, 0, 1], full: true, title: 'the physical waves' });
+        const rot = (z, a) => z.mul(Cx.polar(1, a));
+        const h1 = cp.handle(A1.re, A1.im, { color: 'accent', label: '$\\tilde A_1$', onDrag: (h) => { v.pause(); A1 = rot(new Cx(h.x, h.y), OM * v.t); } });
+        const h2 = cp.handle(A2.re, A2.im, { color: 'orange', label: '$\\tilde A_2$', onDrag: (h) => { v.pause(); A2 = rot(new Cx(h.x, h.y), OM * v.t); } });
+        const wave = (A, x, t) => A.mul(Cx.polar(1, K3 * x - OM * t));
+        let tt = 0;
+        v.animate((t) => {
+          tt = t;
+          const B = two.value ? A2 : new Cx(0, 0), S = A1.add(B);
+          const p1 = rot(A1, -OM * t), p2 = rot(B, -OM * t), ps = rot(S, -OM * t);
+          if (!h1.dragging) { h1.x = p1.re; h1.y = p1.im; }
+          if (!h2.dragging) { h2.x = p2.re; h2.y = p2.im; }
+          h2.visible = two.value;
+          // ---- phasor diagram
+          cp.circle(0, 0, S.abs(), { color: 'green', width: 1, dash: [3, 4], alpha: 0.6 });
+          cp.arrow(0, 0, p1.re, p1.im, { color: 'accent', width: 2.6 });
+          if (two.value) {
+            cp.arrow(0, 0, p2.re, p2.im, { color: 'orange', width: 2.6 });
+            cp.line(p1.re, p1.im, ps.re, ps.im, { color: 'orange', width: 1.2, dash: [4, 4] });
+            cp.line(p2.re, p2.im, ps.re, ps.im, { color: 'accent', width: 1.2, dash: [4, 4] });
+            cp.arrow(0, 0, ps.re, ps.im, { color: 'green', width: 3 });
+            cp.dot(ps.re, ps.im, { r: 4, color: 'green', label: 'sum', labelPos: 'ne' });
+          }
+          for (const [p, col] of two.value ? [[p1, 'accent'], [p2, 'orange'], [ps, 'green']] : [[p1, 'accent']]) {
+            cp.line(p.re, p.im, p.re, 0, { color: col, width: 1, dash: [2, 3], alpha: 0.8 });
+            cp.dot(p.re, 0, { r: 4.5, color: col });
+          }
+          cp.corner('shadows on the real axis = displacements', 'bl', { color: 'muted' });
+          // ---- 3D helix of the sum (x along the axis, Re up, Im into the page)
+          const Z = two.value ? S : A1, P = (x) => { const w = wave(Z, x, t); return [x - 1.5, SC * w.im, SC * w.re]; };
+          s3.poly([[-1.5, YW, -1.05], [1.5, YW, -1.05], [1.5, YW, 1.05], [-1.5, YW, 1.05]], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 1 });
+          s3.poly([[-1.5, -1.05, ZF], [1.5, -1.05, ZF], [1.5, 1.05, ZF], [-1.5, 1.05, ZF]], { fill: 'muted', fillAlpha: 0.04, color: 'faint', width: 1 });
+          s3.line([-1.6, 0, 0], [1.65, 0, 0], { color: 'muted', width: 1.2 });
+          s3.text('x', [1.78, 0, 0], { color: 'muted', math: true });
+          s3.line([-1.5, YW, 0], [1.5, YW, 0], { color: 'faint', width: 1 });
+          s3.curve((x) => { const w = wave(Z, x, t); return [x - 1.5, YW, SC * w.re]; }, 0, 3, { n: 160, color: 'ink', width: 2.4 });
+          s3.curve((x) => { const w = wave(Z, x, t); return [x - 1.5, SC * w.im, ZF]; }, 0, 3, { n: 160, color: 'muted', width: 1.2, alpha: 0.6 });
+          s3.curve(P, 0, 3, { n: 220, color: 'green', width: 2.6 });
+          for (let j = 0; j <= 24; j++) {
+            const x = j / 8, q = P(x);
+            s3.line([x - 1.5, 0, 0], q, { color: 'green', width: 1.2, alpha: 0.55 });
+            if (j % 4 === 0) s3.line(q, [q[0], YW, q[2]], { color: 'faint', width: 1, dash: [2, 3] });
+          }
+          s3.arrow([-1.5, 0, 0], P(0), { color: 'green', width: 2.8 });
+          s3.text('real part: the wave', [0.2, YW, 1.25], { color: 'ink', size: 11.5 });
+          s3.text('imaginary part', [0.6, 0.9, ZF - 0.12], { color: 'muted', size: 11.5 });
+          // ---- physical waves
+          wv.hline(0, { color: 'faint', width: 1 });
+          const y1 = (x) => wave(A1, x, t).re, y2 = (x) => wave(B, x, t).re;
+          wv.fn(y1, { color: 'accent', width: 1.6 });
+          if (two.value) { wv.fn(y2, { color: 'orange', width: 1.6 }); wv.fn((x) => y1(x) + y2(x), { color: 'ink', width: 3.2 }); }
+          wv.fn((x) => wave(S, x, t).re, { color: 'green', width: 2, dash: [6, 5] });
+          wv.dot(0, wave(S, 0, t).re, { r: 5, color: 'green' });
+        }, { still: 0.6 });
+        v.legend([['accent', '$\\Re[\\tilde A_1e^{i(kx-\\omega t)}]$'], ['orange', '$\\Re[\\tilde A_2e^{i(kx-\\omega t)}]$'], ['ink', 'sum of the curves'], ['green', '$\\Re[(\\tilde A_1+\\tilde A_2)e^{i(kx-\\omega t)}]$', { dash: true }]]);
+        v.readout(() => {
+          const B = two.value ? A2 : new Cx(0, 0), S = A1.add(B), deg = (z) => v.fix((z.arg() * 180) / Math.PI, 0);
+          let err = 0; for (let i = 0; i <= 300; i++) { const x = (3 * i) / 300; err = Math.max(err, Math.abs(wave(S, x, tt).re - wave(A1, x, tt).re - wave(B, x, tt).re)); }
+          const pred = Math.sqrt(A1.abs2() + B.abs2() + 2 * A1.abs() * B.abs() * Math.cos(A1.arg() - B.arg()));
+          const vel = (wave(S, 0, tt + 1e-5).re - wave(S, 0, tt - 1e-5).re) / 2e-5, velP = wave(S.mul(new Cx(0, -OM)), 0, tt).re;
+          return `$\\tilde A_1$ = ${v.fix(A1.abs(), 2)}∠${deg(A1)}°` + (two.value ? `, $\\tilde A_2$ = ${v.fix(B.abs(), 2)}∠${deg(B)}°, sum ${v.fix(S.abs(), 3)}∠${deg(S)}° · interference formula $\\sqrt{A_1^2+A_2^2+2A_1A_2\\cos\\Delta\\varphi}$ = ${v.fix(pred, 3)} · largest gap between "add the curves" and "add the arrows": ${err === 0 ? '0 (exactly)' : '$' + v.sci(err, 1) + '$'}` : ' · switch on the second wave to add phasors') + ` · velocity at $x=0$: finite difference ${v.fix(vel, 4)}, phasor rule $\\Re[-i\\omega\\tilde A e^{-i\\omega t}]$ ${v.fix(velP, 4)}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6',
+      kind: 'Principle',
+      name: 'Superposition of linear waves',
+      statement: String.raw`If $u_1$ and $u_2$ solve a **linear** homogeneous wave equation, such as $u_{tt}=c^2u_{xx}$, then so does every combination $a u_1+b u_2$. Physically: two waves that meet simply add, pass through each other, and emerge exactly as they would have been without the encounter. A solution for compound initial data is the sum of the solutions for the parts.
+
+The principle holds exactly only for linear media. For a medium whose restoring force is nonlinear, e.g. a string whose stiffness grows with stretch, $u_{tt}=\partial_x\big[(c^2+\beta u_x^2)\,u_x\big]$, the sum of two solutions is not a solution. Colliding waves then interact: they distort each other and generate new frequencies. Real strings, air and light are linear to excellent accuracy at small amplitudes.`,
+      idea: String.raw`The wave operator $L u=u_{tt}-c^2u_{xx}$ is linear: $L(au_1+bu_2)=aLu_1+bLu_2$, and initial data add in the same way, so by uniqueness (pde-2.5) the solution for $u_1(0)+u_2(0)$ is $u_1+u_2$. D'Alembert's formula (1.3) makes this concrete: the right-moving parts add, the left-moving parts add, and each moves at $c$ regardless of the other. With a term like $\beta u_x^2u_x$ the operator is no longer linear: the cross terms $3\beta(u_{1x}^2u_{2x}+u_{1x}u_{2x}^2)$ appear only where both waves are present, and they are the interaction.`,
+      caption: String.raw`Three simulations run side by side: wave A alone, wave B alone, and A and B together. The blue string is the simulation with both; the dashed green curve is A alone plus B alone. With $\beta=0$ they coincide at every moment, and the **superposition defect** (red, below left) stays at zero, even when two opposite pulses cancel to a momentarily flat string. Raise the nonlinear stiffness $\beta$ and the defect appears where the waves overlap and stays after they part. Choose *wave trains* to add two sinusoids of nearby wavelength: the probe trace (below right) beats at the difference frequency.`,
+      deps: ['waves-1.3'],
+      see: ['music-1.11', 'pde-1.1', 'em-1.4', 'waves-3.1'],
+      refs: ['Crawford ch. 4', 'Hecht ch. 2'],
+      tags: ['superposition', 'linearity', 'beats'],
+      scope: String.raw`Exact for linear wave equations. For real media it holds while the amplitude is small enough that the restoring force is proportional to the displacement (small slopes for strings, small pressure changes for sound, moderate fields for light in matter).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Superposition_principle' },
+      viz(v) {
+        const M = v.M, L = 8, NX = 400, DX = L / NX, DT = 0.2 * DX, NU = 0.0015, HIST = 10;
+        const sc = v.select('waves', [{ value: 'same', label: 'two pulses' }, { value: 'opp', label: 'opposite pulses' }, { value: 'trains', label: 'wave trains (beats)' }], 'same', { onChange: () => { v.t = 0; } });
+        const bS = v.slider('nonlinear stiffness $\\beta$', 0, 0.6, 0, { step: 0.01, onChange: () => { v.t = 0; } });
+        const s = v.stage({ x: [0, L], y: [-1.05, 1.15], height: 230, axes: false, full: true });
+        const dp = v.stage({ x: [0, L], y: [-0.3, 0.3], height: 200, axes: 'box', xlabel: 'x', title: 'superposition defect: (A and B) − (A alone + B alone)' });
+        const pr = v.stage({ x: [-HIST, 0], y: [-1.1, 1.1], height: 200, axes: 'box', xlabel: 'time before now', title: 'what the probe records' });
+        const probe = s.handle(5, -0.92, { color: 'teal', constrain: 'x', label: 'probe' });
+        const g = (u) => Math.exp(-4 * Math.LN2 * u * u), dg = (u) => -8 * Math.LN2 * u * g(u);
+        const per = (x) => ((x % L) + L) % L, near = (x, x0) => { let d = per(x - x0); if (d > L / 2) d -= L; return d; };
+        const K1 = (TAU * 10) / L, K2 = (TAU * 12) / L, AT = 0.12;
+        const init = (which) => {
+          const sc0 = sc.value, u = new Float64Array(NX), w = new Float64Array(NX);
+          for (let i = 0; i < NX; i++) {
+            const x = i * DX;
+            if (sc0 === 'trains') {
+              if (which === 'A') { u[i] = AT * Math.sin(K1 * x); w[i] = -AT * K1 * Math.cos(K1 * x); }
+              else { u[i] = AT * Math.sin(K2 * x); w[i] = -AT * K2 * Math.cos(K2 * x); }
+            } else if (which === 'A') { const d = near(x, 2) / 0.8; u[i] = 0.5 * g(d); w[i] = -0.5 * dg(d) / 0.8; }
+            else { const d = -near(x, 6) / 0.9, a = sc0 === 'opp' ? -0.5 : 0.42; u[i] = a * pulse(sc0 === 'opp' ? 'gauss' : 'skew', sc0 === 'opp' ? near(x, 6) / 0.8 : d); w[i] = sc0 === 'opp' ? -0.5 * dg(near(x, 6) / 0.8) / 0.8 : -a * dpulse('skew', d) / 0.9; }
+          }
+          return { u, w };
+        };
+        const D = (u, out, beta) => {
+          for (let i = 0; i < NX; i++) {
+            const ip = (i + 1) % NX, im = (i + NX - 1) % NX, sp = (u[ip] - u[i]) / DX, sm = (u[i] - u[im]) / DX;
+            out[i] = (sp + beta * sp * sp * sp - sm - beta * sm * sm * sm) / DX;
+          }
+        };
+        const mk = (which) => {
+          const { u, w } = init(which), prev = new Float64Array(NX), acc = new Float64Array(NX);
+          D(u, acc, bS.value);
+          for (let i = 0; i < NX; i++) prev[i] = u[i] - DT * w[i] + 0.5 * DT * DT * acc[i];
+          return { u: Float64Array.from(u), prev, acc, nxt: new Float64Array(NX) };
+        };
+        const stepSim = (S, beta) => {
+          D(S.u, S.acc, beta);
+          for (let i = 0; i < NX; i++) {
+            const ip = (i + 1) % NX, im = (i + NX - 1) % NX;
+            const visc = (NU * DT * ((S.u[ip] - S.prev[ip]) - 2 * (S.u[i] - S.prev[i]) + (S.u[im] - S.prev[im]))) / (DX * DX);
+            S.nxt[i] = 2 * S.u[i] - S.prev[i] + DT * DT * S.acc[i] + visc;
+          }
+          const p = S.prev; S.prev = S.u; S.u = S.nxt; S.nxt = p;
+        };
+        let A, B, AB, tSim = 0, key = '', hist = [], lastProbe = 5;
+        const reset = () => { A = mk('A'); B = mk('B'); AB = mk('AB'); for (let i = 0; i < NX; i++) { AB.u[i] = A.u[i] + B.u[i]; AB.prev[i] = A.prev[i] + B.prev[i]; } tSim = 0; hist = []; };
+        const at = (S, x) => { const u = per(x) / DX, i = Math.floor(u) % NX, f = u - Math.floor(u); return S.u[i] * (1 - f) + S.u[(i + 1) % NX] * f; };
+        let dmax = 0, umax = 0, ke = 0, pe = 0;
+        v.animate((t) => {
+          const k = sc.value + '|' + bS.value;
+          if (k !== key || t < tSim - 1e-9) { key = k; reset(); }
+          if (probe.x !== lastProbe) { lastProbe = probe.x; hist = []; }
+          const beta = bS.value;
+          while (tSim < t) { stepSim(A, beta); stepSim(B, beta); stepSim(AB, beta); tSim += DT; if (Math.round(tSim / DT) % 5 === 0) { hist.push([tSim, at(AB, probe.x)]); if (hist.length > 2600) hist.shift(); } }
+          dmax = 0; umax = 1e-12; ke = 0; pe = 0;
+          for (let i = 0; i < NX; i++) {
+            dmax = Math.max(dmax, Math.abs(AB.u[i] - A.u[i] - B.u[i])); umax = Math.max(umax, Math.abs(A.u[i]) + Math.abs(B.u[i]));
+            const vel = (AB.u[i] - AB.prev[i]) / DT, sl = (AB.u[(i + 1) % NX] - AB.u[i]) / DX; ke += 0.5 * vel * vel * DX; pe += (0.5 * sl * sl + 0.25 * beta * sl ** 4) * DX;
+          }
+          const tr = sc.value === 'trains', ys = tr ? 0.32 : 1;
+          s.setView([0, L], [-1.05 * ys, 1.15 * ys]); pr.setView([-HIST, 0], [-1.1 * ys, 1.1 * ys]); dp.setView([0, L], [-0.3 * ys, 0.3 * ys]);
+          probe.y = -0.92 * ys;
+          // ---- strings
+          const pts = (S, f = (i) => S.u[i]) => { const p = M.range(NX).map((i) => [i * DX, f(i)]); p.push([L, f(0)]); return p; };
+          s.hline(0, { color: 'faint', width: 1 });
+          s.path(pts(A), { color: 'orange', width: 1.2, alpha: 0.7 });
+          s.path(pts(B), { color: 'purple', width: 1.2, alpha: 0.7 });
+          s.path(pts(AB), { color: 'accent', width: 3.4 });
+          s.path(pts(A, (i) => A.u[i] + B.u[i]), { color: 'green', width: 2, dash: [7, 5] });
+          s.vline(probe.x, { color: 'teal', width: 1, dash: [3, 4] });
+          s.corner(`t = ${v.fix(t, 2)} L/c`, 'tl', { color: 'ink' });
+          s.corner('periodic: the right end joins the left end', 'tr', { color: 'muted' });
+          // ---- defect
+          dp.hline(0, { color: 'faint', width: 1 });
+          dp.path(pts(AB, (i) => AB.u[i] - A.u[i] - B.u[i]), { color: 'red', width: 2.2 });
+          dp.corner(`largest |defect| = ${dmax < 1e-12 ? v.fix(dmax * 1e15, 1) + '×10⁻¹⁵' : v.fix(dmax, 4)}`, 'tl', { color: dmax < 1e-9 ? 'green' : 'red', weight: 600 });
+          // ---- probe history
+          pr.hline(0, { color: 'faint', width: 1 });
+          pr.path(hist.map(([tt, y]) => [tt - tSim, y]), { color: 'teal', width: 1.6 });
+          if (sc.value === 'trains') {
+            const dw = (K2 - K1) / 2;
+            pr.fn((u) => 2 * AT * Math.abs(Math.cos(dw * (probe.x - (tSim + u)))), { color: 'muted', width: 1.4, dash: [5, 4] });
+            pr.fn((u) => -2 * AT * Math.abs(Math.cos(dw * (probe.x - (tSim + u)))), { color: 'muted', width: 1.4, dash: [5, 4] });
+          }
+        }, { period: 8, still: 1.85 });
+        v.legend([['accent', 'simulation with A and B together'], ['green', 'A alone + B alone', { dash: true }], ['orange', 'A alone'], ['purple', 'B alone'], ['red', 'defect']]);
+        v.readout(() => {
+          const lin = bS.value === 0, rel = dmax / umax;
+          let extra = '';
+          if (sc.value === 'opp') extra = ` · energy now: ${v.fix((100 * ke) / (ke + pe), 0)} % kinetic, ${v.fix((100 * pe) / (ke + pe), 0)} % stretch (at the moment of cancellation the string is flat but moving)`;
+          if (sc.value === 'trains') extra = ` · wave trains with $k_1=2\\pi\\cdot10/L$, $k_2=2\\pi\\cdot12/L$: beat period $1/|f_1-f_2|$ = ${v.fix(1 / (((K2 - K1) / TAU)), 2)} $L/c$ (the dashed envelope)`;
+          return `largest superposition defect ${lin ? 'with a linear string' : `with $\\beta$ = ${v.fix(bS.value, 2)}`}: ${v.fix(100 * rel, rel < 1e-6 ? 12 : 2)} % of the amplitude${lin ? ' (rounding error only)' : ''}${extra}`;
+        });
+      },
+    },
   ],
 };

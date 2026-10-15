@@ -628,7 +628,6 @@ Each keeps some properties of what we see and gives up others; none of them is â
           for (let i = -HW; i <= HW; i++) { const a = pierce([i, VY, G]), b = pierce([i, VY + N, G]); sc.line([a[0], VY, a[1] + G], [b[0], VY, b[1] + G], { color: 'accent', width: 1.6, bias: -0.1 }, 2); }
           for (let k = 0; k <= N; k++) { const a = pierce([-HW, VY + k, G]), b = pierce([HW, VY + k, G]); sc.line([a[0], VY, a[1] + G], [b[0], VY, b[1] + G], { color: 'accent', width: 1.6, bias: -0.1 }, 2); }
           sc.line([man[0], man[1], G], [man[0], man[1], G + 2.75], { color: 'ink', width: 4 }, 3); sc.dot([man[0], man[1], G + 2.85], { r: 4, color: 'ink', top: false });
-          sc.tex('E', [E[0], E[1], E[2] - 0.6], { color: 'accent', size: 15 });
           sc.flush();
           // ---- the painting
           P.rect(-HW, 0, HW, VH, { fill: 'orange', fillAlpha: 0.04, color: 'orange', width: 1.8 });

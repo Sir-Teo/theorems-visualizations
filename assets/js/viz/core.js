@@ -376,8 +376,14 @@ class Stage {
     }
     c.font = 'italic 15px Newsreader, "Times New Roman", serif'; c.fillStyle = resolveColor('muted');
     const off = o.ticks ? this._labOff || { x: 0, y: 0 } : { x: 0, y: 0 };
-    if (o.xlabel) { c.textAlign = 'right'; c.textBaseline = 'bottom'; c.fillText(o.xlabel, this.W - 6, ax - 5 - off.x); }
-    if (o.ylabel) { c.textAlign = 'left'; c.textBaseline = 'top'; c.fillText(o.ylabel, ay + 7 + off.y, 5); }
+    // labels with $…$ go through the KaTeX overlay ('$t$ (s)' mixes text and math; '$\\omega$' is pure TeX)
+    const lab = (str, X, Y, align, baseline) => {
+      const t = String(str), pure = /^\$[^$]+\$$/.test(t);
+      if (/\$[^$]+\$/.test(t)) this.texPx(pure ? t.slice(1, -1) : t, X, Y, { color: 'muted', size: 15, align, baseline, rich: !pure });
+      else { c.textAlign = align === 'right' ? 'right' : 'left'; c.textBaseline = baseline; c.fillText(t, X, Y); }
+    };
+    if (o.xlabel) lab(o.xlabel, this.W - 6, ax - 5 - off.x, 'right', 'bottom');
+    if (o.ylabel) lab(o.ylabel, ay + 7 + off.y, 5, 'left', 'top');
     c.restore();
   }
 
