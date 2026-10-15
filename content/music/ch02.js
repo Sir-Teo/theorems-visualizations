@@ -74,6 +74,7 @@ The chain has exactly $N$ normal modes, $y_j\propto\sin\frac{jk\pi}{N+1}$, with 
           tau = 0.32 * t;
           const yb = M.range(N).map((j) => A.reduce((a, Aq, q) => a + Aq * S[q][j] * Math.cos(W[q] * Math.PI * tau), 0));
           s.hline(0, { color: 'faint', width: 1, dash: [3, 4] });
+          s.path([[0, 0], [h.x, h.y], [1, 0]], { color: 'gold', width: 1, dash: [2, 4], alpha: 0.7 });
           if (gh.value) s.fn((x) => 0.5 * (Y(x - tau) + Y(x + tau)), { domain: [0, 1], n: 400, color: 'muted', width: 1.6, dash: [7, 5] });
           s.path([[0, 0], ...yb.map((y, j) => [(j + 1) / P, y]), [1, 0]], { color: 'ink', width: 1.6 });
           if (frc.value) {
@@ -89,17 +90,17 @@ The chain has exactly $N$ normal modes, $y_j\propto\sin\frac{jk\pi}{N+1}$, with 
           s.corner(`${N} bead${N > 1 ? 's' : ''}, ${N} mode${N > 1 ? 's' : ''}`, 'tr', { color: 'accent', weight: 600 });
           // ---- dispersion
           dp.line(0, 0, KM + 0.7, KM + 0.7, { color: 'muted', width: 1.5, dash: [6, 4] });
-          dp.text('ideal string: f_k = k f₁', 8.6, 7.6, { color: 'muted', size: 11.5, align: 'left' });
+          dp.text('ideal string: fₖ = k·f₁', 8.4, 7.4, { color: 'muted', size: 11.5, align: 'left' });
           dp.curve((u) => [u, ((2 * P) / Math.PI) * Math.sin((u * Math.PI) / (2 * P))], 0, Math.min(N, KM + 0.7), { color: 'accent', width: 1.4, alpha: 0.6, n: 200 });
           W.slice(0, KM).forEach((w, q) => dp.dot(q + 1, w, { r: 4.5, color: 'accent' }));
-          if (N < KM) dp.text(`no modes beyond k = ${N}`, KM + 0.5, 0.9, { color: 'red', size: 11.5, align: 'right' });
+          if (N < KM) dp.text(`no modes beyond k = ${N}`, KM + 0.5, 2.6, { color: 'red', size: 11.5, align: 'right' });
           // ---- spectrum of the bridge force
           const nm = (ps) => Math.max(1e-12, ...ps.map((p) => Math.abs(p.a)));
           const mi = nm(c.iParts), mc = nm(c.cParts);
-          c.iParts.forEach((p, i) => { const x = i + 1, a = Math.abs(p.a) / mi; if (x <= KM + 0.5 && a > 1e-3) { sp.line(x, 0, x, a, { color: 'muted', width: 5, alpha: 0.35 }); } });
+          c.iParts.forEach((p, i) => { const x = i + 1, a = Math.abs(p.a) / mi; if (x <= KM + 0.5 && a > 1e-3) { sp.line(x + 0.14, 0, x + 0.14, a, { color: 'muted', width: 5, alpha: 0.4 }); } });
           c.cParts.forEach((p) => { const x = p.f / F1, a = Math.abs(p.a) / mc; if (x <= KM + 0.5 && a > 1e-3) { sp.line(x, 0, x, a, { color: 'accent', width: 2 }); sp.dot(x, a, { r: 3.5, color: 'accent' }); } });
         }, { still: 0.9 });
-        v.legend([['accent', 'beaded chain'], ['muted', 'ideal string', { dash: true }], ['gold', 'net force on a bead']]);
+        v.legend([['accent', 'beaded chain'], ['muted', 'ideal string (bars: its spectrum)', { dash: true }], ['gold', 'net force on a bead; dotted: the pluck']]);
         v.readout(() => {
           const c = chain(), { N, W } = c, cents = (r) => 1200 * Math.log2(r);
           const head = `$N$ = ${N}: the chain has ${N} mode${N > 1 ? 's' : ''}; its lowest is ${v.fix(W[0], 4)} $f_1$, ${v.fix(-cents(W[0]), 1)} ¢ flat of the ideal string`;
@@ -168,6 +169,7 @@ On a string of length $L$ with fixed ends the same formula holds once $y_0$ is e
           s.corner(sel.value === 'draw' ? 'your shape' : 'drag across the panel to draw a shape', 'tr', { color: 'muted' });
           // ---- space–time
           st.heat((x, y) => dal(x, y), { range: [-amp, amp], cmap: 'diverging', key: ver, res: 2 });
+          st.axes();
           st.path(M.range(201).map((i) => [refl(x0 + i / 100), i / 100]), { color: 'orange', width: 1.6, dash: [5, 4] });
           st.path(M.range(201).map((i) => [refl(x0 - i / 100), i / 100]), { color: 'purple', width: 1.6, dash: [5, 4] });
           st.hline(tau, { color: 'gold', width: 2.2 });
@@ -237,6 +239,7 @@ If the two waves differ in frequency, the pattern is not standing: the nodes dri
           if (ph.t != null) s.corner('♪ playing', 'tr', { color: 'gold', weight: 600 });
           // ---- space–time
           st.heat((x, y) => W.R(x, y) + W.L(x, y), { range: [-1.05, 1.05], cmap: 'diverging', key: `${n}|${d}`, res: 2 });
+          st.axes();
           for (let j = -2 * n - 10; j <= 2 * n + 10; j++) {
             const xa = (TAU * j) / (W.k + W.k2), xb = (TAU * j - (W.w2 - W.w) * 4) / (W.k + W.k2);
             st.line(xa, 0, xb, 4, { color: 'ink', width: 1, alpha: 0.55, dash: [3, 3] });
@@ -247,7 +250,7 @@ If the two waves differ in frequency, the pattern is not standing: the nodes dri
         v.readout(() => {
           if (!st0) return '';
           const { n, d } = st0, f = n * F1, lam = (2 * LEN) / n;
-          const head = `mode $n$ = ${n}: $\\lambda_n=2L/n$ = ${v.fix(lam * 100, 1)} cm, $f_n=n f_1$ = ${v.fix(f, 1)} Hz (${noteOf(v.M, f)}) on the 65 cm G string, nodes at $x$ = ${M.range(n + 1).map((j) => (j === 0 ? '0' : j === n ? 'L' : `${j}L/${n}`)).join(', ')}`;
+          const head = `mode $n$ = ${n}: $\\lambda_n=2L/n$ = ${v.fix(lam * 100, 1)} cm, $f_n=n f_1$ = ${v.fix(f, 1)} Hz (${noteOf(v.M, f)}) on the 65 cm G string, nodes at $x$ = ${M.range(n + 1).map((j) => (j === 0 ? '0' : j === n ? 'L' : j === 1 ? `L/${n}` : `${j}L/${n}`)).join(', ')}`;
           if (!d) return `${head} · the two waves have equal frequencies, so the nodes never move and the ends stay at rest`;
           const vn = (CW * d) / (2 + d);
           return `${head} · left wave detuned to ${v.fix(f * (1 + d), 1)} Hz: nodes drift at $c\\,\\frac{f'-f}{f+f'}$ = ${v.fix(Math.abs(vn), 1)} m/s (${d > 0 ? 'leftward' : 'rightward'}), a fixed point hears beats at $|f'-f|$ = ${v.fix(Math.abs(f * d), 1)} Hz, and the ends are dragged up and down, waxing and waning at the beat rate up to the full wave height: impossible for a fixed string`;
@@ -380,7 +383,7 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
         v.button('Measure', () => { const L = Ls.value, T = Ts.value, mu = muOf(sS.value); pts.push({ L, T, mu, f: measure(L, T, mu) }); });
         v.button('Clear', () => { pts.length = 0; });
         const mono = v.stage({ x: [-0.1, 1.62], y: [-0.62, 0.45], height: 300, axes: false, weight: 1.3 });
-        const lg = v.stage({ x: [0.1, 2], y: [20, 5000], xlog: true, ylog: true, height: 300, axes: 'box', grid: true, xlabel: 'L (m)', ylabel: 'f₁ (Hz)', weight: 1 });
+        const lg = v.stage({ x: [0.1, 2], y: [20, 5000], xlog: true, ylog: true, height: 300, axes: 'box', grid: true, xlabel: 'L (m)', weight: 1, title: 'f₁ in Hz against the chosen quantity (log–log)' });
         const br = mono.handle(0.648, 0, { color: 'gold', r: 8, constrain: (x) => [M.clamp(x, 0.15, 1.3), 0], onDrag: (hd) => { Ls.set(hd.x); sync(); } });
         const same = (p, k) => (k === 'L' || Math.abs(p.L / Ls.value - 1) < 1e-3) && (k === 'T' || Math.abs(p.T / Ts.value - 1) < 1e-3) && (k === 'mu' || Math.abs(p.mu / muOf(sS.value) - 1) < 1e-3);
         const AX = {
@@ -394,11 +397,11 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
           sync();
           const L = Ls.value, T = Ts.value, mu = muOf(sS.value), f = f1(), dpx = Math.max(1.2, STR[sS.value].d * 3.2);
           // ---- monochord
-          mono.rect(-0.04, -0.17, 1.4, -0.03, { fill: 'orange', fillAlpha: 0.18, color: 'orange', width: 1.2, radius: 3 });
-          mono.circle(0.7, -0.1, 0.035, { color: 'orange', width: 1, alpha: 0.6 });
-          mono.poly([[0, 0], [-0.025, -0.03], [0.025, -0.03]], { fill: 'muted', fillAlpha: 1, stroke: false });
-          mono.poly([[L, 0], [L - 0.03, -0.03], [L + 0.03, -0.03]], { fill: 'gold', fillAlpha: 0.9, stroke: false });
-          const A = 0.05 * Math.min(1, 0.4 + L), ph = Math.cos(TAU * 1.6 * t);
+          mono.rect(-0.04, -0.23, 1.4, -0.085, { fill: 'orange', fillAlpha: 0.18, color: 'orange', width: 1.2, radius: 3 });
+          mono.circle(0.7, -0.155, 0.032, { color: 'orange', width: 1, alpha: 0.6 });
+          mono.poly([[0, 0], [-0.025, -0.085], [0.025, -0.085]], { fill: 'muted', fillAlpha: 1, stroke: false });
+          mono.poly([[L, 0], [L - 0.03, -0.085], [L + 0.03, -0.085]], { fill: 'gold', fillAlpha: 0.9, stroke: false });
+          const A = 0.06 * Math.min(1, 0.4 + L), ph = Math.cos(TAU * 1.6 * t);
           mono.between((x) => A * Math.sin((Math.PI * x) / L), (x) => -A * Math.sin((Math.PI * x) / L), 0, L, { fill: 'accent', fillAlpha: 0.12, n: 120 });
           mono.fn((x) => A * Math.sin((Math.PI * x) / L) * ph, { domain: [0, L], n: 120, color: 'accent', width: dpx });
           mono.line(L, 0, 1.49, 0, { color: 'ink', width: dpx });
@@ -409,13 +412,13 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
           mono.text(`T = ${v.fmt(T, 3)} N`, 1.44, yTop - side * 0.3, { align: 'right', color: 'ink', size: 12, weight: 600 });
           mono.text(`(${v.fmt(kg, 3)} kg)`, 1.44, yTop - side * 0.3 - 0.075, { align: 'right', color: 'muted', size: 11 });
           mono.measure(0, 0.22, L, 0.22, `L = ${v.fix(L * 100, 1)} cm`, { color: 'ink', math: false, size: 12, offset: -11 });
-          mono.text(`${STR[sS.value].label}: μ = ${v.fmt(mu * 1e3, 3)} g/m`, 0.02, -0.27, { align: 'left', color: 'muted', size: 11.5 });
-          mono.text(`f₁ = ${v.fix(f, 1)} Hz  ${noteOf(M, f)}`, 0.02, -0.4, { align: 'left', color: 'accent', size: 15, weight: 700 });
+          mono.text(`${STR[sS.value].label}: μ = ${v.fmt(mu * 1e3, 3)} g/m`, 0.02, -0.3, { align: 'left', color: 'muted', size: 11.5 });
+          mono.text(`f₁ = ${v.fix(f, 1)} Hz  ${noteOf(M, f)}`, 0.02, -0.42, { align: 'left', color: 'accent', size: 15, weight: 700 });
           if (voice && voice.playing) mono.text('♪ sounding', 0.02, -0.52, { align: 'left', color: 'gold', size: 12, weight: 600 });
           // ---- log–log plot against the chosen quantity
           const ax = AX[xv.value];
           lg.setScale({ xlog: true, ylog: true, x: ax.x, y: [20, 5000] });
-          lg.setLabels(ax.lab, 'f₁ (Hz)');
+          lg.setLabels(ax.lab, null);
           lg.fn(ax.f, { domain: ax.x, color: 'muted', width: 1.6, dash: [6, 4] });
           const mine = pts.filter((p) => same(p, xv.value));
           pts.filter((p) => !mine.includes(p)).forEach((p) => lg.dot(ax.val(p), p.f, { r: 3.5, color: 'faint' }));
@@ -424,8 +427,8 @@ On logarithmic axes the three laws are straight lines of slope $-1$, $+\tfrac12$
           lg.dot(xc, f, { r: 6.5, color: 'gold', hollow: true, width: 2.4 });
           lg.corner(`law: slope ${ax.law > 0 ? '+' : '−'}${Math.abs(ax.law) === 1 ? '1' : '½'}`, 'tr', { color: 'muted', weight: 600 });
           fit = mine.length >= 2 && new Set(mine.map((p) => ax.val(p).toFixed(6))).size >= 2 ? M.linreg(mine.map((p) => Math.log10(ax.val(p))), mine.map((p) => Math.log10(p.f))) : null;
-          if (fit) lg.corner(`fit to ${mine.length} points: slope ${v.fix(fit.slope, 3)}`, 'bl', { color: 'accent', weight: 600 });
-          else lg.corner(mine.length ? 'measure at another setting' : 'press Measure', 'bl', { color: 'muted' });
+          if (fit) lg.textPx(`fit to ${mine.length} points: slope ${v.fix(fit.slope, 3)}`, lg.W - 10, 40, { align: 'right', color: 'accent', weight: 600, size: 12 });
+          else lg.textPx(mine.length ? 'measure at another setting' : 'press Measure', lg.W - 10, 40, { align: 'right', color: 'muted', size: 12 });
         }, { still: 0.2 });
         v.legend([['muted', 'Mersenne’s law through the current setting', { dash: true }], ['accent', 'measurements, others held fixed', { dot: true }], ['faint', 'measurements taken at other settings', { dot: true }]]);
         v.readout(() => {

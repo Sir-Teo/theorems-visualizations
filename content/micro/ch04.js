@@ -9,14 +9,6 @@ function trimArrow(s, a, b, st, t0 = 11, t1 = 13) {
   const ux = (X2 - X1) / L, uy = (Y2 - Y1) / L, [x1, y1] = s.inv(X1 + ux * t0, Y1 + uy * t0), [x2, y2] = s.inv(X2 - ux * t1, Y2 - uy * t1);
   s.arrow(x1, y1, x2, y2, st);
 }
-/** Text beside the midpoint of segment p–q, pushed `off` pixels along the normal that points away from `away`. */
-function segLabel(s, p, q, text, away, st = {}, off = 14) {
-  const X1 = s.X(p[0]), Y1 = s.Y(p[1]), X2 = s.X(q[0]), Y2 = s.Y(q[1]), L = Math.hypot(X2 - X1, Y2 - Y1) || 1;
-  let nx = -(Y2 - Y1) / L, ny = (X2 - X1) / L;
-  const mx = (X1 + X2) / 2, my = (Y1 + Y2) / 2;
-  if ((s.X(away[0]) - mx) * nx + (s.Y(away[1]) - my) * ny > 0) { nx = -nx; ny = -ny; }
-  s.textPx(text, mx + nx * off, my + ny * off, { align: Math.abs(nx) < 0.3 ? 'center' : nx > 0 ? 'left' : 'right', baseline: 'middle', size: 11.5, ...st });
-}
 
 export default {
   collection: 'micro',
@@ -108,7 +100,7 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
       num: '4.2', kind: 'Concept', name: 'Kinked budget sets: taxes, subsidies, rationing',
       statement: String.raw`When the price of a good depends on how much is bought, or quantities are restricted, the budget set is no longer a triangle. A **tax on units beyond a threshold** $\bar x$ makes the boundary steeper beyond $\bar x$ (an inward kink; the set stays convex); a **discount beyond** $\bar x$ makes it flatter (an outward kink; the set becomes non-convex). An **in-kind transfer** of $V$ dollars that can only be spent on good 1 adds a flat stretch of length $V/p_1$ at the top: the set is the cash-grant triangle with a corner cut off. A **ration** $x_1 \le \bar x$ truncates the set with a vertical edge. Each boundary is piecewise linear, and the slope of each piece is minus the price ratio that applies there.`,
       idea: String.raw`Spending is still additive, but the amount spent on good 1 is now a piecewise-linear function $e(x_1)$ of the quantity, and the budget set is $\{e(x_1) + p_2x_2 \le m\}$. Its boundary $x_2 = (m - e(x_1))/p_2$ has slope $-e'(x_1)/p_2$ on each piece, so a jump in the marginal price makes a kink. If marginal prices rise, $e$ is convex and the set is convex; if they fall, convexity is lost. A voucher lets the first $V$ dollars of good 1 cost nothing out of income, which is a zero marginal price; a ration adds the constraint $x_1 \le \bar x$. A consumer whose best bundle without the policy lies across a kink often ends up exactly *at* the kink, which is why kinks produce bunching in data.`,
-      caption: String.raw`Choose a policy and move its sliders. The dashed line is the ordinary budget line (income 60, $p_1 = 2$, good 2 measured in dollars); the shaded set is what the policy allows, with the region it removes in red and the region it adds in green or orange. With **show a consumer** on, a Cobb–Douglas consumer's best bundle (green) and its indifference curve are found by searching the kinked boundary; the hollow dot is the choice without the policy.`,
+      caption: String.raw`Choose a policy and move its sliders. The dashed line is the ordinary budget line (income 60, $p_1 = 2$, good 2 measured in dollars); the shaded set is what the policy allows, with the region it removes in red and the region it adds in green or orange. The right panel plots the marginal price of food, which is minus the slope of the boundary, so every kink is a jump. With **show a consumer** on, a Cobb–Douglas consumer's best bundle (green) is found by searching the kinked boundary (the hollow dot is the choice without the policy), and its willingness to pay for one more unit of food, the MRS, is plotted against the marginal price: the best bundle is where the two meet, possibly on a jump.`,
       deps: ['micro-4.1'], refs: ['Varian Ch. 2'], tags: ['budget'],
       see: ['micro-5.15', 'micro-3.10'],
       viz(v) {
@@ -141,9 +133,15 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
           s.setView([0, XM], [0, YM]); g.setView([0, XM], [0, 7.4]);
           s.poly([[0, 0], ...pts], { fill: 'accent', fillAlpha: 0.14, stroke: false });
           const kink = F.kinks[0];
-          if (kink && k === 'tax') { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); s.text('lost to the tax', X0, 0.16 * YM, { dx: 8, color: 'red', size: 11.5, weight: 600, align: 'left' }); }
-          if (kink && k === 'ration') { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); s.text('rationed away', kink[0], 0.12 * YM, { dx: 8, color: 'red', size: 11.5, weight: 600, align: 'left' }); }
-          if (kink && k === 'disc') { s.poly([kink, last, [X0, 0]], { fill: 'green', fillAlpha: 0.18, stroke: false }); s.text('gained from the discount', last[0], 0.16 * YM, { dx: -4, color: 'green', size: 11.5, weight: 600, align: 'right' }); }
+          // the region removed or added, labelled midway between the old line and the new edge
+          const oldX = (y) => (m - y) / p1, newX = (y) => (kink[1] > 0 ? kink[0] + ((kink[1] - y) / kink[1]) * (last[0] - kink[0]) : kink[0]);
+          const mid = (y) => [(oldX(y) + newX(y)) / 2, y];
+          if (kink && (k === 'tax' || k === 'ration')) { s.poly([kink, [X0, 0], last], { fill: 'red', fillAlpha: 0.16, stroke: false }); const y = 0.24 * kink[1]; if (Math.abs(oldX(y) - newX(y)) * s.scale > 70) s.text(k === 'tax' ? 'lost to the tax' : 'rationed away', ...mid(y), { color: 'red', size: 11.5, weight: 600, align: 'center' }); }
+          if (kink && k === 'disc') {
+            s.poly([kink, last, [X0, 0]], { fill: 'green', fillAlpha: 0.18, stroke: false }); const y = 0.24 * kink[1]; if (Math.abs(oldX(y) - newX(y)) * s.scale > 70) s.text('gained', ...mid(y), { color: 'green', size: 11.5, weight: 600, align: 'center' });
+            s.line(0, m, last[0], 0, { color: 'red', width: 1.6, dash: [3, 4] });
+            const cy = m - (m / last[0]) * kink[0]; s.text('this chord leaves the set', kink[0], cy, { dx: 10, dy: -8, color: 'red', size: 11.5, weight: 600, align: 'left' });
+          }
           if (k === 'voucher') {
             const Vv = V.value; s.poly([[0, m], [0, m + Vv], [Vv / p1, m]], { fill: 'orange', fillAlpha: 0.22, stroke: false });
             s.line(0, m + Vv, (m + Vv) / p1, 0, { color: 'orange', width: 1.5, dash: [5, 4] });
@@ -152,20 +150,16 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
           }
           s.line(X0, 0, 0, m, { color: 'muted', width: 1.5, dash: [6, 5] });
           s.path(pts, { color: 'accent', width: 3.2 });
-          for (let i = 0; i + 1 < pts.length; i++) { // slopes of the pieces, written inside the set
-            const pr = F.prices[i], lab = pr === Infinity ? 'no more allowed' : pr === 0 ? 'slope 0' : `slope −${v.fix(pr, 2)}`;
-            segLabel(s, pts[i], pts[i + 1], lab, [1e3, 1e3], { color: 'accent', weight: 600 }, 13);
-          }
-          if (kink) s.dot(kink[0], kink[1], { r: 5, color: 'accent', label: 'kink', labelPos: k === 'voucher' ? 'ne' : 'sw' });
+          if (kink) s.dot(kink[0], kink[1], { r: 5, color: 'accent', label: 'kink', labelPos: k === 'voucher' ? 's' : 'sw' });
           // right: the marginal price of food along the boundary
           for (let i = 0; i + 1 < pts.length; i++) {
             const pr = F.prices[i], a = pts[i][0], b = pts[i + 1][0];
             if (pr === Infinity) { g.vband(a, XM, { color: 'red', alpha: 0.1 }); g.vline(a, { color: 'red', width: 2.6 }); g.text('ration: no more food', a, 6.6, { dx: 8, color: 'red', size: 11.5, weight: 600, align: 'left' }); continue; }
             g.line(a, pr, b, pr, { color: 'accent', width: 3 });
             if (i > 0 && F.prices[i - 1] !== Infinity) g.line(a, F.prices[i - 1], a, pr, { color: 'accent', width: 1.4, dash: [4, 3] });
-            g.text(pr === 0 ? 'free: the voucher pays' : `${v.fix(pr, 2)}`, (a + Math.min(b, XM)) / 2, pr, { dy: pr > 6.6 ? 12 : -10, align: 'center', color: 'accent', size: 11.5, weight: 600 });
+            if (pr === 0) g.text('0: the voucher pays', a, 0, { dx: 34, dy: -26, align: 'left', color: 'accent', size: 11.5, weight: 600 });
+            else g.text(`${v.fix(pr, 2)}`, (a + Math.min(b, XM)) / 2, pr, { dy: pr > 6.6 ? 12 : -10, align: 'center', color: 'accent', size: 11.5, weight: 600 });
           }
-          g.vline(last[0], { color: 'faint', width: 1, dash: [3, 3] });
           let opt = null, base = null, cash = null, Fu = null, mrs = null;
           if (show.value) {
             const a = al.value; Fu = prefs('cd', { a });
@@ -182,7 +176,7 @@ Its outer edge, where $p_1x_1 + p_2x_2 = m$ and all income is spent, is the **bu
             const xs = opt.p[0]; mrs = (a / (1 - a)) * (opt.p[1] / Math.max(xs, 1e-9));
             g.line(xs, 0, xs, Math.min(mrs, 7.4), GUIDE);
             if (mrs < 7.2) g.dot(xs, mrs, { r: 6.5, color: 'green', label: 'x*', labelPos: 'ne' });
-            g.text('MRS', 0.06 * XM, Math.min(W(0.06 * XM), 7), { dx: 8, dy: 4, color: 'purple', size: 12, weight: 700, align: 'left', baseline: 'top' });
+            const xl = 0.3 * last[0]; g.text('MRS', xl, Math.min(W(xl), 6.6), { dx: 10, color: 'purple', size: 12, weight: 700, align: 'left' });
           }
           const area = Math.abs(v.M.polyArea([[0, 0], ...pts]));
           st = { k, F, kink, opt, base, cash, area, mrs };

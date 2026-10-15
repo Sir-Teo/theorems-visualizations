@@ -317,7 +317,7 @@ where $\rho$ is symmetric and $\alpha$ is alternating by 9.16. The sum is direct
           // the defects along the family
           const dS = (tt) => asym(madd(Sm, mscl(X, tt))), dK = (tt) => askew(msub(Km, mscl(X, tt)));
           const ym = Math.max(1, dS(1), dK(1), dS(-1), dK(-1)) * 1.15;
-          R.setView([-1, 1], [0, ym]);
+          R.setView([-1, 1], [-0.04 * ym, ym]);
           R.fn(dS, { color: 'red', width: 2.6 }); R.fn(dK, { color: 'purple', width: 2.6, dash: [7, 4] });
           R.vline(t, { color: 'gold', width: 1.4 }); R.dot(t, dS(t), { r: 5, color: 'red' }); R.dot(t, dK(t), { r: 5, color: 'purple' });
           R.dot(0, 0, { r: 6, color: 'green', label: 't = 0', labelPos: 'ne' });
@@ -347,12 +347,12 @@ A function $q \colon V \to \mathbf F$ is called a **quadratic form** on $V$ if t
       see: ['ladr-9.14'],
       tags: ['quadratic forms'],
       viz(v) {
-        const PRE = { gen: [[1, 1.5], [-0.5, -0.6]], ip: [[1.2, 0.3], [0.3, 0.7]], alt: [[0, 1], [-1, 0]] };
+        const PRE = { gen: [[1, 1.2], [-0.4, -0.6]], ip: [[1.2, 0.3], [0.3, 0.7]], alt: [[0, 1], [-1, 0]] };
         const pre = v.select('$\\beta(u, v) = \\langle u, Av\\rangle$', [{ value: 'gen', label: 'a general $\\beta$' }, { value: 'ip', label: 'an inner product' }, { value: 'alt', label: 'an alternating $\\beta$' }], 'gen');
         const sk = v.slider('add the alternating form $s\\,(u_1v_2 - u_2v_1)$', -1.5, 1.5, 0, { step: 0.05 });
         const P = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380, title: '$q(v) = \\beta(v, v) = \\langle v, Av\\rangle$' });
         const S3 = v.stage3d({ range: 1.9, height: 380, yaw: -0.6, pitch: 0.42, labels: ['x₁', 'x₂', 'q'], title: 'graph of $q$ over $\\|v\\| \\le 1.4$ (heights $\\times 0.5$)' });
-        const vh = P.handle(1.1, 0.55, { color: 'gold', label: 'v', constrain: disc(1.4) });
+        const vh = P.handle(1.0, 0.45, { color: 'gold', label: 'v', constrain: disc(1.4) });
         let st = null;
         v.render(() => {
           const B0 = PRE[pre.value], s = sk.value, A = [[B0[0][0], B0[0][1] + s], [B0[1][0] - s, B0[1][1]]];
@@ -427,8 +427,8 @@ $$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{
           R.line(-6, b + 6, 9, b - 9, { color: 'accent', width: 2.6 });
           R.line(-6, -6, 9, 9, { color: 'muted', width: 1.2, dash: [6, 5] });
           R.dot(b / 2, b / 2, { r: 6, color: 'green', label: 'symmetric', labelPos: 'se' });
-          const lx = Math.min(4.2, Math.max(-2.6, b + 2.4)), ly = b - lx;
-          R.tex(`A_{1,2} + A_{2,1} = ${tn(b)}`, lx, ly, { color: 'accent', size: 13, dx: 8, dy: -14, align: 'left' });
+          const lx = Math.min(4.3, b + 2.6), ly = b - lx;
+          R.tex(`A_{1,2} + A_{2,1} = ${tn(b)}`, lx, ly, { color: 'accent', size: 13, dx: -4, dy: 16, align: 'right' });
           R.text('A₁₂ = A₂₁', 3.6, 3.6, { color: 'muted', size: 11, align: 'right', dy: -10 });
           const on = Math.abs(oh.x + oh.y - b) < 1e-9;
           R.corner(on ? 'on the line: same q' : 'off the line: a different q', 'tl', { color: on ? 'green' : 'red', weight: 700 });
@@ -470,7 +470,7 @@ $$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{
         const L = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380 });
         const G = v.stage({ x: [-2.5, 2.5], y: [-2, 6], axes: 'box', height: 380, xlabel: 'λ', title: '$\\lambda \\mapsto q(\\lambda u)$ vs $\\lambda^2 q(u)$' });
         const uh = L.handle(0.7, 0.35, { color: 'accent', label: 'u', constrain: disc(1.2) });
-        const wh = L.handle(-0.35, 0.8, { color: 'gold', label: 'w', constrain: disc(1.2) });
+        const wh = L.handle(-0.75, 0.55, { color: 'gold', label: 'w', constrain: disc(1.2) });
         // a fixed random sample for the tests
         const r = v.rng(11), smp = Array.from({ length: 36 }, () => [r.uniform(-1.5, 1.5), r.uniform(-1.5, 1.5)]);
         let st = null, lastT = '';
