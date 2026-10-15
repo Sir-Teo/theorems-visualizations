@@ -445,7 +445,6 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
       tags: ['screening', 'prevalence'],
       credit: 'Wolfe, Horowitz & Kenner, 2005',
       scope: String.raw`Laboratory search tasks and X-ray baggage images with student and professional observers; the size of the effect depends on feedback, display difficulty and payoffs, and real-world miss rates at checkpoints are not public.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Prevalence_effect' },
       viz(v) {
         const M = v.M, after = timers(v), D = 1.8, G = 0.45, T = 4000, TS = 1000, A0 = 5, B0 = 10;
         const DATA = { m50: 0.2, m2: 0.46 }; // Wolfe et al. 2007, X-ray baggage with feedback, as reported by Van Wert, Horowitz & Wolfe (2009)

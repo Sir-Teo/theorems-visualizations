@@ -213,7 +213,7 @@ so the average of $N$ independent channels follows the deterministic relaxation 
 $$\frac{dx}{dt} = \alpha_x(V)(1-x) - \beta_x(V)\,x \quad\Longleftrightarrow\quad \tau_x(V)\frac{dx}{dt} = x_\infty(V) - x,$$
 with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)$. After a voltage step from $V_0$ to $V_1$ the gate relaxes exponentially, $x(t) = x_\infty(V_1) + \big(x_\infty(V_0) - x_\infty(V_1)\big)e^{-t/\tau_x(V_1)}$. A channel needing several gates open (Hodgkin–Huxley's $n^4$ and $m^3h$) has open probability equal to a power or product of gating variables.`,
       idea: String.raw`This is mass-action kinetics (pchem-7.4) for the reaction closed ⇄ open, or equivalently the mean of the two-state Markov chain of neuro-1.6. The voltage dependence comes from charged parts of the protein moving in the membrane field. The ratio $\alpha/\beta$ is a Boltzmann factor $e^{q(V - V_{1/2})/kT}$ (thermo-6.1), which makes $x_\infty(V)$ sigmoidal. Since the relaxation is exponential with a single time constant (ode-1.5), measuring $x_\infty$ and $\tau_x$ at each voltage under voltage clamp (neuro-1.5) determines $\alpha_x(V) = x_\infty/\tau_x$ and $\beta_x(V) = (1-x_\infty)/\tau_x$. Hodgkin and Huxley did exactly this for the gates $n$, $m$ and $h$ (neuro-2.1, neuro-2.2).`,
-      caption: String.raw`A population of 2000 gates, each flipping at random with the Hodgkin–Huxley rates of the chosen gate (squid axon, 6.3 °C); 400 of them are shown as tiles (filled = open). At the step, from $V_0$ to $V_1$, the open fraction (gold) relaxes along the exponential predicted by the ODE (blue dashed). Bottom: $x_\infty(V)$ and $\tau_x(V)$ for all three gates, with the chosen one bold and the two voltages marked. Note that $h$ runs the other way: it *closes* on depolarization. Try $m$, which is about ten times faster than $n$ and $h$.`,
+      caption: String.raw`A population of 2000 gates, each flipping at random with the Hodgkin–Huxley rates of the chosen gate (squid axon, 6.3 °C); 400 of them are shown as tiles (filled = open). At the step, from $V_0$ to $V_1$, the open fraction (gold) relaxes along the exponential predicted by the ODE (blue dashed). Bottom: $x_\infty(V)$ and $\tau_x(V)$ for all three gates, with the chosen one bold and the two voltages marked. Note that $h$ runs the other way: it *closes* on depolarization. Try $m$: it is about ten times faster than the other two gates.`,
       scope: String.raw`Independent gates with first-order kinetics; the Hodgkin–Huxley rate functions are empirical fits for the squid axon at 6.3 °C (rates scale roughly ×3 per 10 °C).`,
       deps: ['neuro-1.6', 'pchem-7.4'],
       see: ['ode-1.5', 'thermo-6.1', 'neuro-2.1', 'neuro-2.2', 'mathbio-5.2'],
@@ -231,7 +231,7 @@ with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)
         const NG = 2000, NSHOW = 400, NS = 1500, GC = { n: ION_COL.K, m: ION_COL.Na, h: 'teal' };
         let key = '', S = null;
         const sim = () => {
-          const g = gate.value, V0 = V0s.value, V1 = V1s.value, t0 = gateTau(g, V0), t1 = gateTau(g, V1), T = (8 * Math.max(t0, t1)) / 0.8, ts = 0.2 * T, dt = T / NS;
+          const g = gate.value, V0 = V0s.value, V1 = V1s.value, t1 = gateTau(g, V1), T = 10 * t1, ts = 0.2 * T, dt = T / NS;
           const [a0, b0] = gateRates(g, V0), [a1, b1] = gateRates(g, V1), r = v.rng(7);
           const st = new Uint8Array(NG * (NS + 1)), frac = new Float64Array(NS + 1);
           const p = (a, b) => [1 - Math.exp(-a * dt), 1 - Math.exp(-b * dt)];
@@ -277,7 +277,7 @@ with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)
           for (const [V, lab] of [[R.V0, 'V₀'], [R.V1, 'V₁']]) {
             si.dot(V, gateInf(R.g, V), { r: 5, color: lab === 'V₁' ? 'gold' : 'muted' });
             sT.dot(V, gateTau(R.g, V), { r: 5, color: lab === 'V₁' ? 'gold' : 'muted' });
-            si.text(lab, V, gateInf(R.g, V), { size: 11, color: 'ink', align: 'left', dx: 7, baseline: 'middle', weight: 600 });
+            si.text(lab, V, gateInf(R.g, V), { size: 11, color: 'ink', align: 'left', dx: 7, dy: -8, baseline: 'middle', weight: 600 });
           }
         }, { period: 8, still: 7 });
         v.legend([['gold', 'fraction open (2000 gates)'], ['accent', 'ODE: exponential relaxation', { dash: true }], [ION_COL.K, '$n$'], [ION_COL.Na, '$m$'], ['teal', '$h$']]);

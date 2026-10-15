@@ -259,7 +259,7 @@ If instead $\eta$ ranges over a lower-dimensional curve (a **curved** exponentia
           const { fam, k, c, maxCurve, rectLo, rectHi, mcMax, mcErr } = info;
           if (fam === 'curved') {
             const kk = 1 / (c * c) + 1 / n, dead = maxCurve < 1e-3;
-            return String.raw`on the curve, $E_\theta\,g=\mu^2\big(1-(k-\tfrac15)c^2\big)$, largest size ${v.fix(maxCurve, 4)} for $|\mu|\le3$ · it vanishes identically when $k=1/c^2+1/n=${v.fix(kk, 3)}$ · simulated means: largest $|\cdot|$ ${v.fix(mcMax, 3)} with 2 SE up to ${v.fix(mcErr, 3)} — ` + (dead ? `**a non-zero $g$ with zero mean for every member: $(\bar X,S^2)$ is not complete in this curved family**` : 'not yet zero: drag $k$ or press the button');
+            return String.raw`on the curve, $E_\theta\,g=\mu^2\big(1-(k-\tfrac15)c^2\big)$, largest size ${v.fix(maxCurve, 4)} for $|\mu|\le3$ · it vanishes identically when $k=1/c^2+1/n=${v.fix(kk, 3)}$ · simulated means: largest $|\cdot|$ ${v.fix(mcMax, 3)} with 2 SE up to ${v.fix(mcErr, 3)} — ` + (dead ? '**a non-zero $g$ with zero mean for every member: $(\\bar X,S^2)$ is not complete in this curved family**' : 'not yet zero: drag $k$ or press the button');
           }
           return String.raw`on the open window $E_\theta\,g$ ranges over $[${v.fix(rectLo, 3)},\,${v.fix(rectHi, 3)}]$ for $k=${v.fix(k, 2)}$: **never identically zero** · its zero set (green) is a pair of lines through the origin, which contains no open set · by the theorem the same holds for every non-zero $g$: $(\sum X_i,\sum X_i^2)$ is complete in the full family`;
         });

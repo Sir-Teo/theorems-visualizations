@@ -148,8 +148,8 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
         const kS = v.slider('clean-up cost $K$', 0, 3000, 2200, { step: 50, fmt: (x) => money(x) });
         const bS = v.slider('B pays each year (5 years)', 250, 450, 350, { step: 5, fmt: (x) => money(x) });
         const rS = v.slider('cost of capital $r$', 0, 0.4, 0.1, { step: 0.0025, fmt: (x) => pct(x, 2) });
-        const FM = v.stage({ x: [-0.6, 6.6], y: [-3200, 1100], height: 140, axes: 'box', weight: 1, minWidth: 300, xticks: [0, 1, 2, 3, 4, 5, 6].map((t) => [t, String(t)]), title: 'the mine: cash flows by year' });
-        const FC = v.stage({ x: [-0.6, 5.6], y: [-1100, 1450], height: 140, axes: 'box', weight: 1, minWidth: 300, xticks: [0, 1, 2, 3, 4, 5].map((t) => [t, String(t)]), title: 'projects A (blue) and B (purple)' });
+        const FM = v.stage({ x: [-0.6, 6.6], y: [-3700, 1300], height: 140, axes: 'box', weight: 1, minWidth: 300, yticks: [], xticks: [0, 1, 2, 3, 4, 5, 6].map((t) => [t, String(t)]), title: 'the mine: cash flows by year' });
+        const FC = v.stage({ x: [-0.6, 5.6], y: [-1500, 1700], height: 140, axes: 'box', weight: 1, minWidth: 300, yticks: [], xticks: [0, 1, 2, 3, 4, 5].map((t) => [t, String(t)]), title: 'projects A (blue) and B (purple)' });
         const NM = v.stage({ x: [0, R1], y: [-400, 200], height: 280, axes: 'box', weight: 1, minWidth: 300, ylabel: 'NPV ($)', xticks: pctTicks([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]), title: 'the mine: NPV(r)' });
         const NC = v.stage({ x: [0, R2], y: [-400, 800], height: 280, axes: 'box', weight: 1, minWidth: 300, ylabel: 'NPV ($)', xticks: pctTicks([0, 0.1, 0.2, 0.3, 0.4]), title: 'A versus B: NPV(r)' });
         const mine = () => [-1000, 600, 600, 600, 600, 600, -kS.value];
@@ -261,7 +261,6 @@ while for $g\ge r$ the growing perpetuity has infinite value. The future value o
             P.rect(t - 0.5, base, on ? n + 0.5 : NM + 0.5, base + h, { fill: col, fillAlpha: on ? 0.75 : 0.12, stroke: false });
             if (on && n < NM) P.rect(n + 0.5, base, NM + 0.5, base + h, { fill: col, fillAlpha: 0.12, stroke: false });
             base += h;
-            if (P.Y(0) - P.Y(base) > 2000) break;
           }
           const stair = []; for (let t = 0; t <= NM; t++) stair.push([t - 0.5, cum[t]], [t + 0.5, cum[t]]);
           P.path(stair, { color: 'ink', width: 1.4, alpha: 0.7 });
@@ -360,7 +359,7 @@ the payment that makes the loan the present value of an $n$-period annuity (fin 
             },
             fill: (i, j) => { if (i === nr - 1) return ['muted', 0.12]; const q = data[i].a; return j === 4 && q ? ['red', 0.1 + 0.5 * (q.I / q.paid)] : null; },
             weight: (i) => (i === nr - 1 ? 700 : 500),
-            activeRow: data.findIndex((d) => d.yr === ky),
+            activeRow: data.findIndex((d) => d.yr === ky) >= 0 ? data.findIndex((d) => d.yr === ky) : undefined,
             activeColor: 'gold',
           });
           st = { L, y, n, E, base, cur, m, k, q: R[k - 1] };
@@ -508,7 +507,7 @@ Equivalently the expected return is the dividend yield plus growth, $r=D_1/P_0+g
         v.readout(() => {
           if (!st) return '';
           const { PA, PB, gap, same, buyA, base, n, last, fair } = st;
-          if (!same) return `B now pays ${usd(qS.value)} at year 3, not ${usd(106)}: the cash flows differ, so the law of one price says nothing directly. Of the price gap ${usd(gap, 2)}, ${usd(fair, 2)} is the present value of the extra payment ($0.88 \\times$ ${qS.value - 106}); buying one and selling the other leaves an open position of ${usd(106 - qS.value)} at year 3 — not an arbitrage.`;
+          if (!same) return `B now pays ${usd(qS.value)} at year 3, not ${usd(106)}: the cash flows differ, so the law of one price says nothing directly. Of the price gap ${usd(gap, 2)}, ${usd(fair, 2)} is the present value of the extra payment, $0.88\\times(${qS.value}-106)$; buying one and selling the other leaves an open position of ${usd(106 - qS.value)} at year 3 — not an arbitrage.`;
           return `Identical cash flows, prices ${usd(PA, 2)} (A) and ${usd(PB, 2)} (B): ${Math.abs(gap) < 0.005 ? 'one price — no arbitrage left.' : `**${buyA ? 'buy A, sell B' : 'sell A, buy B'}** for ${usd(Math.abs(gap), 2)} today with every future flow cancelling.`}` + (n ? ` After ${n} trade${n > 1 ? 's' : ''} you have pocketed **${usd(base, 2)}** (last trade ${usd(last, 2)}); each trade closes 30% of the gap, so the profits form a geometric series that converges.` : ' Press Trade.');
         });
       },
