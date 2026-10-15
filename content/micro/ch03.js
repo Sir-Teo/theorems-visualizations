@@ -640,7 +640,7 @@ the "Harberger triangle" between demand and supply over the units no longer trad
           g.fn(W, { domain: [0, 100], color: 'red', width: 2.6 });
           g.line(r.q, 0, r.q, top, { color: 'muted', dash: [3, 3], width: 1 }); g.tex('Q^*', r.q, top, { dy: 6, dx: 4, align: 'left', baseline: 'top', size: 14 });
           for (const { k, o: oo } of all) if (k !== p) { g.dot(oo.q, W(oo.q), { r: 4.5, color: COL[k] }); g.text(k, oo.q, W(oo.q), { dx: 8, align: 'left', color: COL[k], size: 11 }); }
-          g.dot(q, W(q), { r: 7, color: COL[p], label: p, labelPos: q < r.q * 0.35 ? 'ne' : 'nw' });
+          g.dot(q, W(q), { r: 7, color: COL[p] }); g.text(p, q, W(q), { dx: -11, dy: -8, align: 'right', color: COL[p], size: 13, weight: 700 });
           st = { p, o, r, dwl: dwlAt(D, S, r, q), cs: simpson((x) => D(x) - o.pb, 0, q), ps: simpson((x) => o.ps - S(x), 0, q), tr: (o.pb - o.ps) * q, ts0: simpson((x) => D(x) - S(x), 0, r.q) };
         });
         v.legend([['blue', 'consumer surplus'], ['orange', 'producer surplus'], ['green', 'tax revenue / quota rents'], ['red', 'deadweight loss']]);

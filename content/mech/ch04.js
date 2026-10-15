@@ -76,7 +76,7 @@ function steady(w, w0, beta, f0 = 1) {
 function lockIn(ts, xs, w, periods = 4) {
   const tEnd = ts[ts.length - 1], t0 = tEnd - periods * TAU / w; let a = 0, b = 0, n = 0;
   for (let i = 1; i < ts.length; i++) {
-    if (ts[i] < t0) continue;
+    if (ts[i - 1] < t0 - 1e-12) continue;
     const dt = ts[i] - ts[i - 1], tm = (ts[i] + ts[i - 1]) / 2, xm = (xs[i] + xs[i - 1]) / 2;
     a += xm * Math.cos(w * tm) * dt; b += xm * Math.sin(w * tm) * dt; n += dt;
   }
@@ -114,7 +114,7 @@ directed back toward the natural length, in stretching ($x>0$) and in compressio
         // units: cm and N. k = 40 N/m; yield at 4 N with 10 % linear hardening; solid length reached at x = −8 cm
         const K = 0.4, FY = 4, HK = 0.04, L0 = 20, XB = -8, KB = 8, BW = 4;
         const rig = v.stage({ x: [-3, 49], y: [-7.2, 6.4], equal: true, height: 220, axes: false, full: true });
-        const plot = v.stage({ x: [-10, 25], y: [-6.5, 8.5], height: 270, full: true, xlabel: 'extension x (cm)', ylabel: 'force on the block F (N)' });
+        const plot = v.stage({ x: [-10, 25], y: [-6.5, 8.5], height: 270, full: true, xlabel: 'extension x (cm)', ylabel: 'F (N)' });
         let st;
         const force = (x) => -K * (Math.max(x, XB) - st.p) - (x < XB ? KB * (x - XB) : 0); // once the coils touch the wire is frozen
         function moveTo(x1) {
@@ -157,8 +157,8 @@ directed back toward the natural length, in stretching ($x>0$) and in compressio
           const lo = Math.max(st.p - fy / K, XB), hi = st.p + fy / K;
           plot.vband(lo, hi, { color: 'green', alpha: 0.1 });
           plot.vband(-12, XB, { color: 'red', alpha: 0.09 });
-          plot.text('elastic range', (lo + Math.min(hi, 25)) / 2, 7.7, { color: 'green', align: 'center', size: 11.5, weight: 600 });
-          plot.text('coil bind', (XB - 10) / 2, 7.7, { color: 'red', align: 'center', size: 11 });
+          plot.text('elastic range', (lo + Math.min(hi, 25)) / 2, -5.9, { color: 'green', align: 'center', size: 11.5, weight: 600 });
+          plot.text('coil bind', (XB - 10) / 2, -5.9, { color: 'red', align: 'center', size: 11 });
           plot.fn((u) => -K * u, { color: 'muted', dash: [6, 5], width: 1.5 });
           plot.tex('F=-kx', 16, -K * 16, { color: 'muted', align: 'right', baseline: 'top', dx: -8, dy: 6, size: 14 });
           plot.path(st.hist, { color: 'gold', width: 2.6 });
@@ -196,7 +196,7 @@ the shadow on the real axis of a phasor $a e^{i\omega t}$ turning at constant an
         const eps = v.slider('non-Hooke term $\\epsilon$', 0, 3, 0, { step: 0.01 });
         const W = 6;
         const sP = v.stage({ x: [-35, 15.5], y: [-25, 14.5], equal: true, height: 340, axes: false, weight: 1.05 });
-        const sT = v.stage({ x: [0, W], y: [-13.5, 13.5], height: 340, axes: 'box', xlabel: 't (s)', ylabel: 'x (cm)', weight: 1 });
+        const sT = v.stage({ x: [0, W], y: [-15, 15], height: 340, axes: 'box', xlabel: 't (s)', ylabel: 'x (cm)', weight: 1 });
         let sim = null, key = '';
         function simulate() {
           const kk = `${m.value}|${k.value}|${A.value}|${ph.value}|${eps.value}`; if (kk === key) return sim; key = kk;
@@ -234,7 +234,7 @@ the shadow on the real axis of a phasor $a e^{i\omega t}$ turning at constant an
           sT.path(pts, { color: 'accent', width: 2.4 });
           sT.dot(tt, xs, { color: 'gold', r: 5 });
           const c = S.cr.filter((u) => u <= W);
-          if (c.length > 1) { sT.measure(c[0], 12.2, c[1], 12.2, 'T', { color: 'green' }); }
+          if (c.length > 1) sT.measure(c[0], -R - 1.6, c[1], -R - 1.6, 'T', { color: 'green', offset: -12 });
         });
         v.legend([['accent', 'mass integrated from $m\\ddot x=-kx$ (Verlet)'], ['orange', 'shadow of the phasor, $A\\cos(\\omega t-\\varphi)$', { dash: true }]]);
         v.readout(() => {
@@ -259,7 +259,7 @@ If $U''(x_0)=0$ the conclusion fails: for $U = cx^4$ the period is proportional 
       tags: ['stability', 'linearization', 'harmonic oscillator'],
       viz(v) {
         const POT = {
-          morse: { label: 'Morse', U: (x) => 0.5 * (1 - Math.exp(-x)) ** 2, F: (x) => -(1 - Math.exp(-x)) * Math.exp(-x), x: [-1, 4], y: [-0.04, 0.62], lim: [-0.66, 3.5], x0: 1.5, amax: 2.2 },
+          morse: { label: 'Morse', U: (x) => 0.5 * (1 - Math.exp(-x)) ** 2, F: (x) => -(1 - Math.exp(-x)) * Math.exp(-x), x: [-1, 4], y: [-0.04, 0.62], lim: [-0.66, 3.5], x0: 0.7, amax: 2.2 },
           pend: { label: 'pendulum $1-\\cos x$', U: (x) => 1 - Math.cos(x), F: (x) => -Math.sin(x), x: [-3.5, 3.5], y: [-0.08, 2.25], lim: [-3.08, 3.08], x0: 1.6, amax: 3.15 },
           stiff: { label: '$\\tfrac12x^2+\\tfrac14x^4$', U: (x) => x * x / 2 + x ** 4 / 4, F: (x) => -x - x ** 3, x: [-1.8, 1.8], y: [-0.08, 2.4], lim: [-1.45, 1.45], x0: 1.0, amax: 1.5 },
           quart: { label: '$\\tfrac14x^4$ (degenerate)', U: (x) => x ** 4 / 4, F: (x) => -(x ** 3), x: [-1.9, 1.9], y: [-0.08, 2.4], lim: [-1.7, 1.7], x0: 1.0, amax: 1.75 },
@@ -305,7 +305,7 @@ If $U''(x_0)=0$ the conclusion fails: for $U = cx^4$ the period is proportional 
           const C = curve(sel.value);
           if (k2 > 1e-6) {
             sT.hline(Math.sqrt(1 / k2), { color: 'orange', dash: [6, 5], width: 1.5 });
-            sT.text('harmonic prediction 2π√(m/U″(x₀))', P.amax * 0.04, Math.sqrt(1 / k2), { color: 'orange', size: 11, dy: -10 });
+            sT.text('harmonic prediction 2π√(m/U″(x₀))', P.amax * 0.97, Math.sqrt(1 / k2), { color: 'orange', size: 11, dy: 11, align: 'right' });
           } else sT.corner('U″(x₀) = 0: no harmonic limit, T → ∞ as a → 0', 'tr', { color: 'red', weight: 600 });
           sT.path(C, { color: 'accent', width: 2.4 });
           sT.dots(C, { color: 'accent', r: 2.2 });
@@ -317,7 +317,7 @@ If $U''(x_0)=0$ the conclusion fails: for $U = cx^4$ the period is proportional 
           if (!isFinite(R.T)) return 'release away from the minimum';
           if (k2 > 1e-6) {
             const T0 = TAU / Math.sqrt(k2), rel = R.T / T0 - 1;
-            return `$U''(x_0) = ${v.fix(k2, 4)}$ (numerical) → $T_0 = 2\\pi\\sqrt{m/U''(x_0)} = ${v.fix(T0, 4)}$ · simulated $T = ${v.fix(R.T, 4)}$ at amplitude $a = ${v.fix(R.a, 3)}$, ${rel >= 0 ? '+' : '−'}${v.fix(Math.abs(100 * rel), 2)} % · $(T/T_0-1)/a^2 = ${v.fix(rel / (R.a * R.a), 4)}$ — nearly constant as $a\\to0$, so the error is $O(a^2)$`;
+            return `$U''(x_0) = ${v.fix(k2, 4)}$ (numerical) → $T_0 = 2\\pi\\sqrt{m/U''(x_0)} = ${v.fix(T0, 4)}$ · simulated $T = ${v.fix(R.T, 4)}$ at amplitude $a = ${v.fix(R.a, 3)}$, ${rel >= 0 ? '+' : '−'}${v.fix(Math.abs(100 * rel), 2)} % · $(T/T_0-1)/a^2 = ${v.fix(rel / (R.a * R.a), 4)}$ — this ratio settles to a constant as $a\\to0$ (try it), so the error is $O(a^2)$`;
           }
           return `$U''(x_0) = 0$: the hypothesis fails. Simulated $T = ${v.fix(R.T, 3)}$ at $a = ${v.fix(R.a, 3)}$, and $T\\cdot a = ${v.fix(R.T * R.a, 4)}$ is the same for every amplitude ($= 4K(1/\\sqrt2) = 7.416$), so $T\\to\\infty$ as $a\\to0$`;
         });
@@ -354,7 +354,9 @@ For small angles $\sin\theta\approx\theta$, and the motion is simple harmonic wi
         v.animate((t) => {
           const s = sim(), W = 4 * s.T0, tt = t % W, i = Math.min(s.r.x.length - 1, Math.round(tt / s.dt));
           const th = s.r.x[i], tl = s.a0 * Math.cos(s.w0 * tt), D = 180 / Math.PI;
-          // pendulum picture
+          // pendulum picture (window fitted to the swing)
+          const hx = s.a0 > Math.PI / 2 ? 1.15 : Math.max(0.5, 1.12 * Math.sin(s.a0) + 0.1);
+          sp.setView([-hx, hx], [-1.18, Math.max(0.22, -1.12 * Math.cos(s.a0) + 0.12)]);
           hatch(v, sp, -0.16, 0.035, 0.16, 0.035, -1, 6, 6);
           sp.curve((a) => [Math.sin(a), -Math.cos(a)], -s.a0, s.a0, { color: 'faint', dash: [3, 4], width: 1 });
           sp.line(0, 0, 0, -1.12, { color: 'faint', width: 1, dash: [2, 4] });
@@ -365,7 +367,7 @@ For small angles $\sin\theta\approx\theta$, and the motion is simple harmonic wi
           sp.dot(0, 0, { color: 'ink', r: 3 });
           sp.corner(`L = ${v.fix(Ls.value, 2)} m`, 'bl');
           // angle against time
-          sg.setView([0, W], [-1.22 * th0.value, 1.22 * th0.value]);
+          sg.setView([-0.02 * W, W], [-1.22 * th0.value, 1.22 * th0.value]);
           sg.hline(0, { color: 'faint', width: 1 });
           sg.fn((u) => th0.value * Math.cos(s.w0 * u), { color: 'orange', dash: [5, 4], width: 1.6 });
           const pts = s.r.x.map((x, j) => [s.r.t[j], x * D]);
@@ -431,11 +433,11 @@ all traversed clockwise in the same time $2\pi/\omega$.`,
           sP.dot(r.pts[i][0], r.pts[i][1], { color: 'gold', r: 5.5 });
           // energy history
           sE.hline(1, { color: 'green', dash: [6, 5], width: 1.3 });
+          sE.path(r.en.map((e, j) => [j * r.perStep, e]), { color: 'accent', width: 3.2 });
           if (meth.value === 'fe' || meth.value === 'be') {
             const g = Math.log10(1 + hw * hw) * (meth.value === 'fe' ? 1 : -1);
-            sE.fn((u) => 10 ** (g * u / r.perStep), { color: 'orange', dash: [5, 4], width: 1.5 });
+            sE.fn((u) => 10 ** (g * u / r.perStep), { color: 'orange', dash: [5, 4], width: 1.6 });
           }
-          sE.path(r.en.map((e, j) => [j * r.perStep, e]), { color: 'accent', width: 2 });
           if (i < r.en.length) sE.dot(i * r.perStep, r.en[i], { color: 'gold', r: 5 });
         });
         v.legend([['green', 'exact orbit (energy ellipse)', { dash: true }], ['accent', 'computed orbit'], ['orange', 'predicted $E_n = E_0(1\\pm h^2\\omega^2)^{\\pm n}$', { dash: true }]]);
@@ -470,7 +472,7 @@ If $\omega_y/\omega_x = p/q$ is rational (in lowest terms) the orbit is closed, 
         const dl = v.slider('phase $\\delta$', 0, 3.14, 0.5, { step: 0.01 });
         const NPER = 40, PER = 800, G = 50, N = NPER * PER;
         const s = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, height: 360, axes: false, weight: 1 });
-        const sc = v.stage({ x: [0, NPER], y: [0, 1], height: 360, axes: 'box', xlabel: 'x-periods', ylabel: 'fraction visited', weight: 1 });
+        const sc = v.stage({ x: [0.25, NPER], y: [0, 1], xlog: true, height: 360, axes: 'box', xlabel: 'time (x-periods)', ylabel: 'fraction of cells visited', weight: 1 });
         let D = null, key = '';
         function data() {
           const kk = `${r}|${dl.value}`; if (kk === key) return D; key = kk;
@@ -495,11 +497,11 @@ If $\omega_y/\omega_x = p/q$ is rational (in lowest terms) the orbit is closed, 
           s.line(x, y, x, 1.1, { color: 'orange', dash: [2, 3], width: 1 }); s.line(x, y, 1.1, y, { color: 'purple', dash: [2, 3], width: 1 });
           s.dot(x, 1.1, { color: 'orange', r: 4 }); s.dot(1.1, y, { color: 'purple', r: 4 });
           s.dot(x, y, { color: 'gold', r: 6 });
-          s.text('x = A cos ωₓt', -1, 1.16, { color: 'orange', size: 11 }); s.text('y', 1.15, -1.05, { color: 'purple', size: 11, math: true });
-          const cpts = []; for (let j = 0; j <= N; j += 40) cpts.push([j / PER, d.cov[j] / (G * G)]);
+          s.text('x', x, 1.1, { color: 'orange', math: true, dx: 9 }); s.text('y', 1.1, y, { color: 'purple', math: true, dy: -12 });
+          const cpts = []; for (let j = 160; j <= N; j += 20) cpts.push([j / PER, d.cov[j] / (G * G)]);
           sc.path(cpts, { color: 'accent', width: 1, alpha: 0.25 });
           sc.path(cpts.filter((p) => p[0] <= tau), { color: 'accent', width: 2.4 });
-          sc.dot(tau, d.cov[i] / (G * G), { color: 'gold', r: 5 });
+          if (tau >= 0.25) sc.dot(tau, d.cov[i] / (G * G), { color: 'gold', r: 5 });
           if (d.frac) { sc.vline(d.frac[1], { color: 'green', dash: [5, 4], width: 1.3 }); sc.text(`closes after ${d.frac[1]} period${d.frac[1] > 1 ? 's' : ''}`, d.frac[1], 0.06, { color: 'green', size: 11, dx: 6 }); }
         });
         v.legend([['accent', 'orbit so far'], ['orange', '$x$ oscillation', { dot: true }], ['purple', '$y$ oscillation', { dot: true }]]);
@@ -571,7 +573,7 @@ The energy decreases at the rate $\dot E = -b\dot x^2\le0$.`,
         v.readout(() => {
           const s = sim(), zz = z.value, b = zz * w0;
           const lam = zz < 1 ? `${v.fix(-b, 2)} \\pm ${v.fix(w0 * Math.sqrt(1 - zz * zz), 2)}\\,i` : `${v.fix(-b + w0 * Math.sqrt(zz * zz - 1), 2)},\\ ${v.fix(-b - w0 * Math.sqrt(zz * zz - 1), 2)}`;
-          return `$\\omega_0 = 2\\pi$ rad/s · $\\lambda_\\pm = ${lam}$ s⁻¹ · RK4 vs closed form: max difference ${v.fix(s.err, 9)} · energy left after 1 s: ${v.fix(100 * s.E1, s.E1 < 0.01 ? 4 : 1)} %${zz < 0 ? ' — negative damping feeds energy in (the roots have positive real part)' : ''}`;
+          return `$\\omega_0 = 2\\pi$ rad/s · $\\lambda_\\pm = ${lam}$ s⁻¹ · RK4 vs closed form: max difference $${v.sci(s.err, 1)}$ · energy left after 1 s: ${v.fix(100 * s.E1, s.E1 < 0.01 ? 4 : 1)} %${zz < 0 ? ' — negative damping feeds energy in (the roots have positive real part)' : ''}`;
         });
       },
     },
@@ -590,8 +592,8 @@ The asymptotic decay rate $\sigma$ is maximal, equal to $\omega_0$, exactly at c
         const w0 = TAU;
         const z = v.slider('damping $\\beta/\\omega_0$', 0.05, 3, 0.6, { step: 0.01 });
         const mode = v.select('right panel', [{ value: 'rate', label: 'decay rate' }, { value: 'settle', label: 'settling time (±2 %)' }], 'rate');
-        const sL = v.stage({ x: [0, 3], y: [1e-8, 3], ylog: true, height: 330, axes: 'box', xlabel: 't (s)', ylabel: '|x(t)|', weight: 1.1 });
-        const sR = v.stage({ x: [0, 3], y: [0, 1.15], height: 330, axes: 'box', xlabel: 'β/ω₀', weight: 1 });
+        const sL = v.stage({ x: [0, 3], y: [1e-8, 3], ylog: true, height: 330, axes: 'box', xlabel: 't (s)', weight: 1.1, title: '$|x(t)|$ on a log scale, released from rest' });
+        const sR = v.stage({ x: [0, 3.08], y: [0, 1.15], height: 330, axes: 'box', xlabel: 'β/ω₀', weight: 1, title: ' ' });
         const sigma = (zz) => (zz <= 1 ? zz : zz - Math.sqrt(zz * zz - 1));
         const absPath = (zz) => { const r = rk4run((t, y) => [y[1], -2 * zz * w0 * y[1] - w0 * w0 * y[0]], [1, 0], 3, 3000); return r.y.map((y, i) => [r.t[i], Math.abs(y[0])]); };
         const REF = [[0.25, 'orange'], [1, 'green'], [3, 'purple']].map(([zz, c]) => ({ zz, c, pts: absPath(zz) }));
@@ -630,8 +632,8 @@ The asymptotic decay rate $\sigma$ is maximal, equal to $\omega_0$, exactly at c
             sR.text('critical', 1, 1.1, { color: 'green', size: 11, dx: 5 });
             sR.fn(sigma, { domain: [0, 3], color: 'ink', width: 2.2 });
             for (const R of REF) sR.dot(R.zz, sigma(R.zz), { color: R.c, r: 4.5 });
-            sR.dot(zz, sigma(zz), { color: 'accent', r: 6.5 });
-            sR.dot(zz, u.sm, { color: 'gold', hollow: true, r: 10, width: 2 });
+            sR.dot(zz, u.sm, { color: 'gold', hollow: true, r: 10, width: 2.2 });
+            sR.dot(zz, sigma(zz), { color: 'accent', r: 5 });
           } else {
             const S = settleCurve();
             sR.setView(null, [0, 3]); sR.setTitle('time to stay within $\\pm2\\%$, released from rest (s)');
@@ -703,8 +705,8 @@ which oscillates at the driving frequency and lags it by $\delta\in(0,\pi)$, and
           if (tTR.value) sX.fn(s.tr, { color: 'orange', width: 1.8 });
           if (tSS.value && tTR.value) sX.fn((t) => s.ss(t) + s.tr(t), { color: 'green', dash: [2, 4], width: 2 });
           // phasor diagram
-          const R = 1.25 * Math.max(1, s.A); sP.setView([-R, R], [-R, R]);
-          sP.line(-R, 0, R, 0, { color: 'faint', width: 1 }); sP.line(0, -R, 0, R, { color: 'faint', width: 1 });
+          const R = 1.15 * Math.max(1, s.A); sP.setView([-R, R], [-R, 0.32 * R]);
+          sP.line(-R, 0, R, 0, { color: 'faint', width: 1 }); sP.line(0, -R, 0, 0.3 * R, { color: 'faint', width: 1 });
           sP.arrow(0, 0, 1, 0, { color: 'muted', width: 2.2 }); sP.text('drive F₀/k', 1, 0, { color: 'muted', size: 11, dy: -10, align: 'center' });
           const px = s.A * Math.cos(-s.d), py = s.A * Math.sin(-s.d);
           sP.curve((a) => [0.35 * R * Math.cos(a), 0.35 * R * Math.sin(a)], -s.d, 0, { color: 'orange', width: 1.6 });
@@ -712,8 +714,10 @@ which oscillates at the driving frequency and lags it by $\delta\in(0,\pi)$, and
           sP.arrow(0, 0, px, py, { color: 'accent', width: 2.6 });
           sP.tex('Ae^{-i\\delta}', px, py, { color: 'accent', dx: px > 0 ? 22 : -22, dy: 12, size: 13 });
           // transient size
-          sE.fn((t) => s.C0 * Math.exp(-s.b * t), { color: 'orange', dash: [6, 4], width: 1.6 });
-          sE.path(s.env, { color: 'ink', width: 2 });
+          let lo = Infinity, hi = 0; for (const p of s.env) { if (p[1] > 0) lo = Math.min(lo, p[1]); hi = Math.max(hi, p[1]); }
+          sE.setView(null, [Math.max(1e-9, lo * 0.3), hi * 3]);
+          sE.path(s.env, { color: 'ink', width: 3.2 });
+          sE.fn((t) => s.C0 * Math.exp(-s.b * t), { color: 'orange', dash: [6, 4], width: 1.8 });
         });
         v.legend([['ink', 'numerical solution'], ['accent', 'steady state $x_{\\rm ss}$', { dash: true }], ['orange', 'transient $x_{\\rm tr}$ / its envelope $e^{-\\beta t}$'], ['green', '$x_{\\rm ss}+x_{\\rm tr}$', { dash: true }]]);
         v.readout(() => {
@@ -773,8 +777,8 @@ is largest at $\omega_R=\sqrt{\omega_0^2-2\beta^2}$ (when $\beta<\omega_0/\sqrt2
           sRig.rect(-1.2, ys, 1.2, ys + 0.35, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1.6 });
           sRig.path(springPts(0, ys, 0, ym + 0.55, 9, 0.38, 0.08), { color: 'ink', width: 1.5 });
           sRig.rect(-0.75, ym - 0.55, 0.75, ym + 0.55, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 });
-          sRig.line(-1.6, 4.1, -1.35, 4.1, { color: 'orange', width: 1.4 }); sRig.line(-1.6, 0, -1.35, 0, { color: 'accent', width: 1.4 });
-          sRig.text('drive', 1.3, ys + 0.18, { color: 'orange', size: 11, align: 'left', dx: 2 });
+          sRig.line(-1.9, 4.27, 1.9, 4.27, { color: 'faint', dash: [3, 3], width: 1 }); sRig.line(-1.9, 0, 1.9, 0, { color: 'faint', dash: [3, 3], width: 1 });
+          sRig.text('drive', 0, ys + 0.75, { color: 'orange', size: 11, align: 'center' }); sRig.text('mass', 0, ym - 0.95, { color: 'accent', size: 11, align: 'center' });
           sRig.corner(`× ${v.fix(sc, 2)} scale`, 'bl', { size: 10.5 });
         });
         v.legend([['accent', 'steady-state formula'], ['gold', 'measured from simulation', { dot: true }], ['orange', 'your drive frequency', { dot: true }]]);

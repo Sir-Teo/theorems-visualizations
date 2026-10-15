@@ -653,23 +653,28 @@ class Stage {
   /** Status text pinned to a corner: pos = 'tl' | 'tr' | 'bl' | 'br'. */
   corner(str, pos = 'tl', st = {}) {
     const m = 10, X = pos[1] === 'l' ? m : this.W - m, Y = pos[0] === 't' ? m + 7 : this.H - m - 7;
-    return this.textPx(String(str), X, Y, { align: pos[1] === 'l' ? 'left' : 'right', color: 'muted', size: 12, ...st });
+    const o = { align: pos[1] === 'l' ? 'left' : 'right', color: 'muted', size: 12, ...st };
+    if (/\$[^$]+\$/.test(str)) return this.texPx(String(str), X, Y, { ...o, rich: true }); // text with $…$ math: HTML overlay
+    return this.textPx(String(str), X, Y, o);
   }
   _labelAt(label, X, Y, off, pos, color, st) {
     const dirs = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [0.75, -0.75], nw: [-0.75, -0.75], se: [0.75, 0.75], sw: [-0.75, 0.75] };
     const [dx, dy] = dirs[pos] || dirs.ne;
     const align = dx > 0.1 ? 'left' : dx < -0.1 ? 'right' : 'center';
     const baseline = dy > 0.1 ? 'top' : dy < -0.1 ? 'bottom' : 'middle';
-    if (st.tex) this.texPx(label, X + dx * off, Y + dy * off, { color, align, baseline, size: st.labelSize });
+    const m = typeof label === 'string' && /^\$[^$]+\$$/.test(label); // '$v_1$' renders as TeX
+    if (st.tex || m) this.texPx(m ? label.slice(1, -1) : label, X + dx * off, Y + dy * off, { color, align, baseline, size: st.labelSize });
     else this.textPx(String(label), X + dx * off, Y + dy * off, { color, align, baseline, math: st.math ?? true, size: st.labelSize });
   }
-  /** KaTeX label at data coords (HTML overlay). st: {color, size(px), align: left|center|right, baseline: top|middle|bottom, dx, dy}. */
+  /** KaTeX label at data coords (HTML overlay). st: {color, size(px), align: left|center|right, baseline: top|middle|bottom, dx, dy, rich (text with $…$ math)}. */
   tex(latex, x, y, st = {}) { return this.texPx(latex, this.X(x), this.Y(y), st); }
   texPx(latex, X, Y, st = {}) {
     let el = this._tex[this._texN];
     if (!el) { el = h('div', 'tex-label'); this.overlay.append(el); this._tex.push(el); }
     this._texN++;
-    if (el._src !== latex) { el.innerHTML = katexHTML(latex); el._src = latex; }
+    const src = (st.rich ? 'R:' : 'T:') + latex;
+    if (el._src !== src) { el.innerHTML = st.rich ? inlineHTML(latex) : katexHTML(latex); el._src = src; }
+    el.style.fontFamily = st.rich ? 'Inter, system-ui, sans-serif' : '';
     el.style.display = '';
     el.style.left = (X + (st.dx || 0)) + 'px'; el.style.top = (Y + (st.dy || 0)) + 'px';
     el.style.color = resolveColor(st.color || 'ink');
@@ -928,7 +933,9 @@ class Stage3D {
   tex(latex, p, st = {}) {
     const P = this.project(p);
     let el = this._tex[this._texN]; if (!el) { el = h('div', 'tex-label'); this.overlay.append(el); this._tex.push(el); } this._texN++;
-    if (el._src !== latex) { el.innerHTML = katexHTML(latex); el._src = latex; }
+    const src = (st.rich ? 'R:' : 'T:') + latex;
+    if (el._src !== src) { el.innerHTML = st.rich ? inlineHTML(latex) : katexHTML(latex); el._src = src; }
+    el.style.fontFamily = st.rich ? 'Inter, system-ui, sans-serif' : '';
     el.style.display = ''; el.style.left = (P[0] + (st.dx || 0)) + 'px'; el.style.top = (P[1] + (st.dy || 0)) + 'px';
     el.style.color = resolveColor(st.color || 'ink'); el.style.fontSize = (st.size || 15) + 'px'; el.style.transform = 'translate(-50%,-50%)';
     return this;

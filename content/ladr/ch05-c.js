@@ -783,7 +783,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         const pair = v.select('', [{ value: 'c', label: 'commuting: $T = S^2 - 0.5S + 0.4I$' }, { value: 'n', label: 'not commuting' }], 'c');
         const P = v.stage({ x: [-2.6, 2.6], y: [-2.4, 2.4], equal: true, axes: false, height: 400, weight: 1.15, minWidth: 300, title: 'the basis grid; the F moved by $ST$ and by $TS$' });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 280 });
-        const h1 = P.handle(1, 0.25, { color: 'blue', label: 'v₁' }), h2 = P.handle(0.35, 1, { color: 'purple', label: 'v₂' });
+        const h1 = P.handle(1.45, 0.35, { color: 'blue', label: 'v₁' }), h2 = P.handle(-0.5, 1.25, { color: 'purple', label: 'v₂' });
         const TA = v.table(Q, { rows: 2, cols: 2, region: [0, 0.52, 0.5, 0.92], maxCell: 50, size: 13.5 }), TB = v.table(Q, { rows: 2, cols: 2, region: [0.5, 0.52, 1, 0.92], maxCell: 50, size: 13.5 });
         const TC = v.table(Q, { rows: 2, cols: 2, region: [0.15, 0.02, 0.85, 0.4], maxCell: 54, size: 14 });
         const ttl = (T, tex, col) => { const g = T.geo; if (g) Q.texPx(tex, g.X0 + (g.cols * g.cw) / 2, g.Y0 - 15, { color: col, size: 13.5 }); };
@@ -868,6 +868,306 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
         });
         v.legend([['gold', '$v \\in E(\\lambda, S)$'], ['green', '$Tv$, inside the eigenspace'], ['red', '$Tv$ leaving it (non-commuting $T$)']]);
         v.readout(() => st && `With $\\lambda = ${st.lamS}$: $S(Tv) - \\lambda\\,Tv$ has length $${st.comm < 1e-9 ? v.sci(st.err, 1) : tn(st.err, 3)}$ and $Tv$ is at distance $${st.dist < 1e-9 ? '0' : tn(st.dist, 3)}$ from $E(${st.lamS}, S)$: ${st.comm < 1e-9 ? 'since $ST = TS$, $S(Tv) = T(Sv) = \\lambda\\,Tv$ — **invariant**.' : 'without commutativity the eigenspace is **not** invariant.'}`);
+      },
+    },
+    // ------------------------------------------------------------------ 5.76
+    {
+      num: '5.76',
+      kind: 'Theorem',
+      name: 'Simultaneous diagonalizability ⟺ commutativity',
+      statement: String.raw`Two diagonalizable operators on the same vector space have diagonal matrices with respect to one and the same basis if and only if they commute.`,
+      idea: String.raw`Diagonal matrices of the same size commute, so operators that are diagonal in a common basis commute (5.74). Conversely, let $S, T$ be diagonalizable and commute, and let $\lambda_1, \dots, \lambda_m$ be the distinct eigenvalues of $S$. Then $V = E(\lambda_1, S) \oplus \cdots \oplus E(\lambda_m, S)$ (5.55), each $E(\lambda_k, S)$ is invariant under $T$ (5.75), and $T$ restricted to it is diagonalizable (5.65). An eigenbasis of each restriction consists of vectors that are eigenvectors of $T$ and (being in $E(\lambda_k, S)$) of $S$; together they form a basis of $V$ in which both matrices are diagonal.`,
+      caption: String.raw`$S$ is fixed (its eigen-axes are blue). Drag the tips $Te_1, Te_2$ to choose $T$; they snap when $T$ commutes with $S$. The orange lines are $T$'s eigen-axes, and the thin orange grid is the image under $T$ of the blue grid. While $ST = TS$ the axes coincide, the grid is only stretched along its own lines, and both matrices on the right are diagonal in one basis. Pull a tip away: the axes split and $\mathcal M(T)$ fills in. With $S = 1.5I$ every $T$ commutes, and the common basis is simply an eigenbasis of $T$.`,
+      deps: ['ladr-5.74', 'ladr-5.55', 'ladr-5.75', 'ladr-5.65'],
+      tags: ['commuting', 'diagonalization'],
+      viz(v) {
+        const M = v.M;
+        const ang = (d) => [Math.cos((d * Math.PI) / 180), Math.sin((d * Math.PI) / 180)];
+        const P0 = M.transpose([ang(18), ang(105)]);
+        const SS = { d: M.matMul(M.matMul(P0, [[2, 0], [0, 0.6]]), M.inverse(P0)), s: [[1.5, 0], [0, 1.5]] };
+        const which = v.select('$S$', [{ value: 'd', label: 'eigenvalues $2, 0.6$' }, { value: 's', label: '$S = 1.5I$' }], 'd');
+        const P = v.stage({ x: [-2.8, 2.8], y: [-2.4, 2.4], equal: true, height: 400, weight: 1.3, minWidth: 320 });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 250 });
+        const T0 = SS.d.map((r, i) => r.map((x, j) => -0.6 * x + (i === j ? 1.8 : 0)));
+        // snap T onto the commutant span{I, S} (Frobenius projection) when it is close
+        const snapT = (T) => {
+          const S = SS[which.value]; if (which.value === 's') return T;
+          const B = orthN([[1, 0, 0, 1], S.flat()]), t = T.flat(), pr = B.reduce((acc, e) => acc.map((c, i) => c + e[i] * t.reduce((s, x, k) => s + x * e[k], 0)), [0, 0, 0, 0]);
+          return Math.hypot(...t.map((x, i) => x - pr[i])) < 0.13 ? [[pr[0], pr[1]], [pr[2], pr[3]]] : T;
+        };
+        const h1 = P.handle(T0[0][0], T0[1][0], { color: 'orange', label: 'Te₁', constrain: (x, y) => { const T = snapT([[x, h2.x], [y, h2.y]]); h2.x = T[0][1]; h2.y = T[1][1]; return [T[0][0], T[1][0]]; } });
+        const h2 = P.handle(T0[0][1], T0[1][1], { color: 'orange', label: 'Te₂', constrain: (x, y) => { const T = snapT([[h1.x, x], [h1.y, y]]); h1.x = T[0][0]; h1.y = T[1][0]; return [T[0][1], T[1][1]]; } });
+        const TA = v.table(Q, { rows: 2, cols: 2, region: [0.05, 0.5, 0.95, 0.86], maxCell: 52, size: 14 }), TB = v.table(Q, { rows: 2, cols: 2, region: [0.05, 0.04, 0.95, 0.4], maxCell: 52, size: 14 });
+        const ttl = (T, tex, col) => { const g = T.geo; if (g) Q.texPx(tex, g.X0 + (g.cols * g.cw) / 2, g.Y0 - 15, { color: col, size: 14 }); };
+        let st = null;
+        v.render(() => {
+          const S = SS[which.value], T = [[h1.x, h2.x], [h1.y, h2.y]];
+          const comm = maxAbs(msub(M.matMul(S, T), M.matMul(T, S))), ok = comm < 1e-9;
+          const eS = eigenspaces(M, S).list, eT = eigenspaces(M, T);
+          // a basis to show the matrices in: a common eigenbasis if there is one, else S's eigenbasis (or T's when S is scalar)
+          let B = null, common = false;
+          const tB = eT.list.flatMap((e) => e.B), sB = eS.flatMap((e) => e.B);
+          if (ok && tB.length === 2) { B = which.value === 's' || eS.length === 1 ? tB : sB; common = true; }
+          else B = which.value === 's' ? (tB.length === 2 ? tB : [[1, 0], [0, 1]]) : sB;
+          // S's eigen-grid and its image under T
+          if (which.value === 'd') {
+            const [a, b] = sB;
+            for (let k = -5; k <= 5; k++) {
+              P.line(k * a[0] - 6 * b[0], k * a[1] - 6 * b[1], k * a[0] + 6 * b[0], k * a[1] + 6 * b[1], { color: 'blue', width: 1, alpha: 0.13 });
+              P.line(-6 * a[0] + k * b[0], -6 * a[1] + k * b[1], 6 * a[0] + k * b[0], 6 * a[1] + k * b[1], { color: 'blue', width: 1, alpha: 0.13 });
+              const Ta = ap2(T, a), Tb = ap2(T, b);
+              P.line(k * Ta[0] - 6 * Tb[0], k * Ta[1] - 6 * Tb[1], k * Ta[0] + 6 * Tb[0], k * Ta[1] + 6 * Tb[1], { color: 'orange', width: 0.8, alpha: 0.3 });
+              P.line(-6 * Ta[0] + k * Tb[0], -6 * Ta[1] + k * Tb[1], 6 * Ta[0] + k * Tb[0], 6 * Ta[1] + k * Tb[1], { color: 'orange', width: 0.8, alpha: 0.3 });
+            }
+            eS.forEach((e) => { const u = e.B[0]; P.line(-6 * u[0], -6 * u[1], 6 * u[0], 6 * u[1], { color: 'blue', width: 5, alpha: 0.35 }); const s = u[1] < -0.05 ? -1 : 1; P.tex(`E(${tn(e.lam)}, S)`, 2.2 * u[0] * s, 2.2 * u[1] * s, { color: 'blue', size: 13.5, dx: -34 * Math.abs(u[1]), dy: -12 * Math.abs(u[0]) }); });
+          } else P.corner('S = 1.5 I: every nonzero vector is an eigenvector of S', 'tl', { color: 'blue', weight: 600 });
+          eT.list.forEach((e) => e.B.length === 1 && P.line(-6 * e.B[0][0], -6 * e.B[0][1], 6 * e.B[0][0], 6 * e.B[0][1], { color: 'orange', width: 2, dash: [7, 5] }));
+          P.arrow(0, 0, h1.x, h1.y, { color: 'orange', width: 2.2 }); P.arrow(0, 0, h2.x, h2.y, { color: 'orange', width: 2.2 });
+          if (eT.nonreal) P.corner('T has no real eigenvectors', which.value === 'd' ? 'tl' : 'bl', { color: 'red', weight: 700 });
+          else if (which.value === 'd') P.corner(ok ? 'ST = TS: the eigen-axes coincide' : 'ST ≠ TS: the eigen-axes split', 'tl', { color: ok ? 'green' : 'red', weight: 700 });
+          const Bm = M.transpose(B), Bi = M.inverse(Bm), MS = M.matMul(Bi, M.matMul(S, Bm)), MT = M.matMul(Bi, M.matMul(T, Bm));
+          const offT = Math.max(Math.abs(MT[0][1]), Math.abs(MT[1][0])), offS = Math.max(Math.abs(MS[0][1]), Math.abs(MS[1][0]));
+          const cell = (X, off) => (i, j) => (i === j ? ['green', 0.14] : Math.abs(X[i][j]) < 1e-9 ? null : ['red', 0.18]);
+          TA.draw({ value: (i, j) => MS[i][j], format: (x) => pn(Math.abs(x) < 5e-10 ? 0 : x), fill: cell(MS, offS) });
+          TB.draw({ value: (i, j) => MT[i][j], format: (x) => pn(Math.abs(x) < 5e-10 ? 0 : x), fill: cell(MT, offT) });
+          const bn = common ? 'common eigenbasis' : which.value === 's' ? "T's eigenbasis" : "S's eigenbasis";
+          ttl(TA, `\\mathcal M(S) \\text{ in the ${bn}}`, 'blue'); ttl(TB, `\\mathcal M(T) \\text{ in the same basis}`, offT < 1e-9 ? 'green' : 'red');
+          st = { comm, ok, common, offT, nonreal: eT.nonreal, T };
+        });
+        v.legend([['blue', "$S$'s eigen-axes and grid"], ['orange', "$T$'s eigen-axes; image of the grid under $T$", { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { comm, ok, common, offT, nonreal } = st;
+          if (ok && common) return `$ST - TS = 0$, and in the basis on the right **both** matrices are diagonal: a common eigenbasis.`;
+          if (ok) return `$ST = TS$, but $T$ is not diagonalizable over $\\mathbf R$, so the theorem does not apply.`;
+          return `$ST - TS \\ne 0$ (largest entry ${tn(comm, 3)}): ${nonreal ? '$T$ has no real eigenvectors at all' : `in $S$'s eigenbasis $\\mathcal M(T)$ has off-diagonal entries up to ${tn(offT, 3)}`}, so no basis diagonalizes both.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.78
+    {
+      num: '5.78',
+      kind: 'Theorem',
+      name: 'Common eigenvector for commuting operators',
+      statement: String.raw`Every pair of commuting operators on a finite-dimensional nonzero complex vector space has a common eigenvector.`,
+      idea: String.raw`Let $S, T \in \mathcal L(V)$ commute. By 5.19, $S$ has an eigenvalue $\lambda$, so $E(\lambda, S) \ne \{0\}$. By 5.75, $E(\lambda, S)$ is invariant under $T$, so $T|_{E(\lambda, S)}$ is an operator on a nonzero complex vector space and has an eigenvector $w$ (5.19 again). Then $Tw = \mu w$ and, because $w \in E(\lambda, S)$, also $Sw = \lambda w$. The two operators need not share an eigenvalue — only the eigenvector.`,
+      caption: String.raw`Step through the proof for two commuting operators on $\mathbf R^3$ (real ones, so that everything can be drawn). Choose the eigenvalue $\lambda$ of $S$: its eigenspace is a plane or a line. Step 2 shows that $T$ maps it into itself; step 3 finds an eigenvector $w$ of $T$ inside it; step 4 checks $Sw = \lambda w$ and $Tw = \mu w$. Turn up the twist: $T$ restricted to the plane then has no *real* eigenvector — over $\mathbf C$ it would, which is why the theorem is stated for complex spaces. Turn up $\varepsilon$ to break commutativity: the plane is no longer invariant, and no common eigenvector exists.`,
+      deps: ['ladr-5.19', 'ladr-5.75'],
+      tags: ['commuting', 'eigenvalues'],
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.1, 2.2], equal: true, axes: false, height: 400, minWidth: 330 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.6 });
+        const SM = conj(M, QM, [[2, 0, 0], [0, 2, 0], [0, 0, -1]]), PERT = conj(M, QM, [[0, 0, 0.8], [0, 0, -0.5], [0.9, 0.6, 0]]);
+        const PL = orthN([QB[0], QB[1]]), LN = [unit3(QB[2])];
+        const lamSel = v.select('eigenvalue of $S$', [{ value: 2, label: '$\\lambda = 2$ (plane)' }, { value: -1, label: '$\\lambda = -1$ (line)' }], 2);
+        const tw = v.slider('twist of $T$ on the plane', 0, 1.5, 0, { step: 0.05 }), eps = v.slider('non-commuting part $\\varepsilon$', 0, 1, 0, { step: 0.05 });
+        const code = ['$S$ has an eigenvalue $\\lambda$: $E(\\lambda,S) \\ne \\{0\\}$   ▷ 5.19', '$E(\\lambda,S)$ is invariant under $T$   ▷ 5.75', '$T|_{E(\\lambda,S)}$ has an eigenvector $w$   ▷ 5.19', '$Sw = \\lambda w$ and $Tw = \\mu w$: common eigenvector'];
+        const frames = [0, 1, 2, 3].map((k) => ({ k, line: k + 1 }));
+        const SP = v.steps({ frames, code, codeTitle: 'proof of 5.78', start: 3, note: false });
+        let st = null;
+        v.render(() => {
+          const k = SP.frame.k ?? 3, lam = +lamSel.value, E = lam === 2 ? PL : LN;
+          const T0 = conj(M, QM, [[1.4, 0.9, 0], [0.5 - tw.value, 0.2, 0], [0, 0, 0.7]]);
+          const T = T0.map((r, i) => r.map((x, j) => x + eps.value * PERT[i][j]));
+          const comm = maxAbs(msub(M.matMul(SM, T), M.matMul(T, SM)));
+          const leak = Math.max(...E.map((e) => len3(sub3(ap(T, e), projOnto(ap(T, e), E)))));
+          const inv = leak < 1e-9;
+          // eigenvectors of T inside E (honest: through the restriction when E is invariant)
+          let ws = [], cplx = false;
+          if (inv) {
+            if (E.length === 1) ws = [{ w: E[0], mu: dot3(ap(T, E[0]), E[0]) }];
+            else {
+              const R = [[dot3(E[0], ap(T, E[0])), dot3(E[0], ap(T, E[1]))], [dot3(E[1], ap(T, E[0])), dot3(E[1], ap(T, E[1]))]];
+              const es = eigenspaces(M, R); cplx = es.nonreal > 0;
+              ws = es.list.flatMap((e) => e.B.map((b) => ({ w: unit3(add3(mul3(E[0], b[0]), mul3(E[1], b[1]))), mu: e.lam })));
+            }
+          }
+          // all common eigenvectors (for the readout): eigenvectors of T that are also eigenvectors of S
+          const eT = eigenspaces(M, T).list, eS = eigenspaces(M, SM).list;
+          let ncommon = 0;
+          for (const a of eT) for (const b of eS) { const B = orthN([...a.B, ...b.B]); ncommon += a.B.length + b.B.length - B.length; }
+          sc.begin();
+          drawSub(sc, PL, 'blue', { r: 1.45, fillAlpha: lam === 2 ? 0.14 : 0.04, edge: lam === 2 ? 0.6 : 0.2, grid: lam === 2 });
+          drawSub(sc, LN, 'purple', { len: 1.7, alpha: lam === -1 ? 0.55 : 0.2 });
+          sc.tex(lam === 2 ? 'E(2,S)' : 'E(-1,S)', lam === 2 ? subLabelAt(sc, PL, { r: 1.45, side: 'left' }) : subLabelAt(sc, LN, { len: 1.7, low: true }), { color: lam === 2 ? 'blue' : 'purple', size: 14, dx: lam === 2 ? -30 : 0, dy: lam === 2 ? 0 : 14 });
+          if (k >= 1) {
+            if (E.length === 2) {
+              const circ = [], img = [];
+              for (let i = 0; i <= 48; i++) { const t = (2 * Math.PI * i) / 48, w = add3(mul3(E[0], 0.6 * Math.cos(t)), mul3(E[1], 0.6 * Math.sin(t))); circ.push(w); img.push(ap(T, w)); }
+              sc.path(circ, { color: 'muted', width: 1.2 }); sc.path(img, { color: inv ? 'green' : 'red', width: 2 });
+            } else { const Te = ap(T, mul3(E[0], 0.8)); sc.arrow(ZERO, Te, { color: inv ? 'green' : 'red', width: 2 }); }
+          }
+          const w = ws[0];
+          if (k >= 2 && w) ws.forEach((u, i) => { const s = sc.P(u.w)[1] >= 0 ? 1 : -1; sc.line(mul3(u.w, -1.6), mul3(u.w, 1.6), { color: 'gold', width: i ? 2 : 3.5, alpha: i ? 0.45 : 0.85 }, 12); });
+          if (k >= 3 && w) {
+            const ww = mul3(w.w, sc.P(w.w)[1] >= 0 ? 0.75 : -0.75), Sw = ap(SM, ww), Tw = ap(T, ww);
+            sc.arrow(ZERO, Sw, { color: 'blue', width: 2.6 }); sc.arrow(ZERO, Tw, { color: 'orange', width: 2.6 }); sc.arrow(ZERO, ww, { color: 'gold', width: 3.4 });
+            sc.tex('w', ww, { color: 'gold', size: 15, dx: 12, dy: 12 }); sc.tex('Sw', Sw, { color: 'blue', size: 14, dx: 14, dy: -10 }); sc.tex('Tw', Tw, { color: 'orange', size: 14, dx: -16, dy: -10 });
+          }
+          sc.flush();
+          let msg, col;
+          if (k === 0) { msg = `step 1: λ = ${lam} is an eigenvalue of S`; col = 'muted'; }
+          else if (!inv) { msg = 'T pushes vectors out of E(λ, S): ST ≠ TS'; col = 'red'; }
+          else if (k === 1) { msg = 'step 2: T maps E(λ, S) into itself'; col = 'green'; }
+          else if (!w) { msg = 'T on this plane has no real eigenvector (over C it has one)'; col = 'red'; }
+          else { msg = k === 2 ? 'step 3: an eigenvector w of T inside E(λ, S)' : 'step 4: w is an eigenvector of both S and T'; col = 'green'; }
+          S.corner(msg, 'tl', { color: col, weight: 700 });
+          st = { k, inv, w, lam, comm, ncommon, cplx, T };
+        });
+        v.legend([['blue', '$E(\\lambda, S)$ and $Sw$', { area: true }], ['green', 'image under $T$ (inside: invariant)'], ['gold', 'eigenvectors of $T$ in $E(\\lambda, S)$'], ['orange', '$Tw$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { inv, w, lam, comm, ncommon, cplx, T } = st;
+          const head = comm < 1e-9 ? '$ST = TS$. ' : `$ST \\ne TS$ (largest entry of $ST - TS$: ${tn(comm, 2)}). `;
+          if (!inv) return head + `$E(${lam}, S)$ is not invariant, and computing all eigenvectors of both operators finds **${ncommon ? ncommon + ' common direction(s)' : 'no common eigenvector'}**.`;
+          if (!w) return head + `$T|_{E(2,S)}$ has nonreal eigenvalues: no real eigenvector in this plane. Over $\\mathbf C$ the proof goes through; here the other eigenspace of $S$ still supplies a common eigenvector (${ncommon} found in all).`;
+          const Sw = ap(SM, w.w), Tw = ap(T, w.w);
+          return head + `$w = (${w.w.map((x) => tn(x)).join(', ')})$: $Sw = ${tn(dot3(Sw, w.w))}\\,w$ and $Tw = ${tn(w.mu)}\\,w$ (residuals ${v.sci(len3(sub3(Sw, mul3(w.w, lam))), 1)} and ${v.sci(len3(sub3(Tw, mul3(w.w, w.mu))), 1)}) — a **common eigenvector**, with different eigenvalues $${lam}$ and $${tn(w.mu)}$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.80
+    {
+      num: '5.80',
+      kind: 'Theorem',
+      name: 'Commuting operators are simultaneously triangularizable',
+      statement: String.raw`Suppose $V$ is a finite-dimensional complex vector space and $S, T \in \mathcal L(V)$ commute. Then there is a basis of $V$ with respect to which both $S$ and $T$ have upper-triangular matrices.`,
+      idea: String.raw`Induct on $\dim V$. Take a common eigenvector $v_1$ (5.78) and a complement $W$ with $V = \operatorname{span}(v_1) \oplus W$ (2.33); let $P$ be the projection onto $W$ along $v_1$. The compressions $\hat S = PS|_W$ and $\hat T = PT|_W$ still commute, because $P$ only discards multiples of the common eigenvector $v_1$. By induction they are upper triangular in some basis $v_2, \dots, v_n$ of $W$; then $Sv_k$ and $Tv_k$ lie in $\operatorname{span}(v_1, \dots, v_k)$ for every $k$, so both matrices in $v_1, \dots, v_n$ are upper triangular (5.39).`,
+      caption: String.raw`Two commuting operators on $\mathbf R^3$ with real eigenvalues; their matrices are shown in the current basis, with the entries below the diagonal red until they vanish. Step through the construction: a common eigenvector $v_1$ kills the first column below the diagonal of **both** matrices; the commuting compressions to $W = v_1^\perp$ give a common eigenvector $v_2$; any $v_3$ completes the basis. In 3D the flag $\operatorname{span}(v_1) \subset \operatorname{span}(v_1, v_2)$ is drawn, invariant under both operators. Resample for another pair, or switch to a non-commuting pair and watch the first step fail.`,
+      deps: ['ladr-5.78', 'ladr-2.33', 'ladr-5.39'],
+      tags: ['commuting', 'triangular'],
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.1, 2.2], equal: true, axes: false, height: 400, weight: 1.1, minWidth: 300 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.5 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 280 });
+        const pairSel = v.select('', [{ value: 'c', label: 'commuting pair' }, { value: 'n', label: 'non-commuting pair' }], 'c');
+        let seed = 5, SM = null, TM = null, NM = null;
+        const gen = () => {
+          const r = v.rng(seed++);
+          let Q = QM;
+          for (let tries = 0; tries < 60; tries++) { const C = [0, 1, 2].map(() => unit3([r.uniform(-1, 1), r.uniform(-1, 1), r.uniform(-1, 1)])); if (Math.abs(M.det(C)) > 0.55) { Q = fromCols(C); break; } }
+          const lam = Math.round(r.uniform(-1, 2) * 2) / 2, nu = lam + (r.uniform() < 0.5 ? -1.5 : 1.5), s = r.uniform(0.6, 1.2) * (r.uniform() < 0.5 ? -1 : 1);
+          const a = Math.round(r.uniform(-1, 2) * 2) / 2, b = r.uniform(-1.2, 1.2), c = a + (r.uniform() < 0.5 ? -1 : 1);
+          SM = conj(M, Q, [[lam, s, 0], [0, lam, 0], [0, 0, nu]]); TM = conj(M, Q, [[a, b, 0], [0, a, 0], [0, 0, c]]);
+          NM = TM.map((rw, i) => rw.map((x, j) => x + [[0, 0, 0.7], [0.5, 0, 0], [0, 0.9, 0]][i][j]));
+        };
+        gen();
+        v.button('Resample', () => { gen(); SP.reset({ at: 'keep' }); });
+        /** Common eigenvectors of A, B on Rⁿ (n ≤ 3): for each eigenspace of A, the eigenvectors of B inside it (via the restriction when invariant). */
+        const commonEig = (A, B) => {
+          const n = A.length, out = [];
+          for (const e of eigenspaces(M, A).list) {
+            const E = e.B, BE = E.map((u) => ap(B, u));
+            const leak = Math.max(...BE.map((y) => { const p = E.reduce((acc, u) => acc.map((c, i) => c + u[i] * y.reduce((s, x, k) => s + x * u[k], 0)), Array(n).fill(0)); return Math.hypot(...y.map((x, i) => x - p[i])); }));
+            if (leak > 1e-7) continue;
+            const Rm = E.map((u) => BE.map((y) => u.reduce((s, x, k) => s + x * y[k], 0)));
+            for (const f of eigenspaces(M, Rm).list) for (const c of f.B) out.push(E[0].map((_, i) => E.reduce((s, u, k) => s + c[k] * u[i], 0)));
+          }
+          return out;
+        };
+        const perpBasis = (u) => { const a = unit3(Math.abs(u[0]) < 0.8 ? cross3([1, 0, 0], u) : cross3([0, 1, 0], u)); return [a, cross3(u, a)]; };
+        const build = () => {
+          const A = SM, B = pairSel.value === 'c' ? TM : NM, fr = [{ k: 0, basis: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], A, B, note: 'Standard basis: neither matrix is upper triangular.' }];
+          const c1 = commonEig(A, B);
+          if (!c1.length) { fr.push({ k: 1, fail: true, basis: fr[0].basis, A, B, note: 'Step 1 fails: these operators do not commute, and they have no common eigenvector — no basis can start the flag.' }); return fr; }
+          const v1 = unit3(c1[0]), [w2, w3] = perpBasis(v1), B1 = [v1, w2, w3];
+          fr.push({ k: 1, basis: B1, A, B, note: String.raw`$v_1$ is a common eigenvector (5.78); complete it by $W = v_1^\perp$. Column 1 of both matrices is now zero below the diagonal.` });
+          const MA = M.matMul(M.inverse(fromCols(B1)), M.matMul(A, fromCols(B1))), MB = M.matMul(M.inverse(fromCols(B1)), M.matMul(B, fromCols(B1)));
+          const hA = [[MA[1][1], MA[1][2]], [MA[2][1], MA[2][2]]], hB = [[MB[1][1], MB[1][2]], [MB[2][1], MB[2][2]]];
+          const c2 = commonEig(hA, hB);
+          if (!c2.length) { fr.push({ k: 2, fail: true, basis: B1, A, B, note: 'The compressions to $W$ have no common real eigenvector.' }); return fr; }
+          const u = c2[0], v2 = unit3(add3(mul3(w2, u[0]), mul3(w3, u[1]))), v3 = unit3(cross3(v1, v2));
+          const hc = maxAbs(msub(M.matMul(hA, hB), M.matMul(hB, hA)));
+          fr.push({ k: 2, basis: [v1, v2, v3], A, B, note: String.raw`$\hat S = PS|_W$ and $\hat T = PT|_W$ commute (their commutator is ${v.sci(hc, 1)}); their common eigenvector gives $v_2 \in W$. Column 2 is now zero below the diagonal.` });
+          fr.push({ k: 3, basis: [v1, v2, v3], A, B, done: true, note: String.raw`Any $v_3$ completing the basis works: both matrices are upper triangular, and their diagonals list the eigenvalues (5.41).` });
+          return fr;
+        };
+        const SP = v.steps({ frames: build, code: ['find a common eigenvector $v_1$   ▷ 5.78', '$W$ with $V = \\operatorname{span}(v_1) \\oplus W$   ▷ 2.33', 'common eigenvector $v_2$ of $\\hat S, \\hat T$ on $W$', 'complete to a basis $v_1, v_2, v_3$'], codeTitle: 'triangularize both', codePos: 'below', start: 'end' });
+        pairSel.el.addEventListener('click', () => SP.reset({ at: 'end' }));
+        const TA = v.table(R, { rows: 3, cols: 3, region: [0.02, 0.5, 0.49, 0.9], maxCell: 46, size: 12.5 }), TB = v.table(R, { rows: 3, cols: 3, region: [0.51, 0.5, 0.98, 0.9], maxCell: 46, size: 12.5 });
+        const ttl = (T, tex, col) => { const g = T.geo; if (g) R.texPx(tex, g.X0 + (g.cols * g.cw) / 2, g.Y0 - 14, { color: col, size: 13.5 }); };
+        let st = null;
+        v.render(() => {
+          const f = SP.frame.basis ? SP.frame : { k: 0, basis: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], A: SM, B: TM };
+          const Bm = fromCols(f.basis), Bi = M.inverse(Bm), MA = M.matMul(Bi, M.matMul(f.A, Bm)), MB = M.matMul(Bi, M.matMul(f.B, Bm));
+          const fill = (X) => (i, j) => (i > j ? (Math.abs(X[i][j]) < 1e-8 ? ['green', 0.16] : ['red', 0.2]) : i === j ? ['gold', 0.12] : null);
+          const fmt = (x) => pn(Math.abs(x) < 5e-9 ? 0 : x, 2);
+          TA.draw({ value: (i, j) => MA[i][j], format: fmt, fill: fill(MA) }); TB.draw({ value: (i, j) => MB[i][j], format: fmt, fill: fill(MB) });
+          ttl(TA, '\\mathcal M(S)', 'blue'); ttl(TB, '\\mathcal M(T)', 'orange');
+          const below = Math.max(Math.abs(MA[1][0]), Math.abs(MA[2][0]), Math.abs(MA[2][1]), Math.abs(MB[1][0]), Math.abs(MB[2][0]), Math.abs(MB[2][1]));
+          const comm = maxAbs(msub(M.matMul(f.A, f.B), M.matMul(f.B, f.A)));
+          R.text(comm < 1e-9 ? 'ST = TS' : `ST ≠ TS (largest entry of ST − TS: ${pn(comm, 2)})`, 0.5, 0.36, { align: 'center', size: 13, weight: 700, color: comm < 1e-9 ? 'green' : 'red' });
+          R.text(f.fail ? 'no common eigenvector: the construction stops' : below < 1e-8 ? 'both upper triangular ✓' : 'red entries: not yet upper triangular', 0.5, 0.26, { align: 'center', size: 13, weight: 600, color: f.fail ? 'red' : below < 1e-8 ? 'green' : 'muted' });
+          R.text(`basis: ${f.k === 0 ? 'e₁, e₂, e₃' : f.k === 1 ? 'v₁, and two vectors of W' : 'v₁, v₂, v₃'}`, 0.5, 0.16, { align: 'center', size: 12, color: 'muted' });
+          sc.begin();
+          const [b1, b2, b3] = f.basis;
+          if (f.k >= 1 && !f.fail) {
+            if (f.k >= 2) sc.disc(b1, unit3(sub3(b2, mul3(b1, dot3(b1, b2)))), 1.35, { fill: 'green', color: 'green', fillAlpha: 0.13, grid: true, alpha: 0.6 });
+            else sc.disc(b2, b3, 1.3, { fill: 'muted', color: 'muted', fillAlpha: 0.06, grid: false, alpha: 0.4 });
+            sc.line(mul3(b1, -1.7), mul3(b1, 1.7), { color: 'gold', width: 4, alpha: 0.5 }, 12);
+          }
+          const names = f.k === 0 ? ['e_1', 'e_2', 'e_3'] : f.k === 1 ? ['v_1', 'w_2', 'w_3'] : ['v_1', 'v_2', 'v_3'];
+          f.basis.forEach((b, i) => { const c = f.k >= 1 && i <= (f.k >= 2 ? 1 : 0) ? 'gold' : i === 0 ? 'blue' : 'muted'; sc.arrow(ZERO, mul3(b, 1.1), { color: f.k === 0 ? EC[i] : c, width: 2.6 }); sc.tex(names[i], mul3(b, 1.27), { color: f.k === 0 ? EC[i] : c, size: 14 }); });
+          if (f.k >= 1 && !f.fail) {
+            const u = mul3(b1, 0.8); sc.arrow(ZERO, ap(f.A, u), { color: 'blue', width: 1.6, head: 7 }); sc.arrow(ZERO, ap(f.B, u), { color: 'orange', width: 1.6, head: 7 });
+          }
+          sc.flush();
+          if (f.k >= 2 && !f.fail) S.corner('span(v₁) ⊂ span(v₁, v₂): invariant under S and T', 'tl', { color: 'green', weight: 700 });
+          else if (f.k === 1 && !f.fail) S.corner('Sv₁ and Tv₁ lie on the line of v₁', 'tl', { color: 'green', weight: 700 });
+          st = { MA, MB, below, f };
+        });
+        v.legend([['gold', 'the flag $\\operatorname{span}(v_1) \\subset \\operatorname{span}(v_1, v_2)$'], ['red', 'nonzero below the diagonal', { area: true }], ['green', 'zero below the diagonal', { area: true }]]);
+        v.readout(() => st && (st.f.fail ? 'The two operators do not commute: no common eigenvector, so no basis makes both matrices upper triangular.' : st.below < 1e-8 ? `Both matrices are upper triangular in $v_1, v_2, v_3$ (largest entry below the diagonal: ${v.sci(st.below, 1)}); their diagonals are $(${[0, 1, 2].map((i) => tn(st.MA[i][i])).join(', ')})$ and $(${[0, 1, 2].map((i) => tn(st.MB[i][i])).join(', ')})$.` : `Largest entry below the diagonal: ${tn(st.below, 3)}.`));
+      },
+    },
+    // ------------------------------------------------------------------ 5.81
+    {
+      num: '5.81',
+      kind: 'Theorem',
+      name: 'Eigenvalues of sum and product of commuting operators',
+      statement: String.raw`Suppose $V$ is a finite-dimensional complex vector space and $S, T \in \mathcal L(V)$ commute. Then
+- every eigenvalue of $S + T$ is an eigenvalue of $S$ plus an eigenvalue of $T$;
+- every eigenvalue of $ST$ is an eigenvalue of $S$ times an eigenvalue of $T$.`,
+      idea: String.raw`Choose a basis in which both $S$ and $T$ are upper triangular (5.80). Then $\mathcal M(S + T) = \mathcal M(S) + \mathcal M(T)$ and $\mathcal M(ST) = \mathcal M(S)\mathcal M(T)$ (3.35, 3.43) are upper triangular too, with diagonals the entrywise sums and products of the two diagonals. The eigenvalues of a triangular matrix are its diagonal entries (5.41), so each eigenvalue of $S + T$ is $\lambda_k + \mu_k$ and each eigenvalue of $ST$ is $\lambda_k\mu_k$, where $\lambda_k$ and $\mu_k$ are the $k$th diagonal entries — eigenvalues of $S$ and of $T$. Without commutativity the conclusion fails.`,
+      caption: String.raw`$S$ and $T$ act on $\mathbf C^3$, built from their eigenvalues, which you drag: $\lambda_k$ (blue) and $\mu_k$ (orange). The faint rings are all nine candidates $\lambda_i + \mu_j$ (or $\lambda_i \mu_j$); the green dots are the eigenvalues of $S + T$ (or $ST$), computed from the matrix. While $T$'s eigenbasis equals $S$'s, the operators commute and each green dot sits on a candidate — the matched pair is joined by an arrow. Turn $T$'s eigenbasis by the angle $\varphi$: $T$ keeps its eigenvalues, so the candidates stay put, but $ST \ne TS$ and the green dots drift off.`,
+      deps: ['ladr-5.80', 'ladr-3.35', 'ladr-3.43', 'ladr-5.41'],
+      tags: ['commuting', 'eigenvalues'],
+      viz(v) {
+        const M = v.M, Cx = M.Cx;
+        const S = v.stage({ x: [-3.3, 3.9], y: [-2.4, 2.4], equal: true, height: 420, full: true, xlabel: 'Re', ylabel: 'Im' });
+        const op = v.select('', [{ value: 's', label: '$S + T$' }, { value: 'p', label: '$ST$' }], 's');
+        const phi = v.slider("turn $T$'s eigenbasis by $\\varphi$", 0, 60, 0, { step: 1, fmt: (x) => `${x}°` });
+        const L = [[-1.4, 0.9], [0.4, -0.9], [1.5, 0.8]].map((p, k) => S.handle(p[0], p[1], { color: 'blue', label: `λ${'₁₂₃'[k]}` }));
+        const U = [[0.6, 0.5], [-0.8, -0.3], [0.7, -0.7]].map((p, k) => S.handle(p[0], p[1], { color: 'orange', label: `μ${'₁₂₃'[k]}` }));
+        let st = null;
+        v.render(() => {
+          const lam = L.map((h) => new Cx(h.x, h.y)), mu = U.map((h) => new Cx(h.x, h.y)), sum = op.value === 's';
+          const R = M.matMul(rot3([0.3, 1, 0.5], (phi.value * Math.PI) / 180), QM);
+          const SM = cDiagConj(M, QM, lam), TM = cDiagConj(M, R, mu);
+          const C = sum ? SM.map((r, i) => r.map((z, j) => z.add(TM[i][j]))) : SM.map((r, i) => TM[0].map((_, j) => r.reduce((s, z, k) => s.add(z.mul(TM[k][j])), new Cx(0, 0))));
+          const ev = cEigvals(M, C);
+          const comb = (a, b) => (sum ? a.add(b) : a.mul(b));
+          const cands = []; lam.forEach((a, i) => mu.forEach((b, j) => cands.push({ z: comb(a, b), i, j })));
+          cands.forEach((c) => S.dot(c.z.re, c.z.im, { r: 6, hollow: true, color: c.i === c.j ? 'muted' : 'faint', width: 1.4 }));
+          if (phi.value === 0) lam.forEach((a, k) => {
+            const z = comb(a, mu[k]);
+            if (sum) S.arrow(a.re, a.im, z.re, z.im, { color: 'orange', width: 1.4, dash: [5, 4], head: 7 });
+            else S.arrow(a.re, a.im, z.re, z.im, { color: 'purple', width: 1.4, dash: [5, 4], head: 7 });
+          });
+          const dists = ev.map((z) => Math.min(...cands.map((c) => Math.hypot(z.re - c.z.re, z.im - c.z.im))));
+          ev.forEach((z, k) => S.dot(z.re, z.im, { r: 6, color: dists[k] < 1e-6 ? 'green' : 'red' }));
+          const comm = (() => { let m = 0; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { let a = new Cx(0, 0), b = new Cx(0, 0); for (let k = 0; k < 3; k++) { a = a.add(SM[i][k].mul(TM[k][j])); b = b.add(TM[i][k].mul(SM[k][j])); } m = Math.max(m, a.sub(b).abs()); } return m; })();
+          S.corner(comm < 1e-9 ? `ST = TS: every eigenvalue of ${sum ? 'S + T' : 'ST'} is a candidate` : `ST ≠ TS: eigenvalues of ${sum ? 'S + T' : 'ST'} miss the candidates`, 'tl', { color: comm < 1e-9 ? 'green' : 'red', weight: 700 });
+          st = { ev, dists, comm, sum };
+        });
+        v.legend([['blue', 'eigenvalues $\\lambda_k$ of $S$', { dot: true }], ['orange', 'eigenvalues $\\mu_k$ of $T$', { dot: true }], ['muted', 'candidates $\\lambda_i + \\mu_j$ or $\\lambda_i\\mu_j$', { dot: true }], ['green', 'computed eigenvalues', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { ev, dists, comm, sum } = st, nm = sum ? 'S + T' : 'ST';
+          return `Eigenvalues of $${nm}$: ${ev.map((z) => `$${ctn(z.re, z.im)}$`).join(', ')}. Distance to the nearest candidate: ${dists.map((d) => (d < 1e-6 ? `$${v.sci(d, 0)}$` : `$${tn(d, 3)}$`)).join(', ')} — ${comm < 1e-9 ? '**on the candidates**, as 5.81 promises.' : `**off** them: with $\\|ST - TS\\| \\approx ${tn(comm, 2)}$ the theorem does not apply.`}`;
+        });
       },
     },
   ],

@@ -549,7 +549,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         let seed = 2;
         v.button('Random $T$', () => { seed++; });
         const S = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 380, weight: 1.15, title: 'an operator $T$ on $V$' });
-        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.42, axis: 1.6, lim: 1.3 });
+        const sc = v.scene3(S, { yaw: 0.35, pitch: 0.42, axis: 1.6, lim: 1.3 });
         const B = v.stage({ x: [-0.25, 7.65], y: [-0.09, 1.3], height: 380, weight: 0.85, minWidth: 240, axes: 'box', xlabel: 'n',
           xticks: [1, 2, 3, 4, 5, 6, 7], yticks: [[0, '0%'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']], title: 'random $n\\times n$ real matrices with a real eigenvalue' });
         // the tally, computed once: entries independent standard normal
@@ -687,7 +687,7 @@ So column $k$ lists the coordinates of $Tv_k$ in the same basis. For an operator
           if (!ok) P.corner('v₁, v₂ are dependent: not a basis', 'tl', { color: 'red', weight: 700 });
           else if (Math.abs(C[1][0]) < 1e-9 && Math.abs(C[0][1]) < 1e-9) P.corner('a basis of eigenvectors: the matrix is diagonal', 'tl', { color: 'green', weight: 700 });
           else if (Math.abs(C[1][0]) < 1e-9) P.corner('v₁ is an eigenvector: first column is (λ, 0)', 'tl', { color: 'green', weight: 700 });
-          const fm = (x) => pn(x, 2), colc = (i, j) => (j === 0 ? 'blue' : 'purple');
+          const fm = (x) => (typeof x === 'number' ? pn(x, 2) : x), colc = (i, j) => (j === 0 ? 'blue' : 'purple');
           TM.draw({ value: (i, j) => (ok ? C[i][j] : '—'), format: fm, textColor: colc, fill: (i, j) => (ok && i !== j && Math.abs(C[i][j]) < 1e-9 ? ['green', 0.2] : [colc(i, j), 0.08]) });
           TS.draw({ value: (i, j) => A[i][j], format: fm, textColor: () => 'muted' });
           ttl(Q, TM, '\\mathcal M\\bigl(T, (v_1, v_2)\\bigr)', 'ink', false, 15);
@@ -823,7 +823,7 @@ with $*$ standing for entries that are unknown or irrelevant.`,
           if (ok) { C = M.matMul(M.inverse(Bm), M.matMul(T, Bm)); a = [[1, 0], [2, 0], [2, 1]].every(([i, j]) => Math.abs(C[i][j]) < 1e-6); }
           const b = ok && inv1 && inv2, c = ok && d1 < tol && d2 < tol;
           TM.draw({
-            value: (i, j) => (ok ? C[i][j] : '—'), format: (x) => pn(x, 2),
+            value: (i, j) => (ok ? C[i][j] : '—'), format: (x) => (typeof x === 'number' ? pn(x, 2) : x),
             fill: (i, j) => (!ok ? null : i > j ? (Math.abs(C[i][j]) < 1e-6 ? ['green', 0.25] : ['red', 0.22]) : null),
             textColor: (i, j) => VC[j],
           });
@@ -872,7 +872,7 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
           if (!cur) return '';
           if (i === 0) return 'Any vector $v$: in general all three of its coordinates are nonzero.';
           const [k] = cur.f[i - 1], down = ord.value === 'down' && !wrong.value, where = ['the line $\\operatorname{span}(v_1)$', 'the plane $\\operatorname{span}(v_1, v_2)$'];
-          let s = `Apply $T - ${lamName(k)}I$. `;
+          let s = `Apply $T - ${lamName(k)} I$. `;
           if (i === 3) s += cur.norms[3] < 1e-9 ? '**The vector is $0$.**' : `The result is not $0$ (length ${tn(cur.norms[3], 3)}).`;
           else if (down) s += `It lands in ${where[2 - i]}.`;
           else s += cur.flag[i] ? `It lies in ${where[cur.flag[i] - 1]}.` : 'It is not in the flag.';
@@ -920,7 +920,7 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
         v.legend([['teal', '$\\operatorname{span}(v_1)$'], ['purple', '$\\operatorname{span}(v_1, v_2)$', { area: true }], ['gold', 'the vector after each factor']]);
         v.readout(() => {
           if (!st) return '';
-          const prod = st.f.slice().reverse().map(([k]) => `(T - ${lamName(k)}I)`).join('');
+          const prod = st.f.slice().reverse().map(([k]) => `(T - ${lamName(k)} I)`).join('');
           return `$${prod}\\,v$ has length $${v.sci(st.norms[3], 1)}$, and the whole operator $${prod}$ has largest entry $${v.sci(st.Pmax, 1)}$` + (st.Pmax < 1e-9 ? ' — **it is the zero operator**.' : ' — **not zero**: $\\mu$ is not a diagonal entry.');
         });
       },
@@ -1185,6 +1185,10 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
           const g1 = useEig ? basis[0] : [1, 0], g2 = useEig ? basis[1] : [0, 1];
           const F = (p) => mv(Ms, p);
           for (let k = -6; k <= 6; k++) {
+            P.line(k * g1[0] - 7 * g2[0], k * g1[1] - 7 * g2[1], k * g1[0] + 7 * g2[0], k * g1[1] + 7 * g2[1], { color: 'grid', width: 1 });
+            P.line(k * g2[0] - 7 * g1[0], k * g2[1] - 7 * g1[1], k * g2[0] + 7 * g1[0], k * g2[1] + 7 * g1[1], { color: 'grid', width: 1 });
+          }
+          for (let k = -6; k <= 6; k++) {
             const a = F([k * g1[0] - 7 * g2[0], k * g1[1] - 7 * g2[1]]), b = F([k * g1[0] + 7 * g2[0], k * g1[1] + 7 * g2[1]]);
             const c = F([k * g2[0] - 7 * g1[0], k * g2[1] - 7 * g1[1]]), d = F([k * g2[0] + 7 * g1[0], k * g2[1] + 7 * g1[1]]);
             P.line(a[0], a[1], b[0], b[1], { color: k ? (useEig ? 'teal' : 'muted') : 'ink', width: k ? 1 : 1.6, alpha: k ? 0.45 : 0.8 });
@@ -1193,25 +1197,27 @@ $$(T - \lambda_1 I)\cdots(T - \lambda_n I) = 0.$$`,
           const cell = [[0, 0], g1, [g1[0] + g2[0], g1[1] + g2[1]], g2];
           P.poly(cell, { color: 'muted', width: 1, dash: [4, 3], fill: false });
           P.poly(cell.map(F), { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.16 });
-          if (basis) basis.forEach((b, k) => { P.line(-4 * b[0], -4 * b[1], 4 * b[0], 4 * b[1], { color: 'green', width: 1.4, dash: [6, 4] }); const Fb = F(b); P.arrow(0, 0, Fb[0], Fb[1], { color: VC[k], width: 2.8 }); P.tex(`${s === 1 ? `Tv_${k + 1} = ${tn(lam[k])}` : ''}v_${k + 1}`.replace(/^v/, 'v'), Fb[0], Fb[1], { color: VC[k], size: 13.5, dx: 10, dy: k ? -12 : 14, align: 'left' }); });
+          if (basis) basis.forEach((b, k) => { P.line(-4 * b[0], -4 * b[1], 4 * b[0], 4 * b[1], { color: 'green', width: 1.4, dash: [6, 4] }); const Fb = F(b); P.arrow(0, 0, Fb[0], Fb[1], { color: VC[k], width: 2.8 }); P.tex(s === 1 ? `Tv_${k + 1} = ${tn(lam[k]) === '1' ? '' : tn(lam[k])}v_${k + 1}` : `v_${k + 1} \\mapsto ${tn(1 - s + s * lam[k])}\\,v_${k + 1}`, Fb[0], Fb[1], { color: VC[k], size: 13.5, dx: 10, dy: k ? -12 : 14, align: 'left' }); });
           P.arrow(0, 0, h1.x, h1.y, { color: 'orange', width: 1.3, alpha: 0.6, head: 7 }); P.arrow(0, 0, h2.x, h2.y, { color: 'orange', width: 1.3, alpha: 0.6, head: 7 });
           if (!basis) P.corner(real ? 'one eigen-direction only: not diagonalizable' : 'no real eigenvector: not diagonalizable over ℝ', 'tl', { color: 'red', weight: 700 });
           else if (grid.value === 'std') P.corner('standard grid: lines tilt and shear', 'tl', { color: 'muted', weight: 600 });
           else P.corner('eigenvector grid: pure stretching', 'tl', { color: 'green', weight: 700 });
-          TS.draw({ value: (i, j) => A[i][j], format: (x) => pn(x, 2), textColor: () => 'muted' });
+          TS.draw({ value: (i, j) => A[i][j], format: (x) => (typeof x === 'number' ? pn(x, 2) : x), textColor: () => 'muted' });
           ttl(Q, TS, '\\mathcal M(T)\\ \\text{(standard basis)}', 'muted', false, 13);
           let D = null;
           if (basis) { const Bm = [[basis[0][0], basis[1][0]], [basis[0][1], basis[1][1]]]; D = M.matMul(M.inverse(Bm), M.matMul(A, Bm)); }
-          TD.draw({ value: (i, j) => (D ? D[i][j] : '—'), format: (x) => pn(x, 2), fill: (i, j) => (D ? (i === j ? ['gold', 0.25] : ['green', 0.15]) : ['red', 0.1]), textColor: (i, j) => (D ? (i === j ? VC[i] : 'green') : 'red') });
+          TD.draw({ value: (i, j) => (D ? D[i][j] : '—'), format: (x) => (typeof x === 'number' ? pn(x, 2) : x), fill: (i, j) => (D ? (i === j ? ['gold', 0.25] : ['green', 0.15]) : ['red', 0.1]), textColor: (i, j) => (D ? (i === j ? VC[i] : 'green') : 'red') });
           ttl(Q, TD, D ? '\\mathcal M\\bigl(T, (v_1, v_2)\\bigr)\\ \\text{— diagonal}' : '\\text{no basis of eigenvectors}', D ? 'green' : 'red', false, 13.5);
+          v.legend([[useEig ? 'teal' : 'muted', `${useEig ? 'eigenvector' : 'standard'} grid, moved (faint: before)`], ['accent', 'the cell of the basis, moved', { area: true }], ['green', 'eigen-directions', { dash: true }]]);
           st = { basis, lam, D, real };
         });
-        v.legend([['teal', 'eigenvector grid, moved'], ['accent', 'the cell spanned by the basis, moved', { area: true }], ['green', 'eigen-directions', { dash: true }]]);
+
         v.readout(() => {
           if (!st) return '';
           if (!st.basis) return st.real ? 'Only one eigen-direction: every basis contains a vector that is not an eigenvector, so no basis makes the matrix diagonal.' : 'The eigenvalues are not real, so no nonzero vector of $\\mathbf R^2$ is mapped to a multiple of itself: $T$ is not diagonalizable over $\\mathbf R$ (it is over $\\mathbf C$).';
           const { lam, D, basis } = st;
-          return `$Tv_1 = ${tn(lam[0])}\\,v_1$ and $Tv_2 = ${tn(lam[1])}\\,v_2$ with $v_1 = ${vtex(basis[0])}$, $v_2 = ${vtex(basis[1])}$, so $\\mathcal M(T, (v_1, v_2)) = ${mtex(D)}$: $T$ is diagonalizable.`;
+          const cf = (x) => (tn(x) === '1' ? '' : tn(x) === '-1' ? '-' : `${tn(x)}\\,`);
+          return `$Tv_1 = ${cf(lam[0])}v_1$ and $Tv_2 = ${cf(lam[1])}v_2$ with $v_1 = ${vtex(basis[0])}$, $v_2 = ${vtex(basis[1])}$, so $\\mathcal M(T, (v_1, v_2)) = ${mtex(D)}$: $T$ is diagonalizable.`;
         });
       },
     },
@@ -1233,8 +1239,8 @@ It consists of all eigenvectors of $T$ for $\lambda$ together with $0$; so $\lam
         const ss = v.slider('coupling $s$', 0, 1.5, 0, { step: 0.05 });
         const lamS = v.slider('$\\lambda$', -2, 3, 2, { step: 0.01, onChange: (x) => { for (const e of [2, -1]) if (Math.abs(x - e) < 0.07 && x !== e) lamS.set(e); } });
         const S = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, axes: false, height: 370, weight: 1.1 });
-        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.4, axis: 1.5, lim: 1.1 });
-        const G = v.stage({ x: [-2, 3], y: [0, 3], height: 370, weight: 0.9, axes: 'box', xlabel: 'λ', title: 'the two smallest singular values of $T - \\lambda I$' });
+        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.55, axis: 1.5, lim: 1.1 });
+        const G = v.stage({ x: [-2, 3], y: [-0.3, 3], height: 370, weight: 0.9, axes: 'box', xlabel: 'λ', title: 'the two smallest singular values of $T - \\lambda I$' });
         const hv = sc.handle([0.6, 0.3, 0.2], { color: 'accent', label: 'v' });
         const cache = {};
         let curKey = '', st = null;
@@ -1245,7 +1251,7 @@ It consists of all eigenvectors of $T$ for $\lambda$ together with $0$; so $\lam
           if (key !== curKey) {
             curKey = key;
             if (dim === 1) { hv.mode = 'line'; hv.d = E[0]; hv.set(mul3(E[0], 0.8)); }
-            else if (dim === 2) { hv.mode = 'plane'; hv.a = E[0]; hv.b = E[1]; hv.set(add3(mul3(E[0], 0.55), mul3(E[1], 0.5))); }
+            else if (dim === 2) { hv.mode = 'plane'; hv.a = E[0]; hv.b = E[1]; hv.set(add3(mul3(E[0], 0.2), mul3(E[1], 0.75))); }
           }
           hv.h.visible = dim > 0;
           sc.begin();
@@ -1265,7 +1271,8 @@ It consists of all eigenvectors of $T$ for $\lambda$ together with $0$; so $\lam
           const C = cache[ck];
           G.path(C.xs.map((x, i) => [x, C.s2[i]]), { color: 'orange', width: 2 });
           G.path(C.xs.map((x, i) => [x, C.s1[i]]), { color: 'accent', width: 2.4 });
-          for (const e of [2, -1]) { const d = M.nullspace(shiftI(T, e), 1e-8).length; G.vline(e, { color: 'green', width: 1.2, dash: [4, 4] }); G.text(`dim E = ${d}`, e, 2.85, { align: 'center', color: 'green', size: 11.5, weight: 700 }); }
+          for (const e of [2, -1]) { const d = M.nullspace(shiftI(T, e), 1e-8).length; G.vline(e, { color: 'green', width: 1.2, dash: [4, 4] }); G.text(`dim E = ${d}`, e, 2.85, { align: e > 0 ? 'right' : 'left', dx: e > 0 ? -6 : 6, color: 'green', size: 11.5, weight: 700 }); }
+          G.hline(0, { color: 'muted', width: 1 });
           const sv = M.svd(shiftI(T, lam)).S;
           G.vline(lam, { color: 'gold', width: 1.4 });
           G.dot(lam, sv[2], { r: 5, color: 'accent' }); G.dot(lam, sv[1], { r: 5, color: 'orange' });
