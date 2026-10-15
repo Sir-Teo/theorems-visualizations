@@ -254,8 +254,9 @@ The isotherms on a $p$–$V$ diagram are hyperbolas. The constant is proportiona
       idea: String.raw`Halve the volume at constant temperature and the molecules, moving just as fast as before, are twice as crowded: twice as many strike each square centimetre of wall per second, each with the same average impulse, so the pressure doubles. That argument — made quantitative by the kinetic model 1.6 — assumes the molecules occupy no volume and exert no forces on each other. Real molecules do both; at high density (or near liquefaction) the attractions lower the pressure below the hyperbola and, when they are packed tight, their size pushes it above (1.11).`,
       caption: String.raw`Two boxes of 100 molecules at the same temperature share one piston: the top box holds point molecules that never touch (a perfect gas), the bottom one real xenon atoms (Lennard-Jones size and attraction). The pressure in each is **measured** from the impacts on the walls over short windows; each window adds a dot. Let the piston sweep, or drag its handle. Perfect-gas dots fall on the hyperbola $nRT/V$ and keep $pV/nRT = 1$; xenon, near its critical temperature, sags below once it is compressed. Heat it and xenon behaves better.`,
       deps: [],
-      refs: ['Atkins 1A', 'M–S ch. 16'],
+      refs: ['Atkins 1A', 'M–S ch. 16', 'Hirschfelder, Curtiss & Bird (Lennard-Jones parameters)'],
       tags: ['gas laws', 'isotherm'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Boyle%27s_law' },
       credit: 'Boyle (with Towneley and Hooke), 1662; Mariotte, 1676',
       scope: String.raw`Holds for any gas in the limit of low pressure, at fixed temperature and amount. Deviations grow with density and with proximity to the gas's critical temperature: for nitrogen at room temperature they are below 1% up to about 50 bar, for xenon (critical temperature 290 K) they reach 10% by 20 bar.`,
       viz(v) {
@@ -356,6 +357,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
       deps: [],
       refs: ['Atkins 1A'],
       tags: ['gas laws', 'absolute zero'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Charles%27s_law' },
       credit: 'Amontons, 1702; Charles, c. 1787; Gay-Lussac, 1802; Thomson (Kelvin), 1848',
       scope: String.raw`Holds in the limit of low pressure for any gas, far from its condensation temperature. Near condensation real gases contract more than the law predicts; below it they liquefy, so the lines can never actually be followed down to absolute zero.`,
       viz(v) {
@@ -475,8 +477,9 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
       idea: String.raw`A heavy molecule moves slowly, so it strikes the wall less often, but each strike delivers more momentum; at a common temperature the mean kinetic energy $\tfrac12 m\langle v^2\rangle$ is the same for every gas (1.6), and the two effects cancel exactly: the impact rate goes as $1/\sqrt m$ and the impulse per impact as $\sqrt m$. Pressure therefore counts molecules, whatever their mass, which is how Avogadro's principle made it possible to weigh molecules relative to one another and fix the atomic weights. When the gas is crowded, molecular size and attraction — different for each gas — break the equality.`,
       caption: String.raw`Three boxes hold the **same number** of molecules (100) in the **same volume** at the **same temperature** (300 K): hydrogen, nitrogen and xenon, whose masses differ 65-fold. Each dial is a pressure gauge counting real impacts; the shaded arc is ±2 standard errors and the green mark the perfect-gas value $nRT/V$. The bars on the right show why the gauges agree: xenon hits the wall less often but harder, and on a log scale the two effects cancel. Crowd the boxes and the gauges part ways — xenon's attractions pull its reading down, hydrogen's size pushes it up.`,
       deps: [],
-      refs: ['Atkins 1A'],
+      refs: ['Atkins 1A', 'Hirschfelder, Curtiss & Bird (Lennard-Jones parameters)'],
       tags: ['gas laws', 'mole'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Avogadro%27s_law' },
       credit: 'Avogadro, 1811 (made the basis of atomic weights by Cannizzaro, 1860)',
       scope: String.raw`Holds in the low-pressure limit. At 1 bar and room temperature real gases depart from it by less than about 1% (more for easily condensed gases such as xenon, CO₂ or water vapour); at hundreds of bar the departures reach tens of percent.`,
       viz(v) {
@@ -648,12 +651,13 @@ The states of a fixed amount of gas therefore form a surface $p = nRT/V$ over th
       statement: String.raw`Model a gas as $N$ molecules of mass $m$ in a container of volume $V$, in ceaseless random motion, whose size is negligible compared with the distances between them, which interact only in brief elastic collisions, and which bounce elastically off the walls. The momentum they deliver to the walls per unit area and time is a pressure
 $$p = \frac{N m \langle v^2\rangle}{3V} = \frac{nM\,v_{\rm rms}^2}{3V}, \qquad v_{\rm rms} = \sqrt{\langle v^2\rangle}.$$
 Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\tfrac12 m\langle v^2\rangle = \tfrac32 k_BT$ and $v_{\rm rms} = \sqrt{3RT/M}$. The number of impacts on area $A$ per unit time is $\tfrac14 \mathcal N \bar v A$, with $\mathcal N = N/V$ and $\bar v$ the mean speed. For a mixture each species contributes its own share — Dalton's partial pressures.`,
-      idea: String.raw`A molecule with velocity component $v_x$ that hits a wall perpendicular to $x$ reverses $v_x$ and gives the wall impulse $2mv_x$ (mech-2.1). The molecules with that $v_x$ that reach area $A$ in time $\Delta t$ fill a slanted prism of volume $Av_x\Delta t$, so half of $\mathcal N A v_x\Delta t$ of them arrive; the momentum delivered per unit area and time is $\mathcal N m\langle v_x^2\rangle$, and isotropy gives $\langle v_x^2\rangle = \tfrac13\langle v^2\rangle$. Collisions between molecules only exchange momentum among them, so they do not change the wall pressure — as long as the molecules are small. When they fill a noticeable fraction of the box, momentum is passed across a molecular diameter at each collision and the pressure rises above the formula (1.11).`,
+      idea: String.raw`A molecule with velocity component $v_x$ that hits a wall perpendicular to $x$ reverses $v_x$ and gives the wall impulse $2mv_x$ (mech-2.1). Of the molecules with speed component $|v_x|$ in a slab of thickness $|v_x|\Delta t$ next to an area $A$ of wall, the half moving towards it arrive within $\Delta t$: $\tfrac12\mathcal N A|v_x|\Delta t$ impacts, each delivering $2m|v_x|$. The momentum delivered per unit area and time is therefore $\mathcal N m\langle v_x^2\rangle$, and isotropy gives $\langle v_x^2\rangle = \tfrac13\langle v^2\rangle$. Collisions between molecules only exchange momentum among them, so they do not change the wall pressure — as long as the molecules are small. When they fill a noticeable fraction of the box, momentum is passed across a molecular diameter at each collision and the pressure rises above the formula (1.11).`,
       caption: String.raw`80 nitrogen molecules (real diameter 0.37 nm) bounce in a box; every wall impact flashes. Left: the running pressure — total impulse delivered to the walls divided by area and elapsed time, with a ±2σ band — homing in on the kinetic-model value $Nm\langle v^2\rangle/3V$ (dashed); the ticks along the top are individual impacts, length ∝ impulse. Shrink the box: impacts come faster, exactly as $\tfrac14\mathcal N\bar vA$ predicts, until the molecules fill a sizeable part of the box and the pressure overshoots. Heat it, or add helium and read off Dalton's partial pressures.`,
       deps: ['pchem-1.4', 'mech-2.1'],
       see: ['thermo-1.6', 'thermo-1.5'],
       refs: ['Atkins Focus 1', 'M–S ch. 27'],
       tags: ['kinetic theory', 'pressure'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Kinetic_theory_of_gases' },
       credit: 'D. Bernoulli, 1738; Krönig, 1856; Clausius, 1857',
       scope: String.raw`Assumes molecules much smaller than their spacing and forces only during collisions: accurate for gases at low and moderate pressure. At high density the excluded volume raises the pressure (by the factor $1 + \tfrac{2\pi}{3}\mathcal N d^3 + \dots$ for hard spheres of diameter $d$) and attractions lower it (1.11–1.13).`,
       viz(v) {
@@ -707,7 +711,7 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
           boxFront(sb, P3, 0, 1, 0, 1);
           sb.corner(`${G.N} molecules · V = ${v.fix((L / 10) ** 3, 1)} nm³ · ${v.fix(G.t * T0 * 1e12, 0)} ps`, 'tl', { size: 11 });
           // --- running pressure ---
-          const ps = Mo.p * BAR, tmax = Math.max(40, el * T0 * 1e12 * 1.08), ymax = Math.max(ps * 2, 1e-6);
+          const ps = Mo.p * BAR, tmax = Math.max(40, el * T0 * 1e12 * 1.08), ymax = Math.max(ps * 2, pm * BAR * 1.3, 1e-6);
           sg.setView([0, tmax], [0, ymax]);
           const tp = (u) => u * T0 * 1e12;
           if (track.length > 1) {
@@ -735,7 +739,7 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
           const { Mo, el, pm, dp, eta } = R, ns = el * T0 * 1e9, rateM = acc.hits / ns, rateP = Mo.rate / (T0 * 1e9);
           let s = `After ${acc.hits} impacts: measured $p = ${v.fix(pm * BAR, 2)} \\pm ${v.fix(2 * dp * BAR, 2)}$ bar, kinetic model $Nm\\langle v^2\\rangle/3V = ${v.fix(Mo.p * BAR, 2)}$ bar (ratio $${v.fix(pm / Mo.p, 3)}$). Impacts per ns: $${v.fix(rateM, 0)}$ measured, $\\tfrac14\\mathcal N\\bar vA = ${v.fix(rateP, 0)}$ predicted.`;
           if (mix.value) s += ` Partial pressures: $\\mathrm{N_2}$ ${v.fix(acc.impS[0] / (Mo.A * el) * BAR, 2)} vs ${v.fix(Mo.pS[0] * BAR, 2)} bar, He ${v.fix(acc.impS[1] / (Mo.A * el) * BAR, 2)} vs ${v.fix(Mo.pS[1] * BAR, 2)} bar — they add up to the total (Dalton).`;
-          s += ` The molecules fill $\\eta = ${v.fix(100 * eta, eta < 0.1 ? 2 : 1)}\\%$ of the box; finite size raises both the impact rate and the pressure above the point-molecule model by about $1 + 4\\eta = ${v.fix(1 + 4 * eta, 3)}$${eta < 0.005 ? ' — negligible here' : eta > 0.05 ? ' — the model fails' : ''}.`;
+          s += ` The molecules fill $\\eta = ${v.fix(100 * eta, eta < 0.1 ? 2 : 1)}\\%$ of the box; finite size raises both the impact rate and the pressure above the point-molecule model by about $1 + 4\\eta = ${v.fix(1 + 4 * eta, 3)}$${eta < 0.005 ? ' — negligible here' : eta > 0.1 ? ' to first order (more at this density): the point-molecule model fails' : eta > 0.05 ? ' — the point-molecule model fails' : ''}.`;
           return s;
         });
       },
@@ -745,13 +749,14 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
       num: '1.9', kind: 'Definition', name: 'Collision frequency and mean free path',
       statement: String.raw`In a gas of molecules with collision cross-section $\sigma = \pi d^2$ ($d$ the molecular diameter), number density $\mathcal N = p/k_BT$ and mean speed $\bar v = \sqrt{8k_BT/\pi m}$, the **collision frequency** $z$ is the mean number of collisions one molecule makes per unit time, and the **mean free path** $\lambda$ is the mean distance it travels between collisions. The kinetic model gives
 $$z = \sigma\,\bar v_{\rm rel}\,\mathcal N = \sqrt2\,\sigma\bar v\,\frac{p}{k_BT}, \qquad \lambda = \frac{\bar v}{z} = \frac{k_BT}{\sqrt2\,\sigma p}.$$
-At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\lambda \approx 70$ nm, about 200 molecular diameters, and $z \approx 7\times10^9\ \mathrm{s^{-1}}$. The free paths are scattered nearly exponentially about their mean.`,
+At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\lambda \approx 70$ nm, nearly 200 molecular diameters, and $z \approx 7\times10^9\ \mathrm{s^{-1}}$. The free paths are scattered nearly exponentially about their mean.`,
       idea: String.raw`A molecule sweeps out a collision tube of cross-section $\sigma$: any other molecule whose centre lies within $d$ of its path is hit. Moving at the mean *relative* speed, it sweeps a volume $\sigma\bar v_{\rm rel}$ per unit time and meets $\sigma\bar v_{\rm rel}\mathcal N$ molecules. For Maxwell-distributed velocities (thermo-6.15) the mean relative speed of two molecules is $\sqrt2\,\bar v$, which is where the $\sqrt2$ comes from. Collisions are random events at a nearly constant rate, so the distance to the next one is close to exponentially distributed. The formulas assume a dilute gas: when the molecules fill several percent of the volume, a molecule's neighbours crowd its path and collisions come sooner (Enskog's factor).`,
       caption: String.raw`A periodic piece of gas — no walls — with one molecule tagged: its zig-zag path and the points where it collided are drawn, and every free path of every molecule goes into the histogram on the right, against the exponential law with the predicted mean $\lambda = k_BT/\sqrt2\sigma p$ (dashed). Raise the pressure: the paths shrink as $1/p$. Above a few hundred bar the molecules fill a noticeable part of the space and the measured paths fall short of the dilute-gas formula — the readout then also gives the dense-gas (Enskog) correction.`,
       deps: ['pchem-1.6', 'thermo-6.15'],
       see: ['thermo-7.1'],
       refs: ['Atkins Focus 1', 'M–S ch. 27'],
       tags: ['kinetic theory', 'collisions'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Mean_free_path' },
       credit: 'Clausius, 1858 (mean free path); Maxwell, 1860 (the factor √2)',
       viz(v) {
         const N = 120, T = 300, RATE = 18, NB = 32;
@@ -806,12 +811,13 @@ At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\
           sa.corner(`box ${v.fix(L / 10, 2)} nm (periodic) · ${v.fix(G.t * T0 * 1e12, 0)} ps`, 'bl', { size: 11 });
           // --- histogram vs exponential ---
           const xmax = 4 * lp / 10, tot = counts.reduce((a, b) => a + b, 0), bw = xmax / NB;
-          sh.setView([0, xmax], [0, 1.15 * 10 / lp]);
-          if (tot > 0) sh.hist({ edges: Array.from({ length: NB + 1 }, (_, k) => k * bw), counts: Array.from(counts, (c) => c / (cnt * bw)) }, { color: sp.col, fillAlpha: 0.35 });
+          const dens = Array.from(counts, (c) => (cnt ? c / (cnt * bw) : 0)), top = Math.max(1.15 * 10 / lp, 1.08 * Math.max(...dens));
+          sh.setView([0, xmax], [0, top]);
+          if (tot > 0) sh.hist({ edges: Array.from({ length: NB + 1 }, (_, k) => k * bw), counts: dens }, { color: sp.col, fillAlpha: 0.35 });
           sh.fn((xn) => Math.exp(-xn * 10 / lp) * 10 / lp, { color: 'ink', width: 2, dash: [6, 4] });
           sh.vline(lp / 10, { color: 'ink', width: 1.2, dash: [3, 3] });
-          if (cnt) { sh.vline(R.lm / 10, { color: sp.col, width: 2.2 }); sh.text('measured mean', R.lm / 10, 1.08 * 10 / lp, { size: 11, color: sp.col, dx: 5, align: 'left' }); }
-          sh.text('λ predicted', lp / 10, 0.94 * 10 / lp, { size: 11, color: 'ink', dx: 5, align: 'left' });
+          if (cnt) { sh.vline(R.lm / 10, { color: sp.col, width: 2.2 }); sh.text('measured mean', R.lm / 10, 0.94 * top, { size: 11, color: sp.col, dx: 5, align: 'left' }); }
+          sh.text('λ predicted', lp / 10, 0.82 * top, { size: 11, color: 'ink', dx: 5, align: 'left' });
         }, { still: 20 });
         v.legend([['gold', 'path of the tagged molecule'], ['ink', 'its collisions', { dot: true }], ['muted', 'free paths of all molecules', { area: true }], ['ink', 'exponential law, mean $k_BT/\\sqrt2\\sigma p$', { dash: true }]]);
         v.readout(() => {
@@ -834,6 +840,7 @@ The scale height $H$ is about 8.4 km for air at 288 K. In a mixture left undistu
       deps: ['pchem-1.4'],
       refs: ['Atkins Focus 1'],
       tags: ['atmosphere', 'Boltzmann factor'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Barometric_formula' },
       credit: 'Halley, 1686; Laplace, 1805',
       scope: String.raw`Assumes an isothermal atmosphere, uniform $g$ and diffusive (unstirred) equilibrium. Earth's real atmosphere cools by about 6.5 K/km in the troposphere, and turbulence mixes all gases to a common profile up to the turbopause near 100 km; above it the gases separate by mass as the formula predicts.`,
       viz(v) {

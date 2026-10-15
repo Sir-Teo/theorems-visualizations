@@ -193,7 +193,9 @@ with the convention $0\log 0=0$, so outcomes of probability zero contribute noth
         let U = null, Useed = null;
         const unif = () => { if (Useed !== seed) { const r = v.rng(hashStr('info-1.2|' + seed)); U = new Float64Array(CAP); for (let i = 0; i < CAP; i++) U[i] = r(); Useed = seed; } return U; };
         // samples X_t = F⁻¹(U_t) from a fixed stream of uniforms, so dragging a bar moves the whole picture continuously
+        let simKey = null, simVal = null;
         const sim = () => {
+          const key = p.join(',') + '|' + N + '|' + seed; if (key === simKey) return simVal; simKey = key;
           const u = unif(), n = p.length, C = []; let c = 0; for (const x of p) { c += x; C.push(c); }
           const I = p.map(surpr), cnt = new Array(n).fill(0), path = []; let s = 0, next = 1;
           for (let t = 0; t < N; t++) {
@@ -202,7 +204,7 @@ with the convention $0\log 0=0$, so outcomes of probability zero contribute noth
             cnt[k]++; s += I[k];
             if (t + 1 >= next || t === N - 1) { path.push([t + 1, s / (t + 1)]); next = Math.ceil((t + 1) * 1.02); }
           }
-          return { cnt, path, avg: N ? s / N : NaN };
+          return (simVal = { cnt, path, avg: N ? s / N : NaN });
         };
         v.render(() => {
           const own = src.value === 'own';
@@ -495,7 +497,7 @@ with $L^*=H(X)$ exactly when every probability is a power of $\tfrac12$. The bes
               s.dot(x, y, { r, color: onPath.has(nd.id) ? 'gold' : 'accent', alpha: 0.75 });
               s.text(NAMES[nd.leaf], x, -0.62, { align: 'center', size: 12.5, weight: 600, color: 'ink' });
               s.text(v.fix(nd.w, 3).replace(/^0/, ''), x, -1.02, { align: 'center', size: 11, color: 'muted' });
-              if (done) { s.text(`${depth(nd.id)} question${depth(nd.id) === 1 ? '' : 's'}`, x, -1.5, { align: 'center', size: 10.5, color: 'teal', weight: 600 }); s.text(pathOf(nd.id), x, -1.9, { align: 'center', size: 10.5, color: 'teal', weight: 700 }); }
+              if (done) { s.text(`d = ${depth(nd.id)}`, x, -1.5, { align: 'center', size: 10.5, color: 'teal', weight: 600 }); s.text(pathOf(nd.id), x, -1.9, { align: 'center', size: 10.5, color: 'teal', weight: 700 }); }
             }
           }
           if (!done) s.corner(`${roots().length} groups: click two to join them under one question`, 'tl', { size: 12 });
@@ -509,7 +511,7 @@ with $L^*=H(X)$ exactly when every probability is a power of $\tfrac12$. The bes
           bar(0, Hp, 'green'); bar(1, Ls, 'accent'); bar(2, L, 'gold'); if (played) bar(3, played.avg, 'gold', true);
           if (!done) sR.text('unfinished', 2, 0.25, { align: 'center', size: 10.5, color: 'muted' });
         });
-        v.legend([['accent', 'objects (size: probability)', { dot: true }], ['accent', 'question nodes: probability of being asked'], ['teal', 'questions needed · yes/no path'], ['green', 'band $[H, H+1)$', { area: true }]]);
+        v.legend([['accent', 'objects (size: probability)', { dot: true }], ['accent', 'question nodes: probability of being asked'], ['teal', 'questions needed $d$ · yes/no path'], ['green', 'band $[H, H+1)$', { area: true }]]);
         v.readout(() => {
           const Hp = H(P), Ls = bestL();
           if (!complete()) return String.raw`${roots().length} groups left · $H = ${v.fix(Hp, 3)}$ bits; the best tree needs $L^* = ${v.fix(Ls, 3)}$ questions on average`;

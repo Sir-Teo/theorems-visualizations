@@ -283,3 +283,24 @@ export function trace(s, ts, ys, st = {}) {
   for (let i = 0; i < ts.length; i++) pts[i] = isFinite(ys[i]) ? [ts[i], ys[i]] : null;
   s.path(pts, st);
 }
+
+// ---------------------------------------------------------------- a car on a road (SI units)
+// m dv/dt = Fmax·u − kd (v + w)|v + w| − m g Cr − m g sin θ   (throttle u ∈ [−1, 1], negative = braking; headwind w)
+export const CAR = { m0: 1500, Fmax: 4500, kd: 0.42, Cr: 0.01, g: 9.81, vr: 25 };
+export const sinGrade = (gr) => gr / Math.sqrt(1 + gr * gr);
+export function carAccel(v, u, grade, m, wind = 0, Fmax = CAR.Fmax) {
+  const va = v + wind;
+  return (Fmax * u - CAR.kd * va * Math.abs(va) - m * CAR.g * CAR.Cr - m * CAR.g * sinGrade(grade)) / m;
+}
+/** Throttle that holds speed vr on a flat road with no wind for mass m. */
+export const carTrim = (vr = CAR.vr, m = CAR.m0, Fmax = CAR.Fmax) => (CAR.kd * vr * vr + m * CAR.g * CAR.Cr) / Fmax;
+/** Side view of a car whose wheels touch (x, y), tilted by angle ang (rad); st: {color, alpha, scale, label}. */
+export function drawCar(s, x, y, ang, st = {}) {
+  const k = st.scale ?? 1, ca = Math.cos(ang), sa = Math.sin(ang), col = st.color || 'accent', al = st.alpha ?? 1;
+  const P = (px, py) => [x + k * (px * ca - py * sa), y + k * (px * sa + py * ca)];
+  const body = [[-2.25, 0.32], [2.25, 0.32], [2.3, 0.85], [1.35, 1.0], [0.75, 1.5], [-1.05, 1.5], [-1.65, 1.0], [-2.3, 0.92]].map(([a, b]) => P(a, b));
+  const win = [[0.62, 1.05], [0.45, 1.38], [-0.95, 1.38], [-1.35, 1.05]].map(([a, b]) => P(a, b));
+  s.poly(body, { fill: col, fillAlpha: 0.85 * al, color: col, width: 1.4, alpha: al });
+  s.poly(win, { fill: 'panel', fillAlpha: 0.75 * al, stroke: false });
+  for (const wx of [-1.4, 1.4]) { const c = P(wx, 0.36); s.circle(c[0], c[1], 0.36 * k, { fill: 'ink', fillAlpha: al, color: 'panel', width: 1.2, alpha: al }); }
+}

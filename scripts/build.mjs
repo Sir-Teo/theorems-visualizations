@@ -181,6 +181,15 @@ for (const it of all) for (const d of it.deps) {
   if (D.col !== it.col) colEdges.set(`${D.col}>${it.col}`, (colEdges.get(`${D.col}>${it.col}`) || 0) + 1);
 }
 const edgeList = (m) => [...m].map(([k, n]) => { const [from, to] = k.split('>'); return { from, to, n }; });
+// field-level links over the whole syllabus (written + planned), for the chord diagram on the home page
+const fieldOfCol = new Map(collections.map((C) => [C.id, C.field]));
+const fieldEdges = new Map();
+for (const it of [...all, ...ghosts]) for (const d of [...(it.deps || []), ...(it.pdeps || [])]) {
+  const D = byId.get(d) || plannedById.get(d); if (!D) continue;
+  const a = fieldOfCol.get(D.col), b = fieldOfCol.get(it.col);
+  if (a && b && a !== b) fieldEdges.set(`${a}>${b}`, (fieldEdges.get(`${a}>${b}`) || 0) + 1);
+}
+const paperCount = [...all, ...ghosts].filter((it) => it.kind === 'Paper').length;
 
 // ---------- colours ----------
 // sRGB ↔ OKLCH, for deriving collection shades from the field hue
@@ -261,6 +270,8 @@ const index = {
   bridges: bridges.map((B) => ({ slug: B.slug, title: B.title, blurb: B.blurb, steps: B.steps.filter((st) => byId.has(st.id) || plannedById.has(st.id)) })),
   chapterEdges: edgeList(chEdges),
   collectionEdges: edgeList(colEdges),
+  fieldEdges: edgeList(fieldEdges),
+  paperCount,
 };
 // write into a private folder, then swap it in, so pages being served or checked never see a half-written data/
 const OUT = `data.tmp-${process.pid}`;

@@ -264,7 +264,7 @@ Interaction (create once, outside `render`):
 |---|---|
 | `s.handle(x, y, {color, r, label, labelPos, constrain})` → `h` | draggable point; read `h.x`, `h.y`. `constrain`: `'x'`, `'y'`, `{x:[a,b], y:[c,d]}` or `(x,y) => [x', y']` (e.g. snap onto a curve). `h.onDrag = fn`, `h.visible = false`, `h.set(x,y)`. |
 | `s.onDrag((x, y, phase) => …)` | free drag/draw anywhere (`phase`: start/move/end). |
-| `s.onClick((x, y) => …)` | click to add points etc. |
+| `s.onClick((x, y, mod) => …)` | click to add points etc.; `mod = {shift, alt, ctrl, button}` (e.g. shift-click to decrease). |
 
 ### Stage3D
 

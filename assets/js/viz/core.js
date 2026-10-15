@@ -854,7 +854,7 @@ class Stage {
       this.pointer.down = false;
       if (this._active) { this._active.dragging = false; this._active = null; cv.style.cursor = 'grab'; this.rt.invalidate(); }
       else if (this._dragging) { this._dragging = false; this._drag.forEach((f) => f(x, y, 'end')); this.rt.invalidate(); }
-      if (this._downAt && Math.hypot(px - this._downAt[0], py - this._downAt[1]) < 5 && performance.now() - this._downAt[2] < 600 && e.type === 'pointerup') { this._click.forEach((f) => f(x, y)); if (this._click.length) this.rt.invalidate(); }
+      if (this._downAt && Math.hypot(px - this._downAt[0], py - this._downAt[1]) < 5 && performance.now() - this._downAt[2] < 600 && e.type === 'pointerup') { const mod = { shift: e.shiftKey, alt: e.altKey, ctrl: e.ctrlKey || e.metaKey, button: e.button }; this._click.forEach((f) => f(x, y, mod)); if (this._click.length) this.rt.invalidate(); }
       this._downAt = null;
     };
     cv.addEventListener('pointerup', up);

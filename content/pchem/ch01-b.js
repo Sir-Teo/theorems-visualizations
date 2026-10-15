@@ -100,8 +100,9 @@ For a perfect gas $Z = 1$ in every state. For real gases $Z \to 1$ as $p \to 0$;
       idea: String.raw`$Z$ measures, at a glance, how far a real gas is from the perfect-gas law (1.4). A molecular picture explains its shape: at intermediate distances molecules attract one another, which pulls them together and lowers the pressure they exert for a given volume ($Z < 1$); at short distances they repel, so in a dense gas part of the volume is unavailable and the pressure is higher ($Z > 1$). Which effect wins depends on how dense the gas is and how hot it is relative to the depth of the attractive well — which is why helium and hydrogen at room temperature show $Z > 1$ from the start while carbon dioxide dips far below 1 and liquefies.`,
       caption: String.raw`$Z$ against pressure for five gases, computed from an equation of state: the van der Waals equation with each gas's measured $a$ and $b$, or the more accurate Peng–Robinson equation. At 0 °C the open circles are measured values for nitrogen. Drag the probe along the pressure axis; the bars on the right split each gas's departure from 1 into a repulsive part (molecular volume, up) and an attractive part (down). Change the temperature: cool carbon dioxide below 304 K and its curve breaks where it liquefies; heat everything and the dips flatten out.`,
       deps: ['pchem-1.4'],
-      refs: ['Atkins 1C', 'M–S ch. 16'],
+      refs: ['Atkins 1C', 'M–S ch. 16', 'CRC Handbook (van der Waals constants)', 'Amagat (1893) for the N₂ data'],
       tags: ['real gases', 'equation of state'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Compressibility_factor' },
       credit: 'Andrews, 1869; Amagat, 1893 (measurements)',
       viz(v) {
         const NAMES = ['He', 'H2', 'N2', 'CH4', 'CO2'], PMAX = 1000;
@@ -176,8 +177,9 @@ $B$ is negative at low temperature and positive at high temperature. At the **Bo
       idea: String.raw`The expansion is a Taylor series of $Z$ about the perfect-gas limit $1/V_m = 0$; its first correction counts pairs of molecules close enough to interact. The integrand $e^{-u/kT} - 1$ (Mayer's function) is $-1$ inside the repulsive core, which excludes volume and makes $B$ positive, and positive in the attractive well, where molecules linger, which makes $B$ negative. At low temperature the well wins; at high temperature molecules cross it too fast to care and the core wins. The balance point is the Boyle temperature, where the gas's $Z$–$p$ curve leaves 1 horizontally (1.11).`,
       caption: String.raw`Left: the Lennard-Jones potential of the chosen gas and the integrand $(e^{-u/kT} - 1)\,r^2$ of $B$ — the red area (repulsive core) pushes $B$ up, the blue area (attractive well) pulls it down. Middle: $B(T)$ computed by integrating, against measured values (circles); it crosses zero at the computed Boyle temperature (green) close to the measured one (tick). Right: $Z = 1 + Bp/RT$ at three temperatures — at $T_B$ the line is flat. Slide the temperature through $T_B$ and watch the blue area shrink below the red one. Helium and hydrogen miss: quantum effects.`,
       deps: ['pchem-1.11'],
-      refs: ['Atkins 1C', 'M–S ch. 16', 'Atkins Table 1C.3 (B data)'],
+      refs: ['Atkins 1C', 'M–S ch. 16', 'Atkins Table 1C.3 (B data)', 'Hirschfelder, Curtiss & Bird (Lennard-Jones parameters)'],
       tags: ['real gases', 'virial expansion'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Virial_expansion' },
       credit: 'Kamerlingh Onnes, 1901',
       scope: String.raw`The series converges at low and moderate densities; truncated after $B$ it is good to about 1% while $|B|/V_m \lesssim 0.05$ (tens of bar for permanent gases at room temperature). It does not describe condensation, where the expansion diverges.`,
       viz(v) {
@@ -250,6 +252,7 @@ The constant $b$ is the volume excluded per mole by the molecules themselves (fo
       deps: ['pchem-1.4', 'pchem-1.11', 'thermo-4.1'],
       refs: ['Atkins 1C', 'M–S ch. 16', 'CRC Handbook (van der Waals constants)'],
       tags: ['real gases', 'equation of state'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Van_der_Waals_equation' },
       credit: 'van der Waals, 1873',
       scope: String.raw`Qualitatively right everywhere — it predicts condensation, a critical point and corresponding states — but quantitatively only a first correction: it is good to a few percent at moderate densities and poor near the critical point and in the liquid (it predicts $Z_c = 3/8$ against about 0.29 for real fluids).`,
       viz(v) {
@@ -307,8 +310,9 @@ Above $T_c$ no pressure liquefies the substance: there is a single **supercritic
       idea: String.raw`Below $T_c$ the van der Waals isotherm (1.13) has a loop; Maxwell's equal-area rule (thermo-4.3) replaces it by the tie line at which the liquid and vapour have equal chemical potential, and the ends of the tie lines trace the coexistence dome. As $T$ rises the maximum and minimum of the loop move together and merge into a point of inflection — the top of the dome. Solving $p' = p'' = 0$ for the cubic gives the critical constants. There $\partial p/\partial V = 0$, so the isothermal compressibility is infinite: squeezing the fluid costs nothing, regions of very different density cost almost no free energy, and fluctuations of every size appear.`,
       caption: String.raw`Left: van der Waals isotherms in reduced units, with the coexistence dome (from Maxwell's construction) and the spinodal (dashed). Slide the temperature: the tie line (green) and its two equal areas shrink to a point at $T = T_c$, where the isotherm is flat with an inflection. Pick a gas to see what the van der Waals constants predict for its critical point next to the measured one. Right: a lattice model of the same transition at the same $T/T_c$ — molecules hop on a grid and attract their neighbours. Below $T_c$ liquid and vapour separate; at $T_c$ clusters of every size flicker (critical opalescence); above it the fluid is uniform.`,
       deps: ['pchem-1.13', 'thermo-4.3', 'thermo-4.2'],
-      refs: ['Atkins 1C', 'M–S ch. 16'],
+      refs: ['Atkins 1C', 'M–S ch. 16', 'CRC Handbook (critical constants)'],
       tags: ['real gases', 'phase transitions'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Critical_point_(thermodynamics)' },
       credit: 'Cagniard de la Tour, 1822; Andrews, 1869',
       viz(v) {
         const PICK = ['CO2', 'N2', 'Xe', 'H2O'], NL = 80, KC = 1 / 0.567296;   // lattice gas: kT_c = 0.567 ε (2D Ising, exact)
@@ -388,8 +392,9 @@ all gases obey approximately the same equation of state: gases at the same reduc
       caption: String.raw`$Z$ against pressure on a log scale for nine gases, each at the same reduced temperature $T_r$ (so at very different absolute temperatures), computed from the Peng–Robinson equation with each gas's measured $T_c$, $p_c$ and acentric factor. Slide **rescale** from 0 to 1: every curve slides along the axis by its own $\log p_c$ and the simple gases collapse onto one curve, which the van der Waals universal curve (dashed) follows at moderate pressure but not beyond. Water, ammonia and CO₂ (elongated or polar, larger $\omega$) stay apart, and so do the quantum gases helium and hydrogen. Right: the measured critical compression factors, a direct test with data.`,
       deps: ['pchem-1.15'],
       see: ['thermo-4.2'],
-      refs: ['Atkins 1C', 'M–S ch. 16'],
+      refs: ['Atkins 1C', 'M–S ch. 16', 'CRC Handbook (critical constants)'],
       tags: ['real gases', 'scaling'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Theorem_of_corresponding_states' },
       credit: 'van der Waals, 1880; Pitzer, 1955 (acentric factor)',
       scope: String.raw`Good to a few percent for simple nonpolar fluids (the noble gases from argon up, methane, nitrogen, oxygen); polar, hydrogen-bonded and strongly non-spherical molecules need a third parameter, and helium and hydrogen need quantum corrections.`,
       viz(v) {

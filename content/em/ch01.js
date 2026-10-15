@@ -81,6 +81,13 @@ function quiver(s, v, F, st = {}) {
     s.arrow(x0, y0, x0 + (ux * len) / s.sx, y0 + (uy * len) / s.sy, { color: st.color || 'accent', alpha: (st.alpha ?? 0.75) * (0.35 + 0.65 * t), width: 1.4, head: 6 });
   }
 }
+/** Filled arrowhead at data point q pointing from p to q. */
+function headAt(s, v, p, q, color, alpha = 1, size = 7.5) {
+  const X = s.X(q[0]), Y = s.Y(q[1]), dx = X - s.X(p[0]), dy = Y - s.Y(p[1]), L = Math.hypot(dx, dy); if (!L) return;
+  const ux = dx / L, uy = dy / L, c = s.ctx; c.save(); c.fillStyle = v.color(color, alpha); c.beginPath();
+  c.moveTo(X + ux * size * 0.55, Y + uy * size * 0.55); c.lineTo(X - ux * size * 0.45 - uy * size * 0.42, Y - uy * size * 0.45 + ux * size * 0.42);
+  c.lineTo(X - ux * size * 0.45 + uy * size * 0.42, Y - uy * size * 0.45 - ux * size * 0.42); c.closePath(); c.fill(); c.restore();
+}
 const showStage = (S, on) => { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; };
 const sgnCol = (q) => (q > 0 ? 'red' : q < 0 ? 'blue' : 'muted');
 /** Signed charge in nC as text: '+4 nC'. */
@@ -116,7 +123,7 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
         const sH = v.stage({ x: [0, 13.5], y: [0, 10], height: 340, axes: 'box', weight: 1.35, title: 'number of drops against measured charge (10⁻¹⁹ C)' });
         // ---------- pith balls (SI inside, cm for drawing)
         const Lth = 0.1, piv = 0.025, rb = 0.004, mb = 1.5e-5, QMAX = 9e10;
-        let nA = 31207553119, nB = 18724531871, note = 'Both balls were touched with a glass rod rubbed on silk, so both are positive and they repel.', seed = 3, sol;
+        let nA = 49932084990, nB = 31207553119, note = 'Both balls were touched with glass rods rubbed on silk, so both are positive and they repel.', seed = 3, sol;
         const solve = () => {
           const qA = nA * e, qB = nB * e; let tA = 0, tB = 0, F = [0, 0], contact = false, pA, pB;
           for (let it = 0; it < 700; it++) {
@@ -161,7 +168,7 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
         const b6 = v.button('measure 30 more drops', () => { nDrops = Math.min(900, nDrops + 30); });
         const b7 = v.button('start over', () => { nDrops = 12; });
         const RHO = 919.9 - 1.2, ETA = 1.824e-5, GAP = 0.016, VOLT = 5085, EF = VOLT / GAP, DIST = 0.005;
-        const W = [6, 10, 13, 14, 13, 11, 9, 7, 5, 4], WS = W.reduce((a, b) => a + b, 0);
+        const W = [10, 13, 14, 14, 12, 10, 8, 6, 5, 4], WS = W.reduce((a, b) => a + b, 0);
         const dropAt = (i, sg, cn) => {
           const r = v.rng(4001 + 17 * i);
           let a, n, tries = 0;
@@ -197,22 +204,22 @@ $$e = 1.602\,176\,634\times10^{-19}\ \text{C}$$
           {
             const s = sB, cm = (p) => [p[0] * 100, p[1] * 100];
             s.rect(-7, 0, 7, 0.6, { fill: 'muted', fillAlpha: 0.25, color: 'muted', width: 1 });
-            const fs = 3 / (mb * g); // cm of arrow per newton: the weight is a 3 cm arrow
+            const fs = 4.5 / (mb * g); // cm of arrow per newton: the weight is a 4.5 cm arrow
             const items = [[sol.pA, nA, 'A', -piv, sol.F, 'right'], [sol.pB, nB, 'B', piv, [-sol.F[0], -sol.F[1]], 'left']];
             for (const [p, n, lab, px, F, al] of items) {
               const [X, Y] = cm(p), col = sgnCol(n);
               s.line(px * 100, 0, X, Y, { color: 'muted', width: 1.2 });
-              s.arrow(X, Y, X, Y - 3, { color: 'faint', width: 2, head: 8 });
-              const fl = Math.hypot(F[0], F[1]) * fs;
-              if (fl > 0.25) s.arrow(X, Y, X + F[0] * fs, Y + F[1] * fs, { color: 'orange', width: 2.4, head: 9 });
               s.circle(X, Y, rb * 100, { fill: col, fillAlpha: n ? 0.6 : 0.25, color: col, width: 1.6 });
               s.text(lab, X, Y, { align: 'center', size: 12, weight: 700, halo: false });
+              const r0 = rb * 100, fl = Math.hypot(F[0], F[1]) * fs;
+              s.arrow(X, Y - r0, X, Y - r0 - 4.5, { color: 'faint', width: 2, head: 8 });
+              if (fl > 0.1) { const ux = F[0] / Math.hypot(...F), uy = F[1] / Math.hypot(...F); s.arrow(X + ux * r0, Y + uy * r0, X + ux * (r0 + fl), Y + uy * (r0 + fl), { color: 'orange', width: 2.6, head: 9 }); }
               const dx = al === 'right' ? -1.1 : 1.1;
-              s.text(`${groupInt(n)} e`, X + dx, Y + 0.45, { align: al, size: 12.5, color: n ? col : 'muted', weight: 600 });
-              s.text(`${n ? (n > 0 ? '+' : '−') + v.fix(Math.abs(n * e) * 1e9, 3) : '0'} nC`, X + dx, Y - 0.75, { align: al, size: 11.5, color: 'muted' });
+              s.text(`${groupInt(n)} e`, X + dx * 0.6, Y + 2.1, { align: al, size: 12.5, color: n ? col : 'muted', weight: 600 });
+              s.text(`${n ? (n > 0 ? '+' : '−') + v.fix(Math.abs(n * e) * 1e9, 3) : '0'} nC`, X + dx * 0.6, Y + 1.0, { align: al, size: 11.5, color: 'muted' });
             }
-            s.text('weight', sol.pA[0] * 100, sol.pA[1] * 100 - 3.6, { align: 'center', size: 11, color: 'muted' });
-            if (Math.hypot(...sol.F) * fs > 0.25) s.text('Coulomb force', sol.pB[0] * 100 + 0.9, sol.pB[1] * 100 - 1.9, { size: 11, color: 'orange' });
+            s.text('weight', sol.pA[0] * 100, sol.pA[1] * 100 - 5.6, { align: 'center', size: 11, color: 'muted' });
+            if (Math.hypot(...sol.F) * fs > 0.25) s.text('Coulomb force', sol.pB[0] * 100 + 0.9, sol.pB[1] * 100 - 1.2, { size: 11, color: 'orange' });
             s.corner('threads 10 cm, pith balls 0.015 g, hung 5 cm apart', 'tr', { size: 11 });
           }
           {
@@ -293,7 +300,7 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
         const box = () => { const dx = Math.max(0.4, Math.abs(hk.x - hc.x)), dy = Math.max(0.4, Math.abs(hk.y - hc.y)); return [hc.x - dx, hc.y - dy, hc.x + dx, hc.y + dy]; };
         const inside = (p) => { const [a, b, c, d] = box(); return p.x > a && p.x < c && p.y > b && p.y < d; };
         let P, T, Q0, inflow, hist, ev, flashes, rng, held = null, simCheat = null, T0 = 0;
-        const make = (x, y, q, age = 0) => { const p = { x, y, q, age }; p.in = inside(p); return p; };
+        const make = (x, y, q, age = 0, ang = null) => { const a = ang ?? rng.uniform(0, TAU), sp = q ? 0.75 : 0.4; const p = { x, y, q, age, vx: sp * Math.cos(a), vy: sp * Math.sin(a) }; p.in = inside(p); return p; };
         const reset = () => {
           rng = v.rng(11); P = []; T = 0; inflow = 0; flashes = []; ev = { pair: 0, ann: 0, dec: 0, fake: 0 }; simCheat = cheat.value;
           for (let i = 0; i < 26; i++) P.push(make(rng.uniform(0.3, W - 0.3), rng.uniform(0.3, H - 0.3), i < 13 ? 1 : i < 25 ? -1 : 1, 5));
@@ -304,31 +311,32 @@ where $\rho$ is the charge density and $\mathbf J$ the current density. Charged 
         const Qin = () => P.reduce((a, p) => a + (inside(p) ? p.q : 0), 0);
         const tally = () => { for (const p of P) { const now = inside(p); if (now !== p.in) { inflow += p.q * (now ? 1 : -1); p.in = now; } } };
         const step = (dt) => {
-          const sd = 0.55 * Math.sqrt(dt);
+          const turn = 1.5 * Math.sqrt(dt);
           for (const p of P) {
             p.age += dt; if (p === held) continue;
-            p.x += sd * rng.normal(); p.y += sd * rng.normal();
-            if (p.x < 0.12) p.x = 0.24 - p.x; if (p.x > W - 0.12) p.x = 2 * (W - 0.12) - p.x;
-            if (p.y < 0.12) p.y = 0.24 - p.y; if (p.y > H - 0.12) p.y = 2 * (H - 0.12) - p.y;
+            const th = turn * rng.normal(), c = Math.cos(th), sn = Math.sin(th), vx = p.vx * c - p.vy * sn;
+            p.vy = p.vx * sn + p.vy * c; p.vx = vx; p.x += p.vx * dt; p.y += p.vy * dt;
+            if ((p.x < 0.15 && p.vx < 0) || (p.x > W - 0.15 && p.vx > 0)) p.vx *= -1;
+            if ((p.y < 0.15 && p.vy < 0) || (p.y > H - 0.15 && p.vy > 0)) p.vy *= -1;
           }
           tally();
           // annihilation of a ± pair that meets (both on the same side of the boundary)
           for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) {
             const a = P[i], b = P[j];
             if (a.q * b.q !== -1 || a.age < 1 || b.age < 1 || a === held || b === held || a.in !== b.in) continue;
-            if (Math.hypot(a.x - b.x, a.y - b.y) < 0.2 && rng() < 0.5) {
+            if (Math.hypot(a.x - b.x, a.y - b.y) < 0.22 && rng() < 0.5) {
               flashes.push({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, t: T, k: 'ann' }); ev.ann++;
               P.splice(j, 1); P.splice(i, 1); i--; break;
             }
           }
           if (P.length < 70 && rng() < rate.value * dt) {
             const x = rng.uniform(0.5, W - 0.5), y = rng.uniform(0.5, H - 0.5);
-            P.push(make(x, y, 1), make(x, y, -1)); flashes.push({ x, y, t: T, k: 'pair' }); ev.pair++;
+            const a = rng.uniform(0, TAU); P.push(make(x, y, 1, 0, a), make(x, y, -1, 0, a + Math.PI)); flashes.push({ x, y, t: T, k: 'pair' }); ev.pair++;
           }
           for (let i = 0; i < P.length; i++) {
             const p = P[i];
             if (p.q === 0 && p !== held && rng() < 0.07 * dt) {
-              P.splice(i, 1, make(p.x, p.y, 1)); if (!cheat.value) P.push(make(p.x, p.y, -1)); else ev.fake++;
+              const a = rng.uniform(0, TAU); P.splice(i, 1, make(p.x, p.y, 1, 0, a)); if (!cheat.value) P.push(make(p.x, p.y, -1, 0, a + Math.PI)); else ev.fake++;
               flashes.push({ x: p.x, y: p.y, t: T, k: 'dec' }); ev.dec++;
             }
           }
@@ -546,7 +554,7 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
         const M = v.M, C = M.CONST, kE = C.ke * 1e-5;
         const s = v.stage({ x: [-6, 6], y: [-3.6, 3.6], equal: true, height: 350, axes: false, weight: 1.5 });
         const sp = v.stage({ x: [1e-3, 15], y: [1e-6, 1], xlog: true, ylog: true, height: 350, axes: 'box', weight: 1, title: 'relative error $|\\mathbf F/q-\\mathbf E|/|\\mathbf E|$ against $q$ (nC)' });
-        const qt = v.slider('test charge $q$', 0.001, 15, 6, { log: true, fmt: (x) => M.si(x * 1e-9, 'C') });
+        const qt = v.slider('test charge $q$', 0.001, 15, 10, { log: true, fmt: (x) => M.si(x * 1e-9, 'C') });
         const free = v.toggle('sources free to move (on springs)', true);
         const KS = 0.25; // spring constant, N/m
         const anchors = [{ x: -2.2, y: 0.7, q: 6 }, { x: 2.3, y: -0.9, q: -4 }];
@@ -596,12 +604,356 @@ a vector field defined everywhere except at the charges, and a charge $q$ placed
           sp.path(curve.map(([q, e]) => [q, Math.max(e, ymin * 1.01)]), { color: free.value ? 'accent' : 'green', width: 2.4 });
           if (free.value) sp.fn((q) => curve[24][1] * (q / curve[24][0]), { color: 'muted', dash: [4, 4], width: 1 });
           sp.dot(qt.value, Math.max(R.rel, ymin * 1.01), { r: 6, color: 'gold' });
-          sp.corner(free.value ? 'dashed: slope 1' : 'pinned sources: F/q = E exactly', 'br', { size: 11.5, color: free.value ? 'muted' : 'green' });
+          sp.corner(free.value ? 'dashed: slope 1' : 'pinned sources: F/q = E exactly', 'tl', { size: 11.5, color: free.value ? 'muted' : 'green' });
         });
         v.legend([['accent', 'field of the sources (direction; longer = stronger)'], ['green', 'true field $\\mathbf E$ at the test point', { dash: true }], ['gold', 'measured $\\mathbf F/q$']]);
         v.readout(() => {
           const { E0, R, p0 } = st, mv = Math.max(...R.p.map((b, i) => Math.hypot(b.x - p0[i].x, b.y - p0[i].y)));
           return `true field $|\\mathbf E|$ = ${M.si(Math.hypot(...E0), 'N/C')} · measured $|\\mathbf F/q|$ = ${M.si(Math.hypot(...R.E), 'N/C')} · relative error ${M.si(R.rel * 100, '%')}` + (free.value ? ` · the test charge dragged the sources by up to ${M.si(mv * 0.01, 'm')}` : ' · sources pinned');
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.6
+    {
+      num: '1.6',
+      kind: 'Definition',
+      name: 'Field lines',
+      statement: String.raw`A **field line** of $\mathbf E$ is a curve tangent to $\mathbf E$ at each of its points: a solution of $d\mathbf r/ds = \mathbf E/|\mathbf E|$. Exactly one field line passes through each point where $\mathbf E\ne 0$, so field lines never cross. For an electrostatic field they begin on positive charges and end on negative charges or run off to infinity. If the number of lines leaving or entering a charge is drawn proportional to the charge, then the number of lines crossing a small surface is proportional to the flux of $\mathbf E$ through it, so the density of lines (lines per unit area across them) is proportional to $|\mathbf E|$.`,
+      idea: String.raw`Tangency defines the lines; the counting rule is what makes them quantitative. Near a charge the field is that of the charge alone, radially symmetric, so lines spaced evenly around it carry equal shares $q/N$ of its flux. Between two neighbouring lines no flux crosses (the field is parallel to them), and in a charge-free region the flux in a tube of lines is conserved (Gauss’s law, em-1.14) — so every line keeps its share all the way along, and counting lines measures flux everywhere. In a planar drawing this is exact for **line charges**, where the picture is a cross-section of the 3D field; for point charges the true rule is lines per unit *area*, and a single slice through them only shows the pattern qualitatively.`,
+      caption: String.raw`Drag the charges, change their sizes with the sliders, and drag the two gold handles of the probe segment. Lines crossing it light up; the readout compares their number with the flux through the segment times the lines drawn per unit charge. With line charges they agree to within the one-line graininess, wherever you put the probe; switch to point charges and the agreement is lost — a slice of a 3D pattern cannot show $|\mathbf E|$ by crowding. The readout also checks where every line starts and ends.`,
+      deps: ['em-1.5'],
+      refs: ['Griffiths §2.2', 'Purcell ch. 1'],
+      tags: ['field lines', 'field'],
+      viz(v) {
+        const M = v.M, D = 8;
+        const s = v.stage({ x: [-6.2, 6.2], y: [-3.7, 3.7], equal: true, height: 400, axes: false, full: true });
+        const mode = v.select('', [{ value: '2d', label: 'line charges (exact in the plane)' }, { value: '3d', label: 'point charges (a slice of 3D)' }], '2d');
+        const qs = [v.slider('$q_1$', -3, 3, 2, { step: 0.5 }), v.slider('$q_2$', -3, 3, -1, { step: 0.5 }), v.slider('$q_3$', -3, 3, 1, { step: 0.5 })];
+        const shade = v.toggle('shade field strength $|\\mathbf E|$', true);
+        const F = v.fields(s, { sources: [{ x: -2.5, y: 0.4, q: 2 }, { x: 2.2, y: -0.9, q: -1 }, { x: 0.2, y: 2.2, q: 1 }], lineDensity: D, heat: 'magnitude', heatStrength: 0.3, heatColor: 'orange' });
+        const P1 = s.handle(-0.4, 1.3, { color: 'gold', r: 6 }), P2 = s.handle(0.3, -1.9, { color: 'gold', r: 6 });
+        let info = null;
+        v.render(() => {
+          F.o.law = mode.value;
+          qs.forEach((c, i) => { F.setStrength(i, c.value); F.handles[i].visible = c.value !== 0; F.handles[i].label = c.value ? `${c.value > 0 ? '+' : '−'}${Math.abs(c.value)}` : ''; });
+          F.draw({ lines: false, heat: shade.value ? 'magnitude' : false });
+          const lines = F.fieldLines(), src = F.live().filter((q) => q.q !== 0);
+          const ax = P1.x, ay = P1.y, ex = P2.x - ax, ey = P2.y - ay;
+          const atSrc = (p) => src.find((q) => Math.abs(q.x - p[0]) < 1e-9 && Math.abs(q.y - p[1]) < 1e-9);
+          let net = 0, tot = 0, pm = 0, pe = 0, em = 0;
+          for (const L of lines) {
+            const pts = L.pts; let hit = false;
+            for (let k = 1; k < pts.length; k++) {
+              const p = pts[k - 1], q = pts[k], dx = q[0] - p[0], dy = q[1] - p[1], den = ex * dy - ey * dx;
+              if (Math.abs(den) < 1e-14) continue;
+              const t = ((p[0] - ax) * dy - (p[1] - ay) * dx) / den, u = ((p[0] - ax) * ey - (p[1] - ay) * ex) / den;
+              if (t >= 0 && t <= 1 && u >= 0 && u < 1) { net += Math.sign((L.reverse ? -1 : 1) * (dy * ex - dx * ey)); tot++; hit = true; }
+            }
+            const a = atSrc(pts[0]), b = atSrc(pts[pts.length - 1]);
+            if (!L.reverse) { if (b) pm++; else pe++; } else if (b) pm++; else em++;
+            void a;
+            s.path(pts, { color: hit ? 'gold' : 'ink', width: hit ? 2.2 : 1.3, alpha: hit ? 1 : 0.7 });
+            const m = Math.floor(pts.length / 2);
+            if (pts.length > 12) { const [p, q] = L.reverse ? [pts[m + 2], pts[m]] : [pts[m - 2], pts[m]]; headAt(s, v, p, q, hit ? 'gold' : 'ink', hit ? 1 : 0.75); }
+          }
+          // the probe segment and its normal
+          s.line(P1.x, P1.y, P2.x, P2.y, { color: 'gold', width: 4, alpha: 0.6 });
+          const L = Math.hypot(ex, ey) || 1, mx = ax + ex / 2, my = ay + ey / 2;
+          arrowPx(s, mx, my, -ey / L, ex / L, 22, { color: 'gold', width: 2, head: 7 });
+          s.tex(String.raw`\hat{\mathbf n}`, mx + ((-ey / L) * 34) / s.sx, my + ((ex / L) * 34) / s.sy, { color: 'gold', size: 14, align: 'center' });
+          const Ff = F.F(), flux = quad((t) => { const f = Ff(ax + t * ex, ay + t * ey); return f[1] * ex - f[0] * ey; }, 0, 1, 1e-10, 20, 16);
+          info = { tot, net, pm, pe, em, flux };
+        });
+        v.legend([['ink', 'field lines ($8$ per unit charge)'], ['gold', 'lines crossing the probe segment'], ['orange', '$|\\mathbf E|$ (log shading)', { area: true }]]);
+        v.readout(() => {
+          const { tot, net, flux, pm, pe, em } = info, ends = `lines: ${pm} run from a $+$ charge to a $-$ charge, ${pe} leave the window from a $+$ charge, ${em} come in from outside to a $-$ charge`;
+          if (mode.value === '2d') return `**${tot}** lines cross the probe (net ${net} along $\\hat{\\mathbf n}$) · flux through it × lines per unit flux $= ${v.fix(D * flux, 2)}$ — the count is the flux, to within one line · ${ends}`;
+          return `${tot} lines cross the probe, while the flux rule would predict ${v.fix(D * flux, 2)}: in a slice through point charges the lines spread like $1/r$ but $|\\mathbf E|$ falls like $1/r^2$, so crowding only hints at strength · ${ends}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.7
+    {
+      num: '1.7',
+      kind: 'Definition',
+      name: 'Continuous charge distributions',
+      statement: String.raw`When charge is spread so finely that its graininess does not matter, it is described by a **density**: a line density $\lambda$ (C/m) along a curve, a surface density $\sigma$ (C/m²) or a volume density $\rho$ (C/m³), so that a small piece carries $dq = \lambda\,dl$, $\sigma\,da$ or $\rho\,d\tau$. Its field is the limit of the superposition of point charges — the integral
+$$\mathbf E(\mathbf r) = \frac{1}{4\pi\varepsilon_0}\int \frac{\mathbf r-\mathbf r'}{|\mathbf r-\mathbf r'|^3}\,dq(\mathbf r'),$$
+which converges for every point $\mathbf r$ off a line or surface charge, and everywhere for a bounded volume density.`,
+      idea: String.raw`Chop the distribution into $N$ small pieces, replace each by a point charge $dq$ and add their Coulomb fields (em-1.5): that is a Riemann sum for the integral, and for a probe off the charge the integrand is smooth, so the sums converge to it (pma-10.1). How fast depends on where each piece’s charge is put: at the piece’s end the error falls like $1/N$, at its midpoint like $1/N^2$ — the classical left-endpoint and midpoint rules. A probe close to the rod needs pieces smaller than its distance before the sum settles down.`,
+      caption: String.raw`The rod (total charge 12 nC) is cut into $N$ pieces, each replaced by a point charge (red dots). At the probe $P$ the thin arrows are the separate contributions, the gold arrow their sum and the broad green arrow the integral. Drag $P$, raise $N$, switch the rod to a semicircle: the right panel plots the relative error for every $N$ at once — straight lines of slope $-2$ (midpoints) or $-1$ (left ends). Bring $P$ close to the rod and the error stays large until the pieces are shorter than its distance.`,
+      deps: ['em-1.5', 'pma-10.1'],
+      refs: ['Griffiths §2.1'],
+      tags: ['field', 'integration'],
+      viz(v) {
+        const M = v.M, C = M.CONST, kE = C.ke * 1e-5, Q = 12;
+        const s = v.stage({ x: [-5.2, 5.2], y: [-1.8, 4.2], equal: true, height: 330, axes: false, weight: 1.3 });
+        const sp = v.stage({ x: [1, 1024], y: [1e-7, 3], xlog: true, ylog: true, height: 330, axes: 'box', weight: 1, xlabel: 'pieces N', title: 'relative error of the sum at $P$' });
+        const shape = v.select('rod', [{ value: 'line', label: 'straight' }, { value: 'arc', label: 'semicircle' }], 'line');
+        const place = v.select('charge of each piece at', [{ value: 'mid', label: 'its midpoint' }, { value: 'end', label: 'its left end' }], 'mid');
+        const Ns = v.slider('pieces $N$', 1, 200, 6, { int: true, log: true });
+        const P = s.handle(0.9, 0.8, { color: 'gold', r: 7, label: '$P$', labelPos: 'ne' });
+        const pos = (t) => (shape.value === 'line' ? [-4 + 8 * t, 0] : [3.3 * Math.cos(Math.PI * (1 - t)), -0.4 + 3.3 * Math.sin(Math.PI * (1 - t))]);
+        const exact = (x, y) => {
+          const r = quad2((t) => { const [px, py] = pos(t), dx = x - px, dy = y - py, r3 = Math.pow(dx * dx + dy * dy, 1.5); return [dx / r3, dy / r3]; }, 0, 1, 1e-11, 24, 32);
+          return [r[0] * Q * kE, r[1] * Q * kE];
+        };
+        const sum = (x, y, N, parts) => {
+          let u = 0, w = 0;
+          for (let j = 0; j < N; j++) {
+            const [px, py] = pos(place.value === 'mid' ? (j + 0.5) / N : j / N), dx = x - px, dy = y - py, r3 = Math.pow(dx * dx + dy * dy, 1.5), k = (Q / N) * kE;
+            u += (k * dx) / r3; w += (k * dy) / r3; if (parts) parts.push([(k * dx) / r3, (k * dy) / r3, px, py]);
+          }
+          return [u, w];
+        };
+        const NS = []; for (let k = 0; k <= 70; k++) { const n = Math.round(Math.pow(1024, k / 70)); if (!NS.length || n !== NS[NS.length - 1]) NS.push(n); }
+        let st = null;
+        v.render(() => {
+          s.setView([-5.2, 5.2], shape.value === 'line' ? [-2.6, 3.4] : [-1.8, 4.2]);
+          const N = Ns.value, E = exact(P.x, P.y), parts = [], EN = sum(P.x, P.y, N, parts), mE = Math.hypot(...E);
+          s.curve(pos, 0, 1, { color: 'red', width: 8, alpha: 0.22, n: 200 });
+          for (let j = 0; j <= N && N <= 120; j++) { const p = pos(j / N), q = pos(Math.min(1, j / N + 1e-4)), tx = q[0] - p[0], ty = q[1] - p[1], tl = Math.hypot(tx, ty) || 1; s.line(p[0] - (ty / tl) * 0.18, p[1] + (tx / tl) * 0.18, p[0] + (ty / tl) * 0.18, p[1] - (tx / tl) * 0.18, { color: 'red', width: 1, alpha: 0.6 }); }
+          const r = Math.max(2.2, Math.min(7, 14 / Math.sqrt(N)));
+          for (const [, , px, py] of parts) s.dot(px, py, { r, color: 'red' });
+          const scale = 95 / mE;
+          if (N <= 40) for (const [u, w] of parts) arrowPx(s, P.x, P.y, u, w, Math.min(170, Math.hypot(u, w) * scale), { color: 'red', width: 1, alpha: 0.45, head: 6 });
+          arrowPx(s, P.x, P.y, E[0], E[1], 95, { color: 'green', width: 5, alpha: 0.55, head: 13 });
+          arrowPx(s, P.x, P.y, EN[0], EN[1], Math.min(240, Math.hypot(...EN) * scale), { color: 'gold', width: 2.6, head: 10 });
+          // error for every N
+          const errs = NS.map((n) => { const e = sum(P.x, P.y, n); return [n, Math.max(1e-16, Math.hypot(e[0] - E[0], e[1] - E[1]) / mE)]; });
+          const lo = Math.max(1e-9, Math.min(...errs.map((e) => e[1]))) / 3; sp.setView([1, 1024], [lo, 5]);
+          const a = errs.find((e) => e[0] >= 16) || errs[0];
+          sp.fn((n) => a[1] * Math.pow(n / a[0], -2), { color: 'muted', dash: [4, 4], width: 1 });
+          sp.fn((n) => a[1] * Math.pow(n / a[0], -1), { color: 'muted', dash: [2, 4], width: 1 });
+          sp.text('slope −2', 150, a[1] * Math.pow(150 / a[0], -2), { size: 11, color: 'muted', align: 'right', dx: -8, dy: 2 });
+          sp.text('slope −1', 150, a[1] * Math.pow(150 / a[0], -1), { size: 11, color: 'muted', align: 'left', dy: -12 });
+          sp.path(errs, { color: 'accent', width: 2.4 });
+          const eN = Math.hypot(EN[0] - E[0], EN[1] - E[1]) / mE;
+          sp.dot(N, Math.max(eN, lo * 1.01), { r: 6, color: 'gold' });
+          const fitPts = errs.filter((e) => e[0] >= 24 && e[0] <= 400 && e[1] > 1e-14);
+          const L = fitPts.length > 3 ? M.linreg(fitPts.map((e) => Math.log10(e[0])), fitPts.map((e) => Math.log10(e[1]))) : null;
+          st = { E, EN, eN, slope: L ? L.slope : NaN };
+        });
+        v.legend([['red', 'contribution of each piece'], ['gold', 'sum of the $N$ point charges'], ['green', 'the integral $\\int k\\,\\lambda\\,dl\\,(\\mathbf r-\\mathbf r\')/|\\mathbf r-\\mathbf r\'|^3$']]);
+        v.readout(() => `sum of ${Ns.value} point charges: ${M.si(Math.hypot(...st.EN), 'N/C')} · integral: ${M.si(Math.hypot(...st.E), 'N/C')} · relative error ${v.sci(st.eN, 2).includes('times') ? '$' + v.sci(st.eN, 2) + '$' : v.fix(st.eN, 4)} · fitted slope of the error curve (24 ≤ N ≤ 400): **${v.fix(st.slope, 2)}**`);
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.8
+    {
+      num: '1.8',
+      kind: 'Model',
+      name: 'Field of a uniformly charged line',
+      statement: String.raw`A straight segment of length $L$ carrying uniform line charge $\lambda$ produces, at a point a distance $s$ from its line whose foot lies between distances $x_1$ and $x_2$ along it from the two ends (signed), the field components
+$$E_\perp = \frac{\lambda}{4\pi\varepsilon_0 s}\left(\frac{x_2}{\sqrt{x_2^2+s^2}}+\frac{x_1}{\sqrt{x_1^2+s^2}}\right),\qquad E_\parallel = \frac{\lambda}{4\pi\varepsilon_0}\left(\frac{1}{\sqrt{x_2^2+s^2}}-\frac{1}{\sqrt{x_1^2+s^2}}\right).$$
+For an **infinite line** this becomes radial with magnitude
+$$E = \frac{\lambda}{2\pi\varepsilon_0\,s}.$$`,
+      idea: String.raw`Integrate Coulomb’s law along the segment (em-1.7): with $x$ the coordinate along the line, each element contributes $\lambda\,dx/4\pi\varepsilon_0(x^2+s^2)$, and the substitution $x = s\tan\theta$ makes both components elementary. When both ends recede ($x_1,x_2\to\infty$) the bracket in $E_\perp$ tends to 2 and $E_\parallel$ to 0. The $1/s$ law — slower than $1/s^2$ because there is ever more charge within a given angle as you move away — holds where the segment *looks* infinite: for $s$ and the distance to the nearer end both small compared with the distance to that end. Far away the segment is a point charge $\lambda L$.`,
+      caption: String.raw`The map shades how far the field of the finite rod is from the infinite-line value $\lambda/2\pi\varepsilon_0 s$ (green: within 1 %, orange: off by more than 10 %). Drag $P$ and change the length. The right panel plots the numerically integrated $|\mathbf E|$ along the perpendicular through $P$: it follows the dashed $1/s$ line close in and bends over to the point-charge law $1/r^2$ beyond about half the rod’s length.`,
+      scope: String.raw`Uniform line charge on a thin straight rod in vacuum; the infinite-line formula is accurate to 1 % when the probe is closer to the rod than about a tenth of its distance to the nearer end.`,
+      deps: ['em-1.7'],
+      refs: ['Griffiths §2.1', 'Purcell ch. 1'],
+      tags: ['line charge', 'field'],
+      viz(v) {
+        const M = v.M, C = M.CONST, lam = 50e-9, K = C.ke * lam * 100; // N/C per (1/cm)
+        const s = v.stage({ x: [-12, 12], y: [-6.5, 6.5], equal: true, height: 330, axes: false, weight: 1.5 });
+        const sp = v.stage({ x: [0.1, 100], y: [10, 1e7], xlog: true, ylog: true, height: 330, axes: 'box', weight: 1, xlabel: 'distance s (cm)', title: '$|\\mathbf E|$ (N/C) on the perpendicular through $P$' });
+        const Lr = v.slider('rod length $L$', 1, 200, 16, { log: true, fmt: (x) => `${x.toPrecision(3)} cm` });
+        const P = s.handle(1.5, 1.8, { color: 'gold', r: 7, label: '$P$' });
+        const closed = (x, y, L) => { const a = -L / 2 - x, b = L / 2 - x, sy = Math.max(1e-9, Math.abs(y)), r1 = Math.hypot(a, sy), r2 = Math.hypot(b, sy); return [K * (1 / r2 - 1 / r1), (K * (b / r2 - a / r1)) / sy]; };
+        const numeric = (x, y, L) => { const sy = Math.max(1e-9, Math.abs(y)), r = quad2((xp) => { const dx = x - xp, d3 = Math.pow(dx * dx + sy * sy, 1.5); return [dx / d3, sy / d3]; }, -L / 2, L / 2, 1e-12, 24, 32); return [K * r[0], K * r[1]]; };
+        const dev = (x, y, L) => { const E = closed(x, y, L); return Math.abs(Math.hypot(E[0], E[1]) / ((2 * K) / Math.abs(y)) - 1); };
+        let st = null;
+        v.render(() => {
+          const L = Lr.value, Pc = v.rgb('panel'), G = v.rgb('green'), O = v.rgb('orange');
+          s.raster((x, y) => {
+            if (Math.abs(y) < 1e-6) return null;
+            const t = Math.max(0, Math.min(1, (Math.log10(dev(x, y, L) + 1e-12) + 3) / 3));
+            const [A, k] = t < 0.34 ? [G, 0.42 * (1 - t / 0.34)] : [O, 0.36 * Math.pow((t - 0.34) / 0.66, 1.3)];
+            return [Pc[0] + (A[0] - Pc[0]) * k, Pc[1] + (A[1] - Pc[1]) * k, Pc[2] + (A[2] - Pc[2]) * k];
+          }, { res: 3, key: `${L}|${Pc.join(',')}` });
+          const lg = (x, y) => Math.log10(dev(x, y, L) + 1e-12);
+          s.contour(lg, [-2], { color: v.color('green', 0.9), width: 1.4 });
+          s.contour(lg, [-1], { color: v.color('orange', 0.9), width: 1.4 });
+          const x0 = Math.max(-L / 2, -12.5), x1 = Math.min(L / 2, 12.5);
+          s.line(x0, 0, x1, 0, { color: 'red', width: 6, alpha: 0.75 });
+          for (let x = Math.ceil(x0); x <= x1; x += 1) s.text('+', x, 0, { align: 'center', size: 11, color: 'panel', weight: 700, halo: false });
+          if (L / 2 > 12) { s.text('rod continues →', 11.8, -0.55, { align: 'right', size: 11, color: 'red' }); s.text('← rod continues', -11.8, -0.55, { align: 'left', size: 11, color: 'red' }); }
+          s.line(P.x, 0, P.x, P.y, { color: 'gold', width: 1.2, dash: [4, 3] });
+          const E = numeric(P.x, P.y, L), Ec = closed(P.x, P.y, L), m = Math.hypot(...E);
+          arrowPx(s, P.x, P.y, E[0], E[1] * Math.sign(P.y || 1), 70, { color: 'gold', width: 3, head: 10 });
+          const lab = (lv, col, txt) => { let a = 0.01, b = 6.4; if (dev(0, b, L) < lv) return; for (let it = 0; it < 50; it++) { const m = (a + b) / 2; if (dev(0, m, L) < lv) a = m; else b = m; } s.text(txt, 0, a, { align: 'center', size: 11.5, color: col, weight: 600, dy: -8 }); };
+          lab(0.01, 'green', '1 %'); lab(0.1, 'orange', '10 %');
+          // the perpendicular profile
+          const prof = []; for (let k = 0; k <= 70; k++) { const d = 0.1 * Math.pow(1000, k / 70), e = numeric(P.x, d, L); prof.push([d, Math.hypot(...e)]); }
+          sp.fn((d) => (2 * K) / d, { color: 'green', dash: [6, 4], width: 1.6 });
+          sp.fn((d) => (K * L) / (d * d + P.x * P.x), { color: 'orange', dash: [3, 4], width: 1.6, domain: [Math.max(0.1, L / 3), 100] });
+          sp.path(prof, { color: 'accent', width: 2.6 });
+          sp.dot(Math.max(0.1, Math.abs(P.y)), m, { r: 6, color: 'gold' });
+          st = { E, Ec, m, s: Math.abs(P.y) };
+        });
+        v.legend([['accent', 'numerical integral'], ['green', '$\\lambda/2\\pi\\varepsilon_0 s$ (infinite line)', { dash: true }], ['orange', '$\\lambda L/4\\pi\\varepsilon_0 r^2$ (point charge)', { dash: true }]]);
+        v.readout(() => {
+          const inf = (2 * K) / st.s, d = Math.hypot(st.E[0] - st.Ec[0], st.E[1] - st.Ec[1]) / st.m;
+          return `$\\lambda = 50$ nC/m · at $P$ ($s = ${v.fix(st.s, 2)}$ cm): numerical integral ${M.si(st.m, 'N/C')} (the closed form agrees ${d < 1e-10 ? 'to better than $10^{-10}$' : 'to ' + v.fix(d, 6)}) · infinite line $\\lambda/2\\pi\\varepsilon_0 s$ = ${M.si(inf, 'N/C')} · ratio ${v.fix(st.m / inf, 4)}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.9
+    {
+      num: '1.9',
+      kind: 'Model',
+      name: 'Fields of a charged ring and disk',
+      statement: String.raw`On the axis of a ring of radius $R$ carrying total charge $Q$ uniformly, at height $z$ above its centre, the field points along the axis with
+$$E_z = \frac{1}{4\pi\varepsilon_0}\,\frac{Qz}{(z^2+R^2)^{3/2}} ,$$
+which vanishes at the centre and is largest at $z = \pm R/\sqrt2$. On the axis of a uniformly charged disk of radius $R$ and surface density $\sigma$,
+$$E_z = \frac{\sigma}{2\varepsilon_0}\left(1-\frac{z}{\sqrt{z^2+R^2}}\right)\quad(z>0),$$
+which tends to $\sigma/2\varepsilon_0$ just above the disk and to the point-charge field $Q/4\pi\varepsilon_0z^2$, $Q = \sigma\pi R^2$, far away. Both are odd in $z$; the disk’s field jumps by $\sigma/\varepsilon_0$ across it.`,
+      idea: String.raw`By symmetry every ring element has a partner opposite, and the components of their fields perpendicular to the axis cancel; the axial components are all equal, $dq\,z/4\pi\varepsilon_0(z^2+R^2)^{3/2}$, so they simply add (em-1.7). At the centre each element’s pull is purely sideways and cancels completely. A disk is a stack of rings of radius $r$ and charge $\sigma\,2\pi r\,dr$; integrating the ring formula over $r$ gives the disk’s field. Close to the disk every ring within a wide cone contributes, and the result no longer depends on $z$ — the seed of the uniform field of an infinite plane (em-1.10).`,
+      caption: String.raw`Drag $P$ along the axis in the right panel (or rotate the 3D view). For the ring the thin red arrows are the fields of eight of its elements (enlarged): their sideways parts cancel in pairs and the green resultant points along the axis. The curve is the numerical sum; the readout locates its maximum and compares it with $R/\sqrt2$. For the disk the curve is a numerical integral over rings: flat at $\sigma/2\varepsilon_0$ near the disk and merging into the point-charge curve far away.`,
+      scope: String.raw`Exact on the axis for thin, uniformly charged rings and disks in vacuum; off the axis the fields involve elliptic integrals.`,
+      deps: ['em-1.7'],
+      refs: ['Griffiths §2.1'],
+      tags: ['ring', 'disk', 'field'],
+      viz(v) {
+        const M = v.M, C = M.CONST, Q = 10e-9, k = C.ke;
+        const shape = v.select('', [{ value: 'ring', label: 'ring' }, { value: 'disk', label: 'disk' }], 'ring');
+        const s3 = v.stage3d({ range: 3.5, height: 340, yaw: -0.55, pitch: 0.32, labels: ['x', 'y', 'z'], axisLength: 3.1, weight: 0.9 });
+        const sp = v.stage({ x: [-8, 8], y: [-1, 1], height: 340, axes: 'box', weight: 1.15, xlabel: 'height z on the axis (cm)', title: '$E_z$ on the axis (kN/C)' });
+        const Rs = v.slider('radius $R$', 1, 3, 2, { step: 0.05, fmt: (x) => `${x.toFixed(2)} cm` });
+        const zh = sp.handle(2.2, 0, { color: 'gold', r: 7, label: '$P$', constrain: 'x' });
+        const NR = 720;
+        /** Ring of radius R (cm), charge q (C): vector sum of NR element fields at (0, 0, z) cm → [Ex, Ey, Ez] N/C. */
+        const ringE = (z, R, q = Q) => { let ex = 0, ey = 0, ez = 0; for (let j = 0; j < NR; j++) { const ph = (TAU * j) / NR, dx = -R * Math.cos(ph) * 0.01, dy = -R * Math.sin(ph) * 0.01, dz = z * 0.01, d3 = Math.pow(dx * dx + dy * dy + dz * dz, 1.5), c = (k * q) / NR / d3; ex += c * dx; ey += c * dy; ez += c * dz; } return [ex, ey, ez]; };
+        const ringAxis = (z, r, q) => (k * q * z * 0.01) / Math.pow((z * z + r * r) * 1e-4, 1.5);
+        const diskE = (z, R) => { const sig = Q / (Math.PI * R * R * 1e-4); return quad((r) => ringAxis(z, r, sig * TAU * r * 1e-4), 0, R, 1e-6, 20, 16); };
+        const formula = (z, R) => (shape.value === 'ring' ? ringAxis(z, R, Q) : (Q / (Math.PI * R * R * 1e-4) / (2 * C.eps0)) * (Math.sign(z) - z / Math.hypot(z, R)));
+        let st = null, key = '', curve = [];
+        v.render(() => {
+          const R = Rs.value, ring = shape.value === 'ring';
+          if (key !== `${R}|${ring}`) { key = `${R}|${ring}`; curve = []; for (let i = 0; i <= 320; i++) { const z = -8 + (16 * i) / 320; if (Math.abs(z) < 1e-9) { curve.push(null); continue; } curve.push([z, (ring ? ringE(z, R)[2] : diskE(z, R)) / 1e3]); } }
+          const vals = curve.filter(Boolean).map((p) => Math.abs(p[1])), ymax = Math.max(...vals) * 1.32;
+          sp.setView([-8, 8], [-ymax, ymax]);
+          const z = Math.abs(zh.x) < 0.02 ? 0.02 : zh.x, Ez = (ring ? ringE(z, R)[2] : diskE(z, R)) / 1e3; zh.y = Ez;
+          sp.hline(0, { color: 'faint', width: 1 });
+          const Qpt = (zz) => (k * Q * Math.sign(zz)) / (zz * zz * 1e-4) / 1e3;
+          sp.clip(() => sp.fn(Qpt, { color: 'orange', dash: [3, 4], width: 1.5, domain: [-8, 8], n: 400 }));
+          if (!ring) { const E0 = Q / (Math.PI * R * R * 1e-4) / (2 * C.eps0) / 1e3; sp.hline(E0, { color: 'green', dash: [6, 4], width: 1.4 }); sp.hline(-E0, { color: 'green', dash: [6, 4], width: 1.4 }); sp.text('σ/2ε₀', 7.8, E0, { align: 'right', size: 11.5, color: 'green', dy: -10 }); }
+          for (const dom of [[-8, -1e-6], [1e-6, 8]]) sp.fn((zz) => formula(zz, R) / 1e3, { color: 'muted', width: 5, alpha: 0.25, domain: dom, n: 200 });
+          sp.path(curve, { color: 'accent', width: 2.4 });
+          let zpk = NaN;
+          if (ring) {
+            let a = 0.05, b = 3 * R; for (let it = 0; it < 60; it++) { const m1 = a + (b - a) * 0.382, m2 = a + (b - a) * 0.618; if (ringE(m1, R)[2] > ringE(m2, R)[2]) b = m2; else a = m1; }
+            zpk = (a + b) / 2; const Ep = ringE(zpk, R)[2] / 1e3;
+            sp.line(zpk, 0, zpk, Ep, { color: 'green', dash: [4, 3], width: 1.2 }); sp.dot(zpk, Ep, { r: 5, color: 'green', label: '$R/\\sqrt2$', labelPos: 'ne' });
+          }
+          // 3D picture
+          
+          if (ring) {
+            s3.curve((t) => [R * Math.cos(t), R * Math.sin(t), 0], 0, TAU, { color: 'red', width: 3.5, n: 120 });
+          } else {
+            const poly = []; for (let i = 0; i < 72; i++) poly.push([R * Math.cos((TAU * i) / 72), R * Math.sin((TAU * i) / 72), 0]);
+            s3.poly(poly, { fill: 'red', fillAlpha: 0.22, color: 'red', width: 1.5 });
+            for (const f of [0.25, 0.5, 0.75]) s3.curve((t) => [f * R * Math.cos(t), f * R * Math.sin(t), 0], 0, TAU, { color: 'red', width: 1, alpha: 0.5, n: 60 });
+          }
+          // element fields at P, drawn to a common scale (each piece magnified by the number of pieces shown)
+          const P3 = [0, 0, z], els = ring ? [1] : [0.35, 0.7, 1], nE = 8, parts = [];
+          for (const f of els) for (let j = 0; j < nE; j++) {
+            const ph = (TAU * j) / nE + (f === 1 ? 0 : 0.4 * f), ex = f * R * Math.cos(ph), ey = f * R * Math.sin(ph), w = ring ? 1 : f;
+            const d = [-ex, -ey, z], dl = Math.hypot(...d), m = w / (dl * dl * dl);
+            parts.push([ex, ey, d[0] * m, d[1] * m, d[2] * m]);
+          }
+          const sz = parts.reduce((a, p) => a + p[4], 0), sc = 1.3 / Math.abs(sz || 1), mag = ring ? 5 : 9;
+          for (const [ex, ey, ux, uy, uz] of parts) {
+            s3.dot([ex, ey, 0], { r: 3, color: 'red', ring: false });
+            s3.arrow(P3, [ux * sc * mag, uy * sc * mag, z + uz * sc * mag], { color: 'red', alpha: 0.55, width: 1.5, head: 8 });
+          }
+          s3.arrow(P3, [0, 0, z + Math.sign(sz) * 1.3], { color: 'green', width: 4, head: 12 });
+          s3.dot(P3, { r: 5, color: 'gold' }); s3.text('P', [-0.45, 0.2, z - 0.15], { color: 'gold', math: true });
+          st = { Ez, z, R, zpk };
+        });
+        v.legend([['accent', 'numerical sum / integral'], ['muted', 'closed-form formula', { area: true }], ['orange', 'point charge $Q/4\\pi\\varepsilon_0 z^2$', { dash: true }]]);
+        v.readout(() => {
+          const { Ez, z, R, zpk } = st, f = formula(z, R) / 1e3;
+          if (shape.value === 'ring') {
+            const tr = Math.hypot(...ringE(z, R).slice(0, 2));
+            return `$Q = 10$ nC · at $z = ${v.fix(z, 2)}$ cm: sum of ${NR} element fields $E_z$ = ${M.si(Ez * 1e3, 'N/C')} (sideways parts cancel to ${M.si(tr, 'N/C')}) · formula ${M.si(f * 1e3, 'N/C')} · maximum found at $z = ${v.fix(zpk, 4)}$ cm, $R/\\sqrt2 = ${v.fix(R / Math.SQRT2, 4)}$ cm`;
+          }
+          const E0 = Q / (Math.PI * R * R * 1e-4) / (2 * C.eps0);
+          return `$Q = 10$ nC, $\\sigma$ = ${M.si(Q / (Math.PI * R * R * 1e-4), 'C/m²')} · at $z = ${v.fix(z, 2)}$ cm: integral over rings ${M.si(Ez * 1e3, 'N/C')}, formula ${M.si(f * 1e3, 'N/C')} · $\\sigma/2\\varepsilon_0$ = ${M.si(E0, 'N/C')} (ratio ${v.fix((Ez * 1e3) / E0, 3)}) · $E_z\\cdot 4\\pi\\varepsilon_0 z^2/Q = ${v.fix((Ez * 1e3 * z * z * 1e-4) / (k * Q), 3)}$ (→ 1 far away)`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.10
+    {
+      num: '1.10',
+      kind: 'Model',
+      name: 'Infinite charged plane: a uniform field',
+      statement: String.raw`An infinite plane carrying uniform surface charge $\sigma$ produces on each side a **uniform** field perpendicular to the plane, pointing away from it if $\sigma>0$, of magnitude
+$$E = \frac{\sigma}{2\varepsilon_0},$$
+independent of the distance from the plane. Two parallel planes with charges $+\sigma$ and $-\sigma$ produce the field $\sigma/\varepsilon_0$, pointing from the positive to the negative plane, between them, and **no field** outside.`,
+      idea: String.raw`It is the $R\to\infty$ limit of the disk (em-1.9): $\sigma/2\varepsilon_0\,(1 - z/\sqrt{z^2+R^2}) \to \sigma/2\varepsilon_0$ for every $z$. Distance does not matter because moving away from the plane weakens each element’s field like $1/r^2$, but the area of plane seen within a given cone of directions grows like $r^2$ — the two exactly compensate. Superposition (em-1.4) then gives the pair: between the planes the two fields of size $\sigma/2\varepsilon_0$ point the same way and add, outside they point oppositely and cancel. This is the ideal parallel-plate capacitor; a finite plate is close to it when the plate is large compared with its distance from the probe.`,
+      caption: String.raw`Side view of a charged disk ($\sigma$ = 50 nC/m²); the arrows are its field (length ∝ $\sqrt{|\mathbf E|}$), computed by integrating over the disk in polar coordinates centred under each point. Grow the radius: the arrows straighten and equalize, and the axial profile on the right flattens onto $\pm\sigma/2\varepsilon_0$. Drag $P$: the readout compares the field there with the field at twice the height. With two sheets the field fills the gap and vanishes outside — but only once the disks are large.`,
+      scope: String.raw`An idealization: a real plate of radius $R$ is uniform to within 1 % only at distances below about $R/100$ from its centre region and away from its edges.`,
+      deps: ['em-1.9'],
+      refs: ['Griffiths §2.2', 'Purcell ch. 1'],
+      tags: ['plane', 'uniform field'],
+      viz(v) {
+        const M = v.M, C = M.CONST, sig = 50e-9, kS = C.ke * sig, E2 = sig / (2 * C.eps0);
+        const s = v.stage({ x: [-10, 10], y: [-6, 6], equal: true, height: 330, axes: false, weight: 1.45 });
+        const sp = v.stage({ x: [-6, 6], y: [-4, 4], height: 330, axes: 'box', weight: 1, xlabel: 'height z on the axis (cm)', title: '$E_z$ on the axis (kN/C)' });
+        const mode = v.select('', [{ value: 'one', label: 'one sheet $+\\sigma$' }, { value: 'two', label: 'two sheets $\\pm\\sigma$' }], 'one');
+        const Rs = v.slider('disk radius $R$', 1, 1000, 6, { log: true, fmt: (x) => M.si(x * 0.01, 'm') });
+        const P = s.handle(2.5, 2.2, { color: 'gold', r: 7, label: '$P$' });
+        const H = 1.5;
+        /** Field (in units of kσ) at (x, z) cm of a disk of radius R cm in the plane z = 0. */
+        const disk = (x, z, R) => {
+          const Z = Math.abs(z); if (Z < 1e-7) return [NaN, NaN];
+          const fz = (t) => Z / Math.sqrt(t * t + Z * Z), fr = (t) => Math.asinh(t / Z) - t / Math.sqrt(t * t + Z * Z);
+          const r = quad2((ph) => {
+            const ux = Math.cos(ph), b = x * ux, disc = b * b - (x * x - R * R); if (disc <= 0) return [0, 0];
+            const sq = Math.sqrt(disc), t2 = -b + sq; if (t2 <= 0) return [0, 0];
+            const t1 = Math.max(0, -b - sq); return [-(fr(t2) - fr(t1)) * ux, fz(t1) - fz(t2)];
+          }, 0, TAU, 1e-9, 16, 24);
+          return [r[0], Math.sign(z) * r[1]];
+        };
+        const field = (x, z, R) => {
+          if (mode.value === 'one') return disk(x, z, R).map((c) => c * kS);
+          const a = disk(x, z + H, R), b = disk(x, z - H, R); return [(a[0] - b[0]) * kS, (a[1] - b[1]) * kS];
+        };
+        let key = '', grid = [], prof = [], st = null;
+        v.render(() => {
+          const R = Rs.value, two = mode.value === 'two';
+          if (key !== `${R}|${two}`) {
+            key = `${R}|${two}`; grid = [];
+            for (let x = -9.25; x <= 9.3; x += 1.25) for (let z = -5.5; z <= 5.6; z += 1) grid.push([x, z, field(x, z, R)]);
+            prof = []; for (let i = 0; i <= 240; i++) { const z = -6 + (12 * i) / 240; const near = two ? Math.min(Math.abs(z - H), Math.abs(z + H)) : Math.abs(z); prof.push(near < 1e-6 ? null : [z, field(0, z, R)[1] / 1e3]); }
+          }
+          const ref = E2;
+          // sheets
+          const sheets = two ? [[-H, 'red', '+'], [H, 'blue', '−']] : [[0, 'red', '+']];
+          for (const [zz, col, sg] of sheets) {
+            const x0 = Math.max(-R, -10.5), x1 = Math.min(R, 10.5);
+            s.line(x0, zz, x1, zz, { color: col, width: 5, alpha: 0.75 });
+            for (let x = Math.ceil(x0 / 1.25) * 1.25; x <= x1; x += 1.25) s.text(sg, x, zz, { align: 'center', size: 11, weight: 700, color: 'panel', halo: false });
+          }
+          if (R > 10) s.corner(`disk edge at ${M.si(R * 0.01, 'm')}, far off-screen`, 'tr', { size: 11 });
+          for (const [x, z, E] of grid) { const m = Math.hypot(...E); if (!isFinite(m) || m < ref * 0.003) continue; const L = Math.min(34, 24 * Math.sqrt(m / ref)); arrowPx(s, x - (E[0] / m) * (L / 2) / s.sx, z - (E[1] / m) * (L / 2) / s.sy, E[0], E[1], L, { color: 'accent', width: 1.6, head: Math.min(7, L * 0.45), alpha: 0.85 }); }
+          const EP = field(P.x, P.y, Rs.value), EP2 = field(P.x, 2 * P.y, Rs.value);
+          arrowPx(s, P.x, P.y, EP[0], EP[1], Math.min(70, 40 * Math.sqrt(Math.hypot(...EP) / ref)), { color: 'gold', width: 3, head: 10 });
+          s.dot(P.x, 2 * P.y, { r: 3.5, color: 'gold', alpha: 0.6 });
+          // profile
+          const ymax = (two ? 2.4 : 1.4) * ref / 1e3; sp.setView([-6, 6], [-ymax, ymax]);
+          sp.hline(0, { color: 'faint', width: 1 });
+          if (two) { sp.path([[-6, 0], [-H, 0], null, [-H, (2 * ref) / 1e3], [H, (2 * ref) / 1e3], null, [H, 0], [6, 0]], { color: 'green', dash: [6, 4], width: 1.6 }); }
+          else { sp.hline(ref / 1e3, { color: 'green', dash: [6, 4], width: 1.4 }); sp.hline(-ref / 1e3, { color: 'green', dash: [6, 4], width: 1.4 }); }
+          for (const [zz, col] of sheets) sp.vline(zz, { color: col, width: 2, alpha: 0.5 });
+          sp.path(prof, { color: 'accent', width: 2.6 });
+          st = { EP, EP2 };
+        });
+        v.legend([['accent', 'computed field of the disk(s)'], ['green', 'infinite sheets: $\\pm\\sigma/2\\varepsilon_0$, or $\\sigma/\\varepsilon_0$ in the gap', { dash: true }], ['gold', 'probe $P$ (faint dot: twice as high)', { dot: true }]]);
+        v.readout(() => {
+          const { EP, EP2 } = st, m = Math.hypot(...EP), m2 = Math.hypot(...EP2);
+          return `$\\sigma/2\\varepsilon_0$ = ${M.si(E2, 'N/C')} · at $P$: ${M.si(m, 'N/C')} = ${v.fix(m / E2, 3)} $\\sigma/2\\varepsilon_0$, tilted ${v.fix((Math.atan2(Math.abs(EP[0]), Math.abs(EP[1])) * 180) / Math.PI, 1)}° from the normal · at twice the height: ${v.fix(m2 / E2, 3)} $\\sigma/2\\varepsilon_0$`;
         });
       },
     },

@@ -781,3 +781,80 @@ export class TimelineView {
     }
   }
 }
+
+// ------------------------------------------------------------ chord diagram of fields
+/**
+ * Chord diagram of dependency links between fields. edges: [{from, to, n}] where `from` is the field whose results
+ * are used and `to` the field using them. Arcs are sized by each field's cross-field links; a ribbon joins two fields
+ * and takes the colour of the one that supplies more. Hover an arc or ribbon to read the counts; click an arc to open the field.
+ */
+export function renderChord(host, { fields, edges, onField, size = 560 }) {
+  host.innerHTML = '';
+  const ids = fields.map((F) => F.id), ix = new Map(ids.map((id, i) => [id, i])), n = ids.length;
+  const M = ids.map(() => new Array(n).fill(0));
+  for (const e of edges) if (ix.has(e.from) && ix.has(e.to)) M[ix.get(e.from)][ix.get(e.to)] += e.n;
+  const pair = (i, j) => M[i][j] + M[j][i];
+  const tot = ids.map((_, i) => ids.reduce((s, _2, j) => s + (i === j ? 0 : pair(i, j)), 0));
+  const keep = ids.map((_, i) => i).filter((i) => tot[i] > 0);
+  const T = keep.reduce((s, i) => s + tot[i], 0); if (!T) { host.innerHTML = '<p class="muted">No cross-field links yet.</p>'; return; }
+  const S = size, cx = S / 2, cy = S / 2, R = S / 2 - 78, ring = 13, gap = 0.035;
+  const span = 2 * Math.PI - gap * keep.length;
+  const root = svg('svg', { viewBox: `0 0 ${S} ${S}`, class: 'chord', role: 'img', 'aria-label': 'How the fields depend on one another' }, host);
+  const P = (a, r) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  const arcD = (a0, a1, r0, r1) => { const lg = a1 - a0 > Math.PI ? 1 : 0, [x0, y0] = P(a0, r1), [x1, y1] = P(a1, r1), [x2, y2] = P(a1, r0), [x3, y3] = P(a0, r0); return `M${x0},${y0}A${r1},${r1} 0 ${lg} 1 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 ${lg} 0 ${x3},${y3}Z`; };
+  // angular layout: each field's arc, subdivided into one segment per partner (partners in circular order)
+  const arc = new Map(), seg = new Map();
+  let a = -Math.PI / 2;
+  for (const i of keep) {
+    const w = (span * tot[i]) / T; arc.set(i, [a, a + w]);
+    let b = a; const order = keep.filter((j) => j !== i).sort((p, q) => ((p - i + n) % n) - ((q - i + n) % n)).reverse();
+    for (const j of order) { const sw = (span * pair(i, j)) / T; seg.set(`${i}:${j}`, [b, b + sw]); b += sw; }
+    a += w + gap;
+  }
+  const gR = svg('g', { class: 'ribbons' }, root), gA = svg('g', { class: 'arcs' }, root), gL = svg('g', { class: 'labels' }, root);
+  const rib = [];
+  for (const i of keep) for (const j of keep) {
+    if (j <= i || !pair(i, j)) continue;
+    const [a0, a1] = seg.get(`${i}:${j}`), [b0, b1] = seg.get(`${j}:${i}`), r = R - 2;
+    const [x0, y0] = P(a0, r), [x1, y1] = P(a1, r), [x2, y2] = P(b0, r), [x3, y3] = P(b1, r);
+    const d = `M${x0},${y0}A${r},${r} 0 0 1 ${x1},${y1}Q${cx},${cy} ${x2},${y2}A${r},${r} 0 0 1 ${x3},${y3}Q${cx},${cy} ${x0},${y0}Z`;
+    const src = M[i][j] >= M[j][i] ? i : j;
+    const p = svg('path', { d, style: `fill:var(--f-${ids[src]});stroke:var(--f-${ids[src]})` }, gR);
+    rib.push({ el: p, i, j });
+  }
+  const center = svg('text', { x: cx, y: cy - 8, 'text-anchor': 'middle', class: 'chord-c1' }, root);
+  const center2 = svg('text', { x: cx, y: cy + 12, 'text-anchor': 'middle', class: 'chord-c2' }, root);
+  const center3 = svg('text', { x: cx, y: cy + 30, 'text-anchor': 'middle', class: 'chord-c2' }, root);
+  const totalLinks = edges.reduce((s, e) => s + (ix.has(e.from) && ix.has(e.to) ? e.n : 0), 0);
+  const idle = () => { center.textContent = `${totalLinks.toLocaleString('en')} links`; center2.textContent = 'between fields'; center3.textContent = 'hover to trace'; };
+  const F = (i) => fields[i];
+  const focus = (fi, fj) => {
+    for (const r of rib) r.el.classList.toggle('dim', fi != null && !(fj == null ? r.i === fi || r.j === fi : (r.i === fi && r.j === fj) || (r.i === fj && r.j === fi)));
+    for (const [i, el] of arcEls) el.classList.toggle('dim', fi != null && i !== fi && i !== fj && (fj != null || !pair(i, fi)));
+  };
+  const arcEls = new Map();
+  for (const i of keep) {
+    const [a0, a1] = arc.get(i);
+    const el = svg('path', { d: arcD(a0, a1, R, R + ring), class: 'chord-arc', style: `fill:var(--f-${ids[i]})`, tabindex: 0, role: 'link', 'aria-label': F(i).title }, gA);
+    arcEls.set(i, el);
+    const inN = keep.reduce((s, j) => s + (j === i ? 0 : M[j][i]), 0), outN = keep.reduce((s, j) => s + (j === i ? 0 : M[i][j]), 0);
+    const enter = () => { focus(i); center.textContent = F(i).short || F(i).title; center2.textContent = `uses ${inN.toLocaleString('en')} results from other fields`; center3.textContent = `supplies ${outN.toLocaleString('en')} to them`; };
+    el.addEventListener('pointerenter', enter); el.addEventListener('focus', enter);
+    el.addEventListener('pointerleave', () => { focus(null); idle(); }); el.addEventListener('blur', () => { focus(null); idle(); });
+    el.addEventListener('click', () => onField?.(ids[i]));
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter') onField?.(ids[i]); });
+    // label outside the ring, along the radius
+    const am = (a0 + a1) / 2, [lx, ly] = P(am, R + ring + 8), right = Math.cos(am) >= 0;
+    const deg = (am * 180) / Math.PI, rot = right ? deg : deg + 180;
+    const t = svg('text', { x: lx, y: ly, transform: `rotate(${rot} ${lx} ${ly})`, 'text-anchor': right ? 'start' : 'end', 'dominant-baseline': 'middle', class: 'chord-lab', style: `fill:var(--f-${ids[i]})` }, gL);
+    t.textContent = F(i).short || F(i).title;
+    t.addEventListener('click', () => onField?.(ids[i]));
+  }
+  for (const r of rib) {
+    const { i, j } = r;
+    r.el.addEventListener('pointerenter', () => { focus(i, j); center.textContent = `${F(i).short} ↔ ${F(j).short}`; center2.textContent = `${F(j).short} uses ${M[i][j].toLocaleString('en')} from ${F(i).short}`; center3.textContent = `${F(i).short} uses ${M[j][i].toLocaleString('en')} from ${F(j).short}`; });
+    r.el.addEventListener('pointerleave', () => { focus(null); idle(); });
+  }
+  idle();
+  return { focus: (a, b) => focus(a == null ? null : ix.get(a), b == null ? null : ix.get(b)), M, ids };
+}

@@ -810,12 +810,12 @@ $$A_k = \begin{pmatrix} \lambda_k & & * \\ & \ddots & \\ 0 & & \lambda_k \end{pm
       statement: String.raw`Suppose $N \in \mathcal L(V)$ is nilpotent. Then $I + N$ has a square root: there is $R \in \mathcal L(V)$ with $R^2 = I + N$. (This holds for $\mathbf F = \mathbf R$ as well as $\mathbf F = \mathbf C$.)`,
       idea: String.raw`Imitate the Taylor series $\sqrt{1 + x} = 1 + \tfrac12 x - \tfrac18 x^2 + \tfrac1{16} x^3 - \cdots$. If $N^m = 0$, put $R = I + a_1 N + \cdots + a_{m-1}N^{m-1}$; then $R^2 = I + 2a_1 N + (2a_2 + a_1^2)N^2 + \cdots$, and one solves successively $2a_1 = 1$, $2a_2 + a_1^2 = 0$, …, making every coefficient after the first two vanish. All powers $N^k$ with $k \ge m$ are $0$, so the infinite series becomes a finite sum and no convergence question arises — the coefficients are just the binomial coefficients $\binom{1/2}{k}$.`,
       caption: String.raw`$N$ is a strictly upper-triangular $3$-by-$3$ matrix (its size set by the slider). Left: the unit cube (grey), its image under $I + N$ (a shear, green outline), under $R_m$ (orange edges) and under $R_m^2$ (gold), where $R_m = \sum_{k<m}\binom{1/2}{k}N^k$ is the series cut after $m$ terms; drag the background to rotate. When $N^3 = 0$, three terms already give $R_3^2 = I + N$ exactly and the gold box sits in the green one; with $N^2 = 0$ two terms suffice. Right: the defect $\|R_m^2 - (I + N)\|$ for each $m$ on a log scale — it drops to exactly $0$. Make $N$ not nilpotent: the defect only decays geometrically (or blows up once the spectral radius exceeds $1$) and never reaches $0$.`,
-      deps: ['ladr-8.14', 'ladr-8.16'],
+      deps: ['ladr-8.14'],
       tags: ['nilpotent', 'square roots'],
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-2, 2], y: [-1.75, 2.15], equal: true, axes: false, height: 370, weight: 1.15, minWidth: 300 });
-        const G = v.stage({ x: [-0.1, 7.6], y: [1e-18, 1e3], ylog: true, axes: 'box', height: 370, minWidth: 260, title: 'defect $\\|R_m^2 - (I + N)\\|$ for $m = 1, \\dots, 7$ terms', xticks: [1, 2, 3, 4, 5, 6, 7] });
+        const G = v.stage({ x: [-0.1, 7.6], y: [1e-19, 1e3], ylog: true, axes: 'box', height: 370, minWidth: 260, title: 'defect $\\|R_m^2 - (I + N)\\|$ for $m = 1, \\dots, 7$ terms', xticks: [1, 2, 3, 4, 5, 6, 7] });
         const sc = v.scene3(S, { yaw: -0.8, pitch: 0.33, axis: 1.35, lim: 2 });
         const kind = v.select('$N$', [{ value: 'n3', label: '$N^3 = 0 \\ne N^2$' }, { value: 'n2', label: '$N^2 = 0$' }, { value: 'bad', label: 'not nilpotent' }], 'n3');
         const sz = v.slider('size of $N$', 0.2, 1.6, 0.9, { step: 0.05 });
@@ -1218,7 +1218,7 @@ $$A_k = \begin{pmatrix} \lambda_k & 1 & & 0 \\ & \ddots & \ddots & \\ & & \ddots
               const tgt = p - k;
               if (k > 0) {
                 if (tgt >= 1) SC.dot(...D2(X0 + tgt * dx, Y), { r: 6, color: 'gold' });
-                else SC.dot(...D2(X0 - 4 + 3 * (p - 1), Y), { r: 4, color: 'red' });
+                else SC.dot(...D2(X0 + 14 + 9 * (p - 1), Y + 11), { r: 4, color: 'red' });
               } else SC.dot(...D2(Xp, Y), { r: 6, color: c });
             }
           });

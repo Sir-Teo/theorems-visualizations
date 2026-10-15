@@ -462,9 +462,11 @@ function chartFormants(h, b, r) {
 }
 /** Where a place's articulator meets the upper wall (arc length from the lips, cm). */
 const PLACE_S = { dental: 1.35, alveolar: 2.15, postalveolar: 2.75, retroflex: 3.4, palatal: 4.6, velar: 6.7, uvular: 8.5, pharyngeal: 11.6 };
-/** Tongue control points for a constriction of width `gap` (cm) at a place (the rest of the tongue near neutral). */
-function consCtl(place, gap) {
-  const s = PLACE_S[place]; if (s == null) return tongueCtl(4.6, 0.2);
+/** Which articulator makes a constriction at arc length s from the lips (cm). */
+const regionAt = (s) => (s <= 0.45 ? 'bilabial' : s <= 1.4 ? 'dental' : s <= 2.5 ? 'alveolar' : s <= 3.05 ? 'postalveolar' : s <= 3.8 ? 'retroflex' : s <= 5.8 ? 'palatal' : s <= 7.9 ? 'velar' : s <= 9.4 ? 'uvular' : s <= 16 ? 'pharyngeal' : 'glottal');
+/** Tongue control points for a constriction of width `gap` (cm) at a place, optionally at arc length sAt (the rest of the tongue near neutral). */
+function consCtl(place, gap, sAt) {
+  const s = sAt ?? PLACE_S[place]; if (s == null || place === 'bilabial' || place === 'glottal') return tongueCtl(4.6, 0.2);
   const w = along(WALL, WALL_S, s), tx = w.x + w.nx * gap, ty = w.y + w.ny * gap;
   if (place === 'dental' || place === 'alveolar' || place === 'postalveolar') {
     const c = tongueCtl(4.7, 0.0); c[0] = [tx + 0.45, ty - 0.75]; c[1] = [tx, ty]; c[2] = [tx + 0.75, ty - 0.2]; c[3] = [tx + 1.7, Math.min(ty - 0.35, 0.6)]; return c;
@@ -710,6 +712,304 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
         v.readout(() => info && (info.c
           ? `**[${info.sym}]** = ${info.desc}: ${MD[info.mn]} · e.g. ${IPA_EX[info.sym] || '—'} · gold lines on the spectrogram mark the consonant in [a${info.sym}a]`
           : `**[${info.sym}]** = ${info.desc} · synthesized with F1 ≈ ${Math.round(info.F[0])} Hz, F2 ≈ ${Math.round(info.F[1])} Hz (${info.measured ? 'measured cardinal value' : 'interpolated between the measured cardinal vowels'}) · e.g. ${VROW[info.sym][4]}`));
+      },
+    },
+    // ------------------------------------------------------------------ 1.3
+    {
+      num: '1.3',
+      kind: 'Concept',
+      name: 'Place of articulation',
+      statement: String.raw`The **place of articulation** of a consonant is where along the vocal tract the airway is narrowed or closed: the meeting point of an *active* articulator (lower lip, tongue tip or blade, tongue body, tongue root, vocal folds) with a *passive* one (upper lip, upper teeth, alveolar ridge, hard palate, velum, uvula, back wall of the pharynx). From the lips inward the IPA distinguishes bilabial [p], labiodental [f], dental [θ], alveolar [t], postalveolar [ʃ], retroflex [ʈ], palatal [c], velar [k], uvular [q], pharyngeal [ħ] and glottal [ʔ] places. Acoustically, place is signalled by the spectrum of the noise made at the constriction, which is shaped mainly by the resonances of the **front cavity** between the constriction and the lips (roughly a quarter-wave resonator, peaking near $c/4L_f$ for a front cavity of length $L_f$), and by the formant transitions into neighbouring vowels.`,
+      idea: String.raw`At the moment a stop is released, a short burst of turbulent noise is generated at the constriction. The cavity behind it is nearly decoupled by the narrow opening, so the burst is filtered mostly by the front cavity, a tube closed at the constriction and open at the lips: its lowest resonance is about $c/4L_f$. The front cavity is absent for [p] (a flat, weak, low burst), about 1.5–2 cm for [t] (a peak near 4–5 kHz), and 5–7 cm for [k] (a compact peak near 1.5–2 kHz), so the burst spectrum moves steadily downward as the closure moves back. At the glottis the "front cavity" is the whole tract, whose resonances are just the vowel formants of the uniform tube (ling-1.8). The labels themselves come from the IPA chart (ling-1.2).`,
+      caption: String.raw`Drag the **gold** handle along the roof of the mouth, from the lips back to the glottis. The tongue or lips close the tract there; the shaded stretch is the front cavity. The right panel is the spectrum of the release burst, computed by FFT of noise filtered by that cavity, with dashed lines at its predicted resonances $(2n-1)\,c/4L_f$; the strip below is the spectrogram of [aCa] synthesized with this closure. *Listen* plays it; *p, t, k, ʔ* plays the four main English and German stops in turn. Watch the burst peak fall as the front cavity lengthens.`,
+      deps: ['ling-1.2'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['consonants', 'articulation'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Place_of_articulation' },
+      viz(v) {
+        const M = v.M, FM = 7600;
+        const tr = v.stage({ x: [-2.5, 9.6], y: [-9.6, 4.6], equal: true, height: 340, axes: false, minWidth: 280, weight: 1.1 });
+        const sp = v.stage({ x: [0, FM], y: [-42, 4], height: 340, axes: 'box', title: 'burst spectrum (dB)', minWidth: 260, xticks: [[0, '0'], [2000, '2k'], [4000, '4k'], [6000, '6 kHz']] });
+        const sg = v.stage({ x: [0, 0.5], y: [0, 6000], height: 150, axes: 'box', full: true, yticks: [[0, '0'], [2000, '2k'], [4000, '4k'], [6000, '6 kHz']] });
+        const h0 = along(WALL, WALL_S, 2.1);
+        const H = tr.handle(h0.x, h0.y, { color: 'gold', r: 8, constrain: (x, y) => { const q = nearestOn(WALL, WALL_S, x, y); return [q.x, q.y]; } });
+        const SYM = { bilabial: 'p', dental: 't̪', alveolar: 't', postalveolar: 't̠', retroflex: 'ʈ', palatal: 'c', velar: 'k', uvular: 'q', pharyngeal: '—', glottal: 'ʔ' };
+        // formant loci along the tract (for [a] context), interpolated between the canonical places
+        const LOC = [[0, [220, 800, 2200]], [1.2, [220, 1600, 2600]], [2.1, [220, 1800, 2700]], [3.4, [260, 1700, 1800]], [4.6, [220, 2300, 3000]], [6.7, [220, 2000, 2200]], [8.5, [450, 1200, 2400]], [11.6, [750, 1100, 2400]], [17, [750, 1300, 2500]]];
+        const locAt = (s) => { let i = 1; while (i < LOC.length - 1 && LOC[i][0] < s) i++; const [s0, a] = LOC[i - 1], [s1, b] = LOC[i], u = clampN((s - s0) / (s1 - s0), 0, 1); return a.map((x, k) => x + (b[k] - x) * u); };
+        const sOf = () => nearestOn(WALL, WALL_S, H.x, H.y).s;
+        const lfOf = (s) => (s < 0.45 ? 0 : s);
+        const cons = (s) => ({ sym: SYM[regionAt(s)], pl: { lf: lfOf(s), loc: s > 16 ? null : locAt(s) }, mn: 'plosive', vc: 0 });
+        const cache = new Map();
+        const get = (s) => {
+          const key = Math.round(s * 10);
+          if (cache.has(key)) return cache.get(key);
+          const lf = lfOf(s), res = lf >= 0.8 ? [1, 2, 3].map((n) => ((2 * n - 1) * C_TRACT) / (4 * lf)).filter((f) => f < FM) : [];
+          // burst: noise through the front-cavity resonances (in parallel); a labial burst has no front cavity and is flat
+          const n = Math.round(0.25 * SR), rnd = noiseGen(5), x = new Float32Array(n);
+          if (!res.length) { let y = 0; for (let i = 0; i < n; i++) { const w = rnd(); x[i] = w - 0.55 * y; y = w; } }
+          else for (const [k, f] of res.entries()) { const [A, B, C] = resCoef(f, 0.22 * f + 120), g = 1 / (k + 1); let y1 = 0, y2 = 0; const r2 = noiseGen(9 + k); for (let i = 0; i < n; i++) { const y = A * r2() + B * y1 + C * y2; y2 = y1; y1 = y; x[i] += g * y * (f / 1000); } }
+          const N = 512, acc = new Float64Array(N / 2 + 1); let cnt = 0;
+          for (let s0 = 0; s0 + N <= n; s0 += N / 2) { const re = new Float64Array(N), im = new Float64Array(N); for (let j = 0; j < N; j++) re[j] = x[s0 + j] * (0.5 - 0.5 * Math.cos((2 * Math.PI * j) / N)); M.fft(re, im); for (let b = 0; b <= N / 2; b++) acc[b] += re[b] * re[b] + im[b] * im[b]; cnt++; }
+          const spec = Array.from(acc, (a) => 10 * Math.log10(a / cnt + 1e-14)), mx = Math.max(...spec);
+          // smooth over 5 bins so the curve shows the envelope rather than noise
+          const sm = spec.map((_, b) => { let t = 0, c = 0; for (let j = -2; j <= 2; j++) if (spec[b + j] != null) { t += spec[b + j]; c++; } return t / c - mx; });
+          let pk = 1; for (let b = 2; b < sm.length && (b * SR) / N < FM; b++) if (sm[b] > sm[pk]) pk = b;
+          const syl = speak(['a', cons(s), 'a']);
+          const out = { lf, res, sm, peak: (pk * SR) / N, syl, S: stft(M, syl.buf, { win: 0.005, fmax: 6000 }) };
+          cache.set(key, out); return out;
+        };
+        v.soundButton('Listen', (snd) => snd.samples(normalise(get(sOf()).syl.buf.slice(), 0.85, 0.02), SR, { gain: 0.6 }));
+        v.soundButton('p, t, k, ʔ', (snd) => {
+          const parts = [0.1, 2.1, 6.7, 17.3].map((s) => normalise(get(s).syl.buf.slice(), 0.85, 0.02)), gap = Math.round(0.18 * SR);
+          const out = new Float32Array(parts.reduce((a, p) => a + p.length + gap, 0)); let o = 0; for (const p of parts) { out.set(p, o); o += p.length + gap; }
+          snd.samples(out, SR, { gain: 0.6 });
+        });
+        v.legend([['gold', 'constriction', { dot: true }], ['gold', 'front cavity', { area: true }], ['accent', 'burst spectrum'], ['orange', 'predicted $(2n-1)\\,c/4L_f$', { dash: true }]]);
+        let info = null;
+        v.render(() => {
+          const s = sOf(), reg = regionAt(s), d = get(s);
+          const cfg = { hy: 0.9, glottis: reg === 'glottal' ? 'closed' : 'voiceless', velum: 'up', ctl: consCtl(reg, 0, s) };
+          if (reg === 'bilabial') cfg.lipGap = 0;
+          drawTract(tr, cfg);
+          // front cavity: the stretch of wall from the lips to the closure
+          if (s > 0.3) { const pts = []; for (let u = 0; u <= s; u += 0.1) { const w = along(WALL, WALL_S, u); pts.push([w.x + w.nx * 0.25, w.y + w.ny * 0.25]); } tr.path(pts, { color: 'gold', width: 7, alpha: 0.45 }); }
+          tr.text(`${reg} [${SYM[reg]}]`, -2.3, -4.5, { size: 13, color: 'ink', align: 'left', weight: 650 });
+          tr.text(s < 0.45 ? 'no front cavity' : `front cavity L = ${v.fix(s, 1)} cm`, -2.3, -5.2, { size: 12, color: 'muted', align: 'left' });
+          // spectrum
+          sp.path(d.sm.map((y, b) => [(b * SR) / 512, y]).filter((p) => p[0] <= FM), { color: 'accent', width: 2.2 });
+          for (const f of d.res) sp.vline(f, { color: 'orange', dash: [5, 4], width: 1.5 });
+          if (d.res.length) sp.dot(d.peak, d.sm[Math.round((d.peak * 512) / SR)], { r: 4.5, color: 'gold' });
+          sp.corner(d.res.length ? `c/4L = ${Math.round(d.res[0])} Hz` : 'flat: nothing in front of the closure', 'tr', { color: 'orange', weight: 600 });
+          // spectrogram of [aCa]
+          sg.setView([0, d.syl.dur], [0, 6000]);
+          drawSpec(sg, d.S, v.rgb('ink'), { key: Math.round(s * 10), range: 48 });
+          const c = d.syl.segs[1]; sg.vline(c.t1, { color: 'gold', dash: [4, 3], width: 1.4 });
+          sg.text('burst', c.t1 + 0.004, 5600, { size: 11, color: 'gold', align: 'left' });
+          sg.corner(`[a${SYM[reg] === '—' ? '?' : SYM[reg]}a]`, 'tr', { color: 'accent', weight: 650 });
+          info = { s, reg, d };
+        });
+        v.readout(() => info && (info.reg === 'pharyngeal'
+          ? `pharyngeal closure at ${v.fix(info.s, 1)} cm from the lips: the IPA shades the pharyngeal plosive as judged impossible (the tongue root cannot seal against the pharynx wall); the model still predicts a low burst near ${Math.round(info.d.res[0])} Hz`
+          : info.reg === 'glottal' ? `glottal stop [ʔ]: the vocal folds close; the "front cavity" is the whole tract (${v.fix(info.s, 1)} cm), so its resonances ${info.d.res.map((f) => Math.round(f)).join(', ')} Hz are just the schwa formants and there is no separate burst`
+          : info.d.res.length ? `${info.reg} [${SYM[info.reg]}]: front cavity $L_f$ = ${v.fix(info.s, 1)} cm → predicted lowest resonance $c/4L_f$ = **${Math.round(info.d.res[0])} Hz**; strongest peak of the computed burst spectrum: **${Math.round(info.d.peak)} Hz**`
+          : `bilabial [p]: the closure is at the lips, nothing filters the burst, so its spectrum is flat and weak and falls gently with frequency`));
+      },
+    },
+    // ------------------------------------------------------------------ 1.4
+    {
+      num: '1.4',
+      kind: 'Concept',
+      name: 'Manner of articulation',
+      statement: String.raw`The **manner of articulation** is how narrow a constriction is and how the air gets past it. In a **stop** (plosive) the oral tract is completely closed, pressure builds up behind the closure, and its release makes a burst; in a **nasal** the oral tract is also closed but the velum is lowered, so air flows out through the nose; in a **fricative** the gap is so narrow that the airflow through it becomes turbulent and hisses; in an **approximant** the articulators come close enough to change the resonances but not to make turbulence; a **vowel** has the most open tract. Trills (repeated vibration of an articulator in the airstream), taps (one fast contact) and laterals (air escaping past the sides of the tongue) complete the list. Whether a constriction is a fricative is decided by aerodynamics: the flow through it turns turbulent when its Reynolds number $\mathrm{Re}=uD/\nu$ exceeds roughly 1800, where $u$ is the air speed in the constriction, $D$ its width and $\nu$ the kinematic viscosity of air.`,
+      idea: String.raw`Treat the larynx and the oral constriction as two orifices in series fed by the lungs at pressure $P_s$. Each orifice of area $A$ passing volume flow $U$ costs a pressure drop $\tfrac12\rho\,(U/A)^2$ (Bernoulli), so the pressure in the mouth is $P_{oral}=P_s\,A_g^2/(A_g^2+A_c^2)$ and the jet speed in the constriction is $u=\sqrt{2P_{oral}/\rho}$. Closing the mouth ($A_c\to0$) stops the flow and raises $P_{oral}$ to $P_s$, which also stops voicing, since the vocal folds need a pressure drop of a couple of cm H₂O across them; opening the nasal port relieves the pressure, which is why nasals can be voiced indefinitely. Narrowing the constriction raises $u$ until the jet becomes turbulent, and the noise it radiates grows steeply, roughly as $u^3A^{1/2}$ (Stevens), so fricatives sit in a narrow band of areas around 0.05–0.2 cm². Place is the other dimension (ling-1.3).`,
+      caption: String.raw`Slide the constriction area from **closed** to wide open (it sits at the alveolar ridge, so the sounds run [t]/[d] → [s]/[z] → [ɹ] → [a]). The animation shows air parcels from the lungs: they speed up through narrow passages, swirl when the flow turns turbulent, and stop when the tract is closed, while the red shading is the air pressure. The gauges compute the pressures, the Reynolds number and the radiated noise level; the manner is read off them, not looked up. Lower the velum to make a nasal, and switch voicing off to see why voiceless fricatives hiss louder. *Listen* plays [aCa] synthesized with these settings, shown in the spectrogram.`,
+      deps: ['ling-1.3'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['consonants', 'aerodynamics'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Manner_of_articulation' },
+      viz(v) {
+        const M = v.M, PS = 784, RHO = 1.14, NU = 1.6e-5, REC = 1800, AN = 0.25, CMH2O = 98.07;
+        const areaOf = (u) => (u < 0.03 ? 0 : Math.pow(10, -2.3 + (3.0 * (u - 0.03)) / 0.97));
+        const uS = v.slider('constriction area $A_c$', 0, 1, 0.42, { step: 0.005, fmt: (u) => { const A = areaOf(u); return A === 0 ? 'closed' : v.fix(A, A < 0.1 ? 3 : 2) + ' cm²'; } });
+        const nas = v.toggle('velum lowered (nasal)', false);
+        const voi = v.toggle('voiced', true);
+        const tube = v.stage({ x: [0, 24], y: [-2.9, 4.3], height: 220, axes: false, full: true });
+        const gauge = v.stage({ x: [0, 1], y: [0, 4.9], height: 250, axes: false, minWidth: 250, weight: 0.85 });
+        const sg = v.stage({ x: [0, 0.6], y: [0, 7000], height: 250, axes: 'box', minWidth: 280, yticks: [[0, '0'], [2000, '2k'], [4000, '4k'], [6000, '6 kHz']] });
+        const neutral = new Array(34).fill(3);
+        const aero = () => {
+          const Ac = areaOf(uS.value), An = nas.value ? AN : 0, Ag = voi.value ? 0.1 : 0.3, Aeff = Ac + An;
+          const Po = (PS * Ag * Ag) / (Ag * Ag + Aeff * Aeff);
+          const U = Aeff > 0 ? (Math.sqrt((2 * PS) / RHO) * Ag * Aeff * 1e-4) / Math.sqrt(Ag * Ag + Aeff * Aeff) : 0;
+          const uc = Ac > 0 ? Math.sqrt((2 * Po) / RHO) : 0, D = Math.sqrt((4 * Ac * 1e-4) / Math.PI), Re = (uc * D) / NU, dPg = PS - Po;
+          const gv = voi.value ? clampN((dPg - 200) / 300, 0, 1) : 0;
+          const Ln = Ac > 0 ? 30 * Math.log10(Math.max(uc, 1e-3)) + 5 * Math.log10(Ac) - 41.4 : -99, turb = M.smoothstep(REC, 1.6 * REC, Re), gn = turb * Math.pow(10, Ln / 20);
+          // the open glottis is itself a narrowing: voiceless sounds get aspiration noise from it ([h])
+          const ug = Math.sqrt((2 * dPg) / RHO), Lg = voi.value ? -99 : 30 * Math.log10(Math.max(ug, 1e-3)) + 5 * Math.log10(Ag) - 41.4 - 8, gh = voi.value || Ac === 0 ? 0 : Math.pow(10, Lg / 20);
+          let F = null;
+          if (Ac > 0) { const A = neutral.slice(); for (let i = 28; i <= 30; i++) A[i] = Math.min(3, Ac); F = tubeFormants(A, 0.5, 3); }
+          const manner = Ac === 0 ? (nas.value ? 'nasal stop' : 'stop (plosive)') : gn > 0.03 ? 'fricative' : F[0] < 380 ? 'approximant' : 'vowel';
+          const sym = Ac === 0 ? (nas.value ? 'n' : voi.value ? 'd' : 't') : manner === 'fricative' ? (voi.value ? 'z' : 's') : manner === 'approximant' ? (voi.value ? 'ɹ' : 'ɹ̥') : voi.value ? (nas.value ? 'ã' : 'a') : 'h';
+          return { Ac, An, Ag, Aeff, Po, U, Uc: Aeff > 0 ? (U * Ac) / Aeff : 0, Un: Aeff > 0 ? (U * An) / Aeff : 0, uc, Re, dPg, gv, Ln, gn, gh, F, manner, sym };
+        };
+        let syl = { key: null };
+        const sound = () => {
+          const a = aero(), key = [Math.round(uS.value * 200), nas.value, voi.value].join();
+          if (syl.key === key) return syl;
+          let buf, segs;
+          if (a.Ac === 0) { const r = speak(['a', a.sym, 'a']); buf = r.buf; segs = [r.segs[1].t0, r.segs[1].t1]; }
+          else {
+            const Fa = VF.a, Fc = a.F, t0 = 0.05, d1 = 0.15, tr = 0.045, dc = 0.17, T1 = t0 + d1, T2 = T1 + tr, T3 = T2 + dc, T4 = T3 + tr, dur = T4 + d1 + 0.05;
+            const mix = (t) => (t < T1 ? 0 : t < T2 ? (t - T1) / tr : t < T3 ? 1 : t < T4 ? 1 - (t - T3) / tr : 0);
+            buf = synth((t) => { const m = mix(t); return { f0: 128 - (25 * t) / dur, av: (1 - m) + m * a.gv, ah: m * Math.min(1.2, 4 * a.gh), af: m * Math.min(1.3, 1.1 * a.gn), ff: 5470, fb: 1600, nz: a.An && m > 0.4 ? 1700 : 0, F: [...Fa.map((f, k) => f + (Fc[k] - f) * m), ...FHI], B: BW5 }; }, dur);
+            segs = [T2, T3];
+          }
+          syl = { key, buf, segs, dur: buf.length / SR, S: stft(M, buf, { win: 0.005, fmax: 7000 }) };
+          return syl;
+        };
+        v.soundButton('Listen', (snd) => snd.samples(normalise(sound().buf.slice(), 0.85, 0.02), SR, { gain: 0.6 }));
+        // particles: oral and nasal paths; speed ∝ (flow / local area), compressed so that slow flows still move
+        const R = v.rng(4), oral = M.range(150).map(() => [R(), R() * 2 - 1]), nasal = M.range(60).map(() => [R(), R() * 2 - 1]);
+        const CX = 17.6;
+        const halfOral = (x, a) => (x < 3.4 ? 2.2 : x < 5.8 ? 0.55 : x < 6.25 ? Math.max(0.04, 0.55 * Math.sqrt(a.Ag / 0.6)) : Math.abs(x - CX) < 0.55 ? 0.95 * Math.sqrt(Math.min(3, a.Ac) / 3) : x < 20.6 ? 0.95 : 2.4);
+        const OPATH = [[1.6, 0], [20.6, 0], [24.5, 0]], NPATH = [[1.6, 0], [8.6, 0], [9.6, 1.7], [10.1, 3.1], [20.6, 3.1], [24.5, 3.1]];
+        const pathPos = (P, u) => { const S = arcLen(P), L = S[S.length - 1], q = along(P, S, u * L); return [q.x, q.y, q.nx, q.ny]; };
+        const timeTable = (P, half, U) => { // cumulative travel time along a path, sampled at 240 points
+          const n = 240, tt = [0]; let acc = 0, last = pathPos(P, 0);
+          for (let i = 1; i <= n; i++) { const p = pathPos(P, i / n), ds = Math.hypot(p[0] - last[0], p[1] - last[1]), A = Math.max(0.02, half(p[0], p[1]) ** 2 * 3.3), speed = 0.6 + 2.2 * Math.pow((U * 1e6) / A / 100, 0.45); acc += ds / speed; tt.push(acc); last = p; }
+          return tt;
+        };
+        let info = null;
+        v.animate((t) => {
+          const a = aero(), S = sound();
+          info = a;
+          // ---- the schematic tract: lungs, trachea, glottis, pharynx and mouth, nasal branch
+          const pres = (P) => clampN(P / PS, 0, 1);
+          tube.rect(0.3, -2.3, 3.4, 2.3, { fill: 'red', fillAlpha: 0.2, color: 'muted', width: 1.3 });
+          tube.text('lungs', 1.85, 1.75, { size: 11.5, color: 'muted', align: 'center' });
+          tube.text('8 cm H₂O', 1.85, -1.75, { size: 11, color: 'red', align: 'center' });
+          tube.rect(3.4, -0.55, 5.9, 0.55, { fill: 'red', fillAlpha: 0.2, stroke: false });
+          tube.rect(6.25, -0.95, CX - 0.55, 0.95, { fill: 'red', fillAlpha: 0.02 + 0.18 * pres(a.Po), stroke: false });
+          if (nas.value) tube.poly([[8.4, 0.95], [9.6, 0.95], [10.6, 2.6], [20.6, 2.6], [20.6, 3.6], [9.9, 3.6], [8.6, 0.95]], { fill: 'red', fillAlpha: 0.02 + 0.18 * pres(a.Po), stroke: false });
+          const wall = { color: 'ink', width: 2.2 };
+          tube.line(3.4, 0.55, 5.9, 0.55, wall); tube.line(3.4, -0.55, 5.9, -0.55, wall);
+          const hc = 0.95 * Math.sqrt(Math.min(3, a.Ac) / 3);
+          tube.path([[6.25, 0.95], [8.4, 0.95]], wall);
+          tube.path([[9.7, 0.95], [CX - 0.9, 0.95], [CX - 0.45, hc], [CX + 0.45, hc], [CX + 0.9, 0.95], [20.6, 0.95]], wall);
+          tube.path([[6.25, -0.95], [CX - 0.9, -0.95], [CX - 0.45, -hc], [CX + 0.45, -hc], [CX + 0.9, -0.95], [20.6, -0.95]], wall);
+          tube.path([[8.4, 0.95], [9.4, 2.6], [9.9, 3.6], [20.6, 3.6]], { color: 'muted', width: 1.6 }); tube.path([[9.7, 0.95], [10.6, 2.6], [20.6, 2.6]], { color: 'muted', width: 1.6 });
+          // velum: a flap that seals the nasal branch or hangs open
+          if (nas.value) tube.line(9.7, 0.95, 10.4, 0.25, { color: 'pink', width: 4 }); else tube.line(8.4, 0.95, 9.7, 0.95, { color: 'pink', width: 4 });
+          tube.text('velum', 9.05, nas.value ? -0.35 : 1.3, { size: 10.5, color: 'muted', align: 'center' });
+          // glottis
+          const hg = 0.55 * Math.sqrt(a.Ag / 0.6) * (voi.value ? 0.55 + 0.45 * Math.abs(Math.sin(t * 9)) : 1);
+          tube.poly([[5.9, 0.55], [6.25, hg], [6.25, 0.55]], { fill: 'muted', fillAlpha: 0.9, stroke: false }); tube.poly([[5.9, -0.55], [6.25, -hg], [6.25, -0.55]], { fill: 'muted', fillAlpha: 0.9, stroke: false });
+          tube.text(voi.value ? 'vocal folds (vibrating)' : 'glottis open', 6.1, -1.35, { size: 10.5, color: 'muted', align: 'center' });
+          tube.text('constriction', CX, -1.35, { size: 10.5, color: 'gold', align: 'center' });
+          tube.text('lips', 20.6, -1.35, { size: 10.5, color: 'muted', align: 'center' });
+          if (nas.value) tube.text('nose', 21.7, 3.1, { size: 10.5, color: 'teal', align: 'left' });
+          // particles
+          const drawFlow = (pts, P, U, nasalPath) => {
+            const half = (x, y) => (nasalPath && y > 0.9 ? 0.45 : halfOral(x, a));
+            const tt = timeTable(P, half, U), T = tt[tt.length - 1];
+            for (const [ph, eta] of pts) {
+              let u;
+              if (U <= 0) u = ph * 0.82; // no flow: parcels sit still (behind a closure they are merely compressed)
+              else { const tau = (ph * T + t) % T; let lo = 0, hi = tt.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (tt[m] < tau) lo = m; else hi = m; } u = (lo + (tau - tt[lo]) / (tt[hi] - tt[lo] || 1)) / (tt.length - 1); }
+              const [x, y, nx, ny] = pathPos(P, u);
+              if (U <= 0 && !nasalPath && x > CX - 0.6) continue;
+              let w = half(x, y) * 0.85 * eta;
+              let px = x + nx * w, py = y + ny * w;
+              if (!nasalPath && x > CX + 0.2 && x < 23 && a.Re > REC && U > 0) { const k = Math.min(1, (x - CX) / 2), amp = k * Math.min(0.75, 0.22 * Math.log2(a.Re / REC) + 0.15); py += amp * Math.sin(17 * ph + 6 * t + 3 * x) * Math.cos(5 * eta + 4 * t); px += 0.25 * amp * Math.sin(11 * eta + 7 * t); }
+              if (py > -2.8 && py < 4.2) tube.dot(px, py, { r: 2.1, color: nasalPath ? 'teal' : U > 0 ? 'accent' : 'muted' });
+            }
+          };
+          drawFlow(oral, OPATH, a.Uc, false);
+          if (nas.value) drawFlow(nasal, NPATH, a.Un, true);
+          if (a.Ac === 0) tube.text(nas.value ? 'mouth closed: all air leaves through the nose' : 'closed: no flow, pressure behind the closure rises to the lung pressure', 12, -2.35, { size: 11.5, color: 'red', align: 'center' });
+          else if (a.Re > REC) tube.text('turbulent jet', CX + 2.2, -0.0 + 1.45, { size: 11, color: 'orange', align: 'center' });
+          tube.text(`${a.manner} [${a.sym}]`, 23.8, -2.35, { size: 14, color: 'accent', align: 'right', weight: 650 });
+          // ---- gauges
+          const bar = (row, label, frac, col, marks, val) => {
+            const y = 4.35 - row * 1.2;
+            gauge.text(label, 0.03, y + 0.27, { size: 11.5, color: 'ink', align: 'left' });
+            gauge.text(val, 0.97, y + 0.27, { size: 11.5, color: col, align: 'right', weight: 650 });
+            gauge.rect(0.03, y - 0.28, 0.97, y, { fill: 'grid', fillAlpha: 0.7, stroke: false });
+            gauge.rect(0.03, y - 0.28, 0.03 + 0.94 * clampN(frac, 0, 1), y, { fill: col, fillAlpha: 0.75, stroke: false });
+            for (const [f, txt] of marks) { const x = 0.03 + 0.94 * f; gauge.line(x, y - 0.4, x, y + 0.08, { color: 'ink', width: 1.6 }); gauge.text(txt, x, y - 0.52, { size: 10, color: 'muted', align: 'center' }); }
+          };
+          bar(0, 'pressure in the mouth', a.Po / PS, 'red', [], `${v.fix(a.Po / CMH2O, 1)} cm H₂O`);
+          bar(1, 'pressure drop across the glottis', a.dPg / PS, a.dPg > 200 ? 'green' : 'red', [[200 / PS, 'voicing needs ≈ 2']], `${v.fix(a.dPg / CMH2O, 1)} cm H₂O`);
+          const lr = (x) => (Math.log10(Math.max(x, 10)) - 1) / 4;
+          bar(2, 'Reynolds number in the constriction', lr(a.Re), a.Re > REC ? 'orange' : 'accent', [[lr(REC), 'turbulent above ≈ 1800']], a.Ac ? Math.round(a.Re).toLocaleString('en-US') : '—');
+          const nl = Math.max(a.Ln + 20 * Math.log10(Math.max(1e-6, M.smoothstep(REC, 1.6 * REC, a.Re))), -60);
+          bar(3, 'turbulence noise, re [s]', (nl + 60) / 66, 'orange', [[50 / 66, '−10 dB']], a.Ac && a.Re > REC ? `${v.fix(nl, 0)} dB` : 'none');
+          // ---- spectrogram of [aCa]
+          sg.setView([0, S.dur], [0, 7000]);
+          drawSpec(sg, S.S, v.rgb('ink'), { key: S.key, range: 48 });
+          for (const x of S.segs) sg.vline(x, { color: 'gold', dash: [4, 3], width: 1.4 });
+          sg.corner(`[a${a.sym}a]`, 'tr', { color: 'accent', weight: 650 });
+        }, { still: 1.3 });
+        v.readout(() => info && `$A_c$ = ${info.Ac ? v.fix(info.Ac, 3) + ' cm²' : '0 (closed)'} · flow $U$ = ${v.fix(info.U * 1e3, 2)} L/s · jet speed $u = \\sqrt{2P_{oral}/\\rho}$ = ${v.fix(info.uc, 1)} m/s · Re = ${Math.round(info.Re)} · ${info.F ? `F1 of the tract = ${Math.round(info.F[0])} Hz · ` : ''}**${info.manner}**${voi.value && info.gv < 0.15 ? ' · voicing fails: almost no pressure drop across the vocal folds' : ''}`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.5
+    {
+      num: '1.5',
+      kind: 'Concept',
+      name: 'Voicing and voice onset time',
+      statement: String.raw`A sound is **voiced** when the vocal folds vibrate during it and **voiceless** when they are held apart. For stops, voicing is best described by the **voice onset time** (VOT): the interval from the release of the closure to the start of vocal-fold vibration, negative when voicing starts before the release. Three regions are used by the world's languages:
+
+- **prevoiced** stops, VOT below about −30 ms: voicing runs through the closure, [b];
+- **short-lag** stops, VOT from about 0 to 30 ms: plain voiceless unaspirated, [p];
+- **long-lag** stops, VOT above about 40 ms: aspirated, [pʰ], the gap filled with breathy noise.
+
+Languages carve this one phonetic dimension differently: Spanish contrasts prevoiced /b/ with short-lag /p/, English contrasts short-lag /b/ with long-lag /p/, and Thai uses all three.`,
+      idea: String.raw`Voicing needs air flowing through the glottis, which a closed mouth soon stops (ling-1.4); to keep the folds vibrating through a closure the speaker must expand the pharynx, so prevoicing takes effort, and voicing in a closure radiates only as a low "voice bar". After the release, if the folds are still apart, air rushes through the open glottis and makes aspiration noise in the formant region until they close and vibrate. Lisker and Abramson (1964) measured VOT in eleven languages and found that this single timing variable separates the stop categories of every one of them, with the categories clustering in the same three regions. The manner here is plosive (ling-1.4); only the timing of the larynx relative to the lips changes.`,
+      caption: String.raw`Drag the **gold** handle along the VOT axis (bottom) from −150 to +120 ms. The waveform and spectrogram show the synthesized syllable: a low voice bar before the release when VOT is negative, the burst at time 0, then aspiration noise until voicing starts (green line). The coloured bands are the categories that listeners of the chosen language hear, with Lisker and Abramson's (1964) production means marked; English puts both [b] and [p] in its /b/, while Spanish puts [p] in its /p/. *Listen*, or play the three types in a row.`,
+      deps: ['ling-1.4'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['voicing', 'VOT'],
+      credit: 'L. Lisker & A. S. Abramson, 1964',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Voice_onset_time' },
+      viz(v) {
+        const M = v.M, T0 = -0.17, T1 = 0.22;
+        const lang = v.select('listener', [{ value: 'en', label: 'English' }, { value: 'es', label: 'Spanish' }, { value: 'th', label: 'Thai' }], 'en');
+        const wav = v.stage({ x: [T0, T1], y: [-1.15, 1.5], height: 140, axes: false, full: true });
+        const sg = v.stage({ x: [T0, T1], y: [0, 5000], height: 190, axes: 'box', full: true, yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4k'], [5000, '5 kHz']], xticks: [-0.15, -0.1, -0.05, [0, '0'], 0.05, 0.1, 0.15, [0.2, '200 ms']].map((x) => (Array.isArray(x) ? x : [x, `${Math.round(x * 1000)}`])) });
+        const ax = v.stage({ x: [-180, 130], y: [-1.25, 1.2], height: 120, axes: false, full: true });
+        const H = ax.handle(45, 0, { color: 'gold', r: 9, constrain: (x) => [clampN(x, -150, 120), 0] });
+        // categories heard by listeners (approximate boundaries) and production means (Lisker & Abramson 1964, labial stops)
+        const LANG = {
+          en: { cats: [[-180, 25, '/b/', 'accent'], [25, 130, '/p/', 'orange']], means: [[1, '/b/'], [58, '/p/']] },
+          es: { cats: [[-180, 0, '/b/', 'accent'], [0, 130, '/p/', 'orange']], means: [[-138, '/b/'], [4, '/p/']] },
+          th: { cats: [[-180, -20, '/b/', 'accent'], [-20, 35, '/p/', 'green'], [35, 130, '/pʰ/', 'orange']], means: [[-97, '/b/'], [6, '/p/'], [64, '/pʰ/']] },
+        };
+        const cache = new Map();
+        const syl = (vot) => {
+          const key = Math.round(vot);
+          if (cache.has(key)) return cache.get(key);
+          const dcl = Math.max(0.1, -vot / 1000 + 0.03), r = speak([['p', dcl], ['a', 0.26]], { vot: vot / 1000, lead: 0.06, f0: (t) => 120 - 15 * t });
+          const tr = r.segs[0].t1, S = stft(M, r.buf, { win: 0.005, fmax: 5000 });
+          const out = { buf: r.buf, tr, S }; cache.set(key, out); return out;
+        };
+        const play = (snd, vots) => {
+          const parts = vots.map((x) => normalise(syl(x).buf.slice(), 0.85, 0.015)), gap = Math.round(0.25 * SR);
+          const out = new Float32Array(parts.reduce((a, p) => a + p.length + gap, 0)); let o = 0; for (const p of parts) { out.set(p, o); o += p.length + gap; }
+          snd.samples(out, SR, { gain: 0.6 });
+        };
+        v.soundButton('Listen', (snd) => play(snd, [H.x]));
+        v.soundButton('[b], [p], [pʰ]', (snd) => play(snd, [-90, 10, 70]));
+        v.legend([['gold', 'release (burst)', { dash: true }], ['green', 'voicing starts', { dash: true }], ['muted', 'production means (Lisker & Abramson 1964)', { dot: true }]]);
+        let info = null;
+        v.render(() => {
+          const vot = H.x, d = syl(vot), L = LANG[lang.value];
+          // waveform, aligned so that the release is at 0
+          const i0 = Math.max(0, Math.round((d.tr + T0) * SR)), i1 = Math.min(d.buf.length, Math.round((d.tr + T1) * SR));
+          let mx = 0; for (let i = i0; i < i1; i++) mx = Math.max(mx, Math.abs(d.buf[i]));
+          const pts = []; for (let i = i0; i < i1; i += 2) pts.push([i / SR - d.tr, d.buf[i] / (mx || 1)]);
+          wav.path(pts, { color: 'accent', width: 1.1 });
+          const vOn = Math.max(vot, 0) / 1000;
+          wav.vline(0, { color: 'gold', dash: [5, 4], width: 1.6 }); wav.vline(vot / 1000, { color: 'green', dash: [5, 4], width: 1.6 });
+          if (Math.abs(vot) > 6) wav.measure(Math.min(0, vot / 1000), 1.12, Math.max(0, vot / 1000), 1.12, `VOT ${vot > 0 ? '+' : '−'}${Math.abs(Math.round(vot))} ms`, { color: 'ink', math: false, size: 11.5, offset: -10 });
+          if (vot < -6) wav.text('voice bar', vot / 2000, -1.02, { size: 11, color: 'muted', align: 'center' });
+          if (vot > 12) wav.text('aspiration', vOn / 2, -1.02, { size: 11, color: 'orange', align: 'center' });
+          wav.text('vowel [a]', 0.15, -1.02, { size: 11, color: 'muted', align: 'center' });
+          // spectrogram
+          drawSpec(sg, d.S, v.rgb('ink'), { key: Math.round(vot), t0: -d.tr, range: 50 });
+          sg.vline(0, { color: 'gold', dash: [5, 4], width: 1.6 }); sg.vline(vot / 1000, { color: 'green', dash: [5, 4], width: 1.6 });
+          // the VOT axis with the listener's categories
+          for (const [a, b, lab, col] of L.cats) { ax.rect(a, -0.45, b, 0.45, { fill: col, fillAlpha: 0.2, stroke: false }); ax.text(lab, (Math.max(a, -175) + b) / 2, 0.8, { size: 13, color: col, align: 'center', weight: 650 }); }
+          for (const [a] of L.cats.slice(1)) ax.vline(a, { color: 'ink', width: 1.5, dash: [3, 3] });
+          ax.line(-180, 0, 130, 0, { color: 'muted', width: 1 });
+          for (let x = -150; x <= 120; x += 30) { ax.line(x, -0.5, x, -0.38, { color: 'muted', width: 1 }); ax.text(`${x > 0 ? '+' : x < 0 ? '−' : ''}${Math.abs(x)}${x === 120 ? ' ms' : ''}`, x, -0.8, { size: 10.5, color: 'muted', align: x === 120 ? 'right' : 'center' }); }
+          for (const [m, lab] of L.means) { const x = Math.max(-176, m); ax.dot(x, 0, { r: 4.5, color: 'muted' }); ax.text(m < -176 ? `${lab} ${m} ←` : '', x + 4, -0.25, { size: 10, color: 'muted', align: 'left' }); }
+          const ph = vot < -10 ? 'prevoiced [b]' : vot <= 30 ? 'short-lag [p]' : 'aspirated [pʰ]';
+          const heard = (lg) => LANG[lg].cats.find(([a, b]) => vot >= a && vot < b)[2];
+          info = { vot, ph, en: heard('en'), es: heard('es'), th: heard('th') };
+        });
+        v.readout(() => info && `VOT = **${info.vot > 0 ? '+' : info.vot < 0 ? '−' : ''}${Math.abs(Math.round(info.vot))} ms**: phonetically ${info.ph} · heard as English **${info.en}**, Spanish **${info.es}**, Thai **${info.th}**`);
       },
     },
   ],

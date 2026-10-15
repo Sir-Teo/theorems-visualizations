@@ -74,7 +74,7 @@ The *quotient* is $q=\lfloor a/b\rfloor$ and $r$, the *remainder*, is written $a
         const B = v.slider('$b$', 1, 24, 9, { int: true });
         const loose = v.toggle('drop $0 \\le r$ (allow $|r| < b$)', false);
         const R = v.stage({ x: [-2, 50], y: [-1.05, 2.75], height: 200, axes: false, full: true });
-        const T = v.stage({ x: [-4.5, 73], y: [-2.3, 19.2], height: 296, axes: false, full: true, title: 'the remainder $a \\bmod b$ for $0 \\le a \\le 72$, $1 \\le b \\le 18$ — darker = larger remainder, green = remainder $0$ · click a cell' });
+        const T = v.stage({ x: [-4.5, 73], y: [-2.3, 19.2], height: 296, axes: false, full: true, title: 'the remainder $a \\bmod b$ for $0 \\le a \\le 72$, $1 \\le b \\le 18$ — stronger shade = larger remainder, green = remainder $0$ · click a cell' });
         T.onClick((x, y) => { const a = Math.round(x), b = Math.round(y); if (a >= 0 && a <= 72 && b >= 1 && b <= 18) { A.set(a); B.set(b); } });
         v.render(() => {
           const a = A.value, b = B.value, q = Math.floor(a / b), r = a - q * b;
@@ -170,9 +170,36 @@ The gcd is characterised by divisibility alone: it is the unique $g\ge0$ that di
           if (k <= 1) return [[0, 1]];
           if (dirCache.has(key)) return dirCache.get(key);
           const rr = v.rng(97 + k), cands = NICE[k] ? [NICE[k]] : [];
-          for (let i = 0; i < 150; i++) { const d = []; for (let j = 0; j < k; j++) { const th = rr.uniform(0.15, Math.PI - 0.15), len = rr.uniform(0.75, 1.25); d.push([Math.cos(th) * len, Math.sin(th) * len * 0.8 + 0.22]); } cands.push(d); }
+          for (let i = 0; i < (k >= 4 ? 260 : 150); i++) { const d = []; for (let j = 0; j < k; j++) { const th = rr.uniform(0.15, Math.PI - 0.15), len = rr.uniform(0.75, 1.25); d.push([Math.cos(th) * len, Math.sin(th) * len * 0.8 + 0.22]); } cands.push(d); }
+          if (k >= 3) for (let i = 0; i < 120; i++) { const d = []; for (let j = 0; j < k; j++) d.push([rr.uniform(-1.6, 1.6), rr.uniform(0.85, 1.15)]); cands.push(d); } // rank-like layouts: one level per prime factor
           const W = Math.max(300, S.width), H = Math.max(200, S.height);
           let best = cands[0], bs = -1;
+          const scoreOf = (d) => {
+            const P = E.map((e) => { let x = 0, y = 0; for (let i = 0; i < k; i++) { x += e[i] * d[i][0]; y += e[i] * d[i][1]; } return [x, y]; });
+            let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+            for (const [x, y] of P) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+            const sc = Math.min(W / (x1 - x0 + 1.1), H / (y1 - y0 + 1.35));
+            let md = Infinity;
+            for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) md = Math.min(md, Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]));
+            for (const [i, j] of edges) {
+              const [ax, ay] = P[i], dx = P[j][0] - ax, dy = P[j][1] - ay, L2 = dx * dx + dy * dy;
+              for (let m = 0; m < P.length; m++) {
+                if (m === i || m === j) continue;
+                const t = Math.max(0, Math.min(1, ((P[m][0] - ax) * dx + (P[m][1] - ay) * dy) / L2));
+                md = Math.min(md, 1.5 * Math.hypot(P[m][0] - ax - t * dx, P[m][1] - ay - t * dy));
+              }
+            }
+            return sc * md;
+          };
+          if (k >= 4) { // score everything, then refine the best few by small random perturbations
+            const scored = cands.map((d) => [scoreOf(d), d]).sort((p, q) => q[0] - p[0]).slice(0, 5);
+            for (const [s0, d0] of scored) {
+              let cur = d0, cs = s0;
+              for (let it = 0; it < 70; it++) { const d = cur.map(([x, y]) => [x + rr.normal() * 0.12, Math.max(0.2, y + rr.normal() * 0.08)]); const s = scoreOf(d); if (s > cs) { cs = s; cur = d; } }
+              if (cs > bs) { bs = cs; best = cur; }
+            }
+            dirCache.set(key, best); return best;
+          }
           for (const d of cands) {
             const P = E.map((e) => { let x = 0, y = 0; for (let i = 0; i < k; i++) { x += e[i] * d[i][0]; y += e[i] * d[i][1]; } return [x, y]; });
             let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
@@ -239,7 +266,7 @@ The gcd is characterised by divisibility alone: it is the unique $g\ge0$ that di
           if (a === b) tag(a, 'a = b', 'ink', 'r');
           else { tag(a, 'a', 'blue', 'r'); tag(b, 'b', 'orange', 'l'); }
           if (g !== a && g !== b) tag(g, 'gcd', 'gold', 'r');
-          S.corner(`${k} prime${k === 1 ? '' : 's'} in play: ${ps.join(', ') || '—'}`, 'tl', { size: 11.5 });
+          S.corner(`${k} prime${k === 1 ? '' : 's'} in play: ${[...ps].sort((u, w) => u - w).join(', ') || '—'} — one direction each`, 'tl', { size: 11.5 });
         });
         v.readout(() => {
           const a = A.value, b = B.value, g = M.gcd(a, b), da = divisorsOf(a), db = divisorsOf(b), dg = divisorsOf(g);
@@ -457,7 +484,7 @@ More precisely, the set $\{ax+by : x,y\in\Z\}$ of all integer combinations of $a
           mark(sp, pos.value ? `smallest > 0: ${sp}` : `g = ${g}`, pos.value ? 'red' : 'green');
           if (pos.value && g < sp) { N.dot(g, 0, { r: 4.5, hollow: true, color: 'green' }); N.text(`g = ${g} unreachable`, g, 0.62, { align: 'left', size: 11, color: 'green', weight: 650, dx: 4 }); }
           if (!pos.value && sel != null && rows[sel] && rows[sel].r !== sp && rows[sel].r <= Mx && rows[sel].r > 0) mark(rows[sel].r, `r = ${rows[sel].r}`, 'gold', false);
-          N.corner(pos.value ? 'values ax + by with x, y ≥ 0 only' : 'all values ax + by (x, y any integers): exactly the multiples of g', 'tl', { size: 11 });
+          N.corner(pos.value ? 'values ax + by with x, y ≥ 0 only' : 'all values ax + by (x, y any integers): exactly the multiples of g', 'tr', { size: 11 });
           st = { a, b, g, rows, n };
         });
         v.readout(() => {

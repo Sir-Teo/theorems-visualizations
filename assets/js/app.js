@@ -1,7 +1,7 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
 import { buildIndex, runSearch, highlight, norm } from './search.js';
-import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
+import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, renderChord, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
 const SITE = 'Ideas, Visualized';
@@ -137,6 +137,7 @@ function pageHome() {
         <span><b>${nViz.toLocaleString('en')}</b>interactive visualizations</span>
         <span><b>${G.edgeCount.toLocaleString('en')}</b>dependency links</span>
         ${G.plannedCount ? `<span><b>${G.plannedCount.toLocaleString('en')}</b>more on the syllabus</span>` : ''}
+        ${G.paperCount ? `<span><b>${G.paperCount.toLocaleString('en')}</b><a href="#/papers">landmark papers</a></span>` : ''}
         <span><b>${G.live.length}</b>of ${G.collections.length} collections live</span>
         <span><b>${G.fields.length}</b>fields</span>
       </div>
@@ -158,10 +159,15 @@ function pageHome() {
     </section>
     <section class="wrap">
       <div class="card flow-card">
-        <div class="flow-head"><h2>How the shelves build on one another</h2><span class="muted" style="font-size:13px">Each curve: results of one part used in another · hover to trace</span></div>
-        <div style="overflow-x:auto" id="flow"></div>
+        <div class="flow-head"><h2>How the fields lean on one another</h2><span class="muted" style="font-size:13px">every dependency link that crosses a field boundary, written and planned · hover to trace · click a field to open it</span></div>
+        <div class="chord-wrap"><div id="chord"></div><div class="chord-side"><h3>Strongest flows</h3><ol class="flow-list" id="flow-list"></ol></div></div>
       </div>
     </section>
+    ${G.paperCount ? `<section class="wrap">
+      <div class="section-title"><h2>Landmark papers</h2><span class="muted">${G.paperCount} papers that changed their fields, each linked to the ideas it introduced · <a href="#/papers">all papers →</a></span></div>
+      <div class="card papers-timeline home-papers" id="home-ptl"></div>
+      <div class="papers-list" id="home-papers"></div>
+    </section>` : ''}
     ${(G.bridges || []).length ? `<section class="wrap">
       <div class="section-title"><h2>Bridges</h2><span class="muted">one idea followed across fields · <a href="#/bridges">all bridges →</a></span></div>
       <div class="col-grid">${G.bridges.slice(0, 6).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B)} ${B.steps.length} steps</div></a>`).join('')}</div>
@@ -191,10 +197,23 @@ function pageHome() {
   drawTM();
   const ro = new ResizeObserver(() => { clearTimeout(ro.t); ro.t = setTimeout(drawTM, 120); }); ro.observe(el.querySelector('#treemap'));
   cleanup = () => ro.disconnect();
-  // flow: chapters when only a few collections are live, otherwise collections grouped by field
-  const live = G.live.map((C) => C.id);
-  const flow = live.length <= 4 ? chapterFlow(G, live) : collectionFlow(G, liveFields.map((F) => ({ title: F.title, color: `var(--f-${F.id})`, colIds: fieldCols(F).map((C) => C.id) })), { includePlanned: false });
-  renderFlow(el.querySelector('#flow'), { ...flow, onOpen: (R) => go(R.ch != null ? `#/c/${R.col}/${R.ch}` : `#/c/${R.col}`) });
+  // chord diagram of cross-field links, with the strongest directed flows beside it
+  const fe = G.fieldEdges || [];
+  const chord = renderChord(el.querySelector('#chord'), { fields: G.fields, edges: fe, onField: (f) => go(`#/f/${f}`) });
+  const fl = el.querySelector('#flow-list'), top = [...fe].sort((a, b) => b.n - a.n).slice(0, 10), maxN = top[0]?.n || 1;
+  fl.innerHTML = top.map((e) => `<li data-a="${e.from}" data-b="${e.to}"><span class="fl-t"><span style="color:var(--f-${e.from})">${escapeHTML(G.fieldById.get(e.from).short)}</span> → <span style="color:var(--f-${e.to})">${escapeHTML(G.fieldById.get(e.to).short)}</span></span><span class="fl-bar"><i style="width:${(100 * e.n) / maxN}%;background:var(--f-${e.from})"></i></span><span class="fl-n">${e.n}</span></li>`).join('');
+  for (const li of fl.children) { li.addEventListener('pointerenter', () => chord?.focus(li.dataset.a, li.dataset.b)); li.addEventListener('pointerleave', () => chord?.focus(null)); }
+  // landmark papers: a compact timeline and a few to open (interactive ones first)
+  if (G.paperCount) ensurePlanned().then(() => {
+    const host = el.querySelector('#home-ptl'); if (!host?.isConnected) return;
+    const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper');
+    const view = new TimelineView(host, G, { items: papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) });
+    const prev = cleanup; cleanup = () => { prev?.(); view.destroy(); };
+    const pick = [...papers.filter((p) => !p.planned).sort((a, b) => (a.yr ?? 0) - (b.yr ?? 0))];
+    const famous = ['info-5.18', 'toc-7.13', 'rel-1.14', 'astro-10.19', 'bioinf-1.13', 'popgen-1.17', 'game-1.11', 'ode-10.15'];
+    for (const id of famous) { const p = G.byId.get(id); if (p && !pick.includes(p)) pick.push(p); }
+    el.querySelector('#home-papers').innerHTML = pick.slice(0, 6).map((p) => `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${inlineHTML(p.name)}</div><div class="au">${escapeHTML(p.au || '')} · ${escapeHTML(G.colById.get(p.col).short)}</div></span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`).join('');
+  }).catch(() => {});
   const chainEl = el.querySelector('#chain');
   if (chainEl) chainEl.innerHTML = chain.map((it) => link(it)).join('<span class="faint" aria-hidden="true">→</span>');
   const grid = el.querySelector('#field-grid');

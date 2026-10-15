@@ -208,7 +208,7 @@ $$\operatorname{tr}(AB) = \operatorname{tr}(BA).$$
             TG.draw({
               rows: m + 1, cols: n + 1, region: [0.2, 0.17, 0.8, 0.86],
               value: (i, j) => (i < m && j < n ? P[i][j] : i < m ? rs[i] : j < n ? cs[j] : tot),
-              rowLabels: (i) => (i < m ? `$j = ${i + 1}$` : '$\\Sigma$'), colLabels: (j) => (j < n ? `$k = ${j + 1}$` : '$\\Sigma$'),
+              rowLabels: (i) => (i < m ? `$${i + 1}$` : '$\\Sigma$'), colLabels: (j) => (j < n ? `$${j + 1}$` : '$\\Sigma$'), cornerLabel: '$j \\backslash k$',
               fill: (i, j) => (i < m && j < n ? null : i < m ? ['blue', 0.25] : j < n ? ['orange', 0.25] : ['green', 0.35]),
               weight: (i, j) => (i === m || j === n ? 700 : 500),
             });
@@ -227,15 +227,17 @@ $$\operatorname{tr}(AB) = \operatorname{tr}(BA).$$
               { T: TP[0], rows: 2, cols: 2, title: 'ABC', draw: { value: (i, j) => ABC[i][j], fill: diagFill('green', 0.3) }, under: `\\operatorname{tr} = ${trs.ABC}`, ucol: 'green' },
               { T: TP[1], rows: 2, cols: 2, title: 'ACB', draw: { value: (i, j) => ACB[i][j], fill: diagFill('red', 0.25) }, under: `\\operatorname{tr} = ${trs.ACB}`, ucol: trs.ACB === trs.ABC ? 'green' : 'red' },
             ], 0.9);
-            // the six orders on a hexagon; rotations are joined
-            const W = S2.width, H = S2.height, cx = W / 2, cy = H / 2 + 4, rad = Math.min(95, H / 2 - 30);
-            const order = ['ABC', 'ACB', 'BCA', 'CBA', 'CAB', 'BAC'], pos = {};
-            order.forEach((k, i) => { const a = -Math.PI / 2 + (i * TAU) / 6; pos[k] = [cx + rad * 1.9 * Math.cos(a), cy + rad * Math.sin(a)]; });
-            const D = (p) => [S2.invX(p[0]), S2.invY(p[1])];
-            const cyc = [['ABC', 'BCA', 'CAB'], ['ACB', 'CBA', 'BAC']];
-            cyc.forEach((g, gi) => g.forEach((k, i) => { const a = pos[k], b = pos[g[(i + 1) % 3]], u = [b[0] - a[0], b[1] - a[1]], l = Math.hypot(...u); S2.arrow(...D([a[0] + (u[0] * 46) / l, a[1] + (u[1] * 22) / l]), ...D([b[0] - (u[0] * 46) / l, b[1] - (u[1] * 22) / l]), { color: gi ? 'orange' : 'green', width: 1.8, head: 8, alpha: 0.7 }); }));
-            order.forEach((k) => { const gi = cyc[0].includes(k) ? 0 : 1; S2.texPx(`\\operatorname{tr}(${k}) = ${trs[k]}`, pos[k][0], pos[k][1], { size: 15, color: gi ? 'orange' : 'green' }); });
-            S2.texPx('\\text{arrows: move the first factor to the end}', cx, cy, { size: 12.5, color: 'muted' });
+            // the two classes of rotations, as two triangles
+            const W = S2.width, H = S2.height, cy = H / 2 + 8, D = (p) => [S2.invX(p[0]), S2.invY(p[1])];
+            const cyc = [['ABC', 'BCA', 'CAB'], ['ACB', 'CBA', 'BAC']], eq = trs.ABC === trs.ACB;
+            cyc.forEach((g, gi) => {
+              const cx = W * (gi ? 0.73 : 0.27), col = gi ? 'orange' : 'green', P = [0, 1, 2].map((i) => { const a = -Math.PI / 2 + (i * TAU) / 3; return [cx + 2.3 * 70 * Math.cos(a), cy + 70 * Math.sin(a)]; });
+              P.forEach((a, i) => { const b = P[(i + 1) % 3], p0 = [a[0] + 0.3 * (b[0] - a[0]), a[1] + 0.3 * (b[1] - a[1])], p1 = [a[0] + 0.7 * (b[0] - a[0]), a[1] + 0.7 * (b[1] - a[1])]; S2.arrow(...D(p0), ...D(p1), { color: col, width: 1.8, head: 8, alpha: 0.75 }); });
+              g.forEach((k, i) => S2.texPx(`\\operatorname{tr}(${k}) = ${trs[k]}`, P[i][0], P[i][1], { size: 15, color: col }));
+              S2.texPx(gi ? '\\text{rotations of } ACB' : '\\text{rotations of } ABC', cx, 16, { size: 13, color: col });
+            });
+            S2.texPx(eq ? '=' : '\\ne', W / 2, cy, { size: 30, color: eq ? 'green' : 'red' });
+            S2.texPx('\\text{swap two factors}', W / 2, cy + 30, { size: 12, color: 'muted' });
             st = { two: false, trs };
           }
         });
@@ -262,19 +264,20 @@ The hypothesis that the *same* basis is used for the domain and the target matte
       tags: ['trace', 'change of basis'],
       viz(v) {
         const M = v.M;
-        const T = [[2, 1, 0], [-1, 1, 1], [0.5, 1, 1]], C0 = [[1.1, -0.3, 0.1], [-0.6, 1, 0.3], [0.2, 0.3, 1.1]];
+        const T = [[2, 1, 0], [-1, 1, 1], [0.5, 1, 1]], C0 = [[1.1, -0.3, 0.1], [-0.3, 1.1, -0.35], [0.2, 0.3, 1.1]];
         const CC = ['blue', 'purple', 'teal'];
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.9], equal: true, axes: false, height: 330, weight: 1.15, minWidth: 290 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 250 });
         const Hs = v.stage({ x: [0, 199], y: [-6, 8], axes: 'box', height: 190, full: true, xticks: [], title: 'record while the basis moves: diagonal entries (thin) and their sum (thick)' });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.4, lim: 1.6 });
+        const sc = v.scene3(S, { yaw: 0.6, pitch: 0.3, axis: 1.4, lim: 1.6 });
         const U = C0.map((p, k) => sc.handle(p, { color: CC[k], label: `$u_${k + 1}$` }));
         const other = v.toggle('standard basis for the target (break it)', false);
         const TB = v.table(R, { rows: 3, cols: 3, region: [0.05, 0.22, 0.95, 0.86], maxCell: 62, size: 15 });
         // a record of bases: a sweep (rotation × shear, never singular) ending at the starting basis, then the reader's drags
         const hist = [];
         for (let i = 0; i < 140; i++) {
-          const s = 1 - i / 139, Rm = rot3([1, 0.7, 0.4], 4 * s), Sh = [[1, 2.2 * Math.sin(4 * s), 0], [0, 1, 1.6 * Math.sin(3 * s)], [0.8 * Math.sin(5 * s), 0, 1]];
+          const s = 1 - i / 139, Rm = rot3([1, 0.7, 0.4], 4 * s);
+          const Sh = mm(mm([[1, 2.5 * Math.sin(4 * s), 0], [0, 1, 0], [0, 0, 1]], [[1, 0, 0], [0, 1, 2 * Math.sin(3 * s)], [0, 0, 1]]), [[1, 0, 0], [0, 1, 0], [1.5 * Math.sin(5 * s), 0, 1]]);
           hist.push(mm(mm(Rm, Sh), transp(C0)).map((r) => r.slice()));
         }
         let st = null;
@@ -395,7 +398,7 @@ where $v_1, \dots, v_n$ is any basis of $V$. By 8.50 the right side does not dep
 $$\operatorname{tr} T = d_1\lambda_1 + \cdots + d_m\lambda_m.$$`,
       idea: String.raw`By 8.37 there is a basis in which $T$ has an upper-triangular matrix whose diagonal lists the eigenvalues, each as often as its multiplicity (8.31). The trace of that matrix is the sum of the eigenvalues, and by 8.50 the trace does not depend on the basis. Over $\mathbf R$ the statement fails if one sums only real eigenvalues: a rotation of $\mathbf R^2$ by $\theta$ has trace $2\cos\theta$ and no real eigenvalues at all — the missing summands are the complex pair $e^{\pm i\theta}$.`,
       caption: String.raw`A $3$-by-$3$ complex matrix $A = D + sO$: drag its diagonal entries $A_{1,1}, A_{2,2}, A_{3,3}$ (blue, purple, teal) in $\mathbb C$; $O$ is a fixed off-diagonal pattern scaled by $s$. The eigenvalues (pink) move away from the diagonal entries as $s$ grows. The dashed path adds the diagonal entries head to tail, the solid path adds the eigenvalues; both always end at the same point, $\operatorname{tr} A$ (green), and the gold star — their common centroid — is $\operatorname{tr} A/3$. Switch to *real matrix, real eigenvalues only*: the diagonal entries stay on the real axis, and once two eigenvalues leave it as a complex pair, the real eigenvalues alone no longer add up to the trace.`,
-      deps: ['ladr-8.37', 'ladr-8.50', 'ladr-8.51', 'ladr-8.31'],
+      deps: ['ladr-8.37', 'ladr-8.50', 'ladr-8.51', 'ladr-8.23'],
       tags: ['trace', 'eigenvalues'],
       viz(v) {
         const M = v.M;
@@ -407,7 +410,7 @@ $$\operatorname{tr} T = d_1\lambda_1 + \cdots + d_m\lambda_m.$$`,
         const TA = v.table(Pm, { rows: 3, cols: 3, region: [0.02, 0.4, 0.98, 0.9], maxCell: 64, size: 12 });
         const real = () => fld.value === 'R';
         const H = [[1, 1], [-0.8, -0.5], [1.6, -1]].map((p, k) => S.handle(p[0], p[1], { color: CC[k], label: `$A_{${k + 1}${k + 1}}$`, constrain: (x, y) => [Math.round(x * 20) / 20, real() ? 0 : Math.round(y * 20) / 20] }));
-        const fld = v.select('', [{ value: 'C', label: 'complex matrix, all eigenvalues' }, { value: 'R', label: 'real matrix, real eigenvalues only' }], 'C', { onChange: (c) => { if (c === 'R') H.forEach((h) => h.set(h.x, 0)); } });
+        const fld = v.select('', [{ value: 'C', label: 'complex matrix, all eigenvalues' }, { value: 'R', label: 'real matrix, real eigenvalues only' }], 'C', { onChange: (c) => { const P0 = c === 'R' ? [[-1.8, 0], [1, 0], [2.3, 0]] : [[1, 1], [-0.8, -0.5], [1.6, -1]]; H.forEach((h, k) => h.set(...P0[k])); } });
         const s = v.slider('off-diagonal size $s$', 0, 2, 1, { step: 0.05 });
         let st = null;
         v.render(() => {
@@ -460,8 +463,9 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
         const PRE = {
           ax: [[3, -1, -2], [3, 2, -3], [1, 2, 0]],
           four: [[2, 1, 0, -1], [1, -1, 2, 0], [0, 3, 1, 1], [-2, 0, 1, 2]],
-          rep: mm(mm([[1, 1, 0], [0, 1, 1], [0, 0, 1]], [[2, 0, 0], [0, 2, 0], [0, 0, -1]]), [[1, -1, 1], [0, 1, -1], [0, 0, 1]]),
         };
+        const P3 = [[1, 1, 0], [1, 2, 1], [0, 1, 2]];
+        PRE.rep = mm(mm(P3, [[2, 0, 0], [0, 2, 0], [0, 0, -1]]), M.inverse(P3).map((r) => r.map((x) => Math.round(x))));
         let A = clone(PRE.ax), view = '', st = null;
         v.select('', [{ value: 'ax', label: 'Axler 8.53' }, { value: 'four', label: '4-by-4' }, { value: 'rep', label: 'eigenvalue 2 repeated' }], 'ax', { onChange: (k) => { A = clone(PRE[k]); } });
         const poly = v.select('polynomial', [{ value: 'q', label: 'characteristic $q$' }, { value: 'min', label: 'minimal' }], 'q');
@@ -498,7 +502,7 @@ $$q(z) = z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots .$$`,
           S.dot(t / n, 0, { r: 13, hollow: true, color: 'green', width: 2.6 });
           S.text(`tr A / ${n} = ${pn(t / n, 3)}`, t / n, 0, { dy: 28, align: 'center', size: 12.5, color: 'green', weight: 700 });
           const hit = cabs([last[0] - t / n, last[1]]) < 1e-6;
-          S.corner(hit ? `zero of p^(${deg - 1}) = tr A / n` : `zero of p^(${deg - 1}) ≠ tr A / n`, 'bl', { color: hit ? 'green' : 'red', weight: 700 });
+          S.corner(hit ? `zero of p^(${deg - 1}) = tr A / n` : `zero of p^(${deg - 1}) ≠ tr A / n`, 'tr', { color: hit ? 'green' : 'red', weight: 700 });
           // editor and coefficients
           TE.draw({ rows: n, cols: n, value: (i, j) => A[i][j], fill: diagFill('green', 0.22) });
           ttl(E, TE, 'A', 'ink', false, 16);
@@ -606,7 +610,7 @@ $$\operatorname{tr}(ST) = \operatorname{tr}(TS) \quad \text{for all } S, T \in \
           let big = 1; for (const p of [-2, 2]) for (const q of [-2, 2]) big = Math.max(big, Math.abs(g(p, q)));
           if (fn.value !== 'tr') big = Math.max(big, Math.abs(g(0, 2)), Math.abs(g(2, 0)), Math.abs(g(1.4, 1.4)), Math.abs(g(1.4, -1.4)));
           const lo = fn.value === 'rho' ? 0 : -big;
-          F.heat((p, q) => g(p, q), { range: [lo, big], cmap: fn.value === 'rho' ? 'viridis' : 'diverging', res: 3, key: `${seed}|${fn.value}`, alpha: 0.55 });
+          F.heat((p, q) => g(p, q), { range: [lo, big], cmap: fn.value === 'rho' ? 'viridis' : 'diverging', res: 3, key: `${seed}|${fn.value}`, alpha: 0.45 });
           const step = nice(big / 6, [0.25, 0.5, 1, 2, 3, 4, 5, 10, 20]), lv = []; for (let L = Math.ceil(lo / step) * step; L <= big; L += step) lv.push(L);
           F.contour(g, lv, { color: 'ink', width: 1, res: 90 });
           F.axes();
@@ -653,10 +657,12 @@ $$ST - TS = I.$$`,
         const mode = v.select('', [{ value: 'gd', label: 'search for $ST - TS = K$' }, { value: 'poly', label: 'polynomials: $Dx - xD$' }], 'gd');
         const nsel = v.select('$n$', [2, 3, 4], 3);
         const tgt = v.select('target $K$', [{ value: 'I', label: '$K = I$' }, { value: 'Z', label: '$K = \\operatorname{diag}(1, -1, 0, \\dots)$' }], 'I');
-        const it = v.slider('iteration', 0, 300, 300, { int: true });
+        const it = v.slider('iteration', 0, 300, 30, { int: true });
         const btn = v.button('new start', () => { seed++; });
         const np = v.slider('polynomials of degree $< n$', 2, 9, 5, { int: true });
-        const A = v.stage({ x: [0, 300], y: [1e-8, 100], ylog: true, axes: 'box', height: 330, weight: 1.15, minWidth: 290 });
+        const A = v.stage({ x: [0, 300], y: [-8, 2.3], axes: 'box', height: 330, weight: 1.15, minWidth: 290 });
+        const LT = [-8, -6, -4, -2, 0, 2].map((k) => [k, k === 0 ? '1' : k === 2 ? '100' : `10${String(k).split('').map((c) => '⁻⁰¹²³⁴⁵⁶⁷⁸⁹'['-0123456789'.indexOf(c)]).join('')}`]);
+        const lg = (x) => Math.log10(Math.max(x, 1e-8));
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 260 });
         const TB = v.table(B, { rows: 3, cols: 3, maxCell: 54, size: 13 });
         const cache = new Map();
@@ -679,18 +685,22 @@ $$ST - TS = I.$$`,
           }
           cache.set(key, hist); return hist;
         };
-        let st = null;
+        let st = null, lastGd = null;
+        const LEG = () => v.legend([['accent', '$\\|ST - TS - K\\|^2$'], ['purple', '$\\|ST - TS\\|^2$ (for $K = I$ the error is this plus $n$)', { dash: true }], ['red', 'unreachable: below $(\\operatorname{tr} K)^2/n$', { area: true }]]);
         v.render(() => {
           const gd = mode.value === 'gd';
+          if (gd !== lastGd) { lastGd = gd; if (gd) LEG(); else v.legend([['green', 'entries $+1$'], ['red', 'the last entry $-(n-1)$']]); }
           nsel.el.hidden = tgt.el.hidden = it.el.hidden = btn.hidden = !gd; np.el.hidden = gd;
           if (gd) {
             const n = nsel.value, K = eye(n).map((r, i) => r.map((x, j) => (tgt.value === 'I' ? x : i === j ? (i === 0 ? 1 : i === 1 ? -1 : 0) : 0)));
             const hist = run(n, K, seed), k = it.value, h = hist[k], floor = tgt.value === 'I' ? n : 0;
-            A.setView([0, 300], [1e-8, 100]);
-            A.setTitle('$\\|ST - TS - K\\|^2$ during the search (log scale)');
-            if (floor) { A.hband(1e-8, floor, { color: 'red', alpha: 0.07 }); A.hline(floor, { color: 'red', width: 1.6, dash: [6, 4] }); A.text(`floor n = ${n}: tr(ST − TS) = 0 ≠ tr I`, 296, floor, { dy: 12, align: 'right', size: 12, color: 'red', weight: 600 }); }
-            A.path(hist.map((q, i) => [i, Math.max(q.L, 1e-8)]), { color: floor ? 'accent' : 'green', width: 2.6 });
-            A.dot(k, Math.max(h.L, 1e-8), { r: 6, color: 'gold' });
+            A.setView([0, 300], [-8, 2.3]); A.setTicks(null, LT);
+            A.setTitle('$\\|ST - TS - K\\|^2$ during the search (log scale)'); A.setTicks([0, 50, 100, 150, 200, 250, 300], LT);
+            if (floor) { A.hband(-8, lg(floor), { color: 'red', alpha: 0.07 }); A.hline(lg(floor), { color: 'red', width: 1.6, dash: [6, 4] }); A.text(`floor n = ${n}: tr(ST − TS) = 0 ≠ tr I`, 296, lg(floor), { dy: 12, align: 'right', size: 12, color: 'red', weight: 600 }); }
+            if (floor) A.path(hist.map((q, i) => [i, lg(fro2(q.C))]), { color: 'purple', width: 2, dash: [6, 4] });
+            A.path(hist.map((q, i) => [i, lg(q.L)]), { color: floor ? 'accent' : 'green', width: 2.8 });
+            A.dot(k, lg(h.L), { r: 6, color: 'gold' });
+            if (floor) A.dot(k, lg(fro2(h.C)), { r: 4.5, color: 'purple' });
             TB.draw({ rows: n, cols: n, region: [0.05, 0.3, 0.95, 0.86], value: (i, j) => h.C[i][j], format: (x) => pn(x, 2), fill: (i, j) => (i === j ? [floor ? 'red' : 'green', 0.22] : null) });
             ttl(B, TB, `ST - TS \\ \\text{at iteration } ${k}`, 'ink', false, 14);
             B.texPx(`\\operatorname{tr}(ST - TS) = ${tn(h.trC, 12)}`, B.width / 2, B.height - 58, { size: 14, color: 'ink' });
@@ -701,10 +711,10 @@ $$ST - TS = I.$$`,
             // D and x on the basis 1, x, …, x^{n−1} (x·x^{n−1} dropped): (Dx − xD) is computed, not assumed
             const Dm = eye(n).map((r, i) => r.map((_, j) => (j === i + 1 ? j : 0))), Xm = eye(n).map((r, i) => r.map((_, j) => (i === j + 1 ? 1 : 0)));
             const Cm = msub(mm(Dm, Xm), mm(Xm, Dm));
-            A.setView([0.3, n + 0.7], [-(n - 0.5), 2.2]);
+            A.setView([0.3, n + 0.7], [-(n - 0.5), 2.2]); A.setTicks(Array.from({ length: n }, (_, i) => [i + 1, String(i + 1)]), null);
             A.setTitle('diagonal of $Dx - xD$ on polynomials of degree $< n$');
             A.hline(0, { color: 'muted', width: 1 });
-            Cm.forEach((r, i) => { const y = r[i]; A.rect(i + 1 - 0.32, 0, i + 1 + 0.32, y, { fill: y > 0 ? 'green' : 'red', fillAlpha: 0.5, color: y > 0 ? 'green' : 'red', width: 1.2 }); A.text(pn(y, 0), i + 1, y, { dy: y > 0 ? -10 : 12, align: 'center', size: 12, color: y > 0 ? 'green' : 'red', weight: 700 }); });
+            Cm.forEach((r, i) => { const y = r[i]; A.rect(i + 1 - 0.32, 0, i + 1 + 0.32, y, { fill: y > 0 ? 'green' : 'red', fillAlpha: 0.5, color: y > 0 ? 'green' : 'red', width: 1.2 }); A.text(pn(y, 0), i + 1, y, { dy: y > 0 ? -10 : -12, align: 'center', size: 12, color: y > 0 ? 'green' : 'red', weight: 700 }); });
             TB.draw({ rows: n, cols: n, region: [0.04, 0.22, 0.96, 0.88], value: (i, j) => Cm[i][j], format: (x) => pn(x, 0), textColor: (i, j) => (Cm[i][j] ? 'ink' : 'faint'), fill: (i, j) => (i === j ? [Cm[i][j] > 0 ? 'green' : 'red', 0.25] : null), maxCell: 40, size: 12 });
             ttl(B, TB, 'Dx - xD', 'ink', false, 15);
             B.texPx(`\\operatorname{tr} = ${n - 1}\\cdot 1 - ${n - 1} = ${tr(Cm)}`, B.width / 2, B.height - 22, { size: 14, color: 'ink' });

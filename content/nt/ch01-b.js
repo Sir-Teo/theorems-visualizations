@@ -301,14 +301,14 @@ Cost: about $N\sum_{p\le\sqrt N}1/p\approx N\ln\ln N$ crossings.`,
             if (i && j) rbox(v, C, X0 - c / 2 + 2, Y0 - c * 0.38, c - 4, c * 0.76, 4, { fill: val === '1' ? 'teal' : 'purple', fillAlpha: 0.22 });
             C.textPx(val, X0, Y0, { align: 'center', size: 12, weight: i && j ? 650 : 500, color: i && j ? 'ink' : 'muted', halo: false });
           }));
-          C.textPx(m === 'm3' ? '1 · 1 ≡ 1: a product of factors ≡ 1 is ≡ 1, so N ≡ 3 needs a factor ≡ 3' : '3 · 3 ≡ 1: factors ≡ 3 can pair up and hide inside N ≡ 1', tx + 3.2 * c, ty + c * 0.8, { size: 12, color: 'muted' });
+          C.textPx(m === 'm3' ? '1 · 1 ≡ 1: a product of factors ≡ 1 is ≡ 1, so N ≡ 3 needs a factor ≡ 3' : m === 'm1' ? '3 · 3 ≡ 1: factors ≡ 3 can pair up and hide inside N ≡ 1' : 'residues alone cannot exclude 3 · 3 ≡ 1 here; quadratic residues do (chapter 4)', tx + 3.2 * c, ty + c * 0.8, { size: 12, color: 'muted' });
           if (msg) C.corner(msg, 'br', { size: 11, color: 'red', weight: 600 });
           st = { m, L, N, fs, has1, has3 };
         });
         v.readout(() => {
           if (!st) return '';
           const { m, L, N, fs } = st;
-          const head = `$N = ${grp(N)} = ${facTexOf(fs)}$. `;
+          const head = fs.length === 1 && fs[0][1] === 1 ? `$N = ${grp(N)}$ is prime. ` : `$N = ${grp(N)} = ${facTexOf(fs)}$. `;
           if (m === 'm3') { const q3 = fs.filter(([p]) => p % 4n === 3n).map(([p]) => grp(p)); return head + `Each listed $p$ divides $N + 1$, so $N \\bmod p = p - 1 \\ne 0$ for $p \\in \\{${L.join(', ') || '\\,'}\\}$; the prime factor${q3.length > 1 ? 's' : ''} $${q3.join(', ')} \\equiv 3 \\pmod 4$ ${q3.length > 1 ? 'are' : 'is'} new.`; }
           if (m === 'm1') return head + (st.has1 ? 'This list happened to produce a prime $\\equiv 1$; for the list $\\{5\\}$ it does not ($21 = 3\\cdot 7$), so the method proves nothing.' : 'No prime $\\equiv 1 \\pmod 4$ divides $N$ — the mirror image of the argument fails.');
           return head + 'All prime factors are $\\equiv 1 \\pmod 4$ and new: this polynomial proves that there are infinitely many primes $\\equiv 1 \\pmod 4$.';
@@ -361,10 +361,12 @@ and consequently $\gcd(F_m,F_n)=1$ for all $m\ne n$. In particular each $F_n$ ha
           if (fm === 'F') {
             const n = Math.max(i, j, 1), m = Math.min(i, j), show = Math.min(n, 5);
             Bs.setTitle(n <= 5 ? `$F_0F_1\\cdots F_{${n - 1}} = 2^{2^{${n}}} - 1$ in binary, then $+2 = F_{${n}}$` : `$F_{${n}}$ has $2^{${n}} + 1$ binary digits — too many to draw`);
-            const bits = 2 ** show + 1, lw = 128, bw = Math.min(16, (W - lw - 20) / bits), rowH = Math.min(36, (H - 40) / (show + 2.4));
+            const bits = 2 ** show + 1, lw = 128, bw = Math.min(16, (W - lw - 20) / bits), rowH = Math.min(46, (H - 60) / (show + 2.4));
             const X1 = W - 12;
-            const rowBits = (Y, str, col, label, hl) => {
+            const rowBits = (Y, str, col, label, hl, dec) => {
               Bs.texPx(label, lw - 10, Y, { align: 'right', size: 13, color: hl ? 'accent' : 'ink' });
+              const room = X1 - str.length * bw - lw;
+              if (dec != null && room >= 16 + 7.2 * String(dec).length) Bs.textPx(String(dec), X1 - str.length * bw - 10, Y, { align: 'right', size: 11.5, color: 'muted' });
               for (let b = 0; b < str.length; b++) {
                 const X = X1 - (str.length - b) * bw, one = str[b] === '1';
                 rbox(v, Bs, X + 1, Y - bw / 2 + 1, bw - 2, bw - 2, 2, one ? { fill: col, fillAlpha: 0.85 } : { stroke: 'faint', width: 1 });
@@ -375,12 +377,12 @@ and consequently $\gcd(F_m,F_n)=1$ for all $m\ne n$. In particular each $F_n$ ha
               for (let k = 0; k < n; k++) {
                 prod *= F(k);
                 const lab = k === 0 ? 'F_0' : k === 1 ? 'F_0F_1' : k === 2 ? 'F_0F_1F_2' : `F_0\\cdots F_{${k}}`;
-                rowBits(18 + rowH * (k + 0.5), prod.toString(2), 'gold', lab, k === m && m < n);
+                rowBits(18 + rowH * (k + 0.5), prod.toString(2), 'gold', lab, k === m && m < n, prod);
               }
               const Yp = 18 + rowH * (n + 0.35);
-              rowBits(Yp, '10', 'muted', '+\\,2', false);
+              rowBits(Yp, '10', 'muted', '+\\,2', false, 2);
               Bs.line(Bs.invX(lw), Bs.invY(Yp + rowH * 0.5), Bs.invX(X1), Bs.invY(Yp + rowH * 0.5), { color: 'muted', width: 1 });
-              rowBits(18 + rowH * (n + 1.25), F(n).toString(2), 'green', `F_{${n}}`, true);
+              rowBits(18 + rowH * (n + 1.25), F(n).toString(2), 'green', `F_{${n}}`, true, F(n));
             } else {
               Bs.texPx(`F_0F_1\\cdots F_{${n - 1}} = 2^{${2 ** n}} - 1 = \\underbrace{11\\cdots1}_{${2 ** n}}{}_2`, W / 2, H * 0.35, { size: 16 });
               Bs.texPx(`F_{${n}} = 1\\underbrace{00\\cdots0}_{${2 ** n - 1}}1_2 = F_0\\cdots F_{${n - 1}} + 2`, W / 2, H * 0.55, { size: 16 });
@@ -460,7 +462,7 @@ are all composite. Hence the gaps $p_{k+1}-p_k$ between consecutive primes are u
             const col = end ? (pr ? 'green' : 'gray') : 'red';
             rbox(v, A, X - cw / 2 + 2, Y - 22, cw - 4, 44, 6, { fill: col, fillAlpha: end ? 0.22 : 0.18, stroke: col, width: 1.4, dash: end ? [4, 3] : null });
             A.textPx(`+${k}`, X, Y - 8, { align: 'center', size: Math.min(12, cw * 0.4), weight: 650, halo: false });
-            A.textPx(end ? (pr ? 'prime' : 'comp.') : `${k} |`, X, Y + 10, { align: 'center', size: Math.min(10.5, cw * 0.36), color: col, weight: 650, halo: false });
+            A.textPx(end ? (pr ? 'prime' : 'comp.') : `${k} |`, X, Y + 10, { align: 'center', size: end ? Math.min(10.5, cw * 0.29) : Math.min(10.5, cw * 0.36), color: col, weight: 650, halo: false });
           }
           A.textPx(`n! = ${n}! = ${F.toString().length > 26 ? F.toString().slice(0, 12) + '…' + ` (${F.toString().length} digits)` : F.toString()}`, W / 2, 20, { align: 'center', size: 12.5, color: 'muted' });
           A.textPx(`${n - 1} consecutive composites n!+2 … n!+n (red); the dashed ends n!+1 and n!+${n + 1} are tested`, W / 2, 124, { align: 'center', size: 11.5, color: 'muted' });
@@ -483,7 +485,7 @@ are all composite. Hence the gaps $p_{k+1}-p_k$ between consecutive primes are u
           if (first && first[0] >= 10) Gs.dot(first[0], first[1], { r: 6, color: 'green', label: `${first[0]} → ${first[0] + first[1]}`, labelPos: 'nw' });
           const Fn = Number(F);
           if (Fn <= 1e7) { Gs.vline(Fn + 2, { color: 'red', width: 1.5, dash: [5, 4] }); Gs.text(`n! + 2`, Fn + 2, 96, { color: 'red', size: 11.5, align: 'right', dx: -6, weight: 650 }); }
-          else Gs.corner(`n! + 2 ≈ 10^${Math.floor(Math.log10(Fn))} — far off to the right →`, 'tr', { color: 'red', size: 12, weight: 650 });
+          else Gs.corner(`n! + 2 ≈ ${v.M.pow10Text(Math.floor(Math.log10(Fn)))} — far off to the right →`, 'tr', { color: 'red', size: 12, weight: 650 });
           st = { n, F, p1, p2, first };
         });
         v.readout(() => {

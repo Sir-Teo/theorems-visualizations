@@ -502,6 +502,29 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .paper-cite .pc-title a:hover { text-decoration-color: currentColor; }
 .paper-cite .pc-venue, .paper-cite .pc-doi { font-size: 13px; color: var(--ink-3); }
 .papers-list { display: grid; gap: 8px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); }
+.chord-wrap { display: grid; grid-template-columns: minmax(0, 560px) minmax(220px, 1fr); gap: 24px; align-items: center; }
+@media (max-width: 860px) { .chord-wrap { grid-template-columns: 1fr; } }
+.chord { width: 100%; height: auto; display: block; max-width: 560px; margin: 0 auto; }
+.chord .ribbons path { fill-opacity: 0.42; stroke-opacity: 0.6; stroke-width: 0.5; transition: fill-opacity .15s, stroke-opacity .15s; }
+.chord .ribbons path:hover { fill-opacity: 0.75; }
+.chord .ribbons path.dim { fill-opacity: 0.05; stroke-opacity: 0.08; }
+.chord-arc { cursor: pointer; transition: opacity .15s; outline: none; }
+.chord-arc.dim { opacity: 0.25; }
+.chord-arc:focus-visible { stroke: var(--ink); stroke-width: 1.5; }
+.chord-lab { font: 600 12px var(--font-sans, Inter, system-ui, sans-serif); cursor: pointer; letter-spacing: .02em; }
+.chord-c1 { font: 600 17px var(--font-serif); fill: var(--ink); paint-order: stroke; stroke: var(--panel); stroke-width: 5px; stroke-linejoin: round; }
+.chord-c2 { font: 12px var(--font-sans, Inter, system-ui, sans-serif); fill: var(--ink-2); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; }
+.chord-side h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 0 0 10px; font-weight: 600; }
+.flow-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.flow-list li { display: grid; grid-template-columns: 150px 1fr 40px; gap: 10px; align-items: center; font-size: 13.5px; cursor: default; padding: 2px 4px; border-radius: 6px; }
+.flow-list li:hover { background: var(--panel-2, rgba(0,0,0,.04)); }
+.flow-list .fl-t { white-space: nowrap; font-weight: 600; }
+.flow-list .fl-bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.flow-list .fl-bar i { display: block; height: 100%; border-radius: 4px; opacity: .8; }
+.flow-list .fl-n { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.home-papers { height: 300px; }
+#home-papers { margin-top: 12px; }
+.hero-stats a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line-2); }
 .provenance { margin-top: 6px; font-size: 14px; color: var(--ink-2); }
 .provenance .eyebrow { display: inline; margin-right: 6px; }
 .provenance a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line-2); }
