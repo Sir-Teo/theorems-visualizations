@@ -33,8 +33,8 @@ function layT(t) {
 }
 const snapT = (t) => layT(cloneT(t));
 function treeView(L, o) {
-  const n = Math.max(L.n, 1), h = L.h + (o.nil ? 0.8 : 0);
-  return [[-0.62 - (o.padL || 0), n - 0.38 + (o.padR || 0)], [-h - 0.58 - (o.padB || 0), 0.58 + (o.padT || 0)]];
+  const n = Math.max(L.n, 1), h = L.h + (o.nil ? 0.8 : 0), e = o.nil ? 0.32 : 0;
+  return [[-0.62 - e - (o.padL || 0), n - 0.38 + e + (o.padR || 0)], [-h - 0.58 - (o.padB || 0), 0.58 + (o.padT || 0)]];
 }
 const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [0.75, -0.75], nw: [-0.75, -0.75], se: [0.75, 0.75], sw: [-0.75, 0.75] };
 /**
@@ -831,6 +831,297 @@ where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log
           const dep = (L, k) => L.pos.get(k).d, prev = S.frames[S.i - 1].L;
           const chk = (g) => I[g].every((k) => dep(f.L, k) - dep(prev, k) === (g === 'B' ? 0 : (g === 'A') === (I.dir === 'right') ? -1 : 1));
           return `${I.dir} rotation at ${I.top}: depths in $A$ ${(I.dir === 'right' ? '−1' : '+1')} ${chk('A') ? '✓' : '✗'}, in $B$ unchanged ${chk('B') ? '✓' : '✗'}, in $C$ ${(I.dir === 'right' ? '+1' : '−1')} ${chk('C') ? '✓' : '✗'} · in-order sequence unchanged ${sorted ? '✓' : '✗'} · height ${f.h0} → **${f.L.h}** · rotation ${S.i} of ${S.n - 1}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.6
+    {
+      num: '5.6',
+      kind: 'Definition',
+      name: 'Red–black trees',
+      statement: String.raw`A **red–black tree** is a binary search tree in which every node is coloured red or black, the nil pointers are treated as black leaves, and
+(i) the root is black;
+(ii) a red node has no red child;
+(iii) for every node $x$, all paths from $x$ down to a nil leaf contain the same number of black nodes.
+
+That number, not counting $x$ itself, is the **black height** $\mathrm{bh}(x)$. Not every tree shape can be coloured this way: (ii) and (iii) force every root-to-leaf path to be at most twice as long as any other, which is what keeps the height logarithmic (5.7).`,
+      idea: String.raw`The colours encode a 2-3-4 tree (a B-tree with $t=2$, 5.10): merge every red node into its black parent and each merged group becomes a node with 2, 3 or 4 children, all of whose leaves lie at the same depth — that is property (iii). Red nodes are the "slack" that lets the tree be imperfect while black paths stay perfectly balanced, and since reds cannot be stacked, a path has at most one red per black.`,
+      caption: String.raw`Click nodes to recolour them. Under each nil leaf is the number of black nodes on its path from the root; red edges mark a red node with a red child, and orange rings mark nodes whose two sides have different black heights (the others show $\mathrm{bh}$). Shape **III** is too lopsided to colour at all — try, then ask for a valid colouring.`,
+      deps: ['algo-5.2'],
+      refs: ['CLRS 4e §13.1'],
+      credit: 'Bayer, 1972; Guibas & Sedgewick, 1978',
+      tags: ['search trees', 'balanced trees'],
+      viz(v) {
+        const SH = { I: [40, 20, 60, 10, 30, 50, 70, 25, 35, 65], II: [60, 30, 80, 20, 40, 70, 90, 10, 25, 5], III: [50, 30, 70, 20, 40, 10, 25, 5, 80] };
+        const shape = v.select('shape', [{ value: 'I', label: 'I' }, { value: 'II', label: 'II' }, { value: 'III', label: 'III' }], 'I', { onChange: () => setShape(false) });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340 });
+        let T = null, L = null, col = new Map(), feas = null, msg = '';
+        function setShape(first) {
+          T = bstFrom(SH[shape.value]); L = layT(T); feas = rbColourings(T); msg = '';
+          col = new Map(inord(T).map((u) => [u.k, 'B']));
+          if (first && feas.ok) { col = new Map(feas.col); col.set(60, 'R'); }
+        }
+        setShape(true);
+        s.onClick((x, y) => { const c = hitT(s, L, x, y, 18); if (c) { col.set(c.k, col.get(c.k) === 'R' ? 'B' : 'R'); msg = ''; } });
+        v.button('Valid colouring', () => { if (feas.ok) { col = new Map(feas.col); msg = ''; } else msg = '**No valid colouring exists for this shape.**'; });
+        v.button('All black', () => { col = new Map(inord(T).map((u) => [u.k, 'B'])); msg = ''; });
+        v.button('Random colours', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); col = new Map(inord(T).map((u) => [u.k, r() < 0.35 ? 'R' : 'B'])); msg = ''; });
+        let info = null;
+        v.render(() => {
+          for (const u of inord(T)) u.c = col.get(u.k);
+          const chk = rbCheck(T), cnt = new Map();
+          (function go(u, c) { if (!u) return; const cc = c + (u.c === 'B' ? 1 : 0); cnt.set(u.k, cc); go(u.l, cc); go(u.r, cc); })(T, 0);
+          const dr = drawT(s, L, {
+            nil: true, padB: 0.55, fill: (k) => (col.get(k) === 'R' ? 'red' : 'ink'),
+            ring: (k, c) => (chk.bad.has(k) ? 'orange' : c.p == null && col.get(k) === 'R' ? 'red' : null),
+            note: (k) => (chk.bad.has(k) ? ['≠', 'orange', 'ne'] : [`bh ${chk.bh.get(k)}`, 'muted', 'ne']),
+            edgeColor: (a, b) => (chk.redred.has(b) ? 'red' : null), edgeWidth: (a, b) => (chk.redred.has(b) ? 4.5 : null),
+          });
+          const counts = dr.nils.map((q) => cnt.get(q.p)), freq = new Map(); counts.forEach((c) => freq.set(c, (freq.get(c) || 0) + 1));
+          const mode = [...freq.entries()].sort((a, b) => b[1] - a[1])[0][0], eq = freq.size === 1;
+          dr.nils.forEach((q, i) => s.text(String(counts[i]), q.x, q.y, { align: 'center', baseline: 'top', dy: 8, size: 12, weight: 800, color: eq ? 'green' : counts[i] === mode ? 'muted' : 'red' }));
+          if (chk.rootRed) { const [x, y] = dr.at(T.k); s.text('root must be black', x, y, { dx: dr.r + 10, size: 11.5, weight: 700, color: 'red' }); }
+          info = { chk, eq, lo: Math.min(...counts), hi: Math.max(...counts) };
+        });
+        v.legend([['ink', 'black node', { dot: true }], ['red', 'red node / red–red edge', { dot: true }], ['orange', 'black heights differ below', { dot: true }], ['green', 'black nodes on each root–nil path']]);
+        v.readout(() => {
+          const { chk, eq, lo, hi } = info, ok = !chk.rootRed && !chk.redred.size && eq;
+          const lens = []; (function go(u, d) { if (!u) { lens.push(d); return; } go(u.l, d + 1); go(u.r, d + 1); })(T, 0);
+          const shape = feas.ok ? `this shape can be coloured (root black height ${feas.bhs.join(' or ')})` : `this shape **cannot** be coloured: a root–nil path with ${Math.max(...lens)} nodes is more than twice one with ${Math.min(...lens)}`;
+          return (msg ? msg + ' · ' : '') + `(i) root black ${chk.rootRed ? '✗' : '✓'} · (ii) no red–red edge ${chk.redred.size ? `✗ (${chk.redred.size})` : '✓'} · (iii) equal black counts ${eq ? `✓ (${lo} on every path)` : `✗ (from ${lo} to ${hi})`} · ${ok ? '**a red–black tree** ✓' : 'not a red–black tree'} · ${shape}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.7
+    {
+      num: '5.7',
+      kind: 'Lemma',
+      name: 'Red–black trees have height at most 2 log₂(n + 1)',
+      statement: String.raw`A red–black tree with $n$ internal (key-carrying) nodes has height at most $2\log_2(n+1)$, where the height $h$ counts the internal nodes on a longest path from the root to a nil leaf. Consequently search, minimum, maximum, successor and predecessor take $O(\log n)$ time.`,
+      idea: String.raw`First, by induction on the height of $x$, the subtree rooted at any node $x$ contains at least $2^{\mathrm{bh}(x)}-1$ internal nodes: each child has black height at least $\mathrm{bh}(x)-1$, so the subtree has at least $2(2^{\mathrm{bh}(x)-1}-1)+1$ nodes. Second, red nodes cannot be adjacent and the root is black (5.6), so at least half of the nodes on any root-to-leaf path are black: $\mathrm{bh}(\text{root})\ge h/2$. Together $n\ge 2^{h/2}-1$, i.e. $h\le 2\log_2(n+1)$. The tallest trees, computed below by dynamic programming over all legal colourings, nearly reach the bound: a red–black spine beside perfect all-black subtrees.`,
+      caption: String.raw`The tree is the *tallest* legal red–black tree with $n$ nodes, found by an exhaustive dynamic program. Label the nodes by black height, subtree size or the guaranteed minimum $2^{\mathrm{bh}}-1$, and click a node to check the size bound on its subtree. Below, the tallest height for every $n \le 127$ stays under $2\log_2(n+1)$.`,
+      deps: ['algo-5.6'],
+      refs: ['CLRS 4e §13.1'],
+      tags: ['balanced trees'],
+      viz(v) {
+        const R = rbTallest(127), cache = new Map();
+        const nS = v.slider('$n$', 1, 40, 22, { int: true, onChange: () => { sel = null; } });
+        const lab = v.select('label', [{ value: 'bh', label: 'black height' }, { value: 'size', label: 'subtree size' }, { value: 'bound', label: '$2^{bh}-1$' }], 'size');
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, full: true });
+        const P = v.stage({ x: [0, 128], y: [0, 15], axes: 'box', height: 200, full: true, title: 'height of the tallest red–black tree with $n$ nodes', xlabel: 'n' });
+        let sel = null, info = null;
+        const get = (n) => { if (!cache.has(n)) { const t = R.tree(n); cache.set(n, { t, L: layT(t), chk: rbCheck(t), size: new Map(inord(t).map((u) => [u.k, sizeT(u)])) }); } return cache.get(n); };
+        s.onClick((x, y) => { const g = get(nS.value), c = hitT(s, g.L, x, y, 18); sel = c && c.k !== sel ? c.k : null; });
+        v.render(() => {
+          const n = nS.value, g = get(n), sub = new Set(sel != null ? keysOf(g.L.pos.get(sel).n) : []);
+          const val = (k) => { const b = g.chk.bh.get(k); return lab.value === 'bh' ? b : lab.value === 'size' ? g.size.get(k) : 2 ** b - 1; };
+          drawT(s, g.L, {
+            nil: true, rmax: 14, fill: (k, c) => (c.n.c === 'R' ? 'red' : 'ink'), label: (k) => String(val(k)),
+            ring: (k) => (k === sel ? 'gold' : sub.has(k) ? 'gold' : null),
+            edgeColor: (a, b) => (sub.has(a) && sub.has(b) ? 'gold' : null), edgeWidth: (a, b) => (sub.has(a) && sub.has(b) ? 3 : null),
+          });
+          const h = hgt(g.t); s.setTitle(`tallest legal tree for $n = ${n}$: height **${h}**, bound $2\\log_2(n+1) = ${v.fix(2 * LG(n + 1), 2)}$`);
+          // plot
+          const st = [], mn = [];
+          for (let m = 1; m <= 127; m++) { st.push([m - 0.5, R.best[m]], [m + 0.5, R.best[m]]); mn.push([m - 0.5, Math.ceil(LG(m + 1))], [m + 0.5, Math.ceil(LG(m + 1))]); }
+          P.path(mn, { color: 'faint', width: 1.5 });
+          P.fn((m) => 2 * LG(m + 1), { color: 'orange', width: 2.2, dash: [7, 4], domain: [0.5, 128] });
+          P.path(st, { color: 'red', width: 2.2 });
+          P.vline(n, { color: 'muted', width: 1, dash: [2, 3] });
+          P.dot(n, R.best[n], { r: 5, color: 'red' });
+          info = { n, h, g };
+        });
+        v.legend([['red', 'tallest legal height'], ['orange', '$2\\log_2(n+1)$', { dash: true }], ['faint', 'shortest possible $\\lceil\\log_2(n+1)\\rceil$'], ['gold', 'selected subtree', { dot: true }]]);
+        v.readout(() => {
+          const { n, h, g } = info, root = g.t, bh = g.chk.bh.get(root.k);
+          let allOk = true; for (const c of g.L.nodes) if (g.size.get(c.k) < 2 ** g.chk.bh.get(c.k) - 1) allOk = false;
+          const s1 = sel != null ? `subtree of the selected node: ${g.size.get(sel)} nodes $\\ge 2^{${g.chk.bh.get(sel)}}-1 = ${2 ** g.chk.bh.get(sel) - 1}$ ✓ · ` : '';
+          return s1 + `every node: size $\\ge 2^{\\mathrm{bh}}-1$ ${allOk ? '✓' : '✗'} · root: $\\mathrm{bh} = ${bh} \\ge h/2 = ${h / 2}$ ✓, so $n = ${n} \\ge 2^{${bh}}-1 = ${2 ** bh - 1}$ · height $h = ${h} \\le 2\\log_2(n+1) = ${v.fix(2 * LG(n + 1), 2)}$ ${h <= 2 * LG(n + 1) ? '✓' : '✗'} · over all $n \\le 127$ the tallest tree comes within ${v.fix(Math.min(...R.best.slice(1).map((b, i) => 2 * LG(i + 2) - b)), 2)} of the bound`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.8
+    {
+      num: '5.8',
+      kind: 'Algorithm',
+      name: 'Red–black insertion',
+      statement: String.raw`To insert a key into a red–black tree, insert it as in a BST (5.3) and colour the new node $z$ red; then, while $z$'s parent is red, let $y$ be $z$'s uncle and
+(1) if $y$ is red, colour the parent and $y$ black and the grandparent red, and continue from the grandparent;
+(2) if $y$ is black and $z$ is an inner grandchild (a "triangle"), rotate at the parent to turn it into case 3;
+(3) if $y$ is black and $z$ is an outer grandchild (a "line"), colour the parent black and the grandparent red and rotate at the grandparent — the loop ends.
+
+Finally colour the root black. The result is a red–black tree; the insertion takes $O(\log n)$ time and performs **at most two rotations**.`,
+      idea: String.raw`A red leaf leaves every black height unchanged, so property (iii) holds throughout; the only possible damage is one red–red edge between $z$ and its parent (or a red root). Each case preserves that invariant: case 1 only recolours, keeping black heights, and pushes the violation two levels up, so it repeats at most $O(\log n)$ times by 5.7; cases 2 and 3 rotate (5.5) and recolour so that the violation disappears and black heights are kept, after which the loop stops. Hence at most two rotations per insertion.`,
+      caption: String.raw`Choose a key and press **Insert** (or **Insert ascending**, the input that turns a plain BST into a path), then step through the fix-up. The gold ring is $z$; a red edge is the one red–red violation the loop carries upward. Every node is checked at every step: its black height is shown beside it, and an orange ring would flag a node whose two sides disagree.`,
+      deps: ['algo-5.5', 'algo-5.7'],
+      refs: ['CLRS 4e §13.3'],
+      credit: 'Guibas & Sedgewick, 1978',
+      tags: ['balanced trees'],
+      viz(v) {
+        let tree = rbBuild([11, 2, 14, 1, 7, 15, 5, 8]);
+        const key = v.slider('key $k$', 1, 99, 4, { int: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 360 });
+        let run = rbInsertFrames(tree, 4); tree = run.root;
+        const S = v.steps({ frames: run.F, code: RB_CODE, codeTitle: 'RB-Insert (case labels assume z.p is a left child)', transition: 0.45, speed: 1, start: 1, still: 1 });
+        const go = (k) => { run = rbInsertFrames(tree, k); tree = run.root; S.reset(run.F, { at: 0 }); S.play(); };
+        v.button('Insert', () => go(key.value));
+        v.button('Insert ascending', () => { const m = tree ? Math.max(...keysOf(tree)) : 0; if (m < 99) { key.set(m + 1); go(m + 1); } });
+        v.button('Random tree', () => { const r = v.rng(Math.floor(Math.random() * 1e6)), ks = new Set(); while (ks.size < 14) ks.add(r.int(1, 99)); tree = rbBuild([...ks]); run = { F: [{ L: layT(tree), cases: [], rot: 0, k: null, line: 12, note: 'A red–black tree built from 14 random keys.' }] }; S.reset(run.F); });
+        v.button('Empty', () => { tree = null; run = { F: [{ L: layT(null), cases: [], rot: 0, k: null, note: 'The empty tree.' }] }; S.reset(run.F); });
+        let info = null;
+        v.render(() => {
+          const f = S.frame, rootC = f.L.nodes.find((c) => c.p == null), chk = rbCheck(rootC ? rootC.n : null);
+          drawT(s, f.L, {
+            prev: S.prev && S.prev.L, tw: S.tween, nil: true, rmax: 14,
+            fill: (k, c) => (c.n.c === 'R' ? 'red' : 'ink'), ring: (k) => (chk.bad.has(k) ? 'orange' : k === f.z ? 'gold' : null),
+            note: (k) => (f.L.n <= 22 ? (chk.bad.has(k) ? ['≠', 'orange', 'ne'] : [String(chk.bh.get(k)), 'muted', 'ne']) : null),
+            edgeColor: (a, b) => (chk.redred.has(b) ? 'red' : null), edgeWidth: (a, b) => (chk.redred.has(b) ? 4.5 : null),
+          });
+          info = { f, chk };
+        });
+        v.legend([['gold', 'z', { dot: true }], ['red', 'red node / red–red edge', { dot: true }], ['ink', 'black node', { dot: true }], ['muted', 'black height', { dot: true }]]);
+        v.readout(() => {
+          const { f, chk } = info, n = f.L.n, h = n ? f.L.h + 1 : 0;
+          const cs = f.cases && f.cases.length ? f.cases.join(' → ') : '—';
+          return `${f.k != null ? `insert ${f.k} · ` : ''}cases so far: ${cs} · rotations ${f.rot ?? 0} (never more than 2) · equal black heights at all ${n} nodes ${chk.bad.size ? '✗' : '✓'} · red–red edges: ${chk.redred.size}${chk.redred.size ? ' (only at $z$, as the loop invariant allows)' : ' ✓'} · height $h = ${h} \\le 2\\log_2(n+1) = ${v.fix(2 * LG(n + 1), 2)}$ ✓`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.9
+    {
+      num: '5.9',
+      kind: 'Definition',
+      name: 'AVL trees',
+      statement: String.raw`An **AVL tree** is a binary search tree in which, at every node, the heights of the left and right subtrees differ by at most one; the difference $\mathrm{bf}(x)=h(x.\mathit{left})-h(x.\mathit{right})\in\{-1,0,+1\}$ is the node's **balance factor** (an empty subtree has height 0). After an insertion, the lowest ancestor whose balance factor became $\pm2$ is repaired by a single rotation (if the new key lies in an outer grandchild subtree) or a double rotation (inner grandchild), which restores the subtree's former height, so one repair suffices. An AVL tree with $n$ nodes has height
+$$h<1.4405\,\log_2(n+2)-0.3277.$$`,
+      idea: String.raw`Let $N(h)$ be the fewest nodes in an AVL tree of height $h$. The sparsest tree has subtrees of heights $h-1$ and $h-2$, so $N(h)=N(h-1)+N(h-2)+1$ with $N(1)=1$, $N(2)=2$; then $N(h)+1$ satisfies the Fibonacci recurrence and $N(h)=F_{h+2}-1\ge\varphi^{h}/\sqrt5-2$ by the closed form of linear recurrences (2.11). Inverting gives the bound with $1/\log_2\varphi=1.4405$. These sparsest trees, the *Fibonacci trees*, are the gold points on the right. Rebalancing uses the rotations of 5.5.`,
+      caption: String.raw`Insert keys (try **Insert ascending**) and step through: the numbers beside the nodes are balance factors, a red ring marks a node that reached $\pm2$, gold is the new key and orange the node a rotation lifted. The right panel records the height after every insertion against the AVL bound. Switch to **plain BST** to see the same keys without rebalancing, or load a **Fibonacci tree**, the sparsest AVL tree of its height.`,
+      deps: ['algo-5.5', 'algo-2.11'],
+      refs: ['CLRS 4e Prob. 13-3'],
+      credit: 'Adelson-Velsky & Landis, 1962',
+      tags: ['balanced trees'],
+      viz(v) {
+        const mode = v.select('', [{ value: 'avl', label: 'AVL: rebalance' }, { value: 'bst', label: 'plain BST' }], 'avl', { onChange: () => replay() });
+        const key = v.slider('key $k$', 1, 99, 50, { int: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, weight: 1.7, minWidth: 360 });
+        const P = v.stage({ x: [0, 34], y: [0, 12.5], axes: 'box', height: 310, minWidth: 220, title: 'height after each insertion', xlabel: 'n' });
+        let seq = [10, 20, 30, 40, 50, 60, 70, 80], tree = null, hist = [], tot = { single: 0, double: 0 };
+        const on = () => mode.value === 'avl';
+        function replay(lastFrames = true) {
+          tree = null; hist = []; tot = { single: 0, double: 0 }; let F = null;
+          seq.forEach((k, i) => { const r = avlInsertFrames(tree, k, on()); tree = r.root; tot.single += r.st.single; tot.double += r.st.double; hist.push([i + 1, hgt(tree)]); if (i === seq.length - 1) F = r.F; });
+          if (S) S.reset(lastFrames && F ? F : [{ L: snapT(tree), k: null, note: 'Rebuilt.' }], { at: 'end' });
+          return F;
+        }
+        let S = null;
+        seq.push(75); const F0 = replay();
+        S = v.steps({ frames: F0, code: AVL_CODE, codeTitle: 'AVL insertion', codePos: 'below', transition: 0.45, speed: 1, start: 1, still: 1 });
+        const ins = (k) => { const r = avlInsertFrames(tree, k, on()); if (r.F.length && r.root !== tree) { seq.push(k); tree = r.root; tot.single += r.st.single; tot.double += r.st.double; hist.push([seq.length, hgt(tree)]); } S.reset(r.F, { at: 0 }); S.play(); };
+        v.button('Insert', () => ins(key.value));
+        v.button('Insert ascending', () => { const m = seq.length ? Math.max(...seq) : 0; if (m < 99) { key.set(m + 1); ins(m + 1); } });
+        v.button('Fibonacci tree', () => { seq = bfsKeys(fibTree(6)); replay(false); });
+        v.button('Empty', () => { seq = []; replay(false); });
+        let info = null;
+        v.render(() => {
+          const f = S.frame, rootC = f.L.nodes.find((c) => c.p == null), H = heightsOf(rootC ? rootC.n : null), bad = new Set(f.badSet || []);
+          const bf = (c) => (c.n.l ? H.get(c.n.l.k) : 0) - (c.n.r ? H.get(c.n.r.k) : 0);
+          drawT(s, f.L, {
+            prev: S.prev && S.prev.L, tw: S.tween, rmax: 14,
+            fill: (k) => (k === f.newk ? 'gold' : k === f.rotated ? 'orange' : null),
+            ring: (k, c) => (k === f.bad || Math.abs(bf(c)) > 1 ? 'red' : null),
+            note: (k, c) => { const b = bf(c); return [b > 0 ? '+' + b : b < 0 ? '−' + -b : '0', Math.abs(b) > 1 ? 'red' : 'muted', 'ne']; },
+          });
+          // plot
+          const n = hist.length, hmax = Math.max(6, ...hist.map((p) => p[1]));
+          P.setView([0, Math.max(34, n + 1)], [0, Math.max(12.5, hmax + 1)]);
+          P.fn((m) => Math.ceil(LG(m + 1)), { color: 'faint', width: 1.4, domain: [1, 200] });
+          P.fn((m) => 1.4405 * LG(m + 2) - 0.3277, { color: 'red', width: 2, dash: [7, 4], domain: [0, 200] });
+          for (let h = 1, a = 1, b = 2; h <= 12; h++) { const N = h === 1 ? 1 : h === 2 ? 2 : (() => { const c = a + b + 1; a = b; b = c; return c; })(); if (N <= 200) P.dot(N, h, { r: 4.5, color: 'gold' }); }
+          P.path(hist.map(([m, h]) => [m, h]), { color: 'accent', width: 1.6, alpha: 0.6 });
+          hist.forEach(([m, h]) => P.dot(m, h, { r: 3, color: h > 1.4405 * LG(m + 2) - 0.3277 ? 'red' : 'accent' }));
+          info = { f, H, bad: f.L.nodes.filter((c) => Math.abs(bf(c)) > 1).length };
+        });
+        v.legend([['gold', 'new key / Fibonacci trees', { dot: true }], ['orange', 'lifted by a rotation', { dot: true }], ['red', '$|\\mathrm{bf}| = 2$ / bound $1.44\\log_2(n+2)-0.33$', { dot: true }], ['accent', 'measured height', { dot: true }]]);
+        v.readout(() => {
+          const { f, bad } = info, n = f.L.n, h = n ? f.L.h + 1 : 0, B = 1.4405 * LG(n + 2) - 0.3277;
+          const mid = on() && !S.atEnd && bad > 0 ? '**mid-repair** (step to the end) · ' : '';
+          return mid + `$n = ${n}$, height $h = ${h}$ levels · AVL bound $1.4405\\log_2(n+2)-0.3277 = ${v.fix(B, 2)}$ ${h < B ? '✓' : '✗ exceeded'} · nodes with $|\\mathrm{bf}| \\ge 2$: ${bad}${bad ? '' : ' ✓'} · rotations in this build: ${tot.single} single, ${tot.double} double`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.10
+    {
+      num: '5.10',
+      kind: 'Definition',
+      name: 'B-trees',
+      statement: String.raw`A **B-tree of minimum degree** $t\ge2$ is a rooted search tree in which
+(i) every node holds between $t-1$ and $2t-1$ keys in increasing order (the root at least one), and an internal node with $m$ keys has $m+1$ children, the keys of the $i$-th child lying between the node's $(i-1)$-st and $i$-th keys;
+(ii) all leaves have the same depth $h$, the height.
+
+Since level $i\ge1$ has at least $2t^{i-1}$ nodes with at least $t-1$ keys each, $n\ge 2t^h-1$, i.e. $h\le\log_t\frac{n+1}{2}$. Insertion walks down from the root, splitting every full node it meets around its median (which moves up into the parent), and adds the key to a leaf; the tree grows only at the root.`,
+      idea: String.raw`Splitting full nodes on the way down guarantees that the parent of any node being split has room for the median, so one downward pass suffices. A split keeps both halves at depth unchanged; only a root split adds a level, and it adds it above *every* leaf at once, which is why all leaves stay at the same depth. With $t$ in the hundreds, a node fills a disk page and a search touches $h+1\approx\log_t n$ pages; $t=2$ gives 2-3-4 trees, the shape behind red–black trees (5.6).`,
+      caption: String.raw`Insert keys (random or ascending) and step through: green is the node being visited, orange the two halves of a split and gold the parent that received the median. The dashed line shows every leaf at the same depth. Change $t$ to rebuild the same keys with wider nodes. Below: heights while inserting 20 000 random keys for $t = 2, 3, 5, 10$ against $\log_t\frac{n+1}{2}$.`,
+      deps: ['algo-5.2'],
+      refs: ['CLRS 4e §18.1', 'CLRS 4e §18.2'],
+      credit: 'Bayer & McCreight, 1970',
+      tags: ['balanced trees'],
+      viz(v) {
+        const tS = v.select('$t$', ['2', '3', '5'], '2', { onChange: () => replay() });
+        const key = v.slider('key $k$', 1, 99, 50, { int: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true });
+        const P = v.stage({ x: [1, 20000], y: [0, 14], xlog: true, axes: 'box', height: 220, full: true, title: 'height while inserting random keys (solid) and the bound $\\log_t\\frac{n+1}{2}$ (dashed)', xlabel: 'n' });
+        const rng0 = v.rng(41); let seq = []; while (seq.length < 18) { const k = rng0.int(1, 99); if (!seq.includes(k)) seq.push(k); }
+        let root = null;
+        function replay() {
+          const t = +tS.value; root = null; for (const k of seq.slice(0, -1)) root = btInsert(root, k, t);
+          const F = []; root = btInsert(root, seq[seq.length - 1], t, F); if (S) S.reset(F, { at: Math.max(0, F.findIndex((f) => f.mk != null)) }); return F;
+        }
+        let S = null; const F0 = replay();
+        S = v.steps({ frames: F0, code: BT_CODE, codeTitle: 'B-Tree-Insert', codePos: 'below', speed: 1.2, start: Math.max(0, F0.findIndex((f) => f.mk != null)) });
+        const ins = (k) => { const t = +tS.value, F = []; if (!btHas(root, k)) seq.push(k); root = btInsert(root, k, t, F); S.reset(F, { at: 0 }); S.play(); };
+        v.button('Insert', () => ins(key.value));
+        v.button('Insert random', () => { const free = []; for (let k = 1; k <= 99; k++) if (!btHas(root, k)) free.push(k); if (free.length) { const k = free[Math.floor(Math.random() * free.length)]; key.set(k); ins(k); } });
+        v.button('Insert ascending', () => { const m = seq.length ? Math.max(...seq) : 0; if (m < 99) { key.set(m + 1); ins(m + 1); } });
+        v.button('Reset', () => { seq = []; root = null; S.reset([{ root: null, note: 'The empty B-tree.' }]); });
+        // height curves
+        const TS = [2, 3, 5, 10], COL = { 2: 'accent', 3: 'teal', 5: 'purple', 10: 'orange' }, curves = {};
+        for (const t of TS) { const r = v.rng(900 + t); let b = null; const pts = []; let last = -1; for (let n = 1; n <= 20000; n++) { b = btInsert(b, Math.floor(r() * 1e9), t); const h = btStats(b).h; if (h !== last) { if (pts.length) pts.push([n, last]); pts.push([n, h]); last = h; } } pts.push([20000, last]); curves[t] = pts; }
+        let info = null;
+        v.render(() => {
+          const f = S.frame, rt = f.root, t = +tS.value, cw = 1, gap = 0.7, lev = 1.75, boxes = []; let cur = 0;
+          const go = (u, d) => { const w = Math.max(1, u.keys.length) * cw; let b; if (!u.kids.length) { b = { u, x0: cur, d, w }; cur += w + gap; } else { const ch = u.kids.map((c) => go(c, d + 1)); const mid = (ch[0].x0 + ch[ch.length - 1].x0 + ch[ch.length - 1].w) / 2; b = { u, x0: mid - w / 2, d, w, ch }; } boxes.push(b); return b; };
+          if (rt) go(rt, 0);
+          const W = Math.max(cur - gap, 6), Hd = Math.max(0, ...boxes.map((b) => b.d));
+          s.setView([-0.8, W + 0.8], [-Hd * lev - 1.1, 0.75]);
+          const fs = clamp(s.sx * 0.45, 8, 13.5);
+          for (const b of boxes) if (b.ch) b.ch.forEach((c, i) => { const x = b.x0 + i * cw; s.line(x, -b.d * lev - 0.36, c.x0 + c.w / 2, -c.d * lev + 0.36, { color: 'muted', width: 1.4 }); s.dot(x, -b.d * lev - 0.36, { r: 2.4, color: 'muted', ring: false }); });
+          if (rt) { s.line(-0.6, -Hd * lev - 0.62, W + 0.6, -Hd * lev - 0.62, { color: 'green', width: 1.2, dash: [5, 4] }); s.text(`all leaves at depth h = ${Hd}`, W + 0.6, -Hd * lev - 0.62, { align: 'right', baseline: 'top', dy: 3, size: 11, color: 'green', weight: 600 }); }
+          for (const b of boxes) {
+            const y = -b.d * lev, hl = b.u.hl, col = hl === 'split' ? 'orange' : hl === 'up' ? 'gold' : hl === 'cur' || hl === 'new' ? 'green' : null;
+            b.u.keys.forEach((k, i) => {
+              const x = b.x0 + i * cw, star = (k === f.mk && hl === 'up') || k === f.newk;
+              s.rect(x, y - 0.36, x + cw, y + 0.36, { fill: star ? 'gold' : col || 'panel', fillAlpha: star ? 0.5 : col ? 0.14 : 1, color: 'faint', width: 1 });
+              s.text(String(k), x + cw / 2, y, { align: 'center', size: fs, weight: 700, color: 'ink' });
+            });
+            s.rect(b.x0, y - 0.36, b.x0 + b.w, y + 0.36, { color: col || 'muted', width: col ? 2.6 : 1.5 });
+          }
+          if (!rt) s.text('empty tree', W / 2, 0, { align: 'center', size: 13, color: 'muted' });
+          // plot
+          for (const tt of TS) {
+            const a = tt === t ? 1 : 0.35;
+            P.fn((n) => Math.log((n + 1) / 2) / Math.log(tt), { color: COL[tt], width: tt === t ? 2 : 1.3, dash: [6, 4], alpha: a, domain: [1, 20000] });
+            P.path(curves[tt], { color: COL[tt], width: tt === t ? 2.6 : 1.5, alpha: a });
+            const last = curves[tt][curves[tt].length - 1]; P.text(`t = ${tt}`, 20000, last[1], { align: 'right', baseline: 'bottom', dy: -3, size: 11.5, weight: 700, color: COL[tt], alpha: Math.max(a, 0.6) });
+          }
+          const st = rt ? btStats(rt) : null;
+          if (st && st.n) P.dot(st.n, st.h, { r: 5, color: COL[t] });
+          info = { st, t };
+        });
+        v.legend([['green', 'visited node / leaf level'], ['orange', 'split halves'], ['gold', 'receives the median', { area: true }]]);
+        v.readout(() => {
+          const { st, t } = info; if (!st) return 'Empty tree: insert a key.';
+          const occ = st.n <= 2 * t - 1 || (st.minK >= t - 1 && st.maxK <= 2 * t - 1), B = Math.log((st.n + 1) / 2) / Math.log(t);
+          return `$n = ${st.n}$ keys, $t = ${t}$ · non-root nodes hold ${st.minK === Infinity ? '—' : st.minK}–${st.maxK} keys, within $[t-1, 2t-1] = [${t - 1}, ${2 * t - 1}]$ ${occ ? '✓' : '✗'} · leaves all at depth ${[...st.leafD].join(', ')} ${st.leafD.size === 1 ? '✓' : '✗'} · $h = ${st.h} \\le \\log_t\\frac{n+1}{2} = ${v.fix(B, 2)}$ ${st.h <= B + 1e-9 ? '✓' : '✗'} · a search reads at most $h+1 = ${st.h + 1}$ nodes`;
         });
       },
     },

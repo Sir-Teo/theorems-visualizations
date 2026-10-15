@@ -754,5 +754,432 @@ $$B = R^*R.$$`,
         });
       },
     },
+    // ------------------------------------------------------------------ 7.68
+    {
+      num: '7.68',
+      kind: 'Theorem',
+      name: 'Role of positive singular values',
+      statement: String.raw`Suppose $T \in \mathcal L(V, W)$. Then
+(a) $T$ is injective $\iff$ $0$ is not a singular value of $T$;
+(b) the number of positive singular values of $T$ equals $\dim \operatorname{range} T$;
+(c) $T$ is surjective $\iff$ the number of positive singular values of $T$ equals $\dim W$.`,
+      idea: String.raw`(a) $T$ is injective $\iff \operatorname{null} T = \{0\} \iff \operatorname{null} T^*T = \{0\}$ (7.64(b)) $\iff 0$ is not an eigenvalue of $T^*T \iff 0$ is not a singular value. (b) The spectral theorem (7.29, 7.31) diagonalizes $T^*T$ in an orthonormal basis, so $\dim \operatorname{range} T^*T$ is the number of positive eigenvalues counted with multiplicity — the number of positive singular values — and 7.64(d) says this is $\dim \operatorname{range} T$. (c) $T$ is surjective exactly when $\dim \operatorname{range} T = \dim W$ (2.39).`,
+      caption: String.raw`Pick the shape of $T$. The 3D view (drag the background to rotate) shows the image of the unit sphere of $V$ inside $W$ — an ellipsoid, a flat ellipse or a segment — with its semi-axes $s_k f_k$. Slide columns into the span of the others: singular values drop to $0$ one at a time (bars, right) and the image loses a dimension each time. The number of positive bars always equals $\dim \operatorname{range} T$, computed independently by row reduction. Injectivity needs all $\dim V$ bars positive; surjectivity needs $\dim W$ of them — impossible for $\mathbf R^2 \to \mathbf R^3$, and injectivity is impossible for $\mathbf R^3 \to \mathbf R^2$.`,
+      deps: ['ladr-7.65', 'ladr-7.64', 'ladr-7.29', 'ladr-7.31', 'ladr-2.39'],
+      tags: ['singular values'],
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-1.8, 1.8], y: [-1.6, 1.9], equal: true, axes: false, height: 380, weight: 1.3, minWidth: 320, title: 'in $W$: the image of the unit sphere of $V$' });
+        const B = v.stage({ x: [0.3, 3.7], y: [0, 2], height: 380, minWidth: 240, axes: false, title: 'the singular values of $T$' });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.45, lim: 1.6 });
+        const shape = v.select('', [{ value: '33', label: '$\\mathbf R^3 \\to \\mathbf R^3$' }, { value: '32', label: '$\\mathbf R^2 \\to \\mathbf R^3$' }, { value: '23', label: '$\\mathbf R^3 \\to \\mathbf R^2$' }], '33');
+        const t1 = v.slider('collapse a column', 0, 1, 0.55, { step: 0.01 });
+        const t2 = v.slider('collapse another', 0, 1, 0, { step: 0.01 });
+        const C = { 33: [[1.15, 0.2, -0.1], [0.25, 0.85, 0.35], [-0.2, 0.25, 0.75]], 32: [[1.15, 0.3, -0.1], [-0.2, 0.8, 0.55]], 23: [[1.15, 0.3], [-0.4, 0.9], [0.5, 0.6]] };
+        const Tof = () => {
+          const k = shape.value, c = C[k].map((x) => x.slice()), a = t1.value, b = t2.value;
+          if (k === '33') { c[1] = add(c[1], scl(sub(scl(c[0], 0.8), c[1]), b)); c[2] = add(c[2], scl(sub(add(scl(c[0], 0.5), scl(c[1], -0.4)), c[2]), a)); }
+          else if (k === '32') c[1] = add(c[1], scl(sub(scl(c[0], -0.6), c[1]), a));
+          else { c[1] = add(c[1], scl(sub(scl(c[0], -0.6), c[1]), a)); c[2] = add(c[2], scl(sub(scl(c[0], 0.7), c[2]), a)); }
+          return fromCols(c);
+        };
+        const AC = ['blue', 'purple', 'teal'];
+        let st = null;
+        v.render(() => {
+          const k = shape.value; t2.el.hidden = k !== '33';
+          const T = Tof(), m = T.length, n = T[0].length, emb = (w) => (w.length === 3 ? w : [w[0], w[1], 0]);
+          const sing = M.eigSym(mm(tr(T), T)).values.map((x) => Math.sqrt(Math.max(0, x)));
+          const tol = 1e-6 * Math.max(1, sing[0]), pos = sing.filter((x) => x > tol).length;
+          const rk = M.rref(T, 1e-9).pivots.length, sv = M.svd(T);
+          const ax = sv.S.map((x, i) => emb(scl(sv.U.map((r) => r[i]), x > tol ? x : 0)));
+          sc.begin();
+          if (m === 2) { sc.disc([1, 0, 0], [0, 1, 0], 1.55, { fill: 'muted', color: 'muted', fillAlpha: 0.04, alpha: 0.4 }); sc.tex('W = \\mathbf R^2', [1.3, -1.1, 0], { color: 'muted', size: 13 }); }
+          if (n === 3) {
+            sphereImage(sc, T, { color: 'accent', width: 1, alpha: 0.35 });
+            const pairs = m === 3 ? [[0, 1], [0, 2], [1, 2]] : [[0, 1]];
+            for (const [i, j] of pairs) ellPoly3(sc, ax[i], ax[j], { fill: 'accent', color: 'accent', fillAlpha: 0.09, alpha: 0.5, width: 1.2 });
+          } else ellPoly3(sc, ax[0], ax[1], { fill: 'accent', color: 'accent', fillAlpha: 0.16, alpha: 0.8, width: 1.6 });
+          ax.forEach((a, i) => { if (len(a) > 1e-6) { sc.arrow(ZERO, a, { color: AC[i], width: 3 }); sc.tex(`s_${i + 1}f_${i + 1}`, scl(a, 1.18), { color: AC[i], size: 14 }); } });
+          sc.flush();
+          const dimNames = ['a point', 'a segment', 'a flat ellipse', 'an ellipsoid'];
+          S.corner(`image: ${dimNames[pos]} (dimension ${pos})`, 'tl', { color: 'muted', weight: 600 });
+          // the bars
+          const ymax = Math.max(1.2, sing[0] * 1.2);
+          B.setView([0.3, n + 0.7], [-0.62 * ymax, 1.12 * ymax]);
+          B.line(0.4, 0, n + 0.6, 0, { color: 'muted', width: 1 });
+          sing.forEach((x, i) => {
+            const ok = x > tol, c = ok ? 'green' : 'red';
+            if (ok) B.rect(i + 0.72, 0, i + 1.28, x, { fill: c, fillAlpha: 0.5, color: c, width: 1.2 });
+            else B.dot(i + 1, 0, { color: 'red', r: 6 });
+            B.text(`s${'₁₂₃'[i]} = ${pf(ok ? x : 0)}`, i + 1, ok ? x : 0, { align: 'center', dy: -12, size: 12, color: c, weight: 600 });
+          });
+          const inj = pos === n, sur = pos === m;
+          const ln = (y, txt, good) => B.text(txt, n / 2 + 0.5, -y * ymax, { align: 'center', size: 12.5, color: good == null ? 'ink' : good ? 'green' : 'red', weight: good == null ? 500 : 700 });
+          ln(0.12, `${pos} positive  =  dim range T = ${rk} (row reduction)`, null);
+          ln(0.27, `injective: ${inj ? 'yes — no zero singular value' : 'no — 0 is a singular value'}`, inj);
+          ln(0.42, `surjective: ${sur ? `yes — ${pos} = dim W` : `no — ${pos} < dim W = ${m}`}`, sur);
+          st = { T, sing, pos, rk, n, m, inj, sur, nul: M.nullspace(T, 1e-9).length };
+        });
+        v.legend([['accent', '$T(\\text{unit sphere})$', { area: true }], ['green', 'positive singular value', { area: true }], ['red', 'singular value $0$', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { T, sing, pos, rk, n, m, inj, sur, nul } = st;
+          return `$T = ${mtex(T)}$ has $\\dim V = ${n}$ singular values $${sing.map((x) => tn(x > 1e-6 * Math.max(1, sing[0]) ? x : 0)).join(', ')}$. (a) $\\dim\\operatorname{null} T = ${nul}$: ${inj ? '**injective**, and $0$ is not a singular value' : '**not injective**, and $0$ is a singular value'}. (b) ${pos} positive $= \\dim\\operatorname{range} T = ${rk}$. (c) $\\dim W = ${m}$: ${sur ? '**surjective**' : '**not surjective**'}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.69
+    {
+      num: '7.69',
+      kind: 'Theorem',
+      name: 'Isometry ⟺ all singular values equal 1',
+      statement: String.raw`Suppose $S \in \mathcal L(V, W)$. Then
+$$S \text{ is an isometry} \iff \text{all singular values of } S \text{ equal } 1.$$`,
+      idea: String.raw`By 7.49, $S$ is an isometry if and only if $S^*S = I$. The operator $S^*S$ is self-adjoint, so by the spectral theorem (7.29, 7.31) it is diagonal in some orthonormal basis; hence $S^*S = I$ exactly when all its eigenvalues equal $1$, which (taking square roots) means all singular values of $S$ equal $1$. Eigenvalues of $S$ itself cannot detect this: a shear has both eigenvalues equal to $1$ and still stretches some vectors.`,
+      caption: String.raw`Drag $S(1,0)$ and $S(0,1)$; they snap to length $1$ and to right angles. Left: a house and the unit circle (dashed) with their images under $S$; drag the gold $v$ to compare $\|Sv\|$ with $\|v\|$. Right: the stretch factor $\|Su\|$ for every unit vector $u$, drawn as a polar curve; it touches the circles of radius $s_1$ (along $e_1$) and $s_2$ (along $e_2$). Lengths are preserved exactly when this curve is the unit circle — when $s_1 = s_2 = 1$. Try the shear: eigenvalues $1, 1$, but not an isometry.`,
+      deps: ['ladr-7.49', 'ladr-7.29', 'ladr-7.31', 'ladr-7.65'],
+      tags: ['singular values', 'isometries'],
+      viz(v) {
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.1, 2.3], equal: true, height: 360, minWidth: 290, weight: 1.1 });
+        const P = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, height: 360, minWidth: 260, axes: false, title: 'stretch factor $\\|Su\\|$ in each direction $u$' });
+        const PRE = { rot: rot(0.6), ref: mm(rot(0.6), [[1, 0], [0, -1]]), shear: [[1, 0.8], [0, 1]], half: mm(rot(0.6), [[1, 0], [0, 0.6]]), small: scl(rot(0.6).flat(), 0.8) };
+        PRE.small = [PRE.small.slice(0, 2), PRE.small.slice(2)];
+        const snapC = (other) => (x, y) => {
+          let p = [x, y]; const o = other();
+          if (len(o) > 0.2 && Math.abs(dot(unit(p), unit(o))) < 0.07) p = sub(p, scl(unit(o), dot(p, unit(o))));
+          const L = len(p); if (L > 0 && Math.abs(L - 1) < 0.07) p = scl(p, 1 / L);
+          return p;
+        };
+        const H = colHandles(S, PRE.half, { l1: 'S(1,0)', l2: 'S(0,1)', c1: snapC(() => [H.h2.x, H.h2.y]), c2: snapC(() => [H.h1.x, H.h1.y]) });
+        v.select('', [{ value: 'rot', label: 'rotation' }, { value: 'ref', label: 'reflection' }, { value: 'shear', label: 'shear' }, { value: 'half', label: 'one axis × 0.6' }, { value: 'small', label: '0.8 × rotation' }], 'half', { onChange: (k) => H.set(PRE[k]) });
+        const vh = S.handle(-1.35, -1.0, { color: 'gold', label: 'v' });
+        let st = null;
+        v.render(() => {
+          const A = H.A, { s, e } = svd22(A), iso = Math.abs(s[0] - 1) < 1e-6 && Math.abs(s[1] - 1) < 1e-6, col = iso ? 'green' : 'orange';
+          for (let i = -3; i <= 3; i++) {
+            const a = mv(A, [i, -3]), b = mv(A, [i, 3]), c = mv(A, [-3, i]), d = mv(A, [3, i]);
+            S.line(a[0], a[1], b[0], b[1], { color: col, width: 1, alpha: 0.2 }); S.line(c[0], c[1], d[0], d[1], { color: col, width: 1, alpha: 0.2 });
+          }
+          S.circle(0, 0, 1, { color: 'muted', dash: [4, 4], width: 1 });
+          S.path(ellPts(A), { color: iso ? 'green' : 'accent', width: 1.6 });
+          for (const sh of [HOUSE, DOOR, WIN]) {
+            S.poly(sh, { color: 'muted', dash: [3, 3], width: 1 });
+            S.poly(sh.map((p) => mv(A, p)), { fill: col, fillAlpha: 0.16, color: col, width: 1.6 });
+          }
+          const vv = [vh.x, vh.y], Sv = mv(A, vv);
+          S.circle(0, 0, len(vv), { color: 'gold', width: 1, dash: [2, 4], alpha: 0.8 });
+          S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });
+          S.arrow(0, 0, Sv[0], Sv[1], { color: 'purple', width: 2.6 });
+          S.tex('Sv', Sv[0], Sv[1], { color: 'purple', size: 15, dx: 13, dy: -10 });
+          S.corner(iso ? 'S preserves lengths: an isometry' : 'S changes some lengths', 'tl', { color: iso ? 'green' : 'red', weight: 700 });
+          // the stretch profile
+          P.circle(0, 0, 1, { color: 'green', width: 1.6, alpha: 0.8 });
+          P.circle(0, 0, s[0], { color: 'blue', width: 1.2, dash: [6, 4] });
+          if (s[1] > 0.02) P.circle(0, 0, s[1], { color: 'purple', width: 1.2, dash: [6, 4] });
+          const prof = []; for (let k = 0; k <= 360; k++) { const u = uAt((TAU * k) / 360); prof.push(scl(u, len(mv(A, u)))); }
+          P.path(prof, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 2.4 });
+          for (const [k, c] of [[0, 'blue'], [1, 'purple']]) {
+            const u = e[k];
+            P.line(-2.1 * u[0], -2.1 * u[1], 2.1 * u[0], 2.1 * u[1], { color: c, width: 1, alpha: 0.35 });
+            for (const sg of [1, -1]) P.dot(sg * s[k] * u[0], sg * s[k] * u[1], { color: c, r: 4.5 });
+            const lp = scl(u, Math.max(s[k], 0.25) + 0.3);
+            P.tex(`s_${k + 1} = ${tn(s[k])}`, lp[0], lp[1], { color: c, size: 14 });
+          }
+          P.text('unit circle', 0, -1, { color: 'green', size: 11, dy: 12, align: 'center' });
+          st = { A, s, iso, nv: len(vv), nSv: len(Sv), ev: v.M.eig2(A) };
+        });
+        v.legend([['accent', 'the stretch profile $u \\mapsto \\|Su\\|\\,u$', { area: true }], ['blue', 'radius $s_1$', { dash: true }], ['purple', 'radius $s_2$', { dash: true }], ['green', 'radius $1$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { A, s, iso, nv, nSv, ev } = st, StS = mm(tr(A), A);
+          const evs = ev.map(([re, im]) => (Math.abs(im) < 1e-9 ? tn(re) : `${tn(re)} ${im > 0 ? '+' : '-'} ${tn(Math.abs(im))}i`)).join(', ');
+          return `$S^*S = ${mtex(StS)}$, singular values $${tn(s[0], 3)}, ${tn(s[1], 3)}$; $\\|v\\| = ${tn(nv)}$, $\\|Sv\\| = ${tn(nSv)}$ — ${iso ? '$S^*S = I$: **an isometry**' : '**not an isometry**'}. Eigenvalues of $S$: $${evs}$${!iso && ev.every(([re, im]) => Math.abs(Math.hypot(re, im) - 1) < 1e-6) ? ' — all of absolute value $1$, yet $S$ is no isometry' : ''}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.70
+    {
+      num: '7.70',
+      kind: 'Theorem',
+      name: 'Singular value decomposition',
+      statement: String.raw`Suppose $T \in \mathcal L(V, W)$ and the positive singular values of $T$ are $s_1, \dots, s_m$. Then there exist orthonormal lists $e_1, \dots, e_m$ in $V$ and $f_1, \dots, f_m$ in $W$ such that
+$$Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\rangle f_m$$
+for every $v \in V$.`,
+      idea: String.raw`$T^*T$ is a positive operator (7.64), so the spectral theorem (7.29, 7.31) gives an orthonormal basis $e_1, \dots, e_n$ of $V$ with $T^*Te_k = s_k^2 e_k$. For $k \le m$ put $f_k = Te_k / s_k$; then $\langle f_j, f_k\rangle = \langle e_j, T^*Te_k\rangle / (s_j s_k) = \langle e_j, e_k\rangle$, so the $f_k$ are orthonormal. For $k > m$, $T^*Te_k = 0$ forces $Te_k = 0$ (7.64(b)). Now expand $v = \sum_k \langle v, e_k\rangle e_k$ (6.30) and apply $T$. In the plane this says that every linear map is a rotation (reading off the coordinates $\langle v, e_k\rangle$), a stretch along perpendicular axes, and a second rotation (placing the results along the $f_k$).`,
+      caption: String.raw`Drag the targets $T(1,0)$ and $T(0,1)$ to choose $T$, then watch: the plane (grid, unit circle, face) is first turned so that $e_1, e_2$ lie along the axes, then stretched by $s_1, s_2$ along those axes (with a flip when $\det T < 0$), then turned so that the axes land on $f_1, f_2$. The motion ends exactly on $T$ applied to the picture: the dashed target ellipse is $T(\text{unit circle})$, and $e_k$ arrives at $s_k f_k = Te_k$. Click the timeline to jump to any moment.`,
+      deps: ['ladr-7.65', 'ladr-7.64', 'ladr-7.29', 'ladr-7.31', 'ladr-6.30'],
+      tags: ['singular values', 'factorization'],
+      credit: 'Beltrami, 1873; Jordan, 1874',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Singular_value_decomposition' },
+      viz(v) {
+        const S = v.stage({ x: [-3, 3], y: [-2.5, 2.5], equal: true, height: 400, full: true });
+        const TL = v.stage({ x: [0, 10], y: [0, 1], height: 58, full: true, axes: false });
+        const H = colHandles(S, [[1.7, -0.6], [0.8, 1.0]]);
+        const PH = [[1, 3], [3.5, 5.5], [6, 8]], PL = ['1 · rotate e₁, e₂ onto the axes', '2 · stretch by s₁, s₂', '3 · rotate the axes onto f₁, f₂'], PC = ['blue', 'orange', 'purple'];
+        TL.onClick((x) => { v.pause(); v.t = Math.max(0, Math.min(9.99, x)); });
+        const EYES = [[-0.36, 0.3], [0.36, 0.3]], MOUTH = Array.from({ length: 25 }, (_, i) => scl(uAt(Math.PI * (1.15 + (0.7 * i) / 24)), 0.55));
+        let st = null;
+        v.animate((t) => {
+          const T = H.A, { s, e, f, det } = svd22(T);
+          const al = Math.atan2(e[0][1], e[0][0]), be = Math.atan2(f[0][1], f[0][0]), sg2 = s[1] * (dot(f[1], perp(f[0])) < 0 ? -1 : 1);
+          const u1 = smooth((t - 1) / 2), u2 = smooth((t - 3.5) / 2), u3 = smooth((t - 6) / 2);
+          const L = mm(rot(be * u3), mm([[1 + (s[0] - 1) * u2, 0], [0, 1 + (sg2 - 1) * u2]], rot(-al * u1)));
+          const P = (p) => mv(L, p);
+          for (let i = -5; i <= 5; i++) {
+            const a = P([i, -5]), b = P([i, 5]), c = P([-5, i]), d = P([5, i]);
+            S.line(a[0], a[1], b[0], b[1], { color: 'accent', width: i ? 1 : 1.6, alpha: i ? 0.14 : 0.3 });
+            S.line(c[0], c[1], d[0], d[1], { color: 'accent', width: i ? 1 : 1.6, alpha: i ? 0.14 : 0.3 });
+          }
+          S.path(ellPts(T), { color: 'muted', width: 1.3, dash: [6, 4] });
+          S.path(ellPts(L), { fill: 'accent', fillAlpha: 0.12, color: 'accent', width: 2 });
+          for (const c of EYES) S.path(Array.from({ length: 25 }, (_, i) => P(add(c, scl(uAt((TAU * i) / 24), 0.1)))), { fill: 'ink', fillAlpha: 0.55, stroke: false });
+          S.path(MOUTH.map(P), { color: 'ink', width: 2.4, alpha: 0.7 });
+          const phase = t < 3.25 ? 0 : t < 5.75 ? 1 : 2;
+          e.forEach((u, k) => {
+            const c = k ? 'purple' : 'blue', w = P(u);
+            S.arrow(0, 0, w[0], w[1], { color: c, width: 3.2 });
+            const lab = phase === 0 ? `e_${k + 1}` : phase === 1 ? `${tn(k ? 1 + (sg2 - 1) * u2 : 1 + (s[0] - 1) * u2)}\\,${k ? '(0,1)' : '(1,0)'}` : `s_${k + 1} f_${k + 1}`;
+            const lp = len(w) > 0.05 ? add(w, scl(unit(w), 0.32)) : [0.3, k ? 0.3 : -0.3];
+            S.tex(lab, lp[0], lp[1], { color: c, size: 15 });
+          });
+          S.corner(t < 1 ? 'the unit circle with the right singular vectors e₁, e₂' : t < 8.2 ? PL[Math.min(2, Math.max(0, PH.findIndex(([a, b]) => t < b + 0.25)))] : 'done: the picture is now T(picture)', 'tl', { color: 'muted', weight: 600 });
+          if (det < 0 && t > 3.5 && t < 6) S.corner('det T < 0: the stretch includes a flip', 'tr', { color: 'orange', weight: 600 });
+          // timeline
+          TL.rect(0, 0.28, 10, 0.72, { fill: 'faint', fillAlpha: 0.12, stroke: false });
+          PH.forEach(([a, b], i) => { TL.rect(a, 0.28, b, 0.72, { fill: PC[i], fillAlpha: 0.22, stroke: false }); TL.text(PL[i], (a + b) / 2, 0.5, { align: 'center', size: 11.5, color: 'ink' }); });
+          TL.line(t, 0.08, t, 0.92, { color: 'gold', width: 3 });
+          let err = 0; for (let k = 0; k < 24; k++) { const x = uAt((TAU * k) / 24), Tx = mv(T, x), rhs = add(scl(f[0], s[0] * dot(x, e[0])), scl(f[1], s[1] * dot(x, e[1]))); err = Math.max(err, len(sub(Tx, rhs))); }
+          const Lend = mm(rot(be), mm([[s[0], 0], [0, sg2]], rot(-al)));
+          st = { T, s, e, f, err, err2: maxAbs(msub(Lend, T)) };
+        }, { period: 10, still: 4.6 });
+        v.legend([['blue', '$e_1 \\to s_1 f_1$'], ['purple', '$e_2 \\to s_2 f_2$'], ['muted', 'target $T(\\text{unit circle})$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { T, s, e, f, err, err2 } = st;
+          return `$T = ${mtex(T)}$: $s_1 = ${tn(s[0])}$, $s_2 = ${tn(s[1])}$, $e_1 = ${vtex(e[0])}$, $e_2 = ${vtex(e[1])}$, $f_1 = ${vtex(f[0])}$, $f_2 = ${vtex(f[1])}$. Check: $\\max_{\\|v\\|=1}\\|Tv - \\sum_k s_k\\langle v, e_k\\rangle f_k\\| = ${v.sci(err, 1)}$, and rotate∘stretch∘rotate differs from $T$ by $${v.sci(err2, 1)}$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.75
+    {
+      num: '7.75',
+      kind: 'Theorem',
+      name: 'SVD of the adjoint and the pseudoinverse',
+      statement: String.raw`Suppose $T \in \mathcal L(V, W)$ has positive singular values $s_1, \dots, s_m$, and $e_1, \dots, e_m$ and $f_1, \dots, f_m$ are orthonormal lists in $V$ and $W$ with
+$$Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\rangle f_m \quad\text{for all } v \in V.$$
+Then for every $w \in W$
+$$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \quad\text{and}\quad T^\dagger w = \frac{\langle w, f_1\rangle}{s_1}e_1 + \cdots + \frac{\langle w, f_m\rangle}{s_m}e_m.$$`,
+      idea: String.raw`For the adjoint, expand: $\langle Tv, w\rangle = \sum_k s_k\langle v, e_k\rangle\langle f_k, w\rangle = \big\langle v, \sum_k s_k\langle w, f_k\rangle e_k\big\rangle$, and the adjoint is the unique map with this property (7.1). For the pseudoinverse, call the right side $v$. Then $Tv = \sum_k \langle w, f_k\rangle f_k$, which is $P_{\operatorname{range} T} w$ because $f_1, \dots, f_m$ is an orthonormal basis of $\operatorname{range} T$ (6.57); and $v$ lies in $\operatorname{span}(e_1, \dots, e_m) = (\operatorname{null} T)^\perp$. Those two properties define $T^\dagger w$ (6.68). So: swap the roles of the $e$'s and $f$'s to get $T^*$; swap and invert the $s_k$ to get $T^\dagger$.`,
+      caption: String.raw`Drag $T(1,0)$, $T(0,1)$ (in $W$; $T(0,1)$ snaps onto the line of $T(1,0)$ to make rank $1$) and the gold $w$. In $W$, $w$ is split along the orthonormal $f_1, f_2$; in $V$ the same coefficients, multiplied by $s_k$ (for $T^*$) or divided by $s_k$ (for $T^\dagger$), are laid along $e_1, e_2$ tip to tail. The result lands inside the ring computed directly — as the transpose matrix, or as the pseudoinverse matrix. For $T^\dagger$ the green arrow in $W$ is $TT^\dagger w = P_{\operatorname{range} T} w$; with rank $1$, $T^\dagger w$ is the shortest of all the least-squares solutions (dashed line). Move towards rank $1$ without snapping and watch $T^\dagger w$ run away as $1/s_2$ blows up.`,
+      deps: ['ladr-7.70', 'ladr-7.1', 'ladr-6.68', 'ladr-6.57'],
+      tags: ['singular values', 'pseudoinverse'],
+      viz(v) {
+        const M = v.M;
+        const V = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 360, minWidth: 280, title: 'in $V$: $T^*w$ or $T^\\dagger w$' });
+        const W = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 360, minWidth: 280, title: 'in $W$: $w$ and the $f_k$' });
+        const which = v.select('', [{ value: 'adj', label: '$T^*$: swap $e_k$ and $f_k$' }, { value: 'pinv', label: '$T^\\dagger$: swap and invert $s_k$' }], 'pinv');
+        const PRE = { r2: [[1.3, 0.4], [0.3, 0.9]], r1: [[1.2, -0.6], [0.4, -0.2]] };
+        v.select('', [{ value: 'r2', label: 'invertible' }, { value: 'r1', label: 'rank 1' }], 'r1', { onChange: (k) => H.set(PRE[k]) });
+        const H = colHandles(W, PRE.r1, {
+          c2: (x, y) => {
+            const p = [Math.round(x * 10) / 10, Math.round(y * 10) / 10], a = [H.h1.x, H.h1.y];
+            return len(a) > 0.1 && Math.abs(p[0] * a[1] - p[1] * a[0]) < 0.09 * len(a) ? scl(unit(a), dot([x, y], unit(a))) : p;
+          },
+        });
+        const wh = W.handle(-0.5, 1.5, { color: 'gold', label: 'w' });
+        let st = null;
+        v.render(() => {
+          const T = H.A, { s, e, f } = svd22(T), w = [wh.x, wh.y], adj = which.value === 'adj';
+          const tol = 1e-9 * Math.max(1, s[0]), m = s.filter((x) => x > tol).length;
+          const c = f.map((fk) => dot(w, fk)), coef = [0, 1].map((k) => (k < m ? (adj ? s[k] * c[k] : c[k] / s[k]) : 0));
+          const out = add(scl(e[0], coef[0]), scl(e[1], coef[1])), direct = adj ? mv(tr(T), w) : mv(M.pinv(T), w);
+          const oc = adj ? 'orange' : 'green';
+          // W
+          if (m === 1) { W.line(-4 * f[0][0], -4 * f[0][1], 4 * f[0][0], 4 * f[0][1], { color: 'green', width: 6, alpha: 0.22 }); const lp = scl(f[0], f[0][1] >= 0 ? 2.1 : -2.1); W.tex('\\operatorname{range} T', lp[0], lp[1], { color: 'green', size: 13, dy: -12 }); }
+          W.path(ellPts(T), { color: 'accent', width: 1, alpha: 0.5, dash: [3, 3] });
+          f.forEach((u, k) => {
+            const col = k ? 'purple' : 'blue', foot = scl(u, c[k]);
+            W.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], { color: col, width: 1, alpha: 0.25 });
+            W.arrow(0, 0, u[0], u[1], { color: col, width: 2.4 });
+            W.tex(`f_${k + 1}`, u[0] * 1.25 - 0.12 * u[1], u[1] * 1.25 + 0.12 * u[0], { color: col, size: 14 });
+            W.line(w[0], w[1], foot[0], foot[1], { color: col, width: 1, dash: [3, 3] });
+            W.dot(foot[0], foot[1], { color: col, r: 3.5 });
+          });
+          if (!adj) { const Pw = add(scl(f[0], c[0]), m === 2 ? scl(f[1], c[1]) : [0, 0]); if (m === 1) { W.arrow(0, 0, Pw[0], Pw[1], { color: 'green', width: 3 }); W.tex('TT^\\dagger w', Pw[0], Pw[1], { color: 'green', size: 14, dx: 18, dy: 12 }); } }
+          W.arrow(0, 0, w[0], w[1], { color: 'gold', width: 2.6 });
+          // V
+          V.circle(0, 0, 1, { color: 'muted', width: 1, dash: [4, 4] });
+          const ax = [0, 1].map((k) => (k < m ? (adj ? s[k] : 1 / s[k]) : 0));
+          V.path(Array.from({ length: 121 }, (_, i) => { const t = (TAU * i) / 120; return add(scl(e[0], ax[0] * Math.cos(t)), scl(e[1], ax[1] * Math.sin(t))); }), { color: oc, width: 1, alpha: 0.5, dash: [3, 3] });
+          e.forEach((u, k) => {
+            const col = k ? 'purple' : 'blue';
+            V.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], { color: k < m || adj ? col : 'red', width: k < m || adj ? 1 : 3, alpha: k < m || adj ? 0.25 : 0.4 });
+            V.arrow(0, 0, u[0], u[1], { color: col, width: 2.4 });
+            V.tex(`e_${k + 1}`, u[0] * 1.25 - 0.12 * u[1], u[1] * 1.25 + 0.12 * u[0], { color: col, size: 14 });
+          });
+          if (!adj && m === 1) {
+            const lp = scl(e[1], e[1][1] >= 0 ? 2.15 : -2.15); V.tex('\\operatorname{null} T', lp[0], lp[1], { color: 'red', size: 13, dx: 26 });
+            const a = add(out, scl(e[1], -4)), b = add(out, scl(e[1], 4));
+            V.line(a[0], a[1], b[0], b[1], { color: 'orange', width: 1.6, dash: [6, 4] });
+            rightMark(V, e[1], scl(out, -1), 0.14, 'orange', out);
+          }
+          const c1 = scl(e[0], coef[0]);
+          V.arrow(0, 0, c1[0], c1[1], { color: 'blue', width: 1.8, dash: [5, 4] });
+          if (m === 2) V.arrow(c1[0], c1[1], out[0], out[1], { color: 'purple', width: 1.8, dash: [5, 4] });
+          V.dot(direct[0], direct[1], { color: oc, r: 10, hollow: true, width: 2 });
+          V.arrow(0, 0, out[0], out[1], { color: oc, width: 3 });
+          const bx = V.bounds, inside = out[0] > bx.x[0] && out[0] < bx.x[1] && out[1] > bx.y[0] && out[1] < bx.y[1];
+          if (inside) V.tex(adj ? 'T^*w' : 'T^\\dagger w', out[0], out[1], { color: oc, size: 15, dx: 16, dy: -12 });
+          else V.corner(`T†w has length ${pf(len(out), 1)}: off the panel (s₂ = ${pf(s[1], 3)} is tiny)`, 'tl', { color: 'red', weight: 700 });
+          st = { T, s, m, adj, out, direct, c };
+        });
+        v.legend([['gold', '$w$'], ['blue', '$e_1, f_1$'], ['purple', '$e_2, f_2$'], ['orange', '$T^*w$'], ['green', '$T^\\dagger w$, $TT^\\dagger w$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { s, m, adj, out, direct, c } = st;
+          const terms = [0, 1].slice(0, m).map((k) => (adj ? `${tn(s[k])}\\cdot(${tn(c[k])})\\,e_${k + 1}` : `\\tfrac{${tn(c[k])}}{${tn(s[k])}}\\,e_${k + 1}`)).join(' + ');
+          return `$s = ${tn(s[0])}, ${tn(s[1])}$ (rank ${m}); $\\langle w, f_k\\rangle = ${c.map((x) => tn(x)).join(', ')}$. ${adj ? '$T^*w' : '$T^\\dagger w'} = ${terms} = ${vtex(out)}$; computed directly ${adj ? '(transpose matrix)' : '(pseudoinverse matrix)'}: $${vtex(direct)}$ — difference $${v.sci(len(sub(out, direct)), 1)}$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.80
+    {
+      num: '7.80',
+      kind: 'Theorem',
+      name: 'Matrix version of SVD',
+      statement: String.raw`Suppose $A$ is a $p$-by-$n$ matrix of rank $m \ge 1$. Then there exist a $p$-by-$m$ matrix $B$ with orthonormal columns, an $m$-by-$m$ diagonal matrix $D$ with positive numbers on the diagonal, and an $n$-by-$m$ matrix $C$ with orthonormal columns such that
+$$A = BDC^*.$$`,
+      idea: String.raw`Let $T: \mathbf F^n \to \mathbf F^p$ have matrix $A$; then $\dim \operatorname{range} T = m$ (3.78), so 7.70 gives $Tv = \sum_{k=1}^m s_k\langle v, e_k\rangle f_k$. Take $B = [f_1 \cdots f_m]$, $D = \operatorname{diag}(s_1, \dots, s_m)$, $C = [e_1 \cdots e_m]$. Then $AC = BD$ column by column ($Ae_k = s_kf_k$), so $ACC^* = BDC^*$; and $ACC^* = A$ because $CC^*$ fixes each $e_k$ while both sides kill $(\operatorname{span}(e_1,\dots,e_m))^\perp$. Read as $A = \sum_k s_k f_k e_k^*$, the factorization writes $A$ as a sum of rank-one layers; the layers are orthonormal for the entrywise (Frobenius) inner product, so dropping all but the first $k$ leaves an error of exactly $\sqrt{s_{k+1}^2 + \cdots + s_m^2}$. Storing $B, D, C$ takes $m(p + m + n)$ numbers instead of $pn$.`,
+      caption: String.raw`A $60 \times 80$ grey-scale picture is a matrix $A$ of numbers between $0$ (black) and $1$ (white). Its factors are computed, and $A_k = B_kD_kC_k^*$ keeps only the first $k$ columns of $B$ and $C$ and the $k$ largest singular values. Drag $k$ (or click the spectrum): the picture sharpens, the error image $A - A_k$ (red where $A$ is lighter, blue where darker) fades, and the measured error matches $\sqrt{\sum_{j>k} s_j^2}$. The tartan has rank $3$, so $k = 3$ already gives $A = BDC^*$ exactly. Switch to *the factors* to see $B_k$, $D_k$ and $C_k^*$ themselves.`,
+      deps: ['ladr-7.70', 'ladr-3.78'],
+      tags: ['singular values', 'factorization'],
+      credit: 'Eckart & Young, 1936',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Singular_value_decomposition' },
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-3, 259], y: [-3, 72], equal: true, axes: false, height: 300, full: true });
+        const G = v.stage({ x: [0.3, 60.7], y: [0.01, 100], ylog: true, height: 170, full: true, axes: 'box', xlabel: 'j', title: 'singular values $s_j$ of the picture, log scale (click to choose $k$)' });
+        const pic = v.select('', [{ value: 'land', label: 'landscape' }, { value: 'face', label: 'portrait' }, { value: 'plaid', label: 'tartan' }], 'land');
+        const view = v.select('show', [{ value: 'img', label: 'images' }, { value: 'fac', label: 'the factors' }], 'img');
+        const kS = v.slider('terms $k$', 1, 60, 6, { int: true, step: 1 });
+        G.onClick((x) => kS.set(Math.max(1, Math.min(60, Math.round(x)))));
+        const cache = {};
+        const get = (name) => {
+          if (cache[name]) return cache[name];
+          const f = PICS[name], A = [];
+          for (let i = 0; i < IMG_P; i++) { const r = []; for (let j = 0; j < IMG_N; j++) r.push(Math.min(1, Math.max(0, f(j + 0.5, i + 0.5)))); A.push(r); }
+          const { U, S: s, V } = M.svd(A), m = s.filter((x) => x > 1e-10 * s[0]).length;
+          return (cache[name] = { A, U, s, V, m, ak: {}, mU: maxAbs(U.map((r) => r.slice(0, 60))), mV: maxAbs(V) });
+        };
+        const approx = (D, k) => D.ak[k] || (D.ak[k] = D.A.map((r, i) => r.map((_, j) => { let x = 0; for (let l = 0; l < k; l++) x += D.s[l] * D.U[i][l] * D.V[j][l]; return x; })));
+        const gray = (x) => { const g = Math.round(255 * Math.min(1, Math.max(0, x))); return [g, g, g, 255]; };
+        const signed = (x, sc) => (x >= 0 ? rgba(v, 'red', Math.min(1, x / sc)) : rgba(v, 'blue', Math.min(1, -x / sc)));
+        let st = null;
+        v.render(() => {
+          const D = get(pic.value), k = Math.round(kS.value), Ak = approx(D, k), fac = view.value === 'fac';
+          const { A, U, s, V } = D;
+          S.setView(fac ? [-3, 275] : [-3, 259], [-3, 72]);
+          const rects = fac ? [
+            { x0: 0, y0: 0, w: 40, h: 60, rows: IMG_P, cols: k, cell: (i, j) => signed(U[i][j], D.mU * 0.8) },
+            { x0: 48, y0: 10, w: 40, h: 40, rows: k, cols: k, cell: (i, j) => (i === j ? rgba(v, 'gold', 0.2 + (0.8 * s[i]) / s[0]) : null) },
+            { x0: 96, y0: 10, w: 80, h: 40, rows: k, cols: IMG_N, cell: (i, j) => signed(V[j][i], D.mV * 0.8) },
+            { x0: 192, y0: 0, w: 80, h: 60, rows: IMG_P, cols: IMG_N, cell: (i, j) => gray(Ak[i][j]) },
+          ] : [
+            { x0: 0, y0: 0, w: 80, h: 60, rows: IMG_P, cols: IMG_N, cell: (i, j) => gray(A[i][j]) },
+            { x0: 88, y0: 0, w: 80, h: 60, rows: IMG_P, cols: IMG_N, cell: (i, j) => gray(Ak[i][j]) },
+            { x0: 176, y0: 0, w: 80, h: 60, rows: IMG_P, cols: IMG_N, cell: (i, j) => signed(A[i][j] - Ak[i][j], 0.25) },
+          ];
+          S.raster((x, y) => {
+            for (const R of rects) if (x >= R.x0 && x < R.x0 + R.w && y >= R.y0 && y < R.y0 + R.h) {
+              const j = Math.min(R.cols - 1, Math.floor(((x - R.x0) / R.w) * R.cols)), i = Math.min(R.rows - 1, Math.floor(((R.y0 + R.h - y) / R.h) * R.rows));
+              return R.cell(i, j);
+            }
+            return null;
+          }, { key: [pic.value, k, view.value, v.rgb('red').join(), v.rgb('panel').join()].join('|'), res: 1 });
+          for (const R of rects) S.rect(R.x0, R.y0, R.x0 + R.w, R.y0 + R.h, { color: 'muted', width: 1 });
+          const TT = fac ? [`B_k\\ (60\\times ${k})`, `D_k\\ (${k}\\times ${k})`, `C_k^*\\ (${k}\\times 80)`, `A_k = B_kD_kC_k^*`] : ['A\\ \\ (60\\times 80)', `A_k,\\ \\text{rank } ${Math.min(k, D.m)}`, 'A - A_k'];
+          rects.forEach((R, i) => S.tex(TT[i], R.x0 + R.w / 2, R.y0 + R.h + 5.5, { size: 14, color: i === 1 && !fac ? 'accent' : 'ink' }));
+          if (fac) { S.text('=', 184, 30, { size: 26, align: 'center', color: 'muted' }); S.text('·', 44, 30, { size: 26, align: 'center', color: 'muted' }); S.text('·', 92, 30, { size: 26, align: 'center', color: 'muted' }); }
+          // errors
+          let e2 = 0; for (let i = 0; i < IMG_P; i++) for (let j = 0; j < IMG_N; j++) e2 += (A[i][j] - Ak[i][j]) ** 2;
+          const tail = Math.sqrt(s.slice(k).reduce((a, x) => a + x * x, 0)), tot = Math.sqrt(s.reduce((a, x) => a + x * x, 0));
+          // spectrum
+          const lo = 0.012;
+          s.forEach((x, j) => {
+            const kept = j < k, real = x > 1e-10 * s[0], y = Math.max(lo * 1.15, x);
+            G.line(j + 1, lo, j + 1, y, { color: kept ? 'blue' : 'red', width: 2.4, alpha: real ? 0.85 : 0.25 });
+            if (real) G.dot(j + 1, x, { color: kept ? 'blue' : 'red', r: 2.6, ring: false });
+          });
+          G.vline(k + 0.5, { color: 'gold', width: 1.6, dash: [4, 4] });
+          G.text(`kept: ${k}`, k + 0.5, 55, { align: 'right', dx: -6, size: 12, color: 'blue', weight: 600 });
+          if (k < 60) G.text(`discarded: √(Σ s_j², j > ${k}) = ${pf(tail, 3)}`, k + 0.5, 55, { align: 'left', dx: 6, size: 12, color: 'red', weight: 600 });
+          if (D.m < 60) G.text(`s_j = 0 for j > ${D.m} = rank A`, 59.5, 0.035, { align: 'right', size: 12, color: 'muted' });
+          st = { k, m: D.m, err: Math.sqrt(e2), tail, tot };
+        });
+        v.legend([['blue', 'kept singular values', { dot: true }], ['red', 'discarded', { dot: true }], ['red', '$A - A_k > 0$', { area: true }], ['blue', '$A - A_k < 0$', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { k, m, err, tail, tot } = st;
+          return `rank $m = ${m}$. With $k = ${k}$: $B_k$ is $60\\times${k}$, $D_k$ is $${k}\\times${k}$, $C_k$ is $80\\times${k}$ — $k(p + k + n) = ${k * (140 + k)}$ numbers instead of $pn = 4800$. Measured $\\|A - A_k\\|_F = ${tn(err, 4)}$; predicted $\\sqrt{\\sum_{j>k} s_j^2} = ${tn(tail, 4)}$ (${tn((100 * err) / tot, 1)}\\% of $\\|A\\|_F$).${k >= m ? ` Since $k \\ge m$, this is the exact factorization $A = BDC^*$.` : ''}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.82
+    {
+      num: '7.82',
+      kind: 'Theorem',
+      name: 'Upper bound for ‖Tv‖',
+      statement: String.raw`Suppose $T \in \mathcal L(V, W)$ and $s_1$ is the largest singular value of $T$. Then
+$$\|Tv\| \le s_1\|v\|$$
+for all $v \in V$. Equality holds for $v = e_1$ in a singular value decomposition of $T$, so $\max\{\|Tv\| : \|v\| \le 1\} = s_1$.`,
+      idea: String.raw`Write $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_m\langle v, e_m\rangle f_m$ (7.70). Since the $f_k$ are orthonormal, $\|Tv\|^2 = s_1^2|\langle v, e_1\rangle|^2 + \cdots + s_m^2|\langle v, e_m\rangle|^2$ (6.24). Replace every $s_k$ by the largest one and use Bessel's inequality (6.26): $\|Tv\|^2 \le s_1^2\big(|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2\big) \le s_1^2\|v\|^2$. For $v = e_1$ we get $Te_1 = s_1f_1$, of norm $s_1$. Geometrically, $s_1$ is the longest semi-axis of the image of the unit sphere.`,
+      caption: String.raw`Drag $T(1,0)$, $T(0,1)$ to edit $T$, and the gold $v$ anywhere. Left: the image ellipse of the unit circle sits inside the green circle of radius $s_1$, touching it only at $\pm s_1f_1 = \pm Te_1$; and $Tv$ always stays inside the dotted circle of radius $s_1\|v\|$. Right: for each unit direction $u$, $\|Tu\|^2$ (computed directly, blue line) splits into $s_1^2|\langle u, e_1\rangle|^2$ and $s_2^2|\langle u, e_2\rangle|^2$; replacing $s_2$ by $s_1$ would fill the strip up to the green line $s_1^2$ — the inequality in the proof.`,
+      deps: ['ladr-7.70', 'ladr-6.26', 'ladr-6.24'],
+      tags: ['singular values', 'norms'],
+      viz(v) {
+        const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 370, minWidth: 290 });
+        const G = v.stage({ x: [0, TAU], y: [0, 4], height: 370, minWidth: 280, axes: 'box', xlabel: 'angle of u', xticks: [[Math.PI / 2, 'π/2'], [Math.PI, 'π'], [(3 * Math.PI) / 2, '3π/2'], [TAU, '2π']], title: '$\\|Tu\\|^2$ for unit $u$, split along $e_1, e_2$' });
+        const H = colHandles(S, [[1.3, 0.8], [-0.5, 0.7]]);
+        const vh = S.handle(-1.0, 0.75, { color: 'gold', label: 'v' });
+        let st = null;
+        v.render(() => {
+          const T = H.A, { s, e, f } = svd22(T), vv = [vh.x, vh.y], Tv = mv(T, vv), nv = len(vv);
+          S.circle(0, 0, s[0], { color: 'green', width: 1.8, dash: [7, 4], fill: 'green', fillAlpha: 0.04 });
+          S.circle(0, 0, 1, { color: 'muted', dash: [4, 4], width: 1 });
+          S.path(ellPts(T), { fill: 'accent', fillAlpha: 0.12, color: 'accent', width: 1.8 });
+          S.circle(0, 0, s[0] * nv, { color: 'green', width: 1.2, dash: [2, 3], alpha: 0.8 });
+          for (const sg of [1, -1]) { S.dot(sg * e[0][0], sg * e[0][1], { color: 'blue', r: 4 }); S.dot(sg * s[0] * f[0][0], sg * s[0] * f[0][1], { color: 'green', r: 5.5 }); }
+          const t1 = scl(f[0], s[0]);
+          S.arrow(0, 0, t1[0], t1[1], { color: 'green', width: 2.2 });
+          const lp = add(t1, scl(f[0], 0.35));
+          S.tex('s_1 f_1 = Te_1', lp[0], lp[1], { color: 'green', size: 14 });
+          S.tex('e_1', e[0][0] * 1.22, e[0][1] * 1.22, { color: 'blue', size: 14 });
+          S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });
+          S.arrow(0, 0, Tv[0], Tv[1], { color: 'purple', width: 2.6 });
+          S.tex('Tv', Tv[0], Tv[1], { color: 'purple', size: 15, dx: 13, dy: -10 });
+          // the split of ‖Tu‖²
+          const a = (t) => s[0] ** 2 * dot(uAt(t), e[0]) ** 2, b = (t) => s[1] ** 2 * dot(uAt(t), e[1]) ** 2, top = s[0] ** 2;
+          G.setView(null, [0, Math.max(0.5, top * 1.18)]);
+          G.between((t) => top, (t) => a(t) + b(t), 0, TAU, { fill: 'green', fillAlpha: 0.08 });
+          G.between(a, () => 0, 0, TAU, { fill: 'blue', fillAlpha: 0.28 });
+          G.between((t) => a(t) + b(t), a, 0, TAU, { fill: 'purple', fillAlpha: 0.28 });
+          G.fn((t) => len(mv(T, uAt(t))) ** 2, { color: 'accent', width: 2.4, n: 240 });
+          G.hline(top, { color: 'green', width: 1.8, dash: [7, 4] });
+          G.text(`s₁² = ${pf(top)}`, 0.1, top, { color: 'green', dy: -10, size: 12, weight: 600 });
+          const th = ((Math.atan2(vv[1], vv[0]) % TAU) + TAU) % TAU, nu = nv > 1e-9 ? len(mv(T, scl(vv, 1 / nv))) ** 2 : 0;
+          G.vline(th, { color: 'gold', width: 1.3, dash: [4, 4] }); G.dot(th, nu, { color: 'gold', r: 4.5 });
+          const te = ((Math.atan2(e[0][1], e[0][0]) % Math.PI) + Math.PI) % Math.PI;
+          for (const x of [te, te + Math.PI]) G.dot(x, top, { color: 'green', r: 4.5 });
+          let mx = 0; for (let k = 0; k < 720; k++) mx = Math.max(mx, len(mv(T, uAt((Math.PI * k) / 720))));
+          st = { s, nTv: len(Tv), nv, mx, e };
+        });
+        v.legend([['accent', '$\\|Tu\\|^2$ (direct)'], ['blue', '$s_1^2|\\langle u, e_1\\rangle|^2$', { area: true }], ['purple', '$s_2^2|\\langle u, e_2\\rangle|^2$', { area: true }], ['green', '$s_1^2$ and radius $s_1$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { s, nTv, nv, mx, e } = st;
+          return `$\\|Tv\\| = ${tn(nTv, 3)} \\le s_1\\|v\\| = ${tn(s[0], 3)} \\cdot ${tn(nv, 3)} = ${tn(s[0] * nv, 3)}$ (ratio $${tn(nv > 1e-9 ? nTv / (s[0] * nv) : 0, 3)}$). Over the unit circle $\\max\\|Tu\\| = ${tn(mx, 4)} = s_1$, the longest semi-axis, reached at $u = \\pm e_1 = \\pm${vtex(e[0])}$.`;
+        });
+      },
+    },
   ],
 };

@@ -96,6 +96,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
         const Ifree = (r) => P / (4 * Math.PI * Math.max(RMIN, r) ** 2);
         const Iat = (x, y) => { const r1 = Math.hypot(x, y); let I = Ifree(r1); if (wall.value) I += Rw.value * Ifree(Math.hypot(x - 2 * WX, y)); return I; };
         const ph = playhead(v);
+        let lastWall = null;
         const geo = () => {
           const r1 = Math.hypot(lis.x, lis.y), r2 = Math.hypot(lis.x - 2 * WX, lis.y);
           return { r1, r2, I: Iat(lis.x, lis.y), delay: (r2 - r1) / c };
@@ -115,6 +116,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
         });
         v.animate((t) => {
           Rw.el.hidden = !wall.value;
+          if (wall.value !== lastWall) { lastWall = wall.value; v.legend([['accent', 'free field $P/4\\pi r^2$'], ...(lastWall ? [['green', 'with the wall (direct + reflected)'], ['red', 'reflected path, from the image source']] : []), ['gold', 'listener', { dot: true }], ['orange', 'at $2r$ and $4r$', { dot: true }]]); }
           if (wall.value && lis.x > WX - 0.8) lis.x = WX - 0.8;
           const theme = v.color('panel');
           fp.heat((x, y) => (wall.value && x > WX ? NaN : dB(Iat(x, y))), { range: [55, 105], cmap: 'viridis', res: 3, key: `${wall.value}|${Rw.value}|${theme}` });
@@ -165,7 +167,6 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
           });
           gr.dot(r1, Iat(lis.x, lis.y), { r: 6, color: 'gold', label: 'listener', labelPos: 'sw', math: false });
         }, { still: 0.4 });
-        v.legend([['accent', 'free field $P/4\\pi r^2$'], ['green', 'with the wall (direct + reflected)'], ['gold', 'listener', { dot: true }], ['orange', 'at $2r$ and $4r$', { dot: true }]]);
         v.readout(() => {
           const g = geo(), A = 4 * Math.PI * g.r1 ** 2, If = Ifree(g.r1);
           let s = `$r$ = ${v.fix(g.r1, 1)} m: the power $P$ = ${P} W is spread over $4\\pi r^2$ = ${v.fmt(A, 4)} m², so $I = P/4\\pi r^2 = ${v.sci(If, 3)}$ W/m² (${v.fix(dB(If), 1)} dB) · at $2r$: $I/4$, ${v.fix(dB(If / 4) - dB(If), 2)} dB · pressure amplitude $\\propto 1/r$`;
@@ -191,7 +192,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sound_pressure' },
       viz(v) {
         const M = v.M, C = M.CONST, rc = rhoAir(C) * cAir(C), FS = 48000, NB = 16384, NV = 288, F_TONE = 500;
-        const IS = v.slider('intensity of one source $I_1$', 1e-12, 1, 1e-6, { log: true, fmt: (x) => { const e = Math.floor(Math.log10(x) + 1e-9); return `${v.fix(x / Math.pow(10, e), 1)}×${M.pow10Text(e)} W/m²`; } });
+        const IS = v.slider('intensity of one source $I_1$', 1e-12, 1, 2e-7, { log: true, fmt: (x) => { const e = Math.floor(Math.log10(x) + 1e-9); return `${v.fix(x / Math.pow(10, e), 1)}×${M.pow10Text(e)} W/m²`; } });
         const nSel = v.select('sources $N$', [{ value: 1, label: '1' }, { value: 2, label: '2' }, { value: 10, label: '10' }, { value: 100, label: '100' }], 2);
         const kind = v.select('', [{ value: 'noise', label: 'independent noise' }, { value: 'phase', label: 'same tone, in phase' }, { value: 'random', label: 'same tone, random phases' }], 'noise');
         const lad = v.stage({ x: [0, 1], y: [-6, 146], height: 400, axes: false, weight: 0.85, title: 'level meter' });
@@ -278,7 +279,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
       num: '1.9',
       kind: 'Phenomenon',
       name: 'Equal-loudness contours (phons and sones)',
-      statement: String.raw`The ear is not equally sensitive at all frequencies, so sounds of equal sound pressure level do not sound equally loud. The **loudness level** of a pure tone, in **phons**, is the level in dB SPL of a 1 kHz tone that a typical listener judges equally loud. Joining the frequency–level points of equal loudness level gives the **equal-loudness contours** (standardised in ISO 226:2003 for young adults with normal hearing, frontal free-field listening, 20 Hz–12.5 kHz). They are lowest near 3–4 kHz, where hearing is most sensitive, rise steeply toward low frequencies (a 50 Hz tone needs about 26 dB more than a 1 kHz tone to reach 60 phon), and flatten at high levels. The **sone** scale measures loudness itself: 1 sone is a 1 kHz tone at 40 dB, and above about 40 phon each increase of 10 phon roughly **doubles** the loudness, $N\approx2^{(L_N-40)/10}$ sones.`,
+      statement: String.raw`The ear is not equally sensitive at all frequencies, so sounds of equal sound pressure level do not sound equally loud. The **loudness level** of a pure tone, in **phons**, is the level in dB SPL of a 1 kHz tone that a typical listener judges equally loud. Joining the frequency–level points of equal loudness level gives the **equal-loudness contours** (standardised in ISO 226:2003 for young adults with normal hearing, frontal free-field listening, 20 Hz–12.5 kHz). They are lowest near 3–4 kHz, where hearing is most sensitive, rise steeply toward low frequencies (a 50 Hz tone needs about 30 dB more than a 1 kHz tone to reach 60 phon), and flatten at high levels. The **sone** scale measures loudness itself: 1 sone is a 1 kHz tone at 40 dB, and above about 40 phon each increase of 10 phon roughly **doubles** the loudness, $N\approx2^{(L_N-40)/10}$ sones.`,
       idea: String.raw`The contours are measured, not derived: listeners adjust a tone until it matches a 1 kHz reference, and ISO 226 fits the averaged data with a formula. The low-frequency rise reflects the transmission of the outer and middle ear and internal noise; the dip around 3–4 kHz is the resonance of the ear canal. Because level is logarithmic (1.8) and loudness grows roughly as a power of intensity, about $I^{0.3}$, a factor 10 in intensity (+10 dB) multiplies loudness by about $10^{0.3}\approx2$.`,
       caption: String.raw`Drag the test tone (gold). In **contour** mode it stays on the chosen contour: drag it into the bass and watch its dB reading climb while its loudness, in phons and sones, stays fixed. In **free** mode put it anywhere and read off its loudness level. *Test, then 1 kHz* plays it against the equally loud reference; the two sweeps step through octaves at constant dB and along the contour, which should sound more even (headphones help; the absolute level is set by your volume and your speakers colour the result).`,
       deps: ['music-1.8'],
@@ -366,7 +367,10 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         const terhardt = (f) => { const k = f / 1000; return 3.64 * Math.pow(k, -0.8) - 6.5 * Math.exp(-0.6 * (k - 3.3) ** 2) + 1e-3 * k ** 4; };
         const ageS = v.slider('age', 10, 80, 45, { step: 1, fmt: (x) => `${Math.round(x)} years` });
         const sex = v.select('', [{ value: 'female', label: 'female' }, { value: 'male', label: 'male' }], 'female');
-        const alpha = (f) => { const t = ISO7029[sex.value]; return f <= 8000 ? logInterp(ISO7029.f, t, f) : t[9] * (1 + 2 * Math.log2(f / 8000)); };
+        const alpha = (f) => { // ISO 7029 up to 8 kHz; above, extrapolated smoothly (same slope at 8 kHz, then growing)
+          const t = ISO7029[sex.value]; if (f <= 8000) return logInterp(ISO7029.f, t, f);
+          const u = Math.log2(f / 8000), sl = (t[9] - t[8]) / Math.log2(8000 / 6000); return t[9] + sl * u + 0.02 * u * u;
+        };
         const thr = (f, age = ageS.value) => terhardt(f) + (age > 18 ? alpha(f) * (age - 18) ** 2 : 0);
         const upper = (age) => { let lo = 1000, hi = 30000; if (thr(hi, age) < 120) return hi; for (let k = 0; k < 40; k++) { const m = Math.sqrt(lo * hi); if (thr(m, age) < 120) lo = m; else hi = m; } return lo; };
         const s = v.stage({ x: [10, 30000], y: [-34, 145], xlog: true, height: 390, axes: 'box', grid: true, xlabel: 'f (Hz)', ylabel: 'SPL (dB)', full: true, title: 'the audible region' });
@@ -517,9 +521,9 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         const M = v.M, C = M.CONST, c = cAir(C), TAU = 2 * Math.PI;
         const DX = 0.025, NX = 240, NY = 112, CN = 0.5, DT = (CN * DX) / c, IW = 72, IS = 6, YC = 1.4, KM = (CN - 1) / (CN + 1), WARM = 760;
         const view = v.select('show', [{ value: 'p', label: 'pressure (slowed down)' }, { value: 'L', label: 'level in dB' }], 'p');
-        const fq = v.slider('frequency $f$', 100, 1600, 400, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
+        const fq = v.slider('frequency $f$', 100, 1600, 1000, { step: 10, fmt: (x) => Math.round(x) + ' Hz' });
         const wS = v.slider('doorway width $w$', 0.3, 1.2, 0.8, { step: 0.025, fmt: (x) => v.fix(x, 2) + ' m' });
-        const s = v.stage({ x: [-0.04, 6.04], y: [-0.62, 2.84], equal: true, height: 460, axes: false, full: true, title: 'ripple tank: the 2D wave equation, solved live (6 m × 2.8 m)' });
+        const s = v.stage({ x: [-0.04, 6.04], y: [-0.46, 2.84], equal: true, height: 445, axes: false, full: true, title: 'ripple tank: the 2D wave equation, solved live (6 m × 2.8 m)' });
         const lis = s.handle(4.2, 0.45, { color: 'gold', label: 'listener', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, (IW + 3) * DX, 5.9), M.clamp(y, 0.1, 2.7)] });
         const N = NX * NY;
         let p = new Float32Array(N), pp = new Float32Array(N), pn = new Float32Array(N);

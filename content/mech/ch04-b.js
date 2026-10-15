@@ -402,13 +402,13 @@ The period of the motion diverges logarithmically as $E\to1$ from either side.`,
       tags: ['phase space', 'pendulum', 'separatrix'],
       viz(v) {
         const s = v.stage({ x: [-Math.PI, Math.PI], y: [-3.2, 3.2], height: 360, axes: 'box', xlabel: 'θ', ylabel: 'θ̇', xticks: piTicks, yticks: [-3, -2, -1, 0, 1, 2, 3], weight: 1.15 });
-        const s3 = v.stage3d({ height: 360, range: 1.5, axes: false, yaw: 0.5, pitch: 0.42, weight: 0.85 });
+        const s3 = v.stage3d({ height: 360, range: 1.4, axes: false, yaw: 0.28, pitch: 0.24, weight: 0.85 });
         const pp = v.phasePlane(s, {
           f: (x, y) => [y, -Math.sin(x)], field: 'none', nullclines: false, separatrices: true, fixedPoints: true,
           H: (x, y) => y * y / 2 - Math.cos(x), contours: [-0.75, -0.3, 0.3, 1.6, 2.6], seeds: [], click: false,
         });
         const h0 = s.handle(1.5, 1.0, { color: 'accent', label: 'start', constrain: (x, y) => [clamp(x, -Math.PI + 0.01, Math.PI - 0.01), clamp(y, -3.1, 3.1)] });
-        const P = (th, om) => [Math.sin(th), -Math.cos(th), om * 0.36];
+        const P = (th, om) => [Math.sin(th), -Math.cos(th), om * 0.31];
         let O = null, key = '';
         function orbit() {
           const kk = `${h0.x}|${h0.y}`; if (kk === key) return O; key = kk;
@@ -436,14 +436,21 @@ The period of the motion diverges logarithmically as $E\to1$ from either side.`,
           s.dot(wrapA(cur[0]), cur[1], { color: 'gold', r: 6 });
           s.corner(o.lib ? 'libration' : 'rotation (over the top)', 'tr', { color: o.lib ? 'accent' : 'orange', weight: 600 });
           // cylinder
-          s3.surface((a, z) => [Math.sin(a), -Math.cos(a), z], [0, TAU], [-1.2, 1.2], { nu: 40, nv: 4, color: 'muted', alpha: 0.1 });
-          for (const om of [-3.3, 3.3]) s3.curve((a) => P(a, om), 0, TAU, { color: 'muted', width: 1.2, n: 72 });
-          s3.curve((a) => P(a, 0), 0, TAU, { color: 'muted', width: 1, dash: [3, 4], n: 72 });
-          s3.line(P(0, -3.3), P(0, 3.3), { color: 'muted', width: 1, dash: [3, 4] }); s3.line(P(Math.PI, -3.3), P(Math.PI, 3.3), { color: 'muted', width: 1, dash: [3, 4] });
-          for (const sg of [1, -1]) s3.curve((a) => P(a, sg * 2 * Math.cos(a / 2)), -Math.PI, Math.PI, { color: 'red', width: 1.8, n: 120 });
-          s3.path(o.pts.map(([th, om]) => P(th, om)), { color: o.lib ? 'accent' : 'orange', width: 3 });
-          s3.dot(P(0, 0), { color: 'teal', r: 5 }); s3.dot(P(Math.PI, 0), { color: 'ink', r: 5 });
-          s3.text('θ = 0 (hanging)', P(0, -3.75), { color: 'muted', size: 11 }); s3.text('θ = π (upright)', P(Math.PI, -3.75), { color: 'muted', size: 11 });
+          // cylinder drawn as a wireframe; anything on the far side is faded (depth cue)
+          const back = (p) => s3.project(p)[2] > s3.project([0, 0, p[2]])[2] + 1e-9;
+          const cyl = (pts3, st) => {
+            let run = [], side = null;
+            for (const p of pts3) { const bk = back(p); if (side !== null && bk !== side) { s3.path(run, { ...st, alpha: side ? 0.25 : 1 }); run = [run[run.length - 1]]; } run.push(p); side = bk; }
+            if (run.length > 1) s3.path(run, { ...st, alpha: side ? 0.25 : 1 });
+          };
+          const ring = (om, st) => cyl(Array.from({ length: 73 }, (_, j) => P(TAU * j / 72, om)), st);
+          for (const om of [-3.3, 3.3]) ring(om, { color: 'muted', width: 1.3 });
+          for (const om of [-1.65, 0, 1.65]) ring(om, { color: 'muted', width: 0.8, dash: [3, 4] });
+          for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6, bk = back(P(a, 0)); s3.line(P(a, -3.3), P(a, 3.3), { color: 'muted', width: k % 6 ? 0.6 : 1.1, alpha: bk ? 0.2 : 0.55 }); }
+          for (const sg of [1, -1]) cyl(Array.from({ length: 121 }, (_, j) => { const a = -Math.PI + TAU * j / 120; return P(a, sg * 2 * Math.cos(a / 2)); }), { color: 'red', width: 1.8 });
+          cyl(o.pts.filter((_, j) => j % 3 === 0 || j === o.pts.length - 1).map(([th, om]) => P(th, om)), { color: o.lib ? 'accent' : 'orange', width: 3 });
+          s3.dot(P(0, 0), { color: 'teal', r: 5, alpha: back(P(0, 0)) ? 0.35 : 1 }); s3.dot(P(Math.PI, 0), { color: 'ink', r: 5, alpha: back(P(Math.PI, 0)) ? 0.35 : 1 });
+          s3.text('θ = 0 (hanging)', P(0, 0), { color: 'teal', size: 11, dy: 15 }); s3.text('θ = π (upright)', P(Math.PI, 0), { color: 'muted', size: 11, dy: -13 });
           s3.dot(P(cur[0], cur[1]), { color: 'gold', r: 6 });
         });
         pp.legend([['accent', 'your orbit: libration'], ['orange', 'your orbit: rotation']]);
@@ -550,34 +557,36 @@ The resonance peak leans toward higher frequency for a hardening spring ($\epsil
     // ------------------------------------------------------------------ 4.17
     {
       num: '4.17', kind: 'Phenomenon', name: 'Parametric resonance',
-      statement: String.raw`An oscillator whose *parameters* vary periodically can be destabilised even though nothing pushes it. For a pendulum (a swing) whose length is modulated as $L(t) = L_0(1+\epsilon\cos\Omega t)$, the equilibrium $\theta=0$ becomes unstable — small swings grow exponentially — inside **instability tongues** that emanate from the frequencies
-$$\Omega = \frac{2\omega_0}{n},\qquad n = 1, 2, 3,\dots,\qquad \omega_0=\sqrt{g/L_0},$$
-the widest at $\Omega = 2\omega_0$ (pumping twice per swing). Stability is decided by the monodromy matrix $M$ of the linearised equation over one modulation period: with $\det M = 1$ the motion is unstable exactly when $|\operatorname{tr}M|>2$. Damping lifts the tongues off the axis, so a threshold $\epsilon$ must be exceeded.`,
-      scope: String.raw`The tongues are a property of the linearised (small-angle) equation. At finite amplitude the pendulum’s period grows (4.14), which detunes the pumping, so real growth saturates or beats instead of continuing exponentially.`,
-      idea: String.raw`The linearised equation is linear with periodic coefficients (Hill’s equation; Floquet theory). Its solutions after one period are $M$ times the initial state, so after $k$ periods $M^k$: the eigenvalues $\mu$ of $M$ (Floquet multipliers) decide everything. In angular-momentum form $\dot\theta = p/L^2$, $\dot p = -gL\theta$ the flow is Hamiltonian, so $\det M = 1$ (Liouville) and $\mu_1\mu_2=1$: either both lie on the unit circle (bounded) or one is real with $|\mu|>1$ (growth), and $|\operatorname{tr}M|=2$ is the boundary. For small $\epsilon$ resonance needs the modulation to return in step with the swing — every half natural period times $n$ — which is why the tongues start at $\Omega = 2\omega_0/n$ (4.2, 4.4).`,
-      caption: String.raw`Left: the stability chart, computed pixel by pixel from the monodromy matrix (shaded where the swing is unstable; darker = faster growth). **Drag the point** to choose the pumping frequency and depth. Right: the swing animated with its varying length, and below its angle from a small $3^\circ$ start, simulated with the full nonlinear equation, against the linear Floquet prediction (dashed). Inside a tongue the swing builds up — and then saturates as the growing amplitude detunes it.`,
+      statement: String.raw`An oscillator whose *parameters* vary periodically can be destabilised although nothing pushes it. For a pendulum whose effective gravity is modulated, $g_{\rm eff} = g(1+\epsilon\cos\Omega t)$ — its pivot shaken vertically — the small-angle equation is Mathieu’s, $\ddot\theta+\omega_0^2(1+\epsilon\cos\Omega t)\,\theta = 0$, and the equilibrium $\theta = 0$ is unstable (small swings grow exponentially) inside **instability tongues** that emanate from
+$$\Omega = \frac{2\omega_0}{n},\qquad n = 1, 2, 3,\dots,\qquad \omega_0=\sqrt{g/L},$$
+the widest at $\Omega = 2\omega_0$ (two pumps per swing), the $n$-th of width $O(\epsilon^n)$. Stability is decided by the monodromy matrix $M$ of the linear equation over one modulation period: with $\det M = 1$ the motion is unstable exactly when $|\operatorname{tr}M|>2$. A swing pumped by changing its length, $L = L_0(1+\epsilon\cos\Omega t)$, has the same main tongue at $\Omega = 2\omega_0$. Damping lifts the tongues off the axis, so a threshold $\epsilon$ must be exceeded.`,
+      scope: String.raw`The tongues belong to the linearised (small-angle) equation. At finite amplitude the pendulum’s period grows (4.14), which detunes the pumping, so real growth saturates or beats instead of continuing exponentially. Which higher tongues appear depends on how the parameter is modulated: for the length-pumped swing the computed chart shows only the main tongue (the even ones are absent and the third is a hairline).`,
+      idea: String.raw`The linearised equation is linear with periodic coefficients (Hill’s equation; Floquet theory): one period maps the state by a matrix $M$, $k$ periods by $M^k$, so the eigenvalues $\mu$ of $M$ (Floquet multipliers) decide everything. Both systems are Hamiltonian (for the swing, in the variables $\theta$ and $p = L^2\dot\theta$), so $\det M = 1$ by Liouville’s theorem and $\mu_1\mu_2 = 1$: either both multipliers lie on the unit circle (bounded motion) or one is real with $|\mu|>1$ (growth), and $|\operatorname{tr}M| = 2$ is the boundary. At small $\epsilon$ a modulation can only feed the swing if it comes back in step with it, after a whole number of half natural periods — whence $\Omega = 2\omega_0/n$ (4.2, 4.4).`,
+      caption: String.raw`Left: the stability chart, computed pixel by pixel from the monodromy matrix (shaded where $\theta = 0$ is unstable; darker = faster growth). **Drag the point** to choose the pumping frequency and depth, and switch between a shaken pivot and a pumped swing. Right: the pendulum, animated from the simulation, and below its angle from a $3^\circ$ start, integrated with the full nonlinear equation, against the linear Floquet growth (dashed). Inside a tongue the swing builds up — and then saturates as the growing amplitude detunes it.`,
       deps: ['mech-4.2', 'mech-4.4'],
       refs: ['Arnold §25', 'Goldstein §11.7'],
       tags: ['parametric resonance', 'Floquet theory', 'stability'],
       credit: 'Faraday, 1831; Mathieu, 1868; Floquet, 1883',
       viz(v) {
+        const mode = v.select('modulate', [{ value: 'g', label: 'gravity (shaken pivot)' }, { value: 'L', label: 'length (pumped swing)' }], 'g');
         const gam = v.slider('damping $\\gamma/\\omega_0$', 0, 0.12, 0, { step: 0.005 });
-        const sC = v.stage({ x: [0.3, 2.8], y: [0, 0.6], height: 320, axes: 'box', xlabel: 'Ω/ω₀', ylabel: 'ε', weight: 1.35, title: 'stability chart (shaded: unstable)' });
-        const sS = v.stage({ x: [-1.5, 1.5], y: [-1.75, 0.35], equal: true, height: 320, axes: false, weight: 0.65, minWidth: 190, title: 'the swing' });
+        const sC = v.stage({ x: [0.3, 2.8], y: [0, 0.6], height: 320, axes: 'box', xlabel: 'Ω/ω₀', weight: 1.35, title: 'stability chart in the $(\\Omega, \\epsilon)$ plane (shaded: unstable)' });
+        const sS = v.stage({ x: [-1.25, 1.25], y: [-1.45, 0.65], equal: true, height: 320, axes: false, weight: 0.65, minWidth: 190, title: 'the pendulum' });
         const sT = v.stage({ x: [0, 120], y: [-40, 40], height: 220, full: true, axes: true, xlabel: 't ω₀', ylabel: 'θ (°)' });
-        const hp = sC.handle(2.0, 0.15, { color: 'accent', r: 8, constrain: (x, y) => [clamp(x, 0.32, 2.78), clamp(y, 0.005, 0.59)] });
-        const NX = 160, NY = 72, X0 = 0.3, X1 = 2.8, Y1 = 0.6;
-        // monodromy of θ' = p/L², p' = −Lθ − γp over one period 2π/Ω, L = 1 + ε cos Ωt (L0 = g = 1)
-        function monodromy(Om, eps, g, cosTab, n) {
+        const hp = sC.handle(2.0, 0.25, { color: 'accent', r: 8, constrain: (x, y) => [clamp(x, 0.32, 2.78), clamp(y, 0.005, 0.59)] });
+        const NX = 240, NY = 72, X0 = 0.3, X1 = 2.8, Y1 = 0.6;
+        // monodromy over one period 2π/Ω (g = L0 = 1, ω0 = 1); 'g': θ' = p, p' = −(1 + ε cos)θ − γp; 'L': θ' = p/L², p' = −Lθ − γp
+        function monodromy(Om, eps, g, cosTab, n, md) {
           const T = TAU / Om, h = T / n; let a = [1, 0], b = [0, 1];
           for (let i = 0; i < n; i++) {
-            const L0 = 1 + eps * cosTab[2 * i], Lm = 1 + eps * cosTab[2 * i + 1], L1 = 1 + eps * cosTab[2 * i + 2];
+            const c0 = 1 + eps * cosTab[2 * i], cm = 1 + eps * cosTab[2 * i + 1], c1 = 1 + eps * cosTab[2 * i + 2];
+            const i0 = md === 'L' ? 1 / (c0 * c0) : 1, im = md === 'L' ? 1 / (cm * cm) : 1, i1 = md === 'L' ? 1 / (c1 * c1) : 1;
             for (const s of [a, b]) {
               const th = s[0], p = s[1];
-              const k1t = p / (L0 * L0), k1p = -L0 * th - g * p;
-              const k2t = (p + h / 2 * k1p) / (Lm * Lm), k2p = -Lm * (th + h / 2 * k1t) - g * (p + h / 2 * k1p);
-              const k3t = (p + h / 2 * k2p) / (Lm * Lm), k3p = -Lm * (th + h / 2 * k2t) - g * (p + h / 2 * k2p);
-              const k4t = (p + h * k3p) / (L1 * L1), k4p = -L1 * (th + h * k3t) - g * (p + h * k3p);
+              const k1t = p * i0, k1p = -c0 * th - g * p;
+              const k2t = (p + h / 2 * k1p) * im, k2p = -cm * (th + h / 2 * k1t) - g * (p + h / 2 * k1p);
+              const k3t = (p + h / 2 * k2p) * im, k3p = -cm * (th + h / 2 * k2t) - g * (p + h / 2 * k2p);
+              const k4t = (p + h * k3p) * i1, k4p = -c1 * (th + h * k3t) - g * (p + h * k3p);
               s[0] = th + h / 6 * (k1t + 2 * k2t + 2 * k3t + k4t); s[1] = p + h / 6 * (k1p + 2 * k2p + 2 * k3p + k4p);
             }
           }
@@ -586,26 +595,29 @@ the widest at $\Omega = 2\omega_0$ (pumping twice per swing). Stability is decid
           return { tr, det, rho, T };
         }
         const tables = (Om) => { const T = TAU / Om, n = Math.max(48, Math.ceil(T / 0.06)), c = new Float64Array(2 * n + 1); for (let j = 0; j <= 2 * n; j++) c[j] = Math.cos(Om * T * j / (2 * n)); return { c, n }; };
-        let CH = null, ckey = -1;
+        let CH = null, ckey = '';
         function chart() {
-          if (ckey === gam.value) return CH; ckey = gam.value;
+          const kk = `${gam.value}|${mode.value}`; if (ckey === kk) return CH; ckey = kk;
           const g = gam.value, grow = new Float32Array(NX * NY);
           for (let i = 0; i < NX; i++) {
             const Om = X0 + (X1 - X0) * (i + 0.5) / NX, tb = tables(Om);
-            for (let j = 0; j < NY; j++) { const m = monodromy(Om, Y1 * (j + 0.5) / NY, g, tb.c, tb.n); grow[i * NY + j] = Math.log(Math.max(m.rho, 1e-300)) / m.T; }
+            for (let j = 0; j < NY; j++) { const m = monodromy(Om, Y1 * (j + 0.5) / NY, g, tb.c, tb.n, mode.value); grow[i * NY + j] = Math.log(Math.max(m.rho, 1e-300)) / m.T; }
           }
-          return (CH = { grow, g });
+          return (CH = { grow, key: kk });
         }
         let SM = null, skey = '';
         function swing() {
-          const kk = `${hp.x}|${hp.y}|${gam.value}`; if (kk === skey) return SM; skey = kk;
-          const Om = hp.x, eps = hp.y, g = gam.value, tb = tables(Om), m = monodromy(Om, eps, g, tb.c, tb.n);
+          const kk = `${hp.x}|${hp.y}|${gam.value}|${mode.value}`; if (kk === skey) return SM; skey = kk;
+          const Om = hp.x, eps = hp.y, g = gam.value, md = mode.value, tb = tables(Om), m = monodromy(Om, eps, g, tb.c, tb.n, md);
           const th0 = 3 * Math.PI / 180, h = Math.min(0.02, m.T / 60), n = Math.ceil(120 / h), hh = 120 / n;
-          const f = (t, s) => { const L = 1 + eps * Math.cos(Om * t); return [s[1] / (L * L), -L * Math.sin(s[0]) - g * s[1]]; };
+          const f = md === 'L'
+            ? (t, s) => { const L = 1 + eps * Math.cos(Om * t); return [s[1] / (L * L), -L * Math.sin(s[0]) - g * s[1]]; }
+            : (t, s) => [s[1], -(1 + eps * Math.cos(Om * t)) * Math.sin(s[0]) - g * s[1]];
           let s = [th0, 0]; const pts = [[0, th0]];
-          for (let i = 0; i < n; i++) { s = rk4step(f, i * hh, s, hh); if (i % 4 === 3) pts.push([(i + 1) * hh, s[0]]); if (Math.abs(s[0]) > 40) break; }
+          let over = NaN;
+          for (let i = 0; i < n; i++) { s = rk4step(f, i * hh, s, hh); if (i % 4 === 3 || Math.abs(s[0]) > Math.PI) pts.push([(i + 1) * hh, s[0]]); if (Math.abs(s[0]) > Math.PI) { over = (i + 1) * hh; break; } }
           let mx = 0; for (const p of pts) mx = Math.max(mx, Math.abs(p[1]));
-          return (SM = { m, pts, mx, th0, Om, eps });
+          return (SM = { m, pts, mx, th0, Om, eps, md, over, tEnd: pts[pts.length - 1][0] });
         }
         const PAL = v.rgb('orange');
         v.animate((t) => {
@@ -614,30 +626,34 @@ the widest at $\Omega = 2\omega_0$ (pumping twice per swing). Stability is decid
             const i = Math.floor((x - X0) / (X1 - X0) * NX), j = Math.floor(y / Y1 * NY);
             if (i < 0 || i >= NX || j < 0 || j >= NY) return null;
             const gr = C.grow[i * NY + j]; if (!(gr > 1e-4)) return null;
-            return [PAL[0], PAL[1], PAL[2], Math.round(255 * Math.min(0.85, 0.18 + gr / 0.12))];
-          }, { res: 2, key: `${C.g}|${PAL.join()}`, id: 'chart' });
-          for (let n = 1; n <= 4; n++) { const x = 2 / n; if (x > X0) { sC.vline(x, { color: 'muted', dash: [2, 4], width: 1 }); sC.text(`n = ${n}`, x, 0.565, { color: 'muted', size: 11, align: 'center' }); } }
+            return [PAL[0], PAL[1], PAL[2], Math.round(255 * Math.min(0.85, 0.3 + gr / 0.1))];
+          }, { res: 1, key: `${C.key}|${PAL.join()}`, id: 'chart' });
+          for (let n = 1; n <= 4; n++) { const x = 2 / n; if (x > X0) { sC.vline(x, { color: 'muted', dash: [2, 4], width: 1 }); sC.text(`n = ${n}`, x, 0.57, { color: 'muted', size: 11, align: 'center', dx: n === 4 ? 4 : 0 }); } }
           sC.axes();
-          // the swing (length varies, angle from the simulation)
-          const tsim = (t * 4) % 120, idx = Math.min(W.pts.length - 1, Math.round(tsim / (W.pts[1][0] - W.pts[0][0]))), th = W.pts[idx][1];
-          const L = 1 + W.eps * Math.cos(W.Om * tsim), Lv = 1.25 * L / (1 + 0.6);
-          hatch(v, sS, -0.5, 0.06, 0.5, 0.06, -1, 6, 6);
-          sS.line(0, 0, Lv * Math.sin(th), -Lv * Math.cos(th), { color: 'ink', width: 2 });
-          sS.dot(Lv * Math.sin(th), -Lv * Math.cos(th), { color: 'accent', r: 10 });
-          sS.dot(0, 0, { color: 'ink', r: 3 });
-          sS.corner(`L = ${v.fix(L, 2)} L₀`, 'bl', { size: 11 });
+          // the pendulum (angle from the simulation; pivot or length modulated as in the model)
+          const tsim = (t * 4) % W.tEnd, idx = Math.min(W.pts.length - 1, Math.round(tsim / (W.pts[1][0] - W.pts[0][0]))), th = W.pts[idx][1];
+          const mod = Math.cos(W.Om * tsim), L = W.md === 'L' ? 1 + W.eps * mod : 1, yp = W.md === 'L' ? 0 : -W.eps / (W.Om * W.Om) * mod;
+          if (W.md === 'L') hatch(v, sS, -0.45, 0.06, 0.45, 0.06, -1, 6, 6);
+          else { sS.rect(-0.3, yp, 0.3, yp + 0.1, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1.5 }); sS.line(0, yp + 0.1, 0, 0.6, { color: 'orange', width: 1.4 }); }
+          const Lv = 0.95 * L;
+          sS.line(0, yp, Lv * Math.sin(th), yp - Lv * Math.cos(th), { color: 'ink', width: 2 });
+          sS.dot(Lv * Math.sin(th), yp - Lv * Math.cos(th), { color: 'accent', r: 10 });
+          sS.dot(0, yp, { color: 'ink', r: 3 });
+          sS.corner(W.md === 'L' ? `L = ${v.fix(L, 2)} L₀` : `effective g = ${v.fix(1 + W.eps * mod, 2)} g`, 'bl', { size: 11 });
           // angle against time
           const ym = clamp(1.15 * W.mx * D, 6, 200); sT.setView(null, [-ym, ym]);
           const lam = Math.log(W.m.rho) / W.m.T;
           if (lam > 1e-4) for (const sg of [1, -1]) sT.fn((u) => sg * W.th0 * D * Math.exp(lam * u), { color: 'orange', dash: [5, 4], width: 1.5 });
           sT.path(W.pts.map(([u, a]) => [u, a * D]), { color: 'accent', width: 1.8 });
           sT.vline(tsim, { color: 'gold', width: 1.2, alpha: 0.6 });
+          if (isFinite(W.over)) { sT.dot(W.over, W.pts[W.pts.length - 1][1] * D, { color: 'red', r: 5 }); sT.corner(`over the top at tω₀ = ${v.fix(W.over, 1)}`, 'tr', { color: 'red', weight: 600 }); }
         });
         v.legend([['orange', 'unstable region / linear growth $\\theta_0|\\mu|^{t/T}$', { area: true }], ['accent', 'nonlinear simulation']]);
         v.readout(() => {
           const W = swing(), m = W.m, unst = m.rho > 1 + 1e-6;
           const head = `$\\Omega = ${v.fix(W.Om, 3)}\\,\\omega_0$, $\\epsilon = ${v.fix(W.eps, 3)}$: $\\operatorname{tr}M = ${v.fix(m.tr, 4)}$, $\\det M = ${v.fix(m.det, 4)}$, largest Floquet multiplier $|\\mu| = ${v.fix(m.rho, 4)}$ per pump cycle`;
-          return unst ? `${head} → **unstable**: the linear theory multiplies the swing by ${v.fix(m.rho, 3)} every cycle; the nonlinear simulation grows from 3° to ${v.fix(W.mx * 180 / Math.PI, 1)}° and stops growing as the larger swing detunes itself` : `${head} → stable: the swing stays bounded (largest angle ${v.fix(W.mx * 180 / Math.PI, 2)}°)`;
+          if (unst && isFinite(W.over)) return `${head} → **unstable**: linear theory multiplies the swing by ${v.fix(m.rho, 3)} every cycle; here the pumping is strong enough that the nonlinear pendulum is driven right over the top`;
+          return unst ? `${head} → **unstable**: linear theory multiplies the swing by ${v.fix(m.rho, 3)} every cycle; the nonlinear simulation grows from 3° to ${v.fix(W.mx * 180 / Math.PI, 1)}° and stops growing as the larger swing detunes itself` : `${head} → stable: the swing stays bounded (largest angle ${v.fix(W.mx * 180 / Math.PI, 2)}°)`;
         });
       },
     },
@@ -660,7 +676,7 @@ and the **inverted position $\varphi=0$ is stable** exactly when $a^2\omega^2 > 
         const aL = v.slider('shaking amplitude $a/L$', 0, 0.25, 0.1, { step: 0.005 });
         const wr = v.slider('shaking frequency $\\omega/\\omega_0$', 4, 60, 25, { step: 0.5 });
         const p0 = v.slider('initial tilt $\\varphi_0$ (°)', 1, 90, 25, { step: 1 });
-        const sP = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.55], equal: true, height: 300, axes: false, weight: 0.62, minWidth: 190 });
+        const sP = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.55], equal: true, height: 300, axes: false, weight: 0.62, minWidth: 190, title: 'the shaken pendulum' });
         const sU = v.stage({ x: [-Math.PI, Math.PI], y: [-1.6, 3], height: 300, axes: 'box', xlabel: 'φ (from upright)', xticks: piTicks, weight: 1.38, title: 'effective potential $U_{\\rm eff}(\\varphi)$' });
         const sT = v.stage({ x: [0, 40], y: [-100, 100], height: 220, full: true, axes: true, xlabel: 't ω₀', ylabel: 'φ (°)' });
         let S = null, key = '';
@@ -760,7 +776,7 @@ has negative damping at small amplitude ($|x|<1$ pumps energy in) and positive d
         pp.legend([['green', 'negative damping, $|x|<1$', { area: true }], ['gold', 'moving with the flow', { dot: true }]]);
         v.readout(() => {
           const r = run(), m = mu.value;
-          return `limit cycle (from the simulation): amplitude ${v.fix(r.amp, 3)}, period $T = ${v.fix(r.T, 3)}$ · small-$\\mu$ estimate $2\\pi(1+\\mu^2/16) = ${v.fix(TAU * (1 + m * m / 16), 3)}$ · relaxation estimate $(3-2\\ln2)\\mu = ${v.fix((3 - 2 * Math.log(2)) * m, 3)}$${m > 3 ? ' (plus a correction $\\approx 7.0\\,\\mu^{-1/3}$ for finite $\\mu$: ' + v.fix((3 - 2 * Math.log(2)) * m + 7.014 * Math.pow(m, -1 / 3), 3) + ')' : ''}`;
+          return `limit cycle (from the simulation): amplitude ${v.fix(r.amp, 3)}, period $T = ${v.fix(r.T, 3)}$ · small-$\\mu$ estimate $2\\pi(1+\\mu^2/16) = ${v.fix(TAU * (1 + m * m / 16), 3)}$ (for $\\mu\\ll1$) · relaxation estimate $(3-2\\ln2)\\mu = ${v.fix((3 - 2 * Math.log(2)) * m, 3)}$ (for $\\mu\\gg1$)${m > 3 ? ' (plus a correction $\\approx 7.0\\,\\mu^{-1/3}$ for finite $\\mu$: ' + v.fix((3 - 2 * Math.log(2)) * m + 7.014 * Math.pow(m, -1 / 3), 3) + ')' : ''}`;
         });
       },
     },

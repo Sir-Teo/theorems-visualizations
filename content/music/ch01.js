@@ -123,7 +123,7 @@ where $B=\rho c^2$ is the adiabatic bulk modulus, $\rho$ the density and $c$ the
         const M = v.M, C = M.CONST, TAU = 2 * Math.PI, L = 2, VIS_F = 0.55;
         const c = soundSpeed(C, GAS.air, 20), rho = gasDensity(C, GAS.air, 20);
         const fq = v.slider('frequency $f$', 170, 1700, 343, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
-        const pa = v.slider('pressure amplitude $\\hat p$', 0.3, 10, 2, { log: true, fmt: (x) => v.fmt(x, 2) + ' Pa' });
+        const pa = v.slider('pressure amplitude $\\hat p$', 0.3, 10, 2.005, { log: true, fmt: (x) => v.fmt(x, 2) + ' Pa' });
         const graph = v.select('graph', [{ value: 'xi', label: 'displacement $\\xi$' }, { value: 'p', label: 'pressure $p$' }, { value: 'both', label: 'both' }], 'both');
         const shade = v.toggle('shade compressions', true);
         v.soundButton('Listen', (snd) => snd.tone(fq.value, { duration: 2, gain: (0.3 * pa.value) / 10, release: 0.25 }));
@@ -571,7 +571,7 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
           hi = Math.max(hi, lo + 600);
           const pad = 0.04 * (hi - lo);
           top.setView([lo - pad, hi + pad], null);
-          drawRow(P.a, rowA);
+          drawRow(P.a, cB != null ? rowA : [0.75, 2.35]);
           if (cB != null) drawRow(P.b, rowB);
           top.text('stacked intervals', lo - pad * 0.6, 2.47, { align: 'left', color: 'muted', size: 11 });
           if (cB != null) top.text('compared with', lo - pad * 0.6, 1.47, { align: 'left', color: 'muted', size: 11 });
@@ -584,9 +584,9 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
             top.rect(ix0, 2.62, ix1, 3.52, { fill: 'panel', fillAlpha: 1, color: 'muted', width: 1 });
             top.line((ix0 + ix1) / 2, 2.62, e, 2.5, { color: 'muted', width: 1, dash: [2, 3] });
             for (let c = Math.ceil((e - hw) / 10) * 10; c <= e + hw; c += 10) top.line(mp(c), 2.62, mp(c), 2.68, { color: 'muted', width: 1 });
-            top.rect(ix0, 3.08, Math.max(ix0, Math.min(ix1, mp(cA))), 3.3, { fill: 'accent', fillAlpha: 0.3, stroke: false });
-            top.rect(ix0, 2.76, Math.max(ix0, Math.min(ix1, mp(cB))), 2.98, { fill: 'orange', fillAlpha: 0.3, stroke: false });
-            top.rect(mp(Math.min(cA, cB)), 2.72, mp(Math.max(cA, cB)), 3.34, { fill: 'red', fillAlpha: 0.22, stroke: false });
+            top.rect(mp(Math.min(cA, cB)), 2.72, mp(Math.max(cA, cB)), 3.34, { fill: 'red', fillAlpha: 0.14, stroke: false });
+            top.rect(ix0, 3.08, Math.max(ix0, Math.min(ix1, mp(cA))), 3.3, { fill: 'accent', fillAlpha: 0.35, stroke: false });
+            top.rect(ix0, 2.76, Math.max(ix0, Math.min(ix1, mp(cB))), 2.98, { fill: 'orange', fillAlpha: 0.35, stroke: false });
             top.line(mp(cA), 3.04, mp(cA), 3.34, { color: 'accent', width: 2 });
             top.line(mp(cB), 2.72, mp(cB), 3.02, { color: 'orange', width: 2 });
             top.text(`gap ${v.fix(Math.abs(cA - cB), 2)} ¢`, mp(Math.max(cA, cB)) + 0.012 * span, 3.03, { align: 'left', color: 'red', size: 12, weight: 700 });
@@ -607,7 +607,7 @@ so an octave is $1200$ ¢, an equal-tempered semitone $100$ ¢, the pure fifth $
           for (const e of P.a) counts[e] = (counts[e] || 0) + 1;
           const sum = Object.entries(counts).map(([e, n]) => `${e[0] === '-' ? '−' : '+'}${n > 1 ? n + '×' : ''}${v.fix(Math.abs(centsOf(e)), 2)}`).join(' ').replace(/^\+/, '');
           let s = P.a.length ? `product of ratios $${frac(rA)}$ = ${v.fix(rA[0] / rA[1], 5)} → $1200\\log_2$ = ${v.fix(direct, 2)} ¢; sum of cents ${sum || '0'} = ${v.fix(cA, 2)} ¢ ${Math.abs(direct - cA) < 1e-6 ? '✓' : '✗'}` : 'empty chain: add intervals with the buttons';
-          if (P.b.length) { const rB = ratio(P.b), cB = total(P.b); s += ` · vs $${frac(rB)}$ = ${v.fix(cB, 2)} ¢: gap ${v.fix(Math.abs(cA - cB), 2)} ¢, ratio $${frac(rA[0] * rB[1] > rB[0] * rA[1] ? ratio([...P.a, ...P.b.map((e) => (e[0] === '-' ? e.slice(1) : '-' + e))]) : ratio([...P.b, ...P.a.map((e) => (e[0] === '-' ? e.slice(1) : '-' + e))]))}$`; }
+          if (P.b.length) { const rB = ratio(P.b), cB = total(P.b); s += ` · compared chain $${frac(rB)}$ = ${v.fix(cB, 2)} ¢: gap ${v.fix(Math.abs(cA - cB), 2)} ¢, ratio $${frac(rA[0] * rB[1] > rB[0] * rA[1] ? ratio([...P.a, ...P.b.map((e) => (e[0] === '-' ? e.slice(1) : '-' + e))]) : ratio([...P.b, ...P.a.map((e) => (e[0] === '-' ? e.slice(1) : '-' + e))]))}$`; }
           return `${s} · two tones: $f_1$ = ${v.fix(f1S.value, 1)} Hz, $f_2$ = ${v.fix(f2(), 2)} Hz, $f_2/f_1$ = ${v.fix(f2() / f1S.value, 5)} → ${v.fix(h2.x, 1)} ¢ ($\\Delta f$ = ${v.fix(f2() - f1S.value, 2)} Hz, the beat rate when played together)`;
         });
       },
