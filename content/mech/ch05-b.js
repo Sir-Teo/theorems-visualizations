@@ -378,7 +378,7 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         for (let k = 0; k < 4000; k++) step(1 / 600, 40, 0.97); // settle once before the first frame
         v.button('Shake', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); for (let i = 1; i < N; i++) { prev[i][0] -= r.uniform(-0.02, 0.02); prev[i][1] -= r.uniform(-0.03, 0.05); } v.play(); });
         v.button('Drop from a hump', () => { reset(-0.6); v.play(); });
-        let lastT = 0, cur = null, subDt = 1 / 600;
+        let lastT = 0, cur = null, subDt = 1 / 600, snapPos = null, vmax = 0;
         // Gauss–Newton fit of y = y0 + c cosh((x − x0)/c) to the beads
         const fit = (start) => {
           let [x0, y0, c] = start;
@@ -396,6 +396,7 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         };
         v.animate((t) => {
           let dt = t - lastT; lastT = t; if (!(dt > 0) || dt > 0.05) dt = 0;
+          if (dt > 0 && !snapPos) snapPos = pos.map((p) => p.slice());
           if (dt > 0) { const n = 10; subDt = dt / n; for (let k = 0; k < n; k++) step(subDt, 40, 0.996); }
           pos[0] = [P1.x, P1.y]; pos[N] = [P2.x, P2.y];
           const cat = catenaryThrough(P1.x, P1.y, P2.x, P2.y, ellS.value), F = fit([cat.x0, cat.y0, cat.c]);
@@ -416,7 +417,8 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
           pos.forEach((p, i) => { if (i > 0 && i < N) s.dot(p[0], p[1], { r: 3.4, color: v.mix('teal', 'orange', clamp((p[1] - cat.y0) / Tmax, 0, 1)) }); });
           s.fn(cat.f, { domain: [P1.x, P2.x], color: 'green', width: 2, dash: [7, 5] });
           let dev = 0, len = 0; pos.forEach((p, i) => { dev = Math.max(dev, Math.abs(p[1] - cat.f(p[0]))); if (i) len += Math.hypot(p[0] - pos[i - 1][0], p[1] - pos[i - 1][1]); });
-          let vmax = 0; for (let i = 1; i < N; i++) vmax = Math.max(vmax, Math.hypot(pos[i][0] - prev[i][0], pos[i][1] - prev[i][1]) / subDt);
+          if (dt > 0 && snapPos) { vmax = 0; for (let i = 1; i < N; i++) vmax = Math.max(vmax, Math.hypot(pos[i][0] - snapPos[i][0], pos[i][1] - snapPos[i][1]) / dt); }
+          if (dt > 0) snapPos = pos.map((p) => p.slice());
           s.corner(vmax < 0.003 ? 'at rest' : `moving: fastest bead ${v.fix(100 * vmax, 1)} cm/s`, 'tr', { color: vmax < 0.003 ? 'green' : 'orange', weight: 600 });
           cur = { cat, F, dev, len, parDev, para: para.value, sag: Math.min(P1.y, P2.y) - ymin, moving: vmax >= 0.003 };
           v.legend([['green', 'catenary predicted from supports and length', { dash: true }], ['teal', 'beads: low tension', { dot: true }], ['orange', 'high tension', { dot: true }], ...(para.value ? [['red', 'parabola, same sag', { dash: true }]] : [])]);

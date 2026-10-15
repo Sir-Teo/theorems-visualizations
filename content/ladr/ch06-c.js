@@ -423,8 +423,9 @@ export default {
         const bBest = v.button('Best', () => { snapBest = true; });
         // ---- R³ part
         const nrm = unit3([0.25, -0.35, 0.9]), [pa, pb] = perp(nrm);
-        const Vh = sc.handle(add3(add3(mul3(pa, 0.25), mul3(pb, 0.35)), mul3(nrm, 0.95)), { color: 'gold', label: 'v' });
-        const Uh = sc.handle(add3(mul3(pa, -0.75), mul3(pb, -0.55)), { mode: 'plane', a: pa, b: pb, color: 'orange', label: 'u', snap: (p) => { const f = sub3(Vh.p, mul3(nrm, dot3(Vh.p, nrm))); return len3(sub3(p, f)) < 0.06 ? f : p; } });
+        const inP = (p) => sub3(p, mul3(nrm, dot3(p, nrm))), ex0 = [Math.cos(0.6), Math.sin(0.6), 0];   // ex0: horizontal on screen at the start
+        const Vh = sc.handle(add3(mul3(inP(ex0), -0.45), mul3(nrm, 0.95)), { color: 'gold', label: 'v' });
+        const Uh = sc.handle(mul3(inP(ex0), 0.8), { mode: 'plane', a: pa, b: pb, color: 'orange', label: 'u', snap: (p) => { const f = sub3(Vh.p, mul3(nrm, dot3(Vh.p, nrm))); return len3(sub3(p, f)) < 0.06 ? f : p; } });
         // ---- function part: u interpolates handles at Chebyshev nodes of [−0.97π, 0.97π]
         let nodes = chebNodes(5, -0.97 * PI, 0.97 * PI), snapBest = false, best = Infinity, lastV = null;
         const H = [];
@@ -469,7 +470,7 @@ export default {
             sc.line(f, p, { color: 'green', width: 3 });
             if (leg > 1e-6) { sc.line(p, u, { color: 'red', width: 2.6 }); sc.line(f, u, { color: 'orange', width: 2, dash: [5, 4] }); if (leg > 0.06 && dBest > 0.06) corner3(sc, f, unit3(sub3(u, f)), nrm, 0.11, { color: 'ink' }); }
             sc.dot(f, { r: 5.5, color: 'green' }); sc.tex('P_Uv', f, { color: 'green', dx: -24, dy: 14, size: 13.5 });
-            sc.arrow(ZERO, p, { color: 'gold', width: 2.2, head: 9, alpha: 0.8 });
+            sc.arrow(ZERO, p, { color: 'gold', width: 1.6, head: 8, alpha: 0.55 });
             sc.flush();
             // the meter
             const sc2 = 0.62 / Math.max(1.2, dYou, dBest), y0 = 0.1;

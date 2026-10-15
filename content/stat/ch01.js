@@ -663,8 +663,9 @@ Consequently, with $\varepsilon_n=\sqrt{\log(2/\alpha)/(2n)}$, the band $\big[F_
           const lam = Math.sqrt(n) * e, nb = 52, B = binned(S.vals, 0, 2.6, nb, (d) => Math.sqrt(n) * d);
           const inB = { edges: B.edges, density: B.density.map((d, i) => (B.edges[i] < lam - 1e-12 ? d : 0)) }, outB = { edges: B.edges, density: B.density.map((d, i) => (B.edges[i] >= lam - 1e-12 ? d : 0)) };
           viewPad(sR, [0, 2.6], [0, Math.max(B.max, 1.8) * 1.12]);
-          sR.hist(inB, { density: true, color: 'accent', fillAlpha: 0.32 });
-          sR.hist(outB, { density: true, color: 'red', fillAlpha: 0.4 });
+          sR.hist(inB, { density: true, color: 'accent', fillAlpha: 0.32, outline: false });
+          sR.hist(outB, { density: true, color: 'red', fillAlpha: 0.45, outline: false });
+          sR.hist(B, { density: true, color: 'accent', fillAlpha: 0 });
           sR.fn(kolPdf, { domain: [0.12, 2.6], color: 'green', width: 2, n: 300 });
           sR.vline(lam, { color: 'orange', width: 2 });
           sR.tex('\\sqrt n\\,\\varepsilon_n', lam, Math.max(B.max, 1.8) * 1.04, { color: 'orange', align: 'left', dx: 5, size: 14 });

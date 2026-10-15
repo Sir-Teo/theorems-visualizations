@@ -170,7 +170,8 @@ and mean $d_2/(d_2-2)$ for $d_2>2$. If $T\sim t_\nu$ then $T^2\sim F_{1,\nu}$, a
           const inB = { edges: B.edges, density: B.density.map((d, i) => (B.edges[i + 1] <= F.lo || B.edges[i] >= F.hi ? 0 : d)) }, outB = { edges: B.edges, density: B.density.map((d, i) => (B.edges[i + 1] <= F.lo || B.edges[i] >= F.hi ? d : 0)) };
           const top = Math.max(B.max, peakOf(F.pdf, xmax * 0.03, xmax)) * 1.15;
           viewPad(sR, [0, xmax], [0, top]);
-          sR.hist(inB, { density: true, color: 'accent', fillAlpha: 0.33 }); sR.hist(outB, { density: true, color: 'red', fillAlpha: 0.4 });
+          sR.hist(inB, { density: true, color: 'accent', fillAlpha: 0.33, outline: false }); sR.hist(outB, { density: true, color: 'red', fillAlpha: 0.45, outline: false });
+          sR.hist(B, { density: true, color: 'accent', fillAlpha: 0 });
           sR.fn(F.pdf, { domain: [xmax * 1e-3, xmax], color: 'green', width: 2.4, n: 500 });
           sR.vline(F.lo, { color: 'orange', dash: [5, 4], width: 1.5 }); sR.vline(F.hi, { color: 'orange', dash: [5, 4], width: 1.5 });
           v.legend([['gold', 'repeats inside the central 95%', { dot: true }], ['red', 'outside', { dot: true }], ['orange', '2.5% and 97.5% points of $F$'], ['green', `exact $F_{${n1S.value - 1},${n2S.value - 1}}$ density`]]);
@@ -215,16 +216,18 @@ In particular $X_{(n)}$ has cdf $F^n$, $X_{(1)}$ has cdf $1-(1-F)^n$, and for un
           const S = R.sync(), P = pop(M, popSel.value), n = nS.value, k = Math.min(kS.value, n), [lo, hi] = P.view;
           sT.setView([lo, hi], [-1, 1]);
           sT.line(lo, 0, hi, 0, { color: 'faint', width: 1.2 });
+          let lastPx = -1e9;
           if (S.last) S.last.forEach((x, i) => {
-            const me = i === k - 1;
+            const me = i === k - 1, px = sT.X(x);
             sT.dot(x, 0, { r: me ? 7 : 4.2, color: me ? 'orange' : 'gold' });
-            if (n <= 15 || me) sT.text(String(i + 1), x, 0, { dy: -15, align: 'center', size: 11, color: me ? 'orange' : 'muted', math: false });
+            if ((n <= 15 && px - lastPx > 14) || me) { sT.text(String(i + 1), x, 0, { dy: -15, align: 'center', size: 11, color: me ? 'orange' : 'muted', math: false }); lastPx = px; }
           });
           if (S.last) sT.tex(`X_{(${k})} = ${v.fix(S.last[k - 1], 3)}`, S.last[k - 1], 0, { dy: 22, color: 'orange', size: 14 });
           const g = dens(P, n, k), B = binned(S.vals, lo, hi, 90), top = Math.max(B.max, peakOf(g, lo, hi)) * 1.15;
-          tH(`histogram of $X_{(${k})}$, the ${k === 1 ? 'minimum' : k === n ? 'maximum' : `${k}-th smallest of ${n}`}` + (P.key === 'uniform' ? `: exact law $\\mathrm{Beta}(${k},${n - k + 1})$` : ''));
+          const ord = (j) => j + (j % 10 === 1 && j % 100 !== 11 ? 'st' : j % 10 === 2 && j % 100 !== 12 ? 'nd' : j % 10 === 3 && j % 100 !== 13 ? 'rd' : 'th');
+          tH(`histogram of $X_{(${k})}$, the ${k === 1 ? 'minimum' : k === n ? 'maximum' : `${ord(k)} smallest of ${n}`}` + (P.key === 'uniform' ? `: exact law $\\mathrm{Beta}(${k},${n - k + 1})$` : ''));
           viewPad(sH, [lo, hi], [0, top]);
-          sH.clip(() => { for (let j = 1; j <= n; j++) if (j !== k) sH.fn(dens(P, n, j), { color: 'muted', width: 1, alpha: 0.4, n: 300 }); });
+          sH.clip(() => { for (let j = 1; j <= n; j++) if (j !== k) sH.fn(dens(P, n, j), { color: 'muted', width: 1, alpha: 0.3, n: 300 }); });
           sH.hist(B, { density: true, color: 'accent', fillAlpha: 0.33 });
           sH.fn(g, { color: 'green', width: 2.4, n: 500 });
           v.legend([['gold', 'sorted sample', { dot: true }], ['orange', '$X_{(k)}$', { dot: true }], ['accent', 'simulated $X_{(k)}$', { area: true }], ['green', 'exact density $f_{(k)}$'], ['muted', 'the other order statistics']]);
@@ -256,7 +259,7 @@ Part (b) is how random numbers with any law are generated from uniform ones. Par
         const dir = v.select('direction', [{ value: 'fwd', label: '$X \\mapsto F(X)$' }, { value: 'inv', label: '$U \\mapsto F^{-1}(U)$' }], 'fwd');
         const popSel = v.select('population $F$', popOpts(['normal', 'expo', 'bimodal', 'poisson']), 'expo');
         const wrong = v.toggle('push through a wrong cdf $G$', false);
-        const s = v.stage({ x: [-2, 6], y: [-0.62, 1.07], height: 430, axes: false, full: true });
+        const s = v.stage({ x: [-2, 6], y: [-0.62, 1.1], height: 430, axes: false, full: true });
         const frame = () => { const [a, b] = pop(M, popSel.value).view; return { a, b, w: 0.42 * (b - a) }; };
         const h = s.handle(1, 0, { color: 'orange', constrain: (x) => { const f = frame(); return [clamp(x, f.a, f.b), 0]; } });
         let hx = {};
@@ -274,7 +277,7 @@ Part (b) is how random numbers with any law are generated from uniform ones. Par
         });
         v.render(() => {
           const S = R.sync(), P = pop(M, popSel.value), L = law(), { a, b, w } = frame(), V = S.vals, N = V.length, fwd = dir.value === 'fwd';
-          s.setView([a - w, b], [-0.62, 1.07]);
+          s.setView([a - w, b], [-0.62, 1.1]);
           if (hx[popSel.value] == null) hx[popSel.value] = P.q(0.7);
           if (!h.dragging) { h.x = hx[popSel.value]; h.y = 0; }
           const x0l = a - 0.03 * w;
@@ -282,7 +285,7 @@ Part (b) is how random numbers with any law are generated from uniform ones. Par
           s.line(a, 0, b, 0, { color: 'faint', width: 1.2 }); s.line(a, 0, a, 1, { color: 'faint', width: 1.2 }); s.line(a, 1, b, 1, { color: 'grid', width: 1, dash: [3, 4] });
           [0, 0.5, 1].forEach((y) => s.text(String(y), a, y, { dx: 5, dy: y === 1 ? 8 : -7, size: 10.5, color: 'muted', math: false }));
           const step = (b - a) > 8 ? 2 : (b - a) > 3 ? 1 : 0.5;
-          for (let t = Math.ceil(a / step) * step; t <= b; t += step) s.text(String(+t.toFixed(1)).replace('-', '−'), t, 0, { dy: 9, align: 'center', size: 10.5, color: 'muted', math: false });
+          for (let t = Math.ceil(a / step) * step; t <= b - 0.03 * (b - a); t += step) s.text(String(+t.toFixed(1)).replace('-', '−'), t, 0, { dy: 9, align: 'center', size: 10.5, color: 'muted', math: false });
           // the cdf used for the transform (and the true one if different)
           const curve = (cdf, disc, col, st = {}) => { if (disc) { const pts = [[a, cdf(a)]]; for (let k = Math.max(0, Math.ceil(a)); k <= b; k++) pts.push([k, cdf(k - 1)], [k, cdf(k)]); pts.push([b, cdf(b)]); s.path(pts, { color: col, width: 2.4, ...st }); } else s.fn(cdf, { domain: [a, b], color: col, width: 2.4, n: 400, ...st }); };
           if (wrong.value) curve(P.cdf, P.discrete, 'green', { width: 1.6, dash: [5, 4] });
@@ -301,12 +304,12 @@ Part (b) is how random numbers with any law are generated from uniform ones. Par
             B.density.forEach((d, i) => { if (d) s.rect(B.edges[i], top0, B.edges[i + 1], top0 - d * sc, { fill: 'accent', fillAlpha: 0.35, stroke: false }); });
             s.fn((x) => top0 - P.pdf(x) * sc, { domain: [a, b], color: 'green', width: 2, n: 300 });
           }
-          s.text(fwd ? 'histogram of X (drawn from F)' : `histogram of X = ${wrong.value ? 'G' : 'F'}⁻¹(U)`, b, top0 - depth, { align: 'right', dy: 4, size: 11.5, color: 'muted', math: false });
+          s.text(fwd ? 'histogram of X (drawn from F)' : `histogram of X = ${wrong.value ? 'G' : 'F'}⁻¹(U)`, a - w, top0 - depth / 2, { dx: 8, size: 11.5, color: 'muted', math: false });
           // left: histogram of U, bars growing leftwards from x0l
           const BU = binned(V, 0, 1, 40, (p) => p[1]), su = (0.86 * w) / 2.2;
           BU.density.forEach((d, i) => { if (d) s.rect(x0l - Math.min(d, 2.2) * su, BU.edges[i], x0l, BU.edges[i + 1], { fill: d > 2.2 ? 'red' : 'accent', fillAlpha: 0.35, stroke: false }); });
           s.line(x0l - su, 0, x0l - su, 1, { color: 'green', width: 2, dash: [5, 4] });
-          s.text(fwd ? `histogram of U = ${wrong.value ? 'G' : 'F'}(X)` : 'histogram of U (uniform)', a - w, 1.05, { size: 11.5, color: 'muted', math: false });
+          s.text(fwd ? `histogram of U = ${wrong.value ? 'G' : 'F'}(X)` : 'histogram of U (uniform)', a - w, 1.05, { dx: 8, size: 11.5, color: 'muted', math: false });
           s.text('density 1', x0l - su, -0.03, { align: 'center', size: 10, color: 'green', math: false });
           // handle guide
           const u0 = L.cdf(h.x);
@@ -379,7 +382,7 @@ in distribution. In particular, if $\sqrt n(\bar X_n-\mu)/\sigma\to N(0,1)$ (cen
           sL.hist(Nw.BZ, { density: true, color: 'muted', fillAlpha: 0, width: 1.6 });
           sL.fn(phi, { color: 'green', width: 2.4, n: 300 });
           const outT = Nw.BT.out / Math.max(1, Nw.BT.N), outZ = Nw.BZ.out / Math.max(1, Nw.BZ.N);
-          if (outT > 0.01 || outZ > 0.01) sL.corner(`outside the window: T ${pct(outT)}, Z ${pct(outZ)}`, 'tl', { color: 'red' });
+          if (outT > 0.01 || outZ > 0.01) sL.corner(`outside the window: T ${pct(outT)}, Z ${pct(outZ)}`, 'tr', { color: 'red' });
           viewPad(sR, [2, 200], [0.005, 1], { xlog: true, ylog: true });
           sR.hline(0.87 / Math.sqrt(REPS), { color: 'faint', dash: [2, 4], width: 1.2 });
           sR.text('simulation noise', 200, 0.87 / Math.sqrt(REPS), { align: 'right', dx: -6, dy: 9, size: 11, color: 'muted', math: false });
@@ -450,7 +453,6 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
           sL.fn((x) => c + a * (x - mu), { color: 'orange', width: 1.8, dash: [6, 4] });
           const V = S.vals, pts = []; for (let i = Math.max(0, V.length - 500); i < V.length; i++) pts.push([V[i], g.f(V[i])]);
           sL.dots(pts, { r: 2.3, color: 'gold', alpha: 0.6 });
-          sL.corner(`slope g′(μ) = ${v.fix(a, 3)}`, 'br', { color: 'orange', weight: 600 });
           const Y = summ(); let xl, xr;
           if (Y.sorted.length > 20) { xl = qSorted(Y.sorted, 0.003); xr = qSorted(Y.sorted, 0.997); } else { xl = c - 1; xr = c + 1; }
           const span = Math.max(xr - xl, 1e-3); xl = Math.min(xl, c) - 0.12 * span; xr = Math.max(xr, c) + 0.12 * span;
@@ -482,7 +484,7 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
 $$P\big(|\bar X-E\bar X|\ge t\big)\le 2\exp\!\Big(-\frac{2n^2t^2}{\sum_i(b_i-a_i)^2}\Big),$$
 which for variables in $[0,1]$ reads $2e^{-2nt^2}$. Unlike the normal approximation it is a guarantee at every $n$, and unlike Chebyshev's bound $\sigma^2/(nt^2)$ it decays exponentially in $n$.`,
       idea: String.raw`Apply Markov's inequality (prob-1.6.4) to $e^{\lambda(\bar X-\mu)}$ and optimize over $\lambda$ (the Chernoff method). Independence factorizes the moment generating function, and Hoeffding's lemma bounds each factor: a centred variable confined to $[a,b]$ has $E e^{\lambda X}\le e^{\lambda^2(b-a)^2/8}$, proved from the convexity of $x\mapsto e^{\lambda x}$ (Jensen-type chord bound, rca-3.3). Boundedness replaces knowledge of the distribution; independence is what makes the exponent grow like $n$.`,
-      caption: String.raw`Each repeat averages $n$ variables in $[0,1]$; $10^4$ repeats estimate the tail $P(|\bar X-\mu|\ge t)$ (blue) on a log scale. It always lies below Hoeffding's bound (green) and, for moderate $t$, far below Chebyshev's (orange); the purple normal approximation is close but is not a bound. Drag the orange handle to read the three numbers at any $t$. Make the sequence *sticky* (each variable repeats the previous one with probability 0.8): the variables are no longer independent and the empirical tail breaks through the bound.`,
+      caption: String.raw`Each repeat averages $n$ variables in $[0,1]$; $10^4$ repeats estimate the tail $P(|\bar X-\mu|\ge t)$ (blue) on a log scale. It always lies below Hoeffding's bound (green), which decays exponentially in $nt^2$ and soon beats Chebyshev's polynomial bound (orange); the purple normal approximation is close but is not a bound. Drag the orange handle to read the three numbers at any $t$. Make the sequence *sticky* (each variable repeats the previous one with probability 0.8): the variables are no longer independent and the empirical tail breaks through the bound.`,
       deps: ['rca-3.3', 'prob-1.6.4'],
       refs: ['Wasserman §4.1'],
       tags: ['concentration', 'inequalities'],
@@ -570,7 +572,7 @@ Bernoulli, binomial, Poisson, normal, gamma and beta families are exponential fa
           const wq = 0.22 * (f.eta[1] - f.eta[0]);
           sL.fn((x) => A + A1 * (x - e) + 0.5 * A2 * (x - e) ** 2, { domain: [e - wq, e + wq], color: 'purple', width: 2, dash: [6, 4] });
           sL.fn((x) => A + A1 * (x - e), { color: 'orange', width: 2 });
-          sL.corner(`slope A′(η) = ${v.fix(A1, 3)}   ·   curvature A″(η) = ${v.fix(A2, 3)}`, 'tl', { color: 'muted', weight: 600 });
+          sL.corner(`slope A′(η) = ${v.fix(A1, 3)}   ·   curvature A″(η) = ${v.fix(A2, 3)}`, 'br', { color: 'muted', weight: 600 });
           const [lo, hi] = f.view(e), m = moments(S.vals); let yb;
           tR(`4,000 draws from $p_\\eta$: $${f.par(e)}$`);
           if (f.disc) {
@@ -617,14 +619,14 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
         const M = v.M;
         const famSel = v.select('family', popOpts(['normal', 'cauchy', 'expo', 'uniform']).map((o) => ({ ...o, label: { normal: 'normal', cauchy: 'Cauchy', expo: 'exponential', uniform: 'uniform' }[o.value] })), 'normal');
         const refSel = v.select('Q–Q reference', [{ value: 'same', label: 'same family' }, { value: 'normal', label: 'normal' }], 'same');
-        const nS = v.slider('sample size $n$', 10, 500, 60, { int: true, log: true });
+        const nS = v.slider('sample size $n$', 10, 500, 100, { int: true, log: true });
         let seed = 1; v.button('New sample', () => { seed++; });
         const sL = v.stage({ x: [-6, 8], y: [0, 0.85], height: 320, axes: 'box', title: 'standard member (dashed) and the member $\\tfrac1\\sigma f\\big(\\tfrac{x-\\mu}\\sigma\\big)$' });
         const sR = v.stage({ x: [-3, 3], y: [-3, 3], height: 320, axes: 'box' });
         const tR = titler(sR);
         const par = { mu: 1.2, sd: 1.5 };
-        const hM = sL.handle(1.2, 0, { color: 'orange', label: 'μ', constrain: (x) => [clamp(x, -3, 3), 0] });
-        const hS = sL.handle(2.7, 0, { color: 'purple', label: 'μ+σ', constrain: (x) => [clamp(x, par.mu + 0.4, par.mu + 3), 0] });
+        const hM = sL.handle(1.2, 0, { color: 'orange', constrain: (x) => [clamp(x, -3, 3), 0] });
+        const hS = sL.handle(2.7, 0, { color: 'purple', constrain: (x) => [clamp(x, par.mu + 0.4, par.mu + 3), 0] });
         hM.onDrag = (h) => { par.mu = h.x; }; hS.onDrag = (h) => { par.sd = h.x - par.mu; };
         const zc = memo(), zs = () => zc([famSel.value, nS.value, seed].join('|'), () => { const P = pop(M, famSel.value), r = v.rng(hashStr('ls|' + famSel.value + '|' + seed)), z = []; for (let i = 0; i < nS.value; i++) z.push(P.draw(r)); return sortNum(z); });
         const qq = () => {
@@ -642,7 +644,7 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
           sL.fn(P.pdf, { color: 'muted', width: 1.6, dash: [5, 4], n: 500 });
           sL.fn((x) => P.pdf((x - par.mu) / par.sd) / par.sd, { color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.12, n: 600 });
           const yb = 0.8; sL.line(par.mu, yb, par.mu + par.sd, yb, { color: 'purple', width: 2.4 }); sL.tex('\\sigma', par.mu + par.sd / 2, yb, { dy: -11, color: 'purple', size: 14 });
-          sL.line(par.mu, 0, par.mu, yb, { color: 'orange', width: 1, dash: [3, 4] }); sL.line(par.mu + par.sd, 0, par.mu + par.sd, yb, { color: 'purple', width: 1, dash: [3, 4] });
+          sL.line(par.mu, 0, par.mu, yb, { color: 'orange', width: 1, dash: [3, 4] }); sL.tex('\\mu', par.mu, yb, { dx: -8, align: 'right', color: 'orange', size: 14 }); sL.line(par.mu + par.sd, 0, par.mu + par.sd, yb, { color: 'purple', width: 1, dash: [3, 4] });
           for (const y of Q.ys) if (y > -6 && y < 8) sL.line(y, 0.015, y, 0.06, { color: 'gold', width: 1.4, alpha: 0.8 });
           // Q–Q plot, windowed on the central quantiles
           const n = Q.xs.length, x0 = Q.Q0.q(0.02), x1 = Q.Q0.q(0.98), dx = 0.12 * (x1 - x0), yq = sortNum(Q.ys);
@@ -655,7 +657,7 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
           sR.dots(pts, { r: n > 200 ? 2 : 3, color: 'gold' });
           const b = sR.bounds, outside = pts.filter(([x, y]) => x < b.x[0] || x > b.x[1] || y < b.y[0] || y > b.y[1]).length;
           if (outside) sR.corner(`${outside} extreme point${outside > 1 ? 's' : ''} outside the window`, 'br', { color: 'muted' });
-          axisLabels(sR, 'reference quantile', 'sorted data');
+          axisLabels(sR, '\\text{reference quantile}', '\\text{sorted data}');
           v.legend([['accent', 'member density · quartile line', { area: true }], ['gold', 'sample'], ...(refSel.value === 'same' ? [['green', 'line $\\mu+\\sigma x$']] : [])]);
         });
         v.readout(() => {

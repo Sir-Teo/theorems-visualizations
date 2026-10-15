@@ -596,7 +596,7 @@ $$\|u + v\|^2 = \|u\|^2 + \|v\|^2.$$`,
       credit: 'Babylonian tablets, c. 1800 BCE; Pythagorean school, c. 500 BCE',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pythagorean_theorem' },
       viz(v) {
-        const S = v.stage({ x: [-3.3, 3.9], y: [-2.6, 3.4], equal: true, height: 420, weight: 1.45, minWidth: 330 });
+        const S = v.stage({ x: [-3, 4], y: [-1.85, 3.85], equal: true, height: 420, weight: 1.45, minWidth: 330 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, minWidth: 220, title: 'areas' });
         const uh = S.handle(1.6, 0.35, { color: 'accent', label: 'u' });
         const bh = S.handle(1.145, 2.43, {
@@ -631,6 +631,7 @@ $$\|u + v\|^2 = \|u\|^2 + \|v\|^2.$$`,
           if (!right) { const a = Math.min(nu2 + nv2, ns2), b = Math.max(nu2 + nv2, ns2); R.rect(X(a), y2 - 0.035, X(b), y1 + hh + 0.035, { fill: 'red', fillAlpha: 0.12, stroke: false }); R.tex(`\\text{gap } |2\\langle u,v\\rangle| = ${tn(Math.abs(2 * ip))}`, 0.08, y2 - 0.09, { color: 'red', size: 14, align: 'left' }); }
           R.tex('\\|u\\|^2 + \\|v\\|^2', 0.08, y1 + hh + 0.06, { align: 'left', size: 14 });
           R.tex('\\|u + v\\|^2', 0.08, y2 + hh + 0.06, { align: 'left', size: 14 });
+          R.text(pn(nu2 + nv2, 2), X(nu2 + nv2), y1 + hh + 0.05, { align: 'right', size: 12, weight: 700 }); R.text(pn(ns2, 2), X(ns2), y2 + hh + 0.05, { align: 'right', size: 12, weight: 700 });
           R.corner(right ? 'u ⊥ v: equal' : 'not a right angle', 'tl', { color: right ? 'green' : 'red', weight: 700 });
           st = { nu2, nv2, ns2, ip, right };
         });
