@@ -100,8 +100,8 @@ $X$ and $Y$ are **conditionally independent given $Z$**, written $X\perp Y\mid Z
           const top = Math.max(0.5, ...(fs || [0]), ...mg.fy, ...hd) * 1.12;
           viewPad(sR, [0, top], [-3.6, 3.6]);
           hd.forEach((d, k) => { if (d > 0) sR.rect(0, Y0 + k * bw, d, Y0 + (k + 1) * bw, { fill: 'gold', fillAlpha: 0.35, color: 'gold', width: 0.8 }); });
+          if (fs) sR.path(ys.map((y, j) => [fs[j], y]), { color: 'accent', width: 3 });
           sR.path(ys.map((y, j) => [mg.fy[j], y]), { color: 'muted', width: 1.8, dash: [6, 4] });
-          if (fs) sR.path(ys.map((y, j) => [fs[j], y]), { color: 'accent', width: 2.6 });
           const tv = fs ? 0.5 * trapz(fs.map((u, j) => Math.abs(u - mg.fy[j]))) : NaN;
           tR(cond === 'none' ? 'slice at $x=a$, renormalised: $f(y\\mid x=a)$' : `slice within $Z=${cond}$: $f(y\\mid x=a,\\,Z=${cond})$`);
           const zl = cond === 'none' ? '' : `,\\,Z=${cond}`, zm = cond === 'none' ? '$f(y)$, no slice' : `$f(y\\mid Z=${cond})$, no slice`;
@@ -237,7 +237,7 @@ $$f(x\mid\theta)=g\big(T(x),\theta\big)\,h(x)\qquad\text{for all }x\text{ and }\
 
 Examples: Poisson, $\prod_i e^{-\lambda}\lambda^{x_i}/x_i!=\big[e^{-n\lambda}\lambda^{\sum x_i}\big]\cdot\big[1/\prod x_i!\big]$, so $\sum X_i$ is sufficient; uniform on $\{0,\dots,\theta\}$ or $(0,\theta)$, $f=\big[(\text{const})^{-n}\mathbf 1\{\max x_i\le\theta\}\big]\cdot\mathbf 1\{\min x_i\ge0\}$, so $\max X_i$ is sufficient; $N(\mu,\sigma^2)$, where $(\sum X_i,\sum X_i^2)$ is.`,
       idea: String.raw`Discrete case. If $T$ is sufficient, take $g(t,\theta)=P_\theta(T=t)$ and $h(x)=P(X=x\mid T=T(x))$, which is free of $\theta$ by sufficiency; their product is $P_\theta(X=x)$. Conversely, given a factorization, $P_\theta(X=x\mid T=t)=g(t,\theta)h(x)\big/\sum_{T(y)=t}g(t,\theta)h(y)=h(x)/\sum_{T(y)=t}h(y)$, and $\theta$ cancels. The general dominated case replaces sums by Radon–Nikodym derivatives (rca-6.10), with Halmos and Savage's lemma that a dominated family has a countable subfamily with the same null sets supplying a single dominating probability.`,
-      caption: String.raw`The sample space of two observations $(x_1,x_2)$, one cell per point ($x_1$ across, $x_2$ up), outlined along the level sets of $T$. The three panels are the factors of the necessity proof: $g(T(x),\theta)=P_\theta(T=T(x))$ (constant on each level set), $h(x)=P(X=x\mid T=T(x))$, and their product $f(x\mid\theta)$. Drag $\lambda$ (or $\theta$): when $T$ is sufficient only $g$ and $f$ change and the middle panel stays frozen. Choose a statistic that is not sufficient for the model and the middle panel changes with the parameter: no $\theta$-free factor $h$ exists. Click a cell to read its numbers.`,
+      caption: String.raw`The sample space of two observations $(x_1,x_2)$, one cell per point ($x_1$ across, $x_2$ up), with a thread joining the cells of each level set of $T$ (gold: the level set of the selected cell). The three panels are the factors of the necessity proof: $g(T(x),\theta)=P_\theta(T=T(x))$ (constant on each level set), $h(x)=P(X=x\mid T=T(x))$, and their product $f(x\mid\theta)$. Drag $\lambda$ (or $\theta$): when $T$ is sufficient only $g$ and $f$ change and the middle panel stays frozen. Choose a statistic that is not sufficient for the model and the middle panel changes with the parameter: no $\theta$-free factor $h$ exists. Click a cell to read its numbers.`,
       deps: ['stat-2.2', 'rca-6.10'],
       refs: ['Casella–Berger §6.2'],
       tags: ['sufficiency', 'factorization'],
@@ -253,7 +253,7 @@ Examples: Poisson, $\prod_i e^{-\lambda}\lambda^{x_i}/x_i!=\big[e^{-n\lambda}\la
         let sel = [2, 3];
         for (const s of [sg, sh, sf]) s.onClick((x, y) => { const i = Math.round(x), j = Math.round(y); if (i >= 0 && i <= K && j >= 0 && j <= K) sel = [i, j]; });
         const Tf = { sum: (a, b) => a + b, max: (a, b) => Math.max(a, b), x1: (a) => a };
-        const levelPaths = (st) => { const out = []; for (let t = 0; t <= 2 * K; t++) { let pts = []; if (st === 'sum') { for (let i = Math.max(0, t - K); i <= Math.min(t, K); i++) pts.push([i, t - i]); } else if (t <= K) pts = st === 'max' ? [[t, 0], [t, t], [0, t]] : [[t, 0], [t, K]]; if (pts.length === 1) pts.push([pts[0][0] + 0.001, pts[0][1]]); if (pts.length) out.push([t, pts]); } return out; };
+        const levelPaths = (st) => { const out = []; for (let t = 0; t <= 2 * K; t++) { let pts = []; if (st === 'sum') { for (let i = Math.max(0, t - K); i <= Math.min(t, K); i++) pts.push([i, t - i]); } else if (t <= K) pts = st === 'max' ? [[t, 0], [t, t], [0, t]] : [[t, 0], [t, K]]; if (pts.length > 1) out.push([t, pts]); } return out; };
         // marginal law q(k) of one observation, on 0..60
         const q = (mod, par) => { const out = new Float64Array(61); if (mod === 'pois') { out[0] = Math.exp(-par); for (let k = 1; k <= 60; k++) out[k] = (out[k - 1] * par) / k; } else for (let k = 0; k <= par; k++) out[k] = 1 / (par + 1); return out; };
         const gOf = (mod, st, par) => { // exact P(T = t) over the whole sample space
@@ -353,9 +353,15 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
           const draw = { bern: () => (r() < 0.35 ? 1 : 0), pois: () => D.poisson(3).sample(r), expo: () => D.exponential(1.5).sample(r), norm: () => 1 + 0.8 * r.normal(), gam: () => D.gamma(3, 0.5).sample(r), beta: () => D.beta(2, 5).sample(r), unif: () => 2 * r(), cauchy: () => Math.tan(Math.PI * (r() - 0.5)) }[f];
           for (let i = 0; i < n; i++) xs.push(draw());
           const out = { f, n, xs };
-          if (f === 'cauchy') { // a second Cauchy sample, moved to the same mean and SD
-            const z = []; for (let i = 0; i < n; i++) z.push(Math.tan(Math.PI * (r() - 0.5)));
-            const a = moments(xs), b = moments(z); out.ys = z.map((t) => a.mean + (a.sd * (t - b.mean)) / b.sd);
+          if (f === 'cauchy') { // sample B: rotate disjoint triples of A about the (1,1,1) axis, which keeps Σx and Σx² exactly
+            const ys = xs.slice(), idx = xs.map((_, i) => i); for (let i = n - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+            const c = Math.cos(Math.PI / 2), s3 = Math.sin(Math.PI / 2) / Math.sqrt(3);
+            for (let k = 0; k + 2 < n; k += 3) {
+              const [i, j, l] = [idx[k], idx[k + 1], idx[k + 2]], m = (xs[i] + xs[j] + xs[l]) / 3, d = [xs[i] - m, xs[j] - m, xs[l] - m];
+              const ux = [d[2] - d[1], d[0] - d[2], d[1] - d[0]]; // (1,1,1) × d
+              ys[i] = m + c * d[0] + s3 * ux[0]; ys[j] = m + c * d[1] + s3 * ux[1]; ys[l] = m + c * d[2] + s3 * ux[2];
+            }
+            out.ys = ys;
           }
           return out;
         });
@@ -366,9 +372,9 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
           expo: { full: (xs, l) => xs.reduce((s, x) => s + Math.log(l) - l * x, 0), fromT: (n, S, l) => n * Math.log(l) - l * S, T: (xs) => xs.reduce((a, b) => a + b, 0), win: [0.05, 5], pl: '\\lambda' },
           unif: { full: (xs, t) => xs.reduce((s, x) => s + (x <= t ? -Math.log(t) : -Infinity), 0), fromT: (n, mx, t) => (t >= mx ? -n * Math.log(t) : -Infinity), T: (xs) => Math.max(...xs), win: [0.02, 4], pl: '\\theta' },
           cauchy: { full: (xs, t) => xs.reduce((s, x) => s - Math.log1p((x - t) ** 2), 0), win: [-3, 3], pl: '\\theta' },
-          norm: { full: (xs, m, s) => xs.reduce((a, x) => a - Math.log(s) - ((x - m) ** 2) / (2 * s * s), 0), fromT: (n, T, m, s) => -n * Math.log(s) - (T[1] - 2 * m * T[0] + n * m * m) / (2 * s * s), T: (xs) => [xs.reduce((a, b) => a + b, 0), xs.reduce((a, b) => a + b * b, 0)], win: [[-3, 5], [0.1, 4]], pl: ['\\mu', '\\sigma'], map: (x) => [x, x * x] },
-          gam: { full: (xs, a, b) => xs.reduce((s, x) => s + a * Math.log(b) - lg(a) + (a - 1) * Math.log(x) - b * x, 0), fromT: (n, T, a, b) => n * (a * Math.log(b) - lg(a)) + (a - 1) * T[0] - b * T[1], T: (xs) => [xs.reduce((a, x) => a + Math.log(x), 0), xs.reduce((a, b) => a + b, 0)], win: [[0.2, 25], [0.1, 18]], pl: ['\\alpha', '\\beta'], map: (x) => [Math.log(x), x] },
-          beta: { full: (xs, a, b) => xs.reduce((s, x) => s + (a - 1) * Math.log(x) + (b - 1) * Math.log1p(-x) - lb(a, b), 0), fromT: (n, T, a, b) => (a - 1) * T[0] + (b - 1) * T[1] - n * lb(a, b), T: (xs) => [xs.reduce((a, x) => a + Math.log(x), 0), xs.reduce((a, x) => a + Math.log1p(-x), 0)], win: [[0.2, 15], [0.2, 35]], pl: ['a', 'b'], map: (x) => [Math.log(x), Math.log1p(-x)] },
+          norm: { full: (xs, m, s) => (s <= 0 ? -1e9 : xs.reduce((a, x) => a - Math.log(s) - ((x - m) ** 2) / (2 * s * s), 0)), fromT: (n, T, m, s) => (s <= 0 ? -1e9 : -n * Math.log(s) - (T[1] - 2 * m * T[0] + n * m * m) / (2 * s * s)), T: (xs) => [xs.reduce((a, b) => a + b, 0), xs.reduce((a, b) => a + b * b, 0)], win: [[-3, 5], [0.1, 4]], pl: ['\\mu', '\\sigma'], map: (x) => [x, x * x] },
+          gam: { full: (xs, a, b) => (a <= 0 || b <= 0 ? -1e9 : xs.reduce((s, x) => s + a * Math.log(b) - lg(a) + (a - 1) * Math.log(x) - b * x, 0)), fromT: (n, T, a, b) => (a <= 0 || b <= 0 ? -1e9 : n * (a * Math.log(b) - lg(a)) + (a - 1) * T[0] - b * T[1]), T: (xs) => [xs.reduce((a, x) => a + Math.log(x), 0), xs.reduce((a, b) => a + b, 0)], win: [[0.2, 25], [0.1, 18]], pl: ['\\alpha', '\\beta'], map: (x) => [Math.log(x), x] },
+          beta: { full: (xs, a, b) => (a <= 0 || b <= 0 ? -1e9 : xs.reduce((s, x) => s + (a - 1) * Math.log(x) + (b - 1) * Math.log1p(-x) - lb(a, b), 0)), fromT: (n, T, a, b) => (a <= 0 || b <= 0 ? -1e9 : (a - 1) * T[0] + (b - 1) * T[1] - n * lb(a, b)), T: (xs) => [xs.reduce((a, x) => a + Math.log(x), 0), xs.reduce((a, x) => a + Math.log1p(-x), 0)], win: [[0.2, 15], [0.2, 35]], pl: ['a', 'b'], map: (x) => [Math.log(x), Math.log1p(-x)] },
         };
         const wc = memo();
         const window2 = (d) => wc(d.f + '|' + d.n + '|' + seed, () => { // adaptive window: the region where the relative log-likelihood exceeds −9
@@ -437,7 +443,7 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
             const fF = xsG.map((t) => L.full(d.xs, t)), mF = Math.max(...fF.filter(isFinite));
             let fT, mT;
             if (f === 'cauchy') { fT = xsG.map((t) => L.full(d.ys, t)); mT = Math.max(...fT); }
-            else { const T = L.T(d.xs); fT = xsG.map((t) => L.fromT(n, T, t)); mT = Math.max(...fT.filter(isFinite)); extra = f === 'unif' ? `$\\max_i x_i=${v.fix(T, 3)}$` : `$\\sum T(x_i)=${v.fix(T, 3)}$`; }
+            else { const T = L.T(d.xs); fT = xsG.map((t) => L.fromT(n, T, t)); mT = Math.max(...fT.filter(isFinite)); extra = f === 'unif' ? `$\\max_i x_i=${v.fix(T, 3)}$` : `$\\sum T(x_i)=${Number.isInteger(T) ? T : v.fix(T, 3)}$`; }
             const rF = fF.map((u) => u - mF), rT = fT.map((u) => u - mT);
             for (let i = 0; i <= N; i++) if (isFinite(rF[i]) && isFinite(rT[i])) maxDiff = Math.max(maxDiff, Math.abs(rF[i] - rT[i]));
             viewPad(sR, [a, b], [-12, 1.2], { left: 34 });
@@ -472,14 +478,14 @@ Conversely (the Pitman–Koopman–Darmois theorem), for i.i.d. samples from a f
 
 A minimal sufficient statistic exists for any dominated family on a nice sample space and is unique up to one-to-one maps. It can be described explicitly: $x\sim y$ when the likelihood functions $\theta\mapsto f(x\mid\theta)$ and $\theta\mapsto f(y\mid\theta)$ are proportional, and $T(x)$ is the class of $x$ (for instance the normalised likelihood function itself). Examples: $\sum X_i$ for Bernoulli trials, while the whole sample is sufficient but not minimal; $\max X_i$ for uniforms on $\{0,\dots,\theta\}$; the unordered sample (order statistics) when the model is "all distributions".`,
       idea: String.raw`If $S$ is sufficient and $S(x)=S(y)$, the factorization (2.3) gives $f(x\mid\theta)/f(y\mid\theta)=h(x)/h(y)$, a constant, so $x$ and $y$ have proportional likelihoods: every sufficient partition sits inside the likelihood partition. The likelihood partition is itself sufficient (2.6 proves this), so it is the coarsest one, and it is minimal. Compressing further would merge two points with different likelihood shapes, and the conditional law given the merged class would then depend on $\theta$.`,
-      caption: String.raw`The 25 points of the sample space of two draws from a law on $\{0,\dots,4\}$. Cells share a colour when their likelihood functions are proportional (the minimal sufficient partition); the number in each cell is the value of the candidate statistic. A statistic is sufficient when equal numbers never straddle two colours, and minimal when, in addition, each colour carries a single number. Click a cell: on the right, the normalised likelihood functions of all points with the same candidate value. They coincide when the candidate is sufficient. Try each candidate under each model; the readout scores them all.`,
+      caption: String.raw`The 25 points of the sample space of two draws from a law on $\{0,\dots,4\}$. Cells share a colour when their likelihood functions are proportional (the minimal sufficient partition); the label in each cell is the value of the candidate statistic (the last candidate labels each point by the shape of its likelihood, which is minimal sufficient by construction). A statistic is sufficient when equal numbers never straddle two colours, and minimal when, in addition, each colour carries a single number. Click a cell: on the right, the normalised likelihood functions of all points with the same candidate value. They coincide when the candidate is sufficient. Try each candidate under each model; the readout scores them all.`,
       deps: ['stat-2.2', 'stat-2.3'],
       refs: ['Casella–Berger §6.2'],
       tags: ['minimal sufficiency', 'partitions'],
       viz(v) {
         const M = v.M, K = 4;
         const modS = v.select('model', [{ value: 'bin', label: 'Binomial$(4,p)$' }, { value: 'unif', label: 'uniform on $\\{0,\\dots,\\theta\\}$' }, { value: 'any', label: 'any law on $\\{0,\\dots,4\\}$' }, { value: 'two', label: 'two simple hypotheses' }], 'bin');
-        const CANDS = [{ value: 'id', label: '$(x_1,x_2)$', f: (a, b) => `${a},${b}` }, { value: 'sum', label: '$x_1+x_2$', f: (a, b) => `${a + b}` }, { value: 'max', label: '$\\max$', f: (a, b) => `${Math.max(a, b)}` }, { value: 'ord', label: '$\\{x_1,x_2\\}$', f: (a, b) => `${Math.min(a, b)}${Math.max(a, b)}` }, { value: 'x1', label: '$x_1$', f: (a) => `${a}` }];
+        const CANDS = [{ value: 'id', label: '$(x_1,x_2)$', f: (a, b) => `${a},${b}` }, { value: 'sum', label: '$x_1+x_2$', f: (a, b) => `${a + b}` }, { value: 'max', label: '$\\max$', f: (a, b) => `${Math.max(a, b)}` }, { value: 'ord', label: '$\\{x_1,x_2\\}$', f: (a, b) => `${Math.min(a, b)}${Math.max(a, b)}` }, { value: 'x1', label: '$x_1$', f: (a) => `${a}` }, { value: 'L', label: 'shape of $L_x$', f: null }];
         const cS = v.select('candidate statistic', CANDS.map(({ value, label }) => ({ value, label })), 'sum');
         const sL = v.stage({ x: [-0.6, K + 0.6], y: [-0.6, K + 0.6], equal: true, height: 330, axes: 'box', xticks: [0, 1, 2, 3, 4], yticks: [0, 1, 2, 3, 4], weight: 1, title: 'sample space: colour = likelihood class' });
         const sR = v.stage({ x: [0, 1], y: [0, 1], height: 330, axes: 'box', weight: 1.1 });
@@ -510,21 +516,22 @@ A minimal sufficient statistic exists for any dominated family on a nice sample 
           const col = []; for (let c = 0; c < nC; c++) { const used = new Set([...adj[c]].map((d) => col[d]).filter((u) => u != null)); let k = c % CYCLE.length, tries = 0; while (used.has(k) && tries++ < CYCLE.length) k = (k + 1) % CYCLE.length; col[c] = k; }
           return { vec, cls, nC, col };
         });
+        const candF = (mod, c) => (c.f ? c.f : (a, b) => String.fromCharCode(65 + lr(mod).cls[`${a},${b}`]));
         const score = (mod, cand) => {
-          const L = lr(mod), C = CANDS.find((c) => c.value === cand), blocks = new Map();
+          const L = lr(mod), C = { f: candF(mod, CANDS.find((c) => c.value === cand)) }, blocks = new Map();
           for (let i = 0; i <= K; i++) for (let j = 0; j <= K; j++) { const t = C.f(i, j); if (!blocks.has(t)) blocks.set(t, new Set()); blocks.get(t).add(L.cls[`${i},${j}`]); }
           const suff = [...blocks.values()].every((s) => s.size === 1);
           return { nB: blocks.size, suff, minimal: suff && blocks.size === L.nC };
         };
         let info = null;
         v.render(() => {
-          const mod = modS.value, cand = CANDS.find((c) => c.value === cS.value), L = lr(mod), [si, sj] = sel, tSel = cand.f(si, sj);
+          const mod = modS.value, c0 = CANDS.find((c) => c.value === cS.value), cand = { ...c0, f: candF(mod, c0) }, L = lr(mod), [si, sj] = sel, tSel = cand.f(si, sj);
           viewPad(sL, [-0.6, K + 0.6], [-0.6, K + 0.6], { left: 22, bottom: 16 });
           for (let i = 0; i <= K; i++) for (let j = 0; j <= K; j++) {
             const c = L.cls[`${i},${j}`], col = CYCLE[L.col[c] % CYCLE.length], mine = cand.f(i, j) === tSel;
             sL.rect(i - 0.48, j - 0.48, i + 0.48, j + 0.48, { fill: col, fillAlpha: mine ? 0.62 : 0.3, color: mine ? 'ink' : col, width: mine ? 2 : 1, radius: 5 });
             const lab = cand.value === 'ord' ? `{${cand.f(i, j).split('').join(',')}}` : cand.f(i, j);
-            sL.text(lab, i, j, { align: 'center', size: cand.value === 'id' || cand.value === 'ord' ? 12 : 15, weight: 700, color: 'ink' });
+            sL.text(lab, i, j, { align: 'center', size: cand.value === 'id' || cand.value === 'ord' ? 12 : 15, weight: 700, color: 'ink', math: cand.value === 'L' });
           }
           sL.rect(si - 0.5, sj - 0.5, si + 0.5, sj + 0.5, { color: 'gold', width: 3.4, radius: 6 });
           // right: normalised likelihood functions of the selected candidate block
@@ -549,7 +556,7 @@ A minimal sufficient statistic exists for any dominated family on a nice sample 
           if (!info) return '';
           const { mod, L, nCls } = info, own = score(mod, cS.value);
           const parts = CANDS.map((c) => { const s = score(mod, c.value); return `${c.label}: ${s.nB} blocks, ${s.suff ? (s.minimal ? '**minimal sufficient**' : 'sufficient, not minimal') : 'not sufficient'}`; });
-          return String.raw`${L.nC} likelihood classes · the selected block meets ${nCls} class${nCls > 1 ? 'es' : ''} — ${own.suff ? 'its likelihoods all have one shape' : 'its likelihoods have different shapes, so conditioning on it leaves $\theta$ in play'} · ` + parts.join(' · ');
+          return String.raw`${L.nC} likelihood classes · the selected block meets ${nCls} class${nCls > 1 ? 'es' : ''} — ${own.suff ? 'its likelihoods all have one shape' : 'its likelihoods have different shapes, so conditioning on it leaves $\\theta$ in play'} · ` + parts.join(' · ');
         });
       },
     },
@@ -604,8 +611,10 @@ Examples for a sample of size $n$: $\bar X$ for $N(\mu,1)$; $(\bar X,S^2)$ for $
         v.button('Scramble $y$', () => { const r = v.rng(hashStr('scr' + shuffleK++)); hy.forEach((h) => h.set(modS.value === 'unif' ? 0.2 + 4.5 * r() : -2 + 6 * r(), 0)); });
         let info = null;
         v.render(() => {
-          const mod = modS.value, a = xs(), b = ysv();
+          const mod = modS.value;
           cBtn.hidden = mod !== 'cauchy';
+          if (mod === 'unif') for (const hd of [...hx, ...hy]) if (hd.x < 0.05) hd.set(Math.max(0.05, -hd.x), hd.y);
+          const a = xs(), b = ysv();
           // left: the two data sets on number lines
           for (const [yy, col, nm] of [[1, 'accent', 'x'], [0, 'orange', 'y']]) { sL.line(-3, yy, 6, yy, { color: 'faint', width: 1.4 }); sL.tex(nm, -3.1, yy + 0.32, { color: col, size: 17, align: 'left' }); }
           for (let t = -3; t <= 6; t++) { sL.line(t, -0.06, t, 0.06, { color: 'faint' }); sL.line(t, 0.94, t, 1.06, { color: 'faint' }); sL.text(String(t).replace('-', '−'), t, -0.28, { align: 'center', size: 11, color: 'muted' }); }
@@ -646,7 +655,7 @@ Examples for a sample of size $n$: $\bar X$ for $N(\mu,1)$; $(\bar X,S^2)$ for $
           const { mod, isFlat, spread, same } = info;
           const nm = { n1: '$\\bar x$', n2: '$(\\bar x,s^2)$', unif: '$x_{(4)}$', cauchy: 'the order statistics' }[mod];
           const sp = isFinite(spread) ? v.fix(spread, 4) : '∞';
-          return String.raw`log-likelihood ratio varies by ${sp} over the window: **${isFlat ? 'flat' : 'not flat'}** · ${nm}: ${same ? '**equal** for $x$ and $y$' : 'different for $x$ and $y$'} · ` + (isFlat === same ? 'the two agree, as the criterion says: ' + nm + ' is minimal sufficient' : 'mismatch at the drag tolerance; press match');
+          return String.raw`log-likelihood ratio varies by ${sp} over the window: **${isFlat ? 'flat' : 'not flat'}** · ${nm}: ${same ? '**equal** for $x$ and $y$' : 'different for $x$ and $y$'} · ` + (isFlat === same ? `flatness and equality go together, as the criterion says: ${nm} ${mod === 'cauchy' ? 'are' : 'is'} minimal sufficient` : 'equal only up to the drag tolerance: press match');
         });
       },
     },

@@ -94,13 +94,14 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
         // effects on the index scale: a = 0…9 (ages 40–44 … 85–89), p = 0…11 (1960–64 … 2015–19), c = p − a + 9 (born ≈ 1875 + 5c)
         const ALPHA = Array.from({ length: NA }, (_, a) => -6.25 + 0.47 * a);
         const PI = Array.from({ length: NP }, (_, p) => -0.085 * (p - 5.5) + 0.05 * Math.sin(0.9 * p));
-        const GAMMA = Array.from({ length: NA + NP - 1 }, (_, c) => 0.28 * Math.exp(-(((c - 9.5) / 2) ** 2)) + 0.015 * (c - 10) - 0.06);
+        const GAMMA = Array.from({ length: NA + NP - 1 }, (_, c) => 0.4 * Math.exp(-(((c - 9.5) / 2) ** 2)) + 0.015 * (c - 10) - 0.08);
         const abar = (NA - 1) / 2, pbar = (NP - 1) / 2, cbar = pbar - abar + (NA - 1);
         const slope = (arr) => { const n = arr.length, xm = (n - 1) / 2, ym = sum(arr) / n; let a = 0, b = 0; arr.forEach((y, i) => { a += (i - xm) * (y - ym); b += (i - xm) ** 2; }); return a / b; };
         const sP = slope(PI), sC = slope(GAMMA);
-        const Hs = v.stage({ x: [1958, 2030], y: [38, 92], equal: true, height: 410, axes: 'box', weight: 1.15, minWidth: 300, ylabel: 'age', xticks: [1960, 1980, 2000, 2020], yticks: [40, 50, 60, 70, 80, 90], title: 'the table of death rates (log scale)' });
+        const Hs = v.stage({ x: [1949, 2049], y: [37, 93], equal: true, height: 410, axes: 'box', weight: 1.2, minWidth: 300, ylabel: 'age', xticks: [1960, 1980, 2000, 2020], yticks: [40, 50, 60, 70, 80, 90], title: 'the table of death rates' });
         const E = v.stage({ x: [0, 1], y: [0, 3], height: 410, axes: false, weight: 1, minWidth: 260, title: 'the three effects (log rate)' });
-        const th = v.slider('tilt θ (change in log rate per 5 years)', -0.6, 0.3, 0, { step: 0.005, fmt: (x) => sg(x, 3) });
+        const th = v.slider('tilt θ (change in log rate per 5 years)', -0.25, 0.15, 0, { step: 0.005, fmt: (x) => sg(x, 3) });
+        const col = v.select('colour the table by', [{ value: 'rel', label: 'rate ÷ its age group’s average' }, { value: 'abs', label: 'death rate' }], 'rel');
         v.button('as generated', () => th.set(0));
         v.button('no period trend', () => th.set(sP));
         v.button('no cohort trend', () => th.set(-sC));
@@ -112,7 +113,8 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
           ga: GAMMA.map((x, c) => (onlyAge ? x : x + t * (c - cbar))),
         });
         const cell = (e, a, p) => e.al[a] + e.pi[p] + e.ga[p - a + NA - 1];
-        const LO = cell(eff(0), 0, NP - 1) - 0.3, HI = cell(eff(0), NA - 1, 0) + 0.3;
+        const LO = cell(eff(0), 0, NP - 1) - 0.3, HI = cell(eff(0), NA - 1, 0) + 0.3, REL = 0.55;
+        const rowMean = (e, a) => { let t = 0; for (let p = 0; p < NP; p++) t += cell(e, a, p); return t / NP; };
         let st = null;
         v.render(() => {
           const t = th.value, e = eff(t, brk.value), e0 = eff(0, false);
@@ -120,7 +122,8 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
           for (let a = 0; a < NA; a++) for (let p = 0; p < NP; p++) {
             const z = cell(e, a, p), z0 = cell(e0, a, p); dmax = Math.max(dmax, Math.abs(z - z0));
             const x0 = P0 + 5 * p, y0 = A0 + 5 * a;
-            Hs.rect(x0, y0, x0 + 5, y0 + 5, { fill: M.cmap(clamp((z - LO) / (HI - LO), 0, 1), 'viridis'), fillAlpha: 1, stroke: false });
+            const zz = col.value === 'abs' ? (z - LO) / (HI - LO) : 0.5 + (z - rowMean(e, a)) / (2 * REL);
+            Hs.rect(x0, y0, x0 + 5, y0 + 5, { fill: M.cmap(clamp(zz, 0, 1), col.value === 'abs' ? 'viridis' : 'diverging'), fillAlpha: 1, stroke: false });
             if (Math.abs(z - z0) > 1e-9) Hs.rect(x0 + 0.25, y0 + 0.25, x0 + 4.75, y0 + 4.75, { color: 'red', width: 1.6 });
           }
           for (let k = -NA + 1; k < NP; k++) { // cohort diagonals
@@ -129,22 +132,24 @@ reproduce exactly the same rate in every cell, because the added terms sum to $\
           }
           const ai = Math.floor((H.y - A0) / 5), pi = Math.floor((H.x - P0) / 5), ci = pi - ai + NA - 1;
           Hs.rect(P0 + 5 * pi, A0 + 5 * ai, P0 + 5 * pi + 5, A0 + 5 * ai + 5, { color: 'gold', width: 2.6 });
-          Hs.colorbar([LO, HI], 'viridis', { pos: 'right', label: 'per 1 000', fmt: (x) => { const r = 1000 * Math.exp(x); return r >= 10 ? fx(r, 0) : fx(r, 1); } });
+          if (col.value === 'abs') Hs.colorbar([LO, HI], 'viridis', { pos: 'right', label: 'per 1 000', fmt: (x) => { const r = 1000 * Math.exp(x); return r >= 10 ? fx(r, 0) : fx(r, 1); } });
+          else Hs.colorbar([-REL, REL], 'diverging', { pos: 'right', label: '× age avg', fmt: (x) => `×${fx(Math.exp(x), 2)}` });
           // ----- effects panel: three bands, each with a fixed vertical scale covering the slider's range
           const bands = [['age effect α (by age)', e.al, e0.al, 'blue', ['40', '85'], ai], ['period effect π (by period)', e.pi, e0.pi, 'orange', ['1960', '2015'], pi], ['cohort effect γ (by birth year)', e.ga, e0.ga, 'purple', ['1875', '1975'], ci]];
-          bands.forEach(([name, cur, gen, col, ends, hi], k) => {
+          bands.forEach(([name, cur, gen, cl, ends, hi], k) => {
             const top = 3 - k, base = top - 1, n = cur.length, X = (i) => 0.07 + (0.88 * i) / (n - 1);
             const ext = [];
-            for (const tt of [-0.6, 0.3, 0]) { const ee = eff(tt, false); const arr = k === 0 ? ee.al : k === 1 ? ee.pi : ee.ga; ext.push(...arr); }
-            if (brk.value && k === 0) ext.push(...cur);
+            ext.push(...cur, ...gen);
             const lo = Math.min(...ext), hiV = Math.max(...ext), Y = (z) => base + 0.16 + (0.62 * (z - lo)) / (hiV - lo || 1);
             E.rect(0.02, base + 0.05, 0.98, top - 0.05, { fill: 'grid', fillAlpha: 0.25, stroke: false, radius: 6 });
-            E.text(name, 0.04, top - 0.1, { color: col, size: 11.5, weight: 700 });
+            E.text(name, 0.04, top - 0.1, { color: cl, size: 11.5, weight: 700 });
             E.text(ends[0], X(0), base + 0.1, { align: 'center', color: 'muted', size: 10 });
             E.text(ends[1], X(n - 1), base + 0.1, { align: 'center', color: 'muted', size: 10 });
-            E.path(gen.map((z, i) => [X(i), Y(z)]), { color: col, width: 1.4, dash: [4, 4], alpha: 0.55 });
-            E.path(cur.map((z, i) => [X(i), Y(z)]), { color: col, width: 2.4 });
-            E.dots(cur.map((z, i) => [X(i), Y(z)]), { r: 2.6, color: col });
+            E.path(gen.map((z, i) => [X(i), Y(z)]), { color: cl, width: 1.4, dash: [4, 4], alpha: 0.55 });
+            const sl0 = slope(cur), mz = sum(cur) / n, mi = (n - 1) / 2;
+            E.line(X(0), Y(mz - sl0 * mi), X(n - 1), Y(mz + sl0 * mi), { color: cl, width: 1, dash: [2, 3], alpha: 0.8 });
+            E.path(cur.map((z, i) => [X(i), Y(z)]), { color: cl, width: 2.4 });
+            E.dots(cur.map((z, i) => [X(i), Y(z)]), { r: 2.6, color: cl });
             E.dot(X(hi), Y(cur[hi]), { r: 5, color: 'gold' });
             const sl = slope(cur) / 5;
             E.text(`trend ${sg(sl, 3)} per year`, 0.96, top - 0.1, { align: 'right', color: 'ink', size: 11 });

@@ -16,7 +16,7 @@
 //   1.5  William Smith's map, A Delineation of the Strata of England and Wales (1815); Strata Identified by Organized
 //        Fossils (1816–19); Cuvier & Brongniart on the Paris Basin (1808/1811).
 
-import { TAU, clamp, LITH, rgbMix, lithPoly, classify, surfaceAt, drawSection, unconformity, fossil, fmtYr } from './ch01.shared.js';
+import { TAU, clamp, LITH, rgbMix, lithPoly, classify, surfaceAt, drawSection, fossil, fmtYr } from './ch01.shared.js';
 
 // ── 1.1 silicate structures ─────────────────────────────────────────────────
 const H3 = Math.sqrt(2 / 3); // height of a regular tetrahedron with unit O–O edge
@@ -98,7 +98,7 @@ function cleavageInset(v, s, kind, box) {
   const cxp = (X0 + X1) / 2, cyp = (Y0 + Y1) / 2 + 6, W = X1 - X0, Hh = Y1 - Y0;
   c.save(); c.beginPath(); c.rect(X0 + 2, Y0 + 18, W - 4, Hh - 20); c.clip();
   if (kind === 'px' || kind === 'am') {
-    const { A, B } = BEAMS[kind], k = Math.min((W - 16) / (2.3 * B), (Hh - 26) / (2.4 * A));
+    const { A, B } = BEAMS[kind], k = Math.min((W - 16) / (1.75 * B), (Hh - 26) / (1.85 * A));
     const bw = 0.3 * B * k, bh = 0.21 * A * k, ink = v.color('accent');
     for (let i = -3; i <= 3; i++) for (let j = -3; j <= 3; j++) for (const [di, dj] of [[0, 0], [0.5, 0.5]]) {
       const X = cxp + (i + di) * B * k, Y = cyp + (j + dj) * A * k;
@@ -106,11 +106,14 @@ function cleavageInset(v, s, kind, box) {
       c.fillRect(X - bw, Y - bh, 2 * bw, bh * 0.45); c.fillRect(X - bw, Y + bh * 0.55, 2 * bw, bh * 0.45); c.fillRect(X - bw * 0.2, Y - bh, bw * 0.4, 2 * bh);
     }
     c.strokeStyle = v.color('red'); c.lineWidth = 1.6; c.setLineDash([5, 3]);
-    for (let i = -4; i <= 4; i++) for (const sg of [1, -1]) { // traces through the gaps ((i+½)B, 0) along (B, ±A)
+    for (const i of [-1, 0]) for (const sg of [1, -1]) { // traces through the gaps ((i+½)B, 0) along (B, ±A)
       const gx = cxp + (i + 0.5) * B * k, gy = cyp, dx = B * k * 3, dy = sg * A * k * 3;
       c.beginPath(); c.moveTo(gx - dx, gy - dy); c.lineTo(gx + dx, gy + dy); c.stroke();
     }
     c.setLineDash([]);
+    const ang = (2 * Math.atan(A / B) * 180) / Math.PI, gx = cxp + 0.5 * B * k;
+    s.textPx(`${Math.round(ang)}°`, gx + 9, cyp, { size: 11.5, weight: 700, color: 'red' });
+    s.textPx(`${Math.round(180 - ang)}°`, gx, cyp - 11, { size: 11.5, weight: 700, color: 'red', align: 'center' });
   } else if (kind === 'mica') {
     for (let j = -2; j <= 2; j++) {
       const Y = cyp + j * 22;
@@ -320,7 +323,7 @@ Each shared oxygen is counted half for each of its two tetrahedra, so the ratio 
         const D = v.stage({ x: [0, 10], y: [0, 7], axes: false, height: 380, weight: 1.35 });
         const T = v.stage({ x: [-1.05, 1.05], y: [-1.05, 1.05], equal: true, axes: false, height: 380, weight: 0.75, minWidth: 240 });
         const H = v.stage({ x: [0.01, 3e9], y: [0, 7.2], xlog: true, axes: 'box', height: 180, full: true, xlabel: 'duration (years, log scale)', yticks: [] });
-        let hist = ['intr', 'erI', 'lith'], rngN = 0;
+        let hist = ['intr', 'erI', 'lith', 'metS'], rngN = 0;
         const stateOf = () => { let node = 'magma', depth = 25, tex = 'melt', rock = 'magma'; for (const id of hist) { const P = RC_PROC.find((p) => p.id === id); node = P.to; tex = P.tex; rock = P.rock; depth = P.depth; } return { node, depth, tex, rock }; };
         const durOf = (P, depthBefore) => (P.t === 'erode' ? (() => { const d = Math.max(depthBefore, 0.05) * 1e6 / den.value; return [d, d]; })() : P.t());
         const take = (id) => { hist.push(id); if (hist.length > 14) hist.shift(); };
@@ -454,7 +457,7 @@ If the early crystals are removed from the melt (they settle, or the melt is squ
         const sys = v.select('system', [{ value: 'fo', label: 'olivine–silica (discontinuous)' }, { value: 'pl', label: 'plagioclase (continuous)' }], 'fo', { onChange: () => applyMode() });
         const w0s = v.slider('melt: wt% SiO₂', 45, 59, 50, { step: 0.5 });
         const x0s = v.slider('melt: % anorthite', 20, 95, 60, { step: 1 });
-        const cool = v.slider('cooling', 0, 1, 0.62, { step: 0.002 });
+        const cool = v.slider('cooling', 0, 1, 0.68, { step: 0.002 });
         const frac = v.toggle('fractional (remove crystals)', false);
         const P = v.stage({ x: [40, 72], y: [1460, 1935], axes: 'box', height: 380, weight: 1.25, xlabel: 'wt% SiO₂', ylabel: 'T (°C)' });
         const C = v.stage({ x: [-1, 1], y: [-1.05, 1.05], axes: false, height: 380, weight: 0.65, minWidth: 220 });
@@ -514,8 +517,8 @@ If the early crystals are removed from the melt (they settle, or the melt is squ
             P.text('Fo + En', 47, 1500, { size: 12, color: 'muted' });
             P.text('En + silica', 61, 1500, { size: 12, color: 'muted' });
             P.text('silica +', 71.6, 1598, { size: 11, color: 'muted', align: 'right' }); P.text('liquid', 71.6, 1582, { size: 11, color: 'muted', align: 'right' });
-            P.text('Fo', FO.wFo, 1935, { dx: 4, dy: 9, size: 11.5, color: 'muted' }); P.text('En', FO.wEn, 1935, { dx: 4, dy: 9, size: 11.5, color: 'muted' });
-            P.dot(FO.wP, FO.TP, { r: 3.5, color: 'ink' }); P.text('peritectic 1557 °C', FO.wP, FO.TP, { dx: 6, dy: -11, size: 11, color: 'ink' });
+            P.text('En', FO.wEn, 1935, { dx: 4, dy: 9, size: 11.5, color: 'muted' });
+            P.dot(FO.wP, FO.TP, { r: 3.5, color: 'ink' }); P.text('peritectic 1557 °C', FO.wP, FO.TP, { dx: -8, dy: 13, size: 11, color: 'ink', align: 'right' });
             P.dot(FO.wE, FO.TE, { r: 3.5, color: 'ink' }); P.text('eutectic 1543 °C', FO.wE, FO.TE, { dx: 4, dy: 12, size: 11, color: 'ink' });
             P.text('Fo melts at 1890 °C', FO.wFo, FO.TFo, { dx: 6, dy: 4, size: 11, color: 'ink' });
             // bulk and path
@@ -666,7 +669,7 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
         const lith = v.select('next layer', [{ value: 'sand', label: 'sandstone' }, { value: 'shale', label: 'shale' }, { value: 'lime', label: 'limestone' }, { value: 'cong', label: 'conglomerate' }], 'sand');
         const tiltS = v.slider('tilt angle (°)', -40, 40, 15, { step: 1 });
         const quiz = v.toggle('quiz: order the units yourself', false, { onChange: () => { placed = []; msg = ''; } });
-        const S = v.stage({ x: [0, ST_W], y: [0, ST_H], axes: false, aspect: ST_H / ST_W, weight: 1.45, equal: true });
+        const S = v.stage({ x: [0, ST_W], y: [0, ST_H], axes: false, height: 400, weight: 1.45, equal: true });
         const G2 = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 400, weight: 0.7, minWidth: 220, title: 'what the outcrop proves' });
         const G = v.graph(G2, { nodes: [], edges: [], directed: true, layout: 'none', draggable: false, r: 12, fontSize: 12 });
         const surf = () => { let lo = Infinity, hi = -Infinity; for (let x = 0.2; x < ST_W; x += 0.4) { const z = surfaceAt(hist, x, ST_H + 0.02, -1, 0.05); lo = Math.min(lo, z); hi = Math.max(hi, z); } return [lo, hi]; };
@@ -728,7 +731,7 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
           const a = analyse(), q = quiz.value;
           S.rect(0, 0, ST_W, ST_H, { fill: 'blue', fillAlpha: 0.05, stroke: false });
           drawSection(v, S, hist, { key: JSON.stringify(hist), res: 2, pale: 0.48 });
-          hist.forEach((e, k) => { if (e.type === 'erode') S.path(unconformity(hist, k, -8, 20), { color: 'red', width: 2.4 }); });
+          hist.forEach((e, k) => { if (e.type === 'erode') S.contour((x, z) => { const c = classify(hist, x, z); return c ? (c.k > k ? 1 : 0) : NaN; }, [0.5], { color: 'red', width: 2.6, res: 240 }); });
           // erosion surfaces as wavy unconformity lines are visible through contrast; mark fault traces
           for (const u of a.units) {
             const p = a.pos.get(u); if (!p) continue;

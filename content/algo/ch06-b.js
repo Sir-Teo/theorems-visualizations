@@ -199,31 +199,46 @@ function tTeX(N) {
 }
 
 // ---------- 6.14: union–find costs under four heuristics, and the CLRS potential for union by rank + path compression
-function ufCost(n, heur, wl, budget) {
-  const p = new Int32Array(n), rk = new Int32Array(n), deepE = new Int32Array(n), deepD = new Int32Array(n);
-  for (let i = 0; i < n; i++) { p[i] = i; deepE[i] = i; }
-  const byRank = heur === 'both' || heur === 'rank', comp = heur === 'both' || heur === 'comp';
-  let cost = 0, ops = 0, s = 12345;
+/** A workload on n elements as a flat list of operations: [0, a, b] = UNION(a, b), [1, x, 0] = FIND(x). Oblivious: it does not depend on the heuristics. */
+function ufOps(n, wl) {
+  const buf = new Int32Array(15 * n + 30); let len = 0, s = 12345;
+  const ops = { push: (...a) => { for (const x of a) buf[len++] = x; } };
   const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }, ri = () => Math.floor(rnd() * n);
-  const find = (x) => { let r = x; while (p[r] !== r) { r = p[r]; cost++; } cost++; if (comp) while (p[x] !== r) { const nx = p[x]; p[x] = r; x = nx; } return r; };
-  const link = (a, b) => {                       // naive: a's root goes below b's root
-    if (byRank && rk[a] > rk[b]) [a, b] = [b, a];
-    p[a] = b; if (byRank && rk[a] === rk[b]) rk[b]++;
-    if (deepD[a] + 1 > deepD[b]) { deepD[b] = deepD[a] + 1; deepE[b] = deepE[a]; }
-    cost++;
-  };
-  const union = (a, b) => { ops++; const ra = find(a), rb = find(b); if (ra !== rb) link(ra, rb); return ra === rb ? ra : p[ra] === rb ? rb : ra; };
-  const fnd = (x) => { ops++; return find(x); };
-  const over = () => cost > budget;
-  if (wl === 'random') { for (let t = 0; t < 4 * n && !over(); t++) { if (rnd() < 0.5) union(ri(), ri()); else fnd(ri()); } }
-  else if (wl === 'doubling') {
-    for (let st = 1; st < n && !over(); st *= 2) for (let i = 0; i + st < n && !over(); i += 2 * st) { const r = union(i, i + st); fnd(deepE[r]); }
-    for (let t = 0; t < 2 * n && !over(); t++) fnd(ri());
-  } else {
-    for (let i = 1; i < n && !over(); i++) { union(0, i); fnd(0); }
-    for (let t = 0; t < 2 * n && !over(); t++) fnd(ri());
+  if (wl === 'random') { for (let t = 0; t < 4 * n; t++) { if (rnd() < 0.5) ops.push(0, ri(), ri()); else ops.push(1, ri(), 0); } }
+  else if (wl === 'chain') { for (let i = 1; i < n; i++) ops.push(0, 0, i, 1, 0, 0); for (let t = 0; t < 2 * n; t++) ops.push(1, ri(), 0); }
+  else {
+    // a binomial tree on half the elements; then, again and again, hang the whole tree below a new element and FIND the deepest leaf.
+    // ch/bv track the tree that naive linking + path compression would produce, which always contains a binomial tree B_k.
+    const B = 2 ** Math.floor(LG(n / 2)), ch = Array.from({ length: n }, () => []), bv = new Int32Array(n);
+    for (let st = 1, b = 0; st < B; st *= 2, b++) for (let i = 0; i + st < B; i += 2 * st) { ops.push(0, i + st - 1, i + 2 * st - 1); ch[i + 2 * st - 1].push(i + st - 1); bv[i + 2 * st - 1] = b + 1; }
+    let root = B - 1;
+    for (let z = B; z < n; z++) {
+      ops.push(0, root, z); ch[z] = [root];
+      const path = [z]; let u = z; while (ch[u].length) { u = ch[u][ch[u].length - 1]; path.push(u); }
+      ops.push(1, u, 0);
+      const k = path.length - 2;                 // path = z, v_k, …, v_0
+      for (let i = 1; i < path.length; i++) ch[path[i - 1]].pop();
+      const vs = path.slice(1).reverse();          // v_0 … v_k
+      ch[z] = vs.slice(1); vs.forEach((w, i) => { if (i) bv[w] = i - 1; }); bv[z] = k;
+      root = z;
+    }
   }
-  return over() ? null : cost / ops;
+  return buf.subarray(0, len);
+}
+function ufCost(n, heur, ops, budget) {
+  const p = new Int32Array(n), rk = new Int32Array(n); for (let i = 0; i < n; i++) p[i] = i;
+  const byRank = heur === 'both' || heur === 'rank', comp = heur === 'both' || heur === 'comp';
+  let cost = 0, m = 0;
+  const find = (x) => { let r = x; while (p[r] !== r) { r = p[r]; cost++; } cost++; if (comp) while (p[x] !== r) { const nx = p[x]; p[x] = r; x = nx; } return r; };
+  for (let t = 0; t < ops.length && cost <= budget; t += 3) {
+    m++;
+    if (ops[t] === 1) { find(ops[t + 1]); continue; }
+    let a = find(ops[t + 1]), b = find(ops[t + 2]); cost++;
+    if (a === b) continue;
+    if (byRank && rk[a] > rk[b]) [a, b] = [b, a];      // naive linking: a's root goes below b's root
+    p[a] = b; if (byRank && rk[a] === rk[b]) rk[b]++;
+  }
+  return cost > budget ? null : cost / m;
 }
 const AKS = new Map();
 function Aks(k, j) {                             // A_k(j) for small arguments, Infinity once it passes 10⁶
@@ -233,9 +248,9 @@ function Aks(k, j) {                             // A_k(j) for small arguments, 
   AKS.set(key, a); return a;
 }
 const alphaSmall = (n) => (n <= 2 ? 0 : n <= 3 ? 1 : n <= 7 ? 2 : n <= 2047 ? 3 : 4);
-/** Run the workload with union by rank + path compression, recording actual and amortized cost of every FIND and LINK. */
+/** Run the workload with union by rank + path compression, recording the actual and the amortized cost of every FIND and LINK. */
 function ufPotential(n, wl) {
-  const p = new Int32Array(n), rk = new Int32Array(n), kids = Array.from({ length: n }, () => new Set()), phi = new Float64Array(n), a = alphaSmall(n);
+  const ops = ufOps(n, wl), p = new Int32Array(n), rk = new Int32Array(n), kids = Array.from({ length: n }, () => new Set()), phi = new Float64Array(n), a = alphaSmall(n);
   for (let i = 0; i < n; i++) p[i] = i;
   const phiOf = (x) => {
     if (p[x] === x || rk[x] === 0) return a * rk[x];
@@ -245,9 +260,7 @@ function ufPotential(n, wl) {
   };
   let PHI = 0;
   const upd = (x) => { const v = phiOf(x); PHI += v - phi[x]; phi[x] = v; };
-  const ev = []; let s = 777;
-  const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }, ri = () => Math.floor(rnd() * n);
-  const deepE = Int32Array.from({ length: n }, (_, i) => i), deepD = new Int32Array(n);
+  const ev = [];
   const find = (x) => {
     const before = PHI, path = [x]; while (p[path[path.length - 1]] !== path[path.length - 1]) path.push(p[path[path.length - 1]]);
     const r = path[path.length - 1];
@@ -259,13 +272,12 @@ function ufPotential(n, wl) {
     if (rk[x] > rk[y]) [x, y] = [y, x];
     p[x] = y; kids[y].add(x); upd(x);
     if (rk[x] === rk[y]) { rk[y]++; upd(y); for (const c of kids[y]) upd(c); }
-    if (deepD[x] + 1 > deepD[y]) { deepD[y] = deepD[x] + 1; deepE[y] = deepE[x]; }
-    ev.push({ k: 'l', c: 1, am: 1 + PHI - before }); return y;
+    ev.push({ k: 'l', c: 1, am: 1 + PHI - before });
   };
-  const union = (u, w) => { const x = find(u), y = find(w); return x === y ? x : link(x, y); };
-  if (wl === 'random') { for (let t = 0; t < 4 * n; t++) { if (rnd() < 0.5) union(ri(), ri()); else find(ri()); } }
-  else if (wl === 'doubling') { for (let st = 1; st < n; st *= 2) for (let i = 0; i + st < n; i += 2 * st) find(deepE[union(i, i + st)]); for (let t = 0; t < 2 * n; t++) find(ri()); }
-  else { for (let i = 1; i < n; i++) { union(0, i); find(0); } for (let t = 0; t < 2 * n; t++) find(ri()); }
+  for (let t = 0; t < ops.length; t += 3) {
+    if (ops[t] === 1) find(ops[t + 1]);
+    else { const x = find(ops[t + 1]), y = find(ops[t + 2]); if (x !== y) link(x, y); }
+  }
   return { ev, alpha: a, PHI };
 }
 
@@ -684,7 +696,7 @@ so $\alpha(n)=0,1,2,3$ for $n\le 2$, $n=3$, $4\le n\le 7$, $8\le n\le 2047$, and
       credit: 'Tarjan, 1975',
       tags: ['union-find', 'amortized'],
       viz(v) {
-        const wl = v.select('workload', [{ value: 'random', label: 'random' }, { value: 'doubling', label: 'equal sizes, then deep finds' }, { value: 'chain', label: 'big ∪ singleton, then finds' }], 'doubling');
+        const wl = v.select('workload', [{ value: 'random', label: 'random' }, { value: 'binomial', label: 'binomial tree: new root, deepest find' }, { value: 'chain', label: 'big ∪ singleton, then finds' }], 'binomial');
         const kS = v.slider('$n$ (right panel)', 6, 12, 10, { int: true, fmt: (k) => String(2 ** k) });
         const A = v.stage({ x: [16, 65536], y: [0, 18], axes: 'box', xlog: true, height: 300, weight: 1.15, minWidth: 300, title: 'pointer steps per operation (m ≈ 4n)',
           xticks: [[16, '2⁴'], [64, '2⁶'], [256, '2⁸'], [1024, '2¹⁰'], [4096, '2¹²'], [16384, '2¹⁴'], [65536, '2¹⁶']] });
@@ -692,7 +704,7 @@ so $\alpha(n)=0,1,2,3$ for $n\le 2$, $n=3$, $4\le n\le 7$, $8\le n\le 2047$, and
         const HEUR = [{ key: 'both', label: 'rank + compression', color: 'green' }, { key: 'rank', label: 'rank only', color: 'blue' }, { key: 'comp', label: 'compression only', color: 'purple' }, { key: 'none', label: 'neither', color: 'red' }];
         const NS = Array.from({ length: 13 }, (_, i) => 2 ** (i + 4));
         const curves = new Map(), pots = new Map();
-        const curve = (w) => { if (!curves.has(w)) curves.set(w, HEUR.map((h) => NS.map((n) => ufCost(n, h.key, w, 3e7)))); return curves.get(w); };
+        const curve = (w) => { if (!curves.has(w)) { const O = NS.map((n) => ufOps(n, w)); curves.set(w, HEUR.map((h) => NS.map((n, i) => ufCost(n, h.key, O[i], 4e6)))); } return curves.get(w); };
         const pot = (w, k) => { const key = w + k; if (!pots.has(key)) pots.set(key, ufPotential(2 ** k, w)); return pots.get(key); };
         const lstar = (n) => { let c = 0; while (n > 1) { n = LG(n); c++; } return c; };
         v.render(() => {
