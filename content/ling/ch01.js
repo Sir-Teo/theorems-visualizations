@@ -46,14 +46,14 @@ function synth(par, dur, o = {}) {
   const n = Math.max(1, Math.round(dur * SR)), out = new Float32Array(n), rnd = noiseGen(o.seed ?? 7), rnd2 = noiseGen((o.seed ?? 7) + 101);
   const NF = 5, cA = new Float64Array(NF), cB = new Float64Array(NF), cC = new Float64Array(NF), y1 = new Float64Array(NF), y2 = new Float64Array(NF);
   let ph = 0, q = null, nF = 0, jit = 1, pA = 1, pB = 0, pC = 0, py1 = 0, py2 = 0, zA = 1, zB = 0, zC = 0, zx1 = 0, zx2 = 0;
-  let fA = 0, fB = 0, fC = 0, fy1 = 0, fy2 = 0, fx1 = 0, lpY = 0;
+  let fA = 0, fB = 0, fC = 0, fN = 1, fy1 = 0, fy2 = 0, fx1 = 0, lpY = 0;
   const jitAmt = o.jitter ?? 0.005;
   for (let i = 0; i < n; i++) {
     if (i % 16 === 0) {
       q = par(i / SR); nF = Math.min(NF, q.F.length);
       for (let k = 0; k < nF; k++) { const c = resCoef(Math.min(q.F[k], SR / 2 - 200), q.B[k]); cA[k] = c[0]; cB[k] = c[1]; cC[k] = c[2]; }
       if (q.nz) { [pA, pB, pC] = resCoef(270, 100); const z = resCoef(q.nz, 120); zA = 1 / z[0]; zB = -z[1] / z[0]; zC = -z[2] / z[0]; }
-      if (q.af > 0) [fA, fB, fC] = resCoef(Math.min(q.ff ?? 4000, SR / 2 - 300), q.fb ?? 1500);
+      if (q.af > 0) { const ff = Math.min(q.ff ?? 4000, SR / 2 - 300), fb = q.fb ?? 1500; [fA, fB, fC] = resCoef(ff, fb); fN = 1 / (resGain(ff, fb, ff) * 2 * Math.sin((Math.PI * ff) / SR)); }
     }
     // glottal source: flow derivative, one pulse per period
     const f0 = Math.max(40, q.f0 * jit), dt = f0 / SR, oq = q.oq ?? 0.6;
@@ -70,7 +70,7 @@ function synth(par, dur, o = {}) {
     for (let k = 0; k < nF; k++) { const y = cA[k] * s + cB[k] * y1[k] + cC[k] * y2[k]; y2[k] = y1[k]; y1[k] = y; s = y; }
     if (q.nz) { const yz = zA * s + zB * zx1 + zC * zx2; zx2 = zx1; zx1 = s; const yp = pA * yz + pB * py1 + pC * py2; py2 = py1; py1 = yp; s = yp; }
     let fr = 0;
-    if (q.af > 0) { const x = q.af * rnd(); const y = fA * x + fB * fy1 + fC * fy2; fy2 = fy1; fy1 = y; fr = (y - fx1) * 2.2; fx1 = y; }
+    if (q.af > 0) { const x = q.af * rnd(); const y = fA * x + fB * fy1 + fC * fy2; fy2 = fy1; fy1 = y; fr = (y - fx1) * fN; fx1 = y; } // unit gain at the peak
     out[i] = s + fr;
   }
   return out;

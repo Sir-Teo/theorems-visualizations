@@ -68,8 +68,13 @@ export function hsGas(o) {
     vx[i] = sd * R.normal(); vy[i] = sd * R.normal(); vz[i] = sd * R.normal(); e[i] = T0 * gammaHalf(R, dof[i]);
   }
   // ---- predictions
+  const per = !!o.periodic, dmax = Math.max(...SP.map((q) => q.d ?? 1));
+  const my = (q) => (per ? q - G.Ly * Math.round(q / G.Ly) : q), mz = (q) => (per ? q - G.Lz * Math.round(q / G.Lz) : q);
+  let vcap = 0;
+  const speedCap = () => { vcap = 0; for (let i = 0; i < N; i++) vcap = Math.max(vcap, Math.hypot(vx[i], vy[i], vz[i])); vcap = 1.1 * vcap + 1e-9; };
+  speedCap();
   const pairT = (i, j) => {
-    const dx = x[i] - x[j], dy = y[i] - y[j], dz = z[i] - z[j], ux = vx[i] - vx[j], uy = vy[i] - vy[j], uz = vz[i] - vz[j];
+    const dx = x[i] - x[j], dy = my(y[i] - y[j]), dz = mz(z[i] - z[j]), ux = vx[i] - vx[j], uy = vy[i] - vy[j], uz = vz[i] - vz[j];
     const b = dx * ux + dy * uy + dz * uz; if (b >= 0) return Infinity;
     const u2 = ux * ux + uy * uy + uz * uz, dd = (d[i] + d[j]) / 2, c = dx * dx + dy * dy + dz * dz - dd * dd, disc = b * b - u2 * c;
     if (disc <= 0) return Infinity;
@@ -77,13 +82,16 @@ export function hsGas(o) {
   };
   const predictPair = (i) => {
     let tb = Infinity, jb = -1; const si = side[i];
+    if (per) { tb = Math.max(1e-6, (Math.min(G.Ly, G.Lz) / 2 - dmax) / (Math.hypot(vx[i], vy[i], vz[i]) + vcap)); jb = -2; }
     for (let j = 0; j < N; j++) { if (j === i || side[j] !== si) continue; const t = pairT(i, j); if (t < tb) { tb = t; jb = j; } }
     tP[i] = G.t + tb; jP[i] = jb; cP[i] = jb >= 0 ? cc[jb] : 0;
   };
   const predictWall = (i) => {
     let tb = Infinity, wb = -1, t;
+    if (!per) {
     if (vy[i] > 0) { t = (G.Ly - y[i]) / vy[i]; if (t < tb) { tb = t; wb = 3; } } else if (vy[i] < 0) { t = -y[i] / vy[i]; if (t < tb) { tb = t; wb = 2; } }
     if (vz[i] > 0) { t = (G.Lz - z[i]) / vz[i]; if (t < tb) { tb = t; wb = 5; } } else if (vz[i] < 0) { t = -z[i] / vz[i]; if (t < tb) { tb = t; wb = 4; } }
+    }
     const v = vx[i];
     if (plate && side[i] === 1) { if (plate.U > v) { t = Math.max(0, x[i] - plate.X) / (plate.U - v); if (t < tb) { tb = t; wb = 7; } } }
     else if (v < 0) { t = -x[i] / v; if (t < tb) { tb = t; wb = 0; } }
@@ -123,12 +131,13 @@ export function hsGas(o) {
   const drift = (dt) => {
     if (dt <= 0) return;
     for (let i = 0; i < N; i++) { x[i] += vx[i] * dt; y[i] += vy[i] * dt; z[i] += vz[i] * dt; }
+    if (per) for (let i = 0; i < N; i++) { y[i] -= G.Ly * Math.floor(y[i] / G.Ly); z[i] -= G.Lz * Math.floor(z[i] / G.Lz); }
     const a = acc(), X0 = pist.X;
     pist.X += pist.U * dt + 0.5 * a * dt * dt; pist.U += a * dt;
     if (plate) plate.X += plate.U * dt;
     const Xm = (X0 + pist.X) / 2;
     G.Vint += Xm * G.Ly * G.Lz * dt;
-    G.Aint += 2 * (G.Ly * G.Lz + Xm * (G.Ly + G.Lz)) * dt;
+    G.Aint += 2 * (G.Ly * G.Lz + (per ? 0 : Xm * (G.Ly + G.Lz))) * dt;
     G.t += dt;
   };
   const ke = (i) => 0.5 * m[i] * (vx[i] * vx[i] + vy[i] * vy[i] + vz[i] * vz[i]);
@@ -158,7 +167,7 @@ export function hsGas(o) {
     return w === 1 || w >= 6 ? (w === 1 ? pist.M : plate.M) < Infinity : false;
   };
   const collide = (i, j) => {
-    const dx = x[i] - x[j], dy = y[i] - y[j], dz = z[i] - z[j], r = Math.hypot(dx, dy, dz) || 1;
+    const dx = x[i] - x[j], dy = my(y[i] - y[j]), dz = mz(z[i] - z[j]), r = Math.hypot(dx, dy, dz) || 1;
     const nx = dx / r, ny = dy / r, nz = dz / r, un = (vx[i] - vx[j]) * nx + (vy[i] - vy[j]) * ny + (vz[i] - vz[j]) * nz;
     const mu = m[i] * m[j] / (m[i] + m[j]);
     let un2 = -un;
@@ -186,9 +195,11 @@ export function hsGas(o) {
         const j = jP[i];
         if (j < 0 || cP[i] !== cc[j]) { predictPair(i); continue; }
         collide(i, j); cc[i]++; cc[j]++;
+        if (per && (Math.hypot(vx[i], vy[i], vz[i]) > vcap || Math.hypot(vx[j], vy[j], vz[j]) > vcap)) { speedCap(); G.repredict(); continue; }
         predictPair(i); predictPair(j); predictWall(i); predictWall(j);
       } else if (kind === 2) {
         const moved = hitWall(i, wW[i]); cc[i]++;
+        if (per && Math.hypot(vx[i], vy[i], vz[i]) > vcap) { speedCap(); G.repredict(); continue; }
         if (moved) rewall(); else predictWall(i);
         predictPair(i);
       } else if (kind === 3) {
@@ -215,14 +226,14 @@ export function hsGas(o) {
     const st = G.stats(s); if (st.K <= 0) return;
     const f = Math.sqrt(Math.max(0.05, (st.K + Q) / st.K));
     for (let i = 0; i < N; i++) { if (s >= 0 && side[i] !== s) continue; vx[i] *= f; vy[i] *= f; vz[i] *= f; cc[i]++; }
-    G.repredict();
+    speedCap(); G.repredict();
   };
   /** Rescale side s to temperature T (translation and internal energy). */
   G.setT = (T, s = -1) => {
     const st = G.stats(s); if (st.K <= 0) return;
     const f = Math.sqrt(T / st.Ttr), g = st.E > 0 ? T / (2 * st.E / Math.max(1, st.f - 3 * st.n)) : 1;
     for (let i = 0; i < N; i++) { if (s >= 0 && side[i] !== s) continue; vx[i] *= f; vy[i] *= f; vz[i] *= f; e[i] *= g; cc[i]++; }
-    G.repredict();
+    speedCap(); G.repredict();
   };
   /** Remove the partition: both sides become one region (free expansion). */
   G.removePlate = () => { if (!G.plate) return; G.plate = null; side.fill(0); G.repredict(); };

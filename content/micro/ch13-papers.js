@@ -125,16 +125,17 @@ The paper applies the argument to health insurance for people over 65, the emplo
             L.dot(c.bx + (distSel.value === 'two' ? 0 : ((c.row * 7) % 5 - 2) * 0.006), (c.row + 0.55) * rowH, { r: 3.4, color: symOn ? 'green' : traded ? 'gold' : 'faint', ring: false });
           }
           if (!symOn) {
-            L.vline(p, { color: 'accent', width: 2.4 });
+            const cl = (x) => Math.min(x, 2.13);
+            L.vline(cl(p), { color: 'accent', width: 2.4 });
             const side = (x) => (x < 1.2 ? { dx: 6, align: 'left' } : { dx: -6, align: 'right' });
-            L.text(`price p = ${pf(p)}`, p, ymax * 0.95, { color: 'accent', weight: 700, size: 12.5, ...side(p) });
+            L.text(`price p = ${pf(p)}`, cl(p), ymax * 0.95, { color: 'accent', weight: 700, size: 12.5, ...side(p) });
             if (isFinite(f.m)) {
               L.vline(f.m, { color: 'blue', width: 1.8, dash: [6, 4] });
               L.text(`μ = ${pf(f.m)}`, f.m, ymax * 0.79, { color: 'blue', weight: 600, size: 12, ...side(f.m) });
-              const nx = Math.min(f.next, 2.14);
+              const nx = cl(f.next);
               L.vline(nx, { color: 'orange', width: 2.2 });
               L.text(`b·μ = ${pf(f.next)}`, nx, ymax * 0.87, { color: 'orange', weight: 700, size: 12, ...side(nx) });
-              if (f.next < p - 0.03) L.arrow(p, ymax * 0.71, f.next, ymax * 0.71, { color: 'red', width: 2, head: 8 });
+              if (f.next < p - 0.03) L.arrow(cl(p), ymax * 0.71, f.next, ymax * 0.71, { color: 'red', width: 2, head: 8 });
             }
           } else {
             L.corner('every car trades at a price between x and b·x', 'tl', { color: 'green', weight: 700 });

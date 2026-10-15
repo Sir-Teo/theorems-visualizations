@@ -568,7 +568,7 @@ and then $x(t)\to\infty$ as $t\uparrow T$. For $f(x) = x^p$ with $p>1$ this give
         const pS = v.slider('$p$', 0.5, 3, 1.5, { step: 0.01 });
         const s = v.stage({ x: [-0.15, 3], y: [0, 10], height: 280, full: true, xlabel: 't', ylabel: 'x', title: 'solutions and their blow-up times' });
         const sA = v.stage({ x: [0, 10], y: [0, 2.2], height: 210, weight: 1, minWidth: 260, xlabel: 'ξ', title: '$1/f(\\xi)$: area from $x_0$ to $\\infty$ = escape time' });
-        const sT = v.stage({ x: [0, 40], y: [0, 3], height: 210, weight: 1, minWidth: 260, axes: 'box', xlabel: 'log₁₀ X', title: 'time $t(X)$ to reach the level $X$' });
+        const sT = v.stage({ x: [0, 16], y: [0, 3], height: 210, weight: 1, minWidth: 260, axes: 'box', xlabel: 'log₁₀ X', title: 'time $t(X)$ to reach the level $X$' });
         const H = s.handle(0, 1, { color: 'accent', label: '$x_0$', labelPos: 'e', constrain: (x, y) => [0, v.M.clamp(y, 0.3, 4)] });
         let info = null;
         v.legend([['accent', 'solution from $x_0$'], ['muted', 'other starting values'], ['red', 'blow-up time $T$', { dash: true }], ['gold', 'RK4', { dot: true }]]);
@@ -600,15 +600,15 @@ and then $x(t)\to\infty$ as $t\uparrow T$. For $f(x) = x^p$ with $p>1$ this give
           // bottom right: t(X) against log10 X, exact and numerical
           const num = trace(F, 0, x0, 60, { h: 0.01, cap: 1e40, rel: 0.05 });
           const dots = [];
-          for (let k = Math.ceil(Math.log10(x0) + 1e-9); k <= 40; k += 2) {
+          for (let k = Math.ceil(Math.log10(x0) + 1e-9); k <= 16; k += 1) {
             const L = 10 ** k; let tc = NaN;
             for (let i = 1; i < num.length; i++) if (num[i - 1][1] < L && num[i][1] >= L) { const [ta, xa] = num[i - 1], [tb, xb] = num[i]; tc = ta + ((Math.log(L) - Math.log(xa)) * (tb - ta)) / (Math.log(xb) - Math.log(xa)); break; }
             if (isFinite(tc)) dots.push([k, tc]);
           }
-          const tmax = Math.min(Math.max(isFinite(T0) ? T0 * 1.4 : tX(x0, 1e40) * 1.08, 0.5), 60);
-          sT.setView([Math.min(0, Math.floor(Math.log10(x0))), 40], [0, tmax]);
-          sT.fn((k) => tX(x0, 10 ** k), { domain: [Math.log10(x0), 40], color: 'accent', width: 2.4, n: 400 });
-          if (isFinite(T0)) { sT.hline(T0, { color: 'red', width: 1.4, dash: [6, 4] }); sT.text('T', 40, T0, { color: 'red', align: 'right', dx: -6, dy: -9, math: true }); }
+          const tmax = Math.min(Math.max(isFinite(T0) ? T0 * 1.4 : tX(x0, 1e16) * 1.15, 0.5), 60);
+          sT.setView([Math.min(0, Math.floor(Math.log10(x0))), 16], [0, tmax]);
+          sT.fn((k) => tX(x0, 10 ** k), { domain: [Math.log10(x0), 16], color: 'accent', width: 2.4, n: 400 });
+          if (isFinite(T0)) { sT.hline(T0, { color: 'red', width: 1.4, dash: [6, 4] }); sT.text('T', 16, T0, { color: 'red', align: 'right', dx: -6, dy: -9, math: true }); }
           sT.dots(dots, { r: 3, color: 'gold' });
           let err = 0; for (const [t, x] of q) if (x < 1e3) { const e = Math.abs(x - xExact(x0, t)) / Math.max(1, x); if (isFinite(e)) err = Math.max(err, e); }
           info = { law, p, x0, T0, area10, tX, err, numEsc: q.escape };

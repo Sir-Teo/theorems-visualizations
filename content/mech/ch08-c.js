@@ -236,11 +236,13 @@ summed over all $b$ giving the same $\theta$. The total cross-section $\sigma = 
           if (D.rb) { g.hline((D.rb.th * 180) / Math.PI, { color: 'red', dash: [4, 4], width: 1.2 }); g.text('rainbow', Q.bmax * 0.97, (D.rb.th * 180) / Math.PI, { color: 'red', size: 11, align: 'right', dy: -9 }); }
           // cross-section
           const ymax = tg.value === 'sphere' ? 0.5 : Math.max(0.5, 1.25 * Math.max(...D.hist.filter((q) => q[0] > 15).map((q) => q[1])));
-          h.setView([0, 180], [0, ymax]);
+          const xmax = D.rb ? Math.min(180, 10 * Math.ceil((1.8 * D.rb.th * 180) / Math.PI / 10)) : 180;
+          h.setView([0, xmax], [0, ymax]);
+          if (D.rb) { h.vline((D.rb.th * 180) / Math.PI, { color: 'red', dash: [4, 4], width: 1.4 }); h.text('rainbow angle', (D.rb.th * 180) / Math.PI, ymax * 0.6, { color: 'red', size: 11, dx: 6 }); }
           h.bars(D.hist.map((q) => q[1]), { x0: D.hist[0][0], dx: 5, color: 'gold', fillAlpha: 0.55, barWidth: 0.92 });
           h.path(D.formula.filter((q) => q[1] < ymax * 3), { color: 'accent', width: 2.2 });
           if (tg.value === 'sphere') h.hline(0.25, { color: 'green', dash: [5, 4], width: 1.4 });
-          else h.text('forward peak off scale ↑', 14, ymax * 0.93, { color: 'muted', size: 10.5 });
+          else h.text('forward peak continues off scale ↑', xmax * 0.97, ymax * 0.93, { color: 'muted', size: 10.5, align: 'right' });
           const mid = ((th0 + th1) / 2) * (180 / Math.PI);
           h.vline(mid, { color: 'orange', width: 1.5 });
           const dsig = TAU * ((b0 + b1) / 2) * (b1 - b0), dOm = TAU * Math.sin((th0 + th1) / 2) * Math.abs(th1 - th0);
@@ -470,7 +472,7 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
           const D = run(), Q = D.Q, N = D.rec.t.length - 1, simT = Math.min((t * Q.T) / 30, Q.T);
           let k = 0; { let lo = 0, hi = N; while (hi - lo > 1) { const mm = (lo + hi) >> 1; if (D.rec.t[mm] <= simT) lo = mm; else hi = mm; } k = lo; }
           let far = Q.lim; { const X = D.rec.x[k]; for (let i = 0; i < 3; i++) far = Math.max(far, 1.15 * Math.abs(X[2 * i]), (1.15 * Math.abs(X[2 * i + 1])) / 0.73); }
-          far = Math.min(far, 4 * Q.lim);
+          far = Math.min(far, 2.2 * Q.lim);
           s.setView([-far, far], [-far * 0.73, far * 0.73]);
           const tail = Math.round((cfg.value === 'pyth' ? 4 : 2.5) / 0.02);
           for (let i = 0; i < 3; i++) {
@@ -496,7 +498,7 @@ For $m_1 < m_2$ every lab angle from $0$ to $\pi$ occurs; for $m_1 = m_2$, $\the
         v.readout(() => {
           if (!cur) return '';
           const { D } = cur;
-          let out = String.raw`${D.n.toLocaleString('en')} adaptive steps; largest $|\Delta E/E| = ${sci(v, D.dEmax)}$ (closest approach ${v.fix(D.rClose, 4)}); total momentum $${sci(v, Math.hypot(...D.P))}$, angular momentum $L_z = ${v.fix(D.Lz, 6)}$ — conserved`;
+          let out = String.raw`${D.n.toLocaleString('en')} adaptive steps; largest $|\Delta E/E| = ${sci(v, D.dEmax)}$ (closest approach ${v.fix(D.rClose, 4)}); total momentum $${sci(v, Math.hypot(...D.P))}$, angular momentum $L_z = ${Math.abs(D.Lz) < 1e-9 ? sci(v, D.Lz) : v.fix(D.Lz, 6)}$ — conserved`;
           if (D.ej) out += String.raw` · body ${D.ej.i + 1} left the group near $t \approx ${v.fix(D.ej.t, 1)}$; its energy relative to the remaining pair is ${v.fix(D.esc, 3)}` + (D.esc > 0 ? ' > 0: it escapes for good' : ' < 0: it will fall back');
           else out += ' · no ejection within this run';
           if (cfg.value === 'eight') out += push.value === 0 ? ' · unperturbed: the three bodies chase each other on one figure-eight, period 6.326' : D.ej ? ' · the figure-eight survives tiny pushes (it is linearly stable) but not this one' : ' · try other pushes: whether and when a body is flung out depends sensitively on the push (chaos)';
@@ -523,7 +525,7 @@ at every point of the orbit. Consequently all satellites launched from the same 
         const C = v.M.CONST, GM = C.G * C.Mearth, RE = C.Rearth, r0 = 2 * RE, vesc = Math.sqrt((2 * GM) / r0) / 1000, vcirc = Math.sqrt(GM / r0) / 1000;
         const sp = v.slider('launch speed (km/s)', 3, 9, 6.4, { step: 0.01, onChange: (x) => { if (Math.abs(x - vesc) < 0.03 && x !== vesc) sp.set(vesc); } });
         const s = v.stage({ x: [-6, 4], y: [-4, 4], equal: true, axes: false, height: 340, weight: 1.25, title: 'orbits (units of $R_\\oplus$)' });
-        const g = v.stage({ x: [0, 8], y: [0, 10], axes: 'box', height: 340, xlabel: 'r / R⊕', ylabel: 'v (km/s)', title: 'speed against distance, all orbits' });
+        const g = v.stage({ x: [0, 8], y: [0, 10], axes: 'box', height: 340, xlabel: 'r (Earth radii)', ylabel: 'v (km/s)', title: 'speed against distance, all orbits' });
         const NS = 12, COLS = ['blue', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red', 'blue', 'orange', 'green', 'purple'];
         const cache = memo(); let cur = null;
         const run = () => cache(sp.value, () => {
@@ -607,10 +609,10 @@ For ellipses ($e<1$) the origin lies inside the circle and the whole circle is t
           const Tsim = bound ? Math.min(el.T, 60) * (n === 2 ? 1 : 2.2) : 14;
           const F = centralOrbit((r) => -1 / r ** n, s0, { T: Tsim, eta: 0.003, rmax: 10, rmin: 0.03, maxSteps: 80000 });
           const B = bound ? null : centralOrbit((r) => -1 / r ** n, s0, { T: -14, eta: 0.003, rmax: 10, rmin: 0.03, maxSteps: 40000 });
-          // equal-time samples
-          const Tt = Math.abs(F.t[F.t.length - 1]), M = 36, samp = [];
-          for (let k = 0; k < M; k++) samp.push(stateAt(F, (k * Tt) / M));
-          if (B) { const Tb = Math.abs(B.t[B.t.length - 1]); for (let k = 1; k < M / 2; k++) samp.push(stateAt(B, (-k * Tb) / (M / 2))); }
+          // equal-time samples (12 per orbit for ellipses; both branches for unbound orbits)
+          const Tt = Math.abs(F.t[F.t.length - 1]), M = bound && n === 2 ? 12 : 16, samp = [];
+          if (B) { const Tb = Math.abs(B.t[B.t.length - 1]); for (let k = M / 2 - 1; k >= 1; k--) samp.push(stateAt(B, (-k * Tb) / (M / 2))); }
+          for (let k = 0; k < (B ? M / 2 : M); k++) samp.push(stateAt(F, (k * Tt) / (B ? M / 2 : M)));
           // algebraic (Kåsa) circle fit to all velocity samples
           const all = F.s.concat(B ? B.s : []), rows = [], rhs = [];
           for (let i = 0; i < all.length; i += Math.max(1, Math.floor(all.length / 800))) { const [, , vx, vy] = all[i]; rows.push([vx, vy, 1]); rhs.push(vx * vx + vy * vy); }
@@ -622,23 +624,23 @@ For ellipses ($e<1$) the origin lies inside the circle and the whole circle is t
           const D = run(), el = D.el;
           s.path((D.B ? D.B.s.slice().reverse() : []).concat(D.F.s).map((S) => [S[0], S[1]]), { color: 'ink', width: 1.4, alpha: 0.7 });
           sun(s, 0, 0, { r: 0.06 });
-          const sc = 0.35;
-          D.samp.forEach((S, k) => s.arrow(S[0], S[1], S[0] + sc * S[2], S[1] + sc * S[3], { color: k === 0 ? 'accent' : 'purple', width: 1.3, head: 6, alpha: 0.85 }));
-          s.arrow(P0.x, P0.y, V.x, V.y, { color: 'accent', width: 2.4 });
+          const sc = 0.3, CC = ['blue', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
+          D.samp.forEach((S, k) => { s.arrow(S[0], S[1], S[0] + sc * S[2], S[1] + sc * S[3], { color: CC[k % 8], width: 2, head: 7 }); s.dot(S[0], S[1], { r: 3, color: CC[k % 8] }); });
+          s.arrow(P0.x, P0.y, V.x, V.y, { color: 'accent', width: 1.6, dash: [4, 3] });
           // hodograph
           let vmax = 0.8; for (const S of D.all) vmax = Math.max(vmax, Math.abs(S[2]), Math.abs(S[3]));
           const lim = Math.min(4, 1.12 * Math.max(vmax, Math.hypot(D.cx, D.cy) + D.R));
           hd.setView([-lim, lim], [-lim, lim]);
           hd.line(-lim, 0, lim, 0, { color: 'faint', width: 1 }); hd.line(0, -lim, 0, lim, { color: 'faint', width: 1 });
-          hd.circle(D.cx, D.cy, D.R, { color: 'green', width: 1.4, dash: [6, 4] });
-          hd.path(D.all.map((S) => [S[2], S[3]]), { color: D.n === 2 ? 'accent' : 'red', width: 2 });
-          D.samp.forEach((S, k) => { hd.arrow(0, 0, S[2], S[3], { color: k === 0 ? 'accent' : 'purple', width: 1.1, head: 6, alpha: 0.6 }); });
+          hd.path(D.all.map((S) => [S[2], S[3]]), { color: D.n === 2 ? 'ink' : 'red', width: 2.4, alpha: 0.6 });
+          hd.circle(D.cx, D.cy, D.R, { color: 'green', width: 1.6, dash: [7, 5] });
+          D.samp.forEach((S, k) => { hd.arrow(0, 0, S[2], S[3], { color: CC[k % 8], width: 1.8, head: 7 }); });
           hd.dot(D.cx, D.cy, { r: 4, color: 'gold' });
           hd.dot(0, 0, { r: 3, color: 'ink', label: 'O', labelPos: 'sw' });
           s.corner(D.n === 2 ? (D.bound ? `ellipse, e = ${v.fix(el.e, 3)}` : `hyperbola, e = ${v.fix(el.e, 3)}`) : `n = ${v.fix(D.n, 3)}`, 'tl', { color: D.n === 2 ? 'green' : 'red', weight: 600 });
           cur = D;
         });
-        v.legend([['purple', 'velocity at equal time steps'], ['accent', 'hodograph (tip of $\\mathbf v$)'], ['green', 'least-squares circle', { dash: true }], ['gold', 'its centre', { dot: true }]]);
+        v.legend([['blue', 'velocities at equal time steps (same colours in both panels)'], ['ink', 'hodograph (tip of $\\mathbf v$)'], ['green', 'least-squares circle', { dash: true }], ['gold', 'its centre', { dot: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const D = cur, el = D.el, kl = 1 / Math.abs(el.h), off = Math.hypot(D.cx, D.cy);
