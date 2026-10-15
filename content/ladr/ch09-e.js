@@ -628,11 +628,11 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
       tags: ['determinants'],
       viz(v) {
         const M = v.M;
-        const A0 = [[2, 1, -1], [4, 1, 0], [-2, 2, 3]];
+        const A0 = [[2, 1, 0], [0, 2, 1], [1, 0, 2]];
         let A = clone(A0), hist = [], log = [], ghost = null;
         const op = v.select('operation', [{ value: 'add', label: 'line $i$ += $k \\times$ line $j$' }, { value: 'swap', label: 'swap lines $i, j$' }, { value: 'scale', label: 'line $i$ $\\times$= $k$' }], 'add');
         const rc = v.select('lines', [{ value: 'r', label: 'rows' }, { value: 'c', label: 'columns' }], 'r');
-        const PAIRS = [[1, 0], [2, 0], [2, 1], [0, 1], [0, 2], [1, 2], [0, 0]];
+        const PAIRS = [[2, 0], [1, 0], [2, 1], [0, 1], [0, 2], [1, 2], [0, 0]];
         const pair = v.select('$(i, j)$', PAIRS.map(([i, j], q) => ({ value: q, label: `$(${i + 1}, ${j + 1})$` })), 0);
         const kS = v.slider('$k$', -3, 3, -2, { step: 0.5 });
         const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 260 });
@@ -658,7 +658,7 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
         v.button('next elimination step', elimStep);
         v.button('undo', () => { if (hist.length) { const h = hist.pop(); A = h.A; ghost = h.ghost; log.pop(); } });
         v.button('reset', () => { A = clone(A0); hist = []; log = []; ghost = null; });
-        doOp('swap', 'c', 0, 2, 0); elimStep(); // start with a column swap and one elimination step in the ledger
+        doOp('swap', 'c', 0, 2, 0); elimStep(); // start with a column swap and a row swap (the first elimination step) in the ledger
         let st = null;
         v.render(() => {
           const [pi, pj] = PAIRS[pair.value], o = op.value, r = rc.value;

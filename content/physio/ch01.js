@@ -261,7 +261,7 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
             const r = v.rng(11), left = [], right = [];
             for (let i = 0; i < N1; i++) left.push({ x: xl - W * r(), y: H * r() });
             for (let i = 0; i < N2; i++) right.push({ x: xr + W * r(), y: H * r() });
-            return { left, right, mem: [], r, hist: { t: [0], c1: [N1 / (W * H)], c2: [N2 / (W * H)] }, events: [], steps: 0 };
+            return { left, right, mem: [], r, hist: { t: [0], c1: [N1 / (W * H)], c2: [N2 / (W * H)] }, net: 0, gross: 0, pred: 0, steps: 0 };
           }, (S) => {
             const r = S.r;
             // cosmetic bath motion (stirred baths)
@@ -275,8 +275,8 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
             const keep = [];
             for (const m of S.mem) {
               m.j += r() < 0.5 ? -1 : 1; m.y = clamp(m.y + (r() - 0.5) * 1.2, y0 + 0.3, y1 - 0.3);
-              if (m.j < 0) { S.left.push({ x: xl - 0.6, y: m.y }); if (m.from === 'R') S.events.push([S.steps, -1]); }
-              else if (m.j >= L) { S.right.push({ x: xr + 0.6, y: m.y }); if (m.from === 'L') S.events.push([S.steps, 1]); }
+              if (m.j < 0) { S.left.push({ x: xl - 0.6, y: m.y }); if (m.from === 'R') { S.net--; S.gross++; } }
+              else if (m.j >= L) { S.right.push({ x: xr + 0.6, y: m.y }); if (m.from === 'L') { S.net++; S.gross++; } }
               else keep.push(m);
             }
             S.mem = keep;
@@ -291,6 +291,7 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
                 S.mem.push({ j: side === 'L' ? 0 : L - 1, y: clamp(q.y, y0 + 0.3, y1 - 0.3), from: side });
               }
             }
+            S.pred += ((K * Dm) / (L + 1)) * h * (S.left.length - S.right.length) / (W * H);
             S.steps++;
             if (S.steps % 30 === 0) { S.hist.t.push(S.steps / SPS); S.hist.c1.push(S.left.length / (W * H)); S.hist.c2.push(S.right.length / (W * H)); }
           });
@@ -308,8 +309,8 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
           sb.rect(xr, 0, xr + W, H, { fill: 'blue', fillAlpha: 0.06, stroke: false });
           sb.rect(xl - W, 0, xr + W, H, { color: 'muted', width: 1.4 });
           bilayer(sb, xl, xr, y0, y0 + h, { spacing: 10 });
-          sb.rect(xl, 0, xr, y0, { fill: 'muted', fillAlpha: 0.35, hatch: true, color: 'muted', width: 1 });
-          sb.rect(xl, y0 + h, xr, H, { fill: 'muted', fillAlpha: 0.35, hatch: true, color: 'muted', width: 1 });
+          sb.rect(xl, 0, xr, y0, { fill: 'muted', fillAlpha: 0.35, hatch: true, evenodd: true, color: 'muted', width: 1 });
+          sb.rect(xl, y0 + h, xr, H, { fill: 'muted', fillAlpha: 0.35, hatch: true, evenodd: true, color: 'muted', width: 1 });
           sb.dots(S.left.map((q) => [q.x, q.y]), { r: 2.1, color: 'gold' });
           sb.dots(S.right.map((q) => [q.x, q.y]), { r: 2.1, color: 'gold' });
           sb.dots(S.mem.map((m) => [xl + 0.5 + m.j, m.y]), { r: 2.6, color: 'orange' });
@@ -328,13 +329,8 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
         v.legend([['gold', 'solute in the baths', { dot: true }], ['orange', 'solute inside the membrane', { dot: true }], ['accent', '$c_1$ simulated'], ['orange', '$c_2$ simulated'], ['ink', 'Fick prediction', { dash: true }]]);
         v.readout(() => {
           if (!S) return '';
-          const { L, K, h, P } = params(), win = 1500, from = S.steps - win;
-          let net = 0, gross = 0; for (const [st, d] of S.events) if (st >= from) { net += d; gross++; }
-          const n = Math.min(win, S.steps);
-          // average Δc over the same window from the history (sampled every 30 steps)
-          let sum = 0, cnt = 0; for (let i = 0; i < S.hist.t.length; i++) if (S.hist.t[i] * SPS >= from) { sum += S.hist.c1[i] - S.hist.c2[i]; cnt++; }
-          const dc = cnt ? sum / cnt : 0, pred = P * h * dc, meas = n > 0 ? net / n : 0, se = n > 0 ? Math.sqrt(gross) / n : 0;
-          return `$P = KD_m/\\Delta x = ${v.fix(K, 2)}\\times ${Dm} / ${L + 1} = ${v.fix(P, 4)}$ sites/step · over the last ${n} steps: measured net flux ${v.fix(meas, 4)} $\\pm$ ${v.fix(se, 4)} molecules/step vs Fick $PA\\,\\Delta c = ${v.fix(pred, 4)}$ ${n < win ? '(still inside the lag time $\\Delta x^2/6D_m$)' : ''}`;
+          const { L, K, P } = params(), lag = (L + 1) ** 2 / (6 * Dm);
+          return `$P = KD_m/\\Delta x = ${v.fix(K, 2)}\\times ${Dm} / ${L + 1} = ${v.fix(P, 4)}$ sites/step · in ${S.steps} steps: **${S.net}** net crossings counted ($\\pm$ ${Math.round(Math.sqrt(S.gross))}) vs Fick's $\\int PA\\,\\Delta c\\,dt = ${v.fix(S.pred, 1)}$ · lag time $\\Delta x^2/6D_m \\approx ${Math.round(lag)}$ steps`;
         });
       },
     },

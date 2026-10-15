@@ -37,8 +37,8 @@ A particle of definite momentum $p$ and energy $E$ has the de Broglie wave $\psi
         const th = v.slider('global phase $\\theta$ (multiply by $e^{i\\theta}$)', 0, TAU, 0, { step: 0.01, fmt: piFmt });
         al = v.slider('relative phase $\\alpha$ of the right packet', 0, TAU, 0, { step: 0.01, fmt: piFmt });
         al.el.hidden = true;
-        const s3 = v.stage3d({ height: 300, range: 1.62, yaw: -0.5, pitch: 0.34, axes: false, weight: 1, title: '$x\\mapsto(x,\\ \\operatorname{Re}\\psi,\\ \\operatorname{Im}\\psi)$' });
-        const s1 = v.stage({ x: [-8, 8], y: [-0.85, 0.85], height: 300, axes: true, weight: 1.3, xlabel: 'x', title: 'height $|\\psi|$, colour $\\arg\\psi$' });
+        const s3 = v.stage3d({ height: 300, range: 1.5, yaw: -0.32, pitch: 0.24, persp: 0, axes: false, weight: 1, title: '$x\\mapsto(x,\\ \\operatorname{Re}\\psi,\\ \\operatorname{Im}\\psi)$' });
+        const s1 = v.stage({ x: [-8, 8], y: [-0.85, 0.85], height: 300, axes: 'box', weight: 1.3, xlabel: 'x', title: 'height $|\\psi|$, colour $\\arg\\psi$' });
         const s2 = v.stage({ x: [-8, 8], y: [0, 0.62], height: 150, axes: 'box', full: true, xlabel: 'x', ylabel: '|ψ|²', title: 'probability density $|\\psi|^2$' });
         const build = (theta, alpha) => {
           const re = new Float64Array(n), im = new Float64Array(n), k = k0.value, m = mode.value;
@@ -64,9 +64,8 @@ A particle of definite momentum $p$ and energy $E$ has the de Broglie wave $\psi
           s3.text('x', [1.7, 0, 0], { color: 'muted', size: 12 });
           s3.line([-1.55, 0, 0], [-1.55, 1, 0], { color: 'accent', width: 1.4, alpha: 0.8 }); s3.text('Re', [-1.55, 1.12, 0], { color: 'accent', size: 11 });
           s3.line([-1.55, 0, 0], [-1.55, 0, 1], { color: 'purple', width: 1.4, alpha: 0.8 }); s3.text('Im', [-1.55, 0, 1.12], { color: 'purple', size: 11 });
-          const floor = [], wall = [];
-          for (let i = 0; i < n; i += 2) { floor.push([x[i] * S, P.re[i] * A, -1]); wall.push([x[i] * S, 1.15, P.im[i] * A]); }
-          s3.path(floor, { color: 'accent', width: 1, alpha: 0.45 }); s3.path(wall, { color: 'purple', width: 1, alpha: 0.45 });
+          const floor = []; for (let i = 0; i < n; i += 2) floor.push([x[i] * S, P.re[i] * A, -1.05]);
+          s3.path(floor, { color: 'accent', width: 1, alpha: 0.4 }); s3.text('shadow: Re ψ', [1.2, 0.2, -1.05], { color: 'accent', size: 10.5 });
           for (let i = 0; i < n - 1; i++) {
             const a2 = P.re[i] ** 2 + P.im[i] ** 2; if (a2 < 1e-5) continue;
             s3.line(pt(i), pt(i + 1), { color: col(Math.atan2(P.im[i] + P.im[i + 1], P.re[i] + P.re[i + 1])), width: 2.6 });

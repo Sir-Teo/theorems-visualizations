@@ -92,7 +92,7 @@ and integrated them numerically with $\sigma = 10$, $b = 8/3$ and $r = 28$, just
           if (isFinite(lam) && lam > 0.05) sE.fn((x) => d0 * Math.exp(lam * x), { domain: [0, Math.log(30 / d0) / lam], color: 'ink', width: 1.4, dash: [6, 4] });
           // ---- Lorenz map
           sM.fn((x) => x, { color: 'faint', width: 1 });
-          sM.dots(lmap, { r: 1.3, color: 'accent', alpha: 0.35 });
+          sM.dots(lmap, { r: 1.3, color: 'accent', alpha: 0.55 });
           for (let i = 0; i + 1 < TABLE2.length; i++) sM.dot(TABLE2[i][1], TABLE2[i + 1][1], { r: 3, color: 'ink' });
           sM.dot(385, 483, { r: 3.4, color: 'ink', hollow: true }); sM.text('(385, 483): Lorenz’s start', 385, 483, { dx: 8, size: 10.5, color: 'muted', align: 'left' });
           // agreement with Table 2

@@ -128,7 +128,7 @@ the same eastward direction in both hemispheres and largest at the equator. A so
         const pre = v.select('drop', Object.entries(PRE).map(([value, label]) => ({ value, label })), 'reich', { onChange: (k) => { const D = DROPS.find((q) => q.key === k); if (D) { hS.set(D.h); lS.set(D.lat); } } });
         hS = v.slider('drop height $h$ (m)', 1, 1000, 158.5, { log: true });
         lS = v.slider('latitude $\\lambda$ (°)', -89, 89, 50.887, { step: 0.01 });
-        const sT = v.stage({ x: [-8, 40], y: [0, 170], axes: 'box', height: 330, xlabel: 'east of the plumb line (mm)', ylabel: 'height (m)', title: 'the fall on the rotating Earth (horizontal axis magnified)' });
+        const sT = v.stage({ x: [-8, 40], y: [0, 170], axes: 'box', height: 330, ylabel: 'height (m)', title: 'the fall on the rotating Earth: millimetres east of the plumb line' });
         const sC = v.stage({ x: [5, 1000], y: [0.1, 400], xlog: true, ylog: true, axes: 'box', height: 330, xlabel: 'h (m)', title: 'eastward deflection (mm)' });
         const g = 9.81;
         const formula = (h, lat) => (1 / 3) * OMEGA * g * Math.cos(lat * DEG) * Math.sqrt(2 * h / g) ** 3;
@@ -154,13 +154,14 @@ the same eastward direction in both hemispheres and largest at the equator. A so
           sT.rect(-0.28 * dm - 1, -0.2 * F.h, 1.5 * dm + 1, 0, { fill: 'green', fillAlpha: 0.1, stroke: false });
           sT.hline(0, { color: 'green', width: 2 });
           const fc = []; for (let j = 0; j <= 100; j++) { const z = F.h * (1 - j / 100); fc.push([formula(F.h - z, F.lat) * 1000, z]); }
-          sT.path(fc, { color: 'green', width: 1.6, dash: [6, 4] });
+          sT.path(fc, { color: 'green', width: 7, alpha: 0.25 });
+          sT.path(fc, { color: 'green', width: 1.4, dash: [6, 4] });
           const frac = Math.min(1, tA / 3), k = Math.max(1, Math.round(frac * (F.path.length - 1)));
           sT.path(F.path.slice(0, k + 1), { color: 'accent', width: 2.6 });
           if (match) {
             sT.line(D.d - D.err, 0, D.d + D.err, 0, { color: 'red', width: 3 });
             sT.dot(D.d, 0, { r: 5.5, color: 'red' });
-            sT.text(`${D.who}: ${D.d}${D.err ? ' ± ' + D.err : ''} mm`, D.d, 0, { color: 'red', size: 11.5, dy: 16, align: 'center' });
+            sT.text(`${D.who}: ${D.d}${D.err ? ' ± ' + D.err : ''} mm`, D.d, 0, { color: 'red', size: 11.5, dx: 12, dy: -16, align: 'left' });
           }
           const p = F.path[k]; sT.dot(p[0], p[1], { r: 7, color: 'gold' });
           sT.dot(0, F.h, { r: 3, color: 'ink' });

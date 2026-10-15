@@ -40,11 +40,10 @@ export function moments(x, re, im, hbar = 1) {
   const n = x.length, dx = x[1] - x[0];
   let N = 0, m1 = 0, m2 = 0, p1 = 0, p2 = 0;
   for (let i = 0; i < n; i++) { const r = re[i] * re[i] + im[i] * im[i]; N += r; m1 += r * x[i]; m2 += r * x[i] * x[i]; }
-  for (let i = 1; i < n - 1; i++) {
-    const dr = (re[i + 1] - re[i - 1]) / (2 * dx), di = (im[i + 1] - im[i - 1]) / (2 * dx);
-    p1 += re[i] * di - im[i] * dr;
+  for (let i = 2; i < n - 2; i++) { // fourth-order central differences
+    const dr = (re[i - 2] - 8 * re[i - 1] + 8 * re[i + 1] - re[i + 2]) / (12 * dx), di = (im[i - 2] - 8 * im[i - 1] + 8 * im[i + 1] - im[i + 2]) / (12 * dx);
+    p1 += re[i] * di - im[i] * dr; p2 += dr * dr + di * di;
   }
-  for (let i = 0; i < n - 1; i++) { const dr = (re[i + 1] - re[i]) / dx, di = (im[i + 1] - im[i]) / dx; p2 += dr * dr + di * di; }
   N *= dx; m1 *= dx; m2 *= dx; p1 *= dx * hbar; p2 *= dx * hbar * hbar;
   const mx = m1 / N, mp = p1 / N;
   return { N, mx, sx: Math.sqrt(Math.max(0, m2 / N - mx * mx)), mp, sp: Math.sqrt(Math.max(0, p2 / N - mp * mp)) };

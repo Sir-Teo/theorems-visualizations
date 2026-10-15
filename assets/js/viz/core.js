@@ -399,7 +399,7 @@ class Stage {
       for (let k = -L; k <= L; k += gap) { const cx = this.W / 2 + nx * k, cy = this.H / 2 + ny * k; c.moveTo(cx - ux * L, cy - uy * L); c.lineTo(cx + ux * L, cy + uy * L); }
       c.stroke(); c.restore();
     }
-    const doStroke = st.stroke !== false && (st.color != null || st.width != null || (defStroke && !st.fill));
+    const doStroke = st.stroke !== false && st.width !== 0 && (st.color != null || st.width != null || (defStroke && !st.fill)); // canvas ignores lineWidth = 0, so width 0 means no stroke
     if (doStroke) {
       c.strokeStyle = withAlpha(st.color || 'ink', st.alpha);
       c.lineWidth = st.width ?? defWidth;
