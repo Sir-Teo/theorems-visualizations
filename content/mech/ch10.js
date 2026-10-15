@@ -167,7 +167,7 @@ where $r_\perp$ is the distance of the mass element from the axis. For rotation 
         const TAUQ = 0.5, TS = 4, B = 1.3;
         const sE = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 320, title: 'cells shaded by $r_\\perp^2\\,dm$ (axis $\\perp$ page)' });
         const sR = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 320, title: 'the same torque, two axes' });
-        const sT = v.stage({ x: [0, TS], y: [0, 2], axes: 'box', height: 150, full: true, xlabel: 't (s)', title: 'angle turned (turns) under $\\tau = 0.5$ N·m from rest' });
+        const sT = v.stage({ x: [0, TS], y: [0, 2], axes: 'box', gutter: true, height: 150, full: true, xlabel: 't (s)', title: 'angle turned (turns) under $\\tau = 0.5$ N·m from rest' });
         const P = sE.handle(0.6, 0.25, { color: 'gold', label: 'axis', constrain: (x, y) => [clamp(x, -1.35, 1.35), clamp(y, -1.35, 1.35)] });
         const cacheC = memo(); let cur = null;
         const data = () => cacheC(shape.value + '|' + nS.value, () => {
@@ -243,7 +243,7 @@ So among all parallel axes, the one through the centre of mass has the smallest 
         const ref = v.select('reference axis', [{ value: 'cm', label: 'through the centre of mass' }, { value: 'A', label: 'through another point A' }], 'cm');
         const B = 1.55, N = 310;   // 1 cm cells, aligned with the hammer's edges
         const sE = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 330, title: 'contours of $I_P$ as the axis point moves' });
-        const sP = v.stage({ x: [-1.7, 1.7], y: [0, 1], axes: 'box', height: 330, title: '$I$ (kg·m²) against $d$ (m) along the dashed line' });
+        const sP = v.stage({ x: [-1.7, 1.7], y: [0, 1], axes: 'box', gutter: true, height: 330, title: '$I$ (kg·m²) against $d$ (m) along the dashed line' });
         const P = sE.handle(0.95, 0.55, { color: 'gold', label: 'P', constrain: (x, y) => [clamp(x, -1.5, 1.5), clamp(y, -1.5, 1.5)] });
         const A = sE.handle(-0.8, -0.6, { color: 'red', label: 'A', constrain: (x, y) => [clamp(x, -1.5, 1.5), clamp(y, -1.5, 1.5)] });
         const cache = memo(); let cur = null;
@@ -398,7 +398,7 @@ As a function of $d$ the period is shortest at $d = k$. Every other value of $T$
         const flip = v.toggle('hang it from the centre of oscillation', false);
         const PX = 0.62;   // the equivalent simple pendulum hangs from its own support at x = PX
         const sW = v.stage({ x: [-0.62, 1.12], y: [-1.12, 0.56], equal: true, axes: false, height: 340, title: 'the bar and its equivalent simple pendulum' });
-        const sT = v.stage({ x: [0, 0.8], y: [1.4, 3.6], axes: 'box', height: 340, title: 'small-angle period $T$ (s) against the pivot distance $d$ (m)' });
+        const sT = v.stage({ x: [0, 0.8], y: [1.4, 3.6], axes: 'box', gutter: true, height: 340, title: 'small-angle period $T$ (s) against the pivot distance $d$ (m)' });
         const Tof = (d) => TAU * Math.sqrt((k * k + d * d) / (g * d));
         const Hd = sT.handle(dS.value, Tof(dS.value), { color: 'gold', constrain: (x) => { const d = clamp(x, 0.03, 0.5); return [d, Tof(d)]; }, onDrag: () => dS.set(+Hd.x.toFixed(3)) });
         const cache = memo(); let cur = null;
@@ -473,7 +473,7 @@ Otherwise the body skids: it accelerates at $g(\sin\theta - \mu\cos\theta)$ whil
         const thS = v.slider('incline angle $\\theta$ (°)', 3, 60, 25, { step: 0.5 });
         const muS = v.slider('friction coefficient $\\mu$', 0, 0.8, 0.4, { step: 0.005 });
         const sL = v.stage({ x: [-0.6, 3], y: [-1.5, 1.6], equal: true, axes: false, height: 330, title: 'four lanes, one incline angle' });
-        const sX = v.stage({ x: [0, 2], y: [0, D * 1.08], axes: 'box', height: 330, xlabel: 't (s)', title: 'distance down the slope (m)' });
+        const sX = v.stage({ x: [0, 2], y: [0, D * 1.08], axes: 'box', gutter: true, height: 330, xlabel: 't (s)', title: 'distance down the slope (m)' });
         const motion = () => {
           const th = thS.value * DEG, mu = muS.value;
           return BODIES.map((b) => {

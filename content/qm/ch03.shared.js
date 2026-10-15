@@ -132,7 +132,7 @@ export function levelDiagram(s, o) {
     s.path(pts, { color: o.vColor || 'muted', width: 2 });
   });
   const show = o.show || E.map((_, i) => i), isHi = (i) => o.hi == null || o.hi === i || (Array.isArray(o.hi) && o.hi.includes(i));
-  const amp = typeof o.amp === 'function' ? o.amp : () => o.amp ?? 1;
+  const amp = typeof o.amp === 'function' ? o.amp : () => o.amp ?? 1, labs = [];
   for (const i of show) {
     const Ei = E[i]; if (Ei == null || Ei > y1 || Ei < y0) continue;
     let a = 0, b = n - 1; while (a < n - 1 && V[a] > Ei) a++; while (b > 0 && V[b] > Ei) b--;
@@ -143,7 +143,15 @@ export function levelDiagram(s, o) {
       const p = psi[i]; let mx = 0; for (let k = 0; k < n; k++) mx = Math.max(mx, Math.abs(p[k]));
       for (let k = 1; k < n - 1; k++) if (p[k] * p[k + 1] < 0 && Math.abs(p[k]) + Math.abs(p[k + 1]) > 1e-3 * mx) { const xz = x[k] - p[k] * (x[k + 1] - x[k]) / (p[k + 1] - p[k]); s.dot(xz, Ei, { r: 3.6, color: 'red' }); }
     }
-    if (o.label) s.text(o.label(i), xb, Ei, { dx: 6, align: 'left', size: 11, color: h ? (o.labelColor || 'ink') : 'muted' });
+    if (o.label) labs.push([Ei, o.label(i), h]);
+  }
+  // labels in a column at the right edge, pushed apart so that close levels stay readable
+  labs.sort((a, b) => a[0] - b[0]);
+  let prev = Infinity;
+  for (const [Ei, str, h] of labs) {
+    let Y = Math.min(s.Y(Ei), s.H - 12); if (Y > prev - 17) Y = prev - 17; prev = Y;
+    if (Y < 8) break;
+    s.textPx(str, s.W - 8, Y, { align: 'right', size: 10.5, color: h ? (o.labelColor || 'ink') : 'muted', plate: true });
   }
 }
 

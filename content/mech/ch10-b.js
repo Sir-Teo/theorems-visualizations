@@ -63,7 +63,7 @@ Angular momentum is parallel to angular velocity exactly when $\boldsymbol\omega
       viz(v) {
         const S = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: false, height: 340, title: 'five masses, principal axes, $\\boldsymbol\\omega$ and $\\mathbf L$' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axes: false, lim: 1.5, hint: false });
-        const sm = v.stage({ x: [-180, 180], y: [-90, 90], axes: 'box', height: 340, xticks: [-180, -90, 0, 90, 180], yticks: [-90, -45, 0, 45, 90], title: 'angle between $\\boldsymbol\\omega$ and $\\mathbf L$ for each direction of $\\boldsymbol\\omega$' });
+        const sm = v.stage({ x: [-180, 180], y: [-90, 90], axes: 'box', gutter: true, height: 340, xticks: [-180, -90, 0, 90, 180], yticks: [-90, -45, 0, 45, 90], title: 'angle between $\\boldsymbol\\omega$ and $\\mathbf L$ for each direction of $\\boldsymbol\\omega$' });
         const START = [[0.9, 0.35, 0.2], [-0.75, 0.55, -0.1], [0.15, -0.85, 0.35], [0.05, 0.45, 0.95], [0.25, 0.4, -0.9]];
         const Hm = START.map((p) => sc.handle(p, { color: 'ink', r: 6 }));
         const W = sc.handle([0.55, -0.5, 1.0], { color: 'accent', label: '$\\boldsymbol\\omega$' });
@@ -220,7 +220,7 @@ So faster spin gives slower precession. For a horizontal axle this steady preces
         const mode = v.select('start', [{ value: 'rest', label: 'released from rest' }, { value: 'steady', label: 'launched with Ω' }], 'rest');
         const S = v.stage({ x: [-0.95, 0.95], y: [-0.85, 1.05], equal: true, axes: false, height: 350, title: 'a gyroscope on a post (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -1.0, pitch: 0.3, axes: false, hint: false });
-        const sp = v.stage({ x: [5, 300], y: [0.01, 30], xlog: true, ylog: true, axes: 'box', height: 350, xlabel: 'spin ω₃ (rad/s)', title: 'precession rate $\\Omega$ (rad/s)' });
+        const sp = v.stage({ x: [5, 300], y: [0.01, 30], xlog: true, ylog: true, axes: 'box', gutter: true, height: 350, xlabel: 'spin ω₃ (rad/s)', title: 'precession rate $\\Omega$ (rad/s)' });
         const sim = (w3, steady) => {
           const W0 = steady ? mgl / (I3w * w3) : 0, n0 = [1, 0, 0];
           const y0 = [...n0, 0, 0, 1, I3w * w3, 0, I1w * W0];
@@ -290,7 +290,7 @@ In vector form, $\mathsf I\dot{\boldsymbol\omega} + \boldsymbol\omega\times\math
         const tq = v.select('torque', [{ value: 'none', label: 'none' }, { value: 'body', label: 'thruster on the book (along e₁)' }, { value: 'space', label: 'push fixed in space (along z)' }], 'none');
         const S = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 330, title: 'the book, $\\boldsymbol\\omega$ and $\\mathbf L$ in space (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.35, lim: 1.5, hint: false });
-        const sw = v.stage({ x: [0, TS], y: [-2, 2], axes: 'box', height: 330, xlabel: 't (s)', title: 'body components $\\omega_1, \\omega_2, \\omega_3$ (rad/s)' });
+        const sw = v.stage({ x: [0, TS], y: [-2, 2], axes: 'box', gutter: true, height: 330, xlabel: 't (s)', title: 'body components $\\omega_1, \\omega_2, \\omega_3$ (rad/s)' });
         const W0 = { gen: [0.9, 0.7, 0.6], e1: [1.5, 0.05, 0.05], e2: [0.03, 1.4, 0.03], e3: [0.05, 0.05, 1.3] };
         const cache = memo(); let cur = null;
         const run = () => cache(start.value + '|' + tq.value, () => {
@@ -378,7 +378,7 @@ and the body flips over periodically: $\omega_2$ reverses sign over and over whi
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.35, axes: false, hint: false });
         const SP = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 300, title: '$\\mathbf L$ in the body frame (drag to rotate)' });
         const sp = v.scene3(SP, { yaw: -0.75, pitch: 0.4, axes: false, hint: false });
-        const st = v.stage({ x: [0, TS], y: [-7, 7], axes: 'box', height: 170, full: true, xlabel: 't (s)', title: 'body components of $\\boldsymbol\\omega$ (rad/s)' });
+        const st = v.stage({ x: [0, TS], y: [-7, 7], axes: 'box', gutter: true, height: 170, full: true, xlabel: 't (s)', title: 'body components of $\\boldsymbol\\omega$ (rad/s)' });
         const cacheP = memo(), cache = memo(); let cur = null;
         const polhodes = () => cacheP('p', () => {
           const out = [];
@@ -554,7 +554,7 @@ in the sense of the spin for an oblate body ($I_3 > I_1$) and against it for a p
         const S = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 340, title: ' ' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.25, axes: false, hint: false });
         const sb = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 340, title: ' ' });
-        const sT = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', height: 150, full: true, xlabel: 't', title: ' ' });
+        const sT = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', gutter: true, height: 150, full: true, xlabel: 't', title: ' ' });
         const cache = memo(); let cur = null;
         const runTop = () => cache([rS.value, aS.value].join('|'), () => {
           const ratio = rS.value, rc = 0.55, hc = Math.max(0.05, Math.sqrt(Math.max(0, 3 * rc * rc * (2 / ratio - 1)))), I3v = 0.5 * rc * rc, I1v = I3v / ratio;

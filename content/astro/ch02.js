@@ -181,7 +181,7 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
       credit: 'Hill, 1878',
       viz(v) {
         const SYS = { em: { mu: MU_EM, l: ['Earth', 'Moon'] }, pc: { mu: MU_PC, l: ['Pluto', 'Charon'] }, sj: { mu: MU_SJ, l: ['Sun', 'Jupiter'] } };
-        const sys = v.select('system', [{ value: 'em', label: 'Earth–Moon (μ = 0.012)' }, { value: 'pc', label: 'Pluto–Charon (μ = 0.11)' }, { value: 'sj', label: 'Sun–Jupiter (μ = 0.00095)' }], 'em');
+        const sys = v.select('system', [{ value: 'em', label: 'Earth–Moon (μ = 0.012)' }, { value: 'pc', label: 'Pluto–Charon (μ = 0.11)' }, { value: 'sj', label: 'Sun–Jupiter (μ = 0.00095)' }], 'em', { onChange: () => uS.set(uS.value) });
         const range = () => { const L = lagrange(SYS[sys.value].mu); return [L.C.L4 - 0.04, L.C.L1 + 0.12, L]; };
         const Cof = (u) => { const [lo, hi] = range(); return lo + u * (hi - lo); };
         const uS = v.slider('Jacobi constant $C_J$', 0, 1, 0.64, { step: 0.001, fmt: (u) => v.fix(Cof(u), 4) });

@@ -3,7 +3,7 @@ import { TAU, grid, normSq, normalize, interp, phaseLUT, drawPsi, drawReal, phas
 
 /** Potentials offered as presets (typed formulas, ħ = m = 1). */
 const PRESETS = {
-  lopsided: ['lopsided well', '0.06 x^4 - 0.5 x'],
+  lopsided: ['lopsided well', '0.06 x^4 - 0.5 x + 1'],
   harmonic: ['harmonic', '0.5 x^2'],
   double: ['double well', '0.04 (x^2 - 8)^2'],
   bumpy: ['bumpy bowl', '0.3 x^2 + 1.2 cos(4 x)'],
@@ -87,13 +87,13 @@ A superposition $c_1\psi_1e^{-iE_1t/\hbar}+c_2\psi_2e^{-iE_2t/\hbar}$ with $E_1\
           const Vmin = Math.min(...S.Vg), span = E[K - 1] - Vmin, [xl, xr] = wellWindow(S.x, S.Vg, E[K - 1] + 0.3 * span);
           sL.setView([xl, xr], [Vmin - 0.06 * span, E[K - 1] + 0.16 * span]);
           let pmax = 0; for (const p of S.psi) for (const y of p) pmax = Math.max(pmax, Math.abs(y));
-          const amp = (0.45 * span) / (K - 1) / pmax, act = cs.map((c) => c[0]);
-          levelDiagram(sL, { x: S.x, V: S.Vg, E, psi: S.psi, col, amp, hi: act, label: (i) => sub(i + 1) });
+          const amp = (0.38 * span) / (K - 1) / pmax, act = cs.map((c) => c[0]);
+          levelDiagram(sL, { x: S.x, V: S.Vg, E, psi: S.psi, col, amp, hi: act, label: (i) => `n = ${i + 1}` });
           for (const [j] of cs) { let ia = 0; while (ia < N - 1 && S.Vg[ia] > E[j]) ia++; phasor(v, sL, col, Math.max(14, sL.X(S.x[ia]) - 16), sL.Y(E[j]), -E[j] * tau); }
           // Ψ(x, t)
           const P = psiAt(S, cs, tau), P0 = psiAt(S, cs, 0);
           let bound = 0; for (let i = 0; i < N; i++) { let s = 0; for (const [j, c] of cs) s += Math.abs(c * S.psi[j][i]); bound = Math.max(bound, s); }
-          sR.setView([xl, xr], [-0.05 * bound, bound * 1.18]);
+          sR.setView([xl, xr], [-0.12 * bound, bound * 1.18]);
           sR.fn((X) => (interp(S.x, S.Vg, X) - Vmin) / (span * 1.16) * bound * 1.18, { color: 'muted', width: 1.3, dash: [4, 3], n: 300 });
           drawPsi(sR, S.x, P.re, P.im, { col });
           sR.path(Array.from(S.x, (X, i) => [X, Math.hypot(P0.re[i], P0.im[i])]), { color: 'ink', width: 1.2, dash: [2, 3], alpha: 0.6 });
@@ -199,7 +199,7 @@ The moduli $|c_n|$ never change; $|c_n|^2$ is the probability that an energy mea
           }
           // coefficient bars
           const nb = mode.value === 'coef' ? KD : K;
-          sc.setView([0.4, nb + 0.6], [-1.05, 1.05]);
+          sc.setView([-0.2, nb + 0.7], [-1.05, 1.05]);
           sc.hline(0, { color: 'faint' });
           for (let n = 1; n <= nb; n++) {
             const val = mode.value === 'coef' ? coef[n - 1] : c[n - 1], ph = (val < 0 ? Math.PI : 0) - S.E[n - 1] * tau;
@@ -210,7 +210,7 @@ The moduli $|c_n|$ never change; $|c_n|^2$ is the probability that an energy mea
           const q = sim.at(tau), re = new Float64Array(NN), im = new Float64Array(NN);
           for (let n = 0; n < K; n++) { const ph = -S.E[n] * tau, cr = c[n] * Math.cos(ph), ci = c[n] * Math.sin(ph), p = S.psi[n]; for (let i = 0; i < NN; i++) { re[i] += cr * p[i]; im[i] += ci * p[i]; } }
           let d2 = 0, top = 0.2; for (let i = 1; i < NN - 1; i++) { d2 += (re[i] - q.re[i - 1]) ** 2 + (im[i] - q.im[i - 1]) ** 2; top = Math.max(top, Math.hypot(I0.re[i])); }
-          sE.setView([A, B], [-0.04 * top * 1.4, top * 1.4]);
+          sE.setView([A, B], [-0.12 * top * 1.4, top * 1.4]);
           sE.fn((X) => Math.min(top * 1.4, ((interp(xg, S.Vg, X) - Vmin) / (vt - Vmin)) * top * 1.3), { color: 'muted', width: 1.3, fill: 'muted', fillAlpha: 0.08, n: 300 });
           drawPsi(sE, xg, re, im, { col });
           const cn = [0]; for (let i = 0; i < NN - 2; i++) cn.push(Math.hypot(q.re[i], q.im[i])); cn.push(0);
@@ -219,8 +219,8 @@ The moduli $|c_n|$ never change; $|c_n|^2$ is the probability that an energy mea
           let H = 0; for (let n = 0; n < K; n++) H += c[n] * c[n] * S.E[n];
           st = { tau, err: Math.sqrt(d2 * dx), trunc: I0.trunc, H: H / I0.kept, K, steps: sim.steps };
         }, { period: TW, still: 4 });
-        v.legend([['ink', '|Ψ| from Σ cₙ e^{−iEₙt} ψₙ (fill = phase)'], ['gold', '|Ψ| from Crank–Nicolson', { dash: true }], ['green', 'partial sum of K terms', { dash: true }], ['muted', 'V(x), scaled', { area: true }]]);
-        v.readout(() => st && `$t = ${v.fix(st.tau, 2)}$ after ${st.steps} steps of $\\Delta t = ${dtS.value}$ · $\\|\\Psi_{\\rm CN}(t)-\\sum_{n\\le ${st.K}}c_ne^{-iE_nt/\\hbar}\\psi_n\\| = ${v.fix(st.err, 5)}$, against the truncation error $\\big(\\sum_{n>${st.K}}|c_n|^2\\big)^{1/2} = ${v.fix(st.trunc, 5)}$ (the rest is time-step error) · $\\langle H\\rangle = \\sum|c_n|^2E_n/\\sum|c_n|^2 = ${v.fix(st.H, 5)}$, constant in time.`);
+        v.legend([['ink', '$|\\Psi|$ from $\\sum c_ne^{-iE_nt/\\hbar}\\psi_n$ (fill = phase)'], ['gold', '$|\\Psi|$ from Crank–Nicolson', { dash: true }], ['green', 'partial sum of $K$ terms', { dash: true }], ['muted', '$V(x)$, scaled', { area: true }]]);
+        v.readout(() => st && `$t = ${v.fix(st.tau, 2)}$ after ${st.steps} steps of $\\Delta t = ${dtS.value}$ · $\\|\\Psi_{\\rm CN}(t)-\\sum_{n\\le ${st.K}}c_ne^{-iE_nt/\\hbar}\\psi_n\\| = ${v.sci(st.err, 2)}$, against the truncation error $\\big(\\sum_{n>${st.K}}|c_n|^2\\big)^{1/2} = ${st.trunc < 1e-12 ? '0' : v.sci(st.trunc, 2)}$${st.trunc < 1e-12 ? ' (every nonzero coefficient is kept, so all of the difference is time-step error)' : ' (the rest is time-step error)'} · $\\langle H\\rangle = \\sum|c_n|^2E_n/\\sum|c_n|^2 = ${v.fix(st.H, 5)}$, constant in time.`);
       },
     },
     // ------------------------------------------------------------------ 3.3
@@ -241,22 +241,22 @@ Each $\psi_n$ is a whole number of half-wavelengths, $\lambda_n=2L/n$, with $n-1
       tags: ['infinite square well', 'particle in a box', 'quantization'],
       viz(v) {
         const M = v.M, C = M.CONST, E1nm = (C.h * C.h) / (8 * C.me * 1e-18) / C.eV, HC = (C.h * C.c) / C.eV * 1e9; // 0.376 eV·nm², 1239.84 eV·nm
-        let Lref = 1;
-        const s = v.stage({ x: [-0.25, 3.3], y: [-0.4, 10.4], height: 360, axes: 'box', weight: 1.35, xlabel: 'x (nm)', ylabel: 'E (eV)', title: 'an electron in a box of width $L$' });
+        let Lref = 1.2;
+        const s = v.stage({ x: [-0.18, 2.35], y: [-0.7, 10.4], height: 360, axes: 'box', weight: 1.35, xlabel: 'x (nm)', ylabel: 'E (eV)', title: 'an electron in a box of width $L$' });
         const s2 = v.stage({ x: [0.85, 13], y: [0.004, 300], xlog: true, ylog: true, height: 360, axes: 'box', weight: 0.85, xlabel: 'n', ylabel: 'Eₙ (eV)', title: '$E_n$ against $n$ (log–log)' });
-        const hL = s.handle(1, 9.8, { color: 'gold', r: 8, label: 'L', labelPos: 'e', constrain: (X) => [M.clamp(X, 0.4, 3), 9.8] });
+        const hL = s.handle(1.2, -0.35, { color: 'gold', r: 8, label: 'L', labelPos: 'e', constrain: (X) => [M.clamp(X, 0.4, 2.1), -0.35] });
         const nS = v.slider('level $n$', 1, 10, 3, { int: true });
-        v.button('Halve $L$', () => hL.set(Math.max(0.4, hL.x / 2), 9.8));
-        v.button('Double $L$', () => hL.set(Math.min(3, hL.x * 2), 9.8));
+        v.button('Halve $L$', () => hL.set(Math.max(0.4, hL.x / 2), -0.35));
+        v.button('Double $L$', () => hL.set(Math.min(2.1, hL.x * 2), -0.35));
         v.button('Make this $L$ the reference', () => { Lref = hL.x; });
         const NX = 320;
         let st = null;
         v.render(() => {
           const L = hL.x, col = phaseLUT(v), E = (n) => (n * n * E1nm) / (L * L), n0 = nS.value;
           // walls and floor
-          s.rect(-0.25, -0.4, 0, 10.4, { fill: 'muted', fillAlpha: 0.12, hatch: 'muted', hatchAlpha: 0.35, stroke: false });
-          s.rect(L, -0.4, 3.3, 10.4, { fill: 'muted', fillAlpha: 0.12, hatch: 'muted', hatchAlpha: 0.35, stroke: false });
-          s.line(0, -0.4, 0, 10.4, { color: 'muted', width: 2 }); s.line(L, -0.4, L, 10.4, { color: 'muted', width: 2 }); s.line(0, 0, L, 0, { color: 'muted', width: 2 });
+          s.rect(-0.18, -0.7, 0, 10.4, { fill: 'muted', fillAlpha: 0.12, hatch: 'muted', hatchAlpha: 0.35, stroke: false });
+          s.rect(L, -0.7, 2.35, 10.4, { fill: 'muted', fillAlpha: 0.12, hatch: 'muted', hatchAlpha: 0.35, stroke: false });
+          s.line(0, -0.7, 0, 10.4, { color: 'muted', width: 2 }); s.line(L, -0.7, L, 10.4, { color: 'muted', width: 2 }); s.line(0, 0, L, 0, { color: 'muted', width: 2 });
           const { x } = grid(0, L, NX), nmax = Math.min(14, Math.floor(Math.sqrt((10 * L * L) / E1nm)));
           for (let n = 1; n <= nmax; n++) {
             const En = E(n), gap = Math.min(E(n + 1) - En, n > 1 ? En - E(n - 1) : En), amp = (0.42 * gap) / Math.sqrt(2 / L), h = n === n0;
@@ -321,7 +321,7 @@ so Parseval's identity $\sum_n|c_n|^2=\|f\|^2$ holds. The convergence is in $L^2
         const Ns = v.slider('terms $N$', 1, NMAX, 6, { int: true });
         const sG = v.stage({ x: [0, 1], y: [0, 1], height: 310, axes: false, weight: 0.8, title: 'overlaps $\\langle\\phi_m|\\phi_n\\rangle$, first 8' });
         const sF = v.stage({ x: [0, 1], y: [-0.5, 1.4], height: 310, axes: 'box', weight: 1.2, xlabel: 'x / L', title: '$f$ and $S_N=\\sum_{n\\le N}\\langle\\phi_n|f\\rangle\\,\\phi_n$' });
-        const sE = v.stage({ x: [1, NMAX], y: [1e-5, 2], xlog: true, ylog: true, height: 200, axes: 'box', full: true, xlabel: 'N', ylabel: 'error', title: 'measured $\\|f-S_N\\|^2$ (dots) and $\\|f\\|^2-\\sum_{n\\le N}|c_n|^2$ (line)' });
+        const sE = v.stage({ x: [1, NMAX], y: [1e-7, 2], xlog: true, ylog: true, height: 200, axes: 'box', full: true, xlabel: 'N', ylabel: 'error', title: 'measured $\\|f-S_N\\|^2$ (dots) and $\\|f\\|^2-\\sum_{n\\le N}|c_n|^2$ (line)' });
         sF.onDrag((X, Y) => {
           if (fs.value !== 'draw') return;
           const i = Math.round(X * (ND - 1)); if (i < 0 || i >= ND) return;
@@ -366,15 +366,15 @@ so Parseval's identity $\sum_n|c_n|^2=\|f\|^2$ holds. The convergence is in $L^2
           sF.path(Array.from(x, (X, i) => [X, SNshow[i]]), { color: 'green', width: 2 });
           if (fs.value === 'draw') sF.corner('drag to draw f', 'tr', { color: 'muted' });
           // error plot
-          sE.path(bess.map((y, n) => [n + 1, y > 0 ? y : NaN]), { color: 'accent', width: 2 });
-          sE.dots(errs.map((y, n) => [n + 1, y]).filter((p) => p[1] > 1e-5), { r: 2.8, color: 'gold' });
+          sE.path(bess.map((y, n) => [n + 1, y > 0 ? y : NaN]), { color: 'purple', width: 2 });
+          sE.dots(errs.map((y, n) => [n + 1, y]).filter((p) => p[1] > 1e-7), { r: 2.8, color: 'gold' });
           sE.dot(N, errs[N - 1], { r: 6.5, color: 'gold' });
           if (bs.value === 'odd') sE.hline(errs[NMAX - 1], { color: 'red', dash: [5, 4], width: 1.4 });
           const neg = bess.findIndex((y) => y < 0);
           if (neg >= 0) sE.corner(`Bessel's inequality fails from N = ${neg + 1}: Σ|cₙ|² > ‖f‖²`, 'bl', { color: 'red', weight: 600 });
           st = { N, err: errs[N - 1], bes: bess[N - 1], nf, off, par: acc, b: bs.value, floor: errs[NMAX - 1] };
         });
-        v.legend([['accent', 'f'], ['green', 'S_N'], ['gold', 'measured ‖f − S_N‖²', { dot: true }], ['accent', '‖f‖² − Σ|cₙ|²', { dash: false }]]);
+        v.legend([['accent', '$f$'], ['green', '$S_N$'], ['gold', 'measured $\\|f-S_N\\|^2$', { dot: true }], ['purple', '$\\|f\\|^2-\\sum_{n\\le N}|c_n|^2$']]);
         v.readout(() => st && `largest entry of $\\langle\\phi_m|\\phi_n\\rangle-\\delta_{mn}$: **${st.off < 1e-9 ? '< 10⁻⁹' : v.fix(st.off, 3)}** · $N = ${st.N}$: $\\|f-S_N\\|^2 = ${v.sci(st.err, 3)}$ vs $\\|f\\|^2-\\sum_{n\\le N}|c_n|^2 = ${st.bes < 0 ? '-' : ''}${v.sci(Math.abs(st.bes), 3)}$` + (st.b === 'box' ? ` · Parseval with 60 terms: $\\sum|c_n|^2 = ${v.fix(st.par, 5)}$ vs $\\|f\\|^2 = ${v.fix(st.nf, 5)}$` : st.b === 'odd' ? ` · the error stalls at ${v.fix(st.floor, 4)}: an incomplete family` : ' · not orthonormal: the coefficients $\\langle\\phi_n|f\\rangle$ no longer add up') + '.');
       },
     },
@@ -394,9 +394,9 @@ A localized wave packet first bounces back and forth like a classical particle, 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_revival' },
       tags: ['revivals', 'quantum carpet', 'interference'],
       viz(v) {
-        const M = v.M, L = 1, TR = (4 * L * L) / Math.PI, TMAX = 1.05 * TR, PER = 21, NXC = 240, NTC = 420, NXF = 600, X0 = 0.32, AIMP = 0.37;
-        const sig = v.slider('packet width $\\sigma/L$', 0.03, 0.12, 0.06, { step: 0.001 });
-        const k0s = v.slider('momentum $k_0L$', 0, 60, 14, { step: 0.5 });
+        const M = v.M, L = 1, TR = (4 * L * L) / Math.PI, TMAX = 1.05 * TR, PER = 21, NXC = 240, NTC = 640, NXF = 600, X0 = 0.32, AIMP = 0.37;
+        const sig = v.slider('packet width $\\sigma/L$', 0.02, 0.12, 0.035, { step: 0.001 });
+        const k0s = v.slider('momentum $k_0L$', 0, 60, 0, { step: 0.5 });
         const al = v.slider('impurity strength $\\alpha$', 0, 1.5, 0, { step: 0.01 });
         const jump = (f) => () => { v.pause(); v.t = (PER * f) / 1.05; };
         v.button('$t=T_{\\rm rev}/4$', jump(0.25)); v.button('$T_{\\rm rev}/2$', jump(0.5)); v.button('$T_{\\rm rev}$', jump(1));
@@ -437,8 +437,8 @@ A localized wave packet first bounces back and forth like a classical particle, 
         let st = null;
         v.animate((t) => {
           const D = data(), col = phaseLUT(v), tau = (t / PER) * TMAX, P = state(D, tau), top = Math.sqrt(D.peak) * 1.25;
-          s1.setView([-0.04, 1.04], [0, top]);
-          s1.rect(-0.04, 0, 0, top, { fill: 'muted', fillAlpha: 0.15, hatch: 'muted', hatchAlpha: 0.3, stroke: false }); s1.rect(1, 0, 1.04, top, { fill: 'muted', fillAlpha: 0.15, hatch: 'muted', hatchAlpha: 0.3, stroke: false });
+          s1.setView([-0.04, 1.04], [-0.12 * top, top]);
+          s1.rect(-0.04, -0.12 * top, 0, top, { fill: 'muted', fillAlpha: 0.15, hatch: 'muted', hatchAlpha: 0.3, stroke: false }); s1.rect(1, -0.12 * top, 1.04, top, { fill: 'muted', fillAlpha: 0.15, hatch: 'muted', hatchAlpha: 0.3, stroke: false });
           s1.path(Array.from(xf, (X, i) => [X, Math.hypot(D.re0[i], D.im0[i])]), { color: 'ink', width: 1.2, dash: [3, 3], alpha: 0.6 });
           drawPsi(s1, xf, P.re, P.im, { col });
           phaseWheel(s1, col, s1.W - 60, 36, 11);
@@ -527,9 +527,11 @@ normalizable whenever $\phi\in L^2$; a band of width $\Delta k$ gives a packet o
           for (let i = 0; i < NXP; i++) { const [r, q] = psi(x[i], t); re[i] = r; im[i] = q; }
           let top = 0.05; for (let i = 0; i < NXP; i++) top = Math.max(top, Math.hypot(re[i], im[i]));
           if (spec.value === 'band') { const sx = 1 / (2 * dkS.value); top = Math.max(top, (2 * Math.PI * sx * sx) ** -0.25); }
-          sS.setView([-XR, XR], [-0.03 * top, top * 1.22]);
+          sS.setView([-XR, XR], [-0.95 * top, top * 1.22]);
+          sS.hline(-0.5 * top, { color: 'faint', width: 0.8 });
+          sS.path(Array.from(x, (X, i) => [X, -0.5 * top + 0.36 * re[i]]), { color: 'accent', width: 1.1 });
+          sS.text('Re Ψ', -XR + 0.6, -0.5 * top + 0.4 * top, { size: 10.5, color: 'accent' });
           drawPsi(sS, x, re, im, { col });
-          sS.path(Array.from(x, (X, i) => [X, re[i] * 0.5 + top * 0.6]), { color: 'accent', width: 0.9, alpha: 0.5 });
           if (spec.value === 'comb') { const P = (2 * Math.PI) / spS.value; for (let q = -6; q <= 6; q++) { const X = q * P; if (Math.abs(X) < XR) sS.vline(X, { color: 'muted', dash: [2, 4], width: 1 }); } sS.text(`period 2π/δk = ${v.fix((2 * Math.PI) / spS.value, 2)}`, -XR + 1, top * 1.13, { size: 11, color: 'muted' }); }
           phaseWheel(sS, col, sS.W - 34, 36, 11);
           // spectrum
@@ -547,7 +549,7 @@ normalizable whenever $\phi\in L^2$; a band of width $\Delta k$ gives a packet o
           let m0 = 0, m1 = 0, m2 = 0; const dx = x[1] - x[0]; for (let i = 0; i < NXP; i++) { const r = re[i] ** 2 + im[i] ** 2; m0 += r; m1 += r * x[i]; m2 += r * x[i] * x[i]; }
           st = { mode: spec.value, N100: NL(100), N1e4: NL(1e4), w: Math.sqrt(Math.max(0, m2 / m0 - (m1 / m0) ** 2)), norm: m0 * dx, dk: dkS.value, t };
         }, { period: PER, still: 8 });
-        v.legend([['ink', '|Ψ| (fill = phase)'], ['accent', 'Re Ψ (offset)'], ['green', 'normalizable: ∫|Ψ|² → 1'], ['red', 'not normalizable: ∫|Ψ|² ∝ L']]);
+        v.legend([['ink', '|Ψ| (fill = phase)'], ['accent', 'Re Ψ (below)'], ['green', 'normalizable: ∫|Ψ|² → 1'], ['red', 'not normalizable: ∫|Ψ|² ∝ L']]);
         v.readout(() => st && (st.mode === 'band' ? `continuous band: $\\int|\\Psi|^2dx = ${v.fix(st.norm, 5)}$ on screen and $\\int_{-L}^{L}\\to1$ — a normalizable state · width now $\\Delta x = ${v.fix(st.w, 3)}$; at $t=0$ it is $1/(2\\Delta k) = ${v.fix(1 / (2 * st.dk), 3)}$, and it spreads as time goes on (2.12).` : `$\\int_{-L}^{L}|\\Psi|^2dx = ${v.fix(st.N100, 1)}$ for $L = 100$ and ${v.fix(st.N1e4, 0)} for $L = 10^4$: it grows without bound, so this is not a state in $L^2$` + (st.mode === 'one' ? ' — $|\\Psi|^2 = 1$ everywhere: definite momentum, completely unknown position.' : ` — the pattern repeats every $2\\pi/\\delta k = ${v.fix(2 * Math.PI / spS.value, 2)}$; shrink $\\delta k$ and the copies move apart.`)));
       },
     },
@@ -580,7 +582,7 @@ normalizable whenever $\phi\in L^2$; a band of width $\Delta k$ gives a packet o
           for (let k = 0; k <= NE; k++) { const E = Vmin + ((Etop - Vmin) * k) / NE; stair.push([E, countNodes(numerov(Vg, h, E), 1, x.length - 2)]); }
           const nodes = R.psi.map((p) => countNodes(p, 1, x.length - 2, 1e-6));
           S = { key: Vin.value, x, h, Vg, E: R.E, psi: R.psi, Vmin, Etop, stair, nodes };
-          hE.y = (R.E[2] + R.E[3]) / 2;
+          hE.y = (R.E[1] + R.E[2]) / 2;
           return S;
         };
         let st = null;
@@ -624,59 +626,86 @@ normalizable whenever $\phi\in L^2$; a band of width $\Delta k$ gives a packet o
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Avoided_crossing' },
       tags: ['degeneracy', 'wronskian', 'avoided crossing'],
       viz(v) {
-        const M = v.M, A = -7.5, B = 7.5, NG = 420, K = 4, NEPS = 49, EPS = 2;
+        const M = v.M, A = -7.5, B = 7.5, NG = 420, K = 4, NEPS = 41, EPS = 2;
         const eps = v.slider('asymmetry $\\varepsilon$', -EPS, EPS, 0.35, { step: 0.01 });
-        const dS = v.slider('half-separation $d$', 1.3, 3.2, 1.9, { step: 0.01 });
+        const dS = v.slider('half-separation $d$', 1.3, 3.2, 1.6, { step: 0.01 });
         const wall = v.toggle('impenetrable wall between the wells', false);
         const lev = v.select('energy near level', [1, 2, 3, 4].map((k) => ({ value: k - 1, label: String(k) })), 0);
         const det = v.slider('detuning $E-E_n$', -0.3, 0.3, 0, { step: 0.002 });
         const g = (u) => 1 / (1 + Math.exp(6 * (Math.abs(u) - 1)));
         const Vof = (e, d, w) => (X) => -(4 + e) * g(X + d) - (4 - e) * g(X - d) + (w && Math.abs(X) < 0.3 ? 2000 : 0);
-        const sA = v.stage({ x: [A, B], y: [-6.5, 1], height: 250, axes: 'box', weight: 1.3, xlabel: 'x', title: 'shot from the left (blue) and from the right (purple) at $E$' });
-        const sW = v.stage({ x: [A, B], y: [-1, 1], height: 250, axes: 'box', weight: 0.7, xlabel: 'x', title: 'Wronskian $W(x)=u_Lu_R\'-u_L\'u_R$' });
-        const sS = v.stage({ x: [-EPS, EPS], y: [-6.5, 0], height: 230, axes: 'box', full: true, xlabel: 'ε', ylabel: 'E', title: 'levels against the asymmetry $\\varepsilon$' });
+        const sA = v.stage({ x: [A, B], y: [-6.5, 1], height: 250, axes: 'box', weight: 1.3, xlabel: 'x', title: 'shot from the left (blue) and the right (purple) at $E$' });
+        const sW = v.stage({ x: [A, B], y: [-1, 1], height: 250, axes: 'box', weight: 0.7, xlabel: 'x', title: 'their Wronskian $W(x)$' });
+        const sS = v.stage({ x: [-EPS, EPS], y: [-6.5, 0], height: 240, axes: 'box', weight: 1.1, xlabel: 'ε', ylabel: 'E', title: 'levels against the asymmetry $\\varepsilon$' });
+        const sG = v.stage({ x: [-EPS, EPS], y: [1e-13, 10], ylog: true, height: 240, axes: 'box', weight: 0.9, xlabel: 'ε', title: 'gaps $E_{n+1}-E_n$ (log scale)' });
+        const levelsAt = (e, d, w) => M.schrodinger1D(Vof(e, d, w), [A, B], { n: NG, k: K }).E;
         const flowCache = {};
+        /** Levels on an ε grid, with each local minimum of a gap refined by golden-section search (so true crossings show up). */
         const flow = (d, w) => {
           const key = `${d}|${w}`; if (flowCache[key]) return flowCache[key];
-          const out = []; for (let j = 0; j < NEPS; j++) { const e = -EPS + (2 * EPS * j) / (NEPS - 1); out.push([e, M.schrodinger1D(Vof(e, d, w), [A, B], { n: NG, k: K }).E]); }
-          return (flowCache[key] = out);
+          const pts = []; for (let j = 0; j < NEPS; j++) { const e = -EPS + (2 * EPS * j) / (NEPS - 1); pts.push([e, levelsAt(e, d, w)]); }
+          const extra = [];
+          for (let k = 0; k < K - 1; k++) for (let j = 1; j < NEPS - 1; j++) {
+            const gp = (q) => q[1][k + 1] - q[1][k];
+            if (!(gp(pts[j]) < gp(pts[j - 1]) && gp(pts[j]) <= gp(pts[j + 1]))) continue;
+            let lo = pts[j - 1][0], hi = pts[j + 1][0]; const r = 0.618034;
+            let c = hi - r * (hi - lo), dd = lo + r * (hi - lo), Ec = levelsAt(c, d, w), Ed = levelsAt(dd, d, w);
+            for (let it = 0; it < 18; it++) {
+              if (Ec[k + 1] - Ec[k] < Ed[k + 1] - Ed[k]) { hi = dd; dd = c; Ed = Ec; c = hi - r * (hi - lo); Ec = levelsAt(c, d, w); }
+              else { lo = c; c = dd; Ec = Ed; dd = lo + r * (hi - lo); Ed = levelsAt(dd, d, w); }
+            }
+            extra.push([c, Ec]);
+          }
+          return (flowCache[key] = pts.concat(extra).sort((p, q) => p[0] - q[0]));
+        };
+        /** Solutions shot from both ends at E, each scaled to unit size where V < E + ½; W on the points where both stay moderate. */
+        const shoot = (Vg, h, E) => {
+          const n = Vg.length, uL = numerov(Vg, h, E), uR = numerov(Float64Array.from(Vg).reverse(), h, E).reverse();
+          let nL = 1e-300, nR = 1e-300; for (let i = 0; i < n; i++) if (Vg[i] < E + 0.5) { nL = Math.max(nL, Math.abs(uL[i])); nR = Math.max(nR, Math.abs(uR[i])); }
+          for (let i = 0; i < n; i++) { uL[i] /= nL; uR[i] /= nR; }
+          const W = []; let sw = 0, cnt = 0, sLR = 0, sLL = 0, sRR = 0;
+          for (let i = 1; i < n - 1; i++) {
+            if (Math.abs(uL[i]) > 30 || Math.abs(uR[i]) > 30) { W.push(null); continue; }
+            const w = (uL[i] * (uR[i + 1] - uR[i - 1]) - uR[i] * (uL[i + 1] - uL[i - 1])) / (2 * h);
+            W.push(w); sw += w; cnt++; sLR += uL[i] * uR[i]; sLL += uL[i] * uL[i]; sRR += uR[i] * uR[i];
+          }
+          return { uL, uR, W, Wm: cnt ? sw / cnt : 0, shape: Math.abs(sLR) / Math.sqrt(sLL * sRR || 1) };
+        };
+        /** The eigenvalue of the Numerov problem nearest a finite-difference estimate: secant iteration on the mean Wronskian. */
+        const refine = (Vg, h, E0) => {
+          let a = E0, b = E0 + 1e-4, fa = shoot(Vg, h, a).Wm, fb = shoot(Vg, h, b).Wm;
+          for (let it = 0; it < 10 && Math.abs(fb) > 1e-13 && fb !== fa; it++) { const c = b - (fb * (b - a)) / (fb - fa); a = b; fa = fb; b = c; fb = shoot(Vg, h, b).Wm; }
+          return Math.abs(b - E0) < 0.05 ? b : E0;
         };
         let st = null;
         v.render(() => {
           const d = dS.value, w = wall.value, e = eps.value, Vf = Vof(e, d, w), R = M.schrodinger1D(Vf, [A, B], { n: NG, k: K }), x = R.x, h = x[1] - x[0];
-          const Vg = Float64Array.from(x, Vf), E = R.E[lev.value] + det.value;
-          // potential and shot solutions
+          const Vg = Float64Array.from(x, Vf), En = refine(Vg, h, R.E[lev.value]), E = En + det.value;
           sA.clip(() => { sA.poly([[A, -7], ...Array.from(x, (X, i) => [X, Math.min(Vg[i], 2)]), [B, -7]], { fill: 'muted', fillAlpha: 0.14, stroke: false }); sA.path(Array.from(x, (X, i) => [X, Math.min(Vg[i], 2)]), { color: 'muted', width: 2 }); });
-          R.E.forEach((En, k) => sA.hline(En, { color: 'muted', width: 0.8, dash: [2, 4], alpha: 0.6 }));
+          R.E.forEach((q) => sA.hline(q, { color: 'muted', width: 0.8, dash: [2, 4], alpha: 0.6 }));
           sA.hline(E, { color: 'gold', width: 1.2, dash: [5, 3] });
-          const uL = numerov(Vg, h, E), uR = numerov(Float64Array.from(Vg).reverse(), h, E).reverse();
-          const allowedMax = (u) => { let m = 1e-300; for (let i = 0; i < x.length; i++) if (Vg[i] < E + 0.5) m = Math.max(m, Math.abs(u[i])); return m; };
-          const nL = allowedMax(uL), nR = allowedMax(uR);
-          for (let i = 0; i < x.length; i++) { uL[i] /= nL; uR[i] /= nR; }
+          const S = shoot(Vg, h, E);
           sA.clip(() => {
-            sA.path(Array.from(x, (X, i) => [X, E + 1.1 * uL[i]]), { color: 'accent', width: 2.2 });
-            sA.path(Array.from(x, (X, i) => [X, E + 1.1 * uR[i]]), { color: 'purple', width: 2, dash: [6, 4] });
+            sA.path(Array.from(x, (X, i) => [X, E + 1.1 * S.uL[i]]), { color: 'accent', width: 2.2 });
+            sA.path(Array.from(x, (X, i) => [X, E + 1.1 * S.uR[i]]), { color: 'purple', width: 2, dash: [6, 4] });
           });
           // Wronskian
-          const Wp = []; let wmin = Infinity, wmax = -Infinity;
-          for (let i = 1; i < x.length - 1; i++) {
-            if (Math.abs(uL[i]) > 30 || Math.abs(uR[i]) > 30) { Wp.push(null); continue; }
-            const W = uL[i] * (uR[i + 1] - uR[i - 1]) / (2 * h) - uR[i] * (uL[i + 1] - uL[i - 1]) / (2 * h);
-            Wp.push([x[i], W]); wmin = Math.min(wmin, W); wmax = Math.max(wmax, W);
-          }
-          const wr = Math.max(0.5, 1.4 * Math.max(Math.abs(wmin), Math.abs(wmax)));
+          const Wp = S.W.map((q, i) => (q == null ? null : [x[i + 1], q])), ws = S.W.filter((q) => q != null);
+          const wr = Math.max(0.5, 1.4 * Math.max(...ws.map(Math.abs)));
           sW.setView([A, B], [-wr, wr]); sW.hline(0, { color: 'faint' });
           sW.path(Wp, { color: 'green', width: 2.4 });
-          // level flow
+          // level flow and gaps
           const F = flow(d, w);
           for (let k = 0; k < K; k++) sS.path(F.map(([q, Es]) => [q, Es[k]]), { color: FAMILY[k], width: 2.2 });
-          sS.vline(e, { color: 'gold', width: 1.4 }); R.E.forEach((En, k) => sS.dot(e, En, { r: 4.5, color: FAMILY[k] }));
+          sS.vline(e, { color: 'gold', width: 1.4 }); R.E.forEach((q, k) => sS.dot(e, q, { r: 4.5, color: FAMILY[k] }));
           sS.dot(e, E, { r: 7, color: 'gold', hollow: true, width: 2 });
-          const R0 = M.schrodinger1D(Vof(0, d, w), [A, B], { n: NG, k: 2 });
-          st = { E, Wmean: (wmin + wmax) / 2, Wvar: wmax - wmin, gap: R0.E[1] - R0.E[0], w, det: det.value };
+          for (let k = 0; k < K - 1; k++) sG.path(F.map(([q, Es]) => [q, Math.max(1e-13, Es[k + 1] - Es[k])]), { color: FAMILY[k], width: 2 });
+          sG.vline(e, { color: 'gold', width: 1.4 });
+          let gmin = Infinity; for (const [, Es] of F) gmin = Math.min(gmin, Es[1] - Es[0]);
+          st = { E, Wm: S.Wm, Wvar: Math.max(...ws) - Math.min(...ws), shape: S.shape, gmin, w, det: det.value };
         });
-        v.legend([['accent', 'u_L: shot from the left'], ['purple', 'u_R: shot from the right', { dash: true }], ['green', 'W(x)'], ['gold', 'energy E', { dash: true }]]);
-        v.readout(() => st && `$E = ${v.fix(st.E, 5)}$ · $W$ across the grid: ${fz(v, st.Wmean, 4)} (varies by ${v.sci(Math.max(st.Wvar, 1e-16), 1)}: constant)${Math.abs(st.det) < 1e-9 ? ' — an eigenvalue, so $W = 0$ and $u_L\\propto u_R$' : ' — not an eigenvalue: $W\\neq0$, the two decaying solutions are independent'}${st.w && Math.abs(st.det) < 1e-9 ? ' (with the wall they can be independent even so)' : ''} · gap at $\\varepsilon = 0$: $E_2-E_1 = ${v.sci(Math.max(st.gap, 1e-17), 2)}$${st.w ? ' — the wall makes the levels cross (degenerate)' : ' > 0: the levels repel'}.`);
+        v.legend([['accent', '$u_L$: shot from the left'], ['purple', '$u_R$: shot from the right', { dash: true }], ['green', '$W(x)$'], ['gold', 'energy $E$', { dash: true }]]);
+        v.readout(() => st && `$E = ${v.fix(st.E, 5)}$ · $W$ across the grid: $${Math.abs(st.Wm) < 5e-9 ? '0' : v.sci(st.Wm, 2)}$ (varies by $${v.sci(Math.max(st.Wvar, 1e-16), 1)}$: constant)` + (Math.abs(st.det) < 1e-9 ? ` — an eigenvalue, so $W = 0$; shape overlap of $u_L$ and $u_R$: **${v.fix(st.shape, 4)}**${st.shape > 0.999 ? ' (proportional)' : ' — independent although $W=0$: the wall splits the line'}` : ' — not an eigenvalue: $W\\neq0$ and the two decaying solutions are independent') + ` · smallest gap $E_2-E_1$ over the sweep: $${v.sci(Math.max(st.gmin, 1e-16), 2)}$${st.w ? ' — at numerical zero: the wall makes the levels cross' : ' > 0: the levels repel'}.`);
       },
     },
     // ------------------------------------------------------------------ 3.9
@@ -733,7 +762,7 @@ because the kinetic term is strictly positive for any normalizable $\psi\neq0$ a
           const c = hC.x, s = sw.value, rho = Float64Array.from(S.x, (X) => Math.exp(-((X - c) ** 2) / (2 * s * s)) / (Math.sqrt(TAU) * s));
           let Vm = 0; for (let i = 0; i < S.x.length; i++) Vm += S.Vg[i] * rho[i] * S.h;
           const Tm = 1 / (8 * s * s), H = Vm + Tm, rmax = 1 / (Math.sqrt(TAU) * s);
-          sA.clip(() => sA.path(Array.from(S.x, (X, i) => [X, Math.min(hi, H) + 0.35 * span * rho[i] / rmax]), { color: 'accent', width: 1.8, fill: 'accent', fillAlpha: 0.12 }));
+          sA.clip(() => sA.path(Array.from(S.x, (X, i) => (rho[i] > 2e-3 * rmax ? [X, Math.min(hi, H) + 0.35 * span * rho[i] / rmax] : null)), { color: 'accent', width: 1.8, fill: 'accent', fillAlpha: 0.12 }));
           sA.line(c, lo + 0.05 * (hi - lo), c, Math.min(hi, H), { color: 'accent', width: 1, dash: [2, 3] });
           // stacked bar
           sB.hline(S.Vmin, { color: 'red', width: 1.6, dash: [6, 4] }); sB.text('V_min', 2.95, S.Vmin, { color: 'red', size: 11, align: 'right', dy: 9 });
@@ -770,7 +799,7 @@ It is the limit of square wells of width $a$ and depth $\alpha/a$ (fixed area $\
       viz(v) {
         const M = v.M, AL = 1;
         const aS = v.slider('well width $a$ (depth $\\alpha/a$)', 0.01, 12, 1.2, { log: true, sig: 3 });
-        const s1 = v.stage({ x: [-4, 4], y: [-0.2, 1.25], height: 270, axes: 'box', weight: 1.1, xlabel: 'x', title: 'ground state of the square well and $\\sqrt\\kappa\\,e^{-\\kappa|x|}$' });
+        const s1 = v.stage({ x: [-4, 4], y: [-0.42, 1.25], height: 270, axes: 'box', weight: 1.1, xlabel: 'x', title: 'ground state of the square well and $\\sqrt\\kappa\\,e^{-\\kappa|x|}$' });
         const s2 = v.stage({ x: [-1.5, 1.5], y: [-1.3, 1.3], height: 270, axes: 'box', weight: 0.9, xlabel: 'x', title: 'slope $\\psi\'(x)$ near the well' });
         const s3 = v.stage({ x: [0.01, 12], y: [-0.62, 0.05], xlog: true, height: 200, axes: 'box', full: true, xlabel: 'a', ylabel: 'E', title: 'bound-state energies against the width $a$ (area $\\alpha$ fixed)' });
         /** Bound states of the square well of half-width b, depth V0 (ħ = m = 1): [{E, z, w, parity}]. */
@@ -795,8 +824,8 @@ It is the limit of square wells of width $a$ and depth $\alpha/a$ (fixed area $\
         v.render(() => {
           const a = aS.value, Ls = levels(a), W = wave(Ls[0]), kd = AL, b = a / 2, dep = AL / a;
           // well (schematic depth) and wave functions
-          s1.rect(-b, -0.2, b, -0.04, { fill: 'muted', fillAlpha: 0.35, hatch: 'muted', hatchAlpha: 0.5, color: 'muted', width: 1 });
-          s1.text(`well: width ${v.fix(a, a < 0.1 ? 3 : 2)}, depth ${dep < 10 ? v.fix(dep, 2) : v.fix(dep, 0)}`, 0, -0.12, { align: 'center', size: 11, color: 'ink', dy: 0, plate: true });
+          s1.rect(-b, -0.16, b, -0.05, { fill: 'muted', fillAlpha: 0.35, hatch: 'muted', hatchAlpha: 0.5, color: 'muted', width: 1 });
+          s1.text(`well: width ${v.fix(a, a < 0.1 ? 3 : 2)}, depth ${dep < 10 ? v.fix(dep, 2) : v.fix(dep, 0)}`, Math.max(b, 0.05), -0.105, { align: 'left', dx: 6, size: 11, color: 'ink' });
           s1.fn((X) => Math.sqrt(kd) * Math.exp(-kd * Math.abs(X)), { color: 'green', width: 2.2, dash: [6, 4] });
           s1.fn(W.psi, { color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.1, n: 1200 });
           if (Ls.length > 1) s1.corner('a second (odd) bound state exists', 'tr', { color: 'orange', weight: 600 });
@@ -813,7 +842,7 @@ It is the limit of square wells of width $a$ and depth $\alpha/a$ (fixed area $\
           const jump = W.dpsi(b + 1e-9) - W.dpsi(-b - 1e-9);
           st = { a, E: Ls[0].E, n: Ls.length, jump, pred: -2 * AL * W.psi(0), psi0: W.psi(0), psid: Math.sqrt(kd) };
         });
-        v.legend([['accent', 'square well, exact'], ['green', 'delta well: √κ e^{−κ|x|}, E = −½', { dash: true }], ['orange', 'second bound state']]);
+        v.legend([['accent', 'square well, exact'], ['green', 'delta well: $\\sqrt\\kappa\\,e^{-\\kappa|x|}$, $E=-\\tfrac12$', { dash: true }], ['orange', 'second bound state']]);
         v.readout(() => st && `$a = ${v.fix(st.a, 3)}$: $E_0 = ${v.fix(st.E, 5)}$ vs $-m\\alpha^2/2\\hbar^2 = -0.5$ (${v.fix(100 * Math.abs(st.E / -0.5 - 1), 3)} % off) · slope change across the well $\\psi'(b^+)-\\psi'(-b^-) = ${v.fix(st.jump, 4)}$ vs $-2m\\alpha\\psi(0)/\\hbar^2 = ${v.fix(st.pred, 4)}$ · $\\psi(0) = ${v.fix(st.psi0, 4)}$ → $\\sqrt\\kappa = 1$ · ${st.n} bound state${st.n > 1 ? 's' : ''}.`);
       },
     },

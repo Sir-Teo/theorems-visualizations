@@ -76,7 +76,42 @@ function fitCycle(M, pts, tc, H = 2, quad = false) {
   return { x, season, trend, f: (t) => trend(t) + season(t), slope: x[1], pp: mx - mn, tmax, tmin };
 }
 
+// ───────── Revelle & Suess (1957): seawater carbonate chemistry ─────────
+// Not accessed in the original (the Tellus site would not serve it here); its claims are cited through Weart, The
+// Discovery of Global Warming (AIP, history.aip.org/climate/co2.htm): uptake by the surface layer "barely one-tenth the
+// amount a naïve calculation would have predicted", surface water exchanging CO₂ with the air within a decade or so, and
+// "Human beings are now carrying out a large scale geophysical experiment of a kind that could not have happened in the
+// past nor be reproduced in the future". Chemistry (total pH scale): K₀ Weiss (1974); K₁, K₂ Lueker et al. (2000); K_B
+// Dickson (1990); K_W Millero (1995); total boron Uppström (1974). Check at 25 °C, S = 35: pK₁ 5.847, pK₂ 8.966,
+// pK_B 8.597, pK_W 13.217. Today: global mean Revelle factor ≈ 10.8 in 2000 (Jiang et al. 2019, Sci. Rep. 9: 18624,
+// from +3.7 ≈ 34% by 2100 under RCP8.5), about one unit above pre-industrial (Sabine et al. 2004, via NOAA PMEL);
+// ocean sink 2.9 ± 0.4 GtC/yr = 26% of emissions, atmosphere 48% (Global Carbon Budget 2024, ESSD 17: 965).
+function seaConsts(TC, S) {
+  const T = TC + 273.15, lnT = Math.log(T), T100 = T / 100, sS = Math.sqrt(S);
+  return {
+    K0: Math.exp(-60.2409 + 93.4517 / T100 + 23.3585 * Math.log(T100) + S * (0.023517 - 0.023656 * T100 + 0.0047036 * T100 * T100)),
+    K1: 10 ** -(3633.86 / T - 61.2172 + 9.6777 * lnT - 0.011555 * S + 0.0001152 * S * S),
+    K2: 10 ** -(471.78 / T + 25.929 - 3.16967 * lnT - 0.01781 * S + 0.0001122 * S * S),
+    KB: Math.exp((-8966.9 - 2890.53 * sS - 77.942 * S + 1.728 * S * sS - 0.0996 * S * S) / T + 148.0248 + 137.1942 * sS + 1.62142 * S - (24.4344 + 25.085 * sS + 0.2474 * S) * lnT + 0.053105 * sS * T),
+    KW: Math.exp(148.9652 - 13847.26 / T - 23.6521 * lnT + (118.67 / T - 5.977 + 1.0495 * lnT) * sS - 0.01615 * S),
+    BT: (0.000416 * S) / 35,
+  };
+}
+/** DIC, TA in mol/kg → [H⁺], species and pCO₂ (µatm). */
+function seaSolve(DIC, TA, c) {
+  const alk = (H) => { const d = H * H + c.K1 * H + c.K1 * c.K2; return (DIC * (c.K1 * H + 2 * c.K1 * c.K2)) / d + (c.BT * c.KB) / (c.KB + H) + c.KW / H - H - TA; };
+  let lo = 1e-11, hi = 1e-5;
+  for (let i = 0; i < 90; i++) { const m = Math.sqrt(lo * hi); if (alk(m) > 0) lo = m; else hi = m; }
+  const H = Math.sqrt(lo * hi), d = H * H + c.K1 * H + c.K1 * c.K2;
+  const co2 = (DIC * H * H) / d, hco3 = (DIC * c.K1 * H) / d, co3 = (DIC * c.K1 * c.K2) / d;
+  return { H, pH: -Math.log10(H), co2, hco3, co3, pCO2: (co2 / c.K0) * 1e6 };
+}
+/** DIC (mol/kg) in equilibrium with pCO₂ (µatm) at alkalinity TA. */
+function seaDIC(p, TA, c) { let a = 0.5e-3, b = 3.5e-3; for (let i = 0; i < 70; i++) { const m = (a + b) / 2; if (seaSolve(m, TA, c).pCO2 < p) a = m; else b = m; } return (a + b) / 2; }
+const GTC_PER_PPM = 2.124, OCEAN_AREA = 3.61e14, SEAWATER_RHO = 1025;
+
 export default {
+
   collection: 'climate',
   chapter: 7,
   items: [

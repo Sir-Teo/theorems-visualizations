@@ -46,7 +46,7 @@ The coordinates are singular at $\theta = 0$ and $\theta = \pi$ (**gimbal lock**
         const steps = v.toggle('show the three steps', false);
         const S = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 360, title: 'gimbals and the body (drag to rotate)' });
         const sc = v.scene3(S, { yaw: 0.3, pitch: 0.3, axes: false, hint: false });
-        const sm = v.stage({ x: [-180, 180], y: [-180, 180], equal: true, axes: 'box', height: 360, xticks: [-180, -90, 0, 90, 180], yticks: [-180, -90, 0, 90, 180], title: "$\\|\\mathsf R(\\varphi', \\theta, \\psi') - \\mathsf R\\|$ across $(\\varphi', \\psi')$" });
+        const sm = v.stage({ x: [-180, 180], y: [-180, 180], equal: true, axes: 'box', gutter: true, height: 360, xticks: [-180, -90, 0, 90, 180], yticks: [-180, -90, 0, 90, 180], title: "$\\|\\mathsf R(\\varphi', \\theta, \\psi') - \\mathsf R\\|$ across $(\\varphi', \\psi')$" });
         let cur = null;
         v.render(() => {
           const ph = phS.value * DEG, th = thS.value * DEG, ps = psS.value * DEG, R = euler(ph, th, ps);
@@ -120,7 +120,7 @@ with $E' = E - L_3^2/2I_3$. So $\theta$ **nutates** periodically between the two
         v.select('preset', [{ value: 'loops', label: 'loops' }, { value: 'cusps', label: 'cusps' }, { value: 'waves', label: 'waves' }, { value: 'steady', label: 'steady' }], 'cusps', { onChange: (p) => kS.set({ loops: -0.8, cusps: 0, waves: 0.45, steady: 1 }[p]) });
         const S = v.stage({ x: [-1.38, 1.38], y: [-1.3, 1.42], equal: true, axes: false, height: 350, title: 'the trace of the axis on a sphere (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.42, axes: false, hint: false });
-        const sU = v.stage({ x: [20, 90], y: [0, 1], axes: 'box', height: 350, xlabel: 'θ (°)', title: '$U_{\\rm eff}(\\theta)$ and the energy $E\'$ (J)' });
+        const sU = v.stage({ x: [20, 90], y: [0, 1], axes: 'box', gutter: true, height: 350, xlabel: 'θ (°)', title: '$U_{\\rm eff}(\\theta)$ and the energy $E\'$ (J)' });
         const steadyRate = (w3) => { const a = I1v * Math.cos(TH0), b = I3v * w3; return (b - Math.sqrt(b * b - 4 * a * mgl)) / (2 * a); };
         const cache = memo(); let cur = null;
         const run = () => cache(wS.value + '|' + kS.value, () => {
@@ -201,8 +201,8 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
         const tauS = v.slider('spin-down time (s)', 3, 100, 9, { log: true });
         const S = v.stage({ x: [-0.95, 0.95], y: [-0.35, 1.05], equal: true, axes: false, height: 300, title: 'the top (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axes: false, hint: false });
-        const sF = v.stage({ x: [0, 2.5], y: [-0.4, 2.2], axes: 'box', height: 300, title: 'linear modes against $\\omega_3/\\omega_c$ (rates in units of $\\omega_c$)' });
-        const sT = v.stage({ x: [0, TS], y: [0.1, 180], ylog: true, axes: 'box', height: 170, full: true, xlabel: 't (s)', title: 'tilt of the axis (degrees, log scale)' });
+        const sF = v.stage({ x: [0, 2.5], y: [-0.4, 2.2], axes: 'box', gutter: true, height: 300, title: 'linear modes against $\\omega_3/\\omega_c$ (rates in units of $\\omega_c$)' });
+        const sT = v.stage({ x: [0, TS], y: [0.1, 180], ylog: true, axes: 'box', gutter: true, height: 170, full: true, xlabel: 't (s)', title: 'tilt of the axis (degrees, log scale)' });
         const cache = memo(); let cur = null;
         const run = () => cache(w0S.value + '|' + tauS.value, () => {
           const w3 = w0S.value * wc, fr = 1 / tauS.value, a0 = 0.5 * DEG, n0 = [Math.sin(a0), 0, Math.cos(a0)], u0 = unit(crs([0, 1, 0], n0));
@@ -210,16 +210,16 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
           const tilt = R.y.map((y) => Math.acos(clamp(y[2], -1, 1)) / DEG), spin = R.y.map((y) => (y[6] * y[0] + y[7] * y[1] + y[8] * y[2]) / I3v);
           const tc = w0S.value > 1 ? tauS.value * Math.log(w0S.value) : 0;
           let t5 = NaN; for (let i = 0; i < tilt.length; i++) if (tilt[i] > 5) { t5 = R.t[i]; break; }
-          let maxBefore = 0; for (let i = 0; i < tilt.length && R.t[i] < tc; i++) maxBefore = Math.max(maxBefore, tilt[i]);
+          let maxBefore = 0; for (let i = 0; i < tilt.length && R.t[i] < 0.9 * tc; i++) maxBefore = Math.max(maxBefore, tilt[i]);
           return { R, tilt, spin, tc, t5, maxBefore, w3 };
         });
         v.animate((t) => {
           const B = run(), R = B.R, i = idxAt(R, t % TS), y = R.y[i], n = [y[0], y[1], y[2]], u = [y[3], y[4], y[5]], ws = B.spin[i] / wc;
           sc.begin();
           sc.disc([1, 0, 0], [0, 1, 0], 0.7, { fill: 'faint', fillAlpha: 0.2, color: 'faint', grid: true }, [0, 0, 0]);
-          const tr = R.y.slice(Math.max(0, i - 300), i + 1).map((q) => [q[0] * 0.66, q[1] * 0.66, q[2] * 0.66]);
+          const tr = R.y.slice(Math.max(0, i - 300), i + 1).map((q) => [q[0] * 0.62, q[1] * 0.62, q[2] * 0.62]);
           sc.path(tr, { color: 'gold', width: 1.8 });
-          drawTop(sc, n, u, l * DSP, rd * DSP);
+          drawTop(sc, n, u, l * DSP, rd * DSP * 0.65);
           sc.dot([0, 0, 0], { r: 3, color: 'ink' });
           sc.flush();
           S.corner(`$\\omega_3 = ${v.fix(ws, 3)}\\,\\omega_c$ · tilt ${v.fix(B.tilt[i], 2)}°`, 'tl', { color: ws > 1 ? 'green' : 'red' });
@@ -247,7 +247,7 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
           const { B, ws } = cur;
           const head = String.raw`$I_1 = ${v.sci(I1v, 3)}$, $I_3 = ${v.sci(I3v, 3)}$ kg·m², $Mgl = ${v.sci(mgl, 3)}$ N·m · threshold $\omega_c = \sqrt{4MglI_1}/I_3 = ${v.fix(wc, 1)}$ rad/s (${v.fix(wc / TAU, 1)} turns/s) · now $\omega_3 = ${v.fix(ws, 3)}\,\omega_c$`;
           if (B.w3 <= wc) return head + String.raw` · started below the threshold: the tilt grows at once (above 5° after ${isFinite(B.t5) ? v.fix(B.t5, 2) : '—'} s)`;
-          return head + String.raw` · the spin crosses $\omega_c$ at $t = \tau\ln(\omega_3(0)/\omega_c) = ${v.fix(B.tc, 2)}$ s; until then the tilt stayed below ${v.fix(B.maxBefore, 3)}°, and it passed 5° at ${isFinite(B.t5) ? v.fix(B.t5, 2) + ' s' : 'no time in this run'}`;
+          return head + String.raw` · the spin crosses $\omega_c$ at $t = \tau\ln(\omega_3(0)/\omega_c) = ${v.fix(B.tc, 2)}$ s; up to $0.9\,t_c$ the tilt stayed below ${v.fix(B.maxBefore, 3)}° (it started at 0.5°), and it passed 5° at ${isFinite(B.t5) ? v.fix(B.t5, 2) + ' s' : 'no time in this run'}`;
         });
       },
     },
@@ -260,7 +260,7 @@ $$\lambda_\pm = \frac{I_3\omega_3 \pm \sqrt{I_3^2\omega_3^2 - 4MglI_1}}{2I_1}$$
 $$\dot\psi = \frac32\,H\,\frac{\cos\varepsilon}{\omega}\,\frac{Gm}{a^3} \qquad(\text{for the Sun } Gm/a^3 = n^2),$$
 about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H = 0$) would not precess.`,
       idea: String.raw`Averaged over an orbit, the Sun’s tidal pull (9.3) on the bulge is a torque that tries to tilt the equator into the ecliptic: $\tau = \frac32\frac{Gm}{a^3}(C - A)\sin\varepsilon\cos\varepsilon$, directed along the line of the equinoxes. Earth is a fast gyroscope with $L = C\omega$, so, as in 10.10, the torque turns $\mathbf L$ sideways instead of reducing $\varepsilon$: the axis precesses at $\tau/(L\sin\varepsilon)$, which is the formula above. The Moon is far less massive but much closer, and since $m/a^3$ is what matters it contributes about twice as much as the Sun. Hipparchus found the precession around 130 BC, and Newton explained it in the Principia (1687).`,
-      caption: String.raw`Drag the year slider from 13,000 BC to AD 16,000. Left: the northern sky around the pole of the ecliptic (centre), from 50 bright stars at their J2000 positions; the celestial pole (gold) moves around the circle of radius $\varepsilon$, and the readout names the bright star nearest to it. Right: the cause, with the bulge and the obliquity exaggerated. The Sun’s pull on the near and far sides of the bulge (gold arrows) gives a torque (orange) perpendicular to the spin, so the axis turns around the ecliptic pole. The rate is computed from the torque formula. Switch off the Moon, or flatten or round the Earth, and watch the pole lag behind its real schedule.`,
+      caption: String.raw`Drag the year slider from 13,000 BC to AD 16,000. Left: the northern sky around the pole of the ecliptic (centre), from 50 bright stars at their J2000 positions; the celestial pole (gold) moves around the circle of radius $\varepsilon$, and the readout names the bright star nearest to it. Right: the cause, with the bulge and the obliquity exaggerated. The Sun (here at a solstice) pulls the near and far sides of the bulge toward the ecliptic plane (gold arrows); the torque (orange) points along the line of the equinoxes, perpendicular to the spin, so the axis turns around the ecliptic pole. The rate is computed from the torque formula. Switch off the Moon, or flatten or round the Earth, and watch the pole lag behind its real schedule.`,
       deps: ['mech-10.10', 'mech-9.3'],
       see: ['climate-8.1'],
       refs: ['Goldstein §5.8', 'Tong §3.6'],
@@ -272,7 +272,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
         const nS = TAU / (365.256363 * 86400), nM = TAU / (27.321661 * 86400), muM = 0.0123000371, eS = 0.0167, eM = 0.0549, iM = 5.145 * DEG;
         const yS = v.slider('year', -13000, 16000, 2026, { step: 1, fmt: (y) => (y <= 0 ? `${1 - Math.round(y)} BC` : `AD ${Math.round(y)}`) });
         const moon = v.toggle('include the Moon', true);
-        const hS = v.slider('Earth’s flattening $H$ / actual', 0, 2, 1, { step: 0.01 });
+        const hS = v.slider('flattening $H$ (× actual)', 0, 2, 1, { step: 0.01 });
         const sk = v.stage({ x: [-50, 50], y: [-50, 50], equal: true, axes: false, height: 360, title: 'the northern sky around the ecliptic pole' });
         const S3 = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 360, title: 'why: torque on the equatorial bulge (drag to rotate)' });
         const sc = v.scene3(S3, { yaw: -0.4, pitch: 0.25, axes: false, hint: false });
@@ -310,7 +310,7 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
           for (const r of [10, 20, 30, 40]) sk.circle(0, 0, r, { color: 'faint', width: 0.6, alpha: 0.5 });
           sk.circle(0, 0, EPS / DEG, { color: 'gold', width: 1.4, dash: [4, 4], alpha: 0.8 });
           const p0 = 50.29 / 3600 * DEG;
-          for (const [yy, lab] of [[-7999, '8000 BC'], [-3999, '4000 BC'], [1, 'AD 1'], [4000, 'AD 4000'], [8000, 'AD 8000'], [12000, 'AD 12,000']]) {
+          for (const [yy, lab] of [[-7999, '8000 BC'], [-3999, '4000 BC'], [4000, 'AD 4000'], [8000, 'AD 8000'], [12000, 'AD 12,000']]) {
             const a = Math.PI / 2 - p0 * (yy - 2000), [x, y] = XY(a, bp), rr = Math.hypot(x, y), [xo, yo] = [(x * (rr + 4.5)) / rr, (y * (rr + 4.5)) / rr];
             sk.dot(x, y, { r: 2.5, color: 'gold' });
             sk.text(lab, xo, yo, { color: 'gold', size: 10, align: 'center', alpha: 0.95 });
@@ -320,14 +320,14 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
             const r = 90 - s.b / DEG; if (r > 49) continue;
             const [x, y] = XY(s.lam, s.b);
             sk.dot(x, y, { r: clamp(4.6 - 0.95 * s.mag, 1.3, 5.2), color: 'ink' });
-            if (LABEL.has(s.name)) sk.text(s.name, x, y, { color: 'muted', size: 10.5, dx: 6, dy: -6 });
+            if (LABEL.has(s.name)) { const left = s.name === 'Polaris' || s.name === 'Thuban'; sk.text(s.name, x, y, { color: 'muted', size: 10.5, dx: left ? -6 : 6, dy: -6, align: left ? 'right' : 'left' }); }
             const dd = Math.acos(clamp(Math.sin(s.b) * Math.sin(bp) + Math.cos(s.b) * Math.cos(bp) * Math.cos(s.lam - lp), -1, 1));
             if (s.mag < 3.5 && (!best || dd < best.d)) best = { ...s, d: dd };
           }
           const [px, py] = XY(lp, bp);
           sk.circle(px, py, 5, { color: 'gold', width: 1, alpha: 0.6 });
-          sk.dot(px, py, { r: 6, color: 'gold' }); sk.text('pole', px, py, { color: 'gold', size: 11, dx: 8, dy: 10 });
-          sk.dot(0, 0, { r: 3, color: 'accent' }); sk.text('ecliptic pole', 0, 0, { color: 'accent', size: 10, dx: 6, dy: 9 });
+          sk.dot(px, py, { r: 6, color: 'gold' }); sk.text('pole', px, py, { color: 'gold', size: 11, dx: 9, dy: 9, plate: true });
+          sk.dot(0, 0, { r: 3, color: 'accent' }); sk.text('ecliptic pole', 0, 0, { color: 'accent', size: 10, dx: -5, dy: 9, align: 'right' });
           sk.corner(Y <= 0 ? `${1 - Y} BC` : `AD ${Y}`, 'tl', { size: 13, color: 'ink' });
           // physics view in ecliptic coordinates: z = ecliptic pole
           const s = [Math.sin(EPS) * Math.cos(lp), Math.sin(EPS) * Math.sin(lp), Math.cos(EPS)], zE = [0, 0, 1];
@@ -351,7 +351,8 @@ about $16''$/yr from the Sun and $34''$/yr from the Moon. A spherical Earth ($H 
           sc.arrow([0, 0, 0], scl(s, 1.25), { color: 'accent', width: 3 }); sc.tex('\\mathbf L', scl(s, 1.36), { color: 'accent', size: 15 });
           const tq = unit(crs(s, zE));
           if (k1 > 0.01) { sc.arrow([0, 0, 0], scl(tq, 0.55 + 0.3 * Math.min(k1, 1.5)), { color: 'orange', width: 2.8 }); sc.tex('\\boldsymbol\\tau', scl(tq, 0.7 + 0.3 * Math.min(k1, 1.5)), { color: 'orange', size: 15 }); }
-          sc.arrow([0.95, 0, 0], [1.45, 0, 0], { color: 'gold', width: 2 }); sc.tex('\\text{to the Sun}', [1.3, 0, 0.14], { color: 'gold', size: 11 });
+          const sun = unit([ey[0], ey[1], 0]);   // the Sun at a solstice, where its pull on the bulge is largest
+          sc.arrow(scl(sun, 1.0), scl(sun, 1.48), { color: 'gold', width: 2 }); sc.tex('\\text{to the Sun}', add(scl(sun, 1.3), [0, 0, 0.16]), { color: 'gold', size: 11 });
           sc.flush();
           cur = { Rt, best, lp, Y };
         });
@@ -525,8 +526,8 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
         const mode = v.select('mechanism', [{ value: 'tuck', label: 'tuck and turn' }, { value: 'bend', label: 'bend and twist (Kane–Scher)' }], 'tuck');
         const S = v.stage({ x: [-0.88, 0.88], y: [-0.78, 0.78], equal: true, axes: false, height: 340, title: 'the cat, $\\mathbf L = 0$ throughout (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.3, pitch: 0.22, axes: false, hint: false });
-        const sS = v.stage({ x: [-300, 300], y: [-1.3, 1.3], axes: 'box', height: 340, title: ' ' });
-        const sT = v.stage({ x: [0, 1], y: [-30, 200], axes: 'box', height: 160, full: true, xlabel: 'fraction of the loop', title: 'roll of each half (°): 0 = feet up, 180 = feet down' });
+        const sS = v.stage({ x: [-300, 300], y: [-1.3, 1.3], axes: 'box', gutter: true, height: 340, title: ' ' });
+        const sT = v.stage({ x: [0, 1], y: [-30, 200], axes: 'box', gutter: true, height: 160, full: true, xlabel: 'fraction of the loop', title: 'roll of each half (°): 0 = feet up, 180 = feet down' });
         const LH = 0.48, RC = 0.11, NL = 4;
         const LOOPS = { tuck: [[0, 1], [270, 1], [270, -1], [0, -1]], bend: Array.from({ length: 8 }, (_, k) => [75 * Math.cos((-TAU * k) / 8), 75 * Math.sin((-TAU * k) / 8)]) };
         const Hs = { tuck: LOOPS.tuck.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => [clamp(a, -300, 300), clamp(b, -1, 1)] })), bend: LOOPS.bend.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => { const r = Math.hypot(a, b), k = r > 85 ? 85 / r : 1; return [a * k, b * k]; } })) };

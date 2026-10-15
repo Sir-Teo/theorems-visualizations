@@ -184,7 +184,7 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
           sc.dot([0, 0, 0], { r: 6, color: 'gold' });
           sc.flush();
           { const A = sc.P([1.6, 0, 0]); S.text('vernal equinox', A[0], A[1], { color: 'muted', size: 10.5, dy: 12, align: 'center' }); }
-          { const A = sc.P(vlin(rAsc, F.n, 0.13, ez)); S.text('☊', A[0], A[1], { color: 'orange', size: 15, align: 'center' }); }
+          { const A = sc.P(vlin(rAsc, F.n, 0.13, ez)); S.text('☊', A[0], A[1], { color: 'orange', size: 15, dx: -14, align: 'center' }); }
           S.corner(`i = ${v.fix(st.inc / DEG, 1)}°  ${st.inc > Math.PI / 2 ? '(retrograde)' : '(prograde)'}`, 'tl', { color: st.inc > Math.PI / 2 ? 'red' : 'muted', size: 12 });
           // face-on panel
           const A = a * scale, bA = A * Math.sqrt(1 - e * e), c = A * e;

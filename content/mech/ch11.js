@@ -213,7 +213,7 @@ two **constant** symmetric matrices ($K$ is symmetric because mixed partial deri
 $$M\ddot{\boldsymbol\eta} + K\boldsymbol\eta = 0 .$$
 The neglected terms are of third order, so solutions of the true and linearised equations that start at the same small displacement of size $\varepsilon$ stay within $O(\varepsilon^2)$ of each other over any fixed time interval. If the first nonzero correction to $V$ is quartic (as for a symmetric potential), the agreement improves to $O(\varepsilon^3)$.`,
       idea: String.raw`Taylor’s theorem does all the work. The first-order term of $V$ vanishes because $\mathbf q_0$ is an equilibrium, so $V$ starts at second order with the Hessian $K$, symmetric by the equality of mixed partials (pma-9.41). $T$ is already quadratic in $\dot{\boldsymbol\eta}$, so replacing $M(\mathbf q)$ by $M(\mathbf q_0)$ only changes it at third order. Lagrange’s equations (6.6) then turn quadratic forms into linear forces. Over a fixed time, Gronwall’s inequality turns an $O(\varepsilon^2)$ error in the force into an $O(\varepsilon^2)$ error in the motion. This is the many-dimensional version of 4.3.`,
-      caption: String.raw`Left, the potential surface with its osculating quadratic bowl (wire mesh); right, the same seen from above, with the true contours (solid) and the quadratic ones (dashed). Drag the gold start point: the true motion (blue) and the linearised one (orange, dashed) are released from rest there. Close to the minimum they are indistinguishable; drag outward and they peel apart. The bottom-right panel measures the deviation over the whole run for a range of amplitudes along the same direction. Its slope is the order of the first neglected term minus one: 1 for the cubic Hénon–Heiles potential, 2 for the even pendulum potential.`,
+      caption: String.raw`Left, the potential surface with its osculating quadratic bowl (wire mesh); right, the same seen from above, with the true contours (solid) and the quadratic ones (dashed). Drag the gold start point: the true motion (blue) and the linearised one (orange, dashed) are released from rest there. Close to the minimum they are indistinguishable; drag outward and they peel apart. The bottom-right panel measures the deviation over the whole run for a range of amplitudes along the same direction. At small amplitude its slope is the order of the first neglected term minus one: 2 for the even pendulum potential, 1 for the cubic Hénon–Heiles potential (there the curve bends upward as the second-order frequency shift accumulates over the long run).`,
       deps: ['mech-6.6', 'mech-4.3', 'pma-9.41'],
       refs: ['Goldstein §6.1', 'Arnold §22'],
       tags: ['linearisation', 'small oscillations', 'Hessian'],
@@ -249,7 +249,7 @@ The neglected terms are of third order, so solutions of the true and linearised 
           const dir = [x0[0] / eps, x0[1] / eps];
           const sw = sweepC(`${pick.value}|${dir}`, () => {
             const out = []; for (let j = 0; j <= 14; j++) { const e = 0.012 * 1.42 ** j; if (e > 0.98 * R0 * Math.SQRT2) break; const r = sim(P, G, [dir[0] * e, dir[1] * e]); out.push([e, r.dev / e]); }
-            const fit = out.filter((p) => isFinite(p[1]) && p[0] < 0.05 && p[1] > 1e-12);
+            const fit = out.filter((p) => isFinite(p[1]) && p[0] < 0.03 && p[1] > 1e-12);
             const slope = fit.length > 2 ? M.linreg(fit.map((p) => Math.log(p[0])), fit.map((p) => Math.log(p[1]))).slope : NaN;
             return { out, slope };
           });
@@ -278,7 +278,7 @@ The neglected terms are of third order, so solutions of the true and linearised 
           const pts = sw.out.filter((p) => isFinite(p[1]) && p[1] > 0);
           if (pts.length) {
             const [e0, d0] = pts[0];
-            for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) { sL.fn((e) => d0 * (e / e0) ** pw, { color: 'faint', dash: [4, 4], width: 1.2 }); sL.text(lab, 0.06, d0 * (0.06 / e0) ** pw, { color: 'muted', size: 11, dx: 4, dy: pw === 1 ? 10 : -10 }); }
+            for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) { sL.fn((e) => d0 * (e / e0) ** pw, { color: 'faint', dash: [4, 4], width: 1.2 }); const el = Math.min(1.8, e0 * (2 / d0) ** (1 / pw)); sL.text(lab, el, d0 * (el / e0) ** pw, { color: 'muted', size: 11, align: 'right', dx: -6, dy: pw === 1 ? 12 : -12 }); }
             sL.path(pts, { color: 'blue', width: 2 }); sL.dots(pts, { r: 3, color: 'blue' });
           }
           if (isFinite(S.dev) && S.dev > 0) sL.dot(eps, S.dev / eps, { r: 6, color: 'gold' });
@@ -289,7 +289,7 @@ The neglected terms are of third order, so solutions of the true and linearised 
           if (!cur) return '';
           const { K, G, S, eps, sw } = cur, f = (x) => v.fix(x, 4);
           const esc = !isFinite(S.dev) ? ' · **the true motion escapes over a saddle**: no linear approximation can follow it' : String.raw` · max deviation $${num(v, S.dev, 4)}$, i.e. ${v.fix((100 * S.dev) / eps, 2)}% of $\varepsilon$`;
-          return String.raw`Hessian at the minimum (finite differences) $K = \begin{pmatrix}${f(K[0][0])} & ${f(K[0][1])}\\ ${f(K[1][0])} & ${f(K[1][1])}\end{pmatrix}$ ($\partial_x\partial_y V$ and $\partial_y\partial_x V$ agree) · linear frequencies $\omega = ${v.fix(Math.sqrt(G.w2[0]), 4)}, ${v.fix(Math.sqrt(G.w2[1]), 4)}$ · amplitude $\varepsilon = ${v.fix(eps, 3)}$${esc} · fitted small-$\varepsilon$ slope of the deviation ÷ ε: ${v.fix(sw.slope, 2)}`;
+          return String.raw`Hessian at the minimum (finite differences) $K = \begin{pmatrix}${f(K[0][0])} & ${f(K[0][1])}\\ ${f(K[1][0])} & ${f(K[1][1])}\end{pmatrix}$ ($\partial_x\partial_y V$ and $\partial_y\partial_x V$ agree) · linear frequencies $\omega = ${v.fix(Math.sqrt(G.w2[0]), 4)}, ${v.fix(Math.sqrt(G.w2[1]), 4)}$ · amplitude $\varepsilon = ${v.fix(eps, 3)}$${esc} · slope of the deviation ÷ ε for $\varepsilon < 0.03$: ${v.fix(sw.slope, 2)}`;
         });
       },
     },

@@ -65,7 +65,8 @@ So even a rough guess of the fundamental mode shape gives a good upper bound for
         let syncing = false;
         const fromSphere = (xi) => { const a = toA(xi), s = 0.85 / Math.max(...a.map(Math.abs)); syncing = true; bh.forEach((h, i) => h.set(i + 1, a[i] * s)); syncing = false; };
         const fromBeads = () => { if (syncing) return; let xi = unit(toXi(bh.map((h) => h.y))); if (sc.P(xi)[2] > 0) xi = xi.map((c) => -c); H.set(xi); };
-        const H = sc.handle(unit(toXi([0.7, 0.4, 1])), { color: 'gold', label: 'trial', snap: front, onDrag: (h) => fromSphere(h.p) });
+        let xi0 = unit(toXi([1, 0.45, 0.9])); if (sc.P(xi0)[2] > 0) xi0 = xi0.map((c) => -c);
+        const H = sc.handle(xi0, { color: 'gold', label: 'trial', snap: front, onDrag: (h) => fromSphere(h.p) });
         const bh = [0, 1, 2].map((i) => sB.handle(i + 1, 0.5, { color: 'purple', r: 7 + 3 * Math.sqrt(ms[i]), constrain: (x, y) => [i + 1, clamp(y, -1.05, 1.05)] }));
         bh.forEach((h) => (h.onDrag = fromBeads));
         fromSphere(H.p);
@@ -226,7 +227,7 @@ $$X_1 = \frac{F\,(k - m\Omega^2)}{(K + k - M\Omega^2)(k - m\Omega^2) - k^2}.$$
         const zS = v.slider('absorber damping ratio $\\zeta_a$', 0, 0.3, 0, { step: 0.001 });
         const on = v.toggle('absorber attached', true);
         const sT = v.stage({ x: [-0.75, 0.75], y: [-0.05, 1.25], equal: true, axes: false, height: 350, weight: 0.75, title: 'a tower with a pendulum absorber' });
-        const sR = v.stage({ x: W, y: [0.1, 200], ylog: true, axes: 'box', height: 350, weight: 1.3, xlabel: 'driving frequency $\\Omega/\\omega_0$', title: 'amplitude ÷ static deflection $F/K$' });
+        const sR = v.stage({ x: W, y: [0.1, 200], ylog: true, axes: 'box', height: 350, weight: 1.3, title: 'amplitude ÷ static deflection $F/K$, against $\\Omega/\\omega_0$' });
         const hO = sR.handle(0.98, 0.15, { color: 'gold', constrain: (x) => [clamp(x, W[0] + 0.005, W[1] - 0.005), 0.15] });
         v.button('Den Hartog optimum', () => { const mu = muS.value; fS.set(1 / (1 + mu)); zS.set(Math.sqrt((3 * mu) / (8 * (1 + mu) ** 3))); });
         v.button('drive at the absorber frequency', () => hO.set(fS.value, 0.15));
@@ -239,21 +240,32 @@ $$X_1 = \frac{F\,(k - m\Omega^2)}{(K + k - M\Omega^2)(k - m\Omega^2) - k^2}.$$
           return { X1, X2 };
         };
         const ab = (z) => Math.hypot(z.re, z.im);
+        const cacheC = memo();
+        /** Response curves, fixed points and peak heights for one parameter set (cached). */
+        const curves = (mu, f, za, att) => cacheC([mu, f, za, att].join('|'), () => {
+          const n = 1200, free = [], main = [], rel = []; let pk = 0, pk0 = 0;
+          for (let i = 0; i <= n; i++) {
+            const x = W[0] + ((W[1] - W[0]) * i) / n, q0 = resp(x, mu, f, za, false), q = resp(x, mu, f, za, att);
+            free.push([x, ab(q0.X1)]); main.push([x, ab(q.X1)]); rel.push([x, ab({ re: q.X2.re - q.X1.re, im: q.X2.im - q.X1.im })]);
+            pk = Math.max(pk, ab(q.X1)); pk0 = Math.max(pk0, ab(q0.X1));
+          }
+          // fixed points: where the undamped and the locked (infinitely damped) absorber give the same |X1|
+          const d = (x) => ab(resp(x, mu, f, 0, true).X1) - 1 / Math.abs(1 - (1 + mu) * x * x);
+          const fp = []; let x0 = W[0], d0 = d(x0);
+          for (let i = 1; i <= 800; i++) { const x1 = W[0] + ((W[1] - W[0]) * i) / 800, d1 = d(x1); if (isFinite(d0) && isFinite(d1) && Math.sign(d0) !== Math.sign(d1) && Math.abs(d0 - d1) < 50) { let a = x0, b = x1; for (let k = 0; k < 40; k++) { const m = (a + b) / 2; if (Math.sign(d(m)) === Math.sign(d(a))) a = m; else b = m; } const xm = (a + b) / 2; if (Math.abs(1 - (1 + mu) * xm * xm) > 1e-3) fp.push(xm); } x0 = x1; d0 = d1; }
+          return { free, main, rel, fp, pk, pk0 };
+        });
         let cur = null;
         v.animate((t) => {
           const mu = muS.value, f = fS.value, za = zS.value, att = on.value, Om = hO.x;
           const r = resp(Om, mu, f, za, att), X1 = r.X1, X2 = r.X2;
           // response curves
-          const g = (fn) => (x) => fn(resp(x, mu, f, za, att));
-          sR.fn((x) => ab(resp(x, mu, f, za, false).X1), { color: 'red', width: 1.6, dash: [6, 4], n: 600 });
+          const C = curves(mu, f, za, att);
+          sR.path(C.free, { color: 'red', width: 1.6, dash: [6, 4] });
           if (att) {
-            sR.fn(g((q) => ab({ re: q.X2.re - q.X1.re, im: q.X2.im - q.X1.im })), { color: 'orange', width: 1.4, n: 600 });
-            sR.fn(g((q) => ab(q.X1)), { color: 'blue', width: 2.6, n: 900 });
-            // fixed points: where the undamped and the locked (infinitely damped) absorber give the same |X1|
-            const d = (x) => ab(resp(x, mu, f, 0, true).X1) - 1 / Math.abs(1 - (1 + mu) * x * x);
-            const fp = []; let x0 = W[0], d0 = d(x0);
-            for (let i = 1; i <= 800; i++) { const x1 = W[0] + ((W[1] - W[0]) * i) / 800, d1 = d(x1); if (isFinite(d0) && isFinite(d1) && Math.sign(d0) !== Math.sign(d1) && Math.abs(d0 - d1) < 50) { let a = x0, b = x1; for (let k = 0; k < 40; k++) { const m = (a + b) / 2; if (Math.sign(d(m)) === Math.sign(d(a))) a = m; else b = m; } const xm = (a + b) / 2; if (Math.abs(1 - (1 + mu) * xm * xm) > 1e-3) fp.push(xm); } x0 = x1; d0 = d1; }
-            fp.slice(0, 2).forEach((x, i) => { const y = 1 / Math.abs(1 - (1 + mu) * x * x); sR.dot(x, y, { r: 4.5, color: 'ink', hollow: true }); sR.text(i ? 'Q' : 'P', x, y, { color: 'ink', size: 12, dy: -12, align: 'center', weight: 600 }); });
+            sR.path(C.rel, { color: 'orange', width: 1.4 });
+            sR.path(C.main, { color: 'blue', width: 2.6 });
+            C.fp.slice(0, 2).forEach((x, i) => { const y = 1 / Math.abs(1 - (1 + mu) * x * x); sR.dot(x, y, { r: 4.5, color: 'ink', hollow: true }); sR.text(i ? 'Q' : 'P', x, y, { color: 'ink', size: 12, dy: -12, align: 'center', weight: 600 }); });
             sR.vline(f, { color: 'green', width: 1, dash: [2, 4], alpha: 0.8 });
             sR.text('absorber frequency', f, 0.3, { color: 'green', size: 10.5, align: 'left', dx: 4 });
           }
@@ -282,7 +294,7 @@ $$X_1 = \frac{F\,(k - m\Omega^2)}{(K + k - M\Omega^2)(k - m\Omega^2) - k^2}.$$
         v.readout(() => {
           if (!cur) return '';
           const { mu, f, za, att, Om, X1, X2 } = cur, a1 = ab(X1), rel = ab({ re: X2.re - X1.re, im: X2.im - X1.im });
-          let pk = 0, pk0 = 0; for (let i = 0; i <= 2000; i++) { const x = W[0] + ((W[1] - W[0]) * i) / 2000; pk = Math.max(pk, ab(resp(x, mu, f, za, att).X1)); pk0 = Math.max(pk0, ab(resp(x, mu, f, za, false).X1)); }
+          const { pk, pk0 } = curves(mu, f, za, att);
           const s = String.raw`At $\Omega/\omega_0 = ${v.fix(Om, 3)}$: $|X_1| = ${num(v, a1, 3)}\,F/K$` + (att ? String.raw`, absorber swing $|X_2-X_1| = ${v.fix(rel, 2)}\,F/K$, phase of the absorber relative to the drive ${v.fix((Math.atan2(X2.im, X2.re) * 180) / Math.PI, 0)}°` : '');
           const opt = String.raw` · Den Hartog: $\omega_a/\omega_0 = 1/(1+\mu) = ${v.fix(1 / (1 + mu), 3)}$, $\zeta = ${v.fix(Math.sqrt((3 * mu) / (8 * (1 + mu) ** 3)), 3)}$, peak level $\approx\sqrt{1+2/\mu} = ${v.fix(Math.sqrt(1 + 2 / mu), 1)}$`;
           return s + String.raw` · highest response over the band: ${v.fix(pk, 1)} with the absorber, ${v.fix(pk0, 1)} without (1% structural damping)` + (att ? opt : '');
@@ -401,8 +413,8 @@ A transition state in chemistry is such a saddle, with exactly one imaginary-fre
           const trajs = Array.from({ length: 12 }, (_, k) => { const ph = (TAU * k) / 12 + 0.13; return rk4rec(F, [eps * Math.cos(ph), eps * Math.sin(ph), 0, 0], T, Math.round(T / DT), EV, out); });
           let gMeas = NaN;
           if (E.lam[0] < 0) {
-            const u = E.vec[0], R = rk4rec(F, [eps * u[0], eps * u[1], 0, 0], T, Math.round(T / DT), EV, out);
-            const pts = R.y.map((q, i) => [R.t[i], Math.log(Math.hypot(q[0], q[1]))]).filter((p) => p[1] > Math.log(5 * eps) && p[1] < Math.log(0.4));
+            const u = E.vec[0], e0 = 1e-5, R = rk4rec(F, [e0 * u[0], e0 * u[1], 0, 0], 3 * T, Math.round((3 * T) / DT), EV, out);
+            const pts = R.y.map((q, i) => [R.t[i], Math.log(Math.hypot(q[0], q[1]))]).filter((p) => p[1] > Math.log(1e-3) && p[1] < Math.log(0.03));
             if (pts.length > 4) gMeas = v.M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])).slope;
           }
           let maxR = 0; for (const R of trajs) for (const q of R.y) maxR = Math.max(maxR, Math.hypot(q[0], q[1]));
@@ -444,7 +456,7 @@ A transition state in chemistry is such a saddle, with exactly one imaginary-fre
         v.readout(() => {
           if (!cur) return '';
           const B = cur, [l1, l2] = B.E.lam;
-          if (l1 < 0) return String.raw`Hessian eigenvalues $\omega^2 = ${v.fix(l1, 4)}$ and $${v.fix(l2, 4)}$: a saddle, $\gamma = \sqrt{${v.fix(-l1, 4)}} = ${v.fix(Math.sqrt(-l1), 4)}$ · measured growth rate along the unstable direction (slope of $\log|\boldsymbol\eta|$): ${v.fix(B.gMeas, 4)} · trajectories reach ${v.fix(B.maxR, 2)} from a start at ${v.fix(B.eps, 3)}`;
+          if (l1 < 0) return String.raw`Hessian eigenvalues $\omega^2 = ${v.fix(l1, 4)}$ and $${v.fix(l2, 4)}$: a saddle, $\gamma = \sqrt{${v.fix(-l1, 4)}} = ${v.fix(Math.sqrt(-l1), 4)}$ · measured growth rate of a run started $10^{-5}$ along the unstable direction (slope of $\log|\boldsymbol\eta|$ while it is small): ${v.fix(B.gMeas, 4)} · trajectories reach ${v.fix(B.maxR, 2)} from a start at ${v.fix(B.eps, 3)}`;
           return String.raw`Hessian eigenvalues $\omega^2 = ${v.fix(l1, 4)}$ and $${v.fix(l2, 4)}$, both positive: a minimum, frequencies $${v.fix(Math.sqrt(Math.max(0, l1)), 3)}$ and $${v.fix(Math.sqrt(l2), 3)}$ · every trajectory stays within ${v.fix(B.maxR, 4)} of the equilibrium (started at ${v.fix(B.eps, 3)})`;
         });
       },

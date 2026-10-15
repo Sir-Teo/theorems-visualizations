@@ -105,5 +105,96 @@ He held the relative humidity fixed, so his numbers include the **water-vapour f
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 3.12
+    // Data (verified, scanned report via geosci.uchicago.edu/~archer): §1 "the most probable global warming for a doubling of
+    // CO₂ to be near 3°C with a probable error of ± 1.5°C"; the more realistic models give 2–3.5 °C; §3.1 ΔQ ≈ 4 W m⁻²
+    // (±25%), blackbody λ = 4σT³ ≈ 4 W m⁻² K⁻¹ → 1 °C, fixed relative humidity halves λ → 2 °C, radiative–convective
+    // λ = 2.0 ± 0.5 (Ramanathan & Coakley 1978), snow–ice albedo lowers λ by 0.1–0.9 (0.3 likely), total λ = 1.7 ± 0.8 →
+    // 1.6–4.5 K, 2.4 likely; §3.2 a 1% increase of all clouds cools by 0.4 W m⁻²; Table 1 (M1, M2, M3 of Manabe; H1, H2
+    // of Hansen) and §4 p. 15: hemispheric ΔT ≈ 3 °C in M1 and M2, global 2 °C in M3, 3.5 °C in H1, 3.9 °C in H2; p. 16:
+    // "2°C as the lower bound from the M series and 3.5°C as the upper bound from H1 ... 0.5°C as an additional margin
+    // for error on the low side ... 1°C ... on the high side ... the range 1.5°C to 4.5°C, with the most probable value
+    // near 3°C". Later assessments: FAR 1990 1.5–4.5 (best guess 2.5); SAR 1995 unchanged; TAR 2001 1.5–4.5; AR4 2007
+    // likely 2–4.5, best ≈ 3; AR5 2013 likely 1.5–4.5, no best estimate; AR6 2021 best 3, likely 2.5–4, very likely 2–5.
+    {
+      num: '3.12',
+      kind: 'Paper',
+      name: 'Carbon Dioxide and Climate: A Scientific Assessment',
+      paper: { authors: 'J. G. Charney, A. Arakawa, D. J. Baker, et al. (Ad Hoc Study Group on Carbon Dioxide and Climate)', year: 1979, title: 'Carbon Dioxide and Climate: A Scientific Assessment', venue: 'National Academy of Sciences, Washington, DC (report)', doi: '10.17226/12181' },
+      introduces: [],
+      statement: String.raw`A panel of the US National Academy of Sciences, chaired by Jule Charney, concluded that if the CO₂ content of the atmosphere doubles and the climate reaches equilibrium, the global mean surface warming would most probably be **near 3 °C, with a probable error of ±1.5 °C**, larger at high latitudes.
+
+(a) **Simple models.** Doubling CO₂ adds about $\Delta Q=4$ W m⁻² of heating; with the feedback parameter $\lambda$ the warming is $\Delta T=\Delta Q/\lambda$. A blackbody Earth has $\lambda\approx4$ W m⁻² K⁻¹ (1 °C); holding relative humidity fixed roughly halves $\lambda$ (2 °C); with snow and ice albedo the panel estimated $\lambda=1.7\pm0.8$ W m⁻² K⁻¹, hence 1.6–4.5 °C, 2.4 °C likely.
+
+(b) **General circulation models.** Two of Manabe's models gave about 3 °C (hemispheric) and his global model 2 °C; Hansen's gave 3.5 and 3.9 °C. Judging that the M series underestimated and the H series overestimated the moisture and ice feedbacks, the panel took **2 °C as a lower bound** and **3.5 °C as an upper bound**, then added 0.5 °C below and, because of high clouds, 1 °C above: **1.5–4.5 °C**.
+
+The estimate is an equilibrium sensitivity for a doubling: it says nothing about how fast warming comes, and the panel warned that ocean heat uptake could delay it by decades.`,
+      idea: String.raw`By 1979 Keeling's curve (climate-7.16) showed CO₂ rising steadily, and the White House asked the Academy whether the warming predicted by the new general circulation models (climate-9.5) could be trusted. The panel met for five days at Woods Hole and did something new: it compared every model's equilibrium climate sensitivity (climate-3.5) with the physics of each feedback (water vapour, lapse rate, snow and ice, clouds; climate-4.5, climate-2.16), looked hard for any overlooked negative feedback ("we have tried but have been unable to find"), and turned the spread into an explicit uncertainty range. Its "3 ± 1.5 °C" became the canonical range for four decades: the IPCC reports of 1990, 1995, 2001 and 2013 kept 1.5–4.5 °C, and only AR6 (2021), combining process understanding, the historical record and palaeoclimates, narrowed the likely range to 2.5–4 °C around the same 3 °C. The often-repeated story that the range came from Manabe's 2 °C and Hansen's 4 °C plus or minus half a degree is a simplification: the report itself starts from 2 °C and from Hansen's 3.5 °C (H1) and widens them asymmetrically.`,
+      caption: String.raw`**Left**: the feedback arithmetic of the report's §3. Warming $\Delta T=\Delta Q/\lambda$ is a hyperbola in the feedback parameter $\lambda$: the blackbody (1 °C) and fixed-humidity (2 °C) cases are marked, and the panel's $\lambda=1.7\pm0.8$ band (blue) maps onto a lopsided range of warmings on the vertical axis, because positive feedbacks stretch the high side. Set the **forcing**, the radiative–convective $\lambda$, and the **snow–ice** and **cloud** feedbacks; the gold point is your sensitivity. **Right**: the five general circulation models of Table 1, the bounds the panel took from them, and its margins (drag the **margin** sliders, 0.5 and 1.0 °C in the report), then every IPCC assessment since, with the gold point carried over from the left.`,
+      deps: ['climate-3.5', 'climate-4.5', 'climate-9.5', 'climate-2.16'],
+      refs: [],
+      tags: ['climate sensitivity', 'feedbacks', 'history'],
+      credit: 'Charney et al. (US National Academy of Sciences), 1979',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Charney_Report' },
+      viz(v) {
+        const dQ = v.slider('ΔQ for 2×CO₂ (W/m²)', 3, 5, 4, { step: 0.05 });
+        const lRC = v.slider('λ, fixed humidity', 1.5, 2.5, 2.0, { step: 0.05 });
+        const fIce = v.slider('snow–ice feedback', 0, 0.9, 0.3, { step: 0.05 });
+        const fCl = v.slider('cloud feedback', -0.6, 0.6, 0, { step: 0.05 });
+        const mLo = v.slider('low margin (°C)', 0, 1.5, 0.5, { step: 0.05 });
+        const mHi = v.slider('high margin (°C)', 0, 1.5, 1.0, { step: 0.05 });
+        const L = v.stage({ x: [0, 4.4], y: [0, 9], axes: 'box', height: 380, weight: 0.9, minWidth: 260, xlabel: 'feedback parameter λ (W m⁻² K⁻¹)', ylabel: 'warming for 2×CO₂ (°C)', title: 'ΔT = ΔQ / λ' });
+        const R = v.stage({ x: [0, 6.2], y: [-0.9, 12.6], axes: false, height: 380, weight: 1.1, hover: true, title: 'the models, the verdict, and what came after' });
+        const GCM = [['M1', 3, 'Manabe: sector, swamp ocean, no seasons, fixed clouds (hemispheric)', true], ['M2', 3, 'Manabe: as M1 with cloud feedback (hemispheric)', true], ['M3', 2, 'Manabe: global, mixed-layer ocean, seasons', false], ['H1', 3.5, 'Hansen: global, mixed layer, seasons, cloud feedback', false], ['H2', 3.9, 'Hansen: swamp ocean, no seasons, cloud feedback', false]];
+        const IPCC = [['FAR 1990', 1.5, 4.5, null, null, 2.5], ['SAR 1995', 1.5, 4.5, null, null, 2.5], ['TAR 2001', 1.5, 4.5, null, null, null], ['AR4 2007', 2, 4.5, null, null, 3], ['AR5 2013', 1.5, 4.5, null, null, null], ['AR6 2021', 2.5, 4, 2, 5, 3]];
+        let st = null;
+        v.render(() => {
+          const lam = lRC.value - fIce.value - fCl.value, dT = lam > 0.05 ? dQ.value / lam : Infinity;
+          // ---- left: the hyperbola and the band
+          const Q = dQ.value;
+          L.vband(0.9, 2.5, { color: 'blue', alpha: 0.1 });
+          L.hband(Q / 2.5, Q / 0.9, { color: 'blue', alpha: 0.1 });
+          L.fn((x) => Q / x, { domain: [0.3, 4.4], color: 'ink', width: 2.4, n: 300 });
+          L.line(1.7, 0, 1.7, Q / 1.7, { color: 'blue', width: 1.4, dash: [4, 3] }); L.line(0, Q / 1.7, 1.7, Q / 1.7, { color: 'blue', width: 1.4, dash: [4, 3] });
+          L.text('λ = 1.7 ± 0.8', 1.7, 6.3, { size: 11.5, weight: 700, color: 'blue', align: 'center', plate: true });
+          L.text(`${v.fix(Q / 2.5, 1)}–${v.fix(Q / 0.9, 1)} °C`, 0.06, Q / 0.9, { size: 11.5, weight: 700, color: 'blue', align: 'left', dy: -9 });
+          for (const [x, lab] of [[4, 'blackbody'], [2, 'fixed humidity']]) { L.dot(x, Q / x, { r: 5, color: 'ink' }); L.text(lab, x, Q / x, x === 4 ? { dy: -14, size: 11.5, weight: 600, align: 'center' } : { dx: 10, dy: 12, size: 11.5, weight: 600, align: 'left' }); }
+          if (isFinite(dT) && dT < 9) { L.line(lam, 0, lam, dT, { color: 'gold', width: 1.2, dash: [2, 3] }); L.dot(lam, dT, { r: 8, color: 'gold' }); }
+          // ---- right: GCMs, bounds, IPCC
+          const xT = (t) => t; // °C axis
+          const row = (i) => 12 - i;
+          for (let t = 0; t <= 6; t++) { R.line(xT(t), -0.1, xT(t), 12.3, { color: 'grid', width: 1 }); R.text(`${t}`, xT(t), -0.35, { size: 11, color: 'muted', align: 'center' }); }
+          R.text('°C for doubled CO₂', 6.15, -0.35, { size: 11, color: 'muted', align: 'right', dy: -16 });
+          GCM.forEach(([name, t, , hemi], i) => { R.dot(t, row(i), { r: 6, color: name[0] === 'M' ? 'teal' : 'purple', hollow: hemi }); R.text(name, 0.08, row(i), { size: 12, weight: 700, color: name[0] === 'M' ? 'teal' : 'purple' }); });
+          const lo = 2, hi = 3.5, yb = row(5.15);
+          R.rect(lo - mLo.value, yb - 0.32, hi + mHi.value, yb + 0.32, { fill: 'green', fillAlpha: 0.22, color: 'green', width: 1.5, radius: 4 });
+          R.rect(lo, yb - 0.32, hi, yb + 0.32, { fill: 'green', fillAlpha: 0.35, stroke: false });
+          R.line(3, yb - 0.45, 3, yb + 0.45, { color: 'green', width: 3 });
+          R.text('Charney 1979', 0.08, yb, { size: 12, weight: 700, color: 'green' });
+          R.text(`${v.fix(lo - mLo.value, 1)} – ${v.fix(hi + mHi.value, 1)}`, hi + mHi.value, yb, { dx: 8, size: 11.5, weight: 700, color: 'green' });
+          R.hline(row(5.85), { color: 'faint', width: 1 });
+          IPCC.forEach(([name, a, b, va, vb, best], i) => {
+            const y = row(6.5 + i * 0.95);
+            if (va != null) R.line(va, y, vb, y, { color: 'orange', width: 2, alpha: 0.7 });
+            R.rect(a, y - 0.22, b, y + 0.22, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1.2, radius: 3 });
+            if (best != null) R.line(best, y - 0.34, best, y + 0.34, { color: 'orange', width: 3 });
+            R.text(name, 0.08, y, { size: 11.5, weight: 600, color: 'ink' });
+          });
+          if (isFinite(dT) && dT < 6.2) { R.vline(dT, { color: 'gold', width: 1.4, dash: [3, 3] }); R.text('you', dT, 12.35, { size: 11, weight: 700, color: 'gold', align: 'center' }); }
+          // hover on a model row shows its configuration
+          const P = R.pointer; let hov = null;
+          if (P.inside) GCM.forEach((g, i) => { if (Math.abs(P.y - row(i)) < 0.45) hov = g; });
+          if (hov) R.text(hov[2], 6.1, row(GCM.indexOf(hov)), { align: 'right', size: 11, color: 'ink', plate: true, dy: -14 });
+          st = { lam, dT };
+        });
+        v.legend([['blue', 'panel’s λ = 1.7 ± 0.8 and the warmings it implies', { area: true }], ['teal', 'Manabe models (hollow: hemispheric)', { dot: true }], ['purple', 'Hansen models', { dot: true }], ['green', 'bounds (dark) and margins (light), best 3 °C', { area: true }], ['orange', 'IPCC likely range (line: very likely)', { area: true }], ['gold', 'your λ and ΔT', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { lam, dT } = st;
+          const you = isFinite(dT) && lam > 0.05 ? `your feedbacks: $\\lambda$ = ${v.fix(lRC.value, 2)} − ${v.fix(fIce.value, 2)} (ice) − ${v.fix(fCl.value, 2)} (clouds) = **${v.fix(lam, 2)}** W m⁻² K⁻¹, so $\\Delta T = ${v.fix(dQ.value, 2)}/${v.fix(lam, 2)}$ = **${v.fix(dT, 2)} °C**` : `your feedbacks leave $\\lambda \\le 0$: no equilibrium, a runaway — the case the panel looked for and could not find`;
+          return `${you} · report: blackbody 1 °C, fixed humidity 2 °C, with snow and ice $\\lambda = 1.7 \\pm 0.8$ → ${v.fix(4 / 2.5, 1)}–${v.fix(4 / 0.9, 1)} °C (it printed 1.6–4.5), 2.4 °C likely; the same ±0.8 in $\\lambda$ is −0.8 °C and +2.1 °C in warming · models: 2 °C (M3) to 3.9 °C (H2); verdict ${v.fix(2 - mLo.value, 1)}–${v.fix(3.5 + mHi.value, 1)} °C with your margins (report: 1.5–4.5, most probable 3) · AR6 (2021): best estimate **3 °C**, likely 2.5–4 °C, very likely 2–5 °C — the 1979 central value has survived 42 years; the likely range is half as wide`;
+        });
+      },
+    },
   ],
 };
