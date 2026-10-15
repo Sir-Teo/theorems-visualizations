@@ -213,7 +213,7 @@ so the average of $N$ independent channels follows the deterministic relaxation 
 $$\frac{dx}{dt} = \alpha_x(V)(1-x) - \beta_x(V)\,x \quad\Longleftrightarrow\quad \tau_x(V)\frac{dx}{dt} = x_\infty(V) - x,$$
 with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)$. After a voltage step from $V_0$ to $V_1$ the gate relaxes exponentially, $x(t) = x_\infty(V_1) + \big(x_\infty(V_0) - x_\infty(V_1)\big)e^{-t/\tau_x(V_1)}$. A channel needing several gates open (Hodgkin–Huxley's $n^4$ and $m^3h$) has open probability equal to a power or product of gating variables.`,
       idea: String.raw`This is mass-action kinetics (pchem-7.4) for the reaction closed ⇄ open, or equivalently the mean of the two-state Markov chain of neuro-1.6. The voltage dependence comes from charged parts of the protein moving in the membrane field. The ratio $\alpha/\beta$ is a Boltzmann factor $e^{q(V - V_{1/2})/kT}$ (thermo-6.1), which makes $x_\infty(V)$ sigmoidal. Since the relaxation is exponential with a single time constant (ode-1.5), measuring $x_\infty$ and $\tau_x$ at each voltage under voltage clamp (neuro-1.5) determines $\alpha_x(V) = x_\infty/\tau_x$ and $\beta_x(V) = (1-x_\infty)/\tau_x$. Hodgkin and Huxley did exactly this for the gates $n$, $m$ and $h$ (neuro-2.1, neuro-2.2).`,
-      caption: String.raw`A population of 400 gates, each flipping at random with the Hodgkin–Huxley rates of the chosen gate (squid axon, 6.3 °C). Each tile is one gate (filled = open). At the step, from $V_0$ to $V_1$, the open fraction (gold) relaxes along the exponential predicted by the ODE (blue dashed). Bottom: $x_\infty(V)$ and $\tau_x(V)$ for all three gates, with the chosen one bold and the two voltages marked. Note that $h$ runs the other way: it *closes* on depolarization. Try $m$, which is about ten times faster than $n$ and $h$.`,
+      caption: String.raw`A population of 2000 gates, each flipping at random with the Hodgkin–Huxley rates of the chosen gate (squid axon, 6.3 °C); 400 of them are shown as tiles (filled = open). At the step, from $V_0$ to $V_1$, the open fraction (gold) relaxes along the exponential predicted by the ODE (blue dashed). Bottom: $x_\infty(V)$ and $\tau_x(V)$ for all three gates, with the chosen one bold and the two voltages marked. Note that $h$ runs the other way: it *closes* on depolarization. Try $m$, which is about ten times faster than $n$ and $h$.`,
       scope: String.raw`Independent gates with first-order kinetics; the Hodgkin–Huxley rate functions are empirical fits for the squid axon at 6.3 °C (rates scale roughly ×3 per 10 °C).`,
       deps: ['neuro-1.6', 'pchem-7.4'],
       see: ['ode-1.5', 'thermo-6.1', 'neuro-2.1', 'neuro-2.2', 'mathbio-5.2'],
@@ -228,7 +228,7 @@ with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)
         const sx = v.stage({ x: [0, 10], y: [-0.03, 1.03], height: 260, axes: 'box', xlabel: 't (ms)', ylabel: 'fraction open', weight: 1.3, minWidth: 430 });
         const si = v.stage({ x: [-100, 40], y: [0, 1.02], height: 190, axes: 'box', xlabel: 'V (mV)', ylabel: 'x∞(V)', weight: 1, minWidth: 300 });
         const sT = v.stage({ x: [-100, 40], y: [0, 10], height: 190, axes: 'box', xlabel: 'V (mV)', ylabel: 'τx(V) (ms)', weight: 1, minWidth: 300 });
-        const NG = 400, NS = 1500, GC = { n: ION_COL.K, m: ION_COL.Na, h: 'teal' };
+        const NG = 2000, NSHOW = 400, NS = 1500, GC = { n: ION_COL.K, m: ION_COL.Na, h: 'teal' };
         let key = '', S = null;
         const sim = () => {
           const g = gate.value, V0 = V0s.value, V1 = V1s.value, t0 = gateTau(g, V0), t1 = gateTau(g, V1), T = (8 * Math.max(t0, t1)) / 0.8, ts = 0.2 * T, dt = T / NS;
@@ -249,7 +249,7 @@ with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)
           const R = get(), tc = Math.min(R.T, ((t % 8) / 6.5) * R.T), k = Math.min(NS, Math.round(tc / R.dt)); cur = k;
           const col = GC[R.g];
           // tiles
-          for (let i = 0; i < NG; i++) {
+          for (let i = 0; i < NSHOW; i++) {
             const x = i % 20, y = Math.floor(i / 20), s = R.st[i * (NS + 1) + k];
             sg.rect(x + 0.1, y + 0.1, x + 0.9, y + 0.9, { fill: s ? col : 'grid', fillAlpha: s ? 0.85 : 1, stroke: false, radius: 2 });
           }
@@ -280,7 +280,7 @@ with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)
             si.text(lab, V, gateInf(R.g, V), { size: 11, color: 'ink', align: 'left', dx: 7, baseline: 'middle', weight: 600 });
           }
         }, { period: 8, still: 7 });
-        v.legend([['gold', 'fraction of 400 gates open'], ['accent', 'ODE: exponential relaxation', { dash: true }], [ION_COL.K, '$n$'], [ION_COL.Na, '$m$'], ['teal', '$h$']]);
+        v.legend([['gold', 'fraction open (2000 gates)'], ['accent', 'ODE: exponential relaxation', { dash: true }], [ION_COL.K, '$n$'], [ION_COL.Na, '$m$'], ['teal', '$h$']]);
         v.readout(() => {
           const R = get();
           // fit τ to the population by least squares on the exponential (golden-section search in log τ)
@@ -289,7 +289,7 @@ with $x_\infty = \alpha_x/(\alpha_x+\beta_x)$ and $\tau_x = 1/(\alpha_x+\beta_x)
           let lo = Math.log(R.tau / 5), hi = Math.log(R.tau * 5); const gr = (Math.sqrt(5) - 1) / 2;
           for (let it = 0; it < 60; it++) { const a1 = hi - gr * (hi - lo), b1 = lo + gr * (hi - lo); if (sse(Math.exp(a1)) < sse(Math.exp(b1))) hi = b1; else lo = a1; }
           const fit = Math.abs(pre - R.xinf) > 0.05 ? Math.exp((lo + hi) / 2) : NaN;
-          return `at $V_1 = ${R.V1}$ mV: $\\alpha = ${v.fix(R.a1, 3)}$, $\\beta = ${v.fix(R.b1, 3)}$ ms⁻¹ · $x_\\infty = \\alpha/(\\alpha+\\beta) = ${v.fix(R.xinf, 3)}$, $\\tau = 1/(\\alpha+\\beta) = ${v.fix(R.tau, 3)}$ ms · from the 400 simulated gates: fitted $\\tau = ${isFinite(fit) ? v.fix(fit, 3) : '—'}$ ms, final fraction ${v.fix(R.frac[NS], 3)}`;
+          return `at $V_1 = ${R.V1}$ mV: $\\alpha = ${v.fix(R.a1, 3)}$, $\\beta = ${v.fix(R.b1, 3)}$ ms⁻¹ · $x_\\infty = \\alpha/(\\alpha+\\beta) = ${v.fix(R.xinf, 3)}$, $\\tau = 1/(\\alpha+\\beta) = ${v.fix(R.tau, 3)}$ ms · from 2000 simulated gates (400 shown): fitted $\\tau = ${isFinite(fit) ? v.fix(fit, 3) : '—'}$ ms, final fraction ${v.fix(R.frac[NS], 3)}`;
         });
       },
     },

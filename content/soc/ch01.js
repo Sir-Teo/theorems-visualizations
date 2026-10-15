@@ -129,7 +129,7 @@ Two consequences recur throughout this collection.
 
 (b) Quite different individual motives can produce the same aggregate, so the motives cannot be read off the pattern; and a small change in the rules can change the pattern completely.`,
       idea: String.raw`Schelling opened *Micromotives and Macrobehavior* with a lecture audience that seated itself leaving the front rows of the hall empty. Nobody need have wanted the front empty. If each newcomer merely prefers someone seated in the rows just ahead, the first few arrivals scatter at random, each later arrival settles just behind somebody, clusters grow backwards, and the front stays empty until the back is full — when the latecomers must take the seats nobody chose. A mild taste for the back produces a similar picture for a different reason, and a dislike of sitting at a stranger's elbow produces a different one (alternate seats) that the late arrivals then destroy. The pattern lives in the interaction, which is why the following items simulate it: segregation from neighbourhood preferences (soc-1.2), tipping (soc-1.6), cascades of joiners (soc-1.8).`,
-      caption: String.raw`People enter one at a time and each picks among the empty seats, favouring seats that suit the chosen motive (with some idiosyncratic randomness). Colour shows arrival order, from early (blue) to late (gold); the last arrival has a red ring. Drag **people arrived** to replay the filling, pick a motive above or mix them with the sliders, and compare the row profile on the right with the dashed level of a randomly seated audience. With *someone just ahead* no rule mentions rows, yet the front empties.`,
+      caption: String.raw`People enter one at a time and each picks among the empty seats, favouring seats that suit the chosen motive (with some idiosyncratic randomness). Colour shows arrival order, from the first (purple) to the last (yellow); the latest arrival has a red ring. Drag **people arrived** to replay the filling, pick a motive above or mix them with the sliders, and compare the row profile on the right with the dashed level of a randomly seated audience. With *someone just ahead* no rule mentions rows, yet the front empties.`,
       deps: [],
       see: ['soc-1.10', 'soc-9.1', 'soc-9.4'],
       refs: ['Schelling ch. 1'],
@@ -148,7 +148,8 @@ Two consequences recur throughout this collection.
         v.button('New audience', () => { seed += 1; });
         const Hs = v.stage({ x: [-0.4, SEATS + 0.4], y: [-2.2, ROWS + 0.3], height: 370, weight: 1.5, axes: false, title: 'the hall, seen from above' });
         const Bs = v.stage({ x: [-0.02, 1.08], y: [-2.2, ROWS + 0.3], height: 370, weight: 0.6, minWidth: 190, axes: false, title: 'share of each row taken' });
-        v.legend([['blue', 'early arrivals', { dot: true }], ['gold', 'late arrivals', { dot: true }], ['red', 'latest arrival', { dot: true }], ['muted', 'random seating', { dash: true }]]);
+        const ord = (u) => v.M.cmap(0.12 + 0.8 * u, 'viridis');
+        v.legend([[ord(0), 'first to arrive', { dot: true }], [ord(0.5), 'midway', { dot: true }], [ord(1), 'last to arrive', { dot: true }], ['red', 'latest arrival (ring)', { dot: true }], ['muted', 'random seating', { dash: true }]]);
         let key = '', sim = null, st = null;
         v.render(() => {
           const k = [bS.value, cS.value, aS.value, seed].join('|');
@@ -157,7 +158,6 @@ Two consequences recur throughout this collection.
           // stage / lectern
           Hs.rect(SEATS / 2 - 5, -1.9, SEATS / 2 + 5, -0.85, { fill: 'faint', fillAlpha: 0.35, stroke: false, radius: 6 });
           Hs.text('stage', SEATS / 2, -1.37, { color: 'muted', size: 12, align: 'center' });
-          Hs.text('front', -0.3, 0.5, { color: 'muted', size: 11, align: 'left', dy: 0 });
           const rowCount = new Array(ROWS).fill(0); let elbow = 0;
           for (let r = 0; r < ROWS; r++) for (let s = 0; s < SEATS; s++) {
             const q = r * SEATS + s, i = occ[q], here = i >= 0 && i < n;
@@ -165,7 +165,7 @@ Two consequences recur throughout this collection.
             if (!here) { Hs.rect(x0, y0, x1, y1, { fill: 'grid', fillAlpha: 1, stroke: false, radius: 3 }); continue; }
             rowCount[r]++;
             const left = s > 0 && occ[q - 1] >= 0 && occ[q - 1] < n, right = s < SEATS - 1 && occ[q + 1] >= 0 && occ[q + 1] < n; if (left || right) elbow++;
-            Hs.rect(x0, y0, x1, y1, { fill: v.mix('blue', 'gold', n > 1 ? i / (n - 1) : 0), fillAlpha: 1, stroke: false, radius: 3 });
+            Hs.rect(x0, y0, x1, y1, { fill: ord(n > 1 ? i / (n - 1) : 0), fillAlpha: 1, stroke: false, radius: 3 });
           }
           if (n > 0) { const q = seq[n - 1], r = Math.floor(q / SEATS), s = q % SEATS; Hs.rect(s + 0.02, r + 0.06, s + 0.98, r + 0.94, { color: 'red', width: 2.4, radius: 4 }); }
           // row profile
@@ -177,15 +177,16 @@ Two consequences recur throughout this collection.
           Bs.text('front', 1.06, 0.5, { color: 'muted', size: 11, align: 'right' });
           Bs.text(`random: ${pc(lvl)}`, Math.min(Math.max(lvl, 0.3), 0.75), -0.7, { color: 'muted', size: 11, align: 'center' });
           let empty = 0; while (empty < ROWS && rowCount[empty] === 0) empty++;
-          const backHalf = rowCount.slice(ROWS / 2).reduce((x, y) => x + y, 0);
-          st = { n, empty, back: n ? backHalf / n : 0, elbow: n ? elbow / n : 0, meanRow: n ? rowCount.reduce((x, y, r) => x + y * (r + 1), 0) / n : 0 };
+          const front4 = rowCount.slice(0, 4).reduce((x, y) => x + y, 0), back4 = rowCount.slice(ROWS - 4).reduce((x, y) => x + y, 0);
+          st = { n, empty, front: n ? front4 / n : 0, back: n ? back4 / n : 0, elbow: n ? elbow / n : 0, meanRow: n ? rowCount.reduce((x, y, r) => x + y * (r + 1), 0) / n : 0 };
         });
         v.readout(() => {
           if (!st) return '';
-          const { n, empty, back, elbow, meanRow } = st;
+          const { n, empty, front, back, elbow, meanRow } = st;
           if (!n) return 'The hall is empty: drag **people arrived**.';
           const why = bS.value === 0 && cS.value > 0 ? ' — although nobody here has any preference among rows: the front empties only because each newcomer wants somebody just ahead' : bS.value > 0 && cS.value === 0 && aS.value === 0 ? ' — a mild individual preference, sharpened into a hard edge by the order of arrival' : aS.value > 0 && bS.value === 0 && cS.value === 0 ? ' — everyone wanted a free seat beside them, but once the alternate seats are gone the latecomers must sit at someone’s elbow' : '';
-          return `${n} of ${CAP} seats taken · front **${empty}** row${empty === 1 ? '' : 's'} completely empty · the back half of the hall holds **${pc(back)}** of the audience (random seating: 50%) · mean row ${v.fix(meanRow, 1)} of ${ROWS} · ${pc(elbow)} have someone at their elbow${why}.`;
+          const rnd = Math.min(1, 4 / ROWS);
+          return `${n} of ${CAP} seats taken · the front 4 rows hold **${pc(front)}** of the audience and the back 4 rows **${pc(back)}** (random seating: ${pc(rnd)} each)${empty ? ` · the first ${empty} row${empty === 1 ? ' is' : 's are'} completely empty` : ''} · mean row ${v.fix(meanRow, 1)} of ${ROWS} · ${pc(elbow)} have someone at their elbow${why}.`;
         });
       },
     },
@@ -199,7 +200,7 @@ Two consequences recur throughout this collection.
 The model's output is a spatial pattern and its degree of segregation, measured for instance by the average share of like neighbours, to be compared with the value under random mixing ($s^2 + (1-s)^2$ when a share $s$ of agents is blue).`,
       scope: String.raw`A deliberately stylised model: a regular grid, two groups, the same tolerance for everyone, costless moves, and preferences only about neighbours' type. It shows that mild preferences are *sufficient* for strong segregation, not that they are its actual cause in any city, where prices, institutions and discrimination also act.`,
       idea: String.raw`A discontented agent's move does more than raise its own like share: it changes two neighbourhoods. Where it leaves, its kind becomes rarer, which can push the remaining neighbours of its kind below $T$; where it arrives, it thickens a cluster of its own kind and pushes members of the other kind there toward discontent. Moves beget moves, and the cascade stops only when clusters are large enough that their boundaries are short compared with their areas. The histogram of like shares shows the result: a distribution that starts centred on the random-mixing value ends piled up near 1, far above the line $T$ that anyone asked for (soc-1.3 maps this across all $T$; soc-1.10 is Schelling's own version, worked by hand).`,
-      caption: String.raw`Press ▶ (or **Step**) and watch discontented agents relocate. The right panel is the distribution of like-neighbour shares: red residents are below the tolerance line $T$ and will move, purple ones are content; the dashed outline is the starting distribution. The strip below tracks the average like share against the random-mixing level. Click any cell to inspect its neighbourhood. Change $T$ (the run resumes), the vacancies or the blue share (new board), or let movers pick only *a vacancy that suits them*.`,
+      caption: String.raw`Press ▶ (or **Step**) and watch discontented agents relocate. The right panel sorts residents by their share of like neighbours: red residents are below the tolerance line $T$ and will move, purple ones are content; the dashed outline is the starting distribution. The strip below tracks the average like share against the random-mixing level. Click any cell to inspect its neighbourhood. Change $T$ (the run resumes), the vacancies or the blue share (new board), or let movers pick only *a vacancy that suits them*.`,
       deps: ['soc-1.1'],
       see: ['soc-1.10'],
       refs: ['Schelling ch. 4', 'E&K §4.5'],
@@ -214,7 +215,7 @@ The model's output is a spatial pattern and its degree of segregation, measured 
         const shA = v.slider('blue share', 0.2, 0.8, 0.5, { step: 0.01, fmt: pc, onChange: () => { A.reset(); v.restart(); } });
         const rule = v.select('the discontented move to', [{ value: 'random', label: 'any vacancy' }, { value: 'content', label: 'a vacancy that suits them' }], 'random', { onChange: () => { A.reset(); v.restart(); } });
         const s = v.stage({ height: 340, weight: 1.1, title: 'the city (torus)' });
-        const hs = v.stage({ x: [0, 1], y: [0, 0.5], height: 340, axes: 'box', xlabel: 'share of like neighbours', ylabel: 'share of residents', title: 'who is content, who will move' });
+        const hs = v.stage({ x: [-0.03, 1.03], y: [0, 0.5], height: 340, axes: 'box', title: 'residents by share of like neighbours' });
         const ts = v.stage({ height: 150, axes: 'box', full: true, xlabel: 'round', title: '' });
         const city = (M) => ({ w: M.w, h: M.h, g: M.grid, R: M.rng });
         const BINS = 10;
@@ -250,7 +251,7 @@ The model's output is a spatial pattern and its degree of segregation, measured 
           // histogram
           const H = histOf(M), H0 = M.data.h0;
           const ymax = Math.max(0.3, ...H.ok.map((o, b) => o + H.bad[b]), ...H0.ok.map((o, b) => o + H0.bad[b])) * 1.12;
-          hs.setView([0, 1], [0, ymax]);
+          hs.setView([-0.03, 1.03], [-ymax * 0.075, ymax * 1.1]);
           for (let b = 0; b < BINS; b++) {
             const x0 = b / BINS + 0.006, x1 = (b + 1) / BINS - 0.006;
             if (H.ok[b]) hs.rect(x0, 0, x1, H.ok[b], { fill: 'purple', fillAlpha: 0.6, stroke: false });
@@ -259,12 +260,12 @@ The model's output is a spatial pattern and its degree of segregation, measured 
           const outline = []; for (let b = 0; b < BINS; b++) { const y = H0.ok[b] + H0.bad[b]; outline.push([b / BINS, y], [(b + 1) / BINS, y]); }
           hs.path([[0, 0], ...outline, [1, 0]], { color: 'muted', width: 1.6, dash: [5, 4] });
           hs.vline(T.value, { color: 'ink', width: 1.6 });
-          hs.text(`T = ${pc(T.value)}`, T.value, ymax * 0.94, { color: 'ink', size: 12, align: T.value > 0.75 ? 'right' : 'left', dx: T.value > 0.75 ? -6 : 6, weight: 600 });
+          hs.text(`T = ${pc(T.value)}: move ← | → stay`, T.value, ymax * 1.03, { color: 'ink', size: 12, align: T.value > 0.6 ? 'right' : 'left', dx: T.value > 0.6 ? -6 : 6, weight: 600 });
           // time series
-          A.plot(ts, { series: ['segregation', 'unhappy'], colors: { segregation: 'purple', unhappy: 'red' }, names: { segregation: 'like-neighbour share', unhappy: 'discontented' }, minWindow: 30 });
+          A.plot(ts, { series: ['segregation', 'unhappy'], colors: { segregation: 'purple', unhappy: 'red' }, names: { segregation: 'like-neighbour share', unhappy: 'discontented' }, minWindow: 30, y: [-0.16, 1.06] });
           const base = shA.value ** 2 + (1 - shA.value) ** 2;
           ts.hline(base, { color: 'muted', dash: [5, 4], width: 1.2 });
-          ts.text('random mixing', ts.bounds.x[0], base, { color: 'muted', size: 11, dx: 6, dy: -9 });
+          ts.text('random mixing', ts.bounds.x[1], base, { color: 'muted', size: 11, dx: -8, dy: 9, align: 'right' });
         });
         v.readout(() => {
           const M = A.model, base = shA.value ** 2 + (1 - shA.value) ** 2;
@@ -297,7 +298,7 @@ A smaller group ends up more isolated relative to random mixing than the majorit
         const rule = v.select('move to', [{ value: 'random', label: 'any vacancy' }, { value: 'content', label: 'a suitable vacancy' }], 'random', { onChange: () => snap() });
         const vacS = v.select('vacancies', [{ value: '10', label: '10%' }, { value: '25', label: '25%' }], '10', { onChange: () => snap() });
         const shS = v.select('blue share', [{ value: '50', label: '50%' }, { value: '25', label: '25% (minority)' }], '50', { onChange: () => snap() });
-        const P = v.stage({ x: [-0.02, 0.92], y: [0, 1.04], height: 350, weight: 1.35, axes: 'box', xlabel: 'tolerance $T$: like share each agent asks for', ylabel: 'outcome', title: 'segregation at rest, against what each agent asks' });
+        const P = v.stage({ x: [-0.03, 0.93], y: [-0.13, 1.05], height: 350, weight: 1.35, axes: 'box', xlabel: 'tolerance $T$ (share of like neighbours each agent asks for)', title: 'like-neighbour share at rest, against the demand $T$' });
         const Bd = v.stage({ x: [0, W], y: [0, W], height: 350, weight: 0.75, minWidth: 220, axes: false, equal: true, title: 'final board' });
         const cache = new Map();
         const data = () => {
@@ -333,12 +334,12 @@ A smaller group ends up more isolated relative to random mixing than the majorit
           const poly = []; curve.forEach(([T, y]) => poly.push([T, Math.max(y, floor(T))])); for (let i = curve.length - 1; i >= 0; i--) poly.push([curve[i][0], floor(curve[i][0])]);
           P.poly(poly, { fill: 'purple', fillAlpha: 0.1, stroke: false });
           P.line(0, 0, 0.92, 0.92, { color: 'muted', dash: [5, 4], width: 1.3 });
-          P.text('outcome = demand', 0.86, 0.86, { color: 'muted', size: 11, align: 'right', dy: 12 });
+          P.text('outcome = demand', 0.3, 0.3, { color: 'muted', size: 11, align: 'left', dx: 10, dy: 8 });
           P.hline(base, { color: 'muted', dash: [2, 4], width: 1.3 });
-          P.text('random mixing', 0.9, base, { color: 'muted', size: 11, align: 'right', dy: -9 });
+          P.text('random mixing', 0.0, base, { color: 'muted', size: 11, align: 'left', dy: 10 });
           if (minority) {
             P.path(d.likeA.map((y, i) => [Ts[i], y]), { color: 'blue', width: 2 }); P.path(d.likeB.map((y, i) => [Ts[i], y]), { color: 'orange', width: 2 });
-            P.hline(sh, { color: 'blue', dash: [2, 4], width: 1 }); P.text('blue: random', 0.9, sh, { color: 'blue', size: 10.5, align: 'right', dy: -9 });
+            P.hline(sh, { color: 'blue', dash: [2, 4], width: 1 }); P.text('blue: random mixing', 0.5, sh, { color: 'blue', size: 10.5, align: 'center', dy: 10 });
           }
           P.path(d.un.map((y, i) => [Ts[i], y]), { color: 'red', width: 1.8 });
           P.path(curve, { color: 'purple', width: 2.6 });
@@ -353,10 +354,10 @@ A smaller group ends up more isolated relative to random mixing than the majorit
         });
         v.readout(() => {
           const d = data(), i = idx(h.x), T = i * DT, y = mean(d.like[i]), sh = +shS.value / 100, base = sh * sh + (1 - sh) * (1 - sh);
-          const third = mean(d.like[Math.round(1 / 3 / DT)]), half = mean(d.like[10]);
+          const t30 = mean(d.like[6]), t35 = mean(d.like[7]), half = mean(d.like[10]);
           const grp = sh < 0.5 ? ` · blues (25%) end with ${pc(d.likeA[i])} like neighbours against a random ${pc(sh)} (×${v.fix(d.likeA[i] / sh, 1)}); oranges ${pc(d.likeB[i])} against ${pc(1 - sh)} (×${v.fix(d.likeB[i] / (1 - sh), 1)})` : '';
           const tail = d.un[i] > 0.05 ? ` — **no equilibrium**: ${pc(d.un[i])} are still discontented after 100 rounds` : ` after ${v.fix(d.steps[i], 0)} rounds`;
-          return `$T = ${v.fix(T, 2)}$: settled like-neighbour share **${pc(y)}** (random mixing ${pc(base)}, demand ${pc(T)})${tail}${grp} · on this board: ${pc(third)} at $T \\approx 1/3$, ${pc(half)} at $T = 1/2$`;
+          return `$T = ${v.fix(T, 2)}$: settled like-neighbour share **${pc(y)}** (random mixing ${pc(base)}, demand ${pc(T)})${tail}${grp} · on this board: ${pc(t30)} at $T = 0.30$ and ${pc(t35)} at $T = 0.35$ (a third lies between), ${pc(half)} at $T = 0.50$`;
         });
       },
     },
@@ -373,7 +374,7 @@ A smaller group ends up more isolated relative to random mixing than the majorit
 
 Both indices see only tract counts, so their values depend on how the tracts are drawn.`,
       idea: String.raw`$D$ is half the $\ell^1$ distance between two distributions over tracts — where the A's live and where the B's live. Moving one A member from a tract with more than its share of A into one with less lowers $D$ by exactly $1/A$, which gives the "share who would have to move" reading, and sorting tracts by composition turns $D$ into the maximum gap of a Lorenz-type curve. Exposure instead measures the surroundings of the average person, which is what Schelling's like-neighbour share (soc-1.2) measures at the scale of eight neighbours. Because both indices are blind to arrangement *within* tracts, a fine checkerboard of households scores as perfectly integrated, and narrow stripes score as perfectly segregated or perfectly integrated depending on the tract size: the modifiable areal unit problem, a cousin of Simpson's paradox (causal-4.4).`,
-      caption: String.raw`A city of $24 \times 24$ households (blue = A, orange = B) divided into tracts. Choose a city, then drag on the map to repaint households with the **brush** colour. The right panel is the segregation curve, with $D$ marked as its largest gap from the diagonal. Change the **tract size** — the households stay put, only the boundaries move — and switch on **census view** to see the city as the indices see it, each tract shaded by its mix (white = the city's mix).`,
+      caption: String.raw`A city of $24 \times 24$ households (blue = A, orange = B) divided into tracts. Choose a city, then drag on the map to repaint households with the **brush** colour. The right panel is the segregation curve, with $D$ marked as its largest gap from the diagonal. Change the **tract size** — the households stay put, only the boundaries move — and switch on **census view** to see the city as the indices see it, each tract shaded by its mix (white = the city's mix) and labelled with its blue share.`,
       deps: ['soc-1.2'],
       see: ['causal-4.4'],
       refs: ['Schelling ch. 4'],
@@ -387,7 +388,7 @@ Both indices see only tract counts, so their values depend on how the tracts are
         const brush = v.select('brush', [{ value: '1', label: 'blue' }, { value: '2', label: 'orange' }], '2');
         const census = v.toggle('census view', false);
         const M = v.stage({ x: [0, CW], y: [0, CW], height: 360, weight: 1.05, axes: false, equal: true, title: 'the city and its tracts' });
-        const S = v.stage({ x: [0, 1], y: [0, 1], height: 360, weight: 0.95, axes: 'box', equal: true, xlabel: 'cumulative share of blues', ylabel: 'cumulative share of oranges', title: 'segregation curve' });
+        const S = v.stage({ x: [-0.08, 1.04], y: [-0.08, 1.04], height: 360, weight: 0.95, axes: 'box', ylabel: 'cumulative share of oranges', title: 'segregation curve: oranges (up) against blues (across)' });
         M.onDrag((x, y) => { const b = +brush.value; for (let j = Math.floor(y - 1.3); j <= y + 1.3; j++) for (let i = Math.floor(x - 1.3); i <= x + 1.3; i++) if (i >= 0 && j >= 0 && i < CW && j < CW && Math.hypot(i + 0.5 - x, j + 0.5 - y) < 1.4) g[j * CW + i] = b; });
         v.legend([['blue', 'A: blue households', { dot: true }], ['orange', 'B: orange households', { dot: true }], ['purple', 'segregation curve'], ['red', '$D$ = largest gap']]);
         let res = null;
@@ -410,7 +411,7 @@ Both indices see only tract counts, so their values depend on how the tracts are
           S.path([...pts, [1, 0]], { fill: 'purple', fillAlpha: 0.1, stroke: false, close: true });
           S.path(pts, { color: 'purple', width: 2.4 });
           pts.forEach((p) => S.dot(p[0], p[1], { r: 2, color: 'purple' }));
-          if (best > 0.005) { S.arrow(at[0], at[1], at[0], at[0], { color: 'red', width: 2, both: true, head: 7 }); S.tex(`D = ${v.fix(best, 2)}`, at[0], (at[0] + at[1]) / 2, { color: 'red', align: 'left', dx: 8, size: 15 }); }
+          if (best > 0.005) { const lft = at[0] > 0.55; S.arrow(at[0], at[1], at[0], at[0], { color: 'red', width: 2, both: true, head: 7 }); S.tex(`D = ${v.fix(best, 2)}`, at[0], (at[0] + at[1]) / 2, { color: 'red', align: lft ? 'right' : 'left', dx: lft ? -8 : 8, size: 15 }); }
           S.text('evenness', 0.6, 0.6, { color: 'muted', size: 11, dx: -8, dy: -10, align: 'right' });
           const all = [2, 3, 4, 6, 8, 12].map((kk) => [kk, tractIndices(g, kk).D]);
           res = { k, R, all };
@@ -445,18 +446,19 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
         const ex = v.select('example', [{ value: 'one', label: 'Schelling 1: 100 vs 50, up to 2 : 1' }, { value: 'two', label: 'Schelling 2: 100 vs 100, up to 5 : 1' }, { value: 'three', label: 'tolerant blues, wary oranges' }], 'one',
           { onChange: (k) => { const [m, a, b] = EX[k]; mB.set(m); RW.set(a); RB.set(b); place(); } });
         const mB = v.slider('oranges in the city ($m_B$; blues $m_W$ = 100)', 10, 150, 50, { int: true, step: 1, onChange: () => place() });
-        const RW = v.slider('most tolerant blue accepts oranges : blues up to', 0.2, 6, 2, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} : 1` });
-        const RB = v.slider('most tolerant orange accepts blues : oranges up to', 0.2, 6, 2, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} : 1` });
+        const RW = v.slider('most tolerant blue accepts this many oranges per blue', 0.2, 6, 2, { step: 0.05 });
+        const RB = v.slider('most tolerant orange accepts this many blues per orange', 0.2, 6, 2, { step: 0.05 });
         const mW = 100;
-        const P = v.stage({ x: [0, 100], y: [0, 50], height: 370, weight: 1.3, axes: 'box', xlabel: 'blues in the area $w$', ylabel: 'oranges in the area $b$', title: 'entry and departure' });
-        const Q = v.stage({ x: [0, 100], y: [0, 2.2], height: 370, weight: 0.8, minWidth: 230, axes: 'box', xlabel: 'residents, most tolerant first', ylabel: 'tolerated ratio', title: 'tolerance schedules' });
+        const P = v.stage({ x: [0, 100], y: [0, 50], height: 370, weight: 1.3, axes: 'box', title: 'blues present $w$ (across), oranges present $b$ (up)' });
+        const Q = v.stage({ x: [0, 100], y: [0, 2.2], height: 370, weight: 0.8, minWidth: 230, axes: 'box', ylabel: 'tolerated ratio', title: 'tolerance schedules (most tolerant first)' });
         const start = P.handle(30, 22, { color: 'ink', label: 'start', labelPos: 'ne' });
         function place() { start.set(Math.min(start.x, mW), Math.min(start.y, mB.value)); }
         v.legend([['blue', 'blues content: $b \\le T_W(w)$'], ['orange', 'oranges content: $w \\le T_B(b)$'], ['ink', 'trajectory'], ['green', 'stable', { dot: true }], ['red', 'tipping point', { dot: true }]]);
         let bkey = '', basin = null, out = null;
         v.render(() => {
           const m = mB.value, Rw = RW.value, Rb = RB.value, T = tipModel(mW, m, Rw, Rb);
-          P.setView([0, mW], [0, m]);
+          P.setView([-0.07 * mW, 1.04 * mW], [-0.08 * m, 1.1 * m]);
+          P.rect(0, 0, mW, m, { color: 'faint', width: 1, dash: [3, 3] });
           // basins (cached): which outcome each starting mix ends in
           const key = [m, Rw, Rb].join('|');
           if (key !== bkey) {
@@ -478,16 +480,16 @@ For straight-line tolerance schedules (tolerances spread uniformly from 0 to $R$
           for (const f of [0.08, 0.25, 0.5]) { const q = Math.floor(f * (path.length - 2)); if (q > 0 && q + 1 < path.length) P.arrow(path[q][0], path[q][1], path[q + 1][0], path[q + 1][1], { color: 'ink', head: 10, width: 0.01 }); }
           T.eq.forEach(([x, y], q) => P.dot(x, y, { r: 6, color: T.kind[q] === 'stable' ? 'green' : 'red', hollow: T.kind[q] !== 'stable' }));
           P.dot(end[0], end[1], { r: 3.5, color: 'ink' });
-          P.text('all blue', mW, 0, { color: 'blue', size: 11.5, align: 'right', dx: -8, dy: -12, weight: 600 });
-          P.text('all orange', 0, m, { color: 'orange', size: 11.5, align: 'left', dx: 10, dy: 12, weight: 600 });
+          P.text('all blue', mW, 0, { color: 'blue', size: 11.5, align: 'right', dx: -6, dy: 14, weight: 600 });
+          P.text('all orange', 0, m, { color: 'orange', size: 11.5, align: 'left', dx: 10, dy: -12, weight: 600 });
           // schedules and who is content at the starting mix
           const top = Math.max(Rw, Rb) * 1.12, xm = Math.max(mW, m);
-          Q.setView([0, xm], [0, top]);
-          Q.line(0, Rw, mW, 0, { color: 'blue', width: 2.4 }); Q.line(0, Rb, m, 0, { color: 'orange', width: 2.4 });
+          Q.setView([-0.04 * xm, xm * 1.03], [-0.07 * top, top]);
+          Q.line(0, Rw, mW, 0, { color: 'blue', width: 4.2, alpha: 0.85 }); Q.line(0, Rb, m, 0, { color: 'orange', width: 2 });
           const w0 = start.x, b0 = start.y, rW = w0 > 0.01 ? b0 / w0 : Infinity, rB = b0 > 0.01 ? w0 / b0 : Infinity;
           const okW = isFinite(rW) ? Math.max(0, Math.min(mW, mW * (1 - rW / Rw))) : 0, okB = isFinite(rB) ? Math.max(0, Math.min(m, m * (1 - rB / Rb))) : 0;
-          if (isFinite(rW) && rW < top) { Q.line(0, rW, okW, rW, { color: 'blue', dash: [4, 4], width: 1.3 }); Q.line(0, rW, okW, rW, { color: 'blue', width: 4, alpha: 0.35 }); Q.dot(okW, rW, { r: 4, color: 'blue' }); }
-          if (isFinite(rB) && rB < top) { Q.line(0, rB, okB, rB, { color: 'orange', width: 4, alpha: 0.35 }); Q.dot(okB, rB, { r: 4, color: 'orange' }); }
+          if (isFinite(rW) && rW < top) { Q.line(0, rW, okW, rW, { color: 'blue', width: 4, alpha: 0.3 }); Q.dot(okW, rW, { r: 4.5, color: 'blue' }); Q.text(`${v.fix(okW, 0)} blues content`, okW, rW, { color: 'blue', size: 11, dx: 8, dy: -9, weight: 600 }); }
+          if (isFinite(rB) && rB < top) { Q.line(0, rB, okB, rB, { color: 'orange', width: 4, alpha: 0.3 }); Q.dot(okB, rB, { r: 4.5, color: 'orange' }); Q.text(`${v.fix(okB, 0)} oranges content`, okB, rB, { color: 'orange', size: 11, dx: 8, dy: -9, weight: 600 }); }
           out = { T, end, okW, okB, w0, b0, rW, rB };
         });
         v.readout(() => {

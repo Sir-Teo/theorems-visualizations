@@ -102,7 +102,7 @@ $$R=r^2,\qquad \mathcal T=\frac{Z_2}{Z_1}\,\tau^2,\qquad R+\mathcal T=1 .$$`,
             const x = 0.35 + 1.2 * 1; es.rect(x, EL / E0, x + 0.8, (EL + ER) / E0, { fill: 'teal', fillAlpha: 0.18, stroke: false });
             es.hline(1, { color: 'green', width: 1.4, dash: [5, 4] });
             es.text(`sum ${v.fix((EL + ER) / E0, 4)}`, 3.95, 1.1, { color: 'green', size: 11.5, align: 'right' });
-          } else es.text('waiting for the pulses to separate…', 2, 0.6, { color: 'muted', size: 11.5, align: 'center' });
+          } else es.text('waiting for the pulses to separate…', 2.75, 0.6, { color: 'muted', size: 11.5, align: 'center' });
         }, { period: TE + 0.8, still: 4.3 });
         v.legend([['accent', 'first string'], ['purple', 'second string'], ['green', 'prediction $r\\,f$, $\\tau f$', { dash: true }], ['orange', '$r$, $R$'], ['teal', '$\\tau$, $\\mathcal T$']]);
         v.readout(() => {
@@ -313,7 +313,7 @@ which is 343 m/s in air at 20 °C, independent of pressure and growing as $\sqrt
           const px = M.range(N).map((i) => [0.5 * (S.X[i] + S.X[i + 1]), S.pr[i] - P0]);
           pp.path(px, { color: 'red', width: 2.2 });
           pp.path(M.range(N + 1).map((j) => [S.X[j], P.rho * P.c * S.V[j]]), { color: 'accent', width: 1.6, dash: [5, 4] });
-          if (pist.value === 'push') { const xf = P.c * (S.t - T0); if (xf > 0 && xf < L) pp.vline(xf, { color: 'gold', width: 1.4, dash: [5, 4] }); }
+          if (pist.value === 'push') { const xf = P.cad * (S.t - T0); if (xf > 0 && xf < L) pp.vline(xf, { color: 'gold', width: 1.4, dash: [5, 4] }); }
           // ---- microphones
           mp.setView([0, 6], [-pmax * 1.1, pmax * 2.2]);
           mp.hline(0, { color: 'faint', width: 1 });

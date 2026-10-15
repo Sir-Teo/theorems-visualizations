@@ -149,8 +149,8 @@ Its solution $h(p, \bar u) = (h_1, h_2)$ is the **Hicksian** (compensated) deman
             g.clip(() => { g.path(mc, { color: 'accent', width: 2.6 }); g.path(hcurve(k, uA), { color: 'orange', width: 2.6 }); });
             g.hline(P0, { color: 'muted', width: 1, dash: [3, 3] }); g.hline(P, { color: 'muted', width: 1, dash: [3, 3] });
             g.dot(A[0], P0, { r: 6, color: 'muted', label: 'A', labelPos: 'ne', labelColor: 'ink' }); g.dot(B[0], P, { r: 6, color: 'orange', label: 'B', labelPos: 'nw' }); g.dot(C[0], P, { r: 6.5, color: 'green', label: 'C', labelPos: 'se' });
-            g.text('Marshallian', mc[mc.length - 1][0], 3.15, { dx: 6, color: 'accent', ...LBL, align: 'left', baseline: 'top' });
-            const hc = hcurve(k, uA); if (hc.length) g.text('Hicksian', hc[hc.length - 1][0], 3.15, { dx: -6, color: 'orange', ...LBL, align: 'right', baseline: 'top' });
+            if (mc[0][0] < 13) g.text('Marshallian', mc[0][0], mc[0][1], { dx: 6, dy: 4, color: 'accent', ...LBL, align: 'left' });
+            const hc = hcurve(k, uA); if (hc.length && hc[0][0] < 13) g.text('Hicksian', hc[0][0], hc[0][1], { dx: 6, dy: hc[0][0] > mc[0][0] - 2.5 && hc[0][0] < mc[0][0] + 2.5 ? -14 : 4, color: 'orange', ...LBL, align: 'left' });
             // decomposition bars
             const sub = B[0] - A[0], inc = C[0] - B[0], tot = C[0] - A[0], W = Math.max(1, Math.abs(sub), Math.abs(inc), Math.abs(tot)) * 1.25;
             b.setView([-W, W], [0, 3]); b.setTitle('change in $x_1$: substitution + income = total');

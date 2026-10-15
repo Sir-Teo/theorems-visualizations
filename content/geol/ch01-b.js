@@ -88,10 +88,10 @@ const PHASES = [['dep1', 0, 0.32, 'deposition in the sea'], ['deform', 0.32, 0.4
 const WF = [{ name: 'beach sand', lith: 'sand' }, { name: 'offshore mud', lith: 'shale' }, { name: 'shelf limestone', lith: 'lime' }];
 const W_NX = 120, W_NT = 90;
 const W_MODES = {
-  trans: { label: 'transgression', s: (u) => 92 - 62 * u },
-  reg: { label: 'regression', s: (u) => 28 + 62 * u },
-  both: { label: 'in and out', s: (u) => 60 + 32 * Math.cos(TAU * u) },
-  jump: { label: 'sudden fall', s: (u) => (u < 0.5 ? 92 - 66 * (u / 0.5) : 110 - 50 * ((u - 0.5) / 0.5)), fall: 0.5 },
+  trans: { label: 'transgression', s: (u) => 96 - 82 * u },
+  reg: { label: 'regression', s: (u) => 14 + 82 * u },
+  both: { label: 'in and out', s: (u) => 58 + 40 * Math.cos(TAU * u) },
+  jump: { label: 'sudden fall', s: (u) => (u < 0.5 ? 96 - 84 * (u / 0.5) : 112 - 50 * ((u - 0.5) / 0.5)), fall: 0.5 },
 };
 const faciesAt = (d) => (d < 0 ? -1 : d < 16 ? 0 : d < 40 ? 1 : 2);
 /** Deposit the basin: columns of segments {f, t, h, eroded (top was eroded before it was laid)}. */
@@ -101,7 +101,7 @@ function waltherBasin(mode) {
     const u = t / (W_NT - 1), s = M.s(u);
     if (M.fall && t === Math.round(M.fall * (W_NT - 1)) + 1) { // forced regression: exposed sediment is eroded
       for (let i = 0; i < W_NX; i++) {
-        const x = i + 0.5; if (x > s) continue; let rem = 9; const c = cols[i];
+        const x = i + 0.5; if (x > s) continue; let rem = 4; const c = cols[i];
         while (rem > 0 && c.length) { const top = c[c.length - 1]; if (top.h <= rem) { rem -= top.h; c.pop(); } else { top.h -= rem; rem = 0; } }
         c.cut = true;
       }
@@ -251,21 +251,21 @@ The time an unconformity represents is at least the thickness removed divided by
           // rock column vs time column
           const D = dep.value, Er = ero.value;
           const t1 = (g.H1 * 1000) / D, t2 = (g.H2 * 1000) / D, te = (g.He * 1000) / Er, tn = key === 'para' ? 12 : 0, tg = te + tn, T = t1 + tg + t2;
-          const Hs = g.H1 + g.H2, yR = (h) => h / Hs, yT = (x) => x / T;
+          const H1d = g.H1 || 0.8 * g.H2, Hs = H1d + g.H2, yR = (h) => h / Hs, yT = (x) => x / T;
           const cx0 = 0.9, cx1 = 2.9, tx0 = 6.2, tx1 = 8.2;
           W.text('rock', (cx0 + cx1) / 2, 1.07, { align: 'center', size: 12.5, weight: 700 }); W.text('time', (tx0 + tx1) / 2, 1.07, { align: 'center', size: 12.5, weight: 700 });
-          W.rect(cx0, 0, cx1, yR(g.H1), { fill: 'teal', fillAlpha: 0.35, color: 'teal', width: 1 });
-          W.rect(cx0, yR(g.H1), cx1, 1, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1 });
-          W.line(cx0 - 0.15, yR(g.H1), cx1 + 0.15, yR(g.H1), { color: 'red', width: 2.6 });
+          W.rect(cx0, 0, cx1, yR(H1d), { fill: g.H1 ? 'teal' : 'pink', fillAlpha: 0.35, color: g.H1 ? 'teal' : 'pink', width: 1 });
+          W.rect(cx0, yR(H1d), cx1, 1, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1 });
+          W.line(cx0 - 0.15, yR(H1d), cx1 + 0.15, yR(H1d), { color: 'red', width: 2.6 });
           W.rect(tx0, 0, tx1, yT(t1), { fill: 'teal', fillAlpha: 0.35, color: 'teal', width: 1 });
           W.rect(tx0, yT(t1), tx1, yT(t1 + tg), { fill: 'red', fillAlpha: 0.12, stroke: false, hatch: 'red', hatchAlpha: 0.45 });
           W.rect(tx0, yT(t1), tx1, yT(t1 + tg), { color: 'red', width: 1.6 });
           W.rect(tx0, yT(t1 + tg), tx1, 1, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1 });
-          W.poly([[cx1, yR(g.H1)], [tx0, yT(t1)], [tx0, yT(t1 + tg)]], { fill: 'red', fillAlpha: 0.1, stroke: false });
-          W.line(cx1, yR(g.H1), tx0, yT(t1), { color: 'red', width: 1, dash: [3, 3] }); W.line(cx1, yR(g.H1), tx0, yT(t1 + tg), { color: 'red', width: 1, dash: [3, 3] });
+          W.poly([[cx1, yR(H1d)], [tx0, yT(t1)], [tx0, yT(t1 + tg)]], { fill: 'red', fillAlpha: 0.1, stroke: false });
+          W.line(cx1, yR(H1d), tx0, yT(t1), { color: 'red', width: 1, dash: [3, 3] }); W.line(cx1, yR(H1d), tx0, yT(t1 + tg), { color: 'red', width: 1, dash: [3, 3] });
           W.line(cx1, 0, tx0, 0, { color: 'faint', width: 1, dash: [3, 3] }); W.line(cx1, 1, tx0, 1, { color: 'faint', width: 1, dash: [3, 3] });
-          W.text(`${v.fix(g.H1 * 1000, 0)} m`, cx0 - 0.1, yR(g.H1) / 2, { align: 'right', size: 11 }); W.text(`${v.fix(g.H2 * 1000, 0)} m`, cx0 - 0.1, (1 + yR(g.H1)) / 2, { align: 'right', size: 11 });
-          W.text(fmtYr(t1 * 1e6), tx1 + 0.12, yT(t1) / 2, { size: 11 }); W.text(fmtYr(t2 * 1e6), tx1 + 0.12, (1 + yT(t1 + tg)) / 2, { size: 11 });
+          W.text(g.H1 ? `${v.fix(g.H1 * 1000, 0)} m` : 'granite', cx0 - 0.1, yR(H1d) / 2, { align: 'right', size: 11 }); W.text(`${v.fix(g.H2 * 1000, 0)} m`, cx0 - 0.1, (1 + yR(H1d)) / 2, { align: 'right', size: 11 });
+          if (t1 > 0) W.text(fmtYr(t1 * 1e6), tx1 + 0.12, yT(t1) / 2, { size: 11 }); W.text(fmtYr(t2 * 1e6), tx1 + 0.12, (1 + yT(t1 + tg)) / 2, { size: 11 });
           W.text(`gap ${fmtYr(tg * 1e6)}`, tx1 + 0.12, yT(t1 + tg / 2), { size: 11.5, weight: 700, color: 'red' });
           // time cursor
           const pf = (name) => { const P = PHASES.find((p) => p[0] === name); return clamp((u - P[1]) / (P[2] - P[1]), 0, 1); };
@@ -278,7 +278,8 @@ The time an unconformity represents is at least the thickness removed divided by
           if (!st) return '';
           const { U, g, t1, t2, te, tn, tg, T } = st;
           const gap = tn ? `no erosion here, but ${tn} Myr of fossil zones are missing (non-deposition): the contact looks like any bedding plane` : `${v.fix(g.He * 1000, 0)} m eroded on average at ${v.fix(ero.value, 0)} m/Myr = **${fmtYr(te * 1e6)}**`;
-          return `**${U.name}**: ${U.what} · older beds ${v.fix(g.H1 * 1000, 0)} m at ${v.fix(dep.value, 0)} m/Myr = ${fmtYr(t1 * 1e6)} · gap: ${gap} · younger beds ${fmtYr(t2 * 1e6)} · the surface, a line in the rock, is **${v.fix((100 * tg) / T, 0)}%** of the ${fmtYr(T * 1e6)} this outcrop spans`;
+          const older = g.H1 ? `older beds ${v.fix(g.H1 * 1000, 0)} m at ${v.fix(dep.value, 0)} m/Myr = ${fmtYr(t1 * 1e6)}` : 'older rock: granite intruded into schist, crystallized at depth';
+          return `**${U.name}**: ${U.what} · ${older} · gap: ${gap} · younger beds ${fmtYr(t2 * 1e6)} · the surface, a line in the rock, is **${v.fix((100 * tg) / T, 0)}%** of the ${fmtYr(T * 1e6)} this outcrop spans`;
         });
       },
     },
@@ -312,7 +313,7 @@ The time an unconformity represents is at least the thickness removed divided by
           const M = W_MODES[m];
           for (let k = 0; k < n; k++) {
             const sk = B.s[k];
-            if (M.fall && k === Math.round(M.fall * (W_NT - 1)) + 1) for (let i = 0; i < W_NX; i++) { if (i + 0.5 > sk) continue; let rem = 9; const c = cols[i]; while (rem > 0 && c.length) { const top = c[c.length - 1]; if (top.h <= rem) { rem -= top.h; c.pop(); } else { top.h -= rem; rem = 0; } } c.cut = true; }
+            if (M.fall && k === Math.round(M.fall * (W_NT - 1)) + 1) for (let i = 0; i < W_NX; i++) { if (i + 0.5 > sk) continue; let rem = 4; const c = cols[i]; while (rem > 0 && c.length) { const top = c[c.length - 1]; if (top.h <= rem) { rem -= top.h; c.pop(); } else { top.h -= rem; rem = 0; } } c.cut = true; }
             for (let i = 0; i < W_NX; i++) { const f = faciesAt(i + 0.5 - sk); if (f < 0) continue; const c = cols[i]; c.push({ f, t: k, h: 1, eroded: !!c.cut }); c.cut = false; }
           }
           // draw columns, merging runs of one facies
@@ -422,7 +423,6 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           const i = clamp(Math.round(Math.log(age.value / R.t[0]) / Math.log(R.t[1] / R.t[0])), 0, R.t.length - 1), prof = R.prof[i];
           const zv = clamp(4.2 * Math.sqrt(kap * age.value * YR) / 1000, 60, 1400);
           P.setView([0, Math.max(T0, 600) * 1.08], [-zv, 0]);
-          if (!perry.value && !A) P.fn((x) => x, { domain: [0, 0] }); // (keeps the axis padding consistent)
           if (!perry.value && !A) P.curve((u) => { const zm = u * zv * 1000; return [T0 * v.M.erf(zm / (2 * Math.sqrt(kap * age.value * YR))), -u * zv]; }, 0, 1, { color: 'ink', width: 1.3, dash: [6, 4] });
           const pts = []; for (let j = 0; j < R.z.length && R.z[j] <= zv * 1000 * 1.001; j++) pts.push([prof[j], -R.z[j] / 1000]);
           P.path(pts, { color: 'accent', width: 2.6 });
@@ -500,7 +500,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           drawCol(ERAS, 7.05, 8.25, 26, (n) => COL9[n] || (n.includes('archean') ? 'red' : 'orange'), true);
           drawCol(EONS, 8.35, 9.45, 26, (n) => COL9[n], true);
           // age ticks
-          const ticks = lg ? (all ? [1, 10, 100, 538.8, 1000, 2500, 4567] : [1, 2.58, 10, 66, 100, 251.9, 538.8]) : all ? [0, 538.8, 1000, 2000, 2500, 3000, 4000, 4567] : [0, 66, 100, 145, 201.4, 251.9, 300, 358.9, 419.6, 443.1, 486.9, 538.8].filter((t) => t !== 145);
+          const ticks = lg ? (all ? [1, 10, 100, 538.8, 1000, 2500, 4567] : [1, 2.58, 10, 23.04, 66, 143.1, 251.9, 538.8]) : all ? [0, 538.8, 1000, 1600, 2500, 3200, 4031, 4567] : [0, ...PHAN.map((p) => p[1])];
           for (const t of ticks) { if (t > tMax) continue; const y = yN(t); S.line(9.5, y, 9.62, y, { color: 'muted', width: 1 }); S.text(`${t === 0 ? 0 : v.fix(t, t < 10 ? 2 : 1).replace(/\.0$/, '')}`, 9.66, y, { size: 10, color: 'muted' }); }
           S.text('Ma', 9.66, yN(0) + 0.03, { size: 10, color: 'muted' });
           // connectors between the columns
@@ -508,12 +508,10 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           // mass extinctions
           for (const [name, a, b] of EXTINCT) {
             if (a > tMax) continue;
-            const P = PHAN.find((p) => b <= p[1] + 1e-9 && b >= p[2] - 1e-9 && (b < p[1] - 1e-9 || p[0] === 'Silurian')) || PHAN.find((p) => b === p[1]);
             const yNum = yN(b); let yRel = null;
             for (const p of PHAN) { const r = relY.get(p[0]); if (!r) continue; if (b <= p[1] + 1e-9 && b >= p[2] - 1e-9) { const f = (p[1] - b) / (p[1] - p[2]); yRel = r[0] + f * (r[1] - r[0]); break; } }
             if (yRel != null) { S.line(rx0 - 0.25, yRel, rx1, yRel, { color: 'red', width: 2.2 }); S.text(name, rx0 - 0.28, yRel, { align: 'right', size: 9.5, color: 'red', weight: 600 }); }
             S.line(nx0, yNum, nx1, yNum, { color: 'red', width: 2.2 });
-            void P;
           }
           st = { all, lg };
         });
@@ -565,24 +563,19 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
         ];
         const frames = NOTES.map((note, i) => ({ step: i, note }));
         const Sp = v.steps({ frames, transition: 1.6, start: 5, still: 5, speed: 0.45 });
-        const dur = () => {
-          const D = dep.value * 1e-3, Er = ero.value * 1e-3; // km per kyr → use m/yr: rates in mm/yr → km/yr ×1e-6
-          const y = (km, r) => (km * 1e6) / (r * 1e3); // km / (mm/yr) → years
-          return [y(H1, dep.value), y(Hfold, ero.value), y(He1, ero.value), y(Hup, dep.value), y(He2, ero.value)];
-          // (D, Er unused: kept for clarity of units)
-        };
+        const yrs = (km, r) => (km * 1e6) / r; // thickness in km at a rate in mm/yr → years
+        const dur = () => [yrs(H1, dep.value), yrs(Hfold, ero.value), yrs(He1, ero.value), yrs(Hup, dep.value), yrs(He2, ero.value)];
         let st = null;
         v.render(() => {
           const f = Sp.frame, k = f.step ?? 5, tw = Sp.tween;
           const E = E0.map((e) => ({ ...e, p: e.type === 'base' ? 1 : e.step < k ? 1 : e.step === k ? tw : 0 }));
           if (k === 5) E.forEach((e) => { e.p = 1; });
-          const sky = k === 2 || k === 4 || k === 5;
-          if (!sky || k === 0) S.rect(-5, -1, 17, k === 3 ? 4.2 : 5.6, { fill: 'blue', fillAlpha: 0.07, stroke: false });
-          if (k >= 4) S.rect(-5, -1, 3.2, 3.1, { fill: 'blue', fillAlpha: 0.12, stroke: false });
+          if (k <= 1) S.rect(-5, -1, 17, 5.6, { fill: 'blue', fillAlpha: 0.07, stroke: false });
+          if (k >= 4) S.rect(-5, -1, 17, 2.0, { fill: 'blue', fillAlpha: 0.14, stroke: false });
           for (let x = 0; x <= 12; x++) S.line(x, -0.2, x, 6, { color: 'grid', width: 0.6 }); for (let y = 0; y <= 6; y++) S.line(0, y, 12, y, { color: 'grid', width: 0.6 });
           drawSection(v, S, E, { key: `${k}|${tw.toFixed(3)}`, res: 2, pale: 0.45 });
           if (k >= 3 && (k > 3 || tw > 0.05)) uncLine(S, E, kE1, { res: 170 });
-          if (k >= 4) S.text('sea', 1.2, 2.6, { size: 12, color: 'blue', weight: 600 });
+          if (k >= 4) S.text('North Sea', 0.3, 1.75, { size: 12, color: 'blue', weight: 600 });
           S.corner(`${k + 1}/6`, 'tr', { size: 12, weight: 700, color: 'muted' });
           // the clock
           const d = dur(), labels = ['grey beds laid down', 'folding', 'erosion to a plain', 'red beds laid down', 'tilt, uplift, erosion'];
