@@ -64,7 +64,7 @@ export default {
       statement: String.raw`Let $A$ be a Banach algebra and $B$ a commutative Banach algebra with unit that is semisimple. Then every homomorphism $\psi:A\to B$ is continuous.`,
       idea: String.raw`Use the closed graph theorem (2.15). Suppose $x_n\to x$ in $A$ and $\psi(x_n)\to y$ in $B$. For each $h\in\Delta_B$, $h\circ\psi$ is either $0$ or a complex homomorphism of $A$, and either way it is continuous (10.7). Hence $h(y)=\lim h(\psi(x_n))=h(\psi(x))$ for every $h\in\Delta_B$. So $y-\psi(x)$ lies in the radical of $B$ (11.9), which is $\{0\}$, and the graph of $\psi$ is closed. In particular a commutative semisimple Banach algebra carries only one Banach-algebra topology: apply the theorem to the identity map between two such norms.`,
       caption: String.raw`A homomorphism $\psi:\ell^1(\Z_+)\to C[0,1]$ is fixed by the function $g=\psi(z)$, through $\psi(x)(t)=\sum x_ng(t)^n$. Drag the three points the curve $g$ passes through ($t=0,\frac12,1$). Evaluation at $t$ composed with $\psi$ is a complex homomorphism of $\ell^1(\Z_+)$, so $g(t)$ must lie in its maximal ideal space, the closed disc (green). Then $|\psi(x)(t)|\le\norm x_1$: $\psi$ is continuous, with norm $\le1$. Right: $|\psi(x)(t)|$ for $x_n=(n+1)^{-2}$, against $\norm x_1$ (orange). Push the curve out of the disc: there the series diverges (red), and no such homomorphism exists.`,
-      deps: ['fa-11.9', 'fa-11.7', 'fa-10.7', 'fa-2.15'],
+      deps: ['fa-11.9', 'fa-11.8', 'fa-10.7', 'fa-2.15'],
       tags: ['commutative Banach algebras', 'automatic continuity'],
       verify: true,
       viz(v) {
@@ -207,7 +207,7 @@ In particular $\norm{\hat x}_\infty=\norm x$ for every $x$ if and only if $\norm
 (b) If $A$ is semisimple, the involution is continuous: there is a $C$ with $\norm{x^*}\le C\norm x$.`,
       idea: String.raw`(a) $\tilde h$ is linear and multiplicative because the involution reverses products and conjugates scalars, and $\tilde h(e)=1$ (11.15). $\tilde h_\alpha\to\tilde h$ whenever $h_\alpha\to h$ pointwise, so $\tau$ is continuous; it is its own inverse. (b) Closed graph theorem (2.15). If $x_n\to x$ and $x_n^*\to y$, then for every $h$, $h(y)=\lim h(x_n^*)=\lim\overline{\tilde h(x_n)}=\overline{\tilde h(x)}=h(x^*)$, since $\tilde h$ is continuous. So $y-x^*$ lies in the radical, which is $\{0\}$.`,
       caption: String.raw`Two involutions on algebras whose $\Delta$ you can see. **Disc algebra**, $f^*(z)=\overline{f(\bar z)}$: here $\tau(w)=\bar w$, a reflection of the disc. **$\ell^1(\Z)$**, $x^*_n=\overline{x_{-n}}$: here $\Delta=\T$ and $\tau=\mathrm{id}$. Drag the point $w$ and the coefficients of $f=c_0+c_1z+c_2z^2$ (right). The readout checks $\widehat{f^*}(w)=\overline{\hat f(\tau w)}$. The colour shows $|\operatorname{Im}\widehat{(f+f^*)}|$ for the hermitian element $f+f^*$: it vanishes exactly on the fixed points of $\tau$ (the real diameter, or the whole circle).`,
-      deps: ['fa-11.15', 'fa-11.9', 'fa-11.7', 'fa-2.15'],
+      deps: ['fa-11.15', 'fa-11.9', 'fa-11.8', 'fa-2.15'],
       tags: ['involutions', 'commutative Banach algebras', 'automatic continuity'],
       verify: true,
       viz(v) {

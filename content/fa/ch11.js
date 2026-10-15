@@ -1,6 +1,7 @@
 // Rudin, Functional Analysis — Chapter 11: Commutative Banach Algebras (part 1: ideals, homomorphisms, Gelfand transforms)
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Numbering checked where possible against Google Books snippet views (2nd ed. and the 1st, which agrees at every
+// point checked) and Jordan Bell's page-numbered citations; items carry `verify: true`.
 
 const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
 const csub = (a, b) => [a[0] - b[0], a[1] - b[1]];
@@ -182,7 +183,7 @@ export default {
       },
     },
     {
-      num: '11.7',
+      num: '11.8',
       kind: 'Definition',
       name: 'Radical; semisimple algebras',
       statement: String.raw`The **radical** of $A$, $\operatorname{rad}A$, is the intersection of all maximal ideals of $A$. $A$ is **semisimple** if $\operatorname{rad}A=\{0\}$. By 11.5, $x\in\operatorname{rad}A$ iff $h(x)=0$ for every $h\in\Delta$, iff $\sigma(x)=\{0\}$, iff $\lim\norm{x^n}^{1/n}=0$ ($x$ is quasinilpotent).`,
@@ -199,9 +200,9 @@ export default {
 (a) $\Delta$ is a compact Hausdorff space;
 (b) $x\mapsto\hat x$ is a homomorphism of $A$ onto a subalgebra $\hat A$ of $C(\Delta)$ that separates points and contains the constants, with kernel $\operatorname{rad}A$;
 (c) $\hat x(\Delta)=\sigma(x)$ and $\norm{\hat x}_\infty=\rho(x)\le\norm x$.`,
-      idea: String.raw`$\Delta$ is a weak*-closed subset of the unit ball of $A^*$ (multiplicativity and $h(e)=1$ are preserved under pointwise limits), hence compact by Banach–Alaoglu. $\hat x(\Delta)=\sigma(x)$ is 11.5(e), and then $\norm{\hat x}_\infty=\rho(x)$ by definition of the spectral radius; the kernel is the radical by 11.7.`,
+      idea: String.raw`$\Delta$ is a weak*-closed subset of the unit ball of $A^*$ (multiplicativity and $h(e)=1$ are preserved under pointwise limits), hence compact by Banach–Alaoglu. $\hat x(\Delta)=\sigma(x)$ is 11.5(e), and then $\norm{\hat x}_\infty=\rho(x)$ by definition of the spectral radius; the kernel is the radical by 11.8.`,
       caption: String.raw`$A=\ell^1(\Z)$, whose maximal ideal space is the circle (11.13): $\hat x(e^{i\theta})=\sum_nx_ne^{in\theta}$. Drag the bar tops of $x$ (left). Middle: $\hat x(\T)=\sigma(x)$ in the plane, with the circles of radius $\norm{\hat x}_\infty=\rho(x)$ (green) and $\norm x_1$ (orange). Right: $\norm{x^n}_1^{1/n}$ (convolution powers) against $n$, decreasing to $\norm{\hat x}_\infty$ — the spectral radius formula computed two ways.`,
-      deps: ['fa-11.5', 'fa-3.15', 'fa-10.13'],
+      deps: ['fa-11.5', 'fa-11.8', 'fa-3.15', 'fa-10.13'],
       tags: ['Gelfand transform', 'commutative Banach algebras'],
       verify: true,
       viz(v) {
