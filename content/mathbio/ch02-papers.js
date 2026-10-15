@@ -95,7 +95,7 @@ May drew the lessons that erratic fluctuations in data need not mean noise or co
           }
           const ink = v.rgb('ink');
           sB.raster((x, y) => { const i = Math.floor(((x - r[0]) / (r[1] - r[0])) * diag.W), j = Math.floor((1 - y / ym) * diag.H); if (i < 0 || i >= diag.W || j < 0 || j >= diag.H) return null; const c = diag.grid[j * diag.W + i]; if (!c) return null; return [ink[0], ink[1], ink[2], Math.min(255, 70 + 40 * Math.log(1 + c))]; }, { res: 2, key: dKey });
-          for (const [p, lab] of m.marks) if (p >= r[0] && p <= r[1]) { sB.vline(p, { color: 'orange', width: 1, dash: [3, 4] }); sB.text(lab, p, ym, { dx: 4, dy: 10, size: 10.5, color: 'orange', align: 'left', weight: 600 }); }
+          m.marks.forEach(([p, lab], k) => { if (p >= r[0] && p <= r[1]) { sB.vline(p, { color: 'orange', width: 1, dash: [3, 4] }); sB.text(lab, p, ym, { dx: 4, dy: k % 2 ? 26 : 10, size: 10.5, color: 'orange', align: 'left', weight: 600 }); } });
           SS[map.value].forEach((p) => { if (p >= r[0] && p <= r[1]) sB.dot(p, m.crit(p), { r: 2.6, color: 'green' }); });
           sB.vline(a, { color: 'accent', width: 1.6 });
           sL.hline(0, { color: 'muted', width: 1 });

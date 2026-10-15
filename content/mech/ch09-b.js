@@ -401,7 +401,7 @@ which conserves the **Jacobi constant** $C = -2U - |\dot{\mathbf r}|^2$. The equ
 $$27\mu(1-\mu) < 1\iff \mu < \mu_{\rm R} = \tfrac12\bigl(1 - \sqrt{23/27}\bigr) \approx 0.0385 .$$
 This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \approx 0.00095$) satisfies it, and its Trojan asteroids librate around $L_4$ and $L_5$ on tadpole orbits.`,
       idea: String.raw`In the rotating frame (9.6) the primaries are fixed, the centrifugal force joins gravity in the effective potential $U$, and the Coriolis force does no work; this is why $C$ is conserved, and the curves $-2U = C$ bound where a body of given $C$ can go. Equilibria are critical points of $U$ (3.12). For two-body circular motion (8.2) the triangle points satisfy this exactly: each lies at unit distance from both primaries. Linearizing at $L_4$ gives $\lambda^4 + \lambda^2 + \tfrac{27}{4}\mu(1-\mu) = 0$, whose roots are purely imaginary only when $27\mu(1-\mu) < 1$. A particle that slides off the potential hill is turned back by the Coriolis force, so it circles the summit instead of rolling down.`,
-      caption: String.raw`Left: the co-rotating frame, with the effective potential shaded and its contours through $L_1$, $L_2$ and $L_3$ (the zero-velocity curves at those energies). Drag the gold test particle to choose where it starts at rest, or use the buttons to start near $L_4$ (a tadpole orbit) or near $L_3$ (a horseshoe orbit). Right: the same motion seen from an inertial frame, with the primaries orbiting. Bottom: the growth rate of small perturbations around $L_4$ against the mass ratio, computed from the eigenvalues of the linearized motion. It is zero up to Routh’s value, and above it the particle near $L_4$ drifts away. Raise $\mu$ past $0.0385$ to watch that happen.`,
+      caption: String.raw`Left: the co-rotating frame, with the effective potential shaded and its contours through $L_1$, $L_2$ and $L_3$ (the zero-velocity curves at those energies). By default it is unrolled along the orbit, with the angle from $m_2$ across and the distance from the centre of mass minus 1 up, which magnifies the thin band where Trojans live; switch to the whole frame to see all five points at once. Drag the gold test particle to choose where it starts at rest, or use the buttons to start near $L_4$ (a tadpole orbit) or near $L_3$ (a horseshoe orbit). Right: the same motion seen from an inertial frame, with the primaries orbiting. Bottom: the growth rate of small perturbations around $L_4$ against the mass ratio, computed from the eigenvalues of the linearized motion. It is zero up to Routh’s value, and above it the particle near $L_4$ drifts away. Raise $\mu$ past $0.0385$ to watch that happen.`,
       deps: ['mech-9.6', 'mech-8.2', 'mech-3.12', 'mech-8.20'],
       see: ['astro-2.1', 'astro-2.2', 'astro-2.4', 'astro-2.5'],
       refs: ['Tong §2.5', 'Goldstein §3.12'],
@@ -412,17 +412,25 @@ This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \ap
         const SYS = { sj: ['Sun–Jupiter', 9.537e-4], em: ['Earth–Moon', 0.01215], over: ['μ = 0.045 (past Routh)', 0.045] };
         const sys = v.select('system', Object.entries(SYS).map(([value, [label]]) => ({ value, label })), 'sj', { onChange: (k) => muS.set(SYS[k][1]) });
         muS = v.slider('mass ratio $\\mu$', 1e-4, 0.5, 9.537e-4, { log: true, sig: 4 });
-        const S = v.stage({ x: [-1.6, 1.6], y: [-1.45, 1.45], equal: true, axes: false, height: 340, weight: 1.25, title: 'co-rotating frame' });
+        const view = v.select('left panel', [{ value: 'zoom', label: 'unrolled along the orbit' }, { value: 'whole', label: 'whole frame' }], 'zoom');
+        const Sz = v.stage({ x: [-180, 180], y: [-0.08, 0.08], axes: 'box', height: 340, weight: 1.25, xticks: [-180, -120, -60, 0, 60, 120, 180], title: 'co-rotating frame, unrolled: angle from $m_2$ (°) against $r - 1$' });
+        const Sw = v.stage({ x: [-1.6, 1.6], y: [-1.45, 1.45], equal: true, axes: false, height: 340, weight: 1.25, title: 'co-rotating frame' });
         const I = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, axes: false, height: 340, title: 'inertial frame' });
         const Gs = v.stage({ x: [1e-4, 0.5], y: [-0.08, 0.45], xlog: true, axes: 'box', height: 170, full: true, xlabel: 'μ', title: 'growth rate of perturbations at $L_4$: largest $\\mathrm{Re}\\,\\lambda$' });
-        const P = S.handle(Math.cos(85 * DEG) - 9.537e-4, Math.sin(85 * DEG), { color: 'gold' });
-        v.button('start near L4 (tadpole)', () => { const mu = muS.value; P.set(Math.cos(85 * DEG) - mu, Math.sin(85 * DEG)); });
-        v.button('start near L3 (horseshoe)', () => { const mu = muS.value; P.set(-1.002 - mu, 0); });
+        // the start point (at rest in the rotating frame) has a handle in both views of the rotating frame
+        const toZ = (x, y) => [Math.atan2(y, x) / DEG, Math.hypot(x, y) - 1], fromZ = (a, d) => [(1 + d) * Math.cos(a * DEG), (1 + d) * Math.sin(a * DEG)];
+        let start = [Math.cos(85 * DEG) - 9.537e-4, Math.sin(85 * DEG)];
+        const Pw = Sw.handle(start[0], start[1], { color: 'gold' }), z0 = toZ(start[0], start[1]), Pz = Sz.handle(z0[0], z0[1], { color: 'gold' });
+        const setStart = (x, y) => { start = [x, y]; Pw.set(x, y); const z = toZ(x, y); Pz.set(z[0], z[1]); };
+        Pw.onDrag = () => { start = [Pw.x, Pw.y]; const z = toZ(Pw.x, Pw.y); Pz.set(z[0], z[1]); };
+        Pz.onDrag = () => { start = fromZ(Pz.x, Pz.y); Pw.set(start[0], start[1]); };
+        v.button('start near L4 (tadpole)', () => setStart(Math.cos(85 * DEG) - muS.value, Math.sin(85 * DEG)));
+        v.button('start near L3 (horseshoe)', () => setStart(-1.002 - muS.value, 0));
         const MU_R = 0.5 * (1 - Math.sqrt(23 / 27));
         const Ux = (mu, x) => { const a = x + mu, b = x - 1 + mu; return x - ((1 - mu) * a) / Math.abs(a) ** 3 - (mu * b) / Math.abs(b) ** 3; }; // −∂U/∂x on y = 0
         const bis = (f, a, b) => { let fa = f(a); for (let k = 0; k < 100; k++) { const m = (a + b) / 2, fm = f(m); if (fm * fa <= 0) b = m; else { a = m; fa = fm; } } return (a + b) / 2; };
         const lmemo = memo();
-        function lpoints(mu) { return lmemo(mu, () => { const e = 1e-9, f = (x) => Ux(mu, x); return [[bis(f, -mu + e, 1 - mu - e), 0], [bis(f, 1 - mu + e, 2.5), 0], [bis(f, -2.5, -mu - e), 0], [0.5 - mu, Math.sqrt(3) / 2], [0.5 - mu, -Math.sqrt(3) / 2]]; }); }
+        const lpoints = (mu) => lmemo(mu, () => { const e = 1e-9, f = (x) => Ux(mu, x); return [[bis(f, -mu + e, 1 - mu - e), 0], [bis(f, 1 - mu + e, 2.5), 0], [bis(f, -2.5, -mu - e), 0], [0.5 - mu, Math.sqrt(3) / 2], [0.5 - mu, -Math.sqrt(3) / 2]]; });
         const Ueff = (mu, x, y) => -0.5 * (x * x + y * y) - (1 - mu) / Math.hypot(x + mu, y) - mu / Math.hypot(x - 1 + mu, y);
         const growth = (mu) => {
           const s3 = Math.sqrt(3), A = [[0, 0, 1, 0], [0, 0, 0, 1], [0.75, ((3 * s3) / 4) * (1 - 2 * mu), 0, 2], [((3 * s3) / 4) * (1 - 2 * mu), 2.25, -2, 0]];
@@ -431,13 +439,13 @@ This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \ap
         const gmemo = memo();
         const gcurve = () => gmemo(1, () => { const out = []; for (let j = 0; j <= 160; j++) { const mu = 10 ** (-4 + (Math.log10(0.5) + 4) * (j / 160)); out.push([mu, Math.max(0, growth(mu).g)]); } return out; });
         const cache = memo();
-        const run = () => cache([muS.value, P.x, P.y].join('|'), () => {
+        const run = () => cache([muS.value, start[0], start[1]].join('|'), () => {
           const mu = muS.value, T = 300;
           const F = (t, Y) => {
             const x = Y[0], y = Y[1], a = x + mu, b = x - 1 + mu, r1 = Math.hypot(a, y), r2 = Math.hypot(b, y), k1 = (1 - mu) / r1 ** 3, k2 = mu / r2 ** 3;
             return [Y[2], Y[3], x - k1 * a - k2 * b + 2 * Y[3], y - k1 * y - k2 * y - 2 * Y[2]];
           };
-          let Y = [P.x, P.y, 0, 0], t = 0; const rec = { t: [0], y: [Y] }; let next = 0.05, steps = 0, stop = '';
+          let Y = [start[0], start[1], 0, 0], t = 0; const rec = { t: [0], y: [Y] }; let next = 0.05, steps = 0, stop = '';
           const C = (Y) => -2 * Ueff(mu, Y[0], Y[1]) - Y[2] * Y[2] - Y[3] * Y[3], C0 = C(Y); let dC = 0;
           while (t < T && steps < 400000) {
             const r1 = Math.hypot(Y[0] + mu, Y[1]), r2 = Math.hypot(Y[0] - 1 + mu, Y[1]);
@@ -448,25 +456,47 @@ This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \ap
             if (Math.hypot(Y[0], Y[1]) > 4) { stop = 'escape'; break; }
           }
           const L = lpoints(mu);
-          let dmax = 0; for (const q of rec.y) dmax = Math.max(dmax, Math.hypot(q[0] - L[3][0], q[1] - L[3][1]));
-          return { mu, rec, dC, C0, stop, steps, L, dmax, T: rec.t[rec.t.length - 1] };
+          // classify by the angle from m₂ seen from the barycentre
+          let amin = 180, amax = -180, past0 = false, past180 = false, prev = Math.atan2(rec.y[0][1], rec.y[0][0]) / DEG;
+          for (const q of rec.y) { const a = Math.atan2(q[1], q[0]) / DEG; amin = Math.min(amin, a); amax = Math.max(amax, a); if (Math.sign(a) !== Math.sign(prev)) { if (Math.abs(a) < 90) past0 = true; else past180 = true; } prev = a; }
+          const kind = stop ? stop : past0 ? 'passes $m_2$' : past180 ? 'horseshoe' : 'tadpole';
+          return { mu, rec, dC, C0, stop, steps, L, amin, amax, kind, T: rec.t[rec.t.length - 1] };
         });
         let cur = null;
         v.animate((tA) => {
-          const B = run(), mu = B.mu, L = B.L, n = B.rec.t.length - 1, tt = Math.min((tA / 24) * 300, B.T);
-          let k = Math.min(n, Math.round(tt / 0.05));
-          const UL = L.map(([x, y]) => Ueff(mu, x, y));
-          S.heat((x, y) => Math.max(Ueff(mu, x, y), UL[0] - 0.6), { range: [UL[0] - 0.6, UL[3] + 0.005], cmap: 'viridis', key: 'U' + mu, alpha: 0.3, res: 3 });
-          S.contour((x, y) => Ueff(mu, x, y), [UL[0]], { color: 'red', width: 1.4, res: 140 });
-          S.contour((x, y) => Ueff(mu, x, y), [UL[1]], { color: 'orange', width: 1.4, res: 140 });
-          S.contour((x, y) => Ueff(mu, x, y), [UL[2]], { color: 'purple', width: 1.4, res: 140 });
-          S.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 5] });
-          const path = B.rec.y.slice(0, k + 1).map((q) => [q[0], q[1]]);
-          S.path(path, { color: 'ink', width: 1.4, alpha: 0.85 });
-          S.dot(-mu, 0, { r: 9, color: 'gold' }); S.dot(1 - mu, 0, { r: 4 + 5 * Math.cbrt(mu / 0.05), color: 'blue' });
-          ['L₁', 'L₂', 'L₃', 'L₄', 'L₅'].forEach((lab, j) => { S.dot(L[j][0], L[j][1], { r: 3.5, color: 'red' }); S.text(lab, L[j][0], L[j][1], { color: 'red', size: 12, weight: 600, dx: j === 2 ? -6 : 6, dy: j < 3 ? 13 : j === 3 ? -11 : 11, align: j === 2 ? 'right' : 'left' }); });
-          const q = B.rec.y[k]; S.dot(q[0], q[1], { r: 5, color: 'gold' });
-          S.corner(`t = ${v.fix(B.rec.t[k] / TAU, 1)} orbits`, 'tl');
+          const B = run(), mu = B.mu, L = B.L, n = B.rec.t.length - 1, tt = Math.min((tA / 24) * 300, B.T), zoom = view.value === 'zoom';
+          const k = Math.min(n, Math.round(tt / 0.05)), q = B.rec.y[k];
+          const UL = L.map(([x, y]) => Ueff(mu, x, y)), LAB = ['L₁', 'L₂', 'L₃', 'L₄', 'L₅'];
+          Sz.el.hidden = !zoom; Sw.el.hidden = zoom;
+          if (zoom) {
+            const yr = Math.min(0.6, Math.max(0.06, 1.6 * Math.cbrt(mu / 3))), Uz = (a, d) => { const p = fromZ(a, d); return Ueff(mu, p[0], p[1]); };
+            Sz.setView([-180, 180], [-yr, yr]);
+            const lo = 2 * UL[0] - UL[3];
+            Sz.heat((a, d) => Math.max(Uz(a, d), lo), { range: [lo, UL[3]], cmap: 'viridis', key: 'z' + mu + '|' + yr, alpha: 0.3, res: 3 });
+            for (const f of [0.3, 0.65]) Sz.contour(Uz, [UL[3] - f * (UL[3] - UL[2])], { color: 'muted', width: 1, dash: [4, 4], res: 160 });
+            Sz.contour(Uz, [UL[0]], { color: 'red', width: 1.4, res: 160 });
+            Sz.contour(Uz, [UL[1]], { color: 'orange', width: 1.4, res: 160 });
+            Sz.contour(Uz, [UL[2]], { color: 'purple', width: 1.4, res: 160 });
+            Sz.hline(0, { color: 'faint', width: 1, dash: [3, 5] });
+            const pts = []; let pa = null;
+            for (let j = 0; j <= k; j++) { const z = toZ(B.rec.y[j][0], B.rec.y[j][1]); if (pa !== null && Math.abs(z[0] - pa) > 180) pts.push(null); pts.push(z); pa = z[0]; }
+            Sz.path(pts, { color: 'ink', width: 1.4, alpha: 0.85 });
+            Sz.dot(0, -mu, { r: 4 + 5 * Math.cbrt(mu / 0.05), color: 'blue' });
+            L.forEach((p, j) => { const z = toZ(p[0], p[1]); Sz.dot(z[0], z[1], { r: 3.5, color: 'red' }); Sz.text(LAB[j], Math.min(176, z[0]), z[1], { color: 'red', size: 12, weight: 600, dx: j === 2 ? -6 : 6, dy: j === 0 ? 13 : -11, align: j === 2 ? 'right' : 'left' }); });
+            const zq = toZ(q[0], q[1]); Sz.dot(zq[0], zq[1], { r: 5, color: 'gold' });
+            Sz.corner(`t = ${v.fix(B.rec.t[k] / TAU, 1)} orbits`, 'tr');
+          } else {
+            Sw.heat((x, y) => Math.max(Ueff(mu, x, y), UL[0] - 0.6), { range: [UL[0] - 0.6, UL[3] + 0.005], cmap: 'viridis', key: 'U' + mu, alpha: 0.3, res: 3 });
+            Sw.contour((x, y) => Ueff(mu, x, y), [UL[0]], { color: 'red', width: 1.4, res: 140 });
+            Sw.contour((x, y) => Ueff(mu, x, y), [UL[1]], { color: 'orange', width: 1.4, res: 140 });
+            Sw.contour((x, y) => Ueff(mu, x, y), [UL[2]], { color: 'purple', width: 1.4, res: 140 });
+            Sw.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 5] });
+            Sw.path(B.rec.y.slice(0, k + 1).map((p) => [p[0], p[1]]), { color: 'ink', width: 1.4, alpha: 0.85 });
+            Sw.dot(-mu, 0, { r: 9, color: 'gold' }); Sw.dot(1 - mu, 0, { r: 4 + 5 * Math.cbrt(mu / 0.05), color: 'blue' });
+            LAB.forEach((lab, j) => { Sw.dot(L[j][0], L[j][1], { r: 3.5, color: 'red' }); Sw.text(lab, L[j][0], L[j][1], { color: 'red', size: 12, weight: 600, dx: j === 2 ? -6 : 6, dy: j < 3 ? 13 : j === 3 ? -11 : 11, align: j === 2 ? 'right' : 'left' }); });
+            Sw.dot(q[0], q[1], { r: 5, color: 'gold' });
+            Sw.corner(`t = ${v.fix(B.rec.t[k] / TAU, 1)} orbits`, 'tl');
+          }
           // inertial view
           const th = B.rec.t[k];
           I.circle(0, 0, mu, { color: 'gold', width: 1, dash: [3, 4], alpha: 0.6 }); I.circle(0, 0, 1 - mu, { color: 'blue', width: 1, dash: [3, 4], alpha: 0.6 });
@@ -474,29 +504,30 @@ This is Routh’s criterion (Gascheau 1843, Routh 1875). Sun–Jupiter ($\mu \ap
           I.path(tail, { color: 'ink', width: 1.4, alpha: 0.85 });
           const m1 = rot(-mu, 0, th), m2 = rot(1 - mu, 0, th), pp = rot(q[0], q[1], th), l4 = rot(L[3][0], L[3][1], th);
           I.line(m1[0], m1[1], l4[0], l4[1], { color: 'red', width: 1, alpha: 0.5, dash: [3, 3] }); I.line(m2[0], m2[1], l4[0], l4[1], { color: 'red', width: 1, alpha: 0.5, dash: [3, 3] });
-          I.dot(l4[0], l4[1], { r: 3.5, color: 'red' });
+          I.dot(l4[0], l4[1], { r: 3.5, color: 'red' }); I.text('L₄', l4[0], l4[1], { color: 'red', size: 11, weight: 600, dx: 7, dy: -9, align: 'left' });
           I.dot(m1[0], m1[1], { r: 9, color: 'gold' }); I.dot(m2[0], m2[1], { r: 4 + 5 * Math.cbrt(mu / 0.05), color: 'blue' }); I.dot(pp[0], pp[1], { r: 5, color: 'gold' });
+          I.corner('trail: the last 1.6 orbits', 'tl', { size: 11 });
           // growth rate against μ
           Gs.vband(MU_R, 0.5, { color: 'red', alpha: 0.08 });
           Gs.vline(MU_R, { color: 'red', width: 1.2, dash: [5, 4] });
           Gs.text('Routh: μ = 0.0385', MU_R, 0.4, { color: 'red', size: 11, dx: 6, align: 'left' });
+          for (const [lab, m] of [['Sun–Jupiter', 9.537e-4], ['Earth–Moon', 0.01215]]) { Gs.vline(m, { color: 'faint', width: 1, dash: [2, 4] }); Gs.text(lab, m, 0.12, { color: 'muted', size: 10.5, align: 'center' }); }
           Gs.path(gcurve(), { color: 'accent', width: 2.4 });
           const gr = growth(mu);
           Gs.dot(mu, Math.max(0, gr.g), { r: 5, color: 'gold' });
-          for (const [lab, m] of [['Sun–Jupiter', 9.537e-4], ['Earth–Moon', 0.01215]]) { Gs.vline(m, { color: 'faint', width: 1, dash: [2, 4] }); Gs.text(lab, m, 0.12, { color: 'muted', size: 10.5, align: 'center' }); }
           cur = { B, gr };
         }, { period: 26, still: 22 });
-        v.legend([['red', 'zero-velocity curve through $L_1$'], ['orange', 'through $L_2$'], ['purple', 'through $L_3$'], ['ink', 'test particle'], ['accent', 'growth rate at $L_4$']]);
+        v.legend([['red', 'zero-velocity curve through $L_1$'], ['orange', 'through $L_2$'], ['purple', 'through $L_3$'], ['muted', 'lower levels round $L_4$, $L_5$', { dash: true }], ['ink', 'test particle'], ['accent', 'growth rate at $L_4$']]);
         v.readout(() => {
           if (!cur) return '';
           const { B, gr } = cur, mu = B.mu, L = B.L, hill = Math.cbrt(mu / 3);
           const om = gr.ev.filter((z) => z.im > 1e-9).map((z) => z.im).sort((a, b) => a - b);
-          let out = String.raw`$\mu = ${num(v, mu, 5)}$ · $L_1$ and $L_2$ lie ${v.fix(1 - mu - L[0][0], 4)} and ${v.fix(L[1][0] - 1 + mu, 4)} from $m_2$ (Hill radius $(\mu/3)^{1/3} = ${v.fix(hill, 4)}$), $L_3$ at $x = ${v.fix(L[2][0], 4)}$`;
+          let out = String.raw`$\mu = ${num(v, mu, 5)}$ · $L_1$ and $L_2$ lie ${v.fix(1 - mu - L[0][0], 4)} and ${v.fix(L[1][0] - 1 + mu, 4)} from $m_2$ (Hill radius $(\mu/3)^{1/3} = ${v.fix(hill, 4)}$)`;
           out += gr.g < 1e-7
             ? String.raw` · $L_4$ is stable: eigenvalues $\pm${v.fix(om[0] ?? 0, 4)}i$ and $\pm${v.fix(om[om.length - 1] ?? 0, 4)}i$ (libration period ${v.fix(1 / (om[0] || 1), 1)} orbits), since $27\mu(1-\mu) = ${v.fix(27 * mu * (1 - mu), 4)} < 1$`
             : String.raw` · $L_4$ is unstable: $\mathrm{Re}\,\lambda = ${v.fix(gr.g, 4)}$, since $27\mu(1-\mu) = ${v.fix(27 * mu * (1 - mu), 3)} > 1$`;
-          out += String.raw` · Jacobi constant $C = ${v.fix(B.C0, 5)}$, drift $${sci(v, B.dC)}$ over ${v.fix(B.T / TAU, 1)} orbits; farthest from $L_4$: ${v.fix(B.dmax, 3)}`;
-          if (B.stop) out += ` · stopped: ${B.stop}`;
+          out += String.raw` · this orbit: ${B.kind}` + (B.kind === 'tadpole' ? String.raw`, between ${v.fix(B.amin, 0)}° and ${v.fix(B.amax, 0)}° from $m_2$` : '');
+          out += String.raw` · Jacobi constant $C = ${v.fix(B.C0, 5)}$, drift $${sci(v, B.dC)}$ over ${v.fix(B.T / TAU, 1)} orbits`;
           return out;
         });
       },

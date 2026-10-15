@@ -427,7 +427,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           rc.vband(ks - 12.5, ks - 11.5, { color: 'gold', alpha: 0.25 }); rc.vband(ks - 0.5, ks + 0.5, { color: 'gold', alpha: 0.35 });
           rc.dot(ks, dev(ty, sel), { r: 5.5, color: 'gold' });
           const dA = dev(ty, 21), dC = dev(ty, 108), sgn = (x) => (x > 0.05 ? '+' : '');
-          rc.text(`A0: ${sgn(dA)}${v.fix(dA, 1)} ¢`, 2, dA - 6, { align: 'left', color: 'accent', size: 11, weight: 600 });
+          rc.text(`A0: ${sgn(dA)}${v.fix(dA, 1)} ¢`, 4, dA - 6, { align: 'left', color: 'accent', size: 11, weight: 600 });
           rc.text(`C8: ${sgn(dC)}${v.fix(dC, 1)} ¢`, 87, Math.min(40, dC + 6), { align: 'right', color: 'accent', size: 11, weight: 600 });
           // ---- keyboard
           for (let k = 1; k <= 88; k++) {

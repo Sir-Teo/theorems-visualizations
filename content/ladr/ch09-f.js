@@ -553,12 +553,12 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           const n = A.length, sgn = conv.value === 'iz' && n % 2 ? -1 : 1;
           const f = (x) => sgn * M.det(A.map((r, i) => r.map((a, j) => (i === j ? x - a : -a))));
           // interpolate through the nodes: solve the Vandermonde system for the coefficients
+          const m = centre(); win = [m - 2.8, m + 2.8];
+          H.forEach((h) => { h.x = M.clamp(h.x, win[0] + 0.1, win[1] - 0.1); });
           const xs = H.slice(0, n + 1).map((h) => h.x), distinct = xs.every((x, i) => xs.every((y, j) => i === j || Math.abs(x - y) > 1e-3));
           let c = null;
           if (distinct) c = M.solve(xs.map((x) => Array.from({ length: n + 1 }, (_, k) => x ** k)), xs.map(f));
           const pv = (x) => c.reduce((s, a, k) => s + a * x ** k, 0);
-          const m = centre(); win = [m - 2.8, m + 2.8];
-          H.forEach((h) => { h.x = M.clamp(h.x, win[0] + 0.1, win[1] - 0.1); });
           const grid = M.linspace(win[0], win[1], 61), vals = grid.map(f), mid = grid.map((x, i) => (Math.abs(x - m) <= 1.9 ? Math.abs(vals[i]) : 0));
           const Y = nice(1.15 * Math.max(3, ...mid), [3, 4, 6, 8, 10, 15, 20, 30, 40, 60]);
           P.setView(win, [-Y, Y]);

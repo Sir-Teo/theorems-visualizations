@@ -646,5 +646,183 @@ The principle holds exactly only for linear media. For a medium whose restoring 
         });
       },
     },
+    // ------------------------------------------------------------------ 1.7
+    {
+      num: '1.7',
+      kind: 'Theorem',
+      name: 'Energy density and energy flux of a wave',
+      statement: String.raw`A string with tension $T$ and density $\mu$ carries, per unit length, the **kinetic** and **potential** energy densities
+$$\mathcal K=\tfrac12\mu\,y_t^2,\qquad \mathcal U=\tfrac12T\,y_x^2 ,$$
+and the power transmitted past a point $x$ (work done per unit time by the part on the left on the part on the right) is
+$$P=-T\,y_x\,y_t .$$
+They satisfy the local conservation law $\partial_t(\mathcal K+\mathcal U)+\partial_xP=0$, so the total energy on the string changes only by what flows through its ends. For a single travelling wave $y=f(x\mp ct)$:
+(a) $\mathcal K=\mathcal U$ at every point and every instant, and
+(b) $P=\pm c\,(\mathcal K+\mathcal U)$: the energy moves with the wave at speed $c$, and the energy that flows past any point equals the whole energy of the pulse. For a harmonic wave of amplitude $A$ the mean power is $\tfrac12\sqrt{T\mu}\,\omega^2A^2$.`,
+      idea: String.raw`Multiply the wave equation $\mu y_{tt}=Ty_{xx}$ by $y_t$: the left side is $\partial_t(\tfrac12\mu y_t^2)$, and $Ty_ty_{xx}=\partial_x(Ty_xy_t)-\partial_t(\tfrac12Ty_x^2)$, which gives the conservation law (the field version of mech-3.6, pde-2.4). $\mathcal U$ is the work done stretching the string: a slope $y_x$ lengthens an element $dx$ by about $\tfrac12y_x^2dx$ against the tension $T$. For $f(x-ct)$ we have $y_t=-cy_x$, and $\mu c^2=T$ turns $\tfrac12\mu y_t^2$ into $\tfrac12Ty_x^2$; then $P=Tc\,y_x^2=c(\mathcal K+\mathcal U)$. When two waves overlap, the cross terms in $y_t^2$ and $y_x^2$ have opposite signs, so the energy can sit momentarily all in motion or all in stretch, but the total is unchanged.`,
+      caption: String.raw`A pulse on a string with $T=100$ N and $\mu=10$ g/m ($c=100$ m/s), in slow motion. Middle panel: the kinetic energy density is drawn upward (orange) and the potential energy density downward (purple), both computed from finite differences of the moving string. For one travelling pulse the picture is a perfect mirror image. Below: the power through the teal probe (drag it); the shaded area is the energy that has gone past, which ends up equal to the pulse's total energy. Choose *two pulses* or *opposite pulses* to break the mirror while the pulses overlap; the total stays the same.`,
+      deps: ['waves-1.2', 'mech-3.6', 'pde-2.4'],
+      see: ['em-11.5', 'mech-11.17'],
+      refs: ['Crawford ch. 4'],
+      tags: ['energy', 'power', 'conservation law'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/String_vibration#Derivation' },
+      viz(v) {
+        const M = v.M, T = 100, MU = 0.01, C = Math.sqrt(T / MU), A = 0.01, W = 0.3, XM = 4, TEND = 0.032, SLOW = 0.006;
+        const sc = v.select('waves', [{ value: 'one', label: 'one pulse' }, { value: 'two', label: 'two pulses' }, { value: 'opp', label: 'opposite pulses' }], 'one');
+        const shp = v.select('shape', [{ value: 'gauss', label: 'bump' }, { value: 'skew', label: 'skewed' }], 'skew');
+        const s = v.stage({ x: [0, XM], y: [-1.6, 1.6], height: 170, axes: 'box', xlabel: 'x (m)', ylabel: 'y (cm)', yticks: [-1, 0, 1], full: true });
+        const es = v.stage({ x: [0, XM], y: [-140, 140], height: 200, axes: 'box', ylabel: 'mJ/m', xlabel: 'x (m)', full: true, title: 'kinetic energy density ½μy_t² (up) and potential ½Ty_x² (down)' });
+        const ps = v.stage({ x: [0, TEND * 1000], y: [-14, 14], height: 190, axes: 'box', xlabel: 't (ms)', ylabel: 'P (W)', full: true, title: 'power through the probe, P = −T y_x y_t' });
+        const probe = s.handle(2.7, -1.35, { color: 'teal', constrain: 'x', label: 'probe' });
+        const disp = (x, t) => {
+          const name = shp.value, mode = sc.value;
+          let y = A * pulse(name, (x - 0.8 - C * t) / W);
+          if (mode !== 'one') { const sg = mode === 'opp' ? -1 : 1; y += sg * A * pulse(name, -(x - 3.2 + C * t) / W); }
+          return y;
+        };
+        const hx = 1e-4, ht = hx / C;
+        const yx = (x, t) => (disp(x + hx, t) - disp(x - hx, t)) / (2 * hx), yt = (x, t) => (disp(x, t + ht) - disp(x, t - ht)) / (2 * ht);
+        const Kd = (x, t) => 0.5 * MU * yt(x, t) ** 2, Ud = (x, t) => 0.5 * T * yx(x, t) ** 2, Pw = (x, t) => -T * yx(x, t) * yt(x, t);
+        let tp = 0, sums = null, sKey = '', umax = 1;
+        const fac = () => (sc.value === 'one' ? 1250 : 2600);
+        const nice = (x) => { const p = 10 ** Math.floor(Math.log10(x)), m = x / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; };
+        v.animate((t) => {
+          tp = Math.min(t, 5.4) * SLOW;
+          if (sKey !== shp.value + sc.value) { // scale the panels to the pulse
+            sKey = shp.value + sc.value; umax = 0; for (let i = 0; i <= 800; i++) umax = Math.max(umax, Ud((XM * i) / 800, 0));
+            const ym = fac() * umax, st = nice(ym / 2.5), ticks = [];
+            for (let k = -3; k <= 3; k++) if (Math.abs(k * st) < ym) ticks.push([k * st, v.fix(Math.abs(k * st), 0)]);
+            es.setView([0, XM], [-ym, ym]); es.setTicks(undefined, ticks);
+            ps.setView([0, TEND * 1000], [-2.6 * C * umax, 2.6 * C * umax]);
+          }
+          const ym = fac() * umax;
+          s.hline(0, { color: 'faint', width: 1 });
+          s.fn((x) => 100 * disp(x, tp), { color: 'accent', width: 3, n: 600 });
+          s.vline(probe.x, { color: 'teal', width: 1, dash: [3, 4] });
+          s.corner(`t = ${v.fix(tp * 1000, 1)} ms`, 'tr', { color: 'ink' });
+          // ---- energy densities: K up, U down
+          es.fn((x) => 1000 * Kd(x, tp), { color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.3, n: 600 });
+          es.fn((x) => -1000 * Ud(x, tp), { color: 'purple', width: 2, fill: 'purple', fillAlpha: 0.3, n: 600 });
+          es.fn((x) => 1000 * Ud(x, tp), { color: 'purple', width: 1.2, dash: [4, 4], n: 600 });
+          es.hline(0, { color: 'muted', width: 1 });
+          es.vline(probe.x, { color: 'teal', width: 1, dash: [3, 4] });
+          es.text('kinetic', XM - 0.05, 0.85 * ym, { color: 'orange', size: 11.5, align: 'right' });
+          es.text('potential (and its mirror image, dashed, above)', XM - 0.05, -0.62 * ym, { color: 'purple', size: 11.5, align: 'right' });
+          // ---- power through the probe
+          const xp = probe.x;
+          ps.hline(0, { color: 'faint', width: 1 });
+          ps.fn((ms) => Pw(xp, ms / 1000), { domain: [0, tp * 1000], color: 'teal', width: 0, fill: 'teal', fillAlpha: 0.3, n: 500 });
+          ps.fn((ms) => Pw(xp, ms / 1000), { color: 'teal', width: 2, n: 600 });
+          ps.vline(tp * 1000, { color: 'ink', width: 1.2, dash: [4, 4] });
+          // ---- energy ledger
+          const n = 1200, K = M.integrate((x) => Kd(x, tp), -1, XM + 1, n), U = M.integrate((x) => Ud(x, tp), -1, XM + 1, n);
+          const Epass = tp > 0 ? M.integrate((u) => Pw(xp, u), 0, tp, 600) : 0;
+          const E0 = M.integrate((x) => Kd(x, 0) + Ud(x, 0), -1, XM + 1, n);
+          let dm = 0, km = 1e-12; for (let i = 0; i <= 400; i++) { const x = (XM * i) / 400, a = Kd(x, tp), b = Ud(x, tp); dm = Math.max(dm, Math.abs(a - b)); km = Math.max(km, a, b); }
+          sums = { K, U, E0, Epass, dm: dm / km, pc: Pw(xp, tp), ce: C * (Kd(xp, tp) + Ud(xp, tp)) };
+          ps.corner(`energy past the probe so far: ${v.fix(1000 * Epass, 1)} mJ`, 'tr', { color: 'teal', weight: 600 });
+        }, { period: 6, still: 1.9 });
+        v.legend([['orange', 'kinetic $\\tfrac12\\mu y_t^2$', { area: true }], ['purple', 'potential $\\tfrac12Ty_x^2$', { area: true }], ['teal', 'power through the probe']]);
+        v.readout(() => {
+          if (!sums) return '';
+          const { K, U, E0, Epass, dm, pc, ce } = sums, mJ = (x) => v.fix(1000 * x, 2);
+          const one = sc.value === 'one';
+          return `$\\int\\mathcal K\\,dx$ = ${mJ(K)} mJ, $\\int\\mathcal U\\,dx$ = ${mJ(U)} mJ, total ${mJ(K + U)} mJ (at $t=0$: ${mJ(E0)} mJ) · largest $|\\mathcal K-\\mathcal U|$ along the string: ${v.fix(100 * dm, dm < 1e-3 ? 4 : 1)} % of the peak density${one ? '' : ' (the pulses overlap: the mirror breaks)'} · at the probe $P$ = ${v.fix(pc, 3)} W, $c(\\mathcal K+\\mathcal U)$ = ${v.fix(ce, 3)} W · energy past the probe ${mJ(Epass)} mJ${one ? ` of the pulse's ${mJ(E0)} mJ` : ' (right-going energy counts +, left-going −)'}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.8
+    {
+      num: '1.8',
+      kind: 'Definition',
+      name: 'Characteristic impedance',
+      statement: String.raw`The **characteristic impedance** of a string is
+$$Z=\sqrt{T\mu}=\mu c=\frac Tc\qquad(\text{units kg/s}).$$
+It is the ratio of the transverse force to the transverse velocity in a wave travelling one way: for $y=f(x-ct)$ the force that the left part exerts on the right part is $F=-T\,y_x$, and
+$$F=Z\,\dot y .$$
+So a semi-infinite string, driven at its end, acts exactly like a **dashpot** of resistance $Z$: whatever the driving force, the end moves with velocity $F/Z$, in phase with the force, and all the power $F^2/Z$ goes into the outgoing wave and never returns. A string of finite length does not behave like this: reflected waves come back and the force–velocity ratio becomes complex and frequency-dependent.`,
+      idea: String.raw`For a right-moving wave $y_t=-c\,y_x$, so $-Ty_x=(T/c)\,y_t=Z\,y_t$; with $c=\sqrt{T/\mu}$ this is $T/c=\sqrt{T\mu}$. The power $Fy_t=Zy_t^2$ is the energy flux of 1.7. Impedance combines the two properties of a medium differently from the speed: $c=\sqrt{T/\mu}$ is stiffness over inertia, while $Z=\sqrt{T\mu}$ grows with both. It is the quantity that has to match for a wave to cross from one medium to another without reflection (1.9).`,
+      caption: String.raw`A massless ring on a frictionless rod is pushed up and down by a sinusoidal force (gold arrow). The string runs off to the right into an absorbing tail that stands in for the rest of an infinitely long string. Below left: the force and $Z$ times the ring's velocity lie on top of each other. Below right: plotted against each other they trace a straight line of slope $Z=\sqrt{T\mu}$ (dashed). Change $T$ and $\mu$ and the slope follows. Then end the string at 2 m with a fixed or free end: reflections return, the line opens into an ellipse, and the average power drops towards zero.`,
+      deps: ['waves-1.7'],
+      see: ['circ-9.3', 'em-11.17', 'music-11.3'],
+      refs: ['Crawford ch. 4'],
+      tags: ['impedance', 'power'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Mechanical_impedance' },
+      viz(v) {
+        const M = v.M, L = 2, LS = 2.6, F0 = 0.5, FR = 50, SLOW = 0.02, WIN = 0.06;
+        const Ts = v.slider('tension $T$ (N)', 20, 180, 100, { step: 1, onChange: () => { v.t = 0; } });
+        const mS = v.slider('density $\\mu$ (g/m)', 2, 20, 10, { step: 0.1, onChange: () => { v.t = 0; } });
+        const far = v.select('far end', [{ value: 'inf', label: 'infinite (absorbed)' }, { value: 'fixed', label: 'fixed at 2 m' }, { value: 'free', label: 'free at 2 m' }], 'inf', { onChange: () => { v.t = 0; } });
+        const drv = v.select('force', [{ value: 'sine', label: 'sinusoid, 50 Hz' }, { value: 'pulses', label: 'pulses' }], 'sine', { onChange: () => { v.t = 0; } });
+        const s = v.stage({ x: [-0.12, L + 0.62], y: [-11, 11], height: 210, axes: false, full: true });
+        const tr = v.stage({ x: [-WIN * 1000, 0], y: [-0.7, 0.7], height: 210, axes: 'box', xlabel: 'time before now (ms)', ylabel: 'N', title: 'force F and Z·(ring velocity)' });
+        const fv = v.stage({ x: [-1, 1], y: [-0.7, 0.7], height: 210, axes: 'box', xlabel: 'ring velocity (m/s)', ylabel: 'F (N)', title: 'force against velocity' });
+        const force = (t) => {
+          if (drv.value === 'sine') return F0 * Math.sin(TAU * FR * t) * M.smoothstep(t / 0.012);
+          let f = 0; for (let k = 0; k < 40; k++) { const tk = 0.006 + 0.016 * k; if (Math.abs(t - tk) < 0.01) f += (k % 2 ? -1 : 1) * F0 * Math.exp(-(((t - tk) / 0.0015) ** 2)); }
+          return f;
+        };
+        let C = null, key = '', rec = [], lastRec = 0, y0prev = 0;
+        const build = () => {
+          const T = Ts.value, mu = mS.value / 1000, c = Math.sqrt(T / mu), inf = far.value === 'inf';
+          const x1 = inf ? L + LS : L;
+          const damp = inf ? (x) => (x > L ? 3.2 * (c / LS) * ((x - L) / LS) ** 2 * 6 : 0) : () => 4;
+          C = makeChain({ x0: 0, x1, mu: () => mu, T, delta: 0.008 / c, left: 'driven', right: far.value === 'free' ? 'free' : 'fixed', damp });
+          C.force = force; C.set(null, null); rec = []; lastRec = 0; y0prev = 0;
+        };
+        let Z = 1, cc = 100;
+        v.animate((t) => {
+          const k = [Ts.value, mS.value, far.value, drv.value].join();
+          const tp = t * SLOW;
+          if (k !== key || tp < C.t - 1e-9) { key = k; build(); }
+          Z = Math.sqrt(Ts.value * mS.value / 1000); cc = Math.sqrt(Ts.value / (mS.value / 1000));
+          const dt = 0.5 * C.delta;
+          while (C.t < tp) {
+            C.step(dt);
+            if (C.t - lastRec >= 2.5e-4) { lastRec = C.t; rec.push([C.t, C.F, C.v[0]]); if (rec.length > 400) rec.shift(); }
+          }
+          // ---- the string (displacement in mm)
+          const inf = far.value === 'inf';
+          if (inf) {
+            s.rect(L, -11, L + 0.62, 11, { fill: 'muted', fillAlpha: 0.07, stroke: false });
+            s.text('absorbing tail: stands in for', L + 0.31, 9.4, { color: 'muted', size: 11, align: 'center' });
+            s.text('the rest of an infinite string', L + 0.31, 7.9, { color: 'muted', size: 11, align: 'center' });
+          } else if (far.value === 'fixed') wall(s, L, -6, 6, 1, 0.04);
+          s.hline(0, { color: 'faint', width: 1 });
+          s.path(C.pts(0, L + 0.62, 1000), { color: 'accent', width: 2.4 });
+          if (far.value === 'free') rod(s, L, -10, 10, 1000 * C.y[C.N - 1]);
+          const y0 = 1000 * C.y[0];
+          rod(s, 0, -10.5, 10.5, y0);
+          const Fn = C.F, vn = C.v[0];
+          s.arrow(-0.06, y0, -0.06, y0 + 9 * (Fn / F0), { color: 'gold', width: 3 });
+          s.arrow(0.06, y0, 0.06, y0 + 9 * (vn * Z / F0), { color: 'teal', width: 2 });
+          s.corner(`displacement in mm · slow motion, t = ${v.fix(C.t * 1000, 1)} ms`, 'tl', { color: 'ink' });
+          // ---- traces
+          const tn = C.t;
+          tr.hline(0, { color: 'faint', width: 1 });
+          tr.path(rec.map((r) => [(r[0] - tn) * 1000, r[1]]), { color: 'gold', width: 2.4 });
+          tr.path(rec.map((r) => [(r[0] - tn) * 1000, Z * r[2]]), { color: 'teal', width: 2, dash: [6, 4] });
+          // ---- F against v
+          const vm = 1.25 * F0 / Z;
+          fv.setView([-vm, vm], [-0.7, 0.7]);
+          fv.hline(0, { color: 'faint', width: 1 }); fv.vline(0, { color: 'faint', width: 1 });
+          fv.line(-vm, -Z * vm, vm, Z * vm, { color: 'green', width: 2, dash: [7, 5] });
+          fv.text(`slope Z = √(Tμ) = ${v.fix(Z, 3)} kg/s`, -0.95 * vm, 0.6, { color: 'green', size: 11.5 });
+          const last = rec.filter((r) => r[0] > tn - 0.024);
+          fv.path(last.map((r) => [r[2], r[1]]), { color: 'gold', width: 2.2 });
+          if (last.length) fv.dot(last[last.length - 1][2], last[last.length - 1][1], { r: 5, color: 'gold' });
+        }, { still: 2.2 });
+        v.legend([['gold', 'driving force F'], ['teal', 'Z × ring velocity', { dash: true }], ['green', 'F = Z v', { dash: true }]]);
+        v.readout(() => {
+          const last = rec.filter((r) => r[0] > C.t - 0.02);
+          if (last.length < 20) return `$Z=\\sqrt{T\\mu}$ = ${v.fix(Z, 3)} kg/s, $c=\\sqrt{T/\\mu}$ = ${v.fix(cc, 1)} m/s · collecting a full period…`;
+          let sfv = 0, svv = 0, sff = 0, P = 0;
+          for (const r of last) { sfv += r[1] * r[2]; svv += r[2] * r[2]; sff += r[1] * r[1]; P += r[1] * r[2]; }
+          const slope = sfv / svv, corr = sfv / Math.sqrt(svv * sff), ang = (Math.acos(M.clamp(corr, -1, 1)) * 180) / Math.PI;
+          P /= last.length;
+          const sine = drv.value === 'sine';
+          return `$Z=\\sqrt{T\\mu}$ = ${v.fix(Z, 3)} kg/s ($c$ = ${v.fix(cc, 1)} m/s) · measured best-fit $F/v$ over the last 20 ms: ${v.fix(slope, 3)} kg/s · correlation of $F$ and $v$: ${v.fix(corr, 3)}${sine ? ` (phase difference ${v.fix(ang, 0)}°)` : ''} · mean power delivered ${v.fix(1000 * P, 1)} mW` + (sine ? `, for a matched load $F_0^2/2Z$ = ${v.fix((1000 * F0 * F0) / (2 * Z), 1)} mW` : '');
+        });
+      },
+    },
   ],
 };

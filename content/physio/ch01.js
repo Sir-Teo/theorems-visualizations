@@ -355,7 +355,7 @@ $$\Pi = R\,T\,c$$
         const cs = v.slider('solute concentration $c_0$', 0.2, 4, 2, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mM` });
         const Ts = v.slider('temperature', 0, 40, 37, { step: 1, fmt: (x) => `${x} °C` });
         const mem = v.select('membrane', [{ value: 'semi', label: 'semipermeable ($\\sigma = 1$)' }, { value: 'leaky', label: 'leaky to the solute' }], 'semi');
-        const su = v.stage({ x: [-46, 50], y: [-22, 168], equal: true, axes: false, height: 340, weight: 0.9 });
+        const su = v.stage({ x: [-80, 52], y: [-30, 166], equal: true, axes: false, height: 340, weight: 0.9 });
         const sh = v.stage({ x: [0, 30], y: [0, 120], height: 340, axes: 'box', xlabel: 't (display s)', ylabel: 'Δh (cm)', weight: 1.1 });
         const rhog = 1000 * 9.81, A = 1e-4, h0 = 0.5, tauV = 2.2, Lp = 1 / (2 * tauV * rhog), Ps = 0.5 / (2 * 12), dt = 0.01, TEND = 30;
         let key = '', run = null;
@@ -380,7 +380,7 @@ $$\Pi = R\,T\,c$$
           const R = get(), tt = Math.min(TEND, t % (TEND + 3)), i = idxAt(R.t, tt); cur = i;
           const hL = R.hL[i], hR = R.hR[i], q = R.q[i];
           // tube geometry (cm): arms x∈[−30,−14] and [14,30], bottom channel y∈[−16,0]
-          const xo = 30, xi = 14, yb = -16;
+          const xo = 36, xi = 13, yb = -16;
           su.rect(-xo, yb, xo, 0, { fill: 'blue', fillAlpha: 0.13, stroke: false });
           su.rect(-xo, 0, -xi, hL, { fill: 'blue', fillAlpha: 0.13, stroke: false });
           su.rect(xi, 0, xo, hR, { fill: 'blue', fillAlpha: 0.13, stroke: false });
@@ -391,7 +391,7 @@ $$\Pi = R\,T\,c$$
           su.text('cm', xo + 3.5, 160, { size: 9.5, color: 'muted', align: 'left', baseline: 'middle' });
           // solute dots: density ∝ moles per volume on each side
           const kR = Math.round((400 * R.nR[i]) / 2e-4), kL = Math.round((400 * R.nL[i]) / 2e-4);
-          const place = (u, w, side, h) => { const a = (xo - 1.6) * 16, tot = a + 16 * h; return u * tot < a ? [side * (1.6 + (u * tot) / 16), yb + w * 16] : [side * (xi + w * 16), (u * tot - a) / 16]; };
+          const aw = xo - xi, place = (u, w, side, h) => { const a = (xo - 1.6) * 16, tot = a + aw * h; return u * tot < a ? [side * (1.6 + (u * tot) / 16), yb + w * 16] : [side * (xi + w * aw), (u * tot - a) / aw]; };
           su.dots(pts.slice(0, Math.min(450, kR)).map(([a, b]) => place(a, b, 1, hR)), { r: 2, color: 'orange' });
           if (mem.value === 'leaky') su.dots(pts.slice(450, 450 + Math.min(450, kL)).map(([a, b]) => place(a, b, -1, hL)), { r: 2, color: 'orange' });
           // water flux arrow
@@ -399,9 +399,11 @@ $$\Pi = R\,T\,c$$
           if (wq > 0.02) { const d = q > 0 ? 1 : -1; su.arrow(-9 * d, -8, 9 * d, -8, { color: 'blue', width: 1.5 + 5 * wq, head: 9 + 6 * wq }); }
           su.text('water', -22, yb - 2, { size: 10.5, color: 'blue', align: 'center', baseline: 'top' });
           su.text('solution', 22, yb - 2, { size: 10.5, color: 'orange', align: 'center', baseline: 'top' });
-          // Δh bracket
-          su.line(-xi - 1, hL, xi + 1, hL, { color: 'muted', dash: [3, 3], width: 1 });
-          if (hR - hL > 2) { su.measure(8, hL, 8, hR, ''); su.text(`Δh = ${v.fix(hR - hL, 1)} cm`, 7, (hL + hR) / 2, { size: 11, color: 'ink', align: 'right', weight: 600 }); }
+          // Δh bracket, drawn outside the left arm
+          su.line(-xi, hL, -xo - 8, hL, { color: 'muted', dash: [3, 3], width: 1 });
+          su.line(xo, hR, xo + 0.1, hR, { color: 'muted', width: 1 });
+          su.line(-xo - 8, hR, xi, hR, { color: 'muted', dash: [3, 3], width: 1, alpha: 0.6 });
+          if (Math.abs(hR - hL) > 2) { su.measure(-xo - 5, hL, -xo - 5, hR, ''); su.text('Δh', -xo - 8, (hL + hR) / 2, { size: 12, color: 'ink', align: 'right', baseline: 'bottom', weight: 700 }); su.text(`${v.fix(hR - hL, 1)} cm`, -xo - 8, (hL + hR) / 2, { size: 11, color: 'ink', align: 'right', baseline: 'top' }); }
           // history
           sh.setView([0, TEND], [0, Math.max(30, R.naive * 1.15)]);
           sh.hline(R.naive, { color: 'muted', dash: [6, 4], width: 1.3 });
@@ -441,7 +443,7 @@ where $\pi_0$ is the isotonic osmolality. **Hypotonic** solutions swell cells an
         const urea = v.slider('urea outside (permeant)', 0, 600, 0, { step: 10, fmt: (x) => `${Math.round(x)} mM` });
         const bs = v.slider('osmotically inactive fraction $b$', 0.3, 0.6, 0.4, { step: 0.01 });
         const scell = v.stage({ x: [-6.2, 6.2], y: [-4.2, 4.2], equal: true, axes: false, height: 270, weight: 1 });
-        const sbv = v.stage({ x: [0, 3.6], y: [0, 2.4], height: 270, axes: 'box', xlabel: 'π₀/π_eff', ylabel: 'V/V₀', weight: 1 });
+        const sbv = v.stage({ x: [0, 3.6], y: [0, 2.4], height: 270, axes: 'box', xlabel: 'π₀ / π (effective)', ylabel: 'V/V₀', weight: 1 });
         const sf = v.stage({ x: [0.2, 0.9], y: [0, 1.05], height: 190, axes: 'box', xlabel: 'NaCl (%)', ylabel: 'fraction lysed', full: true, xticks: [0.2, 0.3, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8, 0.9] });
         const phi = 0.93, osmPerPct = 2 * phi * (10 / 58.44) * 1000, pi0 = 0.9 * osmPerPct, V0 = 90, Amem = 140;
         const Vcrit = Amem ** 1.5 / (6 * Math.sqrt(Math.PI)), rc = Math.cbrt((3 * Vcrit) / (4 * Math.PI));
@@ -521,7 +523,7 @@ where $\pi_0$ is the isotonic osmolality. **Hypotonic** solutions swell cells an
       statement: String.raw`Many solutes, glucose among them, cross membranes on **carrier proteins** that bind the solute on one side, change conformation and release it on the other (alternating access). Because there are finitely many carriers and each takes a finite time per cycle, the flux saturates:
 $$J = J_{\max}\,\frac{c}{K_m + c}\qquad(\text{zero-trans uptake}),$$
 with $J_{\max} = N\times$(turnover per carrier) and $K_m$ the concentration of half-maximal flux. Simple diffusion instead grows linearly, $J = PAc$ (1.3), without limit. Facilitated transport is passive: the net flux always runs down the concentration gradient and vanishes when $c_{\text{in}} = c_{\text{out}}$. It also shows specificity and competitive inhibition.`,
-      idea: String.raw`Model the carrier as a four-state cycle: empty outward-facing ⇄ loaded outward-facing ⇄ loaded inward-facing ⇄ empty inward-facing ⇄ empty outward-facing. With nothing inside, the steady-state flux of this Markov chain has exactly the Michaelis–Menten form (mathbio-5.3). At low $c$ the carriers wait for substrate, so the flux is proportional to $c$. At high $c$ every carrier is loaded as soon as it faces out, and the flux is capped by the conformational rates. $K_m$ is not the binding constant: for this symmetric carrier with fast binding it is about half the dissociation constant. Isoforms with different $K_m$ suit different jobs. GLUT1 in red cells and brain endothelium ($K_m \approx 1.5$ mM) is nearly saturated at blood glucose. Liver and β-cell GLUT2 ($K_m \approx 17$–20 mM) is not, so its flux tracks blood glucose (Lodish, Molecular Cell Biology).`,
+      idea: String.raw`Model the carrier as a four-state cycle: empty outward-facing ⇄ loaded outward-facing ⇄ loaded inward-facing ⇄ empty inward-facing ⇄ empty outward-facing. With nothing inside, the steady-state flux of this Markov chain has exactly the Michaelis–Menten form (mathbio-5.3). At low $c$ the carriers wait for substrate, so the flux is proportional to $c$. At high $c$ every carrier is loaded as soon as it faces out, and the flux is capped by the conformational rates. $K_m$ belongs to the whole cycle, not to binding alone: it equals the dissociation constant only when binding is fast and loaded and empty carriers flip at the same rate, as here, and slower release or a faster empty return shifts it. Isoforms with different $K_m$ suit different jobs. GLUT1 in red cells and brain endothelium ($K_m \approx 1.5$ mM) is nearly saturated at blood glucose. Liver and β-cell GLUT2 ($K_m \approx 17$–20 mM) is not, so its flux tracks blood glucose (Lodish, Molecular Cell Biology).`,
       caption: String.raw`Each carrier in the membrane is a stochastic four-state machine with its own random transitions: binding (gold hexagon), flipping, release and flipping back empty. Glucose is cleared inside as fast as it arrives (zero-trans). Right: the flux per carrier against outside concentration. The blue curve is the exact steady state of the chain, the dashed curve the Michaelis–Menten fit, the orange line a channel-like pathway with the same initial slope, and the gold point the flux counted from the animation. Switch between GLUT1 and GLUT2 and compare the flux at a blood glucose of 5 mM.`,
       scope: String.raw`A single symmetric carrier species with no substrate on the trans side; with trans substrate, exchange and asymmetry add terms, and coupled carriers (symporters) can move a solute uphill.`,
       deps: ['physio-1.3', 'mathbio-5.3'],
@@ -573,8 +575,8 @@ with $J_{\max} = N\times$(turnover per carrier) and $K_m$ the concentration of h
           // carriers
           const dx = 14.5 / N;
           for (let i = 0; i < N; i++) {
-            const x = dx * (i + 0.5), s = S.st[i], outF = s === 0 || s === 1, w = Math.min(0.42, dx * 0.32);
-            const col = 'teal', a = x - w - 0.15, near = x - 0.03, far = x - 0.28;
+            const x = dx * (i + 0.5), s = S.st[i], outF = s === 0 || s === 1, w = Math.min(0.3, dx * 0.2);
+            const col = 'teal', a = x - w - 0.15, near = x - 0.04, far = x - 0.3;
             const Lp = outF ? [[a, -1.15], [near, -1.15], [far, 1.15], [a, 1.15]] : [[a, -1.15], [far, -1.15], [near, 1.15], [a, 1.15]];
             sm.poly(Lp, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
             sm.poly(Lp.map(([px, py]) => [2 * x - px, py]), { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
@@ -589,8 +591,8 @@ with $J_{\max} = N\times$(turnover per carrier) and $K_m$ the concentration of h
           sj.fn((x) => slope * x, { color: 'orange', width: 1.8 });
           sj.fn((x) => (Jm * x) / (Km + x), { color: 'ink', dash: [6, 4], width: 1.3 });
           sj.fn((x) => carrierFlux(x, Kd), { color: 'accent', width: 2.4, n: 120 });
-          sj.hline(Jm, { color: 'muted', dash: [2, 3] }); sj.text('J_max', 39.5, Jm, { size: 11, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
-          sj.vline(Km, { color: 'faint', dash: [2, 3] }); sj.text('K_m', Km, Jm * 0.08, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sj.hline(Jm, { color: 'muted', dash: [2, 3] }); sj.tex('J_{\\max}', 39.5, Jm, { size: 13, color: 'muted', align: 'right', baseline: 'bottom', dy: -2 });
+          sj.vline(Km, { color: 'faint', dash: [2, 3] }); sj.tex('K_m', Km, Jm * 0.08, { size: 13, color: 'muted', align: 'left', dx: 4 });
           sj.hline(Jm / 2, { color: 'faint', dash: [2, 3] });
           sj.vline(c, { color: 'gold', width: 1 });
           if (S.t > 2) {
@@ -603,7 +605,7 @@ with $J_{\max} = N\times$(turnover per carrier) and $K_m$ the concentration of h
         v.readout(() => {
           if (!S) return '';
           const Kd = kd(), Jm = carrierJmax(Kd), Km = carrierKm(Kd), c = cs.value, J = carrierFlux(c, Kd), N = Ns.value;
-          return `chain: $J(c) = ${v.fix(J, 4)}$ s⁻¹ per carrier; Michaelis–Menten with $J_{\\max} = ${v.fix(Jm, 3)}$, $K_m = ${v.fix(Km, 2)}$ mM gives ${v.fix((Jm * c) / (Km + c), 4)} · counted: ${S.done} crossings by ${N} carriers in ${v.fix(S.t, 1)} s = ${v.fix(S.done / (N * Math.max(S.t, 1e-9)), 3)} s⁻¹ · saturation $c/(K_m + c) = ${v.fix((100 * c) / (Km + c), 0)}\\%$ (binding $K_d = ${v.fix(Kd, 2)}$ mM, so $K_m \\approx K_d/2$)`;
+          return `chain: $J(c) = ${v.fix(J, 4)}$ s⁻¹ per carrier; Michaelis–Menten with $J_{\\max} = ${v.fix(Jm, 3)}$, $K_m = ${v.fix(Km, 2)}$ mM gives ${v.fix((Jm * c) / (Km + c), 4)} · counted: ${S.done} crossings by ${N} carriers in ${v.fix(S.t, 1)} s = ${v.fix(S.done / (N * Math.max(S.t, 1e-9)), 3)} s⁻¹ · saturation $c/(K_m + c) = ${v.fix((100 * c) / (Km + c), 0)}\\%$ (binding $K_d = ${v.fix(Kd, 2)}$ mM: with fast binding and symmetric flipping $K_m \\approx K_d$)`;
         });
       },
     },

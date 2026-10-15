@@ -29,7 +29,7 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
         const M = v.M, PSA = psaModel(M), NP = 2000, SHOW = 14;
         const sD = v.stage({ x: [-3.6, 6.6], y: [0, 0.62], height: 250, full: true, axes: 'box', yticks: [], xlabel: 'biomarker score' });
         const sT = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: false, weight: 1.15, minWidth: 300, title: 'the 2×2 table, per 1 000 people tested' });
-        const sR = v.stage({ x: [0, 1], y: [0, 1], equal: true, height: 290, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', weight: 0.85, minWidth: 250, title: 'ROC curve: every cut-off at once' });
+        const sR = v.stage({ x: [-0.15, 1.03], y: [-0.1, 1.04], height: 290, axes: 'box', xlabel: '1 − specificity', ylabel: 'sensitivity', xticks: [0.2, 0.4, 0.6, 0.8, 1], yticks: [0.2, 0.4, 0.6, 0.8, 1], weight: 0.85, minWidth: 250, title: 'ROC curve: every cut-off at once' });
         const mk = v.select('biomarker', [{ value: 'gen', label: 'generic score' }, { value: 'psa', label: 'PSA for prostate cancer (PCPT)' }], 'gen');
         const dS = v.slider("separation $d'$ (difference of means in SDs)", 0, 4, 1.8, { step: 0.05 });
         const prevS = v.slider('prevalence among the people tested', 0.01, 0.5, 0.2, { log: true, fmt: (x) => pcs(x) });
@@ -39,17 +39,17 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
         const snap = (x) => { if (mk.value === 'psa') for (const [c] of PSA_POINTS) if (Math.abs(Math.log(x / c)) < 0.05) return c; return x; };
         let yH = 0.025;
         const H = sD.handle(1, yH, { color: 'gold', constrain: (x) => { const S = model(); return [snap(S.log ? M.clamp(x, S.lo * 1.1, S.hi / 1.1) : M.clamp(x, S.lo + 0.15, S.hi - 0.15)), yH]; } });
-        const N01 = M.dist.normal(0, 1), pairsU = uniforms(M, 211, 4 * NP);
+        const N01 = M.dist.normal(0, 1), ZP = Array.from(uniforms(M, 202, 2 * NP), (u) => N01.quantile(u * 0.999999));
         let shown = 'gen', st = null;
         v.render(() => {
           const psa = mk.value === 'psa', S = model(), p = prevS.value, pairs = pairT.value, scaled = sizeT.value;
           dS.el.hidden = psa;
-          if (mk.value !== shown) { shown = mk.value; sD.setScale({ xlog: psa, x: [S.lo, S.hi] }); sD.setLabels(psa ? 'PSA (ng/mL), log scale' : 'biomarker score'); H.x = psa ? 4.1 : 1; }
+          if (mk.value !== shown) { shown = mk.value; sD.setScale({ xlog: psa, x: [S.lo, S.hi] }); sD.setLabels(psa ? 'PSA (ng/mL), log scale' : 'biomarker score'); sD.setTicks(psa ? [0.2, 0.5, ...PSA_POINTS.map((q) => [q[0], String(q[0])]), 10, 20] : null); H.x = psa ? 4.1 : 1; }
           const c = H.x, se = S.se(c), sp = S.sp(c);
           // ----- densities: heights (optionally ∝ group size), label rows, pair rows above
           const pk = psa ? 1 / (Math.sqrt(2 * Math.PI) * Math.min(PSA.s0, PSA.s1)) : 1 / Math.sqrt(2 * Math.PI);
           const w0 = scaled ? (1 - p) / Math.max(p, 1 - p) : 1, w1 = scaled ? p / Math.max(p, 1 - p) : 1;
-          const top = pk * 1.42, ymax = pairs ? top * 1.75 : top;
+          const top = pk * 1.58, ymax = pairs ? top * 1.7 : top;
           sD.setView(null, [0, ymax]);
           const f0 = (x) => w0 * S.f0(x), f1 = (x) => w1 * S.f1(x), z = () => 0, [a, b] = [S.lo, S.hi];
           sD.between(f0, z, a, c, { fill: 'blue', fillAlpha: 0.26 });
@@ -58,20 +58,19 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
           sD.between(f1, z, a, c, { fill: 'red', fillAlpha: 0.06, hatch: 'red', hatchAngle: -45, hatchAlpha: 0.6 });
           sD.fn(f0, { color: 'blue', width: 2.2 });
           sD.fn(f1, { color: 'red', width: 2.2 });
-          if (psa) for (const [k] of PSA_POINTS) { sD.line(k, 0, k, pk * 0.07, { color: 'muted', width: 1.4 }); sD.text(`${k}`, k, pk * 0.07, { dy: -7, align: 'center', color: 'muted', size: 10.5 }); }
           sD.line(c, 0, c, top * 0.99, { color: 'gold', width: 2 });
           // the four cells as two rows split by the cut-off
-          const yr1 = top * 0.9, yr2 = top * 0.79, L = { dx: -9, align: 'right', size: 12, weight: 700 }, R = { dx: 9, align: 'left', size: 12, weight: 700 };
+          const yr1 = top * 0.83, yr2 = top * 0.73, L = { dx: -9, align: 'right', size: 12, weight: 700 }, R = { dx: 9, align: 'left', size: 12, weight: 700 };
           sD.text(`TN ${pc(sp)} of healthy`, c, yr1, { ...L, color: 'blue' }); sD.text(`FP ${pc(1 - sp)} of healthy`, c, yr1, { ...R, color: 'blue' });
           sD.text(`FN ${pc(1 - se)} of diseased`, c, yr2, { ...L, color: 'red' }); sD.text(`TP ${pc(se)} of diseased`, c, yr2, { ...R, color: 'red' });
-          sD.text('← negative', c, top * 0.68, { dx: -9, align: 'right', color: 'muted', size: 11 }); sD.text('positive →', c, top * 0.68, { dx: 9, align: 'left', color: 'muted', size: 11 });
+          sD.text('← test negative', c, top * 0.93, { dx: -9, align: 'right', color: 'muted', size: 11.5 }); sD.text('test positive →', c, top * 0.93, { dx: 9, align: 'left', color: 'muted', size: 11.5 });
           // random pairs: one healthy and one diseased score per row; green = diseased scored higher
           let good = 0;
           for (let k = 0; k < NP; k++) {
-            const x0 = S.m0 + S.s0 * N01.quantile(pairsU[2 * k] * 0.999999), x1 = S.m1 + S.s1 * N01.quantile(pairsU[2 * k + 1] * 0.999999);
+            const x0 = S.m0 + S.s0 * ZP[2 * k], x1 = S.m1 + S.s1 * ZP[2 * k + 1];
             if (x1 > x0) good++;
             if (pairs && k < SHOW) {
-              const X0 = psa ? Math.exp(x0) : x0, X1 = psa ? Math.exp(x1) : x1, y = top * 1.04 + ((ymax - top * 1.08) * (k + 0.5)) / SHOW, ok = x1 > x0;
+              const X0 = psa ? Math.exp(x0) : x0, X1 = psa ? Math.exp(x1) : x1, y = top * 1.02 + ((ymax * 0.93 - top * 1.02) * (k + 0.5)) / SHOW, ok = x1 > x0;
               sD.line(X0, y, X1, y, { color: ok ? 'green' : 'orange', width: 2, alpha: 0.75 });
               sD.dot(X0, y, { r: 3.6, color: 'blue' }); sD.dot(X1, y, { r: 3.6, color: 'red' });
             }
@@ -93,14 +92,15 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
           sT.text(`across the top row: PPV = TP ÷ positives = ${F.TP} ÷ ${F.pos} = ${F.pos ? pc(F.TP / F.pos) : '—'} (2.2)`, 0.5, 0.04, { align: 'center', color: 'muted', size: 11.5 });
           // ----- ROC
           const roc = rocPoints(S);
+          sR.rect(0, 0, 1, 1, { color: 'grid', width: 1 });
           sR.line(0, 0, 1, 1, { color: 'faint', width: 1.2, dash: [4, 4] });
           sR.poly([...roc, [1, 0]], { fill: 'accent', fillAlpha: 0.1, stroke: false });
           sR.path(roc, { color: 'accent', width: 2.4 });
           sR.line(1 - sp, 0, 1 - sp, se, { color: 'blue', width: 1, dash: [3, 3] }); sR.line(0, se, 1 - sp, se, { color: 'red', width: 1, dash: [3, 3] });
           if (psa) PSA_POINTS.forEach(([k, a1, b1]) => { sR.dot(1 - b1, a1, { r: 4.2, color: 'gold', hollow: true, width: 2 }); sR.text(`${k}`, 1 - b1, a1, { dx: 7, dy: 6, align: 'left', color: 'muted', size: 10.5 }); });
           sR.dot(1 - sp, se, { r: 5.5, color: 'gold' });
-          sR.text(`AUC = ${v.fix(S.auc, 3)}`, 0.97, 0.13, { align: 'right', color: 'accent', size: 13, weight: 700 });
-          if (psa) sR.text(`published ${PSA_AUC}`, 0.97, 0.05, { align: 'right', color: 'muted', size: 11 });
+          sR.text(`AUC = ${v.fix(S.auc, 3)}`, 0.97, 0.3, { align: 'right', color: 'accent', size: 13, weight: 700 });
+          if (psa) sR.text(`published ${PSA_AUC}`, 0.97, 0.22, { align: 'right', color: 'muted', size: 11 });
           st = { ...st, c, se, sp, F, p, psa, auc: S.auc, mc: good / NP, pairs, snapped: psa && PSA_POINTS.find((q) => q[0] === c) };
         });
         v.legend([['red', 'diseased', { area: true }], ['blue', 'healthy', { area: true }], ['gold', 'cut-off / operating point'], ['green', 'pair ranked correctly'], ['orange', 'pair ranked wrongly']]);

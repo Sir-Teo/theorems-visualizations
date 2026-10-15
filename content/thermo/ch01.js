@@ -277,7 +277,7 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
         const fresh = () => { win = G.snap(); win.moved = false; acc = { T: 0, n: 0, c: 0 }; };
         const make = () => {
           clock.kick(30);
-          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true, thermal: [1, 0, 0, 0, 0, 0], Tb: Ts.value }); fresh(); };
+          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true, thermal: [1, 0, 0, 0, 0, 0], Tb: Ts.value }); G.setT(Ts.value); fresh(); };
         const clock = simClock(12, 0.06, 40);
         // the automatic sweep visits 14 volumes, holding each one still for long enough to measure two windows
         const sweep = (t) => { const k = Math.floor(t / 34) % 26, idx = k < 14 ? k : 26 - k; return XMAX * (XMIN / XMAX) ** (idx / 13); };
@@ -552,7 +552,7 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
       num: '1.8', kind: 'Definition', name: 'Quasistatic, reversible and irreversible processes',
       statement: String.raw`A process is **quasistatic** if it runs so slowly that the system passes through a continuous sequence of equilibrium states; only then does it trace a curve in the space of state variables (a path on the $P$–$V$ diagram), with the pressure on the piston equal to the gas's equilibrium pressure at every instant. A process is **reversible** if it can be retraced exactly, returning both system and surroundings to their initial states; reversible processes are quasistatic and free of friction and of heat flow across finite temperature differences. All real processes are **irreversible** to some degree: fast compression, free expansion, friction, mixing and heat conduction cannot be undone without leaving a change somewhere else.`,
       idea: String.raw`A gas relaxes by molecular motion, so "slow" means slow compared with the time for pressure disturbances to cross it — the piston speed must be much smaller than the speed of sound. A piston pushed faster piles molecules up against its face, so it meets *more* than the equilibrium pressure on the way in and *less* on the way out; the work done on the gas over a closed cycle, $-\oint P_{\text{piston}}\,dV$, is then positive and ends up as internal energy. In the quasistatic limit the two curves merge into one equilibrium path and the net work vanishes: the cycle can be run backwards.`,
-      caption: String.raw`An insulated cylinder of hard spheres; the piston compresses the gas to a third of its volume and draws back, over and over, at the speed you choose (in units of the thermal speed; sound travels at about 1.3). The $P$–$V$ panel shows the pressure **measured on the piston face** — red going in, blue coming out — against the equilibrium adiabat (dashed). Slowly, red and blue lie on the adiabat and the gas returns to its starting temperature after each cycle. Fast, the curves split into a loop whose area is work turned into heat, and the density profile (right) shows molecules crowding the piston.`,
+      caption: String.raw`An insulated cylinder of hard spheres; the piston compresses the gas to a third of its volume and draws back, over and over, at the speed you choose (in units of the thermal speed; sound travels at about 1.3). The $P$–$V$ panel shows the pressure **measured on the piston face** — red going in, blue coming out — against the quasistatic adiabat of this hard-sphere gas (dashed, $d\ln T = -\tfrac23 Z\,d\ln V$ with the Carnahan–Starling $Z$). Slowly, red and blue lie on the adiabat and the gas returns to its starting temperature after each cycle. Fast, the curves split into a loop whose area is work turned into heat, and the density profile (right) shows molecules crowding the piston.`,
       deps: ['thermo-1.1'],
       refs: ['Callen ch. 4', 'Schroeder §1.5'],
       tags: ['processes', 'reversibility'],
@@ -566,12 +566,16 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
         const sd = v.stage({ x: [0, X1], y: [0, 3], height: 290, axes: 'box', xlabel: 'x (σ)', ylabel: 'density / mean', title: 'density along the cylinder', weight: 1 });
         const make = () => {
           clock.kick(1.2);
-          G = hsGas({ species: [{ m: 1, d: 0.5 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 }, diffuse: [1, 0, 1, 1, 1, 1] });
+          G = hsGas({ species: [{ m: 1, d: 1 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 } });
+          G.setT(1);
           dir = -1; cyc = 0; pts = []; Tstart = G.stats().T; Wstart = 0; rec = [{ cyc: 0, T: Tstart, W: 0 }]; lastSnap = G.snap(); prof = new Float64Array(22).fill(1); tCyc = 0;
           G.setU(-us.value);
         };
         const clock = simClock(1, 0.05);
-        const P0 = N * 1 / (X1 * A), V0 = X1 * A, adi = (V) => P0 * (V0 / V) ** (5 / 3);
+        // the quasistatic adiabat of this hard-sphere gas: d ln T = −(2/3) Z(η) d ln V (Carnahan–Starling Z), P = NkT Z/V
+        const V0 = X1 * A, adiTab = [];
+        { let lnT = 0; const n = 400, l0 = Math.log(V0), l1 = Math.log(X2 * A * 0.85); for (let i = 0; i <= n; i++) { const lv = l0 + (l1 - l0) * i / n, V = Math.exp(lv), Z = carnahanStarling(N * Math.PI / 6 / V); adiTab.push([V, N * Math.exp(lnT) * Z / V]); lnT -= (2 / 3) * Z * (l1 - l0) / n; } }
+        const adi = (V) => { if (V >= V0) return adiTab[0][1] * (V0 / V) ** (5 / 3); for (let i = 1; i < adiTab.length; i++) if (adiTab[i][0] <= V) { const [Va, Pa] = adiTab[i - 1], [Vb, Pb] = adiTab[i]; return Pa + (Pb - Pa) * (V - Va) / (Vb - Va); } return adiTab[adiTab.length - 1][1]; };
         make();
         v.animate((t) => {
           const u = us.value, rate = clamp(2 * (X1 - X2) / u / 7, 6, 400);
@@ -600,13 +604,15 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
           const pmax = adi(X2 * A) * (u > 0.6 ? 1.9 : 1.3);
           pv.setView([X2 * A * 0.92, X1 * A * 1.03], [0, pmax]);
           pv.fn(adi, { color: 'ink', dash: [6, 4], width: 1.6 });
-          pv.text('equilibrium adiabat PV^(5/3) = const', X2 * A * 1.05 + 400, adi(X2 * A * 1.05 + 400), { dx: 10, size: 11.5, color: 'ink' });
+          pv.text('quasistatic adiabat of this gas', X2 * A * 1.05 + 400, adi(X2 * A * 1.05 + 400), { dx: 10, size: 11.5, color: 'ink' });
           for (const p of pts) pv.dot(p.V, p.P, { r: 2.6, color: p.d < 0 ? 'red' : 'blue', alpha: p.c === cyc ? 0.95 : 0.3, ring: false });
           pv.vline(X * A, { color: 'faint', width: 1 });
           // density profile
           sd.setView([0, X1], [0, 3]);
           sd.hline(1, { color: 'ink', dash: [6, 4], width: 1.2 });
-          sd.path(Array.from(prof).flatMap((q, k) => [[k * X / nb, q], [(k + 1) * X / nb, q]]), { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.12 });
+          const step = Array.from(prof).flatMap((q, k) => [[k * X / nb, q], [(k + 1) * X / nb, q]]);
+          sd.poly([[0, 0], ...step, [X, 0]], { fill: 'accent', fillAlpha: 0.12, stroke: false });
+          sd.path(step, { color: 'accent', width: 2.2 });
           sd.vline(X, { color: dir < 0 ? 'red' : 'blue', width: 3, alpha: 0.7 });
           sd.text('piston', X, 2.8, { dx: -5, align: 'right', size: 11, color: dir < 0 ? 'red' : 'blue' });
         }, { still: 8 });

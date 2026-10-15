@@ -199,7 +199,7 @@ Gravity can thus be removed locally by going to a freely falling frame (9.1), bu
           return { m, eps, eta, Rp, GM, ts, G, Ac, gap, gapAt, free, tLand, tA, Yc0, T };
         });
         const cabin = (s) => s.rect(-HW, 0, HW, 1.02, { radius: 9, color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.04 });
-        const STARS = [[-0.72, 1.05], [0.7, 0.95], [-0.7, 0.25], [0.74, 0.12], [0.68, 0.55], [-0.75, 0.62], [0.05, -0.1], [-0.4, -0.12], [0.45, -0.08]];
+        const STARS = [[-0.72, 1.05], [0.7, 0.95], [-0.7, 0.25], [0.74, 0.12], [0.68, 0.55], [-0.75, 0.62], [-0.45, -0.1]];
         v.animate((t) => {
           const B = run(), m = B.m, k = Math.min(B.ts.length - 1, Math.round(Math.min(t, B.T) / 0.01));
           sG.setTitle(m === 'stand' ? 'standing on a planet of radius $R$' : 'falling freely toward the planet');

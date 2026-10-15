@@ -444,7 +444,7 @@ so the gas heats when compressed and cools when it expands. On a $P$–$V$ diagr
         const make = () => {
           clock.kick(150);
           const ins = walls.value === 'ins', dof = +gas.value;
-          G = hsGas({ species: [{ m: 1, d: 0.6, dof }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(81 + dof), piston: { X: X1 }, diffuse: ins ? [1, 0, 1, 1, 1, 1] : [0, 0, 0, 0, 0, 0], thermal: ins ? [0, 0, 0, 0, 0, 0] : [1, 0, 1, 1, 1, 1], Tb: 1 });
+          G = hsGas({ species: [{ m: 1, d: 0.6, dof }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(81 + dof), piston: { X: X1 }, diffuse: [0, 0, 0, 0, 0, 0], thermal: ins ? [0, 0, 0, 0, 0, 0] : [1, 0, 1, 1, 1, 1], Tb: 1 });
           dir = -1; pts = []; last = G.snap(); last.T = 0; last.n = 0; cyc = 0; T0 = 1;
           G.setU(-U);
         };
