@@ -309,8 +309,8 @@ where $c_1, c_2$ are the concentrations in the two well-stirred baths, $A$ is th
           sb.rect(xr, 0, xr + W, H, { fill: 'blue', fillAlpha: 0.06, stroke: false });
           sb.rect(xl - W, 0, xr + W, H, { color: 'muted', width: 1.4 });
           bilayer(sb, xl, xr, y0, y0 + h, { spacing: 10 });
-          sb.rect(xl, 0, xr, y0, { fill: 'muted', fillAlpha: 0.35, hatch: true, evenodd: true, color: 'muted', width: 1 });
-          sb.rect(xl, y0 + h, xr, H, { fill: 'muted', fillAlpha: 0.35, hatch: true, evenodd: true, color: 'muted', width: 1 });
+          sb.rect(xl, 0, xr, y0, { fill: 'muted', fillAlpha: 0.3, hatch: 'muted', stroke: false });
+          sb.rect(xl, y0 + h, xr, H, { fill: 'muted', fillAlpha: 0.3, hatch: 'muted', stroke: false });
           sb.dots(S.left.map((q) => [q.x, q.y]), { r: 2.1, color: 'gold' });
           sb.dots(S.right.map((q) => [q.x, q.y]), { r: 2.1, color: 'gold' });
           sb.dots(S.mem.map((m) => [xl + 0.5 + m.j, m.y]), { r: 2.6, color: 'orange' });

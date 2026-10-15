@@ -2,6 +2,8 @@
 import { TAU, grid, packet, normSq, normalize, moments, current, sampler, ksDistance, phaseLUT, drawPsi, phaseWheel, splitStepper, clockSim, big, fz } from './ch02.shared.js';
 
 /** π-multiple formatter for phase sliders. */
+/** Superscript digits for plain-text labels (1.50 → ¹·⁵⁰). */
+const sup = (t) => String(t).replace(/[0-9.−-]/g, (c) => ({ '.': '·', '-': '⁻', '−': '⁻' }[c] || '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]));
 const piFmt = (t) => (Math.abs(t) < 5e-3 ? '0' : `${(t / Math.PI).toFixed(2)}π`);
 /** Harmonic-oscillator eigenfunctions (ħ = m = ω = 1) ψ_0, ψ_1, ψ_2 at x. */
 const ho = [(x) => Math.PI ** -0.25 * Math.exp(-x * x / 2), (x) => Math.PI ** -0.25 * Math.SQRT2 * x * Math.exp(-x * x / 2), (x) => Math.PI ** -0.25 / Math.SQRT2 * (2 * x * x - 1) * Math.exp(-x * x / 2)];
@@ -115,7 +117,7 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
         const STATES = {
           gauss: { label: 'Gaussian', f: (X) => [Math.exp(-((X + 0.6) ** 2) / 2.2), 0], k: 1.6 },
           cat: { label: 'two packets', f: (X) => [Math.exp(-((X + 2.2) ** 2) / 0.9) + 0.75 * Math.exp(-((X - 2) ** 2) / 1.4), 0], k: -1.2 },
-          skew: { label: 'oscillator mix', f: (X) => [ho[0](X) + 0.55 * ho[2](X), 0.85 * ho[1](X)], k: 0 },
+          skew: { label: 'oscillator mix', f: (X) => [ho[0](X) + 0.55 * ho[2](X) + 0.5 * ho[1](X), 0.7 * ho[1](X)], k: 0 },
           node: { label: 'first excited state', f: (X) => [ho[1](X), 0], k: 0 },
         };
         const state = v.select('state', Object.entries(STATES).map(([value, S]) => ({ value, label: S.label })), 'skew', { onChange: () => reset() });
@@ -135,7 +137,7 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
         v.button('Measure 100', () => measure(100));
         v.button('Measure 10,000', () => measure(10000));
         v.button('Reset', () => reset());
-        const s1 = v.stage({ x: [-6, 6], y: [-0.05, 0.85], height: 170, axes: 'box', full: true, xlabel: '', ylabel: '|ψ|', title: 'the state $\\psi$ (height $|\\psi|$, colour $\\arg\\psi$)' });
+        const s1 = v.stage({ x: [-6, 6], y: [-0.05, 0.85], height: 170, axes: 'box', full: true, xticks: [], ylabel: '|ψ|', title: 'the state $\\psi$ (height $|\\psi|$, colour $\\arg\\psi$)' });
         const sc = v.stage({ x: [-6, 6], y: [0, 1], height: 70, axes: false, full: true, title: 'detection screen' });
         const s2 = v.stage({ x: [-6, 6], y: [0, 0.6], height: 220, axes: 'box', full: true, xlabel: 'x', ylabel: 'density', title: 'histogram of detected positions against $|\\psi|^2$' });
         reset();
@@ -165,7 +167,7 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
           st = { N: xs.length, D, crit: 1.36 / Math.sqrt(xs.length), mean, mx: m.mx, left, pl, last };
         });
         v.legend([['gold', 'detections (histogram)', { area: true }], ['green', 'Born density $|\\psi|^2$'], ['accent', 'dots on the screen', { dot: true }]]);
-        v.readout(() => st && `${big(st.N)} detections${st.last != null ? ` (last at $x = ${v.fix(st.last, 3)}$)` : ''} · fraction found at $x<0$: **${v.fix(st.left, 4)}** vs Born $\\int_{-\\infty}^0|\\psi|^2 = ${v.fix(st.pl, 4)}$ · Kolmogorov–Smirnov distance to $|\\psi|^2$: $D_N = ${v.fix(st.D, 4)}$, ${st.D < st.crit ? 'below' : 'above'} the 95 % band $1.36/\\sqrt N = ${v.fix(st.crit, 4)}$ · sample mean ${v.fix(st.mean, 3)} vs $\\int x|\\psi|^2dx = ${v.fix(st.mx, 3)}$${scr.value ? ' · phase scrambled: same $|\\psi|^2$, same data, same $D_N$' : ''}.`);
+        v.readout(() => st && `${big(st.N)} detections${st.last != null ? ` (last at $x = ${v.fix(st.last, 3)}$)` : ''} · fraction found at $x<0$: **${v.fix(st.left, 4)}** vs Born $\\int_{-\\infty}^0|\\psi|^2 = ${v.fix(st.pl, 4)}$ · Kolmogorov–Smirnov distance to $|\\psi|^2$: $D_N = ${v.fix(st.D, 4)}$, ${st.D < st.crit ? 'below' : 'above'} the 95 % band $1.36/\\sqrt N = ${v.fix(st.crit, 4)}$ · sample mean ${fz(v, st.mean, 3)} vs $\\int x|\\psi|^2dx = ${fz(v, st.mx, 3)}$${scr.value ? ' · phase scrambled: same $|\\psi|^2$, same data, same $D_N$' : ''}.`);
       },
     },
     // ------------------------------------------------------------------ 2.3
@@ -193,7 +195,7 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
         const nb = v.button('Normalize', () => { const N = normDraw(); lastNorm = N; const c = 1 / Math.sqrt(N); yd = yd.map((y) => y * c); normed = true; });
         const sync = () => { sv.el.hidden = fam.value !== 'tail'; nb.hidden = fam.value !== 'draw'; };
         const s1 = v.stage({ x: [-12, 12], y: [-0.8, 1.2], height: 300, axes: true, weight: 1.15, xlabel: 'x', title: '$\\psi$ and $\\psi/\\sqrt{N(L)}$' });
-        const s2 = v.stage({ x: [1, 1e4], y: [0.1, 3e4], xlog: true, ylog: true, height: 300, axes: 'box', weight: 1, xlabel: 'L', ylabel: 'N(L)', title: 'partial norm $N(L)=\\int_{-L}^{L}|\\psi|^2dx$' });
+        const s2 = v.stage({ x: [1, 1e4], y: [0.3, 3e5], xlog: true, ylog: true, height: 300, axes: 'box', weight: 1, xlabel: 'L', ylabel: 'N(L)', title: 'partial norm $N(L)=\\int_{-L}^{L}|\\psi|^2dx$' });
         const dval = (X) => { if (X <= -6 || X >= 6) return 0; const f = (X + 6) / 12 * (NDR - 1), i = Math.min(NDR - 2, Math.floor(f)); return yd[i] + (f - i) * (yd[i + 1] - yd[i]); };
         const normDraw = () => M.integrate((X) => dval(X) ** 2, -6, 6, 2400);
         s1.onDrag((X, Y, phase) => {
@@ -228,15 +230,15 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
           const pts = []; for (let k = 0; k <= 160; k++) { const LL = 10 ** (4 * k / 160); pts.push([LL, NL(LL)]); }
           let lim = null;
           if (f === 'draw') lim = NL(6); else if (f === 'tail' && sv.value > 0.5) lim = NL(1e9);
-          if (lim) { s2.hline(lim, { color: 'green', dash: [6, 4], width: 1.4 }); s2.text(`limit ${v.fix(lim, 4)}`, 1.3, lim, { color: 'green', size: 11.5, dy: -9 }); }
+          if (lim) { s2.hline(lim, { color: 'green', dash: [6, 4], width: 1.4 }); s2.text(`limit ${v.fix(lim, 4)}`, 8000, lim, { color: 'green', size: 11.5, dy: -9, align: 'right' }); }
           s2.path(pts, { color: f === 'plane' || (f === 'tail' && sv.value <= 0.5) ? 'red' : 'accent', width: 2.6 });
           s2.dot(L, N, { r: 6, color: 'gold' });
-          const verdict = f === 'plane' ? 'not square-integrable: N(L) = 2L' : f === 'draw' ? 'square-integrable (zero outside [−6, 6])' : sv.value > 0.5 ? `square-integrable: tail |x|^{−${v.fix(2 * sv.value, 2)}} is integrable` : sv.value > 0.495 ? 'borderline s = ½: N(L) ≈ 2 log L → ∞' : `not square-integrable: N(L) ~ L^{${v.fix(1 - 2 * sv.value, 2)}}`;
-          s2.corner(verdict, 'tl', { color: /not|borderline/.test(verdict) ? 'red' : 'green', weight: 600 });
+          const verdict = f === 'plane' ? 'not square-integrable: N(L) = 2L' : f === 'draw' ? 'square-integrable (zero outside [−6, 6])' : sv.value > 0.5 ? `square-integrable: |ψ|² ~ 1/|x|${sup(v.fix(2 * sv.value, 2))} is integrable` : sv.value > 0.495 ? 'borderline s = ½: N(L) ≈ 2 log L → ∞' : `not square-integrable: N(L) ~ L${sup(v.fix(1 - 2 * sv.value, 2))}`;
+          s2.corner(verdict, 'tr', { color: /not|borderline/.test(verdict) ? 'red' : 'green', weight: 600 });
           st = { L, N, c, lim, f, draw: f === 'draw' ? normDraw() : null };
         });
         v.legend([['accent', 'ψ', { dash: true }], ['green', 'ψ normalized over [−L, L]'], ['gold', 'current window', { dot: true }]]);
-        v.readout(() => st && `$N(L) = ${v.fix(st.N, 4)}$ for $L = ${st.L < 100 ? v.fix(st.L, 1) : big(st.L)}$, normalizing factor $1/\\sqrt{N(L)} = ${v.fix(st.c, 5)}$` + (st.f === 'draw' ? ` · drawn $\\psi$: $\\int|\\psi|^2 = ${v.fix(st.draw, 6)}$${lastNorm != null ? ` (it was ${v.fix(lastNorm, 4)} before the last Normalize)` : ''}` : st.lim ? ` → ${v.fix(st.c * Math.sqrt(st.N / st.lim), 5)}$\\cdot$… converges to $1/\\norm{\\psi} = ${v.fix(1 / Math.sqrt(st.lim), 5)}$: the normalized state has a limit.` : ' → 0 as $L\\to\\infty$: the normalized function fades to zero everywhere, so there is no normalized state.'));
+        v.readout(() => st && `$N(L) = ${v.fix(st.N, 4)}$ for $L = ${st.L < 100 ? v.fix(st.L, 1) : big(st.L)}$, normalizing factor $1/\\sqrt{N(L)} = ${v.fix(st.c, 5)}$` + (st.f === 'draw' ? ` · drawn $\\psi$: $\\int|\\psi|^2 = ${v.fix(st.draw, 6)}$${lastNorm != null ? ` (it was ${v.fix(lastNorm, 4)} before the last Normalize)` : ''}` : st.lim ? `, which converges to $1/\\norm{\\psi} = ${v.fix(1 / Math.sqrt(st.lim), 5)}$ as $L\\to\\infty$: the normalized state has a limit.` : ' → 0 as $L\\to\\infty$: the normalized function fades to zero everywhere, so there is no normalized state.'));
         sync();
       },
     },
@@ -297,14 +299,16 @@ in three dimensions $\hat H=-\frac{\hbar^2}{2m}\nabla^2+V(\mathbf r)$. It is fir
           drawPsi(s1, x, S.re, S.im, { col, base: E0, scale: (top - lo) * 0.33 / 0.42 });
           s1.hline(E0, { color: 'ink', dash: [5, 4], width: 1, alpha: 0.6 });
           s1.text('⟨H⟩', X1, E0, { color: 'ink', size: 11, align: 'right', dy: -8, dx: -4 });
-          phaseWheel(s1, col, 40, 40, 12);
+          phaseWheel(s1, col, s1.W - 34, 40, 12);
           // history raster
           let hmax = 1e-9; for (let k = 0; k < S.nrec * NCOL; k++) hmax = Math.max(hmax, S.hist[k]);
+          const CA = v.rgb('accent'), CG = v.rgb('gold');
           s2.raster((X, Y) => {
             if (X < X0 || X > X1 || Y < 0 || Y > TMAX) return null;
             const r = Math.round((Y / TMAX) * (NREC - 1)); if (r >= S.nrec) return null;
             const c = M.clamp(Math.floor(((X - X0) / (X1 - X0)) * NCOL), 0, NCOL - 1);
-            return M.cmap(Math.sqrt(S.hist[r * NCOL + c] / hmax), 'magma');
+            const u = Math.sqrt(S.hist[r * NCOL + c] / hmax), w = Math.max(0, (u - 0.6) / 0.4);
+            return [CA[0] + (CG[0] - CA[0]) * w, CA[1] + (CG[1] - CA[1]) * w, CA[2] + (CG[2] - CA[2]) * w, Math.round(255 * Math.min(1, 1.15 * u))];
           }, { res: 2, key: `${S.nrec}|${hmax}|${S.t}` });
           s2.hline(S.t, { color: 'gold', width: 1.4, dash: [4, 3] });
           st = { T: S.t, N: en.N, E: en.E, dE: en.E - E0, mx: en.mx, err: Vin.error };

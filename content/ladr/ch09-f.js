@@ -542,8 +542,11 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
         const conv = v.select('convention', [{ value: 'zi', label: '$\\det(\\lambda I - A)$' }, { value: 'iz', label: '$\\det(A - \\lambda I)$' }], 'zi');
         const TT = v.table(E, { rows: 3, cols: 3, region: [0.1, 0.12, 0.9, 0.82], maxCell: 46, size: 14 });
         editable(E, TT, { bump: (i, j, k) => { A[i][j] = M.clamp(A[i][j] + k, -9, 9); } });
-        const H = [0, 1, 2, 3, 4].map((k) => P.handle(0, 0, { color: 'orange', r: 6, constrain: (x) => [M.clamp(x, -2.9, 2.9), P.yr ? 0 : 0] }));
-        const place = (n) => H.forEach((h, k) => { h.visible = k <= n; h.set(-2.2 + (4.4 * k) / n + 0.13, 0); });
+        // the window is centred on tr A / n (the mean of the zeros), in steps of 0.5
+        const centre = () => Math.round((2 * A.reduce((s, r, i) => s + r[i], 0)) / A.length) / 2;
+        let win = [-2.8, 2.8];
+        const H = [0, 1, 2, 3, 4].map((k) => P.handle(0, 0, { color: 'orange', r: 6, constrain: (x) => [M.clamp(x, win[0] + 0.1, win[1] - 0.1), 0] }));
+        const place = (n) => { const m = centre(); H.forEach((h, k) => { h.visible = k <= n; h.set(m - 2.2 + (4.4 * k) / n + 0.13, 0); }); };
         place(3);
         let st = null;
         v.render(() => {
@@ -554,9 +557,11 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           let c = null;
           if (distinct) c = M.solve(xs.map((x) => Array.from({ length: n + 1 }, (_, k) => x ** k)), xs.map(f));
           const pv = (x) => c.reduce((s, a, k) => s + a * x ** k, 0);
-          const grid = M.linspace(-3, 3, 61), vals = grid.map(f), mid = grid.map((x, i) => (Math.abs(x) <= 2.2 ? Math.abs(vals[i]) : 0));
+          const m = centre(); win = [m - 2.8, m + 2.8];
+          H.forEach((h) => { h.x = M.clamp(h.x, win[0] + 0.1, win[1] - 0.1); });
+          const grid = M.linspace(win[0], win[1], 61), vals = grid.map(f), mid = grid.map((x, i) => (Math.abs(x - m) <= 1.9 ? Math.abs(vals[i]) : 0));
           const Y = nice(1.15 * Math.max(3, ...mid), [3, 4, 6, 8, 10, 15, 20, 30, 40, 60]);
-          P.setView([-3, 3], [-Y, Y]);
+          P.setView(win, [-Y, Y]);
           if (c) P.fn(pv, { color: 'accent', width: 2.6 });
           P.dots(grid.map((x, i) => [x, vals[i]]), { r: 3, color: 'gold' });
           xs.forEach((x) => { const y = f(x); P.line(x, 0, x, y, { color: 'orange', width: 1, dash: [3, 3] }); P.dot(x, y, { r: 5.5, color: 'orange' }); });
