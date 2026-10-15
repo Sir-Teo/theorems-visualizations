@@ -410,6 +410,53 @@ that needs it and is frozen (additive changes only) once a collection depends on
 
 ---
 
+## 6b. Visualizing everything
+
+The rule is simple: **no idea without a picture you can push on, and no part of the atlas you
+cannot see at a glance.**
+
+**Every kind of idea has a visual grammar.**
+
+| kind | the picture shows | the reader tests it by |
+|---|---|---|
+| Theorem / Lemma / Corollary | the hypotheses and the conclusion on a concrete instance | breaking a hypothesis and watching the conclusion fail |
+| Law / Principle / Postulate | a simulation obeying the law, with the predicted vs measured quantity read out | leaving the regime of validity |
+| Model | the model's state and its key output curve | moving the parameters across thresholds |
+| Algorithm | the algorithm running step by step on editable input, invariant and operation counter live | editing the input, stepping, feeding adversarial cases |
+| Concept / Definition | the defining picture, examples and non-examples side by side | toggling between examples and non-examples |
+| Phenomenon / Paradox | the effect produced live (and heard, for sound) | changing the conditions that create or dissolve it |
+| Method | the method applied to a problem, before and after | swapping problems and watching it succeed or fail |
+| Invention / Event | the device working, or the historical dynamic quantitatively | operating the mechanism; sliding the parameters of history |
+
+**Kits cover the fields** (the runtime gives every viz the same look and behaviour):
+
+| kit | fields it serves |
+|---|---|
+| core stages, handles, sliders, 3D, TeX; log/polar axes, histograms, colour bars | everything |
+| numerics (FFT, n×n linear algebra, distributions, symplectic and adaptive integrators, Gillespie, units, number theory) | mathematics, physics, chemistry, biology, statistics, engineering |
+| `graph`, `steps`, `table` | algorithms, graph theory, automata, Markov chains, causal DAGs, DP, Cayley tables, payoff matrices |
+| `phasePlane`, `fields` | ODEs, mechanics, ecology, neuroscience, kinetics, control; vector calculus, electromagnetism, fluids |
+| `quantum`, `mol`, `circuit` | quantum mechanics and computing; chemistry and spectroscopy; circuits and electronics |
+| `globe`, `timeline`, `agents`, `curves`, `tree` | geography, geology, climate; history and deep time; social and ecological simulations; economics; phylogenetics, linguistics, syntax |
+| `sound` (audio) | music, acoustics, hearing, signals |
+
+**Automated gates** (scripts/check.mjs): runtime errors, blank canvases, TeX errors, and
+*quality warnings* for a static picture (no control, handle, drag, click or hover) or a missing
+live readout. Screenshots in light, dark and every mode are reviewed per chapter.
+
+**Seeing the whole atlas:**
+
+- *Everything at a glance*: a zoomable treemap of fields → collections → chapters (area ∝ ideas,
+  solid = written, pale = planned) on the home and field pages.
+- *The map*: every idea as a node in one graph, field regions shelf-packed; semantic zoom with
+  bundled collection-to-collection edges when far out, individual edges and labels when close;
+  hover lights up ancestry and descendants; planned ideas as ghost nodes.
+- *Flows*: how chapters and collections feed one another (home, field and collection pages).
+- *Lineage*: on every page, the prerequisites a chosen number of steps back.
+- *Timeline* (next): every idea with a `credit` year placed on a zoomable log/linear timeline,
+  from Euclid to CRISPR.
+- *Bridges* and *paths* (§8): curated cross-field walks and computed prerequisite plans.
+
 ## 7. Authoring at scale
 
 ### 7.1 Field guides (extend AUTHORING.md)
