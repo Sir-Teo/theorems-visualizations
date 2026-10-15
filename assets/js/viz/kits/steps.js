@@ -9,9 +9,9 @@
 import { richHTML, katexHTML } from '../core.js';
 
 const CSS = `
-.ctl-steps { gap: 6px; flex: 1 1 380px; max-width: 640px; }
-.ctl-steps input[type=range] { flex: 1 1 120px; min-width: 80px; margin: 0 6px; }
-.ctl-steps .steps-count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; min-width: 7.5em; text-align: right; }
+.ctl-steps { gap: 6px; flex: 1 1 300px; max-width: 640px; flex-wrap: wrap; min-width: 0; }
+.ctl-steps input[type=range] { flex: 1 1 90px; min-width: 50px; margin: 0 4px; }
+.ctl-steps .steps-count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; min-width: 6.6em; text-align: right; }
 .ctl-steps .btn-icon { width: 32px; height: 32px; }
 .ctl-steps .btn-icon:disabled { opacity: .38; cursor: default; border-color: var(--line-2); color: var(--ink); }
 .steps-code { order: 50; flex: 0 1 auto; align-self: stretch; position: relative; min-width: 0; max-width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; overflow: auto; padding: 8px 0; font: 12.3px/1.62 var(--font-mono); color: var(--ink-2); }

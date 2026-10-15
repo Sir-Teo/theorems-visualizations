@@ -187,7 +187,7 @@ class Graph {
         let ax = 0, ay = 0; for (const { id } of this.adj(e.from).concat(this.inn(e.from))) { const g = GN.get(K(id)); if (g && g !== ga) { const d = Math.hypot(g.X - ga.X, g.Y - ga.Y) || 1; ax += (g.X - ga.X) / d; ay += (g.Y - ga.Y) / d; } }
         th = Math.hypot(ax, ay) > 0.3 ? Math.atan2(-ay, -ax) : -Math.PI / 2;
       }
-      const R = Math.max(ga.hw, ga.hh) + 26 + 12 * loopK, sp = 0.62;
+      const R = Math.max(ga.hw, ga.hh) + 34 + 14 * loopK, sp = 0.52;
       const c1 = [ga.X + R * 1.35 * Math.cos(th - sp), ga.Y + R * 1.35 * Math.sin(th - sp)], c2 = [ga.X + R * 1.35 * Math.cos(th + sp), ga.Y + R * 1.35 * Math.sin(th + sp)];
       pts = []; for (let i = 0; i <= 48; i++) { const t = i / 48, u = 1 - t; pts.push([u * u * u * ga.X + 3 * u * u * t * c1[0] + 3 * u * t * t * c2[0] + t * t * t * ga.X, u * u * u * ga.Y + 3 * u * u * t * c1[1] + 3 * u * t * t * c2[1] + t * t * t * ga.Y]); }
     } else if (e._via && e._via.length) {

@@ -190,6 +190,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.toggle(label, value, {onChange})` | switch → `{value}` |
 | `v.select(label, options, value, {onChange})` | segmented buttons; options are strings or `{value, label}` (labels may contain TeX). → `{value, set}` |
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
+| `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
 | `ctl.el.hidden = true` | every control exposes its element as `.el` (a button *is* its element): hide controls that do nothing in the current mode. |
 | `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. |
 | `v.legend([[color, label], [color, label, {dash, dot, area}]])` | legend row (call once, or inside render if it changes). |
@@ -203,9 +204,15 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 
 `{ x: [x0, x1], y: [y0, y1], height: 340, equal: false, axes: true | 'box' | false, grid: false,
 ticks: true, xlabel, ylabel, xticks: [v | [v, 'label']], yticks, title: 'rich text',
-full: false /* force full row */, weight: 1, minWidth: 260, hover: false, aspect /* H/W */ }`
+full: false /* force full row */, weight: 1, minWidth: 260, hover: false, aspect /* H/W */,
+xlog: false, ylog: false }`
 
 - `equal: true` keeps 1:1 aspect (expands the shorter range) — use for geometry and ℂ.
+- `xlog: true` / `ylog: true` make an axis logarithmic; give its (positive) range in actual units (`x: [1, 1e4]`).
+  `X/Y/inv`, ticks (decades labelled `10 100 1k`, or `10ⁿ` beyond 0.001…100k; 2·10ᵏ, 5·10ᵏ when there
+  is room; faint minor ticks/grid at 2…9), `fn` (samples evenly in log x), `between`, `field`, `hist`
+  and every primitive follow. Non-positive values break lines / sit below the panel; a log axis lies on
+  the panel edge (like `'box'`); `scale` is then pixels per decade.
 - `axes: true` draws axes through the origin, `'box'` along the left/bottom edges.
 - Several stages sit side by side when wide enough (each at least `minWidth` px) and wrap on
   narrow screens. `full: true` makes a stage take the whole row (stacked layout).
@@ -237,6 +244,9 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `raster((x,y) => [r,g,b,a?] or null, {res, key, id})` | per-pixel image; recomputed only when `key` changes. |
 | `heat((x,y) => number, {range:[lo,hi], cmap:'viridis'|'magma'|'diverging', res, key})` | scalar field. |
 | `domain(z => Cx, {key, res, contours, gridLines})` | phase portrait of a complex function. |
+| `hist(values or {edges, counts}, {bins, range, density, color, fillAlpha, outline, gap})` | histogram: bars + step outline (binned by `M.histogram`; `density: true` integrates to 1; on a log x axis pass log-spaced edges as `bins`). |
+| `colorbar([lo,hi], cmap, {pos:'right'|'left'|'top'|'bottom', label, tex, ticks, fmt, length})` | colour bar on a small panel inside the edge, for a `heat` map (`cmap`: name or `t => [r,g,b]`). |
+| `polarGrid({rings, spokes:12, rmax, center, angles:'deg'|'rad'|false, labelAngle, labels})` | polar grid (`rings`: count or radii); use with `equal: true, axes: false`. |
 | `setView([x0,x1], [y0,y1])` | change the window (fine to call inside render). |
 | `setTitle(rich)` | change (or add) the stage title. |
 | `setTicks(xticks, yticks)` | change custom ticks per mode (`null` = automatic). |
@@ -259,6 +269,18 @@ labels: ['x','y','z'] })`. Methods (points are `[x,y,z]`): `line(p,q)`, `path(pt
 `poly(pts, {fill, fillAlpha})`, `surface((u,v) => p, [u0,u1], [v0,v1], {n, color, alpha, wire,
 colorFn(u,v,p)})`. `s.yaw`/`s.pitch` may be animated. Depth sorting is automatic.
 
+### Audio
+
+`const snd = v.sound()` (one per viz): `snd.tone(partials, {duration: 1, gain: .25, attack: .01,
+release: .3, delay, type, harmonics, rolloff})` — `partials` is a frequency, `[f, …]` or
+`[[f, amp], …]` (amplitudes normalised to sum 1; `harmonics: n` turns a frequency into a 1/k harmonic
+tone) · `snd.chord(f1, f2, …, opts)` (each note a frequency or a partial list) ·
+`snd.samples(Float32Array, sampleRate, {gain, loop})` · `snd.noise({color: 'white'|'pink'|'brown',
+duration})` · `snd.stop()` · `snd.playing`, `snd.available`. Every play call returns `{stop(), playing}`.
+`v.soundButton('Play', (snd) => snd.chord(220, 330))` adds a speaker button (stops what is playing
+first). Sound starts only after a user gesture (autoplay rules), so trigger it from buttons or handles;
+without Web Audio (headless checks) every call is a silent no-op; all sound stops when the viz is destroyed.
+
 ### `v.M` math library
 
 `clamp lerp invLerp remap smoothstep ease sign fract mod range linspace sum mean argmin argmax
@@ -274,6 +296,47 @@ det inverse solve eigSym2 eig2 svd2 gramSchmidt project` · geometry: `hull poin
 closestOnSegment closestOnConvexPoly unitBall(p) blob(cx,cy,r,seed)` · complex: `Cx` (methods
 `add sub mul div scale neg conj inv abs abs2 arg exp log pow sqrt sin cos`, `Cx.polar(r,θ)`),
 `cx I mobius discAuto contourIntegral(f, g:[0,1]→ℂ) winding(g, a)` · colour: `hsl2rgb cmap(t,name)`.
+
+**FFT** (forward `X_k = Σ x_n e^{−2πikn/N}`, unnormalised): `fft(re, im)` in place, any length
+(radix-2 for powers of two, exact Bluestein otherwise — never pads; `zeroPad(x, n)`, `nextPow2` if you
+want padding) · `ifft` (÷N) · `fftReal(x)` → `{re, im}` · `dft(re, im, inverse)` (naive) ·
+`fft2(reRows, imRows)` / `ifft2` in place · `fftShift`, `ifftShift` (1D or rows) · `spectrum(x, fs)` →
+one-sided `{freq, amp, phase}` (a cosine of amplitude A reads A).
+
+**Matrices** (arrays of rows): `zeros(m,n) trace outer kron matPow(A,k)` · `lu(A)` → `{L, U, P, perm,
+sign, singular}` (PA = LU), `luSolve(lu or A, b or B)` · `qr(A, {thin})` (Householder, R_ii ≥ 0) ·
+`eigSym(A)` (Jacobi) → `{values ↓, vectors (columns), vecs (list)}` · `eig(A)` (Hessenberg + shifted QR)
+→ `{values: [Cx] by |λ| ↓, vectors: [real unit vector | null], cvectors: [{re, im}]}` · `svd(A)` (m×n,
+one-sided Jacobi) → thin `{U, S ↓, V}`, A = U diag(S) Vᵀ · `pinv`, `lstsq(A, b)`, `rank(A, tol)`,
+`nullspace(A)` (orthonormal list), `rref(A)` → `{R, pivots}` · `expm(A)` (Padé + squaring) ·
+`charPoly(A)` → ascending coefficients for `polyEval`.
+
+**Probability**: `dist.normal(μ,σ) dist.binomial(n,p) dist.poisson(λ) dist.exponential(rate)
+dist.uniform(a,b) dist.gamma(k,θ) dist.beta(a,b) dist.chi2(k) dist.studentT(ν) dist.geometric(p)`
+(trials up to the first success, k ≥ 1), each `{pdf (= pmf), cdf, quantile, mean, variance, stdev,
+support, discrete, sample(r, n?), span(p)}` with `r = v.rng(seed)` (`dist(p, q)` is still the distance)
+· `erf erfc lgamma lbeta gammaP(a,x) gammaQ betaI(a,b,x)` · data: `histogram(xs, {bins, range})` →
+`{edges, counts, density, centers, total}`, `quantile(xs, q or [q…])`, `median`, `variance(xs, ddof = 1)`,
+`stdev`, `cumsum`, `linreg(xs, ys)` → `{slope, intercept, r, r2, predict(x), seSlope, seIntercept, sigma}`.
+
+**ODEs** (states are numbers or arrays; unlike `rk4` these return `{t: [], y: []}`):
+`rk45(F, t0, y0, t1, {tol, rtol, atol, hmax})` (adaptive Dormand–Prince; also `ok`) ·
+`implicitEuler(F, J?, t0, y0, t1, n)` (stiff; Newton, numerical Jacobian if `J` omitted) ·
+`euler(F, t0, y0, t1, n)` · for `x'' = accel(x, t)`: `verlet`, `leapfrog`, `symplecticEuler(accel, x0,
+v0, dt, n)` → `{t, x, v}` · `gillespie(rates, stoich, x0, tMax, r)` → `{t, x, reactions}` (exact SSA;
+`rates` = `x => [a_j]` or `[x => a_j]`).
+
+**Physics**: `CONST` (SI, CODATA 2018: `c h hbar kB NA e me mp mn u G eps0 mu0 ke R F sigma b alpha Ry
+a0 muB eV g0 atm T0 au ly pc yr Msun Rsun Lsun Mearth Rearth`; units in `CONST_UNITS`) ·
+`si(x, unit, digits)` → `"2.34 mA"` · `pow10Text(k)` → `"10⁻³"`.
+
+**Number theory** (Number or BigInt): `gcd lcm egcd(a,b)` → `{g, x, y}` · `modpow(b,e,m)` (exact at any
+size) · `modinv` (null if none) · `isPrime` (deterministic Miller–Rabin below 3.3·10²⁴) · `sieve(n)` →
+primes · `factor(n)` → `[[p, e]…]` · `primeFactors(n)` → `[2, 2, 3]` · `totient` · `contFrac(x or
+[p, q], n)` · `convergents(a or x)` → `[[p, q]…]`.
+
+**Music**: `midiToFreq(m, a4 = 440) freqToMidi centsBetween(f1, f2) noteName(m, {flats})` (`"C♯4"`) ·
+`plompLevelt(f1, f2, a1, a2)` (Sethares, peak 1) · `dissonance(partials…)` (sum over all pairs).
 
 ---
 
@@ -299,3 +362,18 @@ Rules:
 - Prefer deterministic pictures (`v.rng(seed)`) so screenshots are stable; `Math.random` only
   behind a “Resample” button.
 - No network access, no DOM access outside the API.
+
+---
+
+## 5. Kits
+
+Higher-level building blocks on `v` for algorithms, networks, tables and step-by-step constructions — full
+reference, worked examples and the list of demos in **[docs/kits.md](docs/kits.md)** (live demos:
+`tools/harness.html?file=tools/demos/kits.js&id=demo-1.1` … `demo-1.13`). Create once, draw inside `v.render`.
+
+| kit | |
+|---|---|
+| `v.graph(stage, spec)` → `G` | node-link diagrams: layouts `force circle grid layered tree fit none`, arrows/curved parallel edges/self-loops, weight labels, dragging and editing (`onChange`), hit-testing, and `bfs dfs dijkstra topoSort mst maxflow` returning step events with ready-made `view`s for `G.draw`. |
+| `v.graphs(name, …)` | generators to spread into a spec: `random grid complete cycle path star wheel bipartite tree hypercube petersen fromAdjacency`. |
+| `v.steps({frames, code})` → `S` | step-through player (⏮ ◀ ▶ ▶\|, scrubber, counter) with highlighted pseudocode, per-frame notes, `S.frame`, `S.reset()`, optional gliding transitions (`S.tween`). |
+| `v.table(stage, spec)` → `T` | grids of cells (DP, Cayley, payoff, truth, transition tables): TeX/pair values, fills, highlights, headers, `T.hit`, `T.arrow`/`T.pointer` back-pointers. |

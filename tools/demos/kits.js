@@ -398,5 +398,102 @@ export default {
         });
       },
     },
+    // ------------------------------------------------------------------ 1.11
+    {
+      num: '1.11',
+      kind: 'Algorithm',
+      name: 'Euclid by cutting squares (steps without a graph)',
+      statement: String.raw`**Euclid's algorithm** by subtraction: replace the larger of $a,b$ by their difference until they are equal. Geometrically, cut the largest possible square off an $a\times b$ rectangle; the side of the last square is $\gcd(a,b)$, because cutting never changes the common divisors.`,
+      caption: String.raw`Step through the cuts; the current square is gold and the remaining rectangle is outlined.`,
+      viz(v) {
+        const s = v.stage({ x: [-0.5, 21.5], y: [-0.5, 8.5], equal: true, axes: false, height: 260 });
+        const frames = [{ squares: [], rest: [0, 0, 21, 8], line: [], note: String.raw`A $21\times 8$ rectangle: $\gcd(21, 8) = \gcd(13, 8)$, since a common divisor of two numbers divides their difference.` }];
+        let [x, y, w, h] = [0, 0, 21, 8]; const sq = [];
+        while (w > 0 && h > 0) {
+          const q = Math.min(w, h); sq.push([x, y, q]);
+          if (w > h) { x += q; w -= q; } else { y += q; h -= q; }
+          frames.push({ squares: sq.slice(), rest: [x, y, w, h], line: w === 0 || h === 0 ? 4 : w >= h ? 2 : 3, vars: { a: w || q, b: h || q },
+            note: w === 0 || h === 0 ? `The last cut leaves nothing: $\\gcd(21, 8) = ${q}$.` : `Cut off a ${q} × ${q} square; a ${w} × ${h} rectangle remains.` });
+        }
+        const S = v.steps({ frames, code: ['while a ≠ b', '  if a > b:  a ← a − b', '  else:  b ← b − a', 'return a'], codeTitle: 'Euclid(a, b)', speed: 1.5 });
+        const COLS = ['blue', 'teal', 'purple', 'orange', 'pink', 'green'];
+        v.render(() => {
+          const f = S.frame;
+          f.squares.forEach(([x0, y0, q], k) => {
+            const last = k === f.squares.length - 1, col = last ? 'gold' : COLS[k % COLS.length];
+            s.rect(x0, y0, x0 + q, y0 + q, { fill: col, fillAlpha: last ? 0.5 : 0.22, color: col, width: 1.5 });
+            if (q > 1.5 || last) s.text(String(q), x0 + q / 2, y0 + q / 2, { align: 'center', color: last ? 'ink' : col, weight: 700, size: Math.min(16, 8 + q) });
+          });
+          const [rx, ry, rw, rh] = f.rest; if (rw > 0 && rh > 0) s.rect(rx, ry, rx + rw, ry + rh, { color: 'accent', width: 2.5, dash: [6, 4] });
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.12
+    {
+      num: '1.12',
+      kind: 'Model',
+      name: "Payoff matrix: prisoner's dilemma",
+      statement: String.raw`In a two-player game in normal form, cell $(i,j)$ lists the payoffs (row player, column player). A cell is a **Nash equilibrium** when each player's strategy is a best response to the other's. In the prisoner's dilemma, *Defect* is dominant for both, so (Defect, Defect) is the unique equilibrium even though both would prefer (Cooperate, Cooperate).`,
+      caption: String.raw`A star marks a best response (blue: row player A, red: column player B); a green cell is a Nash equilibrium, where both coincide. Click a cell to inspect it; switch games — matching pennies has no pure equilibrium.`,
+      viz(v) {
+        const GAMES = {
+          pd: { names: ['Cooperate', 'Defect'], P: [[[3, 3], [0, 5]], [[5, 0], [1, 1]]] },
+          stag: { names: ['Stag', 'Hare'], P: [[[4, 4], [0, 3]], [[3, 0], [3, 3]]] },
+          mp: { names: ['Heads', 'Tails'], P: [[[1, -1], [-1, 1]], [[-1, 1], [1, -1]]] },
+        };
+        const game = v.select('', [{ value: 'pd', label: "Prisoner's dilemma" }, { value: 'stag', label: 'Stag hunt' }, { value: 'mp', label: 'Matching pennies' }], 'pd');
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230 });
+        const T = v.table(s, { rows: 2, cols: 2, square: false, maxCell: 62, cellAspect: 2.3, size: 17, cornerLabel: 'A \\ B' });
+        let sel = [1, 1];
+        s.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) sel = [c.i, c.j]; });
+        const best = (G) => {
+          const brA = [0, 1].map((j) => Math.max(G.P[0][j][0], G.P[1][j][0])), brB = [0, 1].map((i) => Math.max(G.P[i][0][1], G.P[i][1][1]));
+          return { a: (i, j) => G.P[i][j][0] === brA[j], b: (i, j) => G.P[i][j][1] === brB[i] };
+        };
+        v.render(() => {
+          const G = GAMES[game.value], br = best(G);
+          const num = (x) => String(x).replace('-', '−');
+          T.draw({
+            rowLabels: G.names, colLabels: G.names, highlight: [sel],
+            value: (i, j) => [num(G.P[i][j][0]) + (br.a(i, j) ? '*' : ''), num(G.P[i][j][1]) + (br.b(i, j) ? '*' : '')],
+            fill: (i, j) => (br.a(i, j) && br.b(i, j) ? ['green', 0.3] : null),
+          });
+        });
+        v.readout(() => {
+          const G = GAMES[game.value], br = best(G), [i, j] = sel, eq = br.a(i, j) && br.b(i, j);
+          return `(${G.names[i]}, ${G.names[j]}) pays A **${G.P[i][j][0]}** and B **${G.P[i][j][1]}** — ${eq ? 'a Nash equilibrium.' : 'not an equilibrium: ' + (br.a(i, j) ? 'B' : 'A') + ' would deviate.'}`.replace(/-(\d)/g, '−$1');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.13
+    {
+      num: '1.13',
+      kind: 'Algorithm',
+      name: 'DFS edge classification and topological sort',
+      statement: String.raw`**Depth-first search** stamps each vertex with a discovery time $d$ and a finishing time $f$; the intervals $[d,f]$ nest like parentheses. Every edge becomes a *tree*, *back*, *forward* or *cross* edge, and a directed graph is acyclic exactly when DFS finds no back edge — in which case decreasing $f$ (or Kahn's algorithm) gives a topological order.`,
+      caption: String.raw`Notes show $d/f$; grey vertices (orange outline) are on the recursion stack. Switch to Kahn's algorithm: it gets stuck on the cycle $v\to y\to x\to v$ and on the loop at $z$. Toggle the loop and the edge $y\to x$ off to make the graph acyclic.`,
+      viz(v) {
+        const s = v.stage({ x: [-0.4, 2.4], y: [-0.75, 1.4], axes: false, equal: true, height: 300 });
+        const P = { u: [0, 1], v: [1, 1], w: [2, 1], x: [0, 0], y: [1, 0], z: [2, 0] };
+        const all = [['u', 'v'], ['u', 'x'], ['x', 'v'], ['v', 'y'], ['y', 'x'], ['w', 'y'], ['w', 'z'], ['z', 'z']];
+        const G = v.graph(s, { directed: true, layout: 'none', nodes: Object.entries(P).map(([id, [x, y]]) => ({ id, x, y, notePos: id === 'z' ? 'e' : y ? 'n' : 's' })), edges: all });
+        const algo = v.select('', [{ value: 'dfs', label: 'Depth-first search' }, { value: 'kahn', label: "Kahn's topological sort" }], 'dfs', { onChange: () => rebuild() });
+        const loop = v.toggle('loop $z\\to z$', true, { onChange: () => rebuild() });
+        const back = v.toggle('edge $y\\to x$', true, { onChange: () => rebuild() });
+        const run = () => (algo.value === 'dfs' ? G.dfs() : G.topoSort());
+        const S = v.steps({ frames: () => run().events, code: run().code, codeTitle: 'DFS(G)', speed: 1.5 });
+        function rebuild() {
+          G.edges = all.filter(([a, b]) => (loop.value || a !== 'z' || b !== 'z') && (back.value || a !== 'y' || b !== 'x'));
+          S.setCode(run().code, algo.value === 'dfs' ? 'DFS(G)' : 'Kahn(G)'); S.reset();
+        }
+        v.render(() => G.draw(S.frame.view));
+        v.legend([['green', 'tree'], ['red', 'back', { dash: true }], ['purple', 'forward', { dash: true }], ['teal', 'cross', { dash: true }]]);
+        v.readout(() => {
+          const f = S.frame;
+          if (algo.value === 'kahn') return f.order ? `Output so far: ${f.order.join(', ') || '—'}` : '';
+          return f.post ? `Finished (reverse = topological order if acyclic): ${f.post.join(', ') || '—'}` : '';
+        });
+      },
+    },
   ],
 };
