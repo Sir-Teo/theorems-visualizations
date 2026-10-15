@@ -264,18 +264,19 @@ which depends only on the four rays through $O$. So every line cutting those ray
         // colonnade mode: eye height 1.6, picture distance 2.4, horizon drawn at y = 1.4
         const HZ = 1.4, cam = camera([0, 0, 1.6], { d: 2.4 });
         const vpH = S.handle(3.0, HZ, { color: 'green', label: 'V', labelPos: 'n', constrain: (x) => [M.clamp(x, -5, 5), HZ] });
-        const b0 = S.handle(-2.6, -2.2, { color: 'accent', label: 'first column', labelPos: 'w', constrain: (x, y) => [x, Math.min(y, HZ - 0.25)] });
+        const b0 = S.handle(-2.4, -0.75, { color: 'accent', label: 'first column', labelPos: 'w', constrain: (x, y) => [x, Math.min(y, HZ - 0.25)] });
         const projHandles = [...P, O, m1, m2, n1, n2], colHandles = [vpH, b0];
         const onLine = (X, a, b) => meet([O.x, O.y], X, a, b);
         const tpar = (X, a, b) => { const L = Math.hypot(b[0] - a[0], b[1] - a[1]); return ((X[0] - a[0]) * (b[0] - a[0]) + (X[1] - a[1]) * (b[1] - a[1])) / L; };
         const colonnade = () => {
           const phi = Math.atan2(vpH.x, cam.d), u = [Math.sin(phi), Math.cos(phi), 0];
           const g = cam.ground(b0.x, b0.y - HZ) || [0, 4, 0];
-          const cols = Array.from({ length: 9 }, (_, k) => { const B = [g[0] + 2.2 * k * u[0], g[1] + 2.2 * k * u[1], 0]; const p = cam.proj(B), q = cam.proj([B[0], B[1], 3.2]); return p && q ? { p: [p[0], p[1] + HZ], q: [q[0], q[1] + HZ] } : null; }).filter(Boolean);
+          const cols = Array.from({ length: 9 }, (_, k) => { const B = [g[0] + 3 * k * u[0], g[1] + 3 * k * u[1], 0]; const p = cam.proj(B), q = cam.proj([B[0], B[1], 3.2]); return p && q ? { p: [p[0], p[1] + HZ], q: [q[0], q[1] + HZ] } : null; }).filter(Boolean);
           return { cols, V: [cam.d * Math.tan(phi), HZ] };
         };
         v.render(() => {
           const pm = mode.value === 'proj';
+          v.legend(pm ? [['accent', 'the four points on $\\ell$'], ['gold', 'rays from $O$'], ['orange', 'image line $m$'], ['purple', 'image line $n$']] : [['accent', 'first four columns'], ['green', 'fifth column and its predicted base'], ['gray', 'further columns']]);
           projHandles.forEach((h) => (h.visible = pm)); colHandles.forEach((h) => (h.visible = !pm));
           if (pm) {
             const A = P.map((h) => [h.x, h.y]), Ob = [O.x, O.y];
@@ -294,7 +295,7 @@ which depends only on the four rays through $O$. So every line cutting those ray
             S.line(bx[0], HZ, bx[1], HZ, { color: 'muted', width: 1, dash: [5, 4] });
             if (cols.length > 1) { const a = cols[0].p; S.line(a[0], a[1], V[0], V[1], { color: 'accent', width: 1.2, dash: [4, 4] }); const t = cols[0].q; S.line(t[0], t[1], V[0], V[1], { color: 'accent', width: 1.2, dash: [4, 4] }); }
             cols.slice().reverse().forEach((c, k) => {
-              const i = cols.length - 1 - k, w = Math.max(2, Math.abs(c.q[1] - c.p[1]) * 0.12 * S.scale);
+              const i = cols.length - 1 - k, w = Math.max(2, Math.abs(c.q[1] - c.p[1]) * 0.07 * S.scale);
               S.line(c.p[0], c.p[1], c.q[0], c.q[1], { color: i < 4 ? 'accent' : i === 4 ? 'green' : 'gray', width: w });
             });
             // predicted 5th column from the cross-ratio of columns 2–4 (= 4/3)
@@ -307,7 +308,6 @@ which depends only on the four rays through $O$. So every line cutting those ray
             }
           }
         });
-        v.legend([['accent', 'the four points (columns)'], ['gold', 'rays from $O$'], ['orange', 'image line $m$'], ['purple', 'image line $n$']]);
         v.readout(() => {
           if (mode.value === 'proj') {
             const A = P.map((h) => [h.x, h.y]), xs = A.map((p) => p[0]);

@@ -130,7 +130,7 @@ Solved numerically, without further adjustment, these four equations (neuro-2.3)
             const run = membrane(shocks, T, tEnd);
             sV.hline(0, { color: 'faint', width: 1 });
             sV.hline(S(ENA), { color: 'orange', width: 1, dash: [3, 4] }); sV.text(`${flip ? 'V_Na = −115' : 'E_Na = 115'} mV`, tEnd, S(ENA), { align: 'right', dx: -4, dy: flip ? -9 : 11, size: 11, color: 'orange' });
-            sV.hline(S(EK), { color: 'blue', width: 1, dash: [3, 4] }); sV.text(`${flip ? 'V_K = +12' : 'E_K = −12'} mV`, tEnd, S(EK), { align: 'right', dx: -4, dy: flip ? 11 : -9, size: 11, color: 'blue' });
+            sV.hline(S(EK), { color: 'teal', width: 1, dash: [3, 4] }); sV.text(`${flip ? 'V_K = +12' : 'E_K = −12'} mV`, tEnd, S(EK), { align: 'right', dx: -4, dy: flip ? 11 : -9, size: 11, color: 'teal' });
             if (m === 'mem' && isFinite(thr0)) {
               for (const d of [-0.3, 0.3]) sV.path(membrane([[0, thr0 + d]], T, tEnd, 0.02).map((p) => [p[0], S(p[1])]), { color: d < 0 ? 'red' : 'green', width: 1.1, alpha: 0.55 });
               sV.dot(0, S(thr0), { r: 4, color: 'red', label: `threshold ${v.fix(thr0, 1)}`, labelPos: 'w', math: false, labelSize: 11.5 });
@@ -138,15 +138,15 @@ Solved numerically, without further adjustment, these four equations (neuro-2.3)
             sV.path(run.map((p) => [p[0], S(p[1])]), { color: 'accent', width: 2.6 });
             if (m === 'ref') sV.vline(dT.value, { color: 'gold', width: 1.4, dash: [4, 3] });
             // gates
-            sG.path(run.map((p) => [p[0], p[2]]), { color: 'orange', width: 2.2 }); sG.path(run.map((p) => [p[0], p[3]]), { color: 'purple', width: 2.2 }); sG.path(run.map((p) => [p[0], p[4]]), { color: 'blue', width: 2.2 });
-            sG.path(run.map((p) => [p[0], p[2] ** 3 * p[3]]), { color: 'orange', width: 1.2, dash: [4, 3] }); sG.path(run.map((p) => [p[0], p[4] ** 4]), { color: 'blue', width: 1.2, dash: [4, 3] });
+            sG.path(run.map((p) => [p[0], p[2]]), { color: 'orange', width: 2.2 }); sG.path(run.map((p) => [p[0], p[3]]), { color: 'purple', width: 2.2 }); sG.path(run.map((p) => [p[0], p[4]]), { color: 'teal', width: 2.2 });
+            sG.path(run.map((p) => [p[0], p[2] ** 3 * p[3]]), { color: 'orange', width: 1.2, dash: [4, 3] }); sG.path(run.map((p) => [p[0], p[4] ** 4]), { color: 'teal', width: 1.2, dash: [4, 3] });
             const lab = (i, txt, col) => { const p = run[Math.round(run.length * 0.62)]; sG.text(txt, p[0], p[i], { dy: -9, color: col, size: 12, weight: 700, math: true }); };
-            lab(2, 'm', 'orange'); lab(3, 'h', 'purple'); lab(4, 'n', 'blue');
+            lab(2, 'm', 'orange'); lab(3, 'h', 'purple'); lab(4, 'n', 'teal');
             const peakU = Math.max(...run.map((p) => p[1]));
             if (m === 'mem') {
               const cur = run.map((p) => [p[0], currents(p[1], p[2], p[3], p[4])]);
               sC.hline(0, { color: 'faint', width: 1 });
-              sC.path(cur.map(([t, c]) => [t, c.na]), { color: 'orange', width: 2.2 }); sC.path(cur.map(([t, c]) => [t, c.k]), { color: 'blue', width: 2.2 });
+              sC.path(cur.map(([t, c]) => [t, c.na]), { color: 'orange', width: 2.2 }); sC.path(cur.map(([t, c]) => [t, c.k]), { color: 'teal', width: 2.2 });
               sC.setTitle('ionic currents (µA/cm²): Na⁺ inward, K⁺ outward');
               const iNa = Math.min(...cur.map(([, c]) => c.na)), iK = Math.max(...cur.map(([, c]) => c.k));
               // sodium charge per impulse → moles
@@ -173,11 +173,11 @@ Solved numerically, without further adjustment, these four equations (neuro-2.3)
             sG.path(C.rec.map((p) => [p[0], S(p[1])]), { color: 'orange', width: 2.2 }); sG.path(C.rec.map((p) => [p[0], S(p[2])]), { color: 'red', width: 2.2 });
             const last = C.snaps[1]; sV.setTitle('the impulse along the axon at four times');
             sC.setTitle(`conductances along the axon at ${v.fix(last.t, 1)} ms (mS/cm²)`);
-            sC.path(xs.map((x, i) => [x, last.gna[i]]), { color: 'orange', width: 2.2 }); sC.path(xs.map((x, i) => [x, last.gk[i]]), { color: 'blue', width: 2.2 });
+            sC.path(xs.map((x, i) => [x, last.gna[i]]), { color: 'orange', width: 2.2 }); sC.path(xs.map((x, i) => [x, last.gk[i]]), { color: 'teal', width: 2.2 });
             st = { m, C, T };
           }
         });
-        v.legend([['accent', 'membrane potential'], ['orange', '$m$, $m^3h$ (dashed), $I_{\\rm Na}$, $g_{\\rm Na}$'], ['purple', '$h$'], ['blue', '$n$, $n^4$ (dashed), $I_{\\rm K}$, $g_{\\rm K}$']]);
+        v.legend([['accent', 'membrane potential'], ['orange', '$m$, $m^3h$ (dashed), $I_{\\rm Na}$, $g_{\\rm Na}$'], ['purple', '$h$'], ['teal', '$n$, $n^4$ (dashed), $I_{\\rm K}$, $g_{\\rm K}$']]);
         v.readout(() => {
           if (!st) return '';
           const T = st.T;

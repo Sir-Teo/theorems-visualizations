@@ -405,7 +405,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
         const KEYNAME = (k) => M.noteName(k + 20);
         const rc = v.stage({ x: [0.5, 88.5], y: [-45, 45], height: 270, axes: 'box', grid: true, ylabel: 'cents from equal temperament', xticks: [1, 13, 25, 37, 49, 61, 73, 85, 88].map((k) => [k, KEYNAME(k)]), yticks: [-40, -20, 0, 20, 40], full: true, title: 'deviation of the tuned first partials from equal temperament' });
         const kb = v.stage({ x: [0.5, 88.5], y: [0, 1], height: 62, axes: false, full: true });
-        const al = v.stage({ x: [-16, 16], y: [0.4, 3.6], height: 150, axes: 'box', xlabel: 'mismatch (¢): upper note’s partial against the lower note’s', yticks: [[3, '2:1'], [2, '4:2'], [1, '6:3']], xticks: [-15, -10, -5, 0, 5, 10, 15], full: true });
+        const al = v.stage({ x: [-19.5, 16.5], y: [0.15, 3.75], height: 160, axes: 'box', xlabel: 'mismatch (¢): upper note’s partial against the lower note’s', yticks: [[3, '2:1'], [2, '4:2'], [1, '6:3']], xticks: [-15, -10, -5, 0, 5, 10, 15], full: true });
         const pick = (x) => { const k = M.clamp(Math.round(x), 13, 88); sel = k + 20; };
         kb.onClick((x) => pick(x)); rc.onClick((x) => pick(x));
         v.render(() => {
@@ -420,13 +420,14 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           const ks = sel - 20;
           rc.vband(ks - 12.5, ks - 11.5, { color: 'gold', alpha: 0.25 }); rc.vband(ks - 0.5, ks + 0.5, { color: 'gold', alpha: 0.35 });
           rc.dot(ks, dev(ty, sel), { r: 5.5, color: 'gold' });
-          for (const [k, lab] of [[1, 'A0'], [88, 'C8']]) rc.text(`${dev(ty, k + 20) > 0 ? '+' : ''}${v.fix(dev(ty, k + 20), 1)} ¢`, k + (k === 1 ? 1 : -1), dev(ty, k + 20) + (dev(ty, k + 20) > 0 ? -5 : 5), { align: k === 1 ? 'left' : 'right', color: 'accent', size: 11, weight: 600 });
+          const dA = dev(ty, 21), dC = dev(ty, 108), sgn = (x) => (x > 0.05 ? '+' : '');
+          rc.text(`A0: ${sgn(dA)}${v.fix(dA, 1)} ¢`, 2, dA - 6, { align: 'left', color: 'accent', size: 11, weight: 600 });
+          rc.text(`C8: ${sgn(dC)}${v.fix(dC, 1)} ¢`, 87, Math.min(40, dC + 6), { align: 'right', color: 'accent', size: 11, weight: 600 });
           // ---- keyboard
           for (let k = 1; k <= 88; k++) {
             const m = k + 20, black = [1, 3, 6, 8, 10].includes(M.mod(m, 12)), on = m === sel || m === sel - 12;
             kb.rect(k - 0.5, 0, k + 0.5, 1, { fill: on ? 'gold' : black ? 'ink' : 'panel', fillAlpha: on ? 0.9 : black ? 0.75 : 1, color: 'faint', width: 0.6 });
           }
-          kb.corner('click a key to select an octave', 'tr', { color: 'muted' });
           // ---- partial alignment for the selected octave
           const f = all()[ty], lo = sel - 12;
           al.vline(0, { color: 'green', width: 1.5 });
@@ -434,6 +435,8 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
             const y = { '21': 3, '42': 2, '63': 1 }[key], pu = Pj(f.get(sel), Bm(sel), b), pl = Pj(f.get(lo), Bm(lo), a);
             const c = 1200 * Math.log2(pu / pl), beat = Math.abs(pu - pl);
             al.line(-16, y, 16, y, { color: 'faint', width: 1 });
+            const used = ty !== 'none' && ((sel > 69 && SCH[ty].up[0] === a) || (sel < 69 && SCH[ty].dn[0] === a));
+            if (used) al.text('tuned to coincide', -15.8, y - 0.3, { align: 'left', color: 'green', size: 10.5, weight: 600 });
             al.dot(M.clamp(c, -15.5, 15.5), y, { r: 6, color: Math.abs(c) < 0.5 ? 'green' : 'red' });
             al.text(`${v.fix(c, 1)} ¢ · ${v.fix(beat, 2)} beats/s`, M.clamp(c, -15.5, 15.5) + (c > 8 ? -0.8 : 0.8), y + 0.28, { align: c > 8 ? 'right' : 'left', color: 'ink', size: 11 });
           }
