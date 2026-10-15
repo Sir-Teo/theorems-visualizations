@@ -129,7 +129,7 @@ Multiplying by a shifted impulse picks out one sample, $x[n]\,\delta[n-n_0]=x[n_
         v.readout(() => {
           if (!st) return '';
           const { nc, s, d, e1, e2 } = st, n0 = n0S.value, sh = n0 === 0 ? 'n' : `n${n0 > 0 ? '-' : '+'}${Math.abs(n0)}`, sh1 = n0 + 1 === 0 ? 'n' : `n${n0 + 1 > 0 ? '-' : '+'}${Math.abs(n0 + 1)}`;
-          const what = input.value === 'd' ? `with $x=\\delta[${sh}]$ the running sum is the step $u[${sh}]$ and the difference is $\\delta[${sh}]-\\delta[${sh1}]$` : input.value === 'u' ? `with $x=u[${sh}]$ the running sum is the ramp $(${sh}+1)\\,u[${sh}]$ and the difference is the impulse $\\delta[${sh}]$` : 'for your sequence';
+          const what = input.value === 'd' ? `with $x=\\delta[${sh}]$ the running sum is the step $u[${sh}]$ and the difference is $\\delta[${sh}]-\\delta[${sh1}]$` : input.value === 'u' ? `with $x=u[${sh}]$ the running sum is the ramp $(${sh}+1)\\,u[${sh}]$ and the difference is the impulse $\\delta[${sh}]$` : 'for your sequence the middle panel is its discrete integral and the bottom panel its discrete derivative';
           return `at $n=${nc}$: $s[${nc}]=\\sum_{k\\le ${nc}}x[k]$ = ${v.fmt(s, 3)}, $d[${nc}]=x[${nc}]-x[${nc - 1}]$ = ${v.fmt(d, 3)} · ${what} · inverse pair on the whole window: $\\max_n|s[n]-s[n-1]-x[n]|$ = ${v.fix(e1, 3)} and $\\max_n|\\sum_{k\\le n}d[k]-x[n]|$ = ${v.fix(e2, 3)}`;
         });
       },
@@ -502,7 +502,9 @@ the **norm** $\|x\|=\sqrt{\langle x,x\rangle}$ (the square root of the energy) a
           s2.corner(`net area ⟨x, y⟩ = ${v.fix(Math.abs(xy) < 5e-12 ? 0 : xy, 4)}`, 'tr', { color: Math.abs(xy) < 1e-6 ? 'green' : 'ink', weight: 600 });
           // ---- vectors (Gram–Schmidt coordinates: x on the axis, y at angle θ)
           const S = 1.5, X = [nx * S, 0], Y = [ny * S * cl, ny * S * Math.sin(th)];
-          s3.line(-1.6, 0, 2.7, 0, { color: 'faint', width: 1 });
+          const xs3 = [0, X[0], Y[0], X[0] + Y[0]], top3 = Math.max(Y[1], 0.5);
+          s3.setView([Math.min(...xs3) - 0.3, Math.max(...xs3) + 0.75], [-0.28, top3 + 0.3]);
+          s3.line(-5, 0, 5, 0, { color: 'faint', width: 1 });
           s3.poly([[0, 0], X, [X[0] + Y[0], X[1] + Y[1]], Y], { fill: 'muted', fillAlpha: 0.06, color: 'faint', width: 1, dash: [3, 4] });
           s3.arrow(0, 0, X[0] + Y[0], X[1] + Y[1], { color: 'muted', width: 1.6 });
           s3.line(Y[0], Y[1], proj * X[0], 0, { color: 'accent', width: 1.2, dash: [4, 3] });

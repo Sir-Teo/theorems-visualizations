@@ -71,7 +71,7 @@ export default {
           paper: { authors: 'W. Weinberg', year: 1908, title: 'Über den Nachweis der Vererbung beim Menschen',
                    venue: 'Jahreshefte des Vereins für vaterländische Naturkunde in Württemberg 64: 368–382', url: 'https://www.biodiversitylibrary.org/page/7987521' },
           introduces: ['popgen-1.5'], deps: ['popgen-1.2'], refs: [],
-          pic: 'Weinberg’s derivation: pure-bred stocks AA and aa mixed in proportions m and n mate at random and give m² : 2mn : n² in a single generation, which then reproduces itself; the reader mixes founding stocks in any proportions, steps through generations, and adds a third mixed stock to see that the equilibrium depends only on the allele frequency, not on how the population began.' },
+          pic: 'Weinberg’s derivation: pure-bred stocks AA and aa mixed in any proportions mate at random and reach the binomial proportions p² : 2pq : q² in a single generation, which then reproduce themselves; the reader mixes founding stocks in any proportions, steps through generations, and adds a third mixed stock to see that the equilibrium depends only on the allele frequency, not on how the population began.' },
       ],
     },
     {
@@ -145,7 +145,7 @@ export default {
           paper: { authors: 'S. E. Luria and M. Delbrück', year: 1943, title: 'Mutations of Bacteria from Virus Sensitivity to Virus Resistance',
                    venue: 'Genetics 28 (6): 491–511', doi: '10.1093/genetics/28.6.491' },
           introduces: [], deps: ['popgen-3.1', 'mathbio-11.1'], refs: [],
-          pic: 'The fluctuation test: grow many small parallel cultures and plate each on phage; if resistance arose only on contact with the virus the counts would be Poisson, but mutations that happened earlier give jackpots — as in the paper’s Experiment 23, where 11 of 20 cultures had no resistant bacteria and others had 35, 64 and 107 (mean 11.4, variance 694) while samples of one culture varied only as Poisson; the reader runs both hypotheses and compares variance to mean.' },
+          pic: 'The fluctuation test: grow many small parallel cultures and plate each on phage; if resistance arose only on contact with the virus the counts would be Poisson, but mutations that happened earlier in a culture’s growth give jackpots — as in the paper’s tables, where many cultures had no resistant bacteria and a few had dozens or more than a hundred, the variance far above the mean, while repeated samples of one culture varied only as Poisson; run both hypotheses and compare variance with mean.' },
         { num: '3.14', kind: 'Paper', name: 'Evolutionary Rate at the Molecular Level',
           paper: { authors: 'Motoo Kimura', year: 1968, title: 'Evolutionary Rate at the Molecular Level',
                    venue: 'Nature 217 (5129): 624–626', doi: '10.1038/217624a0' },
@@ -190,7 +190,7 @@ export default {
           paper: { authors: 'Charles Darwin and Alfred Wallace', year: 1858, title: 'On the Tendency of Species to form Varieties; and on the Perpetuation of Varieties and Species by Natural Means of Selection',
                    venue: 'Journal of the Proceedings of the Linnean Society of London, Zoology 3 (9): 45–62', doi: '10.1111/j.1096-3642.1858.tb02500.x' },
           introduces: [], deps: ['mathbio-1.2'], refs: [],
-          pic: 'The joint paper’s argument run as a simulation: a population breeding geometrically outruns a fixed food supply, so most offspring die; give individuals a heritable trait — the fleetness of Darwin’s wolves hunting scarcer deer — and the trait distribution shifts generation by generation, while switching heredity off or equalizing survival stops the change.' },
+          pic: 'The joint paper’s argument run as a simulation: a population breeding geometrically outruns a fixed food supply, so most offspring die; give individuals a heritable trait, such as the speed of a predator whose prey is growing scarce, and the trait distribution shifts generation by generation, while switching heredity off or equalizing survival stops the change.' },
       ],
     },
     {

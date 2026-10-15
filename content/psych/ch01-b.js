@@ -172,7 +172,7 @@ Staircases spend almost all trials near threshold, so they are far more efficien
         const b2 = v.button('2nd higher', () => answer(2));
         const bRes = v.button('Reset', () => { after.clear(); phase = 'idle'; ys = fresh(); });
         const tr = v.stage({ x: [-1, 61], y: [FLOOR, CEIL], ylog: true, height: 250, axes: 'box', full: true, xlabel: 'trial', title: 'one staircase: pitch difference Δ in cents (log scale)' });
-        const pf = v.stage({ x: [0.3, 150], y: [0.4, 1.04], xlog: true, height: 230, axes: 'box', weight: 1, xlabel: 'Δ (cents)', yticks: [0.5, 0.6, 0.707, 0.794, 0.9, 1], title: 'the simulated listener: P(correct)' });
+        const pf = v.stage({ x: [0.3, 150], y: [0.4, 1.04], xlog: true, height: 230, axes: 'box', weight: 1, xlabel: 'Δ (cents)', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'the simulated listener: P(correct)' });
         const hs = v.stage({ x: [FLOOR, CEIL], y: [0, 10], xlog: true, height: 230, axes: 'box', weight: 1, xlabel: 'estimate (cents)', yticks: [], title: `estimates from ${RUNS} runs` });
         const fresh = () => ({ L: START, run: 0, dir: 0, pts: [], rev: [] });
         const stepStair = (S, ok, n, f) => {
@@ -522,9 +522,9 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
       viz(v) {
         const M = v.M, after = timers(v);
         const MOD = {
-          light: { lo: -2, hi: 6, I0: 3, model: (I) => 0.015 * (I + 3), unit: 'background I (relative units)', wf: [0.006, 12] },
-          noise: { lo: 0, hi: 9, I0: 4, model: (I) => 0.1 * (I + 4), unit: 'I (re threshold)', wf: [0.04, 1.2] },
-          tone: { lo: 0, hi: 9, I0: null, model: (I) => 0.463 * Math.pow(I, 0.928), unit: 'I (re threshold)', wf: [0.04, 1.2] },
+          light: { lo: -2, hi: 6, I0: 3, model: (I) => 0.015 * (I + 3), unit: 'background I (relative units)', wf: [0.0022, 12] },
+          noise: { lo: 0, hi: 9, I0: 4, model: (I) => 0.1 * (I + 4), unit: 'I (re threshold)', wf: [0.025, 1.2] },
+          tone: { lo: 0, hi: 9, I0: null, model: (I) => 0.463 * Math.pow(I, 0.928), unit: 'I (re threshold)', wf: [0.025, 1.2] },
         };
         const mod = v.select('stimulus', [{ value: 'light', label: 'light on a background' }, { value: 'noise', label: 'broadband noise' }, { value: 'tone', label: 'pure tone (1 kHz)' }], 'light');
         const drop = v.slider('drop the lowest levels', 0, 40, 0, { step: 5, fmt: (x) => (x ? `lowest ${x} dB dropped` : 'none dropped') });
@@ -568,8 +568,8 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           tvi.dots(D.map((p) => [p.I, p.d]), { r: 3.8, color: 'ink' });
           tvi.vline(I0, { color: 'green', dash: [2, 4], width: 1.2 });
           tvi.text('I₀', I0, dmax * 1.6, { dx: 5, align: 'left', color: 'green', weight: 700, size: 12.5 });
-          const xw = 10 ** (C.hi - 1.6);
-          tvi.text('Weber: slope 1', xw, kW * xw, { dx: 8, dy: 12, align: 'left', color: 'red', size: 11.5, weight: 600 });
+          const xw = 10 ** (C.hi - 1.3);
+          tvi.text('Weber: slope 1', xw, kW * xw, { dx: -8, dy: -6, align: 'right', color: 'red', size: 11.5, weight: 600 });
           const xf = 10 ** (C.lo + 0.2);
           tvi.text(m === 'tone' ? 'slope < 1 everywhere' : 'flat: ΔI → k·I₀', xf, C.model(xf), { dy: -14, align: 'left', color: m === 'tone' ? 'purple' : 'green', size: 11.5, weight: 600 });
           if (snd) tvi.line(hL.x, dmin / 6, hL.x, hL.y, { color: 'gold', dash: [2, 3], width: 1.2 });
@@ -581,7 +581,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           wf.path(D.map((p) => [p.I, p.d / (p.I + I0)]), { color: 'green', width: 1.2, alpha: 0.5 });
           wf.dots(D.map((p) => [p.I, p.d / (p.I + I0)]), { r: 3.8, color: 'green' });
           if (D.length) wf.text('ΔI / I', D[0].I, D[0].d / D[0].I, { dx: 10, align: 'left', color: 'red', weight: 700, size: 12 });
-          wf.text('ΔI / (I + I₀)', x1, kM, { dx: -6, dy: kM > kW ? -12 : 13, align: 'right', color: 'green', weight: 700, size: 12 });
+          wf.text('ΔI / (I + I₀)', x1, kM, { dx: -6, dy: -13, align: 'right', color: 'green', weight: 700, size: 12 });
           if (snd) wf.vline(hL.x, { color: 'gold', dash: [2, 3], width: 1.2 });
           st = { m, kW, kM, eW, eM, best, lr, n: D.length, C };
         });
@@ -677,11 +677,11 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
         v.readout(() => {
           const k = kS.value, steps = cache ? cache.steps : [1];
           const n = steps.filter((I) => I <= Ih).length - 1, S = Sint(Ih);
-          const exact = law.value === 'weber' ? ` = $\\ln I/\\ln(1+k)$ = ${v.fix(Math.log(Ih) / Math.log(1 + k), 2)} at the staircase corners; Fechner's integral $\\ln I/k$ = ${v.fix(Math.log(Ih) / k, 2)}` : '';
+          const exact = law.value === 'weber' ? ` (the corner curve $\\ln I/\\ln(1+k)$ gives ${v.fix(Math.log(Ih) / Math.log(1 + k), 2)}; Fechner's continuous version $\\ln I/k$ gives ${v.fix(Math.log(Ih) / k, 2)}, the same logarithm with a slightly smaller constant)` : '';
           const Sr = M.range(8).map((j) => Sint(Math.pow(IMAX, j / 7))), Sd = M.range(8).map((j) => Sint(1 + ((IMAX - 1) * j) / 7));
           const gaps = (a) => a.slice(1).map((y, i) => y - a[i]);
           const gr = gaps(Sr), gd = gaps(Sd);
-          return `at $I$ = ${v.fix(Ih, 1)}× threshold: ${n} whole JNDs stacked${exact} · integral (numerical) ${v.fix(S, 2)} JNDs · ladder steps in JNDs: equal ratios ${v.fix(Math.min(...gr), 1)}–${v.fix(Math.max(...gr), 1)}, equal differences ${v.fix(Math.min(...gd), 1)}–${v.fix(Math.max(...gd), 1)}${law.value === 'weber' ? ' — Fechner predicts the first ladder evenly spaced and the second rushing up then crawling' : ''}`;
+          return `at $I$ = ${v.fix(Ih, 1)}× threshold: ${n} whole JNDs stacked${exact} · numerical integral ${v.fix(S, 2)} JNDs · ladder steps in JNDs: equal ratios ${v.fix(Math.min(...gr), 1)}–${v.fix(Math.max(...gr), 1)}, equal differences ${v.fix(Math.min(...gd), 1)}–${v.fix(Math.max(...gd), 1)}${law.value === 'weber' ? ' — Fechner predicts the first ladder evenly spaced and the second rushing up then crawling' : ''}`;
         });
       },
     },
@@ -772,7 +772,7 @@ In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p
 $$P(\text{correct})=\Phi\!\left(\frac{|n_1-n_2|}{w\sqrt{n_1^2+n_2^2}}\right),$$
 a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typically about 0.1–0.3 in adults and much larger in young children; six-month-old infants distinguish 8 from 16 dots but not 8 from 12 (Xu & Spelke, 2000). The same ratio signature appears in monkeys, birds and fish. Because more dots also means more ink or denser packing, experiments vary dot size and spacing so that no single visual cue predicts the answer; whether numerosity is perceived directly or computed from such cues is still debated.`,
       idea: String.raw`If the internal estimate of $n$ is normal with mean $n$ and standard deviation $wn$, the difference of the two estimates is normal with mean $n_2-n_1$ and standard deviation $w\sqrt{n_1^2+n_2^2}$ (independent normals add), and the observer is correct when its sign is right. Writing $n_2=rn_1$, the ratio of mean to spread is $(r-1)/(w\sqrt{1+r^2})$: $n_1$ cancels. So plotting accuracy against the difference spreads the data into separate curves for each base number, while plotting against the ratio collapses them onto one curve whose steepness measures $w$. Equivalently, number is represented on a compressed, roughly logarithmic scale (1.11).`,
-      caption: String.raw`Two arrays of dots; half the trials keep the dot size fixed and half keep the total dot area fixed, so neither size nor ink gives the answer. The default subject is a simulated observer with $w$ = 0.18: 20 trials for each of five ratios at base numbers 10, 20 and 40. Middle: accuracy against the *difference* — three separate curves. Right: against the *ratio* — one curve, fitted by maximum likelihood with its 95% band. Drag the **gold** handle to show any condition on the left. Switch to **you**: *▶ Flash* shows two arrays for 0.3 s; answer which had more dots, and watch your own points collapse.`,
+      caption: String.raw`Two arrays of dots; half the trials keep the dot size fixed and half keep the total dot area fixed, so neither size nor ink gives the answer. The default subject is a simulated observer with $w$ = 0.18: 40 trials for each of five ratios at base numbers 10, 20 and 40. Middle: accuracy against the *difference* — three separate curves. Right: against the *ratio* — one curve, fitted by maximum likelihood with its 95% band. Drag the **gold** handle to show any condition on the left. Switch to **you**: *▶ Flash* shows two arrays for 0.3 s; answer which had more dots, and watch your own points collapse.`,
       deps: ['psych-1.9'],
       refs: ['Gescheider ch. 1'],
       tags: ['number', 'Weber'],
@@ -848,7 +848,6 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
             pd.fn((d) => pcN(b, b + d, w), { domain: [0.2, 41], color: COLS[b], width: 1.8, alpha: 0.8 });
           }
           for (const c of cells) { const [lo, hi] = wilson(c.k, c.n); pd.line(c.big - c.b, lo, c.big - c.b, hi, { color: COLS[c.b], width: 1.1, alpha: 0.45 }); pd.dot(c.big - c.b, c.k / c.n, { r: 4.3, color: COLS[c.b] }); }
-          for (const b of BASES) { const x = Math.min(39, Math.round(b * 2) - b); pd.text(`${b} vs …`, x, pcN(b, b + x, w), { dy: 13, align: 'right', color: COLS[b], weight: 700, size: 11.5 }); }
           // ---- accuracy against the ratio
           if (F) {
             const fr = (r, ww) => pcN(1, r, ww);

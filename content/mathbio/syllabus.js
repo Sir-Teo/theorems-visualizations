@@ -229,7 +229,7 @@ export default {
           paper: { authors: 'A. V. Hill', year: 1910, title: 'The possible effects of the aggregation of the molecules of haemoglobin on its dissociation curves',
                    venue: 'Journal of Physiology 40 (Suppl.): iv–vii (Proceedings of the Physiological Society, 22 January 1910)', doi: '10.1113/jphysiol.1910.sp001386' },
           introduces: ['mathbio-5.8'], deps: ['mathbio-5.1'], refs: [],
-          pic: 'Hill’s curve fitting: oxygen saturation y = Kxⁿ/(1 + Kxⁿ) is fitted to a measured haemoglobin dissociation curve; slide n and K and see that n = 1, a single site, gives a hyperbola that cannot match the sigmoid, while a non-integer n between 2 and 3 fits — then read n off the Hill plot as a slope.' },
+          pic: 'Hill’s curve fitting: oxygen saturation y = Kxⁿ/(1 + Kxⁿ) is fitted to a measured haemoglobin dissociation curve; slide n and K and see that n = 1, a single site, gives a hyperbola that cannot match the sigmoid, while a non-integer n well above 1 fits — Hill’s point that n need not count real binding sites — then read n off the Hill plot as a slope.' },
       ],
     },
     {

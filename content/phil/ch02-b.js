@@ -20,6 +20,8 @@ function unionLength(iv) {
 }
 /** Cantor's pairing ℕ×ℕ → ℕ (1-based): (c, s) ↦ (c+s−1)(c+s−2)/2 + s. */
 const pairNum = (c, s) => ((c + s - 1) * (c + s - 2)) / 2 + s;
+/** 12000 → "1.2·10⁴" for labels. */
+const bigNum = (x) => { if (x < 1e4) return String(Math.round(x)); const e = Math.floor(Math.log10(x)); return `${(x / 10 ** e).toFixed(1)}·10${String(e).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]).join('')}`; };
 /** Quadratic Bézier point. */
 const bez = (p0, p1, p2, t) => [(1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0], (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]];
 
@@ -324,12 +326,11 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           const L = LS.value, p = pS.value, A = areaTable(p);
           const areaAt = (x) => { const u = Math.log(x) / DU, i = Math.min(NU - 1, Math.floor(u)); return A[i] + (A[i + 1] - A[i]) * (u - i); };
           // ---- the horn (first stretch, x ≤ 12)
-          S3.begin && null;
           const Xs = Math.min(L, 12), r = (x) => x ** -p;
           S3.surface((x, th) => [x - 6.5, r(x) * Math.cos(th), r(x) * Math.sin(th)], [1, Xs], [0, 2 * Math.PI], { nu: 44, nv: 26, color: 'accent', alpha: 0.9, colorFn: (x) => (x < 2 ? 'blue' : 'accent') });
           S3.curve((th) => [1 - 6.5, Math.cos(th), Math.sin(th)], 0, 2 * Math.PI, { color: 'ink', width: 1.6 });
           S3.line([-6.2, 0, 0], [6.2, 0, 0], { color: 'faint', width: 1, dash: [4, 4] });
-          if (L > 12) S3.text(`… continues to x = ${L >= 1e4 ? v.sci(L, 1).replace(/\\times10\^\{(\d+)\}/, '·10^$1') : v.fix(L, 0)}`, [5.6, 0, -1.6], { size: 11.5, color: 'muted' });
+          if (L > 12) S3.text(`… continues to x = ${bigNum(L)}`, [4.2, 0, -1.7], { size: 11.5, color: 'muted' });
           // ---- running volume and area
           const Vinf = p > 0.5 ? Math.PI / (2 * p - 1) : Infinity;
           const yMax = Math.min(140, Math.max(12, Math.min(areaAt(1e6), 120) * 1.05, isFinite(Vinf) ? Vinf * 1.2 : 0));
@@ -340,14 +341,14 @@ The **painter’s paradox**: the horn can be filled with $\pi$ units of paint, y
           if (Math.abs(p - 1) < 0.005) G.fn((x) => 2 * Math.PI * Math.log(x), { color: 'orange', width: 1.2, dash: [3, 4], alpha: 0.7 });
           G.vline(L, { color: 'gold', width: 1.8 });
           G.dot(L, vol(p, L), { r: 5, color: 'blue' }); if (areaAt(L) < yMax) G.dot(L, areaAt(L), { r: 5, color: 'orange' });
-          st = { L, p, V: vol(p, L), A: areaAt(L), Vinf };
+          st = { L, p, V: vol(p, L), A: areaAt(L), Vinf, Ainf: p > 1 ? areaAt(1e6) + (2 * Math.PI * 1e6 ** (1 - p)) / (p - 1) : Infinity };
         });
         v.legend([['blue', 'volume $\\pi\\int_1^L x^{-2p}dx$'], ['orange', 'area $2\\pi\\int_1^L x^{-p}\\sqrt{1+p^2x^{-2p-2}}\\,dx$'], ['orange', '$2\\pi\\ln L$ (at $p = 1$)', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
-          const { L, p, V, A, Vinf } = st, f = (x) => v.fix(x, 3);
+          const { L, p, V, A, Vinf, Ainf } = st, f = (x) => v.fix(x, 3);
           const cls = p > 1 ? 'both converge (p > 1)' : p > 0.5 ? '**finite volume, infinite area** (½ < p ≤ 1): Gabriel’s horn' : 'both diverge (p ≤ ½)';
-          return `Up to $L = ${L >= 1e4 ? v.sci(L, 2) : v.fix(L, 1)}$: volume $${f(V)}$${isFinite(Vinf) ? ` (limit $${f(Vinf)}$)` : ' (→ ∞)'}, area $${f(A)}$${p > 1 ? ` (limit $${f(2 * Math.PI * 0 + A)}$ and rising slowly)` : ' (→ ∞)'} · ${cls}` +
+          return `Up to $L = ${L >= 1e4 ? v.sci(L, 2) : v.fix(L, 1)}$: volume $${f(V)}$${isFinite(Vinf) ? ` (limit $${f(Vinf)}$)` : ' (→ ∞)'}, area $${f(A)}$${p > 1 ? ` (limit ≈ $${f(Ainf)}$)` : ' (→ ∞)'} · ${cls}` +
             (p > 0.5 && p <= 1 ? ` · a coat of paint 0.01 thick on this much surface needs about $${f(0.01 * A)}$ units of paint, more than the $${f(Vinf)}$ the whole horn holds once $L$ is large enough` : '') + '.';
         });
       },

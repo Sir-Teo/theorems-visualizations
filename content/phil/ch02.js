@@ -95,7 +95,7 @@ export default {
           if (!reg) {
             C.setTitle('tasks completed by time $t$');
             const pts = [[0, 0]];
-            if (speed) { for (let k = 1; k <= 16; k++) { const tk = 1 - 2 ** -k; pts.push([tk, k - 1], [tk, k]); } C.vline(1, { color: 'red', dash: [5, 4], width: 1.6 }); C.text('t = 1: infinitely many', 1.02, 12.6, { size: 11, weight: 600, color: 'red' }); }
+            if (speed) { for (let k = 1; k <= 16; k++) { const tk = 1 - 2 ** -k; pts.push([tk, k - 1], [tk, k]); } C.vline(1, { color: 'red', dash: [5, 4], width: 1.6 }); C.text('infinitely many by t = 1 →', 0.97, 12.6, { align: 'right', size: 11, weight: 600, color: 'red' }); }
             else for (let k = 1; k <= 13; k++) pts.push([k * TAU, k - 1], [k * TAU, k]);
             pts.push([speed ? 1 : 1.3, pts[pts.length - 1][1]]);
             C.clip(() => C.path(pts, { color: 'purple', width: 2.4 }));
@@ -112,10 +112,10 @@ export default {
             C.text('t → 0: infinitely many ahead', 0.04, 12.6, { size: 11, weight: 600, color: 'red' });
           }
         });
-        v.legend([['blue', 'distance covered $1-2^{-n}$'], ['orange', 'time used', { dash: true }], ['purple', 'task count'], ['gold', 'now']]);
         v.readout(() => {
           if (!st) return '';
           const { t, reg, speed, n } = st, f = (x) => v.fix(x, 4);
+          v.legend(reg ? [['teal', 'tasks behind the runner', { area: true }], ['purple', 'tasks still ahead'], ['gold', 'now']] : [['blue', 'distance covered $1-2^{-n}$'], ['orange', 'time used', { dash: true }], ['purple', 'tasks completed'], ['gold', 'now']]);
           if (reg) return t >= 1 ? `$t = ${f(t)}$: the runner is through, and every task is done.` : `$t = ${f(t)}$: the runner is at ${f(t)}. **Infinitely many** tasks are already behind (every interval below ${f(t)}), and **${st.ahead}** are still ahead. No task came first: reaching $2^{-k}$ always required reaching $2^{-k-1}$ before.`;
           if (!speed) return `Each task takes 0.1 time units whatever its length: after **${n}** tasks the time used is ${v.fix(TAU * n, 1)} and grows without bound, while the distance $1-2^{-${n}} = ${f(1 - 2 ** -n)}$ stays below 1. The runner never arrives: the answer to Zeno needs the task times to shrink.`;
           if (!isFinite(n)) return `$t = ${f(t)} \\ge 1$: **all** the infinitely many tasks are done (although none of them is the last), and the runner has crossed the finish line. Total time $\\sum_{k\\ge1}2^{-k} = 1$ (geometric series).`;
@@ -150,7 +150,7 @@ export default {
           const d = dS.value, r = rS.value, t = tS.value, vT = r * vA, conv = r < 1;
           const tStar = conv ? d / (vA - vT) : Infinity;
           const T = Math.max(12, Math.min(40, conv ? 1.3 * tStar : 30), t * 1.05), X = Math.max(vA * T, d + vT * T) * 1.04;
-          S.setView([0, T], [0, X]);
+          S.setView([-0.06 * T, T], [-0.07 * X, X]);
           // stages: end times T_k and positions X_k (Achilles reaches X_k at T_k)
           const Tk = [0], Xk = [0];
           for (let k = 1; k <= 60; k++) { Tk.push(Tk[k - 1] + (d / vA) * r ** (k - 1)); Xk.push(Xk[k - 1] + d * r ** (k - 1)); if (Tk[k] > 1e4) break; }
@@ -165,19 +165,20 @@ export default {
           if (conv && tStar <= T) { S.dot(tStar, vA * tStar, { r: 6, color: 'red' }); S.text('overtaking', tStar, vA * tStar, { dx: 10, dy: 12, size: 11.5, weight: 600, color: 'red' }); }
           S.vline(t, { color: 'muted', dash: [4, 4], width: 1.2 });
           S.dot(t, vA * t, { r: 5, color: 'blue' }); S.dot(t, d + vT * t, { r: 5, color: 'green' });
-          S.text('Achilles', T * 0.97, vA * T * 0.97, { align: 'right', dy: 12, size: 12, weight: 600, color: 'blue' });
-          S.text('tortoise', T * 0.97, d + vT * T * 0.97, { align: 'right', dy: -12, size: 12, weight: 600, color: 'green' });
+          S.text('Achilles', T * 0.16, vA * T * 0.16, { dx: 8, dy: 10, size: 12, weight: 600, color: 'blue' });
+          S.text('tortoise', T * 0.04, d + vT * T * 0.04, { dy: -12, size: 12, weight: 600, color: 'green' });
           // ---- track
           const xmax = Math.max(vA * t, d + vT * t, conv ? vA * tStar : 0, 60) * 1.08;
           top.setView([-0.02 * xmax, xmax], [-0.9, 1.1]);
           top.line(0, 0, xmax, 0, { color: 'faint', width: 1 });
+          top.line(0, -0.25, 0, 0.25, { color: 'ink', width: 1.5 }); top.text('start', 0, -0.55, { align: 'center', size: 10.5, color: 'muted' });
           for (let k = 1; k <= Math.min(nDone + 1, 30); k++) { const x = Xk[k]; top.line(x, 0, x, 0.55, { color: 'gold', width: 1.4, alpha: k <= nDone ? 1 : 0.4 }); if (k <= 4) top.text(`${k}`, x, 0.72, { align: 'center', size: 10.5, color: 'gold' }); }
           top.dot(vA * t, 0, { r: 7, color: 'blue', label: 'A', labelPos: 's' });
           top.dot(d + vT * t, 0, { r: 7, color: 'green', label: 'T', labelPos: 's' });
           top.corner(`t = ${v.fix(t, 2)} s`, 'tr');
           // ---- stage durations
           const tot12 = Tk[Math.min(12, Tk.length - 1)], yMax = (conv ? Math.max(tStar, tot12) : tot12) * 1.15;
-          B.setView([0.2, 12.8], [0, yMax]);
+          B.setView([0.2, 12.8], [-0.09 * yMax, yMax]);
           const run = [];
           for (let k = 1; k <= 12 && k < Tk.length; k++) {
             const du = Tk[k] - Tk[k - 1];
@@ -194,7 +195,7 @@ export default {
           const { d, r, t, tStar, nDone, conv, sum } = st;
           const head = `By $t = ${v.fix(t, 2)}$ s, **${nDone >= 59 ? 'all but finitely many visible' : nDone}** stage${nDone === 1 ? '' : 's'} finished · stage $k$ lasts $\\tfrac{d}{v_A}r^{k-1} = ${v.fix(d / vA, 2)}\\times${v.fix(r, 2)}^{k-1}$ s`;
           if (!conv) return head + ` · with $r = ${v.fix(r, 2)} \\ge 1$ the stages do not shrink, $\\sum r^{k}$ diverges, and the lines never cross: Achilles really never catches up.`;
-          return head + ` · all stages together: $\\dfrac{d/v_A}{1-r} = ${v.fix(sum, 3)}$ s · the lines cross at $t^* = \\dfrac{d}{v_A - v_T} = ${v.fix(tStar, 3)}$ s ✓ · ${t < tStar ? 'still before the overtaking' : '**overtaken**: every one of the infinitely many stages is over'}.`;
+          return head + ` · all stages together: $\\tfrac{d/v_A}{1-r} = ${v.fix(sum, 3)}$ s · the lines cross at $t^* = \\tfrac{d}{v_A - v_T} = ${v.fix(tStar, 3)}$ s ✓ · ${t < tStar ? 'still before the overtaking' : '**overtaken**: every one of the infinitely many stages is over'}.`;
         });
       },
     },

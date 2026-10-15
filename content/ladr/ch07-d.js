@@ -238,14 +238,14 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
           if (s1 > 1e-9) W.path(ellPts(T), { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 1.8, dash: op ? [5, 4] : false });
           else W.dot(0, 0, { color: 'accent', r: 5 });
           if (s1 > 1e-9) {
-            for (const sg of [1, -1]) W.dot(sg * s1 * f[0][0], sg * s1 * f[0][1], { color: 'green', r: 5.5, hollow: op });
+            if (s[0] - s[1] > 1e-6) for (const sg of [1, -1]) W.dot(sg * s1 * f[0][0], sg * s1 * f[0][1], { color: 'green', r: 5.5, hollow: op });
             let u = unit(sub(f[1], f[0])); if (u[1] < 0) u = scl(u, -1);
             const q = scl(u, s1), m = add(scl(q, 0.6), scl(perp(u), u[0] >= 0 ? 0.3 : -0.3));
             W.line(0, 0, q[0], q[1], { color: 'green', width: 1.6 });
             W.tex(`\\|T\\| = ${tn(s1)}`, m[0], m[1], { color: 'green', size: 14 });
           }
           if (len(Tv) > 0.02) { W.arrow(0, 0, Tv[0], Tv[1], { color: 'gold', width: 2.6 }); W.tex('Tv', Tv[0], Tv[1], { color: 'gold', size: 15, dx: 12 * Math.sign(Tv[0] || 1), dy: -10 }); }
-          W.corner(s1 < 1e-9 ? 'T = 0: the image is {0} and ‖T‖ = 0' : op ? 'open disk: ‖Tv‖ comes close to ‖T‖, never reaches it' : 'the maximum is attained at v = ±e₁', 'bl', { color: op ? 'red' : 'muted', weight: 600, size: 11.5 });
+          W.corner(s1 < 1e-9 ? 'T = 0: the image is {0} and ‖T‖ = 0' : op ? 'open disk: ‖Tv‖ comes close to ‖T‖, never reaches it' : s[0] - s[1] < 1e-6 ? 's₁ = s₂: every unit v attains the maximum' : 'the maximum is attained at v = ±e₁', 'bl', { color: op ? 'red' : 'muted', weight: 600, size: 11.5 });
           // brute-force search over a polar grid of the disk (closed: radii up to 1; open: up to 0.999)
           let mx = 0; const rM = op ? 0.999 : 1;
           for (let i = 1; i <= 20; i++) for (let k = 0; k < 360; k++) mx = Math.max(mx, len(mv(T, scl(uAt((Math.PI * k) / 360), (rM * i) / 20))));
@@ -321,7 +321,7 @@ the greatest length of the image of a vector in the closed unit ball. The maximu
         v.readout(() => {
           if (!st) return '';
           const { nS, nT, nU, nL, L, isZero, nSu, nTu, nUu, eq } = st;
-          return `(a) $\\|S\\| = ${tn(nS, 3)} \\ge 0$, $\\|T\\| = ${tn(nT, 3)} \\ge 0$. (b) ${isZero ? '$T = 0$ and $\\|T\\| = 0$.' : '$T \\ne 0$, and $\\|T\\| > 0$.'} (c) $\\|\\lambda T\\| = ${tn(nL, 3)} = |${tn(L)}| \\cdot ${tn(nT, 3)}$. (d) $\\|S + T\\| = ${tn(nU, 3)} ${eq ? '=' : '<'} ${tn(nS + nT, 3)} = \\|S\\| + \\|T\\|$; at $v$: $\\|(S+T)v\\| = ${tn(nUu, 3)} \\le \\|Sv\\| + \\|Tv\\| = ${tn(nSu + nTu, 3)}$.${eq && !isZero ? ' **Equality**: $S$ and $T$ stretch the same unit vector most, in the same direction.' : ''}`;
+          return `(a) $\\|S\\| = ${tn(nS, 3)} \\ge 0$, $\\|T\\| = ${tn(nT, 3)} \\ge 0$. (b) ${isZero ? '$T = 0$ and $\\|T\\| = 0$.' : '$T \\ne 0$, and $\\|T\\| > 0$.'} (c) $\\|\\lambda T\\| = ${tn(nL, 3)} = |${tn(L)}| \\cdot ${tn(nT, 3)}$. (d) $\\|S + T\\| = ${tn(nU, 3)} ${eq ? '=' : '<'} ${tn(nS + nT, 3)} = \\|S\\| + \\|T\\|$; at $v$: $\\|(S+T)v\\| = ${tn(nUu, 3)} \\le \\|Sv\\| + \\|Tv\\| = ${tn(nSu + nTu, 3)}$.${nU < 1e-12 ? ' Here $S + T = 0$, so $\\|S + T\\| = 0$, as (b) demands.' : eq && !isZero ? ' **Equality**: $S$ and $T$ stretch the same unit vector most, in the same direction.' : ''}`;
         });
       },
     },
@@ -896,6 +896,7 @@ A **parallelepiped** is a set of the form $u + P(v_1, \dots, v_n)$ for some $u \
             for (const t of [0, 1]) { R.dot(X(t), y, { color: 'green', r: 4.5, hollow: true }); R.text(String(t), X(t), y - 0.05, { align: 'center', size: 11, color: 'muted' }); }
             if (a) { const ak = a[k], ok = ak > 0 && ak < 1, xx = Math.max(-0.5, Math.min(1.5, ak)); R.dot(X(xx), y, { color: ok ? CC[k] : 'red', r: 6.5 }); R.tex(`a_${k + 1} = ${tn(ak)}`, X(xx), y + 0.06, { color: ok ? CC[k] : 'red', size: 14 }); }
           });
+          R.tex('x \\in u + P(v_1, v_2, v_3) \\iff (a_1, a_2, a_3) \\in (0, 1)^3', 0.5, 0.27, { size: 14, color: 'muted' });
           R.text(!a ? 'no unique coordinates: not a basis' : inside ? 'every aₖ in (0, 1): x is inside' : 'some aₖ outside (0, 1): x is outside', 0.5, 0.14, { align: 'center', size: 12.5, weight: 700, color: !a ? 'red' : inside ? 'green' : 'red' });
           st = { a, inside, det, basis };
         });
@@ -1058,7 +1059,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
         v.select('', [{ value: 'gen', label: 'generic $T$' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: '$\\det T < 0$' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         let r2 = 0.9, lastU = [-1.0, -0.8];
         const uh = V.handle(-1.0, -0.8, { color: 'orange', label: 'u', onDrag: () => { ah.x += uh.x - lastU[0]; ah.y += uh.y - lastU[1]; lastU = [uh.x, uh.y]; } });
-        const ah = V.handle(-1.0 + 1.5 * Math.cos(0.75), -0.8 + 1.5 * Math.sin(0.75), {
+        const ah = V.handle(-1.0 + 1.5 * Math.cos(1.25), -0.8 + 1.5 * Math.sin(1.25), {
           color: 'blue', label: 'r₁b₁', constrain: (x, y) => {
             const d = [x - uh.x, y - uh.y], r = Math.max(0.25, len(d)); let t = Math.atan2(d[1], d[0]);
             const te = angOf(svd22(H.A).e[0]);
@@ -1211,7 +1212,7 @@ $$\operatorname{volume} T(\Omega) = (\text{product of the singular values of } T
           V.poly(ring, { color: 'ink', width: 2 });
           const img = ring.map((p) => mv(T, p));
           W.poly(img, { color: 'ink', width: 2 });
-          const axesAt = (P, D, nm, R, up) => D.forEach((d, k) => { P.line(-R * d[0], -R * d[1], R * d[0], R * d[1], { color: k ? 'purple' : 'blue', width: 1.2, dash: [6, 4], alpha: 0.75 }); const lp = scl(d, ((d[1] >= 0) === up ? 1 : -1) * R * 0.9); P.tex(`${nm}_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 14, dx: 12 }); });
+          const axesAt = (P, D, nm, R, up) => D.forEach((d, k) => { P.line(-R * d[0], -R * d[1], R * d[0], R * d[1], { color: k ? 'purple' : 'blue', width: 1.2, dash: [6, 4], alpha: 0.75 }); const pos = up ? d[1] >= 0 : d[0] < -0.05 || (Math.abs(d[0]) <= 0.05 && d[1] < 0), lp = scl(d, (pos ? 1 : -1) * R * 0.9); P.tex(`${nm}_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 14, dx: 12 }); });
           axesAt(V, e, 'e', 1.65, true);
           axesAt(W, f, 'f', 2.5, false);
           W.corner(lined ? `each box → a box with sides s₁h, s₂h (s₁s₂ = ${pf(s[0] * s[1], 3)})` : 'boxes → slanted parallelograms', 'tl', { color: lined ? 'green' : 'purple', weight: 700, size: 11.5 });
