@@ -255,9 +255,9 @@ $$\alpha(v_1, \dots, v_m) = 0.$$`,
         const H = [];
         const proj = (p) => { const n = cross(H[0].p, H[1].p), nn = len(n); if (nn < 1e-9) return p; return sub(p, scl(n, dot(p, n) / (nn * nn))); };
         const snapPlane = (p) => { const n = cross(H[0].p, H[1].p), nn = len(n); if (nn < 1e-9) return p; return Math.abs(dot(p, n) / nn) < 0.08 ? proj(p) : p; };
-        H.push(sc.handle([0.95, 0.05, -0.2], { color: CC[0], label: 'v₁' }));
-        H.push(sc.handle([-0.05, 0.9, 0.3], { color: CC[1], label: 'v₂' }));
-        H.push(sc.handle([0.4, 0.47, 0.06], { color: CC[2], label: 'v₃', snap: snapPlane }));
+        H.push(sc.handle([0.95, 0.1, 0.25], { color: CC[0], label: 'v₁' }));
+        H.push(sc.handle([0.2, 0.85, 0.55], { color: CC[1], label: 'v₂' }));
+        H.push(sc.handle([0.53, 0.47, 0.39], { color: CC[2], label: 'v₃', snap: snapPlane }));
         H[2].set(proj(H[2].p));
         v.button('drop $v_3$ into the plane', () => H[2].set(proj(H[2].p)));
         v.button('lift $v_3$ out', () => { const n = unit(cross(H[0].p, H[1].p)); H[2].set(add(proj(H[2].p), scl(n, 0.7))); });
@@ -529,7 +529,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
           const sN = N % 2 ? '-1' : '+1';
           if (!adj) return `$\\operatorname{sign}${ptex(list)} = (-1)^{${N}} = ${sN}$; inverted pairs $(k, \\ell)$: ${pairs.length ? `$${pairs.join(',\\ ')}$` : 'none'}. Sorting by adjacent swaps (bubble sort) takes exactly $N = ${N}$ swaps; sorting by selection takes $${selSw}$ swaps ($m$ minus the number of cycles)${selSw === N ? ' — here the same number' : ' — a different number, of the same parity'}.`;
           const agree = D % 2 === N % 2;
-          return `Adjacent descents: $D = ${D}$, so $(-1)^D = ${D % 2 ? '-1' : '+1'}$, while $N = ${N}$ inverted pairs give $${sN}$ and selection sort uses $${selSw}$ swaps. ${agree ? 'Here the parities happen to agree,' : '**They disagree:**'} descents miss the inverted pairs that are not neighbours, and their count does not change parity under every swap — so only $(-1)^N$ gives a well-defined sign.`;
+          return `Adjacent descents: $D = ${D}$, so $(-1)^D = ${D % 2 ? '-1' : '+1'}$, while $N = ${N}$ inverted pairs give $${sN}$ and selection sort uses $${selSw}$ swaps. ${agree ? 'Here the parities happen to agree, but' : '**They disagree:**'} descents miss the inverted pairs that are not neighbours, and their count does not change parity under every swap — so only $(-1)^N$ gives a well-defined sign.`;
         });
       },
     },

@@ -404,7 +404,7 @@ function drawTract(s, cfg) {
   const gs = cfg.glottis || 'voiced', gy = -8.55, gap = gs === 'voiceless' ? 0.36 : gs === 'closed' ? 0 : gs === 'breathy' ? 0.18 : 0.06, midG = 7.1;
   s.poly([[6.85, gy + 0.22], [midG - gap / 2, gy], [6.85, gy - 0.22]], { fill: 'muted', fillAlpha: 0.9, stroke: false });
   s.poly([[7.4, gy + 0.22], [midG + gap / 2, gy], [7.4, gy - 0.22]], { fill: 'muted', fillAlpha: 0.9, stroke: false });
-  const ix = 1.2, iy = -7.0, op = gs === 'voiceless' ? 0.42 : gs === 'closed' ? 0.0 : gs === 'breathy' ? 0.22 : 0.05;
+  const ix = 1.2, iy = -7.6, op = gs === 'voiceless' ? 0.42 : gs === 'closed' ? 0.0 : gs === 'breathy' ? 0.22 : 0.05;
   s.circle(ix, iy, 0.95, { color: 'muted', width: 1, fill: 'faint', fillAlpha: 0.25 });
   for (const sg of [-1, 1]) {
     if (gs === 'voiced' || gs === 'breathy') s.curve((u) => [ix + sg * ((op * (1 + u)) / 2 + 0.035 * Math.sin(u * 18)), iy + 0.72 - (1.44 * (u + 1)) / 2], -1, 1, { color: 'ink', width: 2.2, n: 60 });
@@ -785,8 +785,8 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
           drawTract(tr, cfg);
           // front cavity: the stretch of wall from the lips to the closure
           if (s > 0.3) { const pts = []; for (let u = 0; u <= s; u += 0.1) { const w = along(WALL, WALL_S, u); pts.push([w.x + w.nx * 0.25, w.y + w.ny * 0.25]); } tr.path(pts, { color: 'gold', width: 7, alpha: 0.45 }); }
-          tr.text(`${reg} [${SYM[reg]}]`, -2.3, -4.5, { size: 13, color: 'ink', align: 'left', weight: 650 });
-          tr.text(s < 0.45 ? 'no front cavity' : `front cavity L = ${v.fix(s, 1)} cm`, -2.3, -5.2, { size: 12, color: 'muted', align: 'left' });
+          tr.text(`${reg} [${SYM[reg]}]`, -2.3, -4.1, { size: 13, color: 'ink', align: 'left', weight: 650 });
+          tr.text(s < 0.45 ? 'no front cavity' : `front cavity L = ${v.fix(s, 1)} cm`, -2.3, -4.8, { size: 12, color: 'muted', align: 'left' });
           // spectrum
           sp.path(d.sm.map((y, b) => [(b * SR) / 512, y]).filter((p) => p[0] <= FM), { color: 'accent', width: 2.2 });
           for (const f of d.res) sp.vline(f, { color: 'orange', dash: [5, 4], width: 1.5 });
@@ -840,8 +840,9 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
           const ug = Math.sqrt((2 * dPg) / RHO), Lg = voi.value ? -99 : 30 * Math.log10(Math.max(ug, 1e-3)) + 5 * Math.log10(Ag) - 41.4 - 8, gh = voi.value || Ac === 0 ? 0 : Math.pow(10, Lg / 20);
           let F = null;
           if (Ac > 0) { const A = neutral.slice(); for (let i = 28; i <= 30; i++) A[i] = Math.min(3, Ac); F = tubeFormants(A, 0.5, 3); }
-          const manner = Ac === 0 ? (nas.value ? 'nasal stop' : 'stop (plosive)') : gn > 0.03 ? 'fricative' : F[0] < 380 ? 'approximant' : 'vowel';
-          const sym = Ac === 0 ? (nas.value ? 'n' : voi.value ? 'd' : 't') : manner === 'fricative' ? (voi.value ? 'z' : 's') : manner === 'approximant' ? (voi.value ? 'ɹ' : 'ɹ̥') : voi.value ? (nas.value ? 'ã' : 'a') : 'h';
+          let manner = Ac === 0 ? (nas.value ? 'nasal stop' : 'stop (plosive)') : gn > 0.03 ? 'fricative' : F[0] < 380 ? 'approximant' : voi.value ? 'vowel' : 'voiceless vowel ([h]-like)';
+          let sym = Ac === 0 ? (nas.value ? 'n' : voi.value ? 'd' : 't') : manner === 'fricative' ? (voi.value ? 'z' : 's') : manner === 'approximant' ? (voi.value ? 'ɹ' : 'ɹ̥') : voi.value ? 'a' : 'h';
+          if (nas.value && Ac > 0) { manner = 'nasalized ' + manner; sym += '\u0303'; }
           return { Ac, An, Ag, Aeff, Po, U, Uc: Aeff > 0 ? (U * Ac) / Aeff : 0, Un: Aeff > 0 ? (U * An) / Aeff : 0, uc, Re, dPg, gv, Ln, gn, gh, F, manner, sym };
         };
         let syl = { key: null };
@@ -935,7 +936,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
           const lr = (x) => (Math.log10(Math.max(x, 10)) - 1) / 4;
           bar(2, 'Reynolds number in the constriction', lr(a.Re), a.Re > REC ? 'orange' : 'accent', [[lr(REC), 'turbulent above ≈ 1800']], a.Ac ? Math.round(a.Re).toLocaleString('en-US') : '—');
           const nl = Math.max(a.Ln + 20 * Math.log10(Math.max(1e-6, M.smoothstep(REC, 1.6 * REC, a.Re))), -60);
-          bar(3, 'turbulence noise, re [s]', (nl + 60) / 66, 'orange', [[50 / 66, '−10 dB']], a.Ac && a.Re > REC ? `${v.fix(nl, 0)} dB` : 'none');
+          bar(3, 'turbulence noise, re [s]', (nl + 60) / 66, 'orange', [[50 / 66, '−10 dB']], a.Ac && a.Re > REC ? `${Math.round(nl) === 0 ? '0' : v.fix(nl, 0)} dB` : 'none');
           // ---- spectrogram of [aCa]
           sg.setView([0, S.dur], [0, 7000]);
           drawSpec(sg, S.S, v.rgb('ink'), { key: S.key, range: 48 });
@@ -1086,7 +1087,7 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
       name: 'Formants: resonances of the vocal tract',
       statement: String.raw`The **formants** F1, F2, F3, … of a speech sound are the resonance frequencies of the vocal tract, seen as peaks of the envelope of its spectrum. They are properties of the filter, not of the source: changing the pitch $f_0$ moves the harmonics, which always sit at $k f_0$, but leaves the envelope and its peaks where they are, so a vowel keeps its identity when sung on different notes. The harmonics only *sample* the envelope at multiples of $f_0$; formant frequencies must be inferred from those samples, which is easy for a low voice (harmonics close together compared with the formant bandwidths) and becomes impossible once $f_0$ is comparable to F1.`,
       idea: String.raw`In the source–filter model (ling-1.1) the output spectrum is the product of a harmonic line spectrum and the filter's transfer function. Raising $f_0$ spreads the lines apart but cannot move the resonances, which are set by the tract's shape (music-4.9 makes the same point for instruments). A spectrogram of a vowel sung on a rising glide shows it directly: the harmonics fan out as diverging curves, while the bands where they are strong stay horizontal. When the harmonic spacing exceeds the width of a formant peak, the peak can fall between two harmonics and become invisible; sopranos singing high notes face exactly this, and often move F1 up to the nearest harmonic, at the cost of vowel clarity.`,
-      caption: String.raw`Pick a vowel and drag the pitch $f_0$. Left: the harmonics (stems) under the fixed resonance curve of the tract (dashed), computed from one period of the synthesized vowel; the red marker is F1 as an analyst would estimate it from the harmonics alone (peak of the strongest harmonics, interpolated). Right: a narrow-band spectrogram of the vowel sung on a glide from 100 to 800 Hz, with the true formants as dashed lines and the current pitch marked; *Sing the glide* plays it. Raise $f_0$ past 400 Hz on [i] or [u] and watch the estimate of F1 break down.`,
+      caption: String.raw`Pick a vowel and drag the pitch $f_0$. Left: the harmonics (stems) under the fixed resonance curve of the tract (dashed), computed from one period of the synthesized vowel; the red marker is F1 as an analyst would estimate it from the harmonics alone (the strongest harmonic once the source's slope is removed, refined by a parabola through its neighbours). Right: a narrow-band spectrogram of the vowel sung on a glide from 100 to 800 Hz, with the true formants as dashed lines and the current pitch marked; *Sing the glide* plays it. Raise $f_0$ past 400 Hz on [i] or [u] and watch the estimate of F1 break down.`,
       deps: ['ling-1.1', 'music-4.9'],
       refs: ['Ladefoged & Johnson', 'Jurafsky & Martin ch. 15'],
       tags: ['formants', 'acoustics'],
@@ -1120,9 +1121,10 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
           for (let k = 0; k < 3; k++) { sp.vline(F[k], { color: 'orange', dash: [3, 4], alpha: 0.8 }); sp.text(`F${k + 1}`, F[k], 27, { size: 11.5, color: 'orange', align: 'center', weight: 650 }); }
           for (let k = 1; k * f0 < FM && k < h.length; k++) { sp.line(k * f0, -45, k * f0, h[k] - ref, { color: 'accent', width: 1.8 }); sp.dot(k * f0, h[k] - ref, { r: 3, color: 'accent' }); }
           // F1 as estimated from the harmonics: the strongest harmonic below 1.2 kHz, refined by a parabola through its neighbours
-          let kb = 1; for (let k = 1; k * f0 < 1200 && k < h.length; k++) if (h[k] > h[kb]) kb = k;
+          const hf = h.map((x, k) => x - src[k]); // harmonics with the source's slope removed: samples of the filter gain
+          let kb = 1; for (let k = 1; k * f0 < 1200 && k < hf.length; k++) if (hf[k] > hf[kb]) kb = k;
           let est = kb * f0;
-          if (kb > 1 && h[kb + 1] != null) { const a = h[kb - 1], b = h[kb], c = h[kb + 1], den = a - 2 * b + c; if (den < 0) est = f0 * (kb + clampN((0.5 * (a - c)) / den, -0.5, 0.5)); }
+          if (kb > 1 && hf[kb + 1] != null) { const a = hf[kb - 1], b = hf[kb], c = hf[kb + 1], den = a - 2 * b + c; if (den < 0) est = f0 * (kb + clampN((0.5 * (a - c)) / den, -0.5, 0.5)); }
           sp.dot(est, h[kb] - ref + 4, { r: 5.5, color: 'red' });
           sp.corner(`f₀ = ${Math.round(f0)} Hz`, 'tr', { color: 'accent', weight: 650 });
           // glide spectrogram

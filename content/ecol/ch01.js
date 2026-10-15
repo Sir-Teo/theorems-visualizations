@@ -131,7 +131,6 @@ where $S_i$ is the supply of resource $i$ and $f_i \le 1$ the growth that resour
           A.text('need met', 4.5, 1, { color: 'muted', size: 10.5, align: 'right', dy: -8 });
           for (const y of [0.18, 0.62]) A.line(-0.47, y, 4.47, y, { color: 'ink', width: 1.6, alpha: 0.55 });
           A.line(-0.47, 0, 4.47, 0, { color: 'ink', width: 2 });
-          if (mode.value === 'min') A.path([[lim - 0.3, S[lim]], [lim + 0.05, S[lim] + 0.03], [lim + 0.33, S[lim] + 0.005], [lim + 0.38, S[lim] - 0.2]], { color: 'accent', width: 3, alpha: 0.75 });
           NAMES.forEach((n, i) => A.text(n, i, -0.1, { align: 'center', color: i === lim ? 'red' : 'ink', weight: 600, size: 12.5 }));
           const tall = M.argmax(S);
           A.text(`growth ${Math.round(100 * G)} %`, tall, Math.max(0.07, Math.min(wl, 1) / 2), { align: 'center', color: 'accent', weight: 700, size: 13 });
@@ -183,7 +182,7 @@ where $S_i$ is the supply of resource $i$ and $f_i \le 1$ the growth that resour
         v.render(() => {
           const t = thr.y, R = PROC.map((p) => tpcRange(p, t));
           A.hline(t, { color: 'gold', dash: [5, 4], width: 1.4 });
-          A.text(`needed: ${t.toFixed(2)}`, 41, t, { color: 'gold', align: 'right', dy: -10, size: 11 });
+          A.text(`needed: ${t.toFixed(2)}`, 41, t, { color: 'gold', align: 'right', dy: 11, size: 11, weight: 600 });
           PROC.forEach((p, k) => {
             A.fn((T) => tpc(T, p), { color: p.color, width: 2.4, fill: p.color, fillAlpha: 0.06, base: 0 });
             const y = -0.08 - 0.08 * k, [a, b] = R[k];
@@ -244,7 +243,7 @@ On log–log axes the power law is a straight line whose slope is the **scaling 
         const trait = v.select('trait', [{ value: 'bmr', label: 'metabolic rate' }, { value: 'life', label: 'lifespan' }, { value: 'gest', label: 'gestation' }, { value: 'mat', label: 'maturity' }, { value: 'home', label: 'home range' }, { value: 'dens', label: 'density' }], 'bmr');
         const lin = v.toggle('linear axes', false);
         const s = v.stage({ x: [1e-3, 3e5], y: [1e-2, 1e3], xlog: true, ylog: true, height: 390, full: true, axes: 'box', hover: true, xlabel: 'body mass (kg)' });
-        const SHOW = [['Sorex araneus', 'common shrew', 'nw'], ['Mus musculus', 'house mouse', 'se'], ['Homo sapiens', 'human', 'se'], ['Elephas maximus', 'Asian elephant', 'nw'], ['Balaenoptera musculus', 'blue whale', 'nw'], ['Canis lupus', 'wolf', 'se']];
+        const SHOW = [['Sorex araneus', 'common shrew', 'se'], ['Mus musculus', 'house mouse', 'ne'], ['Homo sapiens', 'human', 'se'], ['Elephas maximus', 'Asian elephant', 'nw'], ['Balaenoptera musculus', 'blue whale', 'nw'], ['Canis lupus', 'wolf', 'se']];
         let info = null, lastKey = '';
         v.render(() => {
           const t = T[trait.value], recs = R.filter((r) => t.get(r)), P = recs.map((r) => t.get(r));
@@ -281,7 +280,7 @@ On log–log axes the power law is a straight line whose slope is the **scaling 
         v.readout(() => {
           if (!info) return '';
           const { F, n, t, hv } = info;
-          let s1 = String.raw`${n} species · fitted exponent $b = ${F.slope.toFixed(3)}$ (95 % CI ${F.lo.toFixed(3)} to ${F.hi.toFixed(3)}), $r^2 = ${F.r2.toFixed(2)}$ · normalization $a = ${v.fmt(F.a, 3)}$ at 1 kg · reference slope ${t.refTxt}`;
+          let s1 = String.raw`${n} species · fitted exponent $b = ${F.slope.toFixed(3)}$ (95 % CI ${fx(F.lo, 3)} to ${fx(F.hi, 3)}), $r^2 = ${F.r2.toFixed(2)}$ · normalization $a = ${v.fmt(F.a, 3)}$ at 1 kg · reference slope ${t.refTxt}`;
           if (info.lin) s1 += ` · on linear axes ${pct(info.smallFrac)} of the species sit in the leftmost 1 % of the mass axis`;
           if (hv) s1 += ` · **${hv.r.name}**: ${massTxt(hv.r.m)}, ${v.fmt(info.yv, 3)} ${t.lab.match(/\(([^)]*)\)/)[1]}`;
           return s1;
@@ -311,7 +310,7 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
         const perkg = v.toggle('per kilogram', false);
         const A = v.stage({ x: [1.5e-3, 2e3], y: [0.03, 3000], xlog: true, ylog: true, height: 360, weight: 1.35, axes: 'box', hover: true, xlabel: 'body mass (kg)', ylabel: 'basal metabolic rate (W)' });
         const B = v.stage({ x: [5e-3, 300], y: [0.35, 1.15], xlog: true, height: 360, weight: 1, axes: 'box', xlabel: 'centre of a 1.5-decade window (kg)', ylabel: 'local exponent', title: 'exponent fitted in a sliding window' });
-        const yb = () => (perkg.value ? 0.12 : 0.045);
+        const yb = () => (perkg.value ? 0.36 : 0.045);
         const hL = A.handle(0.0035, 0.045, { color: 'gold', constrain: (x) => [M.clamp(x, 2e-3, 1e3), yb()] });
         const hR = A.handle(420, 0.045, { color: 'gold', constrain: (x) => [M.clamp(x, 2e-3, 1e3), yb()] });
         // sliding-window exponents (computed once)
@@ -325,7 +324,7 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
         let info = null, lastPk = null;
         v.render(() => {
           const pk = perkg.value;
-          if (pk !== lastPk) { lastPk = pk; A.setView(null, pk ? [0.4, 300] : [0.03, 3000]); A.setLabels(undefined, pk ? 'metabolic rate per kg (W/kg)' : 'basal metabolic rate (W)'); hL.set(hL.x, yb()); hR.set(hR.x, yb()); }
+          if (pk !== lastPk) { lastPk = pk; A.setView(null, pk ? [0.3, 300] : [0.03, 3000]); A.setLabels(undefined, pk ? 'metabolic rate per kg (W/kg)' : 'basal metabolic rate (W)'); hL.set(hL.x, yb()); hR.set(hR.x, yb()); }
           const yv = (i) => (pk ? Y[i] / X[i] : Y[i]);
           const a = Math.min(hL.x, hR.x), b = Math.max(hL.x, hR.x);
           A.vband(A.xr[0], a, { color: 'grid', alpha: 0.5 }); A.vband(b, A.xr[1], { color: 'grid', alpha: 0.5 });
@@ -341,7 +340,8 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
               A.fn(conv(f34.f), { color: 'green', dash: [6, 5], width: 1.8, domain: [lo, hi] });
               A.fn(conv(F.f), { color: 'accent', width: 3, domain: [lo, hi] });
             });
-            A.text(`b = ${F.slope.toFixed(3)}${pk ? ` (per kg ${fx(F.slope - 1, 3)})` : ''}`, hi, conv(F.f)(hi), { align: 'right', dy: pk ? 16 : -14, color: 'accent', weight: 700 });
+            if (pk) A.text(`per kg: slope ${fx(F.slope - 1, 3)}`, lo, conv(F.f)(lo), { align: 'left', dx: 8, dy: -16, color: 'accent', weight: 700 });
+            else A.text(`b = ${F.slope.toFixed(3)}`, hi, F.f(hi), { align: 'right', dy: -14, color: 'accent', weight: 700 });
           }
           const hv = hoverPick(A, hits);
           if (hv) { A.dot(hv.x, hv.y, { r: 6, hollow: true, color: 'ink', width: 2 }); A.textPx(`${hv.r.name} · ${massTxt(hv.r.bm)} · ${v.fmt(bmrW(hv.r), 3)} W`, Math.min(hv.X + 10, A.W - 8), hv.Y - 12, { align: hv.X > A.W * 0.55 ? 'right' : 'left', size: 12, weight: 600 }); }
@@ -360,7 +360,7 @@ so a mammal 10 000 times heavier uses about 1 000 times more energy, and each gr
           const { F, f23, f34, n, a, b } = info;
           if (!F) return 'widen the window: fewer than five species inside it';
           const pref = f23.ssr < f34.ssr ? '2/3' : '3/4';
-          return String.raw`window ${massTxt(a * 1000)} – ${massTxt(b * 1000)}: ${n} species, exponent $b = ${F.slope.toFixed(3)}$ (95 % CI ${F.lo.toFixed(3)}–${F.hi.toFixed(3)}) · residual sum of squares with the slope fixed: 2/3 → ${f23.ssr.toFixed(2)}, 3/4 → ${f34.ssr.toFixed(2)}, so this window prefers **${pref}** · at 1 kg the fitted rate is ${v.fmt(F.f(1), 3)} W`;
+          return String.raw`window ${massTxt(a * 1000)} – ${massTxt(b * 1000)}: ${n} species, exponent $b = ${F.slope.toFixed(3)}$ (95 % CI ${F.lo.toFixed(3)}–${F.hi.toFixed(3)}; per kilogram ${fx(F.slope - 1, 3)}) · residual sum of squares with the slope fixed: 2/3 → ${f23.ssr.toFixed(2)}, 3/4 → ${f34.ssr.toFixed(2)}, so this window prefers **${pref}** · at 1 kg the fitted rate is ${v.fmt(F.f(1), 3)} W`;
         });
       },
     },
@@ -401,7 +401,7 @@ so $B \propto M^{3/4}$. With Poiseuille flow throughout (Murray's cube law, $\be
         };
         let info = null;
         v.render(() => {
-          const n = +nSel.value, Nmax = n === 2 ? 9 : 6, N = Math.min(L.value, Nmax), T = net(N, n);
+          const n = +nSel.value, Nmax = n === 2 ? 9 : 5, N = Math.min(L.value, Nmax), T = net(N, n);
           // drawing: scale lengths so the tree fits
           const tot = T.l.reduce((s, x) => s + x, 0), sc = 1.95 / tot, wmax = 11 / T.r[0];
           const spread = n === 2 ? [-1, 1] : [-1, 0, 1], ang0 = n === 2 ? 0.62 : 0.58;
@@ -414,7 +414,7 @@ so $B \propto M^{3/4}$. With Poiseuille flow throughout (Murray's cube law, $\be
             for (const s of spread) draw(k + 1, x2, y2, th + s * a);
           };
           draw(0, 0, -1, 0);
-          A.dots(tips, { r: N > 7 ? 1.6 : 2.4, color: 'green' });
+          A.dots(tips, { r: tips.length > 130 ? 1.4 : 2.4, color: 'green' });
           // scaling panel
           const pts = [];
           for (let k = 1; k <= 30; k++) pts.push([net(k, n).V, n ** k, k]);
@@ -483,7 +483,7 @@ with $T$ the body temperature in kelvin, $k = 8.617\times10^{-5}$ eV/K Boltzmann
           for (const c of [0, 10, 20, 30, 40]) { A.vline(ikT(c), { color: 'grid', width: 1 }); A.text(`${c} °C`, ikT(c), A.yr[1], { align: 'center', baseline: 'top', dy: 4, size: 10.5, color: 'muted' }); }
           A.vband(A.xr[0], ikT(hi), { color: 'grid', alpha: 0.5 }); A.vband(ikT(lo), A.xr[1], { color: 'grid', alpha: 0.5 });
           const big = pts.map((p, i) => [p.x, ys[i], Math.log10(p.m)]);
-          for (const [x, y, lm] of big) A.dot(x, y, { r: 2.2 + 0.55 * (lm + 4), color: corr.value ? 'teal' : 'orange', alpha: 0.55, ring: false });
+          for (const [x, y, lm] of big) A.dot(x, y, { r: 2.2 + 0.55 * (lm + 4), color: 'teal', alpha: 0.55, ring: false });
           A.fn((x) => Rg.intercept + Rg.slope * x, { color: 'accent', width: 2.8, domain: [ikT(hi), ikT(lo)] });
           const nT = M.dist.studentT(n - 2).quantile(0.975);
           info = { E: -Rc.slope, ciE: nT * Rc.seSlope, Er: -Rr.slope, ciR: nT * Rr.seSlope, lo, hi };

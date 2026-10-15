@@ -15,6 +15,12 @@ function shapeAt(P, stage, x, y, r, col, st = {}) {
 /** Words of length n over {0,1} in binary order; bit i (from the left) = letter i. */
 const bitsOf = (w, n) => Array.from({ length: n }, (_, i) => (w >> (n - 1 - i)) & 1);
 const popcount = (w) => { let c = 0; while (w) { c += w & 1; w >>= 1; } return c; };
+/** Nonnegative 'nice' tick values up to about max (for bar charts whose window starts below 0). */
+function niceTicks(max, target = 5) {
+  const raw = Math.max(1, max) / target, p = 10 ** Math.floor(Math.log10(raw)), m = raw / p, st = (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p, out = [];
+  for (let t = 0; t <= max * 1.001; t += st) out.push(Math.round(t * 1e6) / 1e6);
+  return out;
+}
 
 export default {
   collection: 'comb',
@@ -154,9 +160,9 @@ export default {
         });
         v.render(() => {
           const P = pen(v, A), W = P.W, H = P.H, c = counts(), n = seq.length, mx = Math.max(0, ...c), ceil = Math.ceil(n / k);
-          const cap = Math.max(4, mx + 1, ceil + 1), x0 = 18, bw = (W - 36) / k, top = 34, bot = H - 30, rr = Math.min(bw * 0.3, (bot - top) / (2 * cap) * 0.92);
+          const cap = Math.max(4, mx + 1, ceil + 1), x0 = 12, bw = (W - 86) / k, top = 34, bot = H - 30, rr = Math.min(bw * 0.3, (bot - top) / (2 * cap) * 0.92);
           geo = { x0, bw };
-          const lvl = (h) => bot - h * 2 * rr * 1.04;
+          const lvl = (h) => bot - h * 2 * rr * 1.04, xe = x0 + k * bw;
           for (let b = 0; b < k; b++) {
             const xl = x0 + b * bw + bw * 0.12, w = bw * 0.76, full = c[b] === mx && mx > 0;
             P.rect(xl, top - 6, w, bot - top + 8, { fill: full ? 'red' : 'muted', fillAlpha: full ? 0.07 : 0.05, color: full ? 'red' : 'faint', width: full ? 2.2 : 1.2, r: 4 });
@@ -164,22 +170,25 @@ export default {
             P.text(String(c[b]), x0 + (b + 0.5) * bw, bot + 15, { align: 'center', size: 13, weight: 600, color: full ? 'red' : 'ink' });
           }
           if (n > 0) {
-            P.line(x0, lvl(ceil) + 0.5, W - 18, lvl(ceil) + 0.5, { color: 'red', width: 1.6, dash: [7, 5] });
-            P.text(`⌈n/k⌉ = ${ceil}`, W - 20, lvl(ceil) - 9, { align: 'right', size: 12, color: 'red', weight: 600 });
-            P.line(x0, lvl(n / k), W - 18, lvl(n / k), { color: 'muted', width: 1.1, dash: [2, 4] });
-            P.text(`n/k = ${v.fmt(n / k, 3)}`, x0 + 2, lvl(n / k) + 10, { size: 11, color: 'muted' });
+            P.line(x0, lvl(ceil) + 0.5, xe + 6, lvl(ceil) + 0.5, { color: 'red', width: 1.6, dash: [7, 5] });
+            P.text(`⌈n/k⌉ = ${ceil}`, xe + 10, lvl(ceil), { size: 12, color: 'red', weight: 700 });
+            P.line(x0, lvl(n / k), xe + 6, lvl(n / k), { color: 'muted', width: 1.1, dash: [2, 4] });
+            P.text(`n/k = ${v.fmt(n / k, 3)}`, xe + 10, lvl(n / k) + (Math.abs(lvl(n / k) - lvl(ceil)) < 16 ? 14 : 0), { size: 11, color: 'muted' });
           }
           A.corner(`${n} balls · ${k} boxes`, 'tl', { color: 'ink', weight: 600 });
           // history panel
           const hist = [0]; const cc = Array(k).fill(0); for (const b of seq) { cc[b]++; hist.push(Math.max(...cc)); }
           const xm = Math.max(12, n + 1), ym = Math.max(4, Math.max(...hist) + 1);
           B.setView([0, xm], [0, ym]);
-          const stair = []; for (let t = 0; t <= xm; t++) { stair.push([t, Math.ceil(t / k)]); stair.push([t + 1, Math.ceil(t / k)]); }
+          B.setTicks(null, Array.from({ length: ym + 1 }, (_, i) => i));
+          const step = (f) => { const pts = []; for (let t = 0; t <= xm; t++) { pts.push([t, f(t)]); pts.push([t + 1, f(t)]); } return pts; };
+          const stair = step((t) => Math.ceil(t / k));
           B.path(stair.concat([[xm + 1, 0], [0, 0]]), { fill: 'red', fillAlpha: 0.08, stroke: false, close: true });
-          B.path(stair, { color: 'red', width: 1.8 });
-          B.path(hist.map((h, t) => [t, h]), { color: 'gold', width: 2.4 });
-          hist.forEach((h, t) => B.dot(t, h, { r: t === n ? 5 : 3, color: h === Math.ceil(t / k) ? 'green' : 'gold' }));
-          B.text('unreachable', xm * 0.97, 0.45, { align: 'right', size: 11.5, color: 'red' });
+          B.path(stair, { color: 'red', width: 4, alpha: 0.45 });
+          const hp = []; hist.forEach((h, t) => { hp.push([t, h]); if (t < n) hp.push([t + 1, h]); });
+          B.path(hp, { color: 'gold', width: 2.2 });
+          hist.forEach((h, t) => B.dot(t, h, { r: t === n ? 5 : 3.2, color: h === Math.ceil(t / k) ? 'green' : 'gold' }));
+          B.text('unreachable', xm * 0.55, 0.35, { align: 'center', size: 11.5, color: 'red', weight: 600 });
         });
         v.legend([['red', '$\\lceil n/k\\rceil$ (the bound)'], ['gold', 'your fullest box'], ['green', 'meets the bound', { dot: true }]]);
         v.readout(() => {
@@ -327,10 +336,11 @@ i.e. the row sums and the column sums of the 0/1 incidence matrix have the same 
             });
             // bipartite picture
             const P = pen(v, R), W = P.W, H = P.H, xl = W * 0.26, xr = W * 0.74;
-            const py = (i) => 40 + (i * (H - 70)) / 4, cy = (j) => 52 + (j * (H - 94)) / 3;
+            const py = (i) => 48 + (i * (H - 82)) / 4, cy = (j) => 60 + (j * (H - 106)) / 3;
             for (let i = 0; i < 5; i++) for (let j = 0; j < 4; j++) if (M[i][j]) P.line(xl, py(i), xr, cy(j), { color: 'blue', width: 1.8, alpha: 0.55 });
-            for (let i = 0; i < 5; i++) { P.dot(xl, py(i), 8, { fill: 'orange' }); P.text(PEOPLE[i], xl - 14, py(i), { align: 'right', size: 12.5 }); P.text(String(rs[i]), xl + 13, py(i) - 11, { size: 11, color: 'orange', weight: 700 }); }
-            for (let j = 0; j < 4; j++) { P.rect(xr - 8, cy(j) - 8, 16, 16, { fill: 'purple', r: 3 }); P.text(CLUBS[j], xr + 14, cy(j), { size: 12.5 }); P.text(String(cs[j]), xr - 13, cy(j) - 12, { align: 'right', size: 11, color: 'purple', weight: 700 }); }
+            for (let i = 0; i < 5; i++) { P.dot(xl, py(i), 11, { fill: 'orange' }); P.text(String(rs[i]), xl, py(i), { align: 'center', size: 12, color: 'panel', weight: 700, halo: false }); P.text(PEOPLE[i], xl - 17, py(i), { align: 'right', size: 12.5 }); }
+            for (let j = 0; j < 4; j++) { P.rect(xr - 11, cy(j) - 11, 22, 22, { fill: 'purple', r: 4 }); P.text(String(cs[j]), xr, cy(j), { align: 'center', size: 12, color: 'panel', weight: 700, halo: false }); P.text(CLUBS[j], xr + 17, cy(j), { size: 12.5 }); }
+            P.text('number inside = row / column sum', W / 2, 16, { align: 'center', size: 11.5, color: 'muted' });
             P.text(`${T} membership lines`, W / 2, H - 12, { align: 'center', size: 12, color: 'muted' });
             info = `Row sums (clubs per person) ${rs.join(' + ')} $= ${T}$; column sums (members per club) ${cs.join(' + ')} $= ${T}$. Both count the same ${T} (person, club) pairs — the lines on the right.`;
           } else if (md === 'hand') {
@@ -398,7 +408,7 @@ with $n^{\underline 0} = 1$ and $n^{\underline k} = 0$ for $k>n$. The case $k=n$
         const nS = v.slider('people $n$', 2, 6, 5, { int: true, onChange: () => { seats = seats.filter((p) => p < nS.value); kS.set(Math.min(kS.value, nS.value)); } });
         const kS = v.slider('seats $k$', 1, 4, 3, { int: true, onChange: () => { if (kS.value > nS.value) kS.set(nS.value); seats = seats.slice(0, kS.value); } });
         v.button('Clear seats', () => { seats = []; });
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
+        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 128, full: true });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, full: true, title: 'all ordered seatings, nested by seat 1 (blocks) and seat 2 (rows)' });
         const NM = ['Ada', 'Bo', 'Cy', 'Di', 'Ed', 'Flo'];
         let geo = null;
@@ -409,7 +419,7 @@ with $n^{\underline 0} = 1$ and $n^{\underline k} = 0$ for $k>n$. The case $k=n$
         });
         v.render(() => {
           const n = nS.value, k = Math.min(kS.value, n); seats = seats.filter((p) => p < n).slice(0, k);
-          const P = pen(v, T), W = P.W, H = P.H, py = H * 0.42, gap = Math.min(46, (W * 0.42) / n);
+          const P = pen(v, T), W = P.W, H = P.H, py = H * 0.5, gap = Math.min(46, (W * 0.42) / n);
           geo = { n, k, py, px: (i) => 30 + gap * (i + 0.5), sx: (j) => W * 0.5 + 34 + j * Math.min(84, (W * 0.5 - 90) / Math.max(1, k - 0.3)) };
           P.text('people', 22, 16, { size: 12, color: 'muted', weight: 600 });
           for (let i = 0; i < n; i++) {
@@ -433,7 +443,7 @@ with $n^{\underline 0} = 1$ and $n^{\underline k} = 0$ for $k>n$. The case $k=n$
           const Q = pen(v, B), BW = Q.W, BH = Q.H, all = kPerms(n, k);
           const cols = n, rowsN = k >= 2 ? n - 1 : 1, per = k >= 3 ? fall(n - 2, k - 2) : 1, sub = k >= 4 ? n - 3 : per;
           const cw = (BW - 16 - (cols - 1) * 8) / cols, rh = (BH - 14 - (rowsN - 1) * 4) / rowsN;
-          const nsub = per / sub, q = Math.max(2.2, Math.min(14, (cw - 8 - (nsub - 1) * 4) / (per * 1.3), (rh - 6) / (k + 0.3)));
+          const nsub = per / sub, q = Math.max(2.2, Math.min(22, (cw - 8 - (nsub - 1) * 4) / (per * 1.3), (rh - 6) / (k + 0.3)));
           const pre = seats;
           all.forEach((w) => {
             const c = w[0], rIdx = k >= 2 ? w[1] - (w[1] > w[0] ? 1 : 0) : 0;
@@ -441,7 +451,7 @@ with $n^{\underline 0} = 1$ and $n^{\underline k} = 0$ for $k>n$. The case $k=n$
             const sb = Math.floor(idxInRow / sub), x0 = 8 + c * (cw + 8), y0 = 7 + rIdx * (rh + 4);
             const rowW = per * q * 1.3 + (nsub - 1) * 4, xs = x0 + (cw - rowW) / 2 + idxInRow * q * 1.3 + sb * 4, ys = y0 + (rh - k * q) / 2;
             const match = pre.every((p, t) => w[t] === p), exact = match && pre.length === k;
-            w.forEach((p, t) => Q.rect(xs, ys + t * q, q * 1.05, q * 0.92, { fill: CAT[p], fillAlpha: match ? 0.95 : 0.16 }));
+            w.forEach((p, t) => { Q.rect(xs, ys + t * q, q * 1.05, q * 0.92, { fill: CAT[p], fillAlpha: match ? 0.95 : 0.16 }); if (q >= 15 && match) Q.text(LET[p].toUpperCase(), xs + q * 0.52, ys + t * q + q * 0.47, { align: 'center', size: q * 0.55, weight: 700, color: 'panel', halo: false }); });
             if (exact) Q.rect(xs - 2, ys - 2, q * 1.05 + 4, k * q + 3, { color: 'ink', width: 2 });
           });
           for (let c = 0; c < cols; c++) { const lit = !pre.length || pre[0] === c; Q.rect(8 + c * (cw + 8) - 2, 3, cw + 4, BH - 6, { color: lit ? CAT[c] : 'faint', width: lit && pre.length ? 2 : 1, r: 5, alpha: lit ? 0.9 : 0.5 }); }
@@ -503,7 +513,7 @@ and taking complements gives the symmetry $\binom nk = \binom n{n-k}$.`,
         v.readout(() => {
           const n = nS.value, k = set.length, c = binom(n, k);
           const idx = kSubsets(n, k).findIndex((S) => S.every((x, i) => x === set[i])) + 1;
-          return `$\\binom{${n}}{${k}} = \\dfrac{${n}^{\\underline{${k}}}}{${k}!} = \\dfrac{${fall(n, k)}}{${fact(k)}} = ${c}$: the table has ${c} rows of ${fact(k)} ordered selections, $${c}\\times${fact(k)} = ${fall(n, k)}$. Your subset {${set.map((i) => LET[i]).join(', ')}} is row ${idx} of ${c}; its complement is a $(${n - k})$-subset, so $\\binom{${n}}{${k}} = \\binom{${n}}{${n - k}}$.`;
+          return `$\\binom{${n}}{${k}} = \\dfrac{${n}^{\\underline{${k}}}}{${k}!} = \\dfrac{${fall(n, k)}}{${fact(k)}} = ${c}$: the table has ${c} rows of ${fact(k)} ordered selections, $${c}\\times${fact(k)} = ${fall(n, k)}$. Your subset {${set.map((i) => LET[i]).join(', ')}} is row ${idx} of ${c}; its complement is an $${n - k}$-subset, so $\\binom{${n}}{${k}} = \\binom{${n}}{${n - k}}$.`;
         });
       },
     },
@@ -601,8 +611,8 @@ Writing $\binom n0,\dots,\binom nn$ as row $n$ of a triangle therefore gives **P
         });
         v.render(() => {
           const N = NS.value, f = S.frame, idx = S.i, cn = f.n, ck = f.k;
-          A.setView([-N / 2 - 0.6, N / 2 + 0.6], [-N - 0.6, 0.6]);
-          const tot = binom(cn, ck), wmax = 0.55;
+          A.setView([-N / 2 - 1.5, N / 2 + 0.6], [-N - 0.5, 0.5]);
+          const tot = binom(cn, ck), wmax = 0.42;
           // ribbons: paths to each parent, edge width ∝ number of paths through it
           const flow = (tn, tk, color) => {
             const T = binom(tn, tk); if (!T) return;
@@ -621,10 +631,10 @@ Writing $\binom n0,\dots,\binom nn$ as row $n$ of a triangle therefore gives **P
             const [x, y] = at(n, k), grown = i <= idx;
             const isCur = n === cn && k === ck, isL = n === cn - 1 && k === ck - 1, isR = n === cn - 1 && k === ck;
             const colr = isCur ? 'gold' : isL ? 'orange' : isR ? 'teal' : null;
-            A.circle(x, y, 0.43, { fill: colr || 'panel', fillAlpha: colr ? 0.9 : 1, color: colr || (grown ? 'muted' : 'faint'), width: colr ? 2 : 1, alpha: grown ? 1 : 0.6 });
-            if (grown) { const val = binom(n, k); A.text(String(val), x, y, { align: 'center', size: Math.min(13, A.scale * (val > 99 ? 0.32 : 0.42)), weight: colr ? 700 : 500, color: colr ? 'panel' : 'ink', halo: false }); }
+            A.circle(x, y, 0.34, { fill: colr || 'panel', fillAlpha: colr ? 0.92 : 1, color: colr || (grown ? 'muted' : 'faint'), width: colr ? 2 : 1, alpha: grown ? 1 : 0.6 });
+            if (grown) { const val = binom(n, k); A.text(String(val), x, y, { align: 'center', size: Math.min(13, A.scale * (val > 99 ? 0.25 : 0.33)), weight: colr ? 700 : 500, color: colr ? 'panel' : 'ink', halo: false }); }
           });
-          for (let n = 0; n <= N; n++) A.text(`n=${n}`, -N / 2 - 0.55, -n, { size: 10, color: 'muted', halo: false });
+          for (let n = 0; n <= N; n++) A.text(`n = ${n}`, -N / 2 - 1.4, -n, { size: 10.5, color: 'muted', halo: false });
           // subsets panel
           const P = pen(v, B), W = P.W, H = P.H;
           if (cn === 0) { P.text('row 0: the only subset of ∅ is ∅', W / 2, H / 2, { align: 'center', size: 13, color: 'muted' }); return; }
@@ -633,7 +643,7 @@ Writing $\binom n0,\dots,\binom nn$ as row $n$ of a triangle therefore gives **P
             P.text(title, 10, y0 + 10, { size: 12, color: colr, weight: 700 });
             if (!list.length) { P.text('none', 10, y0 + 32, { size: 12, color: 'muted' }); return; }
             if (list.length > 140) { P.text(`${list.length} subsets — too many to draw`, 10, y0 + 32, { size: 12, color: 'muted' }); return; }
-            const g = fitGrid(list.length, W - 16, h - 26, 1 / (cn * 1.12), 5, cn * 15);
+            const g = fitGrid(list.length, W - 16, h - 26, 1 / (cn * 1.12), 5, cn * 22);
             const qq = g.w / cn;
             list.forEach((S2, i) => {
               const [x, y] = g.at(i); const X = x + 8, Y = y + y0 + 22;
@@ -668,7 +678,7 @@ $$\binom{m+n}{k} = \sum_{j=0}^{k}\binom mj\binom n{k-j}.$$`,
         const kS = v.slider('committee size $k$', 0, 12, 4, { int: true, onChange: () => clampK() });
         function clampK() { if (kS.value > mS.value + nS.value) kS.set(mS.value + nS.value); selJ = null; }
         const A = v.stage({ x: [-0.6, 5.6], y: [-0.6, 4.6], axes: false, equal: true, height: 340, weight: 1.15, title: 'paths: up = chosen, first $m$ steps = women' });
-        const B = v.stage({ x: [-0.7, 6], y: [0, 10], axes: 'box', height: 340, weight: 1, xlabel: 'j = women on the committee', title: 'committees by number of women' });
+        const B = v.stage({ x: [-0.7, 6], y: [0, 10], axes: 'box', height: 340, weight: 1, title: 'committees by the number $j$ of women' });
         const range = () => { const m = mS.value, n = nS.value, k = Math.min(kS.value, m + n); const js = []; for (let j = Math.max(0, k - n); j <= Math.min(m, k); j++) js.push(j); return { m, n, k, js }; };
         A.onClick((x, y) => { const { m, js } = range(); let best = null, bd = 0.45; js.forEach((j) => { const d = Math.hypot(m - j - x, j - y); if (d < bd) { bd = d; best = j; } }); selJ = best === selJ ? null : best; });
         B.onClick((x) => { const { js } = range(); const j = Math.round(x); selJ = js.includes(j) && j !== selJ ? j : null; });
@@ -680,7 +690,7 @@ $$\binom{m+n}{k} = \sum_{j=0}^{k}\binom mj\binom n{k-j}.$$`,
           // diagonal x + y = m
           A.line(Math.max(0, m - k) - 0.3, Math.min(m, k) + 0.3, Math.min(m, X) + 0.3, m - Math.min(m, X) - 0.3, { color: 'muted', width: 1.5, dash: [6, 4] });
           const P2 = (x1, y1, x2, y2) => binom(x2 - x1 + y2 - y1, y2 - y1) * (x2 >= x1 && y2 >= y1 ? 1 : 0);
-          const wscale = 0.5 * A.scale / Math.max(1, tot);
+          const wscale = 0.42 * A.scale / Math.max(1, tot);
           js.forEach((j) => {
             const cx = m - j, cy = j, faded = selJ != null && selJ !== j, col = CAT[j % CAT.length];
             for (let x = 0; x <= X; x++) for (let y = 0; y <= k; y++) for (const [dx, dy] of [[1, 0], [0, 1]]) {
@@ -689,7 +699,7 @@ $$\binom{m+n}{k} = \sum_{j=0}^{k}\binom mj\binom n{k-j}.$$`,
               if (x2 + y2 <= m) cnt = P2(0, 0, x, y) * P2(x2, y2, cx, cy) * P2(cx, cy, X, k);
               else if (x + y >= m) cnt = P2(0, 0, cx, cy) * P2(cx, cy, x, y) * P2(x2, y2, X, k);
               else cnt = 0;
-              if (cnt) A.line(x, y, x2, y2, { color: col, width: Math.max(0.8, cnt * wscale), alpha: faded ? 0.08 : 0.5 });
+              if (cnt) A.line(x, y, x2, y2, { color: col, width: Math.max(0.8, cnt * wscale), alpha: faded ? 0.08 : 0.42 });
             }
           });
           js.forEach((j) => {
@@ -701,8 +711,9 @@ $$\binom{m+n}{k} = \sum_{j=0}^{k}\binom mj\binom n{k-j}.$$`,
           A.dot(X, k, { r: 4.5, color: 'ink', label: `(${X}, ${k})`, labelPos: 'ne' });
           // bars
           const J = Math.min(m, k), ymax = tot * 1.12 || 1;
-          B.setView([-0.7, J + 2.2], [0, ymax]);
-          B.setTicks(Array.from({ length: J + 1 }, (_, j) => j).concat([[J + 1.4, 'all']]), null);
+          B.setView([-0.7, J + 2.2], [-ymax * 0.1, ymax]);
+          B.hline(0, { color: 'muted', width: 1 });
+          B.setTicks(Array.from({ length: J + 1 }, (_, j) => [j, 'j = ' + j]).concat([[J + 1.4, 'all']]), niceTicks(tot));
           js.forEach((j) => {
             const c = binom(m, j) * binom(n, k - j), col = CAT[j % CAT.length], faded = selJ != null && selJ !== j;
             B.rect(j - 0.36, 0, j + 0.36, c, { fill: col, fillAlpha: faded ? 0.15 : 0.6, color: col, width: 1.4, alpha: faded ? 0.4 : 1 });

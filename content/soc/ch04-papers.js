@@ -72,13 +72,13 @@ They found the same signature, $L \gtrsim L_{\rm random}$ but $C \gg C_{\rm rand
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model' },
       viz(v) {
         const M = v.M;
-        const pS = v.slider('rewiring probability $p$', 0.0001, 1, 0.04, { log: true, sig: 2 });
+        const pS = v.slider('rewiring probability $p$', 0.0001, 1, 0.05, { log: true, sig: 2 });
         const nS = v.slider('small ring: $n$', 12, 80, 40, { int: true });
         const kS = v.select('$k$', [{ value: 2, label: '2' }, { value: 4, label: '4' }, { value: 6, label: '6' }], 4);
         let seed = 1;
         v.button('Rewire again', () => { seed++; });
         const A = v.stage({ x: [-1.25, 1.25], y: [-1.25, 1.25], equal: true, axes: false, height: 360, weight: 0.9, title: 'a ring you can rewire' });
-        const B = v.stage({ x: [1e-4, 1], y: [0, 1.08], xlog: true, axes: 'box', height: 360, weight: 1.1, xlabel: 'rewiring probability p', title: 'Figure 2, recomputed: n = 1000, k = 10' });
+        const B = v.stage({ x: [6e-5, 1.7], y: [-0.07, 1.1], xlog: true, yticks: [0, 0.2, 0.4, 0.6, 0.8, 1], axes: 'box', height: 360, weight: 1.1, title: 'Figure 2 recomputed: n = 1000, k = 10, log p' });
         // ---- progressive computation of Figure 2 (exact L and C, 20 realizations per p)
         const N = 1000, K = 10, REAL = 20, base = lc(wattsStrogatz(N, K, 0, rng32(1)));
         const acc = PGRID.map(() => ({ L: [], C: [] }));
@@ -128,8 +128,8 @@ They found the same signature, $L \gtrsim L_{\rm random}$ but $C \gg C_{\rm rand
             B.dot(q, mL, { r: 5, color: 'ink' });
             const X = B.X(q), Y = B.Y(mC), h = 5; const c = B.ctx; c.save(); c.strokeStyle = v.color('accent'); c.lineWidth = 2; c.fillStyle = v.color('panel'); c.beginPath(); c.rect(X - h, Y - h, 2 * h, 2 * h); c.fill(); c.stroke(); c.restore();
           });
-          B.text('C(p) / C(0)', 1.5e-4, 0.9, { color: 'accent', weight: 700, size: 12.5 });
-          B.text('L(p) / L(0)', 1.5e-4, 0.32, { color: 'ink', weight: 700, size: 12.5 });
+          B.text('C(p) / C(0)', 2e-3, 0.88, { color: 'accent', weight: 700, size: 12.5 });
+          B.text('L(p) / L(0)', 2.5e-4, 0.2, { color: 'ink', weight: 700, size: 12.5 });
           const real = Math.min(REAL, Math.floor(done / PGRID.length));
           B.corner(`${real} of ${REAL} realizations per point`, 'tr', { size: 11.5 });
           // interpolate the n = 1000 curves at the slider's p (log-linear between grid points)

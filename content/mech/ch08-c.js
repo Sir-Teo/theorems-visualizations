@@ -37,7 +37,7 @@ function energy3(x, v, m) {
   return E;
 }
 
-// Geiger & Marsden (1913), Table I, gold foil: deflection (degrees) and scintillations counted (relative)
+// Geiger & Marsden (1913), Phil. Mag. 25: 604–623, gold foil, first series: deflection (degrees) and scintillations counted (relative)
 const GM1913 = [[150, 33.1], [135, 43.0], [120, 51.9], [105, 69.5], [75, 211], [60, 477], [45, 1435], [37.5, 3300], [30, 7800], [22.5, 27300], [15, 132000]];
 
 export default {

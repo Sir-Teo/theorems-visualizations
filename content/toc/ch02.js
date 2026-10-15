@@ -72,7 +72,7 @@ On input $w=w_1\cdots w_n$ the machine computes $r_0=q_0$, $r_i=\delta(r_{i-1},w
         const gs = v.stage({ x: [0, 10], y: [0, 7.2], axes: false, equal: true, height: 290, weight: 1.5 });
         const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 290, weight: 1 });
         const tp = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 64, full: true });
-        const ls = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 158, full: true });
+        const ls = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 148, full: true });
         const G = dfaGraph(v, gs, D, { deadAt: [8.8, 0.9] });
         const T = v.table(tb, { rows: 3, cols: 2, maxCell: 50, size: 15, square: false, cellAspect: 1.35, labelSize: 14 });
         G.onClick = ({ node }) => { if (node && node.id !== DEAD) { node.acc = !node.acc; refresh(); } return true; };
@@ -299,7 +299,8 @@ A hallmark of regularity is that the counting sequence $a_n=|L\cap\Sigma^n|$ obe
           for (let t = 0; t < k; t++) { let sacc = 0; for (let j = 0; j <= t; j++) sacc += Qp[j] * dp[t - j]; Pp.push(sacc); }
           while (Pp.length > 1 && Pp[Pp.length - 1] === 0) Pp.pop();
           const gf = []; for (let n = 0; n <= N; n++) { let b = n < Pp.length ? Pp[n] : 0; for (let j = 1; j <= Math.min(n, k); j++) b -= Qp[j] * gf[n - j]; gf.push(b); }
-          return { brute, dp, gf, P: Pp, Q: Qp, m };
+          let lam = null; try { const ev = v.M.eig(A).values; lam = Math.max(...ev.map((z) => (Math.abs(z.im ?? 0) < 1e-9 ? z.re ?? z : -Infinity))); } catch (e) { lam = null; }
+          return { brute, dp, gf, P: Pp, Q: Qp, m, lam };
         };
         const poly = (cs) => { let s = ''; cs.forEach((a, i) => { if (!a) return; const sgn = a < 0 ? '-' : s ? '+' : '', A = Math.abs(a), mon = i === 0 ? '' : i === 1 ? 'x' : `x^{${i}}`; s += `${sgn}${A === 1 && i ? '' : A}${mon}`; }); return s || '0'; };
         let C = counts();
@@ -327,7 +328,7 @@ A hallmark of regularity is that the counting sequence $a_n=|L\cap\Sigma^n|$ obe
         v.legend([['green', 'string in the language', { dot: true }]]);
         v.readout(() => {
           const g = C.dp[11] / C.dp[10];
-          return String.raw`$\sum_n a_n x^n = \dfrac{${poly(C.P)}}{${poly(C.Q)}}$ · all three counts agree for $n\le 11$ ✓ · growth $a_{11}/a_{10} = ${v.fix(g, 4)}$ (the largest eigenvalue of $A$)`;
+          return String.raw`$\sum_n a_n x^n = \dfrac{${poly(C.P)}}{${poly(C.Q)}}$ · all three counts agree for $n\le 11$ ✓ · growth $a_{11}/a_{10} = ${v.fix(g, 4)}$, tending to the largest eigenvalue of $A$` + (C.lam != null && isFinite(C.lam) ? String.raw`, $\lambda_{\max} = ${v.fix(C.lam, 4)}$` : '');
         });
       },
     },

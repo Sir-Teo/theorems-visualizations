@@ -325,7 +325,7 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
           const bx = pic.bounds.x, by = pic.bounds.y;
           // ---- plan
           plan.line(bx[0], d, bx[1], d, { color: 'orange', width: 3 });
-          plan.text('picture plane', bx[0] + 0.1, d - 0.2, { align: 'left', baseline: 'top', size: 11, color: 'orange' });
+          plan.text('picture plane', bx[1] - 0.1, d - 0.2, { align: 'right', baseline: 'top', size: 11, color: 'orange' });
           plan.clip(() => {
             P.forEach((pr, j) => {
               const col = j ? 'purple' : 'accent';
@@ -343,7 +343,7 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
           const V = par ? null : C.vp(u);
           P.forEach((pr, j) => {
             const col = j ? 'purple' : 'accent', off = j ? -2.3 : 0;
-            for (let t = -12; t < 60; t += 0.7) { const c = [A.x + t * u[0] + off * n[0], A.y + t * u[1] + off * n[1], 0]; if (c[1] < d * 1.15) continue; seg3(pic, C, [c[0] - 0.55 * n[0], c[1] - 0.55 * n[1], 0], [c[0] + 0.55 * n[0], c[1] + 0.55 * n[1], 0], { color: 'gray', width: 1.4, alpha: 0.7 }); }
+            for (let t = -12; t < 60; t += 0.7) { const c = [A.x + t * u[0] + off * n[0], A.y + t * u[1] + off * n[1], 0]; if (c[1] < 0.6) continue; seg3(pic, C, [c[0] - 0.55 * n[0], c[1] - 0.55 * n[1], 0], [c[0] + 0.55 * n[0], c[1] + 0.55 * n[1], 0], { color: 'gray', width: 1.4, alpha: 0.7 }); }
             for (const a of pr) {
               const s = seg3(pic, C, [a[0] - 12 * u[0], a[1] - 12 * u[1], 0], [a[0] + 60 * u[0], a[1] + 60 * u[1], 0], { color: col, width: 2.4 });
               if (s && V) pic.line(s[1][0], s[1][1], V[0], V[1], { color: col, width: 1.2, dash: [4, 4], alpha: 0.8 });
@@ -383,7 +383,7 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
         const side = v.stage({ x: [-0.5, 14.5], y: [-0.2, 3.7], axes: false, height: 360, weight: 0.65, minWidth: 230, title: 'side view (vertical scale enlarged)' });
         const pitch = v.slider('roof pitch', 0, 60, 35, { step: 1, fmt: (x) => `${x}°` });
         const eh = side.handle(0, 1.6, { color: 'accent', label: 'eye', labelPos: 'ne', constrain: (x, y) => [0, M.clamp(y, 0.25, 3.0)] });
-        const figs = [[-0.6, 2.8], [0.65, 4.2], [-3.2, 6.5], [-2.4, 13]];
+        const figs = [[-0.6, 2.8], [0.65, 4.2], [-3.2, 6.5], [-4.6, 13]];
         const box = boxMesh([-2.6, 3.6, 0], [1.1, 1.1, 1.1], BY);
         const cs = Math.cos(GY), sn = Math.sin(GY);
         const hz = [[cs, -sn, 0], [sn, cs, 0], [Math.cos(BY), -Math.sin(BY), 0], [Math.sin(BY), Math.cos(BY), 0]]; // horizontal edge directions
@@ -395,7 +395,7 @@ which depends on the direction alone, not on where the lines are. If $\mathbf u$
           const bx = pic.bounds.x, by = pic.bounds.y;
           // ---- picture: ground, horizon, objects (far to near)
           pic.rect(bx[0], 0, bx[1], Math.min(h, by[1]), { fill: 'faint', fillAlpha: 0.1, stroke: false });
-          for (const [a, b] of gridLines(-10, 10, 2, 26, 1)) { const s2 = C.seg(a, b); if (s2) pic.line(s2[0][0], s2[0][1] + h, s2[1][0], s2[1][1] + h, { color: 'faint', width: 0.8 }); }
+          for (const [a, b] of gridLines(-10, 10, 1.2, 26.2, 1)) { const s2 = C.seg(a, b); if (s2) pic.line(s2[0][0], s2[0][1] + h, s2[1][0], s2[1][1] + h, { color: 'faint', width: 0.8 }); }
           const objs = figs.map(([x, y]) => ({ y, f: () => drawFigure(pic, pane, [x, y, 0], FIG, { color: 'ink', alpha: 0.6 }) }));
           objs.push({ y: 7.0, f: () => drawSolids(pic, pane, [0, 0, h], [{ mesh: house, color: 'teal' }]) }, { y: 3.6, f: () => drawSolids(pic, pane, [0, 0, h], [{ mesh: box, color: 'purple' }]) });
           objs.sort((p, q) => q.y - p.y).forEach((o) => o.f());
@@ -536,12 +536,12 @@ An object turned away from this position breaks (a) and (b).`,
       tags: ['perspective', 'Alberti', 'construction'],
       viz(v) {
         const M = v.M, W = 8, WH = 6, N = 10; // window 8 × 6 braccia, 10 rows of tiles
-        const win = v.stage({ x: [-0.3, 8.3], y: [-0.35, 6.3], equal: true, axes: false, height: 300, weight: 1.2, title: 'the window (in braccia)' });
+        const win = v.stage({ x: [-0.25, 10.45], y: [-0.35, 6.3], equal: true, axes: false, height: 300, weight: 1.2, title: 'the window (in braccia)' });
         const plan = v.stage({ x: [-1, 9], y: [-12.6, 10.6], equal: true, axes: false, height: 300, weight: 0.8, minWidth: 220, title: 'the floor seen from above' });
-        const small = v.stage({ x: [-0.6, 22.6], y: [-1.0, 4.4], equal: true, axes: false, height: 150, full: true, title: 'Alberti’s “small space”: the eye, the picture and the floor seen from the side' });
+        const small = v.stage({ x: [-0.6, 22.6], y: [-1.0, 4.85], equal: true, axes: false, height: 205, full: true, title: 'Alberti’s “small space”: the eye, the picture and the floor seen from the side' });
         const dS = v.slider('eye distance $d$ (braccia)', 2, 12, 6, { int: true });
         const bot = v.toggle('fixed-ratio rule (each band ⅔ of the last)', false);
-        const C0 = win.handle(4, 3, { color: 'accent', label: 'C', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, 1, 7), M.clamp(y, 0.8, 5.5)] });
+        const C0 = win.handle(4, 3, { color: 'accent', label: 'C', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, 1, 7), M.clamp(y, 0.8, 4.4)] });
         const notes = [
           '**1.** The window is a rectangle standing on the front edge of the floor. The man on the base line is 3 braccia tall, so a braccio is a third of his height.',
           '**2.** Divide the base line into braccia: 8 equal parts.',
@@ -580,21 +580,21 @@ An object turned away from this position breaks (a) and (b).`,
             P.forEach((p) => win.dot(p[0], p[1], { r: 3, color: col }));
             if (!bot.value) {
               if (cx + d <= win.bounds.x[1]) win.dot(cx + d, h, { r: 5, color: 'green', label: 'distance point', labelPos: 'n' });
-              else win.corner(`distance point off to the right, ${d} braccia from C`, 'tr', { color: 'green', size: 11.5 });
+              else win.text('to the distance point →', win.bounds.x[1] - 0.08, h + 0.2, { align: 'right', baseline: 'bottom', size: 10.5, color: 'green' });
             }
           }
           // ---- plan: eye in front of the window, the tiled floor behind it
           for (let i = 0; i <= W; i++) plan.line(i, 0, i, N, { color: k >= 3 ? 'accent' : 'faint', width: 0.9, alpha: 0.7 });
           for (let j = 0; j <= N; j++) plan.line(0, j, W, j, { color: k >= 6 ? 'orange' : 'faint', width: 0.9, alpha: 0.7 });
           plan.line(-1, 0, 9, 0, { color: 'orange', width: 2.4 });
-          plan.text('window', 8.9, 0.35, { align: 'right', baseline: 'bottom', size: 10.5, color: 'orange' });
+          plan.text('window', -1.1, -0.35, { align: 'right', baseline: 'top', size: 10.5, color: 'orange' });
           plan.dot(cx, -d, { r: 4.5, color: 'accent', label: 'eye', labelPos: 'w' });
           plan.line(cx, -d, cx, 0, { color: 'muted', width: 1, dash: [3, 3] });
           plan.text(`d = ${d}`, cx + 0.2, -d / 2, { align: 'left', size: 10.5, color: 'muted' });
           if (k >= 7) {
             plan.line(0, 0, Math.min(W, N), Math.min(W, N), { color: 'green', width: 2.4 });
             plan.line(cx, -d, cx + d + 2, 2, { color: 'green', width: 1.2, dash: [5, 4] });
-            plan.dot(cx + d, 0, { r: 4, color: 'green' });
+            plan.dot(cx + d, 0, { r: 4, color: 'green', label: 'distance point', labelPos: 'se', labelSize: 11 });
           }
           // ---- small space
           if (k >= 4) {

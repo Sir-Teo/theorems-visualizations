@@ -414,7 +414,7 @@ export default {
           const pad = (a, b) => [a - 0.06 * (b - a), b + 0.06 * (b - a)];
           const [x0, x1] = pad(Math.min(...xs), Math.max(...xs)), [y0, y1] = pad(Math.min(...ys), Math.max(...ys));
           st.setView([-x1, -x0], [-y1, -y0]); // F2 grows to the left, F1 downward
-          const nice = (lo, hi, list) => list.filter((z) => z >= lo && z <= hi), reg = (lo, hi, step) => M.range(Math.floor((hi - lo) / step) + 2).map((i) => Math.ceil(lo / step) * step + i * step).filter((z) => z <= hi);
+          const inner = (lo, hi) => (z) => z >= lo + 0.04 * (hi - lo) && z <= hi - 0.04 * (hi - lo), nice = (lo, hi, list) => list.filter(inner(lo, hi)), reg = (lo, hi, step) => M.range(Math.floor((hi - lo) / step) + 2).map((i) => Math.ceil(lo / step) * step + i * step).filter(inner(lo, hi));
           const xt = key === 'raw' ? nice(x0, x1, [800, 1000, 1500, 2000, 2500, 3000, 3500]) : reg(x0, x1, key === 'nearey' ? 0.2 : 0.5), yt = key === 'raw' ? nice(y0, y1, [300, 400, 500, 600, 800, 1000, 1200]) : reg(y0, y1, key === 'nearey' ? 0.2 : 0.5);
           const fmt = (z) => (key === 'raw' ? `${z}` : v.fix(z, 1).replace('-', '−'));
           st.setTicks(xt.map((z) => [-z, fmt(z)]), yt.map((z) => [-z, fmt(z)]));

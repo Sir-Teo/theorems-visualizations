@@ -42,10 +42,9 @@ function drawAnimal(s, ear, leg, tail, col) {
   const body = []; for (let k = 0; k <= 60; k++) { const t = (2 * Math.PI * k) / 60; body.push([25 * Math.cos(t), 8 * Math.sin(t)]); }
   const tl = []; for (let k = 0; k <= 20; k++) { const u = k / 20; tl.push([-22 - 0.62 * tail * u, 1 - 0.45 * tail * u * u - 2 * u]); }
   s.path(tl, { color: col, width: 7, alpha: 0.9 });
-  for (const x of [-17, -10, 14, 20]) s.rect(x - 1.8, -6 - leg, x + 1.8, -3, { fill: col, fillAlpha: 0.85, color: 'ink', width: 1 });
+  for (const x of [-17, -10, 14, 20]) s.rect(x - 1.8, -6 - leg, x + 1.8, -5.5, { fill: col, fillAlpha: 0.85, color: 'ink', width: 1 });
   s.poly(body, { fill: col, fillAlpha: 0.95, color: 'ink', width: 1.2 });
   const hx = 28, hy = 9;
-  s.poly([[hx - 6, hy - 6], [hx - 2, hy - 3], [hx - 9, hy + 3]], { fill: col, fillAlpha: 0.95, stroke: false });
   for (const dx of [-3.2, 1.6]) s.poly([[hx + dx - 1.9, hy + 4], [hx + dx + 1.9, hy + 4.6], [hx + dx - 0.2, hy + 4.3 + ear]], { fill: col, fillAlpha: 0.95, color: 'ink', width: 1 });
   s.circle(hx, hy, 6, { fill: col, fillAlpha: 0.95, color: 'ink', width: 1.2 });
   s.poly([[hx + 4, hy + 2.6], [hx + 11, hy - 1.2], [hx + 10.6, hy - 2.4], [hx + 3.5, hy - 3.4]], { fill: col, fillAlpha: 0.95, color: 'ink', width: 1 });
@@ -101,7 +100,7 @@ export default {
           });
           A.fn((m) => 1 / (heartRate(m) * MIN_PER_YEAR), { color: 'red', width: 2.6, domain: [2e-3, 2e5] });
           A.fn((m) => 1 / (breathRate(m) * MIN_PER_YEAR), { color: 'accent', width: 2.6, domain: [2e-3, 2e5] });
-          A.text('heartbeat period, slope 0.25', 1.5e5, 1 / (heartRate(1.5e5) * MIN_PER_YEAR), { color: 'red', align: 'right', dy: 12, size: 11, weight: 700 });
+          A.text('heartbeat period, slope 0.25', 1, 1 / (heartRate(1) * MIN_PER_YEAR), { color: 'red', align: 'left', dy: 14, size: 11, weight: 700 });
           A.text('breath period, slope 0.26', 1.5e5, 1 / (breathRate(1.5e5) * MIN_PER_YEAR), { color: 'accent', align: 'right', dy: -12, size: 11, weight: 700 });
           // right panel: lifetime counts
           const heart = prod.value === 'heart', rate = heart ? heartRate : breathRate;
@@ -216,7 +215,7 @@ $$D\propto M^{-3/4}$$
         const ins = v.slider(String.raw`insulation: conductance $h$ (W m⁻² K⁻¹)`, 0.3, 8, 1, { log: true, sig: 2 });
         const fam = v.select('bird family', ['Spheniscidae', 'Alcidae', 'Laridae', 'Podicipedidae', 'Paridae', 'Scolopacidae'].map((f) => ({ value: f, label: BIRD_NAMES[f] })), 'Spheniscidae');
         const A = v.stage({ x: [1e-3, 3e3], y: [-60, 42], xlog: true, axes: 'box', height: 360, weight: 1, xlabel: 'body mass (kg)', title: 'lower critical temperature (°C)' });
-        const B = v.stage({ x: [-3, 80], y: [5, 6e4], ylog: true, axes: 'box', height: 360, weight: 1, hover: true, xlabel: '|latitude of range centre| (°)', title: 'body mass (g)' });
+        const B = v.stage({ x: [-6, 80], y: [5, 6e4], ylog: true, axes: 'box', height: 360, weight: 1, hover: true, xlabel: '|latitude of range centre| (°)', title: 'body mass (g)' });
         const Tb = 38, area = (m) => 0.11 * m ** 0.65;
         const prod = (m) => (prodSel.value === 'k' ? K.f(m) : K.f(1) * m);
         const Tlc = (m) => Tb - prod(m) / (ins.value * area(m));
@@ -228,7 +227,7 @@ $$D\propto M^{-3/4}$$
           hm.set(hm.x, M.clamp(Tlc(hm.x), -59, 41));
           const Ta = ha.y;
           A.hline(Ta, { color: 'red', width: 1.6, dash: [6, 4] });
-          A.text(`air ${Ta.toFixed(0)} °C`, 400, Ta, { color: 'red', dx: -14, dy: -11, size: 11, weight: 600, align: 'right' });
+          A.text(`air ${fx(Ta, 0)} °C`, 400, Ta, { color: 'red', dx: -14, dy: -11, size: 11, weight: 600, align: 'right' });
           A.clip(() => {
             A.between((x) => Math.max(Tlc(x), Ta), () => Ta, 1e-3, 3e3, { fill: 'red', fillAlpha: 0.12, n: 160 });
             A.fn(Tlc, { color: 'accent', width: 3 });
@@ -255,7 +254,7 @@ $$D\propto M^{-3/4}$$
         v.readout(() => {
           if (!info) return '';
           const i = info;
-          let s = `a ${massTxt(i.m * 1000)} mammal: metabolic rate ${v.fmt(i.bmr, 3)} W, lower critical temperature **${i.T.toFixed(1)} °C**; a body 10× heavier is comfortable down to ${Math.abs(i.per10).toFixed(1)} °C lower · at ${i.Ta.toFixed(0)} °C it ${i.need > 0 ? `must produce ${v.fmt(i.need, 3)} W extra (${Math.round((100 * i.need) / i.bmr)} % of its basal rate)` : 'needs no extra heat'}`;
+          let s = `a ${massTxt(i.m * 1000)} mammal: metabolic rate ${v.fmt(i.bmr, 3)} W, lower critical temperature **${fx(i.T, 1)} °C**; a body 10× heavier is comfortable down to ${Math.abs(i.per10).toFixed(1)} °C lower · at ${fx(i.Ta, 0)} °C it ${i.need > 0 ? `must produce ${v.fmt(i.need, 3)} W extra (${Math.round((100 * i.need) / i.bmr)} % of its basal rate)` : 'needs no extra heat'}`;
           s += ` · ${BIRD_NAMES[fam.value]}: ${i.n} species, mass changes by ${fx(100 * (10 ** (i.L.b * 10) - 1), 0)} % per 10° of latitude, r = ${fx(i.L.r, 2)} · across all ${i.tot} bird families with ≥ 10 species, ${i.pos} have r > 0`;
           if (i.hv) s += ` · **${i.hv.r.name}**`;
           return s;
@@ -339,7 +338,7 @@ $$D\propto M^{-3/4}$$
         const M = v.M;
         const grp = v.select('group', Object.entries(LOMOLINO).map(([k, g]) => ({ value: k, label: g.lab })), 'all');
         const view = v.select('view', [{ value: 'si', label: 'relative size Si' }, { value: 'mm', label: 'insular vs mainland mass' }], 'si');
-        let seed = 3;
+        let seed = 9;
         v.button('new sample', () => { seed++; });
         const s = v.stage({ x: [1, 1e7], y: [0.15, 6], xlog: true, ylog: true, height: 380, full: true, axes: 'box', xlabel: 'mainland body mass (g)', title: 'insular ÷ mainland body mass, Si' });
         let info = null;

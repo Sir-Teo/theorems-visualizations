@@ -453,7 +453,6 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
       caption: String.raw`Rows hold the strings of each length, and the path is the enumeration, numbering every cell it passes. Type a string to see the step at which it is reached. Over $\{a,b\}$ the rows are finite and the triangle is swept row by row. Switch to the infinite alphabet $\N$: row by row, the walk is trapped in row 1 forever; walking along diagonals reaches every cell after finitely many steps.`,
       deps: ['toc-1.3', 'pma-2.13', 'pma-2.12'],
       refs: ['Sipser §4.2'],
-      credit: 'Cantor, 1874–1878',
       tags: ['countability', 'enumeration'],
       viz(v) {
         let w = 'aba', t = [2, 1];
@@ -765,15 +764,17 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
           for (const u of NODES) {
             const [x, y] = xy(u), s0 = st[u], isCur = u === f.w;
             const col = s0 === 'ok' ? 'green' : s0 === 'bad' ? 'red' : s0 === 'open' ? 'muted' : 'faint';
-            P.circle(x, y, r, { fill: isCur ? 'gold' : s0 ? col : 'panel', fillAlpha: isCur ? 0.9 : s0 === 'open' ? 0.12 : s0 ? 0.28 : 1, color: isCur ? 'gold' : col, width: isCur ? 2.6 : 1.5, dash: s0 === 'open' ? [3, 3] : undefined });
-            P.text(sh(u), x, y + 0.5, { size: u.length > 2 ? 11 : 12.5, weight: 600, color: isCur ? onColor(v, 'gold') : 'ink' });
+            const cf = isCur ? (s0 === 'bad' ? 'red' : 'gold') : null;
+            P.circle(x, y, r, { fill: cf || (s0 ? col : 'panel'), fillAlpha: cf ? 0.9 : s0 === 'open' ? 0.12 : s0 ? 0.28 : 1, color: cf || col, width: cf ? 2.6 : 1.5, dash: s0 === 'open' ? [3, 3] : undefined });
+            P.text(sh(u), x, y + 0.5, { size: u.length > 2 ? 11 : 12.5, weight: 600, color: cf ? onColor(v, cf) : 'ink' });
           }
           // the inductive template, filled in
           const Q = pen(ds, v), r0 = check(f.w || '');
           Q.sans(f.w ? `inductive step at w = ${f.w}:  u = ${sh(f.w.slice(0, -1))},  σ = ${f.w.slice(-1)}` : 'base case  w = ε', 14, 20, { align: 'left', size: 13, weight: 600, color: 'muted' });
           r0.lines.forEach(([sym, con], k) => {
-            Q.tex(sym, k ? 96 : 16, 56 + k * 74, { size: 15, align: 'left' });
-            Q.tex(con, k ? 110 : 30, 56 + k * 74 + 28, { size: 14, align: 'left', color: r0.ok || k < r0.lines.length - 1 ? 'muted' : 'red' });
+            const ind = { revcat: 92, len: 100, pal: 64 }[claim.value];
+            Q.tex(sym, k ? ind : 16, 56 + k * 74, { size: 15, align: 'left' });
+            Q.tex(con, k ? ind + 14 : 30, 56 + k * 74 + 28, { size: 14, align: 'left', color: r0.ok || k < r0.lines.length - 1 ? 'muted' : 'red' });
           });
           if (f.w) Q.sans(r0.ok ? 'uses only the claim for u — the parent node' : 'this step is invalid, so the claim is not proved for w', 14, Q.H - 14, { align: 'left', size: 12, color: r0.ok ? 'green' : 'red', weight: 600 });
         });

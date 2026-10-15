@@ -145,6 +145,35 @@ function divCol(z, scale, P, N, BG, a = 0.85) {
 }
 const PI_TICKS = [[0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π'], [1.5 * Math.PI, '3π/2'], [TAU, '2π']];
 
+// ---------- three dimensions ----------
+const det3 = (a, b, c) => dot(a, cross(b, c));
+/** Orthonormal pair spanning the plane perpendicular to n. */
+function perpPair(n) { const u = unit(n), a = unit(Math.abs(u[0]) < 0.9 ? cross(u, [1, 0, 0]) : cross(u, [0, 1, 0])); return [a, cross(u, a)]; }
+/** The isotropic set {x : xᵗAx = 0} of a symmetric 3×3 matrix in a scene3: a double cone, two planes, a plane or a line. */
+function drawIso(sc, M, As, R = 1.55) {
+  const E = M.eigSym(As), ls = E.values, vs = E.vecs, tol = 1e-6 * Math.max(1, ...ls.map(Math.abs)), pos = [], neg = [], zer = [];
+  ls.forEach((l, i) => (l > tol ? pos : l < -tol ? neg : zer).push(i));
+  const st = { color: 'muted', width: 1, alpha: 0.28 };
+  if (zer.length === 0 && pos.length && neg.length) {
+    const lone = pos.length === 1 ? pos[0] : neg[0], [b, c] = pos.length === 1 ? neg : pos, tips = [[], []];
+    for (let k = 0; k < 24; k++) {
+      const t = (TAU * k) / 24;
+      const d = scl(unit(add(add(scl(vs[b], Math.cos(t) / Math.sqrt(Math.abs(ls[b]))), scl(vs[c], Math.sin(t) / Math.sqrt(Math.abs(ls[c])))), scl(vs[lone], 1 / Math.sqrt(Math.abs(ls[lone]))))), R);
+      sc.line(scl(d, -1), d, st, 6); tips[0].push(d); tips[1].push(scl(d, -1));
+    }
+    for (const T of tips) sc.path([...T, T[0]], { color: 'muted', width: 1.2, alpha: 0.45 });
+    return 'cone';
+  }
+  if (zer.length === 1 && pos.length === 1) {
+    const z = vs[zer[0]], a = vs[pos[0]], b = vs[neg[0]];
+    for (const sg of [1, -1]) sc.disc(z, unit(add(scl(a, 1 / Math.sqrt(ls[pos[0]])), scl(b, sg / Math.sqrt(-ls[neg[0]])))), 1.3, { fill: 'muted', fillAlpha: 0.07, color: 'muted', alpha: 0.4 });
+    return 'planes';
+  }
+  if (zer.length === 1) { sc.line(scl(vs[zer[0]], -R), scl(vs[zer[0]], R), { color: 'muted', width: 2.4, alpha: 0.6 }, 8); return 'line'; }
+  if (zer.length === 2) { sc.disc(vs[zer[0]], vs[zer[1]], 1.3, { fill: 'muted', fillAlpha: 0.07, color: 'muted', alpha: 0.4 }); return 'plane'; }
+  return 'none';
+}
+
 export default {
   collection: 'ladr',
   chapter: 9,
@@ -551,6 +580,171 @@ The set of symmetric bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{sym}}$. 
           if (!st) return '';
           const sym = Math.abs(st.s) < 1e-9;
           return `$A = \\mathcal M(\\rho) = ${mtex(st.A)}$. $\\ \\rho(u, w) = ${tn(st.ruw, 3)}$, $\\rho(w, u) = ${tn(st.rwu, 3)}$, and $\\rho(u, w) - \\rho(w, u) = ${tn(st.d, 3)} = (A_{1,2} - A_{2,1})(u_1w_2 - u_2w_1) = ${tn(st.s, 2)} \\cdot ${tn(st.area, 3)}$ ${mark(Math.abs(st.d - st.s * st.area) < 1e-9)}. ` + (sym ? '**Symmetric**: $A = A^{t}$, so the values agree for every pair.' : '**Not symmetric**: $A \\ne A^{t}$, and the values differ for every pair of independent vectors.');
+        });
+      },
+    },
+
+    // ------------------------------------------------------------------ 9.12
+    {
+      num: '9.12',
+      kind: 'Theorem',
+      name: 'Symmetric bilinear forms are diagonalizable',
+      statement: String.raw`Suppose $\rho \in V^{(2)}$. The following are equivalent:
+(a) $\rho$ is a symmetric bilinear form on $V$;
+(b) $\mathcal M\big(\rho, (e_1, \dots, e_n)\big)$ is a symmetric matrix for every basis $e_1, \dots, e_n$ of $V$;
+(c) $\mathcal M\big(\rho, (e_1, \dots, e_n)\big)$ is a symmetric matrix for some basis $e_1, \dots, e_n$ of $V$;
+(d) $\mathcal M\big(\rho, (e_1, \dots, e_n)\big)$ is a diagonal matrix for some basis $e_1, \dots, e_n$ of $V$.`,
+      idea: String.raw`(a)⇒(b)⇒(c) are immediate; (c)⇒(a) by expanding $\rho(u, w)$ in the basis; (d)⇒(c) because diagonal matrices are symmetric. The heart is (a)⇒(d), by induction on $\dim V$. If $\rho = 0$ any basis works. Otherwise some $\rho(u, w) \ne 0$, and the identity
+$$2\rho(u, w) = \rho(u + w, u + w) - \rho(u, u) - \rho(w, w)$$
+produces a vector $v$ with $\rho(v, v) \ne 0$. Its $\rho$-orthogonal space $U = \{u : \rho(u, v) = 0\}$ is the null space of a nonzero linear functional, so $\dim U = n - 1$ and $v \notin U$. By induction $U$ has a basis $e_1, \dots, e_{n-1}$ in which $\rho|_U$ is diagonal; then $e_1, \dots, e_{n-1}, v$ diagonalizes $\rho$, since $\rho(e_k, v) = 0$ by construction and $\rho(v, e_k) = 0$ **by symmetry** — the one step that uses (a). The diagonal entries depend on the choices, but by Sylvester's law of inertia the numbers of positive, negative and zero entries do not.`,
+      caption: String.raw`A bilinear form on $\mathbf R^3$; the grey rays form its cone of isotropic vectors, where $\rho(x, x) = 0$. Drag $v_1$ (blue) anywhere off the cone: the orange plane is $U_1 = \{u : \rho(u, v_1) = 0\}$. Drag $v_2$ (purple), which stays in $U_1$; the green line is $U_2 = \{u \in U_1 : \rho(u, v_2) = 0\}$, and it gives $v_3$. On the right, the matrix of $\rho$ in the basis $v_1, v_2, v_3$ is diagonal however you choose; its diagonal entries change, their signs never do. Put $v_1$ on the cone and the step breaks down ($v_1 \in U_1$). In *every axis isotropic* all $\rho(e_j, e_j) = 0$, and the start $v_1 = e_1 + e_2$ comes from the identity above. For *not symmetric* only the entries below the diagonal vanish. Drag the background to rotate.`,
+      deps: ['ladr-9.9', 'ladr-9.4'],
+      tags: ['bilinear forms', 'diagonalization'],
+      viz(v) {
+        const M = v.M;
+        const PRE = {
+          ind: { A: [[1, 0.6, 0.4], [0.6, -0.2, 0.7], [0.4, 0.7, 0.3]], v1: [-0.48, 1.03, 0.17], view: [-0.5, 0.3] },
+          iso: { A: [[0, 1, 0.5], [1, 0, 0.8], [0.5, 0.8, 0]], v1: [0.85, 0.85, 0], view: [2.58, 0.34] },
+          pos: { A: [[1.6, 0.4, 0.2], [0.4, 1.1, -0.3], [0.2, -0.3, 0.8]], v1: [0.18, -0.36, 1.08], view: [-0.5, 0.3] },
+          ns: { A: [[1, 0.9, -0.2], [-0.3, -0.5, 0.8], [0.6, -0.4, 0.4]], v1: [0.66, -0.6, -0.73], view: [-0.5, 0.3] },
+        };
+        const pre = v.select('$\\rho$', [{ value: 'ind', label: 'indefinite' }, { value: 'iso', label: 'every axis isotropic' }, { value: 'pos', label: 'positive definite' }, { value: 'ns', label: 'not symmetric' }], 'ind', { onChange: (k) => { [sc.yaw, sc.pitch] = PRE[k].view; h1.set(PRE[k].v1); h2.set([0.1, 0.95, -0.5]); } });
+        const S = v.stage({ x: [-2, 2], y: [-1.85, 1.85], equal: true, axes: false, height: 420, weight: 1.2 });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.45, lim: 1.4 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, weight: 0.8, minWidth: 260 });
+        const h1 = sc.handle(PRE.ind.v1, { color: 'accent', label: 'v₁' });
+        const h2 = sc.handle([0.1, 0.95, -0.5], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'purple', label: 'v₂' });
+        let st = null;
+        v.render(() => {
+          const key = pre.value, A = PRE[key].A, As = symPart(A), symm = key !== 'ns';
+          sc.begin();
+          const iso = drawIso(sc, M, As);
+          // step 1: v₁ and its ρ-orthogonal plane U₁ = (Av₁)^⊥
+          const v1 = h1.p, q1 = bil(A, v1, v1), n1 = mv(A, v1), [a1, b1] = perpPair(n1);
+          h2.a = a1; h2.b = b1;
+          { const nn = unit(n1); let p = sub(h2.p, scl(nn, dot(h2.p, nn))); if (len(p) < 0.25) p = scl(a1, 0.95); h2.p = p; }
+          // step 2: v₂ ∈ U₁ and U₂ = U₁ ∩ (Av₂)^⊥
+          const v2 = h2.p, q2 = bil(A, v2, v2), n2 = mv(A, v2);
+          let d3 = cross(n1, n2); const ok3 = len(d3) > 1e-6 * Math.max(1, len(n1) * len(n2));
+          if (det3(v1, v2, d3) < 0) d3 = scl(d3, -1);
+          const v3 = ok3 ? scl(unit(d3), 1.15) : [0, 0, 0];
+          sc.disc(a1, b1, 1.3, { fill: 'orange', fillAlpha: 0.11, color: 'orange', grid: true, alpha: 0.6 });
+          sc.tex('U_1', scl(add(a1, b1), 0.95), { color: 'orange', size: 15, top: true });
+          if (ok3) { const d = unit(d3); sc.line(scl(d, -1.65), scl(d, 1.65), { color: 'green', width: 2.2, alpha: 0.75 }, 14); sc.tex('U_2', scl(d, -1.75), { color: 'green', size: 15 }); }
+          if (key === 'iso') {
+            const e1 = [0.85, 0, 0], e2 = [0, 0.85, 0];
+            sc.arrow([0, 0, 0], e1, { color: 'muted', width: 1.8 }); sc.arrow([0, 0, 0], e2, { color: 'muted', width: 1.8 });
+            sc.line(e1, add(e1, e2), { color: 'muted', dash: [4, 4], width: 1.2 }); sc.line(e2, add(e1, e2), { color: 'muted', dash: [4, 4], width: 1.2 });
+            sc.tex('e_1', e1, { color: 'muted', size: 13, dx: 4, dy: 12 }); sc.tex('e_2', e2, { color: 'muted', size: 13, dx: 10, dy: 8 });
+          }
+          sc.arrow([0, 0, 0], v1, { color: 'accent', width: 3 });
+          sc.arrow([0, 0, 0], v2, { color: 'purple', width: 3 });
+          if (ok3) { sc.arrow([0, 0, 0], v3, { color: 'green', width: 3 }); sc.tex('v_3', v3, { color: 'green', size: 15, dx: 12, dy: -10 }); }
+          sc.flush();
+          const basis = [v1, v2, v3], dB = det3(v1, v2, v3), isBasis = ok3 && Math.abs(dB) > 0.03;
+          const bad1 = Math.abs(q1) < 0.05 * dot(v1, v1), bad2 = Math.abs(q2) < 0.05 * dot(v2, v2);
+          if (bad1) S.corner('ρ(v₁, v₁) ≈ 0: v₁ lies in U₁ — choose another v₁', 'tl', { color: 'red', weight: 700 });
+          else if (bad2) S.corner('ρ(v₂, v₂) ≈ 0: v₂ lies in U₂ — choose another v₂', 'tl', { color: 'red', weight: 700 });
+          // the matrix of ρ in the basis v₁, v₂, v₃
+          const Mr = gram(A, basis), W = R.width, H = R.height, cw = Math.min(64, (W - 70) / 3), ch = Math.min(44, cw * 0.75), X0 = (W - 3 * cw) / 2 + 10, Y0 = 70;
+          const zero = (x) => Math.abs(x) < 1e-9;
+          matPx(v, R, Mr, X0, Y0, {
+            cw, ch, size: 15, label: '\\mathcal M\\big(\\rho, (v_1, v_2, v_3)\\big)', labelSize: 15,
+            fill: (i, j) => (i === j ? [Mr[i][i] > 1e-9 ? 'blue' : Mr[i][i] < -1e-9 ? 'red' : 'muted', 0.18] : zero(Mr[i][j]) ? ['green', 0.1] : ['red', 0.18]),
+            color: (i, j) => (i !== j && zero(Mr[i][j]) ? 'green' : 'ink'),
+          });
+          ['v_1', 'v_2', 'v_3'].forEach((t, i) => R.texPx(t, X0 - 18, Y0 + (i + 0.5) * ch, { size: 14, color: ['accent', 'purple', 'green'][i] }));
+          const dg = [0, 1, 2].map((i) => Mr[i][i]), sg = signature(dg, 1e-9), ev = M.eigSym(As).values, sgE = signature(ev, 1e-7);
+          const sgn = (x) => (x > 1e-9 ? '+' : x < -1e-9 ? '-' : '0');
+          let y = Y0 + 3 * ch + 36;
+          const line = (tex, col = 'ink', size = 14) => { R.texPx(tex, W / 2, y, { size, color: col }); y += 30; };
+          if (!isBasis) line('\\text{not a basis}', 'red', 15);
+          else if (symm) {
+            line(`\\text{diagonal signs } (${dg.map(sgn).join(', ')})`, 'ink');
+            line(`(n_+, n_-, n_0) = (${sg.join(', ')})`, 'ink', 15);
+            line(`\\text{eigenvalues of } \\mathcal M(\\rho, \\text{std}):`, 'muted', 13);
+            line(ev.map((x) => tn(x, 2)).join(',\\ \\ '), 'muted', 13);
+            line(`\\text{signs } (${sgE.join(', ')}) \\text{ — the same}`, sgE.join() === sg.join() ? 'green' : 'red', 13);
+          } else {
+            line('\\text{below the diagonal: all } 0', 'green');
+            line('\\text{above: } \\rho(v_1, v_2) = ' + tn(Mr[0][1], 2), 'red');
+            line('\\text{not diagonal: } \\rho(v_1, v_2) \\ne \\rho(v_2, v_1)', 'red', 13);
+          }
+          st = { Mr, dg, sg, ev, sgE, symm, isBasis, bad1, bad2, iso };
+        });
+        v.legend([['accent', '$v_1$'], ['orange', '$U_1 = \\{u : \\rho(u, v_1) = 0\\}$', { area: true }], ['purple', '$v_2 \\in U_1$'], ['green', '$U_2$ and $v_3$'], ['muted', 'isotropic cone']]);
+        v.readout(() => {
+          if (!st) return '';
+          if (!st.isBasis) return 'With this choice $v_1, v_2, v_3$ is not a basis: an isotropic vector ($\\rho(v, v) = 0$) lies in its own $\\rho$-orthogonal space, which is why the proof first finds a $v$ with $\\rho(v, v) \\ne 0$ (from the identity $2\\rho(u, w) = \\rho(u + w, u + w) - \\rho(u, u) - \\rho(w, w)$).';
+          const off = Math.max(...[[0, 1], [0, 2], [1, 2], [1, 0], [2, 0], [2, 1]].map(([i, j]) => Math.abs(st.Mr[i][j])));
+          if (st.symm) return `$\\mathcal M\\big(\\rho, (v_1, v_2, v_3)\\big) = \\operatorname{diag}(${st.dg.map((x) => tn(x, 3)).join(', ')})$, largest off-diagonal entry $${v.sci(off, 2)}$. Signs $(n_+, n_-, n_0) = (${st.sg.join(', ')})$ — the same as the signs of the eigenvalues of the standard matrix, for every admissible choice of $v_1, v_2$ (Sylvester's law of inertia).`;
+          return `$\\mathcal M\\big(\\rho, (v_1, v_2, v_3)\\big) = ${mtex(st.Mr)}$: the entries $\\rho(v_2, v_1), \\rho(v_3, v_1), \\rho(v_3, v_2)$ vanish by construction, but without symmetry nothing forces $\\rho(v_1, v_2)$ and its companions to vanish. A non-symmetric form has no diagonal matrix in any basis: (d) implies (a).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 9.13
+    {
+      num: '9.13',
+      kind: 'Theorem',
+      name: 'Diagonalizing a symmetric form by an orthonormal basis',
+      statement: String.raw`Suppose $V$ is a real inner product space and $\rho$ is a symmetric bilinear form on $V$. Then $\rho$ has a diagonal matrix with respect to some orthonormal basis of $V$.`,
+      idea: String.raw`Take any orthonormal basis $f_1, \dots, f_n$ and let $B = \mathcal M(\rho, f)$, a symmetric matrix by 9.12. The operator $T$ with $\mathcal M(T, f) = B$ is self-adjoint (its matrix in an orthonormal basis equals its transpose), so the real spectral theorem (7.29) gives an orthonormal basis $e_1, \dots, e_n$ in which $T$ is diagonal: $C^{-1}BC$ is diagonal, where $C = \mathcal M\big(I, (e), (f)\big)$ (3.84). Because $C$ is a real unitary matrix, $C^{-1} = C^{t}$ (7.57), so by 9.7 $\mathcal M(\rho, e) = C^{t}BC = C^{-1}BC$ is diagonal. The inner product has nothing to do with $\rho$: the theorem diagonalizes two quadratic forms at once — the positive definite $\langle v, v\rangle$ (to the identity) and $\rho(v, v)$. The proof fails over $\mathbf C$, where a symmetric matrix need not be self-adjoint.`,
+      caption: String.raw`Left: the dashed ellipse is the unit circle of the inner product $\langle x, y\rangle = x_1y_1 + c\,x_2y_2$, and the blue and orange curves are $\rho(v, v) = 1$ and $\rho(v, v) = -1$. Drag $f_1$ around the dashed ellipse; $f_2$ is the unit vector orthogonal to it *for this inner product*, so $f_1, f_2$ is always an orthonormal basis. Right: the same picture in the coordinates of $f_1, f_2$, where the inner product becomes the ordinary dot product and the curves are those of $\mathcal M(\rho, (f_1, f_2))$. When the dashed green principal axes line up with the coordinate axes (the handle snaps there) the matrix is diagonal. With $c \ne 1$ the solution is orthonormal but does not look perpendicular. A skew part $s$ breaks symmetry: the curves can still be aligned, but the matrix keeps the off-diagonal entries $\pm s/\sqrt c$.`,
+      deps: ['ladr-9.12', 'ladr-7.29', 'ladr-3.84', 'ladr-9.7', 'ladr-7.57'],
+      see: ['mech-11.4'],
+      tags: ['bilinear forms', 'spectral theorem'],
+      viz(v) {
+        const PRE = { ell: [[1.3, 0.55], [0.55, 0.6]], hyp: [[0.5, 0.9], [0.9, -0.4]] };
+        const pre = v.select('$\\rho$', [{ value: 'ell', label: 'ellipse type' }, { value: 'hyp', label: 'hyperbola type' }], 'ell');
+        const cw = v.slider('weight $c$ in $\\langle x, y\\rangle = x_1y_1 + c\\,x_2y_2$', 0.3, 3, 1, { step: 0.05 });
+        const sk = v.slider('skew part $s$ added to $\\rho$', -1, 1, 0, { step: 0.05 });
+        const P = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 380, title: 'in $V = \\mathbf R^2$' });
+        const Q = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 380, title: 'in the coordinates of $f_1, f_2$' });
+        let t = 0.2;
+        /** Angles (in whitened coordinates y = G^{1/2}x) of the G-orthonormal eigen-directions of the symmetric part. */
+        const targets = () => {
+          const c = cw.value, Bs = PRE[pre.value], r = Math.sqrt(c), Bt = [[Bs[0][0], Bs[0][1] / r], [Bs[1][0] / r, Bs[1][1] / c]], E = esym2(Bt);
+          return E.u.flatMap((u) => { const a = Math.atan2(u[1], u[0]); return [a, a + Math.PI, a - Math.PI, a + TAU, a - TAU]; });
+        };
+        const fh = P.handle(Math.cos(t), Math.sin(t), {
+          color: 'gold', label: 'f₁', constrain: (x, y) => {
+            const r = Math.sqrt(cw.value); let tt = Math.atan2(y * r, x);
+            for (const z of targets()) if (Math.abs(tt - z) < 3.5 / DEG) tt = z;
+            t = tt; return [Math.cos(t), Math.sin(t) / r];
+          },
+        });
+        let st = null;
+        v.render(() => {
+          const c = cw.value, r = Math.sqrt(c), s = sk.value, Bs = PRE[pre.value], Bf = [[Bs[0][0], Bs[0][1] + s], [Bs[1][0] - s, Bs[1][1]]], G = [[1, 0], [0, c]];
+          const f1 = [Math.cos(t), Math.sin(t) / r], f2 = [-Math.sin(t), Math.cos(t) / r];
+          fh.x = f1[0]; fh.y = f1[1];
+          const F = fromCols([f1, f2]), Mf = mm(mm(tp(F), Bf), F), Mg = mm(mm(tp(F), G), F), Ms = symPart(Mf);
+          const diag = Math.abs(Mf[0][1]) < 1e-9 && Math.abs(Mf[1][0]) < 1e-9, aligned = Math.abs(Ms[0][1]) < 1e-9;
+          // left: the plane
+          const ell = []; for (let k = 0; k <= 120; k++) { const a = (TAU * k) / 120; ell.push([Math.cos(a), Math.sin(a) / r]); }
+          P.path(ell, { color: 'muted', width: 1.4, dash: [5, 4] });
+          P.clip(() => { P.path(conic(Bs, 1), { color: 'accent', width: 2.6 }); P.path(conic(Bs, -1), { color: 'orange', width: 2.6 }); });
+          if (aligned) for (const f of [f1, f2]) { const u = unit(f); P.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], { color: 'green', width: 1.4, alpha: 0.7 }); }
+          P.arrow(0, 0, f1[0], f1[1], { color: 'gold', width: 3 });
+          P.arrow(0, 0, f2[0], f2[1], { color: 'purple', width: 3 }); tip(P, 'f_2', f2, 'purple', { off: 16 });
+          // right: in f-coordinates
+          Q.circle(0, 0, 1, { color: 'muted', width: 1.4, dash: [5, 4] });
+          Q.clip(() => { Q.path(conic(Ms, 1), { color: 'accent', width: 2.6 }); Q.path(conic(Ms, -1), { color: 'orange', width: 2.6 }); });
+          const E = esym2(Ms);
+          for (const u of E.u) Q.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], { color: 'green', width: 1.6, dash: [7, 5], alpha: aligned ? 1 : 0.75 });
+          Q.arrow(0, 0, 1, 0, { color: 'gold', width: 3 }); Q.arrow(0, 0, 0, 1, { color: 'purple', width: 3 });
+          Q.tex('f_1', 1, 0, { color: 'gold', dx: 12, dy: 12 }); Q.tex('f_2', 0, 1, { color: 'purple', dx: 14, dy: 8 });
+          const tilt = ((((E.phi * DEG) % 90) + 135) % 90) - 45;
+          Q.corner(aligned ? (diag ? 'diagonal: aligned with the axes' : 'aligned, but the skew part stays') : `principal axes tilted by ${pn(tilt, 1)}°`, 'tl', { color: aligned ? (diag ? 'green' : 'red') : 'muted', weight: 700 });
+          st = { Mf, Mg, diag, aligned, s, c };
+        });
+        v.legend([['muted', 'unit circle of $\\langle\\cdot,\\cdot\\rangle$', { dash: true }], ['accent', '$\\rho(v, v) = 1$'], ['orange', '$\\rho(v, v) = -1$'], ['gold', '$f_1$'], ['purple', '$f_2$'], ['green', 'principal axes', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const head = `$\\mathcal M\\big(\\rho, (f_1, f_2)\\big) = ${mtex(st.Mf, 3)}$, and $\\big(\\langle f_j, f_k\\rangle\\big) = ${mtex(st.Mg, 3)}$: an orthonormal basis. `;
+          if (st.diag) return head + `**Diagonal**, with entries $\\rho(f_1, f_1) = ${tn(st.Mf[0][0], 3)}$ and $\\rho(f_2, f_2) = ${tn(st.Mf[1][1], 3)}$ — the eigenvalues of the self-adjoint operator $T$ with $\\langle Tu, w\\rangle = \\rho(u, w)$.`;
+          if (Math.abs(st.s) > 1e-9) return head + `The off-diagonal entries are $${tn(st.Mf[0][1], 3)}$ and $${tn(st.Mf[1][0], 3)}$: their difference is $2s/\\sqrt c = ${tn((2 * st.s) / Math.sqrt(st.c), 3)}$ for *every* orthonormal basis, so they never vanish together — a non-symmetric form is not diagonalizable at all (9.12).`;
+          return head + 'Rotate $f_1$ until the off-diagonal entries vanish (the handle snaps there).';
         });
       },
     },

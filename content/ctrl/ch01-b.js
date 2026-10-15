@@ -148,7 +148,7 @@ As $K$ rises the closed-loop response typically becomes faster, then oscillatory
       tags: ['stability', 'time delay'],
       viz(v) {
         const M = v.M, TEND = 30;
-        const plS = v.select('plant', [{ value: 'lag3', label: '$1/(s+1)^3$' }, { value: 'delay', label: '$e^{-\\theta s}/(s+1)$' }], 'lag3');
+        const plS = v.select('plant', [{ value: 'lag3', label: '$1/(s+1)^3$' }, { value: 'delay', label: '$e^{-\\theta s}/(s+1)$' }], 'lag3', { onChange: (p) => kS.set(p === 'delay' ? 1.8 : 6) });
         const kS = v.slider('gain $K$', 0.1, 20, 6, { log: true, fmt: (x) => v.fix(x, 2) });
         const thS = v.slider('delay $\\theta$', 0.2, 2.5, 1, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} s` });
         const st = v.stage({ x: [0, TEND], y: [-0.8, 2.6], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'y(t)', full: true, title: 'closed-loop step response' });
@@ -207,7 +207,9 @@ As $K$ rises the closed-loop response typically becomes faster, then oscillatory
           sp.dots(pts, { r: 1.6, color: 'muted', alpha: 0.6 });
           sp.dot(-1, 0, { r: 6, hollow: true, color: 'ink', width: 2 });
           const cl = roots(K);
-          for (const z of cl) { const col = z[0] > 1e-9 ? 'red' : 'accent'; cross(sp, clamp(z[0], -4.4, 1.7), clamp(z[1], -4.4, 4.4), 0.17, { color: col, width: 3 }); }
+          let hidden = 0;
+          for (const z of cl) { if (z[0] < -4.4 || z[0] > 1.7 || Math.abs(z[1]) > 4.3) { hidden++; continue; } cross(sp, z[0], z[1], 0.17, { color: z[0] > 1e-9 ? 'red' : 'accent', width: 3 }); }
+          if (del) sp.corner(`${hidden ? `${hidden} more found outside this window; ` : ''}infinitely many in all`, 'bl', { size: 10.5 });
           // ---- rightmost real part vs K
           const U = ultimate();
           gs.hband(0, 2, { color: 'red', alpha: 0.07 });
@@ -320,8 +322,8 @@ where $F$ is the feedforward compensator. Feedforward lies outside the loop and 
           room.corner(`t = ${v.fix(tm, 0)} min`, 'tl', { size: 11.5 });
           // ---- temperatures and powers
           for (const s of [tc, qc]) { s.vband(20, 35, { color: 'gold', alpha: 0.1 }); s.vband(80, 95, { color: 'teal', alpha: 0.1 }); }
-          tc.text('door', 27.5, 17.65, { size: 11, color: 'muted', align: 'center' });
-          tc.text('window', 87.5, 17.65, { size: 11, color: 'muted', align: 'center' });
+          tc.text('door', 27.5, 18.15, { size: 11, color: 'muted', align: 'center' });
+          tc.text('window', 87.5, 20.68, { size: 11, color: 'muted', align: 'center' });
           tc.hline(Tref, { color: 'ink', dash: [5, 4], width: 1 });
           for (const m of ['ff', 'fb', 'both']) {
             trace(tc, S[m].tt, S[m].Tt, { color: COL[m], width: m === mode ? 3 : 1.7, alpha: m === mode ? 1 : 0.75 });
@@ -576,7 +578,7 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
           },
         };
         const prS = v.select('graph', Object.entries(PRESETS).map(([value, o]) => ({ value, label: o.label })), 'a');
-        const s = v.stage({ x: [-0.7, 10.7], y: [-1.7, 2.3], equal: true, axes: false, height: 230, full: true });
+        const s = v.stage({ x: [-0.7, 10.7], y: [-1.3, 1.75], equal: true, axes: false, height: 230, full: true });
         const lab = (id) => (id === 'u' ? '$u$' : id === 'y' ? '$y$' : `$x_{${id.slice(1)}}$`);
         const mk = (key) => {
           const P = PRESETS[key];
@@ -639,7 +641,7 @@ Moreover $\Delta=\det(I-G)$, where $G$ is the matrix of branch gains, so $T$ is 
         };
         const S = v.steps({
           frames: framesFor,
-          code: ['forward paths $P_k$: $u\\to y$, no node twice', 'loops $L_i$: closed paths, no node twice', 'sets of loops that share no node', '$\\Delta=1-\\sum L_i+\\sum L_iL_j-\\sum L_iL_jL_k+\\cdots$', '$\\Delta_k$: the same sum over the loops that miss $P_k$', '$T=\\sum_k P_k\\Delta_k/\\Delta$'],
+          code: ['forward paths $P_k$: $u\\to y$, no node twice', 'loops $L_i$: closed paths, no node twice', 'loop sets that share no node', '$\\Delta=1-\\sum L_i+\\sum L_iL_j-\\sum L_iL_jL_k+\\cdots$', '$\\Delta_k$: the same sum over the loops that miss $P_k$', '$T=\\sum_k P_k\\Delta_k/\\Delta$'],
           codeTitle: 'Mason’s gain formula', codePos: 'below', start: 'end', still: 'end',
         });
         G.onClick = ({ edge, shift }) => {
@@ -710,10 +712,10 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
           pl.raster((x, y) => { if (x <= 0 || y <= 0) return null; const c = COLS[classify(x, y)], t = 0.22; return [panel[0] + (c[0] - panel[0]) * t, panel[1] + (c[1] - panel[1]) * t, panel[2] + (c[2] - panel[2]) * t]; }, { res: 3, key: `chart|${v.color('panel')}` });
           pl.axes();
           pl.fn((b) => (kOf(b) > 0 ? kOf(b) : NaN), { color: 'ink', width: 2.6, domain: [0, BX[1]] });
-          pl.text('hunting (unstable)', 0.2, 7.5, { size: 12, color: 'red', weight: 600 });
+          pl.text('hunting (unstable)', 0.15, 4.5, { size: 12, color: 'red', weight: 600 });
           pl.text('decaying oscillation', 2.2, 0.9, { size: 12, color: 'blue', weight: 600, align: 'center' });
-          pl.text('creep: all roots real', 3.1, 0.033, { size: 12, color: 'green', weight: 600, align: 'right' });
-          pl.tex('a_2a_1=a_3a_0', 0.62, kOf(0.62), { size: 13, align: 'right', dx: -10, dy: -4 });
+          pl.text('creep: all roots real', 1.58, 0.045, { size: 12, color: 'green', weight: 600, align: 'left' });
+          pl.tex('a_2a_1=a_3a_0', 2.0, kOf(2.0) / 1.6, { size: 13, align: 'center' });
           // ---- roots and their path in K at this friction
           const r = cubicRoots(govCubic(p).coef);
           cp.vband(0, 2, { color: 'red', alpha: 0.07 });
@@ -732,7 +734,7 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
           ts.hline(100, { color: 'ink', dash: [5, 4], width: 1 });
           if (!resp.eq2.stop) ts.hline((100 * resp.eq2.w) / GOV.w0, { color: 'green', dash: [6, 4], width: 1.3 });
           ts.vline(TSTEP, { color: 'purple', dash: [3, 3], width: 1.2 });
-          ts.text('load +8 %', TSTEP + 1.5, 76, { size: 11, color: 'purple' });
+          ts.text('load +8 %', TSTEP + 1.5, 84, { size: 11, color: 'purple' });
           ts.clip(() => trace(ts, resp.tt, resp.ww, { color: classify(beta, K) === 2 ? 'red' : 'accent', width: 2.3 }));
         });
         v.legend([['blue', 'decaying oscillation', { area: true }], ['green', 'aperiodic (creep)', { area: true }], ['red', 'unstable (hunting)', { area: true }], ['muted', 'root paths as $K$ varies', { dot: true }]]);
