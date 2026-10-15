@@ -458,7 +458,7 @@ with $a_0=\varepsilon_0h^2/\pi m_ee^2=0.0529$ nm. The photon wavelengths reprodu
       tags: ['bohr model', 'hydrogen'],
       viz(v) {
         const M = v.M, C = M.CONST;
-        const NUC = { 1: { label: 'H', M: C.mp }, 2: { label: 'He⁺', M: 6.6446573e-27 - 2 * C.me }, 3: { label: 'Li²⁺', M: 1.1650478e-26 - 3 * C.me } };
+        const NUC = { 1: { label: 'H', M: C.mp }, 2: { label: 'He⁺', M: 6.6446573e-27 }, 3: { label: 'Li²⁺', M: 1.1650478e-26 - 3 * C.me } };
         const Zs = v.select('atom', [1, 2, 3].map((z) => ({ value: z, label: NUC[z].label })), 1);
         const red = v.toggle('reduced-mass correction', true);
         const cls = v.toggle('classical electron (radiates)', false);

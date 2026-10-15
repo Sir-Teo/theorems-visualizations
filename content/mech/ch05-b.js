@@ -348,7 +348,7 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Catenary' },
       viz(v) {
         const N = 48;
-        const ellS = v.slider('chain length $\\ell$ (m)', 3.2, 6.5, 4.4, { step: 0.05 });
+        const ellS = v.slider('chain length $\\ell$ (m)', 3.2, 6.5, 5, { step: 0.05 });
         const para = v.toggle('show parabola of equal sag', false);
         const s = v.stage({ x: [-2.3, 2.3], y: [-3.1, 0.8], equal: true, axes: false, height: 360, title: 'a simulated chain (beads) and the predicted catenary' });
         const near = (x, y, o) => { const dx = x - o.x, dy = y - o.y, d = Math.hypot(dx, dy), m = 0.97 * ellS.value; return d > m ? [o.x + (dx * m) / d, o.y + (dy * m) / d] : [x, y]; };
@@ -378,7 +378,7 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         for (let k = 0; k < 4000; k++) step(1 / 600, 40, 0.97); // settle once before the first frame
         v.button('Shake', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); for (let i = 1; i < N; i++) { prev[i][0] -= r.uniform(-0.02, 0.02); prev[i][1] -= r.uniform(-0.03, 0.05); } });
         v.button('Drop from a hump', () => reset(-0.6));
-        let lastT = 0, cur = null;
+        let lastT = 0, cur = null, subDt = 1 / 600;
         // Gauss–Newton fit of y = y0 + c cosh((x − x0)/c) to the beads
         const fit = (start) => {
           let [x0, y0, c] = start;
@@ -396,12 +396,11 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         };
         v.animate((t) => {
           let dt = t - lastT; lastT = t; if (!(dt > 0) || dt > 0.05) dt = 0;
-          if (dt > 0) { const n = 10; for (let k = 0; k < n; k++) step(dt / n, 40, 0.996); }
+          if (dt > 0) { const n = 10; subDt = dt / n; for (let k = 0; k < n; k++) step(subDt, 40, 0.996); }
           pos[0] = [P1.x, P1.y]; pos[N] = [P2.x, P2.y];
           const cat = catenaryThrough(P1.x, P1.y, P2.x, P2.y, ellS.value), F = fit([cat.x0, cat.y0, cat.c]);
           s.hline(cat.y0, { color: 'purple', dash: [2, 4], width: 1.4 });
           s.text(`λ = ${v.fix(cat.y0, 3)} m: tension ∝ height above this line`, -2.25, cat.y0, { color: 'purple', size: 11.5, baseline: 'bottom', dy: -3 });
-          s.fn(cat.f, { domain: [P1.x, P2.x], color: 'green', width: 2.4, dash: [7, 5] });
           let ymin = Infinity, xmin = 0; pos.forEach((p) => { if (p[1] < ymin) { ymin = p[1]; xmin = p[0]; } });
           let parDev = 0, parF = null;
           if (para.value) {
@@ -412,10 +411,11 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
           s.path(pos, { color: 'muted', width: 1.6 });
           // tension ∝ y − λ : colour the beads by it
           const Tmax = Math.max(...pos.map((p) => p[1] - cat.y0));
-          pos.forEach((p, i) => { if (i > 0 && i < N) s.dot(p[0], p[1], { r: 3.6, color: v.mix('teal', 'orange', clamp((p[1] - cat.y0) / Tmax, 0, 1)) }); });
+          pos.forEach((p, i) => { if (i > 0 && i < N) s.dot(p[0], p[1], { r: 3.4, color: v.mix('teal', 'orange', clamp((p[1] - cat.y0) / Tmax, 0, 1)) }); });
+          s.fn(cat.f, { domain: [P1.x, P2.x], color: 'green', width: 2, dash: [7, 5] });
           let dev = 0, len = 0; pos.forEach((p, i) => { dev = Math.max(dev, Math.abs(p[1] - cat.f(p[0]))); if (i) len += Math.hypot(p[0] - pos[i - 1][0], p[1] - pos[i - 1][1]); });
-          let ke = 0; for (let i = 1; i < N; i++) ke += (pos[i][0] - prev[i][0]) ** 2 + (pos[i][1] - prev[i][1]) ** 2;
-          s.corner(ke < 1e-9 ? 'at rest' : 'moving…', 'tr', { color: ke < 1e-9 ? 'green' : 'orange', weight: 600 });
+          let vmax = 0; for (let i = 1; i < N; i++) vmax = Math.max(vmax, Math.hypot(pos[i][0] - prev[i][0], pos[i][1] - prev[i][1]) / subDt);
+          s.corner(vmax < 0.003 ? 'at rest' : `moving: fastest bead ${v.fix(100 * vmax, 1)} cm/s`, 'tr', { color: vmax < 0.003 ? 'green' : 'orange', weight: 600 });
           cur = { cat, F, dev, len, parDev, para: para.value, sag: Math.min(P1.y, P2.y) - ymin };
           v.legend([['green', 'catenary predicted from supports and length', { dash: true }], ['teal', 'beads: low tension', { dot: true }], ['orange', 'high tension', { dot: true }], ...(para.value ? [['red', 'parabola, same sag', { dash: true }]] : [])]);
         }, { still: 1 });
@@ -445,11 +445,11 @@ with equality only for circles. Equivalently, among closed curves of given lengt
         let mode = 'closed';
         const sel = v.select('', [{ value: 'closed', label: 'closed loop' }, { value: 'dido', label: 'Dido: fence against a coast' }], 'closed', { onChange: (m) => { mode = m; } });
         const s = v.stage({ x: [-2.6, 2.6], y: [-2.2, 2.2], equal: true, axes: false, height: 350, weight: 1.7, title: 'drag the vertices; play to relax' });
-        const sm = v.stage({ x: [0, 1], y: [-0.08, 1.12], axes: false, height: 350, minWidth: 170, weight: 0.55, title: 'isoperimetric ratio' });
+        const sm = v.stage({ x: [0, 1], y: [-0.15, 1.12], axes: false, height: 350, minWidth: 170, weight: 0.55, title: 'isoperimetric ratio' });
         const C0 = [[-1.9, -0.6], [-0.9, -1.5], [0.4, -0.9], [1.7, -1.6], [2.1, 0.1], [1.1, 0.5], [1.5, 1.6], [-0.2, 1.3], [-1.3, 1.7]];
         const D0 = [[-2.2, 0], [-1.7, 1.2], [-0.6, 0.7], [0.3, 1.9], [1.2, 1.0], [2.0, 0.7], [2.3, 0]];
         const COAST = -1.5;
-        const HC = C0.map((p) => s.handle(p[0], p[1], { color: 'accent', constrain: { x: [-2.5, 2.5], y: [-2.1, 2.1] } }));
+        const HC = C0.map((p) => s.handle(0.8 * p[0], 0.8 * p[1], { color: 'accent', constrain: { x: [-2.5, 2.5], y: [-2.1, 2.1] } }));
         const HD = D0.map((p, i) => s.handle(p[0], p[1] + COAST, { color: i === 0 || i === D0.length - 1 ? 'orange' : 'accent', constrain: i === 0 || i === D0.length - 1 ? (x) => [clamp(x, -2.5, 2.5), COAST] : (x, y) => [clamp(x, -2.5, 2.5), clamp(y, COAST + 0.02, 2.1)] }));
         const curveOf = (P, dido) => (dido ? spline(P, 18, false) : spline(P, 18, true));
         const ratio = (P, dido) => { const c = curveOf(P, dido), A = Math.abs(shoelace(dido ? c.map((p) => [p[0], p[1] - COAST]) : c)), L = perim(c, !dido); return { A, L, Q: ((dido ? 2 : 4) * Math.PI * A) / (L * L), c }; };
@@ -475,7 +475,7 @@ with equality only for circles. Equivalently, among closed curves of given lengt
           if (dido) {
             s.rect(-9, -9, 9, COAST, { fill: 'teal', fillAlpha: 0.18, stroke: false });
             s.hline(COAST, { color: 'teal', width: 2 });
-            s.text('sea', 2.5, COAST - 0.25, { align: 'right', color: 'teal', size: 12 });
+            s.text('sea', -2.5, COAST - 0.3, { align: 'left', color: 'teal', size: 12, weight: 600 });
             const r = R0.L / Math.PI, xm = (P[0][0] + P[P.length - 1][0]) / 2;
             s.curve((u) => [xm + r * Math.cos(Math.PI * u), COAST + r * Math.sin(Math.PI * u)], 0, 1, { color: 'green', width: 2, dash: [7, 5] });
             s.poly([...R0.c, [P[P.length - 1][0], COAST], [P[0][0], COAST]], { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 3 });
@@ -496,7 +496,7 @@ with equality only for circles. Equivalently, among closed curves of given lengt
           sm.text(v.fix(Q, 4), 0.66, Q, { align: 'left', color: 'ink', size: 13, weight: 700 });
           if (hullQ != null && hullQ - Q > 0.002) { sm.line(0.26, hullQ, 0.66, hullQ, { color: 'purple', width: 1.6, dash: [3, 3] }); sm.text('hull', 0.25, hullQ, { align: 'right', color: 'purple', size: 11 }); }
           for (const q of [0, 0.25, 0.5, 0.75]) sm.text(v.fix(q, 2), 0.27, q, { align: 'right', size: 10.5, color: 'muted' });
-          sm.text(dido ? '2πA/L²' : '4πA/L²', 0.46, -0.06, { align: 'center', size: 12, color: 'ink' });
+          sm.text(dido ? '2πA/L²' : '4πA/L²', 0.46, -0.07, { align: 'center', size: 12, color: 'ink' });
           cur = { dido, ...R0, hullQ };
           v.legend(dido
             ? [['accent', 'fenced land'], ['green', 'semicircle with the same fence length', { dash: true }], ['orange', 'fence ends (slide along the coast)', { dot: true }]]

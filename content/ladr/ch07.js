@@ -768,10 +768,10 @@ checked by expanding the right side. So if $q \equiv 0$, then $\langle Tu, w\ran
           const q1 = q(Tc, [cadd(e1[0], e2[0]), cadd(e1[1], e2[1])]), q2 = q(Tc, [csub(e1[0], e2[0]), csub(e1[1], e2[1])]);
           const q3 = q(Tc, [cadd(e1[0], ie2[0]), cadd(e1[1], ie2[1])]), q4 = q(Tc, [csub(e1[0], ie2[0]), csub(e1[1], ie2[1])]);
           const realHalf = csc(csub(q1, q2), 0.25), rhs = cadd(realHalf, cmul([0, 0.25], csub(q3, q4)));
-          st = { x, z, q1, q2, q3, q4, realHalf, rhs, lhs: cIP(cMV(Tc, e1), e2), k: K.value, Txy: dot(Tim, re), Tyx: dot(Tre, im), qx: dot(Tre, re), qy: dot(Tim, im) };
+          st = { x, z, q1, q2, q3, q4, realHalf, rhs, lhs: cIP(cMV(Tc, e1), e2), k: K.value, rot: which.value === 'rot', Txy: dot(Tim, re), Tyx: dot(Tre, im), qx: dot(Tre, re), qy: dot(Tim, im) };
           v.legend([['gold', '$x = \\operatorname{Re} v$, $Tx$'], ['orange', '$y = \\operatorname{Im} v$, $Ty$'], ['red', 'part of $Ty$ along $x$'], ['purple', '$|\\langle Tv, v\\rangle|$', { area: true }], ['green', 'real $v$', { dash: true }]]);
         });
-        v.readout(() => st && `$v = ${crowT(st.x)}$: $\\langle Tv, v\\rangle = \\langle Tx, x\\rangle + \\langle Ty, y\\rangle + i\\big(\\langle Ty, x\\rangle - \\langle Tx, y\\rangle\\big) = ${nm(st.qx, 3)} + ${nm(st.qy, 3)} + i(${nm(st.Txy, 3)} - (${nm(st.Tyx, 3)})) = ${czT(st.z, 3)}$. Polarization with $u = e_1$, $w = e_2$: $\\langle Tu, w\\rangle = \\tfrac14\\big[(${czT(st.q1)}) - (${czT(st.q2)})\\big] + \\tfrac i4\\big[(${czT(st.q3)}) - (${czT(st.q4)})\\big] = ${czT(st.rhs, 3)}$, and indeed $\\langle Te_1, e_2\\rangle = ${czT(st.lhs, 3)}$. The real vectors alone supply only the first bracket, $${czT(st.realHalf, 3)}$.`);
+        v.readout(() => st && `$v = ${crowT(st.x)}$: $\\langle Tv, v\\rangle = \\langle Tx, x\\rangle + \\langle Ty, y\\rangle + i\\big(\\langle Ty, x\\rangle - \\langle Tx, y\\rangle\\big) = ${nm(st.qx, 3)} + ${nm(st.qy, 3)} + i(${nm(st.Txy, 3)} - (${nm(st.Tyx, 3)})) = ${czT(st.z, 3)}$. Polarization with $u = e_1$, $w = e_2$: $\\langle Tu, w\\rangle = \\tfrac14\\big[(${czT(st.q1)}) - (${czT(st.q2)})\\big] + \\tfrac i4\\big[(${czT(st.q3)}) - (${czT(st.q4)})\\big] = ${czT(st.rhs, 3)}$, and indeed $\\langle Te_1, e_2\\rangle = ${czT(st.lhs, 3)}$. Real vectors alone supply only the first bracket, $${czT(st.realHalf, 3)}$` + (st.rot && Math.abs(st.k) > 1e-9 ? ': zero, so over $\\mathbf R$ the quarter turn is invisible to the form.' : '.'));
       },
     },
     // ------------------------------------------------------------------ 7.14
@@ -783,7 +783,7 @@ checked by expanding the right side. So if $q \equiv 0$, then $\langle Tu, w\ran
 $$T \text{ is self-adjoint} \iff \langle Tv, v\rangle \in \mathbf R \text{ for every } v \in V.$$
 This fails for real inner product spaces, where every $\langle Tv, v\rangle$ is real whether or not $T$ is self-adjoint.`,
       idea: String.raw`For every $v$, $\langle T^*v, v\rangle = \langle v, Tv\rangle = \overline{\langle Tv, v\rangle}$, so $\langle (T - T^*)v, v\rangle = \langle Tv, v\rangle - \overline{\langle Tv, v\rangle} = 2i\operatorname{Im}\langle Tv, v\rangle$. By 7.13 applied to $T - T^*$, this vanishes for all $v$ exactly when $T = T^*$. More quantitatively, $\operatorname{Im}\langle Tv, v\rangle = \langle Kv, v\rangle$ with $K = (T - T^*)/2i$ self-adjoint, so over unit vectors the imaginary parts fill the interval between the least and the greatest eigenvalue of $K$.`,
-      caption: String.raw`The gold point is $\langle Tv, v\rangle$ for a unit vector $v \in \mathbf C^2$ that wanders over the whole unit sphere; its trail fills the shaded region of all such values (for a $2 \times 2$ matrix an elliptical disc whose foci are the eigenvalues, drawn as hollow dots). The red band is the range of imaginary parts. Slide the non-Hermitian part $\varepsilon$ to $0$: $T$ becomes self-adjoint, the band closes, and the whole region collapses onto a segment of the real axis.`,
+      caption: String.raw`The gold point is $\langle Tv, v\rangle$ for a unit vector $v \in \mathbf C^2$ that wanders over the whole unit sphere; the small dots, one for each vector of a grid on the sphere, fill the shaded region of all such values (for a $2 \times 2$ matrix an elliptical disc whose foci are the eigenvalues, drawn as hollow dots). The red band is the range of imaginary parts. Slide the non-Hermitian part $\varepsilon$ to $0$: $T$ becomes self-adjoint, the band closes, and the whole region collapses onto a segment of the real axis.`,
       deps: ['ladr-7.13', 'ladr-7.10'],
       tags: ['self-adjoint'],
       viz(v) {
@@ -791,7 +791,7 @@ This fails for real inner product spaces, where every $\langle Tv, v\rangle$ is 
         const N = [[[0.1, 0.5], [0.9, 0.2]], [[-0.4, 0.1], [0, -0.6]]];
         const which = v.select('Hermitian part $H$', [{ value: 'a', label: 'complex $H$' }, { value: 'b', label: 'real symmetric $H$' }], 'a');
         const eps = v.slider('non-Hermitian part $\\varepsilon$ in $T = H + \\varepsilon N$', 0, 1, 0.6, { step: 0.01 });
-        const P = v.stage({ x: [-2.2, 2.2], y: [-1.45, 1.45], equal: true, height: 360, title: '$\\langle Tv, v\\rangle$ for unit vectors $v \\in \\mathbf C^2$' });
+        const P = v.stage({ x: [-2.2, 2.2], y: [-1.3, 1.3], equal: true, height: 320, title: '$\\langle Tv, v\\rangle$ for unit vectors $v \\in \\mathbf C^2$' });
         const vec = (t) => { const a = (Math.PI / 4) * (1 - Math.cos(0.73 * t)), f = 1.9 * t; return [[Math.cos(a), 0], [Math.cos(f) * Math.sin(a), Math.sin(f) * Math.sin(a)]]; };
         let st = null;
         v.animate((t) => {
@@ -802,7 +802,9 @@ This fails for real inner product spaces, where every $\langle Tv, v\rangle$ is 
           const bd = numRange(T);
           if (herm) { const [l1, l2] = hermEig(T); P.line(l2, 0, l1, 0, { color: 'green', width: 6, alpha: 0.8 }); }
           else P.poly(bd, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1.6 });
-          const tr = []; for (let k = 0; k <= 150; k++) { const x = vec(t - 5 + (5 * k) / 150); tr.push(cIP(cMV(T, x), x)); }
+          const cloud = []; for (let i = 0; i <= 12; i++) for (let j = 0; j < 24; j++) { const a = (Math.PI / 2) * (i / 12), f = (TAU * j) / 24, x = [[Math.cos(a), 0], [Math.cos(f) * Math.sin(a), Math.sin(f) * Math.sin(a)]]; cloud.push(cIP(cMV(T, x), x)); }
+          P.dots(cloud, { r: 1.7, color: herm ? 'green' : 'accent', alpha: 0.45 });
+          const tr = []; for (let k = 0; k <= 360; k++) { const x = vec(t - 12 + (12 * k) / 360); tr.push(cIP(cMV(T, x), x)); }
           P.path(tr, { color: 'gold', width: 1.4, alpha: 0.55 });
           const { ls } = cEig2(T);
           ls.forEach((l) => P.dot(l[0], l[1], { r: 4.5, color: 'ink', hollow: true }));

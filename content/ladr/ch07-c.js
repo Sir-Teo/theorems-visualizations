@@ -153,9 +153,9 @@ function face(x, y) {
   if (Math.abs(x - 40) < 0.9 && y > 29 && y < 35) return 0.5; // nose
   return 0.7 - 0.1 * ((x - 40) / 17); // skin, lit from the left
 }
-function plaid(x, y) { // an exact rank-3 tartan: (0.1 + 0.35 u(y))·1 + 1·0.35 w(x) + 0.2 u₂(y) w₂(x)
+function plaid(x, y) { // an exact rank-3 tartan: (0.18 + 0.3 u(y))·1 + 1·0.3 w(x) + 0.22 u₂(y) w₂(x)
   const band = (t, p, w) => { const r = (((t % p) + p) % p) - p / 2; return Math.exp(-(r * r) / (2 * w * w)); };
-  return 0.1 + 0.35 * band(y, 20, 3) + 0.35 * band(x, 16, 2.5) + 0.2 * band(y + 5, 10, 1.2) * band(x + 4, 8, 1.1);
+  return 0.18 + 0.3 * band(y, 20, 4.5) + 0.3 * band(x, 20, 4.5) + 0.22 * band(y + 5, 10, 1.3) * band(x + 5, 10, 1.3);
 }
 const PICS = { land: landscape, face, plaid };
 
@@ -771,11 +771,11 @@ $$B = R^*R.$$`,
         const M = v.M;
         const S = v.stage({ x: [-1.8, 1.8], y: [-1.6, 1.9], equal: true, axes: false, height: 380, weight: 1.3, minWidth: 320, title: 'in $W$: the image of the unit sphere of $V$' });
         const B = v.stage({ x: [0.3, 3.7], y: [0, 2], height: 380, minWidth: 240, axes: false, title: 'the singular values of $T$' });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.45, lim: 1.6 });
-        const shape = v.select('', [{ value: '33', label: '$\\mathbf R^3 \\to \\mathbf R^3$' }, { value: '32', label: '$\\mathbf R^2 \\to \\mathbf R^3$' }, { value: '23', label: '$\\mathbf R^3 \\to \\mathbf R^2$' }], '33');
-        const t1 = v.slider('collapse a column', 0, 1, 0.55, { step: 0.01 });
+        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.32, axis: 1.45, lim: 1.6 });
+        const shape = v.select('', [{ value: '33', label: '$\\mathbf R^3 \\to \\mathbf R^3$' }, { value: '32', label: '$\\mathbf R^2 \\to \\mathbf R^3$' }, { value: '23', label: '$\\mathbf R^3 \\to \\mathbf R^2$' }], '33', { onChange: (k) => { sc.pitch = k === '23' ? 0.95 : 0.32; } });
+        const t1 = v.slider('collapse a column', 0, 1, 0.35, { step: 0.01 });
         const t2 = v.slider('collapse another', 0, 1, 0, { step: 0.01 });
-        const C = { 33: [[1.15, 0.2, -0.1], [0.25, 0.85, 0.35], [-0.2, 0.25, 0.75]], 32: [[1.15, 0.3, -0.1], [-0.2, 0.8, 0.55]], 23: [[1.15, 0.3], [-0.4, 0.9], [0.5, 0.6]] };
+        const C = { 33: [[1.2, 0.25, -0.15], [0.05, 1.0, 0.3], [-0.25, 0.1, 1.0]], 32: [[1.15, 0.3, -0.1], [-0.2, 0.8, 0.55]], 23: [[1.15, 0.3], [-0.4, 0.9], [0.5, 0.6]] };
         const Tof = () => {
           const k = shape.value, c = C[k].map((x) => x.slice()), a = t1.value, b = t2.value;
           if (k === '33') { c[1] = add(c[1], scl(sub(scl(c[0], 0.8), c[1]), b)); c[2] = add(c[2], scl(sub(add(scl(c[0], 0.5), scl(c[1], -0.4)), c[2]), a)); }
@@ -882,7 +882,7 @@ $$S \text{ is an isometry} \iff \text{all singular values of } S \text{ equal } 
             const u = e[k];
             P.line(-2.1 * u[0], -2.1 * u[1], 2.1 * u[0], 2.1 * u[1], { color: c, width: 1, alpha: 0.35 });
             for (const sg of [1, -1]) P.dot(sg * s[k] * u[0], sg * s[k] * u[1], { color: c, r: 4.5 });
-            const lp = scl(u, Math.max(s[k], 0.25) + 0.3);
+            const lp = scl(u, Math.max(s[0], 1) + 0.38);
             P.tex(`s_${k + 1} = ${tn(s[k])}`, lp[0], lp[1], { color: c, size: 14 });
           }
           P.text('unit circle', 0, -1, { color: 'green', size: 11, dy: 12, align: 'center' });
@@ -914,7 +914,7 @@ for every $v \in V$.`,
       viz(v) {
         const S = v.stage({ x: [-3, 3], y: [-2.5, 2.5], equal: true, height: 400, full: true });
         const TL = v.stage({ x: [0, 10], y: [0, 1], height: 58, full: true, axes: false });
-        const H = colHandles(S, [[1.7, -0.6], [0.8, 1.0]]);
+        const H = colHandles(S, [[0.4, 1.3], [-1.4, -0.7]]);
         const PH = [[1, 3], [3.5, 5.5], [6, 8]], PL = ['1 · rotate e₁, e₂ onto the axes', '2 · stretch by s₁, s₂', '3 · rotate the axes onto f₁, f₂'], PC = ['blue', 'orange', 'purple'];
         TL.onClick((x) => { v.pause(); v.t = Math.max(0, Math.min(9.99, x)); });
         const EYES = [[-0.36, 0.3], [0.36, 0.3]], MOUTH = Array.from({ length: 25 }, (_, i) => scl(uAt(Math.PI * (1.15 + (0.7 * i) / 24)), 0.55));
@@ -986,7 +986,7 @@ $$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \q
             return len(a) > 0.1 && Math.abs(p[0] * a[1] - p[1] * a[0]) < 0.09 * len(a) ? scl(unit(a), dot([x, y], unit(a))) : p;
           },
         });
-        const wh = W.handle(-0.5, 1.5, { color: 'gold', label: 'w' });
+        const wh = W.handle(0.6, 1.6, { color: 'gold', label: 'w' });
         let st = null;
         v.render(() => {
           const T = H.A, { s, e, f } = svd22(T), w = [wh.x, wh.y], adj = which.value === 'adj';
@@ -1057,8 +1057,8 @@ $$A = BDC^*.$$`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Singular_value_decomposition' },
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-3, 259], y: [-3, 72], equal: true, axes: false, height: 300, full: true });
-        const G = v.stage({ x: [0.3, 60.7], y: [0.01, 100], ylog: true, height: 170, full: true, axes: 'box', xlabel: 'j', title: 'singular values $s_j$ of the picture, log scale (click to choose $k$)' });
+        const S = v.stage({ x: [-3, 259], y: [-3, 69], equal: true, axes: false, height: 285, full: true });
+        const G = v.stage({ x: [-1.6, 60.8], y: [0.01, 100], ylog: true, height: 170, full: true, axes: 'box', xlabel: 'j', title: 'singular values $s_j$ of the picture, log scale (click to choose $k$)' });
         const pic = v.select('', [{ value: 'land', label: 'landscape' }, { value: 'face', label: 'portrait' }, { value: 'plaid', label: 'tartan' }], 'land');
         const view = v.select('show', [{ value: 'img', label: 'images' }, { value: 'fac', label: 'the factors' }], 'img');
         const kS = v.slider('terms $k$', 1, 60, 6, { int: true, step: 1 });
@@ -1078,11 +1078,13 @@ $$A = BDC^*.$$`,
         v.render(() => {
           const D = get(pic.value), k = Math.round(kS.value), Ak = approx(D, k), fac = view.value === 'fac';
           const { A, U, s, V } = D;
-          S.setView(fac ? [-3, 275] : [-3, 259], [-3, 72]);
+          S.setView(fac ? [-3, 275] : [-3, 259], [-3, 69]);
+          const kk = Math.min(k, D.m);
+          let mU = 1e-12, mV = 1e-12; for (let l = 0; l < kk; l++) { for (let i = 0; i < IMG_P; i++) mU = Math.max(mU, Math.abs(U[i][l])); for (let j = 0; j < IMG_N; j++) mV = Math.max(mV, Math.abs(V[j][l])); }
           const rects = fac ? [
-            { x0: 0, y0: 0, w: 40, h: 60, rows: IMG_P, cols: k, cell: (i, j) => signed(U[i][j], D.mU * 0.8) },
-            { x0: 48, y0: 10, w: 40, h: 40, rows: k, cols: k, cell: (i, j) => (i === j ? rgba(v, 'gold', 0.2 + (0.8 * s[i]) / s[0]) : null) },
-            { x0: 96, y0: 10, w: 80, h: 40, rows: k, cols: IMG_N, cell: (i, j) => signed(V[j][i], D.mV * 0.8) },
+            { x0: 0, y0: 0, w: 40, h: 60, rows: IMG_P, cols: kk, cell: (i, j) => signed(U[i][j], mU * 0.75) },
+            { x0: 48, y0: 10, w: 40, h: 40, rows: kk, cols: kk, cell: (i, j) => (i === j ? rgba(v, 'gold', 0.2 + (0.8 * s[i]) / s[0]) : null) },
+            { x0: 96, y0: 10, w: 80, h: 40, rows: kk, cols: IMG_N, cell: (i, j) => signed(V[j][i], mV * 0.75) },
             { x0: 192, y0: 0, w: 80, h: 60, rows: IMG_P, cols: IMG_N, cell: (i, j) => gray(Ak[i][j]) },
           ] : [
             { x0: 0, y0: 0, w: 80, h: 60, rows: IMG_P, cols: IMG_N, cell: (i, j) => gray(A[i][j]) },
@@ -1097,11 +1099,13 @@ $$A = BDC^*.$$`,
             return null;
           }, { key: [pic.value, k, view.value, v.rgb('red').join(), v.rgb('panel').join()].join('|'), res: 1 });
           for (const R of rects) S.rect(R.x0, R.y0, R.x0 + R.w, R.y0 + R.h, { color: 'muted', width: 1 });
-          const TT = fac ? [`B_k\\ (60\\times ${k})`, `D_k\\ (${k}\\times ${k})`, `C_k^*\\ (${k}\\times 80)`, `A_k = B_kD_kC_k^*`] : ['A\\ \\ (60\\times 80)', `A_k,\\ \\text{rank } ${Math.min(k, D.m)}`, 'A - A_k'];
+          const ex = k >= D.m, sub = ex ? '' : '_k';
+          const TT = fac ? [`B${sub}\\ (60\\times ${kk})`, `D${sub}\\ (${kk}\\times ${kk})`, `C${sub}^*\\ (${kk}\\times 80)`, ex ? 'A = BDC^*' : 'A_k = B_kD_kC_k^*'] : ['A\\ \\ (60\\times 80)', `A_k,\\ \\text{rank } ${kk}`, 'A - A_k'];
           rects.forEach((R, i) => S.tex(TT[i], R.x0 + R.w / 2, R.y0 + R.h + 5.5, { size: 14, color: i === 1 && !fac ? 'accent' : 'ink' }));
           if (fac) { S.text('=', 184, 30, { size: 26, align: 'center', color: 'muted' }); S.text('·', 44, 30, { size: 26, align: 'center', color: 'muted' }); S.text('·', 92, 30, { size: 26, align: 'center', color: 'muted' }); }
           // errors
           let e2 = 0; for (let i = 0; i < IMG_P; i++) for (let j = 0; j < IMG_N; j++) e2 += (A[i][j] - Ak[i][j]) ** 2;
+          if (!fac && e2 < 1e-16) S.text('A − Aₖ = 0: exact', 216, 30, { align: 'center', size: 14, color: 'green', weight: 700 });
           const tail = Math.sqrt(s.slice(k).reduce((a, x) => a + x * x, 0)), tot = Math.sqrt(s.reduce((a, x) => a + x * x, 0));
           // spectrum
           const lo = 0.012;
@@ -1112,15 +1116,16 @@ $$A = BDC^*.$$`,
           });
           G.vline(k + 0.5, { color: 'gold', width: 1.6, dash: [4, 4] });
           G.text(`kept: ${k}`, k + 0.5, 55, { align: 'right', dx: -6, size: 12, color: 'blue', weight: 600 });
-          if (k < 60) G.text(`discarded: √(Σ s_j², j > ${k}) = ${pf(tail, 3)}`, k + 0.5, 55, { align: 'left', dx: 6, size: 12, color: 'red', weight: 600 });
-          if (D.m < 60) G.text(`s_j = 0 for j > ${D.m} = rank A`, 59.5, 0.035, { align: 'right', size: 12, color: 'muted' });
-          st = { k, m: D.m, err: Math.sqrt(e2), tail, tot };
+          if (k < 60) G.text(`discarded: √(Σ sⱼ² over j > ${k}) = ${pf(tail, 3)}`, k + 0.5, 55, { align: 'left', dx: 6, size: 12, color: 'red', weight: 600 });
+          if (D.m < 60) G.text(`sⱼ = 0 for j > ${D.m} = rank A`, 59.5, 18, { align: 'right', size: 12, color: 'muted', weight: 600 });
+          st = { k, m: D.m, err: Math.sqrt(e2), tail, tot, kk };
         });
         v.legend([['blue', 'kept singular values', { dot: true }], ['red', 'discarded', { dot: true }], ['red', '$A - A_k > 0$', { area: true }], ['blue', '$A - A_k < 0$', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
-          const { k, m, err, tail, tot } = st;
-          return `rank $m = ${m}$. With $k = ${k}$: $B_k$ is $60\\times${k}$, $D_k$ is $${k}\\times${k}$, $C_k$ is $80\\times${k}$ — $k(p + k + n) = ${k * (140 + k)}$ numbers instead of $pn = 4800$. Measured $\\|A - A_k\\|_F = ${tn(err, 4)}$; predicted $\\sqrt{\\sum_{j>k} s_j^2} = ${tn(tail, 4)}$ (${tn((100 * err) / tot, 1)}\\% of $\\|A\\|_F$).${k >= m ? ` Since $k \\ge m$, this is the exact factorization $A = BDC^*$.` : ''}`;
+          const { k, m, err, tail, tot, kk } = st;
+          const sizes = k >= m ? `Since $k \\ge m$, $A_k = A = BDC^*$ exactly, with $B$ $60\\times${m}$, $D$ $${m}\\times${m}$, $C$ $80\\times${m}$: $m(p + m + n) = ${m * (140 + m)}$ numbers instead of $pn = 4800$.` : `With $k = ${k}$: $B_k$ is $60\\times${kk}$, $D_k$ is $${kk}\\times${kk}$, $C_k$ is $80\\times${kk}$ — $k(p + k + n) = ${k * (140 + k)}$ numbers instead of $pn = 4800$.`;
+          return `rank $m = ${m}$. ${sizes} Measured $\\|A - A_k\\|_F = ${tn(err, 4)}$; predicted $\\sqrt{\\sum_{j>k} s_j^2} = ${tn(tail, 4)}$ (${tn((100 * err) / tot, 1)}% of $\\|A\\|_F$).`;
         });
       },
     },
@@ -1139,7 +1144,7 @@ for all $v \in V$. Equality holds for $v = e_1$ in a singular value decompositio
       viz(v) {
         const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 370, minWidth: 290 });
         const G = v.stage({ x: [0, TAU], y: [0, 4], height: 370, minWidth: 280, axes: 'box', xlabel: 'angle of u', xticks: [[Math.PI / 2, 'π/2'], [Math.PI, 'π'], [(3 * Math.PI) / 2, '3π/2'], [TAU, '2π']], title: '$\\|Tu\\|^2$ for unit $u$, split along $e_1, e_2$' });
-        const H = colHandles(S, [[1.3, 0.8], [-0.5, 0.7]]);
+        const H = colHandles(S, [[0.4, 1.2], [1.1, 0.3]]);
         const vh = S.handle(-1.0, 0.75, { color: 'gold', label: 'v' });
         let st = null;
         v.render(() => {
@@ -1151,7 +1156,7 @@ for all $v \in V$. Equality holds for $v = e_1$ in a singular value decompositio
           for (const sg of [1, -1]) { S.dot(sg * e[0][0], sg * e[0][1], { color: 'blue', r: 4 }); S.dot(sg * s[0] * f[0][0], sg * s[0] * f[0][1], { color: 'green', r: 5.5 }); }
           const t1 = scl(f[0], s[0]);
           S.arrow(0, 0, t1[0], t1[1], { color: 'green', width: 2.2 });
-          const lp = add(t1, scl(f[0], 0.35));
+          const nn = perp(f[0]), up = nn[1] < 0 ? scl(nn, -1) : nn, lp = add(scl(t1, 0.55), scl(up, 0.28));
           S.tex('s_1 f_1 = Te_1', lp[0], lp[1], { color: 'green', size: 14 });
           S.tex('e_1', e[0][0] * 1.22, e[0][1] * 1.22, { color: 'blue', size: 14 });
           S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });

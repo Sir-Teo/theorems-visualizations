@@ -402,13 +402,13 @@ The period of the motion diverges logarithmically as $E\to1$ from either side.`,
       tags: ['phase space', 'pendulum', 'separatrix'],
       viz(v) {
         const s = v.stage({ x: [-Math.PI, Math.PI], y: [-3.2, 3.2], height: 360, axes: 'box', xlabel: 'θ', ylabel: 'θ̇', xticks: piTicks, yticks: [-3, -2, -1, 0, 1, 2, 3], weight: 1.15 });
-        const s3 = v.stage3d({ height: 360, range: 1.4, axes: false, yaw: 0.28, pitch: 0.24, weight: 0.85 });
+        const s3 = v.stage3d({ height: 360, range: 1.5, axes: false, yaw: 0.42, pitch: 0.32, weight: 0.85 });
         const pp = v.phasePlane(s, {
           f: (x, y) => [y, -Math.sin(x)], field: 'none', nullclines: false, separatrices: true, fixedPoints: true,
           H: (x, y) => y * y / 2 - Math.cos(x), contours: [-0.75, -0.3, 0.3, 1.6, 2.6], seeds: [], click: false,
         });
         const h0 = s.handle(1.5, 1.0, { color: 'accent', label: 'start', constrain: (x, y) => [clamp(x, -Math.PI + 0.01, Math.PI - 0.01), clamp(y, -3.1, 3.1)] });
-        const P = (th, om) => [Math.sin(th), -Math.cos(th), om * 0.31];
+        const P = (th, om) => [om * 0.42, -Math.sin(th), -Math.cos(th)]; // axis along θ̇; hanging at the bottom, upright on top
         let O = null, key = '';
         function orbit() {
           const kk = `${h0.x}|${h0.y}`; if (kk === key) return O; key = kk;
@@ -437,7 +437,7 @@ The period of the motion diverges logarithmically as $E\to1$ from either side.`,
           s.corner(o.lib ? 'libration' : 'rotation (over the top)', 'tr', { color: o.lib ? 'accent' : 'orange', weight: 600 });
           // cylinder
           // cylinder drawn as a wireframe; anything on the far side is faded (depth cue)
-          const back = (p) => s3.project(p)[2] > s3.project([0, 0, p[2]])[2] + 1e-9;
+          const back = (p) => s3.project(p)[2] > s3.project([p[0], 0, 0])[2] + 1e-9;
           const cyl = (pts3, st) => {
             let run = [], side = null;
             for (const p of pts3) { const bk = back(p); if (side !== null && bk !== side) { s3.path(run, { ...st, alpha: side ? 0.25 : 1 }); run = [run[run.length - 1]]; } run.push(p); side = bk; }
