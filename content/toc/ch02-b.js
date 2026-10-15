@@ -309,8 +309,9 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
       tags: ['automata', 'synchronization'],
       viz(v) {
         let kind = 'cerny', word = [];
-        const nS = v.slider('$n$', 3, 7, 4, { int: true, onChange: () => { rebuild(); word = []; S.reset(); } });
-        v.select('automaton', [{ value: 'cerny', label: 'Černý $C_n$' }, { value: 'rand', label: 'random' }, { value: 'perm', label: 'permutations only' }], 'cerny', { onChange: (k) => { kind = k; rebuild(); word = []; S.reset(); } });
+        const fresh = () => { word = best ? best.slice() : [0, 1, 0, 0, 1, 0, 1, 1, 0, 1]; S.reset({ at: 'end' }); };
+        const nS = v.slider('$n$', 3, 7, 4, { int: true, onChange: () => { rebuild(); fresh(); } });
+        v.select('automaton', [{ value: 'cerny', label: 'Černý $C_n$' }, { value: 'rand', label: 'random' }, { value: 'perm', label: 'permutations only' }], 'cerny', { onChange: (k) => { kind = k; rebuild(); fresh(); } });
         v.button('a', () => { if (word.length < 60) { word.push(0); S.reset({ at: 'end' }); } });
         v.button('b', () => { if (word.length < 60) { word.push(1); S.reset({ at: 'end' }); } });
         v.button('⌫', () => { word.pop(); S.reset({ at: 'end' }); });
@@ -339,8 +340,7 @@ So the problems $E_{\mathrm{DFA}}=\{\langle M\rangle : L(M)=\varnothing\}$ and $
           return out;
         };
         const S = v.steps({ frames, speed: 2, still: 'end' });
-        // start with the shortest reset word loaded
-        word = best ? best.slice() : []; S.reset({ at: 'end' });
+        fresh(); // start with the shortest reset word loaded
         v.render(() => {
           const f = S.frame, n = nS.value, map = f.map || [], mult = {}; map.forEach((q) => { mult[q] = (mult[q] || 0) + 1; });
           const last = f.k > 0 ? word[f.k - 1] : null;

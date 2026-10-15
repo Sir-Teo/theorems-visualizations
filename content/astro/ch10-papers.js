@@ -123,7 +123,7 @@ In modern terms this is the Hubble–Lemaître law $v = H_0 d$ (astro-10.2), the
           for (const q of rows) s.dot(q.r, q.v - F.sun(q), { r: 5, color: GCOL[q.g] });
           // labels on the reference lines, at the right edge
           const lab = (k, txt, col, dy, fx = 0.97) => { const x = Math.min(xmax * fx, 1400 / k); s.text(txt, x, k * x, { color: col, size: 11.5, weight: 700, align: 'right', dy, dx: -4 }); };
-          lab(F.K, `K = ${Math.round(F.K)}`, 'green', 15, 0.93);
+          s.corner(`fit: K = ${Math.round(F.K)} km/s/Mpc`, 'tl', { color: 'green', weight: 700, size: 12.5, dx: 72, dy: 26 });
           if (today) { lab(67.4, 'Planck 67.4', 'teal', 14); lab(73.04, 'SH0ES 73.0', 'red', -12); }
           else lab(67.4, 'Planck, SH0ES', 'muted', 14);
           // hover: name of the nearest galaxy

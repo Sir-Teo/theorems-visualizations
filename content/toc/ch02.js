@@ -345,7 +345,7 @@ because appending a bit $b$ to a numeral of value $x$ gives $2x+b$, and $(2x+b)\
       refs: ['Sipser §1.1'],
       tags: ['automata', 'design'],
       viz(v) {
-        let bits = '10111';
+        let bits = '110101';
         const kS = v.slider('$k$', 2, 9, 3, { int: true, onChange: () => { rebuild(); S.reset({ at: 'end' }); } });
         const order = v.select('feed bits', [{ value: 'msb', label: 'most significant first' }, { value: 'lsb', label: 'least significant first' }], 'msb', { onChange: () => S.reset({ at: 'end' }) });
         keypad(v, ['0', '1'], () => bits, (x) => { bits = x; S.reset({ at: 'end' }); }, { max: 12 });

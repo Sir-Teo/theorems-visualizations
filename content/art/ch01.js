@@ -530,23 +530,23 @@ An object turned away from this position breaks (a) and (b).`,
       tags: ['perspective', 'Alberti', 'construction'],
       viz(v) {
         const M = v.M, W = 8, WH = 6, N = 10; // window 8 × 6 braccia, 10 rows of tiles
-        const win = v.stage({ x: [-0.3, 8.3], y: [-0.35, 6.3], equal: true, axes: false, height: 300, full: true, title: 'the window (braccia)' });
-        const small = v.stage({ x: [-0.6, 22.5], y: [-0.6, 4.6], equal: true, axes: false, height: 150, full: true, title: 'the small space: side view of eye, picture and floor' });
+        const win = v.stage({ x: [-0.3, 8.3], y: [-0.35, 6.3], equal: true, axes: false, height: 300, weight: 1.2, title: 'the window (in braccia)' });
+        const plan = v.stage({ x: [-1, 9], y: [-12.6, 10.6], equal: true, axes: false, height: 300, weight: 0.8, minWidth: 220, title: 'the floor seen from above' });
+        const small = v.stage({ x: [-0.6, 22.6], y: [-1.0, 4.4], equal: true, axes: false, height: 150, full: true, title: 'Alberti’s “small space”: the eye, the picture and the floor seen from the side' });
         const dS = v.slider('eye distance $d$ (braccia)', 2, 12, 6, { int: true });
-        const bot = v.toggle('fixed-ratio rule (wrong)', false);
+        const bot = v.toggle('fixed-ratio rule (each band ⅔ of the last)', false);
         const C0 = win.handle(4, 3, { color: 'accent', label: 'C', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, 1, 7), M.clamp(y, 0.8, 5.5)] });
-        const code = ['window; the man is 3 braccia', 'divide the base into braccia', 'centric point $C$, no higher than the man', 'join $C$ to every division', 'small space: eye at the height of $C$', 'perpendicular at distance $d$ cuts the rays', 'transversals at those heights', 'check: one straight diagonal'];
         const notes = [
-          'The window is a rectangle standing on the floor’s front edge. The man on the base line is 3 braccia tall, so one braccio is a third of his height.',
-          'Divide the base line into braccia: 8 equal parts.',
-          'Put the centric point $C$ where the eye’s central ray meets the window, no higher than the man. The line through it is the centric line (the horizon).',
-          'Join $C$ to every division of the base: the images of the tile edges running straight back.',
-          'In a small space, draw a line divided into braccia and put the eye above its start, at the height of $C$; draw rays to the divisions.',
-          'A perpendicular at the eye distance $d$ is the picture plane seen edge-on: the rays cut it at the heights $h\\,k/(d+k)$.',
-          'Carry those heights into the window: the transverse edges of the tiles.',
-          'Test: a straight line through opposite corners of the tiles must pass through all of them; extended, it hits the centric line at the distance point, $d$ from $C$.',
+          '**1.** The window is a rectangle standing on the front edge of the floor. The man on the base line is 3 braccia tall, so a braccio is a third of his height.',
+          '**2.** Divide the base line into braccia: 8 equal parts.',
+          '**3.** Put the centric point $C$ where the eye’s central ray meets the window, no higher than the man. The line through it is the centric line, the horizon.',
+          '**4.** Join $C$ to every division of the base: the images of the tile edges that run straight back.',
+          '**5.** In a small space, divide a line into braccia and put the eye above its start, at the height of $C$; draw rays to the divisions.',
+          '**6.** A perpendicular at the eye distance $d$ is the picture plane seen edge-on: the rays cut it at the heights $h\\,k/(d+k)$.',
+          '**7.** Carry those heights into the window: they are the transverse edges of the tiles.',
+          '**8.** Test: a straight line through opposite corners of the tiles must pass through all of them. Extended, it meets the centric line at the distance point, $d$ from $C$ — in the plan, the eye’s own $45°$ sight line.',
         ];
-        const S = v.steps({ frames: notes.map((note, k) => ({ k, line: k + 1, note })), code, codeTitle: 'costruzione legittima', start: 'end', still: 7, speed: 0.6, codeWidth: 250 });
+        const S = v.steps({ frames: notes.map((note, k) => ({ k, note })), start: 'end', still: 7, speed: 0.6 });
         const heights = (h, d) => {
           const al = Array.from({ length: N + 1 }, (_, k) => (h * k) / (d + k));
           if (!bot.value) return al;
@@ -557,26 +557,39 @@ An object turned away from this position breaks (a) and (b).`,
           const k = S.frame.k ?? 7, cx = C0.x, h = C0.y, d = dS.value, ys = heights(h, d);
           // ---- window
           win.rect(0, 0, W, WH, { fill: 'orange', fillAlpha: 0.04, color: 'orange', width: 1.8 });
-          drawFigure(win, (P) => [P[0], P[2]], [0.9, 0, 0], 3, { color: 'ink', alpha: 0.5 });
-          if (k >= 1) for (let i = 0; i <= W; i++) win.line(i, -0.12, i, 0.12, { color: 'ink', width: 1.6 });
+          drawFigure(win, (P) => [P[0], P[2]], [0.75, 0, 0], 3, { color: 'ink', alpha: 0.45 });
+          if (k === 0) win.measure(1.45, 0, 1.45, 3, '3 braccia', { color: 'muted' });
+          if (k >= 1) for (let i = 0; i <= W; i++) win.line(i, -0.14, i, 0.14, { color: 'ink', width: 1.6 });
           if (k >= 2) { win.line(0, h, W, h, { color: 'muted', width: 1, dash: [5, 4] }); win.dot(cx, h, { r: 4, color: 'accent' }); }
           win.clip(() => {
             if (k >= 3) for (let i = 0; i <= W; i++) win.line(i, 0, cx, h, { color: 'accent', width: 1.2, alpha: 0.85 });
-            if (k >= 6) for (let j = 1; j <= N; j++) if (ys[j] < h) { const a = corner(cx, h, 0, ys[j]), b = corner(cx, h, W, ys[j]); win.line(a[0], ys[j], b[0], ys[j], { color: bot.value ? 'red' : 'orange', width: 1.4 }); }
-            if (k >= 7) {
-              const P = Array.from({ length: Math.min(N, W) + 1 }, (_, j) => corner(cx, h, j, ys[j])).filter((p) => p[1] < h);
-              win.path(P, { color: bot.value ? 'red' : 'green', width: 2.6 });
-              if (!bot.value) { win.line(P[0][0], P[0][1], cx + d, h, { color: 'green', width: 1.2, dash: [5, 4] }); }
-              else { const q = P[P.length - 1]; win.line(P[0][0], P[0][1], q[0], q[1], { color: 'muted', width: 1, dash: [3, 3] }); }
-              P.forEach((p) => win.dot(p[0], p[1], { r: 3, color: bot.value ? 'red' : 'green' }));
-            }
+            if (k >= 6) for (let j = 1; j <= N; j++) if (ys[j] < h) { const p = corner(cx, h, 0, ys[j]), q = corner(cx, h, W, ys[j]); win.line(p[0], ys[j], q[0], ys[j], { color: bot.value ? 'red' : 'orange', width: 1.4 }); }
           }, [0, W], [0, WH]);
-          if (k >= 7 && !bot.value) {
-            const Dp = cx + d;
-            if (Dp <= win.bounds.x[1]) win.dot(Dp, h, { r: 5, color: 'green', label: 'distance point', labelPos: 'ne' });
-            else win.corner(`distance point beyond the window, ${d} braccia right of C`, 'tr', { color: 'green', size: 11.5 });
+          if (k >= 7) {
+            const P = Array.from({ length: Math.min(N, W) + 1 }, (_, j) => corner(cx, h, j, ys[j])).filter((p) => p[1] < h);
+            const col = bot.value ? 'red' : 'green';
+            if (!bot.value) win.line(P[0][0], P[0][1], cx + d, h, { color: 'green', width: 1.2, dash: [5, 4] });
+            else { const q = P[P.length - 1]; win.line(P[0][0], P[0][1], q[0], q[1], { color: 'muted', width: 1, dash: [3, 3] }); }
+            win.path(P, { color: col, width: 2.6 });
+            P.forEach((p) => win.dot(p[0], p[1], { r: 3, color: col }));
+            if (!bot.value) {
+              if (cx + d <= win.bounds.x[1]) win.dot(cx + d, h, { r: 5, color: 'green', label: 'distance point', labelPos: 'n' });
+              else win.corner(`distance point off to the right, ${d} braccia from C`, 'tr', { color: 'green', size: 11.5 });
+            }
           }
-          if (k === 0) win.text('3 braccia', 1.35, 1.5, { align: 'left', size: 12, color: 'muted' });
+          // ---- plan: eye in front of the window, the tiled floor behind it
+          for (let i = 0; i <= W; i++) plan.line(i, 0, i, N, { color: k >= 3 ? 'accent' : 'faint', width: 0.9, alpha: 0.7 });
+          for (let j = 0; j <= N; j++) plan.line(0, j, W, j, { color: k >= 6 ? 'orange' : 'faint', width: 0.9, alpha: 0.7 });
+          plan.line(-1, 0, 9, 0, { color: 'orange', width: 2.4 });
+          plan.text('window', 8.9, 0.35, { align: 'right', baseline: 'bottom', size: 10.5, color: 'orange' });
+          plan.dot(cx, -d, { r: 4.5, color: 'accent', label: 'eye', labelPos: 'w' });
+          plan.line(cx, -d, cx, 0, { color: 'muted', width: 1, dash: [3, 3] });
+          plan.text(`d = ${d}`, cx + 0.2, -d / 2, { align: 'left', size: 10.5, color: 'muted' });
+          if (k >= 7) {
+            plan.line(0, 0, Math.min(W, N), Math.min(W, N), { color: 'green', width: 2.4 });
+            plan.line(cx, -d, cx + d + 2, 2, { color: 'green', width: 1.2, dash: [5, 4] });
+            plan.dot(cx + d, 0, { r: 4, color: 'green' });
+          }
           // ---- small space
           if (k >= 4) {
             small.line(0, 0, d + N, 0, { color: 'ink', width: 1.4 });
@@ -584,11 +597,11 @@ An object turned away from this position breaks (a) and (b).`,
             small.dot(0, h, { r: 4.5, color: 'accent', label: 'eye', labelPos: 'n' });
             small.line(0, 0, 0, h, { color: 'muted', width: 1, dash: [3, 3] });
             for (let i = 1; i <= d + N; i++) small.line(0, h, i, 0, { color: i >= d ? 'gold' : 'faint', width: i >= d ? 1.3 : 0.8 });
-          }
+          } else small.corner('(used from step 5)', 'tl', { color: 'faint' });
           if (k >= 5) {
             small.line(d, 0, d, h + 0.4, { color: 'orange', width: 2.4 });
-            small.text(`d = ${d}`, d / 2, -0.32, { align: 'center', baseline: 'top', size: 11, color: 'orange' });
-            for (let j = 1; j <= N; j++) { const al = (h * j) / (d + j); small.dot(d, al, { r: 2.6, color: 'orange' }); }
+            small.measure(0, -0.55, d, -0.55, `d = ${d}`, { color: 'orange' });
+            for (let j = 1; j <= N; j++) small.dot(d, (h * j) / (d + j), { r: 2.6, color: 'orange' });
             small.text('picture plane', d + 0.15, h + 0.35, { align: 'left', baseline: 'top', size: 10.5, color: 'orange' });
           }
         });

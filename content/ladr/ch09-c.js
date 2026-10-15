@@ -20,6 +20,8 @@ function tn(x, d = 2) {
 const pn = (x, d = 2) => tn(x, d).replace('-', '−');
 /** TeX for a number that may be a rounding residue: tiny values in scientific notation. */
 const small = (v, x, d = 3) => (Math.abs(x) >= 1e-9 ? tn(x, d) : x === 0 ? '0' : v.sci(x, 1));
+/** Rounding residues below 1e-12 shown as 0, negative numbers in parentheses (for products in TeX). */
+const zt = (x, d = 3) => (Math.abs(x) < 1e-12 ? '0' : x < 0 ? `(${tn(x, d)})` : tn(x, d));
 const vtex = (a, d = 2) => `(${a.map((x) => tn(x, d)).join(', ')})`;
 /** A signed coefficient in a sum: "+ 2u" / "- 0.5u". */
 const term = (c, s, first = false) => (first ? `${tn(c)}${s}` : c < 0 ? ` - ${tn(-c)}${s}` : ` + ${tn(c)}${s}`);
@@ -126,6 +128,12 @@ function vrow(R, y, label, x, scale, color, labelColor) {
   if (Math.abs(L) > 2e-3) R.line(0.5, y - 0.03, 0.5 + L, y - 0.03, { color, width: 10, cap: 'butt', alpha: 0.85 });
   R.line(0.5, y - 0.07, 0.5, y + 0.01, { color: 'muted', width: 1.4 });
 }
+/** A numbered badge (a slot number) at the 3D point p of the scene sc drawn on stage S; call after sc.flush(). */
+function badge(S, sc, p, k, color) {
+  const P = sc.P(p);
+  S.dot(P[0], P[1], { r: 9.5, color });
+  S.text(String(k), P[0], P[1], { align: 'center', color: 'panel', size: 11.5, weight: 700, halo: false });
+}
 /** Two segments p1p2 and q1q2 (2D): their intersection point, or null. */
 function segX(p1, p2, q1, q2) {
   const r = sub(p2, p1), s = sub(q2, q1), d = det2(r, s);
@@ -185,11 +193,11 @@ $$V^{(m)}_{\mathrm{alt}} = \{\alpha \in V^{(m)} : \alpha \text{ is alternating}\
       tags: ['multilinear'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Alternating_multilinear_map' },
       viz(v) {
-        const S = v.stage({ x: [-1.8, 1.8], y: [-1.55, 1.95], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
+        const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, minWidth: 270, title: 'the form on the list, and with a vector repeated' });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.35, lim: 1.5 });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.5, lim: 1.5 });
         const fs = formSelect(v);
-        const V0 = [[1.05, 0.15, 0.1], [0.25, 1.0, 0.2], [0.1, 0.3, 0.95]];
+        const V0 = [[1.05, 0.1, 0.05], [-0.1, 1.0, 0.4], [0.15, 0.3, 0.95]];
         const H = [];
         const snap = (k) => (p) => { for (let j = 0; j < 3; j++) if (j !== k && H[j] && len(sub(p, H[j].p)) < 0.13) return H[j].p.slice(); return p; };
         V0.forEach((p, k) => H.push(sc.handle(p, { color: CC[k], label: `v${sb(k + 1)}`, snap: snap(k) })));
@@ -240,16 +248,16 @@ $$\alpha(v_1, \dots, v_m) = 0.$$`,
       deps: ['ladr-2.19', 'ladr-9.27'],
       tags: ['multilinear', 'independence'],
       viz(v) {
-        const S = v.stage({ x: [-1.8, 1.8], y: [-1.55, 1.95], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
+        const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
         const P = v.stage({ x: [-1.5, 1.5], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', title: '$t \\mapsto \\alpha(v_1, v_2,\\ b_1v_1 + b_2v_2 + t\\,n)$' });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.36, axis: 1.35, lim: 1.6 });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.36, axis: 1.5, lim: 1.6 });
         const fs = formSelect(v);
         const H = [];
         const proj = (p) => { const n = cross(H[0].p, H[1].p), nn = len(n); if (nn < 1e-9) return p; return sub(p, scl(n, dot(p, n) / (nn * nn))); };
         const snapPlane = (p) => { const n = cross(H[0].p, H[1].p), nn = len(n); if (nn < 1e-9) return p; return Math.abs(dot(p, n) / nn) < 0.08 ? proj(p) : p; };
-        H.push(sc.handle([1.1, 0.1, -0.15], { color: CC[0], label: 'v₁' }));
-        H.push(sc.handle([0.2, 1.0, 0.12], { color: CC[1], label: 'v₂' }));
-        H.push(sc.handle([0.76, 0.56, -0.03], { color: CC[2], label: 'v₃', snap: snapPlane }));
+        H.push(sc.handle([0.95, 0.05, -0.2], { color: CC[0], label: 'v₁' }));
+        H.push(sc.handle([-0.05, 0.9, 0.3], { color: CC[1], label: 'v₂' }));
+        H.push(sc.handle([0.4, 0.47, 0.06], { color: CC[2], label: 'v₃', snap: snapPlane }));
         H[2].set(proj(H[2].p));
         v.button('drop $v_3$ into the plane', () => H[2].set(proj(H[2].p)));
         v.button('lift $v_3$ out', () => { const n = unit(cross(H[0].p, H[1].p)); H[2].set(add(proj(H[2].p), scl(n, 0.7))); });
@@ -280,11 +288,11 @@ $$\alpha(v_1, \dots, v_m) = 0.$$`,
             const Y = nice(1.12 * Math.max(0.6, Math.abs(f(-1.5)), Math.abs(f(1.5))), [0.75, 1, 1.5, 2, 3, 4, 6, 8, 12]);
             if (Y !== view) { view = Y; P.setView([-1.5, 1.5], [-Y, Y]); }
             P.vband(-0.02, 0.02, { color: 'green', alpha: 0.18 });
-            P.text('t = 0: dependent lists', 0.06, -0.86 * Y, { size: 12, color: 'green', weight: 600 });
+            P.text('t = 0: dependent lists', 0.06, -0.9 * Y, { size: 12, color: 'green', weight: 600 });
             P.fn(f, { color: 'accent', width: 2.6 });
             const ok = Math.abs(f0) < 1e-9;
             P.dot(0, f0, { r: 7, color: ok ? 'green' : 'red' });
-            P.tex(`\\alpha(v_1, v_2, b_1v_1 + b_2v_2) = ${tn(f0, 3)}`, 0, f0, { color: ok ? 'green' : 'red', size: 13.5, dx: 10, dy: f1 > 0 ? 14 : -14, align: 'left' });
+            P.corner(`at $t = 0$: $\\alpha = ${tn(f0, 3)}$`, 'tl', { color: ok ? 'green' : 'red', weight: 700, size: 13 });
             P.dot(dec.t, f(dec.t), { r: 5.5, color: 'gold' });
           }
           st = { dec, val: F(a, b, c), F, a, b };
@@ -295,7 +303,8 @@ $$\alpha(v_1, \dots, v_m) = 0.$$`,
           const { dec, val, F, a, b } = st;
           if (!dec) return `$v_1$ and $v_2$ are parallel, so the list is dependent: $\\alpha(v_1, v_2, v_3) = ${small(v, val)}$.`;
           const x1 = F(a, b, a), x2 = F(a, b, b), x3 = F(a, b, dec.n);
-          return `$v_3 = ${tn(dec.b1)}\\,v_1 ${dec.b2 < 0 ? '-' : '+'} ${tn(Math.abs(dec.b2))}\\,v_2 ${dec.t < 0 ? '-' : '+'} ${tn(Math.abs(dec.t))}\\,n$, so by linearity in slot 3: $\\alpha(v_1, v_2, v_3) = ${tn(dec.b1)}\\cdot\\alpha(v_1, v_2, v_1) + ${tn(dec.b2)}\\cdot\\alpha(v_1, v_2, v_2) + ${tn(dec.t)}\\cdot\\alpha(v_1, v_2, n) = ${tn(dec.b1)}\\cdot ${small(v, x1)} + ${tn(dec.b2)}\\cdot ${small(v, x2)} + ${tn(dec.t)}\\cdot ${tn(x3, 3)} = ${small(v, val)}$.` +
+          const t = Math.abs(dec.t) < 5e-4 ? 0 : dec.t;
+          return `$v_3 = ${term(dec.b1, '\\,v_1', true)}${term(dec.b2, '\\,v_2')}${term(t, '\\,n')}$, so by linearity in slot 3: $\\alpha(v_1, v_2, v_3) = ${zt(dec.b1, 2)}\\,\\alpha(v_1, v_2, v_1) + ${zt(dec.b2, 2)}\\,\\alpha(v_1, v_2, v_2) + ${zt(t, 2)}\\,\\alpha(v_1, v_2, n) = ${zt(dec.b1, 2)}\\cdot ${zt(x1)} + ${zt(dec.b2, 2)}\\cdot ${zt(x2)} + ${zt(t, 2)}\\cdot ${zt(x3)} = ${tn(Math.abs(val) < 1e-12 ? 0 : val, 3)}$.` +
             (Math.abs(x1) < 1e-9 && Math.abs(x2) < 1e-9 ? ' The first two terms vanish because $\\alpha$ is alternating; only the part of $v_3$ off the plane counts.' : ' The first two terms are **not** $0$: this form is not alternating, and dependent lists ($t = 0$) need not give $0$.');
         });
       },
@@ -392,13 +401,13 @@ $$\alpha(v_2, v_1, v_3, \dots, v_m) = -\alpha(v_1, v_2, v_3, \dots, v_m).$$`,
       deps: ['ladr-9.16', 'ladr-9.27'],
       tags: ['multilinear'],
       viz(v) {
-        const S = v.stage({ x: [-1.8, 1.8], y: [-1.55, 1.95], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
+        const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
         const P = v.stage({ x: [0, 1], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', title: 'value of the form during the swap' });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.35, lim: 1.5 });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.5, lim: 1.5 });
         const fs = formSelect(v);
         const pair = v.select('swap slots', [{ value: '01', label: '$1 \\leftrightarrow 2$' }, { value: '02', label: '$1 \\leftrightarrow 3$' }, { value: '12', label: '$2 \\leftrightarrow 3$' }], '01');
         const ts = v.slider('swap progress $t$', 0, 1, 0.3, { step: 0.01 });
-        const V0 = [[1.1, 0.1, 0.05], [0.15, 1.05, 0.2], [0.2, 0.25, 0.95]];
+        const V0 = [[1.05, 0.1, 0.05], [-0.1, 1.0, 0.4], [0.15, 0.3, 0.95]];
         const H = V0.map((p, k) => sc.handle(p, { color: CC[k], label: `v${sb(k + 1)}` }));
         let st = null, view = 0;
         v.render(() => {
@@ -594,14 +603,14 @@ for every list $v_1, \dots, v_m$ of vectors in $V$ and every $(j_1, \dots, j_m) 
       deps: ['ladr-9.30', 'ladr-9.34'],
       tags: ['permutations', 'multilinear'],
       viz(v) {
-        const S = v.stage({ x: [-1.8, 1.8], y: [-1.55, 1.95], equal: true, axes: false, height: 390, weight: 1.25, minWidth: 300 });
+        const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.25, minWidth: 300 });
         const B = v.stage({ x: [-0.05, 6.05], y: [-1.85, 1.3], axes: false, height: 390, minWidth: 290, title: 'the form on all six orders of the inputs' });
-        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.35, lim: 1.5 });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.5, lim: 1.5 });
         const fs = formSelect(v);
         const PS = perms(3);
         const ps = v.select('order', PS.map((p, i) => ({ value: String(i), label: `$${ptex(p)}$` })), '5');
         B.onClick((x) => { const i = Math.floor(x); if (i >= 0 && i < 6) ps.set(String(i)); });
-        const V0 = [[1.1, 0.1, 0.05], [0.15, 1.05, 0.2], [0.2, 0.25, 0.95]];
+        const V0 = [[1.05, 0.1, 0.05], [-0.1, 1.0, 0.4], [0.15, 0.3, 0.95]];
         const H = V0.map((p, k) => sc.handle(p, { color: CC[k], label: `v${sb(k + 1)}` }));
         let st = null;
         v.render(() => {

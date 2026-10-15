@@ -418,9 +418,9 @@ whatever the shape and size of $S$ and wherever the charges outside it are — o
           };
           const Phi = fl(0), E0 = enc(0);
           const k2 = [mode, n, R, cc.x, cc.y, ...pts.flat(), ...src.flatMap((c) => [c.x, c.y, c.q])].join('|');
-          if (k2 !== key) { key = k2; slide = []; for (let i = 0; i <= 96; i++) { const dx = -6 + (12 * i) / 96; slide.push([dx, fl(dx) * KF, mode === 'open' ? NaN : enc(dx).qin * KF]); } }
-          const unit = three() ? 'V·m' : 'V';
-          sp.setTitle(three() ? 'flux through the sphere (V·m) as it slides sideways' : 'flux per metre (V) as the surface slides sideways');
+          if (k2 !== key) { key = k2; slide = []; for (let i = 0; i <= 160; i++) { const dx = -6 + (12 * i) / 160; slide.push([dx, fl(dx) * KF, mode === 'open' ? NaN : enc(dx).qin * KF]); } }
+          const unit = 'V·m';
+          sp.setTitle(three() ? 'flux through the sphere (V·m) as it slides sideways' : 'flux per metre of length (V·m) as the surface slides sideways');
           const all = slide.flatMap((g) => [g[1], g[2]]).filter(isFinite), lo = Math.min(0, ...all), hi = Math.max(0, ...all), pad = (hi - lo) * 0.15 + 1;
           sp.setView([-6, 6], [lo - pad, hi + pad]);
           sp.hline(0, { color: 'faint', width: 1 }); sp.vline(0, { color: 'gold', width: 1.2, dash: [4, 3] });
@@ -432,9 +432,9 @@ whatever the shape and size of $S$ and wherever the charges outside it are — o
         v.legend([['green', 'out of the surface ($\\mathbf E\\cdot\\hat{\\mathbf n}>0$)'], ['red', 'into it'], ['accent', 'flux, slid sideways'], ['green', '$Q_{\\text{enc}}/\\varepsilon_0$', { area: true }]]);
         v.readout(() => {
           const { Phi, qin, on, unit } = st, three_ = three(), qs = three_ ? 'q' : '\\lambda';
-          if (shape.value === 'open') return `flux through the open surface: ${M.si(Phi, unit)} per metre — an open surface encloses nothing, and its flux changes smoothly as charges move past the gap instead of jumping`;
+          if (shape.value === 'open') return `flux through the open surface: ${M.si(Phi, unit, 6)} per metre of length — an open surface encloses nothing to compare with: its flux still jumps when a charge crosses one of its sides, but drifts smoothly while charges pass the gap`;
           const ok = Math.abs(Phi - qin * KF) <= 1e-6 * Math.max(1, Math.abs(Phi));
-          return `flux out of the ${three_ ? 'sphere' : 'surface'}: **${M.si(Phi, unit)}**${three_ ? '' : ' per metre'} · enclosed $${qs}_{\\text{enc}}/\\varepsilon_0$ = ${M.si(qin * KF, unit)} ($${qs}_{\\text{enc}} = ${v.fix(qin, 2)}$ ${three_ ? 'nC' : 'nC/m'})` +
+          return `flux out of the ${three_ ? 'sphere' : 'surface'}: **${M.si(Phi, unit, 6)}**${three_ ? '' : ' per metre of length'} · enclosed $${qs}_{\\text{enc}}/\\varepsilon_0$ = ${M.si(qin * KF, unit, 6)} ($${qs}_{\\text{enc}} = ${v.fix(qin, 2)}$ ${three_ ? 'nC' : 'nC/m'})` +
             (on ? ` · ${on} charge${on > 1 ? 's' : ''} exactly on the surface, counted as half` : '') +
             (Math.abs(nexp.value - 2) > 1e-9 ? ` · exponent ${v.fix(nexp.value, 2)}: the two differ by ${M.si(Phi - qin * KF, unit)} — **Gauss’s law fails**` : ok ? ' · equal' : '');
         });
@@ -472,7 +472,7 @@ Equivalently, the flux of $\mathbf E$ out of a small region around a point, divi
         const g2 = 2 * SIG * SIG;
         const E = (x, y) => { let u = 0, w = 0; for (const b of blobs) { const dx = x - b.x, dy = y - b.y, r2 = dx * dx + dy * dy; const f = r2 < 1e-12 ? 1 / g2 : -Math.expm1(-r2 / g2) / r2; u += (b.q * f * dx) / TAU; w += (b.q * f * dy) / TAU; } return [u, w]; };
         const rho = (x, y) => { let s = 0; for (const b of blobs) s += b.q * Math.exp(-((x - b.x) ** 2 + (y - b.y) ** 2) / g2); return s / (TAU * SIG * SIG); };
-        const div = (x, y, h = 0.01) => { const a = E(x + h, y), b = E(x - h, y), c = E(x, y + h), d = E(x, y - h); return (a[0] - b[0] + c[1] - d[1]) / (2 * h); };
+        const div = (x, y, h = 0.004) => { const a = E(x + h, y), b = E(x - h, y), c = E(x, y + h), d = E(x, y - h); return (a[0] - b[0] + c[1] - d[1]) / (2 * h); };
         const boxFlux = (cx, cy, h) => {
           const hh = h / 2, edge = (x0, y0, x1, y1) => { const ex = x1 - x0, ey = y1 - y0; return quad((t) => { const f = E(x0 + t * ex, y0 + t * ey); return f[0] * ey - f[1] * ex; }, 0, 1, 1e-12, 16, 4); };
           return edge(cx - hh, cy - hh, cx + hh, cy - hh) + edge(cx + hh, cy - hh, cx + hh, cy + hh) + edge(cx + hh, cy + hh, cx - hh, cy + hh) + edge(cx - hh, cy + hh, cx - hh, cy - hh);
@@ -492,7 +492,8 @@ Equivalently, the flux of $\mathbf E$ out of a small region around a point, divi
           const fA = boxFlux(B.x, B.y, h) / (h * h), r0 = rho(B.x, B.y);
           // convergence
           const pts = []; for (let k = 0; k <= 40; k++) { const hh = 0.02 * Math.pow(200, k / 40); pts.push([hh, Math.max(1e-12, Math.abs(boxFlux(B.x, B.y, hh) / (hh * hh) - r0) / vmax)]); }
-          const ref = pts.find((p) => p[0] > 0.3) || pts[0];
+          const ref = pts.find((p) => p[0] > 0.3) || pts[0], ys = pts.map((p) => p[1]);
+          sc.setView([0.02, 4], [Math.max(1e-10, Math.min(...ys)) / 3, Math.max(...ys) * 3]);
           sc.fn((x) => ref[1] * (x / ref[0]) ** 2, { color: 'muted', dash: [4, 4], width: 1 });
           sc.text('slope 2', 0.06, ref[1] * (0.06 / ref[0]) ** 2, { size: 11, color: 'muted', dy: -10 });
           sc.path(pts, { color: 'accent', width: 2.4 });
@@ -526,9 +527,9 @@ Without such symmetry Gauss’s law still holds but no longer determines $\mathb
         const sp = v.stage({ x: [0, 5], y: [0, 1], height: 340, axes: 'box', weight: 1, xlabel: 'size r of the Gaussian surface (cm)', title: '$E$ on the Gaussian surface (kN/C)' });
         const kind = v.select('', [{ value: 'ball', label: 'ball' }, { value: 'cyl', label: 'long cylinder' }, { value: 'slab', label: 'slab' }], 'ball');
         const extra = v.toggle('add an off-centre charge', false);
-        const P = { ball: { a: 2.5, Q: 10e-9, qx: 4e-9 }, cyl: { a: 2, lam: 100e-9, lx: 60e-9 }, slab: { a: 1.4, rho: 2e-6, qx: 2e-10 } };
+        const P = { ball: { a: 2.5, Q: 10e-9, qx: 8e-9 }, cyl: { a: 2, lam: 100e-9, lx: 60e-9 }, slab: { a: 1.4, rho: 2e-6, qx: 2e-10 } };
         const rh = s.handle(1.6, 0, { color: 'green', r: 7, constrain: (x, y) => (kind.value === 'slab' ? [0, Math.max(0.1, Math.min(3.3, y))] : [Math.max(0.15, Math.min(4.7, x)), 0]) });
-        const xh = s.handle(2.6, 1.5, { color: 'purple', r: 7, label: "$q'$" });
+        const xh = s.handle(3.3, 1.7, { color: 'purple', r: 7, label: "$q'$" });
         const RP = 1.6; // pillbox radius (cm)
         // ── symmetric fields: Gauss and direct integration (lengths in cm, results in N/C)
         const gauss = (r) => {
@@ -582,7 +583,7 @@ Without such symmetry Gauss’s law still holds but no longer determines $\mathb
           const tot = (q) => { const sym = slab ? [0, Math.sign(q.p[1]) * (q.side ? 0 : 1) * Es, 0] : q.n.map((c) => c * Es); if (slab && q.side) { const zz = q.p[1]; sym[1] = Math.sign(zz) * gauss(Math.abs(zz)); } const ex = extra.value ? extraE(q.p) : [0, 0, 0]; return [sym[0] + ex[0], sym[1] + ex[1], sym[2] + ex[2]]; };
           const Eref = Math.max(...cache.pts.map((g) => g[1])) * 1e3;
           for (const q of surf) { const f = tot(q), m = Math.hypot(f[0], f[1]); if (m > Eref * 1e-3) arrowPx(s, q.p[0], q.p[1], f[0], f[1], Math.min(48, 40 * Math.sqrt(m / Eref)), { color: (f[0] * q.n[0] + f[1] * q.n[1]) >= 0 ? 'green' : 'red', width: 2, head: 7 }); }
-          if (extra.value) s.text(kind.value === 'cyl' ? 'λ′ = 60 nC/m' : kind.value === 'ball' ? 'q′ = 4 nC' : 'q′ = 0.2 nC', xh.x, xh.y - 0.5, { align: 'center', size: 11, color: 'purple' });
+          if (extra.value) s.text(kind.value === 'cyl' ? 'λ′ = 60 nC/m' : kind.value === 'ball' ? 'q′ = 8 nC' : 'q′ = 0.2 nC', xh.x, xh.y - 0.5, { align: 'center', size: 11, color: 'purple' });
           // |E| over the whole Gaussian surface (3D samples) and the flux
           let lo = Infinity, hi = 0, flux = 0, area = 0, qenc = 0;
           if (K === 'ball') {
@@ -647,7 +648,7 @@ The cancellation inside depends on the force law being exactly inverse-square.`,
         const GLb = [[-0.9061798459, 0.2369268851], [-0.5384693101, 0.4786286705], [0, 0.5688888889], [0.5384693101, 0.4786286705], [0.9061798459, 0.2369268851]];
         /** Field (N/C, 3D vector in the slice’s frame) and area (cm²) of the patch cut by the cone about unit axis u from P (z = 0). */
         const patch = (px, py, ux, uy, al, n) => {
-          const e1 = [-uy, ux, 0], e2 = [0, 0, 1]; let E = [0, 0, 0], A = 0, tm = 0;
+          const e1 = [-uy, ux, 0]; let E = [0, 0, 0], A = 0, tm = 0;
           for (const [xb, wb] of GLb) for (let jg = 0; jg < 24; jg++) {
             const b = (al / 2) * (xb + 1), g = (TAU * (jg + 0.5)) / 24, sb = Math.sin(b), cb = Math.cos(b);
             const w = [cb * ux + sb * (Math.cos(g) * e1[0]), cb * uy + sb * (Math.cos(g) * e1[1]), sb * Math.sin(g)];
@@ -655,14 +656,13 @@ The cancellation inside depends on the force law being exactly inverse-square.`,
             const dO = wb * (al / 2) * sb * (TAU / 24);
             const f = Math.pow(t, 2 - n) / cchi; // field factor (t in cm, normalised at 1 cm)
             E = E.map((c, i) => c - kS * f * w[i] * dO); A += (t * t / cchi) * dO; tm += t * dO;
-            void e2;
           }
           return { E, A, t: tm / (TAU * (1 - Math.cos(al))) };
         };
         /** Radial field of the whole shell at distance r (cm) for exponent n: 1D integral over the polar angle (u = 1 − w²). */
         const shellE = (r, n) => {
           const w0 = Math.abs(r - R) / Math.sqrt(Math.max(r * R, 1e-12));
-          return kS * TAU * R * R * quadBreaks((w) => { const u = 1 - w * w, d2 = (r - R) ** 2 + 2 * r * R * w * w; return d2 < 1e-30 ? 0 : ((r - R * u) / Math.pow(d2, (n + 1) / 2)) * 2 * w; }, 0, Math.SQRT2, [w0 / 2, w0, 2 * w0], 1e-3, 24) / (R * R) * (R * R) / 1;
+          return kS * TAU * R * R * quadBreaks((w) => { const u = 1 - w * w, d2 = (r - R) ** 2 + 2 * r * R * w * w; return d2 < 1e-30 ? 0 : ((r - R * u) / Math.pow(d2, (n + 1) / 2)) * 2 * w; }, 0, Math.SQRT2, [w0 / 2, w0, 2 * w0], 1e-11, 26);
         };
         let st = null;
         v.render(() => {
@@ -731,7 +731,7 @@ The cancellation inside depends on the force law being exactly inverse-square.`,
       viz(v) {
         const M = v.M, C = M.CONST, a = 15, b = 17, V0 = 3000;
         const s = v.stage({ x: [-5.6, 5.6], y: [-4.4, 4.4], equal: true, height: 350, axes: false, weight: 1.15 });
-        const sp = v.stage({ x: [1750, 1990], y: [1e-18, 1], ylog: true, height: 350, axes: 'box', weight: 1, xlabel: 'year', title: 'limits on $|\\delta|$ from null experiments' });
+        const sp = v.stage({ x: [1750, 2000], y: [1e-18, 1], ylog: true, height: 350, axes: 'box', weight: 1, xlabel: 'year', title: 'limits on $|\\delta|$ from null experiments' });
         const step = v.select('', [{ value: 1, label: '1 · charge the outer globe' }, { value: 2, label: '2 · withdraw the wire' }, { value: 3, label: '3 · remove the outer globe' }, { value: 4, label: '4 · test the inner globe' }], 4);
         const law = v.select('force law', [{ value: 'p', label: '$1/r^{2+\\delta}$' }, { value: 'm', label: '$1/r^{2-\\delta}$' }, { value: 'z', label: 'exactly $1/r^2$' }], 'p');
         const lg = v.slider('$\\log_{10}|\\delta|$', -17, -1, -1.5, { step: 0.1 });
@@ -759,7 +759,7 @@ The cancellation inside depends on the force law being exactly inverse-square.`,
           s.text(`q = ${M.si(qa, 'C')}`, 0, -0.3, { align: 'center', size: 12, color: qcol, weight: 600 });
           // outer globe: two hemispheres
           const sep = k >= 3 ? 1.1 : 0, discharged = k >= 3;
-          for (const sg of [-1, 1]) {
+          if (k < 4) for (const sg of [-1, 1]) {
             const pts = []; for (let j = 0; j <= 60; j++) { const t = -Math.PI / 2 + (Math.PI * j) / 60; pts.push([sg * (rb * Math.cos(t) + sep), rb * Math.sin(t)]); }
             s.path(pts, { color: discharged ? 'faint' : 'red', width: 4, alpha: discharged ? 0.7 : 0.75 });
             if (!discharged) for (let j = 1; j < 10; j++) { const t = -Math.PI / 2 + (Math.PI * j) / 10; s.text('+', sg * (rb + 0.28) * Math.cos(t), (rb + 0.28) * Math.sin(t), { align: 'center', size: 12, weight: 700, color: 'red' }); }
@@ -774,19 +774,18 @@ The cancellation inside depends on the force law being exactly inverse-square.`,
             s.text(ang ? 'balls diverge!' : 'no divergence', top[0], top[1] + 0.35, { align: 'center', size: 11.5, color: ang ? 'green' : 'muted', weight: 600 });
           }
           // limits panel
-          sp.hband(1e-18, Math.max(1e-18, Math.abs(d) || 1e-18), { color: 'gold', alpha: 0.0 });
-          if (d) { sp.hline(Math.abs(d), { color: 'gold', width: 2, dash: [6, 4] }); sp.text('your |δ|', 1985, Math.abs(d), { align: 'right', size: 11, color: 'gold', dy: -10 }); }
+                    if (d) { sp.hline(Math.abs(d), { color: 'gold', width: 2, dash: [6, 4] }); sp.text('your |δ|', 1995, Math.abs(d), { align: 'right', size: 11, color: 'gold', dy: Math.abs(d) > 1e-3 ? 12 : -10 }); }
           for (const [yr, lim, who] of DATA) {
             const seen = Math.abs(d) > lim; sp.line(yr, lim, yr, 1e-18, { color: seen ? 'green' : 'faint', width: 1, alpha: 0.5 });
             sp.dot(yr, lim, { r: 6, color: seen ? 'green' : 'muted' });
-            sp.text(who, yr, lim, { size: 11, color: seen ? 'green' : 'muted', align: yr > 1960 ? 'right' : 'left', dx: yr > 1960 ? -9 : 9, dy: yr === 1970 ? -9 : yr === 1971 ? 9 : -2 });
+            sp.text(who, yr, lim, { size: 11, color: seen ? 'green' : 'muted', align: yr > 1900 ? 'right' : 'left', dx: yr > 1900 ? -9 : 9, dy: yr === 1970 ? -9 : yr === 1971 ? 9 : -2 });
           }
           st = { d, qa, Qb, thr, r: ratio(d) };
         });
         v.readout(() => {
           const { d, qa, Qb, thr, r } = st, n = Math.abs(qa) / C.e;
           if (!d) return `exactly inverse-square: the potential inside the outer globe is constant, the wire carries no charge, $q_{\\text{inner}} = 0$ — every null experiment is consistent with this`;
-          return `$\\delta = ${v.sci(d, 2)}$ · after connecting: $q_{\\text{inner}}/Q_{\\text{outer}} = ${v.sci(r, 3)}$ (≈ ${v.fix(r / d, 3)} δ) · $q_{\\text{inner}}$ = ${M.si(qa, 'C')} ≈ ${n < 1e9 ? v.fmt(n, 3) : v.sci(n, 2)} electrons · Cavendish’s pith balls needed about ${M.si(thr, 'C')}: ${Math.abs(qa) > thr ? '**he would have seen it**' : 'below his threshold'}`;
+          return `$\\delta = ${v.sci(d, 2)}$ · after connecting: $q_{\\text{inner}}/Q_{\\text{outer}} = ${v.sci(r, 3)}$ (≈ ${v.fix(r / d, 3)} δ) · $q_{\\text{inner}}$ = ${M.si(qa, 'C')} ≈ ${n < 1e6 ? v.fmt(Math.round(n), 6) : '$' + v.sci(n, 2) + '$'} electrons · Cavendish’s pith balls needed about ${M.si(thr, 'C')}: ${Math.abs(qa) > thr ? '**he would have seen it**' : 'below his threshold'}`;
         });
       },
     },
