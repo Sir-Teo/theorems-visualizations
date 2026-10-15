@@ -484,7 +484,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
           if (sel != null) s.text('p', pts[sel][0], pts[sel][1], { size: 14, math: true, weight: 700, color: 'gold', dx: -10, dy: 10, align: 'right' });
           // bars
           const k = strip.length, mx = Math.max(8.5, ...cnt.map((c) => c + 1));
-          B.setView([0.3, Math.max(k, 6) + 0.7], [0, mx]);
+          B.setView([0.3, Math.max(k, 6) + 0.7], [-0.07 * mx, mx]);
           B.setTicks(k <= 16 ? strip.map((_, r) => [r + 1, String(r + 1)]) : null, null);
           B.hband(7, mx, { color: 'red', alpha: 0.07 });
           B.hline(7, { color: 'red', dash: [5, 4], width: 1.5 }); B.text('lemma: at most 7', Math.max(k, 6) + 0.6, 7, { color: 'red', size: 11, dy: -9, align: 'right', weight: 600 });
@@ -549,7 +549,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
           for (const q of stack) if (q.ell != null) s.line(q.ell, 0.08, q.ell, 5.95, { color: 'orange', width: 1, alpha: 0.5, dash: [2, 4] });
           const seg = (pr, col, w) => { if (pr) s.line(pts[pr[0]][0], pts[pr[0]][1], pts[pr[1]][0], pts[pr[1]][1], { color: col, width: w }); };
           if (c && f.type === 'combine') {
-            s.rect(Math.max(c.ell - c.delta, -0.5), 0.08, Math.min(c.ell + c.delta, 10.5), 5.95, { fill: 'orange', fillAlpha: 0.14, stroke: false });
+            s.rect(Math.max(c.ell - c.delta, c.x0 - 0.12), 0.08, Math.min(c.ell + c.delta, c.x1 + 0.12), 5.95, { fill: 'orange', fillAlpha: 0.16, stroke: false });
             seg(c.L.pair, 'blue', 3); seg(c.R.pair, 'purple', 3);
             c.compared.forEach((pr) => seg(pr, 'gold', 1.4));
             seg(c.res.pair, 'green', c.improved ? 4 : 2.2);
@@ -591,7 +591,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
         v.legend([['blue', 'left half / random inputs'], ['purple', 'right half'], ['orange', 'strip / lattice inputs'], ['gold', 'distance checked'], ['green', 'best pair']]);
         v.readout(() => {
           const n = pts.length, f = S.frame;
-          return `$n = ${n}$: distance checks so far **${f.dist}** (in all ${run.cnt.dist}, strip-lemma bound ${cpBound(n)}) against brute force $\\binom{${n}}{2} = ${n * (n - 1) / 2}$ · closest distance ${run.res.d.toFixed(4)}, brute force ${brute.toFixed(4)} ${Math.abs(run.res.d - brute) < 1e-12 ? '✓' : '✗'}`;
+          return `$n = ${n}$: distance checks so far **${f.dist}** (in all ${run.cnt.dist}, strip-lemma bound ${cpBound(n)}) against brute force $\\binom{${n}}{2} = ${n * (n - 1) / 2}$ · all steps ${run.cnt.ops} against $n(n-1) = ${n * (n - 1)}$ ${run.cnt.ops < n * (n - 1) ? '(divide and conquer cheaper)' : '(brute force cheaper at this size)'} · closest distance ${run.res.d.toFixed(4)}, brute force ${brute.toFixed(4)} ${Math.abs(run.res.d - brute) < 1e-12 ? '✓' : '✗'}`;
         });
       },
     },
@@ -735,8 +735,8 @@ $$A(x_0)=a_0+x_0\bigl(a_1+x_0(a_2+\dots+x_0(a_{n-1}+x_0a_n)\cdots)\bigr).$$
           C.path(ds.map((d) => [d, d]), { color: 'green', width: 2 }); C.dots(ds.map((d) => [d, d]), { r: 2.6, color: 'green' });
           C.vline(n, { color: 'gold', width: 1.5, dash: [4, 4] });
           C.text('term by term n(n+1)/2', 10.5, 92, { color: 'red', size: 11, align: 'right' });
-          C.text('powers reused 2n − 1', 16.3, 31, { color: 'orange', size: 11, align: 'right', dy: -14 });
-          C.text('Horner n', 16.3, 16, { color: 'green', size: 11, align: 'right', dy: 13 });
+          C.text('powers reused 2n − 1', 16.3, 31, { color: 'orange', size: 11, align: 'right', dy: -12 });
+          C.text('Horner n', 16.3, 16, { color: 'green', size: 11, align: 'right', dy: -11 });
           C.dot(n, f.mults, { r: 5.5, color: 'gold' });
         });
         v.legend([['ink', '$A = q_0$'], ['gold', 'current tail $q_k$ and $b_k$'], ['red', 'real roots of A', { dot: true }]]);

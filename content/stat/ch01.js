@@ -254,7 +254,7 @@ The model is **identifiable** if $\theta\mapsto P_\theta$ is one-to-one, and **c
           if (f === 'normal') {
             tR('parameter space $\\Theta=\\{(\\mu,\\sigma)\\}$ — green: not rejected at 5%');
             viewPad(sR, [-0.6, 3], [0.42, 2]);
-            sR.raster((mu, sd) => { const p = d.pv(mu, sd); return p > 0.05 ? [G[0], G[1], G[2], 80] : p > 0.01 ? [G[0], G[1], G[2], 30] : null; }, { res: 5, key: d.key + v.color('green') });
+            sR.raster((mu, sd) => { const p = d.pv(mu, sd); return p > 0.05 ? [G[0], G[1], G[2], 80] : p > 0.01 ? [G[0], G[1], G[2], 30] : null; }, { res: 4, key: d.key + v.color('green') });
             axisLabels(sR, '\\mu', '\\sigma');
             if (show && d.tk === 'cin') { sR.dot(1.2, 0.9, { r: 7, color: 'green', hollow: true, width: 2.4 }); sR.text('truth', 1.2, 0.9, { dx: 11, dy: 1, color: 'green', size: 12, math: false }); }
             if (show && d.tk === 'cout') sR.corner('the true law is not in Θ', 'br', { color: 'red', weight: 600 });
@@ -266,7 +266,7 @@ The model is **identifiable** if $\theta\mapsto P_\theta$ is one-to-one, and **c
             const ok = d.curve.filter(([, p]) => p > 0.05);
             for (const [l, p] of ok) sR.line(l, 0, l, p, { color: 'green', width: 3.2, alpha: 0.35 });
             sR.path(d.curve, { color: 'accent', width: 2.2 });
-            sR.text('rejected below 0.05', 11.8, 0.075, { align: 'right', color: 'red', size: 11, math: false });
+            sR.text('rejected below 0.05', 0.5, 0.075, { dx: 6, color: 'red', size: 11, math: false });
             axisLabels(sR, '\\lambda', '\\text{p-value}');
             if (show && d.tk === 'din') { sR.vline(4.2, { color: 'green', dash: [5, 4], width: 1.6 }); sR.text('truth', 4.2, 1.0, { dx: 5, color: 'green', size: 12, math: false }); }
             if (show && d.tk === 'dout') sR.corner('the true law is not in Θ', 'tr', { color: 'red', weight: 600 });
@@ -345,7 +345,7 @@ The model is **identifiable** if $\theta\mapsto P_\theta$ is one-to-one, and **c
           const S = R.sync(), P = pop(M, popSel.value), n = nS.value, st = stSel.value, [lo, hi] = P.view;
           const pk = peakOf(P.pdf, lo, hi);
           tP(`population ${P.label} $${P.tex}$ and the last sample of size $n=${n}$`);
-          sP.setView([lo, hi], [-0.3 * pk, 1.12 * pk]);
+          sP.setView([lo, hi], [-0.3 * pk, 1.3 * pk]);
           sP.fn(P.pdf, { color: 'muted', width: 1.8, fill: 'muted', fillAlpha: 0.14, n: 500 });
           sP.hline(-0.02 * pk, { color: 'faint', width: 1 });
           if (S.last) {
@@ -396,9 +396,9 @@ The version with divisor $n$, $S_n^2=\frac1n\sum(X_i-\bar X)^2$, is biased: $E S
         const popSel = v.select('population', popOpts(['normal', 'uniform', 'expo', 't3', 'cauchy']), 'expo');
         const dep = v.select('sampling', [{ value: 'iid', label: 'independent' }, { value: 'ar', label: 'dependent (AR, $\\rho = 0.6$)' }], 'iid');
         const nS = v.slider('sample size $n$', 2, 20, 3, { int: true });
-        const sA = v.stage({ x: [1, 1e4], y: [0, 1.8], xlog: true, height: 300, axes: 'box', weight: 1.35, title: 'running averages over repetitions (units of $\\sigma^2$)' });
+        const sA = v.stage({ x: [1, 1e4], y: [0, 1.8], xlog: true, height: 300, axes: 'box', weight: 1.35 });
         const sB = v.stage({ x: [0, 4], y: [0, 1], height: 300, axes: 'box' });
-        const tB = titler(sB);
+        const tB = titler(sB), tA = titler(sA);
         const R = repeater(v, {
           key: () => [popSel.value, dep.value, nS.value].join('|'),
           sample: (r) => {
@@ -420,7 +420,11 @@ The version with divisor $n$, $S_n^2=\frac1n\sum(X_i-\bar X)^2$, is biased: $E S
         }); };
         v.render(() => {
           const P = pop(M, popSel.value), n = nS.value, Rn = runs(), fin = isFinite(P.var);
-          viewPad(sA, [1, Math.max(10, Rn.N)], [0, fin ? 1.8 : Math.max(1, Rn.ymax * 1.1)], { xlog: true });
+          const ytop = fin ? 1.8 : Math.max(1, Rn.ymax * 1.1);
+          tA(fin ? 'running averages over repetitions (units of $\\sigma^2$)' : 'running averages of $S^2$ and $S_n^2$ (raw units)');
+          if (fin) sA.setTicks(null, null);
+          else { const st = Math.pow(10, Math.floor(Math.log10(ytop / 3))), step = st * (ytop / st > 15 ? 5 : ytop / st > 6 ? 2 : 1), tk = []; for (let y = step; y < ytop; y += step) tk.push([y, y >= 1e6 ? +(y / 1e6).toFixed(1) + 'M' : y >= 1e3 ? +(y / 1e3).toFixed(1) + 'k' : String(+y.toFixed(2))]); sA.setTicks(null, tk); }
+          viewPad(sA, [1, Math.max(10, Rn.N)], [0, ytop], { xlog: true });
           if (fin) {
             sA.hline(1, { color: 'green', dash: [6, 4], width: 1.4 }); sA.hline((n - 1) / n, { color: 'red', dash: [6, 4], width: 1.4 });
             sA.text('σ²', Math.max(10, Rn.N), 1, { align: 'right', dx: -4, dy: -10, color: 'green', size: 13 });
@@ -925,7 +929,7 @@ $$f_\nu(t)=\frac{\Gamma\big(\frac{\nu+1}2\big)}{\sqrt{\nu\pi}\,\Gamma\big(\frac\
 It is symmetric with polynomial tails ($t_1$ is the Cauchy law), has finite moments only of order $<\nu$, and tends to $N(0,1)$ as $\nu\to\infty$. By 1.9, for a normal random sample the **studentized mean** satisfies
 $$\frac{\bar X-\mu}{S/\sqrt n}\sim t_{n-1}.$$`,
       idea: String.raw`By 1.9, $\sqrt n(\bar X-\mu)/\sigma\sim N(0,1)$ and $(n-1)S^2/\sigma^2\sim\chi^2_{n-1}$ are independent, and the unknown $\sigma$ cancels in their ratio. The density follows by integrating out $V$ in the joint density; the beta integral (pma-8.20) produces the constant. Replacing $\sigma$ by the random $S$ adds variability, most visibly in the tails: an unluckily small $S$ makes $T$ large, which is why intervals built from normal quantiles undercover for small $n$.`,
-      caption: String.raw`Each repetition studentizes a sample: $T=(\bar X-\mu)/(S/\sqrt n)$. Left: its histogram against $t_{n-1}$ (green) and $N(0,1)$ (orange dashed). Right: the two-sided tail $P(|T|>x)$ on a log scale, where the difference is unmistakable at $n=3$ and gone by $n=30$. The readout shows what it costs: the interval $\bar X\pm1.96\,S/\sqrt n$ covers $\mu$ far less than 95% of the time at small $n$. Skewed data break the exactness.`,
+      caption: String.raw`Each repetition studentizes a sample: $T=(\bar X-\mu)/(S/\sqrt n)$. Left: its histogram against $t_{n-1}$ (green) and $N(0,1)$ (orange dashed). Right: the two-sided tail $P(|T|>x)$ on a log scale, where the difference is unmistakable for $n=3$ and invisible from $n=30$ on. The readout shows what it costs: the interval $\bar X\pm1.96\,S/\sqrt n$ covers $\mu$ far less than 95% of the time at small $n$. Skewed data break the exactness.`,
       deps: ['stat-1.9', 'pma-8.20'],
       refs: ['Casella–Berger §5.3'],
       tags: ['t distribution', 'normal sampling'],

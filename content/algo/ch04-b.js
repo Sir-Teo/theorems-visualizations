@@ -234,10 +234,10 @@ where $\omega_n=e^{2\pi i/n}$ and $A(x)=\sum_j a_jx^j$. In words, the DFT evalua
         const nSel = v.select('$n$', ['8', '16'], '8', { onChange: () => { a = SIG[pre.value](+nSel.value); sel = Math.min(sel, +nSel.value - 1); } });
         const pre = v.select('signal', [{ value: 'cos', label: 'cosine, $k=2$' }, { value: 'two', label: 'two tones' }, { value: 'pulse', label: 'pulse' }, { value: 'rand', label: 'random' }], 'two', { onChange: () => { a = SIG[pre.value](+nSel.value); } });
         let a = SIG.two(8), sel = 3, drag = null;
-        const Sg = v.stage({ x: [-0.6, 7.6], y: [-2.6, 2.6], axes: 'box', height: 250, weight: 1.15, title: 'samples $a_j$ (drag) and the frequency-$k$ component', xlabel: 'j' });
-        const Sp = v.stage({ x: [-0.6, 7.6], y: [0, 10], axes: 'box', height: 250, weight: 1, title: 'spectrum $|y_k|$ (click a bar)', xlabel: 'k' });
-        const Dm = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 290, weight: 0.75, title: 'evaluation points $\\omega_n^k$' });
-        const Im = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 290, weight: 1.4, title: 'values: $y_k = A(\\omega_n^k)$ on the curve $A(e^{i\\theta})$' });
+        const Sg = v.stage({ x: [-0.6, 7.6], y: [-2.6, 2.6], axes: 'box', height: 250, weight: 1.15, minWidth: 370, title: 'samples $a_j$ (drag), frequency-$k$ part', xlabel: 'j' });
+        const Sp = v.stage({ x: [-0.6, 7.6], y: [0, 10], axes: 'box', height: 250, weight: 1, minWidth: 330, title: 'spectrum $|y_k|$ (click a bar)', xlabel: 'k' });
+        const Dm = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 300, weight: 0.75, minWidth: 260, title: 'evaluation points $\\omega_n^k$' });
+        const Im = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 300, weight: 1.4, minWidth: 380, title: 'values: $y_k = A(\\omega_n^k)$ on the curve $A(e^{i\\theta})$' });
         Sg.onDrag((x, y, ph) => {
           const n = a.length;
           if (ph === 'start') { const j = Math.round(x); drag = j >= 0 && j < n ? j : null; }
@@ -257,21 +257,25 @@ where $\omega_n=e^{2\pi i/n}$ and $A(x)=\sum_j a_jx^j$. In words, the DFT evalua
           for (let j = 0; j < n; j++) { Sg.line(j, 0, j, a[j], { color: 'accent', width: 3.5 }); Sg.dot(j, a[j], { r: 5, color: 'accent' }); Sg.dot(j, comp(j), { r: 3, color: 'gold' }); }
           // spectrum
           const mx = Math.max(1, ...mags) * 1.18;
-          Sp.setView([-0.6, n - 0.4], [0, mx]);
-          for (let q = 0; q < n; q++) { const col = q === k ? 'gold' : (q === n - k && k !== 0 && 2 * k !== n) ? 'orange' : 'accent'; Sp.rect(q - 0.36, 0, q + 0.36, mags[q], { fill: col, fillAlpha: 0.6, color: col, width: 1.2 }); if (n <= 8 || q === k) Sp.text(fx(mags[q], 1), q, mags[q], { align: 'center', size: 10.5, dy: -9, color: q === k ? 'gold' : 'muted' }); }
+          Sp.setView([-0.6, n - 0.4], [-0.09 * mx, mx]);
+          for (let q = 0; q < n; q++) { const col = q === k ? 'gold' : (q === n - k && k !== 0 && 2 * k !== n) ? 'orange' : 'accent'; Sp.rect(q - 0.36, 0, q + 0.36, mags[q], { fill: col, fillAlpha: 0.6, color: col, width: 1.2 }); if ((n <= 8 || q === k) && mags[q] > 0.05) Sp.text(fx(mags[q], 1), q, mags[q], { align: 'center', size: 10.5, dy: -9, color: q === k ? 'gold' : 'muted' }); }
           // domain
           Dm.circle(0, 0, 1, { color: 'muted', width: 1.2 });
           for (let q = 0; q < n; q++) { const [x, y] = root(n, q); Dm.line(0, 0, x, y, { color: q === k ? 'gold' : 'grid', width: q === k ? 2 : 1 }); Dm.dot(x, y, { r: q === k ? 7 : 4.5, color: q === k ? 'gold' : 'accent' }); }
           const [rx, ry] = root(n, k); Dm.tex(`\\omega_{${n}}^{${k}}`, 1.25 * rx, 1.2 * ry, { size: 13, color: 'gold' });
           // image of the circle
           const curve = []; for (let t = 0; t <= 360; t++) { const th = TAU * t / 360; let re = 0, im = 0; for (let j = 0; j < n; j++) { re += a[j] * Math.cos(j * th); im += a[j] * Math.sin(j * th); } curve.push([re, im]); }
-          const R = Math.max(1.2, ...curve.map((p) => Math.hypot(p[0], p[1]))) * 1.12;
-          Im.setView([-R * 1.25, R * 1.25], [-R, R]);
-          Im.line(-R * 1.3, 0, R * 1.3, 0, { color: 'grid', width: 1 }); Im.line(0, -R, 0, R, { color: 'grid', width: 1 });
+          const cxs = curve.map((p) => p[0]).concat(0), cys = curve.map((p) => p[1]).concat(0);
+          const bx0 = Math.min(...cxs), bx1 = Math.max(...cxs), by0 = Math.min(...cys), by1 = Math.max(...cys), half = Math.max(1, (by1 - by0) / 2, (bx1 - bx0) / 3.2) * 1.15, mxc = (bx0 + bx1) / 2, myc = (by0 + by1) / 2;
+          Im.setView([mxc - 1.6 * half, mxc + 1.6 * half], [myc - half, myc + half]);
+          const R = 2 * half;
+          Im.line(mxc - 2 * R, 0, mxc + 2 * R, 0, { color: 'grid', width: 1 }); Im.line(0, myc - R, 0, myc + R, { color: 'grid', width: 1 });
           Im.path(curve, { color: 'muted', width: 1.5 });
           let p = [0, 0];
           for (let j = 0; j < n; j++) { const q = cadd(p, cmul([a[j], 0], root(n, j * k))); Im.arrow(p[0], p[1], q[0], q[1], { color: 'gold', width: 1.8, head: 7, alpha: 0.9 }); p = q; }
-          Y.forEach((yq, q) => { Im.dot(yq[0], yq[1], { r: q === k ? 7 : 4, color: q === k ? 'gold' : 'accent' }); if (n <= 8) Im.text(String(q), yq[0], yq[1], { size: 10.5, color: 'accent', dx: 7, dy: -7, weight: 600 }); });
+          const groups = new Map();
+          Y.forEach((yq, q) => { Im.dot(yq[0], yq[1], { r: q === k ? 7 : 4, color: q === k ? 'gold' : 'accent' }); const key = `${Math.round(yq[0] * 1e6)}:${Math.round(yq[1] * 1e6)}`; if (!groups.has(key)) groups.set(key, { p: yq, ks: [] }); groups.get(key).ks.push(q); });
+          for (const g of groups.values()) if (n <= 8 || g.ks.includes(k)) Im.text('k = ' + g.ks.join(', '), g.p[0], g.p[1], { size: 10.5, color: g.ks.includes(k) ? 'gold' : 'accent', dx: 8, dy: -8, weight: 600 });
           const [fr, fi] = dftCLRS(v.M, a, null), err = Math.max(...Y.map((yq, q) => Math.hypot(yq[0] - fr[q], yq[1] - fi[q])));
           st = { n, k, y: Y[k], m: mags[k], err };
         });
@@ -303,7 +307,7 @@ It uses $\tfrac n2\lg n$ complex multiplications and $n\lg n$ complex additions,
         let a = [2, 1, -1, 3, 0, -2, 1, 1], run = fftRecRun(a);
         function newA() { const n = +nSel.value; a = Array.from({ length: n }, () => rng.int(-3, 3)); S.reset({ at: 'end' }); }
         const frames0 = run.frames, still = frames0.findIndex((f) => f.bf && f.node.n === 8 && f.last.k === 1);
-        const S = v.steps({ frames: () => (run = fftRecRun(a)).frames, code: ['FFT(a):   ▷ n = |a| a power of 2', '  if n = 1: return a', '  $y^{[0]}$ ← FFT(a₀, a₂, …, a_{n−2})', '  $y^{[1]}$ ← FFT(a₁, a₃, …, a_{n−1})', '  for k ← 0 to n/2 − 1:', '    $t \\leftarrow \\omega_n^k\\, y^{[1]}_k$', '    $y_k \\leftarrow y^{[0]}_k + t$;  $y_{k+n/2} \\leftarrow y^{[0]}_k - t$', '  return y'], codeTitle: 'recursive FFT', speed: 2, codePos: 'below', start: still, still });
+        const S = v.steps({ frames: () => (run = fftRecRun(a)).frames, code: ['FFT(a):   ▷ n = |a| a power of 2', '  if n = 1: return a', '  $y^{[0]} \\leftarrow$ FFT($a_0, a_2, \\dots, a_{n-2}$)', '  $y^{[1]} \\leftarrow$ FFT($a_1, a_3, \\dots, a_{n-1}$)', '  for k ← 0 to n/2 − 1:', '    $t \\leftarrow \\omega_n^k\\, y^{[1]}_k$', '    $y_k \\leftarrow y^{[0]}_k + t$;  $y_{k+n/2} \\leftarrow y^{[0]}_k - t$', '  return y'], codeTitle: 'recursive FFT', speed: 2, codePos: 'below', start: still, still });
         v.button('New coefficients', () => newA());
         const T = v.stage({ x: [0, 1], y: [-3.5, 0.5], axes: false, height: 240, full: true });
         const B = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 300, weight: 1.1, title: 'the butterfly $y^{[0]}_k \\pm t$' });
@@ -428,7 +432,7 @@ that is, $V_n^{-1}=\frac1n\overline{V_n}$: interpolation at the roots of unity i
           rec.forEach((x, j) => Sg.dot(j, x, { r: 2.4, color: good ? 'green' : 'red' }));
           // spectrum
           const mags = yr.map((x, k) => Math.hypot(x, yi[k])), mx = Math.max(1, ...mags) * 1.15;
-          Sp.setView([-0.6, n - 0.4], [0, mx]);
+          Sp.setView([-0.6, n - 0.4], [-0.09 * mx, mx]);
           for (let k = 0; k < n; k++) { const on = keep(k); Sp.rect(k - 0.36, 0, k + 0.36, mags[k], on ? { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 1 } : { color: 'red', width: 1.2, dash: [3, 2] }); }
           // matrix
           const M = matrix(n, mth), cell = 0.86 / n, mmax = mth === 'noscale' ? n : 1;
@@ -477,7 +481,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
         });
         let geo = null, st = {};
         Gs.onClick((x) => { if (!geo) return; const k = Math.floor((x - geo.x0) / geo.cw); if (k >= 0 && k < geo.N) sel = k; });
-        const schoolOps = (n) => n * n + (n - 1) * (n - 1);
+        const schoolOps = (n) => n * n + (n - 1) * (n - 1), ALLN = Array.from({ length: 100000 }, (_, i) => i + 1);
         const fftOps = (n) => { const N = nextPow2(2 * n - 1), l = Math.max(1, LG(N)); return 15 * N * l + 8 * N; };
         v.render(() => {
           const n = nS.value, N = few.value ? nextPow2(n) : nextPow2(2 * n - 1);
@@ -494,7 +498,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
             arr.forEach((c, j) => { Co.line(j, Y0, j, Y0 + c * SC, { color: col, width: 3 }); Co.dot(j, Y0 + c * SC, { r: 5.5, color: col }); Co.text(mnus(c), j, Y0 + c * SC, { align: 'center', size: 11, dy: c >= 0 ? -12 : 12 }); });
           }
           // glyph grid
-          const lw = 0.16, cw = Math.min(0.105, (0.98 - lw) / N), x0 = lw, rows = [['ω^k', null, 'muted'], ['A(ω^k)', [ar, ai], 'blue'], ['B(ω^k)', [br, bi], 'purple'], ['C = A·B', [cr, ci], 'green']];
+          const lw = 0.16, cw = Math.min(0.105, (0.98 - lw) / N), x0 = lw, rows = [['ωᵏ', null, 'muted'], ['A(ωᵏ)', [ar, ai], 'blue'], ['B(ωᵏ)', [br, bi], 'purple'], ['C = A·B', [cr, ci], 'green']];
           geo = { x0, cw, N };
           const Rpx = Math.max(6, Math.min(16, Math.abs(Gs.X(cw) - Gs.X(0)) * 0.42, Math.abs(Gs.Y(0) - Gs.Y(0.1)) * 0.75));
           Gs.rect(x0 + sel * cw, 0.04, x0 + (sel + 1) * cw, 0.9, { fill: 'gold', fillAlpha: 0.12, color: 'gold', width: 1.2 });
@@ -506,7 +510,8 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
             if (r === 2) Gs.line(x0, y - 0.1, x0 + N * cw, y - 0.1, { color: 'muted', width: 1 });
           });
           for (let k = 0; k < N; k++) Gs.text(String(k), x0 + (k + 0.5) * cw, 0.94, { align: 'center', size: 10, color: k === sel ? 'gold' : 'muted' });
-          Gs.text(`N = ${N} points`, 0.02, 0.94, { size: 10.5, color: N < 2 * n - 1 ? 'red' : 'muted', weight: 600 });
+          Gs.text(`N = ${N} points`, 0.02, 0.02, { size: 10.5, color: N < 2 * n - 1 ? 'red' : 'muted', weight: 600, baseline: 'bottom' });
+          Gs.text('k', x0 - 0.015, 0.94, { align: 'right', size: 10.5, color: 'muted', math: true });
           // result
           const L = Math.max(2 * n - 1, N), top = Math.max(4, ...school.map(Math.abs), ...rr.map(Math.abs)) * 1.25;
           Rs.setView([-0.6, L - 0.4], [-top, top]);
@@ -516,14 +521,13 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
           school.forEach((c, k) => Rs.dot(k, c, { r: 4.5, color: 'ink', hollow: true, width: 1.8 }));
           if (N < 2 * n - 1) Rs.vband(N - 0.5, L - 0.4, { color: 'red', alpha: 0.07 });
           // costs
-          const ns = []; for (let q = 0; q <= 100; q++) ns.push(Math.round(10 ** (q / 20)));
-          const cr2 = crossover(fftOps, schoolOps, [...new Set(ns)].filter((x) => x >= 1));
+          const cr2 = crossover(fftOps, schoolOps, ALLN);
           if (cr2) { Pl.vband(cr2, 1e5, { color: 'green', alpha: 0.07 }); Pl.vline(cr2, { color: 'green', dash: [5, 4], width: 1.4 }); Pl.text(`FFT wins from n ≈ ${cr2}`, cr2, 3e10, { color: 'green', size: 11, weight: 700, dx: 6 }); }
           Pl.fn(schoolOps, { color: 'red', width: 2 });
           const fp = []; for (let m = 1; m <= 1e5; m = Math.max(m + 1, Math.round(m * 1.05))) fp.push([m, fftOps(m)]);
           Pl.path(fp, { color: 'blue', width: 2 });
           Pl.dot(n, schoolOps(n), { r: 5, color: 'gold' }); Pl.dot(n, fftOps(n), { r: 5, color: 'gold' });
-          Pl.text('schoolbook ≈ 2n²', 30, schoolOps(30), { color: 'red', size: 11, dx: -6, dy: -8, align: 'right' });
+          Pl.text('schoolbook ≈ 2n²', 30, schoolOps(30), { color: 'red', size: 11, dx: 4, dy: 14 });
           Pl.text('3 FFTs + products', 3000, fftOps(3000), { color: 'blue', size: 11, dy: 14 });
           const imax = Math.max(...ri.map(Math.abs));
           st = { n, N, wrong, imax, sel, A: [ar[sel], ai[sel]], B: [br[sel], bi[sel]], C: [cr[sel], ci[sel]], cr: cr2 };
@@ -544,7 +548,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
       name: 'Iterative FFT and the bit-reversal permutation',
       statement: String.raw`The recursion of 4.11 can be unrolled into loops that work **in place**. First permute the input so that $a_j$ moves to position $\mathrm{rev}(j)$, the index whose $\lg n$ binary digits are those of $j$ reversed. Then for $s=1,\dots,\lg n$, with $m=2^s$: for each block of $m$ consecutive positions $k,\dots,k+m-1$ and each $0\le j<m/2$, replace the pair $(u,v)=(A[k+j],A[k+j+m/2])$ by $(u+\omega_m^jv,\;u-\omega_m^jv)$. After stage $\lg n$ the array holds $\mathrm{DFT}_n(a)$ in natural order. The work is $\tfrac n2\lg n$ butterflies, with no recursion and no extra arrays.`,
       idea: String.raw`The leaves of the recursion tree of 4.11 hold the coefficients in a scrambled order: at each level a coefficient goes left or right according to one more bit of its index, starting from the least significant one, so reading the leaves left to right lists the indices with their bits reversed. Running the combine steps bottom-up, level by level, then finds the two halves of every subproblem side by side, in adjacent blocks; each butterfly reads two cells and writes back the same two cells. The diagram of these butterflies is the **butterfly network**, also the blueprint of hardware FFT circuits.`,
-      caption: String.raw`Step through: the crossing lines on the left are the bit-reversal swaps (binary labels), then each stage combines blocks of size $2, 4, 8, \dots$; the gold butterfly is running, with its twiddle $\omega_m^j$. Each dial is a complex value in the array at that stage. Switch on **skip bit reversal** to run the same butterflies on the natural order: the outputs no longer match the DFT. The plot counts butterflies for every size, exactly $\tfrac n2\lg n$.`,
+      caption: String.raw`Step through: the crossing lines on the left are the bit-reversal swaps (binary labels), then each stage combines blocks of size $2, 4, 8, \dots$; the gold butterfly is running, with its twiddle $\omega_m^j$. Each dial is a complex value in the array at that stage (needles scaled per column). Switch on **skip bit reversal** to run the same butterflies on the natural order: the outputs no longer match the DFT. The plot counts butterflies for every size, exactly $\tfrac n2\lg n$.`,
       deps: ['algo-4.11'],
       refs: ['CLRS 4e §30.3', 'Erickson notes: Fast Fourier Transforms'],
       tags: ['fft'],
@@ -568,7 +572,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
           // column headers
           N.text('input', XS(0), 0.75, { align: 'center', size: 11, color: 'muted', weight: 600 });
           N.text(skip.value ? 'not permuted' : 'bit-reversed', XS(1), 0.75, { align: 'center', size: 11, color: skip.value ? 'red' : 'muted', weight: 600 });
-          for (let s = 1; s <= L; s++) N.text(`stage ${s} (m = ${2 ** s})`, XS(s + 1), 0.75, { align: 'center', size: 11, color: f.s === s ? 'gold' : 'muted', weight: 600 });
+          for (let s = 1; s <= L; s++) N.text(s === L ? `stage ${s}: output` : `stage ${s} (m = ${2 ** s})`, XS(s + 1), 0.75, { align: 'center', size: 11, color: f.s === s ? 'gold' : 'muted', weight: 600 });
           // permutation lines
           for (let i = 0; i < n; i++) { const r = skip.value ? i : bitrev(i, L), sw = f.swap && (f.swap[0] === i || f.swap[1] === i); N.line(XS(0), yr(i), XS(1), yr(r), { color: sw ? 'gold' : i === r ? 'faint' : 'orange', width: sw ? 2.6 : 1.4, alpha: sw || i === r ? 1 : 0.6 }); }
           // butterfly wires
@@ -579,13 +583,15 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
               const col = cur ? 'gold' : done ? 'accent' : 'faint', w = cur ? 2.6 : 1.2, al = cur ? 1 : done ? 0.55 : 0.5;
               N.line(XS(s), yr(p), XS(s + 1), yr(p), { color: col, width: w, alpha: al }); N.line(XS(s), yr(q), XS(s + 1), yr(q), { color: col, width: w, alpha: al });
               N.line(XS(s), yr(p), XS(s + 1), yr(q), { color: col, width: w, alpha: al }); N.line(XS(s), yr(q), XS(s + 1), yr(p), { color: col, width: w, alpha: al });
-              if (cur) N.tex(`\\omega_{${m}}^{${j}}`, XS(s) + 0.25, yr(q), { size: 13, color: 'gold', dy: 12 });
+              if (cur) N.tex(`\\omega_{${m}}^{${j}}`, XS(s) + 0.25, yr(q), { size: 13, color: 'gold', dy: q === n - 1 ? -13 : 12 });
             }
           }
           // dials
-          const fin = run.out, mx = Math.max(1, ...cols.flatMap((c) => c.filter(Boolean).map(cabs)), ...fin.map(cabs));
+          // needles scaled per column (by the largest value that column will hold)
+          const lastCols = S.frames[S.n - 1].cols;
+          const colMax = lastCols.map((c) => Math.max(1e-9, ...c.filter(Boolean).map(cabs)));
           const R = Math.max(6, Math.min(12, Math.abs(N.Y(0) - N.Y(1)) * 0.36));
-          cols.forEach((c, ci) => c.forEach((z, i) => { if (!z) return; const hot = f.pos && ci === f.s + 1 && f.pos.includes(i); phasor(v, N, XS(ci), yr(i), z, 1 / mx, R, ci === 0 ? 'accent' : ci === L + 1 ? 'green' : 'teal', { ringColor: hot ? 'gold' : 'faint', ring: hot ? 2.4 : 1.2 }); }));
+          cols.forEach((c, ci) => { const mx = colMax[ci]; c.forEach((z, i) => { if (!z) return; const hot = f.pos && ci === f.s + 1 && f.pos.includes(i); phasor(v, N, XS(ci), yr(i), z, 1 / mx, R, ci === 0 ? 'accent' : ci === L + 1 ? 'green' : 'teal', { ringColor: hot ? 'gold' : 'faint', ring: hot ? 2.4 : 1.2 }); }); });
           for (let i = 0; i < n; i++) {
             N.text(`${i}  ${i.toString(2).padStart(L, '0')}`, XS(0) - 0.2, yr(i), { align: 'right', size: 10.5, color: 'muted' });
             if (cols[L + 1] && cols[L + 1][i]) N.text(`y${SUB(i)}`, xEnd + 0.22, yr(i), { size: 11, color: 'green', weight: 600 });
@@ -665,7 +671,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
           Sh.line(-D - 0.5, 4.95, 0.6, 4.95, { color: 'muted', width: 1 });
           // convolution bars, one per block
           const c = run.c, cmax = Math.max(1, ...c);
-          Sh.text('c_k', -D - 2.9, 3.3, { size: 13, math: true, color: 'purple' });
+          Sh.text('cₖ', -D - 2.9, 3.3, { size: 15, math: true, color: 'purple' });
           c.forEach((ck, k) => {
             const p0 = k * b, xm = -(p0 + (b - 1) / 2), h = 2.6 * ck / cmax, cur = f.step === 'carry' && f.k === k, used = f.step === 'carry' && f.k > k;
             if (xm < -D - 0.5) return;
@@ -684,19 +690,19 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
           if (S.atEnd) { Sh.text('exact', -D - 2.9, -0.6, { size: 11, color: 'muted' }); digits(ps, -0.6, () => 'muted'); }
           // rounding errors
           const myErr = []; for (let bb = 1; bb <= 8; bb++) { const xb = toBlocks(X, bb), yb = toBlocks(Y, bb), raw = fftConv(v.M, xb, yb); let exact = new Array(xb.length + yb.length - 1).fill(0n); for (let i = 0; i < xb.length; i++) for (let j = 0; j < yb.length; j++) exact[i + j] += BigInt(xb[i]) * BigInt(yb[j]); myErr.push(Math.max(1e-17, ...raw.map((r, k) => Math.abs(r - Number(exact[k]))))); }
-          Pe.hband(0.5, 1e4, { color: 'red', alpha: 0.08 }); Pe.hline(0.5, { color: 'red', dash: [5, 4], width: 1.4 }); Pe.text('½: rounding fails', 8.4, 0.5, { align: 'right', size: 10.5, color: 'red', dy: -9 });
+          Pe.hband(0.5, 1e4, { color: 'red', alpha: 0.08 }); Pe.hline(0.5, { color: 'red', dash: [5, 4], width: 1.4 }); Pe.text('½: rounding fails above', 0.6, 0.5, { size: 10.5, color: 'red', dy: -9, weight: 600 });
           Pe.vband(b - 0.45, b + 0.45, { color: 'gold', alpha: 0.12 });
           Pe.path(myErr.map((e, q) => [q + 1, Math.max(e, 1e-16)]), { color: 'blue', width: 1.8 }); myErr.forEach((e, q) => Pe.dot(q + 1, Math.max(e, 1e-16), { r: 4, color: e > 0.5 ? 'red' : 'blue' }));
           Pe.path(bigErr.map((e, q) => [q + 1, Math.max(e, 1e-16)]), { color: 'orange', width: 1.8 }); bigErr.forEach((e, q) => Pe.dot(q + 1, Math.max(e, 1e-16), { r: 4, color: e > 0.5 ? 'red' : 'orange' }));
           // costs
           const sb = (m) => 2 * m * m + m, ka = (m) => KC[Math.min(100000, Math.round(m))], ff = (m) => fftMulCost(Math.round(m), b);
-          const ns = []; for (let q = 20; q <= 100; q++) ns.push(Math.round(10 ** (q / 20)));
+          const ns = Array.from({ length: 99991 }, (_, i) => i + 10);
           const cK = crossover(ka, sb, ns), cF = crossover(ff, ka, ns);
           Pc.fn(sb, { color: 'red', width: 2 }); Pc.fn(ka, { color: 'purple', width: 2 }); Pc.fn(ff, { color: 'blue', width: 2 });
           if (cK) { Pc.vline(cK, { color: 'purple', dash: [4, 4], width: 1.2 }); Pc.text(`Karatsuba < schoolbook from ${cK}`, cK, 4e10, { size: 10.5, color: 'purple', dx: 5, weight: 600 }); }
           if (cF) { Pc.vline(cF, { color: 'blue', dash: [4, 4], width: 1.2 }); Pc.text(`FFT < Karatsuba from ${cF}`, cF, 4e9, { size: 10.5, color: 'blue', dx: 5, weight: 600 }); }
           Pc.dot(n, ff(n), { r: 5, color: 'gold' });
-          Pc.text('schoolbook', 40, sb(40), { color: 'red', size: 11, dx: -6, dy: -8, align: 'right' });
+          Pc.text('schoolbook', 3e4, sb(3e4), { color: 'red', size: 11, dx: -8, dy: -4, align: 'right' });
           Pc.text(`FFT, b = ${b}`, 2e4, ff(2e4), { color: 'blue', size: 11, dy: 14, align: 'right' });
           Pc.text('Karatsuba (n₀ = 16)', 2e4, ka(2e4), { color: 'purple', size: 11, dy: -12, align: 'right' });
           run.cK = cK; run.cF = cF; run.myErr = myErr;

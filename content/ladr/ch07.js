@@ -647,7 +647,7 @@ By 7.9, $T$ is self-adjoint exactly when its matrix with respect to an orthonorm
                 S.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: c, width: 1.2, alpha: 0.55 });
                 const p = scl(u, e.l[i]); S.arrow(0, 0, p[0], p[1], { color: c, width: 2.6 });
                 const r = Math.min(2.2, 1.55 / Math.max(Math.abs(u[1]), 1e-9)), q = scl(u, -r * Math.sign((i ? u[1] : u[0]) || 1));
-                S.tex(`\\lambda_${i + 1} = ${nm(e.l[i])}`, q[0], q[1], { color: c, size: 14, dy: -14 });
+                S.tex(`\\lambda_${i + 1} = ${nm(e.l[i])}`, q[0], q[1], i ? { color: c, size: 14, align: 'left', dx: 12 } : { color: c, size: 14, dy: -14 });
               });
               if (perp) rightMark(S, us[0], us[1], 0.17, 'green'); else angleArc(S, us[0], us[1], 0.32, 'orange', `${nm(ang, 0)}°`);
             }

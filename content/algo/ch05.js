@@ -5,6 +5,8 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const LG = Math.log2;
 const fnv = (f, ...a) => (typeof f === 'function' ? f(...a) : f);
 const plural = (n, w, ws) => `${n} ${n === 1 ? w : ws || w + 's'}`;
+/** True when the page uses the dark theme (black red–black nodes are then drawn as dark discs with a light rim). */
+const isDark = (v) => { const c = v.rgb('panel'); return c[0] + c[1] + c[2] < 384; };
 
 // ---------- binary trees: nodes {k, l, r, …}. A layout puts a node at x = its in-order rank and y = −depth,
 // so the left-to-right order of the picture *is* the in-order sequence and a rotation only moves nodes up or down.
@@ -66,7 +68,7 @@ function drawT(s, L, o = {}) {
       for (const [ch, dx, side] of [[c.n.l, -0.5, 'l'], [c.n.r, 0.5, 'r']]) if (!ch) {
         const X = x + dx, Y = y - 0.8; nils.push({ x: X, y: Y, p: c.k, side });
         s.line(x, y, X, Y, { color: 'faint', width: 1 });
-        s.rect(X - hx, Y - hy, X + hx, Y + hy, { fill: fnv(o.nilColor, c.k, side) || 'ink', fillAlpha: 1, stroke: false });
+        s.rect(X - hx, Y - hy, X + hx, Y + hy, o.dark ? { fill: 'bg', fillAlpha: 1, color: 'muted', width: 1.3 } : { fill: 'ink', fillAlpha: 1, stroke: false });
       }
     }
   }
@@ -74,10 +76,12 @@ function drawT(s, L, o = {}) {
   for (const c of L.nodes) {
     const [x, y] = at(c.k), fill = fnv(o.fill, c.k, c), col = fnv(o.color, c.k, c), ring = fnv(o.ring, c.k, c), al = fnv(o.alpha, c.k, c) ?? 1;
     if (ring) s.dot(x, y, { r: r + 4.5, hollow: true, color: ring, width: 2.6 });
-    if (fill) s.dot(x, y, { r, color: fill, alpha: al });
+    const blk = !fill && fnv(o.black, c.k, c);
+    if (blk && o.dark) { s.dot(x, y, { r, hollow: true, color: 'muted', width: 2.2, alpha: al }); s.dot(x, y, { r: r - 1.6, color: 'bg', ring: false, alpha: al }); }
+    else if (fill || blk) s.dot(x, y, { r, color: fill || 'ink', alpha: al });
     else { s.dot(x, y, { r, hollow: true, color: col || 'muted', width: col ? 2.4 : 1.6, alpha: al }); if (col) s.dot(x, y, { r: r - 1.2, color: col, alpha: 0.15 * al, ring: false }); }
     const lab = o.label ? o.label(c.k, c) : String(c.k);
-    if (lab != null && lab !== '' && r >= 6.5) s.text(lab, x, y, { align: 'center', size: clamp(r * 0.88, 8, 13), weight: 700, color: fnv(o.labelColor, c.k, c) || (fill ? 'panel' : 'ink'), alpha: al, halo: false });
+    if (lab != null && lab !== '' && r >= 6.5) s.text(lab, x, y, { align: 'center', size: clamp(r * 0.88, 8, 13), weight: 700, color: fnv(o.labelColor, c.k, c) || ((fill || blk) && !(blk && o.dark) ? 'panel' : 'ink'), alpha: al, halo: false });
     const note = o.note && o.note(c.k, c);
     if (note) {
       const [txt, ncol, pos = 'ne'] = note, D = DIRS[pos];
@@ -687,18 +691,18 @@ Each operation preserves the BST property and follows a single root-to-leaf path
 $$\bar D(n)=2\Bigl(1+\frac1n\Bigr)H_n-4=2\ln n-O(1),$$
 where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log n)$, about $4.31\ln n$.) For a bad fixed order the same keys give depth $\Theta(n)$: sorted input builds a path, of average depth $(n-1)/2$.`,
       idea: String.raw`Key $j$ (in sorted order) is an ancestor of key $i$ exactly when $j$ is inserted first among the keys between $i$ and $j$ inclusive — the same event that makes quicksort compare them (3.11). For a random order that probability is $1/(|i-j|+1)$, so by linearity of expectation (3.3) the expected depth of $i$ is $\sum_{j\ne i}1/(|i-j|+1)=H_i+H_{n+1-i}-2$; averaging over $i$ gives the formula. The comparisons made while building the tree are exactly the comparisons of quicksort with the first element as pivot.`,
-      caption: String.raw`Left: step through the insertions (green: the comparisons made by the newest key). Right, on a logarithmic $n$-axis where $\ln n$ is a straight line: the average depth and the height measured over 40 random orders up to $n = 65\,536$, against the exact expectation and $2\ln n$. Switch the order to **sorted** or **zig-zag** and both shoot off the chart; **medians first** gives the best possible tree.`,
+      caption: String.raw`Top: step through the insertions (green: the comparisons made by the newest key). Bottom, on a logarithmic $n$-axis where $\ln n$ is a straight line: the average depth and the height (dots: means, bars: ranges) over 40 random orders for each $n$ up to 4096 and 14 beyond, up to $n = 65\,536$, against the exact expectation and $2\ln n$. Switch the order to **sorted** or **zig-zag** and both shoot off the chart; **medians first** gives the best possible tree.`,
       deps: ['algo-5.3', 'algo-3.11'],
       refs: ['CLRS 4e Ch. 12', 'Erickson notes: Treaps and Skip Lists'],
       credit: 'Hibbard, 1962',
       tags: ['search trees', 'randomized'],
       viz(v) {
-        const order = v.select('insertion order', [{ value: 'random', label: 'random' }, { value: 'sorted', label: 'sorted' }, { value: 'zigzag', label: 'zig-zag' }, { value: 'medians', label: 'medians first' }], 'random', { onChange: () => S.reset() });
-        const nS = v.slider('tree size $n$', 4, 40, 28, { int: true, onChange: () => S.reset() });
+        const order = v.select('insertion order', [{ value: 'random', label: 'random' }, { value: 'sorted', label: 'sorted' }, { value: 'zigzag', label: 'zig-zag' }, { value: 'medians', label: 'medians first' }], 'random', { onChange: () => S.reset({ at: 'end' }) });
+        const nS = v.slider('tree size $n$', 4, 40, 28, { int: true, onChange: () => S.reset({ at: 'end' }) });
         let seed = 3;
         v.button('Shuffle', () => { seed++; S.reset({ at: 'end' }); });
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true, title: 'the tree built so far' });
-        const P = v.stage({ x: [2, 65536], y: [0, 46], xlog: true, axes: 'box', height: 270, full: true, title: 'average depth and height against $n$ (log scale, 40 random orders per $n$)', xlabel: 'n' });
+        const P = v.stage({ x: [2, 65536], y: [0, 46], xlog: true, axes: 'box', height: 270, full: true, title: 'average depth and height against $n$ (log scale; random orders)', xlabel: 'n' });
         let perm = [];
         const frames = () => {
           const n = nS.value; perm = orderPerm(order.value, n, v.rng(seed * 101 + n)).map((x) => x + 1);
@@ -753,7 +757,7 @@ where $H_n=1+\frac12+\dots+\frac1n$. (The expected *height* is also $\Theta(\log
           }
           if (f.L.n) P.vline(f.L.n, { color: 'muted', width: 1, dash: [2, 3] });
         });
-        v.legend([['accent', 'average depth (40 trees)', { dot: true }], ['orange', 'height', { dot: true }], ['green', '$2(1+\\frac1n)H_n-4$'], ['gold', '$2\\ln n$', { dash: true }], ['faint', '$\\lfloor\\log_2 n\\rfloor$', { dash: true }]]);
+        v.legend([['accent', 'average depth', { dot: true }], ['orange', 'height', { dot: true }], ['green', '$2(1+\\frac1n)H_n-4$'], ['gold', '$2\\ln n$', { dash: true }], ['faint', '$\\lfloor\\log_2 n\\rfloor$', { dash: true }]]);
         v.readout(() => {
           const f = S.frame, n = f.L.n, D = series(order.value), big = D[D.length - 1];
           let sum = 0; for (const c of f.L.nodes) sum += c.d;
@@ -872,7 +876,7 @@ That number, not counting $x$ itself, is the **black height** $\mathrm{bh}(x)$. 
           const chk = rbCheck(T), cnt = new Map();
           (function go(u, c) { if (!u) return; const cc = c + (u.c === 'B' ? 1 : 0); cnt.set(u.k, cc); go(u.l, cc); go(u.r, cc); })(T, 0);
           const dr = drawT(s, L, {
-            nil: true, padB: 0.55, fill: (k) => (col.get(k) === 'R' ? 'red' : 'ink'),
+            nil: true, padB: 0.55, dark: isDark(v), fill: (k) => (col.get(k) === 'R' ? 'red' : null), black: (k) => col.get(k) !== 'R',
             ring: (k, c) => (chk.bad.has(k) ? 'orange' : c.p == null && col.get(k) === 'R' ? 'red' : null),
             note: (k) => (chk.bad.has(k) ? ['≠', 'orange', 'ne'] : [`bh ${chk.bh.get(k)}`, 'muted', 'ne']),
             edgeColor: (a, b) => (chk.redred.has(b) ? 'red' : null), edgeWidth: (a, b) => (chk.redred.has(b) ? 4.5 : null),
@@ -883,7 +887,7 @@ That number, not counting $x$ itself, is the **black height** $\mathrm{bh}(x)$. 
           if (chk.rootRed) { const [x, y] = dr.at(T.k); s.text('root must be black', x, y, { dx: dr.r + 10, size: 11.5, weight: 700, color: 'red' }); }
           info = { chk, eq, lo: Math.min(...counts), hi: Math.max(...counts) };
         });
-        v.legend([['ink', 'black node', { dot: true }], ['red', 'red node / red–red edge', { dot: true }], ['orange', 'black heights differ below', { dot: true }], ['green', 'black nodes on each root–nil path']]);
+        v.legend([[isDark(v) ? 'faint' : 'ink', 'black node', { dot: true }], ['red', 'red node / red–red edge', { dot: true }], ['orange', 'black heights differ below', { dot: true }], ['green', 'black nodes on each root–nil path']]);
         v.readout(() => {
           const { chk, eq, lo, hi } = info, ok = !chk.rootRed && !chk.redred.size && eq;
           const lens = []; (function go(u, d) { if (!u) { lens.push(d); return; } go(u.l, d + 1); go(u.r, d + 1); })(T, 0);
@@ -916,7 +920,7 @@ That number, not counting $x$ itself, is the **black height** $\mathrm{bh}(x)$. 
           const n = nS.value, g = get(n), sub = new Set(sel != null ? keysOf(g.L.pos.get(sel).n) : []);
           const val = (k) => { const b = g.chk.bh.get(k); return lab.value === 'bh' ? b : lab.value === 'size' ? g.size.get(k) : 2 ** b - 1; };
           drawT(s, g.L, {
-            nil: true, rmax: 14, fill: (k, c) => (c.n.c === 'R' ? 'red' : 'ink'), label: (k) => String(val(k)),
+            nil: true, rmax: 14, dark: isDark(v), fill: (k, c) => (c.n.c === 'R' ? 'red' : null), black: (k, c) => c.n.c !== 'R', label: (k) => String(val(k)),
             ring: (k) => (k === sel ? 'gold' : sub.has(k) ? 'gold' : null),
             edgeColor: (a, b) => (sub.has(a) && sub.has(b) ? 'gold' : null), edgeWidth: (a, b) => (sub.has(a) && sub.has(b) ? 3 : null),
           });
@@ -973,13 +977,13 @@ Finally colour the root black. The result is a red–black tree; the insertion t
           const f = S.frame, rootC = f.L.nodes.find((c) => c.p == null), chk = rbCheck(rootC ? rootC.n : null);
           drawT(s, f.L, {
             prev: S.prev && S.prev.L, tw: S.tween, nil: true, rmax: 14,
-            fill: (k, c) => (c.n.c === 'R' ? 'red' : 'ink'), ring: (k) => (chk.bad.has(k) ? 'orange' : k === f.z ? 'gold' : null),
+            dark: isDark(v), fill: (k, c) => (c.n.c === 'R' ? 'red' : null), black: (k, c) => c.n.c !== 'R', ring: (k) => (chk.bad.has(k) ? 'orange' : k === f.z ? 'gold' : null),
             note: (k) => (f.L.n <= 22 ? (chk.bad.has(k) ? ['≠', 'orange', 'ne'] : [String(chk.bh.get(k)), 'muted', 'ne']) : null),
             edgeColor: (a, b) => (chk.redred.has(b) ? 'red' : null), edgeWidth: (a, b) => (chk.redred.has(b) ? 4.5 : null),
           });
           info = { f, chk };
         });
-        v.legend([['gold', 'z', { dot: true }], ['red', 'red node / red–red edge', { dot: true }], ['ink', 'black node', { dot: true }], ['muted', 'black height', { dot: true }]]);
+        v.legend([['gold', 'z', { dot: true }], ['red', 'red node / red–red edge', { dot: true }], [isDark(v) ? 'faint' : 'ink', 'black node', { dot: true }], ['muted', 'black height', { dot: true }]]);
         v.readout(() => {
           const { f, chk } = info, n = f.L.n, h = n ? f.L.h + 1 : 0;
           const cs = f.cases && f.cases.length ? f.cases.join(' → ') : '—';
@@ -1026,7 +1030,7 @@ $$h<1.4405\,\log_2(n+2)-0.3277.$$`,
           const f = S.frame, rootC = f.L.nodes.find((c) => c.p == null), H = heightsOf(rootC ? rootC.n : null), bad = new Set(f.badSet || []);
           const bf = (c) => (c.n.l ? H.get(c.n.l.k) : 0) - (c.n.r ? H.get(c.n.r.k) : 0);
           drawT(s, f.L, {
-            prev: S.prev && S.prev.L, tw: S.tween, rmax: 14,
+            prev: S.prev && S.prev.L, tw: S.tween, rmax: 14, padT: 0.3,
             fill: (k) => (k === f.newk ? 'gold' : k === f.rotated ? 'orange' : null),
             ring: (k, c) => (k === f.bad || Math.abs(bf(c)) > 1 ? 'red' : null),
             note: (k, c) => { const b = bf(c); return [b > 0 ? '+' + b : b < 0 ? '−' + -b : '0', Math.abs(b) > 1 ? 'red' : 'muted', 'ne']; },

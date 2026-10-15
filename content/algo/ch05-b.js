@@ -179,7 +179,7 @@ If $m$ grows in proportion to $n$, so that $\alpha=O(1)$, all dictionary operati
             if (d.uns <= YM) P.dot(d.a, d.uns, { r: 3.6, color: 'accent' }); else off = true;
             if (su <= YM) P.dot(d.a, su, { r: 3.6, color: 'purple' });
           }
-          if (off) P.text('unsuccessful: 1 + 8α, off the chart ↑', 1.15, 8.3, { size: 11.5, color: 'accent', weight: 700 });
+          if (off) P.text('unsuccessful: 1 + 8α, off the chart ↑', 2.3, 8.3, { size: 11.5, color: 'accent', weight: 700 });
           P.vline(cur.a, { color: 'muted', width: 1, dash: [2, 3] });
           // histogram vs Poisson
           const mx = Math.max(14, cur.mx), fr = []; let fmax = 0;
@@ -286,7 +286,7 @@ Linear probing does worse, about $\frac12\bigl(1+\frac1{(1-\alpha)^2}\bigr)$ and
         const kind = v.select('search', [{ value: 'uns', label: 'unsuccessful' }, { value: 'suc', label: 'successful' }], 'uns');
         const sch = v.select('histogram for', [{ value: 'uniform', label: 'uniform' }, { value: 'double', label: 'double hashing' }, { value: 'linear', label: 'linear' }], 'uniform');
         const aS = v.slider('$\\alpha$', 0.1, 0.98, 0.8, { step: 0.01 });
-        const P = v.stage({ x: [0, 1], y: [1, 1e4], ylog: true, axes: 'box', height: 330, minWidth: 300, title: 'average probes against the load factor', xlabel: 'α' });
+        const P = v.stage({ x: [0, 1], y: [0.8, 1e4], ylog: true, axes: 'box', height: 330, minWidth: 300, title: 'average probes against the load factor', xlabel: 'α' });
         const Hs = v.stage({ x: [0.3, 30.7], y: [0, 0.5], axes: 'box', height: 330, minWidth: 260, title: 'probe counts at the chosen α', xlabel: 'probes' });
         const M = 4093, AL = []; for (let a = 0.05; a < 0.951; a += 0.05) AL.push(+a.toFixed(2)); AL.push(0.97, 0.98, 0.99);
         const curves = {}; for (const s of ['uniform', 'double', 'linear']) curves[s] = oaSimulate(s, M, AL, v.rng(s.length * 7 + 1), 500);
@@ -384,7 +384,7 @@ where $h$ is drawn uniformly from $\mathcal H$. The probability is over the choi
 $$h_{a,b}(x)=\bigl((ax+b)\bmod p\bigr)\bmod m .$$
 The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: for distinct keys $x\ne y$ at most $p(p-1)/m$ of the pairs $(a,b)$ give $h_{a,b}(x)=h_{a,b}(y)$.`,
       idea: String.raw`Let $r=(ax+b)\bmod p$ and $s=(ay+b)\bmod p$. Then $r-s\equiv a(x-y)\not\equiv0$ because $p$ is prime and neither factor is divisible by $p$, so $r\ne s$; and $(a,b)\mapsto(r,s)$ is a bijection from the $p(p-1)$ pairs onto the $p(p-1)$ pairs with $r\ne s$, since $a=(r-s)(x-y)^{-1}$ and $b=r-ax$ can be solved mod $p$. So $(r,s)$ is a uniformly random pair of distinct residues, and for each $r$ at most $\lceil p/m\rceil-1\le(p-1)/m$ values $s\ne r$ satisfy $s\equiv r\pmod m$. With a composite modulus the bijection fails and collisions can exceed the bound.`,
-      caption: String.raw`Fix two keys $x \ne y$. Left: every $(a, b)$, gold where $h_{a,b}(x) = h_{a,b}(y)$. Right: the pair $(r, s) = (ax+b, ay+b) \bmod p$ each $(a, b)$ maps to — every off-diagonal cell is hit exactly once, and the gold-outlined cells ($r \equiv s$ mod $m$) are the collisions. Click a left cell to see its image. Choose a composite modulus to break the bijection: cells are hit twice, the diagonal gets hit, and the bound fails for some pairs.`,
+      caption: String.raw`Fix two keys $x \ne y$. Left: every $(a, b)$, gold where $h_{a,b}(x) = h_{a,b}(y)$. Right: the pair $(r, s) = (ax+b, ay+b) \bmod p$ each $(a, b)$ maps to — every off-diagonal cell is hit exactly once, and the gold-outlined cells ($r \equiv s$ mod $m$) are the collisions. Click a left cell to see its image. Choose a composite modulus to break the bijection: when $x - y$ shares a factor with it, whole rows collide, cells are hit several times, the diagonal gets hit, and the bound fails.`,
       deps: ['algo-5.15'],
       refs: ['CLRS 4e §11.3'],
       credit: 'Carter & Wegman, 1979',
@@ -392,7 +392,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
       viz(v) {
         const pS = v.select('modulus', [{ value: '11', label: '$p = 11$' }, { value: '13', label: '$13$' }, { value: '17', label: '$17$' }, { value: '12', label: '$12$ (not prime)' }, { value: '15', label: '$15$ (not prime)' }], '13', { onChange: () => clampXY() });
         const mS = v.slider('buckets $m$', 2, 6, 3, { int: true });
-        const xS = v.slider('key $x$', 0, 16, 2, { int: true, onChange: () => clampXY() }), yS = v.slider('key $y$', 0, 16, 7, { int: true, onChange: () => clampXY() });
+        const xS = v.slider('key $x$', 0, 16, 1, { int: true, onChange: () => clampXY() }), yS = v.slider('key $y$', 0, 16, 7, { int: true, onChange: () => clampXY() });
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 320, title: 'all $(a, b)$: gold = $x$ and $y$ collide' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, minWidth: 320, title: '$(r, s)$: how often each pair is hit' });
         const TA = v.table(A, { rows: 12, cols: 13, maxCell: 22, size: 9, labelSize: 9.5, cornerLabel: 'a \\ b' });
@@ -427,7 +427,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
           const { p, m, X, Y, C, bound, sa, sb, sr, ss, prime } = info;
           if (X === Y) return 'Choose two different keys $x \\ne y$.';
           const sel1 = `$(a, b) = (${sa}, ${sb})$: $r = ${sr}$, $s = ${ss}$, so $h(x) = ${sr % m}$, $h(y) = ${ss % m}$${sr % m === ss % m ? ' — collide' : ''}`;
-          return `${sel1} · colliding pairs $(a, b)$: **${C}** of ${p * (p - 1)} · bound $p(p-1)/m = ${v.fix(bound, 1)}$ ${C <= bound + 1e-9 ? '✓' : '**exceeded** ✗'}${prime ? '' : ` · ${p} is not prime: $a(x-y) \\equiv 0$ has solutions $a \\ne 0$, so the map to $(r, s)$ is not a bijection`}`;
+          return `${sel1} · colliding pairs $(a, b)$: **${C}** of ${p * (p - 1)} · bound $p(p-1)/m = ${v.fix(bound, 1)}$ ${C <= bound + 1e-9 ? '✓' : '**exceeded** ✗'}${prime ? '' : (() => { const zs = []; for (let a = 1; a < p; a++) if ((a * (X - Y)) % p === 0) zs.push(a); return zs.length ? ` · ${p} is not prime and $a(x-y) \\equiv 0$ for $a \\in \\{${zs.join(', ')}\\}$: those rows collide entirely and the map to $(r, s)$ is not a bijection` : ` · ${p} is not prime, but $x - y$ is coprime to it, so the map stays injective here: choose keys whose difference shares a factor with ${p}`; })()}`;
         });
       },
     },
@@ -618,8 +618,8 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const H = [0, ...coins.map(towerOf)]; H[0] = Math.max(...H.slice(1)) + 1;
         const S0 = skipSearch(H, keys, q), back = S0.moves.slice().reverse();
         const frames = [{ k: 0, note: `The search for ${q} ended at ${keys[S0.end - 1]} after ${S0.moves.length} steps. Walk the path backwards from there.` }];
-        back.forEach((mv, i) => frames.push({ k: i + 1, note: mv.t === 'd' ? `Step back **up** from level ${mv.l - 1} to ${mv.l} at ${mv.i ? keys[mv.i - 1] : 'the head'}: its tower continues — a coin that came up **heads**.` : `Step back **left** at level ${mv.l} from ${keys[mv.j - 1]}: its tower stops at this level — **tails**; ${mv.i ? `the previous tower at this level is ${keys[mv.i - 1]}` : 'we reach the head'}.` }));
-        frames.push({ k: back.length, note: `Back at the head's top level: ${back.filter((m) => m.t === 'd').length} climbs (heads) and ${back.filter((m) => m.t === 'r').length} left steps (tails). Each climb costs $1/p = 2$ steps on average.`, end: true });
+        back.forEach((mv, i) => frames.push({ k: i + 1, note: mv.t === 'd' && mv.i === 0 ? `Climb the head's tower from level ${mv.l - 1} to ${mv.l}: the head has every level, so no coin is involved.` : mv.t === 'd' ? `Step back **up** from level ${mv.l - 1} to ${mv.l} at ${mv.i ? keys[mv.i - 1] : 'the head'}: its tower continues — a coin that came up **heads**.` : `Step back **left** at level ${mv.l} from ${keys[mv.j - 1]}: its tower stops at this level — **tails**; ${mv.i ? `the previous tower at this level is ${keys[mv.i - 1]}` : 'we reach the head'}.` }));
+        frames.push({ k: back.length, note: `Back at the head's top level: ${back.filter((m) => m.t === 'd' && m.i > 0).length} climbs on heads, ${back.filter((m) => m.t === 'r').length} left steps on tails and ${back.filter((m) => m.t === 'd' && m.i === 0).length} climbs up the head. Each climb costs $1/p = 2$ steps on average.`, end: true });
         const St = v.steps({ frames, speed: 1.6, start: 9, still: 9 });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true });
         const A = v.stage({ x: [0, 60], y: [0, 0.2], axes: 'box', height: 210, minWidth: 260, title: 'search steps', xlabel: 'steps' });
@@ -653,8 +653,8 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
             towerColor: (j, l) => (cur && ((cur.t === 'r' && cur.i === j && cur.l === l) || (cur.t === 'd' && cur.i === j && cur.l === l)) ? 'gold' : (j === S0.end && l === 0) || visited(j, l) ? 'accent' : null),
           });
           back.slice(0, f.k).forEach((m) => { if (m.t === 'd') s.arrow(m.i, m.l - 0.7, m.i, m.l - 0.32, { color: 'orange', width: 2.6, head: 7 }); });
-          const strip = back.slice(0, f.k).map((m) => (m.t === 'd' ? 'H↑' : 'T←'));
-          s.text(`coins along the path, read backwards: ${strip.join('  ') || '—'}`, -0.6, -1.75, { size: 12, weight: 700, color: 'ink' });
+          const strip = back.slice(0, f.k).map((m) => (m.t === 'd' ? (m.i === 0 ? '↑' : 'H↑') : 'T←'));
+          s.text(`coins along the path, read backwards (↑ alone: climbing the head): ${strip.join('  ') || '—'}`, -0.6, -1.75, { size: 12, weight: 700, color: 'ink' });
           // histograms
           const n = Math.round(nS.value), p = pS.value, D = sim(n, p), L = Math.log(n) / Math.log(1 / p), bound = L / p + 1 / (1 - p) + 1;
           const hist = (Sx, xs, col, mark, markCol) => {

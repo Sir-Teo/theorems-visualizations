@@ -366,15 +366,19 @@ export default {
       tags: ['orthonormal', 'bases'],
       viz(v) {
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 430 });
-        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.3, axis: 1.45, lim: 1.4 });
-        const mS = v.select('given orthonormal list', [{ value: '1', label: '$e_1$' }, { value: '2', label: '$e_1, e_2$' }], '1');
+        const sc = v.scene3(S, { yaw: -0.98, pitch: 0.42, axis: 1.45, lim: 1.4 });
+        // a frame that looks balanced from the initial view: e₁ ≈ up, f₁ ≈ right, f₂ ≈ left, all leaning toward the viewer
+        const F1 = [0.976, -0.01, -0.219], F2 = [-0.06, -0.974, -0.219];
+        const mS = v.select('given orthonormal list', [{ value: '1', label: '$e_1$' }, { value: '2', label: '$e_1, e_2$' }], '1', { onChange: (m) => {
+          if (m === '2') { E2.set(onCircle(F1)); V1.set(add3(F2, add3(mul3(E1.p, 0.35), mul3(E2.p, 0.3)))); } else V1.set(add3(F1, mul3(E1.p, 0.45)));
+        } });
         const onSphere = (p) => (len3(p) > 1e-6 ? unit3(p) : [1, 0, 0]);
-        const E1 = sc.handle(unit3([0.3, 0.2, 0.93]), { color: 'blue', label: 'e₁', snap: onSphere });
+        const E1 = sc.handle(unit3([0.211, -0.226, 0.95]), { color: 'blue', label: 'e₁', snap: onSphere });
         const onCircle = (p) => { const q = sub3(p, mul3(E1.p, dot3(p, E1.p))); return len3(q) > 1e-6 ? unit3(q) : perp(E1.p)[0]; };
-        const E2 = sc.handle(onCircle([-0.8, -0.5, 0.3]), { color: 'purple', label: 'e₂', snap: onCircle });
+        const E2 = sc.handle(onCircle(F1), { color: 'purple', label: 'e₂', snap: onCircle });
         const given = () => (mS.value === '1' ? [E1.p] : [E1.p, E2.p]);
-        const V1 = sc.handle([0.8, 0.5, 0.15], { color: 'orange', label: 'v₁', snap: (p) => snapSpan(p, orth(given()), 0.1) });
-        const V2 = sc.handle([-0.8, -0.4, 0.5], { color: 'orange', label: 'v₂', snap: (p) => snapSpan(p, orth([E1.p, V1.p]), 0.1) });
+        const V1 = sc.handle([1.07, -0.11, 0.21], { color: 'orange', label: 'v₁', snap: (p) => snapSpan(p, orth(given()), 0.1) });
+        const V2 = sc.handle(add3(add3([-0.06, -0.974, -0.219], mul3([0.211, -0.226, 0.95], 0.55)), mul3([0.976, -0.01, -0.219], 0.45)), { color: 'orange', label: 'v₂', snap: (p) => snapSpan(p, orth([E1.p, V1.p]), 0.1) });
         v.legend([['blue', 'given orthonormal list'], ['orange', 'extension to a basis'], ['green', 'Gram–Schmidt output $f_j$'], ['muted', 'projection removed', { dash: true }]]);
         let st = null;
         v.render(() => {
@@ -632,7 +636,7 @@ export default {
           const diag = [0, 1, 2].map((k) => ctx(U[k][k][0], U[k][k][1]).replace('−', '-')).join(',\\ ');
           const orthoTxt = `$\\|Q^*Q-I\\| = ${zs(qdev)}$`;
           if (real && quasi && basis !== 'std') return `The eigenvalues are $\\lambda_1 = ${ctx(lamC[0][0], 0).replace('−', '-')}$ and the nonreal pair $${ctx(lamC[1][0], Math.abs(lamC[1][1])).replace('−', '-').replace('+', '\\pm ')}$. A real unit eigenvector exists only for $\\lambda_1$; in any real orthonormal basis $e_1,e_2,e_3$ with $Te_1=\\lambda_1e_1$, the block on $e_1^\\perp$ has the nonreal eigenvalues $a\\pm bi$, so its lower entry is never $0$ (here $${ctx(U[2][1][0], U[2][1][1]).replace('−', '-')}$). The minimal polynomial has the irreducible factor $z^2-2az+a^2+b^2$: over $\\mathbf R$, 6.37 fails. Over $\\mathbf C$ (switch) the Schur basis exists.`;
-          if (basis === 'std') return `In the standard basis the diagonal $${diag}$ has nothing to do with the eigenvalues $${eigs}$ (computed from the characteristic polynomial of $A$).`;
+          if (basis === 'std') return `In the standard basis the diagonal $${diag}$ is not the list of eigenvalues $${eigs}$ (computed from the characteristic polynomial of $A$) — only the two sums agree, both being the trace.`;
           if (basis === 'e1') return `$e_1$ is a unit eigenvector for $\\lambda_1$, so column 1 becomes $(\\lambda_1,0,0)$; ${orthoTxt}. The remaining $2\\times2$ block still has to be triangularized inside $e_1^\\perp$.`;
           return `Upper triangular: largest entry below the diagonal $${zs(lowMax)}$, ${orthoTxt}${real ? `, and $Q$ is real ($\\max\\lvert\\operatorname{Im}Q\\rvert = ${zs(imQ)}$)` : ''}. The diagonal $${diag}$ is exactly the list of eigenvalues $${eigs}$.`;
         });
@@ -656,9 +660,9 @@ export default {
         const S2 = v.stage({ x: [-2.8, 2.8], y: [-2.0, 2.0], equal: true, height: 400 });
         const F = v.stage({ x: [-1.08, 1.08], y: [-1.75, 1.6], height: 270, full: true, title: '$p$ (drag the handles), $\\cos\\pi t$ and the representing polynomial $q$' });
         const G = v.stage({ x: [-1.08, 1.08], y: [-1.6, 1.6], height: 190, full: true, title: 'integrands: $p(t)\\cos\\pi t$ and $p(t)\\,q(t)$ — equal signed areas' });
-        const th = v.slider('basis angle $\\theta$', 0, 360, 25, { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const th = v.slider('basis angle $\\theta$', 0, 360, 55, { step: 1, fmt: (x) => `${Math.round(x)}°` });
         const nS = v.slider('$n$', 1, 8, 2, { int: true, onChange: () => renode() });
-        const Ph = S2.handle(0.74, 0.52, { color: 'accent', label: 'φ = 1', constrain: (x, y) => { const l = Math.hypot(x, y); return l < 0.3 ? (l < 1e-9 ? [0.3, 0] : [(0.3 * x) / l, (0.3 * y) / l]) : [x, y]; } });
+        const Ph = S2.handle(0.6, 0.36, { color: 'accent', label: 'φ = 1', labelPos: 'se', constrain: (x, y) => { const l = Math.hypot(x, y); return l < 0.3 ? (l < 1e-9 ? [0.3, 0] : [(0.3 * x) / l, (0.3 * y) / l]) : [x, y]; } });
         const Uh = S2.handle(1.5, -0.95, { color: 'gold', label: 'u' });
         // P_n mode: p interpolates handles at Chebyshev nodes
         let nodes = chebNodes(2), pc = [0.55, 0.5, -0.9];

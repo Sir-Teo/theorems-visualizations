@@ -275,7 +275,7 @@ and its conservation, together with that of $\mathbf P$, says exactly that the c
           st.dot(C.W[i][0], ts[i], { r: 6, color: 'blue' });
           st.dot(C.W[i][1], ts[i], { r: 4 + 3 * Math.cbrt(C.m2), color: 'orange' });
           st.dot(C.X[i], ts[i], { r: 4.5, color: 'green' });
-          if (C.kk > 0) { st.vline(-C.u * ts[i], { color: 'red', alpha: 0.5, dash: [2, 3] }); st.corner('trap centre (red) moves in this frame', 'tl', { color: 'red' }); }
+          if (C.kk > 0) { st.line(0, 0, -C.u * T, T, { color: 'red', alpha: 0.7, dash: [2, 3], width: 1.4 }); st.text('trap centre', -C.u * T, T, { color: 'red', size: 11, align: C.u > 0 ? 'left' : 'right', dx: C.u > 0 ? 4 : -4, dy: 12 }); }
           sk.setView([0, T], C.kr);
           series(sk, ts, C.MX, i, { color: 'green', width: 2 });
           series(sk, ts, C.Pt, i, { color: 'purple', width: 2 });
@@ -301,7 +301,7 @@ and its conservation, together with that of $\mathbf P$, says exactly that the c
       name: 'Screw symmetry and its conserved combination',
       statement: String.raw`Suppose the potential is invariant under the screw motions $\theta\mapsto\theta + s$, $z\mapsto z + \frac{h}{2\pi}s$ about the $z$-axis — a rotation combined with a translation along the axis, with pitch $h$ (the rise per turn; $h<0$ for a left-handed screw) — for instance $U$ depends on $\theta$ and $z$ only through $\theta - 2\pi z/h$, as for a helical groove. Then neither $L_z$ nor $p_z$ need be conserved, but the combination
 $$\mathcal Q = L_z + \frac{h}{2\pi}\,p_z$$
-is. With a wrong coefficient $h'$, $\frac{d}{dt}\big(L_z + \frac{h'}{2\pi}p_z\big) = \big(\frac{h'}{h} - 1\big)\,\tau_z$, where $\tau_z$ is the torque about the axis.`,
+is. With a wrong coefficient $h'$, $\frac{d}{dt}\big(L_z + \frac{h'}{2\pi}p_z\big) = \big(1 - \frac{h'}{h}\big)\,\tau_z$, where $\tau_z$ is the torque about the axis.`,
       idea: String.raw`The generator of the screw is $K = \partial_\theta + \frac{h}{2\pi}\partial_z$; kinetic energy is invariant under rotations and axial translations, so Noether’s theorem (7.3) gives the charge $p_\theta + \frac{h}{2\pi}p_z$ with $p_\theta = L_z$. Directly: a groove depending on $\psi = \theta - 2\pi z/h$ pushes with torque $\tau_z = -\partial U/\partial\theta = -U'(\psi)$ and axial force $F_z = -\partial U/\partial z = \frac{2\pi}{h}U'(\psi)$, so $\tau_z + \frac{h}{2\pi}F_z = 0$. Unrolling the cylinder makes it plain: the screw becomes a translation along the groove, and $\mathcal Q$ is the momentum along it.`,
       caption: String.raw`A particle slides on a cylinder ($a = 1$) cut by a helical groove; left in 3D, middle unrolled, where the groove is a family of straight lines and the faint arrows show the screw generator. It rocks across the groove while drifting along it: $L_z$ (purple) and $\frac{h}{2\pi}p_z$ (teal) swing in opposition and their sum (blue) is flat. Change the pitch or the handedness — the conserved mix changes with it. Use the mismatch slider to try a wrong coefficient: the sum then drifts, exactly as the dashed prediction says.`,
       deps: ['mech-7.3', 'mech-7.4', 'mech-7.5'],
@@ -366,14 +366,14 @@ is. With a wrong coefficient $h'$, $\frac{d}{dt}\big(L_z + \frac{h'}{2\pi}p_z\bi
           sp.dot(R.t[i], B.Q[i], { r: 4.5, color: 'blue' });
           cur = { B, i };
         }, { period: 13.2, still: 11.4 });
-        v.legend([['purple', '$L_z = ma^2\\dot\\theta$'], ['teal', "$\\frac{h'}{2\\pi}\\,p_z$"], ['blue', "$L_z + \\frac{h'}{2\\pi}p_z$"], ['orange', "start $+\\int_0^t(\\frac{h'}{h}-1)\\,\\tau_z\\,dt$", { dash: true }]]);
+        v.legend([['purple', '$L_z = ma^2\\dot\\theta$'], ['teal', "$\\frac{h'}{2\\pi}\\,p_z$"], ['blue', "$L_z + \\frac{h'}{2\\pi}p_z$"], ['orange', "start $+\\int_0^t(1-\\frac{h'}{h})\\,\\tau_z\\,dt$", { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const { B, i } = cur, tt = v.fix(B.R.t[i], 1), dQ = B.Q[i] - B.Q[0];
           const [ll, lh] = rangeOf(B.Lz, i), pz = B.R.y.map((Y) => Y[3]), [pl, ph] = rangeOf(pz, i);
           const head = String.raw`pitch $h = ${v.fix(B.h, 2)}$ (${B.h > 0 ? 'right' : 'left'}-handed), coefficient $h'/2\pi = ${v.fix(B.hp / (2 * Math.PI), 4)}$ · at $t = ${tt}$: $L_z + \frac{h'}{2\pi}p_z = ${v.fix(B.Q[i], 4)}$ (start ${v.fix(B.Q[0], 4)})`;
           if (dS.value === 0) return head + String.raw` — conserved to $${sci(v, maxDev(B.Q, i))}$, while $L_z$ has ranged over $[${v.fix(ll, 3)},\ ${v.fix(lh, 3)}]$ and $p_z$ over $[${v.fix(pl, 3)},\ ${v.fix(ph, 3)}]$`;
-          return head + String.raw` — wrong mix: change $${num(v, dQ, 4)}$, predicted $\int(\frac{h'}{h}-1)\tau_z\,dt = ${num(v, B.R.y[i][4], 4)}$; the right mix $L_z + \frac{h}{2\pi}p_z$ still holds to $${sci(v, maxDev(B.Qtrue, i))}$`;
+          return head + String.raw` — wrong mix: change $${num(v, dQ, 4)}$, predicted $\int(1-\frac{h'}{h})\tau_z\,dt = ${num(v, B.R.y[i][4], 4)}$; the right mix $L_z + \frac{h}{2\pi}p_z$ still holds to $${sci(v, maxDev(B.Qtrue, i))}$`;
         });
       },
     },
@@ -385,7 +385,7 @@ is. With a wrong coefficient $h'$, $\frac{d}{dt}\big(L_z + \frac{h'}{2\pi}p_z\bi
       statement: String.raw`For an isolated system of point particles in three dimensions whose interactions depend only on relative positions (and are invariant under rotations), the Lagrangian is invariant under the ten-parameter Galilean group of time translations (1), space translations (3), rotations (3) and boosts (3). Correspondingly, ten functions are constant along every motion:
 $$E,\qquad \mathbf P = \sum\mathbf p_i,\qquad \mathbf L = \sum\mathbf r_i\times\mathbf p_i,\qquad \mathbf K = M\mathbf R - \mathbf P\,t .$$
 An external field preserves exactly those charges whose symmetries it respects: a uniform field along $z$ keeps $E$, $P_x$, $P_y$, $L_z$, $K_x$, $K_y$; a static central field keeps $E$ and $\mathbf L$; a time-dependent central field keeps only $\mathbf L$.`,
-      idea: String.raw`Each conservation law is Noether’s theorem (7.3) for one generator: homogeneity of time gives $E$ (7.7), of space gives $\mathbf P$ (7.4), isotropy gives $\mathbf L$ (7.5), and boosts give $\mathbf K$ (7.9). For $N$ bodies with $6N$-dimensional phase space these are generally the only integrals that hold for every system of this kind; specific systems may have more (the Runge–Lenz vector of Kepler’s problem, 7.3), and the three-body problem (8.20) shows how little ten integrals do for $N\ge3$. Breaking a symmetry with an external field removes precisely its charge.`,
+      idea: String.raw`Each conservation law is Noether’s theorem (7.3) for one generator: homogeneity of time gives $E$ (7.7), of space gives $\mathbf P$ (7.4), isotropy gives $\mathbf L$ (7.5), and boosts give $\mathbf K$ (7.9). For the Newtonian three-body problem Bruns (1887) proved that every algebraic integral is a function of these ten; special systems may have more (the Runge–Lenz vector of Kepler’s problem, 7.3), and the three-body problem (8.20) shows how little ten integrals do for $N\ge3$. Breaking a symmetry with an external field removes precisely its charge.`,
       caption: String.raw`Five bodies attract by softened gravity, integrated with velocity Verlet. Right: one lane per conserved quantity, showing its change since $t = 0$ (lane height = a typical size of that quantity). With no outside world all ten lanes stay flat — the energy only to the tiny bounded error of the integrator. Switch on a uniform field, a central pull, or a pulsating pull, and watch exactly the predicted lanes turn red. *New cluster* draws another random cluster.`,
       deps: ['mech-7.4', 'mech-7.5', 'mech-7.7', 'mech-7.9'],
       see: ['mech-8.20'],

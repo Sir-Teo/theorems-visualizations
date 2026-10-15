@@ -12,7 +12,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // Theorem-like kinds for mathematics; the rest cover the breadth of the atlas (science, society, arts, history).
 export const KINDS = ['Theorem', 'Lemma', 'Corollary', 'Proposition', 'Definition', 'Law', 'Principle', 'Postulate', 'Algorithm', 'Model',
-  'Concept', 'Phenomenon', 'Method', 'Paradox', 'Hypothesis', 'Invention', 'Event'];
+  'Concept', 'Phenomenon', 'Method', 'Paradox', 'Hypothesis', 'Invention', 'Event', 'Paper'];
 /** Item numbers: chapter.n or chapter.section.n, optional letter for an unnumbered corollary. */
 export const NUM_RE = /^\d{1,2}(\.\d{1,3}){1,2}[a-z]?$/;
 /** Any well-formed id (collection may be unknown). */
@@ -153,7 +153,7 @@ export async function loadAll({ bust = false } = {}) {
     else if (!known.has(A.to)) problems.push({ level: 'error', where: `${A.file} ${A.num}`, msg: `alias target ${A.to} does not exist` });
     else if (A.to.split('-')[0] === A.col) problems.push({ level: 'error', where: `${A.file} ${A.num}`, msg: `alias ${id} → ${A.to} stays inside its collection` });
   }
-  if (aliases.size) for (const it of [...items, ...planned]) for (const k of ['deps', 'see']) {
+  if (aliases.size) for (const it of [...items, ...planned]) for (const k of ['deps', 'see', 'introduces']) {
     if (it[k]?.some((d) => aliases.has(d))) it[k] = [...new Set(it[k].map(resolve))].filter((d) => d !== it.id);
   }
   return { fields, collections, chapters, items, planned, aliases, problems };
@@ -186,6 +186,18 @@ export function validate(items, planned = [], collections = []) {
       if ((stripped.match(/\$/g) || []).length % 2) P.push({ level: 'error', where: w, msg: `unbalanced $ in ${field}` });
     }
   }
+  // landmark papers: citation metadata is required, `introduces` lists the ideas the paper first put forward
+  const paperCheck = (it, w) => {
+    if (it.kind !== 'Paper') { if (it.paper || it.introduces) P.push({ level: 'warn', where: w, msg: 'paper/introduces only make sense on kind Paper' }); return; }
+    const p = it.paper;
+    if (!p || typeof p !== 'object') { P.push({ level: 'error', where: w, msg: 'Paper needs paper: {authors, year, title, venue?, doi?|url?}' }); return; }
+    if (!p.authors || typeof p.authors !== 'string') P.push({ level: 'error', where: w, msg: 'paper.authors must be a string' });
+    if (!Number.isInteger(p.year) || p.year < -3000 || p.year > 2100) P.push({ level: 'error', where: w, msg: 'paper.year must be an integer year' });
+    if (!p.title || typeof p.title !== 'string') P.push({ level: 'error', where: w, msg: 'paper.title must be a string' });
+    if (p.doi && !/^10\.\d{4,9}\/\S+$/.test(p.doi)) P.push({ level: 'warn', where: w, msg: `paper.doi "${p.doi}" does not look like a DOI (10.xxxx/…)` });
+    if (it.introduces != null && !Array.isArray(it.introduces)) P.push({ level: 'error', where: w, msg: 'introduces must be an array' });
+  };
+  for (const it of items) paperCheck(it, `${it.file} ${it.num}`);
   const all = new Map(ids);
   for (const it of planned) {
     const w = `${it.file} ${it.num ?? '?'}`;
@@ -195,11 +207,12 @@ export function validate(items, planned = [], collections = []) {
     if (!KINDS.includes(it.kind)) P.push({ level: 'error', where: w, msg: `kind "${it.kind}" not in ${KINDS.join('/')}` });
     if (!it.name) P.push({ level: 'error', where: w, msg: 'missing name' });
     if (!Array.isArray(it.deps)) P.push({ level: 'error', where: w, msg: 'deps must be an array' });
+    paperCheck(it, w);
     all.set(it.id, it);
   }
   for (const it of [...items, ...planned]) {
     const w = `${it.file} ${it.num}`;
-    for (const field of ['deps', 'see']) {
+    for (const field of ['deps', 'see', 'introduces']) {
       for (const d of it[field] || []) {
         if (!ID_RE.test(d)) { P.push({ level: 'error', where: w, msg: `${field}: malformed id "${d}"` }); continue; }
         if (d === it.id) P.push({ level: 'error', where: w, msg: `${field}: self reference` });

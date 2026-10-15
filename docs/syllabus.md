@@ -31,6 +31,25 @@ export default {
 };
 ```
 
+## Landmark papers
+
+Each field's famous papers are items of kind `Paper`, placed in the chapter of the collection where the main idea they introduced lives (append the next free number; never renumber):
+
+```js
+{ num: '5.18', kind: 'Paper', name: 'A Mathematical Theory of Communication',
+  paper: { authors: 'Claude E. Shannon', year: 1948, title: 'A Mathematical Theory of Communication',
+           venue: 'Bell System Technical Journal 27 (3): 379–423', doi: '10.1002/j.1538-7305.1948.tb01338.x' },
+  introduces: ['info-1.2', 'info-5.4'],   // ideas this paper first put forward (any collection)
+  deps: ['pma-3.26'],                      // what it built on
+  refs: [], pic: 'Recreate Fig. 8: capacity of the binary symmetric channel against error rate, with the reader's own noisy channel…' },
+```
+
+- `paper` is required: `authors` (as printed, "A. B. Name and C. Name"), `year`, `title`; `venue` (journal, volume (issue): pages) and `doi` (or `url` when there is no DOI) whenever they exist. **Verify every citation** against the publisher page, DOI resolver or a library record; never guess a DOI.
+- `introduces` lists the ideas the paper first published; those ideas then show "First published in" on their pages. Point at existing ids (written or planned) and keep it honest: introduced, not merely used.
+- `name` is the paper's title, shortened to ≤ 60 characters if needed; authors and year are shown from `paper`.
+- `pic` should recreate the paper's central figure, table or experiment as something the reader can probe, with the paper's own data where available.
+- Pick papers that changed their field (the ones a historian of the field would list), across eras, and include the field's breadth (not only its theory). Book-anchored collections (`pma`, `rca`, `fa`, `ladr`, `prob`, `alg`, `graph`, `ml`) keep the book's numbering: put papers in a related course collection instead.
+
 ## Cross-listings
 
 When an idea already lives in another collection, do not copy it: cite it in `deps`. If your course genuinely covers it in a chapter, list it with a cross-listing entry, which takes a number but is not a new node:

@@ -35,6 +35,10 @@ for (const it of all) {
   it.see = (it.see || []).filter((d) => byId.has(d) && d !== it.id);
 }
 for (const it of ghosts) it.deps = (it.deps || []).filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
+for (const it of [...all, ...ghosts]) if (it.introduces) it.introduces = it.introduces.filter((d) => d !== it.id && (byId.has(d) || plannedById.has(d)));
+// short author string for lists and search: "Shannon", "Watson & Crick", "Kahneman, Tversky et al."
+const shortAuthors = (a) => { const xs = String(a).split(/\s*(?:,|;|\band\b|&)\s*/).filter(Boolean).map((x) => x.trim().split(/\s+/).pop()); return xs.length > 2 ? `${xs[0]} et al.` : xs.join(' & '); };
+const paperYear = (it) => (it.kind === 'Paper' && Number.isInteger(it.paper?.year) ? it.paper.year : undefined);
 
 // ---------- graph statistics (written items only) ----------
 const children = new Map(all.map((it) => [it.id, []]));
@@ -243,7 +247,8 @@ const index = {
     id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name,
     deps: it.deps, pdeps: it.pdeps.length ? it.pdeps : undefined, see: it.see.length ? it.see : undefined, tags: it.tags?.length ? it.tags : undefined,
     file: it.file, viz: typeof it.viz === 'function', x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0),
-    anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined, yr: yearOf(it.credit),
+    anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined, yr: paperYear(it) ?? yearOf(it.credit),
+    au: it.kind === 'Paper' && it.paper?.authors ? shortAuthors(it.paper.authors) : undefined, intro: it.introduces?.length ? it.introduces : undefined,
   })),
   plannedCount: ghosts.length,
   map: { rows: rowsOut.map(({ bands, ...r }) => r), fields: fieldBoxes },
@@ -254,17 +259,21 @@ const index = {
 await rm(join(ROOT, 'data'), { recursive: true, force: true });
 await mkdir(join(ROOT, 'data/col'), { recursive: true });
 await writeFile(join(ROOT, 'data/index.json'), JSON.stringify(index));
-// planned (ghost) items, compact rows, loaded lazily: [num, chapter, kind#, name, deps, x, y] grouped by collection
+// planned (ghost) items, compact rows, loaded lazily: [num, chapter, kind#, name, deps, x, y, paper?: {y, a, i}] grouped by collection
 const KIND_LIST = [...new Set(ghosts.map((it) => it.kind))];
 const plannedOut = { kinds: KIND_LIST, cols: {} };
-for (const it of ghosts) (plannedOut.cols[it.col] ||= []).push([it.num, it.chapter, KIND_LIST.indexOf(it.kind), it.name, it.deps, Math.round(pos.get(it.id)?.x ?? 0), Math.round(pos.get(it.id)?.y ?? 0)]);
+for (const it of ghosts) {
+  const row = [it.num, it.chapter, KIND_LIST.indexOf(it.kind), it.name, it.deps, Math.round(pos.get(it.id)?.x ?? 0), Math.round(pos.get(it.id)?.y ?? 0)];
+  if (it.kind === 'Paper' && it.paper) row.push({ y: paperYear(it), a: shortAuthors(it.paper.authors), i: it.introduces?.length ? it.introduces : undefined });
+  (plannedOut.cols[it.col] ||= []).push(row);
+}
 await writeFile(join(ROOT, 'data/planned.json'), JSON.stringify(plannedOut));
 for (const C of collections) {
   const its = all.filter((it) => it.col === C.id), pl = ghosts.filter((it) => it.col === C.id);
   if (!its.length && !pl.length) continue;
   const det = {};
-  for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined };
-  for (const it of pl) det[it.id] = { pic: it.pic || undefined, refs: it.refs?.length ? it.refs : undefined, tags: it.tags?.length ? it.tags : undefined };
+  for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined, paper: it.paper || undefined };
+  for (const it of pl) det[it.id] = { pic: it.pic || undefined, refs: it.refs?.length ? it.refs : undefined, tags: it.tags?.length ? it.tags : undefined, paper: it.paper || undefined };
   // chapter summaries live here (not in index.json) to keep the catalog small
   const sums = Object.fromEntries([...chapters.values()].filter((c) => c.col === C.id && c.summary).map((c) => [c.chapter, c.summary]));
   if (Object.keys(sums).length) det._ch = sums;

@@ -169,8 +169,8 @@ so the conjugate (generalized) momentum $p_j$ is a constant of the motion. In ge
       kind: 'Definition',
       name: 'Continuous symmetries of a Lagrangian',
       statement: String.raw`A **continuous symmetry** of a Lagrangian $L(q,\dot q,t)$ is a family of transformations $q\mapsto Q(s,q)$, depending smoothly on a parameter $s$ with $Q(0,q) = q$, that leaves $L$ unchanged up to a total time derivative:
-$$L\big(Q(s,q),\,\tfrac{d}{dt}Q(s,q),\,t\big) = L(q,\dot q,t) + \frac{d}{dt}F_s(q,t),$$
-to first order in $s$ it suffices. The **generator** is the vector field $K(q) = \partial Q/\partial s\,|_{s=0}$. Translations $\mathbf r\mapsto\mathbf r + s\,\mathbf e$ and rotations are the basic examples. Because the action changes only by boundary terms (6.16), a symmetry maps solutions of Lagrange’s equations to solutions. The converse fails: a rescaling $\mathbf r\mapsto\lambda\mathbf r$, $t\mapsto\lambda^{1-k/2}t$ maps solutions to solutions for every potential homogeneous of degree $k$ (mechanical similarity) but multiplies the action by $\lambda^{1+k/2}$, so it is a symmetry of the action only when $k = -2$.`,
+$$L\big(Q(s,q),\,\tfrac{d}{dt}Q(s,q),\,t\big) = L(q,\dot q,t) + \frac{d}{dt}F_s(q,t)$$
+(it is enough that this holds to first order in $s$). The **generator** is the vector field $K(q) = \partial Q/\partial s\,|_{s=0}$. Translations $\mathbf r\mapsto\mathbf r + s\,\mathbf e$ and rotations are the basic examples. Because the action changes only by boundary terms (6.16), a symmetry maps solutions of Lagrange’s equations to solutions. The converse fails: a rescaling $\mathbf r\mapsto\lambda\mathbf r$, $t\mapsto\lambda^{1-k/2}t$ maps solutions to solutions for every potential homogeneous of degree $k$ (mechanical similarity) but multiplies the action by $\lambda^{1+k/2}$, so it is a symmetry of the action only when $k = -2$.`,
       idea: String.raw`If $L$ is unchanged (up to $dF/dt$) the action of the moved path differs from the action of the original by endpoint terms only, so stationary paths go to stationary paths by Hamilton’s principle (6.5, 6.16). Kinetic energy $\tfrac12m|\dot{\mathbf r}|^2$ is invariant under all rigid motions, so a translation or rotation is a symmetry exactly when the potential is invariant. Testing is concrete: move a trajectory and re-integrate the equations from the moved starting point — if the two curves coincide, the transformation respected the dynamics.`,
       caption: String.raw`The blue curve is a solution. The slider moves it by a translation, a rotation or a rescaling (wide orange band); the green curve is a fresh solution integrated from the moved starting point and velocity. Drag the start point and the velocity tip. In the round $-1/r$ field rotations keep green inside the band (gap at round-off level, right); translations do not. In the valley it is the other way round; in the lumpy field nothing works. Rescaling always works for the two homogeneous potentials, yet the readout shows the action is not invariant.`,
       deps: ['mech-6.6', 'mech-6.16'],
@@ -440,13 +440,17 @@ is conserved. If the potential does depend on the common position, $\dot{\mathbf
           out.Px = out.P.map((p) => p[0]); out.Py = out.P.map((p) => p[1]); out.pred = out.I.map((c) => out.Px[0] + c); out.h = h;
           const [xl, xh] = span([out.Px], 0.25, 3), ym = Math.max(...out.Py.map(Math.abs)) * 1.15;
           out.hv = [[xl, xh], [-ym, ym]]; out.pr = span([out.Px, out.pred], 0.2, 1.2);
+          let xa = -0.6, xb = 12.6; for (const X of out.x) for (const p of X) { xa = Math.min(xa, p[0] - 0.5); xb = Math.max(xb, p[0] + 0.5); }
+          out.xv = [xa, xb];
           return out;
         });
         v.animate((t) => {
           const R = run(), n = R.t.length - 1, i = Math.min(n, Math.round(Math.min(t, T) / R.dt)), X = R.x[i];
           // floor
-          const fl = []; for (let k = 0; k <= 400; k++) { const xx = -0.6 + (13.2 * k) / 400; fl.push([xx, R.h(xx)]); }
-          s.poly([[-0.6, -0.45], ...fl, [12.6, -0.45]], { fill: 'muted', fillAlpha: 0.18, stroke: false });
+          const [xa, xb] = R.xv;
+          s.setView([xa, xb], [-0.45, 2.7]);
+          const fl = []; for (let k = 0; k <= 600; k++) { const xx = xa + ((xb - xa) * k) / 600; fl.push([xx, R.h(xx)]); }
+          s.poly([[xa, -0.45], ...fl, [xb, -0.45]], { fill: 'muted', fillAlpha: 0.18, stroke: false });
           s.path(fl, { color: 'muted', width: 2 });
           s.path(R.cm.slice(0, i + 1), { color: 'green', width: 1.4, dash: [4, 4] });
           s.line(X[0][0], X[0][1], X[1][0], X[1][1], { color: 'muted', width: 2 }); s.line(X[1][0], X[1][1], X[2][0], X[2][1], { color: 'muted', width: 2 }); s.line(X[0][0], X[0][1], X[2][0], X[2][1], { color: 'muted', width: 2 });
@@ -610,7 +614,7 @@ If $L = T_2 + T_1 + T_0 - U$ with $T_k$ homogeneous of degree $k$ in the velocit
           sL.dot(w, L, { r: 6, color: 'gold' });
           sL.dot(0, icpt, { r: 6, color: 'green' });
           sL.tex('-h', 0, icpt, { color: 'green', align: w > 0 ? 'right' : 'left', dx: w > 0 ? -9 : 9, dy: 14, size: 14 });
-          sL.corner(`q = ${v.fix(q, 2)}, slope p = ∂L/∂q̇ = ${v.fix(p, 3)}`, 'bl', { color: 'muted' });
+          sL.corner(`q = ${v.fix(q, 2)},  p = ${v.fix(p, 3)}`, 'tl', { color: 'muted' });
           sE.setView([0, T], B.er);
           series(sE, R.t, B.h, i, { color: 'blue', width: 3 });
           series(sE, R.t, B.E, i, { color: 'red', width: 2, dash: [6, 4] });

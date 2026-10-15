@@ -37,13 +37,16 @@ function indexGraph() {
   G.order = new Map(all.map((it, i) => [it.id, i]));
   G.allChildren = new Map(all.map((it) => [it.id, []]));
   for (const it of all) for (const d of depsOf(it)) G.allChildren.get(d)?.push(it.id);
+  // landmark papers ↔ the ideas they first put forward
+  G.introducedBy = new Map();
+  for (const it of all) for (const d of it.intro || []) { if (!G.introducedBy.has(d)) G.introducedBy.set(d, []); G.introducedBy.get(d).push(it.id); }
 }
 let plannedP = null;
 /** Planned (not yet written) items live in data/planned.json and are merged into the graph on demand. */
 function ensurePlanned() {
   if (!plannedP) plannedP = fetch('data/planned.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : { kinds: [], cols: {} })).then((P) => {
     const list = [];
-    for (const C of G.collections) for (const [num, c, k, name, deps, x, y] of P.cols[C.id] || []) list.push({ id: `${C.id}-${num}`, col: C.id, c, num, kind: P.kinds[k], name, deps, x, y, planned: true });
+    for (const C of G.collections) for (const [num, c, k, name, deps, x, y, pa] of P.cols[C.id] || []) list.push({ id: `${C.id}-${num}`, col: C.id, c, num, kind: P.kinds[k], name, deps, x, y, planned: true, ...(pa ? { yr: pa.y, au: pa.a, intro: pa.i } : {}) });
     G.planned = list;
     for (const it of list) G.byId.set(it.id, it);
     indexGraph();
@@ -316,6 +319,22 @@ async function pageChapter(col, c) {
   if (items.length) renderChapterGraph(el.querySelector('#cg'), G, col, c, { onOpen: (it) => go(`#/t/${it.id}`), onOpenChapter: (cc, n) => go(`#/c/${cc}/${n}`) });
 }
 
+/** Citation card for a landmark paper (full metadata comes from the collection shard). */
+function paperBlock(it) {
+  const p = it.paper; if (!p) return '';
+  const href = p.doi ? `https://doi.org/${p.doi}` : p.url;
+  return `<div class="paper-cite"><span class="eyebrow">Paper · ${escapeHTML(String(p.year))}</span>
+    <div class="pc-authors">${escapeHTML(p.authors)}</div>
+    <div class="pc-title">${href ? `<a href="${escapeHTML(href)}" target="_blank" rel="noopener">${inlineHTML(p.title)}</a>` : inlineHTML(p.title)}</div>
+    ${p.venue ? `<div class="pc-venue">${inlineHTML(p.venue)}</div>` : ''}${p.doi ? `<div class="pc-doi">doi:${escapeHTML(p.doi)}</div>` : ''}</div>`;
+}
+/** "Introduced here" (on a paper) and "First published in" (on an idea). */
+function paperLinks(it) {
+  const intro = (it.intro || []).map((d) => G.byId.get(d)).filter(Boolean);
+  const by = (G.introducedBy?.get(it.id) || []).map((d) => G.byId.get(d)).filter(Boolean);
+  return `${intro.length ? `<h2 style="margin-top:18px">Introduced here <span class="count">${intro.length}</span></h2><div class="chip-list">${intro.map((d) => link(d)).join('')}</div>` : ''}${by.length ? `<h2 style="margin-top:18px">First published in</h2><div class="chip-list">${by.map((d) => link(d)).join('')}</div>` : ''}`;
+}
+
 function lineageBlock(it) {
   return `<div class="card lineage-card">
     <div class="lineage-head"><h2>Lineage</h2>
@@ -345,6 +364,7 @@ async function pagePlanned(it) {
   const el = h(`<div class="wrap thm-page" data-col="${it.col}">
     <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/c/${it.col}">${escapeHTML(C.short)}</a><span class="sep">/</span><a href="#/c/${it.col}/${it.c}">${chapterLabel(it.col, it.c)} · ${escapeHTML(Ch?.title || '')}</a></div>
     <div class="thm-head"><div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))} · planned</div><h1>${inlineHTML(it.name)}</h1></div></div>
+    ${paperBlock(it)}
     <div class="statement planned-note">This ${it.kind.toLowerCase()} is on the syllabus of <a href="#/c/${it.col}">${escapeHTML(C.title)}</a> but has not been written yet. Its place in the graph is already known.
       ${it.pic ? `<div class="pic-plan"><span class="eyebrow">Planned visualization</span> ${inlineHTML(it.pic)}</div>` : ''}
       ${it.refs ? `<div class="refs-inline">References: ${escapeHTML(it.refs.join(' · '))}</div>` : ''}</div>
@@ -354,6 +374,7 @@ async function pagePlanned(it) {
         <div class="chip-list">${deps.length ? deps.map((d) => link(d)).join('') : '<span class="empty-note">A starting point.</span>'}</div>
         <h2 style="margin-top:18px">Used by <span class="count">${users.length}</span></h2>
         <div class="chip-list">${users.length ? users.map((d) => link(d)).join('') : '<span class="empty-note">Nothing cites it yet.</span>'}</div>
+        ${paperLinks(it)}
       </div>
       ${lineageBlock(it)}
     </div>
@@ -387,6 +408,7 @@ async function pageTheorem(id) {
         ${next ? `<a class="btn" href="#/t/${next.id}" title="${escapeHTML(fullLabel(next))}">${displayNum(next)} →</a>` : ''}
       </div>
     </div>
+    ${paperBlock(it)}
     <div class="statement">${richHTML(it.st || '')}${it.scope ? `<div class="scope"><span class="eyebrow">Holds when</span> ${inlineHTML(it.scope)}</div>` : ''}</div>
     <div class="thm-grid">
       <div class="card viz-card" ${it.viz ? '' : 'hidden'}><div class="viz-caption" id="caption"></div><div id="viz"><div class="viz-placeholder">Loading visualization…</div></div></div>
@@ -399,6 +421,7 @@ async function pageTheorem(id) {
           <div class="chip-list">${deps.length || pdeps.length ? [...deps, ...pdeps].map((d) => link(d)).join('') : '<span class="empty-note">Nothing earlier in the graph — a starting point.</span>'}</div>
           <h2 style="margin-top:18px">Used by <span class="count">${users.length}</span></h2>
           <div class="chip-list">${users.length ? users.map((d) => link(d)).join('') : '<span class="empty-note">No later result in the graph cites it directly.</span>'}</div>
+          ${paperLinks(it)}
           ${related.length ? `<h2 style="margin-top:18px">Across the atlas</h2><div class="chip-list">${related.map((d) => link(d)).join('')}</div>` : ''}
           ${bridgesOf(it.id).length ? `<h2 style="margin-top:18px">On the bridge${bridgesOf(it.id).length > 1 ? 's' : ''}</h2><div class="chip-list">${bridgesOf(it.id).map((B) => `<a class="chip" href="#/bridge/${B.slug}"><span class="nm">${escapeHTML(B.title)}</span></a>`).join('')}</div>` : ''}
           <div class="stats-row"><span><b>${it.anc}</b> results in its full ancestry</span><span><b>${it.desc}</b> results rely on it</span><span>depth <b>${it.depth}</b></span></div>

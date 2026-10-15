@@ -315,7 +315,7 @@ Part (b) is how random numbers with any law are generated from uniform ones. Par
           const u0 = L.cdf(h.x);
           s.path([[h.x, 0], [h.x, u0], [a, u0]], { color: 'orange', width: 1.8, dash: [5, 3] });
           s.dot(a, u0, { r: 4, color: 'orange' });
-          s.tex('x_0', h.x, 0, { dy: 22, color: 'orange', size: 14 });
+          s.tex('x_0', h.x, 0, { dx: 8, dy: -13, align: 'left', color: 'orange', size: 14 });
           v.legend([[wrong.value ? 'red' : 'green', wrong.value ? 'wrong cdf $G$' : 'cdf $F$'], ['gold', 'last 30 draws, mapped'], ['accent', 'histograms', { area: true }], ['orange', '$x_0$ and $F(x_0)$']]);
         });
         v.readout(() => {
@@ -395,7 +395,7 @@ in distribution. In particular, if $\sqrt n(\bar X_n-\mu)/\sigma\to N(0,1)$ (cen
         v.readout(() => {
           const Nw = now(), P = pop(M, popSel.value), d = den.value; if (!Nw.T.length) return 'Press Draw to start.';
           const DT = ksDist(Nw.T, Phi), DZ = ksDist(Nw.Z, Phi);
-          const why = P.key === 'cauchy' ? 'Cauchy data: no finite $\\sigma$, the CLT itself fails ($Z$ is $\\sqrt n$ times a Cauchy variable)' : d === 'sigma' ? 'with the true $\\sigma$, $T$ is $Z$' : d === 'S' ? '$S \\to \\sigma$ in probability, so by Slutsky $T$ has the same limit as $Z$' : 'two-observation $S$ does not converge to a constant: $T$ tends to $Z/\\chi_1$, a Cauchy law, not $N(0,1)$';
+          const why = P.key === 'cauchy' ? 'Cauchy data: no finite $\\sigma$, the CLT itself fails ($Z$ is $\\sqrt n$ times a Cauchy variable)' : d === 'sigma' ? 'with the true $\\sigma$, $T$ is $Z$' : d === 'S' ? '$S \\to \\sigma$ in probability, so by Slutsky $T$ has the same limit as $Z$' : 'two-observation $S$ does not converge to a constant: $T$ tends to $Z\\,\\sigma/S_{(2)}$, a scale mixture of normals (a Cauchy law for normal data), not $N(0,1)$';
           return String.raw`$n = ${nS.value}$, ${commas(Nw.T.length)} repeats · Kolmogorov distance to $N(0,1)$: $T$ **${v.fix(DT, 4)}**, $Z$ ${v.fix(DZ, 4)} · ${why}`;
         });
       },
@@ -423,7 +423,7 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
           log: { f: (x) => (x > 0 ? Math.log(x) : NaN), d: (x) => 1 / x, d2: (x) => -1 / (x * x), dom: [0.2, 3], tex: '\\log x' },
           sin: { f: Math.sin, d: Math.cos, d2: (x) => -Math.sin(x), dom: [-0.6, 4], tex: '\\sin x' },
         };
-        const mus = { sq: 1, exp: 0.4, log: 1, sin: 0.9 };
+        const mus = { sq: 1, exp: 0.4, log: 1, sin: Math.PI / 2 };
         const gSel = v.select('$g$', [{ value: 'sq', label: '$x^2$' }, { value: 'exp', label: '$e^x$' }, { value: 'log', label: '$\\log x$' }, { value: 'sin', label: '$\\sin x$' }], 'sq');
         const popSel = v.select('population', [{ value: 'normal', label: 'normal' }, { value: 'skew', label: 'skewed' }], 'normal');
         const nS = v.slider('sample size $n$', 2, 400, 20, { int: true, log: true });
@@ -460,7 +460,9 @@ If $g'(\mu)=0$ and $g''(\mu)$ exists and is nonzero, the first-order statement i
           const top = Math.max(B.max, 1e-9) * 1.25;
           viewPad(sR, [xl, xr], [0, top]);
           sR.hist(B, { density: true, color: 'accent', fillAlpha: 0.33 });
-          sR.clip(() => { sR.fn(so, { color: 'purple', width: 2, dash: [6, 4], n: 600 }); sR.fn(dn, { color: 'green', width: 2.4, n: 600 }); });
+          const degen = dn(c) > 4 * top;
+          sR.clip(() => { sR.fn(so, { color: 'purple', width: 2, dash: [6, 4], n: 600 }); if (!degen) sR.fn(dn, { color: 'green', width: 2.4, n: 600 }); });
+          if (degen) sR.corner("g′(μ) ≈ 0: the delta-method normal degenerates", 'tl', { color: 'red', weight: 600 });
           sR.vline(c, { color: 'faint', width: 1, dash: [2, 3] });
           v.legend([['gold', 'repeats $(\\bar X, g(\\bar X))$', { dot: true }], ['orange', 'tangent at $\\mu$', { dash: true }], ['green', 'delta method $N\\big(g(\\mu),\\,g\'(\\mu)^2\\sigma^2/n\\big)$'], ['purple', 'second-order approximation', { dash: true }]]);
         });
@@ -556,9 +558,9 @@ Bernoulli, binomial, Poisson, normal, gamma and beta families are exponential fa
         };
         const famSel = v.select('family', [{ value: 'bern', label: 'Bernoulli' }, { value: 'pois', label: 'Poisson' }, { value: 'norm', label: 'normal ($\\sigma=1$)' }, { value: 'gam', label: 'gamma (shape 3)' }], 'pois');
         const etas = Object.fromEntries(Object.entries(FAM).map(([k, f]) => [k, f.e0]));
-        const sL = v.stage({ x: [-1, 2.6], y: [0, 14], height: 320, axes: 'box', title: 'log-partition $A(\\eta)$: convex, slope = mean, curvature = variance' });
+        const sL = v.stage({ x: [-1, 2.6], y: [0, 14], height: 320, axes: 'box' });
         const sR = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box' });
-        const tR = titler(sR);
+        const tR = titler(sR), tL = titler(sL);
         const h = sL.handle(1, 1, { color: 'accent', label: 'η', constrain: (x) => { const f = FAM[famSel.value], w = f.eta[1] - f.eta[0], xx = clamp(x, f.eta[0] + 0.04 * w, f.eta[1] - 0.04 * w); return [xx, f.A(xx)]; } });
         h.onDrag = (hd) => { etas[famSel.value] = hd.x; };
         const R = repeater(v, { key: () => [famSel.value, etas[famSel.value].toFixed(3)].join('|'), sample: (r) => FAM[famSel.value].draw(r, etas[famSel.value]), stat: (x) => x, init: 4000 });
@@ -572,7 +574,7 @@ Bernoulli, binomial, Poisson, normal, gamma and beta families are exponential fa
           const wq = 0.22 * (f.eta[1] - f.eta[0]);
           sL.fn((x) => A + A1 * (x - e) + 0.5 * A2 * (x - e) ** 2, { domain: [e - wq, e + wq], color: 'purple', width: 2, dash: [6, 4] });
           sL.fn((x) => A + A1 * (x - e), { color: 'orange', width: 2 });
-          sL.corner(`slope A′(η) = ${v.fix(A1, 3)}   ·   curvature A″(η) = ${v.fix(A2, 3)}`, 'br', { color: 'muted', weight: 600 });
+          tL(`$A(\\eta)$: slope $A'(\\eta) = ${v.fix(A1, 3)}$ (mean), curvature $A''(\\eta) = ${v.fix(A2, 3)}$ (variance)`);
           const [lo, hi] = f.view(e), m = moments(S.vals); let yb;
           tR(`4,000 draws from $p_\\eta$: $${f.par(e)}$`);
           if (f.disc) {
@@ -620,7 +622,7 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
         const famSel = v.select('family', popOpts(['normal', 'cauchy', 'expo', 'uniform']).map((o) => ({ ...o, label: { normal: 'normal', cauchy: 'Cauchy', expo: 'exponential', uniform: 'uniform' }[o.value] })), 'normal');
         const refSel = v.select('Q–Q reference', [{ value: 'same', label: 'same family' }, { value: 'normal', label: 'normal' }], 'same');
         const nS = v.slider('sample size $n$', 10, 500, 100, { int: true, log: true });
-        let seed = 1; v.button('New sample', () => { seed++; });
+        let seed = 2; v.button('New sample', () => { seed++; });
         const sL = v.stage({ x: [-6, 8], y: [0, 0.85], height: 320, axes: 'box', title: 'standard member (dashed) and the member $\\tfrac1\\sigma f\\big(\\tfrac{x-\\mu}\\sigma\\big)$' });
         const sR = v.stage({ x: [-3, 3], y: [-3, 3], height: 320, axes: 'box' });
         const tR = titler(sR);
@@ -635,7 +637,10 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
           const xq1 = Q0.q(0.25), xq3 = Q0.q(0.75), yq1 = qSorted(ys, 0.25), yq3 = qSorted(ys, 0.75), slope = (yq3 - yq1) / (xq3 - xq1), icpt = yq1 - slope * xq1;
           let sx = 0, sy = 0, sxx = 0, syy = 0, sxy = 0; for (let i = 0; i < n; i++) { sx += xs[i]; sy += ys[i]; } const mx = sx / n, my = sy / n;
           for (let i = 0; i < n; i++) { sxx += (xs[i] - mx) ** 2; syy += (ys[i] - my) ** 2; sxy += (xs[i] - mx) * (ys[i] - my); }
-          return { P, Q0, xs, ys, slope, icpt, r: sxy / Math.sqrt(sxx * syy) };
+          const x0 = Q0.q(0.02), x1 = Q0.q(0.98), dx = 0.12 * (x1 - x0), yq = sortNum(ys);
+          const ya = Math.min(qSorted(yq, 0.02), icpt + slope * x0), yb = Math.max(qSorted(yq, 0.98), icpt + slope * x1), dy = 0.12 * (yb - ya);
+          const win = [[x0 - dx, x1 + dx], [ya - dy, yb + dy]], out = xs.filter((x, i) => x < win[0][0] || x > win[0][1] || ys[i] < win[1][0] || ys[i] > win[1][1]).length;
+          return { P, Q0, xs, ys, slope, icpt, r: sxy / Math.sqrt(sxx * syy), win, out };
         };
         v.render(() => {
           const P = pop(M, famSel.value), Q = qq();
@@ -647,22 +652,19 @@ the laws of $X=\mu+\sigma Z$ with $Z\sim f$; $\mu$ is the **location** and $\sig
           sL.line(par.mu, 0, par.mu, yb, { color: 'orange', width: 1, dash: [3, 4] }); sL.tex('\\mu', par.mu, yb, { dx: -8, align: 'right', color: 'orange', size: 14 }); sL.line(par.mu + par.sd, 0, par.mu + par.sd, yb, { color: 'purple', width: 1, dash: [3, 4] });
           for (const y of Q.ys) if (y > -6 && y < 8) sL.line(y, 0.015, y, 0.06, { color: 'gold', width: 1.4, alpha: 0.8 });
           // Q–Q plot, windowed on the central quantiles
-          const n = Q.xs.length, x0 = Q.Q0.q(0.02), x1 = Q.Q0.q(0.98), dx = 0.12 * (x1 - x0), yq = sortNum(Q.ys);
-          const ya = Math.min(qSorted(yq, 0.02), Q.icpt + Q.slope * x0), yb2 = Math.max(qSorted(yq, 0.98), Q.icpt + Q.slope * x1), dy = 0.12 * (yb2 - ya);
+          const n = Q.xs.length;
           tR(`Q–Q plot against the ${refSel.value === 'same' ? 'standard member' : 'normal'} quantiles`);
-          viewPad(sR, [x0 - dx, x1 + dx], [ya - dy, yb2 + dy]);
+          viewPad(sR, Q.win[0], Q.win[1]);
           if (refSel.value === 'same') sR.fn((x) => par.mu + par.sd * x, { color: 'green', width: 2.2 });
           sR.fn((x) => Q.icpt + Q.slope * x, { color: 'accent', width: 1.8, dash: [6, 4] });
           const pts = Q.xs.map((x, i) => [x, Q.ys[i]]);
           sR.dots(pts, { r: n > 200 ? 2 : 3, color: 'gold' });
-          const b = sR.bounds, outside = pts.filter(([x, y]) => x < b.x[0] || x > b.x[1] || y < b.y[0] || y > b.y[1]).length;
-          if (outside) sR.corner(`${outside} extreme point${outside > 1 ? 's' : ''} outside the window`, 'br', { color: 'muted' });
           axisLabels(sR, '\\text{reference quantile}', '\\text{sorted data}');
           v.legend([['accent', 'member density · quartile line', { area: true }], ['gold', 'sample'], ...(refSel.value === 'same' ? [['green', 'line $\\mu+\\sigma x$']] : [])]);
         });
         v.readout(() => {
           const Q = qq();
-          return String.raw`quartile line: intercept **${v.fix(Q.icpt, 3)}** ($\mu = ${v.fix(par.mu, 3)}$), slope **${v.fix(Q.slope, 3)}** ($\sigma = ${v.fix(par.sd, 3)}$) · correlation of the Q–Q points $r = ${v.fix(Q.r, 4)}$` + (refSel.value === 'normal' && famSel.value !== 'normal' ? ' · wrong reference family: the plot bends and intercept/slope no longer estimate μ and σ' : '');
+          return (Q.out ? `${Q.out} extreme point${Q.out > 1 ? 's' : ''} outside the window · ` : '') + String.raw`quartile line: intercept **${v.fix(Q.icpt, 3)}** ($\mu = ${v.fix(par.mu, 3)}$), slope **${v.fix(Q.slope, 3)}** ($\sigma = ${v.fix(par.sd, 3)}$) · correlation of the Q–Q points $r = ${v.fix(Q.r, 4)}$` + (refSel.value === 'normal' && famSel.value !== 'normal' ? ' · wrong reference family: the plot bends and intercept/slope no longer estimate μ and σ' : '');
         });
       },
     },
@@ -689,7 +691,7 @@ the conditional mean is linear in $a$ (the regression line) and the conditional 
         const joint = v.select('joint law', [{ value: 'mvn', label: 'bivariate normal' }, { value: 'fake', label: 'same covariance, not normal' }], 'mvn');
         const sL = v.stage({ x: [-5, 5], y: [-5, 5], height: 340, axes: 'box', weight: 1.15, title: 'simulated $(X_1, X_2)$, contours and the regression line' });
         const sR = v.stage({ x: [-5, 5], y: [0, 1], height: 340, axes: 'box', title: '$X_2$ inside the strip $X_1\\approx a$' });
-        const hA = sL.handle(1.2, -4.3, { color: 'orange', label: 'a', constrain: (x) => [clamp(x, -3.8, 3.8), -4.3] });
+        const hA = sL.handle(0.5, -4.3, { color: 'orange', label: 'a', constrain: (x) => [clamp(x, -3.8, 3.8), -4.3] });
         const R = repeater(v, {
           key: () => [s1S.value, s2S.value, rS.value, joint.value].join('|'),
           sample: (r) => { const z1 = r.normal(), z2 = r.normal(), rho = rS.value, c = Math.sqrt(1 - rho * rho); return [s1S.value * z1, s2S.value * (rho * z1 + c * (joint.value === 'mvn' ? 1 : Math.abs(z1)) * z2)]; },

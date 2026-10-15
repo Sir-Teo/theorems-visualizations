@@ -378,7 +378,8 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         for (let k = 0; k < 4000; k++) step(1 / 600, 40, 0.97); // settle once before the first frame
         v.button('Shake', () => { const r = v.rng(Math.floor(Math.random() * 1e6)); for (let i = 1; i < N; i++) { prev[i][0] -= r.uniform(-0.02, 0.02); prev[i][1] -= r.uniform(-0.03, 0.05); } v.play(); });
         v.button('Drop from a hump', () => { reset(-0.6); v.play(); });
-        let lastT = 0, cur = null, subDt = 1 / 600, snapPos = null, vmax = 0;
+        let lastT = 0, cur = null, snapPos = null, vmax = 0, acc = 0;
+        const subDt = 1 / 600;
         // Gauss–Newton fit of y = y0 + c cosh((x − x0)/c) to the beads
         const fit = (start) => {
           let [x0, y0, c] = start;
@@ -397,7 +398,7 @@ where $c$ and $x_0$ are fixed by the supports and the length, and $\lambda$ is t
         v.animate((t) => {
           let dt = t - lastT; lastT = t; if (!(dt > 0) || dt > 0.05) dt = 0;
           if (dt > 0 && !snapPos) snapPos = pos.map((p) => p.slice());
-          if (dt > 0) { const n = 10; subDt = dt / n; for (let k = 0; k < n; k++) step(subDt, 40, 0.996); }
+          if (dt > 0) { acc += dt; let n = 0; while (acc >= subDt && n < 40) { step(subDt, 40, 0.996); acc -= subDt; n++; } if (n === 40) acc = 0; } // fixed physics step
           pos[0] = [P1.x, P1.y]; pos[N] = [P2.x, P2.y];
           const cat = catenaryThrough(P1.x, P1.y, P2.x, P2.y, ellS.value), F = fit([cat.x0, cat.y0, cat.c]);
           s.hline(cat.y0, { color: 'purple', dash: [2, 4], width: 1.4 });
@@ -685,11 +686,11 @@ and a point $x=c$ is **conjugate** to $a$ if the Jacobi equation (the linearised
           for (let j = 0; j < 12; j++) { const a = (TAU * j) / 12; sc.path(sample((u) => [R * Math.sin(Math.PI * u) * Math.cos(a), R * Math.sin(Math.PI * u) * Math.sin(a), R * Math.cos(Math.PI * u)], 40), { color: 'accent', width: 0.9, alpha: 0.3 }); }
           sc.path(sample((u) => [R * Math.cos(TAU * u), R * Math.sin(TAU * u), 0], 60), { color: 'accent', width: 0.9, alpha: 0.3 });
           if (ell > Math.PI) sc.path(sample((u) => pt(ell + (TAU - ell) * u, 0), 60), { color: 'teal', width: 2, dash: [5, 4] });
-          sc.path(sample((u) => pt(ell * u, 0), 120), { color: past ? 'red' : 'green', width: 3.2 });
+          sc.path(sample((u) => pt(ell * u, 0), 120), { color: ell > Math.PI ? 'red' : 'green', width: 3.2 });
           sc.path(sample((u) => pt(ell * u, eps * Math.sin(k * Math.PI * u)), 160), { color: 'gold', width: 2.4 });
           sc.dot([0, 0, R], { r: 5.5, color: 'ink' }); sc.tex('N', [0, 0, R * 1.12], { color: 'ink', size: 15 });
           sc.dot([0, 0, -R], { r: 5.5, color: 'purple' }); sc.tex('S', [0, 0, -R * 1.14], { color: 'purple', size: 15 });
-          sc.dot(pt(ell, 0), { r: 5.5, color: past ? 'red' : 'green' });
+          sc.dot(pt(ell, 0), { r: 5.5, color: ell > Math.PI ? 'red' : 'green' });
           sc.flush();
           s3.corner(ell > Math.PI ? 'past the conjugate point S' : 'before the conjugate point S', 'tl', { color: ell > Math.PI ? 'red' : 'green', weight: 600 });
           // ── ΔL(ε)

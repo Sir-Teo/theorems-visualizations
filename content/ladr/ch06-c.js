@@ -291,9 +291,10 @@ export default {
         const S = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, axes: false, height: 430, weight: 1.15 });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.4, axis: 1.4, lim: 1.4 });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, weight: 0.85, minWidth: 270, title: 'the nine properties, checked' });
-        const th = v.slider('basis angle $\\theta$ in $U$', 0, 360, 75, { step: 1, fmt: (x) => `${Math.round(x)}°` });
-        const n = unit3([0.35, -0.45, 0.82]), [a0, b0] = perp(n);
-        const Vh = sc.handle([0.75, 0.35, 0.95], { color: 'gold', label: 'v', snap: (p) => { const t = dot3(p, n); if (Math.abs(t) < 0.09) return sub3(p, mul3(n, t)); const q = mul3(n, t); return len3(sub3(p, q)) < 0.09 ? q : p; } });
+        const n = unit3([0.35, -0.45, 0.82]), [a0, b0] = perp(n), V0 = [0.75, 0.35, 0.95];
+        const ang0 = (Math.atan2(dot3(V0, b0), dot3(V0, a0)) * 180) / Math.PI;      // start with e₁, e₂ at ±45° to P_U v
+        const th = v.slider('basis angle $\\theta$ in $U$', 0, 360, Math.round((ang0 - 45 + 720) % 360), { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const Vh = sc.handle(V0, { color: 'gold', label: 'v', snap: (p) => { const t = dot3(p, n); if (Math.abs(t) < 0.09) return sub3(p, mul3(n, t)); const q = mul3(n, t); return len3(sub3(p, q)) < 0.09 ? q : p; } });
         const r = [0.3, -0.8, 0.45];                                   // a fixed second vector for the linearity test
         v.legend([['blue', '$U$ and $P_Uv$'], ['purple', '$\\langle v,e_1\\rangle e_1$', { dash: true }], ['teal', '$\\langle v,e_2\\rangle e_2$', { dash: true }], ['green', '$v-P_Uv\\in U^\\perp$']]);
         let st = null;
@@ -330,7 +331,7 @@ export default {
             const y = 0.95 - i * 0.092, isE = lab === '(e)';
             const ok = isE ? Math.abs(val - val2) < 1e-9 : Math.abs(val) < 1e-9;
             Q.tex(`\\text{${lab}}`, 0.02, y, { align: 'left', color: 'muted', size: 12.5 });
-            Q.tex((isE ? `${txt} = ${tn(val, 3)}` : `${txt} = ${zs(val)}`) + (note ? `\\quad {\\scriptstyle (${note})}` : ''), 0.12, y, { align: 'left', color: ok ? 'ink' : 'red', size: 12.5 });
+            Q.tex((isE ? `${txt} = ${tn(val, 3)}` : `${txt} = ${zs(val)}`) + (note ? `\\qquad ${note}` : ''), 0.12, y, { align: 'left', color: ok ? 'ink' : 'red', size: 12.5 });
             Q.tex(ok ? '\\checkmark' : '\\times', 0.97, y, { align: 'right', color: ok ? 'green' : 'red', size: 14 });
           });
           // (h): stacked bar of squared lengths
@@ -341,6 +342,8 @@ export default {
           Q.rect(x0 + np * L, y0, x0 + (np + nw) * L, y1, { fill: 'green', fillAlpha: 0.45, color: 'green', width: 1 });
           Q.rect(x0, y1 + 0.015, x0 + nv * L, y1 + 0.045, { fill: 'gold', fillAlpha: 0.5, color: 'gold', width: 1 });
           Q.tex(`\\|Pv\\|^2 = ${tn(np)} \\le \\|v\\|^2 = ${tn(nv)}`, x0, y1 + 0.1, { align: 'left', size: 12.5, color: 'ink' });
+          if (np * L > 0.09) Q.tex('\\|Pv\\|^2', x0 + (np * L) / 2, (y0 + y1) / 2, { color: 'blue', size: 11 });
+          if (nw * L > 0.13) Q.tex('\\|v-Pv\\|^2', x0 + np * L + (nw * L) / 2, (y0 + y1) / 2, { color: 'green', size: 11 });
           st = { px, w, np, nv, inU: len3(w) < 1e-9, inPerp: len3(px) < 1e-9, all: chk.every(([lab, , a2, b2]) => (lab === '(e)' ? Math.abs(a2 - b2) < 1e-9 : Math.abs(a2) < 1e-9)) };
         });
         v.readout(() => {
@@ -371,7 +374,7 @@ export default {
         const cOf = () => { const p = Fh.p, r2 = dot3(p, p); return mul3(p, 1 / r2); };
         const Wh = sc.handle(mul3(unit3(cOf()), -0.7), { mode: 'line', d: unit3(cOf()), color: 'purple', label: 'w', snap: (p) => { const d = unit3(cOf()), t = dot3(p, d); return Math.abs(t) < 0.25 ? mul3(d, t < 0 ? -0.25 : 0.25) : p; } });
         const Uh = sc.handle([1.0, 0.1, 0.5], { color: 'gold', label: 'u' });
-        v.legend([['orange', '$\\operatorname{null}\\varphi$', { area: true }], ['accent', 'level plane $\\varphi=1$', { area: true }], ['green', '$(\\operatorname{null}\\varphi)^\\perp$ and $v$'], ['purple', 'any $w\\ne0$ on it']]);
+        v.legend([['orange', '$\\operatorname{null}\\varphi$', { area: true }], ['accent', 'level plane $\\varphi=1$', { area: true }], ['green', '$v$ on the line $(\\operatorname{null}\\varphi)^\\perp$'], ['purple', 'any $w\\ne0$ on it']]);
         let st = null;
         v.render(() => {
           const c = cOf(), d = unit3(c);
@@ -381,10 +384,10 @@ export default {
           sc.disc(a, b, 1.25, { fill: 'orange', color: 'orange', fillAlpha: 0.12, grid: true });
           sc.disc(a, b, 0.75, { fill: 'accent', color: 'accent', fillAlpha: 0.08, alpha: 0.6 }, Fh.p);
           const vv = mul3(Wh.p, phi(Wh.p) / dot3(Wh.p, Wh.p));
-          sc.line(mul3(d, -1.7), mul3(d, 1.7), { color: 'green', width: 2.4, alpha: 0.7 }, 12);
+          sc.line(mul3(d, -1.7), mul3(d, 1.7), { color: 'green', width: 1.3, alpha: 0.55, dash: [6, 4] });
           corner3(sc, ZERO, a, d, 0.15, { color: 'ink' });
           sc.arrow(ZERO, Wh.p, { color: 'purple', width: 2.4, head: 9 });
-          sc.arrow(ZERO, vv, { color: 'green', width: 3.6, head: 12 }); sc.tex('v', vv, { color: 'green', dx: -14, dy: -10, size: 16 });
+          sc.arrow(ZERO, vv, { color: 'green', width: 4.2, head: 13 }); sc.tex('v', vv, { color: 'green', dx: -16, dy: -8, size: 16 });
           const u = Uh.p, f = mul3(d, dot3(u, d));
           sc.line(u, f, { color: 'gold', width: 1.2, dash: [3, 3] }); sc.dot(f, { r: 3, color: 'gold' });
           sc.arrow(ZERO, u, { color: 'gold', width: 2.2, head: 9 });
@@ -589,7 +592,7 @@ export default {
           if (r === 2) grid((s, q) => [s * TX[0][0] + q * TX[1][0], s * TX[0][1] + q * TX[1][1]], 1.2).forEach((pts) => SW.path(pts, { color: col, width: ok ? 1.3 : 3, alpha: ok ? 0.75 : 0.9 }));
           else for (let k = -3; k <= 3; k++) SW.dot(0.4 * k * TX[0][0], 0.4 * k * TX[0][1], { r: k ? 3.5 : 4, color: col });
           SW.dot(0, 0, { r: 3, color: 'ink' });
-          if (!ok) SW.corner('the whole restriction collapses: not injective', 'bl', { color: 'red', weight: 600 });
+          if (!ok) SW.corner('the restriction collapses: not injective', 'br', { color: 'red', weight: 600 });
           st = { r, det, ok, pre, y, tilt: al.value, check: pre ? Math.hypot(...mv(A, pre).map((c, i) => c - y[i])) : null };
         });
         v.readout(() => {

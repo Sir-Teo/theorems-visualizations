@@ -196,7 +196,7 @@ An admissible $y_*$ is a **(local) minimum** of $J$ if $J[y_*]\le J[y]$ for ever
               const w = (x1 - x0) * (r.val / vmax);
               sB.rect(x0, yc - rh * 0.34, x0 + w, yc + rh * 0.34, { fill: r.color, fillAlpha: r.best ? 0.55 : 0.35, color: r.color, width: 1.2 });
               const ex = (100 * (r.val - best)) / best;
-              sB.text(`${v.fix(r.val, 3)}${r.best ? '' : `  (+${v.fix(Math.max(0, ex), 1)}%)`}`, x0 + 0.015, yc, { size: 11.5, color: 'ink', weight: 600 });
+              sB.text(`${v.fix(r.val, 3)}${r.best ? '' : `  (+${v.fix(Math.max(0, ex), ex < 1 ? 2 : 1)}%)`}`, x0 + 0.015, yc, { size: 11.5, color: 'ink', weight: 600 });
             } else {
               sB.rect(x0, yc - rh * 0.34, x1, yc + rh * 0.34, { color: 'red', dash: [4, 3], width: 1.2 });
               sB.text('∞: the bead never gets there', x0 + 0.015, yc, { size: 11.5, color: 'red', weight: 600 });

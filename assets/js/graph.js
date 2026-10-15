@@ -8,7 +8,7 @@ let A = null; // the atlas state built by app.js (collections, items, …)
 export function setAtlas(G) { A = G; }
 const COLV = (id) => `var(--c-${id})`;
 export const colShort = (id) => A?.colById?.get(id)?.short || String(id).toUpperCase();
-const KIND_ABBR = { Theorem: 'Thm', Lemma: 'Lem', Corollary: 'Cor', Proposition: 'Prop', Definition: 'Def', Principle: 'Prin', Postulate: 'Post', Algorithm: 'Alg', Concept: 'Conc', Phenomenon: 'Phen', Method: 'Meth', Paradox: 'Parad', Hypothesis: 'Hyp', Invention: 'Inv' };
+const KIND_ABBR = { Theorem: 'Thm', Lemma: 'Lem', Corollary: 'Cor', Proposition: 'Prop', Definition: 'Def', Principle: 'Prin', Postulate: 'Post', Algorithm: 'Alg', Concept: 'Conc', Phenomenon: 'Phen', Method: 'Meth', Paradox: 'Parad', Hypothesis: 'Hyp', Invention: 'Inv', Paper: 'Paper' };
 export const kindAbbr = (k) => KIND_ABBR[k] || k;
 /** Prerequisites of a node: written deps plus not-yet-written (planned) ones. */
 export const depsOf = (it) => (it.pdeps ? [...it.deps, ...it.pdeps] : it.deps);
@@ -674,13 +674,14 @@ function tAxisInv(u) {
 }
 const fmtYear = (y) => (y < 0 ? `${Math.round(-y)} BCE` : `${Math.round(y)}`);
 export class TimelineView {
-  constructor(host, G, { onOpen } = {}) {
-    this.host = host; this.G = G; this.onOpen = onOpen;
+  /** opts: onOpen(id), items (default: written items with a year), what ('dated ideas'), highlight (Set of ids). */
+  constructor(host, G, { onOpen, items, what = 'dated ideas', highlight = null } = {}) {
+    this.host = host; this.G = G; this.onOpen = onOpen; this.hl = highlight;
     host.classList.add('timeline-page');
-    this.items = G.items.filter((it) => it.yr != null);
+    this.items = (items || G.items).filter((it) => it.yr != null);
     this.fields = G.fields.filter((F) => this.items.some((it) => G.colById.get(it.col)?.field === F.id));
     host.innerHTML = `<canvas aria-label="Timeline of ideas"></canvas><div class="map-tip"></div>
-      <div class="map-help">${this.items.length} dated ideas · scroll to zoom in time · drag to pan · click a dot to open</div>`;
+      <div class="map-help">${this.items.length} ${what} · scroll to zoom in time · drag to pan · click a dot to open</div>`;
     this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d'); this.tip = host.querySelector('.map-tip');
     this.u0 = 0; this.u1 = 1; this.hover = null;
     this.ro = new ResizeObserver(() => { this.resize(); this.layout(); this.draw(); }); this.ro.observe(host);
@@ -688,6 +689,8 @@ export class TimelineView {
     this._bind(); this.resize(); this.layout(); this.draw();
   }
   destroy() { this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); }
+  /** Emphasize a set of ids (null clears). */
+  setHighlight(ids) { this.hl = ids && ids.size ? ids : null; this.draw(); }
   resize() { const r = this.host.getBoundingClientRect(); const d = Math.min(2, devicePixelRatio || 1); this.W = r.width; this.H = r.height; this.canvas.width = this.W * d; this.canvas.height = this.H * d; this.canvas.style.width = this.W + 'px'; this.canvas.style.height = this.H + 'px'; this.dpr = d; }
   X(u) { const L = 150, R = this.W - 30; return L + ((u - this.u0) / (this.u1 - this.u0)) * (R - L); }
   layout() {
@@ -718,7 +721,7 @@ export class TimelineView {
       if (drag) { const dx = p[0] - drag.x; if (Math.abs(dx) > 3) drag.moved = true; const w = drag.u1 - drag.u0; let a = drag.u0 - (dx / (this.W - 180)) * w; a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); return; }
       let best = null, bd = 8; for (const l of this.lanes || []) for (const q of l.pts) { const d = Math.hypot(q.x - p[0], q.y - p[1]); if (d < bd) { bd = d; best = q; } }
       if (best !== this.hover) { this.hover = best; cv.style.cursor = best ? 'pointer' : 'grab'; this.draw(); }
-      if (best) { const it = best.it; const C = this.G.colById.get(it.col); this.tip.innerHTML = `<div class="eyebrow" style="color:var(--c-${it.col})">${escapeHTML(C.short)} · ${escapeHTML(fullLabel(it))} · ${fmtYear(it.yr)}</div><div class="nm">${inlineHTML(it.name)}</div>`; this.tip.style.display = 'block'; const w = this.tip.offsetWidth; this.tip.style.left = Math.min(this.W - w - 8, p[0] + 14) + 'px'; this.tip.style.top = (p[1] + 14) + 'px'; } else this.tip.style.display = 'none';
+      if (best) { const it = best.it; const C = this.G.colById.get(it.col); this.tip.innerHTML = `<div class="eyebrow" style="color:var(--c-${it.col})">${escapeHTML(C.short)} · ${escapeHTML(fullLabel(it))} · ${fmtYear(it.yr)}${it.au ? ` · ${escapeHTML(it.au)}` : ''}${it.planned ? ' · planned' : ''}</div><div class="nm">${inlineHTML(it.name)}</div>`; this.tip.style.display = 'block'; const w = this.tip.offsetWidth; this.tip.style.left = Math.min(this.W - w - 8, p[0] + 14) + 'px'; this.tip.style.top = (p[1] + 14) + 'px'; } else this.tip.style.display = 'none';
     });
     cv.addEventListener('pointerup', (e) => { if (drag && !drag.moved && this.hover) this.onOpen?.(this.hover.it.id); drag = null; });
     cv.addEventListener('pointerleave', () => { this.hover = null; this.tip.style.display = 'none'; this.draw(); });
@@ -737,14 +740,21 @@ export class TimelineView {
       c.fillStyle = withAlpha('field-' + l.F.id, 0.05); c.fillRect(0, l.y0 + 1, this.W, l.y1 - l.y0 - 2);
       c.fillStyle = withAlpha('field-' + l.F.id, 1); c.textAlign = 'left'; c.textBaseline = 'middle'; c.font = '600 11.5px Inter, system-ui, sans-serif';
       c.fillText(l.F.short.toUpperCase(), 14, (l.y0 + l.y1) / 2);
-      for (const q of l.pts) { if (q.x < 140 || q.x > this.W - 10) continue; c.beginPath(); c.arc(q.x, q.y, q.r, 0, Math.PI * 2); c.fillStyle = withAlpha(q.it.col, q === this.hover ? 1 : 0.85); c.fill(); if (q === this.hover) { c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); } }
+      for (const q of l.pts) {
+        if (q.x < 140 || q.x > this.W - 10) continue;
+        const on = !this.hl || this.hl.has(q.it.id), a = q === this.hover ? 1 : on ? 0.85 : 0.12;
+        c.beginPath(); c.arc(q.x, q.y, q.r + (this.hl && on ? 1.2 : 0), 0, Math.PI * 2);
+        if (q.it.planned) { c.fillStyle = withAlpha('panel', 1); c.fill(); c.lineWidth = 1.6; c.strokeStyle = withAlpha(q.it.col, a); c.stroke(); } // not yet written: hollow
+        else { c.fillStyle = withAlpha(q.it.col, a); c.fill(); }
+        if (q === this.hover) { c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); }
+      }
     }
     // labels for the most important ideas in view, without overlap
     const occ = []; const free = (x, y, w, h) => { for (const o of occ) if (x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1]) return false; occ.push([x, y, w, h]); return true; };
     const dots = this.lanes.flatMap((l) => l.pts).filter((q) => q.x > 140 && q.x < this.W - 10);
     const blockers = dots.map((q) => [q.x - q.r, q.y - q.r, 2 * q.r, 2 * q.r]);
     const freeOfDots = (x, y, w, h, self) => !blockers.some((b, i) => dots[i] !== self && x < b[0] + b[2] && x + w > b[0] && y < b[1] + b[3] && y + h > b[1]);
-    const all = dots.slice().sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 80);
+    const all = dots.filter((q) => !this.hl || this.hl.has(q.it.id)).sort((a, b) => (b.it.kind === 'Paper') - (a.it.kind === 'Paper') || (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 80);
     c.font = '500 11px Inter, system-ui, sans-serif'; c.textBaseline = 'middle'; c.textAlign = 'left';
     for (const q of all) {
       const t = plainName(q.it.name, 34); const w = c.measureText(t).width;
