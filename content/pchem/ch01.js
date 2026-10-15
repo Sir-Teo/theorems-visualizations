@@ -361,7 +361,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         const N = 160, W = 100, WIN = 10, TLO = 173.15, THI = 573.15, PSTEP = 10, COLS = ['accent', 'orange', 'teal'];
         const STEPS = [-100, -20, 60, 140, 220, 300].map((c) => c + 273.15);
         const law = v.select('hold fixed', [{ value: 'p', label: 'pressure (Charles)' }, { value: 'V', label: 'volume (Gay-Lussac)' }], 'p', { onChange: () => { make(); newSeries(); } });
-        const gas = v.select('molecules', [{ value: 'ideal', label: 'point molecules' }, { value: 'lj', label: 'xenon atoms' }], 'lj', { onChange: () => { make(); newSeries(); } });
+        const gas = v.select('molecules', [{ value: 'ideal', label: 'point molecules' }, { value: 'lj', label: 'xenon atoms' }], 'ideal', { onChange: () => { make(); newSeries(); } });
         const load = v.slider('weights', 1, 3, 1, { int: true, fmt: (k) => `${k} (${k * PSTEP} bar)`, onChange: () => { make(); newSeries(); } });
         const auto = v.toggle('automatic heating in steps', true);
         const Tb = v.slider('bath', -100, 300, 20, { step: 1, fmt: (x) => `${x.toFixed(0)} °C`, onChange: () => { if (auto.value) auto.set(false); tChange = tSim; } });

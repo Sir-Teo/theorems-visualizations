@@ -965,7 +965,7 @@ Every eigenvector is one (take $k = 1$). By 8.1 and 8.3 applied to $T - \lambda 
         v.readout(() => {
           if (!st) return '';
           const { n, chains, ranks } = st, mx = Math.max(...chains);
-          if (brk.value) return `Chains $${chains.join(', ')}$ with $Tu = u$ at the bottom of the first: rank of $T^{${n}}$ is $${ranks[n]}$, of $T^{${n + 1}}$ is $${ranks[n + 1]}$ — the eigenvalue $1$ survives every power, so **no power of $T$ is $0$**.`;
+          if (brk.value) return `${chains.length === 1 ? 'One chain of length' : 'Chains of lengths'} $${chains.join(', ')}$, with $Tu = u$ at the bottom of the first: rank of $T^{${n}}$ is $${ranks[n]}$, of $T^{${n + 1}}$ is $${ranks[n + 1]}$ — the eigenvalue $1$ survives every power, so **no power of $T$ is $0$**.`;
           return `${chains.length === 1 ? 'One chain of length' : 'Chains of lengths'} $${chains.join(', ')}$ in $\\mathbf F^{${n}}$. **$T^{${n}} = 0$**: all $${n * n}$ entries are exactly $0$. The first vanishing power is $T^{${mx}}$ (the longest chain)` + (mx === n ? `, so $T^{${n - 1}}$ (rank $${ranks[n - 1]}$) is not $0$: the exponent $\\dim V$ cannot be lowered in general.` : `, earlier than $T^{${n}}$ here.`);
         });
       },

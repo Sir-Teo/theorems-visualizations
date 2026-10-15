@@ -784,7 +784,7 @@ $$\dim G(\lambda, T) = \dim\operatorname{null}(T - \lambda I)^{\dim V}$$
               if (on) { B.rect(x, y - 0.06, x + d, y + 0.06, { fill: PAL[i % 8], fillAlpha: 0.55, color: PAL[i % 8], width: 1.2 }); B.text(String(d), x + d / 2, y, { align: 'center', baseline: 'middle', size: 12, weight: 700, halo: false }); x += d; }
             });
             if (x < n - 1e-9) { B.rect(x, y - 0.06, n, y + 0.06, { color: 'red', width: 1.6, dash: [5, 4], fill: 'red', fillAlpha: 0.08 }); B.text(`missing ${n - x}`, (x + n) / 2, y, { align: 'center', baseline: 'middle', size: 11.5, color: 'red', weight: 700 }); }
-            B.text(`sum = ${x}`, n + 0.05, y - 0.13, { align: 'right', size: 12, color: x === n ? 'green' : 'red', weight: 700 });
+            B.text(`sum = ${x}`, n - 0.08, y - 0.13, { align: 'right', size: 12, color: x === n ? 'green' : 'red', weight: 700 });
             return x;
           };
           for (let t = 0; t <= n; t++) { B.line(t, 0.12, t, 0.88, { color: 'grid', width: 0.8 }); B.text(String(t), t, 0.06, { align: 'center', size: 10.5, color: 'muted' }); }

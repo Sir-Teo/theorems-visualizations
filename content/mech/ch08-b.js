@@ -79,7 +79,7 @@ and the position follows from $r = a(1 - e\cos E)$ and the true anomaly $\nu$ wi
       viz(v) {
         const ecc = v.slider('eccentricity $e$', 0, 0.99, 0.6, { step: 0.01 });
         const s = v.stage({ x: [-2.15, 1.25], y: [-1.15, 1.15], equal: true, axes: false, height: 330, weight: 1.25 });
-        const c = v.stage({ x: [0, TAU], y: [0, TAU + 1], axes: 'box', height: 330, xlabel: 'E (rad)', title: 'cobweb: $E_{k+1} = M + e\\sin E_k$' });
+        const c = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', height: 330, xlabel: 'E (rad)', title: 'cobweb: $E_{k+1} = M + e\\sin E_k$ (zoomed on the root)' });
         const cache = memo(); let cur = null;
         const ode = () => cache(ecc.value, () => { const e = ecc.value; return centralOrbit((r) => -1 / (r * r), [1 - e, 0, 0, Math.sqrt((1 + e) / (1 - e))], { T: TAU, eta: 0.002, maxSteps: 200000 }); });
         v.animate((t) => {
@@ -112,11 +112,14 @@ and the position follows from $r = a(1 - e\cos E)$ and the true anomaly $\nu$ wi
           s.dot(S[0], S[1], { r: 8, hollow: true, color: 'ink', width: 1.4 });
           s.dot(px, py, { r: 5.5, color: 'gold', label: 'ν', labelPos: 'e' });
           // cobweb
+          let lo = Math.min(M, E), hi = Math.max(M, E); for (const q of it.slice(0, 60)) { lo = Math.min(lo, q); hi = Math.max(hi, q); }
+          const mid = (lo + hi) / 2, half = Math.max(0.6, 0.62 * (hi - lo));
+          c.setView([mid - half, mid + half], [mid - half, mid + half]);
           c.fn((x) => x, { color: 'muted', width: 1.2 });
           c.fn((x) => M + e * Math.sin(x), { color: 'blue', width: 2.2 });
-          const web = [[it[0], 0]]; for (let k = 0; k < Math.min(it.length - 1, 60); k++) { web.push([it[k], it[k + 1]], [it[k + 1], it[k + 1]]); }
+          const web = [[it[0], it[0]]]; for (let k = 0; k < Math.min(it.length - 1, 60); k++) { web.push([it[k], it[k + 1]], [it[k + 1], it[k + 1]]); }
           c.path(web, { color: 'orange', width: 1.3 });
-          c.dot(it[0], 0, { r: 3.5, color: 'orange', label: 'E₀ = M', labelPos: 'ne' });
+          c.dot(it[0], it[0], { r: 3.5, color: 'orange', label: 'E₀ = M', labelPos: 'se' });
           c.dot(E, E, { r: 5.5, color: 'green' });
           const err = Math.hypot(S[0] - px, S[1] - py);
           cur = { e, M, E, nu, nfp: it.length - 1, kN, err, r: Math.hypot(px, py), area: 0.5 * a * b * (E - e * Math.sin(E)) };
@@ -138,7 +141,7 @@ and the position follows from $r = a(1 - e\cos E)$ and the true anomaly $\nu$ wi
 $$\mathbf A = \mathbf p\times\mathbf L - \mu k\,\hat{\mathbf r}.$$
 It is a constant of the motion. It lies in the orbital plane, points from the force centre to the perihelion, and has length $|\mathbf A| = \mu k\,e$; dotting it with $\mathbf r$ gives the orbit $r = (\ell^2/\mu k)/(1 + e\cos\phi)$ directly, with $\phi$ measured from $\mathbf A$. Its conservation is special to the exact inverse-square law: under any perturbation $\delta F(r)$ it turns, and its rate of turning is the precession of the perihelion.`,
       idea: String.raw`Differentiate: $\dot{\mathbf p} = -k\hat{\mathbf r}/r^2$ and $\dot{\mathbf L} = 0$ (2.8, 2.10), so $\tfrac{d}{dt}(\mathbf p\times\mathbf L) = -\tfrac{k}{r^2}\hat{\mathbf r}\times(\mu r^2\,\hat{\mathbf r}\times\dot{\hat{\mathbf r}}) = \mu k\,\dot{\hat{\mathbf r}}$, which is exactly the derivative of $\mu k\hat{\mathbf r}$: the two terms change in lockstep. At perihelion both terms point outward along $\hat{\mathbf r}$, which fixes the direction; the conic of 8.7 drops out of $\mathbf A\cdot\mathbf r = \ell^2 - \mu k r$. With an extra force $-\varepsilon/r^3$ the first derivative no longer matches the second, and $\mathbf A$ rotates.`,
-      caption: String.raw`Press play. At the planet the blue arrow is $\mathbf p\times\mathbf L$ and the orange arrow is $-\mu k\hat{\mathbf r}$, laid head to tail; their sum (green) is copied to the Sun, where it always points at perihelion — both parts swing wildly around the orbit, but the sum does not move. Right: the direction of $\mathbf A$ against time. Add the $1/r^3$ perturbation: the green arrow now creeps round, mostly near perihelion, and its turning per orbit matches the exact prediction.`,
+      caption: String.raw`Press play. At the planet the blue arrow is $\mathbf p\times\mathbf L$ and the orange arrow is $-\mu k\hat{\mathbf r}$, laid head to tail; their sum (green) is copied to the Sun, where it always points at perihelion — both parts swing wildly around the orbit, but the sum does not move. Right: the directions of the three vectors against time — the blue and orange parts each turn through a full circle every orbit, the green sum stays put. Add the $1/r^3$ perturbation: the green arrow now creeps round, mostly near perihelion, and its turning per orbit matches the exact prediction.`,
       deps: ['mech-8.7', 'mech-2.8'],
       refs: ['Goldstein §3.9', 'Tong §4.3'],
       tags: ['conserved quantity', 'Kepler', 'symmetry'],
@@ -147,19 +150,21 @@ It is a constant of the motion. It lies in the orbital plane, points from the fo
         const ecc = v.slider('eccentricity $e$', 0.1, 0.8, 0.55, { step: 0.01 });
         const eps = v.slider('perturbation $\\varepsilon$ in $F = -k/r^2 - \\varepsilon/r^3$', 0, 0.12, 0, { step: 0.002 });
         const s = v.stage({ x: [-2.4, 1.2], y: [-1.5, 1.5], equal: true, axes: false, height: 330, weight: 1.25 });
-        const g = v.stage({ x: [0, 6], y: [-10, 40], axes: 'box', height: 330, xlabel: 't / T', title: 'direction of $\\mathbf A$ (degrees)' });
+        const g = v.stage({ x: [0, 6], y: [-180, 180], axes: 'box', height: 330, xlabel: 't / T', yticks: [-180, -90, 0, 90, 180], title: 'directions (degrees): the parts turn, the sum does not' });
         const NORB = 6, cache = memo(); let cur = null;
         const run = () => cache([ecc.value, eps.value].join('|'), () => {
           const e = ecc.value, ep = eps.value, T0 = TAU;
           const R = centralOrbit((r) => -1 / (r * r) - ep / r ** 3, [1 - e, 0, 0, Math.sqrt((1 + e) / (1 - e))], { T: NORB * T0 * 1.1, eta: 0.003, maxSteps: 200000 });
           const A = R.s.map((S) => { const r = Math.hypot(S[0], S[1]), h = S[0] * S[3] - S[1] * S[2]; return [S[3] * h - S[0] / r, -S[2] * h - S[1] / r]; });
+          const dirPL = R.s.map((S) => { const h = S[0] * S[3] - S[1] * S[2]; return (Math.atan2(-S[2] * h, S[3] * h) * 180) / Math.PI; });
+          const dirR = R.s.map((S) => (Math.atan2(-S[1], -S[0]) * 180) / Math.PI);
           const ang = []; let prev = 0; A.forEach((q, i) => { let a = Math.atan2(q[1], q[0]); if (i) { while (a - prev > Math.PI) a -= TAU; while (a - prev < -Math.PI) a += TAU; } ang.push(a); prev = a; });
           const ph = unwound(R), aps = apsides(R, ph).filter((q) => q.peri);
           const h = Math.sqrt((1 + e) * (1 - e)), gam = Math.sqrt(1 - ep / (h * h)), pred = TAU * (1 / gam - 1);
           const meas = aps.length >= 2 ? (aps[aps.length - 1].phi - 0) / aps.length - TAU : NaN;
           let dAng = 0; for (const a of ang) dAng = Math.max(dAng, Math.abs(a - ang[0]));
           let mag0 = Math.hypot(...A[0]), dMag = 0; for (const q of A) dMag = Math.max(dMag, Math.abs(Math.hypot(...q) - mag0));
-          return { R, A, ang, aps, pred, meas, dAng, dMag, mag0, e, ep, T0 };
+          return { R, A, ang, aps, pred, meas, dAng, dMag, mag0, e, ep, T0, dirPL, dirR };
         });
         v.animate((t) => {
           const D = run(), simT = ((t / 4) * D.T0) % (NORB * D.T0), S = stateAt(D.R, simT);
@@ -177,16 +182,15 @@ It is a constant of the motion. It lies in the orbital plane, points from the fo
           s.arrow(0, 0, A[0], A[1], { color: 'green', width: 3.2 });
           s.tex('\\mathbf A', A[0], A[1], { color: 'green', dx: 12, dy: -8, size: 15 });
           s.dot(S[0], S[1], { r: 5.5, color: 'gold' });
-          s.tex('\\mathbf p\\times\\mathbf L', S[0] + sc * pL[0] * 0.55, S[1] + sc * pL[1] * 0.55, { color: 'blue', dx: 16, size: 13 });
-          // direction plot
-          const deg = D.ang.map((a) => (a * 180) / Math.PI), tt = D.R.t.map((x) => x / D.T0);
-          const yr = span([deg], 0.12, 8);
-          g.setView([0, NORB], yr);
+          // direction plot (angles wrapped to (−180°, 180°], with breaks at the wrap)
+          const tt = D.R.t.map((x) => x / D.T0), wrap = (d) => ((((d + 180) % 360) + 360) % 360) - 180;
+          const series = (arr, upto) => { const pts = []; let prev = null; for (let i = 0; i < arr.length && D.R.t[i] <= upto; i++) { const y = wrap(arr[i]); if (prev != null && Math.abs(y - prev) > 180) pts.push(null); pts.push([tt[i], y]); prev = y; } return pts; };
           for (const q of D.aps) g.vline(q.t / D.T0, { color: 'grid', width: 1 });
-          const pts = []; for (let i = 0; i < deg.length; i++) if (D.R.t[i] <= simT) pts.push([tt[i], deg[i]]);
-          g.path(deg.map((d, i) => [tt[i], d]), { color: 'green', width: 1.2, alpha: 0.3 });
-          g.path(pts, { color: 'green', width: 2.6 });
-          if (D.ep > 0) g.fn((x) => (x * D.pred * 180) / Math.PI, { color: 'purple', width: 1.4, dash: [5, 4] });
+          g.path(series(D.dirPL, simT), { color: 'blue', width: 1.4, alpha: 0.7 });
+          g.path(series(D.dirR, simT), { color: 'orange', width: 1.4, alpha: 0.7 });
+          if (D.ep > 0) { const pr = []; let prev = null; for (let k = 0; k <= 200; k++) { const x = (NORB * k) / 200, y = wrap((x * D.pred * 180) / Math.PI); if (prev != null && Math.abs(y - prev) > 180) pr.push(null); pr.push([x, y]); prev = y; } g.path(pr, { color: 'purple', width: 1.4, dash: [5, 4] }); }
+          g.path(series(D.ang.map((a) => (a * 180) / Math.PI), Infinity), { color: 'green', width: 1.2, alpha: 0.25 });
+          g.path(series(D.ang.map((a) => (a * 180) / Math.PI), simT), { color: 'green', width: 3 });
           cur = { D, Anow: Math.hypot(...A) };
         }, { period: 4 * NORB, still: 3.1 });
         v.legend([['blue', '$\\mathbf p\\times\\mathbf L$'], ['orange', '$-\\mu k\\hat{\\mathbf r}$'], ['green', '$\\mathbf A$ (at the Sun) and its past tips'], ['purple', 'predicted turning, $2\\pi(1/\\gamma - 1)$ per orbit', { dash: true }]]);
@@ -261,7 +265,7 @@ $\Psi = \pi$ for gravity ($n = -2$), $\Psi = \pi/2$ for the spring ($n = 1$). Fo
           const { D, psi0 } = cur, n = D.n;
           if (n <= -3) return String.raw`$n = ${v.fix(n, 2)} \le -3$: $\beta^2 = n + 3 = ${v.fix(n + 3, 2)}$, so $U_{\rm eff}$ has a maximum, not a minimum, at $r_0 = 1$ — the circular orbit is unstable and the kick grows ${n === -3 ? 'linearly' : 'exponentially'} with angle`;
           const close = (() => { const x = D.psi / Math.PI; for (let q = 1; q <= 6; q++) { const p = Math.round(x * q); if (p > 0 && Math.abs(x - p / q) < 2e-3) return { p, q }; } return null; })();
-          return String.raw`measured apsidal angle $\Psi = ${v.fix(D.psi / Math.PI, 4)}\pi$ (mean over ${D.aps.length - 1} half-oscillations) vs small-oscillation theory $\pi/\sqrt{n+3} = ${v.fix(psi0 / Math.PI, 4)}\pi$` + (close ? String.raw` · $\Psi \approx ${close.p}\pi/${close.q}$: the orbit closes after ${close.q % 2 ? 2 * close.q : close.q} apsides` : ' · not a rational multiple of $\\pi$: the orbit never closes') + (Math.abs(D.d) > 0.15 ? ' · large kick: nonlinear corrections visible' : '');
+          return String.raw`measured apsidal angle $\Psi = ${v.fix(D.psi / Math.PI, 4)}\pi$ (mean over ${D.aps.length - 1} half-oscillations) vs small-oscillation theory $\pi/\sqrt{n+3} = ${v.fix(psi0 / Math.PI, 4)}\pi$` + (close ? String.raw` · $\Psi \approx ${close.p}\pi/${close.q}$: the orbit (nearly) closes after ${close.q % 2 ? 2 * close.q : close.q} apsides` : ' · not close to a simple fraction of $\\pi$: the rosette does not close') + (Math.abs(D.d) > 0.15 ? ' · large kick: nonlinear corrections visible' : '');
         });
       },
     },
@@ -316,8 +320,8 @@ $\Psi = \pi$ for gravity ($n = -2$), $\Psi = \pi/2$ for the spring ($n = 1$). Fo
           });
           const yr = [Math.min(D.lo, psi0, 0.45) - 0.08, Math.max(D.hi, psi0, 1.05) + 0.1];
           g.setView([0, 1.02], yr);
-          for (const [q, lab] of [[1, 'π (gravity)'], [0.5, 'π/2 (spring)'], [2 / 3, '2π/3']]) if (q > yr[0] && q < yr[1]) { g.hline(q, { color: 'faint', dash: [4, 4], width: 1 }); g.text(lab, 0.01, q, { color: 'muted', size: 10.5, dy: -8 }); }
-          g.dot(1, psi0, { r: 4, hollow: true, color: 'ink', label: '1/√(n+3)', labelPos: 'w' });
+          for (const [q, lab] of [[1, 'π (gravity)'], [0.5, 'π/2 (spring)'], [2 / 3, '2π/3']]) if (q > yr[0] && q < yr[1]) { g.hline(q, { color: 'faint', dash: [4, 4], width: 1 }); g.text(lab, 0.5, q, { color: 'muted', size: 10.5, dy: -8, align: 'center' }); }
+          g.dot(1, psi0, { r: 4, hollow: true, color: 'ink', label: '1/√(n+3)', labelPos: 'nw' });
           const flat = D.hi - D.lo < 1e-4;
           g.path(D.curve, { color: flat ? 'green' : 'red', width: 2.6 });
           D.orbits.forEach((o, i) => g.dot(FS[i], o.psi / Math.PI, { r: 5, color: COL[i] }));
@@ -349,11 +353,11 @@ the integral taken along the unperturbed ellipse. A term $\delta U = -\gamma/r^3
       viz(v) {
         const C = v.M.CONST, ARC = 206264.806;
         const mode = v.select('perturbation', [{ value: 'gr', label: 'relativistic $-\\gamma/r^3$' }, { value: 'ring', label: 'outer ring (Venus-like)' }], 'gr');
-        const lg = v.slider('strength (log₁₀)', -8, -1, -3, { step: 0.05, fmt: (x) => `10^${v.fix(x, 2)}` });
+        const lg = v.slider('strength (log₁₀)', -8, -1, -2.5, { step: 0.05, fmt: (x) => `10^${v.fix(x, 2)}` });
         const ecc = v.slider('eccentricity $e$', 0, 0.6, 0.2056, { step: 0.0001, decimals: 4 });
         const s = v.stage({ x: [-2, 1.2], y: [-1.4, 1.4], equal: true, axes: false, height: 320 });
         const g = v.stage({ x: [1e-8, 0.1], y: [1e-8, 3], xlog: true, ylog: true, axes: 'box', height: 320, xlabel: 'strength', ylabel: 'advance per orbit (rad)', weight: 1.2, title: 'perihelion advance per orbit' });
-        const bud = v.stage({ x: [0, 640], y: [-0.5, 2.6], axes: false, height: 150, full: true, title: 'Mercury’s perihelion advance, arcseconds per century' });
+        const bud = v.stage({ x: [-20, 650], y: [-0.5, 2.6], axes: false, height: 150, full: true, title: 'Mercury’s perihelion advance, arcseconds per century' });
         const RR = 0.723332 / 0.387098; // Venus/Mercury radius ratio for the scaled ring
         // Mercury budget from real data (ring model + GR)
         const MASS = { Venus: 4.8675e24, Earth: C.Mearth, Mars: 6.4171e23, Jupiter: 1.89819e27, Saturn: 5.6834e26, Uranus: 8.6813e25, Neptune: 1.02413e26 };
@@ -367,39 +371,39 @@ the integral taken along the unperturbed ellipse. A term $\delta U = -\gamma/r^3
         const model = (md, eps) => (md === 'gr' ? { acc: (r) => -1 / (r * r) - (3 * eps) / r ** 4, dU: (r) => -eps / r ** 3 } : { acc: (r) => -1 / (r * r) + ringAcc(r, RR, eps), dU: (r) => ringU(r, RR, eps) });
         const famC = memo(), curC = memo(); let cur = null;
         const family = () => famC([mode.value, ecc.value].join('|'), () => {
-          const pts = []; for (let k = -7; k <= -1; k++) { const eps = 10 ** k, M = model(mode.value, eps); pts.push([eps, simAdvance(M.acc, ecc.value)]); }
+          const pts = []; for (let k = -7; k <= -1; k += 0.5) { const eps = 10 ** k, M = model(mode.value, eps), a = simAdvance(M.acc, ecc.value); if (isFinite(a)) pts.push([eps, a]); }
           const lin = landauAdvance(model(mode.value, 1).dU, 1, ecc.value); // first order: linear in the strength
           return { pts, lin };
         });
         const current = () => curC([mode.value, ecc.value, lg.value].join('|'), () => {
           const eps = 10 ** lg.value, M = model(mode.value, eps), e = ecc.value;
-          const R = centralOrbit(M.acc, [1 - e, 0, 0, Math.sqrt((1 + e) / (1 - e))], { T: 9 * TAU, eta: 0.004, revs: 8, maxSteps: 120000 });
+          const R = centralOrbit(M.acc, [1 - e, 0, 0, Math.sqrt((1 + e) / (1 - e))], { T: 9 * TAU, eta: 0.004, revs: 8, rmin: 0.02, maxSteps: 120000 });
           return { eps, R, adv: simAdvance(M.acc, e), e };
         });
         v.render(() => {
           const F = family(), D = current(), e = D.e, rp = 1 - e;
           // orbits and perihelion directions
           s.setView([-(1 + e) - 0.35, rp + 0.35 + 0.2], [-1.25, 1.25]);
-          s.path(D.R.s.map((S) => [S[0], S[1]]), { color: 'accent', width: 1.2, alpha: 0.85 });
-          for (let k = 0; k <= 8; k++) { const a = k * D.adv; s.line(0, 0, (rp + 0.25) * Math.cos(a), (rp + 0.25) * Math.sin(a), { color: k ? 'red' : 'ink', width: k ? 1.2 : 1.6, alpha: k ? 0.7 : 1 }); }
+          s.path(D.R.s.map((S) => [S[0], S[1]]), { color: isFinite(D.adv) ? 'accent' : 'red', width: 1.2, alpha: 0.85 });
+          if (isFinite(D.adv)) for (let k = 0; k <= 8; k++) { const a = k * D.adv; s.line(0, 0, (rp + 0.25) * Math.cos(a), (rp + 0.25) * Math.sin(a), { color: k ? 'red' : 'ink', width: k ? 1.2 : 1.6, alpha: k ? 0.7 : 1 }); }
           if (mode.value === 'ring') s.circle(0, 0, RR, { color: 'orange', width: 2, dash: [6, 4] });
           sun(s, 0, 0, { r: 0.05 });
-          s.corner(`advance ${v.fix((D.adv * 180) / Math.PI, Math.abs(D.adv) > 0.01 ? 2 : 6)}° per orbit`, 'tl', { color: 'red', weight: 600 });
+          s.corner(isFinite(D.adv) ? `advance ${v.fix((D.adv * 180) / Math.PI, Math.abs(D.adv) > 0.01 ? 2 : 6)}° per orbit` : 'no centrifugal barrier: plunges into the centre', 'tl', { color: 'red', weight: 600 });
           // log–log
           g.fn((x) => F.lin * x, { color: 'green', width: 1.8, dash: [6, 4] });
           g.dots(F.pts, { r: 4, color: 'accent' });
           const mk = mode.value === 'gr' ? mercGR : mercRing;
           g.dot(mk, F.lin * mk, { r: 5, hollow: true, color: 'ink', width: 1.6, label: mode.value === 'gr' ? 'Mercury (GR)' : 'Mercury (Venus)', labelPos: 'se' });
           g.vline(D.eps, { color: 'gold', width: 1.2, dash: [3, 3] });
-          g.dot(D.eps, Math.abs(D.adv), { r: 6.5, color: 'gold' });
+          if (isFinite(D.adv)) g.dot(D.eps, Math.abs(D.adv), { r: 6.5, color: 'gold' });
           // budget bar
           const cols = ['gold', 'blue', 'red', 'orange', 'teal', 'purple', 'pink'];
           let x = 0; const yb = 1.25;
           budget.forEach((b, i) => { bud.rect(x, yb - 0.45, x + b.val, yb + 0.45, { fill: cols[i], fillAlpha: 0.7, stroke: false }); if (b.val > 20) bud.text(b.nm, x + b.val / 2, yb, { color: 'ink', size: 10.5, align: 'center' }); x += b.val; });
           const tot = x; bud.rect(x, yb - 0.45, x + grV, yb + 0.45, { fill: 'green', fillAlpha: 0.85, stroke: false }); bud.text('GR', x + grV / 2, yb, { color: 'ink', size: 10.5, align: 'center', weight: 700 }); x += grV;
-          bud.line(574, -0.1, 574, 2.4, { color: 'ink', width: 2 }); bud.text('observed 574″', 574, 2.35, { color: 'ink', size: 10.5, align: 'center', dy: -2 });
-          bud.line(531, 0.3, 531, 0.75, { color: 'muted', width: 1.6 }); bud.text('full planetary theory 531″', 531, 0.12, { color: 'muted', size: 10, align: 'right', dx: 3 });
-          bud.text(`ring model ${v.fix(tot, 0)}″`, tot, yb + 0.75, { color: 'muted', size: 10, align: 'center' });
+          bud.line(574, yb - 0.75, 574, yb + 0.85, { color: 'ink', width: 2.2 }); bud.text('observed 574″', 578, yb + 0.95, { color: 'ink', size: 10.5, align: 'left', weight: 600 });
+          bud.line(tot, yb + 0.5, tot, yb + 0.85, { color: 'muted', width: 1.4 }); bud.text(`planets as rings ${v.fix(tot, 0)}″`, tot - 4, yb + 0.95, { color: 'muted', size: 10, align: 'right' });
+          bud.line(531, yb - 0.5, 531, yb - 0.85, { color: 'muted', width: 1.4 }); bud.text('full planetary theory 531″ (+ GR 43″ = 574″)', 527, yb - 0.95, { color: 'muted', size: 10, align: 'right' });
           for (let k = 0; k <= 600; k += 100) bud.text(String(k), k, -0.35, { color: 'faint', size: 9.5, align: 'center' });
           cur = { F, D, tot, grV };
         });
@@ -407,7 +411,8 @@ the integral taken along the unperturbed ellipse. A term $\delta U = -\gamma/r^3
         v.readout(() => {
           if (!cur) return '';
           const { F, D, tot, grV } = cur, th = F.lin * D.eps;
-          return String.raw`strength $${v.sci(D.eps, 2)}$: simulated advance $${v.sci(D.adv, 4)}$ rad per orbit, first order $${v.sci(th, 4)}$ (ratio $${v.fix(D.adv / th, 4)}$${Math.abs(D.adv / th - 1) > 0.01 ? ' — no longer a small perturbation' : ''})${mode.value === 'gr' ? String.raw` = $6\pi\gamma/(1-e^2)^2$` : ''} · Mercury: GR $6\pi GM_\odot/c^2a(1-e^2) = ${v.fix(grV, 2)}''$/century; the planets as rings ${v.fix(tot, 0)}″ (full theory 531″, the rings ignore their eccentricities); total ${v.fix(tot + grV, 0)}″ vs observed 574″`;
+          const head = !isFinite(D.adv) ? String.raw`strength $${v.sci(D.eps, 2)}$: the $1/r^3$ attraction beats the centrifugal barrier and the orbit plunges (compare the innermost stable orbit of a black hole)` : String.raw`strength $${v.sci(D.eps, 2)}$: simulated advance $${v.sci(D.adv, 4)}$ rad per orbit, first-order formula${mode.value === 'gr' ? String.raw` $6\pi\gamma/(1-e^2)^2$` : ''} $${v.sci(th, 4)}$ (ratio $${v.fix(D.adv / th, 4)}$${Math.abs(D.adv / th - 1) > 0.01 ? ' — no longer a small perturbation' : ''})`;
+          return head + String.raw` · Mercury: GR $6\pi GM_\odot/c^2a(1-e^2) = ${v.fix(grV, 2)}''$/century; the planets as rings ${v.fix(tot, 0)}″ (full theory 531″, the rings ignore their eccentricities); total ${v.fix(tot + grV, 0)}″ vs observed 574″`;
         });
       },
     },
@@ -470,7 +475,7 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const dv1H = vh - vc1, dv2H = vc2 * (1 - Math.sqrt((2 * r1) / (r1 + r2))), tH = Math.PI * Math.sqrt((r1 + r2) ** 3 / (8 * mu));
           const v1 = vc1 + fS.value * dv1H;
           // simulate the coast until the craft reaches r2, then circularize
-          const R = centralOrbit((r) => -mu / (r * r), [r1, 0, 0, v1], { T: 4 * tH, eta: 0.003, rmax: r2, maxSteps: 60000 });
+          const R = centralOrbit((r) => -mu / (r * r), [r1, 0, 0, v1], { T: 1.05 * tH, eta: 0.002, rmax: r2 * (1 - 1e-7), maxSteps: 60000 });
           const L = R.s[R.s.length - 1], rr = Math.hypot(L[0], L[1]), tx = R.t[R.t.length - 1];
           const ux = L[0] / rr, uy = L[1] / rr, dv2 = Math.hypot(L[2] - -uy * vc2, L[3] - ux * vc2);
           const an = conicXfer(mu, r1, r2, v1);
@@ -479,7 +484,7 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const bi = (Math.SQRT2 - 1) * (vc1 + vc2); // bi-elliptic via r_b → ∞
           const thArr = Math.atan2(L[1], L[0]);
           const nT = TAU / (TAU * Math.sqrt(r2 ** 3 / mu)), lead0 = Math.PI - nT * tH; // Hohmann lead angle
-          return { ph: false, Q, mu, r1, r2, vc1, vc2, dv1H, dv2H, tH, v1, R, tx, dv2, an, fam, Rr, bi, nT, lead0, reached: rr >= r2 * (1 - 1e-9), thArr };
+          return { ph: false, Q, mu, r1, r2, vc1, vc2, dv1H, dv2H, tH, v1, R, tx, dv2, an, fam, Rr, bi, nT, lead0, reached: rr >= r2 * (1 - 1e-6), thArr };
         });
         v.animate((t) => {
           const D = run(), Q = D.Q, L = Q.L;
@@ -494,8 +499,8 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
             s.dot(r1 * Math.cos(at), r1 * Math.sin(at), { r: 6, color: 'green', label: 'target', labelPos: 'ne' });
             s.dot(S[0] / L, S[1] / L, { r: 6, color: 'gold', label: 'chaser', labelPos: 'sw' });
             s.dot(r1, 0, { r: 3, color: 'ink' });
-            s.corner(D.crash ? 'perigee below the surface!' : frac >= 1 ? (Math.abs(D.gap) < 0.5 ? 'rendezvous after one lap' : `missed by ${v.fix(Math.abs(D.gap), 1)}° after one lap`) : 'one phasing lap…', 'tl', { color: D.crash || (frac >= 1 && Math.abs(D.gap) >= 0.5) ? 'red' : 'green', weight: 600 });
-            g.setTitle('gap to the target after one lap (degrees) against the burn');
+            s.corner(D.crash ? 'perigee below the surface!' : frac >= 1 ? (Math.abs(D.gap) < 0.5 ? 'rendezvous after one lap' : `missed by ${v.fix(Math.abs(D.gap), 1)}° after one lap`) : 'one phasing lap…', 'bl', { color: D.crash || (frac >= 1 && Math.abs(D.gap) >= 0.5) ? 'red' : 'green', weight: 600 });
+            g.setTitle('gap to the target after one lap (°) against the burn $\\Delta v$ (m/s; negative = backward)');
             const xs = [], ys = []; for (let dv = -250; dv <= 250; dv += 5) { const y = D.gapAng(dv); if (isFinite(y)) { xs.push(dv); ys.push(y); } }
             g.setView([-250, 250], span([ys, [0]], 0.08, 10));
             g.setTicks(null, null);
@@ -503,7 +508,6 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
             g.path(xs.map((x, i) => [x, ys[i]]), { color: 'accent', width: 2.2 });
             g.dot(D.need, 0, { r: 5, color: 'green', label: `${v.fix(D.need, 1)} m/s`, labelPos: 'n' });
             g.dot(dvS.value, D.gap, { r: 6, color: 'gold' });
-            g.text('burn Δv (m/s): backward ← → forward', 240, span([ys, [0]], 0.08, 10)[0], { color: 'muted', size: 10.5, align: 'right', dy: -10 });
             cur = { D };
             return;
           }
@@ -526,15 +530,15 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           s.dot(r1, 0, { r: 3, color: 'ink' });
           if (D.reached) { const ax = D.r2 * Math.cos(D.thArr) / L, ay = D.r2 * Math.sin(D.thArr) / L; s.dot(ax, ay, { r: 3, color: 'ink' }); }
           const miss = D.reached ? Math.abs(((D.thArr - (D.lead0 + D.nT * D.tx) + Math.PI) % TAU + TAU) % TAU - Math.PI) : NaN;
-          s.corner(!D.reached ? 'never reaches the outer orbit' : miss < 0.01 ? 'arrives with the target' : `arrives ${v.fix((miss * 180) / Math.PI, 1)}° away from the target`, 'tl', { color: D.reached && miss < 0.01 ? 'green' : 'red', weight: 600 });
-          s.corner(`scale: ${Q.Ln}`, 'bl', { color: 'muted', size: 11 });
+          s.corner(!D.reached ? 'never reaches the outer orbit' : miss < 0.01 ? 'arrives with the target' : `arrives ${v.fix((miss * 180) / Math.PI, 1)}° away from the target`, 'bl', { color: D.reached && miss < 0.01 ? 'green' : 'red', weight: 600 });
+          s.corner(`unit: ${Q.Ln}`, 'br', { color: 'muted', size: 11 });
           // Δv vs time
           g.setTitle('total $\\Delta v$ (km/s) against flight time (' + Q.tn + ')');
           const xs = D.fam.map((q) => q[0]), ys = D.fam.map((q) => q[1]);
-          g.setView([0, Math.max(...xs) * 1.05], span([ys], 0.12, 0.2));
+          g.setView([Math.min(...xs) * 0.9, Math.max(...xs) * 1.05], span([ys], 0.12, 0.2));
           g.setTicks(null, null);
           g.path(D.fam, { color: 'accent', width: 2.2 });
-          g.dot(D.tH / Q.tu, (D.dv1H + D.dv2H) / 1000, { r: 5, color: 'green', label: 'Hohmann', labelPos: 'sw' });
+          g.dot(D.tH / Q.tu, (D.dv1H + D.dv2H) / 1000, { r: 5, color: 'green', label: 'Hohmann', labelPos: 'nw' });
           if (D.reached) g.dot(D.tx / Q.tu, ((D.v1 - D.vc1) + D.dv2) / 1000, { r: 6.5, color: 'gold' });
           if (sc.value === 'custom') g.hline(D.bi / 1000, { color: 'purple', dash: [5, 4], width: 1.5 });
           cur = { D, miss };
@@ -567,15 +571,15 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
       credit: 'Michael Minovitch, 1961; first flown by Mariner 10, 1974',
       scope: String.raw`Patched-conic picture: during the encounter (hours to days) the Sun’s pull is treated as uniform and only the planet’s gravity bends the path; the planet’s recoil is negligible.`,
       viz(v) {
-        const GMJ = 1.26686534e17, RJ = 71492e3, VJ = 13.07e3, L = RJ, B0 = 8; // SI; B0 = default aiming offset (R_J)
+        const GMJ = 1.26686534e17, RJ = 71492e3, VJ = 13.07e3, L = RJ, B0 = 15; // SI; B0 = default aiming offset (R_J)
         const s = v.stage({ x: [-40, 40], y: [-26, 26], equal: true, axes: false, height: 300, title: 'Jupiter’s frame (units $R_J$)' });
         const vd = v.stage({ x: [-8, 26], y: [-17, 17], equal: true, axes: false, height: 300, title: 'velocities (km/s)' });
         const sf = v.stage({ x: [-60, 60], y: [-20, 20], equal: true, axes: false, height: 230, full: true, title: 'the Sun’s frame: Jupiter moves to the right (units $R_J$)' });
         let Vin = null, bR = B0;
         const dir = () => { const rx = Vin.x - 13.07, ry = Vin.y, m = Math.hypot(rx, ry) || 1; return [rx / m, ry / m]; };
-        const aimAt = () => { const [ux, uy] = dir(); return [-34 * ux - bR * uy, -34 * uy + bR * ux]; };
-        Vin = vd.handle(8, 5, { color: 'blue', label: 'v_in', labelPos: 'ne', constrain: (x, y) => { const dx = x - 13.07, dy = y; const m = Math.hypot(dx, dy); if (m < 3) return [13.07 + (3 * dx) / (m || 1), (3 * dy) / (m || 1)]; if (m > 16) return [13.07 + (16 * dx) / m, (16 * dy) / m]; return [x, y]; } });
-        const B = s.handle(0, 0, { color: 'ink', r: 6, label: 'aim', labelPos: 'n', constrain: (x, y) => { const [ux, uy] = dir(); bR = clamp(-x * uy + y * ux, -22, 22); return aimAt(); } });
+        const aimAt = () => { const [ux, uy] = dir(); return [-21 * ux - bR * uy, -21 * uy + bR * ux]; };
+        Vin = vd.handle(8, 5, { color: 'blue', label: '$\\mathbf v_{\\rm in}$', labelPos: 'nw', constrain: (x, y) => { const dx = x - 13.07, dy = y; const m = Math.hypot(dx, dy); if (m < 3) return [13.07 + (3 * dx) / (m || 1), (3 * dy) / (m || 1)]; if (m > 16) return [13.07 + (16 * dx) / m, (16 * dy) / m]; return [x, y]; } });
+        const B = s.handle(0, 0, { color: 'ink', r: 6, label: 'aim b', labelPos: 'e', constrain: (x, y) => { const [ux, uy] = dir(); bR = clamp(-x * uy + y * ux, -22, 22); return aimAt(); } });
         { const p = aimAt(); B.x = p[0]; B.y = p[1]; }
         const cache = memo(); let cur = null;
         const run = () => cache([bR, Vin.x, Vin.y].join('|'), () => {
@@ -614,13 +618,13 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const kv = 1e-3;
           vd.circle(13.07, 0, D.vinf * kv, { color: 'faint', width: 1.2, dash: [4, 4] });
           vd.arrow(0, 0, 13.07, 0, { color: 'green', width: 2.6 });
-          vd.text('V_J', 6.5, 0, { color: 'green', size: 12, dy: 12, align: 'center', math: true });
+          vd.tex('\\mathbf V_J', 6.5, 0, { color: 'green', size: 14, dy: 13 });
           vd.arrow(0, 0, D.hin[0] * kv, D.hin[1] * kv, { color: 'blue', width: 2.4 });
           if (!D.crash) {
             vd.arrow(0, 0, D.hout[0] * kv, D.hout[1] * kv, { color: 'orange', width: 2.4 });
             vd.line(13.07, 0, D.hin[0] * kv, D.hin[1] * kv, { color: 'blue', width: 1, dash: [3, 3] });
             vd.line(13.07, 0, D.hout[0] * kv, D.hout[1] * kv, { color: 'orange', width: 1, dash: [3, 3] });
-            vd.dot(D.hout[0] * kv, D.hout[1] * kv, { r: 4, color: 'orange', label: 'v_out', labelPos: 'se' });
+            vd.dot(D.hout[0] * kv, D.hout[1] * kv, { r: 4, color: 'orange', label: '$\\mathbf v_{\\rm out}$', labelPos: 'se' });
           }
           vd.dot(0, 0, { r: 3, color: 'ink' });
           // Sun frame: position = relative position + V (t − t_closest), shown over the encounter window

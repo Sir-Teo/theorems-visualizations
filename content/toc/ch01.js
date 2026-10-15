@@ -493,7 +493,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
             for (let j = 0; j < 32; j++) P.dot(xs5 + (j + 0.5) * cw5, y5, { r: 3, color: 'faint' });
             P.sans('32 strings of length 5 (steps 31–62), then 64 of length 6, …', P.W / 2, y5 + 17, { size: 11.5, color: 'muted' });
           } else {
-            const C = Math.max(6, Math.floor((P.W - left - 30) / 58)), cw = (P.W - left - 30) / C;
+            const room = P.W - left - 30 - (md === 'rows' ? 80 : 0), C = Math.max(5, Math.floor(room / 58)), cw = room / C;
             const cellXY = (n, j) => [left + j * cw + cw / 2, top + n * rowH + 16];
             const tgtN = t.length, tgtJ = rankN(t, binom), visible = (n, j) => n <= 5 && j < C && (n > 0 || j === 0);
             const stepOf = (n, j) => (n === 0 ? 0 : md === 'rows' ? (n === 1 ? j + 1 : Infinity) : 1 + ((n + j) * (n + j - 1)) / 2 + (n - 1));
@@ -507,7 +507,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
             const upto = []; for (const [n, j] of order) { if (stepOf(n, j) > tgtStep) break; upto.push(visible(n, j) ? cellXY(n, j) : null); }
             P.path(seq, { color: 'faint', width: 1.3 });
             P.path(upto, { color: 'accent', width: 2.6 });
-            if (md === 'rows') { const [xe, ye] = cellXY(1, C - 1); P.arrow(xe + 20, ye, P.W - 4, ye, { color: 'red', width: 2.2 }); P.sans('never returns', P.W - 8, ye - 14, { align: 'right', size: 11.5, color: 'red', weight: 600 }); }
+            if (md === 'rows') { const [xe, ye] = cellXY(1, C - 1); P.arrow(xe + cw / 2 + 2, ye, P.W - 8, ye, { color: 'red', width: 2.4 }); P.sans('on to 13, 14, …', P.W - 10, ye - 14, { align: 'right', size: 11, color: 'red', weight: 600 }); P.sans('never returns', P.W - 10, ye + 15, { align: 'right', size: 11, color: 'red', weight: 600 }); }
             for (let n = 0; n <= 5; n++) {
               const R = rowN(n, n === 0 ? 1 : C);
               R.forEach((tt, j) => {
@@ -518,7 +518,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
                 P.text(lab, x, y + 0.5, { size: fs, color: st === Infinity ? 'red' : 'ink', alpha: st === Infinity ? 0.6 : 1, halo: true });
                 P.text(st === Infinity ? '∞' : String(st), x - cw / 2 + 5, y - 19, { align: 'left', size: 9, color: isT ? 'gold' : st === Infinity ? 'red' : 'muted', font: SANS, weight: 600 });
               });
-              if (n > 0) P.text('…', P.W - 14, top + n * rowH + 16, { size: 14, color: 'muted' });
+              if (n > (md === 'rows' ? 1 : 0)) P.text('…', left + C * cw + 12, top + n * rowH + 16, { size: 14, color: 'muted' });
             }
             P.sans('⋮', left + 20, top + 6 * rowH - 6, { size: 14, color: 'muted' });
           }

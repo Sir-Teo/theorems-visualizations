@@ -198,9 +198,11 @@ The players choose simultaneously, none seeing the others' choices, and the prof
         const rng = v.rng(11);
         v.button('Rescale $u_1$ (increasing map)', () => {
           const g = G(), vals = [...new Set(g.U.flat().map((u) => u[0]))].sort((a, b) => a - b), map = new Map();
-          let w = rng.int(-5, -1); const gaps = vals.map(() => rng.int(1, 3));
-          const span = gaps.slice(1).reduce((t, x) => t + x, 0); if (w + span > 10) w = 10 - span;
-          vals.forEach((x, k) => { if (k) w += gaps[k]; map.set(x, Math.max(-5, w)); });
+          // a random strictly increasing map onto integers in [−5, 10]: random gaps of 1–3, shrunk until they fit
+          const gaps = vals.map((_, k) => (k ? rng.int(1, 3) : 0)), sum = () => gaps.reduce((t, x) => t + x, 0);
+          while (sum() > 15) { const k = gaps.findIndex((x) => x > 1); gaps[k]--; }
+          let w = rng.int(-5, 10 - sum());
+          vals.forEach((x, k) => { w += gaps[k]; map.set(x, w); });
           g.U.forEach((row) => row.forEach((u) => { u[0] = map.get(u[0]); }));
           rescaled = true; ed.sync();
         });
