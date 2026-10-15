@@ -868,8 +868,8 @@ The rate for any such region is the number of events in it divided by the person
 - a **continuing common source** gives a plateau that lasts as long as the exposure and ends about one incubation period after the source is removed;
 - a **propagated** (person-to-person) outbreak gives successive, growing waves spaced by the serial interval.
 The **attack rate** of a group is its incidence proportion (1.1) over the outbreak: cases divided by the people at risk. Comparing attack rates between people exposed and not exposed to each candidate source — a food, a well, a contact — points to the source: high among the exposed, low among the unexposed. A spot map of cases adds the third classic view, place, to time (the curve) and person (the attack rates).`,
-      idea: String.raw`If everyone is infected at one moment, onsets are the incubation period's distribution shifted to that moment — hence one peak whose width is the incubation spread; removing the source after the peak changes nothing, because everyone exposed is already infected. A source that keeps infecting adds a new copy of that distribution every day, giving a plateau that stops one incubation period after the exposure ends. When cases infect others, each generation follows the last by roughly the incubation period, so the curve comes in waves, and the attack rate no longer depends on which source people used. Attack rates turn the map's visual cluster into a number: the ratio of attack rates in users and non-users of a source is a risk ratio.`,
-      caption: String.raw`A simulated town of about 1 500 people and five pumps; most households use the nearest pump (thin grey lines bound the pumps' areas). Press play and watch the days pass: each case is drawn as a bar at its house, as on Snow's map (gold = fell ill today), while the epidemic curve fills in. Click a pump to contaminate it (or, person to person, a house to place the first case), move the day the pump handle is removed, and compare the three kinds of outbreak. The bars below are the attack rates among each pump's users.`,
+      idea: String.raw`If everyone is infected at one moment, onsets are the incubation period's distribution shifted to that moment — hence one peak whose width is the incubation spread; removing the source after the peak changes nothing, because everyone exposed is already infected. A source that keeps infecting adds a new copy of that distribution every day, giving a plateau that stops one incubation period after the exposure ends. When cases infect others, each generation follows the last by roughly the incubation period, so the curve comes in waves, and the attack rate no longer depends on which source people used. Attack rates turn the map's visual cluster into a number — the ratio of attack rates in users and non-users of a source is a risk ratio — but a contagious disease clusters in space too, so neighbourhood and water must be separated: Snow's decisive cases were distant households that drank from the Broad Street pump and nearby institutions with wells of their own.`,
+      caption: String.raw`A simulated town of about 1 500 people and five pumps; most households use the nearest pump (thin grey lines bound the pumps' areas). Press play and watch the days pass: each case is drawn as a bar at its house, as on Snow's map (gold = fell ill today), while the epidemic curve fills in. Click a pump to contaminate it (or, person to person, a house to place the first case), move the day the pump handle is removed, and compare the three kinds of outbreak. Below: the attack rate among each pump's users, and Snow's test — the pump's users who live elsewhere against its neighbours who fetch water from another pump. A little sporadic illness unrelated to the outbreak is mixed in, as in real data.`,
       deps: ['epi-1.1'],
       see: ['epi-4.4'],
       refs: ['Gordis ch. 2'],
@@ -878,7 +878,7 @@ The **attack rate** of a group is its incidence proportion (1.1) over the outbre
         const M = v.M, DAYS = 40, SX = [0.8, 3.3, 5.8, 8.3, 10.8], SY = [1.1, 3.0, 4.9, 6.8];
         const PUMPS = [[4.55, 4.9], [9.55, 4.9], [2.05, 1.1], [7.05, 1.1], [7.05, 6.8]];
         const sm = v.stage({ x: [0.25, 11.35], y: [0.45, 7.45], equal: true, axes: false, height: 330, weight: 1.2, title: 'spot map: a bar for each case at its house' });
-        const se = v.stage({ x: [0, DAYS], y: [0, 10], height: 330, axes: 'box', xlabel: 'day of onset', weight: 1, minWidth: 250, title: 'epidemic curve: cases by day of onset' });
+        const se = v.stage({ x: [0, DAYS], y: [0, 10], height: 330, axes: 'box', weight: 1, minWidth: 250, title: 'epidemic curve: cases by day of onset' });
         const sa = v.stage({ x: [0, 100], y: [0, 10], height: 165, axes: false, full: true });
         const rem = v.slider('pump handle removed on day', 1, DAYS, 8, { step: 1 });
         const inc = v.slider('median incubation (days)', 1, 7, 2, { step: 0.5 });
@@ -898,9 +898,10 @@ The **attack rate** of a group is its incidence proportion (1.1) over the outbre
           return { houses, res };
         })();
         const users = PUMPS.map((_, p) => town.res.filter((q) => q.pump === p).length);
+        let lastBg = null;
         const outbreaks = memo();
         const run = () => outbreaks(`${type.value}|${src}|${idx}|${rem.value}|${inc.value}|${seed}`, () => {
-          const r = M.rng(1000 + seed * 31), { houses, res } = town, n = res.length, on = new Float64Array(n).fill(Infinity), med = inc.value, R = rem.value, kind = type.value;
+          const r = M.rng(1000 + seed * 31), { houses, res } = town, n = res.length, on = new Float64Array(n).fill(Infinity), bgFlag = (lastBg = new Uint8Array(n)), med = inc.value, R = rem.value, kind = type.value;
           const incub = (sd) => med * Math.exp(sd * r.normal());
           if (kind === 'point') { for (let i = 0; i < n; i++) if (res[i].pump === src && r() < 0.3) { const t = r() * Math.min(1, R); on[i] = t + incub(0.45); } }
           else if (kind === 'cont') { for (let i = 0; i < n; i++) if (res[i].pump === src) { const t = -Math.log(1 - r()) / 0.016; if (t < Math.min(R, DAYS)) on[i] = t + incub(0.45); } }
@@ -914,6 +915,7 @@ The **attack rate** of a group is its incidence proportion (1.1) over the outbre
               for (const qi of houses[hi].nb) for (const j of houses[qi].res) { if (j === i || inf[j] <= o) continue; if (r() < (qi === hi ? 0.3 : 0.028)) { const tj = o + 1.5 * r(); if (tj < inf[j]) { inf[j] = tj; push([tj, j]); } } }
             }
           }
+          for (let i = 0; i < n; i++) if (r() < 0.006) { const t = DAYS * r(); if (t < on[i]) { on[i] = t; bgFlag[i] = 1; } }
           return on;
         });
         sm.onClick((x, y) => {
@@ -923,7 +925,7 @@ The **attack rate** of a group is its incidence proportion (1.1) over the outbre
         const vorKey = () => `vor|${v.color('faint')}`;
         let st = null;
         v.animate((t) => {
-          const on = run(), kind = type.value, R = rem.value, day = Math.min(DAYS, (DAYS * t) / 10.5), { houses, res } = town;
+          const on = run(), bg = lastBg, kind = type.value, R = rem.value, day = Math.min(DAYS, (DAYS * t) / 10.5), { houses, res } = town;
           // ----- map
           const fc = v.rgb('faint');
           sm.raster((x, y) => { const d = PUMPS.map(([px, py]) => Math.hypot(px - x, py - y)).sort((a, b) => a - b); return d[1] - d[0] < 0.035 ? [fc[0], fc[1], fc[2], 150] : null; }, { key: vorKey(), res: 1 });
@@ -953,20 +955,29 @@ The **attack rate** of a group is its incidence proportion (1.1) over the outbre
           for (let d = 0; d < DAYS; d++) if (daily[d]) se.rect(d + 0.08, 0, d + 0.92, daily[d], { fill: d === Math.floor(day) ? 'gold' : 'red', fillAlpha: 0.75, stroke: false });
           if (kind !== 'prop') { se.vline(R, { color: 'ink', width: 1.4, dash: [5, 4] }); se.text('handle removed', R, top * 0.93, { dx: 4, align: 'left', color: 'ink', size: 11 }); }
           se.vline(day, { color: 'gold', width: 1.4 });
-          // ----- attack rates by pump used
-          const ARf = PUMPS.map((_, p) => res.filter((q, i) => q.pump === p && on[i] < DAYS).length / users[p]), amax = Math.max(0.02, ...ARf) * 1.15;
-          sa.text('attack rate among the people who draw water from each pump: cases so far ÷ users (dashed: by the end of the outbreak)', 1, 9.3, { align: 'left', color: 'ink', size: 12, weight: 600 });
-          PUMPS.forEach((_, p) => {
-            const x = 8 + 19 * p, ar = byPump[p] / users[p], hgt = (6 * ar) / amax, isSrc = kind !== 'prop' && p === src;
-            sa.rect(x - 4, 1.6, x + 4, 1.6 + 6 * (ARf[p] / amax), { color: 'faint', width: 1, dash: [3, 3] });
-            sa.rect(x - 4, 1.6, x + 4, 1.6 + hgt, { fill: isSrc ? 'red' : 'blue', fillAlpha: 0.6, stroke: false });
-            sa.text(`P${p + 1}`, x, 1.0, { align: 'center', color: isSrc ? 'red' : 'blue', size: 12, weight: 700 });
-            sa.text(`${byPump[p]}/${users[p]} = ${pc(ar)}`, x + 4.6, 1.6 + Math.max(hgt, 0.4), { dy: -2, align: 'left', baseline: 'bottom', color: 'ink', size: 11.5 });
-          });
+          // ----- attack rates by pump used, and Snow's test for the pump with the highest attack rate
+          const ARf = PUMPS.map((_, p) => res.filter((q, i) => q.pump === p && on[i] < DAYS).length / users[p]);
+          const focus = kind === 'prop' ? ARf.indexOf(Math.max(...ARf)) : src;
+          const grp = (f) => { let c = 0, n = 0, cf = 0; res.forEach((q, i) => { if (!f(q)) return; n++; if (on[i] <= day) c++; if (on[i] < DAYS) cf++; }); return { c, n, ar: n ? c / n : 0, arF: n ? cf / n : 0 }; };
+          const far = grp((q) => q.pump === focus && houses[q.h].near !== focus), near = grp((q) => q.pump !== focus && houses[q.h].near === focus);
+          const amax = Math.max(0.02, ...ARf, far.arF, near.arF) * 1.12, Hb = (ar) => (5.2 * ar) / amax, Y0 = 2.3;
+          sa.text('attack rate among each pump’s users (cases so far ÷ users; dashed = by the end)', 1, 9.3, { align: 'left', color: 'ink', size: 12, weight: 600 });
+          const bar = (x, w, ar, arF, col, lab, sub) => {
+            sa.rect(x - w, Y0, x + w, Y0 + Hb(arF), { color: 'faint', width: 1, dash: [3, 3] });
+            if (ar > 0) sa.rect(x - w, Y0, x + w, Y0 + Hb(ar), { fill: col, fillAlpha: 0.6, stroke: false });
+            sa.text(pc(ar), x, Y0 + Math.max(Hb(ar), Hb(arF)), { dy: -3, align: 'center', baseline: 'bottom', color: 'ink', size: 11.5, weight: 600 });
+            sa.text(lab, x, 1.55, { align: 'center', color: col, size: 11.5, weight: 700 });
+            sa.text(sub, x, 0.6, { align: 'center', color: 'muted', size: 10.5 });
+          };
+          PUMPS.forEach((_, p) => { const isSrc = kind !== 'prop' && p === src; bar(5 + 11.5 * p, 3.2, byPump[p] / users[p], ARf[p], isSrc ? 'red' : 'blue', `P${p + 1}`, `${byPump[p]}/${users[p]}`); });
+          sa.line(61, 0.4, 61, 9.6, { color: 'grid', width: 1.2 });
+          sa.text(`Snow’s test for P${focus + 1}`, 63, 9.3, { align: 'left', color: 'ink', size: 12, weight: 600 });
+          bar(72, 4, far.ar, far.arF, 'purple', `use P${focus + 1}, live elsewhere`, `${far.c}/${far.n}`);
+          bar(90, 4, near.ar, near.arF, 'teal', `live near P${focus + 1}, other pump`, `${near.c}/${near.n}`);
           const sU = byPump[src], sN = users[src], oU = cases - sU, oN = res.length - sN;
-          let first = Infinity, last = -Infinity, peak = 0; for (let i = 0; i < res.length; i++) if (on[i] < DAYS) { first = Math.min(first, on[i]); last = Math.max(last, on[i]); }
+          let first = Infinity, last = -Infinity, peak = 0; for (let i = 0; i < res.length; i++) if (on[i] < DAYS && !bg[i]) { first = Math.min(first, on[i]); last = Math.max(last, on[i]); }
           for (let d = 0; d < DAYS; d++) if (dailyAll[d] > dailyAll[peak]) peak = d;
-          st = { day, cases, kind, R, src, ar1: sU / sN, ar0: oN ? oU / oN : 0, sU, sN, oU, oN, first, last, peak, total: dailyAll.reduce((x, y) => x + y, 0), med: inc.value };
+          st = { day, cases, kind, R, src, focus, far, near, ar1: sU / sN, ar0: oN ? oU / oN : 0, sU, sN, oU, oN, first, last, peak, total: dailyAll.reduce((x, y) => x + y, 0), med: inc.value };
         }, { period: 13, still: 12.6 });
         v.legend([['red', 'case (bar at its house)'], ['gold', 'fell ill today'], ['blue', 'pump', { dot: true }], ['red', 'contaminated pump', { dot: true }]]);
         v.readout(() => {
@@ -975,8 +986,10 @@ The **attack rate** of a group is its incidence proportion (1.1) over the outbre
           const shape = kind === 'point' ? `one peak (day ${peak}); onsets span days ${v.fix(first, 1)}–${v.fix(last, 1)}, about the incubation range${R > peak + 1 ? ` — the handle came off on day ${R}, after the peak: the outbreak was already fading` : ''}`
             : kind === 'cont' ? `a plateau while the pump stays in use, ending about ${v.fix(med, 1)} days (one incubation period) after the handle is removed on day ${R}`
             : `growing waves about ${v.fix(med + 0.75, 1)} days apart (one serial interval) as each case infects others`;
+          const snow = `Snow's test for P${st.focus + 1}: its users who live elsewhere ${pc(st.far.ar)} vs neighbours who use other pumps ${pc(st.near.ar)}`;
+          if (kind === 'prop') return `day ${Math.floor(day)}: ${cases} of ${total} cases so far · ${shape} · P${st.focus + 1}'s users have the highest attack rate only because the chain began near it — ${snow}: the disease follows the neighbourhood, not the water`;
           const ar = `attack rate among users of P${src + 1}: ${sU}/${sN} = ${pc(ar1)} vs ${oU}/${oN} = ${pc(ar0, 2)} among everyone else` + (ar0 > 0 ? ` (ratio ${v.fix(ar1 / ar0, 1)})` : '');
-          return `day ${Math.floor(day)}: ${cases} of ${total} cases so far · ${shape} · ${kind === 'prop' ? `${ar.replace(`P${src + 1}`, `P${src + 1} (not a source here)`)} — no pump stands out` : ar}`;
+          return `day ${Math.floor(day)}: ${cases} of ${total} cases so far · ${shape} · ${ar} · ${snow}: the disease follows the water`;
         });
       },
     },

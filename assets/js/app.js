@@ -140,9 +140,12 @@ function pageHome() {
         <span><b>${G.live.length}</b>of ${G.collections.length} collections live</span>
         <span><b>${G.fields.length}</b>fields</span>
       </div>
-      <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
+      <form class="hero-search" role="search" id="hero-search"><input type="search" name="q" placeholder="Search ideas, papers and fields: entropy, Noether, kind:paradox…" aria-label="Search the atlas"><button class="btn primary" type="submit">Search</button></form>
+      <div class="hero-try">Try <a href="#/search?q=${encodeURIComponent('kind:paradox')}">kind:paradox</a> · <a href="#/search?q=${encodeURIComponent('fixed point')}">fixed point</a> · <a href="#/search?q=${encodeURIComponent('year:1900-1930 field:physics')}">physics 1900–1930</a> · <a href="#/papers">landmark papers</a> · <a href="#/map?q=${encodeURIComponent('entropy')}">entropy on the map</a></div>
+      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
         <a class="btn primary" href="#/map">Explore the map →</a>
         <a class="btn" href="#fields">Browse the fields</a>
+        <a class="btn" href="#/timeline">Timeline</a>
         <a class="btn" href="#/status">What's coming</a>
       </div>
     </section>
@@ -177,6 +180,7 @@ function pageHome() {
     </section>
   </div>`);
   app.replaceChildren(el);
+  el.querySelector('#hero-search')?.addEventListener('submit', (e) => { e.preventDefault(); const q = new FormData(e.target).get('q'); if (String(q).trim()) go(`#/search?q=${encodeURIComponent(q)}`); });
   // treemap overview, zoomable into a field
   let tmField = null;
   const drawTM = () => {

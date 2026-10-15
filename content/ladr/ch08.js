@@ -204,7 +204,7 @@ where $T^0 = I$.`,
               G.rect(k - 0.33, c + 0.05, k + 0.33, c + 0.95, { fill: nul ? 'green' : 'blue', fillAlpha: nul ? 0.45 : 0.07, color: nul ? 'green' : 'blue', width: 1, alpha: nul ? 0.9 : 0.3 });
             }
             if (k === kSel) G.rect(k - 0.42, -0.04, k + 0.42, 4.04, { color: 'gold', width: 2.6 });
-            G.text(`T${sups(k)}`, k, -0.45, { align: 'center', color: k === kSel ? 'gold' : 'muted', size: 15, math: true });
+            G.tex(`T^{${k}}`, k, -0.45, { color: k === kSel ? 'gold' : 'muted', size: 15 });
             G.text(String(d[k]), k, d[k] > 0 ? d[k] - 0.5 : 0.5, { align: 'center', baseline: 'middle', color: d[k] > 0 ? 'ink' : 'muted', size: 13, weight: 700 });
           }
           const pts = []; for (let k = 0; k <= 6; k++) pts.push([k - 0.5, d[k]], [k + 0.5, d[k]]);
@@ -219,7 +219,7 @@ where $T^0 = I$.`,
           const { d, B, gap } = st, k = kSel;
           let s = `$\\dim\\operatorname{null}T^k$ for $k = 0, 1, \\dots, 7$: $${d.join(',\\ ')}$ — never decreasing. `;
           if (!B.length) s += `$\\operatorname{null}T^{${k}} = \\{0\\}$, which lies in every subspace.`;
-          else s += `A basis of $\\operatorname{null}T^{${k}}$: $${B.map((b) => vtex(b)).join(',\\ ')}$. Applying $T^{${k + 1}}$ to these gives vectors of length at most $${tn(gap, 6)}$, so $\\operatorname{null}T^{${k}} \\subseteq \\operatorname{null}T^{${k + 1}}$.`;
+          else s += `A basis of $\\operatorname{null}T^{${k}}$: $${B.map((b) => vtex(b)).join(',\\ ')}$. ` + (gap < 1e-12 ? `$T^{${k + 1}}$ sends each of them to $0$` : `$T^{${k + 1}}$ sends them to vectors of length at most $${v.sci(gap, 1)}$`) + `, so $\\operatorname{null}T^{${k}} \\subseteq \\operatorname{null}T^{${k + 1}}$.`;
           return s;
         });
       },
@@ -248,7 +248,7 @@ Once the chain of 8.1 pauses, it never grows again.`,
         const pre = v.select('$T$', [{ value: 'c3', label: 'a chain of length 3' }, { value: 'c2', label: 'chain of length 2, then a flip' }, { value: 'z2', label: '$0$ on a plane, then a flip' }, { value: 'inv', label: 'invertible' }], 'c3');
         const S = v.stage({ x: [-2, 2], y: [-1.85, 1.95], equal: true, axes: false, height: 370, weight: 1.25, title: '$\\operatorname{null}T^k$ and the orbit $v, Tv, T^2v, \\dots$' });
         const sc = v.scene3(S, { yaw: -0.55, pitch: 0.33, axis: 1.45, lim: 1.25 });
-        const G = v.stage({ x: [-0.6, 4.6], y: [-0.35, 3.75], height: 370, weight: 0.75, minWidth: 220, axes: 'box', xticks: [0, 1, 2, 3, 4], yticks: [0, 1, 2, 3], xlabel: 'k', title: '$\\dim\\operatorname{null}T^k$' });
+        const G = v.stage({ x: [-0.6, 4.6], y: [-0.45, 3.85], height: 370, weight: 0.75, minWidth: 220, axes: 'box', xticks: [0, 1, 2, 3, 4], yticks: [0, 1, 2, 3], xlabel: 'k', title: '$\\dim\\operatorname{null}T^k$' });
         let cur = null;
         const snap = (p) => {
           if (!cur) return p;
@@ -289,13 +289,13 @@ Once the chain of 8.1 pauses, it never grows again.`,
           sc.arrow([0, 0, 0], orb[0], { color: 'gold', width: 2.8 });
           sc.flush();
           // ---- the staircase
-          if (m < 4) G.rect(m - 0.45, -0.3, 4.55, 3.7, { fill: 'green', fillAlpha: 0.06, color: 'green', dash: [5, 4], width: 1, alpha: 0.6 });
-          if (m < 4) G.text('frozen', (m + 4.5) / 2, 3.45, { align: 'center', color: 'green', size: 12, weight: 700 });
+          if (m < 4) G.rect(m - 0.45, -0.12, 4.5, 3.62, { fill: 'green', fillAlpha: 0.06, color: 'green', dash: [5, 4], width: 1, alpha: 0.6 });
+          if (m < 4) G.text(m === 0 ? 'frozen from the start' : 'frozen', (m + 4.5) / 2, 3.4, { align: 'center', color: 'green', size: 12, weight: 700 });
           for (let j = 0; j <= 4; j++) {
             const on = j <= k;
             if (d[j]) G.rect(j - 0.3, 0, j + 0.3, d[j], { fill: 'green', fillAlpha: on ? 0.5 : 0.1, color: 'green', width: 1, alpha: on ? 1 : 0.3 });
             else G.line(j - 0.3, 0, j + 0.3, 0, { color: 'green', width: 3, alpha: on ? 1 : 0.3 });
-            if (j === k) G.rect(j - 0.42, -0.25, j + 0.42, Math.max(d[j], 0) + 0.25, { color: 'gold', width: 2.2 });
+            if (j === k) G.rect(j - 0.4, -0.08, j + 0.4, d[j] + 0.14, { color: 'gold', width: 2.2 });
           }
           st = { hs, d, m, k };
         });
@@ -329,8 +329,9 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
         const btn = v.button('New random operators', () => { seed += 1; });
         const K = 11, NOPS = 24;
         const G = v.stage({ x: [-0.5, K + 0.5], y: [-0.4, 9.4], height: 350, weight: 1.35, axes: 'box', xticks: [0, 2, 4, 6, 8, 10], yticks: [0, 2, 4, 6, 8], xlabel: 'k', title: '$\\dim\\operatorname{null}T^k$ against $k$' });
-        const Y = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 0.65, minWidth: 210, title: 'chains of the highlighted operator' });
+        const Y = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 350, weight: 0.65, minWidth: 210, title: 'chains of the highlighted operator' });
         const cache = new Map();
+        const stair = (d, jit) => { const p = []; for (let k = 0; k <= K; k++) p.push([k, d[k] + jit], [Math.min(k + 1, K + 0.5), d[k] + jit]); return p; };
         const build = (r, n, parts, inv) => {
           const J = Array.from({ length: n }, () => new Array(n).fill(0)); let o = 0;
           for (const c of parts) { for (let i = 0; i + 1 < c; i++) J[o + i][o + i + 1] = 1; o += c; }
@@ -359,7 +360,7 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
             const d = Array.from({ length: K + 1 }, (_, k) => k);
             hi = { parts: [Infinity], inv: 0, d, stop: Infinity }; list = [hi];
           } else if (mode === 'worst') { hi = build(v.rng(5), n, [n], 0); list = [hi]; }
-          else { list = ops(n); hi = list[0]; }
+          else { list = ops(n); hi = list.reduce((a, o) => (o.stop > a.stop ? o : a), list[0]); }
           const top = mode === 'inf' ? K + 1 : n;
           G.setView([-0.5, K + 0.5], [-0.4, Math.max(4, top) + 1.4]);
           if (mode !== 'inf') {
@@ -369,35 +370,39 @@ $$\operatorname{null} T^{\dim V} = \operatorname{null} T^{\dim V + 1} = \operato
           }
           list.forEach((o, t) => {
             if (o === hi) return;
-            const jit = ((t % 7) - 3) * 0.045, pts = [];
-            for (let k = 0; k <= K; k++) pts.push([k - 0.5, o.d[k] + jit], [k + 0.5, o.d[k] + jit]);
-            G.path(pts, { color: 'accent', width: 1.2, alpha: 0.35 });
+            const jit = ((t % 7) - 3) * 0.045;
+            G.path(stair(o.d, jit), { color: 'accent', width: 1.2, alpha: 0.35 });
             G.dot(o.stop, o.d[o.stop] + jit, { r: 3.2, color: 'accent', alpha: 0.6 });
           });
-          const pts = []; for (let k = 0; k <= K; k++) pts.push([k - 0.5, hi.d[k]], [k + 0.5, hi.d[k]]);
-          G.path(pts, { color: mode === 'inf' ? 'red' : 'green', width: 3 });
+          G.path(stair(hi.d, 0), { color: mode === 'inf' ? 'red' : 'green', width: 3 });
           if (mode === 'inf') G.arrow(K - 0.6, K - 0.6, K + 0.4, K + 0.4, { color: 'red', width: 2.4 });
           else G.dot(hi.stop, hi.d[hi.stop], { r: 6, color: 'green' });
-          // ---- chain diagram of the highlighted operator
+          // ---- chain diagram of the highlighted operator: column i = a chain, cell at height j ↦ cell at height j − 1
           const chains = mode === 'inf' ? [8] : hi.parts, inv = hi.inv, cols = chains.length + (inv ? 1 : 0);
-          const hmax = Math.max(...chains, inv ? 1 : 0, 3), cell = Math.min(0.11, 0.78 / Math.max(cols, 1), 0.74 / hmax);
-          const x0 = 0.5 - (cols * cell * 1.15) / 2 + 0.06, y0 = 0.1;
+          const hmax = Math.max(...chains, inv, 3), b = Y.bounds, W = b.x[1] - b.x[0], H = b.y[1] - b.y[0];
+          const cell = Math.min((0.62 * W) / (cols * 1.35), (0.7 * H) / (hmax * 1.3 + 0.8)), gx = cell * 1.35, gy = cell * 1.3;
+          const x0 = b.x[0] + 0.58 * W - (cols * gx - 0.35 * cell) / 2, y0 = b.y[0] + 0.1 * H + 0.6 * cell;
           const pal = ['green', 'teal', 'blue', 'purple', 'pink', 'orange', 'gold', 'red'];
+          const xr = x0 + (chains.length - 1) * gx + cell;
+          Y.line(x0 - 0.25 * cell, y0 - 0.5 * cell, xr + 0.25 * cell, y0 - 0.5 * cell, { color: 'ink', width: 1.6 });
+          Y.tex('0', x0 - 0.45 * cell, y0 - 0.5 * cell, { size: 14, align: 'right' });
           chains.forEach((c, i) => {
-            const x = x0 + i * cell * 1.15;
+            const x = x0 + i * gx;
             for (let j = 0; j < c; j++) {
-              Y.rect(x, y0 + j * cell, x + cell, y0 + (j + 1) * cell, { fill: pal[j % 8], fillAlpha: 0.45, color: pal[j % 8], width: 1 });
-              if (j > 0) Y.arrow(x + cell / 2, y0 + (j + 0.25) * cell, x + cell / 2, y0 + (j - 0.25) * cell, { color: 'ink', width: 1, head: 5, alpha: 0.5 });
+              const y = y0 + j * gy;
+              Y.rect(x, y, x + cell, y + cell, { fill: pal[j % 8], fillAlpha: 0.5, color: pal[j % 8], width: 1.2 });
+              Y.arrow(x + cell / 2, y - 0.04 * cell, x + cell / 2, j ? y - 0.26 * cell : y0 - 0.46 * cell, { color: 'ink', width: 1.1, head: 5, alpha: 0.6 });
             }
           });
-          if (mode === 'inf') Y.text('⋮', x0 + cell / 2, y0 + 8.35 * cell, { align: 'center', size: 16, color: 'red' });
+          if (mode === 'inf') Y.text('⋮', x0 + cell / 2, y0 + 8 * gy + 0.2 * cell, { align: 'center', size: 18, color: 'red', weight: 700 });
           if (inv) {
-            const x = x0 + chains.length * cell * 1.15;
-            Y.rect(x, y0, x + cell, y0 + inv * cell, { fill: 'faint', fillAlpha: 0.5, color: 'muted', width: 1 });
-            Y.text('inv.', x + cell / 2, y0 + inv * cell + 0.03, { align: 'center', size: 10.5, color: 'muted' });
+            const x = x0 + chains.length * gx + 0.25 * cell;
+            for (let j = 0; j < inv; j++) Y.rect(x, y0 + j * gy, x + cell, y0 + j * gy + cell, { fill: 'faint', fillAlpha: 0.55, color: 'muted', width: 1 });
+            Y.text('invertible', x + cell / 2, y0 + inv * gy + 0.1 * cell, { align: 'center', baseline: 'bottom', size: 11, color: 'muted' });
+            Y.text('part', x + cell / 2, y0 + inv * gy + 0.1 * cell, { align: 'center', baseline: 'bottom', size: 11, color: 'muted', dy: -13 });
           }
-          for (let j = 1; j <= Math.min(hmax, 9); j++) Y.text(`${j}`, x0 - 0.04, y0 + (j - 0.5) * cell, { align: 'right', size: 10.5, color: 'muted' });
-          Y.text('height', x0 - 0.04, y0 + Math.min(hmax, 9) * cell + 0.035, { align: 'right', size: 10.5, color: 'muted' });
+          for (let j = 1; j <= Math.min(hmax, 8); j++) Y.text(`${j}`, x0 - 0.5 * cell, y0 + (j - 1) * gy + cell / 2, { align: 'right', size: 11, color: 'muted' });
+          Y.text('height', x0 - 0.5 * cell, y0 + Math.min(hmax, 8) * gy + 0.1 * cell, { align: 'right', baseline: 'bottom', size: 11, color: 'muted' });
           st = { mode, n, hi, maxStop: Math.max(...list.map((o) => o.stop)), N: list.length };
         });
         v.legend([['green', 'highlighted operator'], ['accent', 'other random operators'], ['orange', '$k = \\dim V$', { dash: true }]]);
@@ -435,8 +440,8 @@ $$V = \operatorname{null} T^{n} \oplus \operatorname{range} T^{n}.$$
         const kS = v.slider('power $k$', 1, 3, 1, { int: true });
         const S = v.stage({ x: [-2.05, 2.05], y: [-1.85, 1.95], equal: true, axes: false, height: 380, weight: 1.3, title: '$\\operatorname{null}T^k$ and $\\operatorname{range}T^k$ in $\\mathbf R^3$' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.32, axis: 1.5, lim: 1.3 });
-        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.7, minWidth: 230, title: 'dimensions for each power' });
-        const TB = v.table(Q, { rows: 3, cols: 4, region: [0.02, 0.2, 0.98, 0.85], square: false, cellAspect: 0.8, maxCell: 56, size: 15, rowLabels: ['$k=1$', '$k=2$', '$k=3$'], colLabels: ['null', 'range', '$\\cap$', '$\\oplus = V$?'] });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.7, minWidth: 230, title: 'dimensions, and is the sum direct?' });
+        const TB = v.table(Q, { rows: 3, cols: 4, region: [0.02, 0.2, 0.98, 0.85], square: false, cellAspect: 0.8, maxCell: 56, size: 15, rowLabels: ['$k=1$', '$k=2$', '$k=3$'], colLabels: ['null', 'range', '$\\cap$', '$\\oplus$'] });
         const hv = sc.handle([0.95, 0.75, 0.85], { color: 'gold', label: 'v' });
         const info = (T, k) => {
           const Tk = mpow(T, k), N = nullO(M, Tk), R = rangeO(Tk), sum = orthN([...N, ...R], 1e-6);

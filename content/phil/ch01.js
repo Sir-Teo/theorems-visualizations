@@ -211,7 +211,7 @@ An argument is **sound** when it is valid *and* all its premises are true in the
           const cell = (r, j) => (j < L.length ? r.w[L[j]] : j < L.length + np ? r.pv[j - L.length] : r.cv);
           T.draw({
             rows: an.rows.length, cols,
-            colLabels: (j) => (j < L.length ? `$${L[j]}$` : j < L.length + np ? `$${PROP[an.prem[j - L.length].k].tex}$` : j === cC ? `$\\therefore\\, ${PROP[an.con].tex}$` : ''),
+            colLabels: (j) => (j < L.length ? `$${L[j]}$` : j < L.length + np ? `$${PROP[an.prem[j - L.length].k].tex}$` : j === cC ? `$${PROP[an.con].tex}$` : ''),
             colLabelColor: (j) => (j < L.length ? 'muted' : j < L.length + np ? 'ink' : 'accent'),
             rowLabels: (i) => (i === ai ? '★' : String(i + 1)),
             rowLabelColor: (i) => (i === ai ? 'gold' : 'muted'),
@@ -368,8 +368,10 @@ On the modern (Boole’s) reading, universal statements do not imply that their 
           }
           // a counter-model
           if (cm.value && res.bad.length) {
-            const m = res.bad.slice().sort((a, b) => bitsOf(a) - bitsOf(b))[0]; let c = 0;
+            const m = res.bad.slice().sort((a, b) => (bitsOf(a) || 9) - (bitsOf(b) || 9))[0]; let c = 0;
             for (let r = 1; r < 8; r++) if ((m >> r) & 1) { const [x, y] = CEN[r]; D.dot(x + 0.13, y - 0.13, { r: 6, color: 'gold', label: 'abcdefg'[c++], labelPos: 'e' }); }
+            const emptyT = ['S', 'M', 'P'].filter((T) => ![1, 2, 3, 4, 5, 6, 7].some((r) => (r & VBIT[T]) && ((m >> r) & 1)));
+            if (emptyT.length) D.text(emptyT.length === 3 ? 'counter-model: nothing exists at all' : `counter-model: no ${emptyT.join(', no ')} exist`, 0, 1.78, { align: 'center', size: 12, weight: 600, color: 'gold' });
           }
           D.text(res.valid ? 'the premises force the conclusion' : 'the premises do not force the conclusion', 0, -1.67, { align: 'center', size: 12.5, weight: 600, color: res.valid ? 'green' : 'red' });
         });
@@ -609,9 +611,9 @@ To weigh a map one needs a model of how strengths combine. A simple probabilisti
           Object.assign(base, BASE0); edges.forEach((e, i) => { e.type = TYPE0[i]; });
           if (k === 'single') edges.find((e) => e.from === 'R3').type = 'off';
           if (k === 'unanswered') edges.find((e) => e.from === 'B1').type = 'off';
-          if (k === 'flip') edges.find((e) => e.from === 'O2').type = 'sup';
+          if (k === 'doubt') base.R2 = 0.3;
         };
-        v.select('scenario', [{ value: 'crito', label: 'as in the Crito' }, { value: 'single', label: 'drop the city argument' }, { value: 'unanswered', label: 'leave the objection unanswered' }, { value: 'flip', label: 'children as a reason' }], 'crito', { onChange: setScene });
+        v.select('scenario', [{ value: 'crito', label: 'as in the Crito' }, { value: 'single', label: 'drop the city argument' }, { value: 'unanswered', label: 'leave the objection unanswered' }, { value: 'doubt', label: 'doubt “never break”' }], 'crito', { onChange: setScene });
         G.onClick = ({ node, edge, shift }) => {
           if (edge && !edge.fixed) edge.type = { sup: 'att', att: 'off', off: 'sup' }[edge.type];
           else if (node && base[node.id] != null) { const k = CRED.indexOf(base[node.id]); base[node.id] = CRED[(k + (shift ? CRED.length - 1 : 1)) % CRED.length]; }
@@ -677,22 +679,22 @@ The moral usually drawn is that a **rule of inference** cannot be replaced by a 
         const rule = v.toggle('allow rules of inference', false);
         const KMAX = 9;
         const Ls = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 350, weight: 1.65 });
-        const Rs = v.stage({ x: [0.3, KMAX + 0.7], y: [1, 4000], ylog: true, axes: 'box', height: 350, weight: 1, title: 'sentence letters in each premise', xlabel: 'premise $C_k$', xticks: Array.from({ length: KMAX }, (_, i) => i + 1) });
+        const Rs = v.stage({ x: [-0.5, KMAX + 0.6], y: [0.45, 4000], ylog: true, axes: 'box', height: 350, weight: 1, title: 'sentence letters in premise $C_k$, written out', xticks: Array.from({ length: KMAX }, (_, i) => [i + 1, `C${'₀₁₂₃₄₅₆₇₈₉'[i + 1]}`]) });
         const letters = (k) => 3 * 2 ** (k - 1);
         const frames = [];
         for (let k = 0; k <= KMAX; k++) {
-          const note = k === 0
+          const said = k === 0
             ? 'Achilles: A and B are true, so Z must be. Tortoise: I accept A and B — but why must I accept Z?'
-            : k === 1 ? 'Achilles writes $C_1$: “if A and B are true, Z must be true.” The Tortoise accepts $C_1$ … and still refuses Z.'
-              : `Achilles writes $C_{${k}}$: “if A, B, $C_1$, …, $C_{${k - 1}}$ are true, Z must be true.” Accepted. Z: still refused.`;
-          frames.push({ k, note });
+            : k === 1 ? 'Achilles writes $C_1$: “if A and B are true, Z must be true.” The Tortoise accepts $C_1$'
+              : `Achilles writes $C_{${k}}$: “if A, B, $C_1$, …, $C_{${k - 1}}$ are true, Z must be true.” The Tortoise accepts it`;
+          frames.push({ k, note: () => (k === 0 ? said : said + (rule.value ? ' — but with rules of inference nobody needs it: Z already follows from A and B.' : ' … and still refuses Z.')) });
         }
         const S = v.steps({ frames, speed: 0.7, start: 3, still: 4 });
         const condTex = (j) => (j === 1 ? '(A\\wedge B)\\to Z' : j === 2 ? '(A\\wedge B\\wedge C_1)\\to Z' : j === 3 ? '(A\\wedge B\\wedge C_1\\wedge C_2)\\to Z' : `(A\\wedge B\\wedge C_1\\wedge\\cdots\\wedge C_{${j - 1}})\\to Z`);
         v.render(() => {
           const k = S.frame.k, on = rule.value;
           // which rows to show: A, B, C_1 … C_k (eliding the middle when long)
-          const rows = [{ lab: 'A', en: 'Things equal to the same are equal to each other.' }, { lab: 'B', en: 'The two sides of this triangle are equal to the same.' }];
+          const rows = [{ lab: 'A', en: 'Things equal to the same are equal to each other.' }, { lab: 'B', en: 'This triangle’s two sides are equal to the same.' }];
           const cs = Array.from({ length: k }, (_, i) => i + 1), show = cs.length > 5 ? [1, null, ...cs.slice(-4)] : cs;
           show.forEach((j) => rows.push(j == null ? { dots: true } : { lab: `C_{${j}}`, j }));
           const y0 = 9.3, dy = 0.86;
@@ -711,13 +713,23 @@ The moral usually drawn is that a **rule of inference** cannot be replaced by a 
           const yz = yb - 0.8;
           Ls.rect(0.2, yz - 0.42, 9.85, yz + 0.42, { fill: on ? 'green' : 'red', fillAlpha: 0.1, color: on ? 'green' : 'red', width: 2, dash: on ? null : [6, 4] });
           Ls.tex('Z', 0.75, yz, { size: 15, color: on ? 'green' : 'red' });
-          Ls.text('The two sides of this triangle are equal to each other.', 1.45, yz, { size: 12.5, color: 'ink' });
+          Ls.text('This triangle’s two sides are equal to each other.', 1.45, yz, { size: 12.5, color: 'ink' });
           Ls.text(on ? 'derived ✓' : 'refused ✗', 9.8, yz, { align: 'right', size: 11.5, weight: 700, color: on ? 'green' : 'red' });
           if (on) {
-            Ls.arrow(0.32, y0, 0.32, yz + 0.45, { color: 'green', width: 2 });
+            Ls.arrow(0.3, y0, 0.3, yz + 0.45, { color: 'green', width: 2 });
             Ls.arrow(0.42, y0 - dy, 0.42, yz + 0.45, { color: 'green', width: 2 });
-            Ls.text('rules: instantiate A, then modus ponens with B', 5, yz - 0.75, { align: 'center', size: 12, weight: 600, color: 'green' });
-          } else Ls.text('Tortoise: “Write that down too, please.”', 5, yz - 0.75, { align: 'center', size: 12, color: 'red' });
+            const yd = yz - 0.85;
+            Ls.text('derivation by rules (the C’s are never used):', 0.3, yd, { size: 11.5, weight: 600, color: 'green' });
+            Ls.text('1.', 0.45, yd - 0.62, { size: 12, color: 'muted' });
+            Ls.tex('(x{=}z \wedge y{=}z)\to x{=}y', 1.0, yd - 0.62, { align: 'left', size: 14 });
+            Ls.text('from A, by instantiation', 9.8, yd - 0.62, { align: 'right', size: 11.5, color: 'muted' });
+            Ls.text('2.', 0.45, yd - 1.24, { size: 12, color: 'muted' });
+            Ls.tex('Z', 1.0, yd - 1.24, { align: 'left', size: 14, color: 'green' });
+            Ls.text('from B and 1, by modus ponens', 9.8, yd - 1.24, { align: 'right', size: 11.5, color: 'muted' });
+          } else {
+            Ls.text('Tortoise: “Write that down too, please.”', 5, yz - 0.8, { align: 'center', size: 12.5, color: 'red' });
+            Ls.text(`gap between the premises and Z after ${k} new premise${k === 1 ? '' : 's'}: one inference step, as at the start`, 5, yz - 1.45, { align: 'center', size: 11.5, color: 'muted' });
+          }
           // ---- letters per premise, log scale
           for (let j = 1; j <= KMAX; j++) {
             const L = letters(j), done = j <= k;
@@ -725,9 +737,8 @@ The moral usually drawn is that a **rule of inference** cannot be replaced by a 
             if (done && j >= k - 2) Rs.text(String(L), j, L * 1.25, { align: 'center', size: 10.5, weight: 700, color: on ? 'muted' : 'purple' });
           }
           Rs.hline(3, { color: 'green', width: 2, dash: on ? null : [5, 4], alpha: on ? 1 : 0.6 });
-          Rs.text('a derivation by rules uses A, B, Z only', KMAX + 0.55, 2.35, { align: 'right', size: 10.5, color: 'green' });
         });
-        v.legend([['purple', 'premises added by Achilles'], ['green', 'what rules of inference need']]);
+        v.legend([['purple', 'premises added by Achilles', { area: true }], ['green', 'letters a derivation by rules needs (A, B, Z)']]);
         v.readout(() => {
           const k = S.frame.k, on = rule.value, tot = 2 + (k ? 3 * (2 ** k - 1) : 0);
           return `Premises on the board: **${k + 2}**` + (k ? ` · the newest, $C_{${k}}$, has $3\\cdot2^{${k - 1}} = ${letters(k)}$ sentence letters written out in full; all premises together ${tot}` : '') +

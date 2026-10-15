@@ -378,5 +378,95 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         });
       },
     },
+    // ------------------------------------------------------------------ 1.3
+    {
+      num: '1.3', kind: 'Principle', name: 'Avogadro’s principle',
+      statement: String.raw`Equal volumes of different gases at the same temperature and pressure contain the same number of molecules. Equivalently, at fixed $T$ and $p$ the volume of a gas is proportional to the amount of substance, $V = V_m\,n$, with a **molar volume** $V_m$ that is the same for every gas (about 24.8 L/mol at 25 °C and 1 bar, 22.7 L/mol at 0 °C and 1 bar). Like the other gas laws it holds in the limit of low pressure.`,
+      idea: String.raw`A heavy molecule moves slowly, so it strikes the wall less often, but each strike delivers more momentum; at a common temperature the mean kinetic energy $\tfrac12 m\langle v^2\rangle$ is the same for every gas (1.6), and the two effects cancel exactly: the impact rate goes as $1/\sqrt m$ and the impulse per impact as $\sqrt m$. Pressure therefore counts molecules, whatever their mass, which is how Avogadro's principle made it possible to weigh molecules relative to one another and fix the atomic weights. When the gas is crowded, molecular size and attraction — different for each gas — break the equality.`,
+      caption: String.raw`Three boxes hold the **same number** of molecules (100) in the **same volume** at the **same temperature** (300 K): hydrogen, nitrogen and xenon, whose masses differ 65-fold. Each dial is a pressure gauge counting real impacts; the shaded arc is ±2 standard errors and the green mark the perfect-gas value $nRT/V$. The bars on the right show why the gauges agree: xenon hits the wall less often but harder, and on a log scale the two effects cancel. Crowd the boxes and the gauges part ways — xenon's attractions pull its reading down, hydrogen's size pushes it up.`,
+      deps: [],
+      refs: ['Atkins 1A'],
+      tags: ['gas laws', 'mole'],
+      credit: 'Avogadro, 1811 (made the basis of atomic weights by Cannizzaro, 1860)',
+      scope: String.raw`Holds in the low-pressure limit. At 1 bar and room temperature real gases depart from it by less than about 1% (more for easily condensed gases such as xenon, CO₂ or water vapour); at hundreds of bar the departures reach tens of percent.`,
+      viz(v) {
+        const N = 100, T = 300, RATE = 15, GAS = [MOL.H2, MOL.N2, MOL.Xe], DT = [0.003, 0.012, 0.03], SETTLE = 15;
+        const dens = v.slider('crowding: perfect-gas pressure $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
+        v.button('Restart the gauges', () => make());
+        const B = 10, GAP = 15.5, R = 4.2;
+        const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.2, B + R + 3.4], equal: true, height: 330, axes: false, weight: 1.6 });
+        const sr = v.stage({ x: [0, 3], y: [0.1, 10], ylog: true, height: 330, axes: false, weight: 0.85, minWidth: 230, title: 'relative to nitrogen (log scale)' });
+        let G = [], s0 = [], tLast = 0, tSim = 0, L = 1;
+        const make = () => {
+          L = Math.cbrt(N * T / (dens.value / BAR));
+          G = GAS.map((sp, k) => mdGas({ N, species: [sp], L: [L, L, L], mode: 'lj', T, rng: v.rng(31 + k) }));
+          s0 = null; tSim = 0;
+        };
+        make();
+        const read = () => (s0 ? G.map((g, k) => { const b = g.snap(), r = g.meas(s0[k], b); return { p: r.p * BAR, dp: r.dp * BAR, rate: r.hits / (r.dt * T0 * 1e9) / (6 * L * L * 1e-2), imp: (b.imp - s0[k].imp) / Math.max(1, r.hits) * 1.66054e-24 * VEL * 1e24, dt: r.dt }; }) : null);
+        const dialAt = (cx, cy, rd, col, pid) => {
+          const lo = 0, hi = 2 * pid, ang = (x) => Math.PI * (1 - Math.max(lo, Math.min(hi, x)) / hi);
+          sa.curve((t) => [cx + R * Math.cos(t), cy + R * Math.sin(t)], 0, Math.PI, { color: 'muted', width: 1.5 });
+          sa.line(cx - R, cy, cx + R, cy, { color: 'muted', width: 1 });
+          for (let k = 0; k <= 8; k++) { const a = Math.PI * (1 - k / 8), r0 = k % 2 ? 0.88 : 0.8; sa.line(cx + R * r0 * Math.cos(a), cy + R * r0 * Math.sin(a), cx + R * Math.cos(a), cy + R * Math.sin(a), { color: 'muted', width: 1 }); }
+          sa.text('0', cx - R, cy - 0.55, { size: 10, color: 'muted', align: 'center' });
+          sa.text(v.fix(hi, hi < 10 ? 1 : 0), cx + R, cy - 0.55, { size: 10, color: 'muted', align: 'center' });
+          const ag = ang(pid); sa.line(cx + 0.72 * R * Math.cos(ag), cy + 0.72 * R * Math.sin(ag), cx + 1.06 * R * Math.cos(ag), cy + 1.06 * R * Math.sin(ag), { color: 'green', width: 3 });
+          if (rd) {
+            const a0 = ang(rd.p - 2 * rd.dp), a1 = ang(rd.p + 2 * rd.dp);
+            sa.curve((t) => [cx + 0.94 * R * Math.cos(t), cy + 0.94 * R * Math.sin(t)], a1, a0, { color: col, width: 7, alpha: 0.3 });
+            const a = ang(rd.p); sa.line(cx, cy, cx + 0.86 * R * Math.cos(a), cy + 0.86 * R * Math.sin(a), { color: col, width: 2.6 });
+            sa.text(`${v.fix(rd.p, rd.p < 10 ? 2 : 1)} bar`, cx, cy + 0.42 * R, { size: 11.5, color: col, align: 'center', weight: 600 });
+          }
+          sa.dot(cx, cy, { r: 3.5, color: 'ink' });
+        };
+        let RD = null;
+        v.animate((t) => {
+          if (t < tLast - 1e-6) make();
+          const dT = Math.min(700, (t - tLast) * RATE); tLast = t;
+          if (dT > 0) {
+            const CH = 0.25;
+            for (let done = 0; done < dT - 1e-9; done += CH) { G.forEach((g, k) => g.run(CH, DT[k])); tSim += CH; if (!s0 && tSim >= SETTLE) s0 = G.map((g) => g.snap()); }
+          }
+          RD = read();
+          const pid = dens.value;
+          GAS.forEach((sp, k) => {
+            const x0 = k * GAP, g = G[k];
+            sa.rect(x0, 0, x0 + B, B, { fill: sp.col, fillAlpha: 0.05, color: 'ink', width: 1.4 });
+            const idx = Array.from({ length: N }, (_, i) => i).sort((a, b) => g.z[b] - g.z[a]), sc = B / L;
+            for (const i of idx) sa.dot(x0 + g.x[i] * sc, g.y[i] * sc, { r: Math.max(1.4, sp.sig / 2 * sc * sa.scale), color: sp.col, alpha: 0.35 + 0.55 * (1 - g.z[i] / L), ring: false });
+            dialAt(x0 + B / 2, B + 1.6, RD && RD[k], sp.col, pid);
+            sa.tex(sp.tex, x0 + B / 2, -1.15, { color: sp.col, size: 16 });
+            const mass = N * sp.m * 1.66054e-27;
+            sa.text(`mass of gas ${v.M.si(mass * 1000, 'g')}`, x0 + B / 2, -2.75, { size: 11, color: 'muted', align: 'center' });
+            const w = (B - 1) * sp.m / GAS[2].m;
+            sa.rect(x0 + 0.5, -4.6, x0 + 0.5 + Math.max(0.12, w), -3.8, { fill: sp.col, fillAlpha: 0.75, stroke: false });
+          });
+          sa.corner(`${N} molecules each · box ${v.fix(L / 10, 2)} nm wide · T = ${T} K · ${v.fix(tSim * T0 * 1e9, 2)} ns`, 'tl', { size: 11 });
+          // why: rate × impulse
+          if (RD) {
+            const ref = RD[1];
+            sr.hline(1, { color: 'ink', width: 1.2 });
+            for (const yv of [0.2, 0.5, 2, 5]) sr.hline(yv, { color: 'grid', width: 1 });
+            GAS.forEach((sp, k) => {
+              const x = k + 0.5, rr = RD[k].rate / ref.rate, ri = RD[k].imp / ref.imp, rp = RD[k].p / ref.p;
+              sr.rect(x - 0.36, 1, x - 0.13, rr, { fill: sp.col, fillAlpha: 0.75, stroke: false });
+              sr.rect(x - 0.11, 1, x + 0.12, ri, { fill: sp.col, fillAlpha: 0.35, color: sp.col, width: 1 });
+              sr.rect(x + 0.14, 1, x + 0.37, rp, { fill: 'green', fillAlpha: 0.7, stroke: false });
+              sr.tex(sp.tex, x, 0.13, { color: sp.col, size: 14 });
+            });
+            sr.text('impacts per s', 0.14, 7.6, { size: 10.5, color: 'muted', align: 'left' });
+            sr.text('impulse per impact', 2.86, 0.23, { size: 10.5, color: 'muted', align: 'right' });
+          }
+        }, { still: 40 });
+        v.legend([['green', 'perfect-gas pressure $nRT/V$ (dial) · measured pressure (bars)'], ['muted', 'bars: impacts per second (solid), impulse per impact (open)', { area: true }]]);
+        v.readout(() => {
+          if (!RD) return 'Letting the gases settle…';
+          const pm = RD.map((r) => r.p), spread = (Math.max(...pm) - Math.min(...pm)) / v.M.mean(pm), err = Math.max(...RD.map((r) => 2 * r.dp / r.p));
+          const verdict = spread <= err * 1.2 ? `the three gauges agree within their error bars (spread ${v.fix(100 * spread, 1)}%, ±2σ up to ${v.fix(100 * err, 1)}%)` : `the gauges disagree by ${v.fix(100 * spread, 0)}% — more than the ±${v.fix(100 * err, 1)}% statistical error: at this crowding the gases are no longer perfect`;
+          return `Same $N$, $V$, $T$: measured $p(\\mathrm{H_2}) = ${v.fix(pm[0], 2)}$, $p(\\mathrm{N_2}) = ${v.fix(pm[1], 2)}$, $p(\\mathrm{Xe}) = ${v.fix(pm[2], 2)}$ bar against $nRT/V = ${v.fix(dens.value, 2)}$ bar — ${verdict}. Hydrogen strikes ${v.fix(RD[0].rate / RD[2].rate, 1)}× as often as xenon, xenon ${v.fix(RD[2].imp / RD[0].imp, 1)}× as hard ($\\sqrt{65} = 8.1$).`;
+        });
+      },
+    },
   ],
 };
