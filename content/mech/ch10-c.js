@@ -437,7 +437,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
       name: 'Unit quaternions double-cover the rotations',
       statement: String.raw`Write a unit quaternion as $q = \cos\frac\theta2 + \sin\frac\theta2\,(n_1 i + n_2 j + n_3 k)$ with $|\mathbf n| = 1$, and let it act on vectors, viewed as pure quaternions, by $\mathbf v \mapsto q\,\mathbf v\,\bar q$. This is the rotation by $\theta$ about $\mathbf n$, and composing rotations corresponds to multiplying quaternions. The map from the unit quaternions (the 3-sphere $S^3 = SU(2)$) to $SO(3)$ is onto and exactly **two-to-one**: $q$ and $-q$ give the same rotation. Consequently a full turn, $\theta$ from $0$ to $2\pi$, is a closed loop in $SO(3)$ whose lift runs from $q = 1$ to $q = -1$; that loop cannot be shrunk to a point. Two full turns lift to a closed loop in $S^3$, which can be shrunk ($\pi_1(SO(3)) = \mathbb Z/2$). Dirac’s belt trick shows this with an object tied to its surroundings by ribbons. After one turn the ribbons stay twisted however they are moved; after two turns they can be untangled without turning the object.`,
       idea: String.raw`For a unit $q$ the map $\mathbf v \mapsto q\mathbf v\bar q$ preserves the norm and fixes the real axis, so it acts on pure quaternions $\cong\mathbb R^3$ by an orthogonal map. It is a rotation because $S^3$ is connected and the map is the identity at $q = 1$. Its axis is $\mathbf n$, and a direct computation gives the angle $\theta$, which is why the half-angles appear. Since $(-q)\mathbf v\overline{(-q)} = q\mathbf v\bar q$, both $\pm q$ give the same rotation, and nothing else does. Following the unique continuous lift of a loop in $SO(3)$ starting at $1$ tells whether the loop is shrinkable. Lifts end at $\pm1$, and since the end point cannot jump during a deformation, a loop ending at $-1$ can never be deformed into one ending at $+1$.`,
-      caption: String.raw`A cube hangs between floor and ceiling by two ribbons (orange on one face, blue on the other, so twists show). **Turn the cube** about the vertical up to 720°. Right: the frames along the ribbon, lifted to unit quaternions and drawn on the slice of $S^3$ with no $j$-component (a 2-sphere with $+1$ at the top and $-1$ at the bottom). After 360° the lift ends at $-1$; after 720° it is a closed loop. **Untangle after 720°** deforms that loop: the ribbons swing round the cube while the cube stays fixed, and the loop shrinks to the point $+1$, leaving the ribbons flat. **Try after 360°** moves the twist about as much as you like, but the lift always ends at $-1$, and the twist never goes away.`,
+      caption: String.raw`A cube hangs between floor and ceiling by two ribbons (orange on one face, blue on the other, so twists show). **Turn the cube** about the vertical up to 720°. Right: the frames along the ribbon, lifted to unit quaternions and drawn on the slice of $S^3$ with no $j$-component (a 2-sphere with $+1$ at the top and $-1$ at the bottom). After 360° the lift ends at $-1$; after 720° it is a closed loop. **Untangle after 720°** deforms that loop: each slice of ribbon is turned about the cube’s centre by its frame, so the ribbons swing round the cube while the cube stays fixed, and the loop shrinks to the point $+1$, leaving the ribbons flat. **Try after 360°** moves the twist about as much as you like, but the lift always ends at $-1$, and the twist never goes away.`,
       deps: ['mech-10.1', 'mech-10.15'],
       see: ['mfd-5.10', 'rep-8.11', 'alg-16.7', 'robot-2.5', 'cg-8.8'],
       refs: ['Goldstein §4.5', 'Goldstein App. A'],
@@ -450,13 +450,13 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
         const S = v.stage({ x: [-1.45, 1.45], y: [-1.85, 1.85], equal: true, axes: false, height: 400, title: 'a cube tied to floor and ceiling (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.5, pitch: 0.18, axes: false, hint: false });
         const Q = v.stage({ x: [-1.45, 1.45], y: [-1.45, 1.45], equal: true, axes: false, height: 400, title: 'the ribbon’s frames lifted to $S^3$' });
-        const sq = v.scene3(Q, { yaw: -0.6, pitch: 0.25, axes: false, hint: false });
+        const sq = v.scene3(Q, { yaw: -2.36, pitch: 0.25, axes: false, hint: false });
         const WALL = 1.65, HC = 0.33, NS = 90;
         /** The lifted path q(s), s ∈ [0, 1], from the wall (s = 0) to the cube (s = 1). */
         const qpath = (s) => {
           const md = mode.value, lam = lS.value;
           if (md === 'turn') return qaxis([0, 0, 1], aS.value * DEG * s);
-          if (md === 'try') { const n = [Math.sin(TAU * Math.min(lam, 1)), 0, Math.cos(TAU * Math.min(lam, 1))]; return qaxis(n, TAU * s); }
+          if (md === 'try') { const n = [Math.sin(Math.PI * lam), 0, Math.cos(Math.PI * lam)]; return qaxis(n, TAU * s); }
           if (lam <= 1) { if (s <= 0.5) return qaxis([0, 0, 1], 2 * TAU * s); const n = [Math.sin(Math.PI * lam), 0, Math.cos(Math.PI * lam)]; return qmul(qaxis(n, 2 * TAU * (s - 0.5)), [-1, 0, 0, 0]); }
           return qaxis([0, 0, 1], 2 * TAU * (2 - lam) * Math.min(s, 1 - s));
         };
@@ -466,11 +466,10 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const qs = Array.from({ length: NS + 1 }, (_, k) => qpath(k / NS)), G = qs.map(qmat), Rc = G[NS], e = eyeDir(sc);
           sc.begin();
           for (const zw of [-WALL, WALL]) sc.disc([1, 0, 0], [0, 1, 0], 0.75, { fill: 'faint', fillAlpha: 0.3, color: 'muted', grid: true }, [0, 0, zw]);
-          // the two ribbons: framed curves whose tangent is G(s) t0, corrected linearly to end on the cube
-          for (const [W, t0, att] of [[[0, 0, -WALL], [0, 0, 1], [0, 0, -HC]], [[0, 0, WALL], [0, 0, -1], [0, 0, HC]]]) {
-            const A = mv(Rc, att), Lb = 1.25 * nrm(sub(A, W)), int = [[0, 0, 0]];
-            for (let k = 1; k <= NS; k++) int.push(madd(int[k - 1], add(mv(G[k - 1], t0), mv(G[k], t0)), Lb / (2 * NS)));
-            const miss = sub(add(W, int[NS]), A), P = int.map((p, k) => madd(add(W, p), miss, -k / NS));
+          // the two ribbons: the slice of ribbon at parameter s (0 at the wall, 1 at the cube) is its rest position turned
+          // about the cube's centre by the frame G(s); at s = 1 that is the cube's own rotation, so the ribbon stays attached
+          for (const [W, att] of [[[0, 0, -WALL], [0, 0, -HC]], [[0, 0, WALL], [0, 0, HC]]]) {
+            const P = G.map((Gk, k) => mv(Gk, add(W, scl(sub(att, W), k / NS))));
             for (let k = 0; k < NS; k++) {
               const w0 = scl(mv(G[k], [1, 0, 0]), 0.13), w1 = scl(mv(G[k + 1], [1, 0, 0]), 0.13);
               const nn = crs(sub(P[k + 1], P[k]), w0), face = dot(nn, e) >= 0;
@@ -502,10 +501,10 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const { qs, Rc, len, jmax } = cur, q = qs[NS], md = mode.value;
           const qt = String.raw`$q_{\rm cube} = ${v.fix(q[0], 3)} ${q[3] >= 0 ? '+' : '-'} ${v.fix(Math.abs(q[3]), 3)}\,k$` + (Math.abs(q[1]) > 1e-9 ? String.raw` $+ ${v.fix(q[1], 3)}\,i$` : '');
           const same = fro(qmat(q), qmat(q.map((c) => -c)));
-          const tail = String.raw` · $q$ and $-q$ give the same rotation: $\|\mathsf R(q) - \mathsf R(-q)\| = ${sci(v, same)}$ · length of the lifted path ${v.fix(len, 3)} (the $j$-component stays ${sci(v, jmax)})`;
+          const tail = String.raw` · the same rotation for $\pm q$: $\|\mathsf R(q) - \mathsf R(-q)\| = ${sci(v, same)}$ · length of the lifted path ${v.fix(len, 3)} (the $j$-component stays ${sci(v, jmax)})`;
           if (md === 'turn') { const a = aS.value; return String.raw`cube turned by ${a}° · ` + qt + (a === 360 ? ' — the cube is back where it started, yet the lift ends at $-1$' : a === 720 ? ' — back at $+1$: the lift is a closed loop' : '') + tail; }
           if (md === 'untangle') return String.raw`deformation ${v.fix(lS.value, 3)} of 2 · the cube does not turn (${qt}) · the closed loop of frames shrinks${lS.value >= 2 ? ' to the point $+1$: ribbons untangled' : ''}` + tail;
-          return String.raw`the axis of the full turn is moved around (deformation ${v.fix(Math.min(lS.value, 1), 3)}) · ${qt}: the end of the lift is stuck at $-1$, so this loop in $SO(3)$ can never be shrunk` + tail;
+          return String.raw`the axis of the full turn is moved around (deformation ${v.fix(lS.value, 3)}) · ${qt}: the end of the lift is stuck at $-1$, so this loop in $SO(3)$ can never be shrunk` + tail;
         });
       },
     },
@@ -516,7 +515,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
       name: 'Falling cat: turning with zero angular momentum',
       statement: String.raw`A body made of several parts that move relative to one another can change its orientation without any external torque and with its total angular momentum exactly zero throughout. After a closed cycle of shape changes it ends in its original shape but rotated. A falling cat dropped upside down with no spin lands on its feet this way. Gravity acts at the centre of mass and exerts no torque about it, so $\mathbf L = 0$ is conserved (2.11), and still the cat turns by $180°$ in about a third of a second. The net rotation depends only on the **loop traced in shape space**, not on how fast it is traced. For small loops it is proportional to the area enclosed, it reverses when the loop is run backwards, and a back-and-forth motion along a line (zero area) gives no net rotation. Two classic two-cylinder models explain the cat. In **tuck and turn**, one half pulls in its legs, so its moment of inertia shrinks, and twists a long way while the other half counter-rotates a little; then the roles swap. In **bend and twist** (Kane & Scher, 1969) the spine bends, the bend is swept around the body, and the halves turn without twisting relative to each other.`,
       idea: String.raw`With the shape given as a function of time, $\mathbf L = \mathsf I_{\rm lock}\boldsymbol\Omega + \sum m\,\mathbf r\times\dot{\mathbf r}_{\rm shape} = 0$ fixes the angular velocity of the whole, $\boldsymbol\Omega = -\mathsf I_{\rm lock}^{-1}\sum m\,\mathbf r\times\dot{\mathbf r}_{\rm shape}$, using the inertia tensor of 10.7. This is linear in the shape velocity, so the rotation is a line integral over the path in shape space, a connection. Time drops out, and by Stokes’ theorem the net rotation for a small loop is the enclosed area times the curvature. In the tuck-and-turn model the halves turn about a common axis, and $L = I_f\dot\theta_f + I_r\dot\theta_r = 0$ gives $d\theta_r = -\frac{I_f}{I_f + I_r}\,d\beta$ in terms of the twist $\beta = \theta_f - \theta_r$, so the net turn is $-\oint\frac{I_f}{I_f+I_r}\,d\beta$. That integral vanishes for every loop unless the ratio changes during it, which is what tucking the legs does.`,
-      caption: String.raw`A two-cylinder cat (front teal, rear orange), released upside down with zero angular momentum. Right: shape space. Drag the corners of the loop; the gold dot runs once around it while the cat (left) changes shape. **Tuck and turn:** across is the twist between the halves, up is which half has its legs tucked. **Bend and twist:** the point is the bend of the spine, its direction and size. The readout checks that $\mathbf L$, summed directly over 84 moving masses, stays zero, and reports the net turn. In tuck and turn it is compared with $-\oint\frac{I_f}{I_f+I_r}d\beta$. Shrink the loop to a line and the turn vanishes; reverse its direction and the turn changes sign.`,
+      caption: String.raw`A two-cylinder cat (front teal, rear orange), released upside down with zero angular momentum. Right: shape space. Drag the corners of the loop; the gold dot runs once around it while the cat (left) changes shape. **Tuck and turn:** across is the twist between the halves, up is which half has its legs tucked. **Bend and twist:** the point is the bend of the spine, its direction and size; the two halves stay mirror images, so their curves coincide. The readout checks that $\mathbf L$, summed directly over 84 moving masses, stays zero, and reports the net turn. In tuck and turn it is compared with $-\oint\frac{I_f}{I_f+I_r}d\beta$. Shrink the loop to a line and the turn vanishes; reverse its direction and the turn changes sign.`,
       deps: ['mech-2.11', 'mech-10.7'],
       see: ['fluid-7.5', 'dg-10.4'],
       refs: ['Tong §3.7'],
@@ -524,12 +523,12 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
       credit: 'Marey, 1894 (photographs); Kane & Scher, 1969 (model); Montgomery, 1993 (gauge theory)',
       viz(v) {
         const mode = v.select('mechanism', [{ value: 'tuck', label: 'tuck and turn' }, { value: 'bend', label: 'bend and twist (Kane–Scher)' }], 'tuck');
-        const S = v.stage({ x: [-1.05, 1.05], y: [-0.95, 0.95], equal: true, axes: false, height: 340, title: 'the cat, $\\mathbf L = 0$ throughout (drag to rotate)' });
+        const S = v.stage({ x: [-0.88, 0.88], y: [-0.78, 0.78], equal: true, axes: false, height: 340, title: 'the cat, $\\mathbf L = 0$ throughout (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.3, pitch: 0.22, axes: false, hint: false });
         const sS = v.stage({ x: [-300, 300], y: [-1.3, 1.3], axes: 'box', height: 340, title: ' ' });
         const sT = v.stage({ x: [0, 1], y: [-30, 200], axes: 'box', height: 160, full: true, xlabel: 'fraction of the loop', title: 'roll of each half (°): 0 = feet up, 180 = feet down' });
         const LH = 0.48, RC = 0.11, NL = 4;
-        const LOOPS = { tuck: [[0, 1], [270, 1], [270, -1], [0, -1]], bend: Array.from({ length: 8 }, (_, k) => [62 * Math.cos((TAU * k) / 8), 62 * Math.sin((TAU * k) / 8)]) };
+        const LOOPS = { tuck: [[0, 1], [270, 1], [270, -1], [0, -1]], bend: Array.from({ length: 8 }, (_, k) => [75 * Math.cos((-TAU * k) / 8), 75 * Math.sin((-TAU * k) / 8)]) };
         const Hs = { tuck: LOOPS.tuck.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => [clamp(a, -300, 300), clamp(b, -1, 1)] })), bend: LOOPS.bend.map(([x, y]) => sS.handle(x, y, { color: 'accent', constrain: (a, b) => { const r = Math.hypot(a, b), k = r > 85 ? 85 / r : 1; return [a * k, b * k]; } })) };
         // mass points of a half in its own frame (axis along +x from the joint for the front, −x for the rear): discs of points
         const half = (sg) => { const P = []; for (let i = 0; i < 5; i++) { const x = sg * LH * (i + 0.5) / 5; for (let k = 0; k < 8; k++) { const a = (TAU * k) / 8; P.push([x, (RC / Math.SQRT2) * Math.cos(a), (RC / Math.SQRT2) * Math.sin(a)]); } } return P; };
@@ -541,7 +540,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const al = Math.hypot(p[0], p[1]) * DEG, ps = Math.atan2(p[1], p[0]), ub = [0, Math.cos(ps), Math.sin(ps)];
           const f = [Math.cos(al / 2), -Math.sin(al / 2) * ub[1], -Math.sin(al / 2) * ub[2]], r = [-Math.cos(al / 2), -Math.sin(al / 2) * ub[1], -Math.sin(al / 2) * ub[2]];
           const minRot = (from, to) => { const ax = crs(from, to), s = nrm(ax); return s < 1e-12 ? I3() : rotAxis(scl(ax, 1 / s), Math.atan2(s, dot(from, to))); };
-          return { Rf: minRot([1, 0, 0], f), Rr: minRot([-1, 0, 0], r), ef: 0.55, er: 0.55 };
+          return { Rf: minRot([1, 0, 0], f), Rr: minRot([-1, 0, 0], r), ef: 0, er: 0 };
         };
         /** All mass points (reference frame) with masses, and the CM. */
         const points = (md, p) => {
@@ -553,15 +552,15 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const Mt = ms.reduce((a, b) => a + b, 0), c = [0, 1, 2].map((j) => ps.reduce((s, q, i) => s + ms[i] * q[j], 0) / Mt);
           return { ps: ps.map((q) => sub(q, c)), ms, c, sh };
         };
-        const loopPt = (verts, u) => {   // closed polygon, uniform in arc length (in scaled units)
+        const loopPt = (verts, u) => {   // closed polygon; time per side ∝ its length, eased so the shape starts and stops smoothly at each corner
           const sx = mode.value === 'tuck' ? 1 / 300 : 1 / 85, sy = mode.value === 'tuck' ? 1 : 1 / 85;
           const seg = verts.map((a, i) => { const b = verts[(i + 1) % verts.length]; return Math.hypot((b[0] - a[0]) * sx, (b[1] - a[1]) * sy); }), tot = seg.reduce((a, b) => a + b, 0) || 1;
           let d = (((u % 1) + 1) % 1) * tot;
-          for (let i = 0; i < verts.length; i++) { if (d <= seg[i] || i === verts.length - 1) { const f = seg[i] ? d / seg[i] : 0, a = verts[i], b = verts[(i + 1) % verts.length]; return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]; } d -= seg[i]; }
+          for (let i = 0; i < verts.length; i++) { if (d <= seg[i] || i === verts.length - 1) { const f0 = seg[i] ? d / seg[i] : 0, f = f0 * f0 * f0 * (10 + f0 * (6 * f0 - 15)), a = verts[i], b = verts[(i + 1) % verts.length]; return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]; } d -= seg[i]; }
           return verts[0];
         };
         const simulate = (md, verts, dir = 1) => {
-          const N = 500, h = 1 / N, du = 1e-5;
+          const N = 800, h = 1 / N, du = 1e-5;
           const Om = (u) => {
             const A = points(md, loopPt(verts, dir * u)), Bp = points(md, loopPt(verts, dir * (u + du))), Bm = points(md, loopPt(verts, dir * (u - du)));
             const I = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], J = [0, 0, 0];
@@ -586,9 +585,12 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
             // space positions and the angular-momentum check
             const X = rec.map((r) => { const P = points(md, loopPt(verts, r.u)); return { P, x: P.ps.map((p) => mv(qmat(r.q), p)) }; });
             let Lmax = 0, Lf = 0;
-            for (let k = 1; k < X.length - 1; k++) {
-              const dt = rec[k + 1].u - rec[k - 1].u; let L = [0, 0, 0], LF = [0, 0, 0];
-              X[k].x.forEach((x, i) => { const vel = scl(sub(X[k + 1].x[i], X[k - 1].x[i]), 1 / dt), c = scl(crs(x, vel), X[k].P.ms[i]); L = add(L, c); if (i < 40) LF = add(LF, c); });
+            for (let k = 2; k < X.length - 2; k++) {
+              const h = rec[k + 1].u - rec[k].u; let L = [0, 0, 0], LF = [0, 0, 0];
+              X[k].x.forEach((x, i) => {   // five-point central difference for the velocity
+                const vel = scl(add(sub(X[k - 2].x[i], X[k + 2].x[i]), scl(sub(X[k + 1].x[i], X[k - 1].x[i]), 8)), 1 / (12 * h)), c = scl(crs(x, vel), X[k].P.ms[i]);
+                L = add(L, c); if (i < 40) LF = add(LF, c);
+              });
               Lmax = Math.max(Lmax, nrm(L)); Lf = Math.max(Lf, nrm(LF));
             }
             const roll = (k, which) => { const sh = X[k].P.sh, Rh = which ? sh.Rf : sh.Rr, dn = mv(qmat(rec[k].q), mv(Rh, [0, 0, -1])); return Math.atan2(-dn[1], dn[2]) / DEG; };
@@ -614,7 +616,7 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           const B = run(), u = Math.min(1, (t % 5.5) / 4.5), k = Math.round(u * (B.rec.length - 1)), Qm = qmat(B.rec[k].q), P = B.X[k].P, sh = P.sh, c = P.c;
           const W = (p) => mv(Qm, sub(p, c));   // reference frame → space
           sc.begin();
-          sc.line([-1, 0, -0.85], [1, 0, -0.85], { color: 'faint', width: 1 });
+          sc.arrow([-0.78, 0, 0.45], [-0.78, 0, 0.2], { color: 'muted', width: 1.6, head: 7 }); sc.tex('\\mathbf g', [-0.78, 0, 0.12], { color: 'muted', size: 13 });
           for (const [Rh, sg, col, ext] of [[sh.Rr, -1, 'orange', sh.er], [sh.Rf, 1, 'teal', sh.ef]]) {
             tube(sc, W([0, 0, 0]), W(mv(Rh, [sg * LH, 0, 0])), RC, { color: col, n: 12 });
             for (const L of legs(sg, ext)) { sc.line(W(mv(Rh, L.root)), W(mv(Rh, L.foot)), { color: 'ink', width: 3 }); sc.dot(W(mv(Rh, L.foot)), { r: 3.5, color: 'ink', top: false }); }
@@ -633,9 +635,9 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
           sS.poly(V, { color: 'accent', width: 2, fill: B.area >= 0 ? 'green' : 'orange', fillAlpha: 0.12 });
           V.forEach((a, i) => { const b = V[(i + 1) % V.length], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], d2 = [(b[0] - a[0]) * 0.08, (b[1] - a[1]) * 0.08]; sS.arrow(m[0] - d2[0], m[1] - d2[1], m[0] + d2[0], m[1] + d2[1], { color: 'accent', width: 2, head: 9 }); });
           const pc = loopPt(V, u); sS.dot(pc[0], pc[1], { r: 6, color: 'gold' });
-          if (md === 'tuck') { sS.text('front legs tucked', -292, 1.17, { color: 'teal', size: 11 }); sS.text('rear legs tucked', -292, -1.17, { color: 'orange', size: 11 }); }
+          if (md === 'tuck') { sS.text('front legs tucked', -292, 1.17, { color: 'teal', size: 11 }); sS.text('rear legs tucked', -292, -0.88, { color: 'orange', size: 11 }); }
           // roll vs fraction of the loop
-          const us = B.rec.map((r) => r.u), lo = Math.min(-30, ...B.rr, ...B.rf), hi = Math.max(200, ...B.rr, ...B.rf);
+          const us = B.rec.map((r) => r.u), lo = Math.min(-30, ...B.rr, ...B.rf) - 15, hi = Math.max(200, ...B.rr, ...B.rf) + 15;
           sT.setView([0, 1], [lo, hi]);
           sT.hline(0, { color: 'faint' }); sT.hline(180, { color: 'green', dash: [5, 4] });
           series(sT, us, B.rr, B.rr.length, { color: 'orange', width: 1, alpha: 0.35 }); series(sT, us, B.rf, B.rf.length, { color: 'teal', width: 1, alpha: 0.35 });
@@ -646,8 +648,8 @@ which is the unique point of the plane $\perp\mathbf n$ through the origin with 
         v.readout(() => {
           if (!cur) return '';
           const { B, md } = cur, net = B.net, ax = Math.abs(net.n[0]);
-          const head = String.raw`$|\mathbf L|$ summed over the masses: at most $${sci(v, B.Lmax)}$, while the front half alone carries up to $${v.fix(B.Lf, 4)}$ (units kg·m²/s per loop time) · net rotation after one loop ${v.fix(net.th / DEG, 1)}° about an axis ${v.fix(Math.acos(Math.min(1, ax)) / DEG, 1)}° from the spine; the same loop run backwards: ${v.fix(B.netB.th / DEG, 1)}° the other way`;
-          if (md === 'tuck') return head + String.raw` · $-\oint\frac{I_f}{I_f + I_r}\,d\beta = ${v.fix(B.pred, 1)}°$ (axisymmetric estimate; the legs on one side make the exact rotation slightly different) · enclosed area ${v.fix(B.area, 1)} °·(tuck units)`;
+          const head = String.raw`$|\mathbf L|$ summed over the masses (finite differences): at most $${sci(v, B.Lmax)}$, while the front half alone carries up to $${v.fix(B.Lf, 4)}$ (kg·m² per loop time) · net rotation after one loop ${v.fix(net.th / DEG, 1)}° about an axis ${v.fix(Math.acos(Math.min(1, ax)) / DEG, 1)}° from the spine; the same loop run backwards: ${v.fix(B.netB.th / DEG, 1)}° the other way`;
+          if (md === 'tuck') return head + String.raw` · $-\oint\frac{I_f}{I_f + I_r}\,d\beta = ${v.fix(B.pred, 1)}°$ (axisymmetric estimate; the legs on one side make the exact rotation slightly different)`;
           return head + String.raw` · area enclosed by the bend loop ${v.fix(B.area, 0)} deg²`;
         });
       },

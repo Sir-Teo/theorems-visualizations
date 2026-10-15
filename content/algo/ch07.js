@@ -274,23 +274,29 @@ function lcsLen(X, Y) {
   for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) c[i][j] = X[i - 1] === Y[j - 1] ? c[i - 1][j - 1] + 1 : Math.max(c[i - 1][j], c[i][j - 1]);
   return c[m][n];
 }
-/** Draw a DP table frame (values, pointers, current cell, dependencies, trace-back path) with the table kit. */
+/** Draw a DP table frame (values, pointers, current cell, dependencies, trace-back path) with the table kit. o.edit colours the path by operation. */
 function drawDP(T, f, X, Y, o = {}) {
-  const key = (i, j) => i * 100 + j, path = f.path || [], onPath = new Set(path.map(([i, j]) => key(i, j))), deps = new Set((f.deps || []).map(([i, j]) => key(i, j)));
+  const key = (i, j) => i * 100 + j, path = f.path || [], deps = new Set((f.deps || []).map(([i, j]) => key(i, j)));
   const isCur = (i, j) => f.cur && f.cur[0] === i && f.cur[1] === j;
-  const diag = new Set(); for (let k = 0; k + 1 < path.length; k++) { const [a, b] = path[k], [c, d] = path[k + 1]; if (a - c === 1 && b - d === 1 && (o.diagAll || X[a - 1] === Y[b - 1])) diag.add(key(a, b)); }
+  const step = new Map(); // path cell → the operation of the step taken out of it
+  path.forEach(([a, b], k) => {
+    const nx = path[k + 1]; if (!nx) { step.set(key(a, b), 'end'); return; }
+    const di = a - nx[0], dj = b - nx[1];
+    step.set(key(a, b), di && dj ? (X[a - 1] === Y[b - 1] ? 'match' : 'sub') : di ? 'del' : 'ins');
+  });
+  const pathFill = (op) => (op === 'match' ? ['green', 0.42] : !o.edit ? ['green', 0.14] : op === 'sub' ? ['orange', 0.38] : op === 'del' ? ['red', 0.22] : op === 'ins' ? ['purple', 0.22] : ['green', 0.14]);
   T.draw({
     rows: X.length + 1, cols: Y.length + 1, rowLabels: ['', ...X], colLabels: ['', ...Y], cornerLabel: '',
     value: (i, j) => f.vals[i][j], format: o.format,
-    fill: (i, j) => (isCur(i, j) ? ['gold', 0.45] : deps.has(key(i, j)) ? ['orange', 0.3] : diag.has(key(i, j)) ? [o.diagColor || 'green', 0.4] : onPath.has(key(i, j)) ? ['green', 0.14] : null),
-    textColor: (i, j) => (f.vals[i][j] == null ? null : onPath.has(key(i, j)) || isCur(i, j) ? 'ink' : 'muted'),
-    weight: (i, j) => (onPath.has(key(i, j)) || isCur(i, j) ? 700 : 500),
+    fill: (i, j) => (isCur(i, j) ? ['gold', 0.45] : deps.has(key(i, j)) ? ['orange', 0.3] : step.has(key(i, j)) ? pathFill(step.get(key(i, j))) : null),
+    textColor: (i, j) => (f.vals[i][j] == null ? null : step.has(key(i, j)) || isCur(i, j) ? 'ink' : 'muted'),
+    weight: (i, j) => (step.has(key(i, j)) || isCur(i, j) ? 700 : 500),
     highlight: f.cur ? [f.cur] : [], activeRow: f.cur?.[0], activeCol: f.cur?.[1],
   });
   for (let i = 0; i <= X.length; i++) for (let j = 0; j <= Y.length; j++) {
     const p = f.ptr[i][j]; if (!p || isCur(i, j)) continue;
-    const match = p[0] && p[1] && X[i - 1] === Y[j - 1];
-    T.pointer(i, j, p, { color: onPath.has(key(i, j)) ? 'green' : match ? 'green' : 'faint', alpha: onPath.has(key(i, j)) ? 1 : match ? 0.6 : 1 });
+    const on = step.has(key(i, j)), match = p[0] && p[1] && X[i - 1] === Y[j - 1];
+    T.pointer(i, j, p, { color: on || match ? 'green' : 'faint', alpha: on ? 1 : match ? 0.6 : 1 });
   }
   if (f.cur) { const [di, dj] = f.ptr[f.cur[0]][f.cur[1]]; T.arrow(f.cur, [f.cur[0] + di, f.cur[1] + dj], { color: 'accent', width: 2.4 }); }
   for (let k = 0; k + 1 < path.length; k++) T.arrow(path[k], path[k + 1], { color: 'green', width: 2.6 });
@@ -336,7 +342,7 @@ plus the cost of the lookups. For Fibonacci numbers $F_n=F_{n-1}+F_{n-2}$, the n
           return [
             { st: 0, lay: 'full', line: [1, 2, 3], note: `The naive call tree of Fib(${n}) has **${tr.length}** calls: every call above the base cases starts two more.` },
             { st: 1, lay: 'full', line: 3, note: `Only ${n + 1} different arguments occur, so **${reps}** of the ${tr.length} calls (red) recompute a value that some earlier call already found.` },
-            { st: 2, lay: 'memo', line: [6, 7, 8], note: `With a memo table the first call for each argument computes and stores it; the ${hits} later ones (gold squares) are lookups and start no subtree: **${2 * n - 1}** calls in all.` },
+            { st: 2, lay: 'memo', line: [6, 7, 8], note: `With a memo table the first call for each argument computes and stores it; the ${hits} later calls (gold squares) return at once — a table lookup, or a base case — and start no subtree: **${2 * n - 1}** calls in all.` },
             { st: 3, lay: 'dag', line: 7, note: `Merge equal calls: the tree collapses into the DAG of the ${n + 1} subproblems, with ${2 * n - 2} dependency arrows — exactly the memo table. Grey numbers: how often the naive tree calls each one.` },
           ];
         };
@@ -416,13 +422,13 @@ plus the cost of the lookups. For Fibonacci numbers $F_n=F_{n-1}+F_{n-2}$, the n
           P.vline(n, { color: 'gold', dash: [4, 3], width: 1.4 });
           P.dot(n, C[n], { r: 6, color: 'red' }); P.dot(n, Mc(n), { r: 6, color: 'green' });
           P.text(`naive ${big(C[n])}`, n, C[n], { dx: 9, dy: -8, size: 11.5, weight: 700, color: 'red' });
-          P.text(`memoized ${Mc(n)}`, n, Mc(n), { dx: 9, dy: -9, size: 11.5, weight: 700, color: 'green' });
+          P.text(`memoized ${Mc(n)}`, n, Mc(n), { dx: 9, dy: 10, size: 11.5, weight: 700, color: 'green' });
         });
         v.legend([['accent', 'computing call', { dot: true }], ['red', 'repeated call', { dot: true }], ['gold', 'memo lookup', { dot: true }], ['red', 'naive $C(n)=2F_{n+1}-1$ and $\\tfrac{2}{\\sqrt5}\\varphi^{n+1}$', { dash: true }], ['green', 'memoized $2n-1$', { dash: true }]]);
         v.readout(() => {
           let calls = 0; const naive = (k) => { calls++; return k < 2 ? k : naive(k - 1) + naive(k - 2); }; const val = naive(n), cn = calls;
           calls = 0; const memo = []; const mf = (k) => { calls++; if (k < 2) return k; if (memo[k] == null) memo[k] = mf(k - 1) + mf(k - 2); return memo[k]; }; mf(n);
-          const head = `$F_{${n}} = ${val}$ · naive recursion: **${cn}** calls, ${cn - (n + 1)} of them repeats · memoized: **${calls}** calls, ${calls - n} of them lookups · $C(${n})/C(${n - 1}) = ${r2(C[n] / C[n - 1])}$, tending to $\\varphi \\approx 1.618$`;
+          const head = `$F_{${n}} = ${val}$ · naive recursion: **${cn}** calls, ${cn - (n + 1)} of them repeats · memoized: **${calls}** calls, ${calls - (n + 1)} of them answered at once · $C(${n})/C(${n - 1}) = ${r2(C[n] / C[n - 1])}$, tending to $\\varphi \\approx 1.618$`;
           return head + (sel != null ? ` · Fib(${sel}) is called **${counts[sel]}** times by the naive tree, once with memoization` : '');
         });
       },
@@ -459,17 +465,17 @@ The subproblems and the “reads” relation form a directed acyclic graph, the 
         const resetBtn = v.button('Clear table', () => clearClick());
         function restart(fromCtl) {
           const click = ord.value === 'click';
-          S.el.hidden = click; if (S.noteEl) S.noteEl.hidden = click; resetBtn.hidden = !click;
-          clearClick(); S.reset({ at: fromCtl ? 'end' : 'keep' });
+          S.el.hidden = click; if (S.noteEl) S.noteEl.hidden = click; if (S.codeEl) S.codeEl.hidden = click; resetBtn.hidden = !click;
+          clearClick(); if (click) [[0, 0], [0, 1], [1, 0], [2, 1]].forEach(([i, j]) => clickCell(i, j)); S.reset({ at: fromCtl ? 'end' : 'keep' });
         }
         resetBtn.hidden = true;
         s.onClick((x, y, mod) => {
           const c = T.hit(x, y); if (!c || c.i < 0 || c.j < 0) return;
           if (mod.shift) { const k = c.i + ',' + c.j; if (blocked.has(k)) blocked.delete(k); else if (k !== '0,0') blocked.add(k); restart(true); return; }
           if (ord.value !== 'click' || CV[c.i][c.j] != null) return;
-          const r = gridStep(CV, c.i, c.j, blocked, diag.value); CV[c.i][c.j] = r.val;
-          r.miss.forEach((d) => cBad.push([[c.i, c.j], d])); cLast = { cur: [c.i, c.j], ...r };
+          clickCell(c.i, c.j);
         });
+        function clickCell(i, j) { const r = gridStep(CV, i, j, blocked, diag.value); CV[i][j] = r.val; r.miss.forEach((d) => cBad.push([[i, j], d])); cLast = { cur: [i, j], ...r }; }
         let view = {};
         v.render(() => {
           const click = ord.value === 'click', f = S.frame, truth = gridTruth(R, C, blocked, diag.value);
@@ -510,7 +516,7 @@ The subproblems and the “reads” relation form a directed acyclic graph, the 
 
 It can fail. For the **longest (most valuable) simple path**, the piece of an optimal $s\to t$ path between $s$ and $m$ need not be an optimal simple $s\to m$ path, and gluing optimal simple $s\to m$ and $m\to t$ paths may revisit vertices: the subproblems are not independent, because they compete for the same vertices.`,
       idea: String.raw`*Cut and paste.* If the $s\to m$ piece of an optimal path $P$ were not cheapest, replace it by a cheaper $s\to m$ path; the result is an $s\to t$ walk cheaper than $P$, and with positive costs any repeated vertex could be cut out, making it cheaper still — contradicting optimality. The argument needs the pasted pieces to combine freely. For simple paths of maximum value they do not: a better $s\to m$ piece may use vertices that the $m\to t$ piece needs, so pasting produces a non-simple walk and the contradiction evaporates. (Longest simple path is NP-hard, and no polynomial dynamic program for it is known.)`,
-      caption: String.raw`Numbers are cell costs; a path moves between neighbouring cells and costs the sum of its cells. Green: the best $s\to t$ path. **Click any cell** to make it the midpoint $m$: blue is the best $s\to m$ path, orange the best $m\to t$ path, each computed on its own. For the cheapest path they reproduce the pieces of the green path whenever $m$ is on it. Switch to the **most valuable simple path**: now the independent halves usually overlap (red hatching) and the green path's pieces are not best for their own endpoints. **Shuffle** for new costs.`,
+      caption: String.raw`Numbers are cell costs; a path moves between neighbouring cells and costs the sum of its cells. Green: the best $s\to t$ path. **Click any cell** to make it the midpoint $m$: blue is the best $s\to m$ path, orange the best $m\to t$ path, each computed on its own. For the cheapest path they reproduce the pieces of the green path whenever $m$ is on it. Switch to the **most valuable simple path**: now the independent halves usually share cells (red, marked 2×) and the green path's pieces are not best for their own endpoints. **Shuffle** for new costs.`,
       deps: ['algo-7.2'],
       see: ['ctrl-10.5', 'algo-9.5', 'toc-13.9'],
       refs: ['CLRS 4e §14.3'],
@@ -537,19 +543,19 @@ It can fail. For the **longest (most valuable) simple path**, the piece of an op
           for (let k = 0; k < N; k++) {
             const i = Math.floor(k / C), j = k % C;
             s.rect(j + 0.04, -i - 0.96, j + 0.96, -i - 0.04, { fill: 'orange', fillAlpha: 0.05 + 0.3 * (cost[k] - 1) / 8, color: 'faint', width: 1, radius: 4 });
-            if (overlap.includes(k)) s.rect(j + 0.04, -i - 0.96, j + 0.96, -i - 0.04, { fill: 'red', fillAlpha: 0.12, hatch: 'red', hatchGap: 5, color: 'red', width: 2, radius: 4 });
+            if (overlap.includes(k)) { s.rect(j + 0.07, -i - 0.93, j + 0.93, -i - 0.07, { color: 'red', width: 2, radius: 4, dash: [5, 3] }); s.text('2×', j + 0.86, -i - 0.8, { align: 'right', size: 11, weight: 800, color: 'red' }); }
           }
           s.path(opt.path.map(ctr), { color: 'green', width: 12, alpha: 0.28 });
           s.path(offPath(A.path, -4), { color: 'blue', width: 2.8 });
           s.path(offPath(B.path, 4), { color: 'orange', width: 2.8 });
-          for (let k = 0; k < N; k++) { const [x, y] = ctr(k); s.text(String(cost[k]), x, y, { align: 'center', size: 17, weight: 700, color: 'ink' }); }
+          for (let k = 0; k < N; k++) { const [x, y] = ctr(k); s.dot(x, y, { r: 13, color: 'panel', ring: false }); s.dot(x, y, { r: 13, hollow: true, color: 'faint', width: 1 }); s.text(String(cost[k]), x, y, { align: 'center', size: 16, weight: 700, color: 'ink', halo: false }); }
           const lab = (k, t, col) => { const [x, y] = ctr(k); s.text(t, x - 0.36, y + 0.3, { align: 'center', size: 13, weight: 800, color: col }); };
           lab(S0, 's', 'ink'); lab(T0, 't', 'ink');
           const [mx, my] = ctr(m); s.rect(mx - 0.47, my - 0.47, mx + 0.47, my + 0.47, { color: 'gold', width: 3.5, radius: 5 }); s.text('m', mx + 0.34, my + 0.3, { align: 'center', size: 13, weight: 800, color: 'gold' });
           const pieceA = onP >= 0 ? opt.path.slice(0, onP + 1).reduce((t, k) => t + cost[k], 0) : null, pieceB = onP >= 0 ? opt.path.slice(onP).reduce((t, k) => t + cost[k], 0) : null;
           info = { opt, A, B, onP, overlap, pieceA, pieceB };
         });
-        v.legend([['green', 'best $s\\to t$ path'], ['blue', 'best $s\\to m$ path'], ['orange', 'best $m\\to t$ path'], ['red', 'cells used by both halves', { area: true }]]);
+        v.legend([['green', 'best $s\\to t$ path'], ['blue', 'best $s\\to m$ path'], ['orange', 'best $m\\to t$ path'], ['red', '2× = cell used by both halves', { dash: true }]]);
         v.readout(() => {
           const { opt, A, B, onP, overlap, pieceA, pieceB } = info, cm = cost[m];
           if (mode.value === 'min') {
@@ -582,7 +588,7 @@ where $i$ is the length of the first piece. Computing $r_1,\dots,r_n$ in increas
         const nS = v.slider('rod length $n$', 1, 10, 8, { int: true, onChange: () => S.reset({ at: 'end' }) });
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true });
         const rod = v.stage({ x: [-0.4, 10.4], y: [-1, 1.4], axes: false, height: 120, full: true });
-        const T = v.table(s, { rows: 4, cols: 11, square: false, maxCell: 44, cellAspect: 1.25, size: 15, rowLabels: ['price $p_i$', '$p_i + r_{j-i}$', 'revenue $r_j$', 'first cut $s_j$'], cornerLabel: 'length' });
+        const T = v.table(s, { rows: 4, cols: 11, square: false, maxCell: 44, cellAspect: 1.25, size: 15, rowLabels: ['$\\text{price } p_i$', '$p_i + r_{j-i}$', '$\\text{revenue } r_j$', '$\\text{first cut } s_j$'], cornerLabel: 'length' });
         const S = v.steps({ frames: () => rodFrames(p, nS.value), code: ROD_CODE, codeTitle: 'Cut-Rod(p, n)', codePos: 'below', speed: 1.4, start: 7, still: 7 });
         s.onClick((x, y, mod) => { const c = T.hit(x, y); if (c && c.i === 0 && c.j >= 1 && c.j <= nS.value) { p[c.j] = clamp(p[c.j] + (mod.shift ? -1 : 1), 0, 40); S.reset({ at: 'keep' }); } });
         v.render(() => {
@@ -617,7 +623,7 @@ where $i$ is the length of the first piece. Computing $r_1,\dots,r_n$ in increas
             piece(0, f.bi, 'gold', `${f.bi} → ${p[f.bi]}`, { alpha: 0.5 });
             let x = f.bi; rodPieces(sArr, j - f.bi).forEach((k) => { piece(x, k, 'green', `${k} → ${p[k]}`, { alpha: 0.18, width: 1.2 }); x += k; });
             if (j < n) piece(j, n - j, 'faint', '', { alpha: 0.04, dash: [4, 3], width: 1 });
-            rod.text(`length ${j}: first piece ${f.bi} (gold) + best cutting of ${j - f.bi} (from $r_{${j - f.bi}}$) = ${r[j]}`, 0, 1.0, { size: 12.5, weight: 600, color: 'ink' });
+            rod.text(`length ${j}: first piece ${f.bi} (gold) + best cutting of ${j - f.bi} (from $r_{${j - f.bi}}$) = ${r[j]}   ·   pieces are labelled length → price`, 0, 1.0, { size: 12.5, weight: 600, color: 'ink' });
           } else { piece(0, n, 'faint', '', { alpha: 0.05, dash: [4, 3], width: 1 }); rod.text('rod of length ' + n, 0, 1.0, { size: 12.5, color: 'muted' }); }
         });
         v.legend([['blue', 'prices (click to edit)', { area: true }], ['green', 'best first piece / optimal pieces', { area: true }], ['gold', 'value being computed', { area: true }]]);
@@ -646,7 +652,7 @@ the two cases being “$j$ is in an optimal solution of the first $j$ intervals�
       refs: ['KT §6.1'],
       tags: ['dynamic programming', 'scheduling'],
       viz(v) {
-        const iv = [[0, 3, 3], [1, 4.5, 5], [3.5, 6, 4], [2, 7.5, 7], [6, 8.5, 3], [5, 10, 6], [8, 11, 4], [9.5, 12, 3]].map(([s, f, w]) => ({ s, f, w }));
+        const iv = [[0, 3, 3], [1, 4.5, 7], [3.5, 6, 1], [2, 7.5, 8], [6, 8.5, 4], [5, 10, 3], [8, 11, 6], [9.5, 12, 5]].map(([s, f, w]) => ({ s, f, w }));
         const s = v.stage({ x: [-1.6, 17.2], y: [-9, 1.4], axes: false, height: 360 });
         const frames = () => {
           const R = wisSolve(iv), F = [], { n, p, opt, take, A } = R;
@@ -692,34 +698,35 @@ the two cases being “$j$ is in an optimal solution of the first $j$ intervals�
             s.rect(0, -n - 0.5, sj, 0.35, { fill: 'green', fillAlpha: 0.05, stroke: false });
             s.line(sj, 0.4, sj, -n - 0.5, { color: 'green', dash: [5, 4], width: 1.4 });
           }
+          if (cur) { // hook from s_j up to the end of interval p(j), drawn under the bars
+            const it = A[cur - 1], pj = p[cur], yj = -cur, yp = -pj, xe = pj ? A[pj - 1].f : 0;
+            s.path([[it.s, yj + 0.27], [it.s, yp], [xe + 0.12, yp]], { color: 'purple', width: 2.2 });
+            s.arrow(xe + 0.5, yp, xe + 0.02, yp, { color: 'purple', width: 2.2, head: 8 });
+            s.text(`p(${cur}) = ${pj}`, it.s, yp, { dx: 8, size: 12, weight: 700, color: 'purple', plate: true });
+          }
           for (let k = 1; k <= n; k++) {
             const it = A[k - 1], y = -k, isC = chosen.has(k), active = k === cur, compat = cur && k < cur && it.f <= A[cur - 1].s;
             const col = isC ? 'green' : active ? 'gold' : compat ? 'teal' : k <= f.upto ? 'accent' : 'muted';
             s.rect(it.s, y - 0.27, it.f, y + 0.27, { fill: col, fillAlpha: isC || active ? 0.55 : 0.22, color: col, width: active || isC ? 2.2 : 1.3, radius: 4 });
-            s.text(`w = ${it.w}`, (it.s + it.f) / 2, y, { align: 'center', size: 12, weight: 700, color: 'ink', halo: false });
+            s.text(`w = ${it.w}`, (it.s + it.f) / 2, y, { align: 'center', size: 12, weight: 700, color: 'ink' });
             s.text(String(k), -1.1, y, { align: 'center', size: 12.5, weight: 700, color: active ? 'gold' : 'muted' });
             // OPT column
             const shown = k <= f.upto;
             s.rect(13.25, y - 0.3, 14.55, y + 0.3, { fill: active ? 'gold' : isC ? 'green' : 'accent', fillAlpha: active ? 0.4 : isC ? 0.3 : shown ? 0.1 : 0.03, color: active ? 'gold' : 'faint', width: active ? 2 : 1, radius: 3 });
             if (shown) s.text(String(opt[k]), 13.9, y, { align: 'center', size: 13, weight: 700, color: 'ink', halo: false });
-            if (shown && !active) s.text(take[k] ? 'take' : 'skip', 14.75, y, { size: 10, color: take[k] ? 'green' : 'muted', weight: 600 });
           }
           s.rect(13.25, -0.3, 14.55, 0.3, { fill: 'accent', fillAlpha: 0.1, color: 'faint', width: 1, radius: 3 }); s.text('0', 13.9, 0, { align: 'center', size: 13, weight: 700, halo: false });
           s.text('0', -1.1, 0, { align: 'center', size: 12.5, weight: 700, color: 'muted' });
           if (cur) {
-            // hook to p(j)
-            const it = A[cur - 1], pj = p[cur], yj = -cur, yp = -pj;
-            const xe = pj ? A[pj - 1].f : 0;
-            s.path([[it.s, yj + 0.27], [it.s, yp - 0.12], [xe + 0.12, yp - 0.12]], { color: 'purple', width: 2.2 });
-            s.arrow(xe + 0.5, yp - 0.12, xe + 0.02, yp - 0.12, { color: 'purple', width: 2.2, head: 8 });
-            s.text(`p(${cur}) = ${pj}`, it.s, (yj + yp) / 2, { dx: 6, size: 12, weight: 700, color: 'purple' });
+            const pj = p[cur], yj = -cur, yp = -pj;
             // take / skip arrows in the OPT column
-            arcArrow(s, 14.6, yj + 0.05, 14.6, yp - 0.05, cur - pj > 1 ? 26 + 6 * (cur - pj) : 20, { color: take[cur] ? 'green' : 'faint', width: take[cur] ? 2.4 : 1.5, headSize: 7 });
+            const bT = Math.min(18 + 7 * (cur - pj), 60);
+            const mid = arcArrow(s, 14.6, yj + 0.05, 14.6, yp - 0.05, -bT, { color: take[cur] ? 'green' : 'faint', width: take[cur] ? 2.4 : 1.5, headSize: 7 });
             arcArrow(s, 13.2, yj + 0.1, 13.2, -(cur - 1) - 0.1, 14, { color: take[cur] ? 'faint' : 'orange', width: take[cur] ? 1.5 : 2.4, headSize: 7 });
-            s.text('take', 16.4, (yj + yp) / 2, { align: 'center', size: 10.5, weight: 700, color: take[cur] ? 'green' : 'muted' });
-            s.text('skip', 12.55, yj + 0.5, { align: 'center', size: 10.5, weight: 700, color: take[cur] ? 'muted' : 'orange' });
+            s.text('take', mid[0], mid[1], { dx: 6, size: 11, weight: 700, color: take[cur] ? 'green' : 'muted' });
+            s.text('skip', 13.2, yj + 0.5, { dx: -16, align: 'right', size: 11, weight: 700, color: take[cur] ? 'muted' : 'orange' });
           }
-          if (f.trace && f.to != null) arcArrow(s, 14.6, -f.j, 14.6, -f.to, 20 + 4 * (f.j - f.to), { color: 'green', width: 2.4, headSize: 7 });
+          if (f.trace && f.to != null) arcArrow(s, 14.6, -f.j, 14.6, -f.to, -Math.min(18 + 7 * (f.j - f.to), 60), { color: 'green', width: 2.4, headSize: 7 });
         });
         v.legend([['gold', 'interval j', { area: true }], ['teal', 'compatible with j (rows ≤ p(j))', { area: true }], ['purple', 'p(j): last compatible interval'], ['green', 'chosen set', { area: true }]]);
         v.readout(() => {
@@ -755,8 +762,8 @@ the answer is $\max_i L_i$, and predecessor pointers recover a subsequence.
         const nS = v.slider('$n$', 6, 16, 12, { int: true, onChange: () => { shuffle(); } });
         function shuffle() { const pool = rng.shuffle(Array.from({ length: 15 }, (_, k) => k + 1)); a = pool.slice(0, nS.value); S.reset({ at: 'end' }); }
         v.button('Shuffle', () => shuffle());
-        const A = v.stage({ x: [-0.7, 11.7], y: [-1.2, 19], axes: false, height: 250, full: true });
-        const B = v.stage({ x: [-0.6, 8], y: [-6, 1], axes: false, height: 190, full: true, title: 'patience piles (top card = last dealt)' });
+        const A = v.stage({ x: [-0.7, 11.7], y: [-1.6, 21.5], axes: false, height: 260, full: true });
+        const B = v.stage({ x: [-0.6, 8], y: [-1, 3], axes: false, height: 170, full: true, title: 'patience piles: each new card goes on the leftmost pile whose top card is at least as large' });
         let run;
         const S = v.steps({ frames: () => (run = lisFrames(a)).F, code: LIS_CODE, codeTitle: 'LIS, two ways', codePos: 'below', speed: 1.2, start: 7, still: 7 });
         let drag = null;
@@ -767,7 +774,7 @@ the answer is $\max_i L_i$, and predecessor pointers recover a subsequence.
         });
         v.render(() => {
           const f = S.frame, n = a.length, i = f.i, done = f.done;
-          A.setView([-0.7, n - 0.3], [-1.6, 19.2]);
+          A.setView([-0.7, n - 0.3], [-1.7, Math.max(...a) + 5.2]);
           const cand = new Set(f.cands || []), dpSet = new Set(f.dpSeq || []);
           A.line(-0.5, 0, n - 0.5, 0, { color: 'muted', width: 1 });
           for (let k = 0; k < n; k++) {
@@ -780,25 +787,24 @@ the answer is $\max_i L_i$, and predecessor pointers recover a subsequence.
               A.text(String(f.L[k]), k, a[k] + 1.25, { align: 'center', size: 11.5, weight: 800, color: 'panel', halo: false });
             }
           }
-          const drawPred = (k, col, w) => { const j = f.pred[k]; if (j < 0) return; arcArrow(A, k - 0.12, a[k] + 1.9, j + 0.12, a[j] + 1.9, -(18 + 5 * (k - j)), { color: col, width: w, headSize: 7 }); };
+          const drawPred = (k, col, w) => { const j = f.pred[k]; if (j < 0) return; arcArrow(A, k - 0.12, a[k] + 2.05, j + 0.12, a[j] + 2.05, -Math.min(14 + 5 * (k - j), 38), { color: col, width: w, headSize: 7 }); };
           if (done) for (const k of f.dpSeq) drawPred(k, 'green', 2.4);
           else { for (let k = 0; k < i; k++) drawPred(k, 'faint', 1.2); drawPred(i, 'gold', 2.6); }
-          A.text('L', -0.55, 18.2, { size: 12, weight: 700, color: 'muted' });
           // piles
           const piles = f.piles, depth = Math.max(...piles.map((p) => p.length)), pSet = new Set(f.pSeq || []);
-          B.setView([-0.6, Math.max(piles.length, 6) - 0.4], [-Math.max(depth, 4) * 0.62 - 0.5, 0.85]);
+          B.setView([-0.6, Math.max(piles.length, 6) - 0.4], [-0.75, Math.max(depth, 3) * 0.62 + 0.05]);
           piles.forEach((pl, k) => {
-            B.text(`pile ${k + 1}`, k, 0.55, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
+            B.text(`pile ${k + 1}`, k, -0.52, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
             pl.forEach((idx, t) => {
-              const y = -t * 0.62, top = t === pl.length - 1, now = idx === i && !done, inS = done && pSet.has(idx);
+              const y = t * 0.62, top = t === pl.length - 1, now = idx === i && !done, inS = done && pSet.has(idx);
               const col = inS ? 'green' : now ? 'gold' : top ? 'accent' : 'muted';
               B.rect(k - 0.36, y - 0.27, k + 0.36, y + 0.27, { fill: col, fillAlpha: now || inS ? 0.55 : top ? 0.22 : 0.08, color: col, width: now || inS ? 2.2 : 1.2, radius: 4 });
               B.text(String(a[idx]), k, y, { align: 'center', size: 13, weight: 700, color: top || now || inS ? 'ink' : 'muted', halo: false });
             });
           });
-          if (!done && f.probes) f.probes.forEach((k) => { const pl = piles[k]; if (!pl || k === f.pile) return; const t = pl.length - 1; B.rect(k - 0.42, -t * 0.62 - 0.33, k + 0.42, -t * 0.62 + 0.33, { color: 'orange', width: 1.8, dash: [3, 3], radius: 5 }); });
+          if (!done && f.probes) f.probes.forEach((k) => { const pl = piles[k]; if (!pl || k === f.pile) return; const t = pl.length - 1; B.rect(k - 0.42, t * 0.62 - 0.33, k + 0.42, t * 0.62 + 0.33, { color: 'orange', width: 1.8, dash: [3, 3], radius: 5 }); });
           const bp = run.back;
-          const link = (idx, col, w) => { const b = bp[idx]; if (b == null || b < 0) return; const pos = (q) => { for (let k = 0; k < piles.length; k++) { const t = piles[k].indexOf(q); if (t >= 0) return [k, -t * 0.62]; } return null; }; const P1 = pos(idx), P2 = pos(b); if (P1 && P2) B.arrow(P1[0] - 0.36, P1[1], P2[0] + 0.38, P2[1], { color: col, width: w, head: 7 }); };
+          const link = (idx, col, w) => { const b = bp[idx]; if (b == null || b < 0) return; const pos = (q) => { for (let k = 0; k < piles.length; k++) { const t = piles[k].indexOf(q); if (t >= 0) return [k, t * 0.62]; } return null; }; const P1 = pos(idx), P2 = pos(b); if (P1 && P2) B.arrow(P1[0] - 0.36, P1[1], P2[0] + 0.38, P2[1], { color: col, width: w, head: 7 }); };
           if (done) f.pSeq.forEach((idx) => link(idx, 'green', 2.2)); else link(i, 'gold', 2.2);
         });
         v.legend([['gold', 'element being processed', { area: true }], ['orange', 'earlier smaller elements / probed piles', { area: true }], ['green', 'a longest increasing subsequence', { area: true }]]);
@@ -837,12 +843,12 @@ Filling the table row by row takes $\Theta(mn)$ time; following the choices back
           const f = S.frame, x = X(), y = Y(), m = x.length, n = y.length;
           drawDP(T, f, x, y);
           // the two strings
-          const W = Math.max(m, n, 8);
-          B.setView([-1.4, W - 0.2], [-0.45, 1.65]);
+          const W = Math.max(m, n, 12);
+          B.setView([-1.4, W - 0.2], [-0.4, 1.8]);
           const off = (L) => (W - L) / 2;
           const used = new Set((f.pairs || []).map(([p]) => 'x' + p)), usedY = new Set((f.pairs || []).map(([, q]) => 'y' + q));
           (f.pairs || []).forEach(([p, q]) => B.line(off(m) + p, 1.08, off(n) + q, 0.32, { color: 'green', width: 2.4 }));
-          const tile = (ch, x0, y0, col, strong) => { B.rect(x0 - 0.4, y0 - 0.3, x0 + 0.4, y0 + 0.3, { fill: col, fillAlpha: strong ? 0.45 : 0.08, color: col, width: strong ? 2 : 1, radius: 4 }); B.text(ch, x0, y0, { align: 'center', size: 15, weight: 700, color: strong ? 'ink' : 'muted', halo: false }); };
+          const tile = (ch, x0, y0, col, strong) => { B.rect(x0 - 0.32, y0 - 0.3, x0 + 0.32, y0 + 0.3, { fill: col, fillAlpha: strong ? 0.45 : 0.08, color: col, width: strong ? 2 : 1, radius: 4 }); B.text(ch, x0, y0, { align: 'center', size: 15, weight: 700, color: strong ? 'ink' : 'muted', halo: false }); };
           for (let p = 0; p < m; p++) tile(x[p], off(m) + p, 1.38, used.has('x' + p) ? 'green' : f.cur && f.cur[0] === p + 1 ? 'gold' : 'faint', used.has('x' + p) || (f.cur && f.cur[0] === p + 1));
           for (let q = 0; q < n; q++) tile(y[q], off(n) + q, 0.02, usedY.has('y' + q) ? 'green' : f.cur && f.cur[1] === q + 1 ? 'gold' : 'faint', usedY.has('y' + q) || (f.cur && f.cur[1] === q + 1));
           B.text('x', -1.0, 1.38, { align: 'center', size: 13, weight: 700, color: 'muted' }); B.text('y', -1.0, 0.02, { align: 'center', size: 13, weight: 700, color: 'muted' });
@@ -874,8 +880,8 @@ The table takes $\Theta(mn)$ time and space; the trace-back yields an optimal al
       credit: 'Levenshtein, 1965; Wagner & Fischer, 1974',
       tags: ['dynamic programming', 'strings'],
       viz(v) {
-        const xi = v.input('x =', 'INTENTION', { width: 130, onChange: () => S.reset({ at: 'end' }) });
-        const yi = v.input('y =', 'EXECUTION', { width: 130, onChange: () => S.reset({ at: 'end' }) });
+        const xi = v.input('x =', 'ALGORITHM', { width: 130, onChange: () => S.reset({ at: 'end' }) });
+        const yi = v.input('y =', 'ALTRUISTIC', { width: 130, onChange: () => S.reset({ at: 'end' }) });
         const cI = v.slider('$c_{\\rm ins}$', 0.5, 3, 1, { step: 0.5, onChange: () => S.reset({ at: 'end' }) });
         const cD = v.slider('$c_{\\rm del}$', 0.5, 3, 1, { step: 0.5, onChange: () => S.reset({ at: 'end' }) });
         const cS = v.slider('$c_{\\rm sub}$', 0.5, 3, 1, { step: 0.5, onChange: () => S.reset({ at: 'end' }) });
@@ -888,18 +894,18 @@ The table takes $\Theta(mn)$ time and space; the trace-back yields an optimal al
         const S = v.steps({ frames: () => (run = editFrames(X(), Y(), cost())).F, code: EDIT_CODE, codeTitle: 'Edit-Distance(x, y)', codePos: 'below', speed: 6, start: 'end', still: 'end' });
         v.render(() => {
           const f = S.frame, x = X(), y = Y(), m = x.length, n = y.length, c = cost();
-          if (view.value === 'table') { s.setView([0, 1], [0, 1]); drawDP(T, f, x, y, { format: (val) => (val == null ? null : r2(val)), diagAll: true, diagColor: 'green' }); }
+          if (view.value === 'table') { s.setView([0, 1], [0, 1]); drawDP(T, f, x, y, { format: (val) => (val == null ? null : r2(val)), edit: true }); }
           else {
             s.setView([-1.25, n + 0.55], [-m - 0.55, 1.1]);
             const key = (i, j) => i * 100 + j, onPath = new Set((f.path || []).map(([i, j]) => key(i, j)));
-            const pathEdge = new Set(); for (let k = 0; k + 1 < (f.path || []).length; k++) pathEdge.add(key(...f.path[k]) + ':' + key(...f.path[k + 1]));
-            const isPE = (a, b) => pathEdge.has(key(...a) + ':' + key(...b));
+            const pathEdge = new Map(); for (let k = 0; k + 1 < (f.path || []).length; k++) { const [a, b] = f.path[k], [c2, d2] = f.path[k + 1]; pathEdge.set(key(a, b) + ':' + key(c2, d2), a > c2 && b > d2 ? (x[a - 1] === y[b - 1] ? 'match' : 'sub') : a > c2 ? 'del' : 'ins'); }
+            const isPE = (a, b) => pathEdge.get(key(...a) + ':' + key(...b)), PC = (a, b) => OPCOL[isPE(a, b)];
             for (let j = 0; j < n; j++) s.text(y[j], j + 0.5, 0.72, { align: 'center', size: 14, weight: 700, color: f.cur && f.cur[1] === j + 1 ? 'gold' : 'muted' });
             for (let i = 0; i < m; i++) s.text(x[i], -0.85, -i - 0.5, { align: 'center', size: 14, weight: 700, color: f.cur && f.cur[0] === i + 1 ? 'gold' : 'muted' });
             for (let i = 0; i <= m; i++) for (let j = 0; j <= n; j++) {
-              if (j < n) s.line(j, -i, j + 1, -i, { color: isPE([i, j + 1], [i, j]) ? 'green' : 'faint', width: isPE([i, j + 1], [i, j]) ? 4 : 1, alpha: 0.9 });
-              if (i < m) s.line(j, -i, j, -i - 1, { color: isPE([i + 1, j], [i, j]) ? 'green' : 'faint', width: isPE([i + 1, j], [i, j]) ? 4 : 1, alpha: 0.9 });
-              if (i < m && j < n) { const mt = x[i] === y[j], pe = isPE([i + 1, j + 1], [i, j]); s.line(j, -i, j + 1, -i - 1, { color: pe ? 'green' : mt ? 'green' : 'faint', width: pe ? 4 : mt ? 2.2 : 0.8, alpha: pe ? 1 : mt ? 0.5 : 0.6, dash: mt || pe ? null : [2, 3] }); }
+              if (j < n) s.line(j, -i, j + 1, -i, { color: PC([i, j + 1], [i, j]) || 'faint', width: isPE([i, j + 1], [i, j]) ? 4 : 1, alpha: 0.9 });
+              if (i < m) s.line(j, -i, j, -i - 1, { color: PC([i + 1, j], [i, j]) || 'faint', width: isPE([i + 1, j], [i, j]) ? 4 : 1, alpha: 0.9 });
+              if (i < m && j < n) { const mt = x[i] === y[j], pe = isPE([i + 1, j + 1], [i, j]); s.line(j, -i, j + 1, -i - 1, { color: pe ? PC([i + 1, j + 1], [i, j]) : mt ? 'green' : 'faint', width: pe ? 4 : mt ? 2.2 : 0.8, alpha: pe ? 1 : mt ? 0.5 : 0.6, dash: mt || pe ? null : [2, 3] }); }
             }
             if (f.cur) { const [i, j] = f.cur, [di, dj] = f.ptr[i][j]; [[i - 1, j], [i, j - 1], [i - 1, j - 1]].forEach(([a, b]) => s.line(b, -a, j, -i, { color: 'orange', width: 2.4 })); s.line(j + dj, -(i + di), j, -i, { color: 'accent', width: 3.4 }); }
             const rN = clamp(Math.min(s.sx, s.sy) * 0.27, 7, 14);
@@ -910,7 +916,7 @@ The table takes $\Theta(mn)$ time and space; the trace-back yields an optimal al
             }
           }
           const shownFrom = run.cols.length - (f.shown ?? (f.path ? run.cols.length : 0));
-          drawAlignment(B, run.cols, { cost: c, minCols: 10, shown: f.path ? null : null, upto: undefined });
+          drawAlignment(B, run.cols, { cost: c, minCols: 10 });
           if (f.path && f.shown != null && f.shown < run.cols.length) {
             // grey out the columns not reached by the trace-back yet
             B.rect(-0.5, -0.95, shownFrom - 0.5, 1.6, { fill: 'panel', fillAlpha: 0.72, stroke: false });
@@ -921,7 +927,7 @@ The table takes $\Theta(mn)$ time and space; the trace-back yields an optimal al
           const x = X(), y = Y(), c = cost(), cols = run.cols, cnt = (op) => cols.filter((k) => k.op === op).length, d = run.D[x.length][y.length];
           const parts = [[cnt('sub'), 'substitution', c.sub], [cnt('del'), 'deletion', c.del], [cnt('ins'), 'insertion', c.ins]].filter(([k]) => k).map(([k, w, cc]) => `${plural(k, w)} × ${r2(cc)}`);
           const L = lcsLen(x, y), noSub = c.sub >= c.ins + c.del;
-          return `$D(${x}, ${y}) = ${r2(d)}$ = ${parts.join(' + ') || 'nothing to do'}; ${cnt('match')} letters kept · alignment cost ${r2(alignCost(cols, c))} ✓` + (noSub ? ` · $c_{\\rm sub} \\ge c_{\\rm ins} + c_{\\rm del}$: no substitutions, and $D = (m-L)c_{\\rm del} + (n-L)c_{\\rm ins} = ${r2((x.length - L) * c.del + (y.length - L) * c.ins)}$ with $L = \\mathrm{LCS} = ${L}$ ✓` : '');
+          return `$D(\\text{${x}}, \\text{${y}}) = ${r2(d)}$ = ${parts.join(' + ') || 'nothing to do'}; ${cnt('match')} letters kept · alignment cost ${r2(alignCost(cols, c))} ✓` + (noSub ? ` · $c_{\\rm sub} \\ge c_{\\rm ins} + c_{\\rm del}$: no substitutions, and $D = (m-L)c_{\\rm del} + (n-L)c_{\\rm ins} = ${r2((x.length - L) * c.del + (y.length - L) * c.ins)}$ with $L = \\mathrm{LCS} = ${L}$ ✓` : '');
         });
       },
     },

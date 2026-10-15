@@ -38,7 +38,7 @@ export function arcArrow(s, ax, ay, bx, by, bend, st = {}) {
 }
 
 // ---------------------------------------------------------------- edit distance (7.8, 7.9)
-/** Full edit-distance table with costs c = {ins, del, sub}. P[i][j] = back-pointer [di, dj]; ties prefer diagonal, then deletion, then insertion. */
+/** Full edit-distance table with costs c = {ins, del, sub}. P[i][j] = back-pointer [di, dj]; ties prefer a match, then deletion, then insertion, then substitution. */
 export function editTable(X, Y, c = { ins: 1, del: 1, sub: 1 }) {
   const m = X.length, n = Y.length, D = [], P = [];
   for (let i = 0; i <= m; i++) { D.push(new Array(n + 1).fill(0)); P.push(new Array(n + 1).fill(null)); }
@@ -46,7 +46,8 @@ export function editTable(X, Y, c = { ins: 1, del: 1, sub: 1 }) {
   for (let j = 1; j <= n; j++) { D[0][j] = D[0][j - 1] + c.ins; P[0][j] = [0, -1]; }
   for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
     const dg = D[i - 1][j - 1] + (X[i - 1] === Y[j - 1] ? 0 : c.sub), dl = D[i - 1][j] + c.del, is = D[i][j - 1] + c.ins;
-    const b = Math.min(dg, dl, is); D[i][j] = b; P[i][j] = b === dg ? [-1, -1] : b === dl ? [-1, 0] : [0, -1];
+    const b = Math.min(dg, dl, is), same = X[i - 1] === Y[j - 1]; D[i][j] = b;
+    P[i][j] = same && b === dg ? [-1, -1] : b === dl ? [-1, 0] : b === is ? [0, -1] : [-1, -1];
   }
   return { D, P, m, n };
 }

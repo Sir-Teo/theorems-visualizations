@@ -152,7 +152,7 @@ with $m-1$ and $n-1$ straight nodal lines. The frequencies are not integer multi
         let m = 2, n = 1;
         const arS = v.slider('aspect ratio $b/a$', 0.5, 2, 1, { step: 0.005, fmt: (x) => v.fix(x, 3) });
         const mixS = v.slider('mix with mode $(n,m)$', 0, 90, 30, { step: 1, fmt: (x) => x + '°' });
-        const s3 = v.stage3d({ range: 0.78, height: 280, yaw: -0.6, pitch: 0.55, axes: false, weight: 1.05, minWidth: 250 });
+        const s3 = v.stage3d({ range: 0.86, height: 280, yaw: -0.6, pitch: 0.55, axes: false, weight: 1.05, minWidth: 250 });
         const hm = v.stage({ x: [-0.78, 0.78], y: [-0.78, 0.78], equal: true, height: 280, axes: false, weight: 0.9, minWidth: 230 });
         const sp = v.stage({ x: [0.42, 2.06], y: [0.75, 2.85], height: 280, axes: 'box', xlabel: 'aspect ratio b/a', xticks: [0.5, 1, 1.5, 2], yticks: [1, 1.5, 2, 2.5], weight: 1.15, minWidth: 260, title: 'frequency / f₁₁ of the square, area fixed' });
         const fOf = (mm, nn, r) => Math.sqrt((mm * mm * r + (nn * nn) / r) / 2); // area 1: a = 1/√r, b = √r
@@ -197,7 +197,7 @@ with $m-1$ and $n-1$ straight nodal lines. The frequencies are not integer multi
           for (const [i, j] of modes) { const y = fOf(i, j, 2); if (y < 2.8 && y > 0.75) sp.text(`${i},${j}`, 2.05, y, { align: 'right', color: 'muted', size: 9.5 }); }
           if (ph.t != null) s3.text('♪', [A / 2, B / 2, 0.6], { color: 'gold', size: 18 });
           info = { r, A, B, th, deg, c1, c2, f1, f2 };
-        }, { still: 0.4 });
+        }, { still: 0.001 });
         v.legend([['gold', 'chosen mode (m, n)'], ['orange', 'its partner (n, m)'], ['ink', 'nodal lines']]);
         v.readout(() => {
           if (!info) return '';
@@ -245,7 +245,7 @@ for $(0,1),(1,1),(2,1),(0,2),(3,1),(1,2),(4,1),(2,2),(0,3),(5,1)$: an inharmonic
         const j01 = besselZero(0, 1);
         const mS = v.slider('nodal diameters $m$', 0, 5, 1, { int: true });
         const nS = v.slider('circles $n$', 1, 3, 1, { int: true });
-        const s3 = v.stage3d({ range: 0.95, height: 280, yaw: -0.5, pitch: 0.5, axes: false, weight: 1, minWidth: 380 });
+        const s3 = v.stage3d({ range: 0.95, height: 280, yaw: -0.5, pitch: 0.36, axes: false, weight: 1, minWidth: 380 });
         const hm = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, height: 280, axes: false, weight: 1, minWidth: 380 });
         const bf = v.stage({ x: [0, 16.4], y: [-0.5, 1.05], height: 240, axes: true, xticks: [], yticks: [-0.4, 0.5, 1], weight: 1, minWidth: 380, title: 'Bessel function and its zeros' });
         const sp = v.stage({ x: [0, 4.3], y: [-0.08, 1.25], height: 240, axes: 'box', xticks: [1, 2, 3, 4], yticks: [], weight: 1, minWidth: 380, title: 'modes at f / f₀₁; height: how strongly the blow excites each' });
@@ -272,7 +272,7 @@ for $(0,1),(1,1),(2,1),(0,2),(3,1),(1,2),(4,1),(2,2),(0,3),(5,1)$: an inharmonic
           let Rmax = 0; for (let i = 0; i <= 100; i++) Rmax = Math.max(Rmax, Math.abs(R(i / 100)));
           const ph = Math.cos(TAU * 0.5 * t * Math.sqrt(j / j01)), U = (r, th) => (R(r) * Math.cos(m * th)) / Rmax;
           // ---- 3D
-          s3.surface((r, th) => [r * Math.cos(th), r * Math.sin(th), 0.42 * U(r, th) * ph], [0, 1], [0, TAU], { nu: 16, nv: 48, colorFn: (r, th) => colOf(sr, U(r, th) * (ph < 0 ? -1 : 1)), alpha: 0.95 });
+          s3.surface((r, th) => [r * Math.cos(th), r * Math.sin(th), 0.55 * U(r, th) * ph], [0, 1], [0, TAU], { nu: 16, nv: 48, colorFn: (r, th) => colOf(sr, U(r, th) * (ph < 0 ? -1 : 1)), alpha: 0.95 });
           s3.curve((th) => [Math.cos(th), Math.sin(th), 0], 0, TAU, { color: 'ink', width: 2.2, n: 72 });
           // ---- top view: amplitude pattern, nodal diameters and circles, strike point
           hm.heat((x, y) => { const r = Math.hypot(x, y); return r <= 1 ? U(r, Math.atan2(y, x)) : NaN; }, { range: [-1.05, 1.05], cmap: 'theme-diverging', res: 3, key: `${m}|${n}` });
@@ -295,7 +295,7 @@ for $(0,1),(1,1),(2,1),(0,2),(3,1),(1,2),(4,1),(2,2),(0,3),(5,1)$: an inharmonic
             let ly = hgt + 0.07; if (sp.X(x) - lastX < 26 && Math.abs(ly - lastY) < 0.08) ly = lastY + 0.09;
             sp.text(`${e.m},${e.n}`, x, ly, { align: 'center', color: on ? 'gold' : 'muted', size: 9.5, weight: on ? 700 : 500 }); lastX = sp.X(x); lastY = ly;
           }
-        }, { still: 0.5 });
+        }, { still: 0.001 });
         v.legend([['gold', 'chosen mode'], ['accent', 'modes with nodal diameters'], ['red', 'symmetric modes (m = 0)'], ['green', 'harmonic grid', { dash: true }]]);
         v.readout(() => {
           const m = mS.value, n = nS.value, j = besselZero(m, n), tabv = BESSEL_TABLE[m]?.[n - 1], ratio = j / j01, near = Math.max(1, Math.round(ratio));
@@ -342,7 +342,7 @@ close to $2:3:4:5:6$, the harmonics 2 to 6 of a pitch an octave below the $(1,1)
         const ket = v.toggle('kettle', true);
         const hd = v.stage({ x: [-1.25, 1.25], y: [-1.3, 0.75], equal: true, height: 250, axes: false, weight: 0.8, minWidth: 260, title: 'the drum from the side (head motion slowed)' });
         const sp = v.stage({ x: [0.2, 3.5], y: [-0.04, 1.42], height: 250, axes: 'box', xticks: [0.5, 1, 1.5, 2, 2.5, 3, 3.5], yticks: [], weight: 1.4, minWidth: 320, title: 'modes at f / f₁₁; height: how strongly the mallet excites each' });
-        const cv = v.stage({ x: [0, 2.5], y: [1.2, 3.25], height: 230, axes: 'box', xlabel: 'air density (× real air)', xticks: [0, 0.5, 1, 1.5, 2, 2.5], yticks: [1.34, 1.5, 2, 2.5, 3], full: true, title: 'frequency ratios f(m,1) / f(1,1) as the air gets denser' });
+        const cv = v.stage({ x: [0, 2.5], y: [1.2, 3.25], height: 230, axes: 'box', xticks: [[0, 'vacuum'], [0.5, '0.5'], [1, 'real air'], [1.5, '1.5'], [2, '2'], [2.5, '2.5 ×']], yticks: [1.34, 1.5, 2, 2.5, 3], full: true, title: 'frequency ratios f(m,1) / f(1,1) against air density' });
         const mallet = hd.handle(0.72, 0.42, { color: 'gold', r: 8, label: 'mallet', labelPos: 'e', constrain: (x) => [M.clamp(x, -0.97, 0.97), 0.42] });
         // the ratio curves (computed once)
         const RHOS = M.range(26).map((i) => i * 0.1), CURVES = [1, 2, 3, 4].map(() => []);
@@ -430,7 +430,7 @@ with the boundary conditions of its edges (for free edges: no bending moment and
         v.button('resonance ▶', () => jump(1));
         v.button('scatter the sand', () => { const r = v.rng(Math.floor(performance.now())); for (let k = 0; k < NS; k++) { SX[k] = r(); SY[k] = r(); } });
         const pl = v.stage({ x: [-0.04, 1.04], y: [-0.04, 1.04], equal: true, height: 330, axes: false, weight: 1, minWidth: 300 });
-        const rc = v.stage({ x: [FMIN, FMAX], y: [-46, 6], xlog: true, height: 330, axes: 'box', xlabel: 'driving frequency (Hz)', yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], weight: 1.1, minWidth: 300, title: 'response of the plate (rms amplitude)' });
+        const rc = v.stage({ x: [FMIN, FMAX], y: [-46, 9], xlog: true, height: 330, axes: 'box', yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40']], weight: 1.1, minWidth: 300, title: 'response (rms amplitude) against driving frequency (Hz)' });
         const drv = pl.handle(0.5, 0.5, { color: 'gold', r: 8, label: 'drive', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, 0, 1), M.clamp(y, 0, 1)] });
         // driven response: complex modal amplitudes and the field on the grid
         const ampl = (f, p) => modes.map((md, k) => { const Om = f / FS, w2 = md.Om * md.Om - Om * Om, g = (Om * md.Om) / Q, d = w2 * w2 + g * g, ph = p[k]; return [(ph * w2) / d, (-ph * g) / d]; });
@@ -454,8 +454,8 @@ with the boundary conditions of its edges (for free edges: no bending moment and
         // sand: a random walk whose step is proportional to the local amplitude (grains only rest where the plate hardly moves)
         const SX = new Float64Array(NS), SY = new Float64Array(NS), rr = v.rng(7);
         for (let k = 0; k < NS; k++) { SX[k] = rr(); SY[k] = rr(); }
-        const stepSand = (n) => { for (let it = 0; it < n; it++) for (let k = 0; k < NS; k++) { const s2 = 0.05 * Math.min(1.2, 1.6 * lerp2(AG, SX[k], SY[k])); if (s2 < 1e-4) continue; let x = SX[k] + s2 * rr.normal(), y = SY[k] + s2 * rr.normal(); if (x < 0) x = -x; if (x > 1) x = 2 - x; if (y < 0) y = -y; if (y > 1) y = 2 - y; SX[k] = M.clamp(x, 0, 1); SY[k] = M.clamp(y, 0, 1); } };
-        field(); stepSand(160);
+        const stepSand = (n) => { for (let it = 0; it < n; it++) for (let k = 0; k < NS; k++) { const s2 = 0.045 * Math.min(1, 4 * lerp2(AG, SX[k], SY[k])); if (s2 < 1e-4) continue; let x = SX[k] + s2 * rr.normal(), y = SY[k] + s2 * rr.normal(); if (x < 0) x = -x; if (x > 1) x = 2 - x; if (y < 0) y = -y; if (y > 1) y = 2 - y; SX[k] = M.clamp(x, 0, 1); SY[k] = M.clamp(y, 0, 1); } };
+        field(); stepSand(260);
         let lastT = 0;
         v.animate((t) => {
           if (sweep.value) { let f = fS.value * Math.exp(0.07 * Math.max(0, Math.min(0.1, t - lastT))); if (f > FMAX) f = FMIN; fS.set(f); sync(); }
@@ -474,7 +474,7 @@ with the boundary conditions of its edges (for free edges: no bending moment and
           // ---- response curve and mode ticks
           rc.path(curve.map(([f, d]) => [f, Math.max(-46, d)]), { color: 'accent', width: 2 });
           const pm = Math.max(...PHI.map(Math.abs));
-          modes.forEach((md, k) => { const f = md.Om * FS; if (f < FMIN || f > FMAX) return; const on = Math.abs(PHI[k]) > 0.2 * pm; rc.line(f, -46, f, -41, { color: on ? 'gold' : 'faint', width: on ? 2.6 : 1.6 }); });
+          modes.forEach((md, k) => { const f = md.Om * FS; if (f < FMIN || f > FMAX) return; const on = Math.abs(PHI[k]) > 0.2 * pm; rc.line(f, 4, f, 9, { color: on ? 'gold' : 'muted', width: on ? 2.6 : 1.4, alpha: on ? 1 : 0.6 }); });
           const fl = 20 * Math.log10(Math.max(1e-9, rmsNow));
           rc.vline(fS.value, { color: 'ink', width: 1.2, dash: [4, 3] });
           rc.dot(fS.value, Math.max(-45, fl), { r: 6, color: 'gold' });
@@ -495,14 +495,14 @@ with the boundary conditions of its edges (for free edges: no bending moment and
       name: 'Bars: xylophone and marimba tuning',
       statement: String.raw`A uniform bar of length $L$ and thickness $t$, free at both ends, vibrates in bending (Euler–Bernoulli, $EI\,w^{(4)}=\rho A\,\omega^2w$) at
 $$f_n=\frac{(\beta_nL)^2}{2\pi L^2}\,t\sqrt{\frac{E}{12\rho}},\qquad \beta_nL=4.730,\ 7.853,\ 10.996,\ 14.137,\ \dots$$
-the roots of $\cos\beta L\cosh\beta L=1$, so its partials stand in the ratios $1 : 2.756 : 5.404 : 8.933$: far from harmonic, which is why an uncut bar sounds clangy. Makers of marimbas, vibraphones and xylophones carve an **arch** under the middle of each bar. Thinning the middle lowers the fundamental, whose bending is concentrated there, much more than the upper modes, so the depth and the length of the arch can be chosen to put the overtones where the maker wants them: in a marimba or vibraphone the first two overtones at **4** and **10** times the fundamental (two octaves, and three octaves and a major third), in a xylophone the first overtone at **3** times (a twelfth).`,
+the roots of $\cos\beta L\cosh\beta L=1$, so its partials stand in the ratios $1 : 2.757 : 5.404 : 8.933$: far from harmonic, which is why an uncut bar sounds clangy. Makers of marimbas, vibraphones and xylophones carve an **arch** under the middle of each bar. Thinning the middle lowers the fundamental, whose bending is concentrated there, much more than the upper modes, so the depth and the length of the arch can be chosen to put the overtones where the maker wants them: in a marimba or vibraphone the first two overtones at **4** and **10** times the fundamental (two octaves, and three octaves and a major third), in a xylophone the first overtone at **3** times (a twelfth).`,
       idea: String.raw`For a bar of variable thickness $t(x)$ the bending stiffness goes as $t^3$ and the mass as $t$: $(Et^3w'')''=12\rho t\,\omega^2 w$. By the Rayleigh quotient, $\omega^2$ is the ratio of the bending energy $\int Et^3w''^2$ to the kinetic energy $\int12\rho t\,w^2$, so removing material where a mode bends most lowers that mode's frequency. The fundamental bends most in the middle; the second mode bends most about a quarter of the way in, the third in three places. An arch cut in the middle therefore lowers $f_1$ a lot, $f_2$ less and $f_3$ less still: the ratios $f_2/f_1$ and $f_3/f_1$ rise, and with two shape parameters (depth and length of the arch) both can be set at once. The ear then hears a nearly harmonic tone with a strong fundamental, the stiff-string inharmonicity of 2.11 tamed by design.`,
       caption: String.raw`The bar is drawn side-on with its thickness exaggerated. Drag the two orange handles to set the **depth** and the **length** of the arch; the modes are recomputed by integrating the bar equation (shooting method) as you drag. Lower left: the first three mode shapes, with their nodes (the cords that hold a marimba bar run through the nodes of the fundamental). Lower right: the partials of a bar tuned to A3 on a keyboard, against the marimba targets $4f_1$, $10f_1$ (green) and the xylophone's $3f_1$ (teal); grey marks show the uncut bar. *Tune the arch* finds the cut for the chosen target by Newton's method. Drag the gold mallet and *strike*: at the centre the second mode, which has a node there, falls silent.`,
       deps: ['music-2.11'],
       see: ['music-6.7', 'pde-7.6', 'mech-11.9'],
       refs: ['Benson ch. 3', 'Sethares ch. 6'],
       tags: ['bars', 'percussion'],
-      credit: 'Euler & Daniel Bernoulli, 1735–1744 (the free bar); arch-cut tuning of marimba bars: 20th century (Deagan)',
+      credit: 'Euler & Daniel Bernoulli, 1735–1744 (the free bar)',
       scope: String.raw`One-dimensional Euler–Bernoulli bending of a slender bar of uniform width, with an arch of the form $1-d(1-|s|^3)$; torsional and lateral modes, rotary inertia and shear (which lower the upper partials of thick bars), the resonator tubes and the cords are left out. Measured marimba bars are usually tuned to $1:4$ exactly, with the third partial between about 9.2 and 10.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Marimba#Bars' },
       viz(v) {
@@ -652,11 +652,14 @@ with higher partials near $2.5, 2.67, 3, 4, \dots$ (a measured carillon bell: $0
           keyboard(kb, M, 150, 2000, -0.4, -0.08, marks);
           const fs = r[4] != null ? (FP * r[4]) / 2 : null;
           if (fs) { kb.line(fs, 0, fs, 1.35, { color: 'gold', width: 1.6, dash: [5, 4] }); kb.text('strike note', fs * 1.015, 1.36, { align: 'left', color: 'gold', size: 10.5, weight: 600 }); }
+          let lastX = -1e9, lastY = -1;
           r.forEach((q, i) => {
             if (q == null) return; const x = FP * q, on = i === k, hh = 0.25 + 0.75 * PART[i].a, col = on ? 'gold' : i < 5 ? 'accent' : 'muted';
             kb.line(x, 0, x, hh, { color: col, width: on ? 3.6 : 2.6 });
-            const c = 1200 * Math.log2(q); kb.text(PART[i].name, x, hh + 0.17, { align: 'center', color: col, size: 10.5, weight: i < 5 ? 600 : 500 });
-            kb.text(`${c >= 0 ? '+' : '−'}${Math.abs(Math.round(c))} ¢`, x, hh + 0.06, { align: 'center', color: 'muted', size: 9.5 });
+            let ly = hh; if (kb.X(x) - lastX < 78 && Math.abs(ly - lastY) < 0.26) ly = lastY + 0.27; // keep neighbouring labels apart
+            const c = 1200 * Math.log2(q); kb.text(PART[i].name, x, ly + 0.17, { align: 'center', color: col, size: 10.5, weight: i < 5 ? 600 : 500 });
+            kb.text(`${c >= 0 ? '+' : '−'}${Math.abs(Math.round(c))} ¢`, x, ly + 0.06, { align: 'center', color: 'muted', size: 9.5 });
+            lastX = kb.X(x); lastY = ly;
           });
           if (bellS.value === 'liberty') kb.corner('upper partials not measured', 'tr', { color: 'muted', size: 10.5 });
         }, { still: 0.3 });

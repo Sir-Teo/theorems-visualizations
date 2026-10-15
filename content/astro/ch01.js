@@ -113,7 +113,7 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
         const P = v.stage({ x: [-1.25, 1.25], y: [-1.25, 1.25], equal: true, axes: false, height: 380, weight: 1, title: 'in the orbit plane (face-on)' });
         const sc = v.scene3(S, { yaw: -0.85, pitch: 0.42, axes: false });
         const st = { Om: 80.30 * DEG, inc: 10.59 * DEG, w: 73.60 * DEG, nu: 100 * DEG };
-        const R = 1.32; // radius of the handle circles (scene units)
+        const R = 1.32, RI = 0.9; // radii of the handle circles (scene units); the i handle sits inside so it never hides the ω handle
         const ez = [0, 0, 1];
         const frame = () => {
           const n = [Math.cos(st.Om), Math.sin(st.Om), 0], u = [-Math.sin(st.Om), Math.cos(st.Om), 0];
@@ -124,7 +124,7 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
           snap: (p) => { const r = Math.hypot(p[0], p[1]) || 1; return [(R * p[0]) / r, (R * p[1]) / r, 0]; },
           onDrag: (H) => { st.Om = (Math.atan2(H.p[1], H.p[0]) + TAU) % TAU; } });
         const hI = sc.handle([0, R, 0], { color: 'purple', label: '$i$', lim: 2,
-          snap: (p) => { const F = frame(); let ang = Math.atan2(vdot(p, ez), vdot(p, F.u)); if (ang < 0) ang = ang < -Math.PI / 2 ? Math.PI : 0; return vlin(R * Math.cos(ang), F.u, R * Math.sin(ang), ez); },
+          snap: (p) => { const F = frame(); let ang = Math.atan2(vdot(p, ez), vdot(p, F.u)); if (ang < 0) ang = ang < -Math.PI / 2 ? Math.PI : 0; return vlin(RI * Math.cos(ang), F.u, RI * Math.sin(ang), ez); },
           onDrag: (H) => { const F = frame(); let ang = Math.atan2(vdot(H.p, ez), vdot(H.p, F.u)); if (ang < 0) ang = ang < -Math.PI / 2 ? Math.PI : 0; st.inc = clamp(ang, 0, Math.PI); } });
         const hW = sc.handle([0, 0, R], { color: 'green', label: '$\\omega$', lim: 2,
           snap: (p) => { const F = frame(), ang = Math.atan2(vdot(p, F.m), vdot(p, F.n)); return vlin(R * Math.cos(ang), F.n, R * Math.sin(ang), F.m); },
@@ -147,7 +147,7 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
           const F = frame(), B = pqw(st.Om, st.inc, st.w), p = a * (1 - e * e);
           // keep handles on their circles unless held
           if (!hO.dragging) hO.p = [R * F.n[0], R * F.n[1], 0];
-          if (!hI.dragging) hI.p = vlin(R * Math.cos(st.inc), F.u, R * Math.sin(st.inc), ez);
+          if (!hI.dragging) hI.p = vlin(RI * Math.cos(st.inc), F.u, RI * Math.sin(st.inc), ez);
           if (!hW.dragging) hW.p = vlin(R * Math.cos(st.w), F.n, R * Math.sin(st.w), F.m);
           sc.begin();
           // reference plane and ♈ direction
@@ -171,7 +171,7 @@ The map from $(a, e, i, \Omega, \omega, M)$ to the state vector $(\mathbf r, \ma
           arc([1, 0, 0], [0, 1, 0], st.Om, 0.42, 'orange');
           arc(F.n, F.m, st.w, 0.55, 'green');
           arc(F.u, ez, st.inc, 0.75, 'purple');
-          sc.line([0, 0, 0], vlin(R, F.u, 0, F.u), { color: 'purple', width: 1, alpha: 0.45, dash: [2, 3] });
+          sc.line([0, 0, 0], vlin(RI, F.u, 0, F.u), { color: 'purple', width: 1, alpha: 0.45, dash: [2, 3] });
           sc.line([0, 0, 0], hI.p, { color: 'purple', width: 1, alpha: 0.45, dash: [2, 3] });
           sc.line([0, 0, 0], hW.p, { color: 'green', width: 1, alpha: 0.45, dash: [2, 3] });
           // normal vector, periapsis, planet, Sun
@@ -264,17 +264,16 @@ where $a$ is the semi-major axis ($a<0$ for hyperbolas). Hence a single measurem
           // log–log panel
           g.fn((r) => vc(r), { color: 'green', width: 1.3, dash: [6, 4] });
           g.fn((r) => Math.SQRT2 * vc(r), { color: 'red', width: 1.3, dash: [6, 4] });
-          g.text('circular', 60, vc(60), { color: 'green', size: 10.5, dy: 10, align: 'right' });
-          g.text('escape', 60, Math.SQRT2 * vc(60), { color: 'red', size: 10.5, dy: -10, align: 'right' });
+          g.text('circular', 78, vc(78), { color: 'green', size: 10.5, dy: 11, align: 'right' });
+          g.text('escape', 78, Math.SQRT2 * vc(78), { color: 'red', size: 10.5, dy: -10, align: 'right' });
           for (const B of BOD) {
             const q = B.a * (1 - B.e), Q = B.a > 0 ? B.a * (1 + B.e) : 80;
             const f = (r) => Math.sqrt(MU_SUN * (2 / r - 1 / B.a)) * AUYR;
             g.fn(f, { domain: [q, Q], color: B.c, width: B.e > 0.5 ? 1.8 : 2.6, alpha: 0.85 });
             g.dot(q, f(q), { r: 2.8, color: B.c });
-            const lr = B.n === 'Halley' ? 4 : B.n === 'Borisov' ? 9 : B.n === 'ʻOumuamua' ? 1.2 : q, ly = f(lr);
-            const right = ['Borisov', 'ʻOumuamua', 'Halley'].includes(B.n);
-            const lx = B.n === 'Pluto' ? Q : lr, lyy = B.n === 'Pluto' ? f(Q) : ly, rt = right || B.n === 'Pluto';
-            g.text(B.n, lx, lyy, { color: B.c, size: 10.5, dx: rt ? 6 : -6, dy: B.n === 'Mars' ? 9 : B.n === 'Earth' ? -9 : B.n === 'Pluto' ? 10 : B.n === 'Neptune' ? -9 : B.n === 'Jupiter' ? 10 : right ? -9 : 0, align: rt ? 'left' : 'right' });
+            const LAB = { Mercury: [q, 0], Earth: [q, -9], Mars: [q, 9], Jupiter: [q, 10], Neptune: [q, 10], Pluto: [q, -10], Halley: [4, -9], 'ʻOumuamua': [1.2, -9], Borisov: [9, -9] };
+            const [lx, ldy] = LAB[B.n], rt = ['Borisov', 'ʻOumuamua', 'Halley'].includes(B.n);
+            g.text(B.n, lx, f(lx), { color: B.c, size: 10.5, dx: rt ? 6 : -6, dy: ldy, align: rt ? 'left' : 'right' });
           }
           const D = run();
           if (D.bound) g.fn((r) => Math.sqrt(MU_SUN * (2 / r - D.invA)) * AUYR, { domain: [0.15, Math.min(80, 2 * D.a * 0.9999)], color: 'accent', width: 1.8, dash: [3, 3] });

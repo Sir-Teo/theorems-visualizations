@@ -393,7 +393,7 @@ As a function of $d$ the period is shortest at $d = k$. Every other value of $T$
       scope: String.raw`Holds for a rigid body on a frictionless horizontal axis in uniform gravity; the small-angle period needs amplitudes of a few degrees for 0.1% accuracy.`,
       viz(v) {
         const g = 9.81, ELL = 1, k = ELL / Math.sqrt(12), T_SIM = 12, DT = 0.002;
-        const dS = v.slider('pivot distance $d$ from the centre of mass (m)', 0.03, 0.5, 0.42, { step: 0.001 });
+        const dS = v.slider('pivot distance $d$ (m)', 0.03, 0.5, 0.42, { step: 0.001 });
         const aS = v.slider('amplitude $\\varphi_0$ (°)', 2, 170, 20, { step: 1 });
         const flip = v.toggle('hang it from the centre of oscillation', false);
         const PX = 0.62;   // the equivalent simple pendulum hangs from its own support at x = PX
@@ -604,7 +604,7 @@ The **inertia tensor** $\mathsf I$ is a symmetric $3\times3$ matrix. Its diagona
           sD.tex('\\mathbf L_\\perp', Lq2[0] * KD * 0.55, Lq2[1] * KD * 0.55, { color: 'purple', dx: 12, dy: -10, size: 15 });
           sD.corner(`$|\\mathbf L_\\perp| = ${v.fix(Lperp, 3)}$, turning with the body`, 'bl', { color: 'purple' });
           cur = { It, L, Lm, w, tq, dL };
-        }, { period: 1e9, still: 1.2 });
+        }, { period: 1e9, still: 2.8 });
         v.legend([['accent', '$\\boldsymbol\\omega$'], ['purple', '$\\mathbf L = \\sum m\\,\\mathbf r\\times\\mathbf v$ and its cone'], ['orange', 'bearing torque $\\boldsymbol\\omega\\times\\mathbf L$'], ['green', 'velocities $\\boldsymbol\\omega\\times\\mathbf r$']]);
         v.readout(() => {
           if (!cur) return '';

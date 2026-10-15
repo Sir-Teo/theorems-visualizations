@@ -64,7 +64,7 @@ Angular momentum is parallel to angular velocity exactly when $\boldsymbol\omega
         const S = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: false, height: 340, title: 'five masses, principal axes, $\\boldsymbol\\omega$ and $\\mathbf L$' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axes: false, lim: 1.5, hint: false });
         const sm = v.stage({ x: [-180, 180], y: [-90, 90], axes: 'box', height: 340, xticks: [-180, -90, 0, 90, 180], yticks: [-90, -45, 0, 45, 90], title: 'angle between $\\boldsymbol\\omega$ and $\\mathbf L$ for each direction of $\\boldsymbol\\omega$' });
-        const START = [[0.9, 0.35, 0.2], [-0.75, 0.55, -0.1], [0.15, -0.85, 0.35], [-0.35, -0.2, 0.95], [0.25, 0.4, -0.9]];
+        const START = [[0.9, 0.35, 0.2], [-0.75, 0.55, -0.1], [0.15, -0.85, 0.35], [0.05, 0.45, 0.95], [0.25, 0.4, -0.9]];
         const Hm = START.map((p) => sc.handle(p, { color: 'ink', r: 6 }));
         const W = sc.handle([0.55, -0.5, 1.0], { color: 'accent', label: '$\\boldsymbol\\omega$' });
         const lonlat = (d) => [Math.atan2(d[1], d[0]) / DEG, Math.asin(clamp(d[2], -1, 1)) / DEG];
@@ -104,7 +104,7 @@ Angular momentum is parallel to angular velocity exactly when $\boldsymbol\omega
           const amax = cacheH(key, () => { let m = 0; for (let la = -88; la <= 88; la += 4) for (let lo = -180; lo < 180; lo += 4) { const d = fromLL(lo, la); m = Math.max(m, angle(d, mv(I, d))); } return Math.max(m / DEG, 1); });
           sm.heat((lo, la) => { const d = fromLL(lo, la); return angle(d, mv(I, d)) / DEG; }, { range: [0, amax], cmap: 'viridis', key, res: 3 });
           sm.axes();
-          P.vecs.forEach((e, i) => { for (const sg of [1, -1]) { const [lo, la] = lonlat(scl(e, sg)); sm.dot(lo, la, { r: 5.5, color: AXC[i] }); sm.text((sg > 0 ? '+' : '−') + 'e' + (i + 1), lo, la, { color: AXC[i], size: 11, dx: 9, dy: -11, plate: true }); } });
+          P.vecs.forEach((e, i) => { for (const sg of [1, -1]) { const [lo, la] = lonlat(scl(e, sg)); sm.dot(lo, la, { r: 5.5, color: AXC[i] }); sm.text((sg > 0 ? '+' : '−') + 'e' + (i + 1), lo, la, { color: AXC[i], size: 11, dx: lo > 120 ? -9 : 9, align: lo > 120 ? 'right' : 'left', dy: la > 70 ? 13 : -11, plate: true }); } });
           const [lw, aw] = lonlat(unit(w));
           if (!MH.dragging) { MH.x = lw; MH.y = aw; }
           sm.corner(`dark = 0°, bright = ${v.fix(amax, 1)}° · longitude across, latitude up`, 'bl', { color: 'ink', size: 11, plate: true });
@@ -260,7 +260,7 @@ So faster spin gives slower precession. For a horizontal axle this steady preces
           sp.vline(wS.value, { color: 'gold', width: 1.2, dash: [4, 4] });
           sp.dot(wS.value, Math.max(B.rate, 1e-3), { r: 6, color: 'gold' });
           cur = { B, Wp: Wp(wS.value) };
-        }, { period: TS, still: 7 });
+        }, { period: TS, still: 6.5 });
         v.legend([['accent', '$\\Omega = Mgl/(I_3\\omega_3)$'], ['green', 'simulated mean rate (within 5%)', { dot: true }], ['red', 'simulated (off by more)', { dot: true }], ['purple', '$\\mathbf L$'], ['orange', 'torque'], ['gold', 'axle tip / current spin']]);
         v.readout(() => {
           if (!cur) return '';

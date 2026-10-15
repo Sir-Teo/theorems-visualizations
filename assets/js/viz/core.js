@@ -239,7 +239,10 @@ class Stage {
     this._fit(); this.rt.invalidate(); return this;
   }
   _fit() {
-    const { pad } = this.o; const W = this.W - 2 * pad, H = this.H - 2 * pad;
+    // margins: pad on every side, or with gutter: true room outside the data area for tick and axis labels (box axes)
+    const pad = this.o.pad || 0, gt = this.o.gutter, G = gt === true ? {} : gt || null;
+    const m = this._m = G ? { l: G.l ?? 42, r: G.r ?? 12, t: G.t ?? (this.o.ylabel ? 34 : 10), b: G.b ?? (this.o.xlabel ? 42 : 24) } : { l: pad, r: pad, t: pad, b: pad }; // axis labels get their own row
+    const W = this.W - m.l - m.r, H = this.H - m.t - m.b;
     // log axes: everything below works in log10 units; xr/yr (and bounds) stay in actual units
     const lx = this.lx = !!this.o.xlog, ly = this.ly = !!this.o.ylog;
     let [x0, x1] = this.view.x, [y0, y1] = this.view.y;
@@ -255,10 +258,10 @@ class Stage {
     this.sx = W / (x1 - x0); this.sy = H / (y1 - y0);
   }
   // transforms (pixels per data unit sx/sy are per decade on a log axis)
-  X(x) { return this.o.pad + ((this.lx ? Math.log10(x) : x) - this._x0) * this.sx; }
-  Y(y) { return this.H - this.o.pad - ((this.ly ? Math.log10(y) : y) - this._y0) * this.sy; }
-  invX(px) { const u = this._x0 + (px - this.o.pad) / this.sx; return this.lx ? 10 ** u : u; }
-  invY(py) { const u = this._y0 + (this.H - this.o.pad - py) / this.sy; return this.ly ? 10 ** u : u; }
+  X(x) { return this._m.l + ((this.lx ? Math.log10(x) : x) - this._x0) * this.sx; }
+  Y(y) { return this.H - this._m.b - ((this.ly ? Math.log10(y) : y) - this._y0) * this.sy; }
+  invX(px) { const u = this._x0 + (px - this._m.l) / this.sx; return this.lx ? 10 ** u : u; }
+  invY(py) { const u = this._y0 + (this.H - this._m.b - py) / this.sy; return this.ly ? 10 ** u : u; }
   // like X/Y, but a non-positive value on a log axis maps just outside the panel (left / bottom edge) instead of NaN
   _px(x) { return this.lx && !(x > 0) ? -2 : this.X(x); }
   _py(y) { return this.ly && !(y > 0) ? this.H + 2 : this.Y(y); }
@@ -283,8 +286,10 @@ class Stage {
     this._texN = 0;
     if (this.o.grid) this.grid();
     if (this.o.axes) this.axes();
+    if (this.o.gutter) { const m = this._m; c.save(); c.beginPath(); c.rect(m.l, m.t, this.W - m.l - m.r, this.H - m.t - m.b); c.clip(); this._clipped = true; } // keep data out of the label gutter
   }
   end() {
+    if (this._clipped) { this.ctx.restore(); this._clipped = false; }
     for (const hd of this.handles) if (hd.visible !== false) this._drawHandle(hd);
     for (let i = this._texN; i < this._tex.length; i++) this._tex[i].style.display = 'none';
   }
@@ -345,6 +350,7 @@ class Stage {
   }
   grid(st = {}) {
     const c = this.ctx; c.save(); c.strokeStyle = resolveColor(st.color || 'grid'); c.lineWidth = 1; c.setLineDash([]);
+    if (this.o.gutter) { const m = this._m; c.beginPath(); c.rect(m.l, m.t, this.W - m.l - m.r, this.H - m.t - m.b); c.clip(); } // grid stays inside the data area
     c.beginPath();
     for (const [v] of this._ticks('x')) { const x = Math.round(this.X(v)) + 0.5; c.moveTo(x, 0); c.lineTo(x, this.H); }
     for (const [v] of this._ticks('y')) { const y = Math.round(this.Y(v)) + 0.5; c.moveTo(0, y); c.lineTo(this.W, y); }
@@ -365,7 +371,7 @@ class Stage {
     const ax = Math.round(this.Y(y0)) + 0.5, ay = Math.round(this.X(x0)) + 0.5;
     c.save();
     c.strokeStyle = resolveColor('faint'); c.lineWidth = 1; c.setLineDash([]);
-    c.beginPath(); c.moveTo(0, ax); c.lineTo(this.W, ax); c.moveTo(ay, 0); c.lineTo(ay, this.H); c.stroke();
+    c.beginPath(); if (o.gutter) { const m = this._m; c.moveTo(ay, ax); c.lineTo(this.W - m.r, ax); c.moveTo(ay, ax); c.lineTo(ay, m.t); } else { c.moveTo(0, ax); c.lineTo(this.W, ax); c.moveTo(ay, 0); c.lineTo(ay, this.H); } c.stroke();
     if (o.ticks) {
       c.fillStyle = resolveColor('muted'); c.font = '500 10.5px Inter, system-ui, sans-serif';
       c.textAlign = 'center'; c.textBaseline = 'top';
@@ -398,10 +404,13 @@ class Stage {
     const lab = (str, X, Y, align, baseline) => {
       const t = String(str), pure = /^\$[^$]+\$$/.test(t);
       if (/\$[^$]+\$/.test(t)) this.texPx(pure ? t.slice(1, -1) : t, X, Y, { color: 'muted', size: 15, align, baseline, rich: !pure });
-      else { c.textAlign = align === 'right' ? 'right' : 'left'; c.textBaseline = baseline; c.fillText(t, X, Y); }
+      else { c.textAlign = align; c.textBaseline = baseline; c.fillText(t, X, Y); }
     };
+    if (o.gutter) { const m = this._m; if (o.xlabel) lab(o.xlabel, m.l + (this.W - m.l - m.r) / 2, this.H - 3, 'center', 'bottom'); if (o.ylabel) lab(o.ylabel, Math.max(4, ay - 30), 3, 'left', 'top'); } // x label centred under the ticks, y label above the axis
+    else {
     if (o.xlabel) lab(o.xlabel, this.W - 6, ax - 5 - off.x, 'right', 'bottom');
     if (o.ylabel) lab(o.ylabel, ay + 7 + off.y, 5, 'left', 'top');
+    }
     c.restore();
   }
 

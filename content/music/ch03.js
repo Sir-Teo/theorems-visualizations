@@ -309,7 +309,7 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
         const src = v.select('sound source', [{ value: 'tap', label: 'tap the end' }, { value: 'breath', label: 'breath noise' }, { value: 'reed', label: 'reed (clarinet)' }], 'reed');
         const tb = v.stage({ x: [-0.07, 1.07], y: [-1.5, 1.5], height: 150, axes: false, full: true });
         const wf = v.stage({ x: [0, 1], y: [-1.25, 1.25], height: 150, axes: 'box', yticks: [], xlabel: 'time (ms)', full: true, title: 'pressure at the open end (simulated)' });
-        const sp = v.stage({ x: [0, NH + 0.6], y: [-72, 8], height: 250, axes: 'box', xlabel: 'frequency in units of $c/4L_{\\text{eff}}$', xticks: M.range(NH, 1), yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true, title: 'spectrum of the simulated sound (FFT)' });
+        const sp = v.stage({ x: [0, NH + 0.6], y: [-72, 8], height: 250, axes: 'box', xticks: M.range(NH, 1), yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true, title: 'spectrum of the simulated sound (FFT)' });
         tb.onClick(() => { if (src.value !== 'reed') capT.el.querySelector('input')?.click(); });
         const capped = () => src.value === 'reed' || capT.value;
         const fq = () => C_AIR / (4 * (Ls.value + D)), fo = () => C_AIR / (2 * (Ls.value + 2 * D));
@@ -362,17 +362,17 @@ Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L
           // ---- spectrum on the c/4L grid
           const S2 = R0.spec, fu = fq();
           for (let h = 1; h <= NH; h++) sp.line(h, -70, h, 6, { color: h % 2 ? 'green' : 'red', width: 1, dash: [3, 4], alpha: 0.45 });
-          const curve = []; for (let i = 1; i < S2.db.length; i++) { const x = S2.freq[i] / fu; if (x > NH + 0.6) break; curve.push([x, Math.max(-71, S2.db[i])]); }
+          const curve = []; for (let i = 1; i < S2.db.length; i++) { const x = S2.freq[i] / fu; if (x < 0.3) continue; if (x > NH + 0.6) break; curve.push([x, Math.max(-71, S2.db[i])]); }
           sp.path(curve, { color: closed ? 'accent' : 'teal', width: 1.5 });
           for (let h = 1; h <= NH; h++) sp.text(h % 2 ? 'odd' : 'even', h, 3.5, { align: 'center', color: h % 2 ? 'green' : 'red', size: 9.5 });
-          sp.setTitle(`spectrum of the simulated sound (FFT): ${closed ? 'capped, peaks on the odd lines only' : 'open, peaks on the even lines'}`);
+          sp.setTitle(`FFT spectrum, frequency in units of c/4L_eff: ${closed ? 'capped, peaks on the odd lines only' : 'open, peaks on the even lines'}`);
         });
         v.legend([['accent', 'capped tube'], ['teal', 'open tube'], ['red', 'lowest pressure mode'], ['orange', 'second mode']]);
         v.readout(() => {
           const R0 = run(), closed = R0.closed, L = Ls.value, th = closed ? fq() : fo();
           const dEven = R0.even.reduce((a, b) => a + b, 0) / 3 - R0.odd.reduce((a, b) => a + b, 0) / 3;
           const name = src.value === 'reed' ? 'clarinet reed' : src.value === 'tap' ? 'tap' : 'breath noise';
-          return `${closed ? 'capped' : 'open'} tube, $L$ = ${v.fix(L * 100, 1)} cm, radius 7.5 mm, ${name} · predicted fundamental ${closed ? `$c/4(L+\\delta)$` : `$c/2(L+2\\delta)$`} = ${v.fix(th, 1)} Hz (${noteOf(M, th)}); simulated ${v.fix(R0.f0, 1)} Hz (FFT resolution ${v.fix(R0.spec.df, 1)} Hz) · harmonics 2, 4, 6 of the sounding note lie on average ${v.fix(Math.abs(dEven), 1)} dB ${dEven < 0 ? 'below' : 'above'} harmonics 1, 3, 5${closed ? ': the even harmonics are missing' : ': all harmonics present'} · the capped tube's fundamental is ${v.fix(1200 * Math.log2(fo() / fq()), 0)} ¢ (about an octave) below the open tube's, and its next resonance is a twelfth (×3) above it`;
+          return `${closed ? 'capped' : 'open'} tube, $L$ = ${v.fix(L * 100, 1)} cm, radius 7.5 mm, ${name} · predicted fundamental ${closed ? `$c/4(L+\\delta)$` : `$c/2(L+2\\delta)$`} = ${v.fix(th, 1)} Hz (${noteOf(M, th)}); simulated ${v.fix(R0.f0, 1)} Hz (FFT resolution ${v.fix(R0.spec.df, 1)} Hz) · harmonics 2, 4, 6 of the sounding note lie on average ${dEven < -60 ? 'more than 60' : v.fix(Math.abs(dEven), 1)} dB ${dEven < 0 ? 'below' : 'above'} harmonics 1, 3, 5${closed ? ': the even harmonics are missing' : ': all harmonics present'} · the capped tube's fundamental is ${v.fix(1200 * Math.log2(fo() / fq()), 0)} ¢ (about an octave) below the open tube's, and its next resonance is a twelfth (×3) above it`;
         });
       },
     },

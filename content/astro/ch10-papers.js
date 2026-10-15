@@ -167,7 +167,7 @@ const CALAN18 = [['1990O', 0.030, 16.26, 0.20, ''], ['1990af', 0.050, 17.63, 0.1
 const inPerlFit = (ex, f) => !ex || ex.split(',').every((p) => (p.includes('-') ? !(f >= p[0] && f <= p[2]) : p !== f));
 
 // COBE FIRAS monopole (Fixsen et al. 1996, Table 4, via LAMBDA): frequency (cm⁻¹), intensity (MJy/sr), 1σ (kJy/sr)
-const FIRAS = [2.27, 200.723, 14, 2.72, 249.508, 19, 3.18, 293.024, 25, 3.63, 327.770, 23, 4.08, 354.081, 22, 4.54, 372.079, 21, 4.99, 381.493, 18, 5.45, 383.478, 18, 5.90, 378.901, 16, 6.35, 368.833, 14, 6.81, 354.063, 13, 7.26, 336.278, 12, 7.71, 316.076, 11, 8.17, 293.924, 10, 8.62, 271.432, 11, 9.08, 248.239, 12, 9.53, 225.940, 14, 9.98, 204.327, 16, 10.44, 183.262, 18, 10.89, 163.830, 22, 11.34, 145.750, 22, 11.80, 128.835, 23, 12.25, 113.568, 23, 12.71, 99.451, 23, 13.16, 87.036, 22, 13.61, 75.876, 21, 14.07, 65.766, 20, 14.52, 57.008, 19, 14.97, 49.223, 19, 15.43, 42.267, 19, 15.88, 36.352, 21, 16.34, 31.062, 23, 16.79, 26.580, 26, 17.24, 22.644, 28, 17.70, 19.255, 30, 18.15, 16.391, 32, 18.61, 13.811, 33, 19.06, 11.716, 35, 19.51, 9.921, 41, 19.97, 8.364, 55, 20.42, 7.087, 88, 20.87, 5.801, 155];
+const FIRAS = [2.27, 200.723, 14, 2.72, 249.508, 19, 3.18, 293.024, 25, 3.63, 327.770, 23, 4.08, 354.081, 22, 4.54, 372.079, 21, 4.99, 381.493, 18, 5.45, 383.478, 18, 5.90, 378.901, 16, 6.35, 368.833, 14, 6.81, 354.063, 13, 7.26, 336.278, 12, 7.71, 316.076, 11, 8.17, 293.924, 10, 8.62, 271.432, 11, 9.08, 248.239, 12, 9.53, 225.940, 14, 9.98, 204.327, 16, 10.44, 183.262, 18, 10.89, 163.830, 22, 11.34, 145.750, 22, 11.80, 128.835, 23, 12.25, 113.568, 23, 12.71, 99.451, 23, 13.16, 87.036, 22, 13.61, 75.876, 21, 14.07, 65.766, 20, 14.52, 57.008, 19, 14.97, 49.223, 19, 15.43, 42.267, 19, 15.88, 36.352, 21, 16.34, 31.062, 23, 16.79, 26.580, 26, 17.24, 22.644, 28, 17.70, 19.255, 30, 18.15, 16.391, 32, 18.61, 13.811, 33, 19.06, 11.716, 35, 19.51, 9.921, 41, 19.97, 8.364, 55, 20.42, 7.087, 88, 20.87, 5.801, 155, 21.33, 4.523, 282];
 const H_PL = 6.62607015e-34, K_B = 1.380649e-23, C_MS = 2.99792458e8;
 /** Planck intensity in MJy/sr at ν GHz, temperature T K. */
 const planckI = (nu, T) => (2 * H_PL * (nu * 1e9) ** 3 / C_MS ** 2) / Math.expm1((H_PL * nu * 1e9) / (K_B * T)) * 1e20;
@@ -387,7 +387,7 @@ They offered no interpretation of their own and pointed to the companion letter 
         const Ts = v.slider('blackbody temperature (K)', 1.5, 5, 2.725, { step: 0.001, decimals: 3 });
         const el = v.slider('elevation of the horn', 15, 90, 90, { step: 1, fmt: (d) => `${Math.round(d)}°` });
         const B = v.stage({ x: [0, 4.2], y: [0, 15], axes: 'box', height: 340, weight: 0.85, minWidth: 250, xlabel: 'air masses  sec z', ylabel: 'antenna temperature (K)', title: 'the budget at 4080 Mc/s' });
-        const S = v.stage({ x: [0.3, 1000], y: [0.03, 1000], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.15, xlabel: 'frequency (GHz)', ylabel: 'I_ν (MJy/sr)', title: 'the spectrum of the sky' });
+        const S = v.stage({ x: [0.3, 1000], y: [0.03, 1000], xlog: true, ylog: true, axes: 'box', height: 340, weight: 1.15, xlabel: 'frequency (GHz)', ylabel: 'intensity Iν (MJy/sr)', title: 'the spectrum of the sky' });
         const NU_PW = 4.08, TPW = 3.5, EPW = 1.0, ATM = 2.3, LOSS = 0.9; // GHz, K
         const nuF = []; for (let i = 0; i < FIRAS.length; i += 3) nuF.push([FIRAS[i] * 29.9792458, FIRAS[i + 1], FIRAS[i + 2] / 1000]);
         const chiF = (T) => nuF.reduce((s, [nu, I, sg]) => s + ((I - planckI(nu, T)) / sg) ** 2, 0);
@@ -408,14 +408,14 @@ They offered no interpretation of their own and pointed to the companion letter 
           B.text('unexplained 3.5 ± 1.0 K', 2.2, TPW / 2, { size: 12, weight: 700, color: 'green', align: 'left', plate: true });
           B.line(1, 6.7 - 0.3, 1, 6.7 + 0.3, { color: 'ink', width: 2 });
           B.dot(1, 6.7, { r: 5, color: 'ink' });
-          B.text('zenith: 6.7 K measured', 1, 6.7, { dx: -8, dy: -16, size: 11.5, weight: 600, align: 'left' });
+          B.text('zenith: 6.7 K measured', 1, 6.7, { dx: 10, dy: 20, size: 11.5, weight: 600, align: 'left', plate: true });
           B.vline(X, { color: 'gold', width: 1.4, dash: [3, 3] });
           B.dot(X, TPW + LOSS + ATM * X, { r: 7, color: 'gold' });
           B.dot(0, TPW + LOSS, { r: 4, color: 'ink', hollow: true });
           // ---- right: spectrum
           const T = Ts.value, tmode = view.value === 'T';
-          if (tmode) { S.setScale({ ylog: false, y: [0, 6.2] }); S.setLabels(undefined, 'brightness temperature T_RJ (K)'); }
-          else { S.setScale({ ylog: true, y: [0.03, 1000] }); S.setLabels(undefined, 'I_ν (MJy/sr)'); }
+          if (tmode) { S.setScale({ ylog: false, y: [0, 6.2] }); S.setLabels(undefined, 'brightness temperature (K)'); }
+          else { S.setScale({ ylog: true, y: [0.03, 1000] }); S.setLabels(undefined, 'intensity Iν (MJy/sr)'); }
           const yOf = (I, nu) => (tmode ? rjTemp(I, nu) : I);
           S.fn((nu) => yOf(planckI(nu, Tbest), nu), { color: 'faint', width: 5, n: 300 });
           S.fn((nu) => yOf(planckI(nu, T), nu), { color: 'accent', width: 2.4, n: 300 });
@@ -427,9 +427,10 @@ They offered no interpretation of their own and pointed to the companion letter 
           S.dot(NU_PW, y0, { r: 7, color: 'green' });
           S.text('Penzias & Wilson 1965', NU_PW, y0, { dx: 12, dy: tmode ? -2 : -4, size: 12, weight: 700, color: 'green', align: 'left', plate: true });
           // 404 Mc/s: no more than 16 K (upper limit)
-          if (tmode) { S.text('404 Mc/s: ≤ 16 K ↑', 0.404, 5.9, { size: 11, color: 'muted', weight: 600, align: 'left', dx: -6 }); }
-          else { const I16 = (2 * K_B * 16 * 0.404e9 ** 2) / C_MS ** 2 * 1e20; S.poly([[0.404, I16 * 0.62], [0.404 * 0.86, I16], [0.404 / 0.86, I16]], { fill: 'muted', fillAlpha: 1, color: 'muted' }); S.text('404 Mc/s ≤ 16 K', 0.404, I16, { dy: -13, size: 11, color: 'muted', weight: 600, align: 'left', dx: -10 }); }
-          S.text('COBE FIRAS', 380, yOf(planckI(380, 2.725), 380), { dx: 8, size: 12, weight: 700, color: 'orange', align: 'left' });
+          if (tmode) { S.text('404 Mc/s: ≤ 16 K (off scale)', 0.36, 5.0, { size: 11, color: 'muted', weight: 600, align: 'left' }); }
+          else { const I16 = (2 * K_B * 16 * 0.404e9 ** 2) / C_MS ** 2 * 1e20; S.poly([[0.404, I16 * 0.62], [0.404 * 0.86, I16], [0.404 / 0.86, I16]], { fill: 'muted', fillAlpha: 1, color: 'muted' }); S.text('404 Mc/s ≤ 16 K', 0.404, I16, { dy: -4, size: 11, color: 'muted', weight: 600, align: 'left', dx: 12 }); }
+          if (tmode) S.text('COBE FIRAS', 90, rjTemp(planckI(90, 2.725), 90), { dx: -12, dy: -12, size: 12, weight: 700, color: 'orange', align: 'right' });
+          else S.text('COBE FIRAS', 55, planckI(55, 2.725), { dx: -10, dy: -10, size: 12, weight: 700, color: 'orange', align: 'right' });
           st = { X, T, chi: chiF(T), tpred: rjTemp(planckI(NU_PW, T), NU_PW) };
         });
         v.legend([['green', 'unexplained excess, 3.5 ± 1.0 K', { area: true }], ['orange', 'ohmic losses + back lobe', { area: true }], ['blue', 'atmosphere (secant law)', { area: true }], ['accent', 'blackbody at your T'], ['faint', 'best fit to FIRAS'], ['orange', 'COBE FIRAS 1996', { dot: true }]]);
@@ -438,6 +439,197 @@ They offered no interpretation of their own and pointed to the companion letter 
           const { X, T, chi, tpred } = st, Tant = TPW + LOSS + ATM * X;
           const quad = Math.hypot(0.3, 0.3, 0.4);
           return `Horn at ${Math.round(el.value)}°: ${v.fix(X, 2)} air masses, antenna temperature ${v.fix(Tant, 2)} K = 3.5 (excess) + 0.9 (losses) + ${v.fix(ATM * X, 2)} (air) · paper: 6.7 − 2.3 − 0.8 − (< 0.1) = **3.5 ± 1.0 K**; the three quoted errors (0.3, 0.3, 0.4 K) add in quadrature to only ${v.fix(quad, 2)} K, so their ±1.0 K is conservative · at 4.08 GHz a ${v.fix(T, 3)} K blackbody gives an antenna (Rayleigh–Jeans) temperature of **${v.fix(tpred, 2)} K**, ${v.fix(Math.abs(TPW - tpred) / EPW, 1)}σ from the 1965 point · FIRAS: χ² = ${chi < 1e5 ? v.fix(chi, 0) : v.fmt(chi, 3)} for 43 frequencies at your T; best fit **${v.fix(Tbest, 4)} K** (χ² ${v.fix(chiBest, 1)}); today’s value 2.72548 ± 0.00057 K (Fixsen 2009): the 1965 point agrees with it within its error bar, measured at a single frequency far down the Rayleigh–Jeans side of a spectrum that peaks near 160 GHz`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 10.21
+    {
+      num: '10.21',
+      kind: 'Paper',
+      name: 'Supernova evidence for an accelerating universe',
+      paper: { authors: 'Adam G. Riess, Alexei V. Filippenko, Peter Challis, et al.', year: 1998, title: 'Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant', venue: 'The Astronomical Journal 116 (3): 1009–1038', doi: '10.1086/300499' },
+      introduces: ['astro-10.11'],
+      statement: String.raw`The High-$z$ Supernova Search Team measured luminosity distances to 16 type Ia supernovae at redshifts $0.16\le z\le0.97$ and compared them with 34 nearby ones, standardizing each by its light-curve shape (two methods: MLCS and the $\Delta m_{15}$ template). On a Hubble diagram of distance modulus $\mu=5\log_{10}(D_L/\text{Mpc})+25$ against redshift, with
+$$D_L=\frac{c}{H_0}(1+z)\,|\Omega_k|^{-1/2}\,\mathrm{sinn}\Big\{|\Omega_k|^{1/2}\!\int_0^z\!\frac{dz'}{\sqrt{(1+z')^2(1+\Omega_Mz')-z'(2+z')\Omega_\Lambda}}\Big\},$$
+the distant supernovae are **10–15% farther** (about 0.25 mag fainter) than expected in a universe of low matter density ($\Omega_M=0.2$) without a cosmological constant, and fainter still compared with $\Omega_M=1$. Fitting $H_0$, $\Omega_M$ and $\Omega_\Lambda$ together, the spectroscopically confirmed supernovae favour $\Omega_\Lambda>0$ at 3.0$\sigma$ (MLCS) and 4.0$\sigma$ (template), a negative deceleration parameter $q_0=\Omega_M/2-\Omega_\Lambda$, i.e. an **accelerating expansion**, and for a flat universe $\Omega_M\approx0.28$, $\Omega_\Lambda\approx0.72$.
+
+The inference assumes that supernovae at $z\sim0.5$ are the same standard candles as nearby ones after the light-curve correction (no evolution, no grey dust), which the paper tested but could not exclude.`,
+      idea: String.raw`By the mid-1990s inflation predicted a flat universe while galaxy clusters showed too little matter for it; the expansion was expected to be decelerating, and the teams set out to measure by how much. Type Ia supernovae became usable standard candles once Phillips (1993) and Riess, Press & Kirshner (1995) showed that their peak brightness correlates with how fast they fade (astro-8.11). Comparing the distance–redshift relation at $z\approx0.5$ with Hubble's law nearby (astro-10.19) measures the change in expansion rate over billions of years (astro-10.8, astro-10.10). The answer, found simultaneously by Perlmutter's Supernova Cosmology Project (astro-10.22), was the opposite of the expectation: the expansion is accelerating, driven by a vacuum energy with negative pressure, the cosmological constant that Einstein had discarded and Friedmann (astro-10.18) had kept as a free parameter. The paper introduced dark energy (astro-10.11) as an observational fact. Together with the microwave background it fixed the "concordance" model, and Perlmutter, Schmidt and Riess shared the 2011 Nobel Prize.`,
+      caption: String.raw`**Top**: the paper's Hubble diagram, distance modulus against redshift (log scale) for the 34 nearby (blue) and 16 distant supernovae (red; orange: sparsely observed "snapshot" supernovae; the hollow point is SN 1997ck, which has no spectrum), from its Tables 5–7, 9 and 10. **Hover** a point for its name. **Bottom**: the same points as differences from a universe with $\Omega_M=0.2$ and no $\Lambda$, as in the paper's Fig. 4: points above zero are farther (fainter) than that universe allows. Curves: $\Omega_M=0.2$ (dotted) and $\Omega_M=1$ (dashed) without $\Lambda$, the paper's best flat fit $(0.24, 0.76)$ (green), and your model (gold): set $\Omega_M$ and $\Omega_\Lambda$ with the sliders and watch $\chi^2$. Switch between the two **distance methods**, or drop SN 1997ck.`,
+      deps: ['astro-8.11', 'astro-10.8', 'astro-10.10', 'astro-10.19', 'astro-10.18'],
+      refs: [],
+      tags: ['cosmology', 'dark energy', 'supernovae'],
+      credit: 'Riess, Filippenko, Challis et al. (High-z Supernova Search Team), 1998',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Accelerating_expansion_of_the_universe' },
+      viz(v) {
+        const meth = v.select('distances', [{ value: 'm', label: 'MLCS' }, { value: 't', label: 'template Δm₁₅' }], 'm');
+        const ck = v.toggle('include SN 1997ck (no spectrum)', true);
+        const omS = v.slider('$\\Omega_M$', 0, 2, 0.24, { step: 0.01 });
+        const olS = v.slider('$\\Omega_\\Lambda$', -1, 2.5, 0.76, { step: 0.01 });
+        const Hs = v.stage({ x: [0.008, 1.25], xlog: true, y: [30.5, 45.5], axes: 'box', height: 300, full: true, hover: true, ylabel: 'distance modulus μ (mag)', title: 'the Hubble diagram' });
+        const Rs = v.stage({ x: [0.008, 1.25], xlog: true, y: [-0.85, 1.05], axes: 'box', height: 230, full: true, xlabel: 'redshift z', ylabel: 'Δμ from (0.2, 0) (mag)', title: 'distances relative to a low-density universe without Λ' });
+        const rowsFor = (m, withCk) => {
+          const j = m === 'm' ? 2 : 4;
+          const near = RIESS_NEAR.map((r, i) => ({ n: r[0], z: 10 ** r[1] / C_KMS, mu: r[j], s: r[j + 1], g: 0, snap: i >= 27 }));
+          const hi = RIESS_HI.filter((r) => withCk || r[0] !== '1997ck').map((r, i) => ({ n: r[0], z: r[1], mu: r[j], s: r[j + 1], g: 1, snap: RIESS_HI.indexOf(r) >= 10, ck: r[0] === '1997ck' }));
+          for (const q of [...near, ...hi]) q.sv = (5 / Math.LN10) * Math.hypot(200, RIESS_SNFEAT.has(q.n) ? 2500 : 0) / (C_KMS * q.z);
+          return [...near, ...hi];
+        };
+        const fitOff = (rows, om, ol) => { // best offset −5 log H₀ and χ²
+          const d = lumDist(om, ol, 1.0); let sw = 0, swx = 0; const xs = [];
+          for (const q of rows) { const D = d(q.z); if (!(D > 0)) return { chi: Infinity }; const w = 1 / (q.s ** 2 + q.sv ** 2), x = q.mu - 5 * Math.log10(D * C_KMS) - 25; xs.push([x, w]); sw += w; swx += w * x; }
+          const off = swx / sw; let chi = 0; for (const [x, w] of xs) chi += w * (x - off) ** 2;
+          return { chi, off, H0: 10 ** (-off / 5) };
+        };
+        const cache = {};
+        const gridFor = (m, withCk) => { // grid likelihood over Ω_M ≥ 0, excluding bouncing universes (paper §4)
+          const key = m + withCk; if (cache[key]) return cache[key];
+          const rows = rowsFor(m, withCk); let best = { chi: Infinity }, pp = 0, pt = 0; const cells = [];
+          for (let om = 0; om <= 2.5001; om += 0.05) for (let ol = -1; ol <= 3.0001; ol += 0.05) { if (noBigBang(om, ol)) continue; const f = fitOff(rows, om, ol); if (!isFinite(f.chi)) continue; cells.push([ol, f.chi]); if (f.chi < best.chi) best = { ...f, om, ol }; }
+          for (const [ol, c] of cells) { const p = Math.exp(-(c - best.chi) / 2); pt += p; if (ol > 0) pp += p; }
+          let flat = { chi: Infinity }; for (let om = 0; om <= 1.0001; om += 0.005) { const f = fitOff(rows, om, 1 - om); if (f.chi < flat.chi) flat = { ...f, om }; }
+          return (cache[key] = { best, P: pp / pt, flat });
+        };
+        let st = null;
+        v.render(() => {
+          const rows = rowsFor(meth.value, ck.value), om = omS.value, ol = olS.value;
+          const near = rows.filter((q) => !q.g), H0fit = fitOff(near, 0.2, 0).H0, H0 = meth.value === 'm' ? 65.2 : 63.8; // curves on the paper's H₀; our nearby fit as a check
+          const muOf = (om_, ol_) => { const d = lumDist(om_, ol_, 1.3); return (z) => 5 * Math.log10((d(z) * C_KMS) / H0) + 25; };
+          const mRef = muOf(0.2, 0), models = [[0.2, 0, 'muted', [2, 3]], [1, 0, 'red', [7, 5]], [0.24, 0.76, 'green', null], [om, ol, 'gold', null]];
+          const bounce = noBigBang(om, ol);
+          for (const [a, b, col, dash] of models) {
+            if (col === 'gold' && bounce) continue;
+            const mu = muOf(a, b), w = col === 'gold' ? 2.8 : 2;
+            Hs.fn((z) => mu(z), { color: col, width: w, dash, domain: [0.008, 1.25], n: 160 });
+            Rs.fn((z) => mu(z) - mRef(z), { color: col, width: w, dash, domain: [0.008, 1.25], n: 160 });
+          }
+          Rs.hline(0, { color: 'faint', width: 1 });
+          for (const q of rows) {
+            const col = q.g ? (q.snap ? 'orange' : 'red') : 'blue', e = Math.hypot(q.s, q.sv), r = q.mu - mRef(q.z);
+            Hs.line(q.z, q.mu - q.s, q.z, q.mu + q.s, { color: col, width: 1.2, alpha: 0.6 });
+            Hs.dot(q.z, q.mu, { r: 4, color: col, hollow: !!q.ck });
+            Rs.line(q.z, r - e, q.z, r + e, { color: col, width: 1.2, alpha: 0.55 });
+            Rs.dot(q.z, r, { r: 4, color: col, hollow: !!q.ck });
+          }
+          // hover
+          const P = Hs.pointer;
+          if (P.inside) {
+            let best = null, bd = 1e9; for (const q of rows) { const dd = Math.hypot(Hs.X(q.z) - Hs.X(P.x), Hs.Y(q.mu) - Hs.Y(P.y)); if (dd < bd) { bd = dd; best = q; } }
+            if (best && bd < 20) { const right = best.z > 0.25; Hs.dot(best.z, best.mu, { r: 8, hollow: true, color: 'ink', width: 2 }); Hs.text(`SN ${best.n}: z = ${v.fix(best.z, 3)}, μ = ${v.fix(best.mu, 2)} ± ${v.fix(best.s, 2)}`, best.z, best.mu, { dx: right ? -12 : 12, dy: -14, align: right ? 'right' : 'left', size: 12, weight: 600, plate: true }); }
+          }
+          Hs.corner(`curves for H₀ = ${v.fix(H0, 1)} km/s/Mpc (paper)`, 'br', { size: 11.5, color: 'muted', dy: -18 });
+          const conf = rows.filter((q) => q.g && !q.ck), well = conf.filter((q) => !q.snap), avg = (L) => L.reduce((s, q) => s + q.mu - mRef(q.z), 0) / L.length;
+          st = { rows, H0, H0fit, mres: avg(well), mall: avg(conf), nconf: conf.length, nwell: well.length, fit: bounce ? null : fitOff(rows, om, ol), G: gridFor(meth.value, ck.value), bounce };
+        });
+        v.legend([['blue', 'nearby (34)', { dot: true }], ['red', 'high z', { dot: true }], ['orange', 'high-z snapshots', { dot: true }], ['muted', '$\\Omega_M = 0.2,\\ \\Omega_\\Lambda = 0$', { dash: [2, 3] }], ['red', '$\\Omega_M = 1,\\ \\Omega_\\Lambda = 0$', { dash: true }], ['green', 'flat 0.24 / 0.76 (paper)'], ['gold', 'your model']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { H0, H0fit, mres, mall, nconf, nwell, fit, G, bounce } = st, om = omS.value, ol = olS.value, m = meth.value === 'm';
+          const far = (10 ** (mres / 5) - 1) * 100;
+          const you = bounce ? `your $(\\Omega_M, \\Omega_\\Lambda)$ = (${v.fix(om, 2)}, ${v.fix(ol, 2)}) has **no big bang** (it bounced), the region the paper excludes` : `your $(\\Omega_M, \\Omega_\\Lambda)$ = (${v.fix(om, 2)}, ${v.fix(ol, 2)}): $\\chi^2$ = **${v.fix(fit.chi, 1)}** for ${st.rows.length} SNe, $q_0 = ${v.fix(om / 2 - ol, 2)}$ (${om / 2 - ol < 0 ? 'accelerating' : 'decelerating'})`;
+          return `the ${nwell} well-observed distant SNe lie on average **${v.fix(mres, 2)} mag** above the (0.2, 0) universe, i.e. **${v.fix(far, 0)}% farther** (paper, Fig. ${m ? '4: 0.25' : '5: 0.28'} mag; abstract: 10–15%); with the ${nconf - nwell} snapshots, all ${nconf} confirmed SNe: ${v.fix(mall, 2)} mag · residuals use the paper’s $H_0$ = ${v.fix(H0, 1)}; our fit to the nearby SNe alone gives ${v.fix(H0fit, 1)} km/s/Mpc, which would lower every residual by ${v.fix(5 * Math.log10(H0 / H0fit), 2)} mag · ${you} · best fits on this data: flat $\\Omega_M = ${v.fix(G.flat.om, 2)}$ ($\\chi^2$ ${v.fix(G.flat.chi, 1)}; paper ${m ? (ck.value ? '0.24' : '0.28') : (ck.value ? '0.21' : '0.17')}), unconstrained (${v.fix(G.best.om, 2)}, ${v.fix(G.best.ol, 2)}); probability that $\\Omega_\\Lambda > 0$: **${v.fix(100 * G.P, 2)}%** (paper ${m ? '99.7% (3.0σ)' : '>99.9% (4.0σ)'} without 97ck) · today: Planck 2018 $\\Omega_m = 0.315 \\pm 0.007$, $\\Omega_\\Lambda = 0.685 \\pm 0.007$; Pantheon+ (1,550 SNe) flat $\\Omega_M = 0.334 \\pm 0.018$`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 10.22
+    {
+      num: '10.22',
+      kind: 'Paper',
+      name: 'Measurements of Ω and Λ from 42 High-Redshift Supernovae',
+      paper: { authors: 'S. Perlmutter, G. Aldering, G. Goldhaber, et al.', year: 1999, title: 'Measurements of Ω and Λ from 42 High-Redshift Supernovae', venue: 'The Astrophysical Journal 517 (2): 565–586', doi: '10.1086/307221' },
+      introduces: ['astro-10.11'],
+      statement: String.raw`The Supernova Cosmology Project measured 42 type Ia supernovae at $0.18\le z\le0.83$ and fitted their stretch-corrected peak magnitudes $m_B^{\rm eff}$, together with 18 nearby supernovae of the Calán/Tololo survey, to
+$$m_B^{\rm eff}(z)=\mathcal M_B+5\log_{10}\mathcal D_L(z;\Omega_M,\Omega_\Lambda),$$
+where $\mathcal D_L=H_0D_L/c$ and $\mathcal M_B$ absorbs both the absolute magnitude and $H_0$. The joint likelihood in the $(\Omega_M,\Omega_\Lambda)$ plane is a long diagonal band, approximately
+$$0.8\,\Omega_M-0.6\,\Omega_\Lambda\approx-0.2\pm0.1\qquad(\Omega_M\lesssim1.5),$$
+which excludes $\Lambda=0$: the probability that $\Omega_\Lambda>0$ is 99.8% for the primary fit (54 supernovae), 99% including identified systematic errors. For a flat universe $\Omega_M=0.28^{+0.09}_{-0.08}$ (statistical) $^{+0.05}_{-0.04}$ (systematic), so $\Omega_\Lambda\approx0.72$ and the expansion accelerates; a flat universe without $\Lambda$ ($\Omega_M=1$) is strongly ruled out.
+
+Supernovae alone constrain only a combination of $\Omega_M$ and $\Omega_\Lambda$; separating them needed the microwave background, which measures $\Omega_M+\Omega_\Lambda$. The result assumes no evolution of the supernovae and no grey dust, which the paper examined among its systematics.`,
+      idea: String.raw`Perlmutter's team had pioneered finding high-redshift supernovae on schedule: wide-field images of the same patches of sky taken three weeks apart, at new moon, so that supernovae caught on the rise could be followed with the Hubble Space Telescope and large telescopes. They expected to measure the deceleration of a matter-dominated universe. Their first seven supernovae (1997) pointed to $\Omega_M\approx1$; the 42 of this paper said the opposite. Because supernovae at $z\sim0.5$ probe $D_L(z)$, which depends on $\Omega_M$ and $\Omega_\Lambda$ (astro-10.8, astro-10.10) in nearly the combination $0.8\Omega_M-0.6\Omega_\Lambda$, the result is a band, not a point, in the plane of Friedmann's parameters (astro-10.18); its tilt is what makes $\Lambda=0$ impossible unless $\Omega_M<0$. With the High-z team's paper (astro-10.21) it established the accelerating universe and dark energy (astro-10.11), and the crossing of this band with the CMB's flatness line became the concordance model, $\Omega_M\approx0.3$, $\Omega_\Lambda\approx0.7$.`,
+      caption: String.raw`**Left**: the $(\Omega_M,\Omega_\Lambda)$ plane, as in the paper's Fig. 7: confidence regions (68, 90, 95, 99%) recomputed here from its Tables 1–2, with $\mathcal M_B$ fitted at each point. Lines: flat universes, $\Lambda=0$, the boundary between accelerating and decelerating expansion, and between eternal expansion and recollapse; hatched, the corner with no big bang. **Drag the gold point** to any universe and watch $\Delta\chi^2$ climb; the teal point is today's Planck value. **Right**: the 60 supernovae as magnitude residuals from your universe (red: SCP; blue: Calán/Tololo; hollow: excluded from the chosen fit), with the empty, Einstein–de Sitter and best flat models for comparison. Switch between the paper's **primary fit** (54 supernovae) and **all 60**.`,
+      see: ['astro-10.21'],
+      deps: ['astro-8.11', 'astro-10.8', 'astro-10.10', 'astro-10.19', 'astro-10.18'],
+      refs: [],
+      tags: ['cosmology', 'dark energy', 'supernovae'],
+      credit: 'Perlmutter, Aldering, Goldhaber et al. (Supernova Cosmology Project), 1999',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Supernova_Cosmology_Project' },
+      viz(v) {
+        const fitSel = v.select('supernovae', [{ value: 'C', label: 'primary fit C (54)' }, { value: 'A', label: 'fit A (all 60)' }], 'C');
+        const P = v.stage({ x: [0, 3], y: [-1.5, 3], axes: 'box', height: 400, weight: 1.1, xlabel: 'Ωₘ (matter)', ylabel: 'ΩΛ (vacuum energy)', title: 'where the 42 supernovae allow the universe to be' });
+        const R = v.stage({ x: [0, 0.9], y: [-1.4, 1.4], axes: 'box', height: 400, weight: 0.9, minWidth: 260, xlabel: 'redshift z', ylabel: 'magnitude − model (mag)', title: 'residuals from your universe' });
+        const h = P.handle(1, 0, { color: 'gold', r: 8, constrain: { x: [0, 3], y: [-1.5, 3] } });
+        const ALL = [...SCP42.map((r) => ({ n: r[0], z: r[1], m: r[2], s: r[3], ex: r[4], scp: true })), ...CALAN18.map((r) => ({ n: r[0], z: r[1], m: r[2], s: r[3], ex: r[4], scp: false }))];
+        const chiOf = (rows, om, ol) => {
+          const d = lumDist(om, ol, 0.84); let sw = 0, swx = 0; const xs = [];
+          for (const q of rows) { const D = d(q.z); if (!(D > 0)) return { chi: Infinity }; const w = 1 / q.s ** 2, x = q.m - 5 * Math.log10(D); xs.push([x, w]); sw += w; swx += w * x; }
+          const Mb = swx / sw; let chi = 0; for (const [x, w] of xs) chi += w * (x - Mb) ** 2; return { chi, Mb };
+        };
+        const NX = 101, NY = 151, DX = 3 / (NX - 1), DY = 4.5 / (NY - 1), cache = {};
+        const gridFor = (f) => {
+          if (cache[f]) return cache[f];
+          const rows = ALL.filter((q) => inPerlFit(q.ex, f)), G = new Float64Array(NX * NY); let best = { chi: Infinity }, pp = 0, pt = 0;
+          for (let i = 0; i < NX; i++) for (let j = 0; j < NY; j++) { const om = i * DX, ol = -1.5 + j * DY; const c = noBigBang(om, ol) ? NaN : chiOf(rows, om, ol).chi; G[i * NY + j] = isFinite(c) ? c : NaN; if (c < best.chi) best = { chi: c, om, ol }; }
+          for (let k = 0; k < G.length; k++) if (isFinite(G[k])) { const p = Math.exp(-(G[k] - best.chi) / 2); pt += p; if (-1.5 + (k % NY) * DY > 0) pp += p; }
+          let flat = { chi: Infinity }; const fl = [];
+          for (let om = 0; om <= 1.0001; om += 0.0025) { const c = chiOf(rows, om, 1 - om).chi; fl.push([om, c]); if (c < flat.chi) flat = { chi: c, om }; }
+          const in1 = fl.filter(([, c]) => c <= flat.chi + 1).map(([o]) => o);
+          // valley: for Ω_M = 0 … 1.5 the best Ω_Λ, fitted to a line
+          const vx = [], vy = []; for (let i = 0; i <= 50; i++) { let bj = -1, bc = Infinity; for (let j = 0; j < NY; j++) { const c = G[i * NY + j]; if (c < bc) { bc = c; bj = j; } } vx.push(i * DX); vy.push(-1.5 + bj * DY); }
+          const lr = v.M.linreg(vx, vy), vmean = vx.reduce((s, x, i) => s + 0.8 * x - 0.6 * vy[i], 0) / vx.length;
+          return (cache[f] = { G, best, P: pp / pt, flat, lo: in1[0], hi: in1[in1.length - 1], rows, slope: lr.slope, icpt: lr.intercept, vmean });
+        };
+        const dchi = (Gd, x, y) => { const fi = x / DX, fj = (y + 1.5) / DY, i = Math.min(NX - 2, Math.max(0, Math.floor(fi))), j = Math.min(NY - 2, Math.max(0, Math.floor(fj))), u = fi - i, w = fj - j; const g = Gd.G, a = g[i * NY + j], b = g[(i + 1) * NY + j], c = g[i * NY + j + 1], d = g[(i + 1) * NY + j + 1]; return (a * (1 - u) * (1 - w) + b * u * (1 - w) + c * (1 - u) * w + d * u * w) - Gd.best.chi; };
+        // no-big-bang boundary and the recollapse boundary
+        const nbb = []; for (let om = 0; om <= 3.0001; om += 0.05) { let lo = 0, hi = 4.2; for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; if (noBigBang(om, m)) hi = m; else lo = m; } nbb.push([om, hi]); }
+        const recoll = (om) => (om <= 1 ? 0 : 4 * om * Math.cos(Math.acos((1 - om) / om) / 3 + (4 * Math.PI) / 3) ** 3);
+        const LEV = [[2.30, 0.42], [4.61, 0.28], [5.99, 0.2], [9.21, 0.12]];
+        const acc = v.rgb('accent');
+        let st = null;
+        v.render(() => {
+          const Gd = gridFor(fitSel.value);
+          P.raster((x, y) => { const d = dchi(Gd, x, y); if (!isFinite(d)) return null; for (const [L, a] of LEV) if (d <= L) return [acc[0], acc[1], acc[2], Math.round(255 * a)]; return null; }, { res: 2, key: 'perl' + fitSel.value });
+          for (const [L] of LEV) P.contour((x, y) => dchi(Gd, x, y), L, { color: 'accent', width: L === 2.30 ? 2 : 1.2, res: 110 });
+          P.poly([...nbb, [3, 3], [0, 3]], { fill: 'muted', fillAlpha: 0.08, hatch: 'muted', hatchAlpha: 0.35, stroke: false });
+          P.path(nbb, { color: 'muted', width: 1.4 });
+          P.text('no big bang', 0.1, 2.25, { size: 12, weight: 700, color: 'muted', align: 'left', plate: true });
+          P.fn((x) => 1 - x, { color: 'ink', width: 1.4, domain: [0, 2.5] });
+          P.text('flat', 2.0, -1.0, { size: 11.5, weight: 700, color: 'ink', align: 'left', dx: 8 });
+          P.hline(0, { color: 'ink', width: 1, dash: [5, 4] });
+          P.text('Λ = 0', 1.2, 0, { size: 11.5, weight: 600, align: 'left', dy: 11, color: 'ink' });
+          P.fn((x) => x / 2, { color: 'orange', width: 1.4, dash: [3, 3] });
+          P.text('accelerating', 2.95, 1.475, { size: 11.5, weight: 700, color: 'orange', align: 'right', dy: -10 });
+          P.text('decelerating', 2.95, 1.475, { size: 11.5, weight: 700, color: 'orange', align: 'right', dy: 11 });
+          P.fn(recoll, { color: 'red', width: 1.3, dash: [7, 4], domain: [0, 3] });
+          P.text('recollapses', 2.95, -0.3, { size: 11, weight: 600, color: 'red', align: 'right', dy: 10 });
+          P.dot(0.315, 0.685, { r: 6, color: 'teal' });
+          P.text('Planck 2018', 0.315, 0.685, { dx: 10, dy: 12, size: 11.5, weight: 700, color: 'teal', align: 'left', plate: true });
+          P.dot(Gd.best.om, Gd.best.ol, { r: 4, color: 'ink' });
+          P.text('best fit', Gd.best.om, Gd.best.ol, { dx: 8, dy: -8, size: 11, weight: 600, color: 'ink', align: 'left' });
+          // ---- residuals from the dragged universe
+          const om = h.x, ol = h.y, bb = noBigBang(om, ol), me = bb ? null : chiOf(Gd.rows, om, ol);
+          R.hline(0, { color: 'faint', width: 1.2 });
+          if (me && isFinite(me.chi)) {
+            const dU = lumDist(om, ol, 0.95), mU = (z) => me.Mb + 5 * Math.log10(dU(z));
+            for (const [a, b, col, dash] of [[0, 0, 'muted', [2, 3]], [1, 0, 'red', [7, 5]], [0.28, 0.72, 'green', null]]) {
+              const f = chiOf(Gd.rows, a, b), dM = lumDist(a, b, 0.95);
+              if (isFinite(f.chi)) R.fn((z) => f.Mb + 5 * Math.log10(dM(z)) - mU(z), { color: col, width: 2, dash, domain: [0.005, 0.9] });
+            }
+            for (const q of ALL) {
+              const r = q.m - mU(q.z), inFit = inPerlFit(q.ex, fitSel.value), col = q.scp ? 'red' : 'blue';
+              R.line(q.z, r - q.s, q.z, r + q.s, { color: col, width: 1.1, alpha: 0.5 });
+              R.dot(q.z, r, { r: 4, color: col, hollow: !inFit });
+            }
+          } else R.text('no big bang: no distances', 0.45, 0, { align: 'center', size: 13, weight: 700, color: 'muted' });
+          st = { Gd, om, ol, bb, me };
+        });
+        v.legend([['accent', '68 / 90 / 95 / 99% regions', { area: true }], ['ink', 'flat'], ['orange', 'q₀ = 0', { dash: [3, 3] }], ['red', 'recollapse boundary', { dash: true }], ['red', 'SCP supernovae', { dot: true }], ['blue', 'Calán/Tololo', { dot: true }], ['muted', 'empty universe', { dash: [2, 3] }], ['green', 'flat 0.28 / 0.72']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { Gd, om, ol, bb, me } = st, C = fitSel.value === 'C';
+          const d = bb ? NaN : me.chi - Gd.best.chi, conf = bb ? '' : d <= 2.3 ? 'inside the 68% region' : d <= 4.61 ? 'inside 90%' : d <= 5.99 ? 'inside 95%' : d <= 9.21 ? 'inside 99%' : `excluded at more than 99% (≈${v.fix(Math.sqrt(Math.max(0, d)), 1)}σ in one parameter)`;
+          const age = ageH0(om, ol), you = bb ? `your universe (${v.fix(om, 2)}, ${v.fix(ol, 2)}) has no big bang` : `your universe (${v.fix(om, 2)}, ${v.fix(ol, 2)}): $\\Delta\\chi^2 = ${v.fix(d, 1)}$, ${conf}; $q_0 = ${v.fix(om / 2 - ol, 2)}$; age $= ${v.fix(age, 3)}/H_0$ = ${v.fix((age * 977.8) / 67.4, 1)} Gyr for $H_0 = 67.4$`;
+          const pl = dchi(Gd, 0.315, 0.685);
+          return `${you} · recomputed from the tables: best fit (${v.fix(Gd.best.om, 2)}, ${v.fix(Gd.best.ol, 2)}) with $\\chi^2 = ${v.fix(Gd.best.chi, 1)}$ for ${Gd.rows.length} SNe (paper ${C ? '(0.73, 1.32), χ² 56' : '(0.83, 1.42), χ² 98'}); flat $\\Omega_M = ${v.fix(Gd.flat.om, 2)}^{+${v.fix(Gd.hi - Gd.flat.om, 2)}}_{-${v.fix(Gd.flat.om - Gd.lo, 2)}}$ (paper ${C ? '0.28 +0.09 −0.08' : '0.29 +0.09 −0.08'}); $P(\\Omega_\\Lambda > 0)$ = **${v.fix(Gd.P, 4)}** (paper ${C ? '0.9979' : '0.9984'}); the valley $\\Omega_\\Lambda \\approx ${v.fix(Gd.slope, 2)}\\,\\Omega_M + ${v.fix(Gd.icpt, 2)}$, along which $0.8\\Omega_M - 0.6\\Omega_\\Lambda$ averages ${v.fix(Gd.vmean, 2)} for $\\Omega_M \\le 1.5$ (paper −0.2 ± 0.1) · today’s Planck 2018 values (0.315, 0.685) sit at $\\Delta\\chi^2 = ${v.fix(pl, 1)}$, ${pl <= 2.3 ? 'inside the 68% region of 1999' : pl <= 5.99 ? 'inside its 95% region' : 'outside its 95% region'}`;
         });
       },
     },

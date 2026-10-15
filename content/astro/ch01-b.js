@@ -128,7 +128,7 @@ give the radii of the smaller and larger star. When both eclipses are total/annu
           const y0 = Math.max(0, lo - 0.1 * (1 - lo) - 0.02), y1 = 1 + 0.16 * (1 - lo) + 0.01;
           lc.setView([-0.25, 0.75], [y0, y1]);
           lc.path(D.ph.map((p, k) => [p, D.fl[k]]), { color: 'accent', width: 2.2 });
-          if (isFinite(D.ta)) for (const [t, lab] of [[D.ta, 'a'], [D.tb, 'b'], [D.tc, 'c']]) if (isFinite(t)) { lc.vline(t, { color: 'orange', width: 1, dash: [3, 3], alpha: 0.8 }); lc.tex(`t_${lab}`, t, y0, { color: 'orange', size: 12, dy: -10, dx: lab === 'a' ? -7 : lab === 'c' ? 7 : 0 }); }
+          if (isFinite(D.ta) && !D.u) for (const [t, lab] of [[D.ta, 'a'], [D.tb, 'b'], [D.tc, 'c']]) if (isFinite(t)) { lc.vline(t, { color: 'orange', width: 1, dash: [3, 3], alpha: 0.8 }); lc.tex(`t_${lab}`, t, y0 + 0.45 * (lo - y0), { color: 'orange', size: 12, dx: lab === 'a' ? -8 : lab === 'c' ? 8 : 0 }); }
           lc.text('primary', isFinite(D.ta) ? D.ta : -0.05, D.fmin, { color: 'muted', size: 10.5, dx: -8, align: 'right' });
           lc.text('secondary', 0.5, D.sec, { color: 'muted', size: 10.5, dy: 12, align: 'center' });
           cur = D;
@@ -139,10 +139,10 @@ give the radii of the smaller and larger star. When both eclipses are total/annu
           const D = cur, d1 = 1 - D.fmin, d2 = 1 - D.sec, ratio = d1 / d2, Tr = (D.T1 / D.T2) ** 4, hot = D.T1 > D.T2 ? 1 : 2;
           let out = String.raw`primary depth ${v.fix(d1 * 100, 2)}%, secondary ${v.fix(d2 * 100, 2)}%; ratio ${v.fix(ratio, 3)} vs $(T_1/T_2)^4 = ${v.fix(Tr, 3)}$ (primary eclipse = star ${hot === 1 ? 1 : 2}, the hotter, covered${hot === 2 ? ' — here star 2 is hotter, so the phase-0.5 dip is the deeper one' : ''})`;
           const Rs = Math.min(D.R1, D.R2), Rl = Math.max(D.R1, D.R2);
+          if (D.u > 0) return out + ' · with limb darkening the eclipse bottoms are rounded: the second and third contacts can no longer be read off, and the small disc hides the bright centre of the large one, so the depth ratio exceeds the T⁴ ratio — real light curves are therefore fitted with a model like this one';
           if (isFinite(D.ta) && isFinite(D.tb) && isFinite(D.tc) && D.tc > D.tb + 1e-4) {
             const rs = Math.PI * (D.tb - D.ta), rl = Math.PI * (D.tc - D.ta);
             out += String.raw` · contacts $t_a, t_b, t_c$ = ${v.fix(D.ta, 4)}, ${v.fix(D.tb, 4)}, ${v.fix(D.tc, 4)} ⇒ $R_s/a = \pi(t_b - t_a) = ${v.fix(rs, 4)}$ (true ${v.fix(Rs, 4)}), $R_\ell/a = \pi(t_c - t_a) = ${v.fix(rl, 4)}$ (true ${v.fix(Rl, 4)})`;
-            if (D.u > 0) out += ' — limb darkening makes the bottom curved, so the "flat" contacts are only approximate';
           } else out += ' · partial eclipse: no flat bottom, the second and third contacts do not exist and the radius formulas cannot be used';
           if (D.u === 0 && isFinite(D.tb) && Math.abs(ratio / Tr - 1) > 0.02) out += ' (depth ratio ≠ T⁴ ratio: the eclipses are not both total/annular)';
           return out;
@@ -231,7 +231,7 @@ of the starlight (modified by limb darkening), and the shape of the transit fixe
             const k = kS.value, b = bS.value, c2 = cacheC(`${k}|${b}|${ldT.value}`, () => chi2(k, b, ldT.value));
             tr.fn((h) => -depthAt(h, k, b, ldT.value, Pp.P, Pp.aR), { color: 'accent', width: 2.2, n: 240, domain: [-6, 6] });
             tr.hline(-k * k * 1e6, { color: 'orange', width: 1, dash: [4, 4] });
-            tr.text('−(Rp/R*)²', -5.9, -k * k * 1e6, { color: 'orange', size: 10.5, dy: 9, align: 'left' });
+            tr.text('−(Rp/R*)²', 5.9, -k * k * 1e6, { color: 'orange', size: 10.5, dy: -9, align: 'right' });
             const inc = Math.acos(clamp(b / Pp.aR, 0, 1)), Rp = k * Pp.Rs * RS, mp = (msini * MJ) / Math.sin(inc), rho = mp / ((4 / 3) * Math.PI * Rp ** 3);
             T = { k, b, c2, inc, Rp, mp, rho };
           } else {
@@ -276,7 +276,7 @@ the node **regresses** (moves westward) for prograde orbits, advances for retrog
         const j2 = v.toggle('$J_2$ (oblate Earth)', true);
         const S = v.stage({ x: [-1.7, 1.7], y: [-1.45, 1.45], equal: true, axes: false, height: 360, weight: 1.15, title: 'one year in 15 seconds' });
         const g = v.stage({ x: [0, 180], y: [-12, 12], axes: 'box', height: 360, weight: 1, xlabel: 'inclination i (°)', ylabel: 'nodal rate dΩ/dt (°/day)', title: 'regression of the node' });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.38, axes: false });
+        const sc = v.scene3(S, { yaw: -0.35, pitch: 0.42, axes: false });
         const rate = (a, inc) => (j2.value ? ((-1.5 * Math.sqrt(MU / a ** 3) * J2V * (RE / a) ** 2 * Math.cos(inc)) * 86400) / DEG : 0);
         const cache = memo();
         // integrate one day (or ≥ 10 orbits) in the J2 field, return the fitted nodal rate
@@ -307,7 +307,7 @@ the node **regresses** (moves westward) for prograde orbits, advances for retrog
         let cur = null;
         v.animate((t) => {
           const a = RE + hS.value, inc = iS.value * DEG, day = (t / 15) * 365.25, M = measure();
-          const r0 = isFinite(M.rate) ? M.rate : rate(a, inc), Om = (r0 * day) * DEG, lamS = (SUN * day) * DEG;
+          const r0 = isFinite(M.rate) ? M.rate : rate(a, inc), Om = (90 + r0 * day) * DEG, lamS = (SUN * day) * DEG; // starts as a dawn–dusk orbit
           const R = 0.62, ro = 1.22; // the Earth is drawn small so the orbit can be seen (not to scale)
           sc.begin();
           // Earth: equator disc, latitude circles and meridians
@@ -379,7 +379,7 @@ It fitted the six planets known at the time and seemed to be confirmed by Uranus
         let seed = 1;
         v.button('new random system', () => { seed++; showRand = true; });
         let showRand = false;
-        const L = v.stage({ x: [-0.8, 9.5], y: [0.25, 160], ylog: true, axes: 'box', height: 340, weight: 1.2, xlabel: 'index n in the rule', ylabel: 'semi-major axis (AU)', title: 'the rule against the planets' });
+        const L = v.stage({ x: [-1.1, 9.5], y: [0.17, 160], ylog: true, axes: 'box', height: 340, weight: 1.2, xlabel: 'index n in the rule', ylabel: 'semi-major axis (AU)', title: 'the rule against the planets' });
         const R = v.stage({ x: [0, 0.25], y: [0, 1], axes: 'box', height: 340, weight: 1, xlabel: 'rms misfit of the best geometric law (dex)', ylabel: 'fraction of random systems', title: 'is our fit special?' });
         const fitGeo = (as) => { const xs = as.map((_, k) => k), ys = as.map((a) => Math.log10(a)), f = v.M.linreg(xs, ys); const rms = Math.sqrt(ys.reduce((s, y, k) => s + (y - f.predict(k)) ** 2, 0) / ys.length); return { f, rms }; };
         const solar = PLAN.slice(0, 9).map((p) => p[1]), SF = fitGeo(solar);
@@ -421,7 +421,7 @@ It fitted the six planets known at the time and seemed to be confirmed by Uranus
             R.hist(fr, { color: 'purple', fillAlpha: 0.35 });
           } else R.text('spacing too large to fit 9 planets', 0.125, 0.5, { color: 'red', align: 'center' });
           R.vline(SF.rms, { color: 'red', width: 2 });
-          R.text('solar system', SF.rms, ytop * 0.93, { color: 'red', size: 10.5, dx: 5, align: 'left' });
+          R.text('solar system', SF.rms, ytop * 0.8, { color: 'red', size: 10.5, dx: 5, align: 'left' });
         });
         v.legend([['accent', 'actual a', { dot: true }], ['ink', 'Titius–Bode prediction', { dot: true }], ['green', 'best geometric law', { dash: true }], ['purple', 'random spaced systems']]);
         v.readout(() => {

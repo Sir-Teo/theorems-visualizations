@@ -552,7 +552,7 @@ fixed up to a unit, chosen by assigning $T = 273.16\ \text{K}$ to the triple poi
           { key: 'rad', title: 'cavity radiation (photon gas)', col: 'gold', P: (V, T) => Arad * T ** 4 / 3, U: (V, T) => Arad * V * T ** 4, ad: (V0, T0, T) => V0 * (T0 / T) ** 3, V1: 1, V2: 2, Vth: 1, xl: 'V (m³)', yl: 'P (µPa)', ps: 1e6 },
         ];
         const stages = SUB.map((S) => v.stage({ x: [0, 1], y: [0, 1], height: 240, axes: 'box', xlabel: S.xl, ylabel: S.yl, weight: 1, minWidth: 220, title: S.title }));
-        const sb = v.stage({ x: [0, 3], y: [0, 800], height: 210, axes: 'box', full: true, ylabel: 'temperature read (K)', xticks: [[0.5, 'ideal gas'], [1.5, 'N₂ (van der Waals)'], [2.5, 'cavity radiation']], title: 'what each substance says the test temperature is' });
+        const sb = v.stage({ x: [0, 3], y: [0, 800], height: 220, axes: 'box', full: true, ylabel: 'temperature read (K)', xticks: [], title: 'what each substance says the test temperature is' });
         const isoQ = (S, Va, Vb, T) => S.U(Vb, T) - S.U(Va, T) + v.M.integrate((V) => S.P(V, T), Va, Vb, 400);
         let res = [];
         v.render(() => {
@@ -578,16 +578,19 @@ fixed up to a unit, chosen by assigning $T = 273.16\ \text{K}$ to the triple poi
           });
           // bars
           const top = Math.max(800, T1 * 1.6);
-          sb.setView([0, 3], [0, top]);
+          sb.setView([0, 3], [-0.12 * top, top]);
+          sb.hline(0, { color: 'muted', width: 1 });
+          ['ideal gas', 'N₂ (van der Waals)', 'cavity radiation'].forEach((t, k) => sb.text(t, k + 0.5, -0.06 * top, { align: 'center', size: 12, weight: 650, color: SUB[k].col }));
           sb.hline(T1, { color: 'ink', width: 1.4, dash: [6, 4] });
-          sb.text(`true ${v.fix(T1, 2)} K`, 2.98, T1, { dy: -9, align: 'right', size: 11, color: 'ink' });
+          sb.text(`true ${v.fix(T1, 2)} K`, 1, T1, { dy: -10, align: 'center', size: 11, color: 'ink', weight: 600, plate: true });
           res.forEach((r, k) => {
             const x = k + 0.5;
             bar(sb, x - 0.14, r.carnotT, 0.12, 'green');
             const shown = Math.min(r.cvT, top * 0.97);
             bar(sb, x + 0.14, shown, 0.12, 'purple', { alpha: 0.6 });
             sb.text(`${v.fix(r.carnotT, 2)}`, x - 0.14, r.carnotT, { dy: -9, align: 'center', size: 10.5, color: 'green', weight: 650 });
-            sb.text(`${r.cvT > top * 0.97 ? '↑ ' : ''}${v.fix(r.cvT, 1)}`, x + 0.14, shown, { dy: -9, align: 'center', size: 10.5, color: 'purple', weight: 650 });
+            const clipped = r.cvT > top * 0.97;
+            sb.text(`${clipped ? '↑ ' : ''}${v.fix(r.cvT, r.cvT < 1000 ? 2 : 1)}`, x + 0.14, shown, { dy: clipped ? 14 : -9, align: 'center', size: 10.5, color: 'purple', weight: 650, plate: clipped });
           });
         });
         v.legend([['green', 'Carnot heat ratio × 273.16 K', { area: true }], ['purple', 'constant-volume thermometer of that substance', { area: true }], ['purple', 'adiabats', { dash: true }]]);
@@ -605,7 +608,7 @@ fixed up to a unit, chosen by assigning $T = 273.16\ \text{K}$ to the triple poi
 $$\eta_C = 1 - \frac{T_c}{T_h},$$
 attained exactly by reversible engines. Every real engine has $\eta < \eta_C$. The limit approaches 1 only as $T_c \to 0$ or $T_h \to \infty$, and it vanishes when $T_h = T_c$. More generally, a reversible cycle that takes in heat over a range of temperatures has $\eta = 1 - \bar T_{\text{out}}/\bar T_{\text{in}}$ with heat-weighted mean temperatures, which is below $\eta_C$ for the extreme temperatures it reaches.`,
       idea: String.raw`Carnot's theorem (2.5) says the reversible efficiency depends only on the two temperatures, and the thermodynamic scale (2.6) is defined so that $Q_c/Q_h = T_c/T_h$ for that engine, which gives the formula. On a $T$–$S$ diagram the proof is a picture: the Carnot cycle is a rectangle, $Q_h$ is the area under its top edge down to $T = 0$, $W$ is the rectangle, and their ratio is $(T_h - T_c)/T_h$. Any other cycle squeezed between the same two temperatures takes in some of its heat below $T_h$ and rejects some above $T_c$, so its rectangle-to-total ratio is smaller.`,
-      caption: String.raw`Left: drag the top and bottom edges ($T_h$, $T_c$) of the Carnot rectangle on the $T$–$S$ plane. Shaded areas are energies per cycle: blue the heat rejected $Q_c$, orange the work $W$; together they make $Q_h$. Toggle the **rival cycle** (purple) — an ellipse inside the same temperature range — and compare its efficiency, computed from $\oint T\,dS$. Right: the Carnot limit as a map over $T_h$ and $T_c$, with contours. The dots are real power plants (observed efficiencies from Curzon & Ahlborn 1975 and Bejan 1997, as tabulated by Esposito et al. 2010); hover a dot to read it. Every plant reaches only 39–70% of its Carnot limit. The cross marks the temperatures set on the left.`,
+      caption: String.raw`Left: drag the top and bottom edges ($T_h$, $T_c$) of the Carnot rectangle on the $T$–$S$ plane. Shaded areas are energies per cycle: blue the heat rejected $Q_c$, orange the work $W$; together they make $Q_h$. Toggle the **rival cycle** (purple) — an ellipse inside the same temperature range — and compare its efficiency, computed from $\oint T\,dS$. Right: the Carnot limit as a map over $T_h$ and $T_c$, with contours. The dots are real power plants (observed efficiencies from Curzon & Ahlborn 1975 and Bejan 1997, as tabulated by Esposito et al. 2010); hover a dot to read it. Every plant reaches only 39–71% of its Carnot limit. The cross marks the temperatures set on the left.`,
       deps: ['thermo-2.6', 'thermo-2.4'],
       see: ['energy-2.2', 'tech-7.10'],
       refs: ['Schroeder §4.1', 'Esposito et al., PRL 105, 150603 (2010), Table I'],
@@ -615,10 +618,10 @@ attained exactly by reversible engines. Every real engine has $\eta < \eta_C$. T
       viz(v) {
         const rival = v.toggle('rival cycle (ellipse) between the same temperatures', true);
         const st = v.stage({ x: [0, 10], y: [0, 1000], height: 340, axes: 'box', xlabel: 'S (J/K)', ylabel: 'T (K)', weight: 1, title: 'Carnot cycle on the $T$–$S$ plane' });
-        const sm = v.stage({ x: [300, 1000], y: [250, 400], height: 340, axes: 'box', xlabel: 'T_h (K)', ylabel: 'T_c (K)', weight: 1.25, hover: true, title: 'Carnot limit $1 - T_c/T_h$ and real plants' });
+        const sm = v.stage({ x: [300, 1000], y: [250, 400], height: 340, axes: 'box', xlabel: 'Th (K)', ylabel: 'Tc (K)', weight: 1.25, hover: true, title: 'Carnot limit $1 - T_c/T_h$ and real plants' });
         const S1 = 2.5, S2 = 7.5;
-        const hH = st.handle(5, 800, { color: 'red', label: 'Th', constrain: (x, y) => [5, clamp(y, (hC ? hC.y : 300) + 40, 980)] });
-        const hC = st.handle(5, 300, { color: 'blue', label: 'Tc', labelPos: 'se', constrain: (x, y) => [5, clamp(y, 30, hH.y - 40)] });
+        const hH = st.handle(5, 750, { color: 'red', label: 'Th', constrain: (x, y) => [5, clamp(y, (hC ? hC.y : 300) + 40, 980)] });
+        const hC = st.handle(5, 330, { color: 'blue', label: 'Tc', labelPos: 'se', constrain: (x, y) => [5, clamp(y, 30, hH.y - 40)] });
         const ellipseEta = (Th, Tc) => { const n = 400; let qin = 0, qout = 0; const Tm = (Th + Tc) / 2, b = (Th - Tc) / 2, a = (S2 - S1) / 2; for (let i = 0; i < n; i++) { const t0 = Math.PI * 2 * i / n, t1 = Math.PI * 2 * (i + 1) / n, Sa = 5 + a * Math.cos(t0), Sb = 5 + a * Math.cos(t1), T = Tm + b * Math.sin((t0 + t1) / 2), dS = Sa - Sb; if (dS > 0) qin += T * dS; else qout -= T * dS; } return { eta: 1 - qout / qin, qin, qout }; };
         let hov = null;
         v.render(() => {
@@ -637,8 +640,8 @@ attained exactly by reversible engines. Every real engine has $\eta < \eta_C$. T
             st.text(`rival η = ${v.fix(ellipseEta(Th, Tc).eta, 3)}`, 5, (Th + Tc) / 2, { dy: 14, align: 'center', size: 11.5, color: 'purple', weight: 650, plate: true });
           }
           // map
-          sm.heat((x, y) => (y < x ? 1 - y / x : NaN), { range: [0, 0.8], cmap: 'theme', res: 4, key: 'carnot-map' });
-          sm.contour((x, y) => 1 - y / x, [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7], { color: 'muted', width: 1, labels: true, fmt: (z) => `η = ${z.toFixed(1)}`, res: 80 });
+          sm.heat((x, y) => (y < x ? 1 - y / x : NaN), { range: [0, 1.4], cmap: 'theme', color: 'purple', res: 4, key: 'carnot-map' });
+          sm.contour((x, y) => 1 - y / x, [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7], { color: 'purple', width: 1, alpha: 0.6, labels: true, fmt: (z) => `${z.toFixed(1)}`, res: 80 });
           sm.axes();
           const ptr = sm.pointer; hov = null;
           if (ptr.inside) { let best = 18 * 18; for (const p of PLANTS) { const d = (sm.X(p.Th) - sm.X(ptr.x)) ** 2 + (sm.Y(p.Tc) - sm.Y(ptr.y)) ** 2; if (d < best) { best = d; hov = p; } } }
@@ -655,7 +658,7 @@ attained exactly by reversible engines. Every real engine has $\eta < \eta_C$. T
           const Th = hH.y, Tc = hC.y, eC = 1 - Tc / Th, er = ellipseEta(Th, Tc), dS = S2 - S1;
           const ratios = PLANTS.map((p) => p.eta / (1 - p.Tc / p.Th));
           const p = hov;
-          return `$Q_h = T_h\\Delta S$ = ${v.fix(Th * dS, 0)} J, $W = (T_h - T_c)\\Delta S$ = ${v.fix((Th - Tc) * dS, 0)} J → $W/Q_h$ = **${v.fix(eC, 4)}** $= 1 - T_c/T_h$ · rival ellipse: $\\eta$ = ${v.fix(er.eta, 4)} (its heat comes in at a mean ${v.fix(er.qin / dS * 1, 0)} K-weighted… below $T_h$) · ${p ? `**${p.name}** (${p.kind}): $T_h$ = ${p.Th} K, $T_c$ = ${p.Tc} K, observed ${v.fix(p.eta, 2)} vs Carnot ${v.fix(1 - p.Tc / p.Th, 3)}` : `plants reach ${v.fix(Math.min(...ratios) * 100, 0)}–${v.fix(Math.max(...ratios) * 100, 0)}% of their Carnot limit (hover a dot)`}`;
+          return `$Q_h = T_h\\Delta S$ = ${v.fix(Th * dS, 0)} J, $W = (T_h - T_c)\\Delta S$ = ${v.fix((Th - Tc) * dS, 0)} J → $W/Q_h$ = **${v.fix(eC, 4)}** $= 1 - T_c/T_h$ · rival ellipse: it takes in heat at a mean $\\bar T_{\\text{in}}$ = ${v.fix(er.qin / dS, 0)} K and rejects it at $\\bar T_{\\text{out}}$ = ${v.fix(er.qout / dS, 0)} K, so $\\eta = 1 - \\bar T_{\\text{out}}/\\bar T_{\\text{in}}$ = ${v.fix(er.eta, 4)} < $\\eta_C$ · ${p ? `**${p.name}** (${p.kind}): $T_h$ = ${p.Th} K, $T_c$ = ${p.Tc} K, observed ${v.fix(p.eta, 2)} vs Carnot ${v.fix(1 - p.Tc / p.Th, 3)}` : `plants reach ${v.fix(Math.min(...ratios) * 100, 0)}–${v.fix(Math.max(...ratios) * 100, 0)}% of their Carnot limit (hover a dot)`}`;
         });
       },
     },
@@ -666,7 +669,7 @@ attained exactly by reversible engines. Every real engine has $\eta < \eta_C$. T
 $$\oint \frac{\delta Q}{T_{\text{res}}} = \sum_i \frac{\delta Q_i}{T_i} \le 0,$$
 with equality if and only if the cycle is reversible. Here $T_{\text{res}}$ is the temperature of the reservoir supplying each heat element (for a reversible cycle it equals the system's own temperature).`,
       idea: String.raw`Clausius' construction: slice the cycle by a family of adiabats into thin strips and replace the cycle within each strip by a small Carnot cycle — an isotherm on top, one at the bottom. Each little Carnot cycle has $Q_{\text{top}}/T_{\text{top}} + Q_{\text{bottom}}/T_{\text{bottom}} = 0$ (2.4, 2.7), and the adiabatic sides shared by neighbouring strips carry no heat, so the zigzag cycle has $\sum Q_i/T_i = 0$ exactly; as the strips get thinner the zigzag converges to the original cycle. For an irreversible cycle, compare with a reversible one fed by the same reservoirs: by Carnot's theorem (2.5) it cannot extract more work, so it must reject more heat, which makes the sum negative. Equivalently, heat crossing a finite temperature gap, or work turned into heat by friction, each add a negative term.`,
-      caption: String.raw`An elliptical cycle of 1 mol of monatomic gas (drag its centre and the corner handle) is cut into $n$ strips by adiabats and replaced by Clausius' zigzag of isotherms (red: heat in, blue: heat out) and adiabats (dashed). Each isotherm touches its own reservoir. The bars are $Q_i/T_i$ for every reservoir and, on the right, their sum. With no gaps and no friction the sum is zero for any $n$, and the zigzag's work converges to the ellipse's area as $n$ grows. Open a **temperature gap** (reservoirs hotter than the gas when giving heat, colder when receiving it) or add **piston friction** during the isothermal strokes (its heat goes into the reservoir in contact): the sum turns negative, and $-\sum Q_i/T_i$ is the entropy produced.`,
+      caption: String.raw`A reversible cycle of 1 mol of monatomic gas, drawn as an ellipse on the $T$–$S$ plane (drag its centre and size handle), is cut into $n$ strips by adiabats and replaced by Clausius' zigzag of isotherms (red: heat in, blue: heat out) and adiabats (dashed). Each isotherm touches its own reservoir. Each strip is a genuine little Carnot cycle: the heat it takes in at the top, $T_{\text{top}}\Delta S$, and gives out at the bottom differ, but their ratios to the temperatures are $\pm\Delta S$. The bars are $Q_i/T_i$ for every reservoir (strip by strip, top in red, bottom in blue) and, at the far right, their sum. With no gaps and no friction the sum is zero for any $n$, and the zigzag's work converges to the ellipse's area as $n$ grows. Open a **temperature gap** (reservoirs hotter than the gas when giving heat, colder when receiving it) or add **piston friction** during the isothermal strokes (its heat goes into the reservoir in contact): the sum turns negative, and $-\sum Q_i/T_i$ is the entropy produced.`,
       deps: ['thermo-2.5'],
       see: ['pchem-3.4'],
       refs: ['Kardar §1.6'],
@@ -674,62 +677,51 @@ with equality if and only if the cycle is reversible. Here $T_{\text{res}}$ is t
       credit: 'Clausius, 1854 (the inequality) and 1865 (its final form)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Clausius_theorem' },
       viz(v) {
-        const nS = v.slider('number of strips $n$', 2, 30, 6, { int: true });
+        const nS = v.slider('number of strips $n$', 2, 30, 8, { int: true });
         const gap = v.slider('temperature gap $\\Delta T$', 0, 60, 0, { step: 1, fmt: (x) => x.toFixed(0) + ' K' });
         const fr = v.slider('piston friction', 0, 8, 0, { step: 0.1, fmt: (x) => v.fix(x, 1) + ' kPa' });
-        const sp = v.stage({ x: [0, 50], y: [0, 520], height: 320, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1, title: 'cycle and Clausius’ zigzag' });
-        const st = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', xlabel: 'S − S_min (J/K)', ylabel: 'T (K)', weight: 1, title: 'the same on the $T$–$S$ plane' });
-        const sb = v.stage({ x: [0, 1], y: [-1, 1], height: 200, axes: 'box', full: true, ylabel: 'Q/T (J/K)', title: 'heat over reservoir temperature, reservoir by reservoir' });
-        const hc = sp.handle(25, 260, { color: 'ink', label: 'centre', constrain: { x: [12, 38], y: [130, 400] } });
-        const hr = sp.handle(37, 380, { color: 'accent', constrain: (x, y) => [clamp(x, hc.x + 3, Math.min(48, 2 * hc.x - 3)), clamp(y, hc.y + 30, Math.min(510, 2 * hc.y - 30))] });
-        hc.onDrag = () => { hr.set(clamp(hr.x, hc.x + 3, Math.min(48, 2 * hc.x - 3)), clamp(hr.y, hc.y + 30, Math.min(510, 2 * hc.y - 30))); };
+        const st = v.stage({ x: [0, 12], y: [150, 750], height: 340, axes: 'box', xlabel: 'S − S₀ (J/K)', ylabel: 'T (K)', weight: 1.2, title: 'cycle and Clausius’ zigzag on the $T$–$S$ plane' });
+        const sb = v.stage({ x: [0, 1], y: [-1, 1], height: 340, axes: 'box', weight: 1, ylabel: 'Q/T (J/K)', title: 'heat over reservoir temperature, reservoir by reservoir' });
+        const hc = st.handle(6, 450, { color: 'ink', label: 'centre', constrain: { x: [4, 8], y: [330, 560] } });
+        const lim = (x, y) => [clamp(x, hc.x + 1, hc.x + Math.min(5.5, hc.x - 0.3)), clamp(y, hc.y + 30, hc.y + Math.min(260, hc.y - 180))];
+        const hr = st.handle(10.5, 600, { color: 'accent', label: 'size', constrain: lim });
+        hc.onDrag = () => { const [x, y] = lim(hr.x, hr.y); hr.set(x, y); };
+        // S − S₀ with S₀ chosen so that S − S₀ = 0 at T = 300 K, V = 10 L (1 mol, monatomic)
+        const toPV = (S, T) => { const V = 10 * Math.exp(S / R) * (300 / T) ** 1.5; return [V, R * T / V]; };
         let out = null;
         v.render(() => {
           const a = hr.x - hc.x, b = hr.y - hc.y, n = nS.value, M = 1440;
-          const loop = Array.from({ length: M + 1 }, (_, i) => { const t = 2 * Math.PI * i / M; return [hc.x + a * Math.cos(t), hc.y - b * Math.sin(t)]; });
-          const TT = loop.map(([V, P]) => V * P / R), SS = loop.map(([V], i) => R * Math.log(V) + 1.5 * R * Math.log(TT[i]));
-          const Smin = Math.min(...SS), Smax = Math.max(...SS), dS = (Smax - Smin) / n;
-          const toPV = (S, T) => { const V = Math.exp((S + Smin - 1.5 * R * Math.log(T)) / R); return [V, R * T / V]; };
+          // clockwise in T–S (heat taken in at the top while S grows): an engine
+          const loop = Array.from({ length: M + 1 }, (_, i) => { const t = 2 * Math.PI * i / M; return [hc.x - a * Math.cos(t), hc.y + b * Math.sin(t)]; });
+          const Smin = hc.x - a, dS = 2 * a / n;
           const up = [], dn = [];
           for (let k = 0; k < n; k++) {
             const Sm = Smin + (k + 0.5) * dS; let hi = -1, lo = 1e9;
-            for (let i = 0; i < M; i++) { const s0 = SS[i] - Sm, s1 = SS[i + 1] - Sm; if (s0 * s1 <= 0 && s0 !== s1) { const T = TT[i] + (TT[i + 1] - TT[i]) * s0 / (s0 - s1); hi = Math.max(hi, T); lo = Math.min(lo, T); } }
+            for (let i = 0; i < M; i++) { const s0 = loop[i][0] - Sm, s1 = loop[i + 1][0] - Sm; if (s0 * s1 <= 0 && s0 !== s1) { const T = loop[i][1] + (loop[i + 1][1] - loop[i][1]) * s0 / (s0 - s1); hi = Math.max(hi, T); lo = Math.min(lo, T); } }
             up.push(hi); dn.push(lo);
           }
-          const dTg = Math.min(gap.value, Math.min(...dn) - 5), mu = fr.value;
-          const rows = [];
-          let sum = 0, Wz = 0;
+          const dTg = Math.min(gap.value, Math.min(...dn) - 20), mu = fr.value;
+          const rows = []; let sum = 0, Wz = 0;
           for (let k = 0; k < n; k++) {
-            const Sa = k * dS, Sb = (k + 1) * dS;
+            const Sa = Smin + k * dS, Sb = Sa + dS;
             const Va = toPV(Sa, up[k])[0], Vb = toPV(Sb, up[k])[0], Vc = toPV(Sb, dn[k])[0], Vd = toPV(Sa, dn[k])[0];
             const Qt = up[k] * dS - mu * Math.abs(Vb - Va), Qb = -dn[k] * dS - mu * Math.abs(Vc - Vd);
             const Tt = up[k] + dTg, Tb = dn[k] - dTg;
             rows.push({ Qt, Qb, Tt, Tb }); sum += Qt / Tt + Qb / Tb; Wz += Qt + Qb;
           }
-          // T–S view
-          const Tmax = Math.max(...TT), Tmin = Math.min(...TT);
-          st.setView([-0.05 * (Smax - Smin), 1.05 * (Smax - Smin)], [Math.max(0, Tmin - 0.25 * (Tmax - Tmin)), Tmax + 0.25 * (Tmax - Tmin)]);
+          // T–S panel
           const zz = [];
-          for (let k = 0; k < n; k++) { zz.push([k * dS, up[k]], [(k + 1) * dS, up[k]]); }
-          for (let k = n - 1; k >= 0; k--) { zz.push([(k + 1) * dS, dn[k]], [k * dS, dn[k]]); }
-          st.poly(zz, { fill: 'orange', fillAlpha: 0.18, color: 'muted', width: 1 });
-          for (let k = 0; k < n; k++) { st.line(k * dS, up[k], (k + 1) * dS, up[k], { color: 'red', width: 2.6 }); st.line(k * dS, dn[k], (k + 1) * dS, dn[k], { color: 'blue', width: 2.6 }); if (k) st.line(k * dS, dn[k], k * dS, up[k], { color: 'purple', width: 1, dash: [4, 4], alpha: 0.7 }); }
-          st.path(SS.map((S, i) => [S - Smin, TT[i]]), { color: 'ink', width: 1.8 });
-          if (dTg > 0) for (let k = 0; k < n; k++) { st.line(k * dS, up[k] + dTg, (k + 1) * dS, up[k] + dTg, { color: 'red', width: 1.2, dash: [3, 3] }); st.line(k * dS, dn[k] - dTg, (k + 1) * dS, dn[k] - dTg, { color: 'blue', width: 1.2, dash: [3, 3] }); }
-          // P–V view
-          sp.path(loop, { color: 'ink', width: 1.8 });
-          const edge = (S0, T0, S1, T1, m = 30) => Array.from({ length: m + 1 }, (_, i) => toPV(S0 + (S1 - S0) * i / m, T0 + (T1 - T0) * i / m));
-          for (let k = 0; k < n; k++) {
-            sp.path(edge(k * dS, up[k], (k + 1) * dS, up[k]), { color: 'red', width: 2.4 });
-            sp.path(edge(k * dS, dn[k], (k + 1) * dS, dn[k]), { color: 'blue', width: 2.4 });
-            sp.path(edge(k * dS, k ? up[k - 1] : dn[0], k * dS, up[k]), { color: 'purple', width: 1.3, dash: [5, 4] });
-            sp.path(edge(k * dS, dn[k], k * dS, k ? dn[k - 1] : up[0]), { color: 'purple', width: 1.3, dash: [5, 4] });
-          }
-          sp.path(edge(n * dS, up[n - 1], n * dS, dn[n - 1]), { color: 'purple', width: 1.3, dash: [5, 4] });
+          for (let k = 0; k < n; k++) zz.push([Smin + k * dS, up[k]], [Smin + (k + 1) * dS, up[k]]);
+          for (let k = n - 1; k >= 0; k--) zz.push([Smin + (k + 1) * dS, dn[k]], [Smin + k * dS, dn[k]]);
+          st.poly(zz, { fill: 'orange', fillAlpha: 0.2, stroke: false });
+          for (let k = 0; k <= n; k++) { const S = Smin + k * dS, t1 = k === 0 ? up[0] : k === n ? up[n - 1] : Math.max(up[k - 1], up[k]), t0 = k === 0 ? dn[0] : k === n ? dn[n - 1] : Math.min(dn[k - 1], dn[k]); st.line(S, t0, S, t1, { color: 'purple', width: 1.2, dash: [4, 4] }); }
+          for (let k = 0; k < n; k++) { st.line(Smin + k * dS, up[k], Smin + (k + 1) * dS, up[k], { color: 'red', width: 2.8 }); st.line(Smin + k * dS, dn[k], Smin + (k + 1) * dS, dn[k], { color: 'blue', width: 2.8 }); }
+          if (dTg > 0) for (let k = 0; k < n; k++) { st.line(Smin + k * dS, up[k] + dTg, Smin + (k + 1) * dS, up[k] + dTg, { color: 'red', width: 1.2, dash: [3, 3] }); st.line(Smin + k * dS, dn[k] - dTg, Smin + (k + 1) * dS, dn[k] - dTg, { color: 'blue', width: 1.2, dash: [3, 3] }); }
+          st.path(loop, { color: 'ink', width: 1.8 });
           // bars
           const vals = rows.flatMap((r) => [r.Qt / r.Tt, r.Qb / r.Tb]), mx = Math.max(0.5, ...vals.map(Math.abs), Math.abs(sum)) * 1.25;
           sb.setView([0, n + 1.6], [-mx, mx]);
-          sb.setTicks([...Array.from({ length: n }, (_, k) => [k + 0.5, n <= 14 ? `${k + 1}` : (k + 1) % 5 === 0 ? `${k + 1}` : '']), [n + 0.95, 'sum']], null);
+          sb.setTicks([...Array.from({ length: n }, (_, k) => [k + 0.5, n <= 10 || (k + 1) % 5 === 0 ? `${k + 1}` : '']), [n + 0.95, 'sum']], null);
           sb.hline(0, { color: 'muted', width: 1 });
           rows.forEach((r, k) => { bar(sb, k + 0.5 - 0.2, r.Qt / r.Tt, 0.17, 'red'); bar(sb, k + 0.5 + 0.2, r.Qb / r.Tb, 0.17, 'blue'); });
           const zero = Math.abs(sum) < 1e-6;
@@ -742,7 +734,7 @@ with equality if and only if the cycle is reversible. Here $T_{\text{res}}$ is t
         v.readout(() => {
           if (!out) return '';
           const { sum, Wz, Wl, n } = out, rev = gap.value === 0 && fr.value === 0;
-          return `$\\sum_i Q_i/T_i$ over ${2 * n} reservoirs = **${v.fix(sum, 6)} J/K** ${rev ? '(reversible: zero for every $n$)' : '< 0: entropy produced $-\\sum Q_i/T_i$ = ' + v.fix(-sum, 4) + ' J/K'} · work of the zigzag ${v.fix(Wz, 1)} J vs the ellipse's area $\\pi ab$ = ${v.fix(Wl, 1)} J${rev ? ' (they converge as $n$ grows)' : ' (friction and gaps cost work too)'}`;
+          return `$\\sum_i Q_i/T_i$ over ${2 * n} reservoirs = **${v.fix(sum, 6)} J/K** ${rev ? '(reversible: zero for every $n$, since each strip is a Carnot cycle with $Q_{\\text{top}}/T_{\\text{top}} = -Q_{\\text{bot}}/T_{\\text{bot}} = \\Delta S$)' : '< 0: entropy produced $-\\sum Q_i/T_i$ = ' + v.fix(-sum, 4) + ' J/K'} · work delivered by the zigzag ${v.fix(Wz, 1)} J vs the cycle's $\\oint T\\,dS = \\pi ab$ = ${v.fix(Wl, 1)} J${rev ? ' (they converge as $n$ grows)' : ' (friction and gaps cost work too)'}`;
         });
       },
     },
@@ -764,7 +756,7 @@ Heat itself is *not* a state function — $\delta Q$ is an inexact differential 
         const pw = v.slider('divide $\\delta Q$ by $T^{p}$ with $p$', 0, 2, 1, { step: 0.05, fmt: (x) => v.fix(x, 2) });
         const gas = v.select('gas', [{ value: 3, label: 'monatomic' }, { value: 5, label: 'diatomic' }], 3);
         const sp = v.stage({ x: [0, 60], y: [0, 520], height: 340, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1.3, title: 'three paths from A to B (1 mol)' });
-        const sb = v.stage({ x: [0, 2], y: [-1.25, 1.25], height: 340, axes: 'box', weight: 1, xticks: [[0.5, '∫ δQ'], [1.5, '∫ δQ / Tᵖ']], title: 'path integrals (bars scaled to the largest)' });
+        const sb = v.stage({ x: [0, 2], y: [-1.25, 1.25], height: 340, axes: 'box', weight: 1, xticks: [[0.5, '∫ δQ  (J)'], [1.5, '∫ δQ / Tᵖ']], yticks: [], title: 'path integrals (bars scaled to the largest)' });
         const con = { x: [4, 58], y: [40, 510] };
         const hA = sp.handle(10, 420, { color: 'ink', label: 'A', constrain: con }), hB = sp.handle(46, 130, { color: 'ink', label: 'B', constrain: con });
         const c1 = sp.handle(40, 400, { color: 'purple', label: 'C₁', constrain: con }), c2 = sp.handle(20, 110, { color: 'purple', label: 'C₂', constrain: con });
@@ -773,8 +765,8 @@ Heat itself is *not* a state function — $\delta Q$ is an inexact differential 
         v.render(() => {
           const f = +gas.value, p = pw.value, A = [hA.x, hA.y], B = [hB.x, hB.y];
           const S = (V, P) => f / 2 * R * Math.log(V * P / R) + R * Math.log(V);
-          const S0 = S(A[0], A[1]), levels = []; for (let k = -12; k <= 12; k++) levels.push(S0 + 6 * k);
-          sp.contour((V, P) => S(V, P), levels, { color: 'faint', width: 1, res: 90 });
+          const S0 = S(A[0], A[1]), levels = []; for (let k = -8; k <= 8; k++) levels.push(S0 + 8 * k);
+          sp.contour((V, P) => S(V, P), levels, { color: 'faint', width: 0.9, alpha: 0.8, res: 90 });
           const paths = [
             { pts: [A, [A[0], B[1]], B], col: 'orange', name: 'isochore, then isobar' },
             { pts: [A, [B[0], A[1]], B], col: 'teal', name: 'isobar, then isochore' },
@@ -795,7 +787,6 @@ Heat itself is *not* a state function — $\delta Q$ is an inexact differential 
             sb.text(`${v.fmt(P.I, 4)}`, 1.5 + dx, P.I / mI, { dy: P.I >= 0 ? -10 : 10, align: 'center', size: 10.5, color: P.col, weight: 650 });
           });
           sb.vline(1, { color: 'faint', dash: [4, 4] });
-          sb.text('J', 0.5, -1.15, { align: 'center', size: 11, color: 'muted' }); sb.text(p === 1 ? 'J/K' : `J/K^${v.fix(p, 2)}`, 1.5, -1.15, { align: 'center', size: 11, color: 'muted' });
           res = { paths, dS, p };
         });
         v.legend([['orange', 'isochore, then isobar'], ['teal', 'isobar, then isochore'], ['purple', 'free path'], ['faint', 'adiabats (constant S)']]);

@@ -252,6 +252,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `colorbar([lo,hi], cmap, {pos:'right'|'left'|'top'|'bottom', label, tex, ticks, fmt, length})` | colour bar on a small panel inside the edge, for a `heat` map (`cmap`: name or `t => [r,g,b]`). |
 | `polarGrid({rings, spokes:12, rmax, center, angles:'deg'|'rad'|false, labelAngle, labels})` | polar grid (`rings`: count or radii); use with `equal: true, axes: false`. |
 | `setView([x0,x1], [y0,y1])` | change the window (fine to call inside render). |
+| `gutter: true` (stage option; or `{l, r, t, b}` px) | **recommended with `axes: 'box'`**: insets the data area so tick labels sit outside it (left and bottom), the x label is centred below the ticks and the y label above the axis, and all drawing is clipped to the data area. No more padding view ranges to keep data off the labels. |
 | `setLabels(xlabel, ylabel)` | change the axis labels (`undefined` keeps one, `null` removes it). `setTicks(x, y)` likewise: `undefined` keeps, `null` = automatic. |
 | `setScale({xlog, ylog, equal, x, y})` | switch an axis between linear and log, or equal/unequal aspect, in place (with an optional new window); e.g. a lin/log toggle on one panel. Cheap to call every frame. |
 | `contour(f, levels, {color, width, dash, res, labels, fmt})` | contour lines of a scalar field `f(x, y)` by marching squares (`levels`: a number or an array; `res` grid cells across, default 120; `labels: true` writes each level on its line). |

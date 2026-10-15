@@ -221,7 +221,7 @@ export function blocEditor(v, s, P, o = {}) {
   const max = () => (typeof o.max === 'function' ? o.max() : o.max ?? 20);
   const geom = () => {
     const W = s.width, H = s.height, nb = P.blocs.length, m = P.m;
-    const head = 24, rowH = Math.min(38, (H - head - 6) / nb);
+    const head = 24, rowH = Math.min(o.rowMax ?? 38, (H - head - 6) / nb);
     const cr = Math.max(7, Math.min(10.5, rowH * 0.33)), step = 2 * cr + 9;
     const cx0 = 14 + cr, chipsEnd = cx0 + (m - 1) * step + cr;
     const bx0 = chipsEnd + 18, bx1 = W - 40;
@@ -309,7 +309,7 @@ export function drawMatrix(v, s, N, box, o = {}) {
  */
 export function drawRepTriangle(v, s, counts, box, o = {}) {
   const c = s.ctx, w = box[2] - box[0], h = box[3] - box[1];
-  const side = Math.min(w - 70, (h - 44) / 0.866), cx = (box[0] + box[2]) / 2, top = box[1] + (h - side * 0.866) / 2 + 4;
+  const side = Math.min(w - 90, (h - 26 - 36) / 0.866), cx = (box[0] + box[2]) / 2, top = box[1] + 26 + Math.max(0, (h - 62 - side * 0.866) / 2);
   const V = [[cx, top], [cx - side / 2, top + side * 0.866], [cx + side / 2, top + side * 0.866]];
   const mid = (a, b) => [(V[a][0] + V[b][0]) / 2, (V[a][1] + V[b][1]) / 2];
   const Gc = [(V[0][0] + V[1][0] + V[2][0]) / 3, (V[0][1] + V[1][1] + V[2][1]) / 3];
@@ -333,7 +333,7 @@ export function drawRepTriangle(v, s, counts, box, o = {}) {
     const edges = [[0, 1, -1], [0, 2, 1], [1, 2, 0]];
     for (const [x, y, side2] of edges) {
       const M = mid(x, y), a = tally(x, y), b = tally(y, x);
-      const out = side2 === 0 ? [M[0], M[1] + 18] : [M[0] + side2 * 34, M[1] - 8];
+      const out = side2 === 0 ? [M[0], M[1] + 22] : [M[0] + side2 * 36, M[1] - 10];
       const wcol = a > b ? CC[x] : b > a ? CC[y] : 'muted';
       txt(v, c, `${LET[x]} ${+a.toFixed(1)} : ${+b.toFixed(1)} ${LET[y]}`, out[0], out[1], { size: 11.5, weight: 700, color: wcol, halo: true });
     }

@@ -122,6 +122,8 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
         let cur = null;
         v.render(() => {
           const D = run(), L = lagrange(mu);
+          let ext = 1.25; for (const q of D.R) ext = Math.max(ext, Math.min(3, 1.06 * Math.max(Math.abs(q.x), Math.abs(q.y), Math.abs(q.X), Math.abs(q.Y))));
+          s.setView([-ext * 1.1, ext * 1.1], [-ext, ext]); si.setView([-ext * 1.1, ext * 1.1], [-ext, ext]);
           // trajectory (rotating frame of the primaries' line)
           s.path(D.R.map((q) => [q.x, q.y]), { color: 'accent', width: 1.3, alpha: 0.85 });
           markL(s, L, { color: 'faint', labels: false });
@@ -185,9 +187,9 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
         const uS = v.slider('Jacobi constant $C_J$', 0, 1, 0.64, { step: 0.001, fmt: (u) => v.fix(Cof(u), 4) });
         const s = v.stage({ x: [-1.6, 1.6], y: [-1.3, 1.3], equal: true, axes: false, height: 380, weight: 1.35, title: 'forbidden region (shaded) and an orbit with this C' });
         const p = v.stage({ x: [-1.6, 1.6], y: [2.9, 3.6], axes: 'box', height: 380, weight: 1, xlabel: 'x (y = 0)', ylabel: '2Ω', title: 'profile along the x-axis' });
-        const H = s.handle(0.5, 0.0, { color: 'accent', label: 'launch', labelPos: 'se' });
-        const Dh = s.handle(0.5, 0.25, { color: 'orange', r: 6 });
-        let ang = Math.PI / 2;
+        let ang = (2 * Math.PI) / 3;
+        const H = s.handle(0.7, 0.0, { color: 'accent', label: 'launch', labelPos: 'sw' });
+        const Dh = s.handle(0.7 + 0.25 * Math.cos(ang), 0.25 * Math.sin(ang), { color: 'orange', r: 6 });
         H.onDrag = () => { Dh.x = H.x + 0.25 * Math.cos(ang); Dh.y = H.y + 0.25 * Math.sin(ang); };
         Dh.onDrag = () => { ang = Math.atan2(Dh.y - H.y, Dh.x - H.x); Dh.x = H.x + 0.25 * Math.cos(ang); Dh.y = H.y + 0.25 * Math.sin(ang); };
         const cache = memo();
@@ -223,7 +225,7 @@ computed in the frame rotating with the primaries, is conserved. Equivalently, i
           for (const k of ['L1', 'L2', 'L3']) { const x = L[k][0]; p.dot(x, L.C[k], { r: 4, color: 'red' }); p.text(k, x, L.C[k], { color: 'red', size: 10.5, dy: 12, align: 'center' }); }
           p.hline(L.C.L4, { color: 'red', width: 1, dash: [3, 3], alpha: 0.6 });
           p.text('C at L4, L5', 1.55, L.C.L4, { color: 'red', size: 10, dy: -8, align: 'right' });
-          p.tex('C_J', -1.55, C, { color: 'green', size: 13, dy: -11, align: 'left' });
+          p.tex('C_J', 0.25, C, { color: 'green', size: 13, dy: -11, align: 'left' });
           cur = { mu, C, L, worst, R, v2 };
         });
         v.legend([['ink', 'forbidden: $2\\Omega < C_J$', { area: true }], ['red', 'Lagrange points'], ['accent', 'orbit with this $C_J$'], ['green', '$C_J$ level (right)']]);
@@ -419,7 +421,7 @@ $S$ has minima at $\phi = \pm 60^\circ$ ($L_4$, $L_5$) and a maximum at $180^\ci
 $$r_H = a\Big(\frac{m}{3M}\Big)^{1/3}$$
 around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to leading order in $(m/M)^{1/3}$. Inside it the planet’s gravity dominates the tidal pull of the star, and the zero-velocity curve through $L_1$ encloses a lobe about the planet of roughly this size. Satellites must orbit well inside: numerically, circular prograde orbits survive out to about $0.5\,r_H$, retrograde ones considerably farther. Earth: $r_H = 1.5\times10^6$ km (the Moon is at $0.26\,r_H$); Jupiter: $0.35$ AU.`,
       idea: String.raw`Near the planet, the restricted problem reduces to Hill’s problem: the planet’s pull $Gm/r^2$ against the tidal-plus-centrifugal acceleration $3GMr/a^3$ of the frame rotating with the planet (mech 9.12). They balance at $r^3 = ma^3/3M$, which is where $L_1$, $L_2$ sit; inside the Jacobi lobe through $L_1$ (2.2) a particle cannot leave. Lengths scale as $r_H$ and times as the orbital period, so in units of $r_H$ the picture is the same for every planet. Retrograde satellites are more robust because the Coriolis force on them points inward.`,
-      caption: String.raw`Left: the neighbourhood of the planet in units of $r_H$, in the frame rotating with it (the star is far to the left). Ten test moons start on circular orbits at 0.3–1.2 $r_H$ and are followed for ten planetary orbits: green if they stay bound, red if they escape. The purple lobe is the zero-velocity curve through $L_1$; the dashed circle is $r_H$. Drag the gold moon to launch your own. Right: how long moons survive against starting distance, for prograde and retrograde orbits — the result hardly depends on the planet, as Hill’s scaling predicts.`,
+      caption: String.raw`Left: the neighbourhood of the planet in units of $r_H$, in the frame rotating with it (the star is far to the left). Ten test moons start on circular orbits at 0.3–1.2 $r_H$ and are followed for ten planetary orbits: green if they stay bound, red if they escape. The purple lobe is the zero-velocity curve through $L_1$; the dashed circle is $r_H$. Drag the gold moon to launch your own. Right: how long moons survive against starting distance, for prograde and retrograde orbits — the result hardly depends on the planet, as Hill’s scaling predicts. Retrograde moons survive even outside the zero-velocity lobe: the Jacobi criterion guarantees confinement but is not needed for it.`,
       deps: ['mech-9.12', 'astro-2.2'],
       refs: ['Murray–Dermott §3.13'],
       tags: ['three-body', 'satellites', 'stability'],
@@ -482,7 +484,7 @@ around the planet — the distance of the Lagrange points $L_1$ and $L_2$ to lea
           const km = rH * P.a * P.km;
           let out = String.raw`${P.name}: $r_H = a(\mu/3)^{1/3} = ${v.fix(rH * P.a, 4)}$ AU $= ${v.sci(km, 3)}$ km; $L_1$ and $L_2$ at ${v.fix((1 - P.mu - lagrange(P.mu).L1[0]) / rH, 3)} and ${v.fix((lagrange(P.mu).L2[0] - 1 + P.mu) / rH, 3)} $r_H$`;
           out += String.raw` · circular moons first escape (within 10 orbits) from ${v.fix(surv.ePro, 2)} $r_H$ (prograde) and ${v.fix(surv.eRet, 2)} $r_H$ (retrograde)`;
-          out += ` · your moon at ${v.fix(Hm.x, 2)} r_H ${isFinite(mine.tEsc) ? `escapes after ${v.fix(mine.tEsc / TAU, 2)} orbits` : 'stays bound'}`;
+          out += ` · your moon at ${v.fix(Hm.x, 2)} $r_H$ ${isFinite(mine.tEsc) ? `escapes after ${v.fix(mine.tEsc / TAU, 2)} orbits` : 'stays bound'}`;
           return out;
         });
       },

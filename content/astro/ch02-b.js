@@ -204,7 +204,7 @@ so the phase portrait in $(\varphi, a)$ has a separatrix: inside it $\varphi$ **
       name: 'Kirkwood gaps',
       statement: String.raw`The distribution of asteroid semi-major axes in the main belt has sharp gaps where an asteroid’s period would be a simple fraction of Jupiter’s: at the 3:1 (2.50 AU), 5:2 (2.82 AU), 7:3 (2.96 AU) and 2:1 (3.28 AU) mean-motion resonances, at $a_J(q/p)^{2/3}$ for the resonance $p{:}q$. Inside these resonances Jupiter’s periodic forcing, combined with its slight eccentricity, drives chaotic growth of the asteroids’ eccentricities until their orbits cross those of Mars or the Earth and they are removed by encounters or collisions. Not every resonance is a gap: the 3:2 resonance (3.97 AU) holds the Hilda group, and the 1:1 resonance holds the Trojans.`,
       idea: String.raw`A mean-motion resonance (2.8) makes Jupiter’s tugs add up instead of cancelling. For the 3:1 and 2:1 resonances with Jupiter on its eccentric orbit, the resonant and secular terms overlap and the motion becomes chaotic (Wisdom 1982–83), producing sudden excursions to $e \gtrsim 0.3$ — enough to reach Mars-crossing perihelia below 1.5 AU — on timescales of $10^5$–$10^6$ years. Resonances further from Jupiter or of higher order are weaker, so their gaps are narrower; some resonant configurations protect bodies from close approaches instead (Hildas, Trojans, 2.4).`,
-      caption: String.raw`Top: real data — the semi-major axes of all 895 910 numbered asteroids (JPL Small-Body Database, Oct 2026) in 0.01-AU bins, with Jupiter’s main resonances marked. Hover to read a bin; toggle the log scale to see the sparse outer belt, the Hildas at 3:2 and the Trojans at 1:1. Bottom: a numerical experiment — 240 test asteroids ($e_0 = 0.05$) integrated with Jupiter in the planar elliptic restricted problem; each dot is the largest eccentricity reached so far, and red dots have become Mars-crossing and are removed. To compress hundreds of thousands of years into 3000, Jupiter’s mass is multiplied by ten (switch it off to see how slow the real effect is). Make Jupiter’s orbit circular and the 3:1 asteroids stop being removed.`,
+      caption: String.raw`Top: real data — the semi-major axes of all 895 910 numbered asteroids (JPL Small-Body Database, Oct 2026) in 0.01-AU bins, with Jupiter’s main resonances marked. Hover to read a bin; toggle the log scale to see the sparse outer belt, the Hildas at 3:2 and the Trojans at 1:1. Bottom: a numerical experiment — 240 test asteroids ($e_0 = 0.05$) integrated with Jupiter in the planar elliptic restricted problem; each dot is the largest eccentricity reached so far, and red dots have become Mars-crossing and are removed. To compress hundreds of thousands of years into 3000, Jupiter’s mass is multiplied by ten (switch it off to see how slow the real effect is); the price is a much wider chaotic zone near Jupiter, which clears everything beyond about 3.4 AU. The 3:1 resonance empties first. Make Jupiter’s orbit circular and its asteroids are pumped less and stop being removed.`,
       deps: ['astro-2.8'],
       refs: ['Murray–Dermott §9.8'],
       tags: ['asteroids', 'resonance', 'data'],
@@ -326,7 +326,7 @@ and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \la
           conj(0, 1, 'green'); conj(1, 2, 'pink');
           for (let k = 0; k < 3; k++) { s.dot(P[k][0], P[k][1], { r: 6, color: COL[k] }); s.text(NAMES[k], P[k][0], P[k][1], { color: COL[k], size: 10.5, dy: -11, align: 'center' }); }
           const PhL = ((lam[0] - 3 * lam[1] + 2 * lam[2]) / DEG % 360 + 360) % 360;
-          s.corner(`day ${v.fix(day % 3650, 1)} · $\\Phi_L = ${v.fix(PhL, 2)}^\\circ$`, 'tl', { color: 'muted', size: 12 });
+          s.corner(`day ${v.fix(day % 3650, 1)} · $\\Phi_L = ${v.fix(PhL, 2)}^\\circ$`, 'bl', { color: 'muted', size: 12 });
           // time panel
           g.hline(180, { color: 'faint', width: 1, dash: [4, 4] });
           g.dots(H.cIE, { r: 1.8, color: 'green', alpha: 0.7 });
@@ -334,7 +334,7 @@ and their mean longitudes are locked so that the **Laplace angle** $\Phi_L = \la
           g.path(H.out.filter((q, k, a) => k === 0 || Math.abs(q[1] - a[k - 1][1]) < 180), { color: 'accent', width: 2 });
           g.path(H.minS, { color: 'red', width: 1.8 });
           g.vline(day % 3650, { color: 'gold', width: 1.2 });
-          g.tex('\\Phi_L', 60, H.out[0][1], { color: 'accent', size: 14, dy: -12, align: 'left' });
+          g.tex('\\Phi_L', 420, H.out[0][1], { color: 'accent', size: 14, dy: -12, align: 'left' });
           g.text('smallest arc holding all three so far', 3600, H.minS[H.minS.length - 1][1], { color: 'red', size: 10.5, dy: -9, align: 'right' });
           if (dn.value === 0) { g.text('Ganymede at each Io–Europa conjunction', 3600, H.cIE[0][1], { color: 'green', size: 10.5, dy: -9, align: 'right' }); g.text('Io at each Europa–Ganymede conjunction', 3600, H.cEG[0][1], { color: 'pink', size: 10.5, dy: 12, align: 'right' }); }
           cur = { H, PhL };
@@ -480,7 +480,7 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
           A.fn((a) => 1 - 1.52 / a, { color: 'muted', width: 1.2, dash: [5, 4] });
           A.text('Mars-crossing', 2.42, 1 - 1.52 / 2.42, { color: 'muted', size: 10, dx: 6, align: 'left' });
           A.fn((a) => 4.9 / a - 1, { color: 'orange', width: 1.2, dash: [5, 4], domain: [3.45, 4.3] });
-          A.text('near Jupiter', 4.25, 4.9 / 4.25 - 1, { color: 'orange', size: 10, dy: -9, align: 'right' });
+          A.text('aphelion near Jupiter', 3.5, 4.9 / 3.5 - 1, { color: 'orange', size: 10, dx: 7, align: 'left' });
           A.dot(2.75, 0.05, { r: 4, color: 'muted' });
           const ref = cacheR(1, () => lyap(2.75, 0.05));
           let C = null;
@@ -499,7 +499,7 @@ If $39.2^\circ < i_0 < 140.8^\circ$ (i.e. $\cos^2 i_0 < 3/5$), the circular orbi
           // the solar system extrapolation (T_L = 5 Myr)
           const TL = 5, lg0 = d0S.value, AUm = Math.log10(1.496e11);
           Ss.hline(AUm, { color: 'red', width: 1.4, dash: [5, 4] });
-          Ss.text('1 AU: Earth’s position unknown', 196, AUm, { color: 'red', size: 10.5, dy: 11, align: 'right' });
+          Ss.text('1 AU: Earth’s position unknown', 4, AUm, { color: 'red', size: 10.5, dy: -9, align: 'left' });
           Ss.hline(Math.log10(6.371e6), { color: 'faint', width: 1, dash: [3, 4] });
           Ss.text('Earth radius', 4, Math.log10(6.371e6), { color: 'muted', size: 10, dy: -8, align: 'left' });
           Ss.fn((t) => lg0 + t / (TL * Math.LN10), { color: 'accent', width: 2.2 });
