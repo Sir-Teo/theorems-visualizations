@@ -170,6 +170,7 @@ whatever the shape of the pulse. Pointwise the pulses tend to $0$ for $t\ne0$ an
         const view = v.select('right panel', [{ value: 'val', label: 'value' }, { value: 'err', label: 'error (log–log)' }], 'val');
         const sl = v.stage({ x: [-1.8, 1.8], y: [-0.35, YT], height: 300, axes: 'box', xlabel: 't', title: 'a unit-area pulse $p_\\varepsilon$, the test function $\\varphi$ and their product' });
         const sr = v.stage({ x: [0.004, 1.2], y: [0, 2], xlog: true, height: 300, axes: 'box', xlabel: 'ε', title: '$\\int p_\\varepsilon\\varphi\\,dt$ as the pulse narrows' });
+        const se = v.stage({ x: [0.004, 1.2], y: [1e-7, 2], xlog: true, ylog: true, height: 300, axes: 'box', xlabel: 'ε', title: 'the error $|\\int p_\\varepsilon\\varphi\\,dt-\\varphi(0)|$ on log–log axes' });
         const pair = (P, f, e) => { const [a, b] = P.sup(e), g = (t) => P.p(t, e) * f(t); return a < 0 && b > 0 ? M.integrate(g, a, 0, 400) + M.integrate(g, 0, b, 400) : M.integrate(g, a, b, 800); };
         const EPS = M.range(90).map((i) => 0.004 * Math.pow(1.2 / 0.004, i / 89));
         let cacheKey = '', curve = null, info = null;
@@ -189,33 +190,37 @@ whatever the shape of the pulse. Pointwise the pulses tend to $0$ for $t\ne0$ an
               sl.fn((t) => P.p(t, e), { domain: [a, b], n: 500, color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.13 });
               sl.fn((t) => P.p(t, e) * f(t), { domain: [a, b], n: 500, fill: 'gold', fillAlpha: 0.55, stroke: false });
             }
-            sl.fn(f, { color: 'purple', width: 2.4, n: 900 });
+            if (T.jump) { sl.fn(f, { domain: [-1.9, -1e-9], color: 'purple', width: 2.4, n: 500 }); sl.fn(f, { domain: [0, 1.9], color: 'purple', width: 2.4, n: 500 }); }
+            else sl.fn(f, { color: 'purple', width: 2.4, n: 900 });
           });
           sl.dot(0, ph0, { color: 'green', r: 5.5 });
           if (T.jump) sl.dot(0, 0.5, { color: 'purple', r: 4.5, hollow: true });
           const peak = P.p(P.sym ? 0 : e / 2, e);
           if (peak > YT * 0.96) { sl.arrow(0, YT * 0.78, 0, YT * 0.97, { color: 'accent', width: 2, head: 8 }); sl.text(`peak ${v.fmt(peak, 3)}`, 0, YT * 0.86, { dx: 9, align: 'left', color: 'accent', size: 12.5, weight: 600 }); }
           sl.corner(`area of the pulse = ${v.fix(area, 4)}`, 'tl', { color: 'accent', weight: 600 });
-          // ---- right panel
-          sr.vline(e, { color: 'gold', width: 1.4, dash: [4, 3] });
-          if (view.value === 'val') {
+          // ---- right panel: the pairing against ε, or its error on log–log axes
+          const showVal = view.value === 'val';
+          sr.el.style.display = showVal ? '' : 'none'; se.el.style.display = showVal ? 'none' : '';
+          if (showVal) {
+            sr.vline(e, { color: 'gold', width: 1.4, dash: [4, 3] });
             let lo = Math.min(limit, ph0, ...curve.map((p) => p[1])), hi = Math.max(limit, ph0, ...curve.map((p) => p[1]));
             const pad = Math.max(0.12, (hi - lo) * 0.18); sr.setView(null, [lo - pad, hi + pad]);
             sr.hline(ph0, { color: 'green', width: 1.6, dash: [6, 4] });
             sr.text('φ(0)', 1.15, ph0, { dy: -9, align: 'right', color: 'green', size: 12, weight: 600 });
-            if (T.jump && Math.abs(limit - ph0) > 1e-9) { sr.hline(limit, { color: 'red', width: 1.4, dash: [3, 3] }); sr.text('the actual limit', 1.15, limit, { dy: 10, align: 'right', color: 'red', size: 12, weight: 600 }); }
+            if (T.jump && Math.abs(limit - ph0) > 1e-9) { sr.hline(limit, { color: 'red', width: 1.4, dash: [3, 3] }); sr.text(`the actual limit ${v.fix(limit, 2)}`, 0.0045, limit, { dy: limit < ph0 ? 11 : -9, align: 'left', color: 'red', size: 12, weight: 600 }); }
             sr.path(curve, { color: 'accent', width: 2.4 });
             sr.dot(e, I, { color: 'gold', r: 6 });
           } else {
-            sr.setView(null, [1e-7, 3]);
-            const errs = curve.map(([x, y]) => [x, Math.abs(y - ph0)]);
-            sr.path(errs.map(([x, y]) => [x, Math.max(y, 1e-9)]), { color: 'accent', width: 2.4 });
-            const ref = (k, c) => sr.fn((x) => c * Math.pow(x, k), { color: 'muted', width: 1.2, dash: [5, 4] });
-            const at1 = Math.abs(pair(P, f, 0.1) - ph0) || 1e-6;
-            ref(2, at1 / 0.01 * 0.35); ref(1, (at1 / 0.1) * 0.35);
-            sr.text('slope 2', 0.006, ((at1 / 0.01) * 0.35) * 0.006 ** 2, { dy: 12, align: 'left', color: 'muted', size: 11.5 });
-            sr.text('slope 1', 0.006, ((at1 / 0.1) * 0.35) * 0.006, { dy: -10, align: 'left', color: 'muted', size: 11.5 });
-            sr.dot(e, Math.max(Math.abs(I - ph0), 1e-9), { color: 'gold', r: 6 });
+            se.vline(e, { color: 'gold', width: 1.4, dash: [4, 3] });
+            const errs = curve.map(([x, y]) => [x, Math.max(Math.abs(y - ph0), 1e-12)]);
+            const er = errs[Math.round(errs.length * 0.45)], c2 = (0.3 * er[1]) / er[0] ** 2, c1 = (0.3 * er[1]) / er[0];
+            se.fn((x) => c2 * x * x, { color: 'muted', width: 1.2, dash: [5, 4] });
+            se.fn((x) => c1 * x, { color: 'muted', width: 1.2, dash: [5, 4] });
+            const xr = 0.75, y2 = c2 * xr * xr, y1 = c1 * xr;
+            if (y2 < 1.5) se.text('slope 2', xr, y2, { dy: -10, align: 'center', color: 'muted', size: 11.5, weight: 600 });
+            if (y1 > 2e-7) se.text('slope 1', xr, y1, { dy: 11, align: 'center', color: 'muted', size: 11.5, weight: 600 });
+            se.path(errs, { color: 'accent', width: 2.4 });
+            se.dot(e, Math.max(Math.abs(I - ph0), 1e-12), { color: 'gold', r: 6 });
           }
           info = { P, T, e, I, ph0, area, limit, peak };
         });

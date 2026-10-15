@@ -13,6 +13,8 @@
 // Deliberate omissions: Bartlett's bisection, Belevitch, Richards' theorem (specialist network synthesis), BJT biasing
 //   detail, digital logic design (→ arch), power electronics beyond the buck converter.
 // The physics behind the circuit laws (charge conservation, Faraday, Kirchhoff from Maxwell) lives in `em`.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'circ',
   chapters: [
@@ -148,6 +150,31 @@ export default {
           pic: 'Bias the amplifier with a slider and feed a small sine: the output is an inverted, enlarged copy with gain −g_m R_D, clipping visibly when the bias leaves the saturation region.' },
         { num: '4.13', kind: 'Invention', name: 'Static memory: the cross-coupled latch', deps: ['circ-4.8', 'circ-4.6'], refs: ['Agarwal–Lang §10.7'],
           pic: 'Two inverters feeding each other have two stable states; the transfer curves are overlaid to show three intersections, and a brief pulse on the set input flips the latch, which then remembers.' },
+        { num: '4.14', kind: 'Paper', name: 'The Transistor, A Semi-Conductor Triode',
+          paper: { authors: 'J. Bardeen and W. H. Brattain', year: 1948, title: 'The Transistor, A Semi-Conductor Triode',
+                   venue: 'Physical Review 74 (2): 230–231', doi: '10.1103/PhysRev.74.230' },
+          introduces: ['tech-11.16', 'mat-9.9'], deps: ['mat-9.5'], refs: [],
+          pic: 'Two closely spaced point contacts on a germanium block, one forward- and one reverse-biased: the reader varies the emitter current and sees the collector current follow with voltage and power gain, plotted as the paper’s characteristic curves.' },
+        { num: '4.15', kind: 'Paper', name: 'The Theory of p-n Junctions and p-n Junction Transistors',
+          paper: { authors: 'W. Shockley', year: 1949, title: 'The Theory of p-n Junctions in Semiconductors and p-n Junction Transistors',
+                   venue: 'Bell System Technical Journal 28 (3): 435–489', doi: '10.1002/j.1538-7305.1949.tb03645.x' },
+          introduces: ['circ-4.1', 'circ-4.11', 'mat-9.8', 'cm-4.8'], deps: ['mat-9.5', 'cm-4.7'], refs: [],
+          pic: 'Bias a p-n junction and watch minority carriers diffuse across it while the current follows I₀(e^{qV/kT} − 1) on linear and log axes; adding a second junction makes a transistor whose collector current tracks the base current with gain β.' },
+        { num: '4.16', kind: 'Paper', name: 'Miniaturized Electronic Circuits',
+          paper: { authors: 'Jack S. Kilby', year: 1959, title: 'Miniaturized Electronic Circuits',
+                   venue: 'US Patent 3,138,743 (filed 6 February 1959, granted 23 June 1964)', url: 'https://patents.google.com/patent/US3138743A/en' },
+          introduces: ['tech-11.17'], deps: ['tech-11.16', 'circ-4.11'], refs: [],
+          pic: 'Lay out an oscillator first as discrete parts and then, as in Kilby’s patent, as resistors, capacitor and transistor all formed in one slab of semiconductor; the reader changes component values and compares the oscillation and the count of hand-made joints.' },
+        { num: '4.17', kind: 'Paper', name: 'Nanowatt Logic Using Field-Effect MOS Triodes',
+          paper: { authors: 'F. M. Wanlass and C. T. Sah', year: 1963, title: 'Nanowatt Logic Using Field-Effect Metal-Oxide Semiconductor Triodes',
+                   venue: '1963 IEEE International Solid-State Circuits Conference, Digest of Technical Papers: 32–33', doi: '10.1109/ISSCC.1963.1157450' },
+          introduces: ['circ-4.8'], deps: ['circ-4.7', 'cm-4.10'], refs: [],
+          pic: 'Pair an n-channel and a p-channel transistor into the complementary inverter, sweep the input voltage, and see the transfer curve and the supply current, which flows only while switching — standby power in nanowatts against a resistor-load inverter.' },
+        { num: '4.18', kind: 'Paper', name: 'Cramming More Components onto Integrated Circuits',
+          paper: { authors: 'Gordon E. Moore', year: 1965, title: 'Cramming More Components onto Integrated Circuits',
+                   venue: 'Electronics 38 (8): 114–117 (reprinted in Proceedings of the IEEE 86 (1): 82–85, 1998)', doi: '10.1109/JPROC.1998.658762' },
+          introduces: ['tech-11.18'], deps: ['tech-11.17'], refs: [],
+          pic: 'Recreate Moore’s two graphs: cost per component against components per chip, its minimum moving right year by year, and log₂ of components per chip against year with his 1959–1965 points, which the reader extrapolates and compares with later chips.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -252,6 +279,11 @@ export default {
           pic: 'Place a small capacitor between the input and output of an inverting stage: the input sees it multiplied by one plus the gain, and the amplifier’s bandwidth on the Bode plot collapses as the gain slider rises.' },
         { num: '7.18', kind: 'Theorem', name: 'Foster’s reactance theorem', deps: ['circ-7.3', 'circ-7.9'], refs: ['Agarwal–Lang ch. 14'],
           pic: 'Build any lossless network of inductors and capacitors: its reactance against frequency always climbs, and its poles and zeros alternate along the frequency axis, as the plot of every random LC network confirms.' },
+        { num: '7.19', kind: 'Paper', name: 'A New System of Alternate Current Motors and Transformers',
+          paper: { authors: 'Nikola Tesla', year: 1888, title: 'A New System of Alternate Current Motors and Transformers',
+                   venue: 'Transactions of the American Institute of Electrical Engineers 5 (10): 308–327', doi: '10.1109/T-AIEE.1888.5570379' },
+          introduces: ['tech-9.14', 'circ-7.15'], deps: ['circ-7.1', 'em-9.3'], refs: [],
+          pic: 'Feed two or three coils with phase-shifted alternating currents and watch their fields add to a vector of constant length that rotates; varying the phase shift changes the rotation, and a rotor is dragged round by the field, as in Tesla’s induction motor.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -290,6 +322,11 @@ export default {
           pic: 'Toggle between a Wien-bridge oscillator, whose clean sine settles when amplitude limiting kicks in, and a Schmitt-trigger relaxation oscillator charging a capacitor back and forth.' },
         { num: '8.15', kind: 'Model', name: 'Instrumentation amplifier', deps: ['circ-8.7', 'circ-8.5'], refs: ['Horowitz–Hill §5.15'],
           pic: 'Three op-amps amplify a millivolt bridge signal riding on volts of common-mode noise: one resistor sets the gain, and the common-mode rejection is measured as resistor mismatch is introduced.' },
+        { num: '8.16', kind: 'Paper', name: 'Stabilized Feedback Amplifiers',
+          paper: { authors: 'H. S. Black', year: 1934, title: 'Stabilized Feedback Amplifiers',
+                   venue: 'Bell System Technical Journal 13 (1): 1–18', doi: '10.1002/j.1538-7305.1934.tb00652.x' },
+          introduces: ['circ-8.2', 'ctrl-1.7'], deps: ['circ-3.8', 'ctrl-1.3'], refs: [],
+          pic: 'Recreate Black’s gain curve: an amplifier whose open-loop gain μ drifts with tubes and supply is wrapped in feedback β, and as μ varies tenfold the closed-loop gain μ/(1 + μβ) barely moves while distortion falls by the factor 1 + μβ.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9

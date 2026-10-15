@@ -160,8 +160,8 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Absolute_threshold' },
       viz(v) {
         const M = v.M, after = timers(v);
-        const LEV = [0, 1.5, 3, 4.5, 6, 8, 11], BG = 100, NS = 7, SB = 0.085, RP = 0.6, XMAX = 11.8;
-        const OBSV = { mu: 4.8, sigma: 1.7, g: 0.03, l: 0.02 };
+        const LEV = [0, 2, 4, 6, 9, 13, 19], BG = 100, NS = 7, SB = 0.085, RP = 0.6, XMAX = 20.5;
+        const OBSV = { mu: 7, sigma: 2.6, g: 0.03, l: 0.02 };
         let phase = 'idle', cur = null, trialId = 0, lastKey = '';
         const who = v.select('subject', OBS, 'sim', { onChange: () => { after.clear(); phase = 'idle'; } });
         const sharp = v.toggle('sharp threshold', false);
@@ -171,9 +171,9 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
         const bMore = v.button('35 more trials', () => simulate(35));
         v.button('Reset', () => { after.clear(); phase = 'idle'; if (who.value === 'sim') { Rs = v.rng(97); nextS = blockQueue(LEV, Rs); sim = []; simulate(140); } else you = []; });
         const st = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 310, weight: 0.8, title: 'the screen' });
-        const pl = v.stage({ x: [-1.4, 12.2], y: [-0.14, 1.08], height: 310, axes: 'box', weight: 1.2, xlabel: 'dot intensity', ylabel: 'proportion “seen”', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'detection: proportion of trials answered “seen”' });
+        const pl = v.stage({ x: [-2.4, 21], y: [-0.14, 1.08], height: 310, axes: 'box', weight: 1.2, xlabel: 'dot intensity', ylabel: 'proportion “seen”', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'detection: proportion of trials answered “seen”' });
         let fit = null;
-        const probe = pl.handle(4.5, 0.4, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0, 11.5); return [xx, fit ? psi(M, fit, xx) : 0.5]; } });
+        const probe = pl.handle(7, 0.4, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0, 20); return [xx, fit ? psi(M, fit, xx) : 0.5]; } });
         let Rs = v.rng(97), nextS = blockQueue(LEV, Rs), sim = [], you = [];
         const Ry = v.rng(2024), nextY = blockQueue(LEV, Ry);
         const simulate = (n) => { for (let i = 0; i < n; i++) { const x = nextS(); sim.push({ x, r: Rs() < psi(M, OBSV, x) }); } };
@@ -183,7 +183,7 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
         const analyse = () => {
           const data = binTrials(who.value === 'you' ? you : sim), b0 = data.find((d) => d.x === 0);
           const g = b0 && b0.n >= 3 ? Math.min(0.3, b0.k / b0.n) : 0.02;
-          return { data, f: fitPsy(M, data, { g, l: 0.02, lo: 0, hi: 11 }) };
+          return { data, f: fitPsy(M, data, { g, l: 0.02, lo: 0, hi: 19 }) };
         };
         v.render(() => {
           const isYou = who.value === 'you';
@@ -222,7 +222,7 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
           }
           drawData(pl, data);
           if (!isYou) { probe.y = f ? psi(M, f, probe.x) : 0.5; pl.line(probe.x, -0.14, probe.x, probe.y, { color: 'gold', dash: [2, 3], width: 1.2 }); }
-          if (!data.length) pl.text('no trials yet — press ▶ Flash', 5.4, 0.72, { align: 'center', color: 'muted', size: 13 });
+          if (!data.length) pl.text('no trials yet — press ▶ Flash', 9.5, 0.72, { align: 'center', color: 'muted', size: 13 });
         });
         v.readout(() => {
           const { data, f } = analyse(), N = data.reduce((s, d) => s + d.n, 0);

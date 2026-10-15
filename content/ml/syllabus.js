@@ -14,9 +14,10 @@
 // Lemma 6.1, printed in italics inside Example 6.1. UML numbers all seven kinds with ONE counter per chapter; examples
 // and remarks have separate counters (Example 6.1 and Lemma 6.1 coexist) and figures/equations theirs too. Every
 // chapter's sequence was checked to be gap-free. In the PDF: 214 numbered blocks — Lemma 75, Theorem 61, Definition 38,
-// Corollary 25, Claim 13, Conjecture 1, Assumption 1. Chapters 1, 18 and 25 have none. Section refs ('UML §c.s') were
-// read off the section headings preceding each label; `deps` were seeded from the "Theorem/Lemma … c.n" citations in the
-// statements and proofs (pdftotext -layout) and then checked by reading them.
+// Corollary 25, Claim 13, Conjecture 1, Assumption 1. Chapters 1, 18 and 25 have none. Section refs ('UML §c.s' or
+// 'UML §c.s.t') name the innermost (sub)section heading preceding each label, read off the XML for all 214 blocks;
+// `deps` were seeded from the "Theorem/Lemma … c.n" citations in the statements and proofs (pdftotext -layout) and then
+// checked by reading them.
 //
 // WHAT IS LISTED. Every numbered block (all 214), under its printed number. Kinds: the book's own label, except
 // Claim → Proposition (all 13), Assumption 24.1 → Definition, Conjecture 29.10 → Hypothesis. UML also numbers its key
@@ -27,10 +28,10 @@
 // letter, with `verify: true` (as in prob and alg), so deps always point backwards: 7.4a = the SRM rule (printed just
 // after Theorem 7.4), 21.10a = Weighted-Majority (after Theorem 21.10). An item printed before the first block of its
 // chapter takes that block's number plus a letter (2.1a–d, 6.1a, 9.1a–c, 13.1a–b, 14.1a, 16.1a–b, 17.1a–e, 19.1a,
-// 20.1a, 22.1a–c, 23.1a, 24.1a–g, 28.1a–b, 31.1a, 33.1a, 34.1a) and precedes the block it is numbered after; chapters
-// without any numbered block (1, 18, 25) use c.1a, c.1b, …. Famous examples (separate counter, so not listable under their own
-// numbers) and a few remarks are lettered the same way, with the example's number in `refs` (e.g. 16.1e = Example 16.2,
-// the Gaussian kernel). 143 lettered items in all.
+// 20.1a, 22.1a–c, 23.1a, 24.1a–g, 28.1a–b, 31.1a, 33.1a, 34.1a) and precedes the block it is numbered after;
+// chapters without any numbered block (1, 18, 25) use c.1a, c.1b, …. Famous examples (separate counter, so not listable
+// under their own numbers) and a few remarks are lettered the same way, with the example's or remark's number in `refs`
+// (e.g. 16.1e = Example 16.2, the Gaussian kernel; 4.6a = Remark 4.1, the discretization trick). 143 lettered items.
 // Appendices A, B, C cannot be chapter numbers here: they are chapters 32, 33, 34 (A.n ↦ 32.n, B.n ↦ 33.n, C.n ↦ 34.n),
 // each item keeping refs: ['UML A.n'] with the printed number; collection.js has chapterLabels for them.
 //
@@ -47,16 +48,18 @@
 //
 // AMBIGUITIES AND DECISIONS.
 // - `deps` point backwards in reading order. Where UML states a result and proves it later through results numbered
-//   after it (7.2 ← 7.3 ← 7.5; 13.1 ← 13.11; 14.2 ← 14.7; 15.4 ← 26.13; 15.8 ← 15.9; 19.5 ← 19.6–19.7; 20.2 ← 20.6;
-//   20.3 ← 20.4; 21.10 ← 21.11–21.14; 23.7–23.8 ← 23.10; 23.9 ← 23.11–23.12; 29.3 ← 29.4; 6.7–6.8 ← ch. 28), the
-//   later item is named in `see`. Main-text proofs that use appendix lemmas (6.10 ← A.5, 6.11 ← A.4, 10.3 ← A.1,
-//   20.6 ← A.2, 23.3 ← B.12, 26.8 ← A.6, 28.1b–c ← B.1, B.11, 30.1 ← B.10, 4.5 proved as B.6) cite them through `see`.
-// - UML repeats itself in places: Hoeffding's inequality is Lemma 4.5 and Lemma B.6; ε-representative samples are
-//   Definitions 4.1 and 26.1 (the second in sup form); the hinge-loss analysis of Soft-SVM (15.7) and the Hard-SVM bound
-//   (15.4 = 26.13) recur. All are listed under both numbers and joined by `see` or `deps`.
-// - Theorem 6.8, Theorem 29.3 and Conjecture 29.10 are stated without (complete) proofs in place; Theorem 13.12,
-//   Theorem 17.5, Theorems 19.5 and Lemmas 19.6–19.7 and Definition 8.2 sit in exercise sections but are numbered
-//   blocks and are listed. Claim 29.9 has two parts (good ERM learns, bad ERM needs |X| times more data).
+//   after it (6.7 ← 6.10–6.11; 6.7–6.8 ← ch. 28; 7.2 ← 7.3 ← 7.5; 13.1 ← 13.11; 14.2 ← 14.7; 15.4 ← 26.13;
+//   15.8 ← 15.9; 19.5 ← 19.6–19.7; 20.2 ← 20.6; 20.3 ← 20.4; 21.10 ← 21.11–21.14; 23.7–23.8 ← 23.10;
+//   23.9 ← 23.11–23.12; 29.3 ← 29.4), the two are joined by `see` instead of `deps`. Main-text proofs that use appendix
+//   lemmas (6.10 ← A.5, 6.11 ← A.4, 10.3 ← A.1, 20.6 ← A.2, 23.3 ← B.12, 26.8 ← A.6, 28.1b–c ← B.1, B.11,
+//   30.1 ← B.10; 4.5 is proved as B.6) cite them through `see` as well.
+// - UML repeats itself in places: Hoeffding's inequality is Lemma 4.5 (stated) and Lemma B.6 (proved); ε-representative
+//   samples are Definitions 4.1 and 26.1 (the second in sup form); the Hard-SVM sample complexity is stated as Theorem
+//   15.4 and proved as Theorem 26.13. All are listed under both numbers and joined by `see` or `deps`.
+// - Theorem 6.8 (proved in ch. 28), Theorem 29.3 (proof only sketched) and Conjecture 29.10 are stated without proofs in
+//   place; their deps are what is needed to state them. Definition 8.2, Theorem 13.12, Theorem 17.5, Theorem 19.5 and
+//   Lemmas 19.6–19.7 sit in exercise sections but are numbered blocks and are listed. Claim 29.9 has two parts (the good
+//   ERM learns fast, the bad ERM needs about |X| times more data).
 // - Names follow UML where it names a result (No-Free-Lunch, Sauer–Shelah–Perles, Kraft, Hoeffding, Projection lemma,
 //   Fritz John, Representer theorem, Johnson–Lindenstrauss, McDiarmid, Massart, Contraction, Natarajan, Bennett,
 //   Bernstein, SVD theorem); otherwise a descriptive name (6.11, 10.2, 14.8, 21.16, …) or the classical one (17.3 is the
@@ -69,9 +72,10 @@
 // - Cross-links: PAC learning, VC theory, Rademacher complexity, boosting, SVMs and kernels, online learning, nearest
 //   neighbours, decision trees, PAC-Bayes and compression bounds have no other home in the atlas, so ml owns them. Links
 //   go to opt (convexity, subgradients, projections, GD/SGD, LP/QP, KKT, duality, lasso, SVM), stat (Hoeffding,
-//   Glivenko–Cantelli, Bayes rules, consistency, overfitting, regression, MLE, EM, Bayesian updating), prob and algo
-//   (Markov, Chebyshev, Chernoff), stoch (Azuma–Hoeffding vs McDiarmid), info (Kraft, prefix codes, MDL, entropy, KL,
-//   Gibbs, mutual information, information gain, k-means quantization), comb (Sauer–Shelah, binomial coefficients),
+//   Glivenko–Cantelli, Bayes rules, consistency, overfitting, regression, MLE, EM, Bayesian updating), prob, algo and
+//   graph (Markov, Chebyshev, Chernoff), rca (convex functions), stoch (Azuma–Hoeffding vs McDiarmid), info (Kraft,
+//   prefix codes, MDL, entropy, KL, Gibbs, mutual information, information gain, k-means quantization), comb
+//   (Sauer–Shelah, binomial coefficients),
 //   ladr and nla (Cauchy–Schwarz, spectral theorem, positive operators, singular values, SVD, PCA), fa (Hilbert spaces),
 //   deep (ERM, bias–variance, networks, activations, universal approximation, VC of ReLU nets, NTK/random features,
 //   autoencoders), cplx and toc (NP-hardness, RP, circuits, Turing machines, Shannon's circuit counting), crypto (one-way
@@ -211,15 +215,15 @@ export default {
           pic: 'Thresholds on k grid points: |H| = k grows with the slider while the VC-dimension stays 1, and log₂|H| climbs away from it.' },
         { num: '6.6d', kind: 'Proposition', name: 'VC-dimension is not the number of parameters', deps: ['ml-6.5'], refs: ['UML §6.3.5'], verify: true,
           pic: 'A single frequency θ is tuned, by a binary-expansion recipe, so that the sign of sin(θx) matches any labelling the reader clicks on the points 10^{−1}, …, 10^{−d}: one parameter, infinite VC-dimension.' },
-        { num: '6.7', kind: 'Theorem', name: 'The fundamental theorem of statistical learning', deps: ['ml-6.6', 'ml-6.10', 'ml-6.11', 'ml-4.4'], see: ['ml-28.4', 'ml-32.2'], refs: ['UML §6.4'],
+        { num: '6.7', kind: 'Theorem', name: 'The fundamental theorem of statistical learning', deps: ['ml-6.6', 'ml-6.5', 'ml-4.4'], see: ['ml-28.4', 'ml-32.2'], refs: ['UML §6.4'],
           pic: 'Six equivalent conditions — uniform convergence, ERM agnostic learner, agnostic PAC, PAC, ERM PAC learner, finite VC-dimension — form a diagram; the reader picks a class and the app evaluates each condition, all lighting up together or not at all.' },
         { num: '6.8', kind: 'Theorem', name: 'The fundamental theorem: quantitative version', deps: ['ml-6.7'], see: ['ml-28.1a', 'ml-28.1b', 'ml-28.1c', 'ml-28.4'], refs: ['UML §6.4'],
           pic: 'For halfspaces in d dimensions, the sample size ERM needs to reach excess error ε is measured and plotted on log axes against ε and d, beside the agnostic rate (d + log 1/δ)/ε² and the realizable rate (d log(1/ε) + log 1/δ)/ε.' },
         { num: '6.9', kind: 'Definition', name: 'Growth function', deps: ['ml-6.2'], refs: ['UML §6.5.1'],
           pic: 'For intervals and for halfplanes, the number of distinct labellings of m random points is counted and plotted against m beside 2^m.' },
-        { num: '6.10', kind: 'Lemma', name: 'Sauer–Shelah–Perles lemma', deps: ['ml-6.9', 'ml-6.5'], see: ['comb-8.12', 'ml-32.5'], refs: ['UML §6.5.1'],
+        { num: '6.10', kind: 'Lemma', name: 'Sauer–Shelah–Perles lemma', deps: ['ml-6.9', 'ml-6.5'], see: ['ml-6.7', 'comb-8.12', 'ml-32.5'], refs: ['UML §6.5.1'],
           pic: 'The growth function of a class of VC-dimension d bends away from 2^m right after m = d and stays under Σ_{i≤d} C(m, i) ≤ (em/d)^d; the inductive proof’s split of H_C into Y₀ and Y₁ is shown on a small table.' },
-        { num: '6.11', kind: 'Theorem', name: 'Uniform convergence from a small growth function', deps: ['ml-6.9', 'ml-4.5', 'ml-2.2'], see: ['ml-32.4', 'ml-33.1a'], refs: ['UML §6.5.2'],
+        { num: '6.11', kind: 'Theorem', name: 'Uniform convergence from a small growth function', deps: ['ml-6.9', 'ml-4.5', 'ml-2.2'], see: ['ml-6.7', 'ml-32.4', 'ml-33.1a'], refs: ['UML §6.5.2'],
           pic: 'The symmetrization trick is animated — a ghost sample S′ is drawn and paired points are swapped by random signs — and the measured expected worst gap stays under (4 + √log τ_H(2m))/√(2m).' },
       ],
     },
@@ -967,7 +971,7 @@ export default {
     {
       n: 30,
       title: 'Compression Bounds',
-      summary: String.raw`A learner that can always rebuild its output from only k of its training examples generalizes: the other m − k examples act as an independent validation set, and a union bound over the choice of the k indices gives error O(k log(m/δ)/m) in the realizable case. Compression schemes exist for axis-aligned rectangles (2d examples), halfspaces (d + 1), separating polynomials and large-margin separators via the Perceptron, and a realizable scheme of size k also serves unrealizable data.`,
+      summary: String.raw`A learner that can always rebuild its output from only k of its training examples generalizes: the other m − k examples act as an independent validation set, and a union bound over the choice of the k indices gives error O(k log(m/δ)/m) in the realizable case. Compression schemes exist for axis-aligned rectangles (2d examples), homogeneous halfspaces (d), separating polynomials and large-margin separators via the Perceptron, and a realizable scheme of size k also serves unrealizable data.`,
       items: [
         { num: '30.1', kind: 'Lemma', name: 'A Bernstein-type validation bound', deps: [], see: ['ml-33.10'], refs: ['UML §30.1'],
           pic: 'A hypothesis built from a few chosen examples is evaluated on the rest; the gap between validation and true error stays within √(2L_V log(1/δ)/|V|) + 4 log(1/δ)/|V|, tighter when L_V is small.' },
@@ -983,8 +987,8 @@ export default {
           pic: 'Find the largest realizable subsample, compress it and rebuild: the hypothesis’s training error matches the best in the class, shown on noisy interval data.' },
         { num: '30.6a', kind: 'Proposition', name: 'A compression scheme for axis-aligned rectangles', deps: ['ml-30.4'], refs: ['UML §30.2.1'], verify: true,
           pic: 'The extreme positive points in each coordinate (at most 2d) are kept, and the box they span is shown to label the whole sample correctly.' },
-        { num: '30.6b', kind: 'Proposition', name: 'A compression scheme of size d + 1 for halfspaces', deps: ['ml-30.4'], see: ['opt-2.10'], refs: ['UML §30.2.2'], verify: true,
-          pic: 'The minimum-norm point of the convex hull of the yᵢxᵢ is written, by Carathéodory’s theorem, with d + 1 examples, which alone rebuild a separating halfspace through the origin.' },
+        { num: '30.6b', kind: 'Proposition', name: 'A compression scheme of size d for homogeneous halfspaces', deps: ['ml-30.4'], see: ['opt-2.10'], refs: ['UML §30.2.2'], verify: true,
+          pic: 'The minimum-norm point of the convex hull of the yᵢxᵢ lies on a face of the hull and is a convex combination of d examples (Carathéodory); those d points alone rebuild it, and it separates the data.' },
         { num: '30.6c', kind: 'Proposition', name: 'Compression by the Perceptron for large-margin separation', deps: ['ml-30.4', 'ml-9.1'], refs: ['UML §30.2.4'], verify: true,
           pic: 'The examples on which the Perceptron updated, at most (R/γ)² of them, are kept; rerunning the Perceptron on them alone reproduces the separator.' },
       ],

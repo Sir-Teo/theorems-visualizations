@@ -731,7 +731,7 @@ the area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the
             sD.hist({ edges: hs.edges, counts: hs.counts.map((c) => Math.min(c / NS, 0.0495)) }, { color: 'red', fillAlpha: 0.3, width: 1 });
             sD.path(Array.from({ length: 105 }, (_, x) => [x + 0.5, Math.min(lt.l[x] - lt.l[x + 1], 0.0495)]), { color: 'ink', width: 1.8 });
             const d0 = lt.l[0] - lt.l[1];
-            if (d0 > 0.05) sD.text(`infant deaths: ${Math.round(1000 * d0)} per 1 000 ↑`, 2, 0.0415, { align: 'left', color: 'red', size: 11.5, weight: 600 });
+            if (d0 > 0.05) sD.text(`infant deaths: ${Math.round(1000 * d0)} per 1 000 ↑`, 0, 0.0428, { dx: 36, align: 'left', color: 'red', size: 11.5, weight: 600 });
             sD.vline(lt.e[0], { color: 'accent', width: 1.6, dash: [5, 4] });
             sD.text(`mean = e₀`, lt.e[0], 0.034, { dx: lt.e[0] > 60 ? -5 : 5, align: lt.e[0] > 60 ? 'right' : 'left', color: 'accent', size: 11.5, weight: 600 });
             sD.dot(mode + 0.5, Math.min(lt.l[mode] - lt.l[mode + 1], 0.0495), { r: 4, color: 'ink' });

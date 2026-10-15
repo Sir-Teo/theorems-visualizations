@@ -21,6 +21,8 @@
 // Gibbs entropy and the maximum-entropy principle are `thermo` ch. 5–6, von Neumann entropy is
 // `qm-14.5`/`qinfo` ch. 10 — all of which cite this collection. Those items were removed here and
 // their numbers left as gaps.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'info',
   chapters: [
@@ -164,6 +166,11 @@ export default {
           pic: 'Fair bits walk down a tree built from the binary expansions of the target probabilities; the expected number of flips is shown between H and H + 2.' },
         { num: '4.16', kind: 'Theorem', name: 'Kolmogorov complexity and entropy', deps: ['toc-11.11', 'info-3.1'], refs: ['Cover–Thomas §14.3'],
           pic: 'A practical compressor stands in as an upper bound on K for long samples from a source; (1/n) times the compressed length tracks the entropy curve as the source bias varies.' },
+        { num: '4.17', kind: 'Paper', name: 'A Universal Algorithm for Sequential Data Compression',
+          paper: { authors: 'Jacob Ziv and Abraham Lempel', year: 1977, title: 'A Universal Algorithm for Sequential Data Compression',
+                   venue: 'IEEE Transactions on Information Theory 23 (3): 337–343', doi: '10.1109/TIT.1977.1055714' },
+          introduces: ['info-4.13'], deps: ['info-4.5', 'info-3.11'], refs: [],
+          pic: 'Type or paste text and watch the sliding window find the longest earlier match for each phrase, emitting (offset, length, next symbol) triples, with the compressed bits per symbol plotted against the entropy rate as the text grows.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -206,6 +213,11 @@ export default {
           pic: 'Forbid the pattern 11 on a binary line: the number of allowed strings grows like φⁿ, so capacity is log₂ of the golden ratio, read from the largest eigenvalue of the constraint graph.' },
         { num: '5.17', kind: 'Concept', name: 'Error exponents', deps: ['info-5.11'], refs: ['MacKay ch. 10'],
           pic: 'Block error of random codes is plotted on a log scale against n for several rates; each line is straight, and its slope, the error exponent, shrinks to zero as R approaches C.' },
+        { num: '5.18', kind: 'Paper', name: 'A Mathematical Theory of Communication',
+          paper: { authors: 'C. E. Shannon', year: 1948, title: 'A Mathematical Theory of Communication',
+                   venue: 'Bell System Technical Journal 27 (3): 379–423 and 27 (4): 623–656', doi: '10.1002/j.1538-7305.1948.tb01338.x' },
+          introduces: ['info-1.2', 'info-1.9', 'info-3.1', 'info-4.5', 'info-5.2', 'info-5.11', 'info-6.8'], deps: ['stoch-1.1'], refs: [],
+          pic: 'Drag p to trace the paper’s Fig. 7, the entropy H(p) of two choices; then send a message through a binary symmetric channel and watch codes of rate below 1 − H(ε) drive the error rate down as blocks lengthen, while rates above capacity cannot.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -300,6 +312,11 @@ export default {
           pic: 'The weight enumerator of the dual is computed both by listing and by the MacWilliams transform of the original; the coefficients agree term by term.' },
         { num: '8.16', kind: 'Theorem', name: 'Random linear codes achieve capacity', deps: ['info-5.11', 'info-8.4'], refs: ['MacKay ch. 14'],
           pic: 'Random parity-check matrices with rate below 1 − H(p) are decoded by maximum likelihood for growing n; block error falls as n grows.' },
+        { num: '8.17', kind: 'Paper', name: 'Error Detecting and Error Correcting Codes',
+          paper: { authors: 'R. W. Hamming', year: 1950, title: 'Error Detecting and Error Correcting Codes',
+                   venue: 'Bell System Technical Journal 29 (2): 147–160', doi: '10.1002/j.1538-7305.1950.tb00463.x' },
+          introduces: ['info-8.1', 'info-8.3', 'info-8.7', 'info-8.8'], deps: ['info-8.2'], refs: [],
+          pic: 'Encode four data bits into Hamming’s seven-bit word with three parity checks, flip any bit by clicking it, and watch the syndrome spell the error’s position in binary; flipping two bits shows where single-error correction ends.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -334,6 +351,11 @@ export default {
           pic: 'A bivariate polynomial is fitted through noisy points; its factors reveal every low-degree polynomial passing near enough, including beyond half the minimum distance.' },
         { num: '9.13', kind: 'Concept', name: 'QR codes', deps: ['info-9.7'], refs: ['MacKay ch. 11'],
           pic: 'Generate a QR code from typed text, deface part of it by painting, and decode: the chosen error-correction level decides how much damage survives.' },
+        { num: '9.14', kind: 'Paper', name: 'Polynomial Codes over Certain Finite Fields',
+          paper: { authors: 'I. S. Reed and G. Solomon', year: 1960, title: 'Polynomial Codes over Certain Finite Fields',
+                   venue: 'Journal of the Society for Industrial and Applied Mathematics 8 (2): 300–304', doi: '10.1137/0108018' },
+          introduces: ['info-9.4', 'info-9.5'], deps: ['info-9.1', 'info-8.4'], refs: [],
+          pic: 'A message becomes the coefficients of a polynomial over a small finite field and is sent as its values at n points; the reader erases or corrupts symbols and watches interpolation through any k good values recover the message.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -368,6 +390,11 @@ export default {
           pic: 'An outer Reed–Solomon code wraps an inner binary code; inner decoding failures become symbol errors that the outer code repairs, with error rates shown at each stage.' },
         { num: '10.13', kind: 'Theorem', name: 'Expander codes decode in linear time', deps: ['info-10.5'], refs: ['MacKay ch. 47'],
           pic: 'Flip any bit that violates most of its checks; on an expanding graph the error count drops every round, while on a poorly connected graph it stalls.' },
+        { num: '10.14', kind: 'Paper', name: 'Error Bounds for Convolutional Codes',
+          paper: { authors: 'Andrew J. Viterbi', year: 1967, title: 'Error Bounds for Convolutional Codes and an Asymptotically Optimum Decoding Algorithm',
+                   venue: 'IEEE Transactions on Information Theory 13 (2): 260–269', doi: '10.1109/TIT.1967.1054010' },
+          introduces: ['info-10.2', 'bioinf-4.4'], deps: ['info-10.1', 'algo-7.2'], refs: [],
+          pic: 'The trellis of a rate-½ convolutional code unrolls in time; the reader flips received bits and watches the decoder keep one survivor path per state and trace back the most likely message, with bit error rate plotted against channel noise.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11

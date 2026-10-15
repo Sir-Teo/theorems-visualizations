@@ -16,6 +16,8 @@
 // simplification and geometry processing, volume visualization (marching cubes), simplex range
 // searching (de Berg ch. 16) and neural rendering. The Fresnel equations themselves are `waves-4.7`;
 // sampling theory is `sig` ch. 7; Jordan curve and Euler formula are `top` ch. 10.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'cg',
   chapters: [
@@ -326,6 +328,11 @@ export default {
           pic: 'Along a ray through smoke, absorption, out-scattering, emission and in-scattering terms are plotted; a phase-function slider shifts scattering from forward to backward.' },
         { num: '11.10', kind: 'Concept', name: 'Bias, variance and consistency of renderers', deps: ['cg-11.5'], refs: ['PBRT 4e §2.1'],
           pic: 'An unbiased path tracer and a biased but smoother estimator are run against a reference; error splits into bias and variance curves as the sample budget grows.' },
+        { num: '11.11', kind: 'Paper', name: 'The Rendering Equation',
+          paper: { authors: 'James T. Kajiya', year: 1986, title: 'The Rendering Equation',
+                   venue: 'ACM SIGGRAPH Computer Graphics 20 (4): 143–150 (SIGGRAPH ’86)', doi: '10.1145/15886.15902' },
+          introduces: ['cg-11.3', 'cg-11.5'], deps: ['cg-10.1', 'cg-10.3', 'cg-11.2', 'stat-9.1'], refs: [],
+          pic: 'A box scene is path-traced live: each pixel averages random light paths, the samples-per-pixel slider shows noise falling like 1/√N, and toggling bounce counts shows what each term of the equation’s series adds to the image.' },
       ],
     },
   ],

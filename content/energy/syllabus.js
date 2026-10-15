@@ -15,6 +15,9 @@
 //   assessment, reactor kinetics and decay heat, economic dispatch.
 // Deliberate omissions: energy policy instruments and carbon pricing (→ macro/micro), nuclear waste geology,
 //   proliferation, detailed power electronics (→ circ).
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
+// Betz 1920 has no DOI or online record; its venue follows the reference list of G. A. M. van Kuik, Wind Energy 10 (2007) 289–291, doi:10.1002/we.218.
 export default {
   collection: 'energy',
   chapters: [
@@ -134,6 +137,16 @@ export default {
           pic: 'Shade one cell in a series string: without bypass diodes the whole string’s current collapses; with them the shaded section is skipped and the power curve develops multiple peaks.' },
         { num: '4.10', kind: 'Theorem', name: 'Concentrating sunlight: the étendue limit', deps: ['energy-4.1', 'energy-2.2'], refs: ['Tester ch. 13'],
           pic: 'Focus sunlight with mirrors of increasing concentration: the receiver temperature rises but can never exceed the Sun’s surface temperature, because the Sun’s angular size caps concentration at about 46,000.' },
+        { num: '4.11', kind: 'Paper', name: 'A New Silicon p-n Junction Photocell',
+          paper: { authors: 'D. M. Chapin, C. S. Fuller and G. L. Pearson', year: 1954, title: 'A New Silicon p-n Junction Photocell for Converting Solar Radiation into Electrical Power',
+                   venue: 'Journal of Applied Physics 25 (5): 676–677', doi: '10.1063/1.1721711' },
+          introduces: ['tech-12.10'], deps: ['energy-4.3', 'mat-9.8', 'energy-4.1'], refs: [],
+          pic: 'Shine an adjustable sun on a silicon junction cell and trace its current–voltage curve; sliding the load finds the maximum power point and an efficiency near the 6 % the Bell Laboratories cell reached, far above the selenium cells before it.' },
+        { num: '4.12', kind: 'Paper', name: 'Detailed Balance Limit of Efficiency of Solar Cells',
+          paper: { authors: 'William Shockley and Hans J. Queisser', year: 1961, title: 'Detailed Balance Limit of Efficiency of p-n Junction Solar Cells',
+                   venue: 'Journal of Applied Physics 32 (3): 510–519', doi: '10.1063/1.1736034' },
+          introduces: ['energy-4.5', 'mat-9.10'], deps: ['thermo-9.4', 'thermo-9.10', 'energy-4.3'], refs: [],
+          pic: 'Slide the band gap of a single-junction cell across a blackbody sun: photons below the gap are lost, the excess above it becomes heat, radiative recombination caps the voltage, and the efficiency traces the paper’s curve with its maximum of about 30 % near 1.1 eV.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -164,6 +177,11 @@ export default {
           pic: 'Extract heat from hot rock faster than conduction resupplies it: the reservoir cools over decades, comparing sustainable heat flux (tens of mW/m²) with mining stored heat.' },
         { num: '5.11', kind: 'Concept', name: 'Biomass and the efficiency of photosynthesis', deps: ['energy-4.1'], refs: ['Tester ch. 10', 'MacKay ch. 6'],
           pic: 'Follow sunlight into a field of energy crops: losses at each step leave under 1% stored as biomass, so the land needed to fuel a country’s cars is drawn on a map.' },
+        { num: '5.12', kind: 'Paper', name: 'Das Maximum der theoretisch möglichen Ausnützung des Windes',
+          paper: { authors: 'A. Betz', year: 1920, title: 'Das Maximum der theoretisch möglichen Ausnützung des Windes durch Windmotoren',
+                   venue: 'Zeitschrift für das gesamte Turbinenwesen 26: 307–309' },
+          introduces: ['energy-5.2'], deps: ['aero-7.3', 'fluid-2.12', 'energy-5.1'], refs: [],
+          pic: 'Slow the wind through an actuator disk by an adjustable induction factor a and watch the stream tube widen; the power coefficient 4a(1 − a)² peaks at a = 1/3 with C_P = 16/27, and a real rotor’s curve sits below Betz’s ceiling.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6

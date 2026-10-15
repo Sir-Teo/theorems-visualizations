@@ -15,6 +15,8 @@
 // Dynamo quorums, gossip, consistent hashing, Chord, TrueTime, Cole–Vishkin, self-stabilization —
 // are referred to the nearest chapter. Deliberately omitted: MapReduce and data-parallel
 // frameworks, distributed transactions beyond commit protocols, and population protocols.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'dist',
   chapters: [
@@ -42,6 +44,11 @@ export default {
           pic: 'An adversarial scheduler starves one process forever; switching on fairness forces it to run infinitely often, and a liveness property that failed now holds.' },
         { num: '1.9', kind: 'Algorithm', name: 'Alternating bit protocol', deps: ['dist-1.6'], refs: ['Lynch §22.3'],
           pic: 'A sender and receiver exchange numbered messages over a channel that loses and duplicates; one alternating bit and retransmission deliver every message exactly once, with an injectable loss button.' },
+        { num: '1.10', kind: 'Paper', name: 'A Protocol for Packet Network Intercommunication',
+          paper: { authors: 'Vinton G. Cerf and Robert E. Kahn', year: 1974, title: 'A Protocol for Packet Network Intercommunication',
+                   venue: 'IEEE Transactions on Communications 22 (5): 637–648', doi: '10.1109/TCOM.1974.1092259' },
+          introduces: ['tech-12.6'], deps: ['tech-12.5', 'dist-1.1', 'dist-1.9'], refs: [],
+          pic: 'Send a message across two packet networks joined by a gateway: it is cut into numbered segments, some are lost, duplicated or reordered, and the receiver’s window and acknowledgements trigger retransmissions until the byte stream is reassembled exactly.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -104,6 +111,11 @@ export default {
           pic: 'Shifting one process’s clock while adjusting delays within their uncertainty u leaves every view unchanged, so skew at least u(1 − 1/n) is unavoidable, shown for small n.' },
         { num: '3.11', kind: 'Concept', name: 'Bounded clock uncertainty in practice (TrueTime)', deps: ['dist-3.9'], refs: ['Attiya–Welch ch. 13'],
           pic: 'Clocks report intervals rather than instants; waiting out the uncertainty before committing makes timestamp order agree with real-time order, shown on a timeline.' },
+        { num: '3.12', kind: 'Paper', name: 'Time, Clocks, and the Ordering of Events',
+          paper: { authors: 'Leslie Lamport', year: 1978, title: 'Time, Clocks, and the Ordering of Events in a Distributed System',
+                   venue: 'Communications of the ACM 21 (7): 558–565', doi: '10.1145/359545.359563' },
+          introduces: ['dist-3.1', 'dist-3.2', 'dist-3.3', 'dist-7.1'], deps: ['dist-1.1', 'rel-1.8'], refs: [],
+          pic: 'A space–time diagram of three processes: the reader adds events and messages, the happened-before arrows and Lamport timestamps update, and dragging events reveals which pairs are concurrent, as in the paper’s light-cone-inspired figures.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -136,6 +148,11 @@ export default {
           pic: 'Writes and reads each contact a majority with timestamped values, and reads write back what they return; crash a minority and every history remains linearizable.' },
         { num: '4.12', kind: 'Theorem', name: 'Register emulation needs a correct majority', deps: ['dist-4.11', 'dist-1.7'], refs: ['Lynch §17.1.4'],
           pic: 'Partition the processes into two halves: a write completed in one half is invisible to a read in the other, producing a stale read that no linearization explains.' },
+        { num: '4.13', kind: 'Paper', name: 'Solution of a Problem in Concurrent Programming Control',
+          paper: { authors: 'E. W. Dijkstra', year: 1965, title: 'Solution of a Problem in Concurrent Programming Control',
+                   venue: 'Communications of the ACM 8 (9): 569', doi: '10.1145/365559.365617' },
+          introduces: ['dist-4.1'], deps: ['dist-1.4'], refs: [],
+          pic: 'N processes share a few variables and run Dijkstra’s entry protocol under a scheduler the reader controls adversarially; the violation counter stays at zero, while a naive flag protocol lets two processes in or deadlocks.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -172,6 +189,11 @@ export default {
           pic: 'Executions of three processes form a subdivided triangle coloured by decisions; Sperner’s lemma forces a fully coloured simplex, an execution where three values are decided.' },
         { num: '5.14', kind: 'Algorithm', name: 'Approximate agreement', deps: ['dist-5.1'], refs: ['Lynch §7.2', 'Attiya–Welch ch. 16'],
           pic: 'Real values are repeatedly averaged after discarding extremes; the spread of correct values halves every round despite faulty inputs, plotted on a log scale.' },
+        { num: '5.15', kind: 'Paper', name: 'Impossibility of Consensus with One Faulty Process',
+          paper: { authors: 'Michael J. Fischer, Nancy A. Lynch and Michael S. Paterson', year: 1985, title: 'Impossibility of Distributed Consensus with One Faulty Process',
+                   venue: 'Journal of the ACM 32 (2): 374–382', doi: '10.1145/3149.214121' },
+          introduces: ['dist-5.7'], deps: ['dist-5.1', 'dist-1.2', 'dist-1.7'], refs: [],
+          pic: 'Explore the configuration tree of a small asynchronous consensus protocol with configurations coloured 0-valent, 1-valent or bivalent; the reader plays the adversary, delaying one message at each step to keep the run bivalent forever.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -198,6 +220,11 @@ export default {
           pic: 'Pre-prepare, prepare and commit phases run in a message diagram among four replicas; make the primary lie and the view-change protocol replaces it.' },
         { num: '6.9', kind: 'Model', name: 'Nakamoto consensus: proof of work and the longest chain', deps: ['dist-6.2', 'crypto-5.6', 'crypto-5.14'], refs: ['Attiya–Welch ch. 14'],
           pic: 'Miners extend a block tree at rates proportional to hash power; forks resolve to the longest chain, and an attacker with a share the reader sets catches up with probability that falls exponentially in confirmations.' },
+        { num: '6.10', kind: 'Paper', name: 'The Byzantine Generals Problem',
+          paper: { authors: 'Leslie Lamport, Robert Shostak and Marshall Pease', year: 1982, title: 'The Byzantine Generals Problem',
+                   venue: 'ACM Transactions on Programming Languages and Systems 4 (3): 382–401', doi: '10.1145/357172.357176' },
+          introduces: ['dist-6.1'], deps: ['dist-1.3', 'dist-5.1'], refs: [],
+          pic: 'Recreate the paper’s three-general figures: make the commander or a lieutenant a traitor and see why no oral-message algorithm can work, then add a fourth general and run OM(1) to agreement.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -224,6 +251,11 @@ export default {
           pic: 'The leader appends entries and commits once a majority stores them; crash and partition servers at will and the log-matching and leader-completeness invariants are checked after every step.' },
         { num: '7.9', kind: 'Algorithm', name: 'Chain replication', deps: ['dist-7.1'], refs: ['Attiya–Welch ch. 10'],
           pic: 'Writes enter at the head and flow down a chain of servers, reads are served by the tail; removing a middle server splices the chain, with throughput and latency read out.' },
+        { num: '7.10', kind: 'Paper', name: 'The Part-Time Parliament',
+          paper: { authors: 'Leslie Lamport', year: 1998, title: 'The Part-Time Parliament',
+                   venue: 'ACM Transactions on Computer Systems 16 (2): 133–169', doi: '10.1145/279227.279229' },
+          introduces: ['dist-7.5', 'dist-7.6'], deps: ['dist-7.1', 'dist-7.4', 'dist-5.7'], refs: [],
+          pic: 'The priests of Paxos pass decrees by numbered ballots: the reader runs proposers and acceptors, drops messages and lets rival proposers duel with higher ballots, and checks that the ledgers never record two different decrees.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -262,6 +294,11 @@ export default {
           pic: 'Finger tables point halfway, a quarter, an eighth around the ring; a lookup hops toward its key, and hop counts are plotted against log₂ n.' },
         { num: '8.15', kind: 'Algorithm', name: 'Self-stabilization: Dijkstra’s token ring', deps: ['dist-1.5'], refs: ['Lynch §8.5'],
           pic: 'Start a ring of counters in any corrupted state with many tokens; the rules eliminate extra tokens until exactly one circulates, from any initial state the reader sets.' },
+        { num: '8.16', kind: 'Paper', name: 'The Anatomy of a Large-Scale Hypertextual Web Search Engine',
+          paper: { authors: 'Sergey Brin and Lawrence Page', year: 1998, title: 'The Anatomy of a Large-Scale Hypertextual Web Search Engine',
+                   venue: 'Computer Networks and ISDN Systems 30 (1–7): 107–117', doi: '10.1016/S0169-7552(98)00110-X' },
+          introduces: ['stoch-4.15', 'nla-6.15'], deps: ['stoch-4.4', 'nla-6.1'], refs: [],
+          pic: 'A small web of pages and links: a random surfer follows links and teleports with probability 1 − d, visit frequencies converge to PageRank by power iteration, and the reader adds links or a link farm to see the ranking shift.' },
       ],
     },
   ],

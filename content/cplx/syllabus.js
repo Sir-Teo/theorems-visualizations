@@ -25,6 +25,8 @@
 // Overlaps with parallel collections: approximation ratios, the vertex-cover 2-approximation,
 // greedy set cover, the knapsack scheme and TSP inapproximability are `algo` ch. 14; Miller–Rabin
 // is `nt-3.12`; Simon’s algorithm is `qinfo`. Those items were removed (numbers left as gaps).
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'cplx',
   chapters: [
@@ -58,6 +60,11 @@ export default {
           pic: 'With a PSPACE-complete oracle, P and NP coincide; with an oracle built stage by stage against each machine, they differ — both constructions are stepped through side by side.' },
         { num: '1.12', kind: 'Theorem', name: 'A provably intractable natural problem', deps: ['cplx-1.3', 'toc-3.6'], refs: ['Arora–Barak ch. 3'],
           pic: 'Equivalence of regular expressions with an exponentiation operator is EXPSPACE-complete, so outside PSPACE; the expression size explodes when the reader expands the exponents.' },
+        { num: '1.13', kind: 'Paper', name: 'On the Computational Complexity of Algorithms',
+          paper: { authors: 'J. Hartmanis and R. E. Stearns', year: 1965, title: 'On the Computational Complexity of Algorithms',
+                   venue: 'Transactions of the American Mathematical Society 117: 285–306', doi: '10.1090/S0002-9947-1965-0170805-7' },
+          introduces: ['toc-12.2', 'cplx-1.1', 'cplx-1.2', 'cplx-1.6'], deps: ['toc-7.5', 'toc-1.5'], refs: [],
+          pic: 'Race multitape machines under a time bound T and a sufficiently larger one: a diagonal machine simulates each fast machine on its own description and does the opposite, while a second panel shows linear speed-up by packing several tape symbols into one.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -90,6 +97,11 @@ export default {
           pic: 'A reduction to a sparse set must map many formulas onto few strings; the self-reduction tree of SAT is pruned using these collisions until only polynomially many branches remain.' },
         { num: '2.13', kind: 'Hypothesis', name: 'Berman–Hartmanis isomorphism conjecture', deps: ['cplx-2.12'], refs: ['Arora–Barak ch. 2'],
           pic: 'Padding functions turn reductions between known NP-complete problems into polynomial-time bijections, shown as a perfect matching between instances of SAT and CLIQUE of bounded size.' },
+        { num: '2.14', kind: 'Paper', name: 'Reducibility Among Combinatorial Problems',
+          paper: { authors: 'Richard M. Karp', year: 1972, title: 'Reducibility Among Combinatorial Problems',
+                   venue: 'in R. E. Miller and J. W. Thatcher (eds.), Complexity of Computer Computations, Plenum Press: 85–103', doi: '10.1007/978-1-4684-2001-2_9' },
+          introduces: ['toc-13.1', 'toc-13.6', 'toc-13.7', 'toc-13.9', 'toc-13.10', 'toc-13.11', 'cplx-2.1', 'cplx-2.3', 'cplx-2.6', 'cplx-2.7', 'cplx-2.8'], deps: ['toc-13.4'], refs: [],
+          pic: 'Karp’s tree of 21 problems drawn as a graph rooted at SAT: click an edge to watch a concrete small formula, graph or list of numbers transformed into the next problem, and a solution mapped back the other way.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -156,6 +168,11 @@ export default {
           pic: 'Any polynomial-time computation becomes a circuit by a log-space transducer; evaluating it layer by layer seems inherently sequential, and its depth is read out.' },
         { num: '4.13', kind: 'Theorem', name: 'NC¹ ⊆ L ⊆ NL ⊆ NC²', deps: ['cplx-4.10', 'toc-14.12'], refs: ['Arora–Barak ch. 6'],
           pic: 'A logarithmic-depth formula is evaluated depth-first with a pointer stack; reachability is computed in depth log² n by repeated Boolean matrix squaring.' },
+        { num: '4.14', kind: 'Paper', name: 'A Symbolic Analysis of Relay and Switching Circuits',
+          paper: { authors: 'Claude E. Shannon', year: 1938, title: 'A Symbolic Analysis of Relay and Switching Circuits',
+                   venue: 'Transactions of the American Institute of Electrical Engineers 57 (12): 713–723', doi: '10.1109/T-AIEE.1938.5057767' },
+          introduces: ['tech-11.13', 'logic-2.8', 'cplx-4.1'], deps: ['alg-19.15a', 'logic-2.3'], refs: [],
+          pic: 'Wire relay contacts in series and parallel and see the network’s hindrance written as a Boolean expression; simplify it with Shannon’s rules and watch the circuit lose contacts while its truth table stays fixed, ending with his relay adder.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -188,6 +205,11 @@ export default {
           pic: 'After amplification, a grid of inputs against random strings has bad cells so sparse that some column is good for every input; the reader shades bad cells and finds that column.' },
         { num: '5.13', kind: 'Theorem', name: 'Sipser–Gács–Lautemann: BPP ⊆ Σ₂ ∩ Π₂', deps: ['cplx-5.4', 'cplx-3.4'], refs: ['Arora–Barak ch. 7'],
           pic: 'A large set of accepting random strings can be covered by a few XOR-shifts of itself, a small one cannot; the reader tries shifts and sees the cube covered or not.' },
+        { num: '5.14', kind: 'Paper', name: 'PRIMES is in P',
+          paper: { authors: 'Manindra Agrawal, Neeraj Kayal and Nitin Saxena', year: 2004, title: 'PRIMES is in P',
+                   venue: 'Annals of Mathematics 160 (2): 781–793', doi: '10.4007/annals.2004.160.781' },
+          introduces: ['cplx-5.10'], deps: ['nt-2.5', 'cplx-3.2', 'cplx-5.6'], refs: [],
+          pic: 'Enter n and run the AKS test: find a small r with large multiplicative order of n, then check (X + a)ⁿ ≡ Xⁿ + a modulo (X^r − 1, n) for each a, and watch a Carmichael number that fools Fermat’s test fail one of these congruences.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -318,6 +340,11 @@ export default {
           pic: 'Vertices become unit vectors on a sphere and a random hyperplane cuts them; the expected cut, at least 0.878 of the relaxation, is checked over many hyperplanes.' },
         { num: '9.17', kind: 'Hypothesis', name: 'Unique Games Conjecture', deps: ['cplx-9.12', 'cplx-9.16'], refs: ['Arora–Barak ch. 22'],
           pic: 'Label-cover instances whose constraints are permutations: a slider for the completeness and soundness gap, and a table of problems whose approximation thresholds the conjecture would settle, 0.878 for MAX-CUT among them.' },
+        { num: '9.18', kind: 'Paper', name: 'Proof Verification and Hardness of Approximation Problems',
+          paper: { authors: 'Sanjeev Arora, Carsten Lund, Rajeev Motwani, Madhu Sudan and Mario Szegedy', year: 1998, title: 'Proof Verification and the Hardness of Approximation Problems',
+                   venue: 'Journal of the ACM 45 (3): 501–555', doi: '10.1145/278298.278306' },
+          introduces: ['cplx-9.6', 'cplx-9.7'], deps: ['cplx-9.5', 'cplx-6.10', 'cplx-9.9', 'cplx-9.10'], refs: [],
+          pic: 'A verifier tosses coins and reads only a few bits of a long proof: the reader corrupts a fraction of a valid proof and watches the rejection rate, then sees the same gap reappear as a MAX-3SAT instance in which no assignment beats a fixed fraction of clauses.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -430,6 +457,21 @@ export default {
           pic: 'Final amplitudes are computed as sums over all computational paths, one path at a time, with memory that stays polynomial; the running time doubles with each added gate.' },
         { num: '13.7', kind: 'Theorem', name: 'Quantum search lower bound (Bennett–Bernstein–Brassard–Vazirani)', deps: ['cplx-13.4'], refs: ['Arora–Barak ch. 10'],
           pic: 'The amplitude on the marked item can grow only a little per query; the bound is plotted against the number of queries and Grover’s √N schedule touches it.' },
+        { num: '13.8', kind: 'Paper', name: 'A Theory of the Learnable',
+          paper: { authors: 'L. G. Valiant', year: 1984, title: 'A Theory of the Learnable',
+                   venue: 'Communications of the ACM 27 (11): 1134–1142', doi: '10.1145/1968.1972' },
+          introduces: ['ml-3.1'], deps: ['cplx-5.1', 'algo-12.18'], refs: [],
+          pic: 'A hidden conjunction of literals labels random examples from a distribution the reader shapes; Valiant’s elimination algorithm learns a hypothesis, and its true error falls below ε with probability at least 1 − δ once the sample passes (n ln 3 + ln 1/δ)/ε.' },
+        { num: '13.9', kind: 'Paper', name: 'A Fast Quantum Mechanical Algorithm for Database Search',
+          paper: { authors: 'Lov K. Grover', year: 1996, title: 'A Fast Quantum Mechanical Algorithm for Database Search',
+                   venue: 'Proceedings of the 28th Annual ACM Symposium on Theory of Computing (STOC ’96): 212–219', doi: '10.1145/237814.237866' },
+          introduces: ['qinfo-5.6'], deps: ['qinfo-5.1', 'qinfo-4.8', 'cplx-13.4'], refs: [],
+          pic: 'The amplitudes of N items are bars; each Grover iteration flips the sign of the marked item and reflects every amplitude about the mean, and the marked bar peaks after about (π/4)√N steps, then shrinks again if the reader keeps going.' },
+        { num: '13.10', kind: 'Paper', name: 'Prime Factorization and Discrete Logs on a Quantum Computer',
+          paper: { authors: 'Peter W. Shor', year: 1997, title: 'Polynomial-Time Algorithms for Prime Factorization and Discrete Logarithms on a Quantum Computer',
+                   venue: 'SIAM Journal on Computing 26 (5): 1484–1509 (conference version FOCS 1994)', doi: '10.1137/S0097539795293172' },
+          introduces: ['qinfo-6.4', 'qinfo-6.7', 'qinfo-6.8'], deps: ['qinfo-5.5', 'qinfo-6.1', 'qinfo-6.6', 'cplx-13.4'], refs: [],
+          pic: 'Choose N = 15 or 21 and a base a: after modular exponentiation and the quantum Fourier transform the register shows peaks at multiples of 2ⁿ/r, and the reader samples peaks, runs continued fractions to recover r and computes gcd(a^{r/2} ± 1, N).' },
       ],
     },
   ],

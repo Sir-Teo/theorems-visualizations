@@ -731,5 +731,171 @@ Comparing with $pV = nRT$ (1.4) identifies temperature with molecular motion: $\
         });
       },
     },
+    // ------------------------------------------------------------------ 1.9
+    {
+      num: '1.9', kind: 'Definition', name: 'Collision frequency and mean free path',
+      statement: String.raw`In a gas of molecules with collision cross-section $\sigma = \pi d^2$ ($d$ the molecular diameter), number density $\mathcal N = p/k_BT$ and mean speed $\bar v = \sqrt{8k_BT/\pi m}$, the **collision frequency** $z$ is the mean number of collisions one molecule makes per unit time, and the **mean free path** $\lambda$ is the mean distance it travels between collisions. The kinetic model gives
+$$z = \sigma\,\bar v_{\rm rel}\,\mathcal N = \sqrt2\,\sigma\bar v\,\frac{p}{k_BT}, \qquad \lambda = \frac{\bar v}{z} = \frac{k_BT}{\sqrt2\,\sigma p}.$$
+At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\lambda \approx 70$ nm, about 200 molecular diameters, and $z \approx 7\times10^9\ \mathrm{s^{-1}}$. The free paths are scattered nearly exponentially about their mean.`,
+      idea: String.raw`A molecule sweeps out a collision tube of cross-section $\sigma$: any other molecule whose centre lies within $d$ of its path is hit. Moving at the mean *relative* speed, it sweeps a volume $\sigma\bar v_{\rm rel}$ per unit time and meets $\sigma\bar v_{\rm rel}\mathcal N$ molecules. For Maxwell-distributed velocities (thermo-6.15) the mean relative speed of two molecules is $\sqrt2\,\bar v$, which is where the $\sqrt2$ comes from. Collisions are random events at a nearly constant rate, so the distance to the next one is close to exponentially distributed. The formulas assume a dilute gas: when the molecules fill several percent of the volume, a molecule's neighbours crowd its path and collisions come sooner (Enskog's factor).`,
+      caption: String.raw`A periodic piece of gas — no walls — with one molecule tagged: its zig-zag path and the points where it collided are drawn, and every free path of every molecule goes into the histogram on the right, against the exponential law with the predicted mean $\lambda = k_BT/\sqrt2\sigma p$ (dashed). Raise the pressure: the paths shrink as $1/p$. Above a few hundred bar the molecules fill a noticeable part of the space and the measured paths fall short of the dilute-gas formula — the readout then also gives the dense-gas (Enskog) correction.`,
+      deps: ['pchem-1.6', 'thermo-6.15'],
+      see: ['thermo-7.1'],
+      refs: ['Atkins Focus 1', 'M–S ch. 27'],
+      tags: ['kinetic theory', 'collisions'],
+      credit: 'Clausius, 1858 (mean free path); Maxwell, 1860 (the factor √2)',
+      viz(v) {
+        const N = 120, T = 300, RATE = 18, NB = 32;
+        const GAS = { He: { d: 2.585, m: 4.003, sig: 0.21, col: 'teal', tex: '\\mathrm{He}' }, N2: { d: 3.700, m: 28.014, sig: 0.43, col: 'blue', tex: '\\mathrm{N_2}' }, CO2: { d: 4.068, m: 44.01, sig: 0.52, col: 'red', tex: '\\mathrm{CO_2}' } };
+        const gas = v.select('gas', [{ value: 'He', label: 'He' }, { value: 'N2', label: '$\\mathrm{N_2}$' }, { value: 'CO2', label: '$\\mathrm{CO_2}$' }], 'N2', { onChange: () => make() });
+        const pr = v.slider('pressure $p = \\mathcal N k_BT$', 2, 300, 20, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
+        v.button('Clear histogram', () => clearH());
+        const sa = v.stage({ x: [-0.04, 1.04], y: [-0.04, 1.04], equal: true, height: 330, axes: false, weight: 0.95, minWidth: 240 });
+        const sh = v.stage({ x: [0, 4], y: [0, 1.1], height: 330, axes: 'box', weight: 1.2, title: 'distribution of free path lengths $x$ (nm)' });
+        let G, L, n, sp, last, paths, counts, trail, tLast = 0, ncol0 = 0, t0 = 0, sum = 0, cnt = 0;
+        const clearH = () => { counts = new Float64Array(NB); sum = 0; cnt = 0; ncol0 = G.ncol; t0 = G.t; };
+        const make = () => {
+          sp = GAS[gas.value]; n = pr.value / BAR / T; L = Math.cbrt(N / n);
+          G = hsGas({ N, species: [sp], L: [L, L, L], T, rng: v.rng(91), periodic: true, tag: 0 });
+          last = new Float64Array(N).fill(-1); trail = [[0, 0, 0]];
+          G.onCol = (i, j) => {
+            for (const k of [i, j]) {
+              if (last[k] >= 0) { const len = Math.hypot(G.vx[k], G.vy[k], G.vz[k]) * (G.t - last[k]), b = Math.floor(len / lamP() * NB / 4); sum += len; cnt++; if (b >= 0 && b < NB) counts[b]++; }
+              last[k] = G.t;
+              if (k === 0) { trail.push([G.ux, G.uy, G.uz]); if (trail.length > 40) trail.shift(); }
+            }
+          };
+          clearH();
+        };
+        const lamP = () => 1 / (Math.SQRT2 * sp.sig * 100 * n);   // Å (σ in nm² → ×100 Å²)
+        make();
+        let R = null;
+        v.animate((t) => {
+          if (t < tLast - 1e-6) make();
+          const dT = Math.min(500, (t - tLast) * RATE); tLast = t;
+          if (dT > 0) G.advance(dT);
+          const lp = lamP(), el = G.t - t0, Tk = G.kinT(), vbar = Math.sqrt(8 * Tk / (Math.PI * sp.m)), zP = Math.SQRT2 * sp.sig * 100 * vbar * n, zM = el > 0 ? 2 * (G.ncol - ncol0) / (N * el) : 0;
+          const eta = Math.PI / 6 * n * sp.d ** 3, chi = (1 - eta / 2) / (1 - eta) ** 3;
+          R = { lp, lm: cnt ? sum / cnt : NaN, zP, zM, eta, chi, cnt };
+          // --- the box, the gas and the tagged path ---
+          const sc = 1 / L;
+          sa.rect(0, 0, 1, 1, { fill: sp.col, fillAlpha: 0.04, color: 'ink', width: 1.4 });
+          const idx = Array.from({ length: N }, (_, i) => i).sort((a, b) => G.z[b] - G.z[a]);
+          for (const i of idx) if (i) sa.dot(G.x[i] * sc, G.y[i] * sc, { r: Math.max(1.4, sp.d / 2 * sc * sa.scale), color: sp.col, alpha: 0.12 + 0.3 * (1 - G.z[i] / L), ring: false });
+          const ox = G.x[0] - G.ux, oy = G.y[0] - G.uy, pts = trail.concat([[G.ux, G.uy, G.uz]]).map((q) => [(q[0] + ox) * sc, (q[1] + oy) * sc]);
+          sa.clip(() => {
+            for (const sx of [-1, 0, 1]) for (const sy of [-1, 0, 1]) {
+              const sh2 = pts.map((q) => [q[0] + sx, q[1] + sy]);
+              sa.path(sh2, { color: 'gold', width: 2.2 });
+              sh2.slice(1, -1).forEach((q) => sa.dot(q[0], q[1], { r: 3.2, color: 'red', ring: false }));
+            }
+          }, [0, 1], [0, 1]);
+          sa.dot(G.x[0] * sc, G.y[0] * sc, { r: Math.max(3, sp.d / 2 * sc * sa.scale), color: 'gold' });
+          const bar = Math.min(0.9, lp * sc);
+          sa.line(0.05, 1.015, 0.05 + bar, 1.015, { color: 'ink', width: 3 });
+          sa.text(`λ = ${v.fix(lp / 10, 2)} nm`, 0.07 + bar, 1.015, { size: 11.5, color: 'ink', align: 'left' });
+          sa.corner(`box ${v.fix(L / 10, 2)} nm (periodic) · ${v.fix(G.t * T0 * 1e12, 0)} ps`, 'bl', { size: 11 });
+          // --- histogram vs exponential ---
+          const xmax = 4 * lp / 10, tot = counts.reduce((a, b) => a + b, 0), bw = xmax / NB;
+          sh.setView([0, xmax], [0, 1.15 * 10 / lp]);
+          if (tot > 0) sh.hist({ edges: Array.from({ length: NB + 1 }, (_, k) => k * bw), counts: Array.from(counts, (c) => c / (cnt * bw)) }, { color: sp.col, fillAlpha: 0.35 });
+          sh.fn((xn) => Math.exp(-xn * 10 / lp) * 10 / lp, { color: 'ink', width: 2, dash: [6, 4] });
+          sh.vline(lp / 10, { color: 'ink', width: 1.2, dash: [3, 3] });
+          if (cnt) { sh.vline(R.lm / 10, { color: sp.col, width: 2.2 }); sh.text('measured mean', R.lm / 10, 1.08 * 10 / lp, { size: 11, color: sp.col, dx: 5, align: 'left' }); }
+          sh.text('λ predicted', lp / 10, 0.94 * 10 / lp, { size: 11, color: 'ink', dx: 5, align: 'left' });
+        }, { still: 20 });
+        v.legend([['gold', 'path of the tagged molecule'], ['red', 'its collisions', { dot: true }], ['muted', 'free paths of all molecules', { area: true }], ['ink', 'exponential law, mean $k_BT/\\sqrt2\\sigma p$', { dash: true }]]);
+        v.readout(() => {
+          if (!R || !R.cnt) return 'Waiting for collisions…';
+          const { lp, lm, zP, zM, eta, chi, cnt } = R;
+          let s = `From ${cnt} free paths: mean free path $${v.fix(lm / 10, 3)}$ nm, predicted $k_BT/\\sqrt2\\sigma p = ${v.fix(lp / 10, 3)}$ nm (ratio $${v.fix(lm / lp, 3)}$, $\\lambda/d = ${v.fix(lp / sp.d, 1)}$). Collision frequency $z = ${v.fix(zM / T0 / 1e9, 1)}$ per ns, predicted $\\sqrt2\\sigma\\bar v\\mathcal N = ${v.fix(zP / T0 / 1e9, 1)}$ per ns.`;
+          s += eta > 0.01 ? ` Molecules fill ${v.fix(100 * eta, 1)}% of the space: Enskog's crowding factor $\\chi = ${v.fix(chi, 3)}$ predicts $z = ${v.fix(chi * zP / T0 / 1e9, 1)}$ per ns.` : ' The gas is dilute: the formulas apply.';
+          return s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.10
+    {
+      num: '1.10', kind: 'Law', name: 'Barometric formula',
+      statement: String.raw`In an isothermal atmosphere of a perfect gas of molar mass $M$ in a uniform gravitational field $g$, the pressure and the density fall exponentially with height:
+$$p(h) = p(0)\,e^{-h/H}, \qquad H = \frac{RT}{Mg} = \frac{k_BT}{mg}.$$
+The scale height $H$ is about 8.4 km for air at 288 K. In a mixture left undisturbed, each gas follows its own exponential with its own $H$ — light gases thin out more slowly — but in Earth's turbulent lower atmosphere (below about 100 km) mixing keeps the composition uniform.`,
+      idea: String.raw`A thin layer of gas between $h$ and $h + dh$ must be held up by the pressure difference across it: $dp = -\rho g\,dh$. For a perfect gas $\rho = pM/RT$ (1.4), so $dp/p = -(Mg/RT)\,dh$, which integrates to the exponential. Molecule by molecule it is the Boltzmann factor $e^{-mgh/k_BT}$: climbing to $h$ costs potential energy $mgh$, which a molecule leaving the warm ground with thermal speeds rarely has when $mgh \gg k_BT$. Heavier molecules have the same kinetic energy but need more of it to climb, so they hug the ground.`,
+      caption: String.raw`600 molecules of helium, nitrogen and carbon dioxide fly ballistic arcs above a warm ground that re-emits them with thermal velocities (they are collision-free, as in the upper atmosphere; a lid at 60 km reflects them). Their time-averaged density profile is plotted on a log scale: each gas gives a straight line whose slope is its own scale height $RT/Mg$ (dashed) — sorted by mass. Change the temperature or the planet. Switch on **stirring**, eddies that carry molecules between heights faster than they can sort themselves, and the composition becomes the same at every height, as it is in Earth's homosphere.`,
+      deps: ['pchem-1.4'],
+      refs: ['Atkins Focus 1'],
+      tags: ['atmosphere', 'Boltzmann factor'],
+      credit: 'Halley, 1686; Laplace, 1805',
+      scope: String.raw`Assumes an isothermal atmosphere, uniform $g$ and diffusive (unstirred) equilibrium. Earth's real atmosphere cools by about 6.5 K/km in the troposphere, and turbulence mixes all gases to a common profile up to the turbopause near 100 km; above it the gases separate by mass as the formula predicts.`,
+      viz(v) {
+        const SPEC = [{ name: 'He', M: 4.003, col: 'teal', n: 150 }, { name: 'N₂', M: 28.014, col: 'blue', n: 300 }, { name: 'CO₂', M: 44.01, col: 'red', n: 150 }];
+        const HT = 60, WC = 24, NB = 30, RATE = 120, KB = 1.380649e-23, U = 1.66053907e-27, SETTLE = 700;
+        const Tsl = v.slider('temperature', 150, 400, 288, { step: 1, fmt: (x) => `${x.toFixed(0)} K`, onChange: () => clearH() });
+        const gsel = v.select('gravity', [{ value: 9.81, label: 'Earth 9.81' }, { value: 3.71, label: 'Mars 3.71' }], 9.81, { onChange: () => clearH() });
+        const stir = v.toggle('stirring (turbulent mixing)', false, { onChange: () => clearH() });
+        v.button('Release from the ground', () => reset());
+        const sc = v.stage({ x: [-3, WC + 1], y: [-2, HT + 2], equal: true, height: 400, axes: false, weight: 0.42, minWidth: 170 });
+        const sp = v.stage({ x: [0.002, 1.5], y: [0, HT], xlog: true, height: 400, axes: 'box', weight: 1, title: 'density relative to the ground (log scale) against height (km)' });
+        const NT = SPEC.reduce((a, s) => a + s.n, 0), S = new Int8Array(NT), x = new Float64Array(NT), z = new Float64Array(NT), vx = new Float64Array(NT), vz = new Float64Array(NT);
+        { let k = 0; SPEC.forEach((s, j) => { for (let i = 0; i < s.n; i++) S[k++] = j; }); }
+        const rng = v.rng(101);
+        let tSim = 0, tLast = 0, hist, wsum, tH = 0;
+        const sig = (j) => Math.sqrt(KB * Tsl.value / (SPEC[j].M * U));   // m/s
+        const emit = (i) => { const s = sig(S[i]); vz[i] = s * Math.sqrt(-2 * Math.log(1 - rng())); vx[i] = s * rng.normal(); z[i] = 0; };
+        const clearH = () => { hist = SPEC.map(() => new Float64Array(NB)); wsum = 0; tH = tSim; };
+        const reset = () => { tSim = 0; for (let i = 0; i < NT; i++) { x[i] = rng() * WC * 1000; emit(i); } clearH(); };
+        reset();
+        const step = (dt) => {
+          const g = +gsel.value, top = HT * 1000;
+          for (let i = 0; i < NT; i++) {
+            let zz = z[i] + vz[i] * dt - 0.5 * g * dt * dt, w = vz[i] - g * dt;
+            if (zz < 0) { const tc = (vz[i] + Math.sqrt(vz[i] * vz[i] + 2 * g * z[i])) / g, rest = dt - tc; emit(i); zz = vz[i] * rest - 0.5 * g * rest * rest; w = vz[i] - g * rest; if (zz < 0) { zz = 0; w = Math.abs(w); } }
+            if (zz > top) { zz = 2 * top - zz; w = -Math.abs(w); }
+            z[i] = zz; vz[i] = w; x[i] = ((x[i] + vx[i] * dt) % (WC * 1000) + WC * 1000) % (WC * 1000);
+          }
+          if (stir.value) for (let k = 0; k < NT * 0.08 * dt; k++) {
+            const a = (rng() * NT) | 0, b = (rng() * NT) | 0;
+            if (S[a] !== S[b]) { [x[a], x[b]] = [x[b], x[a]]; [z[a], z[b]] = [z[b], z[a]]; [vx[a], vx[b]] = [vx[b], vx[a]]; [vz[a], vz[b]] = [vz[b], vz[a]]; }
+          }
+          tSim += dt;
+          if (tSim - tH > SETTLE) { for (let i = 0; i < NT; i++) { const b = Math.min(NB - 1, Math.floor(z[i] / (top / NB))); hist[S[i]][b] += dt; } wsum += dt; }
+        };
+        // time-averaged occupancy of each height bin; the profile is normalised by the fitted ground density n(0)
+        const occ = (j) => Array.from(hist[j], (c, b) => [c / Math.max(1e-9, wsum), (b + 0.5) * HT / NB]).filter((q) => q[0] > 0.04);
+        const fitLine = (j) => { const o = occ(j); if (o.length < 5) return null; const r = v.M.linreg(o.map((q) => q[1]), o.map((q) => Math.log(q[0]))); return r; };
+        const profile = (j) => { const r = fitLine(j); if (!r) return []; const n0 = Math.exp(r.intercept); return occ(j).map((q) => [q[0] / n0, q[1]]); };
+        const fitH = (j) => { const r = fitLine(j); return !r ? NaN : r.slope < 0 ? -1 / r.slope : Infinity; };
+        v.animate((t) => {
+          if (t < tLast - 1e-6) reset();
+          const dT = Math.min(4000, (t - tLast) * RATE); tLast = t;
+          for (let done = 0; done < dT - 1e-9; done += 2) step(Math.min(2, dT - done));
+          // --- the column ---
+          const Th = Tsl.value, f = Math.max(0, Math.min(1, (Th - 150) / 250));
+          sc.rect(0, -1.6, WC, 0, { fill: v.mix('orange', 'red', f), fillAlpha: 0.7, stroke: false });
+          sc.line(0, HT, WC, HT, { color: 'muted', width: 1.5, dash: [4, 3] });
+          for (const hh of [10, 20, 30, 40, 50]) { sc.line(-0.8, hh, 0, hh, { color: 'muted', width: 1 }); sc.text(`${hh}`, -1.1, hh, { size: 10, color: 'muted', align: 'right' }); }
+          sc.text('km', -1.1, HT, { size: 10, color: 'muted', align: 'right' });
+          SPEC.forEach((s, j) => { const pts = []; for (let i = 0; i < NT; i++) if (S[i] === j) pts.push([x[i] / 1000, z[i] / 1000]); sc.dots(pts, { r: 1.9, color: s.col, alpha: 0.8 }); });
+          // --- profiles ---
+          const g = +gsel.value;
+          for (const xv of [0.01, 0.1, 1]) sp.vline(xv, { color: 'grid', width: 1 });
+          SPEC.forEach((s, j) => {
+            const H = 8.314462618 * Th / (s.M * 1e-3 * g) / 1000;
+            sp.fn((rel) => -H * Math.log(rel), { color: s.col, width: 1.6, dash: [6, 4], domain: [Math.exp(-HT / H), 1] });
+            const pr = profile(j).filter((q) => q[0] > 0);
+            sp.path(pr, { color: s.col, width: 1, alpha: 0.5 });
+            sp.dots(pr, { r: 3.2, color: s.col });
+            sp.text(s.name, Math.max(0.003, Math.exp(-50 / H)), Math.min(50, H * Math.log(1 / 0.003)) , { color: s.col, size: 12, weight: 600, dx: 6 });
+          });
+        }, { still: 22 });
+        v.legend([['teal', 'He (4 g/mol)', { dot: true }], ['blue', 'N₂ (28 g/mol)', { dot: true }], ['red', 'CO₂ (44 g/mol)', { dot: true }], ['ink', 'predicted $e^{-h/H}$, $H = RT/Mg$', { dash: true }]]);
+        v.readout(() => {
+          if (!wsum) return `Molecules leaving the ground — the profile is recorded once the atmosphere has settled (${v.fix(Math.max(0, SETTLE - (tSim - tH)), 0)} s of simulated time to go).`;
+          const g = +gsel.value, rows = SPEC.map((s, j) => { const H = 8.314462618 * Tsl.value / (s.M * 1e-3 * g) / 1000, Hm = fitH(j); return `${s.name}: $H = ${isFinite(Hm) ? v.fix(Hm, 1) : '\\infty'}$ km measured, $RT/Mg = ${v.fix(H, 1)}$ km`; });
+          const top = NB - 3, he = (b) => hist[0][b] / Math.max(1e-9, hist[1][b]);
+          return rows.join(' · ') + `. Helium-to-nitrogen ratio near the ground ${v.fix(he(0), 2)}, near 50 km ${v.fix(he(top) || 0, 2)}${stir.value ? ' — stirred: the same mixture at every height.' : ' — unstirred: the light gas takes over aloft.'}`;
+        });
+      },
+    },
   ],
 };

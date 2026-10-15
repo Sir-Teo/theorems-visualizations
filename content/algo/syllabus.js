@@ -67,6 +67,8 @@
 //     algorithm, suffix trees and the Z-algorithm (suffix arrays and KMP chosen, as in CLRS 4e),
 //     binomial and scapegoat trees, maximum subarray (moved online in CLRS 4e), RNA folding and
 //     segmented least squares (KT-only DP examples), min-cost arborescences (KT starred section).
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'algo',
   chapters: [
@@ -185,6 +187,11 @@ export default {
           pic: 'The array is laid out as columns of five sorted by their medians; the median of medians splits the grid into a surely-smaller and a surely-larger block of about 3n/10 each, and the recursion tree’s level costs shrink by 9/10.' },
         { num: '3.19', kind: 'Theorem', name: 'Minimum and maximum together in ⌈3n/2⌉ − 2 comparisons', deps: ['algo-3.16'], refs: ['CLRS 4e §9.1', 'Erickson notes: Adversary Arguments'], tags: ['selection', 'lower bounds'],
           pic: 'Elements are compared in pairs, the winners compete for the maximum and the losers for the minimum; an adversary that tracks which keys can still be the maximum or the minimum shows that no strategy finishes in fewer comparisons.' },
+        { num: '3.20', kind: 'Paper', name: 'Quicksort',
+          paper: { authors: 'C. A. R. Hoare', year: 1962, title: 'Quicksort',
+                   venue: 'The Computer Journal 5 (1): 10–16', doi: '10.1093/comjnl/5.1.10' },
+          introduces: ['algo-3.9'], deps: ['algo-3.1', 'algo-2.1'], refs: [],
+          pic: 'Partition an array of bars around a pivot with Hoare’s two converging pointers, recurse on both sides, and compare the comparison count with n log₂ n and with the quadratic worst case of a bad pivot on sorted input.' },
       ],
     },
     {
@@ -222,6 +229,11 @@ export default {
           pic: 'Indices 0 … n − 1 are drawn with arcs to their bit-reversed partners; after the permutation, the in-place butterflies run level by level on the reordered array.' },
         { num: '4.15', kind: 'Algorithm', name: 'Integer multiplication via the FFT', deps: ['algo-4.13', 'algo-4.1'], refs: ['CLRS 4e Ch. 30', 'Erickson notes: Fast Fourier Transforms'], tags: ['fft', 'arithmetic'],
           pic: 'Two long integers are cut into digit blocks, the blocks are convolved by FFT and carries ripple through; a cost plot compares this route with Karatsuba and the schoolbook method as the length grows.' },
+        { num: '4.16', kind: 'Paper', name: 'Machine Calculation of Complex Fourier Series',
+          paper: { authors: 'James W. Cooley and John W. Tukey', year: 1965, title: 'An Algorithm for the Machine Calculation of Complex Fourier Series',
+                   venue: 'Mathematics of Computation 19 (90): 297–301', doi: '10.1090/S0025-5718-1965-0178586-1' },
+          introduces: ['algo-4.11', 'sig-8.8'], deps: ['algo-4.10', 'algo-4.8'], refs: [],
+          pic: 'The butterfly diagram for N = 8 or 16 lights up stage by stage on the reader’s signal, with the N log₂ N operation count plotted against the N² of the direct sum, and a factorization N = r₁r₂ showing the paper’s mixed-radix split.' },
       ],
     },
     {
@@ -429,6 +441,16 @@ export default {
           pic: 'Enter constraints x_j − x_i ≤ c, each drawn as an edge; Bellman–Ford from a virtual source returns a feasible assignment plotted on a number line, or a negative cycle proving infeasibility.' },
         { num: '9.16', kind: 'Algorithm', name: 'All-pairs shortest paths by min-plus matrix squaring', deps: ['algo-9.2', 'algo-7.2', 'algo-2.12'], refs: ['CLRS 4e §23.1', 'Erickson Ch. 9'], tags: ['shortest paths', 'matrices'],
           pic: 'The weight matrix is “multiplied” by itself with min in place of sum and plus in place of product; each squaring doubles the number of edges a path may use, and the table stops changing after about log₂ n squarings.' },
+        { num: '9.17', kind: 'Paper', name: 'A Note on Two Problems in Connexion with Graphs',
+          paper: { authors: 'E. W. Dijkstra', year: 1959, title: 'A Note on Two Problems in Connexion with Graphs',
+                   venue: 'Numerische Mathematik 1: 269–271', doi: '10.1007/BF01386390' },
+          introduces: ['algo-9.8'], deps: ['algo-9.1', 'algo-9.3'], refs: [],
+          pic: 'On a road map with editable lengths, the set of settled vertices grows outward from the source in order of distance while frontier labels update; a second tab runs the paper’s other problem, growing the shortest spanning tree.' },
+        { num: '9.18', kind: 'Paper', name: 'Heuristic Determination of Minimum Cost Paths',
+          paper: { authors: 'Peter E. Hart, Nils J. Nilsson and Bertram Raphael', year: 1968, title: 'A Formal Basis for the Heuristic Determination of Minimum Cost Paths',
+                   venue: 'IEEE Transactions on Systems Science and Cybernetics 4 (2): 100–107', doi: '10.1109/TSSC.1968.300136' },
+          introduces: ['algo-9.12'], deps: ['algo-9.8'], refs: [],
+          pic: 'On a grid with walls, A* expands nodes in order of g + h; the reader switches the heuristic between zero (Dijkstra), straight-line distance and an overestimate, comparing the explored region and whether the path found is still the shortest.' },
       ],
     },
     {
@@ -478,6 +500,11 @@ export default {
           pic: 'Run greedy by decreasing weight on a matroid and match the brute-force best basis; switch to a non-matroid family such as matchings and weights are built from a failed exchange to make greedy lose.' },
         { num: '10.21', kind: 'Algorithm', name: 'Scheduling unit jobs with deadlines via matroids', deps: ['algo-10.20', 'algo-10.6'], refs: ['Erickson notes: Matroids'], tags: ['matroids', 'scheduling'],
           pic: 'Unit-time jobs with deadlines and penalties are taken greedily by decreasing penalty, a job being kept only if the chosen set can still all meet their deadlines; the feasibility test is drawn as a filling timeline, and the result matches brute force.' },
+        { num: '10.22', kind: 'Paper', name: 'A Method for the Construction of Minimum-Redundancy Codes',
+          paper: { authors: 'David A. Huffman', year: 1952, title: 'A Method for the Construction of Minimum-Redundancy Codes',
+                   venue: 'Proceedings of the IRE 40 (9): 1098–1101', doi: '10.1109/JRPROC.1952.273898' },
+          introduces: ['algo-10.10', 'algo-10.11'], deps: ['algo-10.9', 'info-4.3'], refs: [],
+          pic: 'Type a message: its letter frequencies become leaves that merge two-smallest-first into Huffman’s tree, and the code lengths are compared letter by letter with Shannon–Fano coding and with the entropy bound.' },
       ],
     },
     {
@@ -530,6 +557,11 @@ export default {
           pic: 'Khachiyan’s ellipsoid shrinks around the feasible region of a two-variable LP, halving its area by a fixed factor at every cut, while an interior-point path glides through the middle of the polygon to the optimum.' },
         { num: '11.24', kind: 'Theorem', name: 'Totally unimodular LPs have integral vertices', deps: ['algo-11.16', 'algo-11.10'], refs: ['Erickson notes: Linear Programming Algorithms'], tags: ['linear programming', 'matching'],
           pic: 'For a bipartite graph every vertex of the matching polytope is checked to be 0/1, and the determinant of every square submatrix is in {−1, 0, 1}; add an odd cycle and a half-integral vertex appears.' },
+        { num: '11.25', kind: 'Paper', name: 'Maximal Flow Through a Network',
+          paper: { authors: 'L. R. Ford, Jr. and D. R. Fulkerson', year: 1956, title: 'Maximal Flow Through a Network',
+                   venue: 'Canadian Journal of Mathematics 8: 399–404', doi: '10.4153/CJM-1956-045-5' },
+          introduces: ['algo-11.6', 'graph-6.2.2'], deps: ['algo-11.1', 'algo-11.2'], refs: [],
+          pic: 'On an editable capacitated network, push flow along augmenting paths until none remains, and watch the saturated edges trace a cut whose capacity equals the flow value.' },
       ],
     },
     {

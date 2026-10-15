@@ -14,6 +14,8 @@
 //   omnidirectional wheels, the meter-stick trick, visual servoing, point-cloud registration (ICP).
 // Deliberate omissions: deep perception and learning-based manipulation (→ deep, ml), actuator/sensor hardware
 //   details, soft robotics.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'robot',
   chapters: [
@@ -82,6 +84,11 @@ export default {
           pic: 'Set the platform pose and the six leg lengths follow immediately; set the leg lengths instead and a numerical solver finds one of several possible platform poses, shown as ghost images.' },
         { num: '3.6', kind: 'Phenomenon', name: 'Singularities of closed chains', deps: ['robot-3.5'], refs: ['Lynch–Park ch. 7'],
           pic: 'Drive a planar five-bar mechanism toward an aligned configuration: it suddenly gains an uncontrollable wobble with the actuators locked, or loses the ability to move in a direction.' },
+        { num: '3.7', kind: 'Paper', name: 'A Kinematic Notation for Lower-Pair Mechanisms',
+          paper: { authors: 'J. Denavit and R. S. Hartenberg', year: 1955, title: 'A Kinematic Notation for Lower-Pair Mechanisms Based on Matrices',
+                   venue: 'Journal of Applied Mechanics 22 (2): 215–221', doi: '10.1115/1.4011045' },
+          introduces: ['robot-3.2'], deps: ['robot-2.6', 'robot-1.2'], refs: [],
+          pic: 'Build a linkage joint by joint: for each link set the four parameters (a, α, d, θ), see the frame the convention attaches, and watch the product of 4 × 4 matrices carry the end frame as the joints move.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -194,6 +201,11 @@ export default {
           pic: 'Many movable blocks in a sliding puzzle form a C-space whose dimension grows with the number of blocks; planning time for exact search explodes as blocks are added.' },
         { num: '7.17', kind: 'Method', name: 'Trajectory optimisation', deps: ['robot-7.9', 'robot-7.1', 'vcalc-2.9'], refs: ['Lynch–Park §10.7'],
           pic: 'An initial straight path through obstacles is iteratively bent by gradients of a cost combining smoothness and clearance, until it threads the gaps.' },
+        { num: '7.18', kind: 'Paper', name: 'Spatial Planning: A Configuration Space Approach',
+          paper: { authors: 'Tomás Lozano-Pérez', year: 1983, title: 'Spatial Planning: A Configuration Space Approach',
+                   venue: 'IEEE Transactions on Computers C-32 (2): 108–120', doi: '10.1109/TC.1983.1676196' },
+          introduces: ['robot-7.6', 'cg-3.8'], deps: ['robot-1.3', 'robot-7.8'], refs: [],
+          pic: 'Drag a polygonal robot among polygonal obstacles: each obstacle grows into its configuration-space obstacle while the robot shrinks to a point, a shortest path is found on the visibility graph, and rotating the robot slices through the three-dimensional C-space.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8

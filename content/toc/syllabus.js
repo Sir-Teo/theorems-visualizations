@@ -21,6 +21,8 @@
 // automata/KMP are `algo` ch. 13, Presburger arithmetic, Gödel’s incompleteness and Church’s
 // theorem are `logic` ch. 7 (those items were removed here; their numbers are left as gaps).
 // `logic` ch. 6 cross-links (see:) to the computability items kept here.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'toc',
   chapters: [
@@ -114,6 +116,16 @@ export default {
           pic: 'Reverse every arrow of an NFA and swap start and accept states, or apply a letter-substitution map; test strings are checked on both sides of each construction.' },
         { num: '3.14', kind: 'Concept', name: 'Lexical analysis with automata', deps: ['toc-3.9', 'toc-3.12'], refs: ['Sipser §1.3'],
           pic: 'Token patterns for a toy language compile into one combined DFA that scans typed source code and colours its tokens, with the longest-match rule visible at each boundary.' },
+        { num: '3.15', kind: 'Paper', name: 'Representation of Events in Nerve Nets and Finite Automata',
+          paper: { authors: 'S. C. Kleene', year: 1956, title: 'Representation of Events in Nerve Nets and Finite Automata',
+                   venue: 'in C. E. Shannon and J. McCarthy (eds.), Automata Studies, Annals of Mathematics Studies 34, Princeton University Press: 3–42', doi: '10.1515/9781400882618-002' },
+          introduces: ['toc-1.2', 'toc-3.6', 'toc-3.9'], deps: ['toc-2.1'], refs: [],
+          pic: 'Wire a small net of threshold neurons, feed it input sequences, and read off the event it recognizes as a regular expression built from union, concatenation and Kleene’s star; any expression typed in is turned back into an automaton.' },
+        { num: '3.16', kind: 'Paper', name: 'Finite Automata and Their Decision Problems',
+          paper: { authors: 'M. O. Rabin and D. Scott', year: 1959, title: 'Finite Automata and Their Decision Problems',
+                   venue: 'IBM Journal of Research and Development 3 (2): 114–125', doi: '10.1147/rd.32.0114' },
+          introduces: ['toc-3.1', 'toc-3.3', 'toc-2.7', 'toc-4.11'], deps: ['toc-2.1', 'toc-3.9'], refs: [],
+          pic: 'Build a nondeterministic automaton, type a word and watch the set of live states advance; then grow Rabin and Scott’s subset construction state by state and compare state counts on the “n-th symbol from the end is 1” family.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -186,6 +198,11 @@ export default {
           pic: 'FIRST and FOLLOW sets and the parse table are computed for an editable grammar; conflicts appear as red cells, and a left-recursive rule sends the naive recursive-descent parser into endless recursion.' },
         { num: '5.15', kind: 'Algorithm', name: 'Shift-reduce (LR) parsing', deps: ['toc-5.12'], refs: ['Sipser §2.4'],
           pic: 'A stack and the remaining input are animated as the parser shifts and reduces on a typed expression, building the tree bottom-up; an ambiguous grammar produces a visible shift/reduce conflict.' },
+        { num: '5.16', kind: 'Paper', name: 'On the Translation of Languages from Left to Right',
+          paper: { authors: 'Donald E. Knuth', year: 1965, title: 'On the Translation of Languages from Left to Right',
+                   venue: 'Information and Control 8 (6): 607–639', doi: '10.1016/S0019-9958(65)90426-2' },
+          introduces: ['toc-5.15'], deps: ['toc-5.1', 'toc-5.2', 'toc-6.10'], refs: [],
+          pic: 'Feed an arithmetic expression to an LR(1) parser built from an editable grammar: the stack of states, the lookahead and each shift or reduce are animated on the characteristic automaton, and a grammar edit shows exactly where a conflict appears.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -254,6 +271,16 @@ export default {
           pic: 'A machine is confined between end-markers drawn as walls around its input, yet it recognizes aⁿbⁿcⁿ, which no pushdown automaton can.' },
         { num: '7.12', kind: 'Concept', name: 'The Chomsky hierarchy', deps: ['toc-7.11', 'toc-6.4', 'toc-3.9', 'toc-7.3'], refs: ['Sipser §3.3'],
           pic: 'Nested regions for regular, context-free, context-sensitive and recognizable languages; the reader drags example languages into the smallest region they think holds them and the tool shows the separating witness.' },
+        { num: '7.13', kind: 'Paper', name: 'On Computable Numbers',
+          paper: { authors: 'A. M. Turing', year: 1936, title: 'On Computable Numbers, with an Application to the Entscheidungsproblem',
+                   venue: 'Proceedings of the London Mathematical Society s2-42 (1): 230–265', doi: '10.1112/plms/s2-42.1.230' },
+          introduces: ['toc-7.1', 'toc-7.9', 'toc-8.13', 'toc-9.7'], deps: ['logic-7.7', 'toc-1.5'], refs: [],
+          pic: 'Step Turing’s first example table (m-configurations b, c, e, f printing 0 and 1 on alternate squares) along a tape, edit it into new machines, and see each machine’s description number enter the diagonal table whose flipped diagonal no machine can compute.' },
+        { num: '7.14', kind: 'Paper', name: 'First Draft of a Report on the EDVAC',
+          paper: { authors: 'John von Neumann', year: 1945, title: 'First Draft of a Report on the EDVAC',
+                   venue: 'Moore School of Electrical Engineering, University of Pennsylvania (reprinted in IEEE Annals of the History of Computing 15 (4): 27–75, 1993)', doi: '10.1109/85.238389' },
+          introduces: ['tech-11.15'], deps: ['toc-7.9', 'tech-11.14'], refs: [],
+          pic: 'A toy machine in the report’s spirit keeps program and data in one memory of numbered words; the reader steps the fetch–decode–execute cycle, watching the control unit read an instruction, the arithmetic unit act, and a loop rewrite its own address field.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -288,6 +315,11 @@ export default {
           pic: 'Simulation overheads between models are plotted — multitape to single tape, RAM to Turing machine — all polynomial, while classically simulating a quantum circuit costs time exponential in its qubits.' },
         { num: '8.13', kind: 'Definition', name: 'Computable real numbers (Turing, 1936)', deps: ['toc-7.9', 'toc-1.5'], refs: ['Sipser §3.3'],
           pic: 'Pick √2, π or e and a machine prints its binary digits one by one, each digit certified by an interval; since machines are countable, a counter shows that almost every real has no such machine.' },
+        { num: '8.14', kind: 'Paper', name: 'An Unsolvable Problem of Elementary Number Theory',
+          paper: { authors: 'Alonzo Church', year: 1936, title: 'An Unsolvable Problem of Elementary Number Theory',
+                   venue: 'American Journal of Mathematics 58 (2): 345–363', doi: '10.2307/2371045' },
+          introduces: ['toc-8.6', 'toc-8.11', 'pl-3.7'], deps: ['pl-2.4', 'toc-8.4', 'logic-7.7'], refs: [],
+          pic: 'β-reduce λ-terms on Church numerals step by step, then pose Church’s question “does this term have a normal form?” and watch his diagonal term defeat any proposed decision procedure the reader plugs in.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -465,6 +497,11 @@ export default {
           pic: 'The implication graph of a 2CNF formula is drawn and its strongly connected components found; a variable and its negation in one component is highlighted as proof of unsatisfiability.' },
         { num: '13.14', kind: 'Theorem', name: 'Search reduces to decision for SAT', deps: ['toc-13.4', 'toc-1.10'], refs: ['Sipser §7.4'],
           pic: 'A satisfiability oracle is queried while variables are fixed one at a time; a satisfying assignment emerges after n queries, logged in a table.' },
+        { num: '13.15', kind: 'Paper', name: 'The Complexity of Theorem-Proving Procedures',
+          paper: { authors: 'Stephen A. Cook', year: 1971, title: 'The Complexity of Theorem-Proving Procedures',
+                   venue: 'Proceedings of the Third Annual ACM Symposium on Theory of Computing (STOC ’71): 151–158', doi: '10.1145/800157.805047' },
+          introduces: ['toc-13.2', 'toc-13.4', 'toc-13.5'], deps: ['toc-12.11', 'toc-1.9', 'toc-7.2'], refs: [],
+          pic: 'Pick a tiny nondeterministic machine and input: the tableau of its run is translated live into Cook’s clauses, toggling a cell shows which clause breaks, and a satisfying assignment found by a solver is read back as an accepting computation.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 14

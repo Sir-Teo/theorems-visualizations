@@ -126,8 +126,8 @@ at the sampling rate $f_s=1/T$. The sequence itself knows only the index $n$, wh
         v.soundButton('Listen: $x(t)$', (snd) => { const S = SIG[which.value]; snd.samples(synth(S.rep, S.dur, 0), SR, { gain: 0.5 }); });
         v.soundButton('Listen: samples, held', (snd) => { const S = SIG[which.value]; snd.samples(synth(S.rep, S.dur, fsv()), SR, { gain: 0.5 }); });
         const top = v.stage({ x: [-0.15, 12.15], y: [-1.32, 1.32], height: 215, axes: 'box', yticks: [-1, 0, 1], xlabel: 't (ms)', full: true, title: 'continuous time: $x(t)$ has a value at every instant $t$' });
-        const bot = v.stage({ x: [-2, 74], y: [-1.48, 1.32], height: 210, axes: 'box', yticks: [-1, 0, 1], xlabel: 'n (sample index: no unit)', full: true, title: 'discrete time: $x[n]=x(nT)$ has a value only at the integers $n$' });
-        const YH = -1.08;
+        const bot = v.stage({ x: [-2, 74], y: [-1.62, 1.32], height: 215, axes: 'box', yticks: [-1, 0, 1], xlabel: 'n (sample index: no unit)', full: true, title: 'discrete time: $x[n]=x(nT)$ has a value only at the integers $n$' });
+        const YH = -1.17;
         let Nnow = 72;
         const cur = bot.handle(9.4, YH, { color: 'purple', constrain: (x) => { let n = M.clamp(x, 0, Nnow); if (Math.abs(n - Math.round(n)) < 0.14) n = Math.round(n); return [n, YH]; } });
         v.render(() => {
@@ -360,7 +360,7 @@ Then $2T,3T,\dots$ are periods too, and the smallest positive period, when there
       refs: ['Oppenheim–Willsky §1.2'],
       tags: ['periodicity', 'sinusoids'],
       viz(v) {
-        const M = v.M, F1 = 220, QMAX = 80, LO = 6e-5, ZERO = 1.4e-4, BRK = 3e-4;
+        const M = v.M, F1 = 220, QMAX = 80, LO = 2e-5, ZERO = 1.4e-4, BRK = 3.2e-4;
         const PRE = {
           fifth: { label: 'fifth 3 : 2', r: [3, 2], W: 30 },
           third: { label: 'major third 5 : 4', r: [5, 4], W: 45 },

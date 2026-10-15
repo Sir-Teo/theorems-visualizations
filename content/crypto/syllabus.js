@@ -17,6 +17,8 @@
 // Overlaps with parallel collections: Euclid/Bézout, Euler–Fermat, the CRT, the unit group,
 // quadratic residues, the elliptic-curve group law, Hasse’s bound, lattices and Minkowski’s theorem
 // are owned by `nt` and cited from here (the duplicate items were removed, numbers left as gaps).
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'crypto',
   chapters: [
@@ -74,6 +76,11 @@ export default {
           pic: 'Two distributions are drawn as histograms; the best possible distinguisher’s advantage equals half the total area of their difference, shaded and read out.' },
         { num: '2.9', kind: 'Concept', name: 'Secret splitting by XOR', deps: ['crypto-2.3'], refs: ['Katz–Lindell §15.3'],
           pic: 'Split a secret into n random-looking shares whose XOR is the secret; any n − 1 shares the reader collects have a perfectly uniform XOR.' },
+        { num: '2.10', kind: 'Paper', name: 'Communication Theory of Secrecy Systems',
+          paper: { authors: 'C. E. Shannon', year: 1949, title: 'Communication Theory of Secrecy Systems',
+                   venue: 'Bell System Technical Journal 28 (4): 656–715', doi: '10.1002/j.1538-7305.1949.tb00928.x' },
+          introduces: ['crypto-2.1', 'crypto-2.3', 'crypto-2.4', 'crypto-2.5', 'crypto-1.10'], deps: ['info-1.2', 'crypto-1.7'], refs: [],
+          pic: 'Encrypt a message with a Vigenère key of adjustable length and watch the posterior over plaintexts collapse once the ciphertext passes the unicity distance; switch to a one-time pad and the posterior stays flat.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 3
@@ -110,6 +117,11 @@ export default {
           pic: 'Throw random values into N bins; the probability of a collision is simulated and plotted against the number of throws, crossing ½ near 1.18√N.' },
         { num: '3.14', kind: 'Theorem', name: 'PRP/PRF switching lemma', deps: ['crypto-3.11', 'crypto-3.13'], refs: ['Boneh–Shoup ch. 4'],
           pic: 'A random permutation and a random function are queried q times; they differ only when the function collides, and the measured distinguishing advantage tracks q²/2N.' },
+        { num: '3.15', kind: 'Paper', name: 'Probabilistic Encryption',
+          paper: { authors: 'Shafi Goldwasser and Silvio Micali', year: 1984, title: 'Probabilistic Encryption',
+                   venue: 'Journal of Computer and System Sciences 28 (2): 270–299', doi: '10.1016/0022-0000(84)90070-9' },
+          introduces: ['crypto-3.3', 'crypto-3.4', 'crypto-3.8', 'crypto-9.13'], deps: ['crypto-3.2', 'nt-4.1'], refs: [],
+          pic: 'Encrypt the same bit twice and get unrelated ciphertexts (random squares or non-squares modulo N = pq); in the indistinguishability game the reader tries to tell encryptions of two chosen messages apart and sees the advantage stay near zero without the factors.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -304,6 +316,16 @@ export default {
           pic: 'Encrypt each bit as a random square or a random non-square with Jacobi symbol +1; without the factorization the two kinds look alike, with it the bit is read off instantly.' },
         { num: '9.14', kind: 'Algorithm', name: 'Paillier encryption and additive homomorphism', deps: ['crypto-9.4', 'nt-2.4'], refs: ['Katz–Lindell §15.2'],
           pic: 'Encrypt two numbers, multiply the ciphertexts mod N², and decrypt the sum; an encrypted tally of votes is accumulated without decrypting any single ballot.' },
+        { num: '9.15', kind: 'Paper', name: 'New Directions in Cryptography',
+          paper: { authors: 'Whitfield Diffie and Martin E. Hellman', year: 1976, title: 'New Directions in Cryptography',
+                   venue: 'IEEE Transactions on Information Theory 22 (6): 644–654', doi: '10.1109/TIT.1976.1055638' },
+          introduces: ['crypto-9.2', 'crypto-9.4', 'crypto-9.11', 'crypto-10.1'], deps: ['crypto-9.1', 'crypto-7.2', 'nt-3.2'], refs: [],
+          pic: 'Alice and Bob mix a public colour with secret ones and exchange the mixtures, then repeat the game with g^a mod p; the reader plays Eve on the public channel and sees the cost of the discrete logarithm grow with the size of p.' },
+        { num: '9.16', kind: 'Paper', name: 'Obtaining Digital Signatures and Public-Key Cryptosystems',
+          paper: { authors: 'R. L. Rivest, A. Shamir and L. Adleman', year: 1978, title: 'A Method for Obtaining Digital Signatures and Public-Key Cryptosystems',
+                   venue: 'Communications of the ACM 21 (2): 120–126', doi: '10.1145/359340.359342' },
+          introduces: ['crypto-9.6', 'crypto-7.8', 'alg-7.5'], deps: ['nt-2.8', 'crypto-7.2', 'crypto-9.4'], refs: [],
+          pic: 'Pick two small primes, compute n, φ(n), e and d, encrypt by square-and-multiply, sign with d and let anyone verify with e, and watch factoring n by trial division slow down as the primes grow.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10
@@ -388,6 +410,11 @@ export default {
           pic: 'Two millionaires compare wealth: a comparison circuit is garbled gate by gate into encrypted tables, and the evaluator learns only the output bit, with each table’s rows shuffled.' },
         { num: '12.12', kind: 'Theorem', name: 'Secure multiparty computation', deps: ['crypto-12.11', 'crypto-12.8'], refs: ['Boneh–Shoup ch. 23'],
           pic: 'Parties compute an average salary on secret shares, adding locally and multiplying with a resharing step; the result is revealed while each individual input stays hidden.' },
+        { num: '12.13', kind: 'Paper', name: 'The Knowledge Complexity of Interactive Proof Systems',
+          paper: { authors: 'Shafi Goldwasser, Silvio Micali and Charles Rackoff', year: 1989, title: 'The Knowledge Complexity of Interactive Proof Systems',
+                   venue: 'SIAM Journal on Computing 18 (1): 186–208 (conference version STOC 1985)', doi: '10.1137/0218012' },
+          introduces: ['crypto-12.3', 'cplx-6.1'], deps: ['crypto-3.3', 'toc-12.11'], refs: [],
+          pic: 'Play verifier against a prover claiming a number is a quadratic residue modulo N: each random challenge catches a cheater with probability ½, and a simulator with no secret produces transcripts that look exactly like real ones.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 13

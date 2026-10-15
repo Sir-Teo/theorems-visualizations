@@ -13,6 +13,8 @@
 // Deliberate omissions: Brockett's obstruction (kept in robot, with nonholonomic systems), H∞ synthesis and μ-analysis
 //   beyond the H∞ norm, zero-degree root locus, notch compensation, Youla parametrisation.
 // Topics beyond both references (Bellman/HJB, Pontryagin, particle and unscented filters) cite the nearest chapter.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'ctrl',
   chapters: [
@@ -48,6 +50,11 @@ export default {
           pic: 'Flip the sign of the feedback: a gentle nudge sends the system to one of two saturated states, and the hysteresis loop of a latch is traced as the input is swept back and forth.' },
         { num: '1.13', kind: 'Theorem', name: 'Mason’s gain formula', deps: ['ctrl-1.4'], refs: ['Franklin–Powell §3.2'],
           pic: 'Draw a signal-flow graph with several interlocking loops: forward paths and non-touching loop sets are highlighted one by one, and the gain assembled from them matches the gain found by brute-force block reduction.' },
+        { num: '1.14', kind: 'Paper', name: 'On Governors',
+          paper: { authors: 'J. Clerk Maxwell', year: 1868, title: 'On Governors',
+                   venue: 'Proceedings of the Royal Society of London 16: 270–283', doi: '10.1098/rspl.1867.0055' },
+          introduces: ['ctrl-1.9', 'ctrl-3.3'], deps: ['ctrl-1.2', 'ctrl-2.2'], refs: [],
+          pic: 'A centrifugal governor regulates an engine: the reader raises the governor’s gain and lowers its friction and watches the speed settle, hunt in growing oscillations or creep, while the roots of Maxwell’s characteristic cubic cross into the right half-plane.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -174,6 +181,11 @@ export default {
           pic: 'Shape the reference response with a prefilter while the feedback is tuned for disturbances: the two responses are adjusted independently with separate sliders.' },
         { num: '5.12', kind: 'Method', name: 'Cascade control', deps: ['ctrl-5.4'], refs: ['Åström–Murray ch. 11'],
           pic: 'Add an inner flow loop under an outer temperature loop: a valve disturbance is corrected by the fast inner loop before the temperature even notices.' },
+        { num: '5.13', kind: 'Paper', name: 'Optimum Settings for Automatic Controllers',
+          paper: { authors: 'J. G. Ziegler and N. B. Nichols', year: 1942, title: 'Optimum Settings for Automatic Controllers',
+                   venue: 'Transactions of the ASME 64 (8): 759–765', doi: '10.1115/1.4019264' },
+          introduces: ['ctrl-5.5'], deps: ['ctrl-5.4', 'ctrl-4.1'], refs: [],
+          pic: 'On a simulated process loop, raise a proportional gain until the output oscillates steadily, read off the ultimate gain and period, and apply the Ziegler–Nichols table for P, PI or PID; the step response shows the quarter-amplitude decay the rules aim for.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -248,6 +260,16 @@ export default {
           pic: 'Plot the Nyquist curve together with −1/N(a) for a relay: their intersection predicts the amplitude and frequency of the limit cycle, compared with the simulated oscillation.' },
         { num: '7.16', kind: 'Theorem', name: 'Circle criterion', deps: ['ctrl-7.14', 'ctrl-3.6'], refs: ['Franklin–Powell §9.5'],
           pic: 'Bound a nonlinearity inside a sector by two lines: a disc in the Nyquist plane is drawn from the sector, and stability is certified when the curve avoids it — tested on random nonlinearities in the sector.' },
+        { num: '7.17', kind: 'Paper', name: 'Regeneration Theory',
+          paper: { authors: 'H. Nyquist', year: 1932, title: 'Regeneration Theory',
+                   venue: 'Bell System Technical Journal 11 (1): 126–147', doi: '10.1002/j.1538-7305.1932.tb02344.x' },
+          introduces: ['ctrl-7.3', 'ctrl-7.4'], deps: ['ctrl-7.1', 'top-9.5'], refs: [],
+          pic: 'Draw the loop gain of a feedback amplifier as a polar curve while frequency sweeps, scale the gain with a slider, and count encirclements of the critical point: the closed-loop response turns unstable exactly when an encirclement appears.' },
+        { num: '7.18', kind: 'Paper', name: 'Attenuation and Phase in Feedback Amplifier Design',
+          paper: { authors: 'H. W. Bode', year: 1940, title: 'Relations Between Attenuation and Phase in Feedback Amplifier Design',
+                   venue: 'Bell System Technical Journal 19 (3): 421–454', doi: '10.1002/j.1538-7305.1940.tb00839.x' },
+          introduces: ['ctrl-7.2', 'ctrl-7.6', 'ctrl-7.10', 'sig-6.11'], deps: ['ctrl-7.4', 'sig-9.7'], refs: [],
+          pic: 'Shape a loop’s gain curve on log–log axes and watch Bode’s relation fix the phase — a slope of −20n dB per decade forces about −90n degrees — so the reader sees how steeply the gain may fall before the phase margin at crossover is gone.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -396,6 +418,11 @@ export default {
           pic: 'Push a Gaussian through a strongly nonlinear map: sigma points capture the transformed mean and covariance more accurately than linearisation, compared with a Monte Carlo cloud.' },
         { num: '12.12', kind: 'Method', name: 'Loop transfer recovery', deps: ['ctrl-12.6', 'ctrl-11.8'], refs: ['Franklin–Powell §7.11'],
           pic: 'Inflate the fictitious process noise in the Kalman design step by step: the Nyquist curve of the LQG loop bends back toward the robust LQR curve, and the recovered margins are read out.' },
+        { num: '12.13', kind: 'Paper', name: 'A New Approach to Linear Filtering and Prediction Problems',
+          paper: { authors: 'R. E. Kalman', year: 1960, title: 'A New Approach to Linear Filtering and Prediction Problems',
+                   venue: 'Journal of Basic Engineering 82 (1): 35–45', doi: '10.1115/1.3662552' },
+          introduces: ['ctrl-12.3', 'ctrl-12.4', 'ctrl-12.5'], deps: ['ctrl-12.1', 'ctrl-2.1', 'sig-13.7', 'stat-12.3'], refs: [],
+          pic: 'Track a target with random accelerations from noisy position fixes: predict and update steps move an uncertainty ellipse, the reader tunes process and measurement noise, and the gain settles while the estimate hugs the true path far better than the raw readings.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 13

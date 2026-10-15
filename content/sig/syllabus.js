@@ -12,6 +12,8 @@
 // Deliberate omissions: feedback systems (O&W ch. 11 → ctrl), chirp-z transform, fractional-delay filters.
 // Note: chapter 13 (random signals) and parts of ch. 8/10 (wavelets, equiripple design) go beyond both references;
 //   their refs point to the nearest related chapter.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'sig',
   chapters: [
@@ -269,6 +271,16 @@ export default {
           pic: 'A signal made of a few tones is measured at random times, far fewer than Nyquist requires; ℓ¹ minimisation recovers it exactly, while least squares fails, until sparsity is increased past a threshold.' },
         { num: '7.17', kind: 'Method', name: 'Polyphase decomposition and multirate filter banks', deps: ['sig-7.10', 'sig-7.11'], refs: ['Oppenheim–Willsky §7.5'],
           pic: 'Split a decimating filter into M polyphase branches that each run at the low rate: the output matches the direct filter-then-discard design while an operation counter shows an M-fold saving, and a two-band filter bank splits and perfectly rebuilds a signal.' },
+        { num: '7.18', kind: 'Paper', name: 'Certain Topics in Telegraph Transmission Theory',
+          paper: { authors: 'H. Nyquist', year: 1928, title: 'Certain Topics in Telegraph Transmission Theory',
+                   venue: 'Transactions of the American Institute of Electrical Engineers 47 (2): 617–644', doi: '10.1109/T-AIEE.1928.5055024' },
+          introduces: ['sig-7.3'], deps: ['sig-4.1', 'sig-5.11'], refs: [],
+          pic: 'Send telegraph pulses through a channel of bandwidth B and overlay them as an eye diagram: at 2B pulses per second with suitable shaping the eye stays open at the sampling instants, and faster signalling closes it with intersymbol interference.' },
+        { num: '7.19', kind: 'Paper', name: 'Communication in the Presence of Noise',
+          paper: { authors: 'C. E. Shannon', year: 1949, title: 'Communication in the Presence of Noise',
+                   venue: 'Proceedings of the IRE 37 (1): 10–21', doi: '10.1109/JRPROC.1949.232969' },
+          introduces: ['sig-7.3', 'sig-7.15'], deps: ['sig-5.11', 'sig-7.1', 'info-6.8'], refs: [],
+          pic: 'Sample a band-limited signal at an adjustable rate and rebuild it from sinc pulses: at twice the bandwidth or more the rebuild locks onto the original, below it aliases; a second panel shows a signal as a point in 2TW dimensions inside its sphere of noise.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -451,6 +463,11 @@ export default {
           pic: 'Vary bandwidth and SNR: the capacity B log₂(1 + SNR) is plotted against the bit rates actually achieved by QAM constellations of increasing size, which approach but never cross it.' },
         { num: '12.15', kind: 'Phenomenon', name: 'Heterodyning and beat frequencies', deps: ['sig-5.7'], refs: ['Oppenheim–Willsky §8.1'],
           pic: 'Play two tones a few hertz apart: the sum swells and fades at the difference frequency, and multiplying instead of adding moves energy to the sum and difference frequencies.' },
+        { num: '12.16', kind: 'Paper', name: 'A Method of Reducing Disturbances in Radio Signaling',
+          paper: { authors: 'Edwin H. Armstrong', year: 1936, title: 'A Method of Reducing Disturbances in Radio Signaling by a System of Frequency Modulation',
+                   venue: 'Proceedings of the IRE 24 (5): 689–740', doi: '10.1109/JRPROC.1936.227383' },
+          introduces: ['sig-12.7'], deps: ['sig-12.1', 'sig-12.11'], refs: [],
+          pic: 'Put a tone on a carrier by AM and by wideband FM, add the same noise to both and compare the demodulated outputs: raising the frequency deviation widens the spectrum but buys the output signal-to-noise gain Armstrong demonstrated.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 13
@@ -485,6 +502,11 @@ export default {
           pic: 'Two microphones hear the same noisy source: the cross-correlation peak gives the arrival-time difference, and from it the direction of the source on a map.' },
         { num: '13.13', kind: 'Algorithm', name: 'Levinson–Durbin recursion', deps: ['sig-13.10'], refs: ['Lathi ch. 7'],
           pic: 'Solve the Yule–Walker equations order by order: each step adds one reflection coefficient, the prediction-error power falls monotonically, and every reflection coefficient stays inside (−1, 1), guaranteeing a stable all-pole model.' },
+        { num: '13.14', kind: 'Paper', name: 'Extrapolation, Interpolation, and Smoothing of Time Series',
+          paper: { authors: 'Norbert Wiener', year: 1949, title: 'Extrapolation, Interpolation, and Smoothing of Stationary Time Series',
+                   venue: 'Technology Press of MIT and John Wiley & Sons (first issued as a classified report, 1942)', doi: '10.7551/mitpress/2946.001.0001' },
+          introduces: ['sig-13.7'], deps: ['sig-13.2', 'sig-13.3', 'sig-13.5'], refs: [],
+          pic: 'A signal buried in noise passes through the filter S/(S + N) built from spectra the reader draws, its mean-square error compared with ad hoc low-pass filters; a prediction mode forecasts a manoeuvring aircraft’s track a little ahead, the problem Wiener was set.' },
       ],
     },
   ],

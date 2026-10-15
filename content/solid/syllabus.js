@@ -18,6 +18,8 @@
 //   viscoelasticity beyond creep, photoelasticity apparatus (T&G ch. 5), shells beyond the buckling knockdown.
 // Finite elements (ch. 12) and fracture mechanics (ch. 11) go beyond both references; their refs point to the
 //   nearest related chapter.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'solid',
   chapters: [
@@ -323,6 +325,11 @@ export default {
           pic: 'Plot equilibrium deflection against load: the straight branch loses stability at the Euler load and two buckled branches emerge symmetrically, with an imperfection slider unfolding the pitchfork.' },
         { num: '10.12', kind: 'Phenomenon', name: 'Plate buckling and post-buckling strength', deps: ['solid-7.11', 'solid-10.2'], refs: ['Gere–Goodno §11.2'],
           pic: 'Compress a thin plate supported on all edges: it buckles into a pattern of half-waves set by its aspect ratio, yet keeps carrying extra load as the stiff edges take over.' },
+        { num: '10.13', kind: 'Paper', name: 'Sur la force des colonnes',
+          paper: { authors: 'Leonhard Euler', year: 1759, title: 'Sur la force des colonnes',
+                   venue: 'Mémoires de l’académie des sciences de Berlin 13: 252–282 (Eneström E238)', url: 'https://scholarlycommons.pacific.edu/euler-works/238/' },
+          introduces: ['solid-10.2'], deps: ['solid-7.1', 'solid-10.1'], refs: [],
+          pic: 'Load a slender column of adjustable length, stiffness and end supports: it stays straight until the load reaches π²EI/(KL)², then bows out in a half-sine, and varying the slenderness shows where buckling gives way to crushing.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11
@@ -353,6 +360,11 @@ export default {
           pic: 'Lower the temperature of a steel specimen: its toughness falls off a cliff in a narrow band, and a hull plate that survives a mild day cracks in two on a cold one.' },
         { num: '11.11', kind: 'Model', name: 'Hertzian contact stress', deps: ['solid-2.11'], refs: ['Timoshenko–Goodier ch. 12'],
           pic: 'Press two spheres or a ball onto a flat with a load slider: the contact patch grows as the cube root of the load, the pressure is a half-ellipsoid, and the maximum shear occurs below the surface, where pitting starts.' },
+        { num: '11.12', kind: 'Paper', name: 'The Phenomena of Rupture and Flow in Solids',
+          paper: { authors: 'A. A. Griffith', year: 1921, title: 'The Phenomena of Rupture and Flow in Solids',
+                   venue: 'Philosophical Transactions of the Royal Society of London A 221: 163–198', doi: '10.1098/rsta.1921.0006' },
+          introduces: ['solid-11.4', 'mat-5.3'], deps: ['solid-11.3', 'solid-8.8'], refs: [],
+          pic: 'Pull on a glass plate with a crack of adjustable length: the elastic energy released and the surface energy of the new crack faces are plotted against crack length, and the critical stress where their sum peaks falls as 1/√a.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12
@@ -383,6 +395,11 @@ export default {
           pic: 'Solve the generalised eigenproblem for a meshed bracket: its first few vibration modes are animated with their frequencies, converging as the mesh is refined.' },
         { num: '12.11', kind: 'Method', name: 'The Euler–Bernoulli beam element', deps: ['solid-12.2', 'solid-7.1'], refs: ['Gere–Goodno §9.3'],
           pic: 'Hermite cubic shape functions carry both deflection and slope at each node; even two elements reproduce a point-loaded cantilever’s deflection exactly at the nodes.' },
+        { num: '12.12', kind: 'Paper', name: 'Stiffness and Deflection Analysis of Complex Structures',
+          paper: { authors: 'M. J. Turner, R. W. Clough, H. C. Martin and L. J. Topp', year: 1956, title: 'Stiffness and Deflection Analysis of Complex Structures',
+                   venue: 'Journal of the Aeronautical Sciences 23 (9): 805–823', doi: '10.2514/8.3664' },
+          introduces: ['solid-12.3', 'solid-12.7'], deps: ['solid-9.7', 'solid-8.8'], refs: [],
+          pic: 'Mesh a wing panel into triangles of constant strain, watch the element stiffness matrices assemble into the global matrix, and load the tip: the computed deflection and stresses settle as the reader refines the mesh.' },
       ],
     },
   ],

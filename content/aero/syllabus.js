@@ -17,6 +17,10 @@
 // Gaps filled after comparison: panel/vortex-lattice methods, supersonic thin-aerofoil theory, oblique shocks and
 //   Prandtl–Meyer expansion, weathercock stability, Kepler’s equation in mission design, low-energy transfers.
 // Deliberate omissions: detailed turbomachinery design, structural sizing of airframes, CFD numerics (→ num).
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
+// Wright 1901: venue and date from the Mississippi State University transcription linked in the entry; Tsiolkovsky 1903
+// (Nauchnoe Obozrenie, no. 5) has no DOI or stable online record.
 export default {
   collection: 'aero',
   chapters: [
@@ -106,6 +110,11 @@ export default {
           pic: 'For a thin flat plate or diamond airfoil at supersonic speed, the pressure on each face depends only on its local slope; lift and wave drag coefficients are computed and compared with shock-expansion results.' },
         { num: '4.7', kind: 'Phenomenon', name: 'Hypersonic aerodynamic heating', deps: ['aero-4.5'], refs: ['Anderson ch. 10'],
           pic: 'Raise the Mach number past 5: the stagnation temperature climbs with the square of speed, plotted against the temperature limits of aluminium, titanium and ceramic tiles.' },
+        { num: '4.8', kind: 'Paper', name: 'Drag-Rise Characteristics of Wing-Body Combinations',
+          paper: { authors: 'Richard T. Whitcomb', year: 1952, title: 'A Study of the Zero-Lift Drag-Rise Characteristics of Wing-Body Combinations Near the Speed of Sound',
+                   venue: 'NACA Research Memorandum RM L52H08 (also NACA Report 1273, 1956)', url: 'https://ntrs.nasa.gov/citations/19930087283' },
+          introduces: ['aero-4.4'], deps: ['aero-4.2'], refs: [],
+          pic: 'Plot the cross-sectional area of a wing–body combination along its length and watch the transonic drag rise follow the bumps in that curve; pinching the fuselage at the wing smooths the area distribution and lowers the drag peak near Mach 1.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5
@@ -162,6 +171,11 @@ export default {
           pic: 'Move the centre of gravity behind the neutral point to cut trim drag: the bare airframe diverges, but a feedback controller on pitch rate places the closed-loop poles back in the stable region.' },
         { num: '6.10', kind: 'Phenomenon', name: 'Flutter', deps: ['solid-7.9', 'ctrl-3.12'], refs: ['Anderson ch. 7'],
           pic: 'A wing section with bending and twisting springs sits in an airflow: as speed rises the two modes’ frequencies approach, merge, and a growing oscillation sets in at the flutter speed.' },
+        { num: '6.11', kind: 'Paper', name: 'Some Aeronautical Experiments',
+          paper: { authors: 'Wilbur Wright', year: 1901, title: 'Some Aeronautical Experiments',
+                   venue: 'Journal of the Western Society of Engineers, December 1901 (address of 18 September 1901)', url: 'https://invention.psychology.msstate.edu/i/Wrights/library/Aeronautical.html' },
+          introduces: [], deps: ['aero-2.2', 'aero-6.1'], refs: [],
+          pic: 'Fly the Wrights’ glider: twist the wing tips to restore lateral balance instead of shifting the pilot’s body, trim with the forward elevator, and compare the lift actually obtained in a measured wind with the lift promised by Lilienthal’s tables, as Wilbur reported.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -212,6 +226,16 @@ export default {
           pic: 'An ion engine spirals a spacecraft slowly outward over months; for a fixed power supply, increasing exhaust speed reduces thrust, and the mission time and propellant mass trade off.' },
         { num: '8.8', kind: 'Proposition', name: 'Optimal exhaust speed for power-limited propulsion', deps: ['aero-8.7'], refs: ['Curtis ch. 11'],
           pic: 'For a power-limited spacecraft, plot delivered payload against exhaust speed: too slow wastes propellant, too fast wastes power, and the optimum scales with the required Δv.' },
+        { num: '8.9', kind: 'Paper', name: 'Exploration of Cosmic Space by Means of Reaction Devices',
+          paper: { authors: 'K. E. Tsiolkovsky', year: 1903, title: 'Исследование мировых пространств реактивными приборами (The Exploration of Cosmic Space by Means of Reaction Devices)',
+                   venue: 'Nauchnoe Obozrenie (The Science Review), no. 5, 1903' },
+          introduces: ['aero-8.1'], deps: ['mech-2.2'], refs: [],
+          pic: 'Burn propellant from a rocket of adjustable mass ratio and exhaust speed and watch the velocity follow v = c ln(M₀/M₁); a table of final speeds for growing mass ratios sits beside the curve, with orbital and escape speeds marked.' },
+        { num: '8.10', kind: 'Paper', name: 'A Method of Reaching Extreme Altitudes',
+          paper: { authors: 'Robert H. Goddard', year: 1919, title: 'A Method of Reaching Extreme Altitudes',
+                   venue: 'Smithsonian Miscellaneous Collections 71 (2)', doi: '10.5479/sil.918318.39088014683783' },
+          introduces: [], deps: ['aero-8.1', 'aero-7.8', 'aero-7.9'], refs: [],
+          pic: 'Choose a target altitude, exhaust speed and drag, and the simulation finds the minimum starting mass per pound lifted, the steep curve of Goddard’s tables; a nozzle panel shows how a converging–diverging nozzle raised the exhaust speed he measured.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -271,6 +295,11 @@ export default {
           pic: 'A long satellite in orbit is pulled by tidal torque to point its long axis at the Earth, and librates about that attitude after a disturbance.' },
         { num: '10.5', kind: 'Method', name: 'Reaction wheels and momentum dumping', deps: ['mech-2.9', 'ctrl-5.4'], refs: ['Curtis ch. 10'],
           pic: 'Spin up an internal wheel to rotate the spacecraft the other way; external torques gradually saturate the wheel, which must be unloaded with thrusters or magnetorquers.' },
+        { num: '10.6', kind: 'Paper', name: 'Motion and Aerodynamic Heating of Ballistic Missiles',
+          paper: { authors: 'H. Julian Allen and A. J. Eggers, Jr.', year: 1958, title: 'A Study of the Motion and Aerodynamic Heating of Ballistic Missiles Entering the Earth’s Atmosphere at High Supersonic Speeds',
+                   venue: 'NACA Report 1381', url: 'https://ntrs.nasa.gov/citations/19930091020' },
+          introduces: ['aero-10.1', 'aero-10.2'], deps: ['aero-1.1', 'aero-4.7'], refs: [],
+          pic: 'Send entry bodies of adjustable ballistic coefficient into an exponential atmosphere: the peak deceleration of a steep entry is the same whatever the mass, and the share of heat reaching the body falls as the nose is made blunter.' },
       ],
     },
   ],

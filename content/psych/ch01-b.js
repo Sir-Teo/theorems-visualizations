@@ -270,8 +270,8 @@ a function of sensitivity $d'$ alone. 2AFC estimates are therefore nearly free o
       credit: 'Blackwell, 1953; Green & Swets, 1966',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Two-alternative_forced_choice' },
       viz(v) {
-        const M = v.M, after = timers(v), BG = 128, NS = 9, LEV = [1, 2, 3, 4, 5.5, 7.5, 10], C0 = 3.2, BX = 1.5, NT = 40, LP = 0.02;
-        const R = 0.46, SG = 0.15, FR = 4.2, XMAX = 11;
+        const M = v.M, after = timers(v), BG = 128, NS = 9, LEV = [1.5, 3, 4.5, 6, 8, 11, 15], C0 = 5, BX = 1.5, NT = 40, LP = 0.02;
+        const R = 0.46, SG = 0.15, FR = 4.2, XMAX = 16;
         const dp = (c) => Math.pow(Math.max(0, c) / C0, BX);
         const p2 = (c) => LP / 2 + (1 - LP) * Phi(M, dp(c) / Math.SQRT2);
         const pYes = (c, k) => LP / 2 + (1 - LP) * Phi(M, dp(c) - k);
@@ -286,7 +286,7 @@ a function of sensitivity $d'$ alone. 2AFC estimates are therefore nearly free o
         const st = v.stage({ x: [-1.15, 1.15], y: [-0.82, 0.78], equal: true, axes: false, height: 290, weight: 0.85, title: 'the stimulus' });
         const pl = v.stage({ x: [-1.2, XMAX + 0.2], y: [-0.14, 1.08], height: 290, axes: 'box', weight: 1.15, xlabel: 'grating contrast (%)', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'proportion correct (2AFC) and proportion “yes” (yes/no)' });
         let fit2 = null;
-        const probe = pl.handle(3.2, 0.7, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0.5, 10.5); return [xx, fit2 ? psi(M, fit2, xx) : p2(xx)]; } });
+        const probe = pl.handle(5, 0.7, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0.5, 15.5); return [xx, fit2 ? psi(M, fit2, xx) : p2(xx)]; } });
         let you = [];
         const Ry = v.rng(808), queue = [];
         const nextLevel = () => { if (!queue.length) queue.push(...Ry.shuffle(LEV)); return queue.pop(); };
@@ -395,7 +395,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Weber%E2%80%93Fechner_law' },
       viz(v) {
         const M = v.M, after = timers(v), BASES = [0.03, 0.06, 0.12, 0.24, 0.48], NTR = 50, R0 = 0.3, FST = Math.pow(10, 0.1), RMIN = 0.003, I0D = 0.03, DR = 0.55;
-        let seed = 23, phase = 'idle', cur = null, tid = 0, lastSel = -1;
+        let seed = 23, phase = 'idle', cur = null, tid = 0, sel = 2;
         const who = v.select('subject', OBS, 'sim', { onChange: () => { after.clear(); phase = 'idle'; if (who.value === 'you' && !cur) newTrial(); } });
         const axes = v.select('axes', [{ value: 'lin', label: 'linear' }, { value: 'log', label: 'log–log' }], 'lin');
         const kS = v.slider('simulated Weber fraction $k$', 0.01, 0.15, 0.04, { step: 0.005 });
@@ -436,7 +436,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           return { k0, seK0, a, b, seA, seB };
         };
         let fitInfo = null;
-        const probe = pl.handle(0.12, 0.005, { color: 'gold', constrain: (x, y) => { const pts = fitInfo || []; let best = null; for (const p of pts) if (p) { const [X, Y] = P(p.I, p.d); const dd = Math.abs(pl.X(X) - pl.X(x)); if (!best || dd < best.dd) best = { dd, X, Y }; } return best ? [best.X, best.Y] : [x, y]; } });
+        const probe = pl.handle(0.12, 0.005, { color: 'gold', constrain: (x, y) => { const pts = fitInfo || []; let best = null; pts.forEach((p, i) => { if (!p) return; const [X, Y] = P(p.I, p.d); const dd = Math.abs(pl.X(X) - pl.X(x)); if (!best || dd < best.dd) best = { dd, X, Y, i }; }); if (!best) return [x, y]; sel = best.i; return [best.X, best.Y]; } });
         const P = (I, d) => (axes.value === 'log' ? [Math.log10(I), Math.log10(d)] : [I, d]);
         v.render(() => {
           const isYou = who.value === 'you', log = axes.value === 'log';
@@ -474,11 +474,11 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           let I, dI, side, txt;
           if (isYou) { I = cur ? BASES[cur.b] : BASES[0]; dI = phase === 'show' ? cur.r * I : 0; side = cur ? cur.side : 0; }
           else {
-            let bi = 0, bd = Infinity; good.forEach((p) => { const dd = Math.abs(P(p.I, p.d)[0] - probe.x); if (dd < bd) { bd = dd; bi = BASES.indexOf(p.I); } });
-            const p = pts[bi]; I = BASES[bi]; dI = p ? p.d : 0; side = 1; lastSel = bi;
+            const p = pts[sel]; I = BASES[sel]; dI = p ? p.d : 0; side = 1;
+            if (p) [probe.x, probe.y] = P(p.I, p.d);
             txt = `I = ${I}, ΔI = ${v.fix(dI, 4)} (one JND, ${v.fix((100 * dI) / I, 1)}%)`;
           }
-          const LL = I, LR = I, key = `${isYou ? 'y' + tid + phase : 's' + lastSel + dI.toFixed(5)}`;
+          const key = `${isYou ? 'y' + tid + phase : 's' + sel + dI.toFixed(6)}`;
           const Rn = v.rng(31 + tid);
           st.raster((x, y) => {
             const inDisc = x * x + y * y < DR * DR;
@@ -490,7 +490,6 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           st.line(0, DR + 0.04, 0, DR + 0.13, { color: tcol, width: 2 }); st.line(0, -DR - 0.04, 0, -DR - 0.13, { color: tcol, width: 2 });
           if (!isYou) { st.text(txt, 0, -0.72, { align: 'center', color: tcol, halo: false, size: 12 }); st.text('I', -0.28, DR + 0.1, { align: 'center', color: tcol, halo: false, size: 13, math: true }); st.text('I + ΔI', 0.28, DR + 0.1, { align: 'center', color: tcol, halo: false, size: 13, math: true }); }
           else st.text(phase === 'show' ? `background ${cur.b + 1} of 5 · trial ${stairs[cur.b].trials.length + 1}` : '', 0, -0.72, { align: 'center', color: tcol, halo: false, size: 12 });
-          void LL; void LR;
         });
         v.legend([['accent', 'JND at each background, 95% interval', { dot: true }], ['green', 'best line through the origin: slope = Weber fraction'], ['muted', 'best line with a free intercept', { dash: true }], ['muted', 'the simulated observer’s true JNDs', { dash: [2, 4] }]]);
         v.readout(() => {
@@ -619,20 +618,18 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
         const lad = v.stage({ x: [0, 2], y: [0, 25], height: 340, axes: 'box', weight: 0.55, minWidth: 180, xticks: [[0.5, 'ratios'], [1.5, 'differences']], yticks: [], title: 'two ladders' });
         const dI = (I) => { const k = kS.value; return law.value === 'weber' ? k * I : law.value === 'mod' ? k * (I + I0M) : k * 10; };
         const Sint = (I) => (I <= 1 ? 0 : M.integrate((u) => 1 / dI(u), 1, I, 400));
-        let cache = null, cKey = '';
-        const hd = s.handle(40, 10, { color: 'gold', constrain: (x) => { const I = xs.value === 'log' ? M.clamp(10 ** x, 1, IMAX) : M.clamp(x, 1, IMAX); return [xs.value === 'log' ? Math.log10(I) : I, Sint(I)]; } });
+        let cache = null, cKey = '', Ih = 40;
+        const hd = s.handle(40, 10, { color: 'gold', constrain: (x) => { Ih = xs.value === 'log' ? M.clamp(10 ** x, 1, IMAX) : M.clamp(x, 1, IMAX); return [xs.value === 'log' ? Math.log10(Ih) : Ih, Sint(Ih)]; } });
         v.render(() => {
           const log = xs.value === 'log', X = (I) => (log ? Math.log10(I) : I), key = [law.value, kS.value].join();
           if (key !== cKey) {
             cKey = key; const steps = [1]; while (steps.length < 2000 && steps[steps.length - 1] < IMAX) steps.push(steps[steps.length - 1] + dI(steps[steps.length - 1]));
-            const curve = M.range(241).map((i) => { const I = log ? 10 ** ((2 * i) / 240) : 1 + ((IMAX - 1) * i) / 240; return I; });
             cache = { steps, smax: Sint(IMAX) };
           }
           const { steps, smax } = cache, nFull = steps.filter((I) => I <= IMAX).length - 1, ytop = Math.max(nFull, smax) * 1.12 + 1;
           s.setView(log ? [-0.12, 2.05] : [-3, IMAX + 2], [-0.1 * ytop, ytop]); lad.setView(null, [-0.1 * ytop, ytop]);
           s.setTicks(log ? [[0, '1'], [Math.log10(2), '2'], [Math.log10(5), '5'], [1, '10'], [Math.log10(20), '20'], [Math.log10(50), '50'], [2, '100']] : null, null);
           s.o.xlabel = log ? 'I / threshold (log scale)' : 'I / threshold';
-          hd.x = log ? Math.log10(M.clamp(log ? 10 ** hd.x : hd.x, 1, IMAX)) : hd.x;
           // staircase
           const pts = [[X(1), 0]];
           for (let n = 1; n < steps.length; n++) { const I = Math.min(steps[n], IMAX); pts.push([X(I), n - 1]); if (steps[n] > IMAX) break; pts.push([X(I), n]); }
@@ -642,8 +639,7 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
           const cur = []; for (let i = 0; i <= 240; i++) { const I = log ? 10 ** ((2 * i) / 240) : 1 + ((IMAX - 1) * i) / 240; cur.push([X(I), Sint(I)]); }
           s.path(cur, { color: 'green', width: 2.6 });
           if (stev.value) { const b = 0.33, a = smax / (Math.pow(IMAX, b) - 1), sp = []; for (let i = 0; i <= 240; i++) { const I = log ? 10 ** ((2 * i) / 240) : 1 + ((IMAX - 1) * i) / 240; sp.push([X(I), a * (Math.pow(I, b) - 1)]); } s.path(sp, { color: 'purple', width: 2, dash: [7, 5] }); }
-          const Ih = log ? 10 ** hd.x : hd.x;
-          hd.y = Sint(Ih);
+          hd.x = X(Ih); hd.y = Sint(Ih);
           s.line(hd.x, -0.1 * ytop, hd.x, hd.y, { color: 'gold', dash: [2, 3], width: 1.2 });
           s.line(log ? -0.12 : -3, hd.y, hd.x, hd.y, { color: 'gold', dash: [2, 3], width: 1.2 });
           const lab = law.value === 'weber' ? '(1/k) ln I' : law.value === 'mod' ? '(1/k) ln((I+I₀)/(1+I₀))' : '(I − 1)/ΔI';
@@ -660,7 +656,7 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
         });
         v.legend([['accent', 'one JND per step'], ['green', 'Fechner’s integral $\\int dI/\\Delta I$'], ['purple', 'Stevens: $\\propto I^{0.33}$', { dash: true }], ['teal', 'equal-ratio ladder'], ['orange', 'equal-difference ladder']]);
         v.readout(() => {
-          const Ih = xs.value === 'log' ? 10 ** hd.x : hd.x, k = kS.value, steps = cache ? cache.steps : [1];
+          const k = kS.value, steps = cache ? cache.steps : [1];
           const n = steps.filter((I) => I <= Ih).length - 1, S = Sint(Ih);
           const exact = law.value === 'weber' ? ` = $\\ln I/\\ln(1+k)$ = ${v.fix(Math.log(Ih) / Math.log(1 + k), 2)} at the staircase corners; Fechner's integral $\\ln I/k$ = ${v.fix(Math.log(Ih) / k, 2)}` : '';
           const Sr = M.range(8).map((j) => Sint(Math.pow(IMAX, j / 7))), Sd = M.range(8).map((j) => Sint(1 + ((IMAX - 1) * j) / 7));

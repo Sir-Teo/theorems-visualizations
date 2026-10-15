@@ -15,6 +15,8 @@
 // to chs. 13–14), denotational semantics, Hoare logic and abstract interpretation (cited to §3.4
 // “Semantic styles”) — is referred to the nearest section. Deliberately omitted: process calculi
 // and concurrency semantics, garbage collection, compilation and linear/ownership types.
+// Landmark papers (kind 'Paper', Oct 2026): each citation was checked against its Crossref record (api.crossref.org/works/<doi>)
+// or, without a DOI, against the cited record (NASA NTRS, Google Patents, Euler Archive, Smithsonian Libraries).
 export default {
   collection: 'pl',
   chapters: [
@@ -170,6 +172,11 @@ export default {
           pic: 'A direct-style program is transformed so every call passes its continuation explicitly; the transformed program runs with a constant-size stack.' },
         { num: '5.11', kind: 'Concept', name: 'Monads for effects', deps: ['pl-5.5', 'pl-5.8'], refs: ['Pierce §13.1'],
           pic: 'The same program is written with state, exceptions and logging threaded explicitly and then with a monad; the types record which effects are possible, and the two runs agree.' },
+        { num: '5.12', kind: 'Paper', name: 'Recursive Functions of Symbolic Expressions',
+          paper: { authors: 'John McCarthy', year: 1960, title: 'Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I',
+                   venue: 'Communications of the ACM 3 (4): 184–195', doi: '10.1145/367177.367199' },
+          introduces: [], deps: ['pl-2.1', 'toc-8.4', 'pl-5.4'], refs: [],
+          pic: 'Type S-expressions and watch McCarthy’s eval and apply walk them: atom, car, cdr, cons and cond are evaluated by a short interpreter written in the language itself, and a free-storage counter shows abandoned cells being reclaimed.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
@@ -238,6 +245,11 @@ export default {
           pic: 'A function polymorphic over all subtypes of a record keeps the extra fields of its argument in the result, unlike a plain subtyped version that forgets them.' },
         { num: '7.15', kind: 'Theorem', name: 'Subtyping in full F<: is undecidable', deps: ['pl-7.14', 'toc-10.12'], refs: ['Pierce §28.5'],
           pic: 'The algorithmic subtype checker is run on encoded machine configurations; for some inputs its goal stack grows without end, plotted against steps.' },
+        { num: '7.16', kind: 'Paper', name: 'A Theory of Type Polymorphism in Programming',
+          paper: { authors: 'Robin Milner', year: 1978, title: 'A Theory of Type Polymorphism in Programming',
+                   venue: 'Journal of Computer and System Sciences 17 (3): 348–375', doi: '10.1016/0022-0000(78)90014-4' },
+          introduces: ['pl-7.5', 'pl-7.6', 'pl-4.5'], deps: ['pl-7.3', 'pl-7.4', 'pl-4.7'], refs: [],
+          pic: 'Type an ML expression with let-bound functions and watch Algorithm W create type variables, unify constraints and generalize at each let to reach the principal type; a program that would go wrong at run time is rejected where unification fails.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -320,6 +332,11 @@ export default {
           pic: 'A program is analysed over the interval domain; abstract states widen until a fixed point, and the computed ranges are compared with concrete runs, always containing them.' },
         { num: '10.12', kind: 'Theorem', name: 'Rice’s theorem limits static analysis', deps: ['toc-10.5', 'pl-10.11'], refs: ['Pierce §1.2'],
           pic: 'A would-be perfect “does this program ever divide by zero?” analyser is turned into a halting decider; real analysers are shown either rejecting safe programs or missing bugs.' },
+        { num: '10.13', kind: 'Paper', name: 'An Axiomatic Basis for Computer Programming',
+          paper: { authors: 'C. A. R. Hoare', year: 1969, title: 'An Axiomatic Basis for Computer Programming',
+                   venue: 'Communications of the ACM 12 (10): 576–580, 583', doi: '10.1145/363235.363259' },
+          introduces: ['pl-10.8'], deps: ['pl-1.11', 'pl-10.9'], refs: [],
+          pic: 'Annotate a small while-program with pre- and postconditions and apply Hoare’s axioms rule by rule: the assignment axiom substitutes backwards, the while rule asks for an invariant, and the reader’s invariant is checked on every iteration of sample runs.' },
       ],
     },
   ],
