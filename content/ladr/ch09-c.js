@@ -402,7 +402,7 @@ $$\alpha(v_2, v_1, v_3, \dots, v_m) = -\alpha(v_1, v_2, v_3, \dots, v_m).$$`,
       tags: ['multilinear'],
       viz(v) {
         const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
-        const P = v.stage({ x: [-0.16, 1.06], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', xticks: [0, 0.5, 1], title: 'value of the form during the swap' });
+        const P = v.stage({ x: [-0.16, 1.06], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', xticks: [0, 0.25, 0.75, 1], title: 'value of the form during the swap' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.5, lim: 1.5 });
         const fs = formSelect(v);
         const pair = v.select('swap slots', [{ value: '01', label: '$1 \\leftrightarrow 2$' }, { value: '02', label: '$1 \\leftrightarrow 3$' }, { value: '12', label: '$2 \\leftrightarrow 3$' }], '01');
@@ -600,7 +600,7 @@ where $N$ is the number of pairs of integers $(k, \ell)$ with $1 \le k < \ell \l
 $$\alpha(v_{j_1}, \dots, v_{j_m}) = \big(\operatorname{sign}(j_1, \dots, j_m)\big)\,\alpha(v_1, \dots, v_m)$$
 for every list $v_1, \dots, v_m$ of vectors in $V$ and every $(j_1, \dots, j_m) \in \operatorname{perm} m$.`,
       idea: String.raw`Sort $(j_1, \dots, j_m)$ back to $(1, \dots, m)$ by a sequence of swaps of entries, performing the same swaps on the inputs of $\alpha$. Each swap multiplies the value of $\alpha$ by $-1$ (9.30) and also the sign of the remaining permutation by $-1$ (9.34), so the product $\operatorname{sign}(\text{permutation}) \cdot \alpha(\text{inputs})$ never changes. At the end the permutation is $(1, \dots, m)$, of sign $1$, and the inputs are $v_1, \dots, v_m$.`,
-      caption: String.raw`Drag $v_1, v_2, v_3$ (drag the background to rotate) and pick an order $(j_1, j_2, j_3)$ — buttons, or click a bar. The numbers at the arrow tips are the slots, and the small triangle near the origin turns from slot 1 to slot 2 to slot 3: it reverses (blue to red) exactly for the odd orders. Right: the form on all six orders, each with its strand diagram; for the signed volume every value is $\pm\alpha(v_1, v_2, v_3)$ (dashed lines), with the sign of the permutation. A non-alternating form scatters the six values.`,
+      caption: String.raw`Drag $v_1, v_2, v_3$ (drag the background to rotate) and pick an order $(j_1, j_2, j_3)$ — buttons, or click a bar. The numbered badges on the arrows say which slot each vector occupies, and the box is coloured by the orientation of the list $v_{j_1}, v_{j_2}, v_{j_3}$: blue for the even orders, red for the odd ones. Right: the form on all six orders, each with its strand diagram; for the signed volume every value is $\pm\alpha(v_1, v_2, v_3)$ (dashed lines), with the sign of the permutation. A non-alternating form scatters the six values.`,
       deps: ['ladr-9.30', 'ladr-9.34'],
       tags: ['permutations', 'multilinear'],
       viz(v) {
@@ -621,10 +621,6 @@ for every list $v_1, \dots, v_m$ of vectors in $V$ and every $(j_1, \dots, j_m) 
           sc.begin();
           pped(sc, V[0], V[1], V[2], { fill: oc, color: oc, fillAlpha: 0.08, alpha: 0.45 });
           V.forEach((x, k) => sc.arrow(ZERO, x, { color: CC[k], width: 3.2 }));
-          // the oriented triangle through the slot directions
-          const T = X.map((x) => scl(unit(x), 0.48));
-          sc.poly(T, { fill: oc, fillAlpha: 0.22, edge: false, top: true });
-          for (let k = 0; k < 3; k++) sc.arrow(T[k], T[(k + 1) % 3], { color: oc, width: 2.6, head: 9 });
           sc.flush();
           X.forEach((x, k) => badge(S, sc, scl(x, 0.8), k + 1, CC[jp[k] - 1]));
           S.corner(`slots 1, 2, 3 (badges) hold v${sb(jp[0])}, v${sb(jp[1])}, v${sb(jp[2])}`, 'tl', { color: 'muted', weight: 700 });
@@ -728,16 +724,16 @@ for every alternating $n$-linear form $\alpha$ on $V$.`,
             G.text('rows j₁, columns j₂', 0.5, 0.955, { align: 'center', size: 12, color: 'muted' });
           }
           const nn = n ** n, nf = n === 2 ? 2 : 6, F = alt ? '\\alpha' : '\\beta', es = n === 2 ? 'e_1, e_2' : 'e_1, e_2, e_3', vs = n === 2 ? 'v_1, v_2' : 'v_1, v_2, v_3';
-          G.tex(`\\text{all } ${nn} \\text{ terms: } ${tn(full, 3)} = ${F}(${vs})`, 0.5, 0.16, { size: 14.5 });
+          G.tex(`\\text{sum of all } ${nn} \\text{ terms} = ${F}(${vs}) = ${tn(full, 3)}`, 0.5, 0.16, { size: 14.5 });
           const ok = Math.abs(formula - direct) < 1e-9 * Math.max(1, Math.abs(direct));
-          G.tex(`${F}(${es})\\sum_{\\text{${nf} perms}} \\operatorname{sign}\\cdot b\\cdots b = ${tn(atBasis, 3)}\\cdot ${tn(permSum, 3)} = ${tn(formula, 3)}`, 0.5, 0.06, { size: 14.5, color: ok ? 'green' : 'red' });
+          G.tex(`${F}(${es})\\sum_{\\text{${nf} perms}} \\operatorname{sign}\\cdot b\\cdots b = ${zt(atBasis)}\\cdot ${zt(permSum)} = ${tn(formula, 3)}`, 0.5, 0.06, { size: 14.5, color: ok ? 'green' : 'red' });
           st = { n, alt, full, direct, formula, permSum, atBasis, repSum, ok, nn, nf, es, vs };
         });
         v.legend([['blue', 'permutation, sign $+1$', { area: true }], ['red', 'permutation, sign $-1$', { area: true }], ['orange', 'repeated index, nonzero', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { alt, direct, formula, permSum, atBasis, repSum, ok, nn, nf, es, vs } = st;
-          if (alt) return `Of the $${nn}$ terms, the $${nn - nf}$ with a repeated index vanish ($\\alpha$ is alternating) and the $${nf}$ permutation terms give $\\alpha(${es}) \\cdot ${zt(permSum)} = ${tn(formula, 3)}$, which ${ok ? 'matches' : 'differs from'} $\\alpha(${vs}) = ${tn(direct, 3)}$ computed directly from the vectors (as $\\alpha(e_1, \\dots, e_n)/\\det(e_1, \\dots, e_n)$ times their signed volume).`;
+          if (alt) return `Of the $${nn}$ terms, the $${nn - nf}$ with a repeated index vanish ($\\alpha$ is alternating) and the $${nf}$ permutation terms give $\\alpha(${es}) \\cdot ${zt(permSum)} = ${tn(formula, 3)}$, which ${ok ? 'matches' : 'differs from'} $\\alpha(${vs}) = ${tn(direct, 3)}$ computed directly from the vectors as $\\alpha(e_1, \\dots, e_n)\\,\\mathrm{vol}(v_1, \\dots, v_n)/\\mathrm{vol}(e_1, \\dots, e_n)$, with $\\mathrm{vol}$ the signed volume.`;
           return `$\\beta$ is multilinear, so all $${nn}$ terms still add up to $\\beta(${vs}) = ${tn(direct, 3)}$; but the repeated-index terms contribute $${tn(repSum, 3)}$ and the permutation terms are not $\\pm\\beta(${es})$, so the formula gives $${zt(atBasis)}\\cdot ${zt(permSum)} = ${tn(formula, 3)}$ — ${ok ? 'equal only by accident' : '**wrong**'}.`;
         });
       },

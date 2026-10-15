@@ -27,8 +27,8 @@ The rays from $E$ to all the points of an object form a cone with its apex at th
       tags: ['perspective', 'central projection'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-1.75, 1.75], y: [-1.45, 0.95], equal: true, axes: false, height: 390, weight: 1.25, title: 'eye, pane and objects' });
-        const P = v.stage({ x: [-0.82, 0.82], y: [-0.06, 1.3], equal: true, axes: false, height: 390, weight: 0.75, title: 'what is traced on the pane' });
+        const S = v.stage({ x: [-1.5, 1.6], y: [-1.5, 0.62], equal: true, axes: false, height: 360, weight: 1.25, title: 'eye, pane and objects' });
+        const P = v.stage({ x: [-0.82, 0.82], y: [-0.06, 1.3], equal: true, axes: false, height: 360, weight: 0.75, title: 'what is traced on the pane' });
         const sc = v.scene3(S, { yaw: -0.85, pitch: 0.4, axes: false, lim: 2.2 });
         const G = -0.75, PW = 0.75, PH = 1.25; // ground height, pane half-width and height (scene units)
         const house = houseMesh([0.35, 1.05, G], [0.55, 0.78, 0.4], 0.26, 1.15);

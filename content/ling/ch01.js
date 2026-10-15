@@ -539,27 +539,33 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
           if (cache.key === key) return cache;
           const src = vowelPeriod([], [], P), out = vowelPeriod(Fs, BW5, P);
           const hS = harmonicsDb(M, src), hO = harmonicsDb(M, out), f0 = SR / P;
-          // noise: averaged spectrum of white noise, alone and through the same filter (Welch, 512-point Hann frames)
-          let nS = null, nO = null, wS = null, wO = null;
-          if (srcSel.value !== 'voice') {
+          // noise: averaged spectra (Welch, Hann frames) of white noise alone and through the same filter;
+          // breathy voice: pulses plus aspiration, analysed together with long frames so harmonics and noise share one scale
+          const welch = (x, N) => { const acc = new Float64Array(N / 2 + 1); let cnt = 0; for (let s0 = 0; s0 + N <= x.length; s0 += N / 2) { const re = new Float64Array(N), im = new Float64Array(N); for (let j = 0; j < N; j++) re[j] = x[s0 + j] * (0.5 - 0.5 * Math.cos((2 * Math.PI * j) / N)); M.fft(re, im); for (let b = 0; b <= N / 2; b++) acc[b] += re[b] * re[b] + im[b] * im[b]; cnt++; } return Array.from(acc, (a) => 10 * Math.log10(a / cnt + 1e-14)); };
+          let nS = null, nO = null, wS = null, wO = null, nN = 512;
+          const ref = hS[1];
+          if (srcSel.value === 'whisper') {
             const len = 0.5, ns = synth(() => ({ f0: 100, av: 0, ah: 1, af: 0, F: [], B: [] }), len, { seed: 11 }), no = synth(() => ({ f0: 100, av: 0, ah: 1, af: 0, F: Fs, B: BW5 }), len, { seed: 11 });
-            const welch = (x) => { const N = 512, acc = new Float64Array(N / 2 + 1); let cnt = 0; for (let s0 = 0; s0 + N <= x.length; s0 += N / 2) { const re = new Float64Array(N), im = new Float64Array(N); for (let j = 0; j < N; j++) re[j] = x[s0 + j] * (0.5 - 0.5 * Math.cos((2 * Math.PI * j) / N)); M.fft(re, im); for (let b = 0; b <= N / 2; b++) acc[b] += re[b] * re[b] + im[b] * im[b]; cnt++; } return Array.from(acc, (a) => 10 * Math.log10(a / cnt + 1e-14)); };
-            nS = welch(ns); nO = welch(no);
+            nS = welch(ns, 512); nO = welch(no, 512);
+            const nref = M.mean(nS.slice(20, 120)) + 12; nS = nS.map((x) => x - nref); nO = nO.map((x) => x - nref);
+            wS = ns.slice(4000, 4000 + Math.round(0.03 * SR)); wO = no.slice(4000, 4000 + Math.round(0.03 * SR));
+          } else if (srcSel.value === 'breathy') {
+            const len = 0.6, par = (F) => () => ({ f0, av: 0.55, ah: 0.6, af: 0, F, B: BW5 }), ns = synth(par([]), len, { seed: 11, jitter: 0 }), no = synth(par(Fs), len, { seed: 11, jitter: 0 });
+            const pure = synth(() => ({ f0, av: 1, ah: 0, af: 0, F: [], B: [] }), len, { jitter: 0 }), cal = Math.max(...welch(pure, 2048).slice(1, 60));
+            nN = 2048; nS = welch(ns, 2048).map((x) => x - cal); nO = welch(no, 2048).map((x) => x - cal);
             wS = ns.slice(4000, 4000 + Math.round(0.03 * SR)); wO = no.slice(4000, 4000 + Math.round(0.03 * SR));
           }
-          // reference level: source harmonic 1 = 0 dB; noise spectrum placed 12 dB below
-          const ref = hS[1], nref = nS ? M.mean(nS.slice(20, 120)) + 12 : 0;
-          cache = { key, P, f0, src, out, hS: hS.map((x) => x - ref), hO: hO.map((x) => x - ref), nS: nS && nS.map((x) => x - nref), nO: nO && nO.map((x) => x - nref), wS, wO, Fs };
+          cache = { key, P, f0, src, out, hS: hS.map((x) => x - ref), hO: hO.map((x) => x - ref), nS, nO, nN, wS, wO, Fs };
           return cache;
         };
         const mkSound = (filtered) => {
           const c = analyse(), f0 = c.f0, mode = srcSel.value, Fs = filtered ? c.Fs : [];
-          const buf = synth((t) => ({ f0: f0 * (1.03 - 0.06 * t), av: mode === 'whisper' ? 0 : mode === 'breathy' ? 0.55 : 1, ah: mode === 'voice' ? 0 : mode === 'breathy' ? 0.6 : 1.2, af: 0, F: Fs, B: BW5, oq: mode === 'breathy' ? 0.8 : 0.6 }), 1.1);
+          const buf = synth((t) => ({ f0: f0 * (1.03 - 0.06 * t), av: mode === 'whisper' ? 0 : mode === 'breathy' ? 0.55 : 1, ah: mode === 'voice' ? 0 : mode === 'breathy' ? 0.6 : 1.2, af: 0, F: Fs, B: BW5 }), 1.1);
           return normalise(buf, 0.85, 0.05);
         };
         v.soundButton('Listen', (snd) => snd.samples(mkSound(true), SR, { gain: 0.6 }));
         v.soundButton('Source alone', (snd) => snd.samples(mkSound(false), SR, { gain: 0.45 }));
-        v.legend([['orange', 'source harmonics', { dot: true }], ['ink', 'tract filter $T(f)$'], ['accent', 'output harmonics', { dot: true }], ['muted', 'noise spectrum (whisper)']]);
+        v.legend([['orange', 'source', { dot: true }], ['ink', 'tract filter $T(f)$'], ['accent', 'output', { dot: true }], ['muted', 'noise spectrum (whisper)']]);
         let info = null;
         v.render(() => {
           const c = analyse(), mode = srcSel.value, voiced = mode !== 'whisper', noisy = mode !== 'voice', f0 = c.f0, Fs = c.Fs;
@@ -569,8 +575,7 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
           const n = Math.round(0.03 * SR), mS = norm(c.src), mO = norm(c.out);
           const laneS = [], laneO = [];
           for (let i = 0; i < n; i++) {
-            const sv = (voiced ? per(c.src, i) / mS : 0) * (mode === 'breathy' ? 0.6 : 1) + (noisy && c.wS ? (0.5 * c.wS[i]) / norm(c.wS) : 0);
-            const ov = (voiced ? per(c.out, i) / mO : 0) * (mode === 'breathy' ? 0.6 : 1) + (noisy && c.wO ? (0.5 * c.wO[i]) / norm(c.wO) : 0);
+            const sv = noisy ? c.wS[i] / norm(c.wS) : per(c.src, i) / mS, ov = noisy ? c.wO[i] / norm(c.wO) : per(c.out, i) / mO;
             laneS.push([i / SR, 0.55 + 0.5 * sv]); laneO.push([i / SR, -1.2 + 0.85 * ov]);
           }
           wav.hline(0.55, { color: 'faint' }); wav.hline(-1.2, { color: 'faint' });
@@ -581,28 +586,28 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
           wav.measure(0.0002, -2.12, 0.0102, -2.12, '10 ms', { color: 'muted', size: 11, math: false, offset: -9 });
           // spectra
           const stems = (s, h, col, lo) => { for (let k = 1; k * f0 < FMAX && k < h.length; k++) { s.line(k * f0, lo, k * f0, h[k], { color: col, width: 1.6, alpha: 0.85 }); s.dot(k * f0, h[k], { r: 2.2, color: col }); } };
-          const noiseCurve = (s, arr) => s.path(arr.map((d, b) => [(b * SR) / 512, d]).filter((p) => p[0] <= FMAX), { color: 'muted', width: 1.3 });
-          if (voiced) stems(sS, c.hS, 'orange', -45);
-          if (noisy) noiseCurve(sS, c.nS);
+          const noiseCurve = (s, arr, col) => s.path(arr.map((d, b) => [(b * SR) / c.nN, d]).filter((p) => p[0] <= FMAX), { color: col, width: mode === 'breathy' ? 1.2 : 1.3 });
+          if (mode === 'voice') stems(sS, c.hS, 'orange', -45);
+          if (noisy) noiseCurve(sS, c.nS, mode === 'breathy' ? 'orange' : 'muted');
           sS.corner(voiced ? `harmonics every ${v.fix(f0, 1)} Hz` : 'flat noise: no harmonics', 'tr', { color: 'orange', weight: 600 });
           sT.fn((f) => dB(tractGain(Fs, BW5, f)), { domain: [0, FMAX], n: 500, color: 'ink', width: 2 });
           hs.forEach((h, k) => sT.vline(F[k], { color: h.color, dash: [3, 4], alpha: 0.7 }));
           const env = (f) => dB(tractGain(Fs, BW5, f));
-          if (voiced) {
+          if (mode === 'voice') {
             stems(sO, c.hO, 'accent', -42);
             // the envelope that the harmonics trace: source trend + filter
             const tilt = (f) => { const k = f / f0; const lo = Math.floor(k), hi = lo + 1; if (lo < 1) return c.hS[1]; return hi < c.hS.length ? c.hS[lo] + (c.hS[hi] - c.hS[lo]) * (k - lo) : c.hS[lo]; };
             sO.fn((f) => env(f) + tilt(f), { domain: [f0, FMAX], n: 400, color: 'faint', width: 1.2, dash: [4, 4] });
           }
-          if (noisy) noiseCurve(sO, c.nO);
+          if (noisy) noiseCurve(sO, c.nO, mode === 'breathy' ? 'accent' : 'muted');
           for (let k = 0; k < 3; k++) sO.vline(F[k], { color: hs[k].color, dash: [3, 4], alpha: 0.45 });
           // verification at the strongest output harmonic
           let kb = 1; for (let k = 1; k * f0 < FMAX && k < c.hO.length; k++) if (c.hO[k] > c.hO[kb]) kb = k;
-          info = { kb, f: kb * f0, s: c.hS[kb], t: env(kb * f0), o: c.hO[kb], f0, voiced, Fs };
-          if (voiced) sO.dot(kb * f0, c.hO[kb], { r: 5, color: 'gold' });
+          info = { kb, f: kb * f0, s: c.hS[kb], t: env(kb * f0), o: c.hO[kb], f0, mode, Fs };
+          if (mode === 'voice') sO.dot(kb * f0, c.hO[kb], { r: 5, color: 'gold' });
         });
-        v.readout(() => info && (info.voiced
-          ? `$f_0$ = ${v.fix(info.f0, 1)} Hz · formants ${info.Fs.slice(0, 3).map((f) => Math.round(f)).join(', ')} Hz · strongest harmonic: no. ${info.kb} at ${Math.round(info.f)} Hz (gold): source ${v.fix(info.s, 1)} dB + filter ${v.fix(info.t, 1)} dB = **${v.fix(info.s + info.t, 2)} dB**; measured by FFT of the synthesized waveform: **${v.fix(info.o, 2)} dB**`
+        v.readout(() => info && (info.mode === 'breathy' ? `breathy voice: weaker pulses plus aspiration noise, analysed together (long-window FFT): the harmonics still stand out below about 1.5 kHz, while noise fills in between them higher up; the formant peaks ${info.Fs.slice(0, 3).map((f) => Math.round(f)).join(', ')} Hz are unchanged`
+          : info.mode === 'voice' ? `$f_0$ = ${v.fix(info.f0, 1)} Hz · formants ${info.Fs.slice(0, 3).map((f) => Math.round(f)).join(', ')} Hz · strongest harmonic: no. ${info.kb} at ${Math.round(info.f)} Hz (gold): source ${v.fix(info.s, 1)} dB + filter ${v.fix(info.t, 1)} dB = **${v.fix(info.s + info.t, 2)} dB**; measured by FFT of the synthesized waveform: **${v.fix(info.o, 2)} dB**`
           : `whisper: the source is noise, so the output has no harmonics and no pitch, but its spectrum still peaks at ${info.Fs.slice(0, 3).map((f) => Math.round(f)).join(', ')} Hz, the formants of the filter, which is why whispered vowels stay intelligible`));
       },
     },

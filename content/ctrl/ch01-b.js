@@ -689,11 +689,11 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
       credit: 'J. C. Maxwell, 1868',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/On_Governors' },
       viz(v) {
-        const BX = [0, 3], KY = [0, 7], TEND = 170;
-        const pl = v.stage({ x: [BX[0] - 0.05, BX[1]], y: [KY[0] - 0.12, KY[1]], height: 300, axes: 'box', xlabel: 'friction β', ylabel: 'linkage gain K', weight: 1.15, title: 'stability chart: $a_2a_1$ vs $a_3a_0$' });
+        const BX = [0, 3.2], KY = [0.02, 12], TEND = 170, TSTEP = 12;
+        const pl = v.stage({ x: [BX[0], BX[1]], y: KY, ylog: true, height: 300, axes: 'box', xlabel: 'friction β', ylabel: 'linkage gain K', weight: 1.15, title: 'stability chart: $a_2a_1$ vs $a_3a_0$' });
         const cp = v.stage({ x: [-2.2, 0.6], y: [-1.4, 1.4], equal: true, height: 300, axes: true, xlabel: 'Re', ylabel: 'Im', weight: 1, title: 'roots of the characteristic cubic' });
         const ts = v.stage({ x: [0, TEND], y: [72, 128], height: 190, axes: 'box', xlabel: 't', ylabel: 'speed (% of design)', full: true, yticks: [80, 90, 100, 110, 120] });
-        const H = pl.handle(0.8, 2.6, { color: 'gold', constrain: (x, y) => [clamp(x, 0.02, BX[1]), clamp(y, 0.05, KY[1])] });
+        const H = pl.handle(1.1, 1.4, { color: 'gold', constrain: (x, y) => [clamp(x, 0.03, BX[1] - 0.02), clamp(y, KY[0] * 1.05, KY[1] / 1.05)] });
         const kOf = (beta) => { // Maxwell's boundary a2·a1 = a3·a0 solved for K
           const { phi0 } = GOV, kap = Math.sin(phi0) ** 2 / Math.cos(phi0), a = 2 * GOV.w0 * Math.sin(phi0) * Math.cos(phi0), { J, c } = GOV;
           return ((J * beta + c) * (J * kap + c * beta) - J * c * kap) / (J * a * GOV.Ts * Math.sin(phi0));
@@ -707,17 +707,18 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
         v.render(() => {
           const beta = H.x, K = H.y, p = { K, beta };
           // ---- chart
-          pl.raster((x, y) => { if (x < 0 || y < 0) return null; const c = COLS[classify(x, y)], t = 0.2; return [panel[0] + (c[0] - panel[0]) * t, panel[1] + (c[1] - panel[1]) * t, panel[2] + (c[2] - panel[2]) * t]; }, { res: 3, key: `chart|${v.color('panel')}` });
-          pl.fn(kOf, { color: 'ink', width: 2.6, domain: [0, BX[1]] });
-          pl.text('hunting (unstable)', 0.12, 6.3, { size: 12, color: 'red', weight: 600 });
-          pl.text('decaying oscillation', 1.45, 3.0, { size: 12, color: 'blue', weight: 600, align: 'center' });
-          pl.text('creep: all roots real', 2.9, 0.45, { size: 12, color: 'green', weight: 600, align: 'right' });
-          pl.tex('a_2a_1=a_3a_0', 1.15, kOf(1.15) + 0.35, { size: 13, align: 'right', dx: -6 });
+          pl.raster((x, y) => { if (x <= 0 || y <= 0) return null; const c = COLS[classify(x, y)], t = 0.22; return [panel[0] + (c[0] - panel[0]) * t, panel[1] + (c[1] - panel[1]) * t, panel[2] + (c[2] - panel[2]) * t]; }, { res: 3, key: `chart|${v.color('panel')}` });
+          pl.axes();
+          pl.fn((b) => (kOf(b) > 0 ? kOf(b) : NaN), { color: 'ink', width: 2.6, domain: [0, BX[1]] });
+          pl.text('hunting (unstable)', 0.2, 7.5, { size: 12, color: 'red', weight: 600 });
+          pl.text('decaying oscillation', 2.2, 0.9, { size: 12, color: 'blue', weight: 600, align: 'center' });
+          pl.text('creep: all roots real', 3.1, 0.033, { size: 12, color: 'green', weight: 600, align: 'right' });
+          pl.tex('a_2a_1=a_3a_0', 0.62, kOf(0.62), { size: 13, align: 'right', dx: -10, dy: -4 });
           // ---- roots and their path in K at this friction
           const r = cubicRoots(govCubic(p).coef);
           cp.vband(0, 2, { color: 'red', alpha: 0.07 });
           const path = [];
-          for (let k = 0.02; k <= KY[1]; k += 0.04) for (const z of cubicRoots(govCubic({ K: k, beta }).coef)) path.push(z);
+          for (let k = KY[0]; k <= KY[1]; k *= 1.03) for (const z of cubicRoots(govCubic({ K: k, beta }).coef)) path.push(z);
           cp.dots(path, { r: 1.5, color: 'muted', alpha: 0.6 });
           for (const z of r) cross(cp, clamp(z[0], -2.15, 0.55), clamp(z[1], -1.35, 1.35), 0.07, { color: z[0] > 0 ? 'red' : 'accent', width: 3 });
           // ---- nonlinear response to a load step
@@ -725,13 +726,13 @@ For a cubic characteristic equation $a_3n^3+a_2n^2+a_1n+a_0=0$ with positive coe
           if (rk !== key) {
             rk = key;
             const eq = govEquilibrium(p, GOV.TL0), x = [eq.w, eq.phi, 0], tt = [], ww = [];
-            for (let k = 0; k * 0.02 <= TEND; k++) { const t = k * 0.02; if (k % 10 === 0) { tt.push(t); ww.push((100 * x[0]) / GOV.w0); } govStep(p, x, 0.02, t >= 5 ? GOV.TL0 * 1.08 : GOV.TL0); }
+            for (let k = 0; k * 0.02 <= TEND; k++) { const t = k * 0.02; if (k % 10 === 0) { tt.push(t); ww.push((100 * x[0]) / GOV.w0); } govStep(p, x, 0.02, t >= TSTEP ? GOV.TL0 * 1.08 : GOV.TL0); }
             resp = { tt, ww, eq2: govEquilibrium(p, GOV.TL0 * 1.08) };
           }
           ts.hline(100, { color: 'ink', dash: [5, 4], width: 1 });
           if (!resp.eq2.stop) ts.hline((100 * resp.eq2.w) / GOV.w0, { color: 'green', dash: [6, 4], width: 1.3 });
-          ts.vline(5, { color: 'purple', dash: [3, 3], width: 1.2 });
-          ts.text('load +8 %', 6, 125, { size: 11, color: 'purple' });
+          ts.vline(TSTEP, { color: 'purple', dash: [3, 3], width: 1.2 });
+          ts.text('load +8 %', TSTEP + 1.5, 76, { size: 11, color: 'purple' });
           ts.clip(() => trace(ts, resp.tt, resp.ww, { color: classify(beta, K) === 2 ? 'red' : 'accent', width: 2.3 }));
         });
         v.legend([['blue', 'decaying oscillation', { area: true }], ['green', 'aperiodic (creep)', { area: true }], ['red', 'unstable (hunting)', { area: true }], ['muted', 'root paths as $K$ varies', { dot: true }]]);
