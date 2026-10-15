@@ -605,7 +605,7 @@ produces a vector $v$ with $\rho(v, v) \ne 0$. Its $\rho$-orthogonal space $U = 
         const PRE = {
           ind: { A: [[1, 0.6, 0.4], [0.6, -0.2, 0.7], [0.4, 0.7, 0.3]], v1: [-0.48, 1.03, 0.17], view: [-0.5, 0.3] },
           iso: { A: [[0, 1, 0.5], [1, 0, 0.8], [0.5, 0.8, 0]], v1: [0.85, 0.85, 0], view: [2.58, 0.34] },
-          pos: { A: [[1.6, 0.4, 0.2], [0.4, 1.1, -0.3], [0.2, -0.3, 0.8]], v1: [0.18, -0.36, 1.08], view: [-0.5, 0.3] },
+          pos: { A: [[1.6, 0.4, 0.2], [0.4, 1.1, -0.3], [0.2, -0.3, 0.8]], v1: [0.75, -0.36, 0.8], view: [-0.5, 0.3] },
           ns: { A: [[1, 0.9, -0.2], [-0.3, -0.5, 0.8], [0.6, -0.4, 0.4]], v1: [0.66, -0.6, -0.73], view: [-0.5, 0.3] },
         };
         const pre = v.select('$\\rho$', [{ value: 'ind', label: 'indefinite' }, { value: 'iso', label: 'every axis isotropic' }, { value: 'pos', label: 'positive definite' }, { value: 'ns', label: 'not symmetric' }], 'ind', { onChange: (k) => { [sc.yaw, sc.pitch] = PRE[k].view; h1.set(PRE[k].v1); h2.set([0.9, 0.2, -0.7]); } });
@@ -639,7 +639,11 @@ produces a vector $v$ with $\rho(v, v) \ne 0$. Its $\rho$-orthogonal space $U = 
           }
           sc.arrow([0, 0, 0], v1, { color: 'accent', width: 3 });
           sc.arrow([0, 0, 0], v2, { color: 'purple', width: 3 });
-          if (ok3) { sc.arrow([0, 0, 0], v3, { color: 'green', width: 3 }); sc.tex('v_3', v3, { color: 'green', size: 15, dx: 12, dy: -10 }); }
+          if (ok3) {
+            sc.arrow([0, 0, 0], v3, { color: 'green', width: 3 });
+            const p3 = sc.P(v3), r3 = Math.hypot(S.X(p3[0]) - S.X(0), S.Y(p3[1]) - S.Y(0)) || 1;
+            sc.tex('v_3', v3, { color: 'green', size: 15, dx: (16 * (S.X(p3[0]) - S.X(0))) / r3, dy: (16 * (S.Y(p3[1]) - S.Y(0))) / r3 });
+          }
           sc.flush();
           const basis = [v1, v2, v3], dB = det3(v1, v2, v3), isBasis = ok3 && Math.abs(dB) > 0.03;
           const bad1 = Math.abs(q1) < 0.05 * dot(v1, v1), bad2 = Math.abs(q2) < 0.05 * dot(v2, v2);

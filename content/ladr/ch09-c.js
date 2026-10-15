@@ -250,7 +250,7 @@ $$\alpha(v_1, \dots, v_m) = 0.$$`,
       viz(v) {
         const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 390, weight: 1.3, minWidth: 310 });
         const P = v.stage({ x: [-1.5, 1.5], y: [-2, 2], height: 390, minWidth: 270, xlabel: 't', title: '$t \\mapsto \\alpha(v_1, v_2,\\ b_1v_1 + b_2v_2 + t\\,n)$' });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.36, axis: 1.5, lim: 1.6 });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.36, axis: 1.75, lim: 1.6 });
         const fs = formSelect(v);
         const H = [];
         const proj = (p) => { const n = cross(H[0].p, H[1].p), nn = len(n); if (nn < 1e-9) return p; return sub(p, scl(n, dot(p, n) / (nn * nn))); };

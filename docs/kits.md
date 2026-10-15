@@ -78,7 +78,8 @@ Function options receive `(id, node)` for nodes and `(edge)` for edges. For colo
 | `nodeFill` | solid disc (label switches to the panel colour) — use for "visited"/"current". |
 | `nodeLabel` | text inside/beside the node (e.g. a distance instead of the name). |
 | `nodeNote`, `noteColor` | small bold text beside the node at `notePos` (distances, `d/f` times, in-degrees). |
-| `nodeRing` | colour of an extra outer ring. `labelColor` overrides label colours. |
+| `nodeRing` | colour of an extra outer ring. `labelColor` overrides label colours (labels on solid `nodeFill` discs pick dark or white ink automatically for contrast). |
+| `accept`, `start`, `startDir` | automata: `accept` (id, array, Set or `(id, node) => bool`) draws a double ring; `start` draws an incoming arrow on the node's free side (or `startDir`). Can also be set once in the spec. See tools/demos/kits.js demo-1.14. |
 | `edgeColor`, `edgeWidth`, `edgeDash` | per-edge style (default muted, 1.7 px). |
 | `edgeLabel`, `edgeLabelColor` | replaces the weight label (e.g. `` e => `${f}/${c}` ``); drawn on a halo pill at the arc midpoint. |
 | `highlightPath: [ids]`, `pathColor` | thick edges along consecutive ids (default green). |

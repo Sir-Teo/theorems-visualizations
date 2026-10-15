@@ -119,21 +119,18 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
         const survivors = (ex) => M.range(NS, 1).filter((n) => ex[n - 1] < 3);
         v.animate((t) => {
           const ex = extra(), tr = ph.t != null ? Math.min(DUR, ph.t) : M.mod(0.22 * t, DUR), xf = fh.x;
-          // ---- the string (slow motion; amplitudes follow the real decay)
-          const yAt = (x) => { let y = 0; for (let n = 1; n <= NM; n++) y += b[n - 1] * env(n, tr, ex) * Math.sin(n * Math.PI * x) * Math.cos(TAU * 0.7 * n * t); return y * 0.9 / b.reduce((m, bn) => m + Math.abs(bn) * 0, 0.0) || 0; };
-          const sc = 0.85 / 0.25;
+          // displacement: every mode keeps its own (real) decay; the oscillation itself is slowed down
+          const yAt = (x) => { let y = 0; for (let n = 1; n <= NM; n++) y += b[n - 1] * env(n, tr, ex) * Math.sin(n * Math.PI * x) * Math.cos(TAU * 0.7 * n * t); return y; };
+          const sc = 0.8;
           s.hline(0, { color: 'faint', width: 1, dash: [3, 4] });
-          s.fn((x) => sc * yAtRaw(x), { domain: [0, 1], n: 300, color: 'accent', width: 2.8 });
-          function yAtRaw(x) { let y = 0; for (let n = 1; n <= NM; n++) y += b[n - 1] * env(n, tr, ex) * Math.sin(n * Math.PI * x) * Math.cos(TAU * 0.7 * n * t); return y; }
-          void yAt;
+          s.fn((x) => sc * yAt(x), { domain: [0, 1], n: 300, color: 'accent', width: 2.8 });
           posts(s, 1, 0, 0.15);
           for (const [f, k, q] of FR) if (q <= 5) { s.line(f, -0.05, f, 0.05, { color: 'muted', width: 1 }); s.text(`${k}/${q}`, f, -0.14, { align: 'center', color: 'muted', size: 10.5 }); }
-          const touching = on.value && tr >= TT, ys = sc * yAtRaw(xf);
+          const touching = on.value && tr >= TT, ys = sc * yAt(xf);
           const tipY = touching ? ys + 0.09 : 0.5;
           s.line(xf, 1.0, xf, tipY + 0.06, { color: 'orange', width: 12, alpha: 0.35 });
           s.circle(xf, tipY, 0.035, { fill: 'orange', fillAlpha: touching ? 0.9 : 0.45, color: 'orange', width: 1.5 });
           if (!touching && on.value) s.line(xf, tipY - 0.05, xf, ys, { color: 'orange', width: 1, dash: [2, 3] });
-          s.dot(P0, -0.32, { r: 0 });
           s.text('pluck', P0, -0.3, { align: 'center', color: 'muted', size: 10.5 });
           s.line(P0, -0.24, P0, -0.06, { color: 'muted', width: 1 });
           s.corner(`t = ${v.fix(tr, 2)} s${tr < TT ? ' (open string)' : on.value ? ' (finger down)' : ''}`, 'tl', { color: 'ink', weight: 600 });

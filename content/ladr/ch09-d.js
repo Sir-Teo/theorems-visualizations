@@ -605,7 +605,7 @@ $$\det A = \lambda_1 \cdots \lambda_n.$$`,
         const H3 = sc.handle([0.3, 0.3, 0.8], { color: CC[2], label: 'Ae₃', snap: g });
         H1f.visible = false;
         const free = v.toggle('let $Ae_1$ leave the $x$-axis (not upper triangular)', false, {
-          onChange: (on) => { if (on) { H1f.set(add(H1.p, [0, 0.35, 0.3])); H1f.visible = true; H1.visible = false; } else { H1.set([H1f.p[0], 0, 0]); H1.visible = true; H1f.visible = false; } },
+          onChange: (on) => { if (on) { H1f.set(add(H1.p, [0, -0.35, 0.45])); H1f.visible = true; H1.visible = false; } else { H1.set([H1f.p[0], 0, 0]); H1.visible = true; H1f.visible = false; } },
         });
         const P = perms(3);
         let st = null;

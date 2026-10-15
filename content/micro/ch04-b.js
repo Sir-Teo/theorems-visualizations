@@ -47,7 +47,7 @@ Indifference curves are then the level sets $\{u = c\}$, and the preferred set o
           const o = G[which.value], g = o.g;
           let gmin = Infinity, gmax = -Infinity; for (let i = 0; i <= 200; i++) { const w = g(lo + ((hi - lo) * i) / 200); gmin = Math.min(gmin, w); gmax = Math.max(gmax, w); }
           const T = (w) => (g(w) - gmin) / (gmax - gmin), Z = (w) => Z0 + 0.1 + 1.25 * T(w);
-          S3.begin(); floor3(S3, Z0);
+          floor3(S3, Z0);
           S3.surface((x, y) => [X3(x), X3(y), Z(U(x, y))], [lo, hi], [lo, hi], { n: 26, colorFn: (x, y) => v.M.cmap(0.1 + 0.85 * T(U(x, y)), 'viridis'), alpha: 0.86 });
           for (const L of LV) {
             const xs = logspace(Math.max(lo, (L * L) / hi), Math.min(hi, (L * L) / lo), 40), up = [], dn = [];
@@ -55,7 +55,6 @@ Indifference curves are then the level sets $\{u = c\}$, and the preferred set o
             S3.path(up, { color: 'purple', width: 2.2, bias: -0.04 }); S3.path(dn, { color: 'purple', width: 1.2, alpha: 0.55 });
           }
           for (const [n, h] of H) { const w = U(h.x, h.y), col = n === 'P' ? 'gold' : n === 'Q' ? 'teal' : 'pink'; S3.line([X3(h.x), X3(h.y), Z0], [X3(h.x), X3(h.y), Z(w)], { color: col, width: 1.5, dash: true, bias: -0.06 }); S3.dot([X3(h.x), X3(h.y), Z(w)], { r: 5.5, color: col, bias: -0.08 }); }
-          S3.end();
           // the map: the same curves whatever g is; only the labels change
           for (const L of LV) {
             const pair = o.bad && LV.some((M) => M !== L && Math.abs(g(M) - g(L)) < 1e-9);
@@ -174,14 +173,13 @@ the rate at which utility rises as the consumer gets more of good $i$ alone; for
           const { mn, mx } = rng, X3 = (x) => x / 5 - 1, Z = (w) => -0.62 + (1.3 * (w - mn)) / (mx - mn);
           const u0 = u(a, b), m1 = o.m1(a, b), u1 = u(a + h, b);
           // 3D
-          S3.begin(); floor3(S3, -0.7);
+          floor3(S3, -0.7);
           S3.surface((x, y) => [X3(x), X3(y), Z(u(x, y))], [lo, hi], [lo, hi], { n: 22, colorFn: (x, y) => v.M.cmap(0.12 + 0.8 * (u(x, y) - mn) / (mx - mn), 'viridis'), alpha: 0.72 });
           const pts = []; for (let i = 0; i <= 60; i++) { const x = lo + ((hi - lo) * i) / 60; pts.push([X3(x), X3(b), Z(u(x, b)) + 0.01]); }
           S3.path(pts, { color: 'orange', width: 3.2, bias: -0.05 });
           S3.line([X3(lo), X3(b), -0.7], [X3(hi), X3(b), -0.7], { color: 'orange', width: 1.4, dash: true });
           const tl = 1.6; S3.line([X3(a - tl), X3(b), Z(u0 - m1 * tl)], [X3(a + tl), X3(b), Z(u0 + m1 * tl)], { color: 'green', width: 2.6, bias: -0.07 });
           S3.dot([X3(a), X3(b), Z(u0)], { r: 5.5, color: 'accent', bias: -0.09 });
-          S3.end();
           // the slice
           sl.setView([0, 10], [mn, mn + (mx - mn) * 1.04]);
           sl.fn((x) => u(x, b), { domain: [lo, hi], color: 'orange', width: 2.8 });
