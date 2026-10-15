@@ -97,21 +97,21 @@ at the sampling rate $f_s=1/T$. The sequence itself knows only the index $n$, wh
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Discrete-time_and_continuous-time' },
       viz(v) {
         const M = v.M, WIN = 12e-3;
-        // vowel "ah": harmonics of F0 through three formant resonances (source–filter synthesis), 1/k glottal tilt
+        // vowel "ah": harmonics of F0 through three formant resonances (a cascade source–filter model)
         const F0 = 180, FORM = [[730, 90], [1090, 110], [2440, 160]], parts = [];
         for (let k = 1; k * F0 < 4000; k++) {
           const f = k * F0; let H = v.cx(1, 0);
           for (const [Fi, Bi] of FORM) H = H.mul(v.cx(1 - (f / Fi) ** 2, (f * Bi) / (Fi * Fi)).inv());
-          parts.push([f, H.abs() / k, H.arg()]);
+          parts.push([f, H.abs(), H.arg()]);
         }
         const vowel0 = (t) => { let s = 0; for (const [f, a, p] of parts) s += a * Math.cos(TAU * f * t + p); return s; };
         let vmax = 0; for (let i = 0; i < 1200; i++) vmax = Math.max(vmax, Math.abs(vowel0(i / 1200 / F0)));
         const amax = Math.max(...parts.map((p) => p[1]));
-        const vowelTop = Math.max(...parts.filter((p) => p[1] > 0.05 * amax).map((p) => p[0]));
+        const vowelTop = Math.max(...parts.filter((p) => p[1] > 0.01 * amax).map((p) => p[0]));
         const FA = 250, FB = 2750;
         const chirp = (t) => (t <= 0 || t >= WIN ? 0 : Math.pow(Math.sin((Math.PI * t) / WIN), 0.6) * Math.sin(TAU * (FA * t + ((FB - FA) * t * t) / (2 * WIN))));
         const SIG = {
-          vowel: { f: (t) => vowel0(t) / vmax, rep: (t) => vowel0(t) / vmax, dur: 1.2, top: vowelTop, what: 'strongest harmonics reach' },
+          vowel: { f: (t) => vowel0(t) / vmax, rep: (t) => vowel0(t) / vmax, dur: 1.2, top: vowelTop, what: 'harmonics above 1% of the strongest reach' },
           chirp: { f: chirp, rep: (t) => chirp(M.mod(t, 0.11)), dur: 0.77, top: FB, what: 'the chirp ends at' },
         };
         const which = v.select('signal', [{ value: 'vowel', label: 'vowel “ah”' }, { value: 'chirp', label: 'chirp' }], 'vowel');
@@ -126,7 +126,7 @@ at the sampling rate $f_s=1/T$. The sequence itself knows only the index $n$, wh
         v.soundButton('Listen: $x(t)$', (snd) => { const S = SIG[which.value]; snd.samples(synth(S.rep, S.dur, 0), SR, { gain: 0.5 }); });
         v.soundButton('Listen: samples, held', (snd) => { const S = SIG[which.value]; snd.samples(synth(S.rep, S.dur, fsv()), SR, { gain: 0.5 }); });
         const top = v.stage({ x: [-0.15, 12.15], y: [-1.32, 1.32], height: 215, axes: 'box', yticks: [-1, 0, 1], xlabel: 't (ms)', full: true, title: 'continuous time: $x(t)$ has a value at every instant $t$' });
-        const bot = v.stage({ x: [-2, 74], y: [-1.32, 1.32], height: 205, axes: 'box', yticks: [-1, 0, 1], xlabel: 'n (sample index: no unit)', full: true, title: 'discrete time: $x[n]=x(nT)$ has a value only at the integers $n$' });
+        const bot = v.stage({ x: [-2, 74], y: [-1.48, 1.32], height: 210, axes: 'box', yticks: [-1, 0, 1], xlabel: 'n (sample index: no unit)', full: true, title: 'discrete time: $x[n]=x(nT)$ has a value only at the integers $n$' });
         const YH = -1.08;
         let Nnow = 72;
         const cur = bot.handle(9.4, YH, { color: 'purple', constrain: (x) => { let n = M.clamp(x, 0, Nnow); if (Math.abs(n - Math.round(n)) < 0.14) n = Math.round(n); return [n, YH]; } });
@@ -157,7 +157,7 @@ at the sampling rate $f_s=1/T$. The sequence itself knows only the index $n$, wh
             bot.dot(nC, f(nC * T), { r: 8, hollow: true, color: 'green', width: 2.2 });
             bot.text(`x[${nC}] = ${v.fix(f(nC * T), 3)}`, nC, 1.16, { align: al, color: 'green', size: 13, weight: 600 });
           } else {
-            bot.text('?', nC, 0.32, { align: 'center', color: 'red', size: 20, weight: 700 });
+            bot.dot(nC, 0, { r: 5, hollow: true, color: 'red', width: 2 });
             bot.text(`no sample at n = ${v.fix(nC, 2)}`, nC, 1.16, { align: al, color: 'red', size: 13, weight: 600 });
           }
         });
@@ -194,8 +194,8 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
         const aS = v.slider('scale $a$', -3, 3, 2, { step: 0.05 });
         const bS = v.slider('shift $b$', -6, 6, 1, { step: 0.05 });
         const route = v.select('route', [{ value: 'shift', label: 'shift by $b$, then scale' }, { value: 'scale', label: 'scale, then shift by $b/a$' }, { value: 'wrong', label: 'scale, then shift by $b$ (wrong)' }], 'shift');
-        const top = v.stage({ x: [-4, 4], y: [-0.45, 1.6], height: 185, axes: true, full: true, title: 'the signal $x(\\tau)$: drag in this panel to redraw it' });
-        const bot = v.stage({ x: [-4, 4], y: [-0.82, 1.6], height: 245, axes: true, full: true, title: '$y(t)=x(at+b)$' });
+        const top = v.stage({ x: [-4, 4], y: [-0.45, 1.6], height: 185, axes: 'box', yticks: [0, 1], xlabel: 'τ (s)', full: true, title: 'the signal $x(\\tau)$: drag in this panel to redraw it' });
+        const bot = v.stage({ x: [-4, 4], y: [-0.85, 1.6], height: 245, axes: 'box', yticks: [0, 1], xlabel: 't (s)', full: true, title: '$y(t)=x(at+b)$' });
         const sig = drawable(top, A0, B0, 360, pulse, [-0.4, 1.45]);
         v.button('Reset the pulse', () => sig.set(pulse));
         const h0 = bot.handle(-0.5, YH, { color: 'orange', label: '$\\tau=0$', constrain: 'x' });
@@ -226,6 +226,7 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
           h0.visible = !deg && inView(h0.x); h1.visible = !deg && inView(h1.x);
           h0.labelPos = h0.x <= h1.x ? 'w' : 'e'; h1.labelPos = h0.x <= h1.x ? 'e' : 'w';
           // ---- top: x(τ) with its two landmarks
+          for (const S of [top, bot]) { S.hline(0, { color: 'faint', width: 1 }); S.vline(0, { color: 'faint', width: 1 }); }
           top.fn(sig.f, { color: 'accent', width: 2.6, n: 900 });
           top.dot(0, sig.f(0), { color: 'orange', r: 5.5 }); top.dot(1, sig.f(1), { color: 'purple', r: 5.5 });
           top.text('τ = 0', 0, -0.28, { align: 'center', color: 'orange', size: 12, weight: 600 });
@@ -247,7 +248,7 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
             bot.clip(() => bot.curve((tau) => [pos(tau), sig.f(tau)], A0, B0, { color: bad ? 'red' : 'gold', width: 3.2, n: 900, alpha: 0.9 }));
             bot.dot(pos(0), sig.f(0), { color: 'orange', r: 5 }); bot.dot(pos(1), sig.f(1), { color: 'purple', r: 5 });
             for (const hd of [h0, h1]) if (hd.visible) bot.line(hd.x, YH, hd.x, sig.f(hd === h0 ? 0 : 1), { color: hd.color, dash: [3, 4], width: 1.2, alpha: 0.8 });
-            const A = v.fix(a, 2), B = v.fix(b, 2), Bs = signed(v, b), Ba = signed(v, b / a);
+            const A = v.fix(a, 2), Bs = signed(v, b), Ba = signed(v, b / a);
             let msg;
             if (u1 < 1e-3) msg = 'start: $x(t)$';
             else if (u2 < 1e-3) msg = R === 'shift' ? `step 1, shift: $x(t${Bs})$` : `step 1, scale: $x(${A}t)$`;
@@ -255,7 +256,6 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
             else if (R === 'scale') msg = `step 2, shift by $b/a$: $x(${A}(t${Ba}))=x(${A}t${Bs})$`;
             else msg = `step 2, shift by $b$: $x(${A}(t${Bs}))=x(${A}t${signed(v, a * b)})$` + (u2 > 0.999 && mism > 0.01 ? ' ✗' : '');
             bot.corner(msg, 'tl', { color: bad ? 'red' : 'ink', size: 13 });
-            void B;
           } else bot.corner(`$a=0$: every $t$ reads the same value $x(b)$ = ${v.fix(sig.f(b), 2)}`, 'tl', { color: 'red', size: 13 });
           st = { a, b, deg, mism };
         }, { period: 7.5, still: 7.2 });
