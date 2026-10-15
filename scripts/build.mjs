@@ -8,8 +8,9 @@ import { join } from 'node:path';
 import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
 
 const strict = process.argv.includes('--strict');
-const { fields, collections, chapters, items, planned, problems } = await loadAll();
+const { fields, collections, chapters, items, planned, aliases, problems } = await loadAll();
 const { bridges, problems: bridgeProblems } = await loadBridges();
+for (const B of bridges) for (const st of B.steps) if (aliases.has(st.id)) st.id = aliases.get(st.id).to;
 const P = [...problems, ...bridgeProblems, ...validate(items, planned, collections)];
 {
   const known = new Set([...items, ...planned].map((it) => it.id));
@@ -222,7 +223,8 @@ function yearOf(credit) {
 const chapterRecord = (c) => {
   const its = all.filter((it) => it.col === c.col && it.chapter === c.chapter);
   const pl = ghosts.filter((it) => it.col === c.col && it.chapter === c.chapter).length;
-  return { n: c.chapter, title: c.title, files: c.files.length ? c.files : undefined, count: its.length, viz: its.filter((it) => typeof it.viz === 'function').length, planned: pl || undefined, band: bandOf.get(`${c.col}/${c.chapter}`) || null };
+  const cross = [...aliases.values()].filter((A) => A.col === c.col && A.chapter === c.chapter).map((A) => [A.num, A.to]);
+  return { n: c.chapter, title: c.title, files: c.files.length ? c.files : undefined, count: its.length, viz: its.filter((it) => typeof it.viz === 'function').length, planned: pl || undefined, cross: cross.length ? cross : undefined, band: bandOf.get(`${c.col}/${c.chapter}`) || null };
 };
 const index = {
   generated: new Date().toISOString(),

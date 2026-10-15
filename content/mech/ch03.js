@@ -73,7 +73,7 @@ It depends on the oriented curve but not on how it is parametrized; reversing th
         const which = v.select('force', Object.entries(FIELDS).map(([value, f]) => ({ value, label: f.label })), 'grav');
         const tau = v.slider('marker along the path', 0, 1, 0.55, { step: 0.005 });
         const s = v.stage({ x: [-3, 3], y: [-2.1, 2.1], equal: true, height: 330, axes: false, weight: 1.35 });
-        const g = v.stage({ x: [0, 6], y: [-3, 3], height: 330, axes: 'box', xlabel: 'arc length s', ylabel: 'work done so far', weight: 1 });
+        const g = v.stage({ x: [0, 6], y: [-3, 3], height: 330, axes: 'box', xlabel: 's', weight: 1, title: 'running work $W(s)$ against arc length $s$' });
         const H = [[-2.4, -1.3], [-1.3, 1.8], [1.0, -1.9], [2.4, 1.1]].map((p, i) => s.handle(p[0], p[1], { color: i % 3 ? 'orange' : 'accent', r: i % 3 ? 6 : 8, label: i === 0 ? 'A' : i === 3 ? 'B' : undefined, labelPos: i === 0 ? 'sw' : 'ne' }));
         let R = null;
         v.render(() => {
@@ -87,7 +87,7 @@ It depends on the oriented curve but not on how it is parametrized; reversing th
           vec(s, p[0], p[1], F[0], F[1], 0.75, { color: 'purple', width: 2.4 });
           vec(s, p[0], p[1], tx / tl, ty / tl, 0.6, { color: 'ink', width: 1.6, dash: [4, 3] });
           s.dot(p[0], p[1], { color: 'gold', r: 6 });
-          s.tex('\\mathbf F', p[0] + F[0] * 0.75, p[1] + F[1] * 0.75, { color: 'purple', dx: 8, dy: -6 });
+          if (Math.hypot(...F) > 0.3) s.tex('\\mathbf F', p[0] + F[0] * 0.75, p[1] + F[1] * 0.75, { color: 'purple', dx: 8, dy: -6 });
           // running work
           const S = R.S[400], lo = Math.min(0, ...R.W), hi = Math.max(0, ...R.W), pad = 0.12 * (hi - lo || 1);
           g.setView([0, S * 1.02], [lo - pad, hi + pad]);
@@ -113,7 +113,7 @@ It depends on the oriented curve but not on how it is parametrized; reversing th
 $$T(t_2) - T(t_1) = \sum_{j=1}^k \int_{t_1}^{t_2}\mathbf F_j\cdot\mathbf v\,dt = W_{\text{net}} :$$
 the change in kinetic energy equals the total work done by all the forces. Constraint forces perpendicular to the velocity (a normal force on a frictionless surface, the magnetic force) do no work.`,
       idea: String.raw`Differentiate: $\tfrac{d}{dt}\big(\tfrac12 m\,\mathbf v\cdot\mathbf v\big) = m\,\dot{\mathbf v}\cdot\mathbf v = \mathbf F_{\text{net}}\cdot\mathbf v$ by Newton’s second law, and integrate from $t_1$ to $t_2$ with the fundamental theorem of calculus (pma-6.21). The left side is the power of the net force, so its integral is the work of the net force (3.1). Nothing is assumed about the forces — they can be time-dependent or dissipative — but it is the *net* work that counts: leaving out one force breaks the balance.`,
-      caption: String.raw`A puck is shoved by a time-varying push (orange), held by a spring (purple) and slowed by friction (red). Right: the change in kinetic energy (gold) and the total work of all three forces (dashed) lie on top of each other at every instant; the thin curves are the works of the individual forces. Change the push, the mass or switch friction off.`,
+      caption: String.raw`A puck is shoved by a time-varying push (orange), held by a spring (purple) and slowed by friction (red). Middle: the change in kinetic energy (gold) and the total work of all three forces (dashed) lie on top of each other at every instant. Right: the individual works at time $t$ — the push alone overshoots. Change the push, the mass or switch friction off.`,
       deps: ['mech-3.1', 'pma-6.21', 'mech-1.6'],
       refs: ['Taylor §4.1'],
       tags: ['work', 'energy'],
@@ -122,51 +122,53 @@ the change in kinetic energy equals the total work done by all the forces. Const
         const m = v.slider('mass $m$', 0.5, 3, 1, { step: 0.1 });
         const fr = v.toggle('friction $-\\gamma\\mathbf v$', true);
         const s = v.stage({ x: [-2.6, 2.6], y: [-2.1, 2.1], equal: true, height: 320, axes: false, weight: 1 });
-        const g = v.stage({ x: [0, 12], y: [-1, 4], height: 320, axes: 'box', xlabel: 'time t', ylabel: 'energy', weight: 1.35 });
-        const TEND = 12, N = 2400, dt = TEND / N, k = 1.2, gam = 0.45;
+        const g = v.stage({ x: [0, 12], y: [-1, 4], height: 320, axes: 'box', xlabel: 't', weight: 1.1, title: 'change in kinetic energy vs total work' });
+        const wb = v.stage({ x: [0, 5], y: [-1, 1], height: 320, axes: false, weight: 0.75, title: 'works at time $t$' });
+        const TEND = 12, N = 2400, dt = TEND / N, k = 2.5, gam = 0.35;
         let sim = null, key = '', cur = 0;
-        const push = (t, a) => [a * Math.cos(1.3 * t), a * Math.sin(0.7 * t + 1)];
+        const push = (t, a) => [a * Math.cos(0.9 * t), a * Math.sin(0.55 * t + 1)];
         const solve = () => {
           const a = A.value, M = m.value, gm = fr.value ? gam : 0;
           const f = (t, S) => { const P = push(t, a), Fs = [-k * S[0], -k * S[1]], Ff = [-gm * S[2], -gm * S[3]]; return [S[2], S[3], (P[0] + Fs[0] + Ff[0]) / M, (P[1] + Fs[1] + Ff[1]) / M, P[0] * S[2] + P[1] * S[3], Fs[0] * S[2] + Fs[1] * S[3], Ff[0] * S[2] + Ff[1] * S[3]]; };
-          let y = [-1, 0, 0, 0.9, 0, 0, 0]; const out = [y];
+          let y = [-1, 0, 0, 1.2, 0, 0, 0]; const out = [y];
           for (let i = 0; i < N; i++) { y = rk4step(f, i * dt, y, dt); out.push(y); }
-          const T0 = 0.5 * M * (out[0][2] ** 2 + out[0][3] ** 2);
-          return { out, dT: out.map((S) => 0.5 * M * (S[2] * S[2] + S[3] * S[3]) - T0), M, a, gm };
+          const T0 = 0.5 * M * (out[0][2] ** 2 + out[0][3] ** 2), dT = out.map((S) => 0.5 * M * (S[2] * S[2] + S[3] * S[3]) - T0);
+          let R = 0.5, lo = 0, hi = 0, wm = 0.1;
+          out.forEach((S, j) => { R = Math.max(R, Math.abs(S[0]), Math.abs(S[1])); lo = Math.min(lo, dT[j]); hi = Math.max(hi, dT[j]); wm = Math.max(wm, Math.abs(S[4]), Math.abs(S[5]), Math.abs(S[6]), Math.abs(dT[j])); });
+          return { out, dT, M, a, gm, R: R * 1.15, lo, hi, wm };
         };
         v.animate((t) => {
           const kk = `${A.value}|${m.value}|${fr.value}`; if (kk !== key) { key = kk; sim = solve(); }
           const i = Math.min(N, Math.floor(t / dt)); cur = i;
-          const { out, dT } = sim, S = out[i];
+          const { out, dT } = sim, S = out[i], R = sim.R, sc = 0.25 * R;
+          s.setView([-R * 1.25, R * 1.25], [-R, R]);
           s.path(out.map((q) => [q[0], q[1]]), { color: 'faint', width: 1 });
           s.path(out.slice(0, i + 1).map((q) => [q[0], q[1]]), { color: 'accent', width: 2 });
           s.line(0, 0, S[0], S[1], { color: 'purple', width: 1.2, dash: [3, 3] }); s.dot(0, 0, { color: 'purple', r: 3 });
-          const P = push(t, sim.a);
-          vec(s, S[0], S[1], P[0], P[1], 0.45, { color: 'orange', width: 2.4 });
-          vec(s, S[0], S[1], -k * S[0], -k * S[1], 0.45, { color: 'purple', width: 2 });
-          if (sim.gm) vec(s, S[0], S[1], -sim.gm * S[2], -sim.gm * S[3], 0.45, { color: 'red', width: 2 });
-          vec(s, S[0], S[1], S[2], S[3], 0.45, { color: 'ink', width: 1.4, dash: [4, 3] });
-          s.dot(S[0], S[1], { color: 'gold', r: 7 + 2 * Math.sqrt(sim.M) });
-          // energy panel
-          const Wn = out.map((q) => q[4] + q[5] + q[6]);
-          let lo = 0, hi = 0; for (const q of out) for (const z of [q[4], q[5], q[6]]) { lo = Math.min(lo, z); hi = Math.max(hi, z); }
-          for (const z of dT) { lo = Math.min(lo, z); hi = Math.max(hi, z); }
-          const pad = 0.08 * (hi - lo || 1); g.setView([0, TEND], [lo - pad, hi + pad]);
+          const P = push(t, sim.a), Fs = [-k * S[0], -k * S[1]], fmax = Math.max(sim.a, k * R, 0.5);
+          vec(s, S[0], S[1], P[0], P[1], 1.2 * sc / fmax * 2, { color: 'orange', width: 2.4 });
+          vec(s, S[0], S[1], Fs[0], Fs[1], 1.2 * sc / fmax * 2, { color: 'purple', width: 2 });
+          if (sim.gm) vec(s, S[0], S[1], -sim.gm * S[2], -sim.gm * S[3], 1.2 * sc / fmax * 2, { color: 'red', width: 2 });
+          vec(s, S[0], S[1], S[2], S[3], sc * 0.6, { color: 'ink', width: 1.4, dash: [4, 3] });
+          s.dot(S[0], S[1], { color: 'gold', r: 6 + 2 * Math.sqrt(sim.M) });
+          // ΔT and W_net over time
+          const pad = 0.1 * (sim.hi - sim.lo || 1); g.setView([0, TEND], [sim.lo - pad, sim.hi + pad]);
           g.hline(0, { color: 'faint', width: 1 });
-          const tt = (j) => j * dt;
-          g.path(out.map((q, j) => [tt(j), q[4]]), { color: 'orange', width: 1.1, alpha: 0.7 });
-          g.path(out.map((q, j) => [tt(j), q[5]]), { color: 'purple', width: 1.1, alpha: 0.7 });
-          if (sim.gm) g.path(out.map((q, j) => [tt(j), q[6]]), { color: 'red', width: 1.1, alpha: 0.7 });
-          g.path(dT.slice(0, i + 1).map((z, j) => [tt(j), z]), { color: 'gold', width: 5, alpha: 0.85 });
-          g.path(Wn.slice(0, i + 1).map((z, j) => [tt(j), z]), { color: 'ink', width: 1.6, dash: [6, 4] });
+          g.path(dT.map((z, j) => [j * dt, z]), { color: 'gold', width: 1, alpha: 0.35 });
+          g.path(dT.slice(0, i + 1).map((z, j) => [j * dt, z]), { color: 'gold', width: 6, alpha: 0.8 });
+          g.path(out.slice(0, i + 1).map((q, j) => [j * dt, q[4] + q[5] + q[6]]), { color: 'accent', width: 1.8, dash: [6, 4] });
           g.vline(t, { color: 'faint', width: 1 });
           g.dot(t, dT[i], { color: 'gold', r: 4 });
+          // bars of the individual works
+          const top = sim.wm * 1.15; wb.setView([0, 5], [-top, top]); wb.hline(0, { color: 'muted', width: 1 });
+          const bars = [[S[4], 'orange', 'push'], [S[5], 'purple', 'spring'], [S[6], 'red', 'friction'], [S[4] + S[5] + S[6], 'accent', 'sum'], [dT[i], 'gold', 'ΔT']];
+          bars.forEach(([val, col, lab], j) => { wb.rect(0.15 + j, 0, 0.85 + j, val, { fill: col, fillAlpha: 0.7, color: col }); wb.text(lab, 0.5 + j, val >= 0 ? -0.06 * top : 0.06 * top, { color: col, size: 11, align: 'center', baseline: val >= 0 ? 'top' : 'bottom' }); });
         }, { period: TEND });
-        v.legend([['gold', '$\\Delta T = T(t) - T(0)$'], ['ink', 'total work $W_{\\text{net}}$', { dash: true }], ['orange', 'work of push'], ['purple', 'work of spring'], ['red', 'work of friction'], ['ink', 'velocity', { dash: true }]]);
+        v.legend([['gold', '$\\Delta T = T(t) - T(0)$'], ['accent', 'total work $W_{\\text{push}} + W_{\\text{spring}} + W_{\\text{fric}}$', { dash: true }], ['orange', 'push'], ['purple', 'spring'], ['red', 'friction'], ['ink', 'velocity', { dash: true }]]);
         v.readout(() => {
           if (!sim) return '';
           const S = sim.out[cur], Wn = S[4] + S[5] + S[6];
-          return `$t = ${v.fix(cur * dt, 2)}$ · $\\Delta T = ${v.fix(sim.dT[cur], 5)}$ · $W_{\\text{push}} + W_{\\text{spring}} + W_{\\text{fric}} = ${v.fix(S[4], 3)} + (${v.fix(S[5], 3)}) + (${v.fix(S[6], 3)}) = ${v.fix(Wn, 5)}$ · difference $${v.sci(Math.abs(Wn - sim.dT[cur]), 1)}$ (RK4) · the push alone would predict $${v.fix(S[4], 3)}$`;
+          return `$t = ${v.fix(cur * dt, 2)}$ · $\\Delta T = ${v.fix(sim.dT[cur], 5)}$ · $W_{\\text{push}} + W_{\\text{spring}} + W_{\\text{fric}} = ${v.fix(S[4], 3)} + (${v.fix(S[5], 3)}) + (${v.fix(S[6], 3)}) = ${v.fix(Wn, 5)}$ · difference $${v.sci(Math.abs(Wn - sim.dT[cur]) + 1e-16, 1)}$ (RK4) · the push alone would predict $${v.fix(S[4], 3)}$`;
         });
       },
     },
@@ -191,7 +193,7 @@ is well defined, and the work along any path from $\mathbf r_1$ to $\mathbf r_2$
         const which = v.select('force', Object.entries(FIELDS).map(([value, f]) => ({ value, label: f.label })), 'grav');
         const s = v.stage({ x: [-3, 3], y: [-2.1, 2.1], equal: true, height: 330, axes: false, weight: 1.5 });
         const b = v.stage({ x: [0, 3], y: [-3, 3], height: 330, axes: false, weight: 0.6, title: 'work along each path' });
-        const A = s.handle(-2.2, -0.8, { color: 'ink', label: 'A', labelPos: 'w' }), B = s.handle(2.2, 0.7, { color: 'ink', label: 'B', labelPos: 'e' });
+        const A = s.handle(-2.2, -0.8, { color: 'ink', label: 'A', labelPos: 'w' }), B = s.handle(1.7, 0.9, { color: 'ink', label: 'B', labelPos: 'e' });
         const Q1 = s.handle(-0.5, 2.0, { color: 'accent', r: 6 }), Q2 = s.handle(0.4, -2.0, { color: 'orange', r: 6 });
         let R = null;
         v.render(() => {
@@ -208,14 +210,14 @@ is well defined, and the work along any path from $\mathbf r_1$ to $\mathbf r_2$
           s.path(p1, { color: 'accent', width: 3 }); s.path(p2, { color: 'orange', width: 3 });
           for (const [p, c] of [[p1, 'accent'], [p2, 'orange']]) { const q = p[150], r = p[156]; s.arrow(q[0], q[1], r[0], r[1], { color: c, width: 3, head: 11 }); }
           // bars
-          const top = Math.max(1, Math.abs(w1), Math.abs(w2)) * 1.25; b.setView([0, 3], [-top, top]);
+          const top = Math.max(0.4, Math.abs(w1), Math.abs(w2)) * 1.25; b.setView([0, 3], [-top, top]);
           b.hline(0, { color: 'muted', width: 1 });
           b.rect(0.35, 0, 1.25, w1, { fill: 'accent', fillAlpha: 0.7, color: 'accent' }); b.rect(1.75, 0, 2.65, w2, { fill: 'orange', fillAlpha: 0.7, color: 'orange' });
           b.tex('W_1', 0.8, w1, { color: 'accent', baseline: w1 >= 0 ? 'bottom' : 'top', align: 'center', dy: w1 >= 0 ? -4 : 4 });
           b.tex('W_2', 2.2, w2, { color: 'orange', baseline: w2 >= 0 ? 'bottom' : 'top', align: 'center', dy: w2 >= 0 ? -4 : 4 });
           if (f.U) { const d = f.U(a[0], a[1]) - f.U(bb[0], bb[1]); b.hline(d, { color: 'green', dash: [5, 4], width: 1.4 }); }
         });
-        v.legend([['accent', 'path 1'], ['orange', 'path 2'], ['gold', 'closed loop path 1 − path 2', { area: true }], ['green', '$U(A) - U(B)$', { dash: true }]]);
+        v.legend([['accent', 'path 1'], ['orange', 'path 2'], ['gold', 'closed loop path 1 − path 2', { area: true }], ['green', '$U(A) - U(B)$', { dash: true }], ['accent', 'potential $U$ (gravity, spring)', { area: true }]]);
         v.readout(() => {
           if (!R) return '';
           const { w1, w2, area, f, a, bb } = R, d = w1 - w2;
@@ -247,7 +249,7 @@ In particular, the component of the force in any unit direction $\hat{\mathbf s}
         };
         const which = v.select('potential', Object.entries(POTS).map(([value, p]) => ({ value, label: p.label })), 'hills');
         const s = v.stage({ x: [-3, 3], y: [-2.1, 2.1], equal: true, height: 340, axes: false, weight: 1.45 });
-        const c = v.stage({ x: [-1.6, 1.6], y: [-1, 1], height: 340, axes: 'box', xlabel: 'distance along ŝ', ylabel: 'U', weight: 0.85, title: 'profile of $U$ through $p$' });
+        const c = v.stage({ x: [-1.6, 1.6], y: [-1, 1], height: 340, axes: 'box', xlabel: 's', weight: 0.85, title: 'profile $U(p + s\\hat{\\mathbf s})$' });
         const cur = () => POTS[which.value];
         const F = v.fields(s, { F: (x, y) => cur().F(x, y), phi: (x, y) => cur().U(x, y), lines: false, equipotentials: true });
         const p = s.handle(-0.4, -0.7, { color: 'gold', label: 'p', labelPos: 'sw' });
@@ -268,10 +270,11 @@ In particular, the component of the force in any unit direction $\hat{\mathbf s}
           F.draw({ equipotentials: { levels: L.lv, color: 'ink', alpha: 0.45, width: 1 } });
           let ux = d.x - p.x, uy = d.y - p.y; const ul = Math.hypot(ux, uy) || 1; ux /= ul; uy /= ul;
           const f = P.F(p.x, p.y), fm = Math.hypot(...f), k = 0.9 / Math.max(fm, 0.6);
-          // tangent of the contour through p and the right-angle marker
-          const tx = -f[1] / (fm || 1), ty = f[0] / (fm || 1);
+          // tangent of the contour through p, from the numerical gradient of U (independent of the force law)
+          const e = 1e-4, gx = (P.U(p.x + e, p.y) - P.U(p.x - e, p.y)) / (2 * e), gy = (P.U(p.x, p.y + e) - P.U(p.x, p.y - e)) / (2 * e), gm = Math.hypot(gx, gy) || 1;
+          const tx = -gy / gm, ty = gx / gm;
           s.line(p.x - 0.9 * tx, p.y - 0.9 * ty, p.x + 0.9 * tx, p.y + 0.9 * ty, { color: 'ink', dash: [5, 4], width: 1.3 });
-          const nx = f[0] / (fm || 1), ny = f[1] / (fm || 1), q = 0.16;
+          const nx = -gx / gm, ny = -gy / gm, q = 0.16;
           s.path([[p.x + q * tx, p.y + q * ty], [p.x + q * tx + q * nx, p.y + q * ty + q * ny], [p.x + q * nx, p.y + q * ny]], { color: 'ink', width: 1.2 });
           s.line(p.x - 1.6 * ux, p.y - 1.6 * uy, p.x + 1.6 * ux, p.y + 1.6 * uy, { color: 'orange', width: 1, alpha: 0.6 });
           vec(s, p.x, p.y, f[0], f[1], k, { color: 'green', width: 3 });
@@ -283,10 +286,10 @@ In particular, the component of the force in any unit direction $\hat{\mathbf s}
           c.fn(Ud, { color: 'teal', width: 2.4 });
           c.fn((sg) => U0 - Fs * sg, { color: 'green', dash: [6, 4], width: 1.5, domain: [-0.7, 0.7] });
           c.dot(0, U0, { color: 'gold', r: 5 });
-          R = { f, fm, Fs, dUds, ang: Math.acos(clamp((f[0] * tx + f[1] * ty) / (fm || 1), -1, 1)) };
+          R = { f, fm, Fs, dUds, gm, ang: Math.acos(clamp((f[0] * tx + f[1] * ty) / (fm || 1), -1, 1)) };
         });
         v.legend([['teal', 'potential $U$ (darker = higher)', { area: true }], ['ink', 'equipotentials'], ['green', '$\\mathbf F$ and the tangent of slope $-\\mathbf F\\cdot\\hat{\\mathbf s}$'], ['orange', 'direction $\\hat{\\mathbf s}$']]);
-        v.readout(() => R ? `$|\\mathbf F| = ${v.fix(R.fm, 4)}$ · angle between $\\mathbf F$ and the contour $= ${v.fix(R.ang * 180 / Math.PI, 2)}^\\circ$ · $\\mathbf F\\cdot\\hat{\\mathbf s} = ${v.fix(R.Fs, 5)}$ vs $-dU/ds = ${v.fix(-R.dUds, 5)}$ (finite difference of $U$)` : '');
+        v.readout(() => R ? `$|\\mathbf F| = ${v.fix(R.fm, 4)}$ vs $|\\nabla U| = ${v.fix(R.gm, 4)}$ · angle between $\\mathbf F$ and the contour $= ${v.fix(R.ang * 180 / Math.PI, 2)}^\\circ$ · $\\mathbf F\\cdot\\hat{\\mathbf s} = ${v.fix(R.Fs, 5)}$ vs $-dU/ds = ${v.fix(-R.dUds, 5)}$ (finite difference of $U$)` : '');
       },
     },
     // ------------------------------------------------------------------ 3.5
@@ -304,7 +307,7 @@ The hypothesis in (b) cannot be dropped: on the punctured plane the vortex field
       viz(v) {
         const mode = v.select('field', [{ value: 'smooth', label: 'smooth swirl (curl dial)' }, { value: 'vortex', label: 'point vortex on $\\R^2\\setminus\\{0\\}$' }], 'smooth');
         const cS = v.slider('swirl strength $c$', -1.5, 1.5, 1, { step: 0.05 });
-        const grad = (x, y) => [0.3 * x + 0.2 * y, 0.2 * x - 0.24 * y]; // ∇φ, φ = .15x² + .2xy − .12y²
+        const grad = (x, y) => [0.16 * x + 0.1 * y, 0.1 * x - 0.12 * y]; // ∇φ, φ = .08x² + .1xy − .06y²
         const Fld = (x, y) => {
           const g = grad(x, y), r2 = x * x + y * y;
           if (mode.value === 'vortex') return [g[0] - y / r2, g[1] + x / r2];
@@ -312,17 +315,17 @@ The hypothesis in (b) cannot be dropped: on the punctured plane the vortex field
         };
         const curl = (x, y) => (mode.value === 'vortex' ? 0 : 2 * cS.value / (1 + x * x + y * y) ** 2);
         const s = v.stage({ x: [-3, 3], y: [-2.1, 2.1], equal: true, height: 340, axes: false, full: true });
-        const g = v.stage({ x: [0, 2.5], y: [-1, 7], height: 190, axes: 'box', xlabel: 'radius ρ of a circle with the same centre', full: true });
-        const K = v.fields(s, { F: Fld, lines: false, loop: { type: 'circle', x: 1.3, y: 0.5, r: 0.75, handleAngle: 0.6 }, loopArrows: 'tangent' });
-        const circ = (a, b, r) => { let sum = 0; const n = 256; for (let k = 0; k < n; k++) { const t = 2 * Math.PI * k / n, c = Math.cos(t), sn = Math.sin(t), f = Fld(a + r * c, b + r * sn); sum += (-f[0] * sn + f[1] * c) * r; } return sum * 2 * Math.PI / n; };
-        const curlInt = (a, b, r) => { if (mode.value === 'vortex') return 0; let sum = 0; const nr = 40, nt = 48; for (let i = 0; i < nr; i++) { const rr = r * (i + 0.5) / nr; for (let k = 0; k < nt; k++) { const t = 2 * Math.PI * k / nt; sum += curl(a + rr * Math.cos(t), b + rr * Math.sin(t)) * rr; } } return sum * (r / nr) * (2 * Math.PI / nt); };
+        const g = v.stage({ x: [0, 2.5], y: [-1, 7], height: 190, axes: 'box', xlabel: 'ρ', full: true, title: 'both integrals for circles of radius $\\rho$ about the loop’s centre' });
+        const K = v.fields(s, { F: Fld, lines: false, loop: { type: 'circle', x: 0.75, y: 0.35, r: 1.15, handleAngle: 0.6 }, loopArrows: 'tangent' });
+        const circ = (a, b, r) => { let sum = 0; const n = mode.value === 'vortex' && Math.abs(Math.hypot(a, b) - r) < 0.2 ? 4096 : 256; for (let k = 0; k < n; k++) { const t = 2 * Math.PI * k / n, c = Math.cos(t), sn = Math.sin(t), f = Fld(a + r * c, b + r * sn); sum += (-f[0] * sn + f[1] * c) * r; } return sum * 2 * Math.PI / n; };
+        const curlInt = (a, b, r, nr = 40, nt = 48) => { if (mode.value === 'vortex') return 0; let sum = 0; for (let i = 0; i < nr; i++) { const rr = r * (i + 0.5) / nr; for (let k = 0; k < nt; k++) { const t = 2 * Math.PI * k / nt; sum += curl(a + rr * Math.cos(t), b + rr * Math.sin(t)) * rr; } } return sum * (r / nr) * (2 * Math.PI / nt); };
         let R = null;
         v.render(() => {
           cS.el.hidden = mode.value === 'vortex';
-          if (mode.value === 'smooth') tint(v, s, curl, { signed: true, hi: 2 * 1.5, key: 'c' + cS.value, alpha: 150, pos: 'accent', neg: 'red' });
+          if (mode.value === 'smooth') tint(v, s, curl, { signed: true, hi: 2.2, key: 'c' + cS.value, alpha: 175, pos: 'accent', neg: 'red' });
           s.field((x, y) => { const f = Fld(x, y), m = Math.hypot(...f); return m > 1.4 ? [f[0] * 1.4 / m, f[1] * 1.4 / m] : f; }, { spacing: 32, color: 'muted', alpha: 0.6 });
           K.draw();
-          if (mode.value === 'vortex') { s.dot(0, 0, { color: 'red', r: 6, hollow: true }); s.text('hole: field undefined', 0.15, -0.2, { color: 'red', size: 11 }); }
+          if (mode.value === 'vortex') { s.dot(0, 0, { color: 'red', r: 6, hollow: true }); s.text('hole: field undefined', 0, -0.3, { color: 'red', size: 11, align: 'center' }); }
           const L = K.loop, a = L.x, b = L.y, r = L.r;
           const rs = Array.from({ length: 60 }, (_, i) => 0.03 + 2.47 * i / 59), G = rs.map((q) => circ(a, b, q)), C = rs.map((q) => curlInt(a, b, q));
           const lo = Math.min(-0.5, ...G, ...C), hi = Math.max(0.5, ...G, ...C); g.setView([0, 2.5], [lo - 0.1 * (hi - lo), hi + 0.15 * (hi - lo)]);
@@ -331,7 +334,7 @@ The hypothesis in (b) cannot be dropped: on the punctured plane the vortex field
           g.path(rs.map((q, i) => [q, G[i]]), { color: 'green', width: 1.8, dash: [6, 3] });
           const dO = Math.hypot(a, b); if (mode.value === 'vortex' && dO < 2.5) g.vline(dO, { color: 'red', dash: [3, 3], width: 1 });
           g.vline(r, { color: 'gold', width: 1.2 });
-          R = { circ: K.circulation(), ci: curlInt(a, b, r), inside: Math.hypot(a, b) < r };
+          R = { circ: K.circulation(), ci: curlInt(a, b, r, 160, 128), inside: Math.hypot(a, b) < r };
         });
         v.legend([['green', 'circulation $\\oint\\mathbf F\\cdot d\\mathbf r$', { dash: true }], ['accent', 'curl integral $\\iint(\\nabla\\times\\mathbf F)\\,dA$'], ['gold', 'current loop radius'], ['red', 'radius reaching the hole', { dash: true }]]);
         v.readout(() => {
@@ -366,13 +369,13 @@ is constant along the motion. If in addition non-conservative forces act, $\Delt
         const h = (x) => { let y = 0, d = 0, dd = 0; for (let j = 0; j < 5; j++) { const u = x - XS[j], e = w[j] * Math.exp(-u * u / sg2); y += e; d += -2 * u / sg2 * e; dd += (4 * u * u / (sg2 * sg2) - 2 / sg2) * e; } return [y, d, dd]; };
         fit();
         const bead = s.handle(-2.25, h(-2.25)[0], { color: 'gold', r: 8, label: 'release', labelPos: 'n', constrain: (x) => { const xx = clamp(x, -2.9, 2.9); return [xx, h(xx)[0]]; } });
-        let st = null, key = '', simT = 0, E0 = 1;
+        let st = null, key = '', simT = 0, E0 = 1, first = true;
         const energy = (q, p) => { const [y, d] = h(q); return [0.5 * (1 + d * d) * p * p, gr * (y - FLOOR)]; };
         const f = (t, S) => { const [, d, dd] = h(S[0]), g2 = gam.value; return [S[1], -(gr * d + d * dd * S[1] * S[1]) / (1 + d * d) - g2 * S[1], g2 * (1 + d * d) * S[1] * S[1]]; };
         v.animate((t) => {
           fit(); bead.y = h(bead.x)[0];
           const kk = knots.map((k) => k.y.toFixed(4)).join() + '|' + bead.x.toFixed(4);
-          if (kk !== key || !st || t < simT - 1e-9) { key = kk; st = [bead.x, 0, 0]; simT = t; const e = energy(st[0], 0); E0 = e[0] + e[1]; }
+          if (kk !== key || !st || t < simT - 1e-9) { key = kk; st = [bead.x, 0, 0]; simT = first ? 0 : t; first = false; const e = energy(st[0], 0); E0 = e[0] + e[1]; }
           const dt = 1 / 600; let n = 0;
           while (simT < t && n++ < 4000) { st = rk4step(f, simT, st, dt); simT += dt; if (st[0] > 2.95) { st[0] = 5.9 - st[0]; st[1] = -Math.abs(st[1]); } if (st[0] < -2.95) { st[0] = -5.9 - st[0]; st[1] = Math.abs(st[1]); } }
           // track
@@ -381,7 +384,7 @@ is constant along the motion. If in addition non-conservative forces act, $\Delt
           s.vline(-2.95, { color: 'muted', width: 2 }); s.vline(2.95, { color: 'muted', width: 2 });
           const [T, U] = energy(st[0], st[1]), Q = st[2], y = h(st[0])[0];
           const level = FLOOR + (E0 - Q) / gr; s.hline(level, { color: 'green', dash: [5, 4], width: 1.2 });
-          s.text('E/mg', 2.85, level, { color: 'green', size: 11, align: 'right', dy: -9 });
+          s.text('E/mg', 0, level, { color: 'green', size: 11, align: 'center', dy: -9 });
           s.dot(st[0], y, { color: 'gold', r: 8 });
           // bars
           const top = E0 * 1.18; b.setView([0, 5], [-0.14 * top, top]);
@@ -415,7 +418,7 @@ the kinetic energy of the centre of mass plus the kinetic energy of the motion r
         const ref = v.select('split about', [{ value: 'cm', label: 'centre of mass' }, { value: 'mid', label: 'midpoint' }, { value: 'm1', label: 'mass 1' }], 'cm');
         const s = v.stage({ x: [-4, 6.6], y: [-1.7, 1.7], equal: true, height: 230, axes: false, full: true });
         const bS = v.stage({ x: [0, 2], y: [0, 1], height: 220, axes: false, weight: 0.8, title: 'kinetic energy split' });
-        const g = v.stage({ x: [0, 10], y: [0, 1], height: 220, axes: 'box', xlabel: 'time t', weight: 1.2 });
+        const g = v.stage({ x: [0, 10], y: [0, 1], height: 220, axes: 'box', xlabel: 't', weight: 1.2, title: 'the same split over time' });
         const TEND = 10, N = 4000, dt = TEND / N, k = 9, L0 = 1, th = 0.08;
         let sim = null, key = '', cur = null;
         const solve = () => {
@@ -436,13 +439,15 @@ the kinetic energy of the centre of mass plus the kinetic energy of the motion r
           };
           const q = state(i), sp = split(q); cur = sp;
           // scene: trails, spring, masses, CM
-          const tr1 = [], tr2 = [], trc = []; for (let j = 0; j <= i; j += 8) { const z = state(j); tr1.push(z.r1); tr2.push(z.r2); trc.push(z.Rc); }
-          s.path(tr1, { color: 'accent', width: 1, alpha: 0.5 }); s.path(tr2, { color: 'orange', width: 1, alpha: 0.5 }); s.path(trc, { color: 'green', width: 1.5, dash: [4, 4] });
+          const tr1 = [], tr2 = [], trc = []; for (let j = 0; j <= N; j += 8) { const z = state(j); tr1.push(z.r1); tr2.push(z.r2); trc.push(z.Rc); }
+          const ii = Math.floor(i / 8) + 1;
+          s.path(tr1, { color: 'accent', width: 1, alpha: 0.15 }); s.path(tr2, { color: 'orange', width: 1, alpha: 0.15 }); s.path(trc, { color: 'green', width: 1.2, dash: [4, 4], alpha: 0.6 });
+          s.path(tr1.slice(0, ii), { color: 'accent', width: 1.3, alpha: 0.7 }); s.path(tr2.slice(0, ii), { color: 'orange', width: 1.3, alpha: 0.7 });
           const sx = q.r2[0] - q.r1[0], sy = q.r2[1] - q.r1[1], L = Math.hypot(sx, sy), nx = -sy / L, ny = sx / L, coil = [];
           for (let j = 0; j <= 60; j++) { const a = j / 60, wig = j > 4 && j < 56 ? 0.1 * Math.sin(a * 20 * Math.PI) : 0; coil.push([q.r1[0] + sx * a + nx * wig, q.r1[1] + sy * a + ny * wig]); }
           s.path(coil, { color: 'muted', width: 1.4 });
           s.dot(q.r1[0], q.r1[1], { color: 'accent', r: 7 + 3 * Math.sqrt(m1), label: 'm₁', labelPos: 'nw' }); s.dot(q.r2[0], q.r2[1], { color: 'orange', r: 7 + 3 * Math.sqrt(m2), label: 'm₂', labelPos: 'ne' });
-          s.dot(q.Rc[0], q.Rc[1], { color: 'green', r: 4, label: 'CM', labelPos: 's' });
+          s.dot(q.Rc[0], q.Rc[1], { color: 'green', r: 4 });
           vec(s, q.Rc[0], q.Rc[1], V[0], V[1], 1.2, { color: 'green', width: 2 });
           // bars
           const Tt = sp.T1 + sp.T2, top = Math.max(0.5, Tt, sp.Tu + sp.Ti, sp.Tu + sp.Ti + Math.max(0, sp.X)) * 1.15;
@@ -454,13 +459,13 @@ the kinetic energy of the centre of mass plus the kinetic energy of the motion r
           bS.text('lab', 0.5, -0.06 * top, { size: 12, align: 'center', color: 'muted' }); bS.text('split', 1.5, -0.06 * top, { size: 12, align: 'center', color: 'muted' });
           // time traces
           const tr = []; for (let j = 0; j <= N; j += 10) tr.push([j * dt, split(state(j))]);
-          const gm = Math.max(...tr.map(([, z]) => z.T1 + z.T2)) * 1.12; g.setView([0, TEND], [0, gm]);
+          const gm = Math.max(...tr.map(([, z]) => Math.max(z.T1 + z.T2, z.Tu, z.Ti))) * 1.12; g.setView([0, TEND], [0, gm]);
           g.path(tr.map(([tt, z]) => [tt, z.T1 + z.T2]), { color: 'ink', width: 1.6 });
           g.path(tr.map(([tt, z]) => [tt, z.Tu]), { color: 'green', width: 2.2 });
           g.path(tr.map(([tt, z]) => [tt, z.Ti]), { color: 'purple', width: 2 });
           g.vline(t, { color: 'faint', width: 1 });
         }, { period: TEND });
-        v.legend([['accent', '$\\tfrac12 m_1v_1^2$', { area: true }], ['orange', '$\\tfrac12 m_2v_2^2$', { area: true }], ['green', '$\\tfrac12 M|\\mathbf u|^2$ (reference point)', { area: true }], ['purple', 'relative part $\\sum\\tfrac12 m_i|\\mathbf v_i - \\mathbf u|^2$', { area: true }], ['red', 'cross term $M\\mathbf u\\cdot(\\mathbf V - \\mathbf u)$', { area: true }], ['ink', 'total $T$']]);
+        v.legend([['accent', '$\\tfrac12 m_1v_1^2$', { area: true }], ['orange', '$\\tfrac12 m_2v_2^2$', { area: true }], ['green', '$\\tfrac12 M|\\mathbf u|^2$ (reference point)', { area: true }], ['purple', 'relative part $\\sum\\tfrac12 m_i|\\mathbf v_i - \\mathbf u|^2$', { area: true }], ['red', 'cross term $M\\mathbf u\\cdot(\\mathbf V - \\mathbf u)$', { area: true }], ['ink', 'total $T$'], ['green', 'centre of mass and $\\mathbf V$', { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const { T1, T2, Tu, Ti, X } = cur;
@@ -490,7 +495,7 @@ the kinetic energy of the centre of mass plus the kinetic energy of the motion r
           const J = (1 + e) * m2 / (1 + m2) * n[0]; // impulse on 2; u1 = (1, 0)
           const v1 = [1 - J * n[0], -J * n[1]], v2 = [J / m2 * n[0], J / m2 * n[1]];
           const a1 = Math.hypot(...v1), a2 = Math.hypot(...v2), ang = a1 > 1e-9 && a2 > 1e-9 ? Math.acos(clamp((v1[0] * v2[0] + v1[1] * v2[1]) / (a1 * a2), -1, 1)) * 180 / Math.PI : NaN;
-          return { b, xc, n, m2, e, v1, v2, ang, KE: 0.5 * (a1 * a1 + m2 * a2 * a2) / 0.5 };
+          return { b, xc, n, m2, e, v1, v2, ang };
         };
         v.animate((t) => {
           R = solve(); const { b, xc, v1, v2, m2 } = R, r2 = rho * Math.cbrt(m2);
@@ -501,6 +506,17 @@ the kinetic energy of the centre of mass plus the kinetic energy of the motion r
             s.circle(xc, b, rho, { color: 'accent', dash: [2, 3], width: 1, alpha: 0.6 });
           }
           s.line(xc, b, 0, 0, { color: 'faint', width: 1 });
+          { // outgoing directions from the contact point, with the angle between them
+            const K = [xc / 2, b / 2], a1 = Math.atan2(v1[1], v1[0]), a2 = Math.atan2(v2[1], v2[0]), L1 = Math.hypot(...v1), L2 = Math.hypot(...v2);
+            if (L1 > 1e-6) s.line(K[0], K[1], K[0] + 2.2 * v1[0] / L1, K[1] + 2.2 * v1[1] / L1, { color: 'accent', dash: [5, 4], width: 1.2, alpha: 0.7 });
+            if (L2 > 1e-6) s.line(K[0], K[1], K[0] + 2.2 * v2[0] / L2, K[1] + 2.2 * v2[1] / L2, { color: 'orange', dash: [5, 4], width: 1.2, alpha: 0.7 });
+            if (L1 > 1e-6 && L2 > 1e-6) {
+              let d = a1 - a2; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+              const ok = Math.abs(R.ang - 90) < 0.05, col = ok ? 'green' : 'red';
+              s.curve((u) => [K[0] + 1.1 * Math.cos(a2 + d * u), K[1] + 1.1 * Math.sin(a2 + d * u)], 0, 1, { color: col, width: 2 });
+              const am = a2 + d / 2; s.text(`${v.fix(R.ang, 1)}°`, K[0] + 1.35 * Math.cos(am), K[1] + 1.35 * Math.sin(am), { color: col, size: 13, align: 'center' });
+            }
+          }
           s.circle(c2[0], c2[1], r2, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.5 });
           s.circle(c1[0], c1[1], rho, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1.5 });
           const u = t < tc ? [1, 0] : v1; vec(s, c1[0], c1[1], u[0], u[1], 0.9, { color: 'ink', width: 2 });
@@ -515,13 +531,14 @@ the kinetic energy of the centre of mass plus the kinetic energy of the motion r
           w.tex("m_1\\mathbf v_1'", p1[0] / 2, p1[1] / 2, { color: 'accent', dx: -6, dy: p1[1] > 0 ? -4 : 4, align: 'right', baseline: p1[1] > 0 ? 'bottom' : 'top' });
           w.tex("m_2\\mathbf v_2'", p1[0] + p2[0] / 2, p1[1] + p2[1] / 2, { color: 'orange', dx: 6, align: 'left', baseline: p1[1] > 0 ? 'bottom' : 'top' });
           w.dot(p1[0], p1[1], { color: Math.abs(R.ang - 90) < 0.05 ? 'green' : 'red', r: 5 });
+          if (Math.abs(R.ang - 90) < 0.05) { const L1 = Math.hypot(...p1), L2 = Math.hypot(...p2), q = 0.07, u1 = [-p1[0] / L1 * q, -p1[1] / L1 * q], u2 = [p2[0] / L2 * q, p2[1] / L2 * q]; w.path([[p1[0] + u1[0], p1[1] + u1[1]], [p1[0] + u1[0] + u2[0], p1[1] + u1[1] + u2[1]], [p1[0] + u2[0], p1[1] + u2[1]]], { color: 'green', width: 1.4 }); }
         }, { period: 6 });
         v.legend([['accent', 'ball 1 (incoming)'], ['orange', 'ball 2 (at rest)'], ['green', 'Thales circle on $m_1\\mathbf v_1$', { dash: true }]]);
         v.readout(() => {
           if (!R) return '';
           const { v1, v2, m2, ang } = R, Ta = 0.5 * (v1[0] ** 2 + v1[1] ** 2) + 0.5 * m2 * (v2[0] ** 2 + v2[1] ** 2), px = v1[0] + m2 * v2[0] - 1, py = v1[1] + m2 * v2[1];
           const a = isFinite(ang) ? `angle between $\\mathbf v_1'$ and $\\mathbf v_2'$: $${v.fix(ang, 3)}^\\circ$` : 'head-on: ball 1 stops dead, ball 2 leaves with all the velocity';
-          return `${a} · $T_{\\text{after}}/T_{\\text{before}} = ${v.fix(Ta / 0.5, 4)}$ · momentum error $${v.sci(Math.hypot(px, py) + 1e-17, 1)}$${Math.abs(m2 - 1) < 0.005 && eS.value > 0.995 ? ' · equal masses, elastic: right angle' : ''}`;
+          return `${a} · $T_{\\text{after}}/T_{\\text{before}} = ${v.fix(Ta / 0.5, 4)}$ · momentum error $${Math.hypot(px, py) < 1e-14 ? '0' : v.sci(Math.hypot(px, py), 1)}$${Math.abs(m2 - 1) < 0.005 && eS.value > 0.995 ? ' · equal masses, elastic: right angle' : ''}`;
         });
       },
     },

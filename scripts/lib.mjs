@@ -90,7 +90,9 @@ export async function listContentFiles(collections) {
 
 /**
  * Import the registry and every content module.
- * Returns {fields, collections, chapters: Map "col/n" → chapter, items: [], planned: [], problems: []}.
+ * Returns {fields, collections, chapters: Map "col/n" → chapter, items: [], planned: [], aliases: Map id → {to, col, chapter, …}, problems: []}.
+ * A syllabus entry `{ num, alias: 'owner-id', name }` cross-lists another collection's item: it is not a node of its own,
+ * references to it resolve to the owner, and the chapter page shows the owner's card.
  */
 export async function loadAll({ bust = false } = {}) {
   const { fields, collections, problems } = await loadRegistry({ bust });
@@ -120,6 +122,7 @@ export async function loadAll({ bust = false } = {}) {
   }
   // syllabi: planned items that are not written yet
   const planned = [];
+  const aliases = new Map();
   const written = new Set(items.map((it) => it.id));
   for (const Col of collections) {
     const sf = join(ROOT, 'content', Col.id, 'syllabus.js');
@@ -133,13 +136,27 @@ export async function loadAll({ bust = false } = {}) {
       C.syllabus = (C.syllabus || 0) + (ch.items || []).length;
       for (const it of ch.items || []) {
         const id = `${Col.id}-${it.num}`;
+        // a cross-listing: this number stands for an idea owned by another collection
+        if (it.alias) { aliases.set(id, { to: it.alias, col: Col.id, chapter: ch.n, num: it.num, name: it.name, file: `content/${Col.id}/syllabus.js` }); C.syllabus--; continue; }
         if (written.has(id)) continue;
         planned.push({ ...it, col: Col.id, chapter: ch.n, id, planned: true, file: `content/${Col.id}/syllabus.js`, deps: it.deps || [] });
       }
     }
   }
   for (const C of chapters.values()) if (!C.title) problems.push({ level: 'error', where: C.files[0] || `${C.col}/${C.chapter}`, msg: 'chapter has no title' });
-  return { fields, collections, chapters, items, planned, problems };
+  // resolve cross-listings: references to an alias point at its owner
+  const known = new Set([...items, ...planned].map((it) => it.id));
+  const resolve = (id) => { let k = 0; while (aliases.has(id) && k++ < 8) id = aliases.get(id).to; return id; };
+  for (const [id, A] of aliases) {
+    A.to = resolve(id);
+    if (written.has(id)) problems.push({ level: 'error', where: `${A.file} ${A.num}`, msg: `${id} is written but cross-listed as ${A.to}` });
+    else if (!known.has(A.to)) problems.push({ level: 'error', where: `${A.file} ${A.num}`, msg: `alias target ${A.to} does not exist` });
+    else if (A.to.split('-')[0] === A.col) problems.push({ level: 'error', where: `${A.file} ${A.num}`, msg: `alias ${id} → ${A.to} stays inside its collection` });
+  }
+  if (aliases.size) for (const it of [...items, ...planned]) for (const k of ['deps', 'see']) {
+    if (it[k]?.some((d) => aliases.has(d))) it[k] = [...new Set(it[k].map(resolve))].filter((d) => d !== it.id);
+  }
+  return { fields, collections, chapters, items, planned, aliases, problems };
 }
 
 /** Validate items (and planned items, more leniently); returns problems ({level:'error'|'warn', where, msg}). */

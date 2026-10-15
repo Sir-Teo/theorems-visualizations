@@ -332,7 +332,7 @@ export default {
           pic: 'For a pencil A − λB, slide B toward singularity; one generalized eigenvalue runs off to infinity, while QZ computes the pair (αᵢ, βᵢ) stably throughout.' },
         { num: '10.6', kind: 'Theorem', name: 'Circulant matrices are diagonalized by the DFT', deps: ['nla-5.1', 'pma-8.9'], refs: ['Golub–Van Loan ch. 4'],
           pic: 'Edit the first row of a circulant matrix; its eigenvalues are computed and coincide with the discrete Fourier transform of that row, and every Fourier mode is an eigenvector.' },
-        { num: '10.7', kind: 'Algorithm', name: 'Fast Fourier transform as a sparse factorization', deps: ['nla-10.6', 'nla-1.11'], refs: ['Golub–Van Loan ch. 1'],
+        { num: '10.7', kind: 'Algorithm', name: 'Fast Fourier transform as a sparse factorization', deps: ['nla-10.6', 'nla-1.11', 'algo-4.11'], refs: ['Golub–Van Loan ch. 1'],
           pic: 'The DFT matrix is factored into log₂ n sparse butterfly stages with bit-reversal, drawn as a network; the operation count n log n is compared with n² as n grows.' },
         { num: '10.8', kind: 'Definition', name: 'Kronecker products and separable problems', deps: ['nla-1.1'], refs: ['Golub–Van Loan ch. 12'],
           pic: 'The 2D Laplacian on a grid is assembled as I⊗T + T⊗I from the 1D matrix T; its eigenvalues are all sums of pairs of 1D eigenvalues, verified by sorting both lists.' },

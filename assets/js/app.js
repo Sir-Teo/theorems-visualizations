@@ -18,7 +18,9 @@ async function loadCatalog() {
   const colById = new Map(cat.collections.map((C) => [C.id, C]));
   const colIdx = new Map(cat.collections.map((C, i) => [C.id, i]));
   const fieldById = new Map(cat.fields.map((F) => [F.id, F]));
-  G = { ...cat, planned: [], byId, children, colById, colIdx, fieldById };
+  // cross-listings: a chapter may list another collection's idea under its own number
+  const alias = new Map(cat.collections.flatMap((C) => C.chapters.flatMap((Ch) => (Ch.cross || []).map(([num, to]) => [`${C.id}-${num}`, to]))));
+  G = { ...cat, planned: [], byId, children, colById, colIdx, fieldById, alias };
   indexGraph();
   G.edgeCount = cat.items.reduce((s, it) => s + it.deps.length, 0);
   G.live = cat.collections.filter((C) => C.count);
@@ -272,6 +274,8 @@ async function pageChapter(col, c) {
   await Promise.all([loadShard(col), ensurePlanned()]);
   const items = G.items.filter((it) => it.col === col && it.c === c);
   const planned = G.planned.filter((it) => it.col === col && it.c === c);
+  const cross = (Ch.cross || []).map(([num, to]) => [num, G.byId.get(to)]).filter(([, it]) => it);
+  await loadShards(cross.map(([, it]) => it.col));
   const idx = C.chapters.indexOf(Ch); const prev = C.chapters[idx - 1], next = C.chapters[idx + 1];
   const extDeps = new Set(); for (const it of items) for (const d of it.deps) if (!items.some((x) => x.id === d)) extDeps.add(d);
   const el = h(`<div class="wrap" data-col="${col}">
@@ -299,6 +303,12 @@ async function pageChapter(col, c) {
       <div class="top"><span class="num">${displayNum(it)}</span><span class="kind">${it.kind} · planned</span></div>
       <div class="nm">${inlineHTML(it.name)}</div>
       ${it.pic ? `<div class="st pic">${inlineHTML(it.pic)}</div>` : it.refs ? `<div class="st">${escapeHTML(it.refs.join(' · '))}</div>` : ''}
+    </a>`).join('')}</div>` : ''}
+    ${cross.length ? `<div class="section-title"><h2>Cross-listed</h2><span class="muted">${cross.length === 1 ? 'an idea' : `${cross.length} ideas`} this chapter covers that live in another collection</span></div>
+    <div class="thm-list">${cross.map(([num, it]) => `<a class="card thm-card${it.planned ? ' planned' : ''}" data-col="${it.col}" href="#/t/${it.id}">
+      <div class="top"><span class="num">${escapeHTML(num)} → ${escapeHTML(G.colById.get(it.col).short)} ${displayNum(it)}</span><span class="kind">${it.kind}${it.planned ? ' · planned' : ''}</span></div>
+      <div class="nm">${inlineHTML(it.name)}</div>
+      ${it.st ? `<div class="st">${richHTML(it.st)}</div>` : it.pic ? `<div class="st pic">${inlineHTML(it.pic)}</div>` : ''}
     </a>`).join('')}</div>` : ''}
   </div>`);
   app.replaceChildren(el);
@@ -597,6 +607,7 @@ async function route() {
     else if (parts[0] === 'f' && parts[1]) pageField(parts[1]);
     else if (parts[0] === 'c' && parts.length === 2) pageCollection(parts[1]);
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
+    else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}`);
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
     else if (parts[0] === 'map') await pageMap(params);
     else if (parts[0] === 'status') pageStatus();
