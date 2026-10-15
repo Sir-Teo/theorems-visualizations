@@ -1161,6 +1161,18 @@ const normalD = (mu = 0, sigma = 1) => mkDist({
   quantile: (q) => mu + sigma * normInv(q),
   _draw: (r) => mu + sigma * stdNormal(r),
 });
+/**
+ * Exact inversion sampling for a unimodal discrete law, walking outward from the mode m with pmf ratios
+ * up(k) = f(k+1)/f(k): one cdf call, then about one step per standard deviation. Returns the smallest k with F(k) ≥ u.
+ */
+function invertFromMode(u, m, pmf, cdf, up, lo, hi) {
+  const key = m; let c = invertFromMode.cache.get(cdf); if (!c || c.m !== key) invertFromMode.cache.set(cdf, (c = { m: key, f: pmf(m), F: cdf(m) }));
+  let k = m, fk = c.f, Fk = c.F;
+  if (u <= Fk) { while (k > lo) { const Fp = Fk - fk; if (Fp < u) break; fk /= up(k - 1); Fk = Fp; k--; } return k; }
+  while (k < hi && Fk < u) { fk *= up(k); k++; Fk += fk; if (fk === 0 && Fk < u) break; }
+  return k;
+}
+invertFromMode.cache = new WeakMap();
 function binomialD(n, p) {
   const lp = Math.log(p), lq = Math.log1p(-p);
   const pmf = (k) => {
@@ -1172,7 +1184,7 @@ function binomialD(n, p) {
   const quantile = (q) => (q <= 0 ? 0 : discreteQuantile(cdf, Math.min(q, 1), 0, n));
   return mkDist({
     name: 'binomial', discrete: true, support: [0, n], mean: n * p, variance: n * p * (1 - p), pmf, pdf: pmf, cdf, quantile,
-    _draw: (r) => { if (n <= 40) { let s = 0; for (let i = 0; i < n; i++) if (r() < p) s++; return s; } return quantile(r()); },
+    _draw: (r) => { if (n <= 40) { let s = 0; for (let i = 0; i < n; i++) if (r() < p) s++; return s; } return p === 0 ? 0 : p === 1 ? n : invertFromMode(r(), Math.floor((n + 1) * p), pmf, cdf, (k) => ((n - k) / (k + 1)) * (p / (1 - p)), 0, n); },
   });
 }
 function poissonD(lam) {
@@ -1181,7 +1193,7 @@ function poissonD(lam) {
   const quantile = (q) => { if (q <= 0) return 0; let hi = Math.ceil(lam + 10 * Math.sqrt(lam) + 10); while (cdf(hi) < q && hi < 1e15) hi *= 2; return discreteQuantile(cdf, Math.min(q, 1), 0, hi); };
   return mkDist({
     name: 'poisson', discrete: true, support: [0, Infinity], mean: lam, variance: lam, pmf, pdf: pmf, cdf, quantile,
-    _draw: (r) => { if (lam < 30) { const L = Math.exp(-lam); let k = 0, t = r(); while (t > L) { k++; t *= r(); } return k; } return quantile(r()); },
+    _draw: (r) => { if (lam < 30) { const L = Math.exp(-lam); let k = 0, t = r(); while (t > L) { k++; t *= r(); } return k; } return invertFromMode(r(), Math.floor(lam), pmf, cdf, (k) => lam / (k + 1), 0, Infinity); },
   });
 }
 const exponentialD = (rate = 1) => mkDist({

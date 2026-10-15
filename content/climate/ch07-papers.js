@@ -95,7 +95,7 @@ export default {
 
 Continued at Mauna Loa, the record (climate-7.10) has risen from 316 ppm (annual mean 1959) to 427 ppm (2025), with the seasonal swing riding on an accelerating trend.`,
       idea: String.raw`Before Keeling, published CO₂ measurements scattered over a wide range (from below 300 to above 400 ppm), mostly because samples were taken near cities, forests or the ground, and whether CO₂ was accumulating from fossil fuel was an open question. Revelle and Suess (1957, climate-7.15) had argued that the ocean takes up CO₂ more slowly than assumed and that humanity was conducting a large geophysical experiment, so a precise baseline was needed for the International Geophysical Year. Keeling's insight was to sample air far from local sources (Mauna Loa, at 3,400 m in the mid-Pacific; Antarctica) with an instrument stable enough to see changes of 0.1 ppm. Within two years the paper had both signatures that the record still shows: the "breathing" of the northern biosphere and the rise from burning carbon (whose isotopic fingerprint, climate-7.11, later confirmed its fossil origin). It became the founding observation of the carbon cycle (climate-7.1) as a measurable, changing system.`,
-      caption: String.raw`**Keeling 1960**: the paper's own monthly averages (Table 1): Mauna Loa, the South Pole and Little America (Antarctica), with a fitted trend plus annual cycle; the thin line is NOAA's present Mauna Loa record for the same months, about 3 ppm higher because the calibration scale was revised later. **1958–today**: NOAA's monthly Mauna Loa record. Drag the **window** to measure the growth rate and the seasonal amplitude in any six years; the right panel folds the detrended data in the window onto one year (blue) against Keeling's 1958–60 Mauna Loa cycle (gold).`,
+      caption: String.raw`**Keeling 1960**: the paper's own monthly averages (Table 1): Mauna Loa, the South Pole and Little America (Antarctica), with a fitted trend plus annual cycle; the blue line is NOAA's present Mauna Loa record for the same months, about 3 ppm higher because the calibration scale was revised later. **1958–today**: NOAA's monthly Mauna Loa record. Drag the **window** to measure the growth rate and the seasonal amplitude in any six years; the right panel folds the detrended data in the window onto one year (blue) against Keeling's 1958–60 Mauna Loa cycle (gold).`,
       deps: ['climate-7.1', 'climate-7.11', 'climate-7.15'],
       refs: [],
       tags: ['carbon cycle', 'observations', 'history'],
@@ -115,25 +115,25 @@ Continued at Mauna Loa, the record (climate-7.10) has risen from 316 ppm (annual
         v.render(() => {
           const today = mode.value === 'today';
           if (!today) {
-            s.setView([1957.6, 1960.4], [305, 320]); s.setTicks([1958, 1959, 1960], null);
-            s.path(mlo.filter((p) => p[0] < 1960.4), { color: 'muted', width: 1.3, alpha: 0.7 });
-            if (fitT.value) { s.fn(fK.f, { domain: [1958.1, 1960.3], color: 'accent', width: 1.6, dash: [6, 4] }); s.fn(fSP.trend, { domain: [1957.65, 1960], color: 'orange', width: 1.6, dash: [6, 4] }); }
-            s.path(kml, { color: 'blue', width: 1.4, alpha: 0.6 }); for (const p of kml) s.dot(p[0], p[1], { r: 4.2, color: 'blue' });
-            for (const p of ksp) s.dot(p[0], p[1], { r: 4.2, color: 'orange' });
+            s.setView([1957.6, 1960.4], [309.3, 320.6]); s.setTicks([1958, 1959, 1960], null);
+            s.clip(() => s.path(mlo.filter((p) => p[0] < 1960.5), { color: 'blue', width: 1.4, alpha: 0.75 }));
+            if (fitT.value) { s.fn(fK.f, { domain: [1958.1, 1960.3], color: 'gold', width: 1.6, dash: [6, 4] }); s.fn(fSP.trend, { domain: [1957.65, 1960], color: 'teal', width: 1.6, dash: [6, 4] }); }
+            s.path(kml, { color: 'gold', width: 1.4, alpha: 0.6 }); for (const p of kml) s.dot(p[0], p[1], { r: 4.2, color: 'gold' });
+            for (const p of ksp) s.dot(p[0], p[1], { r: 4.2, color: 'teal' });
             for (const p of kla) s.dot(p[0], p[1], { r: 3.6, color: 'purple', hollow: true });
-            s.text('NOAA today', 1960.33, 318.3, { color: 'muted', size: 11.5, align: 'right', weight: 600 });
-            s.text('Mauna Loa', 1958.42, 315.6, { color: 'blue', size: 12, weight: 700, align: 'left', dy: -8 });
-            s.text('South Pole', 1959.55, 314.9, { color: 'orange', size: 12, weight: 700, align: 'left' });
+            s.text('NOAA record today', 1959.9, 318.9, { color: 'blue', size: 11.5, align: 'right', weight: 600 });
+            s.text('Mauna Loa', 1958.42, 315.6, { color: 'gold', size: 12, weight: 700, align: 'left', dy: -8 });
+            s.text('South Pole', 1959.55, 314.9, { color: 'teal', size: 12, weight: 700, align: 'left' });
             s.text('Little America', 1958.55, 313.75, { color: 'purple', size: 12, weight: 700, align: 'left' });
           } else {
-            s.setView([1956, 2028], [305, 440]); s.setTicks(null, null);
+            s.setView([1950, 2028], [305, 440]); s.setTicks(null, null);
             const w0 = win.value - 3, w1 = win.value + 3;
             s.vband(w0, w1, { color: 'orange', alpha: 0.16, edges: true });
             s.path(mlo, { color: 'blue', width: 1.1 });
             for (const p of kml) s.dot(p[0], p[1], { r: 2.6, color: 'gold' });
             const pts = mlo.filter((p) => p[0] >= w0 && p[0] < w1), F = fitCycle(M, pts, win.value, 2, true);
             if (fitT.value) s.fn(F.f, { domain: [w0, w1], color: 'red', width: 1.6 });
-            s.text(`${v.fix(F.slope, 2)} ppm/yr`, win.value, F.trend(win.value), { dy: 30, color: 'orange', weight: 700, size: 12.5, align: win.value > 2010 ? 'right' : 'left', dx: win.value > 2010 ? -6 : 6 });
+            s.text(`${v.fix(F.slope, 2)} ppm/yr`, win.value, F.trend(w0) - 18, { color: 'orange', weight: 700, size: 12.5, align: 'center' });
             st = { F, pts };
           }
           // ---- seasonal cycle panel
@@ -145,12 +145,12 @@ Continued at Mauna Loa, the record (climate-7.10) has risen from 316 ppm (annual
             const F = st.F; if (fitT.value) c.fn((m) => F.season((m - 0.5) / 12), { color: 'blue', width: 2.4 });
             for (const q of fold(st.pts, F)) c.dot(q[0], q[1], { r: 2.6, color: 'blue', alpha: 0.7 });
           } else {
-            for (const q of fold(ksp, fSP)) c.dot(q[0], q[1], { r: 3.4, color: 'orange' });
+            for (const q of fold(ksp, fSP)) c.dot(q[0], q[1], { r: 3.4, color: 'teal' });
             for (const q of fold(kla, fLA)) c.dot(q[0], q[1], { r: 3.2, color: 'purple', hollow: true });
           }
           if (!today) st = null;
         });
-        v.legend([['blue', 'Mauna Loa', { dot: true }], ['orange', 'South Pole', { dot: true }], ['purple', 'Little America', { dot: true }], ['gold', 'Keeling’s Mauna Loa 1958–60', { dot: true }], ['muted', 'NOAA record'], ['red', 'fit in the window']]);
+        v.legend([['gold', 'Mauna Loa, Keeling 1960', { dot: true }], ['teal', 'South Pole, Keeling 1960', { dot: true }], ['purple', 'Little America, Keeling 1960', { dot: true }], ['blue', 'Mauna Loa, NOAA today'], ['red', 'fit in the window']]);
         v.readout(() => {
           const mon = (t) => MONTH[Math.floor(t * 12) % 12];
           if (mode.value === 'paper') return `Keeling's Mauna Loa months: seasonal swing **${v.fix(fK.pp, 1)} ppm** peak to peak, highest in ${mon(fK.tmax)}, lowest in ${mon(fK.tmin)} (the paper: maximum in spring, minimum in the fall); trend ${v.fix(fK.slope, 2)} ppm/yr over these two years · South Pole: **${v.fix(fSP.slope, 2)} ppm/yr** (the paper: "about 1.3 p.p.m. per year", against 1.4 expected from fossil fuel), no seasonal cycle to speak of · NOAA's record for the same months averages ${v.fix(M.mean(kml.map((p) => MLO[Math.round((p[0] - T0) * 12)] - p[1])), 1)} ppm higher (later recalibration)`;

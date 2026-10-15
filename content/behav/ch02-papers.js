@@ -75,11 +75,11 @@ The theory evaluates a prospect in two phases. Editing codes outcomes as **gains
         v.button('expected value', () => { aS.set(1); lS.set(1); gS.set(1); dS.set(1); });
         const reveal = v.toggle('show all results', false);
         const S = v.stage({ x: [0, 100], y: [0, 64], axes: false, height: 330, full: true });
-        const Vs = v.stage({ x: [-6.6, 6.6], y: [-10, 6], axes: true, height: 290, xlabel: 'outcome x (thousands)', ylabel: 'v(x)', title: 'value function (Figure 3, now with parameters)' });
+        const Vs = v.stage({ x: [-6.6, 6.6], y: [-10, 6], axes: 'box', height: 290, xlabel: 'outcome x (thousands)', ylabel: 'v(x)', title: 'value function (Figure 3, now with parameters)' });
         const Ws = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', height: 290, xlabel: 'stated probability p', ylabel: 'π(p)', title: 'weighting function (Figure 4)', equal: false });
         let cur = 0; const ans = {};
         const chipX = (k) => 1 + k * (98 / PROBS.length);
-        const cardA = [2, 4, 48.5, 40], cardB = [51.5, 4, 98, 40];
+        const cardA = [2, 3, 48.5, 44], cardB = [51.5, 3, 98, 44];
         S.onClick((x, y) => {
           if (y > 54) { const k = Math.floor((x - 1) / (98 / PROBS.length)); if (k >= 0 && k < PROBS.length) cur = k; return; }
           const inside = (c) => x >= c[0] && x <= c[2] && y >= c[1] && y <= c[3];
@@ -105,7 +105,7 @@ The theory evaluates a prospect in two phases. Editing codes outcomes as **gains
           // ---- cards
           const show = reveal.value || ans[P.id] != null, pred = predict(P, a, l, g, d);
           [cardA, cardB].forEach((c, k) => {
-            const chosen = ans[P.id] === k, top = c[3] - (hl.length > 1 ? 4 : 0);
+            const chosen = ans[P.id] === k, top = c[3] - (hl.length > 1 ? 3.5 : 0);
             S.rect(c[0], c[1], c[2], top, { fill: chosen ? 'accent' : 'panel', fillAlpha: chosen ? 0.12 : 1, color: chosen ? 'accent' : 'faint', width: chosen ? 2.4 : 1.2 });
             S.text(lab[k], c[0] + 2.2, top - 4.2, { size: 18, weight: 800, color: chosen ? 'accent' : 'muted' });
             const txt = P.A ? lines(k === 0 ? P.A : P.B) : (k === 0 ? P.tA : P.tB);
@@ -125,11 +125,12 @@ The theory evaluates a prospect in two phases. Editing codes outcomes as **gains
           const xs = P.A ? [...P.A, ...P.B].filter(([x]) => x !== 0).map(([x]) => x / 1000) : [];
           const vmax = 6.6 ** a, vmin = -l * 6.6 ** a;
           Vs.setView([-6.6, 6.6], [vmin * 1.08, vmax * 1.6]);
+          Vs.hline(0, { color: 'muted', width: 1 }); Vs.vline(0, { color: 'muted', width: 1 });
           Vs.fn((x) => x, { color: 'faint', width: 1.2, dash: [5, 4] });
           Vs.fn((x) => (x >= 0 ? x ** a : NaN), { color: 'blue', width: 2.6, domain: [0, 6.6] });
           Vs.fn((x) => (x <= 0 ? -l * (-x) ** a : NaN), { color: 'red', width: 2.6, domain: [-6.6, 0] });
           for (const x of xs) { const y = val(x * 1000, a, l); Vs.line(x, 0, x, y, { color: 'gold', width: 1, dash: [3, 3] }); Vs.dot(x, y, { r: 4.5, color: 'gold' }); }
-          Vs.text(`v(−1) / v(1) = −${l.toFixed(2)}`, -6.3, vmax * 1.3, { color: 'red', weight: 600, size: 12 });
+          Vs.text(`loss aversion: v(−1) / v(1) = −${l.toFixed(2)}`, 0.5, vmin * 0.8, { color: "red", weight: 600, size: 12 });
           // ---- weighting function
           Ws.line(0, 0, 1, 1, { color: 'faint', width: 1.2, dash: [5, 4] });
           Ws.fn((p) => wfun(p, g), { color: 'blue', width: 2.6, domain: [0, 1] });

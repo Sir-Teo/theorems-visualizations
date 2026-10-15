@@ -9,13 +9,19 @@ function runBudget(G, T, ch, ms, each) {
   return done;
 }
 /** Clock for animated simulations: returns the simulated time to add this frame (catching up after a jump, e.g. a still frame). */
-function simClock(rate, cap = 0.25) {
+function simClock(rate, cap = 0.25, warm = 0) {
   let last = null;
-  return (t, reset) => {
-    if (last === null || t < last - 1e-6) { last = t; reset?.(); return Math.min(t, 8) * rate; }
+  const clock = (t, reset) => {
+    clock.big = false;
+    if (last === null || t < last - 1e-6) { const first = last === null; last = t; reset?.(); clock.big = true; return Math.max(first ? warm : 0, Math.min(t, 8) * rate); }
     const dt = t - last; last = t;
-    return (dt > 0.5 ? Math.min(dt, 8) : Math.min(dt, cap)) * rate;
+    if (dt > 0.5) { clock.big = true; return Math.min(dt, 8) * rate; }
+    return Math.min(dt, cap) * rate;
   };
+  clock.big = false;
+  /** wall-clock budget (ms) for this frame: generous when catching up */
+  clock.ms = () => (clock.big ? 900 : 14);
+  return clock;
 }
 /** Temperature colour ramp (cold blue → purple → hot red). */
 const tRamp = (v) => ramp(v, 'blue', 'red', 32, 'purple');
@@ -311,16 +317,16 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
         const ph = sc.handle(XMAX + 0.55, L / 2, { color: 'orange', r: 8, constrain: (x) => [clamp(x, XMIN + 0.55, XMAX + 0.55), L / 2] });
         ph.onDrag = () => { if (auto.value) auto.set(false); };
         const sp = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: 'box', xlabel: 'NkT/V', ylabel: 'measured P', title: 'measured pressure against $NkT/V$' });
-        const sz = v.stage({ x: [0, 0.32], y: [0.8, 4.6], height: 290, axes: 'box', xlabel: 'packing fraction η (middle)', ylabel: 'P/ρkT', title: 'departure from the ideal gas' });
+        const sz = v.stage({ x: [0, 0.32], y: [0.5, 4.6], height: 290, axes: 'box', xlabel: 'packing fraction η (middle)', ylabel: 'P/ρkT', title: 'departure from the ideal gas' });
         const fresh = () => { win = G.snap(); win.X = G.pist.X; acc = { T: 0, n: 0, c: 0 }; };
         const make = () => { G = hsGas({ species: [{ m: 1, d: 1 }], counts: [Ns.value], Ly: L, Lz: L, T: Ts.value, rng: v.rng(5 + Ns.value), piston: { X: G ? G.pist.X : 30 }, periodic: true }); fresh(); };
         make();
         const sweep = (t) => { const u = (t % 360) / 360, tri = u < 0.5 ? 2 * u : 2 - 2 * u; return XMAX * (XMIN / XMAX) ** tri; };
-        const clock = simClock(6, 0.06);
+        const clock = simClock(6, 0.06, 36);
         const rp = ramp(v, 'teal', 'red', 24, 'purple');
         v.animate((t) => {
           const add = clock(t, () => { tSim = 0; pts = []; G = null; make(); });
-          runBudget(G, add, 0.1, 14, (h) => {
+          runBudget(G, add, 0.1, clock.ms(), (h) => {
             tSim += h;
             const target = auto.value ? sweep(tSim) : ph.x - 0.55, X = G.pist.X, U = clamp((target - X) / 2, -0.25, 0.25);
             if (Math.abs(U - G.pist.U) > 1e-3 || (U === 0 && G.pist.U !== 0)) G.setU(Math.abs(U) < 1e-3 ? 0 : U);
@@ -348,7 +354,7 @@ where $k = 1.380649\times10^{-23}$ J/K is Boltzmann's constant, $n = N/N_A$ the 
           sz.hline(1, { color: 'ink', dash: [6, 4], width: 1.4 });
           sz.fn(carnahanStarling, { color: 'red', width: 2.2, domain: [0, 0.32] });
           sz.text('hard spheres (Carnahan–Starling)', 0.315, carnahanStarling(0.3), { align: 'right', dy: -16, color: 'red', size: 11.5 });
-          sz.text('ideal gas', 0.31, 1, { align: 'right', dy: -9, color: 'ink', size: 11.5 });
+          sz.text('ideal gas: P = ρkT', 0.01, 1, { align: 'left', dy: -10, color: 'ink', size: 11.5 });
           for (const p of pts) sz.dot(p.eta, p.Z, { r: 3, color: pick(rp, p.eta / 0.3), alpha: 0.75, ring: false });
           const q = pts[pts.length - 1];
           if (q) { sp.dot(q.id, q.P, { r: 6, hollow: true, color: 'ink' }); sz.dot(q.eta, q.Z, { r: 6, hollow: true, color: 'ink' }); }
@@ -388,13 +394,13 @@ with $x_i = N_i/N$ the mole fraction. Equivalently, each gas behaves as if the o
           a0 = null; acc = { n: 0, T: 0, c: [0, 0, 0] };
         };
         make();
-        const clock = simClock(5, 0.06);
+        const clock = simClock(5, 0.06, 30);
         const alone = (rho, d, T) => { const eta = rho * Math.PI / 6 * d ** 3; return rho * T * carnahanStarling(eta); };
         const bmcsl = (rhos, T) => { const xi = [0, 1, 2, 3].map((k) => Math.PI / 6 * rhos.reduce((s, r, i) => s + r * SPC[i].d ** k, 0)); const o = 1 - xi[3]; return T * 6 / Math.PI * (xi[0] / o + 3 * xi[1] * xi[2] / (o * o) + (3 - xi[3]) * xi[2] ** 3 / (o ** 3)); };
         let res = null;
         v.animate((t) => {
           const add = clock(t, () => make());
-          runBudget(G, add, 0.1, 14, () => {
+          runBudget(G, add, 0.1, clock.ms(), () => {
             if (G.t > 8) {
               if (!a0) a0 = G.snap();
               const X = G.pist.X, c = [0, 0, 0]; for (let i = 0; i < G.N; i++) if (G.x[i] > 2 && G.x[i] < X - 2) c[G.S[i]]++;
@@ -463,10 +469,10 @@ Collisions between molecules do not change the result: they conserve momentum an
           G.onWall = (i, w, J) => { if (w === 1) { hits.push([G.t, J]); const b = Math.floor((J / (2 * G.m[i]) + 4.2) / bw); if (b >= 0 && b < 42) binsHit[b]++; } };
         };
         make();
-        const clock = simClock(8, 0.05);
+        const clock = simClock(8, 0.05, 70);
         v.animate((t) => {
           const add = clock(t, () => make());
-          runBudget(G, add, 0.1, 12, (h) => {
+          runBudget(G, add, 0.1, clock.ms(), (h) => {
             let s = 0; for (let i = 0; i < G.N; i++) { s += G.m[i] * G.vx[i] * G.vx[i]; const b = Math.floor((G.vx[i] + 4.2) / bw); if (b >= 0 && b < 42) binsAll[b] += h; }
             mv2 += s * h; nmv += h;
           });
@@ -480,16 +486,16 @@ Collisions between molecules do not change the result: they conserve momentum an
           sc.text('fixed piston: impacts recorded', X + 1.4, L + 0.75, { size: 11, color: 'orange', align: 'right' });
           sc.text(`L = ${X} σ, ${G.N} molecule${G.N > 1 ? 's' : ''}`, 0, -1, { size: 11.5, color: 'muted' });
           // staircase over the last TW
-          const tStart = G.t - TW, F = nmv > 0 ? mv2 / nmv / X : 0;
-          let cum = 0; const stair = [[-TW, 0]];
+          const tStart = Math.max(t0, G.t - TW), F = nmv > 0 ? mv2 / nmv / X : 0, x0 = tStart - G.t;
+          let cum = 0; const stair = [[x0, 0]];
           for (const [th, J] of hits) { if (th < tStart) continue; stair.push([th - G.t, cum]); cum += J; stair.push([th - G.t, cum]); }
           stair.push([0, cum]);
-          const top = Math.max(cum, F * TW, 1) * 1.15;
+          const top = Math.max(cum, -F * x0, 1) * 1.15;
           st.setView([-TW, 0], [0, top]);
-          st.line(-TW, 0, 0, F * TW, { color: 'green', width: 2, dash: [7, 4] });
+          st.line(x0, 0, 0, -F * x0, { color: 'green', width: 2, dash: [7, 4] });
           st.path(stair, { color: 'accent', width: 2.2 });
           for (const [th, J] of hits) if (th >= tStart) st.line(th - G.t, 0, th - G.t, J * top / 30, { color: 'orange', width: 1.4, alpha: 0.8 });
-          st.text('slope = N m⟨vₓ²⟩ / L', -TW + 2, F * TW * 0.9 + top * 0.04, { size: 11.5, color: 'green' });
+          st.text('slope = N m⟨vₓ²⟩ / L', -TW + 2, top * 0.9, { size: 11.5, color: 'green' });
           // histograms
           const totA = binsAll.reduce((s, q) => s + q, 0), totH = binsHit.reduce((s, q) => s + q, 0);
           if (totA > 0) sh.path(Array.from(binsAll).flatMap((q, k) => [[-4.2 + k * bw, q / totA / bw], [-4.2 + (k + 1) * bw, q / totA / bw]]), { color: 'accent', width: 1.6, fill: 'accent', fillAlpha: 0.12 });
@@ -534,11 +540,11 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
           series = []; sp = [[], []]; tLast = -1;
         };
         make();
-        const clock = simClock(10, 0.05);
+        const clock = simClock(10, 0.05, 0);
         const kin = () => { const K = [0, 0], n = [0, 0]; for (let i = 0; i < G.N; i++) { const s = G.S[i]; K[s] += 0.5 * G.m[i] * (G.vx[i] ** 2 + G.vy[i] ** 2 + G.vz[i] ** 2); n[s]++; } return [K[0] / n[0], K[1] / n[1]]; };
         v.animate((t) => {
           const add = clock(t, () => make());
-          runBudget(G, add, 0.25, 12, () => {
+          runBudget(G, add, 0.25, clock.ms(), () => {
             if (G.t - tLast >= 0.5) {
               tLast = G.t; const k = kin(); series.push([G.t, k[0], k[1]]); if (series.length > 2000) series.shift();
               if (G.t > 25) for (let i = 0; i < G.N; i++) { const s = G.S[i]; sp[s].push(Math.hypot(G.vx[i], G.vy[i], G.vz[i])); if (sp[s].length > 9000) sp[s].splice(0, 600); }
@@ -591,7 +597,7 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
         const sd = v.stage({ x: [0, X1], y: [0, 3], height: 290, axes: 'box', xlabel: 'x (σ)', ylabel: 'density / mean', title: 'density along the cylinder', weight: 1 });
         const make = () => {
           G = hsGas({ species: [{ m: 1, d: 1 }], counts: [N], Ly: L, Lz: L, T: 1, rng: v.rng(51), piston: { X: X1 } });
-          dir = -1; cyc = 0; pts = []; Tstart = G.stats().T; Wstart = 0; rec = [{ cyc: 0, T: Tstart, W: 0 }]; lastSnap = G.snap(); prof = new Float64Array(30); tCyc = 0;
+          dir = -1; cyc = 0; pts = []; Tstart = G.stats().T; Wstart = 0; rec = [{ cyc: 0, T: Tstart, W: 0 }]; lastSnap = G.snap(); prof = new Float64Array(22).fill(1); tCyc = 0;
           G.setU(-us.value);
         };
         make();
@@ -600,7 +606,7 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
         v.animate((t) => {
           const u = us.value, rate = clamp(2 * (X1 - X2) / u / 7, 6, 400);
           const add = clock(t, () => make()) * rate;
-          runBudget(G, add, Math.min(0.25, 0.3 / u), 14, () => {
+          runBudget(G, add, Math.min(0.25, 0.3 / u), clock.ms(), (h) => {
             const X = G.pist.X;
             if (dir < 0 && X <= X2 + 1e-9) { dir = 1; G.setU(u); lastSnap = G.snap(); }
             else if (dir > 0 && X >= X1 - 1e-9) {
@@ -611,11 +617,12 @@ the same for every kind of molecule, whatever its mass. In a mixture at a common
               const b = G.snap(), r = G.meas(lastSnap, b);
               pts.push({ V: r.V, P: r.pPist, d: dir, c: cyc }); if (pts.length > 900) pts.shift(); lastSnap = b;
             }
+            // density profile in the piston's frame, averaged over the last ~2 time units
+            const Xn = G.pist.X, nb = prof.length, cnt = new Float64Array(nb), a = Math.min(1, h / 2);
+            for (let i = 0; i < G.N; i++) cnt[Math.min(nb - 1, Math.floor(G.x[i] / Xn * nb))]++;
+            for (let k = 0; k < nb; k++) prof[k] = prof[k] * (1 - a) + a * cnt[k] / (G.N / nb);
           });
-          // instantaneous density profile (smoothed in time)
-          const X = G.pist.X, nb = prof.length, cnt = new Float64Array(nb);
-          for (let i = 0; i < G.N; i++) cnt[Math.min(nb - 1, Math.floor(G.x[i] / X * nb))]++;
-          for (let k = 0; k < nb; k++) prof[k] = prof[k] * 0.85 + 0.15 * cnt[k] / (G.N / nb);
+          const X = G.pist.X, nb = prof.length;
           drawGas(sc, G, { color: (i) => 'accent', rod: 5, pistonColor: dir < 0 ? 'red' : 'blue', fill: 'accent', fillAlpha: 0.04, len: X1 + 1.2 });
           sc.arrow(X + 2.4, L + 0.6, X + 2.4 + 2.2 * dir, L + 0.6, { color: dir < 0 ? 'red' : 'blue', width: 2.2 });
           sc.text(`stroke ${2 * cyc + (dir < 0 ? 1 : 2)} · insulated walls`, 0, -1.1, { size: 11.5, color: 'muted' });
@@ -659,7 +666,7 @@ positive when the gas is compressed ($dV < 0$) and negative when it expands and 
         const sS = v.slider('state along the path', 0, 1, 0.65, { step: 0.005 });
         const loop = v.toggle('return to A along the straight line', false);
         const sp = v.stage({ x: [0, 12], y: [0, 420], height: 340, axes: 'box', xlabel: 'V (L)', ylabel: 'P (kPa)', weight: 1.5, title: 'the work is the area under the path' });
-        const sc = v.stage({ x: [0, 6], y: [-0.6, 9], height: 340, axes: false, weight: 0.75 });
+        const sc = v.stage({ x: [0, 6], y: [-0.6, 9], height: 340, axes: false, weight: 0.75, equal: true });
         const con = { x: [0.6, 11.6], y: [20, 410] };
         const hA = sp.handle(2.5, 330, { color: 'accent', label: 'A', constrain: con });
         const hB = sp.handle(10, 90, { color: 'accent', label: 'B', constrain: con });
@@ -686,7 +693,7 @@ positive when the gas is compressed ($dV < 0$) and negative when it expands and 
           if (path.value === 'curve') { sp.line(hA.x, hA.y, hC.x, hC.y, { color: 'purple', width: 1, dash: [3, 3], alpha: 0.6 }); sp.line(hC.x, hC.y, hB.x, hB.y, { color: 'purple', width: 1, dash: [3, 3], alpha: 0.6 }); }
           sp.dot(cur[0], cur[1], { r: 6, color: 'gold' });
           const W = work(P, sS.value);
-          sp.text(`W so far = ${W.toFixed(0)} J`, cur[0], cur[1], { dx: 10, dy: -14, size: 12, weight: 600, color: 'ink' });
+          sp.text(`W so far = ${v.fix(W, 0)} J`, cur[0], cur[1], { dx: 10, dy: -14, size: 12, weight: 600, color: 'ink' });
           // cylinder: piston height ∝ V, gauge ∝ P
           const hgt = 0.7 * cur[0];
           sc.rect(1, 0, 3.6, 8.6, { color: 'ink', width: 2 });
@@ -706,8 +713,8 @@ positive when the gas is compressed ($dV < 0$) and negative when it expands and 
         v.legend([['accent', 'chosen path'], ['orange', 'area under the path = work done by the gas', { area: true }], ['purple', 'net work of the closed cycle', { area: true }]]);
         v.readout(() => {
           const ws = { PV: work(pts('PV')), VP: work(pts('VP')), line: work(pts('line')), curve: work(pts('curve')) };
-          const cyc = loop.value ? ` · closed cycle: net work on the gas ${(ws[path.value] - ws.line).toFixed(0)} J (minus the purple area)` : '';
-          return `work done on the gas from A to B, $W = -\\int P\\,dV$: expand-then-cool ${ws.PV.toFixed(0)} J · cool-then-expand ${ws.VP.toFixed(0)} J · straight ${ws.line.toFixed(0)} J · curved ${ws.curve.toFixed(0)} J — same endpoints, different work${cyc}`;
+          const cyc = loop.value ? ` · closed cycle: net work on the gas ${v.fix(ws[path.value] - ws.line, 0)} J (minus the purple area)` : '';
+          return `work done on the gas from A to B, $W = -\\int P\\,dV$: expand-then-cool ${v.fix(ws.PV, 0)} J · cool-then-expand ${v.fix(ws.VP, 0)} J · straight ${v.fix(ws.line, 0)} J · curved ${v.fix(ws.curve, 0)} J — same endpoints, different work${cyc}`;
         });
       },
     },
@@ -739,11 +746,11 @@ positive when the gas is compressed ($dV < 0$) and negative when it expands and 
           hist = []; Ul0 = G.stats(0).U; Ur0 = G.stats(1).U; xmin = Infinity; xmax = -Infinity;
         };
         make();
-        const clock = simClock(10, 0.05);
+        const clock = simClock(10, 0.05, 0);
         let tl = -1;
         v.animate((t) => {
           const add = clock(t, () => make());
-          runBudget(G, add, 0.25, 12, () => {
+          runBudget(G, add, 0.25, clock.ms(), () => {
             xmin = Math.min(xmin, G.plate.X); xmax = Math.max(xmax, G.plate.X);
             if (G.t - tl >= 1) { tl = G.t; const a = G.stats(0), b = G.stats(1); hist.push([G.t, a.T, b.T, G.Ep[1], b.U - Ur0, -(a.U - Ul0)]); if (hist.length > 1500) hist.shift(); }
           });

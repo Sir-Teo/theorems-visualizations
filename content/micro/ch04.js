@@ -267,7 +267,7 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
             const r = get(i, j); if (r == null) continue;
             const red = inCyc.has(key(i, j));
             if (r === 0) s.line(...P(i), ...P(j), { color: red ? 'red' : 'purple', width: red ? 2.6 : 1.6, dash: [5, 4], alpha: red ? 1 : 0.75 });
-            else { const [lo, hi] = r > 0 ? [j, i] : [i, j]; trimArrow(s, P(lo), P(hi), { color: red ? 'red' : 'muted', width: red ? 2.8 : 1.3, alpha: red ? 1 : 0.55, head: red ? 10 : 7 }); }
+            else { const [lo, hi] = r > 0 ? [j, i] : [i, j]; trimArrow(s, P(lo), P(hi), { color: red ? 'red' : 'muted', width: red ? 2.8 : 1.2, alpha: red ? 1 : 0.42, head: red ? 10 : 7 }); }
           }
           // money pump: where the trader is after `pump` trades, and what it has cost
           let hold = null, paid = 0;
@@ -420,47 +420,46 @@ Then $\succsim$ is reflexive, $\sim$ is an equivalence relation, and $\succ$ is 
             const cp = v.rgb('purple'), ct = v.rgb('teal');
             s.raster((x, y) => { const w = uT(x, y), inP = Math.abs(w - uP) <= d, inQ = Math.abs(w - uQ) <= d; if (!inP && !inQ) return null; if (inP && inQ) return [(cp[0] + ct[0]) / 2, (cp[1] + ct[1]) / 2, (cp[2] + ct[2]) / 2, 95]; return inP ? [cp[0], cp[1], cp[2], 60] : [ct[0], ct[1], ct[2], 60]; }, { key: `${uP}|${uQ}|${d}|${cp}${ct}`, res: 2 });
             s.clip(() => { s.fn((x) => lvlY(uP, x), { domain: [0.05, 10], color: 'purple', width: 1.4, dash: [5, 4] }); s.fn((x) => lvlY(uQ, x), { domain: [0.05, 10], color: 'teal', width: 1.4, dash: [5, 4] }); });
-            s.text('bundles indifferent to P', 9.7, 1.0, { align: 'right', color: 'purple', size: 11.5, weight: 600 });
-            s.text('bundles indifferent to Q', 9.7, 9.4, { align: 'right', color: 'teal', size: 11.5, weight: 600 });
+            s.text('indifferent to P', 9.8, Math.max(0.7, lvlY(uP - d, 9.8) - 0.45), { align: 'right', color: 'purple', size: 11.5, weight: 600 });
+            s.text('indifferent to Q', lvlY(uQ + d, 8.8) + 0.25, 8.8, { align: 'left', color: 'teal', size: 11.5, weight: 600 });
           }
           const hi = Qy >= Py ? 'Q' : 'P', lo = hi === 'Q' ? 'P' : 'Q', yLo = Math.min(Py, Qy), yHi = Math.max(Py, Qy);
           const gap = Math.abs(Qy - Py) > 0.02 && Math.abs(P.x - X.x) > 0.05;
           if (gap && yLo < 10) {
             s.rect(P.x, yLo, 10, 10, { fill: 'green', fillAlpha: 0.07, color: 'green', width: 1, dash: [4, 3] });
-            s.text(`at least as much of both as ${lo}`, Math.min(P.x + 0.15, 7.2), Math.min(yLo, 9.2) + 0.35, { color: 'green', size: 11, align: 'left' });
+            if ((10 - P.x) * s.scale > 150 && yLo < 8.6) s.text(`≥ ${lo} in both goods`, 9.85, 9.55, { color: 'green', size: 11.5, weight: 600, align: 'right' });
             if (yHi < 10) s.arrow(P.x, yLo, P.x, yHi, { color: 'green', width: 2.2, head: 8 });
           }
           if (Qy < 10) s.dot(P.x, Qy, { r: 6, color: 'teal', label: 'Q', labelPos: Qy > Py ? 'ne' : 'se' });
           if (tr && gap) s.dot(X.x, X.y, { r: 13, hollow: true, color: 'red', width: 2.2 });
-          // the argument, drawn as a triangle of relations
-          const N = { X: [5, 8.4], P: [1.6, 2.5], Q: [8.4, 2.5] };
-          const node = (k, col) => { g.dot(...N[k], { r: 17, color: col, alpha: 0.18 }); g.dot(...N[k], { r: 17, hollow: true, color: col, width: 2 }); g.tex(k, ...N[k], { size: 18, color: col }); };
+          // the argument, drawn as a triangle of relations with the reasons listed underneath
+          const N = { X: [5, 8.9], P: [1.7, 5.3], Q: [8.3, 5.3] };
+          const node = (k, col) => { g.dot(...N[k], { r: 16, color: col, alpha: 0.16 }); g.dot(...N[k], { r: 16, hollow: true, color: col, width: 2 }); g.tex(k, ...N[k], { size: 17, color: col }); };
           const trim = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-          g.line(...trim(N.X, N.P, 0.17), ...trim(N.X, N.P, 0.83), { color: 'purple', width: 2.2 });
-          g.line(...trim(N.X, N.Q, 0.17), ...trim(N.X, N.Q, 0.83), { color: 'teal', width: 2.2 });
-          if (tr) {
-            g.tex('P \\sim X', 2.2, 5.9, { color: 'purple', size: 15, align: 'right' }); g.text('same curve', 2.2, 5.0, { color: 'purple', size: 11, align: 'right' });
-            g.tex('X \\sim Q', 7.8, 5.9, { color: 'teal', size: 15, align: 'left' }); g.text('same curve', 7.8, 5.0, { color: 'teal', size: 11, align: 'left' });
-          } else {
-            const d = del.value;
-            g.tex(`|u_X - u_P| = ${v.fix(uX - uP, 2)} \\le \\delta`, 2.6, 6.2, { color: 'purple', size: 13, align: 'right' }); g.tex('P \\sim X', 2.6, 5.2, { color: 'purple', size: 15, align: 'right' });
-            g.tex(`|u_Q - u_X| = ${v.fix(uQ - uX, 2)} \\le \\delta`, 7.4, 6.2, { color: 'teal', size: 13, align: 'left' }); g.tex('X \\sim Q', 7.4, 5.2, { color: 'teal', size: 15, align: 'left' });
-            void d;
-          }
+          g.line(...trim(N.X, N.P, 0.2), ...trim(N.X, N.P, 0.8), { color: 'purple', width: 2.2 });
+          g.line(...trim(N.X, N.Q, 0.2), ...trim(N.X, N.Q, 0.8), { color: 'teal', width: 2.2 });
+          g.tex('\\sim', 2.75, 7.45, { color: 'purple', size: 20 }); g.tex('\\sim', 7.25, 7.45, { color: 'teal', size: 20 });
+          const line = (y, txt, col) => g.tex(txt, 5, y, { rich: true, color: col, size: 13.5 });
           if (!gap) {
-            g.text(Math.abs(P.x - X.x) <= 0.05 ? 'move P away from X' : 'the two curves coincide here', 5, 2.5, { color: 'muted', size: 12, align: 'center' });
+            g.text(Math.abs(P.x - X.x) <= 0.05 ? 'move P away from X' : 'the two curves coincide here', 5, 5.3, { color: 'muted', size: 12, align: 'center' });
           } else if (tr) {
             const [La, Lb] = hi === 'Q' ? ['P', 'Q'] : ['Q', 'P'];
-            g.arrow(...trim(N[La], N[Lb], 0.2), ...trim(N[La], N[Lb], 0.8), { color: 'green', width: 2.4, head: 9 });
-            g.tex(`${hi} \\succ ${lo}`, 5, 3.55, { color: 'green', size: 16 }); g.text('monotonicity: more of good 2', 5, 4.45, { color: 'green', size: 11, align: 'center' });
-            g.line(N.P[0] + 1.2, 1.25, N.Q[0] - 1.2, 1.25, { color: 'purple', width: 1.6, dash: [5, 4] });
-            g.tex('P \\sim Q', 5, 0.62, { color: 'purple', size: 15 }); g.text('transitivity', 5, 1.75, { color: 'purple', size: 11, align: 'center' });
-            g.text('✗', 5, 2.5, { color: 'red', size: 24, weight: 800, align: 'center' });
-            g.text('contradiction', 6.1, 2.5, { color: 'red', size: 12, weight: 700, align: 'left' });
+            g.arrow(...trim(N[La], N[Lb], 0.19), ...trim(N[La], N[Lb], 0.81), { color: 'green', width: 2.4, head: 9 });
+            g.tex('\\succ', 5, 5.95, { color: 'green', size: 20 });
+            g.line(2.95, 4.55, 7.05, 4.55, { color: 'purple', width: 1.6, dash: [5, 4] }); g.tex('\\sim', 5, 4.05, { color: 'purple', size: 20 });
+            g.text('✗', 5, 5.3, { color: 'red', size: 22, weight: 800, align: 'center' });
+            line(3.0, '$P \\sim X$: both on curve 1', 'purple');
+            line(2.2, '$X \\sim Q$: both on curve 2', 'teal');
+            line(1.4, '$P \\sim Q$ by transitivity', 'purple');
+            line(0.6, `$${hi} \\succ ${lo}$ by monotonicity (more of good 2)`, 'green');
+            g.text('contradiction', 5, 9.75, { color: 'red', size: 12.5, weight: 700, align: 'center' });
           } else {
-            g.arrow(...trim(N.P, N.Q, 0.2), ...trim(N.P, N.Q, 0.8), { color: 'green', width: 2.4, head: 9 });
-            g.tex(`|u_Q - u_P| = ${v.fix(uQ - uP, 2)} > \\delta`, 5, 3.7, { color: 'green', size: 13 }); g.tex('Q \\succ P', 5, 1.55, { color: 'green', size: 16 });
-            g.text('no transitivity, no contradiction', 5, 0.55, { color: 'muted', size: 11.5, align: 'center' });
+            g.arrow(...trim(N.P, N.Q, 0.19), ...trim(N.P, N.Q, 0.81), { color: 'green', width: 2.4, head: 9 });
+            g.tex('\\succ', 5, 5.95, { color: 'green', size: 20 });
+            line(3.0, `$|u_X - u_P| = ${v.fix(uX - uP, 2)} \\le \\delta \\Rightarrow P \\sim X$`, 'purple');
+            line(2.2, `$|u_Q - u_X| = ${v.fix(uQ - uX, 2)} \\le \\delta \\Rightarrow X \\sim Q$`, 'teal');
+            line(1.4, `$|u_Q - u_P| = ${v.fix(uQ - uP, 2)} > \\delta \\Rightarrow Q \\succ P$`, 'green');
+            line(0.6, 'indifference is not transitive: no contradiction', 'muted');
           }
           node('X', 'accent'); node('P', 'purple'); node('Q', 'teal');
           st = { tr, Py, Qy, gap, hi, lo, uP, uX, uQ };
@@ -488,19 +487,19 @@ Monotonicity makes indifference curves slope downward and rules out thick curves
       see: ['opt-2.1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Convex_preferences' },
       viz(v) {
-        const base = (x, y) => Math.sqrt(Math.max(x, 0) * Math.max(y, 0)), c1 = 3, c2 = 4.2;
+        const base = (x, y) => Math.sqrt(Math.max(x, 0) * Math.max(y, 0)), c1 = 2.8, c2 = 4.8;
         const thick = { u: (x, y) => { const c = base(x, y); return c < c1 ? c : c < c2 ? c1 : c - (c2 - c1); }, ray: false };
         const FAM = {
           cd: { label: 'Cobb–Douglas', F: prefs('cd') },
           subs: { label: 'perfect substitutes', F: prefs('subs') },
           concave: { label: 'concave curves', F: prefs('concave') },
           thick: { label: 'thick curves', F: thick },
-          sat: { label: 'satiation', F: prefs('sat', { bx: 6.2, by: 6.4 }) },
+          sat: { label: 'satiation', F: prefs('sat', { bx: 6.3, by: 5.2 }) },
         };
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const tS = v.slider('mixture weight $t$ on $A$', 0, 1, 0.5, { step: 0.01 });
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 380, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.3 });
-        const g = v.stage({ x: [0, 1], y: [0, 1], height: 380, axes: 'box', xlabel: 't', title: 'utility along the segment, $u(tA + (1-t)B)$' });
+        const g = v.stage({ x: [0, 1], y: [0, 1], height: 380, axes: 'box', xlabel: 't', xticks: [[0.03, 'B'], 0.25, 0.5, 0.75, [0.97, 'A']], title: 'utility along the segment, $u(tA + (1-t)B)$' });
         const box = (x, y) => [clamp(x, 0.2, 9.8), clamp(y, 0.2, 9.8)];
         const snap = (k, ax, ay, x, y) => {
           const F = FAM[k].F; [x, y] = box(x, y);
@@ -526,7 +525,7 @@ Monotonicity makes indifference curves slope downward and rules out thick curves
           if (k === 'thick' && base(A.x, A.y) >= c1 && base(A.x, A.y) <= c2) {
             const pts = []; for (let i = 0; i <= 80; i++) { const x = 0.2 + (9.8 * i) / 80; pts.push([x, Math.min(11, (c1 * c1) / x)]); } for (let i = 80; i >= 0; i--) { const x = 0.2 + (9.8 * i) / 80; pts.push([x, Math.min(11, (c2 * c2) / x)]); }
             s.clip(() => s.poly(pts, { fill: 'purple', fillAlpha: 0.22, color: 'purple', width: 1.6 }));
-            s.text('one thick indifference set', 8.6, 3.6 ** 2 / 8.6, { color: 'purple', size: 11.5, weight: 600, align: 'center', dy: -2 });
+            s.text('one thick indifference set', 9.8, 3.3 ** 2 / 9.0, { color: 'purple', size: 11.5, weight: 600, align: 'right' });
           } else drawLevel(s, F, uA, { color: 'purple', width: 2.6 });
           if (F.bliss) s.dot(...F.bliss, { r: 4.5, color: 'ink', label: 'bliss', labelPos: 'e' });
           // the segment AB, coloured point by point
@@ -539,15 +538,14 @@ Monotonicity makes indifference curves slope downward and rules out thick curves
           let monoBad = 0, tot = 0;
           for (let i = 0; i <= 14; i++) for (let j = 0; j <= 14; j++) { if (!i && !j) continue; const x = A.x + ((10 - A.x) * i) / 14, y = A.y + ((10 - A.y) * j) / 14; tot++; if (u(x, y) <= uA + eps) monoBad++; }
           // right panel
-          const vals = seg.map((q) => q[3] + uA), lo = Math.min(uA, ...vals), hi = Math.max(uA, ...vals), pad = Math.max(0.08 * (hi - lo), 0.05 * Math.max(1, Math.abs(uA)));
-          g.setView([0, 1], [lo - pad, hi + pad]);
+          const vals = seg.map((q) => q[3] + uA), lo = Math.min(uA, ...vals), hi = Math.max(uA, ...vals), pad = Math.max(0.1 * (hi - lo), 0.05 * Math.max(1, Math.abs(uA)));
+          g.setView([0, 1], [lo - 2.2 * pad, hi + pad]);
           const phi = (tt) => u(tt * A.x + (1 - tt) * Bh.x, tt * A.y + (1 - tt) * Bh.y);
-          g.between(phi, () => uA, 0, 1, { fill: 'green', fillAlpha: 0.2 });
-          g.between(() => uA, (tt) => Math.max(phi(tt), lo - pad), 0, 1, { fill: 'red', fillAlpha: 0.22 });
-          g.hline(uA, { color: 'purple', width: 1.6, dash: [6, 4] }); g.text('u(A) = u(B)', 0.5, uA, { dy: -9, align: 'center', color: 'purple', size: 11.5 });
+          g.between((tt) => Math.max(phi(tt), uA), () => uA, 0, 1, { fill: 'green', fillAlpha: 0.22 });
+          g.between(() => uA, (tt) => Math.min(phi(tt), uA), 0, 1, { fill: 'red', fillAlpha: 0.24 });
+          g.hline(uA, { color: 'purple', width: 1.6, dash: [6, 4] }); g.text('u(A) = u(B)', Math.abs(t - 0.5) < 0.18 ? 0.2 : 0.5, uA, { dy: 12, align: 'center', color: 'purple', size: 11.5 });
           g.fn(phi, { domain: [0, 1], color: 'ink', width: 2.4, n: 160 });
           g.vline(t, { color: 'gold', width: 1.4 }); g.dot(t, uC, { r: 5.5, color: 'gold', label: 'C', labelPos: 'ne' });
-          g.text('B', 0.015, uA, { dy: 12, color: 'muted', size: 12, weight: 700 }); g.text('A', 0.985, uA, { dy: 12, align: 'right', color: 'muted', size: 12, weight: 700 });
           st = { k, uA, uC, minD, tMin, monoBad, tot, C };
         });
         v.readout(() => {

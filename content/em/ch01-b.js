@@ -867,7 +867,7 @@ although $\nabla\cdot\mathbf E = 0$ pointwise at every $\mathbf r\neq\mathbf 0$.
 $$e = 4.774\times10^{-10}\ \text{esu} = 1.592\times10^{-19}\ \text{C}\quad(\pm0.2\%),$$
 and, with Faraday’s constant from electrolysis, Avogadro’s number $N = F/e = 6.062\times10^{23}$ per mole. The value is 0.6 % below today’s exact $e$, almost entirely because the viscosity of air he used was too small.`,
       idea: String.raw`Before Millikan, $e$ was inferred from the fall of whole charged clouds (Townsend, J. J. Thomson, H. A. Wilson), good to perhaps 25 %, and whether electricity was granular at all was still argued — Ehrenhaft claimed to see "subelectrons". Millikan’s 1909–1910 work switched from clouds to single drops of non-evaporating oil; the 1913 paper is the precision version. Each drop gives its charge from two speeds through Stokes’s law (fluid-7.2) and the uniform field between plates (em-1.10); catching ions from an X-ray burst changes the charge in whole steps (em-1.1). The correction to Stokes’s law, tested by varying the pressure, removed the last systematic dependence on drop size. The result fixed $e$, and with it Avogadro’s number, the electron mass and (with spectroscopy) Planck’s constant, to a few parts in a thousand; Kellström’s better viscosity of air (1937) raised it to today’s value.`,
-      caption: String.raw`**Simulated** drops in Millikan’s chamber — plates 16 mm apart at 5 kV, clock oil, air at 23 °C, pressures 4–76 cm of mercury — generated from today’s $e$, today’s viscosity of air and a Stokes correction, then analysed the way the paper does (the paper’s own tables are not reproduced). Left: one drop timed again and again; press *X-ray burst* to change its charge — every charge is a whole number $n$ of units. Right: the paper’s central plot, $e_1^{2/3}$ against $1/pa$ for many drops; its straight-line intercept gives $e$. Switch to Millikan’s viscosity and you recover his low value; switch off the Stokes correction and the scatter of $e_1$ is left unexplained.`,
+      caption: String.raw`**Simulated** drops in Millikan’s chamber — plates 16 mm apart at 5 kV, clock oil, air at 23 °C, pressures 12–76 cm of mercury — generated from today’s $e$, today’s viscosity of air and a Stokes correction, then analysed the way the paper does (the paper’s own tables are not reproduced). Left: one drop timed again and again; press *X-ray burst* to change its charge — every charge is a whole number $n$ of units. Right: the paper’s central plot, $e_1^{2/3}$ against $1/pa$ for many drops; its straight-line intercept gives $e$. Switch to Millikan’s viscosity and you recover his low value; switch off the Stokes correction and the scatter of $e_1$ is left unexplained.`,
       deps: ['em-1.1', 'em-1.10', 'fluid-7.2'],
       refs: [],
       tags: ['charge', 'history of physics'],
@@ -893,7 +893,7 @@ and, with Faraday’s constant from electrolysis, Avogadro’s number $N = F/e =
         // the population of drops for the plot (seeded)
         const drops = [];
         for (let i = 0; i < 46; i++) {
-          const r = v.rng(911 + 31 * i), a = Math.exp(r.uniform(Math.log(0.55e-6), Math.log(3.2e-6))), p = Math.exp(r.uniform(Math.log(4), Math.log(76)));
+          const r = v.rng(911 + 31 * i), a = Math.exp(r.uniform(Math.log(0.55e-6), Math.log(3.2e-6))), p = Math.exp(r.uniform(Math.log(12), Math.log(76)));
           const mg = (4 / 3) * Math.PI * a ** 3 * RHO * g; let n = r.int(3, 18); if (n * C.e * EF < 1.15 * mg) n = Math.ceil((1.15 * mg) / (C.e * EF)) + r.int(0, 4);
           const [tg, tF] = timing(a, n, p, r); drops.push({ a, p, n, tg, tF });
         }
@@ -918,9 +918,9 @@ and, with Faraday’s constant from electrolysis, Avogadro’s number $N = F/e =
           const c = L.intercept, eFit = Math.pow(c, 1.5) * 1e-19, se = 1.5 * Math.sqrt(c) * L.seIntercept * 1e-19;
           const mean1 = pts.reduce((s, q) => s + q.e1, 0) / pts.length, sd1 = Math.sqrt(pts.reduce((s, q) => s + (q.e1 - mean1) ** 2, 0) / (pts.length - 1));
           // the plot
-          const xs = pts.map((q) => q.x), ys = pts.map((q) => q.y), xmax = Math.max(...xs) * 1.08, y0 = Math.min(...ys, c) - 0.2, y1 = Math.max(...ys) + 0.08;
+          const xs = pts.map((q) => q.x), ys = pts.map((q) => q.y), xmax = Math.max(...xs) * 1.08, y0 = Math.min(...ys, c) - 0.12, y1 = Math.max(...ys) + 0.06;
           sp.setView([0, xmax], [y0, y1]);
-          if (corr.value) { sp.fn((x) => c + L.slope * x, { color: 'green', width: 2.2, domain: [0, xmax] }); sp.dot(0, c, { r: 6, color: 'green' }); sp.tex(String.raw`\text{intercept } e^{2/3}`, xmax * 0.03, c, { color: 'green', size: 13, align: 'left', baseline: 'top', dy: 8 }); }
+          if (corr.value) { sp.fn((x) => c + L.slope * x, { color: 'green', width: 2.2, domain: [0, xmax] }); sp.line(0, c, xmax * 0.06, c + (y1 - y0) * 0.3, { color: 'green', width: 1, dash: [3, 3] }); sp.dot(0, c, { r: 6, color: 'green' }); sp.tex(String.raw`\text{intercept} = e^{2/3}`, xmax * 0.06, c + (y1 - y0) * 0.3, { color: 'green', size: 13, align: 'left', baseline: 'bottom', dy: -2 }); }
           else sp.hline(Math.pow(mean1 / 1e-19, 2 / 3), { color: 'red', width: 1.6, dash: [6, 4] });
           sp.dots(pts.map((q) => [q.x, q.y]), { r: 4, color: 'accent' });
           const A0 = analyse(log[log.length - 1].tg, log[log.length - 1].tF, log[log.length - 1].n, eta), x0 = 1 / (D0.p * radius(A0.a1, D0.p, bFit) * 100) / 1e3;

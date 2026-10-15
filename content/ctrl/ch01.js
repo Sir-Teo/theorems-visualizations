@@ -544,10 +544,10 @@ the injected signal minus what comes back, per unit injected. The closed-loop ch
           // ---- diagram: comparator, C, P, sensor, with the cut marked
           const Y = 4.1, Y2 = 1.4, R = 0.34;
           const segs = [
-            { pts: [[2.0 + R, Y], [4.7, Y]], lab: ['e', 3.5, Y + 0.42] },
-            { pts: [[7.3, Y], [10.8, Y]], lab: ['u', 9.05, Y + 0.42] },
+            { pts: [[2.0 + R, Y], [4.7, Y]], lab: ['e', 2.68, Y + 0.42] },
+            { pts: [[7.3, Y], [10.8, Y]], lab: ['u', 7.95, Y + 0.42] },
             { pts: [[14.4, Y], [17.4, Y], [17.4, Y2], [14.4, Y2]], lab: ['y', 17.8, 2.75] },
-            { pts: [[10.8, Y2], [2.0, Y2], [2.0, Y - R]], lab: ['y_m', 6.5, Y2 + 0.42] },
+            { pts: [[10.8, Y2], [2.0, Y2], [2.0, Y - R]], lab: ['y_m', 9.4, Y2 + 0.42] },
           ];
           bdSum(dg, 2.0, Y, R, { w: '+', s: '−' });
           bdWire(dg, [[0.3, Y], [2.0 - R, Y]], { alpha: 0.4 }); dg.tex('r=0', 0.9, Y + 0.45, { size: 13, color: 'muted' });
