@@ -1,6 +1,6 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
-import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
+import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
 const SITE = 'Ideas, Visualized';
@@ -406,6 +406,15 @@ function pageMap(params) {
   cleanup = () => { view.dead = true; view.destroy(); };
 }
 
+function pageTimeline() {
+  setTitle('Timeline'); setNav('timeline'); curCol = null;
+  const host = document.createElement('div');
+  app.replaceChildren(host);
+  if (!G.items.some((it) => it.yr != null)) { app.replaceChildren(h(`<div class="wrap page-head"><h1>Timeline</h1><p class="sub">No dated ideas yet: items gain a place on the timeline when they carry a <code>credit</code> with a year.</p></div>`)); return; }
+  const view = new TimelineView(host, G, { onOpen: (id) => go(`#/t/${id}`) });
+  cleanup = () => view.destroy();
+}
+
 function pageStatus() {
   setTitle('Status'); setNav('status'); curCol = null;
   const tot = G.collections.reduce((s, C) => ({ n: s.n + C.count, p: s.p + C.planned, v: s.v + C.viz }), { n: 0, p: 0, v: 0 });
@@ -485,6 +494,7 @@ async function route() {
     else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
     else if (parts[0] === 'map') pageMap(params);
     else if (parts[0] === 'status') pageStatus();
+    else if (parts[0] === 'timeline') pageTimeline();
     else if (parts[0] === 'about') pageAbout();
     else if (parts[0] === 'audit') pageAudit();
     else pageNotFound();
@@ -492,7 +502,7 @@ async function route() {
     console.error(e);
     app.replaceChildren(h(`<div class="wrap page-head"><h1>Something went wrong</h1><p class="sub">${escapeHTML(e.message)}</p></div>`));
   }
-  if (parts[0] !== 'map') window.scrollTo(0, 0);
+  if (parts[0] !== 'map' && parts[0] !== 'timeline') window.scrollTo(0, 0);
 }
 
 // ------------------------------------------------------------ search

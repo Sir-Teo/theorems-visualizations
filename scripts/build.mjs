@@ -205,6 +205,14 @@ ${collections.map((C) => `[data-col="${C.id}"]{--bc:var(--c-${C.id});--fc:var(--
 ${fields.map((F) => `[data-field="${F.id}"]{--fc:var(--f-${F.id})}`).join('\n')}
 `;
 
+// ---------- years (for the timeline) ----------
+/** Earliest year mentioned in a credit string: 'Baire, 1899' → 1899, 'Euclid, c. 300 BCE' → -300. */
+function yearOf(credit) {
+  if (!credit) return undefined;
+  const ys = [...String(credit).matchAll(/(\d{1,4})\s*(BCE|BC)?/g)].map((m) => (m[2] ? -+m[1] : +m[1])).filter((y) => y < 2100 && (y < 0 || y >= 100 || /BCE|BC/.test(credit)));
+  return ys.length ? Math.min(...ys) : undefined;
+}
+
 // ---------- write ----------
 const chapterRecord = (c) => {
   const its = all.filter((it) => it.col === c.col && it.chapter === c.chapter);
@@ -228,7 +236,7 @@ const index = {
     id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name,
     deps: it.deps, pdeps: it.pdeps.length ? it.pdeps : undefined, see: it.see.length ? it.see : undefined, tags: it.tags?.length ? it.tags : undefined,
     file: it.file, viz: typeof it.viz === 'function', x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0),
-    anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined,
+    anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined, yr: yearOf(it.credit),
   })),
   planned: ghosts.map((it) => ({ id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps, x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0) })),
   map: { rows: rowsOut.map(({ bands, ...r }) => r), fields: fieldBoxes },

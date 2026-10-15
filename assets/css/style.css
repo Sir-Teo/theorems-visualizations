@@ -142,7 +142,7 @@ p { margin: 0 0 .8em; }
   .brand i { display: none; }
   .nav { margin-left: 0; gap: 0; }
   .nav a { padding: 6px 6px; font-size: 13px; }
-  .nav a[data-nav="about"], .nav a[data-nav="status"] { display: none; }
+  .nav a[data-nav="about"], .nav a[data-nav="status"], .nav a[data-nav="timeline"] { display: none; }
   .nav-menu summary { padding: 6px 6px; font-size: 13px; }
   .fields-menu { position: fixed; left: 16px; right: 16px; top: 52px; width: auto; }
   .header-tools { gap: 6px; }
@@ -336,7 +336,8 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .viz-placeholder { padding: 40px 20px; text-align: center; color: var(--ink-3); border: 1px dashed var(--line-2); border-radius: 12px; }
 
 /* ============================================================ map */
-.map-page { position: relative; height: calc(100vh - 58px); min-height: 520px; overflow: hidden; }
+.map-page, .timeline-page { position: relative; height: calc(100vh - 58px); min-height: 520px; overflow: hidden; }
+.timeline-page canvas { position: absolute; inset: 0; display: block; touch-action: none; cursor: grab; }
 .map-page canvas { position: absolute; inset: 0; display: block; touch-action: none; }
 .map-ui { position: absolute; left: 16px; top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; z-index: 5; max-width: calc(100% - 32px); }
 .map-ui .card { padding: 6px 10px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); }

@@ -654,3 +654,92 @@ export function renderTreemap(host, G, { field = null, onField, onCollection, on
     }
   }
 }
+
+// ------------------------------------------------------------ timeline of ideas (canvas)
+/** Piecewise time axis: the distant past is compressed, recent centuries get room. */
+const T_BREAKS = [[-3000, 0], [-500, 0.06], [1500, 0.2], [1700, 0.34], [1850, 0.58], [1950, 0.86], [2030, 1]];
+function tAxis(y) {
+  if (y <= T_BREAKS[0][0]) return 0;
+  for (let i = 1; i < T_BREAKS.length; i++) { const [y0, u0] = T_BREAKS[i - 1], [y1, u1] = T_BREAKS[i]; if (y <= y1) return u0 + ((y - y0) / (y1 - y0)) * (u1 - u0); }
+  return 1;
+}
+function tAxisInv(u) {
+  for (let i = 1; i < T_BREAKS.length; i++) { const [y0, u0] = T_BREAKS[i - 1], [y1, u1] = T_BREAKS[i]; if (u <= u1) return y0 + ((u - u0) / (u1 - u0)) * (y1 - y0); }
+  return T_BREAKS[T_BREAKS.length - 1][0];
+}
+const fmtYear = (y) => (y < 0 ? `${Math.round(-y)} BCE` : `${Math.round(y)}`);
+export class TimelineView {
+  constructor(host, G, { onOpen } = {}) {
+    this.host = host; this.G = G; this.onOpen = onOpen;
+    host.classList.add('timeline-page');
+    this.items = G.items.filter((it) => it.yr != null);
+    this.fields = G.fields.filter((F) => this.items.some((it) => G.colById.get(it.col)?.field === F.id));
+    host.innerHTML = `<canvas aria-label="Timeline of ideas"></canvas><div class="map-tip"></div>
+      <div class="map-help">${this.items.length} dated ideas · scroll to zoom in time · drag to pan · click a dot to open</div>`;
+    this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d'); this.tip = host.querySelector('.map-tip');
+    this.u0 = 0; this.u1 = 1; this.hover = null;
+    this.ro = new ResizeObserver(() => { this.resize(); this.layout(); this.draw(); }); this.ro.observe(host);
+    this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
+    this._bind(); this.resize(); this.layout(); this.draw();
+  }
+  destroy() { this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); }
+  resize() { const r = this.host.getBoundingClientRect(); const d = Math.min(2, devicePixelRatio || 1); this.W = r.width; this.H = r.height; this.canvas.width = this.W * d; this.canvas.height = this.H * d; this.canvas.style.width = this.W + 'px'; this.canvas.style.height = this.H + 'px'; this.dpr = d; }
+  X(u) { const L = 150, R = this.W - 30; return L + ((u - this.u0) / (this.u1 - this.u0)) * (R - L); }
+  layout() {
+    // one lane per field; inside a lane, a beeswarm so dots never overlap at the current zoom
+    const top = 40, bot = this.H - 50; const laneH = (bot - top) / Math.max(1, this.fields.length);
+    this.lanes = this.fields.map((F, i) => ({ F, y0: top + i * laneH, y1: top + (i + 1) * laneH }));
+    const R = 3.6;
+    for (const lane of this.lanes) {
+      const its = this.items.filter((it) => this.G.colById.get(it.col).field === lane.F.id).map((it) => ({ it, x: this.X(tAxis(it.yr)) })).sort((a, b) => a.x - b.x || (b.it.desc || 0) - (a.it.desc || 0));
+      const mid = (lane.y0 + lane.y1) / 2, maxOff = (lane.y1 - lane.y0) / 2 - R - 2; const placed = [];
+      for (const p of its) {
+        let off = 0; for (let k = 0; k < 200; k++) { off = (k % 2 ? 1 : -1) * Math.ceil(k / 2) * (R * 2 + 0.6); if (Math.abs(off) > maxOff) { off = (Math.random() - 0.5) * 2 * maxOff; break; } const y = mid + off; if (!placed.some((q) => Math.abs(q.x - p.x) < R * 2 && Math.abs(q.y - y) < R * 2)) break; }
+        p.y = mid + off; placed.push(p); while (placed.length && placed[0].x < p.x - R * 4) placed.shift();
+        p.r = R;
+      }
+      lane.pts = its;
+    }
+  }
+  _bind() {
+    const cv = this.canvas; let drag = null;
+    const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    cv.addEventListener('wheel', (e) => { e.preventDefault(); const [px] = pos(e); const L = 150, R = this.W - 30; const u = this.u0 + ((px - L) / (R - L)) * (this.u1 - this.u0); const f = Math.exp(e.deltaY * 0.0015); let w = Math.min(1, Math.max(0.004, (this.u1 - this.u0) * f)); let a = u - (u - this.u0) * (w / (this.u1 - this.u0)); a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); }, { passive: false });
+    cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); drag = { x: pos(e)[0], u0: this.u0, u1: this.u1, moved: false }; });
+    cv.addEventListener('pointermove', (e) => {
+      const p = pos(e);
+      if (drag) { const dx = p[0] - drag.x; if (Math.abs(dx) > 3) drag.moved = true; const w = drag.u1 - drag.u0; let a = drag.u0 - (dx / (this.W - 180)) * w; a = Math.max(0, Math.min(1 - w, a)); this.u0 = a; this.u1 = a + w; this.layout(); this.draw(); return; }
+      let best = null, bd = 8; for (const l of this.lanes || []) for (const q of l.pts) { const d = Math.hypot(q.x - p[0], q.y - p[1]); if (d < bd) { bd = d; best = q; } }
+      if (best !== this.hover) { this.hover = best; cv.style.cursor = best ? 'pointer' : 'grab'; this.draw(); }
+      if (best) { const it = best.it; const C = this.G.colById.get(it.col); this.tip.innerHTML = `<div class="eyebrow" style="color:var(--c-${it.col})">${escapeHTML(C.short)} · ${escapeHTML(fullLabel(it))} · ${fmtYear(it.yr)}</div><div class="nm">${inlineHTML(it.name)}</div>`; this.tip.style.display = 'block'; const w = this.tip.offsetWidth; this.tip.style.left = Math.min(this.W - w - 8, p[0] + 14) + 'px'; this.tip.style.top = (p[1] + 14) + 'px'; } else this.tip.style.display = 'none';
+    });
+    cv.addEventListener('pointerup', (e) => { if (drag && !drag.moved && this.hover) this.onOpen?.(this.hover.it.id); drag = null; });
+    cv.addEventListener('pointerleave', () => { this.hover = null; this.tip.style.display = 'none'; this.draw(); });
+  }
+  draw() {
+    const c = this.ctx; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
+    // ticks: choose a step that gives ~10 labels in view
+    const yA = tAxisInv(this.u0), yB = tAxisInv(this.u1);
+    c.font = '500 11px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'top';
+    const cands = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+    let lastX = -1e9;
+    for (const step of cands) {
+      const ticks = []; for (let y = Math.ceil(yA / step) * step; y <= yB; y += step) ticks.push(y);
+      if (ticks.length <= 160) {
+        for (const y of ticks) { const x = this.X(tAxis(y)); if (x - lastX < 56 && x > lastX) continue; if (x < 140 || x > this.W - 20) continue; lastX = x; c.strokeStyle = withAlpha('grid', 1); c.lineWidth = 1; c.beginPath(); c.moveTo(x, 34); c.lineTo(x, this.H - 44); c.stroke(); c.fillStyle = resolveColor('muted'); c.fillText(fmtYear(y), x, this.H - 38); }
+        break;
+      }
+    }
+    for (const l of this.lanes) {
+      c.fillStyle = withAlpha('field-' + l.F.id, 0.05); c.fillRect(0, l.y0 + 1, this.W, l.y1 - l.y0 - 2);
+      c.fillStyle = withAlpha('field-' + l.F.id, 1); c.textAlign = 'left'; c.textBaseline = 'middle'; c.font = '600 11.5px Inter, system-ui, sans-serif';
+      c.fillText(l.F.short.toUpperCase(), 14, (l.y0 + l.y1) / 2);
+      for (const q of l.pts) { if (q.x < 140 || q.x > this.W - 10) continue; c.beginPath(); c.arc(q.x, q.y, q.r, 0, Math.PI * 2); c.fillStyle = withAlpha(q.it.col, q === this.hover ? 1 : 0.85); c.fill(); if (q === this.hover) { c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); } }
+    }
+    // labels for the most important ideas in view, without overlap
+    const occ = []; const free = (x, y, w, h) => { for (const o of occ) if (x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1]) return false; occ.push([x, y, w, h]); return true; };
+    const all = this.lanes.flatMap((l) => l.pts).filter((q) => q.x > 140 && q.x < this.W - 10).sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 120);
+    c.font = '500 11px Inter, system-ui, sans-serif'; c.textBaseline = 'middle'; c.textAlign = 'left';
+    for (const q of all) { const t = plainName(q.it.name, 34); const w = c.measureText(t).width; if (!free(q.x + 6, q.y - 7, w + 4, 14)) continue; c.lineWidth = 3; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(t, q.x + 6, q.y); c.fillStyle = resolveColor('muted'); c.fillText(t, q.x + 6, q.y); }
+  }
+}
