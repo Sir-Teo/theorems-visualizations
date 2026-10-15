@@ -328,8 +328,8 @@ the balancing equation (1.1) divided by $PY$; for one year it is very close to t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Birth_rate' },
       viz(v) {
         const KEYS = Object.keys(CRS), Y0 = 1950, Y1 = 2023;
-        const A = v.stage({ x: [1948, 2025.5], y: [0, 55], height: 300, axes: 'box', full: true, ylabel: 'per 1 000 person-years', xticks: DECADES });
-        const G = v.stage({ x: [1948, 2025.5], y: [-10, 40], height: 240, axes: 'box', full: true, ylabel: 'per 1 000', xticks: DECADES, title: 'growth = natural increase + net migration' });
+        const A = v.stage({ x: [1948, 2027.5], y: [0, 55], height: 300, axes: 'box', full: true, ylabel: 'per 1 000 person-years', xticks: DECADES });
+        const G = v.stage({ x: [1948, 2027.5], y: [-10, 40], height: 240, axes: 'box', full: true, ylabel: 'per 1 000', xticks: DECADES, title: 'growth = natural increase + net migration' });
         const cs = v.select('country', KEYS.map((k) => ({ value: k, label: CRS[k].name })), 'MEX');
         const yr = v.slider('year', Y0, Y1, 1990, { int: true });
         const pick = (x) => { yr.set(clamp(Math.round(x), Y0, Y1)); v.invalidate(); };
@@ -380,7 +380,7 @@ the balancing equation (1.1) divided by $PY$; for one year it is very close to t
           G.dot(t, 10 * S.r[i], { r: 4, color: 'ink' });
           st = { S, t, i };
         });
-        v.legend([['green', 'births (CBR)'], ['red', 'deaths (CDR)'], ['purple', 'net migration (CNMR)'], ['ink', 'UN growth rate $\\ln(P_{t+1}/P_t)$ × 1000']]);
+        v.legend([['green', 'births (CBR)'], ['red', 'deaths (CDR)'], ['muted', 'world', { dash: true }], ['purple', 'net migration (CNMR)'], ['ink', 'UN growth rate $\\ln(P_{t+1}/P_t)$ × 1000']]);
         v.readout(() => {
           if (!st) return '';
           const { S, t, i } = st, b = S.CBR[i], d = S.CDR[i], m = S.CNMR[i], g = b - d + m;
@@ -404,7 +404,7 @@ which with $r$ in percent is the **rule of 70**: $T_2 \approx 70/r$. If growth i
       tags: ['growth', 'exponential'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rule_of_72' },
       viz(v) {
-        const L = v.stage({ x: [0, 100], y: [0, 10], height: 330, axes: 'box', weight: 1.25, minWidth: 300, xlabel: 'years', ylabel: 'P(t) / P(0)' });
+        const L = v.stage({ x: [0, 103], y: [0, 10], height: 330, axes: 'box', weight: 1.25, minWidth: 300, xlabel: 'years', ylabel: 'P(t) / P(0)' });
         const R = v.stage({ x: [0, 25], y: [-12, 5], height: 330, axes: 'box', weight: 1, minWidth: 250, xlabel: 'growth rate (% a year)', ylabel: 'error (%)', title: 'how wrong are the rules?' });
         const W = v.stage({ x: [1948, 2025], y: [0, 100], height: 250, axes: 'box', full: true, ylabel: 'years to double', xticks: DECADES, title: 'world population 1950–2023: doubling time at each year’s rate vs the time it actually took' });
         const rS = v.slider('growth rate $r$ (% a year)', -3, 10, 2, { step: 0.1, fmt: (x) => `${fx(x, 1)}%` });
@@ -419,7 +419,7 @@ which with $r$ in percent is the **rule of 70**: $T_2 \approx 70/r$. If growth i
           const r = rS.value / 100, cont = comp.value === 'cont', g = (t) => (cont ? Math.exp(r * t) : (1 + r) ** t), log = L.ly;
           const k1 = cont ? r : Math.log(1 + r), T2 = Math.abs(k1) > 1e-12 ? Math.log(2) / Math.abs(k1) : Infinity, end = g(100);
           const top = Math.max(end, 1, 2.2), botv = Math.min(end, 1);
-          L.setView([0, 100], log ? [Math.min(0.45, botv * 0.7), top * 1.35] : [0, top * 1.07]);
+          L.setView([0, 103], log ? [Math.min(0.45, botv * 0.7), top * 1.35] : [0, top * 1.07]);
           L.setTitle(r === 0 ? 'no growth' : `${r > 0 ? 'doubling' : 'halving'} every ${fx(T2, T2 < 10 ? 2 : 1)} years`);
           // doubling (or halving) guides
           const K = Number.isFinite(T2) ? Math.min(Math.floor(100 / T2), 40) : 0, pts = [];
@@ -440,8 +440,8 @@ which with $r$ in percent is the **rule of 70**: $T_2 \approx 70/r$. If growth i
           R.fn((p) => 100 * ((70 / p) / ex(p) - 1), { domain: [0.1, 25], color: 'orange', width: 2.2 });
           R.fn((p) => 100 * ((72 / p) / ex(p) - 1), { domain: [0.1, 25], color: 'purple', width: 2.2, dash: [6, 4] });
           R.text('70/r vs continuous', 24.5, 2.1, { align: 'right', color: 'green', size: 11, weight: 650 });
-          R.text('70/r vs yearly', 24.5, -11, { align: 'right', color: 'orange', size: 11, weight: 650 });
-          R.text('72/r vs yearly', 13, -1.6, { align: 'center', color: 'purple', size: 11, weight: 650 });
+          R.text('70/r vs yearly', 15, 100 * ((70 / 15) / ex(15) - 1), { dx: -6, dy: 12, align: 'right', color: 'orange', size: 11, weight: 650 });
+          R.text('72/r vs yearly', 17, 100 * ((72 / 17) / ex(17) - 1), { dx: 6, dy: -12, align: 'left', color: 'purple', size: 11, weight: 650 });
           const pa = Math.abs(rS.value);
           if (pa >= 0.1) { R.vline(pa, { color: 'gold', width: 1.6 }); R.dot(pa, 100 * (0.7 / Math.log(2) - 1), { r: 4, color: 'green' }); R.dot(pa, 100 * ((70 / pa) / ex(pa) - 1), { r: 4, color: 'orange' }); R.dot(pa, 100 * ((72 / pa) / ex(pa) - 1), { r: 4, color: 'purple' }); }
           // ----- the world
@@ -451,7 +451,7 @@ which with $r$ in percent is the **rule of 70**: $T_2 \approx 70/r$. If growth i
           W.dots(realized.map((d, k) => (d == null ? null : [1950 + k, d])), { r: 3, color: 'blue' });
           W.vline(y, { color: 'gold', width: 1.6 });
           W.dot(y, (100 * Math.log(2)) / WP.r[j], { r: 5, color: 'green' });
-          if (realized[j] != null) { W.dot(y, realized[j], { r: 5, color: 'blue' }); W.text(`took ${fx(realized[j], 1)} y`, y, realized[j], { dx: 8, dy: -9, color: 'blue', size: 11.5, weight: 650 }); }
+          if (realized[j] != null) { W.dot(y, realized[j], { r: 5, color: 'blue' }); W.text(`took ${fx(realized[j], 1)} y`, y, realized[j], { dy: -17, align: 'center', color: 'blue', size: 11.5, weight: 650 }); }
           W.text(`${fx((100 * Math.log(2)) / WP.r[j], 1)} y at ${fx(WP.r[j], 2)}%`, y, (100 * Math.log(2)) / WP.r[j], { dx: 8, dy: 10, color: 'green', size: 11.5, weight: 650 });
           st = { r, cont, T2, end, y, j };
         });
@@ -479,23 +479,23 @@ which with $r$ in percent is the **rule of 70**: $T_2 \approx 70/r$. If growth i
 - the **cohort–period parallelogram** (one cohort during one calendar year, spread over two ages).
 For any such set, the events in it divided by the person-years lived in it — the horizontal extent of the lifeline segments inside — is its occurrence–exposure rate (1.2).`,
       idea: String.raw`Lifelines at $45°$ encode $c = t - a$ geometrically, so the three ways of grouping the same events are three directions of slicing one plane. Data arrive in different shapes — deaths registered by age and year fill squares, deaths classified by age and year of birth fill triangles, a census counts the lifelines crossing a vertical line — and much of demographic estimation is converting between these shapes. Person-years in a set are areas swept by lifelines, events are points: adding triangles gives squares or parallelograms, and every rate is a ratio of the two. The same constraint $c = t - a$ that makes the diagram work also makes age, period and cohort effects inseparable (1.6).`,
-      caption: String.raw`Simulated lifelines: 130 births between 2008 and 2022 under high child mortality (red dots are deaths). Choose a region type and drag the gold handle: the region lights up, the parts of lifelines inside it thicken, and the readout gives its deaths, person-years and rate. *Two triangles* splits a Lexis square into its two cohorts — the square's deaths and person-years are the sums of the triangles'. Faint diagonals separate birth cohorts (labelled at the bottom and left edges). **Click a death** to read its three coordinates and check that age = period − birth date.`,
+      caption: String.raw`Simulated lifelines: 100 births between 2004 and 2022 under high child mortality, seen in 2010–2021 up to age 6 (red dots are deaths). Choose a region type and drag the gold handle: the region lights up, the parts of lifelines inside it thicken, and the readout gives its deaths, person-years and rate. *Two triangles* splits a Lexis square into its two cohorts — the square's deaths and person-years are the sums of the triangles'. Faint diagonals separate the birth cohorts. **Click a death** to read its three coordinates and check that age = period − birth date.`,
       deps: ['demo-1.2'],
       see: ['epi-1.10'],
       refs: ['PHG ch. 1'],
       tags: ['lexis diagram', 'cohort'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lexis_diagram' },
       viz(v) {
-        const M = v.M, X0 = 2014, X1 = 2022, AM = 6;
-        const s = v.stage({ x: [X0, X1], y: [0, AM], equal: true, height: 420, axes: 'box', grid: true, full: true, ylabel: 'age', xticks: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], yticks: [0, 1, 2, 3, 4, 5, 6] });
+        const M = v.M, X0 = 2010, X1 = 2022, AM = 6;
+        const s = v.stage({ x: [X0, X1], y: [0, AM], equal: true, height: 420, axes: 'box', grid: true, full: true, ylabel: 'age', xticks: [2010, 2012, 2014, 2016, 2018, 2020, 2022], yticks: [0, 1, 2, 3, 4, 5, 6] });
         const reg = v.select('region', [{ value: 'age', label: 'age group' }, { value: 'period', label: 'period' }, { value: 'cohort', label: 'birth cohort' }, { value: 'square', label: 'Lexis square' }, { value: 'tri', label: 'two triangles' }, { value: 'ca', label: 'cohort × age' }, { value: 'cp', label: 'cohort × period' }], 'square');
         const H = s.handle(2018.62, 3.3, { color: 'gold', constrain: (x, y) => [clamp(x, X0 + 0.02, X1 - 0.02), clamp(y, 0.02, AM - 0.02)] });
         // cumulative hazard of a high-mortality schedule: μ(a) = 0.25 e^{−2a} + 0.03
         const Hz = (a) => 0.125 * (1 - Math.exp(-2 * a)) + 0.03 * a;
         const people = (() => {
           const r = M.rng(17), out = [];
-          for (let i = 0; i < 130; i++) {
-            const b = 2008 + 14 * r(), e = -Math.log(1 - r());
+          for (let i = 0; i < 100; i++) {
+            const b = 2004 + 18 * r(), e = -Math.log(1 - r());
             const T = e >= Hz(AM + 1) ? Infinity : M.bisect((a) => Hz(a) - e, 0, AM + 1);
             out.push({ b, d: b + T });
           }
@@ -530,8 +530,6 @@ For any such set, the events in it divided by the person-years lived in it — t
           // cohort diagonals with birth-year labels
           for (let c = X0 - AM; c < X1; c++) {
             s.line(Math.max(c, X0), Math.max(c, X0) - c, Math.min(c + AM, X1), Math.min(c + AM, X1) - c, { color: 'muted', width: 0.8, alpha: 0.35 });
-            if (c >= X0 && c < X1) s.text(String(c), c + 0.5, 0, { dy: -8, align: 'center', color: 'muted', size: 9.5 });
-            else if (c < X0 && X0 - c < AM) s.text(`b. ${c}`, X0, X0 - c - 0.5, { dx: 4, color: 'muted', size: 9.5 });
           }
           const R = region(reg.value, H.x, H.y), res = [];
           for (const [k, r] of R.entries()) {

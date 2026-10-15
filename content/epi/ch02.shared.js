@@ -6,7 +6,11 @@ export const int = (x) => String(Math.round(x)).replace(/\B(?=(\d{3})+(?!\d))/g,
 /** Percentage with d decimals (plain text). */
 export const pc = (x, d = 1) => `${(100 * x).toFixed(d)}%`;
 /** Percentage with as many decimals as the size needs: 0.44 → 44%, 0.044 → 4.4%, 0.0059 → 0.59%, 0.0002 → 0.020%. */
-export function pcs(x) { const a = Math.abs(100 * x); return `${(100 * x).toFixed(a >= 9.95 ? 0 : a >= 0.995 ? 1 : a >= 0.0995 ? 2 : 3)}%`; }
+export function pcs(x) {
+  const a = Math.abs(100 * x);
+  if (a >= 99.5 && a < 100) return `${(100 * x).toFixed(a >= 99.95 ? 2 : 1)}%`; // 99.93% must not read as 100%
+  return `${(100 * x).toFixed(a >= 9.95 ? 0 : a >= 0.995 ? 1 : a >= 0.0995 ? 2 : 3)}%`;
+}
 /** One-slot cache: f() is recomputed only when the key changes. */
 export function memo() { let key = {}, val; return (k, f) => (k === key ? val : ((key = k), (val = f()))); }
 /** n fixed uniforms in (0, 1] from a seed, so a simulated population keeps its "luck" while sliders move. */

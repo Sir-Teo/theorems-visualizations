@@ -56,7 +56,7 @@ export function turntable(s, R, ang, o = {}) {
   s.circle(cx, cy, R, { fill: o.fill || 'accent', fillAlpha: o.fillAlpha ?? 0.07, color: o.rim || 'muted', width: 1.6 });
   for (const f of [1 / 3, 2 / 3]) s.circle(cx, cy, f * R, { color: 'faint', width: 0.9, alpha: 0.7 });
   for (let k = 0; k < n; k++) { const a = ang + (TAU * k) / n; s.line(cx, cy, cx + R * Math.cos(a), cy + R * Math.sin(a), { color: 'faint', width: 0.9, alpha: 0.7 }); }
-  if (o.mark !== false) s.line(cx, cy, cx + R * Math.cos(ang), cy + R * Math.sin(ang), { color: o.markColor || 'orange', width: 2.2, alpha: 0.75 });
+  if (o.mark !== false) s.line(cx, cy, cx + R * Math.cos(ang), cy + R * Math.sin(ang), { color: o.markColor || 'pink', width: 2.2, alpha: 0.7 });
   for (let k = 0; k < 48; k++) { const a = ang + (TAU * k) / 48, r1 = k % 4 ? 0.97 : 0.93; s.line(cx + R * r1 * Math.cos(a), cy + R * r1 * Math.sin(a), cx + R * Math.cos(a), cy + R * Math.sin(a), { color: 'muted', width: 1, alpha: 0.6 }); }
 }
 /** Curved arrow on a circle of radius r about (cx, cy), from angle a0 sweeping `sweep` radians (sign = sense). */

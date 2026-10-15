@@ -135,8 +135,8 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
         const M = v.M, N = 1000, COLS = 40, ROWS = 25;
         const sI = v.stage({ x: [0, COLS], y: [0, ROWS], equal: true, axes: false, height: 300, weight: 1.15, minWidth: 300 });
         const sF = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 300, weight: 1, minWidth: 280, title: 'the same 1 000 people as a frequency tree' });
-        const sC = v.stage({ x: [0.0005, 0.95], y: [-0.03, 1.06], xlog: true, height: 220, full: true, axes: 'box', xlabel: 'prevalence (pre-test probability), log scale', title: 'predictive values against prevalence, with sensitivity and specificity held fixed',
-          xticks: [[0.001, '0.1%'], [0.003, '0.3%'], [0.01, '1%'], [0.03, '3%'], [0.1, '10%'], [0.3, '30%'], [0.9, '90%']], yticks: [[0, '0'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']] });
+        const sC = v.stage({ x: [0.0005, 0.95], y: [-0.13, 1.06], xlog: true, height: 220, full: true, axes: 'box', xlabel: 'prevalence (pre-test probability), log scale', title: 'predictive values against prevalence, with sensitivity and specificity held fixed',
+          xticks: [[0.001, '0.1%'], [0.003, '0.3%'], [0.01, '1%'], [0.03, '3%'], [0.1, '10%'], [0.3, '30%'], [0.9, '90%']], yticks: [[0, '0'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%']] });
         const prevS = v.slider('prevalence $p$', 0.0005, 0.9, BCSC.prev, { log: true, fmt: (x) => pcs(x) });
         const seS = v.slider('sensitivity', 0.5, 0.999, BCSC.se, { step: 0.001, fmt: (x) => pc(x) });
         const spS = v.slider('specificity', 0.5, 0.999, BCSC.sp, { step: 0.001, fmt: (x) => pc(x) });
@@ -180,7 +180,8 @@ With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases
           bar(0.65, F.FN, F.TN, `the ${int(F.neg)} negatives: ${F.FN} diseased, ${int(F.TN)} not`, `NPV ${pc(F.TN / F.neg)}`, 'blue');
           // ----- curves against prevalence
           sC.hline(se, { color: 'red', width: 1.2, dash: [6, 5], alpha: 0.6 }); sC.hline(sp, { color: 'blue', width: 1.2, dash: [6, 5], alpha: 0.6 });
-          sC.text('sensitivity', 0.0006, se, { dy: -8, align: 'left', color: 'red', size: 10.5, alpha: 0.8 }); sC.text('specificity', 0.0006, sp, { dy: se > sp - 0.06 && se < sp + 0.06 ? 9 : -8, align: 'left', color: 'blue', size: 10.5, alpha: 0.8 });
+          sC.hline(0, { color: 'grid', width: 1 });
+          sC.text('sensitivity', 0.0045, se, { dy: se >= sp ? -8 : 9, align: 'left', color: 'red', size: 10.5, alpha: 0.85 }); sC.text('specificity', 0.0045, sp, { dy: sp > se ? -8 : 9, align: 'left', color: 'blue', size: 10.5, alpha: 0.85 });
           sC.fn((x) => ppv(x, se, sp), { color: 'red', width: 2.6 });
           sC.fn((x) => npv(x, se, sp), { color: 'blue', width: 2.6 });
           const pHalf = (1 - sp) / (se + 1 - sp);
