@@ -44,7 +44,7 @@ function centralOrbit(acc, s0, o = {}) {
   return out;
 }
 
-/** State of an orbit record at time t (binary search + linear interpolation). */
+/** State [x, y, vx, vy] of an orbit record at time t (binary search + Hermite interpolation). */
 function stateAt(R, t) {
   const ts = R.t, n = ts.length - 1, sg = ts[n] < 0 ? -1 : 1;
   const tt = sg * t;
@@ -52,8 +52,13 @@ function stateAt(R, t) {
   if (tt >= sg * ts[n]) return R.s[n];
   let lo = 0, hi = n;
   while (hi - lo > 1) { const m = (lo + hi) >> 1; if (sg * ts[m] <= tt) lo = m; else hi = m; }
-  const u = (t - ts[lo]) / (ts[hi] - ts[lo]), A = R.s[lo], B = R.s[hi];
-  return A.map((c, i) => c + u * (B[i] - c));
+  const h = ts[hi] - ts[lo], u = (t - ts[lo]) / h, A = R.s[lo], B = R.s[hi];
+  // cubic Hermite for the positions (their derivatives are the stored velocities), linear for the velocities
+  const h00 = 2 * u ** 3 - 3 * u * u + 1, h10 = u ** 3 - 2 * u * u + u, h01 = -2 * u ** 3 + 3 * u * u, h11 = u ** 3 - u * u;
+  const out = A.map((c, i) => c + u * (B[i] - c));
+  out[0] = h00 * A[0] + h10 * h * A[2] + h01 * B[0] + h11 * h * B[2];
+  out[1] = h00 * A[1] + h10 * h * A[3] + h01 * B[1] + h11 * h * B[3];
+  return out;
 }
 
 /** Kepler elements of a state (unit mass, GM = mu): energy, angular momentum, eccentricity vector, a, p, period. */
@@ -115,17 +120,17 @@ function sun(s, x, y, o = {}) {
 /** Thin spherical shell (mass 1, radius R) summed ring by ring (θ = πu², so rings crowd near the pole facing P):
  *  pull toward the centre on a point at distance r. `cum` collects [fraction of the shell passed, running sum]. */
 function shellPull(r, R, n = 1500, cum = null) {
-  let g = 0;
-  for (let i = 0; i < n; i++) {
-    const u = (i + 0.5) / n, th = Math.PI * u * u, dth = (TAU * u) / n, c = Math.cos(th);
-    const s2 = r * r + R * R - 2 * r * R * c;
-    g += (0.5 * Math.sin(th) * (r - R * c) * dth) / (s2 * Math.sqrt(s2));
-    if (cum && i % 6 === 5) cum.push([(1 - c) / 2, g]);
+  let g = 0; const h = 1 / n; // Simpson's rule in u (n even)
+  for (let i = 0; i <= n; i++) {
+    const u = i * h, th = Math.PI * u * u, c = Math.cos(th), s2 = r * r + R * R - 2 * r * R * c;
+    const f = s2 > 1e-24 ? (0.5 * Math.sin(th) * (r - R * c) * TAU * u) / (s2 * Math.sqrt(s2)) : 0;
+    g += ((i === 0 || i === n ? 1 : i % 2 ? 4 : 2) * f * h) / 3;
+    if (cum && i % 6 === 0) cum.push([(1 - c) / 2, g]);
   }
   return g;
 }
 /** Uniform ball (mass 1, radius 1) as K nested shells, each summed ring by ring; `cum` gets [shell radius, running sum]. */
-function ballPull(r, K = 120, n = 320, cum = null) {
+function ballPull(r, K = 200, n = 160, cum = null) {
   let g = 0;
   for (let k = 0; k < K; k++) {
     const R = (k + 0.5) / K, m = ((k + 1) ** 3 - k ** 3) / K ** 3;
@@ -191,10 +196,10 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
       scope: String.raw`Exact for an inverse-square force and exact spherical symmetry (thin shell or density depending only on the distance from the centre); for any other force law or shape the field outside is not that of a point mass and the field inside does not vanish.`,
       viz(v) {
         const shape = v.select('mass distribution', [{ value: 'shell', label: 'spherical shell' }, { value: 'ball', label: 'uniform ball' }, { value: 'cube', label: 'cubic shell' }], 'shell');
-        const s = v.stage({ x: [-2.4, 2.4], y: [-1.75, 1.75], equal: true, axes: false, height: 320, weight: 1.15, title: 'cross-section through $O$ and $P$' });
-        const cs = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', height: 320, xlabel: 'slices added', title: 'running sum of the pull toward $O$' });
-        const gp = v.stage({ x: [0, 2.6], y: [-0.08, 1.15], axes: 'box', height: 200, full: true, xlabel: 'r / R', title: 'field toward the centre along the ray $OP$ (units $GM/R^2$)' });
-        const P = s.handle(0.48, 0.26, { color: 'gold', label: 'P', labelPos: 'n', constrain: { x: [-2.3, 2.3], y: [-1.65, 1.65] } });
+        const s = v.stage({ x: [-2.05, 2.05], y: [-1.5, 1.5], equal: true, axes: false, height: 320, weight: 1.15, title: 'cross-section through $O$ and $P$' });
+        const cs = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', height: 320, title: 'running sum of the pull toward $O$' });
+        const gp = v.stage({ x: [0, 2.6], y: [-0.16, 1.15], axes: 'box', height: 200, full: true, xlabel: 'r / R', title: 'field toward the centre along the ray $OP$ (units $GM/R^2$)' });
+        const P = s.handle(0.48, 0.26, { color: 'gold', label: 'P', labelPos: 'n', constrain: { x: [-1.98, 1.98], y: [-1.45, 1.45] } });
         const Cn = s.handle(-0.7, 0.714, { color: 'purple', r: 5.5, constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [x / r, y / r]; } });
         const prof = memo(); let cur = null;
         const profile = (mode, ux, uy) => prof(mode + '|' + (mode === 'cube' ? Math.round(Math.atan2(uy, ux) * 200) : ''), () => {
@@ -202,7 +207,7 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
           for (let i = 1; i <= 64; i++) {
             const r = (2.6 * i) / 64;
             if (mode === 'shell') { if (Math.abs(r - 1) > 0.012) pts.push([r, shellPull(r, 1, 1200)]); }
-            else if (mode === 'ball') pts.push([r, ballPull(r, 100, 240)]);
+            else if (mode === 'ball') pts.push([r, ballPull(r, 160, 120)]);
             else {
               const rs = 1 / Math.max(Math.abs(ux), Math.abs(uy));
               if (Math.abs(r - rs) < 0.06) continue;
@@ -222,12 +227,12 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
             const big = Math.max(...dgs.map(Math.abs));
             s.circle(0, 0, 1, { fill: 'accent', fillAlpha: 0.06, color: 'faint', width: 1 });
             for (let j = 0; j < K; j++) {
-              const th = ((j + 0.5) * Math.PI) / K, c = Math.cos(th), sn = Math.sin(th), cx = c * ux, cy = c * uy, A = sn, B = 0.16 * sn;
+              const th = ((j + 0.5) * Math.PI) / K, c = Math.cos(th), sn = Math.sin(th), cx = c * ux, cy = c * uy, A = sn, B = 0.12 * sn;
               const pts = []; for (let k = 0; k <= 48; k++) { const ph = (TAU * k) / 48; pts.push([cx + A * Math.cos(ph) * nx + B * Math.sin(ph) * ux, cy + A * Math.cos(ph) * ny + B * Math.sin(ph) * uy]); }
               const a = Math.abs(dgs[j]) / big;
               s.path(pts, { color: dgs[j] >= 0 ? 'blue' : 'orange', width: 1 + 2.2 * a, alpha: 0.25 + 0.75 * a });
             }
-            s.line(-2.4 * ux, -2.4 * uy, 2.4 * ux, 2.4 * uy, { color: 'faint', dash: [3, 4], width: 1 });
+            s.line(-2.1 * ux, -2.1 * uy, 2.1 * ux, 2.1 * uy, { color: 'faint', dash: [3, 4], width: 1 });
             extra.near = cum.length ? Math.min(...cum.map((q) => q[1])) : 0;
             // Newton's double cone (inside only)
             Cn.visible = r < 0.96;
@@ -246,10 +251,12 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
             }
           } else if (mode === 'ball') {
             Cn.visible = false;
-            const gr = ballPull(r, 120, 320, cum); g = [-gr * ux, -gr * uy]; pred = r > 1 ? 1 / (r * r) : r;
+            const K = 200, gr = ballPull(r, K, 160, cum); g = [-gr * ux, -gr * uy];
+            let menc = 0; for (let k = 0; k < K; k++) if ((k + 0.5) / K < r) menc += ((k + 1) ** 3 - k ** 3) / K ** 3;
+            pred = menc / (r * r); extra.cont = r > 1 ? 1 / (r * r) : r;
             for (let k = 10; k >= 1; k--) { const R = k / 10; s.circle(0, 0, R, { fill: R <= r ? 'green' : 'accent', fillAlpha: 0.05, color: R <= r ? 'green' : 'faint', width: R <= r ? 1.4 : 0.8 }); }
             s.circle(0, 0, Math.min(r, 1), { color: 'green', width: 2, dash: [5, 4] });
-            extra.inside = Math.min(r, 1) ** 3;
+            extra.inside = menc;
           } else {
             Cn.visible = false;
             const bins = new Array(60).fill(0);
@@ -268,24 +275,24 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
               }
               if (ends.length >= 2) { const a = Math.abs(bins[i]) / big; s.line(ends[0][0], ends[0][1], ends[ends.length - 1][0], ends[ends.length - 1][1], { color: bins[i] >= 0 ? 'blue' : 'orange', width: 1 + 2 * a, alpha: 0.25 + 0.7 * a }); }
             }
-            s.line(-2.4 * ux, -2.4 * uy, 2.4 * ux, 2.4 * uy, { color: 'faint', dash: [3, 4], width: 1 });
+            s.line(-2.1 * ux, -2.1 * uy, 2.1 * ux, 2.1 * uy, { color: 'faint', dash: [3, 4], width: 1 });
           }
           s.dot(0, 0, { r: 3, color: 'ink', label: 'O', labelPos: 'sw' });
           const gm = Math.hypot(g[0], g[1]), radial = -(g[0] * ux + g[1] * uy), perp = g[0] * nx + g[1] * ny;
           const ok = Math.abs(radial - pred) < 2e-3 * Math.max(1, pred) && Math.abs(perp) < 1e-3;
-          if (gm > 0.004) { const L = 0.55 * Math.min(1.6, gm) / gm; s.arrow(P.x, P.y, P.x + L * g[0], P.y + L * g[1], { color: ok ? 'green' : 'red', width: 2.6 }); }
+          if (gm > 0.05) { const L = 0.55 * Math.min(1.6, gm) / gm; s.arrow(P.x, P.y, P.x + L * g[0], P.y + L * g[1], { color: ok ? 'green' : 'red', width: 2.6 }); }
+          else if (!ok && gm > 1e-6) { const L = 0.45 / gm; s.arrow(P.x, P.y, P.x + L * g[0], P.y + L * g[1], { color: 'red', width: 2, dash: [4, 3] }); s.text(`direction only (|g| = ${v.fix(gm, 4)})`, P.x, P.y, { color: 'red', size: 10.5, dy: 16, align: 'center' }); }
           if (pred > 0.004 && !ok) { const L = 0.55 * Math.min(1.6, pred) / pred; s.arrow(P.x, P.y, P.x - L * pred * ux, P.y - L * pred * uy, { color: 'green', width: 1.6, dash: [4, 3] }); }
           s.corner(ok ? (pred === 0 ? 'net pull = 0' : 'pull = point mass at O') : 'not a point mass, not zero', 'tl', { color: ok ? 'green' : 'red', weight: 600 });
           // running sum
           const yr = span([cum.map((q) => q[1]), [0, pred]], 0.12, 0.2);
           cs.setView([0, 1], yr);
-          cs.setTitle(mode === 'ball' ? 'running sum as shells are added from the centre' : 'running sum as slices are added from the side of $P$');
+          cs.setTitle(mode === 'ball' ? 'running sum against the radius of the last shell added' : mode === 'shell' ? 'running sum against the fraction of the shell added (from $P$’s side)' : 'running sum, slice by slice from $P$’s side');
           cs.hline(0, { color: 'muted', width: 1 });
           cs.hline(pred, { color: 'green', dash: [5, 4], width: 1.5 });
           cs.path(cum, { color: mode === 'cube' && !ok ? 'red' : 'accent', width: 2.4 });
           if (cum.length) cs.dot(cum[cum.length - 1][0], cum[cum.length - 1][1], { r: 4.5, color: ok ? 'green' : 'red' });
           if (mode === 'ball') cs.vline(Math.min(r, 1), { color: 'gold', dash: [3, 3] });
-          cs.text(mode === 'ball' ? 'shell radius' : 'far side', 0.98, yr[0] + 0.06 * (yr[1] - yr[0]), { color: 'muted', size: 11, align: 'right' });
           // profile
           const pts = profile(mode, ux, uy);
           gp.vband(0, mode === 'cube' ? 1 / Math.max(Math.abs(ux), Math.abs(uy)) : 1, { color: 'accent', alpha: 0.06 });
@@ -307,7 +314,7 @@ outside, the shell pulls exactly like a point mass $M$ at its centre; inside, th
           }
           if (mode === 'ball') {
             const gE = (C.G * C.Mearth) / C.Rearth ** 2;
-            return String.raw`$r = ${v.fix(r, 3)}R$: sum over 120 shells $g_r = ${v.fix(radial, 4)}$, ${r < 1 ? String.raw`$GM(r)/r^2 = GMr/R^3 = ${v.fix(pred, 4)}$ (mass inside: ${v.fix(100 * extra.inside, 1)}%; the shells outside $r$ add nothing)` : String.raw`point mass $${v.fix(pred, 4)}$`} · Earth as a uniform ball: $GM_\oplus/R_\oplus^2 = ${v.fix(gE, 2)}$ m/s², so here $${v.fix(gE * radial, 2)}$ m/s²`;
+            return String.raw`$r = ${v.fix(r, 3)}R$: sum over 200 shells $g_r = ${v.fix(radial, 5)}$ · ${r < 1 ? String.raw`mass of the shells inside $r$: $M(r) = ${v.fix(extra.inside, 5)}M$, and $GM(r)/r^2 = ${v.fix(pred, 5)}$ — the shells outside add nothing (continuous ball: $GMr/R^3 = ${v.fix(extra.cont, 4)}$)` : String.raw`point mass $GM/r^2 = ${v.fix(pred, 5)}$`} · Earth as a uniform ball: $GM_\oplus/R_\oplus^2 = ${v.fix(gE, 2)}$ m/s², so here ${v.fix(gE * radial, 2)} m/s²`;
           }
           return String.raw`cubic shell, same mass: radial pull $${v.fix(radial, 4)}$ vs the point-mass/zero claim $${v.fix(pred, 4)}$, sideways component $${v.fix(perp, 4)}$ (field off the radial line by $${v.fix((Math.atan2(Math.abs(perp), radial) * 180) / Math.PI, 1)}°$) — far away the cube does approach $GM/r^2$, but only approximately`;
         });
@@ -333,14 +340,14 @@ where the **reduced mass** is $\mu = \dfrac{m_1m_2}{m_1 + m_2}$. So the centre o
         const q = v.slider('mass ratio $m_2/m_1$', 0.02, 1, 1.018 / 2.063, { step: 0.005 });
         const model = v.select('one-body model', [{ value: 'mu', label: 'reduced mass $\\mu$' }, { value: 'fixed', label: 'heavier star fixed' }], 'mu');
         const drift = v.toggle('centre of mass drifts', false);
-        const s = v.stage({ x: [-17, 17], y: [-14, 14], equal: true, axes: false, height: 330, title: 'both stars (lab frame)' });
-        const sr = v.stage({ x: [-36, 10], y: [-17, 17], equal: true, axes: false, height: 330, title: 'separation $\\mathbf r = \\mathbf r_2 - \\mathbf r_1$, star 1 at the origin' });
+        const s = v.stage({ x: [-22, 22], y: [-17, 17], equal: true, axes: false, height: 330, title: 'both stars (lab frame)' });
+        const sr = v.stage({ x: [-34, 10.5], y: [-18.5, 17.5], equal: true, axes: false, height: 330, title: 'separation $\\mathbf r = \\mathbf r_2 - \\mathbf r_1$, star 1 at the origin' });
         const cache = memo(); let cur = null;
         const P0 = TAU * Math.sqrt(a ** 3 / (GM1 * Mtot)), Tsim = 2 * P0, N = 6000, dt = Tsim / N;
         const run = () => cache([q.value, model.value, drift.value].join('|'), () => {
           const m1 = Mtot / (1 + q.value), m2 = Mtot - m1, mu = (m1 * m2) / Mtot;
           const r0 = [-a * (1 + e), 0], v0 = [0, -Math.sqrt((GM1 * Mtot * (1 - e)) / (a * (1 + e)))];
-          const V = drift.value ? [1.0, 0.28] : [0, 0], R0 = drift.value ? [-12, -3] : [0, 0];
+          const V = drift.value ? [0.36, 0.1] : [0, 0], R0 = [0, 0];
           const s0 = [R0[0] - (m2 / Mtot) * r0[0], R0[1] - (m2 / Mtot) * r0[1], R0[0] + (m1 / Mtot) * r0[0], R0[1] + (m1 / Mtot) * r0[1], V[0] - (m2 / Mtot) * v0[0], V[1] - (m2 / Mtot) * v0[1], V[0] + (m1 / Mtot) * v0[0], V[1] + (m1 / Mtot) * v0[1]];
           const f2 = (S) => { const dx = S[2] - S[0], dy = S[3] - S[1], d3 = Math.hypot(dx, dy) ** 3, k = GM1 / d3; return [S[4], S[5], S[6], S[7], k * m2 * dx, k * m2 * dy, -k * m1 * dx, -k * m1 * dy]; };
           const Mm = model.value === 'mu' ? Mtot : m1;
@@ -363,27 +370,27 @@ where the **reduced mass** is $\mu = \dfrac{m_1m_2}{m_1 + m_2}$. So the centre o
           const R = run(), k = Math.min(N, Math.round(((t * P0) / 7 / dt) % (N + 1)));
           const S = R.two[k], m1 = R.m1, m2 = R.m2;
           // lab panel
-          if (drift.value) s.setView(R.xr, R.yr); else s.setView([-17, 17], [-14, 14]);
+          s.setView(R.xr, R.yr);
           s.path(R.two.map((Q) => [Q[0], Q[1]]), { color: 'blue', width: 1.2, alpha: 0.45 });
           s.path(R.two.map((Q) => [Q[2], Q[3]]), { color: 'orange', width: 1.2, alpha: 0.45 });
           const cm = R.two.map((Q) => [(m1 * Q[0] + m2 * Q[2]) / Mtot, (m1 * Q[1] + m2 * Q[3]) / Mtot]);
           s.path(cm, { color: 'green', width: 1.6, dash: [5, 4] });
           const X = (m1 * S[0] + m2 * S[2]) / Mtot, Y = (m1 * S[1] + m2 * S[3]) / Mtot;
           s.line(S[0], S[1], S[2], S[3], { color: 'faint', width: 1 });
-          s.circle(S[0], S[1], 0.55 + 0.45 * Math.cbrt(m1), { fill: 'blue', fillAlpha: 0.85, color: 'blue', width: 1 });
-          s.circle(S[2], S[3], 0.55 + 0.45 * Math.cbrt(m2), { fill: 'orange', fillAlpha: 0.85, color: 'orange', width: 1 });
+          s.dot(S[0], S[1], { r: 4 + 5 * Math.cbrt(m1 / Mtot), color: 'blue' });
+          s.dot(S[2], S[3], { r: 4 + 5 * Math.cbrt(m2 / Mtot), color: 'orange' });
           s.dot(X, Y, { r: 4.5, color: 'green', label: 'CM', labelPos: 'se' });
           s.text(`m₁ = ${v.fix(m1, 2)} M☉`, S[0], S[1], { color: 'blue', size: 11, dy: -16, align: 'center' });
           s.text(`m₂ = ${v.fix(m2, 2)} M☉`, S[2], S[3], { color: 'orange', size: 11, dy: 16, align: 'center' });
           // relative panel
           sr.path(R.two.map((Q) => [Q[2] - Q[0], Q[3] - Q[1]]), { color: 'purple', width: 2.4 });
           const good = model.value === 'mu';
-          const step = 150; for (let j = 0; j <= k; j += step) { const O = R.one[j]; sr.dot(O[0], O[1], { r: 3.2, color: good ? 'green' : 'red', ring: false }); }
+          const step = 100; for (let j = 0; j <= k; j += step) { const O = R.one[j]; sr.dot(O[0], O[1], { r: 3.2, color: good ? 'green' : 'red', ring: false }); }
           if (!good) sr.path(R.one.slice(0, k + 1).map((O) => [O[0], O[1]]), { color: 'red', width: 1.3, dash: [4, 3] });
-          sr.circle(0, 0, 0.55 + 0.45 * Math.cbrt(m1), { fill: 'blue', fillAlpha: 0.85, color: 'blue', width: 1 });
+          sr.dot(0, 0, { r: 4 + 5 * Math.cbrt(m1 / Mtot), color: 'blue' });
           sr.dot(S[2] - S[0], S[3] - S[1], { r: 6, color: 'orange' });
           const O = R.one[k]; sr.dot(O[0], O[1], { r: 4, color: good ? 'green' : 'red', hollow: true, width: 2 });
-          sr.corner(good ? 'one body of mass μ in the field −GM r/r³' : 'star 1 held fixed: field −Gm₁ r/r³', 'tl', { color: good ? 'green' : 'red', weight: 600 });
+          sr.corner(good ? 'one body of mass μ in the field −GM r/r³' : 'star 1 held fixed: field −Gm₁ r/r³', 'bl', { color: good ? 'green' : 'red', weight: 600 });
           cur = { R, k };
         }, { period: 14, still: 2.2 });
         v.legend([['blue', 'star 1'], ['orange', 'star 2'], ['green', 'centre of mass', { dash: true }], ['purple', 'separation $\\mathbf r_2-\\mathbf r_1$'], ['green', 'one-body model', { dot: true }]]);
@@ -426,9 +433,11 @@ so the radial motion is that of a particle on a line in the **effective potentia
         H = se.handle(2.2, -0.32, { color: 'gold', label: 'E', labelPos: 'ne' });
         const Ueff = (P, l, r) => P.U(r) + (l * l) / (2 * r * r);
         const view = (P, l) => {
-          const xs = [], ys = []; for (let i = 0; i <= 200; i++) { const r = P.rr[0] + ((P.rr[1] - P.rr[0]) * i) / 200; xs.push(r); ys.push(Ueff(P, l, r)); }
-          let m = Math.min(...ys); if (pot.value === 'spring') return [m - 0.25 * l - 0.2, m + 2.2];
-          return [m - 0.25, Math.max(0.5, m + 1.1)];
+          const ys = []; for (let i = 0; i <= 300; i++) ys.push(Ueff(P, l, P.rr[0] + ((P.rr[1] - P.rr[0]) * i) / 300));
+          if (pot.value === 'spring') { const m = Math.min(...ys); return [m - 0.25 * l - 0.2, m + 2.2]; }
+          if (pot.value === 'kepler') { const m = Math.min(...ys); return [m - 0.25, Math.max(0.5, m + 1.1)]; }
+          const ih = ys.indexOf(Math.max(...ys)), well = Math.min(...ys.slice(ih)), top = Math.min(ys[ih], 1.2); // the hump and the well beyond it
+          return [well - 0.25, Math.max(top + 0.25, 0.5)];
         };
         const cache = memo(); let cur = null;
         const run = () => {
@@ -462,6 +471,7 @@ so the radial motion is that of a particle on a line in the **effective potentia
           const R = run(), n = R.tt.length - 1, simT = (t * R.T) / 12, k = Math.min(n, Math.round(simT / R.dt));
           const P = R.P, l = R.l;
           // orbit
+          const lim = clamp(1.12 * Math.min(R.hi, 6), 1.3, 6.2); so.setView([-lim, lim], [-lim, lim]);
           if (R.rmax && R.rmax < 6) so.circle(0, 0, R.rmax, { color: 'muted', dash: [4, 4], width: 1.2 });
           if (R.rmin > 0) so.circle(0, 0, R.rmin, { color: 'muted', dash: [4, 4], width: 1.2 });
           if (R.rmax && R.rmin > 0 && R.rmax < 6) so.rings([conicPts(R.rmax, 0, 0, 1e9, 120), conicPts(R.rmin, 0, 0, 1e9, 120)], { fill: 'green', fillAlpha: 0.07, stroke: false, evenodd: true });
@@ -518,7 +528,7 @@ so the radial motion is that of a particle on a line in the **effective potentia
       refs: ['Goldstein §3.3', 'Taylor §8.4'],
       tags: ['effective potential', 'conic sections', 'energy'],
       viz(v) {
-        const so = v.stage({ x: [-6.5, 2.5], y: [-3.3, 3.3], equal: true, axes: false, height: 320, full: true, title: 'orbits with angular momentum $\\ell = 1$ (force centre at the focus)' });
+        const so = v.stage({ x: [-9.4, 3.2], y: [-2.4, 2.4], equal: true, axes: false, height: 320, full: true, title: 'orbits with angular momentum $\\ell = 1$ (force centre at the focus)' });
         const se = v.stage({ x: [0, 8], y: [-0.62, 0.62], axes: 'box', height: 210, full: true, xlabel: 'r', title: 'effective potential $U_{\\rm eff} = -1/r + 1/2r^2$ — drag the energy' });
         const snap = (E) => (Math.abs(E + 0.5) < 0.015 ? -0.5 : Math.abs(E) < 0.012 ? 0 : E);
         const H = se.handle(7.3, -0.22, { color: 'gold', label: 'E', labelPos: 'w', constrain: (x, y) => [7.3, snap(clamp(y, -0.5, 0.58))] });
@@ -542,8 +552,8 @@ so the radial motion is that of a particle on a line in the **effective potentia
           const R = run(), col = COL[R.k];
           // family of conics with p = 1
           for (const E of fam) { const e = Math.sqrt(Math.max(0, 1 + 2 * E)); so.path(conicPts(1, e, 0, 16), { color: COL[kind(E)], width: 1, alpha: 0.3 }); }
-          so.line(0, -3.3, 0, 3.3, { color: 'faint', dash: [3, 4], width: 1 });
-          so.line(-6.5, 0, 2.5, 0, { color: 'faint', width: 1 });
+          so.line(0, -4, 0, 4, { color: 'faint', dash: [3, 4], width: 1 });
+          so.line(-12, 0, 5, 0, { color: 'faint', width: 1 });
           so.dot(0, 1, { r: 3.5, color: 'ink' }); so.dot(0, -1, { r: 3.5, color: 'ink' });
           so.text('latus rectum: r = p = ℓ²/μk', 0.12, 1.12, { color: 'muted', size: 11 });
           so.path(R.pts, { color: col, width: 3 });
@@ -562,7 +572,7 @@ so the radial motion is that of a particle on a line in the **effective potentia
           se.line(0, R.E, 8, R.E, { color: col, width: 2 });
           for (const r of tp) if (r < 8) se.dot(r, R.E, { r: 4.5, color: 'red' });
           if (R.E < 0 && r2 > 8) se.text(`r_max = ${v.fix(r2, 1)} →`, 7.0, R.E, { color: 'red', size: 11, dy: 11, align: 'right' });
-          se.text('E = 0', 0.25, 0, { color: 'muted', size: 11, dy: -9 });
+          se.text('E = 0', 7.9, 0, { color: 'muted', size: 11, dy: -9, align: 'right' });
           se.dot(1, -0.5, { r: 3, color: 'green' });
           cur = R;
         });
@@ -599,8 +609,8 @@ where $\ell$ is the angular momentum about the centre. In particular a planet mo
         const ecc = v.slider('eccentricity $e$', 0, 0.85, 0.6, { step: 0.01 });
         const Ns = v.slider('time slices $N$', 6, 16, 10, { int: true });
         const s = v.stage({ x: [-2.25, 0.85], y: [-1.15, 1.15], equal: true, axes: false, height: 330, weight: 1.45 });
-        const b = v.stage({ x: [0.3, 16.7], y: [0, 1], axes: 'box', height: 330, xlabel: 'slice', title: 'swept area per slice' });
-        const Q = s.handle(0, 0, { color: 'purple', r: 6, label: 'area origin', labelPos: 's', constrain: (x, y) => (Math.hypot(x, y) < 0.07 ? [0, 0] : [x, y]) });
+        const b = v.stage({ x: [-0.6, 10.6], y: [0, 1], axes: 'box', height: 330, xlabel: 'slice', title: 'swept area per slice' });
+        const Q = s.handle(0, 0, { color: 'purple', r: 6, labelPos: 's', constrain: (x, y) => (Math.hypot(x, y) < 0.07 ? [0, 0] : [x, y]) });
         const COLS = ['blue', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
         const cache = memo(); let cur = null;
         const run = () => cache([force.value, ecc.value, Ns.value].join('|'), () => {
@@ -611,7 +621,7 @@ where $\ell$ is the angular momentum about the centre. In particular a planet mo
             view = [[-1.75, 1.75], [-1.15, 1.15]];
           } else {
             const rp = 1 - e; s0 = [rp, 0, 0, Math.sqrt((1 + e) / (1 - e))]; T = TAU;
-            const g = force.value === 'drag' ? 0.035 : 0;
+            const g = force.value === 'drag' ? 0.02 : 0;
             f = (S) => { const r = Math.hypot(S[0], S[1]), k = -1 / (r * r * r); return [S[2], S[3], k * S[0] - g * S[2], k * S[1] - g * S[3]]; };
             view = [[-2.05 + 0.25 * (0.6 - e), 0.55], [-1.05, 1.05]];
           }
@@ -635,18 +645,20 @@ where $\ell$ is the angular momentum about the centre. In particular a planet mo
             }
           }
           s.path(R.path.map((S) => [S[0], S[1]]), { color: 'ink', width: 1.6 });
-          sun(s, 0, 0, { r: 0.045, label: 'force centre', dy: 15 });
+          sun(s, 0, 0, { r: 0.045, label: 'force centre', dy: 17 });
           const P = R.path[upto];
           s.dot(P[0], P[1], { r: 6, color: 'gold' });
           s.line(qx, qy, P[0], P[1], { color: 'gold', width: 1.4 });
           const moved = Math.hypot(qx, qy) > 1e-9;
+          Q.label = moved ? 'area origin' : null;
           s.corner(moved ? 'areas measured from another point' : force.value === 'drag' ? 'force not central' : 'central force, areas from its centre', 'tl', { color: moved || force.value === 'drag' ? 'red' : 'green', weight: 600 });
           // bars
           const mean = R.ab / N, done = Math.min(N, Math.floor(upto / R.sub));
-          b.setView([0.3, 16.7], [0, 1.6 * mean]);
+          b.setView([-0.7, N + 0.6], [0, 1.6 * mean]);
+          b.setTicks(Array.from({ length: N }, (_, i) => i + 1), null);
           b.hline(mean, { color: 'green', dash: [5, 4], width: 1.5 });
           b.bars(areas.slice(0, Math.max(done, 0)), { color: (val, i) => COLS[i % COLS.length] });
-          b.text('πab/N', 16.5, mean, { color: 'green', size: 11, align: 'right', dy: -9 });
+          b.text('πab/N', N + 0.5, mean, { color: 'green', size: 11, align: 'right', dy: -9 });
           cur = { R, areas, done, mean, moved };
         }, { period: 9, still: 8.5 });
         v.readout(() => {
@@ -680,7 +692,7 @@ with initial data $u = 1/r_0$, $du/d\phi = -\mu\dot r_0/\ell$. Its solution give
         const LAWS = {
           inv2: { label: '$1/r^2$', F: (r) => -1 / (r * r), v0: [0.15, 1.2] },
           spring: { label: 'spring $r$', F: (r) => -r, v0: [0.2, 0.55] },
-          inv25: { label: '$1/r^{2.5}$', F: (r) => -1 / r ** 2.5, v0: [0.1, 1.15] },
+          inv25: { label: '$1/r^{2.5}$', F: (r) => -1 / r ** 2.5, v0: [0.1, 0.84] },
           inv3: { label: '$1/r^3$', F: (r) => -1 / r ** 3, v0: [-0.12, 0.82] },
           inv5: { label: '$1/r^5$', F: (r) => -1 / r ** 5, v0: [0, 1 / (Math.sqrt(8) * 0.5)] },
         };
@@ -699,22 +711,33 @@ with initial data $u = 1/r_0$, $du/d\phi = -\mu\dot r_0/\ell$. Its solution give
           // Binet integration in φ: u'' = -u - F(1/u)/(h² u²)  (μ = 1)
           const sg = Math.sign(h) || 1, H2 = h * h;
           const fb = (Y) => [Y[1], -Y[0] - L.F(1 / Y[0]) / (H2 * Y[0] * Y[0])];
-          let Y = [1 / r0, -vx / h * sg * sg], phi = 0; const dphi = 0.002, bu = [[0, Y[0]]], bx = [];
+          let Y = [1 / r0, -vx / Math.abs(h)], phi = 0; const dphi = 0.002, bu = [[0, Y[0], Y[1]]], bx = [];
           const phMax = Math.min(tu[tu.length - 1][0], 3 * TAU);
           for (let k = 0; phi < phMax && k < 20000; k++) {
             Y = rk4(fb, Y, dphi); phi += dphi;
             if (!(Y[0] > 1 / 8) || Y[0] > 1 / 0.03) break;
-            bu.push([phi, Y[0]]);
-            if (k % 50 === 49) bx.push([Math.cos(sg * phi) / Y[0], Math.sin(sg * phi) / Y[0]]);
+            bu.push([phi, Y[0], Y[1]]);
+            if (k % 50 === 49 && phi <= TAU + 1e-9) bx.push([Math.cos(sg * phi) / Y[0], Math.sin(sg * phi) / Y[0]]);
           }
-          // compare r(φ) from both integrations
-          let dev = 0, j = 0;
-          for (const [p, u] of bu) { while (j < tu.length - 2 && tu[j + 1][0] < p) j++; const a = tu[j], b2 = tu[j + 1]; if (!b2 || b2[0] === a[0] || p > b2[0]) continue; const ut = a[1] + ((p - a[0]) / (b2[0] - a[0])) * (b2[1] - a[1]); dev = Math.max(dev, Math.abs(1 / ut - 1 / u)); }
+          // compare r(φ): at every time step, Binet's u is Hermite-interpolated (it carries u and du/dφ) at the same angle
+          let dev = 0, j = 0; const bl = bu[bu.length - 1][0];
+          for (const [p, ut] of tu) {
+            if (p > bl) break;
+            while (j < bu.length - 2 && bu[j + 1][0] < p) j++;
+            const A = bu[j], B = bu[j + 1], hh = B[0] - A[0], x = (p - A[0]) / hh;
+            const ub = (2 * x ** 3 - 3 * x * x + 1) * A[1] + (x ** 3 - 2 * x * x + x) * hh * A[2] + (-2 * x ** 3 + 3 * x * x) * B[1] + (x ** 3 - x * x) * hh * B[2];
+            dev = Math.max(dev, Math.abs(1 / ut - 1 / ub));
+          }
           const umax = Math.max(...bu.map((q) => q[1]), ...tu.map((q) => q[1]));
           return { R, tu, bu, bx, dev, h, stop: R.stop, phMax: Math.max(phMax, 1), umax };
         });
         v.render(() => {
           const D = run();
+          // fit the window to the orbit, the start point and the velocity tip
+          let x0 = Math.min(0, tip.x) - 0.3, x1 = Math.max(1, tip.x) + 0.3, y0 = Math.min(0, tip.y) - 0.3, y1 = Math.max(0, tip.y) + 0.3;
+          for (const S of D.R.s) { x0 = Math.min(x0, S[0]); x1 = Math.max(x1, S[0]); y0 = Math.min(y0, S[1]); y1 = Math.max(y1, S[1]); }
+          const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hw = Math.max(1.2, Math.min(4.5, 0.56 * Math.max(x1 - x0, y1 - y0)));
+          s.setView([cx - 1.1 * hw, cx + 1.1 * hw], [cy - hw, cy + hw]);
           s.path(D.R.s.map((S) => [S[0], S[1]]), { color: 'blue', width: 2.4 });
           s.dots(D.bx, { r: 3, color: 'orange' });
           sun(s, 0, 0, { r: 0.05, color: 'ink' });
@@ -723,22 +746,22 @@ with initial data $u = 1/r_0$, $du/d\phi = -\mu\dot r_0/\ell$. Its solution give
           if (law.value === 'inv5') s.circle(0.5, 0, 0.5, { color: 'green', width: 1, dash: [4, 4] });
           const msg = D.stop === 'centre' ? 'falls into the centre' : D.stop === 'escape' ? 'escapes' : '';
           if (msg) s.corner(msg, 'tl', { color: 'red', weight: 600 });
-          g.setView([0, D.phMax], [0, Math.min(D.umax * 1.12, 12)]);
-          for (let k = 1; k * Math.PI < D.phMax; k++) g.vline(k * Math.PI, { color: 'faint', width: 1 });
+          g.setView([-0.25, D.phMax], [0, Math.min(D.umax * 1.12, 12)]);
+          const tk = []; for (let k = 1; k * Math.PI < D.phMax; k++) { g.vline(k * Math.PI, { color: 'grid', width: 1 }); tk.push([k * Math.PI, k === 1 ? 'π' : k + 'π']); }
+          g.setTicks(tk, null);
           g.path(D.tu, { color: 'blue', width: 2.6 });
           g.path(D.bu, { color: 'orange', width: 1.4, dash: [5, 4] });
           g.dots(D.bu.filter((_, i) => i % 50 === 0), { r: 2.6, color: 'orange' });
-          for (let k = 1; k * Math.PI < D.phMax; k++) g.text(k + 'π', k * Math.PI, 0, { color: 'muted', size: 10, dy: -8, align: 'center' });
           cur = D;
         });
-        v.legend([['blue', 'time integration of $\\mu\\ddot{\\mathbf r} = F\\hat{\\mathbf r}$'], ['orange', 'Binet: $u\'\' + u = -\\mu F/\\ell^2u^2$', { dash: true }]]);
+        v.legend([['blue', 'time integration of $\\mu\\ddot{\\mathbf r} = F\\hat{\\mathbf r}$'], ['orange', 'Binet: $u\'\' + u = -\\mu F/\\ell^2u^2$ (dots: first turn)', { dash: true }]]);
         v.readout(() => {
           if (!cur) return '';
           const D = cur, L = law.value;
           let out = String.raw`$\ell = ${v.fix(D.h, 3)}$ · largest gap between the two orbits $r(\phi)$: $${sci(v, D.dev)}$`;
           if (L === 'inv2') { const u = D.bu.map((q) => q[1]); out += String.raw` · right-hand side $\mu k/\ell^2 = ${v.fix(1 / (D.h * D.h), 4)}$ = mean of $u$ over a turn $${v.fix((Math.max(...u) + Math.min(...u)) / 2, 4)}$: $u = (1 + e\cos(\phi - \phi_0))/p$, a conic`; }
           if (L === 'inv3') out += String.raw` · here $u'' + (1 - 1/\ell^2)u = 0$ is exactly linear: ${D.h * D.h < 1 ? String.raw`$\ell^2 < 1$, exponential growth — a spiral into the centre` : String.raw`$\ell^2 > 1$, a sinusoid of period $2\pi/\sqrt{1 - 1/\ell^2}$ that reaches $u = 0$: escape`}`;
-          if (L === 'inv5') out += String.raw` · the circle $r = 2a\cos\phi$ through the centre solves Binet’s equation exactly when $F = -8a^2\ell^2/\mu r^5$; with $a = \tfrac12$ that needs $\ell = 1/\sqrt2 = 0.7071$ — it is unstable, so any other launch spirals in or escapes`;
+          if (L === 'inv5') out += String.raw` · the circle $r = 2a\cos\phi$ through the centre solves Binet’s equation exactly when $F = -8a^2\ell^2/\mu r^5$; with $a = \tfrac12$ that needs $\ell = 1/\sqrt2 = 0.7071$: the particle then rides the circle into the centre, arriving in finite time at infinite speed, and any other launch spirals in or escapes`;
           if (L === 'spring') out += ' · $u(\\phi)$ has period $\\pi$: an ellipse centred on the force centre';
           if (L === 'inv25') out += ' · $u(\\phi)$ oscillates with a period that is not a divisor of $2\\pi$: the ellipse precesses';
           return out;
@@ -792,11 +815,13 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
           const efit = Math.hypot(Bc, Cc) / A, pfit = 1 / A, wfit = Math.atan2(Cc, Bc);
           // unwound angle and 1/r for the right panel (forward run only)
           let th = 0, prev = Math.atan2(s0[1], s0[0]); const th0 = prev, ur = [];
-          F.s.forEach((S, i) => { const a = Math.atan2(S[1], S[0]); let d = a - prev; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; if (i) th += d; prev = a; if (i % 6 === 0) ur.push([Math.abs(th), 1 / Math.hypot(S[0], S[1])]); });
+          let nextA = 0; const unw = [0];
+          F.s.forEach((S, i) => { const a = Math.atan2(S[1], S[0]); let d = a - prev; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; if (i) { th += d; unw.push(th); } prev = a; if (Math.abs(th) >= nextA) { ur.push([Math.abs(th), 1 / Math.hypot(S[0], S[1])]); nextA += 0.11; } });
           const sgn = el.h >= 0 ? 1 : -1;
-          // apsidal advance per turn: angle between successive perihelia
-          const peri = []; for (let i = 1; i < F.s.length - 1; i++) { const r0 = Math.hypot(F.s[i - 1][0], F.s[i - 1][1]), r1 = Math.hypot(F.s[i][0], F.s[i][1]), r2 = Math.hypot(F.s[i + 1][0], F.s[i + 1][1]); if (r1 < r0 && r1 <= r2) peri.push(Math.atan2(F.s[i][1], F.s[i][0])); }
-          let adv = NaN; if (peri.length >= 2) { let d = peri[1] - peri[0]; while (d > Math.PI) d -= TAU; while (d < -Math.PI) d += TAU; adv = d * sgn; }
+          // apsidal advance per turn: unwound angle between successive perihelia, located where r·v changes sign from − to +
+          const peri = [];
+          for (let i = 1; i < F.s.length; i++) { const A = F.s[i - 1], B = F.s[i], a0 = A[0] * A[2] + A[1] * A[3], a1 = B[0] * B[2] + B[1] * B[3]; if (a0 < 0 && a1 >= 0) { const u = -a0 / (a1 - a0); peri.push(unw[i - 1] + u * (unw[i] - unw[i - 1])); } }
+          const adv = peri.length >= 2 ? sgn * (peri[1] - peri[0]) - TAU : NaN;
           return { n, s0, el, bound, F, all, A, Bc, Cc, efit, pfit, wfit, res, ur, th0, sgn, adv };
         });
         v.animate((t) => {
@@ -823,11 +848,11 @@ Bound orbits ($E<0$, $e<1$) are ellipses with semi-major axis $a = p/(1 - e^2) =
           // right panel
           const xmax = Math.max(TAU, Math.min(4 * TAU, R.ur.length ? R.ur[R.ur.length - 1][0] : TAU));
           const umax = Math.max(...R.ur.map((q) => q[1]));
-          g.setView([0, xmax], [0, Math.min(1.15 * umax, 6)]);
-          for (let k = 1; k * TAU <= xmax + 1e-9; k++) g.vline(k * TAU, { color: 'faint', width: 1 });
+          g.setView([-0.3, xmax], [0, Math.min(1.15 * umax, 6)]);
+          const tk = []; for (let k = 1; k * TAU <= xmax + 1e-9; k++) { g.vline(k * TAU, { color: 'grid', width: 1 }); tk.push([k * TAU, 2 * k + 'π']); }
+          g.setTicks(tk, null);
           g.fn((p) => R.A + R.Bc * Math.cos(R.th0 + R.sgn * p) + R.Cc * Math.sin(R.th0 + R.sgn * p), { color: 'green', width: 1.6, dash: [5, 4] });
-          g.dots(R.ur, { r: 2, color: col });
-          for (let k = 1; k * TAU <= xmax + 1e-9; k++) g.text(`${2 * k}π`, k * TAU, 0, { color: 'muted', size: 10, dy: -8, align: 'center' });
+          g.dots(R.ur, { r: 2.6, color: col });
         }, { period: 30, still: 2.5 });
         v.legend([['blue', 'simulated orbit'], ['green', 'least-squares conic, focus at the centre', { dash: true }], ['orange', 'distance to the focus'], ['purple', 'distance to the empty focus']]);
         v.readout(() => {
@@ -877,7 +902,7 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
           });
         });
         v.animate((t) => {
-          const D = run(), inner = zoom.value === 'inner', lim = inner ? 3.2 : 42, yrPerSec = inner ? 0.35 : 12;
+          const D = run(), inner = zoom.value === 'inner', lim = inner ? 3.2 : 50, yrPerSec = inner ? 0.35 : 12;
           s.setView([-lim, lim], [-lim, lim]);
           s.circle(0, 0, inner ? 1 : 10, { color: 'faint', width: 0.8, dash: [2, 4] });
           s.text(inner ? '1 AU' : '10 AU', inner ? 0.72 : 7.2, inner ? -0.72 : -7.2, { color: 'muted', size: 10 });
@@ -899,7 +924,7 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
             g.dot(d.B.a, d.B.T, { r: 6, hollow: true, color: 'ink', width: 1.3 });
             if (isFinite(d.Tm)) { g.dot(d.am, d.Tm, { r: 3.6, color: d.B.c === 'faint' ? 'muted' : d.B.c }); xs.push(Math.log10(d.am)); ys.push(Math.log10(d.Tm)); }
           }
-          for (const d of D) if (['Mercury', 'Earth', 'Jupiter', 'Neptune', 'Halley', 'Pluto', 'Ceres'].includes(d.B.n)) g.text(d.B.n, d.B.a, d.B.T, { color: 'muted', size: 10, dx: d.B.n === 'Halley' ? 9 : -9, align: d.B.n === 'Halley' ? 'left' : 'right', dy: d.B.n === 'Pluto' ? -6 : 0 });
+          for (const d of D) if (['Mercury', 'Earth', 'Jupiter', 'Neptune', 'Halley', 'Pluto', 'Ceres'].includes(d.B.n)) { const right = d.B.n === 'Halley' || d.B.n === 'Mercury'; g.text(d.B.n, d.B.a, d.B.T, { color: 'muted', size: 10, dx: right ? 9 : -9, align: right ? 'left' : 'right', dy: d.B.n === 'Pluto' ? -6 : d.B.n === 'Mercury' ? 4 : 0 }); }
           const fit = xs.length > 2 ? v.M.linreg(xs, ys) : null;
           if (fit) g.fn((a) => 10 ** fit.predict(Math.log10(a)), { color: 'accent', width: 1, alpha: 0.6 });
           cur = { D, fit };
@@ -909,7 +934,7 @@ Since $m \ll M_\odot$, all planets share almost the same constant $T^2/a^3$, so 
           if (!cur || !cur.fit) return '';
           const { D, fit } = cur, n = pw.value, J = D.find((d) => d.B.n === 'Jupiter'), H = D.find((d) => d.B.n === 'Halley'), V = D.find((d) => d.B.n === 'Venus');
           let out = String.raw`slope of the simulated points $= ${v.fix(fit.slope, 4)}$ ($r^2 = ${v.fix(fit.r2, 6)}$)`;
-          if (n === 2) out += String.raw` — Kepler’s $3/2$ · Halley ($e = 0.97$): $T = ${v.fix(H.Tm, 2)}$ yr, Venus ($e = 0.007$): $T/a^{3/2} = ${v.fix(V.Tm / V.am ** 1.5, 5)}$, Halley $T/a^{3/2} = ${v.fix(H.Tm / H.am ** 1.5, 5)}$ yr/AU$^{3/2}$ · Jupiter catalogue ${v.fix(J.B.T, 3)} yr vs Sun-only ${v.fix(J.Tm, 3)} yr: the factor $\sqrt{M_\odot/(M_\odot+m_J)} = ${v.fix(Math.sqrt(1 / (1 + 9.546e-4)), 5)}$ closes the gap (8.2)`;
+          if (n === 2) out += String.raw` — Kepler’s $3/2$ · Halley ($e = 0.97$): $T = ${v.fix(H.Tm, 2)}$ yr, Venus ($e = 0.007$): $T/a^{3/2} = ${v.fix(V.Tm / V.am ** 1.5, 5)}$, Halley $T/a^{3/2} = ${v.fix(H.Tm / H.am ** 1.5, 5)}$ yr/AU$^{3/2}$ · Jupiter: catalogue ${v.fix(J.B.T, 3)} yr, Sun-only model ${v.fix(J.Tm, 3)} yr; counting Jupiter’s own mass, $M_\odot + m_J$ (8.2), gives ${v.fix(J.Tm * Math.sqrt(1 / (1 + 9.546e-4)), 3)} yr — the rest is perturbation by the other planets`;
           else out += String.raw` vs $(n+1)/2 = ${v.fix((n + 1) / 2, 3)}$ for circular orbits · eccentric bodies now miss the line: Halley’s $T/a^{(n+1)/2}$ differs from Venus’s by ${v.fix(100 * Math.abs(H.Tm / H.am ** ((n + 1) / 2) / (V.Tm / V.am ** ((n + 1) / 2)) - 1), 1)}%`;
           return out;
         });

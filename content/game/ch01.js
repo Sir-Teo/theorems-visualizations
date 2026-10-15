@@ -465,7 +465,7 @@ then D is strictly better than C for each player whatever the other does, so (D,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Prisoner%27s_dilemma' },
       viz(v) {
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, minWidth: 380, title: 'the game' });
-        const Pl = v.stage({ x: [-0.8, 10.8], y: [-0.8, 10.8], axes: 'box', height: 260, minWidth: 380, title: 'payoff plane: $u_1$ (you) across, $u_2$ up' });
+        const Pl = v.stage({ x: [-0.9, 10.8], y: [-1.3, 10.8], axes: 'box', height: 260, minWidth: 380, title: 'payoff plane: $u_1$ (you) across, $u_2$ up' });
         const Hs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, minWidth: 380, title: 'the last rounds' });
         const Ch = v.stage({ x: [0, 8], y: [0, 30], axes: 'box', height: 200, minWidth: 380, title: 'running payoffs, round by round' });
         const sl = {};
@@ -563,7 +563,7 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
       viz(v) {
         const keys = ['stag', 'bos', 'coord', 'pd'];
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.9, title: 'two equilibria (green)' });
-        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', height: 330, weight: 1.1, title: 'basins of the best-reply dynamics', xlabel: '', ylabel: '' });
+        const Q = v.stage({ x: [-0.17, 1.04], y: [-0.15, 1.05], axes: false, height: 330, weight: 1.1, title: 'basins of the best-reply dynamics' });
         let g = mkGame(CLASSICS.stag.G.R, CLASSICS.stag.G.C, CLASSICS.stag.G.U), L = null;
         const pick = v.select('game', keys.map((k) => ({ value: k, label: CLASSICS[k].label })), 'stag', { onChange: (k) => { const p = CLASSICS[k].G; g = mkGame(p.R, p.C, p.U); ed.sync(); } });
         const ed = payoffEditor(v, A, { game: () => g, layout: () => L });
@@ -584,19 +584,26 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
         }
         // corner keys: 'TL' = (row 0, col 0) at (1, 1); 'BR' = (row 1, col 1) at (0, 0); 'TR' = (row 0, col 1) at (1, 0); 'BL' = (row 1, col 0) at (0, 1)
         const CC = { TL: 'teal', BR: 'purple', TR: 'gold', BL: 'pink' }, POS = { TL: [1, 1], BR: [0, 0], TR: [1, 0], BL: [0, 1] }, CELL = { TL: [0, 0], BR: [1, 1], TR: [0, 1], BL: [1, 0] };
-        let shareKey = '', shares = {};
+        let shareKey = '', shares = {}, legKey = '';
         let st = null;
         v.render(() => {
           const U = g.U, ne = pureNE(U);
-          L = bimatrix(v, A, g, { sel: ed.sel, maxH: 76 });
-          Q.o.xlabel = `share of row players choosing ${g.R[0]}`; Q.o.ylabel = `share of column players choosing ${g.C[0]}`;
+          L = bimatrix(v, A, g, { sel: ed.sel, maxH: 92, maxW: 132 });
           const pnl = v.rgb('panel'), rgb = Object.fromEntries(Object.entries(CC).map(([k, c]) => [k, v.rgb(c)])), faint = v.rgb('faint');
           const key = JSON.stringify(U) + v.color('panel') + v.color('teal');
           Q.raster((x, y) => {
+            if (x < 0 || x > 1 || y < 0 || y > 1) return null;
             const { corner } = flow(U, x, y, false), c = corner ? rgb[corner] : faint, a = corner ? 0.3 : 0.15;
             return [pnl[0] + (c[0] - pnl[0]) * a, pnl[1] + (c[1] - pnl[1]) * a, pnl[2] + (c[2] - pnl[2]) * a];
           }, { res: 4, key });
-          Q.axes();
+          // the unit square of population mixes, with its own axes
+          Q.rect(0, 0, 1, 1, { color: 'muted', width: 1.2 });
+          for (const t of [0, 0.25, 0.5, 0.75, 1]) {
+            Q.line(t, 0, t, -0.015, { color: 'muted', width: 1 }); Q.text(t === 0 || t === 1 ? String(t) : v.fix(t, 2), t, -0.02, { align: 'center', baseline: 'top', size: 10.5, color: 'muted' });
+            Q.line(0, t, -0.012, t, { color: 'muted', width: 1 }); Q.text(t === 0 || t === 1 ? String(t) : v.fix(t, 2), -0.018, t, { align: 'right', size: 10.5, color: 'muted' });
+          }
+          Q.text(`share of row players choosing ${g.R[0]} →`, 0.5, -0.082, { align: 'center', baseline: 'top', size: 11.5, color: C1, weight: 600 });
+          const ctx = Q.ctx; ctx.save(); ctx.translate(Q.X(-0.135), Q.Y(0.5)); ctx.rotate(-Math.PI / 2); ctx.font = FONT(11.5, 600); ctx.fillStyle = v.color(C2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(`share of column players choosing ${g.C[0]} →`, 0, 0); ctx.restore();
           if (key !== shareKey) {
             shareKey = key; shares = {}; const K = 50;
             for (let a = 0; a < K; a++) for (let b = 0; b < K; b++) { const { corner } = flow(U, (a + 0.5) / K, (b + 0.5) / K, false); const c = corner || 'none'; shares[c] = (shares[c] || 0) + 1 / (K * K); }
@@ -605,13 +612,16 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
           const den1 = (U[0][0][0] - U[1][0][0]) - (U[0][1][0] - U[1][1][0]), ys = den1 ? -(U[0][1][0] - U[1][1][0]) / den1 : NaN;
           const den2 = (U[0][0][1] - U[0][1][1]) - (U[1][0][1] - U[1][1][1]), xs = den2 ? -(U[1][0][1] - U[1][1][1]) / den2 : NaN;
           const okx = xs > 0 && xs < 1, oky = ys > 0 && ys < 1;
-          if (oky) { Q.hline(ys, { color: C1, dash: [6, 4], width: 1.6 }); Q.text(`row players indifferent (${v.fix(ys, 2)})`, 0.02, ys, { dy: -8, color: C1, size: 11, weight: 600, align: 'left' }); }
-          if (okx) { Q.vline(xs, { color: C2, dash: [6, 4], width: 1.6 }); Q.text(`column players indifferent (${v.fix(xs, 2)})`, xs, 0.03, { dx: 6, color: C2, size: 11, weight: 600, align: 'left', baseline: 'bottom' }); }
-          if (okx && oky) Q.dot(xs, ys, { r: 6, hollow: true, color: 'ink', width: 2, label: 'tipping point', labelPos: 'se' });
+          if (oky) { Q.line(0, ys, 1, ys, { color: C1, dash: [6, 4], width: 1.6 }); Q.text(`row players indifferent at ${v.fix(ys, 2)}`, 0.02, ys, { dy: ys > 0.5 ? 10 : -9, color: C1, size: 11, weight: 600, align: 'left' }); }
+          if (okx) {
+            Q.line(xs, 0, xs, 1, { color: C2, dash: [6, 4], width: 1.6 });
+            const c2 = Q.ctx; c2.save(); c2.translate(Q.X(xs) + (xs > 0.5 ? -9 : 9), Q.Y(0.03)); c2.rotate(-Math.PI / 2); c2.font = FONT(11, 600); c2.fillStyle = v.color(C2); c2.textAlign = 'left'; c2.textBaseline = 'middle'; c2.fillText(`column players indifferent at ${v.fix(xs, 2)}`, 0, 0); c2.restore();
+          }
+          if (okx && oky) { Q.dot(xs, ys, { r: 6, hollow: true, color: 'ink', width: 2 }); Q.text('tipping point', xs, ys, { dx: xs > 0.82 ? -10 : 10, dy: ys > 0.25 ? 13 : -13, align: xs > 0.82 ? 'right' : 'left', size: 11.5, weight: 700, color: 'ink' }); }
           for (const [i, j] of ne) {
             const k = Object.keys(CELL).find((q) => CELL[q][0] === i && CELL[q][1] === j), [px, py] = POS[k];
             Q.dot(px, py, { r: 7, color: 'green' });
-            Q.text(prof(g, i, j), px, py, { dx: px ? -12 : 12, dy: py ? 12 : -12, align: px ? 'right' : 'left', baseline: py ? 'top' : 'bottom', color: CC[k], size: 12.5, weight: 800 });
+            Q.text(prof(g, i, j), px, py, { dx: px ? -12 : 12, dy: py ? 13 : -13, align: px ? 'right' : 'left', baseline: py ? 'top' : 'bottom', color: CC[k], size: 12.5, weight: 800 });
           }
           const fl = flow(U, H.x, H.y, true);
           Q.path(fl.path, { color: 'gold', width: 2.6 }); Q.dots(fl.path.filter((_, k) => k % 3 === 0), { r: 2.4, color: 'gold' });
@@ -624,8 +634,10 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
             rd = { e1, e2, p1, p2, pd: pareto(e1, e2) ? e1 : pareto(e2, e1) ? e2 : null };
           }
           st = { ne, fl, rd, okx, oky, xs, ys };
+          const lk = g.R.join() + g.C.join();
+          if (lk !== legKey) { legKey = lk; v.legend([['teal', `basin of ${prof(g, 0, 0)}`, { area: true }], ['purple', `basin of ${prof(g, 1, 1)}`, { area: true }], ['gold', 'adjustment path from the start'], ['green', 'pure equilibrium', { dot: true }]]); }
         });
-        v.legend([['teal', `basin of the top-left cell`, { area: true }], ['purple', 'basin of the bottom-right cell', { area: true }], ['gold', 'adjustment path from the start'], ['green', 'pure equilibrium', { dot: true }]]);
+
         v.readout(() => {
           if (!st) return '';
           const { ne, fl, rd } = st, cn = (k) => (k ? prof(g, CELL[k][0], CELL[k][1]) : 'nowhere (it keeps cycling)');

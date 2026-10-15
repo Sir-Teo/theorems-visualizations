@@ -414,12 +414,12 @@ so $\|T^*w\| \le \|T\|\,\|w\|$ and $\|T^*\| \le \|T\|$ by 7.88(c). Applying this
         const G = v.stage({ x: [0, Math.PI], y: [0, 3], height: 360, minWidth: 260, axes: 'box', xlabel: 'direction of u', xticks: PI_TICKS, title: '$\\|Tu\\|$ and $\\|T^*u\\|$ for unit $u$' });
         const H = colHandles(S, [[1.2, 1.1], [-0.2, 0.6]]);
         const mode = v.select('', [{ value: 'adj', label: 'the adjoint $T^*$' }, { value: 'skew', label: 'transpose in a skewed basis' }], 'adj');
-        const al = v.slider('angle between $b_1$ and $b_2$', 0.4, 1.5708, 0.7, { step: 0.01 });
+        const al = v.slider('angle between $b_1$ and $b_2$ (degrees)', 25, 90, 40, { step: 1 });
         const wh = S.handle(-1.3, 0.9, { color: 'gold', label: 'w' });
         let st = null;
         v.render(() => {
           const T = H.A, Ts = tr(T), sk = mode.value === 'skew'; al.el.hidden = !sk;
-          const a = al.value, P = [[1, Math.cos(a)], [0, Math.sin(a)]], N = mm(P, mm(tr(mm(inv2(P), mm(T, P))), inv2(P)));
+          const a = al.value / DEG, P = [[1, Math.cos(a)], [0, Math.sin(a)]], N = mm(P, mm(tr(mm(inv2(P), mm(T, P))), inv2(P)));
           const sT = svd22(T), sS = svd22(Ts), sN = svd22(N), s1 = sT.s[0];
           S.circle(0, 0, 1, { color: 'muted', width: 1, dash: [3, 4] });
           S.circle(0, 0, s1, { color: 'green', width: 1.8, dash: [7, 4], fill: 'green', fillAlpha: 0.04 });
@@ -454,7 +454,7 @@ so $\|T^*w\| \le \|T\|\,\|w\|$ and $\|T^*\| \le \|T\|$ by 7.88(c). Applying this
           if (!st) return '';
           const { s1, sS, sN, sk, a2, ip, m1, m2, nTsw, nw } = st;
           const chain = `At $w$: $\\|T^*w\\|^2 = ${tn(a2, 3)} = \\langle TT^*w, w\\rangle = ${tn(ip, 3)} \\le \\|TT^*w\\|\\|w\\| = ${tn(m1, 3)} \\le \\|T\\|\\|T^*w\\|\\|w\\| = ${tn(m2, 3)}$, so $\\|T^*w\\| = ${tn(nTsw, 3)} \\le \\|T\\|\\|w\\| = ${tn(s1 * nw, 3)}$.`;
-          return `$\\|T\\| = ${tn(s1, 4)}$ and $\\|T^*\\| = ${tn(sS, 4)}$. ${chain}${sk ? ` The skewed "transpose" has norm $${tn(sN, 4)}$${Math.abs(sN - s1) > 1e-6 ? ' $\\ne \\|T\\|$: it is **not** the adjoint' : ''}.` : ''}`;
+          return `$\\|T\\| = ${tn(s1, 4)}$ and $\\|T^*\\| = ${tn(sS, 4)}$. ${chain}${sk ? ` The skewed “transpose” has norm $${tn(sN, 4)}$${Math.abs(sN - s1) > 1e-6 ? ' $\\ne \\|T\\|$: it is **not** the adjoint' : ''}.` : ''}`;
         });
       },
     },
@@ -553,10 +553,10 @@ $$T = S\sqrt{T^*T}.$$`,
       tags: ['factorization', 'positivity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Polar_decomposition' },
       viz(v) {
-        const S = v.stage({ x: [-2.5, 2.5], y: [-2.3, 2.3], equal: true, height: 390, minWidth: 330, weight: 1.6 });
+        const S = v.stage({ x: [-2.5, 2.5], y: [-2.3, 2.3], equal: true, height: 390, minWidth: 330, weight: 1.6, ticks: false });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, minWidth: 230, title: 'the two factors' });
         const TL = v.stage({ x: [0, 10], y: [0, 1], height: 56, full: true, axes: false });
-        const PRE = { gen: [[0.9, -1.2], [1.4, 0.2]], ref: [[0.5, 1.4], [1.3, -0.2]], r1: [[1.4, 0.7], [0.6, 0.3]], cx: [[1.1, -0.8], [0.8, 1.1]] };
+        const PRE = { gen: [[0.9, -1.2], [1.4, 0.2]], ref: [[0.5, 1.4], [1.3, -0.2]], r1: [[0.4, 0.8], [-0.6, -1.2]], cx: [[1.1, -0.8], [0.8, 1.1]] };
         const H = colHandles(S, PRE.gen);
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'ref', label: '$\\det T < 0$' }, { value: 'r1', label: 'rank 1' }, { value: 'cx', label: 'normal (a complex number)' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
         const which = v.select('positive factor', [{ value: 'r', label: '$\\sqrt{T^*T}$' }, { value: 'w', label: '$\\sqrt{TT^*}$ (wrong)' }], 'r');
@@ -571,7 +571,7 @@ $$T = S\sqrt{T^*T}.$$`,
           const U = madd(outer(f[0], e[0]), outer(f2, e[1])), dU = U[0][0] * U[1][1] - U[0][1] * U[1][0];
           const wrong = which.value === 'w', Pos = wrong ? Q : P, axes = wrong ? f : e;
           const u1 = smooth((t - 1) / 2.5), u2 = smooth((t - 4.5) / 2.5), phi = Math.atan2(U[1][0], U[0][0]);
-          const Su = dU > 0 ? rot(phi * u2) : mm(mm(rot(phi / 2), [[1, 0], [0, 1 - 2 * u2]]), rot(-phi / 2));
+          const Su = dU > 0 ? rot(phi * u2) : mm(mm(rot(phi / 2), [[1, 0], [0, Math.cos(Math.PI * u2)]]), rot(-phi / 2));
           const L = mm(Su, madd([[1, 0], [0, 1]], mscl(msub(Pos, [[1, 0], [0, 1]]), u1)));
           const final = mm(U, Pos), err = maxAbs(msub(final, T)), miss = err > 1e-6;
           // the moving grid, unit circle and letter
@@ -593,7 +593,7 @@ $$T = S\sqrt{T^*T}.$$`,
             S.text(`×${pf(1 + (s[k] - 1) * u1)}`, lp[0], lp[1], { color: 'orange', size: 12.5, weight: 700, align: 'center' });
           });
           if (t >= 4.2 && t < 7.4) {
-            if (dU > 0) S.curve((x) => scl(uAt(x * phi * u2), 0.55), 0, 1, { color: 'purple', width: 2.2 });
+            if (dU > 0) { const a0 = angOf(axes[0]); S.curve((x) => scl(uAt(a0 + x * phi * u2), 0.6), 0, 1, { color: 'purple', width: 2.2 }); }
             else { const m = uAt(phi / 2); S.line(-3.5 * m[0], -3.5 * m[1], 3.5 * m[0], 3.5 * m[1], { color: 'purple', width: 1.6, dash: [7, 4] }); }
           }
           axes.forEach((d, k) => {
@@ -623,7 +623,7 @@ $$T = S\sqrt{T^*T}.$$`,
           R.tex(`S${wrong ? '\\sqrt{TT^*}' : '\\sqrt{T^*T}'} = ${mtex(final)}`, 0.5, 0.12, { size: 14.5, color: miss ? 'red' : 'green' });
           R.text(miss ? '≠ T' : '= T', 0.5, 0.03, { size: 12.5, color: miss ? 'red' : 'green', weight: 700, align: 'center' });
           st = { T, P, Q, U, dU, err, wrong, s, errQ: maxAbs(msub(mm(Q, U), T)), normal: maxAbs(msub(P, Q)) < 1e-6, fl: flip.value };
-        }, { period: 10, still: 5.8 });
+        }, { period: 10, still: 6.5 });
         v.legend([['blue', 'image of $e_1$'], ['purple', 'image of $e_2$'], ['orange', 'stretch axes', { dash: true }], ['muted', 'target $T(\\text{picture})$', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
@@ -727,7 +727,7 @@ by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \f
         const scV = v.scene3(SV, { yaw: -0.6, pitch: 0.3, axis: 1.25, lim: 1.3, hint: false });
         const scW = v.scene3(SW, { yaw: -0.6, pitch: 0.3, axis: 1.5, lim: 2 });
         const usv = (R1, s, R2) => mm(R1, mm(DIAG3(s), tr(R2)));
-        const PRE = { gen: usv(rot3([1, 0.4, 0.8], 0.9), [1.7, 1.05, 0.55], rot3([0.2, 1, -0.5], 1.1)), shear: [[1, 0.9, 0], [0, 1, 0.6], [0, 0, 1]], diag: [[1.6, 0, 0], [0, 1, 0], [0, 0, 0.5]] };
+        const PRE = { gen: usv(mm(rot3([0, 0, 1], 0.7), rot3([1, 0, 0], 0.25)), [1.7, 1.05, 0.55], rot3([0.2, 1, -0.5], 1.1)), shear: [[1, 0.9, 0], [0, 1, 0.6], [0, 0, 1]], diag: [[1.6, 0, 0], [0, 1, 0], [0, 0, 0.5]] };
         let T0 = PRE.gen;
         v.select('', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'diag', label: 'diagonal' }], 'gen', { onChange: (k) => { T0 = PRE[k]; } });
         const ep = v.slider('flatten: $T(I - \\varepsilon\\, e_3e_3^*)$, $\\varepsilon$', 0, 1, 0, { step: 0.01 });
@@ -992,7 +992,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.6, 2.0], equal: true, axes: false, height: 390, weight: 1.35, minWidth: 320 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, minWidth: 240, title: 'the edges $w_k$: inner products and volume' });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.32, axis: 1.45, lim: 1.7 });
-        const rs = [['$r_1$', 1.2], ['$r_2$', 0.8], ['$r_3$', 0.55]].map(([l, x]) => v.slider(l, 0.2, 1.5, x, { step: 0.01 }));
+        const rs = [['$r_1$', 1.2], ['$r_2$', 0.8], ['$r_3$', 0.7]].map(([l, x]) => v.slider(l, 0.2, 1.5, x, { step: 0.01 }));
         const tw = v.slider('turn the frame about $e_1$', -3.14, 3.14, 0.35, { step: 0.01 });
         const tilt = v.slider('tilt $w_2$ toward $e_1$ (degrees)', -60, 60, 0, { step: 1 });
         // the handle at u + w₁ aims e₁ (it stays at distance r₁ from u); moving u carries it along
@@ -1127,9 +1127,9 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
         const G = v.stage({ x: [1.8, 72], y: [0, 8], xlog: true, height: 360, minWidth: 260, axes: 'box', xlabel: 'boxes per side n', title: 'total area of the boxes' });
         const mkS = (rings, exact, label) => ({ rings, area: Math.abs(polyArea(rings[0])) - (rings[1] ? Math.abs(polyArea(rings[1])) : 0), exact, label });
         const SH = {
-          disk: mkS([ringOf(() => 1.3)], Math.PI * 1.69, 'π · 1.3²'),
+          disk: mkS([ringOf(() => 1.3).map((p) => add(p, [0.3, 0.2]))], Math.PI * 1.69, 'π · 1.3²'),
           ell: mkS([ellRing(1.75, 0.8, 0.5)], Math.PI * 1.75 * 0.8, 'π · 1.75 · 0.8'),
-          ring: mkS([ringOf(() => 1.6), ringOf(() => 0.8)], Math.PI * (1.6 ** 2 - 0.8 ** 2), 'π(1.6² − 0.8²)'),
+          ring: mkS([ringOf(() => 1.55), ringOf(() => 0.75)].map((R) => R.map((p) => add(p, [-0.2, 0.15]))), Math.PI * (1.55 ** 2 - 0.75 ** 2), 'π(1.55² − 0.75²)'),
           blob: mkS([ringOf((t) => 1.2 + 0.3 * Math.sin(3 * t) + 0.15 * Math.cos(2 * t + 1))], null, 'shoelace formula'),
         };
         const shape = v.select('', [{ value: 'disk', label: 'disk' }, { value: 'ell', label: 'ellipse' }, { value: 'ring', label: 'ring' }, { value: 'blob', label: 'blob' }], 'disk');
@@ -1157,7 +1157,7 @@ where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ i
             G.path(ser.map(([m, , b]) => [m, b]), { color: 'orange', width: 2 }); G.dots(ser.map(([m, , b]) => [m, b]), { color: 'orange', r: 3 });
           });
           G.hline(sh.area, { color: 'ink', width: 1.4, dash: [6, 4] });
-          G.text(`area ${pf(sh.area, 3)}`, 66, sh.area, { align: 'right', dy: -10, size: 12, weight: 700 });
+          G.text(`true area ${pf(sh.area, 3)}`, 2.1, sh.area, { align: 'left', dy: -10, size: 12, weight: 700 });
           G.vline(n, { color: 'gold', width: 1.6, dash: [4, 4] });
           G.dot(n, Math.min(lo, 2 * sh.area), { color: 'green', r: 5.5 }); G.dot(n, Math.min(hi, 2 * sh.area), { color: 'orange', r: 5.5 });
           st = { n, h, ni: c.inn.length, nb: c.bnd.length, lo, hi, sh, ang };

@@ -125,9 +125,9 @@ function cGS(vs, tol = 1e-9) {
   return B;
 }
 /** Row reduction with partial pivoting, entries below rtol·max|entry| treated as 0: {R, piv}. */
-function cRref(A, rtol = 1e-8) {
+function cRref(A, rtol = 1e-8, atol = 0) {
   const m = A.length, n = A[0].length, R = A.map((r) => r.map((z) => z.slice())), piv = [];
-  const t = rtol * Math.max(1e-300, cMax(A));
+  const t = Math.max(atol, rtol * Math.max(1e-300, cMax(A)));
   for (let col = 0, row = 0; col < n && row < m; col++) {
     let p = row; for (let i = row + 1; i < m; i++) if (cabs(R[i][col]) > cabs(R[p][col])) p = i;
     if (cabs(R[p][col]) <= t) { for (let i = row; i < m; i++) R[i][col] = [0, 0]; continue; }
@@ -138,7 +138,7 @@ function cRref(A, rtol = 1e-8) {
   }
   return { R, piv };
 }
-const cRank = (A, rtol) => (cMax(A) === 0 ? 0 : cRref(A, rtol).piv.length);
+const cRank = (A, rtol, atol = 0) => (cMax(A) <= atol ? 0 : cRref(A, rtol, atol).piv.length);
 /** Orthonormal basis of the null space of a complex matrix. */
 function cNull(A, rtol) {
   const n = A[0].length;
@@ -270,6 +270,25 @@ function cCharPoly(A) {
   }
   return c;
 }
+/** Value of the k-th derivative of the polynomial with complex ascending coefficients c at z. */
+function cpolyDer(c, k, z) {
+  let f = [0, 0];
+  for (let j = c.length - 1; j >= k; j--) { let fac = 1; for (let i = 0; i < k; i++) fac *= j - i; f = cadd(cmul(f, z), cscl(toC(c[j]), fac)); }
+  return f;
+}
+/**
+ * Sharpen clustered eigenvalues: a root of multiplicity m of q is a simple root of q^{(m−1)}, so Newton's method on
+ * that derivative, started at the cluster mean, converges to it quickly even though the m computed roots scatter.
+ */
+function polishClusters(cl, c) {
+  return cl.map((e) => {
+    let z = e.lam.slice();
+    for (let it = 0; it < 6; it++) { const f = cpolyDer(c, e.m - 1, z), fp = cpolyDer(c, e.m, z); if (cabs(fp) < 1e-300) break; const dz = cdiv(f, fp); z = csub(z, dz); if (cabs(dz) < 1e-15 * (1 + cabs(z))) break; }
+    if (cabs(csub(z, e.lam)) > 1e-3 * (1 + cabs(e.lam))) z = e.lam.slice();
+    for (const i of [0, 1]) if (Math.abs(z[i] - Math.round(z[i])) < 1e-10 * (1 + cabs(z))) z[i] = Math.round(z[i]);
+    return { lam: z, m: e.m };
+  });
+}
 /** Polynomial with complex ascending coefficients as TeX in the variable v. */
 function cpolyTeX(c, v = 'z', d = 2) {
   let s = '';
@@ -365,7 +384,7 @@ In matrix form: if $A$ is an $n$-by-$n$ complex matrix with eigenvalues $\lambda
         v.button('roots on the eigenvalues ($p = q$)', () => { follow = true; });
         const S = v.stage({ x: [-9, 9], y: [-7, 7], equal: true, height: 320, weight: 1.15, minWidth: 280, title: 'eigenvalues of $A$ (rings) and roots of $p$ (drag)' });
         const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 250 });
-        const Tl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true });
+        const Tl = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 215, full: true });
         const TT = v.table(E, { rows: 3, cols: 3, region: [0.03, 0.2, 0.97, 0.88], maxCell: 66, size: 15 });
         editable(E, TT, { bump: (i, j, k) => { const p = part.value === 'im' ? 1 : 0; A[i][j] = A[i][j].slice(); A[i][j][p] = M.clamp(A[i][j][p] + k, -9, 9); } });
         const snapTo = (x, y) => {
@@ -375,21 +394,27 @@ In matrix form: if $A$ is an $n$-by-$n$ complex matrix with eigenvalues $\lambda
         };
         const R = [0, 1, 2].map((k) => S.handle(0, 0, { color: 'gold', label: `r${sub(k + 1)}`, labelPos: ['ne', 'se', 'nw'][k], constrain: snapTo, onDrag: () => { follow = false; } }));
         v.render(() => {
-          cl = clusterEig(M.eigC(A, { vectors: false }).values);
-          const big = Math.max(2, ...cl.map((e) => cabs(e.lam)));
-          const Rv = [4, 6, 8, 10, 14, 20, 30, 45].find((r) => r >= 1.35 * big) ?? 45;
-          if (Rv !== view) { view = Rv; S.setView([-Rv, Rv], [-0.78 * Rv, 0.78 * Rv]); }
+          const qc = cCharPoly(A);
+          cl = polishClusters(clusterEig(M.eigC(A, { vectors: false }).values), qc);
+          // a window around the eigenvalues (it changes only when they move far)
+          const ctr = cscl(cl.reduce((s, e) => cadd(s, cscl(e.lam, e.m)), [0, 0]), 1 / 3), spread = Math.max(...cl.map((e) => cabs(csub(e.lam, ctr))));
+          const Rv = [2.5, 4, 6, 8, 10, 14, 20, 30].find((r) => r >= 1.7 * spread) ?? 30, c0 = [Math.round(ctr[0]), Math.round(ctr[1])], key = `${Rv}|${c0}`;
+          if (key !== view) { view = key; S.setView([c0[0] - Rv, c0[0] + Rv], [c0[1] - 0.78 * Rv, c0[1] + 0.78 * Rv]); }
           if (follow) { let k = 0; for (const e of cl) for (let j = 0; j < e.m && k < 3; j++, k++) { R[k].x = e.lam[0]; R[k].y = e.lam[1]; } }
           const roots = R.map((h) => [h.x, h.y]);
           const used = cl.map(() => 0); let match = true;
           for (const r of roots) { const i = cl.findIndex((e) => cnear(e.lam, r, 1e-9 * (1 + cabs(r)))); if (i < 0) { match = false; break; } used[i]++; }
           match = match && cl.every((e, i) => used[i] === e.m);
           // the complex plane
-          cl.forEach((e) => {
-            S.dot(e.lam[0], e.lam[1], { r: 11, hollow: true, color: 'accent', width: 2.6 });
-            S.text(`${cpn(e.lam, 2)}${e.m > 1 ? `  (×${e.m})` : ''}`, e.lam[0], e.lam[1], { dy: 24, align: 'center', color: 'accent', size: 12.5, weight: 600 });
+          const on = roots.map((r) => cl.findIndex((e) => cnear(e.lam, r, 1e-9 * (1 + cabs(r)))));
+          cl.forEach((e, i) => {
+            S.dot(e.lam[0], e.lam[1], { r: 12, hollow: true, color: 'accent', width: 2.6 });
+            S.text(`${cpn(e.lam, 2)}${e.m > 1 ? ` (×${e.m})` : ''}`, e.lam[0], e.lam[1], { dy: 26, align: 'center', color: 'accent', size: 12.5, weight: 600 });
+            const names = on.map((k, j) => (k === i ? `r${sub(j + 1)}` : null)).filter(Boolean);
+            if (names.length) S.text(names.join(' '), e.lam[0], e.lam[1], { dy: -25, align: 'center', color: 'gold', size: 13, weight: 700, math: true });
           });
-          roots.forEach((r) => { const near = cl.reduce((b, e) => (cabs(csub(e.lam, r)) < cabs(csub(b.lam, r)) ? e : b), cl[0]); if (!cnear(near.lam, r, 1e-9 * (1 + cabs(r)))) S.line(r[0], r[1], near.lam[0], near.lam[1], { color: 'red', dash: [4, 4], width: 1.3 }); });
+          R.forEach((h, j) => { h.label = on[j] < 0 ? `r${sub(j + 1)}` : undefined; });
+          roots.forEach((r, j) => { if (on[j] >= 0) return; const near = cl.reduce((b, e) => (cabs(csub(e.lam, r)) < cabs(csub(b.lam, r)) ? e : b), cl[0]); S.line(r[0], r[1], near.lam[0], near.lam[1], { color: 'red', dash: [4, 4], width: 1.3 }); });
           S.corner(match ? 'p = q (roots = eigenvalues with multiplicity)' : 'p ≠ q', 'tl', { color: match ? 'green' : 'red', weight: 700 });
           // the editor
           TT.draw({ value: (i, j) => cpn(A[i][j], 0), fill: (i, j) => (i === j ? ['gold', 0.16] : null) });
@@ -409,17 +434,17 @@ In matrix form: if $A$ is an $n$-by-$n$ complex matrix with eigenvalues $\lambda
             titles = ['A^3', 'A^3 + c_2A^2', 'A^3 + c_2A^2 + c_1A', match ? 'q(A)' : 'p(A)'];
             links = ['+\\,c_2A^2', '+\\,c_1A', '+\\,c_0I'];
           }
-          const W = Tl.width, L = Math.max(70, Math.min(138, (W - 5 * 64) / 4)), gap = (W - 4 * L) / 5, Y0 = 46, cs = L / 3;
+          const W = Tl.width, L = Math.max(70, Math.min(124, (W - 5 * 84) / 4)), gap = (W - 4 * L) / 5, Y0 = 50, cs = L / 3;
           const rmax = Math.max(1e-300, ...tiles.map(cMax));
           const D = (X, Y) => [Tl.invX(X), Tl.invY(Y)];
           tiles.forEach((Tm, k) => {
-            const X0 = gap + k * (L + gap), last = k === 3, rk = cRank(Tm, 1e-9), mx = cMax(Tm);
+            const X0 = gap + k * (L + gap), last = k === 3, rk = cRank(Tm, 1e-9, zt), mx = cMax(Tm);
             Tl.texPx(titles[k], X0 + L / 2, Y0 - 20, { size: 13.5, color: last ? (mx < zt ? 'green' : 'red') : 'ink' });
             for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
               const cx0 = X0 + (j + 0.5) * cs, cy0 = Y0 + (i + 0.5) * cs, z = Tm[i][j], r = cabs(z);
               Tl.rect(...D(X0 + j * cs, Y0 + (i + 1) * cs), ...D(X0 + (j + 1) * cs, Y0 + i * cs), { color: 'faint', width: 1, fill: last ? (mx < zt ? 'green' : 'red') : 'muted', fillAlpha: last ? 0.06 : 0.03 });
               if (r < zt) { Tl.dot(...D(cx0, cy0), { r: 3.2, color: 'green' }); continue; }
-              const Lr = Math.max(6, (cs / 2 - 5) * Math.sqrt(Math.min(1, r / rmax))), th = Math.atan2(z[1], z[0]);
+              const Lr = Math.max(8, (cs / 2 - 5) * Math.sqrt(Math.min(1, r / rmax))), th = Math.atan2(z[1], z[0]);
               Tl.arrow(...D(cx0, cy0), ...D(cx0 + Lr * Math.cos(th), cy0 - Lr * Math.sin(th)), { color: last ? 'red' : 'accent', width: 2, head: 6 });
             }
             Tl.textPx(`rank ${rk}`, X0 + L / 2, Y0 + L + 15, { align: 'center', color: last && mx < zt ? 'green' : 'muted', size: 12, weight: 600 });
@@ -430,14 +455,14 @@ In matrix form: if $A$ is an $n$-by-$n$ complex matrix with eigenvalues $\lambda
               Tl.texPx(links[k], (xa + xb) / 2, ya - 15, { size: 11.5, color: 'muted' });
             }
           });
-          st = { match, zero: cMax(tiles[3]) < zt, mx: cMax(tiles[3]), roots, q: cCharPoly(A), cl };
+          st = { match, zero: cMax(tiles[3]) < zt, mx: cMax(tiles[3]), roots, q: qc, cl };
         });
         v.legend([['accent', 'eigenvalue of $A$', { dot: true }], ['gold', 'root of $p$ (drag)', { dot: true }], ['green', 'entry exactly $0$', { dot: true }], ['red', 'nonzero entry of $p(A)$']]);
         v.readout(() => {
           if (!st) return '';
-          const q = `q(z) = ${factTeX(st.cl)} = ${cpolyTeX(st.q, 'z', 2)}`;
+          const fq = factTeX(st.cl), eq = cpolyTeX(st.q, 'z', 2), q = `q(z) = ${fq}${fq === eq ? '' : ` = ${eq}`}`;
           const p = st.match ? '' : ` Your $p(z) = ${st.roots.map((r) => (cabs(r) < 5e-3 ? 'z' : `(z - ${/[+-]/.test(ctn(r, 2).slice(1)) ? `(${ctn(r, 2)})` : ctn(r, 2)})`)).join('')}$.`;
-          if (st.match) return `Characteristic polynomial $${q}$. With $p = q$ every entry of $q(A)$ is $0$ (largest $|\\text{entry}| = ${v.sci(st.mx, 1)}$, rounding only): **Cayley–Hamilton**.`;
+          if (st.match) return `Characteristic polynomial $${q}$. With $p = q$ every entry of $q(A)$ is $0$ (${st.mx === 0 ? 'exactly' : `largest $|\\text{entry}| = ${v.sci(st.mx, 1)}$, rounding only`}): **Cayley–Hamilton**.`;
           if (st.zero) return `$${q}$.${p} Here $p \\ne q$, yet $p(A) = 0$: $p$ is still a multiple of the minimal polynomial (5.29, 8.30) — the extra root is not needed on a diagonalizable piece.`;
           return `$${q}$.${p} Since $p \\ne q$, **$p(A) \\ne 0$**: largest $|\\text{entry}| = ${tn(st.mx, 2)}$. Put each root back on an eigenvalue, as often as its multiplicity.`;
         });
@@ -501,9 +526,10 @@ In matrix form: if $A$ is an $n$-by-$n$ complex matrix with eigenvalues $\lambda
               else B.rect(x0, j + 0.06, x1, j + 0.94, { color: 'gold', width: 1.3, dash: [3, 3], fill: 'gold', fillAlpha: 0.06 });
               if (sq * B.width / 4.5 > 52) B.tex(cabs(e.lam) < 5e-3 ? 'z' : Math.abs(e.lam[1]) < 5e-3 ? `z ${e.lam[0] < 0 ? '+' : '-'} ${tn(Math.abs(e.lam[0]))}` : `z - \\lambda`, cxm, j + 0.5, { size: 12.5, color: inMin && inQ ? 'ink' : 'muted' });
             }
-            const ey = exps[i], ok = ey >= e.k;
-            B.line(x0 - 0.12, ey, x1 + 0.12, ey, { color: ok ? 'gold' : 'red', width: 4 });
-            B.text(`p: ${ey}`, x1 + 0.13, ey, { color: ok ? 'gold' : 'red', size: 12, weight: 700, align: 'left' });
+            const ey = exps[i], ok = ey >= e.k, u = 4 / B.width;
+            B.line(x0 - 6 * u, ey, x1 + 6 * u, ey, { color: ok ? 'gold' : 'red', width: 4 });
+            B.dot(x1 + 17 * u, ey, { r: 9, color: ok ? 'gold' : 'red' });
+            B.text(String(ey), x1 + 17 * u, ey, { color: 'panel', size: 11.5, weight: 700, align: 'center', halo: false });
             B.tex(`\\lambda = ${ctn(e.lam, 2)}`, cxm, -0.55, { color: col, size: 14 });
             B.tex(`k = ${e.k} \\le d = ${e.m}`, cxm, -1.25, { color: 'muted', size: 12.5 });
           });
@@ -600,6 +626,7 @@ In matrix form: if $A$ is an $n$-by-$n$ complex matrix with eigenvalues $\lambda
             vals.forEach((l, i) => S.texPx(`${tn(l)}\\!: ${c.counts[i]}\\times`, Xc + (i - (vals.length - 1) / 2) * 64, g.Y0 + 4 * g.ch + 20, { size: 13.5, color: c.counts[i] === mult[i] ? EC[i % EC.length] : 'red' }));
             S.textPx(ok ? 'counts = multiplicities' : 'counts ≠ multiplicities', Xc, g.Y0 + 4 * g.ch + 42, { align: 'center', size: 11.5, color: ok ? 'green' : 'red', weight: 600 });
           });
+          S.texPx(`\\text{multiplicities (ranks of } (T - \\lambda I)^4\\text{):}\\ \\ ${vals.map((l, i) => `\\dim G(${tn(l)}, T) = ${mult[i]}`).join(',\\ \\ ')}`, S.width / 2, S.height - 24, { size: 14, color: 'muted' });
           st = { A, vals, mult, cards };
         });
         v.legend([['blue', 'diagonal entry = an eigenvalue', { area: true }], ['red', 'nonzero entry below the diagonal / diagonal entry not an eigenvalue', { area: true }]]);

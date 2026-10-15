@@ -173,7 +173,7 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
         const st = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 310, weight: 0.8, title: 'the screen' });
         const pl = v.stage({ x: [-2.4, 21], y: [-0.14, 1.08], height: 310, axes: 'box', weight: 1.2, xlabel: 'dot intensity', ylabel: 'proportion “seen”', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'detection: proportion of trials answered “seen”' });
         let fit = null;
-        const probe = pl.handle(7, 0.4, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0, 20); return [xx, fit ? psi(M, fit, xx) : 0.5]; } });
+        const probe = pl.handle(12, 0.4, { color: 'gold', constrain: (x) => { const xx = M.clamp(x, 0, 20); return [xx, fit ? psi(M, fit, xx) : 0.5]; } });
         let Rs = v.rng(97), nextS = blockQueue(LEV, Rs), sim = [], you = [];
         const Ry = v.rng(2024), nextY = blockQueue(LEV, Ry);
         const simulate = (n) => { for (let i = 0; i < n; i++) { const x = nextS(); sim.push({ x, r: Rs() < psi(M, OBSV, x) }); } };
@@ -251,7 +251,7 @@ The classical picture of a sharp barrier (never detected below $x_{50}$, always 
 
 Like the absolute threshold (1.1), the JND is a statistical quantity defined by a criterion proportion, not a smallest quantum of sensation: smaller differences are noticed sometimes, larger ones are missed sometimes. For a cumulative-normal $P$ with spread $\sigma$, $\mathrm{JND}=0.674\,\sigma$.`,
       idea: String.raw`If each presentation of $C$ produces an internal impression $C+\varepsilon$ with Gaussian noise of spread $\sigma$, and the standard is remembered as $\mathrm{PSE}$, then $P(C)=\Phi\big((C-\mathrm{PSE})/\sigma\big)$: the 25% and 75% points lie $0.674\,\sigma$ either side of the PSE, so the JND measures the noise that limits discrimination, while the PSE measures bias. A difference of one JND is noticed on 75% of comparisons; three JNDs on about 98%. Weber's question (1.9) is how the JND changes with the standard.`,
-      caption: String.raw`The standard is a 500 Hz tone, the comparison is up to 30 cents (hundredths of a semitone) above or below. The simulated observer has 45 trials at each of nine comparisons. Drag the **gold** handle along the curve and press *Listen* to hear that pair; *Hear one JND* warbles a sustained tone between 500 Hz and one JND above it, live. Switch to **you**, press *▶ Play pair* and answer whether the second tone was higher or lower; the next pair follows, and your own curve, PSE and JND appear as you go (headphones help).`,
+      caption: String.raw`The standard is a 500 Hz tone, the comparison is up to 30 cents (hundredths of a semitone) above or below. The simulated observer has 45 trials at each of nine comparisons. Drag the **gold** handle along the curve and press *Listen* to hear that pair; *Hear one JND* warbles a sustained tone between 500 Hz and one JND above it, live. Switch to **you**, press *Play pair* and answer whether the second tone was higher or lower; the next pair follows, and your own curve, PSE and JND appear as you go (headphones help).`,
       deps: ['psych-1.1'],
       see: ['music-5.9'],
       refs: ['Gescheider ch. 1'],
@@ -267,7 +267,7 @@ Like the absolute threshold (1.1), the JND is a statistical quantity defined by 
         const who = v.select('subject', OBS, 'sim', { onChange: () => { after.clear(); phase = 'idle'; v.sound().stop(); } });
         const play = (c) => { const snd = v.sound(); snd.stop(); snd.tone(F0, VOICE); snd.tone(fq(c), { ...VOICE, delay: 0.75 }); pair = c; ph.start(1.3); };
         const bListen = v.soundButton('Listen: standard, then gold', () => play(probe.x));
-        const bPlay = v.soundButton('▶ Play pair', () => next());
+        const bPlay = v.soundButton('Play pair', () => next());
         const bHi = v.button('2nd higher', () => answer(true));
         const bLo = v.button('2nd lower', () => answer(false));
         v.soundButton('Hear one JND', (snd) => {
@@ -325,11 +325,11 @@ Like the absolute threshold (1.1), the JND is a statistical quantity defined by 
           }
           drawData(pl, data);
           if (!isYou) { probe.y = f ? psi(M, f, probe.x) : 0.5; }
-          if (!data.length) pl.text('no trials yet — press ▶ Play pair', 0, 0.68, { align: 'center', color: 'muted', size: 13 });
+          if (!data.length) pl.text('no trials yet — press Play pair', 0, 0.68, { align: 'center', color: 'muted', size: 13 });
         });
         v.readout(() => {
           const { data, f } = analyse(), N = data.reduce((s, d) => s + d.n, 0);
-          if (!N) return 'No trials yet. Press **▶ Play pair**: you hear the 500 Hz standard, then a comparison. Answer *2nd higher* or *2nd lower* even when unsure — a guess is data too.';
+          if (!N) return 'No trials yet. Press **Play pair**: you hear the 500 Hz standard, then a comparison. Answer *2nd higher* or *2nd lower* even when unsure — a guess is data too.';
           if (!f) return `${N} trial${N > 1 ? 's' : ''} so far: keep going.`;
           const q25 = thrOf(M, f, 0.25).x, q50 = thrOf(M, f, 0.5), q75 = thrOf(M, f, 0.75).x, J = (q75 - q25) / 2;
           const ci = isFinite(q50.se) ? ` ± ${v.fix(1.96 * q50.se, 1)}` : '';
@@ -414,7 +414,7 @@ so the threshold is the criterion and the spread is the internal noise: the slop
             const t = thrOf(M, f, 0.5);
             fitTxt = f.ok ? `fit from ${f.N} trials: threshold $\\hat\\alpha$ = ${v.fix(t.x, 2)} ± ${v.fix(1.96 * t.se, 2)}, spread $\\hat\\sigma$ = ${v.fix(f.sigma, 2)} (95% range ×÷${v.fix(Math.exp(1.96 * Math.sqrt(f.cov[2])), 2)})` : `the data jump from almost no “yes” to almost all “yes” between two levels, so the slope cannot be estimated: the spread is smaller than the spacing of the levels and the curve is effectively the classical step`;
           }
-          return `at level $x$ = ${v.fix(xp, 2)}: area beyond $c$ (numerical integral) = ${v.fix(pYes, 4)}, $\\Phi((x-c)/\\sigma)$ = ${v.fix(exact, 4)} · true threshold $c$ = ${v.fix(T.mu, 2)}, spread $\\sigma$ = ${v.fix(T.sigma, 2)}, slope at threshold $1/(\\sigma\\sqrt{2\\pi})$ = ${v.fix(phi(0) / T.sigma, 3)}${lapse.value ? ' (×0.96 with lapses)' : ''} per unit · ${fitTxt}`;
+          return `at level $x$ = ${v.fix(xp, 2)}: area beyond $c$ (numerical integral) = ${v.fix(pYes, 4)}, $\\Phi((x-c)/\\sigma)$ = ${v.fix(exact, 4)}${lapse.value ? `, so with lapses $\\psi(x)=0.02+0.96\\times$area = ${v.fix(0.02 + 0.96 * pYes, 4)}` : ''} · true threshold $c$ = ${v.fix(T.mu, 2)}, spread $\\sigma$ = ${v.fix(T.sigma, 2)}, slope at threshold $1/(\\sigma\\sqrt{2\\pi})$ = ${v.fix(phi(0) / T.sigma, 3)}${lapse.value ? ' (×0.96 with lapses)' : ''} per unit · ${fitTxt}`;
         });
       },
     },
@@ -530,7 +530,7 @@ Two expectation errors bias the series in opposite directions. With **habituatio
         const M = v.M, OB = { mu: -63, sigma: 2, g: 0.01, l: 0.01 }, STEP = 3, NS = 16;
         const who = v.select('subject', OBS, 'sim', { onChange: () => { stopTone(); } });
         const hab = v.slider('expectation', -0.6, 0.6, 0.45, { step: 0.01, fmt: (h) => (Math.abs(h) < 0.005 ? 'neutral' : h > 0 ? `habituation ${Math.round(100 * h)}%` : `anticipation ${Math.round(-100 * h)}%`) });
-        const bStart = v.soundButton('▶ Start next series', () => startSeries());
+        const bStart = v.soundButton('Start next series', () => startSeries());
         const bYes = v.button('I hear it', () => respond(true));
         const bNo = v.button('I don’t', () => respond(false));
         v.button('Reset', () => { stopTone(); you = []; });
@@ -601,7 +601,7 @@ Two expectation errors bias the series in opposite directions. With **habituatio
           const ncol = Math.max(NS, ser.length + (isYou && !cur ? 1 : 0));
           sheet.setView([-0.75, ncol - 0.25], [lo, hi]); sum.setView(null, [lo, hi]);
           const yt = []; for (let y = 10 * Math.ceil((lo + 2) / 10); y <= hi - 5; y += 10) yt.push(y);
-          sheet.setTicks(M.range(ncol).map((i) => [i, String(i + 1)]), yt); sum.setTicks(null, yt);
+          sheet.setTicks(M.range(ncol).map((i) => [i, String(i + 1)]), yt); sum.setTicks(undefined, yt);
           for (let L = STEP * Math.ceil(lo / STEP); L <= hi - 4; L += STEP) sheet.hline(L, { color: 'grid', width: 1 });
           ser.forEach((S, i) => {
             const col = S.dir === 'A' ? 'orange' : 'blue';
@@ -616,7 +616,7 @@ Two expectation errors bias the series in opposite directions. With **habituatio
             if (S.trans != null) sheet.line(i - 0.38, S.trans, i + 0.38, S.trans, { color: col, width: 3.2 });
           });
           if (!isYou) sheet.hline(OB.mu, { color: 'muted', dash: [6, 5], width: 1.3 });
-          if (isYou && !ser.length) sheet.text('press ▶ Start next series', (ncol - 1) / 2, (lo + hi) / 2, { align: 'center', color: 'muted', size: 13 });
+          if (isYou && !ser.length) sheet.text('press Start next series', (ncol - 1) / 2, (lo + hi) / 2, { align: 'center', color: 'muted', size: 13 });
           // ---- summary
           const A = ser.filter((s) => s.dir === 'A' && s.trans != null).map((s) => s.trans), D = ser.filter((s) => s.dir === 'D' && s.trans != null).map((s) => s.trans);
           A.forEach((y, i) => sum.dot(0.75 + ((i % 3) - 1) * 0.12, y, { r: 4, color: 'orange' }));
@@ -695,8 +695,8 @@ The method is quick and natural and is the standard way to measure matches, from
           // ---- the figure
           fs.line(XS, YS, XS + S, YS, { color: 'ink', width: 3.2 });
           fins(XS, XS + S, YS, fig.value, 'ink');
-          fs.text('standard', XS - 3, YS, { align: 'right', color: 'muted', size: 12 });
-          fs.text('comparison', XC - 3, YC, { align: 'right', color: 'muted', size: 12 });
+          fs.text('standard', XS + S / 2, YS + 4.2, { align: 'center', color: 'muted', size: 12 });
+          fs.text('comparison', XC + S / 2, YC + 4.2, { align: 'center', color: 'muted', size: 12 });
           const xEnd = isYou ? H.x : XC + S * (1 + (mu ?? 0) / 100);
           fs.line(XC, YC, xEnd, YC, { color: 'accent', width: 3.2 });
           fs.line(XC, YC - 1.6, XC, YC + 1.6, { color: 'accent', width: 2 });
@@ -704,7 +704,6 @@ The method is quick and natural and is the standard way to measure matches, from
             for (const s of sets) fs.line(XC + S * (1 + s / 100), YC - 2.3, XC + S * (1 + s / 100), YC + 2.3, { color: 'gold', width: 1.6, alpha: 0.85 });
             fs.text(`mean of ${n} settings`, (XC + xEnd) / 2, YC - 3.8, { align: 'center', color: 'gold', size: 11.5 });
           }
-          fs.line(XS + S, YS + 2.5, XS + S, YS - 1.5, { color: 'faint', width: 1, dash: [2, 3] });
           // ---- histogram
           const counts = M.histogram(sets, { bins: M.range(31).map((i) => -32 + 2.5 * i), range: [-32, 45.5] });
           const ymax = Math.max(3, ...counts.counts) * 1.3, left = mu != null && mu > 0.5;
@@ -720,13 +719,13 @@ The method is quick and natural and is the standard way to measure matches, from
             hs.text('PSE', mu, ymax * 0.92, { dx: left ? 6 : -6, align: left ? 'left' : 'right', color: 'green', weight: 700, size: 12 });
             if (Math.abs(mu) > 3) hs.arrow(0, ymax * 0.78, mu, ymax * 0.78, { color: 'red', width: 1.8, head: 7 });
             if (Math.abs(mu) > 3) hs.text('constant error', mu / 2, ymax * 0.78, { dy: -10, align: 'center', color: 'red', size: 11.5, weight: 600 });
-          } else if (!n) hs.text('no settings yet: drag the handle, then Record match', 5, ymax * 0.5, { align: 'center', color: 'muted', size: 13 });
+          } else if (!n) hs.text('no settings yet: drag the handle, then Record match', -15, ymax * 0.5, { align: 'center', color: 'muted', size: 13 });
           stt = { n, mu, sd };
         });
         v.readout(() => {
           if (!stt) return '';
           const { n, mu, sd } = stt, isYou = who.value === 'you';
-          const now = isYou ? `current setting ${v.fix(100 * ((H.x - XC) / S - 1), 1)}% · ` : '';
+          const sets = isYou ? you[fig.value] : [], now = isYou && sets.length ? `last setting ${v.fmt(sets[sets.length - 1], 3)}% · ` : '';
           if (!n) return now + 'No settings recorded for this figure yet.';
           if (n < 2) return `${now}1 setting: ${v.fix(mu, 1)}%. Record more to estimate the spread.`;
           const J = 0.674 * sd, seM = sd / Math.sqrt(n);

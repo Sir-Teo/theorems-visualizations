@@ -49,7 +49,7 @@ So the count at noon is not the limit of the counts. Whether the set-theoretic a
       viz(v) {
         const strat = v.select('removal rule', [{ value: 'low', label: 'remove ball $n$ at stage $n$' }, { value: 'ten', label: 'remove ball $10n$' }, { value: 'rnd', label: 'remove a random ball' }], 'low');
         const mS = v.slider('stage $m$', 0, 10, 6, { int: true });
-        const G = v.stage({ x: [-1.9, 10.4], y: [-0.25, 10.75], axes: false, height: 370, weight: 1.05 });
+        const G = v.stage({ x: [-1.9, 10.4], y: [0.3, 11.3], axes: false, height: 370, weight: 1.05 });
         const R = v.stage({ x: [-8, 104], y: [-9, 112], axes: 'box', height: 370, weight: 1 });
         // one seeded random run: removal stage of every ball that ever enters (up to 400 stages)
         const SIM = 400, remRnd = new Map(), alive = [];
@@ -77,7 +77,7 @@ So the count at noon is not the limit of the counts. Whether the set-theoretic a
             }
           }
           const inUrn = (() => { let c = 0; for (let b = 1; b <= 10 * m; b++) if (remStage(b, k) > m) c++; return c; })();
-          G.text(`after stage ${m}: ${10 * m} in, ${m} out, ${inUrn} in the urn`, 4.95, -0.02, { align: 'center', size: 12, weight: 700, color: 'ink' });
+          G.text(`after stage ${m}: ${10 * m} in, ${m} out, ${inUrn} in the urn`, 4.95, 10.9, { align: 'center', size: 12.5, weight: 700, color: 'ink' });
           // ---- right panel
           if (k !== 'rnd') {
             R.setView([-8, 104], [-9, 112]); R.setTicks([0, 20, 40, 60, 80, 100], [0, 20, 40, 60, 80, 100]);
@@ -89,14 +89,14 @@ So the count at noon is not the limit of the counts. Whether the set-theoretic a
               else R.line(b, 101, b, 108, { color: 'blue', width: 1.6, alpha: 0.8 });
             }
             R.text(k === 'low' ? 'ball b leaves at stage b: every removal stage is finite' : 'never removed (∞): every ball not divisible by 10', k === 'low' ? 2 : 50, k === 'low' ? 95 : 104.5, { align: k === 'low' ? 'left' : 'center', size: 11, weight: 600, color: k === 'low' ? 'red' : 'blue' });
-            R.text('ball b →', 100, -5, { align: 'right', size: 11, color: 'muted' });
+            R.text(`removed by stage ${m}`, 60, m + 4, { size: 10.5, color: 'red' });
           } else {
             R.setView([-0.7, 12.4], [-0.09, 1.12]); R.setTicks([[0, '1'], [2, '100'], [4, '10⁴'], [6, '10⁶'], [8, '10⁸'], [10, '10¹⁰'], [12, '10¹²']], [0, 0.25, 0.5, 0.75, 1]);
             R.setTitle('chance a ball is still in the urn after stage $n$');
             for (const [b, col] of [[1, 'blue'], [100, 'teal']]) {
               const pts = []; for (let i = 0; i <= 240; i++) { const e = (12 * i) / 240; pts.push([e, surv(b, 10 ** e)]); }
               R.path(pts, { color: col, width: 2.4 });
-              R.text(`ball ${b}`, 10.5, surv(b, 10 ** 10.5), { dy: -10, size: 11, weight: 600, color: col });
+              const ex = b === 1 ? 5 : 8.5; R.text(`ball ${b}`, ex, surv(b, 10 ** ex), b === 1 ? { dx: -6, dy: 10, align: 'right', size: 11, weight: 600, color: col } : { dx: 6, dy: -10, size: 11, weight: 600, color: col });
             }
             for (let n = 1; n <= SIM; n = Math.ceil(n * 1.25)) R.dot(Math.log10(n), alive[n - 1] / Math.min(100, 10 * n), { r: 2.8, color: 'gold' });
             R.text('→ 0 like n^(−1/9)', 12.2, 0.2, { align: 'right', size: 11, color: 'muted' });
@@ -163,12 +163,12 @@ With finitely many reapers there is no puzzle: the earliest one strikes. With in
           const death = !finite && tailAll ? -11.6 : strikers.length ? -Math.max(...strikers) : null;
           if (death == null) S.line(-11.2, 0.25, 0.6, 0.25, { color: 'green', width: 4 });
           else { S.line(-11.2, 0.25, death, 0.25, { color: 'green', width: 4 }); S.line(death, 0.25, 0.6, 0.25, { color: 'red', width: 4, alpha: 0.7 }); }
-          S.text(death == null ? 'the man survives every reaper' : 'alive  →  dead', death == null ? -5 : Math.max(death, -10.5) + 0.15, -0.0, { size: 11, weight: 600, color: death == null ? 'green' : 'red', align: death == null ? 'center' : 'left' });
-          S.text('1:00', 0.35, -0.05, { align: 'center', size: 11, color: 'muted' });
+          S.text(death == null ? 'the man survives every reaper' : death < -10.8 ? 'dead before every shown reaper' : 'alive  →  dead', death == null ? -5 : Math.max(death, -10.8) + 0.1, -0.08, { size: 11, weight: 600, color: death == null ? 'green' : 'red', align: death == null ? 'center' : 'left' });
+          S.text('1:00', 0.45, 0.48, { align: 'center', size: 10.5, weight: 600, color: 'muted' });
           for (let n = 1; n <= N; n++) {
             const x = -n, on = c.strikes(n), ok = !c.bad.includes(n), col = on ? 'red' : 'muted';
             S.line(x, 0.62, x, 1.6, { color: col, width: on ? 2.6 : 1.4 });
-            S.curve((t) => [x + 0.32 * Math.cos(t), 1.6 + 0.2 * Math.sin(t) - 0.0], Math.PI * 0.15, Math.PI * 0.95, { color: col, width: on ? 3 : 1.6 });
+            S.curve((t) => bez([x + 0.02, 1.62], [x - 0.22, 1.82], [x - 0.5, 1.47], t), 0, 1, { color: col, width: on ? 3.4 : 2, n: 24 });
             S.text(`#${n}`, x, 1.98, { align: 'center', size: 12, weight: 700, color: on ? 'red' : 'ink' });
             S.text(TIME(n), x, 0.48, { align: 'center', size: 9.5, color: 'muted' });
             S.text(ok ? '✓' : '✗', x, -0.62, { align: 'center', size: 15, weight: 700, color: ok ? 'green' : 'red' });
@@ -212,27 +212,37 @@ so there are exactly as many squares as numbers. Galileo (1638) concluded that �
       tags: ['infinity', 'cardinality', 'bijection'],
       viz(v) {
         const mode = v.select('', [{ value: 'sq', label: 'Galileo: $n\\mapsto n^2$' }, { value: 'n1', label: 'hotel: one new guest' }, { value: '2n', label: 'hotel: a coach' }, { value: 'inf', label: 'hotel: infinitely many coaches' }], 'sq');
-        const fin = v.toggle('finite hotel: only rooms 1–20', false);
+        const fin = v.toggle('finite version (rooms 1–20, numbers 1–100)', false);
         const pS = v.slider('move the guests', 0, 1, 1, { step: 0.01 });
         const H = v.stage({ x: [-1.3, 21.3], y: [-2.75, 3.05], axes: false, height: 310, full: true });
         const D = v.stage({ x: [1, 1e6], y: [-0.1, 1.12], xlog: true, axes: 'box', height: 170, full: true, title: 'share of $1, \\dots, R$ taken by the original guests (images)', yticks: [0, 0.5, 1] });
         const CCOL = ['gold', 'orange', 'pink', 'purple'];
         let st = null;
         v.render(() => {
-          const k = mode.value, p = pS.value, finite = fin.value && k !== 'sq';
-          fin.el.hidden = k === 'sq';
-          const path = (a, b, bulge, col, lab, out = false) => {
+          const k = mode.value, p = pS.value, finite = fin.value;
+          const path = (a, b, bulge, col, lab, out = false) => H.clip(() => {
             const c = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + bulge];
             H.curve((t) => bez(a, c, b, t), 0, 1, { color: out ? 'red' : col, width: 1.1, alpha: 0.45, n: 40 });
             const q = bez(a, c, b, p);
             H.dot(q[0], q[1], { r: 8.5, color: out && p > 0.98 ? 'red' : col });
             H.text(lab, q[0], q[1], { align: 'center', size: lab.length > 2 ? 7 : 8.5, weight: 700, color: 'panel', halo: false });
-          };
+          });
           if (k === 'sq') {
             // top: numbers 1..10; bottom: the number line 1..100 with the squares marked
             const X = (n) => 0.5 + (20 * (n - 1)) / 99;
             H.text('every number n', -1.2, 2.55, { size: 11.5, weight: 600, color: 'blue' });
-            H.text('its square n² on the line 1 … 100', -1.2, -0.9, { size: 11.5, weight: 600, color: 'gold' });
+            H.text('its square n² on the line 1 … 100', -1.2, -0.75, { size: 11.5, weight: 600, color: 'gold' });
+            // the same pairing for n = 1..100, squares on the line 1..10 000
+            const XT = (n) => 0.5 + (20 * (n - 1)) / 99, XB = (m) => 0.5 + (20 * (m - 1)) / 9999;
+            H.text('n = 1 … 100', -1.2, -1.12, { size: 11, weight: 600, color: 'blue' });
+            H.text('n² on the line 1 … 10 000', -1.2, -2.62, { size: 11, weight: 600, color: 'gold' });
+            H.line(XB(1), -2.33, XB(10000), -2.33, { color: 'faint', width: 1.2 });
+            for (let n = 1; n <= 100; n++) {
+              H.line(XT(n), -1.36, XB(n * n), -2.3, { color: 'blue', width: 0.8, alpha: 0.3 });
+              H.line(XB(n * n), -2.33, XB(n * n), -2.18, { color: 'gold', width: 1.2 });
+              H.dot(XT(n), -1.36, { r: 1.8, color: finite && n > 10 ? 'red' : 'blue', ring: false });
+            }
+            if (finite) H.text('finite range 1 … 100: only 1–10 have their square inside it — 100 numbers, 10 squares ✗', 10.5, -0.75, { align: 'left', size: 11, weight: 600, color: 'red', dx: -60 });
             H.line(X(1), -0.15, X(100), -0.15, { color: 'faint', width: 1.4 });
             for (let m = 1; m <= 100; m++) { const sq = Number.isInteger(Math.sqrt(m)); H.line(X(m), -0.15, X(m), sq ? 0.15 : -0.02, { color: sq ? 'gold' : 'faint', width: sq ? 2 : 1 }); if (sq) H.text(String(m), X(m), -0.45, { align: 'center', size: 10, weight: 600, color: 'gold' }); }
             for (let n = 1; n <= 10; n++) {
@@ -248,10 +258,14 @@ so there are exactly as many squares as numbers. Galileo (1638) concluded that �
             if (!finite) H.text('→ ∞', 20.85, 1.0, { align: 'center', size: 13, weight: 700, color: 'muted' });
             else { H.line(20.55, -0.5, 20.55, 2.5, { color: 'red', width: 2 }); H.text('last room', 20.75, 2.75, { align: 'center', size: 10, weight: 600, color: 'red' }); }
             const target = (n) => (k === 'n1' ? n + 1 : 2 * n);
+            let ev = 0;
             for (let n = 1; n <= 20; n++) {
               const t = target(n), out = t > 20;
-              path([n, 2.0], [out ? 21.0 : t, out ? 1.0 : 0.0], out ? 0 : -0.25, 'blue', String(n), out && finite);
+              if (!out) path([n, 2.0], [t, 0.0], -0.25, 'blue', String(n));
+              else if (finite) path([n, 2.0], [20.2, 1.72 - 0.21 * ev++], 0, 'blue', String(n), true);
+              else path([n, 2.0], [21.2 + (t - 21) * 0.9, 0.0], -0.1, 'blue', String(n));
             }
+            if (finite && p > 0.98) H.text('no room!', 20.0, -0.62, { align: 'center', size: 11, weight: 700, color: 'red' });
             if (k === 'n1') { H.text('lobby', -0.3, -1.25, { align: 'center', size: 11, color: 'gold', weight: 600 }); path([-0.3, -0.9], [1, 0], 0.2, 'gold', 'new'); }
             if (k === '2n') {
               H.rect(0.45, -2.05, 10.55, -1.15, { color: 'gold', width: 1.4, fill: 'gold', fillAlpha: 0.07 }); H.text('coach: passengers 1, 2, 3, … → rooms 1, 3, 5, …', 11, -1.6, { size: 11, color: 'gold', weight: 600 });

@@ -5,7 +5,7 @@
 const halfTex = (k) => (k === 0 ? '1' : k <= 10 ? `\\tfrac{1}{${2 ** k}}` : `2^{-${k}}`);
 /** A drawn arrow (shaft, head, fletching) whose tip is at (x, y); len in data units. */
 function drawArrow(s, x, y, len, col, alpha = 1) {
-  const hx = len * 0.16, hy = 0.13;
+  const hx = len * 0.24, hy = 0.13;
   s.line(x - len, y, x - hx * 0.7, y, { color: col, width: 3, alpha });
   s.poly([[x, y], [x - hx, y + hy], [x - hx, y - hy]], { fill: col, fillAlpha: alpha, stroke: false });
   for (const d of [1, -1]) s.poly([[x - len + 0.02, y], [x - len - hx * 0.6, y + d * hy * 0.9], [x - len + hx * 0.5, y + d * hy * 0.9], [x - len + hx * 0.8, y]], { fill: 'orange', fillAlpha: alpha * 0.85, stroke: false });
@@ -219,21 +219,27 @@ export default {
         const zoom = v.toggle('zoom with h', false);
         const rest = v.toggle('the arrow is at rest', false);
         const xm = (t) => 0.6 + 1.1 * t - 0.12 * t * t, vm = (t) => 1.1 - 0.24 * t;
-        const strip = v.stage({ x: [0, 4.3], y: [-0.75, 1.45], axes: false, height: 150, full: true });
+        const strip = v.stage({ x: [-0.05, 10.05], y: [-1.0, 1.55], axes: false, height: 170, full: true });
         const G = v.stage({ x: [0, 4], y: [0, 3.4], axes: 'box', height: 300, xlabel: 't', ylabel: 'x', weight: 1.1 });
-        const Q = v.stage({ x: [1e-4, 1], y: [-0.15, 1.3], xlog: true, axes: 'box', height: 300, xlabel: 'h', title: 'difference quotient $\\frac{x(t_0+h)-x(t_0)}{h}$', weight: 1 });
+        const Q = v.stage({ x: [2.5e-5, 1], y: [-0.15, 1.3], xlog: true, axes: 'box', height: 300, xlabel: 'h', title: 'difference quotient $\\frac{x(t_0+h)-x(t_0)}{h}$', weight: 1 });
         let st = null;
         v.render(() => {
           const t0 = t0S.value, h = hS.value, still = rest.value;
           const X = (t) => (still ? xm(t0) : xm(t)), V = still ? 0 : vm(t0);
-          // ---- the film strip: the flying arrow and an arrow at rest, both at t0
-          strip.text('flying arrow', 0.05, 1.18, { size: 12, weight: 600, color: 'blue' });
-          strip.text('arrow at rest', 0.05, 0.03, { size: 12, weight: 600, color: 'purple' });
-          for (const k of [-3, -2, -1, 1, 2, 3]) drawArrow(strip, X(t0 + k * 0.25), 0.78, 0.55, 'blue', 0.13);
-          drawArrow(strip, X(t0), 0.78, 0.55, 'blue');
-          drawArrow(strip, xm(t0), -0.38, 0.55, 'purple');
-          strip.line(xm(t0), -0.7, xm(t0), 1.05, { color: 'gold', width: 1.4, dash: [4, 4] });
-          strip.text(`instant t₀ = ${v.fix(t0, 2)}: the two snapshots are identical`, xm(t0) + 0.06, -0.62, { size: 11.5, color: 'gold', weight: 600, align: xm(t0) > 2.6 ? 'right' : 'left', dx: xm(t0) > 2.6 ? -12 : 0 });
+          // ---- film strip: five frames around t0, for a flying arrow and for an arrow at rest
+          const DT = 0.5, fx = (i, pos) => 2 * i + 0.15 + ((pos - 0.2) / 3.3) * 1.7;
+          for (let i = 0; i < 5; i++) {
+            const tt = t0 + (i - 2) * DT, mid = i === 2;
+            strip.rect(2 * i + 0.06, -0.78, 2 * i + 1.94, 1.22, { color: mid ? 'gold' : 'faint', width: mid ? 2.6 : 1, fill: mid ? 'gold' : 'muted', fillAlpha: mid ? 0.08 : 0.03 });
+            strip.text(mid ? `t₀ = ${v.fix(t0, 2)}` : `t₀ ${i < 2 ? '−' : '+'} ${v.fix(Math.abs(i - 2) * DT, 1)}`, 2 * i + 1, 1.38, { align: 'center', size: 11, weight: mid ? 700 : 500, color: mid ? 'gold' : 'muted' });
+            for (const [y, col, pos] of [[0.62, 'blue', xm(tt)], [-0.3, 'purple', xm(t0)]]) {
+              strip.line(2 * i + 0.15, y - 0.2, 2 * i + 1.85, y - 0.2, { color: 'faint', width: 1 });
+              if (pos > 0.25 && pos < 3.55) drawArrow(strip, fx(i, pos), y, 0.42, col);
+            }
+          }
+          strip.text('flying', 0.12, 1.03, { size: 10.5, weight: 600, color: 'blue' });
+          strip.text('at rest', 0.12, 0.1, { size: 10.5, weight: 600, color: 'purple' });
+          strip.text('in the gold frame the two snapshots are identical; only comparing frames reveals the motion', 5, -0.92, { align: 'center', size: 11, color: 'muted' });
           // ---- position-time graph with secant and tangent
           if (zoom.value) { const w = Math.max(2.5 * h, 0.004); G.setView([t0 - w, t0 + w], [X(t0) - w * 1.3, X(t0) + w * 1.3]); } else G.setView([0, 4], [0, 3.4]);
           G.fn(X, { color: 'blue', width: 2.6 });
@@ -245,8 +251,8 @@ export default {
           Q.hline(V, { color: 'green', dash: [6, 4], width: 1.6 });
           Q.fn((hh) => (X(t0 + hh) - X(t0)) / hh, { color: 'orange', width: 2.4 });
           Q.dot(h, slope, { r: 5, color: 'orange' });
-          Q.text(`v(t₀) = ${v.fix(V, 4)}`, 1.6e-4, V, { dy: -11, size: 11.5, weight: 600, color: 'green' });
-          Q.text('h → 0: the quotient converges', 1.4e-4, 1.22, { size: 11, color: 'muted' });
+          Q.text(`v(t₀) = ${v.fix(V, 4)}`, 1.2e-3, V, { dy: -11, size: 11.5, weight: 600, color: 'green' });
+          Q.text('← h → 0: the quotient converges', 1.2e-4, 1.2, { size: 11, color: 'muted' });
           st = { t0, h, slope, V, still, x: X(t0) };
         });
         v.legend([['blue', 'position $x(t)$'], ['orange', 'secant over $[t_0, t_0+h]$'], ['green', 'tangent: velocity at $t_0$', { dash: true }]]);
@@ -275,12 +281,14 @@ The paradox has teeth on an **atomistic** view of space and time. Suppose time c
         const mode = v.select('time', [{ value: 'cont', label: 'continuous' }, { value: 'atom', label: 'atoms of time' }], 'cont');
         const tS = v.slider('time (atoms)', 0, 2, 0.5, { step: 0.01 });
         const S = v.stage({ x: [-2.6, 6.6], y: [-0.55, 3.2], axes: false, height: 230, full: true });
-        const TL = v.stage({ x: [-0.15, 2.15], y: [-0.7, 2.1], axes: false, height: 160, full: true });
+        const TL = v.stage({ x: [-0.12, 2.42], y: [-0.7, 2.1], axes: false, height: 160, full: true });
         const posA = (i) => i - 1, posB = (i, t) => 1 + i - t, posC = (j, t) => 2 - j + t; // B1 leads to the left, C1 leads to the right
         const ROWS = [['B', 2.35, 'orange', posB, '← moving left'], ['A', 1.35, 'muted', (i) => posA(i), 'at rest'], ['C', 0.35, 'teal', posC, 'moving right →']];
         let st = null;
         v.render(() => {
           const atom = mode.value === 'atom', t = atom ? Math.round(tS.value) : tS.value;
+          if (atom && t >= 1) for (const [R, y, col, pos] of ROWS) if (R !== 'A') for (let i = 1; i <= 4; i++) { const x = pos(i, t - 1); S.rect(x + 0.04, y - 0.3, x + 0.96, y + 0.3, { color: col, width: 1.2, dash: [4, 4], alpha: 0.55 }); }
+          if (atom && t >= 1) S.text(`dashed: positions at atom ${t - 1}`, 6.5, -0.38, { align: 'right', size: 10.5, color: 'muted' });
           for (const [R, y, col, pos, lab] of ROWS) {
             S.text(`row ${R}`, -2.5, y + 0.36, { size: 11.5, weight: 600, color: col === 'muted' ? 'ink' : col });
             S.text(lab, -2.5, y - 0.08, { size: 10.5, color: 'muted' });
@@ -337,14 +345,14 @@ The sequence of states, on, off, on, off, …, has **no limit**, so continuity c
         const uS = v.slider('halvings $u$ (time $= 2^{-u}$ min before noon)', -1, 16, 6.4, { step: 0.01 });
         const noon = v.select('state at noon (you decide)', [{ value: 1, label: 'on' }, { value: 0, label: 'off' }], 1);
         const L = v.stage({ x: [-1.6, 1.6], y: [-1.75, 1.6], equal: true, axes: false, height: 260, weight: 0.55 });
-        const W = v.stage({ x: [-1.3, 18.6], y: [-0.55, 1.45], axes: false, height: 260, weight: 1.45 });
+        const W = v.stage({ x: [-2.9, 18.7], y: [-0.55, 1.45], axes: false, height: 260, weight: 1.45 });
         const stateAt = (u) => (u < 0 ? 0 : Math.floor(u) % 2 === 0 ? 1 : 0);
         let st = null;
         v.render(() => {
           const u = uS.value, s = stateAt(u), presses = u < 0 ? 0 : Math.floor(u) + 1, pick = +noon.value;
           // ---- the lamp
           const on = s === 1;
-          if (on) for (let k = 0; k < 12; k++) { const a = (k / 12) * 2 * Math.PI; L.line(0.95 * Math.cos(a), 0.35 + 0.95 * Math.sin(a), 1.35 * Math.cos(a), 0.35 + 1.35 * Math.sin(a), { color: 'gold', width: 2.5 }); }
+          if (on) for (let k = 0; k < 12; k++) { const a = (k / 12) * 2 * Math.PI; if (k >= 7 && k <= 11) continue; L.line(0.95 * Math.cos(a), 0.35 + 0.95 * Math.sin(a), 1.35 * Math.cos(a), 0.35 + 1.35 * Math.sin(a), { color: 'gold', width: 2.5 }); }
           L.circle(0, 0.35, 0.78, { fill: on ? 'gold' : 'muted', fillAlpha: on ? 0.75 : 0.15, color: on ? 'gold' : 'muted', width: 2.5 });
           L.rect(-0.32, -0.75, 0.32, -0.38, { fill: 'muted', fillAlpha: 0.5, color: 'muted', width: 1.5 });
           L.text(on ? 'ON' : 'OFF', 0, 0.35, { align: 'center', size: 18, weight: 700, color: on ? 'ink' : 'muted' });
@@ -366,11 +374,11 @@ The sequence of states, on, off, on, off, …, has **no limit**, so continuity c
           // noon column
           W.rect(17.45, -0.3, 18.5, 1.3, { fill: 'accent', fillAlpha: 0.08, color: 'accent', width: 1.4, dash: [5, 4] });
           W.text('noon', 17.97, -0.45, { align: 'center', size: 11.5, weight: 700, color: 'accent' });
-          W.text(pick ? 'on?' : 'off?', 17.97, 0.95, { align: 'center', size: 13, weight: 700, color: 'accent' });
-          W.dot(17.97, pick, { r: 6, color: 'accent' });
-          for (const [k, lab] of [[0, '1 min'], [1, '½'], [2, '¼'], [4, '1/16'], [8, '1/256'], [12, '1/4096'], [16, '1/65536']]) W.text(lab, k, -0.25, { align: 'center', size: 10.5, color: 'muted' });
-          W.text('presses, at minutes before noon →', 2.6, 1.32, { size: 11, color: 'muted' });
-          W.text('1 = on', -1.2, 1, { size: 10.5, color: 'muted' }); W.text('0 = off', -1.2, 0.1, { size: 10.5, color: 'muted' });
+          W.dot(17.97, pick, { r: 7, color: 'accent' });
+          W.text('your pick', 17.97, 1.36, { align: 'center', size: 10.5, weight: 600, color: 'accent' });
+          for (const [k, lab] of [[0, '1 min'], [2, '¼'], [4, '1/16'], [8, '1/256'], [12, '1/4096'], [16, '1/65536']]) W.text(lab, k, -0.25, { align: 'center', size: 10.5, color: 'muted' });
+          W.text('presses, at minutes before noon →', 3.2, 1.32, { size: 11, color: 'muted' });
+          W.text('on', -1.5, 1, { align: 'right', size: 11, weight: 600, color: 'muted' }); W.text('off', -1.5, 0, { align: 'right', size: 11, weight: 600, color: 'muted' });
           st = { u, s, presses, pick, avg: presses ? sum / 17 : 0 };
         });
         v.legend([['gold', 'state before noon'], ['purple', 'average of the states so far', { dot: true }], ['accent', 'your stipulated state at noon', { dot: true }]]);

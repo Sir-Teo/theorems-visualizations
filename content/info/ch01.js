@@ -225,7 +225,7 @@ with the convention $0\log 0=0$, so outcomes of probability zero contribute noth
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Entropy_(information_theory)' },
       viz(v) {
         const T = textStats(), CAP = 60000;
-        let p = [0.34, 0.22, 0.16, 0.12, 0.1, 0.06], seed = 1, N = 2000;
+        let p = [0.46, 0.2, 0.13, 0.1, 0.07, 0.04], seed = 1, N = 2000;
         const src = v.select('source', [{ value: 'own', label: 'your distribution' }, { value: 'text', label: 'English text' }], 'own');
         const nS = v.slider('outcomes $n$', 2, 10, 6, { int: true, onChange: (n) => { p = resizeP(p, n); } });
         const rd = v.slider('characters read $n$', 10, T.N, 300, { int: true, log: true });
@@ -290,10 +290,13 @@ with the convention $0\log 0=0$, so outcomes of probability zero contribute noth
           const ymax = own ? Math.max(4, Math.ceil(Math.log2(n) + 2.2)) : 9;
           viewPad(sB, [0, 1], [0, ymax]);
           drawProfile(sB, v, dist, name, ymax);
+          // labels go on the side where the profile is lower
+          const nz = dist.map((x, i) => [x, i]).filter(([x]) => x > 0), hl = nz.length ? surpr(nz[0][0]) : 0, hr = nz.length ? surpr(nz[nz.length - 1][0]) : 0;
+          const L = hl <= hr, lx = L ? 0 : 1, al = L ? 'left' : 'right', ddx = L ? 6 : -6;
           sB.hline(Math.log2(n), { color: 'orange', width: 1.5, dash: [6, 4] });
-          sB.text(`log₂ ${n}`, 1, Math.log2(n), { align: 'right', dx: -6, dy: -9, color: 'orange', size: 11.5 });
+          sB.text(`log₂ ${n}`, lx, Math.log2(n), { align: al, dx: ddx, dy: -9, color: 'orange', size: 11.5 });
           sB.hline(Hd, { color: 'green', width: 2.4 });
-          sB.text(`H = ${v.fix(Hd, 3)} bits`, 1, Hd, { align: 'right', dx: -6, dy: 11, color: 'green', weight: 700 });
+          sB.text(`H = ${v.fix(Hd, 3)} bits`, lx, Hd, { align: al, dx: ddx, dy: (L ? hl : hr) < Hd - 0.4 ? 11 : -10, color: 'green', weight: 700 });
         });
         v.readout(() => {
           if (src.value === 'own') {
@@ -325,7 +328,7 @@ It is symmetric, $h(p)=h(1-p)$; strictly concave; increasing on $[0,\tfrac12]$ w
         const terms = v.toggle('show the two terms', true);
         let seed = 3; v.button('New flips', () => { seed++; });
         const sL = v.stage({ x: [0, 1], y: [0, 1.12], height: 340, axes: 'box', weight: 1.4, title: '$h(p) = -p\\log_2 p-(1-p)\\log_2(1-p)$' });
-        const sR = v.stage({ x: [0, 20], y: [0, 13.4], height: 340, equal: true, axes: false, title: '200 flips with $P(\\text{heads}) = p$' });
+        const sR = v.stage({ x: [-0.2, 20.2], y: [-3.4, 13.2], height: 340, equal: true, axes: false, title: '200 flips with $P(\\text{heads}) = p$' });
         const dom = () => (view.value === 'zoom' ? [0, 0.05] : [0, 1]);
         const hP = sL.handle(0.2, h2(0.2), { color: 'accent', label: 'p', labelPos: 'n', constrain: (x) => { const [a, b] = dom(); const q = clamp(x, a, b); return [q, h2(q)]; } });
         let U = null, Us = null;
@@ -358,13 +361,14 @@ It is symmetric, $h(p)=h(1-p)$; strictly concave; increasing on $[0,\tfrac12]$ w
             else sR.rect(cx - 0.38, cy - 0.38, cx + 0.38, cy + 0.38, { color: 'muted', width: 1, alpha: 0.6 });
           });
           const bpf = (k ? -k * Math.log2(p) : 0) / 200 + (200 - k ? -(200 - k) * Math.log2(1 - p) : 0) / 200;
-          sR.text(`${k} heads, ${200 - k} tails`, 10, 2.15, { align: 'center', size: 12.5, weight: 600, color: 'ink' });
-          sR.tex(`-\\tfrac1{200}\\log_2 P(\\text{these flips}) = ${v.fix(bpf, 3)}`, 10, 1.05, { size: 14, color: 'gold' });
-          sR.tex(`h(p) = ${v.fix(hp, 3)}\\ \\text{bits per flip}`, 10, 0.05, { size: 14, color: 'accent', baseline: 'bottom' });
+          const y0 = sR.Y(2.9), xm = sR.X(10);
+          sR.textPx(`${k} heads, ${200 - k} tails`, xm, y0 + 16, { align: 'center', size: 12.5, weight: 600, color: 'ink' });
+          sR.texPx(`\\text{these flips: } -\\tfrac1{200}\\log_2 P = ${v.fix(bpf, 3)}\\text{ bits each}`, xm, y0 + 42, { size: 14, color: 'gold' });
+          sR.texPx(`\\text{entropy: } h(p) = ${v.fix(hp, 3)}\\text{ bits per flip}`, xm, y0 + 68, { size: 14, color: 'accent' });
         });
         v.readout(() => {
           const p = hP.x, hp = h2(p), m = p > 0 && p < 1 ? v.fix(Math.log2((1 - p) / p), 3) : p === 0 ? '+\\infty' : '-\\infty';
-          return String.raw`$h(${v.fix(p, 3)}) = ${v.fix(hp, 4)}$ bits $= h(${v.fix(1 - p, 3)})$ · slope $h'(p) = \log_2\frac{1-p}{p} = ${m}$ · maximum $h(\tfrac12) = 1$ bit` + (p > 0 && p < 1 ? ` · quadratic approximation $1-\\frac{2}{\\ln 2}(p-\\tfrac12)^2 = ${v.fix(1 - (2 / Math.LN2) * (p - 0.5) ** 2, 4)}$` : '');
+          return String.raw`$h(${v.fix(p, 3)}) = ${v.fix(hp, 4)}$ bits $= h(${v.fix(1 - p, 3)})$ · slope $h'(p) = \log_2\frac{1-p}{p} = ${m}$ · maximum $h(\tfrac12) = 1$ bit` + (Math.abs(p - 0.5) < 0.2 ? ` · near the top $h(p)\\approx $1-\\frac{2}{\\ln 2}(p-\\tfrac12)^2 = ${v.fix(1 - (2 / Math.LN2) * (p - 0.5) ** 2, 4)}$` : p < 0.06 ? ` · near $0$, $h(p)\\approx p\\log_2\\frac1p = ${v.fix(-p * Math.log2(Math.max(p, 1e-12)), 4)}$` : '');
         });
       },
     },
@@ -384,7 +388,7 @@ with $H(X)=0$ exactly when $X$ is constant and $H(X)=\log_2 n$ exactly when $X$ 
       viz(v) {
         const T = textStats(), S3 = Math.sqrt(3) / 2, LOG3 = Math.log2(3), L27 = Math.log2(27);
         const mode = v.select('outcomes', [{ value: '3', label: 'three (the simplex)' }, { value: 'text', label: '27 letters of English' }], '3');
-        const mix = v.slider('mix toward uniform $t$', 0, 1, 0, { step: 0.01 });
+        const mix = v.slider('mix toward uniform $t$', 0, 1, 0.3, { step: 0.01 });
         let trail = [];
         const toXY = (q) => [q[1] + 0.5 * q[2], S3 * q[2]];
         const toP = (x, y) => { const c = y / S3, b = x - 0.5 * c; return [1 - b - c, b, c]; };
@@ -432,7 +436,7 @@ with $H(X)=0$ exactly when $X$ is constant and $H(X)=\log_2 n$ exactly when $X$ 
           if (supp < 3) sG.corner(`${3 - supp} outcome${supp === 1 ? 's' : ''} impossible: H ≤ log₂ ${supp}`, 'tl', { color: 'red', size: 11.5 });
           // ── letters
           const t = mix.value, P = pt(t), P0 = pt(0), Ht = H(P);
-          viewPad(sL, [-0.8, 26.8], [0, 0.2]); sL.setTicks(order.map(([, k], i) => [i, ALPH_SHOW(k)]), null);
+          viewPad(sL, [-0.8, 26.8], [0, 0.215]); sL.setTicks(order.map(([, k], i) => [i, ALPH_SHOW(k)]), null);
           P.forEach((x, i) => { sL.rect(i - 0.38, 0, i + 0.38, x, { fill: 'accent', fillAlpha: 0.5, stroke: false }); if (t > 0) sL.line(i - 0.38, P0[i], i + 0.38, P0[i], { color: 'muted', width: 1.3 }); });
           sL.hline(1 / 27, { color: 'orange', width: 1.5, dash: [6, 4] }); sL.text('uniform 1/27', 26.8, 1 / 27, { align: 'right', dy: -9, color: 'orange', size: 11.5 });
           viewPad(sM, [0, 1], [3.95, 4.85]);
@@ -476,14 +480,16 @@ with $L^*=H(X)$ exactly when every probability is a power of $\tfrac12$. The bes
         const merge = (a, b) => { const nd = { id: nodes.length, w: nodes[a].w + nodes[b].w, kids: [a, b], parent: null }; nodes[a].parent = nd.id; nodes[b].parent = nd.id; nodes.push(nd); game = null; played = null; };
         const roots = () => nodes.filter((n) => n.parent === null);
         const rootOf = (id) => { while (nodes[id].parent !== null) id = nodes[id].parent; return id; };
+        const halving = () => { reset(); let lv = nodes.map((n) => n.id); while (lv.length > 1) { const nx = []; for (let i = 0; i + 1 < lv.length; i += 2) { merge(lv[i], lv[i + 1]); nx.push(nodes.length - 1); } if (lv.length % 2) nx.push(lv[lv.length - 1]); lv = nx; } };
         const huffman = () => { reset(); while (roots().length > 1) { const r = roots().sort((a, b) => a.w - b.w || a.id - b.id); merge(r[0].id, r[1].id); } };
         const bestL = () => { let w = P.slice(), c = 0; while (w.length > 1) { w.sort((a, b) => a - b); const m = w[0] + w[1]; c += m; w = [m, ...w.slice(2)]; } return c; };
         const depth = (i) => { let d = 0, id = i; while (nodes[id].parent !== null) { id = nodes[id].parent; d++; } return d; };
         const complete = () => roots().length === 1;
-        reset();
-        v.select('objects', [{ value: 'skewed', label: 'skewed' }, { value: 'uniform', label: 'equally likely' }, { value: 'dyadic', label: 'dyadic ($\\tfrac12, \\tfrac14, \\dots$)' }, { value: 'sure', label: 'nearly certain' }], 'skewed', { onChange: (k) => { P = PRE[k].slice(); reset(); } });
+        halving();
+        v.select('objects', [{ value: 'skewed', label: 'skewed' }, { value: 'uniform', label: 'equally likely' }, { value: 'dyadic', label: 'dyadic ($\\tfrac12, \\tfrac14, \\dots$)' }, { value: 'sure', label: 'nearly certain' }], 'skewed', { onChange: (k) => { P = PRE[k].slice(); halving(); } });
         v.button('Undo', () => { const last = nodes[nodes.length - 1]; if (last.kids) { nodes.pop(); last.kids.forEach((k) => (nodes[k].parent = null)); sel = null; game = null; played = null; } });
-        v.button('Start over', reset);
+        v.button('Clear', reset);
+        v.button('Halving tree', halving);
         v.button('Best tree (Huffman)', huffman);
         const draw = (r) => { let u = r(), i = 0; while (i < 7 && u >= P[i]) { u -= P[i]; i++; } return i; };
         v.button('Play a game', () => { if (!complete()) return; const r = v.rng(hashStr('game|' + gseed++)); const i = draw(r); const path = [i]; let id = i; while (nodes[id].parent !== null) { id = nodes[id].parent; path.push(id); } game = { leaf: i, path }; });
@@ -577,7 +583,7 @@ It is the uncertainty left about $Y$ once $X$ is known. $H(Y\mid X)=0$ exactly w
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Conditional_entropy' },
       viz(v) {
         const PRE = {
-          noisy: [[0.32, 0.04, 0.04], [0.035, 0.28, 0.035], [0.025, 0.025, 0.2]],
+          noisy: [[0.36, 0.02, 0.02], [0.06, 0.2, 0.09], [0.05, 0.05, 0.15]],
           indep: [0.5, 0.3, 0.2].map((a) => [0.45, 0.35, 0.2].map((b) => a * b)),
           func: [[0.3, 0, 0], [0.3, 0, 0], [0, 0.4, 0]],
           same: [[0.5, 0, 0], [0, 0.3, 0], [0, 0, 0.2]],
@@ -603,10 +609,10 @@ It is the uncertainty left about $Y$ once $X$ is known. $H(Y\mid X)=0$ exactly w
           const S = stats();
           // ── the table
           for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
-            const q = P[3 * i + j], x0 = j, y0 = -i - 1, side = 0.9 * Math.sqrt(q);
+            const q = P[3 * i + j], x0 = j, y0 = -i - 1, side = 0.72 * Math.sqrt(q);
             sT.rect(x0 + 0.03, y0 + 0.03, x0 + 0.97, y0 + 0.97, { color: drag && drag.k === 3 * i + j ? 'gold' : 'faint', width: drag && drag.k === 3 * i + j ? 2.2 : 1.2 });
-            if (q > 0) sT.rect(x0 + 0.5 - side / 2, y0 + 0.5 - side / 2, x0 + 0.5 + side / 2, y0 + 0.5 + side / 2, { fill: 'accent', fillAlpha: 0.35, stroke: false });
-            sT.text(q > 0 ? v.fix(q, 3) : '0', x0 + 0.5, y0 + 0.5, { align: 'center', size: 12, weight: 600, color: q > 0 ? 'ink' : 'muted' });
+            if (q > 0) sT.rect(x0 + 0.5 - side / 2, y0 + 0.6 - side / 2, x0 + 0.5 + side / 2, y0 + 0.6 + side / 2, { fill: 'accent', fillAlpha: 0.45, stroke: false });
+            sT.text(q > 0 ? v.fix(q, 3) : '0', x0 + 0.5, y0 + 0.15, { align: 'center', size: 11.5, weight: 600, color: q > 0 ? 'ink' : 'muted', halo: false });
           }
           for (let k = 0; k < 3; k++) {
             sT.tex(`y_${k + 1}`, k + 0.5, 0.3, { color: 'teal', size: 15 });
@@ -621,14 +627,14 @@ It is the uncertainty left about $Y$ once $X$ is known. $H(Y\mid X)=0$ exactly w
           sT.tex('p(x)', 3.38, 0.3, { color: 'accent', size: 13 });
           sT.tex('H(Y|x)', 4.15, 0.3, { color: 'teal', size: 13 });
           // ── area diagram (1 bit = K units of area)
-          const K = 0.95, rX = Math.sqrt((K * S.HX) / Math.PI), rY = Math.sqrt((K * S.HY) / Math.PI), target = K * S.I;
+          const K = 1.45, rX = Math.sqrt((K * S.HX) / Math.PI), rY = Math.sqrt((K * S.HY) / Math.PI), target = K * S.I;
           let d;
           if (rX < 1e-9 || rY < 1e-9) d = rX + rY;
           else if (target <= 1e-9) d = rX + rY + 0.02;
           else if (target >= Math.PI * Math.min(rX, rY) ** 2 - 1e-9) d = Math.abs(rX - rY);
           else { let lo = Math.abs(rX - rY), hi = rX + rY; for (let it = 0; it < 60; it++) { const m = (lo + hi) / 2; if (lensArea(rX, rY, m) > target) lo = m; else hi = m; } d = (lo + hi) / 2; }
           const sh = -(Math.min(-rX, d - rY) + Math.max(rX, d + rY)) / 2;
-          const cX = sh, cY = sh + d, cyv = -0.15, xl = cX - rX, xr = cX + rX, yl = cY - rY, yr = cY + rY;
+          const cX = sh, cY = sh + d, cyv = -0.2, xl = cX - rX, xr = cX + rX, yl = cY - rY, yr = cY + rY;
           if (rX > 0) sV.circle(cX, cyv, rX, { fill: 'accent', fillAlpha: 0.22, color: 'accent', width: 2 });
           if (rY > 0) sV.circle(cY, cyv, rY, { fill: 'teal', fillAlpha: 0.22, color: 'teal', width: 2 });
           // the lens in purple
@@ -649,14 +655,14 @@ It is the uncertainty left about $Y$ once $X$ is known. $H(Y\mid X)=0$ exactly w
             ['H(Y\\mid X)', S.HYgX, 'teal', 2.05, (yr + Math.max(xr, yl)) / 2],
           ];
           for (const [nm, val, col, lx, rx] of regions) {
-            sV.tex(nm, lx, 2.2, { color: col, size: 14 });
-            sV.text(v.fix(val, 3) + ' bits', lx, 1.83, { align: 'center', color: col, size: 11.5, weight: 600 });
-            if (val > 0.003) sV.line(lx, 1.68, rx, cyv + 0.05, { color: col, width: 1, alpha: 0.7 });
+            sV.tex(nm, lx, 2.25, { color: col, size: 14 });
+            sV.text(v.fix(val, 3) + ' bits', lx, 1.9, { align: 'center', color: col, size: 11.5, weight: 600 });
+            if (val > 0.003) sV.line(lx, 1.76, rx, cyv + 0.05, { color: col, width: 1, alpha: 0.7 });
           }
           sV.tex(`H(X) = ${v.fix(S.HX, 3)}`, cX, cyv - rX, { dy: 14, color: 'accent', size: 13, align: rY > 0 && cY - cX < 0.9 ? 'right' : 'center' });
           sV.tex(`H(Y) = ${v.fix(S.HY, 3)}`, cY, cyv - rY, { dy: 14, color: 'teal', size: 13, align: rX > 0 && cY - cX < 0.9 ? 'left' : 'center' });
           sV.tex(`\\text{union} = H(X,Y) = ${v.fix(S.HXY, 3)}`, 0, -2.25, { color: 'ink', size: 13, baseline: 'bottom' });
-          const sq = Math.sqrt(K); sV.rect(2.95 - sq, -2.28, 2.95, -2.28 + sq, { color: 'muted', width: 1, dash: [3, 3] }); sV.text('1 bit', 2.95 - sq / 2, -2.28 + sq / 2, { align: 'center', size: 10.5, color: 'muted' });
+          const sq = Math.sqrt(K / 4); sV.rect(2.95 - sq, -2.3, 2.95, -2.3 + sq, { color: 'muted', width: 1, dash: [3, 3] }); sV.text('¼ bit', 2.95 - sq / 2, -2.3 + sq, { dy: -8, align: 'center', size: 10.5, color: 'muted' });
         });
         v.readout(() => {
           const S = stats();

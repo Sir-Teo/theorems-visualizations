@@ -237,5 +237,204 @@ $B$ is negative at low temperature and positive at high temperature. At the **Bo
         });
       },
     },
+    // ------------------------------------------------------------------ 1.13
+    {
+      num: '1.13', kind: 'Model', name: 'Van der Waals equation',
+      statement: String.raw`The van der Waals equation corrects the perfect-gas law for the size of molecules and the attraction between them:
+$$\Big(p + a\frac{n^2}{V^2}\Big)(V - nb) = nRT, \qquad\text{i.e.}\qquad p = \frac{RT}{V_m - b} - \frac{a}{V_m^2}.$$
+The constant $b$ is the volume excluded per mole by the molecules themselves (four times their own volume for hard spheres), and $a$ measures the strength of their mutual attraction, which lowers the pressure in proportion to the square of the density. Both are fitted to each gas (CO₂: $a = 3.66$ bar L² mol⁻², $b = 0.0429$ L mol⁻¹). The equation reduces to $pV = nRT$ when $a, b \to 0$ or $V_m \to \infty$. Below the temperature $T_c = 8a/27Rb$ its isotherms develop a loop on which $(\partial p/\partial V)_T > 0$ — the signature of liquefaction.`,
+      idea: String.raw`Two corrections to the kinetic picture (1.6). Molecules move freely only in the volume their neighbours leave empty, $V_m - b$, so the repulsive (kinetic) pressure is $RT/(V_m - b)$, higher than the perfect-gas value. A molecule about to hit the wall is tugged back by the molecules behind it; both the number of impacts and the pull on each scale with the density, so the pressure drops by $a/V_m^2$. The cubic equation that results has, at low temperature, three volumes for one pressure: a dense liquid root, a dilute vapour root, and an unstable one in between — the loop that Maxwell's construction replaces by a horizontal tie line (thermo-4.3, 1.15).`,
+      caption: String.raw`The thick curve is a van der Waals isotherm, the dashed one the perfect-gas isotherm at the same temperature, and the faint family runs through the critical temperature $T_c = 8a/27Rb$. Slide $a$ and $b$ down to zero and the two coincide; raise $a$ and the isotherm sags, raise $b$ and it is pushed up against the wall $V_m = b$. Cool below $T_c$ and the isotherm wiggles: the red stretch, where compressing the gas would lower its pressure, cannot exist. Drag the state point; the bars split its pressure into the kinetic part $RT/(V_m-b)$ and the attraction $-a/V_m^2$.`,
+      deps: ['pchem-1.4', 'pchem-1.11', 'thermo-4.1'],
+      refs: ['Atkins 1C', 'M–S ch. 16', 'CRC Handbook (van der Waals constants)'],
+      tags: ['real gases', 'equation of state'],
+      credit: 'van der Waals, 1873',
+      scope: String.raw`Qualitatively right everywhere — it predicts condensation, a critical point and corresponding states — but quantitatively only a first correction: it is good to a few percent at moderate densities and poor near the critical point and in the liquid (it predicts $Z_c = 3/8$ against about 0.29 for real fluids).`,
+      viz(v) {
+        const PICK = ['N2', 'CO2', 'Xe', 'H2O'];
+        const gs = v.select('constants of', PICK.map((n) => ({ value: n, label: `$${GAS[n].tex}$` })), 'CO2', { onChange: (n) => { aS.set(GAS[n].a); bS.set(GAS[n].b); } });
+        const aS = v.slider('attraction $a$', 0, 6, GAS.CO2.a, { step: 0.001, fmt: (x) => `${x.toFixed(2)} bar·L²/mol²` });
+        const bS = v.slider('excluded volume $b$', 0, 0.08, GAS.CO2.b, { step: 0.0001, fmt: (x) => `${(1000 * x).toFixed(1)} mL/mol` });
+        const Tsl = v.slider('temperature', 150, 700, 280, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
+        const s = v.stage({ x: [0, 0.5], y: [-100, 300], height: 380, axes: 'box', weight: 1.55, xlabel: 'Vₘ (L/mol)', title: 'pressure (bar) against molar volume' });
+        const sb = v.stage({ x: [0, 4], y: [-200, 600], height: 380, axes: false, weight: 0.65, minWidth: 190, title: 'pressure at the state point (bar)' });
+        const H = s.handle(0.2, 0, { color: 'gold', r: 7, constrain: (x) => [Math.max(0.01, Math.min(0.5, x)), 0] });
+        let st = null;
+        v.render(() => {
+          const a = aS.value, b = bS.value, T = Tsl.value, Tc = a > 0 && b > 0 ? 8 * a / (27 * R * b) : Infinity;
+          const p = (V) => (V > b ? R * T / (V - b) - a / (V * V) : NaN), dp = (V) => -R * T / (V - b) ** 2 + 2 * a / V ** 3;
+          if (b > 0) s.rect(0, -100, b, 300, { fill: 'gray', fillAlpha: 0.18, stroke: false });
+          if (b > 0.012) s.text('V < b', b / 2, 284, { size: 10.5, color: 'muted', align: 'center' });
+          s.hline(0, { color: 'faint', width: 1 });
+          if (isFinite(Tc)) for (const f of [0.85, 0.95, 1, 1.1, 1.25]) { const TT = f * Tc; s.fn((V) => (V > b ? R * TT / (V - b) - a / (V * V) : NaN), { color: f === 1 ? 'muted' : 'faint', width: f === 1 ? 1.4 : 1, domain: [b * 1.02, 0.5] }); } if (isFinite(Tc)) s.text(`faint: 0.85–1.25 T_c,  T_c = ${Tc.toFixed(0)} K`, 0.495, Math.min(280, R * 1.25 * Tc / (0.49 - b) - a / 0.2401 + 14), { size: 10.5, color: 'muted', align: 'right' });
+          s.fn((V) => R * T / V, { color: 'ink', width: 1.6, dash: [6, 4], domain: [0.01, 0.5] });
+          // the isotherm, red where dp/dV > 0
+          const N = 500, pts = [], bad = [];
+          for (let k = 0; k <= N; k++) { const V = b + 0.0005 + (0.5 - b) * (k / N) ** 1.6, P = p(V), up = dp(V) > 0; pts.push([V, P]); bad.push(up ? [V, P] : null); }
+          s.path(pts, { color: 'accent', width: 2.8 });
+          s.path(bad, { color: 'red', width: 4.5 });
+          const V = H.x, P = p(V), Pid = R * T / V;
+          H.y = Math.max(-100, Math.min(300, isFinite(P) ? P : 0));
+          s.dot(V, Math.max(-100, Math.min(300, Pid)), { r: 4.5, color: 'ink', hollow: true });
+          st = { a, b, T, Tc, V, P, Pid, rep: V > b ? R * T / (V - b) : NaN, att: a / (V * V), loop: T < Tc };
+          // bars: perfect gas, kinetic with excluded volume, attraction, total
+          const top = Math.max(300, (st.rep || 0) * 1.1, Pid * 1.1), bot = Math.min(-150, -st.att * 1.1);
+          sb.setView([0, 4], [bot, top]);
+          sb.line(0, 0, 4, 0, { color: 'ink', width: 1 });
+          const bar = (i, val, col, lab, base = 0) => { if (!isFinite(val)) return; sb.rect(i + 0.15, base, i + 0.85, base + val, { fill: col, fillAlpha: 0.65, stroke: false }); sb.text(lab, i + 0.5, val >= 0 ? base + val : base + val, { size: 10.5, color: col, align: 'center', dy: val >= 0 ? -9 : 10 }); };
+          bar(0, Pid, 'ink', 'RT/V');
+          bar(1, st.rep, 'red', 'RT/(V−b)');
+          bar(2, -st.att, 'blue', '−a/V²');
+          bar(3, P, 'gold', 'p');
+        });
+        v.legend([['accent', 'van der Waals isotherm'], ['red', 'unstable: $\\partial p/\\partial V > 0$'], ['ink', 'perfect gas, same $T$', { dash: true }], ['muted', 'isotherms around $T_c = 8a/27Rb$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { a, b, T, Tc, V, P, Pid, loop } = st, g = GAS[gs.value], match = Math.abs(a - g.a) < 1e-6 && Math.abs(b - g.b) < 1e-7;
+          const tc = isFinite(Tc) ? `$T_c = 8a/27Rb = ${v.fix(Tc, 0)}$ K${match ? ` (measured for ${g.name}: ${g.Tc} K)` : ''}` : 'with $a = 0$ or $b = 0$ there is no critical point';
+          return `At $V_m = ${v.fix(V, 3)}$ L/mol and ${v.fix(T, 0)} K: $p = ${v.fix(P, 1)}$ bar against the perfect gas's $${v.fix(Pid, 1)}$ bar, so $Z = pV_m/RT = ${v.fix(P * V / (R * T), 3)}$. ${tc}${loop ? ' — this isotherm is below it and has a van der Waals loop.' : '.'}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.15
+    {
+      num: '1.15', kind: 'Phenomenon', name: 'The critical point',
+      statement: String.raw`Below its **critical temperature** $T_c$ a gas compressed at constant temperature condenses: at the vapour pressure liquid and vapour coexist, and the volume shrinks at constant pressure from that of the saturated vapour to that of the liquid. As $T$ rises the two coexisting densities approach each other, and at $T_c$ they merge at the **critical point** $(T_c, p_c, V_c)$, where the isotherm has a horizontal inflection,
+$$\Big(\frac{\partial p}{\partial V}\Big)_T = 0, \qquad \Big(\frac{\partial^2 p}{\partial V^2}\Big)_T = 0 .$$
+Above $T_c$ no pressure liquefies the substance: there is a single **supercritical fluid**. For a van der Waals gas the conditions give $V_c = 3b$, $p_c = a/27b^2$, $T_c = 8a/27Rb$ and $Z_c = p_cV_c/RT_c = 3/8$. Near the critical point the compressibility diverges and density fluctuations grow to the scale of the wavelength of light, which makes the fluid milky (**critical opalescence**).`,
+      idea: String.raw`Below $T_c$ the van der Waals isotherm (1.13) has a loop; Maxwell's equal-area rule (thermo-4.3) replaces it by the tie line at which the liquid and vapour have equal chemical potential, and the ends of the tie lines trace the coexistence dome. As $T$ rises the maximum and minimum of the loop move together and merge into a point of inflection — the top of the dome. Solving $p' = p'' = 0$ for the cubic gives the critical constants. There $\partial p/\partial V = 0$, so the isothermal compressibility is infinite: squeezing the fluid costs nothing, regions of very different density cost almost no free energy, and fluctuations of every size appear.`,
+      caption: String.raw`Left: van der Waals isotherms in reduced units, with the coexistence dome (from Maxwell's construction) and the spinodal (dashed). Slide the temperature: the tie line (green) and its two equal areas shrink to a point at $T = T_c$, where the isotherm is flat with an inflection. Pick a gas to see what the van der Waals constants predict for its critical point next to the measured one. Right: a lattice model of the same transition at the same $T/T_c$ — molecules hop on a grid and attract their neighbours. Below $T_c$ liquid and vapour separate; at $T_c$ clusters of every size flicker (critical opalescence); above it the fluid is uniform.`,
+      deps: ['pchem-1.13', 'thermo-4.3', 'thermo-4.2'],
+      refs: ['Atkins 1C', 'M–S ch. 16'],
+      tags: ['real gases', 'phase transitions'],
+      credit: 'Cagniard de la Tour, 1822; Andrews, 1869',
+      viz(v) {
+        const PICK = ['CO2', 'N2', 'Xe', 'H2O'], NL = 80, KC = 1 / 0.567296;   // lattice gas: kT_c = 0.567 ε (2D Ising, exact)
+        const Tr = v.slider('temperature $T/T_c$', 0.75, 1.2, 0.9, { step: 0.001, fmt: (x) => x.toFixed(3) });
+        const gs = v.select('constants of', PICK.map((n) => ({ value: n, label: `$${GAS[n].tex}$` })), 'CO2');
+        const s = v.stage({ x: [0.4, 8], xlog: true, y: [0, 1.6], height: 360, axes: 'box', weight: 1.25, title: 'reduced isotherms: $p/p_c$ against $V/V_c$ (log scale)' });
+        const sl = v.stage({ x: [0, NL], y: [0, NL], equal: true, height: 360, axes: false, weight: 0.85, minWidth: 230, title: 'lattice fluid at the same $T/T_c$' });
+        // coexistence dome and spinodal (computed once)
+        const dome = []; for (let k = 0; k <= 120; k++) { const u = 1 - k / 120, t = 1 - 0.4 * Math.max(u, 0.004) ** 2, m = maxwell(t); if (m) dome.push([t, m]); }
+        const domeL = dome.map(([, m]) => [m.Vl, m.p]).concat([[1, 1]]), domeG = dome.map(([, m]) => [m.Vg, m.p]).reverse();
+        const spin = []; for (let V = 0.67; V < 8; V *= 1.01) { const [t, p] = spinodal(V); if (t >= 0.6 && p >= 0) spin.push([V, p]); }
+        // lattice fluid
+        const occ = new Uint8Array(NL * NL), rng = v.rng(7), occList = [], empList = [], pos = new Int32Array(NL * NL);
+        { const idx = Array.from({ length: NL * NL }, (_, i) => i); for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; } idx.forEach((c, k) => { if (k < NL * NL / 2) { occ[c] = 1; pos[c] = occList.length; occList.push(c); } else { pos[c] = empList.length; empList.push(c); } }); }
+        const nb = (c) => { const x = c % NL, y = (c / NL) | 0; return occ[((x + 1) % NL) + y * NL] + occ[((x + NL - 1) % NL) + y * NL] + occ[x + ((y + 1) % NL) * NL] + occ[x + ((y + NL - 1) % NL) * NL]; };
+        const adj = (a, b) => { const ax = a % NL, ay = (a / NL) | 0, bx = b % NL, by = (b / NL) | 0, dx = Math.min((ax - bx + NL) % NL, (bx - ax + NL) % NL), dy = Math.min((ay - by + NL) % NL, (by - ay + NL) % NL); return dx + dy === 1; };
+        const sweep = (beta) => {
+          for (let k = 0; k < occList.length; k++) {
+            const ii = (rng() * occList.length) | 0, jj = (rng() * empList.length) | 0, i = occList[ii], j = empList[jj];
+            const dn = nb(j) - (adj(i, j) ? 1 : 0) - nb(i);   // change in the number of occupied neighbours of the moved molecule
+            if (dn >= 0 || rng() < Math.exp(beta * dn)) { occ[i] = 0; occ[j] = 1; occList[ii] = j; pos[j] = ii; empList[jj] = i; pos[i] = jj; }
+          }
+        };
+        const fluct = () => {   // density fluctuations in 10×10 blocks, relative to an uncorrelated lattice
+          const B = 10, nbk = NL / B, vals = [];
+          for (let by = 0; by < nbk; by++) for (let bx = 0; bx < nbk; bx++) { let c = 0; for (let y = 0; y < B; y++) for (let x = 0; x < B; x++) c += occ[(bx * B + x) + (by * B + y) * NL]; vals.push(c); }
+          const m = vals.reduce((a, b) => a + b, 0) / vals.length, va = vals.reduce((a, b) => a + (b - m) ** 2, 0) / vals.length;
+          return va / (B * B * 0.25);
+        };
+        let tLast = 0, F = 1, Fs = [];
+        const rgb = (n) => { const c = v.rgb(n); return [c[0], c[1], c[2], 255]; }, C = { liq: rgb('accent'), vap: rgb('panel') };
+        v.animate((t) => {
+          const T = Tr.value, beta = KC / T;
+          const nsw = Math.min(400, Math.max(0, Math.round((t - tLast) * 30))); tLast = t;
+          for (let k = 0; k < nsw; k++) sweep(beta);
+          if (nsw) { Fs.push(fluct()); if (Fs.length > 40) Fs.shift(); F = Fs.reduce((a, b) => a + b, 0) / Fs.length; }
+          // --- reduced van der Waals diagram ---
+          s.poly(domeL.concat(domeG), { fill: 'accent', fillAlpha: 0.07, stroke: false });
+          s.path(domeL.concat(domeG), { color: 'accent', width: 1.4 });
+          s.path(spin, { color: 'red', width: 1.2, dash: [5, 4] });
+          for (const f of [0.8, 0.9, 1.0, 1.1, 1.2]) s.fn((Vr) => pVdw(f, Vr), { color: 'faint', width: 1, domain: [0.42, 8] });
+          const m = maxwell(T);
+          if (m) {
+            const mid = cubicRoots(-(m.p + 8 * T) / (3 * m.p), 3 / m.p, -1 / m.p).filter((x) => x > 1 / 3)[1];
+            s.between((Vr) => pVdw(T, Vr), () => m.p, m.Vl, mid, { fill: 'gold', fillAlpha: 0.45 });
+            s.between(() => m.p, (Vr) => pVdw(T, Vr), mid, m.Vg, { fill: 'teal', fillAlpha: 0.45 });
+            s.fn((Vr) => pVdw(T, Vr), { color: 'ink', width: 1.2, dash: [3, 3], domain: [m.Vl, m.Vg] });
+            s.fn((Vr) => pVdw(T, Vr), { color: 'ink', width: 2.6, domain: [0.42, m.Vl] });
+            s.fn((Vr) => pVdw(T, Vr), { color: 'ink', width: 2.6, domain: [m.Vg, 8] });
+            s.line(m.Vl, m.p, m.Vg, m.p, { color: 'green', width: 3 });
+            s.dot(m.Vl, m.p, { r: 4.5, color: 'green' }); s.dot(m.Vg, m.p, { r: 4.5, color: 'green' });
+            s.text('liquid', m.Vl, m.p, { size: 11, color: 'green', align: 'right', dx: -6, dy: 10 });
+            s.text('vapour', m.Vg, m.p, { size: 11, color: 'green', align: 'left', dx: 6, dy: 10 });
+          } else s.fn((Vr) => pVdw(T, Vr), { color: 'ink', width: 2.6, domain: [0.42, 8] });
+          s.dot(1, 1, { r: 6, color: 'red' });
+          s.text('critical point', 1, 1, { size: 11.5, color: 'red', dx: 8, dy: -10, align: 'left' });
+          // --- lattice ---
+          sl.raster((x, y) => (occ[Math.min(NL - 1, x | 0) + Math.min(NL - 1, y | 0) * NL] ? C.liq : C.vap), { res: 2, key: Math.random() });
+          sl.rect(0, 0, NL, NL, { color: 'muted', width: 1 });
+        }, { still: 8 });
+        v.legend([['accent', 'coexistence dome (Maxwell)', { area: true }], ['red', 'spinodal: $\\partial p/\\partial V = 0$', { dash: true }], ['green', 'tie line'], ['gold', 'equal areas', { area: true }]]);
+        v.readout(() => {
+          const g = GAS[gs.value], T = Tr.value, Tc = 8 * g.a / (27 * R * g.b), pc = g.a / (27 * g.b * g.b), Vc = 3 * g.b * 1000, m = maxwell(T);
+          const crit = `Van der Waals constants of ${g.name} predict $T_c = 8a/27Rb = ${v.fix(Tc, 0)}$ K (measured ${g.Tc}), $p_c = a/27b^2 = ${v.fix(pc, 1)}$ bar (measured ${g.pc}), $V_c = 3b = ${v.fix(Vc, 0)}$ cm³/mol (measured ${g.Vc}); $Z_c = 3/8 = 0.375$ against a measured $${v.fix(g.pc * g.Vc / (1000 * R * g.Tc), 3)}$.`;
+          const here = m ? ` At $T = ${v.fix(T * Tc, 0)}$ K liquid ($${v.fix(m.Vl * Vc, 0)}$ cm³/mol) and vapour ($${v.fix(m.Vg * Vc, 0)}$ cm³/mol) coexist at $${v.fix(m.p * pc, 1)}$ bar; the tie line spans $${v.fix(m.Vg - m.Vl, 2)}\\,V_c$.` : ` At $T = ${v.fix(T * Tc, 0)}$ K, above $T_c$, there is one fluid at every pressure.`;
+          return crit + here + ` Lattice fluid: density fluctuations ${v.fix(F, 1)}× those of a random arrangement` + (T < 0.98 ? ' — separated into liquid and vapour.' : T < 1.03 ? ' — near the critical point, clusters of all sizes.' : ' — a uniform fluid.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.16
+    {
+      num: '1.16', kind: 'Principle', name: 'Law of corresponding states',
+      statement: String.raw`Measured in units of their critical constants — the **reduced variables**
+$$p_r = \frac{p}{p_c}, \qquad V_r = \frac{V_m}{V_c}, \qquad T_r = \frac{T}{T_c},$$
+all gases obey approximately the same equation of state: gases at the same reduced temperature and reduced pressure have the same compression factor $Z$, and the same reduced volume. The van der Waals equation is an example: in reduced variables it becomes $p_r = 8T_r/(3V_r - 1) - 3/V_r^2$, with no reference to $a$ or $b$. The law works well for simple, nearly spherical, nonpolar molecules (Ar, Kr, Xe, CH₄, N₂, O₂), less well for elongated or polar ones (CO₂, NH₃, H₂O) and for the quantum gases He and H₂; a third parameter such as Pitzer's acentric factor $\omega$ restores much of the agreement.`,
+      idea: String.raw`If every molecule interacts through the same law with only an energy scale $\varepsilon$ and a length scale $\sigma$ — as for a Lennard-Jones potential — then measuring temperature in units of $\varepsilon/k$, pressure in units of $\varepsilon/\sigma^3$ and volume in units of $\sigma^3$ removes every trace of the particular gas from the classical statistical mechanics. The critical point is one point of the universal equation, so $T_c$, $p_c$, $V_c$ are proportional to those scales and dividing by them does the same job (1.15). Molecules whose interactions are not of one shape — dipoles, hydrogen bonds, rod-like shapes, or quantum zero-point motion — break the scaling.`,
+      caption: String.raw`$Z$ against pressure on a log scale for nine gases, each at the same reduced temperature $T_r$ (so at very different absolute temperatures), computed from the Peng–Robinson equation with each gas's measured $T_c$, $p_c$ and acentric factor. Slide **rescale** from 0 to 1: every curve slides along the axis by its own $\log p_c$ and the simple gases collapse onto one curve — near the van der Waals universal curve (dashed) in shape but not in depth. Water, ammonia and CO₂ stay apart, and helium and hydrogen deviate the other way. Right: the measured critical compression factors, a direct test with data.`,
+      deps: ['pchem-1.15'],
+      see: ['thermo-4.2'],
+      refs: ['Atkins 1C', 'M–S ch. 16'],
+      tags: ['real gases', 'scaling'],
+      credit: 'van der Waals, 1880; Pitzer, 1955 (acentric factor)',
+      scope: String.raw`Good to a few percent for simple nonpolar fluids (the noble gases from argon up, methane, nitrogen, oxygen); polar, hydrogen-bonded and strongly non-spherical molecules need a third parameter, and helium and hydrogen need quantum corrections.`,
+      viz(v) {
+        const ORDER = ['Ar', 'N2', 'CH4', 'Xe', 'CO2', 'NH3', 'H2O', 'He', 'H2'], SIMPLE = ['Ar', 'N2', 'CH4', 'Xe'];
+        const Tr = v.slider('reduced temperature $T_r = T/T_c$', 1.05, 2.5, 1.3, { step: 0.01 });
+        const lam = v.slider('rescale by $p_c$', 0, 1, 1, { step: 0.01 });
+        const s = v.stage({ x: [-1.5, 1.5], y: [0, 1.4], height: 380, axes: 'box', weight: 1.55, title: 'compression factor $Z$' });
+        const sz = v.stage({ x: [0, 9], y: [0, 0.42], height: 380, axes: false, weight: 0.7, minWidth: 200, title: 'measured $Z_c = p_cV_c/RT_c$' });
+        const pr = Array.from({ length: 121 }, (_, k) => 10 ** (-1.3 + 2.8 * k / 120));   // reduced pressures 0.05 … 32
+        let st = null;
+        v.render(() => {
+          const T = Tr.value, L = lam.value;
+          // x is log10 of p / p_c^L (bar^(1-L)); window slides with L
+          const lo = (1 - L) * Math.log10(0.5) + L * Math.log10(0.05), hi = (1 - L) * Math.log10(4000) + L * Math.log10(30);
+          s.setView([lo, hi], [0, 1.4]);
+          const ticks = L < 0.02 ? [0, 1, 2, 3].map((k) => [k, `${10 ** k} bar`]) : L > 0.98 ? [-1, 0, 1].map((k) => [k, `p_r = ${10 ** k}`]) : [];
+          s.setTicks(ticks, null);
+          s.hline(1, { color: 'ink', width: 1.2, dash: [6, 4] });
+          const at2 = {};
+          for (const nm of ORDER) {
+            const g = GAS[nm], TT = T * g.Tc, sh = (1 - L) * Math.log10(g.pc);
+            const pts = pr.map((q) => [Math.log10(q) + sh, zStable(g, TT, q * g.pc, 'pr').Z]);
+            s.path(pts, { color: g.col, width: SIMPLE.includes(nm) ? 2.4 : 1.8, alpha: SIMPLE.includes(nm) ? 1 : 0.9, dash: nm === 'He' || nm === 'H2' ? [5, 3] : null });
+            at2[nm] = zStable(g, TT, 2 * g.pc, 'pr').Z;
+            const end = pts[pts.length - 1];
+            if (L < 0.9) s.text(g.name, end[0], end[1], { size: 10.5, color: g.col, dx: -4, dy: -8, align: 'right' });
+          }
+          if (L > 0.9) {
+            const zv = (q) => { const roots = cubicRoots(-(q + 8 * T) / (3 * q), 3 / q, -1 / q).filter((x) => x > 1 / 3); const V = roots[roots.length - 1]; return q * V / (8 * T / 3); };
+            s.path(pr.map((q) => [Math.log10(q), zv(q)]), { color: 'ink', width: 2, dash: [3, 4], alpha: 0.8 });
+            s.text('van der Waals', Math.log10(3), zv(3), { size: 11, color: 'ink', dy: 14, align: 'center' });
+          }
+          s.corner(L < 0.02 ? 'absolute pressure' : L > 0.98 ? 'reduced pressure p/p_c' : `p / p_c^${L.toFixed(2)}`, 'tl', { size: 11.5, color: 'ink' });
+          st = { at2, T };
+          // measured critical compression factors
+          const zs = ORDER.map((nm) => [nm, GAS[nm].pc * GAS[nm].Vc / (1000 * R * GAS[nm].Tc)]);
+          sz.line(0, 0.375, 9, 0.375, { color: 'ink', width: 1.2, dash: [5, 4] }); sz.text('van der Waals 3/8', 8.9, 0.375, { size: 10, color: 'ink', align: 'right', dy: -8 });
+          sz.line(0, 0.307, 9, 0.307, { color: 'muted', width: 1, dash: [2, 3] }); sz.text('Peng–Robinson 0.307', 8.9, 0.307, { size: 10, color: 'muted', align: 'right', dy: -8 });
+          zs.forEach(([nm, z], k) => { const g = GAS[nm]; sz.rect(k + 0.15, 0, k + 0.85, z, { fill: g.col, fillAlpha: 0.7, stroke: false }); sz.text(g.name, k + 0.5, 0.012, { size: 10, color: 'panel', align: 'center', halo: false, weight: 600 }); sz.text(v.fix(z, 3), k + 0.5, z, { size: 9.5, color: 'ink', align: 'center', dy: -7 }); });
+        });
+        v.legend(ORDER.slice(0, 7).map((nm) => [GAS[nm].col, GAS[nm].name]).concat([['teal', 'He, H₂ (quantum)', { dash: true }], ['ink', 'van der Waals', { dash: true }]]));
+        v.readout(() => {
+          if (!st) return '';
+          const z = st.at2, simple = SIMPLE.map((n) => z[n]), spread = Math.max(...simple) - Math.min(...simple);
+          return `At $T_r = ${v.fix(st.T, 2)}$ and $p_r = 2$: simple gases Ar ${v.fix(z.Ar, 3)}, N₂ ${v.fix(z.N2, 3)}, CH₄ ${v.fix(z.CH4, 3)}, Xe ${v.fix(z.Xe, 3)} (spread ${v.fix(spread, 3)}); CO₂ ${v.fix(z.CO2, 3)}, NH₃ ${v.fix(z.NH3, 3)}, H₂O ${v.fix(z.H2O, 3)}; He ${v.fix(z.He, 3)}, H₂ ${v.fix(z.H2, 3)}. In absolute units these states lie between ${v.fix(2 * GAS.He.pc, 0)} and ${v.fix(2 * GAS.H2O.pc, 0)} bar and ${v.fix(st.T * GAS.He.Tc, 0)} to ${v.fix(st.T * GAS.H2O.Tc, 0)} K.`;
+        });
+      },
+    },
   ],
 };

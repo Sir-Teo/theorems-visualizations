@@ -396,7 +396,7 @@ export default {
             const y = 0.48 - (k - 1) * 0.15, w = 0.6 * (d[k] / n);
             R.rect(0.3, y - 0.045, 0.9, y + 0.045, { color: 'grid', width: 1 });
             if (d[k]) R.rect(0.3, y - 0.045, 0.3 + w, y + 0.045, { fill: ['teal', 'blue', 'purple'][k - 1], fillAlpha: 0.45, color: ['teal', 'blue', 'purple'][k - 1], width: 1.2 });
-            R.tex(`\\operatorname{null}T^{${k}}`, 0.27, y, { align: 'right', size: 13 });
+            R.tex(k === 1 ? '\\operatorname{null}T' : `\\operatorname{null}T^{${k}}`, 0.27, y, { align: 'right', size: 13 });
             R.text(`dim ${d[k]}`, 0.92, y, { size: 11.5, color: 'muted' });
           }
           st = { kz, mp, isZm, strict, B, d };
@@ -432,7 +432,7 @@ the set of generalized eigenvectors of $T$ for $\lambda$ together with $0$. Taki
         const N = v.stage({ x: [-2.3, 3.3], y: [-1.6, 3.3], height: 380, weight: 0.7, minWidth: 220, axes: false, title: 'dimensions as $\\lambda$ moves' });
         let cur = null;
         const snap = (p) => { if (!cur || cur.G.length !== 2) return p; const q = projN(p, cur.G); return normN(subN(p, q)) < 0.14 && normN(q) > 0.15 ? q : p; };
-        const hv = sc.handle([0.7, 0.9, 0.35], { color: 'gold', label: 'v', snap });
+        const hv = sc.handle(addN(sclN(colOf(S0, 0), 0.35), sclN(colOf(S0, 1), 0.9)), { color: 'gold', label: 'v', snap });
         let st = null;
         v.render(() => {
           const c = cS.value, l = lS.value, T = conjM(M, S0, [[2, c, 0], [0, 2, 0], [0, 0, -1]]), A = shiftI(T, l);
@@ -444,7 +444,7 @@ the set of generalized eigenvectors of $T$ for $\lambda$ together with $0$. Taki
           if (E.length) drawSpan(sc, E, { color: 'teal', r: 1.75, width: 4, fillAlpha: 0.22 });
           const ch = [hv.p, mv(A, hv.p), mv(P[2], hv.p), mv(P[3], hv.p)], z = ch.findIndex((w) => normN(w) < 1e-8 * Math.max(1, normN(hv.p)));
           for (let k = 1; k <= 3; k++) {
-            if (z >= 0 && k >= z) break;
+            if ((z >= 0 && k >= z) || normN(ch[k]) > 2.3) break;
             sc.arrow([0, 0, 0], ch[k], { color: 'orange', width: 2.3, alpha: 1 - 0.2 * (k - 1) });
             sc.tex(k === 1 ? '(T-\\lambda I)v' : `(T-\\lambda I)^{${k}}v`, ch[k], { color: 'orange', size: 12.5, dx: 14, dy: -10 });
           }
@@ -490,7 +490,7 @@ the set of generalized eigenvectors of $T$ for $\lambda$ together with $0$. Taki
 $$G(\lambda, T) = \operatorname{null}(T - \lambda I)^{\dim V}.$$
 In particular $G(\lambda, T)$ is a subspace of $V$.`,
       idea: String.raw`Clearly $\operatorname{null}(T - \lambda I)^{\dim V} \subseteq G(\lambda, T)$. Conversely, if $(T - \lambda I)^k v = 0$ for some $k$, apply 8.1 and 8.3 to the operator $T - \lambda I$: its null spaces increase and are frozen from step $\dim V$ on, so $v \in \operatorname{null}(T - \lambda I)^{\max(k, \dim V)} = \operatorname{null}(T - \lambda I)^{\dim V}$. One fixed power does the job for every vector at once.`,
-      caption: String.raw`$V = \mathcal P_4(\mathbf R)$ (dimension 5) and $(Tp)(x) = p(x+1)$, whose only eigenvalue is $1$; then $T - I$ is the forward difference $\Delta$. Drag the five values $p(0), \dots, p(4)$ (they fix $p$, of degree at most 4). The table lists the values of $(T - \lambda I)^k p$ at $x = 0, \dots, 4$: at $\lambda = 1$ each row is the difference of the row above, the degree drops by one per step, and the row $k = \deg p + 1$ is entirely $0$ (green) — never later than $k = 5 = \dim V$. The last column counts $\dim\operatorname{null}(T - \lambda I)^k$, frozen from $k = 5$. Move $\lambda$ off $1$: no row ever vanishes, so $G(\lambda, T) = \{0\}$.`,
+      caption: String.raw`$V = \mathcal P_4(\mathbf R)$ (dimension 5) and $(Tp)(x) = p(x+1)$, whose only eigenvalue is $1$; then $T - I$ is the forward difference $\Delta$. Drag the five values $p(0), \dots, p(4)$ (they fix $p$, of degree at most 4). The table lists the values of $(T - \lambda I)^k p$ at $x = 0, \dots, 4$: at $\lambda = 1$ each row is the difference of the row above, the degree drops by one per step, and the row $k = \deg p + 1$ is entirely $0$ (green) — never later than $k = 5 = \dim V$. The last column counts $\dim N_k$, where $N_k = \operatorname{null}(T - \lambda I)^k$: frozen from $k = 5$. Move $\lambda$ off $1$: no row ever vanishes, so $G(\lambda, T) = \{0\}$.`,
       deps: ['ladr-8.19', 'ladr-8.1', 'ladr-8.3'],
       tags: ['generalized eigenvectors'],
       viz(v) {
@@ -501,7 +501,7 @@ In particular $G(\lambda, T)$ is a subspace of $V$.`,
         const ys0 = [1, 3, 2, -1, 0.5];
         const hs = ys0.map((y, i) => F.handle(i, y, { color: 'accent', constrain: (x, yy) => [i, M.clamp(Math.round(yy * 2) / 2, -4, 6)] }));
         const TB = v.table(Q, { rows: K + 1, cols: 7, region: [0.02, 0.02, 0.98, 0.98], square: false, cellAspect: 1.45, maxCell: 44, size: 12.5,
-          rowLabels: (k) => `$${k}$`, colLabels: ['$0$', '$1$', '$2$', '$3$', '$4$', '$\\deg$', '$\\dim\\operatorname{null}$'], cornerLabel: '$k \\backslash x$' });
+          rowLabels: (k) => `$${k}$`, colLabels: ['$0$', '$1$', '$2$', '$3$', '$4$', '$\\deg$', '$\\dim N_k$'], cornerLabel: '$k \\backslash x$' });
         const Pas = Array.from({ length: 5 }, (_, i) => Array.from({ length: 5 }, (_, j) => (j >= i ? M.binom(j, i) : 0)));
         const COL = ['accent', 'purple', 'teal', 'pink', 'orange', 'gold', 'green'];
         let st = null;
@@ -584,10 +584,9 @@ In particular $G(\lambda, T)$ is a subspace of $V$.`,
           const cols = parts.flatMap((q) => q.basis), Bm = fromCols(cols), full = cols.length === 4 && cRank(M, Bm, 1e-9) === 4;
           let Mp = null;
           if (full) Mp = cMM(cInv(M, Bm), cMM(T, Bm));
-          const scl = Math.max(1, cMaxAbs(T));
+          const scl = Math.max(cMaxAbs(T), Mp ? cMaxAbs(Mp) : 0);
           // ---- eigenvalue plane
-          Z.circle(0, 0, 1, { color: 'faint', dash: [3, 4], width: 1 });
-          parts.forEach((q) => { Z.circle(q.z[0], q.z[1], 0.1 + 0.05 * q.alg, { color: q.color, width: 2.2 }); Z.text(`d = ${q.alg}`, q.z[0], q.z[1], { color: q.color, size: 11.5, weight: 700, dy: 24, align: 'center' }); });
+          parts.forEach((q) => { const rr = 0.09 + 0.05 * q.alg; Z.circle(q.z[0], q.z[1], rr, { color: q.color, width: 2.2 }); Z.text(`d = ${q.alg}`, q.z[0] + rr, q.z[1], { color: q.color, size: 11.5, weight: 700, dx: 6, dy: 10, align: 'left' }); });
           // ---- tiles
           const w = 0.95;
           phasorTile(P, T, 0.1, 0.12, w, { sc: scl });
@@ -619,6 +618,255 @@ In particular $G(\lambda, T)$ is a subspace of $V$.`,
           const dims = parts.map((q) => q.alg).join(' + ');
           if (!full) return `The eigenspaces have dimensions $${parts.map((q) => q.geo).join(' + ')} = ${n} < 4$: **no basis of eigenvectors**. The generalized eigenspaces have dimensions $${dims} = 4$.`;
           return `$\\mathbf C^4 = ${parts.map((q, i) => `G(${czT(q.z)}, T)`).join(' \\oplus ')}$, dimensions $${dims} = 4$. Largest entry outside the blocks: $${v.sci(off, 1)}$ (each $G$ is invariant); $(B - \\lambda I)^{d}$ for each block $B$ of size $d$: largest entry $${v.sci(nil, 1)}$ (the nilpotent part).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.23
+    {
+      num: '8.23',
+      kind: 'Definition',
+      name: 'Multiplicity of an eigenvalue',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ and $\lambda$ is an eigenvalue of $T$. The **multiplicity** of $\lambda$ is the dimension of its generalized eigenspace,
+$$\dim G(\lambda, T) = \dim\operatorname{null}(T - \lambda I)^{\dim V}$$
+(the two agree by 8.20). Other books call this the *algebraic multiplicity*, and $\dim E(\lambda, T) = \dim\operatorname{null}(T - \lambda I)$ the *geometric multiplicity*.`,
+      idea: String.raw`Counting eigenvectors undercounts an eigenvalue when there are too few of them; counting generalized eigenvectors does not. By 8.1 the numbers $\dim\operatorname{null}(T - \lambda I)^k$, $k = 1, 2, \dots$, climb from the geometric multiplicity up to the multiplicity and then freeze (8.3). No determinants are needed; 8.31 will show that the multiplicity is the number of times $\lambda$ appears on the diagonal of any upper-triangular matrix of $T$, and 9.62 that it agrees with the determinant-based definition.`,
+      caption: String.raw`Edit the upper-triangular matrix (click the top or bottom half of an entry, or drag it; the entries below the diagonal stay $0$), or pick a preset. For each eigenvalue — each distinct diagonal entry — the bars show $\dim\operatorname{null}(T - \lambda I)^k$ for $k = 1, 2, 3, 4$, computed exactly: the first bar (teal) is the eigenspace, the last (green) the generalized eigenspace, whose dimension is the multiplicity. Nonzero entries above repeated diagonal entries make the teal bar fall short of the green one. The gold dots count how often $\lambda$ sits on the diagonal.`,
+      deps: ['ladr-8.19', 'ladr-8.20'],
+      tags: ['generalized eigenvectors'],
+      viz(v) {
+        const PRE = {
+          defect: [[1, 1, 0.5, -1], [0, 1, 0, 2], [0, 0, -1, 1], [0, 0, 0, 1]],
+          diag: [[1, 0, 0.5, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]],
+          distinct: [[2, 1, -1, 0.5], [0, -1, 1, 1], [0, 0, 0.5, -1], [0, 0, 0, -2]],
+        };
+        let A = PRE.defect.map((r) => r.slice());
+        v.select('preset', [{ value: 'defect', label: '$1$ three times, few eigenvectors' }, { value: 'diag', label: '$1$ three times, more eigenvectors' }, { value: 'distinct', label: 'four distinct eigenvalues' }], 'defect', { onChange: (k) => { A = PRE[k].map((r) => r.slice()); } });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.85, minWidth: 240, title: 'an upper-triangular $\\mathcal M(T)$' });
+        const G = v.stage({ x: [0, 4], y: [-0.9, 5.1], height: 340, weight: 1.15, axes: false, title: '$\\dim\\operatorname{null}(T - \\lambda I)^k$, $k = 1, 2, 3, 4$, for each eigenvalue' });
+        const TT = v.table(Q, { rows: 4, cols: 4, region: [0.04, 0.04, 0.96, 0.96], maxCell: 58, size: 15 });
+        editable(v, Q, TT, () => A, { step: 0.5, min: -3, max: 3, ok: (i, j) => i <= j });
+        let st = null;
+        v.render(() => {
+          const diag = A.map((r, i) => r[i]), eig = [...new Set(diag)].sort((a, b) => a - b);
+          TT.draw({
+            value: (i, j) => A[i][j], format: (x) => pn(x, 1),
+            fill: (i, j) => (i > j ? ['faint', 0.3] : i === j ? [PAL[eig.indexOf(A[i][i]) % 8], 0.3] : A[i][j] ? ['accent', 0.07] : null),
+            textColor: (i, j) => (i > j ? 'muted' : A[i][j] ? 'ink' : 'faint'), weight: (i, j) => (i === j ? 700 : 500),
+          });
+          const data = eig.map((l) => {
+            const B = shiftI(A, l).map((r) => r.map((x) => 2 * x)); // scaled by 2: integer entries, exact ranks
+            const dims = nullDimsInt(B, 4).slice(1);
+            return { l, dims, times: diag.filter((x) => x === l).length };
+          });
+          const m = data.length, gw = 4 / m;
+          for (let y = 1; y <= 4; y++) { G.line(0.05, y, 3.95, y, { color: 'grid', width: 0.8 }); G.text(String(y), 0.02, y, { align: 'right', size: 10.5, color: 'muted' }); }
+          G.line(0.05, 0, 3.95, 0, { color: 'muted', width: 1.2 });
+          data.forEach((d, g) => {
+            const x0 = g * gw + gw * 0.14, bw = (gw * 0.72) / 4, col = PAL[g % 8];
+            d.dims.forEach((h, k) => {
+              const c = k === 0 ? 'teal' : k === 3 ? 'green' : 'muted';
+              G.rect(x0 + k * bw + bw * 0.1, 0, x0 + (k + 0.9) * bw, h, { fill: c, fillAlpha: k === 0 || k === 3 ? 0.55 : 0.25, color: c, width: 1 });
+              G.text(String(k + 1), x0 + (k + 0.5) * bw, -0.22, { align: 'center', size: 9.5, color: 'muted' });
+            });
+            G.tex(`\\lambda = ${tn(d.l, 1)}`, x0 + 2 * bw, -0.62, { size: 14, color: col });
+            for (let t = 0; t < d.times; t++) G.dot(x0 + 2 * bw + (t - (d.times - 1) / 2) * 0.16, 4.55, { r: 5, color: 'gold' });
+            G.text(`mult. ${d.dims[3]}`, x0 + 2 * bw, 4.95, { align: 'center', size: 12, color: 'green', weight: 700 });
+          });
+          st = { data };
+        });
+        v.legend([['teal', '$\\dim E(\\lambda, T)$', { area: true }], ['green', '$\\dim G(\\lambda, T)$ = multiplicity', { area: true }], ['gold', 'times on the diagonal', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          return st.data.map((d) => `$\\lambda = ${tn(d.l, 1)}$: $\\dim E = ${d.dims[0]}$, multiplicity $\\dim G = ${d.dims[3]}$${d.dims[0] < d.dims[3] ? ' (too few eigenvectors)' : ''}`).join('; ') + `. The multiplicities add up to $${st.data.reduce((s, d) => s + d.dims[3], 0)} = \\dim V$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.25
+    {
+      num: '8.25',
+      kind: 'Theorem',
+      name: 'Sum of the multiplicities equals dim V',
+      statement: String.raw`Suppose $\mathbf F = \mathbf C$ and $T \in \mathcal L(V)$. Then the sum of the multiplicities of all the eigenvalues of $T$ equals $\dim V$.`,
+      idea: String.raw`By the generalized eigenspace decomposition (8.22), $V = G(\lambda_1, T) \oplus \cdots \oplus G(\lambda_m, T)$, and the dimension of a direct sum is the sum of the dimensions (3.94). The eigenspaces alone would not do: their dimensions add up to less than $\dim V$ whenever $T$ is not diagonalizable. Over $\mathbf R$ the theorem fails too, because a real operator may have too few real eigenvalues.`,
+      caption: String.raw`A random operator on $\mathbf C^n$ — choose $n$, and “repeated” to build in Jordan blocks. Its eigenvalues are computed and clustered, and the multiplicity of each is computed as $\dim\operatorname{null}(T - \lambda I)^k$ once the chain has frozen. Left: the eigenvalues, each disc's area proportional to its multiplicity. Right: the multiplicities stacked end to end always fill the bar of length $n$, while the eigenspace dimensions (lower bar) may fall short. For a random real matrix, count only the real eigenvalues, as over $\mathbf F = \mathbf R$: the conjugate pairs leave a red gap.`,
+      deps: ['ladr-8.22', 'ladr-3.94', 'ladr-8.23'],
+      tags: ['generalized eigenvectors'],
+      viz(v) {
+        const M = v.M;
+        const nS = v.slider('$n = \\dim V$', 2, 7, 5, { int: true });
+        const kind = v.select('$T$', [{ value: 'rep', label: 'repeated eigenvalues' }, { value: 'rand', label: 'random complex' }, { value: 'real', label: 'random real' }], 'rep');
+        const onlyR = v.toggle('count only real eigenvalues ($\\mathbf F = \\mathbf R$)', false);
+        let seed = 3;
+        v.button('New matrix', () => { seed += 1; });
+        const Z = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, height: 340, weight: 0.9, minWidth: 230, xlabel: 'Re', ylabel: 'Im', title: 'eigenvalues, area ∝ multiplicity' });
+        const B = v.stage({ x: [-0.6, 7.6], y: [0, 1], height: 340, weight: 1.1, axes: false, title: 'multiplicities stacked end to end' });
+        const gen = (n, k, sd) => {
+          const r = v.rng(sd * 97 + n * 13 + (k === 'rep' ? 1 : k === 'rand' ? 2 : 3));
+          if (k === 'rand') return Array.from({ length: n }, () => Array.from({ length: n }, () => [r.uniform(-0.8, 0.8), r.uniform(-0.8, 0.8)]));
+          if (k === 'real') return Array.from({ length: n }, () => Array.from({ length: n }, () => [r.uniform(-1, 1), 0]));
+          const pts = []; for (let t = 0; t < 200 && pts.length < 4; t++) { const z = [r.uniform(-1.1, 1.1), r.uniform(-1.1, 1.1)]; if (cabs(z) < 1.2 && pts.every((q) => cabs(csub(q, z)) > 0.55)) pts.push(z); }
+          const blocks = []; let left = n, i = 0;
+          while (left > 0) { const s = Math.min(left, r.int(1, 3)); blocks.push([pts[i % pts.length], s]); left -= s; i++; if (r() < 0.3 && left > 0) { const s2 = Math.min(left, 1); blocks.push([pts[(i - 1) % pts.length], s2]); left -= s2; } }
+          const S0 = randS(r, n, 0.5);
+          return cMM(cMM(S0, jordanC(blocks)), cInv(M, S0));
+        };
+        let st = null;
+        v.render(() => {
+          const n = nS.value, k = kind.value, T = gen(n, k, seed), ed = eigenData(M, T);
+          onlyR.el.hidden = k !== 'real';
+          const realOnly = k === 'real' && onlyR.value, isReal = (e) => Math.abs(e.z[1]) < 1e-7;
+          const R = Math.max(1.3, ...ed.map((e) => cabs(e.z) * 1.3));
+          Z.setView([-R, R], [-R, R]);
+          ed.forEach((e, i) => {
+            const on = !realOnly || isReal(e), col = on ? PAL[i % 8] : 'red', rad = 7 * Math.sqrt(e.alg);
+            Z.dot(e.z[0], e.z[1], { r: rad, color: col, alpha: on ? 0.75 : 0.25 });
+            if (e.alg > 1) Z.text(String(e.alg), e.z[0], e.z[1], { align: 'center', baseline: 'middle', size: 12, color: 'panel', weight: 700, halo: false });
+          });
+          if (realOnly) Z.hline(0, { color: 'green', width: 2.5, alpha: 0.5 });
+          // stacked bars: multiplicities (top) and eigenspace dimensions (bottom)
+          B.setView([-0.6, n + 0.6], [0, 1]);
+          const bar = (y, key, label) => {
+            let x = 0;
+            B.text(label, 0, y + 0.1, { size: 12, color: 'muted' });
+            ed.forEach((e, i) => {
+              const on = !realOnly || isReal(e), d = e[key]; if (!d) return;
+              if (on) { B.rect(x, y - 0.06, x + d, y + 0.06, { fill: PAL[i % 8], fillAlpha: 0.55, color: PAL[i % 8], width: 1.2 }); B.text(String(d), x + d / 2, y, { align: 'center', baseline: 'middle', size: 12, weight: 700, halo: false }); x += d; }
+            });
+            if (x < n - 1e-9) { B.rect(x, y - 0.06, n, y + 0.06, { color: 'red', width: 1.6, dash: [5, 4], fill: 'red', fillAlpha: 0.08 }); B.text(`missing ${n - x}`, (x + n) / 2, y, { align: 'center', baseline: 'middle', size: 11.5, color: 'red', weight: 700 }); }
+            B.text(`sum = ${x}`, n + 0.05, y - 0.13, { align: 'right', size: 12, color: x === n ? 'green' : 'red', weight: 700 });
+            return x;
+          };
+          for (let t = 0; t <= n; t++) { B.line(t, 0.12, t, 0.88, { color: 'grid', width: 0.8 }); B.text(String(t), t, 0.06, { align: 'center', size: 10.5, color: 'muted' }); }
+          const sA = bar(0.68, 'alg', realOnly ? 'multiplicities of the real eigenvalues' : 'multiplicities dim G(λ, T)');
+          const sG = bar(0.32, 'geo', realOnly ? 'eigenspaces of the real eigenvalues' : 'eigenspace dimensions dim E(λ, T)');
+          B.line(n, 0.12, n, 0.88, { color: 'ink', width: 2 }); B.text(`n = ${n}`, n, 0.94, { align: 'center', size: 12, weight: 700 });
+          st = { n, ed, sA, sG, realOnly };
+        });
+        v.legend([['blue', 'one colour per eigenvalue', { area: true }], ['red', 'not accounted for', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { n, ed, sA, sG, realOnly } = st;
+          const list = ed.map((e) => `${czT(e.z)}\\ (${e.alg})`).join(',\\ ');
+          if (realOnly) return `Eigenvalues (multiplicity): $${list}$. Over $\\mathbf R$ only the real ones count: their multiplicities add up to $${sA}$` + (sA < n ? ` $< ${n}$ — **the theorem needs $\\mathbf F = \\mathbf C$**.` : ' — this time all eigenvalues happen to be real (press **New matrix**).');
+          return `Eigenvalues (multiplicity): $${list}$. Sum of multiplicities $= ${sA} = \\dim V$; sum of eigenspace dimensions $= ${sG}$` + (sG < n ? ` $< ${n}$: not diagonalizable, but the generalized eigenspaces still fill $\\mathbf C^{${n}}$.` : ': here $T$ is diagonalizable.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.26
+    {
+      num: '8.26',
+      kind: 'Definition',
+      name: 'Characteristic polynomial (complex case)',
+      statement: String.raw`Suppose $\mathbf F = \mathbf C$ and $T \in \mathcal L(V)$. Let $\lambda_1, \dots, \lambda_m$ be the distinct eigenvalues of $T$, with multiplicities $d_1, \dots, d_m$. The **characteristic polynomial** of $T$ is
+$$(z - \lambda_1)^{d_1} \cdots (z - \lambda_m)^{d_m}.$$`,
+      idea: String.raw`It packages the eigenvalues and their multiplicities into one monic polynomial. For instance, the operator on $\mathbf C^3$ with matrix $\begin{pmatrix} 6 & 3 & 4 \\ 0 & 6 & 2 \\ 0 & 0 & 7 \end{pmatrix}$ has eigenvalue $6$ with multiplicity $2$ and eigenvalue $7$ with multiplicity $1$, so its characteristic polynomial is $(z - 6)^2(z - 7)$. Most books define it as $\det(zI - T)$; the two definitions agree (9.62), but this one needs no determinants.`,
+      caption: String.raw`Drag the eigenvalues $\lambda_1, \lambda_2, \lambda_3$ and set their multiplicities: an operator with exactly that spectrum is built (one Jordan block per eigenvalue, or a diagonalizable one) and hidden by a random change of basis. From that matrix alone the eigenvalues and the dimensions of their generalized eigenspaces are recomputed, and the characteristic polynomial $q$ is formed. The plane is coloured by the phase of $q(z)$ (brightness bands mark $|q|$): around a zero of multiplicity $d$ the colours cycle $d$ times. Drag two eigenvalues onto each other and the multiplicities add; switch to diagonalizable — more eigenvectors — and $q$ does not change.`,
+      deps: ['ladr-8.23'],
+      tags: ['characteristic polynomial'],
+      viz(v) {
+        const M = v.M;
+        const d1 = v.slider('$d_1$', 1, 3, 2, { int: true }), d2 = v.slider('$d_2$', 1, 3, 1, { int: true }), d3 = v.slider('$d_3$', 0, 2, 1, { int: true });
+        const shape = v.select('built as', [{ value: 'jordan', label: 'one Jordan block per eigenvalue' }, { value: 'diag', label: 'diagonalizable' }], 'jordan');
+        const Z = v.stage({ x: [-1.8, 1.8], y: [-1.25, 1.25], equal: true, height: 380, xlabel: 'Re', ylabel: 'Im', title: 'phase portrait of the characteristic polynomial $q$' });
+        const H = [];
+        const snapTo = (k) => (x, y) => { for (let j = 0; j < 3; j++) if (j !== k && H[j] && H[j].visible !== false && Math.hypot(x - H[j].x, y - H[j].y) < 0.15) return [H[j].x, H[j].y]; return [M.clamp(x, -1.7, 1.7), M.clamp(y, -1.15, 1.15)]; };
+        H.push(Z.handle(0.65, 0.4, { color: 'ink', label: '$\\lambda_1$', constrain: snapTo(0) }));
+        H.push(Z.handle(-0.8, 0.3, { color: 'ink', label: '$\\lambda_2$', constrain: snapTo(1) }));
+        H.push(Z.handle(-0.05, -0.65, { color: 'ink', label: '$\\lambda_3$', constrain: snapTo(2) }));
+        let st = null;
+        v.render(() => {
+          const ds = [d1.value, d2.value, d3.value];
+          H[2].visible = ds[2] > 0;
+          const blocks = [];
+          ds.forEach((d, k) => { if (!d) return; const l = [H[k].x, H[k].y]; if (shape.value === 'jordan') blocks.push([l, d]); else for (let t = 0; t < d; t++) blocks.push([l, 1]); });
+          const n = blocks.reduce((s, b) => s + b[1], 0), r = v.rng(7 + n), S0 = randS(r, n, 0.45);
+          const T = cMM(cMM(S0, jordanC(blocks)), cInv(M, S0)), ed = eigenData(M, T);
+          const list = ed.map((e) => ({ z: e.z, d: e.alg })), q = polyFromMult(list);
+          const key = list.map((e) => `${e.z[0].toFixed(4)},${e.z[1].toFixed(4)},${e.d}`).join('|');
+          Z.domain((z) => { const w = cPolyEval(q, [z.re, z.im]); return new M.Cx(w[0], w[1]); }, { key, res: 2, fade: 0.12 });
+          Z.axes();
+          list.forEach((e) => Z.text(`d = ${e.d}`, e.z[0], e.z[1], { size: 12.5, weight: 700, dx: 16, dy: 16 }));
+          st = { list, q, n, ed };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { list, q, n, ed } = st;
+          return `Recomputed from the $${n}\\times${n}$ matrix: ${ed.map((e) => `$\\lambda = ${czT(e.z)}$ with $\\dim E = ${e.geo}$, multiplicity $${e.alg}$`).join('; ')}. Characteristic polynomial $q(z) = ${factorT(list)} = ${cPolyT(q)}$, of degree $${q.length - 1}$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 8.28
+    {
+      num: '8.28',
+      kind: 'Theorem',
+      name: 'Degree and zeros of characteristic polynomial',
+      statement: String.raw`Suppose $\mathbf F = \mathbf C$ and $T \in \mathcal L(V)$. Then
+(a) the characteristic polynomial of $T$ has degree $\dim V$;
+(b) the zeros of the characteristic polynomial of $T$ are exactly the eigenvalues of $T$.`,
+      idea: String.raw`(a) The degree of $(z - \lambda_1)^{d_1}\cdots(z - \lambda_m)^{d_m}$ is $d_1 + \cdots + d_m$, which is $\dim V$ by 8.25. (b) is built into the definition: the linear factors are exactly $z - \lambda_k$ for the eigenvalues $\lambda_k$. Both depend on using multiplicities: with the eigenspace dimensions in their place, the degree would come out too small for any operator without enough eigenvectors.`,
+      caption: String.raw`A random operator on $\mathbf C^n$ (choose $n$; “repeated” builds in eigenvalues of multiplicity $2$ or $3$). Left: the surface $\log_{10}|q(z)|$ over a square of the complex plane, for the characteristic polynomial $q$ computed from the matrix (drag to rotate); it plunges down exactly at the eigenvalues (dots on the floor). Right: the number of zeros of $q$ inside the circle $|z| = r$, counted by the winding number of $q$ around that circle — it jumps by the multiplicity as $r$ passes each eigenvalue and ends at the degree, always $n$. Use eigenspace dimensions instead of multiplicities: with repeated eigenvalues the degree falls short of $n$.`,
+      deps: ['ladr-8.25', 'ladr-8.26'],
+      tags: ['characteristic polynomial'],
+      viz(v) {
+        const M = v.M;
+        const nS = v.slider('$n = \\dim V$', 1, 7, 5, { int: true });
+        const kind = v.select('eigenvalues', [{ value: 'rep', label: 'repeated' }, { value: 'gen', label: 'generic' }], 'rep');
+        const geo = v.toggle('use eigenspace dimensions instead of multiplicities', false);
+        let seed = 6;
+        v.button('New operator', () => { seed += 1; });
+        const S3 = v.stage3d({ range: 1.3, height: 370, yaw: -0.65, pitch: 0.62, axes: false, weight: 1.15, minWidth: 280, title: '$\\log_{10}|q(z)|$ over the complex plane' });
+        const W = v.stage({ x: [0.05, 30], xlog: true, y: [-0.4, 8], height: 370, weight: 0.85, minWidth: 240, axes: 'box', xlabel: 'r', title: 'zeros of $q$ inside $|z| = r$' });
+        const gen = (n, k, sd) => {
+          const r = v.rng(sd * 53 + n * 7 + (k === 'rep' ? 1 : 0));
+          if (k === 'gen') return Array.from({ length: n }, () => Array.from({ length: n }, () => [r.uniform(-0.8, 0.8), r.uniform(-0.8, 0.8)]));
+          const pts = []; for (let t = 0; t < 300 && pts.length < 4; t++) { const z = [r.uniform(-1.4, 1.4), r.uniform(-1.4, 1.4)]; if (cabs(z) > 0.25 && cabs(z) < 1.5 && pts.every((q) => cabs(csub(q, z)) > 0.6 && Math.abs(cabs(q) - cabs(z)) > 0.12)) pts.push(z); }
+          const blocks = []; let left = n, i = 0;
+          while (left > 0) { const s = Math.min(left, i === 0 ? Math.min(3, n) : r.int(1, 2)); blocks.push([pts[i % 4], s]); left -= s; i++; }
+          const S0 = randS(r, n, 0.5);
+          return cMM(cMM(S0, jordanC(blocks)), cInv(M, S0));
+        };
+        const cache = { key: null };
+        let st = null;
+        v.render(() => {
+          const n = nS.value, k = kind.value, key = `${n}|${k}|${seed}|${geo.value}`;
+          if (cache.key !== key) {
+            const T = gen(n, k, seed), ed = eigenData(M, T), list = ed.map((e) => ({ z: e.z, d: geo.value ? e.geo : e.alg })), q = polyFromMult(list);
+            const rs = [], wn = [];
+            for (let i = 0; i <= 140; i++) {
+              const rr = 0.05 * Math.pow(600, i / 140); let tot = 0, prev = null;
+              for (let j = 0; j <= 400; j++) { const t = (2 * Math.PI * j) / 400, w = cPolyEval(q, [rr * Math.cos(t), rr * Math.sin(t)]), a = Math.atan2(w[1], w[0]); if (prev != null) { let da = a - prev; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI; tot += da; } prev = a; }
+              rs.push(rr); wn.push(Math.round(tot / (2 * Math.PI)));
+            }
+            const L = Math.max(1, ...ed.map((e) => cabs(e.z))) * 1.25;
+            Object.assign(cache, { key, T, ed, list, q, rs, wn, L });
+          }
+          const { ed, list, q, rs, wn, L } = cache;
+          const lo = -2.5, hi = Math.max(0.5, Math.log10(Math.pow(L * 1.5, n)) * 0.8);
+          const hgt = (x, y) => { const w = cPolyEval(q, [x, y]); return M.clamp(Math.log10(Math.max(1e-30, cabs(w))), lo, hi); };
+          const zs = (h) => -0.9 + (1.6 * (h - lo)) / (hi - lo);
+          S3.surface((a, b) => [a, b, zs(hgt(a * L, b * L))], [-1, 1], [-1, 1], { n: 44, colorFn: (a, b, P) => M.cmap((P[2] + 0.9) / 1.6, 'viridis'), alpha: 0.92 });
+          S3.line([-1, -1, -0.9], [1, -1, -0.9], { color: 'faint', width: 1 }); S3.line([-1, -1, -0.9], [-1, 1, -0.9], { color: 'faint', width: 1 });
+          S3.text('Re', [1.12, -1, -0.9], { color: 'muted', math: true }); S3.text('Im', [-1, 1.12, -0.9], { color: 'muted', math: true });
+          list.forEach((e) => { S3.dot([e.z[0] / L, e.z[1] / L, -0.92], { r: 5.5, color: 'red', bias: 0.3 }); if (e.d > 1) S3.text(`×${e.d}`, [e.z[0] / L, e.z[1] / L, -0.92], { color: 'red', size: 12, dy: -12 }); });
+          // winding staircase
+          const deg = q.length - 1;
+          W.setView([0.05, 30], [-0.4, Math.max(deg, n) + 1]);
+          W.hline(n, { color: 'green', width: 1.6, dash: [6, 4] });
+          W.text(`n = ${n}`, 0.07, n + 0.3, { color: 'green', size: 12, weight: 700 });
+          ed.forEach((e) => W.vline(cabs(e.z), { color: 'red', width: 1, alpha: 0.5, dash: [3, 4] }));
+          const pts = []; rs.forEach((rr, i) => { pts.push([rr, wn[i]]); if (i + 1 < rs.length) pts.push([rs[i + 1], wn[i]]); });
+          W.path(pts, { color: deg === n ? 'accent' : 'red', width: 2.6 });
+          const errs = ed.map((e) => cabs(cPolyEval(q, e.z)));
+          st = { n, deg, ed, list, errs, final: wn[wn.length - 1] };
+        });
+        v.legend([['red', 'eigenvalues (and their moduli, right)', { dot: true }], ['accent', 'number of zeros inside $|z| = r$'], ['green', '$\\dim V$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { n, deg, ed, list, errs, final } = st;
+          const zs = list.map((e) => `${czT(e.z)}${e.d > 1 ? `\\ (\\times${e.d})` : ''}`).join(',\\ ');
+          let s = `$q(z) = ${factorT(list)}$ has degree $${deg}$ (winding number for large $r$: $${final}$), zeros $${zs}$; $|q(\\lambda)| \\le ${v.sci(Math.max(...errs), 1)}$ at every eigenvalue. `;
+          s += geo.value ? (deg < n ? `**Degree ${deg} < ${n} = \\dim V**: eigenspace dimensions undercount — only multiplicities give degree $\\dim V$.` : 'Here every eigenspace is as large as its generalized eigenspace, so nothing changes.') : `**Degree $= ${n} = \\dim V$**, and the zeros are exactly the ${ed.length} eigenvalues.`;
+          return s;
         });
       },
     },

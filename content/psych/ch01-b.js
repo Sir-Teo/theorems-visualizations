@@ -151,7 +151,7 @@ The track hovers around the level $x_p$ at which a step down and a step up are e
 $$p^{\,n}=\tfrac12\quad\Longrightarrow\quad p=2^{-1/n}:\qquad 50\%\ (n=1),\quad 70.7\%\ (n=2),\quad 79.4\%\ (n=3).$$
 Staircases spend almost all trials near threshold, so they are far more efficient than constant stimuli (1.4). The target must lie above the guessing floor: in two-alternative forced choice (1.8) the 1-up–1-down rule aims at 50% correct, which is pure guessing, and the track sinks to the smallest level with no threshold to find.`,
       idea: String.raw`The level performs a random walk (a Markov chain on the grid of levels, stoch-1.1) whose drift is downward where $\psi^{\,n}>\tfrac12$ and upward where $\psi^{\,n}<\tfrac12$. Because $\psi$ increases, the drift changes sign exactly once, at $\psi(x)=2^{-1/n}$, and the walk keeps returning to that point; reversals happen where it turns around, on both sides of it, so their average estimates it. Steps that are equal in **log** units make the walk symmetric for stimuli whose discriminability depends on ratios. With a rule whose balance point is at chance, the drift is downward everywhere above zero and nothing stops the descent.`,
-      caption: String.raw`Top: one run of a staircase on a simulated listener discriminating pitch: green dots correct, red wrong, gold rings the reversals, the gold line the estimate (mean of the reversals after the first two) and the green line the level the rule aims at. Bottom left: the listener's psychometric function and the three targets; bottom right: estimates from 300 independent runs, centred on the target. Change the **rule** (try 1-up–1-down), the **step factor** and the **trials per run**. Switch to **you**: *▶ Play trial* plays two tones, one of them higher by the staircase's current number of cents; say which, and the next trial follows at the level the rule picks.`,
+      caption: String.raw`Top: one run of a staircase on a simulated listener discriminating pitch: green dots correct, red wrong, gold rings the reversals, the gold line the estimate (mean of the reversals after the first two) and the green line the level the rule aims at. Bottom left: the listener's psychometric function and the three targets; bottom right: estimates from 300 independent runs, centred on the target. Change the **rule** (try 1-up–1-down), the **step factor** and the **trials per run**. Switch to **you**: *Play trial* plays two tones, one of them higher by the staircase's current number of cents; say which, and the next trial follows at the level the rule picks.`,
       deps: ['psych-1.3', 'stoch-1.1'],
       refs: ['Gescheider ch. 3', 'M&C ch. 11'],
       tags: ['method', 'adaptive'],
@@ -167,11 +167,11 @@ Staircases spend almost all trials near threshold, so they are far more efficien
         const nS = v.slider('trials per run', 20, 120, 60, { int: true });
         const who = v.select('subject', OBS, 'sim', { onChange: () => { after.clear(); phase = 'idle'; v.sound().stop(); } });
         const bNew = v.button('New random run', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
-        const bPlay = v.soundButton('▶ Play trial', () => next());
+        const bPlay = v.soundButton('Play trial', () => next());
         const b1 = v.button('1st higher', () => answer(1));
         const b2 = v.button('2nd higher', () => answer(2));
         const bRes = v.button('Reset', () => { after.clear(); phase = 'idle'; ys = fresh(); });
-        const tr = v.stage({ x: [-1, 61], y: [FLOOR, CEIL], ylog: true, height: 250, axes: 'box', full: true, xlabel: 'trial', title: 'one staircase: pitch difference Δ in cents (log scale)' });
+        const tr = v.stage({ x: [-1, 61], y: [0.1, 300], ylog: true, height: 260, axes: 'box', full: true, xlabel: 'trial', title: 'one staircase: pitch difference Δ in cents (log scale)' });
         const pf = v.stage({ x: [0.3, 150], y: [0.4, 1.04], xlog: true, height: 230, axes: 'box', weight: 1, xlabel: 'Δ (cents)', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'the simulated listener: P(correct)' });
         const hs = v.stage({ x: [FLOOR, CEIL], y: [0, 10], xlog: true, height: 230, axes: 'box', weight: 1, xlabel: 'estimate (cents)', yticks: [], title: `estimates from ${RUNS} runs` });
         const fresh = () => ({ L: START, run: 0, dir: 0, pts: [], rev: [] });
@@ -203,8 +203,11 @@ Staircases spend almost all trials near threshold, so they are far more efficien
           // ---- the track
           const tmax = Math.max(isYou ? 30 : T, S.pts.length + 1);
           tr.setView([-1, tmax + 1], null);
-          if (xt) tr.hline(xt, { color: 'green', dash: [7, 5], width: 1.6 });
-          tr.textPx(xt ? `target: ${(100 * p).toFixed(1)}% correct at ${v.fix(xt, 2)} ¢` : 'target 50% = guessing: no threshold to converge on', tr.width - 10, 16, { align: 'right', color: xt ? 'green' : 'red', weight: 600, size: 12 });
+          if (xt && !isYou) tr.hline(xt, { color: 'green', dash: [7, 5], width: 1.6 });
+          if (isYou) tr.textPx(`your staircase: starts at ${START} ¢, steps ×${f.toFixed(2)}, aims at ${(100 * p).toFixed(1)}% correct`, tr.width - 10, 16, { align: 'right', color: 'muted', weight: 600, size: 12 });
+          else tr.textPx(xt ? `target: ${(100 * p).toFixed(1)}% correct at ${v.fix(xt, 2)} ¢` : 'target 50% = guessing: no threshold to converge on', tr.width - 10, 16, { align: 'right', color: xt ? 'green' : 'red', weight: 600, size: 12 });
+          tr.hline(FLOOR, { color: 'faint', dash: [2, 3], width: 1 });
+          tr.text('smallest step allowed', 0, FLOOR, { dy: 9, align: 'left', color: 'muted', size: 10.5 });
           if (S.pts.length > 1) tr.path(S.pts.map((q) => [q.t, q.L]), { color: 'muted', width: 1.2 });
           if (isYou && phase !== 'idle' || isYou && S.pts.length) tr.dot(S.pts.length, S.L, { r: 4, color: 'gold', hollow: true });
           S.rev.forEach((q, i) => { tr.dot(q.t, q.L, { r: 7.5, color: 'gold', hollow: true, width: 2 }); if (i < 30) tr.text(String(i + 1), q.t, q.L, { dy: q.L > 1.2 * (xt || 1) ? -14 : 14, align: 'center', color: 'gold', size: 10, weight: 600 }); });
@@ -214,7 +217,7 @@ Staircases spend almost all trials near threshold, so they are far more efficien
             tr.line(t0, est.x, tmax + 1, est.x, { color: 'gold', width: 2.4 });
             tr.textPx(`estimate: mean of reversals ${est.from + 1}–${S.rev.length} = ${v.fix(est.x, 2)} ¢`, tr.width - 10, 34, { align: 'right', color: 'gold', weight: 700, size: 12 });
           }
-          if (isYou && !S.pts.length) tr.text('press ▶ Play trial: which of the two tones is higher?', tmax / 2, 90, { align: 'center', color: 'muted', size: 13 });
+          if (isYou && !S.pts.length) tr.text('press Play trial: which of the two tones is higher?', tmax / 2, 90, { align: 'center', color: 'muted', size: 13 });
           // ---- the listener's psychometric function
           pf.fn(pcorr, { color: 'ink', width: 2.2 });
           for (const k of [1, 2, 3]) {
@@ -322,6 +325,7 @@ a function of sensitivity $d'$ alone. 2AFC estimates are therefore nearly free o
           const isYou = who.value === 'you';
           bShow.hidden = bI1.hidden = bI2.hidden = bRes.hidden = !isYou; kS.el.hidden = isYou; bNew.hidden = isYou; probe.visible = !isYou;
           const S = sample();
+          pl.setTitle(isYou ? 'your proportion correct (2AFC)' : 'proportion correct (2AFC) and proportion “yes” (yes/no)');
           const d2 = isYou ? binTrials(you) : S.two;
           fit2 = fitPsy(M, d2, { g: 0.5, l: 0.01, lo: 0, hi: XMAX });
           const fitY = isYou ? null : fitPsy(M, S.yes, { g: Math.min(0.6, S.fa), l: 0.01, lo: 0, hi: XMAX });
@@ -469,8 +473,8 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
             if (p.lo != null) { const [, Ya] = P(p.I, p.lo), [, Yb] = P(p.I, Math.min(p.hi, 4 * p.d)); pl.line(X, Ya, X, Yb, { color: 'accent', width: 1.6, alpha: 0.7 }); }
             pl.dot(X, Y, { r: 5, color: 'accent' });
           }
-          if (L) { const I = log ? 10 ** (xa + 0.12 * (xb - xa)) : 0.42; const [X, Y] = P(I, L.k0 * I); pl.text(`ΔI = ${v.fix(L.k0, 3)} · I`, X, Y, { dx: log ? 0 : -6, dy: -12, align: log ? 'left' : 'right', color: 'green', weight: 700, size: 12.5 }); }
-          if (isYou && !good.length) pl.text('measuring… each background needs about 8 answers before its JND appears', (xa + xb) / 2, pl.bounds.y[1] * 0.5, { align: 'center', color: 'muted', size: 12 });
+          if (L) { const I = log ? 10 ** (xa + 0.5 * (xb - xa)) : 0.42; const [X, Y] = P(I, L.k0 * I); pl.text(`ΔI = ${v.fix(L.k0, 3)} · I`, X, Y, { dx: -8, dy: -12, align: 'right', color: 'green', weight: 700, size: 12.5 }); }
+          if (isYou && !good.length) { const ym = (pl.bounds.y[0] + pl.bounds.y[1]) / 2; pl.text('measuring… a JND appears', (xa + xb) / 2, ym, { dy: -9, align: 'center', color: 'muted', size: 12.5 }); pl.text('after about 8 answers per background', (xa + xb) / 2, ym, { dy: 9, align: 'center', color: 'muted', size: 12.5 }); }
           // ---- stimulus
           let I, dI, side, txt;
           if (isYou) { I = cur ? BASES[cur.b] : BASES[0]; dI = phase === 'show' ? cur.r * I : 0; side = cur ? cur.side : 0; }
@@ -500,7 +504,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           const wf = good.map((p) => `${v.fix((100 * p.d) / p.I, 1)}%`).join(', ');
           if (!L) return `JNDs as fractions of the background: ${wf} · need at least two backgrounds with confidence intervals for the line`;
           const zA = L.a / L.seA, through = Math.abs(zA) < 1.96;
-          return `Weber fractions $\\Delta I/I$ at the five backgrounds: ${wf} · line through the origin: $k$ = **${v.fix(L.k0, 4)}** ± ${v.fix(1.96 * L.seK0, 4)}${who.value === 'sim' ? ` (true ${v.fix(kS.value, 3)})` : ''} · free line: intercept ${v.fix(L.a, 5)} ± ${v.fix(1.96 * L.seA, 5)}, ${through ? 'consistent with zero: the line passes through the origin, as Weber’s law says' : 'clearly above zero: the JND does not shrink in proportion at low backgrounds (see 1.10)'}`;
+          return `Weber fractions $\\Delta I/I$ at the five backgrounds: ${wf} · line through the origin: $k$ = **${v.fix(L.k0, 4)}** ± ${v.fix(1.96 * L.seK0, 4)}${who.value === 'sim' ? ` (true $k$ = ${v.fix(kS.value, 3)}${dark.value ? `, plus a dark light $I_0$ = ${I0D}` : ''})` : ''} · free line: intercept ${v.fix(L.a, 5)} ± ${v.fix(1.96 * L.seA, 5)}, ${through ? 'consistent with zero: the line passes through the origin, as Weber’s law says' : 'clearly above zero: the JND does not shrink in proportion at low backgrounds (see 1.10)'}`;
         });
       },
     },
@@ -528,7 +532,7 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
         };
         const mod = v.select('stimulus', [{ value: 'light', label: 'light on a background' }, { value: 'noise', label: 'broadband noise' }, { value: 'tone', label: 'pure tone (1 kHz)' }], 'light');
         const drop = v.slider('drop the lowest levels', 0, 40, 0, { step: 5, fmt: (x) => (x ? `lowest ${x} dB dropped` : 'none dropped') });
-        const i0S = v.slider('$I_0$ in the model', -20, 30, 5, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} dB = ${v.fmt(10 ** (x / 10), 3)}` });
+        const i0S = v.slider('$I_0$ in the model', -20, 30, 5, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} dB` });
         const Z = (() => { const R = v.rng(5); return M.range(20).map(() => R.normal()); })();
         const data = (m) => { const C = MOD[m], out = []; for (let i = 0, u = C.lo; u <= C.hi + 1e-9; i++, u += 0.5) { const I = 10 ** u; out.push({ u, I, d: C.model(I) * Math.exp(0.07 * Z[i]) }); } return out; };
         const tvi = v.stage({ x: [0.005, 3e6], y: [0.01, 1e5], xlog: true, ylog: true, height: 320, axes: 'box', weight: 1, ylabel: 'JND ΔI', title: 'threshold versus intensity' });
@@ -567,11 +571,11 @@ where the constant $k$ is the **Weber fraction** of that sensory continuum. What
           tvi.dots(all.filter((p) => !D.includes(p)).map((p) => [p.I, p.d]), { r: 3.2, color: 'faint' });
           tvi.dots(D.map((p) => [p.I, p.d]), { r: 3.8, color: 'ink' });
           tvi.vline(I0, { color: 'green', dash: [2, 4], width: 1.2 });
-          tvi.text('I₀', I0, dmax * 1.6, { dx: 5, align: 'left', color: 'green', weight: 700, size: 12.5 });
+          tvi.text('I₀', I0, Math.sqrt(dmin * dmax), { dx: 5, align: 'left', color: 'green', weight: 700, size: 12.5 });
           const xw = 10 ** (C.hi - 1.3);
           tvi.text('Weber: slope 1', xw, kW * xw, { dx: -8, dy: -6, align: 'right', color: 'red', size: 11.5, weight: 600 });
-          const xf = 10 ** (C.lo + 0.2);
-          tvi.text(m === 'tone' ? 'slope < 1 everywhere' : 'flat: ΔI → k·I₀', xf, C.model(xf), { dy: -14, align: 'left', color: m === 'tone' ? 'purple' : 'green', size: 11.5, weight: 600 });
+          if (m === 'tone') tvi.text('slope < 1 everywhere', 10 ** (C.lo + 0.4), C.model(10 ** (C.lo + 3)), { align: 'left', color: 'purple', size: 11.5, weight: 600 });
+          else tvi.text('flat: ΔI → k·I₀', 10 ** (C.lo + 0.2), C.model(10 ** (C.lo + 0.2)), { dy: -14, align: 'left', color: 'green', size: 11.5, weight: 600 });
           if (snd) tvi.line(hL.x, dmin / 6, hL.x, hL.y, { color: 'gold', dash: [2, 3], width: 1.2 });
           // ---- Weber fraction
           wf.hline(kW, { color: 'red', dash: [7, 5], width: 1.4 });
@@ -662,7 +666,7 @@ The law inherits Weber's range of validity (with the modified Weber law of 1.10 
           s.line(hd.x, -0.1 * ytop, hd.x, hd.y, { color: 'gold', dash: [2, 3], width: 1.2 });
           s.line(log ? -0.12 : -3, hd.y, hd.x, hd.y, { color: 'gold', dash: [2, 3], width: 1.2 });
           const lab = law.value === 'weber' ? '(1/k) ln I' : law.value === 'mod' ? '(1/k) ln((I+I₀)/(1+I₀))' : '(I − 1)/ΔI';
-          s.text(lab, X(IMAX * 0.97), Sint(IMAX * 0.97), { dy: 14, align: 'right', color: 'green', weight: 700, size: 12.5 });
+          { const Il = log ? 25 : 70; s.text(lab, X(Il), Sint(Il), { dx: 10, dy: 22, align: 'left', color: 'green', weight: 700, size: 12.5 }); }
           // ladders
           const Ir = M.range(8).map((j) => Math.pow(IMAX, j / 7)), Id = M.range(8).map((j) => 1 + ((IMAX - 1) * j) / 7);
           const t = ph.t, on = t != null ? Math.floor(t / STEP) : -1;
@@ -710,7 +714,9 @@ In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p
         const mo = v.stage({ x: [0, 2.4], y: [-0.3, 1.2], height: 310, axes: false, weight: 0.85, title: 'where the yes answers come from' });
         const pl = v.stage({ x: [-0.6, 10.2], y: [-0.14, 1.08], height: 310, axes: 'box', weight: 1.15, xlabel: 'intensity', yticks: [0, 0.25, 0.5, 0.75, 1], title: 'raw and corrected detection' });
         const pTrue = (x) => Phi(M, (x - MU) / SG);
-        const dpr = (x) => Math.max(0, (2.6 * x) / MU);  // SDT observer: d′ grows linearly with intensity
+        const Z01 = M.dist.normal(0, 1), K5 = -Z01.quantile(GREF);
+        /** SDT observer chosen so that its corrected curve at g = 5% is exactly the high-threshold p(x) */
+        const dpr = (x) => Math.max(0, K5 + Z01.quantile(Math.min(0.9999, GREF + (1 - GREF) * pTrue(x))));
         const HF = (x, g) => {
           if (kind.value === 'ht') { const p = pTrue(x); return { H: p + (1 - p) * g, F: g }; }
           const c = -M.dist.normal(0, 1).quantile(Math.min(0.999, Math.max(0.001, g)));  // criterion giving F = g
@@ -745,7 +751,7 @@ In $m$-alternative forced choice the same reasoning gives $P_c=p+(1-p)/m$, so $p
           // ---- the curves
           pl.hline(S.F, { color: 'red', dash: [6, 4], width: 1.6 });
           pl.text('false alarms F', 10, S.F, { dy: -9, align: 'right', color: 'red', size: 11.5, weight: 600 });
-          if (ht) pl.fn(pTrue, { domain: [0, 10], color: 'green', dash: [7, 5], width: 1.8 });
+          pl.fn(pTrue, { domain: [0, 10], color: 'green', dash: [7, 5], width: 1.8, alpha: ht ? 1 : 0.6 });
           pl.fn((xx) => HF(xx, g).H, { domain: [0, 10], color: 'orange', width: 1.6, alpha: 0.6 });
           pl.fn((xx) => { const a = HF(xx, g); return (a.H - a.F) / (1 - a.F); }, { domain: [0, 10], color: 'green', width: 1.6, alpha: 0.6 });
           pl.fn((xx) => { const a = HF(xx, GREF); return (a.H - a.F) / (1 - a.F); }, { domain: [0, 10], color: 'green', width: 1.2, alpha: 0.45, dash: [2, 4] });
@@ -845,8 +851,10 @@ a function of $n_2/n_1$ alone, where the **internal Weber fraction** $w$ is typi
           // ---- accuracy against the difference
           for (const S of [pd, pr]) S.hline(0.5, { color: 'muted', dash: [4, 4], width: 1 });
           for (const b of BASES) {
-            pd.fn((d) => pcN(b, b + d, w), { domain: [0.2, 41], color: COLS[b], width: 1.8, alpha: 0.8 });
+            pd.fn((d) => pcN(b, b + d, w), { domain: [0.2, 41], color: COLS[b], width: 1.8, alpha: F ? 0.8 : 0.4, dash: F ? null : [5, 4] });
           }
+          if (!F) pr.fn((r) => pcN(1, r, W), { domain: [1, 2.05], color: 'accent', width: 1.8, alpha: 0.4, dash: [5, 4] });
+          if (!F) pr.text(`typical adult, w = ${W}`, 1.55, pcN(1, 1.55, W), { dy: 14, align: 'left', color: 'muted', size: 11.5 });
           for (const c of cells) { const [lo, hi] = wilson(c.k, c.n); pd.line(c.big - c.b, lo, c.big - c.b, hi, { color: COLS[c.b], width: 1.1, alpha: 0.45 }); pd.dot(c.big - c.b, c.k / c.n, { r: 4.3, color: COLS[c.b] }); }
           // ---- accuracy against the ratio
           if (F) {

@@ -59,6 +59,10 @@ export default {
           pic: 'Each of n players chooses a contribution, multiplied by r and shared equally; contributing nothing is dominant whenever r < n, though full contribution would make everyone richer.' },
         { num: '1.10', kind: 'Model', name: 'War of attrition', deps: ['game-1.3'], refs: ['Osborne §3.4'],
           pic: 'Two contestants pay a cost per unit time to keep fighting for a prize; the pure equilibria (one quits at once) and the symmetric mixed one with exponential quitting times are simulated.' },
+        { num: '1.11', kind: 'Paper', name: 'Equilibrium Points in n-Person Games',
+          paper: { authors: 'John F. Nash, Jr.', year: 1950, title: 'Equilibrium Points in n-Person Games', venue: 'Proceedings of the National Academy of Sciences 36 (1): 48–49', doi: '10.1073/pnas.36.1.48' },
+          introduces: ['game-1.3', 'game-2.3'], deps: ['game-2.4', 'game-3.11'], refs: [],
+          pic: 'Nash’s one-page argument made visible: for a 2 × 2 game with payoffs you edit, each player’s best-response correspondence is drawn in the unit square of mixed strategies and their crossings are the equilibrium points; drag the payoffs through coordination, matching-pennies and prisoner’s-dilemma shapes and watch one or three crossings appear, but never none.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 2
@@ -116,6 +120,10 @@ export default {
           pic: 'Allocate troops across battlefields against an opponent’s mixed strategy; no pure allocation is safe, and the optimal mixtures for small cases are computed by linear programming.' },
         { num: '3.10', kind: 'Theorem', name: 'Blackwell’s approachability theorem', deps: ['game-3.3', 'rca-4.10'], refs: ['MSZ §14.5'],
           pic: 'In a repeated game with vector payoffs, the average payoff is steered toward a convex target set by always playing to separate it from its closest point; the trajectory is drawn entering the set.' },
+        { num: '3.11', kind: 'Paper', name: 'Zur Theorie der Gesellschaftsspiele',
+          paper: { authors: 'J. v. Neumann', year: 1928, title: 'Zur Theorie der Gesellschaftsspiele', venue: 'Mathematische Annalen 100: 295–320', doi: '10.1007/BF01448847' },
+          introduces: ['game-3.3'], deps: ['game-3.2'], refs: [],
+          pic: 'Play any two-person zero-sum matrix game, matching pennies or a 3 × 3 game you edit: in pure strategies the maxmin and minmax values differ, but once both players may randomize, the lower envelope of one player’s guaranteed payoffs meets the upper envelope of the other’s at a single value, the saddle point von Neumann proved always exists.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
@@ -242,6 +250,10 @@ export default {
           pic: 'Triangulate the simplex of possible cuts and label each vertex by the owner’s preferred piece; Sperner’s lemma finds a fully labelled cell, approximating an envy-free division as the mesh is refined.' },
         { num: '7.12', kind: 'Theorem', name: 'Exact division exists (Dubins–Spanier)', deps: ['fa-5.5', 'game-7.9'], refs: ['Osborne ch. 8'],
           pic: 'For several players’ valuations, the range of the vector measure of all cuts is computed and shown to be convex, so a division giving every player exactly 1/n by every valuation is found.' },
+        { num: '7.13', kind: 'Paper', name: 'College Admissions and the Stability of Marriage',
+          paper: { authors: 'D. Gale and L. S. Shapley', year: 1962, title: 'College Admissions and the Stability of Marriage', venue: 'American Mathematical Monthly 69 (1): 9–15', doi: '10.1080/00029890.1962.11989827' },
+          introduces: ['algo-11.14', 'game-7.3', 'game-7.6'], deps: [], refs: [],
+          pic: 'Edit rank lists for men and women, or for applicants and colleges with quotas: run deferred acceptance step by step, with proposals, tentative holds and rejections, and check that no pair would rather have each other than their partners; swap who proposes to get the other side’s best stable matching, and try their four-person roommates example, which has no stable pairing at all.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 8
@@ -270,6 +282,10 @@ export default {
           pic: 'Coalition excesses are sorted from largest to smallest for any proposed allocation; a sequence of linear programs lowers the largest excess lexicographically until the nucleolus is reached.' },
         { num: '8.10', kind: 'Theorem', name: 'The Talmud bankruptcy rule is the nucleolus (Aumann–Maschler)', deps: ['game-8.9'], refs: ['MSZ §21.8'],
           pic: 'An estate is divided among creditors by filling linked vessels; the Talmud’s puzzling divisions for estates of 100, 200 and 300 are reproduced and equal the nucleolus of the bankruptcy game.' },
+        { num: '8.11', kind: 'Paper', name: 'A Value for n-Person Games',
+          paper: { authors: 'L. S. Shapley', year: 1953, title: 'A Value for n-Person Games', venue: 'Contributions to the Theory of Games II (Annals of Mathematics Studies 28), Princeton University Press: 307–317', doi: '10.1515/9781400881970-018' },
+          introduces: ['game-8.6', 'game-8.7'], deps: ['game-8.1'], refs: [],
+          pic: 'Define a small coalitional game by editing what each coalition can earn: the value is built as each player’s marginal contribution averaged over all orders of arrival, animated order by order, and checked against Shapley’s axioms (symmetry, efficiency, null player, additivity), which pick it out uniquely.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
