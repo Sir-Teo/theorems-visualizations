@@ -49,12 +49,12 @@ function karaRun(X, Y, n) {
     nd.t0 = snap({ node: nd, line: 3, note: `Split $x = ${pad(x, n)} = ${a}\\cdot 10^{${m}} + ${b}$ and $y = ${pad(y, n)} = ${c}\\cdot 10^{${m}} + ${d}$. Three recursive products, $ac$, $bd$ and $(a+b)(c+d)$, will replace the four products $ac, ad, bc, bd$.` });
     const p1 = rec(a, c, n - m, depth + 1, 'ac', nd, slot * 3);
     const p2 = rec(b, d, m, depth + 1, 'bd', nd, slot * 3 + 1);
-    const s = a + b, t = c + d, al = s / P, ga = t / P, s0 = s % P, t0 = t % P;
-    const q = rec(s0, t0, m, depth + 1, 'mid', nd, slot * 3 + 2);
-    const p3 = q + (al * t0 + ga * s0) * P + al * ga * P * P, mid = p3 - p1 - p2;
+    const s = a + b, t = c + d, al = s / P, ga = t / P, s0 = s % P, u0 = t % P;
+    const q = rec(s0, u0, m, depth + 1, 'mid', nd, slot * 3 + 2);
+    const p3 = q + (al * u0 + ga * s0) * P + al * ga * P * P, mid = p3 - p1 - p2;
     nd.res = p1 * P * P + mid * P + p2;
-    Object.assign(nd, { p1, p2, p3, q, s, t, s0, t0, al, ga, mid });
-    const carry = al || ga ? ` (${al && ga ? '$a+b$ and $c+d$ carry' : al ? '$a+b$ carries' : '$c+d$ carries'} into a digit 1, which only adds shifted copies to $${s0}\\times${t0}$)` : '';
+    Object.assign(nd, { p1, p2, p3, q, s, t, s0, u0, al, ga, mid });
+    const carry = al || ga ? ` (${al && ga ? '$a+b$ and $c+d$ carry' : al ? '$a+b$ carries' : '$c+d$ carries'} into a digit 1, which only adds shifted copies to $${s0}\\times${u0}$)` : '';
     nd.t1 = snap({ node: nd, line: 7, hold: 1.4, note: `$P_1 = ${p1}$, $P_2 = ${p2}$, $P_3 = ${s}\\cdot${t} = ${p3}$${carry}. So $ad+bc = P_3-P_1-P_2 = ${mid}$ and $xy = ${p1}\\cdot10^{${2 * m}} + ${mid}\\cdot10^{${m}} + ${p2} = ${nd.res}$.` });
     return nd.res;
   })(X, Y, n, 0, 'root', null, 0);
@@ -194,9 +194,9 @@ $$xy = ac\cdot10^{2m}+(ad+bc)\cdot10^m+bd .$$
         v.button('New numbers', () => newNums());
         v.button('All 9s', () => { X = Y = 10n ** BigInt(nS.value) - 1n; S.reset({ at: 'end' }); });
         const mode = v.select('count', [{ value: 'mul', label: 'digit multiplications' }, { value: 'ops', label: 'all digit operations' }], 'mul', { onChange: () => { cut.el.hidden = mode.value !== 'ops'; } });
-        const cut = v.slider('cut-off $n_0$ (schoolbook below)', 1, 64, 16, { int: true }); cut.el.hidden = true;
+        const cut = v.slider('cut-off $n_0$ (schoolbook below)', 1, 64, 1, { int: true }); cut.el.hidden = true;
         const T = v.stage({ x: [0, 1], y: [-2.6, 0.55], axes: false, height: 290, full: true });
-        const A = v.stage({ x: [-0.42, 1.12], y: [-0.38, 1.3], equal: true, axes: false, height: 290, weight: 0.85, title: 'the three-for-four trick at the current call' });
+        const A = v.stage({ x: [-0.42, 1.12], y: [-0.38, 1.38], equal: true, axes: false, height: 290, weight: 0.85, title: 'the three-for-four trick at the current call' });
         const NMAX = 4096;
         const P = v.stage({ x: [1, NMAX], y: [1, 4e7], xlog: true, ylog: true, axes: 'box', height: 290, weight: 1.15, xlabel: 'n', title: 'one-digit products' });
         const cache = {}; const costs = (n0) => cache[n0] || (cache[n0] = karCosts(n0, NMAX));
@@ -239,7 +239,7 @@ $$xy = ac\cdot10^{2m}+(ad+bc)\cdot10^m+bd .$$
           A.tex(know(k[0]) ? `P_1 = ${sm(nd.p1)}` : 'P_1 = ac', 0.25, 0.75, { size: 13.5, color: 'blue' });
           A.tex(know(k[1]) ? `P_2 = ${sm(nd.p2)}` : 'P_2 = bd', 0.75, 0.25, { size: 13.5, color: 'purple' });
           A.tex('bc', 0.75, 0.75, { size: 14, color: 'orange' }); A.tex('ad', 0.25, 0.25, { size: 14, color: 'orange' });
-          A.tex(know(k[2]) ? `\\text{whole square } P_3 = ${sm(nd.p3)}` : '\\text{whole square } P_3 = (a+b)(c+d)', 0.5, 1.22, { size: 12.5, color: 'orange', baseline: 'bottom' });
+          A.tex(know(k[2]) ? `\\text{whole square } P_3 = (a+b)(c+d) = ${sm(nd.p3)}` : '\\text{whole square } P_3 = (a+b)(c+d)', 0.5, 1.3, { size: 12.5, color: 'orange', baseline: 'bottom' });
           A.tex(nd.t1 <= i ? `ad+bc = P_3-P_1-P_2 = ${sm(nd.mid)}` : 'ad+bc = P_3 - P_1 - P_2', 0.5, -0.08, { size: 13, baseline: 'top', color: 'ink' });
           A.text('4 block products, only 3 multiplied', 0.5, -0.3, { align: 'center', size: 11, color: 'muted' });
           // ---- cost plot
@@ -251,8 +251,8 @@ $$xy = ac\cdot10^{2m}+(ad+bc)\cdot10^m+bd .$$
             const pts = []; for (let m = 1; m <= NMAX; m++) pts.push([m, C1.M[m]]); P.path(pts, { color: 'blue', width: 2 });
             P.dot(n, C1.M[n], { r: 5.5, color: 'gold' });
             P.text('schoolbook n²', 30, 900, { color: 'red', size: 11, align: 'right', dx: -6, dy: -8 });
-            P.text('Karatsuba M(n)', 900, C1.M[900], { color: 'blue', size: 11, align: 'left', dx: 4, dy: 12 });
-            P.text('n^lg 3', 3000, 3000 ** LG(3), { color: 'muted', size: 10.5, align: 'right', dy: -12 });
+            P.text('Karatsuba M(n)', 400, C1.M[400], { color: 'blue', size: 11, align: 'left', dx: 4, dy: 14 });
+            P.tex('n^{\\lg 3}', 2500, 2500 ** LG(3), { color: 'muted', size: 12, dy: -16, align: 'right' });
             cross = null;
           } else {
             const n0 = cut.value, C = costs(n0);
@@ -263,7 +263,9 @@ $$xy = ac\cdot10^{2m}+(ad+bc)\cdot10^m+bd .$$
             P.fn(sb, { color: 'red', width: 2 });
             const p1 = [], p2 = []; for (let m = 1; m <= NMAX; m++) { p1.push([m, C1.K[m]]); p2.push([m, C.K[m]]); }
             P.path(p1, { color: 'blue', width: 1.2, alpha: 0.45, dash: [4, 4] }); P.path(p2, { color: 'blue', width: 2 });
-            if (cross) { P.vline(cross, { color: 'green', width: 1.5, dash: [5, 4] }); P.text(`Karatsuba wins from n = ${cross}`, cross, 3e7, { color: 'green', size: 11, weight: 700, dx: 6 }); }
+            const pure = crossover((m) => C1.K[m], sb, 1, NMAX);
+            if (pure && n0 > 1) { P.vline(pure, { color: 'blue', width: 1.2, dash: [3, 4], alpha: 0.6 }); P.text(`pure: from ${pure}`, pure, 4e6, { color: 'blue', size: 10.5, dx: 6, alpha: 0.85 }); }
+            if (cross) { P.vline(cross, { color: 'green', width: 1.5, dash: [5, 4] }); P.text(`Karatsuba wins from n = ${cross}`, cross, 3e7, { color: 'green', size: 11, weight: 700, dx: cross > 600 ? -6 : 6, align: cross > 600 ? 'right' : 'left' }); }
             P.text('schoolbook', 3, sb(3), { color: 'red', size: 11, dy: -12 });
             P.text('pure Karatsuba (n₀ = 1)', 60, C1.K[60], { color: 'blue', size: 10.5, alpha: 0.8, dx: 4, dy: -12 });
           }

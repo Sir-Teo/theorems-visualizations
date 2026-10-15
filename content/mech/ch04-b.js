@@ -191,7 +191,7 @@ a series that converges absolutely and uniformly (since $|H(n\omega)| = O(1/n^2)
         const r0 = v.slider('natural frequency $\\omega_0/\\omega$', 0.6, 9.5, 3, { step: 0.01 });
         const Qs = v.slider('quality factor $Q$', 1, 50, 15, { log: true, decimals: 1 });
         const sT = v.stage({ x: [-Math.PI, Math.PI], y: [-2, 2], height: 250, full: true, axes: true, xlabel: 'ωt', xticks: piTicks, title: 'one drive period' });
-        const sB = v.stage({ x: [-0.6, 16.6], y: [2e-3, 60], ylog: true, height: 230, full: true, axes: 'box', xlabel: 'harmonic n', xticks: Array.from({ length: 17 }, (_, n) => n), title: 'harmonic amplitudes (log scale)' });
+        const sB = v.stage({ x: [-0.6, 16.6], y: [5e-4, 60], ylog: true, height: 230, full: true, axes: 'box', xlabel: 'harmonic n', xticks: Array.from({ length: 17 }, (_, n) => n), title: 'harmonic amplitudes (log scale)' });
         const NH = 300, NP = 400;
         const wrap = (t) => { let u = (t + Math.PI) % TAU; if (u < 0) u += TAU; return u - Math.PI; };
         let S = null, key = '';
@@ -208,9 +208,10 @@ a series that converges absolutely and uniformly (since $|H(n\omega)| = O(1/n^2)
           const m = 400, h = TAU / m, K = Math.min(150, Math.ceil(18 / (TAU * b)) + 1), F = (t) => W.f(wrap(t));
           let x = 0, u = 0, t = -Math.PI; const acc = (tt, x, u) => w2 * F(tt) - 2 * b * u - w2 * x, last = [];
           for (let k = 0; k < K; k++) for (let i = 0; i < m; i++) {
-            const e = 1e-9 * h, k1x = u, k1u = acc(t + e, x, u), k2x = u + h / 2 * k1u, k2u = acc(t + h / 2, x + h / 2 * k1x, u + h / 2 * k1u);
+            t = -Math.PI + (k * m + i) * h; // from integers: no drift across the discontinuities
+            const e = 1e-7 * h, k1x = u, k1u = acc(t + e, x, u), k2x = u + h / 2 * k1u, k2u = acc(t + h / 2, x + h / 2 * k1x, u + h / 2 * k1u);
             const k3x = u + h / 2 * k2u, k3u = acc(t + h / 2, x + h / 2 * k2x, u + h / 2 * k2u), k4x = u + h * k3u, k4u = acc(t + h - e, x + h * k3x, u + h * k3u);
-            x += h / 6 * (k1x + 2 * k2x + 2 * k3x + k4x); u += h / 6 * (k1u + 2 * k2u + 2 * k3u + k4u); t += h;
+            x += h / 6 * (k1x + 2 * k2x + 2 * k3x + k4x); u += h / 6 * (k1u + 2 * k2u + 2 * k3u + k4u);
             if (k === K - 1) last.push([-Math.PI + (i + 1) * h, x]);
           }
           let err = 0; for (const [tt, xx] of last) err = Math.max(err, Math.abs(xx - X(tt)));
@@ -227,11 +228,11 @@ a series that converges absolutely and uniformly (since $|H(n\omega)| = O(1/n^2)
           sT.path(s.last, { color: 'ink', dash: [5, 5], width: 1.3 });
           // bars
           sB.fn((Om) => { const [hr, hi] = s.H(Om); return Math.hypot(hr, hi); }, { domain: [0.05, 16.6], color: 'muted', width: 1.4, n: 1200 });
-          if (Math.abs(s.dc) > 1e-12) { sB.rect(-0.36, 1e-9, -0.04, Math.abs(s.dc), { fill: 'orange', fillAlpha: 0.75, color: 'orange', width: 1 }); sB.rect(0.04, 1e-9, 0.36, Math.abs(s.dc), { fill: 'accent', fillAlpha: 0.8, color: 'accent', width: 1 }); }
+          if (Math.abs(s.dc) > 1e-12) { sB.rect(-0.36, 2e-3, -0.04, Math.abs(s.dc), { fill: 'orange', fillAlpha: 0.75, color: 'orange', width: 1 }); sB.rect(0.04, 2e-3, 0.36, Math.abs(s.dc), { fill: 'accent', fillAlpha: 0.8, color: 'accent', width: 1 }); }
           for (const tm of s.terms) {
             if (!tm || tm.n > 16) continue;
-            sB.rect(tm.n - 0.36, 1e-9, tm.n - 0.04, tm.d, { fill: 'orange', fillAlpha: 0.75, color: 'orange', width: 1 });
-            sB.rect(tm.n + 0.04, 1e-9, tm.n + 0.36, tm.r, { fill: 'accent', fillAlpha: 0.8, color: 'accent', width: 1 });
+            if (tm.d > 2e-3) sB.rect(tm.n - 0.36, 2e-3, tm.n - 0.04, tm.d, { fill: 'orange', fillAlpha: 0.75, color: 'orange', width: 1 });
+            if (tm.r > 2e-3) sB.rect(tm.n + 0.04, 2e-3, tm.n + 0.36, tm.r, { fill: 'accent', fillAlpha: 0.8, color: 'accent', width: 1 });
           }
           sB.vline(s.w0, { color: 'green', dash: [4, 4], width: 1.3 });
           sB.text('ω₀', s.w0, 40, { color: 'green', size: 12, dx: 5 });

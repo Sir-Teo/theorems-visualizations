@@ -80,7 +80,7 @@ export default {
 $$I(r)=\frac{P}{4\pi r^2}.$$
 Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the pressure amplitude, which falls as $1/r$. Near reflecting surfaces the listener also receives sound from *image sources* behind them, the level no longer follows the law, and a reflection that arrives late enough (several tens of milliseconds after the direct sound) is heard as a separate **echo**.`,
       idea: String.raw`Energy is conserved and, in steady state, cannot pile up anywhere, so the same power $P$ crosses every sphere centred on the source; this is why a spherical wave's amplitude falls as $1/r$ (waves-1.12). The sphere's area grows as $r^2$, so the power per square metre falls as $1/r^2$. Equivalently, a detector of fixed area $A$ subtends the solid angle $A/r^2$ and catches the fraction $A/4\pi r^2$ of the power. A flat wall acts like a mirror: the reflected sound seems to come from an image of the source behind the wall, along a longer path $r_2$, so it arrives later by $(r_2-r_1)/c$ and weaker by $(r_1/r_2)^2$ times the wall's reflection factor.`,
-      caption: String.raw`Drag the listener (gold). The floor plan is coloured by the level in dB; the two rays through a 2 m patch show the same beam covering twice the width, and so four times the area, at twice the distance. Right: intensity against distance on log–log axes, a straight line of slope −2. *Walk away* plays the tone at $r$, $2r$ and $4r$. Switch on the **wall**: an image source appears, the level near the wall climbs above the free-field line, and *Clap* lets you hear the echo arrive after the delay shown.`,
+      caption: String.raw`Drag the listener (gold). The floor plan is coloured by the level in dB; the two rays through a 4 m patch show the same beam covering twice the width, and so four times the area, at twice the distance. Right: intensity against distance on log–log axes, a straight line of slope −2. *Walk away* plays the tone at $r$, $2r$ and $4r$. Switch on the **wall**: an image source appears, the level near the wall climbs above the free-field line, and *Clap* lets you hear the echo arrive after the delay shown.`,
       deps: ['music-1.1', 'waves-1.12'],
       refs: ['Loy I ch. 4', 'Rossing ch. 6'],
       tags: ['intensity', 'inverse square'],
@@ -92,7 +92,7 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
         const gr = v.stage({ x: [RMIN, 60], y: [1e-6, 0.1], xlog: true, ylog: true, height: 360, axes: 'box', grid: true, xlabel: 'r (m)', ylabel: 'I (W/m²)', weight: 1, title: 'intensity along the line to the listener' });
         const wall = v.toggle('reflecting wall', false);
         const Rw = v.slider('wall reflects', 0, 1, 0.8, { step: 0.01, fmt: (x) => Math.round(100 * x) + '% of the energy' });
-        const lis = fp.handle(9, 4, { color: 'gold', label: 'listener', constrain: (x, y) => { let X = M.clamp(x, -5.5, wall.value ? WX - 0.8 : 53); let Y = M.clamp(y, -19, 19); const r = Math.hypot(X, Y); if (r < 1) { X = X / (r || 1); Y = Y / (r || 1); } return [X, Y]; } });
+        const lis = fp.handle(9, 4, { color: 'gold', label: 'listener', labelPos: 'nw', constrain: (x, y) => { let X = M.clamp(x, -5.5, wall.value ? WX - 0.8 : 53); let Y = M.clamp(y, -19, 19); const r = Math.hypot(X, Y); if (r < 1) { X = X / (r || 1); Y = Y / (r || 1); } return [X, Y]; } });
         const Ifree = (r) => P / (4 * Math.PI * Math.max(RMIN, r) ** 2);
         const Iat = (x, y) => { const r1 = Math.hypot(x, y); let I = Ifree(r1); if (wall.value) I += Rw.value * Ifree(Math.hypot(x - 2 * WX, y)); return I; };
         const ph = playhead(v);
@@ -141,16 +141,16 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
           // the beam through a 2 m patch at r and its 4 m image at 2r
           const r1 = Math.hypot(lis.x, lis.y), ux = lis.x / r1, uy = lis.y / r1, nx = -uy, ny = ux;
           const far = 2 * r1, okFar = !wall.value || far * ux < WX;
-          fp.line(0, 0, far * ux + 2 * nx, far * uy + 2 * ny, { color: 'ink', width: 1, alpha: 0.6 });
-          fp.line(0, 0, far * ux - 2 * nx, far * uy - 2 * ny, { color: 'ink', width: 1, alpha: 0.6 });
-          fp.line(lis.x + nx, lis.y + ny, lis.x - nx, lis.y - ny, { color: 'gold', width: 4 });
+          fp.line(0, 0, far * ux + 4 * nx, far * uy + 4 * ny, { color: 'ink', width: 1, alpha: 0.6 });
+          fp.line(0, 0, far * ux - 4 * nx, far * uy - 4 * ny, { color: 'ink', width: 1, alpha: 0.6 });
+          fp.line(lis.x + 2 * nx, lis.y + 2 * ny, lis.x - 2 * nx, lis.y - 2 * ny, { color: 'gold', width: 4 });
           if (okFar) {
-            fp.line(far * ux + 2 * nx, far * uy + 2 * ny, far * ux - 2 * nx, far * uy - 2 * ny, { color: 'orange', width: 4 });
-            fp.dot(far * ux, far * uy, { r: 5, hollow: true, color: 'orange', label: '2r: ¼ of the intensity', labelPos: ux > 0.3 ? 's' : 'e', math: false });
+            fp.line(far * ux + 4 * nx, far * uy + 4 * ny, far * ux - 4 * nx, far * uy - 4 * ny, { color: 'orange', width: 4 });
+            fp.dot(far * ux, far * uy, { r: 5, hollow: true, color: 'orange', label: '2r: ¼ of the intensity', labelPos: uy > 0 ? 'se' : 'ne', math: false });
           }
-          fp.dot(0, 0, { r: 7, color: 'accent', label: 'source', labelPos: 'sw', math: false });
+          fp.dot(0, 0, { r: 7, color: 'accent', label: 'source', labelPos: 's', math: false });
           // ---- log–log graph
-          for (let k = 0; k <= 5; k++) gr.text(`${60 + 10 * k} dB`, 57, Math.pow(10, k - 6), { align: 'right', baseline: 'bottom', color: 'muted', size: 10.5, dy: -2 });
+          for (let k = 1; k <= 5; k++) gr.text(`${60 + 10 * k} dB`, 57, Math.pow(10, k - 6), { align: 'right', baseline: 'bottom', color: 'muted', size: 10.5, dy: -2 });
           gr.fn(Ifree, { color: 'accent', width: 2.4 });
           gr.text('free field: slope −2', 1.2, Ifree(1.2) * 1.5, { align: 'left', baseline: 'bottom', color: 'accent', size: 12, weight: 600 });
           if (wall.value) {
@@ -190,7 +190,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
       credit: 'Bell Telephone Laboratories, 1928 (the bel, after A. G. Bell)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sound_pressure' },
       viz(v) {
-        const M = v.M, C = M.CONST, rc = rhoAir(C) * cAir(C), FS = 48000, NB = 4800, NV = 480, F_TONE = 500;
+        const M = v.M, C = M.CONST, rc = rhoAir(C) * cAir(C), FS = 48000, NB = 16384, NV = 288, F_TONE = 500;
         const IS = v.slider('intensity of one source $I_1$', 1e-12, 1, 1e-6, { log: true, fmt: (x) => { const e = Math.floor(Math.log10(x) + 1e-9); return `${v.fix(x / Math.pow(10, e), 1)}×${M.pow10Text(e)} W/m²`; } });
         const nSel = v.select('sources $N$', [{ value: 1, label: '1' }, { value: 2, label: '2' }, { value: 10, label: '10' }, { value: 100, label: '100' }], 2);
         const kind = v.select('', [{ value: 'noise', label: 'independent noise' }, { value: 'phase', label: 'same tone, in phase' }, { value: 'random', label: 'same tone, random phases' }], 'noise');
@@ -203,7 +203,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           const R = v.rng(7), one = new Float64Array(NB), sum = new Float64Array(NB);
           for (let s = 0; s < N; s++) {
             const x = new Float64Array(NB);
-            if (k === 'noise') { let a = 0, b = 0; for (let i = 0; i < NB; i++) { const w = R.normal(); x[i] = (w + a + b) / 3; b = a; a = w; } }
+            if (k === 'noise') { let a = 0, b = 0; for (let i = -64; i < NB; i++) { a = 0.8 * a + 0.2 * R.normal(); b = 0.8 * b + 0.2 * a; if (i >= 0) x[i] = b; } } // low-pass filtered white noise
             else { const phi = k === 'phase' ? 0 : R.uniform(0, 2 * Math.PI); for (let i = 0; i < NB; i++) x[i] = Math.sin((2 * Math.PI * F_TONE * i) / FS + phi); }
             let ss = 0; for (let i = 0; i < NB; i++) ss += x[i] * x[i];
             const g = 1 / Math.sqrt(ss / NB);
@@ -256,7 +256,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           let mx = 0; for (let i = 0; i < NV; i++) mx = Math.max(mx, Math.abs(S.sum[i]), Math.abs(S.one[i]));
           const ym = (1.15 * mx * p1) / U[0];
           wav.setView(null, [-ym, ym]);
-          wav.setTitle(`pressure of one source and of all ${N}, in ${U[1]}`);
+          wav.setTitle(N > 1 ? `pressure of one source and of all ${N} together, in ${U[1]}` : `pressure of one source, in ${U[1]}`);
           wav.hband(-pN / U[0], pN / U[0], { color: 'green', alpha: 0.1, edges: true });
           const tms = (i) => (i / FS) * 1000;
           if (N > 1) wav.path(M.range(NV).map((i) => [tms(i), (S.sum[i] * p1) / U[0]]), { color: 'green', width: 1.6 });
@@ -291,7 +291,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         const M = v.M, SWEEP = [63, 125, 250, 500, 1000, 2000, 4000, 8000], STEP = 0.45;
         const mode = v.select('test tone', [{ value: 'contour', label: 'stays on a contour' }, { value: 'free', label: 'free' }], 'contour');
         const phS = v.slider('contour', 20, 90, 60, { step: 1, fmt: (x) => `${Math.round(x)} phon` });
-        const s = v.stage({ x: [20, 12500], y: [-10, 130], xlog: true, height: 390, axes: 'box', grid: true, xlabel: 'f (Hz)', ylabel: 'SPL (dB)', weight: 1.55, title: 'equal-loudness contours (ISO 226:2003)' });
+        const s = v.stage({ x: [20, 12500], y: [-16, 130], xlog: true, height: 390, axes: 'box', grid: true, xlabel: 'f (Hz)', ylabel: 'SPL (dB)', weight: 1.55, title: 'equal-loudness contours (ISO 226:2003)' });
         const so = v.stage({ x: [0, 100], y: [0.02, 80], ylog: true, height: 390, axes: 'box', grid: true, xlabel: 'phon', ylabel: 'sones', weight: 0.7, title: 'loudness in sones' });
         const h = s.handle(100, phonToSpl(100, 60), { color: 'gold', constrain: (x, y) => { const f = M.clamp(x, 20, 12500); return mode.value === 'contour' ? [f, phonToSpl(f, phS.value)] : [f, M.clamp(y, -5, 125)]; } });
         const ph = playhead(v);
@@ -320,7 +320,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           const P = mode.value === 'contour' ? phS.value : splToPhon(h.x, h.y);
           // threshold and contours
           s.path(ISO226.f.map((f, i) => [f, ISO226.Tf[i]]), { color: 'muted', width: 1.6, dash: [6, 4] });
-          s.text('threshold of hearing', 3150, -6, { align: 'center', baseline: 'top', color: 'muted', size: 11, dy: 4 });
+          s.text('threshold of hearing', 140, -2, { align: 'left', color: 'muted', size: 11 });
           for (let L = 10; L <= 90; L += 10) {
             const on = mode.value === 'contour' && L === Math.round(phS.value);
             s.fn((f) => phonToSpl(f, L), { color: on ? 'accent' : 'ink', width: on ? 3 : 1.1, alpha: on ? 1 : L === 10 ? 0.35 : 0.55, dash: L === 10 ? [3, 3] : null, n: 260 });
@@ -364,13 +364,13 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         const M = v.M, F0 = 4000, F1 = 20000, TS = 12;
         const ISO7029 = { f: [125, 250, 500, 1000, 1500, 2000, 3000, 4000, 6000, 8000], male: [0.003, 0.003, 0.0035, 0.004, 0.0055, 0.007, 0.0115, 0.016, 0.018, 0.022], female: [0.003, 0.003, 0.0035, 0.004, 0.005, 0.006, 0.0075, 0.009, 0.012, 0.015] };
         const terhardt = (f) => { const k = f / 1000; return 3.64 * Math.pow(k, -0.8) - 6.5 * Math.exp(-0.6 * (k - 3.3) ** 2) + 1e-3 * k ** 4; };
-        const ageS = v.slider('age', 10, 80, 20, { step: 1, fmt: (x) => `${Math.round(x)} years` });
+        const ageS = v.slider('age', 10, 80, 45, { step: 1, fmt: (x) => `${Math.round(x)} years` });
         const sex = v.select('', [{ value: 'female', label: 'female' }, { value: 'male', label: 'male' }], 'female');
         const alpha = (f) => { const t = ISO7029[sex.value]; return f <= 8000 ? logInterp(ISO7029.f, t, f) : t[9] * (1 + 2 * Math.log2(f / 8000)); };
         const thr = (f, age = ageS.value) => terhardt(f) + (age > 18 ? alpha(f) * (age - 18) ** 2 : 0);
         const upper = (age) => { let lo = 1000, hi = 30000; if (thr(hi, age) < 120) return hi; for (let k = 0; k < 40; k++) { const m = Math.sqrt(lo * hi); if (thr(m, age) < 120) lo = m; else hi = m; } return lo; };
-        const s = v.stage({ x: [14, 24000], y: [-20, 145], xlog: true, height: 390, axes: 'box', grid: true, xlabel: 'f (Hz)', ylabel: 'SPL (dB)', full: true, title: 'the audible region' });
-        const h = s.handle(1000, 30, { color: 'gold', constrain: (x, y) => [M.clamp(x, 15, 23000), M.clamp(y, -15, 140)] });
+        const s = v.stage({ x: [10, 30000], y: [-34, 145], xlog: true, height: 390, axes: 'box', grid: true, xlabel: 'f (Hz)', ylabel: 'SPL (dB)', full: true, title: 'the audible region' });
+        const h = s.handle(1000, 30, { color: 'gold', constrain: (x, y) => [M.clamp(x, 11, 29000), M.clamp(y, -15, 140)] });
         const ph = playhead(v);
         let you = null, sweeping = false;
         const fAt = (t) => F0 * Math.pow(F1 / F0, Math.min(1, t / TS));
@@ -384,12 +384,13 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         v.button('I can’t hear it now', () => { if (sweeping && ph.t != null) { you = fAt(ph.t); sweeping = false; v.sound().stop(); ph.stop(); } });
         v.render(() => {
           const age = ageS.value, fu = upper(age);
-          s.vband(14, 20, { color: 'gray', alpha: 0.18 });
-          s.vband(20000, 24000, { color: 'gray', alpha: 0.18 });
-          s.text('infrasound', 16.8, 75, { align: 'center', color: 'muted', size: 10.5 });
-          s.text('ultra-', 21900, 80, { align: 'center', color: 'muted', size: 10.5 });
-          s.text('sound', 21900, 72, { align: 'center', color: 'muted', size: 10.5 });
-          s.between((f) => 130, (f) => Math.min(130, thr(f)), 14, 24000, { fill: 'accent', fillAlpha: 0.16, n: 500 });
+          s.vband(10, 20, { color: 'gray', alpha: 0.18 });
+          s.vband(20000, 30000, { color: 'gray', alpha: 0.18 });
+          s.text('infra-', 14.1, 66, { align: 'center', color: 'muted', size: 10.5 });
+          s.text('sound', 14.1, 58, { align: 'center', color: 'muted', size: 10.5 });
+          s.text('ultra-', 24500, 66, { align: 'center', color: 'muted', size: 10.5 });
+          s.text('sound', 24500, 58, { align: 'center', color: 'muted', size: 10.5 });
+          s.between((f) => 130, (f) => Math.min(130, thr(f)), 10, 30000, { fill: 'accent', fillAlpha: 0.16, n: 500 });
           if (age > 18) { s.fn((f) => thr(f, 18), { color: 'muted', width: 1.2, dash: [4, 4], n: 400 }); s.text('age 18', 9000, thr(9000, 18), { align: 'center', baseline: 'top', dy: 4, color: 'muted', size: 10.5 }); }
           s.fn((f) => thr(f), { color: 'accent', width: 2.6, n: 500 });
           s.hline(130, { color: 'red', width: 2 }); s.text('threshold of pain', 30, 130, { align: 'left', baseline: 'bottom', dy: -2, color: 'red', size: 11.5, weight: 600 });
@@ -398,8 +399,8 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           s.vline(fu, { color: 'purple', width: 1.6, dash: [6, 3] });
           s.text(`upper limit ≈ ${v.fmt(fu / 1000, 3)} kHz`, fu, 100, { align: 'right', dx: -5, color: 'purple', size: 12, weight: 700 });
           // piano range
-          s.rect(27.5, -16, 4186, -11, { fill: 'ink', fillAlpha: 0.65, stroke: false });
-          s.text('piano: 27.5 Hz – 4.19 kHz', 340, -9, { align: 'center', baseline: 'bottom', color: 'ink', size: 10.5 });
+          s.rect(27.5, -24, 4186, -19, { fill: 'ink', fillAlpha: 0.65, stroke: false });
+          s.text('piano: 27.5 Hz – 4.19 kHz', 340, -17, { align: 'center', baseline: 'bottom', color: 'ink', size: 10.5 });
           if (ph.t != null && sweeping) { const f = fAt(ph.t); s.vline(f, { color: 'red', width: 2.4 }); s.text(`${v.fmt(f / 1000, 3)} kHz`, f, 60, { align: 'right', dx: -5, color: 'red', size: 12.5, weight: 700 }); }
           if (you) { s.vline(you, { color: 'red', width: 2, dash: [3, 3] }); s.text(`you: ${v.fmt(you / 1000, 3)} kHz`, you, 40, { align: 'right', dx: -5, color: 'red', size: 12.5, weight: 700 }); }
           const SL = h.y - thr(h.x);
