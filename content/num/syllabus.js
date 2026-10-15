@@ -1,4 +1,24 @@
 // Syllabus — Numerical Analysis (curated course; see collection.js for references)
+//
+// Sources consulted (research pass, Oct 2026):
+//   - Süli & Mayers, An Introduction to Numerical Analysis (CUP 2003) — chapter TOC (1 iteration for
+//     equations, 2 linear systems, 3 special matrices, 4 nonlinear systems, 5 symmetric eigenproblems,
+//     6 interpolation, 7 integration I, 8 ∞-norm approximation, 9 2-norm approximation,
+//     10 integration II, 11 piecewise polynomials, 12 ODE IVPs, 13 ODE BVPs, 14 FEM); refs cite
+//     chapters: https://www.cambridge.org/core/books/an-introduction-to-numerical-analysis/FD8BCAD7FE68002E2179DFF68B8B7237
+//   - Trefethen, Approximation Theory and Approximation Practice — all 28 chapter titles, extracted
+//     from the author's sample PDF: https://people.maths.ox.ac.uk/trefethen/ATAP/first6.pdf
+//   - MIT OCW 18.330 Introduction to Numerical Analysis (series, quadrature & differences,
+//     interpolation & splines, ODE IVPs, root finding & BVPs, Fourier & sampling, spectral methods,
+//     least squares): https://ocw.mit.edu/courses/18-330-introduction-to-numerical-analysis-spring-2012/pages/syllabus/
+//   - Wikipedia, List of numerical analysis topics: https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics
+// Gaps filled after comparison: floating-point traps (MASTER_PLAN flagship; refs point to S–M ch. 2's
+//   rounding-error material), Faber's theorem, Lebesgue constants, potential theory, Carathéodory–Fejér,
+//   rational/Padé approximation (ATAP 23–28), Peano kernel, Clenshaw–Curtis vs Gauss, Dahlquist
+//   barriers, spurious dynamics of large steps, Fourier/FFT and sampling (18.330), Chebfun.
+// Deliberate omissions: S–M ch. 2–5 (linear systems, special matrices, symmetric eigenvalue methods)
+//   live in `nla`; PDE discretization lives in `pde` ch. 13; Monte Carlo integration lives in
+//   `stat`/`prob`; automatic differentiation and Bézier curves are left to `deep` and `cg`.
 export default {
   collection: 'num',
   chapters: [
@@ -98,7 +118,7 @@ export default {
           pic: 'Equally spaced points on the upper half of the unit circle are projected onto [−1, 1]; the resulting Chebyshev points cluster near the ends, with density 1/√(1 − x²) overlaid.' },
         { num: '3.7', kind: 'Definition', name: 'Chebyshev polynomials', deps: ['num-3.6', 'pma-8.7'], refs: ['Trefethen ATAP ch. 3'],
           pic: 'Tₙ(cos θ) = cos nθ is shown by mapping a cosine wave on the circle down to the interval; the equioscillating polynomials T₀…T₁₀ are drawn with their extrema at Chebyshev points.' },
-        { num: '3.8', kind: 'Theorem', name: 'Chebyshev polynomials minimize the sup norm among monic polynomials', deps: ['num-3.7'], refs: ['Süli–Mayers ch. 8'],
+        { num: '3.8', kind: 'Theorem', name: 'Minimax property of Chebyshev polynomials', deps: ['num-3.7'], refs: ['Süli–Mayers ch. 8'],
           pic: 'Drag the roots of a monic polynomial of degree n on [−1, 1]; its max norm is read out and can never beat 2^{1−n}, attained when the roots sit at the zeros of Tₙ.' },
         { num: '3.9', kind: 'Algorithm', name: 'Barycentric interpolation formula', deps: ['num-3.2', 'num-3.6'], refs: ['Trefethen ATAP ch. 5'],
           pic: 'Evaluate the interpolant in a million Chebyshev points via the barycentric formula and via the Vandermonde system; the first stays accurate to machine precision, the second loses all digits.' },
@@ -292,6 +312,34 @@ export default {
           pic: 'Solve a smooth boundary value problem with a Chebyshev differentiation matrix; the error falls geometrically with N, dwarfing finite differences and finite elements of the same size.' },
         { num: '8.10', kind: 'Invention', name: 'Chebfun: numerical computing with functions', deps: ['num-3.9', 'num-4.4', 'num-6.12'], refs: ['Trefethen ATAP ch. 1'],
           pic: 'Type a function; it is represented by an adaptively chosen Chebyshev interpolant to machine precision, and its roots, integral, maximum and derivative are computed instantly with the coefficient decay shown.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 9
+    {
+      n: 9,
+      title: 'Periodic functions, the FFT and spectral computing',
+      summary: String.raw`For periodic functions the right interpolation points are equispaced and the right basis is trigonometric: the discrete Fourier transform computes the interpolant and the FFT does it in n log n operations. Smooth periodic functions are then approximated with spectral accuracy, and the substitution x = cos θ transfers everything to Chebyshev interpolation on an interval. The price of sampling is aliasing, and the reward is fast transforms, spectral derivatives and accurate contour integrals.`,
+      items: [
+        { num: '9.1', kind: 'Definition', name: 'Trigonometric interpolation in equispaced points', deps: ['pma-8.9', 'num-3.1'], refs: ['Trefethen ATAP ch. 3'],
+          pic: 'Sample a periodic function at N equispaced points around a circle; the unique trigonometric polynomial through them is drawn, and its coefficients are listed beside it.' },
+        { num: '9.2', kind: 'Theorem', name: 'The DFT computes trigonometric interpolants', deps: ['num-9.1', 'nla-10.6', 'nla-10.7'], refs: ['Trefethen ATAP ch. 3'],
+          pic: 'Coefficients from solving the interpolation system and from the FFT of the samples agree to machine precision, while the timing readout shows n log n against n³ as N grows.' },
+        { num: '9.3', kind: 'Theorem', name: 'Spectral accuracy for smooth periodic functions', deps: ['num-9.2', 'num-6.5'], refs: ['Trefethen ATAP ch. 8'],
+          pic: 'Interpolate e^{sin θ}, a C² periodic function and a periodic function with a kink; errors fall geometrically, like N⁻³ and like N⁻¹, plotted together on log axes.' },
+        { num: '9.4', kind: 'Phenomenon', name: 'Aliasing on an equispaced grid', deps: ['num-9.1', 'sig-7.5'], refs: ['Trefethen ATAP ch. 4'],
+          pic: 'Sample a sinusoid of frequency k on N points and raise k past N/2; the samples become indistinguishable from a lower frequency, whose curve is overlaid through the same dots.' },
+        { num: '9.5', kind: 'Method', name: 'Bandlimited (sinc) interpolation', deps: ['num-9.1', 'sig-7.3'], refs: ['Trefethen ATAP ch. 22'],
+          pic: 'Reconstruct a bandlimited signal from its samples as a sum of shifted sinc functions, each drawn faintly; for a signal with energy above the Nyquist frequency the reconstruction error appears.' },
+        { num: '9.6', kind: 'Theorem', name: 'Chebyshev, Fourier and Laurent: one theory', deps: ['num-9.1', 'num-3.7'], refs: ['Trefethen ATAP ch. 3'],
+          pic: 'A function on [−1, 1] is lifted to the unit circle by x = (z + z⁻¹)/2; its Chebyshev series becomes a symmetric Laurent series and a Fourier cosine series, the three coefficient lists shown side by side.' },
+        { num: '9.7', kind: 'Algorithm', name: 'Chebyshev coefficients by the FFT', deps: ['num-9.6', 'num-9.2'], refs: ['Trefethen ATAP ch. 3'],
+          pic: 'Values at Chebyshev points are mirrored into a periodic sequence and transformed; the resulting Chebyshev coefficients decay until they hit machine precision, where the series is chopped.' },
+        { num: '9.8', kind: 'Theorem', name: 'Discrete orthogonality at Chebyshev points', deps: ['num-3.7', 'num-3.16'], refs: ['Trefethen ATAP ch. 4'],
+          pic: 'The matrix of discrete inner products of T₀…Tₙ sampled at n + 1 Chebyshev points is computed and displayed as a diagonal heat map, with the aliasing pattern appearing once the degree exceeds n.' },
+        { num: '9.9', kind: 'Method', name: 'Fourier spectral differentiation', deps: ['num-9.2', 'pde-13.10'], refs: ['Trefethen ATAP ch. 21'],
+          pic: 'Differentiate a periodic function by multiplying its FFT coefficients by ik; the derivative error reaches machine precision with a few dozen points, while finite differences are still at 10⁻³.' },
+        { num: '9.10', kind: 'Method', name: 'Contour integrals by the trapezoidal rule', deps: ['num-6.5', 'rca-10.15'], refs: ['Trefethen ATAP ch. 19'],
+          pic: 'Compute Taylor coefficients and derivatives of an analytic function from Cauchy’s integral on a circle using N trapezoidal points; the error falls geometrically until the circle radius makes rounding dominate.' },
       ],
     },
   ],
