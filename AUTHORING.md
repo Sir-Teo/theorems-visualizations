@@ -243,7 +243,7 @@ Common style keys: `color` (stroke), `width`, `alpha`, `dash` (`true` or `[on, o
 | `corner(str, 'tl'|'tr'|'bl'|'br', {color, weight})` | status text in a corner. |
 | `raster((x,y) => [r,g,b,a?] or null, {res, key, id})` | per-pixel image; recomputed only when `key` changes. |
 | `heat((x,y) => number, {range:[lo,hi], cmap:'viridis'|'magma'|'diverging', res, key})` | scalar field. |
-| `domain(z => Cx, {key, res, contours, gridLines})` | phase portrait of a complex function. |
+| `domain(z => Cx, {key, res, contours, gridLines, fade})` | phase portrait of a complex function; `fade` (0–1) blends toward the panel colour so labels drawn on top stay legible. |
 | `hist(values or {edges, counts}, {bins, range, density, color, fillAlpha, outline, gap})` | histogram: bars + step outline (binned by `M.histogram`; `density: true` integrates to 1; on a log x axis pass log-spaced edges as `bins`). |
 | `colorbar([lo,hi], cmap, {pos:'right'|'left'|'top'|'bottom', label, tex, ticks, fmt, length})` | colour bar on a small panel inside the edge, for a `heat` map (`cmap`: name or `t => [r,g,b]`). |
 | `polarGrid({rings, spokes:12, rmax, center, angles:'deg'|'rad'|false, labelAngle, labels})` | polar grid (`rings`: count or radii); use with `equal: true, axes: false`. |
@@ -290,7 +290,7 @@ dist fmt fix` · `rng(seed)` → `r()`, `r.uniform(a,b)`, `r.int(a,b)`, `r.norma
 `iterate(g,x0,n)`, `partialSums(term,n,start)`, `rk4(F,t0,y0,t1,n)` · special: `factorial binom
 gamma gaussian bump cantorFn cantorIntervals(level)` · Fourier: `dirichlet(N,x) fejer(N,x)
 poisson(r,t) fourierCoeffs(f,N) fourierEval(c,t,fejer) trigCoeffs(f,N) trigEval` ·
-approximation: `polyEval bernstein(f,n,x) landau(n) lagrange(xs,ys) chebyshevT` · linear
+approximation: `polyEval polyRoots(coef, {start}) polyFromRoots(roots) bernstein(f,n,x) landau(n) lagrange(xs,ys) chebyshevT` · linear
 algebra: `dot vadd vsub vscale vlerp norm(a,p) normalize cross3 matVec matMul transpose identity
 det inverse solve eigSym2 eig2 svd2 gramSchmidt project` · geometry: `hull pointInPoly polyArea
 closestOnSegment closestOnConvexPoly unitBall(p) blob(cx,cy,r,seed)` · complex: `Cx` (methods

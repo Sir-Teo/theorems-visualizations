@@ -204,6 +204,32 @@ export function trigEval({ a, b }, x, N = a.length - 1) { let s = a[0] / 2; for 
 
 // ---------- polynomials & approximation ----------
 export const polyEval = (coef, x) => coef.reduceRight((acc, c) => acc * x + c, 0); // coef[0] + coef[1] x + ...
+/**
+ * All complex roots of a polynomial with ascending coefficients (numbers or Cx), by Durand–Kerner
+ * (Weierstrass) iteration. `start` (optional array of Cx) warm-starts from previous roots, which keeps
+ * roots continuous when coefficients are dragged. Returns an array of Cx (length = degree).
+ */
+export function polyRoots(coef, { start = null, iters = 500, tol = 1e-12 } = {}) {
+  const c = coef.map((a) => (a instanceof Cx ? a : new Cx(+a, 0)));
+  while (c.length > 1 && c[c.length - 1].abs() < 1e-14) c.pop();
+  const n = c.length - 1; if (n < 1) return [];
+  const lead = c[n]; const a = c.map((z) => z.div(lead)); // monic
+  const R = 1 + Math.max(...a.slice(0, n).map((z) => z.abs())); // Cauchy bound
+  let z = start && start.length === n ? start.map((w) => (w instanceof Cx ? w : new Cx(w.re, w.im))) : Array.from({ length: n }, (_, k) => Cx.polar(R * 0.9, (2 * Math.PI * k) / n + 0.4));
+  const P = (x) => { let acc = new Cx(0, 0); for (let k = n; k >= 0; k--) acc = acc.mul(x).add(a[k]); return acc; };
+  for (let it = 0; it < iters; it++) {
+    let delta = 0;
+    z = z.map((zi, i) => { let den = new Cx(1, 0); for (let j = 0; j < n; j++) if (j !== i) den = den.mul(zi.sub(z[j])); if (den.abs() < 1e-300) den = new Cx(1e-12, 1e-12); const step = P(zi).div(den); delta = Math.max(delta, step.abs()); return zi.sub(step); });
+    if (delta < tol * R) break;
+  }
+  return z;
+}
+/** Ascending coefficients (Cx) of the monic polynomial with the given roots (numbers or Cx). */
+export function polyFromRoots(roots) {
+  let c = [new Cx(1, 0)];
+  for (const r0 of roots) { const r = r0 instanceof Cx ? r0 : new Cx(+r0, 0); const nc = Array.from({ length: c.length + 1 }, () => new Cx(0, 0)); for (let k = 0; k < c.length; k++) { nc[k + 1] = nc[k + 1].add(c[k]); nc[k] = nc[k].sub(c[k].mul(r)); } c = nc; }
+  return c;
+}
 export function bernstein(f, n, x) { let s = 0; for (let k = 0; k <= n; k++) s += f(k / n) * binom(n, k) * x ** k * (1 - x) ** (n - k); return s; }
 /** Landau kernel Q_n(x) = c_n (1-x^2)^n on [-1,1], normalised to integral 1 (used in Rudin's Weierstrass proof). */
 export function landau(n) { const c = 1 / integrate((x) => (1 - x * x) ** n, -1, 1, 2000); return (x) => Math.abs(x) <= 1 ? c * (1 - x * x) ** n : 0; }

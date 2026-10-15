@@ -304,7 +304,7 @@ main { flex: 1; }
 .viz-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); padding: 0 4px; }
 .viz-legend:empty { display: none; }
 .lg-item { display: inline-flex; align-items: center; gap: 7px; }
-.lg-swatch { width: 18px; height: 3px; border-radius: 2px; background: var(--sw); }
+.lg-swatch { width: 18px; height: 3px; border-radius: 2px; background: var(--sw); flex: none; display: inline-block; vertical-align: middle; }
 .lg-swatch.dash { background: repeating-linear-gradient(90deg, var(--sw) 0 5px, transparent 5px 8px); }
 .lg-swatch.dot { width: 9px; height: 9px; border-radius: 50%; }
 .lg-swatch.area { height: 10px; opacity: .45; border-radius: 3px; }

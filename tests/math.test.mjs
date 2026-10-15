@@ -391,5 +391,17 @@ test('music: MIDI ↔ frequency, cents, Plomp–Levelt (Sethares), note names', 
   eq(M.noteName(70.4, { ascii: true }), 'A#4'); eq(M.noteName(59, { octave: false }), 'B'); eq(M.noteName(12), 'C0'); eq(M.noteName(11), 'B-1');
 });
 
+// ------------------------------------------------------------ polynomial roots
+test('polyRoots & polyFromRoots', () => {
+  const rs = M.polyRoots([2, -3, 1]).map((z) => z.re).sort((a, b) => a - b); close(rs[0], 1, 1e-10); close(rs[1], 2, 1e-10);
+  const quart = M.polyRoots([1, 0, 0, 0, 1]); for (const z of quart) { close(z.abs(), 1, 1e-10); close(z.pow ? 1 : 1, 1); }
+  for (const z of quart) { const w = z.mul(z).mul(z).mul(z); close(w.re, -1, 1e-9); close(w.im, 0, 1e-9); }
+  const roots = [new M.Cx(1, 2), new M.Cx(-0.5, 0.3), new M.Cx(2, 0)], c = M.polyFromRoots(roots), back = M.polyRoots(c);
+  for (const r of roots) ok(back.some((z) => z.sub(r).abs() < 1e-8), 'round trip');
+  eq(M.polyFromRoots([1, 2, 3]).map((z) => z.re), [-6, 11, -6, 1]);
+  const warm = M.polyRoots(c, { start: back }); for (let i = 0; i < 3; i++) ok(warm[i].sub(back[i]).abs() < 1e-8, 'warm start keeps order');
+  eq(M.polyRoots([5]), []); eq(M.polyRoots([1, 1, 0, 0]).length, 1, 'trailing zero coefficients dropped');
+});
+
 console.log(`\n${passed} passed, ${failed} failed${failed ? ': ' + fails.join('; ') : ''}`);
 process.exit(failed ? 1 : 0);

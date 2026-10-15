@@ -707,6 +707,8 @@ class Stage {
   /** Domain colouring of a complex function f(z: Cx) → Cx (hue = argument, shading = log-modulus contours). */
   domain(f, st = {}) {
     const contours = st.contours ?? true, sat = st.saturation ?? 0.62, gridLines = st.gridLines ?? false;
+    const fade = M.clamp(st.fade ?? 0, 0, 1), bg = fade ? rgbOf('panel') : null; // fade: blend toward the panel colour so labels on top stay legible
+    const out = (rgb) => (fade ? rgb.map((v, i) => (i < 3 ? v + (bg[i] - v) * fade : v)) : rgb);
     return this.raster((x, y) => {
       let w; try { w = f(new M.Cx(x, y)); } catch { return null; }
       const re = w.re ?? w[0], im = w.im ?? w[1];
@@ -714,7 +716,7 @@ class Stage {
       const mod = Math.hypot(re, im); let l = 0.52;
       if (contours) { const t = M.fract(Math.log2(mod + 1e-300)); l = 0.42 + 0.2 * Math.pow(t, 0.7); }
       if (gridLines) { const gx = Math.abs(M.fract(re + 0.5) - 0.5), gy = Math.abs(M.fract(im + 0.5) - 0.5); if (Math.min(gx, gy) < 0.03) l *= 0.6; }
-      return M.hsl2rgb(Math.atan2(im, re) / M.TAU, sat, l);
+      return out(M.hsl2rgb(Math.atan2(im, re) / M.TAU, sat, l));
     }, st);
   }
 
