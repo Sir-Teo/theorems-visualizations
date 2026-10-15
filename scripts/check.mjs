@@ -6,11 +6,11 @@
 //   node scripts/check.mjs physics         # a whole field
 //   flags: --shots (save PNGs to shots/), --modes (also every segmented-control option → shots/<id>~k.png),
 //          --dark, --still, --w=860, --static (skip browser), --quiet, --jobs=N
-import { existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { homedir } from 'node:os';
 import { loadAll, validate, printProblems, ROOT } from './lib.mjs';
 import { createServer } from './serve.mjs';
+import { findBrowser } from './browser.mjs';
 
 const args = process.argv.slice(2);
 const flags = new Set(args.filter((a) => a.startsWith('--')).map((a) => a.split('=')[0]));
@@ -32,23 +32,6 @@ console.log(`  ${st.errors} error(s), ${st.warnings} warning(s)`);
 if (flags.has('--static')) process.exit(st.errors ? 1 : 0);
 
 // ---------- browser run ----------
-function findBrowser() {
-  const cache = join(homedir(), 'Library/Caches/ms-playwright');
-  const pw = process.env.PLAYWRIGHT_BROWSERS_PATH;
-  const pwCands = [];
-  if (pw && existsSync(pw)) for (const d of readdirSync(pw).sort().reverse()) {
-    if (d.startsWith('chromium_headless_shell-')) pwCands.push(join(pw, d, 'chrome-linux/headless_shell'), join(pw, d, 'chrome-headless-shell-linux64/chrome-headless-shell'));
-    if (/^chromium-\d+$/.test(d)) pwCands.push(join(pw, d, 'chrome-linux/chrome'), join(pw, d, 'chrome-linux64/chrome'));
-  }
-  const cands = [
-    process.env.CHROME_PATH,
-    ...pwCands,
-    ...['1243', '1223', '1181'].map((v) => join(cache, `chromium_headless_shell-${v}/chrome-headless-shell-mac-arm64/chrome-headless-shell`)),
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    '/usr/bin/chromium', '/usr/bin/google-chrome',
-  ].filter(Boolean);
-  return cands.find((p) => existsSync(p));
-}
 const { chromium } = await import('playwright-core');
 const server = createServer(); await new Promise((r) => server.listen(0, r));
 const port = server.address().port;

@@ -3,18 +3,21 @@ import { resolveColor, withAlpha, inlineHTML, richHTML, escapeHTML } from './viz
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const svg = (tag, attrs = {}, parent) => { const el = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) if (v != null) el.setAttribute(k, v); if (parent) parent.append(el); return el; };
-const BOOK_VAR = { pma: 'var(--c-pma)', rca: 'var(--c-rca)', fa: 'var(--c-fa)' };
-const BOOK_SHORT = { pma: 'PMA', rca: 'RCA', fa: 'FA' };
-export const kindAbbr = (k) => ({ Theorem: 'Thm', Lemma: 'Lem', Corollary: 'Cor', Proposition: 'Prop', Definition: 'Def' }[k] || k);
-export function displayNum(it) {
-  const m = it.num.match(/^(\d+\.\d+)([a-z])$/);
-  if (m) return it.kind === 'Corollary' ? `${m[1]}${m[2]}` : it.num;
-  return it.num;
-}
+let A = null; // the atlas state built by app.js (collections, items, …)
+/** Register the atlas so labels and colours can be looked up by collection id. */
+export function setAtlas(G) { A = G; }
+const COLV = (id) => `var(--c-${id})`;
+export const colShort = (id) => A?.colById?.get(id)?.short || String(id).toUpperCase();
+const KIND_ABBR = { Theorem: 'Thm', Lemma: 'Lem', Corollary: 'Cor', Proposition: 'Prop', Definition: 'Def', Principle: 'Prin', Postulate: 'Post', Algorithm: 'Alg', Concept: 'Conc', Phenomenon: 'Phen', Method: 'Meth', Paradox: 'Parad', Hypothesis: 'Hyp', Invention: 'Inv' };
+export const kindAbbr = (k) => KIND_ABBR[k] || k;
+/** Prerequisites of a node: written deps plus not-yet-written (planned) ones. */
+export const depsOf = (it) => (it.pdeps ? [...it.deps, ...it.pdeps] : it.deps);
+export function displayNum(it) { return it.num; }
 export function fullLabel(it) {
-  const m = it.num.match(/^(\d+\.\d+)([a-z])$/);
+  const m = it.num.match(/^([\d.]+\d)([a-z])$/);
   if (m && it.kind === 'Corollary') return `Corollary to ${m[1]}`;
-  if (it.b === 'rca' && it.c === 0) return `${it.kind} (Prologue ${it.num.slice(2)})`;
+  const lab = A?.colById?.get(it.col)?.chapterLabels?.[it.c];
+  if (lab) return `${it.kind} (${lab} ${it.num.split('.').slice(1).join('.')})`;
   return `${it.kind} ${it.num}`;
 }
 const plainName = (s, n = 34) => { const t = s.replace(/\$([^$]*)\$/g, (_, x) => x.replace(/\\[a-zA-Z]+\s?/g, '').replace(/[{}^_]/g, '')); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
@@ -65,17 +68,18 @@ function edgePath(x1, y1, x2, y2) {
 
 function nodeGroup(parent, it, x, y, w, h, { target = false, compact = false, onClick, external = false, extra = '' } = {}) {
   const g = svg('g', { class: 'gnode', transform: `translate(${x},${y})`, tabindex: 0, role: 'link', 'aria-label': `${fullLabel(it)}: ${plainName(it.name, 80)}` }, parent);
-  const col = BOOK_VAR[it.b];
+  const col = COLV(it.col);
   const isDef = it.kind === 'Definition';
+  if (it.planned) g.classList.add('planned');
   svg('rect', {
     x: 0, y: 0, width: w, height: h, rx: compact ? 7 : 9,
-    fill: target ? col : 'var(--panel)', stroke: col, 'stroke-width': target ? 0 : 1.3,
-    'stroke-dasharray': isDef ? '4 3' : null, opacity: external ? 0.9 : 1,
+    fill: target ? col : it.planned ? 'var(--bg-2)' : 'var(--panel)', stroke: col, 'stroke-width': target ? 0 : 1.3,
+    'stroke-dasharray': it.planned ? '2 3' : isDef ? '4 3' : null, opacity: it.planned ? 0.75 : external ? 0.9 : 1,
   }, g);
   const t1 = svg('text', { x: 10, y: compact ? h / 2 + 4 : 15, 'font-size': 10.5, 'font-family': 'var(--font-mono)', fill: target ? 'var(--bg)' : col, 'font-weight': 500 }, g);
-  t1.textContent = `${external || it.b !== extra ? BOOK_SHORT[it.b] + ' ' : ''}${kindAbbr(it.kind)} ${displayNum(it)}`;
+  t1.textContent = `${external || it.col !== extra ? colShort(it.col) + ' ' : ''}${kindAbbr(it.kind)} ${displayNum(it)}${it.planned && !compact ? ' · planned' : ''}`;
   if (!compact) {
-    const t2 = svg('text', { x: 10, y: 30, 'font-size': 12, fill: target ? 'var(--bg)' : 'var(--ink)', 'font-weight': target ? 600 : 450 }, g);
+    const t2 = svg('text', { x: 10, y: 30, 'font-size': 12, fill: target ? 'var(--bg)' : it.planned ? 'var(--ink-3)' : 'var(--ink)', 'font-weight': target ? 600 : 450 }, g);
     t2.textContent = plainName(it.name, Math.floor((w - 16) / 6.4));
   }
   const tip = svg('title', {}, g); tip.textContent = `${fullLabel(it)} — ${plainName(it.name, 200)}`;
@@ -107,14 +111,14 @@ export function renderLineage(host, G, id, { depth = 2, dependents = true, reduc
   while (queue.length) {
     const x = queue.shift(); const d = dist.get(x);
     if (d >= depth) continue;
-    for (const p of G.byId.get(x).deps) if (!dist.has(p)) { dist.set(p, d + 1); queue.push(p); }
+    for (const p of depsOf(G.byId.get(x))) if (G.byId.has(p) && !dist.has(p)) { dist.set(p, d + 1); queue.push(p); }
   }
   const anc = [...dist.keys()];
-  const down = dependents ? (G.children.get(id) || []).filter((c) => !dist.has(c)) : [];
+  const down = dependents ? (G.allChildren.get(id) || []).filter((c) => !dist.has(c)) : [];
   const ids = [...anc, ...down];
   const set = new Set(ids);
   let edges = [];
-  for (const x of ids) for (const p of G.byId.get(x).deps) if (set.has(p)) edges.push([p, x]);
+  for (const x of ids) for (const p of depsOf(G.byId.get(x))) if (set.has(p)) edges.push([p, x]);
   if (reduce) edges = transitiveReduce(ids, edges);
   // level: target 0, dependents +1, ancestors −(longest path to target inside the set)
   const succIn = new Map(ids.map((i) => [i, []]));
@@ -138,14 +142,14 @@ export function renderLineage(host, G, id, { depth = 2, dependents = true, reduc
   for (const [a, b] of edges) {
     const pa = pos.get(a), pb = pos.get(b);
     const A = G.byId.get(a), B = G.byId.get(b);
-    const cross = A.b !== B.b;
-    const e = svg('path', { d: edgePath(X(pa) + W, Y(pa) + H / 2, X(pb), Y(pb) + H / 2), stroke: cross ? BOOK_VAR[A.b] : 'var(--ink-3)', 'stroke-width': 1.4, 'stroke-dasharray': cross ? '5 4' : null, opacity: 0.75, class: 'gedge' }, eg);
+    const cross = A.col !== B.col;
+    const e = svg('path', { d: edgePath(X(pa) + W, Y(pa) + H / 2, X(pb), Y(pb) + H / 2), stroke: cross ? COLV(A.col) : 'var(--ink-3)', 'stroke-width': 1.4, 'stroke-dasharray': cross || A.planned || B.planned ? '5 4' : null, opacity: A.planned || B.planned ? 0.45 : 0.75, class: 'gedge' }, eg);
     e.dataset.a = a; e.dataset.b = b; edgeEls.push(e);
   }
   const nodeEls = new Map();
   for (const x of ids) {
     const p = pos.get(x); const it = G.byId.get(x);
-    nodeEls.set(x, nodeGroup(root, it, X(p), Y(p), W, H, { target: x === id, compact, extra: me.b, onClick: x === id ? null : onOpen }));
+    nodeEls.set(x, nodeGroup(root, it, X(p), Y(p), W, H, { target: x === id, compact, extra: me.col, onClick: x === id ? null : onOpen }));
   }
   wireHover(root, nodeEls, edgeEls);
   // scroll so the target is visible
@@ -154,19 +158,19 @@ export function renderLineage(host, G, id, { depth = 2, dependents = true, reduc
 }
 
 // ------------------------------------------------------------ chapter graph
-export function renderChapterGraph(host, G, book, ch, { onOpen, onOpenChapter } = {}) {
+export function renderChapterGraph(host, G, col, ch, { onOpen, onOpenChapter } = {}) {
   host.innerHTML = '';
-  const items = G.items.filter((it) => it.b === book && it.c === ch);
+  const items = G.items.filter((it) => it.col === col && it.c === ch);
   if (!items.length) return;
   const inCh = new Set(items.map((i) => i.id));
   // external prerequisites collapsed by chapter
   const ext = new Map();
   for (const it of items) for (const d of it.deps) if (!inCh.has(d)) {
-    const D = G.byId.get(d); const k = `${D.b}/${D.c}`;
-    if (!ext.has(k)) ext.set(k, { key: k, b: D.b, c: D.c, items: new Set(), targets: new Map() });
+    const D = G.byId.get(d); const k = `${D.col}/${D.c}`;
+    if (!ext.has(k)) ext.set(k, { key: k, col: D.col, c: D.c, items: new Set(), targets: new Map() });
     const E = ext.get(k); E.items.add(d); E.targets.set(it.id, (E.targets.get(it.id) || 0) + 1);
   }
-  const extNodes = [...ext.values()].sort((a, b) => G.bookIdx[a.b] - G.bookIdx[b.b] || a.c - b.c);
+  const extNodes = [...ext.values()].sort((a, b) => G.colIdx.get(a.col) - G.colIdx.get(b.col) || a.c - b.c);
   const ids = [...extNodes.map((e) => 'ext:' + e.key), ...items.map((i) => i.id)];
   let edges = [];
   for (const it of items) for (const d of it.deps) if (inCh.has(d)) edges.push([d, it.id]);
@@ -189,91 +193,125 @@ export function renderChapterGraph(host, G, book, ch, { onOpen, onOpenChapter } 
   for (const [a, b] of edges) {
     const pa = pos.get(a), pb = pos.get(b);
     const isExt = a.startsWith('ext:'); const E = isExt ? ext.get(a.slice(4)) : null;
-    const e = svg('path', { d: edgePath(colX(pa.col) + wOf(a), Y(pa) + H / 2, colX(pb.col), Y(pb) + H / 2), stroke: isExt ? BOOK_VAR[E.b] : 'var(--ink-3)', 'stroke-width': isExt ? 1 + Math.min(3, E.targets.get(b) - 1) * 0.6 : 1.4, 'stroke-dasharray': isExt ? '4 4' : null, opacity: isExt ? 0.55 : 0.8, class: 'gedge' }, eg);
+    const e = svg('path', { d: edgePath(colX(pa.col) + wOf(a), Y(pa) + H / 2, colX(pb.col), Y(pb) + H / 2), stroke: isExt ? COLV(E.col) : 'var(--ink-3)', 'stroke-width': isExt ? 1 + Math.min(3, E.targets.get(b) - 1) * 0.6 : 1.4, 'stroke-dasharray': isExt ? '4 4' : null, opacity: isExt ? 0.55 : 0.8, class: 'gedge' }, eg);
     e.dataset.a = a; e.dataset.b = b; edgeEls.push(e);
   }
   const nodeEls = new Map();
   for (const E of extNodes) {
     const k = 'ext:' + E.key; const p = pos.get(k);
     const g = svg('g', { class: 'gnode', transform: `translate(${colX(p.col)},${Y(p)})`, tabindex: 0, role: 'link' }, root);
-    svg('rect', { x: 0, y: 0, width: EW, height: H, rx: 9, fill: 'var(--panel-2)', stroke: BOOK_VAR[E.b], 'stroke-width': 1, 'stroke-dasharray': '3 3' }, g);
-    const t1 = svg('text', { x: 10, y: 15, 'font-size': 10.5, 'font-family': 'var(--font-mono)', fill: BOOK_VAR[E.b], 'font-weight': 500 }, g);
-    t1.textContent = `${BOOK_SHORT[E.b]} ch. ${E.c}`;
+    svg('rect', { x: 0, y: 0, width: EW, height: H, rx: 9, fill: 'var(--panel-2)', stroke: COLV(E.col), 'stroke-width': 1, 'stroke-dasharray': '3 3' }, g);
+    const t1 = svg('text', { x: 10, y: 15, 'font-size': 10.5, 'font-family': 'var(--font-mono)', fill: COLV(E.col), 'font-weight': 500 }, g);
+    t1.textContent = `${colShort(E.col)} ch. ${E.c}`;
     const t2 = svg('text', { x: 10, y: 30, 'font-size': 11.5, fill: 'var(--ink-2)' }, g);
     t2.textContent = `${E.items.size} result${E.items.size > 1 ? 's' : ''} used`;
     const tip = svg('title', {}, g); tip.textContent = [...E.items].map((d) => `${G.byId.get(d).num} ${plainName(G.byId.get(d).name, 60)}`).join('\n');
-    g.addEventListener('click', () => onOpenChapter?.(E.b, E.c));
+    g.addEventListener('click', () => onOpenChapter?.(E.col, E.c));
     nodeEls.set(k, g);
   }
-  for (const it of items) { const p = pos.get(it.id); nodeEls.set(it.id, nodeGroup(root, it, colX(p.col), Y(p), W, H, { onClick: onOpen, extra: book })); }
+  for (const it of items) { const p = pos.get(it.id); nodeEls.set(it.id, nodeGroup(root, it, colX(p.col), Y(p), W, H, { onClick: onOpen, extra: col })); }
   wireHover(root, nodeEls, edgeEls);
 }
 
-// ------------------------------------------------------------ chapter flow (home / book pages)
-/** Three columns of chapters (one per book); curves show how many results of one chapter are used in another. */
-export function renderFlow(host, G, { books = ['pma', 'rca', 'fa'], onOpenChapter } = {}) {
+// ------------------------------------------------------------ flow diagrams (home / field / collection pages)
+/**
+ * Columns of rows (chapters or collections); curves show how many results of one row are used in another.
+ * columns: [{ title, color, rows: [{ key, n, label, count, color, planned, title }] }], edges: [{ from, to, n }]
+ */
+export function renderFlow(host, { columns, edges, onOpen, ariaLabel = 'How the parts depend on one another' }) {
   host.innerHTML = '';
-  const cols = books.map((b) => G.books.find((B) => B.id === b)).filter(Boolean);
-  const ROWH = 25, TOP = 44, colW = books.length === 1 ? 420 : 310, GAP = books.length === 1 ? 0 : 110;
+  const cols = columns.filter((c) => c.rows.length);
+  if (!cols.length) return;
+  const one = cols.length === 1;
+  const ROWH = 25, TOP = 44, colW = one ? 420 : cols.length > 4 ? 250 : 310, GAP = one ? 0 : cols.length > 4 ? 80 : 110;
   const width = cols.length * colW + (cols.length - 1) * GAP + 80;
-  const rows = Math.max(...cols.map((B) => B.chapters.length));
+  const rows = Math.max(...cols.map((C) => C.rows.length));
   const height = TOP + rows * ROWH + 16;
-  const root = svg('svg', { class: 'flow-svg', viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': 'How the chapters depend on one another' }, host);
-  root.style.minWidth = Math.min(width, books.length === 1 ? 520 : 860) + 'px';
+  const root = svg('svg', { class: 'flow-svg', viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': ariaLabel }, host);
+  root.style.minWidth = Math.min(width, one ? 520 : 860) + 'px';
   const P = new Map();
-  cols.forEach((B, ci) => {
+  cols.forEach((C, ci) => {
     const x = 60 + ci * (colW + GAP);
-    const head = svg('text', { x, y: 20, 'font-size': 12, 'font-weight': 600, fill: BOOK_VAR[B.id], 'letter-spacing': '0.08em' }, root);
-    head.textContent = B.title.toUpperCase();
-    B.chapters.forEach((C, ri) => P.set(`${B.id}/${C.n}`, { x, y: TOP + ri * ROWH, B, C }));
+    const head = svg('text', { x, y: 20, 'font-size': 12, 'font-weight': 600, fill: C.color, 'letter-spacing': '0.08em' }, root);
+    const maxH = Math.floor((colW - 10) / 7.6);
+    head.textContent = C.title.length > maxH ? C.title.slice(0, maxH - 1).toUpperCase() + '…' : C.title.toUpperCase();
+    C.rows.forEach((R, ri) => P.set(R.key, { x, y: TOP + ri * ROWH, ci, R }));
   });
-  const maxN = Math.max(1, ...G.chapterEdges.map((e) => e.n));
+  const maxN = Math.max(1, ...edges.map((e) => e.n));
   const eg = svg('g', { fill: 'none' }, root);
   const edgeEls = [];
-  for (const e of G.chapterEdges) {
+  for (const e of edges) {
     const a = P.get(e.from), b = P.get(e.to); if (!a || !b) continue;
     let d;
-    if (a.B === b.B) {
+    if (a.ci === b.ci) {
       const bend = 14 + Math.abs(b.y - a.y) * 0.32;
       d = `M${a.x - 12},${a.y} C${a.x - 12 - bend},${a.y} ${b.x - 12 - bend},${b.y} ${b.x - 12},${b.y}`;
-    } else {
+    } else if (a.ci < b.ci) {
       const x1 = a.x + colW - 28, x2 = b.x - 12, mx = (x2 - x1) * 0.5;
       d = `M${x1},${a.y} C${x1 + mx},${a.y} ${x2 - mx},${b.y} ${x2},${b.y}`;
+    } else {
+      const x1 = a.x - 12, x2 = b.x + colW - 28, mx = (x1 - x2) * 0.5;
+      d = `M${x1},${a.y} C${x1 - mx},${a.y} ${x2 + mx},${b.y} ${x2},${b.y}`;
     }
-    const p = svg('path', { d, stroke: BOOK_VAR[a.B.id], 'stroke-width': 0.8 + 4.2 * Math.sqrt(e.n / maxN), opacity: 0.22, 'stroke-linecap': 'round', class: 'fedge' }, eg);
+    const p = svg('path', { d, stroke: a.R.color, 'stroke-width': 0.8 + 4.2 * Math.sqrt(e.n / maxN), opacity: 0.22, 'stroke-linecap': 'round', class: 'fedge' }, eg);
     p.dataset.a = e.from; p.dataset.b = e.to;
-    const t = svg('title', {}, p); t.textContent = `${e.n} result${e.n > 1 ? 's' : ''} from ${a.B.short} ch. ${a.C.n} used in ${b.B.short} ch. ${b.C.n}`;
+    const t = svg('title', {}, p); t.textContent = `${e.n} result${e.n > 1 ? 's' : ''} from ${a.R.title || a.R.label} used in ${b.R.title || b.R.label}`;
     edgeEls.push(p);
   }
   const rowsG = svg('g', {}, root);
   for (const [k, p] of P) {
-    const g = svg('g', { class: 'gnode', transform: `translate(${p.x},${p.y})`, tabindex: 0, role: 'link', 'aria-label': `${p.B.short} chapter ${p.C.n}: ${p.C.title}` }, rowsG);
+    const R = p.R;
+    const g = svg('g', { class: 'gnode' + (R.planned ? ' planned' : ''), transform: `translate(${p.x},${p.y})`, tabindex: 0, role: 'link', 'aria-label': R.title || R.label }, rowsG);
     svg('rect', { x: -16, y: -11, width: colW - 4, height: 22, rx: 6, fill: 'transparent', class: 'hit' }, g);
-    svg('circle', { cx: -12, cy: 0, r: 3.2 + Math.sqrt(p.C.count || 1) * 0.55, fill: BOOK_VAR[p.B.id] }, g);
-    const n = svg('text', { x: 2, y: 4, 'font-size': 11, 'font-family': 'var(--font-mono)', fill: 'var(--ink-3)' }, g); n.textContent = String(p.C.n).padStart(2, ' ');
-    const maxCh = Math.floor((colW - 84) / 6.6); const t = svg('text', { x: 24, y: 4.5, 'font-size': 13, fill: 'var(--ink)' }, g); t.textContent = p.C.title.length > maxCh ? p.C.title.slice(0, maxCh - 1).trimEnd() + '…' : p.C.title;
-    const full = svg('title', {}, g); full.textContent = `${p.B.short} ${p.C.n} · ${p.C.title} — ${p.C.count} results`;
-    const c = svg('text', { x: colW - 30, y: 4, 'font-size': 10.5, 'font-family': 'var(--font-mono)', fill: 'var(--ink-3)', 'text-anchor': 'end' }, g); c.textContent = p.C.count || '';
+    svg('circle', R.planned ? { cx: -12, cy: 0, r: 3.4, fill: 'none', stroke: R.color, 'stroke-width': 1.2, 'stroke-dasharray': '2 2' } : { cx: -12, cy: 0, r: 3.2 + Math.sqrt(R.count || 1) * 0.55, fill: R.color }, g);
+    const nx = R.n != null && R.n !== '' ? 2 : -6;
+    if (R.n != null && R.n !== '') { const n = svg('text', { x: 2, y: 4, 'font-size': 11, 'font-family': 'var(--font-mono)', fill: 'var(--ink-3)' }, g); n.textContent = String(R.n).padStart(2, ' '); }
+    const lx = nx + 22; const maxCh = Math.floor((colW - lx - 50) / 6.6);
+    const t = svg('text', { x: lx, y: 4.5, 'font-size': 13, fill: R.planned ? 'var(--ink-3)' : 'var(--ink)' }, g); t.textContent = R.label.length > maxCh ? R.label.slice(0, maxCh - 1).trimEnd() + '…' : R.label;
+    const full = svg('title', {}, g); full.textContent = `${R.title || R.label} — ${R.count ? `${R.count} results` : 'planned'}`;
+    const c = svg('text', { x: colW - 30, y: 4, 'font-size': 10.5, 'font-family': 'var(--font-mono)', fill: 'var(--ink-3)', 'text-anchor': 'end' }, g); c.textContent = R.count || (R.planned ? '·' : '');
     g.addEventListener('mouseenter', () => { root.classList.add('focus'); for (const e of edgeEls) { const on = e.dataset.a === k || e.dataset.b === k; e.style.opacity = on ? 0.85 : 0.05; } });
     g.addEventListener('mouseleave', () => { root.classList.remove('focus'); for (const e of edgeEls) e.style.opacity = ''; });
-    g.addEventListener('click', () => onOpenChapter?.(p.B.id, p.C.n));
-    g.addEventListener('keydown', (e) => { if (e.key === 'Enter') onOpenChapter?.(p.B.id, p.C.n); });
+    g.addEventListener('click', () => onOpen?.(R));
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter') onOpen?.(R); });
   }
+}
+/** Flow whose columns are collections and rows their chapters. */
+export function chapterFlow(G, colIds) {
+  const columns = colIds.map((id) => G.colById.get(id)).filter(Boolean).map((C) => ({
+    title: C.title, color: COLV(C.id),
+    rows: C.chapters.map((Ch) => ({ key: `${C.id}/${Ch.n}`, col: C.id, ch: Ch.n, n: Ch.n, label: Ch.title || `Chapter ${Ch.n}`, title: `${C.short} ${Ch.n} · ${Ch.title}`, count: Ch.count, planned: !Ch.count, color: COLV(C.id) })),
+  }));
+  const want = new Set(colIds);
+  return { columns, edges: G.chapterEdges.filter((e) => want.has(e.from.split('/')[0]) && want.has(e.to.split('/')[0])) };
+}
+/** Flow whose columns are groups (fields or areas) and rows their collections. */
+export function collectionFlow(G, groups, { includePlanned = true } = {}) {
+  const columns = groups.map((g) => ({
+    title: g.title, color: g.color,
+    rows: g.colIds.map((id) => G.colById.get(id)).filter((C) => C && (includePlanned || C.count)).map((C) => ({ key: C.id, col: C.id, label: C.title, title: C.title, count: C.count, planned: !C.count, color: COLV(C.id) })),
+  }));
+  return { columns, edges: G.collectionEdges };
 }
 
 // ------------------------------------------------------------ global map (canvas)
 export class MapView {
-  constructor(host, G, { onOpen, focus } = {}) {
-    this.host = host; this.G = G; this.onOpen = onOpen;
+  constructor(host, G, { onOpen, focus, loadShard } = {}) {
+    this.host = host; this.G = G; this.onOpen = onOpen; this.loadShard = loadShard;
     host.classList.add('map-page');
+    this.fieldOf = new Map(G.collections.map((C) => [C.id, C.field]));
+    this.nodes = [
+      ...G.items.map((it) => ({ it, x: it.x, y: it.y, r: Math.min(8, 2.6 + Math.sqrt(it.desc || 0) * 0.4) })),
+      ...G.planned.map((it) => ({ it, x: it.x, y: it.y, r: 2.2, ghost: true })),
+    ];
+    const fieldsHere = G.fields.filter((F) => this.nodes.some((n) => this.fieldOf.get(n.it.col) === F.id));
     host.innerHTML = `
       <canvas aria-label="Map of all results and their dependencies"></canvas>
       <div class="map-ui">
         <div class="card"><span class="eyebrow">Show</span>
-          <label><input type="checkbox" data-b="pma" checked> <span class="book-dot" data-book="pma"></span>PMA</label>
-          <label><input type="checkbox" data-b="rca" checked> <span class="book-dot" data-book="rca"></span>RCA</label>
-          <label><input type="checkbox" data-b="fa" checked> <span class="book-dot" data-book="fa"></span>FA</label>
+          ${fieldsHere.map((F) => `<label><input type="checkbox" data-f="${F.id}" checked> <span class="col-dot" data-field="${F.id}" style="--bc:var(--f-${F.id})"></span>${escapeHTML(F.short)}</label>`).join('')}
           <label><input type="checkbox" data-defs checked> definitions</label>
+          ${G.planned.length ? '<label><input type="checkbox" data-planned checked> planned</label>' : ''}
         </div>
         <button class="btn" data-fit type="button">Fit</button>
       </div>
@@ -282,21 +320,22 @@ export class MapView {
       <div class="map-legend card">
         <span><svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="var(--c-accent)" stroke-width="2.5"/></svg>builds on (ancestors)</span>
         <span><svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="var(--c-green)" stroke-width="2.5"/></svg>used by (descendants)</span>
+        ${G.planned.length ? '<span><svg width="12" height="12"><circle cx="6" cy="6" r="3.5" fill="none" stroke="var(--ink-3)" stroke-dasharray="2 2"/></svg>planned, not yet written</span>' : ''}
         <span>node size ∝ results that depend on it</span>
       </div>
       <div class="map-help">scroll / pinch to zoom · drag to pan · click a node · double-click to open</div>`;
     this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d');
     this.tip = host.querySelector('.map-tip'); this.side = host.querySelector('.map-side');
-    this.show = { pma: true, rca: true, fa: true, defs: true };
-    host.querySelectorAll('input[data-b]').forEach((cb) => cb.addEventListener('change', () => { this.show[cb.dataset.b] = cb.checked; this.draw(); }));
+    this.show = { fields: new Set(fieldsHere.map((F) => F.id)), defs: true, planned: true };
+    host.querySelectorAll('input[data-f]').forEach((cb) => cb.addEventListener('change', () => { if (cb.checked) this.show.fields.add(cb.dataset.f); else this.show.fields.delete(cb.dataset.f); this.draw(); }));
     host.querySelector('input[data-defs]').addEventListener('change', (e) => { this.show.defs = e.target.checked; this.draw(); });
+    host.querySelector('input[data-planned]')?.addEventListener('change', (e) => { this.show.planned = e.target.checked; this.draw(); });
     host.querySelector('[data-fit]').addEventListener('click', () => this.fit(true));
     this.k = 1; this.tx = 0; this.ty = 0; this.hover = null; this.sel = null;
-    this.nodes = G.items.map((it) => ({ it, x: it.x, y: it.y, r: Math.min(8, 2.6 + Math.sqrt(it.desc || 0) * 0.4) }));
     this.byId = new Map(this.nodes.map((n) => [n.it.id, n]));
     this.edges = [];
-    for (const n of this.nodes) for (const d of n.it.deps) { const m = this.byId.get(d); if (m) this.edges.push([m, n]); }
-    this.top = this.nodes.slice().sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 60);
+    for (const n of this.nodes) for (const d of depsOf(n.it)) { const m = this.byId.get(d); if (m) this.edges.push([m, n]); }
+    this.top = this.nodes.filter((n) => !n.ghost).sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 80);
     this._bind();
     this.ro = new ResizeObserver(() => { this.resize(); if (!this.userMoved && !this.sel) this.fit(false); else this.draw(); });
     this.ro.observe(host);
@@ -304,16 +343,18 @@ export class MapView {
     if (focus && this.byId.has(focus)) this.select(this.byId.get(focus), true);
     this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
   }
-  destroy() { this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); cancelAnimationFrame(this.anim); }
-  visible(n) { return this.show[n.it.b] && (this.show.defs || n.it.kind !== 'Definition'); }
+  destroy() { this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); }
+  visible(n) { return this.show.fields.has(this.fieldOf.get(n.it.col)) && (this.show.defs || n.it.kind !== 'Definition') && (this.show.planned || !n.ghost); }
   resize() {
     const r = this.host.getBoundingClientRect(); const d = Math.min(2, devicePixelRatio || 1);
     this.W = r.width; this.H = r.height; this.canvas.width = this.W * d; this.canvas.height = this.H * d;
     this.canvas.style.width = this.W + 'px'; this.canvas.style.height = this.H + 'px'; this.dpr = d;
   }
   bounds() {
-    const xs = this.nodes.map((n) => n.x), ys = this.nodes.map((n) => n.y);
-    return [Math.min(...xs) - 60, Math.min(...ys) - 80, Math.max(...xs) + 60, Math.max(...ys) + 40];
+    const vis = this.nodes.filter((n) => this.visible(n)); const ns = vis.length ? vis : this.nodes;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const n of ns) { if (n.x < x0) x0 = n.x; if (n.x > x1) x1 = n.x; if (n.y < y0) y0 = n.y; if (n.y > y1) y1 = n.y; }
+    return [x0 - 60, y0 - 170, x1 + 60, y1 + 40];
   }
   fit(animate) {
     const [x0, y0, x1, y1] = this.bounds();
@@ -331,25 +372,35 @@ export class MapView {
   sx(x) { return x * this.k + this.tx; } sy(y) { return y * this.k + this.ty; }
   hit(px, py) {
     let best = null, bd = 12;
-    for (const n of this.nodes) { if (!this.visible(n)) continue; const d = Math.hypot(this.sx(n.x) - px, this.sy(n.y) - py) - Math.max(2, n.r * Math.min(1.4, this.k)); if (d < bd) { bd = d; best = n; } }
+    for (const n of this.nodes) { if (!this.visible(n)) continue; const d = Math.hypot(this.sx(n.x) - px, this.sy(n.y) - py) - Math.max(2, n.r * Math.min(1.4, this.k)) + (n.ghost ? 3 : 0); if (d < bd) { bd = d; best = n; } }
     return best;
   }
   closure(n) {
     const anc = new Set(), desc = new Set();
-    const up = [n.it.id]; while (up.length) { const x = up.pop(); for (const d of this.G.byId.get(x).deps) if (!anc.has(d)) { anc.add(d); up.push(d); } }
-    const dn = [n.it.id]; while (dn.length) { const x = dn.pop(); for (const c of this.G.children.get(x) || []) if (!desc.has(c)) { desc.add(c); dn.push(c); } }
+    const up = [n.it.id]; while (up.length) { const x = up.pop(); for (const d of depsOf(this.G.byId.get(x))) if (!anc.has(d) && this.G.byId.has(d)) { anc.add(d); up.push(d); } }
+    const dn = [n.it.id]; while (dn.length) { const x = dn.pop(); for (const c of this.G.allChildren.get(x) || []) if (!desc.has(c)) { desc.add(c); dn.push(c); } }
     return { anc, desc };
+  }
+  head(it) {
+    const C = this.G.colById.get(it.col);
+    return `<div class="eyebrow" style="color:var(--c-${it.col})">${escapeHTML(C?.short || it.col)} · ${escapeHTML(fullLabel(it))}${it.planned ? ' · planned' : ''}</div>`;
+  }
+  /** Statements live in per-collection shards; fetch on demand and refresh `then`. */
+  needSt(it, then) {
+    if (it.st != null || it.planned || !this.loadShard) return;
+    this.loadShard(it.col).then(() => { if (!this.dead) then(); });
   }
   select(n, fly) {
     this.sel = n; this.selClosure = n ? this.closure(n) : null;
     if (!n) { this.side.classList.remove('open'); this.draw(); return; }
     const it = n.it; const { anc, desc } = this.selClosure;
-    this.side.innerHTML = `<div class="eyebrow" style="color:${BOOK_VAR[it.b]}">${BOOK_SHORT[it.b]} · ${escapeHTML(fullLabel(it))}</div>
-      <div class="nm">${inlineHTML(it.name)}</div><div class="st">${richHTML(it.st)}</div>
-      <div class="stats-row"><span><b>${it.deps.length}</b> direct prerequisites</span><span><b>${anc.size}</b> in its full ancestry</span><span><b>${desc.size}</b> results rely on it</span></div>
-      <div style="display:flex;gap:8px;margin-top:14px"><a class="btn primary" href="#/t/${it.id}">Open theorem →</a><button class="btn" type="button" data-close>Close</button></div>`;
+    this.side.innerHTML = `${this.head(it)}
+      <div class="nm">${inlineHTML(it.name)}</div><div class="st">${it.planned ? '<span class="faint">On the syllabus, not written yet.</span>' : richHTML(it.st || '')}</div>
+      <div class="stats-row"><span><b>${depsOf(it).length}</b> direct prerequisites</span><span><b>${anc.size}</b> in its full ancestry</span><span><b>${desc.size}</b> results rely on it</span></div>
+      <div style="display:flex;gap:8px;margin-top:14px"><a class="btn primary" href="#/t/${it.id}">Open →</a><button class="btn" type="button" data-close>Close</button></div>`;
     this.side.querySelector('[data-close]').addEventListener('click', () => this.select(null));
     this.side.classList.add('open');
+    this.needSt(it, () => { if (this.sel === n) this.select(n, false); });
     if (fly) this.focusNode(n); else this.draw();
   }
   _bind() {
@@ -358,7 +409,7 @@ export class MapView {
     cv.addEventListener('wheel', (e) => {
       e.preventDefault(); cancelAnimationFrame(this.anim); this.userMoved = true;
       const [px, py] = pos(e); const f = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018));
-      const k = Math.min(8, Math.max(0.05, this.k * f)); const r = k / this.k;
+      const k = Math.min(8, Math.max(0.01, this.k * f)); const r = k / this.k;
       this.tx = px - (px - this.tx) * r; this.ty = py - (py - this.ty) * r; this.k = k; this.draw();
     }, { passive: false });
     cv.addEventListener('pointerdown', (e) => {
@@ -371,7 +422,7 @@ export class MapView {
       if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, p);
       if (pinch && ptrs.size === 2) {
         const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
-        const k = Math.min(8, Math.max(0.05, pinch.k * d / pinch.d)); const r = k / pinch.k;
+        const k = Math.min(8, Math.max(0.01, pinch.k * d / pinch.d)); const r = k / pinch.k;
         this.k = k; this.tx = pinch.c[0] - (pinch.c[0] - pinch.tx) * r; this.ty = pinch.c[1] - (pinch.c[1] - pinch.ty) * r; moved = true; this.draw(); return;
       }
       if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) { moved = true; this.userMoved = true; } this.tx = drag.tx + dx; this.ty = drag.ty + dy; this.draw(); return; }
@@ -392,13 +443,14 @@ export class MapView {
     window.addEventListener('keydown', this._key);
   }
   _tip(n, p) {
-    if (!n) { this.tip.style.display = 'none'; return; }
-    const it = n.it;
-    this.tip.innerHTML = `<div class="eyebrow" style="color:${BOOK_VAR[it.b]}">${BOOK_SHORT[it.b]} · ${escapeHTML(fullLabel(it))}</div><div class="nm">${inlineHTML(it.name)}</div><div class="st">${richHTML(it.st)}</div>`;
+    if (!n) { this.tip.style.display = 'none'; this._tipN = null; return; }
+    const it = n.it; this._tipN = n; this._tipP = p;
+    this.tip.innerHTML = `${this.head(it)}<div class="nm">${inlineHTML(it.name)}</div><div class="st">${it.planned ? '<span class="faint">planned</span>' : richHTML(it.st || '')}</div>`;
     this.tip.style.display = 'block';
     const w = this.tip.offsetWidth, h = this.tip.offsetHeight;
     let x = p[0] + 16, y = p[1] + 16; if (x + w > this.W - 8) x = p[0] - w - 16; if (y + h > this.H - 8) y = p[1] - h - 16;
     this.tip.style.left = x + 'px'; this.tip.style.top = y + 'px';
+    this.needSt(it, () => { if (this._tipN === n) this._tip(n, this._tipP); });
   }
   draw() {
     if (this._raf) return;
@@ -406,33 +458,45 @@ export class MapView {
   }
   _draw() {
     const c = this.ctx, k = this.k; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
-    const col = { pma: resolveColor('pma'), rca: resolveColor('rca'), fa: resolveColor('fa') };
     const focus = this.hover || this.sel;
     const fc = focus ? (focus === this.sel ? this.selClosure : this.closure(focus)) : null;
-    if (focus && focus !== this.sel) this._hc = fc;
+    const off = (x0, y0, x1, y1) => x1 < 0 || x0 > this.W || y1 < 0 || y0 > this.H;
+    // field regions
+    for (const F of this.G.map?.fields || []) {
+      if (!this.show.fields.has(F.field)) continue;
+      const x0 = this.sx(F.x0), y0 = this.sy(F.y0), x1 = this.sx(F.x1), y1 = this.sy(F.y1);
+      if (off(x0, y0, x1, y1)) continue;
+      c.fillStyle = withAlpha('field-' + F.field, 0.035); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 18 * Math.min(1, k * 4)); c.fill();
+      c.font = `600 ${Math.max(12, Math.min(30, 44 * k))}px Inter, system-ui, sans-serif`; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
+      c.save(); c.letterSpacing = '0.08em'; c.fillText(F.title.toUpperCase(), x0 + 4, y0 - 6); c.restore();
+    }
     // chapter bands
     c.font = '600 11px Inter, system-ui, sans-serif';
-    for (const B of this.G.books) {
-      if (!this.show[B.id]) continue;
-      B.chapters.forEach((C, i) => {
-        const b = C.band; if (!b) return;
+    for (const C of this.G.collections) {
+      if (!this.show.fields.has(C.field)) continue;
+      C.chapters.forEach((Ch, i) => {
+        const b = Ch.band; if (!b) return;
+        if (!Ch.count && !this.show.planned) return;
         const x0 = this.sx(b.x0), x1 = this.sx(b.x1), y0 = this.sy(b.y0), y1 = this.sy(b.y1);
-        if (x1 < 0 || x0 > this.W || y1 < 0 || y0 > this.H) return;
-        c.fillStyle = withAlpha(B.id, i % 2 ? 0.035 : 0.065); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 8 * Math.min(1, k)); c.fill();
+        if (off(x0, y0, x1, y1)) return;
+        c.fillStyle = withAlpha(C.id, (i % 2 ? 0.035 : 0.065) * (Ch.count ? 1 : 0.5)); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 8 * Math.min(1, k)); c.fill();
         const wpx = x1 - x0;
-        c.fillStyle = withAlpha(B.id, 0.9); c.textAlign = 'left'; c.textBaseline = 'top';
-        const label = wpx > 150 ? `${C.n} · ${C.title}` : wpx > 60 ? `Ch ${C.n}` : `${C.n}`;
+        if (wpx < 18) return;
+        c.fillStyle = withAlpha(C.id, Ch.count ? 0.9 : 0.5); c.textAlign = 'left'; c.textBaseline = 'top';
+        const label = wpx > 150 ? `${Ch.n} · ${Ch.title}` : wpx > 60 ? `Ch ${Ch.n}` : `${Ch.n}`;
         c.save(); c.beginPath(); c.rect(x0, y0, wpx, 30); c.clip(); c.fillText(label, x0 + 6, y0 + 7); c.restore();
       });
     }
-    for (const R of this.G.mapRows || []) {
-      if (!this.show[R.book]) continue;
-      c.font = `italic 500 ${Math.max(15, Math.min(30, 26 * k))}px Newsreader, serif`; c.fillStyle = withAlpha(R.book, 1); c.textAlign = 'left'; c.textBaseline = 'bottom';
-      c.fillText(R.label, this.sx(R.x) + 4, this.sy(R.y) - 6);
+    for (const R of this.G.map?.rows || []) {
+      if (!this.show.fields.has(this.fieldOf.get(R.col))) continue;
+      const fs = Math.max(13, Math.min(28, 26 * k));
+      const x = this.sx(R.x), y = this.sy(R.y); if (off(x, y - fs - 8, x + 600, y)) continue;
+      c.font = `italic 500 ${fs}px Newsreader, serif`; c.fillStyle = withAlpha(R.col, 1); c.textAlign = 'left'; c.textBaseline = 'bottom';
+      c.fillText(R.label, x + 4, y - 6);
     }
     c.font = '600 11px Inter, system-ui, sans-serif';
     // edges
-    const drawEdges = (list, style, width) => {
+    const drawEdges = (list, style, width, dash) => {
       c.beginPath();
       for (const [a, b] of list) {
         const x1 = this.sx(a.x), y1 = this.sy(a.y), x2 = this.sx(b.x), y2 = this.sy(b.y);
@@ -440,11 +504,14 @@ export class MapView {
         const dx = Math.max(20 * k, Math.abs(x2 - x1) * 0.45);
         c.moveTo(x1, y1); c.bezierCurveTo(x1 + dx, y1, x2 - dx, y2, x2, y2);
       }
-      c.strokeStyle = style; c.lineWidth = width; c.stroke();
+      c.strokeStyle = style; c.lineWidth = width; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
     };
     const vis = this.edges.filter(([a, b]) => this.visible(a) && this.visible(b));
     if (!fc) {
-      for (const B of ['pma', 'rca', 'fa']) drawEdges(vis.filter(([a]) => a.it.b === B), withAlpha(B, 0.16), Math.max(0.6, Math.min(1.3, k)));
+      const byCol = new Map();
+      for (const e of vis) { if (e[0].ghost || e[1].ghost) continue; const key = e[0].it.col; if (!byCol.has(key)) byCol.set(key, []); byCol.get(key).push(e); }
+      for (const [col, list] of byCol) drawEdges(list, withAlpha(col, 0.16), Math.max(0.6, Math.min(1.3, k)));
+      if (this.show.planned) drawEdges(vis.filter(([a, b]) => a.ghost || b.ghost), withAlpha('muted', 0.12), 0.7, [3, 3]);
     } else {
       drawEdges(vis, withAlpha('ink', 0.05), 0.7);
       const id = focus.it.id; const A = new Set([...fc.anc, id]), D = new Set([...fc.desc, id]);
@@ -458,10 +525,11 @@ export class MapView {
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -20 || x > this.W + 20 || y < -20 || y > this.H + 20) continue;
       let alpha = 1;
       if (fc && n !== focus && !fc.anc.has(n.it.id) && !fc.desc.has(n.it.id)) alpha = 0.14;
-      const r = Math.max(1.6, n.r * rk);
+      const r = Math.max(n.ghost ? 1.4 : 1.6, n.r * rk);
       c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2);
-      if (n.it.kind === 'Definition') { c.fillStyle = withAlpha('panel', alpha); c.fill(); c.lineWidth = 1.4; c.strokeStyle = withAlpha(n.it.b, alpha); c.stroke(); }
-      else { c.fillStyle = withAlpha(n.it.b, alpha); c.fill(); }
+      if (n.ghost) { c.lineWidth = 1; c.strokeStyle = withAlpha(n.it.col, alpha * 0.45); c.stroke(); }
+      else if (n.it.kind === 'Definition') { c.fillStyle = withAlpha('panel', alpha); c.fill(); c.lineWidth = 1.4; c.strokeStyle = withAlpha(n.it.col, alpha); c.stroke(); }
+      else { c.fillStyle = withAlpha(n.it.col, alpha); c.fill(); }
       if (n === focus || n === this.sel) { c.beginPath(); c.arc(x, y, r + 4, 0, Math.PI * 2); c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); }
     }
     // labels
@@ -476,7 +544,7 @@ export class MapView {
       const w = c.measureText(txt).width; const r = Math.max(1.6, n.r * rk);
       if (!strong && !free(x + r + 3, y - 7, w + 4, 14)) return;
       c.lineWidth = 3.5; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(txt, x + r + 4, y);
-      c.fillStyle = resolveColor(strong ? 'ink' : 'muted'); c.fillText(txt, x + r + 4, y);
+      c.fillStyle = resolveColor(strong ? 'ink' : n.ghost ? 'faint' : 'muted'); c.fillText(txt, x + r + 4, y);
     };
     if (focus) label(focus, true);
     if (this.sel && this.sel !== focus) label(this.sel, true);
