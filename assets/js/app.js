@@ -53,7 +53,9 @@ const shards = new Map();
 function loadShard(col) {
   if (!shards.has(col)) {
     shards.set(col, fetch(`data/col/${col}.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).then((det) => {
-      for (const [id, d] of Object.entries(det)) { const it = G.byId.get(id); if (it) Object.assign(it, d); }
+      const { _ch, ...rest } = det;
+      for (const [n, sum] of Object.entries(_ch || {})) { const Ch = chapterOf(col, +n); if (Ch) Ch.summary = sum; }
+      for (const [id, d] of Object.entries(rest)) { const it = G.byId.get(id); if (it) Object.assign(it, d); }
     }).catch(() => { shards.delete(col); }));
   }
   return shards.get(col);
@@ -235,10 +237,11 @@ function pageField(f) {
   else el.querySelector('#flow-card').remove();
 }
 
-function pageCollection(id) {
+async function pageCollection(id) {
   const C = G.colById.get(id); if (!C) return pageNotFound();
   const F = G.fieldById.get(C.field);
   setTitle(C.title); setNav('fields'); curCol = id;
+  if (C.chapters.length) await loadShard(id);
   const refs = C.source?.type === 'course' ? C.source.refs || [] : [];
   const el = h(`<div class="wrap" data-col="${C.id}">
     <div class="page-head">

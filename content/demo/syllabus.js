@@ -26,7 +26,8 @@
 // determinants, Coale–Trussell and Princeton indices, Lee–Carter, kinship, multistate tables.
 // Hand-offs: the mathematics of Leslie matrices, Perron–Frobenius, the Euler–Lotka equation, momentum and
 // the renewal equation is already planned in `mathbio` ch. 4 — cited here, and demo items apply it to
-// human populations instead of repeating it. Exponential/logistic growth come from `mathbio` ch. 1.
+// human populations instead of repeating it. Exponential/logistic growth come from `mathbio` ch. 1;
+// Fisher’s sex-ratio principle from `popgen`, the gravity model from `geog`, Simpson’s paradox from `causal`.
 export default {
   collection: 'demo',
   chapters: [
@@ -50,7 +51,7 @@ export default {
           pic: 'Generate a death-rate surface from age, period and cohort effects you choose; then add any linear trend to the three effects in the way age = period − cohort allows and watch the fitted surface stay identical.' },
         { num: '1.7', kind: 'Method', name: 'Direct and indirect age standardization', deps: ['demo-1.3'], refs: ['PHG ch. 2'],
           pic: 'Two populations with different age pyramids and death schedules; apply one standard population to both and see the crude ranking reverse when age composition is removed.' },
-        { num: '1.8', kind: 'Paradox', name: 'Simpson’s paradox in crude death rates', deps: ['demo-1.7'], refs: ['PHG ch. 2'],
+        { num: '1.8', kind: 'Paradox', name: 'Simpson’s paradox in crude death rates', deps: ['demo-1.7', 'causal-4.4'], refs: ['PHG ch. 2'],
           pic: 'A young country with higher death rates at every age has a lower crude death rate than an old country; drag the age structures and find where the paradox appears and disappears.' },
         { num: '1.9', kind: 'Method', name: 'Kitagawa decomposition of a rate difference', deps: ['demo-1.7'], refs: ['PHG ch. 2'],
           pic: 'The difference between two crude rates is split into a rate effect and a composition effect, shown as stacked bars that always add up to the total difference.' },
@@ -150,8 +151,8 @@ export default {
           pic: 'Benchmark a population’s births against Hutterite rates; the indices for overall, marital fertility and marriage multiply together, and provinces of 19th-century Europe are mapped by I_g.' },
         { num: '4.10', kind: 'Paradox', name: 'Children come from larger families than women have', deps: ['demo-4.2'], refs: ['PHG ch. 5'],
           pic: 'A population of mothers with various family sizes; sample children instead of mothers and the average family size jumps to mean + variance/mean, Preston’s inspection-paradox result.' },
-        { num: '4.11', kind: 'Principle', name: 'Fisher’s principle: why sex ratios are near 1:1', deps: ['demo-4.3'], refs: ['K&C: Understanding Population Characteristics'],
-          pic: 'An agent population where parents have a heritable tendency to produce sons; whichever sex is rarer earns more grandchildren, and the simulated ratio returns to one half from any start.' },
+        { num: '4.11', kind: 'Phenomenon', name: 'Human sex ratios from birth to old age', deps: ['demo-4.3', 'popgen-11.1'], refs: ['K&C: Understanding Population Characteristics'],
+          pic: 'About 105 boys are born per 100 girls; apply male and female life tables and the sex ratio by age falls through parity near reproductive ages to a large female majority among the old, as Fisher’s principle and excess male mortality suggest.' },
         { num: '4.12', kind: 'Phenomenon', name: 'Sex ratio at birth and “missing women”', deps: ['demo-4.11'], refs: ['PHG ch. 5'],
           pic: 'Observed sex ratios at birth by birth order for several countries against the biological norm of about 105; the cumulative gap converts into an estimate of missing women.' },
       ],
@@ -252,7 +253,7 @@ export default {
           pic: 'Choose a fertility and mortality regime; the expected numbers of living mothers, sisters, daughters and cousins at each age are computed and drawn as a family tree with fractional people.' },
         { num: '8.2', kind: 'Phenomenon', name: 'Low-fertility kinship: fewer cousins, more grandparents', deps: ['demo-8.1'], refs: ['K&C: The Demographic Theory of Kinship'],
           pic: 'Slide from a 1900 to a 2020 regime: the family tree thins sideways (siblings, cousins) and lengthens vertically (living grandparents), the “beanpole family”.' },
-        { num: '8.3', kind: 'Model', name: 'Gravity model and Ravenstein’s laws of migration', deps: ['demo-1.3'], refs: ['PHG ch. 1'],
+        { num: '8.3', kind: 'Model', name: 'Gravity model and Ravenstein’s laws of migration', deps: ['demo-1.3', 'geog-9.6'], refs: ['PHG ch. 1'],
           pic: 'Flows between cities scale with the product of populations over a power of distance; fit the exponent to internal migration data and map the predicted and observed flows.' },
         { num: '8.4', kind: 'Model', name: 'Rogers–Castro model migration schedule', deps: ['demo-1.2'], refs: ['K&C: The Multi-State Model'],
           pic: 'Migration rates by age have a childhood component, a labour-force peak near age 23 and a retirement bump; drag each component’s parameters to fit an observed schedule.' },

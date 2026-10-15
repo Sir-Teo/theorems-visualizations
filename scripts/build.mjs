@@ -222,7 +222,7 @@ function yearOf(credit) {
 const chapterRecord = (c) => {
   const its = all.filter((it) => it.col === c.col && it.chapter === c.chapter);
   const pl = ghosts.filter((it) => it.col === c.col && it.chapter === c.chapter).length;
-  return { n: c.chapter, title: c.title, summary: c.summary || undefined, files: c.files.length ? c.files : undefined, count: its.length, viz: its.filter((it) => typeof it.viz === 'function').length, planned: pl || undefined, band: bandOf.get(`${c.col}/${c.chapter}`) || null };
+  return { n: c.chapter, title: c.title, files: c.files.length ? c.files : undefined, count: its.length, viz: its.filter((it) => typeof it.viz === 'function').length, planned: pl || undefined, band: bandOf.get(`${c.col}/${c.chapter}`) || null };
 };
 const index = {
   generated: new Date().toISOString(),
@@ -263,6 +263,9 @@ for (const C of collections) {
   const det = {};
   for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined };
   for (const it of pl) det[it.id] = { pic: it.pic || undefined, refs: it.refs?.length ? it.refs : undefined, tags: it.tags?.length ? it.tags : undefined };
+  // chapter summaries live here (not in index.json) to keep the catalog small
+  const sums = Object.fromEntries([...chapters.values()].filter((c) => c.col === C.id && c.summary).map((c) => [c.chapter, c.summary]));
+  if (Object.keys(sums).length) det._ch = sums;
   await writeFile(join(ROOT, `data/col/${C.id}.json`), JSON.stringify(det));
 }
 await writeFile(join(ROOT, 'data/atlas.css'), css);

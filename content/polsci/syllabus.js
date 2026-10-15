@@ -25,7 +25,7 @@
 // doctrinal paradox and List–Pettit, Plott and McKelvey, setter and veto-player models, Meltzer–Richard,
 // swing voter’s curse, Cox’s M+1 rule, effective number of parties, Penrose law, new-members paradox,
 // ensemble redistricting, dollar auction and the Richardson arms race.
-// Hand-offs: Nash equilibrium, the Shapley value and mechanism design belong to `game` (not yet written);
+// Hand-offs: Nash equilibrium, repeated games, bargaining and the Shapley value are in `game` (cited);
 // Condorcet’s jury theorem lives here and `soc` builds the wisdom of crowds on it.
 export default {
   collection: 'polsci',
@@ -138,7 +138,7 @@ export default {
           pic: 'Voters’ utility curves over a policy line; drag their peaks, and a checker reports whether every voter’s preferences have one peak along the chosen ordering.' },
         { num: '4.2', kind: 'Theorem', name: 'Black’s median voter theorem', deps: ['polsci-4.1', 'polsci-2.1'], refs: ['Shepsle: spatial model'],
           pic: 'Pit any policy against the median ideal point: the median wins every pairwise vote, with the vote split counted; break single-peakedness for one voter and a cycle can return.' },
-        { num: '4.3', kind: 'Model', name: 'Hotelling–Downs party competition', deps: ['polsci-4.2', 'micro-10.17'], refs: ['Shepsle: spatial model'],
+        { num: '4.3', kind: 'Model', name: 'Hotelling–Downs party competition', deps: ['polsci-4.2', 'micro-10.17', 'geog-9.3'], refs: ['Shepsle: spatial model'],
           pic: 'Two parties take turns moving to win votes from a distribution you draw; they converge on the median, and a third party or abstention-from-alienation makes them diverge.' },
         { num: '4.4', kind: 'Phenomenon', name: 'Why parties do not fully converge', deps: ['polsci-4.3'], refs: ['Shepsle: spatial model'],
           pic: 'Add primaries, policy-motivated candidates and turnout that falls with distance; equilibrium positions separate, compared with roll-call estimates of real party positions.' },
@@ -220,7 +220,7 @@ export default {
           pic: 'Set weights and a quota; every subset of voters is listed as winning or losing, with minimal winning coalitions highlighted.' },
         { num: '7.2', kind: 'Theorem', name: 'Trade robustness characterizes weighted systems', deps: ['polsci-7.1'], refs: ['T&P ch. 2', 'T&P ch. 8'],
           pic: 'Enter a voting system as a list of winning coalitions (e.g. the U.S. federal system); the page searches for a trade among winning coalitions that makes both losing, proving no weights exist.' },
-        { num: '7.3', kind: 'Definition', name: 'Shapley–Shubik power index', deps: ['polsci-7.1'], refs: ['T&P ch. 3'],
+        { num: '7.3', kind: 'Definition', name: 'Shapley–Shubik power index', deps: ['polsci-7.1', 'game-8.7'], refs: ['T&P ch. 3'],
           pic: 'All orderings of voters are enumerated (or sampled); the pivotal voter in each ordering is coloured, and each member’s share of pivots is its index.' },
         { num: '7.4', kind: 'Definition', name: 'Banzhaf power index', deps: ['polsci-7.1'], refs: ['T&P ch. 3'],
           pic: 'For every winning coalition, members whose departure would make it lose are marked critical; the normalised counts give the Banzhaf index, compared with Shapley–Shubik.' },
@@ -298,15 +298,15 @@ export default {
       title: 'Conflict, escalation and bargaining',
       summary: String.raw`Politics is also strategic conflict. Simple games capture arms races and crises; the dollar auction shows how rational steps add up to ruinous escalation; and bargaining models explain why the proposer in a legislature captures much of the surplus and why war, though costly, can occur when information is private or commitments are not credible.`,
       items: [
-        { num: '10.1', kind: 'Model', name: 'Chicken and the Cuban missile crisis', deps: [], refs: ['T&P ch. 4'],
+        { num: '10.1', kind: 'Model', name: 'Chicken and the Cuban missile crisis', deps: ['game-1.3'], refs: ['T&P ch. 4'],
           pic: 'A 2×2 payoff matrix for the crisis you can edit; the best-response arrows locate the two pure equilibria and the risk of the mixed one as payoffs change.' },
-        { num: '10.2', kind: 'Model', name: 'The arms race as a prisoner’s dilemma', deps: [], refs: ['T&P ch. 4'],
+        { num: '10.2', kind: 'Model', name: 'The arms race as a prisoner’s dilemma', deps: ['game-1.4', 'game-5.5'], refs: ['T&P ch. 4'],
           pic: 'Two states choose to arm or disarm; dominant strategies lead both to arm, and repeated play with tit-for-tat shows when restraint can be sustained.' },
         { num: '10.3', kind: 'Model', name: 'Richardson’s arms-race model', deps: ['ode-6.3'], refs: ['T&P ch. 10'],
           pic: 'Two coupled linear ODEs for arms stocks with reaction, fatigue and grievance sliders; the phase portrait shows a stable balance or a runaway race depending on the eigenvalues.' },
         { num: '10.4', kind: 'Paradox', name: 'The dollar auction', deps: [], refs: ['T&P ch. 6'],
           pic: 'Bid against a simulated opponent for a dollar where both top bidders pay; each raise is locally rational, and the totals paid climb far past the prize.' },
-        { num: '10.5', kind: 'Model', name: 'Legislative bargaining (Baron–Ferejohn)', deps: ['polsci-7.9'], refs: ['Shepsle: institutions'],
+        { num: '10.5', kind: 'Model', name: 'Legislative bargaining (Baron–Ferejohn)', deps: ['polsci-7.9', 'game-7.2'], refs: ['Shepsle: institutions'],
           pic: 'A randomly chosen proposer offers a split to a minimal majority; equilibrium shares are computed for different discount factors and amendment rules, with the proposer’s premium highlighted.' },
         { num: '10.6', kind: 'Model', name: 'The bargaining model of war (Fearon)', deps: ['polsci-10.1'], refs: ['T&P ch. 10'],
           pic: 'A line of possible settlements with war costs carving out a bargaining range both sides prefer to fighting; add private information or a shifting power balance and war becomes possible in equilibrium.' },

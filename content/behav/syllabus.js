@@ -27,7 +27,8 @@
 // fast-and-frugal heuristics, magnitude/sign effects, projection bias, level-k and QRE, crowding out,
 // salience, sludge, and the replication record of nudges, the hot hand and the marshmallow test.
 // Hand-offs: lotteries, the vNM theorem, risk aversion and certainty equivalents are planned in `micro`
-// ch. 13 and are cited, not repeated; game-theoretic foundations will live in `game`.
+// ch. 13 and are cited, not repeated; game models (ultimatum, beauty contest, public goods) come from
+// `game`, and behav keeps the experimental evidence.
 // Deliberate omissions: priming studies of the 2000s (largely failed replication) appear only as caveats.
 export default {
   collection: 'behav',
@@ -202,19 +203,19 @@ export default {
       title: 'Social preferences and behavioral games',
       summary: String.raw`In the lab people share money they could keep, reject offers they could accept, and pay to punish free riders. Models of inequity aversion and reciprocity capture these patterns, while level-k reasoning and noisy best responses explain why play in strategic games departs from Nash equilibrium. Incentives can even backfire when they crowd out intrinsic or social motives.`,
       items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'The ultimatum game', deps: [], refs: ['W&K ch. 10'],
+        { num: '6.1', kind: 'Phenomenon', name: 'Ultimatum-game behaviour: low offers rejected', deps: ['game-4.7'], refs: ['W&K ch. 10'],
           pic: 'Propose a split of $10 to simulated responders drawn from experimental data; offers below about 30% are often rejected, and your expected earnings by offer are plotted.' },
         { num: '6.2', kind: 'Phenomenon', name: 'The dictator game', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
           pic: 'Remove the right to reject: average giving drops but stays well above zero, and toggles for anonymity and “taking” options show how fragile the generosity is.' },
-        { num: '6.3', kind: 'Phenomenon', name: 'Public goods games with punishment (Fehr–Gächter)', deps: ['micro-12.10'], refs: ['W&K ch. 10'],
+        { num: '6.3', kind: 'Phenomenon', name: 'Public goods games with punishment (Fehr–Gächter)', deps: ['micro-12.10', 'game-1.9'], refs: ['W&K ch. 10'],
           pic: 'Ten rounds of contributions in a simulated group: without punishment contributions decay toward zero, with costly punishment they climb and stay high.' },
         { num: '6.4', kind: 'Model', name: 'Inequity aversion (Fehr–Schmidt)', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
           pic: 'Utility penalised by envy (α) and guilt (β); drag the parameters and see which ultimatum offers a responder rejects and what a proposer should offer.' },
         { num: '6.5', kind: 'Phenomenon', name: 'The trust game and reciprocity', deps: ['behav-6.1'], refs: ['W&K ch. 10'],
           pic: 'Send money that triples in transit; simulated trustees return amounts drawn from experimental data, and the return per unit sent is plotted.' },
-        { num: '6.6', kind: 'Model', name: 'Level-k reasoning and the beauty contest', deps: [], refs: ['W&K ch. 9'],
+        { num: '6.6', kind: 'Model', name: 'Level-k reasoning in the beauty contest', deps: ['game-1.8'], refs: ['W&K ch. 9'],
           pic: 'Guess two-thirds of the average guess; a histogram of past responses shows spikes at 33 and 22 (level 1 and 2), far from the Nash answer of zero, and your guess is ranked.' },
-        { num: '6.7', kind: 'Model', name: 'Quantal response equilibrium', deps: ['psych-3.8', 'behav-6.6'], refs: ['W&K ch. 9'],
+        { num: '6.7', kind: 'Model', name: 'Quantal response equilibrium', deps: ['psych-3.8', 'behav-6.6', 'game-1.3'], refs: ['W&K ch. 9'],
           pic: 'Players choose by logit best responses with a precision slider; equilibrium choice probabilities move from uniform randomness at λ = 0 to Nash as λ grows, fitting lab data in between.' },
         { num: '6.8', kind: 'Phenomenon', name: 'Motivation crowding out (the daycare fine)', deps: ['behav-6.3'], refs: ['W&K ch. 10'],
           pic: 'Late pickups per week at Israeli daycares before, during and after a fine: lateness rises once the fine is introduced and stays high after it is removed.' },

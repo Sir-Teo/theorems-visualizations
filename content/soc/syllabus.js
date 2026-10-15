@@ -29,7 +29,9 @@
 // prediction theorem, Braess and the price of anarchy, crowd and traffic dynamics.
 // Hand-offs: PageRank and random walks on graphs are in `stoch`; SIR and Kuramoto ODEs in `ode`; logistic
 // growth and harvesting in `mathbio`/`ode`; the tragedy of the commons as a market failure in `micro`;
-// Condorcet’s jury theorem in `polsci`. These are cited and given their network/collective framing here.
+// Condorcet’s jury theorem in `polsci`; Braess, the price of anarchy, ESS and the spatial prisoner’s
+// dilemma in `game`; the coalescent in `popgen`; Zipf’s law for cities in `geog`. These are cited and
+// given their network/collective/empirical framing here.
 // NOTE: Dunbar’s number, Ostrom, the Bass model and crowd dynamics are not covered by the collection.js
 // references; those items have refs: [] until a reference is added.
 export default {
@@ -53,7 +55,7 @@ export default {
           pic: 'Tolerance schedules for two groups in one neighbourhood plotted together; the dynamics drift to all-one-group or a mixed equilibrium depending on where you start.' },
         { num: '1.6', kind: 'Concept', name: 'Critical mass and tipping points', deps: ['soc-1.5'], refs: ['Schelling ch. 3'],
           pic: 'Plot the share who will act as a function of the share already acting; equilibria are crossings of the 45° line, and an S-shaped curve has an unstable middle crossing — the tipping point.' },
-        { num: '1.7', kind: 'Model', name: 'Schelling’s binary-choice diagrams', deps: ['soc-1.6', 'micro-12.10'], refs: ['Schelling ch. 7'],
+        { num: '1.7', kind: 'Model', name: 'Schelling’s binary-choice diagrams', deps: ['soc-1.6', 'micro-12.10', 'game-1.5'], refs: ['Schelling ch. 7'],
           pic: 'Payoff lines for choosing left or right as functions of how many others choose right (hockey helmets, daylight saving); their crossings and slopes decide which collective outcomes are stable.' },
         { num: '1.8', kind: 'Model', name: 'Granovetter’s threshold model of collective behaviour', deps: ['soc-1.6'], refs: ['E&K §19.6'],
           pic: 'A crowd of 100 people with riot thresholds 0, 1, 2, …, 99: one instigator triggers everyone; draw the threshold histogram and iterate the cascade map to its fixed point.' },
@@ -117,7 +119,7 @@ export default {
           pic: 'Noisy private signals averaged through DeGroot updating: a star network converges to the hub’s error, while balanced networks approach the truth as they grow.' },
         { num: '3.6', kind: 'Concept', name: 'Community structure and modularity', deps: ['soc-2.5'], refs: ['Newman ch. 14'],
           pic: 'Run a modularity-maximizing split on the karate-club network and compare it with the real factional split after the club broke up.' },
-        { num: '3.7', kind: 'Phenomenon', name: 'Power from position in exchange networks', deps: ['soc-3.1'], refs: ['E&K §12.2', 'E&K §12.3'],
+        { num: '3.7', kind: 'Phenomenon', name: 'Power from position in exchange networks', deps: ['soc-3.1', 'game-7.1'], refs: ['E&K §12.2', 'E&K §12.3'],
           pic: 'Bargaining over a dollar on paths of 2, 3 and 4 nodes: lab results and the balanced-outcome predictions show the middle node of a 3-path taking almost everything.' },
       ],
     },
@@ -151,8 +153,8 @@ export default {
           pic: 'Degree distributions of a dozen real networks with power-law and lognormal fits; the likelihood-ratio results show strong power laws are rarer than often claimed, as in Broido–Clauset 2019.' },
         { num: '4.12', kind: 'Phenomenon', name: 'Unpredictable success in cultural markets (MusicLab)', deps: ['soc-4.9'], refs: ['E&K §18.4'],
           pic: 'Eight parallel worlds of listeners who see download counts: the same songs end up with very different rankings, while an independent world without social information is far more even.' },
-        { num: '4.13', kind: 'Phenomenon', name: 'Zipf’s law for city sizes', deps: ['soc-4.7'], refs: ['Newman ch. 10'],
-          pic: 'Rank–size plot of cities for several countries with slopes near −1; a Gibrat growth simulation (random proportional growth with a floor) reproduces the law.' },
+        { num: '4.13', kind: 'Phenomenon', name: 'Gibrat’s proportional growth and city-size laws', deps: ['soc-4.7', 'geog-9.9'], refs: ['Newman ch. 10'],
+          pic: 'Cities grow by random proportional shocks with a lower floor; the simulated rank–size plot settles near slope −1, matched against real city-size data for several countries.' },
         { num: '4.14', kind: 'Model', name: 'The configuration model', deps: ['soc-4.1', 'soc-2.4'], refs: ['Newman ch. 12'],
           pic: 'Give each node stubs according to any degree sequence and pair them at random; the excess-degree distribution of neighbours is computed and explains the friendship paradox in closed form.' },
         { num: '4.15', kind: 'Phenomenon', name: 'The long tail', deps: ['soc-4.7'], refs: ['E&K §18.5'],
@@ -167,7 +169,7 @@ export default {
       title: 'Diffusion, cascades and contagion',
       summary: String.raw`Ideas, products and diseases spread through networks, but by different rules. Behaviours that need reinforcement from several neighbours spread as threshold cascades that tightly knit clusters can block, while diseases spread from single contacts and are helped by long-range ties and hubs. People also copy others because others’ choices carry information, which can lock a whole population into a wrong choice. Aggregate adoption often follows an S-curve that the Bass model describes.`,
       items: [
-        { num: '5.1', kind: 'Model', name: 'Diffusion as a network coordination game', deps: ['soc-1.8'], refs: ['E&K §19.2'],
+        { num: '5.1', kind: 'Model', name: 'Diffusion as a network coordination game', deps: ['soc-1.8', 'game-1.5'], refs: ['E&K §19.2'],
           pic: 'Seed a few adopters of a new behaviour on a network; each node adopts when at least a fraction q of neighbours have, and the cascade either takes over or stalls as you vary q.' },
         { num: '5.2', kind: 'Theorem', name: 'Dense clusters block cascades', deps: ['soc-5.1'], refs: ['E&K §19.3'],
           pic: 'Paint a cluster where every node has more than 1 − q of its neighbours inside; the cascade stops at its edge, and the page proves the converse on graphs you draw.' },
@@ -201,7 +203,7 @@ export default {
           pic: 'The same set of partnerships run sequentially or overlapping in time; concurrency opens time-respecting paths and the outbreak size jumps, with the time-ordered paths highlighted.' },
         { num: '5.17', kind: 'Phenomenon', name: 'Lock-in under increasing returns (Arthur)', deps: ['soc-5.13', 'stoch-12.10'], refs: ['E&K §17.4'],
           pic: 'Adopters choose between two technologies whose payoff grows with installed base; repeated runs lock in to either one at random, as in a Pólya urn, regardless of which is better.' },
-        { num: '5.18', kind: 'Theorem', name: 'Genealogies coalesce: a recent common ancestor', deps: ['soc-5.8'], refs: ['E&K §21.7'],
+        { num: '5.18', kind: 'Theorem', name: 'Genealogies coalesce: a recent common ancestor', deps: ['soc-5.8', 'popgen-10.2'], refs: ['E&K §21.7'],
           pic: 'Trace maternal lines backwards in a fixed-size population; lineages merge until one remains, and the time to the common ancestor scales with population size as the coalescent predicts.' },
       ],
     },
@@ -255,7 +257,7 @@ export default {
       items: [
         { num: '8.1', kind: 'Concept', name: 'The collective action problem (Olson)', deps: ['micro-12.10'], refs: ['Schelling ch. 7'],
           pic: 'Groups of different sizes choose whether to contribute to a shared project; the private benefit of contributing falls with group size, and contributions in the simulation fall with it.' },
-        { num: '8.2', kind: 'Model', name: 'The multi-person prisoner’s dilemma', deps: ['soc-8.1'], refs: ['Schelling ch. 7'],
+        { num: '8.2', kind: 'Model', name: 'The multi-person prisoner’s dilemma', deps: ['soc-8.1', 'game-1.4'], refs: ['Schelling ch. 7'],
           pic: 'Schelling-style payoff lines for cooperators and defectors as functions of how many cooperate: defecting always pays more, yet everyone cooperating beats everyone defecting.' },
         { num: '8.3', kind: 'Model', name: 'Tragedy of the commons as a harvesting game', deps: ['micro-12.11', 'mathbio-1.12', 'soc-8.2'], refs: ['E&K §24.2'],
           pic: 'Herders add cows to a regrowing pasture; each herder’s best response overgrazes, and the stock crashes in the simulation, compared with the sustainable-yield optimum.' },
@@ -263,16 +265,16 @@ export default {
           pic: 'Switch on boundaries, local rules, participation, monitoring, graduated sanctions, conflict resolution, recognition and nesting in an agent model of a fishery and see which combinations prevent collapse.' },
         { num: '8.5', kind: 'Phenomenon', name: 'Communication and sanctions in common-pool experiments', deps: ['soc-8.4'], refs: [],
           pic: 'Lab common-pool appropriation over rounds: baseline overuse, then cheap talk, then sanctioning; group efficiency rises in each phase, as in Ostrom, Walker and Gardner (1992).' },
-        { num: '8.6', kind: 'Model', name: 'Evolution of cooperation: Axelrod’s tournaments', deps: ['soc-8.2'], refs: [],
+        { num: '8.6', kind: 'Model', name: 'Evolution of cooperation: Axelrod’s tournaments', deps: ['soc-8.2', 'game-5.3'], refs: [],
           pic: 'Run a round-robin of repeated prisoner’s-dilemma strategies you choose (tit-for-tat, always defect, grudger…); tit-for-tat wins without ever beating any single opponent.' },
-        { num: '8.7', kind: 'Model', name: 'Hawk–dove and evolutionarily stable strategies', deps: ['soc-8.6'], refs: ['E&K §7.2', 'E&K §7.5'],
-          pic: 'Replicator dynamics on the share of hawks for adjustable resource value and fight cost; the population settles at the mixed ESS V/C whatever its starting point.' },
-        { num: '8.8', kind: 'Phenomenon', name: 'Spatial structure protects cooperators (Nowak–May)', deps: ['soc-8.6'], refs: [],
-          pic: 'Cooperators and defectors on a grid copy their most successful neighbour; clusters of cooperators persist and form kaleidoscopic patterns for a range of temptation values.' },
-        { num: '8.9', kind: 'Paradox', name: 'Braess’s paradox', deps: ['soc-2.1'], refs: ['E&K §8.2'],
-          pic: 'Drivers choose routes selfishly on a four-road network; add a zero-cost shortcut and the equilibrium travel time for everyone rises from 65 to 80 minutes.' },
-        { num: '8.10', kind: 'Theorem', name: 'Price of anarchy for selfish routing', deps: ['soc-8.9'], refs: ['E&K §8.3'],
-          pic: 'Pigou’s two-road example with a slider: the ratio of equilibrium to optimal total travel time is computed and never exceeds 4/3 with linear delays.' },
+        { num: '8.7', kind: 'Model', name: 'Evolution of social norms: stag-hunt dynamics', deps: ['soc-8.6', 'game-6.4', 'game-1.5'], refs: ['E&K §7.4'],
+          pic: 'Replicator dynamics in a stag-hunt population: the basin of the cooperative norm shrinks as its risk grows, and random mutations let the population tip between norms, mostly toward the risk-dominant one.' },
+        { num: '8.8', kind: 'Theorem', name: 'Cooperation on networks: the b/c > k rule', deps: ['soc-8.6', 'game-5.9'], refs: [],
+          pic: 'Cooperators and defectors on graphs of average degree k imitate successful neighbours; across simulated runs cooperation is favoured roughly when benefit/cost exceeds k (Ohtsuki et al. 2006).' },
+        { num: '8.9', kind: 'Phenomenon', name: 'Braess’s paradox in real road networks', deps: ['game-6.11'], refs: ['E&K §8.2'],
+          pic: 'Before-and-after traffic for road closures in Seoul, Stuttgart and New York, beside an equilibrium model of the same network in which removing the link lowers everyone’s travel time.' },
+        { num: '8.10', kind: 'Principle', name: 'Congestion pricing restores the social optimum', deps: ['game-6.12', 'micro-12.3'], refs: ['E&K §8.3'],
+          pic: 'Charge each road a toll equal to the delay a driver imposes on others; the equilibrium flow moves to the optimum and the price of anarchy readout drops to one.' },
         { num: '8.11', kind: 'Phenomenon', name: 'Reputation systems sustain trust among strangers', deps: ['soc-8.6'], refs: ['E&K §22.9'],
           pic: 'Buyers and sellers of hidden-quality goods with and without public feedback scores; with reputation, honest sellers survive and prices track quality, without it the market unravels.' },
       ],
