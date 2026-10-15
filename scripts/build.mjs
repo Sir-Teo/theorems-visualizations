@@ -218,7 +218,7 @@ const index = {
     file: it.file, viz: typeof it.viz === 'function', x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0),
     anc: ancestors(it.id).size, desc: descCount.get(it.id), depth: depth(it.id), verify: it.verify ? 1 : undefined,
   })),
-  planned: ghosts.map((it) => ({ id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps, refs: it.refs?.length ? it.refs : undefined, x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0) })),
+  planned: ghosts.map((it) => ({ id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps, x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0) })),
   map: { rows: rowsOut.map(({ bands, ...r }) => r), fields: fieldBoxes },
   chapterEdges: edgeList(chEdges),
   collectionEdges: edgeList(colEdges),
@@ -227,10 +227,11 @@ await rm(join(ROOT, 'data'), { recursive: true, force: true });
 await mkdir(join(ROOT, 'data/col'), { recursive: true });
 await writeFile(join(ROOT, 'data/index.json'), JSON.stringify(index));
 for (const C of collections) {
-  const its = all.filter((it) => it.col === C.id);
-  if (!its.length) continue;
+  const its = all.filter((it) => it.col === C.id), pl = ghosts.filter((it) => it.col === C.id);
+  if (!its.length && !pl.length) continue;
   const det = {};
   for (const it of its) det[it.id] = { st: it.statement, refs: it.refs?.length ? it.refs : undefined, scope: it.scope || undefined, credit: it.credit || undefined, links: it.links || undefined };
+  for (const it of pl) det[it.id] = { pic: it.pic || undefined, refs: it.refs?.length ? it.refs : undefined, tags: it.tags?.length ? it.tags : undefined };
   await writeFile(join(ROOT, `data/col/${C.id}.json`), JSON.stringify(det));
 }
 await writeFile(join(ROOT, 'data/atlas.css'), css);

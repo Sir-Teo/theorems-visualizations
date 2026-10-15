@@ -1,6 +1,6 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
-import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
+import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, MapView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
 const SITE = 'Ideas, Visualized';
@@ -123,6 +123,13 @@ function pageHome() {
     </section>
     <section class="wrap">
       <div class="card flow-card">
+        <div class="flow-head"><h2>Everything at a glance</h2><span class="muted" style="font-size:13px" id="tm-hint">area ∝ ideas · solid = written, pale = planned · click a field to zoom in</span></div>
+        <div class="tm-crumbs" id="tm-crumbs"></div>
+        <div id="treemap"></div>
+      </div>
+    </section>
+    <section class="wrap">
+      <div class="card flow-card">
         <div class="flow-head"><h2>How the shelves build on one another</h2><span class="muted" style="font-size:13px">Each curve: results of one part used in another · hover to trace</span></div>
         <div style="overflow-x:auto" id="flow"></div>
       </div>
@@ -141,6 +148,16 @@ function pageHome() {
     </section>
   </div>`);
   app.replaceChildren(el);
+  // treemap overview, zoomable into a field
+  let tmField = null;
+  const drawTM = () => {
+    el.querySelector('#tm-crumbs').innerHTML = tmField ? `<a href="#/" data-tm-up>All fields</a><span class="sep">/</span><span>${escapeHTML(G.fieldById.get(tmField).title)}</span> · <a href="#/f/${tmField}">open the field page →</a>` : '';
+    el.querySelector('[data-tm-up]')?.addEventListener('click', (e) => { e.preventDefault(); tmField = null; drawTM(); });
+    renderTreemap(el.querySelector('#treemap'), G, { field: tmField, onField: (f) => { tmField = f; drawTM(); }, onCollection: (c) => go(`#/c/${c}`), onChapter: (c, n) => go(`#/c/${c}/${n}`), height: innerWidth < 700 ? 420 : 520 });
+  };
+  drawTM();
+  const ro = new ResizeObserver(() => { clearTimeout(ro.t); ro.t = setTimeout(drawTM, 120); }); ro.observe(el.querySelector('#treemap'));
+  cleanup = () => ro.disconnect();
   // flow: chapters when only a few collections are live, otherwise collections grouped by field
   const live = G.live.map((C) => C.id);
   const flow = live.length <= 4 ? chapterFlow(G, live) : collectionFlow(G, liveFields.map((F) => ({ title: F.title, color: `var(--f-${F.id})`, colIds: fieldCols(F).map((C) => C.id) })), { includePlanned: false });
@@ -178,12 +195,20 @@ function pageField(f) {
       <h3>${escapeHTML(C.title)}</h3>
       <div class="sum">${inlineHTML(C.blurb)}</div>
       <div class="meta">${progress(C)}${colStatus(C)}</div></a>`).join('')}</div></section>` : ''; }).join('')}
+    <div class="card flow-card" style="margin-top:22px">
+      <div class="flow-head"><h2>At a glance</h2><span class="muted" style="font-size:13px">collections and chapters · area ∝ ideas · solid = written, pale = planned</span></div>
+      <div id="treemap"></div>
+    </div>
     <div class="card flow-card" id="flow-card" style="margin-top:28px">
       <div class="flow-head"><h2>How the collections connect</h2><span class="muted" style="font-size:13px">curves: results of one collection used in another</span></div>
       <div style="overflow-x:auto" id="flow"></div>
     </div>
   </div>`);
   app.replaceChildren(el);
+  const drawTM = () => renderTreemap(el.querySelector('#treemap'), G, { field: F.id, onCollection: (c) => go(`#/c/${c}`), onChapter: (c, n) => go(`#/c/${c}/${n}`), height: 440 });
+  drawTM();
+  const ro = new ResizeObserver(() => { clearTimeout(ro.t); ro.t = setTimeout(drawTM, 120); }); ro.observe(el.querySelector('#treemap'));
+  cleanup = () => ro.disconnect();
   const ff = flowFor(cols.map((C) => C.id));
   const flow = ff ? chapterFlow(G, ff.live) : collectionFlow(G, F.areas.map((A) => ({ title: A.title, color: `var(--f-${F.id})`, colIds: cols.filter((C) => C.area === A.id).map((C) => C.id) })));
   if (flow.columns.some((c) => c.rows.length)) renderFlow(el.querySelector('#flow'), { ...flow, onOpen: (R) => go(R.ch != null ? `#/c/${R.col}/${R.ch}` : `#/c/${R.col}`) });
@@ -250,7 +275,7 @@ async function pageChapter(col, c) {
     <div class="thm-list">${planned.map((it) => `<a class="card thm-card planned" data-col="${col}" href="#/t/${it.id}">
       <div class="top"><span class="num">${displayNum(it)}</span><span class="kind">${it.kind} · planned</span></div>
       <div class="nm">${inlineHTML(it.name)}</div>
-      ${it.refs ? `<div class="st">${escapeHTML(it.refs.join(' · '))}</div>` : ''}
+      ${it.pic ? `<div class="st pic">${inlineHTML(it.pic)}</div>` : it.refs ? `<div class="st">${escapeHTML(it.refs.join(' · '))}</div>` : ''}
     </a>`).join('')}</div>` : ''}
   </div>`);
   app.replaceChildren(el);
@@ -277,15 +302,18 @@ function wireLineage(el, it) {
   drawLineage();
 }
 
-function pagePlanned(it) {
+async function pagePlanned(it) {
   const C = G.colById.get(it.col); const Ch = chapterOf(it.col, it.c);
+  await loadShard(it.col);
   setTitle(`${C.short} ${it.num}: ${it.name.replace(/\$/g, '')} (planned)`); setNav('fields'); curCol = it.col;
   const deps = depsOf(it).map((d) => G.byId.get(d)).filter(Boolean);
   const users = (G.allChildren.get(it.id) || []).map((d) => G.byId.get(d));
   const el = h(`<div class="wrap thm-page" data-col="${it.col}">
     <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/c/${it.col}">${escapeHTML(C.short)}</a><span class="sep">/</span><a href="#/c/${it.col}/${it.c}">${chapterLabel(it.col, it.c)} · ${escapeHTML(Ch?.title || '')}</a></div>
     <div class="thm-head"><div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))} · planned</div><h1>${inlineHTML(it.name)}</h1></div></div>
-    <div class="statement planned-note">This ${it.kind.toLowerCase()} is on the syllabus of <a href="#/c/${it.col}">${escapeHTML(C.title)}</a> but has not been written yet. Its place in the graph is already known.${it.refs ? `<div class="refs-inline">References: ${escapeHTML(it.refs.join(' · '))}</div>` : ''}</div>
+    <div class="statement planned-note">This ${it.kind.toLowerCase()} is on the syllabus of <a href="#/c/${it.col}">${escapeHTML(C.title)}</a> but has not been written yet. Its place in the graph is already known.
+      ${it.pic ? `<div class="pic-plan"><span class="eyebrow">Planned visualization</span> ${inlineHTML(it.pic)}</div>` : ''}
+      ${it.refs ? `<div class="refs-inline">References: ${escapeHTML(it.refs.join(' · '))}</div>` : ''}</div>
     <div class="thm-grid">
       <div class="card panel">
         <h2>Builds on <span class="count">${deps.length}</span></h2>
@@ -302,7 +330,7 @@ function pagePlanned(it) {
 
 async function pageTheorem(id) {
   const it = G.byId.get(id); if (!it) return pageNotFound();
-  if (it.planned) return pagePlanned(it);
+  if (it.planned) return await pagePlanned(it);
   const C = G.colById.get(it.col); const Ch = chapterOf(it.col, it.c);
   setTitle(`${C.short} ${fullLabel(it)}: ${it.name.replace(/\$/g, '')}`); setNav('fields'); curCol = it.col;
   await loadShard(it.col);

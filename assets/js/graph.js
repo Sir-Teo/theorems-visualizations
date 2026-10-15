@@ -552,3 +552,75 @@ export class MapView {
     else if (k >= 0.35) for (const n of this.top) { if (fc && !fc.anc.has(n.it.id) && !fc.desc.has(n.it.id)) continue; label(n, false); }
   }
 }
+
+// ------------------------------------------------------------ treemap overview (home page)
+/** Squarified treemap layout: items [{value}] sorted descending → rectangles inside [x, y, w, h]. */
+function squarify(items, x, y, w, h) {
+  const out = []; let rest = items.slice(); const total = rest.reduce((s, it) => s + it.value, 0) || 1;
+  const scale = (w * h) / total;
+  let rx = x, ry = y, rw = w, rh = h;
+  const worst = (row, side) => { const s = row.reduce((a, it) => a + it.value * scale, 0); const mx = Math.max(...row.map((it) => it.value * scale)), mn = Math.min(...row.map((it) => it.value * scale)); return Math.max((side * side * mx) / (s * s), (s * s) / (side * side * mn)); };
+  while (rest.length) {
+    const side = Math.min(rw, rh); const row = [rest[0]]; let i = 1;
+    while (i < rest.length && worst([...row, rest[i]], side) <= worst(row, side)) { row.push(rest[i]); i++; }
+    const s = row.reduce((a, it) => a + it.value * scale, 0);
+    if (rw >= rh) { const cw = s / rh; let cy = ry; for (const it of row) { const ch = (it.value * scale) / cw; out.push({ it, x: rx, y: cy, w: cw, h: ch }); cy += ch; } rx += cw; rw -= cw; }
+    else { const ch = s / rw; let cx = rx; for (const it of row) { const cw = (it.value * scale) / ch; out.push({ it, x: cx, y: ry, w: cw, h: ch }); cx += cw; } ry += ch; rh -= ch; }
+    rest = rest.slice(i);
+  }
+  return out;
+}
+/**
+ * Everything at a glance: fields → collections (→ chapters when zoomed into a field), area ∝ ideas
+ * (written + planned), solid = written, pale = planned. Click a field to zoom in, a collection to open it.
+ */
+export function renderTreemap(host, G, { field = null, onField, onCollection, onChapter, height = 520 } = {}) {
+  host.innerHTML = '';
+  const W = Math.max(320, host.clientWidth || 1000), H = field ? Math.round(height * 1.05) : height;
+  const root = svg('svg', { class: 'treemap-svg', width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Treemap of every field and collection' }, host);
+  const size = (C) => Math.max(40, (C.count || 0) + (C.planned || 0) || 80);
+  const fields = (field ? G.fields.filter((F) => F.id === field) : G.fields).map((F) => {
+    const cols = G.collections.filter((C) => C.field === F.id);
+    return { F, cols, value: cols.reduce((s, C) => s + size(C), 0) };
+  }).sort((a, b) => b.value - a.value);
+  const PAD = 3, HEAD = 22;
+  for (const fr of squarify(fields, 0, 0, W, H)) {
+    const { F, cols } = fr.it; const fx = fr.x + PAD / 2, fy = fr.y + PAD / 2, fw = fr.w - PAD, fh = fr.h - PAD;
+    const g = svg('g', { class: 'tm-field' + (field ? '' : ' zoomable'), 'data-field': F.id }, root);
+    svg('rect', { x: fx, y: fy, width: fw, height: fh, rx: 8, fill: `var(--f-${F.id})`, 'fill-opacity': 0.08, stroke: `var(--f-${F.id})`, 'stroke-opacity': 0.5 }, g);
+    const showHead = fh > 40 && fw > 60;
+    if (showHead) {
+      const t = svg('text', { x: fx + 8, y: fy + 15, 'font-size': 11.5, 'font-weight': 700, 'letter-spacing': '0.06em', fill: `var(--f-${F.id})` }, g);
+      const label = (fw > 180 ? F.title : F.short).toUpperCase(); t.textContent = label.length * 7.6 > fw - 16 ? F.short.toUpperCase() : label;
+    }
+    if (!field) { g.addEventListener('click', (e) => { if (!e.target.closest('.tm-col')) onField?.(F.id); }); svg('title', {}, g).textContent = `${F.title} — click to zoom in`; }
+    const inner = squarify(cols.map((C) => ({ C, value: size(C) })).sort((a, b) => b.value - a.value), fx + 4, fy + (showHead ? HEAD : 4), fw - 8, fh - (showHead ? HEAD : 4) - 4);
+    for (const cr of inner) {
+      const C = cr.it.C; const x = cr.x + 1.5, y = cr.y + 1.5, w = Math.max(0, cr.w - 3), h = Math.max(0, cr.h - 3);
+      const cg = svg('g', { class: 'tm-col', tabindex: 0, role: 'link', 'aria-label': `${C.title}: ${C.count} written, ${C.planned} planned` }, g);
+      const tot = (C.count || 0) + (C.planned || 0); const frac = tot ? C.count / tot : 0;
+      svg('rect', { x, y, width: w, height: h, rx: 5, fill: `var(--c-${C.id})`, 'fill-opacity': 0.16, stroke: `var(--c-${C.id})`, 'stroke-opacity': 0.45, 'stroke-dasharray': tot ? null : '3 3' }, cg);
+      if (frac > 0) svg('rect', { x, y: y + h * (1 - frac), width: w, height: h * frac, rx: 5, fill: `var(--c-${C.id})`, 'fill-opacity': 0.85 }, cg);
+      // chapters when zoomed into one field
+      if (field && C.chapters.length && w > 40 && h > 40) {
+        const chs = squarify(C.chapters.map((Ch) => ({ Ch, value: Math.max(1, (Ch.count || 0) + (Ch.planned || 0)) })).sort((a, b) => b.value - a.value), x + 3, y + 22, w - 6, h - 25);
+        for (const r of chs) {
+          const Ch = r.it.Ch; const rr = svg('rect', { x: r.x + 0.5, y: r.y + 0.5, width: Math.max(0, r.w - 1), height: Math.max(0, r.h - 1), rx: 2, fill: 'var(--panel)', 'fill-opacity': Ch.count ? 0.18 : 0.5, stroke: 'var(--panel)', 'stroke-opacity': 0.9, class: 'tm-ch' }, cg);
+          svg('title', {}, rr).textContent = `${C.short} ${Ch.n} · ${Ch.title} — ${Ch.count || 0} written${Ch.planned ? `, ${Ch.planned} planned` : ''}`;
+          rr.addEventListener('click', (e) => { e.stopPropagation(); onChapter?.(C.id, Ch.n); });
+          if (r.w > 70 && r.h > 16) { const t = svg('text', { x: r.x + 4, y: r.y + 12, 'font-size': 10, fill: Ch.count && frac > 0.5 ? 'var(--bg)' : 'var(--ink-2)', 'pointer-events': 'none' }, cg); const mx = Math.floor((r.w - 8) / 5.6); t.textContent = (`${Ch.n} ${Ch.title}`).slice(0, mx); }
+        }
+      }
+      if (w > 34 && h > 16) {
+        const big = w > 120 && h > 34; const lab = big ? C.title : C.short;
+        const mx = Math.floor((w - 10) / (big ? 6.4 : 6));
+        const t = svg('text', { x: x + 5, y: y + 13, 'font-size': big ? 12 : 10.5, 'font-weight': 600, fill: frac > 0.92 && !field ? 'var(--bg)' : 'var(--ink)', 'pointer-events': 'none' }, cg);
+        t.textContent = lab.length > mx ? (big && C.short.length <= mx ? C.short : lab.slice(0, Math.max(1, mx - 1)) + '…') : lab;
+        if (h > 34 && w > 60 && !field) { const n = svg('text', { x: x + 5, y: y + 27, 'font-size': 10, 'font-family': 'var(--font-mono)', fill: frac > 0.92 ? 'var(--bg)' : 'var(--ink-3)', 'pointer-events': 'none' }, cg); n.textContent = C.count ? `${C.count}${C.planned ? ` +${C.planned}` : ''}` : C.planned ? `${C.planned} planned` : 'planned'; }
+      }
+      svg('title', {}, cg).textContent = `${C.title} — ${C.count} written${C.planned ? `, ${C.planned} planned` : ''}`;
+      cg.addEventListener('click', (e) => { e.stopPropagation(); onCollection?.(C.id); });
+      cg.addEventListener('keydown', (e) => { if (e.key === 'Enter') onCollection?.(C.id); });
+    }
+  }
+}
