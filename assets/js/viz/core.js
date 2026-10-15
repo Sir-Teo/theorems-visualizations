@@ -1282,7 +1282,7 @@ class Runtime {
       tex: katexHTML,
     };
     // add-on kits (assets/js/viz/kits): each is make(api, rt, ...args)
-    for (const [name, make] of Object.entries(KITS)) api[name] = (...args) => make(api, rt, ...args);
+    for (const [name, make] of Object.entries(KITS)) api[name] = Object.assign((...args) => make(api, rt, ...args), make);
     return api;
   }
 }
