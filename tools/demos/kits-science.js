@@ -296,5 +296,131 @@ export default {
         });
       },
     },
+
+    // ---------------------------------------------------------------- more examples
+    {
+      num: '2.11', kind: 'Model', name: 'The Van der Pol oscillator and its limit cycle',
+      statement: String.raw`$\ddot x - \mu(1 - x^2)\dot x + x = 0$ pumps energy in at small amplitude and dissipates it at large amplitude. For every $\mu > 0$ the origin is unstable and all other orbits approach a unique, isolated closed orbit — a **limit cycle** (Liénard's theorem). Its period grows from $2\pi$ (small $\mu$) to about $(3 - 2\ln 2)\,\mu$ (relaxation oscillations, large $\mu$).`,
+      caption: String.raw`Two trajectories, one from inside and one from outside, converge onto the same cycle (integrated with adaptive RK45; each stops once successive returns agree to a fraction of a pixel). Gold dots ride along them. **Click** to add more.`,
+      viz(v) {
+        const s = v.stage({ x: [-4.2, 4.2], y: [-5.5, 5.5], height: 380, xlabel: 'x', ylabel: 'y = ẋ' });
+        const mu = v.slider('$\\mu$', 0.1, 3, 1, { step: 0.05 });
+        const pp = v.phasePlane(s, { f: (x, y, t, p) => [y, p.mu * (1 - x * x) * y - x], params: { mu }, method: 'rk45', seeds: [[0.3, 0], [-3.6, 4.8]], trajColor: 'cycle', tMax: 150 });
+        v.button('Clear trajectories', () => pp.clear());
+        v.animate((t) => pp.draw({ particles: true, t: t * 2 }));
+        pp.legend([['gold', 'moving with the flow', { dot: true }]]);
+        v.readout(() => {
+          const c = pp.trajectories.map((tr) => tr.fwd).find((f) => f && f.stop === 'limit cycle'), m = mu.value;
+          return `${pp.describe({ max: 1 })} · ${c ? `limit cycle reached, period $T = ${v.fix(c.period, 3)}$` : 'no cycle detected yet'} (small-$\\mu$ value $2\\pi = 6.283$, relaxation estimate $(3 - 2\\ln 2)\\mu = ${v.fix((3 - 2 * Math.log(2)) * m, 2)}$)`;
+        });
+      },
+    },
+    {
+      num: '2.12', kind: 'Theorem', name: 'Circulation and flux of a vortex and a source (Stokes and Gauss in 2D)',
+      statement: String.raw`For a planar velocity field built from point vortices (strength $\Gamma$), point sources (strength $m$) and a uniform stream, the circulation around any closed curve equals the total vortex strength inside, $\oint \mathbf u\cdot d\mathbf s = \sum \Gamma_{\text{in}}$ (Stokes), and the outflow equals the total source strength inside, $\oint \mathbf u\cdot\mathbf n\,ds = \sum m_{\text{in}}$ (divergence theorem): away from the points the flow is irrotational and incompressible.`,
+      caption: String.raw`Drag the vortex, the source, and the four corners of the loop. Grey streamlines are evenly spaced; arrows on the loop show the component that is being integrated.`,
+      viz(v) {
+        const s = v.stage({ x: [-3, 3], y: [-1.9, 1.9], equal: true, height: 360, axes: false });
+        const mode = v.select('loop arrows', [{ value: 'tangent', label: 'tangential (circulation)' }, { value: 'normal', label: 'normal (flux)' }], 'tangent');
+        const U = v.slider('stream $U$', 0, 1.5, 0.6, { step: 0.05 });
+        const F = v.fields(s, {
+          sources: [{ type: 'vortex', x: -0.9, y: 0.1, gamma: 4 }, { type: 'source', x: 1.1, y: -0.2, m: 2.5 }],
+          uniform: () => [U.value, 0], lines: false, streamlines: true, streamSep: 20,
+          loop: { type: 'poly', pts: [[-1.9, -0.9], [0.1, -0.9], [0.1, 1.0], [-1.9, 1.0]] },
+        });
+        v.render(() => F.draw({ loopArrows: mode.value }));
+        F.legend([['purple', 'vortex $\\Gamma = 4$', { dot: true }], ['teal', 'source $m = 2.5$', { dot: true }]]);
+        v.readout(() => { const I = F.integrals(), e = F.enclosed(); return `circulation $\\oint \\mathbf u\\cdot d\\mathbf s = ${v.fix(I.circulation, 4)}$ vs $\\sum\\Gamma_{\\text{in}} = ${v.fix(e.gamma, 4)}$ · flux $\\oint \\mathbf u\\cdot\\mathbf n\\,ds = ${v.fix(I.flux, 4)}$ vs $\\sum m_{\\text{in}} = ${v.fix(e.q, 4)}$`; });
+      },
+    },
+    {
+      num: '2.13', kind: 'Law', name: 'The inverting amplifier and saturation',
+      statement: String.raw`With an ideal op-amp, negative feedback holds the inverting input at virtual ground, so the input current $V_{in}/R_1$ must flow through $R_2$ and $V_{out} = -\dfrac{R_2}{R_1}V_{in}$, independent of the load. A real op-amp cannot swing beyond its supply rails: past $|V_{in}| = V_{rail}R_1/R_2$ the output saturates and the virtual ground is lost.`,
+      caption: String.raw`Drag $V_{in}$ and change $R_2$. Wires are coloured by voltage (red positive, blue negative). Right: the transfer curve from DC solves of the drawn circuit (rails at $\pm 10$ V).`,
+      viz(v) {
+        const s = v.stage({ x: [-1.6, 8.4], y: [-1.3, 3.95], equal: true, height: 290, axes: false, weight: 1.2 });
+        const sp = v.stage({ x: [-3, 3], y: [-12, 12], height: 290, axes: 'box', xlabel: 'V_in', ylabel: 'V_out', weight: 0.9 });
+        const C = v.circuit(s, [
+          { type: 'V', id: 'Vin', value: 1, at: [0, 2, 0, 0] },
+          { type: 'R', id: 'R1', name: 'R1', value: 1e3, at: [0, 2, 2.5, 2] }, { type: 'W', at: [2.5, 2, 3, 2] },
+          { type: 'OA', id: 'U1', at: [4.5, 1.5], rails: [-10, 10], label: 'ideal' },
+          { type: 'W', at: [2.5, 2, 2.5, 3.2] }, { type: 'R', id: 'R2', value: 4.7e3, at: [2.5, 3.2, 6.6, 3.2] }, { type: 'W', at: [6.6, 3.2, 6.6, 1.5, 6, 1.5] },
+          { type: 'R', id: 'RL', value: 1e4, at: [6.6, 1.5, 6.6, 0], labelSide: 1 },
+          { type: 'W', at: [3, 1, 3, 0.4] }, { type: 'GND', at: [3, 0.4] }, { type: 'GND', at: [0, 0] }, { type: 'GND', at: [6.6, 0] },
+          { type: 'label', at: [6.6, 1.5], text: '$V_{out}$', dx: 10, dy: 6 },
+        ]);
+        const vin = C.control('Vin', '$V_{in}$', -3, 3, { log: false, step: 0.01 }); C.control('R2', '$R_2$', 500, 20e3);
+        let res;
+        v.animate((t) => {
+          res = C.draw({ result: C.dc(), t, vmax: 10 });
+          const curve = []; const keep = C.part('Vin').value;
+          for (let k = 0; k <= 120; k++) { C.part('Vin').value = -3 + 6 * k / 120; curve.push([C.part('Vin').value, C.dc().V(C.net.termNode.get('U1').out)]); }
+          C.part('Vin').value = keep;
+          sp.hband(-10, 10, { color: 'green', alpha: 0.05 }); sp.hline(10, { color: 'red', dash: [4, 4], width: 1 }); sp.hline(-10, { color: 'red', dash: [4, 4], width: 1 });
+          sp.text('rail', -2.95, 10.6, { color: 'red', size: 11, align: 'left' });
+          sp.path(curve, { color: 'accent', width: 2.4 }); sp.dot(keep, res.V(C.net.termNode.get('U1').out), { color: 'gold', r: 5 });
+        });
+        v.legend([['accent', 'transfer curve $V_{out}(V_{in})$'], ['red', 'supply rails', { dash: true }], ['gold', 'current dots / operating point']]);
+        v.readout(() => {
+          if (!res) return ''; const out = res.V(C.net.termNode.get('U1').out), m = res.V(C.net.termNode.get('U1').minus), g = -C.part('R2').value / C.part('R1').value;
+          return `$V_{out} = ${v.fix(out, 3)}$ V, ideal $-\\tfrac{R_2}{R_1}V_{in} = ${v.fix(g * vin.value, 3)}$ V · inverting input $${v.fix(m * 1e3, 2)}$ mV ${Math.abs(out) >= 9.999 ? '(**saturated**: virtual ground lost)' : '(virtual ground)'} · load current $${v.fix(res.I('RL') * 1e3, 3)}$ mA`;
+        });
+      },
+    },
+    {
+      num: '2.14', kind: 'Concept', name: 'A half-wave rectifier with a smoothing capacitor',
+      statement: String.raw`A diode conducts only when forward biased (Shockley: $i = I_s(e^{v/V_T} - 1)$), so it passes the positive half-waves. A capacitor across the load charges to nearly the peak, $V_p - V_D$, and between peaks discharges through the load, leaving a ripple $\Delta V \approx \dfrac{V_p}{R C f}$.`,
+      caption: String.raw`Transient simulation with Newton iterations for the diode. The dots flow only in short bursts near the peaks — the capacitor recharging. Increase $C$ to shrink the ripple.`,
+      viz(v) {
+        const s = v.stage({ x: [-1.6, 6.9], y: [-1, 3.6], equal: true, height: 270, axes: false });
+        const sp = v.stage({ x: [0, 100], y: [-11, 11], height: 270, axes: 'box', xlabel: 't (ms)', ylabel: 'V', weight: 1.2 });
+        const C = v.circuit(s, [
+          { type: 'V', id: 'Vs', wave: { type: 'sine', amp: 10, f: 50 }, ac: 10, label: '10 V, 50 Hz', at: [0, 2.6, 0, 0] },
+          { type: 'D', id: 'D1', at: [0, 2.6, 3, 2.6], label: 'Shockley' }, { type: 'W', at: [3, 2.6, 5.2, 2.6] },
+          { type: 'C', id: 'C1', value: 100e-6, at: [3, 2.6, 3, 0] }, { type: 'R', id: 'RL', value: 1e3, at: [5.2, 2.6, 5.2, 0] },
+          { type: 'W', at: [5.2, 0, 0, 0] }, { type: 'GND', at: [1.5, 0] },
+        ]);
+        C.control('C1', '$C$', 1e-6, 1e-3);
+        let tr = null, key = '';
+        v.animate((t) => {
+          const k = String(C.part('C1').value); if (k !== key) { key = k; tr = C.transient(0.1, 5e-5); }
+          const time = (t % 8) / 8 * 0.1, snap = tr.at(time), out = C.net.termNode.get('RL').a, inn = C.net.termNode.get('Vs').a;
+          C.draw({ result: snap, t: t * 0.5, vmax: 10 });
+          sp.path(tr.series(inn).map(([a, b]) => [a * 1e3, b]), { color: 'muted', width: 1.4, dash: [4, 3] });
+          sp.path(tr.series(out).map(([a, b]) => [a * 1e3, b]), { color: 'accent', width: 2.4 });
+          sp.vline(time * 1e3, { color: 'gold', width: 1.4 }); sp.dot(time * 1e3, snap.V(out), { color: 'accent', r: 4.5 });
+        });
+        v.legend([['muted', 'source $v_s$', { dash: true }], ['accent', 'load voltage'], ['gold', 'current dots']]);
+        v.readout(() => {
+          if (!tr) return ''; const out = tr.v[C.net.termNode.get('RL').a], late = Array.from(out).slice(Math.floor(out.length * 0.6)), hi = Math.max(...late), lo = Math.min(...late);
+          return `peak $${v.fix(hi, 2)}$ V (diode drop $${v.fix(10 - hi, 2)}$ V) · ripple $\\Delta V = ${v.fix(hi - lo, 2)}$ V vs estimate $V_p/(RCf) = ${v.fix(hi / (1e3 * C.part('C1').value * 50), 2)}$ V`;
+        });
+      },
+    },
+    {
+      num: '2.15', kind: 'Algorithm', name: "Grover's search on two qubits",
+      statement: String.raw`Grover's algorithm finds a marked item among $N$ in about $\tfrac\pi4\sqrt N$ queries. The **oracle** flips the sign of the marked basis state; the **diffusion** operator $2|s\rangle\langle s| - I$ reflects all amplitudes about their mean, so the marked amplitude grows. For $N = 4$ a single oracle + diffusion round finds the marked item with probability 1.`,
+      caption: String.raw`Step through the circuit. Bar heights are $|a|$ and colours the phase: after the oracle the marked state turns orange (phase $\pi$); the diffusion then concentrates all amplitude on it.`,
+      viz(v) {
+        const Q = v.quantum();
+        const sd = v.stage({ height: 150, axes: false, full: true });
+        const sa = v.stage({ height: 250, axes: false, full: true });
+        const marked = v.select('marked item', ['00', '01', '10', '11'], '11');
+        const step = v.slider('step', 0, 13, 13, { int: true });
+        const build = (m) => {
+          const qc = Q.circuit(2).h(0).h(1); const flip = () => { for (const q of [0, 1]) if (m[q] === '0') qc.x(q); };
+          flip(); qc.cz(0, 1); flip(); qc.h(0).h(1).x(0).x(1).cz(0, 1).x(0).x(1).h(0).h(1).measure(); return qc;
+        };
+        let qc = build('11'), cur = '11';
+        v.render(() => {
+          if (marked.value !== cur) { cur = marked.value; qc = build(cur); }
+          const max = qc.length; if (step.value > max) step.set(max);
+          const k = Math.min(step.value, max), psi = qc.state(k);
+          Q.diagram(sd, qc, { step: k, onPick: (j) => step.set(j), colWidth: 62 });
+          Q.amplitudes(sa, psi, { mode: 'amp' });
+        });
+        v.readout(() => { const psi = qc.state(Math.min(step.value, qc.length)); return `$|\\psi\\rangle = ${psi.ket(3)}$ · $P(${cur}) = ${v.fix(psi.prob(cur), 4)}$`; });
+      },
+    },
   ],
 };

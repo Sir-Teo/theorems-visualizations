@@ -24,8 +24,17 @@ function arrow2(S, p, q, color, label, o = {}) {
     S.tex(label, q[0], q[1], { color, size: o.size ?? 15, dx: (dx / L) * off + (o.dx || 0), dy: (dy / L) * off + (o.dy || 0) });
   }
 }
-/** Show or hide a stage (the runtime's .stage display rule overrides the bare hidden attribute). */
-function show(S, on) { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; }
+/**
+ * Show exactly the stages flagged true and resize every listed visible stage at once. (The runtime's .stage
+ * display rule overrides the bare hidden attribute, and its ResizeObserver watches only the whole viz, so a stage
+ * shown again — or widened because a neighbour vanished — would otherwise keep its old canvas size.)
+ * Called from the mode select's onChange and once during setup, never inside a draw.
+ */
+function layout(v, list) {
+  for (const [S, on] of list) { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; }
+  for (const [S, on] of list) if (on && typeof S.resize === 'function') S.resize();
+  v.invalidate();
+}
 /** Circular arc of radius r about the origin from angle t0 to t1. */
 function arc(S, r, t0, t1, st) { if (Math.abs(t1 - t0) > 1e-3) S.curve((t) => [r * Math.cos(t), r * Math.sin(t)], t0, t1, { n: 60, ...st }); }
 /** Point at fraction s ∈ [0,1] along a polyline (equal time per segment) and the part already walked. */
@@ -320,10 +329,12 @@ is the set of all lists of length $n$ of elements of $\mathbf F$, and for $(x_1,
       tags: ['vector spaces'],
       viz(v) {
         const cx = v.cx;
-        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'R3', label: '$\\R^3$' }, { value: 'C1', label: '$\\C^1$' }, { value: 'C2', label: '$\\C^2$' }], 'R3');
+        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'R3', label: '$\\R^3$' }, { value: 'C1', label: '$\\C^1$' }, { value: 'C2', label: '$\\C^2$' }], 'R3', { onChange: () => relayout() });
         const S3 = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 400, full: true });
         const P1 = v.stage({ x: [-2.4, 2.4], y: [-2, 2], equal: true, height: 340 });
         const P2 = v.stage({ x: [-2.4, 2.4], y: [-2, 2], equal: true, height: 340 });
+        const relayout = () => layout(v, [[S3, sp.value === 'R3'], [P1, sp.value !== 'R3'], [P2, sp.value === 'C2']]);
+        relayout();
         const sc = scene3(v, S3, { labels: ['x₁', 'x₂', 'x₃'] });
         const X = sc.handle([1.1, 0.9, 0.8], { color: 'accent', label: 'x' });
         const s1 = v.slider('$x_1$', -1.6, 1.6, 1.1, { step: 0.01 }), s2 = v.slider('$x_2$', -1.6, 1.6, 0.9, { step: 0.01 }), s3 = v.slider('$x_3$', -1.6, 1.6, 0.8, { step: 0.01 });
@@ -333,7 +344,6 @@ is the set of all lists of length $n$ of elements of $\mathbf F$, and for $(x_1,
         const axisLab = (S, a, b) => { S.text(a, S.bounds.x[1] - 6 / S.scale, 0, { math: true, color: 'muted', align: 'right', baseline: 'bottom', dy: -4 }); S.text(b, 0, S.bounds.y[1], { math: true, color: 'muted', align: 'left', baseline: 'top', dx: 7, dy: 5 }); };
         v.render(() => {
           const m = sp.value;
-          show(S3, m === 'R3'); show(P1, m !== 'R3'); show(P2, m === 'C2');
           for (const s of [s1, s2, s3]) s.el.hidden = m !== 'R3';
           if (m !== lastMode) {
             lastMode = m;
@@ -387,10 +397,12 @@ is the set of all lists of length $n$ of elements of $\mathbf F$, and for $(x_1,
       tags: ['vector spaces'],
       viz(v) {
         const M = v.M, cx = v.cx;
-        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'R3', label: '$\\R^3$' }, { value: 'C2', label: '$\\C^2$, coordinate by coordinate' }], 'R2');
+        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'R3', label: '$\\R^3$' }, { value: 'C2', label: '$\\C^2$, coordinate by coordinate' }], 'R2', { onChange: () => relayout() });
         const S3 = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 400, full: true });
         const P1 = v.stage({ x: [-2.6, 2.6], y: [-1.7, 2.5], equal: true, height: 360 });
         const P2 = v.stage({ x: [-2.6, 2.6], y: [-1.7, 2.5], equal: true, height: 360 });
+        const relayout = () => layout(v, [[S3, sp.value === 'R3'], [P1, sp.value !== 'R3'], [P2, sp.value === 'C2']]);
+        relayout();
         const sc = scene3(v, S3);
         const X3 = sc.handle([1.2, -0.4, 0.4], { color: 'blue', label: 'x' }), Y3 = sc.handle([-0.3, 0.9, 0.8], { color: 'orange', label: 'y' });
         const x1 = P1.handle(1.5, 0.35, { color: 'blue', label: 'x' }), y1 = P1.handle(0.3, 1.2, { color: 'orange', label: 'y' });
@@ -410,7 +422,6 @@ is the set of all lists of length $n$ of elements of $\mathbf F$, and for $(x_1,
         v.legend([['gold', 'walk $x$, then $y$', { dot: true }], ['teal', 'walk $y$, then $x$', { dot: true }], ['green', 'the common endpoint', { dot: true }]]);
         v.animate((t) => {
           const m = sp.value, s = M.smoothstep(Math.min(1, t / 3.2));
-          show(S3, m === 'R3'); show(P1, m !== 'R3'); show(P2, m === 'C2');
           if (m !== lastMode) {
             lastMode = m;
             x1.label = m === 'C2' ? 'x₁' : 'x'; y1.label = m === 'C2' ? 'y₁' : 'y';
@@ -475,13 +486,15 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
           H: { label: 'half-plane $y\\ge0$', kind: 'plane', add, smul, member: (u) => u[1] >= -1e-12, rand: (r) => [r.uniform(-2, 2), r.uniform(0, 2)] },
           T: { label: '$\\R^2$, $a\\cdot(x,y)=(ax,y)$', kind: 'plane', add, smul: (a, u) => [a * u[0], u[1]], member: () => true, rand: (r) => [r.uniform(-2, 2), r.uniform(-2, 2)] },
         };
-        const which = v.select('', Object.entries(C).map(([value, c]) => ({ value, label: c.label })), 'H');
+        const which = v.select('', Object.entries(C).map(([value, c]) => ({ value, label: c.label })), 'H', { onChange: () => relayout() });
         const sa = v.slider('$a$', -2, 2, -0.6, { step: 0.05 }), sb = v.slider('$b$', -2, 2, 0.7, { step: 0.05 });
         let seed = 7;
         v.button('Resample tests', () => { seed += 1; });
         const PL = v.stage({ x: [-2.6, 2.6], y: [-2.4, 2.4], equal: true, height: 400, weight: 1.35 });
         const G = v.stage({ x: [-2.2, 2.2], y: [-3, 3], height: 400, weight: 1.35 });
         const CK = v.stage({ x: [0, 1], y: [0, 8.6], axes: false, height: 400, weight: 1, minWidth: 300 });
+        const relayout = () => { const pl = C[which.value].kind === 'plane'; layout(v, [[PL, pl], [G, !pl], [CK, true]]); };
+        relayout();
         // elements: plane (u, w), polynomials by their values at −1, 0, 1, functions on {1,2,3} by their values
         const U = PL.handle(1.3, 0.9, { color: 'blue', label: 'u', constrain: (x, y) => [x, which.value === 'H' ? Math.max(0, y) : y] });
         const W = PL.handle(-0.6, 1.4, { color: 'orange', label: 'w', constrain: (x, y) => [x, which.value === 'H' ? Math.max(0, y) : y] });
@@ -522,7 +535,6 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
         let st = {};
         v.render(() => {
           const key = which.value, K = C[key], a = sa.value, b = sb.value;
-          show(PL, K.kind === 'plane'); show(G, K.kind !== 'plane');
           U.visible = W.visible = K.kind === 'plane';
           for (const h of [...pu, ...pw]) h.visible = K.kind === 'poly';
           for (const h of [...fu, ...fw]) h.visible = K.kind === 'bars';
@@ -607,9 +619,11 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
       tags: ['vector spaces'],
       viz(v) {
         const M = v.M;
-        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'sh', label: 'shifted: $u\\oplus w=u+w-c$' }, { value: 'pos', label: '$(0,\\infty)$, $x\\oplus y=xy$' }], 'sh');
+        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'sh', label: 'shifted: $u\\oplus w=u+w-c$' }, { value: 'pos', label: '$(0,\\infty)$, $x\\oplus y=xy$' }], 'sh', { onChange: () => relayout() });
         const S = v.stage({ x: [-2.8, 2.8], y: [-2.1, 2.1], equal: true, height: 380, ticks: false });
         const NL = v.stage({ x: [-3.3, 3.3], y: [-0.75, 3], height: 380, axes: false });
+        const relayout = () => layout(v, [[S, sp.value !== 'pos'], [NL, sp.value === 'pos']]);
+        relayout();
         const Cc = S.handle(0.9, 0.6, { color: 'green' });
         const zeroOf = () => (sp.value === 'sh' ? [Cc.x, Cc.y] : [0, 0]);
         const E = S.handle(-0.3, -0.7, { color: 'red', label: "0′", constrain: (x, y) => { const z = zeroOf(); return Math.hypot(x - z[0], y - z[1]) < 0.12 ? z : [x, y]; } });
@@ -620,7 +634,7 @@ Elements of $V$ are called *vectors* (or points). $V$ is a *real* vector space w
         let st = {};
         v.render(() => {
           const m = sp.value;
-          show(S, m !== 'pos'); show(NL, m === 'pos'); Cc.visible = m === 'sh';
+          Cc.visible = m === 'sh';
           // ---- plane versions
           {
             const c = m === 'sh' ? [Cc.x, Cc.y] : [0, 0], e = [E.x, E.y];
@@ -733,17 +747,18 @@ The steps use the additive identity, the hypothesis $v+w'=0$, associativity (and
       deps: ['ladr-1.20'],
       tags: ['vector spaces'],
       viz(v) {
-        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'pos', label: '$(0,\\infty)$, $a\\odot x=x^a$' }, { value: 'tw', label: 'twisted $a\\cdot(x,y)=(ax,y)$' }], 'R2');
+        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'pos', label: '$(0,\\infty)$, $a\\odot x=x^a$' }, { value: 'tw', label: 'twisted $a\\cdot(x,y)=(ax,y)$' }], 'R2', { onChange: () => relayout() });
         const sa = v.slider('$a$', -1.5, 2, 0.45, { step: 0.01 });
         const S = v.stage({ x: [-3.2, 3.2], y: [-2.3, 2.3], equal: true, height: 400, ticks: false });
         const NL = v.stage({ x: [-3.4, 3.4], y: [-0.75, 3], height: 400, axes: false });
+        const relayout = () => layout(v, [[S, sp.value !== 'pos'], [NL, sp.value === 'pos']]);
+        relayout();
         const COLS = ['blue', 'orange', 'purple'];
         const H = [[1.5, 1.1], [-1.4, 0.9], [0.6, -1.3]].map((p, k) => S.handle(p[0], p[1], { color: COLS[k], label: `v${'₁₂₃'[k]}`, constrain: disc(1.9) }));
         const HL = [-1.6, 0.9, 1.9].map((x, k) => NL.handle(x, 0.85 + 0.75 * k, { color: COLS[k], constrain: (xx) => [v.M.clamp(xx, -2.2, 2.2), 0.85 + 0.75 * k] }));
         let st = {};
         v.render(() => {
           const m = sp.value, a = sa.value, tw = m === 'tw';
-          show(S, m !== 'pos'); show(NL, m === 'pos');
           const mul = (t, p) => (tw ? [t * p[0], p[1]] : [t * p[0], t * p[1]]);
           // ---- plane
           H.forEach((h, k) => {

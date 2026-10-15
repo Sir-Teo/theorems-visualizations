@@ -55,12 +55,12 @@ export function getMolecule(m) {
   const bonds = m.bonds ? m.bonds.map((b) => [b[0], b[1], b[2] ?? 1]) : autoBond(atoms);
   return { name: m.name, formula: m.formula || formula({ atoms }), atoms, bonds };
 }
-/** Bonds by covalent radii: i–j bonded if d < tol·(r_i + r_j); order guessed from the contraction (≤ .81 triple, ≤ .9 double, C–C ≤ .95 aromatic). */
-export function autoBond(atoms, tol = 1.15, orders = true) {
+/** Bonds by covalent radii: i–j bonded if d < r_i + r_j + tol (Å, default 0.4 as in Jmol); order guessed from the contraction d/(r_i + r_j) (≤ .81 triple, ≤ .9 double, C–C ≤ .95 aromatic). */
+export function autoBond(atoms, tol = 0.4, orders = true) {
   const out = [];
   for (let i = 0; i < atoms.length; i++) for (let j = i + 1; j < atoms.length; j++) {
     const a = atoms[i], b = atoms[j], d = Math.hypot(a.pos[0] - b.pos[0], a.pos[1] - b.pos[1], a.pos[2] - b.pos[2]), s = el(a.el).r + el(b.el).r;
-    if (d < tol * s && d > 0.4) { const q = d / s; out.push([i, j, !orders || a.el === 'H' || b.el === 'H' ? 1 : q <= 0.81 ? 3 : q <= 0.9 ? 2 : a.el === 'C' && b.el === 'C' && q <= 0.95 ? 1.5 : 1]); }
+    if (d < s + tol && d > 0.4) { const q = d / s; out.push([i, j, !orders || a.el === 'H' || b.el === 'H' ? 1 : q <= 0.81 ? 3 : q <= 0.9 ? 2 : a.el === 'C' && b.el === 'C' && q <= 0.95 ? 1.5 : 1]); }
   }
   return out;
 }

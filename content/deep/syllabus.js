@@ -117,7 +117,7 @@ export default {
       title: 'Optimization for training',
       summary: String.raw`Neural networks are trained by variants of gradient descent on non-convex losses. The learning rate must respect the curvature, stochastic minibatches trade accuracy for speed, and momentum and adaptive step sizes cope with ill-conditioning. The landscape turns out to be friendlier than non-convexity suggests: saddle points rather than bad local minima dominate, gradient descent almost surely escapes strict saddles, and independently trained solutions are joined by low-loss paths. Full-batch training also shows behaviour no classical analysis predicts, such as the edge of stability.`,
       items: [
-        { num: '4.1', kind: 'Algorithm', name: 'Gradient descent', deps: ['pma-9.19', 'ode-5.13'], refs: ['Prince §6.1', 'Goodfellow §4.3'],
+        { num: '4.1', kind: 'Algorithm', name: 'Gradient descent', deps: ['vcalc-2.7', 'pma-9.19', 'ode-5.13'], refs: ['Prince §6.1', 'Goodfellow §4.3'],
           pic: 'Run gradient descent on a 2D loss surface from a draggable start; the path crosses the contours at right angles, and a learning-rate slider moves between slow crawling, fast convergence and divergence.' },
         { num: '4.2', kind: 'Theorem', name: 'Stability threshold of the learning rate', deps: ['deep-4.1'], refs: ['Goodfellow §4.3'],
           pic: 'On a quadratic of curvature L the iterates contract for η < 2/L and oscillate with growing amplitude beyond it; the readout compares the per-step factor |1 − ηL| with the observed ratio of successive errors.' },

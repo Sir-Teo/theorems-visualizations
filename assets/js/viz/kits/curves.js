@@ -266,7 +266,7 @@ class Curves {
     s.poly([...L, [1, 1]].reverse().concat([[0, 0]]), { fill: st.fill || 'red', fillAlpha: st.fillAlpha ?? 0.18, stroke: false });
     s.line(0, 0, 1, 1, { color: 'muted', width: 1.4, dash: [5, 4] });
     s.path(L, { color: st.color || 'accent', width: 2.4 });
-    if (st.label !== false) s.text(`Gini = ${G.toFixed(3)}`, 0.62, 0.3, { color: st.fill || 'red', size: 12.5, weight: 600, align: 'center' });
+    if (st.label !== false) { const x = 0.6, f = monotone(L.filter((p, i) => i === 0 || p[0] > L[i - 1][0])), y = (x + f(x)) / 2; s.text(`Gini = ${G.toFixed(3)}`, x, y, { color: st.fill || 'red', size: 12.5, weight: 600, align: 'center' }); } // inside the Gini area
     return G;
   }
 }

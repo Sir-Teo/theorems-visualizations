@@ -27,8 +27,17 @@ function arrow2(S, p, q, color, label, o = {}) {
     S.tex(label, q[0], q[1], { color, size: o.size ?? 15, dx: (dx / L) * off + (o.dx || 0), dy: (dy / L) * off + (o.dy || 0) });
   }
 }
-/** Show or hide a stage (the runtime's .stage display rule overrides the bare hidden attribute). */
-function show(S, on) { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; }
+/**
+ * Show exactly the stages flagged true and resize every listed visible stage at once. (The runtime's .stage
+ * display rule overrides the bare hidden attribute, and its ResizeObserver watches only the whole viz, so a stage
+ * shown again — or widened because a neighbour vanished — would otherwise keep its old canvas size.)
+ * Called from the mode select's onChange and once during setup, never inside a draw.
+ */
+function layout(v, list) {
+  for (const [S, on] of list) { S.el.hidden = !on; S.el.style.display = on ? '' : 'none'; }
+  for (const [S, on] of list) if (on && typeof S.resize === 'function') S.resize();
+  v.invalidate();
+}
 const disc = (r) => (x, y) => { const n = Math.hypot(x, y); return n > r ? [(x * r) / n, (y * r) / n] : [x, y]; };
 /** A log₂-scale number line for (0,∞) with ticks 1/8 … 8 and the zero vector 1 marked. */
 function logLine(S, y0 = 0, top = 2.5, note) {
@@ -161,18 +170,19 @@ export default {
       tags: ['vector spaces'],
       viz(v) {
         const M = v.M;
-        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'pos', label: '$(0,\\infty)$: $x\\oplus y=xy$, $a\\odot x=x^a$' }], 'R2');
+        const sp = v.select('', [{ value: 'R2', label: '$\\R^2$' }, { value: 'pos', label: '$(0,\\infty)$: $x\\oplus y=xy$, $a\\odot x=x^a$' }], 'R2', { onChange: () => relayout() });
         const sa = v.slider('$a$', -3, 2, -0.6, { step: 0.01 });
         v.button('set $a=-1$', () => sa.set(-1));
         const S = v.stage({ x: [-2.4, 2.4], y: [-2, 2], equal: true, height: 360, ticks: false, weight: 1.25 });
         const NL = v.stage({ x: [-3.3, 3.3], y: [-0.75, 2.75], height: 360, axes: false, weight: 1.25 });
         const G = v.stage({ x: [-3, 2], y: [-0.2, 4], height: 360, axes: 'box', weight: 0.85, minWidth: 230, xlabel: 'a', title: 'distance from $v+av$ to $0$' });
+        const relayout = () => layout(v, [[S, sp.value === 'R2'], [NL, sp.value === 'pos'], [G, true]]);
+        relayout();
         const V = S.handle(1.3, 0.8, { color: 'blue', label: 'v', constrain: disc(1.8) });
         const VL = NL.handle(1.4, 2.0, { color: 'blue', constrain: (x) => [M.clamp(x, -2.4, 2.4), 2.0] });
         let st = {};
         v.render(() => {
           const m = sp.value, a = sa.value, zero = Math.abs(1 + a) < 1e-9;
-          show(S, m === 'R2'); show(NL, m === 'pos');
           // ---- ℝ²
           const p = [V.x, V.y], ap = [a * p[0], a * p[1]], s = [(1 + a) * p[0], (1 + a) * p[1]];
           S.dot(-p[0], -p[1], { r: 10, color: 'green', alpha: 0.18 }); S.tex('-v', -p[0], -p[1], { color: 'green', dx: 18, dy: 14, size: 14 });
@@ -261,7 +271,7 @@ export default {
             const u = U.sample(r), w = U.sample(r), lam = r.uniform(-1.6, 1.6), s = add3(u, w), m = scl3(u, lam);
             const okS = U.member(s), okM = U.member(m);
             if (okS) inS++; if (okM) inM++;
-            if (!bad && (!okS || !okM)) bad = { u, w, s, m, lam, okS, okM };
+            if ((!okS || !okM)) { const score = len3(cross3(u, w)) + 0.3 * (len3(u) + len3(w)); if (!bad || score > bad.score) bad = { u, w, s, m, lam, okS, okM, score }; }
             pairs.push({ u, w, s, m, okS, okM });
           }
           for (const q of pairs) { sc.dot(q.s, { r: 3.2, color: q.okS ? 'green' : 'red', ring: false, top: false, bias: -0.02 }); sc.dot(q.m, { r: 2.4, color: q.okM ? 'teal' : 'red', ring: false, top: false, bias: -0.02 }); }
@@ -312,10 +322,12 @@ export default {
           p0: { label: '$p(1)=0$ in $\\mathcal P_2(\\R)$', poly: true, c: 0 },
           p1: { label: '$p(1)=1$ in $\\mathcal P_2(\\R)$', poly: true, c: 1 },
         };
-        const which = v.select('$U=$', Object.entries(SETS).map(([value, s]) => ({ value, label: s.label })), 'quad');
+        const which = v.select('$U=$', Object.entries(SETS).map(([value, s]) => ({ value, label: s.label })), 'quad', { onChange: () => relayout() });
         const sl = v.slider('$\\lambda$', -2, 2, -0.8, { step: 0.05 });
         const PL = v.stage({ x: [-2.6, 2.6], y: [-2, 2], equal: true, height: 380, ticks: false });
         const G = v.stage({ x: [-2, 2], y: [-3, 3.2], height: 380, xlabel: 'x' });
+        const relayout = () => layout(v, [[PL, !SETS[which.value].poly], [G, !!SETS[which.value].poly]]);
+        relayout();
         const cur = () => SETS[which.value];
         const U = PL.handle(1.2, 0.6, { color: 'blue', label: 'u', constrain: (x, y) => cur().proj ? cur().proj(x, y) : [x, y] });
         const W = PL.handle(0.4, 1.2, { color: 'orange', label: 'w', constrain: (x, y) => cur().proj ? cur().proj(x, y) : [x, y] });
@@ -333,7 +345,6 @@ export default {
         };
         v.render(() => {
           const key = which.value, K = SETS[key], lam = sl.value;
-          show(PL, !K.poly); show(G, !!K.poly);
           U.visible = W.visible = !K.poly; for (const h of [...pu, ...pw]) h.visible = !!K.poly;
           if (key !== lastKey && !K.poly) { lastKey = key; const a = K.proj(U.x, U.y), b = K.proj(W.x, W.y); U.x = a[0]; U.y = a[1]; W.x = b[0]; W.y = b[1]; if (key === 'axes') { U.x = 1.2; U.y = 0; W.x = 0; W.y = 1.1; } }
           if (key !== lastKey) lastKey = key;
@@ -380,13 +391,13 @@ export default {
         v.readout(() => {
           const { K, c1, ex2, ex3, first } = st; if (!K) return '';
           const show2 = (p) => (K.poly ? `p(1)=${tn(p[2])}` : vtex(p));
-          const ok = '<b style="color:var(--c-green)">✓</b>', no = '<b style="color:var(--c-red)">✗</b>';
+          const ok = '✓', no = '✗';
           const lines = [
-            `(a) $0\\in U$: ${c1 ? ok : no + (K.poly ? ' the zero polynomial has $p(1)=0\\ne1$' : ' the origin is not in the set')}`,
-            `(b) closed under addition: ${ex2 ? `${no} e.g. $u=${show2(ex2.u)}$, $w=${show2(ex2.w)}$ but $u+w$ has $${show2(ex2.s)}$` : `${ok} (your $u+w$ and 400 random pairs)`}`,
-            `(c) closed under scalar multiplication: ${ex3 ? `${no} e.g. $${tn(ex3.a)}\\cdot${show2(ex3.u)}$ gives $${show2(ex3.m)}$` : `${ok} (your $\\lambda u$ and 400 random tries)`}`,
+            `(a) $0\\in U$ ${c1 ? ok : no + (K.poly ? ' (the zero polynomial has $p(1)=0\\ne1$)' : ' (the origin is not in the set)')}`,
+            `(b) closed under addition ${ex2 ? `${no} (e.g. $u=${show2(ex2.u)}$, $w=${show2(ex2.w)}$ but $u+w$ has $${show2(ex2.s)}$)` : `${ok} (your $u+w$ and 400 random pairs)`}`,
+            `(c) closed under scalar multiplication ${ex3 ? `${no} (e.g. $${tn(ex3.a)}\\cdot${show2(ex3.u)}$ gives $${show2(ex3.m)}$)` : `${ok} (your $\\lambda u$ and 400 random tries)`}`,
           ];
-          return lines.join('\n') + '\n' + (first ? `So $U$ is **not** a subspace; the first failing condition is (${'abc'[first - 1]}).` : 'All three hold, so $U$ is a subspace; in particular $-u=(-1)u\\in U$ by (c) and Theorem 1.32.');
+          return lines.join('; ') + '. ' + (first ? `So $U$ is **not** a subspace; the first failing condition is (${'abc'[first - 1]}).` : 'All three hold, so $U$ is a subspace; in particular $-u=(-1)u\\in U$ by (c) and Theorem 1.32.');
         });
       },
     },
@@ -663,11 +674,13 @@ $$V_1+\dots+V_m=\{v_1+\dots+v_m : v_1\in V_1,\dots,v_m\in V_m\}.$$`,
       viz(v) {
         const M = v.M;
         const nU = unit([0.18, -0.28, 1]), [aU, bU] = planeBasis(nU);
-        const sp = v.select('', [{ value: 'PL', label: 'plane $U$ and line $W$' }, { value: 'PP', label: 'two planes' }], 'PL');
+        const sp = v.select('', [{ value: 'PL', label: 'plane $U$ and line $W$' }, { value: 'PP', label: 'two planes' }], 'PL', { onChange: () => relayout() });
         const tilt = v.slider('tilt of $W$ out of $U$', -90, 90, 32, { step: 0.5, fmt: (x) => `${x.toFixed(1)}°` });
-        const az = v.slider('turn $W$', 0, 360, 40, { step: 1, fmt: (x) => `${x.toFixed(0)}°` });
+        const az = v.slider('turn $W$', 0, 360, 150, { step: 1, fmt: (x) => `${x.toFixed(0)}°` });
         const S = v.stage({ x: [-2, 2], y: [-1.75, 1.75], equal: true, axes: false, height: 400, weight: 1.45 });
         const G = v.stage({ x: [-90, 90], y: [0, 5], height: 400, axes: 'box', weight: 0.85, minWidth: 230, xlabel: 'tilt', title: 'size $|w|$ of the $W$-piece of $v$', xticks: [[-90, '−90°'], [-45, '−45°'], [0, '0°'], [45, '45°'], [90, '90°']] });
+        const relayout = () => layout(v, [[S, true], [G, sp.value === 'PL']]);
+        relayout();
         const sc = scene3(v, S);
         const Vh = sc.handle([0.55, -0.35, 0.75], { color: 'gold', label: 'v' });
         const inU = (deg) => { const t = (deg * Math.PI) / 180; return add3(scl3(aU, Math.cos(t)), scl3(bU, Math.sin(t))); };
@@ -676,7 +689,6 @@ $$V_1+\dots+V_m=\{v_1+\dots+v_m : v_1\in V_1,\dots,v_m\in V_m\}.$$`,
         let st = {};
         v.render(() => {
           const m = sp.value, b = tilt.value, a = az.value, x = Vh.p, d = dirW(b, a), flat = b === 0;
-          show(G, m === 'PL');
           sc.begin();
           sc.disc(aU, bU, 1.45, { color: 'blue', fillAlpha: 0.11, grid: true });
           let u = null, w = null, info;

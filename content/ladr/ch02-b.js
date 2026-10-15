@@ -404,10 +404,14 @@ export default {
         const red = v.toggle('reduce to a basis', true);
         let seed = 7;
         v.button('Resample', () => { seed++; });
-        const UB = { 0: [], 1: orth([[0.8, -0.35, 0.5]]), 2: orth([[1, 0, -0.8], [0, 1, -0.4]]), 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) };
+        const UB = { 0: [], 1: orth([[0.8, -0.35, 0.5]]), 2: orth([[1, 0, -0.32], [0, 1, 0.215]]), 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) };
         function messy(U, sd) {
-          const r = v.rng(sd), L = [], why = [];
-          const rand = () => { for (let t = 0; t < 99; t++) { const p = comb(U.map(() => r.uniform(-1.5, 1.5)), U); if (len3(p) > 0.75 && len3(p) < 1.8) return p; } return comb(U.map(() => 1), U); };
+          const r = v.rng(sd), L = [], why = [], fresh = [];
+          const rand = () => {
+            const B = orth(fresh);
+            for (let t = 0; t < 199; t++) { const p = comb(U.map(() => r.uniform(-1.5, 1.5)), U); if (len3(p) > 0.85 && len3(p) < 1.75 && (B.length >= U.length || distTo(p, B) > 0.6 * len3(p))) { fresh.push(p); return p; } }
+            return comb(U.map(() => 1), U);
+          };
           if (!U.length) return { L: [ZERO, ZERO, ZERO], why: ['0', '0', '0'] };
           const plan = ['r'];
           const rest = ['r', 'r', 'm', 's', 'z', r() < 0.5 ? 'm' : 'r'];
@@ -431,7 +435,7 @@ export default {
           if (R && kept.length === 2) { const [a, b] = kept.map((i) => L[i]); G.poly([ZERO, a, add3(a, b), b], { fill: 'green', fillAlpha: 0.14, color: 'green', alpha: 0.5, occlude: false }); }
           L.forEach((p, i) => {
             const k = kept.includes(i), lab = `v_${i + 1}`;
-            if (len3(p) < 1e-9) { G.dot(ZERO, { r: 5, color: R ? 'faint' : 'blue', noDim: true }); return; }
+            if (len3(p) < 1e-9) { G.dot(ZERO, { r: 5, color: R ? 'faint' : 'blue', noDim: true }); G.tex(`${lab} = 0`, ZERO, { color: R ? 'muted' : 'blue', dx: -30, dy: 14, size: 13 }); return; }
             if (!R) G.vec(p, { color: 'blue', label: lab, width: 2.3, size: 14 });
             else if (k) G.vec(p, { color: 'green', label: lab, width: 3, size: 14 });
             else G.vec(p, { color: 'faint', label: lab, width: 1.5, dash: [4, 4], head: 7, size: 13 });
@@ -467,8 +471,8 @@ export default {
         const M = v.M;
         const G = scene3(v, { height: 400 });
         const len = v.select('independent list', [{ value: '1', label: '$u_1$' }, { value: '2', label: '$u_1,u_2$' }], '2');
-        const h1 = G.handle([1, 0.5, 0.5], { color: 'blue', constrain: (q) => snapGrid(q) });
-        const h2 = G.handle([0, 1, 1], { color: 'purple', constrain: (q) => snapInto(snapGrid(q), orth([h1.p]), 0.16) });
+        const h1 = G.handle([1, -0.5, -0.5], { color: 'blue', constrain: (q) => snapGrid(q) });
+        const h2 = G.handle([0.5, 1, 1], { color: 'purple', constrain: (q) => snapInto(snapGrid(q), orth([h1.p]), 0.16) });
         const E = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
         let st = null;
         v.legend([['accent', '$\\operatorname{span}(u_1,\\dots,u_m)$', { area: true }], ['green', 'survivors', { area: true }], ['faint', 'deleted', { dash: true }]]);
@@ -556,7 +560,7 @@ export default {
         const G = scene3(v, { height: 380, minWidth: 300, weight: 1.5 });
         const T = v.stage({ x: [0, 10], y: [0, 10], height: 380, axes: false, minWidth: 250, title: 'what 2.22 gives' });
         const nB = v.select('list $B$', [{ value: '1', label: '$b_1$' }, { value: '2', label: '$b_1,b_2$' }, { value: '3', label: '$b_1,b_2,b_3$' }], '2');
-        const VB = orth([[1, 0, -0.8], [0, 1, -0.4]]), inV = (q, f) => intoSpan(q, VB, f);
+        const VB = orth([[1, 0, -0.32], [0, 1, 0.215]]), inV = (q, f) => intoSpan(q, VB, f);
         const HA = [], HB = [];
         [[1.3, 0.2, -1.12], [-0.2, 1.2, -0.32]].forEach((p, i) => HA.push(G.handle(projOnto(p, VB), { color: 'blue', constrain: (q, f) => { const x = inV(q, f); return i ? snapInto(x, orth([HA[0].p]), 0.16) : x; } })));
         [[0.9, 0.9, -1.08], [-1.1, 0.5, 0.68], [0.3, -1.2, 0.24]].forEach((p, i) => HB.push(G.handle(projOnto(p, VB), { color: 'orange', constrain: (q, f) => { const x = inV(q, f); return i ? snapInto(x, orth(HB.slice(0, i).map((h) => h.p)), 0.16) : x; } })));
@@ -571,7 +575,7 @@ export default {
           if (OB.length === 1) G.lineSpan(OB[0], { color: 'orange', width: 4, alpha: 0.35, len: 2 });
           A.forEach((p, i) => G.vec(p, { color: 'blue', label: `a_${i + 1}`, width: 2.8 }));
           B.forEach((p, i) => G.vec(p, { color: 'orange', label: `b_${i + 1}`, width: 2.8 }));
-          G.text('V', mul3(VB[0], -1.75), { color: 'muted', math: true, size: 17 });
+          G.text('V', add3(mul3(VB[0], -1.45), mul3(VB[1], 1.45)), { color: 'muted', math: true, size: 18 });
           st = { lA: 2, lB: k, iA: OA.length === 2, sA: OA.length === 2, iB: OB.length === k, sB: OB.length === 2 };
         });
         v.render(() => {
@@ -619,9 +623,9 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Dimension_(vector_space)' },
       viz(v) {
         const G = scene3(v, { height: 360, minWidth: 300, weight: 1.6 });
-        const T = v.stage({ x: [-0.6, 4.6], y: [0, 10], height: 360, axes: 'box', minWidth: 220, xticks: [0, 1, 2, 3, 4], xlabel: 'basis length', title: 'tally of bases found' });
+        const T = v.stage({ x: [-0.6, 4.6], y: [0, 10], height: 360, axes: 'box', minWidth: 220, xticks: [0, 1, 2, 3, 4], title: 'tally: lengths of the bases found' });
         const sp = v.select('space', [{ value: 'line', label: 'a line' }, { value: 'plane', label: 'a plane' }, { value: 'R3', label: '$\\mathbf R^3$' }, { value: 'P2', label: '$\\mathcal P_2(\\mathbf R)$' }], 'plane');
-        const nP = [0.6, 0.3, 0.75], dirL = [0.8, -0.35, 0.5];
+        const nP = [0.3, -0.2, 0.93], dirL = [0.8, -0.35, 0.5];
         let seed = 1, cur = null;
         const tally = { line: [], plane: [], R3: [], P2: [] };
         function sample(kind, r) {
@@ -643,10 +647,10 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
         v.legend([['faint', 'six random vectors of the space', { dash: true }], ['green', 'the basis found by sifting'], ['green', 'tally', { area: true }]]);
         G.render(() => {
           const kind = sp.value;
-          if (kind !== last) { last = kind; G.labels = kind === 'P2' ? ['a₀', 'a₁', 'a₂'] : ['x', 'y', 'z']; if (!tally[kind].length) trial(); else if (!cur || cur.kind !== kind) trial(); }
+          if (kind !== last) { last = kind; G.labels = kind === 'P2' ? ['a₀', 'a₁', 'a₂'] : ['x', 'y', 'z']; if (!tally[kind].length) for (let i = 0; i < 12; i++) trial(); else if (!cur || cur.kind !== kind) trial(); }
           const { L, kept } = cur;
           if (kind === 'line') G.lineSpan(dirL, { color: 'orange', width: 3, len: 2.2 });
-          else if (kind === 'plane') G.disc(orth([[1, 0, -0.8], [0, 1, -0.4]]), { color: 'orange', r: 2, fillAlpha: 0.1 });
+          else if (kind === 'plane') G.disc(orth([[1, 0, -0.32], [0, 1, 0.215]]), { color: 'orange', r: 2, fillAlpha: 0.1 });
           else G.cube(1.6, { color: 'orange' });
           L.forEach((p, i) => { if (!kept.includes(i)) G.vec(p, { color: 'faint', width: 1.4, dash: [4, 4], head: 7 }); });
           kept.forEach((i, j) => G.vec(L[i], { color: 'green', width: 3, label: kind === 'P2' ? `p_${j + 1}` : `b_${j + 1}` }));
@@ -667,7 +671,7 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
           const name = { line: 'the line', plane: 'the plane', R3: '$\\mathbf R^3$', P2: '$\\mathcal P_2(\\mathbf R)$' }[kind];
           let extra = '';
           if (kind === 'P2') extra = ' Basis found: ' + kept.map((i, j) => { const c = L[i]; return `$p_${j + 1} = ${combTeX([c[0], c[1], c[2]], ['1', 'x', 'x^2'])}$`; }).join(', ') + '.';
-          return `All ${n} bases of ${name} found so far have length ${d}, so $\\dim = ${d}$.${extra}`;
+          return `${n === 1 ? 'The basis' : `All ${n} bases`} of ${name} found so far ${n === 1 ? 'has' : 'have'} length ${d}, so $\\dim = ${d}$.${extra}`;
         });
       },
     },
@@ -686,9 +690,9 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
         const T = v.stage({ x: [0, 3], y: [-0.4, 3.6], height: 380, axes: false, minWidth: 190, title: 'dimension gauge' });
         const Vs = v.select('$V$', [{ value: '3', label: '$\\mathbf R^3$' }, { value: '2', label: 'the plane $W$' }], '3');
         const kS = v.slider('number of vectors', 1, 4, 4, { int: true });
-        const VB = { 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), 2: orth([[1, 0, -0.8], [0, 1, -0.4]]) };
+        const VB = { 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), 2: orth([[1, 0, -0.32], [0, 1, 0.215]]) };
         const H = [];
-        [[1.3, 0.2, 0.1], [0.1, 1.2, 0.4], [-0.3, 0.3, 1.3], [0.9, -0.9, 0.7]].forEach((p, i) => H.push(G.handle(p, {
+        [[1.3, 0.2, 0.1], [0.1, 1.2, 0.4], [-0.3, 0.3, 1.3], [-1.0, -0.5, 0.8]].forEach((p, i) => H.push(G.handle(p, {
           color: VC[i],
           constrain: (q, f) => snapInto(intoSpan(q, VB[Vs.value], f), orth(H.slice(0, i).map((h) => h.p)), 0.16),
         })));
@@ -700,14 +704,15 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
           H.forEach((h, i) => { h.visible = i < k; });
           const vs = H.slice(0, k).map((h) => h.p), B = orth(vs), kept = siftIdx(vs);
           if (VBv.length === 2) G.disc(VBv, { color: 'orange', r: 2.05, fillAlpha: 0.07 }); else G.cube(1.6, { color: 'orange' });
-          if (B.length === 2) G.disc(B, { color: 'accent', r: 1.75, fillAlpha: 0.2 }); else if (B.length === 1) G.lineSpan(B[0], { color: 'accent', width: 6, alpha: 0.4 }); else if (B.length === 3) G.cube(1.25, { color: 'accent' });
+          if (B.length === 2) G.disc(B, { color: 'accent', r: VBv.length === 2 ? 2.05 : 1.8, fillAlpha: 0.2 }); else if (B.length === 1) G.lineSpan(B[0], { color: 'accent', width: 6, alpha: 0.4 });
           vs.forEach((p, i) => G.vec(p, { color: kept.includes(i) ? VC[i] : 'faint', label: `v_${i + 1}`, width: kept.includes(i) ? 2.8 : 1.8, dash: kept.includes(i) ? undefined : [4, 4] }));
+          G.corner(B.length === VBv.length ? `U = V: the vectors fill ${VBv.length === 3 ? 'ℝ³' : 'the plane W'}` : `U is ${['{0}', 'a line', 'a plane'][B.length]} inside V`, 'tl', { color: B.length === VBv.length ? 'green' : 'muted', weight: 600 });
           st = { dU: B.length, dV: VBv.length, k, kept };
         });
         v.render(() => {
           if (!st) return;
           const { dU, dV, k, kept } = st;
-          for (let j = 0; j < 3; j++) { T.rect(0.35, j, 1.15, j + 0.92, { fill: j < dU ? 'accent' : 'grid', fillAlpha: j < dU ? 0.55 : 0.4, color: j < dU ? 'accent' : 'faint', width: 1 }); T.rect(1.85, j, 2.65, j + 0.92, { fill: j < dV ? 'orange' : 'grid', fillAlpha: j < dV ? 0.5 : 0.4, color: j < dV ? 'orange' : 'faint', width: 1 }); }
+          for (let j = 0; j < 3; j++) { T.rect(0.5, j + 0.04, 1.0, j + 0.88, { fill: j < dU ? 'accent' : 'grid', fillAlpha: j < dU ? 0.55 : 0.4, color: j < dU ? 'accent' : 'faint', width: 1 }); T.rect(2.0, j + 0.04, 2.5, j + 0.88, { fill: j < dV ? 'orange' : 'grid', fillAlpha: j < dV ? 0.5 : 0.4, color: j < dV ? 'orange' : 'faint', width: 1 }); }
           T.text(`dim U = ${dU}`, 0.75, -0.22, { align: 'center', size: 13, color: 'accent', weight: 600 }); T.text(`dim V = ${dV}`, 2.25, -0.22, { align: 'center', size: 13, color: 'orange', weight: 600 });
           T.text(dU <= dV ? '≤  ✓' : '>', 1.5, 1.5, { align: 'center', size: 18, color: dU <= dV ? 'green' : 'red', weight: 700 });
           T.text(`${k - kept.length} of ${k} vectors redundant`, 1.5, 3.35, { align: 'center', size: 12, color: 'muted' });
@@ -771,16 +776,16 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
       name: 'Subspace of full dimension equals the whole space',
       statement: String.raw`Suppose $V$ is finite-dimensional and $U$ is a subspace of $V$ with $\dim U=\dim V$. Then $U=V$.`,
       idea: String.raw`Let $u_1,\dots,u_n$ be a basis of $U$, so $n=\dim U=\dim V$. It is a linearly independent list in $V$ of length $\dim V$, hence a basis of $V$ by 2.38. So every vector of $V$ is a combination of the $u$'s, i.e. lies in $U$.`,
-      caption: String.raw`Choose $V$ ($\mathbf R^3$ or the plane $W$) and grow the subspace $U$ by adding vectors (they stay in $V$; a tip near the span of the earlier ones snaps into it). The dots are a grid of sample points of $V$, lit green when they lie in $U$. Line, plane: almost all of $V$ stays dark. The moment $\dim U$ reaches $\dim V$, every sample point lights up — $U$ has become $V$.`,
+      caption: String.raw`Choose $V$ ($\mathbf R^3$ or the plane $W$) and grow the subspace $U$ with the slider, dragging its spanning vectors (they stay in $V$; in $\mathbf R^3$ their coordinates snap to the grid, and a tip near the span of the earlier ones snaps into it). The dots are a grid of sample points of $V$, lit green when they lie in $U$. A line or a plane catches only a few of them. The moment $\dim U$ reaches $\dim V$, every sample point lights up — $U$ has become $V$.`,
       deps: ['ladr-2.38'],
       tags: ['dimension'],
       viz(v) {
         const G = scene3(v, { height: 410 });
         const Vs = v.select('$V$', [{ value: '3', label: '$\\mathbf R^3$' }, { value: '2', label: 'the plane $W$' }], '3');
         const kS = v.slider('vectors spanning $U$', 0, 3, 2, { int: true });
-        const VB = { 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), 2: orth([[1, 0, -0.8], [0, 1, -0.4]]) };
+        const VB = { 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), 2: orth([[1, 0, -0.32], [0, 1, 0.215]]) };
         const H = [];
-        [[1.25, 0.25, 0.15], [0.05, 1.2, 0.5], [-0.35, 0.2, 1.25]].forEach((p, i) => H.push(G.handle(p, { color: VC[i], constrain: (q, f) => snapInto(intoSpan(q, VB[Vs.value], f), orth(H.slice(0, i).map((h) => h.p)), 0.16) })));
+        [[1.2, 0, 0], [0, 1.2, 0.6], [-0.6, 0, 1.2]].forEach((p, i) => H.push(G.handle(p, { color: VC[i], constrain: (q, f) => snapInto(Vs.value === '3' ? snapGrid(q, 0.6, 0.08) : intoSpan(q, VB[Vs.value], f), orth(H.slice(0, i).map((h) => h.p)), 0.16) })));
         const grid = { 3: [], 2: [] };
         for (const a of [-1, -0.5, 0, 0.5, 1]) for (const b of [-1, -0.5, 0, 0.5, 1]) for (const c of [-1, -0.5, 0, 0.5, 1]) grid[3].push([a * 1.2, b * 1.2, c * 1.2]);
         for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) { const p = add3(mul3(VB[2][0], i * 0.45), mul3(VB[2][1], j * 0.45)); if (len3(p) < 1.9) grid[2].push(p); }
@@ -863,23 +868,23 @@ For example, $\dim\mathbf F^n=n$ (standard basis) and $\dim\mathcal P_m(\mathbf 
       statement: String.raw`If $V_1$ and $V_2$ are subspaces of a finite-dimensional vector space, then
 $$\dim(V_1+V_2)=\dim V_1+\dim V_2-\dim(V_1\cap V_2).$$`,
       idea: String.raw`Choose a basis $u_1,\dots,u_m$ of $V_1\cap V_2$ and extend it (2.32) to a basis $u_1,\dots,u_m,v_1,\dots,v_j$ of $V_1$ and to a basis $u_1,\dots,u_m,w_1,\dots,w_k$ of $V_2$. The combined list $u_1,\dots,u_m,v_1,\dots,v_j,w_1,\dots,w_k$ spans $V_1+V_2$, and a short computation using $V_1\cap V_2=\spn(u_1,\dots,u_m)$ shows it is linearly independent. So $\dim(V_1+V_2)=m+j+k=(m+j)+(m+k)-m$. It is the inclusion–exclusion formula of counting, for dimensions.`,
-      caption: String.raw`$V_1$ (blue) is fixed; $V_2$ (orange) is spanned by $w_1$ (and $w_2$), which you can drag — a tip near $V_1$ snaps into it. The green part is $V_1\cap V_2$; the arrows $u$, $v$, $w$ are the bases from the proof. The two sides of the formula are computed independently (the intersection by solving a linear system, the sum from a spanning list). Rotate $V_2$ until it falls into $V_1$: the intersection jumps up and the sum drops by the same amount.`,
+      caption: String.raw`$V_1$ (blue) is fixed; $V_2$ (orange) is spanned by one or two vectors whose tips (orange dots) you can drag — a tip near $V_1$ snaps into it. The green part is $V_1\cap V_2$; the arrows $u$, $v$, $w$ are the bases from the proof. The two sides of the formula are computed independently (the intersection by solving a linear system, the sum from a spanning list). Rotate $V_2$ until it falls into $V_1$: the intersection jumps up and the sum drops by the same amount.`,
       deps: ['ladr-2.32', 'ladr-2.35'],
       tags: ['dimension'],
       credit: 'Grassmann, 1844',
       viz(v) {
         const M = v.M;
-        const G = scene3(v, { height: 420 });
+        const G = scene3(v, { height: 420, pitch: 0.75 });
         const t1 = v.select('$V_1$', [{ value: '1', label: 'line' }, { value: '2', label: 'plane' }], '2');
         const t2 = v.select('$V_2$', [{ value: '1', label: 'line' }, { value: '2', label: 'plane' }], '2');
         const V1B = { 1: [unit3([1, 0.35, 0.1])], 2: orth([[1, 0, 0.25], [0, 1, -0.15]]) };
         const H = [];
-        [[0.4, 1.1, 1.0], [1.1, -0.4, 0.9]].forEach((p, i) => H.push(G.handle(p, {
+        [[0.1, 1.1, 0.9], [-0.2, -0.9, 1.3]].forEach((p, i) => H.push(G.handle(p, {
           color: 'orange',
           constrain: (q) => { let x = snapInto(q, V1B[t1.value], 0.16); if (i) x = snapInto(x, orth([H[0].p]), 0.16); return x; },
         })));
         let st = null;
-        v.legend([['blue', '$V_1$', { area: true }], ['orange', '$V_2$', { area: true }], ['green', '$V_1\\cap V_2$', { area: true }]]);
+        v.legend([['blue', '$V_1$', { area: true }], ['orange', '$V_2$', { area: true }], ['green', '$V_1\\cap V_2$', { area: true }], ['purple', '$V_1+V_2$ when it is a plane', { area: true }]]);
         G.render(() => {
           const B1 = V1B[t1.value], k2 = +t2.value; H[1].visible = k2 === 2;
           const W = H.slice(0, k2).map((h) => h.p), B2 = orth(W);
@@ -890,7 +895,7 @@ $$\dim(V_1+V_2)=\dim V_1+\dim V_2-\dim(V_1\cap V_2).$$`,
           if (B1.length === 2) G.disc(B1, { color: 'blue', r: 2, fillAlpha: 0.12 }); else G.lineSpan(B1[0], { color: 'blue', width: 4, len: 2.2, alpha: 0.55 });
           if (B2.length === 2) G.disc(B2, { color: 'orange', r: 2, fillAlpha: 0.12 }); else if (B2.length === 1) G.lineSpan(B2[0], { color: 'orange', width: 4, len: 2.2, alpha: 0.55 });
           if (I.length === 1) G.lineSpan(I[0], { color: 'green', width: 7, len: 2.1, alpha: 0.75 }); else if (I.length === 0) G.dot(ZERO, { r: 6, color: 'green', noDim: true });
-          if (S.length === 3) G.cube(1.75, { color: 'purple', fillAlpha: 0.02, alpha: 0.25 });
+          if (S.length === 2 && S.length > Math.max(B1.length, B2.length)) G.disc(S, { color: 'purple', r: 2.15, fillAlpha: 0.05, alpha: 0.6 });
           // the bases of the proof: u's (intersection), extended by v's (in V1) and w's (in V2)
           const us = I.map((e) => mul3(e, 1.3));
           const vx = siftIdx([...us, ...B1]).slice(us.length).map((i) => mul3([...us, ...B1][i], 1.3));
@@ -898,7 +903,7 @@ $$\dim(V_1+V_2)=\dim V_1+\dim V_2-\dim(V_1\cap V_2).$$`,
           us.forEach((p, i) => G.vec(p, { color: 'green', label: `u_${i + 1}`, width: 3.2 }));
           vx.forEach((p, i) => G.vec(p, { color: 'blue', label: `v_${i + 1}`, width: 3.2 }));
           wx.forEach((p, i) => G.vec(p, { color: 'orange', label: `w_${i + 1}`, width: 3.2, at: 0.62, off: 13 }));
-          W.forEach((p) => G.dot(p, { r: 3, color: 'orange', noDim: true }));
+          W.forEach((p) => G.arrow(ZERO, p, { color: 'orange', width: 1.3, alpha: 0.6, dash: [2, 3], head: 0 }));
           const d1 = B1.length, d2 = B2.length, di = I.length, ds = S.length;
           G.corner(`${d1} + ${d2} − ${di} = ${d1 + d2 - di} = dim(V₁ + V₂)`, 'tl', { color: d1 + d2 - di === ds ? 'green' : 'red', weight: 600 });
           st = { d1, d2, di, ds, m: us.length, j: vx.length, k: wx.length };

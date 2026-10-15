@@ -1,4 +1,68 @@
 // Syllabus — Classical Mechanics (curated course; see collection.js for references)
+//
+// ── Research audit (2026-10) ────────────────────────────────────────────────────────────
+// The first draft was written from memory; it was then checked against the sources below.
+//
+// Tables of contents of the references
+//   • Tong, Lectures on Classical Dynamics (Cambridge Part II), full TOC from the PDF:
+//     https://www.damtp.cam.ac.uk/user/tong/dynamics/clas.pdf (now https://davidtong.org/teaching/classical-dynamics/)
+//   • Goldstein–Poole–Safko 3e: full TOC, exercises and subject index read from
+//     https://www.math.toronto.edu/khesin/biblio/GoldsteinPooleSafkoClassicalMechanics.pdf ;
+//     chapter list also at https://www.pearson.com/store/en-us/p/classical-mechanics/P200000006871/9780201657029
+//   • Arnold, Mathematical Methods of Classical Mechanics 2e: full §1–§52 + appendix list, OCR text of
+//     https://archive.org/details/MathematicalMethodsOfClassicalMechanics (Springer GTM 60, 978-1-4757-2063-1)
+//   • Taylor, Classical Mechanics: chapter titles from the UMD PHYS 410 schedule
+//     https://www.physics.umd.edu/courses/Phys410/Anlage_Fall14/ ; ch. 1 sections from the publisher sample chapter
+//     https://sites.evergreen.edu/psam1617/wp-content/uploads/sites/175/2016/08/MechanicsCh01x.pdf ; ch. 9 and §11.1–11.3
+//     from https://www.overleaf.com/latex/templates/chapter-review-notes/npqqbrvfkwqh and https://sites.evergreen.edu/psam1617/?p=556 ;
+//     §4.5/4.7/4.9 and §8.6/8.7 confirmed from course notes. The publisher TOC (https://uscibooks.aip.org/?p=2549) was
+//     unreachable, so the remaining Taylor section numbers are from memory, consistent with every confirmed one;
+//     where the topic did not match a section title a chapter-level ref is used.
+// Course syllabi
+//   • Cambridge Mathematical Tripos schedules (IA Dynamics and Relativity, IB Variational Principles, II Classical Dynamics):
+//     https://www.maths.cam.ac.uk/undergrad/files/schedules.pdf
+//   • MIT OCW 8.09 Classical Mechanics III (Fall 2014), syllabus + lecture notes:
+//     https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/
+//   • MIT OCW 8.223 Classical Mechanics II (IAP 2017): https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/pages/lecture-notes/
+//   • Oxford B7.1 Classical Mechanics synopsis: https://courses.maths.ox.ac.uk/course/view.php?id=6067
+//   • Caltech Ph106ab notes (Golwala), TOC: http://www.astro.caltech.edu/~golwala/ph106ab/ph106ab_notes.pdf
+// Named results
+//   • https://en.wikipedia.org/wiki/List_of_equations_in_classical_mechanics
+//   • Wikipedia categories Classical mechanics, Lagrangian mechanics, Hamiltonian mechanics, Rigid bodies mechanics,
+//     Pendulums, Chaotic maps, Conservation laws, Dynamics (mechanics), Celestial mechanics
+//     (https://en.wikipedia.org/wiki/Category:Classical_mechanics and siblings); Goldstein's subject index.
+//
+// What changed (all existing numbers kept)
+//   • Added (appended to chapters): 6.17 geodesic motion of purely kinetic Lagrangians (Tong §2.5.6, Cambridge II);
+//     8.21 vis-viva / energy fixes the semi-major axis; 8.22 Hamilton's hodograph; 10.19 Chasles' theorem;
+//     10.20 unit quaternions / double cover (Goldstein §4.5); 10.21 falling cat (Tong §3.7); 11.15 Lagrange–Dirichlet
+//     theorem (Arnold §22); 11.16–11.17 Lagrangian field theory and Noether currents (Goldstein ch. 13, Taylor ch. 16,
+//     Cambridge IB); 12.22 Routh's procedure (Goldstein §8.3); 12.23 Liouville's equation (Tong §4.2.1);
+//     12.24 Hamilton–Jacobi separation of variables + Kepler degeneracy (Goldstein §10.4–10.8, MIT 8.09);
+//     12.25 Hannay's angle (Tong §4.6.3).
+//   • Ref corrections: 4.16 (Duffing jumps are Goldstein Ex. 11.8), 5.11 (hanging chain is Goldstein Ex. 2.9),
+//     5.14 (conjugate/focal points: Arnold App. 11), 6.10, 6.16 (Goldstein Deriv. 1.8), 7.10 (Goldstein Ex. 2.19),
+//     8.8 (third law is Goldstein §3.8), 8.13 (perihelion precession is Goldstein §12.3, not §3.9), 9.12 (Tong §2.5.5),
+//     10.6, 10.8, 12.9 (SO(4) of Kepler is Goldstein §9.8), 13.6, 13.8 (Poincaré's geometric theorem: Arnold App. 9),
+//     13.9 (splitting of separatrices: Arnold App. 7), 13.10 (Arnold App. 1). Names: 4.16 Duffing, 8.6 Binet,
+//     10.3 Huygens–Steiner, 10.12 tennis-racket, 13.6 Chirikov, 13.9 splitting of separatrices; 12.15 kind → Method.
+//   • Checked and kept: virial theorem in the central-force chapter (as in Goldstein §3.4; Landau ties it to similarity),
+//     Lagrange points under rotating frames, scattering (8.17–8.19), three-body (8.20), LRL / SO(4) (8.10, 12.9),
+//     rolling and nonholonomic constraints (6.3, 10.6), Foucault, tides, Euler angles. Item 5.12 (isoperimetric
+//     inequality) and 12.15 (symplectic integrators) have no dedicated section in the four references; their refs
+//     point to the nearest supporting material (constrained variations, the symplectic condition).
+//
+// Deliberately left out
+//   • Special relativity (Goldstein ch. 7, Taylor ch. 15, Cambridge IA) → `rel`; continuum mechanics, elasticity and
+//     fluids (Taylor ch. 16, MIT 8.09 ch. 6) → `solid`, `fluid`; point vortices (Tong §4.3.3, Cambridge II) → fluid-3.7;
+//     dimensional analysis → fluid-6.6; generic bifurcations, Poincaré–Bendixson, Lyapunov theory → `ode`;
+//     group velocity and wave packets → `waves`; Bohr–Sommerfeld / Hamilton–Jacobi → Schrödinger (Tong §4.8) → `qm`.
+//   • Statics of rigid bodies (covered in principle by virtual work, 6.4); Kovalevskaya's top, rattleback, tippe top,
+//     satellite nodal precession (Goldstein §5.8), magnetic monopole and Nambu brackets (Tong): absent from most
+//     sources or too specialised. Gauss's least constraint, Hertz's principle, Appell and Udwadia–Kalaba equations,
+//     Newton's revolving-orbits theorem, Bonnet's and Siacci's theorems, Fermi–Pasta–Ulam–Tsingou: obscure for a
+//     course map or outside all four references.
+// ─────────────────────────────────────────────────────────────────────────────────────────
 export default {
   collection: 'mech',
   chapters: [
@@ -154,7 +218,7 @@ export default {
           pic: 'Plot the period against amplitude from the elliptic integral and from simulation; the curve starts flat at 2π√(L/g) and climbs to infinity as the release angle approaches the upright position.' },
         { num: '4.15', kind: 'Definition', name: 'Pendulum phase portrait and the separatrix', deps: ['mech-4.14', 'mech-4.5'], refs: ['Arnold §4', 'Taylor §12.7'],
           pic: 'On the (θ, ω) cylinder, drag an initial condition across the separatrix: closed librations turn into whirling rotations, and the period readout blows up at the crossing.' },
-        { num: '4.16', kind: 'Phenomenon', name: 'Nonlinear resonance: bent curves and jumps', deps: ['mech-4.10', 'mech-4.3'], refs: ['Goldstein §11.7'],
+        { num: '4.16', kind: 'Phenomenon', name: 'Duffing oscillator: bent resonance curves and jumps', deps: ['mech-4.10', 'mech-4.3'], refs: ['Goldstein Ex. 11.8'],
           pic: 'Slowly sweep the drive frequency of a Duffing oscillator up and then down; the response curve leans over and the amplitude jumps at different frequencies in the two directions (hysteresis).' },
         { num: '4.17', kind: 'Phenomenon', name: 'Parametric resonance', deps: ['mech-4.2', 'mech-4.4'], refs: ['Arnold §25', 'Goldstein §11.7'],
           pic: 'Modulate a pendulum’s length at frequency Ω like a child pumping a swing; the instability tongues near Ω = 2ω₀/n are computed from the monodromy trace, and clicking inside or outside one shows growth or bounded motion.' },
@@ -190,13 +254,13 @@ export default {
           pic: 'Pull two coaxial rings apart: the catenoid narrows, its area is compared with two flat discs, and past a critical separation no catenoid exists and the film snaps to the discs.' },
         { num: '5.10', kind: 'Method', name: 'Lagrange multipliers for constrained functionals', deps: ['mech-5.4', 'pma-9.28'], refs: ['Goldstein §2.4'],
           pic: 'Maximise a functional over curves of fixed length: the level sets of the objective and the constraint are drawn in a two-parameter family of trial curves and touch exactly at the optimum, with λ read off.' },
-        { num: '5.11', kind: 'Model', name: 'Hanging chain: the catenary', deps: ['mech-5.10', 'mech-5.6'], refs: ['Goldstein §2.4'],
+        { num: '5.11', kind: 'Model', name: 'Hanging chain: the catenary', deps: ['mech-5.10', 'mech-5.6'], refs: ['Goldstein Ex. 2.9', 'Goldstein §2.2'],
           pic: 'Hang a chain of beads between draggable supports; the relaxed simulation settles onto a cosh curve fitted live, and lengthening the chain changes the multiplier but not the family.' },
         { num: '5.12', kind: 'Theorem', name: 'Isoperimetric inequality (Dido’s problem)', deps: ['mech-5.10'], refs: ['Goldstein §2.4'],
           pic: 'Reshape a closed loop of fixed length by dragging its vertices; the ratio 4πA/L² never exceeds 1 and approaches it only as the loop rounds into a circle.' },
         { num: '5.13', kind: 'Definition', name: 'Geodesics on surfaces', deps: ['mech-5.4', 'pma-6.27'], refs: ['Taylor §6.3', 'Arnold §12'],
           pic: 'Shoot geodesics on a cylinder, a cone and a sphere; unrolling the cylinder and cone turns them into straight lines, while on the sphere they are great circles.' },
-        { num: '5.14', kind: 'Theorem', name: 'Extremals need not minimise: conjugate points', deps: ['mech-5.13', 'pma-5.15'], refs: ['Arnold §12'],
+        { num: '5.14', kind: 'Theorem', name: 'Extremals need not minimise: conjugate points', deps: ['mech-5.13', 'pma-5.15'], refs: ['Arnold App. 11'],
           pic: 'Great-circle arcs from the north pole are stationary for length, but extend one past the south pole (the conjugate point) and a small sideways perturbation shortens it — the second variation changes sign.' },
       ],
     },
@@ -204,7 +268,7 @@ export default {
     {
       n: 6,
       title: 'Lagrangian mechanics',
-      summary: String.raw`A system’s possible positions form a configuration space, often curved by constraints and best described with generalized coordinates. D’Alembert’s principle removes the workless constraint forces, and Hamilton’s principle of stationary action packages the whole dynamics into a single variational problem whose Euler–Lagrange equations are Lagrange’s equations — valid in every coordinate system. Classic examples (double Atwood machine, pendulum on a cart, bead on a rotating hoop, spherical pendulum) show the method’s power; Lagrange multipliers recover the constraint forces when we want them.`,
+      summary: String.raw`A system’s possible positions form a configuration space, often curved by constraints and best described with generalized coordinates. D’Alembert’s principle removes the workless constraint forces, and Hamilton’s principle of stationary action packages the whole dynamics into a single variational problem whose Euler–Lagrange equations are Lagrange’s equations — valid in every coordinate system. Classic examples (double Atwood machine, pendulum on a cart, bead on a rotating hoop, spherical pendulum) show the method’s power; Lagrange multipliers recover the constraint forces when we want them. With no potential at all, motion simply runs along the geodesics of configuration space.`,
       items: [
         { num: '6.1', kind: 'Definition', name: 'Configuration space and degrees of freedom', deps: ['mech-1.1'], refs: ['Arnold §17', 'Tong §2.3'],
           pic: 'A double pendulum moves beside its configuration space, the torus of two angles, drawn both as a doughnut and as a square with opposite edges glued; the state point moves in sync.' },
@@ -224,7 +288,7 @@ export default {
           pic: 'For a pendulum hanging from a sliding cart, plot the generalized momentum ∂L/∂ẋ against the cart’s own mẋ; the difference is the pendulum’s share, and only the former is conserved.' },
         { num: '6.9', kind: 'Model', name: 'Double Atwood machine', deps: ['mech-6.6', 'mech-1.16'], refs: ['Taylor §7.5'],
           pic: 'A pulley hangs from a pulley; set three masses and watch two degrees of freedom move, with the accelerations from Lagrange’s equations matching a tension-by-tension Newtonian solution.' },
-        { num: '6.10', kind: 'Model', name: 'Pendulum hanging from a sliding cart', deps: ['mech-6.6', 'mech-2.4'], refs: ['Taylor §7.5', 'Goldstein §1.6'],
+        { num: '6.10', kind: 'Model', name: 'Pendulum hanging from a sliding cart', deps: ['mech-6.6', 'mech-2.4'], refs: ['Taylor ch. 7'],
           pic: 'A pendulum swings from a cart on a frictionless rail: the cart recoils with each swing, the horizontal centre of mass stays put, and a mass-ratio slider changes the frequency.' },
         { num: '6.11', kind: 'Model', name: 'Bead on a rotating hoop: a pitchfork bifurcation', deps: ['mech-6.6', 'mech-3.12'], refs: ['Taylor §7.5', 'Tong §2.5'],
           pic: 'Spin the hoop faster: past ω = √(g/R) the bottom loses stability and two new equilibria appear at cos θ = g/(Rω²); the effective potential and the pitchfork diagram update with the spin slider.' },
@@ -236,8 +300,10 @@ export default {
           pic: 'Integrate L = ½mv² − qφ + qv·A for a cyclotron orbit; apply a gauge change A → A + ∇χ and the trajectory is unchanged while the canonical momentum readout shifts.' },
         { num: '6.15', kind: 'Definition', name: 'Rayleigh dissipation function', deps: ['mech-6.6', 'mech-4.7'], refs: ['Goldstein §1.5'],
           pic: 'A damped two-mass system is integrated from Lagrange’s equations with a dissipation function; the measured rate of energy loss equals twice the dissipation function at every instant.' },
-        { num: '6.16', kind: 'Theorem', name: 'Adding a total derivative leaves the motion unchanged', deps: ['mech-6.5'], refs: ['Goldstein §1.4'],
+        { num: '6.16', kind: 'Theorem', name: 'Adding a total derivative leaves the motion unchanged', deps: ['mech-6.5'], refs: ['Goldstein Deriv. 1.8'],
           pic: 'Add dF(q,t)/dt to a Lagrangian with F chosen by the reader; the action of every path shifts only by endpoint terms, so the stationary path and the simulated motion stay the same.' },
+        { num: '6.17', kind: 'Theorem', name: 'Purely kinetic Lagrangians: free motion is geodesic', deps: ['mech-6.6', 'mech-5.13', 'mech-7.7'], refs: ['Tong §2.5', 'Arnold §45'],
+          pic: 'A frictionless bead feeling no force slides on a surface you sculpt (sphere, torus, saddle, surface of revolution); its path lies on the geodesic between its endpoints, its speed never changes, and on a surface of revolution Clairaut’s r·sin ψ (ψ measured from the meridian) stays constant.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -264,7 +330,7 @@ export default {
           pic: 'For the bead on a hoop driven at constant ω, plot T + U and h together: the motor’s work makes the energy oscillate, yet h stays exactly constant.' },
         { num: '7.9', kind: 'Corollary', name: 'Galilean boosts: the centre of mass moves uniformly', deps: ['mech-7.3', 'mech-1.8', 'mech-2.4'], refs: ['Tong §2.4'],
           pic: 'Two interacting particles: their positions wobble, but the boost charge MX − Pt is flat in time, which is the statement that the centre of mass coasts uniformly.' },
-        { num: '7.10', kind: 'Proposition', name: 'Screw symmetry and its conserved combination', deps: ['mech-7.3'], refs: ['Goldstein §2.6'],
+        { num: '7.10', kind: 'Proposition', name: 'Screw symmetry and its conserved combination', deps: ['mech-7.3'], refs: ['Goldstein Ex. 2.19'],
           pic: 'A particle in a helically twisted potential: p_z and L_z each oscillate, but the combination L_z + (h/2π)·p_z (h the pitch, sign set by the handedness) stays constant, and changing the pitch changes the conserved mix.' },
         { num: '7.11', kind: 'Theorem', name: 'Ten classical conservation laws', deps: ['mech-7.4', 'mech-7.5', 'mech-7.7', 'mech-7.9'], refs: ['Arnold §10', 'Tong §2.4'],
           pic: 'An N-body cluster with live readouts of E, P, L and the boost charge K: all ten stay constant (energy to the small bounded error of the symplectic integrator), and an external field breaks a chosen subset.' },
@@ -276,7 +342,7 @@ export default {
     {
       n: 8,
       title: 'Central forces and orbits',
-      summary: String.raw`Two bodies attracting each other reduce to one body of reduced mass in a central field, and conservation of angular momentum reduces that to one-dimensional motion in an effective potential. For the inverse-square law the orbits are conics: Kepler’s three laws follow, and the Laplace–Runge–Lenz vector explains why the ellipses do not precess. Bertrand’s theorem says only two force laws close all bounded orbits. The same machinery describes orbital manoeuvres, the virial theorem, Rutherford scattering and the transition to the three-body problem.`,
+      summary: String.raw`Two bodies attracting each other reduce to one body of reduced mass in a central field, and conservation of angular momentum reduces that to one-dimensional motion in an effective potential. For the inverse-square law the orbits are conics: Kepler’s three laws follow, the energy fixes the semi-major axis, the velocities trace a circle, and the Laplace–Runge–Lenz vector explains why the ellipses do not precess. Bertrand’s theorem says only two force laws close all bounded orbits. The same machinery describes orbital manoeuvres, the virial theorem, Rutherford scattering and the transition to the three-body problem.`,
       items: [
         { num: '8.1', kind: 'Theorem', name: 'Newton’s shell theorem', deps: ['mech-1.17', 'pma-10.51'], refs: ['Taylor §4.8'],
           pic: 'Move a test mass in and out of a spherical shell; the field is summed numerically ring by ring and matches a point mass outside and zero inside — replace the sphere by a cube and both claims fail.' },
@@ -288,11 +354,11 @@ export default {
           pic: 'Drag the energy across the gravitational effective potential: at the bottom a circle, below zero ellipses, at zero a parabola, above zero hyperbolas.' },
         { num: '8.5', kind: 'Theorem', name: 'Kepler’s second law', deps: ['mech-2.10', 'mech-8.2'], refs: ['Taylor §8.3', 'Goldstein §3.2'],
           pic: 'Shade the area swept by the radius in equal time slices of an eccentric orbit; the wedges change shape but their area readouts are identical — switch to a non-central force and they differ.' },
-        { num: '8.6', kind: 'Theorem', name: 'The orbit equation', deps: ['mech-8.3'], refs: ['Taylor §8.5', 'Goldstein §3.5'],
+        { num: '8.6', kind: 'Theorem', name: 'The orbit equation (Binet’s equation)', deps: ['mech-8.3'], refs: ['Taylor §8.5', 'Goldstein §3.5'],
           pic: 'Pick a force law; integrating the equation for u = 1/r as a function of angle and integrating the motion in time produce the same orbit, overlaid.' },
         { num: '8.7', kind: 'Theorem', name: 'Kepler’s first law: conic orbits', deps: ['mech-8.6', 'mech-1.17'], refs: ['Taylor §8.6', 'Goldstein §3.7'],
           pic: 'Launch a planet with a draggable velocity; the traced orbit is fitted by a conic with the Sun at a focus and the eccentricity is read off — change the exponent to 2.1 and the ellipse starts to precess.' },
-        { num: '8.8', kind: 'Theorem', name: 'Kepler’s third law', deps: ['mech-8.7', 'mech-8.5'], refs: ['Taylor §8.6', 'Goldstein §3.7'],
+        { num: '8.8', kind: 'Theorem', name: 'Kepler’s third law', deps: ['mech-8.7', 'mech-8.5'], refs: ['Taylor §8.6', 'Goldstein §3.8'],
           pic: 'Several planets with different semi-major axes and eccentricities: a log–log plot of period against semi-major axis lands on a line of slope 3/2, regardless of eccentricity.' },
         { num: '8.9', kind: 'Model', name: 'Kepler’s equation: position in time', deps: ['mech-8.8', 'pma-9.23'], refs: ['Goldstein §3.8'],
           pic: 'Mean, eccentric and true anomalies are drawn on the ellipse and its auxiliary circle; Kepler’s equation is solved by the fixed-point iteration E ← M + e sin E, shown as a cobweb converging for every e < 1.' },
@@ -302,7 +368,7 @@ export default {
           pic: 'Perturb a circular orbit under F ∝ r^n: for n > −3 it wobbles with apsidal angle π/√(n+3) (computed and measured), for n < −3 it spirals in or out.' },
         { num: '8.12', kind: 'Theorem', name: 'Bertrand’s theorem', deps: ['mech-8.11', 'mech-8.6'], refs: ['Goldstein §3.6', 'Arnold §8'],
           pic: 'Slide the force exponent and launch bounded orbits of various sizes: only for the linear spring and the inverse-square law do all of them close; nearby exponents give rosettes.' },
-        { num: '8.13', kind: 'Phenomenon', name: 'Precession of the perihelion', deps: ['mech-8.10', 'mech-8.11'], refs: ['Goldstein §3.9'],
+        { num: '8.13', kind: 'Phenomenon', name: 'Precession of the perihelion', deps: ['mech-8.10', 'mech-8.11'], refs: ['Goldstein §12.3'],
           pic: 'Add a perturbation — an outer ring of mass or a relativistic-style 1/r³ term — and measure the perihelion advance per orbit against the first-order formula as the strength slider moves.' },
         { num: '8.14', kind: 'Phenomenon', name: 'Hohmann transfer orbits', deps: ['mech-8.7', 'mech-8.4'], refs: ['Taylor §8.8'],
           pic: 'Transfer a spacecraft between two circular orbits with two tangential burns; Δv readouts are compared with other transfers, and burning forward to catch a target that is ahead shows the counterintuitive phasing.' },
@@ -318,6 +384,10 @@ export default {
           pic: 'The same collision is drawn in both frames; with the projectile heavier than the target the lab angle never exceeds a maximum, shown as the tangent to the velocity circle.' },
         { num: '8.20', kind: 'Phenomenon', name: 'The three-body problem', deps: ['mech-8.2', 'mech-7.11'], refs: ['Goldstein §3.12', 'Tong §2.5'],
           pic: 'Three equal masses start on the figure-eight choreography integrated with a symplectic scheme; a small push makes the orbit wander and eventually eject a body, while the energy error stays bounded.' },
+        { num: '8.21', kind: 'Proposition', name: 'Orbital energy and the vis-viva equation', deps: ['mech-8.7', 'mech-8.4', 'mech-3.6'], refs: ['Goldstein §3.7', 'Taylor §8.6'],
+          pic: 'Launch satellites from one point with the same speed in different directions: all their ellipses share one semi-major axis and one period, as E = −GMm/2a demands, and the speed readout along every orbit follows v² = GM(2/r − 1/a).' },
+        { num: '8.22', kind: 'Theorem', name: 'Hamilton’s hodograph: Kepler velocities trace a circle', deps: ['mech-8.10', 'mech-8.5'], refs: ['Goldstein Ex. 3.29'],
+          pic: 'Drag the launch velocity of a Kepler orbit: the velocity vectors, redrawn from a common origin, have tips on an exact circle offset from the origin in proportion to the eccentricity; switch to a non-inverse-square force and the circle deforms.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -348,7 +418,7 @@ export default {
           pic: 'A top view of the pendulum’s trace, with Earth’s rotation sped up: its plane turns at Ω sin λ, so the readout period is a day at the pole, longer at mid-latitudes and infinite at the equator.' },
         { num: '9.11', kind: 'Phenomenon', name: 'Inertial circles and geostrophic flow', deps: ['mech-9.8'], refs: ['Taylor §9.7'],
           pic: 'A parcel set moving on a rotating plane traces inertial circles of period π/(Ω sin λ); add a pressure gradient and it settles into flow along the isobars, around a low as in a cyclone.' },
-        { num: '9.12', kind: 'Model', name: 'Restricted three-body problem: Lagrange points', deps: ['mech-9.6', 'mech-8.2', 'mech-3.12'], refs: ['Tong §2.6', 'Goldstein §3.12'],
+        { num: '9.12', kind: 'Model', name: 'Restricted three-body problem: Lagrange points', deps: ['mech-9.6', 'mech-8.2', 'mech-3.12'], refs: ['Tong §2.5', 'Goldstein §3.12'],
           pic: 'Contours of the co-rotating effective potential show the five Lagrange points; drop test particles near L4 to see tadpole and horseshoe orbits, and raise the mass ratio past Routh’s value to destabilise them.' },
         { num: '9.13', kind: 'Theorem', name: 'Larmor’s theorem', deps: ['mech-9.6', 'mech-1.18'], refs: ['Goldstein §5.9'],
           pic: 'An orbit in a central field with a weak magnetic field added is compared with the field-free orbit viewed from a frame rotating at qB/2m; they agree until B is made strong.' },
@@ -358,23 +428,23 @@ export default {
     {
       n: 10,
       title: 'Rigid bodies',
-      summary: String.raw`A rigid body’s orientation changes by rotations, and every displacement about a fixed point is a rotation about some axis. Its rotational inertia is a symmetric tensor whose eigenvectors, the principal axes, are the directions where angular momentum and angular velocity line up. Euler’s equations govern free and torqued rotation: spinning about the intermediate axis is unstable, a symmetric top precesses and nutates, gyroscopes precess slowly under weak torques, and Earth’s own axis wobbles and circles the sky over 26,000 years.`,
+      summary: String.raw`A rigid body’s orientation changes by rotations, and every displacement about a fixed point is a rotation about some axis. Its rotational inertia is a symmetric tensor whose eigenvectors, the principal axes, are the directions where angular momentum and angular velocity line up. Euler’s equations govern free and torqued rotation: spinning about the intermediate axis is unstable, a symmetric top precesses and nutates, gyroscopes precess slowly under weak torques, and Earth’s own axis wobbles and circles the sky over 26,000 years. We close with the geometry of motions themselves: every rigid displacement is a screw, rotations are double-covered by unit quaternions, and a falling cat turns over without any angular momentum.`,
       items: [
         { num: '10.1', kind: 'Theorem', name: 'Euler’s rotation theorem', deps: ['pma-9.34', 'pma-9.35'], refs: ['Goldstein §4.6'],
           pic: 'Compose two rotations of a cube; the composite’s fixed axis is computed as the eigenvector with eigenvalue 1 and drawn, and a single rotation about it reproduces the final orientation.' },
         { num: '10.2', kind: 'Definition', name: 'Moment of inertia about an axis', deps: ['mech-2.12', 'pma-10.1'], refs: ['Taylor §10.2'],
           pic: 'Choose a shape and drag the rotation axis; the moment of inertia is computed by numerical integration and the same torque spins the body up slower when the axis moves away from the mass.' },
-        { num: '10.3', kind: 'Theorem', name: 'Parallel-axis theorem', deps: ['mech-10.2', 'mech-2.3'], refs: ['Tong §3.2', 'Taylor §10.3'],
+        { num: '10.3', kind: 'Theorem', name: 'Parallel-axis (Huygens–Steiner) theorem', deps: ['mech-10.2', 'mech-2.3'], refs: ['Tong §3.2', 'Taylor §10.3'],
           pic: 'Drag the axis away from the centre of mass: the integrated moment of inertia traces the parabola I_cm + Md², with its minimum exactly at the centre of mass.' },
         { num: '10.4', kind: 'Theorem', name: 'Perpendicular-axis theorem', deps: ['mech-10.2'], refs: ['Taylor §10.2'],
           pic: 'For a flat lamina you draw, the moments about two in-plane axes and the normal axis are computed separately and the readout confirms I_z = I_x + I_y; give the body thickness and it fails.' },
         { num: '10.5', kind: 'Model', name: 'Physical pendulum', deps: ['mech-10.3', 'mech-4.4'], refs: ['Taylor §10.2'],
           pic: 'Drag the pivot along a swinging bar: the period is plotted against pivot distance, it is shortest at the radius of gyration, and two pivots with equal period mark Kater’s reversible pendulum.' },
-        { num: '10.6', kind: 'Model', name: 'Rolling without slipping', deps: ['mech-10.2', 'mech-3.7', 'mech-1.15'], refs: ['Taylor §10.1'],
+        { num: '10.6', kind: 'Model', name: 'Rolling without slipping', deps: ['mech-10.2', 'mech-3.7', 'mech-1.15'], refs: ['Goldstein §2.4', 'Taylor ch. 10'],
           pic: 'A hoop, a disc and a sphere race down an incline: acceleration g sin θ/(1 + I/MR²) decides the order, and lowering the friction coefficient below its threshold makes them skid.' },
         { num: '10.7', kind: 'Definition', name: 'Inertia tensor', deps: ['mech-10.2', 'mech-9.4'], refs: ['Taylor §10.3', 'Goldstein §5.3'],
           pic: 'Spin an asymmetric body about an axis you choose: the angular momentum arrow L = Iω is drawn next to ω, generally pointing in a different direction.' },
-        { num: '10.8', kind: 'Theorem', name: 'Principal axes of inertia', deps: ['mech-10.7', 'fa-12.30'], refs: ['Taylor §10.5', 'Goldstein §5.4'],
+        { num: '10.8', kind: 'Theorem', name: 'Principal axes of inertia', deps: ['mech-10.7', 'fa-12.30'], refs: ['Taylor §10.4', 'Goldstein §5.4'],
           pic: 'Place point masses to build a body; its inertia tensor is diagonalised live, and turning ω until L lines up with it lands exactly on one of the three orthogonal eigenvectors drawn.' },
         { num: '10.9', kind: 'Definition', name: 'Rotational energy and the inertia ellipsoid', deps: ['mech-10.8', 'mech-3.7'], refs: ['Arnold §28', 'Goldstein §5.6'],
           pic: 'The ellipsoid ωᵀIω = 2T is drawn around the body; L is normal to it at the tip of ω, and reshaping the mass distribution reshapes the ellipsoid.' },
@@ -382,7 +452,7 @@ export default {
           pic: 'A gyroscope supported at one end precesses instead of falling; the precession rate is plotted against spin and follows Mgl/(I₃ω₃) for fast spin, failing as the spin slider drops.' },
         { num: '10.11', kind: 'Theorem', name: 'Euler’s equations', deps: ['mech-10.8', 'mech-9.5', 'mech-2.9'], refs: ['Taylor §10.7', 'Goldstein §5.5'],
           pic: 'Body-frame angular velocity components are integrated from Euler’s equations and compared with a full simulation of the tumbling body; switch on a torque and the components respond.' },
-        { num: '10.12', kind: 'Theorem', name: 'Intermediate-axis theorem', deps: ['mech-10.11', 'mech-10.9'], refs: ['Taylor §10.8', 'Tong §3.4'],
+        { num: '10.12', kind: 'Theorem', name: 'Intermediate-axis (tennis-racket) theorem', deps: ['mech-10.11', 'mech-10.9'], refs: ['Taylor §10.8', 'Tong §3.4'],
           pic: 'A T-handle in orbit spins about each principal axis in turn: about the largest and smallest it stays put, about the middle one it flips periodically; ω-paths on the energy ellipsoid show the separatrices.' },
         { num: '10.13', kind: 'Model', name: 'Poinsot’s construction', deps: ['mech-10.11', 'mech-10.9'], refs: ['Arnold §29', 'Goldstein §5.6'],
           pic: 'The inertia ellipsoid rolls without slipping on the fixed invariable plane; the polhode traced on the body and the herpolhode traced on the plane are drawn as the motion runs.' },
@@ -396,13 +466,19 @@ export default {
           pic: 'A top spinning upright with friction slowly draining its spin: it stays asleep while ω₃² exceeds 4MglI₁/I₃², then begins to wobble and falls into precession when the readout crosses the threshold.' },
         { num: '10.18', kind: 'Phenomenon', name: 'Precession of the equinoxes', deps: ['mech-10.10', 'mech-9.3'], refs: ['Goldstein §5.8', 'Tong §3.6'],
           pic: 'Sun and Moon pull on Earth’s equatorial bulge; the torque arrows and the precessing spin axis are drawn on a millennia slider, and the pole star moves from Polaris toward Vega.' },
+        { num: '10.19', kind: 'Theorem', name: 'Chasles’ theorem: every rigid motion is a screw', deps: ['mech-10.1'], refs: ['Goldstein §4.6'],
+          pic: 'Move a block from one pose to another by any mix of rotations and translations; the equivalent screw axis is computed and drawn, and a single turn about it combined with a slide along it reproduces the final pose.' },
+        { num: '10.20', kind: 'Theorem', name: 'Unit quaternions double-cover the rotations', deps: ['mech-10.1', 'mech-10.15'], refs: ['Goldstein §4.5', 'Goldstein App. A'],
+          pic: 'A cube tied to the walls by ribbons is turned about any axis (Dirac’s belt trick): after 360° the ribbons stay tangled, after 720° they can be untangled without turning the cube; the matching unit quaternion ends at −1 after one turn and returns to +1 after two.' },
+        { num: '10.21', kind: 'Phenomenon', name: 'Falling cat: turning with zero angular momentum', deps: ['mech-2.11', 'mech-10.7'], refs: ['Tong §3.7'],
+          pic: 'A two-part body starting with zero angular momentum runs through a loop of shape changes you design; its angular momentum readout stays at zero, yet it ends up rotated by an angle that grows with the area the loop encloses in shape space.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11
     {
       n: 11,
       title: 'Small oscillations and normal modes',
-      summary: String.raw`Near a stable equilibrium every system with many degrees of freedom is a set of coupled springs, described by a quadratic kinetic and potential energy. Simultaneously diagonalising the two quadratic forms gives the normal modes: independent oscillators whose superpositions produce beats, energy exchange and avoided crossings. Chains of masses lead to dispersion and, in the continuum limit, to waves on a string; Rayleigh’s principle and interlacing explain how frequencies respond to changes, and negative eigenvalues signal instability.`,
+      summary: String.raw`Near a stable equilibrium every system with many degrees of freedom is a set of coupled springs, described by a quadratic kinetic and potential energy. Simultaneously diagonalising the two quadratic forms gives the normal modes: independent oscillators whose superpositions produce beats, energy exchange and avoided crossings. Chains of masses lead to dispersion and, in the continuum limit, to waves on a string; Rayleigh’s principle and interlacing explain how frequencies respond to changes, negative eigenvalues signal instability, and the Lagrange–Dirichlet theorem guarantees stability at any strict minimum of the potential. Taking the continuum limit inside the action gives Lagrangian field theory, where Noether’s theorem produces local densities and fluxes.`,
       items: [
         { num: '11.1', kind: 'Model', name: 'Two masses and three springs', deps: ['mech-4.2', 'mech-6.6'], refs: ['Taylor §11.1'],
           pic: 'Two carts coupled by springs start from displacements you set; the motion is split live into an in-phase and an out-of-phase mode, each oscillating at its own fixed frequency.' },
@@ -432,13 +508,19 @@ export default {
           pic: 'Detune one of two coupled oscillators and plot the normal-mode frequencies: they approach and repel with a gap proportional to the coupling, crossing only when the coupling slider is zero.' },
         { num: '11.14', kind: 'Theorem', name: 'Unstable modes and saddle equilibria', deps: ['mech-11.4', 'mech-3.12'], refs: ['Arnold §22', 'Tong §2.6'],
           pic: 'At a saddle of a potential surface one eigenvalue of the linearised problem is negative; trajectories started nearby escape exponentially along its eigenvector while oscillating along the other.' },
+        { num: '11.15', kind: 'Theorem', name: 'Lagrange–Dirichlet theorem: potential minima are stable', deps: ['mech-3.12', 'mech-3.6', 'mech-6.6', 'ode-5.6'], refs: ['Arnold §22'],
+          pic: 'Start trajectories near the bottom of a potential surface you sculpt, including a flat quartic minimum where linearisation says nothing: an energy level set closes a small cup around the minimum that traps every nearby trajectory, while near a saddle they escape.' },
+        { num: '11.16', kind: 'Theorem', name: 'Lagrangian density and the field Euler–Lagrange equation', deps: ['mech-11.9', 'mech-6.5', 'mech-5.4'], refs: ['Goldstein §13.1', 'Goldstein §13.2'],
+          pic: 'Refine a bead chain into a string and watch the summed Lagrangian become ∫(½μẏ² − ½τy′²)dx; its field Euler–Lagrange equation is the wave equation, and editing the density (add a restoring term or a y⁴ term) changes the equation and the simulated waves accordingly.' },
+        { num: '11.17', kind: 'Theorem', name: 'Noether’s theorem for fields: conserved currents', deps: ['mech-11.16', 'mech-7.3'], refs: ['Goldstein §13.3', 'Goldstein §13.7'],
+          pic: 'On a simulated string the energy density and energy flux (from time translations) and the momentum density (from space translations) are plotted along x; the energy inside any window you mark changes exactly by the net flux through its ends.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12
     {
       n: 12,
       title: 'Hamiltonian mechanics',
-      summary: String.raw`The Legendre transform trades velocities for momenta and the Lagrangian for the Hamiltonian, turning the dynamics into a first-order flow on phase space. Poisson brackets encode that flow algebraically, canonical transformations change coordinates without spoiling it, and conserved quantities generate symmetries. Liouville’s theorem — the flow preserves phase-space volume — underlies statistical mechanics and good numerical integrators. For integrable systems action–angle variables make the motion uniform rotation on tori, the action is an adiabatic invariant, and perturbation theory computes how frequencies shift.`,
+      summary: String.raw`The Legendre transform trades velocities for momenta and the Lagrangian for the Hamiltonian, turning the dynamics into a first-order flow on phase space. Poisson brackets encode that flow algebraically, canonical transformations change coordinates without spoiling it, and conserved quantities generate symmetries. Liouville’s theorem — the flow preserves phase-space volume — underlies statistical mechanics and good numerical integrators. For integrable systems action–angle variables make the motion uniform rotation on tori, separation of variables in the Hamilton–Jacobi equation finds them, the action is an adiabatic invariant (with a geometric Hannay angle left over), and perturbation theory computes how frequencies shift. Routh’s procedure and Liouville’s equation round out the toolkit.`,
       items: [
         { num: '12.1', kind: 'Definition', name: 'Legendre transform', deps: ['rca-3.1', 'pma-9.24'], refs: ['Arnold §14', 'Tong §4.1'],
           pic: 'For a convex function, drag the slope p: the tangent line with that slope is drawn and its intercept gives −f*(p); transforming twice returns f, while a non-convex f comes back as its convex hull.' },
@@ -456,7 +538,7 @@ export default {
           pic: 'Pick two functions on the phase plane; their level curves are drawn and the bracket {f, g}, the Jacobian ∂(f,g)/∂(q,p), is shaded as the signed area spanned by their gradients.' },
         { num: '12.8', kind: 'Theorem', name: 'Jacobi identity and Poisson’s theorem', deps: ['mech-12.7', 'pma-9.41'], refs: ['Goldstein §9.6', 'Arnold §40'],
           pic: 'In a system with L_x and L_y both conserved, their bracket L_z is conserved too, and the readouts confirm it; the Jacobi identity is checked numerically at random phase points.' },
-        { num: '12.9', kind: 'Theorem', name: 'Hidden symmetry of the Kepler problem', deps: ['mech-12.8', 'mech-8.10'], refs: ['Tong §4.3', 'Goldstein §9.7'],
+        { num: '12.9', kind: 'Theorem', name: 'Hidden symmetry of the Kepler problem', deps: ['mech-12.8', 'mech-8.10'], refs: ['Tong §4.3', 'Goldstein §9.8'],
           pic: 'The flow generated by a component of the Runge–Lenz vector deforms a Kepler ellipse through all orbits of the same energy — circle to needle — while the period and semi-major axis stay fixed.' },
         { num: '12.10', kind: 'Definition', name: 'Canonical transformations', deps: ['mech-12.7'], refs: ['Goldstein §9.1', 'Tong §4.4'],
           pic: 'Apply a transformation to a grid of phase-space cells: canonical ones preserve each cell’s area and the brackets {Q, P} = 1, while a non-canonical squeeze changes both and distorts Hamilton’s equations.' },
@@ -468,7 +550,7 @@ export default {
           pic: 'A blob of initial conditions in the pendulum’s phase plane stretches into a long filament, but its area (computed from the boundary polygon) stays constant; turn on damping and it shrinks.' },
         { num: '12.14', kind: 'Theorem', name: 'Poincaré’s integral invariant', deps: ['mech-12.13', 'pma-10.33'], refs: ['Arnold §44'],
           pic: 'A closed loop of initial conditions in a two-degree-of-freedom system is carried by the flow; the projected areas onto the (q₁,p₁) and (q₂,p₂) planes trade back and forth while their sum ∮p·dq stays constant.' },
-        { num: '12.15', kind: 'Theorem', name: 'Symplectic integrators', deps: ['mech-12.13', 'mech-12.10'], refs: ['Goldstein §9.4'],
+        { num: '12.15', kind: 'Method', name: 'Symplectic integrators', deps: ['mech-12.13', 'mech-12.10'], refs: ['Goldstein §9.4'],
           pic: 'Integrate a Kepler orbit for a thousand periods with RK4 and with leapfrog at the same step size: RK4’s energy drifts and the orbit decays, while leapfrog’s energy error oscillates within a bounded band.' },
         { num: '12.16', kind: 'Method', name: 'Hamilton–Jacobi equation', deps: ['mech-12.11'], refs: ['Goldstein §10.1', 'Tong §4.7'],
           pic: 'Wavefronts of Hamilton’s principal function for a family of projectiles are drawn as level sets of S, with trajectories as rays crossing them at right angles, like light rays and wavefronts in optics.' },
@@ -482,6 +564,14 @@ export default {
           pic: 'A charged particle spirals into a converging magnetic field; its magnetic moment stays nearly constant, so it slows along the field and bounces, unless its pitch angle lies in the loss cone.' },
         { num: '12.21', kind: 'Method', name: 'Canonical perturbation theory', deps: ['mech-12.17'], refs: ['Goldstein §12.4'],
           pic: 'Add a quartic term to an oscillator; the first-order frequency shift obtained by averaging over the angle is compared with the simulated frequency as the perturbation strength grows until the series fails.' },
+        { num: '12.22', kind: 'Method', name: 'Routh’s procedure: the Routhian', deps: ['mech-12.2', 'mech-7.12'], refs: ['Goldstein §8.3'],
+          pic: 'For a bead on a spinning cone or a spherical pendulum, the Routhian R = L − p_φφ̇ is built with p_φ held fixed: it acts as a Lagrangian for the remaining coordinate, its effective potential predicts which steady circular motions are stable, and perturbing them in the full simulation confirms it.' },
+        { num: '12.23', kind: 'Theorem', name: 'Liouville’s equation for phase-space densities', deps: ['mech-12.13', 'mech-12.7'], refs: ['Tong §4.2', 'Goldstein §9.9'],
+          pic: 'A smooth density of pendulum initial conditions is evolved on a grid by ∂ρ/∂t = {H, ρ} and compared with sample points pushed along the flow; the density is constant along each trajectory, and any density that depends on H alone stays frozen.' },
+        { num: '12.24', kind: 'Method', name: 'Separation of variables in the Hamilton–Jacobi equation', deps: ['mech-12.16', 'mech-12.17', 'mech-8.7'], refs: ['Goldstein §10.5', 'Tong §4.7'],
+          pic: 'For the Kepler problem in spherical coordinates the Hamilton–Jacobi equation splits into radial, polar and azimuthal pieces, each giving an action; the energy depends only on their sum, so the radial and angular frequencies coincide and every bound orbit closes — perturb the potential and the frequencies split.' },
+        { num: '12.25', kind: 'Phenomenon', name: 'Hannay’s angle: a classical geometric phase', deps: ['mech-12.19', 'mech-12.17', 'mech-9.10'], refs: ['Tong §4.6'],
+          pic: 'Carry a pendulum slowly around a latitude circle (or slowly turn a hoop carrying a bead): after one circuit its swing plane comes back turned by the solid angle the path encloses, whatever the speed of the circuit as long as it is slow, reproducing the Foucault rotation 2π sin λ per day.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 13
@@ -500,15 +590,15 @@ export default {
           pic: 'Two trajectories start 10⁻⁹ apart; the log of their separation grows linearly in time in the chaotic regime (slope = Lyapunov exponent) and only logarithmically on a regular torus.' },
         { num: '13.5', kind: 'Phenomenon', name: 'Chaos in the double pendulum', deps: ['mech-13.4', 'mech-11.6'], refs: ['Tong §2.5'],
           pic: 'Release twin double pendulums from almost the same angles: at low energy they stay together, at high energy they diverge completely; a map of flip times over the initial angles is fractal, and the symplectic integrator’s energy error stays bounded.' },
-        { num: '13.6', kind: 'Model', name: 'Standard map (kicked rotor)', deps: ['mech-13.2', 'mech-12.10'], refs: ['Goldstein §11.5'],
+        { num: '13.6', kind: 'Model', name: 'Chirikov standard map (kicked rotor)', deps: ['mech-13.2', 'mech-12.10'], refs: ['Goldstein §11.5', 'Arnold App. 9'],
           pic: 'Iterate the area-preserving standard map from many seeds with a kick-strength slider K; invariant curves dominate at small K and dissolve into a chaotic sea as K passes 1.' },
         { num: '13.7', kind: 'Theorem', name: 'KAM theorem (statement)', deps: ['mech-12.18', 'mech-12.21', 'mech-13.6'], refs: ['Goldstein §11.2', 'Arnold App. 8'],
           pic: 'In the standard map, tori with sufficiently irrational rotation numbers survive small kicks while rational ones break; the golden-mean curve is the last to go near K ≈ 0.9716.' },
-        { num: '13.8', kind: 'Theorem', name: 'Poincaré–Birkhoff theorem: island chains', deps: ['mech-13.7'], refs: ['Goldstein §11.2'],
+        { num: '13.8', kind: 'Theorem', name: 'Poincaré–Birkhoff theorem: island chains', deps: ['mech-13.7'], refs: ['Arnold App. 9'],
           pic: 'Zoom in on a rational torus of a perturbed twist map: it breaks into a chain of alternating elliptic islands and hyperbolic points, as many of each as the rotation number’s denominator.' },
-        { num: '13.9', kind: 'Phenomenon', name: 'Homoclinic tangle and the chaotic layer', deps: ['mech-13.6', 'mech-4.15'], refs: ['Goldstein §11.5'],
+        { num: '13.9', kind: 'Phenomenon', name: 'Splitting of separatrices: the homoclinic tangle', deps: ['mech-13.6', 'mech-4.15'], refs: ['Arnold App. 7'],
           pic: 'For a periodically forced pendulum, the stable and unstable manifolds of the hyperbolic point are computed and drawn; they cross transversally infinitely often, and the chaotic layer around the old separatrix widens with forcing.' },
-        { num: '13.10', kind: 'Model', name: 'Billiards: integrable, mixed and chaotic', deps: ['mech-13.2', 'mech-12.10'], refs: ['Goldstein §11.5'],
+        { num: '13.10', kind: 'Model', name: 'Billiards: integrable, mixed and chaotic', deps: ['mech-13.2', 'mech-12.10'], refs: ['Arnold App. 1'],
           pic: 'Choose a table — circle, ellipse, stadium, mushroom — and shoot a ball; its Birkhoff phase portrait (position on the wall versus angle) shows caustics, islands or a single chaotic sea.' },
         { num: '13.11', kind: 'Concept', name: 'Ergodicity and time averages', deps: ['mech-13.1', 'fa-12.44', 'mech-13.10'], refs: ['Arnold §51'],
           pic: 'Run a ball for a long time in a stadium and in a circle: the time-averaged position density converges to uniform in the ergodic stadium and stays ring-shaped in the circle.' },

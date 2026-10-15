@@ -1,4 +1,32 @@
 // Syllabus — Partial Differential Equations (curated course; see collection.js for references)
+//
+// Sources consulted (research pass, Oct 2026):
+//   - Evans, Partial Differential Equations 2e (AMS GSM 19) — part/chapter TOC (four linear PDE;
+//     nonlinear first-order; other representations; Sobolev spaces; elliptic; linear evolution;
+//     calculus of variations; nonvariational techniques; Hamilton–Jacobi; conservation laws;
+//     nonlinear waves): https://unicat.nalis.bg/Record/AUBG.000218893/TOC ,
+//     https://www.ebay.com/itm/137260973013 . Section refs (§2.1–2.4, §3.2–3.4, §4.1–4.6, §5.2–5.8,
+//     §6.1–6.5, §7.1–7.4, §8.1–8.6, §9.1–9.6, §10.1) follow the standard 2nd-edition numbering.
+//   - Strauss, Partial Differential Equations: An Introduction 2e — the Wiley TOC PDF could not be
+//     retrieved (https://www.wiley.com/en-us/Partial+Differential+Equations%3A+An+Introduction%2C+2nd+Edition-p-9780470054567);
+//     section refs follow the standard 2nd-edition numbering (ch. 1 origins, 2 waves & diffusions,
+//     3 reflections & sources, 4 boundary problems, 5 Fourier series, 6 harmonic functions, 7 Green,
+//     8 computation, 9 waves in space, 10 boundaries in plane & space, 11 eigenvalue problems,
+//     12 distributions & transforms, 14 nonlinear PDE) and should be spot-checked against a copy.
+//   - MIT OCW 18.152 Introduction to PDEs (Fall 2011) lecture calendar (heat uniqueness & max
+//     principle, fundamental solutions, Green functions, Harnack & Liouville, spherical means,
+//     Kirchhoff, energy estimates, classification, Fourier/Plancherel, Schrödinger, Lagrangian field
+//     theory, transport & Burgers): https://ocw.mit.edu/courses/18-152-introduction-to-partial-differential-equations-fall-2011/pages/calendar/
+//   - Wikipedia, List of partial differential equation topics (named equations and methods):
+//     https://en.wikipedia.org/wiki/List_of_partial_differential_equation_topics
+// Gaps filled after comparison: Tychonoff's example, backward heat ill-posedness, heat balls,
+//   Harnack/Liouville (18.152), Lorentz invariance & spherical waves, Schrödinger spreading, Noether
+//   for fields (18.152 Lagrangian field theory), viscosity solutions, Barenblatt, Weyl's law,
+//   isospectral drums, Lax equivalence, spectral methods.
+// Deliberate omissions: Navier–Stokes and Euler (in `fluid`), Maxwell (in `em`), hydrogen atom (in
+//   `qm`), systems of conservation laws and nonlinear wave equations (Evans ch. 11–12, too
+//   specialised for this level), Atiyah–Singer and other index theory.
+// Web search budget ran out mid-research; remaining checks were done with direct page fetches.
 export default {
   collection: 'pde',
   chapters: [
@@ -192,6 +220,10 @@ export default {
           pic: 'A high-frequency wave passes a lens-shaped region of lower speed; its wavefronts are computed and the rays (normal to the fronts) bend and focus as the eikonal equation predicts.' },
         { num: '6.8', kind: 'Model', name: 'Free Schrödinger equation and spreading wave packets', deps: ['pde-3.3', 'pde-2.9'], refs: ['Strauss §9.4'],
           pic: 'A Gaussian wave packet with adjustable momentum moves and spreads; |ψ|² keeps unit integral while its width grows, unlike the heat equation which also spreads but loses oscillations.' },
+        { num: '6.9', kind: 'Theorem', name: 'Lorentz invariance of the wave equation', deps: ['pde-6.1'], refs: ['Strauss §9.2'],
+          pic: 'Apply a Lorentz boost with a velocity slider to a solution in the (x, t) plane; the boosted function still satisfies the wave equation (residual readout) and the light cone is mapped to itself.' },
+        { num: '6.10', kind: 'Phenomenon', name: 'Spherical waves and 1/r decay', deps: ['pde-6.2'], refs: ['Strauss §9.2'],
+          pic: 'An outgoing radial wave F(r − ct)/r is animated; its amplitude falls like 1/r while the energy flux through spheres of every radius stays the same, read out as the wave expands.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 7
@@ -360,6 +392,62 @@ export default {
           pic: 'On an energy landscape with two valleys, paths joining them are minimized over their highest point; the optimal path crosses a saddle, and the gradient flow from nearby points shows it is a critical point.' },
         { num: '11.10', kind: 'Model', name: 'The heat equation as a gradient flow', deps: ['pde-11.5', 'pde-3.2'], refs: ['Evans §9.6'],
           pic: 'Steepest descent of the Dirichlet energy ∫|∇u|²/2 in L² is run step by step and coincides with the heat equation, while the energy readout decreases monotonically.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 12
+    {
+      n: 12,
+      title: 'Nonlinear phenomena',
+      summary: String.raw`Nonlinear terms bring behaviour that linear equations cannot show. Reaction and diffusion together produce invading fronts and, through Turing’s mechanism, stationary patterns from a uniform state. Sub- and supersolutions trap solutions between known ones, superlinear growth can blow up in finite time, identities from scaling rule out solutions altogether, and symmetry methods prove that positive solutions on balls are radial.`,
+      items: [
+        { num: '12.1', kind: 'Method', name: 'Sub- and supersolutions', deps: ['pde-10.15'], refs: ['Evans §9.3'],
+          pic: 'Draw an ordered pair of a subsolution and a supersolution for a nonlinear elliptic problem; monotone iteration from either converges to solutions trapped between them, shown iterate by iterate.' },
+        { num: '12.2', kind: 'Phenomenon', name: 'Finite-time blow-up for nonlinear heat equations', deps: ['pde-3.1', 'ode-1.14'], refs: ['Evans §9.4'],
+          pic: 'Evolve u_t = Δu + u² from initial data with an amplitude slider; small data decay by diffusion, large data blow up, and the peak height is plotted against time on a log scale.' },
+        { num: '12.3', kind: 'Theorem', name: 'Pohozaev identity and nonexistence', deps: ['pde-11.5'], refs: ['Evans §9.4'],
+          pic: 'For −Δu = |u|^{p−1}u on a ball, slide p past the critical Sobolev exponent; a shooting method finds positive solutions below it and none above, as the Pohozaev balance readout predicts.' },
+        { num: '12.4', kind: 'Theorem', name: 'Radial symmetry by moving planes', deps: ['pde-10.15'], refs: ['Evans §9.5'],
+          pic: 'Reflect a positive solution on a ball across a plane moved in from one side; the reflected copy stays below the original until the plane reaches the centre, shown for every direction.' },
+        { num: '12.5', kind: 'Phenomenon', name: 'Turing instability and pattern formation', deps: ['pde-9.3', 'ode-3.8'], refs: ['Strauss §14.4'],
+          pic: 'Run a two-species reaction–diffusion model; when the inhibitor diffuses fast enough the dispersion relation shows a band of growing wavenumbers and spots or stripes emerge from noise.' },
+        { num: '12.6', kind: 'Theorem', name: 'Bifurcation from a simple eigenvalue', deps: ['pde-10.13', 'ode-8.5'], refs: ['Strauss §14.4'],
+          pic: 'For −u″ = λ(u − u³) on an interval, the zero solution is followed as λ increases; at each Dirichlet eigenvalue a new branch of solutions bifurcates, drawn in a bifurcation diagram with its profile.' },
+        { num: '12.7', kind: 'Theorem', name: 'Comparison principle and spreading speed for Fisher–KPP', deps: ['pde-9.8', 'pde-12.1'], refs: ['Evans §4.2'],
+          pic: 'Bound an invading population between explicit travelling sub- and supersolutions; the measured front position is squeezed between them and its speed tends to 2√(Dr).' },
+        { num: '12.8', kind: 'Model', name: 'Porous medium equation and the Barenblatt solution', deps: ['pde-9.7'], refs: ['Evans §4.2'],
+          pic: 'Spread a mound of gas in a porous medium by u_t = Δ(u^m); unlike the heat equation the support has a sharp edge moving at finite speed, matching the self-similar Barenblatt profile.' },
+        { num: '12.9', kind: 'Method', name: 'Monotonicity methods and the p-Laplacian', deps: ['pde-11.6'], refs: ['Evans §9.1'],
+          pic: 'Solve −div(|∇u|^{p−2}∇u) = 1 on a square with a p slider; the profile morphs from a peaked tent (p near 1) through the parabola-like p = 2 to a flat-topped plateau as p grows.' },
+        { num: '12.10', kind: 'Method', name: 'Fixed-point methods for semilinear problems', deps: ['pde-10.12', 'pma-9.23'], refs: ['Evans §9.2'],
+          pic: 'Iterate u ↦ (−Δ)^{−1}f(u) for a semilinear equation; with a small Lipschitz constant the iterates contract to a solution, and increasing the nonlinearity strength makes the iteration diverge.' },
+      ],
+    },
+    // ───────────────────────────────────────────────────────────── 13
+    {
+      n: 13,
+      title: 'Computing solutions',
+      summary: String.raw`Replacing derivatives by difference quotients turns a PDE into a large algebraic or ODE system. Whether the discrete solution converges depends on stability as well as accuracy: explicit diffusion schemes need small time steps, wave schemes must respect the Courant–Friedrichs–Lewy condition, and the Lax equivalence theorem says consistency plus stability is exactly convergence. Elliptic problems become sparse linear systems, and the finite element method discretizes the weak formulation directly.`,
+      items: [
+        { num: '13.1', kind: 'Method', name: 'Finite-difference approximations of derivatives', deps: ['pma-5.15'], refs: ['Strauss §8.1'],
+          pic: 'Approximate u′ and u″ at a point with forward, backward and centred differences; the errors are plotted against h on log–log axes and show slopes 1, 1 and 2.' },
+        { num: '13.2', kind: 'Method', name: 'Explicit scheme for diffusion and its stability limit', deps: ['pde-13.1', 'pde-1.4'], refs: ['Strauss §8.2'],
+          pic: 'March the heat equation with the forward-time centred-space scheme; with kΔt/Δx² below 1/2 the solution is smooth, just above it a sawtooth mode grows explosively.' },
+        { num: '13.3', kind: 'Method', name: 'Von Neumann stability analysis', deps: ['pde-13.2', 'pde-4.4'], refs: ['Strauss §8.2'],
+          pic: 'For a chosen scheme, the amplification factor of each Fourier mode is plotted against wavenumber; any mode with |G| > 1 is highlighted and is the one that blows up in the simulation.' },
+        { num: '13.4', kind: 'Method', name: 'Implicit and Crank–Nicolson schemes', deps: ['pde-13.3'], refs: ['Strauss §8.2'],
+          pic: 'Take huge time steps with backward Euler and Crank–Nicolson; both stay bounded, but Crank–Nicolson lets high modes oscillate in sign while backward Euler damps them.' },
+        { num: '13.5', kind: 'Theorem', name: 'Courant–Friedrichs–Lewy condition', deps: ['pde-13.1', 'pde-2.3'], refs: ['Strauss §8.3'],
+          pic: 'Overlay the numerical domain of dependence of an explicit wave scheme on the true characteristic cone; when cΔt/Δx exceeds 1 the true cone sticks out and the computed solution blows up.' },
+        { num: '13.6', kind: 'Phenomenon', name: 'Numerical dispersion and diffusion', deps: ['pde-13.5', 'pde-9.3'], refs: ['Strauss §8.3'],
+          pic: 'Advect a square pulse with upwind and Lax–Wendroff schemes; the first smears it out, the second creates trailing ripples, explained by each scheme’s modified dispersion relation.' },
+        { num: '13.7', kind: 'Theorem', name: 'Lax equivalence theorem', deps: ['pde-13.3', 'fa-2.5'], refs: ['Strauss ch. 8'],
+          pic: 'Refine the grid for a consistent stable scheme and a consistent unstable one; errors converge to zero for the first and explode for the second, plotted on log axes.' },
+        { num: '13.8', kind: 'Method', name: 'Five-point Laplacian and relaxation', deps: ['pde-13.1', 'pde-5.4'], refs: ['Strauss §8.4'],
+          pic: 'Solve Laplace’s equation on a grid by Jacobi sweeps; the residual decreases slowly, smooth error components linger longest, and the discrete maximum principle holds at every sweep.' },
+        { num: '13.9', kind: 'Method', name: 'Finite element method', deps: ['pde-10.10', 'pde-10.11'], refs: ['Strauss §8.5'],
+          pic: 'Triangulate a domain you draw; piecewise-linear hat functions span the trial space, the stiffness matrix sparsity is shown, and the Galerkin solution converges as the mesh is refined.' },
+        { num: '13.10', kind: 'Method', name: 'Spectral methods', deps: ['pde-9.2', 'pde-4.9'], refs: ['Strauss ch. 8'],
+          pic: 'Solve the same periodic problem by finite differences and by a Fourier spectral method; on a log plot the spectral error falls exponentially with grid size while the finite-difference error falls like N⁻².' },
       ],
     },
   ],

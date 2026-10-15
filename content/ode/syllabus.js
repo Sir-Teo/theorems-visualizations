@@ -385,6 +385,8 @@ export default {
           pic: 'A Poincaré section of a weakly perturbed integrable system shows most invariant curves deformed but intact; raising the perturbation destroys those with nearly rational frequency ratio first.' },
         { num: '9.9', kind: 'Method', name: 'Symplectic integration', deps: ['ode-9.2', 'ode-2.10'], refs: ['Teschl ch. 8'],
           pic: 'Run explicit Euler and the symplectic Euler/leapfrog method side by side on a pendulum; the first spirals out with growing energy error while the second keeps the energy error bounded for long times.' },
+        { num: '9.10', kind: 'Definition', name: 'Action–angle variables', deps: ['ode-9.6'], refs: ['Teschl §8.4'],
+          pic: 'For a pendulum below the separatrix, each orbit is relabelled by its enclosed area (the action) and a uniformly advancing angle; in these coordinates the motion is a straight line on a cylinder.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 10

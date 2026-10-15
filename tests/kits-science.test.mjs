@@ -86,7 +86,9 @@ test('pplane: trajectories conserve H, close up, find limit cycles and sink into
   for (const method of ['rk4', 'rk45']) {
     const o = orbit(lv, 2, 1, { bounds: B, sx: 150, sy: 150, method });
     assert.equal(o.stop, 'closed orbit', method);
-    let drift = 0; for (const p of o.pts) drift = Math.max(drift, Math.abs(H(...p) - H(2, 1))); assert.ok(drift < 1e-7, `${method} H drift ${drift}`);
+    // the last point is the (linearly interpolated) return to the section; check the integrated points
+    let drift = 0; for (const p of o.pts.slice(0, -1)) drift = Math.max(drift, Math.abs(H(...p) - H(2, 1))); assert.ok(drift < 1e-7, `${method} H drift ${drift}`);
+    close(o.pts[o.pts.length - 1][0], 2, 1e-4); close(o.pts[o.pts.length - 1][1], 1, 1e-4);
   }
   const vdp = orbit((x, y) => [y, (1 - x * x) * y - x], 0.1, 0, { bounds: { x: [-4, 4], y: [-4, 4] }, sx: 100, sy: 100 });
   assert.equal(vdp.stop, 'limit cycle'); close(vdp.period, 6.6633, 0.01, 'Van der Pol (μ = 1) period');
@@ -216,7 +218,7 @@ test('circuit: nets from geometry (wires, T-junctions, ground symbols)', () => {
   ]);
   const r = N.dc(), top = N.termNode.get('R2').a; assert.equal(N.ground, '0'); assert.equal(N.termNode.get('R3').a, top, 'wire joins R2 and R3');
   close(r.V(top), 9 * 1000 / 2000, 1e-6, 'R2 ∥ R3 = 1 kΩ'); close(r.I('R2'), 2.25e-3, 1e-9);
-  assert.equal(N.segs.filter((s) => s.node === '0').length, 2, 'bottom wire split at the ground symbol');
+  assert.equal(N.segs.filter((s) => s.node === '0').length, 3, 'bottom wire split at R2 and at the ground symbol');
 });
 test('circuit: RC, RL and RLC transients match the analytic solutions', () => {
   const rc = new Netlist([{ type: 'V', a: 'a', b: '0', value: 5 }, { type: 'SW', a: 'a', b: 'b', closedAt: 0 }, { type: 'R', id: 'R', a: 'b', b: 'c', value: 1e3 }, { type: 'C', id: 'C', a: 'c', b: '0', value: 1e-4 }]);

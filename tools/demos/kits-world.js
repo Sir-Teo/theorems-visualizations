@@ -188,7 +188,7 @@ export default {
       caption: String.raw`Drag the four handles to reshape demand and supply; slide the tax (negative = subsidy) or switch to a price ceiling or floor. Every area is integrated numerically.`,
       viz(v) {
         const s = v.stage({ x: [0, 100], y: [0, 106], height: 360, axes: 'box', xlabel: 'Q', ylabel: 'P' });
-        const pol = v.select('policy', ['tax', 'ceiling', 'floor'], 'tax');
+        const pol = v.select('policy', ['tax', 'ceiling', 'floor'], 'tax', { onChange: (m) => { if (m === 'ceiling') cap.set(38); if (m === 'floor') cap.set(66); } });
         const t = v.slider('tax $t$', -20, 40, 18, { step: 0.5 }), cap = v.slider('price limit', 5, 95, 38, { step: 0.5 });
         const E = v.curves(s, {
           demand: { linear: [[8, 92], [92, 14]] }, supply: { linear: [[8, 14], [92, 82]] },
@@ -218,7 +218,8 @@ export default {
         v.readout(() => {
           const C = E.consumer, o = C.opt, f = (x) => v.fix(x, 2);
           const cd = pref.value === 'cobb-douglas' ? ` · formula: $\\alpha m/p_x = ${f(al.value * C.m / C.px)}$, $(1-\\alpha)m/p_y = ${f((1 - al.value) * C.m / C.py)}$` : '';
-          return `$p_x = ${f(C.px)}$, $p_y = ${f(C.py)}$, $m = ${C.m}$ · optimum $(x^*, y^*) = (${f(o.x)}, ${f(o.y)})$, $U^* = ${f(o.u)}$ · MRS ${isFinite(C.mrs) ? f(C.mrs) : '—'} vs $p_x/p_y = ${f(C.ratio)}$${cd}`;
+          const pv = pref.value, tail = pv === 'complements' ? ' · at the kink the MRS is undefined: the optimum is where $x = 1.5\,y$' : pv === 'substitutes' ? ` · MRS $= ${f(C.mrs)}$ everywhere ${C.mrs < C.ratio ? '< ' : '> '}$p_x/p_y = ${f(C.ratio)}$: a corner, spend everything on ${C.mrs < C.ratio ? '$y$' : '$x$'}` : ` · MRS $= ${f(C.mrs)}$ = $p_x/p_y = ${f(C.ratio)}$ (tangency)`;
+          return `$p_x = ${f(C.px)}$, $p_y = ${f(C.py)}$, $m = ${C.m}$ · optimum $(x^*, y^*) = (${f(o.x)}, ${f(o.y)})$, $U^* = ${f(o.u)}$${tail}${cd}`;
         });
       },
     },
@@ -235,6 +236,7 @@ export default {
         let out = '';
         v.render(() => {
           const m = mode.value; P.front.h.visible = m === 'ppf';
+          s.setTicks(null, null);
           if (m === 'ppf') { s.setView([0, 10], [0, 10]); s.o.xlabel = 'guns'; s.o.ylabel = 'butter'; P.draw(); const F = P.frontier; out = `$(x/a)^k + (y/b)^k = 1$ with $k = ${v.fix(F.k, 2)}$ · $A$ is **${F.status}** the frontier · opportunity cost of one more unit of $x$: ${v.fix(F.cost, 2)} units of $y$`; }
           if (m === 'cost') {
             s.setView([0, 40], [0, 60]); s.o.xlabel = 'q'; s.o.ylabel = 'cost per unit';
@@ -244,8 +246,8 @@ export default {
             out = `min AVC at $q = ${v.fix(K.minAVC.q, 2)}$ where MC = ${v.fix(K.MC(K.minAVC.q), 3)} = AVC ${v.fix(K.minAVC.value, 3)} · min AC at $q = ${v.fix(K.minAC.q, 2)}$ where MC = ${v.fix(K.MC(K.minAC.q), 3)} = AC ${v.fix(K.minAC.value, 3)}`;
           }
           if (m === 'lorenz') {
-            s.setView([0, 1], [0, 1]); s.o.xlabel = 'population share'; s.o.ylabel = 'income share';
-            const sig = 0.1 + 1.4 * k.value, inc = z.map((u) => Math.exp(sig * u)), G = C.lorenz(inc), exact = 2 * v.M.gaussian(0) * 0 + (2 * (0.5 * (1 + erf(sig / 2))) - 1);
+            s.setView([0, 1], [0, 1]); s.setTicks([0.2, 0.4, 0.6, 0.8], [0.2, 0.4, 0.6, 0.8]); s.o.xlabel = 'population share'; s.o.ylabel = 'income share';
+            const sig = 0.1 + 1.4 * k.value, inc = z.map((u) => Math.exp(sig * u)), G = C.lorenz(inc), exact = erf(sig / 2); // = 2Φ(σ/√2) − 1
             out = `log-normal incomes, $\\sigma = ${v.fix(sig, 2)}$ · sample Gini **${v.fix(G, 3)}** · population value $2\\Phi(\\sigma/\\sqrt2) - 1 = ${v.fix(exact, 3)}$`;
           }
         });

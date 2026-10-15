@@ -784,7 +784,7 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
       viz(v) {
         const G = scene3(v, { height: 410 });
         const Usel = v.select('subspace $U$', [{ value: '0', label: '$\\{0\\}$' }, { value: '1', label: 'a line' }, { value: '2', label: 'a plane' }, { value: '3', label: '$\\mathbf R^3$' }], '2');
-        const UB = { 0: [], 1: orth([[0.8, -0.35, 0.5]]), 2: orth([[1, 0, -0.8], [0, 1, -0.4]]), 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) };
+        const UB = { 0: [], 1: orth([[0.8, -0.35, 0.5]]), 2: orth([[1, 0, -0.32], [0, 1, 0.215]]), 3: orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) };
         let list = [], msg = '', lastU = null, seed = 3;
         const cand = G.handle([0.9, 0.8, 0.2], { color: 'gold', constrain: (q, f) => snapInto(intoSpan(q, UB[Usel.value], f), orth(list), 0.16) });
         const add = () => {
