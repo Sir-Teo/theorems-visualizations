@@ -475,11 +475,11 @@ Each keeps some properties of what we see and gives up others; none of them is â
           });
           // ---- schematic of the surface (top view)
           for (const s of [-1, 1]) if (k !== 'rev') sch.line(0, 0, s * 1.6 * Math.sin(Math.min(F, 3.1) / 2), 1.6 * Math.cos(Math.min(F, 3.1) / 2), { color: 'faint', width: 1, dash: [4, 4] });
-          if (k === 'plane') { const half = 0.7 * Math.tan(Math.min(F, rad(160)) / 2); sch.line(-Math.min(half, 1.3), 0.7, Math.min(half, 1.3), 0.7, { color: 'orange', width: 3 }); }
+          if (k === 'plane') { const t = Math.tan(Math.min(F, rad(160)) / 2), yp = Math.min(0.7, 1.1 / t); sch.line(-yp * t, yp, yp * t, yp, { color: 'orange', width: 3 }); }
           else if (k === 'cyl' || k === 'fish') sch.curve((t) => [0.7 * Math.sin(t), 0.7 * Math.cos(t)], -F / 2, F / 2, { color: 'orange', width: 3 });
           else { sch.line(-1.1, 0.35, 1.1, 0.35, { color: 'orange', width: 3 }); sch.dot(0, 1.6, { r: 4.5, color: 'red', label: 'centre', labelPos: 'e' }); for (const x of [-1, -0.4, 0.4, 1]) sch.line(x, 0.35, 0, 1.6, { color: 'red', width: 1, alpha: 0.6 }); }
           if (k !== 'rev') { sch.dot(0, 0, { r: 4.5, color: 'ink', label: 'eye', labelPos: 's' }); for (const a of [-0.9, 0.35]) sch.line(0, 0, 1.6 * Math.sin(a), 1.6 * Math.cos(a), { color: 'gold', width: 1.2 }); }
-          sch.text({ plane: 'plane', cyl: 'cylinder', fish: 'sphere', rev: 'picture' }[k], 0, k === 'rev' ? 0.2 : 0.55, { align: 'center', baseline: 'top', size: 11, color: 'orange' });
+          sch.text({ plane: 'plane', cyl: 'cylinder', fish: 'sphere', rev: 'picture' }[k], 0, k === 'rev' ? 0.2 : k === 'plane' ? Math.min(0.7, 1.1 / Math.tan(Math.min(F, rad(160)) / 2)) - 0.12 : 0.55, { align: 'center', baseline: 'top', size: 11, color: 'orange' });
         });
         v.legend([['ink', 'kerbs'], ['orange', 'lamp posts'], ['muted', 'horizon', { dash: true }]]);
         v.readout(() => {

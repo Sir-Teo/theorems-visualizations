@@ -83,7 +83,7 @@ export function clocked(dt, reset, step) {
 }
 
 // ---------------------------------------------------------------- drawing helpers (data units)
-/** A labelled box centred at (x, y); st: {color, fill, fillAlpha, active, sub, size, radius, labelColor}. */
+/** A labelled box centred at (x, y); st: {color, fill, fillAlpha, active, sub (above), note (below), size, radius, labelColor}. */
 export function box(s, x, y, w, h, label, st = {}) {
   const col = st.color || 'ink';
   s.rect(x - w / 2, y - h / 2, x + w / 2, y + h / 2, { fill: 'panel', fillAlpha: 1, stroke: false, radius: st.radius ?? 8 });
@@ -92,7 +92,8 @@ export function box(s, x, y, w, h, label, st = {}) {
     if (st.math === false) s.text(label, x, y, { size: st.size || 12, color: st.labelColor || 'ink', align: 'center', baseline: 'middle', weight: 600 });
     else s.tex(label, x, y, { size: st.size || 14, color: st.labelColor || 'ink' });
   }
-  if (st.sub) s.text(st.sub, x, y - h / 2, { size: 10.5, color: st.subColor || 'muted', align: 'center', baseline: 'top', dy: 4 });
+  if (st.sub) s.text(st.sub, x, y + h / 2, { size: 10.5, color: st.subColor || 'muted', align: 'center', baseline: 'bottom', dy: -3 });
+  if (st.note) s.text(st.note, x, y - h / 2, { size: 11, color: st.noteColor || 'ink', align: 'center', baseline: 'top', dy: 4, weight: 600 });
 }
 /** Summing junction with signs placed at {w, n, s, e}. */
 export function sumJ(s, x, y, r, signs = {}) {

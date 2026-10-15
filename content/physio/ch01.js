@@ -96,7 +96,7 @@ A disturbance that would shift $x$ by $\Delta x_{\text{open}}$ with the loop ope
         const dist = v.select('disturbance', [{ value: 'cold', label: 'cold room 5 °C' }, { value: 'heat', label: 'hot room 45 °C' }, { value: 'ex', label: 'exercise +500 W' }], 'cold');
         const Gs = v.slider('controller gain $G$', 0, 400, 200, { step: 5, fmt: (x) => `${Math.round(x)} W/K` });
         const showPos = v.toggle('show reversed (positive) feedback', true);
-        const sd = v.stage({ x: [0, 10.6], y: [0.3, 6.1], equal: true, axes: false, height: 300, weight: 1 });
+        const sd = v.stage({ x: [0, 11], y: [0.2, 5.9], equal: true, axes: false, height: 300, weight: 1 });
         const sp = v.stage({ x: [0, 8], y: [30, 42], height: 300, axes: 'box', xlabel: 't (h)', ylabel: 'core temperature (°C)', weight: 1.1, yticks: [30, 32, 34, 36, 38, 40, 42] });
         let key = '', runs = null;
         const get = () => {
@@ -110,27 +110,20 @@ A disturbance that would shift $x$ by $\Delta x_{\text{open}}$ with the loop ope
           const i = idxAt(R.neg.t, th), T = R.neg.T[i], u = R.neg.u[i], e = T - TH.Tset;
           // ---- loop diagram
           const heat = u > 1, cool = u < -1, effCol = heat ? 'orange' : cool ? 'blue' : 'muted';
-          const amt = Math.min(1, Math.abs(u) / 300);
-          const phase = t * 1.2;
-          const wSet = [[0.5, 4.7], [1.6, 4.7]], wE = [[2.25, 4.7], [3.0, 4.7]], wU = [[5.6, 4.7], [6.35, 4.7]], wEff = [[7.8, 4.15], [7.8, 2.25]];
-          const wT = [[6.35, 1.7], [5.6, 1.7]], wFb = [[3.0, 1.7], [1.92, 1.7], [1.92, 4.35]];
+          const amt = Math.min(1, Math.abs(u) / 300), phase = t * 1.2;
+          const wSet = [[0.25, 4.6], [1.18, 4.6]], wE = [[1.82, 4.6], [3.05, 4.6]], wU = [[5.55, 4.6], [6.65, 4.6]], wEff = [[8.15, 4.05], [8.15, 2.35]];
+          const wT = [[6.65, 1.8], [5.55, 1.8]], wFb = [[3.05, 1.8], [1.5, 1.8], [1.5, 4.28]];
           for (const w of [wSet, wE, wU, wEff, wT, wFb]) wire(sd, w, { color: 'muted' });
           for (const w of [wE, wU, wEff, wT, wFb]) flowDots(sd, w, phase, 0.38, { color: 'gold', r: 2 });
-          sumJ(sd, 1.92, 4.7, 0.33, { w: '+', s: '−' });
-          box(sd, 4.3, 4.7, 2.5, 1.05, 'hypothalamus', { math: false, color: 'accent', sub: 'controller' });
-          box(sd, 7.8, 4.7, 2.85, 1.05, heat ? 'shivering, vasoconstriction' : cool ? 'sweating, vasodilation' : 'effectors idle', { math: false, color: effCol, fill: effCol, fillAlpha: 0.06 + 0.3 * amt, active: amt > 0.05, size: 11, sub: 'effectors' });
-          box(sd, 7.8, 1.7, 2.85, 1.05, 'body heat store', { math: false, color: 'ink', sub: 'plant' });
-          box(sd, 4.3, 1.7, 2.5, 1.05, 'thermoreceptors', { math: false, color: 'teal', sub: 'sensor' });
-          sd.text('set point', 0.5, 5.05, { size: 11, color: 'muted', align: 'left' });
-          sd.text('37 °C', 0.5, 4.35, { size: 11, color: 'ink', align: 'left', weight: 600 });
-          const dLab = dist.value === 'cold' ? (th >= TH.t0 ? 'air 5 °C' : 'air 25 °C') : dist.value === 'heat' ? (th >= TH.t0 ? 'air 45 °C' : 'air 25 °C') : th >= TH.t0 && th < 3.5 ? 'exercise +500 W' : 'rest';
-          wire(sd, [[10.5, 0.75], [9.6, 0.75], [9.6, 1.25], [9.25, 1.25]], { color: 'red', width: 2 });
-          sd.text('disturbance', 10.45, 1.0, { size: 10.5, color: 'red', align: 'right' });
-          sd.text(dLab, 10.45, 0.5, { size: 10.5, color: 'red', align: 'right', weight: 600 });
-          sd.text(`T = ${v.fix(T, 2)} °C`, 5.97, 1.98, { size: 11, color: 'ink', align: 'center', weight: 600 });
-          sd.text(`e = ${e >= 0 ? '+' : ''}${v.fix(e, 2)} K`, 2.62, 5.05, { size: 11, color: 'ink', align: 'center', weight: 600 });
-          sd.text(`${u >= 0 ? '+' : '−'}${Math.round(Math.abs(u))} W`, 5.97, 5.05, { size: 11, color: effCol === 'muted' ? 'ink' : effCol, align: 'center', weight: 700 });
-          sd.text(`heat: ${heat ? '+' : cool ? '−' : ''}${Math.round(Math.abs(u))} W`, 7.92, 3.2, { size: 10.5, color: 'muted', align: 'left' });
+          sumJ(sd, 1.5, 4.6, 0.32, { n: '+', w: '', s: '−' });
+          box(sd, 4.3, 4.6, 2.5, 1.0, 'hypothalamus', { math: false, color: 'accent', sub: 'controller', note: `error e = ${e >= 0 ? '+' : ''}${v.fix(e, 2)} K` });
+          box(sd, 8.15, 4.6, 3.0, 1.0, heat ? 'shivering' : cool ? 'sweating' : 'idle', { math: false, color: effCol, fill: effCol, fillAlpha: 0.06 + 0.3 * amt, active: amt > 0.05, sub: 'effectors', note: `${heat ? 'heat +' : cool ? 'heat −' : ''}${Math.round(Math.abs(u))} W`, noteColor: effCol === 'muted' ? 'ink' : effCol });
+          box(sd, 8.15, 1.8, 3.0, 1.0, 'body heat store', { math: false, color: 'ink', sub: 'plant' });
+          box(sd, 4.3, 1.8, 2.5, 1.0, 'thermoreceptors', { math: false, color: 'teal', sub: 'sensor', note: `T = ${v.fix(T, 2)} °C` });
+          sd.text('set point 37 °C', 0.2, 4.3, { size: 10.5, color: 'muted', align: 'left', baseline: 'top' });
+          const dLab = dist.value === 'cold' ? (th >= TH.t0 ? 'air 5 °C' : 'air 25 °C') : dist.value === 'heat' ? (th >= TH.t0 ? 'air 45 °C' : 'air 25 °C') : th >= TH.t0 && th < 3.5 ? 'exercise +500 W' : 'at rest';
+          wire(sd, [[8.15, 0.45], [8.15, 1.25]], { color: 'red', width: 2 });
+          sd.text(`disturbance: ${dLab}`, 8.35, 0.62, { size: 10.5, color: 'red', align: 'left', baseline: 'middle', weight: 600 });
           // ---- time traces
           sp.hband(36.5, 37.5, { color: 'green', alpha: 0.08 });
           sp.vline(TH.t0, { color: 'red', dash: [3, 3], width: 1 });
@@ -153,7 +146,7 @@ A disturbance that would shift $x$ by $\Delta x_{\text{open}}$ with the loop ope
           const dOpen = dist.value === 'cold' ? -20 : dist.value === 'heat' ? 20 : 500 / TH.k;
           const pred = dOpen / (1 + G / TH.k), uNeed = -G * pred, sat = uNeed > TH.umax || uNeed < TH.umin;
           const fmt = (x) => (x > 45 ? '> 45' : x < 25 ? '< 25' : v.fix(x, 2));
-          return `at $t = ${v.fix(th, 2)}$ h: feedback $${fmt(R.neg.T[i])}$ °C · no feedback $${fmt(R.off.T[i])}$ °C · reversed $${fmt(R.pos.T[i])}$ °C<br>open-loop shift $\\Delta T_{\\text{open}} = ${v.fix(dOpen, 1)}$ K; loop gain $G/k = ${v.fix(G / TH.k, 1)}$, so the predicted closed-loop error is $\\Delta T_{\\text{open}}/(1 + G/k) = ${v.fix(pred, 2)}$ K${sat ? ' — but that needs more than the effectors can deliver: **saturated**' : ''}; simulated at 8 h: $${v.fix(R.neg.T.at(-1) - TH.Tset, 2)}$ K`;
+          return `at $t = ${v.fix(th, 2)}$ h: feedback $${fmt(R.neg.T[i])}$ °C · no feedback $${fmt(R.off.T[i])}$ °C · reversed $${fmt(R.pos.T[i])}$ °C · open-loop shift $\\Delta T_{\\text{open}} = ${v.fix(dOpen, 1)}$ K; loop gain $G/k = ${v.fix(G / TH.k, 1)}$, so the predicted closed-loop error is $\\Delta T_{\\text{open}}/(1 + G/k) = ${v.fix(pred, 2)}$ K${sat ? ' — but that needs more than the effectors can deliver: **saturated**' : ''}; simulated at 8 h: $${v.fix(R.neg.T.at(-1) - TH.Tset, 2)}$ K`;
         });
       },
     },
