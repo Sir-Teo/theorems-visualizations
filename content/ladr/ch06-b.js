@@ -273,8 +273,8 @@ export default {
         const NODES = [-0.8, -0.25, 0.3, 0.75];
         const F = v.stage({ x: [-1.1, 1.4], y: [-2.6, 2.6], height: 370, weight: 1.25, title: 'the list being orthonormalized' });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 370, weight: 0.85, minWidth: 250, title: 'Gram matrix $\\langle b_i, b_j\\rangle$ of the current list' });
-        const ipS = v.select('$\\langle p,q\\rangle$', [{ value: 'L', label: '$\\int_{-1}^{1} pq$' }, { value: 'S', label: '$\\int_{0}^{1} pq$' }, { value: 'D', label: '$\\sum_{j=1}^{4} p(t_j)q(t_j)$' }], 'L', { onChange: () => St.reset(null, { at: 'end' }) });
-        const nS = v.slider('$n$ in $\\mathcal P_n(\\mathbf R)$', 1, 5, 2, { int: true, onChange: () => St.reset(null, { at: 'end' }) });
+        const ipS = v.select('$\\langle p,q\\rangle$', [{ value: 'L', label: '$\\int_{-1}^{1} pq$' }, { value: 'S', label: '$\\int_{0}^{1} pq$' }, { value: 'D', label: '$\\sum_{j=1}^{4} p(t_j)q(t_j)$' }], 'D', { onChange: () => St.reset(null, { at: 'end' }) });
+        const nS = v.slider('$n$ in $\\mathcal P_n(\\mathbf R)$', 1, 5, 4, { int: true, onChange: () => St.reset(null, { at: 'end' }) });
         const moments = (kind, n) => {
           const m = [];
           for (let k = 0; k <= 2 * n; k++) m.push(kind === 'L' ? (k % 2 ? 0 : 2 / (k + 1)) : kind === 'S' ? 1 / (k + 1) : NODES.reduce((s, t) => s + t ** k, 0));

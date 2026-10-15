@@ -184,7 +184,7 @@ If $m$ grows in proportion to $n$, so that $\alpha=O(1)$, all dictionary operati
           // histogram vs Poisson
           const mx = Math.max(14, cur.mx), fr = []; let fmax = 0;
           for (let c = 0; c <= mx; c++) { const f = (cur.hist.get(c) || 0) / cur.m; fr.push(f); fmax = Math.max(fmax, f); }
-          Hs.setView([-0.7, mx + 0.7], [0, Math.max(0.3, fmax * 1.12)]);
+          const yt = Math.max(0.3, fmax * 1.12); Hs.setView([-0.22 * (mx + 1) - 0.7, mx + 0.7], [-0.07 * yt, yt]);
           fr.forEach((f, c) => { if (f) Hs.rect(c - 0.4, 0, c + 0.4, f, { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1 }); });
           const pts = []; for (let c = 0; c <= mx; c++) pts.push([c, poissonPmf(cur.a, c)]);
           Hs.path(pts, { color: 'green', width: 1.8 }); pts.forEach(([c, y]) => Hs.dot(c, y, { r: 2.8, color: 'green' }));
@@ -216,7 +216,7 @@ Deletion must leave a "deleted" marker, since emptying a slot would cut the prob
       tags: ['hashing'],
       viz(v) {
         const pr = v.select('probe sequence', [{ value: 'lin', label: 'linear probing' }, { value: 'dbl', label: 'double hashing' }], 'lin');
-        const nS = v.slider('keys inserted', 0, 28, 22, { int: true });
+        const nS = v.slider('keys inserted', 0, 28, 21, { int: true });
         let seed = 2;
         v.button('New keys', () => { seed++; });
         const m = 31;
@@ -254,7 +254,7 @@ Deletion must leave a "deleted" marker, since emptying a slot would cut the prob
             R.text(String(t + 1), mx, my, { align: 'center', size: 10.5, weight: 700, color: 'orange' });
           }
           if (n) { const k = keys[n - 1]; R.text(`key ${k}`, 0, 0.2, { align: 'center', size: 13, weight: 700, color: 'gold' }); R.text(pr.value === 'lin' ? `h₁ = ${k % m}, step 1` : `h₁ = ${k % m}, step h₂ = ${1 + (k % (m - 1))}`, 0, 0, { align: 'center', size: 11.5, color: 'muted' }); R.text(`${plural(lastSeq.length, 'probe')}`, 0, -0.2, { align: 'center', size: 12, weight: 700, color: 'orange' }); }
-          const ym = Math.max(10, ...costs) + 1; B.setView([0.3, 28.7], [0, ym]);
+          const ym = Math.max(10, ...costs) + 1; B.setView([-1.6, 28.7], [-0.07 * ym, ym]);
           costs.forEach((c, t) => B.rect(t + 0.62, 0, t + 1.38, c, { fill: t === n - 1 ? 'gold' : pr.value === 'lin' ? 'orange' : 'teal', fillAlpha: 0.55, color: t === n - 1 ? 'gold' : pr.value === 'lin' ? 'orange' : 'teal', width: 1 }));
           info = { n, costs, runs, lastSeq, keys };
         });
@@ -303,7 +303,7 @@ Linear probing does worse, about $\frac12\bigl(1+\frac1{(1-\alpha)^2}\bigr)$ and
           const d = histAt(sch.value, a), xs = k === 'uns' ? d.costs : d.ins, cnt = new Map(); let tail = 0;
           for (const c of xs) { if (c > 30) tail++; else cnt.set(c, (cnt.get(c) || 0) + 1); }
           const N = xs.length; let fmax = 0; for (const c of cnt.values()) fmax = Math.max(fmax, c / N);
-          Hs.setView([0.3, 30.7], [0, Math.max(0.12, fmax * 1.12, (1 - a) * 1.12)]);
+          const yt = Math.max(0.12, fmax * 1.12, (1 - a) * 1.12); Hs.setView([-2.6, 30.7], [-0.07 * yt, yt]);
           for (const [c, q] of cnt) Hs.rect(c - 0.4, 0, c + 0.4, q / N, { fill: COL[sch.value], fillAlpha: 0.45, color: COL[sch.value], width: 1 });
           if (k === 'uns') { const g = []; for (let i = 1; i <= 30; i++) g.push([i, a ** (i - 1) * (1 - a)]); Hs.path(g, { color: 'green', width: 1.8 }); g.forEach(([x, y]) => Hs.dot(x, y, { r: 2.5, color: 'green' })); }
           if (tail) Hs.text(`${v.fix((100 * tail) / N, 1)}% need more than 30 →`, 30.4, Math.max(0.12, fmax * 1.12) * 0.92, { align: 'right', size: 11.5, weight: 700, color: COL[sch.value] });
@@ -411,7 +411,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
             fill: (i, j) => (X === Y ? ['red', 0.3] : col[i][j] ? ['gold', 0.6] : ['accent', 0.05]), highlight: [[sa - 1, sb, 'ink']],
           });
           const out = [];
-          for (let r = 0; r < p; r++) for (let s2 = 0; s2 < p; s2++) if (r % m === s2 % m) out.push([r, s2, 'gold']);
+          for (let r = 0; r < p; r++) for (let s2 = 0; s2 < p; s2++) if (r % m === s2 % m && (r !== s2 || hits[r][s2])) out.push([r, s2, 'gold']);
           out.push([sr, ss, 'ink']);
           TB.draw({
             rows: p, cols: p, rowLabels: (i) => String(i), colLabels: (j) => String(j),
@@ -451,8 +451,8 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const ksel = v.select('keys', [{ value: 'mod', label: 'adversarial for $k \\bmod 16$' }, { value: 'rand', label: 'random' }], 'mod', { onChange: (x) => { mode = x; keys = x === 'mod' ? keysMod.slice() : Array.from({ length: n }, () => Math.floor(r() * p)); } });
         v.button('Draw a new h', () => { a = 1 + Math.floor(r() * (p - 1)); b = Math.floor(r() * p); if (mode === 'attack') mode = 'stale'; });
         v.button('Attack this h', () => { const h = uh(a, b, p, m), t = h(keys[0]), out = [keys[0]]; for (let x = 1; out.length < n && x < p; x++) if (h(x) === t && x !== keys[0]) out.push(x); keys = out; mode = 'attack'; });
-        const A = v.stage({ x: [-0.7, 15.7], y: [0, 25], axes: 'box', height: 230, minWidth: 260, title: 'fixed $h(k) = k \\bmod 16$', xlabel: 'bucket' });
-        const B = v.stage({ x: [-0.7, 15.7], y: [0, 25], axes: 'box', height: 230, minWidth: 260, title: 'random $h_{a,b}$ from the universal family', xlabel: 'bucket' });
+        const A = v.stage({ x: [-2, 15.7], y: [-2, 26], axes: 'box', height: 230, minWidth: 260, title: 'fixed $h(k) = k \\bmod 16$', xlabel: 'bucket' });
+        const B = v.stage({ x: [-2, 15.7], y: [-2, 26], axes: 'box', height: 230, minWidth: 260, title: 'random $h_{a,b}$ from the universal family', xlabel: 'bucket' });
         const C = v.stage({ x: [-0.7, 23.7], y: [0, 0.4], axes: 'box', height: 200, full: true, title: 'other keys in the first key’s bucket, over 2000 random draws of $h$', xlabel: 'keys sharing the bucket' });
         let info = null;
         v.render(() => {
@@ -465,17 +465,19 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
           // many draws
           const rr = v.rng(4242 + keys[1]), cnt = new Array(n).fill(0); let sum = 0; const D = 2000;
           for (let t = 0; t < D; t++) { const g = uh(1 + Math.floor(rr() * (p - 1)), Math.floor(rr() * p), p, m), t0 = g(keys[0]); let c = 0; for (let i = 1; i < n; i++) if (g(keys[i]) === t0) c++; cnt[c]++; sum += c; }
-          const fmax = Math.max(...cnt) / D; C.setView([-0.7, 23.7], [0, Math.max(0.3, fmax * 1.15)]);
+          const fmax = Math.max(...cnt) / D, ct = Math.max(0.3, fmax * 1.15); C.setView([-1.5, 23.7], [-0.08 * ct, ct]);
           cnt.forEach((c, k) => { if (c) C.rect(k - 0.38, 0, k + 0.38, c / D, { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1 }); });
           C.vline(sum / D, { color: 'accent', width: 2.2 }); C.vline((n - 1) / m, { color: 'green', width: 2, dash: [6, 4] });
           C.text(`mean ${v.fix(sum / D, 2)}`, sum / D, Math.max(0.3, fmax * 1.15) * 0.9, { dx: -6, align: 'right', size: 11.5, weight: 700, color: 'accent' });
           C.text(`(n − 1)/m = ${v.fix((n - 1) / m, 2)}`, (n - 1) / m, Math.max(0.3, fmax * 1.15) * 0.75, { dx: 6, size: 11.5, weight: 700, color: 'green' });
-          info = { fl: Math.max(...fixed), rl: Math.max(...rnd), mean: sum / D };
+          let sq = 0; for (let i = 0; i < m; i++) { const c = Math.floor((p - 1 - i) / m) + 1; sq += c * (c - 1); }
+          let s2 = 0; for (let k = 0; k < n; k++) s2 += cnt[k] * k * k; const sd = Math.sqrt(Math.max(0, s2 / D - (sum / D) ** 2) / D);
+          info = { fl: Math.max(...fixed), rl: Math.max(...rnd), mean: sum / D, sd, exact: (n - 1) * sq / (p * (p - 1)) };
         });
         v.legend([['red', 'chains under a function the keys were chosen against', { area: true }], ['accent', 'chains under a fresh random $h$', { area: true }], ['green', 'load factor $\\alpha = 1.5$ / bound', { dash: true }]]);
         v.readout(() => {
-          const { fl, rl, mean } = info;
-          return `$n = ${n}$, $m = ${m}$, $\\alpha = ${n / m}$ · longest chain: fixed function **${fl}**, current random $h$ **${rl}**${mode === 'attack' ? ' (the keys were picked after seeing this $h$ — draw a new one)' : mode === 'stale' ? ' (keys chosen against the previous $h$: harmless now)' : ''} · average over 2000 draws of the keys sharing the first key's bucket **${v.fix(mean, 3)}** $\\le (n-1)/m = ${v.fix((n - 1) / m, 3)}$ ${mean <= (n - 1) / m * 1.04 ? '✓' : ''} · expected search cost $\\le 1 + \\alpha$`;
+          const { fl, rl, mean, sd, exact } = info;
+          return `$n = ${n}$, $m = ${m}$, $\\alpha = ${n / m}$ · longest chain: fixed function **${fl}**, current random $h$ **${rl}**${mode === 'attack' ? ' (the keys were picked after seeing this $h$ — draw a new one)' : mode === 'stale' ? ' (keys chosen against the previous $h$: harmless now)' : ''} · keys sharing the first key's bucket: exact expectation over the family ${v.fix(exact, 4)} $\\le (n-1)/m = ${v.fix((n - 1) / m, 4)}$ ✓, measured over 2000 draws ${v.fix(mean, 3)} ± ${v.fix(sd, 3)} · so a search costs $\\le 1 + \\alpha$ in expectation`;
         });
       },
     },
@@ -511,7 +513,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const s = v.stage({ x: [-4, 30], y: [-0.6, 16], axes: false, height: 380, weight: 1.6, minWidth: 360 });
         const Q = v.stage({ x: [1, 6], y: [0, 0.5], axes: 'box', height: 380, minWidth: 220, title: '$\\sum_j b_j^2 / n$ over 3000 draws of $h$', xlabel: 'space / n' });
         s.onClick((x, y) => { const n = rows.length, j = Math.round(n - 1 - y); if (j < 0 || j >= n) return; const row = rows[j]; if (!row.slots) return; const w = cellW(); const i = Math.floor(x / w); if (i >= 0 && i < row.slots.length && row.slots[i] != null) look = row.slots[i]; });
-        const cellW = () => { const mx = Math.max(1, ...rows.map((rw) => rw.keys.length ** 2)); return Math.min(1.6, 25 / mx); };
+        const cellW = () => { const mx = Math.max(1, ...rows.map((rw) => rw.keys.length ** 2)); return Math.min(1.6, 21 / mx); };
         const hcache = new Map(); let info = null;
         v.render(() => {
           const n = rows.length, w = cellW();
@@ -529,16 +531,16 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
               s.rect(x0, y - 0.34, x0 + w, y + 0.34, { fill: isL ? 'gold' : k != null ? 'accent' : 'panel', fillAlpha: isL ? 0.6 : k != null ? 0.18 : 1, color: k != null ? 'accent' : 'faint', width: 1 });
               if (k != null && w * s.sx > 16) s.text(String(k), x0 + w / 2, y, { align: 'center', size: clamp(w * s.sx * 0.5, 8, 11.5), weight: 700, halo: false });
             });
-            s.text(`${b * b} slots · ${plural(row.tries, 'draw')}`, row.slots.length * w + 0.4, y, { size: 10.5, color: row.tries > 1 ? 'orange' : 'muted' });
+            s.text(`${plural(b * b, 'slot')} · ${plural(row.tries, 'draw')}`, row.slots.length * w + 0.4, y, { size: 10.5, color: row.tries > 1 ? 'orange' : 'muted' });
           });
           // histogram of sum b^2 / n for these keys
           const key = keys.join(',');
           if (!hcache.has(key)) { const rr = v.rng(77), vals = []; for (let t = 0; t < 3000; t++) { const f = uh(1 + Math.floor(rr() * (p - 1)), Math.floor(rr() * p), p, n), sz = new Array(n).fill(0); keys.forEach((k) => sz[f(k)]++); vals.push(sz.reduce((s2, x) => s2 + x * x, 0) / n); } hcache.set(key, vals); }
           const vals = hcache.get(key), cnt = new Map(); vals.forEach((x) => { const k = x.toFixed(4); cnt.set(k, (cnt.get(k) || 0) + 1); });
           let ym = 0; for (const c of cnt.values()) ym = Math.max(ym, c / vals.length);
-          const xmax = Math.max(6, ...vals) + 0.2; Q.setView([1, xmax], [0, ym * 1.15]);
+          const srt = vals.slice().sort((a, b) => a - b), xmax = Math.max(5.5, srt[Math.floor(0.998 * srt.length)] + 0.4); Q.setView([0.15, xmax], [-0.07 * ym * 1.15, ym * 1.15]);
           Q.vband(4, xmax, { color: 'red', alpha: 0.06 });
-          for (const [k, c] of cnt) { const x = +k; Q.rect(x - 0.035, 0, x + 0.035, c / vals.length, { fill: x >= 4 ? 'red' : 'accent', fillAlpha: 0.7, stroke: false }); }
+          for (const [k, c] of cnt) { const x = +k; Q.rect(x - 0.06, 0, x + 0.06, c / vals.length, { fill: x >= 4 ? 'red' : 'accent', fillAlpha: 0.7, stroke: false }); }
           const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
           Q.vline(mean, { color: 'accent', width: 2 }); Q.vline((2 * n - 1) / n, { color: 'green', width: 2, dash: [6, 4] }); Q.vline(4, { color: 'red', width: 1.5 });
           const cur = rows.reduce((a, rw) => a + rw.keys.length ** 2, 0) / n; Q.dot(cur, ym * 1.05, { r: 5, color: 'gold', label: 'now', labelPos: 'e' });
@@ -577,14 +579,14 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
           const S = skipSearch(H, keys, q.value), rset = new Set(S.moves.filter((m) => m.t === 'r').map((m) => `${m.i},${m.j},${m.l}`));
           const ni = newest != null ? keys.indexOf(newest) + 1 : -1;
           drawSkip(s, H, keys, {
-            padB: ni > 0 ? 0.55 : 0,
+            padB: ni > 0 ? 0.55 : 0, padT: 0.5,
             hotLink: (i, j, l) => (rset.has(`${i},${j},${l}`) ? 'gold' : null),
             towerColor: (j, l) => (j === ni ? 'gold' : S.moves.some((m) => (m.i === j && m.l === l) || (m.t === 'r' && m.j === j && m.l === l)) ? 'accent' : null),
             keyColor: (j) => (j === S.end && j ? 'green' : null),
           });
           for (const mv of S.moves) if (mv.t === 'd') s.arrow(mv.i, mv.l - 0.3, mv.i, mv.l - 0.72, { color: 'orange', width: 2.6, head: 7 });
           if (ni > 0) s.text(coins[ni - 1].slice(1).join(' '), ni, -1.3, { align: 'center', size: 11, weight: 700, color: 'gold' });
-          const qx = S.end + 0.5; s.line(qx, -0.45, qx, H[0] - 0.4, { color: 'green', width: 1.2, dash: [3, 4] }); s.text(`q = ${q.value}`, qx, H[0] - 0.4, { align: 'center', baseline: 'bottom', size: 11.5, weight: 700, color: 'green' });
+          const qx = S.end + 0.5; s.line(qx, -0.45, qx, H[0] - 0.62, { color: 'green', width: 1.2, dash: [3, 4] }); s.text(`q = ${q.value}`, qx, H[0] - 0.62, { align: 'center', baseline: 'bottom', size: 11.5, weight: 700, color: 'green' });
           info = { n, S, levels: H[0] };
         });
         v.legend([['gold', 'step right'], ['orange', 'drop a level'], ['accent', 'nodes visited', { area: true }], ['green', 'largest key ≤ q']]);
@@ -658,7 +660,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
           const hist = (Sx, xs, col, mark, markCol) => {
             const cnt = new Map(); let mx = 0, xmax = 0; for (const x of xs) { cnt.set(x, (cnt.get(x) || 0) + 1); xmax = Math.max(xmax, x); }
             for (const c of cnt.values()) mx = Math.max(mx, c / xs.length);
-            const X1 = Math.max(xmax, mark) * 1.08 + 1; Sx.setView([0, X1], [0, mx * 1.2]);
+            const X1 = Math.max(xmax, mark) * 1.08 + 1; Sx.setView([-0.09 * X1, X1], [-0.08 * mx * 1.2, mx * 1.2]);
             const bw = Math.max(0.3, Math.min(0.42, X1 / 200));
             for (const [x, c] of cnt) Sx.rect(x - bw, 0, x + bw, c / xs.length, { fill: col, fillAlpha: 0.55, stroke: false });
             const mean = xs.reduce((a, b) => a + b, 0) / xs.length;

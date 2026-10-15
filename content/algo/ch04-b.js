@@ -13,6 +13,7 @@ const mnus = (s) => String(s).replace(/-/g, '−');
 const fx = (x, d = 2) => mnus((Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d));
 const cfx = (re, im, d = 3) => `${fx(re, d)} ${im < 0 && Math.abs(im) >= 0.5 * 10 ** -d ? '-' : '+'} ${fx(Math.abs(im), d)}i`;
 const SUB = (k) => String(k).split('').map((c) => '₀₁₂₃₄₅₆₇₈₉'[+c]).join('');
+const SUP = (k) => String(k).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join('');
 const PAIRC = ['blue', 'orange', 'teal', 'purple', 'pink', 'gold', 'green', 'red'];
 const nextPow2 = (n) => { let p = 1; while (p < n) p *= 2; return p; };
 function crossover(f, g, xs) { // first sample from which f < g holds to the end of xs
@@ -74,10 +75,10 @@ function fftRecRun(a) {
 
 // ---- 4.14 iterative FFT with recorded frames (CLRS convention)
 const bitrev = (i, L) => { let r = 0; for (let b = 0; b < L; b++) r |= ((i >> b) & 1) << (L - 1 - b); return r; };
-function fftIterRun(a, skipRev) {
+function fftIterRun(a, skipRev, record = true) {
   const n = a.length, L = Math.round(LG(n)), A = a.map((x) => [x, 0]), frames = [];
   const cols = [A.map((z) => z.slice())]; let bf = 0, mul = 0;
-  const snap = (o) => frames.push({ cols: cols.map((c) => c.map((z) => (z ? z.slice() : null))), bf, mul, ...o });
+  const snap = (o) => { if (record) frames.push({ cols: cols.map((c) => c.map((z) => (z ? z.slice() : null))), bf, mul, ...o }); };
   snap({ phase: 'input', line: 1, note: 'The input in natural order, $a_0, a_1, \\dots$ (real numbers: every needle points left or right).' });
   const P = A.map(() => null); cols.push(P);
   if (!skipRev) {
@@ -138,7 +139,7 @@ export default {
         const nS = v.slider('$n$', 2, 16, 8, { int: true });
         const dS = v.slider('$d$', 1, 4, 2, { int: true });
         const kS = v.slider('$k$', 0, 15, 3, { int: true });
-        const tS = v.slider('squaring progress $t$', 0, 1, 0.65, { step: 0.01 });
+        const tS = v.slider('squaring progress $t$', 0, 1, 1, { step: 0.01 });
         const jS = v.slider('$j$', 0, 32, 3, { int: true });
         function vis() { const l = lem.value; dS.el.hidden = kS.el.hidden = l !== 'cancel'; tS.el.hidden = l !== 'halve'; jS.el.hidden = l !== 'sum'; }
         vis();
@@ -169,7 +170,7 @@ export default {
             D.arrow(0, 0.36, k / n, 0.36, { color: 'gold', width: 2 }); D.text(`${d * k}/${N}`, k / n, 0.3, { align: 'center', size: 12, color: 'gold', weight: 700 });
             D.arrow(0, 0.72, k / n, 0.72, { color: 'orange', width: 2 }); D.text(`${k}/${n}`, k / n, 0.79, { align: 'center', size: 12, color: 'orange', weight: 700 });
             D.dot(k / n, 0.5, { r: 6, color: 'green' });
-            if (n % 2 === 0) D.text(`corollary: ω${SUB(n)}^(${n / 2}) = e^{iπ} = −1 (half a turn)`, 0.5, 0.12, { align: 'center', size: 11, color: 'muted' });
+            if (n % 2 === 0) D.text(`corollary: ω${SUB(n)}${SUP(n / 2)} = e^(iπ) = −1 (half a turn)`, 0.5, 0.12, { align: 'center', size: 11, color: 'muted' });
             const a = root(N, d * k), b = root(n, k); info = { l, txt: `$\\omega_{${N}}^{${d * k}} = ${cfx(a[0], a[1], 5)}$ and $\\omega_{${n}}^{${k}} = ${cfx(b[0], b[1], 5)}$ ${Math.hypot(a[0] - b[0], a[1] - b[1]) < 1e-12 ? '✓ equal' : '✗'}` };
           } else if (l === 'halve') {
             const t = tS.value, even = n % 2 === 0, h = even ? n / 2 : n;
@@ -178,7 +179,7 @@ export default {
             for (let j = 0; j < n; j++) {
               const th = TAU * j / n, col = PAIRC[(even ? j % h : j) % PAIRC.length];
               C.dot(Math.cos(th), Math.sin(th), { r: 4, color: col, hollow: true, width: 1.5, alpha: 0.6 });
-              C.curve((u) => [Math.cos(u), Math.sin(u)], th, th * (1 + t), { color: col, width: 2, alpha: 0.5 });
+              C.curve((u) => [Math.cos(u), Math.sin(u)], th, th * (1 + t), { color: col, width: 1.4, alpha: 0.3 });
               C.dot(Math.cos(th * (1 + t)), Math.sin(th * (1 + t)), { r: 6.5 - (j >= h && even ? 2.2 : 0), color: col });
             }
             if (t > 0.999 && even) for (let j = 0; j < h; j++) { const [x, y] = root(h, j); C.text('×2', 1.17 * x, 1.17 * y, { align: 'center', size: 11, weight: 700, color: PAIRC[j % PAIRC.length] }); }
@@ -187,10 +188,10 @@ export default {
             for (let k = 0; k < n; k++) {
               const tgt = even ? k % h : (2 * k) % n, col = PAIRC[(even ? k % h : k) % PAIRC.length], yl = n - 1 - k, yr = even ? (n - 1) - (tgt * (n - 1)) / Math.max(1, h - 1) * (h > 1 ? 1 : 0) : n - 1 - tgt;
               D.line(0.28, yl, 0.72, yr, { color: col, width: 2, alpha: 0.8 });
-              D.text(`ω${SUB(n)}^${k}`, 0.24, yl, { align: 'right', size: 11, color: col });
-              if (!even || k < h) D.text(even ? `ω${SUB(h)}^${tgt}` : `ω${SUB(n)}^${tgt}`, 0.76, yr, { size: 11, color: even ? PAIRC[tgt % PAIRC.length] : PAIRC[k % PAIRC.length] });
+              D.text(`ω${SUB(n)}${SUP(k)}`, 0.24, yl, { align: 'right', size: 11, color: col });
+              if (!even || k < h) D.text(even ? `ω${SUB(h)}${SUP(tgt)}` : `ω${SUB(n)}${SUP(tgt)}`, 0.76, yr, { size: 11, color: even ? PAIRC[tgt % PAIRC.length] : PAIRC[k % PAIRC.length] });
             }
-            const sq = new Set(); for (let k = 0; k < n; k++) { const [x, y] = root(n, 2 * k); sq.add(`${x.toFixed(9)}:${y.toFixed(9)}`); }
+            const sq = new Set(); for (let k = 0; k < n; k++) { const [x, y] = root(n, 2 * k); sq.add(`${Math.round(x * 1e6) + 0}:${Math.round(y * 1e6) + 0}`); }
             info = { l, txt: even ? `squares of the ${n} roots: **${sq.size}** distinct values $= n/2$ ✓, each hit twice; they are the ${h}-th roots of unity, so an FFT of size $n$ needs its halves evaluated at only $n/2$ points` : `$n = ${n}$ is odd: the ${n} squares are **${sq.size}** distinct values, all ${n} roots again — no halving, which is why the radix-2 FFT wants $n$ a power of 2` };
           } else {
             const j = jS.value, g = v.M.gcd(j, n) || n, om = root(n, j);
@@ -341,7 +342,7 @@ It uses $\tfrac n2\lg n$ complex multiplications and $n\lg n$ complex additions,
                 B.tex(`y^{[0]}_{${k}}`, E[0] / 2, E[1] / 2, { size: 12, color: 'blue', dx: -14, dy: -10 });
               }
             }
-            B.corner(`call of size ${m}, twiddle ω${SUB(m)}^${L.k}`, 'tl', { color: 'muted' });
+            B.corner(`call of size ${m}, twiddle ω${SUB(m)}${SUP(L.k)}`, 'tl', { color: 'muted' });
           } else {
             B.setView([-3.3, 3.3], [-3, 3]);
             B.line(-3.5, 0, 3.5, 0, { color: 'grid', width: 1 });
@@ -558,7 +559,7 @@ with $\cdot$ the componentwise product. Taking $N$ the least power of 2 with $N\
         v.button('New input', () => newA());
         const N = v.stage({ x: [-1, 6], y: [-8, 1], axes: false, height: 430, full: true });
         const P = v.stage({ x: [2, 4096], y: [1, 2e7], xlog: true, ylog: true, axes: 'box', height: 200, full: true, xlabel: 'n', title: 'butterflies (each one complex multiplication)' });
-        const counts = []; for (let q = 1; q <= 12; q++) { const r = fftIterRun(new Array(2 ** q).fill(1), false); counts.push([2 ** q, r.bf]); }
+        const counts = []; for (let q = 1; q <= 12; q++) { const r = fftIterRun(new Array(2 ** q).fill(1), false, false); counts.push([2 ** q, r.bf]); }
         v.render(() => {
           const f = S.frame, n = a.length, L = Math.round(LG(n)), cols = f.cols, XS = (c) => (c === 0 ? 0 : c === 1 ? 1.15 : 1.15 + (c - 1) * 1.05);
           const xEnd = XS(L + 1);

@@ -276,7 +276,7 @@ is constant. More generally, for any generator, $\dfrac{d\mathcal Q}{dt} = \delt
           trans: {
             label: 'translation', qtex: 'p_x', rtex: String.raw`\partial L/\partial x`, title: 'Noether charge $p_x$ (translation in $x$)',
             U: (x, y, e) => 0.5 * y * y + 0.04 * e * x * x, G: (x, y, e) => [0.08 * e * x, y], gen: () => [1, 0],
-            ic: [-4.5, 0.9, 0.55, 0], T: 16, n: 4000, every: 4, view: [[-5.6, 5.6], [-3, 3]], lo: 0, hi: 3.2, min: 0.3,
+            ic: [-4, 0.9, 0.5, 0], T: 16, n: 4000, every: 4, view: [[-5.6, 5.6], [-3, 3]], lo: 0, hi: 3.2, min: 0.3,
             Q: (S) => S[2], rate: (S, t, e, md) => [-md.G(S[0], S[1], e)[0], 0], brk: 'valley closed off by $\\varepsilon\\,0.04x^2$',
           },
           rot: {
@@ -288,11 +288,11 @@ is constant. More generally, for any generator, $\dfrac{d\mathcal Q}{dt} = \delt
           },
           scale: {
             label: 'scaling', qtex: String.raw`D = \mathbf r\cdot\mathbf p - 2Et`, rtex: String.raw`-(k+2)U`, title: 'Noether charge $D = \\mathbf r\\cdot\\mathbf p - 2Et$ (dilation)',
-            U: (x, y, e) => 0.5 * Math.pow(Math.hypot(x, y), -2 + e),
-            G: (x, y, e) => { const k = -2 + e, r = Math.max(Math.hypot(x, y), 1e-6), c = 0.5 * k * Math.pow(r, k - 2); return [c * x, c * y]; },
-            gen: (x, y) => [x, y], ic: [-4.4, -2.0, 1, 0.42], T: 9.5, n: 4750, every: 5, view: [[-5, 5], [-3.4, 3.4]], lo: 0, hi: 1.2, min: 0.5, invert: true,
+            U: (x, y, e) => 0.3 * Math.pow(Math.hypot(x, y), -2 + e),
+            G: (x, y, e) => { const k = -2 + e, r = Math.max(Math.hypot(x, y), 1e-6), c = 0.3 * k * Math.pow(r, k - 2); return [c * x, c * y]; },
+            gen: (x, y) => [x, y], ic: [-4.0, -2.42, 0.94, 0.34], T: 9.2, n: 4600, every: 5, view: [[-5, 5], [-3.4, 3.4]], lo: 0, hi: 0.6, min: 0.5, invert: true,
             Q: (S, t, e, md) => S[0] * S[2] + S[1] * S[3] - 2 * t * (0.5 * (S[2] ** 2 + S[3] ** 2) + md.U(S[0], S[1], e)),
-            rate: (S, t, e, md) => [-e * md.U(S[0], S[1], e), 0], brk: 'repulsion $\\tfrac12 r^{k}$ with $k = -2+\\varepsilon$',
+            rate: (S, t, e, md) => [-e * md.U(S[0], S[1], e), 0], brk: 'repulsion $0.3\\,r^{k}$ with $k = -2+\\varepsilon$',
           },
           lrl: {
             label: 'Kepler: Runge–Lenz', qtex: String.raw`\arg\mathbf A`, rtex: String.raw`f\,\hat{\mathbf r}\times\mathbf L`, title: 'direction of the Runge–Lenz vector $\\mathbf A$ (°)',
