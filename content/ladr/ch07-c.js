@@ -122,6 +122,11 @@ function sphereImage(sc, T, st) {
 /** An RGBA pixel of a palette colour with the given opacity (0–1), for rasters drawn over the panel. */
 const rgba = (v, name, a) => { const c = v.rgb(name); return [c[0], c[1], c[2], Math.round(255 * Math.min(1, Math.max(0, a)))]; };
 
+/** A little house (outline, door, window) for pictures of linear maps of the plane. */
+const HOUSE = [[-0.5, -0.55], [0.5, -0.55], [0.5, 0.15], [0, 0.62], [-0.5, 0.15]];
+const DOOR = [[-0.16, -0.55], [0.08, -0.55], [0.08, -0.14], [-0.16, -0.14]];
+const WIN = [[0.2, -0.06], [0.38, -0.06], [0.38, 0.13], [0.2, 0.13]];
+
 // ---------- pictures for 7.80 (60 × 80 grey-scale images, values in [0, 1]) ----------
 const IMG_P = 60, IMG_N = 80;
 function landscape(x, y) {

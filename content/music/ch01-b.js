@@ -87,10 +87,10 @@ Doubling the distance quarters the intensity (a drop of 6.02 dB) and halves the 
       scope: String.raw`Holds in a free field (no reflecting surfaces), at distances large compared with the size of the source, for a source radiating equally in all directions, and over distances short enough that absorption by the air is negligible (it matters at high frequencies over hundreds of metres).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Inverse-square_law' },
       viz(v) {
-        const M = v.M, C = M.CONST, c = cAir(C), P = 0.1, WX = 24, RMIN = 0.5;
+        const M = v.M, C = M.CONST, c = cAir(C), P = 0.1, WX = 20, RMIN = 0.5;
         const fp = v.stage({ x: [-6, 54], y: [-20, 20], equal: true, height: 360, axes: false, weight: 1.3, title: 'floor plan, 60 m × 40 m: level in dB' });
         const gr = v.stage({ x: [RMIN, 60], y: [1e-6, 0.1], xlog: true, ylog: true, height: 360, axes: 'box', grid: true, xlabel: 'r (m)', ylabel: 'I (W/m²)', weight: 1, title: 'intensity along the line to the listener' });
-        const wall = v.toggle('reflecting wall', true);
+        const wall = v.toggle('reflecting wall', false);
         const Rw = v.slider('wall reflects', 0, 1, 0.8, { step: 0.01, fmt: (x) => Math.round(100 * x) + '% of the energy' });
         const lis = fp.handle(9, 4, { color: 'gold', label: 'listener', labelPos: 'nw', constrain: (x, y) => { let X = M.clamp(x, -5.5, wall.value ? WX - 0.8 : 53); let Y = M.clamp(y, -19, 19); const r = Math.hypot(X, Y); if (r < 1) { X = X / (r || 1); Y = Y / (r || 1); } return [X, Y]; } });
         const Ifree = (r) => P / (4 * Math.PI * Math.max(RMIN, r) ** 2);
@@ -519,7 +519,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         const view = v.select('show', [{ value: 'p', label: 'pressure (slowed down)' }, { value: 'L', label: 'level in dB' }], 'p');
         const fq = v.slider('frequency $f$', 100, 1600, 400, { log: true, fmt: (x) => Math.round(x) + ' Hz' });
         const wS = v.slider('doorway width $w$', 0.3, 1.2, 0.8, { step: 0.025, fmt: (x) => v.fix(x, 2) + ' m' });
-        const s = v.stage({ x: [-0.04, 6.04], y: [-0.04, 2.84], equal: true, height: 380, axes: false, full: true, title: 'ripple tank: the 2D wave equation, solved live (6 m × 2.8 m)' });
+        const s = v.stage({ x: [-0.04, 6.04], y: [-0.62, 2.84], equal: true, height: 460, axes: false, full: true, title: 'ripple tank: the 2D wave equation, solved live (6 m × 2.8 m)' });
         const lis = s.handle(4.2, 0.45, { color: 'gold', label: 'listener', labelPos: 'ne', constrain: (x, y) => [M.clamp(x, (IW + 3) * DX, 5.9), M.clamp(y, 0.1, 2.7)] });
         const N = NX * NY;
         let p = new Float32Array(N), pp = new Float32Array(N), pn = new Float32Array(N);
@@ -561,7 +561,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
         const amp2 = (id) => Math.max(0, (p[id] * p[id] + pp[id] * pp[id] - 2 * p[id] * pp[id] * cw) / sw2);
         const ramp = signedRamp(v);
         const lisId = () => Math.min(NY - 1, Math.floor(lis.y / DX)) * NX + Math.min(NX - 1, Math.floor(lis.x / DX));
-        let lastLis = '';
+        let lastLis = '', lastView = null;
         v.soundButton('Listen at the listener', (snd) => snd.tone(fq.value, { duration: 1.6, gain: 0.25 * Math.min(1.6, Math.sqrt(2 * ms)) }));
         v.soundButton('Incoming wave', (snd) => snd.tone(fq.value, { duration: 1.6, gain: 0.25 }));
         v.animate(() => {
@@ -573,6 +573,7 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
           const est = amp2(lisId()) / 2, lk = `${lis.x},${lis.y}`;
           if (lk !== lastLis || pending > 0) { lastLis = lk; ms = est; } else ms += 0.25 * (est - ms);
           const ink = v.rgb('ink'), panel = v.color('panel');
+          if (view.value !== lastView) { lastView = view.value; v.legend(lastView === 'p' ? [['red', 'compression', { area: true }], ['blue', 'rarefaction', { area: true }], ['ink', 'rigid wall'], ['gold', 'listener', { dot: true }]] : [['ink', 'rigid wall'], ['gold', 'listener', { dot: true }], ['muted', 'dashed: edges of the geometric shadow', { dash: true }]]); }
           if (view.value === 'p') {
             s.raster((x, y) => {
               const i = Math.floor(x / DX), j = Math.floor(y / DX);
@@ -587,22 +588,21 @@ Since $I=p^2/\rho c$ the two agree to within about 0.1 dB in air. A factor of 10
               const id = j * NX + i;
               return wall[id] ? ink : M.cmap((10 * Math.log10(amp2(id) + 1e-9) + 30) / 36, 'magma');
             }, { res: 2, key: `L${n}|${panel}` });
-            s.colorbar([-30, 6], 'magma', { pos: 'right', label: 'dB vs incoming', length: 0.55 });
+            s.colorbar([-30, 6], 'magma', { pos: 'bottom', label: 'level relative to the incoming wave (dB)', length: 0.5 });
           }
           const half = wS.value / 2, xw0 = IW * DX, xw1 = (IW + 2) * DX, lc = view.value === 'p' ? 'ink' : 'panel';
           s.rect(xw0, 0, xw1, YC - half, { fill: 'ink', fillAlpha: 1, stroke: false });
           s.rect(xw0, YC + half, xw1, NY * DX, { fill: 'ink', fillAlpha: 1, stroke: false });
           s.line(xw1, YC + half, NX * DX, YC + half, { color: lc, width: 1.2, dash: [6, 4], alpha: 0.75 });
           s.line(xw1, YC - half, NX * DX, YC - half, { color: lc, width: 1.2, dash: [6, 4], alpha: 0.75 });
-          s.text('geometric shadow', view.value === 'p' ? 5.9 : 4.9, 0.12, { align: 'right', color: 'ink', size: 11.5 });
-          s.text('geometric shadow', view.value === 'p' ? 5.9 : 4.9, 2.68, { align: 'right', color: 'ink', size: 11.5 });
+          s.text('geometric shadow', 5.9, 0.12, { align: 'right', color: 'ink', size: 11.5 });
+          s.text('geometric shadow', 5.9, 2.68, { align: 'right', color: 'ink', size: 11.5 });
           s.text('plane wave →', 0.12, 2.68, { align: 'left', color: 'ink', size: 12, weight: 600 });
           s.rect(0, 0, NX * DX, NY * DX, { color: 'muted', width: 1 });
           if (lamv < 3) s.measure(0.25, 0.25, 0.25 + lamv, 0.25, `λ = ${M.si(lamv, 'm')}`, { color: 'ink', math: false, size: 12, offset: -11 });
           const lvl = 10 * Math.log10(Math.max(1e-9, 2 * ms));
           s.text(`${lvl >= 0 ? '+' : '−'}${v.fix(Math.abs(lvl), 1)} dB`, lis.x, lis.y, { align: lis.x > 5 ? 'right' : 'left', dx: lis.x > 5 ? -12 : 12, dy: 14, color: 'ink', size: 12.5, weight: 700 });
         }, { still: 0.5 });
-        v.legend([['red', 'compression', { area: true }], ['blue', 'rarefaction', { area: true }], ['ink', 'rigid wall'], ['gold', 'listener', { dot: true }]]);
         v.readout(() => {
           const lam = c / fq.value, wv = wS.value, lvl = 10 * Math.log10(Math.max(1e-9, 2 * ms)), inShadow = Math.abs(lis.y - YC) > wv / 2;
           const beam = lam < wv ? `the beam's first null at $\\theta=\\arcsin(\\lambda/w)$ = ${v.fix((Math.asin(lam / wv) * 180) / Math.PI, 0)}°` : '$\\lambda > w$: the doorway radiates like a new source and the sound floods round the corners';

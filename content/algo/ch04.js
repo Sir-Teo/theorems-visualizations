@@ -425,14 +425,20 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
         const presets = {
           spread: () => blueNoise(v.rng(7), 26, 0.4, 9.6, 0.4, 6.0, 1.05),
           line: () => blueNoise(v.rng(11), 26, 0.4, 9.6, 0.4, 6.0, 0.95, 1.1),
-          hex: () => { const out = []; for (let r = 0; r < 7; r++) for (let c = -3; c <= 3; c++) { const x = 5 + (c + (r % 2 ? 0.5 : 0)) * 1.0 + 0.02 * r, y = 0.5 + r * 0.866; if (x > 0.3 && x < 9.7) out.push([x, y]); } return out; },
+          packed: () => {
+            // six points in the box above p with every same-side distance at least δ = 1.6: 5 later neighbours
+            const D = 1.6, l = 5, y0 = 1.9, core = [[-0.999, 0], [-0.001, 0.07], [-0.5, 0.999], [0.001, 0], [0.999, 0.07], [0.5, 0.999]].map(([x, y]) => [l + D * x, y0 + D * y]);
+            const r = v.rng(5), out = core.slice(); let t = 0;
+            while (out.length < 24 && t++ < 6000) { const p = [r.uniform(0.4, 9.6), r.uniform(0.3, 6.1)]; if (out.every((q) => dist2(p, q) >= 1.75)) out.push(p); }
+            return out;
+          },
         };
-        let pts = presets.spread(), sel = null, drag = null;
-        const pre = v.select('points', [{ value: 'spread', label: 'spread out' }, { value: 'line', label: 'crowding the line' }, { value: 'hex', label: 'hexagonal lattice' }], 'spread', { onChange: () => { pts = presets[pre.value](); sel = null; } });
+        let pts = presets.packed(), sel = null, drag = null;
+        const pre = v.select('points', [{ value: 'packed', label: 'packed box' }, { value: 'line', label: 'crowding the line' }, { value: 'spread', label: 'spread out' }], 'packed', { onChange: () => { pts = presets[pre.value](); sel = null; } });
         const fac = v.slider('δ used ÷ true δ', 0.5, 2.5, 1, { step: 0.05 });
         v.button('Jiggle', () => { pts = pts.map(([x, y]) => [Math.min(9.7, Math.max(0.3, x + rng.uniform(-0.12, 0.12))), Math.min(6.1, Math.max(0.3, y + rng.uniform(-0.12, 0.12)))]); });
         const s = v.stage({ x: [0, 10], y: [0, 6.4], equal: true, axes: false, height: 360, weight: 1.45 });
-        const B = v.stage({ x: [0, 10], y: [0, 9], axes: 'box', height: 360, weight: 1, minWidth: 240, title: 'later strip points within $\\delta$ vertically', xlabel: 'strip point (by y)' });
+        const B = v.stage({ x: [0, 10], y: [0, 9], axes: 'box', height: 360, weight: 1, minWidth: 240, title: 'strip points by $y$: later ones within $\\delta$ vertically' });
         let I = stripInfo(pts, 1);
         s.onDrag((x, y, ph) => {
           if (ph === 'start') { let b = -1, bd = 0.35; pts.forEach((p, k) => { const d = Math.hypot(p[0] - x, p[1] - y); if (d < bd) { bd = d; b = k; } }); drag = b >= 0 ? { k: b, moved: false } : null; }
@@ -445,8 +451,8 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
           const { ell, side, best, cross, delta, du, strip, cnt } = I;
           if (sel == null || !strip.includes(sel)) sel = strip.length ? strip[cnt.indexOf(Math.max(...cnt))] : null;
           s.vband(ell - du, ell + du, { color: 'orange', alpha: 0.1, edges: true });
-          s.line(ell, 0, ell, 6.4, { color: 'ink', width: 1.5, dash: [6, 4] });
-          s.text('ℓ', ell, 6.25, { align: 'center', size: 14, math: true, dx: 8 });
+          s.vline(ell, { color: 'ink', width: 1.5, dash: [6, 4] });
+          s.text('ℓ', ell, 6.3, { align: 'left', size: 15, math: true, dx: 5 });
           // same-side closest pairs
           [0, 1].forEach((sd) => { const b = best[sd]; if (!b.p) return; const [i, j] = b.p, col = sd ? 'purple' : 'blue'; s.line(pts[i][0], pts[i][1], pts[j][0], pts[j][1], { color: col, width: 3, alpha: 0.75 }); s.text(sd ? 'δ_R' : 'δ_L', (pts[i][0] + pts[j][0]) / 2, (pts[i][1] + pts[j][1]) / 2, { color: col, size: 12, weight: 700, dy: -10, align: 'center' }); });
           // the box above p
@@ -478,7 +484,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
           B.setView([0.3, Math.max(k, 6) + 0.7], [0, mx]);
           B.setTicks(k <= 16 ? strip.map((_, r) => [r + 1, String(r + 1)]) : null, null);
           B.hband(7, mx, { color: 'red', alpha: 0.07 });
-          B.hline(7, { color: 'red', dash: [5, 4], width: 1.5 }); B.text('7 (lemma)', 0.4, 7, { color: 'red', size: 11, dy: -9 });
+          B.hline(7, { color: 'red', dash: [5, 4], width: 1.5 }); B.text('lemma: at most 7', Math.max(k, 6) + 0.6, 7, { color: 'red', size: 11, dy: -9, align: 'right', weight: 600 });
           cnt.forEach((c, r) => { const col = c > 7 ? 'red' : strip[r] === sel ? 'gold' : side[strip[r]] ? 'purple' : 'blue'; B.rect(r + 1 - 0.34, 0, r + 1 + 0.34, Math.max(c, 0.06), { fill: col, fillAlpha: 0.65, color: col, width: 1 }); });
           I.missed = missed; I.inBox = inBox.length;
         });
@@ -515,7 +521,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
         function regen() { pts = gen[lay.value](nS.value, v.rng(seed)); S.reset({ at: 'end' }); }
         v.button('Resample', () => { seed++; regen(); });
         const S = v.steps({ frames: () => (run = cpRun(pts)).frames, code: ['ClosestPair(P):   ▷ P sorted by x', '  if |P| ≤ 3: try all pairs', '  ℓ ← median x;  split P into L, R', '  δ_L ← ClosestPair(L);  δ_R ← ClosestPair(R)', '  δ ← min(δ_L, δ_R);  merge L, R by y', '  S ← points with |x − ℓ| < δ, by y', '  compare each s ∈ S with the next ≤ 7', '  return the best pair'], codeTitle: 'closest pair', speed: 2, codePos: 'below', start: 'end', still: 'end' });
-        const mode = v.select('count', [{ value: 'dist', label: 'distance checks' }, { value: 'ops', label: 'all steps' }], 'dist');
+        const mode = v.select('count', [{ value: 'ops', label: 'all steps' }, { value: 'dist', label: 'distance checks' }], 'ops');
         const s = v.stage({ x: [0, 10], y: [-2.4, 6], axes: false, height: 400, full: true });
         const P = v.stage({ x: [4, 8192], y: [1, 1e8], xlog: true, ylog: true, axes: 'box', height: 250, full: true, xlabel: 'n' });
         s.onDrag((x, y, ph) => {
@@ -539,7 +545,7 @@ recursively and returns $C_{11}=M_1+M_4-M_5+M_7$, $C_{12}=M_3+M_5$, $C_{21}=M_2+
           for (const q of stack) if (q.ell != null) s.line(q.ell, 0.08, q.ell, 5.95, { color: 'orange', width: 1, alpha: 0.5, dash: [2, 4] });
           const seg = (pr, col, w) => { if (pr) s.line(pts[pr[0]][0], pts[pr[0]][1], pts[pr[1]][0], pts[pr[1]][1], { color: col, width: w }); };
           if (c && f.type === 'combine') {
-            s.vband(c.ell - c.delta, c.ell + c.delta, { color: 'orange', alpha: 0.13 });
+            s.rect(Math.max(c.ell - c.delta, -0.5), 0.08, Math.min(c.ell + c.delta, 10.5), 5.95, { fill: 'orange', fillAlpha: 0.14, stroke: false });
             seg(c.L.pair, 'blue', 3); seg(c.R.pair, 'purple', 3);
             c.compared.forEach((pr) => seg(pr, 'gold', 1.4));
             seg(c.res.pair, 'green', c.improved ? 4 : 2.2);
@@ -607,8 +613,8 @@ The two are related by the Vandermonde system $V\mathbf a=\mathbf y$ with $V_{kj
         const nSel = v.select('degree bound $n$', ['2', '3', '4', '5', '6'], '4', { onChange: () => { const n = +nSel.value; const L = v.M.linspace(-1.6, 1.6, n); for (let k = 0; k < n; k++) { xs[k] = n === 1 ? 0 : L[k]; hv[k].x = xs[k]; } for (let j = n; j < NMAX; j++) a[j] = 0; if (mode.value === 'val') { const V = vander(xs, n); ys = V.map((r) => r.reduce((s, c, j) => s + c * a[j], 0)); for (let k = 0; k < n; k++) hv[k].y = ys[k]; } vis(); } });
         const G = v.stage({ x: [-2.2, 2.2], y: [-4.2, 4.2], height: 320, weight: 1.25, title: 'the polynomial $A(x)$' });
         const Bs = v.stage({ x: [-0.6, 5.6], y: [-3.4, 3.4], height: 320, weight: 0.9, axes: 'box', title: 'its coefficients $a_j$', xticks: [0, 1, 2, 3, 4, 5].map((j) => [j, `a${'₀₁₂₃₄₅'[j]}`]) });
-        const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true });
-        const TT = v.table(Ts, { rows: 4, cols: 6, square: false, cellAspect: 1.55, maxCell: 40, size: 13 });
+        const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, full: true });
+        const TT = v.table(Ts, { rows: 4, cols: 6, square: false, cellAspect: 1.55, maxCell: 40, size: 13, region: [0, 0, 1, 0.93] });
         const hb = Array.from({ length: NMAX }, (_, j) => Bs.handle(j, a[j], { constrain: (x, y) => [j, Math.max(-3.2, Math.min(3.2, y))], color: 'orange' }));
         const hv = Array.from({ length: NMAX }, (_, k) => G.handle(xs[k], 0, { constrain: (x, y) => [Math.max(-2.1, Math.min(2.1, x)), Math.max(-4.1, Math.min(4.1, y))], color: 'accent' }));
         function vis() { const n = +nSel.value, cm = mode.value === 'coef'; hb.forEach((h, j) => { h.visible = cm && j < n; }); hv.forEach((h, k) => { h.visible = !cm && k < n; }); }
@@ -644,7 +650,7 @@ The two are related by the Vandermonde system $V\mathbf a=\mathbf y$ with $V_{kj
             fill: (k, j) => (j === n ? ['orange', cm ? 0.3 : 0.14] : j === n + 1 ? ['accent', cm ? 0.12 : 0.3] : null),
             textColor: (k, j) => (j < n ? 'muted' : 'ink'),
           });
-          Ts.text('V', 0.5, 0.06, { align: 'center', size: 11, color: 'muted' });
+          Ts.corner('the Vandermonde system  V a = y', 'tl', { size: 11.5 });
           st = { n, det, prod, sing, cm };
         });
         v.legend([['orange', 'coefficients $a_j$', { area: true }], ['accent', 'values $y_k = A(x_k)$', { dot: true }]]);
@@ -677,7 +683,7 @@ $$A(x_0)=a_0+x_0\bigl(a_1+x_0(a_2+\dots+x_0(a_{n-1}+x_0a_n)\cdots)\bigr).$$
         const C = v.stage({ x: [0.5, 16.5], y: [0, 140], axes: 'box', height: 330, weight: 0.85, minWidth: 240, xlabel: 'degree n', title: 'multiplications' });
         const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true });
         const TT = v.table(Ts, { rows: 3, cols: 6, square: false, cellAspect: 1.45, maxCell: 42, size: 13.5, rowLabels: ['$a_k$', '$+\\;b_{k+1}x_0$', '$b_k$'] });
-        const xh = G.handle(0.9, 0, { constrain: 'x', color: 'accent', label: 'x₀', labelPos: 's' });
+        const xh = G.handle(0.9, -3.65, { constrain: 'x', color: 'accent', label: 'x₀', labelPos: 'e' });
         const frames = () => {
           const n = nS.value, x = xh.x, b = Array(n + 1).fill(null), pr = Array(n + 1).fill(null);
           b[n] = a[n];
@@ -699,11 +705,18 @@ $$A(x_0)=a_0+x_0\bigl(a_1+x_0(a_2+\dots+x_0(a_{n-1}+x_0a_n)\cdots)\bigr).$$
           for (let k = n; k >= f.k; k--) if (k > 0) G.clip(() => G.fn(tail(k), { color: k === f.k ? 'gold' : TAILC[k], width: k === f.k ? 2.6 : 1.4, alpha: k === f.k ? 1 : 0.55 }));
           G.clip(() => G.fn(tail(0), { color: 'ink', width: f.k === 0 ? 3 : 2, alpha: f.k === 0 ? 1 : 0.35 }));
           G.vline(x0, { color: 'accent', width: 1, dash: [3, 4] });
+          G.text('drag x₀', x0, -3.65, { size: 10.5, color: 'muted', dx: x0 > 1.2 ? -14 : 14, dy: 14, align: x0 > 1.2 ? 'right' : 'left' });
+          // b_k dots on the vertical through x0, labels pushed apart so they never overlap
+          const labs = [];
           for (let k = n; k >= f.k; k--) {
-            const y = f.b[k], yc = Math.max(-3.9, Math.min(3.9, y)), cur = k === f.k;
+            const y = f.b[k], yc = Math.max(-3.3, Math.min(3.9, y)), cur = k === f.k;
             G.dot(x0, yc, { r: cur ? 6 : 4.2, color: cur ? 'gold' : k === 0 ? 'ink' : TAILC[k] });
-            if (cur || n - k < 2) G.text(`b${'₀₁₂₃₄₅₆₇₈'[k]}`, x0, yc, { size: 12, weight: 700, color: cur ? 'gold' : 'muted', dx: 9, dy: -7 });
+            labs.push({ k, y: yc, ly: yc, cur });
           }
+          labs.sort((p, q) => p.y - q.y);
+          for (let t = 1; t < labs.length; t++) labs[t].ly = Math.max(labs[t].ly, labs[t - 1].ly + 0.42);
+          const side = x0 > 1.2 ? -1 : 1;
+          labs.forEach((L) => { G.line(x0, L.y, x0 + side * 0.16, L.ly, { color: 'faint', width: 1 }); G.text(`b${'₀₁₂₃₄₅₆₇₈'[L.k]} = ${fx(f.b[L.k])}`, x0 + side * 0.18, L.ly, { size: 11.5, weight: L.cur ? 700 : 500, color: L.cur ? 'gold' : L.k === 0 ? 'ink' : 'muted', align: side > 0 ? 'left' : 'right' }); });
           // tableau
           TT.draw({
             cols: n + 1, colLabels: (j) => `$k=${n - j}$`,
@@ -713,7 +726,7 @@ $$A(x_0)=a_0+x_0\bigl(a_1+x_0(a_2+\dots+x_0(a_{n-1}+x_0a_n)\cdots)\bigr).$$
           });
           // counts
           C.setView([0.5, 16.5], [0, 140]);
-          const ds = v.M.range(1, 17);
+          const ds = v.M.range(16, 1);
           C.path(ds.map((d) => [d, d * (d + 1) / 2]), { color: 'red', width: 2 }); C.dots(ds.map((d) => [d, d * (d + 1) / 2]), { r: 2.6, color: 'red' });
           C.path(ds.map((d) => [d, 2 * d - 1]), { color: 'orange', width: 2 }); C.dots(ds.map((d) => [d, 2 * d - 1]), { r: 2.6, color: 'orange' });
           C.path(ds.map((d) => [d, d]), { color: 'green', width: 2 }); C.dots(ds.map((d) => [d, d]), { r: 2.6, color: 'green' });
@@ -837,33 +850,31 @@ It is exactly the coefficient sequence of the product of polynomials: if $A(x)=\
         const kS = v.slider('power $k$', 0, 16, 3, { int: true });
         const snap = v.toggle('snap $z$ to the $n$-th roots', true);
         const C = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, height: 360, title: 'the zeros of $z^n - 1$' });
-        const Sm = v.stage({ x: [-1.3, 3.3], y: [-1.6, 2.4], equal: true, height: 360, title: 'head to tail: $1 + z + z^2 + \\dots + z^{n-1}$' });
+        const Sm = v.stage({ x: [-1.3, 3.3], y: [-1.6, 2.4], equal: true, axes: false, height: 360, title: 'head to tail: $1 + z + z^2 + \\dots + z^{n-1}$' });
         const z = C.handle(Math.cos(TAU / 8), Math.sin(TAU / 8), { color: 'gold', label: 'z', r: 8, constrain: (x, y) => { if (!snap.value) return [x, y]; const n = nS.value, j = ((Math.round(Math.atan2(y, x) / TAU * n) % n) + n) % n; return [Math.cos(TAU * j / n), Math.sin(TAU * j / n)]; } });
         let st = {};
         v.render(() => {
           const n = nS.value, k = kS.value, zc = v.cx(z.x, z.y);
-          C.domain((w) => w.pow(n).sub(ONE), { key: 'zn' + n, res: 3, fade: 0.62 });
+          C.domain((w) => w.pow(n).sub(ONE), { key: 'zn' + n, res: 3, fade: 0.72 });
           C.circle(0, 0, 1, { color: 'ink', width: 1.4 });
+          // powers of z
+          const pw = []; let p = v.cx(1, 0); for (let j = 0; j <= Math.max(n, k); j++) { pw.push(p); p = p.mul(zc); }
+          for (let j = 0; j < n; j++) C.line(0, 0, Math.cos(TAU * j / n), Math.sin(TAU * j / n), { color: 'muted', width: 0.8, alpha: 0.4 });
+          C.clip(() => C.path(pw.slice(0, n + 1).map((q) => [q.re, q.im]), { color: 'gold', width: 2.2, alpha: 0.9 }));
           // roots, primitive ones filled
           for (let j = 0; j < n; j++) {
             const x = Math.cos(TAU * j / n), y = Math.sin(TAU * j / n), prim = v.M.gcd(j, n) === 1;
-            C.line(0, 0, x, y, { color: 'muted', width: 0.8, alpha: 0.4 });
-            C.dot(x, y, prim ? { r: 5.5, color: 'accent' } : { r: 5, color: 'accent', hollow: true, width: 2 });
+            C.dot(x, y, prim ? { r: 6, color: 'accent' } : { r: 5.5, color: 'accent', hollow: true, width: 2.2 });
           }
-          C.text('1', 1, 0, { size: 13, weight: 700, dx: 10, dy: -8 });
-          C.tex('\\omega_n', Math.cos(TAU / n), Math.sin(TAU / n), { size: 14, color: 'accent', dx: Math.cos(TAU / n) * 18, dy: -Math.sin(TAU / n) * 18 });
-          // powers of z
-          const pw = []; let p = v.cx(1, 0); for (let j = 0; j <= Math.max(n, k); j++) { pw.push(p); p = p.mul(zc); }
-          C.clip(() => {
-            C.path(pw.slice(0, n + 1).map((q) => [q.re, q.im]), { color: 'gold', width: 2, alpha: 0.85 });
-            pw.slice(1, n + 1).forEach((q) => C.dot(q.re, q.im, { r: 2.6, color: 'gold' }));
-          });
+          C.clip(() => pw.slice(1, n + 1).forEach((q) => { if (Math.abs(q.abs() - 1) > 0.02) C.dot(q.re, q.im, { r: 3, color: 'gold' }); }));
+          C.text('1', 1, 0, { size: 13, weight: 700, dx: 11, dy: -9 });
+          C.tex('\\omega_n', Math.cos(TAU / n), Math.sin(TAU / n), { size: 14, color: 'accent', dx: -Math.cos(TAU / n) * 24, dy: Math.sin(TAU / n) * 22 });
           const zk = pw[k];
           if (zk && zk.abs() < 2.4) {
             const th = Math.atan2(zk.im, zk.re), t1 = th < 0 ? th + TAU : th;
             C.curve((t) => [0.32 * Math.cos(t), 0.32 * Math.sin(t)], 0, t1, { color: 'orange', width: 2 });
             C.dot(zk.re, zk.im, { r: 7, color: 'orange', hollow: true, width: 2.5 });
-            C.text(`z^${k}`, zk.re, zk.im, { color: 'orange', size: 13, weight: 700, dx: zk.re >= 0 ? 12 : -12, dy: zk.im >= 0 ? -10 : 12, align: zk.re >= 0 ? 'left' : 'right' });
+            C.tex(`z^{${k}}`, zk.re, zk.im, { color: 'orange', size: 15, dx: zk.re >= 0 ? 20 : -20, dy: zk.im >= 0 ? -14 : 14 });
           }
           // head-to-tail sum
           const chain = [[0, 0]]; let sx = 0, sy = 0; for (let j = 0; j < n; j++) { sx += pw[j].re; sy += pw[j].im; chain.push([sx, sy]); }
@@ -873,6 +884,7 @@ It is exactly the coefficient sequence of the product of polynomials: if $A(x)=\
           Sm.setView([cxm - w * 1.1, cxm + w * 1.1], [cym - w, cym + w]);
           for (let j = 0; j < n; j++) Sm.arrow(chain[j][0], chain[j][1], chain[j + 1][0], chain[j + 1][1], { color: j === 0 ? 'ink' : 'gold', width: 2, head: 8 });
           const sum = v.cx(sx, sy), closes = sum.abs() < 1e-9;
+          Sm.line(cxm - w * 1.1, 0, cxm + w * 1.1, 0, { color: 'grid', width: 1 }); Sm.line(0, cym - w, 0, cym + w, { color: 'grid', width: 1 });
           Sm.dot(0, 0, { r: 4.5, color: 'ink', label: '0', labelPos: 'sw' });
           Sm.dot(sx, sy, { r: 6, color: closes ? 'green' : 'red' });
           Sm.corner(closes ? 'closes up: the sum is 0' : `ends at ${fx(sx, 3)} ${sy < 0 ? '−' : '+'} ${fx(Math.abs(sy), 3)}i`, 'tl', { color: closes ? 'green' : 'red', weight: 700 });
