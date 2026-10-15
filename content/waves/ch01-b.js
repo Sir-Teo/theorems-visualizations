@@ -277,13 +277,10 @@ which is 343 m/s in air at 20 °C, independent of pressure and growing as $\sqrt
         };
         const pAt = (x) => { const { X, pr } = S; let lo = 0, hi = N; while (hi - lo > 1) { const md = (lo + hi) >> 1; if (X[md] <= x) lo = md; else hi = md; } return pr[lo] - P0; };
         const dispAt = (s0) => { const u = s0 / L0, i = Math.min(N - 1, Math.floor(u)), f = u - i; return S.X[i] * (1 - f) + S.X[i + 1] * f - s0; };
-        const firstPeak = (k) => { // time of the first strong maximum in a microphone record (parabolic interpolation)
-          const h = S.hist; if (h.length < 5) return NaN;
-          let mx = 0; for (const r of h) mx = Math.max(mx, r[k]); if (mx < 20) return NaN;
-          for (let i = 1; i < h.length - 1; i++) if (h[i][k] > 0.5 * mx && h[i][k] >= h[i - 1][k] && h[i][k] > h[i + 1][k]) {
-            const a = h[i - 1][k], b = h[i][k], c = h[i + 1][k], den = a - 2 * b + c, d = den < 0 ? (0.5 * (a - c)) / den : 0;
-            return h[i][0] + d * (h[i + 1][0] - h[i][0]);
-          }
+        // time at which a microphone's record first rises through a fixed threshold (linear interpolation)
+        const firstCross = (k) => {
+          const h = S.hist, P = S.P, thr = 0.25 * P.rho * P.c * (pist.value === 'push' ? AP / (2 * TAUP) : AS * TAU * FS * 0.6);
+          for (let i = 1; i < h.length; i++) if (h[i - 1][k] < thr && h[i][k] >= thr) return h[i - 1][0] + ((thr - h[i - 1][k]) / (h[i][k] - h[i - 1][k])) * (h[i][0] - h[i - 1][0]);
           return NaN;
         };
         let tms = 0;
@@ -321,15 +318,15 @@ which is 343 m/s in air at 20 °C, independent of pressure and growing as $\sqrt
           mp.path(S.hist.map((r) => [r[0] * 1000, r[2] + pmax * 1.0]), { color: 'purple', width: 1.8 });
           mp.text(`mic at ${MIC[0]} m`, 5.9, pmax * 0.35, { color: 'teal', size: 11.5, align: 'right' });
           mp.text(`mic at ${MIC[1]} m (shifted up)`, 5.9, pmax * 1.35, { color: 'purple', size: 11.5, align: 'right' });
-          const t1 = firstPeak(1), t2 = firstPeak(2);
+          const t1 = firstCross(1), t2 = firstCross(2);
           if (pist.value === 'push') for (const xm of MIC) mp.vline((T0 + xm / P.cad) * 1000, { color: 'gold', width: 1.2, dash: [5, 4] });
           const near = (tt) => S.hist.reduce((b, r) => (Math.abs(r[0] - tt) < Math.abs(b[0] - tt) ? r : b));
           if (isFinite(t1)) mp.dot(t1 * 1000, near(t1)[1], { r: 4.5, color: 'teal' });
           if (isFinite(t2)) mp.dot(t2 * 1000, pmax + near(t2)[2], { r: 4.5, color: 'purple' });
-        }, { period: 6, still: 3.4 });
+        }, { period: 6, still: 4.0 });
         v.legend([['red', 'pressure change $p$'], ['accent', '$\\rho_0c\\,u$ (fluid velocity)', { dash: true }], ['gold', 'arrival predicted by $\\sqrt{\\gamma P/\\rho}$', { dash: true }]]);
         v.readout(() => {
-          const P = S.P, t1 = firstPeak(1), t2 = firstPeak(2), cm = isFinite(t1) && isFinite(t2) && t2 > t1 ? (MIC[1] - MIC[0]) / (t2 - t1) : NaN;
+          const P = S.P, t1 = firstCross(1), t2 = firstCross(2), cm = isFinite(t1) && isFinite(t2) && t2 > t1 ? (MIC[1] - MIC[0]) / (t2 - t1) : NaN;
           return `${P.G.name} at ${v.fix(Tk.value, 0)} K and 1 atm: $\\rho_0$ = ${v.fix(P.rho, 3)} kg/m³, $\\gamma$ = ${v.fix(P.G.g, 3)} · Laplace $\\sqrt{\\gamma P_0/\\rho_0}$ = ${v.fix(P.cad, 1)} m/s, Newton $\\sqrt{P_0/\\rho_0}$ = ${v.fix(P.cN, 1)} m/s · speed measured between the microphones: ${isFinite(cm) ? v.fix(cm, 1) + ' m/s' : '… (waiting for the wave to reach both)'}${iso.value ? ' — the isothermal gas reproduces Newton’s value, not the real speed of sound' : ''} · acoustic impedance $\\rho_0c$ = ${v.fix(P.rho * P.c, 0)} kg/(m²·s)`;
         });
       },

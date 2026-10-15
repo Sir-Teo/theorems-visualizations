@@ -241,7 +241,7 @@ so that two statisticians who record the same data in different units (°C and �
           }
           return out;
         });
-        const line = (s, xs, ests, title, unit, other) => {
+        const line = (s, xs, ests, unit) => {
           const lo = Math.min(...xs, ...ests.flat()), hi = Math.max(...xs, ...ests.flat()), pad = 0.08 * (hi - lo) + 0.5;
           s.setView([lo - pad, hi + pad], [-0.6, 1.4]);
           s.line(lo - pad, 0, hi + pad, 0, { color: 'muted', width: 1.4 });
@@ -249,16 +249,15 @@ so that two statisticians who record the same data in different units (°C and �
           for (let t = Math.ceil((lo - pad) / st) * st; t <= hi + pad; t += st) { s.line(t, -0.06, t, 0.06, { color: 'muted' }); s.text(`${v.fix(t, st < 1 ? 1 : 0)}`, t, -0.3, { align: 'center', size: 11, color: 'muted' }); }
           xs.forEach((x) => s.dot(x, 0.18, { r: 4, color: 'gold' }));
           s.text(unit, hi + pad, -0.3, { align: 'right', dx: -4, size: 12, color: 'muted', weight: 600 });
-          t1 && null;
         };
         let info = null;
         v.render(() => {
           const xs = data(), a = aS.value, b = bS.value, ys = xs.map((x) => a + b * x);
           const e0 = EST.map((E) => E.f(xs)), e1 = EST.map((E) => E.f(ys)), et = e0.map((e) => a + b * e);
-          line(s1, xs, [e0], '', '°C');
+          line(s1, xs, [e0], '°C');
           EST.forEach((E, q) => { s1.line(e0[q], 0.35, e0[q], 0.95 - 0.13 * q, { color: E.col, width: 1.4 }); s1.dot(e0[q], 0.95 - 0.13 * q, { r: 5.5, color: E.col }); });
           t1('readings in the original units (°C) and four estimates of the centre');
-          line(s2, ys, [e1, et], '', a === 32 && b === 1.8 ? '°F' : 'new units');
+          line(s2, ys, [e1, et], a === 32 && b === 1.8 ? '°F' : 'new units');
           EST.forEach((E, q) => { const y = 0.95 - 0.13 * q; s2.line(e1[q], 0.35, e1[q], y, { color: E.col, width: 1.4 }); s2.dot(et[q], y, { r: 8.5, color: E.col, hollow: true, width: 2.2 }); s2.dot(e1[q], y, { r: 5.5, color: E.col }); if (Math.abs(e1[q] - et[q]) > 1e-9) s2.line(Math.min(e1[q], et[q]), y, Math.max(e1[q], et[q]), y, { color: E.col, width: 2.2, dash: [4, 3] }); });
           t2(`transformed readings $a+bx$ with $a=${v.fix(a, 1)}$, $b=${v.fix(b, 2)}$: filled = estimator on new data, ring = transformed old estimate`);
           // risk
@@ -405,7 +404,7 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
           key: () => [modeS.value, nS.value, modeS.value === 'suff' ? s2S.value : '', modeS.value === 'mom' ? aS.value : ''].join('|'),
           sample: (r) => {
             const mode = modeS.value;
-            if (mode === 'mom') { const a = aS.value, xs = []; for (let i = 0; i < 50; i++) xs.push(M.dist.gamma(a, 1).sample(r)); return [gammaMM(xs), gammaML(xs)]; }
+            if (mode === 'mom') { const G = M.dist.gamma(aS.value, 1), xs = []; for (let i = 0; i < 50; i++) xs.push(G.sample(r)); return [gammaMM(xs), gammaML(xs)]; }
             const n = nS.value, sg = mode === 'suff' && r() < 0.5 ? s2S.value : 1, xs = []; for (let i = 0; i < n; i++) xs.push(sg * r.normal());
             return [...sig12(xs), sg === 1 ? 0 : 1];
           },
@@ -414,6 +413,7 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
         let info = null;
         v.render(() => {
           const S = R.sync(), mode = modeS.value, V = S.vals, N = V.length;
+          sR.setScale({ xlog: mode === 'mom' });
           nS.el.hidden = mode === 'mom'; s2S.el.hidden = mode !== 'suff'; flipT.el.hidden = mode !== 'suff'; aS.el.hidden = mode !== 'mom';
           if (mode === 'eff') {
             const n = nS.value, a = moments(V, (p) => p[0]), b = moments(V, (p) => p[1]);
@@ -471,8 +471,7 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
             axisLabels(sL, '\\hat\\alpha', null);
             // right: the curve and the efficiency against α (theory) with the simulated point
             const effT = (x) => 1 / (2 * (x + 1) * (x * trigamma(x) - 1)), effS = ml.var / mm.var;
-            viewPad(sR, [0.3, 12], [0, 1.05], { left: 40 });
-            sR.setScale({ xlog: true, x: [0.3, 12] });
+            sR.setView([0.3, 12], [0, 1.05]);
             sR.fn(effT, { domain: [0.3, 12], color: 'green', width: 2.4 });
             sR.dot(a, effS, { r: 6, color: 'red' });
             sR.text(`simulated ${effS.toFixed(2)}`, a, effS, { dx: 10, dy: 12, align: 'left', color: 'red', size: 12, weight: 700 });
@@ -481,7 +480,6 @@ His motivating example (from his 1920 paper on Eddington's claim): for normal da
             lg([['red', 'method of moments $\\bar x^2/s^2$', { area: true }], ['accent', 'maximum likelihood', { area: true }], ['green', 'true $\\alpha$ · large-sample efficiency $1/\\big(2(\\alpha+1)(\\alpha\\psi\'(\\alpha)-1)\\big)$']]);
             info = { mode, a, effS, effT: effT(a), mm, ml, N };
           }
-          if (mode !== 'mom') sR.setScale({ xlog: false });
         });
         v.readout(() => {
           if (!info) return '';

@@ -144,7 +144,7 @@ Two consequences recur throughout this collection.
         const bS = v.slider('taste for the back rows', 0, 2, 0, { step: 0.05 });
         const cS = v.slider('wants someone in the 2 rows ahead', 0, 3, 1.5, { step: 0.05 });
         const aS = v.slider('dislikes a neighbour at the elbow', 0, 3, 0, { step: 0.05 });
-        let seed = 1978;
+        let seed = 1988;
         v.button('New audience', () => { seed += 1; });
         const Hs = v.stage({ x: [-0.4, SEATS + 0.4], y: [-2.2, ROWS + 0.3], height: 370, weight: 1.5, axes: false, title: 'the hall, seen from above' });
         const Bs = v.stage({ x: [-0.02, 1.08], y: [-2.2, ROWS + 0.3], height: 370, weight: 0.6, minWidth: 190, axes: false, title: 'share of each row taken' });
@@ -298,7 +298,7 @@ A smaller group ends up more isolated relative to random mixing than the majorit
         const rule = v.select('move to', [{ value: 'random', label: 'any vacancy' }, { value: 'content', label: 'a suitable vacancy' }], 'random', { onChange: () => snap() });
         const vacS = v.select('vacancies', [{ value: '10', label: '10%' }, { value: '25', label: '25%' }], '10', { onChange: () => snap() });
         const shS = v.select('blue share', [{ value: '50', label: '50%' }, { value: '25', label: '25% (minority)' }], '50', { onChange: () => snap() });
-        const P = v.stage({ x: [-0.03, 0.93], y: [-0.13, 1.05], height: 350, weight: 1.35, axes: 'box', xlabel: 'tolerance $T$ (share of like neighbours each agent asks for)', title: 'like-neighbour share at rest, against the demand $T$' });
+        const P = v.stage({ x: [-0.03, 0.93], y: [-0.24, 1.05], height: 350, weight: 1.35, axes: 'box', xlabel: 'tolerance $T$ (share of like neighbours each agent asks for)', title: 'like-neighbour share at rest, against the demand $T$' });
         const Bd = v.stage({ x: [0, W], y: [0, W], height: 350, weight: 0.75, minWidth: 220, axes: false, equal: true, title: 'final board' });
         const cache = new Map();
         const data = () => {

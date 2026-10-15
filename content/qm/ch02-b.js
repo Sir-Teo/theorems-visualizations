@@ -199,7 +199,7 @@ where $\Delta x$ is the standard deviation of $|\psi(x)|^2$ and $\Delta p$ that 
 $1=\big|\int x(\bar\psi\psi'+\psi\bar\psi')\big|\le2\norm{x\psi}\norm{\psi'}$ by Cauchy–Schwarz, i.e. $\Delta x\,\Delta p\ge\hbar/2$. Equality in Cauchy–Schwarz forces $\psi'=-\lambda x\psi$ with $\lambda>0$ real, whose solutions are Gaussians — the function that is its own Fourier transform (fa-7.6). Physically it is the bandwidth theorem for waves (waves-2.10): a short pulse needs a broad band of wave numbers, and de Broglie's $p=\hbar k$ turns wave numbers into momenta.`,
       caption: String.raw`Pick a **shape** and **squeeze** it: $|\psi|^2$ (left) narrows while $|\phi|^2$ (right, by FFT) widens, with $\pm\Delta$ marked on both. Bottom: $\Delta x\,\Delta p$ in units of $\hbar/2$ for every shape at several squeezes — flat lines, since squeezing cannot change the product — and the hatched region below 1 is forbidden. Only the **Gaussian** touches the floor; add a **chirp** and even the Gaussian lifts off. The **box** has a jump, so its $\Delta p$ is limited only by the grid: refine the grid and it grows without bound.`,
       deps: ['qm-2.10', 'waves-2.10', 'fa-7.6'],
-      see: ['qm-5.10', 'qm-5.20'],
+      see: ['qm-5.10', 'qm-5.20', 'pma-11.35'],
       refs: ['Griffiths §1.6', 'Hall ch. 12'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Uncertainty_principle' },
       tags: ['uncertainty principle', 'fourier transform'],
@@ -511,7 +511,7 @@ exactly Bohr's terms (1.5), hence the Balmer series. Integers now arise the way 
           const finite = !bound || Math.abs(T.end) < 0.02, pts = [];
           for (let i = 0; i < T.u.length; i += 3) { const y = T.u[i] / T.mx; pts.push([i * T.h, Math.max(-1.7, Math.min(1.7, y))]); }
           s1.path(pts, { color: finite ? 'green' : 'red', width: 2.6 });
-          if (!finite) { const up = T.end > 0; s1.arrow(R * 0.955, up ? 0.95 : -0.95, R * 0.955, up ? 1.68 : -1.68, { color: 'red', width: 2.4, head: 9 }); s1.text(up ? 'u → +∞' : 'u → −∞', R * 0.93, up ? 1.35 : -1.35, { color: 'red', size: 12.5, align: 'right', weight: 700 }); }
+          if (!finite) { const up = T.end > 0; s1.arrow(R * 0.955, up ? 0.95 : -0.95, R * 0.955, up ? 1.68 : -1.68, { color: 'red', width: 2.4, head: 9 }); s1.text(up ? 'u → +∞' : 'u → −∞', R * 0.93, up ? 1.35 : -1.1, { color: 'red', size: 12.5, align: 'right', weight: 700 }); }
           // exact eigenfunction nearest in energy, for comparison
           s1.corner(bound ? (finite ? 'finite everywhere: an eigenvalue' : 'not finite: no state at this energy') : 'E > 0: finite and oscillating — allowed', 'tl', { color: finite ? 'green' : 'red', weight: 600 });
           // ---- landscape

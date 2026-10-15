@@ -279,7 +279,7 @@ Where $e$ is differentiable, $\partial e/\partial p_i = h_i(p, \bar u)$ (**Sheph
         const fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');
         const p1 = v.slider('price $p_1$', 0.4, 3, 1.4, { step: 0.01 });
         const m = v.slider('income $m$', 2, 16, 9, { step: 0.05 });
-        const ub = v.slider('target $\\bar u$', 1, 4.5, 2.5, { step: 0.01 });
+        const ub = v.slider('target $\\bar u$', 1, 4.5, 1.7, { step: 0.01 });
         const s = v.stage({ x: [0, 12], y: [0, 12], height: 330, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.05 });
         const iv = v.stage({ x: [0, 20], y: [0, 5], height: 330, axes: 'box', xlabel: 'money', ylabel: 'utility', title: 'graph of $v(p, \\cdot)$, read backwards: $e(p, \\cdot)$' });
         const ep = v.stage({ x: [0.3, 3.1], y: [0, 1], height: 200, axes: 'box', full: true, xlabel: 'price p₁', ylabel: 'money', title: 'the expenditure function $e(p_1, \\bar u)$ is concave in the price' });
@@ -306,8 +306,10 @@ Where $e$ is differentiable, $\partial e/\partial p_i = h_i(p, \bar u)$ (**Sheph
           if (H.e <= 20) { iv.line(0, U, H.e, U, { color: 'gold', width: 1.4, dash: [4, 3] }); iv.arrow(H.e, U, H.e, 0.05 * top, { color: 'gold', width: 1.6, head: 8 }); iv.dot(H.e, U, { r: 6, color: 'gold' }); iv.text(`e(p, ū) = ${v.fix(H.e, 2)}`, H.e, 0.05 * top, { dx: 6, dy: -12, color: 'gold', ...LBL, align: 'left' }); }
           // e against p1, with the line of the fixed bundle
           const ec = ecurve(k, U), emax = Math.max(...ec.map((q) => q[1]).filter(isFinite));
-          ep.setView([0.3, 3.1], [0, emax * 1.15]);
-          ep.clip(() => ep.line(0.3, 0.3 * H.x[0] + p2 * H.x[1], 3.1, 3.1 * H.x[0] + p2 * H.x[1], { color: 'gold', width: 2, dash: [6, 4] }));
+          const emin = Math.min(...ec.map((q) => q[1]).filter(isFinite)), lineAt = (q) => q * H.x[0] + p2 * H.x[1];
+          ep.setView([0.3, 3.1], [Math.max(0, emin - 0.12 * (emax - emin)), emax + 0.12 * (emax - emin)]);
+          const eAt = (q) => { const j = clamp(Math.floor(((q - 0.3) / 2.8) * 70), 0, 69), w = ((q - 0.3) / 2.8) * 70 - j; return ec[j][1] * (1 - w) + ec[j + 1][1] * w; };
+          ep.clip(() => { ep.between(lineAt, eAt, 0.3, 3.1, { fill: 'gold', fillAlpha: 0.14, n: 140 }); ep.line(0.3, lineAt(0.3), 3.1, lineAt(3.1), { color: 'gold', width: 2, dash: [6, 4] }); });
           ep.path(ec, { color: 'accent', width: 2.8 });
           ep.dot(P, H.e, { r: 6, color: 'gold' });
           ep.text(`slope h₁ = ${v.fix(H.x[0], 2)}`, P, H.e, { dx: 10, dy: 16, color: 'gold', ...LBL, align: 'left' });
@@ -364,7 +366,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           a.clip(() => a.line(q - 0.9, vq - 0.9 * vp, q + 0.9, vq + 0.9 * vp, { color: 'green', width: 2.2 }));
           const vq1 = VV(q, M + D); a.line(q, vq, q, vq1, { color: 'gold', width: 3 }); a.text('Δv', q, (vq + vq1) / 2, { dx: -8, color: 'gold', ...LBL, align: 'right' });
           const del = bisect((t) => VV(q + t, M + D) - vq, 0, PB + 2 - q, 50);
-          if (del != null && q + del <= PB) { a.arrow(q, vq, q + del, vq, { color: 'teal', width: 2.6, head: 9 }); a.text(`δ = ${v.fix(del, 3)}`, q + del / 2, vq, { dy: 13, color: 'teal', ...LBL, align: 'center' }); }
+          if (del != null && q + del <= PB) { a.arrow(q, vq, q + del, vq, { color: 'teal', width: 2.6, head: 9 }); a.text(`δ = ${v.fix(del, 3)}`, q + del / 2, vq, { dy: -11, color: 'teal', ...LBL, align: 'center' }); }
           // the demand curve and Roy's dots
           const xs = ps.map((p) => best(u, p, M).x1), xmax = Math.max(...xs.filter(isFinite));
           d.setView([PA, PB], [0, Math.min(xmax * 1.08, 40)]);
@@ -386,7 +388,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
       num: '5.14', kind: 'Definition', name: 'Homothetic preferences and linear Engel curves',
       statement: String.raw`Preferences are **homothetic** if scaling two indifferent bundles by the same factor keeps them indifferent: $x \sim y$ implies $tx \sim ty$ for every $t > 0$. Equivalently they can be represented by a utility function homogeneous of degree one, every indifference curve is a radial blow-up of every other, and the MRS is constant along each ray from the origin. Then demand is proportional to income, $x(p, m) = m\,x(p, 1)$: the income offer curve is a ray, Engel curves are straight lines through the origin, every income elasticity equals 1, and budget shares do not depend on income. Cobb–Douglas, CES, perfect substitutes and perfect complements are homothetic; quasilinear and Stone–Geary preferences are not.`,
       idea: String.raw`If $x^*$ is best at income $m$, then $tx^*$ is affordable at income $tm$, and anything better than $tx^*$ that was affordable at $tm$ would, scaled back by $1/t$, be better than $x^*$ and affordable at $m$, since scaling preserves the ranking. So $tx^*$ is best at $tm$, and the optimum moves along the ray through $x^*$. Equivalently, the tangency condition $\mathrm{MRS} = p_1/p_2$ picks out one ray (4.12), whatever the income. This is what makes homothetic preferences convenient for aggregation and for trade models: a population with the same homothetic tastes behaves like a single consumer whatever the distribution of income. Quasilinear preferences fail this: once income covers the satiating amount of good 1, all extra income goes to good 2.`,
-      caption: String.raw`Slide income and the price. The green curve is the income expansion path, drawn over the full range of incomes. The purple curve is the indifference curve through the current best bundle, and the gold dashed curve is the curve through the best bundle at $m = 4$, scaled up by $m/4$. For homothetic preferences the two coincide and the path is a ray. For **quasilinear** and **Stone–Geary** preferences they separate, the path bends, and the Engel curves on the right are not straight lines through the origin; the bottom panel shows the budget share drifting with income.`,
+      caption: String.raw`Slide income and the price. The green curve is the income expansion path, drawn over the full range of incomes. The purple curve is the indifference curve through the current best bundle, and the gold dashed curve is the curve through the best bundle at a base income $m_0$ (here 4), scaled up by $m/m_0$. For homothetic preferences the two coincide and the path is a ray. For **quasilinear** and **Stone–Geary** preferences they separate, the path bends, and the Engel curves on the right are not straight lines through the origin; the bottom panel shows the budget share drifting with income.`,
       deps: ['micro-5.8', 'micro-4.12'], refs: ['Varian Ch. 6'], tags: ['demand', 'preferences'],
       see: ['micro-1.11'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Homothetic_preferences' },
@@ -405,22 +407,30 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
         const s = v.stage({ x: [0, 13], y: [0, 13], height: 360, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.15 });
         const e = v.stage({ x: [0, MMAX], y: [0, 12], height: 360, axes: 'box', xlabel: 'income m', ylabel: 'quantity', title: 'Engel curves' });
         const sh = v.stage({ x: [0, MMAX], y: [0, 1], height: 150, axes: 'box', full: true, xlabel: 'income m', ylabel: 'share s₁', title: 'the budget share of good 1 against income' });
-        v.legend([['green', 'income expansion path'], ['purple', 'indifference curve now'], ['gold', 'curve at m = 4, scaled by m/4', { dash: true }], ['orange', 'x₁(m)'], ['teal', 'x₂(m)']]);
+        v.legend([['green', 'income expansion path'], ['purple', 'indifference curve now'], ['gold', 'curve at the base income m₀, scaled by m/m₀', { dash: true }], ['orange', 'x₁(m)'], ['teal', 'x₂(m)']]);
         let st = {};
         v.render(() => {
           const k = fam.value, o = FAM[k], F = o.F, M = m.value, P = p1.value;
           const ms = []; for (let i = 0; i <= 160; i++) ms.push(0.05 + ((MMAX - 0.05) * i) / 160);
           const path = ms.map((q) => demand(F, P, p2, q)), ok = path.map((q) => q && isFinite(q[0]) && q[0] >= 0 && q[1] >= 0);
-          const xs = demand(F, P, p2, M), x0 = demand(F, P, p2, M0);
+          const B0 = F.sub ? Math.max(M0, P * F.sub[0] + p2 * F.sub[1] + 1) : M0, xs = demand(F, P, p2, M), x0 = demand(F, P, p2, B0);
+          budget(s, P, p2, M);
+          if (!isFinite(xs[0])) {
+            s.clip(() => s.path(path.map((q, i) => (ok[i] ? q : null)), { color: 'green', width: 3 }));
+            s.dot(F.sub[0], F.sub[1], { r: 4, color: 'ink', label: 'subsistence', labelPos: 'nw', math: false });
+            s.corner('income does not cover the subsistence bundle', 'tr', { color: 'red', weight: 700 });
+            e.clip(() => { e.path(ms.map((q, i) => (ok[i] ? [q, path[i][0]] : null)), { color: 'orange', width: 2.6 }); e.path(ms.map((q, i) => (ok[i] ? [q, path[i][1]] : null)), { color: 'teal', width: 2.6 }); });
+            e.vline(M, GUIDE); sh.clip(() => sh.path(ms.map((q, i) => (ok[i] ? [q, (P * path[i][0]) / q] : null)), { color: 'orange', width: 2.6 }));
+            st = { k, o, M, P, xs, x0, B0, bad: true }; return;
+          }
           // the ray through the current bundle, for comparison
           const th = Math.atan2(xs[1], xs[0]); s.line(0, 0, 20 * Math.cos(th), 20 * Math.sin(th), { color: 'muted', width: 1, dash: [3, 4] });
-          budget(s, P, p2, M);
           s.clip(() => s.path(path.map((q, i) => (ok[i] ? q : null)), { color: 'green', width: 3 }));
           drawLevel(s, F, F.u(...x0), { color: v.color('purple', 0.35), width: 1.2 });
           drawLevel(s, F, F.u(...xs), { color: 'purple', width: 2.6 });
-          const kf = M / M0, base = icurve(F, F.u(...x0), 13 / kf, 13 / kf, 220).map((q) => (q ? [kf * q[0], kf * q[1]] : null));
+          const kf = M / B0, base = icurve(F, F.u(...x0), 13 / kf, 13 / kf, 220).map((q) => (q ? [kf * q[0], kf * q[1]] : null));
           s.clip(() => s.path(base, { color: 'gold', width: 2.2, dash: [7, 5] }));
-          if (F.sub) s.dot(F.sub[0], F.sub[1], { r: 4, color: 'ink', label: 'subsistence', labelPos: 'sw', math: false });
+          if (F.sub) s.dot(F.sub[0], F.sub[1], { r: 4, color: 'ink', label: 'subsistence', labelPos: 'nw', math: false });
           s.dot(x0[0], x0[1], { r: 4.5, color: 'green', alpha: 0.7 });
           s.dot(xs[0], xs[1], { r: 6.5, color: 'green', label: 'x*', labelPos: 'ne' });
           // Engel curves
@@ -432,11 +442,12 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           // is demand proportional to income? compare x(m)/m across incomes
           const rat = path.map((q, i) => (ok[i] && ms[i] > 1 ? q[0] / ms[i] : null)).filter((z) => z != null), spread = (Math.max(...rat) - Math.min(...rat)) / Math.max(...rat);
           const gap = Math.max(...base.filter(Boolean).map((q) => Math.abs(F.u(q[0], q[1]) - F.u(...xs)))) / Math.max(1e-9, Math.abs(F.u(...xs)));
-          st = { k, o, M, P, xs, x0, spread, gap, s1: (P * xs[0]) / M };
+          st = { k, o, M, P, xs, x0, B0, spread, gap, s1: (P * xs[0]) / M };
         });
         v.readout(() => {
-          const { k, o, M, xs, x0, spread, s1 } = st, f = (q) => v.fix(q, 2);
-          const head = `At $m = ${f(M)}$ the best bundle is $(${f(xs[0])}, ${f(xs[1])})$; at $m = 4$ it was $(${f(x0[0])}, ${f(x0[1])})$, and scaled by $m/4$ that would be $(${f((x0[0] * M) / 4)}, ${f((x0[1] * M) / 4)})$.`;
+          const { k, o, M, P, xs, x0, B0, spread, s1, bad } = st, f = (q) => v.fix(q, 2);
+          if (bad) return `Income ${f(M)} does not cover the subsistence bundle $(2, 1)$, which costs ${f(2 * P + 1)}: Stone–Geary utility is undefined there. Raise income.`;
+          const head = `At $m = ${f(M)}$ the best bundle is $(${f(xs[0])}, ${f(xs[1])})$; at the base income $m_0 = ${f(B0)}$ it was $(${f(x0[0])}, ${f(x0[1])})$, and scaled by $m/m_0$ that would be $(${f((x0[0] * M) / B0)}, ${f((x0[1] * M) / B0)})$.`;
           if (o.homo) return `${head} They agree: **homothetic**. Demand is proportional to income ($x_1/m$ varies by ${v.fix(100 * spread, 4)}% across incomes), Engel curves are straight lines through the origin and the share $s_1 = ${f(s1)}$ never changes.`;
           if (k === 'ql') return `${head} They differ: **not homothetic**. Below $m = 3p_2 = 3$ only good 1 is bought; beyond that $x_1 = 3p_2/p_1$ is fixed, the expansion path turns vertical, and the share of good 1 falls toward zero as income grows.`;
           return `${head} They differ: **not homothetic**. Stone–Geary demand is $x_1 = 2 + 0.3(m - p_1\\cdot 2 - p_2\\cdot 1)/p_1$: subsistence quantities are bought first, so Engel curves are straight but do not pass through the origin, and the share $s_1 = ${f(s1)}$ drifts with income.`;

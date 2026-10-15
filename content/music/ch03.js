@@ -191,5 +191,188 @@ The standing waves that fit are $\xi=A\,X(x)\cos\omega t$, $p=-\rho c^2A\,X'(x)\
         });
       },
     },
+    // ------------------------------------------------------------------ 3.2
+    {
+      num: '3.2',
+      kind: 'Theorem',
+      name: 'The open pipe: all harmonics',
+      statement: String.raw`A cylindrical pipe of length $L$ and radius $a\ll\lambda$, open at both ends, has pressure nodes just outside each end, so its resonances are
+$$f_n=\frac{n\,c}{2L_{\text{eff}}},\qquad L_{\text{eff}}=L+2\delta,\qquad n=1,2,3,\dots,$$
+a **complete harmonic series**. The **end correction** $\delta$ is the distance beyond the rim at which the standing wave's pressure node sits: $\delta\approx0.6133\,a$ for a thin-walled unflanged end (Levine and Schwinger) and $\delta\approx0.8216\,a$ for an end set in a large flange. The fundamental is set by the length (an open organ pipe of nominal length 8 feet sounds C2, about 65 Hz; a concert flute's 60 cm of open tube sounds C4), and halving the length raises every resonance an octave. To first order in $ka$ the end correction is the same for every mode, so the series stays harmonic; at larger $ka$ it shrinks a little and the upper resonances creep sharp.`,
+      idea: String.raw`At an open end the pressure must fall to atmospheric, which by 3.1 makes it a pressure node; with both ends alike the pipe holds a whole number of half wavelengths, $L_{\text{eff}}=n\lambda/2$, exactly as a string fixed at both ends does (2.4). The node is not at the rim because the air just outside the mouth moves with the air inside: it has inertia, and that extra mass of air lengthens the column by a fraction of the radius. Solving the radiation problem for a semi-infinite tube (by the Wiener–Hopf method) gives $0.6133a$ at low frequency; a flange confines the outside flow and adds more. Because $\delta$ is the same for every low mode, the ratios $1:2:3:\cdots$ survive, which is why flutes, recorders and open flue pipes sound with every harmonic and overblow at the octave.`,
+      caption: String.raw`Drag the gold handle at the end of the pipe, or the length slider, and *hold the note* to hear the pitch follow; the top panel shows the pressure standing wave of the chosen mode, continued (dashed) beyond each end to its virtual node. Lower left: the open end at true scale, with the pressure along the axis reaching zero a distance $\delta$ outside the rim; change the **radius** and the **ends** to move it. Lower right: the resonances on a keyboard; grey dashes mark where they would be without the end correction. *Overblow* plays modes 1 to 6 in turn: octave, twelfth, two octaves, …`,
+      deps: ['music-3.1', 'music-2.6'],
+      see: ['music-11.13', 'waves-2.1', 'music-2.4'],
+      refs: ['Benson ch. 3', 'Rossing ch. 12'],
+      tags: ['pipes', 'harmonics'],
+      credit: 'Daniel Bernoulli, 1762; end correction: Rayleigh, 1871; Levine & Schwinger, 1948',
+      scope: String.raw`Plane waves only ($ka\lesssim1$, i.e. diameters well below the wavelength), small amplitudes, no wall losses and no mean flow. The constant end correction is the low-frequency limit; Davies, Bento Coelho and Bhattacharya (1980) fitted $\delta/a\approx0.6133-0.1168(ka)^2$ for $ka<0.5$. Real flutes add the embouchure hole, tone holes and a tapered head joint.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/End_correction' },
+      viz(v) {
+        const M = v.M, NM = 16;
+        const Ls = v.slider('length $L$', 0.1, 5, 0.644, { log: true, fmt: (x) => (x < 1 ? v.fix(x * 100, 1) + ' cm' : v.fix(x, 3) + ' m'), onChange: () => sync() });
+        const as = v.slider('radius $a$', 0.002, 0.06, 0.0095, { log: true, fmt: (x) => v.fix(x * 1000, 1) + ' mm', onChange: () => sync() });
+        const endS = v.select('ends', [{ value: 'unfl', label: 'unflanged' }, { value: 'fl', label: 'flanged' }, { value: 'none', label: 'no end correction' }], 'unfl', { onChange: () => sync() });
+        const nS = v.slider('mode shown $n$', 1, 8, 2, { int: true });
+        const HARM = [[1, 1], [2, 0.5], [3, 0.28], [4, 0.14], [5, 0.08], [6, 0.05], [7, 0.03]];
+        let voice = null;
+        const hold = v.toggle('hold the note', false, { onChange: (on) => { if (on) voice = v.sound().tone(HARM.map(([h, a]) => [h * f1(), a]), { sustain: true, gain: 0.2, attack: 0.05 }); else if (voice) { voice.stop(); voice = null; } } });
+        const dOf = () => (endS.value === 'none' ? 0 : (endS.value === 'fl' ? END_FL : END_UNFL) * as.value);
+        const Leff = () => Ls.value + 2 * dOf();
+        const f1 = () => C_AIR / (2 * Leff());
+        function sync() { if (voice && voice.playing) voice.setFreq(f1()); }
+        v.soundButton('Overblow: modes 1 → 6', (snd) => { M.range(6, 1).forEach((n, i) => snd.tone(HARM.map(([h, a]) => [h * n * f1(), a]), { duration: 0.5, gain: 0.2, delay: 0.58 * i, release: 0.1 })); });
+        const top = v.stage({ x: [-0.1, 1.1], y: [-1.45, 1.45], height: 200, axes: false, full: true });
+        const zm = v.stage({ x: [-4.5, 3.2], y: [-2.3, 2.3], equal: true, height: 240, axes: false, weight: 0.85, minWidth: 260, title: 'the open end at true scale' });
+        const sp = v.stage({ x: [40, 8000], y: [-0.42, 1.3], xlog: true, height: 240, axes: 'box', yticks: [], xlabel: 'frequency (Hz)', weight: 1.4, title: 'resonances on the keyboard' });
+        const hEnd = top.handle(0.644, 0, { color: 'gold', r: 8, constrain: (x) => [x, 0], onDrag: (h) => { Ls.set(M.clamp(h.x, 0.1, 5)); sync(); } });
+        v.animate((t) => {
+          const L = Ls.value, a = as.value, d = dOf(), Le = L + 2 * d, n = nS.value, f = f1();
+          if (!hEnd.dragging) hEnd.set(L, 0);
+          // ---- whole pipe (vertical scale exaggerated)
+          top.setView([-0.1 * L, 1.1 * L], [-1.45, 1.45]);
+          const R = 0.32 + 0.55 * Math.sqrt(a / 0.06), k = (n * Math.PI) / Le, p = (x) => Math.sin(k * (x + d)), ph = Math.cos(TAU * 0.5 * t * Math.sqrt(n));
+          drawTube(top, 0, L, R, R);
+          top.between((x) => 0.85 * Math.abs(p(x)), (x) => -0.85 * Math.abs(p(x)), 0, L, { fill: 'red', fillAlpha: 0.1, n: 300 });
+          top.fn((x) => 0.85 * p(x) * ph, { domain: [0, L], n: 300, color: 'red', width: 2.6 });
+          if (d > 0) for (const [x0, x1] of [[-d, 0], [L, L + d]]) top.fn((x) => 0.85 * p(x) * ph, { domain: [x0, x1], n: 30, color: 'red', width: 1.6, dash: [4, 3] });
+          for (const x of [-d, L + d]) top.dot(x, 0, { r: 5, color: 'red', hollow: true, width: 2 });
+          for (let q = 1; q < n; q++) top.dot((q * Le) / n - d, 0, { r: 4, color: 'red', hollow: true, width: 1.6 });
+          top.text(`L = ${L < 1 ? v.fix(L * 100, 1) + ' cm' : v.fix(L, 3) + ' m'}`, L / 2, -R - 0.28, { align: 'center', color: 'ink', size: 12, weight: 600 });
+          top.corner(`mode ${n}: ${v.fix(n * f, 1)} Hz, ${noteOf(M, n * f)} (slow motion)`, 'tl', { color: 'red', weight: 600 });
+          if (voice && voice.playing) top.corner(`♪ ${v.fix(f, 1)} Hz`, 'tr', { color: 'gold', weight: 600 });
+          // ---- the open end, true scale (units of the radius)
+          const da = d / a;
+          zm.rect(-4.5, 1, 0, 1.18, { fill: 'muted', fillAlpha: 0.5, stroke: false }); zm.rect(-4.5, -1.18, 0, -1, { fill: 'muted', fillAlpha: 0.5, stroke: false });
+          if (endS.value === 'fl') { zm.rect(0, 1, 0.18, 2.3, { fill: 'muted', fillAlpha: 0.5, stroke: false }); zm.rect(0, -2.3, 0.18, -1, { fill: 'muted', fillAlpha: 0.5, stroke: false }); }
+          for (const r0 of [0.9, 1.6, 2.3]) zm.curve((u) => [0.05 + r0 * Math.cos(u), r0 * Math.sin(u)], -1.25, 1.25, { color: 'accent', width: 1, alpha: 0.35, dash: [3, 4], n: 60 });
+          // pressure amplitude along the axis near the end: sin(k(L + δ − x)) ≈ k(δ − u a): a straight line through zero at u = δ/a
+          const slope = 0.42, pz = (u) => slope * (da - u);
+          zm.hline(0, { color: 'faint', width: 1 });
+          zm.fn(pz, { domain: [-4.5, 0], color: 'red', width: 2.6 });
+          if (da > 0) zm.fn(pz, { domain: [0, da], color: 'red', width: 1.8, dash: [4, 3] });
+          zm.dot(da, 0, { r: 6, color: 'red', hollow: true, width: 2.2 });
+          if (da > 0) zm.measure(0, -1.55, da, -1.55, `δ = ${v.fix(da, 3)} a`, { color: 'red', math: false, size: 11.5, offset: -11 });
+          zm.measure(-3.6, -1, -3.6, 1, '2a', { color: 'muted', size: 12, offset: 13 });
+          zm.text('pressure amplitude on the axis', -4.35, pz(-4.35) + 0.28, { align: 'left', color: 'red', size: 11 });
+          zm.text(endS.value === 'none' ? 'idealized: node at the rim' : 'virtual node', da + 0.15, 0.35, { align: 'left', color: 'red', size: 11 });
+          // ---- resonances on the keyboard
+          const fs = M.range(NM, 1).map((q) => q * f), f0i = C_AIR / (2 * L), marks = new Map();
+          fs.slice(0, 8).forEach((x, i) => marks.set(Math.round(M.freqToMidi(x)), i + 1 === n ? 'gold' : 'accent'));
+          keyboard(sp, M, 40, 8000, -0.4, -0.08, marks);
+          M.range(NM, 1).forEach((q) => { const x = q * f0i; if (x < 8000 && d > 0) sp.line(x, 0, x, 0.95, { color: 'muted', width: 1.2, dash: [3, 3], alpha: 0.6 }); });
+          fs.forEach((x, i) => {
+            if (x > 8000) return; const on = i + 1 === n, hgt = 0.35 + 0.6 / Math.sqrt(i + 1);
+            sp.line(x, 0, x, hgt, { color: on ? 'gold' : 'accent', width: on ? 3.2 : 2.2 });
+            if (i < 8 || (i + 1) % 2 === 0) sp.text(String(i + 1), x, hgt + 0.1, { align: 'center', color: on ? 'gold' : 'ink', size: 11, weight: on ? 700 : 500 });
+          });
+        }, { still: 0.6 });
+        v.legend([['red', 'pressure standing wave; hollow dots: pressure nodes'], ['accent', 'resonances $nc/2L_{\\text{eff}}$'], ['muted', 'without end correction, $nc/2L$', { dash: true }]]);
+        v.readout(() => {
+          const L = Ls.value, a = as.value, d = dOf(), Le = Leff(), f = f1(), n = nS.value;
+          const ideal = C_AIR / (2 * L), shift = 1200 * Math.log2(f / ideal);
+          let ref = '';
+          if (endS.value === 'unfl') {
+            // Davies et al.'s frequency-dependent correction, solved self-consistently for mode n
+            let fn = n * f; for (let it = 0; it < 30; it++) { const ka = (TAU * fn * a) / C_AIR; fn = (n * C_AIR) / (2 * (L + 2 * a * (END_UNFL - 0.1168 * ka * ka))); }
+            let f1d = f; for (let it = 0; it < 30; it++) { const ka = (TAU * f1d * a) / C_AIR; f1d = C_AIR / (2 * (L + 2 * a * (END_UNFL - 0.1168 * ka * ka))); }
+            const kan = (TAU * fn * a) / C_AIR;
+            ref = kan < 0.5 ? ` · with the frequency-dependent correction $\\delta/a=0.6133-0.1168(ka)^2$, mode ${n} ($ka$ = ${v.fix(kan, 2)}) lies ${centsTxt(1200 * Math.log2(fn / (n * f1d)), 1)} from ${n} × the fundamental` : ` · mode ${n} has $ka$ = ${v.fix(kan, 2)} > 0.5, beyond the range of the refined formula: such a wide pipe is no longer a clean plane-wave resonator up there`;
+          }
+          return `$\\delta$ = ${v.fix(d * 1000, 2)} mm at each end, $L_{\\text{eff}}=L+2\\delta$ = ${v.fix(Le * 100, 2)} cm · $f_1=c/2L_{\\text{eff}}$ = ${v.fix(f, 2)} Hz (${noteOf(M, f)}), ${centsTxt(shift, 1)} from the bare $c/2L$ · resonances $f_n/f_1$ = ${M.range(6, 1).join(' : ')} … exactly, in the constant-$\\delta$ model${ref}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 3.3
+    {
+      num: '3.3',
+      kind: 'Theorem',
+      name: 'The closed pipe: odd harmonics only',
+      statement: String.raw`A cylinder of length $L$ closed at one end and open at the other has a pressure antinode at the closed end and a pressure node just beyond the open end, so it holds an odd number of quarter wavelengths:
+$$f_n=\frac{(2n-1)\,c}{4L_{\text{eff}}},\qquad L_{\text{eff}}=L+\delta,\qquad n=1,2,3,\dots$$
+Its resonances are the **odd harmonics** $1:3:5:7:\cdots$ of a fundamental $c/4L_{\text{eff}}$, about an octave below the open pipe of the same length (3.2). A steady tone that such a tube supports therefore has strong odd and weak even harmonics. This is the **clarinet**: a nearly cylindrical bore closed at the mouthpiece by the reed. It sounds about an octave lower than a flute of similar length, its low register has a hollow, square-wave-like timbre with the even harmonics far weaker than the odd ones, and it overblows not at the octave but at the **twelfth** (the third harmonic).`,
+      idea: String.raw`The closed end reflects a pressure pulse unchanged and the open end reflects it inverted (3.1), so a pulse comes back upright after one round trip ($2L/c$) in an open pipe but upside down in a capped one, and needs a second round trip to repeat: the period doubles to $4L/c$. A signal that inverts every half period, $x(t+T/2)=-x(t)$, has Fourier coefficients $c_n(1-(-1)^n)/2$: the even harmonics cancel exactly (the same parity argument as the plucked string's missing harmonics, 2.8). With only one end open, $\delta$ is added once. A reed acts as a pressure-controlled valve, so it must sit at a pressure antinode: the reed end is effectively closed.`,
+      caption: String.raw`Click the tube (or the switch) to **cap** its left end and pick a **sound source**: a tap on the end, breath noise, or a clarinet reed (which caps the tube itself). Everything below is computed from a waveguide simulation of the tube, a sampled version of d'Alembert's travelling waves (2.2). Middle: the pressure at the open end; after a tap you see the pulse return each round trip, inverted every second time when capped. Bottom: its spectrum, by FFT, on a grid of multiples of $c/4L_{\text{eff}}$: an open tube rings at the even lines, a capped one at the odd lines only. *Listen*, or compare open and capped directly.`,
+      deps: ['music-3.1'],
+      see: ['ling-1.8', 'music-7.17', 'music-11.12', 'music-2.8'],
+      refs: ['Benson ch. 3', 'Rossing ch. 12'],
+      tags: ['pipes', 'harmonics'],
+      credit: 'Daniel Bernoulli, 1762; reed waveguide model: McIntyre, Schumacher & Woodhouse, 1983; J. O. Smith, 1986',
+      scope: String.raw`An idealized cylinder: plane waves, a frequency-independent end correction and simple lumped losses. A real clarinet's even harmonics are weak but not absent (its bore is not perfectly cylindrical, it has tone holes and a flaring bell, and the reed is nonlinear), and above about 1.5 kHz the open tone holes let the even harmonics back in. The simulated reed is the reed-table model of physical-modelling synthesis, not a measured reed.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Clarinet#Acoustics' },
+      viz(v) {
+        const M = v.M, A = 0.0075, D = END_UNFL * A, NH = 13, NFFT = 8192;
+        const Ls = v.slider('length $L$', 0.3, 1.0, 0.6, { step: 0.005, fmt: (x) => v.fix(x * 100, 1) + ' cm' });
+        const capT = v.toggle('cap the left end', true);
+        const src = v.select('sound source', [{ value: 'tap', label: 'tap the end' }, { value: 'breath', label: 'breath noise' }, { value: 'reed', label: 'reed (clarinet)' }], 'reed');
+        const tb = v.stage({ x: [-0.07, 1.07], y: [-1.5, 1.5], height: 150, axes: false, full: true });
+        const wf = v.stage({ x: [0, 1], y: [-1.25, 1.25], height: 150, axes: 'box', yticks: [], xlabel: 'time (ms)', full: true, title: 'pressure at the open end (simulated)' });
+        const sp = v.stage({ x: [0, NH + 0.6], y: [-72, 8], height: 250, axes: 'box', xlabel: 'frequency / (c/4L_eff)', xticks: M.range(NH, 1), yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true, title: 'spectrum of the simulated sound (FFT)' });
+        tb.onClick(() => { if (src.value !== 'reed') capT.el.querySelector('input')?.click(); });
+        const capped = () => src.value === 'reed' || capT.value;
+        const fq = () => C_AIR / (4 * (Ls.value + D)), fo = () => C_AIR / (2 * (Ls.value + 2 * D));
+        const sim = (closed, kind, dur) => (kind === 'reed' ? clarinetSim(fq(), dur) : closed ? tubeSim(2 * fq(), true, dur, kind) : tubeSim(fo(), false, dur, kind));
+        let key = '', S = null;
+        const run = () => {
+          const k = [Ls.value, capped(), src.value].join(); if (k === key) return S; key = k;
+          const closed = capped(), buf = sim(closed, src.value, src.value === 'tap' ? NFFT / SR + 0.01 : 0.45);
+          const seg = src.value === 'tap' ? buf.subarray(0, NFFT) : buf.subarray(buf.length - NFFT);
+          const spec = spectrumDB(M, seg, NFFT);
+          // fundamental: the lowest spectral peak within 20 dB of the strongest
+          let f0 = 0; const df = spec.df;
+          for (let i = 3; i < spec.db.length / 4; i++) if (spec.db[i] > -20 && spec.db[i] >= spec.db[i - 1] && spec.db[i] >= spec.db[i + 1]) { const a = spec.db[i - 1], b = spec.db[i], c = spec.db[i + 1]; f0 = (i + (0.5 * (a - c)) / (a - 2 * b + c || 1)) * df; break; }
+          const odd = [1, 3, 5].map((h) => levelAt(spec, h * f0)), even = [2, 4, 6].map((h) => levelAt(spec, h * f0));
+          S = { closed, buf, seg, spec, f0, odd, even };
+          return S;
+        };
+        const listen = (snd, closed, kind) => snd.samples(finish(sim(closed, kind, kind === 'tap' ? 1.2 : 1.6), 0.8, SR, 0.002, 0.08), SR, { gain: 0.55 });
+        v.soundButton('Listen', (snd) => listen(snd, capped(), src.value));
+        v.soundButton('open, then capped', (snd) => { const kind = src.value === 'reed' ? 'breath' : src.value, a = finish(sim(false, kind, 1.2), 0.8), b = finish(src.value === 'reed' ? sim(true, 'reed', 1.4) : sim(true, kind, 1.2), 0.8); snd.samples(join([a, b], 0.3), SR, { gain: 0.55 }); });
+        v.render(() => {
+          const R0 = run(), closed = R0.closed, reed = src.value === 'reed', L = Ls.value;
+          capT.el.hidden = reed;
+          // ---- the tube with its two lowest pressure modes
+          const R = 0.8;
+          drawTube(tb, 0, 1, R, R, { closedLeft: closed && !reed });
+          if (reed) { // mouthpiece and reed: they close the tube
+            tb.poly([[0, R], [-0.055, 0.45], [-0.055, -0.45], [0, -R]], { fill: 'muted', fillAlpha: 0.6, color: 'ink', width: 1.4 });
+            tb.line(-0.05, -0.42, 0.0, -0.1, { color: 'gold', width: 3.5 });
+            tb.text('reed', -0.06, -1.05, { align: 'left', color: 'gold', size: 11, weight: 600 });
+          }
+          for (const [q, col] of [[1, 'red'], [2, 'orange']]) {
+            const k = closed ? ((2 * q - 1) * Math.PI) / 2 : q * Math.PI, P = (x) => (closed ? Math.cos(k * x) : Math.sin(k * x));
+            tb.fn((x) => 0.62 * P(x), { domain: [0, 1], n: 120, color: col, width: 1.8, alpha: 0.85 });
+          }
+          tb.text(closed ? 'closed end: pressure antinode' : 'open end', 0.01, R + 0.38, { align: 'left', color: 'muted', size: 11 });
+          tb.text('open end: pressure node', 0.99, R + 0.38, { align: 'right', color: 'muted', size: 11 });
+          tb.corner(reed ? 'the reed closes the tube' : 'click the tube to cap or uncap it', 'bl', { color: 'muted', size: 11 });
+          // ---- waveform: four periods of the capped tube
+          const Tq = 1 / fq(), win = 4 * Tq * 1000, seg = R0.src === 'tap' ? null : null;
+          wf.setView([0, win], [-1.25, 1.25]);
+          const b = R0.buf, n0 = src.value === 'tap' ? 0 : b.length - Math.round((win / 1000) * SR) - 1, nW = Math.round((win / 1000) * SR);
+          let mx = 1e-9; for (let i = 0; i < nW; i++) mx = Math.max(mx, Math.abs(b[n0 + i]));
+          const pts = []; for (let i = 0; i < nW; i += 2) pts.push([(i / SR) * 1000, b[n0 + i] / mx]);
+          wf.hline(0, { color: 'faint', width: 1 });
+          wf.path(pts, { color: closed ? 'accent' : 'teal', width: 1.6 });
+          const Tp = (closed ? Tq : 1 / fo()) * 1000;
+          for (let q = 1; q * Tp < win; q++) wf.vline(q * Tp, { color: 'muted', width: 1, dash: [3, 4], alpha: 0.6 });
+          wf.corner(`dashed lines: one period, ${v.fix(Tp, 2)} ms = ${closed ? '4L/c' : '2L/c'}`, 'tr', { color: 'muted', size: 11 });
+          // ---- spectrum on the c/4L grid
+          const S2 = R0.spec, fu = fq();
+          for (let h = 1; h <= NH; h++) sp.line(h, -70, h, 6, { color: h % 2 ? 'green' : 'red', width: 1, dash: [3, 4], alpha: 0.45 });
+          const curve = []; for (let i = 1; i < S2.db.length; i++) { const x = S2.freq[i] / fu; if (x > NH + 0.6) break; curve.push([x, Math.max(-71, S2.db[i])]); }
+          sp.path(curve, { color: closed ? 'accent' : 'teal', width: 1.5 });
+          for (let h = 1; h <= NH; h++) sp.text(h % 2 ? 'odd' : 'even', h, 3.5, { align: 'center', color: h % 2 ? 'green' : 'red', size: 9.5 });
+          sp.corner(closed ? 'capped: peaks on the odd lines only' : 'open: peaks on the even lines', 'tr', { color: closed ? 'accent' : 'teal', weight: 600, size: 11.5 });
+        });
+        v.legend([['accent', 'capped tube'], ['teal', 'open tube'], ['red', 'lowest pressure mode'], ['orange', 'second mode']]);
+        v.readout(() => {
+          const R0 = run(), closed = R0.closed, L = Ls.value, th = closed ? fq() : fo();
+          const dEven = R0.even.reduce((a, b) => a + b, 0) / 3 - R0.odd.reduce((a, b) => a + b, 0) / 3;
+          const name = src.value === 'reed' ? 'clarinet reed' : src.value === 'tap' ? 'tap' : 'breath noise';
+          return `${closed ? 'capped' : 'open'} tube, $L$ = ${v.fix(L * 100, 1)} cm, radius 7.5 mm, ${name} · predicted fundamental ${closed ? `$c/4(L+\\delta)$` : `$c/2(L+2\\delta)$`} = ${v.fix(th, 1)} Hz (${noteOf(M, th)}); simulated ${v.fix(R0.f0, 1)} Hz (FFT resolution ${v.fix(R0.spec.df, 1)} Hz) · harmonics 2, 4, 6 of the sounding note lie on average ${v.fix(Math.abs(dEven), 1)} dB ${dEven < 0 ? 'below' : 'above'} harmonics 1, 3, 5${closed ? ': the even harmonics are missing' : ': all harmonics present'} · the capped tube's fundamental is ${v.fix(1200 * Math.log2(fo() / fq()), 0)} ¢ (about an octave) below the open tube's, and its next resonance is a twelfth (×3) above it`;
+        });
+      },
+    },
   ],
 };

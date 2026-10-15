@@ -38,17 +38,17 @@ function erodedThickness(E, k, x0, x1, zTop) {
 
 // ── 1.6 unconformities ─────────────────────────────────────────────────────
 const KM = 0.2; // km per section unit in 1.6
-const lowerBeds = (tops, liths, from = 0) => tops.map((top, i) => ({ type: 'dep', lith: liths[i % liths.length], top, from: i ? tops[i - 1] : from, ph: 'dep1' }));
-const upperBeds = (tops, liths, from) => tops.map((top, i) => ({ type: 'dep', lith: liths[i % liths.length], top, from: i ? tops[i - 1] : from, ph: 'dep2' }));
+const lowerBeds = (tops, liths, from = 0) => tops.map((top, i) => ({ type: 'dep', lith: liths[i % liths.length], top, from: i ? tops[i - 1] : from, phase: 'dep1' }));
+const upperBeds = (tops, liths, from) => tops.map((top, i) => ({ type: 'dep', lith: liths[i % liths.length], top, from: i ? tops[i - 1] : from, phase: 'dep2' }));
 const UNC = {
   angular: {
     label: 'angular', name: 'angular unconformity', what: 'tilted (or folded) older beds truncated and overlain by flat younger beds',
     E: () => [
       { type: 'base', lith: 'gneiss', top: 0 },
       ...lowerBeds([0.55, 1.1, 1.65, 2.2, 2.75, 3.3], ['sand', 'shale', 'lime']),
-      { type: 'tilt', ang: (24 * Math.PI) / 180, cx: 6, cz: 0, ph: 'deform' },
-      { type: 'uplift', dz: 0.7, ph: 'deform' },
-      { type: 'erode', level: 2.3, amp: 0.09, wl: 2.9, ph: 'erode', from: 7 },
+      { type: 'tilt', ang: (24 * Math.PI) / 180, cx: 6, cz: 0, phase: 'deform' },
+      { type: 'uplift', dz: 0.7, phase: 'deform' },
+      { type: 'erode', level: 2.3, amp: 0.09, wl: 2.9, phase: 'erode', from: 7 },
       ...upperBeds([2.75, 3.3, 3.85, 4.4], ['cong', 'sand', 'shale', 'lime'], 2.15),
     ],
   },
@@ -57,18 +57,18 @@ const UNC = {
     E: () => [
       { type: 'base', lith: 'gneiss', top: 0 },
       ...lowerBeds([0.55, 1.1, 1.65, 2.2, 2.75, 3.3], ['lime', 'shale', 'sand']),
-      { type: 'uplift', dz: 0.6, ph: 'deform' },
-      { type: 'erode', level: 2.95, amp: 0.32, wl: 2.6, ph: 'erode', from: 7 },
+      { type: 'uplift', dz: 0.6, phase: 'deform' },
+      { type: 'erode', level: 2.95, amp: 0.32, wl: 2.6, phase: 'erode', from: 7 },
       ...upperBeds([3.5, 4.0, 4.5, 5.0], ['cong', 'sand', 'shale', 'lime'], 2.6),
     ],
   },
   non: {
     label: 'nonconformity', name: 'nonconformity', what: 'sedimentary beds resting on eroded igneous or metamorphic rock',
     E: () => [
-      { type: 'base', lith: 'schist', top: 4.2, ph: 'dep1' },
-      { type: 'pluton', lith: 'granite', cx: 5.6, cz: 1.0, rx: 3.6, rz: 2.4, ph: 'dep1' },
-      { type: 'uplift', dz: 0.9, ph: 'deform' },
-      { type: 'erode', level: 2.3, amp: 0.12, wl: 3.3, ph: 'erode', from: 7 },
+      { type: 'base', lith: 'schist', top: 4.2, phase: 'dep1' },
+      { type: 'pluton', lith: 'granite', cx: 5.6, cz: 1.0, rx: 3.6, rz: 2.4, phase: 'dep1' },
+      { type: 'uplift', dz: 0.9, phase: 'deform' },
+      { type: 'erode', level: 2.3, amp: 0.12, wl: 3.3, phase: 'erode', from: 7 },
       ...upperBeds([2.8, 3.35, 3.9, 4.45], ['cong', 'sand', 'shale', 'lime'], 2.15),
     ],
   },
@@ -77,7 +77,7 @@ const UNC = {
     E: () => [
       { type: 'base', lith: 'gneiss', top: 0 },
       ...lowerBeds([0.55, 1.1, 1.65, 2.2], ['shale', 'lime']),
-      { type: 'erode', level: 2.2, amp: 0, ph: 'erode', from: 2.2 },
+      { type: 'erode', level: 2.2, amp: 0, phase: 'erode', from: 2.2 },
       ...upperBeds([2.75, 3.3, 3.85, 4.4], ['shale', 'lime'], 2.2),
     ],
   },
@@ -225,7 +225,7 @@ The time an unconformity represents is at least the thickness removed divided by
         const geo = (key) => {
           if (cache.has(key)) return cache.get(key);
           const E = UNC[key].E(), kE = E.findIndex((e) => e.type === 'erode');
-          const lower = E.filter((e) => e.ph === 'dep1' && e.type === 'dep'), upper = E.filter((e) => e.ph === 'dep2');
+          const lower = E.filter((e) => e.phase === 'dep1' && e.type === 'dep'), upper = E.filter((e) => e.phase === 'dep2');
           const H1 = lower.length ? (lower[lower.length - 1].top - (E[0].top ?? 0)) * KM : 0, H2 = (upper[upper.length - 1].top - upper[0].from) * KM;
           const He = erodedThickness(E, kE, 0, 12, 9) * KM;
           const g = { E, kE, H1, H2, He }; cache.set(key, g); return g;
@@ -236,7 +236,7 @@ The time an unconformity represents is at least the thickness removed divided by
           const E = g.E.map((e) => ({ ...e })), ph = PHASES.find(([, a, b]) => u >= a && u < b) || PHASES[4];
           // progress of every event
           for (const [name, a, b] of PHASES) {
-            const evs = E.filter((e) => (e.ph || 'dep1') === name), f = clamp((u - a) / (b - a), 0, 1);
+            const evs = E.filter((e) => (e.phase || 'dep1') === name), f = clamp((u - a) / (b - a), 0, 1);
             if (name === 'dep1' || name === 'dep2') evs.forEach((e, i) => { e.p = clamp(f * evs.length - i, 0, 1); });
             else evs.forEach((e) => { e.p = f; });
           }
@@ -247,12 +247,12 @@ The time an unconformity represents is at least the thickness removed divided by
           if (u > PHASES[3][1]) uncLine(S, E, g.kE, { res: 160 });
           S.corner(`${PHASES.indexOf(ph) + 1}. ${ph[3]}`, 'tl', { size: 12.5, weight: 700, color: 'ink' });
           S.corner(U.name, 'tr', { size: 12, weight: 600, color: 'red' });
-          S.measure(11.4, 0, 11.4, 1, '200 m', { color: 'muted' });
+          S.line(0.35, 0.25, 0.35, 1.25, { color: 'ink', width: 2 }); S.line(0.2, 0.25, 0.5, 0.25, { color: 'ink', width: 2 }); S.line(0.2, 1.25, 0.5, 1.25, { color: 'ink', width: 2 }); S.text('200 m', 0.6, 0.75, { size: 11.5, weight: 700 });
           // rock column vs time column
           const D = dep.value, Er = ero.value;
           const t1 = (g.H1 * 1000) / D, t2 = (g.H2 * 1000) / D, te = (g.He * 1000) / Er, tn = key === 'para' ? 12 : 0, tg = te + tn, T = t1 + tg + t2;
           const H1d = g.H1 || 0.8 * g.H2, Hs = H1d + g.H2, yR = (h) => h / Hs, yT = (x) => x / T;
-          const cx0 = 0.9, cx1 = 2.9, tx0 = 6.2, tx1 = 8.2;
+          const cx0 = 1.9, cx1 = 3.7, tx0 = 5.9, tx1 = 7.7;
           W.text('rock', (cx0 + cx1) / 2, 1.07, { align: 'center', size: 12.5, weight: 700 }); W.text('time', (tx0 + tx1) / 2, 1.07, { align: 'center', size: 12.5, weight: 700 });
           W.rect(cx0, 0, cx1, yR(H1d), { fill: g.H1 ? 'teal' : 'pink', fillAlpha: 0.35, color: g.H1 ? 'teal' : 'pink', width: 1 });
           W.rect(cx0, yR(H1d), cx1, 1, { fill: 'orange', fillAlpha: 0.35, color: 'orange', width: 1 });

@@ -398,14 +398,6 @@ class Stage {
   _paint(st, defStroke = true, defWidth = 2) {
     const c = this.ctx;
     if (st.fill) { c.fillStyle = withAlpha(st.fill === true ? (st.color || 'ink') : st.fill, st.fillAlpha ?? 0.18); c.fill(st.evenodd ? 'evenodd' : 'nonzero'); }
-    if (st.hatch) { // diagonal hatching inside the current path: hatch: true | colour, hatchGap px, hatchAngle degrees
-      c.save(); c.clip(st.evenodd ? 'evenodd' : 'nonzero');
-      const gap = st.hatchGap ?? 6, a = ((st.hatchAngle ?? 45) * Math.PI) / 180, L = Math.hypot(this.W, this.H);
-      c.strokeStyle = withAlpha(st.hatch === true ? (st.color || 'ink') : st.hatch, st.hatchAlpha ?? 0.55); c.lineWidth = st.hatchWidth ?? 1; c.setLineDash([]);
-      c.beginPath(); const ux = Math.cos(a), uy = -Math.sin(a), nx = -uy, ny = ux;
-      for (let k = -L; k <= L; k += gap) { const cx = this.W / 2 + nx * k, cy = this.H / 2 + ny * k; c.moveTo(cx - ux * L, cy - uy * L); c.lineTo(cx + ux * L, cy + uy * L); }
-      c.stroke(); c.restore();
-    }
     const doStroke = st.stroke !== false && st.width !== 0 && (st.color != null || st.width != null || (defStroke && !st.fill)); // canvas ignores lineWidth = 0, so width 0 means no stroke
     if (doStroke) {
       c.strokeStyle = withAlpha(st.color || 'ink', st.alpha);
@@ -414,6 +406,14 @@ class Stage {
       c.lineCap = st.cap || 'round'; c.lineJoin = 'round';
       c.stroke();
       c.setLineDash([]);
+    }
+    if (st.hatch) { // diagonal hatching inside the current path, last, because drawing it replaces the path: hatch: true | colour, hatchGap px, hatchAngle degrees
+      c.save(); c.clip(st.evenodd ? 'evenodd' : 'nonzero');
+      const gap = st.hatchGap ?? 6, a = ((st.hatchAngle ?? 45) * Math.PI) / 180, L = Math.hypot(this.W, this.H);
+      c.strokeStyle = withAlpha(st.hatch === true ? (st.color || 'ink') : st.hatch, st.hatchAlpha ?? 0.55); c.lineWidth = st.hatchWidth ?? 1; c.setLineDash([]);
+      c.beginPath(); const ux = Math.cos(a), uy = -Math.sin(a), nx = -uy, ny = ux;
+      for (let k = -L; k <= L; k += gap) { const cx = this.W / 2 + nx * k, cy = this.H / 2 + ny * k; c.moveTo(cx - ux * L, cy - uy * L); c.lineTo(cx + ux * L, cy + uy * L); }
+      c.stroke(); c.restore();
     }
   }
   // ---------- primitives (data coordinates) ----------
@@ -721,8 +721,12 @@ class Stage {
     c.fillStyle = withAlpha(st.color || 'ink', st.alpha); c.fillText(str, X, Y);
     c.restore(); return this;
   }
-  /** Canvas text at data coords. st: {size, color, align, baseline, dx, dy, math (italic serif), halo, plate (rounded backing box)}. */
-  text(str, x, y, st = {}) { return this.textPx(String(str), this.X(x), this.Y(y), st); }
+  /** Text at data coords: canvas text, or the KaTeX overlay when it contains $…$. st: {size, color, align, baseline, dx, dy, math (italic serif), halo, plate (rounded backing box)}. */
+  text(str, x, y, st = {}) {
+    const t = String(str);
+    if (/\$[^$]+\$/.test(t) && !/\$\d/.test(t)) { const pure = /^\$[^$]+\$$/.test(t); return this.texPx(pure ? t.slice(1, -1) : t, this.X(x) + (st.dx || 0), this.Y(y) + (st.dy || 0), { ...st, dx: 0, dy: 0, rich: !pure, align: st.align || 'left', baseline: st.baseline || 'middle', size: st.size ? st.size * 1.15 : 14 }); } // $…$ → KaTeX overlay
+    return this.textPx(t, this.X(x), this.Y(y), st);
+  }
   /** Status text pinned to a corner: pos = 'tl' | 'tr' | 'bl' | 'br'. */
   corner(str, pos = 'tl', st = {}) {
     const m = 10, X = pos[1] === 'l' ? m : this.W - m, Y = pos[0] === 't' ? m + 7 : this.H - m - 7;

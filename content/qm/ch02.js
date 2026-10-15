@@ -182,6 +182,7 @@ So $\rho=|\psi|^2$ is a **probability density**. Repeating the measurement on ma
       idea: String.raw`Probabilities must add up to one, and by the Born rule the total probability is $\int|\psi|^2$; so only functions with a finite integral can be rescaled into states. $L^2$ (pma-11.34) is the natural home: it is a vector space (so superpositions of states are states), and its inner product $\ip{\phi}{\psi}=\int\bar\phi\psi$ supplies the overlaps that quantum predictions are built from. Normalizing over a finite window $[-L,L]$ and letting $L\to\infty$ shows the dichotomy: for $\psi\in L^2$ the normalized functions converge, while for a plane wave or a slow tail the normalizing factor $1/\sqrt{N(L)}$ tends to $0$ and the "state" fades away everywhere.`,
       caption: String.raw`Left: $\psi$ (blue, dashed) and its normalized version over the window $[-L,L]$ (green). Right: the partial norm $N(L)=\int_{-L}^{L}|\psi|^2$ on log–log axes. With the **tail** family, slide the exponent $s$ across $\tfrac12$: above it $N(L)$ levels off (an $L^2$ state), below it $N(L)$ grows like $L^{1-2s}$, and stretching the window $L$ makes the normalized wave function shrink towards zero. The **plane wave** grows like $2L$. In **draw** mode, drag on the left panel to sketch any $\psi$, then press **Normalize**.`,
       deps: ['qm-2.2', 'pma-11.34'],
+      see: ['rca-4.4', 'pma-11.42'],
       refs: ['Griffiths §1.4'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Normalizing_constant' },
       tags: ['normalization', 'square-integrable'],
@@ -331,7 +332,7 @@ so total probability drains away where $V_I<0$ (absorption: particles removed fr
       idea: String.raw`Differentiate under the integral: $\partial_t|\psi|^2=\bar\psi\,\partial_t\psi+\psi\,\partial_t\bar\psi$. Substituting the equation, the potential contributes $\frac{1}{i\hbar}(V-\bar V)|\psi|^2=\frac2\hbar V_I|\psi|^2$, which vanishes for real $V$, and the kinetic terms combine into an exact derivative $-\partial_x j$ (the probability current, 2.6), whose integral is the flux at infinity, zero for a decaying $\psi$. In operator language, $\hat H$ is symmetric — integrating by parts twice moves $\partial_x^2$ from one factor of $\ip{\phi}{\hat H\psi}$ to the other — so $\frac{d}{dt}\ip\psi\psi=\frac{i}{\hbar}\big(\ip{\hat H\psi}{\psi}-\ip{\psi}{\hat H\psi}\big)=0$; for the free equation this is Plancherel's theorem applied mode by mode (pde-9.10). The Crank–Nicolson step $\big(1+\tfrac{i\Delta t}{2\hbar}\hat H\big)\psi^{+}=\big(1-\tfrac{i\Delta t}{2\hbar}\hat H\big)\psi$ inherits this exactly: it is the Cayley transform of a Hermitian matrix, hence unitary for every $\Delta t$.`,
       caption: String.raw`A packet hits a barrier and splits; the Crank–Nicolson simulation runs three copies at once. Bottom: total probability against time. With a **real** potential (green) it stays at $1$ to machine precision — the readout shows twelve digits — at any time step, even an absurdly large one (the motion then goes wrong, the norm does not). Choose the **absorber** (hatched edges, $V_I=-\Gamma$): probability leaks away as the two halves enter it. Choose **gain** ($V_I=+\Gamma$ in a strip): the transmitted half grows. The readout checks the measured $dN/dt$ against $\frac2\hbar\int V_I|\psi|^2dx$.`,
       deps: ['qm-2.4', 'qm-2.3', 'pde-9.10'],
-      see: ['pde-13.4'],
+      see: ['pde-13.4', 'fa-13.38', 'fa-13.19'],
       refs: ['Griffiths §1.4'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Unitarity_(physics)' },
       tags: ['unitarity', 'conservation', 'probability'],
@@ -390,7 +391,7 @@ so total probability drains away where $V_I<0$ (absorption: particles removed fr
             s2.path(pts, { color: COLS[q], width: q === k ? 3 : 1.4, alpha: q === k ? 1 : 0.55 });
           }
           s2.vline(S.t, { color: 'gold', dash: [4, 3], width: 1.2 });
-          const L = R[R.length - 1];
+          const L = R[R.length - 1]; s2.setView([0, TMAX], [0, Math.max(1.75, 1.12 * Math.max(...L.N))]);
           st = { t: S.t, N0: L.N[0], Nk: L.N[k], meas: L.meas[k], F: R.length > 1 ? 0.5 * (L.F[k] + R[R.length - 2].F[k]) : L.F[k], k, steps: R.length - 1 };
         }, { period: 12, still: 6.5 });
         v.legend([['green', 'N(t), real V'], ['red', 'N(t), absorber'], ['orange', 'N(t), gain'], ['muted', 'barrier V', { area: true }]]);

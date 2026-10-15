@@ -59,7 +59,7 @@ export function prefs(kind, P = {}) {
       const a = P.a ?? 0.5, g1 = P.g1 ?? 2, g2 = P.g2 ?? 1;
       const u = (x, y) => (x > g1 && y > g2 ? a * Math.log(x - g1) + (1 - a) * Math.log(y - g2) : -1e6 + Math.min(x - g1, y - g2));
       return { u, grad: (x, y) => [a / (x - g1), (1 - a) / (y - g2)], ray: true, sub: [g1, g2],
-        dem: (p1, p2, m) => { const S = m - p1 * g1 - p2 * g2; return S > 0 ? [g1 + (a * S) / p1, g2 + ((1 - a) * S) / p2] : null; } }; }
+        dem: (p1, p2, m) => { const S = m - p1 * g1 - p2 * g2; return S > 0 ? [g1 + (a * S) / p1, g2 + ((1 - a) * S) / p2] : [NaN, NaN]; } }; } // NaN: subsistence unaffordable
     case 'inf': { // good 1 inferior: the indifference curve of level c is x2 = c − K(c) ln(1 + x1), K(c) = A k/(k + c), flatter for larger c
       const A = P.A ?? 5, k = P.k ?? 8;
       const u = (x, y) => { const L = Math.log(1 + Math.max(x, 0)), z = Math.max(y, 0); return (-(k - z) + Math.sqrt((k - z) ** 2 + 4 * k * (z + A * L))) / 2; };

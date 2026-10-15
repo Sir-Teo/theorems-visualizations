@@ -154,7 +154,7 @@ whose solution is the input filtered by an exponential kernel: $V(t) = E_L + \fr
 $$I = g\,(V - E_{\text{rev}}),$$
 the conductance times the **driving force** $V - E_{\text{rev}}$. A channel permeable to several ions reverses at a GHK-weighted potential between their Nernst potentials. For the nicotinic acetylcholine receptor, which passes Na⁺ and K⁺ about equally, that is near 0 mV. Measuring where the current reverses, and how $E_{\text{rev}}$ shifts as concentrations change, identifies which ions a channel passes.`,
       idea: String.raw`At $E_{\text{rev}}$ the electrical force on the permeant ions exactly balances their concentration gradient, so the net flux vanishes. Away from it the net flux grows with the imbalance. The linear (ohmic) law $I = g(V-E)$ is the first-order expansion. The GHK current equation (physio-1.9) gives the exact constant-field curve, which bends because the ions on the two sides are present in very different numbers. Calcium, with about $10^{-4}$ mM inside and 2 mM outside, passes almost purely inward current. A tenfold change in external concentration moves $E$ by $61.5/z$ mV at body temperature, the test that Hodgkin and Katz used to show that the action potential is carried by Na⁺.`,
-      caption: String.raw`Drag the holding voltage along the axis of the current–voltage plot, or pick another channel. Left: the channel in the membrane. The ions flow outward or inward through the pore, at a rate proportional to the current, and stop at the reversal potential. Right: the GHK current of one open channel (bold), and the linear approximation $g(V-E)$ with the same slope at $E$ (dashed). Both cross zero at the same voltage, except for the mixed cation channel, where the ohmic average of $E_{Na}$ and $E_K$ misses the true reversal potential. Change the external concentration: the reversal potential follows Nernst.`,
+      caption: String.raw`Drag the holding voltage along the axis of the current–voltage plot, or pick another channel. Left: the channel in the membrane. The ions flow outward or inward through the pore, at a rate proportional to the current, and stop at the reversal potential. Right: the GHK current of one open channel (bold) and an ohmic channel $g(V-E)$ carrying the same current at $-65$ mV (dashed). Both cross zero at the same voltage, except for the mixed cation channel, where the ohmic average of $E_{Na}$ and $E_K$ misses the true reversal potential. The calcium channel shows how far from ohmic a channel can be: with almost no Ca²⁺ inside it passes inward current only. Change the external concentration: the reversal potential follows Nernst.`,
       scope: String.raw`Single open channels with fixed concentrations; in a whole cell, currents of other channels shift the voltage at which the *total* current reverses (neuro-1.4).`,
       deps: ['physio-1.8'],
       see: ['physio-1.9', 'pchem-8.6', 'neuro-1.4'],
@@ -171,10 +171,13 @@ the conductance times the **driving force** $V - E_{\text{rev}}$. A channel perm
         const model = () => {
           const c = CH[ch.value], ghk = (V) => c.ions.reduce((s, ion) => { const q = conc(ion); return s + ghkI(ION_Z[ion], q.i, q.o, V); }, 0);
           const Erev = c.ions.length === 1 ? nernst(ION_Z[c.ions[0]], conc(c.ions[0]).o, conc(c.ions[0]).i) : bisect(ghk, -100, 100);
-          const slope = (ghk(Erev + 0.01) - ghk(Erev - 0.01)) / 0.02, k = c.g / 1000 / slope; // scale so that dI/dV = g at E_rev (pA/mV)
           const E1 = c.ions.map((ion) => nernst(ION_Z[ion], conc(ion).o, conc(ion).i));
-          const Eohm = E1.reduce((a, b) => a + b, 0) / E1.length;
-          return { c, I: (V) => k * ghk(V), lin: (V) => (c.g / 1000) * (V - Eohm), Erev, Eohm, E1 };
+          const Eohm = E1.reduce((a, b) => a + b, 0) / E1.length, gS = c.g / 1000, lin = (V) => gS * (V - Eohm);
+          // scale the GHK curve so that it carries the same current as the linear channel at the resting potential −65 mV
+          // (if that current is tiny, match the slopes at the reversal potential instead)
+          const slope = (ghk(Erev + 0.01) - ghk(Erev - 0.01)) / 0.02;
+          const k = Math.abs(lin(-65)) > gS * 3 && Math.abs(ghk(-65)) > 1e-12 ? lin(-65) / ghk(-65) : gS / slope;
+          return { c, I: (V) => k * ghk(V), lin, Erev, Eohm, E1 };
         };
         const pool = (() => { const r = v.rng(2), a = []; for (let i = 0; i < 220; i++) a.push([r(), r()]); return a; })();
         let M = null;
@@ -268,11 +271,11 @@ the conductance-weighted average of the reversal potentials. Raising a conductan
           for (const kk in g) C.set('R' + kk, g[kk] > 0 ? 1 / g[kk] : 1e9);
           const sum = Object.values(g).reduce((a, b) => a + b, 0), tau = 1 / sum;
           C.part('Cm').ic = old;
-          state = { Vold: old, t0: tNow, tau, Vnew: vinf(g), tr: C.transient(Math.max(30, 6 * tau), Math.min(tau, 30) / 60) };
+          state = { Vold: old, t0: tNow, tau, Vnew: vinf(g), tr: C.transient(Math.max(5, 7 * tau), tau / 60) };
         };
         v.animate((t) => {
           update(t);
-          const g = G(), dc = C.dc(), node = C.net.termNode.get('Cm').a, tt = Math.min((t - state.t0) * 8, state.tr.t[state.tr.t.length - 1]);
+          const g = G(), dc = C.dc(), node = C.net.termNode.get('Cm').a, tt = Math.min(((t - state.t0) / 4) * Math.max(5, 7 * state.tau), state.tr.t[state.tr.t.length - 1]);
           const snap = state.tr.at(Math.max(0, tt));
           C.draw({ result: snap, t, vmax: 90, imax: 25 });
           for (const k of ['K', 'Na', 'Cl', 'syn']) {
@@ -300,7 +303,7 @@ the conductance-weighted average of the reversal potentials. Raising a conductan
           }
           // the transient
           const ser = state.tr.series(node);
-          st.setView([0, Math.max(30, 6 * Math.min(state.tau, 30))], [Math.min(state.Vold, state.Vnew) - 4, Math.max(state.Vold, state.Vnew) + 4]);
+          st.setView([0, Math.max(5, 7 * state.tau)], [Math.min(state.Vold, state.Vnew) - 4, Math.max(state.Vold, state.Vnew) + 4]);
           st.hline(state.Vnew, { color: 'green', dash: [5, 4], width: 1.2 });
           st.path(ser.map(([a, b]) => [a, b]), { color: 'accent', width: 1.2, alpha: 0.3 });
           st.path(ser.filter(([a]) => a <= tt).map(([a, b]) => [a, b]), { color: 'accent', width: 2.4 });

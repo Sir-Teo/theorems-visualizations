@@ -37,7 +37,7 @@ Serial testing gains specificity (and positive predictive value) at the cost of 
         const spA = v.slider('test A specificity', 0.5, 0.995, 0.85, { step: 0.005, fmt: (x) => pc(x) });
         const seB = v.slider('test B sensitivity', 0.5, 0.995, 0.8, { step: 0.005, fmt: (x) => pc(x) });
         const spB = v.slider('test B specificity', 0.5, 0.995, 0.97, { step: 0.005, fmt: (x) => pc(x) });
-        const rhoS = v.slider('correlation between the tests’ errors', 0, 0.9, 0.5, { step: 0.01, fmt: (x) => v.fix(x, 2) });
+        const rhoS = v.slider('correlation between the tests’ errors', 0, 0.9, 0, { step: 0.01, fmt: (x) => v.fix(x, 2) });
         const prevS = v.slider('prevalence', 0.002, 0.5, 0.02, { log: true, fmt: (x) => pcs(x) });
         const TB = v.table(sT, { rows: 4, cols: 5, square: false, cellAspect: 1.45, maxCell: 40, size: 12.5, labelSize: 12, region: [0, 0.11, 1, 1], rowLabels: ['test A', 'test B', 'serial: A and B', 'parallel: A or B'], rowLabelColor: (i) => ['orange', 'teal', 'purple', 'gold'][i], colLabels: ['Se', 'Sp', 'PPV', 'NPV', 'tests'], colWeights: [1, 1, 1, 1, 1.15] });
         /** Draw one group's square: a, b = probabilities of A+ and B+ in the group, pab = both. */
@@ -91,7 +91,7 @@ Serial testing gains specificity (and positive predictive value) at the cost of 
         v.readout(() => {
           if (!st) return '';
           const { rows: [A, B, S, P], rho } = st;
-          let s = `serial: Se ${pc(S.se)}, Sp ${pc(S.sp)} — specificity up from ${pc(A.sp)} and ${pc(B.sp)}, sensitivity down · parallel: Se ${pc(P.se)}, Sp ${pc(P.sp)} — sensitivity up, specificity down`;
+          let s = `serial (both +): Se ${pc(S.se)}, **Sp ${pc(S.sp)}** against ${pc(A.sp)} and ${pc(B.sp)} for A and B alone, at the price of sensitivity · parallel (either +): **Se ${pc(P.se)}** against ${pc(A.se)} and ${pc(B.se)}, Sp ${pc(P.sp)}`;
           s += rho > 0 ? ` · with correlated errors ($\\rho = ${v.fix(rho, 2)}$) the independence formulas promise serial Sp ${pc(S.spI)} and parallel Se ${pc(P.seI)}, but the tests deliver only ${pc(S.sp)} and ${pc(P.se)}` : ` · independent tests: $\\text{Se}_A\\text{Se}_B = ${v.fix(A.se, 3)}\\times${v.fix(B.se, 3)} = ${v.fix(S.se, 3)}$ and $1-(1-\\text{Se}_A)(1-\\text{Se}_B) = ${v.fix(P.se, 3)}$`;
           return s;
         });
@@ -209,7 +209,7 @@ $\kappa = 1$ means perfect agreement, $\kappa = 0$ agreement no better than chan
         const scr = v.toggle('screening programme (ages 50–74)', true);
         const ivS = v.slider('screening interval (years)', 1, 5, 2, { step: 0.5 });
         const soS = v.slider('mean preclinical sojourn time (years)', 0.5, 8, 3, { step: 0.1, fmt: (x) => `${x.toFixed(1)} y` });
-        const cureS = v.slider('cured by early detection', 0, 0.6, 0.3, { step: 0.01, fmt: (x) => pc(x, 0) });
+        const cureS = v.slider('cured by early detection', 0, 0.6, 0, { step: 0.01, fmt: (x) => pc(x, 0) });
         const u = [0, 1, 2, 3].map((k) => uniforms(M, 1010 + k, N)), uScr = uniforms(M, 1020, N * MAXS);
         const TB = v.table(sT, { rows: 4, cols: 2, square: false, cellAspect: 2.3, maxCell: 40, size: 13.5, labelSize: 12, region: [0, 0.2, 1, 1], rowLabels: ['5-year survival from diagnosis', 'median survival from diagnosis', 'mean age at death from the cancer', 'deaths from the cancer'], colLabels: ['no screening', 'screening'], colLabelColor: (j) => ['gray', 'accent'][j] });
         let st = null;
@@ -378,7 +378,7 @@ Since slow-growing tumours generally have a better prognosis, screen-detected ca
         const sR = v.stage({ x: [0, 10], y: [-1.6, 10.2], equal: true, axes: false, height: 230, weight: 1, minWidth: 260 });
         const resS = v.slider('non-progressive lesions per progressive cancer', 0, 5, 1, { step: 0.1 });
         const upS = v.slider('share of people screened each year', 0, 1, 0.5, { step: 0.01, fmt: (x) => pc(x, 0) });
-        const cureS = v.slider('screen-detected progressive cancers cured', 0, 0.6, 0.3, { step: 0.01, fmt: (x) => pc(x, 0) });
+        const cureS = v.slider('screen-detected progressive cancers cured', 0, 0.6, 0, { step: 0.01, fmt: (x) => pc(x, 0) });
         const H = sTS.handle(2000, 95, { color: 'gold', constrain: (x) => [Math.round(M.clamp(x, 1990, 2018)), sTS.bounds.y[1] * 0.93] });
         // fixed population of tumours: progressive at LP per 100k per year, non-progressive at up to 5×LP; four uniforms each
         const NP = Math.round((LP * POP / 1e5) * (Y1 - Y0)), NN = 5 * NP, u = [0, 1, 2, 3, 4].map((k) => uniforms(M, 1200 + k, NP + NN));
@@ -429,7 +429,7 @@ Since slow-growing tumours generally have a better prognosis, screen-detected ca
           sS.vline(start, { color: 'gold', width: 1.4 });
           sS.path(S5s.slice(0, 2020 - 1985).map((s, k) => [1985.5 + k, s]), { color: 'green', width: 2.4 });
           sS.dots(S5.slice(0, 2020 - 1985).map((s, k) => [1985.5 + k, s]), { r: 2, color: 'green', alpha: 0.5 });
-          sS.text('line: 3-year average · dots: single years', 1986, 0.17, { align: 'left', color: 'muted', size: 10.5 });
+          sS.text('line: 3-year average · dots: single years', 1988, 0.17, { align: 'left', color: 'muted', size: 10.5 });
           const sB = mean(S5, 1985, start - 1), sA = mean(S5, 2015, 2019);
           // icon array: composition of screen-detected cases from start+5 to 2024
           let pr = 0, ov = 0; for (let yv = start + 5; yv <= 2024; yv++) { const k = yv - 1985; ov += O[k]; pr += I[k] - O[k]; }

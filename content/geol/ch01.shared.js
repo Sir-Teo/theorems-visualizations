@@ -101,7 +101,7 @@ export function classify(E, x, z, k = E.length - 1, side = 0) {
     switch (e.type) {
       case 'base': return z <= e.top ? { k: i, x, z, side } : null;
       case 'dep': {
-        const o = classify(E, x, z, i - 1, side); if (o) return o;
+        const o = classify(E, x, z, i - 1, side); if (o || p <= 0) return o;
         const top = p < 1 ? (e.from ?? e.top) + (e.top - (e.from ?? e.top)) * p : e.top; // during an animation the fill rises from `from`
         return z <= top ? { k: i, x, z, side } : null;
       }

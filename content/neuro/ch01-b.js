@@ -67,9 +67,9 @@ export default {
           { type: 'OA', id: 'Amp', at: [3, 2.5], gain: 1000, label: 'amplifier' },
           { type: 'R', id: 'Rs', value: 0.5, at: [4.5, 2.5, 7, 2.5], label: 'electrode' },
           { type: 'C', id: 'Cm', value: 1, at: [7, 2.5, 7, 0], label: 'membrane' },
-          { type: 'W', at: [7, 2.5, 8.9, 2.5] },
-          { type: 'I', id: 'Iion', value: 0, at: [8.9, 2.5, 8.9, 0], label: 'channels' },
-          { type: 'W', at: [8.9, 0, 0, 0] }, { type: 'GND', at: [4, 0] },
+          { type: 'W', at: [7, 2.5, 9.9, 2.5] },
+          { type: 'I', id: 'Iion', value: 0, at: [9.9, 2.5, 9.9, 0], label: '' },
+          { type: 'W', at: [9.9, 0, 0, 0] }, { type: 'GND', at: [4, 0] },
           { type: 'W', at: [7, 2.5, 7, 3.9, 1.1, 3.9, 1.1, 3.0, 1.5, 3.0] },
         ]);
         let key = '', R = null;
@@ -83,7 +83,7 @@ export default {
           const res = C.draw({ result: C.dc(), t, vmax: 100, imax: 1500 });
           const nm = C.net.termNode.get('Cm').a;
           sc.tex('V_m', 7.25, 3.25, { size: 14, color: 'ink', align: 'left' });
-          sc.text(`${v.fix(res.V(nm), 1)} mV`, 7.85, 3.25, { size: 11, color: 'ink', align: 'left', baseline: 'middle', weight: 600 });
+          sc.text(`${v.fix(res.V(nm), 1)} mV`, 8.1, 3.25, { size: 11, color: 'ink', align: 'left', baseline: 'middle', weight: 600 });
           sc.text(`ionic current ${v.fix(Iion, 0)} µA/cm² (${Iion < 0 ? 'inward' : 'outward'})`, 3.5, 0.55, { size: 11, color: Iion < 0 ? ION_COL.Na : ION_COL.K, align: 'center', baseline: 'middle', weight: 700 });
           // traces
           sv.hline(-65, { color: 'faint', width: 1 });
@@ -109,7 +109,7 @@ export default {
           let peakIn = 0, tIn = 0, err = 0; const j1 = idxAt(R.t, 1.2), j2 = idxAt(R.t, 7.95);
           for (let j = j1; j <= j2; j++) { if (R.I[j] < peakIn) { peakIn = R.I[j]; tIn = R.t[j]; } err = Math.max(err, Math.abs(R.V[j] - R.Vc[j])); }
           const steady = R.I[j2], tauC = HH.C / (2 * (1 + A));
-          return `peak inward ${v.fix(peakIn, 0)} µA/cm² at ${v.fix(tIn - 1, 2)} ms after the step · late outward ${v.fix(steady, 0)} µA/cm² · worst clamp error during the step ${v.fix(err, 2)} mV ${err > 5 ? '(**clamp lost**)' : ''} · charging time constant $C/(G_s(1+A)) = ${v.fix(tauC * 1000, 2)}$ µs, capacitive spike ${v.fix(R.capPeak, 0)} µA/cm²`;
+          return `${peakIn < -1 ? `peak inward ${v.fix(peakIn, 0)} µA/cm² at ${v.fix(tIn - 1, 2)} ms after the step` : 'no inward current'} · late outward ${v.fix(steady, 0)} µA/cm² · worst clamp error during the step ${v.fix(err, 2)} mV ${err > 5 ? '(**clamp lost**)' : ''} · charging time constant $C/(G_s(1+A)) = ${v.fix(tauC * 1000, 2)}$ µs, capacitive spike ${v.fix(R.capPeak, 0)} µA/cm²`;
         });
       },
     },
