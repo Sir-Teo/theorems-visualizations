@@ -78,7 +78,7 @@ On z-coordinates the roles swap: the Gaussian ROC is a straight line, while the 
           ro.path(rocPts(M, fg.mu, 1), { color: 'accent', width: 2.4 });
           ro.line(0, fh.p, 1, 1, { color: 'red', width: 2.2 });
           ro.dot(0, fh.p, { r: 4, color: 'red' });
-          ro.text(`p = ${v.fix(fh.p, 2)}`, 0, fh.p, { dx: 7, dy: -9, align: 'left', color: 'red', size: 11, weight: 700 });
+          ro.text(`p = ${v.fix(fh.p, 2)}`, 0, fh.p, { dx: 8, dy: 13, align: 'left', color: 'red', size: 11, weight: 700 });
           drawCum(ro, pts, { line: false });
           // ---- z-ROC
           zr.clip(() => {
@@ -126,7 +126,7 @@ In two-alternative forced choice (psych-1.8) an observer who receives one observ
         v.button('New trials', () => { seed = 1 + ((Math.random() * 1e9) | 0); v.restart(); });
         const de = v.stage({ x: [-3.5, 8.5], y: [0, 0.5], height: 270, axes: 'box', weight: 1, xlabel: 'evidence $x$', yticks: [], title: 'one 2AFC trial: two observations' });
         const ro = v.stage({ ...ROCOPT, height: 270, weight: 0.85, minWidth: 220, title: 'area under the yes/no ROC' });
-        const cv = v.stage({ x: [1, NMAX], y: [0.4, 1.02], xlog: true, height: 230, full: true, axes: 'box', ylabel: 'proportion correct', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'forced-choice accuracy as trials accumulate' });
+        const cv = v.stage({ x: [1, NMAX], y: [0.4, 1.02], xlog: true, height: 230, full: true, axes: 'box', yticks: [0.5, 0.6, 0.7, 0.8, 0.9, 1], title: 'forced-choice proportion correct as trials accumulate (log scale)' });
         const model = () => {
           const s = sep.value, k = kind.value;
           if (k === 'exp') { const mS = 1 + s, lS = 1 / mS; return {
@@ -153,12 +153,12 @@ In two-alternative forced choice (psych-1.8) an observer who receives one observ
             let A = 0; const NF = 4000; for (let j = 0; j < NF; j++) A += (Mo.Hof(j / NF) + Mo.Hof((j + 1) / NF)) / (2 * NF);
             cache = { xN, xS, cum, ch, A, pb: 0.5 * (Mo.pD(-Math.abs(b)) + Mo.pD(Math.abs(b))) };
           }
-          const n = Math.max(1, Math.min(NMAX, Math.round(Math.pow(NMAX, Math.min(1, t / (PER - 3)))))), i = n - 1, { xN, xS, cum, ch, A, pb } = cache;
+          const n = Math.max(1, Math.min(NMAX, Math.round(10 * Math.pow(NMAX / 10, Math.min(1, t / (PER - 3)))))), i = n - 1, { xN, xS, cum, ch, A, pb } = cache;
           // ---- densities and the latest trial
-          const lo = Mo.lo; de.setView([kind.value === 'exp' ? -0.6 : -3.5, 8.5], [-0.06 * Mo.ymax, Mo.ymax]);
+          const lo = Mo.lo; de.setView([kind.value === 'exp' ? -0.6 : -3.5, 8.5], [-0.17 * Mo.ymax, Mo.ymax]);
           de.fn(Mo.fN, { domain: [lo, 8.5], color: 'muted', width: 2.2, fill: 'muted', fillAlpha: 0.08, n: 300 });
           de.fn(Mo.fS, { domain: [lo, 8.5], color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.1, n: 300 });
-          const yy = -0.03 * Mo.ymax, sigInt = U.w[i], chosen = ch[i];
+          const yy = -0.045 * Mo.ymax, sigInt = U.w[i], chosen = ch[i];
           de.dot(xN[i], yy, { r: 5.5, color: 'gold' }); de.dot(xS[i], yy, { r: 5.5, color: 'accent' });
           const xc = chosen === sigInt ? xS[i] : xN[i];
           de.dot(xc, yy, { r: 9.5, color: chosen === sigInt ? 'green' : 'red', hollow: true, width: 2.2 });
@@ -208,10 +208,10 @@ so the same observer looks $\sqrt2$ times as sensitive in 2AFC as in yes/no, and
         const dS = v.slider("yes/no $d'$", 0, 3, 1.2, { step: 0.01 });
         const rS = v.slider('noise correlation $\\rho$', -0.5, 0.9, 0, { step: 0.01 });
         const nT = v.slider('trials', 100, NMAX, 800, { int: true, log: true });
-        let seed = 12, Z = null, zSeed = -1;
+        let seed = 3, Z = null, zSeed = -1;
         v.button('New random sample', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
         const sc = v.stage({ x: [-3.2, 5.2], y: [-3.2, 5.2], equal: true, height: 330, weight: 1, axes: true, xlabel: '$x_1$', ylabel: '$x_2$', title: 'each trial is a point (interval 1, interval 2)' });
-        const hs = v.stage({ x: [-7, 7], y: [0, 1], height: 330, weight: 1.05, axes: 'box', xlabel: '$D=x_2-x_1$', yticks: [], title: 'the decision variable' });
+        const hs = v.stage({ x: [-7, 7], y: [0, 1], height: 330, weight: 1.05, axes: 'box', yticks: [], title: 'the decision variable D = x₂ − x₁' });
         v.legend([['orange', 'signal in interval 1', { dot: true }], ['accent', 'signal in interval 2', { dot: true }], ['ink', 'decision line $x_1=x_2$', { dash: true }], ['purple', "distance between the means: $\\sqrt2\\,d'$"]]);
         let st = null;
         v.render(() => {
@@ -227,7 +227,7 @@ so the same observer looks $\sqrt2$ times as sensitive in 2AFC as in yes/no, and
             sc.curve((th) => [mx + Math.cos(th), my + rho * Math.cos(th) + cr * Math.sin(th)], 0, 2 * Math.PI, { color: col, width: 2.2, n: 120 });
             sc.dot(mx, my, { r: 4.5, color: col });
           }
-          if (d > 0.2) { sc.arrow(d, 0, 0, d, { color: 'purple', width: 2.2, head: 8, both: true }); sc.text(`√2·d′ = ${v.fix(Math.SQRT2 * d, 2)}`, d / 2, d / 2, { dx: 10, dy: 10, align: 'left', color: 'purple', size: 12, weight: 700 }); }
+          if (d > 0.2) { sc.arrow(d, 0, 0, d, { color: 'purple', width: 2.2, head: 8, both: true }); sc.text(`√2·d′ = ${v.fix(Math.SQRT2 * d, 2)}`, d / 2, d / 2, { dx: 12, dy: 12, align: 'left', color: 'purple', size: 12, weight: 700, plate: true }); }
           sc.text('choose 2', -2.9, lim - 0.4, { align: 'left', color: 'muted', size: 11.5, weight: 600 });
           sc.text('choose 1', lim - 0.2, -2.6, { align: 'right', color: 'muted', size: 11.5, weight: 600 });
           // ---- decision variable
@@ -336,14 +336,14 @@ the fraction of the stimulus energy that the observer effectively uses (Tanner &
 $$d'_{\text{ideal}}=\frac{\lVert s\rVert}{\sigma}=\frac{\sqrt{\sum_i s_i^2}}{\sigma}.$$
 A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$, where $\theta$ is the angle between $t$ and $s$ as vectors of pixel values. Human efficiencies for simple patterns in visual noise are well below one but can reach about 50% (Burgess, Wagner, Jennings & Barlow, 1981).`,
       idea: String.raw`With white Gaussian noise the log likelihood ratio of an image is $(r-\tfrac12\lVert s\rVert^2)/\sigma^2$, a linear function of the template response $r$, so thresholding $r$ is the likelihood-ratio test and nothing else in the image matters (it is a sufficient statistic). Under noise alone $r\sim N(0,\sigma^2\lVert s\rVert^2)$, with the signal $r\sim N(\lVert s\rVert^2,\sigma^2\lVert s\rVert^2)$, which gives $d'=\lVert s\rVert/\sigma$. A human observer loses information to internal noise, to an imperfect template and to uncertainty about where and what the signal is; efficiency puts all these losses on one scale, and because $d'^2$ is proportional to signal energy, $1/\eta$ is how many times more energy the observer needs than the ideal for the same $d'$.`,
-      caption: String.raw`The signal is a small grating patch, known exactly (top right), added to pixel noise. The histogram shows the decision variable of a template matcher, its template response, on 300 simulated images (or on yours), with the theoretical Gaussians; the simulated human is the exact matcher plus internal noise, which makes its efficiency 25%. Switch the **template used** to a shifted, a rotated or a blob-shaped one: a matcher that does not match loses $d'$ by the factor $\cos\theta$. Switch to **you**: *▶ Flash* shows a noisy image for half a second; say whether it contained the pattern. Your $d'$, the ideal observer's $d'$ on exactly the same images, and your efficiency appear in the readout.`,
+      caption: String.raw`The signal is a small grating patch, known exactly (top right), added to pixel noise. The histogram shows the decision variable of a template matcher, its template response, on 600 simulated images (or on yours), with the theoretical Gaussians; the simulated human is the exact matcher plus internal noise, which makes its efficiency 25%. Switch the **template used** to a shifted, a rotated or a blob-shaped one: a matcher that does not match loses $d'$ by the factor $\cos\theta$. Switch to **you**: *▶ Flash* shows a noisy image for half a second; say whether it contained the pattern. Your $d'$, the ideal observer's $d'$ on exactly the same images, and your efficiency appear in the readout.`,
       deps: ['psych-2.12', 'psych-2.3'],
       refs: ['Gescheider ch. 6'],
       tags: ['ideal observer', 'efficiency'],
       credit: 'Tanner & Birdsall, 1958; Barlow, 1962; Burgess et al., 1981',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ideal_observer_analysis' },
       viz(v) {
-        const M = v.M, after = timers(v), NP = 20, SIG = 0.24, NSIM = 300, ETA = 0.25;
+        const M = v.M, after = timers(v), NP = 20, SIG = 0.24, NSIM = 600, ETA = 0.25;
         const gab = (x, y) => Math.exp(-(x * x + y * y) / (2 * 2.8 * 2.8)) * Math.cos((2 * Math.PI * x) / 6);
         const mk = (f) => { const a = new Float64Array(NP * NP); for (let j = 0; j < NP; j++) for (let i = 0; i < NP; i++) a[j * NP + i] = f(i - (NP - 1) / 2, j - (NP - 1) / 2); return a; };
         const S = mk(gab), TPL = { exact: S, shift: mk((x, y) => gab(x - 2, y)), rot: mk((x, y) => gab(y, x)), blob: mk((x, y) => Math.exp(-(x * x + y * y) / (2 * 2.8 * 2.8))) };
@@ -358,7 +358,7 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
         const bN = v.button('No pattern', () => answer(false));
         const bRes = v.button('Reset', () => { after.clear(); phase = 'idle'; you = []; });
         const im = v.stage({ x: [-0.02, 1.62], y: [-0.12, 1.02], equal: true, axes: false, height: 290, weight: 0.95, title: 'the image and the templates' });
-        const hs = v.stage({ x: [-4.5, 9], y: [0, 1], height: 290, axes: 'box', weight: 1.05, xlabel: 'template response (noise SD units)', yticks: [], title: 'the matcher’s decision variable' });
+        const hs = v.stage({ x: [-4.5, 9], y: [0, 1], height: 290, axes: 'box', weight: 1.05, yticks: [], title: 'template response, in noise SD units' });
         const amp = () => (dI.value * SIG) / nS;
         const image = (R, s) => { const a = amp(), x = new Float64Array(NP * NP); for (let i = 0; i < x.length; i++) x[i] = (s ? a * S[i] : 0) + SIG * R.normal(); return x; };
         const resp = (x, t) => dot(t, x) / (SIG * Math.sqrt(dot(t, t)));
@@ -438,7 +438,7 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
       name: 'Detection in the wild: screening and rare targets',
       statement: String.raw`When targets are rare, searchers miss more of them. In laboratory searches of cluttered, baggage-like displays, Wolfe, Horowitz and Kenner (2005) found a miss rate of 7% when a target was present on half of the trials but 30% when it was present on 1%; with realistic X-ray images of bags and full feedback, Wolfe and colleagues (2007) found 20% misses at 50% prevalence and 46% at 2% (as summarised by Van Wert, Horowitz & Wolfe, 2009). The extra misses come mostly from a **criterion shift**: false alarms fall at the same time, $d'$ changes little, the criterion $c$ moves by about one unit in the conservative direction, and target-absent responses get faster. Signal detection theory predicts the direction: an observer who learns the prevalence $\pi$ from feedback and aims to be right as often as possible should set $\beta^*=(1-\pi)/\pi$ (2.12), which is 49 at 2% prevalence. The prevalence effect has also been reported with trained airport screeners and in breast-cancer screening, where targets are rare by nature.`,
       idea: String.raw`With equal stakes the best criterion is the likelihood ratio $(1-\pi)/\pi$: 1 (neutral) at 50% prevalence, 49 at 2%. An observer who tracks the base rate should then say “target” only on strong evidence, accepting misses to avoid a flood of false alarms among the 98% of clean bags. People move less than the ideal amount (2.12) but enough to more than double the miss rate. Because the change is in the criterion, not in $d'$, better eyesight or training to see would not remove it; what helps is changing the decision itself, for instance by raising the effective prevalence or the cost of a miss. Airports insert fictional threat images into real X-ray images of bags (threat image projection) partly for this reason, and the base-rate arithmetic of rare conditions is the same as in medical screening (epi-2.3).`,
-      caption: String.raw`A simulated screener with fixed sensitivity $d'$ = 1.8 learns the target prevalence from feedback and moves its criterion part of the way towards the optimum. Middle: its criterion over 1000 bags at 50% prevalence (blue) and at the **low prevalence** you choose (red), with its misses marked. Right: miss and false-alarm rates, $d'$ and $c$ in the two conditions, next to the X-ray baggage results of Wolfe and colleagues (outlined bars, 50% and 2%). Turn on **ignores prevalence** to fix the criterion: the miss rates become equal. Switch to **you** and screen bags yourself: answer *Threat* or *Clear* for each bag (a knife is hidden in some, at the prevalence chosen under **your bags**), and your rates join the chart.`,
+      caption: String.raw`A simulated screener with fixed sensitivity $d'$ = 1.8 learns the target prevalence from feedback and moves its criterion part of the way towards the optimum. Middle: its criterion over 1000 bags at 50% prevalence (blue) and at the **low prevalence** you choose (red), with the rare targets it missed marked in orange. Right: miss and false-alarm rates, $d'$ and $c$ in the two conditions, next to the X-ray baggage results of Wolfe and colleagues (outlined bars, 50% and 2%). Turn on **ignores prevalence** to fix the criterion: the miss rates become equal. Switch to **you** and screen bags yourself: answer *Threat* or *Clear* for each bag (a knife is hidden in some, at the prevalence chosen under **your bags**), and your rates join the chart.`,
       deps: ['psych-2.12'],
       see: ['epi-2.3'],
       refs: ['Gescheider ch. 8'],
@@ -458,8 +458,8 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
         const bC = v.button('Clear', () => answer(false));
         const bRes = v.button('Reset', () => { after.clear(); phase = 'idle'; you = { hi: [], lo: [] }; last = null; });
         const bag = v.stage({ x: [0, 1.4], y: [0, 1], equal: true, axes: false, height: 270, weight: 0.85, minWidth: 220, title: 'X-ray screen' });
-        const tr = v.stage({ x: [0, TS], y: [-0.6, 2], height: 270, axes: 'box', weight: 1.15, xlabel: 'bag number', yticks: [-0.5, 0, 0.5, 1, 1.5], ylabel: 'criterion c', title: 'the screener’s criterion drifts with prevalence' });
-        const br = v.stage({ x: [0, 10.4], y: [0, 0.7], height: 230, axes: 'box', full: true, xticks: [[1.5, 'miss rate'], [3.9, 'false-alarm rate'], [6.6, 'miss rate'], [9, 'false-alarm rate']], yticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6], title: '50% prevalence (left) and low prevalence (right)' });
+        const tr = v.stage({ x: [0, TS], y: [-0.6, 2.6], height: 270, axes: 'box', weight: 1.15, xlabel: 'bag number', yticks: [-0.5, 0, 0.5, 1, 1.5], ylabel: 'criterion c', title: 'the screener’s criterion drifts with prevalence' });
+        const br = v.stage({ x: [0, 10.4], y: [-0.07, 0.72], height: 240, axes: 'box', full: true, xticks: [[1.5, 'miss rate'], [3.9, 'false-alarm rate'], [6.6, 'miss rate'], [9, 'false-alarm rate']], yticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6], title: '50% prevalence (left) and low prevalence (right)' });
         let phase = 'idle', you = { hi: [], lo: [] }, cur = null, tid = 0, last = null, cache = null, cKey = '';
         const lowP = () => parseFloat(lowS.value) / 100;
         /** One simulated screener run: prevalence p, T bags; criterion from the running estimate of prevalence. */
@@ -492,7 +492,9 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
             const rot = (pts) => pts.map(([u, q]) => [x + sc * (u * Math.cos(a) - q * Math.sin(a)), y + sc * (u * Math.sin(a) + q * Math.cos(a))]);
             bag.poly(rot([[0, -0.22], [1.25, -0.12], [1.55, 0.05], [0, 0.18]]), { fill: XR.met, fillAlpha: 0.62, stroke: false });
             bag.poly(rot([[-0.9, -0.17], [0, -0.17], [0, 0.17], [-0.9, 0.17]]), { fill: XR.org, fillAlpha: 0.55, stroke: false });
+            const c = rot([[0.3, 0]])[0]; return c;
           }
+          return null;
         };
         const Ry = v.rng(1414);
         const nextBag = () => { if (who.value !== 'you' || phase === 'wait') return; const p = yourP.value === 'hi' ? 0.5 : lowP(); cur = { k: Ry() < p, seed: 50 + tid * 37, p: yourP.value }; tid++; phase = 'wait'; };
@@ -510,15 +512,16 @@ A matcher using another template $t$ reaches only $d'_{\text{ideal}}\cos\theta$,
             if (phase === 'wait') drawBag(cur.seed, cur.k);
             else { bag.rect(-1, -1, 3, 3, { fill: XR.bg, fillAlpha: 1, stroke: false }); bag.text(last ? `last bag: ${last.s ? 'knife' : 'clear'}, you said ${last.r ? 'threat' : 'clear'} ${last.s === last.r ? '✓' : '✗'}` : 'press ▶ Next bag', 0.7, 0.5, { align: 'center', color: [60, 60, 60], halo: false, size: 13 }); }
             bag.text(phase === 'wait' ? 'Is there a knife in this bag?' : '', 0.7, 0.04, { align: 'center', color: [60, 60, 60], halo: false, size: 12 });
-          } else { drawBag(7, true); bag.text('a bag with a knife (look closely)', 0.7, 0.04, { align: 'center', color: [60, 60, 60], halo: false, size: 12 }); }
+          } else { const kc = drawBag(7, true); bag.circle(kc[0], kc[1], 0.13, { color: [200, 40, 60], width: 2, dash: [5, 4] }); bag.text('a bag with a knife (circled)', 0.7, 0.04, { align: 'center', color: [60, 60, 60], halo: false, size: 12 }); }
           // ---- criterion traces
           tr.hline(0, { color: 'faint', width: 1 });
           const cOpt = (pp) => Math.log((1 - pp) / pp) / D;
+          tr.setView(null, [-0.6, Math.max(2.2, cOpt(p) + 0.45)]);
           tr.hline(cOpt(p), { color: 'red', dash: [2, 4], width: 1.2, alpha: 0.7 });
-          tr.text(`optimal c at ${lowS.value}: ${v.fix(cOpt(p), 2)}`, TS - 10, Math.min(1.9, cOpt(p)), { dy: -9, align: 'right', color: 'red', size: 11 });
+          tr.text(`optimal c at ${lowS.value}: ${v.fix(cOpt(p), 2)}`, TS - 10, cOpt(p), { dy: -9, align: 'right', color: 'red', size: 11 });
           for (const [R0, col] of [[hi, 'blue'], [lo, 'red']]) {
             tr.path(M.range(TS / 4).map((i) => [4 * i, R0.cs[4 * i]]), { color: col, width: 2 });
-            for (const t of R0.miss) tr.dot(t, R0.cs[t], { r: 3.2, color: 'orange' });
+            if (R0 === lo) for (const t of R0.miss) tr.dot(t, R0.cs[t], { r: 3.6, color: 'orange' });
           }
           // ---- bars
           const yH = yourStats(you.hi), yL = yourStats(you.lo);

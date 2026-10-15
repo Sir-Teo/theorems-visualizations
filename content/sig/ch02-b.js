@@ -390,7 +390,12 @@ so the circuit is a linear, time-invariant, causal, BIBO-stable system with memo
           const R0 = run; if (!R0.y) return '';
           const { tau, T, y, dODE, err } = R0;
           let step = '';
-          if (inp.value === 'step' && 5e-3 + tau < TE) { const j = Math.round((5e-3 + tau) / hS), vt = y[j]; step = ` · after one time constant $v_C$ = ${v.fix(vt, 4)} V = ${v.fix((100 * vt) / V0, 2)}% of ${V0} V (theory $1-1/e$ = 63.21%)`; }
+          if (inp.value === 'step' && 5e-3 + tau < TE) {
+            // the solver sees the step between two samples, i.e. switched on half a step early: measure from there
+            let j0 = 0; while (j0 < T.length && R0.x[j0] < V0 / 2) j0++;
+            const ton = (T[j0 - 1] + T[j0]) / 2, u = (ton + tau) / hS, jj = Math.floor(u), vt = y[jj] + (u - jj) * (y[jj + 1] - y[jj]);
+            step = ` · one time constant after the switch-on $v_C$ = ${v.fix(vt, 4)} V = ${v.fix((100 * vt) / V0, 2)}% of ${V0} V (theory $1-1/e$ = 63.21%)`;
+          }
           else if (inp.value === 'step') step = ' · $\\tau$ is longer than the window: lower $R$ or $C$';
           const CH = {
             lin: `doubling the source doubles $v_C$: largest difference ${errTex(err) === '0' ? '0' : `$${errTex(err)}$`} V (**linear**)`,
@@ -434,7 +439,7 @@ Two basic cases. The **$M$-point moving average** $y[n]=\frac1M\big(x[n]+x[n-1]+
         for (let n = 0; n <= NN; n++) { const d = n === 0 ? 0 : 0.18 + 1.1 * normal(r); chg.push(d); p += d; price.push(p); }
         const sX = v.stage({ x: [NA - 0.8, NN + 0.8], y: [-3, 3], height: 165, axes: 'box', full: true, title: 'input $x[n]$' });
         const sY = v.stage({ x: [NA - 0.8, NN + 0.8], y: [-3, 3], height: 175, axes: 'box', xlabel: 'n', full: true, title: 'output $y[n]$' });
-        const sH = v.stage({ x: [-2.8, HN + 0.8], y: [-1.3, 1.3], height: 205, axes: 'box', xlabel: 'n', weight: 1, title: 'impulse response $h[n]$' });
+        const sH = v.stage({ x: [-3.6, HN + 0.8], y: [-1.3, 1.3], height: 205, axes: 'box', xlabel: 'n', weight: 1, title: 'impulse response $h[n]$' });
         const sD = v.stage({ x: [0, 16], y: [0, 6], equal: true, height: 205, axes: false, weight: 1.5, title: 'the equation as a diagram' });
         const runEq = (x) => {
           const k = eqS.value, Mv = MS.value, al = aS.value, y = new Array(x.length).fill(0);
@@ -470,7 +475,7 @@ Two basic cases. The **$M$-point moving average** $y[n]=\frac1M\big(x[n]+x[n-1]+
           stems(sY, P.filter(([m]) => m <= n), { color: 'purple' });
           sY.dot(n, y[n], { r: 8, hollow: true, color: 'gold', width: 2.2 });
           // ---- impulse response
-          const hv = Array.from({ length: HN + 3 }, (_, j) => [j - 2, j - 2 < 0 ? 0 : hh[j - 2]]), hm = Math.max(1, ...hv.map((q) => Math.abs(q[1])));
+          const hv = Array.from({ length: HN + 3 }, (_, j) => [j - 2, j - 2 < 0 ? 0 : hh[j - 2]]), hm = Math.max(0.2, ...hv.map((q) => (isFinite(q[1]) ? Math.abs(q[1]) : 0)));
           sH.setView(null, [-0.35 * hm - (k === 'diff' ? 0.9 : 0), 1.3 * hm]);
           sH.hline(0, { color: 'faint', width: 1 });
           stems(sH, hv, { color: 'teal' });
@@ -521,10 +526,11 @@ Two basic cases. The **$M$-point moving average** $y[n]=\frac1M\big(x[n]+x[n-1]+
           if (!info) return '';
           const { k, Mv, al, n, x, y, cerr, sumAbs } = info, f = (u) => v.fix(u, 2);
           let eq;
-          if (k === 'ma') { const terms = Array.from({ length: Math.min(Mv, 4) }, (_, j) => f(n - j >= 0 ? x[n - j] : 0)); eq = `$y[${n}]=\\frac1{${Mv}}$(${terms.join(' + ')}${Mv > 4 ? ' + …' : ''}) = ${f(y[n])}`; }
-          else if (k === 'acc') eq = `$y[${n}]=y[${n - 1}]+x[${n}]$ = ${f(n ? y[n - 1] : 0)} + ${f(x[n])} = ${f(y[n])}`;
-          else if (k === 'leaky') eq = `$y[${n}]=\\alpha\\,y[${n - 1}]+x[${n}]$ = ${v.fix(al, 2)}·${f(n ? y[n - 1] : 0)} + ${f(x[n])} = ${f(y[n])}`;
-          else eq = `$y[${n}]=x[${n}]-x[${n - 1}]$ = ${f(x[n])} − ${f(n ? x[n - 1] : 0)} = ${f(y[n])}`;
+          if (k === 'ma') { const terms = Array.from({ length: Math.min(Mv, 4) }, (_, j) => (n - j >= 0 ? x[n - j] : 0)).map((u, j) => (j === 0 ? f(u) : u < 0 ? `− ${f(-u)}` : `+ ${f(u)}`)); eq = `$y[${n}]=\\frac1{${Mv}}$(${terms.join(' ')}${Mv > 4 ? ' + …' : ''}) = ${f(y[n])}`; }
+          const pm = (u) => (u < 0 ? `− ${f(-u)}` : `+ ${f(u)}`), par = (u) => (u < 0 ? `(${f(u)})` : f(u));
+          if (k === 'acc') eq = `$y[${n}]=y[${n - 1}]+x[${n}]$ = ${f(n ? y[n - 1] : 0)} ${pm(x[n])} = ${f(y[n])}`;
+          else if (k === 'leaky') eq = `$y[${n}]=\\alpha\\,y[${n - 1}]+x[${n}]$ = ${v.fix(al, 2)}·${par(n ? y[n - 1] : 0)} ${pm(x[n])} = ${f(y[n])}`;
+          else if (k === 'diff') eq = `$y[${n}]=x[${n}]-x[${n - 1}]$ = ${f(x[n])} ${pm(-(n ? x[n - 1] : 0))} = ${f(y[n])}`;
           const fir = k === 'ma' ? `**FIR**: $h$ has ${Mv} nonzero samples, $\\sum|h|=1$, stable` : k === 'diff' ? '**FIR**: $h=\\delta[n]-\\delta[n-1]$, $\\sum|h|=2$, stable' : k === 'acc' ? '**IIR**: $h[n]=u[n]$ never ends and $\\sum|h|=\\infty$: unstable (a step makes $y$ grow like $n+1$)' : al < 1 ? `**IIR**: $h[n]=\\alpha^n$ decays, $\\sum|h|=1/(1-\\alpha)$ = ${v.fix(sumAbs, 2)}: stable` : `**IIR** with $\\alpha\\ge1$: $h[n]=\\alpha^n$ does not decay, unstable`;
           let extra = '';
           if (inS.value === 'chg' && k === 'acc') extra = ` · summing the daily changes rebuilds the price: $\\max_n|y[n]-\\text{price}[n]|$ = ${num(Math.max(...y.map((u, j) => Math.abs(u - price[j]))))}`;
@@ -588,9 +594,9 @@ Unless $y_0=0$ this system is not linear: zero input gives a nonzero output, and
           const ms = cur.x, j = Math.min(T.length - 1, Math.round(ms / 1e3 / hS));
           cur.y = sP.bounds.y[0] + 0.07 * (sP.bounds.y[1] - sP.bounds.y[0]);
           C.draw({ result: trT.at(ms / 1e3), dots: false, vmax: 6 });
-          sC.text(`v_C(0) = ${v.fix(R0.y0, 1)} V`, 4, 1.5, { dx: 16, size: 12, color: 'teal', weight: 600, align: 'left' });
-          sC.text(`t = ${v.fix(ms, 1)} ms`, 2, -0.8, { size: 12.5, color: 'gold', weight: 600, align: 'center' });
-          sC.text(`τ = RC = ${M.si(R0.tau, 's')}`, 2, -1.25, { size: 12, color: 'muted', align: 'center' });
+          sC.tex(`v_C(0)=${v.fix(R0.y0, 1)}\\,\\text{V}`, 5.2, -0.8, { size: 14, color: 'teal' });
+          sC.text(`t = ${v.fix(ms, 1)} ms`, 1.3, -0.8, { size: 12.5, color: 'gold', weight: 600, align: 'center' });
+          sC.text(`τ = RC = ${M.si(R0.tau, 's')}`, 1.3, -1.25, { size: 12, color: 'muted', align: 'center' });
           // ---- decomposition: stacked bands and curves
           sP.hline(0, { color: 'faint', width: 1 });
           const band = (lo, hi, col) => { const top = [], bot = []; for (let k = 0; k < T.length; k += 4) { top.push([T[k] * 1e3, hi(k)]); bot.push([T[k] * 1e3, lo(k)]); } sP.path(top.concat(bot.reverse()), { fill: col, fillAlpha: 0.18, stroke: false, close: true }); };
@@ -613,12 +619,12 @@ Unless $y_0=0$ this system is not linear: zero input gives a nonzero output, and
           sL.path(series(T, mm, 1e3, 2), { color: 'red', width: 2.2 });
           sL.path(Array.from({ length: Math.floor(T.length / 10) }, (_, q) => [T[q * 10] * 1e3, (1 - a) * zi[q * 10]]), { color: 'ink', width: 1.6, dash: [2, 4] });
         });
-        v.legend([['accent', 'source $v_{in}$'], ['purple', 'total $v_C$'], ['teal', 'zero-input (charge only)'], ['orange', 'zero-state (from rest)'], ['green', '$S\\{ax\\}$ / sum of the parts', { dash: true }], ['red', 'mismatch $S\\{ax\\}-aS\\{x\\}$'], ['ink', '$(1-a)\\times$ zero-input', { dash: true }]]);
+        v.legend([['accent', 'source $v_{in}$'], ['purple', 'total $v_C$'], ['teal', 'zero-input (charge only)'], ['orange', 'zero-state (from rest)'], ['green', 'zero-input + zero-state (top)', { dash: true }], ['green', '$S\\{ax\\}$ (bottom)'], ['orange', '$aS\\{x\\}$ (bottom)', { dash: true }], ['red', 'mismatch $S\\{ax\\}-aS\\{x\\}$'], ['ink', '$(1-a)\\times$ zero-input', { dash: true }]]);
         v.readout(() => {
           const R0 = run; if (!R0.T) return '';
           const { y0, a, dec, lin, pred, tau } = R0;
-          const lt = lin < 1e-9 ? `$S\\{ax\\}$ and $aS\\{x\\}$ agree to $${errTex(lin < 1e-12 ? 0 : lin)}$ V: with no stored charge the circuit is linear` : `$S\\{ax\\}$ and $aS\\{x\\}$ differ by up to ${num(lin)} V, so $x\\mapsto v_C$ is **not linear**; the mismatch equals $(1-a)\\,y_{zi}$ to $${errTex(pred < 1e-13 ? 0 : pred)}$ V`;
-          return `$v_C(0)$ = ${v.fix(y0, 1)} V, $\\tau$ = ${M.si(tau, 's')}: zero-input response $${v.fix(y0, 1)}\\,e^{-t/\\tau}$, zero-state response from rest · the three simulations satisfy total = zero-input + zero-state to $${errTex(dec < 1e-13 ? 0 : dec)}$ V · with $a$ = ${v.fix(a, 2)}: ${lt}`;
+          const lt = lin < 1e-9 ? `$S\\{ax\\}$ and $aS\\{x\\}$ agree to $${errTex(lin < 1e-12 ? 0 : lin)}$ V: with no stored charge the circuit is linear` : `$S\\{ax\\}$ and $aS\\{x\\}$ differ by up to ${num(lin)} V, so $x\\mapsto v_C$ is **not linear**; the mismatch equals $(1-a)\\,y_{zi}$ (largest difference $${errTex(pred < 1e-13 ? 0 : pred)}$ V)`;
+          return `$v_C(0)$ = ${v.fix(y0, 1)} V, $\\tau$ = ${M.si(tau, 's')}: zero-input response $${v.fix(y0, 1)}\\,e^{-t/\\tau}$, zero-state response from rest · the three simulations satisfy total = zero-input + zero-state (largest difference $${errTex(dec < 1e-13 ? 0 : dec)}$ V) · with $a$ = ${v.fix(a, 2)}: ${lt}`;
         });
       },
     },

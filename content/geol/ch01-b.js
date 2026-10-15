@@ -316,15 +316,15 @@ The time an unconformity represents is at least the thickness removed divided by
             if (M.fall && k === Math.round(M.fall * (W_NT - 1)) + 1) for (let i = 0; i < W_NX; i++) { if (i + 0.5 > sk) continue; let rem = 4; const c = cols[i]; while (rem > 0 && c.length) { const top = c[c.length - 1]; if (top.h <= rem) { rem -= top.h; c.pop(); } else { top.h -= rem; rem = 0; } } c.cut = true; }
             for (let i = 0; i < W_NX; i++) { const f = faciesAt(i + 0.5 - sk); if (f < 0) continue; const c = cols[i]; c.push({ f, t: k, h: 1, eroded: !!c.cut }); c.cut = false; }
           }
-          // draw columns, merging runs of one facies
-          let hmax = 0;
+          // draw columns, merging runs of one facies (solid colours: no seams between columns)
+          let hmax = 0; const fc = WF.map((F) => v.mix(LITH[F.lith].color, 'panel', 0.5));
           for (let i = 0; i < W_NX; i++) {
             let y = 0, run = null;
             for (const sgm of cols[i]) {
-              if (run && run.f === sgm.f && !sgm.eroded) run.h += sgm.h; else { if (run) S.rect(i, run.y, i + 1.02, run.y + run.h, { fill: LITH[WF[run.f].lith].color, fillAlpha: 0.5, stroke: false }); run = { f: sgm.f, y, h: sgm.h }; }
+              if (run && run.f === sgm.f && !sgm.eroded) run.h += sgm.h; else { if (run) S.rect(i, run.y, i + 1.02, run.y + run.h, { fill: fc[run.f], fillAlpha: 1, stroke: false }); run = { f: sgm.f, y, h: sgm.h }; }
               y += sgm.h;
             }
-            if (run) S.rect(i, run.y, i + 1.02, run.y + run.h, { fill: LITH[WF[run.f].lith].color, fillAlpha: 0.5, stroke: false });
+            if (run) S.rect(i, run.y, i + 1.02, run.y + run.h, { fill: fc[run.f], fillAlpha: 1, stroke: false });
             cols[i].top = y; hmax = Math.max(hmax, y);
           }
           // time lines every 10 steps, erosion surfaces
@@ -346,13 +346,13 @@ The time an unconformity represents is at least the thickness removed divided by
           // core vs lateral
           const runs = []; let y = 0;
           for (const sgm of cols[wi]) { const last = runs[runs.length - 1]; if (last && last.f === sgm.f && !sgm.eroded) last.h += sgm.h; else runs.push({ f: sgm.f, h: sgm.h, y, cut: sgm.eroded }); y += sgm.h; }
-          const tot = Math.max(y, 1), hcol = 8.2;
+          const tot = Math.max(y, 1), hcol = 7.6;
           R.text('core at the well', 2.2, 9.6, { align: 'center', size: 12, weight: 700 }); R.text('(bottom → top)', 2.2, 9.1, { align: 'center', size: 10.5, color: 'muted' });
-          for (const r of runs) { const y0 = 0.6 + (r.y / tot) * hcol, y1 = 0.6 + ((r.y + r.h) / tot) * hcol; lithPoly(v, R, [[1.2, y0], [3.2, y0], [3.2, y1], [1.2, y1]], WF[r.f].lith, { fillAlpha: 0.5, outline: 'muted', width: 0.8, inkAlpha: 0.6 }); if (r.cut) R.line(0.9, y0, 3.5, y0, { color: 'red', width: 2.6 }); }
+          for (const r of runs) { const y0 = 1.1 + (r.y / tot) * hcol, y1 = 1.1 + ((r.y + r.h) / tot) * hcol; lithPoly(v, R, [[1.2, y0], [3.2, y0], [3.2, y1], [1.2, y1]], WF[r.f].lith, { fillAlpha: 0.5, outline: 'muted', width: 0.8, inkAlpha: 0.6 }); if (r.cut) R.line(0.9, y0, 3.5, y0, { color: 'red', width: 2.6 }); }
           if (!runs.length) R.text('no sediment yet', 2.2, 4, { align: 'center', size: 11, color: 'muted' });
           R.text('belts seaward', 7.3, 9.6, { align: 'center', size: 12, weight: 700 }); R.text('from the shore, today', 7.3, 9.1, { align: 'center', size: 10.5, color: 'muted' });
-          WF.forEach((F, f) => { const y0 = 0.6 + (f * hcol) / 3, y1 = y0 + hcol / 3 - 0.25; lithPoly(v, R, [[6.3, y0], [8.3, y0], [8.3, y1], [6.3, y1]], F.lith, { fillAlpha: 0.5, outline: 'muted', width: 0.8, inkAlpha: 0.6 }); R.text(F.name, 7.3, (y0 + y1) / 2, { align: 'center', size: 11, weight: 700 }); });
-          R.arrow(5.4, 0.8, 5.4, 8.6, { color: 'muted', width: 1.3, head: 7 });
+          WF.forEach((F, f) => { const y0 = 1.1 + (f * hcol) / 3, y1 = y0 + hcol / 3 - 0.25; lithPoly(v, R, [[6.3, y0], [8.3, y0], [8.3, y1], [6.3, y1]], F.lith, { fillAlpha: 0.5, outline: 'muted', width: 0.8, inkAlpha: 0.6 }); R.text(F.name, 7.3, (y0 + y1) / 2, { align: 'center', size: 11, weight: 700 }); });
+          R.arrow(5.4, 1.2, 5.4, 8.6, { color: 'muted', width: 1.3, head: 7 });
           // Walther check
           const seq = runs.map((r) => r.f); let bad = null;
           for (let k = 1; k < runs.length; k++) if (Math.abs(runs[k].f - runs[k - 1].f) > 1) { bad = { a: runs[k - 1].f, b: runs[k].f, cut: runs[k].cut }; break; }
@@ -577,7 +577,7 @@ so the measured surface gradient $G$ fixes the age $t = T_0^2/(\pi\kappa G^2)$. 
           if (k >= 3 && (k > 3 || tw > 0.05)) uncLine(S, E, kE1, { res: 170 });
           if (k >= 4) S.text('North Sea', 0.3, 1.75, { size: 12, color: 'blue', weight: 600 });
           S.corner(`${k + 1}/6`, 'tr', { size: 12, weight: 700, color: 'muted' });
-          S.line(11.6, 3.6, 11.6, 5.6, { color: 'ink', width: 2 }); S.line(11.45, 3.6, 11.75, 3.6, { color: 'ink', width: 2 }); S.line(11.45, 5.6, 11.75, 5.6, { color: 'ink', width: 2 }); S.text('500 m', 11.4, 4.6, { size: 11.5, weight: 700, align: 'right' });
+          S.line(0.4, 3.4, 0.4, 5.4, { color: 'ink', width: 2 }); S.line(0.25, 3.4, 0.55, 3.4, { color: 'ink', width: 2 }); S.line(0.25, 5.4, 0.55, 5.4, { color: 'ink', width: 2 }); S.text('500 m', 0.65, 4.4, { size: 11.5, weight: 700 });
           // the clock
           const d = dur(), labels = ['grey beds laid down', 'folding', 'erosion to a plain', 'red beds laid down', 'tilt, uplift, erosion'];
           const total = d.reduce((a, b) => a + b, 0), gap = d[1] + d[2];

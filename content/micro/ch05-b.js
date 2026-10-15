@@ -495,8 +495,9 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           if (Math.abs(r.ui - r.uq) > 1e-6) drawLevel(s, F, r.ui, { color: 'purple', width: 2.6 });
           if (r.R > 0.02) { s.line(r.q[0], r.q[1], r.q[0], r.q[1] + r.R / p2, { color: 'gold', width: 5, alpha: 0.85 }); s.text('R', r.q[0], r.q[1] + r.R / (2 * p2), { dx: 8, color: 'gold', ...LBL, align: 'left' }); }
           s.dot(x0[0], x0[1], { r: 5, hollow: true, color: 'muted', width: 2, label: 'no tax', labelPos: 'ne', labelColor: 'muted', math: false });
-          s.dot(r.q[0], r.q[1], { r: 6.5, color: 'red', label: 'q', labelPos: 'sw' });
-          s.dot(r.i[0], r.i[1], { r: 6.5, color: 'green', label: 'i', labelPos: r.i[0] > r.q[0] ? 'ne' : 'nw' });
+          const same = Math.hypot(r.i[0] - r.q[0], r.i[1] - r.q[1]) < 0.05;
+          s.dot(r.q[0], r.q[1], { r: 6.5, color: 'red', label: same ? null : 'q', labelPos: 'sw' });
+          s.dot(r.i[0], r.i[1], { r: 6.5, color: 'green', label: same ? 'q = i' : 'i', labelPos: same ? 'se' : r.i[0] > r.q[0] ? 'ne' : 'nw', math: !same });
           // bars: what each tax costs the consumer in money (at the original prices), against the revenue it raises
           const costQ = m - r.eq, costI = r.R, top = Math.max(costQ, 0.5) * 1.3;
           b.setView([0, 1], [-0.1 * top, top]);
@@ -517,7 +518,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           c.path(cv.map((z) => [z[0], z[2]]), { color: 'red', width: 2.6 });
           c.between((x) => { const j = Math.min(59, Math.floor(x * 30)), w = x * 30 - j; return cv[j][2] * (1 - w) + cv[j + 1][2] * w; }, () => 0, 0, T, { fill: 'red', fillAlpha: 0.12 });
           c.vline(T, GUIDE); c.dot(T, r.R, { r: 5.5, color: 'gold' }); c.dot(T, r.EB, { r: 5.5, color: 'red' });
-          c.text('revenue R', 1.98, cv[60][1], { dy: -10, color: 'gold', ...LBL, align: 'right' }); c.text('excess burden', 1.98, cv[60][2], { dy: -10, color: 'red', ...LBL, align: 'right' });
+          c.text('revenue R', 1.5, cv[45][1], { dy: -11, color: 'gold', ...LBL, align: 'center' }); c.text('excess burden', 1.5, cv[45][2], { dy: -11, color: 'red', ...LBL, align: 'center' });
           st = { k, T, r, x0 };
         });
         v.readout(() => {
