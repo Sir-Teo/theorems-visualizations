@@ -478,8 +478,12 @@ reach for, and three exemplary items. Highlights:
 
 ### 7.2 The production line (per collection)
 
-1. **Syllabus** (Phase 2): inventory of `num, kind, name, deps, refs`, reviewed first. This is
-   where structural correctness lives.
+1. **Syllabus** (Phase 2): inventory of `num, kind, name, deps, refs, pic`, reviewed first. This
+   is where structural correctness lives, so it is **researched, not recalled**: tables of
+   contents of the references, two or three university course syllabi, lists of named results,
+   and encyclopedia entries are compared; facts and refs are verified; the sources are recorded
+   in the file (docs/syllabus.md, "Research first"). A separate research audit per field checks
+   coverage against those sources before chapters are written.
 2. **Brief**: `collection.js`, chapter summaries, notation, shared helpers, the kits needed, and
    a *variety plan* so neighbouring items don't look alike.
 3. **Authoring**: parallel agents, one part file (8–12 items) each, following AUTHORING and the
