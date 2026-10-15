@@ -548,7 +548,7 @@ Special cases of notation: $\int f(x)\,dx$ for Lebesgue measure, $\int f(x)\,dG(
           R.rect(7.9 - 0.32, 0, 7.9 + 0.32, hp - hm, { fill: 'gold', fillAlpha: 0.6, stroke: false });
           R.line(4.6, levels[4], 8.25, levels[4], { color: 'gold', width: 1.6, dash: [5, 3] });
           st = { lhs: hp - hm, rhs: levels[4], abs: hp + hm, a, b, If: integ(f), Ig: integ(g) };
-          v.legend([['ink', '$h=af+bg$'], ['accent', '$af$', { dash: true }], ['orange', '$bg$', { dash: true }], ['green', 'positive parts', { area: true }], ['red', 'negative parts', { area: true }], ['gold', 'totals', { area: true }]]);
+          v.legend([['ink', '$h=af+bg$'], ['accent', '$af$', cnt ? { dot: true } : { dash: true }], ['orange', '$bg$', cnt ? { dot: true } : { dash: true }], ['green', 'positive parts', { area: true }], ['red', 'negative parts', { area: true }], ['gold', 'totals', { area: true }]]);
         });
         v.readout(() => st && `$\\int h = ${v.fix(st.lhs, 4)}$, $\\ a\\int f+b\\int g = ${fmtTerm(v, st.a, st.If[0] - st.If[1]).replace(/\\cdot\s*(\S+)$/, '\\cdot($1)')} + ${fmtTerm(v, st.b, st.Ig[0] - st.Ig[1]).replace(/\\cdot\s*(\S+)$/, '\\cdot($1)')} = ${v.fix(st.rhs, 4)}$. (vi): $|\\int h| = ${v.fix(Math.abs(st.lhs), 3)} \\le \\int|h| = ${v.fix(st.abs, 3)}$.`);
       },

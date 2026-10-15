@@ -270,10 +270,11 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             for (let m = 0; m < N2; m++) {
               const [x, y] = pos[m], lab = m ? [...Array(n)].map((_, j) => ((m >> j) & 1 ? L[j] : '')).join('') : '∅';
               const h = hit.get(m);
-              s.dot(x, y, { r: rpx, color: h ? 'blue' : 'faint', fill: h ? 'blue' : 'panel' });
+              if (m === Dmask) s.dot(x, y, { r: rpx + 4.5, hollow: true, width: 2.8, color: 'red' });
+              s.dot(x, y, { r: rpx, color: h ? 'blue' : 'faint', hollow: !h, width: 1.2 });
               s.text(lab, x, y, { align: 'center', size: lab.length > 3 ? 8.5 : 10, weight: 600, color: h ? 'panel' : 'muted', halo: false });
               if (h) s.text(h.map((c) => `f(${c})`).join(','), x, y + pxY(s, rpx + 8), { align: 'center', size: 9.5, color: 'blue', weight: 600 });
-              if (m === Dmask) { s.circle(x, y, pxX(s, rpx + 4), { color: 'red', width: 2.6 }); s.text('D', x + pxX(s, rpx + 6), y - pxY(s, rpx + 2), { size: 12, weight: 700, color: 'red' }); }
+              if (m === Dmask) s.text('D', x + pxX(s, rpx + 7), y - pxY(s, rpx + 3), { size: 12.5, weight: 700, color: 'red' });
               G.nodes.push({ x, y, mask: m, rpx });
             }
             s.text(`𝒫(X): ${N2} subsets`, (lx0 + lx1) / 2, 58.2, { align: 'center', size: 11.5, color: 'muted', weight: 600 });
@@ -395,8 +396,8 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             });
             for (let n = P.lo; n <= P.hi; n++) for (const [side, y] of [['A', yA], ['B', yB]]) {
               const c = ch[side + n], col = TYPE[c.type][0], stop = c.id === side + n && (c.type === 'A' || c.type === 'B');
-              top.dot(n, y, { r: stop ? 8 : 6.5, color: col, alpha: dimmed(c) ? 0.45 : 1 });
-              if (stop) top.circle(n, y, pxX(top, 11), { color: col, width: 1.6 });
+              if (stop) top.dot(n, y, { r: 11.5, hollow: true, width: 1.8, color: col, alpha: dimmed(c) ? 0.45 : 1 });
+              top.dot(n, y, { r: stop ? 7.5 : 6.5, color: col, alpha: dimmed(c) ? 0.45 : 1 });
               top.text(`${side === 'A' ? 'a' : 'b'}${sub(Math.abs(n))}`.replace(/^([ab])/, n < 0 ? '$1₋' : '$1'), n, y + (side === 'A' ? 0.3 : -0.3), { align: 'center', size: 10, color: dimmed(c) ? 'faint' : 'ink' });
             }
             top.text('…', P.hi + 0.6, 0.6, { align: 'center', size: 15, color: 'muted' });
@@ -451,7 +452,7 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
             }
             for (const [sd, vv] of chain) top.dot(vv, Y(sd), { r: 4.5, color: col });
             const [s0, v0] = chain[0];
-            if (type !== 'C') { top.circle(v0, Y(s0), pxX(top, 9), { color: col, width: 2 }); top.text(`chain starts here (${s0 === 'A' ? 'in A, not in g(B)' : 'in B, not in f(A)'})`, Math.min(v0, 0.72), Y(s0) + (s0 === 'A' ? 0.5 : -0.52), { size: 10.5, color: col, weight: 600, align: 'left' }); }
+            if (type !== 'C') { top.dot(v0, Y(s0), { r: 9, hollow: true, width: 2, color: col }); top.dot(v0, Y(s0), { r: 4.5, color: col }); top.text(`chain starts here (${s0 === 'A' ? 'in A, not in g(B)' : 'in B, not in f(A)'})`, Math.min(v0, 0.72), Y(s0) + (s0 === 'A' ? 0.5 : -0.52), { size: 10.5, color: col, weight: 600, align: 'left' }); }
             // bottom: the graph of h
             bot.line(0, 0, 1, 0, { color: 'faint' }); bot.line(0, 0, 0, 1, { color: 'faint' });
             for (const t of [0, 0.5, 1]) { bot.text(String(t), t, -0.07, { align: 'center', size: 10, color: 'muted' }); bot.text(String(t), -0.035, t, { align: 'right', size: 10, color: 'muted' }); }
@@ -526,10 +527,10 @@ is not a value of $f$, so $f$ is not onto. Since $x\mapsto\{x\}$ is one-to-one, 
           if (md === 'pn') {
             // chips for S, and for b(x)
             sq.text('S ⊆ ℕ  (click):', 0, 0.98, { size: 12, weight: 600, color: 'ink' });
-            for (let n = 0; n < 12; n++) { const [cx, cy] = chip(n), on = S.has(n); sq.dot(cx, cy, { r: 14, color: 'blue', fill: on ? 'blue' : 'panel' }); sq.text(String(n), cx, cy, { align: 'center', size: 11.5, weight: 600, color: on ? 'panel' : 'blue', halo: false }); }
+            for (let n = 0; n < 12; n++) { const [cx, cy] = chip(n), on = S.has(n); sq.dot(cx, cy, { r: 14, color: 'blue', hollow: !on }); sq.text(String(n), cx, cy, { align: 'center', size: 11.5, weight: 600, color: on ? 'panel' : 'blue', halo: false }); }
             const xb = Bx.x, bits = []; let t = xb; for (let k = 0; k < 12; k++) { t *= 2; const b = Math.floor(t + 1e-12); bits.push(b); t -= b; }
             sq.text('b(x) = {n : binary digit n+1 of x is 1}:', 0, 0.38, { size: 11, weight: 600, color: 'teal' });
-            for (let n = 0; n < 12; n++) { const [cx] = chip(n), cy = 0.25 - Math.floor(n / 4) * 0.105; sq.dot(cx, cy, { r: 9.5, color: 'teal', fill: bits[n] ? 'teal' : 'panel' }); sq.text(String(n), cx, cy, { align: 'center', size: 9.5, weight: 600, color: bits[n] ? 'panel' : 'teal', halo: false }); }
+            for (let n = 0; n < 12; n++) { const [cx] = chip(n), cy = 0.25 - Math.floor(n / 4) * 0.105; sq.dot(cx, cy, { r: 9.5, color: 'teal', hollow: !bits[n] }); sq.text(String(n), cx, cy, { align: 'center', size: 9.5, weight: 600, color: bits[n] ? 'panel' : 'teal', halo: false }); }
             // Cantor set + c(S)
             const yC = 4.5;
             ln.text('c(S) = Σₙ∈S 2·3⁻ⁿ⁻¹ lands in the Cantor set', 0, 6.0, { size: 12, weight: 600, color: 'blue' });

@@ -402,10 +402,10 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           if (drag.k === 'A') posA = Math.max(Y0 + lenA - 1 - 40, Math.min(Y1 + 40, p)); else posB = Math.max(Y0 + 10, Math.min(Y1 + 40, p));
           if (phase === 'end') drag = null;
         });
-        v.button('cross-date (best placements)', () => {
+        const btnFit = v.button('cross-date (best placements)', () => {
           for (const k of ['A', 'B']) { const sc = scan(k).filter((q) => q[1] != null); const best = sc.reduce((b, q) => (q[1] > b[1] ? q : b)); if (k === 'A') posA = best[0]; else posB = best[0]; }
         });
-        v.button('scramble', () => { posA = 1735; posB = 1846; });
+        const btnScr = v.button('scramble', () => { posA = 1735; posB = 1846; });
         function drawSeries(s, d, y0, row, color, label) {
           const h = 0.6;
           s.rect(y0 - 0.5, row - 0.04, y0 + d.length - 0.5, row + h + 0.04, { fill: color, fillAlpha: 0.07, color, alpha: 0.5, width: 1, radius: 3 });
@@ -425,7 +425,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
           const tree = mode.value === 'tree';
           T1.el.hidden = T2.el.hidden = !tree; lenB.el.hidden = !tree;
           I1.el.hidden = I2.el.hidden = tree;
-          for (const b of v._buttons || []) b.hidden = !tree;
+          btnFit.hidden = btnScr.hidden = !tree;
         }
         v.render(() => {
           if (mode.value === 'tree') {
@@ -457,7 +457,7 @@ Errors accumulate with depth: a missed or doubled layer shifts every older date.
             }
             I1.rect(0.28, -3189.4, 0.72, 0, { color: 'muted', width: 1 });
             for (const z of [0, 1000, 2000, 3000]) { I1.line(0.2, -z, 0.28, -z, { color: 'muted', width: 1 }); I1.text(`${z} m`, 0.18, -z, { align: 'right', size: 10.5, color: 'muted' }); }
-            I1.line(0.22, -hz.y * -1, 0.78, hz.y, { color: 'red', width: 1.5 });
+            I1.line(0.22, hz.y, 0.78, hz.y, { color: 'red', width: 1.5 });
             // records
             const xs = CO2.map((_, k) => -(2 * k + 1));
             for (const c of [180, 220, 260, 300, 340, 380, 420]) { I2.line(-800, yCO2(c), 0, yCO2(c), { color: 'grid', width: 1 }); I2.text(`${c}`, -803, yCO2(c), { align: 'right', size: 10, color: 'muted', halo: false }); }
@@ -623,7 +623,6 @@ He proposes it as a single, physical measure of complexity. His estimates rise b
           for (const p of P) {
             const x = -Math.log10(p[1]), col = CAT[p[3]][0], on = p[0] === sel;
             s.dot(x, p[2], { r: on ? 6.5 : 4.8, color: col });
-            if (on) s.circle(x, p[2], 0, {});
             boxes.push({ p, x, col, on });
           }
           // labels: alternate sides to reduce collisions
