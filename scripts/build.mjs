@@ -5,11 +5,16 @@
 //   node scripts/build.mjs [--strict] [--verbose]
 import { writeFile, mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
-import { loadAll, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
+import { loadAll, loadBridges, validate, printProblems, cmpNum, ROOT } from './lib.mjs';
 
 const strict = process.argv.includes('--strict');
 const { fields, collections, chapters, items, planned, problems } = await loadAll();
-const P = [...problems, ...validate(items, planned, collections)];
+const { bridges, problems: bridgeProblems } = await loadBridges();
+const P = [...problems, ...bridgeProblems, ...validate(items, planned, collections)];
+{
+  const known = new Set([...items, ...planned].map((it) => it.id));
+  for (const B of bridges) for (const st of B.steps) if (!known.has(st.id)) P.push({ level: 'warn', where: B.file, msg: `step ${st.id} is not an item or planned item` });
+}
 const st = printProblems(P, { quiet: !process.argv.includes('--verbose') });
 console.log(`${items.length} items (+${planned.length} planned) in ${[...chapters.values()].filter((c) => !c.planned).length} chapters, ${collections.length} collections — ${st.errors} error(s), ${st.warnings} warning(s)`);
 if (st.errors && strict) process.exit(1);
@@ -240,6 +245,7 @@ const index = {
   })),
   planned: ghosts.map((it) => ({ id: it.id, col: it.col, c: it.chapter, num: it.num, kind: it.kind, name: it.name, deps: it.deps, x: Math.round(pos.get(it.id)?.x ?? 0), y: Math.round(pos.get(it.id)?.y ?? 0) })),
   map: { rows: rowsOut.map(({ bands, ...r }) => r), fields: fieldBoxes },
+  bridges: bridges.map((B) => ({ slug: B.slug, title: B.title, blurb: B.blurb, steps: B.steps.filter((st) => byId.has(st.id) || plannedById.has(st.id)) })),
   chapterEdges: edgeList(chEdges),
   collectionEdges: edgeList(colEdges),
 };

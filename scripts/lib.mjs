@@ -39,7 +39,7 @@ export async function loadRegistry({ bust = false } = {}) {
   const fields = (await imp(join(ROOT, 'content/fields.js'), bust)).default;
   const fieldIds = new Set(fields.map((f) => f.id));
   const collections = [];
-  const dirs = (await readdir(join(ROOT, 'content'), { withFileTypes: true })).filter((d) => d.isDirectory()).map((d) => d.name).sort();
+  const dirs = (await readdir(join(ROOT, 'content'), { withFileTypes: true })).filter((d) => d.isDirectory() && d.name !== 'bridges').map((d) => d.name).sort();
   for (const d of dirs) {
     const f = join(ROOT, 'content', d, 'collection.js');
     if (!existsSync(f)) { problems.push({ level: 'warn', where: `content/${d}`, msg: 'folder has no collection.js (ignored)' }); continue; }
@@ -58,6 +58,20 @@ export async function loadRegistry({ bust = false } = {}) {
   const aOrder = (C) => fields.find((F) => F.id === C.field)?.areas.findIndex((A) => A.id === C.area) ?? 99;
   collections.sort((a, b) => (fOrder.get(a.field) ?? 99) - (fOrder.get(b.field) ?? 99) || aOrder(a) - aOrder(b) || (a.order ?? 999) - (b.order ?? 999) || a.id.localeCompare(b.id));
   return { fields, collections, problems };
+}
+
+/** Load content/bridges/*.js: curated walks through items across collections. */
+export async function loadBridges({ bust = false } = {}) {
+  const dir = join(ROOT, 'content/bridges'); const out = [], problems = [];
+  let files = []; try { files = (await readdir(dir)).filter((f) => f.endsWith('.js')).sort(); } catch { return { bridges: out, problems }; }
+  for (const f of files) {
+    try {
+      const B = (await imp(join(dir, f), bust)).default;
+      if (!B?.slug || !B.title || !Array.isArray(B.steps)) problems.push({ level: 'error', where: `content/bridges/${f}`, msg: 'needs slug, title and steps' });
+      else out.push({ ...B, file: `content/bridges/${f}` });
+    } catch (e) { problems.push({ level: 'error', where: `content/bridges/${f}`, msg: `cannot import: ${e.message}` }); }
+  }
+  return { bridges: out, problems };
 }
 
 /** List chapter files: [{col, file (repo-relative), chapter}] */

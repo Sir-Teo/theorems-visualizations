@@ -134,6 +134,10 @@ function pageHome() {
         <div style="overflow-x:auto" id="flow"></div>
       </div>
     </section>
+    ${(G.bridges || []).length ? `<section class="wrap">
+      <div class="section-title"><h2>Bridges</h2><span class="muted">one idea followed across fields · <a href="#/bridges">all bridges →</a></span></div>
+      <div class="col-grid">${G.bridges.slice(0, 6).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B)} ${B.steps.length} steps</div></a>`).join('')}</div>
+    </section>` : ''}
     <section class="wrap" id="fields">
       <div class="section-title"><h2>The fields</h2><span class="muted">${G.collections.length} collections across ${G.fields.length} fields · faded shelves are planned</span></div>
       <div class="field-grid" id="field-grid"></div>
@@ -365,6 +369,7 @@ async function pageTheorem(id) {
           <h2 style="margin-top:18px">Used by <span class="count">${users.length}</span></h2>
           <div class="chip-list">${users.length ? users.map((d) => link(d)).join('') : '<span class="empty-note">No later result in the graph cites it directly.</span>'}</div>
           ${related.length ? `<h2 style="margin-top:18px">Across the atlas</h2><div class="chip-list">${related.map((d) => link(d)).join('')}</div>` : ''}
+          ${bridgesOf(it.id).length ? `<h2 style="margin-top:18px">On the bridge${bridgesOf(it.id).length > 1 ? 's' : ''}</h2><div class="chip-list">${bridgesOf(it.id).map((B) => `<a class="chip" href="#/bridge/${B.slug}"><span class="nm">${escapeHTML(B.title)}</span></a>`).join('')}</div>` : ''}
           <div class="stats-row"><span><b>${it.anc}</b> results in its full ancestry</span><span><b>${it.desc}</b> results rely on it</span><span>depth <b>${it.depth}</b></span></div>
         </div>
       </div>
@@ -404,6 +409,40 @@ function pageMap(params) {
   app.replaceChildren(host);
   const view = new MapView(host, G, { onOpen: (id) => go(`#/t/${id}`), focus: params.get('focus'), loadShard });
   cleanup = () => { view.dead = true; view.destroy(); };
+}
+
+function bridgesOf(id) { return (G.bridges || []).filter((B) => B.steps.some((st) => st.id === id)); }
+function fieldDots(B) {
+  const seq = []; for (const st of B.steps) { const it = G.byId.get(st.id); const f = it && G.colById.get(it.col)?.field; if (f && seq[seq.length - 1] !== f) seq.push(f); }
+  return `<span class="field-path">${seq.map((f) => `<span class="col-dot" style="--bc:var(--f-${f})" title="${escapeHTML(G.fieldById.get(f).title)}"></span>`).join('<span class="fp-sep"></span>')}</span>`;
+}
+function pageBridges() {
+  setTitle('Bridges'); setNav('bridges'); curCol = null;
+  app.replaceChildren(h(`<div class="wrap"><div class="page-head">
+    <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><span>Bridges</span></div>
+    <h1>Bridges</h1>
+    <p class="sub">One idea, followed across collections and fields. Each bridge is a walk through the atlas, from the mathematics where an idea is born to the places it ends up doing work.</p>
+  </div>
+  <div class="col-grid">${(G.bridges || []).map((B) => `<a class="card bridge-card" href="#/bridge/${B.slug}"><h3>${escapeHTML(B.title)}</h3><div class="sum">${inlineHTML(B.blurb || '')}</div><div class="meta">${fieldDots(B)} ${B.steps.length} steps</div></a>`).join('')}</div></div>`));
+}
+async function pageBridge(slug) {
+  const B = (G.bridges || []).find((x) => x.slug === slug); if (!B) return pageNotFound();
+  setTitle(B.title); setNav('bridges'); curCol = null;
+  await loadShards(B.steps.map((st) => G.byId.get(st.id)?.col).filter(Boolean));
+  const el = h(`<div class="wrap bridge-page"><div class="page-head">
+    <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/bridges">Bridges</a><span class="sep">/</span><span>${escapeHTML(B.title)}</span></div>
+    <div class="eyebrow">Bridge · ${B.steps.length} steps ${fieldDots(B)}</div>
+    <h1>${escapeHTML(B.title)}</h1>
+    <p class="sub">${inlineHTML(B.blurb || '')}</p>
+  </div>
+  <ol class="journey">${B.steps.map((st, i) => { const it = G.byId.get(st.id); if (!it) return ''; const C = G.colById.get(it.col); const F = G.fieldById.get(C.field); return `<li class="j-step${it.planned ? ' planned' : ''}" data-col="${it.col}" style="--fc:var(--f-${F.id})">
+      <div class="j-rail"><span class="j-num">${i + 1}</span></div>
+      <a class="card j-card" href="#/t/${it.id}">
+        <div class="eyebrow"><span class="col-dot"></span>${escapeHTML(F.short)} · ${escapeHTML(C.short)} · ${escapeHTML(fullLabel(it))}${it.planned ? ' · planned' : ''}</div>
+        <div class="nm">${inlineHTML(it.name)}</div>
+        <div class="note">${inlineHTML(st.note || '')}</div>
+      </a></li>`; }).join('')}</ol></div>`);
+  app.replaceChildren(el);
 }
 
 function pageTimeline() {
@@ -495,6 +534,8 @@ async function route() {
     else if (parts[0] === 'map') pageMap(params);
     else if (parts[0] === 'status') pageStatus();
     else if (parts[0] === 'timeline') pageTimeline();
+    else if (parts[0] === 'bridges') pageBridges();
+    else if (parts[0] === 'bridge' && parts[1]) await pageBridge(parts[1]);
     else if (parts[0] === 'about') pageAbout();
     else if (parts[0] === 'audit') pageAudit();
     else pageNotFound();

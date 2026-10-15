@@ -15,7 +15,7 @@ const idx = JSON.parse(readFileSync(join(ROOT, 'data/index.json'), 'utf8'));
 const live = idx.collections.filter((C) => C.count);
 const someItem = (col) => idx.items.find((it) => it.col === col && it.viz);
 const routes = val('--routes')?.split(',') || [
-  '#/', '#/map', '#/timeline', '#/status', '#/about', '#/audit',
+  '#/', '#/map', '#/timeline', '#/bridges', ...(idx.bridges || []).slice(0, 2).map((B) => `#/bridge/${B.slug}`), '#/status', '#/about', '#/audit',
   ...idx.fields.slice(0, 3).map((F) => `#/f/${F.id}`), `#/f/${idx.fields[idx.fields.length - 1].id}`,
   ...live.map((C) => `#/c/${C.id}`), ...live.map((C) => `#/c/${C.id}/${C.chapters.find((c) => c.count).n}`),
   ...live.map((C) => `#/t/${someItem(C.id)?.id}`).filter((r) => !r.endsWith('undefined')),
