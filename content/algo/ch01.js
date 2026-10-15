@@ -480,8 +480,8 @@ Steps (i)–(ii) are an induction on the number of iterations; step (iii) conver
           let x = 0, y = 0, W = A, H = B, k = 0;
           while (W > 0 && H > 0) {
             const c = COLS[k % COLS.length];
-            if (W >= H) { const q = Math.floor(W / H); rect.rect(x, y, x + q * H, y + H, { fill: c, fillAlpha: 0.3, color: c, width: 1.4 }); if (q <= 60) for (let j = 1; j < q; j++) rect.line(x + j * H, y, x + j * H, y + H, { color: c, width: 0.8 }); if (q * H > A / 25 && H > B / 25) rect.text(String(q), x + q * H / 2, y + H / 2, { align: 'center', baseline: 'middle', size: Math.min(15, 7 + H * 260 / B / 25), weight: 700, color: c }); x += q * H; W -= q * H; }
-            else { const q = Math.floor(H / W); rect.rect(x, y, x + W, y + q * W, { fill: c, fillAlpha: 0.3, color: c, width: 1.4 }); if (q <= 60) for (let j = 1; j < q; j++) rect.line(x, y + j * W, x + W, y + j * W, { color: c, width: 0.8 }); if (q * W > B / 25 && W > A / 25) rect.text(String(q), x + W / 2, y + q * W / 2, { align: 'center', baseline: 'middle', size: Math.min(15, 7 + W * 260 / A / 25), weight: 700, color: c }); y += q * W; H -= q * W; }
+            if (W >= H) { const q = Math.floor(W / H); rect.rect(x, y, x + q * H, y + H, { fill: c, fillAlpha: 0.3, color: c, width: 1.4 }); if (q <= 60) for (let j = 1; j < q; j++) rect.line(x + j * H, y, x + j * H, y + H, { color: c, width: 0.8 }); if (q * H > A / 25 && H > B / 25) rect.text(String(q), x + q * H / 2, y + H / 2, { align: 'center', baseline: 'middle', size: Math.min(15, 7 + H * 260 / B / 25), weight: 700, color: 'ink' }); x += q * H; W -= q * H; }
+            else { const q = Math.floor(H / W); rect.rect(x, y, x + W, y + q * W, { fill: c, fillAlpha: 0.3, color: c, width: 1.4 }); if (q <= 60) for (let j = 1; j < q; j++) rect.line(x, y + j * W, x + W, y + j * W, { color: c, width: 0.8 }); if (q * W > B / 25 && W > A / 25) rect.text(String(q), x + W / 2, y + q * W / 2, { align: 'center', baseline: 'middle', size: Math.min(15, 7 + W * 260 / A / 25), weight: 700, color: 'ink' }); y += q * W; H -= q * W; }
             k++;
           }
           // worst cases and Lamé's bound

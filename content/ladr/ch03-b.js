@@ -593,6 +593,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
           const ph = t % 6, s = ph < 1 ? 0 : ph < 2.5 ? M.smoothstep(1, 2.5, ph) : ph < 3.5 ? 1 : ph < 5 ? 1 - M.smoothstep(3.5, 5, ph) : 0;
           sNow = s;
           const D = Math.max(m, n);
+          v.legend([...RC.slice(0, m).map((c, i) => [c, i ? `row ${i + 1}` : 'row 1 of $A$']), ['gold', 'the clicked entry’s path', { dash: true }]]);
           S.line(-0.4, 0.4, D + 0.2, -D - 0.2, { color: 'muted', width: 1.2, dash: [6, 5] });
           S.text('main diagonal', D + 0.15, -D - 0.25, { color: 'muted', size: 11, align: 'right', baseline: 'top' });
           const w = M.lerp(n, m, s), h = M.lerp(m, n, s);
@@ -606,7 +607,6 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
           }
           S.corner(s < 0.02 ? `A is ${m}×${n}` : s > 0.98 ? `Aᵗ is ${n}×${m}` : 'flipping…', 'tr', { color: s > 0.98 ? 'green' : 'ink', weight: 700, size: 14 });
         }, { period: 6, still: 1.9 });
-        v.legend([['blue', 'row 1 of $A$'], ['orange', 'row 2'], ['purple', 'row 3'], ['gold', 'the clicked entry’s path', { dash: true }]]);
         v.readout(() => {
           const [j, k] = pick;
           return `$A_{${j + 1},${k + 1}} = ${V[j][k]} = (A^{\\mathrm t})_{${k + 1},${j + 1}}$` + (j === k ? ' — a diagonal entry, it does not move.' : ` — it slides from row ${j + 1}, column ${k + 1} to row ${k + 1}, column ${j + 1}.`);

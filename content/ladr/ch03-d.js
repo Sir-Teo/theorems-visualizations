@@ -177,14 +177,14 @@ export default {
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -2.25, pitch: 0.3, axis: 1.5, lim: 1.4 });
         const kSel = v.select('$U$', [{ value: '0', label: '$\\{0\\}$' }, { value: '1', label: 'a line' }, { value: '2', label: 'a plane' }, { value: '3', label: '$\\mathbf R^3$' }], '1');
-        const U1 = sc.handle([0.9, 0.45, 0.7], { color: 'blue', label: 'u₁' });
+        const U1 = sc.handle([0.3, 1.0, -0.6], { color: 'blue', label: 'u₁' });
         const U2 = sc.handle([-0.6, 0.9, 0.25], { color: 'blue', label: 'u₂', snap: (p) => snapLine3(p, U1.p, 0.14) });
         const V = sc.handle([0.5, -0.9, 0.9], { color: 'gold', label: 'v' });
         v.legend([['blue', '$U$'], ['gold', 'the translate $v+U$'], ['orange', 'other translates'], ['green', '$U^\\perp$: one point per translate']]);
         let st = null;
         v.render(() => {
           const k = +kSel.value;
-          U1.visible = k === 1 || k === 2; U2.visible = k === 2;
+          U1.h.visible = k === 1 || k === 2; U2.h.visible = k === 2;
           sc.begin();
           const B = k === 3 ? orth([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) : orth([U1.p, U2.p].slice(0, k));
           const W = compl(B), d = B.length, p = V.p, f = projOnto(p, W);
@@ -448,7 +448,7 @@ export default {
       tags: ['duality'],
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, axes: false, height: 430 });
+        const S = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, axes: false, height: 420 });
         const sc = v.scene3(S, { yaw: -2.25, pitch: 0.3, axis: 1.4, lim: 1.4 });
         const HB = [[1.1, 0.3, -0.1], [0.15, 1.1, 0.15], [-0.2, 0.25, 1.0]].map((p, i) => sc.handle(p, { color: VC[i], label: ['v₁', 'v₂', 'v₃'][i] }));
         const X = sc.handle([0.8, 1.2, 0.9], { color: 'gold', label: 'v' });
@@ -582,8 +582,8 @@ export default {
         const mk = (title) => v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, height: 300, minWidth: 200, title });
         const SU = mk("$U$: $(ST)'\\varphi$ and $T'(S'\\varphi)$"), SV = mk("$V$: $S'\\varphi=\\varphi\\circ S$"), SW = mk('$W$: $\\varphi$');
         const mode = v.select('dashed', [{ value: 'r', label: "$T'(S'\\varphi)$" }, { value: 'w', label: "$S'(T'\\varphi)$ — wrong order" }], 'r');
-        const T1 = SV.handle(1.0, 0.45, { color: 'orange', label: 'Te₁' }), T2 = SV.handle(-0.35, 0.85, { color: 'orange', label: 'Te₂' });
-        const S1 = SW.handle(0.95, -0.35, { color: 'purple', label: 'Se₁' }), S2 = SW.handle(0.45, 1.0, { color: 'purple', label: 'Se₂' });
+        const T1 = SV.handle(1.3, 0.1, { color: 'orange', label: 'Te₁' }), T2 = SV.handle(0.9, 0.8, { color: 'orange', label: 'Te₂' });
+        const S1 = SW.handle(0.6, -0.7, { color: 'purple', label: 'Se₁' }), S2 = SW.handle(-0.2, 1.1, { color: 'purple', label: 'Se₂' });
         const F = fHandle(SW, [-0.45, 0.5], 'blue', 'φ');
         v.legend([['blue', '$\\varphi$'], ['purple', "$S'\\varphi$"], ['green', "$(ST)'\\varphi$"], ['ink', 'dashed comparison', { dash: true }]]);
         let st = null;
@@ -599,7 +599,6 @@ export default {
           levels(SU, stp, { color: 'green' });
           levels(SU, cmp, { color: match ? 'ink' : 'red', strips: false, labels: false, dash: [6, 5], width: 1.5, alpha: 0.9 });
           cell2(SU, [1, 0], [0, 1], 'muted');
-          SU.corner(match ? 'dashed = green' : 'dashed ≠ green', 'bl', { color: match ? 'green' : 'red', size: 13 });
           st = { stp, tsp, wrong, match, sum: row(c, [[S[0][0] + T[0][0], S[0][1] + T[0][1]], [S[1][0] + T[1][0], S[1][1] + T[1][1]]]), sumR: [row(c, S)[0] + row(c, T)[0], row(c, S)[1] + row(c, T)[1]] };
         });
         v.readout(() => {
@@ -637,7 +636,7 @@ export default {
         v.legend([['blue', '$U$'], ['orange', 'level planes of $\\varphi$'], ['purple', 'zero planes of members of $U^0$', { area: true }]]);
         let st = null;
         v.render(() => {
-          const k = +kSel.value; U2.visible = k === 2;
+          const k = +kSel.value; U2.h.visible = k === 2;
           Fh.p = into(Fh.p);
           sc.begin();
           const B = orth([U1.p, U2.p].slice(0, k)), W = compl(B), c = mul3(Fh.p, 1 / dot3(Fh.p, Fh.p));
@@ -680,7 +679,7 @@ export default {
         const lam = v.slider('$\\lambda$', -2, 2, 0.8, { step: 0.05 }), mu = v.slider('$\\mu$', -2, 2, 0.7, { step: 0.05 });
         const Uh = scV.handle([0.5, 0.6, 0.9], { color: 'gold', label: 'u', snap: (p) => minLen3(p, 0.6) });
         const on = (p) => { const u = Uh.p, t = +mode.value; return sub3(p, mul3(u, (dot3(p, u) - t) / dot3(u, u))); };
-        const Ph = scD.handle([0.9, -0.5, 0.1], { color: 'blue', label: 'φ', snap: on }), Qh = scD.handle([-0.6, 0.9, 0.4], { color: 'orange', label: 'ψ', snap: on });
+        const Ph = scD.handle([0.9, -0.5, 0.1], { color: 'blue', label: 'φ', snap: on }), Qh = scD.handle([-0.5, -0.6, 0.65], { color: 'orange', label: 'ψ', snap: on });
         v.legend([['blue', '$\\varphi$'], ['orange', '$\\psi$'], ['green', '$\\chi=\\lambda\\varphi+\\mu\\psi$'], ['gold', '$u$']]);
         let st = null;
         v.render(() => {
@@ -690,12 +689,13 @@ export default {
           scD.begin();
           const [pa, pb] = perp(u);
           scD.disc(pa, pb, 1.35, { fill: setC, fillAlpha: 0.08, color: setC, grid: true }, mul3(u, t / dot3(u, u)));
+          if (t) { scD.line(ZERO, mul3(u, 1 / dot3(u, u)), { color: 'red', width: 1.4, dash: [3, 3] }); scD.dot(mul3(u, 1 / dot3(u, u)), { r: 3.5, color: 'red' }); }
           scD.line(mul3(a, l), ch, { color: 'muted', width: 1, dash: [4, 4] }); scD.line(mul3(b, m), ch, { color: 'muted', width: 1, dash: [4, 4] });
           scD.arrow(ZERO, a, { color: 'blue', width: 2.2 }); scD.arrow(ZERO, b, { color: 'orange', width: 2.2 });
           scD.arrow(ZERO, ch, { color: chC, width: 3 });
           scD.tex('\\chi', ch, { color: chC, dx: 12, dy: -10 });
           scD.dot(ZERO, { r: 5, color: t ? 'red' : 'green' });
-          scD.tex(t ? '0\\notin' : '0\\in', ZERO, { color: t ? 'red' : 'green', dx: -12, dy: 14, align: 'right' });
+          scD.tex(t ? '0\\notin\\text{set}' : '0\\in U^0', ZERO, { color: t ? 'red' : 'green', dx: -12, dy: 14, align: 'right' });
           scD.flush();
           scV.begin();
           const zp = (cv, color, lev, fa) => { if (len3(cv) < 1e-9) return; const [x1, x2] = perp(cv); scV.disc(x1, x2, 1.05, { fill: color, fillAlpha: fa, color, alpha: 0.7 }, mul3(cv, lev / dot3(cv, cv))); };
@@ -763,7 +763,7 @@ export default {
           const { k, ok } = st;
           if (!ok) return 'The three vectors are (nearly) dependent; the dual basis needs a basis.';
           const list = k < 3 ? `$U^0=\\operatorname{span}(${[1, 2, 3].slice(k).map((j) => `\\varphi_${j}`).join(',')})$` : '$U^0=\\{0\\}$';
-          return `$\\dim U = ${k}$. The dual basis $\\varphi_1,\\varphi_2,\\varphi_3$ of $u_1,u_2,u_3$ has $\\varphi_j(u_i)=0$ for $i\\ne j$, so the $\\varphi_j$ with $j>${k} kill $U$: ${list}, and $\\dim U^0 = 3-${k} = ${3 - k}$.`;
+          return `$\\dim U = ${k}$. The dual basis $\\varphi_1,\\varphi_2,\\varphi_3$ of $u_1,u_2,u_3$ has $\\varphi_j(u_i)=0$ for $i\\ne j$, so the $\\varphi_j$ with $j>${k}$ kill $U$: ${list}, and $\\dim U^0 = 3-${k} = ${3 - k}$.`;
         });
       },
     },
@@ -881,7 +881,7 @@ export default {
         const r1 = [0.8, 0.45, -0.35], r2 = [-0.25, 0.7, 0.6];
         const Amat = () => { const t = tS.value; return [r1, r2.map((x, i) => (1 - t) * x + t * 0.75 * r1[i])]; };
         const ann = [-0.6, 0.8];
-        const F = fHandle(SW, [0.3, 0.65], 'blue', 'ψ', 0.4, (q) => { if (tS.value < 1) return q; const t = dot2(q, ann), p = [ann[0] * t, ann[1] * t]; return Math.hypot(q[0] - p[0], q[1] - p[1]) < 0.15 ? p : q; });
+        const F = fHandle(SW, [0.7, -0.82], 'blue', 'ψ', 0.4, (q) => { if (tS.value < 1) return q; const t = dot2(q, ann), p = [ann[0] * t, ann[1] * t]; return Math.hypot(q[0] - p[0], q[1] - p[1]) < 0.15 ? p : q; });
         v.button('ψ = the most squashed direction', () => { const e = minDir(Amat()).e; F.set(e[0] / 1.3, e[1] / 1.3); });
         v.legend([['orange', 'image of the cube', { area: true }], ['blue', '$\\psi$'], ['green', "$T'\\psi$"], ['red', '$\\operatorname{null}T$']]);
         let st = null;
@@ -987,7 +987,7 @@ export default {
           if (r === 2) { const B = orth([a, b]); sc.disc(B[0], B[1], 1.3, { fill: 'orange', fillAlpha: 0.1, color: 'orange', grid: true }); } else line3(sc, a, { color: 'orange', width: 3 });
           sc.arrow(ZERO, a, { color: 'orange', width: 2.4 }); sc.arrow(ZERO, b, { color: 'orange', width: 2.4 });
           sc.tex('Te_1', a, { color: 'orange', dx: 10, dy: -10 }); sc.tex('Te_2', b, { color: 'orange', dx: 10, dy: -10 });
-          if (len3(x) > 1e-9) planes3(sc, x, { color: 'purple', r: 0.85, max: 2 });
+          if (len3(x) > 1e-9) planes3(sc, x, { color: 'purple', r: 0.85, max: 3 });
           sc.flush();
           st = { r, res, x, fn: dot2(f, nv) };
         });
@@ -1014,14 +1014,14 @@ export default {
         const SW = v.stage({ x: [-2.6, 2.6], y: [-2.3, 2.3], equal: true, height: 350, title: '$W$: basis $w_1,w_2$, dual basis $\\psi_1,\\psi_2$' });
         const SV = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 350, title: "$V=\\mathbf R^3$: $T'\\psi_k$ at $v_1,v_2,v_3$" });
         const sc = v.scene3(SV, { yaw: -2.25, pitch: 0.3, axis: 1.3, lim: 1.3 });
-        const TB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true });
+        const TB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 220, full: true });
         const kSel = v.select('$k$', [{ value: '0', label: "$k=1$: $T'\\psi_1$" }, { value: '1', label: "$k=2$: $T'\\psi_2$" }], '0');
         const W1 = SW.handle(1.2, 0.15, { color: 'blue', label: 'w₁', constrain: (x, y) => minLen2(x, y, 0.4) });
         const W2 = SW.handle(0.35, 1.0, { color: 'purple', label: 'w₂', constrain: (x, y) => minLen2(x, y, 0.4) });
         const TV = [[1.6, 0.9], [-0.8, 1.4], [0.9, -1.3]].map((p, i) => SW.handle(p[0], p[1], { color: 'orange', label: `Tv${'₁₂₃'[i]}` }));
         const o = { maxCell: 46, size: 14, square: false, cellAspect: 1.6 };
-        const tA = v.table(TB, { rows: 2, cols: 3, region: [0.02, 0, 0.48, 1], rowLabels: ['$w_1$', '$w_2$'], colLabels: ['$v_1$', '$v_2$', '$v_3$'], cornerLabel: '$\\mathcal M(T)$', ...o });
-        const tB = v.table(TB, { rows: 3, cols: 2, region: [0.52, 0, 0.98, 1], rowLabels: ['$\\varphi_1$', '$\\varphi_2$', '$\\varphi_3$'], colLabels: ['$\\psi_1$', '$\\psi_2$'], cornerLabel: "$\\mathcal M(T')$", ...o });
+        const tA = v.table(TB, { rows: 2, cols: 3, region: [0.02, 0, 0.48, 0.84], rowLabels: ['$w_1$', '$w_2$'], colLabels: ['$v_1$', '$v_2$', '$v_3$'], ...o });
+        const tB = v.table(TB, { rows: 3, cols: 2, region: [0.52, 0, 0.98, 0.84], rowLabels: ['$\\varphi_1$', '$\\varphi_2$', '$\\varphi_3$'], colLabels: ['$\\psi_1$', '$\\psi_2$'], ...o });
         TB.onClick((x, y) => { const h = tA.hit(x, y); if (h && h.i >= 0) kSel.set(String(h.i)); const g = tB.hit(x, y); if (g && g.j >= 0) kSel.set(String(g.j)); });
         const E = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
         let st = null;
@@ -1045,6 +1045,7 @@ export default {
           const err = Math.max(...[0, 1, 2].flatMap((j) => [0, 1].map((kk) => Math.abs(MTp[j][kk] - MT[kk][j]))));
           tA.draw({ value: (i, j) => +MT[i][j].toFixed(2), activeRow: k, activeColor: col });
           tB.draw({ value: (i, j) => +MTp[i][j].toFixed(2), activeCol: k, activeColor: col });
+          TB.tex('\\mathcal M(T)', 0.25, 0.93, { align: 'center', size: 15 }); TB.tex("\\mathcal M(T') = \\mathcal M(T)^{\\mathrm t}", 0.75, 0.93, { align: 'center', size: 15 });
           st = { k, row: MT[k], err };
         });
         v.readout(() => {
@@ -1066,8 +1067,8 @@ export default {
       tags: ['duality', 'rank'],
       viz(v) {
         const M = v.M;
-        const PRE = { 3: [[1, 0.5, 0], [0, 1, -0.5], [0.5, 0, 1]], 2: [[1, 0.5, 1.5], [0, 1, 1], [1, -0.5, 0.5]], 1: [[1, -0.5, 1], [1.5, -0.75, 1.5], [-0.5, 0.25, -0.5]] };
-        let A = PRE[2].map((r) => r.slice()), sel = [0, 2];
+        const PRE = { 3: [[1, 0.5, 0], [0, 1, -0.5], [0.5, 0, 1]], 2: [[1, 0, 1], [-1, 0.5, -0.5], [-0.5, -1, -1.5]], 1: [[1, -0.5, 1], [1.5, -0.75, 1.5], [-0.5, 0.25, -0.5]] };
+        let A = PRE[2].map((r) => r.slice()), sel = [2, 2];
         const TB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 170, full: true });
         const o = { rows: 3, cols: 3, maxCell: 42, size: 14, square: false, cellAspect: 1.6 };
         const tA = v.table(TB, { ...o, region: [0.03, 0, 0.47, 1], rowLabels: ['$r_1$', '$r_2$', '$r_3$'], colLabels: ['$c_1$', '$c_2$', '$c_3$'], cornerLabel: '$A$' });
@@ -1075,7 +1076,7 @@ export default {
         const S1 = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 330, title: '$\\operatorname{range}T$ = span of the columns' });
         const S2 = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 330, title: "$\\operatorname{range}T'$ = span of the rows" });
         const sc1 = v.scene3(S1, { yaw: -2.25, pitch: 0.3, axis: 2 }), sc2 = v.scene3(S2, { yaw: -2.25, pitch: 0.3, axis: 2, labels: ['c₁', 'c₂', 'c₃'] });
-        const entry = v.slider('selected entry', -2, 2, A[0][2], { step: 0.25, onChange: (x) => { A[sel[0]][sel[1]] = x; } });
+        const entry = v.slider('selected entry', -2, 2, A[2][2], { step: 0.25, onChange: (x) => { A[sel[0]][sel[1]] = x; } });
         v.select('preset', [{ value: '3', label: 'rank 3' }, { value: '2', label: 'rank 2' }, { value: '1', label: 'rank 1' }], '2', { onChange: (val) => { A = PRE[val].map((r) => r.slice()); entry.set(A[sel[0]][sel[1]]); } });
         TB.onClick((x, y) => { const h = tA.hit(x, y); if (h && h.i >= 0 && h.j >= 0) { sel = [h.i, h.j]; entry.set(A[h.i][h.j]); } });
         const span = (sc, vs, color, names) => {

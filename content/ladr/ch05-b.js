@@ -548,9 +548,9 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         const dimS = v.select('$V$', [{ value: '3', label: '$\\mathbf R^3$ (odd)' }, { value: '2', label: '$\\mathbf R^2$ (even)' }], '3');
         let seed = 2;
         v.button('Random $T$', () => { seed++; });
-        const S = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 380, weight: 1.15 });
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 380, weight: 1.15, title: 'an operator $T$ on $V$' });
         const sc = v.scene3(S, { yaw: -0.7, pitch: 0.42, axis: 1.6, lim: 1.3 });
-        const B = v.stage({ x: [0.35, 7.65], y: [0, 1.17], height: 380, weight: 0.85, minWidth: 240, axes: 'box', xlabel: 'n',
+        const B = v.stage({ x: [-0.25, 7.65], y: [-0.09, 1.3], height: 380, weight: 0.85, minWidth: 240, axes: 'box', xlabel: 'n',
           xticks: [1, 2, 3, 4, 5, 6, 7], yticks: [[0, '0%'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']], title: 'random $n\\times n$ real matrices with a real eigenvalue' });
         // the tally, computed once: entries independent standard normal
         const frac = [];
@@ -565,10 +565,11 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         function make() {
           const r = v.rng(seed * 7919 + 11), n = +dimS.value;
           let Sm; do { Sm = Array.from({ length: n }, () => Array.from({ length: n }, () => r.normal())); } while (Math.abs(M.det(Sm)) < 0.5);
-          const cx = r() < 0.72, a = r.uniform(-0.6, 0.6), b = r.uniform(0.5, 1.1), lam = r.uniform(-1.3, 1.3) || 0.7;
+          const ru = () => (r() < 0.5 ? -1 : 1) * r.uniform(0.55, 1.4);
+          const cx = r() < 0.72 || seed === 2, a = r.uniform(-0.6, 0.6), b = r.uniform(0.5, 1.1), lam = ru();
           let D;
-          if (n === 3) D = cx ? [[a, -b, 0], [b, a, 0], [0, 0, lam]] : [[lam, 0, 0], [0, r.uniform(-1.3, 1.3), 0], [0, 0, r.uniform(-1.3, 1.3)]];
-          else D = cx ? [[a, -b], [b, a]] : [[lam, 0], [0, r.uniform(-1.3, 1.3)]];
+          if (n === 3) D = cx ? [[a, -b, 0], [b, a, 0], [0, 0, lam]] : [[lam, 0, 0], [0, ru(), 0], [0, 0, ru()]];
+          else D = cx ? [[a, -b], [b, a]] : [[lam, 0], [0, ru()]];
           T = conj(M, Sm, D);
           const E = M.eig(T), lines = [], vals = [];
           E.values.forEach((z, i) => { if (Math.abs(z.im) < 1e-9 && E.vectors[i]) { const e = unitN(E.vectors[i]); if (!lines.some((f) => Math.abs(dotN(e, f)) > 1 - 1e-6)) { lines.push(n === 2 ? [e[0], e[1], 0] : e); vals.push(z.re); } } });
@@ -603,7 +604,7 @@ $$p_T = s\cdot p_{T|_U}.$$`,
             B.rect(m - 0.34, 0, m + 0.34, f, { fill: col, fillAlpha: cur ? 0.6 : 0.3, color: col, width: cur ? 2.6 : 1.2 });
             B.text(`${Math.round(f * 100)}%`, m, f, { align: 'center', baseline: 'bottom', dy: -3, size: 11, color: col, weight: 700 });
           });
-          B.corner('odd n: always', 'bl', { color: 'green', weight: 600, size: 11.5, dy: -18 });
+          B.text('odd n: every time', 0.1, 1.22, { color: 'green', weight: 700, size: 12 });
           // the turning angle on R², for the readout
           let minAng = null;
           if (n === 2) { minAng = Infinity; for (let i = 0; i < 360; i++) { const t = (Math.PI * i) / 360, w = [Math.cos(t), Math.sin(t), 0], Tw = mv(T3, w); minAng = Math.min(minAng, Math.asin(Math.min(1, normN(cross3(w, Tw)) / (normN(Tw) || 1)))); } }
@@ -647,14 +648,14 @@ So column $k$ lists the coordinates of $Tv_k$ in the same basis. For an operator
         const op = v.select('operator $T$', Object.entries(OPS).map(([value, O]) => ({ value, label: O.label })), 'axler');
         const P = v.stage({ x: [-2.5, 2.5], y: [-2.1, 2.3], equal: true, axes: false, height: 380, weight: 1.3, title: 'the operator $T$ and the grid of the basis $v_1, v_2$' });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.7, minWidth: 230 });
-        const FSH = [[0, 0], [0.28, 0], [0.28, 0.42], [0.66, 0.42], [0.66, 0.62], [0.28, 0.62], [0.28, 0.8], [0.8, 0.8], [0.8, 1], [0, 1]].map(([x, y]) => [x - 0.2, y - 0.25]);
+        const FSH = [[0, 0], [0.28, 0], [0.28, 0.42], [0.66, 0.42], [0.66, 0.62], [0.28, 0.62], [0.28, 0.8], [0.8, 0.8], [0.8, 1], [0, 1]].map(([x, y]) => [x - 1.3, y - 1.3]);
         let eigdirs = [];
         const snapDir = (x, y) => {
           const l = Math.hypot(x, y); if (l < 0.12) return [x, y];
           for (const e of eigdirs) { const c = (x * e[0] + y * e[1]) / l; if (Math.abs(c) > Math.cos((5 * Math.PI) / 180)) { const s = Math.sign(c) * l; return [s * e[0], s * e[1]]; } }
           return [x, y];
         };
-        const h1 = P.handle(1.05, 0.35, { color: 'blue', label: 'v₁', constrain: snapDir }), h2 = P.handle(0.2, 0.95, { color: 'purple', label: 'v₂', constrain: snapDir });
+        const h1 = P.handle(1.15, -0.15, { color: 'blue', label: 'v₁', constrain: snapDir }), h2 = P.handle(-0.45, 0.95, { color: 'purple', label: 'v₂', constrain: snapDir });
         const TM = v.table(Q, { rows: 2, cols: 2, region: [0, 0.48, 1, 0.95], maxCell: 60, size: 16, rowLabels: ['$v_1$', '$v_2$'], colLabels: ['$Tv_1$', '$Tv_2$'] });
         const TS = v.table(Q, { rows: 2, cols: 2, region: [0, 0.02, 1, 0.4], maxCell: 46, size: 13, rowLabels: ['$e_1$', '$e_2$'], colLabels: ['$Te_1$', '$Te_2$'] });
         let st = null;
@@ -698,7 +699,7 @@ So column $k$ lists the coordinates of $Tv_k$ in the same basis. For an operator
           if (!st) return '';
           if (!st.ok) return 'Move $v_1$, $v_2$ apart: a dependent list is not a basis, and coordinates in it are not defined.';
           const C = st.C, cb = (a, b) => `${tn(a)}\\,v_1 ${b < 0 ? '-' : '+'} ${tn(Math.abs(b))}\\,v_2`;
-          return `$Tv_1 = ${cb(C[0][0], C[1][0])}$ and $Tv_2 = ${cb(C[0][1], C[1][1])}$, so $\\mathcal M\\bigl(T,(v_1,v_2)\\bigr) = ${mtex(C)}$: column $k$ holds the coordinates of $Tv_k$.`;
+          return `$Tv_1 = ${cb(C[0][0], C[1][0])}$ and $Tv_2 = ${cb(C[0][1], C[1][1])}$, so (column $k$ = coordinates of $Tv_k$) $\\mathcal M\\bigl(T,(v_1,v_2)\\bigr) = ${mtex(C)}$.`;
         });
       },
     },
@@ -716,14 +717,14 @@ with $*$ standing for entries that are unknown or irrelevant.`,
       tags: ['triangular'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Triangular_matrix' },
       viz(v) {
-        const A = [[1.5, 1, -0.5], [0, 1, 1], [0, 0, -1]];
+        const A = [[1.5, -1, 0.5], [0, 1, 1], [0, 0, 1.5]];
         const unlock = v.toggle('allow entries below the diagonal', false, { onChange: (b) => { if (!b) { A[1][0] = 0; A[2][0] = 0; A[2][1] = 0; } else if (!A[2][1]) A[2][1] = 0.5; } });
         const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 390, weight: 1.15 });
-        const sc = v.scene3(S, { yaw: -0.8, pitch: 0.4, axis: 1.8, lim: 1.4, labels: ['e₁', 'e₂', 'e₃'] });
+        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.62, axis: 1.8, lim: 1.4, labels: ['e₁', 'e₂', 'e₃'] });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, weight: 0.85, minWidth: 250 });
         const TT = v.table(Q, { rows: 3, cols: 3, region: [0, 0.3, 1, 0.9], maxCell: 58, size: 16, rowLabels: ['$e_1$', '$e_2$', '$e_3$'], colLabels: ['$Te_1$', '$Te_2$', '$Te_3$'] });
         editable(v, Q, TT, () => A, { step: 0.5, min: -1.5, max: 1.5, ok: (i, j) => i <= j || unlock.value });
-        const hw = sc.handle([0.75, 0.6, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'gold', label: 'w' });
+        const hw = sc.handle([0.3, -0.8, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'gold', label: 'w' });
         let st = null;
         v.render(() => {
           const cols = [0, 1, 2].map((k) => colOf(A, k));
@@ -827,7 +828,7 @@ with $*$ standing for entries that are unknown or irrelevant.`,
             textColor: (i, j) => VC[j],
           });
           ttl(Q, TM, '\\mathcal M\\bigl(T, (v_1, v_2, v_3)\\bigr)', 'ink', false, 14);
-          const lights = [[a, '(a)\\ \\text{upper triangular}'], [b, '(b)\\ \\operatorname{span}(v_1),\\ \\operatorname{span}(v_1,v_2)\\ \\text{invariant}'], [c, '(c)\\ Tv_k \\in \\operatorname{span}(v_1,\\dots,v_k)']];
+          const lights = [[a, '\\text{(a)}\\ \\text{upper triangular}'], [b, '\\text{(b)}\\ \\operatorname{span}(v_1),\\ \\operatorname{span}(v_1,v_2)\\ \\text{invariant}'], [c, '\\text{(c)}\\ Tv_k \\in \\operatorname{span}(v_1,\\dots,v_k)']];
           lights.forEach(([on, txt], i) => Q.tex(`${on ? '\\checkmark' : '\\times'}\\ ${txt}`, 0.03, 0.29 - i * 0.1, { align: 'left', color: on ? 'green' : 'red', size: 13 }));
           if (!ok) S.corner('v₁, v₂, v₃ are not a basis', 'tl', { color: 'red', weight: 700 });
           st = { ok, a, b, c, d1, d2, k1: onLine(h1.p) };

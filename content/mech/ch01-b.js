@@ -95,13 +95,14 @@ is also a solution with the same initial data $r(0)=\dot r(0)=0$: Newton's laws 
           ph.text('zero-energy curve', 0.3, e0(0.3), { color: 'accent', size: 11, dx: 6, dy: 12 });
           ph.dot(r, rd, { r: 6, color: 'gold' });
           // r(t)
+          rt.setView([0, sm ? 21 : 8], [0, 1.08]);
           rt.setTitle(sm ? 'solutions from $r(0)=\\varepsilon$, $\\dot r(0)=0$: $r=\\varepsilon\\cosh t$ (the only one from $\\varepsilon=0$ is $r\\equiv0$)' : 'all of these solve $\\ddot r=\\sqrt r$ with $r(0)=\\dot r(0)=0$');
           if (!sm) {
             for (let T2 = 0; T2 <= 6; T2 += 0.5) rt.fn((q) => { const y = sol(q, T2); return y <= 1.06 ? y : NaN; }, { color: 'purple', width: 1, alpha: 0.35 });
             rt.fn((q) => { const y = sol(q, T); return y <= 1.06 ? y : NaN; }, { color: 'accent', width: 2.8 });
             rt.vline(T, { color: 'accent', dash: [4, 4], width: 1 });
           } else {
-            EPS.forEach((e, i) => { rt.fn((q) => { const y = e * Math.cosh(q); return y <= 1.06 ? y : NaN; }, { color: 'purple', width: 1.4, alpha: 0.4 + 0.15 * i }); const tx = Math.acosh(0.9 / e); rt.text(`ε = 10⁻${2 * (i + 1)}`, tx, 0.9, { color: 'purple', size: 11, dx: 4 }); });
+            EPS.forEach((e, i) => { rt.fn((q) => { const y = e * Math.cosh(q); return y <= 1.06 ? y : NaN; }, { color: 'purple', width: 1.4, alpha: 0.4 + 0.15 * i }); const tx = Math.acosh(0.9 / e); rt.text(`ε = ${v.M.pow10Text(-2 * (i + 1))}`, tx, 0.9, { color: 'purple', size: 11, dx: 4 }); });
           }
           rt.hline(0, { color: 'green', width: 3 });
           rt.dot(tau, r, { r: 5, color: 'gold' });
@@ -331,7 +332,7 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
         const s = v.stage({ x: [-2.6, 2.6], y: [-1.2, 2.6], equal: true, height: 340, axes: false, weight: 1.35 });
         const fp = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, height: 340, axes: false, title: 'force polygon', weight: 0.9 });
         const kF = 0.045; // m per N
-        let pushOff = [-0.3, 0.12];
+        let pushOff = [-0.25, -0.5];
         const hp = s.handle(0, 0, { color: 'orange', label: 'P', constrain: (x, y) => [x, y] });
         hp.onDrag = () => { pushOff = [hp.x - cen[0], hp.y - cen[1]]; };
         let cen = [0, 0], st = null;
@@ -373,8 +374,12 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
           if (lift) s.corner('N would be negative: the block leaves the surface', 'tl', { color: 'red', weight: 600 });
           else if (slack) s.corner('T would be negative: the rope goes slack', 'tl', { color: 'red', weight: 600 });
           // force polygon
-          const k2 = 0.05; let q = [-0.4, 1.1];
           const chain = [[W, 'ink'], [Nv, 'green'], [Tv, 'purple'], [P, 'orange']];
+          // fit the polygon (in newtons) into the panel, centred
+          const pts = [[0, 0]]; for (const [F] of chain) { const l = pts[pts.length - 1]; pts.push([l[0] + F[0], l[1] + F[1]]); }
+          const bx = [Math.min(...pts.map((p) => p[0])), Math.max(...pts.map((p) => p[0]))], by = [Math.min(...pts.map((p) => p[1])), Math.max(...pts.map((p) => p[1]))];
+          const k2 = Math.min(0.06, 2.5 / Math.max(bx[1] - bx[0], by[1] - by[0], 1e-9));
+          let q = [-k2 * (bx[0] + bx[1]) / 2, -k2 * (by[0] + by[1]) / 2];
           const start = q;
           for (const [F, col] of chain) { if (vlen(F) < 1e-9) continue; vec(fp, q, F, k2, { color: col, width: 2.4, head: 8 }); q = [q[0] + k2 * F[0], q[1] + k2 * F[1]]; }
           if (vlen([q[0] - start[0], q[1] - start[1]]) > 0.02) vec(fp, start, [q[0] - start[0], q[1] - start[1]], 1, { color: 'pink', width: 2.6, dash: [5, 3] });
@@ -486,7 +491,7 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
         let key = '', sim = null, st = null;
         // state: [z1, z2, φ, z1', z2', φ'] (z down-positive); stiff-spring rope segments with internal damping
         const run = (m1, m2, Mp) => {
-          const I = 0.5 * Mp * R * R, c1 = 2 * 0.3 * Math.sqrt(K * m1), c2 = 2 * 0.3 * Math.sqrt(K * m2);
+          const I = 0.5 * Mp * R * R, c1 = 2 * 0.1 * Math.sqrt(K * m1), c2 = 2 * 0.1 * Math.sqrt(K * m2);
           const massless = Mp < 1e-6;
           const tens = (y) => {
             if (massless) { const e = y[0] + y[1], ed = y[3] + y[4], T = Math.max(0, K * e + 0.5 * (c1 + c2) * ed); return [T, T]; }
@@ -494,20 +499,19 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
             return [Math.max(0, K * e1 + c1 * e1d), Math.max(0, K * e2 + c2 * e2d)];
           };
           const F = (y) => { const [T1, T2] = tens(y); return [y[3], y[4], y[5], G0 - T1 / m1, G0 - T2 / m2, massless ? 0 : R * (T1 - T2) / I]; };
-          // start at rest with each segment pre-stretched to the static tension of its own weight average
-          const T0 = 2 * m1 * m2 * G0 / (m1 + m2);
-          let y = massless ? [T0 / K / 2, T0 / K / 2, 0, 0, 0, 0] : [T0 / K, T0 / K, 0, 0, 0, 0];
+          // released from rest with the rope just taut but unstretched: the tension has to build up by itself
+          let y = [0, 0, 0, 0, 0, 0];
           const dt = 2e-4, out = { t: [], z1: [], z2: [], phi: [], T1: [], T2: [], dt };
           const add = (a, b, h) => a.map((x, i) => x + h * b[i]);
           for (let n = 0, t = 0; t <= TEND; n++, t = n * dt) {
             if (n % 10 === 0) { const [T1, T2] = tens(y); out.t.push(t); out.z1.push(y[0]); out.z2.push(y[1]); out.phi.push(y[2]); out.T1.push(T1); out.T2.push(T2); }
-            if (Math.abs(y[0]) > 0.95 || Math.abs(y[1]) > 0.95) { out.stop = t; break; }
+            if (Math.abs(y[0]) > 0.7 || Math.abs(y[1]) > 0.7) { out.stop = t; break; }
             const k1 = F(y), k2 = F(add(y, k1, dt / 2)), k3 = F(add(y, k2, dt / 2)), k4 = F(add(y, k3, dt));
             y = y.map((x, i) => x + dt / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
           }
-          // least-squares fit z1(t) ≈ z0 + v0 t + a t²/2 over the run (after the first 0.1 s of rope ringing)
+          // least-squares fit z1(t) ≈ z0 + v0 t + a t²/2 over the run (after the first 0.25 s of rope ringing)
           let S = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], b = [0, 0, 0], Tm1 = 0, Tm2 = 0, cnt = 0;
-          out.t.forEach((t, i) => { if (t < 0.1) return; const r = [1, t, t * t / 2]; for (let p = 0; p < 3; p++) { b[p] += r[p] * out.z1[i]; for (let q = 0; q < 3; q++) S[p][q] += r[p] * r[q]; } Tm1 += out.T1[i]; Tm2 += out.T2[i]; cnt++; });
+          out.t.forEach((t, i) => { if (t < 0.25) return; const r = [1, t, t * t / 2]; for (let p = 0; p < 3; p++) { b[p] += r[p] * out.z1[i]; for (let q = 0; q < 3; q++) S[p][q] += r[p] * r[q]; } Tm1 += out.T1[i]; Tm2 += out.T2[i]; cnt++; });
           const sol = v.M.solve(S, b);
           out.a = sol[2]; out.Tm1 = Tm1 / cnt; out.Tm2 = Tm2 / cnt; out.I = I;
           return out;
@@ -523,7 +527,7 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
           s.line(-0.5, 0.35, 0.5, 0.35, { color: 'ink', width: 3 }); s.line(0, 0.35, 0, 0, { color: 'ink', width: 2 });
           s.circle(0, 0, R, { fill: 'muted', fillAlpha: 0.25 + 0.15 * Math.min(1, Mp / 2), color: 'ink', width: 1.6 });
           for (let k = 0; k < 3; k++) { const a = (Mp > 0 ? phi : (z1 - z2) / 2) / R + k * Math.PI / 3; s.line(-R * Math.cos(a), R * Math.sin(a), R * Math.cos(a), -R * Math.sin(a), { color: 'ink', width: 1 }); }
-          const y1 = -1.0 - z1, y2 = -1.0 - z2, b1 = 0.16 * Math.cbrt(m1), b2 = 0.16 * Math.cbrt(m2);
+          const y1 = -1.25 - z1, y2 = -1.25 - z2, b1 = 0.16 * Math.cbrt(m1), b2 = 0.16 * Math.cbrt(m2);
           s.line(-R, 0, -R, y1 + b1, { color: 'ink', width: 1.4 }); s.line(R, 0, R, y2 + b2, { color: 'ink', width: 1.4 });
           s.rect(-R - b1, y1 - b1, -R + b1, y1 + b1, { fill: 'blue', fillAlpha: 0.75, color: 'blue' });
           s.rect(R - b2, y2 - b2, R + b2, y2 + b2, { fill: 'purple', fillAlpha: 0.75, color: 'purple' });
@@ -536,7 +540,7 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
           pl.text('m₁g', Math.max(tEnd, 0.3), m1 * G0, { color: 'blue', size: 12, align: 'right', dy: -10 });
           pl.text('m₂g', Math.max(tEnd, 0.3), m2 * G0, { color: 'purple', size: 12, align: 'right', dy: 12 });
           pl.hline(T1P, { color: 'green', width: 1.2, dash: [2, 3] }); if (Mp > 0) pl.hline(T2P, { color: 'green', width: 1.2, dash: [2, 3] });
-          pl.path(sim.t.map((q, i) => [q, sim.T1[i]]), { color: 'blue', width: 4, alpha: 0.6 });
+          pl.path(sim.t.map((q, i) => [q, sim.T1[i]]), { color: 'blue', width: 3.5, alpha: 0.55 });
           pl.path(sim.t.map((q, i) => [q, sim.T2[i]]), { color: 'purple', width: 1.8, dash: [6, 4] });
           pl.vline(tau, { color: 'gold', width: 1.4 });
         }, { still: 0.6 });
@@ -565,7 +569,7 @@ Forces from several masses add as vectors; equivalently a mass $m$ at $\mathbf r
         const s = v.stage({ x: [-3, 3], y: [-2.2, 2.2], equal: true, height: 340, axes: false, weight: 1.35 });
         const lg = v.stage({ x: [0.2, 40], y: [1e-3, 30], xlog: true, ylog: true, height: 340, axes: 'box', xlabel: 'r (from c.m.)', ylabel: '|g|', title: 'field strength along the ray', weight: 1 });
         const F = v.fields(s, {
-          law: '3d', G: 1, sources: [{ type: 'mass', x: -0.6, y: 0, m: 1, label: 'M₁' }, { type: 'mass', x: 0.9, y: 0.3, m: 0.6, label: 'M₂' }],
+          law: '3d', G: 4 * Math.PI /* the kit's 3d law is Gauss-normalised, g = Gm/(4πr²): this makes g = m/r² */, sources: [{ type: 'mass', x: -0.6, y: 0, m: 1, label: 'M₁' }, { type: 'mass', x: 0.9, y: 0.3, m: 0.6, label: 'M₂' }],
           lines: false, arrows: true, equipotentials: { n: 14 }, heat: 'magnitude',
         });
         const test = s.handle(1.6, -1.2, { color: 'gold', label: 'm', constrain: { x: [-2.9, 2.9], y: [-2.1, 2.1] } });

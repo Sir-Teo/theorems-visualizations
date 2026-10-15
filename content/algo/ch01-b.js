@@ -175,9 +175,9 @@ More generally, without assuming the limit exists: $f = O(g)$ iff $\limsup f/g <
           s.setTicks(null, T);
           s.hline(0, { color: 'muted', width: 1 });
           const vis = pts.filter(([, y]) => y >= y0 && y <= y1), stride = Math.max(1, Math.floor(vis.length / 3500));
-          s.dots(vis.filter((_, k) => k % stride === 0), { r: 1.4, color: 'accent', alpha: 0.55 });
           s.path(clipPath(pts.map(([n], k) => [n, sup[k]]), y0, y1), { color: 'orange', width: 2.2 });
           s.path(clipPath(pts.map(([n], k) => [n, inf[k]]), y0, y1), { color: 'purple', width: 2.2 });
+          s.dots(vis.filter((_, k) => k % stride === 0), { r: 1.6, color: 'accent', alpha: 0.55 });
           const k0 = pts.findIndex(([n]) => n >= N / 100);
           cur = { P, N, hi: sup[k0], lo: inf[k0] };
           s.vband(N / 100, N, { color: 'gold', alpha: 0.07 });
