@@ -6,7 +6,7 @@ const GUIDE = { color: 'muted', width: 1, dash: [3, 3] };
 function floor3(S3, z, [lx, ly] = ['x₁', 'x₂']) {
   const c = [[-1, -1, z], [1, -1, z], [1, 1, z], [-1, 1, z]];
   for (let i = 0; i < 4; i++) S3.line(c[i], c[(i + 1) % 4], { color: 'faint', width: 1 });
-  S3.text(lx, [0, -1.2, z], { color: 'muted', math: true }); S3.text(ly, [-1.2, 0, z], { color: 'muted', math: true });
+  S3.text(lx, [0, -1.2, z], { color: 'muted', math: true }); S3.text(ly, [1.22, 0, z], { color: 'muted', math: true });
 }
 /** Log-spaced samples of [a, b]. */
 function logspace(a, b, n) { const out = []; for (let i = 0; i <= n; i++) out.push(a * (b / a) ** (i / n)); return out; }
@@ -90,11 +90,11 @@ Indifference curves are then the level sets $\{u = c\}$, and the preferred set o
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 390, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.15 });
         const r = v.stage({ x: [-0.6, 10.6], y: [0, 4.6], height: 390, axes: false, title: 'points $(t, t)$ of the diagonal, compared with $X$' });
         const X = s.handle(6.5, 3, { color: 'accent', label: 'X', labelPos: 'ne', constrain: (x, y) => [clamp(x, 0.3, 9.6), clamp(y, 1.2, 9.6)] });
-        v.legend([['green', 'at least as good as X'], ['red', 'no better than X'], ['purple', 'indifference set of X'], ['gold', 'Yₙ → Y', { dot: true }]]);
         const tStar = (F, x, y) => { const w = F.u(x, y); return bisect((t) => F.u(t, t) - w, 1e-6, 60); };
         let st = {};
         v.render(() => {
           const k = fam.value, lex = k === 'lex', x1 = X.x, x2 = X.y;
+          v.legend([['green', 'at least as good as X'], ['red', 'no better than X'], ['purple', 'indifference set of X'], ...(lex ? [['gold', 'a sequence Yₙ → Y', { dot: true }]] : [])]);
           s.line(0, 0, 10, 10, { color: 'faint', width: 1.4 });
           let t = null, top = null, bot = null;
           if (!lex) {
@@ -115,7 +115,7 @@ Indifference curves are then the level sets $\{u = c\}$, and the preferred set o
             const ys = Math.max(0.45, x2 - 1.1);
             for (let n = 1; n <= 7; n++) s.dot(x1 + 2.6 / n, ys, { r: 6 - 0.45 * n, color: 'gold' });
             s.dot(x1, ys, { r: 5.5, hollow: true, color: 'red', width: 2.2 });
-            s.text('Yₙ ≻ X', x1 + 2.6, ys, { dx: 9, color: 'gold', size: 12, weight: 700, align: 'left' });
+            s.text('Yₙ ≻ X', Math.min(x1 + 1.5, 8.7), ys, { dy: -16, color: 'gold', size: 12, weight: 700, align: 'center' });
             s.text('lim Yₙ ≺ X', x1, ys, { dx: -10, dy: 2, color: 'red', size: 12, weight: 700, align: 'right' });
             top = { a: x1, b: 10, open: [dRel < 0, false] }; bot = { a: 0, b: x1, open: [false, dRel > 0] };
           }
@@ -123,7 +123,7 @@ Indifference curves are then the level sets $\{u = c\}$, and the preferred set o
           r.line(0, 0.75, 10, 0.75, { color: 'faint', width: 1.2 });
           for (let i = 0; i <= 10; i += 2) { r.line(i, 0.68, i, 0.82, { color: 'muted', width: 1 }); r.text(String(i), i, 0.75, { dy: 14, align: 'center', color: 'muted', size: 10.5 }); }
           r.text('t', 10.4, 0.75, { color: 'muted', size: 14, math: true, align: 'left', dx: -4, dy: -10 });
-          r.interval(top.a, top.b, 3.1, { color: 'green', width: 7, r: 5.5, open: top.open });
+          r.line(top.a, 3.1, 10, 3.1, { color: 'green', width: 7, cap: 'butt' }); r.arrow(9.7, 3.1, 10.55, 3.1, { color: 'green', width: 3, head: 12 }); r.dot(top.a, 3.1, { r: 5.5, color: 'green', hollow: top.open[0], width: 2.4 });
           r.text('{ t : (t, t) ≿ X }', 0, 3.1, { dy: -22, color: 'green', size: 12.5, weight: 700, align: 'left' });
           r.interval(bot.a, bot.b, 1.9, { color: 'red', width: 7, r: 5.5, open: bot.open });
           r.text('{ t : X ≿ (t, t) }', 0, 1.9, { dy: -22, color: 'red', size: 12.5, weight: 700, align: 'left' });
@@ -176,10 +176,10 @@ the rate at which utility rises as the consumer gets more of good $i$ alone; for
           floor3(S3, -0.7);
           S3.surface((x, y) => [X3(x), X3(y), Z(u(x, y))], [lo, hi], [lo, hi], { n: 22, colorFn: (x, y) => v.M.cmap(0.12 + 0.8 * (u(x, y) - mn) / (mx - mn), 'viridis'), alpha: 0.72 });
           const pts = []; for (let i = 0; i <= 60; i++) { const x = lo + ((hi - lo) * i) / 60; pts.push([X3(x), X3(b), Z(u(x, b)) + 0.01]); }
-          S3.path(pts, { color: 'orange', width: 3.2, bias: -0.05 });
+          S3.path(pts, { color: 'orange', width: 3.2, bias: -3 });
           S3.line([X3(lo), X3(b), -0.7], [X3(hi), X3(b), -0.7], { color: 'orange', width: 1.4, dash: true });
-          const tl = 1.6; S3.line([X3(a - tl), X3(b), Z(u0 - m1 * tl)], [X3(a + tl), X3(b), Z(u0 + m1 * tl)], { color: 'green', width: 2.6, bias: -0.07 });
-          S3.dot([X3(a), X3(b), Z(u0)], { r: 5.5, color: 'accent', bias: -0.09 });
+          const tl = 1.6; S3.line([X3(a - tl), X3(b), Z(u0 - m1 * tl)], [X3(a + tl), X3(b), Z(u0 + m1 * tl)], { color: 'green', width: 2.6, bias: -3.2 });
+          S3.dot([X3(a), X3(b), Z(u0)], { r: 5.5, color: 'accent', bias: -3.4 });
           // the slice
           sl.setView([0, 10], [mn, mn + (mx - mn) * 1.04]);
           sl.fn((x) => u(x, b), { domain: [lo, hi], color: 'orange', width: 2.8 });
@@ -224,23 +224,23 @@ the rate at which utility rises as the consumer gets more of good $i$ alone; for
         v.button('drought: 3 litres', () => qw.set(3));
         v.button('diamond glut: 1.5 ct', () => qd.set(1.5));
         v.button('back to normal', () => { qw.set(80); qd.set(0.1); });
-        const tw = v.stage({ x: [0, 100], y: [0, 440], height: 220, axes: 'box', xlabel: 'litres', ylabel: 'value', title: 'water: total value $TU(q)$' });
-        const td = v.stage({ x: [0, 1.5], y: [0, 440], height: 220, axes: 'box', xlabel: 'carats', ylabel: 'value', title: 'diamonds: total value $TU(q)$' });
-        const mw = v.stage({ x: [0, 100], y: [0, 44], height: 220, axes: 'box', xlabel: 'litres', ylabel: 'per litre', title: 'water: marginal value $MU(q)$' });
-        const md = v.stage({ x: [0, 1.5], y: [0, 440], height: 220, axes: 'box', xlabel: 'carats', ylabel: 'per carat', title: 'diamonds: marginal value $MU(q)$' });
+        const tw = v.stage({ x: [0, 100], y: [0, 440], height: 220, minWidth: 360, axes: 'box', xlabel: 'litres', ylabel: 'value', title: 'water: total value $TU(q)$' });
+        const td = v.stage({ x: [0, 1.5], y: [0, 440], height: 220, minWidth: 360, axes: 'box', xlabel: 'carats', ylabel: 'value', title: 'diamonds: total value $TU(q)$' });
+        const mw = v.stage({ x: [0, 100], y: [0, 44], height: 220, minWidth: 360, axes: 'box', xlabel: 'litres', ylabel: 'per litre', title: 'water: marginal value $MU(q)$' });
+        const md = v.stage({ x: [0, 1.5], y: [0, 440], height: 220, minWidth: 360, axes: 'box', xlabel: 'carats', ylabel: 'per carat', title: 'diamonds: marginal value $MU(q)$' });
         v.legend([['teal', 'water'], ['purple', 'diamonds'], ['green', 'tangent: slope = marginal value'], ['gold', 'spending = price × quantity', { area: true }]]);
         const panel = (T, Mg, TU, MU, q, col, X, unit) => {
           T.fn(TU, { domain: [0, X], color: col, width: 2.6 });
           const t = TU(q), m = MU(q), w = 0.22 * X;
           T.clip(() => T.line(q - w, t - m * w, q + w, t + m * w, { color: 'green', width: 2.4 }));
-          T.line(q, 0, q, t, GUIDE); T.dot(q, t, { r: 5.5, color: col });
-          T.text(`TU = ${v.fix(t, 1)}`, q, t, { dx: q > 0.6 * X ? -10 : 10, dy: t > 380 ? 16 : -14, color: col, size: 12, weight: 700, align: q > 0.6 * X ? 'right' : 'left' });
+          T.line(q, 0, q, t, GUIDE); T.line(0, t, q, t, GUIDE); T.dot(q, t, { r: 5.5, color: col });
+          T.text(`TU = ${v.fix(t, 1)}`, 0, t, { dx: 34, dy: t > 330 ? 11 : -9, color: col, size: 12, weight: 700, align: 'left' });
           Mg.between(MU, () => 0, 0, q, { fill: col, fillAlpha: 0.16 });
           Mg.rect(0, 0, q, m, { fill: 'gold', fillAlpha: 0.6, color: 'gold', width: 1 });
           Mg.fn(MU, { domain: [0, X], color: col, width: 2.6 });
           Mg.line(q, 0, q, m, GUIDE); Mg.dot(q, m, { r: 5.5, color: col });
           const ymax = Mg.bounds.y[1], small = m < 0.04 * ymax;
-          Mg.text(small ? `price ≈ MU = ${v.fix(m, 3)} ${unit} (too small to see)` : `price ≈ MU = ${v.fix(m, m < 10 ? 2 : 0)} ${unit}`, q, m, { dx: q > 0.55 * X ? -8 : 8, dy: small ? -22 : -12, color: col, size: 11.5, weight: 700, align: q > 0.55 * X ? 'right' : 'left' });
+          Mg.text(small ? `price ≈ ${v.fix(m, 3)} ${unit}: too small to see` : `price ≈ MU = ${v.fix(m, m < 10 ? 2 : 0)} ${unit}`, q, m, { dx: q > 0.55 * X ? -8 : 8, dy: small ? -22 : -12, color: col, size: 11.5, weight: 700, align: q > 0.55 * X ? 'right' : 'left' });
         };
         v.render(() => {
           panel(tw, mw, TUw, MUw, qw.value, 'teal', 100, 'per litre');
@@ -304,7 +304,7 @@ The MRS does not depend on which utility function represents the preferences. Pr
             chord = (P.y - y2) / h;
             s.line(P.x, P.y, x2, P.y, { color: 'ink', width: 1.4 }); s.line(x2, P.y, x2, y2, { color: 'red', width: 2.4 });
             s.line(P.x, P.y, x2, y2, { color: 'gold', width: 2.4, dash: [5, 4] }); s.dot(x2, y2, { r: 4.5, color: 'gold' });
-            s.text(`+${v.fix(h, 2)}`, P.x + h / 2, P.y, { dy: -9, align: 'center', size: 11.5 });
+            s.text(`+${v.fix(h, 2)}`, P.x + h / 2, P.y, { dy: 11, align: 'center', size: 11.5 });
             if ((P.y - y2) * s.scale > 16) s.text(`−${v.fix(P.y - y2, 2)}`, x2, (P.y + y2) / 2, { dx: 6, color: 'red', size: 11.5, align: 'left' });
           }
           // the MRS along the whole curve
@@ -353,7 +353,7 @@ Preferences are **homothetic** if the MRS is constant along every ray from the o
           ces: () => `\\mathrm{MRS} = (x_2/x_1)^{${v.fix(1 - rho.value, 2)}}`,
         };
         const s = v.stage({ x: [0, 10], y: [0, 10], height: 380, axes: 'box', xlabel: 'x₁', ylabel: 'x₂', weight: 1.2 });
-        const r = v.stage({ x: [0, 10], y: [0, 4.2], height: 380, axes: 'box', xlabel: 'height x₂ on the line', ylabel: 'MRS', title: 'MRS along the ray and along the vertical line' });
+        const r = v.stage({ x: [0, 10], y: [-0.3, 4.9], height: 380, axes: 'box', xlabel: 'height x₂ on the line', ylabel: 'MRS', yticks: [0, 1, 2, 3, 4], title: 'MRS along the ray and along the vertical line' });
         const R = s.handle(7, 5.2, { color: 'teal', label: 'ray', labelPos: 'e', constrain: (x, y) => [clamp(x, 0.8, 9.8), clamp(y, 0.8, 9.8)] });
         const V = s.handle(3, 9.4, { color: 'orange', constrain: (x) => [clamp(x, 0.5, 9.5), 9.4] });
         v.legend([['purple', 'indifference curves'], ['teal', 'along the ray'], ['orange', 'along the vertical line']]);
@@ -379,23 +379,24 @@ Preferences are **homothetic** if the MRS is constant along every ray from the o
             const yv = bisect((y) => F.u(V.x, y) - L, 1e-9, 40); if (yv != null && yv < 10) mark(V.x, yv, 'orange');
           }
           // right panel: MRS against the height on each line
-          const top = 4.2, ys = []; for (let i = 1; i <= 160; i++) ys.push((10 * i) / 160);
-          const clampM = (m) => (Number.isNaN(m) ? null : Math.min(m, top * 1.5));
+          const top = 4.45, ys = []; for (let i = 1; i <= 160; i++) ys.push((10 * i) / 160);
+          const clampM = (m) => (Number.isNaN(m) ? null : Math.min(m, top));
           const onRayAt = (y) => [y * (cs / Math.max(sn, 1e-9)), y];
-          const prR = ys.map((y) => { const [x] = onRayAt(y); const m = clampM(mrsAt(x, y)); return m == null ? null : [y, m]; });
-          const prV = ys.map((y) => { const m = clampM(mrsAt(V.x, y)); return m == null ? null : [y, m]; });
-          r.hline(top, { color: 'faint', width: 1, dash: [3, 3] }); r.text('∞ / off the chart', 0.2, top, { dy: -9, color: 'muted', size: 10.5, align: 'left' });
-          r.clip(() => { r.path(prV, { color: 'orange', width: 2.6 }); r.path(prR, { color: 'teal', width: 2.6, dash: k === 'subs' ? [7, 5] : null }); });
-          const vals = (pr) => pr.filter(Boolean).map((p) => p[1]);
-          const spread = (arr) => { if (!arr.length) return 0; const mn = Math.min(...arr), mx = Math.max(...arr); return mx === mn ? 0 : (mx - mn) / Math.max(Math.abs(mx), 1e-12); };
-          const homo = spread(vals(prR)) < 1e-6, quasi = spread(vals(prV)) < 1e-6;
-          r.corner(`${homo ? '✓' : '✗'} homothetic`, 'tr', { color: homo ? 'green' : 'red', weight: 700 });
-          r.corner(`${quasi ? '✓' : '✗'} quasilinear`, 'br', { color: quasi ? 'green' : 'red', weight: 700 });
-          const rv = vals(prR), vv = vals(prV);
+          const rawR = ys.map((y) => mrsAt(onRayAt(y)[0], y)), rawV = ys.map((y) => mrsAt(V.x, y));
+          const prof = (raw) => raw.map((m, i) => { const c = clampM(m); return c == null ? null : [ys[i], c]; }).filter(Boolean); // kinks (NaN) are skipped, so jumps show
+          const prR = prof(rawR), prV = prof(rawV);
+          r.hline(top, { color: 'faint', width: 1, dash: [3, 3] }); r.text('∞ or off the chart', 1.1, top, { dy: -9, color: 'muted', size: 10.5, align: 'left' });
+          r.clip(() => { r.path(prR, { color: 'teal', width: 5 }); r.path(prV, { color: 'orange', width: 2.2 }); });
+          const vals = (raw) => raw.filter((m) => !Number.isNaN(m));
+          const spread = (arr) => { if (!arr.length) return 0; const mn = Math.min(...arr), mx = Math.max(...arr); return mx === mn ? 0 : !isFinite(mx) ? 1 : (mx - mn) / Math.max(Math.abs(mx), 1e-12); };
+          const homo = spread(vals(rawR)) < 1e-6, quasi = spread(vals(rawV)) < 1e-6;
+          r.textPx(`${homo ? '✓' : '✗'} homothetic`, r.width - 12, 66, { align: 'right', color: homo ? 'green' : 'red', weight: 700, size: 12.5 });
+          r.textPx(`${quasi ? '✓' : '✗'} quasilinear`, r.width - 12, 84, { align: 'right', color: quasi ? 'green' : 'red', weight: 700, size: 12.5 });
+          const rv = vals(rawR), vv = vals(rawV);
           st = { k, homo, quasi, rmin: Math.min(...rv), rmax: Math.max(...rv), vmin: Math.min(...vv), vmax: Math.max(...vv), slope: sn / cs };
         });
         v.readout(() => {
-          const { k, homo, quasi, rmin, rmax, vmin, vmax, slope } = st, f = (x) => (x >= 6 ? '∞' : v.fix(x, 2));
+          const { k, homo, quasi, rmin, rmax, vmin, vmax, slope } = st, f = (x) => (!isFinite(x) ? '∞' : v.fix(x, 2));
           const desc = { subs: 'Perfect substitutes: only the weighted total matters.', comp: 'Perfect complements: the goods are wanted in the fixed ratio $x_2 = a x_1$; any excess of one is worthless.', cd: 'Cobb–Douglas: smooth convex curves; the exponent is the weight of good 1.', ql: 'Quasilinear: good 2 acts like money, with constant marginal utility.', ces: 'CES: lower $\\rho$ makes the goods poorer substitutes; $\\rho \\to 0$ is Cobb–Douglas, $\\rho = 1$ perfect substitutes.' }[k];
           const rr = homo ? `MRS constant at ${f(rmin)} along the ray of slope ${v.fix(slope, 2)}: **homothetic**` : `MRS varies from ${f(rmin)} to ${f(rmax)} along the ray: **not homothetic**`;
           const vq = quasi ? `constant at ${f(vmin)} along $x_1 = ${v.fix(V.x, 2)}$: **quasilinear**` : `varies from ${f(vmin)} to ${f(vmax)} along $x_1 = ${v.fix(V.x, 2)}$: **not quasilinear**`;

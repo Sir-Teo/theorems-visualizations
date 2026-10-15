@@ -623,6 +623,8 @@ where $s(n,k) = (-1)^{n-k}c(n,k)$. Consequently the lower-triangular matrices $[
           const target = d === 'S' ? (x) => x ** n : (x) => fallX(x, n);
           const term = d === 'S' ? (k) => (x) => S2[n][k] * fallX(x, k) : (k) => (x) => sgnS1(C1, n, k) * x ** k;
           const upto = d === 'S' ? m : n, part = (x) => { let s = 0; for (let k = 0; k <= upto; k++) s += term(k)(x); return s; };
+          v.legend(d === 'S' ? [['ink', '$x^n$'], ['orange', 'terms $S(n,k)x^{\\underline k}$ (dashed: not included)'], ['gold', 'sum of the first $m$ terms'], ['green', 'agreement at $x=0,\\dots,m$', { dot: true }]]
+            : [['ink', '$x^{\\underline n}$'], ['orange', 'terms $s(n,k)x^k$'], ['gold', 'their sum']]);
           const ymax = slog(Math.max(Math.abs(target(x1)), Math.abs(target(x0)), 10)) * 1.08;
           A.setView([x0, x1], [-ymax * 0.55, ymax]);
           const ticks = []; for (let e = 0; 10 ** e <= 10 ** ymax; e++) { ticks.push([slog(10 ** e), e === 0 ? '1' : `10${'⁰¹²³⁴⁵⁶⁷⁸⁹'[e]}`]); if (slog(-(10 ** e)) > -ymax * 0.55) ticks.push([slog(-(10 ** e)), e === 0 ? '−1' : `−10${'⁰¹²³⁴⁵⁶⁷⁸⁹'[e]}`]); }
@@ -647,7 +649,6 @@ where $s(n,k) = (-1)^{n-k}c(n,k)$. Consequently the lower-triangular matrices $[
           B.text(d === 'S' ? 's(n,k)' : 'S(n,k)', 0.5, 0.97, { align: 'center', size: 12, weight: 700, color: 'muted', baseline: 'top' });
           B.text('product = identity', 0.845, 0.97, { align: 'center', size: 12, weight: 700, color: 'green', baseline: 'top' });
         });
-        v.legend([['ink', 'target polynomial'], ['orange', 'single terms (dashed: not included)'], ['gold', 'sum of the terms included'], ['green', 'agreement at $x=0,\\dots,m$', { dot: true }]]);
         v.readout(() => {
           const n = nS.value, m = Math.min(mS.value, n), d = dir.value, M = mats(), L = d === 'S' ? M.S : M.s, R2 = d === 'S' ? M.s : M.S, [ci, cj] = cell;
           let t;
@@ -655,10 +656,10 @@ where $s(n,k) = (-1)^{n-k}c(n,k)$. Consequently the lower-triangular matrices $[
             const terms = []; for (let k = n; k >= 1; k--) terms.push(`${S2[n][k] === 1 ? '' : S2[n][k]}x^{\\underline{${k}}}`);
             t = `$x^{${n}} = ${terms.join(' + ')}$. With $m = ${m}$ term${m > 1 ? 's' : ''} the partial sum matches $x^{${n}}$ at $x = ${Array.from({ length: m + 1 }, (_, j) => j).join(', ')}$` + (m < n ? ` but not at $x = ${m + 1}$ (${v.fmt(Array.from({ length: m + 1 }, (_, k) => S2[n][k] * fallX(m + 1, k)).reduce((a, b) => a + b, 0), 6)} vs ${(m + 1) ** n}).` : ' — and everywhere.');
           } else {
-            const terms = []; for (let k = n; k >= 1; k--) { const c = sgnS1(C1, n, k); terms.push(`${c < 0 ? '-' : terms.length ? '+' : ''}${Math.abs(c) === 1 ? '' : Math.abs(c)}x^{${k}}`); }
+            const terms = []; for (let k = n; k >= 1; k--) { const c = sgnS1(C1, n, k); terms.push(`${c < 0 ? '-' : terms.length ? '+' : ''}${Math.abs(c) === 1 ? '' : Math.abs(c)}x${k > 1 ? `^{${k}}` : ''}`); }
             t = `$x^{\\underline{${n}}} = ${terms.join(' ')}$ — the black and gold curves coincide.`;
           }
-          let dot = 0; const parts = []; for (let k = 0; k <= Math.max(ci, cj); k++) { dot += L[ci][k] * R2[k][cj]; if (L[ci][k] && R2[k][cj]) parts.push(`(${L[ci][k]})(${R2[k][cj]})`); }
+          let dot = 0; const parts = []; for (let k = 0; k <= Math.max(ci, cj); k++) { dot += L[ci][k] * R2[k][cj]; if (L[ci][k] && R2[k][cj]) parts.push(`(${v.fmt(L[ci][k])})(${v.fmt(R2[k][cj])})`); }
           return t + ` Product entry $(${ci},${cj})$: ${parts.length ? parts.join(' + ') : '0'} $= ${dot}$.`;
         });
       },
@@ -672,7 +673,7 @@ where $s(n,k) = (-1)^{n-k}c(n,k)$. Consequently the lower-triangular matrices $[
 $$\binom{2n}{n} \sim \frac{4^n}{\sqrt{\pi n}},$$
 and more precisely $\dfrac{4^n}{\sqrt{\pi(n+\frac12)}} \le \dbinom{2n}{n} \le \dfrac{4^n}{\sqrt{\pi(n+\frac14)}}$ for every $n\ge1$, so that the relative error $1 - \binom{2n}n\sqrt{\pi n}/4^n$ lies between $0$ and $\frac1{8n}$ and equals $\frac1{8n} + O(n^{-2})$. The elementary bounds $\frac{4^n}{2n+1}\le\binom{2n}n\le 4^n$ are off by polynomial factors.`,
       idea: String.raw`$\binom{2n}{n} = (2n)!/(n!)^2$, and Stirling's formula (pma-8.22) $m!\sim\sqrt{2\pi m}\,(m/e)^m$ gives $\sqrt{4\pi n}(2n/e)^{2n}\big/\bigl(2\pi n\,(n/e)^{2n}\bigr) = 4^n/\sqrt{\pi n}$. The elementary bounds only use that $\binom{2n}{n}$ is the largest of the $2n+1$ terms of $(1+1)^{2n} = 4^n$ (1.7). The ratio $r_n = \binom{2n}n\sqrt{\pi n}/4^n$ satisfies $r_{n+1}/r_n = \frac{2n+1}{2n+2}\sqrt{\frac{n+1}{n}}$, which is how the plots compute it exactly up to $n = 1000$.`,
-      caption: String.raw`Top (log–log): $\binom{2n}n/4^n$ (blue dots) against the Stirling prediction $1/\sqrt{\pi n}$ (green) and the elementary bounds $1$ and $1/(2n+1)$ (dashed) — only the Stirling curve has the right slope, $-\tfrac12$. Bottom left: the ratio $r_n$ creeps up to $1$ inside the shaded band of the two-sided bound. Bottom right: the relative error $1 - r_n$ and $1/(8n)$ merge. Slide $n$ up to $1000$.`,
+      caption: String.raw`Top (log–log): $\binom{2n}n/4^n$ (blue dots) against the Stirling prediction $1/\sqrt{\pi n}$ (green) and the elementary bounds $1$ and $1/(2n+1)$ (dashed) — only the Stirling curve has the right slope, $-\tfrac12$. Bottom left: the ratio $r_n$ creeps up to $1$ inside the shaded band of the two-sided bound. Bottom right: the relative error $1 - r_n$ measured in units of $1/(8n)$ tends to $1$ (dashed: the next-order prediction $1-\tfrac1{16n}$). Slide $n$ up to $1000$.`,
       deps: ['comb-1.6', 'pma-8.22'],
       see: ['prob-3.1.2', 'comb-5.13'],
       refs: ['Aigner ch. 1'],
@@ -683,7 +684,7 @@ and more precisely $\dfrac{4^n}{\sqrt{\pi(n+\frac12)}} \le \dbinom{2n}{n} \le \d
         const nS = v.slider('$n$', 1, 1000, 12, { log: true, int: true });
         const A = v.stage({ x: [1, 1000], y: [1e-4, 2], xlog: true, ylog: true, height: 240, full: true, axes: 'box', xlabel: 'n', title: '$\\binom{2n}{n}/4^n$ on log–log axes' });
         const B = v.stage({ x: [1, 1000], y: [0.8, 1.01], xlog: true, height: 230, weight: 1, axes: 'box', xlabel: 'n', title: 'ratio $r_n = \\binom{2n}{n}\\sqrt{\\pi n}/4^n$' });
-        const C = v.stage({ x: [1, 1000], y: [5e-5, 0.3], xlog: true, ylog: true, height: 230, weight: 1, axes: 'box', xlabel: 'n', title: 'relative error $1-r_n$ vs $1/(8n)$' });
+        const C = v.stage({ x: [1, 1000], y: [0.88, 1.015], xlog: true, height: 230, weight: 1, axes: 'box', xlabel: 'n', title: 'relative error in units of $1/(8n)$: $8n(1-r_n)\\to 1$' });
         const pts = []; for (let n = 1; n <= NMAX; n++) if (n <= 40 || n % Math.ceil(n / 25) === 0) pts.push(n);
         v.render(() => {
           const N = Math.round(nS.value);
@@ -701,12 +702,13 @@ and more precisely $\dfrac{4^n}{\sqrt{\pi(n+\frac12)}} \le \dbinom{2n}{n} \le \d
           B.fn((x) => 1 - 1 / (8 * x), { color: 'purple', width: 1.4, dash: [4, 3] });
           B.path(r.slice(1).map((y, i) => [i + 1, y]), { color: 'blue', width: 2.2 });
           B.dot(N, r[N], { r: 5.5, color: 'gold' });
-          C.path(r.slice(1).map((y, i) => [i + 1, 1 - y]), { color: 'blue', width: 3.2 });
-          C.fn((x) => 1 / (8 * x), { color: 'purple', width: 1.8, dash: [6, 4] });
-          C.text('1/(8n)', 3, 1 / 24, { dx: 8, dy: -10, size: 11.5, color: 'purple', weight: 700 });
-          C.dot(N, 1 - r[N], { r: 5.5, color: 'gold' });
+          C.hline(1, { color: 'muted', dash: [5, 4] });
+          C.fn((x) => 1 - 1 / (16 * x), { color: 'purple', width: 1.6, dash: [6, 4] });
+          C.path(r.slice(1).map((y, i) => [i + 1, 8 * (i + 1) * (1 - y)]), { color: 'blue', width: 2.4 });
+          C.dot(N, 8 * N * (1 - r[N]), { r: 5.5, color: 'gold' });
+          C.text('next order: 1 − 1/(16n)', 30, 1 - 1 / 480, { dy: 16, size: 11, color: 'purple', weight: 600 });
         });
-        v.legend([['blue', 'exact (from the ratio recursion)'], ['green', '$1/\\sqrt{\\pi n}$, the two-sided bound band'], ['purple', '$1/(8n)$ correction', { dash: true }], ['red', 'elementary bounds', { dash: true }]]);
+        v.legend([['blue', 'exact (from the ratio recursion)'], ['green', '$1/\\sqrt{\\pi n}$; band = two-sided bound'], ['purple', 'correction terms', { dash: true }], ['red', 'elementary bounds', { dash: true }]]);
         v.readout(() => {
           const N = Math.round(nS.value), big = binomBig(2 * N, N).toString(), ap = 4 ** N / Math.sqrt(Math.PI * N);
           const exact = big.length <= 18 ? commas(big).replace(/,/g, '{,}') : `${big[0]}.${big.slice(1, 7)}\\times10^{${big.length - 1}}`;

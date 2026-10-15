@@ -42,7 +42,7 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
         const M = v.M, NH = 24, H = 0.78, FR = fractions(M, 10);
         const view = v.select('spectrum of', [{ value: 'force', label: 'bridge force $n\\,b_n$' }, { value: 'disp', label: 'displacement $b_n$' }], 'force');
         const s = v.stage({ x: [-0.04, 1.04], y: [-0.82, 1.12], height: 225, axes: false, full: true });
-        const sp = v.stage({ x: [0.3, NH + 0.7], y: [-66, 7], height: 250, axes: 'box', xlabel: 'harmonic n', xticks: [1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true });
+        const sp = v.stage({ x: [-1.1, NH + 0.7], y: [-72, 7], height: 250, axes: 'box', xlabel: 'harmonic n', xticks: [1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24], yticks: [[0, '0 dB'], [-20, '−20'], [-40, '−40'], [-60, '−60']], full: true });
         const h = s.handle(0.2, H, { color: 'gold', label: 'pluck', labelPos: 'n', constrain: (x) => [snapTo(FR, M.clamp(x, 0.02, 0.98), 0.006), H] });
         const pluck = (p, dur = 1.6) => finish(synth(bridgeParts(triCoeffs(p, 1, 40), F1), dur), 0.8);
         v.soundButton('Listen', (snd) => snd.samples(pluck(h.x), SR, { gain: 0.55 }));
@@ -65,7 +65,7 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
             s.hline(y0, { color: 'faint', width: 1 });
             s.fn((x) => y0 + 0.2 * Math.sin(n * Math.PI * x), { domain: [0, 1], n: 300, color: 'red', width: 1.8, dash: [6, 4] });
             s.dot(p, y0, { r: 5, color: 'red' });
-            s.text(`harmonic ${n} has a node at the pluck: it is not excited`, 0.99, y0 - 0.22, { align: 'right', color: 'red', size: 11.5 });
+            s.text(`harmonic ${n} has a node at the pluck: it is not excited`, 0.99, -0.27, { align: 'right', color: 'red', size: 11.5 });
           } else s.text('no harmonic up to 24 has a node at this point', 0.99, -0.62, { align: 'right', color: 'muted', size: 11.5 });
           s.corner(`p = ${v.fix(p, 3)} L${fr ? ` = ${fr[1]}/${fr[2]} L` : ''}`, 'tl', { color: 'gold', weight: 700 });
           // ---- spectrum
@@ -73,12 +73,13 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
           const amax = Math.max(...Array.from(a, Math.abs)), bound = (n) => (force ? 1 / n : 1 / (n * n));
           const kb = (2 * H) / (Math.PI * Math.PI * p * (1 - p)); // |a_n| = kb·|sin|·bound(n)
           const dB = (x) => 20 * Math.log10(Math.max(1e-12, x / amax));
+          sp.hline(-61, { color: 'muted', width: 1 });
           sp.fn((n) => dB(kb * bound(n)), { domain: [1, NH], color: 'muted', width: 1.4, dash: [6, 4] });
-          sp.fn((n) => dB(kb * bound(n) * Math.abs(Math.sin(n * Math.PI * p))), { domain: [0.5, NH + 0.5], n: 1200, color: 'orange', width: 1.4 });
+          sp.clip(() => sp.fn((n) => dB(kb * bound(n) * Math.abs(Math.sin(n * Math.PI * p))), { domain: [0.5, NH + 0.5], n: 1200, color: 'orange', width: 1.4 }), [0, NH + 0.7], [-61, 7]);
           for (let n = 1; n <= NH; n++) {
             const L = dB(Math.abs(a[n - 1]));
-            if (miss.includes(n)) { sp.text('×', n, -60, { align: 'center', color: 'red', size: 18, weight: 700 }); continue; }
-            sp.rect(n - 0.3, -66, n + 0.3, Math.max(-66, L), { fill: 'accent', fillAlpha: 0.65, stroke: false });
+            if (miss.includes(n)) { sp.text('×', n, -57, { align: 'center', color: 'red', size: 18, weight: 700 }); continue; }
+            if (L > -61) sp.rect(n - 0.3, -61, n + 0.3, L, { fill: 'accent', fillAlpha: 0.65, stroke: false });
           }
           sp.corner(force ? 'bridge force: bound 1/n' : 'displacement: bound 1/n²', 'tr', { color: 'muted' });
         });
@@ -98,7 +99,7 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
       name: 'Touching a node: flageolet harmonics',
       statement: String.raw`If a finger rests **lightly** on a sounding string at a point $x_f$, every mode that moves at $x_f$ loses its energy within a few hundredths of a second, while the modes with a node at $x_f$ are hardly disturbed. When $x_f/L=k/q$ in lowest terms the survivors are exactly the harmonics $q,2q,3q,\dots$, a complete harmonic series on the fundamental $qf_1$: the string sounds a **flageolet (natural harmonic)** $q$ times higher than the open string, an octave at $L/2$, an octave and a fifth (a twelfth) at $L/3$ or $2L/3$, two octaves at $L/4$. Touching a point that is not a simple fraction leaves no low harmonic alive and gives only a muffled thud. Pressing the string down to the fingerboard instead shortens it (Mersenne's first law, 2.5).`,
       idea: String.raw`A light touch adds damping at one point: it hardly holds the string in place but absorbs energy at a rate proportional to the square of the string's velocity there. Mode $n$ moves at $x_f$ with relative amplitude $\sin(n\pi x_f/L)$, so its extra decay rate is roughly proportional to $\sin^2(n\pi x_f/L)$ (each mode is treated separately, as in 2.3). Modes whose node falls under the finger (2.3) pass by untouched, and the survivors $q,2q,\dots$ have frequencies $qf_1,2qf_1,\dots$: the harmonic series of a string a $q$-th as long, which is what the ear hears.`,
-      caption: String.raw`The string is plucked near the end; drag the orange finger along it (it clicks onto simple fractions). After the pluck the finger lands, and the panel below plots the level of each harmonic over time: the rows without a node under the finger fade within a fraction of a second, the others ring on. *Pluck, then touch* lets you hear the open string turn into the harmonic; switch the finger off for comparison. In the top panel the motion is slowed down, not to scale.`,
+      caption: String.raw`The string is plucked near the end; drag the orange finger along it (it clicks onto simple fractions). After the pluck the finger lands, and the panel below plots the level of each harmonic over time: the rows without a node under the finger fade within a fraction of a second, the others ring on (deeper colour = louder, from −60 dB to 0 dB). *Pluck, then touch* lets you hear the open string turn into the harmonic; switch the finger off for comparison. In the top panel the motion is slowed down, not to scale.`,
       deps: ['music-2.3', 'music-2.7'],
       refs: ['Loy I ch. 8'],
       tags: ['harmonics', 'string'],
@@ -107,8 +108,8 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
         const M = v.M, NM = 32, P0 = 0.137, TT = 0.3, DUR = 1.6, KAP = 120, NS = 16, FR = fractions(M, 8);
         const on = v.toggle('finger on the string', true);
         const s = v.stage({ x: [-0.04, 1.04], y: [-0.95, 1.2], height: 230, axes: false, full: true });
-        const sg = v.stage({ x: [0, DUR], y: [0.5, NS + 0.5], height: 240, axes: 'box', xlabel: 'time after the pluck (s)', ylabel: 'harmonic n', yticks: [1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16], full: true, title: 'level of each harmonic of the bridge force over time (dB)' });
-        const fh = s.handle(1 / 3, 1.0, { color: 'orange', label: 'finger', labelPos: 'n', constrain: (x) => [snapTo(FR, M.clamp(x, 0.03, 0.97), 0.005), 1.0] });
+        const sg = v.stage({ x: [-0.13, DUR + 0.09], y: [-1.2, NS + 1.9], height: 250, axes: 'box', xlabel: 'time after the pluck (s)', ylabel: 'harmonic n', yticks: [1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16], full: true, title: 'level of each harmonic of the bridge force over time (dB)' });
+        const fh = s.handle(1 / 3, 1.0, { color: 'orange', label: 'finger', labelPos: 'e', constrain: (x) => [snapTo(FR, M.clamp(x, 0.03, 0.97), 0.005), 1.0] });
         const b = triCoeffs(P0, 1, NM), a = b.map((bn, i) => (i + 1) * bn), amax = Math.max(...Array.from(a, Math.abs));
         const extra = () => M.range(NM, 1).map((n) => (on.value ? KAP * Math.sin(n * Math.PI * fh.x) ** 2 : 0));
         const env = (n, t, ex) => Math.exp(-decayOf(n * F1) * t - ex[n - 1] * Math.max(0, t - TT));
@@ -129,23 +130,25 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
           const touching = on.value && tr >= TT, ys = sc * yAt(xf);
           const tipY = touching ? ys + 0.09 : 0.5;
           s.line(xf, 1.0, xf, tipY + 0.06, { color: 'orange', width: 12, alpha: 0.35 });
-          s.circle(xf, tipY, 0.035, { fill: 'orange', fillAlpha: touching ? 0.9 : 0.45, color: 'orange', width: 1.5 });
+          s.dot(xf, tipY, { r: 9, color: 'orange', alpha: touching ? 0.95 : 0.5 });
           if (!touching && on.value) s.line(xf, tipY - 0.05, xf, ys, { color: 'orange', width: 1, dash: [2, 3] });
           s.text('pluck', P0, -0.3, { align: 'center', color: 'muted', size: 10.5 });
           s.line(P0, -0.24, P0, -0.06, { color: 'muted', width: 1 });
           s.corner(`t = ${v.fix(tr, 2)} s${tr < TT ? ' (open string)' : on.value ? ' (finger down)' : ''}`, 'tl', { color: 'ink', weight: 600 });
           const fr = fracOf(FR, xf);
           s.corner(`finger at ${v.fix(xf, 3)} L${fr ? ` = ${fr[1]}/${fr[2]} L` : ''}`, 'tr', { color: 'orange', weight: 700 });
-          // ---- spectrogram
+          // ---- spectrogram (quiet = panel colour, loud = accent: readable in both themes)
+          const lo = v.rgb('panel'), hi = v.rgb('accent');
           sg.raster((x, y) => {
-            const n = Math.round(y); if (n < 1 || n > NS) return null;
+            const n = Math.round(y); if (n < 1 || n > NS || x < 0 || x > DUR) return null;
             const L = 20 * Math.log10(Math.abs(a[n - 1]) / amax * env(n, x, ex) + 1e-9);
-            return M.cmap(M.clamp((L + 60) / 60, 0, 1), 'magma');
-          }, { key: `${xf}|${on.value}`, res: 2 });
+            const u = Math.pow(M.clamp((L + 60) / 60, 0, 1), 0.8);
+            return [0, 1, 2].map((i) => lo[i] + (hi[i] - lo[i]) * u);
+          }, { key: `${xf}|${on.value}|${lo.join()}`, res: 2 });
           sg.axes();
-          if (on.value) { sg.vline(TT, { color: 'panel', width: 1.5, dash: [5, 4] }); sg.text('finger lands', TT + 0.02, NS - 0.2, { align: 'left', color: 'panel', size: 11, weight: 600 }); }
-          sg.vline(tr, { color: 'gold', width: 2.4 });
-          survivors(ex).forEach((n) => sg.text('◂', DUR - 0.01, n, { align: 'right', color: 'green', size: 13 }));
+          if (on.value) { sg.line(TT, 0.5, TT, NS + 0.5, { color: 'orange', width: 1.6, dash: [5, 4] }); sg.text('finger lands', TT, NS + 1.15, { align: 'center', color: 'orange', size: 11, weight: 600 }); }
+          sg.line(tr, 0.5, tr, NS + 0.5, { color: 'gold', width: 2.4 });
+          survivors(ex).forEach((n) => sg.text('◂', DUR + 0.01, n, { align: 'left', color: 'green', size: 13 }));
         }, { still: 0.9 / 0.22 });
         v.legend([['accent', 'the string (slow motion)'], ['orange', 'the finger'], ['green', 'harmonics with a node under the finger', { dot: true }]]);
         v.readout(() => {
@@ -166,7 +169,7 @@ Hence **every harmonic with a node at the plucking point is absent**: if $p/L=k/
 
 Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as the bow moves away from the bridge (Schelleng): too much force and the string cannot release cleanly (raucous, scratchy sound), too little and it slips more than once per period (a "surface" or whistling sound).`,
       idea: String.raw`Any motion of an ideal string is a pair of travelling waves (2.2), so a single corner circulating at speed $c$ is an allowed free motion; it is the one whose displacement at the bow point rises at the constant speed $v_b$ and then falls back. Friction is high when the string is stuck and lower once it slides, so the bow can hold the string during the slow part and let it go when the corner arrives to trigger release, and the corner's return triggers the recapture. Schelleng's bounds follow from requiring the static friction to hold against the corner's tug, $F_N\lesssim\frac{2Zv_b}{\beta(\mu_s-\mu_d)}$, and the losses at the bridge not to trigger extra slips, $F_N\gtrsim\frac{Z^2v_b}{2R\beta^2(\mu_s-\mu_d)}$, where $Z=\sqrt{T\mu}$ is the string's impedance and $R$ the bridge's resistance.`,
-      caption: String.raw`This is a simulation, not an animation of the formula: a digital-waveguide string (2.2) on a violin's open G (196 Hz), held by a bow through a stick–slip friction law. Top: one period in slow motion: the simulated string (blue), the corner (gold), the envelope it sweeps (shaded) and Helmholtz's predicted parabolas (green dashes). Middle: the string's velocity at the bow (stick = flat at the bow speed, shaded green) and the force on the bridge. Right: Schelleng's diagram; drag the point to change bow force and bow position and leave the Helmholtz window, and watch the readout classify what the simulated string does. *Listen* plays 1.4 s of the simulated bridge force.`,
+      caption: String.raw`This is a simulation, not an animation of the formula: a digital-waveguide string (2.2) on a violin's open G (196 Hz), held by a bow through a stick–slip friction law. Top: one period in slow motion: the simulated string (blue), the corner (gold), the envelope it sweeps (shaded) and Helmholtz's predicted parabolas (green dashes). Middle: the string's velocity at the bow (stick = flat at the bow speed, shaded green) and the force on the bridge. Bottom right: Schelleng's diagram (his two bounds, with the bridge resistance taken from the simulated bridge's losses); drag the point to change bow force and bow position and leave the Helmholtz window, and watch the readout classify what the simulated string does. *Listen* plays 1.4 s of the simulated bridge force.`,
       deps: ['music-2.2'],
       see: ['music-2.7', 'music-2.6'],
       refs: ['Benson ch. 3'],
@@ -175,11 +178,13 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
       scope: String.raw`The ideal Helmholtz motion assumes a perfectly flexible string, a point bow and a rigid bridge. Real strings round the corner (losses and stiffness) and show small ripples; the bow has width and the bow hair is elastic; the bounds on bow force are estimates, and the simulated window is narrower at the bottom than Schelleng's formula.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bowed_string_instrument' },
       viz(v) {
-        const M = v.M, L = 0.325, MU = 2.7e-3, C = 2 * L * F1, Z = MU * C, G = 0.985, DMU = 0.5, R = (2 * Z) / (1 - G);
+        const M = v.M, L = 0.325, MU = 2.7e-3, C = 2 * L * F1, Z = MU * C, G = 0.99, LP = 0.6, DMU = 0.5;
+        // Schelleng's R: the simulated bridge's loss near the 10th harmonic, where the secondary waves that cause extra slips live
+        const w10 = (TAU * 10 * F1) / SR, H10 = (1 - LP) / Math.hypot(1 - LP * Math.cos(w10), LP * Math.sin(w10)), R = (2 * Z) / (1 - G * H10);
         const vbS = v.slider('bow speed $v_b$', 0.05, 0.5, 0.1, { log: true, fmt: (x) => v.fix(x * 100, 1) + ' cm/s' });
-        const sch = v.stage({ x: [0.025, 0.3], y: [0.004, 12], xlog: true, ylog: true, height: 235, axes: 'box', xlabel: 'β = bow–bridge distance / L', ylabel: 'bow force (N)', weight: 1, title: 'Schelleng diagram (drag the point)' });
         const s = v.stage({ x: [-0.03, 1.03], y: [-1.2, 1.2], height: 235, axes: false, full: true });
-        const tr = v.stage({ x: [0, 2], y: [-1.5, 2.2], height: 235, axes: 'box', xlabel: 'time (periods)', yticks: [], weight: 1.15, title: 'at the bow, and at the bridge' });
+        const tr = v.stage({ x: [0, 2], y: [-1.5, 2.2], height: 250, axes: 'box', xlabel: 'time (periods)', yticks: [], weight: 1.15, title: 'at the bow, and at the bridge' });
+        const sch = v.stage({ x: [0.025, 0.3], y: [0.004, 12], xlog: true, ylog: true, height: 250, axes: 'box', xlabel: 'β = bow–bridge distance / L', ylabel: 'bow force (N)', weight: 1, title: 'Schelleng diagram (drag the point)' });
         const hd = sch.handle(0.1, 0.5, { color: 'gold', r: 8, constrain: (x, y) => [M.clamp(x, 0.03, 0.28), M.clamp(y, 0.005, 10)] });
         const Fmax = (b, vb) => (2 * Z * vb) / (b * DMU), Fmin = (b, vb) => (Z * Z * vb) / (2 * R * b * b * DMU);
         let key = '', S = null;
@@ -199,7 +204,7 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
         };
         const run = () => {
           const k = [hd.x, hd.y, vbS.value].join(); if (k === key) return S; key = k;
-          const Rr = bowSim({ f1: F1, beta: hd.x, FN: hd.y, vb: vbS.value, Z, dur: 0.4, rec: 2, g: G });
+          const Rr = bowSim({ f1: F1, beta: hd.x, FN: hd.y, vb: vbS.value, Z, dur: 0.4, rec: 2, g: G, lp: LP });
           const cl = classify(Rr), N = Rr.N, snaps = Rr.snaps, mean = new Float64Array(N + 1), lo = new Float64Array(N + 1).fill(Infinity), hi = new Float64Array(N + 1).fill(-Infinity);
           for (const y of snaps) for (let i = 0; i <= N; i++) { mean[i] += y[i] / snaps.length; lo[i] = Math.min(lo[i], y[i]); hi[i] = Math.max(hi[i], y[i]); }
           let ymax = 1e-9; for (let i = 0; i <= N; i++) ymax = Math.max(ymax, Math.abs(lo[i]), Math.abs(hi[i]));
@@ -210,7 +215,7 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
           return S;
         };
         v.soundButton('Listen', (snd) => {
-          const Rr = bowSim({ f1: F1, beta: hd.x, FN: hd.y, vb: vbS.value, Z, dur: 1.4, g: G });
+          const Rr = bowSim({ f1: F1, beta: hd.x, FN: hd.y, vb: vbS.value, Z, dur: 1.4, g: G, lp: LP });
           snd.samples(finish(Rr.out, 0.8, SR, 0.01, 0.08), SR, { gain: 0.5 });
         });
         v.animate((t) => {
@@ -271,7 +276,7 @@ Helmholtz motion needs the bow force $F_N$ to lie in a window that narrows as th
       name: 'Inharmonicity of stiff strings',
       statement: String.raw`A real string resists bending as well as stretching. For a uniform wire of Young's modulus $E$ and diameter $d$, pinned at both ends, the modes are still $\sin(n\pi x/L)$ but their frequencies are
 $$f_n=n\,f_0\sqrt{1+Bn^2},\qquad B=\frac{\pi^3Ed^4}{64\,TL^2},$$
-where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without stiffness. The partials are **sharp of the harmonic series**, by about $866\,B\,n^2$ cents for small $Bn^2$ (relative to $nf_0$), increasingly so up the series. $B$ is largest for short, thick, slack strings: about $10^{-4}$ in a piano's bass and tenor, $4\times10^{-4}$ near middle C and $10^{-2}$ in the top octave. Stiff strings are therefore not periodic oscillators, and two partials that should coincide beat.`,
+where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without stiffness. The partials are **sharp of the harmonic series**, by about $866\,B\,n^2$ cents for small $Bn^2$ (relative to $nf_0$), increasingly so up the series. $B$ is largest for short, thick, slack strings: about $10^{-4}$ in a piano's bass and tenor, $4\times10^{-4}$ near middle C, a few times $10^{-3}$ around C7 and up to about $10^{-2}$ at the top. Stiff strings are therefore not periodic oscillators, and two partials that should coincide beat.`,
       idea: String.raw`Bending stiffness adds a restoring force $-EI\,\partial^4y/\partial x^4$, with $I=\pi d^4/64$, to the string's $T\,\partial^2y/\partial x^2$ (2.1). For a sine of wavenumber $k$ the restoring force per unit length becomes $(Tk^2+EIk^4)y$, so $\omega^2=(T/\mu)k^2(1+EIk^2/T)$. With $k=n\pi/L$ (2.4) this is the formula above: short wavelengths feel the stiffness most, so waves on a stiff string are **dispersive** (high partials travel faster) and the mode frequencies spread apart. With clamped rather than pinned ends the partials are raised a little more, but the $n^2$ law is the same.`,
       caption: String.raw`Choose a piano string or set $B$ directly. Top: the partials (blue) drifting right of the harmonic grid (grey), positions relative to the first partial. Left: their deviation in cents, against the harmonic series built on the first partial. Right: one stretch of the tone's waveform for an ideal and a stiff string: the stiff one changes shape from cycle to cycle, because its partials are not whole multiples. *Both together* plays the stiff tone against a perfectly harmonic one with the same fundamental, so that the mismatched partials beat.`,
       deps: ['music-2.4'],
@@ -287,7 +292,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           ideal: { label: 'ideal', f: 261.63, d: 0 },
           bass: { label: 'bass A0', f: 27.5, d: 1.6, L: 1.6, T: 1300, note: 'wound: the wrap adds mass, not stiffness' },
           mid: { label: 'middle C', f: 261.63, d: 1.0, L: 0.62, T: 650 },
-          treb: { label: 'treble C7', f: 2093, d: 0.85, L: 0.09, T: 632 },
+          treb: { label: 'treble C7', f: 2093, d: 0.8, L: 0.11, T: 840 },
         };
         let B = Bof(1.0, 0.62, 650);
         const pre = v.select('string', Object.entries(PRE).map(([value, o]) => ({ value, label: o.label })), 'mid', { onChange: (k) => { if (PRE[k].d) { B = Bof(PRE[k].d, PRE[k].L, PRE[k].T); bS.set(B); } } });
@@ -324,7 +329,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
           const cmax = Math.max(20, cents(NP) * 1.15);
           cp.setView(null, [-0.05 * cmax, cmax]);
           cp.hband(-5, 5, { color: 'green', alpha: 0.12 });
-          cp.text('±5 ¢', 15.8, 9, { align: 'right', color: 'green', size: 10.5 });
+          cp.text('±5 ¢', 10, 8 + 0.02 * cmax, { align: 'center', color: 'green', size: 10.5 });
           cp.fn((n) => 1200 * Math.log2(Math.sqrt(1 + Bv * n * n) / Math.sqrt(1 + Bv)), { domain: [1, NP], color: 'accent', width: 1.6, alpha: 0.6 });
           for (let n = 1; n <= NP; n++) cp.dot(n, cents(n), { r: 4.5, color: 'accent' });
           // ---- waveforms
@@ -354,7 +359,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
       name: 'Stretched tuning and the Railsback curve',
       statement: String.raw`Because piano strings are inharmonic (2.11), the second partial of every note is a few cents sharp of twice its fundamental. A tuner who makes each octave beatless, matching the upper note to a partial of the lower one, therefore tunes octaves slightly **wider than 2:1**, and the stretch accumulates from the middle of the keyboard outwards. Plotted against key number, the deviation of a well-tuned piano from equal temperament traces the **Railsback curve**: a gentle S, flat in the middle, falling to roughly 10–30 cents flat in the low bass and rising to some 20–40 cents sharp at the top. The size of the stretch depends on the instrument's inharmonicity (short pianos stretch more) and on which partials the tuner matches (2:1, 4:2, 6:3 octaves).`,
       idea: String.raw`If the lower note has first partial $f$ and inharmonicity $B$, its second partial is $2f\sqrt{(1+4B)/(1+B)}\approx2f(1+\tfrac32B)$, about $2600B$ cents above $2f$ (1.6). Making the octave beat-free puts the upper fundamental there, so each octave is stretched by that amount; tuning 4:2 octaves uses $\sqrt{(1+16B)/(1+4B)}$ instead and stretches more. In the treble $B$ grows quickly, so the stretch per octave grows and the curve bends up; in the bass, where the fundamentals are weak, tuners match higher partials of the low note, which pulls the bass flat. Without stretch the octaves beat audibly, at the rate given by the mismatch.`,
-      caption: String.raw`A model piano whose inharmonicity rises from about $10^{-4}$ in the tenor to $3\times10^{-4}$ at A0 and $7\times10^{-3}$ at C8 (typical measured sizes). The middle octave A3–A4 is set in equal temperament and every other note is tuned octave by octave from it, making the chosen partials coincide. Top: the resulting deviation from equal temperament (faint curves: the other octave types). Click a key to select an octave; the bottom panel shows how its partials line up and the readout gives the beat rates; *Hear this octave* plays it. Set **no stretch** or the inharmonicity to 0 to break the effect.`,
+      caption: String.raw`A model piano whose inharmonicity rises from about $10^{-4}$ in the tenor to $3\times10^{-4}$ at A0, $3.5\times10^{-4}$ at middle C and $10^{-2}$ at C8 (typical measured sizes, as in 2.11). The middle octave A3–A4 is set in equal temperament and every other note is tuned octave by octave from it, making the chosen partials coincide. Top: the resulting deviation from equal temperament (faint curves: the other octave types). Click a key to select an octave; the bottom panel shows how its partials line up and the readout gives the beat rates; *Hear this octave* plays it. Set **no stretch** or the inharmonicity to 0 to break the effect.`,
       deps: ['music-2.11', 'music-1.6'],
       refs: ['Rossing ch. 14', 'Sethares ch. 6'],
       tags: ['piano', 'tuning'],
@@ -362,24 +367,26 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stretched_tuning' },
       viz(v) {
         const M = v.M, PAIRS = { '21': [2, 1], '42': [4, 2], '63': [6, 3] };
-        const type = v.select('octaves tuned', [{ value: '21', label: '2:1' }, { value: '42', label: '4:2' }, { value: '63', label: '6:3' }, { value: 'none', label: 'no stretch (equal temperament)' }], '21');
+        // octave types: which partials of the lower note (a) and the upper note (b) are made to coincide, above and below the middle octave
+        const SCH = { mix: { up: [2, 1], dn: [6, 3], name: 'mixed octaves (6:3 in the bass, 2:1 in the treble)' }, '21': { up: [2, 1], dn: [2, 1], name: '2:1 octaves' }, '42': { up: [4, 2], dn: [4, 2], name: '4:2 octaves' }, '63': { up: [6, 3], dn: [6, 3], name: '6:3 octaves' } };
+        const type = v.select('octaves tuned', [{ value: 'mix', label: 'mixed' }, { value: '21', label: '2:1' }, { value: '42', label: '4:2' }, { value: '63', label: '6:3' }, { value: 'none', label: 'no stretch' }], 'mix');
         const kS = v.slider('inharmonicity ×', 0, 3, 1, { step: 0.05, fmt: (x) => '×' + v.fix(x, 2) });
-        const Bm = (m) => kS.value * (3e-4 * Math.pow(10, -(m - 21) / 22) + 1.4e-4 * Math.pow(10, (m - 48) / 36));
+        const Bm = (m) => kS.value * (3e-4 * Math.pow(10, -(m - 21) / 22) + 1.4e-4 * Math.pow(10, (m - 48) / 32));
         const Pj = (f1, B, j) => ((j * f1) / Math.sqrt(1 + B)) * Math.sqrt(1 + B * j * j);
         const et = (m) => 440 * Math.pow(2, (m - 69) / 12);
         const tune = (ty) => {
           const f = new Map();
           for (let m = 21; m <= 108; m++) f.set(m, et(m));
           if (ty === 'none') return f;
-          const [a, b] = PAIRS[ty];
+          const { up: [a, b], dn: [c, d] } = SCH[ty];
           for (let m = 70; m <= 108; m++) { const lo = m - 12, X = Pj(f.get(lo), Bm(lo), a), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (b * Math.sqrt(1 + B * b * b))); }
-          for (let m = 56; m >= 21; m--) { const up = m + 12, X = Pj(f.get(up), Bm(up), b), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (a * Math.sqrt(1 + B * a * a))); }
+          for (let m = 56; m >= 21; m--) { const up = m + 12, X = Pj(f.get(up), Bm(up), d), B = Bm(m); f.set(m, (X * Math.sqrt(1 + B)) / (c * Math.sqrt(1 + B * c * c))); }
           return f;
         };
         let cKey = '', T = null;
         const all = () => {
           const k = kS.value; if (cKey === String(k)) return T; cKey = String(k);
-          T = Object.fromEntries(['21', '42', '63', 'none'].map((ty) => [ty, tune(ty)]));
+          T = Object.fromEntries(['mix', '21', '42', '63', 'none'].map((ty) => [ty, tune(ty)]));
           return T;
         };
         const dev = (ty, m) => 1200 * Math.log2(all()[ty].get(m) / et(m));
@@ -404,7 +411,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
         v.render(() => {
           const ty = type.value;
           rc.hline(0, { color: 'muted', width: 1.2 });
-          for (const t2 of ['21', '42', '63']) if (t2 !== ty) rc.path(M.range(88, 1).map((k) => [k, dev(t2, k + 20)]), { color: 'muted', width: 1.2, alpha: 0.5, dash: [4, 3] });
+          for (const t2 of ['mix', '21', '42', '63']) if (t2 !== ty) rc.path(M.range(88, 1).map((k) => [k, dev(t2, k + 20)]), { color: 'muted', width: 1.2, alpha: 0.5, dash: [4, 3] });
           const pts = M.range(88, 1).map((k) => [k, dev(ty, k + 20)]);
           rc.path(pts, { color: 'accent', width: 2.4 });
           rc.dots(pts, { r: 2.3, color: 'accent' });
@@ -436,7 +443,7 @@ where $f_0=\frac1{2L}\sqrt{T/\mu}$ is the frequency of the same string without s
         v.readout(() => {
           const ty = type.value, f = all()[ty], lo = sel - 12;
           const beat21 = Math.abs(Pj(f.get(sel), Bm(sel), 1) - Pj(f.get(lo), Bm(lo), 2));
-          return `${ty === 'none' ? 'no stretch' : `${PAIRS[ty][0]}:${PAIRS[ty][1]} octaves`}, inharmonicity ×${v.fix(kS.value, 2)} ($B$ = $${v.sci(Bm(lo), 2)}$ at ${M.noteName(lo)}, $${v.sci(Bm(sel), 2)}$ at ${M.noteName(sel)}) · A0 ${v.fix(dev(ty, 21), 1)} ¢, C8 ${v.fix(dev(ty, 108), 1)} ¢ from equal temperament · ${M.noteName(sel)} is tuned to ${v.fix(f.get(sel), 2)} Hz (${v.fix(dev(ty, sel), 1)} ¢); its octave with ${M.noteName(lo)} has the lower note's 2nd partial ${beat21 < 0.01 ? 'beat-free' : `beating at ${v.fix(beat21, 2)} per second`}`;
+          return `${ty === 'none' ? 'no stretch' : SCH[ty].name}, inharmonicity ×${v.fix(kS.value, 2)} ($B$ = $${v.sci(Bm(lo), 2)}$ at ${M.noteName(lo)}, $${v.sci(Bm(sel), 2)}$ at ${M.noteName(sel)}) · A0 ${v.fix(dev(ty, 21), 1)} ¢, C8 ${v.fix(dev(ty, 108), 1)} ¢ from equal temperament · ${M.noteName(sel)} is tuned to ${v.fix(f.get(sel), 2)} Hz (${v.fix(dev(ty, sel), 1)} ¢); its octave with ${M.noteName(lo)} has the lower note's 2nd partial ${beat21 < 0.01 ? 'beat-free' : `beating at ${v.fix(beat21, 2)} per second`}`;
         });
       },
     },

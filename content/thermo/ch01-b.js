@@ -481,5 +481,262 @@ so the gas heats when compressed and cools when it expands. On a $P$–$V$ diagr
         });
       },
     },
+    // ------------------------------------------------------------------ 1.17
+    {
+      num: '1.17', kind: 'Phenomenon', name: 'Sound is adiabatic: Laplace’s correction',
+      statement: String.raw`Sound in a gas travels at
+$$c = \sqrt{\left(\frac{\partial P}{\partial \rho}\right)_{\!S}} = \sqrt{\frac{\gamma P}{\rho}} = \sqrt{\frac{\gamma kT}{m}},$$
+not at Newton's isothermal value $\sqrt{P/\rho}$: the compressions and rarefactions of a sound wave are adiabatic, because heat cannot diffuse across half a wavelength during one period. For air ($\gamma = 1.40$) at 0 °C this gives 331 m/s, matching measurement, whereas the isothermal formula gives 280 m/s, about 15% too low. Newton's own estimate in the *Principia* (about 979 ft/s, 298 m/s) fell short of the measured speed (Derham, 1709: 1142 ft/s) by roughly this factor; Laplace explained the gap in 1816.`,
+      idea: String.raw`A sound wave is a rapid sequence of compressions; the speed is set by how stiffly the gas resists them, $c^2 = dP/d\rho$ (the wave equation for small disturbances, waves 1.11). Newton took $P \propto \rho$ (Boyle's law, constant temperature). But compressed gas warms (1.16), and it pushes back harder than Boyle's law allows — by the factor $\gamma$, since $P \propto \rho^\gamma$ adiabatically. Whether the warming has time to leak away is a race between heat diffusion, rate $Dk^2$ for a wave of wavenumber $k$, and the oscillation, rate $ck$: their ratio $Dk/c$ is about $10^{-6}$ for audible sound in air, so sound is adiabatic to excellent accuracy. Heat would keep pace only near gigahertz frequencies, where the wavelength approaches the molecular mean free path.`,
+      caption: String.raw`A pressure pulse splits into two in a tube of gas, computed exactly from the linearized equations of a gas that conducts heat (diffusivity $D$). Dashed lines mark where pulses would be at Newton's isothermal speed and at Laplace's adiabatic speed $\sqrt\gamma$ times faster; the red curve is the temperature disturbance. Slide $D$ upward: when heat diffuses faster than the pulse oscillates, the temperature bumps vanish and the pulses slow to Newton's speed; in between they are strongly damped. Right: the speed and absorption of sound against $Dk/c$ — audible sound in air sits far to the left, in the adiabatic regime.`,
+      deps: ['thermo-1.16', 'waves-1.11'],
+      see: ['music-1.4', 'fluid-9.11'],
+      refs: ['Schroeder §1.5', 'Laplace, Ann. Chim. Phys. 3, 238 (1816)', 'Finn, Isis 55, 7 (1964)'],
+      tags: ['sound', 'adiabatic'],
+      credit: 'Newton, 1687; Laplace, 1816',
+      scope: String.raw`Small-amplitude sound in a gas whose wavelength is much longer than both the mean free path and the thermal diffusion length per period, $\sqrt{D/\omega}$; for air this covers every audible and ultrasonic frequency up to hundreds of megahertz.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Speed_of_sound#Speed_of_sound_in_ideal_gases_and_air' },
+      viz(v) {
+        const M = v.M, NX = 256, KMAX = 56, X0 = 0.5, W0 = 0.02, TAU = 0.34;
+        const GAS = { air: { g: 1.4, label: 'air, γ = 1.40' }, he: { g: 5 / 3, label: 'helium, γ = 5/3' }, co2: { g: 1.29, label: 'CO₂, γ = 1.29' } };
+        const gsel = v.select('gas', Object.entries(GAS).map(([value, q]) => ({ value, label: q.label })), 'air');
+        const Ds = v.slider('heat diffusivity $D$', 1e-5, 3, 1e-4, { log: true, fmt: (x) => x.toExponential(1) });
+        const sw = v.stage({ x: [0, 1], y: [-0.25, 1.08], height: 260, axes: 'box', xlabel: 'position along the tube', ylabel: 'disturbance', full: true, title: 'a pressure pulse in a heat-conducting gas (lengths in tube lengths, speeds in units of the isothermal speed)' });
+        const sd = v.stage({ x: [1e-8, 1e4], y: [0.96, 1.32], xlog: true, height: 240, axes: 'box', xlabel: 'Dk/c (heat-flow rate ÷ wave rate)', ylabel: 'speed / c_T', title: 'speed of sound', weight: 1 });
+        const sa = v.stage({ x: [1e-8, 1e4], y: [0, 0.5], xlog: true, height: 240, axes: 'box', xlabel: 'Dk/c', ylabel: 'amplitude lost per wavelength', title: 'absorption of sound', weight: 1 });
+        // exact dispersion relation Ω³ + iεΩ² − γΩ − iε = 0 (Ω = ω/kc), right-moving acoustic root
+        const disp = (g, eps, guess) => {
+          let [a, b] = guess || [Math.sqrt(g), 0];
+          for (let it = 0; it < 60; it++) {
+            const a2 = a * a - b * b, b2 = 2 * a * b, a3 = a2 * a - b2 * b, b3 = a2 * b + b2 * a;
+            const fr = a3 - eps * b2 - g * a, fi = b3 + eps * a2 - g * b - eps;
+            const dr = 3 * a2 - 2 * eps * b - g, di = 3 * b2 + 2 * eps * a;
+            const den = dr * dr + di * di; if (!den) break;
+            const da = (fr * dr + fi * di) / den, db = (fi * dr - fr * di) / den;
+            a -= da; b -= db; if (Math.abs(da) + Math.abs(db) < 1e-13) break;
+          }
+          return [a, b];
+        };
+        let curveKey = null, curve = [];
+        const curveFor = (g) => {
+          if (curveKey === g) return curve;
+          curve = []; let guess = null;
+          for (let i = 0; i <= 360; i++) { const le = -8 + 12 * i / 360, eps = 10 ** le; guess = disp(g, eps, guess); curve.push([eps, guess[0], 1 - Math.exp(2 * Math.PI * guess[1] / guess[0])]); }
+          curveKey = g; return curve;
+        };
+        // initial pulse: pressure bump with the adiabatic temperature bump, gas at rest
+        const g0x = Array.from({ length: NX }, (_, i) => Math.exp(-(((i / NX - X0 + 0.5) % 1 - 0.5) ** 2) / (2 * W0 * W0)));
+        const F0 = M.fftReal(g0x);
+        const state = (g, D, tau) => {
+          const A = 1 / g, re = new Array(NX).fill(0), imA = new Array(NX).fill(0), reT = new Array(NX).fill(0), imT = new Array(NX).fill(0);
+          for (let j = 0; j <= KMAX; j++) {
+            const k = 2 * Math.PI * j, Ak = [[0, -k, 0], [k, 0, k], [0, -k * (g - 1), -D * k * k]].map((r) => r.map((x) => x * tau));
+            const E = j === 0 ? [[1, 0, 0], [0, 1, 0], [0, 0, 1]] : M.expm(Ak);
+            const rr = A * F0.re[j], ri = A * F0.im[j], tr = (g - 1) * rr, ti = (g - 1) * ri;
+            const r1 = E[0][0] * rr + E[0][2] * tr, r2 = E[0][0] * ri + E[0][2] * ti, t1 = E[2][0] * rr + E[2][2] * tr, t2 = E[2][0] * ri + E[2][2] * ti;
+            re[j] = r1 + t1; imA[j] = r2 + t2; reT[j] = t1; imT[j] = t2;
+            if (j > 0) { re[NX - j] = re[j]; imA[NX - j] = -imA[j]; reT[NX - j] = reT[j]; imT[NX - j] = -imT[j]; }
+          }
+          M.ifft(re, imA); M.ifft(reT, imT);
+          return { p: re, th: reT };
+        };
+        let meas = null;
+        v.animate((t) => {
+          const g = GAS[gsel.value].g, D = Ds.value, tau = Math.min(t, 2.2) / 2.2 * TAU, cs = Math.sqrt(g);
+          const S = state(g, D, tau), xs = S.p.map((_, i) => i / NX);
+          sw.hline(0, { color: 'faint', width: 1 });
+          for (const [c, col, lab] of [[1, 'red', 'Newton'], [cs, 'green', 'Laplace']]) for (const sgn of [-1, 1]) {
+            const x = X0 + sgn * c * tau; if (x < 0 || x > 1) continue;
+            sw.vline(x, { color: col, width: 1.4, dash: [6, 4] });
+            if (sgn > 0 && tau > 0.04) sw.text(lab, x, 1.0, { align: c === 1 ? 'right' : 'left', dx: c === 1 ? -4 : 4, size: 11.5, color: col, weight: 600 });
+          }
+          sw.path(xs.map((x, i) => [x, S.p[i]]), { color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.15 });
+          sw.path(xs.map((x, i) => [x, S.th[i]]), { color: 'red', width: 1.6 });
+          sw.corner(`t = ${v.fix(tau, 3)}`, 'tr', { size: 12 });
+          // measured position of the right-going pulse
+          let im = -1, pm = -1e9; for (let i = Math.floor((X0 + 0.03) * NX); i < NX; i++) if (S.p[i] > pm) { pm = S.p[i]; im = i; }
+          meas = tau > 0.1 && pm > 0.01 ? { c: (im / NX - X0) / tau, amp: pm, tau } : null;
+          // dispersion panels
+          const C = curveFor(g);
+          for (const s of [sd, sa]) s.vband(3.7e-8, 3.7e-5, { color: 'green', alpha: 0.12 });
+          sd.text('audible sound in air', 1.2e-6, 1.3, { align: 'center', size: 10.5, color: 'green' });
+          sd.hline(cs, { color: 'green', dash: [5, 4], width: 1.2 }); sd.hline(1, { color: 'red', dash: [5, 4], width: 1.2 });
+          sd.text(`adiabatic √γ = ${v.fix(cs, 3)}`, 3e3, cs, { align: 'right', dy: -9, size: 11, color: 'green' });
+          sd.text('isothermal 1', 1e-7, 1, { dy: -9, size: 11, color: 'red' });
+          sd.path(C.map((p) => [p[0], p[1]]), { color: 'accent', width: 2.4 });
+          sa.path(C.map((p) => [p[0], p[2]]), { color: 'purple', width: 2.4, fill: 'purple', fillAlpha: 0.12 });
+          const ep = D / W0, R0 = disp(g, ep, null);
+          sd.dot(ep, R0[0], { r: 5.5, color: 'gold' }); sa.dot(ep, 1 - Math.exp(2 * Math.PI * R0[1] / R0[0]), { r: 5.5, color: 'gold' });
+          sd.text('this pulse', ep, R0[0], { dx: 8, dy: 10, size: 11, color: 'gold' });
+        }, { still: 1.8, period: 3.2 });
+        v.legend([['accent', 'pressure disturbance'], ['red', 'temperature disturbance'], ['green', 'adiabatic (Laplace) position / speed', { dash: true }], ['gold', 'the simulated pulse ($k \\approx 1/w$)', { dot: true }]]);
+        v.readout(() => {
+          const g = GAS[gsel.value].g, cs = Math.sqrt(g);
+          const TK = 273.15, cT = Math.sqrt(R * TK / Mair), cS = cT * Math.sqrt(1.4);
+          const m = meas ? `right-going pulse measured at ${v.fix(meas.c, 3)} $c_T$ (Laplace ${v.fix(cs, 3)}, Newton 1)` : 'pulse still forming…';
+          return `${m} · air at 0 °C: Newton's $\\sqrt{P/\\rho}$ = ${v.fix(cT, 1)} m/s, Laplace's $\\sqrt{\\gamma P/\\rho}$ = ${v.fix(cS, 1)} m/s, measured 331.3 m/s — the isothermal value is ${v.fix(100 * (1 - 1 / Math.sqrt(1.4)), 1)}% low · for a 1 kHz tone in air $Dk/c \\approx 2\\times10^{-6}$`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.18
+    {
+      num: '1.18', kind: 'Model', name: 'Barometric formula and adiabatic lapse rate',
+      statement: String.raw`In hydrostatic equilibrium each layer of an atmosphere is held up by the pressure difference across it, $dP/dz = -\rho g$, and for an ideal gas $\rho = PM/RT$. An **isothermal** atmosphere therefore thins exponentially,
+$$P(z) = P_0\,e^{-z/H},\qquad H = \frac{RT}{Mg}\approx 8.4\ \text{km for air at 288 K}.$$
+A **convectively mixed** atmosphere, in which rising and sinking air expands and compresses adiabatically, instead cools linearly with height at the **dry adiabatic lapse rate**
+$$\Gamma_d = -\frac{dT}{dz} = \frac{g}{c_P} \approx 9.8\ \text{K/km},$$
+with $P \propto T^{c_P/R_s}$ ($R_s = R/M$). The real troposphere cools at about 6.5 K/km on average (moisture releases latent heat), so a dry parcel lifted from the ground ends up colder than its surroundings and sinks back: it is stable.`,
+      idea: String.raw`Stack thin layers: each one must carry the weight of everything above it, so pressure falls by $\rho g\,dz$ per layer, and with $\rho \propto P/T$ the fall is proportional to $P$ itself — exponential if $T$ is constant. For the lapse rate, follow a parcel that rises without exchanging heat: its enthalpy per unit mass changes by $c_P\,dT = dP/\rho$ (first law at constant composition, with $\delta Q = 0$), and the surrounding pressure falls by $dP = -\rho g\,dz$, so $c_P\,dT = -g\,dz$. If the atmosphere cools faster than this with height, a displaced parcel keeps rising (convection); if slower, it returns — convection stirs the lower atmosphere until the lapse rate is close to the adiabatic one.`,
+      caption: String.raw`Three columns of air in hydrostatic balance, integrated layer by layer from the ground: isothermal (blue), dry adiabatic (red) and the U.S. Standard Atmosphere 1976 (black, with its tropopause at 11 km). Left: temperature; middle: pressure on a log scale, where the isothermal column is a straight line; right: the columns shaded by density. Drag the gold parcel up from the ground: it cools along the dry adiabat, 9.8 K per km, faster than the standard atmosphere, so it is colder and denser than its surroundings and would sink back. Change the surface temperature.`,
+      deps: ['thermo-1.16', 'thermo-1.4'],
+      see: ['pchem-1.10', 'geo-1.2', 'fluid-2.4'],
+      refs: ['Schroeder §1.5', 'U.S. Standard Atmosphere, 1976 (NOAA/NASA/USAF)'],
+      tags: ['atmosphere', 'hydrostatics'],
+      credit: 'Halley, 1686 (barometric law); Kelvin, 1862 (convective equilibrium)',
+      scope: String.raw`Assumes an ideal gas of fixed composition, uniform gravity and static (or slowly convecting) air; the dry lapse rate applies to unsaturated air — saturated air cools more slowly (about 4–7 K/km) because condensation releases latent heat.`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Lapse_rate' },
+      viz(v) {
+        const Gd = g0 / cpAir * 1000, ZMAX = 40, P0 = 1013.25;
+        const T0s = v.slider('surface temperature $T_0$', 240, 320, 288.15, { step: 0.5, fmt: (x) => v.fix(x, 1) + ' K' });
+        const st = v.stage({ x: [150, 330], y: [0, ZMAX], height: 340, axes: 'box', xlabel: 'temperature (K)', ylabel: 'altitude (km)', title: 'temperature', weight: 1 });
+        const sp = v.stage({ x: [2, 1100], y: [0, ZMAX], xlog: true, height: 340, axes: 'box', xlabel: 'pressure (hPa)', ylabel: 'altitude (km)', title: 'pressure (log scale)', weight: 1 });
+        const sc = v.stage({ x: [0, 3], y: [0, ZMAX], height: 340, axes: false, title: 'density', weight: 0.5 });
+        const hp = st.handle(288.15 - Gd * 3, 3, { color: 'gold', r: 7, constrain: (x, y) => { const z = clamp(y, 0, 16); return [T0s.value - Gd * z, z]; } });
+        const PROF = {
+          iso: { T: (z, T0) => T0, col: 'blue', name: 'isothermal' },
+          adi: { T: (z, T0) => T0 - Gd * z, col: 'red', name: 'dry adiabatic' },
+          std: { T: (z) => ussa(z).T, col: 'ink', name: 'Standard Atmosphere 1976' },
+        };
+        // integrate dP/dz = −P M g / (R T) layer by layer (RK4, 50 m steps)
+        const column = (Tf) => {
+          const out = [[0, P0]]; let P = P0; const h = 0.05;
+          for (let z = 0; z < ZMAX - 1e-9; z += h) {
+            const f = (zz, PP) => { const T = Tf(zz); return T > 1 ? -PP * Mair * g0 * 1000 / (R * T) : NaN; };
+            const k1 = f(z, P), k2 = f(z + h / 2, P + h / 2 * k1), k3 = f(z + h / 2, P + h / 2 * k2), k4 = f(z + h, P + h * k3);
+            P += h / 6 * (k1 + 2 * k2 + 2 * k3 + k4); if (!(P > 0)) break; out.push([z + h, P]);
+          }
+          return out;
+        };
+        let cols = null, key = null;
+        v.render(() => {
+          const T0 = T0s.value;
+          if (key !== T0) { key = T0; cols = {}; for (const k of Object.keys(PROF)) cols[k] = column((z) => PROF[k].T(z, T0)); hp.x = T0 - Gd * hp.y; }
+          const zp = hp.y;
+          for (const k of Object.keys(PROF)) {
+            const P = PROF[k], c = cols[k];
+            st.path(c.map(([z]) => [P.T(z, T0), z]), { color: P.col, width: 2.4 });
+            sp.path(c.map(([z, p]) => [p, z]), { color: P.col, width: 2.4 });
+          }
+          st.text('tropopause', 216.65, 11, { dx: 6, dy: -8, size: 10.5, color: 'muted' });
+          st.text(`−${v.fix(Gd, 2)} K/km`, T0 - Gd * 9, 9, { dx: -8, align: 'right', size: 11, color: 'red' });
+          st.text('−6.5 K/km', 288.15 - 6.5 * 6, 6, { dx: 8, size: 11, color: 'ink' });
+          // parcel vs environment (standard atmosphere)
+          const Te = ussa(zp).T, Tp = T0 - Gd * zp;
+          st.hline(zp, { color: 'gold', width: 1, dash: [3, 4] }); sp.hline(zp, { color: 'gold', width: 1, dash: [3, 4] });
+          st.dot(Te, zp, { r: 4, color: 'ink' });
+          if (zp > 0.3) {
+            const sinks = Tp < Te;
+            st.arrow(Tp - 9, zp, Tp - 9, zp + (sinks ? -2.2 : 2.2), { color: sinks ? 'blue' : 'red', width: 2 });
+            st.text(sinks ? 'colder than the air around: sinks back' : 'warmer: keeps rising', Tp - 12, zp + 1.2, { align: 'right', size: 11, color: sinks ? 'blue' : 'red' });
+          }
+          sp.text(`H = RT/Mg = ${v.fix(R * T0 / (Mair * g0) / 1000, 2)} km`, 5, ZMAX * 0.93, { size: 11, color: 'blue' });
+          // density columns
+          ['iso', 'adi', 'std'].forEach((k, i) => {
+            const c = cols[k];
+            for (let q = 0; q + 10 < c.length; q += 10) {
+              const [z, p] = c[q], T = PROF[k].T(z, T0), rho = p * 100 * Mair / (R * T), rho0 = P0 * 100 * Mair / (R * T0);
+              sc.rect(i + 0.15, z, i + 0.85, z + 0.5, { fill: PROF[k].col, fillAlpha: clamp(0.85 * rho / rho0, 0, 0.9), stroke: false });
+            }
+            sc.text(['iso', 'adi', 'std'][i] === 'std' ? 'std' : k, i + 0.5, ZMAX - 1, { align: 'center', size: 10.5, color: PROF[k].col, weight: 600 });
+          });
+        });
+        v.legend([['blue', 'isothermal'], ['red', 'dry adiabatic (convecting)'], ['ink', 'U.S. Standard Atmosphere 1976'], ['gold', 'lifted parcel', { dot: true }]]);
+        v.readout(() => {
+          const T0 = T0s.value, zp = hp.y, H = R * T0 / (Mair * g0) / 1000;
+          const Pat = (k) => { const c = cols?.[k]; if (!c) return NaN; const i = Math.min(c.length - 1, Math.round(zp / 0.05)); return c[i][1]; };
+          const Te = ussa(zp).T, Tp = T0 - Gd * zp;
+          const z50 = (() => { const c = cols.std; for (const [z, p] of c) if (p < P0 / 2) return z; return NaN; })();
+          return `$\\Gamma_d = g/c_P$ = ${v.fix(Gd, 2)} K/km ($c_P$ = 1004.7 J/(kg·K)) · scale height $H$ = ${v.fix(H, 2)} km · at ${v.fix(zp, 1)} km: pressure ${v.fix(Pat('iso'), 0)} hPa (isothermal), ${v.fix(Pat('adi'), 0)} (adiabatic), ${v.fix(Pat('std'), 0)} (standard; closed form $P_0e^{-z/H}$ = ${v.fix(P0 * Math.exp(-zp / H), 0)}) · parcel ${v.fix(Tp, 1)} K vs surroundings ${v.fix(Te, 1)} K · half the atmosphere's mass lies below ${v.fix(z50, 1)} km`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 1.19
+    {
+      num: '1.19', kind: 'Phenomenon', name: 'Free expansion of an ideal gas',
+      statement: String.raw`When a gas in a rigid, insulated container is suddenly allowed to expand into an evacuated space (by removing a partition or opening a stopcock), it does no work — nothing is pushed — and no heat flows, so by the first law its internal energy is unchanged: $\Delta U = 0$. For an ideal gas $U$ depends only on $T$, so the final temperature equals the initial one, while the pressure falls in proportion to the volume. Real gases, whose molecules attract one another, cool slightly (they must climb out of each other's potential wells); the **Joule coefficient** $(\partial T/\partial V)_U = -\frac{1}{C_V}\left[T(\partial P/\partial T)_V - P\right]$ measures the effect. Free expansion is the standard example of an irreversible process: the gas never spontaneously returns to its corner.`,
+      idea: String.raw`Molecules flying into the empty half keep their speeds: with no moving wall to hit, nothing slows them, so the kinetic energy and hence $T$ is the same before and after — only the volume they share has grown. Gay-Lussac (1807) and Joule (1845) let air rush from one vessel into an evacuated one, both in a water bath, and detected no temperature change; that was the experimental evidence that the internal energy of a dilute gas does not depend on its volume. With attractions, $U = U_{\text{kin}} - (\text{something} \propto N^2/V)$, so expanding at fixed $U$ converts kinetic energy into potential energy and the gas cools; for a virial gas the cooling is $\Delta T \approx -\frac{RT^2}{C_V}\frac{dB}{dT}\left(\frac1{V_i}-\frac1{V_f}\right)$ per mole.`,
+      caption: String.raw`A simulated gas (hard spheres, no attractions) fills the left half of an insulated box; the right half is empty. Remove the partition (it happens on its own after a while): the gas rushes in, the pressure drops to half, and the temperature trace does not budge, because no wall moves and no heat enters — the ledger stays at zero. Right: what real gases would do when expanding into double their volume, from the second virial coefficient (Lennard-Jones fits): attractions make nitrogen and CO₂ cool, increasingly so at high starting pressure, while helium even warms a little. Hard spheres, like the simulation, do neither.`,
+      deps: ['thermo-1.11'],
+      see: ['thermo-1.8'],
+      refs: ['Callen ch. 4', 'Schroeder §2.6'],
+      tags: ['free expansion', 'irreversibility'],
+      credit: 'Gay-Lussac, 1807; Joule, 1845',
+      scope: String.raw`Exactly no temperature change for an ideal gas; for real gases near room temperature and atmospheric pressure the cooling is a fraction of a kelvin, growing roughly in proportion to the starting density (the virial estimate here is a first-order correction, rough above a few tens of bar).`,
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Joule_expansion' },
+      viz(v) {
+        const L = 10, X = 32, XP = 16, N = 160, AUTO = 45, WIN = 4;
+        const CV = { He: 1.5, H2: 2.45, N2: 2.5, Ar: 1.5, CO2: 3.47 };
+        let G, removed, tRem, hist, last, Tacc, nacc;
+        const gsel = v.select('real gas (right panel)', Object.keys(LJ).map((g) => ({ value: g, label: `$${LJ[g].tex}$` })), 'N2');
+        const Pi = v.slider('its starting pressure', 1, 60, 20, { step: 1, fmt: (x) => `${x} bar` });
+        const remove = () => { if (!removed) { G.removePlate(); removed = true; tRem = G.t; } };
+        v.button('Remove the partition', () => remove());
+        v.button('Start again', () => make());
+        const sc = v.stage({ x: [-1, X + 1], y: [-1.7, L + 1.2], equal: true, height: 220, axes: false, full: true });
+        const sh = v.stage({ x: [0, 160], y: [0, 1.6], height: 270, axes: 'box', xlabel: 'time', ylabel: 'kT  ·  P/P₀', title: 'simulated gas: temperature and pressure', weight: 1.1 });
+        const sm = v.stage({ x: [0, 60], y: [-30, 2], height: 270, axes: 'box', xlabel: 'starting pressure (bar), 300 K', ylabel: 'ΔT (K)', title: 'real gases doubling their volume', weight: 1 });
+        const make = () => {
+          G = hsGas({ species: [{ m: 1, d: 0.6 }], counts: [N], side: [0], Ly: L, Lz: L, T: 1, rng: v.rng(91), piston: { X }, plate: { X: XP }, diffuse: [1, 0, 1, 1, 1, 1] });
+          removed = false; tRem = null; hist = []; last = G.snap(); Tacc = 0; nacc = 0;
+        };
+        make();
+        const clock = simClock(10, 0.05, 6);
+        const area = () => 2 * L * L + (removed ? X : XP) * 4 * L;
+        const P0 = N * 1 / (XP * L * L);
+        v.animate((t) => {
+          const add = clock(t, () => make());
+          runBudget(G, add, 0.25, clock.ms(), (h) => {
+            if (!removed && G.t >= AUTO) remove();
+            Tacc += G.stats().Ttr * h; nacc += h;
+            if (G.t - last.t >= WIN) {
+              const b = G.snap(), J = b.imp.reduce((s, q) => s + q, 0) - last.imp.reduce((s, q) => s + q, 0), straddle = removed && tRem > last.t;
+              hist.push({ t: G.t, T: Tacc / nacc, P: straddle ? NaN : J / (area() * (b.t - last.t)) / P0 });
+              if (hist.length > 400) hist.shift(); last = b; Tacc = 0; nacc = 0;
+            }
+          });
+          drawGas(sc, G, { piston: false, len: X, color: () => 'accent', fill: removed ? null : 'accent', fillAlpha: 0.05 });
+          if (!removed) { sc.text('vacuum', (XP + X) / 2, L / 2, { align: 'center', size: 13, color: 'muted' }); sc.text(`partition (removed automatically at t = ${AUTO})`, XP, L + 0.75, { align: 'center', size: 11, color: 'muted' }); }
+          else sc.text(`partition removed at t = ${v.fix(tRem, 1)}`, XP, L + 0.75, { align: 'center', size: 11, color: 'muted' });
+          sc.text('insulated, rigid walls', 0, -1.1, { size: 11.5, color: 'muted' });
+          // traces
+          const tmax = Math.max(160, G.t);
+          sh.setView([Math.max(0, tmax - 160), tmax], [0, 1.6]);
+          sh.hline(1, { color: 'accent', dash: [6, 4], width: 1.2 }); sh.hline(0.5, { color: 'orange', dash: [6, 4], width: 1.2 });
+          if (removed) sh.vline(tRem, { color: 'muted', width: 1, dash: [3, 3] });
+          sh.path(hist.map((p) => [p.t, p.T]), { color: 'accent', width: 2.4 });
+          sh.dots(hist.filter((p) => isFinite(p.P)).map((p) => [p.t, p.P]), { r: 3, color: 'orange' });
+          sh.text('kT', tmax - 2, 1, { align: 'right', dy: -10, size: 11.5, color: 'accent' });
+          sh.text('P after = ½ P₀', tmax - 2, 0.5, { align: 'right', dy: 12, size: 11.5, color: 'orange' });
+          // virial model
+          const dT = (g, Pbar) => { const T = 300, Vi = R * T / (Pbar * 1e5) * 1e6, dB = (B2(g, T + 5) - B2(g, T - 5)) / 10; return -(R * T * T / (CV[g] * R)) * dB * (1 / Vi - 1 / (2 * Vi)); };
+          sm.hline(0, { color: 'accent', width: 2.4 });
+          sm.text('hard spheres / ideal gas: no change', 59, 0, { align: 'right', dy: -9, size: 11, color: 'accent' });
+          for (const g of Object.keys(LJ)) {
+            const sel = g === gsel.value;
+            sm.fn((p) => dT(g, Math.max(p, 0.01)), { color: LJ[g].col, width: sel ? 2.8 : 1.4, alpha: sel ? 1 : 0.55, domain: [0, 60], n: 60 });
+            sm.text(g.replace('2', '₂'), 59, dT(g, 59), { align: 'right', dy: g === 'He' || g === 'H2' ? 12 : -9, size: 11, color: LJ[g].col, weight: sel ? 700 : 500 });
+          }
+          sm.dot(Pi.value, dT(gsel.value, Pi.value), { r: 5.5, color: LJ[gsel.value].col });
+        }, { still: 7 });
+        v.legend([['accent', 'temperature kT (simulation)'], ['orange', 'pressure / starting pressure', { dot: true }]]);
+        v.readout(() => {
+          const before = hist.filter((p) => !removed || p.t < tRem), after = removed ? hist.filter((p) => p.t > tRem + 15) : [];
+          const mean = (a, k) => a.filter((p) => isFinite(p[k])).reduce((s, p, _, arr) => s + p[k] / arr.length, 0);
+          const g = gsel.value, T = 300, Vi = R * T / (Pi.value * 1e5) * 1e6, dB = (B2(g, T + 5) - B2(g, T - 5)) / 10, dTg = -(T * T / CV[g]) * dB * (1 / Vi - 1 / (2 * Vi));
+          const sim = removed && after.length ? `after: $kT$ = ${v.fix(mean(after, 'T'), 3)} (before ${v.fix(mean(before, 'T'), 3)}), $P/P_0$ = ${v.fix(mean(after, 'P'), 3)}` : `before: $kT$ = ${v.fix(mean(before, 'T'), 3)}, $P/P_0$ = ${v.fix(mean(before, 'P'), 3)}`;
+          return `simulation — ${sim} · work done on the gas ${v.fix(G.Wp, 3)}, heat in ${v.fix(G.Qb, 3)}, so $\\Delta U$ = 0 · $${LJ[g].tex}$ from ${Pi.value} bar at 300 K: $dB/dT$ = ${v.fix(dB, 3)} cm³/(mol·K) → $\\Delta T \\approx$ ${v.fix(dTg, 3)} K`;
+        });
+      },
+    },
   ],
 };

@@ -175,6 +175,8 @@ function ttl(s, T, tex, color = 'ink', below = false, size = 15) {
   const g = T.geo; if (!g) return;
   s.texPx(tex, g.X0 + (g.cols * g.cw) / 2, below ? g.Y0 + g.rows * g.ch + 15 : g.Y0 - g.lh - 14, { color, size });
 }
+/** A panel-coloured plate in pixel coordinates, to keep a label legible over a busy background. */
+function plate(S, X0, Y0, w, h) { S.rect(S.invX(X0), S.invY(Y0), S.invX(X0 + w), S.invY(Y0 + h), { fill: 'panel', fillAlpha: 0.88, stroke: false, radius: 6 }); }
 /** The six faces of the parallelepiped spanned by a, b, c in a scene3. */
 function ppiped(sc, a, b, c, st = {}) {
   const o = [0, 0, 0], ab = add(a, b), ac = add(a, c), bc = add(b, c), abc = add(ab, c);
@@ -213,7 +215,7 @@ A multilinear form gives $0$ when one of its inputs is $0$, so $Tv \ne 0$. Hence
         const R = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 330, minWidth: 270, title: '$T^{-1}$, computed by row reduction' });
         const PRE = { gen: [[1.6, 0.6], [0.4, 1.3]], flip: [[0.5, 1.5], [1.4, 0.3]], near: [[1.8, 1.5], [0.6, 0.62]] };
         const C = colHandles(L, PRE.gen);
-        const vh = L.handle(-1.3, 1.1, { color: 'gold', label: 'v', labelPos: 'nw' });
+        const vh = L.handle(-1.6, -0.5, { color: 'gold', label: 'v', labelPos: 'nw' });
         v.select('', [{ value: 'gen', label: '$\\det T > 0$' }, { value: 'flip', label: '$\\det T < 0$' }, { value: 'near', label: 'nearly singular' }], 'gen', { onChange: (k) => { C.set(PRE[k]); sq.set(0); } });
         const sq = v.slider('squash $Te_2$ onto the line of $Te_1$', 0, 1, 0, { step: 0.01 });
         v.button('make it singular', () => sq.set(1));
@@ -253,8 +255,8 @@ A multilinear form gives $0$ when one of its inputs is $0$, so $Tv \ne 0$. Hence
             R.poly([[0, 0], ia, add(ia, ib), ib], { fill: 'purple', fillAlpha: 0.22, color: 'purple', width: 1.8 });
             R.arrow(0, 0, ia[0], ia[1], { color: 'purple', width: 2.4 });
             R.arrow(0, 0, ib[0], ib[1], { color: 'teal', width: 2.4 });
-            if (len(ia) < 2.8) R.tex('T^{-1}e_1', ia[0], ia[1], { color: 'purple', size: 13, dx: ia[0] >= 0 ? 24 : -24, dy: -10 });
-            if (len(ib) < 2.8) R.tex('T^{-1}e_2', ib[0], ib[1], { color: 'teal', size: 13, dx: ib[0] >= 0 ? 24 : -24, dy: -10 });
+            const lab = (p, t, c) => { const l = len(p); if (l < 2.6 && l > 1e-9) R.tex(t, p[0] + (0.42 * p[0]) / l, p[1] + (0.32 * p[1]) / l, { color: c, size: 13 }); };
+            lab(ia, 'T^{-1}e_1', 'purple'); lab(ib, 'T^{-1}e_2', 'teal');
             R.corner(`det T⁻¹ = ${pn(di, 3)}`, 'tl', { color: 'purple', weight: 700 });
             if (Math.abs(di) > 9) R.corner('area 1/|det T|: off the chart', 'bl', { color: 'muted', size: 11.5 });
           } else {
@@ -286,11 +288,11 @@ $$\det(\lambda I - T) = 0.$$`,
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 330, minWidth: 270, title: 'unit vectors $u$: $Tu$, $\\lambda u$ and $(\\lambda I - T)u$' });
-        const P = v.stage({ x: [-4, 4], y: [-4, 12], height: 330, minWidth: 270, axes: true, xlabel: '$\\lambda$', title: '$\\lambda \\mapsto \\det(\\lambda I - T)$' });
+        const P = v.stage({ x: [-4, 4], y: [-4, 12], height: 330, minWidth: 270, axes: true, xlabel: 'λ', title: '$\\lambda \\mapsto \\det(\\lambda I - T)$' });
         const PRE = { sym: [[1.4, 1.0], [1.0, -0.6]], gen: [[2.0, 1.1], [-0.45, 0.3]], shear: [[1.5, 1.0], [0, 1.5]], rot: [[0.6, -1.5], [1.5, 0.6]] };
         const C = colHandles(L, PRE.sym);
         let zeros = [], zk = 0, st = null;
-        const lam = P.handle(0.4, 0, { color: 'gold', label: 'λ', constrain: (x) => { for (const z of zeros) if (Math.abs(P.X(x) - P.X(z)) < 10) return [z, 0]; return [x, 0]; } });
+        const lam = P.handle(1.4, 0, { color: 'gold', label: 'λ', constrain: (x) => { for (const z of zeros) if (Math.abs(P.X(x) - P.X(z)) < 10) return [z, 0]; return [x, 0]; } });
         v.select('', [{ value: 'sym', label: 'symmetric' }, { value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'rot', label: 'rotation' }], 'sym', { onChange: (k) => C.set(PRE[k]) });
         v.button('jump to the next eigenvalue', () => { if (zeros.length) { zk = (zk + 1) % zeros.length; lam.set(zeros[zk], 0); } });
         const f = (T, x) => M.det([[x - T[0][0], -T[0][1]], [-T[1][0], x - T[1][1]]]);
@@ -380,7 +382,8 @@ So $S^{-1}TS$ multiplies every $\tau$ by $\det T$, which by the definition 9.41 
             const c1 = [B[0][0], B[1][0]], c2 = [B[0][1], B[1][1]];
             W.poly([[0, 0], c1, add(c1, c2), c2], { fill: colr, fillAlpha: 0.22, color: colr, width: 1.8 });
             W.arrow(0, 0, c1[0], c1[1], { color: colr, width: 2.2 }); W.arrow(0, 0, c2[0], c2[1], { color: colr, width: 2.2, dash: [6, 4] });
-            W.texPx(`${cong ? 'S^{\\mathrm t}TS' : 'S^{-1}TS'} = ${mtex(B, 2)}`, 12, W.height - 40, { align: 'left', size: 14, color: colr });
+            plate(W, 6, W.height - 74, 236, 66);
+            W.texPx(`${cong ? 'S^{\\mathrm t}TS' : 'S^{-1}TS'} = ${mtex(B, 2)}`, 14, W.height - 41, { align: 'left', size: 14, color: colr });
             W.corner(`det = ${pn(dB, 3)}${ok ? ' = det T' : ' ≠ det T'}`, 'tl', { color: ok ? 'green' : 'red', weight: 700 });
             st = { dT, dB, ok, ratio, dS, sing, cong };
           } else {
@@ -460,8 +463,8 @@ In particular the right side is the same for every basis.`,
           ttl(R, TB, brk ? '\\mathcal M\\big(T, (e_k), (1, x, x^2)\\big)' : '\\mathcal M\\big(T, (e_1, e_2, e_3)\\big)', brk ? 'red' : 'ink', false, 14);
           R.texPx(`\\det = ${tn(dM, 4)}`, R.width / 2, TB.geo.Y0 + 3 * TB.geo.ch + 22, { size: 16, color: ok ? 'green' : 'red' });
           const all = Object.keys(BN).map((k) => { const Ek = basisCols(k); return Ek ? M.det(matIn(Ek)) : NaN; });
-          Object.keys(BN).forEach((k, i) => R.texPx(`\\text{${{ mono: 'monomials', shift: 'shifted', lag: 'Lagrange', bern: 'Bernstein' }[k]}}: ${isFinite(all[i]) ? tn(all[i], 4) : '-'}`, R.width * (i % 2 ? 0.74 : 0.27), R.height - 52 + 24 * Math.floor(i / 2), { size: 12.5, color: k === kind ? 'ink' : 'muted' }));
-          R.texPx('\\det \\text{ of the matrix in each basis}', R.width / 2, R.height - 80, { size: 12.5, color: 'muted' });
+          Object.keys(BN).forEach((k, i) => R.textPx(`${{ mono: 'monomials', shift: 'shifted', lag: 'Lagrange', bern: 'Bernstein' }[k]}: ${isFinite(all[i]) ? pn(all[i], 4) : '–'}`, R.width * (i % 2 ? 0.74 : 0.27), R.height - 50 + 22 * Math.floor(i / 2), { align: 'center', size: 12.5, color: k === kind ? 'ink' : 'muted', weight: k === kind ? 700 : 500 }));
+          R.textPx('det of the matrix in each basis', R.width / 2, R.height - 76, { align: 'center', size: 12, color: 'muted' });
           P.corner(`det T = a³ = ${pn(dT, 4)}`, 'tl', { color: 'green', weight: 700 });
           st = { ok, dT, dM, all, brk, a: a.value };
         });
@@ -471,7 +474,7 @@ In particular the right side is the same for every basis.`,
           if (st.dM === undefined) return 'Two Lagrange nodes coincide, so the three polynomials are not a basis. Pull them apart.';
           const spread = Math.max(...st.all.filter(isFinite)) - Math.min(...st.all.filter(isFinite));
           if (st.brk) return `With the input basis $(e_k)$ but the output basis $1, x, x^2$, the determinant is $${tn(st.dM, 4)}$, while $\\det T = ${tn(st.dT, 4)}$; across the four bases these numbers spread over $${tn(spread, 3)}$. The theorem needs **one** basis on both sides.`;
-          return `In the monomial basis the matrix is upper triangular with diagonal $1, a, a^2$, so $\\det T = a^3 = ${tn(st.dT, 4)}$ (9.48). In the current basis $\\det\\mathcal M = ${tn(st.dM, 4)}$; over the four bases the determinants differ by at most $${v.sci(Math.max(spread, 1e-17), 1)}$ — rounding.`;
+          return `In the monomial basis the matrix is upper triangular with diagonal $1, a, a^2$, so $\\det T = a^3 = ${tn(st.dT, 4)}$ (9.48). In the current basis $\\det\\mathcal M = ${tn(st.dM, 4)}$; over the four bases the determinants ${spread === 0 ? 'agree exactly' : `differ by at most $${v.sci(spread, 1)}$ (rounding)`}.`;
         });
       },
     },
@@ -510,7 +513,7 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           const dA = cDet(A), prod = pp[pp.length - 1], ok = cabs(csub(prod, dA)) <= 1e-7 * (1 + cabs(dA));
           // window: everything visible, origin included
           const ext = Math.max(1.2, ...[...cl.map((e) => e.lam), ...pp, dA].map((z) => Math.max(Math.abs(z[0]), Math.abs(z[1]) / 0.8)));
-          const Rv = nice(1.18 * ext), key = String(Rv);
+          const Rv = nice(1.3 * ext), key = String(Rv);
           if (key !== view) { view = key; S.setView([-Rv, Rv], [-0.8 * Rv, 0.8 * Rv]); }
           S.circle(0, 0, 1, { color: 'faint', width: 1, dash: [3, 4] });
           fac.forEach((z, k) => {
@@ -520,8 +523,8 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           });
           for (let k = 0; k + 1 < pp.length; k++) S.arrow(pp[k][0], pp[k][1], pp[k + 1][0], pp[k + 1][1], { color: 'gold', width: 2.6 });
           S.dot(dA[0], dA[1], { r: 12, hollow: true, color: 'green', width: 2.8 });
-          S.text(`det A = ${cpn(dA, 2)}`, dA[0], dA[1], { dy: 25, align: 'center', color: 'green', weight: 700, size: 12.5 });
-          pp.forEach((p, k) => S.dot(p[0], p[1], { r: 4.5, color: 'gold', label: k === 0 ? '1' : k === pp.length - 1 ? null : `P${sub(k)}`, labelPos: 'nw' }));
+          S.text(`det A = ${cpn(dA, 2)}`, dA[0], dA[1], { dx: 17, align: 'left', color: 'green', weight: 700, size: 12.5 });
+          pp.forEach((p, k) => S.dot(p[0], p[1], { r: 4.5, color: 'gold', label: k === 0 ? '1' : k > 1 && k < pp.length - 1 ? `P${sub(k)}` : null, labelPos: k === 0 ? 'se' : 'nw' }));
           cl.forEach((e) => {
             S.dot(e.lam[0], e.lam[1], { r: 8, hollow: true, color: 'accent', width: 2.4 });
             S.text(`${cpn(e.lam, 2)}${e.m > 1 ? ` (×${e.m})` : ''}`, e.lam[0], e.lam[1], { dy: -17, align: 'center', color: 'accent', size: 12, weight: 600 });
@@ -561,9 +564,9 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
         const PRE = { gen: [[1.2, 0.4, 0.2], [-0.3, 1.0, 0.6], [0.5, -0.4, 0.9]], neg: [[0.3, 1.1, 0.2], [1.2, 0.2, -0.3], [0.1, 0.4, 1.0]], flat: [[1.0, 0.2, 1.2], [0.2, 1.0, 1.2], [-0.4, 0.6, 0.2]] };
         const Bm = [[0, 1, -1], [1, 0.5, 0], [-0.5, 1, 0.3]];
         let A = clone(PRE.gen);
-        const SC = v.stage({ x: [-2, 2], y: [-1.8, 2.2], equal: true, axes: false, height: 320, minWidth: 270, title: 'columns of $A$' });
-        const SR = v.stage({ x: [-2, 2], y: [-1.8, 2.2], equal: true, axes: false, height: 320, minWidth: 270, title: 'rows of $A$ (the columns of $A^{\\mathrm t}$)' });
-        const Z = v.stage({ x: [-3, 3], y: [-1, 1], equal: true, height: 190, full: true, title: 'complex $A + i\\varphi B$: $\\det A$, $\\det A^{\\mathrm t}$ and $\\det A^*$ in $\\mathbf C$' });
+        const SC = v.stage({ x: [-2, 2], y: [-1.4, 2.4], equal: true, axes: false, height: 320, minWidth: 270, title: 'columns of $A$' });
+        const SR = v.stage({ x: [-2, 2], y: [-1.4, 2.4], equal: true, axes: false, height: 320, minWidth: 270, title: 'rows of $A$ (the columns of $A^{\\mathrm t}$)' });
+        const Z = v.stage({ x: [-3, 3], y: [-1, 1], equal: true, height: 190, full: true, title: 'a complex matrix $C = A + i\\varphi B$: $\\det C$, $\\det C^{\\mathrm t}$ and $\\det C^*$ in $\\mathbf C$' });
         const sc = v.scene3(SC, { yaw: 0.65, pitch: 0.32, axis: 1.5, lim: 1.6 }), sr = v.scene3(SR, { yaw: 0.65, pitch: 0.32, axis: 1.5, lim: 1.6 });
         const CC = ['blue', 'pink', 'teal'], RC = ['orange', 'purple', 'gold'];
         const col = (k) => A.map((r) => r[k]);
@@ -585,18 +588,18 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           const ext = Math.max(0.6, ...[z, zt, zs].map((w) => Math.max(Math.abs(w[0]), Math.abs(w[1]) * 3.2))), Rv = nice(1.25 * ext), key = String(Rv);
           if (key !== view) { view = key; Z.setView([-Rv, Rv], [-Rv / 3.4, Rv / 3.4]); }
           Z.line(z[0], z[1], zs[0], zs[1], { color: 'muted', width: 1.2, dash: [3, 4] });
-          Z.dot(z[0], z[1], { r: 6, color: 'blue' });
           Z.dot(zt[0], zt[1], { r: 11, hollow: true, color: 'orange', width: 2.4 });
+          Z.dot(z[0], z[1], { r: 6, color: 'blue' });
           Z.dot(zs[0], zs[1], { r: 6, color: 'green' });
-          Z.text(`det A = det Aᵗ = ${cpn(z, 3)}`, z[0], z[1], { dx: 16, color: 'blue', size: 12.5, weight: 600 });
-          Z.text(`det A* = ${cpn(zs, 3)}`, zs[0], zs[1], { dx: 16, color: 'green', size: 12.5, weight: 600 });
+          Z.text(`det C = det Cᵗ = ${cpn(z, 3)}`, z[0], z[1], { dx: 16, color: 'blue', size: 12.5, weight: 600 });
+          Z.text(`det C* = ${cpn(zs, 3)}`, zs[0], zs[1], { dx: 16, color: 'green', size: 12.5, weight: 600 });
           st = { d, dt, z, zt, zs };
         });
-        v.legend([['blue', 'columns, $\\det A$'], ['orange', 'rows, $\\det A^{\\mathrm t}$'], ['green', '$\\det A^*$', { dot: true }], ['red', 'negative orientation']]);
+        v.legend([['blue', 'columns, $\\det A$'], ['orange', 'rows, $\\det A^{\\mathrm t}$'], ['green', '$\\det C^*$', { dot: true }], ['red', 'negative orientation']]);
         v.readout(() => {
           if (!st) return '';
           const { d, dt, z, zt, zs } = st;
-          return `Real $A$: $\\det A = ${tn(d, 6)}$ and $\\det A^{\\mathrm t} = ${tn(dt, 6)}$. Complex $A + i\\varphi B$: $\\det = ${ctn(z, 4)}$, $\\det(\\cdot)^{\\mathrm t} = ${ctn(zt, 4)}$, $\\det(\\cdot)^* = ${ctn(zs, 4)} = \\overline{${ctn(z, 4)}}$.`;
+          return `Real $A$: $\\det A = ${tn(d, 6)}$ and $\\det A^{\\mathrm t} = ${tn(dt, 6)}$. Complex $C = A + i\\varphi B$: $\\det C = ${ctn(z, 4)}$, $\\det C^{\\mathrm t} = ${ctn(zt, 4)}$, and $\\det C^* = ${ctn(zs, 4)} = \\overline{\\det C}$${Math.abs(z[1]) > 1e-9 ? ' — not $\\det C$, so the conjugation in the adjoint matters' : ''}.`;
         });
       },
     },
@@ -630,9 +633,9 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
         const pair = v.select('$(i, j)$', PAIRS.map(([i, j], q) => ({ value: q, label: `$(${i + 1}, ${j + 1})$` })), 0);
         const kS = v.slider('$k$', -3, 3, -2, { step: 0.5 });
         const L = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 260 });
-        const S = v.stage({ x: [-2, 2], y: [-1.8, 2.2], equal: true, axes: false, height: 340, minWidth: 280, title: 'parallelepiped of the columns' });
-        const sc = v.scene3(S, { yaw: 0.7, pitch: 0.3, axis: 1.6, lim: 2 });
-        const TB = v.table(L, { rows: 3, cols: 3, region: [0.12, 0.5, 0.88, 0.9], maxCell: 52, size: 14 });
+        const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2.4], equal: true, axes: false, height: 340, minWidth: 280, title: 'parallelepiped of the columns' });
+        const sc = v.scene3(S, { yaw: 0.7, pitch: 0.3, axis: 1.8, lim: 2.2 });
+        const TB = v.table(L, { rows: 3, cols: 3, region: [0.02, 0.4, 0.46, 0.86], maxCell: 46, size: 13.5 });
         const get = (B, r, t) => (r === 'r' ? B[t].slice() : B.map((row) => row[t]));
         const put = (B, r, t, x) => { if (r === 'r') B[t] = x; else B.forEach((row, q) => { row[t] = x[q]; }); };
         const doOp = (o, r, i, j, k) => {
@@ -643,14 +646,16 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           hist.push({ A, ghost }); ghost = A; A = B.map((row) => row.map((x) => (Math.abs(x) < 1e-12 ? 0 : x))); log.push({ name, f, bad: o === 'add' && i === j });
         };
         v.button('apply', () => { const [i, j] = PAIRS[pair.value]; doOp(op.value, rc.value, i, j, kS.value); });
-        v.button('next elimination step', () => {
+        const elimStep = () => {
           for (let c = 0; c < 3; c++) {
             if (Math.abs(A[c][c]) < 1e-12) { for (let r = c + 1; r < 3; r++) if (Math.abs(A[r][c]) > 1e-12) { doOp('swap', 'r', c, r, 0); return; } continue; }
             for (let r = c + 1; r < 3; r++) if (Math.abs(A[r][c]) > 1e-12) { doOp('add', 'r', r, c, -A[r][c] / A[c][c]); return; }
           }
-        });
+        };
+        v.button('next elimination step', elimStep);
         v.button('undo', () => { if (hist.length) { const h = hist.pop(); A = h.A; ghost = h.ghost; log.pop(); } });
         v.button('reset', () => { A = clone(A0); hist = []; log = []; ghost = null; });
+        doOp('swap', 'c', 0, 2, 0); elimStep(); // start with a column swap and one elimination step in the ledger
         let st = null;
         v.render(() => {
           const [pi, pj] = PAIRS[pair.value], o = op.value, r = rc.value;
@@ -665,14 +670,15 @@ where $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues and $d_k = \dim
           ttl(L, TB, `A_{${log.length}}`, 'ink', false, 16);
           const g = TB.geo, pf = o === 'swap' ? (pi === pj ? 1 : -1) : o === 'scale' ? kS.value : pi === pj ? 1 + kS.value : 1;
           L.texPx(`\\text{pending: } \\det \\times ${tn(pf, 3)}`, g.X0 + 1.5 * g.cw, g.Y0 + 3 * g.ch + 18, { size: 13, color: o === 'add' && pi === pj ? 'red' : 'muted' });
-          L.texPx('\\text{ledger}', 16, 22, { size: 13, align: 'left', color: 'muted' });
-          const shown = log.slice(-5), off = log.length - shown.length;
-          if (!shown.length) L.texPx('\\text{(no operations yet)}', 16, 46, { size: 12.5, align: 'left', color: 'faint' });
-          shown.forEach((e, q) => L.texPx(`${off + q + 1}.\\ ${e.name}: \\ \\times ${tn(e.f, 3)}`, 16, 46 + q * 21, { size: 12.5, align: 'left', color: e.bad ? 'red' : e.f === 1 ? 'muted' : 'ink' }));
-          L.texPx(`\\det A_{${log.length}} = ${tn(F, 3)} \\cdot \\det A_0 = ${tn(pred, 3)}`, L.width / 2, L.height - 18, { size: 14, color: ok ? 'green' : 'red' });
+          const X1 = g.X0 + 3 * g.cw + 18;
+          L.textPx('ledger (factor on det)', X1, 26, { size: 12, color: 'muted', weight: 600 });
+          const shown = log.slice(-8), off = log.length - shown.length;
+          if (!shown.length) L.textPx('no operations yet', X1, 50, { size: 12, color: 'faint' });
+          shown.forEach((e, q) => L.texPx(`${off + q + 1}.\\ ${e.name}: \\ \\times ${tn(e.f, 3)}`, X1, 50 + q * 23, { size: 12.5, align: 'left', color: e.bad ? 'red' : e.f === 1 ? 'muted' : 'ink' }));
+          L.texPx(log.length ? `\\det A_{${log.length}} = ${tn(F, 3)} \\cdot \\det A_0 = ${tn(pred, 3)}` : `\\det A_0 = ${tn(d0, 3)}`, L.width / 2, L.height - 18, { size: 14, color: ok ? 'green' : 'red' });
           // the columns' parallelepiped
           const cols = [0, 1, 2].map((k) => A.map((row) => row[k])), gcols = ghost ? [0, 1, 2].map((k) => ghost.map((row) => row[k])) : null;
-          const m = Math.max(1, ...cols.map(len), ...(gcols ? gcols.map(len) : [])), s = 1.6 / m;
+          const m = Math.max(1, ...cols.map(len), ...(gcols ? gcols.map(len) : [])), s = 2.1 / m;
           sc.begin();
           if (gcols) ppEdges(sc, ...gcols.map((c) => scl(c, s)));
           ppiped(sc, ...cols.map((c) => scl(c, s)), { color: d >= 0 ? 'blue' : 'red', fillAlpha: 0.12 });
@@ -709,8 +715,8 @@ Over $\mathbf C$ there is a second view: every eigenvalue of a unitary operator 
       viz(v) {
         const M = v.M;
         const N = 300;
-        const S = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 340, weight: 1.3, minWidth: 290, title: '$\\det S$ for random $S$' });
-        const H = v.stage({ x: [0, 2], y: [0, 1], height: 340, minWidth: 220, axes: 'box', xlabel: '$|\\det S|$', title: 'histogram of $|\\det S|$', yticks: [] });
+        const S = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 340, weight: 1.3, minWidth: 290, ticks: false, title: '$\\det S$ for random $S$' });
+        const H = v.stage({ x: [0, 2], y: [0, 1], height: 340, minWidth: 220, axes: 'box', xlabel: '|det S|', title: 'histogram of $|\\det S|$', yticks: [] });
         const nS = v.select('$n$', [2, 3, 4, 8], 3);
         const fld = v.select('field', [{ value: 'C', label: '$\\mathbf C$: unitary' }, { value: 'R', label: '$\\mathbf R$: orthogonal' }], 'C');
         const eps = v.slider('perturbation $\\varepsilon$ (break unitarity)', 0, 0.5, 0, { step: 0.01 });
@@ -735,6 +741,7 @@ Over $\mathbf C$ there is a second view: every eigenvalue of a unitary operator 
           const mats = list.map(({ Q, G }) => (e ? Q.map((row, i) => row.map((z, j) => cadd(z, cscl(G[i][j], e)))) : Q));
           const ds = mats.map(cDet), ab = ds.map(cabs);
           S.circle(0, 0, 1, { color: 'green', width: 2.2 });
+          S.text('1', 1, 0, { dx: 10, dy: 10, color: 'muted', size: 12 }); S.text('i', 0, 1, { dx: 8, dy: -10, color: 'muted', size: 12, math: true });
           S.dots(ds, { r: 2.6, color: 'accent', alpha: 0.55 });
           sel = Math.min(sel, ds.length - 1);
           const Ssel = mats[sel], z = ds[sel], ev = M.eigC(Ssel, { vectors: false }).values.map(toC);
@@ -746,7 +753,7 @@ Over $\mathbf C$ there is a second view: every eigenvalue of a unitary operator 
           S.corner(e ? `ε = ${pn(e, 2)}: not unitary` : 'all on the unit circle', 'tl', { color: e ? 'red' : 'green', weight: 700 });
           // histogram of |det|
           const top = Math.max(2, Math.ceil(Math.max(...ab) * 2) / 2);
-          const hst = M.histogram(ab, { bins: 40, range: [0, top] }), hmax = Math.max(...hst.counts);
+          const hst = M.histogram(ab, { bins: Math.round(top / 0.05) + 1, range: [-0.025, top + 0.025] }), hmax = Math.max(...hst.counts);
           H.setView([0, top], [0, hmax * 1.12]);
           H.vline(1, { color: 'green', width: 1.6, dash: [5, 4] });
           H.hist({ edges: hst.edges, counts: hst.counts }, { color: e ? 'red' : 'accent', fillAlpha: 0.35 });

@@ -110,9 +110,9 @@ where $v_x$ is his sideways offset and $v_d$ his distance (art-1.2); heights com
       viz(v) {
         const M = v.M, d0 = 3, h0 = 1.5, FW = 2.4, FH = 2.4;
         const pic = v.stage({ x: [-3.5, 3.5], y: [-0.15, 2.55], equal: true, axes: false, height: 330, weight: 1.2, title: 'the picture and its distance points' });
-        const plan = v.stage({ x: [-4.3, 4.3], y: [-6.3, 15.5], equal: true, axes: false, height: 330, weight: 0.8, minWidth: 230, title: 'the floor you reconstruct (plan)' });
-        const spots = { station: [0, -3], closer: [0, -1.5], farther: [0, -5.5], side: [2.2, -3] };
-        const V = plan.handle(0, -3, { color: 'accent', label: 'you', labelPos: 'e', constrain: (x, y) => [M.clamp(x, -3.2, 3.2), M.clamp(y, -6, -1.2)] });
+        const plan = v.stage({ x: [-4.3, 4.3], y: [-5.6, 14], equal: true, axes: false, height: 330, weight: 0.8, minWidth: 230, title: 'the floor you reconstruct (plan)' });
+        const spots = { station: [0, -3], closer: [0, -1.5], farther: [0, -5], side: [2.2, -3] };
+        const V = plan.handle(0, -3, { color: 'accent', label: 'you', labelPos: 'e', constrain: (x, y) => [M.clamp(x, -3.2, 3.2), M.clamp(y, -5.2, -1.2)] });
         v.select('stand', [{ value: 'station', label: 'at the station point' }, { value: 'closer', label: 'closer' }, { value: 'farther', label: 'farther' }, { value: 'side', label: 'to the side' }], 'station', { onChange: (k) => V.set(...spots[k]) });
         const pp = (X, Y, Z = 0) => [(X * d0) / (Y + d0), h0 + ((Z - h0) * d0) / (Y + d0)]; // picture point of a floor/scene point
         const back = (q) => { const vx = V.x, vd = -V.y, s = h0 / (h0 - q[1]); return [vx + s * (q[0] - vx), vd * (s - 1)]; }; // the viewer's reconstruction
@@ -133,16 +133,16 @@ where $v_x$ is his sideways offset and $v_d$ his distance (art-1.2); heights com
           }
           pic.text('D', -d0 - 0.12, h0 + 0.12, { align: 'right', baseline: 'bottom', math: true, size: 15, color: 'green' });
           pic.text('D', d0 + 0.12, h0 + 0.12, { align: 'left', baseline: 'bottom', math: true, size: 15, color: 'green' });
-          pic.dot(0, h0, { r: 4, color: 'accent', label: 'C', labelPos: 'n' });
+          pic.dot(0, h0, { r: 4, color: 'accent', label: 'C', labelPos: 'sw' });
           pic.measure(0, h0 + 0.3, d0, h0 + 0.3, 'd', { color: 'green' });
           // ---- plan: true floor, reconstructed floor, viewer
           plan.line(-FW, 0, FW, 0, { color: 'orange', width: 3 });
           plan.text('picture', 3.2, -0.1, { align: 'left', baseline: 'top', size: 10.5, color: 'orange' });
-          for (let X = -3; X <= 3; X++) plan.line(X, 0, X, 10, { color: 'faint', width: 1 });
-          for (let Y = 0; Y <= 10; Y++) plan.line(-3, Y, 3, Y, { color: 'faint', width: 1 });
+          for (let X = -3; X <= 3; X++) plan.line(X, 0, X, 8, { color: 'faint', width: 1.2 });
+          for (let Y = 0; Y <= 8; Y++) plan.line(-3, Y, 3, Y, { color: 'faint', width: 1.2 });
           const R = (X, Y) => back(pp(X, Y));
-          for (let X = -3; X <= 3; X++) { const a = R(X, 0), b = R(X, 10); plan.line(a[0], a[1], b[0], b[1], { color: 'accent', width: 1.2 }); }
-          for (let Y = 0; Y <= 10; Y++) { const a = R(-3, Y), b = R(3, Y); plan.line(a[0], a[1], b[0], b[1], { color: 'accent', width: 1.2 }); }
+          for (let X = -3; X <= 3; X++) { const a = R(X, 0), b = R(X, 8); plan.line(a[0], a[1], b[0], b[1], { color: 'accent', width: 1.2 }); }
+          for (let Y = 0; Y <= 8; Y++) { const a = R(-3, Y), b = R(3, Y); plan.line(a[0], a[1], b[0], b[1], { color: 'accent', width: 1.2 }); }
           cubes.forEach(([x, y, s], i) => {
             plan.rect(x, y, x + s, y + s, { color: 'faint', width: 1.4, dash: [3, 3] });
             plan.poly([R(x, y), R(x + s, y), R(x + s, y + s), R(x, y + s)], { fill: i ? 'purple' : 'teal', fillAlpha: 0.3, color: i ? 'purple' : 'teal', width: 1.4 });
@@ -178,7 +178,7 @@ The stretching grows without bound toward $90^\circ$, so wide-angle pictures sme
         const top = v.stage({ x: [-3.2, 3.2], y: [-0.25, 3.55], equal: true, axes: false, height: 330, weight: 0.75, minWidth: 230, title: 'from above: the tangent rays' });
         const fov = v.slider('horizontal field of view', 30, 150, 110, { step: 1, fmt: (x) => `${x}°` });
         const circ = v.toggle('painter’s circles', false);
-        const gold = pic.handle(0.86, 0.36, { color: 'gold', constrain: (x, y) => [M.clamp(x, -1, 1), M.clamp(y, -0.62, 0.62)] });
+        const gold = pic.handle(0.62, -0.21, { color: 'gold', constrain: (x, y) => [M.clamp(x, -1, 1), M.clamp(y, -0.62, 0.62)] });
         const grid = []; for (const gz of [-0.42, 0, 0.42]) for (const gx of [-0.8, -0.4, 0, 0.4, 0.8]) grid.push([gx, gz]);
         const outline = (c, d) => {
           const Lc = Math.hypot(...c), cc = c.map((x) => x * (1 - (r * r) / (Lc * Lc))), rho = r * Math.sqrt(1 - (r * r) / (Lc * Lc));
@@ -376,7 +376,7 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
             S.line(P[0] - (dx / L) * 30, P[1] - (dy / L) * 30, Q[0] + (dx / L) * 30, Q[1] + (dy / L) * 30, { color: 'green', width: 2 });
           }
           const bad = free.value && P && Q && R && lineDist(R, P, Q) > 1e-3;
-          [[P, 'P'], [Q, 'Q'], [R, 'R']].forEach(([X, nm]) => { if (X) S.dot(X[0], X[1], { r: 5, color: nm === 'R' && bad ? 'red' : 'gold', label: nm, labelPos: 'n' }); });
+          [[P, 'P'], [Q, 'Q'], [R, 'R']].forEach(([X, nm]) => { if (X) S.dot(X[0], X[1], { r: 5, color: nm === 'R' && bad ? 'red' : 'gold', label: nm, labelPos: 's' }); });
           // ---- spatial figure
           const k2 = tilt.value, z2 = (x) => 0.25 + k2 * x, xa = (0.25 + 0.75) / (0.18 - k2); // planes z1, z2 meet at x = xa
           const cut = (X) => { const D = M.vsub(X, O3), s = (0.25 + k2 * O3[0] - O3[2]) / (D[2] - k2 * D[0]); return M.vadd(O3, M.vscale(D, s)); };
@@ -422,7 +422,7 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
 
 Each keeps some properties of what we see and gives up others; none of them is “the” correct picture of a wide view.`,
       idea: String.raw`The first three are central projections from the eye followed by different ways of laying the projection surface flat. A straight line in space and the eye span a plane; that plane leaves a straight trace on a flat picture, but on a cylinder or a sphere it leaves an ellipse or a great circle, which appears curved once the surface is unrolled (art-1.10). André Barre and Albert Flocon codified a five-point curvilinear perspective in 1968; Pavel Florensky’s essay of 1920 defended the reverse perspective of icons as a deliberate system rather than a failure. Modelling reverse perspective as a projection from a point beyond the scene is a modern geometric reading, not a rule the icon painters wrote down.`,
-      caption: String.raw`Switch between a flat picture, a cylinder, a fisheye and reverse perspective of the same street, and widen the field of view. The small diagram shows the projection surface from above. The readout measures how much a receding kerb, a kerb across the view and a lamp post bend: not at all on the flat picture, more or less on the curved surfaces. In reverse perspective lines stay straight but the street widens with distance.`,
+      caption: String.raw`Switch between a flat picture, a cylinder, a fisheye and reverse perspective of the same street, and widen the field of view. The small diagram shows the projection surface from above. The readout measures how much a receding kerb, a roof edge across the view and a lamp post bend: not at all on the flat picture, more or less on the curved surfaces. In reverse perspective lines stay straight but the street widens with distance.`,
       deps: ['art-1.10'],
       see: ['geog-5.1', 'geog-5.2'],
       refs: ['Kemp ch. 3'],
@@ -432,12 +432,13 @@ Each keeps some properties of what we see and gives up others; none of them is �
         const pic = v.stage({ x: [-1.04, 1.04], y: [-0.66, 0.66], equal: true, axes: false, height: 360, weight: 1.35, title: 'one street, four perspectives' });
         const sch = v.stage({ x: [-1.25, 1.25], y: [-0.25, 1.75], equal: true, axes: false, height: 360, weight: 0.5, minWidth: 190, title: 'surface, from above' });
         const kind = v.select('', [{ value: 'plane', label: 'flat picture' }, { value: 'cyl', label: 'cylinder' }, { value: 'fish', label: 'fisheye' }, { value: 'rev', label: 'reverse' }], 'plane');
-        const fov = v.slider('field of view', 40, 170, 110, { step: 1, fmt: (x) => `${x}°` });
+        const fov = v.slider('field of view', 40, 170, 130, { step: 1, fmt: (x) => `${x}°` });
         const projF = (k, F) => {
           if (k === 'plane') { const f = 1 / Math.tan(Math.min(F, rad(160)) / 2); return (P) => (P[1] > 0.05 ? [(f * P[0]) / P[1], (f * (P[2] - EH)) / P[1]] : null); }
           if (k === 'cyl') { const R = 1 / (F / 2); return (P) => { const rho = Math.hypot(P[0], P[1]), ph = Math.atan2(P[0], P[1]); return rho > 0.05 && Math.abs(ph) < 3 ? [R * ph, (R * (P[2] - EH)) / rho] : null; }; }
           if (k === 'fish') { const R = 1 / (F / 2); return (P) => { const q = [P[0], P[1], P[2] - EH], Lq = Math.hypot(...q), th = Math.acos(M.clamp(q[1] / Lq, -1, 1)), s = Math.hypot(q[0], q[2]); return th < 2.9 && s > 1e-9 ? [(R * th * q[0]) / s, (R * th * q[2]) / s] : th < 1e-9 ? [0, 0] : null; }; }
-          const Dr = 150, W0 = 7.5; return (P) => { const k2 = Dr / (Dr - P[1]); return P[1] > -1 ? [(P[0] * k2) / W0, ((P[2] - EH) * k2) / W0] : null; };
+          // reverse: centre of projection beyond the scene (and below the ground), so far things are drawn larger
+          const Dr = 120, W0 = 9, zc = -3, c0 = -zc / W0 + 0.55; return (P) => { if (P[1] < -1 || P[1] > 50) return null; const k2 = Dr / (Dr - P[1]); return [(P[0] * k2) / W0, ((P[2] - zc) * k2) / W0 - c0]; };
         };
         const path3 = (pr, A, B, n = 40) => { const out = []; let prev = null; for (let i = 0; i <= n; i++) { const p = pr(M.vlerp(A, B, i / n)); if (p && prev && Math.hypot(p[0] - prev[0], p[1] - prev[1]) > 0.6) out.push(null); out.push(p); prev = p; } return out; };
         // the street
@@ -456,8 +457,8 @@ Each keeps some properties of what we see and gives up others; none of them is �
           pic.clip(() => {
             // sky and ground: the horizon is the image of the plane z = EH
             const hz = path3(pr, [-200, 0.2, EH], [200, 0.2, EH], 200).filter(Boolean);
-            pic.rect(bx[0], 0, bx[1], by[1], { fill: 'blue', fillAlpha: 0.05, stroke: false });
-            pic.rect(bx[0], by[0], bx[1], 0, { fill: 'faint', fillAlpha: 0.14, stroke: false });
+            if (k !== 'rev') { pic.rect(bx[0], 0, bx[1], by[1], { fill: 'blue', fillAlpha: 0.05, stroke: false }); pic.rect(bx[0], by[0], bx[1], 0, { fill: 'faint', fillAlpha: 0.14, stroke: false }); }
+            else { const g = [[-200, -1, 0], [200, -1, 0], [200, 50, 0], [-200, 50, 0]].map(pr); pic.poly(g, { fill: 'faint', fillAlpha: 0.14, stroke: false }); }
             for (const [A, B, col, w] of lines) pic.path(path3(pr, A, B, col === 'gold' ? 3 : 120), { color: col, width: w, alpha: col === 'ink' ? 0.75 : 0.9 });
             if (k === 'fish') { const R = 1 / (F / 2); pic.circle(0, 0, (R * Math.PI) / 2, { fill: 'faint', fillAlpha: 0.08, color: 'faint', width: 1 }); }
             for (const b of blocks.slice().sort((p, q) => q.y0 - p.y0)) for (const poly of facade(b)) {
@@ -469,7 +470,7 @@ Each keeps some properties of what we see and gives up others; none of them is �
               for (let z = 3; z < b.h; z += 3) pic.path(path3(pr, [poly[0][0], poly[0][1], z], [poly[1][0], poly[1][1], z], 24), { color: b.col, width: 0.8, alpha: 0.7 });
             }
             for (const [x, y] of lamps) pic.path(path3(pr, [x, y, 0], [x, y, 5], 16), { color: 'orange', width: 2 });
-            if (hz.length > 1) pic.path(hz, { color: 'muted', width: 1, dash: [5, 4] });
+            if (hz.length > 1 && k !== 'rev') pic.path(hz, { color: 'muted', width: 1, dash: [5, 4] });
           });
           // ---- schematic of the surface (top view)
           for (const s of [-1, 1]) if (k !== 'rev') sch.line(0, 0, s * 1.6 * Math.sin(Math.min(F, 3.1) / 2), 1.6 * Math.cos(Math.min(F, 3.1) / 2), { color: 'faint', width: 1, dash: [4, 4] });
@@ -483,9 +484,9 @@ Each keeps some properties of what we see and gives up others; none of them is �
         v.readout(() => {
           const k = kind.value, pr = projF(k, rad(fov.value));
           const bend = (A, B) => { const pts = path3(pr, A, B, 60).filter(Boolean); if (pts.length < 3) return NaN; const a = pts[0], b = pts[pts.length - 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; return Math.max(...pts.map((p) => lineDist(p, a, b))) / L; };
-          const b1 = bend([3.5, 4, 0], [3.5, 40, 0]), b2 = bend([6, 26, 0], [40, 26, 0]), b3 = bend([4.3, 11, 0], [4.3, 11, 5]);
-          const wide = k === 'rev' ? (() => { const n = pr([3.5, 4, 0]), f = pr([3.5, 60, 0]); return ` · the road is drawn $${v.fix(f[0] / n[0], 2)}$ times wider at 60 m than at 4 m`; })() : '';
-          return `bending (sag ÷ chord): receding kerb $${v.fix(b1, 3)}$ · kerb across the view $${v.fix(b2, 3)}$ · lamp post $${v.fix(b3, 3)}$` + wide;
+          const b1 = bend([3.5, 4, 0], [3.5, 40, 0]), b2 = bend([6, 6, 12], [15, 6, 12]), b3 = bend([4.3, 11, 0], [4.3, 11, 5]);
+          const wide = k === 'rev' ? (() => { const n = pr([3.5, 4, 0]), f = pr([3.5, 45, 0]); return ` · the road is drawn $${v.fix(f[0] / n[0], 2)}$ times wider at 45 m than at 4 m`; })() : '';
+          return `bending (sag ÷ chord): receding kerb $${v.fix(b1, 3)}$ · roof edge across the view $${v.fix(b2, 3)}$ · lamp post $${v.fix(b3, 3)}$` + wide;
         });
       },
     },

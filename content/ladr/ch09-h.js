@@ -137,18 +137,18 @@ function block3(sc, T, o = {}) {
   for (let b = 0; b <= n2; b++) for (let c = 0; c <= n3; c++) { const y = Y[0] + b * g, z = Z[0] + c * g; sc.line([X[0], y, z], [X[1], y, z], { color: 'faint', width: 0.7, alpha: 0.6 }, 2); }
   for (let i = 0; i < n1; i++) for (let j = 0; j < n2; j++) for (let k = 0; k < n3; k++) {
     const t = T[i][j][k], f = Math.min(1, Math.abs(t) / s), p = C(i, j, k);
-    if (f > 1e-6) cell3(sc, p, h * (0.22 + 0.7 * Math.sqrt(f)), { fill: t > 0 ? 'blue' : 'red', fillAlpha: 0.22 + 0.4 * f });
-    if (o.ghost) { const q = o.ghost[i][j][k], fq = Math.min(1, Math.abs(q) / s); if (fq > 1e-6) { const hh = h * (0.22 + 0.7 * Math.sqrt(fq)); cell3(sc, p, hh, { fill: q > 0 ? 'blue' : 'red', fillAlpha: 0, alpha: 0.5, width: 0.8 }); } }
-    if (o.numbers) sc.tex(pn(t, o.dec ?? 2), p, { size: 11, color: Math.abs(t) < 5e-3 ? 'faint' : 'ink' });
+    if (f > 1e-6) cell3(sc, p, h * (0.14 + 0.5 * Math.sqrt(f)), { fill: t > 0 ? 'blue' : 'red', fillAlpha: 0.2 + 0.4 * f });
+    if (o.ghost) { const q = o.ghost[i][j][k], fq = Math.min(1, Math.abs(q) / s); if (fq > 1e-6) { const hh = h * (0.14 + 0.5 * Math.sqrt(fq)); cell3(sc, p, hh, { fill: q > 0 ? 'blue' : 'red', fillAlpha: 0, alpha: 0.55, width: 0.9 }); } }
+    if (o.numbers && (o.numbers !== 'nz' || Math.abs(t) >= 5e-3)) sc.tex(pn(t, o.dec ?? 2), p, { size: 11, color: Math.abs(t) < 5e-3 ? 'faint' : 'ink' });
   }
   if (o.hl) { const [i, j, k] = o.hl; cell3(sc, C(i, j, k), h * 0.98, { fill: 'gold', fillAlpha: 0.06, color: 'gold', width: 2, alpha: 1 }); }
   if (o.labels !== false) {
     for (let i = 0; i < n1; i++) sc.tex(`${i + 1}`, [C(i, 0, 0)[0], Y[0] - 0.22, Z[0] - 0.12], { size: 11, color: 'blue' });
-    for (let j = 0; j < n2; j++) sc.tex(`${j + 1}`, [X[1] + 0.22, C(0, j, 0)[1], Z[0] - 0.12], { size: 11, color: 'purple' });
+    for (let j = 0; j < n2; j++) sc.tex(`${j + 1}`, [X[0] - 0.22, C(0, j, 0)[1], Z[0] - 0.12], { size: 11, color: 'purple' });
     for (let k = 0; k < n3; k++) sc.tex(`${k + 1}`, [X[1] + 0.2, Y[0] - 0.2, C(0, 0, k)[2]], { size: 11, color: 'teal' });
-    sc.tex(o.names?.[0] ?? 'i', [0, Y[0] - 0.55, Z[0] - 0.3], { size: 14, color: 'blue' });
-    sc.tex(o.names?.[1] ?? 'j', [X[1] + 0.6, 0, Z[0] - 0.3], { size: 14, color: 'purple' });
-    sc.tex(o.names?.[2] ?? 'k', [X[1] + 0.45, Y[0] - 0.45, 0], { size: 14, color: 'teal' });
+    sc.tex(o.names?.[0] ?? 'i', [X[1] + 0.35, Y[0] - 0.22, Z[0] - 0.12], { size: 14, color: 'blue' });
+    sc.tex(o.names?.[1] ?? 'j', [X[0] - 0.22, Y[1] + 0.35, Z[0] - 0.12], { size: 14, color: 'purple' });
+    sc.tex(o.names?.[2] ?? 'k', [X[1] + 0.2, Y[0] - 0.2, Z[1] + 0.32], { size: 14, color: 'teal' });
   }
   return C;
 }
@@ -183,8 +183,8 @@ $$\hat\Gamma(v \otimes w) = \Gamma(v, w) \qquad \text{for all } (v, w) \in V \ti
           { value: 'det', label: '$\\det(v, w)$' }, { value: 'dot', label: '$\\langle v, w\\rangle$' },
           { value: 'cmul', label: '$vw$ in $\\mathbf C$' }, { value: 'brk', label: '$\\|v\\|\\,\\|w\\|$ (break)' },
         ], 'det');
-        const P = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, height: 330, weight: 0.8, minWidth: 250 });
-        const F = v.stage({ x: [-0.4, 13.2], y: [-4.6, 1.4], equal: true, axes: false, height: 330, weight: 1.2, minWidth: 330 });
+        const P = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, height: 290, weight: 0.8, minWidth: 250 });
+        const F = v.stage({ x: [-0.4, 12.6], y: [-5.0, 1.3], equal: true, axes: false, height: 290, weight: 1.2, minWidth: 330 });
         const hv = P.handle(1.3, 0.4, { color: 'accent', label: '$v$' }), hw = P.handle(0.5, 1.2, { color: 'orange', label: '$w$' });
         const G = {
           det: (a, b) => [a[0] * b[1] - a[1] * b[0]],
@@ -197,7 +197,7 @@ $$\hat\Gamma(v \otimes w) = \Gamma(v, w) \qquad \text{for all } (v, w) \in V \ti
         v.render(() => {
           const k = sel.value, Gf = G[k], vv = [hv.x, hv.y], w = [hw.x, hw.y];
           // ---- the plane picture
-          if (k === 'det') { const a = Gf(vv, w)[0], col = a >= 0 ? 'green' : 'red'; P.poly([[0, 0], vv, add(vv, w), w], { fill: col, fillAlpha: 0.18, color: col, width: 1.2 }); P.tex(`\\det = ${tn(a, 2)}`, (vv[0] + w[0]) / 2, (vv[1] + w[1]) / 2, { color: col, size: 14 }); }
+          if (k === 'det') { const a = Gf(vv, w)[0], col = a >= 0 ? 'green' : 'red'; P.poly([[0, 0], vv, add(vv, w), w], { fill: col, fillAlpha: 0.18, color: col, width: 1.2 }); P.tex(`\\det = ${tn(a, 2)}`, (vv[0] + w[0]) / 2, (vv[1] + w[1]) / 2, { color: col, size: 13 }); }
           if (k === 'dot') { const u = scl(vv, 1 / Math.max(len(vv), 1e-9)), pr = scl(u, dot(w, u)); P.line(-2.2 * u[0], -2.2 * u[1], 2.2 * u[0], 2.2 * u[1], { color: 'faint', width: 1 }); P.line(w[0], w[1], pr[0], pr[1], { color: 'muted', dash: [4, 4], width: 1.2 }); P.line(0, 0, pr[0], pr[1], { color: 'green', width: 5, alpha: 0.6 }); }
           if (k === 'cmul') { const z = Gf(vv, w); P.arrow(0, 0, z[0], z[1], { color: 'green', width: 2.8 }); P.tex('vw', z[0], z[1], { dx: 14, dy: -10, color: 'green', size: 15 }); P.circle(0, 0, 1, { color: 'faint', width: 1 }); }
           if (k === 'brk') { P.circle(0, 0, len(vv), { color: 'accent', width: 1, dash: [4, 4] }); P.circle(0, 0, len(w), { color: 'orange', width: 1, dash: [4, 4] }); }
@@ -220,7 +220,7 @@ $$\hat\Gamma(v \otimes w) = \Gamma(v, w) \qquad \text{for all } (v, w) \in V \ti
           F.tex('=', 9.65, -2, { size: 22, color: err < 1e-9 ? 'green' : 'red' });
           grid(F, out.map((x) => [x]), 10.1, yM, 1, { scale: Math.max(1, maxAbs(out)), frame: err < 1e-9 ? 'green' : 'red', fw: 2 });
           F.tex('\\hat\\Gamma(v \\otimes w)', 10.6, yM + 0.12, { size: 13, baseline: 'bottom', color: err < 1e-9 ? 'green' : 'red' });
-          F.tex(`\\Gamma(v, w) = ${p === 1 ? tn(direct[0], 2) : vtex(direct, 2)}`, 10.6, -4.25, { size: 13.5, color: err < 1e-9 ? 'green' : 'red' });
+          F.tex(`\\text{computed directly: } \\Gamma(v, w) = ${p === 1 ? tn(direct[0], 2) : vtex(direct, 2)}`, 6.3, -4.55, { size: 13.5, color: err < 1e-9 ? 'green' : 'red' });
           // a non-simple tensor: Γ̂ is defined on all of V ⊗ W
           const nonS = mv(Mh, add(vec, outer(w, vv).flat())), sumG = add(direct, Gf(w, vv));
           st = { k, out, direct, err, nonS, sumG, p };
@@ -229,7 +229,7 @@ $$\hat\Gamma(v \otimes w) = \Gamma(v, w) \qquad \text{for all } (v, w) \in V \ti
           if (!st) return '';
           const { k, out, direct, err, nonS, sumG, p } = st, f = (z) => (p === 1 ? tn(z[0], 3) : vtex(z, 3));
           if (k === 'brk') return `$\\|v\\|\\,\\|w\\| = ${f(direct)}$, but the candidate $\\hat\\Gamma$ forced by the basis values ($\\|e_j\\|\\|f_k\\| = 1$) gives $(v_1 + v_2)(w_1 + w_2) = ${f(out)}$ ✗. A map that is not bilinear has no linear partner on $V \\otimes W$.`;
-          const extra = k === 'det' ? ` On the non-simple tensor $v \\otimes w + w \\otimes v$ it gives $${f(nonS)} = \\det(v,w) + \\det(w,v)$: the signed area kills symmetric tensors.` : ` On the non-simple tensor $v \\otimes w + w \\otimes v$ it gives $${f(nonS)} = \\Gamma(v,w) + \\Gamma(w,v) = ${f(sumG)}$.`;
+          const extra = k === 'det' ? ` On $v \\otimes w + w \\otimes v$, which is not a simple tensor, it gives $${f(nonS)} = \\det(v,w) + \\det(w,v)$: the signed area kills symmetric tensors.` : ` On $v \\otimes w + w \\otimes v$, which is not a simple tensor, it gives $${f(nonS)} = \\Gamma(v,w) + \\Gamma(w,v) = ${f(sumG)}$.`;
           return `$\\hat\\Gamma(v \\otimes w) = ${f(out)}$ and $\\Gamma(v, w) = ${f(direct)}$ — difference $${etx(v.M, err)}$ ${mark(err < 1e-9)}.${extra}`;
         });
       },
@@ -243,13 +243,13 @@ $$\hat\Gamma(v \otimes w) = \Gamma(v, w) \qquad \text{for all } (v, w) \in V \ti
 $$\langle v \otimes w, u \otimes x \rangle = \langle v, u\rangle \langle w, x\rangle \qquad \text{for all } v, u \in V \text{ and } w, x \in W.$$
 In particular $\|v \otimes w\| = \|v\|\,\|w\|$.`,
       idea: String.raw`Pick orthonormal bases $e_1, \dots, e_m$ of $V$ and $f_1, \dots, f_n$ of $W$ (6.35) and declare the inner product of two tensors to be the sum of the products of their coefficients in the basis $e_j \otimes f_k$ (9.74): $\big\langle \sum b_{j,k}\, e_j \otimes f_k, \sum c_{j,k}\, e_j \otimes f_k \big\rangle = \sum b_{j,k}\, c_{j,k}$. This is plainly an inner product (6.2). For simple tensors the coefficients are $v_j w_k$ and $u_j x_k$, and $\sum_{j,k} v_j w_k\, u_j x_k = \big(\sum_j v_j u_j\big)\big(\sum_k w_k x_k\big) = \langle v, u\rangle\langle w, x\rangle$ — this step needs the bases to be orthonormal. Uniqueness: simple tensors span $V \otimes W$. The formula could not be used as a definition directly: a tensor has many expressions as sums of simple tensors, and, for instance, the "rule" $\langle v,u\rangle + \langle w, x\rangle$ is not even well defined.`,
-      caption: String.raw`$V = W = \mathbf R^2$. Drag $v, u$ (left) and $w, x$ (middle). Below: the arrays of $v \otimes w$ and $u \otimes x$, and the array of their cell-by-cell products, whose total is the inner product of the two tensors — it always equals $\langle v, u\rangle\langle w, x\rangle$, and $\|v \otimes w\| = \|v\|\,\|w\|$. Break it two ways: use coordinates in a *skewed* (non-orthonormal) basis of $V$ — the cell-by-cell sum no longer matches; or try the rule $\langle v, u\rangle + \langle w, x\rangle$ and move $\lambda$, which rewrites the *same* tensor $v \otimes w$ as $(\lambda v) \otimes (w/\lambda)$ — the "inner product" changes, so the rule is not even a function of the tensors.`,
+      caption: String.raw`$V = W = \mathbf R^2$. Drag $v, u$ (left) and $w, x$ (right). Below: the arrays of $v \otimes w$ and $u \otimes x$, and the array of their cell-by-cell products, whose total is the inner product of the two tensors — it always equals $\langle v, u\rangle\langle w, x\rangle$, and $\|v \otimes w\| = \|v\|\,\|w\|$. Break it two ways: use coordinates in a *skewed* (non-orthonormal) basis of $V$ — the cell-by-cell sum no longer matches; or try the rule $\langle v, u\rangle + \langle w, x\rangle$ and move $\lambda$, which rewrites the *same* tensor $v \otimes w$ as $(\lambda v) \otimes (w/\lambda)$ — the "inner product" changes, so the rule is not even a function of the tensors.`,
       deps: ['ladr-9.74', 'ladr-6.35', 'ladr-6.2'],
       see: ['qm-14.1'],
       tags: ['tensors', 'inner products'],
       viz(v) {
         const mode = v.select('', [{ value: 'on', label: 'orthonormal coordinates' }, { value: 'skew', label: 'skewed basis of $V$ (break)' }, { value: 'sum', label: 'rule $\\langle v,u\\rangle + \\langle w,x\\rangle$ (break)' }], 'on');
-        const lam = v.slider('$\\lambda$: write $v\\otimes w = (\\lambda v)\\otimes(w/\\lambda)$', 0.3, 3, 1, { log: true, sig: 2 });
+        const lam = v.slider('$\\lambda$: write $v\\otimes w = (\\lambda v)\\otimes(w/\\lambda)$', 0.3, 3, 1.8, { log: true, sig: 2 });
         const A = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.9], equal: true, height: 260, title: '$V = \\mathbf R^2$' });
         const B = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.9], equal: true, height: 260, title: '$W = \\mathbf R^2$' });
         const T = v.stage({ x: [-0.2, 14.4], y: [-2.75, 0.9], equal: true, axes: false, height: 200, full: true });
@@ -307,10 +307,10 @@ In particular $\|v \otimes w\| = \|v\|\,\|w\|$.`,
       deps: ['ladr-9.74', 'ladr-9.80'],
       tags: ['tensors', 'orthonormal'],
       viz(v) {
-        const brk = v.toggle('break: $e_2$ free (not orthonormal)', false);
+        const brk = v.toggle('break: $e_2$ free (not orthonormal)', false, { onChange: (b) => { if (b) { const p = rot([he1.x, he1.y], 1.15); he2.set(0.8 * p[0], 0.8 * p[1]); } } });
         const A = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.6], equal: true, height: 240, axes: false, title: 'orthonormal basis of $V$' });
         const B = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.6], equal: true, height: 240, axes: false, title: 'orthonormal basis of $W$' });
-        const T = v.stage({ x: [-0.3, 15.2], y: [-4.45, 0.75], equal: true, axes: false, height: 270, full: true });
+        const T = v.stage({ x: [-0.3, 15.2], y: [-4.6, 0.95], equal: true, axes: false, height: 275, full: true });
         const onC = (x, y) => { const r = Math.hypot(x, y) || 1; return [x / r, y / r]; };
         const he1 = A.handle(Math.cos(0.4), Math.sin(0.4), { color: 'blue', label: '$e_1$', constrain: onC });
         const he2 = A.handle(-0.2, 0.9, { color: 'purple', label: '$e_2$' });
@@ -323,6 +323,7 @@ In particular $\|v \otimes w\| = \|v\|\,\|w\|$.`,
           if (!brk.value) { he2.x = e2[0]; he2.y = e2[1]; }
           for (const S of [A, B]) { S.circle(0, 0, 1, { color: 'faint', width: 1 }); S.line(-1.4, 0, 1.4, 0, { color: 'faint', width: 0.8 }); S.line(0, -1.4, 0, 1.4, { color: 'faint', width: 0.8 }); }
           A.arrow(0, 0, e1[0], e1[1], { color: 'blue', width: 2.8 }); A.arrow(0, 0, e2[0], e2[1], { color: 'purple', width: 2.8 });
+          if (!brk.value) A.tex('e_2', e2[0], e2[1], { dx: -14, dy: -10, color: 'purple', size: 15 });
           B.arrow(0, 0, f1[0], f1[1], { color: 'orange', width: 2.8 }); B.arrow(0, 0, f2[0], f2[1], { color: 'pink', width: 2.8 }); B.tex('f_2', f2[0], f2[1], { dx: -14, dy: -10, color: 'pink', size: 15 });
           const es = [e1, e2], fs = [f1, f2], list = [];
           for (let j = 0; j < 2; j++) for (let k = 0; k < 2; k++) list.push({ j, k, X: outer(es[j], fs[k]) });
@@ -337,8 +338,8 @@ In particular $\|v \otimes w\| = \|v\|\,\|w\|$.`,
           });
           // Gram matrix
           const okI = offI < 1e-9;
-          const gG = grid(T, G, 4.5, 0.35, 0.95, { scale: 1, dec: 2 });
-          T.tex('\\text{Gram matrix } \\langle e_j\\otimes f_k,\\, e_M\\otimes f_N\\rangle', gG.cx, 0.45, { size: 13, baseline: 'bottom', color: okI ? 'green' : 'ink' });
+          const gG = grid(T, G, 4.5, 0.0, 0.95, { scale: 1, dec: 2 });
+          T.tex('\\text{Gram matrix } \\langle e_j\\otimes f_k,\\, e_M\\otimes f_N\\rangle', gG.cx, 0.1, { size: 13, baseline: 'bottom', color: okI ? 'green' : 'ink' });
           T.tex(okI ? '= I_4' : '\\ne I_4', gG.x1 + 0.55, gG.cy, { size: 16, color: okI ? 'green' : 'red', align: 'left' });
           const gV = grid(T, GV, 10.6, -0.25, 0.7, { scale: 1, dec: 2, size: 11 }), gW = grid(T, GW, 13.1, -0.25, 0.7, { scale: 1, dec: 2, size: 11 });
           T.tex('G_V', gV.cx, -0.15, { size: 13, baseline: 'bottom' }); T.tex('\\otimes', 12.4, gV.cy, { size: 18 }); T.tex('G_W', gW.cx, -0.15, { size: 13, baseline: 'bottom' });
@@ -391,7 +392,7 @@ $$\dim \mathcal B(V_1, \dots, V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
           const e = (d, i) => Array.from({ length: d }, (_, t) => +(t === i));
           const C = zeros3(n[0], n[1], n[2]);
           for (let i = 0; i < n[0]; i++) for (let j = 0; j < n[1]; j++) for (let q = 0; q < n[2]; q++) C[i][j][q] = beta(e(n[0], i), e(n[1], j), e(n[2], q));
-          sc.begin(); block3(sc, C, { gap: Math.min(0.75, 2.2 / Math.max(...n)), numbers: n[0] * n[1] * n[2] <= 12, names: ['i', 'j', 'k'] }); sc.flush();
+          sc.begin(); block3(sc, C, { gap: Math.min(0.9, 2.4 / Math.max(...n)), numbers: n[0] * n[1] * n[2] <= 12, names: ['i', 'j', 'k'] }); sc.flush();
           S.corner(`${n[0]} · ${n[1]} · ${n[2]} = ${n[0] * n[1] * n[2]} cells`, 'tl', { color: 'blue', weight: 700, size: 13 });
           // waterfall
           const terms = [];
@@ -492,12 +493,12 @@ $$\dim(V_1 \otimes \cdots \otimes V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
       tags: ['tensors', 'dimension'],
       viz(v) {
         const M = v.M;
-        const sm = v.slider('number of factors $m$', 2, 5, 3, { int: true });
+        const sm = v.slider('number of factors $m$', 2, 5, 4, { int: true });
         const sn = v.slider('dimension $n$', 1, 4, 2, { int: true });
         const mix = v.toggle('mixed: $n, n+1, n, \\dots$', false);
         const sp = v.select('', [{ value: 'ten', label: '$V_1 \\otimes \\cdots \\otimes V_m$' }, { value: 'prod', label: '$V_1 \\times \\cdots \\times V_m$' }], 'ten');
-        const A = v.stage({ x: [0, 100], y: [0, 40], axes: false, height: 300, full: true });
-        const B = v.stage({ x: [0.3, 5.7], y: [1, 3000], ylog: true, axes: 'box', height: 210, full: true, xticks: [1, 2, 3, 4, 5].map((k) => [k, `k = ${k}`]), ylabel: 'dimension' });
+        const A = v.stage({ x: [0, 100], y: [0, 40], axes: false, height: 260, full: true });
+        const B = v.stage({ x: [0.3, 5.7], y: [0.4, 3000], ylog: true, axes: 'box', height: 210, full: true, xticks: [1, 2, 3, 4, 5].map((k) => [k, `k = ${k}`]), ylabel: 'dimension' });
         let memo = null;
         /** Lay out the n1 × … × nm array: returns cell rectangles [x, y, s, value-index] in px of a W×H box. */
         const layout = (d, Wpx, Hpx) => {
@@ -510,15 +511,15 @@ $$\dim(V_1 \otimes \cdots \otimes V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
             const [w, h] = sizeOf(r + 1), lev = Math.floor((m - 2 - r + 1) / 2), horiz = (m - 2 - r) % 2 === 1;
             return horiz ? [d[r] * w + (d[r] - 1) * gap(lev), h] : [w, d[r] * h + (d[r] - 1) * gap(lev)];
           };
-          const [tw, th] = sizeOf(0), s = Math.min(Wpx / tw, Hpx / th), cells = [];
+          const [tw, th] = sizeOf(0), s = Math.min(Wpx / tw, Hpx / th, 40), cells = [], frames = [];
           const place = (r, x, y, idx) => {
             const m = d.length;
-            if (r === m - 2) { for (let i = 0; i < d[m - 2]; i++) for (let j = 0; j < d[m - 1]; j++) cells.push([x + j * s, y + i * s, s, [...idx, i, j]]); return; }
+            if (r === m - 2) { for (let i = 0; i < d[m - 2]; i++) for (let j = 0; j < d[m - 1]; j++) cells.push([x + j * s, y + i * s, s, [...idx, i, j]]); frames.push([x, y, d[m - 1] * s, d[m - 2] * s]); return; }
             const [w, h] = sizeOf(r + 1), lev = Math.floor((m - 2 - r + 1) / 2), horiz = (m - 2 - r) % 2 === 1;
             for (let i = 0; i < d[r]; i++) place(r + 1, x + (horiz ? i * (w + gap(lev)) * s : 0), y + (horiz ? 0 : i * (h + gap(lev)) * s), [...idx, i]);
           };
           place(0, (Wpx - tw * s) / 2, (Hpx - th * s) / 2, []);
-          return { cells, s };
+          return { cells, s, frames };
         };
         let st = null;
         v.render(() => {
@@ -528,11 +529,12 @@ $$\dim(V_1 \otimes \cdots \otimes V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
           // ---- the array
           const Wpx = A.width - 30, Hpx = A.height - 50;
           if (ten) {
-            const { cells, s } = layout(d, Wpx, Hpx), vals = cells.map((c) => c[3].reduce((a, i, q) => a * vecs[q][i], 1)), mx = Math.max(1e-9, ...vals.map(Math.abs));
+            const { cells, s, frames } = layout(d, Wpx, Hpx), vals = cells.map((c) => c[3].reduce((a, i, q) => a * vecs[q][i], 1)), mx = Math.max(1e-9, ...vals.map(Math.abs));
             cells.forEach(([x, y, sz], q) => {
               const X0 = A.invX(15 + x), Y0 = A.invY(35 + y), X1 = A.invX(15 + x + sz), Y1 = A.invY(35 + y + sz), t = vals[q] / mx;
-              A.rect(X0, Y1, X1, Y0, { fill: t >= 0 ? 'blue' : 'red', fillAlpha: 0.08 + 0.55 * Math.abs(t), color: 'grid', width: s > 6 ? 0.6 : 0 });
+              A.rect(X0, Y1, X1, Y0, { fill: t >= 0 ? 'blue' : 'red', fillAlpha: 0.1 + 0.55 * Math.sqrt(Math.abs(t)), color: 'panel', width: s > 6 ? 1 : 0 });
             });
+            frames.forEach(([x, y, w, hh]) => A.rect(A.invX(15 + x), A.invY(35 + y + hh), A.invX(15 + x + w), A.invY(35 + y), { color: 'muted', width: 1 }));
             A.texPx(`${d.join(' \\times ')} = ${P} \\text{ cells}`, A.width / 2, 17, { size: 15, color: 'blue' });
           } else {
             const tot = Sm + (m - 1) * 0.8, s = Math.min(Wpx / tot, 40); let x = (A.width - tot * s) / 2;
@@ -540,7 +542,8 @@ $$\dim(V_1 \otimes \cdots \otimes V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
             A.texPx(`${d.join(' + ')} = ${Sm} \\text{ cells}`, A.width / 2, 17, { size: 15, color: 'orange' });
           }
           // ---- growth chart
-          B.setView([0.3, m + 0.7], [1, Math.max(10, P * 2.5)]);
+          B.setView([0.3, m + 0.7], [0.4, Math.max(10, P * 2.5)]);
+          B.hline(1, { color: 'muted', width: 1 });
           for (let k = 1; k <= m; k++) {
             const pk = d.slice(0, k).reduce((a, b) => a * b, 1), sk = d.slice(0, k).reduce((a, b) => a + b, 0);
             B.rect(k - 0.32, 1, k - 0.02, Math.max(pk, 1.0001), { fill: 'blue', fillAlpha: ten ? 0.75 : 0.3, stroke: false });
@@ -582,7 +585,7 @@ $$\dim(V_1 \otimes \cdots \otimes V_m) = (\dim V_1) \cdots (\dim V_m).$$`,
 $$\{e^1_{j_1} \otimes \cdots \otimes e^m_{j_m}\}_{j_1 = 1, \dots, n_1;\ \dots;\ j_m = 1, \dots, n_m}$$
 is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
       idea: String.raw`Follow 9.74. Dual functionals $\varphi^r_j$ with $\varphi^r_j(e^r_k) = \delta_{jk}$ (from the linear map lemma) satisfy $(e^1_{j_1} \otimes \cdots \otimes e^m_{j_m})(\varphi^1_{k_1}, \dots, \varphi^m_{k_m}) = 1$ if every $j_r = k_r$ and $0$ otherwise; applying a vanishing combination to these lists of functionals kills each coefficient, so the list is independent. It has $n_1 \cdots n_m$ elements, the dimension (9.89), so it is a basis (2.38). Consequently an element of $V_1 \otimes \cdots \otimes V_m$ is described by an array with $m$ indices — its coefficients — which is why tensors appear wherever multi-index arrays do. With bases other than the standard ones, the coefficient array is obtained by applying the inverse change-of-basis matrix along each index.`,
-      caption: String.raw`$\mathbb R^2 \otimes \mathbf R^2 \otimes \mathbf R^2$ and a fixed target tensor $T$ (dashed outlines in both blocks). Step through the eight basis tensors $b_i \otimes c_j \otimes d_k$: left, the current one, scaled by its coefficient $a_{ijk}$ (with standard bases it lights up a single cell; with skewed bases it fills the whole block); right, the running sum $\sum a_{ijk}\, b_i \otimes c_j \otimes d_k$, which reaches $T$ exactly at step 8. Drag either background to rotate. Choose *break* to replace the basis of the second factor by two parallel vectors: the eight tensors span only a 4-dimensional space and the sum never reaches $T$.`,
+      caption: String.raw`$\mathbf R^2 \otimes \mathbf R^2 \otimes \mathbf R^2$ and a fixed target tensor $T$ (dashed outlines in both blocks). Step through the eight basis tensors $b_i \otimes c_j \otimes d_k$: left, the current one, scaled by its coefficient $a_{ijk}$ (with standard bases it lights up a single cell; with skewed bases it fills the whole block); right, the running sum $\sum a_{ijk}\, b_i \otimes c_j \otimes d_k$, which reaches $T$ exactly at step 8. Drag either background to rotate. Choose *break* to replace the basis of the second factor by two parallel vectors: the eight tensors span only a 4-dimensional space and the sum never reaches $T$.`,
       deps: ['ladr-9.88', 'ladr-9.74', 'ladr-9.89'],
       tags: ['tensors', 'bases'],
       viz(v) {
@@ -620,7 +623,7 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
           ang = [s1.yaw, s1.pitch];
           const f = S.frame; if (!f || !f.sum) return;
           const scale = Math.max(1, maxAbs(T));
-          s1.begin(); block3(s1, f.cur || zeros3(2, 2, 2), { gap: 0.95, scale, numbers: !!f.cur, hl: f.idx || undefined, names: ['i', 'j', 'k'] }); s1.flush();
+          s1.begin(); block3(s1, f.cur || zeros3(2, 2, 2), { gap: 0.95, scale, numbers: f.cur ? 'nz' : false, hl: f.idx || undefined, names: ['i', 'j', 'k'] }); s1.flush();
           s2.begin(); block3(s2, f.sum, { gap: 0.95, scale, ghost: T, numbers: true, names: ['i', 'j', 'k'] }); s2.flush();
           R.corner(`‖T − sum‖ = ${pn(f.err, 3)}`, 'tl', { color: f.err < 1e-9 ? 'green' : S.atEnd ? 'red' : 'muted', weight: 700, size: 13 });
           L.corner(sel.value === 'std' ? 'standard bases' : sel.value === 'skew' ? 'skewed bases' : 'c₂ = ½ c₁', 'tl', { color: sel.value === 'dep' ? 'red' : 'muted', weight: 600, size: 12.5 });
@@ -650,10 +653,10 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
       viz(v) {
         const M = v.M;
         const sel = v.select('$\\Gamma(u, v, w)$', [{ value: 'det', label: '$\\det(u, v, w)$' }, { value: 'tri', label: '$\\sum_i u_i v_i w_i$' }, { value: 'brk', label: '$|\\det(u, v, w)|$ (break)' }], 'det');
-        const S = v.stage({ x: [-1.9, 1.9], y: [-1.6, 1.95], equal: true, axes: false, height: 320, full: true });
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.5, 1.85], equal: true, axes: false, height: 290, full: true });
         const sc = v.scene3(S, { yaw: 0.55, pitch: 0.32, axis: 1.35, lim: 1.4 });
         const H = [[1.1, 0.1, 0.1], [0.2, 1.0, -0.15], [0.25, 0.3, 0.95]].map((p, k) => sc.handle(p, { color: ['blue', 'purple', 'teal'][k], label: `$${'uvw'[k]}$` }));
-        const T = v.stage({ x: [-0.3, 16.3], y: [-2.45, 1.05], equal: true, axes: false, height: 175, full: true });
+        const T = v.stage({ x: [-0.3, 16.3], y: [-1.75, 1.2], equal: true, axes: false, height: 170, full: true });
         const eps = (i, j, k) => (i === j || j === k || i === k ? 0 : ((j - i + 3) % 3 === 1 ? 1 : -1));
         let st = null;
         v.render(() => {
@@ -673,19 +676,19 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
           sc.flush();
           S.corner(`det(u, v, w) = ${pn(det, 3)}`, 'tl', { color: col, weight: 700, size: 13 });
           // ---- slices: Γ(e_i, e_j, e_k) and u⊗v⊗w, slice k = fixed third index
-          const c = 0.52;
+          const c = 0.56;
           for (let k = 0; k < 3; k++) {
             const Wk = [0, 1, 2].map((i) => [0, 1, 2].map((j) => W3[i][j][k])), Pk = [0, 1, 2].map((i) => [0, 1, 2].map((j) => P3[i][j][k]));
-            const g1 = grid(T, Wk, k * 1.95, 0.55, c, { scale: 1, dec: 0, size: 11 });
-            T.tex(`k = ${k + 1}`, g1.cx, -1.1, { size: 11.5, color: 'muted', baseline: 'top' });
+            const g1 = grid(T, Wk, k * 1.95, 0.55, c, { scale: 1, dec: 0, size: 11.5, minPx: 18 });
+            T.tex(`k = ${k + 1}`, g1.cx, -1.2, { size: 11.5, color: 'muted', baseline: 'top' });
             const g2 = grid(T, Pk, 7.1 + k * 1.95, 0.55, c, { scale: Math.max(0.2, maxAbs(P3)), numbers: false });
-            T.tex(`k = ${k + 1}`, g2.cx, -1.1, { size: 11.5, color: 'muted', baseline: 'top' });
+            T.tex(`k = ${k + 1}`, g2.cx, -1.2, { size: 11.5, color: 'muted', baseline: 'top' });
           }
           T.tex(k0 === 'det' ? '\\varepsilon_{ijk} = \\det(e_i, e_j, e_k)' : '\\Gamma(e_i, e_j, e_k)', 2.7, 0.65, { size: 13.5, baseline: 'bottom' });
           T.tex('u_i\\,v_j\\,w_k', 9.8, 0.65, { size: 13.5, baseline: 'bottom' });
           T.tex('\\odot', 6.35, -0.25, { size: 20 });
-          T.tex(`\\textstyle\\sum = ${tn(hat, 3)}`, 14.9, -0.05, { size: 15, color: ok ? 'green' : 'red' });
-          T.tex(`${ok ? '=' : '\\ne'} \\Gamma(u, v, w) = ${tn(direct, 3)}`, 14.9, -0.75, { size: 13, color: ok ? 'green' : 'red' });
+          T.tex(`\\textstyle\\sum = ${tn(hat, 3)}`, 14.35, 0.05, { size: 15, color: ok ? 'green' : 'red' });
+          T.tex(`${ok ? '=' : '\\ne'} \\Gamma(u, v, w) = ${tn(direct, 3)}`, 14.35, -0.6, { size: 13, color: ok ? 'green' : 'red' });
           // antisymmetry check on a non-simple tensor
           const P3b = outer3(vv, u, w); let anti = 0; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) for (let k = 0; k < 3; k++) anti += W3[i][j][k] * (P3[i][j][k] + P3b[i][j][k]);
           st = { k0, hat, direct, ok, anti, nz: W3.flat(2).filter((x) => Math.abs(x) > 1e-12).length };
@@ -694,7 +697,7 @@ is a basis of $V_1 \otimes \cdots \otimes V_m$.`,
           if (!st) return '';
           const { k0, hat, direct, ok, anti, nz } = st;
           if (k0 === 'brk') return `$|\\det(u, v, w)| = ${tn(direct, 3)}$, but the forced candidate $\\sum |\\varepsilon_{ijk}|\\,u_iv_jw_k = ${tn(hat, 3)}$ ✗: $|\\det|$ is not trilinear ($|\\det(-u, v, w)| = |\\det(u, v, w)|$), so no linear functional on $\\mathbf R^3\\otimes\\mathbf R^3\\otimes\\mathbf R^3$ matches it.`;
-          const tail = k0 === 'det' ? ` On the non-simple tensor $u\\otimes v\\otimes w + v\\otimes u\\otimes w$ it gives $${tn(anti, 6)}$ — swapping two columns flips the sign.` : '';
+          const tail = k0 === 'det' ? ` On $u\\otimes v\\otimes w + v\\otimes u\\otimes w$ (not a simple tensor) it gives $${tn(anti, 6)}$ — swapping two columns flips the sign.` : '';
           return `$\\hat\\Gamma(u\\otimes v\\otimes w) = ${tn(hat, 4)}$, $\\Gamma(u, v, w) = ${tn(direct, 4)}$ ${mark(ok)}. The matrix of $\\hat\\Gamma$ has ${nz} nonzero entries out of 27.${tail}`;
         });
       },

@@ -513,7 +513,7 @@ and taking complements gives the symmetry $\binom nk = \binom n{n-k}$.`,
         v.readout(() => {
           const n = nS.value, k = set.length, c = binom(n, k);
           const idx = kSubsets(n, k).findIndex((S) => S.every((x, i) => x === set[i])) + 1;
-          return `$\\binom{${n}}{${k}} = \\dfrac{${n}^{\\underline{${k}}}}{${k}!} = \\dfrac{${fall(n, k)}}{${fact(k)}} = ${c}$: the table has ${c} rows of ${fact(k)} ordered selections, $${c}\\times${fact(k)} = ${fall(n, k)}$. Your subset {${set.map((i) => LET[i]).join(', ')}} is row ${idx} of ${c}; its complement is an $${n - k}$-subset, so $\\binom{${n}}{${k}} = \\binom{${n}}{${n - k}}$.`;
+          return `$\\binom{${n}}{${k}} = \\dfrac{${n}^{\\underline{${k}}}}{${k}!} = \\dfrac{${fall(n, k)}}{${fact(k)}} = ${c}$: the table has ${c} rows of ${fact(k)} ordered selections, $${c}\\times${fact(k)} = ${fall(n, k)}$. Your subset {${set.map((i) => LET[i]).join(', ')}} is row ${idx} of ${c}; its complement has $${n - k}$ elements, so $\\binom{${n}}{${k}} = \\binom{${n}}{${n - k}}$.`;
         });
       },
     },

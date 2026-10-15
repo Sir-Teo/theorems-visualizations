@@ -408,7 +408,7 @@ $$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{
         const P = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 390, title: '$q = \\pm1$: target (wide) and from your $A$ (thin)' });
         const R = v.stage({ x: [-3, 4.5], y: [-3, 4.5], equal: true, height: 390, xlabel: 'A₁₂', ylabel: 'A₂₁', title: 'off-diagonal entries $(A_{1,2}, A_{2,1})$' });
         const oh = R.handle(2.6, 0.4, {
-          color: 'gold', label: 'A', constrain: (x, y) => {
+          color: 'gold', label: 'A', labelPos: 'sw', constrain: (x, y) => {
             const b = TG[tg.value][1], d = (x + y - b) / 2;
             if (Math.abs(d) * Math.SQRT2 < 0.12) { x -= d; y -= d; }
             return [Math.round(x * 20) / 20, Math.round(y * 20) / 20];
@@ -628,7 +628,7 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.4, lim: 1.4, labels: ['x₁', 'x₂', 'x₃'] });
         const G = v.stage({ x: [-1.5, 1.5], y: [-2, 2], axes: 'box', height: 400, weight: 0.9, minWidth: 260, xlabel: 't', title: 'slot $k$ fed $x_k + t\\,y$, the others frozen' });
         const COL = ['accent', 'orange', 'purple'], NAME = ['u', 'v', 'w'];
-        const hs = [sc.handle([1, 0.15, 0.2], { color: 'accent', label: 'u' }), sc.handle([0.2, 1, 0.15], { color: 'orange', label: 'v' }), sc.handle([0.15, 0.35, 1], { color: 'purple', label: 'w' })];
+        const hs = [sc.handle([1, 0.15, 0.2], { color: 'accent', label: 'u' }), sc.handle([-0.2, 0.95, 0.5], { color: 'orange', label: 'v' }), sc.handle([0.15, 0.35, 1], { color: 'purple', label: 'w' })];
         const yh = sc.handle([-0.45, -0.75, 0.55], { color: 'gold', label: 'y' });
         let st = null;
         v.render(() => {

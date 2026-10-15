@@ -183,6 +183,14 @@ function ppiped(sc, a, b, c, st = {}) {
     sc.poly(f, { fill: st.color || 'accent', fillAlpha: st.fillAlpha ?? 0.1, color: st.color || 'accent', width: st.width ?? 1, alpha: st.alpha ?? 0.55 });
   }
 }
+/** A panel-coloured plate in pixel coordinates, to keep a label legible over a busy background. */
+function plate(S, X0, Y0, w, h) { S.rect(S.invX(X0), S.invY(Y0), S.invX(X0 + w), S.invY(Y0 + h), { fill: 'panel', fillAlpha: 0.88, stroke: false, radius: 6 }); }
+/** Corner status text (top left) on a plate. */
+function plateCorner(S, str, color, size = 12.5) {
+  const c = S.ctx; c.save(); c.font = `700 ${size}px Inter, system-ui, sans-serif`; const w = c.measureText(str).width; c.restore();
+  plate(S, 4, 5, w + 14, size + 12);
+  S.textPx(str, 11, 11 + size / 2, { color, weight: 700, size, halo: false });
+}
 /** Latitude and longitude curves of the unit sphere, mapped through F (a wireframe of F(sphere)). */
 function wireSphere(sc, F, st = {}, nLat = 5, nLon = 6, n = 40) {
   for (let i = 1; i <= nLat; i++) {
@@ -236,8 +244,8 @@ export default {
           const T = [[a * u[0] * u[0] + b * w[0] * w[0], a * u[0] * u[1] + b * w[0] * w[1]], [a * u[0] * u[1] + b * w[0] * w[1], a * u[1] * u[1] + b * w[1] * w[1]]];
           const d = M.det(T), pos = a >= 0 && b >= 0;
           const q = (x, y) => x * (T[0][0] * x + T[0][1] * y) + y * (T[1][0] * x + T[1][1] * y);
-          const m = Math.max(0.5, Math.abs(a), Math.abs(b)) * 5.3;
-          L.heat((x, y) => q(x, y), { range: [-m, m], cmap: 'diverging', res: 3, key: `${a}|${b}|${th}` });
+          const m = Math.max(0.5, Math.abs(a), Math.abs(b)) * 9;
+          L.raster((x, y) => { const c = M.cmap(M.clamp(0.5 - q(x, y) / (2 * m), 0, 1), 'diverging'); return [c[0], c[1], c[2], 150]; }, { res: 3, key: `${a}|${b}|${th}` });
           L.contour(q, [0], { color: 'ink', width: 1.6, res: 90 });
           L.contour(q, [-1, 1], { color: 'ink', width: 0.8, dash: [3, 4], res: 90 });
           L.circle(0, 0, 1, { color: 'ink', width: 1, alpha: 0.4 });
@@ -247,7 +255,7 @@ export default {
           L.arrow(0, 0, A1[0], A1[1], { color: 'accent', width: 2.6 }); L.arrow(0, 0, B1[0], B1[1], { color: 'purple', width: 2.6 });
           L.tex('\\lambda_1e_1', A1[0], A1[1], { color: 'accent', size: 13, dx: A1[0] >= 0 ? 18 : -18, dy: -12 });
           L.tex('\\lambda_2e_2', B1[0], B1[1], { color: 'purple', size: 13, dx: B1[0] >= 0 ? 18 : -18, dy: -12 });
-          L.corner(pos ? `positive: det = ${pn(d, 3)} ≥ 0` : d < 0 ? `saddle: det = ${pn(d, 3)} < 0` : `not positive, det = ${pn(d, 3)}`, 'tl', { color: col, weight: 700 });
+          plateCorner(L, pos ? `positive: det = ${pn(d, 3)} ≥ 0` : d < 0 ? `saddle: det = ${pn(d, 3)} < 0` : `not positive, det = ${pn(d, 3)}`, col);
           // the samples
           const n = nS.value, pts = samples(n);
           R.rect(0, -3, 3, 0, { fill: 'red', fillAlpha: 0.08, stroke: false });
@@ -264,7 +272,7 @@ export default {
           if (!st) return '';
           const { T, a, b, d, pos, n, nPos, minPos, nNp, N } = st;
           const head = `$T = ${mtex(T, 2)}$ has eigenvalues $${tn(a, 2)}, ${tn(b, 2)}$ and $\\det T = ${tn(d, 4)}$ ${pos ? '$\\ge 0$: positive, as the theorem says.' : d < 0 ? '$< 0$ — but $T$ is not positive (a saddle), so the theorem does not apply.' : '$\\ge 0$ although $T$ is not positive: the converse fails.'}`;
-          return `${head} Samples ($n = ${n}$): ${nPos} of ${N} are positive, and the smallest value of $\\operatorname{sign}(\\det)|\\det|^{1/n}$ among them is $${tn(minPos, 4)} \\ge 0$; ${nNp} non-positive ones still have $\\det \\ge 0$.`;
+          return `${head} Samples ($n = ${n}$): ${nPos} of ${N} are positive, and the smallest value of $\\operatorname{sign}(\\det)|\\det|^{1/n}$ among them is $${minPos === 0 ? '0' : v.sci(minPos, 2)} \\ge 0$; ${nNp} non-positive ones still have $\\det \\ge 0$.`;
         });
       },
     },
@@ -276,7 +284,7 @@ export default {
       statement: String.raw`Suppose $V$ is an inner product space and $T \in \mathcal L(V)$ has singular values $s_1, \dots, s_n$. Then
 $$|\det T| = \sqrt{\det(T^*T)} = s_1 s_2 \cdots s_n.$$`,
       idea: String.raw`By 9.56(c) and 9.49, $|\det T|^2 = \overline{\det T}\,\det T = \det(T^*)\det T = \det(T^*T)$. The operator $T^*T$ is positive with eigenvalues $s_1^2, \dots, s_n^2$ (7.65), and it has an orthonormal eigenbasis (7.29, 7.31). Its matrix in that basis is diagonal, so $\det(T^*T) = s_1^2 \cdots s_n^2$. Taking square roots gives the result. Geometrically, $T$ maps the unit ball onto an ellipsoid with semi-axes $s_1, \dots, s_n$. The eigenvalues of $T$ are a different list, and only the products of their moduli agree.`,
-      caption: String.raw`Drag the columns $Te_1, Te_2, Te_3$ (drag the background to rotate) or pick a preset. The blue wireframe is $T$ applied to the unit sphere: an ellipsoid whose semi-axes $s_ku_k$ (thick arrows) come from the singular value decomposition. Right, on a logarithmic axis: the bars $s_1, s_2, s_3$ are laid head to tail, so their total length is $\log(s_1s_2s_3)$. They land exactly where $|\det T|$ (computed by row reduction) and $\sqrt{\det(T^*T)}$ end. The fourth row compares another list. For the shear, the moduli of the eigenvalues are individually different from the singular values, yet their product lands in the same place (9.55). The column lengths overshoot, which is Hadamard's inequality (9.66). Products of diagonal entries land anywhere.`,
+      caption: String.raw`Drag the columns $Te_1, Te_2, Te_3$ (drag the background to rotate) or pick a preset. The blue wireframe is $T$ applied to the unit sphere: an ellipsoid whose semi-axes $s_ku_k$ (thick arrows) come from the singular value decomposition. Right, on a logarithmic axis, where multiplying means adding lengths: the factors $s_1, s_2, s_3$ are laid head to tail as a staircase that ends at $s_1s_2s_3$ (green dashed line). The bars for $|\det T|$ (computed by row reduction) and $\sqrt{\det(T^*T)}$ end on the same line. The bottom staircase multiplies another list. For the shear, the moduli of the eigenvalues are individually different from the singular values, yet their product lands in the same place (9.55). The column lengths overshoot, which is Hadamard's inequality (9.66). Products of diagonal entries land anywhere.`,
       deps: ['ladr-9.56', 'ladr-9.49', 'ladr-7.65', 'ladr-7.29', 'ladr-7.31'],
       see: ['ladr-9.55', 'ladr-9.66'],
       tags: ['determinants', 'singular values'],
@@ -284,7 +292,7 @@ $$|\det T| = \sqrt{\det(T^*T)} = s_1 s_2 \cdots s_n.$$`,
         const M = v.M;
         const PRE = { gen: [[1.3, 0.3, -0.2], [0.2, 0.8, 0.5], [-0.3, 0.2, 1.1]], shear: [[0.7, 1.4, 0], [0, 0.7, 0.9], [0, 0, 1.2]], rot: [[0.4, -1.2, 0], [1.2, 0.4, 0], [0, 0, 0.6]], thin: [[1.3, 1.2, 0.2], [0.2, 0.3, 0.1], [0.1, 0.2, 0.25]] };
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 340, minWidth: 280, title: '$T$(unit sphere) and its semi-axes $s_k u_k$' });
-        const B = v.stage({ x: [0.05, 20], y: [0, 4.6], xlog: true, height: 340, minWidth: 280, axes: 'box', yticks: [], title: 'head to tail on a log scale' });
+        const B = v.stage({ x: [0.25, 4], y: [0, 6.2], xlog: true, height: 340, minWidth: 280, axes: 'box', yticks: [], title: 'factors laid head to tail on a log scale' });
         const sc = v.scene3(S, { yaw: 0.6, pitch: 0.3, axis: 1.6, lim: 1.7 });
         const CC = ['blue', 'pink', 'teal'], SCOL = ['purple', 'orange', 'green'];
         let A = PRE.gen.map((r) => r.slice());
@@ -303,30 +311,34 @@ $$|\det T| = \sqrt{\det(T^*T)} = s_1 s_2 \cdots s_n.$$`,
           H.forEach((h, k) => sc.line([0, 0, 0], h.p, { color: CC[k], width: 1.4, alpha: 0.8 }, 4));
           sc.flush();
           S.corner(`s = ${s.map((x) => pn(x, 3)).join(', ')}`, 'tl', { color: 'ink', weight: 700 });
-          // log bars
-          const lo = 0.05, hi = 20, cl = (x) => M.clamp(x, lo, hi);
-          const rows = [
-            { y: 3.9, label: 'singular values', list: s, cols: SCOL },
-            { y: 2.95, label: '|det T|', list: [Math.abs(d)], cols: ['green'] },
-            { y: 2.0, label: '√det(T*T)', list: [Math.sqrt(Math.max(0, dtt))], cols: ['green'], dash: true },
-          ];
+          // log bars: each list as a staircase of factors, laid head to tail on a log axis
           const other = cmp.value === 'eig' ? ev : cmp.value === 'col' ? [0, 1, 2].map((k) => len(col(k))) : [0, 1, 2].map((k) => Math.abs(A[k][k]));
-          rows.push({ y: 1.05, label: { eig: '|eigenvalues|', col: 'column lengths', diag: '|diagonal|' }[cmp.value], list: other, cols: ['gold', 'gold', 'gold'], alt: true });
-          const prodS = s[0] * s[1] * s[2];
+          const prodS = s[0] * s[1] * s[2], adet = Math.abs(d), rdet = Math.sqrt(Math.max(0, dtt));
+          const partial = (l) => l.reduce((acc, f) => [...acc, acc[acc.length - 1] * f], [1]);
+          const allP = [...partial(s), ...partial(other), adet, rdet].filter((x) => x > 1e-6);
+          const lo = Math.min(0.5, Math.min(...allP) / 1.6), hi = Math.max(2, Math.max(...allP) * 1.6), cl = (x) => M.clamp(x, lo, hi);
+          B.setView([lo, hi], [0, 6.2]);
           B.vline(1, { color: 'muted', width: 1 });
           B.vline(cl(prodS), { color: 'green', width: 1.6, dash: [5, 4] });
-          for (const r of rows) {
+          const stair = (y0, label, list, cols, alt) => {
+            B.text(label, lo, y0 + 0.45, { dx: 6, align: 'left', size: 12, color: alt ? 'gold' : 'ink', weight: 700 });
             let x = 1;
-            r.list.forEach((f, k) => {
-              const nx = x * f, x0 = cl(x), x1 = cl(nx), h = 0.17;
-              B.rect(Math.min(x0, x1), r.y - h, Math.max(x0, x1), r.y + h, { fill: r.cols[k], fillAlpha: r.alt ? 0.3 + 0.2 * (k % 2) : 0.55, color: r.cols[k], width: 1.2, dash: r.dash ? [4, 3] : undefined });
-              if (r.list.length > 1 && Math.abs(B.X(x1) - B.X(x0)) > 22) B.text(pn(f, 2), Math.sqrt(x0 * x1), r.y, { align: 'center', size: 10.5, color: 'ink', weight: 600 });
+            list.forEach((f, k) => {
+              const nx = x * f, x0 = cl(x), x1 = cl(nx), y = y0 - 0.42 * k, h = 0.13;
+              B.rect(Math.min(x0, x1), y - h, Math.max(x0, x1), y + h, { fill: cols[k], fillAlpha: 0.55, color: cols[k], width: 1.2 });
+              if (k) B.line(x0, y + h, x0, y + 0.42 - h, { color: 'muted', width: 1, dash: [2, 2] });
+              B.text(`×${pn(f, 2)}`, x1, y, { dx: nx >= x ? 6 : -6, align: nx >= x ? 'left' : 'right', size: 11, color: 'ink' });
               x = nx;
             });
-            B.dot(cl(x), r.y, { r: 4, color: 'ink' });
-            B.text(r.label, lo, r.y + 0.36, { dx: 6, align: 'left', size: 12, color: r.alt ? 'gold' : 'ink', weight: 600 });
-            B.text(`→ ${pn(x, 3)}`, cl(x), r.y + 0.36, { dx: x >= 1 ? -2 : 2, align: x >= 1 ? 'right' : 'left', size: 11.5, color: 'muted' });
-          }
+            return x;
+          };
+          const endS = stair(5.4, 'singular values s₁, s₂, s₃', s, SCOL, false);
+          B.rect(Math.min(1, cl(adet)), 3.65, Math.max(1, cl(adet)), 3.91, { fill: 'green', fillAlpha: 0.55, color: 'green', width: 1.2 });
+          B.text(`|det T| = ${pn(adet, 3)}`, lo, 4.18, { dx: 6, align: 'left', size: 12, color: 'green', weight: 700 });
+          B.rect(Math.min(1, cl(rdet)), 3.2, Math.max(1, cl(rdet)), 3.46, { fill: 'green', fillAlpha: 0.25, color: 'green', width: 1.2, dash: [4, 3] });
+          B.text(`√det(T*T) = ${pn(rdet, 3)}`, cl(rdet), 3.33, { dx: rdet >= 1 ? 6 : -6, align: rdet >= 1 ? 'left' : 'right', size: 11, color: 'green' });
+          const endO = stair(2.0, { eig: '|eigenvalues|', col: 'column lengths', diag: '|diagonal entries|' }[cmp.value], other, ['gold', 'gold', 'gold'], true);
+          B.dot(cl(endO), 2.0 - 0.84, { r: 4, color: Math.abs(endO - adet) < 1e-6 * (1 + adet) ? 'green' : 'red' });
           st = { s, d, dtt, prodS, ev, other };
         });
         v.legend([['accent', '$T$(unit sphere)'], ['purple', 'semi-axes / singular values'], ['green', '$|\\det T|$'], ['gold', 'the comparison list']]);
@@ -353,7 +365,7 @@ The factor is the same for every region $\Omega$; this is why $|\det|$ of a deri
       tags: ['determinants', 'geometry'],
       viz(v) {
         const M = v.M;
-        const PRE = { gen: [[1.1, 0.4, 0.1], [-0.2, 0.9, 0.3], [0.2, -0.3, 0.8]], shear: [[1, 0.9, 0.4], [0, 1, 0.7], [0, 0, 1]], flip: [[0.2, 1.1, 0], [1.0, 0.1, 0.2], [0.1, 0.2, 0.9]], flat: [[1, 0.5, 0.8], [0.2, 0.9, 0.6], [0.4, 0.3, 0.55]] };
+        const PRE = { gen: [[1.5, 0.4, 0.1], [-0.2, 1.1, 0.3], [0.2, -0.3, 1.2]], shear: [[1, 0.9, 0.4], [0, 1, 0.7], [0, 0, 1]], flip: [[0.2, 1.1, 0], [1.0, 0.1, 0.2], [0.1, 0.2, 0.9]], flat: [[1, 0.5, 0.8], [0.2, 0.9, 0.6], [0.4, 0.3, 0.55]] };
         let T = PRE.gen;
         const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2.2], equal: true, axes: false, height: 340, minWidth: 280, title: '$\\Omega$ (green) and $F(\\Omega)$ (blue)' });
         const G = v.stage({ x: [-1, 1], y: [0, 2], height: 340, minWidth: 280, axes: 'box', xlabel: 'position of Ω', title: 'measured $\\operatorname{vol} F(\\Omega)/\\operatorname{vol} \\Omega$' });
@@ -442,11 +454,11 @@ So the characteristic polynomial of 8.26 can be computed from any matrix of $T$ 
         const D = v.stage({ x: [-3, 4], y: [-2.6, 2.6], equal: true, height: 360, weight: 1.3, minWidth: 300, title: 'phase portrait of $z \\mapsto \\det(zI - A)$' });
         const E = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, minWidth: 250 });
         const TA = v.table(E, { rows: 4, cols: 4, region: [0.08, 0.5, 0.92, 0.9], maxCell: 44, size: 13.5 });
-        const TE = v.table(E, { rows: 3, cols: 4, region: [0.02, 0.06, 0.98, 0.36], maxCell: 50, square: false, cellAspect: 1.9, size: 12.5 });
+        const TE = v.table(E, { rows: 3, cols: 4, region: [0.02, 0.08, 0.98, 0.42], maxCell: 50, square: false, cellAspect: 1.9, size: 12.5 });
         editable(E, TA, { bump: (i, j, k) => { A[i][j] = M.clamp(A[i][j] + k, -9, 9); } });
-        const ctr = D.handle(2, 0, { color: 'gold', label: 'probe', labelPos: 'n' });
-        const rim = D.handle(2.6, 0, { color: 'gold', r: 5 });
-        let last = [2, 0];
+        const ctr = D.handle(2.25, 0.35, { color: 'gold' });
+        const rim = D.handle(2.25, -0.55, { color: 'gold', r: 5 });
+        let last = [2.25, 0.35];
         ctr.onDrag = () => { rim.x += ctr.x - last[0]; rim.y += ctr.y - last[1]; last = [ctr.x, ctr.y]; };
         v.render(() => {
           last = [ctr.x, ctr.y];
@@ -477,7 +489,7 @@ So the characteristic polynomial of 8.26 can be computed from any matrix of $T$ 
             D.dot(e.lam[0], e.lam[1], { r: 5, color: 'ink' });
             D.text(`${cpn(e.lam, 2)}${e.m > 1 ? `  ×${e.m}` : ''}`, e.lam[0], e.lam[1], { dy: -16, align: 'center', size: 12.5, weight: 700, color: 'ink' });
           });
-          D.corner(near ? 'the circle passes through a zero' : `winding number ${wind} · Σ dim G inside = ${dSum}`, 'tl', { color: near ? 'red' : wind === dSum ? 'green' : 'red', weight: 700 });
+          plateCorner(D, near ? 'the circle passes through a zero' : `winding number ${wind} · Σ dim G inside = ${dSum}`, near ? 'red' : wind === dSum ? 'green' : 'red');
           // the editor and the table of dimensions
           TA.draw({ value: (i, j) => A[i][j], fill: (i, j) => (i === j ? ['gold', 0.14] : null) });
           ttl(E, TA, 'A', 'ink', false, 16);
@@ -536,8 +548,8 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           let c = null;
           if (distinct) c = M.solve(xs.map((x) => Array.from({ length: n + 1 }, (_, k) => x ** k)), xs.map(f));
           const pv = (x) => c.reduce((s, a, k) => s + a * x ** k, 0);
-          const grid = M.linspace(-3, 3, 61), vals = grid.map(f), big = Math.max(4, ...vals.map(Math.abs).filter((y) => y < 60));
-          const Y = nice(1.1 * Math.min(big, 40), [4, 6, 8, 10, 15, 20, 30, 40]);
+          const grid = M.linspace(-3, 3, 61), vals = grid.map(f), mid = grid.map((x, i) => (Math.abs(x) <= 2.2 ? Math.abs(vals[i]) : 0));
+          const Y = nice(1.15 * Math.max(3, ...mid), [3, 4, 6, 8, 10, 15, 20, 30, 40, 60]);
           P.setView([-3, 3], [-Y, Y]);
           if (c) P.fn(pv, { color: 'accent', width: 2.6 });
           P.dots(grid.map((x, i) => [x, vals[i]]), { r: 3, color: 'gold' });
@@ -552,7 +564,8 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           ttl(E, TT, 'A', 'ink', false, 16);
           // zeros in C
           const R = nice(1.2 * Math.max(1.5, ...ev.map((z) => Math.max(Math.abs(z[0]), 1.5 * Math.abs(z[1])))), [2, 3, 4, 5, 6, 8, 10]);
-          Z.setView([-R, R], [-R / 1.5, R / 1.5]);
+          const Ry = Math.max(R / 1.5, 1.5 * Math.max(...ev.map((z) => Math.abs(z[1]))) + 0.4);
+          Z.setView([-R, R], [-Ry, Ry]);
           ev.forEach((z) => Z.dot(z[0], z[1], { r: 6, color: Math.abs(z[1]) < 1e-9 ? 'green' : 'red', label: cpn(z, 2), labelPos: z[1] < -1e-9 ? 's' : 'n' }));
           st = { n, c, dev, real, ev, sgn };
         });
@@ -562,7 +575,7 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
           const { n, c, dev, real, ev, sgn } = st;
           if (!c) return 'Two interpolation nodes coincide; pull them apart.';
           const nonreal = ev.length - real.length;
-          const zs = real.length ? `its real zeros $${real.map((x) => tn(x, 3)).join(', ')}$ are the eigenvalues of $A$ in $\\mathbf R$` : 'it has no real zero, so over $\\mathbf R$ this operator has no eigenvalue';
+          const zs = real.length > 1 ? `its real zeros $${real.map((x) => tn(x, 3)).join(', ')}$ are the eigenvalues of $A$ in $\\mathbf R$` : real.length ? `its real zero $${tn(real[0], 3)}$ is the only eigenvalue of $A$ in $\\mathbf R$` : 'it has no real zero, so over $\\mathbf R$ this operator has no eigenvalue';
           return `The interpolant through ${n + 1} values is $${polyTeX(c, '\\lambda', 3)}$, and it matches the determinant at all 61 sample points (largest relative gap $${v.sci(Math.max(dev, 1e-17), 1)}$): a polynomial of degree ${n} with leading coefficient $${tn(c[n], 4)}$${sgn < 0 ? ' — not monic with this convention' : ''}. ${zs[0].toUpperCase() + zs.slice(1)}${nonreal ? `; ${nonreal} zero${nonreal > 1 ? 's are' : ' is'} not real` : ''}.`;
         });
       },
@@ -639,8 +652,6 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
             pts = [Q1, Q2, Q3, zeta, cmul(zeta, lam), lam, [lam[0], -lam[1]]];
             const ext = Math.max(1.5, ...pts.map((z) => Math.max(Math.abs(z[0]), Math.abs(z[1])))), Rv = nice(1.2 * ext, [1.5, 2, 3, 4, 5, 6, 8, 10, 15, 20]), key = String(Rv);
             if (key !== view) { view = key; Rt.setView([-Rv, Rv], [-Rv, Rv]); }
-            const mir = (z) => [z[0], -z[1]];
-            Rt.path([[0, 0], mir(Q1), mir(Q2), mir(Q3)], { color: 'muted', width: 1.2, dash: [4, 4], alpha: 0.6 });
             Rt.arrow(0, 0, Q1[0], Q1[1], { color: 'blue', width: 2.8 });
             Rt.arrow(Q1[0], Q1[1], Q2[0], Q2[1], { color: 'orange', width: 2.8 });
             Rt.arrow(Q2[0], Q2[1], Q3[0], Q3[1], { color: 'purple', width: 2.8 });
@@ -648,7 +659,8 @@ By the formula 9.46 it is a monic polynomial of degree $\dim V$, and by 9.51 its
             if (!cl2) { Rt.line(0, 0, Q3[0], Q3[1], { color: 'red', width: 2, dash: [3, 3] }); Rt.dot(Q3[0], Q3[1], { r: 5, color: 'red' }); } else Rt.dot(0, 0, { r: 7, hollow: true, color: 'green', width: 2.6 });
             Rt.dot(zeta[0], zeta[1], { r: 5, color: 'gold', label: 'ζ', labelPos: 'ne' });
             Rt.dot(lam[0], lam[1], { r: 8, hollow: true, color: 'accent', width: 2.4, label: 'λ', labelPos: 'ne' });
-            Rt.dot(lam[0], -lam[1], { r: 8, hollow: true, color: 'accent', width: 2.4, label: 'λ̄', labelPos: 'se' });
+            Rt.dot(lam[0], -lam[1], { r: 8, hollow: true, color: 'accent', width: 2.4 });
+            Rt.tex('\\bar\\lambda', lam[0], -lam[1], { color: 'accent', size: 15, dx: 16, dy: 14 });
             Rt.corner(cl2 ? 'closes: ζ·q(λ) = 0' : `gap ζ·p(λ)`, 'tl', { color: cl2 ? 'green' : 'red', weight: 700 });
           } else {
             const zs = Math.abs(disc) < 1e-12 ? [t / 2, t / 2] : [(t - Math.sqrt(disc)) / 2, (t + Math.sqrt(disc)) / 2];
@@ -690,7 +702,7 @@ $$z^n - (\operatorname{tr} T)\,z^{n-1} + \cdots + (-1)^n \det T.$$`,
       tags: ['characteristic polynomial', 'trace'],
       viz(v) {
         const M = v.M;
-        const PRE = { 3: [[2, 1, 0], [-1, 3, 1], [2, 0, 1]], 2: [[3, -1], [2, 1]] };
+        const PRE = { 3: [[2, 1, -1], [-1, 3, 1], [2, 1, 1]], 2: [[3, -1], [2, 1]] };
         let A = clone(PRE[3]), sel = 0, st = null;
         const nS = v.select('$n$', [2, 3], 3, { onChange: (k) => { A = clone(PRE[k]); sel = 0; } });
         const conv = v.select('convention', [{ value: 'zi', label: '$\\det(zI - A)$' }, { value: 'iz', label: '$\\det(A - zI)$' }], 'zi');
@@ -800,16 +812,17 @@ For real $A$: among all parallelepipeds with edges of lengths $\|v_1\|, \dots, \
           // bars
           const L = vs.map(norm), prodL = L[0] * L[1] * L[2], vol = R[0] * R[1] * R[2];
           const top = nice(1.15 * Math.max(...L, ...R, prodL, vol, 1), [1, 1.5, 2, 3, 4, 5, 6, 8, 10, 15]);
-          B.setView([0, 5.4], [0, top]);
+          B.setView([0, 5.4], [-0.09 * top, top]);
+          B.hline(0, { color: 'muted', width: 1 });
           const bar = (x, h, color, a, w = 0.32) => B.rect(x - w, 0, x + w, h, { fill: color, fillAlpha: a, color, width: 1.2 });
           for (let k = 0; k < 3; k++) {
             bar(k + 0.6, L[k], CC[k], 0.18, 0.36);
             bar(k + 0.6, R[k], R[k] > L[k] + 1e-9 ? 'red' : CC[k], 0.7, 0.2);
-            B.tex(`k = ${k + 1}`, k + 0.6, 0, { dy: 12, size: 12, color: 'muted' });
+            B.tex(`k = ${k + 1}`, k + 0.6, -0.045 * top, { size: 12, color: 'muted' });
           }
           const bad = vol > prodL + 1e-9;
           bar(4.1, prodL, 'gold', 0.2, 0.36); bar(4.1, vol, bad ? 'red' : 'green', 0.7, 0.2);
-          B.tex('\\textstyle\\prod', 4.1, 0, { dy: 12, size: 12, color: 'muted' });
+          B.tex('\\text{volume}', 4.1, -0.045 * top, { size: 12, color: 'muted' });
           B.text(`∏‖v‖ = ${pn(prodL, 3)}`, 4.1, prodL, { dy: -10, align: 'center', size: 11.5, color: 'gold', weight: 700 });
           B.text(`|det| = ${pn(vol, 3)}`, 4.1, vol, { dy: vol > 0.88 * prodL ? 14 : -10, align: 'center', size: 11.5, color: bad ? 'red' : 'green', weight: 700 });
           B.vline(3.35, { color: 'faint', width: 1 });
@@ -849,7 +862,7 @@ In particular it is invertible exactly when the $\beta_j$ are distinct.`,
         const Lst = v.stage({ x: [-2.4, 2.4], y: [-0.35, 1.1], height: 170, full: true, axes: false, title: 'the nodes and the pairwise differences $\\beta_k - \\beta_j$, $j < k$' });
         const nS = v.slider('$n$', 2, 6, 4, { int: true, step: 1 });
         const cols = v.select('columns', [{ value: 'v', label: '$1, \\beta, \\dots, \\beta^{n-1}$' }, { value: 'g', label: '$1, \\dots, \\beta^{n-2}, \\beta^{n}$ (break)' }], 'v');
-        const init = [-1.7, -0.6, 0.5, 1.6, -1.15, 1.05];
+        const init = [-1.6, 0.6, -0.5, 1.7, -1.1, 1.15];
         const B = init.map((x, k) => Lst.handle(x, 0, { color: CC[k], label: `β${sub(k + 1)}`, labelPos: 's', constrain: (x) => [M.clamp(x, -2.3, 2.3), 0] }));
         const TB = v.table(R, { rows: 4, cols: 4, region: [0.04, 0.2, 0.96, 0.88], maxCell: 58, size: 12.5 });
         let st = null;
@@ -862,7 +875,7 @@ In particular it is invertible exactly when the $\beta_j$ are distinct.`,
           const N = (k, z) => { let s = 1; for (let j = 0; j < k; j++) s *= z - bs[j]; return s; };
           const Cm = bs.map((b) => Array.from({ length: n }, (_, k) => N(k, b))), diagP = Cm.reduce((s, r, i) => s * r[i], 1);
           // Newton polynomials
-          const ymax = nice(Math.min(30, 1.15 * Math.max(1.5, ...M.linspace(-2.4, 2.4, 49).flatMap((z) => [1, 2, 3, 4, 5].slice(0, n - 1).map((k) => Math.abs(N(k, z)))))), [1.5, 2, 3, 4, 6, 8, 10, 15, 20, 30]);
+          const ymax = nice(1.25 * Math.max(1.5, ...Cm.flat().map(Math.abs)), [1.5, 2, 3, 4, 6, 8, 10, 15, 20, 30, 50, 100]);
           P.setView([-2.4, 2.4], [-ymax, ymax]);
           bs.forEach((b, k) => P.vline(b, { color: CC[k], width: 1, dash: [3, 4], alpha: 0.6 }));
           for (let k = 0; k < n; k++) P.fn((z) => N(k, z), { color: CC[k], width: 2.2 });

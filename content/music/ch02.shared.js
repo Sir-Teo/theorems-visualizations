@@ -189,7 +189,7 @@ export const stiff = (f0, B, n) => n * f0 * Math.sqrt(1 + B * n * n);
  */
 export function bowSim(o) {
   const sr = o.sr || SR, N = Math.max(8, Math.round(sr / (2 * o.f1))), steps = Math.round(o.dur * sr);
-  const mus = o.mus ?? 0.8, mud = o.mud ?? 0.3, v0 = o.v0 ?? 0.15, g = o.g ?? 0.985, lp = o.lp ?? 0.3, Z = o.Z, vb = o.vb, FN = o.FN;
+  const mus = o.mus ?? 0.8, mud = o.mud ?? 0.3, v0 = o.v0 ?? 0.2, g = o.g ?? 0.99, lp = o.lp ?? 0.6, Z = o.Z, vb = o.vb, FN = o.FN;
   const ib = Math.max(1, Math.min(N - 1, Math.round(N * (1 - o.beta))));
   const r = new Float64Array(N + 1), l = new Float64Array(N + 1), y = new Float64Array(N + 1);
   const out = new Float32Array(steps), vbow = new Float32Array(steps), stick = new Uint8Array(steps);

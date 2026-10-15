@@ -257,7 +257,7 @@ $$\alpha(v_1, \dots, v_m) = 0.$$`,
         const snapPlane = (p) => { const n = cross(H[0].p, H[1].p), nn = len(n); if (nn < 1e-9) return p; return Math.abs(dot(p, n) / nn) < 0.08 ? proj(p) : p; };
         H.push(sc.handle([0.95, 0.1, 0.25], { color: CC[0], label: 'v₁' }));
         H.push(sc.handle([0.2, 0.85, 0.55], { color: CC[1], label: 'v₂' }));
-        H.push(sc.handle([0.53, 0.47, 0.39], { color: CC[2], label: 'v₃', snap: snapPlane }));
+        H.push(sc.handle([0.64, 0.36, 0.34], { color: CC[2], label: 'v₃', snap: snapPlane }));
         H[2].set(proj(H[2].p));
         v.button('drop $v_3$ into the plane', () => H[2].set(proj(H[2].p)));
         v.button('lift $v_3$ out', () => { const n = unit(cross(H[0].p, H[1].p)); H[2].set(add(proj(H[2].p), scl(n, 0.7))); });
