@@ -341,10 +341,10 @@ while $\Delta p=\hbar/2\sigma_0$ stays constant; $\Delta x\Delta p=\frac\hbar2\s
           // snapshot
           const NX = 900, re = new Float64Array(NX), im = new Float64Array(NX), xs = new Float64Array(NX);
           for (let i = 0; i < NX; i++) { xs[i] = XW[0] + (XW[1] - XW[0]) * i / (NX - 1); const [a, b] = psiAt(xs[i], T, s0, k0); re[i] = a; im[i] = b; }
-          s3.setView(XW, [-0.04 * (2 * Math.PI * s0 * s0) ** -0.25, 1.15 * (2 * Math.PI * s0 * s0) ** -0.25]);
+          const p0 = (2 * Math.PI * s0 * s0) ** -0.25; s3.setView(XW, [-0.3 * p0, 1.12 * p0]);
           drawPsi(s3, xs, re, im, { col });
           const c = X0 + k0 * T, w = sigT(s0, T);
-          s3.dot(c, 0, { r: 5, color: 'red' }); s3.measure(c - w, 0.9 * (2 * Math.PI * s0 * s0) ** -0.25, c + w, 0.9 * (2 * Math.PI * s0 * s0) ** -0.25, '2σ(t)');
+          s3.dot(c, 0, { r: 5, color: 'red' }); s3.measure(c - w, -0.13 * p0, c + w, -0.13 * p0, '2σ(t)');
           phaseWheel(s3, col, s3.W - 32, 36, 11);
           const near = csim.reduce((b, q) => (Math.abs(q[0] - T) < Math.abs(b[0] - T) ? q : b), csim[0]);
           st = { T, s0, k0, w, tau: 2 * s0 * s0, near, P: PHYS[ph.value] };
@@ -374,7 +374,7 @@ With the relativistic relation $\hbar\omega=\sqrt{m^2c^4+\hbar^2k^2c^2}$ (de Bro
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Group_velocity' },
       tags: ['group velocity', 'phase velocity', 'wave packet'],
       viz(v) {
-        const M = v.M, NG = 2048, XA = -30, L = 150, dxg = L / NG, x = Float64Array.from({ length: NG }, (_, i) => XA + i * dxg), NF = 220, SIG = 2.5;
+        const M = v.M, NG = 2048, XA = -40, L = 160, dxg = L / NG, x = Float64Array.from({ length: NG }, (_, i) => XA + i * dxg), NF = 220, SIG = 4;
         const mode = v.select('dispersion', [{ value: 'nr', label: 'Schrödinger $\\hbar\\omega=\\hbar^2k^2/2m$' }, { value: 'rel', label: 'relativistic $\\hbar\\omega=\\sqrt{m^2c^4+\\hbar^2k^2c^2}$' }], 'nr');
         const ks = v.slider('wave number $k_0$ ($\\hbar = m = c = 1$)', 0.6, 3, 1.6, { step: 0.01 });
         const s1 = v.stage({ x: [-8, 40], y: [-0.85, 0.85], height: 210, axes: 'box', full: true, xlabel: 'x', yticks: [], title: '$\\operatorname{Re}\\psi$ and its envelope $\\pm|\\psi|$' });
@@ -394,28 +394,30 @@ With the relativistic relation $\hbar\omega=\sqrt{m^2c^4+\hbar^2k^2c^2}$ (de Bro
             M.ifft(R, I);
             let sw = 0, sx = 0, amax = 0; const amp = new Float32Array(NG);
             for (let i = 0; i < NG; i++) { const a2 = R[i] * R[i] + I[i] * I[i]; sw += a2; sx += a2 * x[i]; amp[i] = Math.sqrt(a2); amax = Math.max(amax, amp[i]); }
-            frames.push({ t, re: Float32Array.from(R), amp, cx: sx / sw, amax });
+            frames.push({ t, re: Float32Array.from(R), im: Float32Array.from(I), amp, cx: sx / sw, amax });
           }
           // follow one crest: nearest local maximum of Re ψ to the previous crest; hop when it leaves the envelope
           const lam = TAU / k0, track = [], segs = [];
-          const localMax = (F, x0, half) => { let best = null; const i0 = Math.max(1, Math.floor((x0 - half - XA) / dxg)), i1 = Math.min(NG - 2, Math.ceil((x0 + half - XA) / dxg)); for (let i = i0; i <= i1; i++) if (F.re[i] >= F.re[i - 1] && F.re[i] > F.re[i + 1] && (best == null || Math.abs(x[i] - x0) < Math.abs(x[best] - x0))) best = i; return best; };
-          let cur = localMax(frames[0], 0, lam / 2), seg = [];
+          // a crest = a point where arg ψ = 0 (Re ψ > 0 and Im ψ crossing zero upward), located by linear interpolation
+          const crestNear = (F, x0, half) => { let best = null; const i0 = Math.max(0, Math.floor((x0 - half - XA) / dxg)), i1 = Math.min(NG - 2, Math.ceil((x0 + half - XA) / dxg)); for (let i = i0; i <= i1; i++) if (F.im[i] < 0 && F.im[i + 1] >= 0 && F.re[i] + F.re[i + 1] > 0) { const X = x[i] + dxg * F.im[i] / (F.im[i] - F.im[i + 1]); if (best == null || Math.abs(X - x0) < Math.abs(best - x0)) best = X; } return best; };
+          const ampAt = (F, X) => F.amp[Math.max(0, Math.min(NG - 1, Math.round((X - XA) / dxg)))];
+          let cur = crestNear(frames[0], 0, lam / 2) ?? 0, seg = [];
           for (let f = 0; f < NF; f++) {
-            const F = frames[f]; if (f > 0) cur = localMax(F, x[cur], lam / 2) ?? cur;
-            if (F.amp[cur] < 0.3 * F.amax) { if (seg.length > 2) segs.push(seg); seg = []; cur = localMax(F, F.cx - (vp > vg ? 1.4 : -1.4) * SIG, lam / 2) ?? cur; }
-            track.push([x[cur], F.t]); seg.push([F.t, x[cur]]);
+            const F = frames[f]; if (f > 0) cur = crestNear(F, cur, lam / 2) ?? cur;
+            if (ampAt(F, cur) < 0.3 * F.amax) { if (seg.length > 2) segs.push(seg); seg = []; cur = crestNear(F, F.cx - (vp > vg ? 1.2 : -1.2) * SIG, lam / 2) ?? cur; }
+            track.push([cur, F.t]); seg.push([F.t, cur]);
           }
           if (seg.length > 2) segs.push(seg);
           let num = 0, den = 0; for (const sg of segs) { const fit = M.linreg(sg.map((q) => q[0]), sg.map((q) => q[1])), w = sg.length; num += fit.slope * w; den += w; }
           const fitE = M.linreg(frames.map((F) => F.t), frames.map((F) => F.cx));
-          return { frames, track, vcrest: num / den, venv: fitE.slope, vg, vp, T, k0, rel };
+          return { frames, track, vcrest: num / den, venv: fitE.slope, vg, vp, T, k0, rel, a0: frames[0].amax, tau: rel ? null : 2 * SIG * SIG };
         };
         let st = null;
         v.animate((t) => {
           const kk = `${mode.value}|${ks.value}`; if (kk !== key) { key = kk; run = compute(); }
           const { frames, track, T, vg, vp } = run, f = Math.min(NF - 1, Math.floor(((t % 12) / 11) * (NF - 1))), F = frames[f];
           const xr = [-8, Math.max(30, vg * T + 10)];
-          s1.setView(xr, [-0.85, 0.85]); s2.setView(xr, [0, T]);
+          s1.setView(xr, [-1.18 * run.a0, 1.18 * run.a0]); s2.setView(xr, [0, T]);
           // envelope and Re ψ
           const env = [], nenv = [], rp = [];
           for (let i = 0; i < NG; i++) { if (x[i] < xr[0] - 1 || x[i] > xr[1] + 1) continue; env.push([x[i], F.amp[i]]); nenv.push([x[i], -F.amp[i]]); rp.push([x[i], F.re[i]]); }
@@ -423,8 +425,8 @@ With the relativistic relation $\hbar\omega=\sqrt{m^2c^4+\hbar^2k^2c^2}$ (de Bro
           s1.path(rp, { color: 'accent', width: 1.8 });
           s1.dot(track[f][0], F.re[Math.round((track[f][0] - XA) / dxg)], { r: 6, color: 'gold' });
           s1.dot(F.cx, 0, { r: 6, color: 'green' });
-          s1.dot(vg * F.t, -0.62, { r: 7, color: 'red', hollow: true, width: 2.2 });
-          s1.text('classical', vg * F.t, -0.62, { color: 'red', size: 11, dx: 10, baseline: 'middle' });
+          s1.dot(vg * F.t, -1.02 * run.a0, { r: 7, color: 'red', hollow: true, width: 2.2 });
+          s1.text('classical', vg * F.t, -1.02 * run.a0, { color: 'red', size: 11, dx: 10, baseline: 'middle' });
           // space–time
           const CA = v.rgb('accent'), CO = v.rgb('orange');
           s2.raster((X, Y) => {
@@ -443,7 +445,7 @@ With the relativistic relation $\hbar\omega=\sqrt{m^2c^4+\hbar^2k^2c^2}$ (de Bro
           st = run;
         }, { period: 12, still: 6 });
         v.legend([['accent', 'Re ψ'], ['ink', 'envelope ±|ψ|'], ['gold', 'a crest (phase velocity)'], ['green', 'envelope centre', { dot: true }], ['red', 'classical particle p/m']]);
-        v.readout(() => st && `$v = p/m = ${v.fix(st.rel ? st.vg : st.k0, 3)}$${st.rel ? ` (momentum $${v.fix(st.k0, 2)}\\,mc$)` : ''} · measured crest speed **${v.fix(st.vcrest, 3)}** vs $v_p=\\omega/k = ${v.fix(st.vp, 3)}$${st.rel ? ` $= c^2/v$ (faster than light)` : ' $= v/2$'} · measured envelope speed **${v.fix(st.venv, 3)}** vs $v_g = d\\omega/dk = ${v.fix(st.vg, 3)}$ = the classical velocity.`);
+        v.readout(() => st && `$v = p/m = ${v.fix(st.rel ? st.vg : st.k0, 3)}$${st.rel ? ` (momentum $${v.fix(st.k0, 2)}\\,mc$)` : ''} · measured crest speed **${v.fix(st.vcrest, 3)}** vs $v_p=\\omega/k = ${v.fix(st.vp, 3)}$${st.rel ? ` $= c^2/v$ (faster than light)` : ` $= v/2$ (the small excess is the Gouy phase of the spreading packet, $\\tfrac{d}{dt}\\tfrac{\\arctan(t/\\tau)}{2k_0}\\le ${v.fix(1 / (2 * st.k0 * st.tau), 3)}$)`} · measured envelope speed **${v.fix(st.venv, 3)}** vs $v_g = d\\omega/dk = ${v.fix(st.vg, 3)}$ = the classical velocity.`);
       },
     },
   ],

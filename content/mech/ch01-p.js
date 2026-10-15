@@ -58,7 +58,7 @@ export default {
         const hA = W.handle(1, 0, { color: 'accent', label: 'A', labelPos: 'se' });
         const hV = W.handle(1, 0.6, { color: 'orange', label: 'B', labelPos: 'e' });
         let s = null; // kick displacements in Newton's figure
-        const dt = 0.6, DTL = 0.5; // figure interval; time unit that turns AB into the initial velocity in the limit
+        const dt = 0.6, DTL = 0.55; // figure interval; time unit that turns AB into the initial velocity in the limit
         const dirAt = () => { const a = (off.value * Math.PI) / 180; return (p) => rot(unit([-p[0], -p[1]]), a); };
         const startB = () => [hV.x, hV.y]; // AB: the first inertial step
         const resetKicks = () => { const d = dirAt(); let P = [[hA.x, hA.y], startB()]; s = []; for (let k = 1; k <= NK; k++) { const r2 = P[k][0] ** 2 + P[k][1] ** 2, sk = (MU * dt * dt) / Math.max(r2, 0.05); s.push(sk); P = construct(P[0], P[1], s, d).P; } };
@@ -77,6 +77,7 @@ export default {
         v.render(() => {
           const fig = mode.value === 'fig', d = dirAt();
           nS.el.hidden = fig;
+          W.setView(fig ? [-1.75, 1.75] : [-2.0, 1.75], fig ? [-0.6, 1.85] : [-1.75, 1.75]);
           W.dot(0, 0, { r: 6, color: 'ink', label: 'S', labelPos: 'sw' });
           if (fig) {
             const G = construct([hA.x, hA.y], startB(), s, d), P = G.P;
