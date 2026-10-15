@@ -104,9 +104,9 @@ function spline(ys) {
 const ROBX = spline([...ROB.slice(1).reverse().map((r) => r[0]), ...ROB.map((r) => r[0])]), ROBY = spline([...ROB.slice(1).reverse().map((r) => -r[1]), ...ROB.map((r) => r[1])]);
 const robX = (f) => ROBX(f / (5 * D) + 18), robY = (f) => ROBY(f / (5 * D) + 18);
 function mollTheta(f) {
-  if (Math.abs(f) > HALF - 1e-10) return Math.sign(f) * HALF;
-  let t = f, k = PI * Math.sin(f); // solve t' + sin t' = π sin φ with t' = 2θ
-  t *= 2; for (let i = 0; i < 40; i++) { const dt = (t + Math.sin(t) - k) / (1 + Math.cos(t)); t -= dt; if (Math.abs(dt) < 1e-13) break; }
+  if (Math.abs(f) > HALF - 1e-7) return Math.sign(f) * HALF;
+  const k = PI * Math.sin(f); let t = 2 * f; // solve t + sin t = π sin φ for t = 2θ (Newton)
+  for (let i = 0; i < 40; i++) { const dd = 1 + Math.cos(t); if (dd < 1e-15) break; const dt = (t + Math.sin(t) - k) / dd; t -= dt; if (Math.abs(dt) < 1e-13) break; }
   return t / 2;
 }
 const R2 = Math.SQRT2, TM = [[1, 0, 0], [0, 0, -1], [0, 1, 0]];
@@ -197,7 +197,13 @@ export function projection(name = 'orthographic', o = {}) {
       }
       return ev.length ? ev.sort((p, q) => p.t - q.t) : null;
     };
-    P.arc = (s0, s1) => { const d = mod(s1 - s0, per), n = Math.ceil(d / (2 * D)), out = []; for (let i = 1; i < n; i++) out.push(P.edgePt(s0 + (d * i) / n)); return out; };
+    const corners = [0, 2 * PI, 2 * PI + 2 * mL, 4 * PI + 2 * mL];
+    P.arc = (s0, s1) => { // along the map edge, through the corners
+      const d = mod(s1 - s0, per), n = Math.ceil(d / (2 * D)), ts = [];
+      for (let i = 1; i < n; i++) ts.push((d * i) / n);
+      for (const c of corners) { const r = mod(c - s0, per); if (r > 1e-12 && r < d - 1e-12) ts.push(r); }
+      return ts.sort((a, b) => a - b).map((r) => P.edgePt(s0 + r));
+    };
     P.outline = () => { const out = []; for (let s = 0; s < per; s += 2 * D) out.push(P.edgePt(s)); return out; };
     const ol = P.outline(); P.bounds = { x: [Math.min(...ol.map((p) => p[0])), Math.max(...ol.map((p) => p[0]))], y: [Math.min(...ol.map((p) => p[1])), Math.max(...ol.map((p) => p[1]))] };
     P.contains = () => 0;
@@ -289,7 +295,7 @@ export function sphericalArea(ring) {
 }
 
 // ================================================================== the kit
-const fmtKm = (x) => (x >= 100 ? Math.round(x).toLocaleString('en-US').replace(/,/g, ' ') : x.toFixed(1)) + ' km';
+const fmtKm = (x) => (x >= 100 ? Math.round(x).toLocaleString('en-US').replace(/,/g, '\u202f') : x.toFixed(1)) + '\u00a0km'; // narrow no-break spaces
 class Globe {
   constructor(api, rt, stage, spec = {}) {
     if (!stage || typeof stage.X !== 'function') throw new Error('v.globe(stage, spec): the first argument must be a 2D stage');
@@ -386,7 +392,7 @@ class Globe {
     for (let f = -90 + step; f < 90 - 1e-9; f += step) { const p = []; for (let l = -180; l <= 180; l += 2) p.push([l, f]); lines.push(p); }
     const out = []; for (const L of lines) for (const pl of this.P.clipLine(L)) out.push(...pl, null);
     this.s.path(out, { color: o.color || 'muted', width: o.width ?? 0.7, alpha: o.alpha ?? 0.35 });
-    if (o.equator !== false) { const eq = []; for (let l = -180; l <= 180; l += 2) eq.push([l, 0]); const e = []; for (const pl of this.P.clipLine(eq)) e.push(...pl, null); this.s.path(e, { color: o.color || 'muted', width: (o.width ?? 0.7) + 0.3, alpha: (o.alpha ?? 0.35) + 0.15 }); }
+    if (o.equator !== false) { const eq = []; for (let l = -180; l <= 180; l += 2) eq.push([l, 0]); const e = []; for (const pl of this.P.clipLine(eq)) e.push(...pl, null); this.s.path(e, { color: o.color || 'muted', width: (o.width ?? 0.7) + 0.2, alpha: (o.alpha ?? 0.35) + 0.1 }); }
     return this;
   }
   /** Land fill + coastline; names = null (all) or a list of land-mass names; o.fill/o.color/o.alpha. */

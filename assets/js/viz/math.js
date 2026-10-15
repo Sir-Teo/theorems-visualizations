@@ -571,6 +571,7 @@ const signFix = (v) => { let j = 0; for (let i = 1; i < v.length; i++) if (Math.
  * Each eigenvector is unit length with its largest component positive.
  */
 export function eigSym(A) {
+  if (!A.length) return { values: [], vectors: [], vecs: [] };
   const n = A.length, a = A.map((r, i) => r.map((x, j) => (x + A[j][i]) / 2)), V = identity(n);
   let fro = 0; for (const r of a) for (const x of r) fro += x * x;
   for (let sweep = 0; sweep < 100; sweep++) {
@@ -1294,10 +1295,10 @@ export const CONST = Object.freeze({
   ly: 9460730472580800,         // light-year (Julian year × c), m (exact)
   pc: 3.0856775814913673e16,    // parsec, m
   yr: 31557600,                 // Julian year, s (exact)
-  Msun: 1.98847e30,             // solar mass, kg (IAU 2015 nominal GM / G)
+  Msun: 1.98841e30,             // solar mass, kg (IAU 2015 nominal GM☉ / CODATA 2018 G)
   Rsun: 6.957e8,                // nominal solar radius, m (IAU 2015)
   Lsun: 3.828e26,               // nominal solar luminosity, W (IAU 2015)
-  Mearth: 5.9722e24,            // Earth mass, kg
+  Mearth: 5.9722e24,            // Earth mass, kg (IAU 2015 nominal GM⊕ / G)
   Rearth: 6.3781e6,             // nominal equatorial Earth radius, m (IAU 2015)
 });
 /** Unit string for each CONST entry (plain text). */

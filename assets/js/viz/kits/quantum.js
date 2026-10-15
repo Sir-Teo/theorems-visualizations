@@ -106,7 +106,7 @@ function coefTeX(re, im, d) {
   const r = (x) => { const s = (+x.toFixed(d)).toString(); return s; };
   const known = (x) => { const a = Math.abs(x); for (const [v, t] of [[S2, '\\tfrac{1}{\\sqrt2}'], [0.5, '\\tfrac12'], [1, '1'], [Math.sqrt(3) / 2, '\\tfrac{\\sqrt3}{2}']]) if (Math.abs(a - v) < 1e-9) return (x < 0 ? '-' : '') + t; return null; };
   if (Math.abs(im) < 1e-12) return known(re) ?? r(re);
-  if (Math.abs(re) < 1e-12) { const k = known(im) ?? r(im); return k === '1' ? 'i' : k === '-1' ? '-i' : k + 'i'; }
+  if (Math.abs(re) < 1e-12) { const k = known(im) ?? r(im); return k === '1' ? 'i' : k === '-1' ? '-i' : k[0] === '-' ? '-i' + k.slice(1) : 'i' + k; }
   return `(${r(re)}${im < 0 ? '-' : '+'}${r(Math.abs(im))}i)`;
 }
 

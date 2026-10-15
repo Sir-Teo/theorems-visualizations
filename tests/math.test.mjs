@@ -327,7 +327,7 @@ test('CONST (CODATA 2018) relations and si()', () => {
   close(C.hbar, C.h / (2 * Math.PI), 1e-9); close(C.R, C.NA * C.kB, 1e-9); close(C.F, C.NA * C.e, 1e-9);
   close(C.sigma, 2 * Math.PI ** 5 * C.kB ** 4 / (15 * C.h ** 3 * C.c ** 2), 1e-9); close(C.eps0 * C.mu0 * C.c ** 2, 1, 1e-9);
   close(C.ke, 1 / (4 * Math.PI * C.eps0), 1e-9); close(C.ly, C.c * C.yr, 1e-15); close(C.alpha, C.e ** 2 / (4 * Math.PI * C.eps0 * C.hbar * C.c), 1e-9);
-  close(C.a0, C.hbar / (C.me * C.c * C.alpha), 1e-9); close(C.Ry, C.alpha ** 2 * C.me * C.c / (2 * C.h), 1e-9);
+  close(C.a0, C.hbar / (C.me * C.c * C.alpha), 1e-9); close(C.G * C.Msun, 1.3271244e20, 1e-5); close(C.G * C.Mearth, 3.986004e14, 1e-5); close(C.Ry, C.alpha ** 2 * C.me * C.c / (2 * C.h), 1e-9);
   ok(Object.isFrozen(C) && Object.keys(M.CONST_UNITS).every((k) => k in C) && Object.keys(C).every((k) => k in M.CONST_UNITS), 'units documented');
   eq(M.si(0.00234, 'A'), '2.34 mA'); eq(M.si(-1500, 'W'), '−1.50 kW'); eq(M.si(0, 'V'), '0 V'); eq(M.si(999.96, 'W'), '1.00 kW');
   eq(M.si(1e-7, 'm'), '100 nm'); eq(M.si(4.7e-6, 'F', 2), '4.7 µF'); eq(M.si(123), '123'); eq(M.si(12345), '12.3 k'); eq(M.si(6.02214076e23, 'mol⁻¹'), '602 Zmol⁻¹');

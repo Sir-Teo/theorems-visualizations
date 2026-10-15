@@ -1,4 +1,22 @@
 // Syllabus — Theory of Computation (curated course; see collection.js for references)
+//
+// Sources consulted (Oct 2026):
+//   Sipser, Introduction to the Theory of Computation — contents (2nd ed. front matter; the 3rd ed.
+//     inserts §2.4 Deterministic CFLs and keeps the other section numbers):
+//     https://www.cs.virginia.edu/~robins/Sipser_2006_Second_Edition_Problems.pdf
+//   MIT 18.404J (Sipser), Fall 2020 — syllabus and lecture calendar:
+//     https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/pages/calendar/
+//   Cambridge Part IB Computation Theory (register machines, recursive functions, λ-calculus):
+//     https://www.cl.cam.ac.uk/teaching/2324/CompTheory/
+//   Oxford Models of Computation synopsis:
+//     https://www.cs.ox.ac.uk/teaching/courses/2024-2025/modelsofcomputation/
+//   Wikipedia, List of computability and complexity topics:
+//     https://en.wikipedia.org/wiki/List_of_computability_and_complexity_topics
+// Scope split: Sipser ch. 9–10 (hierarchy theorems, relativization, circuits, BPP, alternation,
+// interactive proofs, NC, cryptography) live in `cplx` and `crypto`, which cite this collection.
+// Primitive/μ-recursive functions, cellular automata, tag systems and Fractran are not in Sipser;
+// they are referred to Sipser §3.2 (“Equivalence with other models”). Deliberately omitted:
+// star height, Petri nets, Knuth–Bendix completion, L-systems (low centrality for a first course).
 export default {
   collection: 'toc',
   chapters: [
@@ -230,7 +248,7 @@ export default {
           pic: 'The tape is cut at the head into two stacks; each head move pops one and pushes the other, animated in sync with the Turing machine it simulates.' },
         { num: '7.9', kind: 'Theorem', name: 'Universal Turing machine', deps: ['toc-7.2', 'toc-1.6'], refs: ['Sipser §4.2'],
           pic: 'Encode a small machine as a string, place it with an input on the universal machine’s tape, and watch the universal machine look up each transition and update the simulated tape.' },
-        { num: '7.10', kind: 'Model', name: 'Random-access machines', deps: ['toc-7.5'], refs: ['Sipser §3.3'],
+        { num: '7.10', kind: 'Model', name: 'Random-access machines', deps: ['toc-7.5'], refs: ['Sipser §3.2'],
           pic: 'A register program with load, add and jump-if-zero runs next to its Turing-machine simulation; the ratio of step counts stays bounded by a polynomial as inputs grow.' },
         { num: '7.11', kind: 'Definition', name: 'Linear bounded automata and context-sensitive languages', deps: ['toc-7.1'], refs: ['Sipser §5.1'],
           pic: 'A machine is confined between end-markers drawn as walls around its input, yet it recognizes aⁿbⁿcⁿ, which no pushdown automaton can.' },
@@ -246,28 +264,30 @@ export default {
       items: [
         { num: '8.1', kind: 'Model', name: 'Counter machines and two-counter universality', deps: ['toc-7.8'], refs: ['Sipser §3.2'],
           pic: 'A two-counter machine stores two registers a, b as the single number 2ᵃ3ᵇ in one counter; each simulated increment is watched as a multiplication and each test as a divisibility check.' },
-        { num: '8.2', kind: 'Definition', name: 'Primitive recursive functions', deps: [], refs: ['Sipser §3.3'],
+        { num: '8.2', kind: 'Definition', name: 'Primitive recursive functions', deps: [], refs: ['Sipser §3.2'],
           pic: 'Snap together zero, successor and projection blocks with composition and primitive recursion to build addition, multiplication and exponentiation, then evaluate them and see the recursion unfold.' },
-        { num: '8.3', kind: 'Theorem', name: 'Ackermann’s function is not primitive recursive', deps: ['toc-8.2'], refs: ['Sipser §3.3'],
+        { num: '8.3', kind: 'Theorem', name: 'Ackermann’s function is not primitive recursive', deps: ['toc-8.2'], refs: ['Sipser §3.2'],
           pic: 'Compute A(m, n) with a call counter: the table of values explodes along each row, and A(n, n) overtakes every function in a family of primitive recursive bounds the reader can extend.' },
-        { num: '8.4', kind: 'Definition', name: 'μ-recursive (partial recursive) functions', deps: ['toc-8.2'], refs: ['Sipser §3.3'],
+        { num: '8.4', kind: 'Definition', name: 'μ-recursive (partial recursive) functions', deps: ['toc-8.2'], refs: ['Sipser §3.2'],
           pic: 'The minimization operator searches n = 0, 1, 2, … for a zero of a function; for some inputs the search never ends, shown as a counter that keeps spinning.' },
-        { num: '8.5', kind: 'Theorem', name: 'μ-recursive equals Turing computable', deps: ['toc-8.4', 'toc-7.9'], refs: ['Sipser §3.3'],
+        { num: '8.5', kind: 'Theorem', name: 'μ-recursive equals Turing computable', deps: ['toc-8.4', 'toc-7.9'], refs: ['Sipser §3.2'],
           pic: 'A recursive definition is compiled into a Turing machine and a Turing machine into a μ-recursive function via step-counting; both run on the same inputs and agree.' },
         { num: '8.6', kind: 'Model', name: 'λ-definable functions', deps: [], refs: ['Sipser §3.3'],
           pic: 'Type a λ-term for addition or multiplication of Church numerals and watch β-reduction rewrite it, step by step, into the numeral of the answer.' },
-        { num: '8.7', kind: 'Model', name: 'Cellular automata and Rule 110', deps: ['toc-7.1'], refs: ['Sipser §3.3'],
+        { num: '8.7', kind: 'Model', name: 'Cellular automata and Rule 110', deps: ['toc-7.1'], refs: ['Sipser §3.2'],
           pic: 'Pick an elementary rule number and a seed row and watch the space-time diagram grow; Rule 110 shows the gliders whose collisions are used to build a universal system.' },
-        { num: '8.8', kind: 'Model', name: 'The Game of Life is universal', deps: ['toc-8.7'], refs: ['Sipser §3.3'],
+        { num: '8.8', kind: 'Model', name: 'The Game of Life is universal', deps: ['toc-8.7'], refs: ['Sipser §3.2'],
           pic: 'A glider gun fires across an editable grid; the reader places eaters and blocks to build a logic gate and watches glider streams carry the signals.' },
-        { num: '8.9', kind: 'Model', name: 'Post tag systems', deps: ['toc-7.8'], refs: ['Sipser §3.3'],
+        { num: '8.9', kind: 'Model', name: 'Post tag systems', deps: ['toc-7.8'], refs: ['Sipser §3.2'],
           pic: 'A 2-tag system processes a word as a queue — read the first symbol, delete two, append its production — and the reader edits the rules to see words halt, cycle or grow.' },
-        { num: '8.10', kind: 'Model', name: 'Fractran', deps: ['toc-8.1'], refs: ['Sipser §3.3'],
+        { num: '8.10', kind: 'Model', name: 'Fractran', deps: ['toc-8.1'], refs: ['Sipser §3.2'],
           pic: 'Run Conway’s prime-generating program: the current integer is multiplied by the first fraction that gives an integer, and every power of 2 that appears has a prime exponent, listed live.' },
         { num: '8.11', kind: 'Hypothesis', name: 'Church–Turing thesis', deps: ['toc-8.5', 'toc-8.6', 'toc-8.7', 'toc-7.6', 'toc-8.1'], refs: ['Sipser §3.3'],
           pic: 'One function, multiplication, computed in five models — Turing machine, counter machine, recursive definition, λ-term, cellular automaton — on the reader’s input, with translations between them run live.' },
         { num: '8.12', kind: 'Hypothesis', name: 'Extended Church–Turing thesis', deps: ['toc-8.11', 'toc-7.10'], refs: ['Sipser §3.3'],
           pic: 'Simulation overheads between models are plotted — multitape to single tape, RAM to Turing machine — all polynomial, while classically simulating a quantum circuit costs time exponential in its qubits.' },
+        { num: '8.13', kind: 'Definition', name: 'Computable real numbers (Turing, 1936)', deps: ['toc-7.9', 'toc-1.5'], refs: ['Sipser §3.3'],
+          pic: 'Pick √2, π or e and a machine prints its binary digits one by one, each digit certified by an interval; since machines are countable, a counter shows that almost every real has no such machine.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 9
@@ -336,6 +356,8 @@ export default {
           pic: 'Search integer points of a typed polynomial equation in a growing box: solutions light up when found, but no bound on the search can be computed in general, so searching only recognizes.' },
         { num: '10.16', kind: 'Theorem', name: 'The busy beaver function is uncomputable', deps: ['toc-9.7'], refs: ['Sipser §5.1'],
           pic: 'All 2- and 3-state machines are run from a blank tape; the halting champions and their step counts are listed, and the known values outrun any computable function the reader types.' },
+        { num: '10.17', kind: 'Theorem', name: 'Word problems for semigroups and groups are undecidable', deps: ['toc-10.12', 'toc-7.2'], refs: ['Sipser §5.2'],
+          pic: 'Edit a string-rewriting system and two words; breadth-first search over rewrites finds a derivation when one exists, and the encoding of a machine as rewrite rules shows why no search bound can exist in general.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 11
@@ -376,6 +398,8 @@ export default {
           pic: 'A hypothetical K-computer is wrapped in a short search program that prints the first string of complexity above N; for large N the program is shorter than N, contradicting itself.' },
         { num: '11.16', kind: 'Theorem', name: 'Chaitin’s incompleteness theorem', deps: ['toc-11.15', 'toc-11.7'], refs: ['Sipser §6.4'],
           pic: 'A proof enumerator for a sound theory searches for proofs that K(x) > L; once L exceeds the theory’s own description length the search never succeeds.' },
+        { num: '11.17', kind: 'Concept', name: 'Chaitin’s halting probability Ω', deps: ['toc-11.15', 'toc-9.7'], refs: ['Sipser §6.4'],
+          pic: 'All programs of a prefix-free toy language run in parallel; each one that halts adds 2^(−length) to a lower bound on Ω that creeps upward, and the readout shows how its first n bits would settle halting for every program of length n.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 12

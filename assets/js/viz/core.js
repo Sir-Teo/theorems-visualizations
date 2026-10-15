@@ -240,7 +240,7 @@ class Stage {
     const isX = axis === 'x', [a, b] = isX ? this.xr : this.yr, px = isX ? this.W : this.H;
     const la = Math.log10(a), lb = Math.log10(b), out = { major: [], minor: [] };
     if (!(lb > la) || !isFinite(la) || !isFinite(lb)) return out;
-    const ppd = px / (lb - la), gap = isX ? 62 : 32, inR = (v) => v >= a * (1 - 1e-9) && v <= b * (1 + 1e-9);
+    const ppd = px / (lb - la), inR = (v) => v >= a * (1 - 1e-9) && v <= b * (1 + 1e-9);
     const k0 = Math.floor(la), k1 = Math.ceil(lb), kLo = Math.ceil(la - 1e-9), kHi = Math.floor(lb + 1e-9), decades = kHi - kLo + 1;
     const pow = Math.floor(la + 1e-9) < -3 || kHi > 5; // 10ⁿ labels outside 0.001 … 100k
     const label = (v) => {
@@ -248,16 +248,20 @@ class Stage {
       if (pow) return (m === 1 ? '' : m + '×') + M.pow10Text(k);
       return v >= 1000 ? Number((v / 1000).toPrecision(6)) + 'k' : String(Number(v.toPrecision(6)));
     };
+    // spacing needed between labelled ticks: label width on x (≈ 6.3 px per character), a fixed row height on y
+    const need = (vs) => (isX ? Math.max(28, 6.3 * Math.max(...vs.map((v) => label(v).length)) + 16) : 30);
+    const interior = (vs) => vs.filter((v) => { const q = (Math.log10(v) - la) * ppd; return q >= 8 && q <= px - 8; }).length;
     const mant = (set) => { const vs = []; for (let k = k0; k <= k1; k++) for (const m of set) { const v = m * 10 ** k; if (inR(v)) vs.push(v); } return vs; };
     const sets = pow && decades >= 2 ? [[1]] : [[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 5], [1, 3], [1]];
     let major = null;
     for (const set of sets) {
       const vs = mant(set); let g = Infinity;
       for (let i = 1; i < vs.length; i++) g = Math.min(g, Math.log10(vs[i] / vs[i - 1]) * ppd);
-      if (vs.length >= 2 && g >= gap) { major = vs; break; }
+      if (vs.length >= 2 && interior(vs) >= 2 && g >= need(vs)) { major = vs; break; }
     }
     if (!major && decades >= 2) { // crowded: label every n-th decade, the others become minor ticks
-      let n = Math.ceil(gap / ppd); n = [1, 2, 3, 5, 10, 20, 25, 50, 100].find((s) => s >= n) ?? n;
+      const dec = []; for (let k = kLo; k <= kHi; k++) dec.push(10 ** k);
+      let n = Math.ceil(need(dec) / ppd); n = [1, 2, 3, 5, 10, 20, 25, 50, 100].find((s) => s >= n) ?? n;
       major = []; for (let k = kLo; k <= kHi; k++) (M.mod(k, n) === 0 ? major : out.minor).push(10 ** k);
     }
     if (!major) { // less than a decade visible: linear nice steps
@@ -303,8 +307,9 @@ class Stage {
       }
       c.textAlign = 'right'; c.textBaseline = 'middle';
       const left = ay - 26 > 0;
+      const yMax = (this.lx || this.ly) && !below ? this.H - 22 : this.H - 8; // log axes: keep the bottom-left corner for the x labels
       for (const [v, lab] of this._ticks('y')) {
-        const y = this.Y(v); if (Math.abs(v - y0) < 1e-12 && !box) continue; if (y < 8 || y > this.H - 8) continue;
+        const y = this.Y(v); if (Math.abs(v - y0) < 1e-12 && !box) continue; if (y < 8 || y > yMax) continue;
         c.beginPath(); c.moveTo(ay - 3, y); c.lineTo(ay + 3, y); c.stroke();
         c.textAlign = left ? 'right' : 'left'; c.fillText(lab, left ? ay - 6 : ay + 6, y);
       }

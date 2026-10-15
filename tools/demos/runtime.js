@@ -143,5 +143,17 @@ export default {
         v.readout(() => `ratio ${v.fix(h.x, 3)} = ${v.fix(v.M.centsBetween(1, h.x), 1)} cents (${v.M.noteName(60)} → ${v.M.noteName(60 + 12 * Math.log2(h.x))}); dissonance ${v.fix(h.y, 3)}; sound ${v.sound().available ? 'available' : 'unavailable'}`);
       },
     },
+    {
+      num: '1.7',
+      kind: 'Theorem',
+      name: 'Log-axis tick stress test',
+      statement: String.raw`Automatic log ticks over awkward windows: sub-decade, one decade, a few decades, many decades, tiny panels.`,
+      caption: String.raw`Each panel is log in $x$ (top label) and in $y$; the curve is $y = x$.`,
+      viz(v) {
+        const R = [[2, 3], [1, 10], [0.5, 30], [3e4, 2e6], [1e-12, 1e12], [0.002, 0.2], [7, 9000], [1e-5, 1e-3]];
+        const S = R.map((r) => v.stage({ x: r, y: r, xlog: true, ylog: true, grid: true, axes: 'box', height: 150, minWidth: 190, title: `[${v.fmt(r[0], 3)}, ${v.fmt(r[1], 3)}]` }));
+        v.render(() => { for (const s of S) s.fn((x) => x, { color: 'accent', width: 2 }); });
+      },
+    },
   ],
 };
