@@ -151,7 +151,7 @@ export default {
       statement: String.raw`**Input:** an integer $N\ge2$. Write down $2,3,\dots,N$. Repeatedly take the smallest number $p$ not yet crossed out and not yet used — it is prime — and cross out its multiples $p^2,\ p^2+p,\ p^2+2p,\dots\le N$. **Stop** as soon as $p^2>N$. **Output:** the numbers never crossed out, which are exactly the primes $\le N$.
 
 Cost: about $N\sum_{p\le\sqrt N}1/p\approx N\ln\ln N$ crossings.`,
-      idea: String.raw`A number survives the step for $p$ exactly when $p$ does not divide it, so after the primes $<p$ have been used, the survivors are the numbers with no prime factor below $p$. Such a survivor $m<p^2$ must be prime — a composite $m$ has a prime factor $\le\sqrt m<p$. This one invariant explains everything: the smallest survivor is always prime, crossing may start at $p^2$ (the smaller multiples $kp$, $k<p$, have the smaller factor $k$’s prime and are already gone), and the sieve may stop once $p^2>N$, because then every survivor is below $p^2$.`,
+      idea: String.raw`A number survives the step for $p$ exactly when $p$ does not divide it, so after the primes $<p$ have been used, the survivors are the numbers with no prime factor below $p$. Such a survivor $m<p^2$ must be prime — a composite $m$ has a prime factor $\le\sqrt m<p$. This one invariant explains everything: the smallest survivor is always prime, crossing may start at $p^2$ (a smaller multiple $kp$ with $k<p$ has a prime factor dividing $k$, which is smaller than $p$, so it is already crossed out), and the sieve may stop once $p^2>N$, because then every survivor is below $p^2$.`,
       caption: String.raw`Step through the sieve (▶ plays it). Each prime crosses out its multiples in its own colour, starting at $p^2$; green numbers are *certified* primes — survivors below $p^2$ for the next prime $p$ — and the green region grows until $p^2>N$, when every survivor is certified. Switch the layout: in rows of $30=2\cdot3\cdot5$ the primes fall into the 8 columns coprime to $30$; on the Ulam spiral they cluster on diagonals. Start at $2p$ instead of $p^2$ to see the wasted crossings in red.`,
       deps: ['nt-1.1'],
       tags: ['primes', 'algorithms'],
@@ -271,7 +271,8 @@ Cost: about $N\sum_{p\le\sqrt N}1/p\approx N\ln\ln N$ crossings.`,
             rects.push({ r: chip(v, C, X, 30, cw - 5, 26, String(p), { fill: on ? col : 'faint', fillAlpha: on ? 0.3 : 0.08, stroke: on ? col : 'faint', color: on ? 'ink' : 'muted', size: 12.5 }), p });
           });
           const Ptex = L.length ? L.join('\\cdot ') : '1';
-          const expr = m === 'm3' ? `4\\cdot(${Ptex}) - 1` : m === 'm1' ? `4\\cdot(${Ptex}) + 1` : `(2\\cdot ${L.length > 1 ? `(${Ptex})` : Ptex})^2 + 1`;
+          const Pp = L.length > 1 ? `(${Ptex})` : Ptex;
+          const expr = m === 'm3' ? `4\\cdot ${Pp} - 1` : m === 'm1' ? `4\\cdot ${Pp} + 1` : `(2\\cdot ${Pp})^2 + 1`;
           C.texPx(`N = ${expr} = ${grp(N)} \\equiv ${Number(N % 4n)} \\pmod 4`, W / 2, 84, { size: 17 });
           const fs = facOf(N);
           const items = fs.map(([p, e]) => ({ p, e, r: Number(p % 4n), isNew: !L.includes(Number(p)) }));
@@ -300,7 +301,7 @@ Cost: about $N\sum_{p\le\sqrt N}1/p\approx N\ln\ln N$ crossings.`,
             if (i && j) rbox(v, C, X0 - c / 2 + 2, Y0 - c * 0.38, c - 4, c * 0.76, 4, { fill: val === '1' ? 'teal' : 'purple', fillAlpha: 0.22 });
             C.textPx(val, X0, Y0, { align: 'center', size: 12, weight: i && j ? 650 : 500, color: i && j ? 'ink' : 'muted', halo: false });
           }));
-          C.textPx(m === 'm3' ? '1 · 1 ≡ 1: a product of factors ≡ 1 is ≡ 1, so N ≡ 3 needs a factor ≡ 3' : '3 · 3 ≡ 1: factors ≡ 3 can pair up and hide inside N ≡ 1', tx + 2.6 * c, ty + c * 0.8, { size: 12, color: 'muted' });
+          C.textPx(m === 'm3' ? '1 · 1 ≡ 1: a product of factors ≡ 1 is ≡ 1, so N ≡ 3 needs a factor ≡ 3' : '3 · 3 ≡ 1: factors ≡ 3 can pair up and hide inside N ≡ 1', tx + 3.2 * c, ty + c * 0.8, { size: 12, color: 'muted' });
           if (msg) C.corner(msg, 'br', { size: 11, color: 'red', weight: 600 });
           st = { m, L, N, fs, has1, has3 };
         });
@@ -401,7 +402,9 @@ and consequently $\gcd(F_m,F_n)=1$ for all $m\ne n$. In particular each $F_n$ ha
               }
             };
             draw(80, a, `M_{${a}} = ${2 ** a - 1}`); draw(150, b, `M_{${b}} = ${2 ** b - 1}`); draw(220, d, `M_{${d}} = ${2 ** d - 1}`);
-            Bs.texPx(`2^{${a}} - 1 = (2^{${d}} - 1)(1 + 2^{${d}} + \\cdots + 2^{${a - d}})`, W / 2, 285, { size: 14, color: d > 1 ? 'red' : 'green' });
+            const terms = []; for (let k = 0; k * d < a; k++) terms.push(k === 0 ? '1' : `2^{${k * d}}`);
+            const sum = terms.length <= 4 ? terms.join(' + ') : `1 + 2^{${d}} + \\cdots + 2^{${a - d}}`;
+            Bs.texPx(d === 1 ? `\\gcd(${a}, ${b}) = 1:\\ \\text{only the trivial block } M_1 = 1` : `2^{${a}} - 1 = (2^{${d}} - 1)(${sum})`, W / 2, 285, { size: 14, color: d > 1 ? 'red' : 'green' });
             Bs.texPx(d > 1 ? `\\gcd(M_{${a}}, M_{${b}}) = M_{${d}} = ${2 ** d - 1} \\ne 1` : `\\gcd(${a}, ${b}) = 1 \\Rightarrow \\gcd(M_{${a}}, M_{${b}}) = 1`, W / 2, 325, { size: 14, color: d > 1 ? 'red' : 'green' });
             st = { fm, a, b, d };
           }
@@ -554,9 +557,9 @@ A particular solution is obtained by scaling a Bézout pair: if $ax'+by'=g$, tak
 (a) every $n>ab-a-b$ is representable, while $ab-a-b$ itself is not (the *Frobenius number*);
 (b) for $0\le n\le ab-a-b$, exactly one of $n$ and $ab-a-b-n$ is representable, so exactly $\tfrac12(a-1)(b-1)$ nonnegative integers are not representable.
 If $\gcd(a,b)>1$, infinitely many integers (all non-multiples of $\gcd(a,b)$) are not representable.`,
-      idea: String.raw`Arrange $0,1,2,\dots$ in $a$ columns by their remainder mod $a$. The multiples $0,b,2b,\dots,(a-1)b$ land in different columns (since $\gcd(a,b)=1$), one in each; in its column, everything from that multiple upward is representable (add $a$’s) and everything below is not (a representation would need fewer $b$’s, landing in another column). The highest starting point is $(a-1)b$, so the last gap sits just below it, at $(a-1)b-a=ab-a-b$. For (b): if $n=ax+by$ and $ab-a-b-n=ax'+by'$ with $x,y,x',y'\ge0$, adding gives $a(x+x'+1)+b(y+y'+1)=ab$, impossible by the uniqueness in 1.13; and a counting argument with the columns shows one of the two is always representable.`,
+      idea: String.raw`Arrange $0,1,2,\dots$ in $a$ columns by their remainder mod $a$. The multiples $0,b,2b,\dots,(a-1)b$ land in different columns (since $\gcd(a,b)=1$), one in each; in its column, everything from that multiple upward is representable (add $a$’s) and everything below is not (a representation would need fewer $b$’s, landing in another column). The highest starting point is $(a-1)b$, so the last gap sits just below it, at $(a-1)b-a=ab-a-b$. For (b): if both $n=ax+by$ and $ab-a-b-n=ax'+by'$ with $x,y,x',y'\ge0$, adding gives $aX+bY=ab$ with $X,Y\ge1$; then $a\mid bY$, so $a\mid Y$ (1.5), so $bY\ge ab$ and $aX\le0$ — impossible. Hence at most one number of each pair is representable, so at least half of the $(a-1)(b-1)$ numbers $0,\dots,ab-a-b$ are not; counting the red cells column by column gives $\sum_{k<a}\lfloor kb/a\rfloor=\tfrac12(a-1)(b-1)$, exactly half, so every pair contains exactly one representable number.`,
       caption: String.raw`Choose coin values $a$ and $b$. The grid puts each amount in the column of its remainder mod $a$: green amounts can be paid, red ones cannot, and each column turns green at the first multiple of $b$ it contains (bold outline) — a staircase whose top gap is $ab-a-b$. Click an amount: its partner $ab-a-b-n$ lights up, and exactly one of the two is payable (see also the number line). Make $a$ and $b$ share a factor and whole columns stay red for ever.`,
-      deps: ['nt-1.13'],
+      deps: ['nt-1.13', 'nt-1.5'],
       tags: ['diophantine equations', 'combinatorics'],
       credit: 'Sylvester, 1882–1884',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Coin_problem' },
