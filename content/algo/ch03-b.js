@@ -409,7 +409,7 @@ If the inputs are drawn independently and uniformly from $[0,1)$, the expected r
         v.button('Resample', draw);
         draw();
         const T = v.stage({ x: [0, 1], y: [-0.6, 10], axes: false, height: 300, full: true });
-        const P = v.stage({ x: [10, 10000], y: [0.6, 6000], xlog: true, ylog: true, axes: 'box', height: 200, full: true, title: '$\\sum_i n_i^2 / n$, averaged over 20 draws', xlabel: 'n' });
+        const P = v.stage({ x: [10, 10000], y: [0.6, 3e4], xlog: true, ylog: true, axes: 'box', height: 200, full: true, title: '$\\sum_i n_i^2 / n$, averaged over 20 draws', xlabel: 'n' });
         const curves = {}, r2 = v.rng(5);
         const curve = (name) => {
           if (curves[name]) return curves[name];

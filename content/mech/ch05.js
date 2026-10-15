@@ -163,7 +163,7 @@ An admissible $y_*$ is a **(local) minimum** of $J$ if $J[y_*]\le J[y]$ for ever
           cur = me;
           // ── curve panel
           sC.hline(0, { color: 'faint', dash: [3, 4] });
-          sC.text('height of A: a bead cannot rise above it', -0.2, 0.08, { size: 11, color: 'muted', baseline: 'bottom' });
+          sC.text('height of A: a bead cannot rise above it', 3.25, 0.06, { size: 11, color: 'muted', baseline: 'bottom', align: 'right' });
           if (mode === 'L') sC.line(A[0], A[1], B[0], B[1], { color: 'green', width: 2, dash: [7, 5] });
           else sC.path(cycPts, { color: 'green', width: 2, dash: [7, 5] });
           saved.forEach((c, i) => {

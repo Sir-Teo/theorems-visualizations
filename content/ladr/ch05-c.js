@@ -430,7 +430,7 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-2.3, 2.3], y: [-2.1, 2.2], equal: true, axes: false, height: 400, weight: 1.3, minWidth: 320 });
-        const sc = v.scene3(S, { yaw: -0.55, pitch: 0.3, axis: 1.6 });
+        const sc = v.scene3(S, { yaw: -1.0, pitch: 0.42, axis: 1.6 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 260, title: 'minimal polynomial, computed' });
         const lamS = v.slider('$\\lambda$', 1, 3.5, 2, { step: 0.05 }), sS = v.slider('coupling $s$', 0, 1.5, 1, { step: 0.05 });
         const mu = v.select('show null and range of', [{ value: 2, label: '$T - 2I$' }, { value: 3, label: '$T - 3I$' }], 2);
