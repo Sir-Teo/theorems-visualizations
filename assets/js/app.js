@@ -340,6 +340,13 @@ function paperLinks(it) {
   return `${intro.length ? `<h2 style="margin-top:18px">Introduced here <span class="count">${intro.length}</span></h2><div class="chip-list">${intro.map((d) => link(d)).join('')}</div>` : ''}${by.length ? `<h2 style="margin-top:18px">First published in</h2><div class="chip-list">${by.map((d) => link(d)).join('')}</div>` : ''}`;
 }
 
+/** One line under an idea's title naming the landmark paper(s) that first put it forward. */
+function provenance(it) {
+  const by = (G.introducedBy?.get(it.id) || []).map((d) => G.byId.get(d)).filter(Boolean);
+  if (!by.length) return '';
+  return `<div class="provenance"><span class="eyebrow">First published in</span> ${by.map((p) => `<a href="#/t/${p.id}"><span class="pv-au">${escapeHTML(p.au || '')}${p.yr ? ` ${p.yr}` : ''}</span>, <i>${inlineHTML(p.name)}</i></a>`).join('; ')}</div>`;
+}
+
 function lineageBlock(it) {
   return `<div class="card lineage-card">
     <div class="lineage-head"><h2>Lineage</h2>
@@ -368,7 +375,7 @@ async function pagePlanned(it) {
   const users = (G.allChildren.get(it.id) || []).map((d) => G.byId.get(d));
   const el = h(`<div class="wrap thm-page" data-col="${it.col}">
     <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/c/${it.col}">${escapeHTML(C.short)}</a><span class="sep">/</span><a href="#/c/${it.col}/${it.c}">${chapterLabel(it.col, it.c)} · ${escapeHTML(Ch?.title || '')}</a></div>
-    <div class="thm-head"><div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))} · planned</div><h1>${inlineHTML(it.name)}</h1></div></div>
+    <div class="thm-head"><div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))} · planned</div><h1>${inlineHTML(it.name)}</h1>${provenance(it)}</div></div>
     ${paperBlock(it)}
     <div class="statement planned-note">This ${it.kind.toLowerCase()} is on the syllabus of <a href="#/c/${it.col}">${escapeHTML(C.title)}</a> but has not been written yet. Its place in the graph is already known.
       ${it.pic ? `<div class="pic-plan"><span class="eyebrow">Planned visualization</span> ${inlineHTML(it.pic)}</div>` : ''}
@@ -407,7 +414,7 @@ async function pageTheorem(id) {
   const el = h(`<div class="wrap thm-page" data-col="${it.col}">
     <div class="crumbs"><a href="#/">Home</a><span class="sep">/</span><a href="#/f/${C.field}">${escapeHTML(G.fieldById.get(C.field).short)}</a><span class="sep">/</span><a href="#/c/${it.col}">${escapeHTML(C.short)}</a><span class="sep">/</span><a href="#/c/${it.col}/${it.c}">${chapterLabel(it.col, it.c)} · ${escapeHTML(Ch?.title || '')}</a></div>
     <div class="thm-head">
-      <div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))}${it.credit ? ` · ${escapeHTML(it.credit)}` : ''}${it.verify ? ' <span class="faint" title="Numbering reconstructed — not yet checked against the source">· number unverified</span>' : ''}</div><h1>${inlineHTML(it.name)}</h1></div>
+      <div class="thm-title"><div class="eyebrow"><span class="col-dot"></span>${escapeHTML(fullLabel(it))}${it.credit ? ` · ${escapeHTML(it.credit)}` : ''}${it.verify ? ' <span class="faint" title="Numbering reconstructed — not yet checked against the source">· number unverified</span>' : ''}</div><h1>${inlineHTML(it.name)}</h1>${provenance(it)}</div>
       <div class="thm-nav">
         ${prev ? `<a class="btn" href="#/t/${prev.id}" title="${escapeHTML(fullLabel(prev))}">← ${displayNum(prev)}</a>` : ''}
         ${next ? `<a class="btn" href="#/t/${next.id}" title="${escapeHTML(fullLabel(next))}">${displayNum(next)} →</a>` : ''}

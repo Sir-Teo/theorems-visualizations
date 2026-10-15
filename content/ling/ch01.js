@@ -359,17 +359,19 @@ function headPoly(J) {
 }
 const NASAL = [[-1.3, 1.55], [0.3, 1.35], [1.7, 1.25], [2.4, 1.75], [3.3, 2.1], [4.3, 2.25], [5.3, 2.1], [6.3, 2.05], [7.3, 1.75], [8.25, 1.2], [8.35, 2.3], [7.6, 3.2], [5.6, 3.65], [2.6, 3.6], [0.6, 3.25], [-0.75, 2.6]];
 /**
- * Draw the vocal tract. cfg: {hx, hy (tongue body), round, ctl (custom tongue control points), lipClose (0 open … 1 closed),
- * labiodental, velum: 'up' | 'down', glottis: 'voiced' | 'voiceless' | 'closed' | 'breathy', mark: {x, y, color, label},
- * noise: [x, y] (frication), labels}.
+ * Draw the vocal tract. cfg: {hx, hy (tongue body), round, ctl (custom tongue control points), lipGap (cm between the lips,
+ * for labials), teethGap (lower lip to upper teeth, for labiodentals), velum: 'up' | 'down', glottis: 'voiced' | 'voiceless' |
+ * 'closed' | 'breathy', mark: {x, y, color}, noise: [x, y] (frication), labels}.
  */
 function drawTract(s, cfg) {
   const hy = cfg.hy ?? 0.4, J = 1.05 * jawOf(hy) * (cfg.jaw ?? 1), ctl = cfg.ctl || tongueCtl(cfg.hx ?? 4.5, hy), tg = catmull(ctl, 7);
-  const rnd = cfg.round ? 1 : 0, close = cfg.lipClose ?? 0;
+  const rnd = cfg.round ? 1 : 0;
   s.poly(headPoly(J), { fill: 'faint', fillAlpha: 0.32, color: 'muted', width: 1.2 });
   // lips (upper fixed, lower follows the jaw; rounding pushes both forward)
   const ulx = -0.75 - 0.45 * rnd, uly = 0.27 - 0.06 * rnd;
-  const llEdgeY = close ? 0.24 : cfg.labiodental ? 0.02 : -0.2 - J + 0.25 * rnd, llEdgeX = cfg.labiodental ? 0.75 : close ? ulx + 0.15 : -0.72 - 0.45 * rnd;
+  let llEdgeY = -0.2 - J + 0.25 * rnd, llEdgeX = -0.72 - 0.45 * rnd;
+  if (cfg.lipGap != null) { llEdgeY = uly - 0.03 - cfg.lipGap; llEdgeX = ulx + 0.1; }
+  if (cfg.teethGap != null) { llEdgeY = 0.05 - cfg.teethGap; llEdgeX = 0.82; }
   // airway: wall from the lips to the glottis, then back up the larynx, tongue, lower teeth and lower lip
   const wall = WALL.slice(); if (cfg.velum === 'down') { wall[9] = [6.1, 1.2]; wall[10] = [6.55, 0.35]; wall[11] = [6.85, -0.45]; }
   const lowInc = [[1.12, -0.05 - J], [0.95, -0.12 - J], [0.82, -0.7 - J]], lowLip = [[0.55, -0.55 - J], [0.05, llEdgeY - 0.05], [llEdgeX, llEdgeY]];
@@ -417,6 +419,79 @@ function drawTract(s, cfg) {
   }
 }
 
+// ---------- the IPA charts ----------
+const PLACES = ['bilabial', 'labiodental', 'dental', 'alveolar', 'postalveolar', 'retroflex', 'palatal', 'velar', 'uvular', 'pharyngeal', 'glottal'];
+const PLACE_HEAD = [['Bilabial'], ['Labio-', 'dental'], ['Dental'], ['Alveolar'], ['Post-', 'alveolar'], ['Retro-', 'flex'], ['Palatal'], ['Velar'], ['Uvular'], ['Pharyn-', 'geal'], ['Glottal']];
+/** Pulmonic consonant chart rows: [manner, label, cells [firstCol, lastCol, voiceless, voiced], shaded (impossible) cells [col, half: 0 both, 2 voiced]]. */
+const IPA_ROWS = [
+  ['plosive', 'Plosive', [[0, 0, 'p', 'b'], [2, 4, 't', 'd'], [5, 5, 'ʈ', 'ɖ'], [6, 6, 'c', 'ɟ'], [7, 7, 'k', 'ɡ'], [8, 8, 'q', 'ɢ'], [10, 10, 'ʔ', null]], [[9, 0], [10, 2]]],
+  ['nasal', 'Nasal', [[0, 0, null, 'm'], [1, 1, null, 'ɱ'], [2, 4, null, 'n'], [5, 5, null, 'ɳ'], [6, 6, null, 'ɲ'], [7, 7, null, 'ŋ'], [8, 8, null, 'ɴ']], [[9, 0], [10, 0]]],
+  ['trill', 'Trill', [[0, 0, null, 'ʙ'], [2, 4, null, 'r'], [8, 8, null, 'ʀ']], [[7, 0], [10, 0]]],
+  ['tap', 'Tap or flap', [[1, 1, null, 'ⱱ'], [2, 4, null, 'ɾ'], [5, 5, null, 'ɽ']], [[7, 0], [10, 0]]],
+  ['fricative', 'Fricative', [[0, 0, 'ɸ', 'β'], [1, 1, 'f', 'v'], [2, 2, 'θ', 'ð'], [3, 3, 's', 'z'], [4, 4, 'ʃ', 'ʒ'], [5, 5, 'ʂ', 'ʐ'], [6, 6, 'ç', 'ʝ'], [7, 7, 'x', 'ɣ'], [8, 8, 'χ', 'ʁ'], [9, 9, 'ħ', 'ʕ'], [10, 10, 'h', 'ɦ']], []],
+  ['latfric', 'Lateral fric.', [[2, 4, 'ɬ', 'ɮ']], [[0, 0], [1, 0], [9, 0], [10, 0]]],
+  ['approx', 'Approximant', [[1, 1, null, 'ʋ'], [2, 4, null, 'ɹ'], [5, 5, null, 'ɻ'], [6, 6, null, 'j'], [7, 7, null, 'ɰ']], [[10, 0]]],
+  ['latapprox', 'Lateral approx.', [[2, 4, null, 'l'], [5, 5, null, 'ɭ'], [6, 6, null, 'ʎ'], [7, 7, null, 'ʟ']], [[0, 0], [1, 0], [9, 0], [10, 0]]],
+];
+const MANNER_NAME = { plosive: 'plosive', nasal: 'nasal', trill: 'trill', tap: 'tap', fricative: 'fricative', latfric: 'lateral fricative', approx: 'approximant', latapprox: 'lateral approximant' };
+/** Example words (a language where the sound is a regular consonant). */
+const IPA_EX = {
+  p: 'English *pin*', b: 'English *bin*', t: 'English *tin*', d: 'English *din*', ʈ: 'Hindi *ṭamāṭar* ‘tomato’', ɖ: 'Hindi *ḍar* ‘fear’', c: 'Hungarian *tyúk* ‘hen’', ɟ: 'Hungarian *gyár* ‘factory’',
+  k: 'English *kin*', ɡ: 'English *go*', q: 'Arabic *qalb* ‘heart’', ɢ: 'Persian *qand* ‘sugar’', ʔ: 'English *uh-oh*', m: 'English *man*', ɱ: 'English *comfort* (before f)', n: 'English *no*',
+  ɳ: 'Swedish *barn* ‘child’', ɲ: 'Spanish *año* ‘year’', ŋ: 'English *sing*', ɴ: 'Japanese *san* ‘three’ (at the end of a phrase)', ʙ: 'Kele (Papua New Guinea)', r: 'Spanish *perro* ‘dog’',
+  ʀ: 'German *rot* (some speakers)', ⱱ: 'Mono (Congo)', ɾ: 'Spanish *pero* ‘but’; American *water*', ɽ: 'Hindi *baṛā* ‘big’', ɸ: 'Japanese *fuji*', β: 'Spanish *haba* ‘bean’', f: 'English *fan*',
+  v: 'English *van*', θ: 'English *thin*', ð: 'English *then*', s: 'English *sip*', z: 'English *zip*', ʃ: 'English *ship*', ʒ: 'English *vision*', ʂ: 'Mandarin *shī* ‘poem’', ʐ: 'Russian *žuk* ‘beetle’',
+  ç: 'German *ich* ‘I’', ʝ: 'Spanish *mayo* (many dialects)', x: 'German *Bach*', ɣ: 'Spanish *lago* ‘lake’', χ: 'Arabic *xubz* ‘bread’ (many dialects)', ʁ: 'French *rouge* ‘red’', ħ: 'Arabic *ḥubb* ‘love’',
+  ʕ: 'Arabic *ʿayn* ‘eye’', h: 'English *hat*', ɦ: 'Czech *hora* ‘mountain’', ɬ: 'Welsh *llan* ‘church’', ɮ: 'Zulu *dlala* ‘play’', ʋ: 'Dutch *wat* ‘what’', ɹ: 'English *red*', ɻ: 'Mandarin *rén* ‘person’',
+  j: 'English *yes*', ɰ: 'Spanish *agua* (relaxed g)', l: 'English *leaf*', ɭ: 'Swedish *Karl*', ʎ: 'Italian *figlio* ‘son’', ʟ: 'Mid-Waghi (New Guinea)',
+};
+/** IPA vowels: [symbol, height 0 (open) … 3 (close), backness 0 (front) … 1 (back), rounded, example]. */
+const IPA_V = [
+  ['i', 3, 0, 0, 'English *see*'], ['y', 3, 0, 1, 'French *tu*'], ['ɨ', 3, 0.5, 0, 'Russian *ty* ‘you’'], ['ʉ', 3, 0.5, 1, 'Swedish *ful* (approx.)'], ['ɯ', 3, 1, 0, 'Korean *eu* (ㅡ)'], ['u', 3, 1, 1, 'French *tout*'],
+  ['ɪ', 2.5, 0.2, 0, 'English *sit*'], ['ʏ', 2.5, 0.2, 1, 'German *hübsch*'], ['ʊ', 2.5, 0.8, 1, 'English *put*'],
+  ['e', 2, 0, 0, 'French *été*'], ['ø', 2, 0, 1, 'French *peu*'], ['ɘ', 2, 0.5, 0, 'rare as a separate vowel'], ['ɵ', 2, 0.5, 1, 'Swedish *full*'], ['ɤ', 2, 1, 0, 'Mandarin *è* ‘hungry’'], ['o', 2, 1, 1, 'French *eau*'],
+  ['ə', 1.5, 0.5, 0, 'English *sofa* (2nd vowel)'],
+  ['ɛ', 1, 0, 0, 'English *bed*'], ['œ', 1, 0, 1, 'French *peur*'], ['ɜ', 1, 0.5, 0, 'English *bird* (British)'], ['ɞ', 1, 0.5, 1, 'rare as a separate vowel'], ['ʌ', 1, 1, 0, 'English *cup* (older RP)'], ['ɔ', 1, 1, 1, 'British English *thought*'],
+  ['æ', 0.5, 0, 0, 'English *cat*'], ['ɐ', 0.5, 0.5, 0, 'German *besser* (final)'],
+  ['a', 0, 0, 0, 'Spanish *casa*'], ['ɶ', 0, 0, 1, 'rare; some Danish and Swedish dialects'], ['ɑ', 0, 1, 0, 'English *father*'], ['ɒ', 0, 1, 1, 'British English *lot*'],
+];
+/** Measured average formants (F1, F2 in Hz) of the 16 cardinal vowels [height, back, round] (male speakers; widely tabulated values). */
+const CARD = [[3, 0, 0, 240, 2400], [2, 0, 0, 390, 2300], [1, 0, 0, 610, 1900], [0, 0, 0, 850, 1610], [3, 0, 1, 235, 2100], [2, 0, 1, 370, 1900], [1, 0, 1, 585, 1710], [0, 0, 1, 820, 1530],
+  [3, 1, 0, 300, 1390], [2, 1, 0, 460, 1310], [1, 1, 0, 600, 1170], [0, 1, 0, 750, 940], [3, 1, 1, 250, 595], [2, 1, 1, 360, 640], [1, 1, 1, 500, 700], [0, 1, 1, 700, 760]];
+/** Formants of a vowel at chart position (height h, backness b, rounding r): bilinear interpolation between the cardinal vowels. */
+function chartFormants(h, b, r) {
+  const at = (bb, rr, k) => { const col = CARD.filter((c) => c[1] === bb && c[2] === rr).sort((p, q) => p[0] - q[0]); const i = Math.min(2, Math.floor(h)), u = h - i; return col[i][k] + (col[i + 1][k] - col[i][k]) * u; };
+  const F1 = (1 - b) * at(0, r, 3) + b * at(1, r, 3), F2 = (1 - b) * at(0, r, 4) + b * at(1, r, 4);
+  return [F1, F2, Math.max(F2 + 300, 2350 + 0.2 * (F2 - 1500) - 150 * r)];
+}
+/** Where a place's articulator meets the upper wall (arc length from the lips, cm). */
+const PLACE_S = { dental: 1.35, alveolar: 2.15, postalveolar: 2.75, retroflex: 3.4, palatal: 4.6, velar: 6.7, uvular: 8.5, pharyngeal: 11.6 };
+/** Tongue control points for a constriction of width `gap` (cm) at a place (the rest of the tongue near neutral). */
+function consCtl(place, gap) {
+  const s = PLACE_S[place]; if (s == null) return tongueCtl(4.6, 0.2);
+  const w = along(WALL, WALL_S, s), tx = w.x + w.nx * gap, ty = w.y + w.ny * gap;
+  if (place === 'dental' || place === 'alveolar' || place === 'postalveolar') {
+    const c = tongueCtl(4.7, 0.0); c[0] = [tx + 0.45, ty - 0.75]; c[1] = [tx, ty]; c[2] = [tx + 0.75, ty - 0.2]; c[3] = [tx + 1.7, Math.min(ty - 0.35, 0.6)]; return c;
+  }
+  if (place === 'retroflex') { const c = tongueCtl(4.7, 0.0); c[0] = [tx - 0.55, ty - 0.55]; c[1] = [tx, ty]; c[2] = [tx + 0.75, ty - 0.45]; c[3] = [tx + 1.6, 0.35]; return c; }
+  if (place === 'palatal' || place === 'velar') { const c = tongueCtl(tx, ty); c[4] = [tx, ty]; return c; }
+  if (place === 'uvular') { const c = tongueCtl(5.7, 0.4); c[5] = [tx, ty]; c[4] = [5.9, 0.55]; return c; }
+  const c = tongueCtl(5.0, -0.2); c[7] = [tx, ty]; c[6] = [7.2, -1.2]; return c; // pharyngeal: the root is pulled back
+}
+/** Drawing configuration of the vocal tract for an IPA consonant symbol. */
+function consCfg(sym) {
+  const [place, mn, vc] = CONS[sym];
+  const gap = mn === 'plosive' || mn === 'nasal' || mn === 'latapprox' ? 0 : mn === 'trill' || mn === 'tap' ? 0.03 : mn === 'fricative' || mn === 'latfric' ? 0.1 : 0.45;
+  const cfg = { hy: 0.9, velum: mn === 'nasal' ? 'down' : 'up', glottis: sym === 'ʔ' ? 'closed' : sym === 'ɦ' ? 'breathy' : vc ? 'voiced' : 'voiceless', ctl: consCtl(place, gap) };
+  if (place === 'bilabial' || place === 'labial-velar') { cfg.lipGap = place === 'labial-velar' ? 0.3 : gap; cfg.ctl = place === 'labial-velar' ? consCtl('velar', 0.45) : tongueCtl(4.6, 0.2); if (place === 'labial-velar') cfg.round = true; }
+  if (place === 'labiodental') { cfg.teethGap = gap; cfg.ctl = tongueCtl(4.6, 0.2); }
+  const ws = place === 'bilabial' ? [ -0.65, 0.2] : place === 'labiodental' ? [0.85, 0.04] : PLACE_S[place] != null ? (() => { const w = along(WALL, WALL_S, PLACE_S[place]); return [w.x + w.nx * gap / 2, w.y + w.ny * gap / 2]; })() : [7.13, -8.55];
+  cfg.mark = { x: ws[0], y: ws[1], color: 'gold' };
+  if (mn === 'fricative' || mn === 'latfric') cfg.noise = [ws[0] + (place === 'bilabial' ? -0.2 : 0), ws[1] - 0.25];
+  if (place === 'glottal' && mn === 'fricative') cfg.noise = null;
+  return cfg;
+}
+
 export default {
   collection: 'ling',
   chapter: 1,
@@ -446,10 +521,10 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
         const F = [500, 1500, 2500];
         const PRE = { ə: [500, 1500, 2500], i: [270, 2290, 3010], a: [750, 1300, 2500], u: [300, 870, 2240] };
         const ttl = (t) => ({ height: 210, axes: 'box', minWidth: 236, title: t, x: [0, FMAX], xticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4k'], [5000, '5 kHz']] });
-        const wav = v.stage({ x: [0, 0.03], y: [-2.3, 1.15], height: 150, axes: false, full: true });
+        const wav = v.stage({ x: [0, 0.03], y: [-2.35, 1.45], height: 160, axes: false, full: true });
         const sS = v.stage({ ...ttl('source $S(f)$ (dB)'), y: [-45, 12] });
         const sT = v.stage({ ...ttl('× tract filter $T(f)$ (dB)'), y: [-30, 36] });
-        const sO = v.stage({ ...ttl('= output $S(f)\\,T(f)$ (dB)'), y: [-40, 42] });
+        const sO = v.stage({ ...ttl('= output $S(f)\\,T(f)$ (dB)'), y: [-42, 16] });
         const hs = F.map((f, k) => sT.handle(f, 30, { color: ['accent', 'orange', 'purple'][k], label: `F${k + 1}`, labelPos: 's', constrain: (x) => [clampN(x, k === 0 ? 150 : F[k - 1] + 180, k === 2 ? 4300 : F[k + 1] - 180), 30] }));
         hs.forEach((h, k) => { h.onDrag = () => { F[k] = h.x; }; });
         for (const name of Object.keys(PRE)) v.button(`[${name}]`, () => { PRE[name].forEach((f, k) => { F[k] = f; hs[k].set(f, 30); }); });
@@ -496,10 +571,10 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
           }
           wav.hline(0.55, { color: 'faint' }); wav.hline(-1.2, { color: 'faint' });
           wav.path(laneS, { color: 'orange', width: 1.6 }); wav.path(laneO, { color: 'accent', width: 1.6 });
-          wav.text('source: ' + (mode === 'voice' ? 'glottal pulses' : mode === 'whisper' ? 'turbulent noise' : 'pulses + noise'), 0.0003, 1.08, { size: 11.5, color: 'orange', align: 'left' });
+          wav.text('source: ' + (mode === 'voice' ? 'glottal flow derivative, one pulse per period' : mode === 'whisper' ? 'turbulent noise' : 'pulses + noise'), 0.0003, 1.28, { size: 11.5, color: 'orange', align: 'left' });
           wav.text('output at the lips', 0.0003, -0.25, { size: 11.5, color: 'accent', align: 'left' });
           if (voiced) for (let k = 0; k * c.P < n; k++) wav.vline((k * c.P) / SR + 0.6 * c.P / SR, { color: 'orange', dash: [2, 4], alpha: 0.5 });
-          wav.measure(0, -2.15, 0.01, -2.15, '10 ms', { color: 'muted', size: 11 });
+          wav.measure(0.0002, -2.12, 0.0102, -2.12, '10 ms', { color: 'muted', size: 11, math: false, offset: -9 });
           // spectra
           const stems = (s, h, col, lo) => { for (let k = 1; k * f0 < FMAX && k < h.length; k++) { s.line(k * f0, lo, k * f0, h[k], { color: col, width: 1.6, alpha: 0.85 }); s.dot(k * f0, h[k], { r: 2.2, color: col }); } };
           const noiseCurve = (s, arr) => s.path(arr.map((d, b) => [(b * SR) / 512, d]).filter((p) => p[0] <= FMAX), { color: 'muted', width: 1.3 });
@@ -510,7 +585,7 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
           hs.forEach((h, k) => sT.vline(F[k], { color: h.color, dash: [3, 4], alpha: 0.7 }));
           const env = (f) => dB(tractGain(Fs, BW5, f));
           if (voiced) {
-            stems(sO, c.hO, 'accent', -40);
+            stems(sO, c.hO, 'accent', -42);
             // the envelope that the harmonics trace: source trend + filter
             const tilt = (f) => { const k = f / f0; const lo = Math.floor(k), hi = lo + 1; if (lo < 1) return c.hS[1]; return hi < c.hS.length ? c.hS[lo] + (c.hS[hi] - c.hS[lo]) * (k - lo) : c.hS[lo]; };
             sO.fn((f) => env(f) + tilt(f), { domain: [f0, FMAX], n: 400, color: 'faint', width: 1.2, dash: [4, 4] });
@@ -525,6 +600,120 @@ of the source spectrum $S$ (lines at the harmonics $k f_0$ of the voice, falling
         v.readout(() => info && (info.voiced
           ? `$f_0$ = ${v.fix(info.f0, 1)} Hz · formants ${info.Fs.slice(0, 3).map((f) => Math.round(f)).join(', ')} Hz · strongest harmonic: no. ${info.kb} at ${Math.round(info.f)} Hz (gold): source ${v.fix(info.s, 1)} dB + filter ${v.fix(info.t, 1)} dB = **${v.fix(info.s + info.t, 2)} dB**; measured by FFT of the synthesized waveform: **${v.fix(info.o, 2)} dB**`
           : `whisper: the source is noise, so the output has no harmonics and no pitch, but its spectrum still peaks at ${info.Fs.slice(0, 3).map((f) => Math.round(f)).join(', ')} Hz, the formants of the filter, which is why whispered vowels stay intelligible`));
+      },
+    },
+    // ------------------------------------------------------------------ 1.2
+    {
+      num: '1.2',
+      kind: 'Definition',
+      name: 'The International Phonetic Alphabet',
+      statement: String.raw`The **International Phonetic Alphabet** (IPA) assigns one symbol to each speech sound that distinguishes words in some language, so that any utterance in any language can be written unambiguously, one symbol per segment, independent of spelling. Transcriptions are written in square brackets, as in [ʃɪp] for *ship*. Each consonant symbol is defined by three articulatory coordinates:
+
+- **voicing**: whether the vocal folds vibrate (voiced, right-hand symbol of a pair) or not (voiceless, left);
+- **place**: where the airway is narrowed, from the lips (bilabial) back to the larynx (glottal);
+- **manner**: how narrow the constriction is and how air escapes (plosive, nasal, trill, tap, fricative, lateral, approximant).
+
+So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position of the highest point of the tongue (height: close … open; backness: front … back) and by lip rounding. Diacritics refine any symbol (aspiration [pʰ], nasalisation [ã], length [aː]); further symbols cover clicks, implosives and ejectives, which use other airstreams.`,
+      idea: String.raw`The chart is a coordinate system rather than a list: rows are manners, columns are places from the front of the mouth to the back, and pairs in a cell differ only in voicing, so neighbouring symbols are acoustically and articulatorily close. Empty cells are sounds no language is known to contrast; shaded cells are judged impossible (a nasal needs an oral closure in front of the velum, so a glottal nasal cannot exist). The alphabet was created in 1888 by the International Phonetic Association (founded 1886 by Paul Passy and colleagues for language teaching) on the principle "one sound, one symbol", with Latin letters wherever possible.`,
+      caption: String.raw`Click any symbol. Its row (manner) and column (place) light up, the vocal tract on the left takes that articulation (gold: where the airway is narrowed; the velum drops for nasals; the glottis inset shows voicing), and *Listen* plays it between two [a] vowels, synthesized by rule from its place, manner and voicing, whose spectrogram appears on the right. Switch to **vowels** to click around the vowel trapezoid: the tongue body moves to the corresponding position and the vowel is synthesized from formants measured for the cardinal vowels.`,
+      deps: [],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['IPA', 'transcription'],
+      credit: 'International Phonetic Association, 1886; alphabet 1888',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/International_Phonetic_Alphabet' },
+      viz(v) {
+        const M = v.M;
+        const mode = v.select('chart', [{ value: 'c', label: 'consonants' }, { value: 'v', label: 'vowels' }], 'c');
+        const ch = v.stage({ x: [0, 13], y: [0, 9.5], height: 300, axes: false, full: true });
+        const tr = v.stage({ x: [-2.5, 9.6], y: [-9.6, 4.6], equal: true, height: 320, axes: false, minWidth: 280 });
+        const sp = v.stage({ x: [0, 0.6], y: [0, 6000], height: 320, axes: 'box', xlabel: 'time (s)', minWidth: 280, yticks: [[0, '0'], [1000, '1k'], [2000, '2k'], [3000, '3k'], [4000, '4k'], [5000, '5k'], [6000, '6 kHz']] });
+        let selC = 'b', selV = 'i';
+        const where = {};
+        IPA_ROWS.forEach(([, , cells], i) => cells.forEach(([a, b, vl, vd]) => { if (vl) where[vl] = [i, a, b, 0]; if (vd) where[vd] = [i, a, b, 1]; }));
+        const rowY = (i) => 7.5 - i;
+        const symX = (a, b, half) => (b > a ? 2 + (a + b + 1) / 2 + (half ? 0.42 : -0.42) : 2 + a + (half ? 0.72 : 0.28));
+        const vpos = (h, b, r) => { const xf = 6.0 - (2.6 * h) / 3, x = xf + b * (10.6 - xf); return [x + (r ? 0.3 : -0.3), 0.75 + 2.35 * h]; };
+        const VROW = Object.fromEntries(IPA_V.map((r) => [r[0], r]));
+        ch.onClick((x, y) => {
+          const px = ch.X(x), py = ch.Y(y); let best = null, bd = 26;
+          if (mode.value === 'c') for (const sym of Object.keys(where)) { const [i, a, b, half] = where[sym]; const d = Math.hypot(ch.X(symX(a, b, half)) - px, ch.Y(rowY(i)) - py); if (d < bd) { bd = d; best = sym; } }
+          else for (const [sym, h, b, r] of IPA_V) { const [qx, qy] = vpos(h, b, r); const d = Math.hypot(ch.X(qx) - px, ch.Y(qy) - py); if (d < bd) { bd = d; best = sym; } }
+          if (best) { if (mode.value === 'c') selC = best; else selV = best; }
+        });
+        const cache = new Map();
+        const example = (key) => {
+          if (cache.has(key)) return cache.get(key);
+          let out;
+          if (mode.value === 'c' || key.length === 1 && CONS[key] && !VROW[key]) {
+            const sym = key, mn = CONS[sym][1], d = mn === 'fricative' || mn === 'latfric' ? 0.16 : mn === 'trill' ? 0.1 : null;
+            out = speak(['a', d ? [sym, d] : sym, 'a']);
+          } else {
+            const [, h, b, r] = VROW[key], F = chartFormants(h, b, r);
+            const dur = 0.5, buf = synth((t) => ({ f0: 125 - 20 * t, av: 1, ah: 0, af: 0, F: [F[0], F[1], F[2], ...FHI], B: BW5 }), dur);
+            out = { buf, dur, F };
+          }
+          out.S = stft(M, out.buf, { win: 0.005, fmax: 6000 });
+          cache.set(key, out); return out;
+        };
+        const cur = () => (mode.value === 'c' ? selC : selV);
+        v.soundButton('Listen', (snd) => { const e = example(cur()); snd.samples(normalise(e.buf.slice(), 0.85, 0.02), SR, { gain: 0.6 }); });
+        let info = null;
+        v.render(() => {
+          const ink = v.rgb('ink'), u = ch.X(1) - ch.X(0), fs = clampN(u * 0.33, 10, 19), hs = clampN(u * 0.17, 8.5, 11.5);
+          if (mode.value === 'c') {
+            const [ri, ca, cb] = where[selC];
+            ch.rect(0, rowY(ri) - 0.5, 13, rowY(ri) + 0.5, { fill: 'accent', fillAlpha: 0.1, stroke: false });
+            ch.rect(2 + ca, 0, 3 + cb, 9.5, { fill: 'accent', fillAlpha: 0.1, stroke: false });
+            IPA_ROWS.forEach(([, lab, cells, shaded], i) => {
+              const y0 = rowY(i) - 0.5, y1 = rowY(i) + 0.5;
+              for (const [c, half] of shaded) ch.rect(2 + c + (half === 2 ? 0.5 : 0), y0, 3 + c, y1, { fill: 'muted', fillAlpha: 0.32, stroke: false });
+              ch.text(lab, 0.12, rowY(i), { size: hs + 0.5, color: i === ri ? 'accent' : 'ink', align: 'left', weight: i === ri ? 650 : 500 });
+              const merged = cells.some(([a, b]) => b > a);
+              for (let j = 0; j <= 11; j++) { if (merged && (j === 3 || j === 4)) continue; ch.line(2 + j, y0, 2 + j, y1, { color: 'grid', width: 1 }); }
+              for (const [a, b, vl, vd] of cells) for (const [sym, half] of [[vl, 0], [vd, 1]]) {
+                if (!sym) continue; const x = symX(a, b, half), on = sym === selC;
+                if (on) ch.dot(x, rowY(i), { r: fs * 0.82, color: 'accent', hollow: true, width: 2 });
+                ch.text(sym, x, rowY(i) + 0.02, { size: fs, align: 'center', color: on ? 'accent' : 'ink', weight: on ? 650 : 450 });
+              }
+            });
+            for (let i = 0; i <= 8; i++) ch.line(0, rowY(i) - 0.5 + (i === 8 ? 0 : 0), 13, rowY(i) - 0.5, { color: 'grid', width: 1 });
+            ch.line(0, 8, 13, 8, { color: 'grid', width: 1 });
+            PLACE_HEAD.forEach((lines, j) => lines.forEach((t, k) => ch.text(t, 2.5 + j, 8.95 - (lines.length - 1) * 0.22 + k * -0.42 + (lines.length - 1) * 0.42 - 0.2 * (lines.length - 1), { size: hs, align: 'center', color: j >= ca && j <= cb ? 'accent' : 'muted', weight: j >= ca && j <= cb ? 650 : 500 })));
+            const [place, mn, vc] = CONS[selC];
+            drawTract(tr, consCfg(selC));
+            info = { c: true, sym: selC, desc: `${vc ? 'voiced' : 'voiceless'} ${place === 'alveolar' && (where[selC][2] > where[selC][1]) ? 'alveolar' : place} ${MANNER_NAME[mn]}`, mn };
+          } else {
+            // the vowel trapezoid
+            const C = (h, b) => vpos(h, b, 0).map((z, k) => (k === 0 ? z + 0.3 : z));
+            ch.path([C(3, 0), C(3, 1), C(0, 1), C(0, 0), C(3, 0)], { color: 'muted', width: 1.4 });
+            for (const h of [2, 1]) ch.path([C(h, 0), C(h, 1)], { color: 'grid', width: 1.2 });
+            ch.path([C(3, 0.5), C(0, 0.5)], { color: 'grid', width: 1.2 });
+            [['Close', 3], ['Close-mid', 2], ['Open-mid', 1], ['Open', 0]].forEach(([t, h]) => ch.text(t, C(h, 0)[0] - 0.55, C(h, 0)[1], { size: hs, color: 'muted', align: 'right' }));
+            [['Front', 0], ['Central', 0.5], ['Back', 1]].forEach(([t, b]) => ch.text(t, C(3, b)[0], 9.15, { size: hs, color: 'muted', align: 'center' }));
+            const seen = new Set();
+            for (const [sym, h, b, r] of IPA_V) {
+              const key = h + ',' + b; if (!seen.has(key)) { seen.add(key); const [cx, cy] = C(h, b); ch.dot(cx, cy, { r: 2.6, color: 'muted' }); }
+              const [x, y] = vpos(h, b, r), on = sym === selV;
+              if (on) ch.dot(x, y, { r: fs * 0.82, color: 'accent', hollow: true, width: 2 });
+              ch.text(sym, x, y + 0.03, { size: fs, align: 'center', color: on ? 'accent' : 'ink', weight: on ? 650 : 450 });
+            }
+            ch.text('Where symbols appear in pairs, the one to the right is rounded.', 6.5, 0.12, { size: hs, color: 'muted', align: 'center' });
+            const [, h, b, r] = VROW[selV];
+            drawTract(tr, { hx: 3.2 + 2.5 * b, hy: fitTongue(3.2 + 2.5 * b, -0.9 + 0.85 * h), round: !!r, velum: 'up', glottis: 'voiced', mark: { x: 3.2 + 2.5 * b, y: fitTongue(3.2 + 2.5 * b, -0.9 + 0.85 * h), color: 'gold' } });
+            const HN = { 3: 'close', 2.5: 'near-close', 2: 'close-mid', 1.5: 'mid', 1: 'open-mid', 0.5: 'near-open', 0: 'open' }, BN = { 0: 'front', 0.2: 'near-front', 0.5: 'central', 0.8: 'near-back', 1: 'back' };
+            const F = chartFormants(h, b, r), measured = CARD.some((c) => c[0] === h && c[1] === b && c[2] === r);
+            info = { c: false, sym: selV, desc: `${HN[h]} ${BN[b]} ${r ? 'rounded' : 'unrounded'} vowel`, F, measured };
+          }
+          const e = example(cur());
+          sp.setView([0, e.dur], [0, 6000]);
+          drawSpec(sp, e.S, ink, { key: mode.value + cur(), range: 55 });
+          if (e.segs) for (const sg of e.segs) if (!sg.V) { sp.vline(sg.t0, { color: 'gold', dash: [4, 4], alpha: 0.8 }); sp.vline(sg.t1, { color: 'gold', dash: [4, 4], alpha: 0.8 }); }
+          sp.corner(mode.value === 'c' ? `[a${cur()}a]` : `[${cur()}]`, 'tr', { color: 'accent', weight: 650, size: 14 });
+        });
+        const MD = { plosive: 'complete closure, then a release burst', nasal: 'oral closure with the velum lowered, so air flows out through the nose', trill: 'the articulator vibrates against another in the airstream', tap: 'a single quick contact', fricative: 'a gap narrow enough to make the airflow turbulent (a hiss)', latfric: 'tongue centre closed, turbulent air escapes along the sides', approx: 'articulators close together but not enough for turbulence', latapprox: 'tongue centre closed, air flows smoothly along the sides' };
+        v.readout(() => info && (info.c
+          ? `**[${info.sym}]** = ${info.desc}: ${MD[info.mn]} · e.g. ${IPA_EX[info.sym] || '—'} · gold lines on the spectrogram mark the consonant in [a${info.sym}a]`
+          : `**[${info.sym}]** = ${info.desc} · synthesized with F1 ≈ ${Math.round(info.F[0])} Hz, F2 ≈ ${Math.round(info.F[1])} Hz (${info.measured ? 'measured cardinal value' : 'interpolated between the measured cardinal vowels'}) · e.g. ${VROW[info.sym][4]}`));
       },
     },
   ],

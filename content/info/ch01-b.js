@@ -383,7 +383,7 @@ and the loss is exactly the information about $X$ that $f$ discards: $H(X)-H(f(X
           s.text('second die ↑', 0.3, 6.95, { align: 'left', size: 11, color: 'muted' });
           s.line(7.6, -0.6, 7.6, 7.2, { color: 'faint', width: 1, dash: [3, 4] });
           s.line(8.1, 0, 20.6, 0, { color: 'faint', width: 1.2 });
-          Mo.tiles.forEach((T) => { const col = M.cmap(0.12 + (0.8 * Mo.idx.get(T.y)) / Math.max(1, nv - 1), 'viridis'); s.rect(0.6 + T.a - 0.96, 0.6 + T.b - 0.96, 0.6 + T.a - 0.04, 0.6 + T.b - 0.04, { fill: col, fillAlpha: 0.16, color: col, width: 1, alpha: 0.35 }); });
+          Mo.tiles.forEach((T) => { const col = M.cmap(0.12 + (0.8 * Mo.idx.get(T.y)) / Math.max(1, nv - 1), 'viridis'); s.rect(0.6 + T.a - 0.96, 0.6 + T.b - 0.96, 0.6 + T.a - 0.04, 0.6 + T.b - 0.04, { fill: col, fillAlpha: 0.16, color: col, width: 1, alpha: 0.35 }); if (nv <= 12) s.text(Mo.F.nm(T.y), 0.6 + T.a - 0.5, 0.6 + T.b - 0.5, { align: 'center', size: 10.5, color: 'muted', halo: false }); });
           Mo.tiles.forEach((T, i) => {
             const k = Mo.idx.get(T.y), bx = 8.3 + slot * (k + 0.5), h = T.p * HS;
             const g0 = [0.6 + T.a - 1 + 0.04, 0.6 + T.b - 1 + 0.04, 0.6 + T.a - 0.04, 0.6 + T.b - 0.04];
@@ -529,7 +529,7 @@ and the loss is exactly the information about $X$ that $f$ discards: $H(X)-H(f(X
         v.legend([['purple', 'left heavier', { area: true }], ['gold', 'balanced', { area: true }], ['pink', 'right heavier', { area: true }], ['accent', 'ball: either way', { dot: true }], ['orange', 'only heavier', { dot: true }], ['teal', 'only lighter', { dot: true }]]);
         v.readout(() => {
           const c = counts(assign), na = nAlive(), [L, R] = pans(assign);
-          let s = fair(assign) ? String.raw`this weighing (${L} against ${R}) splits the ${na} hypotheses ${c.join(' / ')}: outcome entropy $${v.fix(H(c), 3)}$ bits, at most $\log_2 3 = 1.585$` : 'put the same number of balls on each pan';
+          let s = fair(assign) ? String.raw`this weighing (${L} against ${R}) splits the ${na} hypothes${na === 1 ? 'is' : 'es'} ${c.join(' / ')}: outcome entropy $${v.fix(H(c), 3)}$ bits, at most $\log_2 3 = 1.585$` : 'put the same number of balls on each pan';
           if (hist.length) s += ' · so far: ' + hist.map((w, k) => `#${k + 1} → ${OUT[w.out]} (${v.fix(w.H, 2)} bits, ${w.before} → ${w.after} left)`).join('; ');
           s += String.raw` · learned $\log_2\frac{24}{${na}} = ${v.fix(Math.log2(24 / Math.max(1, na)), 2)}$ of $\log_2 24 = 4.585$ bits`;
           return s;

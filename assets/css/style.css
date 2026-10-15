@@ -502,6 +502,11 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .paper-cite .pc-title a:hover { text-decoration-color: currentColor; }
 .paper-cite .pc-venue, .paper-cite .pc-doi { font-size: 13px; color: var(--ink-3); }
 .papers-list { display: grid; gap: 8px 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); }
+.provenance { margin-top: 6px; font-size: 14px; color: var(--ink-2); }
+.provenance .eyebrow { display: inline; margin-right: 6px; }
+.provenance a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line-2); }
+.provenance a:hover { border-color: var(--bc, var(--accent)); }
+.provenance .pv-au { font-weight: 600; }
 .papers-tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-top: 14px; }
 .papers-q { flex: 1 1 320px; max-width: 520px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--panel); color: var(--ink-3); }
 .papers-q:focus-within { border-color: var(--accent); }

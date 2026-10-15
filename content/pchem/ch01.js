@@ -361,7 +361,7 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         const N = 160, W = 100, WIN = 10, TLO = 173.15, THI = 573.15, PSTEP = 10, COLS = ['accent', 'orange', 'teal'];
         const STEPS = [-100, -20, 60, 140, 220, 300].map((c) => c + 273.15);
         const law = v.select('hold fixed', [{ value: 'p', label: 'pressure (Charles)' }, { value: 'V', label: 'volume (Gay-Lussac)' }], 'p', { onChange: () => { make(); newSeries(); } });
-        const gas = v.select('molecules', [{ value: 'ideal', label: 'point molecules' }, { value: 'lj', label: 'xenon atoms' }], 'ideal', { onChange: () => { make(); newSeries(); } });
+        const gas = v.select('molecules', [{ value: 'ideal', label: 'point molecules' }, { value: 'lj', label: 'xenon atoms' }], 'lj', { onChange: () => { make(); newSeries(); } });
         const load = v.slider('weights', 1, 3, 1, { int: true, fmt: (k) => `${k} (${k * PSTEP} bar)`, onChange: () => { make(); newSeries(); } });
         const auto = v.toggle('automatic heating in steps', true);
         const Tb = v.slider('bath', -100, 300, 20, { step: 1, fmt: (x) => `${x.toFixed(0)} °C`, onChange: () => { if (auto.value) auto.set(false); tChange = tSim; } });
@@ -477,9 +477,10 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
       credit: 'Avogadro, 1811 (made the basis of atomic weights by Cannizzaro, 1860)',
       scope: String.raw`Holds in the low-pressure limit. At 1 bar and room temperature real gases depart from it by less than about 1% (more for easily condensed gases such as xenon, CO₂ or water vapour); at hundreds of bar the departures reach tens of percent.`,
       viz(v) {
-        const N = 100, T = 300, RATE = 15, GAS = [MOL.H2, MOL.N2, MOL.Xe], SETTLE = 15;
+        const N = 100, T = 300, GAS = [MOL.H2, MOL.N2, MOL.Xe], SETTLE = 15;
+        const RATE = () => 15 * Math.cbrt(4 / dens.value);   // t₀ per second: smaller boxes run slower, so molecules cross them at the same pace
         const DT = () => (dens.value <= 30 ? [0.006, 0.02, 0.04] : [0.003, 0.012, 0.03]);   // time steps resolve the collisions
-        const dens = v.slider('crowding $nRT/V$', 1, 300, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
+        const dens = v.slider('crowding $nRT/V$', 1, 150, 4, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
         v.button('Restart the gauges', () => make());
         const B = 10, GAP = 15.5, R = 4.2;
         const sa = v.stage({ x: [-2.5, 2 * GAP + B + 2.5], y: [-5.0, B + R + 2.6], equal: true, height: 290, axes: false, weight: 1.6 });
@@ -511,9 +512,9 @@ For every gas and every fixed pressure or volume the straight lines extrapolate 
         let RD = null;
         v.animate((t) => {
           if (t < tLast - 1e-6) make();
-          const dT = Math.min(700, (t - tLast) * RATE); tLast = t;
+          const dT = Math.min(45 * RATE(), (t - tLast) * RATE()); tLast = t;
           if (dT > 0) {
-            const CH = 0.25;
+            const CH = Math.min(0.25, dT);
             const dts = DT();
             for (let done = 0; done < dT - 1e-9; done += CH) { G.forEach((g, k) => g.run(CH, dts[k])); tSim += CH; if (!s0 && tSim >= SETTLE) s0 = G.map((g) => g.snap()); }
           }

@@ -120,11 +120,10 @@ function bimatrix(v, s, G, o = {}) {
   if (o.sel) { const [i, j] = o.sel; c.strokeStyle = v.color('gold'); c.lineWidth = 3; c.strokeRect(X0 + j * cw + 3, Y0 + i * ch + 3, cw - 6, ch - 6); }
   // deviation arrows
   const from = o.arrows === 'all' ? liveR.flatMap((i) => liveC.map((j) => [i, j])) : o.arrows === 'sel' && o.sel ? [o.sel] : [];
-  for (const [i, j] of from) {
-    const d = deviations(U, i, j);
-    if (d.r) { const x = X0 + j * cw + Math.min(16, cw * 0.12) + 5 * i, dir = Math.sign(d.r.to - i); arrowPx(v, c, x, cy(i) + dir * ch * 0.04, x, cy(d.r.to) - dir * ch * 0.14, C1, 2.2, 8); }
-    if (d.c) { const y = Y0 + i * ch + Math.min(14, ch * 0.2) + 4 * j, dir = Math.sign(d.c.to - j); arrowPx(v, c, cx(j) + dir * cw * 0.04, y, cx(d.c.to) - dir * cw * 0.14, y, C2, 2.2, 8); }
-  }
+  const rowArrow = (i, j, to) => { const x = X0 + j * cw + Math.min(16, cw * 0.12) + 5 * i, dir = Math.sign(to - i); arrowPx(v, c, x, cy(i) + dir * ch * 0.04, x, cy(to) - dir * ch * 0.14, C1, 2.2, 8); };
+  const colArrow = (i, j, to) => { const y = Y0 + i * ch + Math.min(14, ch * 0.2) + 4 * j, dir = Math.sign(to - j); arrowPx(v, c, cx(j) + dir * cw * 0.04, y, cx(to) - dir * cw * 0.14, y, C2, 2.2, 8); };
+  for (const [i, j] of from) { const d = deviations(U, i, j); if (d.r) rowArrow(i, j, d.r.to); if (d.c) colArrow(i, j, d.c.to); }
+  for (const [i, j, i2, j2] of o.arrowList || []) { if (i2 !== i) rowArrow(i, j, i2); else if (j2 !== j) colArrow(i, j, j2); }
   c.restore();
   return {
     X0, Y0, cw, ch, m, n, cx, cy, lw: rlw, lh,
@@ -665,7 +664,7 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
       statement: String.raw`Two players each show a coin, Heads or Tails. Player 1 wins a point from player 2 if the coins match; player 2 wins a point from player 1 if they differ. The game is **zero-sum** and has **no Nash equilibrium in pure strategies**: in each of the four profiles the loser gains by switching her coin. Rock–Paper–Scissors has the same property with three actions each. An equilibrium does exist once players may randomize — each plays Heads and Tails with probability $\tfrac12$ (game-2.1, game-2.2).`,
       scope: String.raw`A model of pure conflict with no stable deterministic behaviour: it predicts unpredictability. Any small change that gives one player a dominant action (try *one payoff changed*) restores a pure equilibrium.`,
       idea: String.raw`Follow the best replies around the table: at (Heads, Heads) player 2 wants Tails; at (Heads, Tails) player 1 wants Tails; at (Tails, Tails) player 2 wants Heads; at (Tails, Heads) player 1 wants Heads — and we are back where we started. The deviation arrows (game-1.3) form a cycle with no sink, so no cell is a Nash equilibrium, and the dynamic in which players take turns to best-respond never settles. In play this means that any predictable choice can be exploited: an opponent who can forecast your coin always beats it. The only stable behaviour is to be unpredictable — the mixed equilibrium of game-2.2, whose predictions hold up remarkably well in penalty kicks and tennis serves (game-2.8).`,
-      caption: String.raw`Left: the arrows chase each other around the table, and the gold token — the players taking turns to best-respond — circles forever. Switch to Rock–Paper–Scissors (a six-cell cycle) or to *one payoff changed*, where the chase stops at an equilibrium. Right: you are the matcher against the computer, which predicts your next move from your history and best-responds to its prediction. A pre-played sample of a "human-looking" sequence shows how quickly patterns are punished; press *New match* and try to beat it. Only the computer that plays at random cannot be exploited — and cannot exploit you.`,
+      caption: String.raw`Left: the arrows of the players' best replies chase each other around the table, and the gold token — the players taking turns to best-respond — circles forever. Switch to Rock–Paper–Scissors (a six-cell cycle) or to *one payoff changed*, where the chase stops at an equilibrium. Right: you are the matcher against the computer, which predicts your next move from your history and best-responds to its prediction. A pre-played sample of a "human-looking" sequence shows how quickly patterns are punished; press *New match* and try to beat it. Only the computer that plays at random cannot be exploited — and cannot exploit you.`,
       deps: ['game-1.3'],
       refs: ['Osborne §2.4'],
       tags: ['matching pennies', 'zero-sum'],
@@ -673,9 +672,9 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
       viz(v) {
         const RPS = mkGame(['Rock', 'Paper', 'Scissors'], ['Rock', 'Paper', 'Scissors'], idx(3).map((i) => idx(3).map((j) => { const w = i === j ? 0 : (i - j + 3) % 3 === 1 ? 1 : -1; return [w, -w]; })));
         const games = {
-          pennies: { label: 'Matching Pennies', G: CLASSICS.pennies.G, sample: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0] },
-          rps: { label: 'Rock–Paper–Scissors', G: RPS, sample: [0, 0, 1, 0, 0, 2, 0, 1, 0, 0] },
-          settle: { label: 'one payoff changed', G: mkGame(['Heads', 'Tails'], ['Heads', 'Tails'], [[[1, 2], [-1, 1]], [[-1, 1], [1, -1]]]), sample: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0] },
+          pennies: { label: 'Matching Pennies', G: CLASSICS.pennies.G, sample: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0], start: [0, 0] },
+          rps: { label: 'Rock–Paper–Scissors', G: RPS, sample: [0, 0, 1, 0, 0, 2, 0, 1, 0, 0], start: [0, 0] },
+          settle: { label: 'one payoff changed', G: mkGame(['Heads', 'Tails'], ['Heads', 'Tails'], [[[1, 2], [-1, 1]], [[-1, 1], [1, -1]]]), sample: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0], start: [1, 1] },
         };
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'best replies chase each other' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'you (the matcher) against the computer' });
@@ -719,11 +718,12 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
         const STEP = 0.9;
         let st = null;
         v.animate((t) => {
-          const g = G(), U = g.U, path = brPath(U, 1, 1, 200), n = path.length, settled = n < 201;
+          const g = G(), U = g.U, s0 = games[which.value].start, path = brPath(U, s0[0], s0[1], 200), n = path.length, settled = n < 201;
           let k, f;
           if (settled) { const T = (n - 1) * STEP + 2.5, tt = t % T; k = Math.min(n - 1, Math.floor(tt / STEP)); f = k >= n - 1 ? 0 : Math.min(1, (tt - k * STEP) / (STEP * 0.6)); }
           else { k = Math.floor(t / STEP) % (n - 1); f = Math.min(1, (t % STEP) / (STEP * 0.6)); }
-          const L = bimatrix(v, A, g, { arrows: 'all', players: ['You', 'Computer'], maxH: g.R.length > 2 ? 72 : 90, maxW: 130 });
+          const edges = new Map(); for (let q = 0; q + 1 < n; q++) { const e = [path[q][0], path[q][1], path[q + 1][0], path[q + 1][1]]; edges.set(e.join(), e); }
+          const L = bimatrix(v, A, g, { arrowList: [...edges.values()], players: ['You', 'Computer'], maxH: g.R.length > 2 ? 72 : 90, maxW: 130 });
           const at = (i, j) => [L.cx(j), L.cy(i) + L.ch * 0.3];
           for (let q = Math.max(0, k - 3); q < k; q++) { const [px, py] = at(path[q][0], path[q][1]); A.dot(A.invX(px), A.invY(py), { r: 4 + 1.2 * (3 - (k - q)), color: 'gold', alpha: 0.2 + 0.18 * (3 - (k - q)) }); }
           const nx = path[Math.min(k + 1, n - 1)], e = f * f * (3 - 2 * f), [x0, y0] = at(path[k][0], path[k][1]), [x1, y1] = at(nx[0], nx[1]);
@@ -761,7 +761,7 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
           if (!st) return '';
           const { g, N, sc, guessed, ne, wins } = st;
           const head = ne.length ? `pure equilibrium ${listNE(g, ne)}: the chase stops there` : '**no pure equilibrium**: from every cell an arrow leads away';
-          return `${head} · after ${N} round${N === 1 ? '' : 's'} you won ${wins} and scored **${sc > 0 ? '+' : ''}${nm(sc)}** · the computer predicted your move ${guessed} time${guessed === 1 ? '' : 's'}${comp.value === 'rand' ? ' (it is not even trying)' : ''} · being predictable is fatal; randomizing (game-2.2) is the only defence`;
+          return `${head} · after ${N} round${N === 1 ? '' : 's'} you won ${wins} and scored **${sc > 0 ? '+' : ''}${nm(sc)}** · the computer predicted your move ${guessed} time${guessed === 1 ? '' : 's'}${comp.value === 'rand' ? ' (it is not even trying)' : ''} · ${ne.length ? 'with a pure equilibrium the chase ends: the computer has one best reply, so predictability no longer costs you' : 'being predictable is fatal; randomizing (game-2.2) is the only defence'}`;
         });
       },
     },
@@ -777,7 +777,7 @@ $$\bigl[u_1(r,c) - u_1(r',c)\bigr]\bigl[u_2(r,c) - u_2(r,c')\bigr] \;>\; \bigl[u
 
 For weak dominance (b) fails: different deletion orders can leave different games, and Nash equilibria can be deleted.`,
       idea: String.raw`A rational player never uses a strictly dominated action, whatever she believes about the others. If that is known, each player can delete the others' dominated actions as well, and then her own actions that have become dominated, and so on — each round uses one more level of "I know that you know that I am rational". Equilibria are never deleted, because an equilibrium action is a best response to the equilibrium profile (game-1.3) and a strictly dominated action is a best response to nothing. Order does not matter because strict dominance survives the shrinking of the opponents' action sets: an action dominated now stays dominated later (if its dominator is deleted, the dominator's own dominator beats it too, and finiteness ends the chain), so any two complete deletion sequences end in the same game. Weak dominance can be destroyed by deleting the one column where the strict inequality held, which is why order then matters. Some actions are dominated only by a randomization over others (game-2.1); the full theory is rationalizability.`,
-      caption: String.raw`Step through the elimination. Each step outlines a dominated strategy in red and a strategy that beats it in green, with their payoffs coloured in the surviving part of the table — compare them cell by cell. Choose the order (whole rounds, player 1 first, player 2 first): the right panel runs all three orders on the same game and shows that they end in the same survivors. Then pick *order matters* and switch on *weak dominance*: now the order decides which game survives. *Random 4 × 4* draws a new game.`,
+      caption: String.raw`Step through the elimination. Each step outlines a dominated strategy in red and a strategy that beats it in green, with their payoffs coloured in the surviving part of the table — compare them cell by cell. Choose the order (whole rounds, player 1 first, player 2 first): the right panel runs all three orders on the same game and shows that they end in the same survivors. Then pick *order matters*, which switches on *weak dominance*: now the order decides which game survives (switch it off and nothing is strictly dominated). *Random 4 × 4* draws a new game.`,
       deps: ['game-1.1', 'game-1.3'],
       refs: ['Osborne §2.9', 'Osborne §12.2'],
       tags: ['dominance', 'rationality'],
@@ -792,7 +792,7 @@ For weak dominance (b) fails: different deletion orders can leave different game
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'strike out dominated strategies' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'the same game under three deletion orders' });
         let g = games.g44.G, rs = 0;
-        v.select('game', Object.entries(games).map(([k, x]) => ({ value: k, label: x.label })), 'g44', { onChange: (k) => { g = games[k].G; S.reset(); } });
+        v.select('game', Object.entries(games).map(([k, x]) => ({ value: k, label: x.label })), 'g44', { onChange: (k) => { g = games[k].G; if (k === 'weak') weak.set(true); S.reset(); } });
         const ORD = [{ value: 'round', label: 'whole rounds' }, { value: 'rows', label: 'player 1 first' }, { value: 'cols', label: 'player 2 first' }];
         const order = v.select('order', ORD, 'round', { onChange: () => S.reset() });
         const weak = v.toggle('weak dominance', false, { onChange: () => S.reset() });
@@ -1154,7 +1154,7 @@ If $1 < r < n$, each unit contributed returns only $r/n < 1$ to its contributor 
       viz(v) {
         const keys = ['coord', 'pennies', 'pd', 'chicken', 'bos'];
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.85, title: 'a 2 × 2 game you edit' });
-        const Q = v.stage({ x: [-0.17, 1.06], y: [-0.15, 1.07], axes: false, height: 340, weight: 1.15, title: 'best replies in the square of mixed strategies' });
+        const Q = v.stage({ x: [-0.17, 1.08], y: [-0.15, 1.1], axes: false, height: 340, weight: 1.15, title: 'best replies in the square of mixed strategies' });
         let g = mkGame(CLASSICS.coord.G.R, CLASSICS.coord.G.C, CLASSICS.coord.G.U), L = null;
         v.select('game', keys.map((k) => ({ value: k, label: CLASSICS[k].label })), 'coord', { onChange: (k) => { const p = CLASSICS[k].G; g = mkGame(p.R, p.C, p.U); ed.sync(); } });
         const ed = payoffEditor(v, A, { game: () => g, layout: () => L });
@@ -1201,9 +1201,9 @@ If $1 < r < n$, each unit contributed returns only $r/n < 1$ to its contributor 
           const cx = Q.ctx; cx.save(); cx.translate(Q.X(-0.135), Q.Y(0.5)); cx.rotate(-Math.PI / 2); cx.font = FONT(11.5, 600); cx.fillStyle = v.color(C2); cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(`q = P(player 2 plays ${g.C[0]}) →`, 0, 0); cx.restore();
           if (pure.value) {
             Q.text('only the four corners exist', 0.5, 0.5, { align: 'center', color: 'muted', size: 12, weight: 600 });
+            for (const [p, q] of purePts) Q.dot(p, q, { r: 16, hollow: true, color: 'green', width: 2.5 });
             for (const q of [0, 1]) { const s = brSet(d1(q)); for (const p of [0, 1]) if (p >= s[0] && p <= s[1]) Q.dot(p, q, { r: 11, hollow: true, color: C1, width: 3.5 }); }
             for (const p of [0, 1]) { const s = brSet(d2(p)); for (const q of [0, 1]) if (q >= s[0] && q <= s[1]) Q.dot(p, q, { r: 6.5, hollow: true, color: C2, width: 3 }); }
-            for (const [p, q] of purePts) Q.dot(p, q, { r: 16, hollow: true, color: 'green', width: 2.5 });
           } else {
             if (eq.G1.all) Q.rect(0, 0, 1, 1, { fill: C1, fillAlpha: 0.12, stroke: false });
             if (eq.G2.all) Q.rect(0, 0, 1, 1, { fill: C2, fillAlpha: 0.12, stroke: false });

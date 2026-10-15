@@ -475,11 +475,11 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           const ux = L[0] / rr, uy = L[1] / rr, dv2 = Math.hypot(L[2] - -uy * vc2, L[3] - ux * vc2);
           const an = conicXfer(mu, r1, r2, v1);
           const fam = []; for (let k = 0; k <= 60; k++) { const f = 1 + (0.6 * k) / 60, c2 = conicXfer(mu, r1, r2, vc1 + f * dv1H); if (c2) fam.push([c2.t / Q.tu, (f * dv1H + c2.dv2) / 1000]); }
-          const Rt = sc.value === 'custom' ? 1 : r2 / r1, Rr = r2 / r1;
+          const Rr = r2 / r1;
           const bi = (Math.SQRT2 - 1) * (vc1 + vc2); // bi-elliptic via r_b → ∞
-          const thArr = Math.atan2(L[1], L[0]), tgt0 = thArr - (TAU * tH) / (TAU * Math.sqrt(r2 ** 3 / mu)) * 1 + 0; void Rt;
+          const thArr = Math.atan2(L[1], L[0]);
           const nT = TAU / (TAU * Math.sqrt(r2 ** 3 / mu)), lead0 = Math.PI - nT * tH; // Hohmann lead angle
-          return { ph: false, Q, mu, r1, r2, vc1, vc2, dv1H, dv2H, tH, v1, R, tx, dv2, an, fam, Rr, bi, nT, lead0, reached: rr >= r2 * (1 - 1e-9), thArr, tgt0 };
+          return { ph: false, Q, mu, r1, r2, vc1, vc2, dv1H, dv2H, tH, v1, R, tx, dv2, an, fam, Rr, bi, nT, lead0, reached: rr >= r2 * (1 - 1e-9), thArr };
         });
         v.animate((t) => {
           const D = run(), Q = D.Q, L = Q.L;
@@ -511,7 +511,6 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           if (Q.R) s.circle(0, 0, Q.R / L, { fill: 'blue', fillAlpha: 0.18, color: 'blue', width: 1 });
           s.circle(0, 0, r1, { color: 'blue', width: 1.2, dash: [5, 4] });
           s.circle(0, 0, r2, { color: 'green', width: 1.2, dash: [5, 4] });
-          if (D.fam) s.path(conicPts((D.r1 * D.vh2 || 1) * 0, 0, 0, 1), {});
           // Hohmann reference ellipse
           const aH = (r1 + r2) / 2, eH = (r2 - r1) / (r2 + r1); s.path(conicPts(aH * (1 - eH * eH), eH, 0, 2 * r2), { color: 'faint', width: 1, dash: [3, 4] });
           const span1 = 1.25 * D.tH, simT = Math.min((t / 7) * span1, span1);
@@ -568,16 +567,20 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
       credit: 'Michael Minovitch, 1961; first flown by Mariner 10, 1974',
       scope: String.raw`Patched-conic picture: during the encounter (hours to days) the Sun’s pull is treated as uniform and only the planet’s gravity bends the path; the planet’s recoil is negligible.`,
       viz(v) {
-        const GMJ = 1.26686534e17, RJ = 71492e3, VJ = 13.07e3, L = RJ; // SI
+        const GMJ = 1.26686534e17, RJ = 71492e3, VJ = 13.07e3, L = RJ, B0 = 8; // SI; B0 = default aiming offset (R_J)
         const s = v.stage({ x: [-40, 40], y: [-26, 26], equal: true, axes: false, height: 300, title: 'Jupiter’s frame (units $R_J$)' });
         const vd = v.stage({ x: [-8, 26], y: [-17, 17], equal: true, axes: false, height: 300, title: 'velocities (km/s)' });
         const sf = v.stage({ x: [-60, 60], y: [-20, 20], equal: true, axes: false, height: 230, full: true, title: 'the Sun’s frame: Jupiter moves to the right (units $R_J$)' });
-        const B = s.handle(-36, -6, { color: 'ink', r: 6, label: 'aim b', labelPos: 'n', constrain: (x, y) => [-36, clamp(y, -22, 22)] });
-        const Vin = vd.handle(4, 9, { color: 'blue', label: 'v_in', labelPos: 'ne', constrain: (x, y) => { const dx = x - 13.07, dy = y; const m = Math.hypot(dx, dy); if (m < 3) return [13.07 + (3 * dx) / (m || 1), (3 * dy) / (m || 1)]; if (m > 16) return [13.07 + (16 * dx) / m, (16 * dy) / m]; return [x, y]; } });
+        let Vin = null, bR = B0;
+        const dir = () => { const rx = Vin.x - 13.07, ry = Vin.y, m = Math.hypot(rx, ry) || 1; return [rx / m, ry / m]; };
+        const aimAt = () => { const [ux, uy] = dir(); return [-34 * ux - bR * uy, -34 * uy + bR * ux]; };
+        Vin = vd.handle(8, 5, { color: 'blue', label: 'v_in', labelPos: 'ne', constrain: (x, y) => { const dx = x - 13.07, dy = y; const m = Math.hypot(dx, dy); if (m < 3) return [13.07 + (3 * dx) / (m || 1), (3 * dy) / (m || 1)]; if (m > 16) return [13.07 + (16 * dx) / m, (16 * dy) / m]; return [x, y]; } });
+        const B = s.handle(0, 0, { color: 'ink', r: 6, label: 'aim', labelPos: 'n', constrain: (x, y) => { const [ux, uy] = dir(); bR = clamp(-x * uy + y * ux, -22, 22); return aimAt(); } });
+        { const p = aimAt(); B.x = p[0]; B.y = p[1]; }
         const cache = memo(); let cur = null;
-        const run = () => cache([B.y, Vin.x, Vin.y].join('|'), () => {
+        const run = () => cache([bR, Vin.x, Vin.y].join('|'), () => {
           const rel = [(Vin.x - 13.07) * 1e3, Vin.y * 1e3], vinf = Math.hypot(...rel), ux = rel[0] / vinf, uy = rel[1] / vinf, nx = -uy, ny = ux;
-          const b = B.y * L, D0 = 200 * L; // start far out on the incoming asymptote, offset b
+          const b = bR * L, D0 = 200 * L; // start far out on the incoming asymptote, offset b
           const s0 = [-D0 * ux + b * nx, -D0 * uy + b * ny, rel[0], rel[1]];
           const R = centralOrbit((r) => -GMJ / (r * r), s0, { T: (2.2 * D0) / vinf, eta: 0.002, rmin: 0.2 * RJ, maxSteps: 80000 });
           const Lst = R.s[R.s.length - 1], vout = [Lst[2], Lst[3]];
@@ -592,15 +595,19 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
           return { R, rel, vinf, vinfOut, turn, dTheory, hin, hout, rmin, crash: R.stop === 'centre' || rmin < RJ, b, sp0, e, T: R.t[R.t.length - 1] };
         });
         v.animate((t) => {
-          const D = run(), simT = (t / 6) * D.T, S = stateAt(D.R, Math.min(simT, D.T));
+          { const p = aimAt(); if (!B.dragging && (Math.abs(p[0] - B.x) > 1e-9 || Math.abs(p[1] - B.y) > 1e-9)) { B.x = p[0]; B.y = p[1]; } }
+          const D = run();
+          // the encounter window: while Jupiter moves ±45 R_J around closest approach
+          const ic = D.R.s.reduce((bi, Q, i, A) => (Math.hypot(Q[0], Q[1]) < Math.hypot(A[bi][0], A[bi][1]) ? i : bi), 0), tc = D.R.t[ic], tau = (45 * L) / VJ;
+          const t0 = Math.max(0, tc - tau), t1 = Math.min(D.T, tc + tau), simT = t0 + ((t % 6) / 6) * (t1 - t0), S = stateAt(D.R, simT);
           // planet frame
           s.circle(0, 0, 1, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
           for (const y of [-0.45, 0, 0.45]) s.line(-Math.sqrt(1 - y * y), y, Math.sqrt(1 - y * y), y, { color: 'orange', width: 1, alpha: 0.6 });
           s.path(D.R.s.map((Q) => [Q[0] / L, Q[1] / L]), { color: D.crash ? 'red' : 'accent', width: 2.2 });
           s.dot(S[0] / L, S[1] / L, { r: 5, color: 'gold' });
-          const a0 = D.R.s[0], aN = D.R.s[D.R.s.length - 1], k = 6 / (D.vinf || 1);
-          s.arrow(a0[0] / L, a0[1] / L, a0[0] / L + k * a0[2], a0[1] / L + k * a0[3], { color: 'blue', width: 2.2 });
-          s.arrow(aN[0] / L, aN[1] / L, aN[0] / L + k * aN[2], aN[1] / L + k * aN[3], { color: 'orange', width: 2.2 });
+          const inV = D.R.s.findIndex((Q) => Math.hypot(Q[0], Q[1]) < 30 * L), outV = D.R.s.length - 1 - [...D.R.s].reverse().findIndex((Q) => Math.hypot(Q[0], Q[1]) < 30 * L), k = 7 / (D.vinf || 1);
+          if (inV >= 0) { const a0 = D.R.s[inV]; s.arrow(a0[0] / L, a0[1] / L, a0[0] / L + k * a0[2], a0[1] / L + k * a0[3], { color: 'blue', width: 2.4 }); }
+          if (!D.crash && outV < D.R.s.length) { const aN = D.R.s[outV]; s.arrow(aN[0] / L, aN[1] / L, aN[0] / L + k * aN[2], aN[1] / L + k * aN[3], { color: 'orange', width: 2.4 }); }
           s.arrow(-6, -23.5, 6, -23.5, { color: 'green', width: 2 }); s.text('Jupiter moves this way (Sun frame)', 0, -23.5, { color: 'green', size: 10, dy: -9, align: 'center' });
           if (D.crash) s.corner('hits Jupiter', 'tl', { color: 'red', weight: 600 });
           // velocity diagram (km/s)
@@ -616,15 +623,16 @@ Among two-impulse transfers it needs the least total $\Delta v$, at the price of
             vd.dot(D.hout[0] * kv, D.hout[1] * kv, { r: 4, color: 'orange', label: 'v_out', labelPos: 'se' });
           }
           vd.dot(0, 0, { r: 3, color: 'ink' });
-          // Sun frame: position = relative position + V t (t measured from closest approach ≈ mid-run)
-          const tc = D.R.t[D.R.s.reduce((bi, Q, i, A) => (Math.hypot(Q[0], Q[1]) < Math.hypot(A[bi][0], A[bi][1]) ? i : bi), 0)];
-          const pts = D.R.s.map((Q, i) => [(Q[0] + VJ * (D.R.t[i] - tc)) / L, Q[1] / L]);
+          // Sun frame: position = relative position + V (t − t_closest), shown over the encounter window
+          const pts = []; D.R.s.forEach((Q, i) => { if (D.R.t[i] >= t0 && D.R.t[i] <= t1) pts.push([(Q[0] + VJ * (D.R.t[i] - tc)) / L, Q[1] / L]); });
+          let ylo = -6, yhi = 6; for (const p of pts) { ylo = Math.min(ylo, p[1]); yhi = Math.max(yhi, p[1]); }
+          sf.setView([-52, 52], [Math.min(-14, ylo - 4), Math.max(14, yhi + 4)]);
           sf.path(pts, { color: D.crash ? 'red' : 'accent', width: 2.2 });
-          const jx = (VJ * (Math.min(simT, D.T) - tc)) / L;
+          const jx = (VJ * (simT - tc)) / L;
           sf.line(-80, 0, 80, 0, { color: 'faint', width: 1, dash: [3, 5] });
           sf.circle(jx, 0, 1, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
-          sf.dot((S[0] + VJ * (Math.min(simT, D.T) - tc)) / L, S[1] / L, { r: 5, color: 'gold' });
-          const p0 = pts[0], pN = pts[pts.length - 1], kk = 4 / 15e3;
+          sf.dot((S[0] + VJ * (simT - tc)) / L, S[1] / L, { r: 5, color: 'gold' });
+          const p0 = pts[0] || [0, 0], pN = pts[pts.length - 1] || [0, 0], kk = 7 / 15e3;
           sf.arrow(p0[0], p0[1], p0[0] + kk * D.hin[0], p0[1] + kk * D.hin[1], { color: 'blue', width: 2.2 });
           if (!D.crash) sf.arrow(pN[0], pN[1], pN[0] + kk * D.hout[0], pN[1] + kk * D.hout[1], { color: 'orange', width: 2.2 });
           cur = D;

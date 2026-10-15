@@ -116,7 +116,7 @@ export default {
 $$\text{value added} = \text{value of output} - \text{value of intermediate inputs bought from other producers}.$$
 Sales of used goods and financial assets, and transfers such as pensions, are not production and are excluded; some output that is not sold, such as government services and owner-occupied housing, is included at estimated (imputed) values.`,
       idea: String.raw`Follow a loaf of bread: the farmer's wheat is sold to the miller, the miller's flour to the baker, the baker's bread to households. The price of the bread already contains the value of the flour, which contains the value of the wheat, so adding up *every* sale counts the wheat three times and the flour twice. Subtracting each producer's purchases leaves the value it added, and these slices stack exactly into the value of the final purchases. Adding all sales is not even a stable number: if the baker buys the mill, the flour sale disappears from the books while nothing real has changed — the value-added total does not move.`,
-      caption: String.raw`The sliders set what each firm adds; the diagram shows the resulting sales. In the bars below, colour shows whose work a euro pays for: the **sum of all sales** repeats the farmer's teal three times, while **value added** and **final sales** have each slice once and always have the same length. Everything right of the green GDP line is double counting. Switch on **the baker buys the mill**: the sum of sales shrinks, GDP does not.`,
+      caption: String.raw`The sliders set what each firm adds; the diagram shows the resulting sales. In the bars below, colour shows whose work a euro pays for: the **sum of all sales** repeats the farmer's teal three times, while **value added** and **final sales** have each slice once and always have the same length. The red-hatched slices are inputs bought from an earlier firm, counted a second (or third) time; strip them out and the sum of sales shrinks to GDP. Switch on **the baker buys the mill**: the sum of sales shrinks, GDP does not.`,
       deps: [], refs: ['Mankiw ch. 2', 'CORE Macro U3'], tags: ['national accounts', 'GDP'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gross_domestic_product' },
       viz(v) {
@@ -160,23 +160,26 @@ Sales of used goods and financial assets, and transfers such as pensions, are no
           const hh = 0.27, rows = [2.95, 1.8, 0.65];
           const head = (y, txt) => B.text(txt, 2, y + 0.44, { color: 'ink', size: 12, weight: 650 });
           head(rows[0], 'sum of all sales'); head(rows[1], 'sum of value added'); head(rows[2], 'sum of final sales');
+          B.line(gdp, 0.08, gdp, 3.42, { color: 'green', width: 2, dash: [6, 4] });
+          B.text(`GDP ${eur(gdp)}`, gdp, 3.42, { dx: 6, dy: 2, color: 'green', size: 11.5, weight: 700, baseline: 'top' });
           const chunk = (x, parts, y, name) => {
-            let p = x; for (const [col, w] of parts) { hseg(B, p, w, y, hh, col, w >= 8 ? eur(w) : ''); p += w; }
+            let p = x;
+            for (const [col, w, dbl] of parts) {
+              hseg(B, p, w, y, hh, col, w >= 8 ? eur(w) : '');
+              if (dbl && w > 0) { hatch(v, B, p, y - hh, p + w, y + hh, 'red', 0.7, 6); B.rect(p, y - hh, p + w, y + hh, { color: 'red', width: 1.4 }); }
+              p += w;
+            }
             if (name && B.X(p) - B.X(x) > 46) B.text(name, (x + p) / 2, y - hh - 0.14, { align: 'center', color: 'muted', size: 10 });
             B.line(p, y - hh - 0.02, p, y + hh + 0.02, { color: 'panel', width: 3 }); return p;
           };
           let x = 0;
-          x = chunk(x, [['teal', A]], rows[0], 'wheat');
-          if (!mg) x = chunk(x, [['teal', (1 - H) * A], ['purple', (1 - H) * M]], rows[0], 'flour to baker');
-          if (Fh > 0.5) x = chunk(x, [['teal', H * A], ['purple', H * M]], rows[0], 'flour to hh');
-          x = chunk(x, [['teal', (1 - H) * A], ['purple', (1 - H) * M], ['orange', K]], rows[0], 'bread');
-          hatch(v, B, gdp, rows[0] - hh, sales, rows[0] + hh, 'red', 0.75, 6);
-          B.rect(gdp, rows[0] - hh, sales, rows[0] + hh, { color: 'red', width: 1.6 });
-          x = 0; x = chunk(x, [['teal', A]], rows[1], 'farmer'); x = chunk(x, [['purple', M]], rows[1], 'miller'); x = chunk(x, [['orange', K]], rows[1], 'baker');
+          x = chunk(x, [['teal', A, false]], rows[0], 'wheat');
+          if (!mg) x = chunk(x, [['teal', (1 - H) * A, true], ['purple', (1 - H) * M, false]], rows[0], 'flour to baker');
+          if (Fh > 0.5) x = chunk(x, [['teal', H * A, true], ['purple', H * M, false]], rows[0], 'flour to hh');
+          x = chunk(x, [['teal', (1 - H) * A, true], ['purple', (1 - H) * M, !mg], ['orange', K, false]], rows[0], 'bread');
+          x = 0; x = chunk(x, [['teal', A]], rows[1], 'farmer'); x = chunk(x, [['purple', M]], rows[1], mg ? 'mill + bakery' : 'miller'); x = chunk(x, [['orange', K]], rows[1], mg ? '' : 'baker');
           x = 0; if (Fh > 0.5) x = chunk(x, [['teal', H * A], ['purple', H * M]], rows[2], 'flour'); chunk(x, [['teal', (1 - H) * A], ['purple', (1 - H) * M], ['orange', K]], rows[2], 'bread');
           [[rows[0], sales, 'red'], [rows[1], gdp, 'ink'], [rows[2], fin, 'ink']].forEach(([y, tot, col]) => B.text(`= ${eur(tot)}`, tot, y, { dx: 8, color: col, size: 12.5, weight: 700 }));
-          B.line(gdp, 0.08, gdp, 3.42, { color: 'green', width: 2, dash: [6, 4] });
-          B.text(`GDP ${eur(gdp)}`, gdp, 3.42, { dx: 6, dy: 2, color: 'green', size: 11.5, weight: 700, baseline: 'top' });
           st = { A, M, K, Fh, Fb, Br, sales, gdp, fin, mg };
         });
         v.readout(() => {
@@ -200,8 +203,8 @@ Each equals GDP. In published statistics the three are built from different sour
       credit: 'Simon Kuznets, 1934 (U.S. national income estimates); Wassily Leontief, 1936 (input–output tables)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gross_domestic_product#Determining_gross_domestic_product_(GDP)' },
       viz(v) {
-        const Ts = v.stage({ x: [0, 1], y: [0, 1], height: 340, axes: false, weight: 2.4, minWidth: 440 });
-        const Ms = v.stage({ x: [0, 3.6], y: [0, 330], height: 340, axes: 'box', weight: 1, minWidth: 230, xticks: [[0.6, 'production'], [1.8, 'spending'], [3, 'income']], yticks: [0, 100, 200, 300] });
+        const Ts = v.stage({ x: [0, 1], y: [0, 1], height: 340, axes: false, weight: 2.4, minWidth: 440, title: 'who pays whom: the transactions table' });
+        const Ms = v.stage({ x: [-0.5, 3.75], y: [-34, 330], height: 340, axes: 'box', weight: 1, minWidth: 230, xticks: [[0.5, 'production'], [1.7, 'spending'], [3.2, 'income']], yticks: [100, 200, 300], title: 'three measures of GDP' });
         const bk = { Z: [[5, 30, 5], [10, 20, 15], [5, 15, 10]], F: [[20, 0, 0, 10], [40, 30, 10, 25], [70, 5, 35, 5]], Mi: [5, 25, 5], Mf: [15, 10, 0], W: [15, 50, 60] };
         const editable = (i, j) => (i < 3 && j < 7) || (i === 3 && j < 6) || (i === 4 && j < 3);
         const get = (i, j) => (i < 3 ? (j < 3 ? bk.Z[i][j] : bk.F[i][j - 3]) : i === 3 ? (j < 3 ? bk.Mi[j] : bk.Mf[j - 3]) : bk.W[j]);
@@ -262,17 +265,21 @@ Each equals GDP. In published statistics the three are built from different sour
           const prod = A.va, P = sum(prod);
           const C = A.fin[0] + (miss.value === 'firm' ? H : miss.value === 'hh' ? -H : 0), I = A.fin[1], G = A.fin[2], X = A.fin[3], Ex = C + I + G + X - A.M;
           const Wt = sum(bk.W), Pr = sum(A.prof), Inc = Wt + Pr;
+          const pre = Math.abs(P - Ex) < 1e-9 && Math.abs(P - Inc) < 1e-9;
+          if (pre) Ms.line(-0.1, P, 3.6, P, { color: 'green', width: 1.2, dash: [5, 4] });
           const w = 0.34, stack = (xc, parts) => { let y = 0; for (const [col, h, lab] of parts) { if (h > 0) { Ms.rect(xc - w, y, xc + w, y + h, { fill: col, fillAlpha: 0.5, color: 'panel', width: 1.2 }); if (Ms.Y(y) - Ms.Y(y + h) > 15) Ms.text(lab, xc, y + h / 2, { align: 'center', size: 10.5, weight: 600 }); } y += Math.max(0, h); } return y; };
-          stack(0.6, [['green', prod[0], `Farms ${num(prod[0])}`], ['orange', prod[1], `Fact. ${num(prod[1])}`], ['purple', prod[2], `Serv. ${num(prod[2])}`]]);
-          const top = stack(1.8, [['blue', C, `C ${num(C)}`], ['gold', I, `I ${num(I)}`], ['pink', G, `G ${num(G)}`], ['teal', X, `X ${num(X)}`]]);
-          hatch(v, Ms, 1.8 - w, top - A.M, 1.8 + w, top, 'red', 0.9, 5);
-          Ms.rect(1.8 - w, top - A.M, 1.8 + w, top, { color: 'red', width: 1.4 });
-          if (Ms.Y(top - A.M) - Ms.Y(top) > 14) Ms.text(`−M ${num(A.M)}`, 1.8, top - A.M / 2, { align: 'center', color: 'red', size: 10.5, weight: 700 });
-          stack(3, [['teal', Wt, `wages ${num(Wt)}`], ['gold', Pr, `profits ${num(Pr)}`]]);
+          stack(0.5, [['green', prod[0], `Farms ${num(prod[0])}`], ['orange', prod[1], `Fact. ${num(prod[1])}`], ['purple', prod[2], `Serv. ${num(prod[2])}`]]);
+          const top = stack(1.7, [['blue', C, `C ${num(C)}`], ['gold', I, `I ${num(I)}`], ['pink', G, `G ${num(G)}`], ['teal', X, `X ${num(X)}`]]);
+          const mx = 1.7 + w + 0.04;
+          hatch(v, Ms, mx, top - A.M, mx + 0.2, top, 'red', 0.9, 5);
+          Ms.rect(mx, top - A.M, mx + 0.2, top, { color: 'red', width: 1.4 });
+          Ms.arrow(mx + 0.1, top, mx + 0.1, top - A.M, { color: 'red', width: 1.6, head: 7 });
+          Ms.text(`−M ${num(A.M)}`, mx + 0.1, top + 4, { align: 'center', color: 'red', size: 10.5, weight: 700, baseline: 'bottom' });
+          stack(3.2, [['teal', Wt, `wages ${num(Wt)}`], ['gold', Pr, `profits ${num(Pr)}`]]);
           const agree = Math.abs(P - Ex) < 1e-9 && Math.abs(P - Inc) < 1e-9;
-          for (const [xc, lev] of [[0.6, P], [1.8, Ex], [3, Inc]]) Ms.line(xc - w - 0.06, lev, xc + w + 0.06, lev, { color: agree ? 'green' : Math.abs(lev - Ex) < 1e-9 && miss.value === 'firm' || Math.abs(lev - P) < 1e-9 && miss.value === 'hh' ? 'ink' : 'red', width: 2.6 });
-          if (agree) { Ms.line(0.1, P, 3.5, P, { color: 'green', width: 1.2, dash: [5, 4] }); Ms.text(`GDP ${num(P)} ✓`, 1.8, Math.max(top, P) + 8, { align: 'center', color: 'green', size: 12, weight: 700, baseline: 'bottom' }); }
-          else { const lo = Math.min(P, Ex), hi = Math.max(P, Ex); Ms.measure(2.3, lo, 2.3, hi, null, { color: 'red' }); Ms.text(`gap ${num(hi - lo)}`, 2.36, (lo + hi) / 2, { color: 'red', size: 11, weight: 700 }); Ms.text('statistical discrepancy', 1.8, Math.max(top, P) + 8, { align: 'center', color: 'red', size: 11.5, weight: 700, baseline: 'bottom' }); }
+          if (agree) { Ms.text(`GDP ${num(P)} ✓`, 0.5, P + 6, { align: 'center', color: 'green', size: 12, weight: 700, baseline: 'bottom' }); }
+          else { const lo = Math.min(P, Ex), hi = Math.max(P, Ex); Ms.rect(-0.1, lo, 3.6, hi, { fill: 'red', fillAlpha: 0.12, stroke: false }); Ms.text(`discrepancy ${num(hi - lo)}`, 0.5, hi + 6, { align: 'center', color: 'red', size: 11.5, weight: 700, baseline: 'bottom' }); }
+          for (const [x0, x1, lev] of [[0.1, 0.9, P], [mx - 0.06, mx + 0.26, Ex], [2.8, 3.6, Inc]]) Ms.line(x0, lev, x1, lev, { color: agree ? 'green' : 'ink', width: 2.6 });
           st = { A, P, Ex, Inc, C, I, G, X, Wt, Pr, H, agree, prod };
         });
         v.readout(() => {
@@ -312,23 +319,24 @@ Each equals GDP. In published statistics the three are built from different sour
         };
         v.legend([['blue', 'spending'], ['teal', 'incomes'], ['gold', 'taxes'], ['purple', 'saving'], ['orange', 'investment'], ['green', 'exports'], ['red', 'imports'], ['gray', 'net capital flow']]);
         v.animate((t) => {
+          Us.el.hidden = un.value === 'none';
           const tg = target(), dt = lastT == null ? 0 : t - lastT; lastT = t;
           if (!disp || dt <= 0 || dt > 0.5) disp = { ...tg }; else for (const k in tg) disp[k] += (tg[k] - disp[k]) * Math.min(1, dt * 5);
-          const d = disp, k = 0.21 * s.height / 66 * 0.9; // px per unit of flow
+          const d = disp, k = 0.28 * s.width / 820; // px per unit of flow
           const W = (x) => Math.abs(x) * k;
           // flows
           const flows = [
             ['C', bz([11, 40], [11, 64], [89, 64], [89, 40]), d.C, 'blue', [50, 60.6], `consumption C ${Math.round(tg.C)}`],
             ['Y', bz([90, 24], [90, -2], [10, -2], [10, 24]), d.Y, 'teal', [50, 4.6], `factor incomes Y ${Math.round(tg.Y)}`],
             ['T', bz([20, 37], [29, 37], [29, 49], [38, 49]), d.T, 'gold', [27.5, 46], `taxes T ${Math.round(tg.T)}`],
-            ['G', bz([58, 49], [70, 49], [74, 37], [82, 37]), d.G, 'pink', [70, 47.6], `purchases G ${Math.round(tg.G)}`],
+            ['G', bz([58, 49], [72, 49], [85, 51], [85, 40.2]), d.G, 'pink', [70, 51.6], `purchases G ${Math.round(tg.G)}`],
             ['S', bz([20, 27], [29, 27], [29, 13], [38, 13]), d.Sp, 'purple', [24.5, 15.2], `private saving ${Math.round(tg.Sp)}`],
-            ['I', bz([58, 13], [72, 13], [74, 27], [82, 27]), d.Ir, 'orange', [72.5, 15.2], un.value === 'inv' ? `I ${Math.round(tg.I)} + inventories ${Math.round(tg.U)}` : `investment I ${Math.round(tg.Ir)}`],
+            ['I', bz([58, 13], [72, 13], [85, 11], [85, 23.8]), d.Ir, 'orange', [70, 15.6], un.value === 'inv' ? `I ${Math.round(tg.I)} + inventories ${Math.round(tg.U)}` : `investment I ${Math.round(tg.Ir)}`],
             ['X', [[72.3, 34.4], [81.7, 34.4]], d.X, 'green', [77, 37.4], `X ${Math.round(tg.X)}`],
             ['M', [[81.7, 29.6], [72.3, 29.6]], d.M, 'red', [77, 26.4], `M ${Math.round(tg.M)}`],
           ];
           const sg = d.Sg >= 0 ? [[46, 43.6], [46, 18.4]] : [[46, 18.4], [46, 43.6]];
-          flows.push(['Sg', sg, d.Sg, 'purple', [46.8, 31], tg.Sg >= 0 ? `public saving ${Math.round(tg.Sg)}` : `government borrows ${Math.round(-tg.Sg)}`]);
+          flows.push(['Sg', sg, d.Sg, 'purple', [37, 31], tg.Sg >= 0 ? `public saving ${Math.round(tg.Sg)}` : `government borrows ${Math.round(-tg.Sg)}`]);
           const nc = bz([55, 18.4], [58, 23], [62, 24], [64, 26.6]);
           flows.push(['N', d.N >= 0 ? nc : nc.slice().reverse(), d.N, 'gray', [62.5, 21.2], tg.N >= 0 ? `lending abroad ${Math.round(tg.N)}` : `borrowing from abroad ${Math.round(-tg.N)}`]);
           for (const [, pts, val, col] of flows) flowBand(v, s, pts, W(val), col, t);
@@ -349,11 +357,11 @@ Each equals GDP. In published statistics the three are built from different sour
           st = { ...tg, bal, U };
         }, { still: 2 });
         v.readout(() => {
-          const { C, I, G, T, X, M, U, Y, Sp, Sg, N, Ir, bal } = st, r = Math.round;
+          const { C, G, X, M, U, Y, Sp, Sg, N, Ir, bal } = st, r = (x) => num(x);
           if (C == null) return '';
           const keys = { H: 'households', F: 'firms', G: 'government', K: 'financial markets', R: 'rest of world' };
           const bad = Object.keys(bal).filter((k) => Math.abs(bal[k][0] - bal[k][1]) > 1e-9);
-          const id = `$Y = C + I + G + X - M$: ${r(Y)} = ${r(C)} + ${r(Ir)} + ${r(G)} + ${r(X)} − ${r(M)}${bad.length ? ` + ${r(U)} unsold` : ''}. Saving: private ${r(Sp)} + public ${r(Sg)} = ${r(Sp + Sg)}; investment + net lending abroad = ${r(Ir)} + ${r(N)} = ${r(Ir + N)}.`;
+          const id = `$Y = C + I + G + X - M$: ${r(Y)} = ${r(C)} + ${r(Ir)} + ${r(G)} + ${r(X)} − ${r(M)}${bad.length ? ` + ${r(U)} unsold` : ''}. Saving: private ${r(Sp)} + public ${Sg < 0 ? `(${r(Sg)})` : r(Sg)} = ${r(Sp + Sg)} ${bad.length ? '≠' : '='} investment ${r(Ir)} + net lending abroad ${N < 0 ? `(${r(N)})` : r(N)} = ${r(Ir + N)}${bad.length ? '' : ' ✓'}.`;
           if (!bad.length) return `Every box balances. ${id}${U ? ' The unsold goods are recorded as inventory investment, so firms in effect buy them from themselves.' : ''}`;
           return `${id} Unsold output of ${r(U)} not counted anywhere: **${bad.map((k) => keys[k]).join(' and ')}** are out of balance by ${r(U)} — incomes were paid for goods nobody bought, and saving finds no matching investment. Counting inventories restores every identity.`;
         });

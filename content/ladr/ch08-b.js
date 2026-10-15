@@ -485,7 +485,7 @@ the set of generalized eigenvectors of $T$ for $\lambda$ together with $0$. Taki
         const N = v.stage({ x: [-2.3, 3.3], y: [-1.6, 3.3], height: 380, weight: 0.7, minWidth: 220, axes: false, title: 'dimensions as $\\lambda$ moves' });
         let cur = null;
         const snap = (p) => { if (!cur || cur.G.length !== 2) return p; const q = projN(p, cur.G); return normN(subN(p, q)) < 0.14 && normN(q) > 0.15 ? q : p; };
-        const hv = sc.handle(addN(sclN(colOf(S0, 0), 0.35), sclN(colOf(S0, 1), 0.9)), { color: 'gold', label: 'v', snap });
+        const hv = sc.handle(addN(sclN(colOf(S0, 0), -0.45), sclN(colOf(S0, 1), 1.0)), { color: 'gold', label: 'v', snap });
         let st = null;
         v.render(() => {
           const c = cS.value, l = lS.value, T = conjM(M, S0, [[2, c, 0], [0, 2, 0], [0, 0, -1]]), A = shiftI(T, l);
@@ -553,7 +553,7 @@ In particular $G(\lambda, T)$ is a subspace of $V$.`,
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1.05, minWidth: 300, title: 'values of $(T - \\lambda I)^k p$ at $x = 0, 1, 2, 3, 4$' });
         const ys0 = [1, 3, 2, -1, 0.5];
         const hs = ys0.map((y, i) => F.handle(i, y, { color: 'accent', constrain: (x, yy) => [i, M.clamp(Math.round(yy * 2) / 2, -4, 6)] }));
-        const TB = v.table(Q, { rows: K + 1, cols: 7, region: [0.02, 0.02, 0.98, 0.98], square: false, cellAspect: 1.45, maxCell: 44, size: 12.5,
+        const TB = v.table(Q, { rows: K + 1, cols: 7, region: [0.02, 0.02, 0.98, 0.98], square: false, cellAspect: 1.45, maxCell: 44, size: 12.5, labelSize: 12.5,
           rowLabels: (k) => `$${k}$`, colLabels: ['$0$', '$1$', '$2$', '$3$', '$4$', '$\\deg$', '$\\dim N_k$'], cornerLabel: '$k \\backslash x$' });
         const Pas = Array.from({ length: 5 }, (_, i) => Array.from({ length: 5 }, (_, j) => (j >= i ? M.binom(j, i) : 0)));
         const COL = ['accent', 'purple', 'teal', 'pink', 'orange', 'gold', 'green'];
@@ -893,15 +893,15 @@ $$(z - \lambda_1)^{d_1} \cdots (z - \lambda_m)^{d_m}.$$`,
           }
           const { ed, list, q, rs, wn, L } = cache;
           const raw = (x, y) => Math.log10(Math.max(1e-30, cabs(cPolyEval(q, [x, y]))));
-          const smp = []; for (let i = 0; i <= 12; i++) for (let j = 0; j <= 12; j++) smp.push(raw(L * (i / 6 - 1), L * (j / 6 - 1)));
+          const smp = []; for (let i = 0; i <= 44; i++) for (let j = 0; j <= 44; j++) smp.push(raw(L * (i / 22 - 1), L * (j / 22 - 1)));
           smp.sort((a, b) => a - b);
-          const hi = smp[Math.floor(0.85 * smp.length)], lo = hi - 3.5;
+          const hi = smp[Math.floor(0.85 * smp.length)], lo = Math.max(hi - 2.8, smp[Math.floor(0.004 * smp.length)]);
           const hgt = (x, y) => M.clamp(raw(x, y), lo, hi);
           const zs = (h) => -0.7 + (1.1 * (h - lo)) / (hi - lo);
-          S3.surface((a, b) => [a, b, zs(hgt(a * L, b * L))], [-1, 1], [-1, 1], { n: 44, colorFn: (a, b, P) => M.cmap((P[2] + 0.7) / 1.1, 'viridis'), alpha: 0.92 });
+          S3.surface((a, b) => [a, b, zs(hgt(a * L, b * L))], [-1, 1], [-1, 1], { n: 54, colorFn: (a, b, P) => M.cmap((P[2] + 0.7) / 1.1, 'viridis'), alpha: 0.92 });
           S3.path([[-1, -1, -0.72], [1, -1, -0.72], [1, 1, -0.72], [-1, 1, -0.72]], { color: 'faint', width: 1, close: true });
           S3.text('Re', [1.15, -1, -0.72], { color: 'muted', math: true }); S3.text('Im', [-1, 1.15, -0.72], { color: 'muted', math: true });
-          list.forEach((e) => { S3.dot([e.z[0] / L, e.z[1] / L, -0.74], { r: 5.5, color: 'red', bias: 0.3 }); if (e.d > 1) S3.text(`×${e.d}`, [e.z[0] / L, e.z[1] / L, -0.74], { color: 'red', size: 12, dx: 14, dy: 8 }); });
+          list.forEach((e) => { S3.line([e.z[0] / L, e.z[1] / L, -0.72], [e.z[0] / L, e.z[1] / L, zs(Math.min(hi, raw(e.z[0] + 0.02 * L, e.z[1])))], { color: 'red', width: 1.4, dash: [3, 3], alpha: 0.8, bias: -0.2 }); S3.dot([e.z[0] / L, e.z[1] / L, -0.74], { r: 5.5, color: 'red', bias: 0.3 }); if (e.d > 1) S3.text(`×${e.d}`, [e.z[0] / L, e.z[1] / L, -0.74], { color: 'red', size: 12, dx: 14, dy: 8 }); });
           // winding staircase
           const deg = q.length - 1;
           W.setView([0.05, 30], [-0.4, Math.max(deg, n) + 1]);
@@ -919,7 +919,7 @@ $$(z - \lambda_1)^{d_1} \cdots (z - \lambda_m)^{d_m}.$$`,
           const { n, deg, ed, list, errs, final } = st;
           const zs = list.map((e) => `${czT(e.z)}${e.d > 1 ? `\\ (\\times${e.d})` : ''}`).join(',\\ ');
           let s = `$q(z) = ${factorT(list)}$ has degree $${deg}$ (winding number for large $r$: $${final}$), zeros $${zs}$; $|q(\\lambda)| \\le ${v.sci(Math.max(...errs), 1)}$ at every eigenvalue. `;
-          s += geo.value ? (deg < n ? `**Degree ${deg} < ${n} = \\dim V**: eigenspace dimensions undercount — only multiplicities give degree $\\dim V$.` : 'Here every eigenspace is as large as its generalized eigenspace, so nothing changes.') : `**Degree $= ${n} = \\dim V$**, and the zeros are exactly the ${ed.length} eigenvalues.`;
+          s += geo.value ? (deg < n ? `**Degree $${deg} < ${n} = \\dim V$**: eigenspace dimensions undercount — only multiplicities give degree $\\dim V$.` : 'Here every eigenspace is as large as its generalized eigenspace, so nothing changes.') : `**Degree $= ${n} = \\dim V$**, and the zeros are exactly the ${ed.length} eigenvalues.`;
           return s;
         });
       },

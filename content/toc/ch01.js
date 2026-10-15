@@ -167,25 +167,25 @@ A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite
         const R = () => (alpha === 'ab' ? 4 : 3);
         v.render(() => {
           // ---- top: the string, its prefixes / suffixes / reversal
-          const P = pen(A, v), n = w.length, cell = 36, x0 = Math.round((P.W - Math.max(n, 1) * cell) / 2), y0 = 12;
+          const P = pen(A, v), n = w.length, cell = 40, x0 = Math.round((P.W - Math.max(n, 1) * cell) / 2), y0 = 12;
           P.tex('w', x0 - 22, y0 + cell / 2, { size: 18, color: 'muted' });
           if (!n) { P.box(x0, y0, cell - 2, cell - 2, { r: 4, stroke: 'faint', dash: true }); P.text(EPS, x0 + cell / 2 - 1, y0 + cell / 2, { size: 16, color: 'muted' }); }
           tape(P, w, x0, y0, cell, (i) => ({ color: LETTER[w[i]], stroke: LETTER[w[i]], fill: LETTER[w[i]], alpha: 0.1 }));
           for (let i = 0; i < n; i++) P.text(String(i + 1), x0 + i * cell + cell / 2 - 1, y0 + cell + 7, { size: 10, color: 'muted', font: SANS });
           const top = y0 + cell + 24;
           if (view.value === 'rev') {
-            const y1 = top + 62;
+            const y1 = top + 74;
             P.tex('w^R', x0 - 24, y1 + cell / 2, { size: 18, color: 'muted' });
             for (let i = 0; i < n; i++) {
               const xa = x0 + i * cell + cell / 2 - 1, xb = x0 + (n - 1 - i) * cell + cell / 2 - 1;
-              P.path([[xa, y0 + cell], [xa, y0 + cell + 22], [xb, y1 - 22], [xb, y1 - 2]], { color: LETTER[w[i]], width: 1.8, alpha: 0.75 });
+              P.path([[xa, y0 + cell + 13], [xa, y0 + cell + 24], [xb, y1 - 18], [xb, y1 - 2]], { color: LETTER[w[i]], width: 1.8, alpha: 0.75 });
             }
             const wr = rev(w);
             if (!n) { P.box(x0, y1, cell - 2, cell - 2, { r: 4, stroke: 'faint', dash: true }); P.text(EPS, x0 + cell / 2 - 1, y1 + cell / 2, { size: 16, color: 'muted' }); }
             tape(P, wr, x0, y1, cell, (i) => ({ color: LETTER[wr[i]], stroke: LETTER[wr[i]], fill: LETTER[wr[i]], alpha: 0.1 }));
             P.sans(wr === w ? 'wᴿ = w: a palindrome' : 'wᴿ ≠ w', x0 + Math.max(n, 1) * cell + 14, y1 + cell / 2, { align: 'left', size: 13, weight: 600, color: wr === w ? 'green' : 'muted' });
           } else {
-            const pre = view.value === 'pre', col = pre ? 'blue' : 'orange', dy = Math.min(17, (P.H - top - 8) / (n + 1));
+            const pre = view.value === 'pre', col = pre ? 'blue' : 'orange', dy = Math.min(22, (P.H - top - 8) / (n + 1));
             for (let i = 0; i <= n; i++) P.line(x0 + i * cell - 1, y0 + cell + 16, x0 + i * cell - 1, top + n * dy + 4, { color: 'grid', width: 1 });
             for (let k = 0; k <= n; k++) {
               const y = top + k * dy, a = pre ? 0 : k, b = pre ? k : n, xa = x0 + a * cell - 1, xb = x0 + b * cell - 1, str = w.slice(a, b);
@@ -238,12 +238,14 @@ So $\varepsilon\in A^*$ for every $A$, $\varnothing^*=\{\varepsilon\}^*=\{\varep
       tags: ['languages', 'regular operations'],
       viz(v) {
         const CH = ['', 'a', 'b', 'aa', 'ab', 'ba', 'bb'];
-        const A = new Set(['a', 'ab']), B = new Set(['b', 'bb']);
+        const A = new Set(['', 'a', 'ab']), B = new Set(['b', 'ba', 'bb']);
         const op = v.select('', [{ value: 'union', label: '$A\\cup B$' }, { value: 'cat', label: '$AB$' }, { value: 'catr', label: '$BA$' }, { value: 'star', label: '$A^*$' }], 'cat');
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, full: true });
         let hit = [];
         clickPx(s, (x, y) => { const h = hit.find((r) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h); if (h) { const S = h.set === 'A' ? A : B; if (S.has(h.str)) S.delete(h.str); else S.add(h.str); } });
         const MAXL = 4;
+        const sortSL = (a, b) => a.length - b.length || (a < b ? -1 : a > b ? 1 : 0);
+        const pair = () => (op.value === 'cat' ? [A, B, 'A', 'B'] : [B, A, 'B', 'A']);
         function result() {
           const R = new Map(), add = (w, f) => { if (!R.has(w)) R.set(w, []); R.get(w).push(f); };
           if (op.value === 'union') { for (const x of A) add(x, [[x, 'A']]); for (const y of B) add(y, [[y, 'B']]); }
@@ -252,13 +254,12 @@ So $\varepsilon\in A^*$ for every $A$, $\varnothing^*=\{\varepsilon\}^*=\{\varep
             const parts = [...A].filter((x) => x !== '');
             (function go(w, f) { for (const x of parts) if (w.length + x.length <= MAXL) { const g = [...f, [x, 'A' + (f.length % 2)]]; add(w + x, g); go(w + x, g); } })('', []);
           } else {
-            const [X, Y, nx, ny] = op.value === 'cat' ? [A, B, 'A', 'B'] : [B, A, 'B', 'A'];
-            for (const x of X) for (const y of Y) add(x + y, [[x, nx], [y, ny]]);
+            const [X, Y, nx, ny] = pair();
+            for (const x of [...X].sort(sortSL)) for (const y of [...Y].sort(sortSL)) add(x + y, [[x, nx], [y, ny]]);
           }
           return R;
         }
         const COL = { A: 'blue', B: 'orange', A0: 'blue', A1: 'teal' };
-        const sortSL = (a, b) => a.length - b.length || (a < b ? -1 : a > b ? 1 : 0);
         v.render(() => {
           const P = pen(s, v); hit = [];
           // input rows
@@ -274,34 +275,60 @@ So $\varepsilon\in A^*$ for every $A$, $\varnothing^*=\{\varepsilon\}^*=\{\varep
             P.sans(`|${nm}| = ${S.size}`, x0 + CH.length * (chipW + gx) + 6, y + 13, { align: 'left', size: 13, weight: 600, color: col });
           });
           P.line(14, 86, P.W - 14, 86, { color: 'grid', width: 1 });
-          const R = result(), strs = [...R.keys()].sort(sortSL);
-          const name = { union: 'A ∪ B', cat: 'AB', catr: 'BA', star: 'A* (strings of length ≤ 4)' }[op.value];
-          P.sans(name, 14, 100, { align: 'left', size: 13, weight: 600, color: 'muted' });
+          const R = result(), strs = [...R.keys()].sort(sortSL), isCat = op.value === 'cat' || op.value === 'catr';
+          const name = { union: 'A ∪ B', cat: 'AB, by length', catr: 'BA, by length', star: 'A*, strings of length ≤ 4' }[op.value];
+          P.sans(name, 14, 102, { align: 'left', size: 13, weight: 600, color: 'muted' });
+          // pair table for concatenation, on the right
+          let right = P.W - 10;
+          if (isCat) {
+            const [X, Y, nx, ny] = pair(), xs = [...X].sort(sortSL), ys = [...Y].sort(sortSL), c = 40, rh = 26;
+            const tw = (ys.length + 1) * c, tx = P.W - 14 - tw, ty = 110;
+            right = tx - 24;
+            P.sans(`all |${nx}|·|${ny}| = ${xs.length * ys.length} pairs`, tx + tw / 2, 100, { size: 12, color: 'muted', weight: 600 });
+            ys.forEach((y, j) => P.text(sh(y), tx + (j + 1.5) * c, ty + rh / 2, { size: 12.5, weight: 600, color: COL[ny] }));
+            xs.forEach((x, i) => {
+              P.text(sh(x), tx + c / 2, ty + (i + 1.5) * rh, { size: 12.5, weight: 600, color: COL[nx] });
+              ys.forEach((y, j) => {
+                const u = x + y, many = R.get(u).length > 1;
+                P.box(tx + (j + 1) * c + 1, ty + (i + 1) * rh + 1, c - 2, rh - 2, { r: 3, fill: many ? 'red' : 'accent', alpha: many ? 0.22 : 0.07, stroke: many ? 'red' : 'faint' });
+                P.text(sh(u), tx + (j + 1.5) * c, ty + (i + 1.5) * rh + 0.5, { size: Math.min(12.5, (c - 4) / Math.max(1, u.length) * 1.6), color: many ? 'red' : 'ink' });
+              });
+            });
+          }
+          if (op.value === 'union') { // Venn diagram on the right
+            const R0 = 74, cy = 214, cxA = P.W - 250, cxB = cxA + 92;
+            P.circle(cxA, cy, R0, { fill: 'blue', fillAlpha: 0.08, color: 'blue', width: 1.6 });
+            P.circle(cxB, cy, R0, { fill: 'orange', fillAlpha: 0.08, color: 'orange', width: 1.6 });
+            const onlyA = [...A].filter((x) => !B.has(x)).sort(sortSL), both = [...A].filter((x) => B.has(x)).sort(sortSL), onlyB = [...B].filter((x) => !A.has(x)).sort(sortSL);
+            [[onlyA, cxA - 34, 'blue'], [both, (cxA + cxB) / 2, 'purple'], [onlyB, cxB + 34, 'orange']].forEach(([L, x, col]) => L.forEach((u, i) => P.text(sh(u), x, cy + (i - (L.length - 1) / 2) * 19, { size: 13, weight: 600, color: col })));
+            P.tex('A', cxA - R0 + 6, cy - R0 + 4, { size: 16, color: 'blue' }); P.tex('B', cxB + R0 - 6, cy - R0 + 4, { size: 16, color: 'orange' });
+            right = cxA - R0 - 20;
+          }
           // result rows by length; letter width adapts to the widest row
           const rows = []; for (let L = 0; L <= MAXL; L++) rows.push(strs.filter((u) => u.length === L));
           const need = Math.max(...rows.map((r) => r.reduce((a, u) => a + Math.max(1, u.length) + 1.6, 0)));
-          const lw = Math.min(11, (P.W - 70) / Math.max(need, 1)), rh = 40;
+          const lw = Math.min(15, (right - 64) / Math.max(need, 1)), rh = 44;
           rows.forEach((row, L) => {
-            const y = 112 + L * rh; let x = 54;
-            P.text(`|w|=${L}`, 10, y + 14, { align: 'left', size: 10.5, color: 'muted', font: SANS });
-            if (!row.length) { P.text('—', x + 6, y + 14, { size: 12, color: 'faint' }); return; }
+            const y = 114 + L * rh; let x = 58;
+            P.text(`|w|=${L}`, 12, y + 15, { align: 'left', size: 10.5, color: 'muted', font: SANS });
+            if (!row.length) { P.text('—', x + 6, y + 15, { size: 12, color: 'faint' }); return; }
             for (const u of row) {
-              const fs = R.get(u), f = fs[0], wpx = Math.max(1, u.length) * lw + 8;
-              P.box(x, y, wpx, 28, { r: 5, stroke: 'faint' });
-              let cx = x + 4;
-              if (!u.length) P.text(EPS, x + wpx / 2, y + 14.5, { size: 13, color: 'muted' });
+              const fs = R.get(u), f = fs[0], wpx = Math.max(1, u.length) * lw + 10;
+              P.box(x, y, wpx, 30, { r: 5, stroke: fs.length > 1 && op.value !== 'union' ? 'red' : 'faint' });
+              let cx = x + 5;
+              if (!u.length) P.text(EPS, x + wpx / 2, y + 15.5, { size: 13, color: 'muted' });
               for (const [piece, org] of f) {
-                if (!piece.length) { P.line(cx, y + 4, cx, y + 24, { color: COL[org], width: 2.2 }); continue; } // an ε factor
-                P.box(cx, y + 4, piece.length * lw, 20, { r: 3, fill: COL[org], alpha: 0.26, stroke: false });
-                P.text(piece, cx + (piece.length * lw) / 2, y + 14.5, { size: Math.min(13.5, lw * 1.25), weight: 600, color: COL[org] });
+                if (!piece.length) { P.line(cx, y + 5, cx, y + 25, { color: COL[org], width: 2.4 }); continue; } // an ε factor
+                P.box(cx, y + 5, piece.length * lw, 20, { r: 3, fill: COL[org], alpha: 0.26, stroke: false });
+                P.text(piece, cx + (piece.length * lw) / 2, y + 15.5, { size: Math.min(14, lw * 1.2), weight: 600, color: COL[org] });
                 cx += piece.length * lw;
               }
-              if (op.value === 'union' && fs.length > 1) P.box(x + 2, y + 25, wpx - 4, 2, { r: 1, fill: 'orange', alpha: 1, stroke: false });
+              if (op.value === 'union' && fs.length > 1) P.box(x + 3, y + 27, wpx - 6, 2.5, { r: 1, fill: 'orange', alpha: 1, stroke: false });
               if (op.value !== 'union' && fs.length > 1) {
-                P.box(x + wpx - 9, y - 6, 18, 14, { r: 7, fill: 'red', alpha: 0.9, stroke: false });
-                P.text(`×${fs.length}`, x + wpx, y + 1, { size: 9.5, weight: 700, color: 'panel', font: SANS });
+                P.box(x + wpx - 10, y - 7, 20, 14, { r: 7, fill: 'red', alpha: 0.9, stroke: false });
+                P.text(`×${fs.length}`, x + wpx, y, { size: 9.5, weight: 700, color: 'panel', font: SANS });
               }
-              x += wpx + lw * 1.6;
+              x += wpx + lw * 1.4;
             }
           });
         });
@@ -320,7 +347,7 @@ So $\varepsilon\in A^*$ for every $A$, $\varnothing^*=\{\varepsilon\}^*=\{\varep
           }
           const multi = [...R.entries()].filter(([, f]) => f.length > 1);
           const XY = op.value === 'cat' ? 'AB' : 'BA', other = op.value === 'cat' ? 'BA' : 'AB';
-          const swapped = new Set(); const [X, Y] = op.value === 'cat' ? [B, A] : [A, B]; for (const x of X) for (const y of Y) swapped.add(x + y);
+          const swapped = new Set(); const [Y, X] = pair(); for (const x of X) for (const y of Y) swapped.add(x + y);
           const comm = n === swapped.size && [...R.keys()].every((u) => swapped.has(u));
           let s = String.raw`$|A|\cdot|B| = ${A.size * B.size}$ pairs give $|${XY}| = ${n}$ strings`;
           if (multi.length) { const [u, fs] = multi[0]; s += ` — e.g. **${sh(u)}** = ${fs.map((f) => f.map(([p]) => sh(p)).join('·')).join(' = ')}`; }
@@ -349,7 +376,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
         const ord = v.select('order', [{ value: 'sl', label: 'shortlex' }, { value: 'dict', label: 'dictionary' }], 'sl', { onChange: () => S.reset() });
         const keys = keypad(v, ALPH, () => w, (x) => { w = x; }, { max: 7 });
         keys.c.hidden = true;
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, full: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 316, full: true });
         const depth = () => (kS.value === 1 ? 6 : 3);
         const frames = () => {
           const al = ALPH.slice(0, kS.value), dict = ord.value === 'dict' && kS.value > 1;
@@ -360,7 +387,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
         const pos = (u, k) => { const n = u.length; if (k === 1) return n; let p = (k ** n - 1) / (k - 1), val = 0; for (const c of u) val = val * k + ALPH.indexOf(c); return p + val; };
         v.render(() => {
           const P = pen(s, v), k = kS.value, D = depth(), al = ALPH.slice(0, k), dict = ord.value === 'dict' && k > 1;
-          const levels = D + 2, dy = (P.H - 44) / levels, top = 22, f = S.frame, cur = f.u, seen = new Set(S.frames.slice(0, S.i + 1).map((g) => g.u));
+          const levels = dict ? D + 2.7 : D + 1.5, dy = (P.H - 40) / levels, top = 22, f = S.frame, cur = f.u, seen = new Set(S.frames.slice(0, S.i + 1).map((g) => g.u));
           const xy = (u) => { const L = u.length; let j = 0; for (const c of u) j = j * k + ALPH.indexOf(c); const m = 30, span = (P.W - 2 * m) / k ** L; return [m + (j + 0.5) * span, top + L * dy]; };
           const r = k === 3 ? 11 : k === 2 ? 14 : 13;
           const onPath = (u) => w.startsWith(u) && u.length <= w.length;
@@ -375,7 +402,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
           if (dict) {
             let [x, y] = xy('a'.repeat(D));
             for (let L = D + 1; L <= D + 2; L++) {
-              const y2 = top + L * dy; P.line(x, y + r, x, y2 - r, { color: 'red', width: 1.6, dash: [5, 4] });
+              const y2 = top + L * dy; P.line(x, y + r + (L === D + 1 ? 16 : 0), x, y2 - r, { color: 'red', width: 1.6, dash: [5, 4] });
               const u = 'a'.repeat(L), on = seen.has(u);
               P.circle(x, y2, r, { fill: u === cur ? 'gold' : on ? 'red' : 'panel', fillAlpha: u === cur ? 1 : on ? 0.25 : 1, color: 'red', width: 1.6 });
               P.text(String(L), x, y2 + 0.5, { size: 11, weight: 700, color: u === cur ? 'panel' : 'red', font: SANS });
@@ -385,15 +412,15 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
             P.sans('⋮  forever', x + r + 6, y + 22, { align: 'left', size: 12, color: 'red', weight: 600 });
           } else {
             const cntNext = k ** (D + 1), first = (k ** (D + 1) - 1) / Math.max(1, k - 1);
-            for (const u of layer(al, D)) { const [x, y] = xy(u); for (let t = 0; t < k; t++) P.line(x, y + r, x + (t - (k - 1) / 2) * 8, y + r + 12, { color: 'faint', width: 1, dash: [2, 3] }); }
-            P.sans(k === 1 ? `next: ${'a'.repeat(D + 1)} at position ${D + 1}, and so on` : `next: the ${cntNext} strings of length ${D + 1}, at positions ${first}–${first + cntNext - 1}, and so on`, P.W / 2, top + (D + 1) * dy + 6, { size: 12.5, color: 'muted' });
+            for (const u of layer(al, D)) { const [x, y] = xy(u); for (let t = 0; t < k; t++) P.line(x, y + r + 17, x + (t - (k - 1) / 2) * 7, y + r + 27, { color: 'faint', width: 1, dash: [2, 2] }); }
+            P.sans(k === 1 ? `next: ${'a'.repeat(D + 1)} at position ${D + 1}, and so on` : `next: the ${cntNext} strings of length ${D + 1}, at positions ${first}–${first + cntNext - 1}, and so on`, P.W / 2, top + D * dy + r + 42, { size: 12.5, color: 'muted' });
           }
           for (const u of nodes) {
             const [x, y] = xy(u), isCur = u === cur, done = seen.has(u), num = dict ? (/^a*$/.test(u) ? u.length : '∞') : pos(u, k);
             const col = dict && num === '∞' ? 'red' : 'accent';
             P.circle(x, y, r, { fill: isCur ? 'gold' : done ? col : 'panel', fillAlpha: isCur ? 1 : done ? 0.85 : 1, color: isCur ? 'gold' : onPath(u) ? 'gold' : col, width: onPath(u) ? 2.6 : 1.4 });
             P.text(String(num), x, y + 0.5, { size: r < 12 ? 9.5 : 11, weight: 700, color: isCur || done ? 'panel' : col, font: SANS });
-            if (u.length === D && (k < 3 || true)) P.text(sh(u), x, y + r + 9, { size: k === 3 ? 9 : 11, color: onPath(u) ? 'gold' : 'muted' });
+            if (u.length === D) P.text(sh(u), x, y + r + 9, { size: k === 3 ? 9 : 11, color: onPath(u) ? 'gold' : 'muted' });
           }
           P.text(EPS, xy('')[0] + r + 8, top, { align: 'left', size: 12, color: 'muted' });
         });
@@ -431,33 +458,40 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
         v.button('⌫', () => { if (mode.value === 'fin') w = w.slice(0, -1); else t.pop(); });
         const sync = () => { const f = mode.value === 'fin'; ka.hidden = kb.hidden = !f; kn.forEach((b) => (b.hidden = f)); };
         sync();
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 322, full: true });
         const binom = v.M.binom;
         const stepFin = (u) => (2 ** u.length - 1) + [...u].reduce((a, c) => 2 * a + (c === 'b' ? 1 : 0), 0);
         const stepDiag = (tt) => { if (!tt.length) return 0; const n = tt.length, d = n + rankN(tt, binom); return 1 + (d * (d - 1)) / 2 + (n - 1); };
         v.render(() => {
-          const P = pen(s, v), md = mode.value, left = 46, rowH = 46, top = 14;
+          const P = pen(s, v), md = mode.value, left = 46, rowH = 48, top = 14;
           for (let n = 0; n <= 5; n++) P.tex(`\\Sigma^{${n}}`, 22, top + n * rowH + 16, { size: 15, color: 'muted' });
           if (md === 'fin') {
-            const cells = []; // [string, x, y, w]
+            const cells = []; // [string, left x, top y, slot width]
             for (let n = 0; n <= 4; n++) {
               const L = layer(['a', 'b'], n), cw = Math.min(70, (P.W - left - 20) / 16), xs = left + (P.W - left - 20) / 2 - (cw * L.length) / 2;
               L.forEach((u, j) => cells.push([u, xs + j * cw, top + n * rowH, cw]));
             }
-            const target = stepFin(w), pts = cells.map(([u, x, y, cw]) => [x + cw / 2 - 1, y + 16]);
-            P.path(pts, { color: 'faint', width: 1.4 });
-            P.path(pts.slice(0, target + 1), { color: 'accent', width: 2.6 });
+            const target = stepFin(w), gap = 10;
+            // route: between neighbours in a row, and a carriage return under the row to the next one
+            const segs = [];
+            for (let i = 0; i + 1 < cells.length; i++) {
+              const [, x, y, cw] = cells[i], [, x2, y2] = cells[i + 1], ym = y + 16, ym2 = y2 + 16;
+              if (y === y2) segs.push([[x + cw - gap, ym], [x2 + 1, ym2]]);
+              else { const yr = y + 35, xa = x + cw - gap / 2 + 4, xb = x2 - 6; segs.push([[x + cw - gap, ym], [xa, ym], [xa, yr], [xb, yr], [xb, ym2], [x2 + 1, ym2]]); }
+            }
+            segs.forEach((sg, i) => P.path(sg, { color: i < target ? 'accent' : 'faint', width: i < target ? 2.4 : 1.3 }));
             cells.forEach(([u, x, y, cw], i) => {
               const tgt = u === w;
-              P.box(x + 1, y + 2, cw - 4, 28, { r: 4, fill: i <= target ? 'accent' : null, alpha: 0.13, stroke: tgt ? 'gold' : i <= target ? 'accent' : 'faint', width: tgt ? 2.8 : 1 });
-              P.text(sh(u), x + cw / 2 - 1, y + 16.5, { size: 12, color: i <= target ? 'ink' : 'muted', halo: true });
-              P.text(String(i), x + 4, y - 3, { align: 'left', size: 9, color: tgt ? 'gold' : 'muted', font: SANS, weight: 600 });
+              P.box(x + 1, y + 2, cw - gap - 1, 28, { r: 4, fill: i <= target ? 'accent' : null, alpha: 0.13, stroke: tgt ? 'gold' : i <= target ? 'accent' : 'faint', width: tgt ? 2.8 : 1 });
+              P.text(sh(u), x + (cw - gap) / 2 + 0.5, y + 16.5, { size: 12, color: i <= target ? 'ink' : 'muted' });
+              P.text(String(i), x + 2, y - 4, { align: 'left', size: 9, color: tgt ? 'gold' : 'muted', font: SANS, weight: 600 });
             });
             // row 5 as a band of 32 dots
             const y5 = top + 5 * rowH + 16, cw5 = Math.min(22, (P.W - left - 20) / 32), xs5 = left + (P.W - left - 20) / 2 - (cw5 * 32) / 2;
-            P.line(pts[pts.length - 1][0], pts[pts.length - 1][1] + 14, xs5 + cw5 / 2, y5, { color: 'faint', width: 1.2, dash: [3, 3] });
+            const [, xl, yl, cwl] = cells[cells.length - 1];
+            P.path([[xl + cwl - gap, yl + 16], [xl + cwl - gap / 2 + 4, yl + 16], [xl + cwl - gap / 2 + 4, yl + 35], [xs5 - 6, yl + 35], [xs5 - 6, y5], [xs5 + 2, y5]], { color: 'faint', width: 1.2, dash: [3, 3] });
             for (let j = 0; j < 32; j++) P.dot(xs5 + (j + 0.5) * cw5, y5, { r: 3, color: 'faint' });
-            P.sans('32 strings, steps 31–62, then row 6 …', xs5 + cw5 * 32 + 8 > P.W - 150 ? P.W / 2 : xs5 + cw5 * 32 + 8, y5 + 15, { size: 11.5, color: 'muted' });
+            P.sans('32 strings of length 5 (steps 31–62), then 64 of length 6, …', P.W / 2, y5 + 17, { size: 11.5, color: 'muted' });
           } else {
             const C = Math.max(6, Math.floor((P.W - left - 30) / 58)), cw = (P.W - left - 30) / C;
             const cellXY = (n, j) => [left + j * cw + cw / 2, top + n * rowH + 16];
@@ -478,6 +512,7 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
               const R = rowN(n, n === 0 ? 1 : C);
               R.forEach((tt, j) => {
                 const [x, y] = cellXY(n, j), st = stepOf(n, j), isT = n === tgtN && j === tgtJ, reached = st <= tgtStep;
+                P.box(x - cw / 2 + 2, y - 14, cw - 4, 28, { r: 4, fill: 'panel', alpha: 1, stroke: false });
                 P.box(x - cw / 2 + 2, y - 14, cw - 4, 28, { r: 4, fill: st === Infinity ? 'red' : reached ? 'accent' : null, alpha: st === Infinity ? 0.06 : 0.13, stroke: isT ? 'gold' : st === Infinity ? 'red' : reached ? 'accent' : 'faint', strokeAlpha: st === Infinity && !isT ? 0.45 : 1, width: isT ? 2.8 : 1 });
                 const lab = showN(tt), fs = Math.min(12, ((cw - 8) / lab.length) * 1.7);
                 P.text(lab, x, y + 0.5, { size: fs, color: st === Infinity ? 'red' : 'ink', alpha: st === Infinity ? 0.6 : 1, halo: true });
@@ -545,11 +580,13 @@ and $\operatorname{pos}(a_0^{\,n})=n$ when $k=1$. Plain dictionary order is *not
             rowLabelColor: (i) => (i === 8 ? 'green' : i === lastIns ? 'red' : null),
             activeCol: selCol, activeColor: 'red',
           });
-          T.arrow([8, selCol], [selCol, selCol], { color: 'red', width: 2, dash: [5, 4] });
+          // an arrow up the right edge of the column, from D's cell to the diagonal cell it flips
+          const rD = T.cellRect(8, selCol), rG = T.cellRect(selCol, selCol), xa = rD[0] + (rD[2] - rD[0]) * 0.86;
+          s.arrow(xa, Math.max(rD[1], rD[3]) - (Math.abs(rD[3] - rD[1])) * 0.12, xa, Math.min(rG[1], rG[3]) + (Math.abs(rG[3] - rG[1])) * 0.1, { color: 'red', width: 1.8, dash: [4, 3], head: 7 });
         });
         v.legend([['gold', 'diagonal: is $s_i\\in L_i$?', { dot: true }], ['green', '$D=\\{s_i : s_i\\notin L_i\\}$', { dot: true }], ['red', 'where $D$ and $L_i$ differ']]);
         v.readout(() => {
-          const d = D(), i = selCol, mem = d.map((b, k) => (b ? sh(STR[k]) : null)).filter((x) => x != null);
+          const d = D(), i = selCol, mem = d.map((b, k) => (b ? (STR[k] ? `\\mathtt{${STR[k]}}` : '\\varepsilon') : null)).filter((x) => x != null);
           const clash = rows.findIndex((r) => r.bits.every((b, k) => b === d[k]));
           return String.raw`$D\cap\{s_1,\dots,s_8\} = \{${mem.join(', ') || '\\;'}\}$ · at $s_{${i + 1}} = $ **${sh(STR[i])}**: $L_{${i + 1}}$ says ${rows[i].bits[i] ? 1 : 0}, $D$ says ${d[i] ? 1 : 0} — so $D\neq L_{${i + 1}}$, and likewise for every row (${clash < 0 ? 'no row equals $D$ ✓' : 'impossible'}). Eight rows against $2^8 = 256$ bit patterns; no list can hold them all, while $\Sigma^*$ and the set of programs are countable.`;
         });
@@ -570,9 +607,9 @@ and solving the problem means deciding membership in that language (strings that
       tags: ['encodings', 'decision problems'],
       viz(v) {
         const prob = v.select('language', [{ value: 'conn', label: 'CONNECTED' }, { value: 'tri', label: 'TRIANGLE' }, { value: 'bip', label: 'BIPARTITE' }], 'conn');
-        const gs = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, equal: true, height: 250, weight: 1 });
-        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 250, weight: 1.15 });
-        const ps = v.stage({ x: [1, 300], y: [1, 1e6], xlog: true, ylog: true, axes: 'box', height: 210, full: true, xlabel: 'number of vertices $n$', ylabel: 'length of ⟨G⟩' });
+        const gs = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, equal: true, height: 270, weight: 1 });
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, weight: 1.15 });
+        const ps = v.stage({ x: [1, 300], y: [1, 4e5], xlog: true, ylog: true, axes: 'box', height: 200, full: true, xlabel: 'number of vertices n', ylabel: 'symbols in ⟨G⟩' });
         const pos = [[2, 5.6], [5, 6.4], [8, 5.4], [3.2, 2.6], [6.6, 2.4], [8.8, 1.2]];
         const G = v.graph(gs, {
           nodes: pos.map(([x, y], i) => ({ id: i + 1, x, y })), edges: [[1, 2], [2, 3], [1, 4], [2, 4], [4, 5], [3, 5]],
@@ -625,14 +662,24 @@ and solving the problem means deciding membership in that language (strings that
             return y0 + 20 + Math.min(lines.length, 5) * 17 + (lines.length > 5 ? 17 : 0);
           };
           let y = block(`adjacency list  (${e.list.length} symbols)`, e.list, 14, (ch) => (/[0-9]/.test(ch) ? 'accent' : 'muted'));
-          block(`adjacency matrix, rows joined by #  (${e.mat.length} symbols)`, e.mat || 'ε', y + 14, (ch) => (ch === '1' ? 'accent' : ch === '#' ? 'orange' : 'muted'));
+          y = block(`adjacency matrix, rows joined by #  (${e.mat.length} symbols)`, e.mat || 'ε', y + 14, (ch) => (ch === '1' ? 'accent' : ch === '#' ? 'orange' : 'muted'));
+          // the same matrix as a picture: row i of the string is row i of the grid
+          const room = P.H - y - 12, c = Math.max(5, Math.min(16, room / Math.max(1, e.n)));
+          if (e.n && c * e.n <= room + 1) {
+            const gx = 30, gy = y + 8;
+            for (let i = 0; i < e.n; i++) {
+              if (c >= 10) { P.text(String(i + 1), gx - 8, gy + (i + 0.5) * c, { size: 9.5, color: 'muted', font: SANS }); P.text(String(i + 1), gx + (i + 0.5) * c, gy - 6, { size: 9.5, color: 'muted', font: SANS }); }
+              for (let j = 0; j < e.n; j++) P.box(gx + j * c + 0.5, gy + i * c + 0.5, c - 1, c - 1, { r: 1.5, fill: e.A[i][j] === '1' ? 'accent' : null, alpha: 0.75, stroke: 'faint', width: 0.8 });
+            }
+            P.sans('row i = the i-th block of the string', gx + e.n * c + 12, gy + (e.n * c) / 2, { align: 'left', size: 11.5, color: 'muted' });
+          }
           // length plot
           ps.fn(matLen, { color: 'orange', width: 2 });
           ps.fn(completeLen, { color: 'accent', width: 2 });
           ps.fn(cycleLen, { color: 'accent', width: 2, dash: [6, 4] });
           if (e.n >= 1) {
-            ps.dot(e.n, Math.max(1, e.mat.length), { r: 6, color: 'orange', label: 'matrix', labelPos: 'nw' });
-            ps.dot(e.n, e.list.length, { r: 6, color: 'accent', label: 'list', labelPos: 'se' });
+            ps.dot(e.n, e.list.length, { r: 5, color: 'accent', label: 'list', labelPos: 'nw' });
+            ps.dot(e.n, Math.max(1, e.mat.length), { r: 7, color: 'orange', hollow: true, width: 2.4, label: 'matrix', labelPos: 'se' });
           }
         });
         v.legend([['orange', 'matrix encoding ($n^2+n-1$)'], ['accent', 'list encoding, complete graphs'], ['accent', 'list encoding, cycles', { dash: true }]]);
@@ -659,7 +706,7 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
       tags: ['induction', 'proof method'],
       viz(v) {
         const X = 'ab';
-        const claim = v.select('claim', [{ value: 'revcat', label: '$(xy)^R = y^Rx^R$, $x=$ab' }, { value: 'len', label: '$|w^R| = |w|$' }, { value: 'pal', label: '$w^R = w$ (false)' }], 'revcat', { onChange: () => S.reset() });
+        const claim = v.select('claim', [{ value: 'revcat', label: '$(xy)^R = y^Rx^R$ with $x = \\mathtt{ab}$' }, { value: 'len', label: '$|w^R| = |w|$' }, { value: 'pal', label: '$w^R = w$ (false)' }], 'revcat', { onChange: () => S.reset() });
         const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1.1 });
         const ds = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1 });
         const NODES = upTo(['a', 'b'], 3);
@@ -729,7 +776,7 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
         v.readout(() => {
           const st = S.frame.status || {}, ok = Object.values(st).filter((x) => x === 'ok').length, bad = Object.keys(st).find((k) => st[k] === 'bad');
           const truth = NODES.filter((w) => (claim.value === 'pal' ? rev(w) === w : true)).length;
-          return `Proved so far: ${ok} of ${NODES.length} strings of length ≤ 3` + (bad != null ? ` · the step fails at **${bad}**, and indeed the claim is false for ${NODES.length - truth} of these strings.` : ` · every step used only the shorter string's case, so the claim holds for all of $\\Sigma^*$.`);
+          return `Proved so far: ${ok} of ${NODES.length} strings of length ≤ 3` + (bad != null ? ` · the step fails at **${bad}**, and indeed the claim is false for ${NODES.length - truth} of these strings.` : S.atEnd ? ` · every step used only the shorter string's case, and the same template works for every $u$ and $\\sigma$, so the claim holds for all of $\\Sigma^*$.` : ` · each step so far used only its parent's case.`);
         });
       },
     },
@@ -755,10 +802,10 @@ A **literal** is a variable or its negation, a **clause** is an $\lor$ of litera
         };
         let F = mkF(PRESETS.p1), selRow = 6;
         v.select('φ', [{ value: 'p1', label: '$(x\\lor y)\\land\\neg z$' }, { value: 'maj', label: 'majority' }, { value: 'par', label: 'parity' }, { value: 'uns', label: 'transitivity fails' }], 'p1', { onChange: (k) => { F = mkF(PRESETS[k]); rebuild(); S.reset(); } });
-        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.15 });
-        const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1 });
-        const G = v.graph(ts, { nodes: [], edges: [], layout: 'none', shape: 'box', draggable: false, fontSize: 15, r: 14 });
-        const T = v.table(tb, { rows: 8, cols: 5, maxCell: 34, size: 14, colLabels: ['x', 'y', 'z', 'φ', 'CNF'] });
+        const ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, weight: 1.15 });
+        const tb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 310, weight: 1 });
+        const G = v.graph(ts, { nodes: [], edges: [], layout: 'none', shape: 'box', draggable: false, fontSize: 15, r: 14, notePos: 'e' });
+        const T = v.table(tb, { rows: 8, cols: 5, maxCell: 32, size: 14, labelSize: 12, square: false, cellAspect: 1.35, colLabels: ['x', 'y', 'z', 'φ', 'CNF'] });
         const VARS = ['x', 'y', 'z'];
         const env = (i) => ({ x: !!(i & 4), y: !!(i & 2), z: !!(i & 1) });
         function rebuild() {
@@ -828,9 +875,10 @@ yields the smallest prime factor of $N$ by binary search on $k$ in about $\tfrac
           }
         }
         const reset = () => { N = N0; found = []; calls = 0; done = N === 1; restart(2); };
-        v.select('$N$', [{ value: 'a', label: '391' }, { value: 'b', label: '9 991' }, { value: 'c', label: '1 000 003' }, { value: 'd', label: '600 851 475 143' }], 'd', { onChange: (k) => { N0 = NS[k]; reset(); kh.set(mid(), 0); } });
-        const s = v.stage({ x: [1, 10], y: [-1, 1], axes: false, height: 170, full: true, xlog: true });
-        const bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 120, full: true });
+        v.select('$N$', [{ value: 'a', label: '391' }, { value: 'b', label: '9,991' }, { value: 'c', label: '1,000,003' }, { value: 'd', label: '600,851,475,143' }], 'd', { onChange: (k) => { N0 = NS[k]; reset(); kh.set(mid(), 0); } });
+        const s = v.stage({ x: [1, 10], y: [-1.15, 1.1], axes: false, height: 170, full: true, xlog: true });
+        const bs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 132, full: true });
+        const fmtI = (x) => Math.round(x).toLocaleString('en-US');
         const rootN = () => Math.floor(Math.sqrt(N));
         const mid = () => Math.max(2, Math.min(rootN(), Math.floor((lo + hi) / 2)));
         const kh = s.handle(2, 0, { color: 'gold', constrain: (x) => [Math.round(v.M.clamp(x, 2, Math.max(2, rootN()))), 0] });
@@ -845,7 +893,7 @@ yields the smallest prime factor of $N$ by binary search on $k$ in about $\tfrac
         v.button('Ask: factor ≤ k?', () => ask(kh.x));
         v.button('Ask at midpoint', () => ask(mid()));
         v.button('Restart', () => { reset(); kh.set(mid(), 0); });
-        reset(); ask(mid()); ask(mid()); ask(mid());
+        reset(); while (!found.length) ask(mid()); for (let i = 0; i < 4; i++) ask(mid()); // start part-way through
         v.render(() => {
           const R = Math.max(3, rootN());
           s.setView([1.6, R * 1.25], [-1, 1]);
@@ -853,32 +901,45 @@ yields the smallest prime factor of $N$ by binary search on $k$ in about $\tfrac
           else {
             s.line(2, 0, R, 0, { color: 'muted', width: 2 });
             s.rect(lo, -0.22, Math.min(hi, R) + 0.999, 0.22, { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 1.2 });
-            for (const q of log) {
-              s.line(q.k, -0.42, q.k, 0.42, { color: q.yes ? 'green' : 'red', width: 2.2 });
-              s.text(`${q.k.toLocaleString('en-US')}${q.yes ? ' ✓' : ' ✗'}`, q.k, 0.62, { align: 'center', size: 10.5, color: q.yes ? 'green' : 'red', weight: 600 });
-            }
-            s.text('2', 2, -0.62, { align: 'center', size: 11, color: 'muted' });
-            s.text(`⌊√N⌋ = ${R.toLocaleString('en-US')}`, R, -0.62, { align: 'center', size: 11, color: 'muted' });
-            s.text(`candidates for the smallest factor: [${lo.toLocaleString('en-US')}, ${Math.min(hi, R).toLocaleString('en-US')}]`, Math.sqrt(1.7 * R * 1.2), -0.9, { align: 'center', size: 11.5, color: 'accent' });
-            s.text(`k = ${Math.round(kh.x).toLocaleString('en-US')}`, kh.x, 0.3, { align: 'center', size: 11, color: 'gold', weight: 700, dy: -14 });
+            log.forEach((q, i) => {
+              const recent = i >= log.length - 2;
+              s.line(q.k, -0.36, q.k, 0.36, { color: q.yes ? 'green' : 'red', width: recent ? 2.4 : 1.4, alpha: recent ? 1 : 0.6 });
+              if (recent) s.text(`${fmtI(q.k)} ${q.yes ? 'yes' : 'no'}`, q.k, i === log.length - 1 ? 0.58 : 0.86, { align: 'center', size: 11, color: q.yes ? 'green' : 'red', weight: 600 });
+            });
+            s.text('2', 2, -0.6, { align: 'center', size: 11, color: 'muted' });
+            s.text(`⌊√N⌋ = ${fmtI(rootN())}`, R, -0.6, { align: 'right', size: 11, color: 'muted', dx: 4 });
+            s.text(`smallest factor of ${fmtI(N)} lies in [${fmtI(lo)}, ${fmtI(Math.min(hi, R))}]${hi > R ? ' — or it is prime' : ''}`, Math.sqrt(2 * R), -0.95, { align: 'center', size: 11.5, color: 'accent', weight: 600 });
+            s.text(`k = ${fmtI(kh.x)}`, kh.x, -0.36, { align: 'center', size: 11, color: 'gold', weight: 700, dy: 0 });
           }
           // factor bar: widths ∝ log p
           const P = pen(bs, v), L = Math.log(N0), x0 = 14, W = P.W - 28;
           let x = x0;
-          P.sans(`N = ${N0.toLocaleString('en-US')}`, x0, 16, { align: 'left', size: 13, weight: 600, color: 'muted' });
+          P.sans(`N = ${fmtI(N0)}`, x0, 14, { align: 'left', size: 13, weight: 600, color: 'muted' });
+          P.sans('each part is as wide as log p, so the widths add up to log N', P.W - 14, 14, { align: 'right', size: 11.5, color: 'muted' });
           found.forEach((p, i) => {
             const w = (W * Math.log(p)) / L;
-            P.box(x, 32, w - 2, 40, { r: 5, fill: ['blue', 'teal', 'purple', 'orange', 'pink'][i % 5], alpha: 0.3 });
-            P.text(p.toLocaleString('en-US'), x + w / 2, 52, { size: Math.min(13, w / 5), weight: 600 });
+            P.box(x, 28, w - 3, 36, { r: 5, fill: ['blue', 'teal', 'purple', 'orange', 'pink'][i % 5], alpha: 0.3 });
+            P.text(fmtI(p), x + w / 2, 46.5, { size: Math.min(13, w / 5), weight: 600 });
             x += w;
           });
-          if (N > 1) { const w = (W * Math.log(N)) / L; P.box(x, 32, w - 2, 40, { r: 5, stroke: 'faint', dash: true }); P.text(`${N.toLocaleString('en-US')} (cofactor)`, x + w / 2, 52, { size: Math.min(12.5, w / 9), color: 'muted' }); }
-          P.sans(`bar width of each part ∝ log p, so the widths add up to log N`, x0, 92, { align: 'left', size: 11.5, color: 'muted' });
+          if (N > 1) { const w = (W * Math.log(N)) / L; P.box(x, 28, w - 3, 36, { r: 5, stroke: 'faint', dash: true }); P.text(`${fmtI(N)} — not yet factored`, x + w / 2, 46.5, { size: Math.min(12.5, w / 14), color: 'muted' }); }
+          // the questions asked about the current cofactor
+          let cx = x0;
+          P.sans(log.length ? `questions about ${fmtI(N)}:` : done ? 'done' : '', x0, 86, { align: 'left', size: 11.5, color: 'muted', weight: 600 });
+          cx = x0 + P.tw(`questions about ${fmtI(N)}:`, 11.5, 600, SANS) + 10;
+          let row = 0;
+          for (const q of log) {
+            const t = `≤ ${fmtI(q.k)}? ${q.yes ? 'yes' : 'no'}`, tw = P.tw(t, 11, 500) + 12;
+            if (cx + tw > P.W - 10) { row++; cx = x0; if (row > 1) break; }
+            P.box(cx, 77 + row * 24, tw, 19, { r: 9, fill: q.yes ? 'green' : 'red', alpha: 0.14, stroke: q.yes ? 'green' : 'red' });
+            P.text(t, cx + tw / 2, 87 + row * 24, { size: 11, color: q.yes ? 'green' : 'red' });
+            cx += tw + 6;
+          }
         });
         v.legend([['green', 'oracle says yes', { dot: true }], ['red', 'oracle says no', { dot: true }], ['accent', 'interval still containing the smallest factor', { area: true }]]);
         v.readout(() => {
           const bits = Math.ceil(Math.log2(N0 + 1)), per = Math.ceil(Math.log2(Math.sqrt(N0))) + 1;
-          return String.raw`$N$ has ${bits} bits · oracle calls so far: **${calls}** · factors found: ${found.length ? found.map((p) => p.toLocaleString('en-US')).join(' × ') : '—'}${done ? ' ✓ (product = N)' : ''} · binary search needs at most $\lceil\log_2\sqrt N\rceil + 1 = ${per}$ calls per factor, while trial division would test up to $\sqrt N\approx ${v.M.fmt(Math.sqrt(N0), 3)}$ divisors.`;
+          return String.raw`$N$ has ${bits} bits · oracle calls so far: **${calls}** · factors found: ${found.length ? found.map(fmtI).join(' × ') : '—'}${done ? ' ✓ (product = N)' : ''} · binary search needs at most $\lceil\log_2\sqrt N\rceil + 1 = ${per}$ calls per factor, while trial division would test up to $\sqrt N\approx ${v.sci(Math.sqrt(N0), 3)}$ divisors.`;
         });
       },
     },

@@ -471,8 +471,8 @@ with $L^*=H(X)$ exactly when every probability is a power of $\tfrac12$. The bes
         const pathOf = (i) => { let id = i, code = ''; while (nodes[id].parent !== null) { const par = nodes[id].parent; code = (lay.kidsOrd[par][0] === id ? 'Y' : 'N') + code; id = par; } return code; };
         v.render(() => {
           lay = layout();
-          const { pos, kidsOrd, maxH } = lay, top = Math.max(3, maxH) + 0.75, done = complete(), onPath = new Set(game ? game.path : []);
-          s.setView([-0.6, 7.6], [-2.1, top]);
+          const { pos, kidsOrd, maxH } = lay, top = Math.max(3, maxH) + 1.15, done = complete(), onPath = new Set(game ? game.path : []);
+          s.setView([-0.6, 7.6], [-2.45, top]);
           for (const nd of nodes) if (nd.kids) {
             const [xn, yn] = pos[nd.id];
             kidsOrd[nd.id].forEach((k, j) => {
@@ -494,7 +494,7 @@ with $L^*=H(X)$ exactly when every probability is a power of $\tfrac12$. The bes
               s.dot(x, y, { r, color: onPath.has(nd.id) ? 'gold' : 'accent', alpha: 0.75 });
               s.text(NAMES[nd.leaf], x, -0.62, { align: 'center', size: 12.5, weight: 600, color: 'ink' });
               s.text(v.fix(nd.w, 3).replace(/^0/, ''), x, -1.02, { align: 'center', size: 11, color: 'muted' });
-              if (done) s.text(`${depth(nd.id)} · ${pathOf(nd.id)}`, x, -1.5, { align: 'center', size: 11, color: 'teal', weight: 600 });
+              if (done) { s.text(`${depth(nd.id)} question${depth(nd.id) === 1 ? '' : 's'}`, x, -1.5, { align: 'center', size: 10.5, color: 'teal', weight: 600 }); s.text(pathOf(nd.id), x, -1.9, { align: 'center', size: 10.5, color: 'teal', weight: 700 }); }
             }
           }
           if (!done) s.corner(`${roots().length} groups: click two to join them under one question`, 'tl', { size: 12 });

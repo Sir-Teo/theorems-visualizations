@@ -77,7 +77,7 @@ export default {
         });
         const xS = v.slider('$x$', 10, 1e7, 1e5, { log: true, sig: 3 });
         const C = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 236, full: true });
-        const Pl = v.stage({ x: [2, 1e7], y: [0.8, 1.5e6], xlog: true, ylog: true, height: 300, full: true, axes: 'box', grid: true, xlabel: 'x', title: 'how many? $\\pi(x)$ counted by a sieve up to $10^7$ (log–log axes)' });
+        const Pl = v.stage({ x: [2, 1e7], y: [0.8, 1.5e6], xlog: true, ylog: true, height: 300, full: true, axes: 'box', grid: true, title: 'how many? $\\pi(x)$ counted by a sieve up to $10^7$ (log–log axes)' });
         let rects = [];
         C.onClick((x, y) => {
           const X = C.X(x), Y = C.Y(y);
@@ -288,19 +288,19 @@ Cost: about $N\sum_{p\le\sqrt N}1/p\approx N\ln\ln N$ crossings.`,
           });
           const has3 = items.some((it) => it.r === 3), has1 = items.some((it) => it.r === 1);
           let verdict, vcol;
-          if (m === 'm3') { verdict = `N ≡ 3 (mod 4), so some prime factor is ≡ 3 — here ${items.filter((it) => it.r === 3).map((it) => it.p).join(', ')}, and none of them is on the list.`; vcol = 'green'; }
+          if (m === 'm3') { verdict = `N ≡ 3 (mod 4), so some prime factor is ≡ 3 — here ${items.filter((it) => it.r === 3).map((it) => it.p).join(', ')}, not on the list.`; vcol = 'green'; }
           else if (m === 'm1') { verdict = has1 ? 'A new prime ≡ 1 (mod 4) did appear — but only by luck: nothing forces it.' : 'No prime factor ≡ 1 (mod 4) at all: the factors ≡ 3 pair up (3·3 ≡ 1). The argument fails.'; vcol = has1 ? 'orange' : 'red'; }
           else { verdict = 'Every prime factor of (2P)² + 1 is ≡ 1 (mod 4) (−1 is a square mod p only for p ≡ 1), and none is on the list.'; vcol = 'green'; }
           C.textPx(verdict, W / 2, 218, { align: 'center', size: 12.5, color: vcol, weight: 650 });
           // mod-4 multiplication of odd residues
-          const tx = W - 150, ty = 252, c = 26;
-          C.textPx('odd residues mod 4 multiply:', tx - 6, ty - 8, { size: 10.5, color: 'muted' });
+          const tx = 44, ty = 262, c = 30;
+          C.textPx('odd residues mod 4 multiply:', 14, ty - 26, { size: 10.5, color: 'muted' });
           [['·', '1', '3'], ['1', '1', '3'], ['3', '3', '1']].forEach((row, i) => row.forEach((val, j) => {
-            const X0 = tx + j * c, Y0 = ty + i * c * 0.85;
+            const X0 = tx + j * c, Y0 = ty + i * c * 0.8;
             if (i && j) rbox(v, C, X0 - c / 2 + 2, Y0 - c * 0.38, c - 4, c * 0.76, 4, { fill: val === '1' ? 'teal' : 'purple', fillAlpha: 0.22 });
             C.textPx(val, X0, Y0, { align: 'center', size: 12, weight: i && j ? 650 : 500, color: i && j ? 'ink' : 'muted', halo: false });
           }));
-          C.textPx(has3 && m === 'm3' ? 'a product of 1s is 1 — so N ≡ 3 needs a factor ≡ 3' : '3 · 3 ≡ 1: two factors ≡ 3 can hide in N ≡ 1', 12, ty + 22, { size: 11.5, color: 'muted' });
+          C.textPx(m === 'm3' ? '1 · 1 ≡ 1: a product of factors ≡ 1 is ≡ 1, so N ≡ 3 needs a factor ≡ 3' : '3 · 3 ≡ 1: factors ≡ 3 can pair up and hide inside N ≡ 1', tx + 2.6 * c, ty + c * 0.8, { size: 12, color: 'muted' });
           if (msg) C.corner(msg, 'br', { size: 11, color: 'red', weight: 600 });
           st = { m, L, N, fs, has1, has3 };
         });
@@ -308,7 +308,7 @@ Cost: about $N\sum_{p\le\sqrt N}1/p\approx N\ln\ln N$ crossings.`,
           if (!st) return '';
           const { m, L, N, fs } = st;
           const head = `$N = ${grp(N)} = ${facTexOf(fs)}$. `;
-          if (m === 'm3') return head + `Each listed $p$ divides $N + 1$, so $N \\bmod p = p - 1$ for $p \\in \\{${L.join(', ') || '\\,'}\\}$; the factor${fs.filter(([p]) => p % 4n === 3n).length > 1 ? 's' : ''} $\\equiv 3$ ${fs.filter(([p]) => p % 4n === 3n).map(([p]) => grp(p)).join(', ')} ${fs.filter(([p]) => p % 4n === 3n).length > 1 ? 'are' : 'is'} new.`;
+          if (m === 'm3') { const q3 = fs.filter(([p]) => p % 4n === 3n).map(([p]) => grp(p)); return head + `Each listed $p$ divides $N + 1$, so $N \\bmod p = p - 1 \\ne 0$ for $p \\in \\{${L.join(', ') || '\\,'}\\}$; the prime factor${q3.length > 1 ? 's' : ''} $${q3.join(', ')} \\equiv 3 \\pmod 4$ ${q3.length > 1 ? 'are' : 'is'} new.`; }
           if (m === 'm1') return head + (st.has1 ? 'This list happened to produce a prime $\\equiv 1$; for the list $\\{5\\}$ it does not ($21 = 3\\cdot 7$), so the method proves nothing.' : 'No prime $\\equiv 1 \\pmod 4$ divides $N$ — the mirror image of the argument fails.');
           return head + 'All prime factors are $\\equiv 1 \\pmod 4$ and new: this polynomial proves that there are infinitely many primes $\\equiv 1 \\pmod 4$.';
         });
@@ -374,7 +374,7 @@ and consequently $\gcd(F_m,F_n)=1$ for all $m\ne n$. In particular each $F_n$ ha
               for (let k = 0; k < n; k++) {
                 prod *= F(k);
                 const lab = k === 0 ? 'F_0' : k === 1 ? 'F_0F_1' : k === 2 ? 'F_0F_1F_2' : `F_0\\cdots F_{${k}}`;
-                rowBits(18 + rowH * (k + 0.5), prod.toString(2), 'gold', lab, k === m - 1 || k === m);
+                rowBits(18 + rowH * (k + 0.5), prod.toString(2), 'gold', lab, k === m && m < n);
               }
               const Yp = 18 + rowH * (n + 0.35);
               rowBits(Yp, '10', 'muted', '+\\,2', false);
@@ -432,7 +432,7 @@ are all composite. Hence the gaps $p_{k+1}-p_k$ between consecutive primes are u
         const M = v.M;
         const nS = v.slider('$n$', 2, 30, 10, { int: true });
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
-        const Gs = v.stage({ x: [10, 1e7], y: [0, 165], xlog: true, axes: 'box', height: 330, full: true, xlabel: 'position p (log scale)', ylabel: 'gap', title: 'gaps $p_{k+1} - p_k$ between consecutive primes up to $10^7$: how often (shade), records (gold)' });
+        const Gs = v.stage({ x: [10, 1e7], y: [0, 165], xlog: true, axes: 'box', height: 330, full: true, ylabel: 'gap', title: 'gaps $p_{k+1} - p_k$ between consecutive primes $p_k < 10^7$, by position $p_k$ (log scale)' });
         // gap statistics, once
         const P = primeTable().primes, NX = 240, NY = 83, cnt = new Int32Array(NX * NY), recs = [];
         let rec = 0, cmax = 1;
@@ -479,7 +479,7 @@ are all composite. Hence the gaps $p_{k+1}-p_k$ between consecutive primes are u
           const first = recs.find(([, g]) => g >= n);
           if (first && first[0] >= 10) Gs.dot(first[0], first[1], { r: 6, color: 'green', label: `${first[0]} → ${first[0] + first[1]}`, labelPos: 'nw' });
           const Fn = Number(F);
-          if (Fn <= 1e7) { Gs.vline(Fn + 2, { color: 'red', width: 1.5, dash: [5, 4] }); Gs.text(`n! + 2`, Fn + 2, 150, { color: 'red', size: 11.5, align: 'right', dx: -5, weight: 650 }); }
+          if (Fn <= 1e7) { Gs.vline(Fn + 2, { color: 'red', width: 1.5, dash: [5, 4] }); Gs.text(`n! + 2`, Fn + 2, 96, { color: 'red', size: 11.5, align: 'right', dx: -6, weight: 650 }); }
           else Gs.corner(`n! + 2 ≈ 10^${Math.floor(Math.log10(Fn))} — far off to the right →`, 'tr', { color: 'red', size: 12, weight: 650 });
           st = { n, F, p1, p2, first };
         });
@@ -509,7 +509,7 @@ A particular solution is obtained by scaling a Bézout pair: if $ax'+by'=g$, tak
         const M = v.M, R = 10;
         const aS = v.slider('$a$', 1, 12, 4, { int: true }), bS = v.slider('$b$', 1, 12, 6, { int: true }), cS = v.slider('$c$', -30, 30, 10, { int: true });
         const L = v.stage({ x: [-R - 0.5, R + 0.5], y: [-R - 0.5, R + 0.5], equal: true, height: 400, weight: 1, minWidth: 320, title: 'the line $ax + by = c$ over $\\mathbb Z^2$' });
-        const Fs = v.stage({ x: [-R - 0.7, R + 0.7], y: [-0.1, 1.12], height: 400, weight: 1, minWidth: 300, axes: 'box', title: 'for each integer $x$: height of the line above the lattice point below', xlabel: 'x' });
+        const Fs = v.stage({ x: [-R - 0.7, R + 0.7], y: [-0.1, 1.12], height: 400, weight: 1, minWidth: 300, axes: 'box', title: 'height above the lattice point below, per $x$' });
         let st = null;
         v.render(() => {
           const a = aS.value, b = bS.value, c = cS.value, g = M.gcd(a, b), ok = c % g === 0;
@@ -526,7 +526,7 @@ A particular solution is obtained by scaling a Bézout pair: if $ax'+by'=g$, tak
             for (let i = 0; i + 1 < S.length; i++) L.arrow(S[i][0], S[i][1], S[i + 1][0], S[i + 1][1], { color: 'green', width: 1.8, head: 8 });
             S.forEach(([x, y]) => L.dot(x, y, { r: 5.5, color: 'green' }));
             if (S.length) { const [x, y] = S[Math.floor((S.length - 1) / 2)]; L.tex(`(${x}, ${y})`, x, y, { dx: 14, dy: -14, size: 13, color: 'green', align: 'left' }); }
-            if (S.length >= 2) { const [x, y] = S[Math.floor((S.length - 1) / 2)]; L.tex(`+(${b / g}, ${-a / g})`, x + b / g / 2, y - a / g / 2, { dx: 12, dy: 10, size: 12, color: 'green', align: 'left' }); }
+            L.corner(`step between solutions: (b/g, −a/g) = (${b / g}, ${-a / g})`, 'tr', { size: 11.5, color: 'green', weight: 650 });
           }
           // fractional heights
           const lev = new Set(); for (let x = 0; x < b; x++) lev.add(M.mod(c - a * x, b));
@@ -563,7 +563,8 @@ If $\gcd(a,b)>1$, infinitely many integers (all non-multiples of $\gcd(a,b)$) ar
       viz(v) {
         const M = v.M;
         const aS = v.slider('coin $a$', 2, 12, 5, { int: true }), bS = v.slider('coin $b$', 2, 16, 7, { int: true });
-        const G = v.stage({ x: [-1, 5], y: [-1, 8], equal: true, axes: false, height: 400, title: 'amounts in columns by remainder mod $a$' });
+        const G = v.stage({ x: [-1, 5], y: [-1, 8], equal: true, axes: false, height: 400, weight: 1.1, minWidth: 300, title: 'amounts in columns by remainder mod $a$' });
+        const Cn = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, weight: 0.9, minWidth: 280, title: 'paying the selected amount and its partner' });
         const Nl = v.stage({ x: [-1, 30], y: [-1, 1.6], axes: false, height: 118, full: true });
         let sel = 9, st = null, geo = null;
         G.onClick((x, y) => { if (!geo) return; const c = Math.round(x), r = Math.round(y); if (c >= 0 && c < geo.a && r >= 0 && r < geo.rows) sel = r * geo.a + c; });
@@ -601,6 +602,28 @@ If $\gcd(a,b)>1$, infinitely many integers (all non-multiples of $\gcd(a,b)$) ar
           } else Nl.corner(`gcd(a, b) = ${g}: only multiples of ${g} can ever be paid`, 'tr', { size: 11.5, color: 'red', weight: 650 });
           Nl.dot(sel, 0, { r: 6, color: 'ink' });
           let unpay = 0; if (cop) for (let n = 0; n <= F; n++) if (n < first[n % a]) unpay++;
+          // coins for the selected amount (and its partner)
+          const Wc = Cn.width, Hc = Cn.height, list = partner != null && partner !== sel ? [sel, partner] : [sel];
+          list.forEach((n, li) => {
+            const Y0 = 24 + li * (Hc / 2), r = rep(n, a, b);
+            Cn.texPx(`n = ${n}${li ? `\\ (= ${F} - ${sel})` : ''}`, 14, Y0, { align: 'left', size: 15, color: li ? 'purple' : 'ink' });
+            Cn.textPx(r ? 'payable' : 'not payable', Wc - 14, Y0, { align: 'right', size: 12.5, weight: 700, color: r ? 'green' : 'red' });
+            if (r) {
+              const coins = [...Array(r[0]).fill(a), ...Array(r[1]).fill(b)], cr = Math.min(17, (Wc - 30) / Math.max(1, Math.min(coins.length, 9)) / 2.3), per = Math.max(1, Math.floor((Wc - 28) / (cr * 2.3)));
+              coins.forEach((cv, k) => {
+                const X = 14 + cr + (k % per) * cr * 2.3, Y = Y0 + 34 + Math.floor(k / per) * cr * 2.3, col = cv === a ? 'blue' : 'orange';
+                Cn.ctx.save(); Cn.ctx.beginPath(); Cn.ctx.arc(X, Y, cr, 0, 2 * Math.PI); Cn.ctx.fillStyle = v.color(col, 0.25); Cn.ctx.fill(); Cn.ctx.lineWidth = 1.6; Cn.ctx.strokeStyle = v.color(col); Cn.ctx.stroke(); Cn.ctx.restore();
+                Cn.textPx(String(cv), X, Y, { align: 'center', size: Math.min(12, cr * 0.9), weight: 650, halo: false });
+              });
+              if (!coins.length) Cn.textPx('no coins at all: 0 = 0·a + 0·b', 14, Y0 + 34, { size: 12, color: 'muted' });
+              Cn.texPx(`${n} = ${r[0]}\\cdot ${a} + ${r[1]}\\cdot ${b}`, 14, Y0 + 40 + Math.ceil(Math.max(1, coins.length) / per) * cr * 2.3, { align: 'left', size: 13.5, color: 'green' });
+            } else {
+              const tries = []; for (let k = 0; k * b <= n; k++) tries.push(k);
+              const rowH = Math.min(22, (Hc / 2 - 50) / Math.max(1, tries.length));
+              tries.slice(0, 8).forEach((k, i) => Cn.texPx(`${n} - ${k}\\cdot ${b} = ${n - k * b}\\ \\text{(not a multiple of } ${a}\\text{)}`, 14, Y0 + 32 + rowH * i, { align: 'left', size: Math.min(13, rowH * 0.7), color: 'red' }));
+              if (!cop && !tries.length) Cn.textPx('—', 14, Y0 + 32, { size: 12, color: 'red' });
+            }
+          });
           st = { a, b, g, F, unpay, cop, first, partner };
         });
         v.readout(() => {
