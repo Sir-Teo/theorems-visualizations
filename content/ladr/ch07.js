@@ -976,10 +976,10 @@ $$T \text{ is normal} \iff \|Tv\| = \|T^*v\| \text{ for every } v \in V.$$`,
       tags: ['normal'],
       viz(v) {
         const M = v.M, a = 0.6, b = 0.9;
-        const q3 = unit([0.3, -0.5, 0.81]), q1 = unit(cross(q3, [0, 0, 1])), q2 = cross(q3, q1), Qm = [0, 1, 2].map((i) => [q1[i], q2[i], q3[i]]);
+        const q3 = unit([0.3, 0.25, 1]), q1 = unit(cross(q3, [0, 0, 1])), q2 = cross(q3, q1), Qm = [0, 1, 2].map((i) => [q1[i], q2[i], q3[i]]);
         const sl = v.slider('non-normal part $s$', 0, 1.5, 0, { step: 0.05 });
         const S = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.75], equal: true, axes: false, height: 420 });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.5, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.35, axis: 1.5, lim: 1.4 });
         let nul = q3;
         const wh = sc.handle(add(scl(q1, 0.95), scl(q2, 0.35)), { color: 'gold', label: 'w', snap: (p) => { const r = len(p); if (r < 1e-6) return p; const c = dot(p, nul) / r; return Math.abs(c) > Math.cos(7 / DEG) ? scl(nul, Math.sign(c) * r) : p; } });
         const ring = (e, f, r, st) => { const pts = []; for (let k = 0; k <= 60; k++) { const t = (TAU * k) / 60; pts.push(add(scl(e, r * Math.cos(t)), scl(f, r * Math.sin(t)))); } sc.path(pts, st); };

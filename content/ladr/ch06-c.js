@@ -160,7 +160,7 @@ export default {
       name: 'U⊥ = {0} ⟺ U = V for finite-dimensional U',
       statement: String.raw`Suppose $U$ is a finite-dimensional subspace of $V$. Then $$U^\perp=\{0\}\iff U=V.$$`,
       idea: String.raw`If $U^\perp=\{0\}$, then 6.52 and 6.48(b) give $U=(U^\perp)^\perp=\{0\}^\perp=V$. Conversely, if $U=V$ then $U^\perp=V^\perp=\{0\}$ by 6.48(c). In practice this is a test: to show that a subspace is everything, show that the only vector orthogonal to it is $0$. The finite-dimensionality of $U$ matters — in the space of continuous functions on $[-1,1]$ the polynomials form a proper subspace whose orthogonal complement is $\{0\}$.`,
-      caption: String.raw`The sphere is the set of unit vectors in $\mathbf R^3$. Each spanning vector $u_k$ of $U$ cuts out a great circle: the unit vectors orthogonal to it. A unit vector in $U^\perp$ must lie on every circle at once (green). With one vector that is a whole circle; with two independent vectors, two antipodal points $\pm w$; with three vectors spanning $\mathbf R^3$ the circles share no point, so $U^\perp=\{0\}$. Drag $u_3$ into the plane of $u_1,u_2$ (it snaps): $U$ is no longer all of $\mathbf R^3$ and the common points $\pm w$ reappear.`,
+      caption: String.raw`The sphere is the set of unit vectors in $\mathbf R^3$. Each spanning vector $u_k$ of $U$ cuts out a great circle: the unit vectors orthogonal to it. A unit vector in $U^\perp$ must lie on every circle at once (green). With three vectors spanning $\mathbf R^3$ each pair of circles still meets (small rings), but never all three at one point. With one vector that is a whole circle; with two independent vectors, two antipodal points $\pm w$; with three, no common point is left, so $U^\perp=\{0\}$. Drag $u_3$ into the plane of $u_1,u_2$ (it snaps): $U$ is no longer all of $\mathbf R^3$ and the common points $\pm w$ reappear.`,
       deps: ['ladr-6.52', 'ladr-6.48'],
       tags: ['orthogonality'],
       viz(v) {
@@ -191,6 +191,10 @@ export default {
           us.forEach((u, i) => { if (len3(u) > 1e-6) { const [a, b] = perp(u); great(a, b, VC[i], 2.4); } });
           if (W.length === 2) great(W[0], W[1], 'green', 4.2);
           us.forEach((u, i) => sc.arrow(ZERO, u, { color: VC[i], width: 2.8 }));
+          if (k === 3 && W.length === 0) for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) {
+            const c = unit3(cross(us[i], us[j]));
+            if (len3(c) > 0.5) for (const s of [1, -1]) { const q = mul3(c, s); sc.dot(q, { r: 4.5, color: sc.P(q)[2] > 0 ? 'muted' : 'ink', hollow: true, width: 1.6 }); }
+          }
           if (W.length === 1) {
             const w = W[0];
             sc.line(mul3(w, -1.5), mul3(w, 1.5), { color: 'green', width: 1.4, dash: [5, 4], alpha: 0.8 });
@@ -216,7 +220,7 @@ export default {
       name: 'Orthogonal projection P_U',
       statement: String.raw`Suppose $U$ is a finite-dimensional subspace of $V$. The **orthogonal projection** of $V$ onto $U$ is the operator $P_U\in\mathcal L(V)$ defined as follows: for $v\in V$, write $v=u+w$ with $u\in U$ and $w\in U^\perp$, and set $$P_Uv=u.$$`,
       idea: String.raw`The decomposition $v=u+w$ exists and is unique because $V=U\oplus U^\perp$ (6.49), so $P_Uv$ is well defined. Geometrically $P_Uv$ is the foot of the perpendicular dropped from $v$ to $U$ — the shadow of $v$ when light falls along $U^\perp$. For a line, $U=\operatorname{span}(u)$, the formula is $P_Uv=\frac{\langle v,u\rangle}{\|u\|^2}u$.`,
-      caption: String.raw`The blue plane $U$ can be tilted by dragging its normal $n$. The gold cube is centred at $v$ (drag it); its shadow on $U$ is cast by light travelling along $U^\perp$, so every point drops straight down: $P_Uv$ is the foot of the perpendicular, and $v-P_Uv$ lies on the green line $U^\perp$. Switch to **oblique**: light along a slanted direction still lands in $U$ and projecting twice still changes nothing, but the remainder is no longer orthogonal to $U$ — that map is a projection, but not $P_U$.`,
+      caption: String.raw`The blue plane $U$ can be tilted by dragging its normal $n$. The gold cube is centred at $v$ (drag it); its shadow on $U$ is cast by light travelling along $U^\perp$, so every point drops straight down: $P_Uv$ is the foot of the perpendicular, and $v-P_Uv$ lies on the green line $U^\perp$. Switch to **oblique**: light along a slanted direction still lands in $U$ and projecting twice still changes nothing, but the remainder is no longer orthogonal to $U$ — that map is a projection, but not $P_U$ (whose foot stays marked in green).`,
       deps: ['ladr-6.49'],
       see: ['fa-12.14'],
       tags: ['projections'],
@@ -225,9 +229,9 @@ export default {
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.42, axis: 1.4, lim: 1.4 });
         const kind = v.select('light', [{ value: 'orth', label: 'along $U^\\perp$ (orthogonal)' }, { value: 'obl', label: 'oblique' }], 'orth');
         const N = sc.handle(mul3(unit3([0.15, -0.25, 0.95]), 1.15), { color: 'green', label: 'n', snap: (p) => (len3(p) < 0.4 ? mul3(unit3(p.some((c) => c) ? p : [0, 0, 1]), 0.4) : p) });
-        const Vh = sc.handle([0.55, 0.3, 0.95], { color: 'gold', label: 'v' });
+        const Vh = sc.handle([0.55, 0.3, 1.05], { color: 'gold', label: 'v' });
         const RT = (() => { const a = 0.5, b = 0.35, ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b); return [[ca, -sa * cb, sa * sb], [sa, ca * cb, -ca * sb], [0, sb, cb]]; })();
-        const H = 0.2, corners = [];
+        const H = 0.26, corners = [];
         for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) corners.push(mv(RT, [x * H, y * H, z * H]));
         const faces = [[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]];
         v.legend([['blue', '$U$', { area: true }], ['green', '$U^\\perp$'], ['gold', '$v$ and the cube'], ['muted', 'light rays', { dash: true }], ['red', 'remainder not $\\perp U$', { dash: true }]]);
@@ -238,7 +242,7 @@ export default {
           const P = (x) => sub3(x, mul3(d, dot3(x, n) / dot3(d, n)));
           const c = Vh.p, pts = corners.map((q) => add3(c, q)), sh = pts.map(P);
           sc.begin();
-          sc.disc(a, b, 1.5, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
+          sc.disc(a, b, 1.35, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
           sc.line(mul3(n, -1.6), mul3(n, 1.6), { color: 'green', width: 2.2, alpha: 0.65 }, 12);
           // the shadow: convex hull of the projected corners, in plane coordinates
           const hull = v.M.hull(sh.map((p) => [dot3(p, a), dot3(p, b)])).map(([s, t]) => add3(mul3(a, s), mul3(b, t)));
@@ -246,9 +250,10 @@ export default {
           [0, 3, 5, 6].forEach((i) => sc.line(pts[i], sh[i], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.8 }));
           faces.forEach((f) => sc.poly(f.map((i) => pts[i]), { fill: 'gold', color: 'gold', fillAlpha: 0.13, alpha: 0.85, width: 1.3 }));
           const u = P(c), w = sub3(c, u), perpOK = Math.abs(dot3(w, a)) < 1e-9 && Math.abs(dot3(w, b)) < 1e-9;
-          sc.arrow(ZERO, u, { color: 'blue', width: 3, head: 10 }); sc.tex(obl ? 'Pv' : 'P_Uv', u, { color: 'blue', dx: 14, dy: 14, size: 14 });
+          sc.arrow(ZERO, u, { color: 'blue', width: 3, head: 10 }); sc.tex(obl ? 'Pv' : 'P_Uv', u, { color: 'blue', dx: -22, dy: 16, size: 14 });
+          if (obl) { const t = sub3(c, mul3(n, dot3(c, n))); sc.dot(t, { r: 5, color: 'green' }); sc.line(c, t, { color: 'green', width: 1.2, alpha: 0.6, dash: [2, 3] }); sc.tex('P_Uv', t, { color: 'green', dx: 18, dy: 12, size: 12.5 }); }
           sc.line(c, u, { color: perpOK ? 'green' : 'red', width: 2.4, dash: perpOK ? null : [5, 3] });
-          if (len3(w) > 0.08 && len3(u) > 0.08) corner3(sc, u, unit3(mul3(u, -1)), unit3(w), 0.12, { color: perpOK ? 'ink' : 'red' });
+          if (!obl && len3(w) > 0.08 && len3(u) > 0.08) corner3(sc, u, unit3(mul3(u, -1)), unit3(w), 0.12, { color: 'ink' });
           sc.arrow(ZERO, c, { color: 'gold', width: 2.4, head: 9 });
           sc.flush();
           const PP = P(u);
@@ -286,8 +291,8 @@ export default {
         const S = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], equal: true, axes: false, height: 430, weight: 1.15 });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.4, axis: 1.4, lim: 1.4 });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, weight: 0.85, minWidth: 270, title: 'the nine properties, checked' });
-        const th = v.slider('basis angle $\\theta$ in $U$', 0, 360, 30, { step: 1, fmt: (x) => `${Math.round(x)}°` });
-        const n = unit3([0.2, -0.3, 0.93]), [a0, b0] = perp(n);
+        const th = v.slider('basis angle $\\theta$ in $U$', 0, 360, 75, { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const n = unit3([0.35, -0.45, 0.82]), [a0, b0] = perp(n);
         const Vh = sc.handle([0.75, 0.35, 0.95], { color: 'gold', label: 'v', snap: (p) => { const t = dot3(p, n); if (Math.abs(t) < 0.09) return sub3(p, mul3(n, t)); const q = mul3(n, t); return len3(sub3(p, q)) < 0.09 ? q : p; } });
         const r = [0.3, -0.8, 0.45];                                   // a fixed second vector for the linearity test
         v.legend([['blue', '$U$ and $P_Uv$'], ['purple', '$\\langle v,e_1\\rangle e_1$', { dash: true }], ['teal', '$\\langle v,e_2\\rangle e_2$', { dash: true }], ['green', '$v-P_Uv\\in U^\\perp$']]);
@@ -298,7 +303,7 @@ export default {
           const Pdef = (x) => sub3(x, mul3(n, dot3(x, n)));                               // the decomposition v = u + w, w ∈ U⊥ = span(n)
           const x = Vh.p, px = P(x), w = sub3(x, px), c1 = mul3(e1, dot3(x, e1)), c2 = mul3(e2, dot3(x, e2));
           sc.begin();
-          sc.disc(a0, b0, 1.5, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
+          sc.disc(a0, b0, 1.3, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
           sc.line(mul3(n, -1.6), mul3(n, 1.6), { color: 'green', width: 2, alpha: 0.6 }, 12);
           sc.arrow(ZERO, e1, { color: 'muted', width: 1.5, head: 7 }); sc.tex('e_1', e1, { color: 'muted', dx: 10, dy: 12, size: 13 });
           sc.arrow(ZERO, e2, { color: 'muted', width: 1.5, head: 7 }); sc.tex('e_2', e2, { color: 'muted', dx: 10, dy: 12, size: 13 });
@@ -313,19 +318,19 @@ export default {
           const u0 = add3(e1, mul3(e2, -0.6));
           const chk = [
             ['(a)', String.raw`\|P(2v+r)-2Pv-Pr\|`, len3(sub3(P(add3(mul3(x, 2), r)), add3(mul3(px, 2), P(r))))],
-            ['(b)', String.raw`\|Pu-u\|,\ u=e_1-0.6e_2`, len3(sub3(P(u0), u0))],
-            ['(c)', String.raw`\|P n\|,\ n\perp U`, len3(P(n))],
+            ['(b)', String.raw`\|Pu-u\|`, len3(sub3(P(u0), u0)), null, String.raw`u=e_1-0.6e_2\in U`],
+            ['(c)', String.raw`\|Pn\|`, len3(P(n)), null, String.raw`n\in U^\perp`],
             ['(d)', String.raw`\operatorname{dist}(Pv,U)`, Math.abs(dot3(px, n))],
             ['(e)', String.raw`\|Pv\| = \operatorname{dist}(v,U^\perp)`, len3(px), len3(sub3(x, mul3(n, dot3(x, n))))],
-            ['(f)', String.raw`\langle v-Pv,e_1\rangle,\ \langle v-Pv,e_2\rangle`, Math.max(Math.abs(dot3(w, e1)), Math.abs(dot3(w, e2)))],
+            ['(f)', String.raw`\max_k\lvert\langle v-Pv,e_k\rangle\rvert`, Math.max(Math.abs(dot3(w, e1)), Math.abs(dot3(w, e2)))],
             ['(g)', String.raw`\|P(Pv)-Pv\|`, len3(sub3(P(px), px))],
             ['(i)', String.raw`\|\textstyle\sum\langle v,e_k\rangle e_k - u\|`, len3(sub3(px, Pdef(x)))],
           ];
-          chk.forEach(([lab, txt, val, val2], i) => {
+          chk.forEach(([lab, txt, val, val2, note], i) => {
             const y = 0.95 - i * 0.092, isE = lab === '(e)';
             const ok = isE ? Math.abs(val - val2) < 1e-9 : Math.abs(val) < 1e-9;
             Q.tex(`\\text{${lab}}`, 0.02, y, { align: 'left', color: 'muted', size: 12.5 });
-            Q.tex(isE ? `${txt} = ${tn(val, 3)}` : `${txt} = ${zs(val)}`, 0.12, y, { align: 'left', color: ok ? 'ink' : 'red', size: 12.5 });
+            Q.tex((isE ? `${txt} = ${tn(val, 3)}` : `${txt} = ${zs(val)}`) + (note ? `\\quad {\\scriptstyle (${note})}` : ''), 0.12, y, { align: 'left', color: ok ? 'ink' : 'red', size: 12.5 });
             Q.tex(ok ? '\\checkmark' : '\\times', 0.97, y, { align: 'right', color: ok ? 'green' : 'red', size: 14 });
           });
           // (h): stacked bar of squared lengths
@@ -356,16 +361,16 @@ export default {
       name: 'Riesz representation theorem, revisited',
       statement: String.raw`Suppose $V$ is finite-dimensional. For $v\in V$ define $\varphi_v\in V'$ by $\varphi_v(u)=\langle u,v\rangle$. Then $v\mapsto\varphi_v$ is a one-to-one function from $V$ onto $V'$. (It is linear when $\mathbf F=\mathbf R$; when $\mathbf F=\mathbf C$ it is conjugate-linear, $\varphi_{\lambda v}=\bar\lambda\varphi_v$.)`,
       idea: String.raw`One-to-one is the uniqueness in 6.42. For onto, a new argument through complements: if $\varphi\ne0$ then $\operatorname{null}\varphi\ne V$, so $(\operatorname{null}\varphi)^\perp\ne\{0\}$ (6.49), and it is one-dimensional by 6.51 and 3.21. Pick any nonzero $w$ in it and set $v=\frac{\varphi(w)}{\|w\|^2}w$. Then $\varphi(v)=\|v\|^2$, and splitting $u=\bigl(u-\frac{\varphi(u)}{\varphi(v)}v\bigr)+\frac{\varphi(u)}{\varphi(v)}v$ — the first part lies in $\operatorname{null}\varphi$, hence is orthogonal to $v$ — gives $\langle u,v\rangle=\varphi(u)$.`,
-      caption: String.raw`A functional $\varphi$ on $\mathbf R^3$ is drawn by its null plane (orange) and its level plane $\varphi=1$ (drag the dot there to change $\varphi$). The green line is $(\operatorname{null}\varphi)^\perp$. Slide the purple $w$ along that line — any nonzero choice — and the formula $v=\frac{\varphi(w)}{\|w\|^2}w$ always returns the same green vector, the representer. Its tip lies on the level plane $\varphi=\|v\|^2$. Drag the test vector $u$ and compare $\varphi(u)$ with $\langle u,v\rangle$.`,
+      caption: String.raw`A functional $\varphi$ on $\mathbf R^3$ is drawn by its null plane (orange) and its level plane $\varphi=1$ (drag the dot there to change $\varphi$). The green line is $(\operatorname{null}\varphi)^\perp$. Slide the purple $w$ along that line — any nonzero choice — and the formula $v=\frac{\varphi(w)}{\|w\|^2}w$ always returns the same green vector, the representer. Since $\varphi(v)=\|v\|^2$, its tip lies on the level plane of height $\|v\|^2$. Drag the gold test vector $u$: the readout compares $\varphi(u)$ with $\langle u,v\rangle$ for every position.`,
       deps: ['ladr-6.49', 'ladr-6.42', 'ladr-3.110'],
       tags: ['duality', 'inner products'],
       viz(v) {
         const S = v.stage({ x: [-1.85, 1.85], y: [-1.8, 1.8], equal: true, axes: false, height: 430 });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.36, axis: 1.4, lim: 1.4 });
-        const Fh = sc.handle([0.3, -0.25, 0.72], { color: 'accent', label: 'φ = 1', snap: (p) => (len3(p) < 0.4 ? mul3(unit3(p.some((c) => c) ? p : [0, 0, 1]), 0.4) : p) });
+        const Fh = sc.handle([0.49, -0.163, 0.653], { color: 'accent', label: 'φ = 1', snap: (p) => (len3(p) < 0.4 ? mul3(unit3(p.some((c) => c) ? p : [0, 0, 1]), 0.4) : p) });
         const cOf = () => { const p = Fh.p, r2 = dot3(p, p); return mul3(p, 1 / r2); };
         const Wh = sc.handle(mul3(unit3(cOf()), -0.7), { mode: 'line', d: unit3(cOf()), color: 'purple', label: 'w', snap: (p) => { const d = unit3(cOf()), t = dot3(p, d); return Math.abs(t) < 0.25 ? mul3(d, t < 0 ? -0.25 : 0.25) : p; } });
-        const Uh = sc.handle([0.95, 0.65, -0.15], { color: 'gold', label: 'u' });
+        const Uh = sc.handle([1.0, 0.1, 0.5], { color: 'gold', label: 'u' });
         v.legend([['orange', '$\\operatorname{null}\\varphi$', { area: true }], ['accent', 'level plane $\\varphi=1$', { area: true }], ['green', '$(\\operatorname{null}\\varphi)^\\perp$ and $v$'], ['purple', 'any $w\\ne0$ on it']]);
         let st = null;
         v.render(() => {
@@ -373,10 +378,9 @@ export default {
           if (len3(sub3(Wh.d, d)) > 1e-12) Wh.d = d;                // keep w on the (moving) perpendicular line
           const [a, b] = perp(c), phi = (x) => dot3(c, x);
           sc.begin();
-          sc.disc(a, b, 1.4, { fill: 'orange', color: 'orange', fillAlpha: 0.12, grid: true });
-          sc.disc(a, b, 1.05, { fill: 'accent', color: 'accent', fillAlpha: 0.07, alpha: 0.6 }, Fh.p);
+          sc.disc(a, b, 1.25, { fill: 'orange', color: 'orange', fillAlpha: 0.12, grid: true });
+          sc.disc(a, b, 0.75, { fill: 'accent', color: 'accent', fillAlpha: 0.08, alpha: 0.6 }, Fh.p);
           const vv = mul3(Wh.p, phi(Wh.p) / dot3(Wh.p, Wh.p));
-          if (Math.abs(dot3(vv, vv) - 1) > 0.05) sc.disc(a, b, 0.6, { fill: 'green', color: 'green', fillAlpha: 0.05, alpha: 0.45, width: 1 }, vv);
           sc.line(mul3(d, -1.7), mul3(d, 1.7), { color: 'green', width: 2.4, alpha: 0.7 }, 12);
           corner3(sc, ZERO, a, d, 0.15, { color: 'ink' });
           sc.arrow(ZERO, Wh.p, { color: 'purple', width: 2.4, head: 9 });

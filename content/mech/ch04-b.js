@@ -191,7 +191,7 @@ a series that converges absolutely and uniformly (since $|H(n\omega)| = O(1/n^2)
         const r0 = v.slider('natural frequency $\\omega_0/\\omega$', 0.6, 9.5, 3, { step: 0.01 });
         const Qs = v.slider('quality factor $Q$', 1, 50, 15, { log: true, decimals: 1 });
         const sT = v.stage({ x: [-Math.PI, Math.PI], y: [-2, 2], height: 250, full: true, axes: true, xlabel: 'ωt', xticks: piTicks, title: 'one drive period' });
-        const sB = v.stage({ x: [-0.6, 16.6], y: [5e-4, 60], ylog: true, height: 230, full: true, axes: 'box', xlabel: 'harmonic n', xticks: Array.from({ length: 17 }, (_, n) => n), title: 'harmonic amplitudes (log scale)' });
+        const sB = v.stage({ x: [-1.2, 16.6], y: [5e-4, 60], ylog: true, height: 230, full: true, axes: 'box', xlabel: 'harmonic n', xticks: Array.from({ length: 17 }, (_, n) => n), title: 'harmonic amplitudes (log scale)' });
         const NH = 300, NP = 400;
         const wrap = (t) => { let u = (t + Math.PI) % TAU; if (u < 0) u += TAU; return u - Math.PI; };
         let S = null, key = '';
