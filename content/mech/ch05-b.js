@@ -525,7 +525,7 @@ with equality only for circles. Equivalently, among closed curves of given lengt
       viz(v) {
         const SA = 0.42, CA = Math.sqrt(1 - SA * SA), TA = SA / CA, ZA = 1.35, RHO = 2.75, RS = 1.25, ZC = 1.45;
         const SURF = {
-          cyl: { F: (p) => p[0] * p[0] + p[1] * p[1] - 1, grad: (p) => [2 * p[0], 2 * p[1], 0], hq: (w) => 2 * (w[0] * w[0] + w[1] * w[1]), start: [1, 0, -0.35], aim: [1.6, 0.25], view: [[-4.6, 4.6], [-2.3, 2.3]], inside: (p) => Math.abs(p[2]) < ZC },
+          cyl: { F: (p) => p[0] * p[0] + p[1] * p[1] - 1, grad: (p) => [2 * p[0], 2 * p[1], 0], hq: (w) => 2 * (w[0] * w[0] + w[1] * w[1]), start: [1, 0, -1.05], aim: [1.5, -0.84], view: [[-3.5, 3.5], [-2.1, 1.75]], inside: (p) => Math.abs(p[2]) < ZC },
           cone: { F: (p) => p[0] * p[0] + p[1] * p[1] - TA * TA * (p[2] - ZA) ** 2, grad: (p) => [2 * p[0], 2 * p[1], -2 * TA * TA * (p[2] - ZA)], hq: (w) => 2 * (w[0] * w[0] + w[1] * w[1]) - 2 * TA * TA * w[2] * w[2], start: [1.9 * SA, 0, ZA - 1.9 * CA], aim: [0.75, -1.2], view: [[-3, 3], [-3, 2.2]], inside: (p) => { const r = v3.norm(v3.sub(p, [0, 0, ZA])); return r > 0.06 && r < RHO && p[2] < ZA; } },
           sph: { F: (p) => v3.dot(p, p) - RS * RS, grad: (p) => v3.sc(p, 2), hq: (w) => 2 * v3.dot(w, w), start: [RS * Math.cos(0.45), 0, RS * Math.sin(0.45)], aim: [0.8, 0.55], view: [[-3, 3], [-2.6, 2.6]], inside: () => true },
         };
@@ -533,8 +533,8 @@ with equality only for circles. Equivalently, among closed curves of given lengt
         const lenS = v.slider('length of the geodesic', 1, 16, 9, { step: 0.1 });
         const s3 = v.stage({ x: [-1.9, 1.9], y: [-1.75, 1.75], equal: true, axes: false, height: 330, title: 'in space' });
         const sc = v.scene3(s3, { yaw: -0.75, pitch: 0.3, axes: false });
-        const sC = v.stage({ x: [-4.6, 4.6], y: [-2.3, 2.3], equal: true, axes: false, height: 330, title: 'flat chart' });
-        const aim = sC.handle(1.6, 0.25, { color: 'gold', r: 7.5, label: 'aim', labelPos: 'ne' });
+        const sC = v.stage({ x: [-3.5, 3.5], y: [-2.1, 1.75], equal: true, axes: false, height: 330, title: 'flat chart' });
+        const aim = sC.handle(1.5, -0.84, { color: 'gold', r: 7.5, label: 'aim', labelPos: 'ne' });
         let lastS = null;
         // charts: 3D point (with unwrapped angle) → plane, and back
         const n0 = v3.unit(SURF.sph.start), e1 = [0, 1, 0], e2 = v3.cross(n0, e1);
@@ -547,7 +547,8 @@ with equality only for circles. Equivalently, among closed curves of given lengt
         const geo = () => cache([ssel.value, aim.x, aim.y, lenS.value].join('|'), () => {
           const S = SURF[ssel.value], C = chart[ssel.value], p0 = S.start, q0 = C.to(p0, 0);
           const dir = [aim.x - q0[0], aim.y - q0[1]], dl = Math.hypot(...dir) || 1, dd = 1e-5;
-          const w0 = v3.unit(v3.sub(C.from([q0[0] + (dd * dir[0]) / dl, q0[1] + (dd * dir[1]) / dl]), C.from(q0)));
+          const wr = v3.sub(C.from([q0[0] + (dd * dir[0]) / dl, q0[1] + (dd * dir[1]) / dl]), C.from([q0[0] - (dd * dir[0]) / dl, q0[1] - (dd * dir[1]) / dl]));
+          const nh = v3.unit(S.grad(p0)), w0 = v3.unit(v3.sub(wr, v3.sc(nh, v3.dot(wr, nh)))); // tangent by construction
           const acc = (p, w) => { const g = S.grad(p); return v3.sc(g, -S.hq(w) / v3.dot(g, g)); };
           const h = 0.004, n = Math.round(lenS.value / h); let p = p0.slice(), w = w0.slice(), th = 0, prevA = Math.atan2(p[1], p[0]);
           const pts = [p0.slice()], cpts = [q0], Lz0 = p[0] * w[1] - p[1] * w[0]; let Fmax = 0, Lzd = 0, spd = 0, stop = false;
@@ -588,10 +589,10 @@ with equality only for circles. Equivalently, among closed curves of given lengt
           sc.flush();
           // ── chart
           if (key === 'cyl') {
-            sC.rect(-50, -ZC, 50, ZC, { fill: 'accent', fillAlpha: 0.08, stroke: false });
-            sC.hline(ZC, { color: 'accent', width: 1, alpha: 0.6 }); sC.hline(-ZC, { color: 'accent', width: 1, alpha: 0.6 });
-            for (let k = -3; k <= 3; k++) sC.line(Math.PI * (2 * k + 1), -ZC, Math.PI * (2 * k + 1), ZC, { color: 'muted', dash: [4, 4], width: 1 });
-            sC.text('unrolled cylinder: the dashed verticals are the same seam', 0, -ZC, { align: 'center', baseline: 'top', dy: 6, color: 'muted', size: 11.5 });
+            sC.rect(-Math.PI, -ZC, Math.PI, ZC, { fill: 'accent', fillAlpha: 0.08, color: 'accent', width: 1, alpha: 0.6 });
+            for (const x of [-Math.PI, Math.PI]) sC.line(x, -ZC, x, ZC, { color: 'muted', dash: [4, 4], width: 1.4 });
+            sC.text('unrolled cylinder: the left and right edges are the same seam,', 0, -ZC, { align: 'center', baseline: 'top', dy: 6, color: 'muted', size: 11.5 });
+            sC.text('so the straight line re-enters from the other side', 0, -ZC, { align: 'center', baseline: 'top', dy: 21, color: 'muted', size: 11.5 });
           } else if (key === 'cone') {
             const wedge = TAU * SA;
             sC.poly([[0, 0], ...sample((u) => { const ph = -wedge / 2 + wedge * u; return [RHO * Math.sin(ph), -RHO * Math.cos(ph)]; }, 60)], { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1, alpha: 0.6 });
@@ -605,8 +606,21 @@ with equality only for circles. Equivalently, among closed curves of given lengt
             sC.text('central projection of the sphere: meridians and the equator are straight, other parallels curve', 0, -2.55, { align: 'center', baseline: 'bottom', color: 'muted', size: 11 });
           }
           const q0 = Gd.q0, far = 60;
-          sC.line(q0[0] - far * Gd.ux, q0[1] - far * Gd.uy, q0[0] + far * Gd.ux, q0[1] + far * Gd.uy, { color: 'ink', width: 1.4, dash: [7, 5], alpha: 0.7 });
-          sC.path(Gd.cpts, { color: 'gold', width: 3 });
+          if (key === 'cyl') {
+            // wrap the unrolled plane onto one strip: copies of the straight line, clipped to the strip
+            for (let k = -6; k <= 6; k++) {
+              const x0 = q0[0] + TAU * k; let t0 = -far, t1 = far;
+              const clip = (p, d, lo, hi) => { if (Math.abs(d) < 1e-12) { if (p < lo || p > hi) { t0 = 1; t1 = 0; } return; } let a = (lo - p) / d, b = (hi - p) / d; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b); };
+              clip(x0, Gd.ux, -Math.PI, Math.PI); clip(q0[1], Gd.uy, -ZC, ZC);
+              if (t1 > t0) sC.line(x0 + t0 * Gd.ux, q0[1] + t0 * Gd.uy, x0 + t1 * Gd.ux, q0[1] + t1 * Gd.uy, { color: 'ink', width: 1.4, dash: [7, 5], alpha: 0.7 });
+            }
+            const wp = []; let prevX = null;
+            for (const q of Gd.cpts) { const x = ((((q[0] + Math.PI) % TAU) + TAU) % TAU) - Math.PI; if (prevX != null && Math.abs(x - prevX) > Math.PI) wp.push(null); wp.push([x, q[1]]); prevX = x; }
+            sC.path(wp, { color: 'gold', width: 3 });
+          } else {
+            sC.line(q0[0] - far * Gd.ux, q0[1] - far * Gd.uy, q0[0] + far * Gd.ux, q0[1] + far * Gd.uy, { color: 'ink', width: 1.4, dash: [7, 5], alpha: 0.7 });
+            sC.path(Gd.cpts, { color: 'gold', width: 3 });
+          }
           sC.dot(q0[0], q0[1], { r: 5, color: 'ink' });
           cur = { key, Gd };
           v.legend([['gold', 'geodesic (integrated in space)'], ['ink', 'straight line in the chart', { dash: true }], ['orange', 'initial velocity']]);

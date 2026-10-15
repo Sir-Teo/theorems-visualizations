@@ -912,7 +912,7 @@ Examples: the standard basis of $\mathbf F^n$; $\big(\tfrac{1}{\sqrt3}, \tfrac{1
         const PRE = {
           c: [[1 / r3, 1 / r3, 1 / r3], [-1 / r2, 1 / r2, 0], [1 / r6, 1 / r6, -2 / r6]],
           std: [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-          off: [[1.05, 0.15, 0.1], [0.55, 0.9, 0], [0.1, -0.35, 0.8]],
+          off: [[1.05, 0.15, 0.1], [0.3, 0.95, 0.45], [-0.2, -0.35, 0.8]],
         };
         const pre = v.select('', [{ value: 'c', label: 'example 6.23(c)' }, { value: 'std', label: 'standard basis' }, { value: 'off', label: 'not orthonormal' }], 'c', { onChange: (k) => PRE[k].forEach((p, i) => H[i].set(p)) });
         const len = v.select('length', [{ value: 2, label: '$m = 2$' }, { value: 3, label: '$m = 3$' }], 3);
@@ -1000,6 +1000,7 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
           B.rect(0.14, Y(0), 0.4, Y(lhs), { fill: 'gold', fillAlpha: 0.45, color: 'gold', width: 1.4 });
           let acc = 0; a.forEach((x, k) => { B.rect(0.6, Y(acc), 0.86, Y(acc + x * x), { fill: C[k], fillAlpha: 0.4, color: C[k], width: 1.2 }); acc += x * x; });
           B.tex('\\int f^2', 0.27, Y(0), { size: 13, dy: 14 }); B.tex('\\textstyle\\sum a_k^2', 0.73, Y(0), { size: 13, dy: 14 });
+          B.text(pn(lhs, 3), 0.27, Y(lhs) + 0.035, { align: 'center', size: 12, weight: 700 }); B.text(pn(rhs, 3), 0.73, Y(rhs) + 0.035, { align: 'center', size: 12, weight: 700 });
           if (!eq) B.line(0.1, Y(lhs), 0.9, Y(lhs), { color: 'red', width: 1.2, dash: [3, 3] });
           B.corner(eq ? 'equal ✓' : `gap ${pn(lhs - rhs, 3)}`, 'tl', { color: eq ? 'green' : 'red', weight: 700 });
           const gram = E.map((e) => E.map((g) => ipF(e, g)));
@@ -1036,8 +1037,8 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
           const sgn = Math.sign(vmin.reduce((s, x, i) => s + x * A[i].value, 0)) || 1;
           A.forEach((s, i) => s.set(Math.max(-1.5, Math.min(1.5, sgn * r * vmin[i]))));
         });
-        const S = v.stage({ x: [-2.3, 2.3], y: [-2, 2.2], equal: true, axes: false, height: 420 });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.28, axis: 1.6, lim: 1.6 });
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.65, 1.95], equal: true, axes: false, height: 420 });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.28, axis: 1.45, lim: 1.6 });
         const COL = ['accent', 'orange', 'teal'];
         let st = null;
         v.render(() => {
@@ -1057,7 +1058,7 @@ $$\|a_1e_1 + \cdots + a_me_m\|^2 = |a_1|^2 + \cdots + |a_m|^2 \qquad \text{for a
           sc.flush();
           const smin = Sg[2], nx = len3(X);
           if (nx < 1e-6 && r > 1e-6) S.corner('a ≠ 0 but the combination is 0: dependent', 'tl', { color: 'red', weight: 700 });
-          else S.corner(`closest any unit coefficient vector gets to 0: ${pn(smin, 3)}`, 'tl', { color: smin > 1 - 1e-9 ? 'green' : smin < 1e-6 ? 'red' : 'muted', weight: 700 });
+          else S.corner(`min of ‖Σ aₖeₖ‖ over Σ aₖ² = 1: ${pn(smin, 3)}${smin > 1 - 1e-9 ? ' (never below 1)' : ''}`, 'tl', { color: smin > 1 - 1e-9 ? 'green' : smin < 1e-6 ? 'red' : 'muted', weight: 700 });
           st = { a, r, nx, smin, s };
         });
         v.legend([['gold', 'the walk $a_1e_1 + a_2e_2 + a_3e_3$'], ['purple', 'all combinations with $\\sqrt{\\sum a_k^2}$ fixed']]);
@@ -1088,7 +1089,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
         const mode = v.select('', [{ value: 'R3', label: 'vectors in $\\mathbf R^3$' }, { value: 'fn', label: 'functions on $[-1, 1]$' }], 'R3', { onChange: () => show() });
         const m3 = v.select('$m =$', [{ value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }], 2);
         const FN = { abs: (x) => Math.abs(x), exp: (x) => Math.exp(x), step: (x) => (x < 0 ? -0.5 : 1) };
-        const fsel = v.select('$f =$', [{ value: 'abs', label: '$|x|$' }, { value: 'exp', label: '$e^x$' }, { value: 'step', label: 'a step' }], 'abs');
+        const fsel = v.select('$f =$', [{ value: 'step', label: 'a step' }, { value: 'abs', label: '$|x|$' }, { value: 'exp', label: '$e^x$' }], 'step');
         const mf = v.slider('$m$', 1, 8, 3, { int: true });
         const S3 = v.stage({ x: [-1.9, 1.9], y: [-1.5, 2], equal: true, axes: false, height: 390, weight: 1.35, minWidth: 320 });
         const SF = v.stage({ x: [-1.1, 1.1], y: [-1, 2.9], height: 390, weight: 1.35, minWidth: 320, title: '$f$ and $\\sum_{k \\le m} \\langle f, e_k\\rangle e_k$' });
@@ -1096,7 +1097,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
         const show = () => { const fn = mode.value === 'fn'; layout(v, [[S3, !fn], [SF, fn], [R, true]]); m3.el.hidden = fn; fsel.el.hidden = mf.el.hidden = !fn; };
         const sc = v.scene3(S3, { yaw: -0.55, pitch: 0.32, axis: 1.4, lim: 1.5 });
         const E1 = unit3([1, 0.25, -0.2]), E2 = unit3(sub3([0, 1, 0.45], mul3(E1, dot3([0, 1, 0.45], E1)))), E3 = cross3(E1, E2), EE = [E1, E2, E3];
-        const vh = sc.handle([0.7, 0.5, 1.1], { color: 'accent', label: 'v' });
+        const vh = sc.handle([0.7, 0.5, 1.1], { color: 'ink', label: 'v' });
         show();
         const C = ['accent', 'teal', 'purple', 'pink', 'orange', 'green', 'gold', 'blue'];
         const drawBars = (total, parts, lab) => {
@@ -1115,8 +1116,9 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
             const m = m3.value, V = vh.p, c = EE.map((e) => dot3(V, e)), U = EE.slice(0, m).reduce((acc, e, k) => add3(acc, mul3(e, c[k])), ZERO), W = sub3(V, U);
             sc.begin();
             if (m === 1) sc.line(mul3(E1, -1.6), mul3(E1, 1.6), { color: 'muted', width: 3, alpha: 0.35 }, 12);
-            if (m === 2) sc.disc(E1, E2, 1.5, { fill: 'muted', color: 'muted', fillAlpha: 0.1, grid: true, alpha: 0.4 });
-            EE.slice(0, m).forEach((e, k) => { sc.arrow(ZERO, e, { color: C[k], width: 2.2 }); sc.tex(`e_${k + 1}`, mul3(e, 1.15), { color: C[k], size: 14 }); if (Math.abs(c[k]) > 0.03) sc.line(ZERO, mul3(e, c[k]), { color: C[k], width: 4, alpha: 0.55 }); });
+            if (m === 2) sc.disc(E1, E2, 1.25, { fill: 'muted', color: 'muted', fillAlpha: 0.08, grid: true, alpha: 0.35 });
+            EE.slice(0, m).forEach((e, k) => { sc.arrow(ZERO, e, { color: C[k], width: 2.2 }); sc.tex(`e_${k + 1}`, mul3(e, 1.15), { color: C[k], size: 14 }); });
+            if (m >= 2) { let at = ZERO; for (let k = 0; k < m; k++) { const nx = add3(at, mul3(EE[k], c[k])); sc.line(at, nx, { color: C[k], width: 2.2, dash: [4, 3] }); at = nx; } }
             if (len3(W) > 0.02) { sc.line(U, V, { color: 'red', width: 2.2, dash: [5, 4] }); if (len3(W) > 0.25 && len3(U) > 0.2) rightMark3(sc, U, W, mul3(U, -1), 0.12, { color: 'red' }); }
             if (len3(U) > 0.03) sc.arrow(ZERO, U, { color: 'green', width: 2.4 });
             sc.arrow(ZERO, V, { color: 'ink', width: 2.6 });
@@ -1127,7 +1129,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           } else {
             const f = FN[fsel.value], m = mf.value, c = Array.from({ length: m }, (_, k) => ipF(f, (x) => legE(k, x)));
             const ps = (x) => c.reduce((s, ck, k) => s + ck * legE(k, x), 0), tot = ipF(f, f);
-            SF.setView([-1.1, 1.1], fsel.value === 'exp' ? [-0.3, 3] : [-1, 1.6]);
+            SF.setView([-1.1, 1.1], fsel.value === 'exp' ? [-0.3, 3] : fsel.value === 'abs' ? [-0.25, 1.35] : [-1, 1.6]);
             SF.fn(f, { domain: [-1, 1], color: 'ink', width: 3, alpha: 0.85 });
             SF.between(f, ps, -1, 1, { fill: 'red', fillAlpha: 0.12, n: 300 });
             SF.fn(ps, { domain: [-1, 1], color: 'accent', width: 2.2 });
@@ -1156,7 +1158,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
       tags: ['orthonormal', 'bases'],
       viz(v) {
         const rigid = v.toggle('rigid frame ($e_2 \\perp e_1$, both unit)', true, { onChange: (on) => { if (on) { const t = Math.atan2(e1.y, e1.x); e1.set(Math.cos(t), Math.sin(t)); } } });
-        const S = v.stage({ x: [-2.6, 2.6], y: [-2.1, 2.1], equal: true, height: 400, axes: false });
+        const S = v.stage({ x: [-2.4, 2.4], y: [-1.9, 2.1], equal: true, height: 400, axes: false });
         const unitSnap = (x, y) => { const r = Math.hypot(x, y); if (rigid.value || Math.abs(r - 1) < 0.07) return [x / r, y / r]; return r < 0.25 ? [(0.25 * x) / r, (0.25 * y) / r] : [x, y]; };
         const e1 = S.handle(Math.cos(0.45), Math.sin(0.45), { color: 'accent', label: 'e₁', constrain: unitSnap });
         const e2 = S.handle(-Math.sin(0.45), Math.cos(0.45), {
@@ -1175,8 +1177,8 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           const a = [e1.x, e1.y], b = [e2.x, e2.y], P = [p.x, p.y], det = a[0] * b[1] - a[1] * b[0], basis = Math.abs(det) > 1e-6;
           const orth = Math.abs(dot2(a, b)) < 1e-9 && Math.abs(len2(a) - 1) < 1e-9 && Math.abs(len2(b) - 1) < 1e-9;
           if (basis) for (let k = -8; k <= 8; k++) {
-            S.line(k * a[0] - 9 * b[0], k * a[1] - 9 * b[1], k * a[0] + 9 * b[0], k * a[1] + 9 * b[1], { color: 'accent', width: k === 0 ? 1.4 : 0.8, alpha: k === 0 ? 0.5 : 0.22 });
-            S.line(k * b[0] - 9 * a[0], k * b[1] - 9 * a[1], k * b[0] + 9 * a[0], k * b[1] + 9 * a[1], { color: 'orange', width: k === 0 ? 1.4 : 0.8, alpha: k === 0 ? 0.5 : 0.22 });
+            S.line(k * a[0] - 9 * b[0], k * a[1] - 9 * b[1], k * a[0] + 9 * b[0], k * a[1] + 9 * b[1], { color: 'orange', width: k === 0 ? 1.4 : 0.8, alpha: k === 0 ? 0.5 : 0.22 });
+            S.line(k * b[0] - 9 * a[0], k * b[1] - 9 * a[1], k * b[0] + 9 * a[0], k * b[1] + 9 * a[1], { color: 'accent', width: k === 0 ? 1.4 : 0.8, alpha: k === 0 ? 0.5 : 0.22 });
           } else S.line(-9 * a[0], -9 * a[1], 9 * a[0], 9 * a[1], { color: 'red', width: 2, alpha: 0.5 });
           const ip = [dot2(P, a), dot2(P, b)];
           let co = null;
@@ -1194,7 +1196,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           S.corner(agree ? 'coordinates = inner products' : 'coordinates ≠ inner products', 'tl', { color: agree ? 'green' : 'red', weight: 600, dy: 18 });
           st = { co, ip, orth, basis };
         });
-        v.legend([['accent', '$e_1$ and its grid lines'], ['orange', '$e_2$ and its grid lines'], ['purple', 'coordinates along the grid', { dash: true }], ['green', 'perpendicular shadows $\\langle p, e_k\\rangle$', { dot: true }]]);
+        v.legend([['accent', '$e_1$; grid lines parallel to $e_1$'], ['orange', '$e_2$; grid lines parallel to $e_2$'], ['purple', 'coordinates along the grid', { dash: true }], ['green', 'perpendicular shadows $\\langle p, e_k\\rangle$', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { co, ip, orth, basis } = st;
@@ -1216,16 +1218,15 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
       viz(v) {
         const M = v.M;
         const msel = v.select('length $m$', [{ value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }], 3);
-        let seed = 7, E = null;
+        let seed = 7, E = orthN([[1, 0.45, -0.2], [-0.3, 1, 0.25], [0.2, -0.3, 1]]);
         const resample = () => {
-          const r = v.rng(seed++), A = [0, 1, 2].map(() => [r.uniform(-1, 1), r.uniform(-1, 1), r.uniform(-1, 1)]);
-          const B = orthN(A); E = B.length === 3 ? B : [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+          const r = v.rng(seed++);
+          for (let tries = 0; tries < 30; tries++) { const B = orthN([0, 1, 2].map(() => [r.uniform(-1, 1), r.uniform(-1, 1), r.uniform(-1, 1)])); if (B.length === 3) { E = B; break; } }
         };
-        resample();
         v.button('Resample', resample);
-        const S = v.stage({ x: [-2, 2], y: [-1.75, 2.1], equal: true, axes: false, height: 410 });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.45, lim: 1.35 });
-        const th = sc.handle([0.9, 0.7, 0.8], { color: 'gold', label: 't' });
+        const S = v.stage({ x: [-1.75, 1.75], y: [-1.5, 1.95], equal: true, axes: false, height: 410 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.35, lim: 1.35 });
+        const th = sc.handle(add3(add3(mul3(E[0], 0.85), mul3(E[1], 0.65)), mul3(E[2], 0.75)), { color: 'gold', label: 't' });
         const COL = ['accent', 'orange', 'teal'];
         let st = null;
         v.render(() => {
@@ -1240,7 +1241,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           for (let i = 0; i < 8; i++) for (const bit of [1, 2, 4]) if (!(i & bit)) sc.line(corners[i], corners[i | bit], { color: 'green', width: 1.3, alpha: 0.75 }, 4);
           if (m === 3) for (const [i, j, k, l] of [[0, 1, 3, 2], [0, 1, 5, 4], [0, 2, 6, 4]]) sc.poly([corners[i], corners[j], corners[k], corners[l]], { fill: 'green', fillAlpha: 0.06, edge: false });
           let at = ZERO; for (let k = 0; k < m; k++) { const nx = add3(at, legs[k]); if (Math.abs(c[k]) > 0.03) sc.arrow(at, nx, { color: COL[k], width: 2.6, head: 8 }); at = nx; }
-          E.forEach((e, k) => { sc.arrow(ZERO, e, { color: COL[k], width: 1.6, alpha: k < m ? 0.55 : 0.18 }); if (k < m) sc.tex(`e_${k + 1}`, mul3(e, -0.32), { color: COL[k], size: 14 }); });
+          E.forEach((e, k) => { sc.line(ZERO, mul3(e, -0.6), { color: COL[k], width: 1, alpha: k < m ? 0.35 : 0.12, dash: [3, 3] }); sc.arrow(ZERO, e, { color: COL[k], width: 1.8, alpha: k < m ? 0.6 : 0.18 }); if (k < m) sc.tex(`e_${k + 1}`, mul3(e, 1.14), { color: COL[k], size: 14 }); });
           if (len3(res) > 1e-6) { sc.line(P, T, { color: 'red', width: 2.4, dash: [5, 4] }); sc.dot(P, { color: 'red', r: 4.5 }); }
           sc.flush();
           S.corner(m === 3 ? 'm = dim ℝ³: the box always reaches t' : `m = ${m} < 3: residual ${pn(len3(res), 3)}`, 'tl', { color: m === 3 ? 'green' : 'red', weight: 700 });
@@ -1285,7 +1286,7 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
           if (bsel.value === 'bad') { const w = HALF[3].map((x, i) => x + 0.9 * HALF[0][i]), L = Math.hypot(...w); return [HALF[0], HALF[1], HALF[2], w.map((x) => x / L)]; }
           return HALF;
         };
-        const A = v.stage({ x: [-0.6, 23.4], y: [-9, 9], height: 300, full: true, axes: false, title: '$v = c_1e_1 + c_2e_2 + c_3e_3 + c_4e_4$ with $c_k = \\langle v, e_k\\rangle$' });
+        const A = v.stage({ x: [-0.6, 23.4], y: [-9, 9], height: 290, full: true, axes: false, title: '$v = c_1e_1 + c_2e_2 + c_3e_3 + c_4e_4$ with $c_k = \\langle v, e_k\\rangle$' });
         const P = v.stage({ x: [0, 1], y: [0, 1], height: 150, full: true, axes: false, title: "Parseval: $\\|v\\|^2$ two ways" });
         const OFF = [0, 5.4, 9.95, 14.5, 19.05], BW = 0.36;
         const vh = [1, 2, 4, 7].map((y, i) => A.handle(OFF[0] + 0.5 + i, y, { color: 'accent', r: 6, constrain: (_, yy) => { yy = Math.max(-8.5, Math.min(8.5, yy)); const rr = Math.round(yy); return [OFF[0] + 0.5 + i, Math.abs(yy - rr) < 0.15 ? rr : yy]; } }));
@@ -1294,10 +1295,12 @@ $$|\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_m\rangle|^2 \le \|v\|^2.$$`
         v.render(() => {
           const E = basisOf(), V = vh.map((q) => q.y), c = E.map((e) => e.reduce((s, x, i) => s + x * V[i], 0));
           const rec = [0, 1, 2, 3].map((i) => E.reduce((s, e, k) => s + c[k] * e[i], 0));
+          const all = [...V, ...rec, 0, ...E.flatMap((e, k) => e.map((x) => c[k] * x))], lo = Math.min(-2.2, ...all) - 0.4, hi = Math.max(2.2, ...all) + 0.4, yl = lo - 0.13 * (hi - lo);
+          A.setView([-0.6, 23.4], [yl - 0.06 * (hi - lo), hi]);
           const grp = (x0, vals, col, alpha, lbl) => {
             A.line(x0, 0, x0 + 4, 0, { color: 'muted', width: 1 });
             vals.forEach((y, i) => A.rect(x0 + 0.5 + i - BW, 0, x0 + 0.5 + i + BW, y, { fill: col, fillAlpha: alpha, color: col, width: 1.3 }));
-            if (lbl) A.tex(lbl, x0 + 2, -8.2, { color: col, size: 15 });
+            if (lbl) A.tex(lbl, x0 + 2, yl, { color: col, size: 15 });
           };
           grp(OFF[0], V, 'accent', 0.35, 'v');
           rec.forEach((y, i) => A.rect(OFF[0] + 0.5 + i - BW - 0.06, 0, OFF[0] + 0.5 + i + BW + 0.06, y, { color: 'green', width: 2, dash: [4, 3] }));
@@ -1353,9 +1356,9 @@ $$\operatorname{span}(v_1, \dots, v_k) = \operatorname{span}(e_1, \dots, e_k) \q
           { line: 4, note: String.raw`Result: an orthonormal list with $\operatorname{span}(e_1) = \operatorname{span}(v_1)$ and $\operatorname{span}(e_1, e_2) = \operatorname{span}(v_1, v_2)$.` },
         ];
         const S = v.stage({ x: [-1.9, 1.9], y: [-1.55, 2], equal: true, axes: false, height: 410, minWidth: 320 });
-        const STP = v.steps({ frames, code: ['$f_1 \\leftarrow v_1$', '**for** $k = 2, \\dots, m$:', '  $f_k \\leftarrow v_k - \\sum_{j<k} \\frac{\\langle v_k, f_j\\rangle}{\\|f_j\\|^2} f_j$', '**for** $k = 1, \\dots, m$:  $e_k \\leftarrow f_k / \\|f_k\\|$'], codeTitle: 'Gram–Schmidt', start: 'end', speed: 0.8 });
+        const STP = v.steps({ frames, code: ['$f_1 \\leftarrow v_1$', 'for $k = 2, \\dots, m$:', '  $f_k \\leftarrow v_k - \\sum_{j<k} \\frac{\\langle v_k, f_j\\rangle}{\\|f_j\\|^2} f_j$', 'for $k = 1, \\dots, m$:  $e_k \\leftarrow f_k / \\|f_k\\|$'], codeTitle: 'Gram–Schmidt', start: 5, still: 5, speed: 0.8 });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.35, lim: 1.4 });
-        const V1 = sc.handle([1.1, -0.15, 0.2], { color: 'accent', label: 'v₁' });
+        const V1 = sc.handle([1.3, -0.2, 0.25], { color: 'accent', label: 'v₁' });
         const V2 = sc.handle([0.75, 0.9, 0.15], {
           color: 'orange', label: 'v₂', snap: (p) => { const u = unit3(V1.p), q = mul3(u, dot3(p, u)); return len3(sub3(p, q)) < 0.08 ? q : p; },
         });
@@ -1385,7 +1388,8 @@ $$\operatorname{span}(v_1, \dots, v_k) = \operatorname{span}(e_1, \dots, e_k) \q
           }
           if (i >= 3 && i < 6 && ok[1]) { sc.arrow(ZERO, f2, { color: 'purple', width: 3 }); sc.tex('f_2', mul3(f2, 1.12), { color: 'purple', size: 15 }); if (ok[0]) rightMark3(sc, ZERO, f1, f2, 0.15, { color: 'green' }); }
           if (i === 5) { if (ok[2]) { sc.arrow(ZERO, f3, { color: 'pink', width: 3 }); sc.tex('f_3', mul3(f3, 1.12), { color: 'pink', size: 15 }); if (ok[1]) rightMark3(sc, ZERO, f2, f3, 0.15, { color: 'green' }); } else sc.dot(ZERO, { color: 'red', r: 7 }); }
-          if (i >= 6) es.forEach((e, k) => { if (e) { sc.arrow(ZERO, e, { color: COL[k], width: 3.2 }); sc.tex(`e_${k + 1}`, mul3(e, 1.16), { color: COL[k], size: 15 }); } });
+          if (i >= 6) es.forEach((e, k) => { if (e) { sc.arrow(ZERO, e, { color: COL[k], width: 3.2 }); sc.tex(`e_${k + 1}`, mul3(e, 0.6), { color: COL[k], size: 15, dx: 11, dy: -9 }); } });
+
           if (i >= 7 && es.every(Boolean)) for (const [a, b] of [[0, 1], [0, 2], [1, 2]]) rightMark3(sc, ZERO, es[a], es[b], 0.14, { color: 'green' });
           sc.flush();
           const fail = !ok[1] ? 2 : !ok[2] ? 3 : 0;

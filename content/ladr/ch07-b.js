@@ -958,10 +958,15 @@ in other words, $S$ preserves norms.`,
           const dev = Math.max(Math.abs(e.l[0] - 1), Math.abs(e.l[1] - 1)), sdev = Math.max(Math.abs(Math.sqrt(Math.max(0, e.l[0])) - 1), Math.abs(Math.sqrt(Math.max(0, e.l[1])) - 1));
           const dok = Math.abs(d[0] - 1) < t && Math.abs(d[1] - 1) < t && Math.abs(d[2]) < t;
           return `$S^*S = ${mtex(Gm, 3)}$ — ${ok ? 'all five conditions hold:' : 'all five conditions fail:'}
+
 (a) $\\max_{\\|v\\| = 1}\\big|\\|Sv\\| - 1\\big| = ${tn(sdev, 3)}$ ${mark(sdev < t)}
+
 (b) $\\|S^*S - I\\| = ${tn(fro(msub(Gm, eye(2))), 3)}$ ${mark(ok)}
+
 (c) $\\max_{\\|u\\| = \\|v\\| = 1}|\\langle Su, Sv\\rangle - \\langle u, v\\rangle| = ${tn(dev, 3)}$ ${mark(dev < t)}
+
 (d) at $\\varphi = ${PHI.value}^\\circ$: $\\|Sf_1\\|^2 = ${tn(d[0], 3)},\\ \\|Sf_2\\|^2 = ${tn(d[1], 3)},\\ \\langle Sf_1, Sf_2\\rangle = ${tn(d[2], 3)}$ ${mark(dok)}
+
 (e) columns: $\\|Se_1\\|^2 = ${tn(Gm[0][0], 3)},\\ \\|Se_2\\|^2 = ${tn(Gm[1][1], 3)},\\ \\langle Se_1, Se_2\\rangle = ${tn(Gm[0][1], 3)}$ ${mark(ok)}`;
         });
       },
@@ -1069,11 +1074,17 @@ in other words, $S$ preserves norms.`,
           if (!st) return '';
           const gram = (vs) => fro(msub(vs.map((x) => vs.map((y) => dot(x, y))), eye(3))), t = 1e-9, gc = gram(st.cols), gr = gram(st.rows);
           return `${st.uni ? 'All six conditions hold' : 'All six conditions fail'}:
+
 (a) $\\max_{\\|v\\| = 1}\\big|\\|Sv\\| - 1\\big| = ${tn(st.ndev, 3)}$ ${mark(st.ndev < t)}
+
 (b) $\\|S^*S - I\\| = ${tn(st.d1, 3)},\\ \\|SS^* - I\\| = ${tn(st.d2, 3)}$ ${mark(st.d1 < t && st.d2 < t)}
+
 (c) $\\|S^{-1} - S^*\\| = ${tn(st.d3, 3)}$ ${mark(st.d3 < t)}
+
 (d) columns: $\\|(\\langle Se_j, Se_k\\rangle) - I\\| = ${tn(gc, 3)}$ ${mark(gc < t)}
+
 (e) rows: $\\|(\\langle r_j, r_k\\rangle) - I\\| = ${tn(gr, 3)}$ ${mark(gr < t)}
+
 (f) $S^*$: $\\|(S^*)^*S^* - I\\| = \\|SS^* - I\\| = ${tn(st.d2, 3)}$ ${mark(st.d2 < t)}`;
         });
       },
