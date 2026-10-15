@@ -26,7 +26,7 @@ const csubM = (A, B) => A.map((row, i) => row.map((a, j) => [a[0] - B[i][j][0], 
 const cfro = (A) => Math.sqrt(A.flat().reduce((s, z) => s + z[0] * z[0] + z[1] * z[1], 0));
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 12,
   items: [
     {

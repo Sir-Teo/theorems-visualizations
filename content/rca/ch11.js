@@ -120,7 +120,7 @@ function partials(F, x, y, d = 1e-5) {
 const PI_TICKS = [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 11,
   title: 'Harmonic Functions',
   summary: String.raw`Harmonic functions are the real parts of holomorphic functions, and the Poisson kernel is the bridge. After the Cauchy–Riemann equations in the language of $\partial$ and $\bar\partial$, Rudin solves the Dirichlet problem in the disc by Poisson integrals, derives the mean value property, Harnack's theorem and the converse (continuous functions with the mean value property are harmonic, which yields the Schwarz reflection principle). The chapter ends with the boundary behaviour of Poisson integrals — nontangential maximal functions and Fatou-type limits a.e. — and the representation of harmonic functions with bounded $L^p$ means as Poisson integrals.`,

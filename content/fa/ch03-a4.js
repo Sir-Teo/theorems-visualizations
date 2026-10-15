@@ -53,7 +53,7 @@ function flatAt(M, flats, p, tol = 2e-3) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 3,
   items: [
     {

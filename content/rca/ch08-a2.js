@@ -54,7 +54,7 @@ function stairF(x, y) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 8,
   items: [
     // ------------------------------------------------------------------ the Fubini theorem

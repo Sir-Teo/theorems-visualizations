@@ -56,7 +56,7 @@ function cTeX(M, re, im, d = 3) {
 const sciT = (x, d = 2) => { if (!isFinite(x)) return '\\infty'; if (x === 0) return '0'; const a = Math.abs(x); if (a >= 1e-3 && a < 1e5) return String(Number(x.toPrecision(d))); const [m, e] = x.toExponential(d - 1).split('e'); return `${m}\\times10^{${+e}}`; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 13,
   items: [
     {

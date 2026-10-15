@@ -8,7 +8,7 @@ const annulus = (rmin, rmax) => (x, y) => { const r = Math.hypot(x, y) || 1e-9; 
 const residual = (e) => (e < 1e-300 ? '0' : e.toExponential(1).replace('-', '−').replace('e', '\\times10^{') + '}');
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.24

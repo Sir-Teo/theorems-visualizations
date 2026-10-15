@@ -34,7 +34,7 @@ function hueCircle(S, M, r = 1, width = 5) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 6,
   items: [
     // ------------------------------------------------------------------ consequences of Radon–Nikodym

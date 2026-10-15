@@ -83,7 +83,7 @@ function drawLineFamily(S, u, s, phi, st) {
 const LOGTICKS = [[-1, '0.1'], [0, '1'], [1, '10'], [2, '100'], [3, '1000']];
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 2,
   title: 'Completeness',
   summary: String.raw`Completeness enters functional analysis through Baire's theorem: a complete metric space (or a locally compact Hausdorff space) is not a countable union of nowhere dense sets. From this one fact Rudin extracts the Banach–Steinhaus theorem — pointwise bounded families of operators on an F-space are equicontinuous, and pointwise limits of continuous operators are continuous — then the open mapping theorem with its corollaries on inverses and comparable topologies, the closed graph theorem, and the joint continuity of separately continuous bilinear maps.`,

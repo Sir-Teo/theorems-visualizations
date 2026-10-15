@@ -128,7 +128,7 @@ function cfmt(v, z, d = 3) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.34

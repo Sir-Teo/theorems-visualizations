@@ -46,7 +46,7 @@ const ETA = (x, y) => { const r2 = x * x + y * y; return [-y / r2, x / r2]; };
 function segInside(inside, p, q, n = 60) { for (let i = 0; i <= n; i++) { const r = lerp2(p, q, i / n); if (!inside(r[0], r[1])) return false; } return true; }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.33

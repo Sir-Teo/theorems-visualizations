@@ -1,70 +1,138 @@
-// Shared helpers for build/check: discover content modules, load and validate them.
+// Shared helpers for build/check: the atlas registry, content discovery, loading and validation.
+//
+//   content/fields.js            fields → areas (display order, colours)
+//   content/<col>/collection.js  collection metadata
+//   content/<col>/syllabus.js    planned inventory (optional)
+//   content/<col>/chNN*.js       chapters (part files allowed)
 import { readdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-export const BOOKS = [
-  { id: 'pma', short: 'PMA', title: 'Principles of Mathematical Analysis', edition: '3rd edition, 1976', nick: '“Baby Rudin”' },
-  { id: 'rca', short: 'RCA', title: 'Real and Complex Analysis', edition: '3rd edition, 1987', nick: '“Papa Rudin”' },
-  { id: 'fa', short: 'FA', title: 'Functional Analysis', edition: '2nd edition, 1991', nick: '“Grandpa Rudin”' },
-];
-export const KINDS = ['Theorem', 'Lemma', 'Corollary', 'Proposition', 'Definition'];
-export const ID_RE = /^(pma|rca|fa)-\d{1,2}\.\d{1,3}[a-z]?$/;
-export const NUM_RE = /^\d{1,2}\.\d{1,3}[a-z]?$/;
+// Theorem-like kinds for mathematics; the rest cover the breadth of the atlas (science, society, arts, history).
+export const KINDS = ['Theorem', 'Lemma', 'Corollary', 'Proposition', 'Definition', 'Law', 'Principle', 'Postulate', 'Algorithm', 'Model',
+  'Concept', 'Phenomenon', 'Method', 'Paradox', 'Hypothesis', 'Invention', 'Event'];
+/** Item numbers: chapter.n or chapter.section.n, optional letter for an unnumbered corollary. */
+export const NUM_RE = /^\d{1,2}(\.\d{1,3}){1,2}[a-z]?$/;
+/** Any well-formed id (collection may be unknown). */
+export const ID_RE = /^[a-z][a-z0-9]{1,7}-\d{1,2}(\.\d{1,3}){1,2}[a-z]?$/;
+export const COL_RE = /^[a-z][a-z0-9]{1,7}$/;
 
-/** Compare theorem numbers like "2.9" < "2.10" < "2.10a". */
+/** Compare theorem numbers like "2.9" < "2.10" < "2.10a" < "2.10.1". */
 export function cmpNum(a, b) {
-  const pa = a.match(/^(\d+)\.(\d+)([a-z]?)$/), pb = b.match(/^(\d+)\.(\d+)([a-z]?)$/);
-  if (!pa || !pb) return a < b ? -1 : 1;
-  return (+pa[1] - +pb[1]) || (+pa[2] - +pb[2]) || (pa[3] < pb[3] ? -1 : pa[3] > pb[3] ? 1 : 0);
+  const pa = String(a).match(/^([\d.]+?)([a-z]?)$/), pb = String(b).match(/^([\d.]+?)([a-z]?)$/);
+  if (!pa || !pb) return a < b ? -1 : a > b ? 1 : 0;
+  const xa = pa[1].split('.').map(Number), xb = pb[1].split('.').map(Number);
+  for (let i = 0; i < Math.max(xa.length, xb.length); i++) {
+    const u = xa[i] ?? -1, v = xb[i] ?? -1;
+    if (u !== v) return u - v;
+  }
+  return pa[2] < pb[2] ? -1 : pa[2] > pb[2] ? 1 : 0;
 }
 
-/** List content files: [{book, file (repo-relative), chapter}] */
-export async function listContentFiles() {
+const imp = (file, bust) => import(pathToFileURL(file).href + (bust ? `?t=${Date.now()}` : ''));
+
+/** Load content/fields.js and every content/<id>/collection.js. */
+export async function loadRegistry({ bust = false } = {}) {
+  const problems = [];
+  const fields = (await imp(join(ROOT, 'content/fields.js'), bust)).default;
+  const fieldIds = new Set(fields.map((f) => f.id));
+  const collections = [];
+  const dirs = (await readdir(join(ROOT, 'content'), { withFileTypes: true })).filter((d) => d.isDirectory()).map((d) => d.name).sort();
+  for (const d of dirs) {
+    const f = join(ROOT, 'content', d, 'collection.js');
+    if (!existsSync(f)) { problems.push({ level: 'warn', where: `content/${d}`, msg: 'folder has no collection.js (ignored)' }); continue; }
+    let C;
+    try { C = (await imp(f, bust)).default; } catch (e) { problems.push({ level: 'error', where: `content/${d}/collection.js`, msg: `cannot import: ${e.message}` }); continue; }
+    const w = `content/${d}/collection.js`;
+    if (C.id !== d) problems.push({ level: 'error', where: w, msg: `id "${C.id}" ≠ folder "${d}"` });
+    if (!COL_RE.test(C.id || '')) problems.push({ level: 'error', where: w, msg: `bad collection id "${C.id}"` });
+    if (!fieldIds.has(C.field)) problems.push({ level: 'error', where: w, msg: `unknown field "${C.field}"` });
+    else if (!fields.find((F) => F.id === C.field).areas.some((A) => A.id === C.area)) problems.push({ level: 'error', where: w, msg: `unknown area "${C.area}" in field ${C.field}` });
+    for (const k of ['short', 'title', 'blurb']) if (!C[k]) problems.push({ level: 'error', where: w, msg: `missing ${k}` });
+    if (!['book', 'course'].includes(C.source?.type)) problems.push({ level: 'error', where: w, msg: 'source.type must be "book" or "course"' });
+    collections.push({ ...C, id: d });
+  }
+  const fOrder = new Map(fields.map((F, i) => [F.id, i]));
+  const aOrder = (C) => fields.find((F) => F.id === C.field)?.areas.findIndex((A) => A.id === C.area) ?? 99;
+  collections.sort((a, b) => (fOrder.get(a.field) ?? 99) - (fOrder.get(b.field) ?? 99) || aOrder(a) - aOrder(b) || (a.order ?? 999) - (b.order ?? 999) || a.id.localeCompare(b.id));
+  return { fields, collections, problems };
+}
+
+/** List chapter files: [{col, file (repo-relative), chapter}] */
+export async function listContentFiles(collections) {
   const out = [];
-  for (const b of BOOKS) {
-    const dir = join(ROOT, 'content', b.id);
+  for (const C of collections) {
     let files = [];
-    try { files = await readdir(dir); } catch { continue; }
+    try { files = await readdir(join(ROOT, 'content', C.id)); } catch { continue; }
     for (const f of files.sort()) {
       const m = f.match(/^ch(\d{2})(?:-[\w-]+)?\.js$/);
-      if (m) out.push({ book: b.id, chapter: +m[1], file: `content/${b.id}/${f}` });
+      if (m) out.push({ col: C.id, chapter: +m[1], file: `content/${C.id}/${f}` });
     }
   }
   return out;
 }
 
-/** Import every content module. Returns {chapters: Map key→chapter, items: [], problems: []} */
+/**
+ * Import the registry and every content module.
+ * Returns {fields, collections, chapters: Map "col/n" → chapter, items: [], planned: [], problems: []}.
+ */
 export async function loadAll({ bust = false } = {}) {
-  const files = await listContentFiles();
-  const problems = [];
+  const { fields, collections, problems } = await loadRegistry({ bust });
+  const files = await listContentFiles(collections);
   const chapters = new Map();
   const items = [];
+  const chap = (col, n, file) => {
+    const key = `${col}/${n}`;
+    let C = chapters.get(key);
+    if (!C) { C = { col, chapter: n, title: null, summary: null, files: [], planned: true }; chapters.set(key, C); }
+    if (file) { C.files.push(file); C.planned = false; }
+    return C;
+  };
   for (const f of files) {
     let mod;
-    try { mod = await import(pathToFileURL(join(ROOT, f.file)).href + (bust ? `?t=${Date.now()}` : '')); }
+    try { mod = await imp(join(ROOT, f.file), bust); }
     catch (e) { problems.push({ level: 'error', where: f.file, msg: `cannot import: ${e.message}` }); continue; }
     const ch = mod.default;
     if (!ch || typeof ch !== 'object') { problems.push({ level: 'error', where: f.file, msg: 'no default export' }); continue; }
-    if (ch.book !== f.book) problems.push({ level: 'error', where: f.file, msg: `book "${ch.book}" ≠ folder "${f.book}"` });
+    const col = ch.collection ?? ch.book;
+    if (col !== f.col) problems.push({ level: 'error', where: f.file, msg: `collection "${col}" ≠ folder "${f.col}"` });
     if (ch.chapter !== f.chapter) problems.push({ level: 'error', where: f.file, msg: `chapter ${ch.chapter} ≠ filename ${f.chapter}` });
-    const key = `${f.book}/${f.chapter}`;
-    let C = chapters.get(key);
-    if (!C) { C = { book: f.book, chapter: f.chapter, title: null, summary: null, files: [] }; chapters.set(key, C); }
-    C.files.push(f.file);
+    const C = chap(f.col, f.chapter, f.file);
     if (ch.title) C.title = ch.title;
     if (ch.summary) C.summary = ch.summary;
-    for (const it of ch.items || []) items.push({ ...it, book: f.book, chapter: f.chapter, file: f.file, id: `${f.book}-${it.num}` });
+    for (const it of ch.items || []) items.push({ ...it, col: f.col, chapter: f.chapter, file: f.file, id: `${f.col}-${it.num}` });
   }
-  for (const C of chapters.values()) if (!C.title) problems.push({ level: 'error', where: C.files[0], msg: 'chapter has no title' });
-  return { chapters, items, problems };
+  // syllabi: planned items that are not written yet
+  const planned = [];
+  const written = new Set(items.map((it) => it.id));
+  for (const Col of collections) {
+    const sf = join(ROOT, 'content', Col.id, 'syllabus.js');
+    if (!existsSync(sf)) continue;
+    let S;
+    try { S = (await imp(sf, bust)).default; } catch (e) { problems.push({ level: 'error', where: `content/${Col.id}/syllabus.js`, msg: `cannot import: ${e.message}` }); continue; }
+    for (const ch of S.chapters || []) {
+      const C = chap(Col.id, ch.n);
+      if (!C.title && ch.title) C.title = ch.title;
+      if (!C.summary && ch.summary) C.summary = ch.summary;
+      C.syllabus = (C.syllabus || 0) + (ch.items || []).length;
+      for (const it of ch.items || []) {
+        const id = `${Col.id}-${it.num}`;
+        if (written.has(id)) continue;
+        planned.push({ ...it, col: Col.id, chapter: ch.n, id, planned: true, file: `content/${Col.id}/syllabus.js`, deps: it.deps || [] });
+      }
+    }
+  }
+  for (const C of chapters.values()) if (!C.title) problems.push({ level: 'error', where: C.files[0] || `${C.col}/${C.chapter}`, msg: 'chapter has no title' });
+  return { fields, collections, chapters, items, planned, problems };
 }
 
-/** Validate items; returns list of problems ({level:'error'|'warn', where, msg}). */
-export function validate(items) {
+/** Validate items (and planned items, more leniently); returns problems ({level:'error'|'warn', where, msg}). */
+export function validate(items, planned = [], collections = []) {
   const P = [];
   const ids = new Map();
+  const colIds = new Set(collections.map((C) => C.id));
   for (const it of items) {
     const w = `${it.file} ${it.num ?? '?'}`;
     if (!NUM_RE.test(it.num || '')) { P.push({ level: 'error', where: w, msg: `bad num "${it.num}"` }); continue; }
@@ -79,29 +147,44 @@ export function validate(items) {
     if (typeof it.viz !== 'function' && it.kind !== 'Definition') P.push({ level: 'error', where: w, msg: 'missing viz(v) function' });
     if (it.viz != null && typeof it.viz !== 'function') P.push({ level: 'error', where: w, msg: 'viz must be a function' });
     if (!Array.isArray(it.deps)) P.push({ level: 'error', where: w, msg: 'deps must be an array' });
-    for (const field of ['statement', 'idea', 'caption']) {
+    for (const k of ['refs', 'tags', 'see']) if (it[k] != null && !Array.isArray(it[k])) P.push({ level: 'error', where: w, msg: `${k} must be an array` });
+    if (it.links != null && typeof it.links !== 'object') P.push({ level: 'error', where: w, msg: 'links must be an object' });
+    for (const field of ['statement', 'idea', 'caption', 'scope']) {
       const s = it[field]; if (typeof s !== 'string') continue;
       const stripped = s.replace(/\\\$/g, '').replace(/\$\$[\s\S]*?\$\$/g, '');
       if ((stripped.match(/\$/g) || []).length % 2) P.push({ level: 'error', where: w, msg: `unbalanced $ in ${field}` });
     }
   }
-  for (const it of items) {
+  const all = new Map(ids);
+  for (const it of planned) {
+    const w = `${it.file} ${it.num ?? '?'}`;
+    if (!NUM_RE.test(it.num || '')) { P.push({ level: 'error', where: w, msg: `bad num "${it.num}"` }); continue; }
+    if (+it.num.split('.')[0] !== it.chapter) P.push({ level: 'error', where: w, msg: `num ${it.num} not in chapter ${it.chapter}` });
+    if (all.has(it.id) && all.get(it.id).planned) P.push({ level: 'error', where: w, msg: `duplicate planned id ${it.id}` });
+    if (!KINDS.includes(it.kind)) P.push({ level: 'error', where: w, msg: `kind "${it.kind}" not in ${KINDS.join('/')}` });
+    if (!it.name) P.push({ level: 'error', where: w, msg: 'missing name' });
+    if (!Array.isArray(it.deps)) P.push({ level: 'error', where: w, msg: 'deps must be an array' });
+    all.set(it.id, it);
+  }
+  for (const it of [...items, ...planned]) {
     const w = `${it.file} ${it.num}`;
     for (const field of ['deps', 'see']) {
       for (const d of it[field] || []) {
         if (!ID_RE.test(d)) { P.push({ level: 'error', where: w, msg: `${field}: malformed id "${d}"` }); continue; }
         if (d === it.id) P.push({ level: 'error', where: w, msg: `${field}: self reference` });
-        else if (!ids.has(d)) P.push({ level: 'warn', where: w, msg: `${field}: unknown id ${d}` });
+        else if (colIds.size && !colIds.has(d.split('-')[0])) P.push({ level: 'warn', where: w, msg: `${field}: unknown collection in ${d}` });
+        else if (!all.has(d)) P.push({ level: 'warn', where: w, msg: `${field}: unknown id ${d}` });
+        else if (field === 'deps' && !it.planned && all.get(d).planned) P.push({ level: 'info', where: w, msg: `deps: ${d} is planned, not written yet` });
       }
     }
   }
-  // cycle detection on deps
+  // cycle detection on deps (written + planned)
   const state = new Map();
   const visit = (id, stack) => {
     const s = state.get(id); if (s === 2) return; if (s === 1) { P.push({ level: 'error', where: id, msg: `dependency cycle: ${[...stack, id].join(' → ')}` }); return; }
-    state.set(id, 1); for (const d of ids.get(id)?.deps || []) if (ids.has(d)) visit(d, [...stack, id]); state.set(id, 2);
+    state.set(id, 1); for (const d of all.get(id)?.deps || []) if (all.has(d)) visit(d, [...stack, id]); state.set(id, 2);
   };
-  for (const id of ids.keys()) visit(id, []);
+  for (const id of all.keys()) visit(id, []);
   return P;
 }
 

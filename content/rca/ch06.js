@@ -38,7 +38,7 @@ function bbox(pts, pad = 0.12, min = 0.2) {
 const PIECE_COLORS = ['orange', 'purple', 'teal', 'pink', 'gold'];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 6,
   title: 'Complex Measures',
   summary: String.raw`Measures are now allowed to take complex (or signed) values. The total variation $|\mu|$ — a supremum over partitions — turns every complex measure into a finite positive one, and absolute continuity and mutual singularity organise how two measures can sit relative to each other. The Lebesgue–Radon–Nikodym theorem, proved with a Hilbert-space trick, splits any measure into a part with a density and a singular part; from it come the polar form $d\mu=h\,d|\mu|$, the Hahn decomposition, the identification of the dual of $L^p$ with $L^q$, and the Riesz representation of $C_0(X)^*$ by regular complex measures.`,

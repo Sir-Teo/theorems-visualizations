@@ -105,7 +105,7 @@ function dcSums(kind, s) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 19,
   items: [
     // ------------------------------------------------------------------ quasi-analytic classes

@@ -46,7 +46,7 @@ function f0hatD(t) { const c = 1 - 3 * t * t, d = 3 * t - t * t * t, q = c * c +
 const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 9,
   title: 'Fourier Transforms',
   summary: String.raw`The Fourier transform $\hat f(t)=\int f(x)e^{-ixt}\,dm(x)$ turns translation into modulation, dilation into inverse dilation and convolution into multiplication, and by the Riemann–Lebesgue lemma it maps $L^1$ into $C_0$. Using the explicit approximate identity $h_\lambda$ (the Poisson kernel of the half-plane), Rudin proves that $f$ is recovered from $\hat f$ whenever both are integrable, extends the transform to a unitary operator of $L^2$ (Plancherel), describes the closed translation-invariant subspaces of $L^2$, and identifies the complex homomorphisms of the convolution algebra $L^1$ with the points of the real line.`,

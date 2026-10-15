@@ -33,7 +33,7 @@ function betaInt(x, y) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 8,
   items: [
     // ------------------------------------------------------------------ 8.17

@@ -72,7 +72,7 @@ function minEigSym(A) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 11,
   items: [
     // ------------------------------------------------------------------ 11.25

@@ -4,7 +4,7 @@ const LOG = [[-1, '0.1'], [0, '1'], [1, '10'], [2, '100']];
 const sub = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[+d]).join('');
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.13

@@ -21,7 +21,7 @@ function expIt(t, terms = 80) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 8,
   items: [
     // ------------------------------------------------------------------ 8.6

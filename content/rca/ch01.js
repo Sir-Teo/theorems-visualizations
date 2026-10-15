@@ -45,7 +45,7 @@ function drawRow(S, ivs, y0, y1, color, alpha = 0.75) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 1,
   title: 'Abstract Integration',
   summary: String.raw`Rudin builds the Lebesgue integral on an arbitrary measure space in one sweep. Measurable functions are defined exactly like continuous ones — by pulling back open sets, with a σ-algebra in place of a topology — and every nonnegative measurable function is an increasing limit of simple functions. A positive measure integrates nonnegative functions through suprema of integrals of simple functions; the monotone convergence theorem, Fatou's lemma and the dominated convergence theorem then control limits, and the chapter ends by showing how sets of measure zero may be ignored and how every measure can be completed.`,

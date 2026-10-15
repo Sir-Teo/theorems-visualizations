@@ -28,7 +28,7 @@ function haarSynth(c, J) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 4,
   items: [
     // ------------------------------------------------------------------ 4.15

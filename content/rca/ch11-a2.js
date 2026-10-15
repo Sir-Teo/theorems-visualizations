@@ -82,7 +82,7 @@ const cxTeX = (v, p, d = 3) => `${v.fix(p[0], d)} ${p[1] < 0 ? '-' : '+'} ${v.fi
 const PI_TICKS = [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Math.PI / 2, 'π/2'], [Math.PI, 'π']];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 11,
   items: [
     {

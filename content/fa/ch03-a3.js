@@ -22,7 +22,7 @@ function bary(p, a, b, c) {
 const subDigits = (n) => String(n).split('').map((c) => '₀₁₂₃₄₅₆₇₈₉'[+c]).join('');
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 3,
   items: [
     {

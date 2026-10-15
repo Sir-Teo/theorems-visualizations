@@ -48,7 +48,7 @@ function phase(M, re, im) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 18,
   items: [
     {

@@ -31,7 +31,7 @@ function pieces(S, f, a, b, breaks, st) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 4,
   title: 'Continuity',
   summary: String.raw`Limits of functions and continuity between metric spaces, phrased through open sets so that compactness and connectedness can be pushed forward. Continuous images of compact sets are compact (hence extreme values are attained, and continuity becomes uniform), continuous images of connected sets are connected (the intermediate value theorem), and the chapter ends with a catalogue of discontinuities and monotone functions.`,

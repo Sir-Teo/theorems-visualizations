@@ -28,7 +28,7 @@ function sci(x, d = 2) {
 const LOGTICKS = [[0, '1'], [1, '10'], [2, '100'], [3, '1000'], [4, '10⁴']];
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.8

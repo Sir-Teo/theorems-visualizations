@@ -53,7 +53,7 @@ const pmul = (a, b) => { const r = Array.from({ length: a.length + b.length - 1 
 const peval = (a, z) => { let s = [0, 0]; for (let k = a.length - 1; k >= 0; k--) s = cadd(cmul(s, z), a[k]); return s; };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 11,
   items: [
     // ------------------------------------------------------------------ 11.10

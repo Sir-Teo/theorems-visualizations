@@ -30,7 +30,7 @@ const GL3 = [[0.1127016653792583, 5 / 18], [0.5, 8 / 18], [0.8872983346207417, 5
 const cxs = (w, d = 4) => w.toString(d).replace('i', '\\,i');
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 10,
   items: [
     {

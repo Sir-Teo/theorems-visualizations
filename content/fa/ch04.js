@@ -43,7 +43,7 @@ const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const PSEL = [{ value: 1, label: '$1$' }, { value: 1.5, label: '$\\tfrac32$' }, { value: 2, label: '$2$' }, { value: 3, label: '$3$' }, { value: Infinity, label: '$\\infty$' }];
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 4,
   title: 'Duality in Banach Spaces',
   summary: String.raw`For a normed space the dual $X^*$ is always a Banach space; it norms $X$ and its closed unit ball is weak$^*$-compact. Annihilators $M^\perp$ and $\,{}^\perp\!N$ translate subspaces of $X$ into weak$^*$-closed subspaces of $X^*$ and back, and identify the duals of subspaces and quotients. Every bounded operator $T$ has an adjoint $T^*$ of the same norm, with $\mathscr N(T^*)=\mathscr R(T)^\perp$; this leads to the closed range theorem and to duality criteria for surjectivity. The last part studies compact operators: they form a closed ideal, $T$ is compact exactly when $T^*$ is, and away from $0$ their spectrum consists of isolated eigenvalues of finite multiplicity — the Riesz–Schauder theory behind the Fredholm alternative.`,

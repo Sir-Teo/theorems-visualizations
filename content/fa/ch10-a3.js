@@ -51,7 +51,7 @@ const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const p10 = (k) => (k === 0 ? '1' : '10' + (k < 0 ? '⁻' : '') + String(Math.abs(k)).split('').map((d) => SUP[+d]).join(''));
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 10,
   items: [
     {

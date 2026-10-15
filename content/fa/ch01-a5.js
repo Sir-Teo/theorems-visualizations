@@ -16,7 +16,7 @@ function hull(pts) {
 const unitBall = (p, n = 240) => Array.from({ length: n }, (_, i) => { const t = TAU * i / n, c = Math.cos(t), s = Math.sin(t); const r = 1 / pnorm(c, s, p); return [r * c, r * s]; });
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.37

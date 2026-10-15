@@ -70,7 +70,7 @@ function v_integrate(f, a, b, n) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.8

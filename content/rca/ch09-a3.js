@@ -22,7 +22,7 @@ function mid(F, a, b, n) { const h = (b - a) / n; let s = 0; for (let k = 0; k <
 function simpson(f, a, b, n) { if (n % 2) n++; const h = (b - a) / n; let s = f(a) + f(b); for (let i = 1; i < n; i++) s += f(a + i * h) * (i % 2 ? 4 : 2); return (s * h) / 3; }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.13

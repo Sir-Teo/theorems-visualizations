@@ -30,7 +30,7 @@ function opNorm(T, a, b, n = 64) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 12,
   items: [
     // ------------------------------------------------------------------ 12.7 lemma: bounded on a strip

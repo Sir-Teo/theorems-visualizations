@@ -67,7 +67,7 @@ function withDiscClip(S, cx, cy, r, draw) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 2,
   title: 'Positive Borel Measures',
   summary: String.raw`The chapter turns integration around: instead of starting from a measure, it starts from a positive linear functional on $C_c(X)$, the continuous functions of compact support on a locally compact Hausdorff space. Urysohn's lemma and partitions of unity supply enough such functions to recover a unique regular Borel measure from the functional (the Riesz representation theorem). Rudin then studies regularity, builds Lebesgue measure on $\R^k$ from the Riemann integral (translation invariance, uniqueness, the effect of linear maps, nonmeasurable sets), and closes with two theorems saying measurable functions are nearly continuous: Lusin's theorem and the Vitali–Carathéodory theorem.`,

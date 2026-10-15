@@ -64,7 +64,7 @@ function contArg(pts, c = [0, 0], start = null) {
 const fmtC = (v, z, d = 3) => `${v.fix(z[0], d)} ${z[1] < 0 ? '-' : '+'} ${v.fix(Math.abs(z[1]), d)}\\,i`;
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 16,
   items: [
     // ------------------------------------------------------------------ 16.12

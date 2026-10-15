@@ -37,7 +37,7 @@ const snapParallel = (other, tol = 0.035) => (x, y) => {
 };
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.32 rank theorem

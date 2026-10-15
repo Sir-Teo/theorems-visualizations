@@ -29,7 +29,7 @@ const sup = (n) => (n < 0 ? '⁻' : '') + String(Math.abs(n)).split('').map((d) 
 const sub = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[+d]).join('');
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 10,
   title: 'Elementary Properties of Holomorphic Functions',
   summary: String.raw`Complex differentiability turns out to be astonishingly rigid. Starting from line integrals and the index of a closed path, Rudin proves Cauchy's theorem and formula in convex sets, derives power-series expansions, the identity theorem, Liouville, the maximum modulus theorem and the open mapping theorem, and finishes with the global Cauchy theorem and the residue calculus.`,

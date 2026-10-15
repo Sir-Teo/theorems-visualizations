@@ -53,7 +53,7 @@ function balancedCore(U, complex, n = 360) {
 const supNorm = (f, n = 400) => { let m = 0; for (let i = 0; i <= n; i++) m = Math.max(m, Math.abs(f(i / n))); return m; };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.13

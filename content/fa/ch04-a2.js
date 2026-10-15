@@ -50,7 +50,7 @@ function matGrid(S, entry, n, x0, y0, color, fmt) {
 const frac = (a) => { for (let d = 1; d <= 12; d++) { const n = Math.round(a * d); if (Math.abs(n / d - a) < 1e-9) return d === 1 ? String(n) : `${n}/${d}`; } return (Math.round(a * 100) / 100).toString(); };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 4,
   items: [
     // ------------------------------------------------------------------ 4.10

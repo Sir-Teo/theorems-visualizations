@@ -14,7 +14,7 @@ function clampNorm(dx, dy, p, m) {
 const yes = (b) => (b ? '✓' : '✗');
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.15

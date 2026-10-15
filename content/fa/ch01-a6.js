@@ -22,7 +22,7 @@ function bumpDeriv(n, x) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.44

@@ -30,7 +30,7 @@ function elemCoeffs(p, J = 220) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 15,
   title: 'Zeros of Holomorphic Functions',
   summary: String.raw`Where can a holomorphic function vanish? Infinite products answer the question: when $\sum|1-f_n|$ converges locally uniformly, $\prod f_n$ is holomorphic and its zeros are exactly those of the factors. With Weierstrass's elementary factors any discrete set (with multiplicities) is the zero set of a function in $H(\Omega)$; combined with Mittag-Leffler this solves interpolation problems and shows that finitely generated ideals of $H(\Omega)$ are principal. Growth conditions change the picture: Jensen's formula ties the zeros in a disc to the average of $\log|f|$, which forces the Blaschke condition $\sum(1-|\alpha_n|)<\infty$ on zeros of bounded (even Nevanlinna) functions — and conversely Blaschke products realise every such sequence. The chapter ends with the Müntz–Szász theorem, an approximation result proved with exactly this zero-counting.`,

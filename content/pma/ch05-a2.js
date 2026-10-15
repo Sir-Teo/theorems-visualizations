@@ -32,7 +32,7 @@ function pieces(S, f, A, B, cuts, st, gap = 1e-9) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ 5.10

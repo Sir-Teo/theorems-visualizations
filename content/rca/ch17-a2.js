@@ -55,7 +55,7 @@ function spreadLabels(S, labels, { x, gap = 15, align = 'right', dx = -3, size =
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 17,
   items: [
     // ------------------------------------------------------------------ the spaces H^p and N

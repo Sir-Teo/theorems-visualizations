@@ -36,7 +36,7 @@ const matVec = (J, w) => [J[0][0] * w[0] + J[0][1] * w[1], J[1][0] * w[0] + J[1]
 const fmtMat = (v, J, d = 3) => `\\begin{pmatrix}${v.fix(J[0][0], d)}&${v.fix(J[0][1], d)}\\\\ ${v.fix(J[1][0], d)}&${v.fix(J[1][1], d)}\\end{pmatrix}`;
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.22

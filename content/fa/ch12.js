@@ -50,7 +50,7 @@ function legendre01(k, t) {
 const rot2 = (a) => [[Math.cos(a), -Math.sin(a)], [Math.sin(a), Math.cos(a)]];
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 12,
   title: 'Bounded Operators on a Hilbert Space',
   summary: String.raw`This is the chapter the whole book has been heading for. After recalling the geometry of Hilbert space (orthogonal projections, the Riesz representation, orthonormal bases), Rudin shows that $B(H)$ is a $B^*$-algebra under $T\mapsto T^*$, singles out normal, self-adjoint and unitary operators and projections, and proves the Fuglede–Putnam–Rosenblum commutativity theorem. Resolutions of the identity — projection-valued measures $E$ — then turn the commutative Gelfand–Naimark theorem into the spectral theorem $T=\int\lambda\,dE(\lambda)$ for every normal operator, with a Borel functional calculus $f(T)=\int f\,dE$. Its consequences fill the rest: eigenvalues are the atoms of $E$, positive operators have unique positive square roots, invertible operators have polar decompositions $T=UP$, the invertible group of $B(H)$ is connected, every $B^*$-algebra is an algebra of Hilbert-space operators (Gelfand–Naimark), and the averages of the powers of a contraction converge (the mean ergodic theorem).`,

@@ -21,7 +21,7 @@ function extremal(G, p) {
 const fmtP = (p) => (p === Infinity ? '\\infty' : Number.isInteger(p) ? String(p) : p.toFixed(2).replace(/0$/, ''));
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.6

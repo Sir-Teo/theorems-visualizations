@@ -27,7 +27,7 @@ const sub = (n) => String(n).replace(/\d/g, (c) => '₀₁₂₃₄₅₆₇₈�
 function ternary(x, n) { const d = []; let y = x; for (let i = 0; i < n; i++) { y *= 3; let t = Math.floor(y + 1e-12); if (t > 2) t = 2; d.push(t); y -= t; } return d; }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.43

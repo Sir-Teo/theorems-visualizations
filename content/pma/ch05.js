@@ -34,7 +34,7 @@ function yRange(vals, q = 0.02, pad = 0.12, minSpan = 0.5) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 5,
   title: 'Differentiation',
   summary: String.raw`Derivatives of real functions of one real variable: the derivative as a limit of difference quotients, its algebra and the chain rule. The heart of the chapter is the mean value theorem, reached through the observation that an interior extremum has zero derivative and through Cauchy's two-function version; it then drives the monotonicity test, Darboux's intermediate value property of derivatives, L'Hospital's rule and Taylor's theorem with remainder. A final section on vector-valued functions shows that the mean value *equality* breaks down in $\R^k$ while an inequality survives.`,

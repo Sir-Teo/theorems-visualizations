@@ -58,7 +58,7 @@ function runs(pred, a, b, n = 1200) {
 const CYCLE = ['blue', 'purple', 'teal', 'pink', 'orange', 'green', 'gold', 'red'];
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 4,
   items: [
     {

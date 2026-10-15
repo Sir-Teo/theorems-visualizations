@@ -40,7 +40,7 @@ function vecArrow(S, p, q, color, label, o = {}) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.6

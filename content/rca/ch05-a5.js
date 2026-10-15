@@ -9,7 +9,7 @@ const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 const cabs = (a) => Math.hypot(a[0], a[1]);
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ 5.23

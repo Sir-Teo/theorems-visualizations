@@ -51,7 +51,7 @@ function fatCantor(levels) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 7,
   title: 'Differentiation',
   summary: String.raw`How do we recover a function from its integral, or a measure from its values on small balls? Rudin answers with the Hardy–Littlewood maximal function: a simple covering lemma gives a weak-type bound for it, and that bound yields Lebesgue's differentiation theorem — almost every point is a Lebesgue point, and the Radon–Nikodym derivative is a limit of ratios over nicely shrinking sets. The second part settles the fundamental theorem of calculus for Lebesgue integrals through absolute continuity (the Cantor function shows why it is needed), and the chapter ends with the change-of-variables formula for maps that are merely differentiable on the set of integration.`,

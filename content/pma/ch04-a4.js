@@ -30,7 +30,7 @@ function squashedFrame(S, { xs = TICKS, ys = TICKS, xInf = [-1, 1] } = {}) {
 const fmtX = (v, x) => (x === Infinity ? '+\\infty' : x === -Infinity ? '-\\infty' : v.fmt(x, 3));
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 4,
   items: [
     // ------------------------------------------------------------------ monotonic functions

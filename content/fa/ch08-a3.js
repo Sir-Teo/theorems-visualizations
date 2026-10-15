@@ -68,7 +68,7 @@ function slope(pts, a, b) {
   return sxy / sxx;
 }
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 8,
   items: [
     // ------------------------------------------------------------------ 8.4

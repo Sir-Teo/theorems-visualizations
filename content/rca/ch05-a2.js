@@ -18,7 +18,7 @@ function imageVertices(a, p) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ 5.8

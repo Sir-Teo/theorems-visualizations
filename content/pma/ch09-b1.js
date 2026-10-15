@@ -45,7 +45,7 @@ function rootsOn(F, w, lo, hi, n = 200) {
 const fmtM = (v, A, d = 2) => `\\begin{pmatrix}${A.map((r) => r.map((x) => v.fix(x, d)).join(' & ')).join(' \\\\ ')}\\end{pmatrix}`;
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.24 inverse function theorem

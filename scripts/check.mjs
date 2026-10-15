@@ -2,10 +2,11 @@
 //
 //   node scripts/check.mjs                 # everything
 //   node scripts/check.mjs pma/4           # one chapter
-//   node scripts/check.mjs pma-4.19 rca    # an item and a whole book
+//   node scripts/check.mjs pma-4.19 rca    # an item and a whole collection
+//   node scripts/check.mjs physics         # a whole field
 //   flags: --shots (save PNGs to shots/), --modes (also every segmented-control option → shots/<id>~k.png),
 //          --dark, --still, --w=860, --static (skip browser), --quiet, --jobs=N
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { loadAll, validate, printProblems, ROOT } from './lib.mjs';
@@ -16,14 +17,15 @@ const flags = new Set(args.filter((a) => a.startsWith('--')).map((a) => a.split(
 const flagVal = (k, d) => { const a = args.find((x) => x.startsWith(k + '=')); return a ? a.split('=')[1] : d; };
 const targets = args.filter((a) => !a.startsWith('--'));
 
-const { items, problems } = await loadAll();
-const P = [...problems, ...validate(items)];
+const { items, planned, collections, problems } = await loadAll();
+const P = [...problems, ...validate(items, planned, collections)];
+const fieldOf = new Map(collections.map((C) => [C.id, C.field]));
 const matchT = (t, it) => {
   if (t.includes('*')) return new RegExp('^' + t.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$').test(it.file);
-  return t === it.id || t === it.book || t === `${it.book}/${it.chapter}` || t === it.file;
+  return t === it.id || t === it.col || t === `${it.col}/${it.chapter}` || t === it.file || (it.col && t === fieldOf.get(it.col));
 };
 const sel = items.filter((it) => typeof it.viz === 'function').filter((it) => !targets.length || targets.some((t) => matchT(t, it)));
-const relevant = P.filter((p) => !targets.length || targets.some((t) => matchT(t, { file: p.where.split(' ')[0], id: null, book: null })) || items.filter((it) => targets.some((t) => matchT(t, it))).some((it) => p.where.startsWith(`${it.file} ${it.num}`) || p.where === it.file));
+const relevant = P.filter((p) => !targets.length || targets.some((t) => matchT(t, { file: p.where.split(' ')[0], id: null, col: null })) || items.filter((it) => targets.some((t) => matchT(t, it))).some((it) => p.where.startsWith(`${it.file} ${it.num}`) || p.where === it.file));
 console.log(`static check: ${sel.length} item(s)`);
 const st = printProblems(relevant, { quiet: flags.has('--quiet') });
 console.log(`  ${st.errors} error(s), ${st.warnings} warning(s)`);
@@ -32,8 +34,15 @@ if (flags.has('--static')) process.exit(st.errors ? 1 : 0);
 // ---------- browser run ----------
 function findBrowser() {
   const cache = join(homedir(), 'Library/Caches/ms-playwright');
+  const pw = process.env.PLAYWRIGHT_BROWSERS_PATH;
+  const pwCands = [];
+  if (pw && existsSync(pw)) for (const d of readdirSync(pw).sort().reverse()) {
+    if (d.startsWith('chromium_headless_shell-')) pwCands.push(join(pw, d, 'chrome-linux/headless_shell'), join(pw, d, 'chrome-headless-shell-linux64/chrome-headless-shell'));
+    if (/^chromium-\d+$/.test(d)) pwCands.push(join(pw, d, 'chrome-linux/chrome'), join(pw, d, 'chrome-linux64/chrome'));
+  }
   const cands = [
     process.env.CHROME_PATH,
+    ...pwCands,
     ...['1243', '1223', '1181'].map((v) => join(cache, `chromium_headless_shell-${v}/chrome-headless-shell-mac-arm64/chrome-headless-shell`)),
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     '/usr/bin/chromium', '/usr/bin/google-chrome',
@@ -56,7 +65,7 @@ async function worker() {
   page.on('console', (m) => { if (m.type() === 'error') consoleErrs.push(m.text()); });
   while (queue.length) {
     const it = queue.shift(); consoleErrs.length = 0;
-    const url = `http://localhost:${port}/tools/harness.html?file=${encodeURIComponent(it.file)}&id=${encodeURIComponent(it.id)}&theme=${theme}&w=${flagVal('--w', 860)}${flags.has('--still') ? '&still=1' : ''}`;
+    const url = `http://localhost:${port}/tools/harness.html?file=${encodeURIComponent(it.file)}&id=${encodeURIComponent(it.id)}&col=${it.col}&theme=${theme}&w=${flagVal('--w', 860)}${flags.has('--still') ? '&still=1' : ''}`;
     let r;
     try {
       await page.goto(url, { waitUntil: 'load', timeout: 30000 });

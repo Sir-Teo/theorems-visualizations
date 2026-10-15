@@ -60,7 +60,7 @@ function runs(f, pred, a, b, n = 1600) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.31

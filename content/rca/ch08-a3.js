@@ -28,7 +28,7 @@ function pieceInt(F, A, B, breaks = [], n = 10) {
 const box = (a, b, hgt = 1) => (t) => (t >= a && t <= b ? hgt : 0);
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 8,
   items: [
     // ------------------------------------------------------------------ convolutions

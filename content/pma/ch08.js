@@ -15,7 +15,7 @@ function texNum(x, d = 3) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 8,
   title: 'Some Special Functions',
   summary: String.raw`Power series are differentiated term by term, re-expanded about new centres and pinned down by their values on any set with a limit point; Abel's theorem controls them at the edge of the interval. The single series $E(z)=\sum z^n/n!$ then yields $e^x$, the logarithm, the trigonometric functions and the number $\pi$, and a minimum-modulus argument shows that every complex polynomial has a root. Fourier series are treated as best mean-square approximations (Bessel, Parseval) that converge at every point where $f$ is Lipschitz, and the chapter closes with the gamma function — characterised by log-convexity (Bohr–Mollerup) — the beta integral and Stirling's formula.`,

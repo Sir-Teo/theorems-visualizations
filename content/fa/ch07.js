@@ -60,7 +60,7 @@ function binom(n, k) { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + 
 function hermite(n, x) { let a = 1, b = x; if (n === 0) return 1; for (let k = 1; k < n; k++) { const c = x * b - k * a; a = b; b = c; } return b; }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 7,
   title: 'Fourier Transforms',
   summary: String.raw`The Fourier transform on $\R^n$, normalised by $dm_n=(2\pi)^{-n/2}dx$. Its natural home is the Schwartz space $\mathscr S_n$ of rapidly decreasing smooth functions, a Fréchet space that the transform maps onto itself with period 4 (the inversion theorem); by density this yields the Plancherel isometry of $L^2$. Duality then extends the transform to tempered distributions, where differentiation and multiplication by polynomials trade places and convolution becomes multiplication. The Paley–Wiener theorems characterise transforms of compactly supported test functions and distributions as entire functions of exponential type, and Sobolev's lemma turns $L^2$ control of enough derivatives into classical smoothness.`,

@@ -20,7 +20,7 @@ function gibbs(Q, y, iters = 80) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 3,
   items: [
     {

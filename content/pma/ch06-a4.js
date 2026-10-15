@@ -122,7 +122,7 @@ const IDENT = () => integrator((x) => x, () => 1);
 
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 6,
   items: [
     // ------------------------------------------------------------------ 6.21

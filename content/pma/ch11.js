@@ -80,7 +80,7 @@ function mergeIntervals(list) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 11,
   title: 'The Lebesgue Theory',
   summary: String.raw`Rudin builds Lebesgue measure from the ground up: an additive, regular set function on finite unions of boxes is extended through an outer measure to the $\sigma$-ring of sets that elementary sets approximate in the metric $d(A,B)=\mu^*(A\,\triangle\,B)$, where it becomes countably additive. Measurable and simple functions then lead to the Lebesgue integral, the monotone and dominated convergence theorems and Fatou's lemma, and a sharp comparison with the Riemann integral: a bounded function is Riemann integrable exactly when it is continuous almost everywhere. The chapter closes with $L^2$ — its completeness, the Riesz–Fischer theorem and Parseval's identity for complete orthonormal systems.`,

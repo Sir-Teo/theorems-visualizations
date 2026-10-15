@@ -46,7 +46,7 @@ function phaseRGB(M, re, im) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 7,
   items: [
     {

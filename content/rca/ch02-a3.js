@@ -34,7 +34,7 @@ function simpson(f, a, b, n = 400) {
 function bisectInc(F, target, lo, hi) { for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (F(m) < target) lo = m; else hi = m; } return (lo + hi) / 2; }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 2,
   items: [
     // ------------------------------------------------------------ 2.14

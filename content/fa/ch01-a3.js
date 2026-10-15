@@ -43,7 +43,7 @@ function rudinF(x1, x2, s, kind, w) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.22

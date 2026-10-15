@@ -32,7 +32,7 @@ function dft8(x) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 18,
   items: [
     // ------------------------------------------------------------------ ideals and homomorphisms

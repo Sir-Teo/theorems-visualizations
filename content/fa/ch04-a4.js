@@ -42,7 +42,7 @@ function tridiagEig(d, e) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 4,
   items: [
     // ------------------------------------------------------------------ 4.22

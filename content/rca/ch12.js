@@ -43,7 +43,7 @@ function phaseRGB(M, re, im) {
 const blend = (p, q, k) => [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k, p[2] + (q[2] - p[2]) * k];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 12,
   title: 'The Maximum Modulus Principle',
   summary: String.raw`The maximum modulus theorem says that $\abs f$ has no interior maxima; this chapter shows how much that single fact can do. Applied to $f(z)/z$ it gives Schwarz's lemma, which in turn identifies every conformal automorphism of the disc as a rotated Möbius map $\lambda\varphi_\alpha$. On unbounded regions the principle needs a growth condition, and the Phragmén–Lindelöf method supplies it: damping factors give the three-lines theorem and a sharp double-exponential bound in a strip. The three-lines theorem then proves an interpolation theorem for operators on $L^p$ spaces, and the chapter ends with a converse: continuous functions whose whole module obeys the maximum principle must be holomorphic.`,

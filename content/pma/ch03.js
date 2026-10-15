@@ -9,7 +9,7 @@ function samplePlane(p, N) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 3,
   title: 'Numerical Sequences and Series',
   summary: String.raw`Convergence of sequences in a metric space, subsequences and their limits (where compactness reappears as Bolzano–Weierstrass), Cauchy sequences and complete spaces, monotone sequences, and the upper and lower limits that every real sequence possesses. The second half is about series: the Cauchy criterion and the comparison test, geometric series and Cauchy's condensation test, the number $e$, the root and ratio tests, power series and their radius of convergence, summation by parts, absolute convergence, Cauchy products, and Riemann's theorem that a conditionally convergent series can be rearranged to have any sum.`,

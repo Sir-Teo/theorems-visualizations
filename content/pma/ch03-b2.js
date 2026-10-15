@@ -39,7 +39,7 @@ function sci(x, d = 2) {
 const cplx = (z, d = 3) => `${z.re.toFixed(d)} ${z.im < 0 ? '-' : '+'} ${Math.abs(z.im).toFixed(d)}\\,i`;
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.37

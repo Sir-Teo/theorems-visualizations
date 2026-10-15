@@ -21,7 +21,7 @@ const sup = (n) => (n < 0 ? '⁻' : '') + String(Math.abs(n)).split('').map((d) 
 const logTicks = (lo, hi, step = 1) => { const out = []; for (let k = Math.ceil(lo); k <= Math.floor(hi); k++) if (k % step === 0) out.push([k, k === 0 ? '1' : `10${sup(k)}`]); return out; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 15,
   items: [
     {

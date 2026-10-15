@@ -13,7 +13,7 @@ function chebInterp(f, N) {
 const dualExp = (p) => (p === 1 ? Infinity : p === Infinity ? 1 : p / (p - 1));
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ 5.19

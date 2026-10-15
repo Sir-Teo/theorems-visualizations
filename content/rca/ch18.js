@@ -83,7 +83,7 @@ function heatFn(M, S, Lfn, lo, hi, grad, res = 2) {
 const LOGTICKS = [[1, '10'], [0, '1'], [-2, '10⁻²'], [-4, '10⁻⁴'], [-6, '10⁻⁶'], [-8, '10⁻⁸'], [-10, '10⁻¹⁰'], [-12, '10⁻¹²']];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 18,
   title: 'Elementary Theory of Banach Algebras',
   summary: String.raw`A Banach algebra is a Banach space whose elements can also be multiplied, with $\norm{xy}\le\norm{x}\norm{y}$ and a unit of norm $1$. Neumann series show that the invertible elements form an open set on which inversion is continuous; Liouville's theorem then forces every element to have a nonempty compact spectrum, whose radius is $\lim\norm{x^n}^{1/n}$, and the Gelfand–Mazur theorem follows. For commutative algebras, maximal ideals are exactly the kernels of complex homomorphisms, so invertibility becomes a pointwise question — which yields Gelfand's short proof of Wiener's lemma on absolutely convergent Fourier series.`,

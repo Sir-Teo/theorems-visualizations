@@ -30,7 +30,7 @@ function deltaFor(a, eps, h) {
 const winFor = (delta, h) => Math.max(0, Math.ceil(delta / h - 1e-9) - 1);
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 7,
   items: [
     // ------------------------------------------------------------------ 7.18

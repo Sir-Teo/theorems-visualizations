@@ -27,7 +27,7 @@ function lpNorm(vals, p) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 3,
   title: 'L^p-Spaces',
   summary: String.raw`Convexity is the engine of the chapter: it gives Jensen's inequality, and through the convexity of $e^x$ the inequalities of Hölder and Minkowski. These make $L^p(\mu)$ ($1\le p\le\infty$) a normed space once functions that agree almost everywhere are identified, and the Riesz–Fischer argument shows it is complete; a Cauchy sequence even has an a.e.-convergent subsequence. The chapter closes with density results: simple functions, and on locally compact spaces continuous functions with compact support, are dense in $L^p$ for $p<\infty$, while in the sup norm the completion of $C_c(X)$ is $C_0(X)$.`,

@@ -44,7 +44,7 @@ const circlePts = (cx, cy, r, n = 160) => Array.from({ length: n }, (_, i) => [c
 const sciT = (x, d = 2) => { if (!isFinite(x)) return '\\infty'; if (x === 0) return '0'; const a = Math.abs(x); if (a >= 1e-3 && a < 1e5) return String(Number(x.toPrecision(d))); const [m, e] = x.toExponential(d - 1).split('e'); return `${m}\\times10^{${+e}}`; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 13,
   title: 'Approximation by Rational Functions',
   summary: String.raw`Which holomorphic functions are uniform limits of rational functions, and where must the poles be put? After adjoining the point $\infty$ to get the Riemann sphere and recalling partial fractions, Rudin builds a cycle that reproduces Cauchy's formula on any compact set, and with Hahn–Banach and the Riesz representation theorem proves Runge's theorem: on a compact $K$, it is enough to have one pole in each component of $S^2\setminus K$, and if that complement is connected, polynomials suffice. An exhaustion of open sets by compact sets carries this over to open sets, which gives the Mittag-Leffler theorem on prescribing principal parts. The chapter ends with nine equivalent descriptions of simply connected plane regions.`,

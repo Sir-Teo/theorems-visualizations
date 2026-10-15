@@ -43,7 +43,7 @@ function intSing(g, a, b, c, n = 160) {
 function cantorLevel(n) { let I = [[0, 1]]; for (let k = 0; k < n; k++) I = I.flatMap(([a, b]) => { const d = (b - a) / 3; return [[a, a + d], [b - d, b]]; }); return I; }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 7,
   items: [
     // ------------------------------------------------------------------ 7.14

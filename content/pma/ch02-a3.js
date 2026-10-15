@@ -13,7 +13,7 @@ function runs(S, pts, flags, onStyle, offStyle) {
 const ring = (cx, cy, r, n = 48) => Array.from({ length: n }, (_, i) => [cx + r * Math.cos((2 * Math.PI * i) / n), cy + r * Math.sin((2 * Math.PI * i) / n)]);
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.23

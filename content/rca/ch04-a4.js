@@ -32,7 +32,7 @@ const L2n = (ys) => Math.sqrt(ys.reduce((s, y) => s + y * y, 0) / ys.length); //
 const sci = (x) => { if (x === 0) return '0'; if (Math.abs(x) >= 1e-3) return x.toFixed(4); const e = Math.floor(Math.log10(Math.abs(x))); return `${(x / 10 ** e).toFixed(1)}\\times10^{${e}}`; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 4,
   items: [
     // ------------------------------------------------------------------ 4.21

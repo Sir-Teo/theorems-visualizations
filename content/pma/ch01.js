@@ -21,7 +21,7 @@ function numberLine(s, y, o = {}) {
 function v_fix(t) { const r = Math.round(t * 100) / 100; return String(r).replace('-', '−'); }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 1,
   title: 'The Real and Complex Number Systems',
   summary: String.raw`The rational numbers have gaps — no rational squares to $2$ — and the chapter repairs them. After axiomatising ordered sets, suprema and fields, Rudin states that there is an ordered field $\R$ with the least-upper-bound property (constructed from Dedekind cuts in the appendix), and derives the Archimedean property, the density of $\Q$, and the existence of $n$-th roots. The complex field is then built as pairs of reals, with conjugation, absolute value and the Schwarz inequality, and the chapter closes with Euclidean space $\R^k$ and its norm.`,

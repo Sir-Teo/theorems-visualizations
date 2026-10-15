@@ -30,7 +30,7 @@ function vbar(s, x, a, b, st = {}) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.38

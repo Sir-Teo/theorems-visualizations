@@ -5,7 +5,7 @@ const SUB = '₀₁₂₃₄₅₆₇₈₉';
 const sub = (n) => String(n).split('').map((d) => SUB[+d]).join('');
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.13

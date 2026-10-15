@@ -22,7 +22,7 @@ function mid(f, a, b, n = 4000) { const h = (b - a) / n; let s = 0; for (let i =
 function dyadic(n) { const k = Math.floor(Math.log2(n)) + 1, j = n - 2 ** (k - 1); return (2 * j + 1) / 2 ** k; }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.38

@@ -108,7 +108,7 @@ const fact = (k) => { let r = 1; for (let i = 2; i <= k; i++) r *= i; return r; 
 const RAYC = ['accent', 'orange', 'green', 'purple', 'teal', 'pink'];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.26

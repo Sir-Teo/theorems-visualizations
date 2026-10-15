@@ -52,7 +52,7 @@ function sliceNorm2(f, y, n = 8000) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 19,
   title: 'Holomorphic Fourier Transforms',
   summary: String.raw`When a function $F$ on the line vanishes outside an interval or a half-line, its Fourier integral $\int F(t)e^{itz}\,dt$ makes sense for complex $z$ and is holomorphic. Two theorems of Paley and Wiener reverse this: square-integrable functions on a half-line correspond exactly to holomorphic functions in a half-plane with bounded $L^2$ norms on horizontal lines, and square-integrable functions on $[-A,A]$ to entire functions of exponential type $A$ that are square-integrable on $\R$. The chapter then asks when a $C^\infty$ function is determined by its derivatives at a single point, and answers with the Denjoy–Carleman theorem: under log-convexity, the class $C\{M_n\}$ is quasi-analytic exactly when $\sum M_n^{-1/n}$ diverges — a real-variable statement proved with these holomorphic Fourier transforms.`,

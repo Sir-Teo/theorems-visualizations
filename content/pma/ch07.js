@@ -39,7 +39,7 @@ function drawInOut(s, g, lim, a, b, eps, st = {}) {
 
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 7,
   title: 'Sequences and Series of Functions',
   summary: String.raw`When does a limit of functions inherit the good properties of the functions themselves? Pointwise limits can destroy continuity, integrals and derivatives, so Rudin introduces uniform convergence — with its Cauchy criterion and the Weierstrass M-test — and shows that it preserves continuity (making $\mathscr C(X)$ a complete metric space under the sup norm), commutes with integration, and commutes with differentiation when the derivatives converge uniformly; a uniformly convergent sum of zigzags gives a continuous, nowhere differentiable function. The chapter closes with equicontinuity and the Arzelà–Ascoli theorem, and with the Weierstrass approximation theorem and Stone's generalization of it.`,

@@ -13,7 +13,7 @@ function rightAngle(S, p, u, w, size, st = {}) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 4,
   title: 'Elementary Hilbert Space Theory',
   summary: String.raw`An inner product makes a vector space look like Euclidean space: lengths, angles and orthogonality. From the Schwarz inequality Rudin builds the closest-point theorem for closed convex sets, orthogonal projections onto closed subspaces and the representation of every bounded linear functional as $x\mapsto(x,y)$. Orthonormal sets give Fourier coefficients; Bessel's inequality, the Riesz–Fischer theorem and Parseval's identity identify every Hilbert space with some $\ell^2(A)$, once the Hausdorff maximality theorem supplies maximal orthonormal sets. The chapter ends by proving the trigonometric system complete in $L^2(T)$, which yields the classical theory of Fourier series in $L^2$.`,

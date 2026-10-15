@@ -66,7 +66,7 @@ function rayHit(poly, c, th) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 14,
   title: 'Conformal Mapping',
   summary: String.raw`Holomorphic maps with nonvanishing derivative preserve angles, and the linear fractional transformations are the most rigid examples. Montel's theorem (uniformly bounded families are normal) turns the search for a conformal map into an extremal problem, which Rudin solves to prove the Riemann mapping theorem: every simply connected proper subregion of the plane is conformally equivalent to the disc. The chapter then studies the normalized univalent functions of the class $\mathscr S$ (area theorem, $|a_2|\le2$, Koebe's one-quarter theorem), shows that the Riemann map extends to the boundary when the boundary is nice, and proves that annuli of different moduli are not conformally equivalent.`,

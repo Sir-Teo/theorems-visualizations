@@ -17,7 +17,7 @@ function lebesgue3(M, N) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ 5.12

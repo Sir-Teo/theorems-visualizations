@@ -74,7 +74,7 @@ function polarImage(g, radii, nRays = 16, rmax = 0.995) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 14,
   items: [
     // ------------------------------------------------------------------ continuity at the boundary

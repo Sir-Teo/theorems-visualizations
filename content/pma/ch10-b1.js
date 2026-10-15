@@ -49,7 +49,7 @@ function spinArrow(S, c, r, sgn, st = {}) {
 const SUBS = '₀₁₂₃₄';
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.25

@@ -7,7 +7,7 @@ const fmtP = (p) => (p === Infinity ? '\\infty' : Number.isInteger(p) ? String(p
 const phiN = (n, t) => (t >= n ? n : Math.floor(t * 2 ** n) / 2 ** n);
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.12

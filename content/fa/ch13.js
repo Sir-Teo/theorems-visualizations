@@ -20,7 +20,7 @@ const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const p10 = (k) => (k === 0 ? '1' : '10' + (k < 0 ? '⁻' : '') + String(Math.abs(k)).split('').map((d) => SUP[+d]).join(''));
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 13,
   title: 'Unbounded Operators',
   summary: String.raw`Differential operators on $L^2$ are not bounded and are defined only on dense subspaces, so the theory is rebuilt around graphs. An operator is closed if its graph is closed; its adjoint is read off from the graph via the rotation $(x,y)\mapsto(-y,x)$, and is always closed. Symmetric operators satisfy $(Tx,y)=(x,Ty)$; self-adjoint ones in addition have $\mathscr D(T^*)=\mathscr D(T)$, which is the difference between $-i\,d/dx$ on an interval with or without boundary conditions. The Cayley transform $(T-i)(T+i)^{-1}$ turns self-adjoint operators into unitary ones, which carries the spectral theorem over: every self-adjoint (indeed every normal) unbounded operator is $\int\lambda\,dE(\lambda)$, with real spectrum, and generates the unitary group $e^{itT}$. The chapter ends with semigroups of operators $e^{tA}$ and their infinitesimal generators (Hille–Yosida).`,

@@ -35,7 +35,7 @@ function lattice(S, b1, b2, st1, st2) {
 const det3 = (a, b, c) => a[0] * (b[1] * c[2] - b[2] * c[1]) - b[0] * (a[1] * c[2] - a[2] * c[1]) + c[0] * (a[1] * b[2] - a[2] * b[1]);
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 9,
   title: 'Functions of Several Variables',
   summary: String.raw`Calculus moves from the line to maps between Euclidean spaces. The chapter opens with the linear algebra of $\R^n$ — bases and dimension, linear transformations, and the operator norm that turns $L(\R^n,\R^m)$ into a metric space in which the invertible operators form an open set. The derivative $f'(x)$ is then the linear map that best approximates $f(x+h)-f(x)$; it is unique, obeys the chain rule, is represented by the matrix of partial derivatives, and controls increments on convex sets. The contraction principle powers the inverse and implicit function theorems and the rank theorem, after which determinants and Jacobians, higher derivatives with the symmetry of mixed partials, and differentiation under the integral sign complete the chapter.`,

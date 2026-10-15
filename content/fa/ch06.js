@@ -81,7 +81,7 @@ const gaugeA = (A, v) => { let m = 0; for (const a of A) m = Math.max(m, Math.ab
 const shiftPoly = (P, c, s = 1) => P.map((p) => [c[0] + s * p[0], c[1] + s * p[1]]);
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 6,
   title: 'Test Functions and Distributions',
   summary: String.raw`The space $\mathscr D(\Omega)$ of smooth compactly supported test functions receives a locally convex topology that is not metrizable but is complete, has the Heine–Borel property, and in which a sequence converges only if all supports stay in one compact set and all derivatives converge uniformly. Distributions are the continuous linear functionals on it — locally finite combinations of derivatives of continuous functions — and they can be differentiated, multiplied by smooth functions, localised, glued from local pieces, and convolved with test functions and with one another.`,

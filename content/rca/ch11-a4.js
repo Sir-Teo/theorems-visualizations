@@ -45,7 +45,7 @@ const PI_TICKS = [[-Math.PI, '−π'], [-Math.PI / 2, '−π/2'], [0, '0'], [Mat
 const onCircle = (x, y) => { const m = Math.hypot(x, y) || 1; return [x / m, y / m]; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 11,
   items: [
     {

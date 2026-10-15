@@ -24,7 +24,7 @@ function legendreTable(t, K) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 4,
   items: [
     // ------------------------------------------------------------------ 4.10

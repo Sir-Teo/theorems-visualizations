@@ -62,7 +62,7 @@ const GL5 = [[0.04691007703066802, 0.11846344252809454], [0.23076534494715845, 0
 const sub = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[+d] ?? d).join('');
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ integration over paths

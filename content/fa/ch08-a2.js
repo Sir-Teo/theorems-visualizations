@@ -10,7 +10,7 @@ const PRESETS = {
 };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 8,
   items: [
     {

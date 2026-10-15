@@ -51,7 +51,7 @@ const supStr = (n) => (n < 0 ? '⁻' : '') + String(Math.abs(n)).split('').map((
 const logTicks = (y0, y1) => Array.from({ length: 41 }, (_, i) => i - 20).filter((k) => k >= y0 && k <= y1).map((k) => [k, k === 0 ? '1' : `10${supStr(k)}`]);
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 14,
   items: [
     {

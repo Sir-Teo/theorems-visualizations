@@ -17,7 +17,7 @@ const p10 = (k) => (k === 0 ? '1' : '10' + (k < 0 ? '⁻' : '') + String(Math.ab
 const fmtC = (v, z, d = 3) => `${v.fix(z[0], d)}${z[1] < 0 ? '-' : '+'}${v.fix(Math.abs(z[1]), d)}i`;
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 11,
   title: 'Commutative Banach Algebras',
   summary: String.raw`In a commutative Banach algebra the maximal ideals are exactly the kernels of the complex homomorphisms, so an element is invertible precisely when no homomorphism kills it, and its spectrum is the set of its values under homomorphisms. The set $\Delta$ of homomorphisms, with the weak* topology, is a compact Hausdorff space, and the Gelfand transform $x\mapsto\hat x$ represents $A$ by continuous functions on $\Delta$ — faithfully modulo the radical, with $\|\hat x\|_\infty=\rho(x)$. Classical examples: $\ell^1(\Z)$ has $\Delta=\T$ (Wiener's lemma), the disc algebra has $\Delta=\overline U$. With an involution and the $B^*$ identity $\|xx^*\|=\|x\|^2$, the Gelfand transform is an isometric $*$-isomorphism onto all of $C(\Delta)$ (Gelfand–Naimark); spectra are then the same in every closed $*$-subalgebra, and positive functionals are automatically bounded.`,

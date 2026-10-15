@@ -54,7 +54,7 @@ const LOG_TICKS = (lo, hi, step = 2) => {
 };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 10,
   title: 'Banach Algebras',
   summary: String.raw`A Banach algebra is a Banach space with an associative multiplication satisfying $\norm{xy}\le\norm x\norm y$ and a unit of norm $1$. Neumann series make the invertible group $G(A)$ open and inversion continuous; Liouville's theorem, applied to the resolvent $\lambda\mapsto(\lambda e-x)^{-1}$, makes every spectrum a nonempty compact set of radius $\lim\norm{x^n}^{1/n}$, and Gelfand–Mazur follows. The Gleason–Kahane–Żelazko theorem characterises complex homomorphisms by their kernels, Cauchy integrals around the spectrum give a holomorphic functional calculus with the spectral mapping theorem $\sigma(f(x))=f(\sigma(x))$, exponentials generate the identity component of $G(A)$, and the chapter ends with Lomonosov's invariant subspace theorem for operators commuting with a compact operator.`,

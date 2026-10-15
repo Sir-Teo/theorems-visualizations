@@ -36,7 +36,7 @@ function steps(S, s, a, b, st = {}, N = 1600) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 11,
   items: [
     // ------------------------------------------------------------------ the integral

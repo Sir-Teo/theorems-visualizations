@@ -99,7 +99,7 @@ function lyapunovSet(F, y, levels = 7) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 5,
   title: 'Some Applications',
   summary: String.raw`A tour of what the abstract machinery of Chapters 1–4 can do. The closed graph theorem shows that closed subspaces of $L^p$ made of bounded functions are finite-dimensional; Krein–Milman yields Lyapunov's convexity theorem for vector measures and Bishop's generalized Stone–Weierstrass theorem; duality gives peak-interpolation theorems and the representation of $L^1$ functions as sums of Poisson kernels. Fixed-point theorems (Kakutani, Markov–Kakutani, Ryll-Nardzewski) produce Haar measure on compact groups and invariant extensions of functionals, and averaging over a compact group shows that $H^1$ and the disc algebra are not complemented.`,

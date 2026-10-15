@@ -13,7 +13,7 @@ function simpson(f, a, b, n) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 10,
   items: [
     {

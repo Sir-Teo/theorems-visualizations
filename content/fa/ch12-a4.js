@@ -23,7 +23,7 @@ const cabs = (a) => Math.hypot(a[0], a[1]);
 const cexp = (a) => { const e = Math.exp(a[0]); return [e * Math.cos(a[1]), e * Math.sin(a[1])]; };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 12,
   items: [
     {

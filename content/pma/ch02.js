@@ -24,7 +24,7 @@ function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a 
 const minus = (s) => String(s).replace('-', '−');
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 2,
   title: 'Basic Topology',
   summary: String.raw`The chapter opens by making "how many" precise: finite, countable and uncountable sets, with the facts that subsets, countable unions and finite products of countable sets stay countable, while Cantor's diagonal argument shows that the 0–1 sequences (and hence $\R$) do not. It then introduces metric spaces and their basic vocabulary — neighbourhoods, limit points, open and closed sets, closures, relative openness. The second half studies compact sets (culminating in the Heine–Borel and Weierstrass theorems in $\R^k$), perfect sets such as the Cantor set, and connected sets.`,

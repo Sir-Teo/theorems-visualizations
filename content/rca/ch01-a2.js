@@ -23,7 +23,7 @@ function drawRow(S, ivs, y0, y1, color, alpha = 0.8) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.13

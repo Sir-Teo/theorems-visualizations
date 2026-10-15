@@ -5,7 +5,7 @@
 function mid(f, a, b, n = 4000) { const h = (b - a) / n; let s = 0; for (let i = 0; i < n; i++) s += f(a + (i + 0.5) * h); return s * h; }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.30

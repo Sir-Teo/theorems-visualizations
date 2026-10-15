@@ -23,7 +23,7 @@ function mid(f, a, b, n = 4000) { const h = (b - a) / n; let s = 0; for (let i =
 const CYCLE = ['blue', 'orange', 'teal', 'purple', 'pink', 'gold', 'green', 'red'];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.22

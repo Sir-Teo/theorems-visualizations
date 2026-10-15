@@ -55,7 +55,7 @@ function path3Arrows(S, pts, st = {}, fr = [0.5]) {
 const div = (v, x, m) => v.M.cmap(0.5 + 0.5 * v.M.clamp(x / m, -1, 1), 'diverging');
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.42

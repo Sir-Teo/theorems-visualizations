@@ -121,7 +121,7 @@ const ALPHA = () => integrator((x) => 0.5 * x + 0.3 * x * x, (x) => 0.5 + 0.6 * 
 const IDENT = () => integrator((x) => x, () => 1);
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 6,
   title: 'The Riemann–Stieltjes Integral',
   summary: String.raw`Integration is built from upper and lower sums: a bounded function is integrable against an increasing integrator $\alpha$ when refining partitions squeezes the two sums together. Rudin proves the $\eps$-criterion, shows that continuous functions, monotone functions (against continuous $\alpha$) and functions with finitely many discontinuities are integrable, develops linearity and the step-function and density cases of $d\alpha$, and then connects integration with differentiation through the fundamental theorem of calculus. The chapter closes with vector-valued integrals and the length of rectifiable curves.`,

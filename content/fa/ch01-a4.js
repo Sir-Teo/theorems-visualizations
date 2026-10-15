@@ -35,7 +35,7 @@ function hull(pts) {
 const byAngle = (pts) => pts.slice().sort((a, b) => Math.atan2(a[1], a[0]) - Math.atan2(b[1], b[0]));
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.30

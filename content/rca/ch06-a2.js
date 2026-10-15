@@ -25,7 +25,7 @@ function runs(idx) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 6,
   items: [
     // ------------------------------------------------------------------ absolute continuity

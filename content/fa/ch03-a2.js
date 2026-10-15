@@ -15,7 +15,7 @@ function planePatch(n, s) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 3,
   items: [
     {

@@ -56,7 +56,7 @@ function logTicks(y0, y1, fmt) {
 const ccw = (a, b) => { let L = b - a; while (L <= 0) L += TAU; while (L > TAU) L -= TAU; return L; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 17,
   items: [
     // ------------------------------------------------------------------ factorization theorems

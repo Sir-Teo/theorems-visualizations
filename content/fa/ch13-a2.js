@@ -17,7 +17,7 @@ function span(vals, minSpan = 1, pad = 0.15) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 13,
   items: [
     {

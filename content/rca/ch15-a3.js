@@ -35,7 +35,7 @@ function logBlaschke(ar, ai, x, y) { const nr = ar - x, ni = ai - y, dr = 1 - (a
 const GOLD = Math.PI * (3 - Math.sqrt(5));
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 15,
   items: [
     // ------------------------------------------------------------------ Jensen's formula

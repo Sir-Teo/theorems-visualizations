@@ -45,7 +45,7 @@ const C = {
 };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 8,
   title: 'Applications to Differential Equations',
   summary: String.raw`A linear differential operator $P(D)$ with constant coefficients becomes multiplication by the polynomial $P$ under the Fourier transform. A fundamental solution — a distribution $E$ with $P(D)E=\delta$ — turns every equation $P(D)u=w$ with compactly supported $w$ into the formula $u=E*w$. The Malgrange–Ehrenpreis theorem says that fundamental solutions always exist: divide by $P$ on a contour that dodges its zeros, with a mean-value estimate for polynomials controlling the size. For elliptic operators, whose top-order symbol never vanishes off the origin, the division costs nothing at high frequencies, and every solution of $P(D)u=f$ is as smooth as $f$: elliptic regularity, with Weyl's lemma for the Laplacian as the prototype.`,

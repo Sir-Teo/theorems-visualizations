@@ -53,7 +53,7 @@ function dipole(S, x, w, unit, color, label) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 6,
   items: [
     // ------------------------------------------------------------------ localization

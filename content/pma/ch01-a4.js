@@ -4,7 +4,7 @@ const fx = (x, d = 2) => (Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d).repla
 const annulus = (rmin, rmax) => (x, y) => { const r = Math.hypot(x, y) || 1e-9; const t = Math.min(rmax, Math.max(rmin, r)) / r; return [x * t, y * t]; };
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.33

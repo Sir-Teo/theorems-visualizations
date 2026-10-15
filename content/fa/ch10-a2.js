@@ -47,7 +47,7 @@ const p10 = (k) => (k === 0 ? '1' : '10' + (k < 0 ? '⁻' : '') + String(Math.ab
 const fmtC = (v, z, d = 3) => `${v.fix(z[0], d)}${z[1] < 0 ? '-' : '+'}${v.fix(Math.abs(z[1]), d)}i`;
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 10,
   items: [
     {

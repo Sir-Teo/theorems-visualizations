@@ -14,7 +14,7 @@ function numberLine(s, y, o = {}) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 1,
   items: [
     // ------------------------------------------------------------------ 1.17

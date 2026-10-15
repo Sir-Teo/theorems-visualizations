@@ -17,7 +17,7 @@ function rationals(K) {
 function cells(S, list, st) { const pts = []; for (const [a, b, y] of list) pts.push([a, y], [b, y], null); S.path(pts, st); }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 11,
   items: [
     {

@@ -21,7 +21,7 @@ const pow10 = (k) => (k === 0 ? '1' : k === 1 ? '10' : `10${k < 0 ? '⁻' : ''}$
 const logTicks = (lo, hi, every = 1) => { const out = []; for (let k = Math.ceil(lo); k <= Math.floor(hi); k++) if (k % every === 0) out.push([k, pow10(k)]); return out; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ isolated singularities

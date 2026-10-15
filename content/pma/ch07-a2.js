@@ -23,7 +23,7 @@ function drawLimit(s, F, st = {}) {
 const sub = (k) => String(k).replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[+d]);
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 7,
   items: [
     // ------------------------------------------------------------------ 7.12

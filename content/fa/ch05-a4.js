@@ -16,7 +16,7 @@ function specNorm(A, it = 60) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 5,
   items: [
     {

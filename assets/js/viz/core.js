@@ -1,6 +1,7 @@
 // Visualization runtime. A theorem's `viz(v)` function receives the API built by
 // `mount()` below; see AUTHORING.md for the full reference and examples.
 import * as M from './math.js';
+import { KITS } from './kits/index.js';
 
 // ------------------------------------------------------------------ colours
 const NAMES = ['ink', 'muted', 'faint', 'grid', 'bg', 'panel', 'accent', 'blue', 'red', 'green', 'orange', 'purple', 'teal', 'pink', 'gold', 'gray', 'pma', 'rca', 'fa'];
@@ -15,7 +16,13 @@ function palette() {
   return PAL;
 }
 export function resetColors() { PAL = null; RGB.clear(); }
-export function resolveColor(c) { if (c == null) return null; if (Array.isArray(c)) return `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`; return palette()[c] ?? c; }
+/** Palette names, then any `--c-<name>` custom property (collection colours from data/atlas.css), then the CSS colour itself. */
+export function resolveColor(c) {
+  if (c == null) return null; if (Array.isArray(c)) return `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
+  const P = palette(); if (P[c] != null) return P[c];
+  if (typeof c === 'string' && /^[a-z][a-z0-9-]*$/.test(c)) { const v = getComputedStyle(document.documentElement).getPropertyValue('--c-' + c).trim(); P[c] = v || c; return P[c]; }
+  return c;
+}
 /** [r,g,b,a] (0–255, a in 0–1) of a palette name or any CSS colour. */
 export function rgbOf(c) {
   if (Array.isArray(c)) return [c[0], c[1], c[2], c[3] ?? 1];
@@ -941,6 +948,8 @@ class Runtime {
       M, Cx: M.Cx, cx: M.cx, rng: M.rng, fmt: M.fmt, fix: M.fix, sci: M.sci,
       tex: katexHTML,
     };
+    // add-on kits (assets/js/viz/kits): each is make(api, rt, ...args)
+    for (const [name, make] of Object.entries(KITS)) api[name] = (...args) => make(api, rt, ...args);
     return api;
   }
 }

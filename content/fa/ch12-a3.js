@@ -24,7 +24,7 @@ function hull(P) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 12,
   items: [
     {

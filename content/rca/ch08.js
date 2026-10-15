@@ -50,7 +50,7 @@ function drawIv(S, ivs, c, axis, st) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 8,
   title: 'Integration on Product Spaces',
   summary: String.raw`How to integrate over $X\times Y$ when $X$ and $Y$ carry measures. Rudin builds the product $\sigma$-algebra from measurable rectangles, uses monotone classes to show that every product-measurable set and function has measurable sections, defines $\mu\times\lambda$ by integrating the measures of sections, and proves the Fubini theorem: for $\sigma$-finite spaces, iterated integrals of nonnegative or integrable functions may be taken in either order. Counterexamples show that neither integrability nor $\sigma$-finiteness can be dropped. The chapter then identifies Lebesgue measure on $\R^k$ with the completed product of lower-dimensional ones, extends Fubini to completed products, and applies everything to convolutions in $L^1(\R)$ and to the distribution function $t\mapsto\mu\{|f|>t\}$.`,

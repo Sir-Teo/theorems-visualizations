@@ -165,7 +165,7 @@ function discMeet(discs, n = 240) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 16,
   title: 'Analytic Continuation',
   summary: String.raw`A power series lives on a disc, but the function it defines usually wants to live somewhere larger. The chapter first studies the boundary of the disc: every power series meets at least one singular point on its circle of convergence, and series with large enough gaps meet nothing but singular points. It then formalises continuation by chains of discs and along curves, shows that the result is unique for a given curve and unchanged under a homotopy that fixes the end points (the monodromy theorem), and so obtains single-valued branches on simply connected regions. The chapter ends by building, from a conformal map of a curvilinear triangle and the reflection principle, a modular function $\lambda$ that maps the upper half-plane onto $\C\setminus\{0,1\}$, and uses it to prove Picard's theorem: a nonconstant entire function omits at most one value.`,

@@ -58,7 +58,7 @@ function concaveMax(F, a, b, it = 140) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 3,
   title: 'Convexity',
   summary: String.raw`The Hahn–Banach theorems in their many guises — extension of dominated functionals and separation of convex sets by closed hyperplanes — and their consequences: the dual of a locally convex space separates points, weak topologies, the Banach–Alaoglu theorem, the Krein–Milman theorem on extreme points, and vector-valued integration.`,

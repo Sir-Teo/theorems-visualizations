@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../data/atlas.css">
 <style>
   body { padding: 18px; display: block; }
   #wrap { width: var(--w, 860px); }
@@ -22,7 +23,7 @@
 </script>
 </head>
 <body>
-<div id="wrap" data-book="">
+<div id="wrap" data-col="">
   <h1 id="title"></h1>
   <div class="statement" id="statement"></div>
   <div class="card viz-card" id="shot">
@@ -41,9 +42,10 @@
     if (q.get('w')) document.getElementById('wrap').style.setProperty('--w', q.get('w') + 'px');
     const mod = await import('../' + q.get('file'));
     const ch = mod.default;
-    const item = ch.items.find((it) => `${ch.book}-${it.num}` === q.get('id'));
+    const col = ch.collection ?? ch.book;
+    const item = ch.items.find((it) => `${col}-${it.num}` === q.get('id'));
     if (!item) throw new Error('item not found: ' + q.get('id'));
-    document.getElementById('wrap').dataset.book = ch.book;
+    document.getElementById('wrap').dataset.col = col;
     document.getElementById('title').textContent = `${item.kind} ${item.num} — ${item.name}`;
     renderRich(document.getElementById('statement'), item.statement);
     renderRich(document.getElementById('caption'), item.caption || '');

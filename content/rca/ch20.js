@@ -107,7 +107,7 @@ function ramp3(v, a, b, c, t) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 20,
   title: 'Uniform Approximation by Polynomials',
   summary: String.raw`The last chapter answers the question behind Weierstrass's theorem and Runge's theorem completely: if a compact set $K\subset\C$ does not separate the plane, then every function that is continuous on $K$ and holomorphic in its interior is a uniform limit of polynomials on $K$ (Mergelyan's theorem). No holomorphy across $\partial K$ is required, and when $K$ has no interior every continuous function qualifies. The proof extends $f$ to the plane (Tietze), smooths it at a scale $\delta$ so that $\bar\partial$ of the smoothed function lives in a thin layer around $\partial K$, writes it as a Cauchy integral of its $\bar\partial$, and replaces the Cauchy kernel by functions whose singularities lie on small continua outside $K$ — with bounds furnished by conformal mapping and Koebe's one-quarter theorem. Runge's theorem finishes the job.`,

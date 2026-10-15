@@ -68,7 +68,7 @@ function lusinSgn(eps) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 2,
   items: [
     // ------------------------------------------------------------ 2.24

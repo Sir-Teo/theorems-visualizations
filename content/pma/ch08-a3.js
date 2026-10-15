@@ -42,7 +42,7 @@ function fsum(c, x, N, fejer = false) {
 const dirichlet = (N, x) => { const s = Math.sin(x / 2); return Math.abs(s) < 1e-12 ? 2 * N + 1 : Math.sin((N + 0.5) * x) / s; };
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 8,
   items: [
     // ------------------------------------------------------------------ 8.11

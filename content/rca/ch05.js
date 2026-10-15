@@ -33,7 +33,7 @@ function baireStep(c, r, F) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 5,
   title: 'Examples of Banach Space Techniques',
   summary: String.raw`What completeness buys. Baire's theorem — a complete metric space is never a countable union of nowhere dense sets — yields the uniform boundedness principle and the open mapping theorem, and these settle two concrete questions about Fourier series: some continuous functions have divergent Fourier series, and the Fourier coefficients of $L^1$ functions do not fill out $c_0$. The Hahn–Banach theorem then supplies enough bounded linear functionals to detect closures and norms, and the chapter ends by deriving the Poisson integral of the disc from nothing more than the maximum modulus property, Hahn–Banach and the Riesz representation theorem.`,

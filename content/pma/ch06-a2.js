@@ -165,7 +165,7 @@ function alphaCurve(A, f, lo, hi, a, n = 160) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 6,
   items: [
     // ------------------------------------------------------------------ 6.8

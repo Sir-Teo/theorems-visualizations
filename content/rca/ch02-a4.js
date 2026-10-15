@@ -61,7 +61,7 @@ function fatCantor(level) { // Smith–Volterra–Cantor: at step k remove the m
 const LEVEL_COLS = ['accent', 'teal', 'green', 'gold', 'orange', 'pink', 'purple', 'red'];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 2,
   items: [
     // ------------------------------------------------------------ 2.19

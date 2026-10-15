@@ -64,7 +64,7 @@ function freeX(pts, y, cands, win) {
 const mixRGB = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t];
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 17,
   title: 'Hᵖ-Spaces',
   summary: String.raw`Which holomorphic functions in the disc have boundary values, and how much of a function do those boundary values remember? Rudin answers with subharmonic functions: $\log|f|$ and $|f|^p$ lie below their circle averages, so the integral means $M_p(f;r)$ increase and the Hardy spaces $H^p$ and the Nevanlinna class $N$ make sense. Their members have radial limits a.e., factor canonically as (Blaschke product) × (singular inner function) × (outer function), and $H^p$ sits inside $L^p(\T)$ as the functions with no negative frequencies. The chapter ends with the F. and M. Riesz theorem, Beurling's description of the invariant subspaces of the shift on $H^2$, and M. Riesz's theorem that conjugation is bounded on $L^p$ for $1<p<\infty$.`,

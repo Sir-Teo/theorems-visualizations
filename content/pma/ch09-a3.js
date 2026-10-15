@@ -32,7 +32,7 @@ function firstRoot(q, n = 240) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.15

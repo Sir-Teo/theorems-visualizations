@@ -75,7 +75,7 @@ function ctex(M, z, d = 4) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 15,
   items: [
     {

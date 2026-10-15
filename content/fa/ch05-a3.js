@@ -9,7 +9,7 @@ const affA = (p) => [AFF[0][0] * p[0] + AFF[0][1] * p[1], AFF[1][1] * p[1]];
 const affInv = (p) => { const y = p[1] / AFF[1][1]; return [(p[0] - AFF[0][1] * y) / AFF[0][0], y]; };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ Kakutani's fixed point theorem

@@ -49,7 +49,7 @@ const TEST_SERIES = {
 function lgammaTail(n) { let s = 0; for (let k = 31; k <= n; k++) s += Math.log(k); return s; }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.28

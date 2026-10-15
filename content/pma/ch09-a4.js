@@ -26,7 +26,7 @@ for (const [k, m] of Object.entries(MAPS)) { let c = 0; for (let i = 0; i <= 200
 const SQ = (() => { const p = []; const n = 60; for (let i = 0; i < n; i++) p.push([-1 + 2 * i / n, -1]); for (let i = 0; i < n; i++) p.push([1, -1 + 2 * i / n]); for (let i = 0; i < n; i++) p.push([1 - 2 * i / n, 1]); for (let i = 0; i < n; i++) p.push([-1, 1 - 2 * i / n]); return p; })();
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.20

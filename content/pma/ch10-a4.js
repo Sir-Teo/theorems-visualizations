@@ -29,7 +29,7 @@ const D1 = (f, h = 1e-4) => (x, y) => (f(x + h, y) - f(x - h, y)) / (2 * h);
 const D2 = (f, h = 1e-4) => (x, y) => (f(x, y + h) - f(x, y - h)) / (2 * h);
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   items: [
     // ------------------------------------------------------------------ 10.18

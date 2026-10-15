@@ -13,7 +13,7 @@ function sci(x, d = 2) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.17

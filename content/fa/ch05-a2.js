@@ -51,7 +51,7 @@ function arnoldiLS(Z, Fv, dmax) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ a generalized Stone–Weierstrass theorem

@@ -113,7 +113,7 @@ function densify(poly, n = 18) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 0,
   title: 'Prologue: The Exponential Function',
   summary: String.raw`Before any measure theory, Rudin builds the exponential function from nothing but its power series $\exp z=\sum z^n/n!$ and the addition formula $e^{a+b}=e^ae^b$. From these two facts alone he shows that $\exp$ never vanishes, is its own derivative, and is positive and increasing on $\R$; he then *defines* $\pi$ as twice the first positive zero of $\cos t=\Re e^{it}$. Periodicity with period $2\pi i$, the wrapping of the real line around the unit circle by $t\mapsto e^{it}$, and the fact that every nonzero complex number is an exponential follow — with no appeal to geometric intuition about angles or arc length.`,

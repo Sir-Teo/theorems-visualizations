@@ -48,7 +48,7 @@ function levelSet(P, pred) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 2,
   items: [
     // ------------------------------------------------------------ 2.8

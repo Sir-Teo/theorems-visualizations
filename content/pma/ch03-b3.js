@@ -24,7 +24,7 @@ function blockPattern(p, q, len) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 3,
   items: [
     // ------------------------------------------------------------------ 3.47

@@ -29,7 +29,7 @@ const rowTimes = (p, P) => [0, 1, 2].map((j) => p[0] * P[0][j] + p[1] * P[1][j] 
 const matMul3 = (A, B) => A.map((r) => [0, 1, 2].map((j) => r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j]));
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 5,
   items: [
     // ------------------------------------------------------------------ sums of Poisson kernels

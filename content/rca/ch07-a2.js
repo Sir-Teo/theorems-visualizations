@@ -42,7 +42,7 @@ function polyDisc(poly, c, r) {
 function halfDisc(g, r) { if (g >= r) return Math.PI * r * r; if (g <= -r) return 0; return r * r * Math.acos(-g / r) + g * Math.sqrt(r * r - g * g); }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 7,
   items: [
     // ------------------------------------------------------------------ 7.8

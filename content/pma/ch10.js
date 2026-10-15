@@ -18,7 +18,7 @@ function jac2(F, x, y, h = 1e-5) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 10,
   title: 'Integration of Differential Forms',
   summary: String.raw`Rudin builds integration in $\R^k$ from iterated one-variable integrals over cells, proves that the order does not matter, and derives the change-of-variables formula by factoring a smooth map locally into maps that move one coordinate at a time, glued together with partitions of unity. He then introduces differential forms as objects that are integrated over parametrized surfaces, with the exterior product, the exterior derivative $d$ (and $d^2=0$) and pullbacks under smooth maps. Simplexes and chains lead to Stokes' theorem $\int_{\Phi}d\omega=\int_{\partial\Phi}\omega$, which is then applied to closed and exact forms (the Poincaré lemma) and to the classical theorems of vector analysis of Green, Gauss and Stokes.`,

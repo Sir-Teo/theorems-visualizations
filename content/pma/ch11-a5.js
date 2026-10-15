@@ -30,7 +30,7 @@ function walsh(n, x) { let s = 1, k = 1; while (n) { if (n & 1) s *= rad(k, x); 
 function tw(n) { const k = Math.floor(Math.log2(n)), j = n - (1 << k); return [j / (1 << k), (j + 1) / (1 << k), k]; }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 11,
   items: [
     {

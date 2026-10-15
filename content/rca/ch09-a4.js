@@ -13,7 +13,7 @@ const cabs = (p) => Math.hypot(p[0], p[1]);
 const ctex = (v, z, d = 3) => `${v.fix(z[0], d)} ${z[1] < 0 ? '-' : '+'} ${v.fix(Math.abs(z[1]), d)}\\,i`;
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 9,
   items: [
     // ------------------------------------------------------------------ 9.19

@@ -48,7 +48,7 @@ function isConvexPoly(poly) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 1,
   title: 'Topological Vector Spaces',
   summary: String.raw`A topological vector space is a vector space whose topology makes addition and scalar multiplication continuous. Rudin first extracts what this forces — separation of compact and closed sets by translates of one neighbourhood, the Hausdorff property, balanced and bounded neighbourhoods — and shows that a finite-dimensional space carries only one such topology while local compactness forces finite dimension. A countable local base yields an invariant metric; seminorms and Minkowski functionals describe exactly the locally convex spaces, and Kolmogorov's criterion says when a norm exists. Quotient spaces and the classical examples $C(\Omega)$, $H(\Omega)$, $C^\infty(\Omega)$, $\mathscr{D}_K$ and $L^p$ with $0<p<1$ close the chapter.`,

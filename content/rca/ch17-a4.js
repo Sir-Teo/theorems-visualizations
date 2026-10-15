@@ -53,7 +53,7 @@ const angle = (h) => Math.atan2(h.y, h.x);
 const ccw = (a, b) => { let L = b - a; while (L <= 0) L += TAU; while (L > TAU) L -= TAU; return L; };
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 17,
   items: [
     // ------------------------------------------------------------------ the shift operator

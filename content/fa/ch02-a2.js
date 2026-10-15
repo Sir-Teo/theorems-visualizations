@@ -23,7 +23,7 @@ const sci = (x) => { if (!(x > 0)) return '0'; if (x >= 1e-3) return String(+x.t
 const sub = (n) => String(n).split('').map((d) => '₀₁₂₃₄₅₆₇₈₉'[+d]).join('');
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 2,
   items: [
     // ------------------------------------------------------------------ 2.7

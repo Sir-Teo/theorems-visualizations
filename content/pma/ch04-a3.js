@@ -42,7 +42,7 @@ function zeroSegments(F, [x0, x1], [y0, y1], nx, ny) {
 }
 
 export default {
-  book: 'pma',
+  collection: 'pma',
   chapter: 4,
   items: [
     {

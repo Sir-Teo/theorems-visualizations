@@ -52,7 +52,7 @@ function cholSolve(G, b) {
 const decadeTicks = (lo, hi) => { const out = []; for (let k = Math.ceil(lo); k <= Math.floor(hi); k++) out.push([k, k === 0 ? '1' : k === 1 ? '10' : `1e${k}`]); return out; };
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 9,
   title: 'Tauberian Theory',
   summary: String.raw`Wiener's theorem: a closed translation-invariant subspace of $L^1(\R^n)$ whose Fourier transforms have no common zero is all of $L^1$, so the translates of $K$ are dense exactly when $\hat K$ never vanishes. Its Tauberian form says that if one average $K*\varphi$ of a bounded function converges, with $\hat K$ zero-free, then every average $f*\varphi$ converges, and for slowly oscillating $\varphi$ so does $\varphi$ itself. Two applications follow: the prime number theorem, where the zero-free kernel comes from the non-vanishing of $\zeta$ on the line $\Re s=1$, and the asymptotics of the renewal equation.`,

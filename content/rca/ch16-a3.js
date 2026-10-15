@@ -135,7 +135,7 @@ function qBoundary(top = 3) {
 }
 
 export default {
-  book: 'rca',
+  collection: 'rca',
   chapter: 16,
   items: [
     // ------------------------------------------------------------------ 16.16

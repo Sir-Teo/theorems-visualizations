@@ -47,7 +47,7 @@ function norm22(a, b, c, d) {
 }
 
 export default {
-  book: 'fa',
+  collection: 'fa',
   chapter: 13,
   items: [
     // ------------------------------------------------------------------ 13.21
