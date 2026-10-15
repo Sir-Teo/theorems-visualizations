@@ -126,9 +126,10 @@ export function cyclesOf(p) {
 // ------------------------------------------------------------------ layout
 /**
  * Lay out `count` items of shape h/w = aspect in a W×H box with gaps; picks the column count that
- * makes the items largest. Returns {cols, rows, w, h, at(i) → [x, y]} (pixels, top-left corners).
+ * makes the items largest (centred, or top-aligned with valign = 'top'). Returns {cols, rows, w, h, th, at(i) → [x, y]}
+ * (pixels, top-left corners; th = total height used).
  */
-export function fitGrid(count, W, H, aspect = 1, gap = 6, maxW = Infinity) {
+export function fitGrid(count, W, H, aspect = 1, gap = 6, maxW = Infinity, valign = 'center') {
   let best = null;
   for (let cols = 1; cols <= Math.max(1, count); cols++) {
     const rows = Math.ceil(count / cols);
@@ -139,8 +140,8 @@ export function fitGrid(count, W, H, aspect = 1, gap = 6, maxW = Infinity) {
   }
   const { cols, rows, w, h } = best;
   const tw = cols * w + (cols - 1) * gap, th = rows * h + (rows - 1) * gap;
-  const x0 = (W - tw) / 2, y0 = (H - th) / 2;
-  return { cols, rows, w, h, gap, x0, y0, at: (i) => [x0 + (i % cols) * (w + gap), y0 + Math.floor(i / cols) * (h + gap)] };
+  const x0 = (W - tw) / 2, y0 = valign === 'top' ? 0 : (H - th) / 2;
+  return { cols, rows, w, h, gap, x0, y0, th, at: (i) => [x0 + (i % cols) * (w + gap), y0 + Math.floor(i / cols) * (h + gap)] };
 }
 
 /**

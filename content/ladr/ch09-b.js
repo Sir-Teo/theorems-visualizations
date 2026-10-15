@@ -152,7 +152,7 @@ The set of alternating bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{alt}}$
         const cs = v.slider('multiple $c$ of the area form', -2, 2, 1, { step: 0.05 });
         const ss = v.slider('symmetric part $s$', -1.5, 1.5, 0, { step: 0.05 });
         const P = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 380, weight: 1.05 });
-        const R = v.stage({ x: [0, Math.PI], y: [-2, 2], axes: 'box', height: 380, weight: 0.95, xticks: [[0, '0'], [Math.PI / 4, 'π/4'], [Math.PI / 2, 'π/2'], [(3 * Math.PI) / 4, '3π/4'], [Math.PI, 'π']], xlabel: 'angle θ of the unit vector x', title: '$\\alpha(x, x)$ for $x = (\\cos\\theta, \\sin\\theta)$' });
+        const R = v.stage({ x: [0, Math.PI], y: [-2.2, 2.2], axes: 'box', height: 380, weight: 0.95, xticks: [[0, '0'], [Math.PI / 4, 'π/4'], [Math.PI / 2, 'π/2'], [(3 * Math.PI) / 4, '3π/4'], [Math.PI, 'π']], xlabel: 'angle θ of the unit vector x', title: '$\\alpha(x, x)$ for $x = (\\cos\\theta, \\sin\\theta)$' });
         const uh = P.handle(1.4, 0.35, { color: 'accent', label: 'u' });
         const wh = P.handle(0.45, 1.25, { color: 'gold', label: 'w' });
         let st = null;
@@ -174,8 +174,8 @@ The set of alternating bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{alt}}$
           R.between(g, () => 0, 0, Math.PI, { fill: 'red', fillAlpha: 0.15 });
           R.fn(g, { color: okAlt ? 'green' : 'red', width: 3 });
           const ang = (p) => ((Math.atan2(p[1], p[0]) % Math.PI) + Math.PI) % Math.PI;
-          R.dot(ang(u), g(ang(u)), { r: 6, color: 'accent', label: 'u/|u|', labelPos: 'n' });
-          R.dot(ang(w), g(ang(w)), { r: 6, color: 'gold', label: 'w/|w|', labelPos: 's' });
+          R.dot(ang(u), g(ang(u)), { r: 6, color: 'accent', label: 'u/|u|', labelPos: 'ne' });
+          R.dot(ang(w), g(ang(w)), { r: 6, color: 'gold', label: 'w/|w|', labelPos: 'se' });
           R.corner(okAlt ? 'α(x, x) = 0 at every angle: alternating' : `max |α(x, x)| = ${pn(mx, 3)}: not alternating`, 'tl', { color: okAlt ? 'green' : 'red', weight: 700 });
           st = { A, a, area, c, s, auu: bil(A, u, u), aww: bil(A, w, w), mx, okAlt };
         });
@@ -204,7 +204,7 @@ Conversely, if swapping the inputs always flips the sign, take $u = w = v$: then
       viz(v) {
         const ss = v.slider('add a symmetric part $s\\,\\langle u, w\\rangle$', -1, 1, 0, { step: 0.05 });
         const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 400, weight: 1.15 });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.4, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.32, axis: 1.4, lim: 1.4, labels: ['x₁', 'x₂', 'x₃'] });
         const R = v.stage({ x: [0.4, 5.95], y: [-2, 2], height: 400, weight: 0.85, minWidth: 260, axes: false, title: 'the four terms of $\\beta(u + w, u + w)$' });
         const uh = sc.handle([1.1, 0.2, 0.1], { color: 'accent', label: 'u' });
         const wh = sc.handle([0.3, 1.0, 0.5], { color: 'gold', label: 'w' });
@@ -361,6 +361,7 @@ A function $q \colon V \to \mathbf F$ is called a **quadratic form** on $V$ if t
           P.contour(q, [-2.5, -2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2, 2.5], { color: 'purple', width: 1, res: 100 });
           P.contour(q, [0], { color: 'purple', width: 2.2, res: 100 });
           P.axes();
+          if (maxAbs(symPart(A)) < 1e-12) P.corner('q(v) = 0 for every v', 'tl', { color: 'purple', weight: 700 });
           const w = [vh.x, vh.y], Aw = mv(A, w), qv = dot(w, Aw), u = unit(w), foot = scl(u, dot(Aw, u));
           if (Math.abs(qv) > 1e-4) P.clip(() => P.path(conic(A, qv), { color: 'gold', width: 1.8, dash: [6, 4] }));
           P.line(-3 * u[0], -3 * u[1], 3 * u[0], 3 * u[1], { color: 'gold', width: 1, alpha: 0.4 });
@@ -427,7 +428,7 @@ $$q(x_1, \dots, x_n) = \sum_{k=1}^{n}\sum_{j=1}^{n} A_{j,k}\,x_jx_k \qquad\text{
           R.line(-6, b + 6, 9, b - 9, { color: 'accent', width: 2.6 });
           R.line(-6, -6, 9, 9, { color: 'muted', width: 1.2, dash: [6, 5] });
           R.dot(b / 2, b / 2, { r: 6, color: 'green', label: 'symmetric', labelPos: 'se' });
-          const lx = Math.min(4.3, b + 2.6), ly = b - lx;
+          const lx = Math.min(4.2, b + 2.2), ly = b - lx;
           R.tex(`A_{1,2} + A_{2,1} = ${tn(b)}`, lx, ly, { color: 'accent', size: 13, dx: -4, dy: 16, align: 'right' });
           R.text('A₁₂ = A₂₁', 3.6, 3.6, { color: 'muted', size: 11, align: 'right', dy: -10 });
           const on = Math.abs(oh.x + oh.y - b) < 1e-9;
@@ -541,15 +542,15 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
         const PRE = { hyp: [1, 3, 1], ell: [2, -2, 1.5], deg: [1, 2, 1], neg: [-1, 1, -1.2] };
         const pre = v.select('$q$', [{ value: 'hyp', label: '$x_1^2 + 3x_1x_2 + x_2^2$' }, { value: 'ell', label: '$2x_1^2 - 2x_1x_2 + 1.5x_2^2$' }, { value: 'deg', label: '$(x_1 + x_2)^2$' }, { value: 'neg', label: '$-x_1^2 + x_1x_2 - 1.2x_2^2$' }], 'hyp', { onChange: () => { trail.length = 0; } });
         const mode = v.select('basis', [{ value: 'own', label: 'your own' }, { value: 'pr', label: 'principal axes (orthonormal)' }, { value: 'sq', label: 'completing the square' }], 'own');
-        const conj = v.toggle('keep $e_2$ $\\rho$-orthogonal to $e_1$', true);
-        const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400 });
+        const conj = v.toggle('keep $e_2$ $\\rho$-orthogonal to $e_1$', true, { onChange: (b) => { if (!b) e2h.set(e2h.x + 0.45, e2h.y + 0.3); } });
+        const P = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400, title: 'level sets of $q$' });
         const R = v.stage({ x: [-1.12, 1.12], y: [-1.12, 1.12], equal: true, axes: false, height: 400, title: 'the coefficients $(\\lambda_1, \\lambda_2)$ (compressed scale)' });
         const Smat = () => { const [a, b, c] = PRE[pre.value]; return [[a, b / 2], [b / 2, c]]; };
         const conjDir = (e) => { const n = mv(Smat(), e); return len(n) < 1e-9 ? unit(rot90(e)) : unit(rot90(n)); };
         const e1h = P.handle(0.95, 0.2, { color: 'teal', label: 'e₁' });
         const e2h = P.handle(-0.6, 0.8, { color: 'pink', label: 'e₂', constrain: (x, y) => { if (!conj.value) return [x, y]; const d = conjDir([e1h.x, e1h.y]), t = x * d[0] + y * d[1]; return [t * d[0], t * d[1]]; } });
         const trail = [], LM = 20, C = (l) => Math.max(-1.08, Math.min(1.08, slog(l) / slog(LM)));
-        let st = null;
+        let st = null, lastTitle = '';
         v.render(() => {
           const [a, b, c] = PRE[pre.value], Sm = Smat(), q = (p) => bil(Sm, p, p);
           const E = esym2(Sm), pr = { e: [E.u[0], E.u[1]], l: E.l };
@@ -567,8 +568,9 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
           P.arrow(0, 0, f1[0], f1[1], { color: 'teal', width: 3 }); P.arrow(0, 0, f2[0], f2[1], { color: 'pink', width: 3 });
           if (!own) { tip(P, 'e_1', f1, 'teal', { off: 16 }); tip(P, 'e_2', f2, 'pink', { off: 16 }); }
           const sg = signature(pr.l, 1e-9), key = sg.join('');
-          const TYPE = { '200': 'q = 1: an ellipse', '110': 'q = 1: a hyperbola', '020': 'q = 1: no points (q = −1: an ellipse)', '101': 'q = 1: two parallel lines', '011': 'q = 1: no points', '002': 'q = 0 everywhere' };
-          P.corner(TYPE[key] || '', 'tl', { color: 'ink', weight: 700 });
+          const TYPE = { '200': ['an ellipse', '$q = 1$ is an ellipse'], '110': ['a hyperbola', '$q = 1$ is a hyperbola'], '020': ['empty; $q = -1$: an ellipse', '$q = 1$ is empty and $q = -1$ an ellipse'], '101': ['two parallel lines', '$q = 1$ is a pair of parallel lines'], '011': ['empty; $q = -1$: two lines', '$q = 1$ is empty and $q = -1$ a pair of lines'], '002': ['everything ($q = 0$)', '$q = 0$'] }[key] || ['', ''];
+          const ttl = `level sets of $q$: $q = 1$ is ${TYPE[0]}`;
+          if (ttl !== lastTitle) { P.setTitle(ttl); lastTitle = ttl; }
           // the (λ₁, λ₂) plane
           const Q = [[0, 0, 1.12, 1.12, 'blue'], [-1.12, -1.12, 0, 0, 'red'], [-1.12, 0, 0, 1.12, 'purple'], [0, -1.12, 1.12, 0, 'purple']];
           for (const [x0, y0, x1, y1, col] of Q) R.rect(x0, y0, x1, y1, { fill: col, fillAlpha: 0.07, stroke: false });
@@ -588,7 +590,7 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
           R.dot(C(pr.l[0]), C(pr.l[1]), { r: 7, color: 'green' });
           R.dot(C(sq.l[0]), C(sq.l[1]), { r: 7, color: 'orange' });
           if (diagOwn) R.dot(C(ow.l[0]), C(ow.l[1]), { r: 7, color: 'gold' });
-          st = { pr, sq, ow, own, diagOwn, cur, sg, sgs: signature(sq.l, 1e-9), sgo: signature(ow.l, 1e-9), conj: conj.value, type: TYPE[key] };
+          st = { pr, sq, ow, own, diagOwn, cur, sg, sgs: signature(sq.l, 1e-9), sgo: signature(ow.l, 1e-9), conj: conj.value, type: TYPE[1] };
         });
         v.legend([['accent', '$q = 1$'], ['orange', '$q = -1$'], ['teal', '$e_1$'], ['pink', '$e_2$'], ['gold', 'your $(\\lambda_1, \\lambda_2)$, with trail', { dot: true }], ['green', 'principal axes', { dot: true }], ['orange', 'completing the square', { dot: true }]]);
         v.readout(() => {
@@ -596,7 +598,7 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
           const L = (o) => `(${tn(o.l[0])}, ${tn(o.l[1])})`;
           if (st.own && !st.diagOwn) return `$q(x_1e_1 + x_2e_2) = ${polyTex(st.ow.l[0], st.ow.cross, st.ow.l[1])}$ — $e_2$ is not $\\rho$-orthogonal to $e_1$, so the cross term $2\\rho(e_1, e_2)\\,x_1x_2$ survives and this basis does not diagonalize $q$.`;
           const c = st.cur;
-          return `In this basis $q(x_1e_1 + x_2e_2) = ${polyTex(c.l[0], 0, c.l[1])}$. Principal axes: $\\lambda = ${L(st.pr)}$ (the eigenvalues); completing the square: $${L(st.sq)}$${st.own ? `; yours: $${L(st.ow)}$` : ''}. Signs $(n_+, n_-, n_0) = (${st.sg.join(', ')})$ ${mark(st.sg.join() === st.sgs.join() && (!st.own || st.sg.join() === st.sgo.join()))} in every case (Sylvester's law of inertia) — and so ${st.type.replace('q = 1:', '$q = 1$ is')}.`;
+          return `In this basis $q(x_1e_1 + x_2e_2) = ${polyTex(c.l[0], 0, c.l[1])}$. Principal axes: $\\lambda = ${L(st.pr)}$ (the eigenvalues); completing the square: $${L(st.sq)}$${st.own ? `; yours: $${L(st.ow)}$` : ''}. Signs $(n_+, n_-, n_0) = (${st.sg.join(', ')})$ ${mark(st.sg.join() === st.sgs.join() && (!st.own || st.sg.join() === st.sgo.join()))} in every case (Sylvester's law of inertia) — and so ${st.type}.`;
         });
       },
     },
@@ -623,7 +625,7 @@ $$q(x_1e_1 + \cdots + x_ne_n) = \lambda_1x_1^2 + \cdots + \lambda_nx_n^2 \qquad\
         const form = v.select('$\\beta(u, v, w) =$', [{ value: 'det', label: '$\\det(u, v, w)$' }, { value: 'dc', label: '$\\langle u, v\\rangle\\,w_3$' }, { value: 'bad', label: '$\\langle u, v\\rangle\\langle v, w\\rangle$' }], 'det');
         const slot = v.select('test line in slot', [{ value: 0, label: '1' }, { value: 1, label: '2' }, { value: 2, label: '3' }], 1);
         const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 400, weight: 1.1 });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.4, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.4, lim: 1.4, labels: ['x₁', 'x₂', 'x₃'] });
         const G = v.stage({ x: [-1.5, 1.5], y: [-2, 2], axes: 'box', height: 400, weight: 0.9, minWidth: 260, xlabel: 't', title: 'slot $k$ fed $x_k + t\\,y$, the others frozen' });
         const COL = ['accent', 'orange', 'purple'], NAME = ['u', 'v', 'w'];
         const hs = [sc.handle([1, 0.15, 0.2], { color: 'accent', label: 'u' }), sc.handle([0.2, 1, 0.15], { color: 'orange', label: 'v' }), sc.handle([0.15, 0.35, 1], { color: 'purple', label: 'w' })];

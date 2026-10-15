@@ -495,5 +495,26 @@ export default {
         });
       },
     },
+    {
+      num: '1.14',
+      kind: 'Definition',
+      name: 'Graph kit: automaton notation (start arrow, accepting double ring, contrast labels)',
+      statement: String.raw`A DFA over $\{a, b\}$ accepting strings that end in **ab**.`,
+      caption: String.raw`Type a string with the buttons; the current state is filled gold and its label switches to dark ink for contrast. Accepting states have a double ring; the start state has an incoming arrow.`,
+      viz(v) {
+        const s = v.stage({ x: [0, 10], y: [0, 5], axes: false, equal: true, height: 260 });
+        const G = v.graph(s, {
+          directed: true, layout: 'none', accept: ['q2'], start: 'q0', notePos: 's',
+          nodes: [{ id: 'q0', x: 2, y: 1.8 }, { id: 'q1', x: 5, y: 3.4 }, { id: 'q2', x: 8, y: 1.8 }],
+          edges: [{ from: 'q0', to: 'q1', label: 'a' }, { from: 'q0', to: 'q0', label: 'b' }, { from: 'q1', to: 'q1', label: 'a' }, { from: 'q1', to: 'q2', label: 'b' }, { from: 'q2', to: 'q1', label: 'a' }, { from: 'q2', to: 'q0', label: 'b' }],
+        });
+        const d = { q0: { a: 'q1', b: 'q0' }, q1: { a: 'q1', b: 'q2' }, q2: { a: 'q1', b: 'q0' } };
+        let w = 'ab';
+        const run = () => [...w].reduce((q, c) => d[q][c], 'q0');
+        v.button('a', () => { w += 'a'; }); v.button('b', () => { w += 'b'; }); v.button('clear', () => { w = ''; });
+        v.render(() => { const q = run(); G.draw({ nodeFill: (id) => (id === q ? 'gold' : null), nodeNote: (id) => (id === q ? 'here' : '') }); });
+        v.readout(() => `input “${w || 'ε'}” → ${run()} · ${run() === 'q2' ? 'accepted' : 'rejected'}`);
+      },
+    },
   ],
 };

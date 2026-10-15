@@ -38,9 +38,13 @@ function injectCSS() {
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ESC[c]);
+// structural keywords are always bold; connective words (to, in, and, not, of, …) only on lines that also contain a structural one,
+// so prose steps like "add the edge to the tree" stay plain. spec.keywords: false turns bolding off.
+const KW_STRONG = /\b(for|each|while|if|then|else|elif|return|do|downto|repeat|until|break|continue|function|procedure|let|def)\b/;
 const KW = /\b(for|each|while|if|then|else|elif|return|do|to|downto|in|and|or|not|repeat|until|break|continue|function|procedure|let|def|of|with|nil|null|true|false)\b/g;
 /** One pseudocode line → HTML: $TeX$, keywords in bold, comments (// or ▷) muted. */
-function codeHTML(line) {
+function codeHTML(line, keywords = true) {
+  const kwOn = keywords !== false && KW_STRONG.test(String(line).replace(/\$[^$]+\$/g, '').split(/\/\/|▷|#\s/)[0]);
   const parts = String(line).split(/(\$[^$]+\$)/);
   let html = '', comment = false;
   for (const p of parts) {
@@ -48,7 +52,7 @@ function codeHTML(line) {
     let t = p; const m = comment ? -1 : t.search(/\/\/|▷|#\s/);
     let tail = '';
     if (m >= 0) { tail = t.slice(m); t = t.slice(0, m); }
-    html += comment ? `<span class="cm">${esc(t)}</span>` : esc(t).replace(KW, '<span class="kw">$1</span>');
+    html += comment ? `<span class="cm">${esc(t)}</span>` : kwOn ? esc(t).replace(KW, '<span class="kw">$1</span>') : esc(t);
     if (tail) { html += `<span class="cm">${esc(tail)}</span>`; comment = true; }
   }
   return html || ' ';
@@ -96,7 +100,7 @@ export default function steps(api, rt, spec = {}) {
   const fillCode = (code, title) => {
     codeEl.innerHTML = '';
     if (title) codeEl.append(el('div', 'steps-title', esc(title)));
-    lineEls = code.map((ln, k) => { const d = el('div', 'ln', `<span class="no">${k + 1}</span><span>${codeHTML(ln)}</span>`); codeEl.append(d); return d; });
+    lineEls = code.map((ln, k) => { const d = el('div', 'ln', `<span class="no">${k + 1}</span><span>${codeHTML(ln, spec.keywords)}</span>`); codeEl.append(d); return d; });
     codeEl.style.minHeight = Math.min(code.length * 20 + 18 + (title ? 18 : 0), 320) + 'px';
   };
   if (o.code && o.code.length) {

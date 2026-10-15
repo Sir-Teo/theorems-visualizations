@@ -211,13 +211,9 @@ export function bowSim(o) {
     lps = (1 - lp) * r[N] + lp * lps; l[N] = -g * lps;
     const vh = r[ib] + l[ib], uh = vb - vh, a = Math.abs(uh), sg = uh >= 0 ? 1 : -1;
     let vv;
-    if (stuck && 2 * Z * a <= mus * FN) vv = vb;
-    else {
-      const u = slipRoot(a);
-      if (u < 0) { vv = vb; stuck = true; } else { vv = vb - sg * u; stuck = false; }
-      if (u < 0 && 2 * Z * a > mus * FN) { vv = vb - sg * a; stuck = false; } // (cannot happen: guard)
-    }
-    if (vv === vb) stuck = true;
+    if (stuck && 2 * Z * a <= mus * FN) vv = vb; // static friction holds
+    else { const u = slipRoot(a); vv = u < 0 ? vb : vb - sg * u; } // slip on the friction curve, or re-stick
+    stuck = vv === vb;
     const dv = vv - vh;
     r[ib] += dv; l[ib] += dv;
     for (let i = 1; i < N; i++) y[i] += (i === ib ? vv : r[i] + l[i]) * dt;

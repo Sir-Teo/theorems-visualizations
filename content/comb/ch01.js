@@ -70,7 +70,7 @@ export default {
           const D = Math.max(...groups.map((g) => g.length)), m = 22, gapG = groups.length > 1 ? 30 : 0;
           slot = (W - 2 * m - gapG * (groups.length - 1)) / leaves.length;
           leaves.forEach((lf, i) => { lf.x = m + slot * (i + 0.5) + gapG * lf.g; });
-          const q = Math.max(3.2, Math.min(10, slot * 0.36)), rootY = 46, iconTop = H - 12 - D * q * 2.5, rowH = (iconTop - 22 - rootY) / D;
+          const q = Math.max(3.2, Math.min(10, slot * 0.36)), rootY = 46, iconTop = H - 12 - D * q * 2.5, rowH = (iconTop - (groups.length > 1 ? 48 : 22) - rootY) / D;
           // nodes: key = group|prefix
           const nodes = new Map();
           leaves.forEach((lf, i) => {
@@ -107,8 +107,8 @@ export default {
           // group brackets and key
           if (groups.length > 1) groups.forEach((g, gi) => {
             const xs = leaves.filter((lf) => lf.g === gi).map((lf) => lf.x), a = Math.min(...xs) - slot * 0.45, b = Math.max(...xs) + slot * 0.45;
-            P.path([[a, iconTop - 9], [a, iconTop - 13], [b, iconTop - 13], [b, iconTop - 9]], { color: 'muted', width: 1.2 });
-            P.text(g.map((i) => NAMES[i]).join(' and '), (a + b) / 2, iconTop - 21, { size: 11, color: 'muted', align: 'center' });
+            P.path([[a, iconTop - 7], [a, iconTop - 12], [b, iconTop - 12], [b, iconTop - 7]], { color: 'muted', width: 1.2 });
+            P.text(g.map((i) => NAMES[i]).join(' and '), (a + b) / 2, iconTop - 22, { size: 11, color: 'muted', align: 'center' });
           });
           let kx = 12; [0, 1, 2].forEach((st) => { shapeAt(P, st, kx + 5, 16, 5, 'muted'); P.text(NAMES[st], kx + 14, 16, { size: 11.5, color: 'muted' }); kx += 22 + NAMES[st].length * 7; });
           const expr = groups.map((g) => g.map((i) => n[i]).join(String.raw`\times `)).join(' + ');
@@ -306,7 +306,7 @@ i.e. the row sums and the column sums of the 0/1 incidence matrix have the same 
         const PEOPLE = ['Ana', 'Ben', 'Caz', 'Dev', 'Eli'], CLUBS = ['chess', 'choir', 'drama', 'rowing'];
         const M = [[1, 0, 1, 0], [1, 1, 0, 1], [0, 1, 1, 1], [0, 0, 1, 0], [1, 0, 0, 1]];
         const VN = 6; let E = [[0, 1], [0, 2], [1, 2], [2, 3], [3, 4], [1, 4], [4, 5]], pick = null;
-        const L = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], axes: false, height: 350, weight: 1, equal: true });
+        const L = v.stage({ x: [-1.3, 1.3], y: [-1.32, 1.5], axes: false, height: 350, weight: 1, equal: true });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, weight: 1 });
         const TL = v.table(L, { rows: 6, cols: 5, size: 13, maxCell: 46, labelSize: 12.5 });
         const TR = v.table(R, { rows: 7, cols: 8, size: 12, maxCell: 40, labelSize: 11.5 });
@@ -612,7 +612,7 @@ Writing $\binom n0,\dots,\binom nn$ as row $n$ of a triangle therefore gives **P
         v.render(() => {
           const N = NS.value, f = S.frame, idx = S.i, cn = f.n, ck = f.k;
           A.setView([-N / 2 - 1.5, N / 2 + 0.6], [-N - 0.5, 0.5]);
-          const tot = binom(cn, ck), wmax = 0.42;
+          const tot = binom(cn, ck), wmax = 0.62;
           // ribbons: paths to each parent, edge width ∝ number of paths through it
           const flow = (tn, tk, color) => {
             const T = binom(tn, tk); if (!T) return;
@@ -691,17 +691,24 @@ $$\binom{m+n}{k} = \sum_{j=0}^{k}\binom mj\binom n{k-j}.$$`,
           A.line(Math.max(0, m - k) - 0.3, Math.min(m, k) + 0.3, Math.min(m, X) + 0.3, m - Math.min(m, X) - 0.3, { color: 'muted', width: 1.5, dash: [6, 4] });
           const P2 = (x1, y1, x2, y2) => binom(x2 - x1 + y2 - y1, y2 - y1) * (x2 >= x1 && y2 >= y1 ? 1 : 0);
           const wscale = 0.42 * A.scale / Math.max(1, tot);
-          js.forEach((j) => {
-            const cx = m - j, cy = j, faded = selJ != null && selJ !== j, col = CAT[j % CAT.length];
-            for (let x = 0; x <= X; x++) for (let y = 0; y <= k; y++) for (const [dx, dy] of [[1, 0], [0, 1]]) {
-              const x2 = x + dx, y2 = y + dy; if (x2 > X || y2 > k) continue;
-              let cnt;
-              if (x2 + y2 <= m) cnt = P2(0, 0, x, y) * P2(x2, y2, cx, cy) * P2(cx, cy, X, k);
-              else if (x + y >= m) cnt = P2(0, 0, cx, cy) * P2(cx, cy, x, y) * P2(x2, y2, X, k);
-              else cnt = 0;
-              if (cnt) A.line(x, y, x2, y2, { color: col, width: Math.max(0.8, cnt * wscale), alpha: faded ? 0.08 : 0.42 });
-            }
-          });
+          // Sankey-style ribbons: on every edge the paths are split by their crossing point j and laid side by side
+          for (let x = 0; x <= X; x++) for (let y = 0; y <= k; y++) for (const [dx, dy] of [[1, 0], [0, 1]]) {
+            const x2 = x + dx, y2 = y + dy; if (x2 > X || y2 > k) continue;
+            const cnts = js.map((j) => {
+              const cx = m - j, cy = j;
+              if (x2 + y2 <= m) return P2(0, 0, x, y) * P2(x2, y2, cx, cy) * P2(cx, cy, X, k);
+              if (x + y >= m) return P2(0, 0, cx, cy) * P2(cx, cy, x, y) * P2(x2, y2, X, k);
+              return 0;
+            });
+            const tw = cnts.reduce((a, c) => a + c, 0) * wscale; if (!tw) continue;
+            let acc = -tw / 2;
+            js.forEach((j, t) => {
+              const w = cnts[t] * wscale; if (!w) return;
+              const off = (acc + w / 2) / A.scale; acc += w;
+              const faded = selJ != null && selJ !== j, ox = dy ? off : 0, oy = dx ? -off : 0;
+              A.line(x + ox + (dx ? 0.06 : 0), y + oy + (dy ? 0.06 : 0), x2 + ox - (dx ? 0.06 : 0), y2 + oy - (dy ? 0.06 : 0), { color: CAT[j % CAT.length], width: Math.max(0.8, w), alpha: faded ? 0.1 : 0.7, cap: 'butt' });
+            });
+          }
           js.forEach((j) => {
             const c = binom(m, j) * binom(n, k - j), col = CAT[j % CAT.length], faded = selJ != null && selJ !== j;
             A.dot(m - j, j, { r: 6.5, color: col, alpha: faded ? 0.35 : 1 });
@@ -747,7 +754,7 @@ $$\binom{a+b}{a} = \binom{a+b}{b}.$$`,
         const AX = 11, BY = 7;
         let seed = 4; const blocked = new Set();
         const s = v.stage({ x: [-0.8, AX + 0.8], y: [-0.8, BY + 0.8], axes: false, equal: true, height: 370 });
-        const corner = s.handle(6, 4, { color: 'accent', r: 8, constrain: (x, y) => [v.M.clamp(Math.round(x), 1, AX), v.M.clamp(Math.round(y), 1, BY)] });
+        const corner = s.handle(8, 5, { color: 'accent', r: 8, constrain: (x, y) => [v.M.clamp(Math.round(x), 1, AX), v.M.clamp(Math.round(y), 1, BY)] });
         v.button('Resample paths', () => { seed++; });
         v.button('Clear blocks', () => { blocked.clear(); });
         s.onClick((x, y) => {

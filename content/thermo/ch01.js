@@ -440,7 +440,7 @@ Collisions between molecules do not change the result: they conserve momentum an
           while (hits.length && hits[0][0] < G.t - TW - 5) hits.shift();
           // cylinder
           const one = mode.value === 'one';
-          drawGas(sc, G, { color: () => 'accent', rScale: one ? 2 : 1, pistonColor: 'orange' });
+          drawGas(sc, G, { color: () => 'accent', rScale: one ? 25 : 1, pistonColor: 'orange' });
           if (one) { const i = 0; sc.arrow(G.x[i], G.y[i], G.x[i] + 1.6 * G.vx[i], G.y[i], { color: 'red', width: 2, head: 7 }); sc.text('vₓ', G.x[i] + 1.6 * G.vx[i], G.y[i], { dy: -10, color: 'red', size: 12 }); }
           const lastHit = hits.length ? hits[hits.length - 1][0] : -1e9;
           if (G.t - lastHit < 0.6) sc.rect(X, -0.2, X + 1.1, L + 0.2, { fill: 'red', fillAlpha: 0.35, stroke: false });

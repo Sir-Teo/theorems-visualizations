@@ -189,7 +189,7 @@ export default {
 $$v \mapsto \beta(v, u) \qquad\text{and}\qquad v \mapsto \beta(u, v)$$
 are linear functionals on $V$. The set of bilinear forms on $V$ is denoted $V^{(2)}$; with the usual addition and scalar multiplication of functions it is a vector space.`,
       idea: String.raw`Freezing one slot leaves an element of the dual space $V'$ (3.110), so a bilinear form is a rule that turns every vector into a linear functional, and does so linearly. Examples: $\sum_{j,k} A_{j,k}x_jy_k$ on $\mathbf F^n$ for any $n \times n$ matrix $A$; $\langle u, Tv\rangle$ on a real inner product space for any operator $T$; $\varphi(u)\tau(v)$ for any $\varphi, \tau \in V'$; $p(2)\,q'(3)$ on $\mathcal P_n(\mathbf R)$. A real inner product is a bilinear form that happens to be symmetric and positive definite; a complex inner product is not a bilinear form at all, since scalars leave its second slot conjugated. And a bilinear form is *not* a linear map on the vector space $V \times V$: $\beta(2u, 2v) = 4\beta(u, v)$, so only $\beta = 0$ is both.`,
-      caption: String.raw`Drag $u$ (blue). The colours and purple level lines show the linear functional obtained by freezing one slot at $u$: straight, parallel, equally spaced lines, with the zero line (thick) through the origin, which turn and crowd together as $u$ moves. On the right its graph is a plane through the origin. Drag the test vectors $v$ and $w$: the green stick at $v + w$ always reaches the black ring placed at height $\beta(\cdot, v) + \beta(\cdot, w)$. Now pick a candidate that is not bilinear: for $u^{t}Av + 1$ the plane misses the origin, for $\|u\|\,\|v\|$ the levels are circles and the graph a cone — and the ring and the stick separate.`,
+      caption: String.raw`Drag $u$ (blue). The colours and purple level lines show the linear functional obtained by freezing one slot at $u$: straight, parallel, equally spaced lines, with the zero line (thick) through the origin, which turn and crowd together as $u$ moves. On the right its graph is a plane through the origin. Drag the test vectors $v$ and $w$: the green stick at $v + w$ always reaches the ring placed at height $\beta(\cdot, v) + \beta(\cdot, w)$. Now pick a candidate that is not bilinear: for $u^{t}Av + 1$ the plane misses the origin, for $\|u\|\,\|v\|$ the levels are circles and the graph a cone — and the ring and the stick separate.`,
       deps: ['ladr-3.110'],
       tags: ['bilinear forms'],
       viz(v) {
@@ -321,7 +321,7 @@ When the basis has to be named, one writes $\mathcal M\big(\beta, (e_1, \dots, e
       statement: String.raw`Suppose $e_1, \dots, e_n$ is a basis of $V$. Then the map $\beta \mapsto \mathcal M(\beta)$ is an isomorphism of $V^{(2)}$ onto $\mathbf F^{n,n}$. In particular,
 $$\dim V^{(2)} = (\dim V)^2.$$`,
       idea: String.raw`The map $\beta \mapsto \mathcal M(\beta)$ is clearly linear. Its inverse sends a matrix $A$ to the form $\beta_A\big(\sum_j x_je_j, \sum_k y_ke_k\big) = \sum_{j,k}A_{j,k}x_jy_k$: indeed $\mathcal M(\beta_A) = A$ by evaluating on basis pairs, and $\beta_{\mathcal M(\beta)} = \beta$ by the bilinear expansion behind 9.4. So the two spaces are isomorphic and have the same dimension, $\dim\mathbf F^{n,n} = n^2$ (3.40, 3.70). Concretely, the $n^2$ elementary forms $\beta_{jk}(u, v) = x_jy_k$ (the $j$-th coordinate of $u$ times the $k$-th coordinate of $v$) correspond to the matrix units, so they form a basis of $V^{(2)}$: every form is $\sum_{j,k}\beta(e_j, e_k)\,\beta_{jk}$, and none can be left out.`,
-      caption: String.raw`A bilinear form on $\mathbf R^2$ is pictured by its values $\beta(u, v)$ on all pairs of unit vectors: the square chart has the angle $\varphi$ of $u$ across and the angle $\theta$ of $v$ up (blue $> 0$, red $< 0$). Left: the four elementary forms $\beta_{jk}$, each weighted by its slider $c_{jk}$. Right: their sum, with its level lines in black and those of the target form in gold. Move the sliders until the black lines run inside the gold ones — the only way is $c_{jk} = \beta(e_j, e_k)$ (or press the button). Drop $\beta_{21}$ and some targets become unreachable: at the pair $(u, v) = (e_2, e_1)$ the other three forms all vanish.`,
+      caption: String.raw`A bilinear form on $\mathbf R^2$ is pictured by its values $\beta(u, v)$ on all pairs of unit vectors: the square chart has the angle $\varphi$ of $u$ across and the angle $\theta$ of $v$ up (blue $> 0$, red $< 0$). Left: the four elementary forms $\beta_{jk}$, each weighted by its slider $c_{jk}$. Right: their sum, with its own level lines (thin) and those of the target form (wide, gold). Move the sliders until the thin lines run inside the gold ones — the only way is $c_{jk} = \beta(e_j, e_k)$ (or press the button). Drop $\beta_{21}$ and some targets become unreachable: at the pair $(u, v) = (e_2, e_1)$ the other three forms all vanish.`,
       deps: ['ladr-9.4', 'ladr-3.40', 'ladr-3.70'],
       tags: ['bilinear forms', 'dimension'],
       viz(v) {
@@ -331,7 +331,7 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
         const drop = v.toggle('drop $\\beta_{21}$', false, { onChange: (b) => { sl[2].el.hidden = b; } });
         v.button('read off $c_{jk} = \\beta(e_j, e_k)$', () => { const B = TG[tgt.value]; sl.forEach((s, i) => { if (!(drop.value && i === 2)) s.set(B[i >> 1][i & 1]); }); });
         const L = v.stage({ x: [0, 2.35], y: [0, 2.5], equal: true, axes: false, height: 370, weight: 0.85, minWidth: 260, title: 'elementary forms $c_{jk}\\,\\beta_{jk}$' });
-        const R = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', height: 370, weight: 1.15, xticks: PI_TICKS, yticks: PI_TICKS, xlabel: 'angle φ of u', ylabel: 'angle θ of v', title: '$\\sum c_{jk}\\beta_{jk}$ (colour, black levels) vs target (gold levels)' });
+        const R = v.stage({ x: [0, TAU], y: [0, TAU], axes: 'box', height: 370, weight: 1.15, xticks: PI_TICKS, yticks: PI_TICKS, xlabel: 'angle φ of u', ylabel: 'angle θ of v', title: '$\\sum c_{jk}\\beta_{jk}$ (colour, thin levels) vs target (gold levels)' });
         const TS = 0.95, tile = (j, k) => [0.12 + 1.15 * k, 0.08 + 1.2 * (1 - j)];
         let st = null;
         v.render(() => {
@@ -358,7 +358,7 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
           R.contour((x, y) => chartVal(Cm, x, y), [0], { color: 'ink', width: 1.8, res: 90 });
           R.axes();
           let err = 0; for (let a = 0; a < 48; a++) for (let b = 0; b < 48; b++) { const ph = (TAU * a) / 48, th = (TAU * b) / 48; err = Math.max(err, Math.abs(chartVal(Cm, ph, th) - chartVal(B, ph, th))); }
-          if (drop.value) R.dot(Math.PI / 2, 0, { r: 7, color: 'red', label: '(e₂, e₁)', labelPos: 'ne' });
+          if (drop.value) R.dot(Math.PI / 2, Math.PI, { r: 7, color: 'red', label: '(e₂, −e₁)', labelPos: 'ne' });
           st = { err, Cm, B, drop: drop.value, floor: Math.abs(B[1][0]) };
         });
         v.legend([['ink', 'levels of your combination'], ['gold', 'levels of the target $\\beta$'], ['blue', 'value $> 0$', { area: true }], ['red', 'value $< 0$', { area: true }]]);
@@ -367,8 +367,8 @@ $$\dim V^{(2)} = (\dim V)^2.$$`,
           const m = st.err < 0.01;
           let s = `$\\max_{\\varphi,\\theta}\\big|\\sum c_{jk}\\beta_{jk} - \\beta\\big| = ${tn(st.err, 3)}$, with $\\mathcal M\\big(\\sum c_{jk}\\beta_{jk}\\big) = ${mtex(st.Cm)}$. `;
           if (m) s += `**Match**: $\\mathcal M(\\beta) = ${mtex(st.B)}$, i.e. $c_{jk} = \\beta(e_j, e_k)$ — the four elementary forms span $V^{(2)}$, and they are independent, so $\\dim V^{(2)} = 2^2 = 4$.`;
-          else if (st.drop && st.floor > 0.01) s += `Without $\\beta_{21}$ the error can never drop below $|\\beta(e_2, e_1)| = ${tn(st.floor)}$: at $(u, v) = (e_2, e_1)$ the remaining three forms are all $0$. Three forms do not span a 4-dimensional space.`;
-          else s += 'Adjust the sliders until the black level lines run inside the gold ones.';
+          else if (st.drop && st.floor > 0.01) s += `Without $\\beta_{21}$ the error can never drop below $|\\beta(e_2, e_1)| = ${tn(st.floor)}$: at $(u, v) = (e_2, \\pm e_1)$ (the red dot) the remaining three forms are all $0$. Three forms do not span a 4-dimensional space.`;
+          else s += 'Adjust the sliders until the thin level lines run inside the gold ones.';
           return s;
         });
       },
@@ -535,7 +535,7 @@ $$A = C^{t}BC.$$`,
 $$\rho(u, w) = \rho(w, u) \qquad\text{for all } u, w \in V.$$
 The set of symmetric bilinear forms on $V$ is denoted $V^{(2)}_{\mathrm{sym}}$. A square matrix $A$ is called **symmetric** if $A^{t} = A$.`,
       idea: String.raw`Examples: a real inner product; $\langle u, Tw\rangle$ on a real inner product space, which is symmetric exactly when $T$ is self-adjoint (7.10); $\operatorname{tr}(ST)$ on $\mathcal L(V)$, because $\operatorname{tr}(ST) = \operatorname{tr}(TS)$. Expanding in a basis with $A = \mathcal M(\rho)$ gives $\rho(u, w) - \rho(w, u) = \sum_{j,k}(A_{j,k} - A_{k,j})\,x_jy_k$, so a form is symmetric exactly when its matrix is (9.12 makes this precise). On $\mathbf R^2$ the defect is $(A_{1,2} - A_{2,1})(u_1w_2 - u_2w_1)$: a multiple of the signed area of the parallelogram on $u$ and $w$.`,
-      caption: String.raw`Right: the chart of all values $\rho(u, w)$ for unit vectors $u, w$, the angle of the first input across and of the second up. Swapping the inputs is reflection in the dashed diagonal, so $\rho$ is symmetric exactly when the chart is mirror-symmetric — the black level lines and their reflections (gold) coincide. Drag $u$ and $w$ on the circle: the gold point is $(u, w)$, the purple one its mirror image $(w, u)$. Add a skew part $s$ (or pick a non-self-adjoint $T$): the picture loses its mirror symmetry and the parallelogram on the left fills with the defect $\rho(u, w) - \rho(w, u) = s \cdot (\text{signed area})$.`,
+      caption: String.raw`Right: the chart of all values $\rho(u, w)$ for unit vectors $u, w$, the angle of the first input across and of the second up. Swapping the inputs is reflection in the dashed diagonal, so $\rho$ is symmetric exactly when the chart is mirror-symmetric — its thin level lines and their reflections (gold) coincide. Drag $u$ and $w$ on the circle: the gold point is $(u, w)$, the purple one its mirror image $(w, u)$. Add a skew part $s$ (or pick a non-self-adjoint $T$): the picture loses its mirror symmetry and the parallelogram on the left fills with the defect $\rho(u, w) - \rho(w, u) = s \cdot (\text{signed area})$.`,
       deps: ['ladr-9.1'],
       see: ['ladr-7.10'],
       tags: ['bilinear forms', 'symmetry'],
@@ -608,12 +608,12 @@ produces a vector $v$ with $\rho(v, v) \ne 0$. Its $\rho$-orthogonal space $U = 
           pos: { A: [[1.6, 0.4, 0.2], [0.4, 1.1, -0.3], [0.2, -0.3, 0.8]], v1: [0.18, -0.36, 1.08], view: [-0.5, 0.3] },
           ns: { A: [[1, 0.9, -0.2], [-0.3, -0.5, 0.8], [0.6, -0.4, 0.4]], v1: [0.66, -0.6, -0.73], view: [-0.5, 0.3] },
         };
-        const pre = v.select('$\\rho$', [{ value: 'ind', label: 'indefinite' }, { value: 'iso', label: 'every axis isotropic' }, { value: 'pos', label: 'positive definite' }, { value: 'ns', label: 'not symmetric' }], 'ind', { onChange: (k) => { [sc.yaw, sc.pitch] = PRE[k].view; h1.set(PRE[k].v1); h2.set([0.1, 0.95, -0.5]); } });
+        const pre = v.select('$\\rho$', [{ value: 'ind', label: 'indefinite' }, { value: 'iso', label: 'every axis isotropic' }, { value: 'pos', label: 'positive definite' }, { value: 'ns', label: 'not symmetric' }], 'ind', { onChange: (k) => { [sc.yaw, sc.pitch] = PRE[k].view; h1.set(PRE[k].v1); h2.set([0.9, 0.2, -0.7]); } });
         const S = v.stage({ x: [-2, 2], y: [-1.85, 1.85], equal: true, axes: false, height: 420, weight: 1.2 });
-        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.45, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axis: 1.45, lim: 1.4, labels: ['x₁', 'x₂', 'x₃'] });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, weight: 0.8, minWidth: 260 });
         const h1 = sc.handle(PRE.ind.v1, { color: 'accent', label: 'v₁' });
-        const h2 = sc.handle([0.1, 0.95, -0.5], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'purple', label: 'v₂' });
+        const h2 = sc.handle([0.9, 0.2, -0.7], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'purple', label: 'v₂' });
         let st = null;
         v.render(() => {
           const key = pre.value, A = PRE[key].A, As = symPart(A), symm = key !== 'ns';
@@ -696,7 +696,7 @@ produces a vector $v$ with $\rho(v, v) \ne 0$. Its $\rho$-orthogonal space $U = 
       viz(v) {
         const PRE = { ell: [[1.3, 0.55], [0.55, 0.6]], hyp: [[0.5, 0.9], [0.9, -0.4]] };
         const pre = v.select('$\\rho$', [{ value: 'ell', label: 'ellipse type' }, { value: 'hyp', label: 'hyperbola type' }], 'ell');
-        const cw = v.slider('weight $c$ in $\\langle x, y\\rangle = x_1y_1 + c\\,x_2y_2$', 0.3, 3, 1, { step: 0.05 });
+        const cw = v.slider('weight $c$ in $\\langle x, y\\rangle = x_1y_1 + c\\,x_2y_2$', 0.3, 3, 1.5, { step: 0.05 });
         const sk = v.slider('skew part $s$ added to $\\rho$', -1, 1, 0, { step: 0.05 });
         const P = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 380, title: 'in $V = \\mathbf R^2$' });
         const Q = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 380, title: 'in the coordinates of $f_1, f_2$' });

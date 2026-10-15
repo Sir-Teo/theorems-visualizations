@@ -68,7 +68,7 @@ function splitHeight(H, W, nTop, aspTop, nBot, aspBot, maxTop = Infinity, maxBot
     const score = Math.min(fitGrid(nTop, W, h - head, aspTop, 6, maxTop).h, fitGrid(nBot, W, H - h - head, aspBot, 8, maxBot).h);
     if (score > bs + 1e-9) { bs = score; best = h; }
   }
-  return best;
+  return Math.min(best, head + fitGrid(nTop, W, best - head, aspTop, 6, maxTop).th + 10);
 }
 
 export default {
@@ -146,8 +146,8 @@ If every child must get at least one sweet ($x_i\ge 1$) the number is $\binom{n-
               const c = pos.value ? owner[i] : child;
               A.text('★', i, 1, { align: 'center', size: 26, color: CAT[c % CAT.length], halo: false });
             }
-            bars.forEach((b) => A.line(b, 0.48, b, 1.55, { color: 'ink', width: 3.2 }));
-            A.text(pos.value ? `${n} stars, bars in ${k - 1} of the ${n - 1} gaps` : `${S} slots: ${n} stars and ${k - 1} bars`, -0.6, 1.62, { size: 12, color: 'muted', weight: 600, baseline: 'top' });
+            bars.forEach((b) => A.line(b, 0.5, b, 1.45, { color: 'ink', width: 3.2 }));
+            A.text(pos.value ? `${n} stars, bars in ${k - 1} of the ${n - 1} gaps` : `${S} slots: ${n} stars and ${k - 1} bars`, -0.6, 1.73, { size: 12, color: 'muted', weight: 600, baseline: 'top' });
             // children
             const span = S + 0.2, bw = span / k;
             for (let c = 0; c < k; c++) {
@@ -261,9 +261,9 @@ $$S(n,k) = S(n-1,k-1) + k\,S(n-1,k)\qquad(n,k\ge1).$$`,
       viz(v) {
         let sel = [5, 3], pick = null;
         const NMAX = 7, S2 = stirling2(NMAX);
-        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1.5 });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1, title: 'the triangle $S(n,k)$ (click)' });
-        const T = v.table(B, { rows: NMAX + 1, cols: NMAX + 1, size: 12, maxCell: 40, labelSize: 11.5, rowLabels: (i) => `n=${i}`, colLabels: (j) => `k=${j}` });
+        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 2.1 });
+        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 1, minWidth: 250, title: 'the triangle $S(n,k)$ (click)' });
+        const T = v.table(B, { rows: NMAX + 1, cols: NMAX + 1, size: 11, maxCell: 36, labelSize: 10, margin: 4, rowLabels: (i) => `n=${i}`, colLabels: (j) => `k=${j}` });
         B.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 1 && c.i <= 6 && c.j >= 1 && c.j <= c.i) { sel = [c.i, c.j]; pick = null; } });
         let boxes = [];
         A.onClick((x, y) => { const [px, py] = toPx(A, x, y); const b = boxes.find((r) => px >= r[0] && px <= r[0] + r[2] && py >= r[1] && py <= r[1] + r[3]); pick = b ? b[4] : null; });
@@ -287,13 +287,13 @@ $$S(n,k) = S(n-1,k-1) + k\,S(n-1,k)\qquad(n,k\ge1).$$`,
           const ring = (i) => i === n - 1, isPick = (r) => pick && r.join('') === pick.join('');
           P.text(`${n} alone: ${alone.length} = S(${n - 1},${k - 1})`, 8, 12, { size: 12, color: 'orange', weight: 700 });
           if (alone.length) {
-            const g = fitGrid(alone.length, W - 16, hA - 30, aspect, 6, 120);
+            const g = fitGrid(alone.length, W - 16, hA - 30, aspect, 6, 120, 'top');
             alone.forEach((r, i) => { const [x, y] = g.at(i), X = x + 8, Y = y + 24; P.rect(X, Y, g.w, g.h, { fill: isPick(r) ? 'gold' : 'orange', fillAlpha: isPick(r) ? 0.3 : 0.07, r: 4 }); drawArcPartition(P, r, X + 2, Y + 2, g.w - 4, g.h - 4, { ring, labels: true }); boxes.push([X, Y, g.w, g.h, r]); });
           } else P.text('none', 8, 34, { size: 12, color: 'muted' });
           P.line(6, hA, W - 6, hA, { color: 'faint', width: 1, dash: [4, 4] });
           P.text(`${n} joins one of the ${k} blocks: ${join.length} = ${k} × S(${n - 1},${k})`, 8, hA + 14, { size: 12, color: 'teal', weight: 700 });
           if (groups.length) {
-            const g = fitGrid(groups.length, W - 16, H - hA - 30, aspect / k, 8, 120 * k);
+            const g = fitGrid(groups.length, W - 16, H - hA - 30, aspect / k, 8, 120 * k, 'top');
             groups.forEach((G, gi) => {
               const [x, y] = g.at(gi), X = x + 8, Y = y + hA + 26, iw = g.w / k;
               P.rect(X - 2, Y - 2, g.w + 4, g.h + 4, { fill: 'teal', fillAlpha: 0.07, color: 'teal', width: 1, r: 5, alpha: 0.5 });
@@ -396,11 +396,11 @@ and satisfy $c(n,k) = c(n-1,k-1) + (n-1)\,c(n-1,k)$. The signed numbers $s(n,k) 
           const P = pen(v, A), W = P.W, H = P.H, ring = (g) => g === n - 1;
           const asp = 0.42 + 0.12 / k, hA = splitHeight(H, W - 16, alone.length, asp, ins.length, asp, 46 * k + 30, 46 * k + 30);
           P.text(`${n} sits alone: ${alone.length} = c(${n - 1},${k - 1})`, 8, 12, { size: 12, color: 'orange', weight: 700 });
-          if (alone.length) { const g = fitGrid(alone.length, W - 16, hA - 30, asp, 6, 46 * k + 30); alone.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + 24, g.w, g.h, { fill: 'orange', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + 24, g.w, g.h, { ring, arrows: true }); }); }
+          if (alone.length) { const g = fitGrid(alone.length, W - 16, hA - 30, asp, 6, 46 * k + 30, 'top'); alone.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + 24, g.w, g.h, { fill: 'orange', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + 24, g.w, g.h, { ring, arrows: true }); }); }
           else P.text('none', 8, 34, { size: 12, color: 'muted' });
           P.line(6, hA, W - 6, hA, { color: 'faint', width: 1, dash: [4, 4] });
           P.text(`${n} sits to the left of one of the ${n - 1} others: ${ins.length} = ${n - 1} × c(${n - 1},${k})`, 8, hA + 14, { size: 12, color: 'teal', weight: 700 });
-          if (ins.length) { const g = fitGrid(ins.length, W - 16, H - hA - 30, asp, 6, 46 * k + 30); ins.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + hA + 26, g.w, g.h, { fill: 'teal', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + hA + 26, g.w, g.h, { ring, arrows: true }); }); }
+          if (ins.length) { const g = fitGrid(ins.length, W - 16, H - hA - 30, asp, 6, 46 * k + 30, 'top'); ins.forEach((p, i) => { const [x, y] = g.at(i); P.rect(x + 8, y + hA + 26, g.w, g.h, { fill: 'teal', fillAlpha: 0.07, r: 4 }); drawTables(v, P, p, x + 8, y + hA + 26, g.w, g.h, { ring, arrows: true }); }); }
           else P.text('none', 8, hA + 36, { size: 12, color: 'muted' });
           // bars
           const ymax = Math.max(...C[n].slice(1, n + 1)) * 1.2;

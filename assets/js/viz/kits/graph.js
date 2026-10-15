@@ -45,6 +45,20 @@ const CODE = {
 };
 
 // ================================================================== Graph
+
+// membership test for accept/start: an id, an array, a Set, or a predicate
+const inSet = (x, id, n) => x == null || x === false ? false : typeof x === 'function' ? !!x(id, n) : x instanceof Set ? x.has(id) || x.has(K(id)) : Array.isArray(x) ? x.some((y) => K(y) === K(id)) : K(x) === K(id);
+/** Ink colour readable on a solid fill: near-black on light fills, white on dark ones. */
+function onFill(css) {
+  let r = 128, g = 128, b = 128, m;
+  if ((m = /^#([0-9a-f]{6})/i.exec(css))) { const v = parseInt(m[1], 16); r = v >> 16; g = (v >> 8) & 255; b = v & 255; }
+  else if ((m = /^#([0-9a-f]{3})$/i.exec(css))) { r = parseInt(m[1][0] + m[1][0], 16); g = parseInt(m[1][1] + m[1][1], 16); b = parseInt(m[1][2] + m[1][2], 16); }
+  else if ((m = /rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/i.exec(css))) { r = +m[1]; g = +m[2]; b = +m[3]; }
+  const lin = (u) => { u /= 255; return u <= 0.04045 ? u / 12.92 : ((u + 0.055) / 1.055) ** 2.4; };
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return L > 0.22 ? '#17171c' : '#ffffff';
+}
+
 class Graph {
   constructor(api, rt, stage, spec = {}) {
     if (!stage || typeof stage.X !== 'function') throw new Error('v.graph(stage, spec): the first argument must be a 2D stage');
@@ -227,6 +241,8 @@ class Graph {
    * Draw the graph (call inside v.render). Options (functions get (id, node) or (edge)): nodeColor, nodeFill (solid disc),
    * nodeLabel, nodeNote (small text beside the node), noteColor, nodeRing, labelColor, edgeColor, edgeWidth, edgeDash,
    * edgeLabel, edgeLabelColor, highlightPath: [ids], pathColor, dim: Set/array of node ids and edge objects, arrows.
+   * Automata: accept (id | [ids] | Set | (id, node) => bool) draws a double ring; start (same forms) an incoming arrow, from startDir ('w').
+   * These, labelPos and notePos can also be given once in the spec.
    */
   draw(o = {}) {
     const s = this.s, c = s.ctx, A = this.api; this._index();
@@ -287,7 +303,7 @@ class Graph {
       g.rect = [X - pw / 2, Y - ph / 2, pw, ph];
     }
     // ---- nodes
-    const fs = o.fontSize ?? this.o.fontSize;
+    const fs = o.fontSize ?? this.o.fontSize, accept = o.accept ?? this.o.accept, start = o.start ?? this.o.start;
     for (const n of this._nodes) {
       const g = GN.get(K(n.id)); if (!g) continue; const id = n.id, k = K(id);
       const fill = val(o.nodeFill, id, n) ?? n.fill ?? null;
@@ -305,12 +321,20 @@ class Graph {
         c.fillStyle = A.color('panel'); c.fill(); if (col) { c.fillStyle = A.color(col, 0.16); c.fill(); }
         c.lineWidth = col ? 2.3 : 1.6; c.strokeStyle = A.color(col || 'muted'); c.stroke();
       }
+      // automata: accepting states get an inner ring, start states an incoming arrow
+      if (inSet(accept, id, n)) { shape(-3.6); c.lineWidth = 1.5; c.strokeStyle = fill ? A.color(onFill(A.color(fill))) : A.color(col || 'muted'); c.stroke(); }
+      if (inSet(start, id, n)) {
+        const [sx, sy] = DIRS[o.startDir ?? this.o.startDir ?? this._freeSide(n, g)] || DIRS.w, rr = (g.shape === 'box' ? Math.max(g.hw * Math.abs(sx), g.hh * Math.abs(sy)) : g.r) + 2, L = 22;
+        const tx = g.X + sx * rr, ty = g.Y + sy * rr; c.strokeStyle = c.fillStyle = A.color('ink'); c.lineWidth = 1.8;
+        c.beginPath(); c.moveTo(tx + sx * L, ty + sy * L); c.lineTo(tx + sx * 6, ty + sy * 6); c.stroke();
+        c.beginPath(); c.moveTo(tx, ty); c.lineTo(tx + sx * 8 - sy * 4.5, ty + sy * 8 + sx * 4.5); c.lineTo(tx + sx * 8 + sy * 4.5, ty + sy * 8 - sx * 4.5); c.closePath(); c.fill();
+      }
       c.restore();
       // label
       const lab = o.nodeLabel !== undefined ? val(o.nodeLabel, id, n) : g.lab;
       if (lab != null && lab !== '') {
         const str = typeof lab === 'number' ? fmtNum(lab) : String(lab);
-        const lc = val(o.labelColor, id, n) ?? (g.inside && fill ? 'panel' : g.inside ? 'ink' : col || fill || 'ink');
+        const lc = val(o.labelColor, id, n) ?? (g.inside && fill ? onFill(A.color(fill)) : g.inside ? 'ink' : col || fill || 'ink');
         if (g.inside) {
           if (isTex(str)) s.texPx(str.slice(1, -1), g.X, g.Y, { color: lc, size: o.texSize ?? 15, alpha });
           else {
@@ -319,7 +343,7 @@ class Graph {
             lines.forEach((l, i) => c.fillText(l, g.X, g.Y + (i - (lines.length - 1) / 2) * lh + 0.5)); c.restore();
           }
         } else {
-          const pos = n.labelPos ?? o.labelPos, [dx, dy] = DIRS[pos] || DIRS.ne, offp = (g.shape === 'box' ? Math.max(g.hw * Math.abs(dx), g.hh * Math.abs(dy)) : g.r) + 5;
+          const pos = n.labelPos ?? o.labelPos ?? this.o.labelPos, [dx, dy] = DIRS[pos] || DIRS.ne, offp = (g.shape === 'box' ? Math.max(g.hw * Math.abs(dx), g.hh * Math.abs(dy)) : g.r) + 5;
           const X = g.X + dx * offp, Y = g.Y + dy * offp, align = dx > 0.1 ? 'left' : dx < -0.1 ? 'right' : 'center', base = dy > 0.1 ? 'top' : dy < -0.1 ? 'bottom' : 'middle';
           if (isTex(str)) s.texPx(str.slice(1, -1), X, Y, { color: lc, size: o.texSize ?? 15, align, baseline: base, alpha });
           else s.textPx(str, X, Y, { color: lc, align, baseline: base, size: fs + 0.5, weight: 600, alpha });
@@ -329,7 +353,7 @@ class Graph {
       const note = val(o.nodeNote, id, n);
       if (note != null && note !== '') {
         const str = typeof note === 'number' ? fmtNum(note) : String(note);
-        const pos = n.notePos ?? o.notePos, [dx, dy] = DIRS[pos] || DIRS.n, offp = (g.shape === 'box' ? Math.max(g.hw * Math.abs(dx), g.hh * Math.abs(dy)) : g.r) + 4;
+        const pos = n.notePos ?? o.notePos ?? this.o.notePos, [dx, dy] = DIRS[pos] || DIRS.n, offp = (g.shape === 'box' ? Math.max(g.hw * Math.abs(dx), g.hh * Math.abs(dy)) : g.r) + 4;
         const X = g.X + dx * offp, Y = g.Y + dy * offp, align = dx > 0.1 ? 'left' : dx < -0.1 ? 'right' : 'center', base = dy > 0.1 ? 'top' : dy < -0.1 ? 'bottom' : 'middle';
         const nc = val(o.noteColor, id, n) ?? 'muted';
         if (isTex(str)) s.texPx(str.slice(1, -1), X, Y, { color: nc, size: 14, align, baseline: base, alpha });
@@ -337,6 +361,22 @@ class Graph {
       }
     }
     return this;
+  }
+
+  /** The compass direction around node n (drawn at g) farthest from its incident edges and loops (for the start arrow). */
+  _freeSide(n, g) {
+    const angs = [];
+    for (const e of this._edges) {
+      const geo = this._geo?.get(e); if (!geo || (K(e.from) !== K(n.id) && K(e.to) !== K(n.id))) continue;
+      for (const p of geo.pts) { const d = Math.hypot(p[0] - g.X, p[1] - g.Y); if (d > 2 && d < g.r * 4 + 30) angs.push(Math.atan2(p[1] - g.Y, p[0] - g.X)); }
+    }
+    let best = 'w', bs = -1;
+    for (const k of ['w', 'nw', 'sw', 'n', 's', 'e', 'ne', 'se']) {
+      const [dx, dy] = DIRS[k], a = Math.atan2(dy, dx);
+      const sc = angs.length ? Math.min(...angs.map((b) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b))))) : Math.PI;
+      if (sc > bs + 1e-6) { bs = sc; best = k; }
+    }
+    return best;
   }
 
   // ---------------------------------------------------------------- hit testing (data coordinates)

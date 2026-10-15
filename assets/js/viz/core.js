@@ -1365,6 +1365,7 @@ class Runtime {
       readout(f) { rt.readoutFn = f; rt.invalidate(); },
       /** Legend: items = [[colour, label], ...] or [{color, label, dash, dot}]. */
       legend(items) {
+        const sig = JSON.stringify(items); if (rt._legendSig === sig) return; rt._legendSig = sig; // calling it every frame is free when nothing changed
         rt.legendEl.innerHTML = '';
         for (const it of items) {
           const [color, label, extra] = Array.isArray(it) ? it : [it.color, it.label, it];

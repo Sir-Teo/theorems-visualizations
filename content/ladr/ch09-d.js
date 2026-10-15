@@ -140,7 +140,7 @@ export default {
       deps: ['ladr-9.36', 'ladr-9.28', 'ladr-3.114'],
       tags: ['multilinear', 'dimension'],
       viz(v) {
-        const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 370, minWidth: 280 });
+        const S = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 370, minWidth: 280 });
         const P = v.stage({ x: [-3, 3], y: [-3, 3], height: 370, minWidth: 280, xlabel: 'α(u, v)', ylabel: 'α′(u, v)', title: 'one dot per pair $(u, v)$' });
         const mode = v.select('', [{ value: 'r2', label: "two alternating 2-forms on $\\mathbf R^2$" }, { value: 'na', label: "$\\alpha'$ not alternating" }, { value: 'r3', label: 'two alternating 2-forms on $\\mathbf R^3$' }], 'r2');
         let seed = 4, T2 = [[1, 1], [-1, 1]], B2 = [[1, 2], [-1, 1]];
@@ -152,8 +152,8 @@ export default {
         regen();
         v.button("new $\\alpha'$", () => { seed++; regen(); });
         const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
-        const hu = S.handle(1.2, 0.3, { color: CC[0], label: 'u', constrain: snap });
-        const hv = S.handle(0.2, 1.0, { color: CC[1], label: 'v', constrain: snap });
+        const hu = S.handle(1.0, 0.3, { color: CC[0], label: 'u', constrain: snap });
+        const hv = S.handle(0.2, 0.9, { color: CC[1], label: 'v', constrain: snap });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.42, axis: 1.45, lim: 1.5 });
         const Hu = sc.handle([1.1, 0.3, 0.6], { color: CC[0], label: 'u' });
         const Hv = sc.handle([0.15, 1.0, 0.75], { color: CC[1], label: 'v' });
@@ -194,7 +194,7 @@ export default {
           if (md === 'r2') P.line(-Rr, -c * Rr, Rr, c * Rr, { color: 'green', width: 1.6, dash: [6, 4] });
           P.dots(pts, { r: 2.6, color: 'accent', alpha: 0.55 });
           P.dot(cur[0], cur[1], { r: 6.5, color: 'gold' });
-          P.corner(md === 'r2' ? `$\\alpha' = ${tn(c, 3)}\\,\\alpha$ on every pair` : 'no line through 0 fits', md === 'r2' && c < 0 ? 'tr' : 'tl', { color: md === 'r2' ? 'green' : 'red', weight: 700, size: 13 });
+          P.corner(md === 'r2' ? `$\\alpha' = ${tn(c, 3)}\\,\\alpha$ on every pair` : 'no line through 0 fits', md === 'r2' && c < 0 ? 'bl' : 'tl', { color: md === 'r2' ? 'green' : 'red', weight: 700, size: 13 });
           st = { md, cos, c, cur, T2, B2 };
         });
         v.legend([['accent', '300 random pairs', { dot: true }], ['gold', 'your pair', { dot: true }], ['green', "the line $\\alpha' = c\\,\\alpha$", { dash: true }]]);
@@ -239,7 +239,10 @@ $$\alpha(e_1, \dots, e_n) \ne 0 \iff e_1, \dots, e_n \text{ is linearly independ
         v.render(() => {
           const c = cS.value, v1 = [h1.x, h1.y], v2 = [h2.x, h2.y], a12 = c * det2(v1, v2);
           L.raster((x, y) => { const z = c * det2(v1, [x, y]); return Math.abs(z) < 1e-12 ? null : rgba(z > 0 ? 'blue' : 'red', Math.min(0.3, 0.08 * Math.abs(z))); }, { key: `${v1}|${c}`, res: 3 });
-          if (Math.abs(c) > 1e-9 && len(v1) > 1e-9) { const d = scl(unit(v1), 4); L.line(-d[0], -d[1], d[0], d[1], { color: 'green', width: 3, alpha: 0.85 }); }
+          if (Math.abs(c) > 1e-9 && len(v1) > 1e-9) {
+            const d = scl(unit(v1), 4), q = scl(unit(v1), -1.75); L.line(-d[0], -d[1], d[0], d[1], { color: 'green', width: 3, alpha: 0.85 });
+            L.tex('\\operatorname{span}(v_1)', q[0], q[1], { color: 'green', size: 14, dx: v1[0] * v1[1] >= 0 ? 16 : -16, dy: 14 });
+          }
           L.poly([[0, 0], v1, add(v1, v2), v2], { color: oriCol(a12, 1e-9), width: 1.6, fill: oriCol(a12, 1e-9), fillAlpha: 0.15 });
           L.arrow(0, 0, v1[0], v1[1], { color: CC[0], width: 3 }); L.arrow(0, 0, v2[0], v2[1], { color: CC[1], width: 3 });
           const indep = Math.abs(det2(v1, v2)) > 1e-9;
@@ -303,6 +306,7 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
         while (pairs.length < 300) { const a = [r0.uniform(-1.5, 1.5), r0.uniform(-1.5, 1.5)], b = [r0.uniform(-1.5, 1.5), r0.uniform(-1.5, 1.5)]; if (Math.abs(det2(a, b)) > 0.2) pairs.push([a, b, r0.uniform(0.2, 0.8)]); }
         let st = null, view = 0;
         v.render(() => {
+          I.setTitle(pre.value === 'nl' ? 'after the nonlinear map $F$' : 'after $T$');
           const T = H.A, nl = pre.value === 'nl', F = nl ? (p) => mv(T, N(p)) : (p) => mv(T, p), dT = dett(T);
           const u = [hu.x, hu.y], w = [hv.x, hv.y], au = det2(u, w), Fu = F(u), Fw = F(w), aT = det2(Fu, Fw);
           // the domain
@@ -368,7 +372,7 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
         const S = v.stage({ x: [-1.45, 2.15], y: [-1.4, 2.1], equal: true, axes: false, height: 400, weight: 1.35, minWidth: 320 });
         const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 250, title: 'the matrix $A$' });
         const sc = v.scene3(S, { yaw: -0.62, pitch: 0.32, axis: 1.5, lim: 1.6 });
-        const PRE = { gen: [[1.1, 0.2, -0.1], [0.2, 0.9, 0.5], [0.2, -0.3, 0.8]], shear: [[1, 0, 0], [0.8, 1, 0], [0.4, 0.5, 1]], refl: [[0, 1, 0], [1, 0, 0], [0, 0, 1]], sing: [[1, 0.2, 0], [0.2, 0.9, 0.3], [1.2, 1.1, 0.3]] };
+        const PRE = { gen: [[1.1, 0.2, -0.1], [0.2, 0.9, 0.5], [0.2, -0.3, 0.8]], shear: [[1, 0, 0], [0.8, 1, 0], [0.4, 0.5, 1]], refl: [[0, 1, 0], [1, 0, 0], [0, 0, 1]], sing: [[0.9, 0.1, 0], [0.1, 0.8, 0.4], [0.5, 0.5, 0.2]] };
         const g = (p) => p.map((x) => Math.round(x * 10) / 10);
         const H = PRE.gen.map((c, k) => sc.handle(c, { color: CC[k], label: `Ae${sb(k + 1)}`, snap: g }));
         const shape = v.select('', [{ value: 'sq', label: '$A$ is $3 \\times 3$' }, { value: 'ns', label: '$A$ is $3 \\times 2$ (not square)' }], 'sq');
@@ -418,52 +422,52 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
       kind: 'Theorem',
       name: 'Determinant is an alternating multilinear form',
       statement: String.raw`Suppose $n$ is a positive integer. The map that takes a list $v_1, \dots, v_n$ of vectors in $\mathbf F^n$ to $\det\begin{pmatrix} v_1 & \cdots & v_n \end{pmatrix}$ — the determinant of the matrix whose $k$th column is $v_k$ — is an alternating $n$-linear form on $\mathbf F^n$.`,
-      idea: String.raw`Let $T$ be the operator with $Te_k = v_k$, whose matrix is $\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix}$, and let $\alpha$ be the alternating $n$-form with $\alpha(e_1, \dots, e_n) = 1$ (9.37). Then $\det\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix} = \det T = (\det T)\,\alpha(e_1, \dots, e_n) = \alpha(Te_1, \dots, Te_n) = \alpha(v_1, \dots, v_n)$, using the definitions 9.43 and 9.41. So the determinant of the columns *is* the form $\alpha$. In particular a matrix with two equal columns has determinant $0$, and swapping two columns changes its sign (9.30). In $\mathbf R^2$: $\det(a, c)$ is the signed area $|c| \cdot h(a)$, where $h(a)$ is the signed distance of $a$ from the line through $c$ — and $h$ is linear.`,
-      caption: String.raw`The columns of a $2 \times 2$ matrix are $a$ (blue) and $c$ (purple); $\det(a, c)$ is the signed area of their parallelogram: base $|c|$ times the signed distance of $a$ from the dashed line through $c$ (positive on the clockwise side of $c$). *Additive:* drag $a$ and $a'$ (orange); the blue and orange parallelograms, stacked, reach exactly as far from the line as the green dashed one on $a + a'$ (right: the signed distances). *Homogeneous:* the slider scales $a$ by $\lambda$, and the area scales by $\lambda$ — sign included. *Equal columns:* $c$ snaps onto $a$ and the area is $0$. Toggle *unsigned area* to replace $\det$ by $|\det|$: it is still $0$ on equal columns, but additivity fails as soon as $a$ and $a'$ lie on opposite sides of the line, and homogeneity fails for $\lambda < 0$.`,
+      idea: String.raw`Let $T$ be the operator with $Te_k = v_k$, whose matrix is $\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix}$, and let $\alpha$ be the alternating $n$-form with $\alpha(e_1, \dots, e_n) = 1$ (9.37). Then $\det\begin{pmatrix} v_1 & \cdots & v_n\end{pmatrix} = \det T = (\det T)\,\alpha(e_1, \dots, e_n) = \alpha(Te_1, \dots, Te_n) = \alpha(v_1, \dots, v_n)$, using the definitions 9.43 and 9.41. So the determinant of the columns *is* the form $\alpha$. In particular a matrix with two equal columns has determinant $0$, and swapping two columns changes its sign (9.30). In $\mathbf R^2$: $\det(c, a)$ is the signed area $|c| \cdot h(a)$, where $h(a)$ is the signed height of $a$ above the line through $c$ — and $h$ is linear in $a$.`,
+      caption: String.raw`The columns of a $2 \times 2$ matrix are $c$ (purple) and $a$ (blue); $\det(c, a)$ is the signed area of their parallelogram — base $|c|$ times the signed height of $a$ above the dashed line through $c$ (positive on the side that $c$ turns towards counterclockwise). *Additive in column 2:* drag $a$ and $a'$ (orange). The orange parallelogram on $c$ and $a'$ is stacked on top of the blue one, and together they reach exactly the height of the green dashed parallelogram on $c$ and $a + a'$ (right: the heights, with signs). *Homogeneous:* the slider scales $a$ by $\lambda$, and the area scales by $\lambda$, sign included. *Equal columns:* $a$ snaps onto $c$ and the area is $0$. Toggle *unsigned area* to replace $\det$ by $|\det|$: it still vanishes on equal columns, but additivity fails when $a$ and $a'$ lie on opposite sides of the line (as they start), and homogeneity fails for $\lambda < 0$.`,
       deps: ['ladr-9.43', 'ladr-9.41', 'ladr-9.27'],
       see: ['pma-9.34'],
       tags: ['determinants', 'multilinear'],
       viz(v) {
-        const S = v.stage({ x: [-2.4, 3.0], y: [-1.9, 2.9], equal: true, height: 370, weight: 1.45, minWidth: 320, ticks: false });
-        const Hs = v.stage({ x: [0, 1], y: [-1, 1], axes: false, height: 370, minWidth: 220, title: 'signed distances from the line $\\mathbf R c$' });
-        const mode = v.select('', [{ value: 'add', label: 'additive in column 1' }, { value: 'hom', label: 'homogeneous in column 1' }, { value: 'alt', label: 'equal columns' }], 'add');
+        const S = v.stage({ x: [-1.7, 3.1], y: [-1.5, 2.6], equal: true, height: 370, weight: 1.45, minWidth: 320, ticks: false });
+        const Hs = v.stage({ x: [0, 1], y: [-1, 1], axes: false, height: 370, minWidth: 220, title: 'signed heights above the line $\\mathbf R c$' });
+        const mode = v.select('', [{ value: 'add', label: 'additive in column 2' }, { value: 'hom', label: 'homogeneous in column 2' }, { value: 'alt', label: 'equal columns' }], 'add');
         const absT = v.toggle('unsigned area $|\\det|$ instead', false);
         const lam = v.slider('$\\lambda$', -2, 2, 1.6, { step: 0.05 });
         const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
-        const ha = S.handle(1.3, 0.3, { color: 'blue', label: 'a', constrain: snap });
-        const hb = S.handle(-0.7, 0.9, { color: 'orange', label: 'a′', constrain: snap });
-        const hc = S.handle(0.3, 1.7, { color: 'purple', label: 'c', constrain: (x, y) => { const p = snap(x, y); return mode.value === 'alt' && Math.hypot(p[0] - ha.x, p[1] - ha.y) < 0.35 ? [ha.x, ha.y] : p; } });
-        v.button('set $c = a$', () => { mode.set('alt'); hc.set(ha.x, ha.y); });
+        const hc = S.handle(1.9, 0.3, { color: 'purple', label: 'c', constrain: snap });
+        const ha = S.handle(0.4, 1.3, { color: 'blue', label: 'a', constrain: (x, y) => { const p = snap(x, y); return mode.value === 'alt' && Math.hypot(p[0] - hc.x, p[1] - hc.y) < 0.35 ? [hc.x, hc.y] : p; } });
+        const hb = S.handle(0.6, -0.5, { color: 'orange', label: 'a′', constrain: snap });
+        v.button('set $a = c$', () => { mode.set('alt'); ha.set(hc.x, hc.y); });
         let st = null, view = 0;
         v.render(() => {
           const md = mode.value, A = absT.value, D = (x, y) => (A ? Math.abs(det2(x, y)) : det2(x, y));
           lam.el.hidden = md !== 'hom'; hb.visible = md === 'add';
           const a = [ha.x, ha.y], b = [hb.x, hb.y], c = [hc.x, hc.y], lc = len(c);
-          const d = scl(unit(c), 6); S.line(-d[0], -d[1], d[0], d[1], { color: 'muted', dash: [6, 5], width: 1.2 });
+          const d = scl(unit(c), 7); S.line(-d[0], -d[1], d[0], d[1], { color: 'muted', dash: [6, 5], width: 1.2 });
           const par = (o, x, y, st2) => S.poly([o, add(o, x), add(add(o, x), y), add(o, y)], st2);
           let rows = [];
           if (md === 'add') {
             const ab = add(a, b);
-            par([0, 0], a, c, { fill: 'blue', color: 'blue', fillAlpha: 0.2, width: 1.4 });
-            par(a, b, c, { fill: 'orange', color: 'orange', fillAlpha: 0.2, width: 1.4 });
-            par([0, 0], ab, c, { color: 'green', width: 2.2, dash: [7, 4] });
+            par([0, 0], c, a, { fill: 'blue', color: 'blue', fillAlpha: 0.2, width: 1.4 });
+            par(a, c, b, { fill: 'orange', color: 'orange', fillAlpha: 0.2, width: 1.4 });
+            par([0, 0], c, ab, { color: 'green', width: 2.2, dash: [7, 4] });
             S.arrow(0, 0, ab[0], ab[1], { color: 'green', width: 2, dash: [5, 4] });
             S.arrow(a[0], a[1], ab[0], ab[1], { color: 'orange', width: 2.6 });
-            S.tex("a + a'", ab[0], ab[1], { color: 'green', size: 14, dx: 18, dy: -10 });
-            rows = [['a', D(a, c), 'blue'], ["a'", D(b, c), 'orange'], ["a + a'", D(ab, c), 'green']];
+            S.tex("a + a'", ab[0], ab[1], { color: 'green', size: 14, dx: 16, dy: 16 });
+            rows = [['a', D(c, a), 'blue'], ["a'", D(c, b), 'orange'], ["a + a'", D(c, ab), 'green']];
           } else if (md === 'hom') {
             const la = scl(a, lam.value);
-            par([0, 0], a, c, { color: 'blue', width: 1.2, dash: [4, 4] });
-            par([0, 0], la, c, { fill: oriCol(det2(la, c), 1e-9), color: oriCol(det2(la, c), 1e-9), fillAlpha: 0.2, width: 1.6 });
+            par([0, 0], c, a, { color: 'blue', width: 1.2, dash: [4, 4] });
+            par([0, 0], c, la, { fill: oriCol(det2(c, la), 1e-9), color: oriCol(det2(c, la), 1e-9), fillAlpha: 0.2, width: 1.6 });
             S.arrow(0, 0, la[0], la[1], { color: 'gold', width: 2.6 });
             S.tex('\\lambda a', la[0], la[1], { color: 'gold', size: 14, dx: 14, dy: -10 });
-            rows = [['a', D(a, c), 'blue'], ['\\lambda a', D(la, c), 'gold']];
+            rows = [['a', D(c, a), 'blue'], ['\\lambda a', D(c, la), 'gold']];
           } else {
-            par([0, 0], a, c, { fill: oriCol(det2(a, c), 1e-9), color: oriCol(det2(a, c), 1e-9), fillAlpha: 0.2, width: 1.6 });
-            rows = [['a', D(a, c), 'blue']];
+            par([0, 0], c, a, { fill: oriCol(det2(c, a), 1e-9), color: oriCol(det2(c, a), 1e-9), fillAlpha: 0.2, width: 1.6 });
+            rows = [['a', D(c, a), 'blue']];
           }
-          S.arrow(0, 0, a[0], a[1], { color: 'blue', width: 3 });
           S.arrow(0, 0, c[0], c[1], { color: 'purple', width: 3 });
+          S.arrow(0, 0, a[0], a[1], { color: 'blue', width: 3 });
           // heights panel: det = |c| · height
           const hts = rows.map((r) => [r[0], lc > 1e-9 ? r[1] / lc : 0, r[2]]);
           const Y = nice(1.15 * Math.max(0.5, ...hts.map((h) => Math.abs(h[1])), md === 'add' ? Math.abs(hts[0][1]) + Math.abs(hts[1][1]) : 0, md === 'hom' ? Math.abs(lam.value * hts[0][1]) : 0), [0.5, 1, 1.5, 2, 3, 4, 5, 6, 8]);
@@ -472,34 +476,35 @@ $$\alpha_T = (\det T)\,\alpha \quad\text{for all } \alpha \in V^{(\dim V)}_{\mat
           const bar = (x, y0, y1, col, w = 0.13) => Hs.rect(x - w, y0, x + w, y1, { fill: col, fillAlpha: 0.55, color: col, width: 1.2 });
           if (md === 'add') {
             const [h1, h2, h3] = hts.map((h) => h[1]);
-            bar(0.3, 0, h1, 'blue'); bar(0.3, h1, h1 + h2, 'orange'); bar(0.7, 0, h3, 'green');
+            bar(0.3, 0, h1, 'blue'); bar(0.39, h1, h1 + h2, 'orange', 0.05); bar(0.7, 0, h3, 'green');
+            if (Math.abs(h2) > 0.05) Hs.arrow(0.39, h1, 0.39, h1 + h2, { color: 'orange', width: 2, head: 8 });
             Hs.line(0.12, h1 + h2, 0.88, h1 + h2, { color: 'ink', dash: [3, 3], width: 1 });
             Hs.text('a, then a′', 0.3, -Y * 1.04, { align: 'center', size: 12, color: 'muted' }); Hs.text('a + a′', 0.7, -Y * 1.04, { align: 'center', size: 12, color: 'muted' });
           } else if (md === 'hom') {
             bar(0.3, 0, lam.value * hts[0][1], 'blue'); bar(0.7, 0, hts[1][1], 'gold');
-            Hs.text('λ · (distance of a)', 0.3, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' }); Hs.text('distance of λa', 0.7, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' });
+            Hs.text('λ · (height of a)', 0.3, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' }); Hs.text('height of λa', 0.7, -Y * 1.04, { align: 'center', size: 11.5, color: 'muted' });
           } else {
             bar(0.5, 0, hts[0][1], 'green');
-            Hs.text('distance of a', 0.5, -Y * 1.04, { align: 'center', size: 12, color: 'muted' });
+            Hs.text('height of a', 0.5, -Y * 1.04, { align: 'center', size: 12, color: 'muted' });
           }
           const fn = A ? '|\\det|' : '\\det';
-          S.corner(`$${fn}(a, c) = ${tn(D(a, c), 3)}$`, 'tl', { color: 'ink', weight: 700, size: 13 });
+          S.corner(`$${fn}(c, a) = ${tn(D(c, a), 3)}$`, 'tl', { color: 'ink', weight: 700, size: 13 });
+          v.legend([['purple', 'column 1: $c$'], ['blue', 'column 2: $a$'], ...(md === 'add' ? [['orange', "$a'$"], ['green', "$a + a'$", { dash: true }]] : md === 'hom' ? [['gold', '$\\lambda a$']] : [])]);
           st = { md, A, a, b, c, D, lamv: lam.value };
         });
-        v.legend([['blue', 'column 1: $a$'], ['purple', 'column 2: $c$'], ['orange', "$a'$"], ['green', "$a + a'$", { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
           const { md, A, a, b, c, D, lamv } = st, fn = A ? '|\\det|' : '\\det';
           if (md === 'add') {
-            const L = D(add(a, b), c), Rr = D(a, c) + D(b, c), ok = Math.abs(L - Rr) < 1e-9;
-            return `$${fn}(a + a', c) = ${tn(L, 3)}$ and $${fn}(a, c) + ${fn}(a', c) = ${zt(D(a, c))} + ${zt(D(b, c))} = ${tn(Rr, 3)}$: ${ok ? 'equal — linear in the first column' : '**not equal** — $|\\det|$ is not linear, because $a$ and $a\'$ lie on opposite sides of the line'}.`;
+            const L = D(c, add(a, b)), Rr = D(c, a) + D(c, b), ok = Math.abs(L - Rr) < 1e-9;
+            return `$${fn}(c, a + a') = ${tn(L, 3)}$ and $${fn}(c, a) + ${fn}(c, a') = ${zt(D(c, a))} + ${zt(D(c, b))} = ${tn(Rr, 3)}$: ${ok ? 'equal — linear in the second column' : '**not equal** — $|\\det|$ is not linear, because $a$ and $a\'$ lie on opposite sides of the line'}.`;
           }
           if (md === 'hom') {
-            const L = D(scl(a, lamv), c), Rr = lamv * D(a, c), ok = Math.abs(L - Rr) < 1e-9;
-            return `$${fn}(\\lambda a, c) = ${tn(L, 3)}$ and $\\lambda\\,${fn}(a, c) = ${zt(lamv, 2)}\\cdot ${zt(D(a, c))} = ${tn(Rr, 3)}$: ${ok ? 'equal' : '**not equal** — for $\\lambda < 0$ the unsigned area cannot change sign'}.`;
+            const L = D(c, scl(a, lamv)), Rr = lamv * D(c, a), ok = Math.abs(L - Rr) < 1e-9;
+            return `$${fn}(c, \\lambda a) = ${tn(L, 3)}$ and $\\lambda\\,${fn}(c, a) = ${zt(lamv, 2)}\\cdot ${zt(D(c, a))} = ${tn(Rr, 3)}$: ${ok ? 'equal' : '**not equal** — for $\\lambda < 0$ the unsigned area cannot change sign'}.`;
           }
           const eq = Math.hypot(a[0] - c[0], a[1] - c[1]) < 1e-9;
-          return eq ? `The columns are equal and $${fn}(a, a) = ${tn(D(a, c), 3)}$: a matrix with two equal columns has determinant $0$. (Swapping the columns would multiply $\\det$ by $-1$.)` : `Drag $c$ onto $a$ (it snaps) or press *set* $c = a$: then $${fn}(a, c) = 0$. Now $\\det(a, c) = ${tn(det2(a, c), 3)}$ and $\\det(c, a) = ${tn(det2(c, a), 3)}$ — swapping the columns flips the sign.`;
+          return eq ? `The columns are equal and $${fn}(c, c) = ${tn(D(c, a), 3)}$: a matrix with two equal columns has determinant $0$. (Swapping two different columns would multiply $\\det$ by $-1$.)` : `Drag $a$ onto $c$ (it snaps) or press *set* $a = c$: then $${fn}(c, a) = 0$. Meanwhile $\\det(c, a) = ${tn(det2(c, a), 3)}$ and $\\det(a, c) = ${tn(det2(a, c), 3)}$ — swapping the columns flips the sign.`;
         });
       },
     },
@@ -545,12 +550,14 @@ For instance $\det A = A_{1,1}A_{2,2} - A_{2,1}A_{1,2}$ when $n = 2$.`,
           const N = invPos(p).length;
           Ms.tex(`${ptex(p)}\\text{: } ${N}\\text{ red, so } \\operatorname{sign} = ${sign(p) > 0 ? '+1' : '-1'}`, 0.5, 0.11, { size: 15, color: sign(p) > 0 ? 'blue' : 'red' });
           // the bars and the running sum
-          const det = M.det(B), Y = nice(1.12 * Math.max(1, ...terms.map(Math.abs), ...part.map(Math.abs), Math.abs(det)), [2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400]);
-          if (Y !== view) { view = Y; Bs.setView([0, 1], [-1.08 * Y, 1.08 * Y]); }
+          const det = M.det(B), all = [...terms, ...part, det], NL = [2, 3, 4, 5, 6, 8, 10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400];
+          const hi = nice(1.1 * Math.max(1, ...all), NL), mn = Math.min(0, ...all), lo = mn < -0.05 * hi ? -nice(1.1 * -mn, NL) : -0.15 * hi;
+          const key = `${lo}|${hi}`;
+          if (key !== view) { view = key; Bs.setView([0, 1], [lo - 0.06 * (hi - lo), hi + 0.06 * (hi - lo)]); }
           const m = P.length, x0 = 0.1, wd = 0.86 / m, X = (k) => x0 + wd * (k + 0.5);
           Bs.line(0.06, 0, 0.98, 0, { color: 'muted', width: 1 });
-          Bs.line(0.06, -Y, 0.06, Y, { color: 'muted', width: 1 });
-          for (const t of [-Y, -Y / 2, Y / 2, Y]) Bs.text(pn(t, 1), 0.05, t * 0.97, { align: 'right', size: 10, color: 'muted' });
+          Bs.line(0.06, lo, 0.06, hi, { color: 'muted', width: 1 });
+          for (const t of [hi, hi / 2, 0, ...(lo < -0.2 * hi ? [lo / 2, lo] : [])]) { Bs.line(0.05, t, 0.07, t, { color: 'muted', width: 1 }); Bs.text(pn(t, 1), 0.045, t, { align: 'right', size: 10, color: 'muted' }); }
           Bs.line(0.06, det, 0.98, det, { color: 'green', width: 1.8, dash: [6, 4] });
           Bs.text(`det A = ${pn(det, 2)}`, 0.97, det, { align: 'right', size: 12, weight: 700, color: 'green', dy: det >= 0 ? -10 : 10 });
           terms.forEach((x, k) => {
@@ -560,9 +567,10 @@ For instance $\det A = A_{1,1}A_{2,2} - A_{2,1}A_{1,2}$ when $n = 2$.`,
           Bs.path(part.slice(0, i + 1).map((y, k) => [X(k), y]), { color: 'gold', width: 2.4 });
           Bs.dots(part.slice(0, i + 1).map((y, k) => [X(k), y]), { r: 3, color: 'gold' });
           Bs.dot(X(i), part[i], { r: 6, color: 'gold' });
+          v.legend([...(s ? [['blue', 'term, sign $+1$', { area: true }], ['red', 'term, sign $-1$', { area: true }]] : [['teal', 'term without its sign', { area: true }]]), ['gold', 'running sum'], ['green', '$\\det A$ by row reduction', { dash: true }]]);
           st = { n, s, sum: part[m - 1], det, i, m, partial: part[i], B };
         });
-        v.legend([['blue', 'term, sign $+1$', { area: true }], ['red', 'term, sign $-1$', { area: true }], ['gold', 'running sum'], ['green', '$\\det A$ by row reduction', { dash: true }]]);
+
         v.readout(() => {
           if (!st) return '';
           const { n, s, sum, det, i, m, partial, B } = st;
@@ -581,7 +589,7 @@ For instance $\det A = A_{1,1}A_{2,2} - A_{2,1}A_{1,2}$ when $n = 2$.`,
       statement: String.raw`Suppose $A$ is an upper-triangular matrix with $\lambda_1, \dots, \lambda_n$ on the diagonal. Then
 $$\det A = \lambda_1 \cdots \lambda_n.$$`,
       idea: String.raw`In the formula 9.46, a permutation $(j_1, \dots, j_n)$ other than $(1, \dots, n)$ has $j_k > k$ for some $k$ (the entries cannot all satisfy $j_k \le k$ unless $j_k = k$ for every $k$), and then the factor $A_{j_k,k}$ lies below the diagonal, so it is $0$. Only the identity permutation survives, contributing $A_{1,1}\cdots A_{n,n} = \lambda_1 \cdots \lambda_n$. Geometrically, upper-triangular means $Ae_k \in \operatorname{span}(e_1, \dots, e_k)$: the image of the unit cube is a sheared box whose base $P(Ae_1, Ae_2)$ has area $\lambda_1\lambda_2$ and whose height above the base is $\lambda_3$.`,
-      caption: String.raw`The columns of an upper-triangular $A$: $Ae_1$ slides along the $x$-axis (length $\lambda_1$), $Ae_2$ moves in the $xy$-plane, $Ae_3$ anywhere (drag the background to rotate). The shaded box is the image of the unit cube; its orange base has area $\lambda_1\lambda_2$ and the dashed drop line from $Ae_3$ is the height $\lambda_3$, so its volume is the volume of the dashed green box with edges $\lambda_1, \lambda_2, \lambda_3$, however the box is sheared. Right: the six terms of the formula — all but one contain an entry below the diagonal, which is $0$. Turn on the toggle to let $Ae_1$ leave the $x$-axis: $A$ is no longer triangular, other terms come alive, and $\det A \ne \lambda_1\lambda_2\lambda_3$.`,
+      caption: String.raw`The columns of an upper-triangular $A$: $Ae_1$ slides along the $x$-axis (length $\lambda_1$), $Ae_2$ moves in the $xy$-plane, $Ae_3$ anywhere (drag the background to rotate). The shaded box is the image of the unit cube; its orange base has area $\lambda_1\lambda_2$ and the dashed drop line from $Ae_3$ is the height $\lambda_3$, so its volume is the volume of the dashed green box with edges $\lambda_1, \lambda_2, \lambda_3$, however the box is sheared. Right: the six terms of the formula — all but one contain an entry below the diagonal, which is $0$. Turn on the toggle to lift $Ae_1$ off the $x$-axis (then drag it anywhere): $A$ is no longer triangular, other terms come alive, and $\det A \ne \lambda_1\lambda_2\lambda_3$.`,
       deps: ['ladr-9.46', 'ladr-5.38'],
       see: ['ladr-5.41'],
       tags: ['determinants', 'triangular'],
@@ -597,7 +605,7 @@ $$\det A = \lambda_1 \cdots \lambda_n.$$`,
         const H3 = sc.handle([0.3, 0.3, 0.8], { color: CC[2], label: 'Ae₃', snap: g });
         H1f.visible = false;
         const free = v.toggle('let $Ae_1$ leave the $x$-axis (not upper triangular)', false, {
-          onChange: (on) => { if (on) { H1f.set(H1.p); H1f.visible = true; H1.visible = false; } else { H1.set([H1f.p[0], 0, 0]); H1.visible = true; H1f.visible = false; } },
+          onChange: (on) => { if (on) { H1f.set(add(H1.p, [0, 0.35, 0.3])); H1f.visible = true; H1.visible = false; } else { H1.set([H1f.p[0], 0, 0]); H1.visible = true; H1f.visible = false; } },
         });
         const P = perms(3);
         let st = null;
@@ -665,13 +673,13 @@ $$\det A = \lambda_1 \cdots \lambda_n.$$`,
         const mode = v.select('', [{ value: 'st', label: 'compose: $ST$' }, { value: 'sum', label: 'add: $S + T$' }], 'st');
         const HT = colHandles(B, [[1.2, -0.5], [0.4, 1.1]], { l1: 'Te₁', l2: 'Te₂' });
         const HS = colHandles(C, [[1.3, 0.6], [-0.3, 1.5]], { l1: 'Se₁', l2: 'Se₂', c1: 'orange', c2: 'purple' });
-        const hb = A.handle(1.5, 1.6, { color: 'gold', r: 6 });
+        const hb = A.handle(-0.8, 1.4, { color: 'gold', r: 6 });
         const SQ = [[0, 0], [1, 0], [1, 1], [0, 1]];
         let st = null;
         v.render(() => {
           const T = HT.A, Sm = HS.A, sum = mode.value === 'sum';
           C.setTitle(sum ? '$(S + T)(V)$' : '$S(T(V))$');
-          const blob = M.blob(hb.x, hb.y, 0.45, 3, 0.3, 120);
+          const blob = M.blob(hb.x, hb.y, 0.42, 3, 0.3, 120);
           const map = (X, P) => P.map((p) => mv(X, p)), ST = mm(Sm, T), SpT = madd(Sm, T);
           const lbl = (S, P, txt, col) => { const c = P.reduce((s, p) => add(s, p), [0, 0]).map((x) => x / P.length); S.tex(txt, c[0], c[1], { color: col, size: 13 }); };
           // V

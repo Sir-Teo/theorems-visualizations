@@ -346,10 +346,10 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
         const S = v.stage({ x: [-4.6, 4.6], y: [-3.3, 3.6], equal: true, axes: false, height: 380, weight: 1.2, title: 'in the plane' });
         const T = v.stage({ x: [-2.2, 2.4], y: [-1.7, 1.9], equal: true, axes: false, height: 380, weight: 0.8, minWidth: 230, title: 'in space: two plane sections of one pyramid' });
         const free = v.toggle('free Aâ€²', false);
-        const tilt = v.slider('tilt of the second plane', -0.75, -0.15, -0.4, { step: 0.01 });
-        const O = S.handle(-3.6, 2.7, { color: 'ink', label: 'O', labelPos: 'n' });
-        const A = S.handle(-1.6, -2.4, { color: 'accent', label: 'A', labelPos: 's' }), B = S.handle(1.6, -1.4, { color: 'accent', label: 'B', labelPos: 'se' }), C = S.handle(-0.3, 0.6, { color: 'accent', label: 'C', labelPos: 'e' });
-        const t = { A: 0.55, B: 0.48, C: 0.62 };
+        const tilt = v.slider('tilt of the second plane', -0.8, -0.3, -0.45, { step: 0.01 });
+        const O = S.handle(-2.8, 3.2, { color: 'ink', label: 'O', labelPos: 'e' });
+        const A = S.handle(0.1, -1.8, { color: 'accent', label: 'A', labelPos: 'sw' }), B = S.handle(2.3, -1.45, { color: 'accent', label: 'B', labelPos: 'e' }), C = S.handle(1.1, 1.15, { color: 'accent', label: 'C', labelPos: 'e' });
+        const t = { A: 0.68, B: 0.57, C: 0.34 };
         const mk = (X, k) => S.handle(0, 0, { color: 'orange', label: k + "'", labelPos: 'w', constrain: (x, y) => {
           if (k === 'A' && free.value) return [x, y];
           const dx = X.x - O.x, dy = X.y - O.y, tt = M.clamp(((x - O.x) * dx + (y - O.y) * dy) / (dx * dx + dy * dy || 1), 0.12, 1.6); t[k] = tt; return [O.x + tt * dx, O.y + tt * dy];
@@ -361,8 +361,8 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
           return { a, b, c, a2, b2, c2, P: meet(a, b, a2, b2), Q: meet(b, c, b2, c2), R: meet(c, a, c2, a2) };
         };
         const sc = v.scene3(T, { yaw: -0.5, pitch: 0.28, axes: false, hint: false });
-        const z1 = (x) => -0.75 + 0.22 * x, O3 = [-0.55, 0.05, 1.55];
-        const base = [[-1.15, -0.75], [0.75, -0.55], [-0.25, 0.95]].map(([x, y]) => [x, y, z1(x)]);
+        const z1 = (x) => -0.75 + 0.18 * x, O3 = [-0.4, 0.0, 1.5];
+        const base = [[-1.3, -0.3], [0.9, -0.6], [-0.1, 0.55]].map(([x, y]) => [x, y, z1(x)]);
         v.render(() => {
           const g = pts(), { a, b, c, a2, b2, c2, P, Q, R } = g;
           // ---- plane picture
@@ -378,13 +378,13 @@ lie on one line. (If two corresponding sides are parallel, their meeting point i
           const bad = free.value && P && Q && R && lineDist(R, P, Q) > 1e-3;
           [[P, 'P'], [Q, 'Q'], [R, 'R']].forEach(([X, nm]) => { if (X) S.dot(X[0], X[1], { r: 5, color: nm === 'R' && bad ? 'red' : 'gold', label: nm, labelPos: 'n' }); });
           // ---- spatial figure
-          const k2 = tilt.value, z2 = (x) => 0.25 + k2 * x, xa = (0.25 + 0.75) / (0.22 - k2); // planes z1, z2 meet at x = xa
+          const k2 = tilt.value, z2 = (x) => 0.25 + k2 * x, xa = (0.25 + 0.75) / (0.18 - k2); // planes z1, z2 meet at x = xa
           const cut = (X) => { const D = M.vsub(X, O3), s = (0.25 + k2 * O3[0] - O3[2]) / (D[2] - k2 * D[0]); return M.vadd(O3, M.vscale(D, s)); };
           const top = base.map(cut);
           sc.begin();
-          const quad = (zf, col) => sc.poly([[-1.7, -1.3], [xa, -1.3], [xa, 1.4], [-1.7, 1.4]].map(([x, y]) => [x, y, zf(x)]), { fill: col, fillAlpha: 0.07, color: col, width: 0.8, alpha: 0.4 });
+          const quad = (zf, col) => sc.poly([[-1.8, -1.6], [xa, -1.6], [xa, 1.9], [-1.8, 1.9]].map(([x, y]) => [x, y, zf(x)]), { fill: col, fillAlpha: 0.07, color: col, width: 0.8, alpha: 0.4 });
           quad(z1, 'accent'); quad(z2, 'orange');
-          sc.line([xa, -1.5, z1(xa)], [xa, 1.6, z1(xa)], { color: 'green', width: 2.4 }, 8);
+          sc.line([xa, -2.1, z1(xa)], [xa, 2.3, z1(xa)], { color: 'green', width: 2.4 }, 8);
           for (const X of base) sc.line(O3, X, { color: 'muted', width: 1.1 }, 6);
           sc.poly(base, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1.8 });
           sc.poly(top, { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1.8 });
@@ -442,7 +442,7 @@ Each keeps some properties of what we see and gives up others; none of them is â
         const path3 = (pr, A, B, n = 40) => { const out = []; let prev = null; for (let i = 0; i <= n; i++) { const p = pr(M.vlerp(A, B, i / n)); if (p && prev && Math.hypot(p[0] - prev[0], p[1] - prev[1]) > 0.6) out.push(null); out.push(p); prev = p; } return out; };
         // the street
         const blocks = [];
-        for (const [sg, hs] of [[-1, [9, 13, 10, 12]], [1, [12, 8, 14, 9]]]) [[3, 18], [26, 44], [52, 68], [76, 92]].forEach(([y0, y1], i) => blocks.push({ x0: sg * 6, x1: sg * 15, y0, y1, h: hs[i], col: sg < 0 ? 'teal' : 'purple' }));
+        for (const [sg, hs] of [[-1, [9, 13, 10, 12]], [1, [12, 8, 14, 9]]]) [[6, 18], [26, 44], [52, 68], [76, 92]].forEach(([y0, y1], i) => blocks.push({ x0: sg * 6, x1: sg * 15, y0, y1, h: hs[i], col: sg < 0 ? 'teal' : 'purple' }));
         const lines = [];
         for (const x of [-3.5, 3.5]) lines.push([[x, -30, 0], [x, 100, 0], 'ink', 1.6]);
         for (let y = -30; y < 100; y += 4) lines.push([[0, y, 0], [0, y + 2, 0], 'gold', 2]);
@@ -456,7 +456,9 @@ Each keeps some properties of what we see and gives up others; none of them is â
           pic.clip(() => {
             // sky and ground: the horizon is the image of the plane z = EH
             const hz = path3(pr, [-200, 0.2, EH], [200, 0.2, EH], 200).filter(Boolean);
-            pic.rect(bx[0], by[0], bx[1], by[1], { fill: 'blue', fillAlpha: 0.04, stroke: false });
+            pic.rect(bx[0], 0, bx[1], by[1], { fill: 'blue', fillAlpha: 0.05, stroke: false });
+            pic.rect(bx[0], by[0], bx[1], 0, { fill: 'faint', fillAlpha: 0.14, stroke: false });
+            for (const [A, B, col, w] of lines) pic.path(path3(pr, A, B, col === 'gold' ? 3 : 120), { color: col, width: w, alpha: col === 'ink' ? 0.75 : 0.9 });
             if (k === 'fish') { const R = 1 / (F / 2); pic.circle(0, 0, (R * Math.PI) / 2, { fill: 'faint', fillAlpha: 0.08, color: 'faint', width: 1 }); }
             for (const b of blocks.slice().sort((p, q) => q.y0 - p.y0)) for (const poly of facade(b)) {
               const ring = []; let ok = true;
@@ -466,7 +468,6 @@ Each keeps some properties of what we see and gives up others; none of them is â
               pic.poly(ring, { fill: b.col, fillAlpha: 0.16, color: b.col, width: 1.2 });
               for (let z = 3; z < b.h; z += 3) pic.path(path3(pr, [poly[0][0], poly[0][1], z], [poly[1][0], poly[1][1], z], 24), { color: b.col, width: 0.8, alpha: 0.7 });
             }
-            for (const [A, B, col, w] of lines) pic.path(path3(pr, A, B, col === 'gold' ? 3 : 120), { color: col, width: w, alpha: col === 'ink' ? 0.75 : 0.9 });
             for (const [x, y] of lamps) pic.path(path3(pr, [x, y, 0], [x, y, 5], 16), { color: 'orange', width: 2 });
             if (hz.length > 1) pic.path(hz, { color: 'muted', width: 1, dash: [5, 4] });
           });
@@ -509,12 +510,12 @@ Each keeps some properties of what we see and gives up others; none of them is â
         const pic = v.stage({ x: [-2.3, 2.3], y: [-1.6, 1.35], equal: true, axes: false, height: 390 });
         const mode = v.select('light', [{ value: 'sun', label: 'sun' }, { value: 'lamp', label: 'lamp' }], 'sun');
         const refl = v.toggle('reflections in the pool', true);
-        const sun = pic.handle(-1.25, 0.75, { color: 'gold', label: 'sun', labelPos: 'ne', constrain: (x, y) => [x, Math.abs(y) < 0.07 ? (y >= 0 ? 0.07 : -0.07) : y] });
+        const sun = pic.handle(-0.75, -1.15, { color: 'gold', label: 'sun', labelPos: 'ne', constrain: (x, y) => [x, Math.abs(y) < 0.07 ? (y >= 0 ? 0.07 : -0.07) : y] });
         let foot = null;
         const lamp = pic.handle(0.75, 0.42, { color: 'gold', label: 'lamp', labelPos: 'ne', constrain: (x, y) => [x, Math.max(y, (foot ? foot.y : -0.6) + 0.15)], onDrag: () => { foot.x = lamp.x; } });
         foot = pic.handle(0.75, -0.62, { color: 'orange', label: 'foot', labelPos: 'e', constrain: (x, y) => [lamp.x, M.clamp(y, -1.5, -0.1)] });
-        const posts = [[-1.6, 4.4, 2.4], [0.2, 7.5, 2.8], [2.6, 10, 3.2], [2.0, 6.2, 2.1]]; // x, y, height (the last one stands at the pool)
-        const box = boxMesh([-0.5, 5.6, 0], [1.1, 1.1, 1.1], 0.45);
+        const posts = [[-1.9, 5.0, 2.4], [0.1, 8.5, 2.8], [2.9, 11.5, 3.2], [2.0, 6.2, 2.1]]; // x, y, height (the last one stands at the pool)
+        const box = boxMesh([-0.4, 6.2, 0], [1.1, 1.1, 1.1], 0.45);
         const pool = [[0.7, 3.4, 0], [3.6, 3.4, 0], [3.6, 6.2, 0], [0.7, 6.2, 0]];
         const pj = (P) => { const q = C.proj(P); return q ? [q[0], q[1]] : null; };
         const light = () => {
@@ -554,7 +555,7 @@ Each keeps some properties of what we see and gives up others; none of them is â
             }
           }
           const objs = posts.map(([x, y, H]) => ({ y, f: () => { const a = pj([x, y, 0]), b = pj([x, y, H]); pic.line(a[0], a[1], b[0], b[1], { color: 'ink', width: 4 }); } }));
-          objs.push({ y: 5.6, f: () => drawSolids(pic, pj, [0, 0, h], [{ mesh: box, color: 'teal' }]) });
+          objs.push({ y: 6.2, f: () => drawSolids(pic, pj, [0, 0, h], [{ mesh: box, color: 'teal' }]) });
           objs.sort((p, q) => q.y - p.y).forEach((o) => o.f());
           if (lt) {
             if (lt.sun) { pic.dot(lt.vp[0], 0, { r: 5, color: 'orange' }); pic.text('shadow vanishing point', lt.vp[0], lt.src[1] > 0 ? -0.08 : 0.08, { align: 'center', baseline: lt.src[1] > 0 ? 'top' : 'bottom', size: 10.5, color: 'orange' }); if (lt.src[1] < 0) pic.text('(sun behind you: antisolar point)', lt.src[0], lt.src[1] - 0.12, { align: 'center', baseline: 'top', size: 10.5, color: 'gold' }); }
@@ -593,10 +594,10 @@ Each keeps some properties of what we see and gives up others; none of them is â
       links: { wikipedia: 'https://en.wikipedia.org/wiki/De_pictura' },
       viz(v) {
         const M = v.M, HW = 4, VH = 6, N = 8, VY = -1.2, G = -2.6; // veil half-width and height (braccia), rows of tiles, veil plane, ground
-        const S = v.stage({ x: [-6.3, 6.3], y: [-5.6, 4.6], equal: true, axes: false, height: 390, weight: 1.15, title: 'the window, the veil and the visual pyramid' });
-        const P = v.stage({ x: [-4.3, 4.3], y: [-0.35, 6.3], equal: true, axes: false, height: 390, weight: 0.85, minWidth: 240, title: 'the painting, by the costruzione legittima' });
-        const sc = v.scene3(S, { yaw: -0.82, pitch: 0.3, axes: false, lim: 14 });
-        const eye = sc.handle([0.6, VY - 6, G + 3], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -2.5, 2.5), M.clamp(p[1], VY - 11, VY - 2.5), M.clamp(p[2], G + 0.8, G + 4.4)] });
+        const S = v.stage({ x: [-6.6, 6.6], y: [-5.2, 4.4], equal: true, axes: false, height: 390, weight: 1.15, title: 'the window, the veil and the visual pyramid' });
+        const P = v.stage({ x: [-4.3, 5.8], y: [-0.35, 6.3], equal: true, axes: false, height: 390, weight: 0.85, minWidth: 240, title: 'the painting, by the costruzione legittima' });
+        const sc = v.scene3(S, { yaw: -0.5, pitch: 0.3, axes: false, lim: 14 });
+        const eye = sc.handle([0.6, VY - 4.5, G + 3], { color: 'accent', label: 'eye', snap: (p) => [M.clamp(p[0], -2.5, 2.5), M.clamp(p[1], VY - 11, VY - 2.5), M.clamp(p[2], G + 0.8, G + 4.4)] });
         const veil = v.toggle('veil threads in the painting', true);
         const man = [-2.6, VY + 1.5];
         const geo = () => { const E = eye.p; return { E, d: VY - E[1], h: E[2] - G, ex: E[0] }; };

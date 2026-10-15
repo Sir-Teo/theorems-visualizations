@@ -196,7 +196,7 @@ export default {
           if (k !== 'sq' && nn > 0.05) sc.arrow([0, 0, 0], scl(n, Math.min(1, 1.3 / nn)), { color: 'accent', width: 2.4 });
           sc.arrow([0, 0, 0], w, { color: 'orange', width: 2.6 });
           sc.flush();
-          if (k !== 'sq' && nn > 0.05) { const P = sc.P(scl(n, 1.22 * Math.min(1, 1.3 / nn))); R.tex(k === 'lin' ? 'e_1' : 'C^{\\mathsf T}v', P[0], P[1], { color: 'accent', size: 14 }); }
+          if (k !== 'sq' && nn > 0.05) { const P = sc.P(scl(n, 1.22 * Math.min(1, 1.3 / nn))); R.tex(k === 'lin' ? 'e_1' : 'C^{\\mathsf T}v', P[0], P[1], { dy: -16, color: 'accent', size: 14 }); }
           if (nn <= 1e-6) R.corner('β(0, ·) is the zero functional', 'tl', { color: 'muted' });
           // ---- tests: additivity and homogeneity in each slot
           const d1 = Math.max(Math.abs(beta(add(vv, ta), w) - beta(vv, w) - beta(ta, w)), Math.abs(beta(scl(vv, 2), w) - 2 * beta(vv, w)));
@@ -235,7 +235,7 @@ $$\dim \mathcal B(V, W) = (\dim V)(\dim W).$$`,
         const sn = v.slider('$n = \\dim W$', 1, 4, 3, { int: true });
         const fam = v.select('', [{ value: 'bil', label: 'bilinear functionals on $V \\times W$' }, { value: 'lin', label: 'linear functionals on $V \\times W$ (compare)' }], 'bil');
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 0.85, minWidth: 260 });
-        const B = v.stage({ x: [-2.6, 24.8], y: [1e-20, 1e3], ylog: true, axes: 'box', height: 320, weight: 1.15, minWidth: 300, xticks: [1, 4, 8, 12, 16, 20, 24], xlabel: 'index i', ylabel: 'σᵢ', title: 'singular values of 24 functionals × 24 random pairs' });
+        const B = v.stage({ x: [-2.6, 24.8], y: [1e-20, 1e3], ylog: true, axes: 'box', height: 320, weight: 1.15, minWidth: 300, xticks: [1, 4, 8, 12, 16, 20, 24], ylabel: 'σᵢ', title: 'singular values of 24 functionals × 24 random pairs' });
         const T = v.table(A, { rows: 2, cols: 3, maxCell: 62, size: 14, region: [0.05, 0.22, 0.95, 0.84] });
         let memo = null;
         const run = (m, n, k) => {
@@ -340,7 +340,7 @@ $$(v \otimes w)(\varphi, \tau) = \varphi(v)\,\tau(w) \qquad \text{for all } \var
       statement: String.raw`Suppose $V$ and $W$ are finite-dimensional. Then
 $$\dim(V \otimes W) = (\dim V)(\dim W).$$`,
       idea: String.raw`By definition $V \otimes W = \mathcal B(V', W')$. A space and its dual have the same dimension (3.111), so $\dim V' = \dim V$ and $\dim W' = \dim W$, and 9.70 gives $\dim \mathcal B(V', W') = (\dim V')(\dim W') = (\dim V)(\dim W)$. Contrast the product space: $\dim(V \times W) = \dim V + \dim W$ (3.92). The tensor product is the space whose dimension *multiplies*.`,
-      caption: String.raw`Pick $m = \dim V$, $n = \dim W$. Each tile is a random simple tensor $v \otimes w$, drawn as its $m \times n$ array; press *add a random element* for more. A green frame means the new element raised the dimension of the span, a grey one that it was already a combination of the earlier ones. The staircase (right) plots the dimension of the span: it climbs one step per element and stops exactly at $mn$ — simple tensors span all of $V \otimes W$, and no more than $mn$ of them are ever independent. Switch to $V \times W$: the pairs $(v, w)$, drawn as $m + n$ cells, stop at $m + n$.`,
+      caption: String.raw`Pick $m = \dim V$, $n = \dim W$. Each tile is a random simple tensor $v \otimes w$, drawn as its $m \times n$ array; press *add a random element* for more. A green frame means the new element raised the dimension of the span, a grey one that it was already a combination of the earlier ones. The staircase below plots the dimension of the span: it climbs one step per element and stops exactly at $mn$ — simple tensors span all of $V \otimes W$, and no more than $mn$ of them are ever independent. Switch to $V \times W$: the pairs $(v, w)$, drawn as $m + n$ cells, stop at $m + n$.`,
       deps: ['ladr-3.111', 'ladr-9.70', 'ladr-9.71'],
       see: ['ladr-3.92'],
       tags: ['tensors', 'dimension'],
@@ -502,7 +502,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           const Em = fromCols(es), Fm = fromCols(fs), dE = M.det(Em), dF = M.det(Fm);
           // ---- V and W pictures
           E.arrow(0, 0, e1[0], e1[1], { color: 'blue', width: 2.8 }); E.arrow(0, 0, e2[0], e2[1], { color: 'purple', width: 2.8 });
-          if (brk.value) E.tex('e_2 = \\tfrac12 e_1', e2[0], e2[1], { dx: 30, dy: 14, color: 'purple', size: 14 });
+          if (brk.value) E.tex('e_2 = \\tfrac12 e_1', e2[0], e2[1], { dy: 26, color: 'purple', size: 14 });
           E.corner(`det = ${pn(dE, 2)}`, 'tl', { color: Math.abs(dE) > 1e-3 ? 'green' : 'red', weight: 700 });
           sc.begin(); fs.forEach((f, k) => sc.arrow([0, 0, 0], f, { color: FC[k], width: 2.8 })); sc.flush();
           F.corner(`det = ${pn(dF, 2)}`, 'tl', { color: Math.abs(dF) > 1e-3 ? 'green' : 'red', weight: 700 });
@@ -518,10 +518,9 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
             grid(T, tile, x0, y0, c, { numbers: false, scale, fw: 1 });
             T.tex(`${tn(a[j][k], 2)}\\; e_${j + 1}\\!\\otimes\\! f_${k + 1}`, x0 + 1.5 * c, y0 + 0.08, { size: 12.5, baseline: 'bottom', color: 'ink' });
           }
-          T.tex('\\textstyle\\sum_{j,k} a_{j,k}\\, e_j \\otimes f_k', 6.5, 2.05, { size: 13, color: 'muted' });
           T.tex('\\longrightarrow', 6.5, 1.5, { size: 24, color: 'muted' });
           const gR = grid(T, Rb, 7.1, 2.75, 1, { scale });
-          T.tex('\\text{rebuilt}', gR.cx, 3.05, { size: 13, color: res < 1e-9 ? 'green' : 'red', baseline: 'bottom' });
+          T.tex('\\textstyle\\sum_{j,k} a_{j,k}\\, e_j \\otimes f_k', gR.cx, 3.0, { size: 14, color: res < 1e-9 ? 'green' : 'red', baseline: 'bottom' });
           T.tex(res < 1e-9 ? '=' : '\\ne', 10.75, 1.75, { size: 28, color: res < 1e-9 ? 'green' : 'red' });
           const gA = grid(T, A, 11.6, 2.75, 1, { scale });
           T.tex('A', gA.cx, 3.05, { size: 16, baseline: 'bottom' });
@@ -532,7 +531,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           if (!st) return '';
           const { rk, rE, rF, res, rA } = st;
           const ok = rk === 6;
-          return `Rank of the list $\\{e_j \\otimes f_k\\}$: **${rk}** $= ${rE} \\cdot ${rF}$ (rank of the $e$'s times rank of the $f$'s). ${ok ? `A basis: the coefficients $a_{j,k}$ are unique and rebuild $A$ to within $${etx(M, res)}$ ✓.` : `Not a basis: the six arrays span only a ${rk}-dimensional space, and the best combination misses $A$ by $${tn(res, 3)}$ ✗.`} ${rA > 1 ? `And $A$ has rank ${rA}, so it is a sum of basis tensors but not a single simple tensor $v \\otimes w$.` : 'This $A$ has rank 1: it happens to be a simple tensor.'}`;
+          return `Rank of the list $\\{e_j \\otimes f_k\\}$: **${rk}** $= ${rE} \\cdot ${rF}$ (rank of the $e$'s times rank of the $f$'s). ${ok ? `A basis: the coefficients $a_{j,k}$ are unique and rebuild $A$ to within $${etx(M, res)}$ ✓.` : `Not a basis: the six arrays span a space of dimension only ${rk}, and the best combination misses $A$ by $${tn(res, 3)}$ ✗.`} ${rA > 1 ? `And $A$ has rank ${rA}, so it is a sum of basis tensors but not a single simple tensor $v \\otimes w$.` : 'This $A$ has rank 1: it happens to be a simple tensor.'}`;
         });
       },
     },
@@ -555,7 +554,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
         const Q = v.stage({ x: [-0.1, 3.6], y: [-2.6, 2.5], equal: true, axes: false, height: 370, weight: 0.65, minWidth: 200 });
         const sc = v.scene3(S, { yaw: 0.65, pitch: 0.33, axis: 1.45, lim: 1.35 });
         const hu = sc.handle([0.5, -0.4, 1.0], { color: 'accent', label: '$u$' });
-        const hw = sc.handle([0.9, 0.5, 0.1], { color: 'orange', label: '$w$' });
+        const hw = sc.handle([0.9, 0.55, 0.45], { color: 'orange', label: '$w$' });
         const Gm = (a, b) => { const k = Gsel.value; return k === 'cross' ? cross(a, b) : k === 'sum' ? add(a, b) : k === 'scale' ? scl(b, len(a)) : scl(b, dot(a, b)); };
         const ta = [0.3, 0.8, -0.5], tb = [-0.6, 0.2, 0.7];
         let st = null;
@@ -582,7 +581,7 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           sc.arrow([0, 0, 0], w, { color: 'orange', width: 2.6 });
           if (len(g) > 1e-3) sc.arrow([0, 0, 0], g, { color: 'green', width: 3 });
           sc.flush();
-          const P = sc.P(g); if (len(g) > 0.05) S.tex('\\Gamma(u,w)', P[0], P[1], { dx: 22, dy: -12, color: 'green', size: 14 });
+          const P = sc.P(scl(g, 1 + 0.28 / Math.max(len(g), 0.05))); if (len(g) > 0.05) S.tex('\\Gamma(u,w)', P[0], P[1], { color: 'green', size: 14 });
           // ---- right: the matrix of the varied slot, from the images of e_1, e_2, e_3 minus the image of 0
           const cols = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].map((e) => subv(f(e), o)), Mx = fromCols(cols);
           grid(Q, Mx, 0.2, 2.0, 1, { scale: 2 });
@@ -593,14 +592,14 @@ $$\lambda(v \otimes w) = (\lambda v) \otimes w = v \otimes (\lambda w).$$`,
           // ---- linearity defects in each slot
           const d1 = Math.max(len(subv(Gm(add(u, ta), w), add(Gm(u, w), Gm(ta, w)))), len(subv(Gm(scl(u, 2), w), scl(Gm(u, w), 2))));
           const d2 = Math.max(len(subv(Gm(u, add(w, tb)), add(Gm(u, w), Gm(u, tb)))), len(subv(Gm(u, scl(w, 2)), scl(Gm(u, w), 2))));
-          st = { g, d1, d2, k: Gsel.value };
+          st = { g, d1, d2, k: Gsel.value, vw };
         });
         v.legend([['accent', '$u$'], ['orange', '$w$'], ['green', 'image grid and $\\Gamma(u, w)$']]);
         v.readout(() => {
           if (!st) return '';
-          const { g, d1, d2, k } = st, ok1 = d1 < 1e-9, ok2 = d2 < 1e-9;
+          const { g, d1, d2, k, vw } = st, ok1 = d1 < 1e-9, ok2 = d2 < 1e-9;
           const verdict = ok1 && ok2 ? '**bilinear** ✓' : ok1 ? 'linear in slot 1 only — not bilinear' : ok2 ? 'linear in slot 2 only — not bilinear' : 'linear in neither slot';
-          return `$\\Gamma(u, w) = ${vtex(g, 3)}$. Linearity defects: slot 1 $= ${tn(d1, 3)}$ ${mark(ok1)}, slot 2 $= ${tn(d2, 3)}$ ${mark(ok2)} — ${verdict}${k === 'cross' ? '; freezing $u$ gives the antisymmetric matrix shown.' : '.'}`;
+          return `$\\Gamma(u, w) = ${vtex(g, 3)}$. Linearity defects: slot 1 $= ${tn(d1, 3)}$ ${mark(ok1)}, slot 2 $= ${tn(d2, 3)}$ ${mark(ok2)} — ${verdict}${k === 'cross' ? `; freezing $${vw ? 'u' : 'w'}$ gives the antisymmetric matrix shown${vw ? '' : ', $u \\mapsto u \\times w = -\\,w \\times u$'}.` : '.'}`;
         });
       },
     },
