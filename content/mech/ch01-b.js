@@ -59,7 +59,7 @@ is also a solution with the same initial data $r(0)=\dot r(0)=0$: Newton's laws 
       tags: ['determinism', 'ode'],
       viz(v) {
         const smooth = v.toggle('smooth the summit', false);
-        const Ts = v.slider('release time $T$', 0, 4.5, 1.5, { step: 0.05 });
+        const Ts = v.slider('release time $T$', 0, 4.5, 0.5, { step: 0.05 });
         const dome = v.stage({ x: [-0.95, 0.95], y: [-0.82, 0.2], equal: true, height: 270, axes: false, title: 'the dome (cross-section)', weight: 1.15 });
         const ph = v.stage({ x: [-1.1, 1.1], y: [-1.5, 1.5], height: 270, axes: true, title: 'phase plane $(r,\\dot r)$', weight: 1 });
         const rt = v.stage({ x: [0, 8], y: [0, 1.08], height: 200, axes: 'box', xlabel: 't', ylabel: 'r', full: true });
@@ -74,7 +74,7 @@ is also a solution with the same initial data $r(0)=\dot r(0)=0$: Newton's laws 
         const EPS = [1e-2, 1e-4, 1e-6, 1e-8];
         let st = null;
         v.animate((t) => {
-          const sm = smooth.value, T = Ts.value, tau = t % 9;
+          const sm = smooth.value, T = Ts.value, tau = (1.5 * t) % 9;
           Ts.el.hidden = sm;
           // the state now
           let r = 0, rd = 0;
@@ -86,9 +86,13 @@ is also a solution with the same initial data $r(0)=\dot r(0)=0$: Newton's laws 
           const P = R(r), sinp = P[2], cosp = Math.sqrt(Math.max(0, 1 - sinp * sinp)), rb = 0.045;
           dome.circle(P[0] + rb * sinp, P[1] + rb * cosp, rb, { fill: 'gold', fillAlpha: 1, color: 'gold' });
           if (r > 1e-6 && r < 1) vec(dome, [P[0] + rb * sinp, P[1] + rb * cosp], [cosp * sinp, -sinp * sinp], 0.35, { color: 'pink', width: 2, head: 7 });
-          dome.corner(sm ? 'summit $h\\propto r^2$: force $\\propto r$' : 'summit $h\\propto r^{3/2}$: force $\\propto\\sqrt r$', 'tl', { color: sm ? 'green' : 'red', weight: 600 });
+          dome.corner(sm ? 'smooth summit h ∝ r²: force ∝ r' : 'summit h ∝ r³ᐟ²: force ∝ √r', 'tl', { color: sm ? 'green' : 'red', weight: 600 });
           // phase plane + state
           pp.draw();
+          const e0 = (x) => (sm ? x : (2 / Math.sqrt(3)) * Math.pow(x, 0.75));
+          ph.curve((q) => [q, e0(q)], 0, 1.1, { color: 'accent', width: 2.6, n: 200 });
+          ph.curve((q) => [-q, e0(q)], 0, 1.1, { color: 'accent', width: 1.2, alpha: 0.5, n: 200 });
+          ph.text('zero-energy curve', 0.3, e0(0.3), { color: 'accent', size: 11, dx: 6, dy: 12 });
           ph.dot(r, rd, { r: 6, color: 'gold' });
           // r(t)
           rt.setTitle(sm ? 'solutions from $r(0)=\\varepsilon$, $\\dot r(0)=0$: $r=\\varepsilon\\cosh t$ (the only one from $\\varepsilon=0$ is $r\\equiv0$)' : 'all of these solve $\\ddot r=\\sqrt r$ with $r(0)=\\dot r(0)=0$');
@@ -104,7 +108,8 @@ is also a solution with the same initial data $r(0)=\dot r(0)=0$: Newton's laws 
           // residual of the chosen exact solution, and the escape-time integral along E = 0
           let res = 0;
           if (!sm) for (let q = 0.01; q < 8; q += 0.01) { const y = sol(q, T); if (y > 1) break; const h = 1e-3, ydd = (sol(q + h, T) - 2 * y + sol(q - h, T)) / (h * h); res = Math.max(res, Math.abs(ydd - Math.sqrt(y))); }
-          const d = 1e-8, esc = sm ? Math.log(1 / d) : (Math.sqrt(3) / 2) * 4 * (1 - Math.pow(d, 0.25));
+          // along E = 0: dt = dr / ṙ; dome: substitute r = u⁴ (removes the 0 singularity); smooth: from r = 10⁻⁸
+          const esc = sm ? v.M.integrate((w) => 1, Math.log(1e-8), 0, 200) : v.M.integrate((u) => 4 * u ** 3 / ((2 / Math.sqrt(3)) * Math.pow(u, 3) + 1e-300), 1e-12, 1, 200);
           st = { sm, res, esc, r };
         }, { still: 3.8 });
         v.legend([['accent', 'chosen solution'], ['purple', 'other solutions'], ['green', '$r\\equiv0$'], ['gold', 'the particle', { dot: true }]]);
@@ -149,11 +154,13 @@ It lands after $T=2v_0\sin\theta/g$ at the range $R=v_0^2\sin2\theta/g$, which i
           const pred = (v0 * Math.cos(th) / G0) * (v0 * Math.sin(th) + Math.sqrt(v0 * v0 * Math.sin(th) ** 2 + 2 * G0 * h));
           const thBest = Math.asin(v0 / Math.sqrt(2 * v0 * v0 + 2 * G0 * h)) / D2R;
           st = { R: cur.R, pred, Rc: comp.R, T: cur.T, H: cur.H, best, thBest };
-          // scene
-          if (h > 0) s.rect(-1, 0, 0, h, { fill: 'muted', fillAlpha: 0.35, stroke: false });
+          // scene: fit the reachable region (safety parabola) of the current speed and height
+          const Ytop = h + v0 * v0 / (2 * G0), Xreach = Math.sqrt(2 * v0 * v0 * Ytop / G0);
+          s.setView([-0.04 * Xreach, Xreach * 1.04], [-0.05 * Ytop, Ytop * 1.08]);
+          if (h > 0) s.rect(-0.04 * Xreach, 0, 0, h, { fill: 'muted', fillAlpha: 0.35, stroke: false });
           s.hline(0, { color: 'muted', width: 1.5 });
           for (const f of fan) s.path(f.pts, { color: 'muted', width: 1, alpha: 0.35 });
-          s.fn((x) => h + v0 * v0 / (2 * G0) - G0 * x * x / (2 * v0 * v0), { domain: [0, 48], color: 'orange', width: 2, dash: [6, 4] });
+          s.fn((x) => h + v0 * v0 / (2 * G0) - G0 * x * x / (2 * v0 * v0), { domain: [0, Xreach], color: 'orange', width: 2, dash: [6, 4] });
           s.path(comp.pts, { color: 'purple', width: 2, dash: [5, 4] });
           s.path(cur.pts, { color: 'accent', width: 2.6 });
           const tau = Math.min(t % (cur.T + 1), cur.T), p = sampleAt(cur.ts, cur.pts, tau);
@@ -193,7 +200,7 @@ so the projectile never travels further than $x_\infty=v_{x0}/k$ (a vertical asy
         const ths = v.slider('angle (°)', 10, 80, 50, { step: 0.5 });
         const real = v.toggle('real droplet (linear + quadratic drag)', false);
         const s = v.stage({ x: [0, 20], y: [0, 10], height: 330, axes: 'box', xlabel: 'x (m)', ylabel: 'y (m)', weight: 1.4 });
-        const g = v.stage({ x: [0, 3], y: [-10, 10], height: 330, axes: 'box', xlabel: 't (s)', ylabel: 'v_y (m/s)', title: 'vertical velocity', weight: 0.9 });
+        const g = v.stage({ x: [0, 3], y: [-10, 10], height: 330, axes: 'box', xlabel: 't (s)', ylabel: 'm/s', title: 'vertical velocity $v_y(t)$', weight: 0.9 });
         let key = '', C = null, st = null;
         v.animate((t) => {
           const k = ks.value, v0 = v0s.value, th = ths.value * D2R;
@@ -224,7 +231,7 @@ so the projectile never travels further than $x_\infty=v_{x0}/k$ (a vertical asy
           const Tm = Math.max(lin.T, 0.5) * 1.05;
           g.setView([0, Tm], [-Math.max(vt * 1.15, 2), Math.max(vy0 * 1.15, 2)]);
           g.hline(-vt, { color: 'green', dash: [6, 4], width: 1.5 });
-          g.text(`−v_t = −${v.fix(vt, 2)} m/s`, Tm, -vt, { color: 'green', size: 12, align: 'right', dy: -10 });
+          g.text(`terminal −g/k = −${v.fix(vt, 2)} m/s`, Tm, -vt, { color: 'green', size: 12, align: 'right', dy: -10 });
           g.fn((q) => vy0 - G0 * q, { domain: [0, Tm], color: 'muted', dash: [5, 4], width: 1.2 });
           g.path(lin.ts.map((q, i) => [q, lin.vs[i][1]]), { color: 'accent', width: 4, alpha: 0.6 });
           g.fn((q) => -vt + (vy0 + vt) * Math.exp(-k * q), { domain: [0, Tm], color: 'ink', dash: [4, 4], width: 1.4 });
@@ -232,7 +239,7 @@ so the projectile never travels further than $x_\infty=v_{x0}/k$ (a vertical asy
         }, { still: 1.1 });
         v.legend([['accent', 'linear drag (integrated)'], ['ink', 'closed form', { dash: true }], ['muted', 'vacuum', { dash: true }], ['red', 'real droplet']]);
         v.readout(() => st && `Landing at $t=${v.fix(st.T, 3)}$ s: simulated $x=${v.fix(st.R, 4)}$ m, closed form $x(t)=${v.fix(st.xA, 4)}$ m ($y = ${v.sci(st.yA, 1)}$) · asymptote $x_\\infty=${v.fix(st.xinf, 2)}$ m · terminal speed $g/k=${v.fix(st.vt, 2)}$ m/s. ` +
-          `**Regime:** a water drop with this $k$ has $D=${v.M.si(st.D, 'm')}$; at $v_0$ its drag ratio is $f_{\\rm quad}/f_{\\rm lin}=\\gamma Dv/\\beta=${v.fix(st.ratio, 1)}$` + (st.ratio > 1 ? ' — quadratic drag dominates, so the linear model is not valid here' + (st.Rd != null ? ` (the real drop lands at $${v.fix(st.Rd, 2)}$ m)` : '') + '.' : ' — linear drag is a fair model.'));
+          `**Regime:** a water drop with this $k$ has $D=$ ${v.M.si(st.D, 'm')}; at $v_0$ its drag ratio is $f_{\\rm quad}/f_{\\rm lin}=\\gamma Dv/\\beta=${v.fix(st.ratio, 1)}$` + (st.ratio > 1 ? ' — quadratic drag dominates, so the linear model is not valid here' + (st.Rd != null ? ` (the real drop lands at $${v.fix(st.Rd, 2)}$ m)` : '') + '.' : ' — linear drag is a fair model.'));
       },
     },
     // ------------------------------------------------------------------ 1.13
@@ -261,7 +268,7 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
         const v0s = v.slider('launch speed $v_0$ (m/s)', 1, 60, 40, { step: 0.5 });
         const s = v.stage({ x: [0, 100], y: [0, 40], height: 260, axes: 'box', xlabel: 'x (m)', ylabel: 'y (m)', full: true });
         const fall = v.stage({ x: [0, 10], y: [0, 40], height: 220, axes: 'box', xlabel: 't (s)', ylabel: 'v (m/s)', title: 'falling from rest' });
-        const ra = v.stage({ x: [0, 90], y: [0, 1.1], height: 220, axes: 'box', xlabel: 'θ (°)', ylabel: 'R/R_max', title: 'range vs launch angle', xticks: [0, 15, 30, 45, 60, 75, 90] });
+        const ra = v.stage({ x: [0, 90], y: [0, 1.2], height: 220, axes: 'box', xlabel: 'θ (°)', ylabel: 'R / Rmax', title: 'range vs launch angle', xticks: [0, 15, 30, 45, 60, 75, 90] });
         let key = '', C = null, st = null;
         v.animate((t) => {
           const O = OBJ[obj.value], v0 = v0s.value, kb = BETA * O.D / O.m, kc = GAMMA * O.D * O.D / O.m;
@@ -303,7 +310,7 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
           ra.dot(best[0], 1, { r: 5, color: 'green', label: `${best[0]}°`, labelPos: 'n' });
         }, { still: 1 });
         v.legend([['accent', 'full drag, integrated'], ['purple', '45°', { dash: true }], ['muted', 'vacuum', { dash: true }], ['orange', '$v_t\\tanh(gt/v_t)$', { dash: true }], ['teal', 'linear-drag law', { dash: true }], ['green', 'terminal speed', { dash: true }]]);
-        v.readout(() => st && `Terminal speed: simulated $${v.M.si(st.vsim, 'm/s')}$; quadratic prediction $\\sqrt{mg/c} = ${v.M.si(st.vq, 'm/s')}$, linear prediction $mg/b = ${v.M.si(st.vl, 'm/s')}$. Drag ratio $f_{\\rm quad}/f_{\\rm lin}$ at terminal speed: $${v.M.si(st.ratio, '')}$ → ` + (st.ratio > 3 ? '**quadratic regime**.' : st.ratio < 0.3 ? '**linear regime** — the tanh law fails.' : 'mixed regime.') + ` Best launch angle ${st.best}° (vacuum: 45°).`);
+        v.readout(() => st && `Terminal speed: simulated ${v.M.si(st.vsim, 'm/s')}; quadratic prediction $\\sqrt{mg/c} =$ ${v.M.si(st.vq, 'm/s')}, linear prediction $mg/b =$ ${v.M.si(st.vl, 'm/s')}. Drag ratio $f_{\\rm quad}/f_{\\rm lin}$ at terminal speed: $${v.sci(st.ratio, 2)}$ → ` + (st.ratio > 3 ? '**quadratic regime**.' : st.ratio < 0.3 ? '**linear regime** — the tanh law fails.' : 'mixed regime.') + ` Best launch angle ${st.best}° (vacuum: 45°).`);
       },
     },
     // ------------------------------------------------------------------ 1.14
@@ -324,7 +331,7 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
         const s = v.stage({ x: [-2.6, 2.6], y: [-1.2, 2.6], equal: true, height: 340, axes: false, weight: 1.35 });
         const fp = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, height: 340, axes: false, title: 'force polygon', weight: 0.9 });
         const kF = 0.045; // m per N
-        let pushOff = [0.35, 0.55];
+        let pushOff = [-0.3, 0.12];
         const hp = s.handle(0, 0, { color: 'orange', label: 'P', constrain: (x, y) => [x, y] });
         hp.onDrag = () => { pushOff = [hp.x - cen[0], hp.y - cen[1]]; };
         let cen = [0, 0], st = null;
@@ -348,7 +355,7 @@ approaching the terminal speed within a few times $v_t/g$. For a thrown body the
           st = { N, T, as, an, lift, slack, rope, Ngrav: m * G0 * Math.cos(th), Pn, Ps };
           // draw incline
           s.poly([base, [base[0] + Lx, base[1]], top], { fill: 'muted', fillAlpha: 0.22, color: 'muted' });
-          if (th > 0.02) s.text(`θ = ${v.fix(ths.value, 1)}°`, base[0] + Lx - 0.55, base[1] + 0.12, { color: 'muted', size: 12 });
+          if (th > 0.02) s.text(`θ = ${v.fix(ths.value, 1)}°`, base[0] + Lx, base[1] - 0.18, { color: 'muted', size: 12, align: 'right' });
           // block (rotated square)
           const lifted = lift ? 0.08 : 0, c0 = [cen[0] + out[0] * lifted, cen[1] + out[1] * lifted];
           const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [c0[0] + (a * down[0] + b * out[0]) * bs / 2, c0[1] + (a * down[1] + b * out[1]) * bs / 2]);
@@ -401,7 +408,7 @@ with coefficients $0\le\mu_k\le\mu_s$ that depend on the materials but, to a fir
         const mus = v.slider('$\\mu_s$', 0.1, 1, 0.6, { step: 0.01 });
         const muk = v.slider('$\\mu_k$', 0.05, 1, 0.4, { step: 0.01 });
         const s = v.stage({ x: [-2.4, 2.4], y: [-1, 2.6], equal: true, height: 330, axes: false, weight: 1.2 });
-        const f = v.stage({ x: [0, 0.85], y: [0, 0.75], height: 330, axes: 'box', xlabel: 'pull along slope / mg = sin θ', ylabel: 'friction / mg', title: 'friction vs applied force', weight: 1 });
+        const f = v.stage({ x: [0, 0.85], y: [0, 0.75], height: 330, axes: 'box', xlabel: 'pull / mg = sin θ', ylabel: 'friction / mg', title: 'friction vs applied force', weight: 1 });
         const RATE = 5 * D2R, TEND = 10, L = 3.2; // tilt rate (rad/s), duration (s), slope length (m)
         let key = '', sim = null, st = null;
         // integrate the block's slope coordinate with the stick/slip friction law (explicit, dt = 1 ms)
@@ -424,7 +431,7 @@ with coefficients $0\le\mu_k\le\mu_s$ that depend on the materials but, to a fir
           const ms = mus.value, mk = Math.min(muk.value, ms);
           const kk = ms + ':' + mk;
           if (kk !== key) { key = kk; sim = run(ms, mk); }
-          const tau = Math.min(t % (TEND + 1.5), TEND), i = Math.min(sim.t.length - 1, Math.round(tau / 0.001));
+          const tau = Math.min((t + 5) % (TEND + 1.5), TEND), i = Math.min(sim.t.length - 1, Math.round(tau / 0.001));
           const th = sim.th[i], x = sim.x[i], fr = sim.f[i], vv = sim.v[i];
           const i2 = Math.min(sim.t.length - 1, i + 20), i1 = Math.max(0, i - 20), aMeas = (sim.v[i2] - sim.v[i1]) / ((i2 - i1) * 0.001);
           st = { th, slip: sim.slip, sliding: sim.slip && tau >= sim.slip.t, aMeas, aPred: G0 * (Math.sin(th) - mk * Math.cos(th)), ms, mk, off: x >= L };
@@ -447,8 +454,8 @@ with coefficients $0\le\mu_k\le\mu_s$ that depend on the materials but, to a fir
           const tr = []; for (let j = 0; j <= i; j += 10) tr.push([Math.sin(sim.th[j]), sim.f[j]]);
           f.path(tr, { color: 'blue', width: 2.6 });
           f.dot(Math.sin(th), fr, { r: 6, color: 'blue' });
-          f.text('static ceiling μₛ cos θ', 0.02, ms * 0.98, { color: 'orange', size: 11, dy: -8 });
-          f.text('kinetic μₖ cos θ', 0.02, mk * 0.98, { color: 'purple', size: 11, dy: -8 });
+          f.text('static ceiling μₛ cos θ', 0.12, ms * Math.cos(Math.asin(0.12)), { color: 'orange', size: 11, dy: -10 });
+          f.text('kinetic μₖ cos θ', 0.12, mk * Math.cos(Math.asin(0.12)), { color: 'purple', size: 11, dy: -10 });
         }, { still: 7 });
         v.legend([['ink', 'pull along slope $mg\\sin\\theta$'], ['blue', 'friction'], ['orange', '$\\mu_s N$', { dash: true }], ['purple', '$\\mu_k N$', { dash: true }]]);
         v.readout(() => st && (`$\\theta = ${v.fix(st.th / D2R, 2)}°$. ` + (st.slip ? `Slip began at $\\theta = ${v.fix(st.slip.th / D2R, 2)}°$ vs $\\arctan\\mu_s = ${v.fix(Math.atan(st.ms) / D2R, 2)}°$ (tilt step 0.05°). ` : `Not yet slipping: $\\tan\\theta < \\mu_s$. `) + (st.sliding && !st.off ? `Measured acceleration $${v.fix(st.aMeas, 3)}$ m/s² vs $g(\\sin\\theta-\\mu_k\\cos\\theta) = ${v.fix(st.aPred, 3)}$ m/s².` : '') + (muk.value > mus.value ? ' ($\\mu_k$ is capped at $\\mu_s$.)' : '')));
@@ -494,7 +501,7 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
           const add = (a, b, h) => a.map((x, i) => x + h * b[i]);
           for (let n = 0, t = 0; t <= TEND; n++, t = n * dt) {
             if (n % 10 === 0) { const [T1, T2] = tens(y); out.t.push(t); out.z1.push(y[0]); out.z2.push(y[1]); out.phi.push(y[2]); out.T1.push(T1); out.T2.push(T2); }
-            if (Math.abs(y[0]) > 1.25 || Math.abs(y[1]) > 1.25) { out.stop = t; break; }
+            if (Math.abs(y[0]) > 0.95 || Math.abs(y[1]) > 0.95) { out.stop = t; break; }
             const k1 = F(y), k2 = F(add(y, k1, dt / 2)), k3 = F(add(y, k2, dt / 2)), k4 = F(add(y, k3, dt));
             y = y.map((x, i) => x + dt / 6 * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
           }
@@ -528,9 +535,9 @@ with $m_2g<T<m_1g$. A pulley of moment of inertia $I$ and radius $R$ adds $I/R^2
           pl.hline(m1 * G0, { color: 'blue', dash: [6, 4], width: 1.2 }); pl.hline(m2 * G0, { color: 'purple', dash: [6, 4], width: 1.2 });
           pl.text('m₁g', Math.max(tEnd, 0.3), m1 * G0, { color: 'blue', size: 12, align: 'right', dy: -10 });
           pl.text('m₂g', Math.max(tEnd, 0.3), m2 * G0, { color: 'purple', size: 12, align: 'right', dy: 12 });
-          pl.hline(T1P, { color: 'green', width: 1.2 }); if (Mp > 0) pl.hline(T2P, { color: 'green', width: 1.2 });
-          pl.path(sim.t.map((q, i) => [q, sim.T1[i]]), { color: 'blue', width: 1.6, alpha: 0.85 });
-          pl.path(sim.t.map((q, i) => [q, sim.T2[i]]), { color: 'purple', width: 1.6, alpha: 0.85 });
+          pl.hline(T1P, { color: 'green', width: 1.2, dash: [2, 3] }); if (Mp > 0) pl.hline(T2P, { color: 'green', width: 1.2, dash: [2, 3] });
+          pl.path(sim.t.map((q, i) => [q, sim.T1[i]]), { color: 'blue', width: 4, alpha: 0.6 });
+          pl.path(sim.t.map((q, i) => [q, sim.T2[i]]), { color: 'purple', width: 1.8, dash: [6, 4] });
           pl.vline(tau, { color: 'gold', width: 1.4 });
         }, { still: 0.6 });
         v.legend([['blue', 'tension on $m_1$'], ['purple', 'tension on $m_2$'], ['green', 'predicted tension(s)'], ['gold', 'now']]);
@@ -556,7 +563,7 @@ Forces from several masses add as vectors; equivalently a mass $m$ at $\mathbf r
         const M = v.M;
         const two = v.select('', [{ value: 'one', label: 'one mass' }, { value: 'two', label: 'two masses' }], 'one');
         const s = v.stage({ x: [-3, 3], y: [-2.2, 2.2], equal: true, height: 340, axes: false, weight: 1.35 });
-        const lg = v.stage({ x: [0.2, 40], y: [1e-3, 30], xlog: true, ylog: true, height: 340, axes: 'box', xlabel: 'distance r from the centre of mass', ylabel: '|g|', title: 'field strength along the ray', weight: 1 });
+        const lg = v.stage({ x: [0.2, 40], y: [1e-3, 30], xlog: true, ylog: true, height: 340, axes: 'box', xlabel: 'r (from c.m.)', ylabel: '|g|', title: 'field strength along the ray', weight: 1 });
         const F = v.fields(s, {
           law: '3d', G: 1, sources: [{ type: 'mass', x: -0.6, y: 0, m: 1, label: 'M₁' }, { type: 'mass', x: 0.9, y: 0.3, m: 0.6, label: 'M₂' }],
           lines: false, arrows: true, equipotentials: { n: 14 }, heat: 'magnitude',
@@ -574,10 +581,10 @@ Forces from several masses add as vectors; equivalently a mass $m$ at $\mathbf r
           st = { g1: vlen(g1), g2: vlen(g2), r, Mt, isTwo };
           s.line(cm[0], cm[1], cm[0] + 3.5 * r * u[0], cm[1] + 3.5 * r * u[1], { color: 'muted', dash: [3, 4], width: 1 });
           s.dot(cm[0], cm[1], { r: 3.5, color: 'ink', label: 'c.m.', labelPos: 'sw' });
-          const k = 0.9 / Math.max(vlen(g1), 0.05);
-          vec(s, P, g1, Math.min(k, 3), { color: 'gold', width: 3 });
+          const k = 0.8 / Math.max(vlen(g1), 1e-9); // the test-mass arrow is drawn 0.8 long; the 2r arrow at the same scale
+          vec(s, P, g1, k, { color: 'gold', width: 3 });
           s.dot(P2[0], P2[1], { r: 4, color: 'orange', hollow: true, label: '2r', labelPos: 'ne' });
-          vec(s, P2, g2, Math.min(k, 3), { color: 'orange', width: 2.4 });
+          vec(s, P2, g2, k, { color: 'orange', width: 2.4 });
           // log–log profile along the ray
           const rs = []; for (let q = 0; q <= 120; q++) rs.push(0.2 * Math.pow(200, q / 120));
           lg.path(rs.map((q) => { const g = F.field(cm[0] + q * u[0], cm[1] + q * u[1]); const val = vlen(g); return isFinite(val) && val > 0 ? [q, val] : null; }), { color: 'accent', width: 2.2 });
@@ -609,64 +616,69 @@ whatever the sign of the charge.`,
         const Es = v.slider('electric field $E$ (units of $B\\cdot$[speed])', 0, 0.12, 0, { step: 0.005 });
         const S = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, axes: false, height: 380, weight: 1.3 });
         const P2 = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: true, height: 380, title: 'projection across $\\mathbf B$ (x–y plane)', weight: 1 });
-        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.32, axis: 1.9, lim: 1.25, labels: ['x', 'y', 'z'] });
-        const hv = sc.handle([0.8, 0.0, 0.18], { color: 'accent', label: 'v₀' });
-        const NT = 3, dt = 2 * Math.PI / 240; // ω_c = qB/m = 1 → period 2π
+        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.32, axis: 1.9, lim: 2.6, labels: ['x', 'y', 'z'] });
+        const TC = 2 * Math.PI, NT = 3, dt = TC / 240; // ω_c = qB/m = 1 → period 2π
+        // The particle starts at r0, chosen so that its guiding centre starts on the z-axis (shifted by half the
+        // drift); the handle is the tip of the initial velocity drawn from r0, i.e. h = r0 + v0 (an affine map of v0).
+        let v0 = [0.8, 0, 0.12];
+        const Tdraw = (vz) => Math.min(NT * TC, 1.7 / Math.max(1e-9, Math.abs(vz)));
+        const start = (u, E) => [-(u[1] + E), u[0] + E * Tdraw(u[2]) / 2, 0];
+        const hv = sc.handle(M.vadd(start(v0, 0), v0), {
+          color: 'accent', label: 'v₀', lim: 2.6,
+          snap: (p) => { const E = Es.value, T = Tdraw(p[2]), a = p[0] + E, b = p[1] - E * T / 2; v0 = [(a + b) / 2, (b - a) / 2, p[2]]; return p; },
+        });
         let key = '', sim = null, st = null;
         // Boris pusher for q/m = 1, B = ẑ, E = E x̂
-        const run = (v0, E) => {
-          const n = Math.round(NT * 2 * Math.PI / dt), xs = [[0, 0, 0]], ts = [0];
-          let x = [0, 0, 0], u = v0.slice();
+        const run = (u0, r0, E, n) => {
+          const xs = [r0.slice()], us = [u0.slice()], ts = [0];
+          let x = r0.slice(), u = u0.slice();
           const tb = dt / 2, sfac = 2 * tb / (1 + tb * tb);
           for (let i = 0; i < n; i++) {
             const vm = [u[0] + E * dt / 2, u[1], u[2]];
-            const vp = [vm[0] + vm[1] * tb, vm[1] - vm[0] * tb, vm[2]];          // v' = v⁻ + v⁻ × t, t = (0,0,tb)
+            const vp = [vm[0] + vm[1] * tb, vm[1] - vm[0] * tb, vm[2]];          // v' = v⁻ + v⁻ × t, t = (0, 0, tb)
             const vq = [vm[0] + vp[1] * sfac, vm[1] - vp[0] * sfac, vm[2]];      // v⁺ = v⁻ + v' × s
             u = [vq[0] + E * dt / 2, vq[1], vq[2]];
             x = [x[0] + u[0] * dt, x[1] + u[1] * dt, x[2] + u[2] * dt];
-            xs.push(x); ts.push((i + 1) * dt);
+            xs.push(x); us.push(u); ts.push((i + 1) * dt);
           }
-          return { xs, ts };
+          return { xs, us, ts };
         };
         v.animate((t) => {
-          const v0 = hv.p, E = Es.value, kk = [...v0, E].join();
-          if (kk !== key) { key = kk; sim = run(v0, E); }
-          // measured period: spacing of upward zero crossings of v_x (finite differences of x)
-          const xs = sim.xs, n = xs.length, ups = [];
-          for (let i = 2; i < n - 1; i++) { const a = xs[i][0] - xs[i - 1][0], b = xs[i + 1][0] - xs[i][0]; if (a < 0 && b >= 0) ups.push(sim.ts[i] + dt * (-a / (b - a + 1e-30)) - dt / 2); }
+          const E = Es.value, r0 = start(v0, E), kk = [...v0, E].join();
+          if (!hv.h.dragging) hv.p = M.vadd(r0, v0);
+          if (kk !== key) { key = kk; sim = run(v0, r0, E, Math.round(NT * TC / dt)); }
+          const { xs, us, ts } = sim, n = xs.length;
+          // measurements on whole turns: period from upward zero crossings of v_x, drift from the y-displacement
+          const ups = [];
+          for (let i = 1; i < n; i++) { const a = us[i - 1][0], b = us[i][0]; if (a < 0 && b >= 0) ups.push(ts[i - 1] + dt * (-a / (b - a))); }
           const Tm = ups.length >= 2 ? (ups[ups.length - 1] - ups[0]) / (ups.length - 1) : NaN;
-          const drift = (xs[n - 1][1] - xs[0][1]) / sim.ts[n - 1];
-          const vperp = Math.hypot(v0[0], v0[1] + E), rad = vperp; // speed across B in the drift frame, r_L = v⊥/ω_c
+          const drift = (xs[n - 1][1] - xs[0][1]) / ts[n - 1];
           const xmin = Math.min(...xs.map((p) => p[0])), xmax = Math.max(...xs.map((p) => p[0]));
-          st = { Tm, drift, E, rL: (xmax - xmin) / 2, rad, sp: M.norm(v0) };
-          // centre the drawing on the trajectory's mean position
-          const mean = [0, 1, 2].map((j) => xs.reduce((a, p) => a + p[j], 0) / n);
-          const sh = (p) => [p[0] - mean[0], p[1] - mean[1], p[2] - mean[2]];
-          const k = Math.min(1, 1.9 / Math.max(1e-9, ...xs.map((p) => Math.max(...sh(p).map(Math.abs)))));
-          const P = (p) => sh(p).map((c) => c * k);
+          st = { Tm, drift, E, rL: (xmax - xmin) / 2, rad: Math.hypot(v0[0], v0[1] + E), sp: M.norm(v0) };
+          // guiding centre r + ((v − v_d)_y, −(v − v_d)_x), with v_d = (0, −E)
+          const gc = (j) => [xs[j][0] + us[j][1] + E, xs[j][1] - us[j][0], xs[j][2]];
+          const nd = Math.min(n, Math.round(Tdraw(v0[2]) / dt) + 1);
           sc.begin();
-          for (const [gx, gy] of [[-1.4, -1.4], [1.4, -1.4], [-1.4, 1.4], [1.4, 1.4]]) sc.arrow([gx, gy, -1.6], [gx, gy, 1.6], { color: 'teal', width: 1.4, head: 7, alpha: 0.5, top: false });
-          sc.tex('\\mathbf B', [1.4, 1.4, 1.75], { color: 'teal' });
-          if (E > 0) { sc.arrow([-1.6, -1.9, -1.6], [-0.6, -1.9, -1.6], { color: 'red', width: 2 }); sc.tex('\\mathbf E', [-0.5, -1.9, -1.6], { color: 'red' }); }
-          sc.path(xs.filter((p, i) => i % 2 === 0).map(P), { color: 'accent', width: 2 });
-          const tau = (t % (NT * 2 * Math.PI)), i = Math.min(n - 1, Math.round(tau / dt));
-          // guiding centre: x_gc = x − (v × B̂)/ω_c... for q/m = 1, B = ẑ: r_gc = r + (v_y, −v_x, 0)·(−1)... computed from the local velocity
-          const gc = (j) => { const a = xs[Math.max(0, j - 1)], b = xs[Math.min(n - 1, j + 1)], w = [(b[0] - a[0]) / (2 * dt), (b[1] - a[1]) / (2 * dt)]; return [xs[j][0] + w[1], xs[j][1] - w[0], xs[j][2]]; };
-          sc.path(xs.map((_, j) => j).filter((j) => j % 8 === 0).map((j) => P(gc(j))), { color: 'green', width: 2, dash: [5, 4] });
-          sc.dot(P(xs[i]), { r: 6, color: 'gold' });
-          sc.dot(P([0, 0, 0]), { r: 3, color: 'ink' });
-          sc.arrow(P([0, 0, 0]), P(v0.map((c) => c * 1)), { color: 'accent', width: 1.6 });
+          for (const [gx, gy] of [[-1.6, -1.6], [1.6, -1.6], [-1.6, 1.6], [1.6, 1.6]]) sc.arrow([gx, gy, -1.8], [gx, gy, 1.8], { color: 'teal', width: 1.4, head: 7, alpha: 0.5, top: false });
+          sc.tex('\\mathbf B', [1.6, 1.6, 1.95], { color: 'teal' });
+          if (E > 0) { sc.arrow([-1.9, -1.9, -1.8], [-0.9, -1.9, -1.8], { color: 'red', width: 2 }); sc.tex('\\mathbf E', [-0.8, -1.9, -1.8], { color: 'red' }); }
+          sc.path(xs.slice(0, nd).filter((p, i) => i % 2 === 0), { color: 'accent', width: 2 });
+          sc.path(xs.slice(0, nd).map((_, j) => j).filter((j) => j % 8 === 0).map(gc), { color: 'green', width: 2, dash: [5, 4] });
+          const i = Math.min(nd - 1, Math.round((t % Tdraw(v0[2])) / dt));
+          sc.dot(xs[i], { r: 6, color: 'gold' });
+          sc.dot(r0, { r: 3, color: 'ink' });
+          sc.arrow(r0, M.vadd(r0, v0), { color: 'accent', width: 1.6 });
           sc.flush();
-          // projection across B
-          const q2 = xs.map((p) => [p[0] - mean[0], p[1] - mean[1]]);
+          // projection across B (all three turns)
+          const q2 = xs.map((p) => [p[0], p[1]]);
           const R2 = Math.max(1, ...q2.map((p) => Math.max(Math.abs(p[0]), Math.abs(p[1])))) * 1.12;
           P2.setView([-R2, R2], [-R2, R2]);
           P2.path(q2, { color: 'accent', width: 1.8 });
-          P2.path(xs.map((_, j) => j).filter((j) => j % 4 === 0).map((j) => { const g = gc(j); return [g[0] - mean[0], g[1] - mean[1]]; }), { color: 'green', width: 2, dash: [5, 4] });
+          P2.path(xs.map((_, j) => j).filter((j) => j % 4 === 0).map((j) => gc(j).slice(0, 2)), { color: 'green', width: 2, dash: [5, 4] });
           P2.dot(q2[i][0], q2[i][1], { r: 5, color: 'gold' });
         }, { still: 5 });
         v.legend([['accent', 'trajectory (Boris integrator)'], ['green', 'guiding centre', { dash: true }], ['teal', '$\\mathbf B$'], ['red', '$\\mathbf E$']]);
-        v.readout(() => st && `Units $q/m = B = 1$. Speed $|\\mathbf v_0| = ${v.fix(st.sp, 3)}$: measured cyclotron period $${v.fix(st.Tm, 4)}$ vs $2\\pi m/(qB) = ${v.fix(2 * Math.PI, 4)}$ — independent of speed · Larmor radius measured $${v.fix(st.rL, 3)}$ vs $v_\\perp/\\omega_c = ${v.fix(st.rad, 3)}$ · drift speed $${v.fix(Math.abs(st.drift), 4)}$ vs $E/B = ${v.fix(st.E, 4)}$ (along $-\\hat{\\mathbf y} = \\hat{\\mathbf E}\\times\\hat{\\mathbf B}$). For an electron in $B = 1$ mT: $T_c = ${v.M.si(2 * Math.PI * v.M.CONST.me / (v.M.CONST.e * 1e-3), 's')}$.`);
+        v.readout(() => st && `Units $q/m = B = 1$. Speed $|\\mathbf v_0| = ${v.fix(st.sp, 3)}$: measured cyclotron period $${v.fix(st.Tm, 4)}$ vs $2\\pi m/(qB) = ${v.fix(2 * Math.PI, 4)}$ — independent of speed · Larmor radius measured $${v.fix(st.rL, 3)}$ vs $v_\\perp/\\omega_c = ${v.fix(st.rad, 3)}$ (in the drift frame) · drift speed $${v.fix(Math.abs(st.drift), 4)}$ vs $E/B = ${v.fix(st.E, 4)}$, along $-\\hat{\\mathbf y} = \\hat{\\mathbf E}\\times\\hat{\\mathbf B}$. For an electron in $B = 1$ mT: $T_c = 2\\pi m_e/(eB) =$ ${v.M.si(2 * Math.PI * v.M.CONST.me / (v.M.CONST.e * 1e-3), 's')}.`);
       },
     },
   ],

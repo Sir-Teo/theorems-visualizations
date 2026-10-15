@@ -533,5 +533,314 @@ $$p_T = s\cdot p_{T|_U}.$$`,
         });
       },
     },
+    // ------------------------------------------------------------------ 5.34
+    {
+      num: '5.34',
+      kind: 'Theorem',
+      name: 'Operators on odd-dimensional spaces have eigenvalues',
+      statement: String.raw`Every operator on an odd-dimensional vector space has an eigenvalue. (Over $\mathbf C$ this is already known for every nonzero finite dimension (5.19); the new content is the case $\mathbf F = \mathbf R$.)`,
+      idea: String.raw`Induction on the odd number $n = \dim V$, in steps of two; $n = 1$ is clear. Let $p$ be the minimal polynomial of $T$. If $p$ has a factor $z - \lambda$ with $\lambda \in \mathbf R$, then $\lambda$ is an eigenvalue (5.27). Otherwise, by the factorization over $\mathbf R$ (4.16), $p = q\cdot(z^2 + bz + c)$ with $b^2 < 4c$. Then $q(T)$ vanishes on $\operatorname{range}(T^2 + bT + cI)$, and $\deg q < \deg p$ forces that range to be a proper subspace. Its null space has even dimension (5.33), so by the fundamental theorem of linear maps (3.21) the range has odd dimension less than $n$; it is invariant (5.18), so the induction hypothesis gives an eigenvalue of $T$ restricted to it.`,
+      caption: String.raw`Press **Random $T$** repeatedly. On $\mathbf R^3$ a real eigenvector line (green) appears every time: when $T$ also has a pair of nonreal eigenvalues, the purple plane is $\operatorname{null}(T^2 + bT + cI)$ — even-dimensional, where $T$ turns vectors — and the green line is the range of the same operator, odd-dimensional and invariant. Drag $u$ onto the line: $Tu$ becomes parallel to $u$. Switch to $\mathbf R^2$ and many operators have no real eigenvector at all. The bar chart counts, for each size $n$, how many of 300 random real $n\times n$ matrices have a real eigenvalue.`,
+      deps: ['ladr-5.27', 'ladr-4.16', 'ladr-3.21', 'ladr-5.33', 'ladr-5.18'],
+      tags: ['eigenvalues'],
+      viz(v) {
+        const M = v.M;
+        const dimS = v.select('$V$', [{ value: '3', label: '$\\mathbf R^3$ (odd)' }, { value: '2', label: '$\\mathbf R^2$ (even)' }], '3');
+        let seed = 2;
+        v.button('Random $T$', () => { seed++; });
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 380, weight: 1.15 });
+        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.42, axis: 1.6, lim: 1.3 });
+        const B = v.stage({ x: [0.35, 7.65], y: [0, 1.17], height: 380, weight: 0.85, minWidth: 240, axes: 'box', xlabel: 'n',
+          xticks: [1, 2, 3, 4, 5, 6, 7], yticks: [[0, '0%'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']], title: 'random $n\\times n$ real matrices with a real eigenvalue' });
+        // the tally, computed once: entries independent standard normal
+        const frac = [];
+        { const r = v.rng(20240); for (let n = 1; n <= 7; n++) { let k = 0; for (let t = 0; t < 300; t++) { const A = Array.from({ length: n }, () => Array.from({ length: n }, () => r.normal())); if (M.eig(A, { vectors: false }).values.some((z) => Math.abs(z.im) <= 1e-10 * (1 + Math.abs(z.re)))) k++; } frac.push(k / 300); } }
+        let T = null, key = '', info = null;
+        const snap = (p) => {
+          if (!info) return p;
+          for (const e of info.lines) { const d = dotN(p, e), l = normN(p); if (l > 0.15 && Math.abs(d) / l > Math.cos((7 * Math.PI) / 180)) return mul3(e, d); }
+          return p;
+        };
+        const hu = sc.handle([0.8, 0.3, 0.5], { color: 'accent', label: 'u', snap });
+        function make() {
+          const r = v.rng(seed * 7919 + 11), n = +dimS.value;
+          let Sm; do { Sm = Array.from({ length: n }, () => Array.from({ length: n }, () => r.normal())); } while (Math.abs(M.det(Sm)) < 0.5);
+          const cx = r() < 0.72, a = r.uniform(-0.6, 0.6), b = r.uniform(0.5, 1.1), lam = r.uniform(-1.3, 1.3) || 0.7;
+          let D;
+          if (n === 3) D = cx ? [[a, -b, 0], [b, a, 0], [0, 0, lam]] : [[lam, 0, 0], [0, r.uniform(-1.3, 1.3), 0], [0, 0, r.uniform(-1.3, 1.3)]];
+          else D = cx ? [[a, -b], [b, a]] : [[lam, 0], [0, r.uniform(-1.3, 1.3)]];
+          T = conj(M, Sm, D);
+          const E = M.eig(T), lines = [], vals = [];
+          E.values.forEach((z, i) => { if (Math.abs(z.im) < 1e-9 && E.vectors[i]) { const e = unitN(E.vectors[i]); if (!lines.some((f) => Math.abs(dotN(e, f)) > 1 - 1e-6)) { lines.push(n === 2 ? [e[0], e[1], 0] : e); vals.push(z.re); } } });
+          const pair = E.values.find((z) => z.im > 1e-9);
+          info = { n, lines, vals, pair, E };
+          if (n === 3 && pair) {
+            const q = [pair.re * pair.re + pair.im * pair.im, -2 * pair.re, 1], Q = pOfMat(M, q, T);
+            info.q = q; info.N = M.nullspace(Q, 1e-7); info.R = orthN([0, 1, 2].map((k) => colOf(Q, k)), 1e-6);
+          }
+          info.p = minPoly(M, T);
+          hu.mode = n === 2 ? 'plane' : 'free'; hu.a = [1, 0, 0]; hu.b = [0, 1, 0];
+          hu.set(n === 2 ? [0.85, 0.35, 0] : [0.8, 0.3, 0.5]);
+        }
+        let st = null;
+        v.render(() => {
+          const k = `${seed}|${dimS.value}`; if (k !== key) { key = k; make(); }
+          const n = info.n, T3 = n === 3 ? T : [[T[0][0], T[0][1], 0], [T[1][0], T[1][1], 0], [0, 0, 0]];
+          sc.begin();
+          if (n === 2) sc.disc([1, 0, 0], [0, 1, 0], 1.8, { fill: 'faint', color: 'muted', fillAlpha: 0.1, grid: true });
+          if (info.N) sc.disc(info.N[0], info.N[1], 1.7, { fill: 'purple', color: 'purple', fillAlpha: 0.12, grid: true });
+          info.lines.forEach((e) => sc.line(mul3(e, -2), mul3(e, 2), { color: 'green', width: 3.6, alpha: 0.75 }, 16));
+          const u = hu.p, Tu = mv(T3, u), par = normN(cross3(u, Tu)) < 1e-6 * (1 + normN(Tu)) && normN(u) > 1e-6;
+          sc.arrow([0, 0, 0], Tu, { color: par ? 'green' : 'orange', width: 2.6 });
+          sc.arrow([0, 0, 0], u, { color: 'accent', width: 2.8 });
+          sc.tex(par ? 'Tu = \\lambda u' : 'Tu', Tu, { color: par ? 'green' : 'orange', dx: 18, dy: -10, size: 14 });
+          sc.flush();
+          if (!info.lines.length) S.corner('no real eigenvector: every direction is turned', 'tl', { color: 'red', weight: 700, size: 12.5 });
+          else S.corner(info.N ? 'green line = range of T² + bT + cI' : `${info.lines.length} real eigenline${info.lines.length > 1 ? 's' : ''}`, 'tl', { color: 'green', weight: 700, size: 12.5 });
+          // ---- tally
+          frac.forEach((f, i) => {
+            const m = i + 1, odd = m % 2 === 1, cur = m === n, col = odd ? 'green' : 'orange';
+            B.rect(m - 0.34, 0, m + 0.34, f, { fill: col, fillAlpha: cur ? 0.6 : 0.3, color: col, width: cur ? 2.6 : 1.2 });
+            B.text(`${Math.round(f * 100)}%`, m, f, { align: 'center', baseline: 'bottom', dy: -3, size: 11, color: col, weight: 700 });
+          });
+          B.corner('odd n: always', 'bl', { color: 'green', weight: 600, size: 11.5, dy: -18 });
+          // the turning angle on R², for the readout
+          let minAng = null;
+          if (n === 2) { minAng = Infinity; for (let i = 0; i < 360; i++) { const t = (Math.PI * i) / 360, w = [Math.cos(t), Math.sin(t), 0], Tw = mv(T3, w); minAng = Math.min(minAng, Math.asin(Math.min(1, normN(cross3(w, Tw)) / (normN(Tw) || 1)))); } }
+          st = { u, Tu, par, minAng };
+        });
+        v.legend([['green', 'real eigenvector line'], ['purple', '$\\operatorname{null}(T^2+bT+cI)$', { area: true }], ['accent', '$u$'], ['orange', '$Tu$']]);
+        v.readout(() => {
+          if (!st || !info) return '';
+          const fp = factored(M, info.p), ev = info.E.values.map((z) => (Math.abs(z.im) < 1e-9 ? tn(z.re) : `${tn(z.re)} ${z.im > 0 ? '+' : '-'} ${tn(Math.abs(z.im))}i`)).join(',\\ ');
+          let s = `Minimal polynomial $${fp}$ (eigenvalues $${ev}$). `;
+          if (info.n === 3 && info.N) {
+            const [c0, b0] = info.q;
+            s += `With $x^2 + bx + c = ${polyT(info.q, 'x')}$ ($b^2 - 4c = ${tn(b0 * b0 - 4 * c0)} < 0$): $\\dim\\operatorname{null} = ${info.N.length}$ (even), so $\\dim\\operatorname{range} = 3 - ${info.N.length} = ${info.R.length}$ — odd, invariant, hence an eigenline with $\\lambda = ${tn(info.vals[0])}$.`;
+          } else if (info.lines.length) s += 'The minimal polynomial splits into real linear factors, so each of its zeros is an eigenvalue (5.27).';
+          else s += `No real eigenvalue: every vector is turned by at least ${tn((st.minAng * 180) / Math.PI, 1)}°. Even dimension allows this.`;
+          if (st.par) s += ` Your $u$ is an eigenvector: $Tu = ${tn(dotN(st.Tu, st.u) / dotN(st.u, st.u))}\\,u$.`;
+          return s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.35
+    {
+      num: '5.35',
+      kind: 'Definition',
+      name: 'Matrix of an operator',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ and $v_1, \dots, v_n$ is a basis of $V$. The **matrix of $T$** with respect to this basis is the $n$-by-$n$ matrix $\mathcal M(T) = \mathcal M\bigl(T, (v_1,\dots,v_n)\bigr)$ whose entries $A_{j,k}$ are defined by
+$$Tv_k = A_{1,k}v_1 + \dots + A_{n,k}v_n \qquad (k = 1, \dots, n).$$
+So column $k$ lists the coordinates of $Tv_k$ in the same basis. For an operator on $\mathbf F^n$ with no basis specified, the standard basis is meant, and column $k$ is then $T$ applied to the $k$-th standard basis vector.`,
+      idea: String.raw`This is the matrix of a linear map (3.31) in the special case $W = V$, where one uses the *same* basis for the domain and the target — which is why operators have square matrices. The operator is a geometric object; the matrix is a description of it in one coordinate system, and changing the basis changes the description but not the operator. Much of the rest of the book is the search for a basis in which this matrix is as simple as possible: upper triangular (5.38) or diagonal (5.50).`,
+      caption: String.raw`The operator $T$ is fixed: it always sends the faint F to the blue F. Drag the basis vectors $v_1$, $v_2$. The tilted grid is the coordinate system of the basis; the dashed paths show $Tv_1$ and $Tv_2$ reached by walking along $v_1$ and then along $v_2$ — those step lengths are the columns of $\mathcal M(T)$ on the right. Drag $v_1$ near an eigen-direction (it snaps): the first column becomes $(\lambda, 0)$. Snap both, and the matrix is diagonal.`,
+      deps: ['ladr-3.31', 'ladr-5.1'],
+      tags: ['matrices'],
+      viz(v) {
+        const M = v.M;
+        const r50 = (50 * Math.PI) / 180;
+        const OPS = {
+          axler: { label: 'Axler 5.51, divided by 46', A: [[41 / 46, 7 / 46], [-20 / 46, 74 / 46]] },
+          shear: { label: 'a shear', A: [[1, 0.8], [0, 1]] },
+          rot: { label: 'rotate 50°, stretch 1.1', A: [[1.1 * Math.cos(r50), -1.1 * Math.sin(r50)], [1.1 * Math.sin(r50), 1.1 * Math.cos(r50)]] },
+        };
+        const op = v.select('operator $T$', Object.entries(OPS).map(([value, O]) => ({ value, label: O.label })), 'axler');
+        const P = v.stage({ x: [-2.5, 2.5], y: [-2.1, 2.3], equal: true, axes: false, height: 380, weight: 1.3, title: 'the operator $T$ and the grid of the basis $v_1, v_2$' });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 380, weight: 0.7, minWidth: 230 });
+        const FSH = [[0, 0], [0.28, 0], [0.28, 0.42], [0.66, 0.42], [0.66, 0.62], [0.28, 0.62], [0.28, 0.8], [0.8, 0.8], [0.8, 1], [0, 1]].map(([x, y]) => [x - 0.2, y - 0.25]);
+        let eigdirs = [];
+        const snapDir = (x, y) => {
+          const l = Math.hypot(x, y); if (l < 0.12) return [x, y];
+          for (const e of eigdirs) { const c = (x * e[0] + y * e[1]) / l; if (Math.abs(c) > Math.cos((5 * Math.PI) / 180)) { const s = Math.sign(c) * l; return [s * e[0], s * e[1]]; } }
+          return [x, y];
+        };
+        const h1 = P.handle(1.05, 0.35, { color: 'blue', label: 'v₁', constrain: snapDir }), h2 = P.handle(0.2, 0.95, { color: 'purple', label: 'v₂', constrain: snapDir });
+        const TM = v.table(Q, { rows: 2, cols: 2, region: [0, 0.48, 1, 0.95], maxCell: 60, size: 16, rowLabels: ['$v_1$', '$v_2$'], colLabels: ['$Tv_1$', '$Tv_2$'] });
+        const TS = v.table(Q, { rows: 2, cols: 2, region: [0, 0.02, 1, 0.4], maxCell: 46, size: 13, rowLabels: ['$e_1$', '$e_2$'], colLabels: ['$Te_1$', '$Te_2$'] });
+        let st = null;
+        v.render(() => {
+          const A = OPS[op.value].A;
+          const E = M.eig(A); eigdirs = E.values.map((z, i) => (Math.abs(z.im) < 1e-9 && E.vectors[i] ? unitN(E.vectors[i]) : null)).filter(Boolean);
+          const v1 = [h1.x, h1.y], v2 = [h2.x, h2.y], det = v1[0] * v2[1] - v1[1] * v2[0], ok = Math.abs(det) > 0.04;
+          const ap = (p) => mv(A, p);
+          // the grid of the basis
+          if (ok) for (let k = -5; k <= 5; k++) {
+            P.line(k * v1[0] - 6 * v2[0], k * v1[1] - 6 * v2[1], k * v1[0] + 6 * v2[0], k * v1[1] + 6 * v2[1], { color: k ? 'grid' : 'muted', width: k ? 1 : 1.4 });
+            P.line(k * v2[0] - 6 * v1[0], k * v2[1] - 6 * v1[1], k * v2[0] + 6 * v1[0], k * v2[1] + 6 * v1[1], { color: k ? 'grid' : 'muted', width: k ? 1 : 1.4 });
+          }
+          for (const e of eigdirs) P.line(-4 * e[0], -4 * e[1], 4 * e[0], 4 * e[1], { color: 'green', width: 1.2, dash: [2, 5], alpha: 0.8 });
+          P.poly(FSH, { color: 'muted', width: 1.2, fill: 'muted', fillAlpha: 0.06 });
+          P.poly(FSH.map(ap), { color: 'accent', width: 2, fill: 'accent', fillAlpha: 0.16 });
+          let C = null;
+          if (ok) {
+            const Bi = M.inverse([[v1[0], v2[0]], [v1[1], v2[1]]]);
+            C = M.matMul(Bi, M.matMul(A, [[v1[0], v2[0]], [v1[1], v2[1]]]));          // M(T, (v1, v2))
+            [[v1, 0, 'blue'], [v2, 1, 'purple']].forEach(([w, k, col]) => {
+              const a = C[0][k], b = C[1][k], m1 = [a * v1[0], a * v1[1]], Tw = ap(w);
+              P.path([[0, 0], m1, Tw], { color: col, width: 1.6, dash: [5, 4], alpha: 0.85 });
+              P.arrow(0, 0, Tw[0], Tw[1], { color: col, width: 2.4, alpha: 0.75, head: 9 });
+              P.tex(`Tv_${k + 1}`, Tw[0], Tw[1], { color: col, size: 13.5, dx: 14, dy: -10 });
+            });
+          }
+          P.arrow(0, 0, v1[0], v1[1], { color: 'blue', width: 3 }); P.arrow(0, 0, v2[0], v2[1], { color: 'purple', width: 3 });
+          if (!ok) P.corner('v₁, v₂ are dependent: not a basis', 'tl', { color: 'red', weight: 700 });
+          else if (Math.abs(C[1][0]) < 1e-9 && Math.abs(C[0][1]) < 1e-9) P.corner('a basis of eigenvectors: the matrix is diagonal', 'tl', { color: 'green', weight: 700 });
+          else if (Math.abs(C[1][0]) < 1e-9) P.corner('v₁ is an eigenvector: first column is (λ, 0)', 'tl', { color: 'green', weight: 700 });
+          const fm = (x) => pn(x, 2), colc = (i, j) => (j === 0 ? 'blue' : 'purple');
+          TM.draw({ value: (i, j) => (ok ? C[i][j] : '—'), format: fm, textColor: colc, fill: (i, j) => (ok && i !== j && Math.abs(C[i][j]) < 1e-9 ? ['green', 0.2] : [colc(i, j), 0.08]) });
+          TS.draw({ value: (i, j) => A[i][j], format: fm, textColor: () => 'muted' });
+          ttl(Q, TM, '\\mathcal M\\bigl(T, (v_1, v_2)\\bigr)', 'ink', false, 15);
+          ttl(Q, TS, '\\mathcal M(T)\\ \\text{in the standard basis}', 'muted', false, 13);
+          st = { ok, C };
+        });
+        v.legend([['muted', 'F', { area: true }], ['accent', '$T$(F) — never changes', { area: true }], ['green', 'eigen-directions', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          if (!st.ok) return 'Move $v_1$, $v_2$ apart: a dependent list is not a basis, and coordinates in it are not defined.';
+          const C = st.C, cb = (a, b) => `${tn(a)}\\,v_1 ${b < 0 ? '-' : '+'} ${tn(Math.abs(b))}\\,v_2`;
+          return `$Tv_1 = ${cb(C[0][0], C[1][0])}$ and $Tv_2 = ${cb(C[0][1], C[1][1])}$, so $\\mathcal M\\bigl(T,(v_1,v_2)\\bigr) = ${mtex(C)}$: column $k$ holds the coordinates of $Tv_k$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.38
+    {
+      num: '5.38',
+      kind: 'Definition',
+      name: 'Upper-triangular matrix',
+      statement: String.raw`A square matrix is **upper triangular** if all its entries below the diagonal are $0$: $A_{j,k} = 0$ whenever $j > k$. (The *diagonal* consists of the entries $A_{1,1}, \dots, A_{n,n}$ from the upper left to the lower right corner.) One usually writes such a matrix as
+$$\begin{pmatrix} \lambda_1 & & * \\ & \ddots & \\ 0 & & \lambda_n \end{pmatrix},$$
+with $*$ standing for entries that are unknown or irrelevant.`,
+      idea: String.raw`For the matrix of an operator with respect to $v_1, \dots, v_n$, column $k$ lists the coordinates of $Tv_k$ (5.35). Zeros below the diagonal in column $k$ say that $Tv_k$ needs only $v_1, \dots, v_k$. So $T$ maps the line $\operatorname{span}(v_1)$ into itself, the plane $\operatorname{span}(v_1, v_2)$ into itself, and so on: a nested chain of invariant subspaces (made precise in 5.39). At least $n(n-1)/2$ of the $n^2$ entries are forced to be $0$ — almost half when $n$ is large.`,
+      caption: String.raw`Edit the matrix on the right (click the top or bottom half of an entry, or drag it up/down). The arrows on the left are its columns $Te_1$, $Te_2$, $Te_3$ in $\mathbf R^3$. With the entries below the diagonal locked at $0$, $Te_1$ stays on the teal line $\operatorname{span}(e_1)$, and $Te_2$ and $Tw$ (drag $w$) stay in the purple plane $\operatorname{span}(e_1, e_2)$. Unlock those entries and give one a nonzero value: a red segment shows the arrow leaving its subspace.`,
+      deps: ['ladr-5.35'],
+      tags: ['triangular'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Triangular_matrix' },
+      viz(v) {
+        const A = [[1.5, 1, -0.5], [0, 1, 1], [0, 0, -1]];
+        const unlock = v.toggle('allow entries below the diagonal', false, { onChange: (b) => { if (!b) { A[1][0] = 0; A[2][0] = 0; A[2][1] = 0; } else if (!A[2][1]) A[2][1] = 0.5; } });
+        const S = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 390, weight: 1.15 });
+        const sc = v.scene3(S, { yaw: -0.8, pitch: 0.4, axis: 1.8, lim: 1.4, labels: ['e₁', 'e₂', 'e₃'] });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, weight: 0.85, minWidth: 250 });
+        const TT = v.table(Q, { rows: 3, cols: 3, region: [0, 0.3, 1, 0.9], maxCell: 58, size: 16, rowLabels: ['$e_1$', '$e_2$', '$e_3$'], colLabels: ['$Te_1$', '$Te_2$', '$Te_3$'] });
+        editable(v, Q, TT, () => A, { step: 0.5, min: -1.5, max: 1.5, ok: (i, j) => i <= j || unlock.value });
+        const hw = sc.handle([0.75, 0.6, 0], { mode: 'plane', a: [1, 0, 0], b: [0, 1, 0], color: 'gold', label: 'w' });
+        let st = null;
+        v.render(() => {
+          const cols = [0, 1, 2].map((k) => colOf(A, k));
+          sc.begin();
+          sc.disc([1, 0, 0], [0, 1, 0], 2, { fill: 'purple', color: 'purple', fillAlpha: 0.1, grid: true });
+          sc.line([-2.2, 0, 0], [2.2, 0, 0], { color: 'teal', width: 4, alpha: 0.7 }, 16);
+          const leave = [];
+          cols.forEach((c, k) => {
+            const allowed = c.map((x, i) => (i <= k ? x : 0)), off = normN(sub3(c, allowed));
+            if (off > 1e-9 && k < 2) { sc.line(c, allowed, { color: 'red', width: 2.4, dash: [4, 3] }); leave.push(k); }
+            sc.arrow([0, 0, 0], c, { color: VC[k], width: 2.8 });
+            sc.tex(`Te_${k + 1}`, c, { color: VC[k], dx: 16, dy: -10, size: 14 });
+          });
+          const w = hw.p, Tw = mv(A, w), offw = Math.abs(Tw[2]);
+          if (offw > 1e-9) sc.line(Tw, [Tw[0], Tw[1], 0], { color: 'red', width: 2, dash: [4, 3] });
+          sc.arrow([0, 0, 0], Tw, { color: 'orange', width: 2.2 });
+          sc.arrow([0, 0, 0], w, { color: 'gold', width: 2.2 });
+          sc.tex('Tw', Tw, { color: 'orange', dx: 14, dy: 10, size: 13 });
+          sc.flush();
+          const tri = A[1][0] === 0 && A[2][0] === 0 && A[2][1] === 0;
+          TT.draw({
+            value: (i, j) => A[i][j], format: (x) => pn(x, 1),
+            fill: (i, j) => (i > j ? (A[i][j] ? ['red', 0.25] : ['faint', 0.35]) : i === j ? ['gold', 0.2] : ['accent', 0.08]),
+            textColor: (i, j) => (i > j ? (A[i][j] ? 'red' : 'muted') : VC[j]),
+          });
+          ttl(Q, TT, '\\mathcal M(T)', tri ? 'green' : 'red', false, 16);
+          Q.tex(tri ? '\\text{upper triangular: } \\begin{pmatrix} \\lambda_1 & * & * \\\\ 0 & \\lambda_2 & * \\\\ 0 & 0 & \\lambda_3 \\end{pmatrix}' : '\\text{not upper triangular}', 0.5, 0.13, { color: tri ? 'green' : 'red', size: 14 });
+          st = { tri, leave, offw };
+        });
+        v.legend([['teal', '$\\operatorname{span}(e_1)$'], ['purple', '$\\operatorname{span}(e_1, e_2)$', { area: true }], ['red', 'part outside the subspace', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          if (st.tri) return `$A_{2,1} = A_{3,1} = A_{3,2} = 0$: $\\mathcal M(T)$ is upper triangular (3 of its 9 entries forced to be $0$). Hence $Te_1 = ${tn(A[0][0], 1)}\\,e_1 \\in \\operatorname{span}(e_1)$ and $Te_2, Tw \\in \\operatorname{span}(e_1, e_2)$: $T$ maps the line into the line and the plane into the plane.`;
+          const bad = [[1, 0], [2, 0], [2, 1]].filter(([i, j]) => A[i][j]).map(([i, j]) => `A_{${i + 1},${j + 1}} = ${tn(A[i][j], 1)}`);
+          return `$${bad.join(',\\ ')}$ below the diagonal: **not upper triangular**` + (st.leave.length ? ` — $${st.leave.map((k) => `Te_${k + 1}`).join(', ')}$ leave${st.leave.length === 1 ? 's' : ''} ${st.leave.includes(0) ? 'the line' : 'the plane'}` : '') + (st.offw > 1e-9 ? ', and $Tw$ leaves the plane.' : '.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 5.39
+    {
+      num: '5.39',
+      kind: 'Theorem',
+      name: 'Conditions for upper-triangular matrix',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ and $v_1, \dots, v_n$ is a basis of $V$. The following are equivalent:
+(a) the matrix of $T$ with respect to $v_1, \dots, v_n$ is upper triangular;
+(b) $\operatorname{span}(v_1, \dots, v_k)$ is invariant under $T$ for each $k = 1, \dots, n$;
+(c) $Tv_k \in \operatorname{span}(v_1, \dots, v_k)$ for each $k = 1, \dots, n$.`,
+      idea: String.raw`(a) $\Rightarrow$ (b): column $j$ of an upper-triangular matrix says $Tv_j \in \operatorname{span}(v_1,\dots,v_j)$, which lies inside $\operatorname{span}(v_1,\dots,v_k)$ when $j \le k$; so $T$ maps each spanning vector of $\operatorname{span}(v_1,\dots,v_k)$, hence the whole span, into it. (b) $\Rightarrow$ (c) is immediate, since $v_k$ lies in $\operatorname{span}(v_1,\dots,v_k)$. (c) $\Rightarrow$ (a): writing $Tv_k$ in the basis uses only $v_1,\dots,v_k$, so the entries of column $k$ below the diagonal are $0$.`,
+      caption: String.raw`$T$ is a fixed operator on $\mathbf R^3$ (its three eigen-lines are dotted green). Drag $v_1$, $v_2$, $v_3$; on the right are the matrix of $T$ in this basis and three independent tests. Red segments show how far $Tv_1$ is from the line $\operatorname{span}(v_1)$ and $Tv_2$ from the plane $\operatorname{span}(v_1, v_2)$. Drag $v_1$ onto an eigen-line and $v_2$ into an invariant plane (both snap): all three tests turn green at the same moment. **Snap to a flag** cycles through the six bases of this kind.`,
+      deps: ['ladr-5.38', 'ladr-5.2'],
+      tags: ['triangular', 'invariant subspaces'],
+      viz(v) {
+        const M = v.M;
+        const Sm = fromCols([[1, 0.3, -0.2], [0.4, 1, 0.3], [-0.3, 0.5, 1]]);
+        const T = conj(M, Sm, [[1.6, 0.6, 0.4], [0, 0.8, 0.5], [0, 0, -0.7]]);
+        const E = M.eig(T), ev = E.vectors.map(unitN), lam = E.values.map((z) => z.re);
+        const planes = [[0, 1], [0, 2], [1, 2]].map(([i, j]) => ({ i, j, n: unitN(cross3(ev[i], ev[j])) }));
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 390, weight: 1.15 });
+        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.36, axis: 1.5, lim: 1.35 });
+        const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, weight: 0.85, minWidth: 250 });
+        const onLine = (p) => ev.findIndex((e) => normN(p) > 0.1 && Math.abs(dotN(p, e)) / normN(p) > 1 - 1e-9);
+        const snap1 = (p) => { const l = normN(p); if (l < 0.15) return p; for (const e of ev) { const d = dotN(p, e); if (Math.abs(d) / l > Math.cos((7 * Math.PI) / 180)) return mul3(e, d); } return p; };
+        const snap2 = (p) => {
+          const k = onLine(h1.p), l = normN(p); if (k < 0 || l < 0.15) return p;
+          for (const P of planes) if (P.i === k || P.j === k) { const d = dotN(p, P.n); if (Math.abs(d) / l < Math.sin((7 * Math.PI) / 180)) return sub3(p, mul3(P.n, d)); }
+          return p;
+        };
+        const h1 = sc.handle(mul3(ev[0], 1.1), { color: 'blue', label: 'v₁', snap: snap1 });
+        const h2 = sc.handle([-0.2, 0.9, 0.8], { color: 'purple', label: 'v₂', snap: snap2 });
+        const h3 = sc.handle([0.4, -0.7, 0.9], { color: 'teal', label: 'v₃' });
+        const flags = []; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (i !== j) flags.push([i, j]);
+        let fk = 0;
+        v.button('Snap to a flag', () => {
+          const [i, j] = flags[fk++ % flags.length];
+          h1.set(mul3(ev[i], 1.1)); h2.set(add3(mul3(ev[i], 0.35), mul3(ev[j], 1.05)));
+          const v3 = h3.p; if (Math.abs(M.det(fromCols([h1.p, h2.p, v3]))) < 0.05) h3.set(mul3(unitN(cross3(h1.p, h2.p)), 1.1));
+        });
+        const TM = v.table(Q, { rows: 3, cols: 3, region: [0, 0.4, 1, 0.92], maxCell: 54, size: 14, rowLabels: ['$v_1$', '$v_2$', '$v_3$'], colLabels: ['$Tv_1$', '$Tv_2$', '$Tv_3$'] });
+        let st = null;
+        v.render(() => {
+          const vs = [h1.p, h2.p, h3.p], Bm = fromCols(vs), det = M.det(Bm), ok = Math.abs(det) > 0.03;
+          const Tv = vs.map((x) => mv(T, x)), L1 = orthN([vs[0]]), P12 = orthN([vs[0], vs[1]]);
+          const tol = 1e-6;
+          const d1 = distN(Tv[0], L1), d2 = distN(Tv[1], P12), d12 = distN(Tv[0], P12);
+          sc.begin();
+          ev.forEach((e) => sc.line(mul3(e, -2), mul3(e, 2), { color: 'green', width: 1.4, dash: [2, 4], alpha: 0.9 }));
+          const inv1 = d1 < tol, inv2 = d2 < tol && d12 < tol;
+          if (P12.length === 2) sc.disc(P12[0], P12[1], 1.6, { fill: inv2 ? 'green' : 'purple', color: inv2 ? 'green' : 'purple', fillAlpha: 0.1, grid: true });
+          if (L1.length) sc.line(mul3(L1[0], -2.1), mul3(L1[0], 2.1), { color: inv1 ? 'green' : 'blue', width: 3.4, alpha: 0.5 }, 16);
+          if (d1 > tol) sc.line(Tv[0], projN(Tv[0], L1), { color: 'red', width: 2.2, dash: [4, 3] });
+          if (d2 > tol) sc.line(Tv[1], projN(Tv[1], P12), { color: 'red', width: 2.2, dash: [4, 3] });
+          [0, 1].forEach((k) => { sc.arrow([0, 0, 0], Tv[k], { color: VC[k], width: 1.8, alpha: 0.6, dash: [5, 3] }); sc.tex(`Tv_${k + 1}`, Tv[k], { color: VC[k], size: 12.5, dx: 14, dy: -8 }); });
+          vs.forEach((x, k) => sc.arrow([0, 0, 0], x, { color: VC[k], width: 2.8 }));
+          sc.flush();
+          let C = null, a = false;
+          if (ok) { C = M.matMul(M.inverse(Bm), M.matMul(T, Bm)); a = [[1, 0], [2, 0], [2, 1]].every(([i, j]) => Math.abs(C[i][j]) < 1e-6); }
+          const b = ok && inv1 && inv2, c = ok && d1 < tol && d2 < tol;
+          TM.draw({
+            value: (i, j) => (ok ? C[i][j] : '—'), format: (x) => pn(x, 2),
+            fill: (i, j) => (!ok ? null : i > j ? (Math.abs(C[i][j]) < 1e-6 ? ['green', 0.25] : ['red', 0.22]) : null),
+            textColor: (i, j) => VC[j],
+          });
+          ttl(Q, TM, '\\mathcal M\\bigl(T, (v_1, v_2, v_3)\\bigr)', 'ink', false, 14);
+          const lights = [[a, '(a)\\ \\text{upper triangular}'], [b, '(b)\\ \\operatorname{span}(v_1),\\ \\operatorname{span}(v_1,v_2)\\ \\text{invariant}'], [c, '(c)\\ Tv_k \\in \\operatorname{span}(v_1,\\dots,v_k)']];
+          lights.forEach(([on, txt], i) => Q.tex(`${on ? '\\checkmark' : '\\times'}\\ ${txt}`, 0.03, 0.29 - i * 0.1, { align: 'left', color: on ? 'green' : 'red', size: 13 }));
+          if (!ok) S.corner('v₁, v₂, v₃ are not a basis', 'tl', { color: 'red', weight: 700 });
+          st = { ok, a, b, c, d1, d2, k1: onLine(h1.p) };
+        });
+        v.legend([['green', 'eigen-lines of $T$', { dash: true }], ['blue', '$\\operatorname{span}(v_1)$'], ['purple', '$\\operatorname{span}(v_1, v_2)$', { area: true }], ['red', 'distance to the span', { dash: true }]]);
+        v.readout(() => {
+          if (!st || !st.ok) return 'Choose three independent vectors.';
+          const { a, d1, d2 } = st;
+          const s = `$\\operatorname{dist}(Tv_1, \\operatorname{span}(v_1)) = ${tn(d1, 3)}$, $\\operatorname{dist}(Tv_2, \\operatorname{span}(v_1, v_2)) = ${tn(d2, 3)}$. `;
+          if (a) return s + `All three conditions hold together; the diagonal is $${[0, 1, 2].map((k) => tn(mv(M.inverse(fromCols([h1.p, h2.p, h3.p])), mv(T, [h1.p, h2.p, h3.p][k]))[k])).join(',\\ ')}$ — the eigenvalues of $T$.`;
+          return s + (st.k1 < 0 ? 'Condition (c) already fails at $k = 1$: $v_1$ is not an eigenvector, so the first column has nonzero entries below the diagonal.' : 'It holds at $k = 1$ ($v_1$ is an eigenvector) but fails at $k = 2$: $\\operatorname{span}(v_1, v_2)$ is not invariant, and the entry in row 3, column 2 is not $0$.');
+        });
+      },
+    },
   ],
 };

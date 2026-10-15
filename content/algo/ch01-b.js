@@ -159,7 +159,7 @@ More generally, without assuming the limit exists: $f = O(g)$ iff $\limsup f/g <
         const pair = v.select('$f/g$', Object.entries(PAIRS10).map(([value, P]) => ({ value, label: P.label })), 'osc');
         const NN = v.slider('look out to $N$', 100, 1e12, 1e8, { log: true, fmt: (x) => v.M.pow10Text(Math.round(Math.log10(x))) });
         const YT = []; for (let k = -8; k <= 8; k += 2) YT.push([k, k === 0 ? '1' : v.M.pow10Text(k)]);
-        const s = v.stage({ x: [1, 1e8], y: [-8.6, 8.6], xlog: true, height: 360, yticks: YT, title: '$f(n)/g(n)$ on a log scale, with its tail supremum and infimum' });
+        const s = v.stage({ x: [1, 1e8], y: [-8.6, 8.6], xlog: true, axes: 'box', height: 360, yticks: YT, title: '$f(n)/g(n)$ on a log scale, with its tail supremum and infimum' });
         const cache = {};
         let cur = null;
         v.render(() => {
@@ -168,12 +168,16 @@ More generally, without assuming the limit exists: $f = O(g)$ iff $\limsup f/g <
           const pts = all.filter(([n]) => n <= N);
           const sup = new Array(pts.length), inf = new Array(pts.length);
           for (let k = pts.length - 1; k >= 0; k--) { sup[k] = Math.max(pts[k][1], k + 1 < pts.length ? sup[k + 1] : -Infinity); inf[k] = Math.min(pts[k][1], k + 1 < pts.length ? inf[k + 1] : Infinity); }
-          s.setView([1, N], [-8.6, 8.6]);
+          let y0 = Infinity, y1 = -Infinity; for (const [, y] of pts) { y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+          y0 = Math.max(-8.6, Math.min(-1, y0 - 0.15 * (y1 - y0))); y1 = Math.min(8.6, Math.max(1, y1 + 0.15 * (y1 - y0)));
+          s.setView([1, N], [y0, y1]);
+          const T = []; if (y1 - y0 <= 4) { for (let k = Math.floor(y0); k <= y1; k++) for (const mm of [1, 2, 5]) { const t = k + Math.log10(mm); if (t >= y0 && t <= y1) T.push([t, v.fmt(Math.pow(10, t), 3)]); } } else for (let k = Math.ceil(y0 / 2) * 2; k <= y1; k += 2) T.push([k, k === 0 ? '1' : v.M.pow10Text(k)]);
+          s.setTicks(null, T);
           s.hline(0, { color: 'muted', width: 1 });
-          const vis = pts.filter(([, y]) => y >= -8.6 && y <= 8.6), stride = Math.max(1, Math.floor(vis.length / 3500));
+          const vis = pts.filter(([, y]) => y >= y0 && y <= y1), stride = Math.max(1, Math.floor(vis.length / 3500));
           s.dots(vis.filter((_, k) => k % stride === 0), { r: 1.4, color: 'accent', alpha: 0.55 });
-          s.path(clipPath(pts.map(([n], k) => [n, sup[k]]), -8.6, 8.6), { color: 'orange', width: 2.2 });
-          s.path(clipPath(pts.map(([n], k) => [n, inf[k]]), -8.6, 8.6), { color: 'purple', width: 2.2 });
+          s.path(clipPath(pts.map(([n], k) => [n, sup[k]]), y0, y1), { color: 'orange', width: 2.2 });
+          s.path(clipPath(pts.map(([n], k) => [n, inf[k]]), y0, y1), { color: 'purple', width: 2.2 });
           const k0 = pts.findIndex(([n]) => n >= N / 100);
           cur = { P, N, hi: sup[k0], lo: inf[k0] };
           s.vband(N / 100, N, { color: 'gold', alpha: 0.07 });
@@ -199,7 +203,7 @@ So every power of a logarithm is eventually beaten by every positive power of $n
       refs: ['CLRS 4e §3.3'],
       tags: ['asymptotics'],
       viz(v) {
-        const m = v.select('', [{ value: 'pl', label: '$(\\log n)^a$ vs $n^b$' }, { value: 'pe', label: '$n^b$ vs $c^n$' }, { value: 'ef', label: '$c^n$ vs $n!$' }], 'pl');
+        const m = v.select('', [{ value: 'pl', label: '$(\\log n)^a$ vs $n^b$' }, { value: 'pe', label: '$n^b$ vs $c^n$' }, { value: 'ef', label: '$c^n$ vs $n!$' }], 'pl', { onChange: () => { if (m.value === 'pe') { if (b.value < 1) b.set(10); if (c.value > 2) c.set(1.05); } if (m.value === 'pl' && b.value > 2) b.set(0.25); if (m.value === 'ef' && c.value < 5) c.set(20); } });
         const a = v.slider('$a$', 1, 40, 8, { step: 0.5 });
         const b = v.slider('$b$', 0.02, 50, 0.25, { log: true, decimals: 2 });
         const c = v.slider('$c$', 1.001, 100, 1.05, { log: true, decimals: 3 });
@@ -221,7 +225,7 @@ So every power of a logarithm is eventually beaten by every positive power of $n
           s.vband(xs, xmax, { color: 'green', alpha: 0.08 });
           s.path(clipPath(samp.map((x, k) => [x, ys[k]]), ylo - 1, yhi), { color: 'purple', width: 2.6 });
           s.path(clipPath(samp.map((x, k) => [x, yf[k]]), ylo - 1, yhi), { color: 'orange', width: 2.6 });
-          if (xs > 0) { s.dot(xs, Ls(xs), { r: 6, color: 'green' }); s.text('last crossover', xs, Ls(xs), { dx: -8, dy: -14, align: 'right', size: 12, weight: 600, color: 'green' }); }
+          if (xs > 0) { s.dot(xs, Ls(xs), { r: 6, color: 'green' }); const left = xs > 0.3 * xmax; s.text('last crossover', xs, Ls(xs), { dx: left ? -8 : 8, dy: -14, align: left ? 'right' : 'left', size: 12, weight: 600, color: 'green' }); }
           s.text('faster family ahead for good →', xmax * 0.985, ylo + 0.06 * (yhi - ylo), { align: 'right', size: 12, color: 'green' });
         });
         v.legend([['purple', 'slower family'], ['orange', 'faster family']]);

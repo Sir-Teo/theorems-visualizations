@@ -706,7 +706,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 260, title: '$A$: kept columns and kept rows' });
         const S = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 330, title: 'column space in $\\mathbf R^3$' });
         const sc = v.scene3(S, { axis: 2, yaw: 0.6, pitch: 0.3 });
-        const U = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.9, minWidth: 240, title: 'random $3\\times4$ matrices by column rank $c$, row rank $r$' });
+        const U = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.9, minWidth: 240, title: 'tally: column rank $c$, row rank $r$' });
         let kc = [], kr = [];
         const TA = v.table(Q, { rows: 3, cols: 4, maxCell: 50, size: 15, region: [0, 0.08, 1, 0.92], rowLabels: (i) => (kr.includes(i) ? 'kept' : '—'), colLabels: (j) => (kc.includes(j) ? 'kept' : '—'), rowLabelColor: (i) => (kr.includes(i) ? 'orange' : 'faint'), colLabelColor: (j) => (kc.includes(j) ? 'green' : 'faint') });
         editable(v, Q, TA, () => A, { min: -3, max: 3 });
@@ -809,8 +809,8 @@ using associativity of composition (3.8). Without both halves uniqueness fails: 
         const md = v.select('$T$', [{ value: 'inv', label: 'invertible, $\\mathbf R^2 \\to \\mathbf R^2$' }, { value: 'onto', label: '$T(x,y) = x + y$, onto $\\mathbf R$' }], 'inv');
         const wS = v.slider('$w \\in \\mathbf R$', -2, 2, 1.4, { step: 0.05 });
         const S = v.stage({ x: [-3.4, 3.4], y: [-3.3, 2.8], equal: true, axes: false, height: 380 });
-        const T = [[0.6, -0.5], [0.4, 0.8]];
-        const hw = S.handle(0.4, 1.8, { color: 'accent', label: 'w' });
+        const T = [[0.3, -0.8], [0.7, 0.4]];
+        const hw = S.handle(1.5, 1.2, { color: 'accent', label: 'w', labelPos: 'n' });
         const on = (x, y) => { const t = (x - y) / 2; return [M.clamp(0.5 + t, -1.8, 2.8), 1 - M.clamp(0.5 + t, -1.8, 2.8)]; };
         const p1 = S.handle(1.8, -0.8, { color: 'blue', label: 'S₁(1)', constrain: on }), p2 = S.handle(-0.6, 1.6, { color: 'purple', label: 'S₂(1)', constrain: on });
         let st = null;
@@ -821,12 +821,15 @@ using associativity of composition (3.8). Without both halves uniqueness fails: 
           if (inv) {
             const S1 = M.transpose(M.luSolve(M.transpose(T), [[1, 0], [0, 1]]));   // S₁T = I  ⇔  Tᵗ S₁ᵗ = I
             const S2 = M.luSolve(T, [[1, 0], [0, 1]]);                                // T S₂ = I
+            gridImage(S, S2, 4, { color: 'purple', alpha: 0.22 });
             const w = [hw.x, hw.y], s2w = ap2(S2, w), ts2w = ap2(T, s2w), s1w = ap2(S1, ts2w), s1Ts2 = ap2(M.matMul(S1, T), s2w);
             S.arrow(0, 0, w[0], w[1], { color: 'accent', width: 2.6 });
-            S.arrow(w[0], w[1], s2w[0], s2w[1], { color: 'purple', width: 1.8, dash: [5, 4] }); S.tex('S_2', (w[0] + s2w[0]) / 2, (w[1] + s2w[1]) / 2, { color: 'purple', dy: -12, size: 13 });
-            S.arrow(s2w[0] + 0.08, s2w[1] - 0.12, w[0] + 0.08, w[1] - 0.12, { color: 'orange', width: 1.6, dash: [5, 4] }); S.tex('T', (w[0] + s2w[0]) / 2 + 0.1, (w[1] + s2w[1]) / 2 - 0.15, { color: 'orange', dy: 12, size: 13 });
+            const L = Math.hypot(s2w[0] - w[0], s2w[1] - w[1]) || 1, d = [(s2w[0] - w[0]) / L, (s2w[1] - w[1]) / L], mid = [(w[0] + s2w[0]) / 2, (w[1] + s2w[1]) / 2];
+            S.arrow(w[0], w[1], s2w[0], s2w[1], { color: 'purple', width: 1.8, dash: [5, 4] });
+            S.arrow(s2w[0] - 0.1 * d[1], s2w[1] + 0.1 * d[0], w[0] - 0.1 * d[1], w[1] + 0.1 * d[0], { color: 'orange', width: 1.6, dash: [5, 4] });
+            S.tex('S_2', mid[0], mid[1], { color: 'purple', dx: 16 * d[1], dy: 16 * d[0], size: 13 }); S.tex('T', mid[0], mid[1], { color: 'orange', dx: -26 * d[1], dy: -26 * d[0], size: 13 });
             S.dot(s1Ts2[0], s1Ts2[1], { r: 15, hollow: true, color: 'green', width: 1.6 }); S.dot(s1w[0], s1w[1], { r: 10, hollow: true, color: 'blue', width: 2.4 }); S.dot(s2w[0], s2w[1], { r: 5, color: 'purple' });
-            S.tex('S_2w', s2w[0], s2w[1], { color: 'purple', dx: 26, dy: 14, size: 13 }); S.tex('S_1(TS_2w)', s1w[0], s1w[1], { color: 'blue', dx: -46, dy: -16, size: 12 });
+            S.tex('S_2w = S_1(TS_2w)', s2w[0], s2w[1], { color: 'blue', dx: 34 * d[0], dy: -34 * d[1], align: d[0] >= 0 ? 'left' : 'right', size: 13 });
             S.corner('S₁w = S₁(TS₂w) = (S₁T)(S₂w) = S₂w', 'tl', { color: 'green', weight: 700, size: 13 });
             st = { inv, S1, S2, s1w, s2w };
           } else {

@@ -403,39 +403,45 @@ is conserved: each pair contributes **one** potential term, not two. Individual 
           { i: 1, j: 2, U: (r) => 1.0 * (r - 1.4) ** 2, dU: (r) => 2 * (r - 1.4), kind: 'spring' },
           { i: 0, j: 2, U: (r) => { const e = Math.exp(-1.8 * (r - 1.3)); return 1.2 * (1 - e) ** 2 - 1.2; }, dU: (r) => { const e = Math.exp(-1.8 * (r - 1.3)); return 2 * 1.2 * 1.8 * (1 - e) * e; }, kind: 'morse' },
         ];
-        let st = null, key = '', simT = 0, first = true, hist = [];
+        let sim = null, key = '', cur = 0;
         const forces = (P) => { const F = [[0, 0], [0, 0], [0, 0]]; for (const q of PAIRS) { const dx = P[q.i][0] - P[q.j][0], dy = P[q.i][1] - P[q.j][1], r = Math.hypot(dx, dy), f = -q.dU(r) / r; F[q.i][0] += f * dx; F[q.i][1] += f * dy; const sj = brk.value && q.i === 0 && q.j === 1 ? 0.5 : 1; F[q.j][0] -= sj * f * dx; F[q.j][1] -= sj * f * dy; } return F; };
         const energies = (P, V) => { const T = V.map((u, i) => 0.5 * ms[i] * (u[0] ** 2 + u[1] ** 2)), Up = PAIRS.map((q) => q.U(Math.hypot(P[q.i][0] - P[q.j][0], P[q.i][1] - P[q.j][1]))); return { T, Up, E: T[0] + T[1] + T[2] + Up[0] + Up[1] + Up[2] }; };
+        const TEND = 20, dt = 0.002, EVERY = 10;
+        const solve = () => {
+          const V = [[0.5, 0.9], [-0.3, -0.4], [0, 0]]; V[2] = [-(ms[0] * V[0][0] + ms[1] * V[1][0]) / ms[2], -(ms[0] * V[0][1] + ms[1] * V[1][1]) / ms[2]];
+          const P = H.map((h) => [h.x, h.y]); let F = forces(P); const frames = [];
+          for (let n = 0; n <= TEND / dt; n++) {
+            if (n % EVERY === 0) frames.push({ P: P.map((p) => p.slice()), V: V.map((u) => u.slice()), e: energies(P, V) });
+            for (let i = 0; i < 3; i++) { V[i][0] += 0.5 * dt * F[i][0] / ms[i]; V[i][1] += 0.5 * dt * F[i][1] / ms[i]; P[i][0] += dt * V[i][0]; P[i][1] += dt * V[i][1]; }
+            F = forces(P); for (let i = 0; i < 3; i++) { V[i][0] += 0.5 * dt * F[i][0] / ms[i]; V[i][1] += 0.5 * dt * F[i][1] / ms[i]; }
+          }
+          const all = frames.flatMap((f) => [...f.e.T, f.e.E, f.e.Up[0] + f.e.Up[1] + f.e.Up[2]]);
+          return { frames, lo: Math.min(0, ...all), hi: Math.max(0.5, ...all), E0: frames[0].e.E };
+        };
         v.animate((t) => {
           const kk = H.map((h) => `${h.x.toFixed(3)},${h.y.toFixed(3)}`).join(';') + brk.value;
-          if (kk !== key || t < simT - 1e-9) {
-            key = kk; const V = [[0.5, 0.9], [-0.3, -0.4], [0, 0]]; V[2] = [-(ms[0] * V[0][0] + ms[1] * V[1][0]) / ms[2], -(ms[0] * V[0][1] + ms[1] * V[1][1]) / ms[2]];
-            st = { P: H.map((h) => [h.x, h.y]), V, F: null }; st.F = forces(st.P); simT = first ? 0 : t; first = false; hist = []; st.t0 = simT; st.E0 = energies(st.P, st.V).E;
-          }
-          const dt = 0.002; let n = 0;
-          while (simT < t && n++ < 6000) {
-            const { P, V, F } = st;
-            for (let i = 0; i < 3; i++) { V[i][0] += 0.5 * dt * F[i][0] / ms[i]; V[i][1] += 0.5 * dt * F[i][1] / ms[i]; P[i][0] += dt * V[i][0]; P[i][1] += dt * V[i][1]; }
-            st.F = forces(P); for (let i = 0; i < 3; i++) { V[i][0] += 0.5 * dt * st.F[i][0] / ms[i]; V[i][1] += 0.5 * dt * st.F[i][1] / ms[i]; }
-            simT += dt; if (Math.round((simT - st.t0) / dt) % 10 === 0) { const e = energies(P, V); hist.push([simT - st.t0, e]); }
-          }
-          const { P } = st;
+          if (kk !== key) { key = kk; sim = solve(); }
+          const { frames } = sim, i = Math.min(frames.length - 1, Math.floor(t / (dt * EVERY))); cur = i;
+          const { P } = frames[i];
+          const tr = frames.slice(Math.max(0, i - 60), i + 1);
+          for (let k = 0; k < 3; k++) s.path(tr.map((f) => f.P[k]), { color: cols[k], width: 1, alpha: 0.4 });
           for (const q of PAIRS) { if (q.kind === 'spring') spring(s, P[q.i], P[q.j], { color: 'muted' }); else s.line(P[q.i][0], P[q.i][1], P[q.j][0], P[q.j][1], { color: 'teal', dash: [2, 4], width: 2 }); }
-          P.forEach((p, i) => s.dot(p[0], p[1], { color: cols[i], r: 7 + 4 * Math.cbrt(ms[i]) }));
-          // energies
-          const tnow = simT - st.t0, t0 = Math.max(0, tnow - 20);
-          const all = hist.flatMap(([, e]) => [...e.T, e.E, e.Up[0] + e.Up[1] + e.Up[2]]), lo = Math.min(0, ...all), hi = Math.max(0.5, ...all);
-          g.setView([t0, t0 + 20], [lo - 0.08 * (hi - lo), hi + 0.12 * (hi - lo)]);
+          P.forEach((p, k) => s.dot(p[0], p[1], { color: cols[k], r: 7 + 4 * Math.cbrt(ms[k]) }));
+          // energies: whole run faint, elapsed part bold
+          g.setView([0, TEND], [sim.lo - 0.08 * (sim.hi - sim.lo), sim.hi + 0.12 * (sim.hi - sim.lo)]);
           g.hline(0, { color: 'faint', width: 1 });
-          for (let i = 0; i < 3; i++) g.path(hist.map(([tt, e]) => [tt, e.T[i]]), { color: cols[i], width: 1.4, alpha: 0.85 });
-          g.path(hist.map(([tt, e]) => [tt, e.Up[0] + e.Up[1] + e.Up[2]]), { color: 'teal', width: 1.6, dash: [5, 3] });
-          g.path(hist.map(([tt, e]) => [tt, e.E]), { color: 'ink', width: 3 });
-        }, { period: 40 });
+          const tt = (j) => j * dt * EVERY, series = [...[0, 1, 2].map((k) => [(f) => f.e.T[k], cols[k], 1.4, null]), [(f) => f.e.Up[0] + f.e.Up[1] + f.e.Up[2], 'teal', 1.6, [5, 3]], [(f) => f.e.E, 'ink', 3, null]];
+          for (const [fn, col, w, dash] of series) {
+            g.path(frames.map((f, j) => [tt(j), fn(f)]), { color: col, width: 1, alpha: 0.16, dash });
+            g.path(frames.slice(0, i + 1).map((f, j) => [tt(j), fn(f)]), { color: col, width: w, dash });
+          }
+          g.vline(tt(i), { color: 'faint', width: 1 });
+        }, { period: TEND });
         v.legend([['accent', '$T_1$'], ['orange', '$T_2$'], ['purple', '$T_3$'], ['teal', 'pair energies $U_{12} + U_{23} + U_{13}$', { dash: true }], ['ink', 'total $E$']]);
         v.readout(() => {
-          if (!st) return '';
-          const e = energies(st.P, st.V), px = st.V.reduce((a, u, i) => a + ms[i] * u[0], 0), py = st.V.reduce((a, u, i) => a + ms[i] * u[1], 0);
-          return `$T_1 + T_2 + T_3 = ${v.fix(e.T[0] + e.T[1] + e.T[2], 4)}$ · $U_{12} + U_{23} + U_{13} = ${v.fix(e.Up[0] + e.Up[1] + e.Up[2], 4)}$ · $E = ${v.fix(e.E, 5)}$ (start $${v.fix(st.E0, 5)}$, drift $${v.sci(Math.abs(e.E - st.E0) + 1e-16, 1)}$) · total momentum $(${v.fix(px, 4)}, ${v.fix(py, 4)})$${brk.value ? ' — **third law broken: neither is conserved**' : ''}`;
+          if (!sim) return '';
+          const f = sim.frames[cur], e = f.e, st = { E0: sim.E0 }, px = f.V.reduce((a, u, i) => a + ms[i] * u[0], 0), py = f.V.reduce((a, u, i) => a + ms[i] * u[1], 0);
+          return `$T_1 + T_2 + T_3 = ${v.fix(e.T[0] + e.T[1] + e.T[2], 4)}$ · $U_{12} + U_{23} + U_{13} = ${v.fix(e.Up[0] + e.Up[1] + e.Up[2], 4)}$ · $E = ${v.fix(e.E, 5)}$ (start $${v.fix(st.E0, 5)}$, drift $${v.sci(Math.abs(e.E - st.E0) + 1e-16, 1)}$) · total momentum $(${v.fix(Math.abs(px) < 5e-9 ? 0 : px, 4)}, ${v.fix(Math.abs(py) < 5e-9 ? 0 : py, 4)})$${brk.value ? ' — **third law broken: neither is conserved**' : ''}`;
         });
       },
     },

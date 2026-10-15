@@ -288,7 +288,7 @@ function quickTrace(vals, rule, rnd) {
   };
   rec(0, n - 1, 0, -1);
   snap({ line: [], done: true, note: `Sorted with **${cmps}** comparisons.` });
-  return { frames, cmps };
+  return { frames, cmps, calls: frames[frames.length - 1].calls };
 }
 /** Comparisons of quicksort with Lomuto partition (explicit stack); pivot 'first' or 'last'. */
 function quickCount(a, rule) {
@@ -788,7 +788,11 @@ It runs in $O(n\log n)$ time in the worst case, using at most about $2n\log_2 n$
         const hist = [];
         const kS = v.slider('key', 1, 99, 9, { int: true });
         const T = v.stage({ x: [0, 1], y: [-5.2, 0.6], axes: false, height: 320, weight: 2.2, minWidth: 380 });
-        const Hs = v.stage({ x: [0.3, 12.7], y: [0, 5.6], axes: 'box', height: 320, weight: 1, minWidth: 220, title: 'swaps per operation', yticks: [0, 1, 2, 3, 4, 5] });
+        const Hs = v.stage({ x: [-0.9, 12.7], y: [0, 5.6], axes: 'box', height: 320, weight: 1, minWidth: 220, title: 'swaps per operation (latest on the right)', yticks: [1, 2, 3, 4, 5], xticks: [] });
+        for (const [op, arg] of [['insert', 44], ['extract'], ['insert', 16], ['decrease', [9, 6]], ['extract'], ['insert', 70], ['extract'], ['insert', 29]]) {
+          const r0 = pqOp(op, A, arg);
+          if (r0.ok) { A = r0.A; hist.push({ op, sw: r0.sw, h: depthOf(op === 'extract' ? A.length + 1 : A.length) }); }
+        }
         const first = pqOp('insert', A, 9);
         A = first.A; hist.push({ op: 'insert', sw: first.sw, h: depthOf(A.length) }); msg = first.msg;
         const S = v.steps({ frames: first.frames, code: PQ_CODE.insert, codeTitle: 'Insert', codePos: 'below', speed: 1.6, start: 'end' });
@@ -820,7 +824,7 @@ It runs in $O(n\log n)$ time in the worst case, using at most about $2n\log_2 n$
           cells(T, B, { x0: 0.5 - (n * w) / 2, y: y0, w, h: 0.62, gap: w * 0.06, size: 11, style: (i) => (i === f.cur ? { fill: 'gold', alpha: 0.45, stroke: 'gold', width: 2 } : onPath.has(i) ? { stroke: 'gold', width: 1.8 } : null) });
           // history
           const H = hist.slice(-12);
-          Hs.setView([0.3, Math.max(12, H.length) + 0.7], [0, 5.6]);
+          Hs.setView([-0.9, Math.max(12, H.length) + 0.7], [0, 5.6]);
           H.forEach((e, k) => {
             const x = k + 1;
             Hs.rect(x - 0.32, 0, x + 0.32, Math.max(e.sw, 0.06), { fill: OPC[e.op], fillAlpha: 0.65, stroke: false });
@@ -859,7 +863,7 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
         let run = null;
         const trace = () => { const s = v.rng(seed); run = quickTrace(vals, rule.value, s); return run.frames; };
         const f0 = trace();
-        const S = v.steps({ frames: trace, code: QS_CODE, codeTitle: 'Quicksort (Lomuto partition)', codePos: 'below', speed: 3, start: f0.findIndex((f) => f.j === 7) });
+        const S = v.steps({ frames: trace, code: QS_CODE, codeTitle: 'Quicksort (Lomuto partition)', codePos: 'below', speed: 3, start: Math.floor(f0.length * 0.42) });
         const BAL = (c) => { if (c.size <= 1 || c.q == null) return 'muted'; const b = Math.min(c.left, c.right) / Math.max(1, c.size - 1); return b >= 0.25 ? 'green' : b > 0 ? 'orange' : 'red'; };
         const inv = (f) => { if (f.i == null || f.j == null) return null; for (let k = f.p; k <= f.i; k++) if (!(f.A[k] <= f.x)) return false; for (let k = f.i + 1; k < f.j; k++) if (!(f.A[k] > f.x)) return false; return true; };
         v.render(() => {
@@ -876,18 +880,22 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
             },
           });
           if (act && f.i != null && f.q == null) {
-            const iX = Math.max(f.i, f.p - 1);
+            const iX = Math.max(f.i, f.p - 1, -0.42);
             A.arrow(iX, -0.62, iX, -0.12, { color: 'green', width: 2, head: 7 }); A.text('i', iX, -0.78, { align: 'center', size: 13, color: 'green', math: true });
             if (f.j < f.r) { A.arrow(f.j, -0.62, f.j, -0.12, { color: 'ink', width: 2, head: 7 }); A.text('j', f.j, -0.78, { align: 'center', size: 13, color: 'ink', math: true }); }
             A.text(`x = ${f.x}`, f.r, 1.32, { align: 'center', size: 12, color: 'gold', weight: 700 });
           }
           if (act) { A.line(f.p - 0.46, 1.08, f.r + 0.46, 1.08, { color: 'accent', width: 2 }); A.text(`A[${f.p + 1}..${f.r + 1}]`, f.p - 0.46, 1.32, { size: 11.5, color: 'accent' }); }
           // recursion tree
-          const C = f.calls, maxD = Math.max(1, ...C.map((c) => c.depth));
+          const C = f.calls, all = run.calls, maxD = Math.max(1, ...all.map((c) => c.depth));
           R.setView(null, [-maxD - 0.55, 0.6]);
           const xOf = (c) => (c.q != null ? c.q : (c.p + c.r) / 2);
-          for (const c of C) if (c.parent >= 0) { const P = C[c.parent]; R.line(xOf(P), -P.depth, xOf(c), -c.depth, { color: 'faint', width: 1.6 }); }
           const rr = Math.max(5, Math.min(12, R.height / (maxD + 1.2) * 0.32));
+          for (const c of all.slice(C.length)) { // calls still to come: a faint preview of the whole tree
+            if (c.parent >= 0) { const P = all[c.parent]; R.line(P.q, -P.depth, c.q, -c.depth, { color: 'faint', width: 1, dash: [3, 4] }); }
+            disc(R, c.q, -c.depth, rr, null, { stroke: 'faint', width: 1.2 });
+          }
+          for (const c of C) if (c.parent >= 0) { const P = C[c.parent]; R.line(xOf(P), -P.depth, xOf(c), -c.depth, { color: 'muted', width: 1.6 }); }
           for (const c of C) {
             const col = BAL(c), cur = c.id === f.cur && !f.done;
             disc(R, xOf(c), -c.depth, rr, c.size, { stroke: cur ? 'gold' : col, fill: cur ? 'gold' : col, alpha: cur ? 0.5 : 0.2, width: cur ? 2.6 : 1.6, size: 11 });
@@ -923,9 +931,16 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
         // measured quicksort: Lomuto, first-element pivot
         const meas = { sorted: [], random: [] }, r2 = v.rng(12);
         for (let k = 3; k <= 11; k++) { const m = 1 << k, a = range1(m); meas.sorted.push([m, quickCount(a, 'first')]); meas.random.push([m, quickCount(r2.shuffle(a), 'first')]); }
-        const N = 4096; let cacheA = -1, Tm = null;
+        const N = 1 << 17; let cacheA = -1, Tm = null, slope = 0;
         const split = (m, a) => Math.floor(a * (m - 1) + 1e-9);
-        const exact = (a) => { if (a === cacheA) return Tm; Tm = new Float64Array(N + 1); for (let m = 2; m <= N; m++) { const L = split(m, a); Tm[m] = m - 1 + Tm[L] + Tm[m - 1 - L]; } cacheA = a; return Tm; };
+        const exact = (a) => {
+          if (a === cacheA) return Tm;
+          Tm = new Float64Array(N + 1);
+          for (let m = 2; m <= N; m++) { const L = split(m, a); Tm[m] = m - 1 + Tm[L] + Tm[m - 1 - L]; }
+          // growth constant: least-squares slope of T(n)/n against log2 n for n in [2^11, 2^17]
+          const xs = [], ys = []; for (let k = 0; k <= 60; k++) { const m = Math.round(2 ** (11 + k / 10)); xs.push(Math.log2(m)); ys.push(Tm[m] / m); }
+          slope = v.M.linreg(xs, ys).slope; cacheA = a; return Tm;
+        };
         let info = null;
         v.render(() => {
           const a = aS.value, n = nS.value, T = exact(a);
@@ -934,7 +949,7 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
           const rec = (lo, m, d) => { if (m <= 0) return; depth = Math.max(depth, d); (rows[d] ||= []).push([lo, m]); if (m === 1) return; const L = split(m, a); rec(lo, L, d + 1); rec(lo + L + 1, m - 1 - L, d + 1); };
           rec(0, n, 0);
           const W = n * 1.32;
-          I.setView([-n * 0.02, W], [-depth - 1.05, 0.12]);
+          I.setView([-n * 0.02, W], [-depth - 1.05, 0.08 + (depth + 1.1) * 0.07]);
           const rowH = I.height / (depth + 1.2), gap = rowH > 7 ? 0.14 : 0;
           rows.forEach((row, d) => {
             let cost = 0;
@@ -945,7 +960,7 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
             if (cost) I.rect(n * 1.04, -d - 1 + gap, n * 1.04 + (cost / n) * n * 0.26, -d - gap, { fill: 'orange', fillAlpha: 0.6, stroke: false });
           });
           I.line(n * 1.04 + n * 0.26, 0.05, n * 1.04 + n * 0.26, -depth - 1, { color: 'orange', width: 1, dash: [3, 3] });
-          I.text('level cost', n * 1.17, 0.05, { align: 'center', baseline: 'bottom', size: 10.5, color: 'orange' });
+          I.text('level cost', n * 1.17, 0.06, { align: 'center', baseline: 'bottom', size: 10.5, color: 'orange' });
           // plot
           const H = binEntropy(a);
           P.fn((m) => (m * m) / 2, { color: 'red', width: 1.2, dash: [5, 4] });
@@ -955,16 +970,17 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
           if (H > 0) P.fn((m) => (m * Math.log2(m)) / H, { color: 'accent', width: 1.3, dash: [6, 4] });
           P.dots(meas.sorted, { r: 4, color: 'red' }); P.dots(meas.random, { r: 4, color: 'green' });
           P.text('n²/2', 600, 3.2e5, { size: 11, color: 'red', align: 'right' });
-          P.text('n log₂ n', 3000, 1.6e4, { size: 11, color: 'muted', align: 'center' });
+          P.text('n log₂ n', 1300, 5e3, { size: 11, color: 'muted', align: 'left' });
           P.dot(n, Math.max(1, T[n]), { r: 6, color: 'gold' });
-          info = { a, n, depth, Tn: T[n], TN: T[N], H };
+          info = { a, n, depth, Tn: T[n], H };
         });
-        v.legend([['accent', '$\\alpha$-split recurrence (exact)'], ['accent', 'prediction $n\\log_2 n / H(\\alpha)$', { dash: true }], ['red', 'quicksort, sorted input, first pivot', { dot: true }], ['green', 'quicksort, random input', { dot: true }], ['gold', 'current $n$', { dot: true }]]);
+        v.legend([['accent', '$\\alpha$-split recurrence (exact)'], ['accent', 'leading term $n\\log_2 n / H(\\alpha)$', { dash: true }], ['red', 'quicksort, sorted input, first pivot', { dot: true }], ['green', 'quicksort, random input', { dot: true }], ['gold', 'current $n$', { dot: true }]]);
         v.readout(() => {
           if (!info) return '';
-          const { a, n, depth, Tn, TN, H } = info, NL = N * Math.log2(N);
+          const { a, n, depth, Tn, H } = info;
           const pred = a > 0 ? `$\\log_{1/(1-\\alpha)} n = ${v.fix(Math.log(n) / -Math.log(1 - a), 1)}$` : 'the worst case: depth $n-1$';
-          return `$\\alpha = ${v.fix(a, 2)}$: depth **${depth}** for $n=${n}$ (${pred}) · $T(${n}) = ${Tn}$ comparisons · at $n = 4096$: $T(n) = ${v.fix(TN / NL, 2)}\\,n\\log_2 n$` + (a > 0 ? `, theory $1/H(\\alpha) = ${v.fix(1 / H, 2)}$` : `$\\;= \\binom{n}{2}$`);
+          const tail = a === 0 ? ` · $T(n) = \\binom{n}{2}$: quadratic` : ` · growth constant of $T(n)/n$ per doubling, fitted for $n\\le 2^{17}$: **${v.fix(slope, 3)}**, theory $1/H(\\alpha) = ${v.fix(1 / H, 3)}$` + (a < 0.02 ? ' (floors still matter: subarrays shorter than $1/\\alpha$ split $0\\,|\\,m{-}1$)' : '');
+          return `$\\alpha = ${v.fix(a, 2)}$: depth **${depth}** for $n=${n}$ (${pred}) · $T(${n}) = ${Tn}$ comparisons` + tail;
         });
       },
     },
