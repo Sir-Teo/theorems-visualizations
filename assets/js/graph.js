@@ -687,8 +687,10 @@ export class TimelineView {
   X(u) { const L = 150, R = this.W - 30; return L + ((u - this.u0) / (this.u1 - this.u0)) * (R - L); }
   layout() {
     // one lane per field; inside a lane, a beeswarm so dots never overlap at the current zoom
-    const top = 40, bot = this.H - 50; const laneH = (bot - top) / Math.max(1, this.fields.length);
+    const avail = this.H - 110; const laneH = Math.min(170, avail / Math.max(1, this.fields.length));
+    const top = 50 + Math.max(0, (avail - laneH * this.fields.length) / 2);
     this.lanes = this.fields.map((F, i) => ({ F, y0: top + i * laneH, y1: top + (i + 1) * laneH }));
+    this.axisY = top + laneH * this.fields.length + 8;
     const R = 3.6;
     for (const lane of this.lanes) {
       const its = this.items.filter((it) => this.G.colById.get(it.col).field === lane.F.id).map((it) => ({ it, x: this.X(tAxis(it.yr)) })).sort((a, b) => a.x - b.x || (b.it.desc || 0) - (a.it.desc || 0));
@@ -718,18 +720,14 @@ export class TimelineView {
   }
   draw() {
     const c = this.ctx; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
-    // ticks: choose a step that gives ~10 labels in view
-    const yA = tAxisInv(this.u0), yB = tAxisInv(this.u1);
+    // ticks: round years, coarser in the distant past; keep labels ≥ 56 px apart (major years win)
     c.font = '500 11px Inter, system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'top';
-    const cands = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
-    let lastX = -1e9;
-    for (const step of cands) {
-      const ticks = []; for (let y = Math.ceil(yA / step) * step; y <= yB; y += step) ticks.push(y);
-      if (ticks.length <= 160) {
-        for (const y of ticks) { const x = this.X(tAxis(y)); if (x - lastX < 56 && x > lastX) continue; if (x < 140 || x > this.W - 20) continue; lastX = x; c.strokeStyle = withAlpha('grid', 1); c.lineWidth = 1; c.beginPath(); c.moveTo(x, 34); c.lineTo(x, this.H - 44); c.stroke(); c.fillStyle = resolveColor('muted'); c.fillText(fmtYear(y), x, this.H - 38); }
-        break;
-      }
-    }
+    const yA = tAxisInv(this.u0), yB = tAxisInv(this.u1);
+    const steps = [1000, 500, 100, 50, 25, 10, 5, 1];
+    const cand = []; for (const st of steps) for (let y = Math.ceil(yA / st) * st; y <= yB; y += st) if (!cand.some((q) => q.y === y)) cand.push({ y, st });
+    const placed = [];
+    for (const q of cand) { const x = this.X(tAxis(q.y)); if (x < 140 || x > this.W - 20) continue; if (placed.some((p) => Math.abs(p - x) < 56)) continue; placed.push(x);
+      c.strokeStyle = withAlpha('grid', 1); c.lineWidth = 1; c.beginPath(); c.moveTo(x, this.lanes[0].y0); c.lineTo(x, this.axisY); c.stroke(); c.fillStyle = resolveColor('muted'); c.fillText(fmtYear(q.y), x, this.axisY + 4); }
     for (const l of this.lanes) {
       c.fillStyle = withAlpha('field-' + l.F.id, 0.05); c.fillRect(0, l.y0 + 1, this.W, l.y1 - l.y0 - 2);
       c.fillStyle = withAlpha('field-' + l.F.id, 1); c.textAlign = 'left'; c.textBaseline = 'middle'; c.font = '600 11.5px Inter, system-ui, sans-serif';
@@ -738,8 +736,18 @@ export class TimelineView {
     }
     // labels for the most important ideas in view, without overlap
     const occ = []; const free = (x, y, w, h) => { for (const o of occ) if (x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1]) return false; occ.push([x, y, w, h]); return true; };
-    const all = this.lanes.flatMap((l) => l.pts).filter((q) => q.x > 140 && q.x < this.W - 10).sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 120);
+    const dots = this.lanes.flatMap((l) => l.pts).filter((q) => q.x > 140 && q.x < this.W - 10);
+    const blockers = dots.map((q) => [q.x - q.r, q.y - q.r, 2 * q.r, 2 * q.r]);
+    const freeOfDots = (x, y, w, h, self) => !blockers.some((b, i) => dots[i] !== self && x < b[0] + b[2] && x + w > b[0] && y < b[1] + b[3] && y + h > b[1]);
+    const all = dots.slice().sort((a, b) => (b.it.desc || 0) - (a.it.desc || 0)).slice(0, 80);
     c.font = '500 11px Inter, system-ui, sans-serif'; c.textBaseline = 'middle'; c.textAlign = 'left';
-    for (const q of all) { const t = plainName(q.it.name, 34); const w = c.measureText(t).width; if (!free(q.x + 6, q.y - 7, w + 4, 14)) continue; c.lineWidth = 3; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(t, q.x + 6, q.y); c.fillStyle = resolveColor('muted'); c.fillText(t, q.x + 6, q.y); }
+    for (const q of all) {
+      const t = plainName(q.it.name, 34); const w = c.measureText(t).width;
+      for (const [dx, dy] of [[6, 0], [6, -11], [6, 11], [-w - 10, 0]]) {
+        const x = q.x + dx, y = q.y + dy; if (x < 140 || x + w > this.W - 6) continue;
+        if (!freeOfDots(x, y - 7, w + 4, 14, q) || !free(x, y - 7, w + 4, 14)) continue;
+        c.lineWidth = 3; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(t, x, y); c.fillStyle = resolveColor('muted'); c.fillText(t, x, y); break;
+      }
+    }
   }
 }
