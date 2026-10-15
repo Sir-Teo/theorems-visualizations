@@ -69,7 +69,7 @@ function playhead(v) {
 }
 
 /** "+ 1.5" / "− 0.5" for building formulas like x(2t + 1). */
-const signed = (v, x, d = 2) => (x >= 0 ? `+${v.fix(x, d)}` : `-${v.fix(-x, d)}`);
+const signed = (v, x, d = 3) => (x >= 0 ? `+${v.fmt(x, d)}` : `-${v.fmt(-x, d)}`);
 /** Principal value of an angle in (−π, π]. */
 const wrapPi = (w) => { const r = ((((w + Math.PI) % TAU) + TAU) % TAU) - Math.PI; return r === -Math.PI ? Math.PI : r; };
 
@@ -233,7 +233,6 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
           // ---- bottom
           bot.fn(sig.f, { color: 'muted', width: 1.2, dash: [4, 4], alpha: 0.7 });
           const y = (t) => sig.f(a * t + b);
-          bot.fn(y, { color: 'green', width: 2.6, n: 1200 });
           let u1 = 1, u2 = 1, mism = 0;
           if (!deg) {
             u1 = M.ease((tt - 0.6) / 2.2); u2 = M.ease((tt - 3.6) / 2.2);
@@ -244,10 +243,10 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
             };
             if (R === 'wrong') for (let i = 0; i <= 600; i++) { const t = -4 + (8 * i) / 600; mism = Math.max(mism, Math.abs(sig.f(a * (t + b)) - y(t))); }
             const bad = R === 'wrong' && u2 > 0.999 && mism > 0.01;
-            bot.clip(() => bot.curve((tau) => [pos(tau), sig.f(tau)], A0, B0, { color: bad ? 'red' : 'gold', width: 3.2, n: 900, alpha: 0.9 }));
+            bot.clip(() => bot.curve((tau) => [pos(tau), sig.f(tau)], A0, B0, { color: bad ? 'red' : 'gold', width: 5, n: 900, alpha: 0.6 }));
             bot.dot(pos(0), sig.f(0), { color: 'orange', r: 5 }); bot.dot(pos(1), sig.f(1), { color: 'purple', r: 5 });
             for (const hd of [h0, h1]) if (hd.visible) bot.line(hd.x, YH, hd.x, sig.f(hd === h0 ? 0 : 1), { color: hd.color, dash: [3, 4], width: 1.2, alpha: 0.8 });
-            const A = v.fix(a, 2), Bs = signed(v, b), Ba = signed(v, b / a);
+            const A = v.fmt(a, 3), Bs = signed(v, b), Ba = signed(v, b / a);
             let msg;
             if (u1 < 1e-3) msg = 'start: $x(t)$';
             else if (u2 < 1e-3) msg = R === 'shift' ? `step 1, shift: $x(t${Bs})$` : `step 1, scale: $x(${A}t)$`;
@@ -256,6 +255,7 @@ so $y$ is $x$ shifted left by $b$ and then compressed by $a$ (flipped as well if
             else msg = `step 2, shift by $b$: $x(${A}(t${Bs}))=x(${A}t${signed(v, a * b)})$` + (u2 > 0.999 && mism > 0.01 ? ' ✗' : '');
             bot.corner(msg, 'tl', { color: bad ? 'red' : 'ink', size: 13 });
           } else bot.corner(`$a=0$: every $t$ reads the same value $x(b)$ = ${v.fix(sig.f(b), 2)}`, 'tl', { color: 'red', size: 13 });
+          bot.fn(y, { color: 'green', width: 2.2, n: 1200 });
           st = { a, b, deg, mism };
         }, { period: 7.5, still: 7.2 });
         v.legend([['accent', 'drawn signal $x$'], ['green', '$y(t)=x(at+b)$, computed directly'], ['gold', 'a copy of $x$ on its way'], ['muted', '$x(t)$ for comparison', { dash: true }]]);
@@ -438,7 +438,7 @@ In discrete time the analogous signal is $Cz^n$ with $z=e^{s}$.`,
         const M = v.M, TEND = 6, RMAX = 2.6;
         const sp = v.stage({ x: [-1.1, 0.62], y: [-7.2, 7.2], height: 265, axes: true, xlabel: 'σ (1/s)', ylabel: 'ω (rad/s)', title: 'the exponent $s=\\sigma+j\\omega$' });
         const pz = v.stage({ x: [-2.75, 2.75], y: [-2.75, 2.75], equal: true, height: 265, axes: true, title: '$x(t)=Ce^{st}$ in the complex plane' });
-        const s3 = v.stage3d({ height: 330, range: 3.75, axes: false, yaw: -0.32, pitch: 0.34, persp: 9, full: true, title: 'against time: a spiral, with $\\Re\\,x$ on the floor and $\\Im\\,x$ on the back wall' });
+        const s3 = v.stage3d({ height: 340, range: 3.7, axes: false, yaw: -0.38, pitch: 0.55, persp: 9, full: true, title: 'against time: a spiral, with $\\Re\\,x$ on the floor and $\\Im\\,x$ on the back wall' });
         const sH = sp.handle(-0.22, 3.2, { color: 'accent', label: '$s$', constrain: (x, y) => [Math.abs(x) < 0.035 ? 0 : x, Math.abs(y) < 0.28 ? 0 : y] });
         const cH = pz.handle(1.7, 0.35, { color: 'gold', label: '$C$', constrain: (x, y) => { const r = Math.hypot(x, y), k = r > 2.4 ? 2.4 / r : r < 0.3 ? 0.3 / Math.max(r, 1e-9) : 1; return [x * k, y * k]; } });
         const pp = v.phasePlane(pz, { f: (x, y, t, p) => [p.sg * x - p.om * y, p.om * x + p.sg * y], params: { sg: () => sH.x, om: () => sH.y }, field: 'stream', nullclines: false, fixedPoints: true, click: false, both: false, seeds: [] });

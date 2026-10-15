@@ -127,7 +127,7 @@ viz(v) {   // deep time on a log axis with the geologic time scale
 ## 3. `v.agents(stage, spec)` → `A`
 
 Cellular automata and agent-based models. The kit owns the runtime animation (▶/⏸, restart = same seed) and adds
-**Step** and **New run** buttons; `speed` = steps per second. Stats are recorded every step.
+**Step** and **New run** buttons; `speed` = steps per second. Stats are recorded every step. `still` (seconds, default 5) is the moment shown in `--still` screenshots: the model is run up to `still × speed` steps.
 
 | spec key | | |
 |---|---|---|

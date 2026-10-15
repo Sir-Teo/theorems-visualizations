@@ -124,7 +124,7 @@ Multiplying by a shifted impulse picks out one sample, $x[n]\,\delta[n-n_0]=x[n_
           let e1 = 0, e2 = 0, cs = 0;
           for (let i = 0; i < x.length; i++) { e1 = Math.max(e1, Math.abs(S[i] - (i ? S[i - 1] : 0) - x[i])); cs += D[i]; e2 = Math.max(e2, Math.abs(cs - x[i])); }
           st = { nc, x: x[k], s: S[k], d: D[k], e1, e2 };
-        }, { period: (NB - NA + 1) * DT + 2.4, still: (NB - NA + 1) * DT + 1 });
+        }, { period: (NB - NA + 1) * DT + 2.4, still: (6 - NA + 0.5) * DT });
         v.legend([['accent', 'input $x[n]$', { dot: true }], ['purple', 'running sum', { dot: true }], ['orange', 'first difference', { dot: true }], ['gold', 'the cursor $n$ and what has been summed so far', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
@@ -324,7 +324,7 @@ its ordinary derivative plus an impulse of area $J_k$ at every jump.`,
         const eS = v.slider('smoothing width $\\varepsilon$', 0.01, 1, 0.35, { log: true, fmt: (x) => v.fmt(x, 3) });
         const top = v.stage({ x: [XL, XR], y: [-0.35, 1.45], height: 185, axes: 'box', yticks: [0, 1], full: true, title: 'the signal $x$ and its smoothed version $x_\\varepsilon(t)=\\frac1\\varepsilon\\int_{t-\\varepsilon/2}^{t+\\varepsilon/2}x$' });
         const bot = v.stage({ x: [XL, XR], y: YB, height: 250, axes: 'box', yticks: [-2, -1, 0, 1, 2], xlabel: 't', full: true, title: '$x_\\varepsilon\'$ and the predicted limit $x\'_{\\rm ord}+\\sum_k J_k\\,\\delta(t-t_k)$' });
-        const phi = (t) => Math.exp(-((t - 0.25) ** 2) / 0.7), dphi = (t) => (-2 * (t - 0.25) / 0.7) * phi(t);
+        const phi = (t) => Math.exp(-((t - 0.3) ** 2) / 0.3), dphi = (t) => (-2 * (t - 0.3) / 0.3) * phi(t);
         let st = null;
         v.render(() => {
           const S = SIG[which.value], e = eS.value, J = S.J, tj = J.map((p) => p[0]);
@@ -346,7 +346,7 @@ its ordinary derivative plus an impulse of area $J_k$ at every jump.`,
           }
           // spike area around the first jump, and the pairings with φ
           const [t1, J1] = J.find((p) => p[0] === 0) || J[0];
-          const spike = xe(t1 + e) - xe(t1 - e);
+          const spike = xe(t1 + e) - xe(t1 - e) - integrateSplit(M, S.d, t1 - e, t1 + e, [t1], 60);
           const brk = [...tj.flatMap((t) => [t - e / 2, t + e / 2])];
           const Aeps = integrateSplit(M, (t) => dxe(t) * phi(t), -4, 4, brk, 120);
           const Bdist = -integrateSplit(M, (t) => S.x(t) * dphi(t), -4, 4, tj, 200);
@@ -357,7 +357,7 @@ its ordinary derivative plus an impulse of area $J_k$ at every jump.`,
         v.readout(() => {
           if (!st) return '';
           const { e, t1, J1, spike, Aeps, Bdist, Cpred } = st;
-          return `$\\varepsilon$ = ${v.fmt(e, 3)}: the spike of $x_\\varepsilon'$ at $t$ = ${t1} has width $\\varepsilon$, height up to $|J|/\\varepsilon$ = ${v.fmt(Math.abs(J1) / e, 3)} and area $x_\\varepsilon(t+\\varepsilon)-x_\\varepsilon(t-\\varepsilon)$ = ${v.fix(spike, 4)} (jump $J$ = ${J1}) · pairing with $\\varphi$: $\\int x_\\varepsilon'\\varphi\\,dt$ = ${v.fix(Aeps, 4)} $\\to$ $-\\int x\\varphi'\\,dt$ = ${v.fix(Bdist, 4)} $=\\int x'_{\\rm ord}\\varphi\\,dt+\\sum_k J_k\\varphi(t_k)$ = ${v.fix(Cpred, 4)}`;
+          return `$\\varepsilon$ = ${v.fmt(e, 3)}: the spike of $x_\\varepsilon'$ at $t$ = ${t1} has width $\\varepsilon$, height up to $|J|/\\varepsilon$ = ${v.fmt(Math.abs(J1) / e, 3)} and area (above the ordinary derivative) ${v.fix(spike, 4)}, the jump $J$ = ${J1} · pairing with $\\varphi$: $\\int x_\\varepsilon'\\varphi\\,dt$ = ${v.fix(Aeps, 4)} $\\to$ $-\\int x\\varphi'\\,dt$ = ${v.fix(Bdist, 4)} $=\\int x'_{\\rm ord}\\varphi\\,dt+\\sum_k J_k\\varphi(t_k)$ = ${v.fix(Cpred, 4)}`;
         });
       },
     },

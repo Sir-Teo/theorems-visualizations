@@ -750,7 +750,7 @@ At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\
         const gas = v.select('gas', [{ value: 'He', label: 'He' }, { value: 'N2', label: '$\\mathrm{N_2}$' }, { value: 'CO2', label: '$\\mathrm{CO_2}$' }], 'N2', { onChange: () => make() });
         const pr = v.slider('pressure $p = \\mathcal N k_BT$', 2, 300, 20, { log: true, fmt: (x) => `${x < 10 ? x.toFixed(1) : x.toFixed(0)} bar`, onChange: () => make() });
         v.button('Clear histogram', () => clearH());
-        const sa = v.stage({ x: [-0.04, 1.04], y: [-0.04, 1.04], equal: true, height: 330, axes: false, weight: 0.95, minWidth: 240 });
+        const sa = v.stage({ x: [-0.04, 1.04], y: [-0.1, 1.1], equal: true, height: 330, axes: false, weight: 0.95, minWidth: 240 });
         const sh = v.stage({ x: [0, 4], y: [0, 1.1], height: 330, axes: 'box', weight: 1.2, title: 'distribution of free path lengths $x$ (nm)' });
         let G, L, n, sp, last, paths, counts, trail, tLast = 0, ncol0 = 0, t0 = 0, sum = 0, cnt = 0;
         const clearH = () => { counts = new Float64Array(NB); sum = 0; cnt = 0; ncol0 = G.ncol; t0 = G.t; };
@@ -792,8 +792,8 @@ At fixed temperature $\lambda \propto 1/p$; for nitrogen at 1 bar and 25 °C, $\
           }, [0, 1], [0, 1]);
           sa.dot(G.x[0] * sc, G.y[0] * sc, { r: Math.max(3, sp.d / 2 * sc * sa.scale), color: 'gold' });
           const bar = Math.min(0.9, lp * sc);
-          sa.line(0.05, 1.015, 0.05 + bar, 1.015, { color: 'ink', width: 3 });
-          sa.text(`λ = ${v.fix(lp / 10, 2)} nm`, 0.07 + bar, 1.015, { size: 11.5, color: 'ink', align: 'left' });
+          sa.line(0, 1.055, bar, 1.055, { color: 'ink', width: 3 }); sa.line(0, 1.035, 0, 1.075, { color: 'ink', width: 1.5 }); sa.line(bar, 1.035, bar, 1.075, { color: 'ink', width: 1.5 });
+          sa.text(`λ = ${v.fix(lp / 10, 2)} nm (predicted)`, bar + 0.02, 1.055, { size: 11.5, color: 'ink', align: 'left' });
           sa.corner(`box ${v.fix(L / 10, 2)} nm (periodic) · ${v.fix(G.t * T0 * 1e12, 0)} ps`, 'bl', { size: 11 });
           // --- histogram vs exponential ---
           const xmax = 4 * lp / 10, tot = counts.reduce((a, b) => a + b, 0), bw = xmax / NB;
@@ -829,10 +829,10 @@ The scale height $H$ is about 8.4 km for air at 288 K. In a mixture left undistu
       scope: String.raw`Assumes an isothermal atmosphere, uniform $g$ and diffusive (unstirred) equilibrium. Earth's real atmosphere cools by about 6.5 K/km in the troposphere, and turbulence mixes all gases to a common profile up to the turbopause near 100 km; above it the gases separate by mass as the formula predicts.`,
       viz(v) {
         const SPEC = [{ name: 'He', M: 4.003, col: 'teal', n: 150 }, { name: 'N₂', M: 28.014, col: 'blue', n: 300 }, { name: 'CO₂', M: 44.01, col: 'red', n: 150 }];
-        const HT = 60, WC = 24, NB = 30, RATE = 120, KB = 1.380649e-23, U = 1.66053907e-27, SETTLE = 700;
-        const Tsl = v.slider('temperature', 150, 400, 288, { step: 1, fmt: (x) => `${x.toFixed(0)} K`, onChange: () => clearH() });
-        const gsel = v.select('gravity', [{ value: 9.81, label: 'Earth 9.81' }, { value: 3.71, label: 'Mars 3.71' }], 9.81, { onChange: () => clearH() });
-        const stir = v.toggle('stirring (turbulent mixing)', false, { onChange: () => clearH() });
+        const HT = 60, WC = 24, NB = 30, RATE = 120, KB = 1.380649e-23, U = 1.66053907e-27, SETTLE = 700, MEM = 1500;
+        const Tsl = v.slider('temperature', 150, 400, 288, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
+        const gsel = v.select('gravity', [{ value: 9.81, label: 'Earth 9.81' }, { value: 3.71, label: 'Mars 3.71' }], 9.81);
+        const stir = v.toggle('stirring (turbulent mixing)', false);
         v.button('Release from the ground', () => reset());
         const sc = v.stage({ x: [-3, WC + 1], y: [-2, HT + 2], equal: true, height: 400, axes: false, weight: 0.42, minWidth: 170 });
         const sp = v.stage({ x: [0.002, 1.5], y: [0, HT], xlog: true, height: 400, axes: 'box', weight: 1, title: 'density relative to the ground (log scale) against height (km)' });
@@ -858,7 +858,11 @@ The scale height $H$ is about 8.4 km for air at 288 K. In a mixture left undistu
             if (S[a] !== S[b]) { [x[a], x[b]] = [x[b], x[a]]; [z[a], z[b]] = [z[b], z[a]]; [vx[a], vx[b]] = [vx[b], vx[a]]; [vz[a], vz[b]] = [vz[b], vz[a]]; }
           }
           tSim += dt;
-          if (tSim - tH > SETTLE) { for (let i = 0; i < NT; i++) { const b = Math.min(NB - 1, Math.floor(z[i] / (top / NB))); hist[S[i]][b] += dt; } wsum += dt; }
+          if (tSim - tH > SETTLE) {   // time average with a fading memory (about 1500 s), so the profile follows changes
+            const f = Math.exp(-dt / MEM); for (const h of hist) for (let b = 0; b < NB; b++) h[b] *= f;
+            for (let i = 0; i < NT; i++) { const b = Math.min(NB - 1, Math.floor(z[i] / (top / NB))); hist[S[i]][b] += dt; }
+            wsum = wsum * f + dt;
+          }
         };
         // time-averaged occupancy of each height bin; the profile is normalised by the fitted ground density n(0)
         const occ = (j) => Array.from(hist[j], (c, b) => [c / Math.max(1e-9, wsum), (b + 0.5) * HT / NB]).filter((q) => q[0] > 0.04);

@@ -271,9 +271,13 @@ class Agents {
     const api = this.api; this._lastT = 0; let acc = 0;
     api.animate((t) => {
       if (t < this._lastT - 1e-9) { this.m.reset(); acc = 0; this.onStep?.(this.m); } // restart button
-      else if (!this.m.done) { acc += (t - this._lastT) * val(this.spec.speed ?? 12); let n = Math.min(Math.floor(acc), this.spec.maxPerFrame ?? 400); acc -= Math.floor(acc); if (n > 0) { this.m.step(n); this.onStep?.(this.m); } if (this.m.done && api.playing) api.pause(); }
+      else if (!this.m.done) {
+        const still = typeof window !== 'undefined' && window.__vizStill; // screenshots: run all the way to the still time at once
+        acc += (t - this._lastT) * val(this.spec.speed ?? 12); let n = Math.min(Math.floor(acc), still ? 1e6 : this.spec.maxPerFrame ?? 400); acc -= Math.floor(acc);
+        if (n > 0) { this.m.step(n); this.onStep?.(this.m); } if (this.m.done && api.playing) api.pause();
+      }
       this._lastT = t;
-    }, { period: null, autoplay: this.spec.autoplay !== false });
+    }, { period: null, autoplay: this.spec.autoplay !== false, still: this.spec.still ?? 5 });
   }
   _paint(state) {
     const s = this.s, k = this.m.stateIndex(state === true ? 1 : state);

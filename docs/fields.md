@@ -44,6 +44,21 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Show conserved quantities live (energy, momentum, angular momentum) and the quantity the law
   predicts beside the measured one (period vs amplitude, orbit period vs semi-major axis³ᐟ²).
 
+## Statistics & data science
+
+- **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated
+  sampling from a population the reader controls (shape menu incl. skewed and heavy-tailed laws,
+  sample size, *Draw 1 / 100 / 10,000*), building the sampling distribution as a histogram with the
+  theoretical one overlaid. Seed the randomness (`v.M.rng(seed)`) from the control settings so
+  screenshots are reproducible.
+- **The readout compares measured with predicted**: mean, SD, coverage of an interval, size and
+  power of a test, Kolmogorov distance — with the Monte Carlo error shown.
+- **Break it**: Cauchy data (no mean), dependent samples, tiny n, the wrong model, multiple
+  testing, a confounder. Use `v.M.dist` (normal, t, χ², F, gamma, beta, Cauchy, lognormal,
+  mixture, Kolmogorov …) rather than hand-rolled laws.
+- Machine learning items train on data the reader places (click to add points) and show the
+  generalization gap against the bound.
+
 ## Computer science
 
 - **Algorithms run on input the reader can edit**: drag graph nodes and edit weights
@@ -57,6 +72,43 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   for quicksort, a bad hash function, a graph with a cycle for topological sort.
 - Kinds: `Algorithm` (statement = what it computes plus its guarantee), `Theorem` for
   correctness/optimality/lower bounds, `Concept`, `Method`.
+
+## Chemistry & materials
+
+- **Molecular and quantitative**: particles in a box (`v.mol` kit) whose measured pressure,
+  speeds or reaction counts are compared with the macroscopic law; real constants (`v.M.CONST`,
+  SI via `v.M.si`) and real substance data (van der Waals a, b; heats of formation) with sources
+  in `refs`.
+- **Equilibrium as a balance of rates**: show forward and backward rates converging, then perturb
+  (Le Chatelier) and watch the shift; free-energy curves with the minimum moving.
+- **Break it**: high density for ideal gases, low temperature, non-ideal mixtures, a catalyst that
+  changes rates but not the equilibrium.
+- Spectra and orbitals: use `v.M.schrodinger1D` for 1D models, `v.M.wavelengthRGB` for colours;
+  3D shapes through `v.scene3`.
+
+## Biology
+
+- **Populations of individuals**: the `agents` kit (individual-based models) beside the
+  deterministic equation they converge to — Hardy–Weinberg proportions, logistic growth,
+  predator–prey cycles, drift in small populations. Seeded randomness with *New run* buttons.
+- **Genotype colours are a house convention** (popgen: AA blue, Aa purple, aa orange); keep them
+  consistent within a collection.
+- **Break it**: small N (drift), non-random mating, selection, migration, delays, stochasticity.
+- Sequences and trees: alignments as DP tables (`v.table`), phylogenies with the `tree` kit,
+  genealogies backwards in time (coalescent).
+
+## Medicine & health
+
+- **A simulated population the reader controls**: cohorts on lifelines (Lexis-style), with
+  prevalence, risk and rates measured live and compared with the formulas; icon arrays of 100 or
+  1,000 people for risks and test results (natural frequencies beat percentages).
+- **Bias is the main enemy — make it visible**: confounding (stratify and watch an association
+  reverse), selection bias, loss to follow-up, lead-time and length bias in screening, regression
+  to the mean.
+- **Physiology and pharmacology**: compartment models integrated honestly (`v.M` ODE solvers),
+  with dose–response curves on log axes and real parameter values cited in `refs`.
+- **Honesty about data**: historical numbers (Snow, Graunt, Doll & Hill) quoted from their source
+  and cited; modelled data labelled as models.
 
 ## Economics & finance, social sciences
 

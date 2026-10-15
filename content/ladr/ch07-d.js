@@ -635,5 +635,589 @@ $$T = S\sqrt{T^*T}.$$`,
         });
       },
     },
+    // ------------------------------------------------------------------ 7.96
+    {
+      num: '7.96',
+      kind: 'Definition',
+      name: 'Ellipsoid with principal axes',
+      statement: String.raw`Suppose $f_1, \dots, f_n$ is an orthonormal basis of $V$ and $s_1, \dots, s_n$ are positive numbers. The **ellipsoid** $E(s_1f_1, \dots, s_nf_n)$ with **principal axes** $s_1f_1, \dots, s_nf_n$ is the set
+$$E(s_1f_1, \dots, s_nf_n) = \Big\{v \in V : \frac{|\langle v, f_1\rangle|^2}{s_1^2} + \cdots + \frac{|\langle v, f_n\rangle|^2}{s_n^2} < 1\Big\}.$$
+For example, the ball $B = \{v \in V : \|v\| < 1\}$ equals $E(f_1, \dots, f_n)$ for every orthonormal basis $f_1, \dots, f_n$, by Parseval's identity (6.30).`,
+      idea: String.raw`In the coordinates $a_k = \langle v, f_k\rangle$ of 6.30 the condition reads $a_1^2/s_1^2 + \cdots + a_n^2/s_n^2 < 1$: the ball, stretched by the factor $s_k$ along the $f_k$-axis. So $\pm s_kf_k$ are the ends of mutually perpendicular axes on the boundary, and $s_k$ is the length of the $k$th semi-axis. Orthonormality matters: with a skewed list $f_1, \dots, f_n$ the same formula still cuts out an ellipsoid, but its axes lie elsewhere and the points $s_kf_k$ are no longer on it.`,
+      caption: String.raw`Set the semi-axes with the sliders, aim $f_1$ by dragging its handle (it stays on the unit sphere) and turn $f_2, f_3$ about it; drag the background to rotate the view. The surface is $E(s_1f_1, s_2f_2, s_3f_3)$. Drag the gold point $p$: the bar stacks the three terms $|\langle p, f_k\rangle|^2/s_k^2$, and $p \in E$ exactly when the total stays below the line at $1$. Break orthonormality with the skew slider: the formula now describes a different ellipsoid, whose true axes (green, dashed) differ from the $s_kf_k$, and the tips $s_kf_k$ fall outside it (red dots).`,
+      deps: ['ladr-6.27', 'ladr-6.30'],
+      tags: ['geometry'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ellipsoid' },
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.75, 1.95], equal: true, axes: false, height: 400, weight: 1.4, minWidth: 320 });
+        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 240, title: 'is $p$ in $E$?' });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.45, lim: 1.7 });
+        const sl = [['$s_1$', 1.4], ['$s_2$', 0.85], ['$s_3$', 0.5]].map(([l, x]) => v.slider(l, 0.2, 1.6, x, { step: 0.01 }));
+        const tw = v.slider('turn $f_2, f_3$ about $f_1$', -3.14, 3.14, 0.5, { step: 0.01 });
+        const sk = v.slider('skew $f_2$ toward $f_1$ (degrees)', 0, 50, 0, { step: 1 });
+        const fh = sc.handle(unit([1, 0.45, 0.3]), { color: 'blue', label: 'f₁', snap: (p) => (len(p) > 1e-6 ? unit(p) : [1, 0, 0]) });
+        const ph = sc.handle([0.3, -0.75, 0.35], { color: 'gold', label: 'p' });
+        const CC = ['blue', 'purple', 'teal'];
+        let st = null;
+        v.render(() => {
+          const f1 = unit(fh.p), [g, h] = basisPerp(f1), t = tw.value, dk = sk.value / DEG;
+          const f2o = add(scl(g, Math.cos(t)), scl(h, Math.sin(t))), f3 = cross(f1, f2o);
+          const F = [f1, add(scl(f2o, Math.cos(dk)), scl(f1, Math.sin(dk))), f3], s = sl.map((x) => x.value), ortho = dk < 1e-9;
+          // E = {v : Σ⟨v, f_k⟩²/s_k² < 1} = A(B) with A = F⁻¹·diag(s), where F has the rows f_k
+          const A = mm(M.inverse(F), DIAG3(s)), sv = svd3(M, A);
+          const Q = (x) => F.reduce((acc, fk, k) => acc + dot(x, fk) ** 2 / s[k] ** 2, 0);
+          sc.begin();
+          silhouette(sc, S, A, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.4 });
+          sphereImage(sc, A, { color: 'accent', width: 1, alpha: 0.3 });
+          for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) ellPoly3(sc, scl(sv.f[i], sv.s[i]), scl(sv.f[j], sv.s[j]), { fill: 'accent', color: 'accent', fillAlpha: 0.04, alpha: 0.35, width: 1 });
+          if (!ortho) sv.f.forEach((d, k) => sc.line(scl(d, -sv.s[k]), scl(d, sv.s[k]), { color: 'green', width: 2, dash: [6, 4] }));
+          const p = ph.p, q = F.map((fk, k) => dot(p, fk) ** 2 / s[k] ** 2), tot = q[0] + q[1] + q[2], inside = tot < 1;
+          F.forEach((fk, k) => {
+            const tip = scl(fk, s[k]);
+            sc.line(scl(fk, -s[k]), ZERO, { color: CC[k], width: 1.2, alpha: 0.5, dash: [4, 4] });
+            sc.arrow(ZERO, tip, { color: CC[k], width: 3 });
+            sc.tex(`s_${k + 1}f_${k + 1}`, scl(fk, s[k] + 0.26), { color: CC[k], size: 14 });
+            if (!ortho) sc.dot(tip, { color: Q(tip) > 1 + 1e-9 ? 'red' : 'green', r: 5 });
+            else sc.dot(scl(fk, dot(p, fk)), { color: CC[k], r: 3.5 });
+          });
+          sc.line(ZERO, p, { color: 'gold', width: 1.2, dash: [3, 3] });
+          sc.dot(p, { color: inside ? 'green' : 'red', r: 11, hollow: true, width: 2.5 });
+          sc.flush();
+          if (!ortho) S.corner(`f₁, f₂ meet at ${pf(90 - sk.value, 0)}°: not orthonormal`, 'tl', { color: 'red', weight: 700 });
+          // the bar: three terms stacked against the threshold 1
+          const Y = (x) => 0.08 + 0.33 * Math.min(x, 2.4);
+          let acc = 0;
+          q.forEach((x, k) => { if (x > 1e-6) B.rect(0.1, Y(acc), 0.3, Y(acc + x), { fill: CC[k], fillAlpha: 0.55, color: CC[k], width: 1 }); acc += x; });
+          B.rect(0.1, Y(0), 0.3, Y(2.4), { color: 'faint', width: 1 });
+          B.line(0.04, Y(1), 0.36, Y(1), { color: 'ink', width: 2.2, dash: [5, 3] });
+          B.text('1', 0.03, Y(1), { align: 'right', size: 13, weight: 700, dx: 2 });
+          if (tot > 2.4) B.text('↑', 0.2, Y(2.4), { align: 'center', dy: -9, size: 14, weight: 700, color: 'red' });
+          q.forEach((x, k) => B.tex(`\\tfrac{|\\langle p, f_${k + 1}\\rangle|^2}{s_${k + 1}^2} = ${tn(x)}`, 0.42, 0.18 + 0.13 * k, { color: CC[k], size: 14, align: 'left' }));
+          B.tex(`\\text{total} = ${tn(tot)} ${inside ? '<' : '\\ge'} 1`, 0.42, 0.62, { color: inside ? 'green' : 'red', size: 15, align: 'left' });
+          B.text(inside ? 'p ∈ E' : 'p ∉ E', 0.42, 0.71, { color: inside ? 'green' : 'red', size: 15, weight: 700 });
+          st = { s, sv: sv.s, ortho, tips: F.map((fk, k) => Q(scl(fk, s[k]))), tot, inside };
+        });
+        v.legend([['blue', '$s_1f_1$'], ['purple', '$s_2f_2$'], ['teal', '$s_3f_3$'], ['accent', '$E$', { area: true }], ['green', 'true axes (skewed case)', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { s, sv, ortho, tips, tot, inside } = st;
+          const pt = `For $p$ the sum is $${tn(tot, 3)}$, so $p ${inside ? '\\in' : '\\notin'} E$.`;
+          if (ortho) return `With $f_1, f_2, f_3$ orthonormal, $E$ has semi-axes of lengths $${s.map((x) => tn(x)).join(', ')}$ along $f_1, f_2, f_3$ (computed independently: $${sv.map((x) => tn(x)).join(', ')}$), and each tip $s_kf_k$ lies on its boundary. ${pt}`;
+          return `With $f_2$ skewed, the formula still defines an ellipsoid, but its semi-axes are $${sv.map((x) => tn(x)).join(', ')}$, not $${s.map((x) => tn(x)).join(', ')}$, and at the tips $s_kf_k$ the sum is $${tips.map((x) => tn(x)).join(', ')}$ — not on the boundary. ${pt}`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.99
+    {
+      num: '7.99',
+      kind: 'Theorem',
+      name: 'Invertible operator takes ball to ellipsoid',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ is invertible. Then $T$ maps the ball $B = \{v \in V : \|v\| < 1\}$ onto an ellipsoid in $V$. More precisely, if $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_n\langle v, e_n\rangle f_n$ is a singular value decomposition of $T$, then $T(B) = E(s_1f_1, \dots, s_nf_n)$.`,
+      idea: String.raw`Because $T$ is invertible, none of its singular values is $0$ (7.68). For $v \in B$ the decomposition gives $\langle Tv, f_k\rangle = s_k\langle v, e_k\rangle$, so
+$$\frac{|\langle Tv, f_1\rangle|^2}{s_1^2} + \cdots + \frac{|\langle Tv, f_n\rangle|^2}{s_n^2} = |\langle v, e_1\rangle|^2 + \cdots + |\langle v, e_n\rangle|^2 = \|v\|^2 < 1$$
+by 6.30: $T(B) \subseteq E$. Conversely, for $w \in E$ the vector $v = \sum_k \frac{\langle w, f_k\rangle}{s_k}e_k$ has $\|v\| < 1$ and $Tv = w$. So the image of the ball has its semi-axes along the left singular vectors, with lengths the singular values.`,
+      caption: String.raw`Left: the unit ball of $V = \mathbf R^3$ with the right singular vectors $e_1, e_2, e_3$ of $T$. Right: the images of the sphere's meridians and parallels under $T$, computed point by point, and the outline of $E(s_1f_1, s_2f_2, s_3f_3)$ built from the singular value decomposition alone (green, dashed) — they coincide. Drag the gold $v$ (it snaps to the sphere): $\sum_k |\langle Tv, f_k\rangle|^2/s_k^2 = \|v\|^2$, so $Tv \in E$ exactly when $v \in B$. Drag either background to rotate both views. Push *flatten* to $1$: $s_3 \to 0$, $T$ is no longer invertible, and $T(B)$ collapses to a flat ellipse — not an ellipsoid in $V$.`,
+      deps: ['ladr-7.70', 'ladr-7.68', 'ladr-7.96', 'ladr-6.30'],
+      tags: ['geometry', 'singular values'],
+      viz(v) {
+        const M = v.M;
+        const SV = v.stage({ x: [-1.5, 1.5], y: [-1.4, 1.6], equal: true, axes: false, height: 360, minWidth: 260, title: 'in $V$: the ball $B$ and $e_1, e_2, e_3$' });
+        const SW = v.stage({ x: [-2.1, 2.1], y: [-1.95, 2.25], equal: true, axes: false, height: 360, minWidth: 300, weight: 1.2, title: 'in $V$: $T(B)$ and $E(s_1f_1, s_2f_2, s_3f_3)$' });
+        const scV = v.scene3(SV, { yaw: -0.6, pitch: 0.3, axis: 1.25, lim: 1.3, hint: false });
+        const scW = v.scene3(SW, { yaw: -0.6, pitch: 0.3, axis: 1.5, lim: 2 });
+        const usv = (R1, s, R2) => mm(R1, mm(DIAG3(s), tr(R2)));
+        const PRE = { gen: usv(rot3([1, 0.4, 0.8], 0.9), [1.7, 1.05, 0.55], rot3([0.2, 1, -0.5], 1.1)), shear: [[1, 0.9, 0], [0, 1, 0.6], [0, 0, 1]], diag: [[1.6, 0, 0], [0, 1, 0], [0, 0, 0.5]] };
+        let T0 = PRE.gen;
+        v.select('', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'diag', label: 'diagonal' }], 'gen', { onChange: (k) => { T0 = PRE[k]; } });
+        const ep = v.slider('flatten: $T(I - \\varepsilon\\, e_3e_3^*)$, $\\varepsilon$', 0, 1, 0, { step: 0.01 });
+        const vh = scV.handle([0.35, -0.45, 0.5], { color: 'gold', label: 'v', snap: (p) => (Math.abs(len(p) - 1) < 0.06 ? unit(p) : p) });
+        const CC = ['blue', 'purple', 'teal'];
+        let last = null, st = null;
+        v.render(() => {
+          // keep the two views turned the same way
+          if (last) { if (scV.yaw !== last[0] || scV.pitch !== last[1]) { scW.yaw = scV.yaw; scW.pitch = scV.pitch; } else if (scW.yaw !== last[2] || scW.pitch !== last[3]) { scV.yaw = scW.yaw; scV.pitch = scW.pitch; } }
+          last = [scV.yaw, scV.pitch, scW.yaw, scW.pitch];
+          const e3 = svd3(M, T0).e[2], T = mm(T0, msub(EYE3, mscl(outer(e3, e3), ep.value))), sv = svd3(M, T);
+          const inv = sv.s[2] > 1e-6 * sv.s[0];
+          // V: the ball and the right singular vectors
+          scV.begin();
+          SV.circle(0, 0, 1, { fill: 'accent', fillAlpha: 0.07, color: 'accent', width: 1.3 });
+          sphereWire(scV, 1, { color: 'accent', alpha: 0.4 });
+          sv.e.forEach((d, k) => { scV.line(scl(d, -1), ZERO, { color: CC[k], width: 1.2, dash: [4, 4], alpha: 0.5 }); scV.arrow(ZERO, d, { color: CC[k], width: 3 }); scV.tex(`e_${k + 1}`, scl(d, 1.22), { color: CC[k], size: 14 }); });
+          const p = vh.p, Tp = mv(T, p), np = len(p);
+          scV.arrow(ZERO, p, { color: 'gold', width: 2.4 });
+          scV.flush();
+          // W: the computed image of the sphere, and E(s₁f₁, s₂f₂, s₃f₃) from the SVD
+          scW.begin();
+          silhouette(scW, SW, T, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.6 });
+          sphereImage(scW, T, { color: 'accent', width: 1, alpha: 0.45 });
+          if (inv) silhouette(scW, SW, mm(fromCols(sv.f), DIAG3(sv.s)), { color: 'green', width: 2, dash: [7, 5] });
+          sv.f.forEach((d, k) => {
+            const tip = scl(d, sv.s[k]);
+            if (sv.s[k] < 1e-6) return;
+            scW.line(scl(tip, -1), ZERO, { color: CC[k], width: 1.2, dash: [4, 4], alpha: 0.5 });
+            scW.arrow(ZERO, tip, { color: CC[k], width: 3 });
+            scW.tex(`s_${k + 1}f_${k + 1}`, scl(d, sv.s[k] + 0.28), { color: CC[k], size: 14 });
+          });
+          if (len(Tp) > 1e-6) { scW.arrow(ZERO, Tp, { color: 'gold', width: 2.6 }); scW.tex('Tv', add(Tp, scl(unit(Tp), 0.22)), { color: 'gold', size: 14 }); }
+          scW.flush();
+          SW.corner(inv ? (np < 1 ? 'v ∈ B, so Tv ∈ E' : 'v ∉ B, so Tv ∉ E') : 's₃ = 0: T(B) is flat — not an ellipsoid', 'tl', { color: inv ? (np < 1 ? 'green' : 'red') : 'red', weight: 700 });
+          const sum = inv ? sv.f.reduce((a, d, k) => a + dot(Tp, d) ** 2 / sv.s[k] ** 2, 0) : NaN;
+          st = { s: sv.s, inv, sum, np };
+        });
+        v.legend([['blue', '$e_1 \\mapsto s_1f_1$'], ['purple', '$e_2 \\mapsto s_2f_2$'], ['teal', '$e_3 \\mapsto s_3f_3$'], ['accent', '$T(\\text{sphere})$, computed', { area: true }], ['green', 'outline of $E$ from the SVD', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { s, inv, sum, np } = st;
+          if (!inv) return `Singular values $${s.map((x) => tn(x)).join(', ')}$: $s_3 = 0$, so $T$ is not invertible (7.68). $T(B)$ is a flat ellipse in the plane of $f_1, f_2$ — the definition of an ellipsoid in $V$ needs every $s_k > 0$.`;
+          return `Singular values $s_1, s_2, s_3 = ${s.map((x) => tn(x)).join(', ')}$. For the gold $v$: $\\sum_k |\\langle Tv, f_k\\rangle|^2/s_k^2 = ${tn(sum, 4)} = \\|v\\|^2 = ${tn(np * np, 4)}$, which is ${np < 1 ? '$< 1$: $Tv \\in E$' : '$\\ge 1$: $Tv \\notin E$'}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.101
+    {
+      num: '7.101',
+      kind: 'Theorem',
+      name: 'Invertible operator takes ellipsoids to ellipsoids',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ is invertible and $E$ is an ellipsoid in $V$. Then $T(E)$ is an ellipsoid in $V$.`,
+      idea: String.raw`Write $E = E(s_1f_1, \dots, s_nf_n)$ and let $S \in \mathcal L(V)$ be the operator with $Sf_k = s_kf_k$; it maps the ball $B$ onto $E$. Hence $T(E) = T(S(B)) = (TS)(B)$, and $TS$ is invertible, so 7.99 applied to $TS$ says that $T(E)$ is the ellipsoid whose principal axes come from the singular value decomposition of $TS$. Note that $T$ does not, in general, carry the axes of $E$ to the axes of $T(E)$: the images $T(s_kf_k)$ are conjugate diameters, usually not perpendicular.`,
+      caption: String.raw`Three stages of the proof. Middle: shape the ellipse $E$ by dragging the tips of its semi-axes $s_1f_1$ and $s_2f_2$ (the second stays perpendicular). Right: drag $T(1,0)$ and $T(0,1)$; the green region is $T(E)$, computed by applying $T$ to points of $E$, and its axes (green) come from the singular value decomposition of $TS$. The dashed blue and purple arrows $T(s_1f_1)$, $T(s_2f_2)$ are not those axes. Drag the gold $u$ around the circle of $B$ (left) and follow $Su \in \partial E$ and $TSu \in \partial T(E)$. Choose *not invertible*: $T(E)$ flattens into a segment.`,
+      deps: ['ladr-7.99', 'ladr-7.96'],
+      tags: ['geometry'],
+      viz(v) {
+        const mk = (title, r) => v.stage({ x: [-r, r], y: [-r, r], equal: true, height: 290, minWidth: 240, ticks: false, title });
+        const PB = mk('the ball $B$', 1.45), PE = mk('$E = S(B)$', 2.1), PT = mk('$T(E) = (TS)(B)$', 2.9);
+        let s2 = 0.6;
+        const ah = PE.handle(1.25, 0.55, { color: 'blue', label: 's₁f₁', constrain: (x, y) => { const p = [x, y], l = len(p); return l < 0.3 ? scl(l > 1e-9 ? unit(p) : [1, 0], 0.3) : p; } });
+        const bh = PE.handle(-0.55 * 0.6 / 1.366, 1.25 * 0.6 / 1.366, {
+          color: 'purple', label: 's₂f₂', constrain: (x, y) => { const u = perp(unit([ah.x, ah.y])); s2 = Math.max(0.2, Math.min(1.9, dot([x, y], u))); return scl(u, s2); },
+        });
+        const PRE = { gen: [[1.1, 0.7], [-0.5, 0.9]], shear: [[1, 1.2], [0, 1]], sing: [[1.2, 0.6], [0.6, 0.3]] };
+        const H = colHandles(PT, PRE.gen);
+        v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'sing', label: 'not invertible' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
+        const uh = PB.handle(Math.cos(0.9), Math.sin(0.9), { color: 'gold', label: 'u', constrain: (x, y) => (Math.hypot(x, y) > 1e-9 ? unit([x, y]) : [1, 0]) });
+        let st = null;
+        v.render(() => {
+          const a = [ah.x, ah.y], s1 = len(a), f1 = unit(a), f2 = perp(f1), bp = scl(f2, s2);
+          bh.x = bp[0]; bh.y = bp[1];
+          const Sm = madd(mscl(outer(f1, f1), s1), mscl(outer(f2, f2), s2));
+          const T = H.A, TS = mm(T, Sm), sv = svd22(TS), u = [uh.x, uh.y], Su = mv(Sm, u), TSu = mv(TS, u), ok = sv.s[1] > 1e-6;
+          // B, with the directions along which S stretches
+          PB.circle(0, 0, 1, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.6 });
+          [f1, f2].forEach((d, k) => { PB.line(-1.4 * d[0], -1.4 * d[1], 1.4 * d[0], 1.4 * d[1], { color: k ? 'purple' : 'blue', width: 1, dash: [4, 4], alpha: 0.6 }); const lp = scl(d, 1.25); PB.tex(`f_${k + 1}`, lp[0] + 0.12 * d[1], lp[1] - 0.12 * d[0], { color: k ? 'purple' : 'blue', size: 14 }); });
+          PB.arrow(0, 0, u[0], u[1], { color: 'gold', width: 2.2 });
+          // E = S(B)
+          PE.path(ellPts(Sm), { fill: 'blue', fillAlpha: 0.12, color: 'blue', width: 1.8 });
+          PE.arrow(0, 0, a[0], a[1], { color: 'blue', width: 2.4 });
+          PE.arrow(0, 0, bp[0], bp[1], { color: 'purple', width: 2.4 });
+          rightMark(PE, f1, f2, 0.16, 'muted');
+          PE.dot(Su[0], Su[1], { color: 'gold', r: 5.5 });
+          PE.tex('Su', Su[0] * 1.18, Su[1] * 1.18, { color: 'gold', size: 14 });
+          // T(E): T applied to points of the boundary of E, and the axes from the SVD of TS
+          PT.path(ellPts(Sm, 1, 200).map((p) => mv(T, p)), { fill: 'green', fillAlpha: 0.13, color: 'green', width: 1.8 });
+          if (ok) { sv.f.forEach((d, k) => { const w = scl(d, sv.s[k]); PT.arrow(0, 0, w[0], w[1], { color: 'green', width: 2.8 }); const lp = add(w, scl(d, 0.32)); PT.tex(`s_${k + 1}'f_${k + 1}'`, lp[0], lp[1], { color: 'green', size: 14 }); }); rightMark(PT, sv.f[0], sv.f[1], 0.18, 'green'); }
+          const Ta = mv(T, a), Tb = mv(T, bp);
+          PT.arrow(0, 0, Ta[0], Ta[1], { color: 'blue', width: 1.8, dash: [5, 4] });
+          PT.arrow(0, 0, Tb[0], Tb[1], { color: 'purple', width: 1.8, dash: [5, 4] });
+          PT.dot(TSu[0], TSu[1], { color: 'gold', r: 5.5 });
+          PT.corner(ok ? 'T(E) is an ellipse again' : 'T not invertible: T(E) is a segment', 'tl', { color: ok ? 'green' : 'red', weight: 700 });
+          // check: boundary points of T(E) satisfy the ellipse equation for the new axes
+          let dev = 0;
+          if (ok) for (let k = 0; k < 200; k++) { const w = mv(TS, uAt((TAU * k) / 200)); dev = Math.max(dev, Math.abs(dot(w, sv.f[0]) ** 2 / sv.s[0] ** 2 + dot(w, sv.f[1]) ** 2 / sv.s[1] ** 2 - 1)); }
+          const ang = Math.acos(Math.max(-1, Math.min(1, dot(unit(Ta), unit(Tb))))) * DEG;
+          st = { s1, s2, sv: sv.s, ok, dev, ang };
+        });
+        v.legend([['blue', '$s_1f_1$ and $T(s_1f_1)$'], ['purple', '$s_2f_2$ and $T(s_2f_2)$'], ['green', '$T(E)$ and its principal axes', { area: true }], ['gold', '$u \\mapsto Su \\mapsto TSu$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { s1, s2, sv, ok, dev, ang } = st;
+          if (!ok) return `$E = E(s_1f_1, s_2f_2)$ with $s_1 = ${tn(s1)}$, $s_2 = ${tn(s2)}$, but $TS$ has singular values $${tn(sv[0])}, 0$: $T(E)$ is a segment, not an ellipsoid — the theorem needs $T$ invertible.`;
+          return `$E = E(s_1f_1, s_2f_2)$ with $s_1 = ${tn(s1)}$, $s_2 = ${tn(s2)}$. $T(E) = (TS)(B) = E(s_1'f_1', s_2'f_2')$ with $s_1' = ${tn(sv[0])}$, $s_2' = ${tn(sv[1])}$, the singular values of $TS$; on 200 boundary points the equation $\\sum_k \\langle w, f_k'\\rangle^2/s_k'^2 = 1$ holds to within $${v.sci(dev, 1)}$. The images of the old axes meet at $${tn(ang, 1)}^\\circ$ — not the new axes.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.102
+    {
+      num: '7.102',
+      kind: 'Definition',
+      name: 'Parallelepiped',
+      statement: String.raw`Suppose $v_1, \dots, v_n$ is a basis of $V$. Let
+$$P(v_1, \dots, v_n) = \{a_1v_1 + \cdots + a_nv_n : a_1, \dots, a_n \in (0, 1)\}.$$
+A **parallelepiped** is a set of the form $u + P(v_1, \dots, v_n)$ for some $u \in V$; the vectors $v_1, \dots, v_n$ are its **edges**. (When $\dim V = 2$ it is a parallelogram.)`,
+      idea: String.raw`The coordinates $(a_1, \dots, a_n)$ with respect to the basis identify $P(v_1, \dots, v_n)$ with the open unit cube $(0, 1)^n$, and adding $u$ moves it without changing its shape. Membership is a coordinate test: $x \in u + P(v_1, \dots, v_n)$ exactly when the unique coefficients in $x - u = \sum_k a_kv_k$ all lie strictly between $0$ and $1$. The basis condition is what keeps the solid from collapsing: dependent edges would squash it into a lower-dimensional subspace, where the coordinates are no longer unique.`,
+      caption: String.raw`Drag the corner $u$ and the tips of the edges $v_1, v_2, v_3$ (drag the background to rotate). The faint dashed solid is $P(v_1, v_2, v_3)$ at the origin; the shaded one is its translate by $u$. Drag the gold point $x$: the right panel shows its coordinates $a_k$ in $x = u + a_1v_1 + a_2v_2 + a_3v_3$ (the dashed path), and $x$ is inside exactly when all three lie in $(0, 1)$. Drag $v_3$ toward the plane of $v_1, v_2$ (it snaps there): the edges stop being a basis and the solid goes flat.`,
+      deps: ['ladr-2.26'],
+      tags: ['geometry'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Parallelepiped' },
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.65, 2.0], equal: true, axes: false, height: 400, weight: 1.35, minWidth: 320 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 230, title: 'the coordinates $a_1, a_2, a_3$ of $x$' });
+        const sc = v.scene3(S, { yaw: -0.7, pitch: 0.33, axis: 1.45, lim: 1.8 });
+        const PRE = { gen: [[1.0, 0.15, -0.05], [0.3, 0.85, 0.1], [0.1, 0.25, 0.8]], cube: [[0.8, 0, 0], [0, 0.8, 0], [0, 0, 0.8]], flat: [[1.0, 0.15, -0.05], [0.3, 0.85, 0.1], [0.65, 0.5, 0.025]] };
+        const U0 = [-0.55, -0.5, -0.4], CC = ['blue', 'purple', 'teal'];
+        let Ed = PRE.gen.map((e) => e.slice());
+        const uh = sc.handle(U0, { color: 'orange', label: 'u', onDrag: (Hu) => H.forEach((h, k) => { h.p = add(Hu.p, Ed[k]); }) });
+        const H = PRE.gen.map((e, k) => sc.handle(add(U0, e), {
+          color: CC[k], label: `v${'₁₂₃'[k]}`,
+          snap: k === 2 ? (p) => { const n = cross(Ed[0], Ed[1]), nn = len(n); if (nn < 1e-9) return p; const d = dot(sub(p, uh.p), n) / nn; return Math.abs(d) < 0.08 ? sub(p, scl(n, d / nn)) : p; } : null,
+        }));
+        const xh = sc.handle(add(U0, [0.62, 0.55, 0.38]), { color: 'gold', label: 'x' });
+        v.select('', [{ value: 'gen', label: 'general edges' }, { value: 'cube', label: 'a cube' }, { value: 'flat', label: '$v_3$ in the plane of $v_1, v_2$' }], 'gen', { onChange: (k) => { Ed = PRE[k].map((e) => e.slice()); H.forEach((h, j) => h.set(add(uh.p, Ed[j]))); } });
+        const rr = v.rng(11);
+        v.button('random x inside', () => { const a = [0, 1, 2].map(() => 0.1 + 0.8 * rr()); xh.set(add(uh.p, Ed.reduce((acc, e, k) => add(acc, scl(e, a[k])), ZERO))); });
+        let st = null;
+        v.render(() => {
+          Ed = H.map((h) => sub(h.p, uh.p));
+          const u = uh.p, det = dot(Ed[0], cross(Ed[1], Ed[2])), basis = Math.abs(det) > 1e-4;
+          sc.begin();
+          ppedEdges(sc, ZERO, Ed[0], Ed[1], Ed[2], { color: 'muted', width: 1, dash: [3, 4], alpha: 0.8 });
+          sc.arrow(ZERO, u, { color: 'orange', width: 2, dash: [5, 4] });
+          pped(sc, u, Ed[0], Ed[1], Ed[2], { fill: basis ? 'accent' : 'red', color: basis ? 'accent' : 'red', fillAlpha: 0.09, alpha: 0.6 });
+          Ed.forEach((e, k) => sc.arrow(u, add(u, e), { color: CC[k], width: 3.2 }));
+          let a = null;
+          if (basis) {
+            a = M.solve(fromCols(Ed), sub(xh.p, u));
+            let p = u; a.forEach((ak, k) => { const q = add(p, scl(Ed[k], ak)); sc.line(p, q, { color: CC[k], width: 2.2, dash: [4, 3] }); p = q; });
+          }
+          const inside = !!a && a.every((x) => x > 0 && x < 1);
+          sc.dot(xh.p, { color: inside ? 'green' : 'red', r: 11, hollow: true, width: 2.5 });
+          sc.flush();
+          S.corner(basis ? 'v₁, v₂, v₃ is a basis: a parallelepiped' : 'v₁, v₂, v₃ dependent: flat, not a parallelepiped', 'tl', { color: basis ? 'muted' : 'red', weight: 700, size: 11.5 });
+          // the coordinates on three number lines, with (0, 1) marked
+          const X = (t) => 0.1 + 0.8 * ((t + 0.5) / 2);
+          [0, 1, 2].forEach((k) => {
+            const y = 0.8 - 0.2 * k;
+            R.line(X(-0.5), y, X(1.5), y, { color: 'faint', width: 1.5 });
+            R.line(X(0), y, X(1), y, { color: 'green', width: 8, alpha: 0.25 });
+            for (const t of [0, 1]) { R.dot(X(t), y, { color: 'green', r: 4.5, hollow: true }); R.text(String(t), X(t), y - 0.05, { align: 'center', size: 11, color: 'muted' }); }
+            if (a) { const ak = a[k], ok = ak > 0 && ak < 1, xx = Math.max(-0.5, Math.min(1.5, ak)); R.dot(X(xx), y, { color: ok ? CC[k] : 'red', r: 6.5 }); R.tex(`a_${k + 1} = ${tn(ak)}`, X(xx), y + 0.06, { color: ok ? CC[k] : 'red', size: 14 }); }
+          });
+          R.text(!a ? 'no unique coordinates: not a basis' : inside ? 'every aₖ in (0, 1): x is inside' : 'some aₖ outside (0, 1): x is outside', 0.5, 0.14, { align: 'center', size: 12.5, weight: 700, color: !a ? 'red' : inside ? 'green' : 'red' });
+          st = { a, inside, det, basis };
+        });
+        v.legend([['blue', '$v_1$'], ['purple', '$v_2$'], ['teal', '$v_3$'], ['orange', '$u$', { dash: true }], ['accent', '$u + P(v_1, v_2, v_3)$', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { a, inside, det, basis } = st;
+          if (!basis) return `$v_3$ lies in the span of $v_1, v_2$, so $v_1, v_2, v_3$ is not a basis of $\\mathbf R^3$: the set $u + P(v_1, v_2, v_3)$ is flat, and the definition does not apply.`;
+          return `$x = u + ${tn(a[0])}\\,v_1 + ${tn(a[1])}\\,v_2 + ${tn(a[2])}\\,v_3$: ${inside ? 'all three coefficients lie in $(0, 1)$, so $x \\in u + P(v_1, v_2, v_3)$' : 'not all coefficients lie in $(0, 1)$, so $x \\notin u + P(v_1, v_2, v_3)$'}. (Its volume, $|\\det[v_1\\ v_2\\ v_3]| = ${tn(Math.abs(det), 3)}$, will be explained in chapter 9.)`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.104
+    {
+      num: '7.104',
+      kind: 'Theorem',
+      name: 'Invertible maps send parallelepipeds to parallelepipeds',
+      statement: String.raw`Suppose $u \in V$, $v_1, \dots, v_n$ is a basis of $V$, and $T \in \mathcal L(V)$ is invertible. Then
+$$T\big(u + P(v_1, \dots, v_n)\big) = Tu + P(Tv_1, \dots, Tv_n).$$`,
+      idea: String.raw`Linearity gives $T(u + a_1v_1 + \cdots + a_nv_n) = Tu + a_1Tv_1 + \cdots + a_nTv_n$ for every choice of $a_1, \dots, a_n \in (0, 1)$, and as the $a_k$ run over $(0, 1)$ the right side runs over exactly $Tu + P(Tv_1, \dots, Tv_n)$. Invertibility makes $Tv_1, \dots, Tv_n$ a basis (an invertible map sends a basis to a basis), so the right side is again a parallelepiped. A non-invertible $T$ squashes the edges into a dependent list and the image collapses.`,
+      caption: String.raw`Left: drag the corner $u$ and the edge tips $u + v_1$, $u + v_2$ of a parallelogram, cut into a $4 \times 4$ checkerboard by the lines $a_k \in \{\tfrac14, \tfrac12, \tfrac34\}$. Right: drag $T(1,0)$ and $T(0,1)$; the checkerboard is mapped cell by cell, and lands exactly in the green dashed parallelogram $Tu + P(Tv_1, Tv_2)$, drawn from $Tu$, $Tv_1$, $Tv_2$ alone. Drag the gold $x$: its image $Tx$ (gold dot) always sits in the ring at $Tu + a_1Tv_1 + a_2Tv_2$. Choose *not invertible* to watch the parallelogram flatten.`,
+      deps: ['ladr-7.102', 'ladr-3.59'],
+      tags: ['geometry'],
+      viz(v) {
+        const V = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 330, minWidth: 260, ticks: false, title: 'in $V$: $u + P(v_1, v_2)$' });
+        const W = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 330, minWidth: 260, ticks: false, title: 'in $V$: $T\\big(u + P(v_1, v_2)\\big)$' });
+        const snap = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
+        let Ed = [[1.4, 0.3], [0.5, 1.1]];
+        const uh = V.handle(-0.9, -0.8, { color: 'orange', label: 'u', constrain: snap, onDrag: () => { h1.set(uh.x + Ed[0][0], uh.y + Ed[0][1]); h2.set(uh.x + Ed[1][0], uh.y + Ed[1][1]); } });
+        const h1 = V.handle(0.5, -0.5, { color: 'blue', label: 'u+v₁', constrain: snap });
+        const h2 = V.handle(-0.4, 0.3, { color: 'purple', label: 'u+v₂', constrain: snap });
+        const xh = V.handle(0.05, -0.05, { color: 'gold', label: 'x' });
+        const PRE = { gen: [[1.1, -0.5], [0.4, 0.9]], shear: [[1, 0.9], [0, 1]], refl: [[-0.6, 1.0], [1.0, 0.5]], sing: [[1, 0.5], [0.6, 0.3]] };
+        const H = colHandles(W, PRE.gen);
+        v.select('$T$', [{ value: 'gen', label: 'generic' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: 'orientation-reversing' }, { value: 'sing', label: 'not invertible' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
+        let st = null;
+        v.render(() => {
+          Ed = [[h1.x - uh.x, h1.y - uh.y], [h2.x - uh.x, h2.y - uh.y]];
+          const u = [uh.x, uh.y], [v1, v2] = Ed, T = H.A, Tu = mv(T, u), Tv = Ed.map((e) => mv(T, e));
+          const basisV = Math.abs(cross2(v1, v2)) > 1e-9, inv = Math.abs(T[0][0] * T[1][1] - T[0][1] * T[1][0]) > 1e-9;
+          const at = (a1, a2) => add(u, add(scl(v1, a1), scl(v2, a2)));
+          for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+            const cell = [[i, j], [i + 1, j], [i + 1, j + 1], [i, j + 1]].map(([p, q]) => at(p / 4, q / 4)), col = (i + j) % 2 ? 'blue' : 'teal';
+            V.poly(cell, { fill: col, fillAlpha: 0.17, stroke: false });
+            W.poly(cell.map((p) => mv(T, p)), { fill: col, fillAlpha: 0.22, stroke: false });
+          }
+          V.poly([at(0, 0), at(1, 0), at(1, 1), at(0, 1)], { color: 'accent', width: 1.8 });
+          V.arrow(0, 0, u[0], u[1], { color: 'orange', width: 1.8, dash: [5, 4] });
+          V.arrow(u[0], u[1], u[0] + v1[0], u[1] + v1[1], { color: 'blue', width: 2.6 });
+          V.arrow(u[0], u[1], u[0] + v2[0], u[1] + v2[1], { color: 'purple', width: 2.6 });
+          // the parallelogram Tu + P(Tv₁, Tv₂), built from Tu, Tv₁, Tv₂ only
+          const C = [Tu, add(Tu, Tv[0]), add(add(Tu, Tv[0]), Tv[1]), add(Tu, Tv[1])];
+          W.poly(C, { color: 'green', width: 2.2, dash: [7, 4] });
+          W.arrow(0, 0, Tu[0], Tu[1], { color: 'orange', width: 1.8, dash: [5, 4] });
+          W.arrow(Tu[0], Tu[1], C[1][0], C[1][1], { color: 'blue', width: 2.6 });
+          W.arrow(Tu[0], Tu[1], C[3][0], C[3][1], { color: 'purple', width: 2.6 });
+          const lab = (txt, p, q, c) => { const m = add(p, scl(sub(q, p), 1.08)); W.tex(txt, m[0], m[1], { color: c, size: 14, dx: 8, dy: -8 }); };
+          lab('Tv_1', Tu, C[1], 'blue'); lab('Tv_2', Tu, C[3], 'purple');
+          W.tex('Tu', Tu[0], Tu[1], { color: 'orange', size: 14, dx: -14, dy: 12 });
+          // the point x and its image
+          const x = [xh.x, xh.y], a = basisV ? mv(inv2(fromCols(Ed)), sub(x, u)) : null, inside = !!a && a.every((t) => t > 0 && t < 1);
+          V.dot(x[0], x[1], { color: inside ? 'green' : 'red', r: 11, hollow: true, width: 2.5 });
+          const Tx = mv(T, x), pred = a ? add(Tu, add(scl(Tv[0], a[0]), scl(Tv[1], a[1]))) : Tx;
+          W.dot(pred[0], pred[1], { color: inside ? 'green' : 'red', r: 10, hollow: true, width: 2.2 });
+          W.dot(Tx[0], Tx[1], { color: 'gold', r: 5 });
+          W.tex('Tx', Tx[0], Tx[1], { color: 'gold', size: 14, dx: 16, dy: 10 });
+          W.corner(inv ? 'T(u + P(v₁, v₂)) = Tu + P(Tv₁, Tv₂)' : 'T not invertible: Tv₁, Tv₂ dependent — a segment', 'tl', { color: inv ? 'green' : 'red', weight: 700, size: 11.5 });
+          st = { a, inside, Tx, pred, inv, basisV };
+        });
+        v.legend([['orange', '$u$ and $Tu$', { dash: true }], ['blue', '$v_1$ and $Tv_1$'], ['purple', '$v_2$ and $Tv_2$'], ['green', '$Tu + P(Tv_1, Tv_2)$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { a, inside, Tx, pred, inv, basisV } = st;
+          if (!basisV) return 'The edges $v_1, v_2$ are dependent: this is not a parallelogram.';
+          const lin = `$x = u + ${tn(a[0])}\\,v_1 + ${tn(a[1])}\\,v_2$ (${inside ? 'inside' : 'outside'}), and $Tx = ${vtex(Tx)} = Tu + ${tn(a[0])}\\,Tv_1 + ${tn(a[1])}\\,Tv_2$ (difference $${v.sci(len(sub(Tx, pred)), 1)}$): the same coefficients, so the same membership test.`;
+          return lin + (inv ? ' Since $T$ is invertible, $Tv_1, Tv_2$ is a basis and the image is a parallelogram.' : ' But $T$ is not invertible: $Tv_1, Tv_2$ is not a basis, and the image is a segment — not a parallelepiped.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.105
+    {
+      num: '7.105',
+      kind: 'Definition',
+      name: 'Box',
+      statement: String.raw`A **box** in $V$ is a set of the form
+$$u + P(r_1e_1, \dots, r_ne_n),$$
+where $u \in V$, $r_1, \dots, r_n$ are positive numbers, and $e_1, \dots, e_n$ is an orthonormal basis of $V$: a parallelepiped whose edges are mutually orthogonal. In $\mathbf R^2$ the boxes are the rectangles. When $\mathbf F = \mathbf R$, the **volume** of this box is defined to be $r_1 \times \cdots \times r_n$ (7.108).`,
+      idea: String.raw`A box is a parallelepiped (7.102) with orthogonal edges $r_ke_k$ of lengths $r_k$. Orthogonality is exactly what makes the product of the edge lengths the honest volume: the Gram matrix $\big(\langle w_j, w_k\rangle\big)$ of the edges is diagonal, $\operatorname{diag}(r_1^2, \dots, r_n^2)$. Tilt one edge and the solid becomes a slanted parallelepiped whose volume (base area times height) drops below the product of its edge lengths — so 7.108 defines volume only for boxes, and other sets get their volume from boxes (7.109).`,
+      caption: String.raw`Aim $e_1$ (its handle stays on the unit sphere), turn the frame about it, set the edge lengths $r_k$, and drag the corner $u$ (drag the background to rotate). The faint arrows at the origin are the orthonormal $e_1, e_2, e_3$; the box has edges $w_k = r_ke_k$. Right: the inner products $\langle w_j, w_k\rangle$ — a diagonal table for a box — and two bars: the product of the edge lengths $r_1r_2r_3$, and the actual volume (base area times height). They agree for a box. Tilt $w_2$ toward $e_1$: the edges stop being orthogonal, the solid is no longer a box, and the true volume falls short of $r_1r_2r_3$.`,
+      deps: ['ladr-7.102', 'ladr-6.27'],
+      tags: ['geometry'],
+      viz(v) {
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.6, 2.0], equal: true, axes: false, height: 390, weight: 1.35, minWidth: 320 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 390, minWidth: 240, title: 'the edges $w_k$: inner products and volume' });
+        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.32, axis: 1.45, lim: 1.7 });
+        const rs = [['$r_1$', 1.2], ['$r_2$', 0.8], ['$r_3$', 0.55]].map(([l, x]) => v.slider(l, 0.2, 1.5, x, { step: 0.01 }));
+        const tw = v.slider('turn the frame about $e_1$', -3.14, 3.14, 0.35, { step: 0.01 });
+        const tilt = v.slider('tilt $w_2$ toward $e_1$ (degrees)', -60, 60, 0, { step: 1 });
+        const eh = sc.handle(unit([1, 0.35, 0.15]), { color: 'blue', label: 'e₁', snap: (p) => (len(p) > 1e-6 ? unit(p) : [1, 0, 0]) });
+        const uh = sc.handle([-0.6, -0.5, -0.35], { color: 'orange', label: 'u' });
+        const TB = v.table(R, { rows: 3, cols: 3, region: [0.06, 0.4, 0.96, 0.94], maxCell: 56, size: 13.5, rowLabels: ['$w_1$', '$w_2$', '$w_3$'], colLabels: ['$w_1$', '$w_2$', '$w_3$'] });
+        const CC = ['blue', 'purple', 'teal'];
+        let st = null;
+        v.render(() => {
+          const e1 = unit(eh.p), [g, h] = basisPerp(e1), t = tw.value, d = tilt.value / DEG;
+          const e2 = add(scl(g, Math.cos(t)), scl(h, Math.sin(t))), e3 = cross(e1, e2), E = [e1, e2, e3], r = rs.map((x) => x.value);
+          const w = [scl(e1, r[0]), scl(add(scl(e2, Math.cos(d)), scl(e1, Math.sin(d))), r[1]), scl(e3, r[2])];
+          const box = Math.abs(d) < 1e-9, u = uh.p, base = cross(w[0], w[1]), vol = Math.abs(dot(base, w[2])), prod = r[0] * r[1] * r[2];
+          sc.begin();
+          E.forEach((ek, k) => sc.arrow(ZERO, ek, { color: CC[k], width: 1.6, alpha: 0.4 }));
+          sc.arrow(ZERO, u, { color: 'orange', width: 1.6, dash: [5, 4] });
+          pped(sc, u, w[0], w[1], w[2], { fill: box ? 'green' : 'orange', color: box ? 'green' : 'orange', fillAlpha: 0.1, alpha: 0.65 });
+          w.forEach((wk, k) => { sc.arrow(u, add(u, wk), { color: CC[k], width: 3.2 }); sc.tex(`w_${k + 1}`, add(u, scl(wk, 1.0)), { color: CC[k], size: 14, dx: 12, dy: -10 }); });
+          for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) if (Math.abs(dot(w[i], w[j])) < 1e-9) rightMark3(sc, w[i], w[j], 0.14, 'green', u);
+          sc.flush();
+          S.corner(box ? 'orthogonal edges rₖeₖ: a box' : `w₂ tilted by ${pf(Math.abs(tilt.value), 0)}°: a parallelepiped, not a box`, 'tl', { color: box ? 'green' : 'red', weight: 700, size: 11.5 });
+          // the inner products of the edges
+          const G = w.map((a) => w.map((b) => dot(a, b)));
+          TB.draw({ value: (i, j) => G[i][j], format: (x) => pf(x, 2), fill: (i, j) => (i === j ? ['blue', 0.12] : Math.abs(G[i][j]) < 1e-9 ? ['green', 0.2] : ['red', 0.28]) });
+          // the volume bars
+          const top = Math.max(2.4, prod * 1.05), X = (x) => 0.08 + (0.84 * x) / top;
+          R.text('product of edge lengths r₁r₂r₃', 0.08, 0.31, { size: 11.5, color: 'muted' });
+          R.rect(X(0), 0.235, X(prod), 0.275, { fill: 'blue', fillAlpha: 0.45, color: 'blue', width: 1 });
+          R.text(pf(prod, 3), X(prod), 0.255, { size: 12, dx: 6, weight: 700 });
+          R.text('volume = base area × height', 0.08, 0.16, { size: 11.5, color: 'muted' });
+          R.rect(X(0), 0.085, X(vol), 0.125, { fill: box ? 'green' : 'orange', fillAlpha: 0.5, color: box ? 'green' : 'orange', width: 1 });
+          R.text(pf(vol, 3), X(vol), 0.105, { size: 12, dx: 6, weight: 700 });
+          st = { box, vol, prod, r, cosd: Math.cos(d) };
+        });
+        v.legend([['blue', '$w_1 = r_1e_1$'], ['purple', '$w_2$'], ['teal', '$w_3 = r_3e_3$'], ['green', 'box', { area: true }], ['orange', 'tilted: not a box', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { box, vol, prod, r, cosd } = st;
+          if (box) return `A box with edge lengths $r_1, r_2, r_3 = ${r.map((x) => tn(x)).join(', ')}$: its volume (7.108) is $r_1r_2r_3 = ${tn(prod, 3)}$, and base area times height gives the same $${tn(vol, 3)}$.`;
+          return `The edges still have lengths $${r.map((x) => tn(x)).join(', ')}$, but they are not orthogonal, so this is not a box. Its volume, base area times height, is $${tn(vol, 3)} = ${tn(cosd, 3)} \\times r_1r_2r_3$, less than $r_1r_2r_3 = ${tn(prod, 3)}$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.107
+    {
+      num: '7.107',
+      kind: 'Theorem',
+      name: 'Every invertible operator takes some boxes to boxes',
+      statement: String.raw`Suppose $T \in \mathcal L(V)$ is invertible, with singular value decomposition $Tv = s_1\langle v, e_1\rangle f_1 + \cdots + s_n\langle v, e_n\rangle f_n$, where $e_1, \dots, e_n$ and $f_1, \dots, f_n$ are orthonormal bases of $V$. Then for all positive numbers $r_1, \dots, r_n$ and all $u \in V$, $T$ maps the box $u + P(r_1e_1, \dots, r_ne_n)$ onto the box $Tu + P(r_1s_1f_1, \dots, r_ns_nf_n)$.`,
+      idea: String.raw`Since $Te_k = s_kf_k$, linearity gives $T(u + a_1r_1e_1 + \cdots + a_nr_ne_n) = Tu + a_1r_1s_1f_1 + \cdots + a_nr_ns_nf_n$ for all $a_1, \dots, a_n \in (0, 1)$ — this is 7.104 with edges $r_ke_k$. The image edges $r_ks_kf_k$ are orthogonal, with positive lengths because invertibility makes every $s_k > 0$, so the image is a box. For a box turned any other way, the images of its edges are generally not orthogonal and the image is a slanted parallelepiped.`,
+      caption: String.raw`Left: a box (rectangle) with corner $u$ and edges $r_1b_1$, $r_2b_2$ — drag the three handles; the first edge snaps to the right singular directions $e_1, e_2$ of $T$ (dashed). Right: its image, with $f_1, f_2$ dashed; drag $T(1,0)$, $T(0,1)$ to change $T$. Only when the box is lined up with $e_1, e_2$ is the image a box (green, right angle marked), with edges $r_1s_1f_1$ and $r_2s_2f_2$. Bottom: the angle between the image edges for every orientation of the box; it is $90^\circ$ only at the $e$-directions. The faint green dashed box is the lined-up box with the same $u$ and $r_k$, and its image.`,
+      deps: ['ladr-7.105', 'ladr-7.70', 'ladr-7.104'],
+      tags: ['geometry', 'singular values'],
+      viz(v) {
+        const V = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 320, minWidth: 260, ticks: false, title: 'in $V$: a box and the axes $e_1, e_2$' });
+        const W = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, height: 320, minWidth: 260, ticks: false, title: 'in $V$: its image and the axes $f_1, f_2$' });
+        const G = v.stage({ x: [0, 180], y: [0, 180], height: 170, full: true, axes: 'box', xlabel: 'direction of b₁ (degrees)', xticks: [0, 45, 90, 135, 180], yticks: [[0, '0°'], [45, '45°'], [90, '90°'], [135, '135°'], [180, '180°']], title: 'angle between the image edges $T(r_1b_1)$ and $T(r_2b_2)$' });
+        const PRE = { gen: [[1.2, 0.8], [-0.3, 0.9]], shear: [[1, 1.1], [0, 1]], refl: [[0.4, 1.1], [1.0, -0.2]] };
+        const H = colHandles(W, PRE.gen);
+        v.select('', [{ value: 'gen', label: 'generic $T$' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: '$\\det T < 0$' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
+        let r2 = 0.75, lastU = [-0.9, -0.7];
+        const uh = V.handle(-0.9, -0.7, { color: 'orange', label: 'u', onDrag: () => { ah.x += uh.x - lastU[0]; ah.y += uh.y - lastU[1]; lastU = [uh.x, uh.y]; } });
+        const ah = V.handle(-0.9 + 1.3 * Math.cos(0.45), -0.7 + 1.3 * Math.sin(0.45), {
+          color: 'blue', label: 'r₁b₁', constrain: (x, y) => {
+            const d = [x - uh.x, y - uh.y], r = Math.max(0.25, len(d)); let t = Math.atan2(d[1], d[0]);
+            const te = angOf(svd22(H.A).e[0]);
+            for (let k = -4; k <= 4; k++) if (Math.abs(t - (te + (k * Math.PI) / 2)) < 0.05) t = te + (k * Math.PI) / 2;
+            return add([uh.x, uh.y], scl(uAt(t), r));
+          },
+        });
+        const bh = V.handle(0, 0, { color: 'purple', label: 'r₂b₂', constrain: (x, y) => { const b2 = perp(unit([ah.x - uh.x, ah.y - uh.y])); r2 = Math.max(0.2, Math.min(2.2, dot([x - uh.x, y - uh.y], b2))); return add([uh.x, uh.y], scl(b2, r2)); } });
+        let st = null;
+        v.render(() => {
+          lastU = [uh.x, uh.y];
+          const u = [uh.x, uh.y], w1 = sub([ah.x, ah.y], u), b1 = unit(w1), b2 = perp(b1), w2 = scl(b2, r2), r1 = len(w1);
+          bh.x = u[0] + w2[0]; bh.y = u[1] + w2[1];
+          const T = H.A, { s, e, f } = svd22(T), Tu = mv(T, u), Tw1 = mv(T, w1), Tw2 = mv(T, w2);
+          const angle = (a, b) => Math.acos(Math.max(-1, Math.min(1, dot(unit(a), unit(b))))) * DEG;
+          const ang = angle(Tw1, Tw2), isBox = Math.abs(ang - 90) < 1e-6;
+          // V: the e-axes through u, the lined-up box (faint) and the box
+          e.forEach((d, k) => V.line(u[0] - 4 * d[0], u[1] - 4 * d[1], u[0] + 4 * d[0], u[1] + 4 * d[1], { color: k ? 'purple' : 'blue', width: 1, dash: [5, 5], alpha: 0.55 }));
+          e.forEach((d, k) => { const lp = add(u, scl(d, d[1] >= 0 ? -0.55 : 0.55)); V.tex(`e_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 13, dx: 10, dy: 8 }); });
+          const ga = [u, add(u, scl(e[0], r1)), add(add(u, scl(e[0], r1)), scl(e[1], r2)), add(u, scl(e[1], r2))];
+          if (!isBox) V.poly(ga, { color: 'green', width: 1.2, dash: [4, 4], alpha: 0.7 });
+          const bx = [u, add(u, w1), add(add(u, w1), w2), add(u, w2)];
+          V.poly(bx, { fill: 'accent', fillAlpha: 0.14, color: 'accent', width: 1.8 });
+          rightMark(V, w1, w2, 0.16, 'muted', u);
+          // W: the image, the f-axes through Tu and the image of the lined-up box
+          f.forEach((d, k) => W.line(Tu[0] - 6 * d[0], Tu[1] - 6 * d[1], Tu[0] + 6 * d[0], Tu[1] + 6 * d[1], { color: k ? 'purple' : 'blue', width: 1, dash: [5, 5], alpha: 0.55 }));
+          if (!isBox) W.poly(ga.map((p) => mv(T, p)), { color: 'green', width: 1.2, dash: [4, 4], alpha: 0.7 });
+          W.poly(bx.map((p) => mv(T, p)), { fill: isBox ? 'green' : 'orange', fillAlpha: 0.16, color: isBox ? 'green' : 'orange', width: 1.8 });
+          W.arrow(Tu[0], Tu[1], Tu[0] + Tw1[0], Tu[1] + Tw1[1], { color: 'blue', width: 2.4 });
+          W.arrow(Tu[0], Tu[1], Tu[0] + Tw2[0], Tu[1] + Tw2[1], { color: 'purple', width: 2.4 });
+          if (isBox) rightMark(W, Tw1, Tw2, 0.18, 'green', Tu);
+          W.corner(isBox ? 'lined up with e₁, e₂: the image is a box' : `image edges meet at ${pf(ang, 1)}°: not a box`, 'tl', { color: isBox ? 'green' : 'red', weight: 700, size: 11.5 });
+          // G: the angle between the image edges for every orientation
+          G.hline(90, { color: 'green', width: 1.4, dash: [6, 4] });
+          const te = (((angOf(e[0]) * DEG) % 90) + 90) % 90;
+          for (const x of [te, te + 90]) { G.vline(x, { color: 'blue', width: 1, dash: [3, 4] }); G.dot(x, 90, { color: 'green', r: 5 }); }
+          G.fn((x) => angle(mv(T, uAt(x / DEG)), mv(T, perp(uAt(x / DEG)))), { color: 'accent', width: 2.4 });
+          const tb = (((angOf(b1) * DEG) % 180) + 180) % 180;
+          G.vline(tb, { color: 'gold', width: 1.4, dash: [4, 4] });
+          G.dot(tb, ang, { color: isBox ? 'green' : 'orange', r: 5.5 });
+          st = { isBox, ang, r1, r2, s, b1, e1: e[0] };
+        });
+        v.legend([['accent', 'the box', { area: true }], ['orange', 'image: slanted', { area: true }], ['green', 'image: a box / the lined-up box', { area: true }], ['blue', '$e_1$, $f_1$ and the first edge', { dash: true }], ['purple', '$e_2$, $f_2$ and the second edge', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { isBox, ang, r1, r2, s } = st;
+          if (isBox) return `The box is lined up with $e_1, e_2$, so (7.107) its image is the box $Tu + P(r_1s_1f_1, r_2s_2f_2)$ with edges $r_1s_1 = ${tn(r1)} \\cdot ${tn(s[0])} = ${tn(r1 * s[0], 3)}$ and $r_2s_2 = ${tn(r2)} \\cdot ${tn(s[1])} = ${tn(r2 * s[1], 3)}$ — at a right angle.`;
+          return `The image of this box is the parallelepiped $Tu + P(T(r_1b_1), T(r_2b_2))$ (7.104), whose edges meet at $${tn(ang, 1)}^\\circ$: not a box. Turn the box until $b_1 = \\pm e_1$ or $\\pm e_2$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.109
+    {
+      num: '7.109',
+      kind: 'Definition',
+      name: 'Volume',
+      statement: String.raw`Suppose $\mathbf F = \mathbf R$ and $\Omega \subseteq V$. The **volume** of $\Omega$, written $\operatorname{volume} \Omega$, is (approximately) the sum of the volumes of a collection of disjoint boxes that approximate $\Omega$, the approximation becoming exact in the limit of finer and finer boxes; here a box $u + P(r_1e_1, \dots, r_ne_n)$ has volume $r_1 \times \cdots \times r_n$ (7.108). This is an intuitive definition; measure theory turns it into a precise one for reasonable sets.`,
+      idea: String.raw`Boxes lying inside $\Omega$ give a lower estimate, boxes meeting $\Omega$ an upper one. For a set with a reasonable boundary, the boxes that straddle the boundary have total volume tending to $0$ as the boxes shrink — in $\mathbf R^2$, about $n$ of the $n^2$ grid squares of area $(2L/n)^2$ — so both estimates squeeze to the same number, as with lower and upper Riemann sums. Axler asks whether boxes built on a different orthonormal basis give the same answer; the rotated grid shows that they do.`,
+      caption: String.raw`An $n \times n$ grid of boxes covers the square $[-2, 2]^2$. Boxes inside $\Omega$ are green; boxes that meet the boundary are orange (exact segment–box tests). Green alone gives a lower estimate of the area, green plus orange an upper one. Increase $n$ and watch the two totals squeeze onto the true area (right, log scale in $n$); turn the grid to use boxes along a rotated orthonormal basis — the totals change a little, the limit does not. The ring has a hole, and the blob is not convex: the method does not care.`,
+      deps: ['ladr-7.105'],
+      see: ['rca-2.23'],
+      tags: ['geometry'],
+      viz(v) {
+        const S = v.stage({ x: [-2.05, 2.05], y: [-2.05, 2.05], equal: true, height: 360, minWidth: 300, weight: 1.1, axes: false });
+        const G = v.stage({ x: [1.8, 72], y: [0, 8], xlog: true, height: 360, minWidth: 260, axes: 'box', xlabel: 'boxes per side n', title: 'total area of the boxes' });
+        const mkS = (rings, exact, label) => ({ rings, area: Math.abs(polyArea(rings[0])) - (rings[1] ? Math.abs(polyArea(rings[1])) : 0), exact, label });
+        const SH = {
+          disk: mkS([ringOf(() => 1.3)], Math.PI * 1.69, 'π · 1.3²'),
+          ell: mkS([ellRing(1.75, 0.8, 0.5)], Math.PI * 1.75 * 0.8, 'π · 1.75 · 0.8'),
+          ring: mkS([ringOf(() => 1.6), ringOf(() => 0.8)], Math.PI * (1.6 ** 2 - 0.8 ** 2), 'π(1.6² − 0.8²)'),
+          blob: mkS([ringOf((t) => 1.2 + 0.3 * Math.sin(3 * t) + 0.15 * Math.cos(2 * t + 1))], null, 'shoelace formula'),
+        };
+        const shape = v.select('', [{ value: 'disk', label: 'disk' }, { value: 'ell', label: 'ellipse' }, { value: 'ring', label: 'ring' }, { value: 'blob', label: 'blob' }], 'disk');
+        const nS = v.slider('boxes per side $n$', 2, 64, 10, { int: true, step: 1 });
+        const th = v.slider('grid angle (radians)', 0, 1.57, 0, { step: 0.01 });
+        const NL = [2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64], L = 2, cache = {};
+        let st = null;
+        v.render(() => {
+          const sh = SH[shape.value], n = Math.round(nS.value), ang = th.value, Rg = rot(ang), Ri = rot(-ang);
+          const rings = sh.rings.map((R) => R.map((p) => mv(Ri, p)));
+          const key = `${shape.value}|${ang.toFixed(3)}`;
+          const ser = cache[key] || (cache[key] = NL.map((m) => { const c = boxCells(rings, m, L); return [m, c.inn.length * c.h * c.h, (c.inn.length + c.bnd.length) * c.h * c.h]; }));
+          const c = boxCells(rings, n, L), h = c.h, lo = c.inn.length * h * h, hi = (c.inn.length + c.bnd.length) * h * h;
+          const cell = (i, j) => [[i, j], [i + 1, j], [i + 1, j + 1], [i, j + 1]].map(([a, b]) => mv(Rg, [-L + a * h, -L + b * h]));
+          const edge = n <= 24;
+          for (const [i, j] of c.bnd) S.poly(cell(i, j), { fill: 'orange', fillAlpha: 0.32, color: 'orange', width: 0.7, stroke: edge });
+          for (const [i, j] of c.inn) S.poly(cell(i, j), { fill: 'green', fillAlpha: 0.36, color: 'green', width: 0.7, stroke: edge });
+          S.poly([[-L, -L], [L, -L], [L, L], [-L, L]].map((p) => mv(Rg, p)), { color: 'faint', width: 1 });
+          for (const R of sh.rings) S.poly(R, { color: 'ink', width: 2 });
+          S.corner(`n = ${n}: boxes of side ${pf(h, 3)}`, 'tl', { color: 'muted', weight: 700, size: 11.5 });
+          // the two totals as n grows
+          G.setView(null, [0, Math.max(2, 2 * sh.area)]);
+          G.clip(() => {
+            G.path(ser.map(([m, a]) => [m, a]), { color: 'green', width: 2 }); G.dots(ser.map(([m, a]) => [m, a]), { color: 'green', r: 3 });
+            G.path(ser.map(([m, , b]) => [m, b]), { color: 'orange', width: 2 }); G.dots(ser.map(([m, , b]) => [m, b]), { color: 'orange', r: 3 });
+          });
+          G.hline(sh.area, { color: 'ink', width: 1.4, dash: [6, 4] });
+          G.text(`area ${pf(sh.area, 3)}`, 66, sh.area, { align: 'right', dy: -10, size: 12, weight: 700 });
+          G.vline(n, { color: 'gold', width: 1.6, dash: [4, 4] });
+          G.dot(n, Math.min(lo, 2 * sh.area), { color: 'green', r: 5.5 }); G.dot(n, Math.min(hi, 2 * sh.area), { color: 'orange', r: 5.5 });
+          st = { n, h, ni: c.inn.length, nb: c.bnd.length, lo, hi, sh, ang };
+        });
+        v.legend([['green', 'boxes inside $\\Omega$ (lower total)', { area: true }], ['orange', 'boxes meeting the boundary (upper total adds them)', { area: true }], ['ink', 'true area', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { n, h, ni, nb, lo, hi, sh, ang } = st;
+          const truth = sh.exact ? `$${tn(sh.exact, 3)}$ ($${sh.label.replace(/·/g, '\\cdot').replace(/²/g, '^2').replace(/−/g, '-')}$)` : `$${tn(sh.area, 3)}$ (shoelace formula)`;
+          return `$n = ${n}$, boxes of side $h = ${tn(h, 3)}$ along ${ang > 1e-9 ? 'a rotated' : 'the standard'} orthonormal basis: $${ni}$ inside give $${ni}h^2 = ${tn(lo, 3)}$; with the $${nb}$ boundary boxes, $${ni + nb}h^2 = ${tn(hi, 3)}$. True area ${truth}. The gap $${nb}h^2 = ${tn(hi - lo, 3)}$ shrinks roughly like $1/n$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 7.111
+    {
+      num: '7.111',
+      kind: 'Theorem',
+      name: 'Volume changes by the product of the singular values',
+      statement: String.raw`Suppose $\mathbf F = \mathbf R$, $T \in \mathcal L(V)$ is invertible, and $\Omega \subseteq V$. Then
+$$\operatorname{volume} T(\Omega) = (\text{product of the singular values of } T)\,(\operatorname{volume} \Omega).$$`,
+      idea: String.raw`Take a singular value decomposition $Tv = \sum_k s_k\langle v, e_k\rangle f_k$ and approximate $\Omega$ by disjoint boxes $u + P(r_1e_1, \dots, r_ne_n)$ lined up with the right singular vectors. By 7.107, $T$ maps each one onto the box $Tu + P(r_1s_1f_1, \dots, r_ns_nf_n)$, whose volume is $s_1 \cdots s_n$ times $r_1 \cdots r_n$; since $T$ is injective, disjoint boxes go to disjoint boxes, and they approximate $T(\Omega)$. So every approximating sum, and hence the volume, is multiplied by $s_1 \cdots s_n$. Chapter 9 identifies this product with $|\det T|$ (9.60, 9.61).`,
+      caption: String.raw`Left: a region $\Omega$ filled with boxes lined up with the right singular vectors $e_1, e_2$ of $T$ (green inside, orange on the boundary). Right: drag $T(1,0)$ and $T(0,1)$; every green box goes to a box lined up with $f_1, f_2$, with sides multiplied by $s_1$ and $s_2$, so the total area is multiplied by $s_1s_2$. The readout checks this against the area of $T(\Omega)$ measured independently. Try the shear: lengths change but $s_1s_2 = 1$, so area does not. Switch to the standard grid: the boxes now go to slanted parallelograms (purple), and the box picture no longer shows the factor directly.`,
+      deps: ['ladr-7.107', 'ladr-7.109', 'ladr-7.65'],
+      see: ['rca-2.23'],
+      tags: ['geometry', 'singular values'],
+      viz(v) {
+        const V = v.stage({ x: [-1.75, 1.75], y: [-1.75, 1.75], equal: true, height: 340, minWidth: 270, axes: false, title: 'in $V$: $\\Omega$ and boxes along $e_1, e_2$' });
+        const W = v.stage({ x: [-2.7, 2.7], y: [-2.7, 2.7], equal: true, height: 340, minWidth: 270, axes: false, title: 'in $V$: $T(\\Omega)$ and the image boxes' });
+        const heart = Array.from({ length: 360 }, (_, k) => { const t = (TAU * k) / 360; return [1.2 * Math.sin(t) ** 3, 0.075 * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) + 0.19]; });
+        const SHP = { blob: ringOf((t) => 1.05 + 0.28 * Math.sin(3 * t + 0.4) + 0.12 * Math.cos(5 * t)), heart };
+        const PRE = { gen: [[1.4, 0.5], [-0.2, 0.9]], shear: [[1, 1.2], [0, 1]], refl: [[0.3, 1.3], [1.1, -0.1]] };
+        const H = colHandles(W, PRE.gen);
+        v.select('', [{ value: 'gen', label: 'generic $T$' }, { value: 'shear', label: 'shear' }, { value: 'refl', label: '$\\det T < 0$' }], 'gen', { onChange: (k) => H.set(PRE[k]) });
+        const shape = v.select('', [{ value: 'blob', label: 'blob' }, { value: 'heart', label: 'heart' }], 'blob');
+        const nS = v.slider('boxes per side $n$', 4, 40, 16, { int: true, step: 1 });
+        const al = v.toggle('boxes along $e_1, e_2$', true);
+        let st = null;
+        v.render(() => {
+          const T = H.A, { s, e, f, det } = svd22(T), n = Math.round(nS.value), L = 1.6, lined = al.value;
+          const g = lined ? e : [[1, 0], [0, 1]], ring = SHP[shape.value];
+          const c = boxCells([ring.map((p) => [dot(p, g[0]), dot(p, g[1])])], n, L), h = c.h;
+          const cell = (i, j) => [[i, j], [i + 1, j], [i + 1, j + 1], [i, j + 1]].map(([a, b]) => add(scl(g[0], -L + a * h), scl(g[1], -L + b * h)));
+          const ic = lined ? 'green' : 'purple';
+          for (const [i, j] of c.bnd) { const P = cell(i, j); V.poly(P, { fill: 'orange', fillAlpha: 0.2, stroke: false }); W.poly(P.map((p) => mv(T, p)), { fill: 'orange', fillAlpha: 0.2, stroke: false }); }
+          let imgSum = 0;
+          for (const [i, j] of c.inn) {
+            const P = cell(i, j), Q = P.map((p) => mv(T, p));
+            imgSum += Math.abs(polyArea(Q));
+            V.poly(P, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 0.7 });
+            W.poly(Q, { fill: ic, fillAlpha: 0.3, color: ic, width: 0.7 });
+          }
+          V.poly(ring, { color: 'ink', width: 2 });
+          const img = ring.map((p) => mv(T, p));
+          W.poly(img, { color: 'ink', width: 2 });
+          const axesAt = (P, D, nm, R) => D.forEach((d, k) => { P.line(-R * d[0], -R * d[1], R * d[0], R * d[1], { color: k ? 'purple' : 'blue', width: 1.2, dash: [6, 4], alpha: 0.75 }); const lp = scl(d, (d[1] >= 0 ? 1 : -1) * R * 0.9); P.tex(`${nm}_${k + 1}`, lp[0], lp[1], { color: k ? 'purple' : 'blue', size: 14, dx: 12 }); });
+          axesAt(V, e, 'e', 1.65);
+          axesAt(W, f, 'f', 2.5);
+          W.corner(lined ? `each box → a box with sides s₁h, s₂h (s₁s₂ = ${pf(s[0] * s[1], 3)})` : 'boxes → slanted parallelograms', 'tl', { color: lined ? 'green' : 'purple', weight: 700, size: 11.5 });
+          st = { n, h, N: c.inn.length, s, det, imgSum, aO: Math.abs(polyArea(ring)), aT: Math.abs(polyArea(img)), lined };
+        });
+        v.legend([['green', 'boxes inside $\\Omega$ and their images', { area: true }], ['orange', 'boundary boxes', { area: true }], ['purple', 'images of standard boxes', { area: true }], ['blue', '$e_1$, $f_1$', { dash: true }], ['purple', '$e_2$, $f_2$', { dash: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { n, h, N, s, det, imgSum, aO, aT, lined } = st, A = N * h * h, p = s[0] * s[1];
+          const boxes = lined ? `Each goes to a box with sides $s_1h, s_2h$, so the images total $s_1s_2 \\cdot ${tn(A, 3)} = ${tn(p * A, 3)}$ (summed directly: $${tn(imgSum, 3)}$).` : `Their images are slanted parallelograms (total $${tn(imgSum, 3)}$), not boxes.`;
+          return `$${N}$ boxes of side $h = ${tn(h, 3)}$ inside $\\Omega$ total $${tn(A, 3)}$ (area of $\\Omega$: $${tn(aO, 3)}$). ${boxes} Measured independently (shoelace formula), area $T(\\Omega) = ${tn(aT, 3)} = ${tn(aT / aO, 4)} \\times$ area $\\Omega$, and $s_1s_2 = ${tn(s[0], 3)} \\cdot ${tn(s[1], 3)} = ${tn(p, 4)}$ $(= |\\det T| = ${tn(Math.abs(det), 4)}$, see 9.61$)$.`;
+        });
+      },
+    },
   ],
 };

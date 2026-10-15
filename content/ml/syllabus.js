@@ -215,7 +215,7 @@ export default {
           pic: 'Thresholds on k grid points: |H| = k grows with the slider while the VC-dimension stays 1, and log₂|H| climbs away from it.' },
         { num: '6.6d', kind: 'Proposition', name: 'VC-dimension is not the number of parameters', deps: ['ml-6.5'], refs: ['UML §6.3.5'], verify: true,
           pic: 'A single frequency θ is tuned, by a binary-expansion recipe, so that the sign of sin(θx) matches any labelling the reader clicks on the points 10^{−1}, …, 10^{−d}: one parameter, infinite VC-dimension.' },
-        { num: '6.7', kind: 'Theorem', name: 'The fundamental theorem of statistical learning', deps: ['ml-6.6', 'ml-6.5', 'ml-4.4'], see: ['ml-28.4', 'ml-32.2'], refs: ['UML §6.4'],
+        { num: '6.7', kind: 'Theorem', name: 'The fundamental theorem of statistical (PAC) learning', deps: ['ml-6.6', 'ml-6.5', 'ml-4.4'], see: ['ml-28.4', 'ml-32.2'], refs: ['UML §6.4'],
           pic: 'Six equivalent conditions — uniform convergence, ERM agnostic learner, agnostic PAC, PAC, ERM PAC learner, finite VC-dimension — form a diagram; the reader picks a class and the app evaluates each condition, all lighting up together or not at all.' },
         { num: '6.8', kind: 'Theorem', name: 'The fundamental theorem: quantitative version', deps: ['ml-6.7'], see: ['ml-28.1a', 'ml-28.1b', 'ml-28.1c', 'ml-28.4'], refs: ['UML §6.4'],
           pic: 'For halfspaces in d dimensions, the sample size ERM needs to reach excess error ε is measured and plotted on log axes against ε and d, beside the agnostic rate (d + log 1/δ)/ε² and the realizable rate (d log(1/ε) + log 1/δ)/ε.' },
