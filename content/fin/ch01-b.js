@@ -1,5 +1,5 @@
 // Finance — Chapter 1: The time value of money (items 1.7–1.13; 1.1–1.6 are in ch01.js)
-import { clamp, pct, fx, sg, money, usd, npv, dated, irrs, annuityFactor, niceUp } from './ch01.shared.js';
+import { pct, fx, money, usd, usdS, npv, dated, irrs } from './ch01.shared.js';
 
 const pctTicks = (xs, d = 0) => xs.map((x) => [x, pct(x, d)]);
 /** Hatched rectangle with an outline (two passes: the runtime's hatch must not be combined with a stroke). */
@@ -60,7 +60,8 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
         const ha = L.handle(0, 0, { color: 'orange', label: 'a', labelPos: 'sw', constrain: snap });
         const hb = L.handle(0.5, 0, { color: 'orange', label: 'b', labelPos: 'se', constrain: snap });
         const cs = () => PROJ[pS.value].cs;
-        const money2 = (x) => `${x < 0 ? '−' : '+'}$${Math.abs(x).toFixed(2)}`;
+        const money2 = (x) => usdS(x, 2); // rich text
+        const moneyC = (x) => `${x < 0 ? '−' : '+'}$${Math.abs(x).toFixed(2)}`; // canvas text
         function build() {
           const F = dated(cs()), f = (r) => npv(F, r);
           let lo = Math.min(ha.x, hb.x), hi = Math.max(ha.x, hb.x), flo = f(lo);
@@ -80,7 +81,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
         }
         S = v.steps({ frames: build, still: 4, speed: 1.6 });
         ha.onDrag = hb.onDrag = () => S.reset(undefined, { at: 'start' });
-        v.legend([['accent', 'NPV(r)'], ['orange', 'bracket [a, b]', { area: true }], ['gold', 'midpoint', { dot: true }], ['green', 'account in credit', { area: true }], ['red', 'account overdrawn', { area: true }]]);
+        v.legend([['accent', 'NPV(r)'], ['orange', 'bracket [a, b]', { area: true }], ['gold', 'midpoint', { dot: true }], ['green', 'account in credit', { area: true }], ['red', 'account owed money', { area: true }], ['muted', 'after a year of interest', { dash: true }], ['blue', 'cash flow paid in']]);
         let st = null;
         v.render(() => {
           const c = cs(), F = dated(c), f = (r) => npv(F, r), fr = S.frame || {};
@@ -103,7 +104,7 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           Z.fn(f, { domain: zx, color: 'accent', width: 2.5, n: 200 });
           Z.dot(lo, f(lo), { r: 5, color: 'orange' }); Z.dot(hi, f(hi), { r: 5, color: 'orange' });
           if (mid != null) { Z.vline(mid, { color: 'gold', width: 1.4, dash: [4, 3] }); Z.dot(mid, f(mid), { r: 6, color: 'gold' }); Z.text(pct(mid, d), mid, Z.bounds.y[1], { dy: 10, align: 'center', color: 'gold', weight: 700, size: 11.5, plate: true }); }
-          Z.corner(`width ${pct(w, Math.min(9, d + 1))}`, 'bl', { color: 'orange', weight: 650 });
+          Z.corner(`bracket width ${pct(w, Math.min(9, d + 1))}`, 'tr', { color: 'orange', weight: 650 });
           // the account at the midpoint rate
           const rr = mid ?? (lo + hi) / 2, B = balances(c, rr);
           A.setView([-0.6, c.length - 0.4], around(B.concat(c.map((x) => Math.min(x, 0))), 0.16));
@@ -111,12 +112,16 @@ Equivalently, an account paying interest $r^*$ that receives the flows as deposi
           A.hline(0, { color: 'ink', width: 1 });
           B.forEach((b, t) => {
             const col = b >= 0 ? 'green' : 'red', last = t === B.length - 1;
-            A.rect(t - 0.28, 0, t + 0.28, b, { fill: col, fillAlpha: last ? 0.75 : 0.35, color: last ? col : null, width: last ? 2 : 0, stroke: last });
-            if (t > 0) A.line(t - 1 + 0.28, B[t - 1], t - 0.28, B[t - 1] * (1 + rr), { color: 'muted', width: 1.2, dash: [3, 3] });
-            if (c[t] !== 0) A.text(`${c[t] > 0 ? '+' : '−'}${Math.abs(c[t])}`, t, 0, { dy: b >= 0 ? 12 : -12, align: 'center', color: c[t] > 0 ? 'blue' : 'red', size: 10.5, weight: 650 });
+            if (t > 0) { // the balance after a year's interest, before this year's cash flow
+              const gI = B[t - 1] * (1 + rr);
+              A.rect(t - 0.28, 0, t + 0.28, gI, { color: 'muted', width: 1.2, dash: [3, 3] });
+              if (Math.abs(A.Y(b) - A.Y(gI)) > 6) A.arrow(t + 0.36, gI, t + 0.36, b, { color: c[t] > 0 ? 'blue' : 'red', width: 2, head: 7 });
+            }
+            A.rect(t - 0.28, 0, t + 0.28, b, { fill: col, fillAlpha: last ? 0.75 : 0.4, color: last ? col : null, width: last ? 2 : 0, stroke: last });
+            if (c[t] !== 0) A.text(`${c[t] > 0 ? '+' : '−'}${Math.abs(c[t])}`, t + 0.36, 0, { dy: b >= 0 ? 12 : -12, align: 'center', color: c[t] > 0 ? 'blue' : 'red', size: 10.5, weight: 650 });
           });
           const fin = B[B.length - 1];
-          A.text(`ends at ${money2(fin)}`, B.length - 1, fin, { dx: -34, dy: fin >= 0 ? -12 : 12, align: 'right', color: fin >= 0 ? 'green' : 'red', weight: 750, size: 12, plate: true });
+          A.text(`ends at ${moneyC(fin)}`, B.length - 1, fin, { dx: -24, dy: fin >= 0 ? -12 : 12, align: 'right', color: fin >= 0 ? 'green' : 'red', weight: 750, size: 12, plate: true });
           st = { F, lo, hi, mid, fr, fin, rr };
         });
         v.readout(() => {

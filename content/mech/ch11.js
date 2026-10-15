@@ -45,7 +45,7 @@ For equal masses $m$ and equal outer springs $k$ the modes are the in-phase moti
         const kcS = v.slider('middle spring $k_2/k_1$', 0.05, 3, 0.35, { log: true });
         const k3S = v.slider('right spring $k_3/k_1$', 0.25, 4, 1, { log: true });
         const sA = v.stage({ x: [-0.12, 3.12], y: [-0.08, 3.02], height: 290, axes: false, full: true });
-        const sT = v.stage({ x: [0, TT], y: [-1.12, 1.12], height: 230, axes: 'box', xlabel: 't (units of $\\sqrt{m_1/k_1}$)', weight: 1.6, yticks: [] });
+        const WIN = 25, sT = v.stage({ x: [0, WIN], y: [-1.12, 1.12], height: 230, axes: 'box', xlabel: 't', weight: 1.6, yticks: [] });
         const sE = v.stage({ x: [0, 4.6], y: [0, 1.12], height: 230, axes: 'box', weight: 1, xticks: [[0.7, 'cart 1'], [1.6, 'cart 2'], [3.0, 'mode 1'], [3.9, 'mode 2']], yticks: [0, 0.25, 0.5, 0.75, 1], title: 'share of the energy' });
         const h1 = sA.handle(1.4, YR[0], { color: 'purple', constrain: (x) => [clamp(x, 1 - AM, 1 + AM), YR[0]] });
         const h2 = sA.handle(2, YR[0], { color: 'teal', constrain: (x) => [clamp(x, 2 - AM, 2 + AM), YR[0]] });
@@ -86,13 +86,15 @@ For equal masses $m$ and equal outer springs $k$ the modes are the in-phase moti
           sA.text(`+ mode 2: q₂(t)·a₂, at ω₂ = ${v.fix(B.w[1], 3)}`, 0.06, YR[2] + 0.42, { color: 'orange', size: 12 });
           sA.corner(`t = ${v.fix(tau, 1)}`, 'tr');
           // displacements against time: carts (thick) and their mode parts (thin)
-          const off = [0.56, -0.56];
+          const off = [0.56, -0.56], t0 = Math.max(0, tau - WIN + 2), i0 = idxAt(B.R, t0), i1 = idxAt(B.R, t0 + WIN);
+          sT.setView([t0, t0 + WIN], [-1.12, 1.12]);
+          const seg = (f, st, upto) => { const pts = []; for (let j = i0; j <= Math.min(upto, i1); j++) pts.push([B.R.t[j], f(B.rec[j])]); sT.path(pts, st); };
           for (let c = 0; c < 2; c++) {
             sT.hline(off[c], { color: 'faint', width: 1 });
-            series(sT, B.R.t, B.rec.map((q) => off[c] + q.q[0] * A[0][c]), B.rec.length, { color: 'blue', width: 1.1, alpha: 0.7 });
-            series(sT, B.R.t, B.rec.map((q) => off[c] + q.q[1] * A[1][c]), B.rec.length, { color: 'orange', width: 1.1, alpha: 0.7 });
-            series(sT, B.R.t, B.rec.map((q) => off[c] + q.x[c]), i, { color: c ? 'teal' : 'purple', width: 2.2 });
-            sT.tex(c ? 'x_2' : 'x_1', 1.2, off[c] + 0.4, { color: c ? 'teal' : 'purple', size: 14 });
+            seg((q) => off[c] + q.q[0] * A[0][c], { color: 'blue', width: 1.2, alpha: 0.75 }, i);
+            seg((q) => off[c] + q.q[1] * A[1][c], { color: 'orange', width: 1.2, alpha: 0.75 }, i);
+            seg((q) => off[c] + q.x[c], { color: c ? 'teal' : 'purple', width: 2.4 }, i);
+            sT.tex(c ? 'x_2' : 'x_1', t0 + 0.8, off[c] + 0.42, { color: c ? 'teal' : 'purple', size: 14 });
           }
           sT.vline(tau, { color: 'gold', width: 1.4 });
           // energy shares
@@ -114,7 +116,7 @@ For equal masses $m$ and equal outer springs $k$ the modes are the in-phase moti
           let s = String.raw`Roots of $\det(K-\omega^2M)=0$: $\omega_1 = ${v.fix(B.w[0], 4)}$${meas(0)}, $\omega_2 = ${v.fix(B.w[1], 4)}$${meas(1)}`;
           if (eq) s += String.raw` · equal masses and outer springs: $\sqrt{k/m} = 1$, $\sqrt{(k+2k_2)/m} = ${v.fix(Math.sqrt(1 + 2 * S.k2), 4)}$`;
           s += String.raw` · mode shapes $\mathbf a_1 \propto (1, ${v.fix(S.G.A[0][1] / S.G.A[0][0], 3)})$, $\mathbf a_2 \propto (1, ${v.fix(S.G.A[1][1] / S.G.A[1][0], 3)})$`;
-          s += String.raw` · cart 1’s share swings between ${v.fix(100 * B.rE1[0], 0)}% and ${v.fix(100 * B.rE1[1], 0)}%, while each mode energy stays constant to ${sci(v, B.drift)} of the total (Verlet integration error)`;
+          s += String.raw` · cart 1’s share swings between ${v.fix(100 * B.rE1[0], 0)}% and ${v.fix(100 * B.rE1[1], 0)}%, while each mode energy stays constant to $${sci(v, B.drift)}$ of the total (Verlet integration error)`;
           return s;
         });
       },

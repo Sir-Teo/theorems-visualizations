@@ -1,5 +1,5 @@
 // Waves & Optics — Chapter 1: The wave equation
-import { TAU, pulse, dpulse, makeChain, wall, rod } from './ch01.shared.js';
+import { TAU, pulse, dpulse, makeChain, wall, rod, diverging } from './ch01.shared.js';
 
 /** Periodic pulse on [0, 1): profile `name`, FWHM w, centred at x0. */
 const periodic = (name, w, x0) => (x) => { let u = (((x - x0) % 1) + 1) % 1; if (u > 0.5) u -= 1; return pulse(name, u / w); };
@@ -355,7 +355,8 @@ In particular $u(x,t)$ depends only on the initial data in the interval $[x-ct,\
           vs.fn((x) => lerp(v0, x), { color: 'muted', width: 1, dash: [3, 4] });
           vs.fn((x) => vel(x, tau), { color: 'teal', width: 2.4 });
           // ---- space–time
-          xt.heat((x, y) => sol(x, y), { range: [-amp, amp], cmap: 'diverging', key: ver, res: 2 });
+          const dv = diverging(v);
+          xt.raster((x, y) => dv(sol(x, y) / amp), { key: ver, res: 2 });
           xt.axes();
           const a = P.x - P.y, b = P.x + P.y;
           xt.line(P.x, P.y, a, 0, { color: 'orange', width: 2 });
@@ -439,7 +440,8 @@ With $+\omega t$ instead of $-\omega t$ the wave travels in the $-x$ direction. 
           // ---- space-time (sliding window: the top row is now)
           const t0 = t - TW;
           st.setView([0, XM], [t0, t]);
-          st.heat((x, u) => y(x, u), { range: [-1.4, 1.4], cmap: 'diverging', res: 3 });
+          const dv = diverging(v);
+          st.raster((x, u) => dv(y(x, u) / 1.4), { res: 3 });
           st.axes();
           st.clip(() => st.line(crest - d * vp * 4, t - 4, crest, t, { color: 'gold', width: 3 }));
           st.dot(crest, t, { r: 6, color: 'gold' });

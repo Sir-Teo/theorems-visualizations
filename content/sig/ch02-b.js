@@ -44,7 +44,7 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
         const inp = v.select('input', [{ value: 'step', label: 'step' }, { value: 'pulse', label: 'pulse' }, { value: 'sine', label: 'sinusoid' }], 'step');
         const sD = v.stage({ x: [-3.6, 23.6], y: [0, 7], equal: true, height: 230, axes: false, full: true });
         const sP = v.stage({ x: [0, TE], y: [-1, 2], height: 230, axes: 'box', xlabel: 't', full: true, title: 'the signals of the diagram' });
-        const TF = { gain: (i) => `k_${i}`, int: (i) => `\\dfrac{k_${i}}{s}`, delay: (i) => `k_${i}e^{-s}`, lag: (i) => `\\dfrac{k_${i}}{s+1}` };
+        const TF = { gain: (i) => `k_${i}`, int: (i) => `\\frac{k_${i}}{s}`, delay: (i) => `k_${i}e^{-s}`, lag: (i) => `\\frac{k_${i}}{s+1}` };
         const SUB = { gain: 'gain', int: 'integrator', delay: 'delay by 1', lag: 'first-order lag' };
         const DC = (type, k) => (type === 'int' ? (k === 0 ? 0 : Infinity) : k);
         const mk = (type, k) => {
@@ -124,12 +124,13 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
           sD.corner(`t = ${v.fix(tp, 2)}`, 'tr', { color: 'muted' });
           if (R.status !== 'ok') sD.corner(R.status === 'illposed' ? 'ill-posed loop: 1 ± D₁D₂ = 0' : `diverged at t = ${v.fix(R.stopAt, 1)}`, 'br', { color: 'red', size: 12.5, weight: 600 });
           // ---- plot
-          const top = Math.min(60, ymax * 1.15);
-          sP.setView(null, [-top * (inp.value === 'sine' || ymax > 1.01 ? 1 : 0.25), top]);
+          let lo = 0, hi = 0; for (const a of [R.x, R.m1, R.m2, R.y]) for (let n = 0; n <= N; n += 4) if (isFinite(a[n])) { lo = Math.min(lo, a[n]); hi = Math.max(hi, a[n]); }
+          const span = Math.max(1, hi - lo);
+          sP.setView(null, [Math.max(-60, lo - 0.12 * span), Math.min(60, hi + 0.12 * span)]);
           sP.hline(0, { color: 'faint', width: 1 });
           if (R.settled && inp.value === 'step' && isFinite(R.H0)) sP.hline(R.H0, { color: 'green', width: 1.2, dash: [6, 4] });
           const draw = (arr, col, w) => { const done = [], rest = []; for (let n = 0; n <= N; n += 2) { const p = isFinite(arr[n]) ? [n * h, arr[n]] : null; (n <= np ? done : rest).push(p); } rest.unshift(done[done.length - 1] ?? null); sP.clip(() => { sP.path(rest, { color: col, width: w, alpha: 0.22 }); sP.path(done, { color: col, width: w }); }); };
-          draw(R.x, 'accent', 1.8); if (c !== 'series' || true) draw(R.m1, 'orange', 1.5); if (c !== 'series') draw(R.m2, 'teal', 1.5); draw(R.y, 'purple', 2.6);
+          draw(R.x, 'accent', 1.8); draw(R.m1, 'orange', 1.5); if (c !== 'series') draw(R.m2, 'teal', 1.5); draw(R.y, 'purple', 2.6);
           sP.vline(tp, { color: 'gold', width: 1.4 });
         }, { period: 10, still: 9.6 });
         v.legend([['accent', 'input $x$'], ['orange', 'internal signal ($v$, $v_1$ or the error $e$)'], ['teal', 'second branch or feedback signal $f$'], ['purple', 'output $y$'], ['green', 'predicted final value $H(0)$', { dash: true }]]);
@@ -180,10 +181,11 @@ For gains $k_1,k_2$ the three give $k_1k_2$, $k_1+k_2$ and $k_1/(1\pm k_1k_2)$; 
         const cell = (i, j) => { const s = sysOf(i); if (!R[i][j]) R[i][j] = TESTS[PROPS[j].id](s, seed); return R[i][j]; };
         const label = (i) => (ROWS[i] === 'custom' ? `yours: ${String(fx.value).slice(0, 16)}` : NAMES[ROWS[i]]);
         const sT = v.stage({ x: [0, 1], y: [0, 1], height: 418, axes: false, full: true, title: 'every system on the bench against every property (click a cell)' });
-        const sS = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: false, weight: 1, title: 'has the row property but not the column one' });
-        const sW = v.stage({ x: [-5.2, 5.2], y: [-2, 2], height: 300, axes: 'box', weight: 1.45, xlabel: 't', title: 'evidence' });
+        const sS = v.stage({ x: [0, 1], y: [0, 1], height: 300, axes: false, weight: 1.25, title: 'has the row property but not the column one' });
+        const sW = v.stage({ x: [-5.2, 5.2], y: [-2, 2], height: 300, axes: 'box', weight: 1.2, xlabel: 't', title: 'evidence' });
         const T = v.table(sT, { rows: ROWS.length, cols: 6, square: false, maxCell: 22.5, cellAspect: 4.6, size: 13.5, rowLabels: label, colLabels: PROPS.map((p) => p.name), labelSize: 12.5, margin: 4 });
-        const TS = v.table(sS, { rows: 6, cols: 6, square: false, maxCell: 37, cellAspect: 1.55, size: 11.5, rowLabels: PROPS.map((p) => p.short), colLabels: PROPS.map((p) => p.short), labelSize: 11, margin: 6 });
+        const CL = ['linear', 'TI', 'causal', 'memoryless', 'invertible', 'stable'];
+        const TS = v.table(sS, { rows: 6, cols: 6, square: false, maxCell: 37, cellAspect: 2, size: 11.5, rowLabels: PROPS.map((p) => p.short), colLabels: CL, colWeights: [1, 0.78, 0.92, 1.3, 1.12, 0.88], labelSize: 10.5, margin: 4 });
         sT.onClick((x, y) => { const c = T.hit(x, y); if (c && c.i >= 0 && c.j >= 0) { sel = [c.i, c.j]; cell(c.i, c.j); } });
         sS.onClick((x, y) => {
           const c = TS.hit(x, y); if (!c || c.i < 0 || c.j < 0 || c.i === c.j) return;

@@ -364,8 +364,8 @@ export function bdBlock(s, x, y, w, h, label, st = {}) {
   const col = st.color || 'ink';
   s.rect(x - w / 2, y - h / 2, x + w / 2, y + h / 2, { fill: 'panel', fillAlpha: 1, stroke: false, radius: 7 });
   s.rect(x - w / 2, y - h / 2, x + w / 2, y + h / 2, { fill: st.fill || col, fillAlpha: st.fillAlpha ?? (st.active ? 0.18 : 0.06), color: col, width: st.active ? 2.4 : 1.6, radius: 7, alpha: st.alpha });
-  if (label) s.tex(label, x, y + (st.sub ? h * 0.12 : 0), { size: st.size || 15, color: st.labelColor || 'ink' });
-  if (st.sub) s.text(st.sub, x, y - h / 2, { size: 10.5, color: 'muted', align: 'center', baseline: 'bottom', dy: -4 });
+  if (label) s.tex(label, x, y, { size: st.size || 15, color: st.labelColor || 'ink' });
+  if (st.sub) s.text(st.sub, x, y - h / 2, { size: 11, color: 'muted', align: 'center', baseline: 'top', dy: 4 });
 }
 /** Summing junction of pixel radius rPx with signs placed beside its inputs: signs = {w: '+', s: '−', n: '+', e: '+'}. */
 export function bdSum(s, x, y, rPx, signs = {}, st = {}) {
@@ -393,14 +393,16 @@ export function along(P, u) {
   return P[P.length - 1];
 }
 
-/** Numbers for readouts: 3 significant figures, scientific below 10⁻³ (as TeX when tex = true). */
+/** Numbers for readouts: 3 significant figures; scientific notation below 10⁻³ or above 10⁶, as $…$ TeX (raw TeX when tex = true). */
 export function num(x, tex = false) {
   if (x == null || Number.isNaN(x)) return '—';
-  if (!isFinite(x)) return x > 0 ? '∞' : '−∞';
+  if (!isFinite(x)) return tex ? (x > 0 ? '\\infty' : '-\\infty') : x > 0 ? '∞' : '−∞';
   const a = Math.abs(x);
   if (a !== 0 && (a < 1e-3 || a >= 1e6)) {
-    const e = Math.floor(Math.log10(a)), m = x / 10 ** e;
-    return tex ? `${(+m.toFixed(1)).toString().replace('-', '-')}\\times10^{${e}}` : `${(+m.toFixed(1)).toString().replace('-', '−')}·10^${e}`;
+    let e = Math.floor(Math.log10(a)), m = +(x / 10 ** e).toFixed(1);
+    if (Math.abs(m) >= 10) { m /= 10; e++; }
+    const t = `${m}\\times10^{${e}}`;
+    return tex ? t : `$${t}$`;
   }
   return String(+x.toPrecision(3)).replace('-', '−');
 }

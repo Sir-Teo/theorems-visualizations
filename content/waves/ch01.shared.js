@@ -176,3 +176,15 @@ export function rod(s, x, y0, y1, y) {
   s.line(x, y0, x, y1, { color: 'muted', width: 2.5 });
   s.dot(x, y, { r: 5, hollow: true, color: 'ink', width: 2 });
 }
+
+/**
+ * A theme-aware diverging colour map: q in [−1, 1] → [r, g, b], fading from the panel colour to red (q > 0) or blue
+ * (q < 0), so heat maps stay dark in the dark theme. Call it inside the draw function (the palette can change).
+ */
+export function diverging(v) {
+  const P = v.rgb('panel'), R = v.rgb('red'), B = v.rgb('blue');
+  return (q) => {
+    const t = q > 1 ? 1 : q < -1 ? -1 : q || 0, C = t >= 0 ? R : B, a = Math.pow(Math.abs(t), 0.85);
+    return [P[0] + (C[0] - P[0]) * a, P[1] + (C[1] - P[1]) * a, P[2] + (C[2] - P[2]) * a];
+  };
+}

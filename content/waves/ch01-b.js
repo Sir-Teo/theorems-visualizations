@@ -1,5 +1,5 @@
 // Waves & Optics — Chapter 1: The wave equation (part b: junctions, sound, three dimensions, moving sources)
-import { TAU, pulse, dpulse, makeChain, stackReflection, retarded, movingSourceSound, wall, rod } from './ch01.shared.js';
+import { TAU, pulse, dpulse, makeChain, stackReflection, retarded, movingSourceSound, wall, rod, diverging } from './ch01.shared.js';
 
 /** Draw a string from a chain, coloured per medium: colour(x) and width(x) pick the style of each gap. */
 function drawChain(s, C, xa, xb, style, sy = 1) {
@@ -293,7 +293,8 @@ which is 343 m/s in air at 20 °C, independent of pressure and growing as $\sqrt
           const P = S.P, pmax = P.rho * P.c * (pist.value === 'push' ? AP / (2 * TAUP) : AS * TAU * FS) * 1.25;
           // ---- the tube: pressure shading, molecules, piston, closed end
           const ex = (j) => j * L0 + EX * (S.X[j] - j * L0);
-          for (let i = 0; i < N; i++) s.rect(ex(i), -0.02, ex(i + 1), 1.02, { fill: M.cmap(0.5 + 0.5 * M.clamp((S.pr[i] - P0) / pmax, -1, 1), 'diverging'), fillAlpha: 0.75, stroke: false });
+          const dv = diverging(v);
+          for (let i = 0; i < N; i++) s.rect(ex(i), -0.02, ex(i + 1), 1.02, { fill: dv((S.pr[i] - P0) / pmax), fillAlpha: 1, stroke: false });
           const pts = tracers.map(([s0, y]) => [s0 + EX * dispAt(s0), y]);
           s.dots(pts, { r: 1.6, color: 'ink', alpha: 0.55 });
           for (const s0 of tagged) { const x = s0 + EX * dispAt(s0); s.line(s0, 1.0, s0, 1.06, { color: 'gold', width: 1.5 }); s.dot(x, 0.5, { r: 5.5, color: 'gold' }); }
@@ -361,14 +362,15 @@ whose wavefronts are spheres. The amplitude falls as $1/r$ and the intensity as 
         let tt = 0;
         v.animate((t) => {
           tt = t;
-          s.heat((x, y) => p(Math.hypot(x, y), t), { range: [-0.9, 0.9], cmap: 'diverging', res: 3 });
+          const dv = diverging(v);
+          s.raster((x, y) => dv(p(Math.hypot(x, y), t) / 0.9), { res: 3 });
           s.circle(0, 0, hr.x, { color: 'gold', width: 2, dash: [6, 4] });
           s.dot(0, 0, { r: 4, color: 'ink' });
           const rp = Math.hypot(hp.x, hp.y), ang = Math.atan2(hp.y, hp.x), ux = Math.cos(ang), uy = Math.sin(ang);
           const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [hp.x + (a * ux - b * uy) * W / 2, hp.y + (a * uy + b * ux) * W / 2]);
           s.poly(corners, { color: 'teal', width: 2, fill: false });
           // ---- zoom: local coordinates (u along the ray, w across it)
-          zp.heat((u, w) => p(Math.hypot(rp + u, w), t), { range: [-0.9 * amp(rp), 0.9 * amp(rp)], cmap: 'diverging', res: 3 });
+          zp.raster((u, w) => dv(p(Math.hypot(rp + u, w), t) / (0.9 * amp(rp))), { res: 3 });
           const ph = (WSLOW * t) / K; // crests where r = n + ph
           for (let n = Math.ceil(rp - W - ph); n <= rp + W - ph; n++) {
             const rc = n + ph; if (rc <= 0) continue;
@@ -461,9 +463,10 @@ In three dimensions the listener at distance $r$ hears exactly the emitted signa
           for (const x of [-R0, R0]) s1.dot(x, u1(R0, tt) / pk1, { r: 5, color: 'gold' });
           s1.dot(0, 0, { r: 3.5, color: 'ink' });
           // ---- 2D and 3D: radial profiles on a fixed scale per panel (the probe's peak)
+          const dv = diverging(v);
           for (const [stg, k] of [[s2, 1], [s3, 2]]) {
             const a = radial(dims[k][1], tt), pk = tr[k].pk;
-            stg.raster((x, y) => M.cmap(0.5 + 0.5 * M.clamp(look(a, Math.hypot(x, y)) / pk, -1, 1), 'diverging'), { res: 2 });
+            stg.raster((x, y) => dv(look(a, Math.hypot(x, y)) / pk), { res: 2 });
             stg.circle(0, 0, R0, { color: 'gold', width: 1.6, dash: [5, 4] });
             if (tt - T0 > 0) stg.circle(0, 0, tt - T0, { color: 'ink', width: 0.8, alpha: 0.35 });
             stg.dot(0, 0, { r: 3, color: 'ink' });

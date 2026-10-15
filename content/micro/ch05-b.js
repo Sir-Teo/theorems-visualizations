@@ -499,7 +499,7 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
           s.dot(r.i[0], r.i[1], { r: 6.5, color: 'green', label: 'i', labelPos: r.i[0] > r.q[0] ? 'ne' : 'nw' });
           // bars: what each tax costs the consumer in money (at the original prices), against the revenue it raises
           const costQ = m - r.eq, costI = r.R, top = Math.max(costQ, 0.5) * 1.3;
-          b.setView([0, 1], [-0.07 * top, top]);
+          b.setView([0, 1], [-0.1 * top, top]);
           b.line(0.02, 0, 0.98, 0, { color: 'ink', width: 1 });
           [[0.08, 0.42, costQ, 'quantity tax'], [0.58, 0.92, costI, 'income tax']].forEach(([x0b, x1b, cost, nm]) => {
             b.rect(x0b, 0, x1b, Math.min(r.R, cost), { fill: 'gold', fillAlpha: 0.65, stroke: false, radius: 4 });
@@ -507,8 +507,8 @@ The denominator is the marginal utility of income $\lambda$ (5.4). In words: a s
             b.text(v.fix(cost, 2), (x0b + x1b) / 2, cost, { dy: -10, align: 'center', color: cost > r.R + 1e-6 ? 'red' : 'ink', ...LBL });
             b.text(nm, (x0b + x1b) / 2, 0, { dy: 12, align: 'center', color: 'ink', size: 11.5, weight: 600, baseline: 'top' });
           });
-          if (r.R * (b.height / (1.07 * top)) > 22) b.text('revenue R', 0.25, r.R / 2, { align: 'center', color: 'ink', size: 11.5, weight: 600 });
-          if (r.EB * (b.height / (1.07 * top)) > 16) b.text('excess burden', 0.25, r.R + r.EB / 2, { align: 'center', color: 'red', size: 11.5, weight: 700 });
+          if (r.R * (b.height / (1.1 * top)) > 22) b.text('revenue R', 0.25, r.R / 2, { align: 'center', color: 'ink', size: 11.5, weight: 600 });
+          if (r.EB * (b.height / (1.1 * top)) > 16) b.text('excess burden', 0.25, r.R + r.EB / 2, { align: 'center', color: 'red', size: 11.5, weight: 700 });
           b.text("cost to the consumer, in money", 0.5, top, { dy: 6, align: 'center', color: 'muted', size: 11.5, baseline: 'top' });
           // revenue and excess burden against t
           const cv = curve(k), cmax = Math.max(...cv.map((z) => z[1])) * 1.12 || 1;
