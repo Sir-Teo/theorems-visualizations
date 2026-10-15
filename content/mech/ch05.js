@@ -234,7 +234,7 @@ Through a stack of parallel layers the quantity $n\sin\theta$ is the same in eve
         const NL = 5, IF = [0.9, 0.3, -0.3, -0.9], NK = [1.0, 1.22, 1.48, 1.8, 2.2];
         let sT = null;
         const mode = v.select('', [{ value: 'two', label: 'two media' }, { value: 'stack', label: 'stack of layers' }], 'two', {
-          onChange: (m) => { if (sT) { sT.o.xlabel = m === 'two' ? 'crossing point x' : 'layer'; sT.o.ylabel = m === 'two' ? 'travel time cT' : 'n sin θ'; sT.setTicks(m === 'two' ? null : [0, 1, 2, 3, 4].map((k) => [k, `n=${NK[k]}`]), null); } },
+          onChange: (m) => { if (sT) { sT.o.xlabel = m === 'two' ? 'crossing point x' : ''; sT.o.ylabel = m === 'two' ? 'travel time cT' : 'n sin θ'; sT.setTicks(m === 'two' ? null : [0, 1, 2, 3, 4].map((k) => [k, `n=${NK[k]}`]), null); } },
         });
         const n2s = v.slider('index of the lower medium $n_2$', 1, 2.5, 1.33, { step: 0.01 });
         const sR = v.stage({ x: [-2.6, 2.6], y: [-1.9, 1.9], equal: true, axes: false, height: 340, title: 'light from S to P' });
@@ -314,7 +314,7 @@ Through a stack of parallel layers the quantity $n\sin\theta$ is the same in eve
             sT.setView([-0.6, 4.6], [Math.min(0, ...ns) - 0.05 * hi, hi]);
             ns.forEach((val, k) => sT.rect(k - 0.32, 0, k + 0.32, val, { fill: 'gold', fillAlpha: 0.45, color: 'gold', width: 1.2 }));
             sT.hline(no, { color: 'green', dash: [6, 4], width: 1.8 });
-            sT.text('least-time path: the same in every layer', 4.55, no, { color: 'green', size: 11.5, align: 'right', baseline: 'bottom', dy: -4 });
+            sT.corner('dashed: the least-time path, the same in every layer', 'tr', { color: 'green', weight: 600 });
             cur = { two, T: stackT(xs), Tm: O.T, ns, no };
             v.legend([['gold', 'your path, and its $n\\sin\\theta$ per layer'], ['green', 'least-time path', { dash: true }]]);
           }
@@ -342,11 +342,12 @@ for every smooth function $\eta$ that vanishes near $a$ and near $b$ (it is enou
       refs: ['Arnold §12', 'Goldstein §2.2'],
       tags: ['calculus of variations', 'test functions'],
       viz(v) {
-        const fsel = v.select('', [{ value: 'smooth', label: 'continuous $f$' }, { value: 'draw', label: 'draw $f$' }, { value: 'point', label: '$f\\ne0$ at one point only' }], 'smooth');
+        let hc = null;
+        const fsel = v.select('', [{ value: 'smooth', label: 'continuous $f$' }, { value: 'draw', label: 'draw $f$' }, { value: 'point', label: '$f\\ne0$ at one point only' }], 'smooth', { onChange: (m) => { if (hc && m === 'point') hc.set(0.5, 0); } });
         const wS = v.slider('bump half-width $w$', 0.02, 0.35, 0.1, { step: 0.005 });
-        const s1 = v.stage({ x: [0, 1], y: [-1.25, 1.25], height: 250, full: true, axes: true, title: 'a function $f$, a test bump $\\eta$ and their product $f\\eta$' });
+        const s1 = v.stage({ x: [0, 1], y: [-1.25, 1.4], height: 260, full: true, axes: true, title: 'a function $f$, a test bump $\\eta$ and their product $f\\eta$' });
         const s2 = v.stage({ x: [0, 1], y: [-1.25, 1.25], height: 170, full: true, axes: true, title: 'the probe: bump-weighted average $\\int f\\eta_c/\\int\\eta_c$ as the centre $c$ slides' });
-        const hc = s1.handle(0.24, 0, { color: 'orange', label: 'c', labelPos: 's', constrain: (x) => [clamp(x, wS.value + 0.001, 1 - wS.value - 0.001), 0] });
+        hc = s1.handle(0.24, 0, { color: 'orange', label: 'c', labelPos: 's', constrain: (x) => [clamp(x, wS.value + 0.001, 1 - wS.value - 0.001), 0] });
         const NS = 100, drawn = Array.from({ length: NS + 1 }, (_, i) => { const x = i / NS; return 0.75 * Math.exp(-(((x - 0.62) / 0.07) ** 2)) - 0.35 * Math.exp(-(((x - 0.3) / 0.12) ** 2)); });
         let ver = 0, last = null;
         s1.onDrag((x, y, ph) => {
@@ -377,15 +378,15 @@ for every smooth function $\eta$ that vanishes near $a$ and near $b$ (it is enou
         v.render(() => {
           const w = wS.value; if (hc.x < w || hc.x > 1 - w) hc.x = clamp(hc.x, w + 0.001, 1 - w - 0.001);
           const c = hc.x, eta = (x) => testBump((x - c) / w), pt = fsel.value === 'point';
-          s1.fn((x) => Math.max(0, f(x) * eta(x)), { color: 'green', width: 0, fill: 'green', fillAlpha: 0.35, n: 800 });
-          s1.fn((x) => Math.min(0, f(x) * eta(x)), { color: 'red', width: 0, fill: 'red', fillAlpha: 0.35, n: 800 });
+          s1.fn((x) => Math.max(0, f(x) * eta(x)), { color: 'green', stroke: false, fill: 'green', fillAlpha: 0.35, n: 800 });
+          s1.fn((x) => Math.min(0, f(x) * eta(x)), { color: 'red', stroke: false, fill: 'red', fillAlpha: 0.35, n: 800 });
           s1.fn(eta, { color: 'orange', width: 1.8, n: 600 });
           if (pt) { s1.hline(0, { color: 'accent', width: 3 }); s1.dot(0.5, 0, { r: 5, hollow: true, color: 'accent' }); s1.dot(0.5, 1, { r: 5, color: 'accent', label: 'f(½) = 1', labelPos: 'e' }); }
           else s1.fn(f, { color: 'accent', width: 3, n: 600 });
           s1.tex(String.raw`\eta`, c, 1, { color: 'orange', dy: -12 });
-          if (fsel.value === 'draw') s1.corner('drag in this panel to draw f', 'tr', { color: 'accent' });
+          if (fsel.value === 'draw') s1.corner('drag in this panel to draw f', 'br', { color: 'accent' });
           const I = integ((x) => f(x) * eta(x)), Ie = integ(eta);
-          s1.corner(`∫ f η dx = ${v.fix(I, 4)}`, 'tl', { color: Math.abs(I) < 1e-9 ? 'muted' : I > 0 ? 'green' : 'red', weight: 700, size: 13 });
+          s1.corner(`∫ f η dx = ${v.fix(I, 4)}`, 'tr', { color: Math.abs(I) < 1e-9 ? 'muted' : I > 0 ? 'green' : 'red', weight: 700, size: 13 });
           // scan panel
           const sc = scan();
           if (pt) { s2.hline(0, { color: 'accent', width: 1.6, dash: [5, 4], alpha: 0.6 }); s2.dot(0.5, 1, { r: 4, color: 'accent', alpha: 0.6 }); }
@@ -432,9 +433,10 @@ $$\delta J[y;\eta]=\frac{d}{d\varepsilon}J[y+\varepsilon\eta]\Big|_{\varepsilon=
         const cS = v.slider('bump centre $c$', 0.15, 0.85, 0.3, { step: 0.01 });
         const epsS = v.slider('$\\varepsilon$ (gold curve)', -0.3, 0.3, 0.15, { step: 0.01 });
         const sY = v.stage({ x: [-0.05, 1.05], y: [-0.45, 1.05], height: 290, weight: 1.25, axes: true, title: 'candidate, perturbation and the Euler–Lagrange solution' });
-        const sJ = v.stage({ x: [-0.32, 0.32], y: [-0.1, 0.1], height: 290, axes: 'box', xlabel: 'ε', ylabel: 'J(ε) − J(0)', title: '$J$ along the line $y+\\varepsilon\\eta$' });
+        const sJ = v.stage({ x: [-0.32, 0.32], y: [-0.1, 0.1], height: 290, axes: 'box', xticks: [-0.2, -0.1, 0.1, 0.2], xlabel: 'ε', ylabel: 'J(ε) − J(0)', title: '$J$ along the line $y+\\varepsilon\\eta$' });
         const sR = v.stage({ x: [-0.05, 1.05], y: [-1, 1], height: 150, full: true, axes: true, title: 'Euler–Lagrange residual $f_y-\\frac{d}{dx}f_{y\'}$ along the candidate (purple) and the direction $\\eta$ (orange)' });
-        const D = sY.handle(0.62, 0, { color: 'accent', label: 'drag', labelPos: 'ne', constrain: (x, y) => [clamp(x, 0.15, 0.85), y] });
+        const D = sY.handle(0.62, 0, { color: 'accent', label: 'drag', labelPos: 'ne', constrain: (x, y) => { const X = clamp(x, 0.15, 0.85), ys = FN[fsel.value].star(X); return [X, Math.abs(y - ys) < 0.025 ? ys : y]; } });
+        v.button('Remove the defect', () => D.set(D.x, FN[fsel.value].star(D.x)));
         { const F = FN.act; D.y = F.star(0.62) + 0.22; }
         let lastF = 'act';
         const N = 600, h = 1 / N;
@@ -481,7 +483,7 @@ $$\delta J[y;\eta]=\frac{d}{d\varepsilon}J[y+\varepsilon\eta]\Big|_{\varepsilon=
         });
         v.readout(() => {
           if (!cur) return '';
-          const ok = Math.abs(cur.a) < 0.004;
+          const ok = Math.abs(cur.a) < 1e-9;
           return String.raw`slope of $J(\varepsilon)$ at $0$: numerical $\frac{J(h)-J(-h)}{2h} = ${v.fix(cur.dnum, 5)}$ · first-variation formula $\int_0^1\big(f_y-\frac{d}{dx}f_{y'}\big)\eta\,dx = ${v.fix(cur.first, 5)}$ · ` + (ok ? String.raw`the candidate solves $${cur.el}$: the slope is $0$ for every $\eta$.` : String.raw`defect size $${v.fix(cur.a, 3)}$: some direction $\eta$ always gives a nonzero slope, so the candidate is not stationary.`);
         });
       },
@@ -505,7 +507,7 @@ where $m$ is the slope of the line: the increase is of **second order** in the s
         const sG = v.stage({ x: [1e-3, 1], y: [1e-8, 1], xlog: true, ylog: true, axes: 'box', height: 290, xlabel: 'ε', ylabel: '|L[εη] − L[0]|', title: 'scale the wiggle by $\\varepsilon$' });
         const sI = v.stage({ x: [-1.05, 1.05], y: [-0.2, 0.5], height: 135, full: true, axes: true, title: 'the integrand minus 1 along the wiggle (its area is the excess length at $\\varepsilon = 1$)' });
         const XK = [-1, -0.6, -0.2, 0.2, 0.6, 1];
-        const H = [0.28, -0.18, 0.3, 0.12].map((y, i) => sP.handle(XK[i + 1], y, { color: 'accent', constrain: (x, yy) => [XK[i + 1], clamp(yy, -0.65, 0.65)] }));
+        const H = [0.36, -0.26, 0.4, 0.16].map((y, i) => sP.handle(XK[i + 1], y, { color: 'accent', constrain: (x, yy) => [XK[i + 1], clamp(yy, -0.65, 0.65)] }));
         // C¹ cubic Hermite through the knots with Catmull–Rom slopes: η and η′ exactly
         const herm = () => {
           const ys = [0, ...H.map((h) => h.y), 0], n = XK.length, m = ys.map((_, k) => (k === 0 ? (ys[1] - ys[0]) / (XK[1] - XK[0]) : k === n - 1 ? (ys[n - 1] - ys[n - 2]) / (XK[n - 1] - XK[n - 2]) : (ys[k + 1] - ys[k - 1]) / (XK[k + 1] - XK[k - 1])));
@@ -523,30 +525,32 @@ where $m$ is the slope of the line: the increase is of **second order** in the s
         let cur = null;
         v.render(() => {
           const opt = met.value === 'opt', at = herm();
-          if (opt) for (let k = 0; k < 12; k++) { const y0 = -0.75 + (1.5 * k) / 12; sP.rect(-1.2, y0, 1.2, y0 + 0.125, { fill: 'accent', fillAlpha: 0.02 + 0.13 * (k / 11), stroke: false }); }
+          if (opt) { const [b0, b1] = sP.bounds.y, xb = sP.bounds.x; for (let k = 0; k < 16; k++) { const y0 = b0 + ((b1 - b0) * k) / 16; sP.rect(xb[0], y0, xb[1], y0 + (b1 - b0) / 16 + 1e-3, { fill: 'accent', fillAlpha: 0.02 + 0.14 * (k / 15), stroke: false }); } }
           if (opt) { sP.text('n larger', 1.12, 0.66, { align: 'right', size: 11, color: 'accent' }); sP.text('n smaller', 1.12, -0.66, { align: 'right', size: 11, color: 'accent' }); }
           sP.line(-1, 0, 1, 0, { color: 'green', width: 2, dash: [7, 5] });
           sP.fn((x) => at(x)[0], { domain: [-1, 1], color: 'accent', width: 3, n: 400 });
           sP.dot(-1, 0, { r: 6, color: 'ink', label: 'A', labelPos: 'w' }); sP.dot(1, 0, { r: 6, color: 'ink', label: 'B', labelPos: 'e' });
           // log–log
           const I2 = simpson((x) => at(x)[1] ** 2, -1, 1, NQ), I1 = simpson((x) => at(x)[0], -1, 1, NQ);
-          const es = sample((u) => 10 ** (-3 + 3 * u), 36), dL = es.map((e) => excess(at, e, opt));
+          const es = sample((u) => 10 ** (-3 + 3 * u), 36), dL = es.map((e) => excess(at, e, opt)), dM = opt ? es.map((e) => excess(at, -e, true)) : [];
+          const allD = [...dL, ...dM].map(Math.abs).concat([0.5e-6 * I2]).filter((x) => x > 0);
+          sG.setView(null, [Math.max(1e-12, Math.min(...allD) / 4), Math.max(...allD) * 4]);
           sG.fn((e) => 0.5 * e * e * I2, { color: 'green', width: 1.8, dash: [6, 4] });
           if (opt && Math.abs(I1) > 1e-9) sG.fn((e) => 0.5 * e * Math.abs(I1), { color: 'red', width: 1.8, dash: [6, 4] });
           es.forEach((e, i) => sG.dot(e, Math.abs(dL[i]), { r: 3.2, color: dL[i] >= 0 ? 'accent' : 'red' }));
-          if (opt) es.forEach((e) => { const m = excess(at, -e, true); sG.dot(e, Math.abs(m), { r: 3.2, color: m >= 0 ? 'accent' : 'red', hollow: true }); });
-          sG.text(opt ? 'slope 1: a first-order term' : 'slope 2: second order', 0.0015, 0.3, { size: 11.5, color: opt ? 'red' : 'green', baseline: 'top' });
+          dM.forEach((m, i) => sG.dot(es[i], Math.abs(m), { r: 3.2, color: m >= 0 ? 'accent' : 'red', hollow: true }));
+          sG.text(opt ? 'slope 1: a first-order term' : 'slope 2: second order', 0.9, sG.bounds.y[0], { size: 11.5, color: opt ? 'red' : 'green', align: 'right', baseline: 'bottom', dy: -24 });
           // integrand strip
           const g = (x) => { const [y, dy] = at(x), r = Math.sqrt(1 + dy * dy); return (opt ? 1 + 0.5 * y : 1) * r - 1; };
           const gm = span([sample((u) => g(-1 + 2 * u), 200), [0]], 0.15, 0.1);
           sI.setView(null, gm);
-          sI.fn((x) => Math.max(0, g(x)), { domain: [-1, 1], color: 'accent', width: 0, fill: 'accent', fillAlpha: 0.3, n: 500 });
-          sI.fn((x) => Math.min(0, g(x)), { domain: [-1, 1], color: 'red', width: 0, fill: 'red', fillAlpha: 0.3, n: 500 });
+          sI.fn((x) => Math.max(0, g(x)), { domain: [-1, 1], color: 'accent', stroke: false, fill: 'accent', fillAlpha: 0.3, n: 500 });
+          sI.fn((x) => Math.min(0, g(x)), { domain: [-1, 1], color: 'red', stroke: false, fill: 'red', fillAlpha: 0.3, n: 500 });
           sI.fn(g, { domain: [-1, 1], color: 'accent', width: 2, n: 500 });
           const e1 = excess(at, 1, opt), e01 = excess(at, 0.01, opt), em = opt ? excess(at, -0.01, true) : null;
           cur = { opt, e1, e01, I2, I1, em };
           v.legend(opt
-            ? [['accent', 'excess for $+\\varepsilon\\eta$', { dot: true }], ['red', 'negative excess (shorter!)', { dot: true }], ['green', '$\\tfrac12\\varepsilon^2\\int\\eta\'^2$', { dash: true }], ['red', 'first-order term $\\tfrac12\\varepsilon\\,|\\!\\int\\eta|$', { dash: true }]]
+            ? [['accent', 'excess for $+\\varepsilon\\eta$ (filled), $-\\varepsilon\\eta$ (hollow)', { dot: true }], ['red', 'negative: shorter than the line!', { dot: true }], ['green', '$\\tfrac12\\varepsilon^2\\int\\eta\'^2$', { dash: true }], ['red', 'first-order term $\\tfrac12\\varepsilon\\,|\\!\\int\\eta|$', { dash: true }]]
             : [['accent', 'excess length (quadrature)', { dot: true }], ['green', 'prediction $\\tfrac12\\varepsilon^2\\int\\eta\'^2$', { dash: true }]]);
         });
         v.readout(() => {
@@ -573,7 +577,7 @@ This first-order equation is a first integral that replaces the second-order Eul
       viz(v) {
         const K = 9, KAP = 1.5;
         const FN = {
-          film: { f: (x, y, p) => y * Math.sqrt(1 + p * p), fp: (x, y, p) => (y * p) / Math.sqrt(1 + p * p), acc: (x, y, p) => (1 + p * p) / y, y0: 1, p0: -1.1, view: [-0.1, 2.3], flip: false, title: String.raw`f = y\sqrt{1+y'^2}\ \text{(soap film)}`, fx: null },
+          film: { f: (x, y, p) => y * Math.sqrt(1 + p * p), fp: (x, y, p) => (y * p) / Math.sqrt(1 + p * p), acc: (x, y, p) => (1 + p * p) / y, y0: 1, p0: -1.1, view: [0.2, 2.15], flip: false, title: String.raw`f = y\sqrt{1+y'^2}\ \text{(soap film)}`, fx: null },
           brach: { f: (x, y, p) => Math.sqrt((1 + p * p) / y), fp: (x, y, p) => p / Math.sqrt(y * (1 + p * p)), acc: (x, y, p) => -(1 + p * p) / (2 * y), y0: 0.12, p0: 2.2, view: [-0.05, 1.5], flip: true, title: String.raw`f = \sqrt{(1+y'^2)/y}\ \ (y = \text{depth: brachistochrone})`, fx: null },
           act: { f: (x, y, p) => 0.5 * p * p + K * Math.cos(y), fp: (x, y, p) => p, acc: (x, y, p) => -K * Math.sin(y), y0: 0.3, p0: 2.4, view: [-1.6, 1.6], flip: false, title: String.raw`f = \tfrac12y'^2 + 9\cos y\ \ (\text{pendulum action})`, fx: null },
           xdep: { f: (x, y, p) => (1 + KAP * x) * Math.sqrt(1 + p * p), fp: (x, y, p) => ((1 + KAP * x) * p) / Math.sqrt(1 + p * p), acc: (x, y, p) => (-KAP * p * (1 + p * p)) / (1 + KAP * x), y0: 0, p0: 1.2, view: [-0.25, 1.4], flip: false, title: String.raw`f = (1+1.5x)\sqrt{1+y'^2}\ \ (\text{depends on } x)`, fx: (x, y, p) => KAP * Math.sqrt(1 + p * p) },
@@ -658,11 +662,11 @@ traced by a point on a circle of radius $R$ rolling under the horizontal line th
       tags: ['brachistochrone', 'cycloid'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Brachistochrone_curve' },
       viz(v) {
-        const s = v.stage({ x: [-0.25, 4.75], y: [-2.75, 0.55], equal: true, axes: false, height: 330, weight: 1.6, title: 'five wires from A to B' });
-        const sb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, minWidth: 230, title: 'finish times (simulated)' });
-        const B = s.handle(3.2, -1.25, { color: 'ink', label: 'B', labelPos: 'se', constrain: (x, y) => { const X = clamp(x, 0.7, 4.6); return [X, clamp(y, -2.4, -Math.max(0.3, X / 5.5))]; } });
-        const H1 = s.handle(0.7, -1.45, { color: 'orange', constrain: { x: [0.05, 4.5], y: [-2.6, 0.45] } });
-        const H2 = s.handle(1.9, -1.75, { color: 'orange', constrain: { x: [0.05, 4.5], y: [-2.6, 0.45] } });
+        const s = v.stage({ x: [-0.25, 4.75], y: [-2.45, 0.5], equal: true, axes: false, height: 320, weight: 1.6, title: 'five wires from A to B' });
+        const sb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, minWidth: 230, title: 'the race, in order of finish' });
+        const B = s.handle(3.2, -1.25, { color: 'ink', label: 'B', labelPos: 'se', constrain: (x, y) => { const X = clamp(x, 0.7, 4.6); return [X, clamp(y, -2.1, -Math.max(0.3, X / 5.5))]; } });
+        const H1 = s.handle(0.7, -1.45, { color: 'orange', constrain: { x: [0.05, 4.5], y: [-2.35, 0.45] } });
+        const H2 = s.handle(1.9, -1.75, { color: 'orange', constrain: { x: [0.05, 4.5], y: [-2.35, 0.45] } });
         const NAMES = ['cycloid', 'circular arc', 'parabola', 'straight ramp', 'your curve'], COLS = ['green', 'purple', 'teal', 'red', 'orange'];
         const cache = memo();
         const build = () => cache([B.x, B.y, H1.x, H1.y, H2.x, H2.y].join('|'), () => {
@@ -682,8 +686,7 @@ traced by a point on a circle of radius $R$ rolling under the horizontal line th
         v.animate((t) => {
           const Bd = build(), tau = Math.max(0, t - 0.3) * (Bd.Tmax / 3.6);
           s.hline(0, { color: 'faint', dash: [3, 4] });
-          const lowest = Math.min(...Bd.curves[0].map((p) => p[1]));
-          if (Bd.cyc.th > Math.PI) { s.hline(B.y, { color: 'green', dash: [2, 4], alpha: 0.5 }); s.text('the cycloid dips below B', B.x, lowest, { color: 'green', size: 11.5, align: 'center', baseline: 'top', dy: 6 }); }
+          if (Bd.cyc.th > Math.PI) { s.hline(B.y, { color: 'green', dash: [2, 4], alpha: 0.5 }); s.corner('dotted: height of B — the cycloid dips below it and climbs back', 'bl', { color: 'green' }); }
           for (let k = 4; k >= 0; k--) s.path(Bd.curves[k], { color: COLS[k], width: k === 0 ? 3 : 2, alpha: k === 0 ? 1 : 0.85 });
           s.line(0, 0, H1.x, H1.y, { color: 'orange', width: 1, dash: [2, 3], alpha: 0.4 });
           for (let k = 4; k >= 0; k--) {
@@ -694,16 +697,14 @@ traced by a point on a circle of radius $R$ rolling under the horizontal line th
           s.corner(`t = ${v.fix(Math.min(tau, Bd.Tmax), 3)} s (slow motion)`, 'tr', { color: 'ink', weight: 600 });
           // bars
           const rows = Bd.runs.map((r, k) => ({ k, T: r.T })).sort((a, b) => (a.T === b.T ? 0 : !isFinite(a.T) ? 1 : !isFinite(b.T) ? -1 : a.T - b.T));
-          const Tm = Math.max(...rows.filter((r) => isFinite(r.T)).map((r) => r.T)) * 1.05, x0 = 0.04, x1 = 0.96, rh = 0.16;
+          const x0 = 0.04, x1 = 0.96, rh = 0.16;
           rows.forEach((r, i) => {
-            const yc = 0.86 - i * rh, done = tau >= r.T;
-            sb.text(NAMES[r.k], x0, yc + 0.045, { color: COLS[r.k], size: 12, weight: 700 });
-            if (isFinite(r.T)) {
-              const w = (x1 - x0) * Math.min(tau, r.T) / Tm;
-              sb.rect(x0, yc - 0.045, x0 + (x1 - x0) * (r.T / Tm), yc + 0.005, { color: COLS[r.k], width: 1, alpha: 0.5 });
-              sb.rect(x0, yc - 0.045, x0 + w, yc + 0.005, { fill: COLS[r.k], fillAlpha: done ? 0.55 : 0.3, stroke: false });
-              sb.text(v.fix(r.T, 3) + ' s', x1, yc + 0.045, { align: 'right', size: 11.5, color: done ? 'ink' : 'muted', weight: done ? 700 : 500 });
-            } else sb.text('never arrives (rises above A)', x1, yc + 0.045, { align: 'right', size: 11.5, color: 'red' });
+            const yc = 0.86 - i * rh, done = tau >= r.T, frac = sAt(Bd.runs[r.k], Bd.tabs[r.k], tau) / Bd.tabs[r.k].L;
+            sb.text(`${i + 1}. ${NAMES[r.k]}`, x0, yc + 0.045, { color: COLS[r.k], size: 12, weight: 700 });
+            sb.rect(x0, yc - 0.045, x1, yc + 0.005, { color: COLS[r.k], width: 1, alpha: 0.5 });
+            sb.rect(x0, yc - 0.045, x0 + (x1 - x0) * clamp(frac, 0, 1), yc + 0.005, { fill: COLS[r.k], fillAlpha: done ? 0.6 : 0.3, stroke: false });
+            if (isFinite(r.T)) sb.text(done ? `finished: ${v.fix(r.T, 3)} s` : `${v.fix(100 * frac, 0)}% of its wire`, x1, yc + 0.045, { align: 'right', size: 11.5, color: done ? 'ink' : 'muted', weight: done ? 700 : 500 });
+            else sb.text('never arrives (rises above A)', x1, yc + 0.045, { align: 'right', size: 11.5, color: 'red' });
           });
           cur = Bd;
         }, { period: 5.4, still: 2.4 });

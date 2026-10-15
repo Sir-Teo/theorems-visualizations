@@ -423,9 +423,9 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
       kind: 'Theorem',
       name: 'Necessary and sufficient condition for diagonalizability',
       statement: String.raw`Suppose $V$ is finite-dimensional and $T \in \mathcal L(V)$. Then $T$ is diagonalizable if and only if the minimal polynomial of $T$ equals $(z - \lambda_1)\cdots(z - \lambda_m)$ for some list of **distinct** numbers $\lambda_1, \dots, \lambda_m \in \mathbf F$.`,
-      idea: String.raw`If $v_1, \dots, v_n$ is an eigenbasis and $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues, then $(T - \lambda_1 I)\cdots(T - \lambda_m I)$ kills every $v_j$, so it is $0$ and the minimal polynomial divides this product of distinct factors (5.29). Conversely, induct on $m$: $\operatorname{range}(T - \lambda_m I)$ is invariant (5.18), and $T$ restricted to it is killed by the first $m-1$ factors, so it has an eigenbasis by induction. A vector in $\operatorname{range}(T - \lambda_m I) \cap \operatorname{null}(T - \lambda_m I)$ is multiplied by $\prod_{k<m}(\lambda_m - \lambda_k) \ne 0$ and sent to $0$, so the intersection is $\{0\}$; by 1.46, 3.94 and 3.21 the range and the null space are complementary, and their eigenbases together form one for $V$.`,
+      idea: String.raw`If $v_1, \dots, v_n$ is an eigenbasis and $\lambda_1, \dots, \lambda_m$ are the distinct eigenvalues, then $(T - \lambda_1 I)\cdots(T - \lambda_m I)$ kills every $v_j$, so it is $0$; the minimal polynomial divides this product (5.29) and has every $\lambda_k$ as a zero (5.27), so it equals it. Conversely, induct on $m$: $\operatorname{range}(T - \lambda_m I)$ is invariant (5.18), and $T$ restricted to it is killed by the first $m-1$ factors, so it has an eigenbasis by induction. A vector in $\operatorname{range}(T - \lambda_m I) \cap \operatorname{null}(T - \lambda_m I)$ is multiplied by $\prod_{k<m}(\lambda_m - \lambda_k) \ne 0$ and sent to $0$, so the intersection is $\{0\}$; by 1.46, 3.94 and 3.21 the range and the null space are complementary, and their eigenbases together form one for $V$.`,
       caption: String.raw`$T$ is the operator on $\mathbf R^3$ with matrix $\begin{bmatrix} 2 & s & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & 3\end{bmatrix}$ in a tilted basis. Its minimal polynomial is computed from the powers of $T$ (right). The picture shows $\operatorname{null}(T - \mu I)$ (green) and $\operatorname{range}(T - \mu I)$ (orange) for the chosen eigenvalue $\mu$ — the two pieces of the proof. With $\lambda \ne 2$, or with $s = 0$, they are complementary and the factors are distinct. Set $\lambda = 2$ with $s \ne 0$: the factor $z - 2$ repeats, the null line falls *inside* the range plane (red), and no eigenbasis exists.`,
-      deps: ['ladr-5.29', 'ladr-5.18', 'ladr-1.46', 'ladr-3.94', 'ladr-3.21', 'ladr-5.55'],
+      deps: ['ladr-5.29', 'ladr-5.27', 'ladr-5.18', 'ladr-1.46', 'ladr-3.94', 'ladr-3.21'],
       tags: ['diagonalization', 'minimal polynomial'],
       viz(v) {
         const M = v.M;
@@ -536,16 +536,16 @@ $$\dim E(\lambda_1, T) + \cdots + \dim E(\lambda_m, T) \le \dim V.$$`,
           if (inv) {
             R.arrow(0, 0, 1.1, 0, { color: 'muted', width: 1.4, head: 7 }); R.arrow(0, 0, 0, 1.1, { color: 'muted', width: 1.4, head: 7 });
             R.tex('e_1', 1.1, 0, { color: 'muted', size: 13, dx: 10, dy: 10 }); R.tex('e_2', 0, 1.1, { color: 'muted', size: 13, dx: -12 });
-            R.circle(0, 0, 0.6, { color: 'muted', width: 1.2 });
-            R.curve((t) => ap2(RU, [0.6 * Math.cos(t), 0.6 * Math.sin(t)]), 0, 2 * Math.PI, { color: 'green', width: 1.6, fill: 'green', fillAlpha: 0.07, n: 120 });
+            R.circle(0, 0, 0.45, { color: 'muted', width: 1.2 });
+            R.curve((t) => ap2(RU, [0.45 * Math.cos(t), 0.45 * Math.sin(t)]), 0, 2 * Math.PI, { color: 'green', width: 1.6, fill: 'green', fillAlpha: 0.07, n: 120 });
             const dsum = rev.reduce((a, e) => a + e.B.length, 0);
             rev.forEach((e) => {
               if (e.B.length === 2) { R.rect(-9, -9, 9, 9, { fill: 'gold', fillAlpha: 0.06, stroke: false }); return; }
               const b = e.B[0]; R.line(-5 * b[0], -5 * b[1], 5 * b[0], 5 * b[1], { color: 'gold', width: 3, alpha: 0.55 });
-              const s = b[0] < -0.05 ? -1 : 1; R.tex(`\\lambda = ${tn(e.lam)}`, 1.8 * b[0] * s, 1.8 * b[1] * s, { color: 'gold', size: 14, dx: 14 * Math.abs(b[1]), dy: -13 * Math.abs(b[0]) });
+              const s = b[1] < -0.05 || (Math.abs(b[1]) <= 0.05 && b[0] < 0) ? -1 : 1; R.tex(`\\lambda = ${tn(e.lam)}`, 1.6 * b[0] * s, 1.6 * b[1] * s, { color: 'gold', size: 14, dx: 14 * Math.abs(b[1]), dy: -13 * Math.abs(b[0]) });
             });
             R.corner(dsum === 2 ? 'eigenbasis of U found inside U' : 'only one eigen-direction in U', 'tl', { color: dsum === 2 ? 'green' : 'red', weight: 700 });
-            R.tex(`\\mathcal M(T|_U) = ${mtex(RU)}`, 0, -1.8, { size: 13.5 });
+            R.tex(`\\mathcal M(T|_U) = ${mtex(RU)}`, 0, -1.82, { size: 13.5 });
           } else {
             R.text('T|U is not an operator on U', 0, 1.65, { align: 'center', size: 13, color: 'red', weight: 600 });
             R.text(`T moves vectors of U out of U by up to ${pn(leak, 2)}`, 0, 1.35, { align: 'center', size: 12, color: 'muted' });
@@ -718,7 +718,7 @@ because every ratio $|c_k / c_j|$ is at most $1$. So $\lambda$ lies in disk $j$ 
       kind: 'Definition',
       name: 'Commuting operators and matrices',
       statement: String.raw`Two operators $S, T$ on the same vector space **commute** if $ST = TS$. Two square matrices $A, B$ of the same size **commute** if $AB = BA$.`,
-      idea: String.raw`$ST$ means "first $T$, then $S$", so commuting means the order of the two actions does not matter. Some pairs always commute: $\lambda I$ commutes with every operator, and any two polynomials $p(T), q(T)$ in one operator commute (5.17). But commuting is rare — a random pair of matrices almost never commutes; Axler reports that only about $0.3\%$ of the pairs of $2 \times 2$ matrices with integer entries in $[-5, 5]$ do.`,
+      idea: String.raw`$ST$ means "first $T$, then $S$", so commuting means the order of the two actions does not matter. Some pairs always commute: $\lambda I$ commutes with every operator, and any two polynomials $p(T), q(T)$ in one operator commute (5.17). But commuting is rare: of the $11^8$ ordered pairs of $2 \times 2$ matrices with integer entries in $[-5, 5]$, only $674{,}609$ — about $0.3\%$ — commute.`,
       caption: String.raw`A commutative square. The F in the top-left corner is moved along the top and right edges (first $S$, then $T$: the blue F is $TS(\mathrm F)$) and along the left and bottom edges (first $T$, then $S$: the orange outline is $ST(\mathrm F)$). Pick $S$ and $T$, and the angle $\theta$ for rotations: the two F's in the bottom-right corner coincide exactly when $ST = TS$. Try two rotations, a rotation with a scaling, and a rotation with a reflection.`,
       deps: ['ladr-5.1'],
       tags: ['commuting'],

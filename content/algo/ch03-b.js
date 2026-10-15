@@ -127,7 +127,7 @@ export default {
 $$E[X]=\sum_{1\le i<j\le n}\frac{2}{j-i+1}=2(n+1)H_n-4n=2n\ln n+O(n)\approx 1.39\,n\log_2 n,$$
 for every input order.`,
       idea: String.raw`Write $X$ as a sum of indicators $X_{ij}$, one per pair (3.3); each pair is compared at most once, and only when one of them is the pivot. Until some key of $Z_{ij}=\{z_i,\dots,z_j\}$ becomes a pivot, the whole block stays together in one subarray; the first pivot chosen from $Z_{ij}$ is uniform over its $j-i+1$ keys, and $z_i,z_j$ are compared exactly when that first pivot is $z_i$ or $z_j$. Summing $2/(d+1)$ over the pairs at distance $d$ gives harmonic sums, and $H_n=\ln n+O(1)$ (1.14) finishes the estimate.`,
-      caption: String.raw`Each cell $(i,j)$ of the grid is a pair of keys by rank. **Above the diagonal**: how often that pair was compared over all simulated runs; **below the diagonal**: the prediction $2/(j-i+1)$, mirrored, so agreement shows as a symmetric picture. Click a cell to inspect its pair, add runs to sharpen the estimate, and change $n$. Right: every pair's frequency against its rank distance, with the curve $2/(d)$, $d=j-i+1$.`,
+      caption: String.raw`Each cell $(i,j)$ of the grid is a pair of keys by rank. **Above the diagonal**: how often that pair was compared over all simulated runs; **below the diagonal**: the prediction $2/(j-i+1)$, mirrored, so agreement shows as a symmetric picture. Click a cell to inspect its pair, add runs to sharpen the estimate, and change $n$. Right: every pair's frequency against its rank distance, with the curve $2/d$, where $d=j-i+1$.`,
       deps: ['algo-3.9', 'algo-3.3', 'algo-1.14'],
       refs: ['CLRS 4e §7.4', 'KT §13.5'],
       tags: ['sorting', 'randomized'],
@@ -297,7 +297,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
           P.fn((x) => 2 * N + 2 * x + 1, { color: 'accent', width: 2.2 });
           P.hline(N * Math.log2(N), { color: 'orange', width: 2, dash: [6, 4] });
           P.vline((N * Math.log2(N) - 2 * N - 1) / 2, { color: 'muted', width: 1, dash: [2, 4] });
-          P.text('counting sort: 2n + 2k + 1', 2.5e4, 4e5, { size: 11, color: 'accent', align: 'right' });
+          P.text('counting sort: 2n + 2k + 1', 4e3, 4e5, { size: 11, color: 'accent', align: 'right' });
           P.text('n log₂ n comparisons', 8e6, 1.35e4, { size: 11, color: 'orange', align: 'right', baseline: 'bottom' });
           P.dot(k, 2 * N + 2 * k + 1, { r: 5.5, color: 'gold' });
         });
@@ -363,7 +363,7 @@ It runs in $\Theta(n+k)$ time with $\Theta(n+k)$ extra memory, makes no comparis
               const prev = cols[c - 1], where = new Map(order.map((id, r) => [id, r]));
               prev.forEach((id, r0) => C.line(c - 1 + half + 0.06, -r0, c - half - 0.06, -where.get(id), { color: c === t ? 'accent' : 'faint', width: c === t ? 1.6 : 1.1, alpha: 0.8 }));
             }
-            if (c > 0 && c === t) C.text(sortedOK ? `sorted by the last ${c} digit${c === 1 ? '' : 's'} ✓` : 'invariant broken ✗', c, -n + 0.42, { align: 'center', size: 10.5, color: sortedOK ? 'green' : 'red' });
+            if (c > 0 && c === t) C.text(sortedOK ? `sorted on the last ${c} digit${c === 1 ? '' : 's'} ✓` : 'invariant broken ✗', c === ncol - 1 ? c + half + 0.1 : c, -n + 0.42, { align: c === ncol - 1 ? 'right' : 'center', size: 10.5, color: sortedOK ? 'green' : 'red' });
           }
           // cost panel
           const bits = 32, passesFor = (bb) => Math.ceil(bits / Math.log2(bb) - 1e-9);
@@ -840,7 +840,7 @@ At least $3n/10-6$ keys lie on each side of $x$, so the running time satisfies $
         v.readout(() => {
           const U = units(), done = U <= 2;
           const mx = range0(n).filter((i) => !lostA[i]), mn = range0(n).filter((i) => !won[i]);
-          return `comparisons **${cmps}** · units left **${U}** (start $2n = ${2 * n}$, goal 2) · lower bound $\\lceil 3n/2\\rceil - 2 = ${lb()}$, naive $2n - 3 = ${2 * n - 3}$ · ` + (done ? `**max ${NAMES[mx[0]]}, min ${NAMES[mn[0]]}**, found in ${cmps} comparisons` : msg || 'click two keys to compare them');
+          return `comparisons **${cmps}** · units left **${U}** (start $2n = ${2 * n}$, goal 2) · lower bound $\\lceil 3n/2\\rceil - 2 = ${lb()}$, naive $2n - 3 = ${2 * n - 3}$ · ` + (done ? `**max ${NAMES[mx[0]]}, min ${NAMES[mn[0]]}**, found in ${cmps} comparisons` : msg || (mode.value === 'you' ? 'click two keys to compare them' : 'press Next comparison'));
         });
       },
     },

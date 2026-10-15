@@ -864,7 +864,7 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
         let run = null;
         const trace = () => { const s = v.rng(seed); run = quickTrace(vals, rule.value, s); return run.frames; };
         const f0 = trace();
-        const S = v.steps({ frames: trace, code: QS_CODE, codeTitle: 'Quicksort (Lomuto partition)', codePos: 'below', speed: 3, start: Math.floor(f0.length * 0.42) });
+        const S = v.steps({ frames: trace, code: QS_CODE, codeTitle: 'Quicksort (Lomuto partition)', codePos: 'below', speed: 3, start: Math.max(0, f0.findIndex((f) => f.cur > 0 && f.r - f.p >= 5 && f.q == null && f.i != null && f.j - f.p >= 3)) });
         const BAL = (c) => { if (c.size <= 1 || c.q == null) return 'muted'; const b = Math.min(c.left, c.right) / Math.max(1, c.size - 1); return b >= 0.25 ? 'green' : b > 0 ? 'orange' : 'red'; };
         const inv = (f) => { if (f.i == null || f.j == null) return null; for (let k = f.p; k <= f.i; k++) if (!(f.A[k] <= f.x)) return false; for (let k = f.i + 1; k < f.j; k++) if (!(f.A[k] > f.x)) return false; return true; };
         v.render(() => {

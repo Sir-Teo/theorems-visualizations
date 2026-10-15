@@ -620,5 +620,452 @@ export default {
         });
       },
     },
+    // ------------------------------------------------------------------ 6.42
+    {
+      num: '6.42',
+      kind: 'Theorem',
+      name: 'Riesz representation theorem',
+      statement: String.raw`Suppose $V$ is finite-dimensional and $\varphi$ is a linear functional on $V$. Then there is a unique vector $v\in V$ such that $$\varphi(u)=\langle u,v\rangle\quad\text{for every }u\in V.$$ If $e_1,\dots,e_n$ is any orthonormal basis of $V$, this vector is $v=\overline{\varphi(e_1)}\,e_1+\dots+\overline{\varphi(e_n)}\,e_n$.`,
+      idea: String.raw`Take an orthonormal basis $e_1,\dots,e_n$ (it exists by 6.35) and expand $u=\sum\langle u,e_k\rangle e_k$ (6.30). Linearity of $\varphi$ gives $\varphi(u)=\sum\langle u,e_k\rangle\varphi(e_k)=\bigl\langle u,\sum\overline{\varphi(e_k)}e_k\bigr\rangle$, so that sum works as $v$. If $v_1$ and $v_2$ both work, then $\langle u,v_1-v_2\rangle=0$ for every $u$; taking $u=v_1-v_2$ forces $v_1=v_2$. Uniqueness also shows that the formula gives the same $v$ whichever orthonormal basis is used.`,
+      caption: String.raw`**$\mathbf R^2$:** the functional $\varphi$ is drawn by its level lines (drag the dot on the line $\varphi=1$). Turn the orthonormal basis with $\theta$: the pieces $\varphi(e_1)e_1$ and $\varphi(e_2)e_2$ change, but their sum $v$ (green) does not — it always points straight across the level lines, with length $1/(\text{spacing})$. Drag $u$ and compare $\varphi(u)$ with $\langle u,v\rangle$. **$\mathcal P_n(\mathbf R)$:** $\varphi(p)=\int_{-1}^1p(t)\cos(\pi t)\,dt$. The function $\cos\pi t$ is not a polynomial, yet a polynomial $q$ (green) represents $\varphi$. Drag the handles of $p$: the two integrands below differ, but their signed areas agree. Raise $n$ and $q$ creeps toward $\cos\pi t$.`,
+      deps: ['ladr-6.35', 'ladr-6.30', 'ladr-3.110'],
+      see: ['rca-4.12', 'fa-12.3'],
+      credit: 'Frigyes Riesz, 1907',
+      tags: ['duality', 'inner products'],
+      viz(v) {
+        const M = v.M;
+        const mode = v.select('$V$', [{ value: 'R2', label: '$\\mathbf R^2$' }, { value: 'P', label: '$\\mathcal P_n(\\mathbf R)$, $\\langle p,q\\rangle=\\int_{-1}^1pq$' }], 'R2', { onChange: (m) => show(m) });
+        const S2 = v.stage({ x: [-3.2, 3.2], y: [-2.25, 2.25], equal: true, height: 400 });
+        const F = v.stage({ x: [-1.08, 1.08], y: [-1.6, 1.6], height: 270, full: true, title: '$p$ (drag the handles), $\\cos\\pi t$ and the representing polynomial $q$' });
+        const G = v.stage({ x: [-1.08, 1.08], y: [-1.6, 1.6], height: 190, full: true, title: 'integrands: $p(t)\\cos\\pi t$ and $p(t)\\,q(t)$ — equal signed areas' });
+        const th = v.slider('basis angle $\\theta$', 0, 360, 25, { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const nS = v.slider('$n$', 1, 8, 2, { int: true, onChange: () => renode() });
+        const Ph = S2.handle(0.55, 0.42, { color: 'accent', label: 'φ = 1', constrain: (x, y) => { const l = Math.hypot(x, y); return l < 0.3 ? (l < 1e-9 ? [0.3, 0] : [(0.3 * x) / l, (0.3 * y) / l]) : [x, y]; } });
+        const Uh = S2.handle(1.6, -1.0, { color: 'gold', label: 'u' });
+        // P_n mode: p interpolates handles at Chebyshev nodes
+        let nodes = chebNodes(2), pc = [0.55, 0.5, -0.9];
+        const H = [];
+        for (let j = 0; j < 9; j++) H.push(F.handle(0, 0, { color: 'blue', r: 6, constrain: (x, y) => [nodes[j] ?? 0, M.clamp(y, -1.5, 1.5)] }));
+        function renode() {
+          const n = nS.value, old = pc.slice();
+          nodes = chebNodes(n, -0.92, 0.92);
+          H.forEach((h, j) => { h.visible = j <= n && mode.value === 'P'; if (j <= n) { h.x = nodes[j]; h.y = M.clamp(pev(old, nodes[j]), -1.5, 1.5); } });
+          v.invalidate();
+        }
+        function show(m) {
+          layout(v, [[S2, m === 'R2'], [F, m === 'P'], [G, m === 'P']]);
+          th.el.hidden = m !== 'R2'; nS.el.hidden = m !== 'P';
+          Ph.visible = Uh.visible = m === 'R2';
+          renode();
+        }
+        show('R2');
+        const phiP = (p) => M.integrate((t) => pev(p, t) * Math.cos(Math.PI * t), -1, 1, 600);
+        let st = null, cacheN = -1, E = null, q = null;
+        v.render(() => {
+          if (mode.value === 'R2') {
+            v.legend([['accent', 'level lines of $\\varphi$'], ['purple', '$\\varphi(e_1)e_1$', { dash: true }], ['teal', '$\\varphi(e_2)e_2$', { dash: true }], ['green', '$v$'], ['gold', 'test vector $u$', { dot: true }]]);
+            const r2 = Ph.x * Ph.x + Ph.y * Ph.y, c = [Ph.x / r2, Ph.y / r2];           // φ(x) = c·x
+            const phi = (x) => dot2(c, x);
+            levels(S2, c, { color: 'accent' });
+            const t = (th.value * Math.PI) / 180, e1 = [Math.cos(t), Math.sin(t)], e2 = [-Math.sin(t), Math.cos(t)];
+            const a1 = phi(e1), a2 = phi(e2), p1 = [a1 * e1[0], a1 * e1[1]], p2 = [a2 * e2[0], a2 * e2[1]], vv = [p1[0] + p2[0], p1[1] + p2[1]];
+            arr(S2, [0, 0], e1, 'muted', 'e_1', { width: 1.6, head: 7, size: 13 }); arr(S2, [0, 0], e2, 'muted', 'e_2', { width: 1.6, head: 7, size: 13 });
+            S2.line(-4 * e1[0], -4 * e1[1], 4 * e1[0], 4 * e1[1], { color: 'muted', width: 0.8, alpha: 0.35 });
+            S2.line(-4 * e2[0], -4 * e2[1], 4 * e2[0], 4 * e2[1], { color: 'muted', width: 0.8, alpha: 0.35 });
+            arr(S2, [0, 0], p1, 'purple', null, { width: 2, head: 8, dash: [5, 4] });
+            arr(S2, p1, vv, 'teal', null, { width: 2, head: 8, dash: [5, 4] });
+            arr(S2, [0, 0], vv, 'green', 'v', { width: 3.2, head: 12, size: 15 });
+            const u = [Uh.x, Uh.y];
+            arr(S2, [0, 0], u, 'gold', null, { width: 2.2 });
+            const f = (dot2(u, vv) / dot2(vv, vv)), ft = [vv[0] * f, vv[1] * f];
+            S2.line(u[0], u[1], ft[0], ft[1], { color: 'gold', width: 1.2, dash: [3, 3] });
+            S2.dot(0, 0, { r: 3, color: 'ink' });
+            st = { m: 'R2', a1, a2, vv, phiU: phi(u), ipU: dot2(u, vv), sp: 1 / Math.hypot(...c) };
+          } else {
+            v.legend([['blue', '$p$'], ['muted', '$\\cos\\pi t$ (not in $\\mathcal P_n$)', { dash: true }], ['green', 'representer $q$'], ['orange', '$p\\cos\\pi t$', { area: true }]]);
+            const n = nS.value;
+            if (cacheN !== n) { cacheN = n; E = legendreON(n); const w = E.map((e) => phiP(e)); q = new Array(n + 1).fill(0); E.forEach((e, k) => e.forEach((x, i) => { q[i] += w[k] * x; })); }
+            const xs = nodes.slice(0, n + 1), ys = H.slice(0, n + 1).map((h) => h.y);
+            pc = interpCoef(M, xs, ys);
+            F.hline(0, { color: 'muted', width: 0.8, alpha: 0.4 });
+            F.fn((t) => Math.cos(Math.PI * t), { domain: [-1, 1], color: 'muted', width: 2, dash: [6, 4] });
+            F.fn((t) => pev(q, t), { domain: [-1, 1], color: 'green', width: 3 });
+            F.clip(() => F.fn((t) => pev(pc, t), { domain: [-1, 1], color: 'blue', width: 2.4 }));
+            F.tex('q', 1, pev(q, 1), { color: 'green', dx: 12, size: 14, align: 'left' });
+            G.hline(0, { color: 'muted', width: 0.8, alpha: 0.5 });
+            const g1 = (t) => pev(pc, t) * Math.cos(Math.PI * t), g2 = (t) => pev(pc, t) * pev(q, t);
+            let mx = 0.5; for (let i = 0; i <= 100; i++) { const t = -1 + i / 50; mx = Math.max(mx, Math.abs(g1(t)), Math.abs(g2(t))); }
+            G.setView([-1.08, 1.08], [-mx * 1.15, mx * 1.15]);
+            G.fn(g1, { domain: [-1, 1], color: 'orange', width: 2, fill: 'orange', fillAlpha: 0.2 });
+            G.fn(g2, { domain: [-1, 1], color: 'green', width: 2, fill: 'green', fillAlpha: 0.16 });
+            const lhs = M.integrate(g1, -1, 1, 600), rhs = M.integrate(g2, -1, 1, 600);
+            const dist = Math.sqrt(Math.max(0, M.integrate((t) => (Math.cos(Math.PI * t) - pev(q, t)) ** 2, -1, 1, 600)));
+            st = { m: 'P', n, q, lhs, rhs, dist };
+          }
+        });
+        v.readout(() => {
+          if (!st) return '';
+          if (st.m === 'R2') {
+            const { a1, a2, vv, phiU, ipU, sp } = st;
+            return `$\\varphi(e_1) = ${tn(a1)}$, $\\varphi(e_2) = ${tn(a2)}$, so $v = \\varphi(e_1)e_1+\\varphi(e_2)e_2 = ${vt(vv)}$ — the same vector for every $\\theta$. Test: $\\varphi(u) = ${tn(phiU, 3)}$ and $\\langle u,v\\rangle = ${tn(ipU, 3)}$. The level lines are $${tn(sp)}$ apart and $\\|v\\| = ${tn(Math.hypot(...vv))} = 1/${tn(sp)}$.`;
+          }
+          const { n, q, lhs, rhs, dist } = st;
+          return `$q(x) = ${polyTeX(q, 4)}$${n === 2 ? ` $= \\tfrac{15}{2\\pi^2}(1-3x^2)$` : ''}. For the current $p$: $\\int_{-1}^1 p(t)\\cos(\\pi t)\\,dt = ${tn(lhs, 5)}$ and $\\langle p,q\\rangle = \\int_{-1}^1 pq = ${tn(rhs, 5)}$. Distance from $q$ to $\\cos\\pi t$: $\\|\\cos\\pi t - q\\| = ${tn(dist, 4)}$ — $q$ is the orthogonal projection of $\\cos\\pi t$ onto $\\mathcal P_${n}(\\mathbf R)$, so it improves as $n$ grows.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.46
+    {
+      num: '6.46',
+      kind: 'Definition',
+      name: 'Orthogonal complement U⊥',
+      statement: String.raw`If $U$ is a subset of $V$, the **orthogonal complement** of $U$ is the set of vectors orthogonal to every vector of $U$: $$U^\perp=\{v\in V:\ \langle u,v\rangle=0\ \text{for every }u\in U\}.$$`,
+      idea: String.raw`$U$ need not be a subspace — a single vector, or any list of vectors, has an orthogonal complement. A vector orthogonal to $u_1,\dots,u_k$ is orthogonal to every linear combination of them, so $U^\perp=(\operatorname{span}U)^\perp$: in $\mathbf R^3$ one nonzero vector has a plane as complement, two independent vectors a line, three independent vectors only $\{0\}$.`,
+      caption: String.raw`$U$ is the set of blue arrows (one, two or three vectors; drag their tips). The green set is $U^\perp$. Drag the gold test vector $x$: the readout lists its inner products with the vectors of $U$, and $x$ snaps into $U^\perp$ when it gets close. Drag $u_2$ onto the line of $u_1$: the complement grows back to a plane — it only depends on $\operatorname{span}U$ (faint blue).`,
+      deps: ['ladr-6.10'],
+      see: ['rca-4.9'],
+      tags: ['orthogonality'],
+      viz(v) {
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
+        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.32, axis: 1.45, lim: 1.4 });
+        const kS = v.select('$U$', [{ value: '1', label: '$\\{u_1\\}$' }, { value: '2', label: '$\\{u_1,u_2\\}$' }, { value: '3', label: '$\\{u_1,u_2,u_3\\}$' }], '1');
+        const U1 = sc.handle([0.45, 0.35, 0.95], { color: 'blue', label: 'u₁' });
+        const U2 = sc.handle([0.9, -0.55, 0.15], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
+        const U3 = sc.handle([-0.6, -0.8, 0.4], { color: 'blue', label: 'u₃', snap: (p) => snapSpan(p, orth([U1.p, U2.p]), 0.1) });
+        const X = sc.handle([-0.7, 0.9, 0.3], { color: 'gold', label: 'x', snap: (p) => { const k = +kS.value, B = orth([U1.p, U2.p, U3.p].slice(0, k)), W = compl(B); return snapSpan(p, W, 0.12); } });
+        v.legend([['blue', 'the set $U$'], ['green', '$U^\\perp$'], ['gold', 'test vector $x$']]);
+        let st = null;
+        v.render(() => {
+          const k = +kS.value, us = [U1.p, U2.p, U3.p].slice(0, k);
+          U2.visible = k >= 2; U3.visible = k >= 3;
+          const B = orth(us), W = compl(B), x = X.p, ips = us.map((u) => dot3(u, x)), inn = ips.every((a) => Math.abs(a) < 1e-9);
+          sc.begin();
+          if (B.length < 3) spanDraw(sc, B, { color: 'blue', fillAlpha: 0.05, alpha: 0.25, width: 2, grid: false, r: 1.5 });
+          spanDraw(sc, W, { color: 'green', r: 1.35, fillAlpha: 0.14, dot: 7 });
+          us.forEach((u) => { sc.arrow(ZERO, u, { color: 'blue', width: 2.8 }); });
+          const f = projOnto(x, W);
+          if (!inn && W.length) { sc.line(x, f, { color: 'gold', width: 1.4, dash: [4, 3] }); sc.dot(f, { r: 3.5, color: 'green' }); }
+          sc.arrow(ZERO, x, { color: inn ? 'green' : 'gold', width: 3, head: 11 });
+          if (inn && len3(x) > 0.05) us.forEach((u) => corner3(sc, ZERO, unit3(u), unit3(x), 0.13, { color: 'green' }));
+          sc.flush();
+          S.corner(`dim span U = ${B.length}, dim U⊥ = ${W.length}`, 'tl', { color: 'muted' });
+          st = { ips, inn, dU: B.length, dW: W.length, k };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { ips, inn, dU, dW, k } = st;
+          const list = ips.map((a, i) => `$\\langle u_${i + 1}, x\\rangle = ${tn(a, 3)}$`).join(', ');
+          const what = ['only the zero vector', 'a line', 'a plane', 'all of $\\mathbf R^3$'][dW];
+          return `${list}: ${inn ? '**$x \\in U^\\perp$**' : '$x\\notin U^\\perp$'}. Here $U$ has ${k} vector${k > 1 ? 's' : ''} spanning a ${dU}-dimensional subspace, and $U^\\perp$ is ${what}${dU < k ? ' — a redundant vector of $U$ adds no new condition' : ''}.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.48
+    {
+      num: '6.48',
+      kind: 'Theorem',
+      name: 'Properties of orthogonal complement',
+      statement: String.raw`(a) If $U$ is a subset of $V$, then $U^\perp$ is a subspace of $V$.
+(b) $\{0\}^\perp=V$.
+(c) $V^\perp=\{0\}$.
+(d) If $U$ is a subset of $V$, then $U\cap U^\perp\subseteq\{0\}$.
+(e) If $G\subseteq H\subseteq V$, then $H^\perp\subseteq G^\perp$.`,
+      idea: String.raw`Each part is one line from the definition and the basic properties of the inner product (6.6). (a) $\langle u,0\rangle=0$, and $\langle u,v+w\rangle=\langle u,v\rangle+\langle u,w\rangle$, $\langle u,\lambda v\rangle=\bar\lambda\langle u,v\rangle$, so the conditions defining $U^\perp$ survive sums and scalar multiples (the subspace test 1.34). (b) Everything is orthogonal to $0$. (c) and (d): a vector orthogonal to itself has $\langle v,v\rangle=0$, so it is $0$. (e) A vector orthogonal to all of $H$ is in particular orthogonal to all of $G$: more conditions, fewer solutions.`,
+      caption: String.raw`**(a), (d):** $U=\{u\}$ is a single vector, not a subspace, yet $U^\perp$ (green plane) is one: drag $x$ and $y$ inside it and slide $\lambda$ — the sum $x+y$ and the multiple $\lambda x$ never leave the plane. $u$ itself is not in $U^\perp$, since $\langle u,u\rangle=\|u\|^2>0$, so here $U\cap U^\perp$ is even empty. Drag $u$ to the origin: $U=\{0\}$ and $U^\perp$ becomes all of $\mathbf R^3$, which is (b). **(b), (c), (e):** the sets $\{0\}\subseteq\{0,g_1\}\subseteq\{0,g_1,g_2\}\subseteq\{0,g_1,g_2,g_3\}$ get bigger, and their complements shrink inside one another: $\mathbf R^3\supseteq$ plane $\supseteq$ line $\supseteq\{0\}$.`,
+      deps: ['ladr-6.46', 'ladr-1.34', 'ladr-6.6'],
+      tags: ['orthogonality'],
+      viz(v) {
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
+        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.45, lim: 1.4 });
+        const mS = v.select('show', [{ value: 'a', label: '(a), (d): $U^\\perp$ of one vector' }, { value: 'e', label: '(b), (c), (e): a growing set' }], 'a');
+        const kS = v.select('set', [{ value: '0', label: '$\\{0\\}$' }, { value: '1', label: '$+\\,g_1$' }, { value: '2', label: '$+\\,g_2$' }, { value: '3', label: '$+\\,g_3$' }], '2');
+        const lam = v.slider('$\\lambda$', -2, 2, -0.8, { step: 0.05 });
+        const Uh = sc.handle([0.35, 0.3, 0.95], { color: 'blue', label: 'u', snap: (p) => (len3(p) < 0.15 ? [0, 0, 0] : p) });
+        const inPlane = (p) => { const n = unit3(Uh.p); return len3(n) < 0.5 ? p : sub3(p, mul3(n, dot3(p, n))); };
+        const Xh = sc.handle(inPlane([0.9, -0.2, 0]), { color: 'orange', label: 'x', snap: inPlane });
+        const Yh = sc.handle(inPlane([-0.3, 0.8, 0]), { color: 'purple', label: 'y', snap: inPlane });
+        const Gh = [sc.handle([0.2, 0.25, 1.0], { color: 'blue', label: 'g₁' }), sc.handle([0.95, -0.35, 0.1], { color: 'purple', label: 'g₂' }), sc.handle([-0.3, -0.9, 0.35], { color: 'teal', label: 'g₃' })];
+        let st = null;
+        v.render(() => {
+          const md = mS.value;
+          kS.el.hidden = md !== 'e'; lam.el.hidden = md !== 'a';
+          Uh.visible = Xh.visible = Yh.visible = md === 'a';
+          Gh.forEach((h, i) => { h.visible = md === 'e' && i < +kS.value; });
+          sc.begin();
+          if (md === 'a') {
+            v.legend([['blue', '$U=\\{u\\}$'], ['green', '$U^\\perp$'], ['orange', '$x,\\ \\lambda x$'], ['purple', '$y$'], ['teal', '$x+y$']]);
+            const u = Uh.p, zero = len3(u) < 1e-9;
+            if (zero) { spanDraw(sc, [[1, 0, 0], [0, 1, 0], [0, 0, 1]], { color: 'green', box: 1.15, fillAlpha: 0.05 }); sc.dot(ZERO, { r: 7, color: 'blue' }); }
+            else {
+              const [a, b] = perp(u);
+              sc.disc(a, b, 1.45, { fill: 'green', color: 'green', fillAlpha: 0.13, grid: true });
+              // keep x, y in the plane after u moves
+              for (const h of [Xh, Yh]) { const q = inPlane(h.p); if (len3(sub3(q, h.p)) > 1e-9) h.set(q); }
+              const x = Xh.p, y = Yh.p, s = add3(x, y), lx = mul3(x, lam.value);
+              sc.line(x, s, { color: 'muted', width: 1, dash: [3, 3] }); sc.line(y, s, { color: 'muted', width: 1, dash: [3, 3] });
+              sc.arrow(ZERO, lx, { color: 'orange', width: 1.8, head: 8, alpha: 0.75, dash: [5, 3] });
+              sc.tex('\\lambda x', lx, { color: 'orange', dx: 12, dy: 10, size: 13 });
+              sc.arrow(ZERO, x, { color: 'orange', width: 2.6 }); sc.arrow(ZERO, y, { color: 'purple', width: 2.6 });
+              sc.arrow(ZERO, s, { color: 'teal', width: 3 }); sc.tex('x+y', s, { color: 'teal', dx: 16, dy: -10, size: 13 });
+              sc.arrow(ZERO, u, { color: 'blue', width: 3.2 });
+              corner3(sc, ZERO, unit3(u), unit3(a), 0.15, { color: 'muted' });
+            }
+            sc.flush();
+            st = { md, zero, u, ip: zero ? null : [Xh.p, Yh.p, add3(Xh.p, Yh.p), mul3(Xh.p, lam.value)].map((w) => dot3(u, w)) };
+          } else {
+            v.legend([['orange', 'complements of the smaller sets', { area: true }], ['green', 'complement of the current set'], ['blue', 'the vectors of the set']]);
+            const k = +kS.value, gs = Gh.map((h) => h.p);
+            const comps = [0, 1, 2, 3].map((j) => compl(orth(gs.slice(0, j))));
+            for (let j = 0; j < k; j++) {
+              const W = comps[j];
+              if (W.length === 3) spanDraw(sc, W, { color: 'orange', box: 1.15, fillAlpha: 0.02 });
+              else spanDraw(sc, W, { color: 'orange', fillAlpha: 0.05, r: 1.45, alpha: 0.35, width: 2, grid: false });
+            }
+            const W = comps[k];
+            spanDraw(sc, W, { color: 'green', r: 1.45, fillAlpha: 0.15, box: 1.15, dot: 8 });
+            gs.slice(0, k).forEach((g, i) => sc.arrow(ZERO, g, { color: VC[i], width: 3 }));
+            sc.dot(ZERO, { r: 4, color: 'blue' });
+            sc.flush();
+            S.corner(`dims of the complements: ${comps.slice(0, k + 1).map((c) => c.length).join(' ⊇ ')}`, 'tl', { color: 'muted' });
+            st = { md, k, dims: comps.map((c) => c.length) };
+          }
+        });
+        v.readout(() => {
+          if (!st) return '';
+          if (st.md === 'a') {
+            if (st.zero) return `$U=\\{0\\}$: every vector is orthogonal to $0$, so $U^\\perp=\\mathbf R^3$ — property (b). Now $U\\cap U^\\perp=\\{0\\}$.`;
+            const [a, b, c, d] = st.ip;
+            return `$\\langle u,x\\rangle = ${tn(a, 3)}$, $\\langle u,y\\rangle = ${tn(b, 3)}$, $\\langle u,x+y\\rangle = ${tn(c, 3)}$, $\\langle u,\\lambda x\\rangle = ${tn(d, 3)}$: $U^\\perp$ is closed under addition and scalar multiplication, and contains $0$ — a subspace (a). But $\\langle u,u\\rangle = ${tn(dot3(st.u, st.u), 3)} \\ne 0$, so $u\\notin U^\\perp$ and $U\\cap U^\\perp=\\varnothing\\subseteq\\{0\\}$ (d).`;
+          }
+          const { k, dims } = st, names = ['\\{0\\}', '\\{0,g_1\\}', '\\{0,g_1,g_2\\}', '\\{0,g_1,g_2,g_3\\}'];
+          const what = (d) => ['\\{0\\}', '\\text{a line}', '\\text{a plane}', '\\mathbf R^3'][d];
+          let s = `$(${names[k]})^\\perp = ${what(dims[k])}$. `;
+          if (k === 0) s += 'Property (b): every vector is orthogonal to $0$.';
+          else s += `Each enlargement adds a condition, so the complements shrink: $${dims.slice(0, k + 1).map(what).join('\\supseteq ')}$ — property (e).`;
+          if (k === 3 && dims[3] === 0) s += ' The set now spans $\\mathbf R^3$, so its complement is $V^\\perp=\\{0\\}$ — property (c).';
+          return s;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.49
+    {
+      num: '6.49',
+      kind: 'Theorem',
+      name: 'Direct sum of a subspace and its complement',
+      statement: String.raw`Suppose $U$ is a finite-dimensional subspace of $V$. Then $$V=U\oplus U^\perp:$$ every $v\in V$ can be written in exactly one way as $v=u+w$ with $u\in U$ and $w\in U^\perp$.`,
+      idea: String.raw`Let $e_1,\dots,e_m$ be an orthonormal basis of $U$ (6.35) and split $$v=\underbrace{\langle v,e_1\rangle e_1+\dots+\langle v,e_m\rangle e_m}_{u}+\underbrace{v-\langle v,e_1\rangle e_1-\dots-\langle v,e_m\rangle e_m}_{w}.$$ Then $u\in U$, and $\langle w,e_k\rangle=\langle v,e_k\rangle-\langle v,e_k\rangle=0$ for each $k$, so $w\in U^\perp$; hence $V=U+U^\perp$. Since $U\cap U^\perp=\{0\}$ by 6.48(d), the sum is direct (1.46).`,
+      caption: String.raw`**$\mathbf R^3$:** $U$ is the blue plane (tilt it with $u_1,u_2$) and $U^\perp$ the green line. Drag $v$: it splits as $u$ in the plane plus $w$ on the line, with a right angle at the foot. Drag the orange $u'$ to try another split $v=u'+(v-u')$: the remainder $v-u'$ (red) is orthogonal to $U$ only when $u'=u$ (it snaps there). **Functions:** in $\mathcal P_5(\mathbf R)$ with $\langle f,g\rangle=\int_{-1}^1fg$, the even polynomials $U$ and the odd polynomials $U^\perp$ are orthogonal complements. Drag the handles of $f$: it splits into its even part and its odd part, and that split is exactly $P_Uf+(f-P_Uf)$.`,
+      deps: ['ladr-6.35', 'ladr-6.48', 'ladr-1.46'],
+      see: ['rca-4.11'],
+      tags: ['orthogonality', 'direct sums'],
+      viz(v) {
+        const M = v.M;
+        const mode = v.select('$V$', [{ value: 'R3', label: '$\\mathbf R^3$' }, { value: 'F', label: '$\\mathcal P_5(\\mathbf R)$: even $\\oplus$ odd' }], 'R3', { onChange: (m) => show(m) });
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
+        const sc = v.scene3(S, { yaw: -0.62, pitch: 0.3, axis: 1.45, lim: 1.4 });
+        const F = v.stage({ x: [-1.08, 1.08], y: [-1.7, 1.7], height: 400, full: true, title: '$f = f_{\\text{even}} + f_{\\text{odd}}$ with $\\int_{-1}^1 f_{\\text{even}}\\,f_{\\text{odd}} = 0$' });
+        const U1 = sc.handle([1.0, 0.1, 0.15], { color: 'blue', label: 'u₁' });
+        const U2 = sc.handle([0.1, 1.0, -0.25], { color: 'blue', label: 'u₂' });
+        const Vh = sc.handle([0.35, 0.55, 1.05], { color: 'gold', label: 'v' });
+        let base = orth([U1.p, U2.p]);
+        const inU = (p) => { const B = orth([U1.p, U2.p]); if (B.length < 2) return p; let q = projOnto(p, B); const f = projOnto(Vh.p, B); return len3(sub3(q, f)) < 0.1 ? f : q; };
+        const Up = sc.handle([0.9, -0.5, 0.05], { color: 'orange', label: "u'", snap: inU });
+        const XS = [-0.92, -0.6, -0.25, 0.25, 0.6, 0.92];
+        const init = (x) => 0.35 + 0.9 * x - 0.6 * x * x - 0.5 * x ** 3;
+        const H = XS.map((x) => F.handle(x, init(x), { color: 'gold', r: 6, constrain: (xx, y) => [x, M.clamp(y, -1.6, 1.6)] }));
+        function show(m) {
+          layout(v, [[S, m === 'R3'], [F, m === 'F']]);
+          [U1, U2, Vh, Up].forEach((h) => { h.visible = m === 'R3'; });
+          H.forEach((h) => { h.visible = m === 'F'; });
+        }
+        show('R3');
+        const EV = legendreON(5).filter((_, k) => k % 2 === 0);   // orthonormal basis of the even polynomials in P₅
+        const ipF = (f, g) => M.integrate((t) => f(t) * g(t), -1, 1, 400);
+        let st = null;
+        v.render(() => {
+          if (mode.value === 'R3') {
+            v.legend([['blue', '$U$', { area: true }], ['green', '$U^\\perp$'], ['gold', '$v$'], ['orange', "another try $u'$"], ['red', "$v-u'$", { dash: true }]]);
+            const B = orth([U1.p, U2.p]);
+            if (B.length === 2) base = B;
+            const nrm = unit3(cross(base[0], base[1]));
+            // keep u' in the (possibly tilted) plane
+            const qn = projOnto(Up.p, base); if (len3(sub3(qn, Up.p)) > 1e-9) Up.set(qn);
+            const p = Vh.p, u = projOnto(p, base), w = sub3(p, u), up = Up.p, wr = sub3(p, up);
+            sc.begin();
+            sc.disc(base[0], base[1], 1.45, { fill: 'blue', color: 'blue', fillAlpha: 0.1, grid: true });
+            sc.line(mul3(nrm, -1.7), mul3(nrm, 1.7), { color: 'green', width: 2.6, alpha: 0.8 }, 14);
+            [U1, U2].forEach((h) => sc.arrow(ZERO, h.p, { color: 'blue', width: 1.8, head: 8, alpha: 0.7 }));
+            const same = len3(sub3(up, u)) < 1e-9;
+            if (!same) { sc.line(up, p, { color: 'red', width: 2, dash: [5, 3] }); sc.arrow(ZERO, up, { color: 'orange', width: 2, head: 8 }); }
+            sc.arrow(ZERO, u, { color: 'blue', width: 3.2 }); sc.tex('u', u, { color: 'blue', dx: 12, dy: 12, size: 15 });
+            sc.arrow(u, p, { color: 'green', width: 3 }); sc.arrow(ZERO, w, { color: 'green', width: 2, head: 8, alpha: 0.6, dash: [5, 3] });
+            sc.tex('w', w, { color: 'green', dx: 12, dy: -6, size: 15 });
+            sc.line(w, p, { color: 'muted', width: 1, dash: [3, 3] });
+            if (len3(w) > 0.05 && len3(u) > 0.05) corner3(sc, u, unit3(mul3(u, -1)), unit3(w), 0.13, { color: 'ink' });
+            sc.arrow(ZERO, p, { color: 'gold', width: 2.4, head: 9 });
+            sc.flush();
+            st = { m: 'R3', u, w, wr: base.map((e) => dot3(wr, e)), same, wu: base.map((e) => dot3(w, e)) };
+          } else {
+            v.legend([['gold', '$f$'], ['blue', '$f_{\\text{even}}=P_Uf$'], ['green', '$f_{\\text{odd}}=f-P_Uf$'], ['muted', '$f(-x)$', { dash: true }]]);
+            const c = interpCoef(M, XS, H.map((h) => h.y)), f = (t) => pev(c, t);
+            const fe = (t) => (f(t) + f(-t)) / 2, fo = (t) => (f(t) - f(-t)) / 2;
+            // P_U f from the orthonormal basis of U (6.57(i)), independent of the even/odd formula
+            const w = EV.map((e) => ipF(f, (t) => pev(e, t)));
+            const PU = (t) => EV.reduce((s, e, k) => s + w[k] * pev(e, t), 0);
+            F.hline(0, { color: 'muted', width: 0.8, alpha: 0.5 }); F.vline(0, { color: 'muted', width: 0.8, alpha: 0.5 });
+            F.clip(() => {
+              F.fn((t) => f(-t), { domain: [-1, 1], color: 'muted', width: 1.4, dash: [5, 4] });
+              F.fn(fe, { domain: [-1, 1], color: 'blue', width: 2.6 });
+              F.fn(fo, { domain: [-1, 1], color: 'green', width: 2.6 });
+              F.fn(f, { domain: [-1, 1], color: 'gold', width: 3 });
+            });
+            let dPU = 0; for (let i = 0; i <= 50; i++) { const t = -1 + i / 25; dPU = Math.max(dPU, Math.abs(PU(t) - fe(t))); }
+            st = { m: 'F', ip: ipF(fe, fo), dPU, nf: Math.sqrt(ipF(f, f)), ne: Math.sqrt(ipF(fe, fe)), no: Math.sqrt(ipF(fo, fo)) };
+          }
+        });
+        v.readout(() => {
+          if (!st) return '';
+          if (st.m === 'R3') {
+            const { u, w, wr, same, wu } = st;
+            return `$v = u + w$ with $u = ${vt(u)}\\in U$ and $w = ${vt(w)}$, where $\\langle w,e_1\\rangle = ${tn(wu[0], 3)}$, $\\langle w,e_2\\rangle = ${tn(wu[1], 3)}$ for an orthonormal basis $e_1,e_2$ of $U$: $w\\in U^\\perp$. ` +
+              (same ? `Your $u'$ is $u$ itself — the only choice that works.` : `The other try leaves $v-u'$ with $\\langle v-u',e_1\\rangle = ${tn(wr[0], 3)}$, $\\langle v-u',e_2\\rangle = ${tn(wr[1], 3)}$: not in $U^\\perp$. Uniqueness: if $u+w=u'+w'$ then $u-u'=w'-w\\in U\\cap U^\\perp=\\{0\\}$.`);
+          }
+          const { ip, dPU, nf, ne, no } = st;
+          return `$\\langle f_{\\text{even}}, f_{\\text{odd}}\\rangle = ${zs(ip)}$, and $P_Uf$ computed from an orthonormal basis of the even polynomials differs from $f_{\\text{even}}$ by at most $${zs(dPU)}$. Pythagoras checks out: $\\|f\\|^2 = ${tn(nf * nf, 4)} = ${tn(ne * ne, 4)} + ${tn(no * no, 4)} = \\|f_{\\text{even}}\\|^2+\\|f_{\\text{odd}}\\|^2$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.51
+    {
+      num: '6.51',
+      kind: 'Corollary',
+      name: 'Dimension of orthogonal complement',
+      statement: String.raw`Suppose $V$ is finite-dimensional and $U$ is a subspace of $V$. Then $$\dim U^\perp=\dim V-\dim U.$$`,
+      idea: String.raw`By 6.49, $V=U\oplus U^\perp$, and the dimension of a direct sum of two subspaces is the sum of their dimensions (3.94, or 2.43 with $U\cap U^\perp=\{0\}$). Concretely, an orthonormal basis $e_1,\dots,e_m$ of $U$ extends to an orthonormal basis $e_1,\dots,e_m,f_1,\dots,f_k$ of $V$ (6.36), and then $f_1,\dots,f_k$ is an orthonormal basis of $U^\perp$, so $m+k=\dim V$.`,
+      caption: String.raw`$V=\mathbf R^n$ with the dot product, and $U$ is spanned by the rows on the left (integer entries: click the top half of an entry to add $1$, the bottom half to subtract $1$, or drag it). On the right is an orthonormal basis of $U^\perp$, computed as the solutions of $u_i\cdot x=0$. The bar at the bottom counts dimensions: blue for $\dim U$, green for $\dim U^\perp$ — always $n$ cells in total. Make a row a combination of the others (**dependent row**): $\dim U$ drops below the number of rows, and $U^\perp$ gains a dimension.`,
+      deps: ['ladr-6.49', 'ladr-3.94'],
+      tags: ['orthogonality', 'dimension'],
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, full: true });
+        const nS = v.slider('$n=\\dim V$', 2, 6, 5, { int: true });
+        const kS = v.slider('rows spanning $U$', 0, 6, 2, { int: true });
+        const r = v.rng(11);
+        const A = Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => r.int(-3, 3)));
+        A[0] = [1, 2, 0, -1, 1, 0]; A[1] = [0, 1, 1, 2, -1, 1]; A[2] = [2, -1, 1, 0, 1, -2];
+        v.button('Dependent row', () => {
+          const k = Math.min(kS.value, nS.value); if (k < 2) return;
+          const n = nS.value; for (let j = 0; j < n; j++) A[k - 1][j] = M.clamp(A[0][j] + A[1][j], -9, 9);
+        });
+        v.button('Randomize', () => { for (const row of A) for (let j = 0; j < 6; j++) row[j] = r.int(-3, 3); });
+        const TU = v.table(S, { rows: 2, cols: 5, region: [0.0, 0.3, 0.47, 0.9], maxCell: 44, size: 13 });
+        const TW = v.table(S, { rows: 3, cols: 5, region: [0.53, 0.3, 1.0, 0.9], maxCell: 44, size: 11 });
+        let drag = null;
+        S.onDrag((x, y, ph) => {
+          if (ph === 'start') { const c = TU.hit(x, y); drag = c && c.i >= 0 && c.j >= 0 ? { ...c, Y: S.Y(y), a: A[c.i][c.j], moved: false } : null; return; }
+          if (!drag) return;
+          const dy = drag.Y - S.Y(y);
+          if (ph === 'move' && (drag.moved || Math.abs(dy) > 5)) { drag.moved = true; A[drag.i][drag.j] = M.clamp(drag.a + Math.round(dy / 14), -9, 9); }
+          if (ph === 'end') { if (!drag.moved) { const rc = TU.cellRect(drag.i, drag.j); A[drag.i][drag.j] = M.clamp(drag.a + (y > (rc[1] + rc[3]) / 2 ? 1 : -1), -9, 9); } drag = null; }
+          v.invalidate();
+        });
+        let st = null;
+        v.render(() => {
+          const n = nS.value, k = Math.min(kS.value, n);
+          const rows = A.slice(0, k).map((row) => row.slice(0, n));
+          const rk = k ? M.rank(rows, 1e-9) : 0;
+          const W = k ? M.nullspace(rows, 1e-9) : M.identity(n);
+          const xs = (j) => `$x_{${j + 1}}$`;
+          if (k) {
+            TU.set({ rows: k, cols: n });
+            TU.draw({ value: (i, j) => rows[i][j], rowLabels: (i) => `$u_{${i + 1}}$`, colLabels: xs, fill: () => ['blue', 0.1], textColor: () => 'blue' });
+            ttl(S, TU, '\\text{rows spanning } U', 'blue', false, 14);
+          } else S.tex('U=\\{0\\}\\ (\\text{no rows})', 0.235, 0.62, { color: 'blue', size: 16 });
+          if (W.length) {
+            TW.set({ rows: W.length, cols: n });
+            TW.draw({ value: (i, j) => W[i][j], format: (x) => pn(x, 2), rowLabels: (i) => `$f_{${i + 1}}$`, colLabels: xs, fill: () => ['green', 0.1], textColor: () => 'green' });
+            ttl(S, TW, '\\text{orthonormal basis of } U^\\perp', 'green', false, 14);
+          } else S.tex('U^\\perp=\\{0\\}', 0.765, 0.62, { color: 'green', size: 16 });
+          // dimension bar
+          const x0 = 0.18, x1 = 0.82, y0 = 0.07, y1 = 0.17, cw = (x1 - x0) / n;
+          for (let j = 0; j < n; j++) {
+            const col = j < rk ? 'blue' : 'green';
+            S.rect(x0 + j * cw + 0.004, y0, x0 + (j + 1) * cw - 0.004, y1, { fill: col, fillAlpha: 0.35, color: col, width: 1.5 });
+          }
+          if (rk) S.tex(`\\dim U = ${rk}`, x0 + (rk * cw) / 2, y1, { color: 'blue', dy: -13, size: 14 });
+          if (n - rk) S.tex(`\\dim U^\\perp = ${n - rk}`, x0 + rk * cw + ((n - rk) * cw) / 2, y1, { color: 'green', dy: -13, size: 14 });
+          S.tex(`n = ${n}`, x1, (y0 + y1) / 2, { color: 'ink', dx: 30, size: 14 });
+          let cr = 0; rows.forEach((u) => W.forEach((f) => { cr = Math.max(cr, Math.abs(f.reduce((s, x, j) => s + x * u[j], 0))); }));
+          let od = 0; W.forEach((f, i) => W.forEach((g, j) => { od = Math.max(od, Math.abs(f.reduce((s, x, t) => s + x * g[t], 0) - (i === j ? 1 : 0))); }));
+          st = { n, k, rk, dW: W.length, cr, od };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { n, k, rk, dW, cr, od } = st;
+          return `${k} row${k === 1 ? '' : 's'} of rank ${rk}: $\\dim U = ${rk}$${k > rk ? ` (only ${rk} of the ${k} rows are independent)` : ''}. The basis of $U^\\perp$ has $${dW}$ vectors, orthonormal to within $${zs(od)}$ and orthogonal to every row ($\\max\\lvert u_i\\cdot f_j\\rvert = ${zs(cr)}$). So $\\dim U^\\perp = ${dW} = ${n} - ${rk} = \\dim V-\\dim U$.`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.52
+    {
+      num: '6.52',
+      kind: 'Theorem',
+      name: 'Orthogonal complement of the orthogonal complement',
+      statement: String.raw`Suppose $U$ is a finite-dimensional subspace of $V$. Then $$U=(U^\perp)^\perp.$$`,
+      idea: String.raw`Every $u\in U$ is orthogonal to everything in $U^\perp$, so $U\subseteq(U^\perp)^\perp$. Conversely, take $v\in(U^\perp)^\perp$ and split it as $v=u+w$ with $u\in U$, $w\in U^\perp$ (6.49). Then $w=v-u$ lies in $(U^\perp)^\perp$ (both $v$ and $u$ do) and in $U^\perp$, so $w=0$ by 6.48(d), and $v=u\in U$.`,
+      caption: String.raw`Step through: start with $U$ (blue), take its complement $U^\perp$ (green), then the complement of that (purple dashed). For a line or a plane the purple set lands exactly on $U$ — drag $u_1$, $u_2$ to tilt $U$ and repeat. Choose **a set of two vectors**: $U$ is then just two arrows, not a subspace, and $(U^\perp)^\perp$ is the whole plane they span — strictly bigger than $U$. The theorem needs $U$ to be a subspace.`,
+      deps: ['ladr-6.49', 'ladr-6.48'],
+      tags: ['orthogonality'],
+      viz(v) {
+        const S = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 420 });
+        const sc = v.scene3(S, { yaw: -0.68, pitch: 0.3, axis: 1.45, lim: 1.4 });
+        const uS = v.select('$U$', [{ value: 'line', label: 'a line' }, { value: 'plane', label: 'a plane' }, { value: 'set', label: 'a set of two vectors' }], 'line', { onChange: () => St.set(St.n - 1) });
+        const U1 = sc.handle([0.55, 0.45, 0.9], { color: 'blue', label: 'u₁' });
+        const U2 = sc.handle([0.95, -0.5, 0.2], { color: 'blue', label: 'u₂', snap: (p) => snapSpan(p, orth([U1.p]), 0.1) });
+        const St = v.steps({
+          frames: [
+            { k: 0, note: String.raw`Start with $U$.` },
+            { k: 1, note: String.raw`$U^\perp$: everything orthogonal to $U$.` },
+            { k: 2, note: String.raw`$(U^\perp)^\perp$: everything orthogonal to $U^\perp$.` },
+          ], start: 'end', still: 2, speed: 0.7,
+        });
+        let st = null;
+        v.legend([['blue', '$U$'], ['green', '$U^\\perp$'], ['purple', '$(U^\\perp)^\\perp$', { dash: true }]]);
+        v.render(() => {
+          const md = uS.value, k = St.frame.k ?? 2;
+          U2.visible = md !== 'line';
+          const gens = md === 'line' ? [U1.p] : [U1.p, U2.p];
+          const B = orth(gens), W = compl(B), WW = compl(W);
+          sc.begin();
+          if (md === 'set') { gens.forEach((g) => { sc.arrow(ZERO, g, { color: 'blue', width: 3.2 }); sc.dot(g, { r: 6, color: 'blue', top: true }); }); }
+          else { spanDraw(sc, B, { color: 'blue', r: 1.45, fillAlpha: 0.12, width: 3.6 }); gens.forEach((g) => sc.arrow(ZERO, g, { color: 'blue', width: 2, head: 8, alpha: 0.7 })); }
+          if (k >= 1) spanDraw(sc, W, { color: 'green', r: 1.3, fillAlpha: 0.13, width: 3.2 });
+          if (k >= 2) {
+            if (WW.length === 1) sc.line(mul3(WW[0], -1.75), mul3(WW[0], 1.75), { color: 'purple', width: 2.4, dash: [8, 5] });
+            else if (WW.length === 2) {
+              const pts = []; for (let i = 0; i <= 72; i++) { const t = (2 * Math.PI * i) / 72; pts.push(add3(mul3(WW[0], 1.55 * Math.cos(t)), mul3(WW[1], 1.55 * Math.sin(t)))); }
+              sc.path(pts, { color: 'purple', width: 2.4, dash: [8, 5] });
+              sc.disc(WW[0], WW[1], 1.55, { fill: 'purple', color: 'purple', fillAlpha: md === 'set' ? 0.12 : 0.04, grid: false, alpha: 0.2 });
+            }
+          }
+          if (k >= 1 && W.length && B.length) corner3(sc, ZERO, B[0], W[0], 0.16, { color: 'ink' });
+          sc.flush();
+          // ‖P_U − P_{U⊥⊥}‖ (max entry of the difference of the projection matrices)
+          const P = (Bs) => [0, 1, 2].map((i) => [0, 1, 2].map((j) => Bs.reduce((s, e) => s + e[i] * e[j], 0)));
+          const PU = P(B), PW = P(WW);
+          let d = 0; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) d = Math.max(d, Math.abs(PU[i][j] - PW[i][j]));
+          st = { md, k, dU: B.length, dW: W.length, dWW: WW.length, d };
+        });
+        v.readout(() => {
+          if (!st) return '';
+          const { md, k, dU, dW, dWW, d } = st;
+          const nm = (x) => ['$\\{0\\}$', 'a line', 'a plane', '$\\mathbf R^3$'][x];
+          if (k === 0) return `$U$ is ${md === 'set' ? 'a set of two vectors' : nm(dU)}.`;
+          if (k === 1) return `$U^\\perp$ is ${nm(dW)} ($\\dim U^\\perp = 3 - ${dU}$).`;
+          if (md === 'set') return `$(U^\\perp)^\\perp$ is ${nm(dWW)}: it contains the two vectors of $U$ but also every combination of them, so $U\\subsetneq(U^\\perp)^\\perp=\\operatorname{span}U$. Equality needs $U$ to be a subspace.`;
+          return `$(U^\\perp)^\\perp$ is ${nm(dWW)} again, and it is $U$ itself: the orthogonal projections onto $U$ and onto $(U^\\perp)^\\perp$ agree to within $${zs(d)}$ in every matrix entry.`;
+        });
+      },
+    },
   ],
 };

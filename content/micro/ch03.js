@@ -308,7 +308,7 @@ the percentage change in the quantity of $i$ per percentage change in the price 
           sc.dot(Qc(PC0), PC0, { r: 5, color: 'muted', hollow: true });
           sc.line(0, pc, H0.x, pc, { color: 'muted', dash: [3, 3], width: 1 });
           sc.text(`P = ${pc.toFixed(2)}`, H0.x, pc, { dx: 12, dy: 2, align: 'left', baseline: 'top', color: 'accent', size: 12 });
-          sc.text('D coffee', 44, Pc(44), { dy: -10, align: 'right', color: 'blue', size: 12, math: true });
+          sc.text('D coffee', 37, Pc(37), { dy: -12, align: 'center', color: 'blue', size: 13, math: true });
           const out = {};
           for (const [S, G, Pi, key, col, ymax] of [[sT, tea, PT, 'tea', 'teal', 8], [sM, milk, PM, 'milk', 'purple', 6]]) {
             const q0 = 15, q1 = G.Q(Pi, pc), e = Math.abs(pc - PC0) > 0.05 ? arc(q0, q1, PC0, pc) : (key === 'tea' ? kT.value : kM.value);
@@ -597,7 +597,7 @@ the "Harberger triangle" between demand and supply over the units no longer trad
         const pol = v.select('distortion', ['tax', 'quota', 'ceiling', 'floor'], 'tax');
         const tS = v.slider('tax per unit $t$', 0, 60, 26, { step: 0.5 });
         const qS = v.slider('quota $\\bar Q$', 0, 100, 25, { step: 0.5 });
-        const cS = v.slider('price ceiling', 0, 100, 38, { step: 0.5 });
+        const cS = v.slider('price ceiling', 0, 100, 31, { step: 0.5 });
         const fS = v.slider('price floor', 0, 100, 74, { step: 0.5 });
         const E = v.curves(s, { demand: { linear: [[8, 92], [92, 12]] }, supply: { linear: [[8, 12], [92, 84]] } });
         const COL = { tax: 'green', quota: 'purple', ceiling: 'red', floor: 'pink' };

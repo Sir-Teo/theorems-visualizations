@@ -448,5 +448,431 @@ For example, on $\mathbf F^n$ with the Euclidean inner product $\|(z_1, \dots, z
         });
       },
     },
+    // ------------------------------------------------------------------ 6.10
+    {
+      num: '6.10',
+      kind: 'Definition',
+      name: 'Orthogonal vectors',
+      statement: String.raw`Two vectors $u, v$ in an inner product space are **orthogonal** if $\langle u, v\rangle = 0$. The order does not matter, since $\langle u, v\rangle = 0$ exactly when $\langle v, u\rangle = \overline{\langle u, v\rangle} = 0$.`,
+      idea: String.raw`In $\mathbf R^2$ with the dot product, $\langle u, v\rangle = \|u\|\,\|v\|\cos\theta$, so for nonzero vectors orthogonal means perpendicular. The definition keeps the algebra and drops the picture, which lets "perpendicular" make sense where no angle can be drawn — for instance between functions, where $\langle f, g\rangle = \int fg$ vanishes when the positive and negative parts of the product $fg$ cancel. Whether two vectors are orthogonal depends on the inner product, not only on the vectors.`,
+      caption: String.raw`Functions on an interval with $\langle f, g\rangle = \int fg$. Choose $f$ (blue) and drag the three handles of the quadratic $g$ (orange). Below, the product $fg$: blue area counts positively, red area negatively, and $\langle f, g\rangle$ is the difference. Hunt for orthogonal pairs — the handles snap when the areas cancel exactly. Odd against even is always orthogonal on $[-1, 1]$; switch the interval to $[0, 1]$ and the same pair $1, x$ stops being orthogonal.`,
+      deps: ['ladr-6.2'],
+      tags: ['orthogonality'],
+      viz(v) {
+        const FS = { one: [1, 0, 0], x: [0, 1, 0], x2: [0, 0, 1], leg: [-1 / 3, 0, 1] };
+        const fsel = v.select('$f =$', [{ value: 'one', label: '$1$' }, { value: 'x', label: '$x$' }, { value: 'x2', label: '$x^2$' }, { value: 'leg', label: '$x^2 - \\frac13$' }], 'one');
+        const iv = v.select('on', [{ value: 's', label: '$[-1, 1]$' }, { value: 'h', label: '$[0, 1]$' }], 's');
+        const G = v.stage({ x: [-1.15, 1.15], y: [-1.7, 1.9], height: 250, full: true, title: '$f$ (blue) and $g$ (orange)' });
+        const P = v.stage({ x: [-1.15, 1.15], y: [-1.6, 1.6], height: 230, full: true, title: 'the product $fg$ — its signed area is $\\langle f, g\\rangle$' });
+        const XS = [-0.7, 0, 0.7];
+        let gh = [];
+        const dom = () => (iv.value === 's' ? [-1, 1] : [0, 1]);
+        const ipWith = (ys) => { const c = quadThrough(XS, ys), f = FS[fsel.value]; return ipF((x) => pval(f, x), (x) => pval(c, x), ...dom()); };
+        gh = [[0.55], [-0.45], [1.15]].map(([y], k) => G.handle(XS[k], y, {
+          color: 'orange', constrain: (_, yy) => {
+            yy = Math.max(-1.6, Math.min(1.8, yy));
+            const ys = gh.map((h) => h.y); ys[k] = 0; const i0 = ipWith(ys); ys[k] = 1; const slope = ipWith(ys) - i0;
+            if (Math.abs(slope) > 1e-9) { const ys0 = -i0 / slope; if (Math.abs(yy - ys0) < 0.06) yy = ys0; }
+            return [XS[k], yy];
+          },
+        }));
+        let st = null;
+        v.render(() => {
+          const [a, b] = dom(), fc = FS[fsel.value], gc = quadThrough(XS, gh.map((h) => h.y));
+          const f = (x) => pval(fc, x), g = (x) => pval(gc, x), fg = (x) => f(x) * g(x);
+          for (const S of [G, P]) { S.vband(-1.15, a, { color: 'faint', alpha: 0.18 }); S.vband(b, 1.15, { color: 'faint', alpha: 0.18 }); }
+          G.fn(f, { color: 'accent', width: 1, alpha: 0.4 }); G.fn(g, { color: 'orange', width: 1, alpha: 0.4 });
+          G.fn(f, { domain: [a, b], color: 'accent', width: 2.8 }); G.fn(g, { domain: [a, b], color: 'orange', width: 2.8 });
+          const top = Math.max(1, ...Array.from({ length: 41 }, (_, i) => Math.abs(fg(a + ((b - a) * i) / 40)))) * 1.25;
+          P.setView([-1.15, 1.15], [-top, top]);
+          P.fn((x) => Math.max(0, fg(x)), { domain: [a, b], fill: 'accent', fillAlpha: 0.3, stroke: false });
+          P.fn((x) => Math.min(0, fg(x)), { domain: [a, b], fill: 'red', fillAlpha: 0.3, stroke: false });
+          P.fn(fg, { domain: [a, b], color: 'ink', width: 2 });
+          const ip = ipF(f, g, a, b), pos = integ((x) => Math.max(0, fg(x)), a, b), neg = integ((x) => Math.max(0, -fg(x)), a, b);
+          const nf = Math.sqrt(ipF(f, f, a, b)), ng = Math.sqrt(ipF(g, g, a, b)), orth = Math.abs(ip) < 1e-9;
+          const ang = nf > 1e-9 && ng > 1e-9 ? (Math.acos(Math.max(-1, Math.min(1, ip / (nf * ng)))) * 180) / Math.PI : NaN;
+          P.texPx(`+${tn(pos, 3)}`, P.width - 12, 12, { color: 'accent', align: 'right', baseline: 'top', size: 15 });
+          P.texPx(`-${tn(neg, 3)}`, P.width - 12, P.height - 12, { color: 'red', align: 'right', baseline: 'bottom', size: 15 });
+          if (orth) G.corner('⟨f, g⟩ = 0: f and g are orthogonal', 'tl', { color: 'green', weight: 700 });
+          else if (isFinite(ang)) G.corner(`angle arccos(⟨f, g⟩ / ‖f‖‖g‖) = ${pn(ang, 1)}°`, 'tl', { color: 'muted', weight: 600 });
+          st = { ip, pos, neg, orth, ang, a, b };
+        });
+        v.legend([['accent', '$f$; area where $fg > 0$', { area: true }], ['orange', '$g$'], ['red', 'area where $fg < 0$', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { ip, pos, neg, orth, a } = st;
+          return `$\\langle f, g\\rangle = \\int_{${a}}^{1} fg = ${tn(pos, 3)} - ${tn(neg, 3)} = ${tn(ip, 3)}$` + (orth ? ' — **orthogonal**: the blue and red areas cancel.' : '.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.11
+    {
+      num: '6.11',
+      kind: 'Theorem',
+      name: 'Orthogonality and 0',
+      statement: String.raw`In an inner product space $V$:
+(a) $0$ is orthogonal to every vector in $V$;
+(b) $0$ is the only vector in $V$ that is orthogonal to itself.`,
+      idea: String.raw`(a) is 6.6(b): $\langle 0, v\rangle = 0$ because $u \mapsto \langle u, v\rangle$ is linear. (b) is definiteness: $\langle v, v\rangle = 0$ forces $v = 0$. Without definiteness (b) fails — for the form $x_1y_1 - x_2y_2$ on $\mathbf R^2$ every vector on the diagonals is "orthogonal to itself".`,
+      caption: String.raw`The shading is $\langle x, x\rangle$ (darker = larger; red = negative). Drag $v$: the dashed line is $v^\perp = \{x : \langle x, v\rangle = 0\}$, and the ring of test vectors is coloured by the sign of $\langle x, v\rangle$. Shrink $v$ to the origin (it snaps): every test vector turns green — (a). For an inner product, $\langle x, x\rangle$ vanishes only at the centre, so $v$ never lies on its own line $v^\perp$ — (b). Switch to $x_1y_1 - x_2y_2$ and drag $v$ onto a diagonal: $v \ne 0$ lies on $v^\perp$.`,
+      deps: ['ladr-6.6', 'ladr-6.10', 'ladr-6.2'],
+      tags: ['orthogonality'],
+      viz(v) {
+        const FORMS = { dot: [[1, 0], [0, 1]], sk: [[1.4, 0.6], [0.6, 0.8]], mink: [[1, 0], [0, -1]] };
+        const form = v.select('', [{ value: 'dot', label: 'dot product' }, { value: 'sk', label: 'skewed inner product' }, { value: 'mink', label: '$x_1y_1 - x_2y_2$ (not definite)' }], 'sk');
+        const S = v.stage({ x: [-2.5, 2.5], y: [-2.05, 2.05], equal: true, height: 410 });
+        const vh = S.handle(1.1, 0.7, {
+          color: 'gold', label: 'v', constrain: (x, y) => {
+            if (Math.hypot(x, y) < 0.16) return [0, 0];
+            if (form.value === 'mink' && Math.abs(Math.abs(x) - Math.abs(y)) < 0.1) { const r = (Math.abs(x) + Math.abs(y)) / 2; return [Math.sign(x) * r, Math.sign(y) * r]; }
+            return [x, y];
+          },
+        });
+        const ring = Array.from({ length: 28 }, (_, i) => [1.75 * Math.cos((TAU * i) / 28 + 0.05), 1.75 * Math.sin((TAU * i) / 28 + 0.05)]);
+        let st = null;
+        v.render(() => {
+          const A = FORMS[form.value], ip = formA(A), q = (x) => ip(x, x), V = [vh.x, vh.y];
+          const pos = v.rgb('accent'), neg = v.rgb('red'), bg = v.rgb('panel');
+          S.raster((x, y) => {
+            const s = q([x, y]), t = Math.min(1, Math.abs(s) / 6) ** 0.7, c = s >= 0 ? pos : neg;
+            return [0, 1, 2].map((i) => Math.round(bg[i] + (c[i] - bg[i]) * 0.55 * t)).concat(255);
+          }, { key: form.value + v.color('panel'), res: 3 });
+          for (const lev of [0.25, 1, 2.25, 4]) S.path(levelSet(q, lev, 6), { color: 'accent', width: 0.8, alpha: 0.35 });
+          if (form.value === 'mink') { for (const lev of [-0.25, -1, -2.25]) S.path(levelSet(q, lev, 6), { color: 'red', width: 0.8, alpha: 0.35 }); S.line(-3, -3, 3, 3, { color: 'red', width: 1.6, alpha: 0.7 }); S.line(-3, 3, 3, -3, { color: 'red', width: 1.6, alpha: 0.7 }); }
+          S.axes();
+          const zero = V[0] === 0 && V[1] === 0;
+          if (!zero) { const n = [A[0][0] * V[0] + A[1][0] * V[1], A[0][1] * V[0] + A[1][1] * V[1]], L = 9 / len2(n); S.line(-n[1] * L, n[0] * L, n[1] * L, -n[0] * L, { color: 'green', width: 2, dash: [8, 5] }); }
+          const vals = ring.map((x) => ip(x, V)), big = Math.max(1e-9, ...vals.map(Math.abs));
+          ring.forEach((x, i) => {
+            const s = vals[i];
+            if (Math.abs(s) < 1e-9) S.dot(x[0], x[1], { color: 'green', r: 5.5 });
+            else S.dot(x[0], x[1], { color: s > 0 ? 'accent' : 'orange', r: 3 + 2.5 * Math.abs(s) / big });
+          });
+          const self = q(V);
+          if (zero) S.corner('v = 0: ⟨x, 0⟩ = 0 for every x — (a)', 'tl', { color: 'green', weight: 700 });
+          else if (Math.abs(self) < 1e-9) S.corner('v ≠ 0 yet ⟨v, v⟩ = 0: v lies on its own v⊥', 'tl', { color: 'red', weight: 700 });
+          else S.corner(`⟨v, v⟩ = ${pn(self, 3)} ≠ 0: v is not on v⊥`, 'tl', { color: 'muted', weight: 600 });
+          if (!zero) arrowTo(S, 0, 0, V[0], V[1], { color: 'gold', width: 2.8 });
+          if (!zero) { const n = [A[0][0] * V[0] + A[1][0] * V[1], A[0][1] * V[0] + A[1][1] * V[1]], L = len2(n), d = n[1] > 0 ? [n[1] / L, -n[0] / L] : [-n[1] / L, n[0] / L]; S.tex('v^\\perp', 1.55 * d[0], 1.55 * d[1], { color: 'green', size: 16, dx: 14 }); }
+          st = { V, self, zero, mink: form.value === 'mink' };
+        });
+        v.legend([['gold', '$v$'], ['green', '$v^\\perp$; test vectors with $\\langle x, v\\rangle = 0$', { dash: true }], ['accent', '$\\langle x, v\\rangle > 0$', { dot: true }], ['orange', '$\\langle x, v\\rangle < 0$', { dot: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { V, self, zero, mink } = st;
+          if (zero) return 'With $v = 0$: $\\langle x, 0\\rangle = 0$ for every test vector $x$, so $0$ is orthogonal to everything.';
+          if (Math.abs(self) < 1e-9) return `$v = ${vt(V)} \\ne 0$ but $\\langle v, v\\rangle = 0$ — possible only because $x_1y_1 - x_2y_2$ is not definite.`;
+          return `$\\langle v, v\\rangle = ${tn(self, 3)} ${self > 0 ? '> 0' : '< 0'}$: $v$ is not orthogonal to itself` + (mink ? ' (here even negative — this form is not an inner product).' : '; for an inner product only $v = 0$ is.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.12
+    {
+      num: '6.12',
+      kind: 'Theorem',
+      name: 'Pythagorean theorem',
+      statement: String.raw`Suppose $u, v$ are vectors in an inner product space. If $u$ and $v$ are orthogonal, then
+$$\|u + v\|^2 = \|u\|^2 + \|v\|^2.$$`,
+      idea: String.raw`Expand using additivity in both slots (6.6): $\|u + v\|^2 = \langle u + v, u + v\rangle = \|u\|^2 + \langle u, v\rangle + \langle v, u\rangle + \|v\|^2$. Orthogonality kills the two middle terms. In general the middle terms add up to $2\operatorname{Re}\langle u, v\rangle$, which is exactly the error in "Pythagoras" when the angle is not right.`,
+      caption: String.raw`Drag the corner $u$ and the tip $u + v$. Squares are built on the legs $u$ (blue), $v$ (orange) and on $u + v$. When the corner is a right angle (it snaps), the two leg squares exactly fill the hypotenuse square — compare the bars on the right. Bend the angle and the bars disagree by $2\langle u, v\rangle$, shown in red.`,
+      deps: ['ladr-6.10', 'ladr-6.7', 'ladr-6.6'],
+      tags: ['orthogonality', 'norms'],
+      credit: 'Babylonian tablets, c. 1800 BCE; Pythagorean school, c. 500 BCE',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pythagorean_theorem' },
+      viz(v) {
+        const S = v.stage({ x: [-3.3, 3.9], y: [-2.6, 3.4], equal: true, height: 420, weight: 1.45, minWidth: 330 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, minWidth: 220, title: 'areas' });
+        const uh = S.handle(1.6, 0.35, { color: 'accent', label: 'u' });
+        const bh = S.handle(1.15, 2.4, {
+          color: 'orange', label: 'u+v', constrain: (x, y) => {
+            const u = [uh.x, uh.y], d = [x - u[0], y - u[1]], lu = len2(u), ld = len2(d);
+            if (lu > 0.2 && ld > 0.2 && Math.abs(dot2(u, d)) / (lu * ld) < 0.07) { const n = [-u[1] / lu, u[0] / lu], t = dot2(d, n); return [u[0] + t * n[0], u[1] + t * n[1]]; }
+            return [x, y];
+          },
+        });
+        const square = (P, Q, third, col, alpha) => {
+          const d = [Q[0] - P[0], Q[1] - P[1]]; let n = [-d[1], d[0]];
+          const m = [(P[0] + Q[0]) / 2 - third[0], (P[1] + Q[1]) / 2 - third[1]]; if (dot2(n, m) < 0) n = [-n[0], -n[1]];
+          S.poly([P, Q, [Q[0] + n[0], Q[1] + n[1]], [P[0] + n[0], P[1] + n[1]]], { fill: col, fillAlpha: alpha, color: col, width: 1.4 });
+          return [(P[0] + Q[0] + n[0]) / 2, (P[1] + Q[1] + n[1]) / 2];
+        };
+        let st = null;
+        v.render(() => {
+          const O = [0, 0], U = [uh.x, uh.y], B = [bh.x, bh.y], V = [B[0] - U[0], B[1] - U[1]];
+          const nu2 = dot2(U, U), nv2 = dot2(V, V), ns2 = dot2(B, B), ip = dot2(U, V), right = Math.abs(ip) < 1e-9;
+          const cU = square(O, U, B, 'accent', 0.16), cV = square(U, B, O, 'orange', 0.16), cS = square(O, B, U, right ? 'green' : 'red', 0.1);
+          S.poly([O, U, B], { color: 'ink', width: 1, fill: 'ink', fillAlpha: 0.05 });
+          if (right) rightMark(S, U, [-U[0], -U[1]], V, 0.22, { color: 'green', width: 2 });
+          arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 });
+          arrowTo(S, U[0], U[1], B[0], B[1], { color: 'orange', width: 2.6 });
+          S.arrow(0, 0, B[0], B[1], { color: right ? 'green' : 'red', width: 2.2 });
+          S.tex(`${tn(nu2)}`, cU[0], cU[1], { color: 'accent', size: 15 }); S.tex(`${tn(nv2)}`, cV[0], cV[1], { color: 'orange', size: 15 }); S.tex(`${tn(ns2)}`, cS[0], cS[1], { color: right ? 'green' : 'red', size: 15 });
+          // bars
+          const mx = Math.max(nu2 + nv2, ns2) * 1.08, X = (t) => 0.08 + (0.84 * t) / mx, y1 = 0.62, y2 = 0.32, hh = 0.09;
+          R.rect(X(0), y1, X(nu2), y1 + hh, { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1.2 });
+          R.rect(X(nu2), y1, X(nu2 + nv2), y1 + hh, { fill: 'orange', fillAlpha: 0.45, color: 'orange', width: 1.2 });
+          R.rect(X(0), y2, X(ns2), y2 + hh, { fill: right ? 'green' : 'red', fillAlpha: 0.35, color: right ? 'green' : 'red', width: 1.2 });
+          if (!right) { const a = Math.min(nu2 + nv2, ns2), b = Math.max(nu2 + nv2, ns2); R.rect(X(a), y2 - 0.035, X(b), y1 + hh + 0.035, { fill: 'red', fillAlpha: 0.12, stroke: false }); R.tex(`|2\\langle u,v\\rangle| = ${tn(Math.abs(2 * ip))}`, (X(a) + X(b)) / 2, y2 - 0.07, { color: 'red', size: 13 }); }
+          R.tex('\\|u\\|^2 + \\|v\\|^2', 0.08, y1 + hh + 0.06, { align: 'left', size: 14 });
+          R.tex('\\|u + v\\|^2', 0.08, y2 + hh + 0.06, { align: 'left', size: 14 });
+          R.corner(right ? 'u ⊥ v: equal' : 'not a right angle', 'tl', { color: right ? 'green' : 'red', weight: 700 });
+          st = { nu2, nv2, ns2, ip, right };
+        });
+        v.legend([['accent', 'square on $u$'], ['orange', 'square on $v$'], ['green', 'square on $u+v$ (right angle)', { area: true }], ['red', 'not a right angle', { area: true }]]);
+        v.readout(() => {
+          if (!st) return '';
+          const { nu2, nv2, ns2, ip, right } = st;
+          return `$\\|u + v\\|^2 = ${tn(ns2, 3)}$, $\\|u\\|^2 + \\|v\\|^2 = ${tn(nu2, 3)} + ${tn(nv2, 3)} = ${tn(nu2 + nv2, 3)}$, difference $2\\langle u, v\\rangle = ${tn(2 * ip, 3)}$` + (right ? ' — orthogonal, so Pythagoras holds exactly.' : '.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.13
+    {
+      num: '6.13',
+      kind: 'Theorem',
+      name: 'An orthogonal decomposition',
+      statement: String.raw`Suppose $u, v \in V$ with $v \ne 0$. Put
+$$c = \frac{\langle u, v\rangle}{\|v\|^2}, \qquad w = u - \frac{\langle u, v\rangle}{\|v\|^2}\,v.$$
+Then $u = cv + w$ and $\langle w, v\rangle = 0$: $u$ is a multiple of $v$ plus a vector orthogonal to $v$.`,
+      idea: String.raw`Write $u = cv + (u - cv)$ for an unknown scalar $c$ and ask for $u - cv$ to be orthogonal to $v$. Since $\langle u - cv, v\rangle = \langle u, v\rangle - c\|v\|^2$ is an affine function of $c$ with nonzero slope $-\|v\|^2$, it vanishes for exactly one $c$, namely $\langle u, v\rangle / \|v\|^2$. Geometrically $cv$ is the shadow of $u$ on the line through $v$; this decomposition drives Cauchy–Schwarz (6.14).`,
+      caption: String.raw`Drag $u$, $v$, and the gold point $cv$ along the line through $v$. The purple remainder $w = u - cv$ is perpendicular to $v$ only at one position (it snaps there). On the right, $c \mapsto \langle u - cv, v\rangle$ is a straight line crossing $0$ exactly at $c = \langle u, v\rangle/\|v\|^2$ — and the grey curve $\|u - cv\|$ bottoms out at the same $c$.`,
+      deps: ['ladr-6.10', 'ladr-6.7', 'ladr-6.6'],
+      tags: ['orthogonality'],
+      viz(v) {
+        const S = v.stage({ x: [-2.7, 2.7], y: [-2.1, 2.3], equal: true, height: 380, weight: 1.3, minWidth: 300 });
+        const G = v.stage({ x: [-1, 2], y: [-2, 2], height: 380, minWidth: 260, xlabel: 'c', title: 'functions of $c$' });
+        const uh = S.handle(0.7, 1.7, { color: 'accent', label: 'u' });
+        const vh = S.handle(1.6, 0.55, { color: 'orange', label: 'v', constrain: (x, y) => (Math.hypot(x, y) < 0.3 ? [0.3 * Math.cos(Math.atan2(y, x)), 0.3 * Math.sin(Math.atan2(y, x))] : [x, y]) });
+        let c = 0.5;
+        const ph = S.handle(0, 0, {
+          color: 'gold', r: 6, constrain: (x, y) => {
+            const V = [vh.x, vh.y], n2 = dot2(V, V), cs = dot2([uh.x, uh.y], V) / n2;
+            c = (x * V[0] + y * V[1]) / n2; if (Math.abs(c - cs) * Math.sqrt(n2) < 0.08) c = cs;
+            return [c * V[0], c * V[1]];
+          },
+        });
+        let st = null;
+        v.render(() => {
+          const U = [uh.x, uh.y], V = [vh.x, vh.y], n2 = dot2(V, V), nv = Math.sqrt(n2), cs = dot2(U, V) / n2;
+          ph.x = c * V[0]; ph.y = c * V[1];
+          const P = [ph.x, ph.y], W = [U[0] - P[0], U[1] - P[1]], wv = dot2(W, V), perp = Math.abs(c - cs) < 1e-12;
+          S.line(-9 * V[0] / nv, -9 * V[1] / nv, 9 * V[0] / nv, 9 * V[1] / nv, { color: 'orange', width: 1, alpha: 0.4 });
+          if (!perp) { S.line(U[0], U[1], cs * V[0], cs * V[1], { color: 'green', width: 1.2, dash: [3, 4] }); S.dot(cs * V[0], cs * V[1], { color: 'green', r: 3.5 }); }
+          if (perp && len2(W) > 0.15) rightMark(S, P, W, len2(P) > 1e-6 ? [-P[0], -P[1]] : V, 0.2, { color: 'green', width: 2 });
+          if (len2(P) > 0.05) S.arrow(0, 0, P[0], P[1], { color: 'gold', width: 3.4, alpha: 0.85 });
+          arrowTo(S, 0, 0, V[0], V[1], { color: 'orange', width: 2.4 });
+          arrowTo(S, P[0], P[1], U[0], U[1], { color: perp ? 'purple' : 'red', width: 2.4 });
+          arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 });
+          S.tex('cv', P[0] / 2, P[1] / 2, { color: 'gold', size: 15, dx: V[1] > 0 ? 10 : -10, dy: 12 });
+          if (len2(W) > 0.3) S.tex('w', (P[0] + U[0]) / 2, (P[1] + U[1]) / 2, { color: perp ? 'purple' : 'red', size: 15, dx: 12 });
+          // graphs
+          const lo = Math.min(c, cs) - 1.3, hi = Math.max(c, cs) + 1.3, phi = (t) => dot2(U, V) - t * n2, nrm = (t) => Math.hypot(U[0] - t * V[0], U[1] - t * V[1]);
+          const ys = [phi(lo), phi(hi), nrm(lo), nrm(hi)], yt = Math.max(1, ...ys.map(Math.abs)) * 1.1;
+          G.setView([lo, hi], [-yt, yt]);
+          G.fn(nrm, { color: 'muted', width: 2 });
+          G.fn(phi, { color: 'purple', width: 2.4 });
+          G.vline(cs, { color: 'green', width: 1.2, dash: [4, 4] });
+          G.dot(cs, 0, { color: 'green', r: 5 }); G.dot(cs, nrm(cs), { color: 'green', r: 4 });
+          G.vline(c, { color: 'gold', width: 1, alpha: 0.7 });
+          G.dot(c, phi(c), { color: perp ? 'green' : 'gold', r: 6 }); G.dot(c, nrm(c), { color: 'gold', r: 4.5 });
+          G.tex('\\langle u - cv, v\\rangle', lo + 0.1, phi(lo + 0.1), { color: 'purple', size: 14, align: 'left', dx: 6, dy: phi(lo) > 0 ? 16 : -16 });
+          G.tex('\\|u - cv\\|', hi - 0.1, nrm(hi - 0.1), { color: 'muted', size: 14, align: 'right', dy: -14 });
+          st = { c, cs, wv, perp, nv };
+        });
+        v.legend([['accent', '$u$'], ['orange', '$v$'], ['gold', '$cv$'], ['purple', '$w = u - cv$, when $\\perp v$'], ['red', '$u - cv$, not $\\perp v$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { c, cs, wv, perp } = st;
+          return `$\\dfrac{\\langle u, v\\rangle}{\\|v\\|^2} = ${tn(cs, 3)}$; your $c = ${tn(c, 3)}$ gives $\\langle u - cv, v\\rangle = ${tn(wv, 3)}$` + (perp ? ' — **orthogonal**: $u = cv + w$ with $w \\perp v$.' : '.');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.14
+    {
+      num: '6.14',
+      kind: 'Theorem',
+      name: 'Cauchy–Schwarz inequality',
+      statement: String.raw`For all $u, v$ in an inner product space,
+$$|\langle u, v\rangle| \le \|u\|\,\|v\|,$$
+with equality if and only if one of $u, v$ is a scalar multiple of the other. For example (6.16), $(x_1y_1 + \cdots + x_ny_n)^2 \le (x_1^2 + \cdots + x_n^2)(y_1^2 + \cdots + y_n^2)$ for real numbers, and $\big|\int_{-1}^1 fg\big|^2 \le \int_{-1}^1 f^2 \int_{-1}^1 g^2$ for continuous real $f, g$.`,
+      idea: String.raw`If $v = 0$ both sides vanish. Otherwise split $u = cv + w$ with $w \perp v$ (6.13). Pythagoras (6.12) and $\|cv\| = |c|\,\|v\|$ (6.9) give $\|u\|^2 = |\langle u, v\rangle|^2 / \|v\|^2 + \|w\|^2 \ge |\langle u, v\rangle|^2/\|v\|^2$. Multiplied out: $\|u\|^2\|v\|^2 = |\langle u, v\rangle|^2 + (\|v\|\,\|w\|)^2$ — a right triangle whose hypotenuse is $\|u\|\,\|v\|$ and whose legs are $|\langle u, v\rangle|$ and $\|v\|\,\|w\|$, the area of the parallelogram spanned by $u$ and $v$. Equality means that leg vanishes: $w = 0$, i.e. $u$ is a multiple of $v$.`,
+      caption: String.raw`Drag $u$ and $v$ in $\mathbf R^3$ (drag the background to rotate). The purple parallelogram they span has area $\|v\|\,\|w\|$, where $w$ is the part of $u$ perpendicular to $v$. The right panel is the identity behind the proof: a right triangle with legs $|\langle u, v\rangle|$ (green) and the parallelogram's area (purple), and hypotenuse $\|u\|\,\|v\|$ (blue). A leg never exceeds the hypotenuse. Hunt for equality: squeeze the parallelogram flat by lining $u$ up with $v$ (it snaps), and the triangle collapses onto its green leg.`,
+      deps: ['ladr-6.13', 'ladr-6.12', 'ladr-6.9'],
+      see: ['rca-4.2', 'pma-1.35'],
+      tags: ['inequalities'],
+      credit: 'Cauchy, 1821; Bunyakovsky, 1859; Schwarz, 1888',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cauchy%E2%80%93Schwarz_inequality' },
+      viz(v) {
+        const S = v.stage({ x: [-2.1, 2.1], y: [-1.9, 2.1], equal: true, axes: false, height: 410, weight: 1.35, minWidth: 320 });
+        const R = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 410, minWidth: 250, title: '$\\|u\\|^2\\|v\\|^2 = |\\langle u,v\\rangle|^2 + (\\|v\\|\\|w\\|)^2$' });
+        const sc = v.scene3(S, { yaw: -0.65, pitch: 0.33, axis: 1.5, lim: 1.5 });
+        const vh = sc.handle([0.5, 1.25, 0.25], { color: 'orange', label: 'v' });
+        const uh = sc.handle([1.2, 0.2, 0.9], {
+          color: 'accent', label: 'u', snap: (p) => {
+            const V = vh.p, L = len3(p), lv = len3(V); if (L < 0.15 || lv < 0.15) return p;
+            const cs = dot3(p, V) / (L * lv); if (Math.abs(cs) > 0.985) return mul3(V, (Math.sign(cs) * L) / lv);
+            return p;
+          },
+        });
+        let st = null;
+        v.render(() => {
+          const U = uh.p, V = vh.p, nv = len3(V), nu = len3(U), ip = dot3(U, V);
+          const c = nv > 1e-9 ? ip / (nv * nv) : 0, P = mul3(V, c), W = sub3(U, P), nw = len3(W), area = nv * nw;
+          sc.begin();
+          sc.poly([ZERO, U, add3(U, V), V], { fill: 'purple', fillAlpha: 0.16, color: 'purple', width: 1 });
+          if (nv > 1e-6) sc.line(mul3(V, -1.6 / nv), mul3(V, 1.6 / nv), { color: 'orange', width: 1, alpha: 0.35 }, 12);
+          if (nw > 0.03) { sc.line(P, U, { color: 'purple', width: 1.8, dash: [5, 4] }); if (nw > 0.2 && len3(P) > 0.15) rightMark3(sc, P, W, mul3(P, -1), 0.13, { color: 'purple' }); }
+          if (len3(P) > 0.04) sc.arrow(ZERO, P, { color: 'gold', width: 3, head: 9 });
+          sc.arrow(ZERO, V, { color: 'orange', width: 2.6 });
+          sc.arrow(ZERO, U, { color: 'accent', width: 2.6 });
+          if (nw > 0.25) sc.tex('w', add3(P, mul3(W, 0.5)), { color: 'purple', size: 15, dx: 10 });
+          sc.flush();
+          if (nw < 1e-9) S.corner('u is a multiple of v: equality', 'tl', { color: 'green', weight: 700 });
+          // the right triangle
+          const a = Math.abs(ip), b = area, h = nu * nv, k = 0.74 / Math.max(h, 1e-6), x0 = 0.13, y0 = 0.14;
+          R.poly([[x0, y0], [x0 + k * a, y0], [x0 + k * a, y0 + k * b]], { fill: 'accent', fillAlpha: 0.07, stroke: false });
+          R.curve((t) => [x0 + k * h * Math.cos(t), y0 + k * h * Math.sin(t)], 0, Math.atan2(b, a), { color: 'faint', width: 1.2, dash: [3, 4], n: 60 });
+          R.dot(x0 + k * h, y0, { color: 'accent', r: 3.5 });
+          R.line(x0, y0, x0 + k * a, y0, { color: 'green', width: 4 });
+          R.line(x0 + k * a, y0, x0 + k * a, y0 + k * b, { color: 'purple', width: 4 });
+          R.line(x0, y0, x0 + k * a, y0 + k * b, { color: 'accent', width: 3 });
+          if (b > 0.02 * h && a > 0.02 * h) R.path([[x0 + k * a - 0.03, y0], [x0 + k * a - 0.03, y0 + 0.03], [x0 + k * a, y0 + 0.03]], { color: 'muted', width: 1.2 });
+          R.tex(`|\\langle u,v\\rangle| = ${tn(a)}`, x0 + (k * a) / 2, y0, { color: 'green', size: 14, dy: 16 });
+          if (b > 0.05 * h) R.tex(`\\|v\\|\\|w\\| = ${tn(b)}`, x0 + k * a, y0 + (k * b) / 2, { color: 'purple', size: 14, align: a < 0.55 * h ? 'left' : 'right', dx: a < 0.55 * h ? 8 : -8 });
+          R.tex(`\\|u\\|\\|v\\| = ${tn(h)}`, x0 + (k * a) / 2, y0 + (k * b) / 2, { color: 'accent', size: 14, align: 'right', dx: -10, dy: -12 });
+          st = { a, b, h, nw };
+        });
+        v.legend([['accent', '$u$; hypotenuse $\\|u\\|\\|v\\|$'], ['orange', '$v$'], ['gold', 'projection $cv$'], ['purple', 'parallelogram, area $\\|v\\|\\|w\\|$', { area: true }], ['green', '$|\\langle u, v\\rangle|$']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { a, b, h, nw } = st;
+          return `$|\\langle u, v\\rangle| = ${tn(a, 3)} \\le ${tn(h, 3)} = \\|u\\|\\,\\|v\\|$; the squared gap $\\|u\\|^2\\|v\\|^2 - |\\langle u,v\\rangle|^2 = ${tn(h * h - a * a, 3)} = (\\text{area})^2 = ${tn(b * b, 3)}$.` + (nw < 1e-9 ? ' **Equality** — $u$ is a scalar multiple of $v$.' : '');
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.17
+    {
+      num: '6.17',
+      kind: 'Theorem',
+      name: 'Triangle inequality',
+      statement: String.raw`For all $u, v$ in an inner product space,
+$$\|u + v\| \le \|u\| + \|v\|,$$
+with equality if and only if one of $u, v$ is a nonnegative real multiple of the other.`,
+      idea: String.raw`Expand the square: $\|u + v\|^2 = \|u\|^2 + \|v\|^2 + 2\operatorname{Re}\langle u, v\rangle$. Two estimates follow: $\operatorname{Re}\langle u, v\rangle \le |\langle u, v\rangle|$ (6.18, from 4.4) and $|\langle u, v\rangle| \le \|u\|\,\|v\|$ (6.19, Cauchy–Schwarz). Together they give $\|u + v\|^2 \le (\|u\| + \|v\|)^2$. Equality needs both to be tight: Cauchy–Schwarz forces $u, v$ to be parallel, and the first step forces $\langle u, v\rangle$ to be real and nonnegative, so they point the same way.`,
+      caption: String.raw`Drag the corner $u$ and the end point $u + v$. The bent path $u$ then $v$ is never shorter than the green shortcut. The dashed ellipse holds every corner giving a bent path of the same length — it always encloses the shortcut, and flattens onto it only at equality. The ruler below lays the lengths end to end and marks the two steps of the proof. Hunt for equality: line $v$ up with $u$ (it snaps). Pointing $v$ backwards closes the Cauchy–Schwarz gap 6.19 but opens 6.18.`,
+      deps: ['ladr-6.14', 'ladr-4.4'],
+      see: ['rca-4.3'],
+      tags: ['inequalities', 'norms'],
+      viz(v) {
+        const S = v.stage({ x: [-2.2, 3.6], y: [-1.6, 2.4], equal: true, height: 330, full: true });
+        const R = v.stage({ x: [-0.3, 5], y: [0, 3], height: 165, full: true, axes: false, title: 'the lengths, end to end' });
+        const uh = S.handle(1.3, 0.9, { color: 'accent', label: 'u' });
+        const bh = S.handle(2.6, -0.2, {
+          color: 'orange', label: 'u+v', constrain: (x, y) => {
+            const U = [uh.x, uh.y], d = [x - U[0], y - U[1]], lu = len2(U), ld = len2(d);
+            if (lu > 0.2 && ld > 0.2 && Math.abs(U[0] * d[1] - U[1] * d[0]) / (lu * ld) < 0.06) { const t = dot2(d, U) / lu; return [U[0] + (t * U[0]) / lu, U[1] + (t * U[1]) / lu]; }
+            return [x, y];
+          },
+        });
+        let st = null;
+        v.render(() => {
+          const U = [uh.x, uh.y], B = [bh.x, bh.y], V = [B[0] - U[0], B[1] - U[1]];
+          const nu = len2(U), nv = len2(V), ns = len2(B), ip = dot2(U, V), mid = Math.sqrt(Math.max(0, nu * nu + nv * nv + 2 * Math.abs(ip))), L = nu + nv;
+          // ellipse of corners with the same path length
+          const a = L / 2, f = ns / 2, bmin = Math.sqrt(Math.max(0, a * a - f * f)), C = [B[0] / 2, B[1] / 2], e = ns > 1e-9 ? [B[0] / ns, B[1] / ns] : [1, 0];
+          S.curve((t) => [C[0] + a * Math.cos(t) * e[0] - bmin * Math.sin(t) * e[1], C[1] + a * Math.cos(t) * e[1] + bmin * Math.sin(t) * e[0]], 0, TAU, { color: 'muted', width: 1.2, dash: [5, 5], n: 200 });
+          S.dot(0, 0, { color: 'ink', r: 3.5 });
+          S.arrow(0, 0, B[0], B[1], { color: 'green', width: 3 });
+          arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 });
+          arrowTo(S, U[0], U[1], B[0], B[1], { color: 'orange', width: 2.6 });
+          const eq = L - ns < 1e-9;
+          S.corner(eq ? 'equality: v is a nonnegative multiple of u' : `bent path longer by ${pn(L - ns, 3)}`, 'tl', { color: eq ? 'green' : 'muted', weight: 700 });
+          // ruler
+          R.setView([-0.05 * L - 0.25, 1.08 * L + 0.2], [0, 3]);
+          R.line(0, 2.25, nu, 2.25, { color: 'accent', width: 7, cap: 'butt' }); R.line(nu, 2.25, L, 2.25, { color: 'orange', width: 7, cap: 'butt' });
+          R.line(0, 1.25, ns, 1.25, { color: 'green', width: 7, cap: 'butt' });
+          R.tex('\\|u\\|', nu / 2, 2.25, { color: 'accent', size: 14, dy: -15 }); R.tex('\\|v\\|', nu + nv / 2, 2.25, { color: 'orange', size: 14, dy: -15 });
+          R.tex('\\|u + v\\|', Math.min(ns / 2, L * 0.4), 1.25, { color: 'green', size: 14, dy: -15 });
+          for (const [x, col] of [[ns, 'green'], [mid, 'purple'], [L, 'ink']]) R.line(x, 0.55, x, 2.55, { color: col, width: 1.2, dash: [3, 3] });
+          const gap = (x0, x1, lbl, col) => { if (x1 - x0 > 0.03 * L) { R.line(x0, 0.75, x1, 0.75, { color: col, width: 2.5 }); R.tex(lbl, (x0 + x1) / 2, 0.75, { color: col, size: 12, dy: 13 }); } };
+          gap(ns, mid, '6.18', 'purple'); gap(mid, L, '6.19', 'red');
+          st = { nu, nv, ns, L, mid, ip, eq };
+        });
+        v.legend([['accent', '$u$'], ['orange', '$v$'], ['green', '$u + v$'], ['muted', 'corners with the same path length', { dash: true }], ['purple', 'gap 6.18: $\\operatorname{Re}\\langle u,v\\rangle \\le |\\langle u,v\\rangle|$'], ['red', 'gap 6.19: Cauchy–Schwarz']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { nu, nv, ns, L, mid, ip } = st;
+          return `$\\|u + v\\| = ${tn(ns, 3)} \\le ${tn(mid, 3)} \\le ${tn(L, 3)} = ${tn(nu, 3)} + ${tn(nv, 3)} = \\|u\\| + \\|v\\|$ (middle: $\\sqrt{\\|u\\|^2 + \\|v\\|^2 + 2|\\langle u,v\\rangle|}$, with $\\langle u, v\\rangle = ${tn(ip, 3)}$).`;
+        });
+      },
+    },
+    // ------------------------------------------------------------------ 6.21
+    {
+      num: '6.21',
+      kind: 'Theorem',
+      name: 'Parallelogram equality',
+      statement: String.raw`For all $u, v$ in an inner product space,
+$$\|u + v\|^2 + \|u - v\|^2 = 2\big(\|u\|^2 + \|v\|^2\big):$$
+the squared diagonals of a parallelogram add up to the sum of the squares of its four sides.`,
+      idea: String.raw`Expand both squares as inner products: $\|u \pm v\|^2 = \|u\|^2 + \|v\|^2 \pm \big(\langle u, v\rangle + \langle v, u\rangle\big)$. Adding them cancels the cross terms. The identity is a fingerprint of norms that come from inner products: a norm such as $\|x\|_1 = |x_1| + |x_2|$ or $\|x\|_\infty = \max(|x_1|, |x_2|)$ violates it, and (Jordan–von Neumann) any norm satisfying it comes from an inner product.`,
+      caption: String.raw`Drag $u$ and $v$ and turn the whole parallelogram with the slider. With a norm that comes from an inner product, the ratio $\big(\|u+v\|^2 + \|u-v\|^2\big) / \big(2\|u\|^2 + 2\|v\|^2\big)$ is exactly $1$ for every position — its graph on the right is flat. Choose the $\ell^p$ norm: the unit ball (grey) stops being an ellipse and the ratio wobbles as you rotate, except at $p = 2$.`,
+      deps: ['ladr-6.7', 'ladr-6.6'],
+      tags: ['norms'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Parallelogram_law' },
+      viz(v) {
+        const A = [[1.5, 0.7], [0.7, 0.9]];
+        const nsel = v.select('norm', [{ value: 'dot', label: 'dot product' }, { value: 'sk', label: 'skewed inner product' }, { value: 'lp', label: '$\\ell^p$' }], 'lp', { onChange: () => { pS.el.hidden = nsel.value !== 'lp'; } });
+        const pS = v.slider('$p$', 1, 6, 1, { step: 0.05 });
+        const th = v.slider('rotate $\\theta$', 0, 360, 0, { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const S = v.stage({ x: [-2.6, 2.6], y: [-2.2, 2.2], equal: true, height: 370, weight: 1.25, minWidth: 300 });
+        const G = v.stage({ x: [0, 360], y: [0.6, 1.4], height: 370, minWidth: 260, xlabel: 'θ°', xticks: [0, 90, 180, 270, 360], title: 'ratio of the two sides, as the picture turns' });
+        const rot = (p, t) => [p[0] * Math.cos(t) - p[1] * Math.sin(t), p[0] * Math.sin(t) + p[1] * Math.cos(t)];
+        let u0 = [1.2, 0.15], v0 = [0.35, 1.05];
+        const tR = () => (th.value * Math.PI) / 180;
+        const uh = S.handle(...u0, { color: 'accent', label: 'u', constrain: (x, y) => { u0 = rot([x, y], -tR()); return [x, y]; } });
+        const vh = S.handle(...v0, { color: 'orange', label: 'v', constrain: (x, y) => { v0 = rot([x, y], -tR()); return [x, y]; } });
+        const normOf = () => {
+          if (nsel.value === 'dot') return (x) => Math.hypot(x[0], x[1]);
+          if (nsel.value === 'sk') return (x) => Math.sqrt(formA(A)(x, x));
+          const p = pS.value; return (x) => (Math.abs(x[0]) ** p + Math.abs(x[1]) ** p) ** (1 / p);
+        };
+        const ratio = (N, U, V) => (N([U[0] + V[0], U[1] + V[1]]) ** 2 + N([U[0] - V[0], U[1] - V[1]]) ** 2) / (2 * (N(U) ** 2 + N(V) ** 2));
+        pS.el.hidden = nsel.value !== 'lp';
+        let st = null;
+        v.render(() => {
+          const t = tR(), U = rot(u0, t), V = rot(v0, t), N = normOf();
+          uh.x = U[0]; uh.y = U[1]; vh.x = V[0]; vh.y = V[1];
+          // unit ball of the norm
+          const ball = []; for (let i = 0; i <= 240; i++) { const a = (TAU * i) / 240, d = [Math.cos(a), Math.sin(a)], r = 1 / N(d); ball.push([r * d[0], r * d[1]]); }
+          S.poly(ball, { fill: 'muted', fillAlpha: 0.1, color: 'muted', width: 1.2 });
+          const s = [U[0] + V[0], U[1] + V[1]];
+          S.poly([[0, 0], U, s, V], { fill: 'accent', fillAlpha: 0.05, color: 'ink', width: 1, alpha: 0.5 });
+          S.line(V[0], V[1], U[0], U[1], { color: 'purple', width: 2.6 });
+          S.arrow(0, 0, s[0], s[1], { color: 'green', width: 2.6 });
+          arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 }); arrowTo(S, 0, 0, V[0], V[1], { color: 'orange', width: 2.6 });
+          S.tex('u+v', s[0], s[1], { color: 'green', size: 14, dx: 12, dy: -8, align: 'left' });
+          S.tex('u-v', (U[0] + V[0]) / 2, (U[1] + V[1]) / 2, { color: 'purple', size: 14, dx: 10, dy: 10, align: 'left' });
+          // ratio as a function of the rotation angle
+          const pts = []; let mn = Infinity, mx = -Infinity;
+          for (let k = 0; k <= 360; k += 2) { const r = ratio(N, rot(u0, (k * Math.PI) / 180), rot(v0, (k * Math.PI) / 180)); pts.push([k, r]); mn = Math.min(mn, r); mx = Math.max(mx, r); }
+          const spread = Math.max(0.12, 1.25 * Math.max(Math.abs(mx - 1), Math.abs(1 - mn)));
+          G.setView([0, 360], [1 - spread, 1 + spread]);
+          G.hline(1, { color: 'green', width: 5, alpha: 0.3 });
+          G.path(pts, { color: 'accent', width: 2.2 });
+          const r0 = ratio(N, U, V);
+          G.vline(th.value, { color: 'gold', width: 1, dash: [3, 4] }); G.dot(th.value, r0, { color: 'gold', r: 6 });
+          const flat = mx - mn < 1e-9;
+          G.corner(flat ? 'flat at 1: the equality holds everywhere' : `ranges over [${pn(mn, 3)}, ${pn(mx, 3)}]`, 'tl', { color: flat ? 'green' : 'red', weight: 700 });
+          const lhs = N(s) ** 2 + N([U[0] - V[0], U[1] - V[1]]) ** 2, rhs = 2 * (N(U) ** 2 + N(V) ** 2);
+          st = { lhs, rhs, r0, ip: nsel.value !== 'lp' || Math.abs(pS.value - 2) < 1e-9 };
+        });
+        v.legend([['green', '$u + v$'], ['purple', '$u - v$'], ['muted', 'unit ball of the norm', { area: true }], ['accent', 'ratio LHS / RHS']]);
+        v.readout(() => {
+          if (!st) return '';
+          const { lhs, rhs, ip } = st;
+          return `$\\|u+v\\|^2 + \\|u-v\\|^2 = ${tn(lhs, 3)}$ and $2(\\|u\\|^2 + \\|v\\|^2) = ${tn(rhs, 3)}$` + (ip ? ' — equal: this norm comes from an inner product.' : ' — this norm does not come from an inner product.');
+        });
+      },
+    },
   ],
 };

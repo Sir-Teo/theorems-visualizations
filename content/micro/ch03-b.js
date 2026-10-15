@@ -48,7 +48,7 @@ function taxed(Mk, t, ed, es) {
   return { Pb, Ps: Pb - t, Q: Mk.QD(Pb) };
 }
 /** Draw a curve given as Q(P) (so vertical curves are fine). */
-function drawQ(s, Qf, st, p0 = 0.3, p1 = 120) { const pts = []; for (let i = 0; i <= 160; i++) { const p = p0 + ((p1 - p0) * i) / 160, q = Qf(p); pts.push(isFinite(q) && q < 400 ? [q, p] : null); } s.path(pts, st); }
+function drawQ(s, Qf, st, p0 = 0.3, p1 = 120) { const pts = []; for (let i = 0; i <= 160; i++) { const p = p0 + ((p1 - p0) * i) / 160, q = Qf(p); pts.push(isFinite(q) && q > 1e-9 && q < 400 ? [q, p] : null); } s.path(pts, st); }
 
 // domestic market used for the trade items: D: P = 100 − Q, S: P = 10 + 0.8 Q, autarky (50, 50)
 const TD = (q) => 100 - q, TS = (q) => 10 + 0.8 * q;
@@ -88,15 +88,17 @@ The outcome does not depend on which side is legally required to pay: a tax coll
           if (q > 0) s.rect(0, Math.min(ps, pb), q, Math.max(ps, pb), { fill: tv >= 0 ? 'green' : 'purple', fillAlpha: 0.13, stroke: false });
           const lab = tv >= 0 ? ['S + t', 'D − t'] : ['S − s', 'D + s'];
           s.fn(D, { color: 'blue', width: 2.6 }); s.fn(S, { color: 'orange', width: 2.6 });
-          s.text('D', 99, D(99), { dy: -10, align: 'right', color: 'blue', size: 15, math: true });
+          s.text('D', 90, D(90), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 99, S(99), { dy: -10, align: 'right', color: 'orange', size: 15, math: true });
           if (sell) {
             s.fn((x) => S(x) + tv, { color: 'orange', width: 2, dash: [7, 4] });
-            s.text(lab[0], 97, S(97) + tv, { dx: -4, dy: tv >= 0 ? -10 : 12, align: 'right', color: 'orange', size: 15, math: true });
+            const xl = Math.min(96, bisect((x) => S(x) + tv - 93, 0, 100) ?? 96);
+            s.text(lab[0], xl, S(xl) + tv, { dx: -8, align: 'right', color: 'orange', size: 15, math: true });
             if (Math.abs(tv) > 1.5) s.arrow(80, S(80), 80, S(80) + tv, { color: 'orange', width: 1.6, head: 7 });
           } else {
             s.fn((x) => D(x) - tv, { color: 'blue', width: 2, dash: [7, 4] });
-            s.text(lab[1], 97, D(97) - tv, { dx: -4, dy: tv >= 0 ? 12 : -10, align: 'right', color: 'blue', size: 15, math: true });
+            const xl = Math.min(96, bisect((x) => D(x) - tv - 6, 0, 100) ?? 96);
+            s.text(lab[1], xl, D(xl) - tv, { dx: -8, align: 'right', color: 'blue', size: 15, math: true });
             if (Math.abs(tv) > 1.5) s.arrow(20, D(20), 20, D(20) - tv, { color: 'blue', width: 1.6, head: 7 });
           }
           s.dot(r.q, r.p, { r: 4.5, color: 'ink', hollow: true });
@@ -117,8 +119,8 @@ The outcome does not depend on which side is legally required to pay: a tax coll
           g.hline(tv, { color: tv >= 0 ? 'green' : 'purple', width: 2, dash: [7, 4] });
           g.text(tv >= 0 ? `t = ${tv.toFixed(1)}` : `−s = ${tv.toFixed(1)}`, 98, tv, { dy: -10, align: 'right', color: tv >= 0 ? 'green' : 'purple', size: 12, weight: 600 });
           g.line(q, g.bounds.y[0], q, tv, gd); g.line(r.q, g.bounds.y[0], r.q, 0, gd);
-          g.dot(r.q, 0, { r: 4, color: 'ink', hollow: true }); g.tex('Q^*', r.q, 0, { dx: 5, dy: 4, align: 'left', baseline: 'top', size: 13 });
-          g.dot(q, tv, { r: 5.5, color: tv >= 0 ? 'green' : 'purple' }); g.tex('Q_t', q, tv, { dx: -6, dy: -4, align: 'right', baseline: 'bottom', size: 13 });
+          g.dot(r.q, 0, { r: 4, color: 'ink', hollow: true }); g.tex('Q^*', r.q, 0, { dx: -6, dy: 5, align: 'right', baseline: 'top', size: 13 });
+          g.dot(q, tv, { r: 5.5, color: tv >= 0 ? 'green' : 'purple' }); g.tex('Q_t', q, tv, { dx: -6, dy: 5, align: 'right', baseline: 'top', size: 13 });
           st = { q, pb, ps, qSel, qBuy, sell, posted, r, tv };
         });
         v.legend([['blue', 'demand'], ['orange', 'supply'], ['green', 'wedge $P_b - P_s = t$'], ['gold', 'posted (sticker) price']]);
@@ -139,14 +141,14 @@ The outcome does not depend on which side is legally required to pay: a tax coll
 $$\frac{\Delta P_b}{t} \approx \frac{\varepsilon_S}{\varepsilon_S + |\varepsilon_D|},\qquad \frac{-\Delta P_s}{t} \approx \frac{|\varepsilon_D|}{\varepsilon_S + |\varepsilon_D|},$$
 with equality in the limit $t \to 0$, and exactly for every $t$ (short of a prohibitive tax) when both curves are straight lines. So the **less elastic side bears more of the tax** — regardless of who legally pays it (3.10). Perfectly inelastic demand puts the whole tax on buyers; perfectly elastic supply does the same.`,
       idea: String.raw`From 3.10, $Q_D(P_b) = Q_S(P_b - t)$. Differentiate with respect to $t$ at $t = 0$: $Q_D'\,dP_b = Q_S'\,(dP_b - dt)$, so $dP_b/dt = Q_S'/(Q_S' - Q_D')$. Multiplying numerator and denominator by $P^*/Q^*$ turns the slopes into the elasticities of 3.1 and 3.5. For straight lines the slopes are constant, so the same algebra holds for any finite $t$. Economically: the side that can more easily walk away from the market (the more elastic one) escapes the tax.`,
-      caption: String.raw`Set the two elasticities and the tax. The tax revenue rectangle splits at $P^*$ into the buyers' burden (blue, above) and the sellers' burden (orange, below). The right panel plots the measured buyers' share against the formula: with straight lines the point sits on the diagonal for every tax; with constant-elasticity curves the gold stroke shows how far it drifts as the tax grows from $0$ to $40$. Try $|\varepsilon_D| = 0$ or $\varepsilon_S = 0$.`,
+      caption: String.raw`Set the two elasticities and the tax. The tax revenue rectangle splits at $P^*$ into the buyers' burden (blue, above) and the sellers' burden (orange, below). The right panel follows the two shares as the tax grows from $0$ to $40$: with straight lines the boundary is flat and sits exactly on the elasticity formula (dashed); with constant-elasticity curves it starts on the formula and drifts away. Try $|\varepsilon_D| = 0$ or $\varepsilon_S = 0$.`,
       scope: String.raw`Partial-equilibrium, competitive market (price-taking on both sides) for a per-unit tax. The elasticity formula is a first-order approximation: exact for linear curves, approximate for large taxes on curved ones. With market power, general-equilibrium effects or tax evasion the incidence can differ.`,
       deps: ['micro-3.10', 'micro-3.1', 'micro-3.5'],
       refs: ['Mankiw Ch. 6', 'Varian Ch. 16'],
       tags: ['taxation', 'elasticity'],
       viz(v) {
         const s = v.stage({ x: [0, 100], y: [0, 100], height: 340, axes: 'box', xlabel: 'Q', ylabel: 'P', weight: 1.25 });
-        const g = v.stage({ x: [0, 1], y: [0, 1], height: 340, axes: 'box', xlabel: 'formula', ylabel: 'measured', title: 'buyers’ share of the tax', weight: 0.9, xticks: [0.25, 0.5, 0.75, 1], yticks: [0.25, 0.5, 0.75, 1] });
+        const g = v.stage({ x: [0, 40], y: [0, 1], height: 340, axes: 'box', xlabel: 't', title: 'who pays the tax, as the tax grows', weight: 0.95, yticks: [[0.25, '25%'], [0.5, '50%'], [0.75, '75%']] });
         const kind = v.select('curves', [{ value: 'lin', label: 'straight lines' }, { value: 'ce', label: 'constant elasticity' }], 'lin');
         const ed = v.slider('demand elasticity $|\\varepsilon_D|$', 0, 4, 0.6, { step: 0.05 });
         const es = v.slider('supply elasticity $\\varepsilon_S$', 0, 4, 1.8, { step: 0.05 });
@@ -174,23 +176,33 @@ with equality in the limit $t \to 0$, and exactly for every $t$ (short of a proh
             plab(s, Pb, 'P_b', 'blue'); plab(s, Ps, 'P_s', 'orange');
           }
           s.dot(50, 50, { r: 4.5, color: 'ink', hollow: true });
-          // formula vs measurement
-          g.line(0, 0, 1, 1, { color: 'muted', width: 1.2, dash: [5, 4] });
-          g.text('exact agreement', 0.62, 0.62, { dx: 8, dy: 6, align: 'left', baseline: 'top', color: 'muted', size: 11 });
+          // shares of the tax as functions of t, against the elasticity formula
           const shareAt = (tt) => { const rr = taxed(Mk, tt, a, b); return rr && rr.Q > 1e-6 ? (rr.Pb - 50) / tt : NaN; };
-          const trail = []; for (let i = 1; i <= 40; i++) trail.push([pred, shareAt(i)]);
-          g.path(trail, { color: 'gold', width: 7, alpha: 0.5 });
+          const xs = []; for (let i = 0; i <= 80; i++) xs.push(Math.max(1e-3, (40 * i) / 80));
+          const sh = xs.map(shareAt), ok = xs.map((x, i) => [x, sh[i]]).filter((p) => isFinite(p[1]));
+          if (ok.length > 1) {
+            g.poly([[ok[0][0], 0], ...ok, [ok[ok.length - 1][0], 0]], { fill: 'blue', fillAlpha: 0.3, stroke: false });
+            g.poly([[ok[0][0], 1], ...ok, [ok[ok.length - 1][0], 1]], { fill: 'orange', fillAlpha: 0.3, stroke: false });
+            g.path(ok, { color: 'ink', width: 2.2 });
+            const mid = ok[Math.floor(ok.length / 2)];
+            if (mid[1] > 0.12) g.text('buyers pay', 3, mid[1] / 2, { align: 'left', color: 'blue', size: 12, weight: 700 });
+            if (mid[1] < 0.88) g.text('sellers pay', 3, (1 + mid[1]) / 2, { align: 'left', color: 'orange', size: 12, weight: 700 });
+          }
+          g.hline(pred, { color: 'purple', width: 2, dash: [7, 4] });
+          const endUp = ok.length ? ok[ok.length - 1][1] > pred + 0.005 : false, below = endUp ? pred > 0.12 : pred > 0.88;
+          g.tex('\\varepsilon_S/(\\varepsilon_S + |\\varepsilon_D|)', 39, pred, { dy: below ? 6 : -5, align: 'right', baseline: below ? 'top' : 'bottom', color: 'purple', size: 14 });
           const meas = tv > 0 ? shareAt(tv) : shareAt(1e-3);
-          if (isFinite(meas)) g.dot(pred, meas, { r: 6, color: 'accent' });
+          g.vline(tv, { color: 'muted', width: 1, dash: [3, 3] });
+          if (isFinite(meas)) g.dot(Math.max(tv, 0.2), meas, { r: 5.5, color: 'ink' });
           st = { k, a, b, tv, Pb, Ps, Q, prohibitive, pred, meas };
         });
-        v.legend([['blue', 'buyers’ burden $(P_b - P^*)Q_t$'], ['orange', 'sellers’ burden $(P^* - P_s)Q_t$'], ['red', 'deadweight loss'], ['gold', 'measured share for $t$ from 0 to 40']]);
+        v.legend([['blue', 'buyers’ burden $(P_b - P^*)Q_t$'], ['orange', 'sellers’ burden $(P^* - P_s)Q_t$'], ['red', 'deadweight loss'], ['purple', 'elasticity formula', { dash: true }]]);
         v.readout(() => {
           if (!st) return '';
           if (st.degenerate) return 'both curves vertical: the quantity cannot change, and any split of the tax is an equilibrium — the incidence is indeterminate';
           const { k, a, b, tv, Pb, Ps, prohibitive, pred, meas } = st, f = (x) => v.fix(x, 2);
           if (prohibitive) return `the tax $t = ${tv}$ is prohibitive: nothing is traded and there is no burden to share — lower it`;
-          const formula = `$\\varepsilon_S/(\\varepsilon_S + |\\varepsilon_D|) = ${f(b)}/${f(a + b)} = ${pct(pred)}$`;
+          const formula = `$\\varepsilon_S/(\\varepsilon_S + |\\varepsilon_D|) = ${f(b)}/${f(a + b)}$ = ${pct(pred)}`;
           const tail = k === 'lin' ? ' ✓ (exact for straight lines)' : ` (gap ${v.fix(100 * (meas - pred), 1)} points: exact only as $t \\to 0$)`;
           return `buyers' price $50 \\to ${f(Pb)}$, sellers' price $50 \\to ${f(Ps)}$ · buyers bear $${f(Pb - 50)}$ of $t = ${tv}$ = **${pct(meas)}**, sellers ${pct(1 - meas)} · formula ${formula}${tail} · the ${a < b ? 'demand side is less elastic and pays more' : a > b ? 'supply side is less elastic and pays more' : 'two sides are equally elastic and split it evenly'}`;
         });
@@ -215,7 +227,7 @@ $$DWL(t) = \frac{t^2}{2\,\bigl(S'(Q^*) - D'(Q^*)\bigr)} + O(t^3) = \frac{t^2}{2}
         const s = v.stage({ x: [0, 100], y: [0, 100], height: 340, axes: 'box', xlabel: 'Q', ylabel: 'P', weight: 1.2 });
         const g = v.stage({ x: [0, 50], y: [0, 800], height: 340, axes: 'box', xlabel: 't', ylabel: 'DWL', title: 'deadweight loss against the tax', weight: 1 });
         const kind = v.select('curves', [{ value: 'lin', label: 'straight' }, { value: 'cur', label: 'curved' }], 'lin');
-        const t = v.slider('tax $t$', 0, 25, 12, { step: 0.5 });
+        const t = v.slider('tax $t$', 0, 25, 18, { step: 0.5 });
         const dbl = v.toggle('compare with $2t$', true);
         const E1 = v.curves(s, { demand: { linear: [[8, 92], [92, 14]] }, supply: { linear: [[8, 14], [92, 82]] } });
         const E2 = v.curves(s, { demand: { points: [[6, 96], [36, 54], [94, 30]] }, supply: { points: [[6, 16], [56, 30], [94, 90]] } });
@@ -249,8 +261,8 @@ $$DWL(t) = \frac{t^2}{2\,\bigl(S'(Q^*) - D'(Q^*)\bigr)} + O(t^3) = \frac{t^2}{2}
           const h = 1e-3, dD = (D(r1.q0 + h) - D(r1.q0 - h)) / (2 * h), dS = (S(r1.q0 + h) - S(r1.q0 - h)) / (2 * h), H = (x) => (x * x) / (2 * (dS - dD));
           const xs = [], ex = []; for (let i = 0; i <= 80; i++) { const x = (50 * i) / 80, rr = mk(x); xs.push(x); ex.push(rr ? rr.dwl : NaN); }
           const top = Math.max(...ex.filter(isFinite), H(50)) * 1.08; g.setView(null, [0, top]);
-          g.fn(H, { color: 'purple', width: 2, dash: [7, 4] });
           g.path(xs.map((x, i) => [x, ex[i]]), { color: 'red', width: 2.6 });
+          g.fn(H, { color: 'purple', width: 2, dash: [7, 4] });
           g.line(tv, 0, tv, r1.dwl, { color: 'muted', width: 1, dash: [3, 3] });
           g.dot(tv, r1.dwl, { r: 5.5, color: 'red' }); g.tex('t', tv, r1.dwl, { dx: -7, dy: -5, align: 'right', baseline: 'bottom', size: 14, color: 'red' });
           if (r2 && 2 * tv <= 50) { g.line(2 * tv, 0, 2 * tv, r2.dwl, { color: 'muted', width: 1, dash: [3, 3] }); g.dot(2 * tv, r2.dwl, { r: 5.5, color: 'red', hollow: true }); g.tex('2t', 2 * tv, r2.dwl, { dx: -7, dy: -5, align: 'right', baseline: 'bottom', size: 14, color: 'red' }); }
@@ -289,9 +301,12 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
         let st = null;
         v.render(() => {
           const k = kind.value, a = ed.value, b = es.value, tv = t.value, Mk = elMarket(k, a, b);
-          const at = (x) => { const r = taxed(Mk, x, a, b); const Q = Math.max(0, r.Q); const dwl = simpson((p) => Mk.QD(p), 50, r.Pb, 60) + simpson((p) => Mk.QS(p), r.Ps, 50, 60) - x * Q; return { ...r, Q, R: x * Q, dwl: Math.max(0, dwl) }; };
+          const at = (x) => {
+            const r = taxed(Mk, x, a, b); let Q = Math.max(0, r.Q);
+            if (k === 'lin' && Q < 1e-9) { Q = 0; r.Pb = a > 0 ? 50 + 50 / a : r.Pb; r.Ps = Math.max(0, 50 - 50 / b); } // prohibitive: no trade
+            const dwl = simpson((p) => Mk.QD(p), 50, r.Pb, 60) + simpson((p) => Mk.QS(p), r.Ps, 50, 60) - x * Q; return { ...r, Q, R: x * Q, dwl: Math.max(0, dwl) }; };
           drawQ(s, Mk.QD, { color: 'blue', width: 2.6 }, 0.3, 125); drawQ(s, Mk.QS, { color: 'orange', width: 2.6 }, 0.3, 125);
-          for (const x of [20, 40, 60, 80, 100]) { const r = at(x); if (r.Q > 0.05) s.rect(0, r.Ps, r.Q, r.Pb, { color: 'gold', width: 1.3, alpha: 0.75 }); }
+          for (const x of [20, 40, 60, 80, 100]) { const r = at(x); if (r.Q > 0.05 && r.Pb < 118) s.rect(0, r.Ps, r.Q, r.Pb, { color: 'gold', width: 1.3, alpha: 0.75 }); }
           const c = at(tv);
           if (c.Q > 0 && tv > 0) {
             s.rect(0, c.Ps, c.Q, c.Pb, { fill: 'green', fillAlpha: 0.35, color: 'green', width: 1.8 });
@@ -307,11 +322,11 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
           g.path(xs.map((x, i) => [x, Math.min(W[i], top * 2)]), { color: 'red', width: 2, alpha: 0.8 });
           g.path(xs.map((x, i) => [x, R[i]]), { color: 'green', width: 2.8 });
           const peakIn = pk > 0.6 && pk < 149.4;
-          if (peakIn) { const rp = at(pk); g.line(pk, 0, pk, rp.R, { color: 'gold', width: 1.2, dash: [4, 3] }); g.dot(pk, rp.R, { r: 5, color: 'gold' }); g.text(`peak t = ${pk.toFixed(1)}`, pk, rp.R, { dy: -12, align: 'center', color: 'gold', size: 12, weight: 700 }); }
+          if (peakIn) { const rp = at(pk); g.line(pk, 0, pk, rp.R, { color: 'gold', width: 1.2, dash: [4, 3] }); g.dot(pk, rp.R, { r: 5, color: 'gold' }); g.text(`peak t = ${pk.toFixed(1)}`, pk, rp.R, { dy: -12, align: pk > 120 ? 'right' : pk < 25 ? 'left' : 'center', color: 'gold', size: 12, weight: 700 }); }
           const tmax = k === 'lin' && a > 0 ? 50 * (1 / a + 1 / b) : Infinity;
-          if (tmax < 150) { g.dot(tmax, 0, { r: 4.5, color: 'red', hollow: true }); g.text('no trade', tmax, 0, { dy: -10, align: tmax > 130 ? 'right' : 'center', color: 'red', size: 11 }); }
+          if (tmax < 150) { g.dot(tmax, 0, { r: 4.5, color: 'red', hollow: true }); g.text('no trade', tmax, 0, { dy: -28, align: tmax > 130 ? 'right' : 'center', color: 'red', size: 11 }); }
           g.dot(tv, c.R, { r: 6, color: 'green' });
-          g.text('DWL', 148, Math.min(W[148], top * 0.94), { dx: -2, dy: -9, align: 'right', color: 'red', size: 11.5, weight: 600 });
+          { let i = W.findIndex((w) => w > top * 0.88); if (i < 0) i = 140; g.text('DWL', xs[i], Math.min(W[i], top * 0.88), { dx: 8, align: 'left', color: 'red', size: 11.5, weight: 700 }); }
           st = { k, a, b, tv, c, pk, peakIn, Rpk: at(pk).R, tmax };
         });
         v.legend([['green', 'tax revenue'], ['gold', 'revenue rectangles at $t = 20, 40, \\dots, 100$'], ['red', 'deadweight loss']]);
@@ -341,7 +356,7 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
       viz(v) {
         const D = (q) => 96 - 1.5 * q, S = (q) => 10 + 1.2 * q, Qd = (p) => Math.max(0, (96 - p) / 1.5), Qs = (p) => Math.max(0, (p - 10) / 1.2);
         const q0 = 86 / 2.7, p0 = D(q0), N = 60, vals = Array.from({ length: N }, (_, i) => D(i + 0.5));
-        const s = v.stage({ x: [0, 64], y: [0, 100], height: 360, axes: 'box', xlabel: 'Q (buyers)', ylabel: 'P', full: true });
+        const s = v.stage({ x: [0, 64], y: [0, 100], height: 360, axes: 'box', xlabel: 'Q', ylabel: 'P', full: true });
         const rule = v.select('rationing', [{ value: 'eff', label: 'highest value first' }, { value: 'lot', label: 'lottery' }, { value: 'queue', label: 'queueing' }], 'lot');
         const cap = v.slider('price ceiling $\\bar P$', 12, 90, 30, { step: 0.5 });
         let seed = 7;
@@ -363,8 +378,9 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
             s.rect(0, P, qs, mbar, { fill: 'blue', fillAlpha: 0.22, stroke: false });
             s.rect(0, mbar, qs, meff, { fill: 'pink', fillAlpha: 0.5, stroke: false });
             s.line(0, meff, qs, meff, { color: 'blue', width: 1.2, dash: [4, 3] }); s.line(0, mbar, qs, mbar, { color: 'pink', width: 1.6 });
-            s.text('avg value if the highest values were served', qs + 1, meff, { align: 'left', color: 'blue', size: 11 });
-            s.text('avg value of lottery winners', qs + 1, mbar, { align: 'left', color: 'pink', size: 11, weight: 600 });
+            s.text(`average value of the ${Math.round(qs)} highest buyers`, Math.max(qs, Qd(meff)) + 2, meff, { dy: -1, align: 'left', color: 'blue', size: 11.5 });
+            s.text('average value of lottery winners', Math.max(qs, Qd(mbar)) + 2, mbar, { dy: -1, align: 'left', color: 'pink', size: 11.5, weight: 700 });
+            tag(s, 'misallocation', qs / 2, (meff + mbar) / 2, 'ink', qs, meff - mbar, 11.5);
           } else {
             band(s, D, () => Pf, 0, qs, 'blue', 0.22);
             s.rect(0, P, qs, Pf, { fill: 'purple', fillAlpha: 0.3, stroke: false });
@@ -374,7 +390,7 @@ half the prohibitive tax, and it moves to lower rates as either side becomes mor
           band(s, () => pb, S, 0, qs, 'orange', 0.22);
           if (bind) band(s, D, S, qs, q0, 'red', 0.4);
           s.fn(D, { color: 'blue', width: 2.4, domain: [0, 64] }); s.fn(S, { color: 'orange', width: 2.4, domain: [0, 64] });
-          s.text('D', 63.5, D(63.5), { dy: -10, align: 'right', color: 'blue', size: 15, math: true });
+          s.text('D', 57, D(57), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 63.5, Math.min(97, S(63.5)), { dx: -8, align: 'right', color: 'orange', size: 15, math: true });
           s.hline(P, { color: 'red', width: 1.8, dash: [8, 4] }); s.text(bind ? 'ceiling' : 'ceiling (not binding)', 63.5, P, { dy: -9, align: 'right', color: 'red', size: 11.5 });
           if (bind) { s.arrow(qs, P, qd, P, { color: 'red', both: true, head: 6, width: 1.5 }); s.text('shortage', (qs + qd) / 2, P, { dy: 10, align: 'center', color: 'red', size: 11 }); }
@@ -500,11 +516,11 @@ with equality only at $P_w = P_A$. With imports, consumers gain more than produc
             tag(s, imp ? 'transfer from producers' : 'transfer from consumers', tx + 9, (P + PA) / 2, imp ? 'orange' : 'blue', 40, Math.abs(P - PA), 11);
           }
           s.fn(TD, { color: 'blue', width: 2.6 }); s.fn(TS, { color: 'orange', width: 2.6, domain: [0, 100] });
-          s.text('D', 99, TD(99), { dy: -10, align: 'right', color: 'blue', size: 15, math: true });
+          s.text('D', 90, TD(90), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 99, Math.min(97, TS(99)), { dx: -10, align: 'right', color: 'orange', size: 15, math: true });
           s.hline(P, { color: 'gold', width: 2.4 }); s.text('world price', 99, P, { dy: imp ? -9 : 10, align: 'right', color: 'gold', size: 11.5, weight: 700 });
           s.dot(QA, PA, { r: 4.5, color: 'ink', hollow: true }); s.tex('A', QA, PA, { dx: 7, dy: 2, align: 'left', baseline: 'top', size: 14 });
-          if (Math.abs(qd - qs) > 0.5) { s.arrow(Math.min(qd, qs), P, Math.max(qd, qs), P, { color: 'green', both: true, head: 7, width: 1.8 }); s.text(imp ? 'imports' : 'exports', (qd + qs) / 2, P, { dy: imp ? 11 : -11, align: 'center', color: 'green', size: 12, weight: 700 }); }
+          if (Math.abs(qd - qs) > 0.5) { const y = imp ? P - 3.5 : P + 3.5; s.arrow(Math.min(qd, qs), y, Math.max(qd, qs), y, { color: 'green', both: true, head: 7, width: 1.8 }); s.text(imp ? 'imports' : 'exports', (qd + qs) / 2, y, { dy: imp ? 11 : -11, align: 'center', color: 'green', size: 12, weight: 700 }); }
           s.dot(qd, P, { r: 4.5, color: 'blue' }); if (qs > 0) s.dot(qs, P, { r: 4.5, color: 'orange' });
           plab(s, PA, 'P_A', 'muted');
           // winners and losers
@@ -537,7 +553,7 @@ with equality only at $P_w = P_A$. With imports, consumers gain more than produc
       name: 'Tariffs and import quotas',
       statement: String.raw`A small importing country facing world price $P_w$ imposes a **tariff** $t$ per unit imported. The domestic price rises to $P_w + t$ (or to the autarky price $P_A$ if the tariff is prohibitive): domestic production rises, consumption falls and imports shrink. Consumers lose, producers gain and the government collects $t \times$ imports; the net national loss is two deadweight triangles — a **production** distortion (domestic units made at a cost above $P_w$) and a **consumption** distortion (units no longer bought although worth more than $P_w$). An **import quota** that limits imports to the same amount produces the same domestic price, quantities and triangles, but the rectangle that was tariff revenue becomes **quota rents** for whoever holds the import licences; if the rights go to foreign exporters (a "voluntary export restraint"), that rectangle is lost to the country as well.`,
       idea: String.raw`With free trade the domestic price is pinned at $P_w$ (3.16). A tariff is a tax wedge (3.10) between the world price and the domestic price, applied only to imported units; a quota is a quantity limit, and the domestic price then rises until excess demand equals the quota. Either way the domestic price and quantities are the same for the same import level, so the surplus changes of consumers and producers coincide; the only difference is who captures $(P - P_w)\times$ imports. The triangles are the deadweight losses of 3.9 at the two margins where domestic decisions are now taken at the wrong price.`,
-      caption: String.raw`Raise the tariff and watch imports shrink, the green revenue rectangle appear and the two red triangles open; at $t = 24$ the tariff is prohibitive and the country is back in autarky. Switch to a quota — it starts at the import level of the current tariff and gives the same picture with the rectangle going to licence holders, or abroad under an export restraint. Right: gains and losses relative to free trade.`,
+      caption: String.raw`Raise the tariff and watch imports shrink, the green revenue rectangle appear and the two red triangles open; at $t = 24$ the tariff is prohibitive and the country is back in autarky. Switch to a quota — it starts at the import level of the current tariff and gives the same picture with the rectangle going to licence holders, or abroad under an export restraint. Right: gains and losses relative to free trade; the national bar is split into the production triangle, the consumption triangle and (under an export restraint) the rents that leave the country.`,
       deps: ['micro-3.16', 'micro-3.10', 'micro-3.9'],
       refs: ['Mankiw Ch. 9'],
       tags: ['trade', 'policy'],
@@ -566,10 +582,10 @@ with equality only at $P_w = P_A$. With imports, consumers gain more than produc
             tag(s, m === 'tariff' ? 'revenue' : 'rents', (qs + qd) / 2, (P + PW) / 2, rc === 'pink' ? 'red' : rc, qd - qs, P - PW, 11.5);
           }
           s.fn(TD, { color: 'blue', width: 2.6 }); s.fn(TS, { color: 'orange', width: 2.6 });
-          s.text('D', 99, TD(99), { dy: -10, align: 'right', color: 'blue', size: 15, math: true });
+          s.text('D', 90, TD(90), { dx: 6, dy: 4, align: 'left', baseline: 'top', color: 'blue', size: 15, math: true });
           s.text('S', 99, Math.min(97, TS(99)), { dx: -10, align: 'right', color: 'orange', size: 15, math: true });
           s.hline(PW, { color: 'gold', width: 2.2 }); s.text('world price', 99, PW, { dy: 10, align: 'right', color: 'gold', size: 11.5, weight: 700 });
-          if (P > PW + 0.05) { s.hline(P, { color: 'gold', width: 1.8, dash: [7, 4] }); s.text(m === 'tariff' ? (P >= PA - 1e-9 ? 'prohibitive: autarky price' : 'Pw + t') : 'domestic price', 99, P, { dy: -9, align: 'right', color: 'gold', size: 11.5, weight: 700 }); }
+          if (P > PW + 0.05) { s.hline(P, { color: 'gold', width: 1.8, dash: [7, 4] }); s.text(m === 'tariff' ? (P >= PA - 1e-9 ? 'prohibitive: autarky price' : 'world price + t') : 'domestic price', 99, P, { dy: -9, align: 'right', color: 'gold', size: 11.5, weight: 700 }); }
           s.dot(50, 50, { r: 4, color: 'ink', hollow: true });
           if (M > 0.5) { s.arrow(qs, P, qd, P, { color: 'green', both: true, head: 7, width: 1.6 }); s.text('imports', (qs + qd) / 2, P, { dy: -11, align: 'center', color: 'green', size: 11.5, weight: 700 }); }
           s.line(qs0, 0, qs0, PW, { color: 'muted', width: 1, dash: [3, 3] }); s.line(qd0, 0, qd0, PW, { color: 'muted', width: 1, dash: [3, 3] });
@@ -578,7 +594,10 @@ with equality only at $P_w = P_A$. With imports, consumers gain more than produc
           g.line(0, 0.35, 0, 4.65, { color: 'faint', width: 1.2 });
           const rows = [[4, 'consumers', dCS, 'blue'], [3, 'producers', dPS, 'orange'], [2, m === 'tariff' ? 'government' : m === 'home' ? 'licence holders' : 'foreign exporters (abroad)', rect, rc], [1, 'the nation (net)', net, 'red']];
           for (const [y, name, val, c] of rows) {
-            g.rect(0, y - 0.22, val, y + 0.22, { fill: c, fillAlpha: y === 1 ? 0.8 : 0.6, stroke: false });
+            if (y === 1) { // the national loss, split into its pieces
+              let x0 = 0; for (const [w, cc, al] of [[prod, 'red', 0.85], [cons, 'red', 0.55], [m === 'ver' ? rect : 0, 'pink', 0.6]]) { if (w > 0) g.rect(x0, y - 0.22, x0 - w, y + 0.22, { fill: cc, fillAlpha: al, stroke: false }); x0 -= w; }
+            } else if (y === 2 && m === 'ver') g.rect(0, y - 0.22, val, y + 0.22, { fill: c, fillAlpha: 0.25, color: c, width: 1.4, dash: [5, 3] });
+            else g.rect(0, y - 0.22, val, y + 0.22, { fill: c, fillAlpha: 0.6, stroke: false });
             g.text(name, -X * 0.97, y + 0.36, { align: 'left', color: 'ink', size: 11.5, weight: 600 });
             g.text(sgn(val), val, y, { dx: val >= 0 ? 6 : -6, align: val >= 0 ? 'left' : 'right', color: c === 'gold' ? 'ink' : c, size: 11.5, weight: 700 });
           }
