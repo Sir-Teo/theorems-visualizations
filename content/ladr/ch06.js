@@ -871,7 +871,7 @@ the squared diagonals of a parallelogram add up to the sum of the squares of its
           S.arrow(0, 0, s[0], s[1], { color: 'green', width: 2.6 });
           arrowTo(S, 0, 0, U[0], U[1], { color: 'accent', width: 2.6 }); arrowTo(S, 0, 0, V[0], V[1], { color: 'orange', width: 2.6 });
           S.tex('u+v', s[0], s[1], { color: 'green', size: 14, dx: 12, dy: -8, align: 'left' });
-          S.tex('u-v', 0.35 * U[0] + 0.65 * V[0], 0.35 * U[1] + 0.65 * V[1], { color: 'purple', size: 14, dx: -8, dy: -10, align: 'right' });
+          { const mx = (U[0] + V[0]) / 2, my = (U[1] + V[1]) / 2; let nx = -(U[1] - V[1]), ny = U[0] - V[0]; const L = Math.hypot(nx, ny) || 1; nx /= L; ny /= L; if (nx * mx + ny * my < 0) { nx = -nx; ny = -ny; } S.tex('u-v', mx, my, { color: 'purple', size: 14, dx: 16 * nx, dy: -16 * ny }); }
           // ratio as a function of the rotation angle
           const pts = []; let mn = Infinity, mx = -Infinity;
           for (let k = 0; k <= 360; k += 1) { const r = ratio(N, rot(u0, (k * Math.PI) / 180), rot(v0, (k * Math.PI) / 180)); pts.push([k, r]); mn = Math.min(mn, r); mx = Math.max(mx, r); }

@@ -945,7 +945,7 @@ $$T \text{ is normal} \iff \|Tv\| = \|T^*v\| \text{ for every } v \in V.$$`,
           S.circle(0, 0, len(Tsv), { color: 'orange', width: 1.2, dash: [2, 3], alpha: 0.7 });
           S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 }); tip(S, 'v', vv, 'gold', { size: 14 });
           S.arrow(0, 0, Tv[0], Tv[1], { color: 'accent', width: 2.6 }); tip(S, 'Tv', Tv, 'accent');
-          S.arrow(0, 0, Tsv[0], Tsv[1], { color: 'orange', width: 2.6, dash: [6, 4] }); tip(S, 'T^*v', Tsv, 'orange');
+          S.arrow(0, 0, Tsv[0], Tsv[1], { color: 'orange', width: 2.6, dash: [6, 4] }); tip(S, 'T^*v', Tsv, 'orange', { off: len(sub(Tv, Tsv)) < 0.3 ? 42 : 15 });
           const fn = (A) => (x) => len(mv(A, [Math.cos(x / DEG), Math.sin(x / DEG)]));
           G.between(fn(T), fn(Ts), 0, 360, { fill: 'red', fillAlpha: 0.22 });
           G.fn(fn(T), { color: 'accent', width: 2.6 }); G.fn(fn(Ts), { color: 'orange', width: 2.6, dash: [7, 5] });

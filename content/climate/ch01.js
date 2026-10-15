@@ -690,5 +690,307 @@ Venus is hot although it absorbs *less* sunlight than Earth — its clouds refle
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 1.8
+    {
+      num: '1.8',
+      kind: 'Phenomenon',
+      name: 'Insolation by latitude and season',
+      credit: 'Milutin Milanković, 1920 (insolation tables by latitude and season)',
+      statement: String.raw`The daily-mean sunlight reaching the top of the atmosphere at latitude $\varphi$ is
+$$\bar Q = \frac{S}{\pi}\Big(\frac{\bar d}{d}\Big)^2\big(h_0\sin\varphi\sin\delta + \cos\varphi\cos\delta\sin h_0\big),\qquad \cos h_0 = -\tan\varphi\tan\delta ,$$
+where $\delta$ is the Sun's declination ($\sin\delta = \sin\varepsilon\,\sin\lambda_\odot$ for obliquity $\varepsilon$ and solar longitude $\lambda_\odot$), $h_0$ the hour angle of sunset ($h_0 = \pi$ in polar day, $0$ in polar night) and $(\bar d/d)^2$ the distance factor. Insolation therefore depends on latitude *and* season: with Earth's $\varepsilon = 23.44°$ the summer pole, lit for 24 hours, receives about 525 W m⁻² at the solstice — more than the equator (about 385 W m⁻²) — while the winter polar cap gets nothing. The annual mean still falls from about 418 W m⁻² at the equator to about 175 W m⁻² at the poles. With zero obliquity the seasons disappear (apart from the small distance effect) and the poles are dark all year.`,
+      idea: String.raw`The flux on a horizontal surface is $S(\bar d/d)^2\cos Z$ with $\cos Z = \sin\varphi\sin\delta + \cos\varphi\cos\delta\cos h$ (spherical trigonometry on the globe, geog-1.2); averaging over the hours of daylight, $|h| < h_0$, gives the formula (energy-4.2). At the pole $\cos Z = \sin\delta$ all day, while the equator sees a higher noon Sun for only 12 hours. Integrated over the sphere, the insolation of any day is $S(\bar d/d)^2/4$ (1.5): tilt only moves sunlight between latitudes.`,
+      caption: String.raw`The map shows daily-mean insolation for every latitude and day of the year, computed from the formula with Kepler's equation for the orbit; drag the cross to choose a day and latitude. The globe shows that day's lit hemisphere, the tropics and polar circles; the lower panel is the latitude profile on that day against the annual mean. Set the obliquity to zero and the seasons vanish; push it past 54° and the poles receive more sunlight than the equator over the year.`,
+      deps: ['climate-1.5', 'energy-4.2', 'geog-1.2'],
+      refs: ['Pierrehumbert'],
+      tags: ['insolation', 'seasons', 'orbit'],
+      viz(v) {
+        const P = phys(v), M = v.M, S0 = P.S0;
+        const obl = v.slider('obliquity $\\varepsilon$ (°)', 0, 90, 23.44, { step: 0.01, decimals: 2 });
+        const ecc = v.slider('eccentricity $e$', 0, 0.1, 0.0167, { step: 0.0001, decimals: 4 });
+        const MT = MDAYS.slice(0, 12).map((d, i) => [d + 15, MONTHS[i][0]]);
+        const LT = [-90, -60, -30, 0, 30, 60, 90].map((f) => [f, f === 0 ? '0°' : `${Math.abs(f)}°${f > 0 ? 'N' : 'S'}`]);
+        const sA = v.stage({ height: 300, weight: 0.8 });
+        const sB = v.stage({ x: [0, 430], y: [-90, 90], axes: 'box', height: 300, weight: 1.2, xticks: MT, yticks: LT, title: 'daily-mean insolation by latitude and day of year' });
+        const sC = v.stage({ x: [-90, 90], y: [0, 640], axes: 'box', height: 210, full: true, xticks: LT, title: 'latitude profile (W/m²)' });
+        const G = v.globe(sA, { projection: 'orthographic', center: [50, 22], graticule: 30 });
+        const pick = sB.handle(172, 45, { color: 'accent', constrain: (x, y) => [M.clamp(x, 0, 364), M.clamp(y, -89, 89)] });
+        let cache = null, ck = '';
+        const tables = () => {
+          const k = `${obl.value}|${ecc.value}`; if (k === ck) return cache; ck = k;
+          const days = M.range(366).map((d) => { const o = orbitPos(d, ecc.value); return { dec: declination(obl.value, o.lon), fac: o.fac }; });
+          const lats = M.range(181).map((i) => -90 + i), ann = lats.map((f) => M.mean(days.slice(0, 365).map((d) => dailyQ(S0, f, d.dec, d.fac))));
+          const xs = M.range(74).map((i) => Math.min(365, i * 5)), ys = M.range(37).map((j) => -90 + 5 * j);
+          const F = ys.map((f) => xs.map((d) => dailyQ(S0, f, days[d].dec, days[d].fac)));
+          const qmax = Math.max(...F.map((r) => Math.max(...r)));
+          return (cache = { days, lats, ann, xs, ys, F, hi: Math.max(600, Math.ceil(qmax / 100) * 100) });
+        };
+        let R = null;
+        v.render(() => {
+          const T = tables(), day = pick.x, lat = pick.y, o = orbitPos(day, ecc.value), dec = declination(obl.value, o.lon), dd = dec / D2R;
+          const Q = (f) => dailyQ(S0, f, dec, o.fac);
+          // ── map
+          sB.heat((x, y) => { if (x > 365) return NaN; const p = orbitPos(x, ecc.value); return dailyQ(S0, y, declination(obl.value, p.lon), p.fac); }, { range: [0, T.hi], cmap: 'magma', key: `${obl.value}|${ecc.value}|${T.hi}`, res: 3 });
+          for (let L = 100; L < T.hi; L += 100) sB.path(isoSegments(T.F, T.xs, T.ys, L), { color: [255, 255, 255], alpha: L % 200 ? 0.22 : 0.45, width: 1 });
+          if (obl.value > 2) { sB.text('polar night', 172, -84, { color: [235, 235, 235], halo: false, size: 10.5, align: 'center' }); sB.text('polar night', 355, 84, { color: [235, 235, 235], halo: false, size: 10.5, align: 'right' }); }
+          sB.line(day, -90, day, 90, { color: [255, 255, 255], width: 1, alpha: 0.6, dash: [4, 3] });
+          sB.line(0, lat, 365, lat, { color: [255, 255, 255], width: 1, alpha: 0.6, dash: [4, 3] });
+          sB.colorbar([0, T.hi], 'magma', { pos: 'right', label: 'W/m²', length: 0.72 });
+          // ── globe on that day (subsolar point at longitude 0)
+          G.draw();
+          G.smallCircle([180, -dd], 89.9, { fill: 'ink', fillAlpha: 0.38, color: 'ink', alpha: 0.5, width: 1 });
+          const par = (f) => M.range(181).map((i) => [-180 + 2 * i, f]);
+          const e = obl.value;
+          if (e > 0.5 && e < 89.5) { for (const f of [e, -e]) G.path(par(f), { geodesic: false, color: 'orange', width: 1.3, dash: [5, 4] }); for (const f of [90 - e, e - 90]) G.path(par(f), { geodesic: false, color: 'teal', width: 1.3, dash: [5, 4] }); }
+          G.path(par(lat), { geodesic: false, color: 'accent', width: 2.4 });
+          G.dot([0, dd], { color: 'gold', r: 6, label: 'Sun overhead', labelPos: 'e', labelColor: 'gold', math: false });
+          sA.setTitle(`${dateLabel(day)}: Sun overhead at ${v.fix(Math.abs(dd), 1)}°${dd >= 0 ? 'N' : 'S'}`);
+          // ── profile
+          sC.setView(null, [0, Math.max(640, T.hi * 1.06)]);
+          sC.path(T.lats.map((f, i) => [f, T.ann[i]]), { color: 'muted', width: 1.8, dash: [6, 4] });
+          sC.fn(Q, { color: 'accent', width: 2.6, fill: 'accent', fillAlpha: 0.14, domain: [-90, 90], n: 361 });
+          for (const f of [-90, 0, 90]) sC.dot(f, Q(f), { color: 'accent', r: 4.5, label: `${Math.round(Q(f))}`, labelPos: f < 0 ? 'ne' : f > 0 ? 'nw' : 'n', labelColor: 'accent', math: false, labelSize: 11 });
+          sC.vline(lat, { color: 'accent', dash: [3, 3], alpha: 0.6 });
+          const gm = 0.5 * simpson((u) => Q(u / D2R) * Math.cos(u), -Math.PI / 2, Math.PI / 2, 360);
+          const h0 = sunsetAngle(lat, dec);
+          R = { day, lat, dd, q: Q(lat), np: Q(90), sp: Q(-90), eq: Q(0), len: (24 * h0) / Math.PI, gm, exp: (S0 * o.fac) / 4, annEq: T.ann[90], annNP: T.ann[180] };
+        });
+        v.legend([['accent', 'on the chosen day'], ['muted', 'annual mean', { dash: true }], ['orange', 'tropics (±ε)', { dash: true }], ['teal', 'polar circles (±(90° − ε))', { dash: true }], ['gold', 'subsolar point', { dot: true }]]);
+        v.readout(() => {
+          if (!R) return '';
+          const L = (f) => `${Math.abs(Math.round(f))}°${f >= 0 ? 'N' : 'S'}`;
+          const dl = R.len >= 23.995 ? 'polar day (24 h)' : R.len <= 0.005 ? 'polar night' : `${v.fix(R.len, 1)} h of daylight`;
+          return String.raw`${dateLabel(R.day)}, declination $\delta$ = ${v.fix(R.dd, 2)}° · at ${L(R.lat)}: ${dl}, $\bar Q$ = ${v.fix(R.q, 1)} W/m² · North Pole ${v.fix(R.np, 0)}, equator ${v.fix(R.eq, 0)}, South Pole ${v.fix(R.sp, 0)} W/m² · area-weighted mean over all latitudes ${v.fix(R.gm, 2)} W/m² = $S(\bar d/d)^2/4$ = ${v.fix(R.exp, 2)} W/m² · annual mean: equator ${v.fix(R.annEq, 0)}, North Pole ${v.fix(R.annNP, 0)} W/m²`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.9
+    {
+      num: '1.9',
+      kind: 'Phenomenon',
+      name: 'Thermal inertia and the seasonal lag',
+      statement: String.raw`A surface layer of heat capacity $C$ per unit area (water-equivalent depth $h$, $C = \rho c_p h$) forced by the seasonal cycle of absorbed sunlight $F(t)$ and losing heat at a rate $B\,T'$ for a temperature anomaly $T'$ obeys
+$$C\,\frac{dT'}{dt} = F'(t) - B\,T' .$$
+For a sinusoidal forcing of angular frequency $\omega = 2\pi/\text{year}$ the response lags the forcing by $\Delta t = \arctan(\omega C/B)/\omega$ and its amplitude is reduced by $1/\sqrt{B^2+\omega^2C^2}$. A thin layer (land, $h$ of a few metres including the air above) follows the Sun within about a month and swings widely; a deep ocean mixed layer lags by two to three months — never more than a quarter year — and swings little. This is the contrast between continental and maritime climates: midsummer comes weeks after the solstice, later still by the sea.`,
+      scope: String.raw`A linear slab model: it assumes a well-mixed layer of fixed depth and a linear loss $B\,T'$ standing for outgoing radiation plus heat carried away by the atmosphere (a few W m⁻² K⁻¹); real mixed layers deepen in winter and continents exchange heat with the oceans.`,
+      idea: String.raw`It is a first-order linear system (sig-6.8) with time constant $\tau = C/B$, driven by the seasonal insolation of 1.8. When $\omega\tau \ll 1$ the layer stays in near-equilibrium, $T' \approx F'/B$, and follows the forcing; when $\omega\tau \gg 1$ the layer integrates the forcing, $T' \approx \int F'\,dt/C$, which turns a cosine into a sine — a quarter-period lag — and divides the amplitude by $\omega C$. The heat capacity of 50 m of water is that of the whole atmosphere about 20 times over.`,
+      caption: String.raw`The top panel is the seasonal anomaly of absorbed sunlight at the chosen latitude, from the insolation formula of 1.8; below, the exactly periodic temperature response of a slab of the chosen depth (solid) beside land and deep-ocean references (dashed). The arrow marks the lag from peak sunshine to peak temperature. The right panel plots the predicted lag against depth with the measured one from the simulation (gold).`,
+      deps: ['climate-1.6', 'climate-1.8', 'sig-6.8'],
+      refs: ['Pierrehumbert'],
+      tags: ['heat capacity', 'seasons', 'ocean'],
+      viz(v) {
+        const P = phys(v), M = v.M, S0 = P.S0, YR = 365.2422, DAY = 86400, w = TAU / (YR * DAY), ALB = 0.3, RHOC = 1025 * 3990;
+        let hS = null;
+        v.select('', [{ value: 2.5, label: 'land + air (2.5 m)' }, { value: 50, label: 'ocean mixed layer (50 m)' }, { value: 200, label: 'deep mixing (200 m)' }], 10, { onChange: (x) => hS.set(x) });
+        hS = logSlider(v, 'water-equivalent depth $h$ (m)', 0.5, 500, 10, { round: (x) => (x < 10 ? Math.round(x * 10) / 10 : Math.round(x)) });
+        const lat = v.slider('latitude (°N)', 15, 85, 45, { step: 1 });
+        const Bs = v.slider('damping $B$ (W m⁻² K⁻¹)', 1, 10, 4, { step: 0.1 });
+        const TK = [0, 90, 181, 273, 365, 455, 546, 638, 730].map((d) => [d, dateLabel(d).replace(/^\d+ /, '1 ')]);
+        const sF = v.stage({ x: [0, 730], y: [-150, 150], axes: 'box', height: 150, full: true, xticks: TK, title: 'seasonal anomaly of absorbed sunlight $(1-\\alpha)\\,\\bar Q\'$ (W/m²)' });
+        const sT = v.stage({ x: [0, 730], y: [-30, 30], axes: 'box', height: 260, weight: 1.65, xticks: TK, title: 'temperature anomaly $T\'$ (K)' });
+        const sL = v.stage({ x: [0.5, 500], y: [0, 100], xlog: true, axes: 'box', height: 260, weight: 1, xlabel: 'h (m)', title: 'lag of peak temperature (days)' });
+        const N = 730, dt = (YR * DAY) / N; // half-day steps
+        let fk = '', forcing = null;
+        const getForcing = () => { // F'(t) at the 2N + 1 half-step points of one year
+          const k = `${lat.value}`; if (k === fk) return forcing; fk = k;
+          const q = M.range(2 * N + 1).map((i) => { const day = (i / (2 * N)) * YR, o = orbitPos(day, 0.0167); return (1 - ALB) * dailyQ(S0, lat.value, declination(23.44, o.lon), o.fac); });
+          const mean = M.mean(q.slice(0, 2 * N));
+          return (forcing = q.map((x) => x - mean));
+        };
+        const harm = (xs) => { let a = 0, b = 0; xs.forEach((x, k) => { const ph = (TAU * k) / xs.length; a += x * Math.cos(ph); b += x * Math.sin(ph); }); return { amp: (2 * Math.hypot(a, b)) / xs.length, ph: Math.atan2(b, a) }; };
+        const memo = new Map();
+        const sim = (h) => {
+          const F = getForcing(), B = Bs.value, key = `${h}|${B}|${fk}`; if (memo.has(key)) return memo.get(key);
+          const C = RHOC * h, f = (i, T) => (F[i] - B * T) / C;
+          const run = (T0, drive) => { const out = [T0]; let T = T0; for (let k = 0; k < N; k++) { const i = 2 * k, g = (j, x) => (drive ? f(j, x) : (-B * x) / C); const k1 = g(i, T), k2 = g(i + 1, T + (dt / 2) * k1), k3 = g(i + 1, T + (dt / 2) * k2), k4 = g(i + 2, T + dt * k3); T += (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4); out.push(T); } return out; };
+          const part = run(0, true), gain = run(1, false)[N], T0 = part[N] / (1 - gain), Ts = run(T0, true).slice(0, N); // exactly periodic
+          const Fh = harm(F.filter((_, i) => i % 2 === 0).slice(0, N)), Th = harm(Ts);
+          let lag = ((Th.ph - Fh.ph) / TAU) * YR; lag = ((lag % YR) + YR) % YR; if (lag > YR / 2) lag -= YR;
+          const pk = (xs) => { let m = 0; xs.forEach((x, k) => { if (x > xs[m]) m = k; }); return (m * YR) / N; };
+          const r = { Ts, lag, amp: Th.amp, famp: Fh.amp, peakT: pk(Ts), peakF: pk(F.filter((_, i) => i % 2 === 0).slice(0, N)), C };
+          memo.set(key, r); if (memo.size > 60) memo.delete(memo.keys().next().value);
+          return r;
+        };
+        let R = null;
+        v.render(() => {
+          const h = hS.value, B = Bs.value, F = getForcing(), S = sim(h), land = sim(2.5), deep = sim(200);
+          const yrs = (arr, step) => { const pts = []; for (let c = 0; c < 2; c++) arr.forEach((x, k) => pts.push([c * YR + k * step, x])); return pts; };
+          const Fd = F.filter((_, i) => i % 2 === 0).slice(0, N), fmax = Math.max(...Fd.map(Math.abs));
+          sF.setView(null, [-fmax * 1.25, fmax * 1.25]);
+          sF.hline(0, { color: 'faint' });
+          sF.path(yrs(Fd, YR / N), { color: 'gold', width: 2.3, fill: 'gold', fillAlpha: 0.12 });
+          const tmax = Math.max(...[S, land, deep].flatMap((r) => r.Ts.map(Math.abs)));
+          sT.setView(null, [-tmax * 1.3, tmax * 1.3]);
+          sT.hline(0, { color: 'faint' });
+          sT.path(yrs(land.Ts, YR / N), { color: 'orange', width: 1.5, dash: [6, 4] });
+          sT.path(yrs(deep.Ts, YR / N), { color: 'purple', width: 1.5, dash: [6, 4] });
+          sT.path(yrs(S.Ts, YR / N), { color: 'accent', width: 2.8 });
+          const pF = S.peakF + YR, pT = S.peakT + (S.peakT < S.peakF ? 2 * YR : YR);
+          for (const st of [sF, sT]) st.vline(pF, { color: 'gold', dash: [4, 3], width: 1.3 });
+          sT.vline(pT, { color: 'accent', dash: [4, 3], width: 1.3 });
+          const ya = tmax * 1.12;
+          if (pT - pF > 3) sT.arrow(pF, ya, pT, ya, { color: 'green', width: 2, head: 7 });
+          sT.text(`lag ${Math.round(pT - pF)} days`, (pF + pT) / 2, ya, { color: 'green', weight: 600, size: 11.5, align: 'center', baseline: 'bottom', dy: -4 });
+          sT.text('peak sunshine', pF, -tmax * 1.18, { color: 'gold', size: 10.5, align: 'right', dx: -4 });
+          // ── lag against depth
+          sL.hline((YR / 4), { color: 'muted', dash: [5, 4] });
+          sL.text('quarter year', 0.6, YR / 4, { color: 'muted', size: 10.5, align: 'left', baseline: 'bottom', dy: -3 });
+          sL.fn((x) => (Math.atan((w * RHOC * x) / B) / w) / DAY, { color: 'green', width: 2.4 });
+          sL.dot(2.5, land.lag, { color: 'orange', r: 4 }); sL.dot(200, deep.lag, { color: 'purple', r: 4 });
+          sL.dot(h, S.lag, { color: 'gold', r: 6.5 });
+          R = { h, B, S, pred: (Math.atan((w * S.C) / B) / w) / DAY, ampPred: S.famp / Math.hypot(B, w * S.C), land, deep, peakDiff: pT - pF };
+        });
+        v.legend([['gold', 'sunlight anomaly'], ['accent', 'slab of depth $h$'], ['orange', 'land + air, 2.5 m', { dash: true }], ['purple', 'deep mixing, 200 m', { dash: true }], ['green', 'predicted lag $\\arctan(\\omega C/B)/\\omega$']]);
+        v.readout(() => {
+          if (!R) return '';
+          return String.raw`$h$ = ${v.fix(R.h, R.h < 10 ? 1 : 0)} m: $C$ = ${v.M.si(R.S.C, 'J m⁻² K⁻¹', 3)}, time constant $C/B$ = ${v.fix(R.S.C / R.B / 86400, 1)} days · lag of the annual harmonic: simulated ${v.fix(R.S.lag, 1)} days, predicted ${v.fix(R.pred, 1)} days (peak to peak ${Math.round(R.peakDiff)} days) · amplitude: simulated ${v.fix(R.S.amp, 2)} K, predicted $|F_1|/\sqrt{B^2+\omega^2C^2}$ = ${v.fix(R.ampPred, 2)} K · land ${v.fix(R.land.amp, 1)} K and ${v.fix(R.land.lag, 0)} days, deep ocean ${v.fix(R.deep.amp, 1)} K and ${v.fix(R.deep.lag, 0)} days`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.10
+    {
+      num: '1.10',
+      kind: 'Paradox',
+      name: 'The faint young Sun paradox',
+      credit: 'Carl Sagan & George Mullen, 1972',
+      statement: String.raw`Stellar-evolution models agree that the Sun brightens as hydrogen in its core turns to helium: about 4 billion years ago it shone at roughly 70–75 % of today's luminosity (Gough's fit $L(t)/L_0 = [1 + \tfrac25(1 - t/t_\odot)]^{-1}$, $t_\odot = 4.57$ Gyr). With today's albedo and today's greenhouse effect the energy balance (1.6) then puts Earth's mean surface temperature below freezing for its first two billion years. Yet the geological record shows liquid water almost throughout: water-altered zircons by 4.4 billion years ago, water-laid sediments by 3.8, stromatolites by 3.5, and only a few glaciations. The resolution must be a stronger early greenhouse (more CO₂, methane), a darker early Earth, or both — and the ice–albedo feedback makes the problem sharper, since a frozen Earth reflects so much sunlight that it would stay frozen even under today's Sun.`,
+      idea: String.raw`In the zero-dimensional model with a fixed effective emissivity, $T_s \propto [S(1-\alpha)]^{1/4}$ (1.6), so 25 % less sunlight lowers the temperature by a factor $0.75^{1/4} \approx 0.93$, about 20 K — enough to freeze a planet that today sits 15 K above freezing. Keeping 288 K at 4 Ga requires about 60–70 W m⁻² of extra greenhouse forcing, some 17 times the forcing of doubling CO₂ today. The carbonate–silicate weathering cycle, which draws CO₂ down faster when the climate is warm, is the favoured thermostat that lowered the greenhouse as the Sun brightened.`,
+      caption: String.raw`The top panel is the Sun's brightening; below, the global surface temperature that today's greenhouse would give (red, dashed) and that of your early Earth (blue). Add an early greenhouse forcing or darken the early surface — both fade linearly to today's values — and drag the epoch marker to read off the forcing needed. Switch on the ice–albedo feedback: once frozen, the planet stays frozen until the forcing is large enough to melt a white Earth. Green marks are evidence of liquid water, blue bars known glaciations.`,
+      deps: ['climate-1.6'],
+      refs: ['Pierrehumbert'],
+      tags: ['paleoclimate', 'solar luminosity'],
+      viz(v) {
+        const P = phys(v), M = v.M, sig = P.sigma, S0 = P.S0, TSUN = 4.57, A0 = 0.3, AICE = 0.62;
+        const eps0 = (S0 * (1 - A0)) / 4 / (sig * 288 ** 4); // today's effective emissivity
+        const Lr = (g) => 1 / (1 + 0.4 * (1 - (TSUN - g) / TSUN)); // g = billions of years ago
+        const dF = v.slider('extra greenhouse forcing at 4 Ga (W/m²)', 0, 100, 0, { step: 0.5 });
+        const aA = v.slider('albedo at 4 Ga', 0.15, 0.45, 0.3, { step: 0.005 });
+        const ice = v.toggle('ice–albedo feedback (frozen Earth: α = 0.62)', false);
+        const XT = [[-4.5, '4.5'], [-4, '4'], [-3.5, '3.5'], [-3, '3'], [-2.5, '2.5'], [-2, '2'], [-1.5, '1.5'], [-1, '1'], [-0.5, '0.5'], [0, 'now']];
+        const sL = v.stage({ x: [-4.62, 0.08], y: [0.66, 1.04], axes: 'box', height: 120, full: true, xticks: XT, yticks: [0.7, 0.8, 0.9, 1], title: 'solar luminosity $L/L_0$' });
+        const sT = v.stage({ x: [-4.62, 0.08], y: [185, 350], axes: 'box', height: 330, full: true, xticks: XT, xlabel: 'billions of years ago', title: 'global mean surface temperature (K)' });
+        const model = (F0, aEarly, withIce) => {
+          const pts = [], n = 900; let frozen = null;
+          for (let i = 0; i <= n; i++) {
+            const g = 4.5 * (1 - i / n), sF = g / 4, S = S0 * Lr(g), a = A0 + (aEarly - A0) * sF;
+            const Tw = (((S * (1 - a)) / 4 + F0 * sF) / (eps0 * sig)) ** 0.25, Ti = (((S * (1 - AICE)) / 4 + F0 * sF) / (eps0 * sig)) ** 0.25;
+            if (!withIce) { pts.push([-g, Tw]); continue; }
+            if (frozen === null) frozen = Tw < 273.15;
+            else if (frozen && Ti >= 273.15) frozen = false;
+            else if (!frozen && Tw < 273.15) frozen = true;
+            pts.push([-g, frozen ? Ti : Tw]);
+          }
+          return pts;
+        };
+        const at = (pts, x) => { const i = M.clamp(Math.round(((x + 4.5) / 4.5) * 900), 0, 900); return pts[i][1]; };
+        let cur = null;
+        const ep = sT.handle(-3.8, 260, { color: 'accent', label: 'epoch', labelPos: 'ne', constrain: (x) => { const xx = M.clamp(x, -4.5, 0); return [xx, cur ? at(cur, xx) : 260]; } });
+        const WATER = [[4.4, 'zircons', 1], [3.8, 'sediments', 0], [3.5, 'stromatolites', 1]], GLAC = [[2.95, 2.9, 'Pongola'], [2.45, 2.22, 'Huronian'], [0.72, 0.635, 'Snowball']];
+        let R = null;
+        v.render(() => {
+          const ref = model(0, A0, ice.value), mine = model(dF.value, aA.value, ice.value); cur = mine;
+          // ── luminosity
+          sL.fn((x) => Lr(-x), { color: 'gold', width: 2.6, domain: [-4.5, 0] });
+          sL.vline(ep.x, { color: 'accent', dash: [3, 3], alpha: 0.7 });
+          sL.dot(ep.x, Lr(-ep.x), { color: 'accent', r: 4.5 });
+          // ── temperature
+          sT.hband(185, 273.15, { color: 'blue', alpha: 0.07 });
+          sT.hline(273.15, { color: 'blue', width: 1.4 });
+          sT.text('water freezes (273 K)', -4.58, 273.15, { color: 'blue', size: 11, align: 'left', baseline: 'top', dy: 4 });
+          sT.hline(288, { color: 'muted', width: 1, dash: [2, 4] });
+          sT.text('today 288 K', 0.05, 288, { color: 'muted', size: 10.5, align: 'right', baseline: 'bottom', dy: -3 });
+          for (const [g, name, row] of WATER) { const y = row ? 341 : 332; sT.dot(-g, y, { color: 'green', r: 4.5 }); sT.text(`${name} ${g}`, -g, y, { color: 'green', size: 10.5, align: 'left', dx: 7 }); }
+          for (const [g0, g1, name] of GLAC) { sT.rect(-g0, 189, -g1, 197, { fill: 'blue', fillAlpha: 0.6, stroke: false }); sT.text(name, (-g0 - g1) / 2, 197, { color: 'blue', size: 10.5, align: 'center', baseline: 'bottom', dy: -2 }); }
+          sT.path(ref, { color: 'red', width: 2, dash: [7, 5] });
+          sT.path(mine, { color: 'accent', width: 2.8 });
+          const x = ep.x, g = -x, T = at(mine, x); ep.y = T;
+          sT.vline(x, { color: 'accent', dash: [3, 3], alpha: 0.5 });
+          const S = S0 * Lr(g), sF = g / 4, a = A0 + (aA.value - A0) * sF, need = (Tt) => eps0 * sig * Tt ** 4 - (S * (1 - a)) / 4;
+          R = { g, L: Lr(g), S, Tref: at(ref, x), T, n273: need(273.15), n288: need(288), F: dF.value * sF };
+        });
+        v.legend([['gold', 'luminosity'], ['red', "today's greenhouse and albedo", { dash: true }], ['accent', 'with your early greenhouse / albedo'], ['green', 'liquid-water evidence', { dot: true }], ['blue', 'glaciations', { dot: true }]]);
+        v.readout(() => {
+          if (!R) return '';
+          const f = (x) => v.fix(x, 1);
+          return String.raw`${v.fix(R.g, 2)} billion years ago: $L$ = ${v.fix(R.L, 3)} $L_0$, $S$ = ${v.fix(R.S, 0)} W/m² · today's greenhouse gives ${f(R.Tref)} K${R.Tref < 273.15 ? ' (frozen)' : ''}, your model ${f(R.T)} K${R.T < 273.15 ? ' (frozen)' : ''} with ${f(R.F)} W/m² of extra forcing · to reach 273 K the early Earth needs ${f(Math.max(0, R.n273))} W/m², to reach 288 K ${f(Math.max(0, R.n288))} W/m² of extra greenhouse forcing at this albedo — doubling CO₂ today gives about 3.9 W/m²`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.11
+    {
+      num: '1.11',
+      kind: 'Phenomenon',
+      name: 'Scattering of sunlight: Rayleigh and Mie',
+      credit: 'Lord Rayleigh, 1871 (small particles); Gustav Mie, 1908 (spheres of any size)',
+      statement: String.raw`How strongly a particle of radius $r$ scatters light of wavelength $\lambda$ depends on the size parameter $x = 2\pi r/\lambda$. For $x \ll 1$ (air molecules, the smallest aerosols) the scattering efficiency follows Rayleigh's law
+$$Q_{\rm sca} = \frac83\,x^4\left|\frac{m^2-1}{m^2+2}\right|^2 \propto \lambda^{-4},$$
+so blue light (0.45 µm) is scattered about 4.4 times more than red (0.65 µm), symmetrically forwards and backwards: the sky is blue and the setting Sun red. When $x \gtrsim 1$ (haze, sulfate aerosol, cloud droplets) Mie's exact solution for a sphere applies: $Q_{\rm sca}$ oscillates about and tends to 2, nearly independent of wavelength — clouds are white — and the light goes mostly forward. The fraction scattered back to space feeds the planetary albedo (1.5); per unit mass, particles of a few tenths of a micron scatter sunlight most efficiently, which is why sulfate aerosols cool the climate.`,
+      idea: String.raw`A particle much smaller than the wavelength sees a uniform oscillating field and becomes a tiny dipole whose induced moment is proportional to its volume; a dipole radiates power $\propto \omega^4 p^2$ (em-12.10), giving $\lambda^{-4}$ and the $(1+\cos^2\theta)$ angular pattern. For larger spheres Mie expanded the incident wave in vector spherical harmonics; the coefficients $a_n, b_n$ computed here by the Bohren–Huffman recurrences contain the resonances that make $Q_{\rm sca}$ ripple and the diffraction peak that sends light forward. At large $x$, $Q_{\rm sca}\to 2$: a particle removes twice its geometric cross-section from the beam, half of it by diffraction.`,
+      caption: String.raw`Choose a particle size: the left panel shows the Mie scattering efficiency against size parameter on log–log axes, with the Rayleigh law (slope 4) dashed and the blue and red ends of the spectrum marked for this particle. The polar plot is the angular pattern at 550 nm on a logarithmic radial scale (four decades), sunlight coming from the left. The swatches give the colour of the scattered light and of sunlight transmitted through a layer of the chosen optical depth.`,
+      deps: ['em-12.10', 'climate-1.5'],
+      refs: ['Pierrehumbert'],
+      tags: ['scattering', 'aerosols', 'albedo'],
+      viz(v) {
+        const P = phys(v), M = v.M;
+        let rS = null;
+        v.select('', [{ value: 0.0002, label: 'air molecule' }, { value: 0.05, label: 'smoke' }, { value: 0.25, label: 'sulfate haze' }, { value: 1, label: 'dust' }, { value: 10, label: 'cloud droplet' }], 0.25, { onChange: (x) => rS.set(x) });
+        rS = logSlider(v, 'particle radius $r$ (µm)', 0.0002, 20, 0.25, { round: (x) => Number(x.toPrecision(2)), fmt: (x) => (x < 0.01 ? `${v.fix(x * 1000, 1)} nm` : `${x} µm`) });
+        const mS = v.select('refractive index', [{ value: 1.33, label: 'water 1.33' }, { value: 1.43, label: 'sulfate 1.43' }, { value: 1.53, label: 'mineral 1.53' }], 1.43);
+        const tau = v.slider('optical depth of the layer at 550 nm', 0, 6, 2, { step: 0.05 });
+        const sA = v.stage({ x: [1e-3, 400], y: [1e-12, 20], xlog: true, ylog: true, axes: 'box', height: 330, weight: 1.25, xlabel: 'x = 2πr/λ', title: 'scattering efficiency $Q_{\\rm sca}$' });
+        const sB = v.stage({ x: [-1.3, 1.3], y: [-1.22, 1.22], equal: true, axes: false, height: 330, title: 'angular pattern at 550 nm (log scale)' });
+        let ck = '', curve = null; const qmemo = new Map();
+        const Qcurve = (m) => { if (ck === String(m)) return curve; ck = String(m); const xs = M.range(361).map((i) => 1e-3 * (4e5) ** (i / 360)); return (curve = xs.map((x) => [x, mie(x, m).qsca])); };
+        const Qat = (r, lam, m) => { const k = `${r}|${lam}|${m}`; if (!qmemo.has(k)) { qmemo.set(k, mie((TAU * r) / lam, m).qsca); if (qmemo.size > 4000) qmemo.clear(); } return qmemo.get(k); };
+        let R = null;
+        v.render(() => {
+          const r = rS.value, m = mS.value, K = ((m * m - 1) / (m * m + 2)) ** 2;
+          // ── efficiency curve
+          sA.fn((x) => (8 / 3) * x ** 4 * K, { color: 'muted', width: 1.4, dash: [6, 4] });
+          sA.hline(2, { color: 'faint', dash: [3, 4] });
+          sA.text('geometric limit Q = 2', 1e-3, 2, { color: 'muted', size: 10.5, align: 'left', baseline: 'bottom', dx: 6, dy: -3 });
+          sA.path(Qcurve(m), { color: 'accent', width: 2.4 });
+          const xb = (TAU * r) / 0.45, xr = (TAU * r) / 0.65, qb = mie(xb, m).qsca, qr = mie(xr, m).qsca;
+          sA.vband(xr, xb, { color: 'gold', alpha: 0.18 });
+          sA.dot(xb, qb, { color: 'blue', r: 6 }); sA.dot(xr, qr, { color: 'red', r: 6 });
+          sA.text('Rayleigh, slope 4', 3e-3, (8 / 3) * 3e-3 ** 4 * K, { color: 'muted', size: 10.5, align: 'left', dx: 8, dy: 6 });
+          // ── angular pattern at 550 nm
+          const x5 = (TAU * r) / 0.55, mr = mie(x5, m), NA = 181, I = [], th = [];
+          for (let i = 0; i < NA; i++) { th.push((Math.PI * i) / (NA - 1)); I.push(mieIntensity(mr, Math.cos(th[i]))); }
+          const imax = Math.max(...I), rad = (q) => Math.max(0, (Math.log10(q / imax) + 4) / 4);
+          sB.polarGrid({ rings: [0.25, 0.5, 0.75, 1], spokes: 12, labels: false, angles: false });
+          ['10⁻³', '10⁻²', '10⁻¹', '1'].forEach((t, i) => sB.text(t, 0.02, 0.25 * (i + 1), { color: 'muted', size: 10, align: 'left', baseline: 'bottom' }));
+          const pts = []; for (let i = 0; i < NA; i++) pts.push([rad(I[i]) * Math.cos(th[i]), rad(I[i]) * Math.sin(th[i])]);
+          for (let i = NA - 1; i >= 0; i--) pts.push([rad(I[i]) * Math.cos(th[i]), -rad(I[i]) * Math.sin(th[i])]);
+          sB.path(pts, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.18, close: true });
+          const ray = []; for (let i = 0; i <= 360; i++) { const t = (TAU * i) / 360; const q = rad((1 + Math.cos(t) ** 2) / 2 * imax / 1); ray.push([q * Math.cos(t), q * Math.sin(t)]); }
+          sB.path(ray, { color: 'muted', width: 1.2, dash: [5, 4] });
+          sB.arrow(-1.28, 0, -1.03, 0, { color: 'gold', width: 2.5, head: 8 });
+          sB.text('sunlight', -1.28, 0, { color: 'gold', size: 10.5, align: 'left', baseline: 'bottom', dy: -5 });
+          sB.text('forward', 1.03, 0, { color: 'muted', size: 10.5, align: 'right', baseline: 'top', dy: 5 });
+          // back-scattered fraction ∫_{π/2}^{π} I sinθ dθ / ∫_0^π I sinθ dθ (Simpson on the 1° grid)
+          const simp = (a, b) => { let s = 0; for (let i = a; i <= b; i++) s += (i === a || i === b ? 1 : (i - a) % 2 ? 4 : 2) * I[i] * Math.sin(th[i]); return s; };
+          const back = simp(90, 180) / simp(0, 180);
+          // colours: scattered and transmitted sunlight
+          const Qr = (nm) => Qat(r, nm / 1000, m), q550 = Qr(550);
+          const sky = spectrumRGB((nm) => planck(P, nm / 1000, P.Tsun) * Qr(nm)), sun = spectrumRGB((nm) => planck(P, nm / 1000, P.Tsun) * Math.exp((-tau.value * Qr(nm)) / q550));
+          const c = sB.ctx, Y = sB.H - 40;
+          for (const [rgb, X, lab] of [[sky, 14, 'scattered'], [sun, sB.W - 50, 'transmitted']]) {
+            c.save(); c.fillStyle = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; c.strokeStyle = v.color('faint'); c.lineWidth = 1;
+            c.beginPath(); if (c.roundRect) c.roundRect(X, Y, 36, 28, 5); else c.rect(X, Y, 36, 28); c.fill(); c.stroke(); c.restore();
+            sB.textPx(lab, X + 18, Y - 8, { size: 10.5, color: 'muted', align: 'center' });
+          }
+          const rho = m < 1.4 ? 1.0 : m < 1.5 ? 1.77 : 2.6; // g/cm³: water, sulfate, mineral dust
+          R = { r, m, x5, ratio: qb / qr, ang: -Math.log(qb / qr) / Math.log(0.45 / 0.65), back, q550, refl: back * (1 - Math.exp(-tau.value)), mass: (3 * q550) / (4 * rho * 1e6 * r * 1e-6) };
+        });
+        v.legend([['accent', 'Mie (exact)'], ['muted', String.raw`Rayleigh $\tfrac83x^4|\tfrac{m^2-1}{m^2+2}|^2$, and the dipole pattern`, { dash: true }], ['blue', '450 nm', { dot: true }], ['red', '650 nm', { dot: true }]]);
+        v.readout(() => {
+          if (!R) return '';
+          let s = String.raw`$x$ = ${R.x5 < 0.01 ? v.fix(R.x5, 4) : v.fix(R.x5, 2)} at 550 nm · blue/red scattering ratio $Q(450)/Q(650)$ = ${v.fix(R.ratio, 2)} (Rayleigh limit $(650/450)^4$ = 4.35; Ångström exponent ${v.fix(R.ang, 2)}) · back-scattered fraction ${v.fix(R.back * 100, 1)} % · a layer of optical depth ${v.fix(tau.value, 2)} sends ≈ $b(1-e^{-\tau})$ = ${v.fix(R.refl * 100, 1)} % of sunlight back up (single scattering)`;
+          if (R.r >= 0.01) s += String.raw` · mass scattering efficiency $3Q/4\rho r$ = ${v.fix(R.mass, 2)} m²/g`;
+          return s;
+        });
+      },
+    },
   ],
 };

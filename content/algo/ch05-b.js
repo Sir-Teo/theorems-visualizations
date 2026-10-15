@@ -371,7 +371,7 @@ where $h$ is drawn uniformly from $\mathcal H$. The probability is over the choi
         v.readout(() => {
           const { C, H, m, red, max } = info, [x, y] = sel, size = H ? H.length : null;
           const cell = x === y ? `pair (${x}, ${x}): a key always collides with itself` : `pair (${x}, ${y}): ${H ? `${Math.round(C[x][y] * size)} of ${size} functions collide` : `exactly $1/m$ of all $m^{16}$ functions collide`}, $\\Pr = ${v.fix(C[x][y], 3)}$`;
-          return `${cell} · largest off-diagonal probability ${v.fix(max, 3)} vs $1/m = ${v.fix(1 / m, 3)}$ · ${red ? `${plural(red, 'pair')} above $1/m$: **not universal** ✗` : '**universal** ✓'}${size ? ` · $|\\mathcal H| = ${size}$` : ''}`;
+          return `${cell} · largest off-diagonal probability ${v.fix(max, 3)} vs $1/m = ${v.fix(1 / m, 3)}$ · ${red ? `${plural(red, 'pair')} above $1/m$: **not universal** ✗` : '**universal** ✓'}${size ? ` · $|\\mathcal H| = ${size}$` : ''}${fam.value === 'axb' ? ' · the same value for every pair, because $(r, s)$ is a uniform pair of distinct residues (5.16)' : ''}`;
         });
       },
     },
@@ -627,10 +627,10 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
         const cache = new Map();
         const sim = (n, p) => {
           const key = n + '|' + p; if (cache.has(key)) return cache.get(key);
-          const rr = v.rng(Math.round(n * 7 + p * 1000)), T = n > 4096 ? 250 : n > 512 ? 600 : 1500, steps = [], lev = []; let space = 0;
+          const rr = v.rng(Math.round(n * 7 + p * 1000)), T = clamp(Math.round(5e6 / (n / (1 - p))), 100, 1500), steps = [], lev = []; let space = 0;
           const h = new Int32Array(n + 1);
           for (let t = 0; t < T; t++) {
-            let mx = 0; for (let i = 1; i <= n; i++) { let c = 1; while (rr() < p && c < 60) c++; h[i] = c; space += c; if (c > mx) mx = c; }
+            let mx = 0; for (let i = 1; i <= n; i++) { let c = 1; while (rr() < p && c < 400) c++; h[i] = c; space += c; if (c > mx) mx = c; }
             const top = mx + 1; h[0] = top; lev.push(top);
             // backward walk from a random end position (the largest key ≤ a random query)
             let i = Math.floor(rr() * (n + 1)), l = 0, c = 0;

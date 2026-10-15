@@ -691,7 +691,7 @@ and a point $x=c$ is **conjugate** to $a$ if the Jacobi equation (the linearised
           sc.dot([0, 0, -R], { r: 5.5, color: 'purple' }); sc.tex('S', [0, 0, -R * 1.14], { color: 'purple', size: 15 });
           sc.dot(pt(ell, 0), { r: 5.5, color: past ? 'red' : 'green' });
           sc.flush();
-          s3.corner(past ? (k === 1 ? 'the arc has passed S, the conjugate point' : 'past kπ') : 'the arc ends before S', 'bl', { color: past ? 'red' : 'green', weight: 600 });
+          s3.corner(ell > Math.PI ? 'past the conjugate point S' : 'before the conjugate point S', 'tl', { color: ell > Math.PI ? 'red' : 'green', weight: 600 });
           // ── ΔL(ε)
           const es = sample((u) => -0.6 + 1.2 * u, 48), ms = es.map((e) => dL(ell, e, k)), c = coef(ell, k);
           const [lo, hi] = span([ms, es.map((e) => c * e * e)], 0.15, 0.02);

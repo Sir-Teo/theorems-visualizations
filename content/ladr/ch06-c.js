@@ -411,13 +411,13 @@ export default {
       tags: ['projections', 'approximation'],
       viz(v) {
         const M = v.M, PI = Math.PI;
-        const mode = v.select('$V$', [{ value: 'R3', label: '$\\mathbf R^3$, $U$ a plane' }, { value: 'F', label: '$C[-\\pi,\\pi]$, $U=\\mathcal P_n(\\mathbf R)$' }], 'F', { onChange: (m) => show(m) });
+        const mode = v.select('$V$', [{ value: 'R3', label: '$\\mathbf R^3$, $U$ a plane' }, { value: 'F', label: '$C[-\\pi,\\pi]$, $U=\\mathcal P_n(\\mathbf R)$' }], 'R3', { onChange: (m) => show(m) });
         const S = v.stage({ x: [-1.8, 1.8], y: [-1.75, 1.75], equal: true, axes: false, height: 420, weight: 1.3 });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.4, axis: 1.4, lim: 1.4 });
         const D = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420, weight: 0.7, minWidth: 220, title: 'distance to $v$' });
         const F = v.stage({ x: [-3.45, 3.45], y: [-1.6, 1.6], height: 320, full: true, title: '$v$, your polynomial $u$ (drag the handles) and the best approximation $P_Uv$' });
         const E = v.stage({ x: [-3.45, 3.45], y: [-0.5, 0.5], height: 150, full: true, title: 'errors $v-u$ (red) and $v-P_Uv$ (green)' });
-        const tgt = v.select('$v$', [{ value: 'sin', label: '$\\sin x$' }, { value: 'abs', label: '$|x|$' }], 'abs', { onChange: (t) => { bTay.hidden = t !== 'sin'; setTaylor(); best = Infinity; } });
+        const tgt = v.select('$v$', [{ value: 'sin', label: '$\\sin x$' }, { value: 'abs', label: '$|x|$' }], 'sin', { onChange: (t) => { bTay.hidden = t !== 'sin'; setTaylor(); best = Infinity; } });
         const nS = v.slider('$n$ (degree)', 1, 7, 5, { int: true, onChange: () => renode() });
         const bTay = v.button('Taylor', () => { setTaylor(); });
         const bBest = v.button('Best', () => { snapBest = true; });
@@ -453,7 +453,7 @@ export default {
           bTay.hidden = m !== 'F' || tgt.value !== 'sin'; bBest.hidden = m !== 'F';
           best = Infinity;
         }
-        show('F'); setTaylor();
+        show('R3'); setTaylor();
         // orthonormal basis of P_n on [−π, π]: e_k(x) = ê_k(x/π)/√π with ê_k orthonormal on [−1, 1]
         const onb = (n) => legendreON(n).map((e) => e.map((a, i) => a / PI ** i / Math.sqrt(PI)));
         let cache = { key: '', pc: null };
@@ -542,7 +542,7 @@ export default {
         const sc = v.scene3(S3, { yaw: -2.0, pitch: 0.32, axis: 1.4, lim: 1.4 });
         const SW = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, height: 400, minWidth: 260, title: '$W=\\mathbf R^2$' });
         const rS = v.select('$T$', [{ value: '2', label: 'rank 2' }, { value: '1', label: 'rank 1' }], '2', { onChange: () => { const p = onRange(Yh.x, Yh.y); Yh.x = p[0]; Yh.y = p[1]; } });
-        const al = v.slider('tilt $X$ towards $\\operatorname{null}T$', 0, 90, 90, { step: 1, fmt: (x) => `${Math.round(x)}°` });
+        const al = v.slider('tilt $X$ towards $\\operatorname{null}T$', 0, 90, 0, { step: 1, fmt: (x) => `${Math.round(x)}°` });
         const A2 = [[0.9, 0.5, -0.6], [-0.3, 0.8, 0.7]], A1 = [[0.9, 0.5, -0.6], [0.45, 0.25, -0.3]];
         const rdir = [0.9 / Math.hypot(0.9, 0.45), 0.45 / Math.hypot(0.9, 0.45)];
         const onRange = (x, y) => { if (rS.value === '2') return [x, y]; const t = dot2([x, y], rdir); return [rdir[0] * t, rdir[1] * t]; };
@@ -690,7 +690,7 @@ export default {
         const scW = v.scene3(SW, { yaw: -0.65, pitch: 0.34, axis: 1.35, lim: 1.35 });
         const C1 = scW.handle([0.95, 0.15, -0.1], { color: 'blue', label: 'Te₁' });
         const C2 = scW.handle([-0.35, 0.8, 0.5], { color: 'purple', label: 'Te₂', snap: (p) => snapSpan(p, orth([C1.p]), 0.1) });
-        const C3 = scW.handle([0.3,-0.6,0.9], { color: 'teal', label: 'Te₃', snap: (p) => snapSpan(p, orth([C1.p, C2.p]), 0.12) });
+        const C3 = scW.handle(add3(mul3([0.95, 0.15, -0.1], 0.6), mul3([-0.35, 0.8, 0.5], -0.7)), { color: 'teal', label: 'Te₃', snap: (p) => snapSpan(p, orth([C1.p, C2.p]), 0.12) });
         const Wh = scW.handle([0.65, -0.05, 0.9], { color: 'gold', label: 'w' });
         const Xh = scV.handle([-0.2, 0.9, 0.9], { color: 'gold', label: 'x' });
         v.legend([['teal', '$\\operatorname{range}T$', { area: true }], ['red', '$\\operatorname{null}T$'], ['green', '$(\\operatorname{null}T)^\\perp$ and the images'], ['gold', '$w$, $x$', { dot: true }]]);

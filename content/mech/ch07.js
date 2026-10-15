@@ -535,7 +535,8 @@ is conserved. Each axis of symmetry gives one conserved component: a spherically
           sp.hline(0, { color: 'faint' });
           const C = ['purple', 'teal', 'blue'];
           for (let c = 0; c < 3; c++) { series(sp, R.t, B.Lc[c], i, { color: C[c], width: 2.8 }); series(sp, R.t, B.Pc[c], i, { color: 'ink', width: 1.1, dash: [5, 5], alpha: 0.75 }); }
-          for (let c = 0; c < 3; c++) sp.tex(`L_${'xyz'[c]}`, R.t[i], B.Lc[c][i], { color: C[c], dx: 6, size: 13, align: 'left' });
+          const late = R.t[i] > 0.85 * T;
+          for (let c = 0; c < 3; c++) sp.tex(`L_${'xyz'[c]}`, R.t[i], B.Lc[c][i], { color: C[c], dx: late ? -8 : 6, dy: late ? -12 : 0, size: 13, align: late ? 'right' : 'left' });
           cur = { B, i };
         }, { period: 13.2, still: 11.5 });
         v.legend([['purple', '$L_x$'], ['teal', '$L_y$'], ['blue', '$L_z$'], ['ink', '$\\mathbf L(0) + \\int_0^t\\mathbf r\\times\\mathbf F\\,dt$', { dash: true }], ['green', '$\\mathbf L$ and its tip']]);
@@ -609,7 +610,7 @@ If $L = T_2 + T_1 + T_0 - U$ with $T_k$ homogeneous of degree $k$ in the velocit
           sL.dot(w, L, { r: 6, color: 'gold' });
           sL.dot(0, icpt, { r: 6, color: 'green' });
           sL.tex('-h', 0, icpt, { color: 'green', align: w > 0 ? 'right' : 'left', dx: w > 0 ? -9 : 9, dy: 14, size: 14 });
-          sL.corner(`q = ${v.fix(q, 2)}, slope p = ∂L/∂q̇ = ${v.fix(p, 3)}`, 'tl', { color: 'muted' });
+          sL.corner(`q = ${v.fix(q, 2)}, slope p = ∂L/∂q̇ = ${v.fix(p, 3)}`, 'bl', { color: 'muted' });
           sE.setView([0, T], B.er);
           series(sE, R.t, B.h, i, { color: 'blue', width: 3 });
           series(sE, R.t, B.E, i, { color: 'red', width: 2, dash: [6, 4] });
