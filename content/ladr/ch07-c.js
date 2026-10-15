@@ -978,7 +978,7 @@ $$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \q
         const V = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 360, minWidth: 280, title: 'in $V$: $T^*w$ or $T^\\dagger w$' });
         const W = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, height: 360, minWidth: 280, title: 'in $W$: $w$ and the $f_k$' });
         const which = v.select('', [{ value: 'adj', label: '$T^*$: swap $e_k$ and $f_k$' }, { value: 'pinv', label: '$T^\\dagger$: swap and invert $s_k$' }], 'pinv');
-        const PRE = { r2: [[1.3, 0.4], [0.3, 0.9]], r1: [[1.2, -0.6], [0.4, -0.2]] };
+        const PRE = { r2: [[1.5, 0.4], [0.3, 1.0]], r1: [[1.8, -0.9], [0.6, -0.3]] };
         v.select('', [{ value: 'r2', label: 'invertible' }, { value: 'r1', label: 'rank 1' }], 'r1', { onChange: (k) => H.set(PRE[k]) });
         const H = colHandles(W, PRE.r1, {
           c2: (x, y) => {
@@ -1001,7 +1001,7 @@ $$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \q
             const col = k ? 'purple' : 'blue', foot = scl(u, c[k]);
             W.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], { color: col, width: 1, alpha: 0.25 });
             W.arrow(0, 0, u[0], u[1], { color: col, width: 2.4 });
-            W.tex(`f_${k + 1}`, u[0] * 1.25 - 0.12 * u[1], u[1] * 1.25 + 0.12 * u[0], { color: col, size: 14 });
+            W.tex(`f_${k + 1}`, u[0] * 0.6 - 0.26 * u[1], u[1] * 0.6 + 0.26 * u[0], { color: col, size: 14 });
             W.line(w[0], w[1], foot[0], foot[1], { color: col, width: 1, dash: [3, 3] });
             W.dot(foot[0], foot[1], { color: col, r: 3.5 });
           });
@@ -1015,7 +1015,7 @@ $$T^*w = s_1\langle w, f_1\rangle e_1 + \cdots + s_m\langle w, f_m\rangle e_m \q
             const col = k ? 'purple' : 'blue';
             V.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], { color: k < m || adj ? col : 'red', width: k < m || adj ? 1 : 3, alpha: k < m || adj ? 0.25 : 0.4 });
             V.arrow(0, 0, u[0], u[1], { color: col, width: 2.4 });
-            V.tex(`e_${k + 1}`, u[0] * 1.25 - 0.12 * u[1], u[1] * 1.25 + 0.12 * u[0], { color: col, size: 14 });
+            V.tex(`e_${k + 1}`, u[0] * 0.6 - 0.26 * u[1], u[1] * 0.6 + 0.26 * u[0], { color: col, size: 14 });
           });
           if (!adj && m === 1) {
             const lp = scl(e[1], e[1][1] >= 0 ? 2.15 : -2.15); V.tex('\\operatorname{null} T', lp[0], lp[1], { color: 'red', size: 13, dx: 26 });
@@ -1057,7 +1057,7 @@ $$A = BDC^*.$$`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Singular_value_decomposition' },
       viz(v) {
         const M = v.M;
-        const S = v.stage({ x: [-3, 259], y: [-3, 69], equal: true, axes: false, height: 285, full: true });
+        const S = v.stage({ x: [-3, 259], y: [-3, 69], equal: true, axes: false, height: 245, full: true });
         const G = v.stage({ x: [-1.6, 60.8], y: [0.01, 100], ylog: true, height: 170, full: true, axes: 'box', xlabel: 'j', title: 'singular values $s_j$ of the picture, log scale (click to choose $k$)' });
         const pic = v.select('', [{ value: 'land', label: 'landscape' }, { value: 'face', label: 'portrait' }, { value: 'plaid', label: 'tartan' }], 'land');
         const view = v.select('show', [{ value: 'img', label: 'images' }, { value: 'fac', label: 'the factors' }], 'img');
@@ -1156,9 +1156,9 @@ for all $v \in V$. Equality holds for $v = e_1$ in a singular value decompositio
           for (const sg of [1, -1]) { S.dot(sg * e[0][0], sg * e[0][1], { color: 'blue', r: 4 }); S.dot(sg * s[0] * f[0][0], sg * s[0] * f[0][1], { color: 'green', r: 5.5 }); }
           const t1 = scl(f[0], s[0]);
           S.arrow(0, 0, t1[0], t1[1], { color: 'green', width: 2.2 });
-          const nn = perp(f[0]), up = nn[1] < 0 ? scl(nn, -1) : nn, lp = add(scl(t1, 0.55), scl(up, 0.28));
+          const lp = scl(f[0], s[0] + 0.55), side = e[0][0] * f[0][1] - e[0][1] * f[0][0] > 0 ? -1 : 1, le = add(e[0], scl(perp(e[0]), 0.24 * side));
           S.tex('s_1 f_1 = Te_1', lp[0], lp[1], { color: 'green', size: 14 });
-          S.tex('e_1', e[0][0] * 1.22, e[0][1] * 1.22, { color: 'blue', size: 14 });
+          S.tex('e_1', le[0], le[1], { color: 'blue', size: 14 });
           S.arrow(0, 0, vv[0], vv[1], { color: 'gold', width: 2.4 });
           S.arrow(0, 0, Tv[0], Tv[1], { color: 'purple', width: 2.6 });
           S.tex('Tv', Tv[0], Tv[1], { color: 'purple', size: 15, dx: 13, dy: -10 });

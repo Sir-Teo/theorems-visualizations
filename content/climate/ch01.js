@@ -322,5 +322,164 @@ Earth at 288 K peaks near $10\ \mu$m, in the thermal infrared; the Sun at 5772 K
         });
       },
     },
+    // ───────────────────────────────────────────────────────────── 1.4
+    {
+      num: '1.4',
+      kind: 'Law',
+      name: 'Kirchhoff’s law: emissivity equals absorptivity',
+      credit: 'Gustav Kirchhoff, 1859–60',
+      statement: String.raw`At every wavelength (and for every direction and polarisation) the emissivity of a body in local thermodynamic equilibrium equals its absorptivity:
+$$\varepsilon_\lambda = a_\lambda .$$
+The body emits $\varepsilon_\lambda\,\pi B_\lambda(T)$, a fraction $\varepsilon_\lambda$ of the blackbody spectrum (1.1) at its own temperature: a good absorber at some wavelength is an equally good emitter there, and a medium transparent at $\lambda$ cannot emit at $\lambda$. A grey body of absorptivity $a$ therefore emits $a\sigma T^4$. The equality holds wavelength by wavelength, not between different wavelengths: fresh snow absorbs only about 10 % of sunlight yet is nearly black ($\varepsilon \approx 0.99$) at 10 µm, and greenhouse gases emit exactly in the bands where they absorb.`,
+      scope: String.raw`Holds for matter in local thermodynamic equilibrium, i.e. when collisions keep the energy levels populated at the local temperature — true in the troposphere and stratosphere, not in the thin upper atmosphere above roughly 70 km. It relates emission and absorption at the same wavelength, direction and polarisation only.`,
+      idea: String.raw`Put the body inside a closed cavity whose walls are at temperature $T$; the radiation there is blackbody radiation $B_\lambda(T)$. By the second law no temperature difference can arise spontaneously inside an isothermal enclosure (thermo-9.1), so the body must end at $T$, absorbing exactly what it emits. Surrounding it by a filter that passes only a narrow band near $\lambda$ forces the balance in that band alone: $a_\lambda B_\lambda = \varepsilon_\lambda B_\lambda$. A material with $\varepsilon_\lambda \ne a_\lambda$ would settle hotter or colder than its surroundings and could drive a heat engine with no fuel.`,
+      caption: String.raw`A thin plate sits in a cavity whose walls are at 500 K; the dashed wavelength $\lambda_c$ splits the walls' radiation into two bands carrying equal energy, and you set the plate's absorptivity in each. Obeying Kirchhoff's law, it always ends at 500 K. Pick a material that breaks the law — one that emits like a blackbody, or whose emissivity is its absorptivity swapped between the bands — and add a filter that lets only one band reach the plate: it settles at a different temperature from its surroundings, a free temperature difference the second law forbids. Drag the start temperature in the lower panel.`,
+      deps: ['climate-1.1', 'thermo-9.1'],
+      refs: ['Pierrehumbert'],
+      tags: ['radiation', 'emissivity', 'second law'],
+      viz(v) {
+        const P = phys(v), sig = P.sigma, Tw = 500, CAP = 7850 * 470 * 1e-3; // walls (K); 1 mm of steel (J m⁻² K⁻¹)
+        const lamC = bisect((l) => fracBelow(P, l, Tw) - 0.5, 1, 100); // median wavelength of the walls' radiation
+        const law = v.select('plate', [{ value: 'k', label: 'obeys Kirchhoff' }, { value: 'swap', label: 'ε swapped between bands' }, { value: 'black', label: 'emits as a blackbody' }], 'k');
+        const filt = v.select('filter', [{ value: 'none', label: 'none' }, { value: 's', label: 'short band only' }, { value: 'l', label: 'long band only' }], 'none');
+        const aS = v.slider('absorptivity, short band', 0.05, 1, 0.9, { step: 0.01 });
+        const aL = v.slider('absorptivity, long band', 0.05, 1, 0.3, { step: 0.01 });
+        const sA = v.stage({ x: [0, 10], y: [0, 6.4], equal: true, axes: false, height: 280 });
+        const sB = v.stage({ x: [1, 200], y: [-0.06, 1.2], xlog: true, axes: 'box', height: 280, xlabel: 'λ (µm)', title: 'energy per ln λ, scaled to the walls' });
+        const sC = v.stage({ x: [0, 600], y: [200, 600], axes: 'box', height: 190, full: true, xlabel: 't (s)', title: 'plate temperature (K)' });
+        const h0 = sC.handle(0, 300, { color: 'accent', label: 'start', labelPos: 'e', constrain: (x, y) => [0, Math.max(150, Math.min(900, y))] });
+        let R = null, key = '';
+        const model = () => {
+          const k = [law.value, filt.value, aS.value, aL.value, h0.y].join('|');
+          if (k === key) return R;
+          key = k;
+          const a = [aS.value, aL.value], e = law.value === 'k' ? a : law.value === 'swap' ? [a[1], a[0]] : [1, 1];
+          const pass = [filt.value !== 'l' ? 1 : 0, filt.value !== 's' ? 1 : 0], fw = fracBelow(P, lamC, Tw);
+          const absorbed = sig * Tw ** 4 * (pass[0] * a[0] * fw + pass[1] * a[1] * (1 - fw));
+          const emitted = (T) => { const f = fracBelow(P, lamC, T); return sig * T ** 4 * (pass[0] * e[0] * f + pass[1] * e[1] * (1 - f)); };
+          const Teq = bisect((T) => emitted(T) - absorbed, 20, 4000, 60);
+          const rate = (T) => (2 * (absorbed - emitted(T))) / CAP; // two faces
+          const ts = [0], Ts = [h0.y]; let T = h0.y;
+          for (let i = 1; i <= 300; i++) { const h = 2, k1 = rate(T), k2 = rate(T + (h / 2) * k1), k3 = rate(T + (h / 2) * k2), k4 = rate(T + h * k3); T += (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4); ts.push(i * h); Ts.push(T); }
+          R = { a, e, pass, absorbed, emitted, Teq, ts, Ts, emitW: emitted(Tw) };
+          return R;
+        };
+        v.render(() => {
+          const m = model(), dT = m.Teq - Tw, hot = dT > 0.05, cold = dT < -0.05;
+          // ── the cavity
+          sA.rect(0.25, 0.25, 9.75, 6.15, { color: 'orange', width: 7, alpha: 0.75 });
+          sA.text(`walls at ${Tw} K`, 5, 5.85, { color: 'orange', weight: 600, align: 'center', size: 12 });
+          const y0 = [4.15, 2.15], cols = ['gold', 'red'], names = ['short band', 'long band'], Pmax = 0.5 * sig * Tw ** 4;
+          for (let b = 0; b < 2; b++) {
+            const inn = m.pass[b] ? m.a[b] * Pmax * (b ? 1 : 1) : Pmax, fb = fracBelow(P, lamC, m.Teq), out = m.e[b] * sig * m.Teq ** 4 * (b ? 1 - fb : fb);
+            const wIn = 1 + 6 * (m.pass[b] ? (m.a[b] * Pmax) / Pmax : 1), wOut = 1 + 6 * (out / Pmax);
+            for (const side of [-1, 1]) {
+              const xw = 5 + side * 4.35, xs = 5 + side * 0.62, xf = 5 + side * 1.55, yi = y0[b] + 0.32, yo = y0[b] - 0.32;
+              if (m.pass[b]) {
+                sA.arrow(xw, yi, xs, yi, { color: cols[b], width: wIn, head: 10 });
+                sA.arrow(xs, yo, xw, yo, { color: cols[b], width: wOut, head: 10, alpha: 0.6 });
+              } else {
+                sA.arrow(xw, yi, xf + side * 0.12, yi, { color: cols[b], width: 1 + 6 * 1, head: 9, alpha: 0.35 });
+                sA.text('reflected', xf + side * 0.5, yo, { color: 'muted', size: 10.5, align: side < 0 ? 'right' : 'left' });
+              }
+            }
+            sA.text(names[b], 0.7, y0[b] + 0.85, { color: cols[b], size: 11.5, weight: 600, align: 'left' });
+          }
+          if (filt.value !== 'none') { sA.rect(3.45, 0.85, 6.55, 5.25, { color: 'teal', width: 2, dash: [6, 4] }); sA.text(`filter: ${filt.value === 's' ? 'short' : 'long'} band only`, 5, 0.62, { color: 'teal', size: 11, align: 'center', weight: 600 }); }
+          sA.rect(4.62, 1.3, 5.38, 4.95, { fill: hot ? 'red' : cold ? 'blue' : 'gray', fillAlpha: hot || cold ? 0.18 + Math.min(0.5, Math.abs(dT) / 120) : 0.3, color: 'ink', width: 1.4 });
+          sA.text(`${v.fix(m.Teq, 1)} K`, 5, 3.15, { color: 'ink', weight: 700, size: 12.5, align: 'center' });
+          // ── spectra
+          const pw = (l) => l * planck(P, l, Tw), mw = pw(3669.7 / Tw), pt = (l) => l * planck(P, l, m.Teq) / mw;
+          const band = (l) => (l < lamC ? 0 : 1), ok = (l) => m.pass[band(l)];
+          for (let b = 0; b < 2; b++) if (!m.pass[b]) sB.vband(b ? lamC : 1, b ? 200 : lamC, { color: 'gray', alpha: 0.13 });
+          sB.fn((l) => pw(l) / mw, { color: 'orange', width: 1.6, dash: [5, 4] });
+          sB.fn((l) => (ok(l) ? (m.a[band(l)] * pw(l)) / mw : NaN), { color: 'accent', width: 0.1, fill: 'accent', fillAlpha: 0.25, alpha: 0 });
+          sB.fn((l) => (ok(l) ? m.e[band(l)] * pt(l) : NaN), { color: 'red', width: 2.4 });
+          sB.vline(lamC, { color: 'muted', dash: [3, 4] });
+          sB.text('λ_c', lamC, 1.13, { color: 'muted', size: 11, align: 'left', dx: 4 });
+          sB.text('short', lamC, 1.13, { color: 'gold', size: 11, align: 'right', dx: -8, weight: 600 });
+          sB.text('long', lamC, 1.05, { color: 'red', size: 11, align: 'left', dx: 30, weight: 600 });
+          // ── relaxation
+          const lo = Math.min(Tw, m.Teq, h0.y, ...m.Ts), hi = Math.max(Tw, m.Teq, h0.y, ...m.Ts), pad = Math.max(25, (hi - lo) * 0.18);
+          sC.setView(null, [lo - pad, hi + pad]);
+          sC.hline(Tw, { color: 'orange', dash: [6, 4], width: 1.5 });
+          sC.text('walls', 600, Tw, { color: 'orange', size: 11, align: 'right', baseline: 'bottom', dy: -3, dx: -6 });
+          if (Math.abs(dT) > 0.5) { sC.hline(m.Teq, { color: hot ? 'red' : 'blue', dash: [3, 3], width: 1.2 }); sC.text(`equilibrium ${v.fix(m.Teq, 1)} K`, 600, m.Teq, { color: hot ? 'red' : 'blue', size: 11, align: 'right', baseline: dT > 0 ? 'bottom' : 'top', dy: dT > 0 ? -3 : 3, dx: -6 }); }
+          sC.path(m.ts.map((t, i) => [t, m.Ts[i]]), { color: 'accent', width: 2.6 });
+        });
+        v.legend([['orange', "walls' blackbody spectrum", { dash: true }], ['accent', 'absorbed: $a(\\lambda)$ × walls'], ['red', 'emitted by the plate at its temperature'], ['teal', 'filter', { dash: true }]]);
+        v.readout(() => {
+          const m = model(), dT = m.Teq - Tw;
+          const s = String.raw`absorbed ${v.fix(m.absorbed, 1)} W/m² per face · emitted at 500 K would be ${v.fix(m.emitW, 1)} W/m² · equilibrium plate temperature ${v.fix(m.Teq, 2)} K, walls ${Tw} K: $\Delta T$ = ${v.fix(dT, 2)} K`;
+          if (Math.abs(dT) < 0.05) return s + (law.value === 'k' ? ' — no temperature difference, whatever the absorptivities.' : ' — balanced on average, but only by luck: try a filter.');
+          return s + String.raw` — a heat engine between plate and walls could run for ever (Carnot efficiency ${v.fix((Math.abs(dT) / Math.max(m.Teq, Tw)) * 100, 1)} %): a perpetual-motion machine of the second kind, so no real material behaves like this.`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────── 1.5
+    {
+      num: '1.5',
+      kind: 'Definition',
+      name: 'Solar constant and planetary albedo',
+      credit: 'Claude Pouillet, 1838 (first measurement of the solar constant)',
+      statement: String.raw`The **solar constant** $S$ of a planet is the flux of sunlight through a surface perpendicular to the rays at the planet's mean distance $d$ from the Sun, outside any atmosphere. Since the Sun's luminosity $L_\odot = 3.83\times10^{26}$ W crosses every sphere around it,
+$$S = \frac{L_\odot}{4\pi d^2},$$
+about $1361$ W m⁻² at Earth ($d = 1$ AU; the measured *total solar irradiance*), and it scales as $1/d^2$. The **planetary (Bond) albedo** $\alpha$ is the fraction of the incident sunlight, summed over all wavelengths and directions, that the planet reflects back to space (Earth: $\alpha \approx 0.30$). A sphere of radius $R$ intercepts $S\pi R^2$ and absorbs $(1-\alpha)S\pi R^2$; spread over its surface $4\pi R^2$, the mean absorbed flux is
+$$\frac{S(1-\alpha)}{4}\approx 238\ \text{W m}^{-2}\ \text{for Earth.}$$`,
+      idea: String.raw`With no absorption in space, the same power $L_\odot$ crosses every sphere centred on the Sun, so the flux falls as $1/d^2$ (astro-4.2) — doubling the distance quarters it. The albedo lumps together everything that sends sunlight back: clouds, ice, deserts, oceans at grazing sun and the air molecules themselves (1.11). The factor $1/4$ is the ratio of the cross-section $\pi R^2$ that catches the beam to the area $4\pi R^2$ over which it is shared by day, night and latitude (1.6).`,
+      caption: String.raw`Drag the gold point along the inverse-square line, or click a planet: the dashed step shows the flux falling by 4 when the distance doubles. Pick a surface or set the albedo: the planet's brightness and the budget bar show how the sunlight arriving on an average square metre — $S/4$ — splits into reflected and absorbed parts.`,
+      deps: ['astro-4.2', 'energy-4.1'],
+      refs: ['Archer ch. 2', 'Pierrehumbert'],
+      tags: ['solar radiation', 'albedo'],
+      viz(v) {
+        const P = phys(v), M = v.M;
+        const PL = [['Mercury', 0.387], ['Venus', 0.723], ['Earth', 1], ['Mars', 1.524], ['Ceres', 2.77], ['Jupiter', 5.203], ['Saturn', 9.537], ['Uranus', 19.19], ['Neptune', 30.07]];
+        const COVER = [{ value: 0.06, label: 'ocean' }, { value: 0.14, label: 'forest' }, { value: 0.3, label: 'Earth' }, { value: 0.4, label: 'desert' }, { value: 0.6, label: 'cloud deck' }, { value: 0.85, label: 'fresh snow' }];
+        let alb = null;
+        v.select('surface', COVER, 0.3, { onChange: (x) => alb.set(x) });
+        alb = v.slider('albedo $\\alpha$', 0, 1, 0.3, { step: 0.01 });
+        const Sd = (d) => P.Lsun / (4 * Math.PI * (d * P.au) ** 2);
+        const sA = v.stage({ x: [0.25, 50], y: [0.4, 4e4], xlog: true, ylog: true, axes: 'box', height: 330, weight: 1.2, xlabel: 'distance d (AU)', title: String.raw`solar constant $S = L_\odot/4\pi d^2$ (W/m²)` });
+        const sB = v.stage({ x: [-1.6, 1.6], y: [-1.45, 1.25], equal: true, axes: false, height: 330, title: 'what the planet does with it' });
+        const hd = sA.handle(1, Sd(1), { color: 'gold', r: 8, constrain: (x) => { const d = M.clamp(x, 0.3, 40); return [d, Sd(d)]; } });
+        sA.onClick((x) => { let best = null, bd = 0.08; for (const [, d] of PL) { const e = Math.abs(Math.log10(x / d)); if (e < bd) { bd = e; best = d; } } if (best) hd.set(best, Sd(best)); });
+        v.render(() => {
+          const d = hd.x, S = Sd(d), a = alb.value;
+          // ── inverse square
+          sA.fn(Sd, { color: 'gold', width: 2.2 });
+          PL.forEach(([n, dd], i) => { const up = i % 2 === 0; sA.dot(dd, Sd(dd), { color: n === 'Earth' ? 'blue' : 'muted', r: 4.5, label: n, labelPos: up ? 'ne' : 'sw', labelColor: n === 'Earth' ? 'blue' : 'muted', math: false, labelSize: 11 }); });
+          if (2 * d < 50) {
+            sA.line(d, S, 2 * d, S, { color: 'orange', dash: [4, 3], width: 1.4 });
+            sA.line(2 * d, S, 2 * d, S / 4, { color: 'orange', dash: [4, 3], width: 1.4 });
+            sA.text('×2', Math.SQRT2 * d, S, { color: 'orange', size: 11, align: 'center', baseline: 'bottom', dy: -3 });
+            sA.text('÷4', 2 * d, S / 2, { color: 'orange', size: 11, align: 'left', dx: 5 });
+          }
+          sA.corner(`${v.fix(d, 3)} AU: S = ${v.fix(S, S < 10 ? 2 : 0)} W/m²`, 'tr', { color: 'gold', weight: 600 });
+          // ── the planet
+          const cx = 0.25, cy = 0.2, R = 0.78, g = Math.round(255 * Math.pow(Math.max(a, 0.005), 1 / 2.2));
+          for (let k = -3; k <= 3; k++) {
+            const y = cy + (k / 3.4) * R, xs = cx - Math.sqrt(R * R - (y - cy) ** 2);
+            sB.arrow(-1.55, y, xs - 0.02, y, { color: 'gold', width: 2.2, head: 7 });
+            if (a > 0.02) { const ang = Math.atan2(y - cy, xs - cx); sB.arrow(xs, y, xs + Math.cos(ang) * 0.55, y + Math.sin(ang) * 0.55, { color: 'gold', width: 0.5 + 3 * a, alpha: 0.85, head: 6 }); }
+          }
+          sB.circle(cx, cy, R, { fill: [g, g, g], fillAlpha: 1, color: 'ink', width: 1.2 });
+          sB.text(`α = ${v.fix(a, 2)}`, cx, cy, { color: g > 128 ? [20, 20, 20] : [235, 235, 235], halo: false, align: 'center', weight: 700, size: 13 });
+          sB.text('sunlight', -1.55, cy + R + 0.14, { color: 'gold', size: 11, align: 'left' });
+          // budget bar for an average square metre
+          const x0 = -1.45, x1 = 1.45, yb = -1.12, w = x1 - x0, xr = x0 + w * a;
+          sB.rect(x0, yb - 0.11, xr, yb + 0.11, { fill: 'faint', fillAlpha: 0.55, stroke: false });
+          sB.rect(xr, yb - 0.11, x1, yb + 0.11, { fill: 'gold', fillAlpha: 0.75, stroke: false });
+          sB.rect(x0, yb - 0.11, x1, yb + 0.11, { color: 'ink', width: 1 });
+          sB.text(`S/4 = ${v.fix(S / 4, 1)} W/m² arrives on an average m²`, 0, yb + 0.24, { size: 11.5, align: 'center', color: 'ink' });
+          if (a > 0.12) sB.text(`reflected ${v.fix((a * S) / 4, 0)}`, x0 + (w * a) / 2, yb, { size: 10.5, align: 'center', color: 'ink', halo: false });
+          if (a < 0.86) sB.text(`absorbed ${v.fix(((1 - a) * S) / 4, 0)}`, xr + (x1 - xr) / 2, yb, { size: 10.5, align: 'center', color: 'ink', halo: false });
+        });
+        v.legend([['gold', String.raw`$S \propto 1/d^2$`], ['orange', 'doubling the distance', { dash: true }], ['faint', 'reflected', { dot: true }], ['gold', 'absorbed', { dot: true }]]);
+        v.readout(() => {
+          const d = hd.x, S = Sd(d), a = alb.value;
+          return String.raw`$S = L_\odot/4\pi d^2$ = ${v.fix(S, 1)} W/m² at ${v.fix(d, 3)} AU · $S d^2$ = ${v.fix(S * d * d, 1)} W m⁻² AU² (the same everywhere) · reflected $\alpha S/4$ = ${v.fix((a * S) / 4, 1)} W/m², absorbed $S(1-\alpha)/4$ = ${v.fix(((1 - a) * S) / 4, 1)} W/m² · Earth's own orbit (eccentricity 0.0167) swings $S$ between ${v.fix(Sd(0.98329), 0)} W/m² in January and ${v.fix(Sd(1.01671), 0)} W/m² in July`;
+        });
+      },
+    },
   ],
 };

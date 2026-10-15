@@ -101,7 +101,18 @@ function lagrangeAccel(L, q, qd, t, hq = 1e-4, hv = 1e-3) {
 
 /** Wrap an angle to (−π, π]. */
 const wrap = (a) => a - TAU * Math.round(a / TAU);
-const deg = (x) => `${Math.round(x)}°`;
+const deg = (x) => `${Math.round(x)}°`.replace('-', '−');
+
+/** Derivative of equally spaced samples (spacing h): 5-point central stencil, 3-point one-sided at the ends. */
+function deriv5(arr, h) {
+  const n = arr.length, out = new Array(n);
+  for (let i = 0; i < n; i++) {
+    if (i >= 2 && i < n - 2) out[i] = (arr[i - 2] - 8 * arr[i - 1] + 8 * arr[i + 1] - arr[i + 2]) / (12 * h);
+    else if (i < 2) out[i] = (-3 * arr[i] + 4 * arr[i + 1] - arr[i + 2]) / (2 * h);
+    else out[i] = (3 * arr[i] - 4 * arr[i - 1] + arr[i - 2]) / (2 * h);
+  }
+  return out;
+}
 
 /** Zigzag spring from p to q. */
 function spring(s, p, q, o = {}) {
@@ -197,10 +208,10 @@ $$n = 3N - k$$
         const a2 = v.slider('$\\theta_2(0)$', -180, 180, PRE.wild[1], { step: 1, fmt: deg, onChange: () => v.restart() });
         const twin = v.toggle('twin started $10^{-6}$ rad away', true);
         void preset;
-        const sR = v.stage({ x: [-2.15, 2.15], y: [-2.2, 1.6], equal: true, height: 290, axes: false, title: 'real space: 4 coordinates, 2 rod constraints' });
-        const s3 = v.stage3d({ range: 2.2, height: 290, yaw: -0.55, pitch: 0.95, axes: false, title: 'configuration space: the torus $T^2$' });
-        const sQ = v.stage({ x: [-Math.PI, Math.PI], y: [-Math.PI, Math.PI], equal: true, height: 260, axes: 'box', xlabel: 'θ₁', ylabel: 'θ₂', xticks: [[-Math.PI, '−π'], [0, '0'], [Math.PI, 'π']], yticks: [[-Math.PI, '−π'], [0, '0'], [Math.PI, 'π']], title: 'the torus cut open: opposite edges glued' });
-        const sE = v.stage({ x: [0, T], y: [1e-15, 10], ylog: true, height: 260, axes: 'box', xlabel: 't (s)', title: 'energy error and twin separation (log scale)' });
+        const sR = v.stage({ x: [-2.15, 2.15], y: [-2.15, 0.45], equal: true, height: 280, axes: false, minWidth: 380, title: 'real space: 4 coordinates, 2 rod constraints' });
+        const s3 = v.stage3d({ range: 2.15, height: 280, yaw: -0.55, pitch: 0.95, axes: false, minWidth: 380, title: 'configuration space: the torus $T^2$' });
+        const sQ = v.stage({ x: [-3.6, 3.6], y: [-3.6, 3.6], equal: true, height: 270, axes: false, minWidth: 380, title: 'the torus cut open: opposite edges glued' });
+        const sE = v.stage({ x: [0, T], y: [1e-15, 10], ylog: true, height: 270, axes: 'box', minWidth: 380, xlabel: 't (s)', title: 'energy error and twin separation (log scale)' });
         const f = dpRates(1, 1, 1, 1), cache = memo();
         const sim = () => cache(`${a1.value}|${a2.value}`, () => {
           const y0 = [a1.value * DEG, a2.value * DEG, 0, 0];
@@ -217,9 +228,14 @@ $$n = 3N - k$$
         const torus = (p, q, rr = r0) => [(R0 + rr * Math.cos(q)) * Math.cos(p), (R0 + rr * Math.cos(q)) * Math.sin(p), rr * Math.sin(q)];
         const bobs = (y) => { const p1 = [Math.sin(y[0]), -Math.cos(y[0])]; return [p1, [p1[0] + Math.sin(y[1]), p1[1] - Math.cos(y[1])]]; };
         const glue = (s) => {
-          const c = 'muted', e = Math.PI, a = 0.22;
-          for (const x of [-e, e]) s.arrow(x, -a, x, a, { color: c, width: 2, head: 8 });
-          for (const y of [-e, e]) { s.arrow(-a - 0.25, y, a - 0.25, y, { color: c, width: 2, head: 8 }); s.arrow(-a + 0.25, y, a + 0.25, y, { color: c, width: 2, head: 8 }); }
+          const e = Math.PI, a = 0.25;
+          s.rect(-e, -e, e, e, { color: 'muted', width: 1.4, fill: 'accent', fillAlpha: 0.05 });
+          s.line(-e, 0, e, 0, { color: 'blue', width: 1.2, alpha: 0.7 }); s.line(0, -e, 0, e, { color: 'orange', width: 1.2, alpha: 0.7 });
+          for (const x of [-e, e]) s.arrow(x, -a, x, a, { color: 'muted', width: 2, head: 8 });
+          for (const y of [-e, e]) { s.arrow(-a - 0.22, y, a - 0.22, y, { color: 'muted', width: 2, head: 8 }); s.arrow(-a + 0.22, y, a + 0.22, y, { color: 'muted', width: 2, head: 8 }); }
+          s.text('−π', -e, -e - 0.12, { color: 'muted', size: 10.5, align: 'center', baseline: 'top' }); s.text('π', e, -e - 0.12, { color: 'muted', size: 10.5, align: 'center', baseline: 'top' });
+          s.text('−π', -e - 0.12, -e, { color: 'muted', size: 10.5, align: 'right' }); s.text('π', -e - 0.12, e, { color: 'muted', size: 10.5, align: 'right' });
+          s.tex('\\theta_1', e + 0.05, 0, { color: 'blue', align: 'left', size: 14 }); s.tex('\\theta_2', 0, e + 0.05, { color: 'orange', baseline: 'bottom', size: 14 });
         };
         v.animate((t) => {
           const S = sim(), k = frameAt(S.A, t), y = S.A.y[k], yb = S.B.y[k];
@@ -235,11 +251,11 @@ $$n = 3N - k$$
           sR.dot(0, 0, { r: 3.5, color: 'ink' });
           bob(sR, p1, 9, 'blue'); bob(sR, p2, 9, 'orange');
           // ── torus
-          s3.surface((u, w) => torus(u, w), [0, TAU], [0, TAU], { nu: 44, nv: 22, color: 'accent', alpha: 0.26, wire: true });
+          s3.surface((u, w) => torus(u, w), [0, TAU], [0, TAU], { nu: 36, nv: 18, color: 'accent', alpha: 0.2, wire: true });
           s3.curve((u) => torus(u, 0, r0 + 0.01), 0, TAU, { color: 'blue', width: 1.6, n: 120, bias: -0.01 });
           s3.curve((w) => torus(0, w, r0 + 0.01), 0, TAU, { color: 'orange', width: 1.6, n: 60, bias: -0.01 });
           const p3 = []; for (let j = Math.max(0, k - 700); j <= k; j++) { const yy = S.A.y[j]; p3.push(torus(yy[0], yy[1], r0 + 0.02)); }
-          s3.path(p3, { color: 'gold', width: 2.1, bias: -0.03 });
+          s3.path(p3, { color: 'gold', width: 2.4, bias: -0.03 });
           if (twin.value) s3.dot(torus(yb[0], yb[1], r0 + 0.03), { r: 5, color: 'red', alpha: 0.75 });
           s3.dot(torus(y[0], y[1], r0 + 0.03), { r: 6.5, color: 'gold' });
           // ── square
@@ -297,7 +313,7 @@ a smooth one-to-one parametrisation (a chart) whose Jacobian has rank $n$. Any $
           }
           return [x, y];
         };
-        const bead = s.handle(1.22, 0.7, { color: 'gold', r: 8, constrain: (x, y) => proj(x, y) });
+        const bead = s.handle(0.6, 0.75, { color: 'gold', r: 8, constrain: (x, y) => proj(x, y) });
         const cache = memo();
         let info = null;
         v.render(() => {
@@ -306,10 +322,10 @@ a smooth one-to-one parametrisation (a chart) whose Jacobian has rank $n$. Any $
           const B = s.bounds;
           const fam = cache(`${c}|${B.x}|${B.y}`, () => {
             const levels = [];
-            for (let L = 0.2; L < 3; L += 0.2) if (Math.abs(L - c) > 0.06) levels.push(contour((x, y) => F(x, y) - L, B.x, B.y, 140, 110));
+            for (let L = 0.25; L < 3; L += 0.25) if (Math.abs(L - c) > 0.08) levels.push(contour((x, y) => F(x, y) - L, B.x, B.y, 140, 110));
             return { levels, wire: contour((x, y) => F(x, y) - c, B.x, B.y, 360, 290) };
           });
-          for (const L of fam.levels) s.path(L, { color: 'faint', width: 1 });
+          for (const L of fam.levels) s.path(L, { color: 'faint', width: 1, alpha: 0.7 });
           s.path(fam.wire, { color: 'accent', width: 3.2 });
           s.dot(0, 0, { r: 4.5, color: 'red', hollow: true });
           s.text('saddle of f (∇f = 0)', 0, -0.17, { color: 'red', size: 11, align: 'center', baseline: 'top' });
@@ -393,7 +409,7 @@ These two linear conditions on the velocities are not the time derivatives of an
         const cf = v.stage({ x: [-1.2, 1.2], y: [-2.55, 2.55], equal: true, height: 330, axes: false, weight: 0.6, minWidth: 170, title: 'the coins, face on' });
         let saved = null;
         const Bh = s.handle(2.05, 0.8, { color: 'ink', r: 7, label: 'B', labelPos: 'n', constrain: (x, y) => (rail.value ? [x, A[1]] : [x, y]) });
-        const lens = { a1: 1.5, b1: 1.5, a2: 3.7, b2: 3.5 };
+        const lens = { a1: 1.5, b1: 1.5, a2: 5.2, b2: 5.0 };
         const eB = () => (rail.value ? [1, 0] : [Math.cos(phB.value * DEG), Math.sin(phB.value * DEG)]);
         const H = [['a1', true, 'blue'], ['b1', false, 'blue'], ['a2', true, 'orange'], ['b2', false, 'orange']].map(([key, fromA, col]) => {
           const hd = s.handle(0, 0, { color: col, r: 6, constrain: (x, y) => {
@@ -511,12 +527,12 @@ an equation from which the unknown constraint forces have disappeared. In equili
       refs: ['Goldstein §1.4', 'Arnold §21'],
       tags: ['virtual work', 'constraint forces'],
       viz(v) {
-        const m = 1, T = 14, DT = 0.001, EV = 10, K = 0.085;
+        const m = 1, T = 14, DT = 0.001, EV = 2, K = 0.085;
         const h = (x) => 0.14 * x * x + 0.3 * Math.sin(1.6 * x + 0.5);
         const hp = (x) => 0.28 * x + 0.48 * Math.cos(1.6 * x + 0.5);
         const hpp = (x) => 0.28 - 0.768 * Math.sin(1.6 * x + 0.5);
         const x0 = v.slider('release point $x_0$', -2.8, 2.8, -2.5, { step: 0.05, onChange: () => v.restart() });
-        const fr = v.toggle('friction on the wire', false, { onChange: () => v.restart() });
+        const fr = v.toggle('friction on the wire', false);
         const mu = v.slider('friction coefficient $\\mu$', 0.02, 0.4, 0.12, { step: 0.01, onChange: () => v.restart() });
         const dS = v.slider('virtual displacement $\\delta s$ (m)', -1, 1, 0.7, { step: 0.05 });
         const s = v.stage({ x: [-3.2, 3.2], y: [-1.05, 2.0], equal: true, height: 290, axes: false, weight: 1.6, title: 'bead on a wire: forces at the bead' });
@@ -526,7 +542,7 @@ an equation from which the unknown constraint forces have disappeared. In equili
           const [x, , vx, vy] = st, gx = -hp(x), n2 = gx * gx + 1, W = [0, -m * G];
           const lam = (m * hpp(x) * vx * vx - (gx * W[0] + W[1])) / n2, N = [lam * gx, lam];
           let f = [0, 0];
-          if (useF) { const sp = Math.hypot(vx, vy), k = (muv * Math.abs(lam) * Math.sqrt(n2)) / Math.sqrt(sp * sp + 1e-6); f = [-k * vx, -k * vy]; }
+          if (useF) { const sp = Math.hypot(vx, vy), k = (muv * Math.abs(lam) * Math.sqrt(n2)) / Math.sqrt(sp * sp + 1e-4); f = [-k * vx, -k * vy]; }
           return { W, N, f, a: [(W[0] + N[0] + f[0]) / m, (W[1] + N[1] + f[1]) / m] };
         };
         const cache = memo();
@@ -534,9 +550,9 @@ an equation from which the unknown constraint forces have disappeared. In equili
           const useF = fr.value, mv = mu.value;
           const S = integrate((t, st) => { const F = forces(st, useF, mv); return [st[2], st[3], F.a[0], F.a[1]]; }, [x0.value, h(x0.value), 0, 0], T, DT, EV);
           const n = S.t.length, res = [], nt = [], aM = [];
+          const ax = deriv5(S.y.map((y) => y[2]), S.dt), ay = deriv5(S.y.map((y) => y[3]), S.dt); // measured from the velocities
           for (let k = 0; k < n; k++) {
-            const j0 = Math.max(0, k - 1), j1 = Math.min(n - 1, k + 1), dt = S.t[j1] - S.t[j0];
-            const a = [(S.y[j1][2] - S.y[j0][2]) / dt, (S.y[j1][3] - S.y[j0][3]) / dt]; // measured acceleration
+            const a = [ax[k], ay[k]];
             const x = S.y[k][0], tl = Math.hypot(1, hp(x)), tau = [1 / tl, hp(x) / tl], F = forces(S.y[k], useF, mv);
             aM.push(a);
             res.push((F.W[0] - m * a[0]) * tau[0] + (F.W[1] - m * a[1]) * tau[1]);
@@ -589,10 +605,10 @@ an equation from which the unknown constraint forces have disappeared. In equili
           if (!now) return '';
           const R = sim();
           let mx = 0, mn = 0; for (let j = 2; j <= Math.max(2, now.k); j++) { mx = Math.max(mx, Math.abs(R.res[j])); mn = Math.max(mn, Math.abs(R.nt[j])); }
-          const head = String.raw`$\mathbf N\cdot\delta\mathbf r = ${v.fix(now.WN, 4)}$ J (largest $|\mathbf N\cdot\hat\tau|$ so far ${v.sci(Math.max(mn, 1e-16), 1)} N) · $(\mathbf F^{(a)} - m\ddot{\mathbf r})\cdot\delta\mathbf r = ${v.fix(now.sum, 4)}$ J`;
+          const head = String.raw`$\mathbf N\cdot\delta\mathbf r = ${v.fix(now.WN, 4)}$ J (largest $|\mathbf N\cdot\hat\tau|$ so far $${v.sci(Math.max(mn, 1e-16), 1)}$ N) · $(\mathbf F^{(a)} - m\ddot{\mathbf r})\cdot\delta\mathbf r = ${v.fix(now.sum, 4)}$ J`;
           return R.useF
             ? head + String.raw` · friction: $\mathbf f\cdot\delta\mathbf r = ${v.fix(now.Wf, 3)}$ J $\ne 0$, so the d’Alembert sum without friction fails (largest residual ${v.fix(mx, 2)} N per unit $\delta s$); with $\mathbf f$ counted as applied it is $${v.fix(now.sum + now.Wf, 4)}$`
-            : head + String.raw` — zero to finite-difference accuracy (largest ${v.sci(Math.max(mx, 1e-16), 1)} N per unit $\delta s$): the workless normal force has dropped out`;
+            : head + String.raw` — zero to finite-difference accuracy (largest $${v.sci(Math.max(mx, 1e-16), 1)}$ N per unit $\delta s$): the workless normal force has dropped out`;
         });
       },
     },
@@ -663,7 +679,7 @@ Conversely, a path with this property satisfies the equations of motion. For sho
           // q–t panel
           const pert = B.b.map((x, i) => x + et[i]);
           const [lo, hi] = span([B.q, B.b, pert], 0.12, 0.6);
-          sq.setView([-0.02 * T, 1.02 * T], [lo, hi]);
+          sq.setView([-0.03 * T, 1.06 * T], [lo, hi]);
           hs.forEach((h, j) => { h.x = ((j + 1) * T) / 4; h.y = B.b[((j + 1) * NI) / 4] + eta[j]; });
           const P = (arr) => arr.map((y, i) => [B.ts[i], y]);
           sq.poly(P(B.b).concat(P(pert).reverse()), { fill: 'gold', fillAlpha: 0.1, stroke: false });
@@ -677,21 +693,21 @@ Conversely, a path with this property satisfies the equations of motion. For sho
           sS.setView(null, [l2, h2]);
           sS.hline(0, { color: 'faint' }); sS.vline(0, { color: 'faint' });
           if (Math.abs(d1) > 1e-6) sS.line(-1.6, -1.6 * d1, 1.6, 1.6 * d1, { color: 'muted', width: 1, dash: [3, 3] });
+          sS.path(es.map((e, i) => [e, ys[i]]), { color: 'gold', width: 2.8 });
           sS.path(es.map((e, i) => [e, pr[i]]), { color: 'purple', width: 1.6, dash: [6, 4] });
-          sS.path(es.map((e, i) => [e, ys[i]]), { color: 'gold', width: 2.6 });
           sS.dot(0, 0, { r: 5, color: wrong.value ? 'red' : 'green' });
-          const one = dS(1); sS.dot(1, one, { r: 5, color: 'gold', label: 'your path', labelPos: one > (l2 + h2) / 2 ? 'se' : 'ne', labelColor: 'gold', math: false });
+          const one = dS(1), up = dS(1.05) > dS(0.95); sS.dot(1, one, { r: 5, color: 'gold', label: 'your path', labelPos: up ? 'se' : 'ne', labelColor: 'gold', math: false });
           // log–log
           const el = v.M.linspace(-3, Math.log10(1.6), 70).map((u) => 10 ** u), yl = el.map((e) => Math.abs(dS(e)));
           let ymin = Infinity, ymax = 0; for (const y of yl) if (y > 0) { ymin = Math.min(ymin, y); ymax = Math.max(ymax, y); }
           if (!(ymax > 0)) { ymin = 1e-12; ymax = 1; }
           const lo3 = 10 ** Math.floor(Math.log10(ymin) - 0.3), hi3 = 10 ** Math.ceil(Math.log10(ymax) + 0.3);
           sL.setView(null, [lo3, hi3]);
-          const anchor = yl[yl.length - 1] || 1;
+          const anchor = (yl[0] || 1e-9) / 4;
           for (const [pw, lab] of [[1, 'slope 1'], [2, 'slope 2']]) {
-            const g = (e) => anchor * (e / el[el.length - 1]) ** pw;
+            const g = (e) => anchor * (e / el[0]) ** pw;
             sL.path(el.map((e) => [e, g(e)]), { color: 'faint', width: 1.2, dash: [4, 4] });
-            const ex = 10 ** (-1.8 + (pw - 1) * 0.6); if (g(ex) > lo3 * 2) sL.text(lab, ex, g(ex), { color: 'muted', size: 10.5, dy: -9 });
+            const ex = 10 ** (-1.6 + (pw - 1) * 0.5); if (g(ex) > lo3 * 2 && g(ex) < hi3 / 2) sL.text(lab, ex, g(ex), { color: 'muted', size: 10.5, dy: 10 });
           }
           sL.path(el.map((e, i) => [e, yl[i]]), { color: 'gold', width: 2.6 });
           cur = { S0, one, d1, d2, T, slope: Math.log(yl[20] / yl[0]) / Math.log(el[20] / el[0]) };
@@ -727,7 +743,7 @@ $n$ second-order ODEs with no constraint forces in them. For applied forces with
         const T = 20, KF = 0.03, FR = 0.008;
         const MU = 1.2, PX = 0.4, LT = 2.1, TH = 60 * DEG; // swinging Atwood: mass ratio, pulley offset, rope length, start angle
         const AS = 0.15, OM = 2.8, D1 = 90 * DEG, D2 = 0; // shaken support: amplitude, frequency; double pendulum start
-        const sysSel = v.select('system', [{ value: 'dp', label: 'double pendulum' }, { value: 'sam', label: 'swinging Atwood machine' }, { value: 'shake', label: 'pendulum on a shaken support' }], 'dp', { onChange: () => v.restart() });
+        const sysSel = v.select('system', [{ value: 'dp', label: 'double pendulum' }, { value: 'sam', label: 'swinging Atwood machine' }, { value: 'shake', label: 'pendulum on a shaken support' }], 'dp');
         const dtS = v.select('RK4 step', [{ value: 0.004, label: '4 ms' }, { value: 0.002, label: '2 ms' }, { value: 0.001, label: '1 ms' }], 0.002);
         const sN = v.stage({ x: [-2.2, 2.2], y: [-2.3, 0.6], equal: true, height: 290, axes: false, title: 'Newton: Cartesian coordinates + constraint forces' });
         const sL = v.stage({ x: [-2.2, 2.2], y: [-2.3, 0.6], equal: true, height: 290, axes: false, title: 'Lagrange: generalized coordinates only' });
@@ -833,7 +849,6 @@ $n$ second-order ODEs with no constraint forces in them. For applied forces with
           else angleArc(sL, [SYS.shake.sup(tt), 0], 0.3, wrap(yL[0]), 'blue', '\\theta');
           sL.corner(key === 'dp' ? `θ₁ = ${deg(wrap(yL[0]) / DEG)}, θ₂ = ${deg(wrap(yL[1]) / DEG)}` : key === 'sam' ? `r = ${v.fix(yL[0], 3)} m, θ = ${deg(wrap(yL[1]) / DEG)}` : `θ = ${deg(wrap(yL[0]) / DEG)}`, 'bl', { color: 'blue' });
           // log panel
-          sD.hline(1e-12, { color: 'faint', dash: [3, 3] });
           series(sD, R.L.t, R.gap, k, { color: 'accent', width: 2 });
           series(sD, R.L.t, R.err, k, { color: 'purple', width: 1.5, alpha: 0.8 });
           sD.vline(tt, { color: 'gold', width: 1.2 });
@@ -903,7 +918,8 @@ is the same Lagrangian written in the new variables, then $q(t)$ solves the Eule
             for (const a of c.g1) s.curve((u) => c.X([a, u]), c.r1[0], c.r1[1], { color: 'blue', width: 1, alpha: 0.35, n: 120 });
             for (const b of c.g2) s.curve((u) => c.X([u, b]), c.r2[0], c.r2[1], { color: 'orange', width: 1, alpha: 0.35, n: 120 });
           });
-          s.path(Rf.y.map((z) => [z[0], z[1]]), { color: 'ink', width: 1.8, alpha: 0.8 });
+          s.path(Rf.y.map((z) => [z[0], z[1]]), { color: 'ink', width: 1.2, alpha: 0.25 });
+          s.path(Rf.y.slice(0, k + 1).map((z) => [z[0], z[1]]), { color: 'ink', width: 2 });
           const dots = []; for (let j = 0; j <= Math.min(k, Cv.P.length - 1); j += 6) dots.push(Cv.P[j]);
           s.dots(dots, { r: 2.6, color: 'gold' });
           if (Nv) { s.path(Nv.P.slice(0, Math.min(k, Nv.P.length - 1) + 1), { color: 'red', width: 2 }); const pn = Nv.P[Math.min(k, Nv.P.length - 1)]; s.dot(pn[0], pn[1], { r: 6, color: 'red' }); }
@@ -945,22 +961,21 @@ and the **generalized force** is $Q_j = \partial L/\partial q_j$ (for $L = T - U
       tags: ['generalized momentum', 'cyclic coordinate'],
       viz(v) {
         const Mw = 3, HH = 1.4, T = 12, DT = 0.002, EV = 5, KW = 14;
-        const mr = v.slider('block mass $m/M$', 0.1, 2, 0.5, { step: 0.05, onChange: () => v.restart() });
-        const al = v.slider('incline angle $\\alpha$', 22, 55, 35, { step: 1, fmt: deg, onChange: () => v.restart() });
-        const wall = v.toggle('tie the wedge to a wall (spring $K$)', false, { onChange: () => v.restart() });
+        const mr = v.slider('block mass $m/M$', 0.1, 2, 0.5, { step: 0.05 });
+        const al = v.slider('incline angle $\\alpha$', 22, 55, 35, { step: 1, fmt: deg });
+        const wall = v.toggle('tie the wedge to a wall (spring $K$)', false);
         const s = v.stage({ x: [-3, 3], y: [-0.25, 1.75], equal: true, height: 220, axes: false, full: true });
         const p1 = v.stage({ x: [0, T], y: [-2, 2], height: 180, axes: 'box', xlabel: 't (s)', title: 'horizontal momenta (kg·m/s)' });
         const p2 = v.stage({ x: [0, T], y: [-5, 5], height: 180, axes: 'box', xlabel: 't (s)', title: 'rates $\\dot p_j$ (dots) and forces $Q_j=\\partial L/\\partial q_j$ (lines)' });
         const cache = memo();
         const sim = () => cache(`${mr.value}|${al.value}|${wall.value}`, () => {
-          const m = mr.value * Mw, a = al.value * DEG, ca = Math.cos(a), sa = Math.sin(a), k = 25 * m, K = wall.value ? KW : 0;
+          const m = mr.value * Mw, a = al.value * DEG, ca = Math.cos(a), sa = Math.sin(a), k = 9 * m, K = wall.value ? KW : 0;
           const Linc = HH / sa, s0 = Linc / 2 - (m * G * sa) / k;
           const f = (t, z) => { const [X, sv, Xd, sd] = z, r = solve([[Mw + m, m * ca], [m * ca, m]], [-K * X, m * G * sa - k * (sv - s0)]); return [Xd, sd, r[0], r[1]]; };
           const S = integrate(f, [0, Linc / 2 - 0.3, 0, 0.9], T, DT, EV);
           const pX = [], pS = [], MX = [], mB = [], QX = [], QS = [];
           for (const [X, sv, Xd, sd] of S.y) { pX.push((Mw + m) * Xd + m * sd * ca); pS.push(m * (sd + Xd * ca)); MX.push(Mw * Xd); mB.push(m * (Xd + sd * ca)); QX.push(-K * X); QS.push(m * G * sa - k * (sv - s0)); }
-          const der = (arr) => arr.map((_, i) => { const a0 = Math.max(0, i - 1), a1 = Math.min(arr.length - 1, i + 1); return (arr[a1] - arr[a0]) / (S.t[a1] - S.t[a0]); });
-          return { S, m, a, ca, sa, Linc, s0, K, pX, pS, MX, mB, QX, QS, dX: der(pX), dS: der(pS) };
+          return { S, m, a, ca, sa, Linc, s0, K, pX, pS, MX, mB, QX, QS, dX: deriv5(pX, S.dt), dS: deriv5(pS, S.dt) };
         });
         let now = null;
         v.animate((t) => {
@@ -1030,12 +1045,12 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
       refs: ['Taylor §7.5'],
       tags: ['Atwood machine', 'pulleys'],
       viz(v) {
-        const rA = 0.42, rB = 0.25, Y1 = -1.75, YB = -1.1, D2 = 1.65, D3 = 0.7, FL = -3.45, HB = 0.17, GAP = 0.05, TMAX = 2.6, SLOW = 0.4;
+        const rA = 0.5, rB = 0.3, Y1 = -1.75, YB = -1.1, D2 = 1.65, D3 = 0.7, FL = -3.45, HB = 0.17, GAP = 0.05, TMAX = 2.6, SLOW = 0.4;
         const m1 = v.slider('$m_1$ (kg)', 0.2, 5, 3, { step: 0.05, onChange: () => v.restart() });
         const m2 = v.slider('$m_2$ (kg)', 0.2, 5, 1, { step: 0.05, onChange: () => v.restart() });
         const m3 = v.slider('$m_3$ (kg)', 0.2, 5, 2, { step: 0.05, onChange: () => v.restart() });
         const s = v.stage({ x: [-1.25, 1.55], y: [-3.6, 0.55], equal: true, height: 380, axes: false, weight: 1.05, title: 'the machine' });
-        const c = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380, axes: 'box', weight: 1, xlabel: 'x', ylabel: 'y', title: 'configuration plane: $x$ = descent of $m_1$, $y$ = descent of $m_2$ rel. to the pulley' });
+        const c = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 380, axes: 'box', weight: 1, xlabel: 'x', ylabel: 'y', title: 'configuration plane $(x, y)$' });
         // half-planes a·x + b·y ≤ c describing the allowed configurations
         const HP = [[-1, 0, -rA - GAP - Y1 - HB], [1, 0, Y1 - HB - FL], [1, 0, -rA - GAP - rB - YB], [0, -1, D2 - HB - rB - GAP], [-1, 1, YB - D2 - HB - FL], [0, 1, D3 - HB - rB - GAP], [-1, -1, YB - D3 - HB - FL]];
         const inside = (x, y) => HP.every(([a, b, cc]) => a * x + b * y <= cc + 1e-12);
@@ -1084,8 +1099,8 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
             const w = 0.11 * Math.sqrt(ms[i]) + 0.04;
             s.rect(bx - w, by - HB, bx + w, by + HB, { fill: col, fillAlpha: 0.5, color: col, width: 1.6 });
             s.tex(lab, bx, by, { color: 'ink', size: 12 });
-            const al = A[i] * 0.075, side = i === 0 ? -1 : i === 1 ? -1 : 1, ax = bx + side * (w + 0.1);
-            if (Math.abs(al) > 0.01) s.arrow(ax, by, ax, by + al, { color: 'green', width: 2.2, head: 7 });
+            const al = A[i] * 0.1, side = i === 2 ? 1 : -1, ax = bx + side * (w + 0.09);
+            if (Math.abs(al) > 0.005) s.arrow(ax, by - al / 2, ax, by + al / 2, { color: 'green', width: 2.4, head: Math.min(8, 4 + 40 * Math.abs(al)) });
           });
           // tension arrows on the ropes (just above each block, and on the hook of pulley B)
           const tk = 0.02;
@@ -1101,7 +1116,7 @@ In particular $m_1$ stays at rest exactly when $4/m_1 = 1/m_2 + 1/m_3$ — not w
           if (an > 1e-6) c.arrow(0, 0, (0.6 * xa) / an, (0.6 * ya) / an, { color: 'ink', width: 1.4, dash: [4, 3], head: 7 });
           c.path(Mo.S.y.slice(0, k + 1).map((z) => [z[0], z[1]]), { color: 'gold', width: 3 });
           c.dot(0, 0, { r: 4, color: 'ink' }); c.dot(x, y, { r: 6.5, color: 'gold' });
-          c.corner('allowed configurations', 'br', { color: 'green' });
+          c.corner('allowed configurations (green)', 'bl', { color: 'green' });
           now = { k, Mo };
         }, { period: TMAX, speed: SLOW, still: 0.6 });
         v.legend([['orange', 'rope tensions (Newton)'], ['green', 'accelerations'], ['gold', 'path in configuration space']]);

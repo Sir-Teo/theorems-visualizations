@@ -90,7 +90,7 @@ It implies
         const Ts = v.slider('temperature $T$', 300, 30000, 5772, { log: true, fmt: (x) => `${Math.round(x)} K` });
         const hs = v.slider('Planck’s constant $h/h_0$', 0.01, 1, 1, { log: true, fmt: (x) => x.toPrecision(2) });
         const s = v.stage({ x: [0, 2.5], y: [0, 1], height: 340, axes: 'box', xlabel: 'λ (μm)', weight: 1.55, title: 'spectral exitance' });
-        const m = v.stage({ x: [0, 1.08], y: [0, 6], height: 340, axes: 'box', xlabel: 'population', ylabel: 'E / kT', weight: 0.8, title: 'one mode: rungs $nhf$, populations $e^{-E/kT}$' });
+        const m = v.stage({ x: [0, 1.08], y: [-0.3, 6], height: 340, axes: 'box', ylabel: 'E / kT', weight: 0.8, title: 'one mode: rungs $nhf$ ↕, populations $e^{-E/kT}$ ↔' });
         const planck = (lu, T, h) => { const l = lu * 1e-6, x = h * C.c / (l * C.kB * T); return x > 700 ? 0 : 2 * Math.PI * h * C.c * C.c / l ** 5 / Math.expm1(x) * 1e-6; };
         const rj = (lu, T) => { const l = lu * 1e-6; return 2 * Math.PI * C.c * C.kB * T / l ** 4 * 1e-6; };
         const total = (T, h) => { const lp = h * C.c / (WX * C.kB * T); return M.integrate((u) => { const l = Math.exp(u); return planck(l * 1e6, T, h) * 1e6 * l; }, Math.log(lp * 0.01), Math.log(lp * 1e4), 3000); };
@@ -104,10 +104,11 @@ It implies
           lastX = xmax;
           const Mpk = planck(C.b / T * 1e6, T, h0), k3 = M.clamp(Math.floor(Math.log10(1.3 * Mpk) / 3), 0, 4), U = 10 ** (3 * k3), ymax = 1.3 * Mpk / U;
           s.setView([0, xmax], [0, ymax]);
-          pick.x = M.clamp(pick.x, xmax * 0.03, xmax * 0.97); pick.y = ymax * 0.06;
+          pick.x = M.clamp(pick.x, xmax * 0.03, xmax * 0.97); pick.y = ymax * 0.1;
           s.setTitle(`spectral exitance $M_\\lambda$ (${PFX[k3]}W m⁻² μm⁻¹)`);
           // visible band
-          for (let nm = 380; nm < 750; nm += 4) if (nm / 1000 < xmax) s.rect(nm / 1000, 0, Math.min(xmax, (nm + 4) / 1000), ymax * 0.03, { fill: wlRGB(nm + 2), fillAlpha: 0.95, stroke: false });
+          for (let nm = 380; nm < 750; nm += 4) if (nm / 1000 < xmax) s.rect(nm / 1000, 0, Math.min(xmax, (nm + 4) / 1000), ymax, { fill: wlRGB(nm + 2), fillAlpha: 0.16, stroke: false });
+          if (0.565 < xmax * 0.92) s.text('visible', 0.565, ymax * 0.97, { align: 'center', color: 'muted', size: 11, baseline: 'top' });
           const dom = { domain: [xmax * 1e-3, xmax] };
           if (hs.value < 0.995) s.fn((x) => planck(x, T, h0) / U, { color: 'muted', width: 1.4, dash: [5, 4], ...dom });
           s.fn((x) => rj(x, T) / U, { color: 'red', width: 2.2, dash: [8, 5], ...dom });
@@ -123,7 +124,7 @@ It implies
           // curve labels
           const xr = Math.pow(2 * Math.PI * C.c * C.kB * T * 1e-6 / (0.88 * ymax * U), 0.25) * 1e6; // where Rayleigh–Jeans leaves the top
           if (xr < xmax * 0.9) s.text('Rayleigh–Jeans (classical)', xr, ymax * 0.88, { color: 'red', size: 12, dx: 8 });
-          if (yp < ymax * 0.97) s.text('Planck', lp, yp, { color: 'accent', size: 12.5, dx: 10, dy: -14 });
+          if (yp < ymax * 0.97) { const xl = Math.min(lp * 2.1, xmax * 0.8); s.text('Planck', xl, planck(xl, T, h) / U, { color: 'accent', size: 12.5, dx: 6, dy: -12 }); }
           const name = NAMES.find(([TT]) => Math.abs(Math.log(T / TT)) < 0.12);
           if (name && yp < ymax * 0.97) s.corner(`≈ ${name[1]}`, 'tr', { color: 'muted' });
           // the picked mode
@@ -134,14 +135,14 @@ It implies
           const xq = h * C.c / (pick.x * 1e-6 * C.kB * T);
           m.curve((u) => [Math.exp(-u), u], 0, 6, { color: 'muted', dash: [4, 4], width: 1.2 });
           const nR = Math.min(Math.floor(6 / xq), 400);
-          for (let n = 0; n <= nR; n++) { const y = n * xq; m.line(0, y, Math.exp(-y), y, { color: 'accent', width: nR > 60 ? 1 : nR > 20 ? 1.6 : 3, alpha: nR > 60 ? 0.6 : 1 }); }
+          for (let n = 0; n <= nR; n++) { const y = n * xq; m.line(0, y, Math.exp(-y), y, { color: 'accent', width: nR > 60 ? 1 : nR > 20 ? 1.6 : 3.2, alpha: nR > 60 ? 0.6 : 1, cap: 'butt' }); }
           let num = 0, den = 0; const N = Math.min(400000, Math.ceil(45 / xq) + 2);
           for (let n = 0; n < N; n++) { const w = Math.exp(-n * xq); num += n * xq * w; den += w; if (w < 1e-18) break; }
           const mean = num / den;
           m.hline(1, { color: 'red', dash: [6, 4], width: 1.6 });
           m.hline(mean, { color: 'green', width: 2.2 });
           m.text('classical kT', 1.06, 1, { color: 'red', size: 11.5, align: 'right', dy: -9 });
-          m.text(`mean ⟨E⟩ = ${v.fix(mean, 3)} kT`, 1.06, mean, { color: 'green', size: 11.5, align: 'right', dy: mean > 0.25 ? 9 : -9 });
+          m.text(`mean ⟨E⟩ = ${v.fix(mean, 3)} kT`, 1.06, mean, { color: 'green', size: 11.5, align: 'right', dy: Math.abs(mean - 1) < 0.3 && mean < 1 ? 11 : -9 });
           m.corner(xq > 6 ? `first rung at hf = ${v.fix(xq, 1)} kT (off the chart)` : `rung spacing hf = ${v.fix(xq, xq < 0.1 ? 3 : 2)} kT`, 'tr', { color: 'purple' });
           st = { T, lp, wien: C.b * hs.value / T * 1e6, tot: total(T, h), sb: C.sigma / hs.value ** 3 * T ** 4, rjc: 2 * Math.PI * C.c * C.kB * T / (3 * (10e-9) ** 3), xq, mean, f: C.c / (pick.x * 1e-6) };
         });
@@ -174,7 +175,7 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
         const lam = v.slider('wavelength λ', 180, 700, 400, { step: 1, fmt: (x) => `${Math.round(x)} nm` });
         const irr = v.slider('irradiance', 0.25, 4, 1, { log: true, fmt: (x) => `${x.toFixed(2)} W/m²` });
         const Vs = v.slider('anode voltage $V$', -5, 3, -0.5, { step: 0.01, fmt: (x) => `${v.fix(x, 2)} V` });
-        const tube = v.stage({ x: [-0.3, 1.3], y: [-0.66, 0.66], height: 220, axes: false, full: true });
+        const tube = v.stage({ x: [-0.3, 1.3], y: [-0.76, 0.68], height: 230, axes: false, full: true });
         const iv = v.stage({ x: [-5, 3], y: [0, 1], height: 250, axes: 'box', xlabel: 'V (volts)', ylabel: 'I (nA)', weight: 1.15, title: 'photocurrent against anode voltage' });
         const mk = v.stage({ x: [0, 1.7], y: [0, 5.2], height: 250, axes: 'box', xlabel: 'f (10¹⁵ Hz)', ylabel: 'V_s (volts)', weight: 1, title: 'stopping voltage against frequency' });
         const rng = v.rng(11), NS = 4000, U = Array.from({ length: NS }, () => rng()).sort((a, b) => a - b);
@@ -189,17 +190,17 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
           // ---- tube
           tube.rect(-0.06, -0.45, 0, 0.45, { fill: 'muted', fillAlpha: 0.85, stroke: false });
           tube.rect(1, -0.45, 1.05, 0.45, { fill: 'muted', fillAlpha: 0.5, stroke: false });
-          tube.text(`cathode (${met.label})`, -0.03, -0.53, { align: 'center', color: 'ink', size: 12 });
-          tube.text('anode', 1.025, -0.53, { align: 'center', color: 'ink', size: 12 });
+          tube.text(`cathode (${met.label})`, -0.03, 0.5, { align: 'center', color: 'ink', size: 12 });
+          tube.text('anode', 1.025, 0.5, { align: 'center', color: 'ink', size: 12 });
           tube.path([[-0.03, -0.45], [-0.03, -0.6], [0.36, -0.6]], { color: 'muted', width: 1.4 });
           tube.path([[0.44, -0.6], [1.025, -0.6], [1.025, -0.45]], { color: 'muted', width: 1.4 });
           tube.line(0.37, -0.57, 0.37, -0.63, { color: 'ink', width: 2 }); tube.line(0.43, -0.55, 0.43, -0.65, { color: 'ink', width: 2 });
-          tube.text(`V = ${v.fix(V, 2)} V`, 0.4, -0.6, { color: 'ink', size: 12, dx: 30, align: 'left' });
+          tube.text(`V = ${v.fix(V, 2)} V`, 0.4, -0.69, { color: 'ink', size: 12, align: 'center' });
           tube.circle(0.85, -0.6, 0.035, { color: 'ink', width: 1.4, fill: 'panel', fillAlpha: 1 });
           tube.text('A', 0.85, -0.6, { align: 'center', size: 11, color: 'ink' });
-          tube.text(M.si(cur * 1e-9, 'A'), 0.9, -0.6, { color: 'green', size: 12, align: 'left', weight: 600 });
-          tube.circle(LAMP[0], LAMP[1], 0.04, { fill: Array.isArray(pc) ? pc : pc, fillAlpha: 0.9, color: 'muted', width: 1 });
-          tube.text('lamp', LAMP[0] + 0.05, LAMP[1], { color: 'muted', size: 11.5, align: 'left' });
+          tube.text(`I = ${M.si(cur * 1e-9, 'A')}`, 0.85, -0.69, { color: 'green', size: 12, align: 'center', weight: 600 });
+          tube.dot(LAMP[0], LAMP[1], { r: 9, color: pc });
+          tube.text('lamp', LAMP[0], LAMP[1], { color: 'muted', size: 11.5, align: 'left', dx: 14 });
           // photons and electrons, generated per 50 ms bin with a deterministic generator
           const R = 24 * irr.value, k0 = Math.floor((t - 3.4) / DT), k1 = Math.floor(t / DT);
           const els = [];
@@ -217,7 +218,7 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
             }
           }
           tube.dots(els, { r: 3.2, color: 'accent' });
-          tube.corner(K <= 0 ? `hf = ${v.fix(E, 2)} eV < φ = ${met.phi} eV: no electrons, however bright` : V < 0 ? `retarding: only electrons with K > ${v.fix(-V, 2)} eV reach the anode` : 'accelerating: every emitted electron is collected', 'tl', { color: K <= 0 ? 'red' : 'muted' });
+          tube.corner(K <= 0 ? `hf = ${v.fix(E, 2)} eV < φ = ${met.phi} eV: no electrons, however bright` : V < 0 ? `retarding: only electrons with K > ${v.fix(-V, 2)} eV reach the anode` : 'accelerating: every emitted electron is collected', 'tr', { color: K <= 0 ? 'red' : 'muted' });
           // ---- I–V curves
           const Imax = Isat(4) * 1.12;
           iv.setView([-5, 3], [0, Imax]);
@@ -226,8 +227,8 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
             iv.path(pts, { color: col, width: w, dash: col === 'muted' ? [5, 4] : null });
           }
           if (K > 0) {
-            iv.text('2×', 2.6, Math.min(Isat(irr.value * 2), Imax * 0.95), { color: 'muted', size: 11, dy: -8 });
-            iv.text('½×', 2.6, Isat(irr.value / 2), { color: 'muted', size: 11, dy: -8 });
+            iv.text('2×', 1.2, Math.min(Isat(irr.value * 2), Imax * 0.95), { color: 'muted', size: 11, dy: -9 });
+            iv.text('½×', 1.2, Isat(irr.value / 2), { color: 'muted', size: 11, dy: -9 });
             iv.vline(-Vsm, { color: 'green', dash: [5, 4], width: 1.6 });
             iv.text(`−V_s = −${v.fix(Vsm, 2)} V`, -Vsm, Imax * 0.9, { color: 'green', size: 12, align: Vsm > 3.5 ? 'left' : 'right', dx: Vsm > 3.5 ? 6 : -6 });
           }
@@ -237,7 +238,8 @@ Einstein's explanation: light delivers energy in quanta $hf$, each absorbed by a
             const f0 = m.phi * C.eV / C.h / 1e15, sel = key === metal.value;
             mk.line(0, 0, f0, 0, { color: m.col, width: sel ? 2 : 1, dash: [3, 4], alpha: sel ? 1 : 0.6 });
             mk.line(f0, 0, 1.7, (C.h * 1.7e15 / C.eV - m.phi), { color: m.col, width: sel ? 3 : 1.4, alpha: sel ? 1 : 0.6 });
-            mk.text(m.label, f0, 0, { color: m.col, size: 11, dy: -10, align: 'center', weight: sel ? 700 : 500 });
+            const fl = key === 'Zn' ? 1.5 : 1.3, up = key === 'Cs';
+            mk.text(m.label, fl, C.h * fl * 1e15 / C.eV - m.phi, { color: m.col, size: 11.5, dx: up ? -8 : 8, dy: up ? -9 : 9, align: up ? 'right' : 'left', weight: sel ? 700 : 500 });
           }
           const fN = C.c / (lam.value * 1e-9) / 1e15;
           mk.vline(fN, { color: 'muted', dash: [2, 4], width: 1 });
@@ -293,7 +295,7 @@ independent of $\lambda$; classical wave scattering (Thomson) predicts no shift 
           Pw.el.hidden = lam.el.hidden = !cnt; src.el.hidden = cnt; hd.visible = !cnt;
           A.o.axes = B.o.axes = 'box';
           if (cnt) {
-            A.o.axes = 'box'; A.o.xlabel = 'time (s), now = 0'; A.o.ylabel = ''; B.o.xlabel = 'time (s)'; B.o.ylabel = 'energy / hf';
+            A.o.axes = 'box'; A.o.xlabel = 't (s)'; A.o.ylabel = ''; B.o.xlabel = 't (s)'; B.o.ylabel = 'energy / hf';
             const E = C.h * C.c / (lam.value * 1e-9), R = Pw.value / E, pc = photonColor(lam.value);
             const ev = [];
             for (let k = Math.floor((t - 1.03) / DT); k <= Math.floor(t / DT); k++) {
@@ -302,18 +304,21 @@ independent of $\lambda$; classical wave scattering (Thomson) predicts no shift 
               loc.sort((a, b) => a - b); for (const x of loc) if (x <= t && x > t - 1.03) ev.push(x - t);
             }
             const H1 = E / TAUD, ymax = Math.max(1.6 * H1, 1.8 * Pw.value), k3 = Math.floor(Math.log10(ymax) / 3), Uy = 10 ** (3 * k3);
-            A.setView([-1, 0], [0, ymax / Uy]); A.setTitle(`detector signal (${{ '-6': 'a', '-5': 'f', '-4': 'p', '-7': 'z' }[k3] || ''}W)`);
+            A.setView([-1, 0], [-0.07 * ymax / Uy, ymax / Uy]); A.setTitle(`detector signal (${{ '-6': 'a', '-5': 'f', '-4': 'p', '-7': 'z' }[k3] || ''}W)`);
+            // exponential pulses (τ = 4 ms) summed exactly: sample on a grid and just before / after every arrival
             const NSm = 600, sig = []; let y = 0, j = 0, tp = -1.03;
-            while (j < ev.length && ev[j] < -1) { y = y * Math.exp(-(ev[j] - tp) / TAUD) + H1; tp = ev[j]; j++; }
+            const at = (ts) => y * Math.exp(-(ts - tp) / TAUD);
+            while (j < ev.length && ev[j] < -1) { y = at(ev[j]) + H1; tp = ev[j]; j++; }
             for (let i = 0; i <= NSm; i++) {
               const ts = -1 + i / NSm;
-              while (j < ev.length && ev[j] <= ts) { y = y * Math.exp(-(ev[j] - tp) / TAUD) + H1; tp = ev[j]; j++; }
-              sig.push([ts, y * Math.exp(-(ts - tp) / TAUD) / Uy]);
+              while (j < ev.length && ev[j] <= ts) { const te = ev[j], y0 = at(te); if (ev.length < 4000) sig.push([te, y0 / Uy]); y = y0 + H1; tp = te; if (ev.length < 4000) sig.push([te, y / Uy]); j++; }
+              sig.push([ts, at(ts) / Uy]);
             }
             A.hline(Pw.value / Uy, { color: 'red', dash: [7, 5], width: 2 });
-            A.text('classical wave: steady P', -0.98, Pw.value / Uy, { color: 'red', size: 11.5, dy: -10 });
+            A.text('classical wave: steady P', -0.02, Pw.value / Uy, { color: 'red', size: 11.5, dy: -10, align: 'right' });
             A.path(sig, { color: pc, width: 1.8 });
-            if (ev.length < 1500) for (const x of ev) if (x > -1) A.line(x, 0, x, ymax / Uy * 0.035, { color: 'gold', width: 1.2 });
+            if (ev.length < 1500) for (const x of ev) if (x > -1) A.line(x, -0.06 * ymax / Uy, x, -0.01 * ymax / Uy, { color: 'gold', width: 1.6 });
+            v.legend([[pc, 'detector signal (colour of the light)'], ['accent', 'energy absorbed'], ['red', 'classical wave', { dash: true }], ['gold', 'photon arrivals']]);
             const inWin = ev.filter((x) => x > -1);
             B.setView([-1, 0], [0, Math.max(4, 1.25 * R)]);
             const stair = [[-1, 0]]; inWin.forEach((x, i) => { stair.push([x, i]); stair.push([x, i + 1]); }); stair.push([0, inWin.length]);
@@ -359,10 +364,10 @@ independent of $\lambda$; classical wave scattering (Thomson) predicts no shift 
             B.hline(2 * LC * 1e12, { color: 'muted', dash: [3, 4], width: 1 });
             B.text('2h/mₑc', 4, 2 * LC * 1e12, { color: 'muted', size: 11, dy: -9 });
             B.dot(th * 180 / Math.PI, (lp - S.lam) * 1e12, { r: 6, color: 'gold' });
+            v.legend([['accent', 'incident photon'], ['gold', 'scattered photon'], ['green', 'recoil electron'], ['purple', 'Klein–Nishina distribution', { area: true }], ['red', 'classical (Thomson): no shift', { dash: true }]]);
             st = { cnt, th, dl: lp - S.lam, form: LC * (1 - Math.cos(th)), rel: (lp - S.lam) / S.lam, Ke: sc.Ke * MC2, phi: sc.phi, E: eps * MC2 };
           }
         }, { still: 1.6 });
-        v.legend([['accent', 'measured / computed'], ['red', 'classical wave prediction', { dash: true }], ['gold', 'photon events', { dot: true }]]);
         v.readout(() => st && (st.cnt
           ? `Every click deposits $hf = ${v.fix(st.E / C.eV, 3)}$ eV $= ${v.sci(st.E, 3)}$ J, whatever the power. Clicks in the last second: **${st.N}** vs $P/hf = ${v.fix(st.R, st.R < 100 ? 1 : 0)}$ per second (Poisson scatter $\\pm\\sqrt N \\approx ${v.fix(Math.sqrt(Math.max(st.N, 1)), 0)}$). ` + (st.overlap < 0.3 ? 'The trace is a train of separate, identical pulses — nothing like a steady wave.' : `About ${v.fix(st.overlap, 0)} pulses overlap at any moment, so the trace is nearly the steady classical signal (relative fluctuation $\\approx 1/\\sqrt{R\\tau} = ${v.fix(100 / Math.sqrt(st.overlap), 1)}$ %).`)
           : `θ = ${v.fix(st.th * 180 / Math.PI, 1)}°: shift from energy–momentum conservation **${M.si(st.dl, 'm', 5)}**; formula $\\frac{h}{m_ec}(1-\\cos\\theta) =$ ${M.si(st.form, 'm', 5)} · relative shift $\\Delta\\lambda/\\lambda = ${st.rel < 1e-3 ? v.sci(st.rel, 2) : v.fix(100 * st.rel, 2) + '\\,\\%'}$ · electron recoil ${M.si(st.Ke / C.eV, 'eV', 3)} at ${v.fix(st.phi * 180 / Math.PI, 1)}° below the beam · photon energy ${M.si(st.E / C.eV, 'eV', 3)}. Classical wave scattering: $\\Delta\\lambda = 0$.`));
@@ -389,7 +394,7 @@ with a single constant $R_{\rm H}=1.09678\times10^{7}\ \text{m}^{-1}$. Lines wit
         let selIdx = 6;
         const n1sel = v.select('assume lower level $n_1$ of the selected series', [1, 2, 3, 4, 5].map((n) => ({ value: n, label: `$n_1=${n}$` })), 2, { onChange: (n) => { assign[HLINES[selIdx][0]] = n; } });
         const sp = v.stage({ x: [80, 9500], y: [0, 1], height: 165, axes: 'box', xlog: true, yticks: [], xlabel: 'λ (nm)', full: true });
-        const ry = v.stage({ x: [0, 1.05], y: [0, 11.6], height: 290, axes: 'box', xlabel: '1/n₁² − 1/n₂²', ylabel: '1/λ (μm⁻¹)', weight: 1, title: 'Rydberg plot: all series together' });
+        const ry = v.stage({ x: [0.007, 1.6], y: [0.08, 16], height: 290, axes: 'box', xlog: true, ylog: true, xlabel: '1/n₁² − 1/n₂²', ylabel: '1/λ (μm⁻¹)', weight: 1, title: 'Rydberg plot (log–log): all series together' });
         const zm = v.stage({ x: [0, 1], y: [0, 1], height: 290, axes: 'box', yticks: [], xlabel: 'λ (nm)', weight: 1.15 });
         const xOf = (i) => { const [n1, n2] = HLINES[i], a = assign[n1], m2 = a + (n2 - n1); return 1 / (a * a) - 1 / (m2 * m2); };
         const pick = (stage, x, list) => { let best = -1, bd = 1e9; for (const i of list) { const d = Math.abs(stage.X(HLINES[i][2]) - stage.X(x)); if (d < bd) { bd = d; best = i; } } if (best >= 0 && bd < 40) { selIdx = best; n1sel.set(assign[HLINES[best][0]]); } };
@@ -403,31 +408,30 @@ with a single constant $R_{\rm H}=1.09678\times10^{7}\ \text{m}^{-1}$. Lines wit
           let sxy = 0, sxx = 0; HLINES.forEach((L, i) => { const x = xOf(i), y = 1e9 / L[2]; sxy += x * y; sxx += x * x; });
           const R = sxy / sxx; let worst = 0; HLINES.forEach((L, i) => { worst = Math.max(worst, Math.abs(xOf(i) * R / (1e9 / L[2]) - 1)); });
           // ---- full spectrum
-          sp.rect(80, 0.2, 9500, 0.72, { fill: DARK, fillAlpha: 1, stroke: false });
-          sp.rect(380, 0.2, 750, 0.72, { fill: 'gray', fillAlpha: 0.12, stroke: false });
-          for (const [lo, hi, name] of [[80, 380, 'ultraviolet'], [380, 750, 'visible'], [750, 9500, 'infrared']]) sp.text(name, Math.sqrt(lo * hi), 0.1, { align: 'center', color: 'muted', size: 11 });
+          sp.rect(80, 0.3, 9500, 0.74, { fill: DARK, fillAlpha: 1, stroke: false });
+          for (let nm = 380; nm < 750; nm += 5) sp.rect(nm, 0.3, nm + 5, 0.33, { fill: wlRGB(nm + 2.5), fillAlpha: 0.9, stroke: false });
+          for (const [lo, hi, name] of [[80, 380, 'ultraviolet'], [380, 750, 'visible'], [750, 9500, 'infrared']]) sp.text(name, Math.sqrt(lo * hi), 0.235, { align: 'center', color: 'muted', size: 11 });
           for (const k of [1, 2, 3, 4, 5]) {
             const lim = 1e9 * k * k / RH, idx = HLINES.map((_, i) => i).filter((i) => HLINES[i][0] === k), lmax = HLINES[idx[0]][2];
-            sp.line(lim, 0.2, lim, 0.72, { color: SERIES[k].color, dash: [2, 3], width: 1, alpha: 0.7 });
+            sp.line(lim, 0.34, lim, 0.74, { color: SERIES[k].color, dash: [2, 3], width: 1, alpha: 0.7 });
             sp.text(SERIES[k].name, Math.sqrt(lim * lmax), 0.86, { align: 'center', color: SERIES[k].color, size: 12, weight: k === ser ? 700 : 500 });
           }
-          HLINES.forEach(([n1, n2, l], i) => { const col = wlRGB(l) || SERIES[n1].color; glow(sp, l, 0.22, 0.7, col, i === selIdx ? 3 : 1.6); });
-          sp.line(HLINES[selIdx][2], 0.72, HLINES[selIdx][2], 0.78, { color: 'ink', width: 2 });
-          sp.dot(HLINES[selIdx][2], 0.78, { r: 4, color: 'ink' });
+          HLINES.forEach(([n1, n2, l], i) => { const col = wlRGB(l) || SERIES[n1].color; glow(sp, l, 0.35, 0.72, col, i === selIdx ? 3 : 1.6); });
+          sp.line(HLINES[selIdx][2], 0.74, HLINES[selIdx][2], 0.79, { color: 'ink', width: 2 });
+          sp.dot(HLINES[selIdx][2], 0.79, { r: 4, color: 'ink' });
           // ---- Rydberg plot
-          ry.line(0, 0, 1.05, 1.05 * R * 1e-6, { color: 'green', width: 2 });
+          ry.fn((x) => x * R * 1e-6, { color: 'green', width: 2 });
           HLINES.forEach(([n1, n2, l], i) => ry.dot(xOf(i), 1e3 / l, { r: i === selIdx ? 6.5 : 4.5, color: SERIES[n1].color, hollow: assign[n1] !== n1 }));
-          for (const k of [1, 2, 3, 4, 5]) { const i = HLINES.findIndex((L) => L[0] === k); ry.text(SERIES[k].name, xOf(i), 1e3 / HLINES[i][2], { color: SERIES[k].color, size: 11, dx: 8, dy: k === 1 ? 10 : -8 }); }
-          ry.text(`slope R = ${v.fix(R * 1e-7, 5)}×10⁷ m⁻¹`, 0.5, 0.5 * R * 1e-6, { color: 'green', size: 12, dx: 10, dy: 12 });
+          for (const k of [1, 2, 3, 4, 5]) { const i = HLINES.findIndex((L) => L[0] === k); ry.text(SERIES[k].name, xOf(i), 1e3 / HLINES[i][2], { color: SERIES[k].color, size: 11, dx: 9, dy: 9 }); }
+          ry.text(`1/λ = R·x, R = ${v.fix(R * 1e-7, 5)}×10⁷ m⁻¹`, 0.009, 0.012 * R * 1e-6, { color: 'green', size: 12, dy: -16 });
           // ---- zoom on the selected series
           const a = assign[ser], idx = HLINES.map((_, i) => i).filter((i) => HLINES[i][0] === ser);
           const lim = 1e9 * a * a / R, lA = HLINES[idx[0]][2], lo = Math.min(lim, ...idx.map((i) => HLINES[i][2])) * 0.97, hi = Math.max(lA, 1e9 / (R * (1 / (a * a) - 1 / ((a + 1) ** 2)))) * 1.03;
           zm.setView([lo, hi], [0, 1]); zm.setTitle(`${SERIES[ser].name} series ($n_1 = ${a}$ assumed): measured lines and the formula`);
           zm.rect(lo, 0.3, hi, 0.75, { fill: DARK, fillAlpha: 1, stroke: false });
-          for (let m2 = a + 1; m2 <= a + 40; m2++) { const lp = 1e9 / (R * (1 / (a * a) - 1 / (m2 * m2))); if (lp > lo && lp < hi) zm.line(lp, 0.75, lp, 0.86, { color: 'muted', width: 1 }); if (m2 - a <= 4 && lp > lo && lp < hi) zm.text(`${m2}`, lp, 0.9, { align: 'center', color: 'muted', size: 11 }); }
-          zm.text('formula, n₂ =', lo, 0.9, { color: 'muted', size: 11, dx: 4 });
+          for (let m2 = a + 1; m2 <= a + 40; m2++) { const lp = 1e9 / (R * (1 / (a * a) - 1 / (m2 * m2))); if (lp > lo && lp < hi) zm.line(lp, 0.75, lp, 0.86, { color: 'muted', width: 1 }); if (m2 - a <= 4 && lp > lo && lp < hi) zm.text(m2 === a + 1 ? `formula n₂ = ${m2}` : `${m2}`, lp, 0.91, { align: m2 === a + 1 ? 'right' : 'center', dx: m2 === a + 1 ? 6 : 0, color: 'muted', size: 11 }); }
           zm.line(lim, 0.22, lim, 0.86, { color: 'green', dash: [4, 3], width: 1.4 });
-          zm.text('limit n₁²/R', lim, 0.15, { color: 'green', size: 11, align: 'center' });
+          zm.text('limit n₁²/R', lim, 0.17, { color: 'green', size: 11, align: 'left', dx: 4 });
           for (const i of idx) { const l = HLINES[i][2], col = wlRGB(l) || SERIES[ser].color; glow(zm, l, 0.32, 0.73, col, i === selIdx ? 3.4 : 2); }
           for (const i of idx.slice(0, 3)) zm.text(lineName(HLINES[i][0], HLINES[i][1]), HLINES[i][2], 0.22, { align: 'center', color: 'ink', size: 11 });
           const [n1, n2, l] = HLINES[selIdx], m2 = a + (n2 - n1);
@@ -463,7 +467,7 @@ with $a_0=\varepsilon_0h^2/\pi m_ee^2=0.0529$ nm. The photon wavelengths reprodu
         const red = v.toggle('reduced-mass correction', true);
         const cls = v.toggle('classical electron (radiates)', false);
         const so = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, height: 300, axes: false, weight: 0.95, title: 'orbits (to scale)' });
-        const sl = v.stage({ x: [0, 5], y: [-15, 1], height: 300, axes: 'box', ylabel: 'E (eV)', weight: 1.1, title: 'energy levels: click a transition' });
+        const sl = v.stage({ x: [0, 5], y: [-15, 1], height: 300, axes: 'box', yticks: [], xticks: [], weight: 1.1, title: 'energy levels (eV): click a transition' });
         const ss = v.stage({ x: [20, 9500], y: [0, 1], height: 120, axes: 'box', xlog: true, yticks: [], xlabel: 'λ (nm)', full: true });
         const E1 = C.me * C.e ** 4 / (8 * C.eps0 ** 2 * C.h ** 2), A0 = C.eps0 * C.h ** 2 / (Math.PI * C.me * C.e ** 2), RE = C.e ** 2 / (4 * Math.PI * C.eps0 * C.me * C.c ** 2);
         const COLS = { 1: [0.55, 0.17], 2: [1.75, 0.17], 3: [2.95, 0.19], 4: [4.05, 0.22] };
@@ -487,7 +491,7 @@ with $a_0=\varepsilon_0h^2/\pi m_ee^2=0.0529$ nm. The photon wavelengths reprodu
           // ---- level diagram
           const Emin = level(1, Z);
           sl.setView([0, 5], [Emin * 1.08, -Emin * 0.07]);
-          for (let n = 1; n <= 7; n++) { const E = level(n, Z); sl.line(0.35, E, 4.9, E, { color: n === n1 || n === n2 ? 'ink' : 'muted', width: n === n1 || n === n2 ? 2 : 1.1 }); if (n <= 4) sl.text(`n=${n}`, 0.32, E, { align: 'right', color: 'muted', size: 11 }); }
+          for (let n = 1; n <= 7; n++) { const E = level(n, Z); sl.line(0.35, E, 4.9, E, { color: n === n1 || n === n2 ? 'ink' : 'muted', width: n === n1 || n === n2 ? 2 : 1.1 }); if (n <= 4) sl.text(`n=${n}`, 0.32, E, { align: 'right', color: 'muted', size: 11 }); if (n <= 3) sl.text(`${v.fix(E, 2)}`, 4.9, E, { align: 'right', color: 'muted', size: 10.5, dy: -8 }); }
           sl.line(0.35, 0, 4.9, 0, { color: 'faint', dash: [4, 4], width: 1 }); sl.text('∞', 0.32, 0, { align: 'right', color: 'muted', size: 11 });
           for (const k of [1, 2, 3, 4]) sl.text(SERIES[k].name, COLS[k][0] + 0.25, -Emin * 0.035, { align: 'center', color: SERIES[k].color, size: 10.5 });
           for (const A of arrowsOf()) { const on = A.n1 === n1 && A.n2 === n2 && !cls.value; sl.arrow(A.x, level(A.n2, Z), A.x, level(A.n1, Z), { color: on ? 'gold' : SERIES[A.n1].color, width: on ? 3.2 : 1.4, alpha: on ? 1 : 0.55, head: on ? 10 : 6 }); }
@@ -513,7 +517,7 @@ with $a_0=\varepsilon_0h^2/\pi m_ee^2=0.0529$ nm. The photon wavelengths reprodu
           ss.rect(20, 0.18, 9500, 0.78, { fill: DARK, fillAlpha: 1, stroke: false });
           for (let a = 1; a <= 5; a++) for (let b = a + 1; b <= 8; b++) { const l = C.h * C.c / ((level(a, Z) < 0 ? level(b, Z) - level(a, Z) : 1) * C.eV) * 1e9; ss.line(l, 0.2, l, 0.76, { color: wlRGB(l) || 'gray', width: 1, alpha: 0.35, cap: 'butt' }); }
           if (!cls.value) { ss.line(lnm, 0.2, lnm, 0.76, { color: pc, width: 9, alpha: 0.3 * lit, cap: 'butt' }); ss.line(lnm, 0.2, lnm, 0.76, { color: pc, width: 3, alpha: 0.25 + 0.75 * lit, cap: 'butt' }); ss.text(`${v.fix(lnm, lnm < 1000 ? 2 : 0)} nm`, lnm, 0.9, { align: 'center', color: 'ink', size: 11.5 }); }
-          if (meas && !cls.value) { ss.poly([[meas[2], 0.16], [meas[2] * 1.035, 0.04], [meas[2] / 1.035, 0.04]], { fill: 'ink', fillAlpha: 1, stroke: false }); ss.text('measured', meas[2] * 1.06, 0.08, { color: 'muted', size: 10.5 }); }
+          if (meas && !cls.value) ss.poly([[meas[2], 0.16], [meas[2] * 1.035, 0.04], [meas[2] / 1.035, 0.04]], { fill: 'ink', fillAlpha: 1, stroke: false });
           if (smear) { const [la, lb] = smear, l0 = Math.max(20, lb), n = 60; for (let i = 0; i < n; i++) { const x0 = l0 * Math.pow(la / l0, i / n), x1 = l0 * Math.pow(la / l0, (i + 1) / n); ss.rect(x0, 0.2, x1, 0.76, { fill: 'red', fillAlpha: 0.25 + 0.5 * (1 - i / n), stroke: false }); } ss.text('classical: continuous chirp', Math.sqrt(la * l0), 0.9, { align: 'center', color: 'red', size: 11.5 }); }
           st = { Z, n1, n2, lnm, lnm0: C.h * C.c / (dE * C.eV * (red.value ? 1 / mu : 1)) * 1e9, meas, mu, r: rOf(n2) * A0, vv: Z * C.alpha * C.c / n2, dE, Tc: (rOf(n2) * A0) ** 3 / (4 * Z * RE * RE * C.c) };
         }, { still: 1.9 });
@@ -633,7 +637,7 @@ Each allowed orbit therefore occupies an annulus of area $h$ in phase space. It 
           if (P.hard) { lv.line(-A, 0, -A, Etop, { color: 'ink', width: 3 }); lv.line(A, 0, A, Etop, { color: 'ink', width: 3 }); lv.line(-A, 0, A, 0, { color: 'ink', width: 2 }); }
           else lv.fn(P.V, { color: 'ink', width: 2.2 });
           ex.forEach((Ee) => { const x2 = turn(P, Ee); lv.line(-x2, Ee, x2, Ee, { color: 'green', width: 2.6 }); });
-          bs.forEach((Eb, i) => { const x2 = turn(P, Eb); lv.line(-x2 * 1.12, Eb, x2 * 1.12, Eb, { color: 'accent', width: 1.6, dash: [5, 4] }); lv.text(`${ns[i]}`, x2 * 1.12, Eb, { color: 'accent', size: 10.5, dx: 4, align: 'left' }); });
+          bs.forEach((Eb, i) => { const x2 = Math.min(turn(P, Eb) * 1.08, xT * 0.93); lv.line(-x2, Eb, x2, Eb, { color: 'accent', width: 1.6, dash: [5, 4] }); lv.text(`n=${ns[i]}`, x2, Eb, { color: 'accent', size: 10.5, dx: 3, align: 'left' }); });
           lv.hline(E, { color: 'gold', width: 1.2, alpha: 0.8 });
           const errs = bs.map((Eb, i) => (Eb - ex[i]) / ex[i]);
           st = { E, J, ex, bs, errs, ns, mu, key };

@@ -526,7 +526,7 @@ with equality only for circles. Equivalently, among closed curves of given lengt
         const SA = 0.42, CA = Math.sqrt(1 - SA * SA), TA = SA / CA, ZA = 1.35, RHO = 2.75, RS = 1.25, ZC = 1.45;
         const SURF = {
           cyl: { F: (p) => p[0] * p[0] + p[1] * p[1] - 1, grad: (p) => [2 * p[0], 2 * p[1], 0], hq: (w) => 2 * (w[0] * w[0] + w[1] * w[1]), start: [1, 0, -1.05], aim: [1.5, -0.84], view: [[-3.5, 3.5], [-2.1, 1.75]], inside: (p) => Math.abs(p[2]) < ZC },
-          cone: { F: (p) => p[0] * p[0] + p[1] * p[1] - TA * TA * (p[2] - ZA) ** 2, grad: (p) => [2 * p[0], 2 * p[1], -2 * TA * TA * (p[2] - ZA)], hq: (w) => 2 * (w[0] * w[0] + w[1] * w[1]) - 2 * TA * TA * w[2] * w[2], start: [1.9 * SA, 0, ZA - 1.9 * CA], aim: [0.75, -1.2], view: [[-3, 3], [-3, 2.2]], inside: (p) => { const r = v3.norm(v3.sub(p, [0, 0, ZA])); return r > 0.06 && r < RHO && p[2] < ZA; } },
+          cone: { F: (p) => p[0] * p[0] + p[1] * p[1] - TA * TA * (p[2] - ZA) ** 2, grad: (p) => [2 * p[0], 2 * p[1], -2 * TA * TA * (p[2] - ZA)], hq: (w) => 2 * (w[0] * w[0] + w[1] * w[1]) - 2 * TA * TA * w[2] * w[2], start: [1.9 * SA, 0, ZA - 1.9 * CA], aim: [0.38, -1.0], view: [[-3, 3], [-3, 2.2]], inside: (p) => { const r = v3.norm(v3.sub(p, [0, 0, ZA])); return r > 0.06 && r < RHO && p[2] < ZA; } },
           sph: { F: (p) => v3.dot(p, p) - RS * RS, grad: (p) => v3.sc(p, 2), hq: (w) => 2 * v3.dot(w, w), start: [RS * Math.cos(0.45), 0, RS * Math.sin(0.45)], aim: [0.8, 0.55], view: [[-3, 3], [-2.6, 2.6]], inside: () => true },
         };
         const ssel = v.select('surface', [{ value: 'cyl', label: 'cylinder' }, { value: 'cone', label: 'cone' }, { value: 'sph', label: 'sphere' }], 'cyl');
@@ -599,11 +599,13 @@ with equality only for circles. Equivalently, among closed curves of given lengt
             for (let k = -3; k <= 3; k++) { const ph = wedge * (k + 0.5); sC.line(0, 0, RHO * Math.sin(ph), -RHO * Math.cos(ph), { color: 'muted', dash: [4, 4], width: 1 }); }
             sC.circle(0, 0, RHO, { color: 'accent', width: 1, alpha: 0.35 });
             sC.dot(0, 0, { r: 4, color: 'ink', label: 'apex', labelPos: 'n' });
-            sC.text('unrolled cone (copies of the sector beside it)', 0, -RHO, { align: 'center', baseline: 'top', dy: 6, color: 'muted', size: 11.5 });
+            sC.corner('unrolled cone: copies of the sector side by side', 'tl', { color: 'muted', size: 11.5 });
+            sC.corner('(shaded: one copy; dashed rays: the seam)', 'bl', { color: 'muted', size: 11.5 });
           } else {
             for (let j = 0; j < 12; j++) { const a = (TAU * j) / 12; sC.path(sample((u) => { const b = -Math.PI / 2 + Math.PI * u, p = [RS * Math.cos(b) * Math.cos(a), RS * Math.cos(b) * Math.sin(a), RS * Math.sin(b)]; return chart.sph.to(p); }, 120), { color: 'accent', width: 0.8, alpha: 0.4 }); }
             for (const b of [-60, -30, 0, 30, 60].map((d) => (d * Math.PI) / 180)) sC.path(sample((u) => chart.sph.to([RS * Math.cos(b) * Math.cos(TAU * u), RS * Math.cos(b) * Math.sin(TAU * u), RS * Math.sin(b)]), 200), { color: 'accent', width: 0.8, alpha: b === 0 ? 0.7 : 0.4 });
-            sC.text('central projection of the sphere: meridians and the equator are straight, other parallels curve', 0, -2.55, { align: 'center', baseline: 'bottom', color: 'muted', size: 11 });
+            sC.corner('central projection from the centre of the sphere:', 'tl', { color: 'muted', size: 11.5 });
+            sC.corner('every great circle (meridians, equator) maps to a straight line', 'bl', { color: 'muted', size: 11.5 });
           }
           const q0 = Gd.q0, far = 60;
           if (key === 'cyl') {
@@ -681,7 +683,7 @@ and a point $x=c$ is **conjugate** to $a$ if the Jacobi equation (the linearised
           sc.dot([0, 0, -R], { r: 5.5, color: 'purple' }); sc.tex('S', [0, 0, -R * 1.14], { color: 'purple', size: 15 });
           sc.dot(pt(ell, 0), { r: 5.5, color: past ? 'red' : 'green' });
           sc.flush();
-          s3.corner(past ? (k === 1 ? 'the arc has passed S, the conjugate point' : 'past kπ') : 'the arc ends before S', 'tl', { color: past ? 'red' : 'green', weight: 600 });
+          s3.corner(past ? (k === 1 ? 'the arc has passed S, the conjugate point' : 'past kπ') : 'the arc ends before S', 'bl', { color: past ? 'red' : 'green', weight: 600 });
           // ── ΔL(ε)
           const es = sample((u) => -0.6 + 1.2 * u, 48), ms = es.map((e) => dL(ell, e, k)), c = coef(ell, k);
           const [lo, hi] = span([ms, es.map((e) => c * e * e)], 0.15, 0.02);

@@ -352,7 +352,7 @@ where $K$ is the complete elliptic integral of the first kind and AGM the arithm
       tags: ['pendulum', 'elliptic integrals', 'nonlinear oscillations'],
       viz(v) {
         const Ls = v.slider('length $L$ (m)', 0.1, 5, 1, { step: 0.01 });
-        const sP = v.stage({ x: [0, 180], y: [0.72, 4], height: 330, axes: 'box', xlabel: 'θ₀ (°)', ylabel: 'T / T₀', xticks: [0, 30, 60, 90, 120, 150, 180], weight: 1.2, title: 'period against release angle' });
+        const sP = v.stage({ x: [0, 180], y: [0.5, 4], height: 330, axes: 'box', xlabel: 'θ₀ (°)', ylabel: 'T / T₀', xticks: [0, 30, 60, 90, 120, 150, 180], weight: 1.2, title: 'period against release angle' });
         const sW = v.stage({ x: [0, 1], y: [-1.2, 1.2], height: 330, axes: true, xlabel: 't/T', weight: 1, title: 'one swing, rescaled: $\\theta(t)/\\theta_0$' });
         const R = (deg) => 1 / agm(1, Math.cos(deg * Math.PI / 360));
         const hd = sP.handle(165, R(165), { color: 'accent', constrain: (x) => { const d = clamp(x, 1, 179.5); return [d, Math.min(4, R(d))]; } });

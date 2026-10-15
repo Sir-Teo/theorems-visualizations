@@ -436,7 +436,7 @@ all traversed clockwise in the same time $2\pi/\omega$.`,
           if (hi / lo < 1.2) { const pd = Math.max(0.002, (hi / lo - 1) * 0.4); sE.setView(null, [lo / (1 + pd), hi * (1 + pd)]); }
           else sE.setView(null, [Math.max(1e-3, Math.min(0.5, lo / 2)), Math.min(1e3, Math.max(2, hi * 2))]);
           sE.hline(1, { color: 'green', dash: [6, 5], width: 1.3 });
-          sE.path(r.en.map((e, j) => [j * r.perStep, e]), { color: 'accent', width: 3.2 });
+          sE.path(r.en.map((e, j) => [j * r.perStep, e]), { color: 'accent', width: 2.6 });
           if (meth.value === 'fe' || meth.value === 'be') {
             const g = Math.log10(1 + hw * hw) * (meth.value === 'fe' ? 1 : -1);
             sE.fn((u) => 10 ** (g * u / r.perStep), { color: 'orange', dash: [5, 4], width: 1.6 });
@@ -708,8 +708,10 @@ which oscillates at the driving frequency and lags it by $\delta\in(0,\pi)$, and
           if (tTR.value) sX.fn(s.tr, { color: 'orange', width: 1.8 });
           if (tSS.value && tTR.value) sX.fn((t) => s.ss(t) + s.tr(t), { color: 'green', dash: [2, 4], width: 2 });
           // phasor diagram
-          const R = 1.15 * Math.max(1, s.A); sP.setView([-R, R], [-R, 0.32 * R]);
-          sP.line(-R, 0, R, 0, { color: 'faint', width: 1 }); sP.line(0, -R, 0, 0.3 * R, { color: 'faint', width: 1 });
+          const R = 1.15 * Math.max(1, s.A), qx = s.A * Math.cos(s.d), qy = -s.A * Math.sin(s.d);
+          const x0 = Math.min(0, qx) - 0.22 * R, x1 = Math.max(1, qx) + 0.22 * R, y0 = Math.min(0, qy) - 0.22 * R, y1 = 0.28 * R;
+          sP.setView([x0, x1], [y0, y1]);
+          sP.line(x0 - R, 0, x1 + R, 0, { color: 'faint', width: 1 }); sP.line(0, y0 - R, 0, y1 + R, { color: 'faint', width: 1 });
           sP.arrow(0, 0, 1, 0, { color: 'muted', width: 2.2 }); sP.text('drive F₀/k', 1, 0, { color: 'muted', size: 11, dy: -10, align: 'center' });
           const px = s.A * Math.cos(-s.d), py = s.A * Math.sin(-s.d);
           sP.curve((a) => [0.35 * R * Math.cos(a), 0.35 * R * Math.sin(a)], -s.d, 0, { color: 'orange', width: 1.6 });
