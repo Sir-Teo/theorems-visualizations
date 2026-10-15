@@ -187,7 +187,7 @@ export default {
           pic: 'Run SIR on a lattice, a small world and a random network with equal transmission: final size and peak timing differ, compared with the well-mixed ODE curve.' },
         { num: '5.10', kind: 'Phenomenon', name: 'Hubs, superspreaders and the vanishing threshold', deps: ['soc-5.9', 'soc-4.10'], refs: ['Newman ch. 16'],
           pic: 'Effective R on a network is ⟨k²⟩/⟨k⟩ times transmissibility; growing a scale-free network shows the epidemic threshold sliding toward zero, and targeting hubs for vaccination restores it.' },
-        { num: '5.11', kind: 'Phenomenon', name: 'Robustness and fragility: random failure versus targeted attack', deps: ['soc-4.2', 'soc-4.9'], refs: ['Newman ch. 15'],
+        { num: '5.11', kind: 'Phenomenon', name: 'Random failure versus targeted attack', deps: ['soc-4.2', 'soc-4.9'], refs: ['Newman ch. 15'],
           pic: 'Remove nodes at random or highest-degree first from a heavy-tailed network; the giant component barely shrinks under random removal and shatters under attack.' },
         { num: '5.12', kind: 'Model', name: 'Influence maximization (independent cascades)', deps: ['soc-5.8'], refs: [],
           pic: 'Choose k seed nodes to maximize expected spread; the greedy algorithm’s picks and spread are compared with picking the highest-degree nodes, with its (1 − 1/e) guarantee drawn.' },

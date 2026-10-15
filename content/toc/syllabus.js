@@ -17,6 +17,10 @@
 // Primitive/μ-recursive functions, cellular automata, tag systems and Fractran are not in Sipser;
 // they are referred to Sipser §3.2 (“Equivalence with other models”). Deliberately omitted:
 // star height, Petri nets, Knuth–Bendix completion, L-systems (low centrality for a first course).
+// Overlaps with parallel collections: the pigeonhole principle is `comb-1.2`, string-matching
+// automata/KMP are `algo` ch. 13, Presburger arithmetic, Gödel’s incompleteness and Church’s
+// theorem are `logic` ch. 7 (those items were removed here; their numbers are left as gaps).
+// `logic` ch. 6 cross-links (see:) to the computability items kept here.
 export default {
   collection: 'toc',
   chapters: [
@@ -360,7 +364,7 @@ export default {
     {
       n: 11,
       title: 'Self-reference, logic and information',
-      summary: String.raw`A program can obtain its own description — the recursion theorem — which yields quines, one-line undecidability proofs and the fact that minimal programs cannot be recognized. Turned on logic, computability explains Gödel: arithmetic with addition alone is decidable, but with multiplication its truths cannot be listed by any sound proof system. Oracles organize undecidable problems into levels, and Kolmogorov complexity measures the information in a single string by the length of its shortest description.`,
+      summary: String.raw`A program can obtain its own description — the recursion theorem — which yields quines, one-line undecidability proofs and the fact that minimal programs cannot be recognized. Encoding computations as numbers shows that truth in arithmetic with addition and multiplication is undecidable, the computational core of Gödel’s theorems (developed in full in the logic collection). Oracles organize undecidable problems into levels, and Kolmogorov complexity measures the information in a single string by the length of its shortest description.`,
       items: [
         { num: '11.1', kind: 'Algorithm', name: 'Self-reproducing programs (quines)', deps: ['toc-7.9'], refs: ['Sipser §6.1'],
           pic: 'A two-part quine — part A prints part B, part B prints A and then itself — is executed and its output compared with its source; editing either half breaks or preserves self-reproduction.' },

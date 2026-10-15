@@ -14,7 +14,8 @@
 // formula, rasterization, the Phong model and radiosity are standard course topics cited to the
 // nearest chapter. Deliberately omitted: animation and physical simulation (CS184), mesh
 // simplification and geometry processing, volume visualization (marching cubes), simplex range
-// searching (de Berg ch. 16) and neural rendering.
+// searching (de Berg ch. 16) and neural rendering. The Fresnel equations themselves are `waves-4.7`;
+// sampling theory is `sig` ch. 7; Jordan curve and Euler formula are `top` ch. 10.
 export default {
   collection: 'cg',
   chapters: [

@@ -14,6 +14,9 @@
 // practical bridges cited to the nearest chapter. Interactive proofs, BQP and the PCP theorem come
 // from `cplx`; entropy and coding from `info`. Deliberately omitted: quantum key distribution
 // (left to `qinfo`), specific standards beyond AES/SHA/TLS, and electronic voting.
+// Overlaps with parallel collections: Euclid/Bézout, Euler–Fermat, the CRT, the unit group,
+// quadratic residues, the elliptic-curve group law, Hasse’s bound, lattices and Minkowski’s theorem
+// are owned by `nt` and cited from here (the duplicate items were removed, numbers left as gaps).
 export default {
   collection: 'crypto',
   chapters: [

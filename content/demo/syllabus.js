@@ -250,7 +250,7 @@ export default {
       items: [
         { num: '8.1', kind: 'Theorem', name: 'Kinship from rates (Goodman–Keyfitz–Pullum)', deps: ['demo-6.4'], refs: ['K&C: The Demographic Theory of Kinship'],
           pic: 'Choose a fertility and mortality regime; the expected numbers of living mothers, sisters, daughters and cousins at each age are computed and drawn as a family tree with fractional people.' },
-        { num: '8.2', kind: 'Phenomenon', name: 'Kinship under low fertility: fewer cousins, more great-grandparents', deps: ['demo-8.1'], refs: ['K&C: The Demographic Theory of Kinship'],
+        { num: '8.2', kind: 'Phenomenon', name: 'Low-fertility kinship: fewer cousins, more grandparents', deps: ['demo-8.1'], refs: ['K&C: The Demographic Theory of Kinship'],
           pic: 'Slide from a 1900 to a 2020 regime: the family tree thins sideways (siblings, cousins) and lengthens vertically (living grandparents), the “beanpole family”.' },
         { num: '8.3', kind: 'Model', name: 'Gravity model and Ravenstein’s laws of migration', deps: ['demo-1.3'], refs: ['PHG ch. 1'],
           pic: 'Flows between cities scale with the product of populations over a power of distance; fit the exponent to internal migration data and map the predicted and observed flows.' },

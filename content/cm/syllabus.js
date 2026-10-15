@@ -25,7 +25,8 @@
 //   heat capacity thermo-8.10, Pauli paramagnetism thermo-8.11, Einstein solid thermo-5.3, Debye model
 //   thermo-9.13/9.14, Curie’s law thermo-6.10, Weiss mean field thermo-11.5, Curie–Weiss thermo-11.6,
 //   Mermin–Wagner thermo-11.21); em (Drude model em-6.4, Hall effect em-7.5, plasma frequency em-11.14,
-//   diamagnetism em-8.2, domains and hysteresis em-8.9/8.10, Meissner effect em-8.15).
+//   diamagnetism em-8.2, domains and hysteresis em-8.9/8.10, Meissner effect em-8.15); energy (photovoltaic
+//   cell energy-4.3, Shockley–Queisser limit energy-4.5).
 // Deliberate omissions: Hund’s rules and atomic magnetism (qm/qchem), magnetic resonance (qinfo), surfaces,
 //   alloys, amorphous solids, Peierls instability (not in the references).
 export default {
@@ -139,7 +140,7 @@ export default {
     {
       n: 4,
       title: 'Semiconductors and devices',
-      summary: String.raw`In a semiconductor the gap is small enough that temperature and impurities control the carrier densities: their product is fixed by the gap, and dopants behave like scaled-up hydrogen atoms. Carriers drift in fields and diffuse down gradients. Joining p- and n-type material builds a depletion layer and a built-in field, giving the diode’s exponential current–voltage curve and, from there, LEDs, solar cells (and their efficiency limit), transistors, quantum wells and excitons.`,
+      summary: String.raw`In a semiconductor the gap is small enough that temperature and impurities control the carrier densities: their product is fixed by the gap, and dopants behave like scaled-up hydrogen atoms. Carriers drift in fields and diffuse down gradients. Joining p- and n-type material builds a depletion layer and a built-in field, giving the diode’s exponential current–voltage curve and, from there, LEDs, transistors, quantum wells and excitons (solar cells and their efficiency limit are developed in energy).`,
       items: [
         { num: '4.1', kind: 'Definition', name: 'Direct and indirect band gaps', deps: ['qm-10.13', 'cm-2.3'], refs: ['Ashcroft–Mermin ch. 28', 'Kittel ch. 8'],
           pic: 'Band edges of GaAs and silicon side by side: a photon (nearly vertical arrow) bridges the direct gap alone, while the indirect gap needs a phonon to supply momentum, and absorption edges are compared.' },
@@ -157,15 +158,13 @@ export default {
           pic: 'Join p- and n-type regions: carriers diffuse and recombine, Poisson’s equation is solved for the depletion layer, and the band diagram bends by the built-in potential as doping sliders move.' },
         { num: '4.8', kind: 'Law', name: 'Shockley diode equation', deps: ['cm-4.7'], refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 8'],
           pic: 'Apply a bias: quasi-Fermi levels split, the computed current follows I₀(e^{eV/kT} − 1), rising exponentially forward and saturating in reverse.' },
-        { num: '4.9', kind: 'Invention', name: 'Light-emitting diodes and solar cells', deps: ['cm-4.8', 'cm-4.1'], refs: ['Kittel ch. 17', 'Ashcroft–Mermin ch. 29'],
-          pic: 'Forward-biased recombination emits photons at the gap energy, with a gap slider changing the colour; illuminate the same junction and its I–V curve drops into the power-producing quadrant with a maximum-power point.' },
-        { num: '4.10', kind: 'Phenomenon', name: 'Shockley–Queisser limit', deps: ['cm-4.9', 'thermo-9.4'], refs: ['Kittel ch. 8'],
-          pic: 'A solar spectrum and a gap slider: photons below the gap are lost, energy above it thermalizes, and the computed single-junction efficiency peaks near 33% at about 1.34 eV.' },
-        { num: '4.11', kind: 'Invention', name: 'Field-effect transistor (MOSFET)', deps: ['cm-4.7'], refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 17'],
+        { num: '4.9', kind: 'Invention', name: 'Light-emitting diodes', deps: ['cm-4.8', 'cm-4.1'], refs: ['Kittel ch. 17', 'Ashcroft–Mermin ch. 29'],
+          pic: 'Forward-bias a junction: injected electrons and holes recombine in the depletion region and emit photons at the gap energy, a gap slider sweeps the colour from infrared to blue, and an indirect-gap toggle shows the emission collapsing.' },
+        { num: '4.10', kind: 'Invention', name: 'Field-effect transistor (MOSFET)', deps: ['cm-4.7'], refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 17'],
           pic: 'Raise the gate voltage on a metal–oxide–semiconductor stack: the bands bend until an inversion channel forms at the surface, and the drain current switches on past the threshold.' },
-        { num: '4.12', kind: 'Model', name: 'Quantum wells and heterostructures', deps: ['cm-4.1', 'cm-2.3', 'qm-3.4'], refs: ['Kittel ch. 18', 'Kittel ch. 17'],
+        { num: '4.11', kind: 'Model', name: 'Quantum wells and heterostructures', deps: ['cm-4.1', 'cm-2.3', 'qm-3.4'], refs: ['Kittel ch. 18', 'Kittel ch. 17'],
           pic: 'A GaAs layer between AlGaAs barriers: confined subband energies are solved for a width slider, and the emission colour shifts blue as the well narrows.' },
-        { num: '4.13', kind: 'Phenomenon', name: 'Excitons', deps: ['cm-4.4'], refs: ['Kittel ch. 15'],
+        { num: '4.12', kind: 'Phenomenon', name: 'Excitons', deps: ['cm-4.4'], refs: ['Kittel ch. 15'],
           pic: 'An electron and a hole bind like a hydrogen atom scaled by the reduced effective mass and dielectric constant; the computed Rydberg series of absorption lines just below the gap is compared with cuprous-oxide spectra.' },
       ],
     },

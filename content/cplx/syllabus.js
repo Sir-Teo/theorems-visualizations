@@ -22,6 +22,9 @@
 // cryptography, zero knowledge and Impagliazzo’s worlds are in `crypto`; quantum algorithms are
 // left to `qinfo`. Fine-grained and parameterized complexity, the sensitivity theorem (2019) and
 // Williams’ ACC⁰ bound (2011) are outside or after the book and are referred to the nearest chapter.
+// Overlaps with parallel collections: approximation ratios, the vertex-cover 2-approximation,
+// greedy set cover, the knapsack scheme and TSP inapproximability are `algo` ch. 14; Miller–Rabin
+// is `nt-3.12`; Simon’s algorithm is `qinfo`. Those items were removed (numbers left as gaps).
 export default {
   collection: 'cplx',
   chapters: [
@@ -413,7 +416,7 @@ export default {
     {
       n: 13,
       title: 'Average-case and quantum complexity',
-      summary: String.raw`Worst-case hardness says nothing about typical inputs. Levin’s theory gives average-case analogues of NP and of completeness under samplable distributions, the setting that cryptography needs. Quantum computation defines the class BQP, which contains BPP and factoring, sits inside PSPACE, and can be separated from classical classes relative to oracles — the strongest evidence yet against the extended Church–Turing thesis.`,
+      summary: String.raw`Worst-case hardness says nothing about typical inputs. Levin’s theory gives average-case analogues of NP and of completeness under samplable distributions, the setting that cryptography needs. Quantum computation defines the class BQP, which contains BPP and factoring and sits inside PSPACE, while query lower bounds show that even quantum computers cannot search an unstructured list faster than √N.`,
       items: [
         { num: '13.1', kind: 'Definition', name: 'Distributional problems and average-case tractability', deps: ['toc-12.11'], refs: ['Arora–Barak ch. 18'],
           pic: 'Run a SAT solver on random 3SAT instances at different clause densities; running time peaks near the satisfiability threshold and is easy on either side.' },

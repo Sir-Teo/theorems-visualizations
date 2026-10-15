@@ -16,6 +16,11 @@
 // both books and are cited to the nearest section or chapter. Deliberately omitted: Burg’s maximum-entropy spectrum
 // estimation, relay and interference channels, Gelfand–Pinsker coding, the conditional limit
 // theorem (specialist topics); Fisher information and Cramér–Rao are left to `stat`.
+// Overlaps with parallel collections: Huffman coding and its optimality are `algo-10.10/10.11`;
+// the sampling theorem and modulation are `sig` ch. 7 and 12; Landauer, Szilard, Maxwell’s demon,
+// Gibbs entropy and the maximum-entropy principle are `thermo` ch. 5–6, von Neumann entropy is
+// `qm-14.5`/`qinfo` ch. 10 — all of which cite this collection. Those items were removed here and
+// their numbers left as gaps.
 export default {
   collection: 'info',
   chapters: [
@@ -369,7 +374,7 @@ export default {
     {
       n: 11,
       title: 'Inference, gambling and investment',
-      summary: String.raw`Information theory doubles as a theory of inference and of betting. Decoding is inference, and maximum entropy and minimum description length are principled ways to choose models. A gambler’s best long-run growth rate is set by entropy, side information raises it by exactly the mutual information, and good prediction, good compression and good gambling turn out to be the same skill. The same mathematics yields log-optimal and universal portfolios.`,
+      summary: String.raw`Information theory doubles as a theory of inference and of betting. Decoding is inference, and minimum description length turns model choice into a compression problem. A gambler’s best long-run growth rate is set by entropy, side information raises it by exactly the mutual information, and good prediction, good compression and good gambling turn out to be the same skill. The same mathematics yields log-optimal and universal portfolios.`,
       items: [
         { num: '11.1', kind: 'Method', name: 'Maximum-likelihood and MAP decoding', deps: ['info-5.1'], refs: ['MacKay ch. 9'],
           pic: 'For each received word, posterior probabilities of all codewords are shown as bars; the prior slider moves the MAP decision away from the maximum-likelihood one.' },
@@ -394,8 +399,8 @@ export default {
     // ───────────────────────────────────────────────────────────── 12
     {
       n: 12,
-      title: 'Networks, secrecy and the physics of information',
-      summary: String.raw`With many senders and receivers, capacities become regions: correlated sources can be compressed separately as if together (Slepian–Wolf), users can share a channel up to a pentagon of rate pairs, and mixing packets inside a network beats routing them. A noisier eavesdropper can be defeated with no key at all. Information is also physical: erasing a bit costs energy, which exorcises Maxwell’s demon, Shannon’s entropy reappears as Gibbs’ and von Neumann’s, and sensory systems seem tuned to transmit information efficiently.`,
+      title: 'Networks, secrecy and efficient coding',
+      summary: String.raw`With many senders and receivers, capacities become regions: correlated sources can be compressed separately as if together (Slepian–Wolf), users can share a channel up to a pentagon of rate pairs, and mixing packets inside a network beats routing them. A noisier eavesdropper can be defeated with no key at all. Beyond engineering, the same measures suggest that sensory systems are tuned to transmit information efficiently; the physics of information (Landauer, Maxwell’s demon) is treated in the thermodynamics collection.`,
       items: [
         { num: '12.1', kind: 'Theorem', name: 'Slepian–Wolf theorem', deps: ['info-4.7', 'info-1.7'], refs: ['Cover–Thomas §15.4'],
           pic: 'Two correlated binary sources are compressed separately; the achievable rate region is drawn, and random binning decodes successfully at a corner the reader picks.' },
