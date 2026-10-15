@@ -83,13 +83,17 @@ async function worker() {
       }
     } catch (e) { r = { ok: false, errors: [String(e.message || e)], texErrors: [] }; }
     const errs = [...new Set([...(r.errors || []), ...consoleErrs.filter((m) => !/favicon|Failed to load resource/.test(m))])];
-    results.push({ it, errs, tex: r.texErrors || [], blank: r.blank || [], canvases: r.canvases || 0 });
-    const flag = errs.length ? '✗' : (r.texErrors?.length || r.blank?.length) ? '!' : '✓';
+    const q = r.quality || {}; const qual = [];
+    if (r.ok && q.interactive === 0) qual.push('static picture: no control, handle, drag, click or hover');
+    if (r.ok && !q.readout && it.kind !== 'Definition') qual.push('no live readout');
+    results.push({ it, errs, tex: r.texErrors || [], blank: r.blank || [], canvases: r.canvases || 0, qual });
+    const flag = errs.length ? '✗' : (r.texErrors?.length || r.blank?.length || qual.length) ? '!' : '✓';
     if (!flags.has('--quiet') || flag !== '✓') {
       console.log(`${flag} ${it.id.padEnd(12)} ${it.name.slice(0, 60)}`);
       for (const e of errs) console.log(`    error: ${e.split('\n').slice(0, 3).join(' | ')}`);
       for (const e of r.texErrors || []) console.log(`    tex: ${e}`);
       if (r.blank?.length) console.log(`    blank canvas(es): ${r.blank.join(', ')} of ${r.canvases}`);
+      for (const w of qual) console.log(`    quality: ${w}`);
     }
   }
   await page.close();
@@ -97,5 +101,6 @@ async function worker() {
 await Promise.all(Array.from({ length: Math.min(+flagVal('--jobs', 4), sel.length || 1) }, worker));
 await browser.close(); server.close();
 const bad = results.filter((r) => r.errs.length).length, warn = results.filter((r) => !r.errs.length && (r.tex.length || r.blank.length)).length;
-console.log(`\nbrowser check: ${results.length} run, ${bad} failed, ${warn} with TeX/blank warnings` + (flags.has('--shots') ? `; screenshots in shots/` : ''));
+const qwarn = results.filter((r) => r.qual.length).length;
+console.log(`\nbrowser check: ${results.length} run, ${bad} failed, ${warn} with TeX/blank warnings, ${qwarn} with quality warnings` + (flags.has('--shots') ? `; screenshots in shots/` : ''));
 process.exit(bad || st.errors ? 1 : 0);

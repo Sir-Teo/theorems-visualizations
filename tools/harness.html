@@ -51,7 +51,19 @@
     renderRich(document.getElementById('caption'), item.caption || '');
     renderRich(document.getElementById('idea'), item.idea || '');
     if (typeof item.viz !== 'function') throw new Error('no viz function');
-    mount(document.getElementById('viz'), item.viz);
+    // quality instrumentation: count interactive affordances without touching the runtime
+    const stats = { handles: 0, drags: 0, clicks: 0, hover: 0, animate: 0, stages: 0 };
+    const wrapStage = (s) => {
+      stats.stages++;
+      for (const [k, key] of [['handle', 'handles'], ['onDrag', 'drags'], ['onClick', 'clicks']]) if (typeof s[k] === 'function') { const f = s[k].bind(s); s[k] = (...a) => { stats[key]++; return f(...a); }; }
+      return s;
+    };
+    mount(document.getElementById('viz'), (v) => {
+      for (const k of ['stage', 'stage3d']) { const f = v[k]; v[k] = (o = {}) => { if (o.hover) stats.hover++; return wrapStage(f(o)); }; }
+      const an = v.animate; v.animate = (...a) => { stats.animate++; return an(...a); };
+      return item.viz(v);
+    });
+    window.__vizStats = stats;
     await new Promise((r) => setTimeout(r, +(q.get('wait') || 1500)));
     window.dispatchEvent(new Event('vizpause'));
     await new Promise((r) => setTimeout(r, 120));
@@ -64,6 +76,11 @@
       if (n < 3) blank.push(i);
     });
     out.canvases = document.querySelectorAll('#viz canvas').length;
+    const st = window.__vizStats || {};
+    const controls = document.querySelectorAll('#viz .viz-controls > *').length;
+    const readout = (document.querySelector('#viz .viz-readout')?.textContent || '').trim().length > 0;
+    const stage3dDrag = document.querySelectorAll('#viz .stage-hint').length; // 3D stages rotate by dragging
+    out.quality = { ...st, controls, readout, interactive: controls + (st.handles || 0) + (st.drags || 0) + (st.clicks || 0) + (st.hover || 0) + stage3dDrag };
     out.blank = blank;
     out.ok = true;
   } catch (e) { out.errors.push(String(e.stack || e)); }
