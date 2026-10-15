@@ -314,13 +314,14 @@ The canonical feedback loop has five parts: the **reference** $r$; the **compara
           { s: 'ym', pts: [[S.sn[0] - R, Y2], [S.cmp[0], Y2], [S.cmp[0], Y1 - R]], lab: ['y_m', 4.6, Y2 + 0.45] },
         ];
         const INFO = {
-          C: { name: 'controller $C(s)=2+2/s$ (PI)', ins: [['e', 'orange', '$e$ (in)']], out: ['u', 'accent', '$u$ (out)'] },
-          P: { name: 'plant $P(s)=1/((s+1)(0.5s+1))$', ins: [['v', 'orange', '$v=u+d$ (in)']], out: ['y', 'accent', '$y$ (out)'] },
-          H: { name: 'sensor $H(s)=1/(0.1s+1)$', ins: [['y', 'orange', '$y$ (in)']], out: ['hy', 'accent', '$Hy$ (out)'] },
-          cmp: { name: 'comparator $e=r-y_m$', ins: [['r', 'orange', '$r$ (in, +)'], ['ym', 'purple', '$y_m$ (in, −)']], out: ['e', 'accent', '$e$ (out)'] },
-          sd: { name: 'load junction $v=u+d$', ins: [['u', 'orange', '$u$ (in)'], ['d', 'purple', '$d$ (in)']], out: ['v', 'accent', '$v$ (out)'] },
-          sn: { name: 'noise junction $y_m=Hy+n$', ins: [['hy', 'orange', '$Hy$ (in)'], ['n', 'purple', '$n$ (in)']], out: ['ym', 'accent', '$y_m$ (out)'] },
+          C: { name: 'controller $C(s)=2+2/s$ (PI)', ins: [['e', 'orange', 'e']], out: ['u', 'accent', 'u'] },
+          P: { name: 'plant $P(s)=1/((s+1)(0.5s+1))$', ins: [['v', 'orange', 'v=u+d']], out: ['y', 'accent', 'y'] },
+          H: { name: 'sensor $H(s)=1/(0.1s+1)$', ins: [['y', 'orange', 'y']], out: ['hy', 'accent', 'Hy'] },
+          cmp: { name: 'comparator $e=r-y_m$', ins: [['r', 'orange', 'r'], ['ym', 'purple', 'y_m']], out: ['e', 'accent', 'e'] },
+          sd: { name: 'load junction $v=u+d$', ins: [['u', 'orange', 'u'], ['d', 'purple', 'd']], out: ['v', 'accent', 'v'] },
+          sn: { name: 'noise junction $y_m=Hy+n$', ins: [['hy', 'orange', 'Hy'], ['n', 'purple', 'n']], out: ['ym', 'accent', 'y_m'] },
         };
+        let legendFor = '';
         dg.onClick((x, y) => {
           for (const [k, [bx, by, w, h]] of Object.entries(B)) if (Math.abs(x - bx) < w / 2 + 0.2 && Math.abs(y - by) < h / 2 + 0.2) { sel.set(k); return; }
           for (const [k, [sx, sy]] of Object.entries(S)) if (Math.hypot(x - sx, y - sy) < 0.8) { sel.set(k); return; }
@@ -356,11 +357,11 @@ The canonical feedback loop has five parts: the **reference** $r$; the **compara
           sc.vline(tc, { color: 'gold', width: 1.6 });
           for (const [s, col] of [...I.ins, I.out]) sc.dot(tc, at(rr[s], tc), { r: 4, color: col });
           sc.setTitle(I.name);
-          v.legend([...I.ins.map(([, c, l]) => [c, l]), [I.out[1], I.out[2]], ['gold', 'now', { dot: true }]]);
+          if (legendFor !== cur) { legendFor = cur; v.legend([...I.ins.map(([, c, l]) => [c, `input $${l}$`]), [I.out[1], `output $${I.out[2]}$`], ['gold', 'now', { dot: true }]]); }
         }, { period: TEND, still: 9.4 });
         v.readout((t) => {
           const rr = getRun(), tc = (t ?? 0) % TEND, I = INFO[sel.value];
-          const vals = [...I.ins, I.out].map(([s, , l]) => `${l.replace(/ \(.*\)\$?$/, '').replace(/ \((in|out)[^)]*\)/, '')} = ${v.fix(at(rr[s], tc), 3)}`).join(', ');
+          const vals = [...I.ins, I.out].map(([s, , l]) => `$${l.split('=')[0]}$ = ${v.fix(at(rr[s], tc), 3)}`).join(', ');
           return `${I.name} at $t$ = ${v.fix(tc, 2)} s: ${vals} · output $y$ = ${v.fix(at(rr.y, tc), 3)} against the reference $r$ = ${v.fix(at(rr.r, tc), 0)}`;
         });
       },
@@ -453,7 +454,7 @@ and with polynomial fractions $C=n_C/d_C$, $P=n_P/d_P$, $H=n_H/d_H$ every closed
           const T0 = Math.abs(c.T.den[0]) > 1e-12 ? c.T.num[0] / c.T.den[0] : NaN;
           const poles = c.cl.slice().sort((a, b) => b[0] - a[0]).map((p) => (Math.abs(p[1]) < 1e-9 ? v.fix(p[0], 3) : `$${v.fix(p[0], 3)}${p[1] < 0 ? '-' : '+'}${v.fix(Math.abs(p[1]), 3)}i$`)).join(', ');
           const fin = mr < 0 ? ` · final value $T(0)$ = ${v.fix(T0, 4)}, simulation at $t=16$ s: ${v.fix(c.sim.y[c.sim.y.length - 1], 4)}` : '';
-          return `closed-loop poles: ${poles} → ${mr < 0 ? '**stable**' : '**unstable**'}${fin} · formula vs loop simulation: largest difference ${v.sci(c.mx, 2).replace(/^/, '$').concat('$')}${mr >= 0 ? ` (relative ${v.sci(c.rel, 2).replace(/^/, '$').concat('$')})` : ''}, so the two agree`;
+          return `closed-loop poles: ${poles} → ${mr < 0 ? '**stable**' : '**unstable**'}${fin} · formula vs loop simulation: largest difference $${v.sci(Math.max(c.mx, 1e-16), 2)}$${mr >= 0 ? ` (relative to the largest output, $${v.sci(Math.max(c.rel, 1e-16), 2)}$)` : ''}, so the two agree`;
         });
       },
     },
@@ -627,7 +628,6 @@ as complex numbers. So $S$ and $T$ cannot both be small at the same frequency. W
           const Ls = LOOPS[lpS.value].L(kS.value), w = hd.x;
           const vals = grid.map((q) => { const l = tfAt(Ls, q), den = cadd([1, 0], l), S = cdiv([1, 0], den), T = cdiv(l, den); return { l, S, T }; });
           bd.hline(1, { color: 'faint', width: 1 });
-          const ln = scS.value === 'log';
           const pts = (f) => grid.map((q, i) => [q, f(vals[i])]);
           bd.clip(() => {
             bd.path(pts((z) => cabs(z.l)), { color: 'purple', width: 1.6, alpha: 0.75 });
@@ -638,7 +638,6 @@ as complex numbers. So $S$ and $T$ cannot both be small at the same frequency. W
           bd.vline(w, { color: 'gold', width: 1.4 });
           const l = tfAt(Ls, w), den = cadd([1, 0], l), S = cdiv([1, 0], den), T = cdiv(l, den);
           bd.dot(w, cabs(S), { r: 4.5, color: 'accent' }); bd.dot(w, cabs(T), { r: 4.5, color: 'orange' });
-          bd.text(ln ? '|L|' : '', 0.013, 0, {});
           // ---- complex plane
           const R = Math.max(1.6, cabs(S) + 0.3, cabs(T) + 0.3);
           cp.setView([Math.min(-1, -R + 1), Math.max(2.2, R)], [-R, R]);

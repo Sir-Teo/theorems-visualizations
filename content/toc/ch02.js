@@ -180,13 +180,13 @@ $\hat\delta(q,w)$ is the state reached from $q$ after reading $w$. $M$ **accepts
         v.select('machine', [{ value: 'endsAB', label: 'ends in ab' }, { value: 'aMod3', label: '# of a divisible by 3' }, { value: 'hasABA', label: 'contains aba' }], 'endsAB', { onChange: (k) => { D = PRESETS[k](); } });
         const all = v.toggle('runs from every state', false);
         keypad(v, ['a', 'b'], () => w, (x) => { w = x; }, { max: 10 });
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, full: true });
         const RUNC = ['gold', 'blue', 'purple', 'teal', 'pink'];
         let split = 2, geo = null;
         const sh0 = s.handle(0, 0, { color: 'accent', r: 7, constrain: (x, y) => [x, geo ? geo.H - geo.hy : y] });
         v.render(() => {
           const P = pen(s, v), n = w.length, Q = D.states.map((q) => q.id), m = Q.length;
-          const x0 = 92, dx = Math.min(86, (P.W - x0 - 60) / Math.max(n, 1)), top = 56, dy = Math.min(64, (P.H - top - 70) / Math.max(m - 1, 1));
+          const x0 = 104, dx = Math.min(118, (P.W - x0 - 60) / Math.max(n, 1)), top = 62, dy = Math.min(64, (P.H - top - 92) / Math.max(m - 1, 1));
           const X = (t) => x0 + t * dx, Y = (i) => top + i * dy;
           geo = { H: P.H, hy: 30 };
           // split handle snaps to a column
@@ -198,12 +198,13 @@ $\hat\delta(q,w)$ is the state reached from $q$ after reading $w$. $M$ **accepts
             P.box(X(t) + dx / 2 - 13, 12, 26, 26, { r: 4, fill: t < split ? 'blue' : 'orange', alpha: 0.12, stroke: t < split ? 'blue' : 'orange' });
             P.text(w[t], X(t) + dx / 2, 25.5, { size: 15, weight: 600, color: t < split ? 'blue' : 'orange' });
           }
-          P.tex(`x = ${tt(w.slice(0, split))}`, X(split / 2), P.H - 54, { size: 14, color: 'blue' });
-          P.tex(`y = ${tt(w.slice(split))}`, X((split + n) / 2), P.H - 54, { size: 14, color: 'orange' });
+          const yl = Y(m - 1) + 62;
+          P.tex(`x = ${tt(w.slice(0, split))}`, X(split / 2), yl, { size: 14, color: 'blue' });
+          P.tex(`y = ${tt(w.slice(split))}`, X((split + n) / 2), yl, { size: 14, color: 'orange' });
           // state labels and rows
           Q.forEach((q, i) => {
             P.tex(D.states[i].label.replace(/\$/g, ''), 30, Y(i), { size: 16, color: isAcc(D, q) ? 'green' : 'ink' });
-            if (isAcc(D, q)) P.sans('accept', 52, Y(i) + 15, { size: 9.5, color: 'green', align: 'left' });
+            if (isAcc(D, q)) P.sans('accepting', 30, Y(i) + 17, { size: 9.5, color: 'green' });
             P.line(X(0), Y(i), X(n), Y(i), { color: 'grid', width: 1 });
           });
           // every transition between consecutive columns
@@ -223,15 +224,16 @@ $\hat\delta(q,w)$ is the state reached from $q$ after reading $w$. $M$ **accepts
           });
           // δ̂(q0, prefix) under each column
           for (let t = 0; t <= n; t++) P.tex(texState(D, main[t]), X(t), Y(m - 1) + 30, { size: 13, color: t === split ? 'accent' : 'muted' });
-          P.sans('δ̂(q₀, prefix):', X(0) - 12, Y(m - 1) + 30, { align: 'right', size: 11, color: 'muted' });
-          // split line
-          P.line(X(split), 6, X(split), P.H - 36, { color: 'accent', width: 1.6, dash: [6, 4] });
+          P.tex('\\hat\\delta(q_0,\\text{prefix})', X(0) - 16, Y(m - 1) + 30, { align: 'right', size: 12, color: 'muted' });
+          // split line (interrupted around the labels)
+          P.line(X(split), 6, X(split), Y(m - 1) + 17, { color: 'accent', width: 1.6, dash: [6, 4] });
+          P.line(X(split), Y(m - 1) + 43, X(split), P.H - 8, { color: 'accent', width: 1.6, dash: [6, 4] });
         });
         v.readout(() => {
           const x = w.slice(0, split), y = w.slice(split), r = run(D, x).path.at(-1);
           let q = r; for (const c of y) q = step(D, q, c);
           const full = run(D, w);
-          return String.raw`$\hat\delta(q_0, ${tt(x)}) = ${texState(D, r)}$, then $\hat\delta(${texState(D, r)}, ${tt(y)}) = ${texState(D, q)}$ ${q === full.path.at(-1) ? '=' : '\\neq'} $\hat\delta(q_0, ${tt(w)})$ ✓ · ${full.acc ? '$\\in F$: **accept**' : '$\\notin F$: **reject**'}`;
+          return String.raw`$\hat\delta(q_0, ${tt(x)}) = ${texState(D, r)}$, then $\hat\delta(${texState(D, r)}, ${tt(y)}) = ${texState(D, q)} ${q === full.path.at(-1) ? '=' : '\\neq'} \hat\delta(q_0, ${tt(w)})$ ✓ · $\hat\delta(q_0, w)$ ${full.acc ? '$\\in F$: **accept**' : '$\\notin F$: **reject**'}`;
         });
       },
     },

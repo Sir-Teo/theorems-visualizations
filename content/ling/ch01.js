@@ -852,7 +852,7 @@ So [b] *is* "voiced bilabial plosive". A vowel symbol is defined by the position
         // particles: oral and nasal paths; speed ∝ (flow / local area), compressed so that slow flows still move
         const R = v.rng(4), oral = M.range(150).map(() => [R(), R() * 2 - 1]), nasal = M.range(60).map(() => [R(), R() * 2 - 1]);
         const CX = 17.6;
-        const halfOral = (x, a) => (x < 3.4 ? 2.2 : x < 5.8 ? 0.55 : x < 6.25 ? Math.max(0.04, 0.55 * Math.sqrt(a.Ag / 0.6)) : Math.abs(x - CX) < 0.55 ? 0.95 * Math.sqrt(Math.min(3, a.Ac) / 3) : x < 20.6 ? 0.95 : 2.4);
+        const halfOral = (x, a) => (x < 3.4 ? 2.2 : x < 5.8 ? 0.55 : x < 6.25 ? Math.max(0.04, 0.55 * Math.sqrt(a.Ag / 0.6)) : Math.abs(x - CX) < 0.55 ? 0.95 * Math.sqrt(Math.min(3, a.Ac) / 3) : x < 20.6 ? 0.95 : 0.95 + 0.3 * (x - 20.6));
         const OPATH = [[1.6, 0], [20.6, 0], [24.5, 0]], NPATH = [[1.6, 0], [8.6, 0], [9.6, 1.7], [10.1, 3.1], [20.6, 3.1], [24.5, 3.1]];
         const pathPos = (P, u) => { const S = arcLen(P), L = S[S.length - 1], q = along(P, S, u * L); return [q.x, q.y, q.nx, q.ny]; };
         const timeTable = (P, half, U) => { // cumulative travel time along a path, sampled at 240 points
@@ -1010,6 +1010,63 @@ Languages carve this one phonetic dimension differently: Spanish contrasts prevo
           info = { vot, ph, en: heard('en'), es: heard('es'), th: heard('th') };
         });
         v.readout(() => info && `VOT = **${info.vot > 0 ? '+' : info.vot < 0 ? '−' : ''}${Math.abs(Math.round(info.vot))} ms**: phonetically ${info.ph} · heard as English **${info.en}**, Spanish **${info.es}**, Thai **${info.th}**`);
+      },
+    },
+    // ------------------------------------------------------------------ 1.6
+    {
+      num: '1.6',
+      kind: 'Concept',
+      name: 'Vowels: height, backness and rounding',
+      statement: String.raw`Vowels are made with an open vocal tract and are classified by three articulatory dimensions: **height** (how close the highest part of the tongue body comes to the roof of the mouth: close, close-mid, open-mid, open), **backness** (whether that highest point is towards the front, centre or back of the mouth), and **lip rounding**. The IPA vowel chart is a stylised map of tongue positions, a trapezoid because the tongue has more room to move front and back when it is high. The cardinal vowels [i e ɛ a ɑ ɔ o u] are reference points spaced around its edge. Acoustically, the first formant falls as the tongue rises (F1 tracks height inversely), the second formant falls as the tongue moves back (F2 tracks backness), and rounding lowers F2 and F3 by lengthening and narrowing the lip tube.`,
+      idea: String.raw`The tongue body divides the tract into a back cavity (pharynx) and a front cavity (mouth) joined by a constriction. Raising the tongue narrows that constriction and lowers F1 (a Helmholtz-like resonance of the back cavity with the constriction as its neck), while pulling the tongue down and back narrows the pharynx and raises F1. Moving the constriction forward shortens the front cavity and lengthens the back one, raising F2; rounding the lips adds a narrow tube in front and lowers the formants affiliated with the front of the tract. These are exactly the perturbations of the uniform tube (ling-1.8) computed here from the drawing; the symbols and their positions come from the IPA chart (ling-1.2).`,
+      caption: String.raw`Drag the **tongue body** (blue handle) around the mouth and toggle **lip rounding**. The tract's cross-sectional area along its length (bottom strip) is read off the drawing, and its resonances F1–F3 are computed by a chain-of-tubes model; the right panel places the result on an F1–F2 chart beside the measured cardinal vowels (grey), naming the nearest one. *Listen* synthesizes the vowel from the computed formants; with *sound while dragging* on, it sounds continuously and follows your drag. Try a high front tongue for [i], low back for [ɑ], and round a high back tongue for [u].`,
+      deps: ['ling-1.2'],
+      refs: ['Ladefoged & Johnson'],
+      tags: ['vowels', 'articulation'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Vowel' },
+      viz(v) {
+        const M = v.M;
+        const rnd = v.toggle('lips rounded', false, { onChange: () => voice.update(loopBuf) });
+        const live = v.toggle('sound while dragging', false, { onChange: (on) => { if (on) voice.start(loopBuf()); else voice.stop(); } });
+        const tr = v.stage({ x: [-2.5, 9.6], y: [-9.6, 4.6], equal: true, height: 360, axes: false, minWidth: 280, weight: 1.1 });
+        const LF = (f) => -Math.log(f);
+        const ch = v.stage({ x: [LF(2700), LF(480)], y: [LF(1000), LF(185)], height: 360, axes: 'box', minWidth: 260, title: 'computed formants on the F1–F2 chart', xticks: [2500, 2000, 1500, 1000, 700, 500].map((f) => [LF(f), f >= 1000 ? `${f / 1000}k` : `${f}`]), yticks: [200, 300, 400, 600, 800].map((f) => [LF(f), `${f}`]), xlabel: 'F2 (Hz)', ylabel: 'F1 (Hz)' });
+        const af = v.stage({ x: [0, 18.5], y: [0, 9], height: 120, axes: 'box', full: true, xlabel: 'distance from the glottis (cm)', ylabel: 'area (cm²)', yticks: [0, 4, 8] });
+        const H = tr.handle(3.4, 1.2, { color: 'accent', r: 8, constrain: (x, y) => { const hx = clampN(x, 3.0, 5.8); return [hx, fitTongue(hx, clampN(y, -1.0, 1.9))]; } });
+        H.set(3.4, fitTongue(3.4, 1.9));
+        const CSYM = ['i', 'e', 'ɛ', 'a', 'y', 'ø', 'œ', 'ɶ', 'ɯ', 'ɤ', 'ʌ', 'ɑ', 'u', 'o', 'ɔ', 'ɒ'];
+        const voice = loopVoice(v);
+        let cache = { key: null };
+        const model = () => {
+          const key = [v.fix(H.x, 2), v.fix(H.y, 2), rnd.value].join();
+          if (cache.key === key) return cache;
+          const { A, dl, lipA } = areaFunction(H.x, H.y, rnd.value), F = tubeFormants(A, dl, 3);
+          let best = 0, bd = 1e9;
+          CARD.forEach((c, i) => { const d = Math.hypot(Math.log(F[0] / c[3]), Math.log(F[1] / c[4])); if (d < bd) { bd = d; best = i; } });
+          cache = { key, A, dl, lipA, F, near: best, dist: bd };
+          return cache;
+        };
+        const loopBuf = () => { const m = model(); return normalise(vowelPeriod([...m.F, ...FHI], BW5, 133), 0.8, 0); };
+        H.onDrag = () => voice.update(loopBuf);
+        v.soundButton('Listen', (snd) => { live.set(false); const m = model(); snd.samples(normalise(synth((t) => ({ f0: 126 - 22 * t, av: 1, ah: 0, af: 0, F: [...m.F, ...FHI], B: BW5 }), 0.8), 0.85, 0.05), SR, { gain: 0.6 }); });
+        for (const [nm, x, y, r] of [['i', 3.3, 1.9, false], ['ɑ', 5.6, -1.0, false], ['u', 5.6, 1.9, true]]) v.button(`[${nm}]`, () => { H.set(x, fitTongue(x, y)); rnd.set(r); voice.update(loopBuf); });
+        let info = null;
+        v.render(() => {
+          const m = model();
+          drawTract(tr, { hx: H.x, hy: H.y, round: rnd.value, velum: 'up', glottis: 'voiced' });
+          tr.text('tongue body', H.x, H.y + 0.75, { size: 11, color: 'accent', align: 'center' });
+          if (rnd.value) tr.text('rounded', -1.9, -1.4, { size: 11, color: 'purple', align: 'center' });
+          // F1–F2 chart
+          CARD.forEach((c, i) => ch.text(CSYM[i], LF(c[4]), LF(c[3]), { size: 15, color: i === m.near ? 'accent' : 'muted', align: 'center', weight: i === m.near ? 700 : 450 }));
+          ch.dot(LF(m.F[1]), LF(m.F[0]), { r: 7, color: 'gold' });
+          ch.corner(`nearest: [${CSYM[m.near]}]`, 'tr', { color: 'accent', weight: 650, size: 13 });
+          // area function: glottis on the left, lips on the right
+          const L = m.A.length * m.dl;
+          m.A.forEach((a, i) => af.rect(i * m.dl, 0, (i + 1) * m.dl - 0.04, Math.min(a, 9), { fill: i >= m.A.length - (rnd.value ? 4 : 2) ? 'purple' : 'accent', fillAlpha: 0.55, stroke: false }));
+          af.text('glottis', 0.15, 8.2, { size: 10.5, color: 'muted', align: 'left' }); af.text('lips', L - 0.1, 8.2, { size: 10.5, color: 'purple', align: 'right' });
+          info = { F: m.F, near: CSYM[m.near], L, minA: Math.min(...m.A), at: m.A.indexOf(Math.min(...m.A.slice(0, m.A.length - 4))) * m.dl };
+        });
+        v.readout(() => info && `tongue body ${H.y > 0.6 ? 'high' : H.y > -0.2 ? 'mid' : 'low'} and ${H.x < 4.0 ? 'front' : H.x < 4.9 ? 'central' : 'back'}, lips ${rnd.value ? 'rounded' : 'spread'} · tube model: F1 = **${Math.round(info.F[0])} Hz**, F2 = **${Math.round(info.F[1])} Hz**, F3 = ${Math.round(info.F[2])} Hz (tract ${v.fix(info.L, 1)} cm) · nearest cardinal vowel **[${info.near}]**`);
       },
     },
   ],
