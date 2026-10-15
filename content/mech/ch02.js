@@ -115,8 +115,8 @@ and integrating the second law gives the impulse–momentum theorem $\mathbf J =
         const mass = v.slider('mass $m$ (kg)', 0.2, 2, 0.5, { step: 0.05 });
         const pin = v.slider('incoming $p_0$ (kg·m/s)', -4, 4, -2, { step: 0.1 });
         const s0 = v.stage({ x: [-3, 3], y: [-1, 1], height: 86, axes: false, full: true });
-        const s1 = v.stage({ x: [-0.02, 1.02], y: [-2, 44], height: 200, axes: 'box', full: true, xlabel: 't (s)', ylabel: 'F (N)' });
-        const s2 = v.stage({ x: [-0.02, 1.02], y: [-5, 5], height: 180, axes: 'box', full: true, xlabel: 't (s)', ylabel: 'p (kg·m/s)' });
+        const s1 = v.stage({ x: [-0.02, 1.07], y: [-2, 44], height: 200, axes: 'box', full: true, xlabel: 't (s)', ylabel: 'F (N)' });
+        const s2 = v.stage({ x: [-0.02, 1.07], y: [-5, 5], height: 180, axes: 'box', full: true, xlabel: 't (s)', ylabel: 'p (kg·m/s)' });
         const NS = 100;
         const drawn = Array.from({ length: NS + 1 }, (_, i) => { const t = i / NS; return 24 * Math.exp(-(((t - 0.36) / 0.05) ** 2)) + 11 * Math.exp(-(((t - 0.62) / 0.09) ** 2)); });
         let ver = 0, last = null;
@@ -167,7 +167,7 @@ and integrating the second law gives the impulse–momentum theorem $\mathbf J =
           if (Math.abs(pNow) > 0.02) { s0.arrow(xNow, 0.62, xNow + pNow * unit, 0.62, { color: 'blue', width: 2.2 }); s0.tex('p', xNow + pNow * unit, 0.62, { color: 'blue', align: pNow > 0 ? 'left' : 'right', dx: pNow > 0 ? 5 : -5 }); }
           s0.corner(Fnow > 0.01 ? `F = ${v.fix(Fnow, 1)} N` : '', 'tl', { color: 'orange' });
           // ── force panel
-          s1.setView(null, shape.value === 'draw' ? [-2, 44] : [-0.07 * R.Fmax, R.Fmax * 1.18]);
+          s1.setView(null, shape.value === 'draw' ? [-7, 44] : [-0.16 * R.Fmax, R.Fmax * 1.18]);
           const area = []; for (let i = 0; i <= 300; i++) { const tt = (ts * i) / 300; area.push([tt, force(tt)]); }
           area.push([ts, 0], [0, 0]);
           s1.poly(area, { fill: 'accent', fillAlpha: 0.24, stroke: false });
@@ -176,10 +176,9 @@ and integrating the second law gives the impulse–momentum theorem $\mathbf J =
           s1.tex(String.raw`\bar F = J/\Delta t`, b, Fbar, { color: 'orange', align: 'left', baseline: 'bottom', dx: 6, dy: -2 });
           s1.fn(force, { domain: [0, 1], n: 900, color: 'accent', width: 2.4 });
           s1.vline(ts, { color: 'gold', width: 1.5 });
-          s1.corner(`area so far: ${v.fix(M.integrate(force, 0, ts, 1200), 3)} N·s`, 'tl', { color: 'accent', weight: 600 });
-          if (shape.value === 'draw') s1.corner('drag here to draw F(t)', 'tr', { color: 'muted' });
+          s1.corner(`area so far: ${v.fix(M.integrate(force, 0, ts, 1200), 3)} N·s` + (shape.value === 'draw' ? ' — drag in this panel to draw F(t)' : ''), 'tr', { color: 'accent', weight: 600 });
           // ── momentum panel
-          const [lo, hi] = span([R.ps, [0]], 0.18, 2);
+          const [lo, hi] = span([R.ps, [0]], 0.24, 2);
           s2.setView(null, [lo, hi]);
           s2.hline(0, { color: 'faint' });
           s2.hline(pin.value, { color: 'muted', dash: [4, 4] }); s2.hline(R.ps[R.n], { color: 'muted', dash: [4, 4] });
@@ -260,7 +259,7 @@ and integrating the second law gives the impulse–momentum theorem $\mathbf J =
           X.forEach((p, i) => body(sA, p, B.rad[i], COLS[i]));
           X.forEach((p, i) => sA.arrow(p[0], p[1], p[0] + 0.8 * B.m[i] * V[i][0], p[1] + 0.8 * B.m[i] * V[i][1], { color: COLS[i], width: 2 }));
           const C = cmOf(B.m, X);
-          sA.dot(C[0], C[1], { r: 4.5, color: 'green', label: 'CM', labelPos: 'se' });
+          sA.dot(C[0], C[1], { r: 4.5, color: 'green', label: 'CM', labelPos: 'nw' });
           sA.corner({ none: 'no external force', grav: 'external: gravity on every mass', drag: 'external: friction on every mass' }[ext.value], 'tl', { color: ext.value === 'none' ? 'green' : 'red', weight: 600 });
           let s = [0, 0];
           V.forEach((w, i) => { const q = [s[0] + B.m[i] * w[0], s[1] + B.m[i] * w[1]]; sB.arrow(s[0], s[1], q[0], q[1], { color: COLS[i], width: 2, head: 8 }); s = q; });
@@ -485,19 +484,20 @@ the energy of the centre-of-mass motion plus the kinetic energy $K'$ measured in
           // lab
           sL.path(B.cm.slice(0, f.i + 1), { color: 'green', dash: [4, 4], width: 1.3 });
           [0, 1].forEach((j) => sL.path(B.sim.x.slice(0, f.i + 1).map((fr) => fr[j]), { color: COLS[j], width: 1.5, alpha: 0.6 }));
-          X.forEach((p, j) => body(sL, p, B.rad[j], COLS[j], `m_${j + 1}`));
+          X.forEach((p, j) => body(sL, p, B.rad[j], COLS[j], `${j + 1}`));
           X.forEach((p, j) => { const q = [p[0] + SC * m[j] * Vv[j][0], p[1] + SC * m[j] * Vv[j][1]]; if (Math.hypot(Vv[j][0], Vv[j][1]) > 0.01) sL.arrow(p[0], p[1], q[0], q[1], { color: COLS[j], width: 2.2 }); });
           const P = sumP(m, Vv);
           sL.arrow(R[0], R[1] - 0.02, R[0] + SC * P[0], R[1] + SC * P[1] - 0.02, { color: 'green', width: 3 });
           sL.dot(R[0], R[1], { r: 4.5, color: 'green' });
-          sL.tex(String.raw`\mathbf P`, R[0] + SC * P[0], R[1] + SC * P[1], { color: 'green', dx: 6, dy: 4, baseline: 'top' });
+          sL.tex(String.raw`\mathbf P`, R[0] + 0.5 * SC * P[0], R[1], { color: 'green', dy: -8, align: 'center', baseline: 'bottom' });
           // CM frame
           sC.hline(0, { color: 'faint' }); sC.vline(0, { color: 'faint' });
           [0, 1].forEach((j) => sC.path(B.sim.x.slice(0, f.i + 1).map((fr, k) => [fr[j][0] - B.cm[k][0], fr[j][1] - B.cm[k][1]]), { color: COLS[j], width: 1.5, alpha: 0.6 }));
           const Xc = X.map((p) => [p[0] - R[0], p[1] - R[1]]), Vc = Vv.map((w) => [w[0] - B.V[0], w[1] - B.V[1]]);
-          Xc.forEach((p, j) => body(sC, p, B.rad[j], COLS[j], `m_${j + 1}`));
+          Xc.forEach((p, j) => body(sC, p, B.rad[j], COLS[j], `${j + 1}`));
           Xc.forEach((p, j) => sC.arrow(p[0], p[1], p[0] + SC * m[j] * Vc[j][0], p[1] + SC * m[j] * Vc[j][1], { color: COLS[j], width: 2.2 }));
-          sC.dot(0, 0, { r: 4.5, color: 'green', label: "P′ = 0", labelPos: 'se' });
+          sC.dot(0, 0, { r: 4.5, color: 'green' });
+          sC.corner('green dot: centre of mass, where the total momentum P′ = 0', 'bl', { color: 'green' });
           cur = { P, Pc: sumP(m, Vc), K: KE(m, Vv), Kc: KE(m, Vc), V: B.V, Mt: B.Mt, sp: Vc.map((w) => Math.hypot(w[0], w[1])), sp0: [U - B.V[0], B.V[0]] };
           v.legend([[COLS[0], 'momentum of $m_1$'], [COLS[1], 'momentum of $m_2$'], ['green', 'total momentum']]);
         }, { period: T + 1, still: 6.2 });
@@ -616,7 +616,7 @@ The speed gained depends only on the exhaust speed and the mass ratio, not on ho
         const stg = v.toggle('compare two stages', true);
         const grav = v.toggle('gravity (vertical launch)', false);
         const sA = v.stage({ x: [-0.25, 2.65], y: [-9, 112], height: 340, axes: false, weight: 0.8, title: 'mass budget (t)' });
-        const sB = v.stage({ x: [1, 16], y: [0, 8], xlog: true, height: 340, axes: 'box', weight: 1.3, xlabel: 'mass ratio m₀/m', ylabel: 'v (km/s)' });
+        const sB = v.stage({ x: [1, 16], y: [0, 8], xlog: true, height: 340, axes: 'box', weight: 1.3, ylabel: 'v (km/s)', title: 'speed against mass ratio $m_0/m$ (log scale)' });
         const M0 = 1e5, TB = 120, DT = 0.05, TT = 140, g = 9.81;
         const fly = (two) => {
           const u = us.value * 1000, F = fs.value * M0, tank = 0.1 * F, pay = M0 - F - tank, b = F / TB;
@@ -689,10 +689,10 @@ The speed gained depends only on the exhaust speed and the mass ratio, not on ho
           const fA = u * Math.log(M0 / A.mf), m1a = M0 - Bt.F / 2;
           const fB = u * Math.log(M0 / m1a) + u * Math.log((m1a - Bt.tank1) / Bt.mf);
           const last = A.fr.length - 1;
-          let s = String.raw`one stage: final $\Delta v = ${M.si(A.fr[last].v, 'm/s', 4)}$ simulated, $u\ln(m_0/m_f) = ${M.si(fA, 'm/s', 4)}$`;
+          let s = String.raw`one stage: final $\Delta v$ = ${M.si(A.fr[last].v, 'm/s', 4)} simulated, $u\ln(m_0/m_f)$ = ${M.si(fA, 'm/s', 4)}`;
           if (stg.value) s += String.raw` · two stages: ${M.si(Bt.fr[last].v, 'm/s', 4)} simulated, sum of the stage formulas ${M.si(fB, 'm/s', 4)}`;
           if (!grav.value) s += String.raw` · total momentum of rocket + exhaust + dropped tank now: ${v.fix(fa.P, 3)} kg·m/s`;
-          else s += String.raw` · gravity is external: lost so far $\approx g\,t = ${M.si(g * cur.tNow, 'm/s', 3)}$ relative to $u\ln(m_0/m) = ${M.si(u * Math.log(M0 / fa.m), 'm/s', 3)}$`;
+          else s += String.raw` · gravity is external: one stage now at ${M.si(fa.v, 'm/s', 3)} against $u\ln(m_0/m)$ = ${M.si(u * Math.log(M0 / fa.m), 'm/s', 3)}; gravity loss so far $\le g\,t$ = ${M.si(g * cur.tNow, 'm/s', 3)}`;
           return s;
         });
       },
@@ -715,9 +715,9 @@ and the **torque** about $O$ of a force $\mathbf F$ acting at $\mathbf r$ is $\b
         const sP = v.stage({ x: [-5, 5], y: [-3.6, 3.6], equal: true, height: 330, title: 'free particle, $m = 1$ kg' });
         const S3 = v.stage({ x: [-2, 2], y: [-1.8, 2.2], equal: true, axes: false, height: 330, title: '$\\mathbf L = \\mathbf r\\times\\mathbf p$ in 3D' });
         const sc = v.scene3(S3, { yaw: -0.75, pitch: 0.5, axis: 1.5, lim: 1.6 });
-        const O = sP.handle(0.3, 0.2, { color: 'red', label: 'O', labelPos: 'sw' });
-        const A = sP.handle(-4.2, -1.8, { color: 'accent', label: 'start', labelPos: 'sw' });
-        const Wt = sP.handle(-3.1, -1.3, { color: 'orange', label: 'v', labelPos: 'n' });
+        const O = sP.handle(0, 0.9, { color: 'red', label: 'O', labelPos: 'n' });
+        const A = sP.handle(-4.2, -2.6, { color: 'accent', label: 'start', labelPos: 'se' });
+        const Wt = sP.handle(-3.2, -2.2, { color: 'orange', label: 'v', labelPos: 'n' });
         let ax = A.x, ay = A.y;
         A.onDrag = () => { Wt.set(Wt.x + A.x - ax, Wt.y + A.y - ay); ax = A.x; ay = A.y; };
         const DT = 0.8, T = 8, K3 = 0.3; let cur = null;

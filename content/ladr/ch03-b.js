@@ -11,6 +11,8 @@ function tn(x, d = 2) {
 }
 /** The same for canvas text (real minus sign). */
 const pn = (x, d = 2) => tn(x, d).replace('-', '−');
+/** A rounding-error-sized number for TeX: exact 0 below 1e-12. */
+const zs = (v, x) => (x < 1e-12 ? '0' : v.sci(x, 2));
 /** A rational-looking number as p/q (q ≤ 12) for canvas text, else decimals. */
 function fr(x) {
   if (Math.abs(x) < 1e-9) return '0';
@@ -113,13 +115,13 @@ where $\lambda$ times a matrix means multiplying every entry by $\lambda$.`,
       tags: ['matrices'],
       viz(v) {
         const M = v.M;
-        const P = v.stage({ x: [-3.3, 3.3], y: [-3.3, 3.3], equal: true, height: 360, axes: false, title: 'images of the F under $T$ and $\\lambda T$' });
+        const P = v.stage({ x: [-2.5, 2.5], y: [-2.5, 2.5], equal: true, height: 360, axes: false, title: 'images of the F under $T$ and $\\lambda T$' });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.8, minWidth: 240 });
         const lam = v.slider('$\\lambda$', -2, 2, 1.5, { step: 0.05 });
         const bas = v.select('bases of $V = W = \\mathbf R^2$', [{ value: 'std', label: 'standard' }, { value: 'skew', label: 'skewed: $(1,0),\\,(1,1)$' }], 'std');
         const BS = { std: [[1, 0], [0, 1]], skew: [[1, 1], [0, 1]] }; // columns are v₁ = w₁, v₂ = w₂
         let A = [[1, 0.4], [0.3, 0.9]], last = 'std';                    // standard matrix of T
-        const h1 = P.handle(1, 0.3, { color: 'blue', label: 'Tv₁' }), h2 = P.handle(0.4, 0.9, { color: 'purple', label: 'Tv₂' });
+        const h1 = P.handle(1, 0.3, { color: 'blue', label: 'Tv₁', labelPos: 's' }), h2 = P.handle(0.4, 0.9, { color: 'purple', label: 'Tv₂', labelPos: 'w' });
         const T1 = v.table(Q, { rows: 2, cols: 2, region: [0, 0.5, 1, 0.98], maxCell: 56, size: 15, rowLabels: ['$w_1$', '$w_2$'], colLabels: ['$Tv_1$', '$Tv_2$'] });
         const T2 = v.table(Q, { rows: 2, cols: 2, region: [0, 0.0, 1, 0.48], maxCell: 56, size: 15, rowLabels: ['$w_1$', '$w_2$'], colLabels: ['$\\lambda Tv_1$', '$\\lambda Tv_2$'] });
         let st = null;
@@ -152,7 +154,7 @@ where $\lambda$ times a matrix means multiplying every entry by $\lambda$.`,
           st = { MT, MLT, L, err: maxDiff(MLT, MT.map((r) => r.map((x) => L * x))) };
         });
         v.legend([['muted', 'image under $T$', { dash: true }], ['accent', 'image under $\\lambda T$', { area: true }]]);
-        v.readout(() => st && `$\\mathcal M(\\lambda T) = ${mtex(st.MLT)}$ and $\\lambda\\,\\mathcal M(T) = ${tn(st.L)}\\cdot${mtex(st.MT)} = ${mtex(st.MT.map((r) => r.map((x) => st.L * x)))}$ — largest entry difference ${v.sci(st.err, 2)}.`);
+        v.readout(() => st && `$\\mathcal M(\\lambda T) = ${mtex(st.MLT)}$ and $\\lambda\\,\\mathcal M(T) = ${tn(st.L)}\\cdot${mtex(st.MT)} = ${mtex(st.MT.map((r) => r.map((x) => st.L * x)))}$ — largest entry difference $${zs(v, st.err)}$.`);
       },
     },
     // ------------------------------------------------------------------ 3.40
@@ -183,7 +185,7 @@ $$\dim \mathbf F^{m,n} = mn.$$`,
           for (const k of [...off]) { const [j, kk] = k.split(',').map(Number); if (j >= m || kk >= n) off.delete(k); }
           // tiles laid out like the entries they own
           const W = S.width, H = S.height - 30, gap = 14, lab = 16, pad = 14;
-          const cs = Math.min(30, (W - 2 * pad - (n - 1) * gap) / (n * n), (H - 2 * pad - m * lab - (m - 1) * gap) / (m * m)), tW = cs * n, tH = cs * m;
+          const cs = Math.min(42, (W - 2 * pad - (n - 1) * gap) / (n * n), (H - 2 * pad - m * lab - (m - 1) * gap) / (m * m)), tW = cs * n, tH = cs * m;
           const X0 = (W - (n * tW + (n - 1) * gap)) / 2, Y0 = 30 + (H - (m * (tH + lab) + (m - 1) * gap)) / 2 + lab;
           geo = [];
           for (let j = 0; j < m; j++) for (let k = 0; k < n; k++) {
@@ -249,7 +251,7 @@ The product is defined only when the number of columns of $A$ equals the number 
           const prod = (a, b) => { let s = 0; for (let r = 0; r < n; r++) s += A[a][r] * B[r][b]; return s; };
           const num = (i0, j0) => String(i0 + 1);
           TA.set({ rows: m, cols: n, x0: 0, y0: m }); TB.set({ rows: nb, cols: p, x0: n + g, y0: Hh }); TP.set({ rows: m, cols: p, x0: n + g, y0: m });
-          TA.draw({ value: (i, c) => A[i][c], activeRow: j, fill: (i, c) => (i === j ? [VC[c % 4], 0.22] : null), sub: (i, c) => (i === j ? num(c) : null), subColor: (i, c) => VC[c % 4] });
+          TA.draw({ value: (i, c) => A[i][c], activeRow: j, fill: (i, c) => (i === j ? [c < nb ? VC[c % 4] : 'red', 0.22] : null), sub: (i, c) => (i === j ? num(c) : null), subColor: (i, c) => (c < nb ? VC[c % 4] : 'red') });
           TB.draw({ value: (i, c) => B[i][c], activeCol: k, fill: (i, c) => (c === k ? [i < n ? VC[i % 4] : 'red', 0.22] : null), sub: (i, c) => (c === k ? num(i) : null), subColor: (i) => (i < n ? VC[i % 4] : 'red') });
           TP.draw({ value: (i, c) => (ok ? prod(i, c) : '?'), textColor: () => (ok ? 'ink' : 'red'), fill: (i, c) => (i === j && c === k ? [ok ? 'green' : 'red', 0.25] : ok ? null : ['red', 0.06]), highlight: [[j, k, ok ? 'green' : 'red']] });
           S.tex('A', -0.55, m / 2, { size: 19, color: 'ink' });
@@ -281,9 +283,9 @@ where $\mathcal M(T)$ uses the bases of $U$ and $V$, $\mathcal M(S)$ those of $V
       tags: ['matrices'],
       viz(v) {
         const M = v.M;
-        const P = v.stage({ x: [-2.4, 2.4], y: [-2, 2.2], equal: true, height: 360, title: 'the unit square and an F, moved by $T$, then by $S$' });
+        const P = v.stage({ x: [-2.9, 2.9], y: [-2.9, 2.9], equal: true, height: 360, axes: false, title: 'the unit square and an F, moved by $T$, then by $S$' });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.85, minWidth: 250 });
-        const th = v.slider('$S$: rotate by $\\theta$', -180, 180, 50, { step: 1, fmt: (x) => `${x}°` });
+        const th = v.slider('$S$: rotate by $\\theta$', -180, 180, 110, { step: 1, fmt: (x) => `${x}°` });
         const kk = v.slider('$T$: shear $k$', -2, 2, 1, { step: 0.05 });
         const other = v.toggle('also show $TS$', false);
         const regions = [[0, 0.5, 0.5, 0.97], [0.5, 0.5, 1, 0.97], [0, 0, 0.5, 0.47], [0.5, 0, 1, 0.47]];
@@ -295,7 +297,7 @@ where $\mathcal M(T)$ uses the bases of $U$ and $V$, $\mathcal M(S)$ those of $V
           const Tf = (p) => [p[0] + k * p[1], p[1]];
           const mat = (f) => M.transpose([f([1, 0]), f([0, 1])]);            // columns = images of e₁, e₂
           const MS = mat(Sf), MT = mat(Tf), MST = mat((p) => Sf(Tf(p))), AB = M.matMul(MS, MT), BA = M.matMul(MT, MS);
-          P.poly(SQ, { color: 'faint', width: 1, fill: 'faint', fillAlpha: 0.06 }); P.poly(FSH, { color: 'muted', width: 1, fill: false, alpha: 0.7 });
+          gridImage(P, [[1, 0], [0, 1]], 3); P.poly(SQ, { color: 'faint', width: 1, fill: 'faint', fillAlpha: 0.06 }); P.poly(FSH, { color: 'muted', width: 1, fill: false, alpha: 0.7 });
           P.poly(SQ.map(Tf), { color: 'orange', width: 1, dash: [4, 3], fill: false }); P.poly(FSH.map(Tf), { color: 'orange', width: 1.6, fill: 'orange', fillAlpha: 0.1 });
           P.poly(SQ.map((p) => Sf(Tf(p))), { color: 'accent', width: 1.2, dash: [4, 3], fill: false }); P.poly(FSH.map((p) => Sf(Tf(p))), { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.2 });
           if (other.value) { P.poly(SQ.map((p) => Tf(Sf(p))), { color: 'red', width: 1.2, dash: [4, 3], fill: false }); P.poly(FSH.map((p) => Tf(Sf(p))), { color: 'red', width: 2, dash: [6, 4], fill: false }); }
@@ -307,7 +309,7 @@ where $\mathcal M(T)$ uses the bases of $U$ and $V$, $\mathcal M(S)$ those of $V
           st = { err: maxDiff(MST, AB), d: maxDiff(BA, AB), AB, BA };
         });
         v.legend([['orange', '$T$(F)'], ['accent', '$S(T(\\mathrm F))$', { area: true }], ['green', 'corners $\\times\\,\\mathcal M(S)\\mathcal M(T)$', { dot: true }], ['red', '$T(S(\\mathrm F))$', { dash: true }]]);
-        v.readout(() => st && `$\\max|\\mathcal M(ST) - \\mathcal M(S)\\mathcal M(T)| = ${v.sci(st.err, 2)}$, while $\\mathcal M(T)\\mathcal M(S) = ${mtex(st.BA)}$ differs from $\\mathcal M(S)\\mathcal M(T)$ by up to ${tn(st.d, 3)}: the order matters.`);
+        v.readout(() => st && `$\\max|\\mathcal M(ST) - \\mathcal M(S)\\mathcal M(T)| = ${zs(v, st.err)}$, while $\\mathcal M(T)\\mathcal M(S) = ${mtex(st.BA)}$ differs from $\\mathcal M(S)\\mathcal M(T)$ by up to ${tn(st.d, 3)}: the order matters.`);
       },
     },
     // ------------------------------------------------------------------ 3.46
@@ -327,10 +329,10 @@ the product of the $1$-by-$n$ matrix formed by row $j$ of $A$ with the $n$-by-$1
         const S = v.stage({ x: [-2.8, 2.8], y: [-2.8, 2.8], equal: true, axes: false, height: 380, title: 'row $j$ of $A$ and column $k$ of $B$ in $\\mathbf R^3$' });
         const sc = v.scene3(S, { yaw: -0.7, pitch: 0.33, axis: 2.1 });
         const Q = v.stage({ x: [-1, 7.6], y: [-1.1, 7.4], equal: true, axes: false, height: 380, weight: 0.85, minWidth: 250 });
-        const A = [[1, 0.5, 1.5], [-1, 1, 0], [0.5, -1.5, 1]], B = [[1.5, 0, -0.5], [0.5, 1, 1], [1, -1, 0.5]];
+        const A = [[1, 0.5, 1.5], [-1, 1, 0], [0.5, -1.5, 1]], B = [[0.5, 0, -0.5], [1.5, 1, 1], [-0.5, -1, 0.5]];
         let sel = [0, 0];
         const snap = (p) => p.map((c) => Math.round(c * 10) / 10);
-        const ha = sc.handle(A[0], { color: 'blue', label: 'row', lim: 2, snap }), hb = sc.handle(colOf(B, 0), { color: 'orange', label: 'col', lim: 2, snap });
+        const ha = sc.handle(A[0], { color: 'blue', lim: 2, snap }), hb = sc.handle(colOf(B, 0), { color: 'orange', lim: 2, snap });
         const TA = v.table(Q, { rows: 3, cols: 3, cell: [1, 1], x0: 0, y0: 3, size: 13 }), TB = v.table(Q, { rows: 3, cols: 3, cell: [1, 1], x0: 3.6, y0: 6.6, size: 13 }), TP = v.table(Q, { rows: 3, cols: 3, cell: [1, 1], x0: 3.6, y0: 3, size: 13 });
         Q.onClick((x, y) => { const c = TP.hit(x, y); if (c && c.i >= 0 && c.j >= 0) { sel = [c.i, c.j]; ha.set(A[c.i]); hb.set(colOf(B, c.j)); } });
         let st = null;
@@ -341,7 +343,7 @@ the product of the $1$-by-$n$ matrix formed by row $j$ of $A$ with the $n$-by-$1
           sc.begin();
           sc.line(b.map((c) => -1.3 * c), b.map((c) => 1.3 * c), { color: 'orange', width: 1, alpha: 0.45, dash: true });
           sc.line(a, foot, { color: 'muted', width: 1.2, dash: true });
-          sc.line([0, 0, 0], foot, { color: 'green', width: 5, alpha: 0.85 }, 6);
+          sc.line([0, 0, 0], foot, { color: 'green', width: 8, alpha: 0.55 }, 6);
           sc.arrow([0, 0, 0], b, { color: 'orange' }); sc.arrow([0, 0, 0], a, { color: 'blue' });
           sc.tex(`A_{${j + 1},\\cdot}`, a, { color: 'blue', dx: 20, dy: -12, size: 14 }); sc.tex(`B_{\\cdot,${k + 1}}`, b, { color: 'orange', dx: 22, dy: 12, size: 14 });
           sc.flush();
@@ -420,7 +422,7 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
       viz(v) {
         const P = v.stage({ x: [-3.6, 3.6], y: [-3, 3], equal: true, height: 360, title: '$Ab$ as a walk along the columns of $A$' });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, weight: 0.55, minWidth: 210 });
-        const bs = [[1, '1'], [0.8, '2'], [-0.7, '3']].map(([x, k]) => v.slider(`$b_${k}$`, -2, 2, x, { step: 0.05 }));
+        const bs = [[1.4, '1'], [1.2, '2'], [-0.9, '3']].map(([x, k]) => v.slider(`$b_${k}$`, -2, 2, x, { step: 0.05 }));
         const sn = (x, y) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
         const ch = [[1.3, 0.3], [0.3, 1.1], [-0.9, 0.7]].map((p, k) => P.handle(p[0], p[1], { color: VC[k], constrain: sn }));
         const TA = v.table(Q, { rows: 2, cols: 3, region: [0, 0.62, 1, 0.94], maxCell: 40, size: 13 });
@@ -440,7 +442,7 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
             const nx = [cur[0] + b[k] * h.x, cur[1] + b[k] * h.y];
             P.arrow(cur[0], cur[1], nx[0], nx[1], { color: VC[k], width: 3.4 });
             const mx = (cur[0] + nx[0]) / 2, my = (cur[1] + nx[1]) / 2;
-            P.tex(`${tn(b[k])}A_{\\cdot,${k + 1}}`, mx, my, { color: VC[k], dx: 0, dy: -14, size: 12 });
+            { const ux = nx[0] - cur[0], uy = nx[1] - cur[1], l = Math.hypot(ux, uy) || 1; P.tex(`${tn(b[k])}A_{\\cdot,${k + 1}}`, mx, my, { color: VC[k], dx: (-uy / l) * 22, dy: (-ux / l) * 22, size: 12 }); }
             cur = nx;
           });
           P.dot(Ab[0], Ab[1], { r: 10, hollow: true, color: 'green', width: 2.4 });
@@ -452,7 +454,7 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
           ttl(Q, TA, 'A'); ttl(Q, TB, 'b'); ttl(Q, TP, 'Ab', 'green');
           st = { b, Ab, walk: cur };
         });
-        v.readout(() => st && `$b_1A_{\\cdot,1} + b_2A_{\\cdot,2} + b_3A_{\\cdot,3}$ ends at $${vtex(st.walk)}$; row by row, $Ab = ${vtex(st.Ab)}$ — gap ${v.sci(Math.hypot(st.walk[0] - st.Ab[0], st.walk[1] - st.Ab[1]), 2)}.`);
+        v.readout(() => st && `$b_1A_{\\cdot,1} + b_2A_{\\cdot,2} + b_3A_{\\cdot,3}$ ends at $${vtex(st.walk)}$; row by row, $Ab = ${vtex(st.Ab)}$ — gap $${zs(v, Math.hypot(st.walk[0] - st.Ab[0], st.walk[1] - st.Ab[1]))}$.`);
       },
     },
     // ------------------------------------------------------------------ 3.51
@@ -469,8 +471,8 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
       tags: ['matrices'],
       viz(v) {
         const M = v.M;
-        const kS = v.select('column $k$', ['1', '2', '3'], '1'), jS = v.select('row $j$', ['1', '2'], '2');
-        const P = v.stage({ x: [-4.2, 4.2], y: [-4.2, 4.2], equal: true, height: 340, title: 'columns: $(CR)_{\\cdot,k}$ in $\\mathbf R^2$' });
+        const kS = v.select('column $k$', ['1', '2', '3'], '2'), jS = v.select('row $j$', ['1', '2'], '2');
+        const P = v.stage({ x: [-3.3, 3.3], y: [-3.3, 3.3], equal: true, height: 340, title: 'columns: $(CR)_{\\cdot,k}$ in $\\mathbf R^2$' });
         const S3 = v.stage({ x: [-4, 4], y: [-4, 4], equal: true, axes: false, height: 340, title: 'rows: $(CR)_{j,\\cdot}$ in $\\mathbf R^3$' });
         const sc = v.scene3(S3, { axis: 2.6, yaw: -0.75, pitch: 0.32 });
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
@@ -510,7 +512,7 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
         v.readout(() => {
           if (!st) return '';
           const { C, k, j, CR } = st, col = colOf(CR, k);
-          return `$(CR)_{\\cdot,${k + 1}} = ${tn(R[0][k])}\\,C_{\\cdot,1} + ${tn(R[1][k])}\\,C_{\\cdot,2} = ${vtex(col)}$ · $(CR)_{${j + 1},\\cdot} = ${tn(C[j][0])}\\,R_{1,\\cdot} + ${tn(C[j][1])}\\,R_{2,\\cdot} = ${vtex(CR[j])}$, at distance ${v.sci(st.off, 1)} from the plane of the rows of $R$.`;
+          return `$(CR)_{\\cdot,${k + 1}} = ${tn(R[0][k])}\\,C_{\\cdot,1} + ${tn(R[1][k])}\\,C_{\\cdot,2} = ${vtex(col)}$ · $(CR)_{${j + 1},\\cdot} = ${tn(C[j][0])}\\,R_{1,\\cdot} + ${tn(C[j][1])}\\,R_{2,\\cdot} = ${vtex(CR[j])}$, at distance $${zs(v, st.off)}$ from the plane of the rows of $R$.`;
         });
       },
     },
@@ -527,8 +529,8 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
       deps: ['ladr-2.35', 'ladr-2.4'],
       tags: ['rank'],
       viz(v) {
-        const PRE = { r3: [[1, 0, 1], [0, 1, 1], [1, 1, -1]], r2: [[1, 2, 0], [0, 1, 1], [1, 2, 0]], r1: [[1, -1, 1], [2, -2, 2], [-1, 1, -1]], r0: [[0, 0, 0], [0, 0, 0], [0, 0, 0]] };
-        const pre = v.select('example', [{ value: 'r3', label: 'invertible' }, { value: 'r2', label: 'two equal rows' }, { value: 'r1', label: 'all rows parallel' }, { value: 'r0', label: 'zero' }], 'r2');
+        const PRE = { r3: [[1, 0, 1], [0, 1, 1], [1, 1, -1]], r2: [[1, 2, 0], [0, 1, 1], [1, 3, 1]], r1: [[1, -1, 1], [2, -2, 2], [-1, 1, -1]], r0: [[0, 0, 0], [0, 0, 0], [0, 0, 0]] };
+        const pre = v.select('example', [{ value: 'r3', label: 'invertible' }, { value: 'r2', label: 'row 3 = row 1 + row 2' }, { value: 'r1', label: 'all rows parallel' }, { value: 'r0', label: 'zero' }], 'r2');
         const L = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 330, title: 'columns of $A$ and their span' });
         const scL = v.scene3(L, { axis: 2.2, yaw: -0.65, pitch: 0.33 });
         const Rs = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 330, title: 'rows of $A$ and their span' });
@@ -551,7 +553,6 @@ In particular $Ab$ lies in the span of the columns of $A$.`,
           L.corner(`column rank ${dc}: ${nm[dc]}`, 'tl', { color: 'accent', weight: 700, size: 13 });
           Rs.corner(`row rank ${dr}: ${nm[dr]}`, 'tl', { color: 'orange', weight: 700, size: 13 });
           T.draw({ value: (i, j) => A[i][j] });
-          ttl(Q, T, 'A', 'ink', true);
           const same = dc === dr && (dc === 0 || dc === 3 || orthN([...orthN(cols, 1e-6), ...orthN(rows, 1e-6)], 1e-6).length === dc);
           st = { dc, dr, same };
         });
@@ -594,13 +595,13 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
           S.text('main diagonal', D + 0.15, -D - 0.25, { color: 'muted', size: 11, align: 'right', baseline: 'top' });
           const w = M.lerp(n, m, s), h = M.lerp(m, n, s);
           for (const [x0, sg] of [[0, 1], [w, -1]]) S.path([[x0 + 0.18 * sg, 0.08], [x0, 0.08], [x0, -h - 0.08], [x0 + 0.18 * sg, -h - 0.08]], { color: 'ink', width: 2 });
+          const [a, b] = pos(pick[0], pick[1], 0), [c, d] = pos(pick[0], pick[1], 1);
+          if (pick[0] !== pick[1]) S.arrow(a, b, c, d, { color: 'gold', width: 1.4, dash: [3, 3], alpha: 0.8, head: 7 });
           for (let j = 0; j < m; j++) for (let k = 0; k < n; k++) {
             const [x, y] = pos(j, k, s), on = j === pick[0] && k === pick[1], diag = j === k;
             S.circle(x, y, 0.36, { color: RC[j], fill: RC[j], fillAlpha: on ? 0.4 : 0.14, width: on ? 2.6 : 1.2 });
             S.text(pn(V[j][k], 0), x, y, { align: 'center', size: 16, color: diag ? 'ink' : RC[j], weight: 700 });
           }
-          const [a, b] = pos(pick[0], pick[1], 0), [c, d] = pos(pick[0], pick[1], 1);
-          if (pick[0] !== pick[1]) S.arrow(a, b, c, d, { color: 'gold', width: 1.4, dash: [3, 3], alpha: 0.8, head: 7 });
           S.corner(s < 0.02 ? `A is ${m}×${n}` : s > 0.98 ? `Aᵗ is ${n}×${m}` : 'flipping…', 'tr', { color: s > 0.98 ? 'green' : 'ink', weight: 700, size: 14 });
         }, { period: 6, still: 1.9 });
         v.legend([['blue', 'row 1 of $A$'], ['orange', 'row 2'], ['purple', 'row 3'], ['gold', 'the clicked entry’s path', { dash: true }]]);
@@ -627,7 +628,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
         const jS = v.select('rebuild column', ['1', '2', '3', '4'], '3');
         const Q = v.stage({ x: [-0.5, 12.5], y: [-0.9, 3.6], equal: true, axes: false, height: 200, full: true });
         const S = v.stage({ x: [-3.6, 3.6], y: [-3.6, 3.6], equal: true, axes: false, height: 340, title: 'the columns of $A$ in $\\mathbf R^3$; column space in green' });
-        const sc = v.scene3(S, { axis: 2.4, yaw: -0.7, pitch: 0.3 });
+        const sc = v.scene3(S, { axis: 2.4, yaw: 0.6, pitch: 0.3 });
         let A = PRE.a.map((r) => r.slice()), last = 'a', st = null;
         const TA = v.table(Q, { rows: 3, cols: 4, cell: [1, 1], x0: 0, y0: 3, size: 15 });
         const TC = v.table(Q, { rows: 3, cols: 2, cell: [1, 1], x0: 5, y0: 3, size: 15 });
@@ -662,7 +663,7 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
           if (!st) return '';
           const { c, kept, j, R, err } = st;
           if (!c) return 'The zero matrix has column rank $0$; the theorem assumes $c \\ge 1$.';
-          return `Sifting keeps columns ${kept.map((k) => k + 1).join(', ')}: column rank $c = ${c}$, so $C$ is $3\\times${c}$ and $R$ is $${c}\\times4$. Column ${j + 1}: $A_{\\cdot,${j + 1}} = ${kept.map((k, r) => `${tn(R[r][j])}\\,A_{\\cdot,${k + 1}}`).join(' + ')}$. Largest entry of $A - CR$: ${v.sci(err, 2)}.`;
+          return `Sifting keeps columns ${kept.map((k) => k + 1).join(', ')}: column rank $c = ${c}$, so $C$ is $3\\times${c}$ and $R$ is $${c}\\times4$. Column ${j + 1}: $A_{\\cdot,${j + 1}} = ${kept.map((k, r) => `${tn(R[r][j])}\\,A_{\\cdot,${k + 1}}`).join(' + ')}$. Largest entry of $A - CR$: $${zs(v, err)}$.`;
         });
       },
     },
@@ -702,12 +703,12 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
         v.button('Test 500 more', () => tally(500, 1000 + tseed++));
         const Q = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1, minWidth: 260, title: '$A$: kept columns and kept rows' });
         const S = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 330, title: 'column space in $\\mathbf R^3$' });
-        const sc = v.scene3(S, { axis: 2, yaw: -0.7, pitch: 0.3 });
-        const U = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.9, minWidth: 240, title: 'tally of random $3\\times4$ matrices' });
+        const sc = v.scene3(S, { axis: 2, yaw: 0.6, pitch: 0.3 });
+        const U = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.9, minWidth: 240, title: 'random $3\\times4$ matrices by column rank $c$, row rank $r$' });
         let kc = [], kr = [];
         const TA = v.table(Q, { rows: 3, cols: 4, maxCell: 50, size: 15, region: [0, 0.08, 1, 0.92], rowLabels: (i) => (kr.includes(i) ? 'kept' : '—'), colLabels: (j) => (kc.includes(j) ? 'kept' : '—'), rowLabelColor: (i) => (kr.includes(i) ? 'orange' : 'faint'), colLabelColor: (j) => (kc.includes(j) ? 'green' : 'faint') });
         editable(v, Q, TA, () => A, { min: -3, max: 3 });
-        const TT = v.table(U, { rows: 4, cols: 4, maxCell: 52, size: 13, region: [0, 0.04, 1, 0.9], rowLabels: (i) => `${i}`, colLabels: (j) => `${j}`, cornerLabel: 'c \\ r' });
+        const TT = v.table(U, { rows: 4, cols: 4, maxCell: 52, size: 13, region: [0, 0.04, 1, 0.9], rowLabels: (i) => `c = ${i}`, colLabels: (j) => `r = ${j}` });
         let st = null;
         v.render(() => {
           const cols = [0, 1, 2, 3].map((k) => colOf(A, k));
@@ -723,7 +724,6 @@ The rows of $A^{\mathrm t}$ are the columns of $A$ and vice versa.`,
           const mx = Math.max(1, ...cnt.flat());
           TT.draw({ value: (i, j) => cnt[i][j], fill: (i, j) => (i === j ? ['green', 0.12 + (0.5 * cnt[i][j]) / mx] : cnt[i][j] ? ['red', 0.5] : null), textColor: (i, j) => (i === j ? 'ink' : 'faint'), highlight: [[kc.length, kr.length, kc.length === kr.length ? 'accent' : 'red']] });
           U.corner(`${tested} tested · off the diagonal: ${cnt.flat().reduce((s, x, i) => s + (i % 5 ? x : 0), 0)}`, 'bl', { color: 'muted', size: 12, weight: 600 });
-          U.texPx('\\text{column rank } c \\downarrow \\quad \\text{row rank } r \\rightarrow', U.width / 2, U.height - 8, { size: 11, color: 'muted', baseline: 'bottom' });
           st = { c: kc.length, r: kr.length };
         });
         v.legend([['green', 'columns kept by sifting', { area: true }], ['orange', 'rows kept by sifting', { area: true }]]);
@@ -785,7 +785,7 @@ Such an $S$ is called an **inverse** of $T$.`,
         v.legend([['blue', 'the house in $V$', { area: true }], ['accent', 'its image in $W$', { area: true }], ['green', '$S(T(\\text{house}))$', { dash: true }], ['red', 'collapsed points', { dot: true }]]);
         v.readout(() => {
           if (!st) return '';
-          if (st.Sm) return `$\\mathcal M(T) = ${mtex(st.A)}$, $\\mathcal M(S) = ${mtex(st.Sm)}$: $ST = I$ and $TS = I$ up to ${v.sci(st.ok, 1)}.`;
+          if (st.Sm) return `$\\mathcal M(T) = ${mtex(st.A)}$, $\\mathcal M(S) = ${mtex(st.Sm)}$: $ST = I$ and $TS = I$ up to $${zs(v, st.ok)}$.`;
           return `$\\mathcal M(T) = ${mtex(st.A)}$ has determinant $0$: every point of the red line maps to the same point, $T${vtex(st.n)} = 0$, and the range is only a line — $T$ is not invertible.`;
         });
       },

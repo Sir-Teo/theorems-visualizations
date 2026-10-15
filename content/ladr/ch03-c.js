@@ -51,6 +51,10 @@ const perp3 = (B) => orth([...B, [1, 0, 0], [0, 1, 0], [0, 0, 1]]).slice(B.lengt
 const tn = (x, d = 2) => (Math.abs(x) < 0.5 * 10 ** -d ? 0 : x).toFixed(d);
 const bm = (A, d = 2) => '\\begin{bmatrix}' + A.map((r) => r.map((x) => tn(x, d)).join('&')).join('\\\\') + '\\end{bmatrix}';
 const bc = (x, d = 2) => bm(x.map((t) => [t]), d);
+/** TeX for c1 n1 + c2 n2 + … with proper signs. */
+const lc = (cs, names, d = 2) => cs.map((c, i) => (c < -0.5 * 10 ** -d ? (i ? ' - ' : '-') : i ? ' + ' : '') + tn(Math.abs(c), d) + '\\,' + names[i]).join('');
+const pm = (a, b, d = 2) => `${tn(a, d)} ${b < 0 ? '-' : '+'} ${tn(Math.abs(b), d)}`;
+const fmt2 = (x) => tn(x).replace('-', '−');
 const vt = (x, d = 2) => `(${x.map((t) => tn(t, d)).join(',\\,')})`;
 
 /** F-shaped test picture (in the first quadrant). */
@@ -127,8 +131,8 @@ sending each linear map to its matrix with respect to these bases, is an isomorp
       viz(v) {
         const sD = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, height: 300, minWidth: 220, title: String.raw`$V=\mathbf R^2$, basis $v_1,v_2$` });
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, minWidth: 170, weight: 0.65, title: String.raw`$\mathcal M(T)\in\mathbf F^{3,2}$` });
-        const sW = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 300, minWidth: 250, title: String.raw`$W=\mathbf R^3$` });
-        const sc = v.scene3(sW, { yaw: -0.75, pitch: 0.38, axis: 1.6, lim: 1.6 });
+        const sW = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, axes: false, height: 300, minWidth: 250, title: String.raw`$W=\mathbf R^3$` });
+        const sc = v.scene3(sW, { yaw: -0.55, pitch: 0.5, axis: 1.3, lim: 1.5 });
         const PRE = {
           tilt: [[1, 0], [0, 1], [0.6, -0.5]], swap: [[0, -1], [1.2, 0], [0, 0.8]],
           rank1: [[1, 0.5], [0.6, 0.3], [0.4, 0.2]], zero: [[0, 0], [0, 0], [0, 0]],
@@ -150,7 +154,7 @@ sending each linear map to its matrix with respect to these bases, is an isomorp
           sD.line(0, 0, X[0], 0, { color: 'blue', dash: [3, 3], alpha: 0.7 }); sD.line(X[0], 0, X[0], X[1], { color: 'orange', dash: [3, 3], alpha: 0.7 });
           sD.arrow(0, 0, X[0], X[1], { color: 'gold', width: 2.6 });
           // matrix
-          T.draw({ value: (i, j) => A[i][j], format: 2, fill: (i, j) => [j ? 'orange' : 'blue', 0.14] });
+          T.draw({ value: (i, j) => A[i][j], format: fmt2, fill: (i, j) => [j ? 'orange' : 'blue', 0.14] });
           // W
           sc.begin();
           for (let k = -2; k <= 2; k++) {
@@ -167,7 +171,7 @@ sending each linear map to its matrix with respect to these bases, is an isomorp
         v.readout(() => {
           const X = hp(x), Tx = [0, 1, 2].map((i) => A[i][0] * X[0] + A[i][1] * X[1]);
           const zero = A.flat().every((t) => Math.abs(t) < 1e-9);
-          return String.raw`$\mathcal M(T)=${bm(A)}$ holds exactly the coordinates of $Tv_1, Tv_2$ — six numbers, and any six numbers define one linear map (3.4). $Tx=${tn(X[0])}\,Tv_1+${tn(X[1])}\,Tv_2=${vt(Tx)}$.` +
+          return String.raw`$\mathcal M(T)=${bm(A)}$ holds exactly the coordinates of $Tv_1, Tv_2$ — six numbers, and any six numbers define one linear map (3.4). $Tx=${lc(X, ['Tv_1', 'Tv_2'])}=${vt(Tx)}$.` +
             (zero ? ' The zero matrix belongs to the zero map alone: $\\operatorname{null}\\mathcal M=\\{0\\}$.' : '');
         });
       },
@@ -207,7 +211,7 @@ $$\dim\mathcal L(V,W)=(\dim V)(\dim W).$$`,
           }
           for (let k = 0; k < N; k++) {
             sG.dot(0, yv(k, N), { r: 6, color: 'purple' }); sG.tex(`v_${k + 1}`, -0.25, yv(k, N), { color: 'purple', align: 'right', baseline: 'middle' });
-            if (E && k !== sel[1]) sG.text('↦ 0', 0.42, yv(k, N) + 0.22, { color: 'muted', size: 12 });
+            if (E && k !== sel[1]) sG.text('↦ 0', 0.3, yv(k, N), { color: 'muted', size: 13, baseline: 'middle' });
           }
           for (let j = 0; j < Mm; j++) { sG.dot(3, yv(j, Mm), { r: 6, color: 'teal' }); sG.tex(`w_${j + 1}`, 3.25, yv(j, Mm), { color: 'teal', align: 'left', baseline: 'middle' }); }
           T.draw({
@@ -226,7 +230,7 @@ $$\dim\mathcal L(V,W)=(\dim V)(\dim W).$$`,
           if (!info) return '';
           const { N, Mm, rank, res, E } = info;
           return String.raw`$\dim\mathcal L(V,W)=(\dim V)(\dim W)=${N}\cdot${Mm}=${N * Mm}$: the ${N * Mm} maps $E_{j,k}$ are linearly independent (rank of their matrices, flattened: ${rank}) and span. ` +
-            (E ? String.raw`$E_{${sel[0] + 1},${sel[1] + 1}}$ sends $v_{${sel[1] + 1}}\mapsto w_{${sel[0] + 1}}$ and the other $v_i\mapsto 0$.` : String.raw`$T=\sum a_{j,k}E_{j,k}$ with coefficients = matrix entries (largest discrepancy ${v.sci(res + 1e-17, 1)}$).`);
+            (E ? String.raw`$E_{${sel[0] + 1},${sel[1] + 1}}$ sends $v_{${sel[1] + 1}}\mapsto w_{${sel[0] + 1}}$ and the other $v_i\mapsto 0$.` : String.raw`$T=\sum a_{j,k}E_{j,k}$ with coefficients = matrix entries (largest discrepancy $${v.sci(res + 1e-17, 1)}$$).`);
         });
       },
     },
@@ -262,7 +266,7 @@ $$\mathcal M(v)=\begin{bmatrix}b_1\\ \vdots\\ b_n\end{bmatrix},\qquad\text{where
           const B1 = hp(b1), B2 = hp(b2), X = hp(x);
           if (!isBasis2(B1, B2)) return String.raw`$v_1,v_2$ is linearly dependent: some vectors have no expression $b_1v_1+b_2v_2$ and the others have infinitely many.`;
           const c = coords2(B1, B2, X);
-          return String.raw`$v=${tn(c[0])}\,v_1+${tn(c[1])}\,v_2$, so $\mathcal M(v)=${bc(c)}$; in the standard basis the same vector has column $${bc(X)}$.`;
+          return String.raw`$v=${lc(c, ['v_1', 'v_2'])}$, so $\mathcal M(v)=${bc(c)}$; in the standard basis the same vector has column $${bc(X)}$.`;
         });
       },
     },
@@ -281,7 +285,7 @@ $$\mathcal M(T)_{\cdot,k}=\mathcal M(Tv_k).$$`,
         const s = v.stage({ x: [-2.6, 6.3], y: [-2.2, 2.3], equal: true, axes: false, height: 360 });
         const OPS = { shear: [[1, 0.8], [0, 1]], rot: [[0.55, -0.85], [0.85, 0.55]], proj: [[0.8, 0.4], [0.4, 0.2]] };
         const op = v.select('$T$', [{ value: 'shear', label: 'shear' }, { value: 'rot', label: 'rotate & scale' }, { value: 'proj', label: 'projection' }], 'shear');
-        const v1 = s.handle(1.1, 0.25, { color: 'blue', label: 'v₁' }), v2 = s.handle(-0.35, 0.95, { color: 'teal', label: 'v₂' });
+        const v1 = s.handle(0.85, 0.6, { color: 'blue', label: 'v₁' }), v2 = s.handle(-0.45, 0.9, { color: 'teal', label: 'v₂' });
         const w1 = s.handle(0.95, -0.5, { color: 'orange', label: 'w₁' }), w2 = s.handle(0.4, 1.05, { color: 'pink', label: 'w₂' });
         const T = v.table(s, { rows: 2, cols: 2, region: [3.3, -1.9, 6.2, 1.3], maxCell: 62, size: 16, rowLabels: ['$w_1$', '$w_2$'], colLabels: ['$k=1$', '$k=2$'] });
         let st = null;
@@ -296,7 +300,6 @@ $$\mathcal M(T)_{\cdot,k}=\mathcal M(Tv_k).$$`,
           const k = t % 8 < 4 ? 0 : 1, tau = t % 4, vk = k ? V2 : V1, Tvk = mv2(A, vk), c = [MT[0][k], MT[1][k]];
           const e1 = smooth(tau / 0.9), p = add2(sc2(vk, 1 - e1), sc2(Tvk, e1));
           s.arrow(0, 0, vk[0], vk[1], { color: k ? 'teal' : 'blue', width: 5, alpha: 0.35 });
-          s.tex(`v_${k + 1}`, vk[0] * 0.5 - 0.18 * vk[1] / Math.hypot(...vk), vk[1] * 0.5 + 0.18 * vk[0] / Math.hypot(...vk), { color: k ? 'teal' : 'blue', align: 'center', baseline: 'middle' });
           const e2 = smooth((tau - 1) / 0.9);
           const q1 = sc2(W1, c[0] * e2), q2 = add2(q1, sc2(W2, c[1] * e2));
           if (tau > 1) {
@@ -304,13 +307,13 @@ $$\mathcal M(T)_{\cdot,k}=\mathcal M(Tv_k).$$`,
             s.arrow(q1[0], q1[1], q2[0], q2[1], { color: 'pink', width: 3.4, head: 8 });
           }
           s.arrow(0, 0, p[0], p[1], { color: 'green', width: 2.6 });
-          s.tex(tau < 0.9 ? `T` : `Tv_${k + 1}`, p[0] * 1.12 + 0.12, p[1] * 1.12 + 0.12, { color: 'green', align: 'center', baseline: 'middle' });
+          s.tex(tau < 0.9 ? `T` : `Tv_${k + 1}`, p[0] + 0.32, p[1] - 0.12, { color: 'green', align: 'left', baseline: 'middle' });
           const e3 = smooth((tau - 2.1) / 0.8);
           T.draw({
-            value: (i, j) => (j === k && tau < 2.9 ? null : MT[i][j]), format: 2, activeCol: k, activeColor: 'green',
+            value: (i, j) => (j === k && tau < 2.9 ? null : MT[i][j]), format: fmt2, activeCol: k, activeColor: 'green',
             textColor: (i, j) => (j === k ? 'ink' : 'muted'), fill: (i, j) => (j === k && tau >= 2.9 ? ['green', 0.22] : null),
           });
-          s.tex(String.raw`\mathcal M(T)`, 4.55 + 0.25, 1.85, { color: 'ink', align: 'center', baseline: 'middle', size: 17 });
+          { const r0 = T.cellRect(0, 0), r1 = T.cellRect(0, 1), h = Math.abs(r0[3] - r0[1]); s.tex(String.raw`\mathcal M(T)`, (r0[0] + r1[2]) / 2, Math.max(r0[1], r0[3]) + 1.45 * h, { color: 'ink', align: 'center', baseline: 'middle', size: 17 }); }
           if (tau > 1.6 && tau < 2.9) {
             const src = [sc2(W1, c[0] * 0.5), add2(sc2(W1, c[0]), sc2(W2, c[1] * 0.5))];
             for (let i = 0; i < 2; i++) {
@@ -323,7 +326,7 @@ $$\mathcal M(T)_{\cdot,k}=\mathcal M(Tv_k).$$`,
         v.readout(() => {
           if (!st) return 'Restore bases to see the matrix.';
           const { k, c, MT } = st;
-          return String.raw`$Tv_${k + 1}=${tn(c[0])}\,w_1+${tn(c[1])}\,w_2$, so $\mathcal M(Tv_${k + 1})=${bc(c)}$ — column ${k + 1} of $\mathcal M(T)=${bm(MT)}$.`;
+          return String.raw`$Tv_${k + 1}=${lc(c, ['w_1', 'w_2'])}$, so $\mathcal M(Tv_${k + 1})=${bc(c)}$ — column ${k + 1} of $\mathcal M(T)=${bm(MT)}$.`;
         });
       },
     },
@@ -355,8 +358,8 @@ $$\mathcal M(Tv)=\mathcal M(T)\,\mathcal M(v).$$`,
             const MT = matIn(A, cols2(V1, V2), cols2(W1, W2)), mx = coords2(V1, V2, X), prod = mv2(MT, mx), mTx = coords2(W1, W2, Tx);
             stepPath(sV, mx, V1, V2, 'blue', 'teal', { width: 2.6, alpha: 0.75 });
             stepPath(sW, prod, W1, W2, 'orange', 'pink', { width: 3.6, alpha: 0.75 });
-            sV.tex(String.raw`\mathcal M(x)=${bc(mx)}`, -2.4, 2.4, { align: 'left', baseline: 'top', size: 15, color: 'ink' });
-            sW.tex(String.raw`\mathcal M(T)\mathcal M(x)=${bc(prod)}`, -2.4, 2.4, { align: 'left', baseline: 'top', size: 15, color: 'ink' });
+            sV.tex(String.raw`\mathcal M(x)=${bc(mx)}`, sV.bounds.x[0], -2.4, { align: 'left', baseline: 'bottom', size: 15, color: 'ink', dx: 8, dy: -6 });
+            sW.tex(String.raw`\mathcal M(T)\mathcal M(x)=${bc(prod)}`, sW.bounds.x[0], -2.4, { align: 'left', baseline: 'bottom', size: 15, color: 'ink', dx: 8, dy: -6 });
             st = { MT, mx, prod, mTx };
           } else { st = null; sW.corner('not a basis', 'tl', { color: 'red', weight: 600 }); }
           arr(sV, V1, 'blue', null); arr(sV, V2, 'teal', null); arr(sW, W1, 'orange', null); arr(sW, W2, 'pink', null);
@@ -389,7 +392,7 @@ $$\mathcal M(Tv)=\mathcal M(T)\,\mathcal M(v).$$`,
         const C = ['blue', 'orange', 'purple'];
         const PRE = {
           3: [[1.2, 0.25, -0.1], [0.2, 1.1, 0.3], [-0.2, -0.3, 1.0]],
-          2: [[1.2, 0.25, -0.1], [0.2, 1.1, 0.3], [0.7, 0.68, 0.05]],
+          2: [[1.2, 0.25, -0.1], [0.2, 1.1, 0.3], [0.7, 0.675, 0.1]],
           1: [[1.0, 0.5, 0.3], [-0.6, -0.3, -0.18], [0.4, 0.2, 0.12]],
           0: [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
         };
@@ -412,14 +415,14 @@ $$\mathcal M(Tv)=\mathcal M(T)\,\mathcal M(v).$$`,
           const piv = M.rref(A, 1e-9).pivots;
           const img = SPHERE.map((p) => M.matVec(A, p)), R = orth(img, 1e-6), Rc = orth(cols, 1e-7);
           sc.begin();
-          if (Rc.length === 3) cubeEdges(sc, 1.3, 'green');
+          if (Rc.length === 3) cubeEdges(sc, 1.05, 'green');
           else drawSub(sc, Rc, 'green', { r: 1.65, fillAlpha: 0.13, width: 6, alpha: 0.5 });
           sc.dots(img, { r: 1.7, color: 'gold' });
           cols.forEach((c, i) => { if (len3(c) > 1e-9) sc.arrow(O3, c, { color: C[i] }); });
           sc.flush();
           const shape = ['the point $\\{0\\}$', 'a line', 'a plane', 'all of $\\mathbf R^3$'][R.length];
           S.corner(`dim range T = ${R.length}   ·   column rank = ${piv.length}`, 'tl', { color: R.length === piv.length ? 'green' : 'red', weight: 700, size: 13 });
-          TB.draw({ value: (i, j) => A[i][j], format: 2, fill: (i, j) => (piv.includes(j) ? ['green', 0.16] : null) });
+          TB.draw({ value: (i, j) => A[i][j], format: fmt2, fill: (i, j) => (piv.includes(j) ? ['green', 0.16] : null) });
           st = { d: R.length, r: piv.length, shape };
         });
         v.readout(() => st && String.raw`$\operatorname{range}T$ is ${st.shape}: the image of the sphere spans a space of dimension ${st.d}. Row reduction of $\mathcal M(T)$ finds ${st.r} pivot column${st.r === 1 ? '' : 's'}, so the column rank is ${st.r}. ${st.d === st.r ? 'Equal, as the theorem says.' : ''}`);
@@ -452,7 +455,7 @@ $$\mathcal M\big(ST,(u_1,\dots,u_m),(w_1,\dots,w_p)\big)=\mathcal M\big(S,(v_1,\
           for (const [s, b1, b2, p, name, bn] of panels) {
             skewGrid(s, b1, b2, { color: 'muted', n: 7, alpha: 0.16 });
             arr(s, b1, 'blue', s === sU ? 'u_1' : null, { off: 0.25 }); arr(s, b2, 'orange', s === sU ? 'u_2' : null, { off: 0.25 });
-            arr(s, p, 'gold', name, { width: 2.6 });
+            arr(s, p, 'gold', s === sU ? null : name, { width: 2.6 });
             if (isBasis2(b1, b2)) s.tex(String.raw`${bc(coords2(b1, b2, p))}_{${bn}}`, -2.25, 2.25, { align: 'left', baseline: 'top', size: 14, color: 'ink' });
             else { ok = false; s.corner('not a basis', 'tl', { color: 'red', weight: 600 }); }
           }
@@ -466,7 +469,7 @@ $$\mathcal M\big(ST,(u_1,\dots,u_m),(w_1,\dots,w_p)\big)=\mathcal M\big(S,(v_1,\
         v.readout(() => {
           if (!st) return 'Every panel needs a basis.';
           const { MT, MS, prod, direct } = st;
-          return String.raw`$\mathcal M(S)\,\mathcal M(T)=${bm(MS)}${bm(MT)}=${bm(prod)}$ and, directly from $STu_1, STu_2$ in the basis $w$: $\mathcal M(ST)=${bm(direct)}$ (difference ${v.sci(maxDiff(prod, direct) + 1e-17, 1)}).`;
+          return String.raw`$\mathcal M(S)\,\mathcal M(T)=${bm(MS)}${bm(MT)}=${bm(prod)}$ and, directly from $STu_1, STu_2$ in the basis $w$: $\mathcal M(ST)=${bm(direct)}$ (difference $${v.sci(maxDiff(prod, direct) + 1e-17, 1)}$).`;
         });
       },
     },
@@ -500,9 +503,9 @@ are invertible, and each is the inverse of the other.`,
             stepPath(s, cu, U1, U2, 'blue', 'teal', { width: 2.6, alpha: 0.7, ticks: false });
             stepPath(s, cv, V1, V2, 'orange', 'pink', { width: 2.6, alpha: 0.7, ticks: false });
             const Cuv = mm2(inv2(cols2(V1, V2)), cols2(U1, U2)), Cvu = mm2(inv2(cols2(U1, U2)), cols2(V1, V2)), P = mm2(Cuv, Cvu);
-            T1.draw({ value: (i, j) => Cuv[i][j], format: 2, fill: () => ['orange', 0.1] });
-            T2.draw({ value: (i, j) => Cvu[i][j], format: 2, fill: () => ['blue', 0.1] });
-            T3.draw({ value: (i, j) => P[i][j], format: 2, fill: (i, j) => ['green', i === j ? 0.3 : 0.1] });
+            T1.draw({ value: (i, j) => Cuv[i][j], format: fmt2, fill: () => ['orange', 0.1] });
+            T2.draw({ value: (i, j) => Cvu[i][j], format: fmt2, fill: () => ['blue', 0.1] });
+            T3.draw({ value: (i, j) => P[i][j], format: fmt2, fill: (i, j) => ['green', i === j ? 0.3 : 0.1] });
             const lab = (t, y) => sM.tex(t, 0.02, y, { align: 'left', baseline: 'middle', size: 14, color: 'ink' });
             lab(String.raw`\mathcal M(I,(u),(v))`, 0.83); lab(String.raw`\mathcal M(I,(v),(u))`, 0.51); lab(String.raw`\text{their product}`, 0.19);
             st = { cu, cv, Cuv };
@@ -553,7 +556,8 @@ Then $A=C^{-1}BC$.`,
           sC.poly(Fc, { color: 'muted', fill: false, width: 1, dash: [3, 3] });
           sC.poly(Fc.map((p) => mv2(B, p)), { color: 'green', fill: false, width: 1.2, dash: [5, 3] });
           sC.poly(Fc.map((p) => add2(sc2(p, 1 - e), sc2(mv2(B, p), e))), { fill: 'accent', fillAlpha: 0.22, color: 'accent', width: 1.6 });
-          arr(sC, [1, 0], 'orange', String.raw`\mathcal M(v_1)`, { off: 0.42, size: 13 }); arr(sC, [0, 1], 'pink', String.raw`\mathcal M(v_2)`, { off: 0.3, size: 13 });
+          arr(sC, [1, 0], 'orange', null); arr(sC, [0, 1], 'pink', null);
+          sC.tex(String.raw`\mathcal M(v_1)`, 1, -0.3, { color: 'orange', align: 'center', baseline: 'middle', size: 13 }); sC.tex(String.raw`\mathcal M(v_2)`, -0.15, 1, { color: 'pink', align: 'right', baseline: 'middle', size: 13 });
           sV.tex(String.raw`A=${bm(A)}`, -2.5, 2.5, { align: 'left', baseline: 'top', size: 14, color: 'ink' });
           sC.tex(String.raw`B=${bm(B)}`, -2.5, 2.5, { align: 'left', baseline: 'top', size: 14, color: 'ink' });
           st = { A, B, C, back };
@@ -562,7 +566,7 @@ Then $A=C^{-1}BC$.`,
         v.readout(() => {
           if (!st) return 'Choose a basis $v$.';
           const { A, B, C, back } = st;
-          return String.raw`$C=\mathcal M(I,(u),(v))=${bm(C)}$, $\;C^{-1}BC=${bm(back)}=A$ (difference ${v.sci(maxDiff(back, A) + 1e-17, 1)}). $A$ and $B$ are different matrices of the same operator.`;
+          return String.raw`$C=\mathcal M(I,(u),(v))=${bm(C)}$, $\;C^{-1}BC=${bm(back)}=A$ (difference $${v.sci(maxDiff(back, A) + 1e-17, 1)}$). $A$ and $B$ are different matrices of the same operator.`;
         });
       },
     },
@@ -577,11 +581,11 @@ Then $A=C^{-1}BC$.`,
       deps: ['ladr-3.81', 'ladr-3.59'],
       tags: ['invertibility', 'matrices'],
       viz(v) {
-        const s = v.stage({ x: [-2.6, 2.6], y: [-2.4, 2.4], equal: true, height: 350, minWidth: 320, weight: 1.5 });
+        const s = v.stage({ x: [-1.3, 2.3], y: [-1.1, 2.1], equal: true, height: 350, minWidth: 320, weight: 1.5 });
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 350, minWidth: 230 });
         const lam = v.slider(String.raw`second stretch factor $\lambda$ of $T$`, -1.4, 1.4, 0.6, { step: 0.01 });
         const P = [[1, 0.65], [-0.35, 1]];
-        const v1 = s.handle(1, 0.2, { color: 'orange', label: 'v₁' }), v2 = s.handle(0.3, 1, { color: 'pink', label: 'v₂' });
+        const v1 = s.handle(1.3, -0.35, { color: 'orange', label: 'v₁' }), v2 = s.handle(-0.6, 0.8, { color: 'pink', label: 'v₂' });
         const tb = (y0, y1) => v.table(sM, { rows: 2, cols: 2, region: [0.5, y0, 1, y1], maxCell: 44, size: 14 });
         const T1 = tb(0.68, 0.98), T2 = tb(0.36, 0.66), T3 = tb(0.04, 0.34);
         let st = null;
@@ -592,11 +596,11 @@ Then $A=C^{-1}BC$.`,
           const TF = FSH.map((p) => mv2(A, p));
           s.poly(TF, { fill: 'orange', fillAlpha: 0.18, color: 'orange', width: 1.4 });
           arr(s, V1, 'orange', null, { width: 2.6 }); arr(s, V2, 'pink', null, { width: 2.6 });
-          s.tex('F', 0.3, 0.75, { color: 'blue', size: 14 }); s.tex('T(F)', mv2(A, [0.6, 1.3])[0] + 0.25, mv2(A, [0.6, 1.3])[1] + 0.2, { color: 'orange', size: 14 });
+          s.tex('F', 0.6, 1.55, { color: 'blue', size: 15, align: 'center' }); { const q = mv2(A, [1.05, 1.4]); s.tex('T(F)', q[0] + 0.12, q[1] + 0.12, { color: 'orange', size: 15, align: 'left' }); }
           const lab = (t, y) => sM.tex(t, 0.02, y, { align: 'left', baseline: 'middle', size: 14, color: 'ink' });
           if (!isBasis2(V1, V2)) { st = null; s.corner('v₁, v₂ not a basis', 'tl', { color: 'red', weight: 600 }); return; }
           const Bv = cols2(V1, V2), MT = matIn(A, Bv, Bv);
-          T1.draw({ value: (i, j) => MT[i][j], format: 2, fill: () => ['orange', 0.1] }); lab(String.raw`\mathcal M(T)`, 0.83);
+          T1.draw({ value: (i, j) => MT[i][j], format: fmt2, fill: () => ['orange', 0.1] }); lab(String.raw`\mathcal M(T)`, 0.83);
           if (Math.abs(d) < 1e-6) {
             s.corner('T is not invertible: T(F) lies on a line', 'tl', { color: 'red', weight: 600 });
             T2.draw({ value: () => '—', fill: () => ['red', 0.1] }); lab(String.raw`\mathcal M(T)^{-1}`, 0.51);
@@ -606,8 +610,8 @@ Then $A=C^{-1}BC$.`,
           const Ai = inv2(A), back = TF.map((p) => mv2(Ai, p));
           s.poly(back, { color: 'green', fill: false, width: 2, dash: [6, 4] });
           const MTi = matIn(Ai, Bv, Bv), MTinv = inv2(MT), Pr = mm2(MT, MTi);
-          T2.draw({ value: (i, j) => MTi[i][j], format: 2, fill: () => ['green', 0.1] }); lab(String.raw`\mathcal M(T^{-1})`, 0.51);
-          T3.draw({ value: (i, j) => Pr[i][j], format: 2, fill: (i, j) => ['green', i === j ? 0.3 : 0.08] }); lab(String.raw`\mathcal M(T)\mathcal M(T^{-1})`, 0.19);
+          T2.draw({ value: (i, j) => MTi[i][j], format: fmt2, fill: () => ['green', 0.1] }); lab(String.raw`\mathcal M(T^{-1})`, 0.51);
+          T3.draw({ value: (i, j) => Pr[i][j], format: fmt2, fill: (i, j) => ['green', i === j ? 0.3 : 0.08] }); lab(String.raw`\mathcal M(T)\mathcal M(T^{-1})`, 0.19);
           st = { MT, MTi, MTinv, d };
         });
         v.legend([['blue', 'F', { area: true }], ['orange', '$T(F)$', { area: true }], ['green', '$T^{-1}(T(F))$', { dash: true }]]);
@@ -615,7 +619,7 @@ Then $A=C^{-1}BC$.`,
           if (!st) return '';
           if (st.sing) return String.raw`$\lambda=0$: $\det\mathcal M(T)=0$, $T$ is not injective, and neither $T^{-1}$ nor $\mathcal M(T)^{-1}$ exists.`;
           const { MTi, MTinv } = st;
-          return String.raw`$\mathcal M(T^{-1})=${bm(MTi)}$ (from the map $T^{-1}$) and $\mathcal M(T)^{-1}=${bm(MTinv)}$ (inverting the matrix): difference ${v.sci(maxDiff(MTi, MTinv) + 1e-17, 1)}.`;
+          return String.raw`$\mathcal M(T^{-1})=${bm(MTi)}$ (from the map $T^{-1}$) and $\mathcal M(T)^{-1}=${bm(MTinv)}$ (inverting the matrix): difference $${v.sci(maxDiff(MTi, MTinv) + 1e-17, 1)}$.`;
         });
       },
     },
@@ -697,8 +701,9 @@ $$(u_1,\dots,u_m)+(v_1,\dots,v_m)=(u_1+v_1,\dots,u_m+v_m),\qquad\lambda(v_1,\dot
           ['comm', 'u+v=v+u'], ['assoc', '(u+v)+w=u+(v+w)'], ['zero', 'u+0=u'], ['inv', 'u+(-u)=0'],
           ['one', '1u=u'], ['mult', '(ab)u=a(bu)'], ['dist1', 'a(u+v)=au+av'], ['dist2', '(a+b)u=au+bu'],
         ];
-        const ax = v.select('axiom', AX.map(([value, t]) => ({ value, label: `$${t}$` })), 'dist1');
-        let seed = 7;
+        const SHORT = { comm: 'comm.', assoc: 'assoc.', zero: '$u+0$', inv: '$u+(-u)$', one: '$1u$', mult: '$(ab)u$', dist1: '$a(u+v)$', dist2: '$(a+b)u$' };
+        const ax = v.select('axiom', AX.map(([value]) => ({ value, label: SHORT[value] })), 'dist1');
+        let seed = 4;
         v.button('Resample', () => seed++);
         const p0 = sP.handle(-1, 0.4, { color: 'gold', constrain: 'y', label: 'u' }), p1 = sP.handle(1, 1.6, { color: 'gold', constrain: 'y' });
         const ua = sA.handle(1.2, 0.6, { color: 'gold', label: 'u' });
@@ -708,7 +713,7 @@ $$(u_1,\dots,u_m)+(v_1,\dots,v_m)=(u_1+v_1,\dots,u_m+v_m),\qquad\lambda(v_1,\dot
         let st = null;
         v.render(() => {
           const r = v.M.rng(seed), rnd = () => ({ p: [r.uniform(-1.2, 1.2), r.uniform(-1, 1)], a: [r.uniform(-1.5, 1.5), r.uniform(-1.5, 1.5)] });
-          const u = { p: [(p0.y + p1.y) / 2, (p1.y - p0.y) / 2], a: hp(ua) }, vv = rnd(), w = rnd(), a = Math.round(r.uniform(-1.5, 1.8) * 10) / 10, b = Math.round(r.uniform(-1.5, 1.5) * 10) / 10;
+          const u = { p: [(p0.y + p1.y) / 2, (p1.y - p0.y) / 2], a: hp(ua) }, vv = rnd(), w = rnd(), a = r.pick([-1.5, -0.8, 1.4, 1.8, 2]), b = r.pick([-1.2, -0.6, 0.7, 1.3]);
           const k = ax.value;
           const sides = {
             comm: [add(u, vv), add(vv, u), [vv]], assoc: [add(add(u, vv), w), add(u, add(vv, w)), [vv, w]], zero: [add(u, Z), u, []],
@@ -724,6 +729,7 @@ $$(u_1,\dots,u_m)+(v_1,\dots,v_m)=(u_1+v_1,\dots,u_m+v_m),\qquad\lambda(v_1,\dot
           sP.fn((x) => R.p[0] + R.p[1] * x, { color: 'accent', width: 2, dash: [6, 4] });
           sA.arrow(0, 0, L.a[0], L.a[1], { color: 'green', width: 5.5, alpha: 0.5, head: 13 });
           sA.arrow(0, 0, R.a[0], R.a[1], { color: 'accent', width: 2, dash: [6, 4] });
+          sA.tex(AX.find((q) => q[0] === k)[1], sA.bounds.x[0], 2.9, { align: 'left', baseline: 'top', size: 16, color: 'ink', dx: 8 });
           const diff = Math.max(Math.abs(L.p[0] - R.p[0]), Math.abs(L.p[1] - R.p[1]), Math.abs(L.a[0] - R.a[0]), Math.abs(L.a[1] - R.a[1]));
           st = { L, R, diff, a, b, t: AX.find((q) => q[0] === k)[1] };
         });
@@ -732,7 +738,7 @@ $$(u_1,\dots,u_m)+(v_1,\dots,v_m)=(u_1+v_1,\dots,u_m+v_m),\qquad\lambda(v_1,\dot
         v.readout(() => {
           if (!st) return '';
           const { L, R, diff, a, b, t } = st;
-          return String.raw`$${t}$ with $a=${tn(a, 1)}$, $b=${tn(b, 1)}$: left side $=(${ptex(L)},\,${vt(L.a)})$, right side $=(${ptex(R)},\,${vt(R.a)})$; largest difference ${v.sci(diff + 1e-17, 1)}.`;
+          return String.raw`$${t}$ with $a=${tn(a, 1)}$, $b=${tn(b, 1)}$: left side $=(${ptex(L)},\,${vt(L.a)})$, right side $=(${ptex(R)},\,${vt(R.a)})$; largest difference $${v.sci(diff + 1e-17, 1)}$.`;
         });
       },
     },
@@ -756,8 +762,8 @@ $$\dim(V_1\times\cdots\times V_m)=\dim V_1+\cdots+\dim V_m.$$`,
         const f1 = v.select('$V_1$', opts(false), 'R2'), f2 = v.select('$V_2$', opts(false), 'P1'), f3 = v.select('$V_3$', opts(true), 'none');
         let seed = 0;
         v.button('Random element', () => { seed++; });
-        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 420 });
-        const T = v.table(s, { rows: 4, cols: 4, maxCell: 46, minCell: 22, size: 13, labelSize: 12, region: [0, 0, 1, 0.9] });
+        const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360 });
+        const T = v.table(s, { rows: 4, cols: 4, maxCell: 54, minCell: 22, size: 13, labelSize: 12, region: [0, 0, 1, 0.9] });
         const COL = ['blue', 'orange', 'purple'];
         let st = null;
         v.render(() => {
@@ -814,7 +820,7 @@ Then $V_1+\cdots+V_m$ is a direct sum if and only if $\Gamma$ is injective.`,
         const sc1 = v.scene3(S1, { yaw: -0.6, pitch: 0.32, axis: 1.5, lim: 1.5 });
         const sc2_ = v.scene3(S2, { yaw: -0.6, pitch: 0.32, axis: 1.5, lim: 1.5, labels: ['t₁', 't₂', 't₃'], hint: false });
         const C = ['blue', 'orange', 'purple'];
-        const PRE = { direct: [[1.1, 0.1, -0.1], [0.2, 1.1, 0.1], [0.1, 0.3, 1.1]], plane: [[1.1, 0.1, -0.1], [0.2, 1.1, 0.1], [0.8, -0.6, -0.12]] };
+        const PRE = { direct: [[1.1, 0.1, -0.1], [0.2, 1.1, 0.1], [0.1, 0.3, 1.1]], plane: [[1.1, 0.1, -0.1], [0.2, 1.1, 0.1], [0.76, -0.58, -0.14]] }; // plane: a3 = 0.8a1 − 0.6a2
         const H = [];
         const big = (p) => (len3(p) < 0.35 ? mul3(unit3(p.some((q) => q) ? p : [1, 0, 0]), 0.35) : p);
         const snapA = (p, i) => {
@@ -825,11 +831,13 @@ Then $V_1+\cdots+V_m$ is a direct sum if and only if $\Gamma$ is injective.`,
         };
         PRE.direct.forEach((p, i) => H.push(sc1.handle(p, { color: C[i], label: `a${SUBS[i]}`, snap: (q) => snapA(q, i) })));
         let ker = [];
-        const th = sc2_.handle([0.9, 0.6, -0.5], {
+        const th = sc2_.handle([0.5, 0.9, 0.7], {
           color: 'gold', label: 't',
           snap: (p) => { if (ker.length === 1) { const q = mul3(ker[0], dot3(p, ker[0])); if (len3(sub3(p, q)) < 0.18) return q; } return p; },
         });
-        v.select('lines', [{ value: 'direct', label: 'independent' }, { value: 'plane', label: 'coplanar' }], 'direct', { onChange: (k) => PRE[k].forEach((p, i) => H[i].set(p)) });
+        v.select('lines', [{ value: 'direct', label: 'independent' }, { value: 'plane', label: 'coplanar' }], 'direct', {
+          onChange: (k) => { PRE[k].forEach((p, i) => H[i].set(p)); if (k === 'plane') th.set(mul3(unit3([0.8, -0.6, -1]), 1.2)); },
+        });
         let st = null;
         v.render(() => {
           const a = H.map((h) => h.p), A = [0, 1, 2].map((r) => a.map((c) => c[r])), t = th.p;
@@ -860,7 +868,7 @@ Then $V_1+\cdots+V_m$ is a direct sum if and only if $\Gamma$ is injective.`,
         v.readout(() => {
           if (!st) return '';
           const { G, t, ker } = st;
-          const head = String.raw`$\Gamma(t)=${tn(t[0])}a_1+${tn(t[1])}a_2+${tn(t[2])}a_3=${vt(G)}$. `;
+          const head = String.raw`$\Gamma(t)=${lc(t, ['a_1', 'a_2', 'a_3'])}=${vt(G)}$. `;
           if (!ker.length) return head + String.raw`$\operatorname{null}\Gamma=\{0\}$: the only way to reach $0$ is $t=0$, so $\Gamma$ is injective and $V_1+V_2+V_3$ is direct.`;
           const k = ker[0];
           return head + String.raw`$\Gamma(${vt(k)})=0$ although $(${tn(k[0])}a_1,${tn(k[1])}a_2,${tn(k[2])}a_3)\ne0$: $\Gamma$ is not injective and the sum is not direct.`;
@@ -1044,6 +1052,7 @@ $$V/U=\{v+U:\ v\in V\}.$$`,
           s.textPx(lamp(c, '(v + U) ∩ (w + U) ≠ ∅'), 10, 56, { color: c ? 'green' : 'red', weight: 600, size: 12 });
           st = { a, b, c, dist: Math.abs(off) };
         });
+        v.legend([['blue', '$U$'], ['orange', '$v+U$'], ['purple', '$w+U$'], ['gold', '$v-w$']]);
         v.readout(() => {
           if (!st) return '';
           const { a, b, c, dist } = st;
@@ -1062,7 +1071,7 @@ $$V/U=\{v+U:\ v\in V\}.$$`,
 $$(v+U)+(w+U)=(v+w)+U,\qquad\lambda(v+U)=(\lambda v)+U,$$
 is a vector space. Its additive identity is $0+U=U$ and the additive inverse of $v+U$ is $(-v)+U$.`,
       idea: String.raw`The real issue is that the operations are *well defined*: a translate has many names. If $v+U=v'+U$ and $w+U=w'+U$, then $v-v'$ and $w-w'$ lie in $U$ (3.101), hence so do $(v+w)-(v'+w')$ and $\lambda v-\lambda v'$, so $(v+w)+U=(v'+w')+U$ and $\lambda v+U=\lambda v'+U$ — by 3.101 again. Once the operations make sense, each axiom for $V/U$ follows from the same axiom in $V$.`,
-      caption: String.raw`$U$ is the blue line; the classes $v+U$ (orange) and $w+U$ (purple) are set by the handles $v$, $w$. The representatives $v'$, $w'$ (dots) keep sliding along their lines on their own; their sum $v'+w'$ (green dot, with its trail) never leaves the single line $(v+w)+U$. Switch to scalar multiplication: $\lambda v'$ stays on $\lambda v+U$. The numbers on the right are the signed offsets across $U$, which add and scale like real numbers.`,
+      caption: String.raw`$U$ is the blue line; the classes $v+U$ (orange) and $w+U$ (purple) are set by the handles $v$, $w$. The representatives $v'$, $w'$ (dots) keep sliding along their lines on their own; their sum $v'+w'$ (green dot, with its trail) never leaves the single line $(v+w)+U$. Switch to scalar multiplication: $\lambda v'$ stays on $\lambda v+U$. The dots on the dotted transversal record each class by its signed offset across $U$: offsets add and scale like real numbers.`,
       deps: ['ladr-3.101'],
       tags: ['quotients'],
       viz(v) {
@@ -1093,8 +1102,9 @@ is a vector space. Its additive identity is $0+U=U$ and the additive inverse of 
           if (add) s.dot(Wp[0], Wp[1], { r: 5, color: 'purple', label: "w'", labelPos: 'se' });
           s.dot(R[0], R[1], { r: 6, color: 'green', label: add ? "v'+w'" : "λv'", labelPos: 'ne' });
           // offsets on the right edge
-          const xr = s.bounds.x[1] - 0.1;
-          const tag = (p, c, txt) => { const y = p[1] + (xr - p[0]) * e[1] / e[0]; s.text(txt, xr, y + 0.08, { color: c, align: 'right', size: 12, baseline: 'bottom', weight: 600 }); };
+          const Q = sc2(e, 1.7);
+          s.line(Q[0] - 3 * nrm[0], Q[1] - 3 * nrm[1], Q[0] + 3 * nrm[0], Q[1] + 3 * nrm[1], { color: 'muted', dash: [2, 4], width: 1 });
+          const tag = (p, c, txt) => { const P = add2(Q, sc2(nrm, off(p))); s.dot(P[0], P[1], { r: 3, color: c }); s.text(txt, P[0] + 0.12, P[1] + 0.04, { color: c, align: 'left', size: 12, baseline: 'bottom', weight: 600 }); };
           tag(V, 'orange', `${v.fix(off(V), 2)}`); if (add) tag(W, 'purple', `${v.fix(off(W), 2)}`); tag(Rc, 'green', `${v.fix(off(Rc), 2)}`);
           st = { oV: off(V), oW: off(W), oR: off(R), add, L };
         }, { period: 60, autoplay: true });
@@ -1102,7 +1112,7 @@ is a vector space. Its additive identity is $0+U=U$ and the additive inverse of 
         v.readout(() => {
           if (!st) return '';
           const { oV, oW, oR, add, L } = st;
-          return add ? String.raw`Offsets across $U$: $${tn(oV)}+${tn(oW)}=${tn(oV + oW)}$, and the moving sum $v'+w'$ has offset ${v.fix(oR, 3)} at every instant — the class $(v'+w')+U$ does not depend on the representatives.`
+          return add ? String.raw`Offsets across $U$ (dots on the dotted transversal): $${pm(oV, oW)}=${tn(oV + oW)}$, and the moving sum $v'+w'$ has offset ${v.fix(oR, 3)} at every instant — the class $(v'+w')+U$ does not depend on the representatives.`
             : String.raw`Offsets: $${tn(L)}\cdot${tn(oV)}=${tn(L * oV)}$, and $\lambda v'$ has offset ${v.fix(oR, 3)} at every instant.`;
         });
       },

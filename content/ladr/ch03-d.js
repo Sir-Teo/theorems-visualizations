@@ -175,7 +175,7 @@ export default {
       tags: ['quotients', 'dimension'],
       viz(v) {
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 420 });
-        const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axis: 1.5, lim: 1.4 });
+        const sc = v.scene3(S, { yaw: -2.25, pitch: 0.3, axis: 1.5, lim: 1.4 });
         const kSel = v.select('$U$', [{ value: '0', label: '$\\{0\\}$' }, { value: '1', label: 'a line' }, { value: '2', label: 'a plane' }, { value: '3', label: '$\\mathbf R^3$' }], '1');
         const U1 = sc.handle([0.9, 0.45, 0.7], { color: 'blue', label: 'u₁' });
         const U2 = sc.handle([-0.6, 0.9, 0.25], { color: 'blue', label: 'u₂', snap: (p) => snapLine3(p, U1.p, 0.14) });
@@ -247,12 +247,12 @@ export default {
       viz(v) {
         const M = v.M;
         const S3 = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 380, title: '$V=\\mathbf R^3$: translates of $\\operatorname{null}T$' });
-        const sc = v.scene3(S3, { yaw: -0.5, pitch: 0.3, axis: 1.4, lim: 1.35 });
+        const sc = v.scene3(S3, { yaw: -2.25, pitch: 0.3, axis: 1.4, lim: 1.35 });
         const SW = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, height: 380, minWidth: 250, title: '$W=\\mathbf R^2$: one point per translate' });
         const rSel = v.select('$T$', [{ value: '2', label: 'rank 2: null space a line' }, { value: '1', label: 'rank 1: null space a plane' }], '2');
         const slide = v.slider('slide along $v+\\operatorname{null}T$', -1.4, 1.4, 0.8, { step: 0.01 });
         const A2 = [[0.9, 0.5, -0.6], [-0.3, 0.8, 0.7]], A1 = [[0.9, 0.5, -0.6], [0.45, 0.25, -0.3]];
-        const Vh = sc.handle([0.7, -0.6, 0.8], { color: 'gold', label: 'v' });
+        const Vh = sc.handle([-0.2, 0.9, 0.5], { color: 'gold', label: 'v' });
         const rdir = [0.9 / Math.hypot(0.9, 0.45), 0.45 / Math.hypot(0.9, 0.45)];
         const onRange = (x, y) => { if (rSel.value === '2') return [x, y]; const t = dot2([x, y], rdir); return [rdir[0] * t, rdir[1] * t]; };
         const Wh = SW.handle(-1.1, 1.0, { color: 'green', label: 'w', constrain: onRange });
@@ -283,8 +283,8 @@ export default {
           SW.corner(R === 2 ? 'range T = all of ℝ²' : 'range T = a line', 'tl', { color: 'teal' });
           extras.forEach((g) => { const y = M.matVec(A, g); SW.dot(y[0], y[1], { r: 5, color: 'orange' }); });
           SW.dot(0, 0, { r: 6, color: 'red' });
-          SW.dot(Tv[0], Tv[1], { r: 7, color: 'gold' });
-          SW.dot(Tq[0], Tq[1], { r: 11, hollow: true, color: 'pink', width: 2 });
+          SW.dot(Tq[0], Tq[1], { r: 12, hollow: true, color: 'pink', width: 2 });
+          SW.dot(Tv[0], Tv[1], { r: 6.5, color: 'gold' });
           SW.tex('Tv', Tv[0], Tv[1], { color: 'gold', dx: 14, dy: 12, align: 'left' });
           st = { Tv, Tq, R, s: slide.value };
         });
@@ -355,15 +355,15 @@ export default {
         const B2 = S.handle(b2[0], b2[1], { color: 'purple', label: 'v₂', constrain: (x, y) => snap2(minLen2(x, y, 0.3), [B1.x, B1.y], 0.12) });
         const onBasis = () => { const nb1 = [B1.x, B1.y], nb2 = [B2.x, B2.y]; const nc = solve(nb1, nb2, abPrev); if (nc) c = nc; };
         B1.onDrag = onBasis; B2.onDrag = onBasis;
-        const F = fHandle(S, foot2(c), 'accent', 'φ', 0.25);
+        const F = fHandle(S, foot2(c), 'green', 'φ', 0.25);
         F.onDrag = () => { c = coef(F); };
         const rdir = () => { const l1 = Math.hypot(...b1), l2 = Math.hypot(...b2), s = Math.sign(dot2(b1, b2)) || 1, l = Math.hypot(l1, l2); return [l1 / l, (s * l2) / l]; };
         const Qh = D.handle(abPrev[0], abPrev[1], {
-          color: 'accent', label: 'φ',
+          color: 'green', label: 'φ',
           constrain: (x, y) => { if (!deg) return [x, y]; const r = rdir(), t = x * r[0] + y * r[1]; return [r[0] * t, r[1] * t]; },
         });
         Qh.onDrag = () => { if (!deg) { const nc = solve(b1, b2, [Qh.x, Qh.y]); if (nc) c = nc; } else c = [(b1[0] * Qh.x) / dot2(b1, b1), (b1[1] * Qh.x) / dot2(b1, b1)]; };
-        v.legend([['accent', 'level lines of $\\varphi$'], ['blue', '$v_1$'], ['purple', '$v_2$']]);
+        v.legend([['green', 'level lines of $\\varphi$'], ['blue', '$v_1$'], ['purple', '$v_2$']]);
         let st = null;
         v.render(() => {
           b1 = [B1.x, B1.y]; b2 = [B2.x, B2.y]; deg = !dual2(b1, b2);
@@ -372,13 +372,13 @@ export default {
           const nz = dot2(c, c) > 1e-10, ft = nz ? foot2(c) : [99, 99];
           if (!F.dragging) { F.x = ft[0]; F.y = ft[1]; }
           F.visible = nz && Math.abs(ft[0]) < 2.9 && Math.abs(ft[1]) < 2.3;
-          if (nz) levels(S, c, { color: 'accent' }); else S.corner('φ = 0', 'tl', { color: 'accent' });
+          if (nz) levels(S, c, { color: 'green' }); else S.corner('φ = 0', 'tl', { color: 'green' });
           arr(S, [0, 0], b1, 'blue', null); arr(S, [0, 0], b2, 'purple', null);
-          S.text(`φ(v₁) = ${kfmt(+ab[0].toFixed(2))}`, b1[0], b1[1], { color: 'blue', size: 12, dy: 18, align: 'center' });
-          S.text(`φ(v₂) = ${kfmt(+ab[1].toFixed(2))}`, b2[0], b2[1], { color: 'purple', size: 12, dy: -18, align: 'center' });
           if (!deg) D.rect(-9, -9, 9, 9, { fill: 'green', fillAlpha: 0.06, stroke: false });
           else { const r = rdir(); D.line(-9 * r[0], -9 * r[1], 9 * r[0], 9 * r[1], { color: 'red', width: 2.5 }); }
           D.corner(deg ? 'only these pairs occur' : 'every pair occurs', 'tl', { color: deg ? 'red' : 'green' });
+          D.line(ab[0], ab[1], ab[0], 0, { color: 'blue', dash: [4, 4], width: 1.2 }); D.line(ab[0], ab[1], 0, ab[1], { color: 'purple', dash: [4, 4], width: 1.2 });
+          D.dot(ab[0], 0, { r: 3.5, color: 'blue' }); D.dot(0, ab[1], { r: 3.5, color: 'purple' });
           D.dot(0, 0, { r: 4, color: 'ink' });
           D.text('0', 0, 0, { dx: -8, dy: 10, color: 'muted', size: 11 });
           D.text('φ(v₁)', 3.0, 0, { dy: -10, align: 'right', color: 'blue', size: 12 });
@@ -449,9 +449,9 @@ export default {
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-2.1, 2.1], y: [-2.1, 2.1], equal: true, axes: false, height: 430 });
-        const sc = v.scene3(S, { yaw: -0.75, pitch: 0.3, axis: 1.4, lim: 1.4 });
-        const HB = [[1.1, 0.25, 0.05], [0.35, 1.0, -0.15], [0.25, 0.35, 0.95]].map((p, i) => sc.handle(p, { color: VC[i], label: ['v₁', 'v₂', 'v₃'][i] }));
-        const X = sc.handle([0.95, 1.05, 0.75], { color: 'gold', label: 'v' });
+        const sc = v.scene3(S, { yaw: -2.25, pitch: 0.3, axis: 1.4, lim: 1.4 });
+        const HB = [[1.1, 0.3, -0.1], [0.15, 1.1, 0.15], [-0.2, 0.25, 1.0]].map((p, i) => sc.handle(p, { color: VC[i], label: ['v₁', 'v₂', 'v₃'][i] }));
+        const X = sc.handle([0.8, 1.2, 0.9], { color: 'gold', label: 'v' });
         const pl = v.toggle('level planes through $v$', true);
         v.legend([['blue', '$\\varphi_1(v)\\,v_1$'], ['purple', '$\\varphi_2(v)\\,v_2$'], ['teal', '$\\varphi_3(v)\\,v_3$'], ['gold', '$v$', { dot: true }]]);
         let st = null;
@@ -508,10 +508,10 @@ export default {
           const g = [cc[0] * D[0][0] + cc[1] * D[1][0], cc[0] * D[0][1] + cc[1] * D[1][1]], r = [p[0] - g[0], p[1] - g[1]];
           levels(S, p, { color: 'green' });
           levels(S, g, { color: 'orange', strips: false, dash: [6, 5], width: 1.6, side: -1 });
-          for (const Z of [S, R]) { arr(Z, [0, 0], b1, 'blue', '\\,v_1', { width: 2.6 }); arr(Z, [0, 0], b2, 'purple', '\\,v_2', { width: 2.6 }); Z.dot(0, 0, { r: 3, color: 'ink' }); }
+          for (const Z of [S, R]) { arr(Z, [0, 0], b1, 'blue', Z === R ? '\\,v_1' : null, { width: 2.6 }); arr(Z, [0, 0], b2, 'purple', Z === R ? '\\,v_2' : null, { width: 2.6 }); Z.dot(0, 0, { r: 3, color: 'ink' }); }
           const ok = Math.hypot(...r) < 1e-9;
           if (!ok) levels(R, r, { color: 'red' });
-          R.corner(ok ? 'ρ = 0: an exact match' : `ρ(v₁) = ${kfmt(+dot2(r, b1).toFixed(2))},  ρ(v₂) = ${kfmt(+dot2(r, b2).toFixed(2))}`, 'tl', { color: ok ? 'green' : 'red' });
+          R.corner(ok ? 'ρ = 0: an exact match' : `ρ(v₁) = ${kfmt(+dot2(r, b1).toFixed(2))},  ρ(v₂) = ${kfmt(+dot2(r, b2).toFixed(2))}`, 'bl', { color: ok ? 'green' : 'red' });
           st = { pv, cc, ok };
         });
         v.readout(() => {

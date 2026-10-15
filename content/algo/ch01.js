@@ -365,16 +365,16 @@ Steps (i)–(ii) are an induction on the number of iterations; step (iii) conver
       tags: ['searching', 'correctness'],
       viz(v) {
         const base = (() => { const r = v.rng(11), a = [rint(r, 1, 3)]; for (let k = 1; k < 31; k++) a.push(a[k - 1] + rint(r, 1, 3)); return a; })();
-        const nn = v.slider('$n$', 1, 31, 31, { int: true, onChange: () => S.reset() });
-        const xs = v.slider('target $x$', 0, 95, 61, { int: true, onChange: () => S.reset() });
-        const bug = v.toggle('buggy: lo ← mid', false, { onChange: () => { S.setCode(bug.value ? BS_CODE.map((l, i) => (i === 4 ? '  if A[mid] < x:  lo ← mid   // bug' : l)) : BS_CODE); S.reset(); } });
-        const s = v.stage({ x: [0, 35], y: [-7.6, 1.6], axes: false, height: 320 });
+        const nn = v.slider('$n$', 1, 31, 31, { int: true, onChange: () => S.reset(undefined, { at: 'end' }) });
+        const xs = v.slider('target $x$', 0, 95, 61, { int: true, onChange: () => S.reset(undefined, { at: 'end' }) });
+        const bug = v.toggle('buggy: lo ← mid', false, { onChange: () => { S.setCode(bug.value ? BS_CODE.map((l, i) => (i === 4 ? '  if A[mid] < x:  lo ← mid   // bug' : l)) : BS_CODE); S.reset(undefined, { at: 'end' }); } });
+        const s = v.stage({ x: [0, 35], y: [-6.5, 0.9], axes: false, height: 280 });
         const arrOf = () => base.slice(0, nn.value);
         const S = v.steps({ frames: () => bsFrames(arrOf(), xs.value, bug.value), code: BS_CODE, codeTitle: 'Binary-Search(A, x)', speed: 1.2, start: 'end' });
-        s.onClick((x, y) => { const i = Math.round(x); if (i >= 1 && i <= nn.value && y > -0.6 && y < 1.2) { xs.set(arrOf()[i - 1]); S.reset(); } });
+        s.onClick((x, y) => { const i = Math.round(x); if (i >= 1 && i <= nn.value && y > -0.6 && y < 1.2) { xs.set(arrOf()[i - 1]); S.reset(undefined, { at: 'end' }); } });
         v.render(() => {
           const f = S.frame, A = arrOf(), n = A.length, W = Math.max(n, 16) + 3.6, cw = 0.92;
-          s.setView([0.2, W], [-7.6, 1.6]);
+          s.setView([0.2, W], [-6.5, 0.9]);
           f.rows.forEach((row, k) => {
             const y = -k * 1.05, last = k === f.rows.length - 1;
             for (let i = 1; i <= n; i++) {
@@ -386,7 +386,7 @@ Steps (i)–(ii) are an induction on the number of iterations; step (iii) conver
             const size = Math.max(0, row.hi - row.lo + 1);
             s.text(k === 0 ? `${size}` : `→ ${size}`, n + 0.8, y, { baseline: 'middle', size: 11.5, color: row.found ? 'green' : last && f.stuck ? 'red' : 'muted', weight: last ? 600 : 500 });
           });
-          if (f.stuck) s.text('stuck: window repeats', n + 0.8, -f.rows.length * 1.05 + 0.1, { baseline: 'middle', size: 11.5, color: 'red', weight: 700 });
+          if (f.stuck) s.text('stuck: window repeats', n + 0.8, -(f.rows.length - 1) * 1.05 - 0.8, { align: 'right', baseline: 'middle', size: 11.5, color: 'red', weight: 700 });
         });
         v.readout(() => {
           const F = S.frames, n = nn.value, bound = Math.ceil(Math.log2(n + 1)), f = S.frame, last = F[F.length - 1], ok = F.every((g) => g.inv);
@@ -407,8 +407,8 @@ Steps (i)–(ii) are an induction on the number of iterations; step (iii) conver
       refs: ['CLRS 4e §2.1', 'Erickson Ch. 1'],
       tags: ['correctness'],
       viz(v) {
-        const proc = v.select('', Object.entries(VARIANT).map(([value, P]) => ({ value, label: P.label })), 'euclid', { onChange: () => { S.setCode(VARIANT[proc.value].code); S.reset(); } });
-        const seed = v.slider('seed', 1, 40, 1, { int: true, onChange: () => S.reset() });
+        const proc = v.select('', Object.entries(VARIANT).map(([value, P]) => ({ value, label: P.label })), 'euclid', { onChange: () => { S.setCode(VARIANT[proc.value].code); S.reset(undefined, { at: 'end' }); } });
+        const seed = v.slider('seed', 1, 40, 1, { int: true, onChange: () => S.reset(undefined, { at: 'end' }) });
         const top = v.stage({ x: [0, 10], y: [0, 1], axes: false, height: 170, full: true });
         const bot = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', height: 210, full: true });
         const S = v.steps({ frames: () => VARIANT[proc.value].frames(v.rng(seed.value * 31 + 7), seed.value), code: VARIANT.euclid.code, codeTitle: 'loop', speed: 3, start: 'end' });
@@ -430,14 +430,17 @@ Steps (i)–(ii) are an induction on the number of iterations; step (iii) conver
             top.tex(proc.value === 'halve' ? String.raw`x = ${st.toExponential(3).replace(/e([-+]\d+)/, '\\times10^{$1}')}` : `n = ${st}`, 5, 1.7, { align: 'center', baseline: 'middle', size: 26 });
             top.text(proc.value === 'halve' ? 'positive and shrinking, but never 0' : st % 2 === 0 ? 'even' : 'odd', 5, 0.6, { align: 'center', baseline: 'middle', size: 12, color: 'muted' });
           }
-          // variant history
-          const vmax = Math.max(...F.map((g) => g.v)), N = F.length - 1;
-          bot.setView([-0.5, Math.max(N, 4) + 0.5], [0, vmax * 1.1]);
+          // variant history, one bar per iteration
+          const vmax = Math.max(...F.map((g) => g.v)), N = F.length - 1, bw = N > 60 ? 0.45 : 0.36;
+          bot.setView([-0.7, Math.max(N, 4) + 0.7], [-0.04 * vmax, vmax * 1.14]);
+          bot.setTicks([], null);
           bot.hline(0, { color: 'ink', width: 1 });
-          for (let k = 1; k <= N; k++) { const up = F[k].v > F[k - 1].v, c = k <= i ? (up ? 'red' : 'green') : 'faint'; bot.line(k - 1, F[k - 1].v, k, F[k].v, { color: c, width: k <= i ? 2 : 1 }); }
-          const pr = N > 60 ? 2 : 3.5;
-          F.forEach((g, k) => { if (k <= i) bot.dot(k, g.v, { r: k === i ? 5.5 : pr, color: k === i ? 'gold' : 'accent' }); });
-          bot.setTitle(`candidate variant ${P.vname} after each iteration`);
+          F.forEach((g, k) => {
+            const now = k <= i, c = !now ? 'faint' : k === 0 ? 'accent' : g.v > F[k - 1].v ? 'red' : 'green';
+            bot.rect(k - bw, 0, k + bw, g.v, { fill: c, fillAlpha: now ? 0.45 : 0.15, color: k === i ? 'gold' : c, width: k === i ? 2.5 : 1 });
+            if (N <= 30 && P.kind === 'int' && now) bot.text(String(g.v), k, g.v, { align: 'center', dy: -8, size: 11, weight: 600, color: 'muted' });
+          });
+          bot.setTitle(`candidate variant ${P.vname}, one bar per iteration (${N} iterations)`);
         });
         v.readout(() => {
           const P = VARIANT[proc.value], F = S.frames.filter((g) => !g.end), ups = F.slice(1).filter((g, k) => g.v > F[k].v).length, N = F.length - 1;

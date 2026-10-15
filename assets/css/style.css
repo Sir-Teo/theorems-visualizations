@@ -341,7 +341,7 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .timeline-page canvas { position: absolute; inset: 0; display: block; touch-action: none; cursor: grab; }
 .map-page canvas { position: absolute; inset: 0; display: block; touch-action: none; }
 .map-ui { position: absolute; left: 16px; top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; z-index: 5; max-width: calc(100% - 32px); }
-.map-ui .card { padding: 6px 10px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); }
+.map-ui .card { padding: 6px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; box-shadow: var(--shadow); max-width: 100%; }
 .map-ui label { font-size: 13px; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; color: var(--ink-2); }
 .map-tip {
   position: absolute; z-index: 6; pointer-events: none; max-width: 340px; padding: 10px 12px; font-size: 13px;

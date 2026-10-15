@@ -114,6 +114,16 @@ function cubeFaces(sc, h, color) {
     sc.poly(q, { fill: color, fillAlpha: 0.06, color, alpha: 0.35, width: 1 });
   }
 }
+/** Parameter interval [a, b] for which c + t·d stays in the box [−h, h]³. */
+function clipBox(c, d, h) {
+  let a = -Infinity, b = Infinity;
+  for (let i = 0; i < 3; i++) {
+    if (Math.abs(d[i]) < 1e-12) { if (Math.abs(c[i]) > h) return [1, 0]; continue; }
+    const t1 = (-h - c[i]) / d[i], t2 = (h - c[i]) / d[i];
+    a = Math.max(a, Math.min(t1, t2)); b = Math.min(b, Math.max(t1, t2));
+  }
+  return [a, b];
+}
 /** Arrow in a scene with a KaTeX label just past its tip. */
 function arrow3(sc, p, q, color, label, o = {}) {
   if (len(sub(q, p)) > 1e-9) sc.arrow(p, q, { color, width: o.width ?? 2.6, alpha: o.alpha, dash: o.dash });
@@ -172,31 +182,31 @@ The set of all linear maps from $V$ to $W$ is written $\mathcal L(V,W)$, and $\m
         const mode = v.select('', [{ value: 'lin', label: 'linear: $x\\mapsto Ax$' }, { value: 'warp', label: 'nonlinear: $x\\mapsto A\\,\\mathrm{twist}(x)$' }], 'lin');
         const lam = v.slider('$\\lambda$', -2, 2, 1.6, { step: 0.05 });
         const D = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 340, title: 'domain $V=\\R^2$' });
-        const W = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: false, height: 340, title: 'target $W=\\R^2$' });
-        const u = D.handle(1.0, -0.25, { color: 'blue', label: 'u', constrain: disc(1.25) });
-        const w = D.handle(0.1, 0.85, { color: 'purple', label: 'v', constrain: disc(1.25) });
+        const W = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 340, title: 'target $W=\\R^2$' });
+        const u = D.handle(1.0, -0.6, { color: 'blue', label: 'u', constrain: disc(1.25) });
+        const w = D.handle(-0.2, 0.9, { color: 'purple', label: 'v', constrain: disc(1.25) });
         const c1 = W.handle(1.15, 0.3, { color: 'orange', label: 'Te₁', constrain: disc(1.5) });
         const c2 = W.handle(-0.4, 0.95, { color: 'orange', label: 'Te₂', constrain: disc(1.5) });
-        const twist = (p) => { const a = 0.28 * (p[0] * p[0] + p[1] * p[1]), c = Math.cos(a), s = Math.sin(a); return [c * p[0] - s * p[1], s * p[0] + c * p[1]]; };
+        const twist = (p) => { const a = 0.25 * (p[0] * p[0] + p[1] * p[1]), c = Math.cos(a), s = Math.sin(a); return [c * p[0] - s * p[1], s * p[0] + c * p[1]]; };
         let res = { e1: 0, e2: 0, lin: true };
         v.legend([['blue', '$u,\\ Tu$'], ['purple', '$v,\\ Tv$'], ['green', 'sum'], ['gold', 'scalar multiple']]);
         v.render(() => {
           const A = [[c1.x, c2.x], [c1.y, c2.y]], lin = mode.value === 'lin';
           const T = lin ? (p) => mv(A, p) : (p) => mv(A, twist(p));
           const U = [u.x, u.y], V = [w.x, w.y], l = lam.value, UV = add(U, V), LV = scl(V, l);
-          gridImg(D, (p) => p, { lin: true, color: 'muted', alpha: 0.22 });
+          gridImg(D, (p) => p, { lin: true, R: 2, color: 'muted', alpha: 0.22 });
           D.poly([[0, 0], U, UV, V], { fill: 'green', fillAlpha: 0.07, stroke: false });
           D.line(U[0], U[1], UV[0], UV[1], { color: 'purple', dash: [4, 4], alpha: 0.6 }); D.line(V[0], V[1], UV[0], UV[1], { color: 'blue', dash: [4, 4], alpha: 0.6 });
           arrow2(D, [0, 0], LV, 'gold', '\\lambda v', { width: 2 });
           arrow2(D, [0, 0], UV, 'green', 'u+v'); arrow2(D, [0, 0], U, 'blue'); arrow2(D, [0, 0], V, 'purple');
-          gridImg(W, T, { lin, color: 'accent', alpha: 0.3 });
+          gridImg(W, T, { lin, R: 2, color: 'accent', alpha: 0.3 });
           arrow2(W, [0, 0], [c1.x, c1.y], 'orange', null, { width: 1.5, alpha: 0.6 }); arrow2(W, [0, 0], [c2.x, c2.y], 'orange', null, { width: 1.5, alpha: 0.6 });
           const TU = T(U), TV = T(V), TUV = T(UV), S = add(TU, TV), TLV = T(LV), LTV = scl(TV, l);
           W.poly([[0, 0], TU, S, TV], { fill: 'green', fillAlpha: 0.07, stroke: false });
           W.line(TU[0], TU[1], S[0], S[1], { color: 'purple', dash: [4, 4], alpha: 0.6 }); W.line(TV[0], TV[1], S[0], S[1], { color: 'blue', dash: [4, 4], alpha: 0.6 });
           const e1 = len(sub(TUV, S)), e2 = len(sub(TLV, LTV));
-          arrow2(W, [0, 0], LTV, 'gold', e2 < 0.01 ? 'T(\\lambda v)=\\lambda Tv' : '\\lambda Tv', { width: 2 });
-          arrow2(W, [0, 0], S, 'green', e1 < 0.01 ? 'T(u+v)=Tu+Tv' : 'Tu+Tv');
+          arrow2(W, [0, 0], LTV, 'gold', e2 < 0.01 ? 'T(\\lambda v)=\\lambda Tv' : '\\lambda Tv', { width: 2, size: 14, off: 22 });
+          arrow2(W, [0, 0], S, 'green', e1 < 0.01 ? 'T(u+v)=Tu+Tv' : 'Tu+Tv', { size: 14, off: 26 });
           arrow2(W, [0, 0], TU, 'blue', 'Tu'); arrow2(W, [0, 0], TV, 'purple', 'Tv');
           if (e1 >= 0.01) { W.line(S[0], S[1], TUV[0], TUV[1], { color: 'red', width: 2.5 }); W.dot(TUV[0], TUV[1], { r: 5, color: 'red', label: 'T(u+v)', labelPos: 'e' }); }
           if (e2 >= 0.01) { W.line(LTV[0], LTV[1], TLV[0], TLV[1], { color: 'red', width: 2.5 }); W.dot(TLV[0], TLV[1], { r: 5, color: 'red', label: 'T(λv)', labelPos: 'w' }); }
@@ -249,8 +259,8 @@ $$Tv_k=w_k\quad\text{for each } k=1,\dots,n.$$`,
             D.line(-a[0] * 9, -a[1] * 9, a[0] * 9, a[1] * 9, { color: 'red', width: 2, alpha: 0.6 });
             const k = len(a) > 1e-9 ? dot(b, a) / dot(a, a) : null;
             const cons = k != null && len(sub(B, scl(A, k))) < 0.06;
-            D.corner(String.raw`$v_1,v_2$ is **not a basis**`, 'tl', { color: 'red' });
-            W.corner(cons ? 'consistent targets: such $T$ exist, but **not unique**' : String.raw`$Tv_2=kTv_1$ is forced, but $w_2\ne kw_1$: **no such $T$**`, 'tl', { color: 'red' });
+            D.corner('v₁, v₂ is not a basis', 'tl', { color: 'red' });
+            W.corner(cons ? 'consistent targets: such T exist, but are not unique' : 'Tv₂ = k·Tv₁ is forced, but w₂ ≠ k·w₁: no such T', 'tl', { color: 'red' });
             arrow2(D, [0, 0], X, 'gold');
             info = { ok, cons };
           }
@@ -292,7 +302,8 @@ Then $S+T$ and $\lambda T$ are again linear, and with these operations $\mathcal
           [0, 1].forEach((k) => {
             const sa = scl(colOf(Sm, k), A), tb = scl(colOf(Tm, k), B), ck = colOf(C, k), al = k ? 0.75 : 1;
             arrow2(P3, [0, 0], sa, 'blue', null, { width: 2, alpha: al }); arrow2(P3, sa, ck, 'orange', null, { width: 2, alpha: al });
-            arrow2(P3, [0, 0], ck, 'green', `(aS+bT)e_${k + 1}`, { width: 2.6, size: 13 });
+            arrow2(P3, [0, 0], ck, 'green', null, { width: 2.6 });
+            P3.tex(`(aS+bT)e_${k + 1}`, ck[0], ck[1], { color: 'green', size: 13, dy: k ? -16 : 18 });
           });
           if (Math.abs(A) + Math.abs(B) < 1e-9) P3.corner('the zero map', 'tl', { color: 'green' });
         });
@@ -314,7 +325,7 @@ Then $S+T$ and $\lambda T$ are again linear, and with these operations $\mathcal
 
 Multiplication is in general **not** commutative: $ST$ and $TS$ can differ even when both are defined.`,
       idea: String.raw`All three are statements about functions, checked at a single vector: both sides of (a) send $u$ to $T_1(T_2(T_3u))$, so the grouping is irrelevant; (b) is immediate; and (c) uses the pointwise definition of the sum (3.6), with linearity of $S$ for the second identity. Commutativity fails because applying "first rotate, then shear" is a different motion from "first shear, then rotate".`,
-      caption: String.raw`Left: the house undergoes $D$ (stretch), then $H$ (shear), then $R$ (rotation), with the faint ghosts of $Dx$ and $HDx$ — whether you group it as $(RH)D$ or $R(HD)$ the result is the same. Right: pick another order of the same three maps. It usually lands elsewhere (red); the dashed outline is the left result.`,
+      caption: String.raw`Left: the gold house undergoes $D$ (stretch), then $H$ (shear), then $R$ (rotation), leaving the faint ghosts $Dx$ and $HDx$ — whether you group it as $(RH)D$ or $R(HD)$ the result is the same green house. Right: pick another order of the same three maps and move the sliders. It usually lands elsewhere (red); the dashed outline is the left result.`,
       deps: ['ladr-3.1', 'ladr-3.6'],
       tags: ['linear maps', 'composition'],
       viz(v) {
@@ -331,29 +342,30 @@ Multiplication is in general **not** commutative: $ST$ and $TS$ can differ even 
         let info = {};
         const run = (P, word, m, s, final, ref) => {
           gridImg(P, (p) => p, { lin: true, R: 2.8, step: 0.4, color: 'muted', alpha: 0.18 });
-          const steps = word.split('').reverse(); // the rightmost factor acts first
-          let cur = [[1, 0], [0, 1]], lab = 'x';
+          const steps = word.split('').reverse(), Ms = [[[1, 0], [0, 1]]]; // the rightmost factor acts first
+          for (let i = 0; i < 3; i++) Ms.push(mm(m[steps[i]], Ms[i]));
           house(P, (p) => p, { color: 'muted', alpha: 0.35, fillAlpha: 0.1 });
-          for (let i = 0; i < 3; i++) {
-            const next = mm(m[steps[i]], cur), f = M.clamp(s - i, 0, 1);
-            if (f <= 0) break;
-            if (f < 1) { const Q = cur.map((r, a) => r.map((x, b) => x + (next[a][b] - x) * M.smoothstep(f))); house(P, (p) => mv(Q, p), { color: 'gold' }); break; }
-            cur = next; lab = steps[i] + (lab === 'x' ? 'x' : lab);
-            if (i < 2) { house(P, (p) => mv(cur, p), { color: 'muted', alpha: 0.45, fillAlpha: 0.06 }); const top = mv(cur, [0, 0.75]); P.tex(lab, top[0], top[1], { color: 'muted', size: 12, dy: -10 }); }
+          let lab = 'x';
+          for (let i = 1; i <= 2; i++) {
+            lab = steps[i - 1] + lab;
+            house(P, (p) => mv(Ms[i], p), { color: 'muted', alpha: 0.5, fillAlpha: 0.06 });
+            const top = mv(Ms[i], [0, 0.75]); P.tex(lab, top[0], top[1], { color: 'muted', size: 12, dy: -10 });
           }
-          if (s >= 3) {
-            if (ref) house(P, (p) => mv(ref, p), { color: 'green', dash: [5, 4], width: 1.6 });
-            house(P, (p) => mv(cur, p), { color: final });
+          if (ref) house(P, (p) => mv(ref, p), { color: 'green', dash: [5, 4], width: 1.6 });
+          house(P, (p) => mv(Ms[3], p), { color: final });
+          if (s < 3) {
+            const k = Math.floor(s), f = M.smoothstep(s - k), Q = Ms[k].map((r, a) => r.map((x, b) => x + (Ms[k + 1][a][b] - x) * f));
+            P.poly(HOUSE.map((p) => mv(Q, p)), { color: 'gold', width: 2.5, fill: 'gold', fillAlpha: 0.12 });
           }
         };
         v.animate((t) => {
-          const m = mats(), s = Math.min(3, Math.max(0, (t - 0.6) / 1.2));
+          const m = mats(), s = Math.min(3, Math.max(0, (t - 0.5) / 1.3));
           const L = prod('RHD', m), Rt = prod(ord.value, m), same = mdiff(L, Rt) < 1e-9;
           run(P1, 'RHD', m, s, 'green');
           run(P2, ord.value, m, s, same ? 'green' : 'red', L);
           P2.setTitle(`$${ord.value}$: first $${ord.value[2]}$, then $${ord.value[1]}$, then $${ord.value[0]}$`);
           info = { m, L, Rt, same, a: mdiff(mm(mm(m.R, m.H), m.D), mm(m.R, mm(m.H, m.D))) };
-        }, { period: 6.5, still: 6 });
+        }, { period: 6, still: 1.6 });
         v.readout(() => {
           const { L, Rt, same, a } = info; if (!L) return '';
           return String.raw`$(RH)D = R(HD) = ${mtex(L)}$ (difference $${v.sci(a, 1)}$: associativity). $\ ${ord.value} = ${mtex(Rt)}$ — ` + (same ? (ord.value === 'RHD' ? 'the same word.' : 'equal: for these settings the factors happen to commute.') : '**different**: the order of the factors matters.');
@@ -375,7 +387,7 @@ Multiplication is in general **not** commutative: $ST$ and $TS$ can differ even 
         const mode = v.select('', [{ value: 'lin', label: 'linear $x\\mapsto Ax$' }, { value: 'aff', label: 'affine $x\\mapsto Ax+b$' }], 'aff');
         const S = v.stage({ x: [-3, 3], y: [-2.6, 2.6], equal: true, axes: false, height: 360 });
         const c1 = S.handle(1.2, 0.3, { color: 'orange', label: 'Ae₁', constrain: disc(1.6) }), c2 = S.handle(-0.3, 0.9, { color: 'orange', label: 'Ae₂', constrain: disc(1.6) });
-        const bh = S.handle(0.9, 0.65, { color: 'red', label: 'b', constrain: disc(1.2) });
+        const bh = S.handle(0.75, -0.75, { color: 'red', label: 'b', labelPos: 'sw', constrain: disc(1.2) });
         let info = {};
         v.legend([['muted', 'the original grid'], ['accent', 'its image (morphing)'], ['gold', 'path of the origin'], ['red', '$T(0)+T(0)$']]);
         v.animate((t) => {
@@ -384,18 +396,17 @@ Multiplication is in general **not** commutative: $ST$ and $TS$ can differ even 
           const ph = (t % 5) / 5, s = M.smoothstep(M.clamp(ph < 0.5 ? ph * 2.6 : (1 - ph) * 2.6, 0, 1));
           const As = [[1 + s * (A[0][0] - 1), s * A[0][1]], [s * A[1][0], 1 + s * (A[1][1] - 1)]], bs = scl(b, s);
           const f = (p) => add(mv(As, p), bs);
-          gridImg(S, (p) => p, { lin: true, R: 3.2, step: 0.4, color: 'muted', alpha: 0.15 });
-          gridImg(S, f, { lin: true, R: 3.2, step: 0.4, color: 'accent', alpha: 0.32, axis: 'accent' });
+          gridImg(S, (p) => p, { lin: true, R: 6, step: 0.4, color: 'muted', alpha: 0.15 });
+          gridImg(S, f, { lin: true, R: 4.4, step: 0.4, color: 'accent', alpha: 0.32, axis: 'accent' });
           arrow2(S, [0, 0], [c1.x, c1.y], 'orange', null, { width: 1.6, alpha: 0.6, dash: [5, 4] }); arrow2(S, [0, 0], [c2.x, c2.y], 'orange', null, { width: 1.6, alpha: 0.6, dash: [5, 4] });
           S.dot(0, 0, { r: 4, color: 'ink' }); S.tex('0', 0, 0, { color: 'ink', size: 13, dx: -10, dy: 12 });
-          if (aff) {
+          if (aff && len(b) > 1e-6) {
             S.line(0, 0, bs[0], bs[1], { color: 'gold', width: 4, alpha: 0.6 });
-            arrow2(S, b, scl(b, 2), 'red', 'T(0)+T(0)=2b', { width: 2, dash: [5, 4], size: 13 });
-            S.dot(2 * b[0], 2 * b[1], { r: 4, color: 'red', hollow: true });
-          }
-          const T0 = f([0, 0]);
-          S.dot(T0[0], T0[1], { r: 6.5, color: aff && len(b) > 1e-6 ? 'gold' : 'green', hollow: !aff });
-          if (s > 0.98) S.tex(aff ? 'T(0)=T(0+0)' : 'T(0)=0', T0[0], T0[1], { color: aff ? 'gold' : 'green', size: 13, dx: aff ? -50 : 34, dy: aff ? -14 : -14 });
+            arrow2(S, b, scl(b, 2), 'red', null, { width: 2, dash: [5, 4] });
+            S.dot(2 * b[0], 2 * b[1], { r: 6, color: 'red', hollow: true }); S.tex('T(0)+T(0)=2b', 2 * b[0], 2 * b[1], { color: 'red', size: 13, dx: 8, dy: -16, align: 'left' });
+            S.dot(b[0], b[1], { r: 11, color: 'gold', hollow: true }); S.tex('T(0)=T(0+0)=b', b[0], b[1], { color: 'gold', size: 13, dx: 14, dy: 14, align: 'left' });
+            S.dot(bs[0], bs[1], { r: 5, color: 'gold' });
+          } else { S.dot(0, 0, { r: 10, color: 'green', hollow: true }); S.tex('T(0)=0', 0, 0, { color: 'green', size: 14, dx: 16, dy: -16, align: 'left' }); }
           info = { aff, b };
         }, { period: 5, still: 1.9 });
         v.readout(() => {
@@ -425,8 +436,8 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
         const sc = v.scene3(D, { yaw: -0.55, pitch: 0.32 });
         const th = [];
         [[1.0, 0.35], [0.25, 1.0], [1.25, 1.35]].forEach((p, k) => th.push(W.handle(p[0], p[1], { color: 'orange', label: `Te${'₁₂₃'[k]}`, constrain: (x, y) => snapTo(disc(1.8)(x, y), th.filter((_, j) => j !== k).map((h) => [h.x, h.y]), 0.12) })));
-        const n = sc.handle(scl([1, 1, -1], 0.8 / Math.sqrt(3)), { mode: 'line', d: unit([1, 1, -1]), color: 'red', label: 'n' });
-        const x = sc.handle([0.9, -0.5, 0.6], { color: 'blue', label: 'x' });
+        const n = sc.handle(scl([1, 1, -1], -0.9 / Math.sqrt(3)), { mode: 'line', d: unit([1, 1, -1]), color: 'red', label: 'n' });
+        const x = sc.handle([0.5, -0.9, -0.5], { color: 'blue', label: 'x' });
         let info = {};
         v.render(() => {
           const A = [[th[0].x, th[1].x, th[2].x], [th[0].y, th[1].y, th[2].y]];
@@ -435,6 +446,7 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
           sc.begin();
           basis3(sc);
           drawSub(sc, B, 'red', { r: 1.5, width: 4 });
+          if (B.length < 3) sc.tex('\\operatorname{null}T', scl(B[0], 1.5 * Math.sign(dot(B[0], [0, 0, 1]) || 1)), { color: 'red', size: 14, dx: 26 });
           arrow3(sc, O3, n.p, 'red', null); arrow3(sc, O3, x.p, 'blue', null);
           sc.flush();
           th.forEach((h, k) => arrow2(W, [0, 0], [h.x, h.y], 'orange', null, { width: 2 }));
@@ -481,7 +493,7 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
           arrow3(sc, O3, UW, ok(UW) ? 'green' : 'red', 'u+w', { S }); arrow3(sc, O3, LU, ok(LU) ? 'green' : 'red', '\\lambda u', { S });
           sc.dot(O3, { r: 5.5, color: ok(O3) ? 'green' : 'red' });
           sc.flush();
-          S.corner(Math.abs(c) < 1e-9 ? '$c=0$: the plane is null $T$, a subspace' : '$c\\ne0$: the level set is not a subspace', 'tl', { color: Math.abs(c) < 1e-9 ? 'green' : 'red' });
+          S.corner(Math.abs(c) < 1e-9 ? 'c = 0: the plane is null T, a subspace' : 'c ≠ 0: this level set is not a subspace', 'tl', { color: Math.abs(c) < 1e-9 ? 'green' : 'red' });
           info = { a, c, Tu: T(U), Tw: T(Wv), Tuw: T(UW), Tlu: T(LU) };
         });
         v.readout(() => {
@@ -502,8 +514,8 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
       tags: ['linear maps'],
       viz(v) {
         const M = v.M;
-        const D = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, height: 330, title: 'domain' });
-        const W = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, height: 330, title: 'target' });
+        const D = v.stage({ x: [-1.9, 1.9], y: [-1.9, 1.9], equal: true, axes: false, height: 330, title: 'domain' });
+        const W = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, axes: false, height: 330, title: 'target' });
         let c1, c2;
         c1 = W.handle(1.1, 0.4, { color: 'orange', label: 'Te₁', constrain: (x, y) => snapTo(disc(1.4)(x, y), [[c2.x, c2.y]], 0.1) });
         c2 = W.handle(-0.5, 0.9, { color: 'orange', label: 'Te₂', constrain: (x, y) => snapTo(disc(1.4)(x, y), [[c1.x, c1.y]], 0.1) });
@@ -520,6 +532,7 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
         });
         v.render(() => {
           const A = [[c1.x, c2.x], [c1.y, c2.y]], dt = det2(colOf(A, 0), colOf(A, 1));
+          for (const S of [D, W]) { S.line(-9, 0, 9, 0, { color: 'faint', width: 1 }); S.line(0, -9, 0, 9, { color: 'faint', width: 1 }); }
           W.poly([[0, 0], colOf(A, 0), add(colOf(A, 0), colOf(A, 1)), colOf(A, 1)], { fill: 'orange', fillAlpha: 0.1, color: 'orange', alpha: 0.4, width: 1 });
           for (const o of cloud) { D.dot(o.p[0], o.p[1], { r: 2.6, color: o.c }); const y = mv(A, o.p); W.dot(y[0], y[1], { r: 2.6, color: o.c }); }
           const P = [p.x, p.y], Q = [q.x, q.y], TP = mv(A, P), TQ = mv(A, Q), gap = len(sub(TP, TQ)), far = len(sub(P, Q));
@@ -527,7 +540,7 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
           if (hit) D.line(P[0], P[1], Q[0], Q[1], { color: 'red', width: 2, dash: [5, 4] });
           W.dot(TP[0], TP[1], { r: 6, color: 'blue', label: 'Tp', labelPos: 'ne' }); W.dot(TQ[0], TQ[1], { r: 6, color: 'purple', label: hit ? '' : 'Tq', labelPos: 'sw' });
           if (hit) { W.dot(TP[0], TP[1], { r: 12, color: 'red', hollow: true }); W.tex('Tp=Tq', TP[0], TP[1], { color: 'red', size: 14, dy: 24 }); }
-          W.corner(Math.abs(dt) > 1e-9 ? 'area $\\ne 0$: injective' : 'squashed onto a line: not injective', 'tl', { color: Math.abs(dt) > 1e-9 ? 'green' : 'red' });
+          W.corner(Math.abs(dt) > 1e-9 ? 'area ≠ 0: injective' : 'squashed onto a line: not injective', 'tl', { color: Math.abs(dt) > 1e-9 ? 'green' : 'red' });
           info = { A, dt, gap, far, hit };
         });
         v.readout(() => {
@@ -553,7 +566,7 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
         let c1, c2;
         c1 = W.handle(1.0, 0.5, { color: 'orange', label: 'Te₁', constrain: (x, y) => snapTo(disc(1.4)(x, y), [[c2.x, c2.y]], 0.12) });
         c2 = W.handle(-0.6, -0.3, { color: 'orange', label: 'Te₂', constrain: (x, y) => snapTo(disc(1.4)(x, y), [[c1.x, c1.y]], 0.12) });
-        const u = D.handle(0.9, -0.6, { color: 'blue', label: 'u', constrain: disc(1.9) }), w = D.handle(-0.3, 0.9, { color: 'purple', label: 'v', constrain: disc(1.9) });
+        const u = D.handle(1.3, -1.0, { color: 'blue', label: 'u', constrain: disc(1.9) }), w = D.handle(-0.8, 1.3, { color: 'purple', label: 'v', constrain: disc(1.9) });
         v.button('put $v$ on the fibre of $u$', () => {
           const N = M.nullspace([[c1.x, c2.x], [c1.y, c2.y]], 1e-6); if (!N.length) return;
           const U = [u.x, u.y], d = N[0].length === 2 ? N[0] : [1, 0]; let t = 1.1; if (len(add(U, scl(d, t))) > 1.9) t = -1.1;
@@ -575,11 +588,11 @@ Examples: the null space of the zero map is all of $V$; the null space of differ
             D.tex('\\operatorname{null}T', 1.7 * d[0] * Math.sign(d[1] || 1), 1.7 * Math.abs(d[1]) + 0.05, { color: 'red', size: 13, dx: 16 });
           } else if (N.length === 2) {
             D.rect(-2.2, -2.2, 2.2, 2.2, { fill: 'red', fillAlpha: 0.08, stroke: false });
-            D.corner('$\\operatorname{null}T=\\R^2$: everything goes to $0$', 'tl', { color: 'red' });
+            D.corner('null T = ℝ²: everything goes to 0', 'tl', { color: 'red' });
           } else {
             for (let i = -3; i <= 3; i++) for (let j = -3; j <= 3; j++) { const p = [0.55 * i, 0.55 * j], y = mv(A, p), col = CLR[(i + j + 8) % 8]; D.dot(p[0], p[1], { r: 3.5, color: col }); W.dot(y[0], y[1], { r: 3.5, color: col }); }
             D.dot(0, 0, { r: 6, color: 'red' });
-            D.corner('$\\operatorname{null}T=\\{0\\}$: every fibre is one point', 'tl', { color: 'green' });
+            D.corner('null T = {0}: every fibre is a single point', 'tl', { color: 'green' });
           }
           arrow2(D, V, U, 'muted', 'u-v', { width: 1.6, dash: [5, 4], size: 13 });
           arrow2(D, [0, 0], U, 'blue'); arrow2(D, [0, 0], V, 'purple');
@@ -636,7 +649,7 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
             pre = M.lstsq(A, y.p); const N = M.nullspace(A, 1e-6);
             if (N.length === 1) D.line(pre[0] - 6 * N[0][0], pre[1] - 6 * N[0][1], pre[0] + 6 * N[0][0], pre[1] + 6 * N[0][1], { color: 'green', width: 2.5, dash: [6, 4] });
             D.dot(pre[0], pre[1], { r: 8, color: 'green', hollow: true }); D.tex('Tx=y', pre[0], pre[1], { color: 'green', size: 14, dy: 20 });
-          } else D.corner('no $x$ with $Tx=y$', 'tl', { color: 'red' });
+          } else D.corner('no x with Tx = y', 'tl', { color: 'red' });
           info = { A, B, gap, inR, pre };
         });
         v.readout(() => {
@@ -684,7 +697,7 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
           arrow3(scW, O3, TV1, 'blue', 'Tv_1', { S }); arrow3(scW, O3, TV2, 'purple', 'Tv_2', { S });
           arrow3(scW, O3, sum, sOK ? 'green' : 'red', sOK ? 'Tv_1+Tv_2=T(v_1+v_2)' : 'Tv_1+Tv_2', { S, size: 13 });
           arrow3(scW, O3, lt, lOK ? 'gold' : 'red', lOK ? '\\lambda Tv_1' : '\\lambda Tv_1', { S, size: 13 });
-          if (!sOK) scW.dot(Tsum, { r: 5, color: 'green' });
+          if (!sOK) { scW.dot(Tsum, { r: 5, color: 'green' }); scW.tex('T(v_1+v_2)', Tsum, { color: 'green', size: 13, dy: 16 }); }
           scW.dot(O3, { r: 5, color: imgDist(O3) < 1e-6 ? 'green' : 'red' });
           scW.flush();
           info = { aff, B, dSum: imgDist(sum), dL: imgDist(lt), d0: imgDist(O3) };
@@ -715,7 +728,7 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
         const sc = v.scene3(D, { yaw: -0.6, pitch: 0.33 });
         const th = [];
         P.r2.forEach((p, k) => th.push(W.handle(p[0], p[1], { color: 'orange', label: `Te${'₁₂₃'[k]}`, constrain: (x, y) => snapTo(disc(1.4)(x, y), th.filter((_, j) => j !== k).map((h) => [h.x, h.y]), 0.12) })));
-        const yh = W.handle(-1.2, 1.3, { color: 'gold', label: 'y', constrain: (x, y) => {
+        const yh = W.handle(-0.9, 1.1, { color: 'gold', label: 'y', constrain: (x, y) => {
           const A = [[th[0].x, th[1].x, th[2].x], [th[0].y, th[1].y, th[2].y]], B = colBasis(M, A);
           if (B.length === 1) { const q = proj([x, y], B); if (len(sub([x, y], q)) < 0.15) return q; }
           if (B.length === 0 && Math.hypot(x, y) < 0.15) return [0, 0];
@@ -727,18 +740,19 @@ Examples: the range of the zero map is $\{0\}$; the range of differentiation $\m
           void pre;
           const A = [[th[0].x, th[1].x, th[2].x], [th[0].y, th[1].y, th[2].y]], B = colBasis(M, A), N = M.nullspace(A, 1e-6), Y = [yh.x, yh.y];
           const inR = len(sub(Y, proj(Y, B))) < 1e-6;
-          if (B.length === 2) W.rect(-2.4, -2.4, 2.4, 2.4, { fill: 'green', fillAlpha: 0.1, stroke: false });
+          if (B.length === 2) W.rect(W.bounds.x[0], W.bounds.y[0], W.bounds.x[1], W.bounds.y[1], { fill: 'green', fillAlpha: 0.1, stroke: false });
           else if (B.length === 1) W.line(-B[0][0] * 9, -B[0][1] * 9, B[0][0] * 9, B[0][1] * 9, { color: 'green', width: 6, alpha: 0.4 });
           else W.dot(0, 0, { r: 9, color: 'green' });
           for (const s of samples) { const q = mv(A, s); W.dot(q[0], q[1], { r: 2.3, color: 'gold', alpha: 0.8 }); }
           th.forEach((h) => arrow2(W, [0, 0], [h.x, h.y], 'orange', null, { width: 2 }));
           W.dot(Y[0], Y[1], { r: 12, color: inR ? 'green' : 'red', hollow: true });
-          W.corner(B.length === 2 ? 'range $T=\\R^2$: surjective' : `range $T$ is a ${B.length ? 'line' : 'point'}: not surjective`, 'tl', { color: B.length === 2 ? 'green' : 'red' });
+          W.corner(B.length === 2 ? 'range T = ℝ²: surjective' : `range T is a ${B.length ? 'line' : 'point'}: not surjective`, 'tl', { color: B.length === 2 ? 'green' : 'red' });
           sc.begin();
           cubeEdges(sc, 1, { color: 'faint', width: 1 });
           if (inR) {
             const x0 = M.lstsq(A, Y);
-            drawSub(sc, N, 'green', { c: x0, r: N.length === 3 ? 1.4 : 1.3, width: 3.5 });
+            if (N.length === 1) { const [a, b] = clipBox(x0, N[0], 1.45); if (a < b) sc.line(add(x0, scl(N[0], a)), add(x0, scl(N[0], b)), { color: 'green', width: 3.5 }, 16); }
+            else drawSub(sc, N, 'green', { c: x0, r: N.length === 3 ? 1.4 : 1.3 });
             sc.dot(x0, { r: 5, color: 'green' });
           } else sc.tex('\\text{empty: no } x \\text{ reaches } y', [0, 0, 1.55], { color: 'red', size: 14 });
           sc.dots(samples, { r: 1.8, color: 'gold' });
@@ -765,7 +779,7 @@ $$\dim V=\dim\operatorname{null}T+\dim\operatorname{range}T.$$`,
       tags: ['linear maps', 'dimension'],
       viz(v) {
         const M = v.M;
-        const P = { r3: [[1, 0.2, -0.2], [0.1, 0.9, 0.3], [-0.2, 0.3, 1]], r2: [[1, 0.2, -0.2], [0.1, 0.9, 0.3], [0.68, 0.84, 0.12]], r1: [[0.8, 0.4, 0.5], [-0.56, -0.28, -0.35], [1.12, 0.56, 0.7]], r0: [O3, O3, O3] };
+        const P = { r3: [[1, 0.2, -0.2], [0.1, 0.9, 0.3], [-0.2, 0.3, 1]], r2: [[1, 0.2, -0.2], [0.1, 0.9, 0.3], [0.68, 0.84, 0.12]], r1: [[0.8, 0.4, 0.5], [-0.56, -0.28, -0.35], [0.36, 0.18, 0.225]], r0: [O3, O3, O3] };
         v.select('preset', ['r3', 'r2', 'r1', 'r0'].map((k) => ({ value: k, label: `rank ${k[1]}` })), 'r2', { onChange: (k) => P[k].forEach((p, i) => th[i].set(p)) });
         const D = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 360, title: 'domain: null space + extension' });
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 360, title: 'target: range' });
@@ -815,7 +829,7 @@ $$\dim V=\dim\operatorname{null}T+\dim\operatorname{range}T.$$`,
         const W = v.stage({ x: [-3.1, 3.1], y: [-3.1, 3.1], equal: true, height: 350, title: 'target $\\R^2$' });
         const sc = v.scene3(D, { yaw: -0.6, pitch: 0.33 });
         const th = [[1.0, 0.2], [0.3, 0.9], [-0.7, 0.6]].map((p, k) => W.handle(p[0], p[1], { color: 'orange', label: `Te${'₁₂₃'[k]}`, constrain: disc(1.2) }));
-        const x = sc.handle([0.6, -0.5, 0.4], { color: 'gold', label: 'x', lim: 1 });
+        const x = sc.handle([-0.6, -0.9, 0.2], { color: 'gold', label: 'x', lim: 1 });
         let info = {};
         v.render(() => {
           const three = mode.value === '3'; th[2].visible = three;
@@ -837,8 +851,8 @@ $$\dim V=\dim\operatorname{null}T+\dim\operatorname{range}T.$$`,
           W.poly(img, { fill: 'blue', fillAlpha: 0.14, color: 'blue', width: 1.5 });
           (three ? th : th.slice(0, 2)).forEach((h) => arrow2(W, [0, 0], [h.x, h.y], 'orange', null, { width: 2 }));
           const Tx = mv(A, x.p);
-          W.dot(Tx[0], Tx[1], { r: 6, color: 'gold' }); W.tex(N.length ? 'T(x+\\operatorname{null}T)' : 'Tx', Tx[0], Tx[1], { color: 'gold', size: 13, dy: -18 });
-          if (N.length) { W.dot(0, 0, { r: 6, color: 'red' }); W.tex('T(\\operatorname{null}T)=0', 0, 0, { color: 'red', size: 13, dy: 20 }); }
+          W.dot(Tx[0], Tx[1], { r: 6, color: 'gold' }); W.tex(N.length ? 'T(x+\\operatorname{null}T)' : 'Tx', Tx[0], Tx[1], { color: 'gold', size: 13, dy: 18 });
+          if (N.length) { W.dot(0, 0, { r: 6, color: 'red' }); W.tex('T(\\operatorname{null}T)=0', 0, 0, { color: 'red', size: 13, dx: 12, dy: 16, align: 'left' }); }
           info = { three, N, rank: colBasis(M, A).length };
         });
         v.readout(() => {
@@ -865,14 +879,14 @@ $$\dim V=\dim\operatorname{null}T+\dim\operatorname{range}T.$$`,
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 350, title: 'target' });
         const sc = v.scene3(S, { yaw: -0.65, pitch: 0.4 });
         const t1 = sc.handle([1.0, 0.1, 0.3], { color: 'orange', label: 'Te₁' }), t2 = sc.handle([-0.1, 0.85, 0.45], { color: 'orange', label: 'Te₂' });
-        const y = sc.handle([0.5, -0.6, 1.1], { color: 'gold', label: 'y' });
+        const y = sc.handle([-0.6, 0.4, 1.0], { color: 'gold', label: 'y' });
         let info = {}, last = null;
         v.render(() => {
           const two = mode.value === '2';
           if (two !== last) {
             last = two;
             for (const h of [t1, t2, y]) { if (two) { h.mode = 'plane'; h.a = [1, 0, 0]; h.b = [0, 1, 0]; h.p = [h.p[0], h.p[1], 0]; } else h.mode = 'free'; }
-            if (!two) { t1.p = [1.0, 0.1, 0.3]; t2.p = [-0.1, 0.85, 0.45]; y.p = [0.5, -0.6, 1.1]; }
+            if (!two) { t1.p = [1.0, 0.1, 0.3]; t2.p = [-0.1, 0.85, 0.45]; y.p = [-0.6, 0.4, 1.0]; }
           }
           const A = ofCols(t1.p, t2.p), B = colBasis(M, A), xh = M.lstsq(A, y.p), Tx = mv(A, xh), gap = len(sub(y.p, Tx));
           sc.begin();
@@ -889,7 +903,7 @@ $$\dim V=\dim\operatorname{null}T+\dim\operatorname{range}T.$$`,
           house(D, (p) => p, { color: 'accent' });
           arrow2(D, [0, 0], [1, 0], 'orange', 'e_1', { width: 1.8, size: 13 }); arrow2(D, [0, 0], [0, 1], 'orange', 'e_2', { width: 1.8, size: 13 });
           const xc = [M.clamp(xh[0], -1.9, 1.9), M.clamp(xh[1], -1.9, 1.9)];
-          D.dot(xc[0], xc[1], { r: 7, color: gap > 1e-6 ? 'red' : 'green', hollow: true }); D.tex('\\hat x', xc[0], xc[1], { color: gap > 1e-6 ? 'red' : 'green', size: 14, dx: 14, dy: -12 });
+          D.dot(xc[0], xc[1], { r: 7, color: gap > 1e-6 ? 'red' : 'green', hollow: true }); D.tex('\\hat x', xc[0], xc[1], { color: gap > 1e-6 ? 'red' : 'green', size: 15, dx: -16, dy: -14 });
           info = { two, rank: B.length, gap };
         });
         v.readout(() => {
@@ -917,7 +931,7 @@ with more variables than equations ($n>m$) has a solution $(x_1,\dots,x_n)\ne0$.
         const S = v.stage({ x: [-2.1, 2.1], y: [-1.9, 1.9], equal: true, axes: false, height: 400, full: true });
         const sc = v.scene3(S, { yaw: -0.55, pitch: 0.36 });
         const cols = ['blue', 'purple', 'teal'], hs = [];
-        [[0.2, -0.3, 1.0], [0.9, 0.4, 0.2], [-0.3, 1.0, 0.3]].forEach((p, k) => hs.push(sc.handle(p, { color: cols[k], label: `a${'₁₂₃'[k]}`, snap: (q) => { const r = snapTo(q, hs.filter((_, j) => j !== k && (j < 2 || third.value)).map((h) => h.p), 0.1); return len(r) < 0.3 ? q : r; } })));
+        [[0.3, -0.5, 0.9], [0.9, 0.5, 0.3], [-0.3, 1.0, 0.3]].forEach((p, k) => hs.push(sc.handle(p, { color: cols[k], label: `a${'₁₂₃'[k]}`, snap: (q) => { const r = snapTo(q, hs.filter((_, j) => j !== k && (j < 2 || third.value)).map((h) => h.p), 0.1); return len(r) < 0.3 ? q : r; } })));
         let info = {};
         v.render(() => {
           const m = third.value ? 3 : 2; hs[2].h.visible = third.value;
@@ -1009,7 +1023,7 @@ So column $k$ of $\mathcal M(T)$ lists the coordinates of $Tv_k$ in the basis $w
         const W = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 350, title: 'target: basis $w_1,w_2$' });
         let A = [[0.9, -0.55], [0.35, 0.8]];
         const v1 = D.handle(1, 0, { color: 'blue', label: 'v₁', constrain: disc(1.4) }), v2 = D.handle(0.45, 0.9, { color: 'purple', label: 'v₂', constrain: disc(1.4) });
-        const w1 = W.handle(1, 0.3, { color: 'teal', label: 'w₁', constrain: disc(1.5) }), w2 = W.handle(-0.35, 0.95, { color: 'pink', label: 'w₂', constrain: disc(1.5) });
+        const w1 = W.handle(1.1, -0.35, { color: 'teal', label: 'w₁', constrain: disc(1.5) }), w2 = W.handle(0.5, 1.0, { color: 'pink', label: 'w₂', constrain: disc(1.5) });
         const T1 = mv(A, [1, 0]), T2 = mv(A, [0.45, 0.9]);
         const h1 = W.handle(T1[0], T1[1], { color: 'blue', label: 'Tv₁', constrain: disc(2.2) }), h2 = W.handle(T2[0], T2[1], { color: 'purple', label: 'Tv₂', constrain: disc(2.2) });
         let last = [T1, T2], info = {};
@@ -1030,7 +1044,7 @@ So column $k$ of $\mathcal M(T)$ lists the coordinates of $Tv_k$ in the basis $w
             Mt = ofCols(M.solve(Wm, last[0]), M.solve(Wm, last[1]));
             [0, 1].forEach((k) => { const c = colOf(Mt, k), m1 = scl(p, c[0]), col = k ? 'purple' : 'blue'; W.path([[0, 0], m1, last[k]], { color: col, dash: [5, 4], width: 1.6, alpha: 0.85 }); });
             matPx(W, 10, 10, Mt, { label: '\\mathcal M(T)=', labelW: 74, colors: ['blue', 'purple'] });
-          } else W.corner('$w_1,w_2$ is not a basis', 'tl', { color: 'red' });
+          } else W.corner('w₁, w₂ is not a basis', 'tl', { color: 'red' });
           arrow2(W, [0, 0], last[0], 'blue', null); arrow2(W, [0, 0], last[1], 'purple', null);
           info = { Mt, A };
         });
@@ -1056,10 +1070,10 @@ $$\mathcal M(S+T)=\mathcal M(S)+\mathcal M(T).$$`,
       viz(v) {
         const M = v.M;
         const W = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 360, title: 'columns: $(S+T)e_k = Se_k + Te_k$' });
-        const H = v.stage({ x: [-2.6, 2.6], y: [-2.6, 2.6], equal: true, axes: false, height: 360, title: 'the maps $S$, $T$, $S+T$ on a house' });
-        const w1 = W.handle(1.1, 0.25, { color: 'teal', label: 'w₁', constrain: disc(1.5) }), w2 = W.handle(0.25, 1.05, { color: 'pink', label: 'w₂', constrain: disc(1.5) });
-        const s1 = W.handle(0.75, -0.45, { color: 'blue', label: 'Se₁', constrain: disc(1.3) }), s2 = W.handle(-0.6, 0.55, { color: 'blue', label: 'Se₂', constrain: disc(1.3) });
-        const t1 = W.handle(0.55, 0.65, { color: 'orange', label: 'Te₁', constrain: disc(1.3) }), t2 = W.handle(-0.9, -0.25, { color: 'orange', label: 'Te₂', constrain: disc(1.3) });
+        const H = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: false, height: 360, title: 'the maps $S$, $T$, $S+T$ on a house' });
+        const w1 = W.handle(0.3, -1.0, { color: 'teal', label: 'w₁', constrain: disc(1.5) }), w2 = W.handle(-0.9, 0.3, { color: 'pink', label: 'w₂', constrain: disc(1.5) });
+        const s1 = W.handle(0.8, 0.3, { color: 'blue', label: 'Se₁', constrain: disc(1.3) }), s2 = W.handle(-0.3, 0.8, { color: 'blue', label: 'Se₂', constrain: disc(1.3) });
+        const t1 = W.handle(0.4, -0.5, { color: 'orange', label: 'Te₁', constrain: disc(1.3) }), t2 = W.handle(0.5, 0.6, { color: 'orange', label: 'Te₂', constrain: disc(1.3) });
         let info = {};
         v.legend([['blue', '$S$'], ['orange', '$T$'], ['green', '$S+T$'], ['teal', 'basis $w_1, w_2$ of $W$']]);
         v.render(() => {
@@ -1075,8 +1089,9 @@ $$\mathcal M(S+T)=\mathcal M(S)+\mathcal M(T).$$`,
             arrow2(W, [0, 0], u, 'green', `(S+T)e_${k + 1}`, { size: 13 });
           });
           const Sm = ofCols(...Sc), Tm = ofCols(...Tc), Um = ofCols(...Uc);
+          gridImg(H, (x) => x, { lin: true, R: 3, step: 0.5, color: 'muted', alpha: 0.15 });
           house(H, (x) => mv(Sm, x), { color: 'blue', alpha: 0.8 }); house(H, (x) => mv(Tm, x), { color: 'orange', alpha: 0.8 }); house(H, (x) => mv(Um, x), { color: 'green' });
-          if (!okW) { W.corner('$w_1,w_2$ is not a basis', 'tl', { color: 'red' }); info = {}; return; }
+          if (!okW) { W.corner('w₁, w₂ is not a basis', 'tl', { color: 'red' }); info = {}; return; }
           const Wi = M.inverse(Wm), MS = mm(Wi, Sm), MT = mm(Wi, Tm), MU = ofCols(M.solve(Wm, Uc[0]), M.solve(Wm, Uc[1]));
           info = { MS, MT, MU, sum: MS.map((r, i) => r.map((x, j) => x + MT[i][j])) };
         });

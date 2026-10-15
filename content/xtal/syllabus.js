@@ -153,7 +153,7 @@ export default {
       title: 'Diffraction geometry',
       summary: String.raw`Waves scattered by a periodic array reinforce only in special directions. Bragg's picture of reflection from lattice planes, von Laue's three equations and Ewald's sphere in reciprocal space are three views of the same condition. They explain the Laue, rotating-crystal and powder methods, how X-rays are made, and why small crystallites give broad peaks.`,
       items: [
-        { num: '6.1', kind: 'Phenomenon', name: 'Diffraction by a grating', deps: ['pma-8.10'], refs: ['Hammond ch. 7'],
+        { num: '6.1', kind: 'Phenomenon', name: 'Diffraction by a grating', deps: ['pma-8.10', 'waves-7.9'], refs: ['Hammond ch. 7'],
           pic: 'Shine light on a grating with an adjustable number of slits: principal maxima stay at sin θ = nλ/d while sharpening as N grows, with N − 2 weak subsidiary peaks between them.' },
         { num: '6.2', kind: 'Law', name: 'Bragg’s law', deps: ['xtal-4.4'], refs: ['Hammond ch. 8'],
           pic: 'Reflect X-rays off a stack of planes and rotate the crystal: the path difference 2d sin θ is drawn and the reflected intensity spikes only when it equals a whole number of wavelengths.' },
@@ -185,7 +185,7 @@ export default {
           pic: 'Fourier-transform the radial electron density of an atom: the form factor starts at Z and falls with sin θ/λ, faster for diffuse outer electrons, and hydrogen’s barely registers.' },
         { num: '7.2', kind: 'Definition', name: 'Structure factor F_hkl', deps: ['xtal-7.1', 'xtal-5.2'], refs: ['Hammond ch. 9', 'Giacovazzo ch. 3'],
           pic: 'Drag atoms within a unit cell: each contributes a phasor fⱼe^(2πi(hx+ky+lz)) to F_hkl, drawn head to tail in the complex plane, and the intensity |F|² updates for every reflection at once.' },
-        { num: '7.3', kind: 'Theorem', name: 'Diffraction as a Fourier transform: lattice ⊛ motif', deps: ['xtal-5.6', 'xtal-7.2', 'rca-8.13'], refs: ['Hammond ch. 13'],
+        { num: '7.3', kind: 'Theorem', name: 'Diffraction as a Fourier transform: lattice ⊛ motif', deps: ['xtal-5.6', 'xtal-7.2', 'rca-8.13', 'waves-7.4'], refs: ['Hammond ch. 13'],
           pic: 'Convolve a lattice with a motif in one panel and multiply their transforms in the other: the diffraction pattern is the reciprocal lattice sampling the motif’s transform, so changing the motif reweights spots without moving them.' },
         { num: '7.4', kind: 'Phenomenon', name: 'Systematic absences from lattice centring', deps: ['xtal-7.2', 'xtal-3.2'], refs: ['Hammond ch. 9', 'Giacovazzo ch. 3'],
           pic: 'Switch a cubic lattice between P, I and F centring: reflections with h + k + l odd vanish for I and those with mixed parity vanish for F, as the phasors of centring atoms cancel exactly.' },

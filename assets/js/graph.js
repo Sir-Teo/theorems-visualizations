@@ -478,8 +478,12 @@ export class MapView {
       const x0 = this.sx(F.x0), y0 = this.sy(F.y0), x1 = this.sx(F.x1), y1 = this.sy(F.y1);
       if (off(x0, y0, x1, y1)) continue;
       c.fillStyle = withAlpha('field-' + F.field, 0.035); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 18 * Math.min(1, k * 4)); c.fill();
-      c.font = `600 ${Math.max(13, Math.min(30, 60 * k))}px Inter, system-ui, sans-serif`; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
-      c.save(); c.letterSpacing = '0.08em'; c.fillText(F.title.toUpperCase(), x0 + 4, y0 - 4); c.restore();
+      // the title must fit its region: fall back to the short name, then shrink
+      let fs = Math.max(13, Math.min(30, 60 * k)), txt = F.title.toUpperCase();
+      c.save(); c.letterSpacing = '0.08em'; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
+      const room = x1 - x0 - 8, fit = () => { c.font = `600 ${fs}px Inter, system-ui, sans-serif`; return c.measureText(txt).width; };
+      if (fit() > room) { txt = (this.G.fieldById?.get(F.field)?.short || F.field).toUpperCase(); if (fit() > room) { fs = Math.max(9, fs * room / c.measureText(txt).width); fit(); } }
+      c.fillText(txt, x0 + 4, y0 - 4); c.restore();
     }
     // chapter bands
     c.font = '600 11px Inter, system-ui, sans-serif';
@@ -528,7 +532,8 @@ export class MapView {
         const x1 = this.sx(A.x), y1 = this.sy(A.y), x2 = this.sx(B.x), y2 = this.sy(B.y);
         const mx = (x1 + x2) / 2, my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.18;
         c.beginPath(); c.moveTo(x1, y1); c.quadraticCurveTo(mx, my, x2, y2);
-        c.strokeStyle = withAlpha(e.a, 0.28); c.lineWidth = 0.8 + 7 * Math.sqrt(n / this.maxBundle); c.lineCap = 'round'; c.stroke();
+        const t = Math.sqrt(n / this.maxBundle); // thin, faint strands for a few links; bold ones for the main roads
+        c.strokeStyle = withAlpha(e.a, 0.06 + 0.32 * t); c.lineWidth = 0.6 + 7 * t; c.lineCap = 'round'; c.stroke();
       }
     } else if (!fc) {
       const byCol = new Map();
