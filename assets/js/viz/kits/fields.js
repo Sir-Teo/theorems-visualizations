@@ -451,6 +451,7 @@ class Fields {
     }
     // loop
     if (this.loop) this._drawLoop(F, o);
+    if (this._legendExtra) { const items = this.legendItems(this._legendExtra, o), sig = JSON.stringify(items); if (sig !== this._legendSig) { this._legendSig = sig; this.api.legend(items); } }
     return this;
   }
   _drawLoop(F, o) {
@@ -481,15 +482,16 @@ class Fields {
     });
     c2.restore();
   }
-  /** Legend entries for the layers in use (pass to v.legend, optionally with extra entries). */
-  legend(extra = []) {
-    const o = this.o, items = [];
+  /** Set the legend for the layers in use (extra entries appended); later draws keep it in sync with per-draw overrides. */
+  legend(extra = []) { this._legendExtra = extra; const items = this.legendItems(extra); this._legendSig = JSON.stringify(items); this.api.legend(items); return items; }
+  legendItems(extra = [], o = this.o) {
+    const items = [];
     if (o.lines && !o.streamlines) items.push([o.lineColor || 'ink', 'field lines']);
     if (o.streamlines) items.push([o.streamColor || 'muted', 'streamlines']);
     if (o.equipotentials) items.push(['red', 'equipotentials ($\\varphi > 0$ red, $< 0$ blue)']);
     if (o.streamFunction) items.push(['muted', 'level sets of $\\psi$']);
-    if (this.loop) items.push([this.loop.color, o.loopArrows === 'tangent' ? 'loop (arrows: tangential component)' : o.loopArrows && o.loopArrows !== 'none' ? 'loop (arrows: normal component, out green / in red)' : 'loop']);
-    this.api.legend([...items, ...extra]); return items;
+    if (this.loop) items.push([this.loop.color, o.loopArrows === 'tangent' ? 'loop (arrows: tangential component, with green / against red)' : o.loopArrows && o.loopArrows !== 'none' ? 'loop (arrows: normal component, out green / in red)' : 'loop']);
+    return [...items, ...extra];
   }
 }
 

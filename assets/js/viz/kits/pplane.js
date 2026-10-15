@@ -255,7 +255,7 @@ class PhasePlane {
     const s = this.s, c = s.ctx; if (pts.length < 3) return;
     const P = pts.map((p) => [s.X(p[0]), s.Y(p[1])]); let total = 0; for (let i = 1; i < P.length; i++) total += Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]);
     if (total < 24) return;
-    const nm = Math.max(1, Math.floor(total / every)), marks = every === 'mid' ? [total / 2] : Array.from({ length: nm }, (_, k) => (k + 0.5) * total / nm);
+    const nm = Math.max(1, Math.min(this.o.maxHeads ?? 6, Math.floor(total / every))), marks = every === 'mid' ? [total / 2] : Array.from({ length: nm }, (_, k) => (k + 0.5) * total / nm);
     c.save(); c.fillStyle = this.api.color(color, alpha); let acc = 0, mi = 0;
     for (let i = 1; i < P.length && mi < marks.length; i++) {
       const Ls = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]);

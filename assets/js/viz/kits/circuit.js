@@ -538,8 +538,8 @@ class CircuitKit {
       const lines = [name, valTxt].filter(Boolean); const lh = 15, y0 = horiz ? q[1] - (lines.length - 1) * lh / 2 : ny * side > 0 ? q[1] + 7 : q[1] - 7 - (lines.length - 1) * lh;
       const bl = horiz ? 'middle' : ny * side > 0 ? 'top' : 'bottom';
       lines.forEach((txt, i) => {
-        const m = i === 0 && name && txt.match(/^([A-Z][a-z]?)(\d*)$/);
-        if (m) s.texPx(m[2] ? `${m[1]}_{${m[2]}}` : m[1], q[0], y0 + i * lh + (bl === 'top' ? -2 : bl === 'bottom' ? 2 : 0), { align: al, baseline: bl, size: 15, color: 'ink' });
+        const m = i === 0 && name && txt.match(/^([A-Z])(\d+|[a-z]{1,3}|[A-Z]{1,2})?$/); // R1 → R₁, RL → R_L, Vin → V_in
+        if (m) s.texPx(!m[2] ? m[1] : /\d/.test(m[2]) ? `${m[1]}_{${m[2]}}` : `${m[1]}_{\\mathrm{${m[2]}}}`, q[0], y0 + i * lh + (bl === 'top' ? -2 : bl === 'bottom' ? 2 : 0), { align: al, baseline: bl, size: 15, color: 'ink' });
         else s.textPx(txt, q[0], y0 + i * lh, { align: al, baseline: bl, size: i === 0 && name ? 13 : 11.5, color: i === 0 && name ? 'ink' : 'muted', weight: 600 });
       });
     }

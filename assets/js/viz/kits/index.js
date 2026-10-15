@@ -8,6 +8,7 @@ import globe, { geo } from './globe.js';
 import timeline, { timelines } from './timeline.js';
 import agents, { automata } from './agents.js';
 import curves, { econ } from './curves.js';
+import tree, { trees } from './tree.js';
 import phasePlane from './pplane.js';
 import fields from './fields.js';
 import quantum from './quantum.js';
@@ -33,4 +34,6 @@ export const KITS = {
   automata,  // v.automata(name, params) → presets: life, schelling, sir, fire, voter, sandpile, walkers, gas, boids, contagion
   curves,    // v.curves(stage, spec) → economics diagrams: draggable supply/demand with tax/ceiling/floor and integrated surplus areas, indifference curves + budget, PPF, Lorenz/Gini
   econ,      // v.econ(name, ...args) → market, utility, optimum, mrs, contour, lorenz, gini, costs, simpson, root, monotone
+  tree,      // v.tree(stage, spec) → phylogenies, language families, syntax/decision trees: rect/radial/tidy/unrooted layouts, collapsing, paths
+  trees,     // v.trees(name, ...args) → newick, toNewick, upgma, nj, patristic, mrca, path, distance, midpoint, leaves
 };

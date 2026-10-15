@@ -330,7 +330,7 @@ export default {
         });
         v.render(() => F.draw({ loopArrows: mode.value }));
         F.legend([['purple', 'vortex $\\Gamma = 4$', { dot: true }], ['teal', 'source $m = 2.5$', { dot: true }]]);
-        v.readout(() => { const I = F.integrals(), e = F.enclosed(); return `circulation $\\oint \\mathbf u\\cdot d\\mathbf s = ${v.fix(I.circulation, 4)}$ vs $\\sum\\Gamma_{\\text{in}} = ${v.fix(e.gamma, 4)}$ · flux $\\oint \\mathbf u\\cdot\\mathbf n\\,ds = ${v.fix(I.flux, 4)}$ vs $\\sum m_{\\text{in}} = ${v.fix(e.q, 4)}$`; });
+        v.readout(() => { const I = F.integrals(), e = F.enclosed(), z = (x) => (Math.abs(x) < 5e-9 ? 0 : x); return `circulation $\\oint \\mathbf u\\cdot d\\mathbf s = ${v.fix(z(I.circulation), 4)}$ vs $\\sum\\Gamma_{\\text{in}} = ${v.fix(e.gamma, 4)}$ · flux $\\oint \\mathbf u\\cdot\\mathbf n\\,ds = ${v.fix(z(I.flux), 4)}$ vs $\\sum m_{\\text{in}} = ${v.fix(e.q, 4)}$`; });
       },
     },
     {
@@ -339,15 +339,15 @@ export default {
       caption: String.raw`Drag $V_{in}$ and change $R_2$. Wires are coloured by voltage (red positive, blue negative). Right: the transfer curve from DC solves of the drawn circuit (rails at $\pm 10$ V).`,
       viz(v) {
         const s = v.stage({ x: [-1.6, 8.4], y: [-1.3, 3.95], equal: true, height: 290, axes: false, weight: 1.2 });
-        const sp = v.stage({ x: [-3, 3], y: [-12, 12], height: 290, axes: 'box', xlabel: 'V_in', ylabel: 'V_out', weight: 0.9 });
+        const sp = v.stage({ x: [-3, 3], y: [-14, 14], height: 290, axes: 'box', yticks: [-10, -5, 0, 5, 10], xticks: [-2, -1, 0, 1], xlabel: 'input (V)', ylabel: 'output (V)', weight: 0.9 });
         const C = v.circuit(s, [
           { type: 'V', id: 'Vin', value: 1, at: [0, 2, 0, 0] },
           { type: 'R', id: 'R1', name: 'R1', value: 1e3, at: [0, 2, 2.5, 2] }, { type: 'W', at: [2.5, 2, 3, 2] },
-          { type: 'OA', id: 'U1', at: [4.5, 1.5], rails: [-10, 10], label: 'ideal' },
+          { type: 'OA', id: 'U1', at: [4.5, 1.5], rails: [-10, 10], label: false },
           { type: 'W', at: [2.5, 2, 2.5, 3.2] }, { type: 'R', id: 'R2', value: 4.7e3, at: [2.5, 3.2, 6.6, 3.2] }, { type: 'W', at: [6.6, 3.2, 6.6, 1.5, 6, 1.5] },
           { type: 'R', id: 'RL', value: 1e4, at: [6.6, 1.5, 6.6, 0], labelSide: 1 },
           { type: 'W', at: [3, 1, 3, 0.4] }, { type: 'GND', at: [3, 0.4] }, { type: 'GND', at: [0, 0] }, { type: 'GND', at: [6.6, 0] },
-          { type: 'label', at: [6.6, 1.5], text: '$V_{out}$', dx: 10, dy: 6 },
+          { type: 'label', at: [6.6, 1.5], text: '$V_{out}$', dx: 10, dy: -6 },
         ]);
         const vin = C.control('Vin', '$V_{in}$', -3, 3, { log: false, step: 0.01 }); C.control('R2', '$R_2$', 500, 20e3);
         let res;
@@ -357,7 +357,7 @@ export default {
           for (let k = 0; k <= 120; k++) { C.part('Vin').value = -3 + 6 * k / 120; curve.push([C.part('Vin').value, C.dc().V(C.net.termNode.get('U1').out)]); }
           C.part('Vin').value = keep;
           sp.hband(-10, 10, { color: 'green', alpha: 0.05 }); sp.hline(10, { color: 'red', dash: [4, 4], width: 1 }); sp.hline(-10, { color: 'red', dash: [4, 4], width: 1 });
-          sp.text('rail', -2.95, 10.6, { color: 'red', size: 11, align: 'left' });
+          sp.text('rail', 2.95, 11.2, { color: 'red', size: 11, align: 'right' });
           sp.path(curve, { color: 'accent', width: 2.4 }); sp.dot(keep, res.V(C.net.termNode.get('U1').out), { color: 'gold', r: 5 });
         });
         v.legend([['accent', 'transfer curve $V_{out}(V_{in})$'], ['red', 'supply rails', { dash: true }], ['gold', 'current dots / operating point']]);
@@ -372,8 +372,8 @@ export default {
       statement: String.raw`A diode conducts only when forward biased (Shockley: $i = I_s(e^{v/V_T} - 1)$), so it passes the positive half-waves. A capacitor across the load charges to nearly the peak, $V_p - V_D$, and between peaks discharges through the load, leaving a ripple $\Delta V \approx \dfrac{V_p}{R C f}$.`,
       caption: String.raw`Transient simulation with Newton iterations for the diode. The dots flow only in short bursts near the peaks — the capacitor recharging. Increase $C$ to shrink the ripple.`,
       viz(v) {
-        const s = v.stage({ x: [-1.6, 6.9], y: [-1, 3.6], equal: true, height: 270, axes: false });
-        const sp = v.stage({ x: [0, 100], y: [-11, 11], height: 270, axes: 'box', xlabel: 't (ms)', ylabel: 'V', weight: 1.2 });
+        const s = v.stage({ x: [-2.4, 6.9], y: [-1, 3.6], equal: true, height: 270, axes: false });
+        const sp = v.stage({ x: [0, 100], y: [-12.5, 12.5], height: 270, axes: 'box', yticks: [-10, -5, 0, 5, 10], xlabel: 't (ms)', ylabel: 'volts', weight: 1.2 });
         const C = v.circuit(s, [
           { type: 'V', id: 'Vs', wave: { type: 'sine', amp: 10, f: 50 }, ac: 10, label: '10 V, 50 Hz', at: [0, 2.6, 0, 0] },
           { type: 'D', id: 'D1', at: [0, 2.6, 3, 2.6], label: 'Shockley' }, { type: 'W', at: [3, 2.6, 5.2, 2.6] },
@@ -406,7 +406,7 @@ export default {
         const sd = v.stage({ height: 150, axes: false, full: true });
         const sa = v.stage({ height: 250, axes: false, full: true });
         const marked = v.select('marked item', ['00', '01', '10', '11'], '11');
-        const step = v.slider('step', 0, 13, 13, { int: true });
+        const step = v.slider('step', 0, 18, 18, { int: true });
         const build = (m) => {
           const qc = Q.circuit(2).h(0).h(1); const flip = () => { for (const q of [0, 1]) if (m[q] === '0') qc.x(q); };
           flip(); qc.cz(0, 1); flip(); qc.h(0).h(1).x(0).x(1).cz(0, 1).x(0).x(1).h(0).h(1).measure(); return qc;

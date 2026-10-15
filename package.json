@@ -7,7 +7,7 @@
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
     "serve": "node scripts/serve.mjs",
-    "test": "node tests/math.test.mjs"
+    "test": "node tests/math.test.mjs && node tests/kits-science.test.mjs"
   },
   "devDependencies": {
     "playwright-core": "^1.64.0"
