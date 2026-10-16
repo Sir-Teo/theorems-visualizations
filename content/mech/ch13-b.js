@@ -484,8 +484,8 @@ the mean divergence over the current region, so friction ($\nabla\!\cdot f = -\g
           fastDots(v, sP, px, st.ys, NP, 'gold', { alpha: 0.8, size: 2 });
           if (!st.L.capped) { if (name === 'pend') drawCyl(sP, st.L.Y, { fill: false, color: 'accent', width: 1.4 }); else sP.poly(st.L.Y, { fill: false, color: 'accent', width: 1.4 }); }
           sP.corner(`t = ${v.fix(t, 1)}`, 'tr', { color: 'ink', plate: true });
+          sA.path(st.hist.map((h) => [h[0], h[1]]), { color: 'accent', width: 3.2, alpha: 0.75 });
           sA.path(st.hist.map((h) => [h[0], h[2]]), { color: 'red', width: 1.6, dash: [6, 4] });
-          sA.path(st.hist.map((h) => [h[0], h[1]]), { color: 'accent', width: 2.6 });
           sA.hline(1, { color: 'faint', width: 1 }); sA.vline(t, { color: 'gold', width: 1.2 });
           cur = { st, t };
         }, { period: TT / 2 + 2, still: 9 });

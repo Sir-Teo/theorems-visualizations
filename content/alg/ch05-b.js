@@ -20,7 +20,7 @@ function segX(a, b, c, d) {
 }
 /** Chips (rounded boxes with transposition labels) laid out in rows from (x0, y0); returns the next y. */
 function chips(s, list, x0, y0, o = {}) {
-  const w = o.w ?? 0.62, h = o.h ?? 0.42, per = o.per ?? 8, gap = o.gap ?? 0.06;
+  const w = o.w ?? 0.62, h = o.h ?? 0.42, per = o.per ?? 8, gap = o.gap ?? 0.05;
   list.forEach((t, k) => {
     const r = Math.floor(k / per), c = k % per, x = x0 + c * (w + gap), y = y0 - r * (h + 0.12), col = o.color ? o.color(k) : 'accent';
     s.rect(x, y - h, x + w, y, { radius: 5, fill: col, fillAlpha: 0.13, color: col, width: 1.1 });
@@ -112,12 +112,12 @@ a product of $k+m$ transpositions. By Lemma 5.14, $k+m$ is even, so $k$ and $m$ 
           // the two factorizations
           const a = A();
           c.text(`A — from the cycles: ${a.length} (${a.length % 2 ? 'odd' : 'even'})`, 0.15, 5.78, { align: 'left', size: 12, weight: 700, color: 'blue' });
-          let y = chips(c, a, 0.15, 5.45, { color: () => 'blue', per: 8, w: 0.68, h: 0.55, size: 12.5 });
+          let y = chips(c, a, 0.15, 5.45, { color: () => 'blue', per: 8, w: 0.66, h: 0.55, size: 12.5 });
           c.text(`B — another way: ${B.length} (${B.length % 2 ? 'odd' : 'even'})`, 0.15, y - 0.3, { align: 'left', size: 12, weight: 700, color: 'orange' });
-          y = chips(c, B, 0.15, y - 0.6, { color: () => 'orange', per: 8, w: 0.68, h: 0.55, size: 12.5 });
+          y = chips(c, B, 0.15, y - 0.6, { color: () => 'orange', per: 8, w: 0.66, h: 0.55, size: 12.5 });
           const chain = B.concat(a.slice().reverse());
           c.text(`B · A⁻¹ = id: ${chain.length} factors (even ${chain.length % 2 ? '✗' : '✓'})`, 0.15, y - 0.3, { align: 'left', size: 12, weight: 700, color: 'green' });
-          y = chips(c, chain, 0.15, y - 0.6, { color: (k) => (k < B.length ? 'orange' : 'blue'), per: 8, w: 0.68, size: 12, h: 0.5 });
+          y = chips(c, chain, 0.15, y - 0.6, { color: (k) => (k < B.length ? 'orange' : 'blue'), per: 8, w: 0.66, size: 12, h: 0.5 });
           c.text('B · A⁻¹ = σσ⁻¹: read A backwards, each factor undoes itself', 0.15, Math.max(0.25, y - 0.3), { align: 'left', size: 10.5, color: 'muted' });
         });
         v.readout(() => {

@@ -41,10 +41,10 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model' },
       viz(v) {
         const M = v.M;
-        const prod = v.select('production function', Object.entries(PROD).map(([k, p]) => ({ value: k, label: p.label })), 'cd', { onChange: (k) => { if (k === 'multi') { sS.set(0.3); nS.set(0.06); } if (k === 'ces') aS.set(0.25); if (k === 'cd') aS.set(0.33); } });
+        const prod = v.select('production function', Object.entries(PROD).map(([k, p]) => ({ value: k, label: p.label })), 'ces', { onChange: (k) => { if (k === 'multi') { sS.set(0.3); nS.set(0.06); } if (k === 'ces') aS.set(0.25); if (k === 'cd') aS.set(0.33); } });
         const sS = v.slider('saving rate s', 0.05, 0.6, 0.25, { step: 0.005 });
         const nS = v.slider('labour growth n', 0.005, 0.08, 0.03, { step: 0.001 });
-        const aS = v.slider('a (capital exponent / weight)', 0.1, 0.9, 0.33, { step: 0.01 });
+        const aS = v.slider('a (capital exponent / weight)', 0.1, 0.9, 0.25, { step: 0.01 });
         const P = v.stage({ x: [0, 40], y: [0, 1.6], axes: 'box', gutter: true, height: 340, weight: 1.1, minWidth: 260, xlabel: 'capital per worker r', ylabel: 'per worker per year', title: 'Solow’s Figure 1' });
         const T = v.stage({ x: [0, 150], y: [0, 40], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 250, xlabel: 'years', ylabel: 'capital per worker r(t)', title: 'convergence to balanced growth' });
         const h0 = T.handle(0, 3, { color: 'gold', constrain: (x, y) => [0, Math.max(0.2, y)] });

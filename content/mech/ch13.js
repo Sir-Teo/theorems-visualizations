@@ -231,7 +231,7 @@ What the dots show:
         const E = 1, TT = 520, H = 0.01, REC = 6, R0 = Math.sqrt(2 * E);
         const s3 = v.stage3d({ range: 1.7, height: 360, yaw: -0.75, pitch: 0.38, axes: false, weight: 1.05, title: 'the orbit in $(x, p_x, y)$; the plane $y = 0$' });
         const sS = v.stage({ x: [-1.55, 1.55], y: [-1.55, 1.55], equal: true, axes: 'box', gutter: true, height: 360, weight: 1, xlabel: 'x', ylabel: 'pₓ', title: 'section $y = 0$, $p_y > 0$' });
-        const h0 = sS.handle(0.62, 0.35, { color: 'ink', r: 7, constrain: (x, y) => { const r = Math.hypot(x, y), R = R0 * 0.985; return r > R ? [(x * R) / r, (y * R) / r] : [x, y]; } });
+        const h0 = sS.handle(-0.9, 0.55, { color: 'ink', r: 7, constrain: (x, y) => { const r = Math.hypot(x, y), R = R0 * 0.985; return r > R ? [(x * R) / r, (y * R) / r] : [x, y]; } });
         h0.onDrag = () => v.restart();
         const seed = (x, px) => [x, 0, px, Math.sqrt(Math.max(0, 2 * E - x * x - px * px))];
         const run = (s0, k, keepPath) => {

@@ -135,13 +135,12 @@ export default {
       kind: 'Phenomenon',
       name: 'The harmonic seventh (7:4)',
       statement: String.raw`The seventh harmonic of a tone is $7f$, and the interval $7{:}4$ from the fourth harmonic, the **harmonic seventh**, measures $1200\log_2(7/4)\approx968.8$ ¢: 31.2 ¢ flatter than the equal-tempered minor seventh (1000 ¢) and 27.3 ¢ flatter than the Pythagorean $16/9$ (996.1 ¢). A dominant seventh chord tuned $4{:}5{:}6{:}7$ consists of harmonics 4–7 of one fundamental: all its notes' partials fall on a single harmonic series, so the beating between the seventh and the other notes stops. Barbershop quartets, singing without fixed pitch, are said to tune toward this chord, the "locked" or "ringing" chord.`,
-      idea: String.raw`In equal temperament the seventh's 4th partial ($4\times1.7818f\approx7.127f$) lies about 0.127$f$ above the root's 7th partial, and the seventh's 3rd partial beats against the fifth's 7th/2…; around C3 these are beats of roughly 10–20 per second, squarely in the rough range (5.7). Lowering the seventh by 31 ¢ makes $4\cdot\tfrac74f=7f$ exactly, and with a just triad ($4{:}5{:}6$) every near-coincidence becomes an exact one: the chord's partials are the harmonics of $f/4$ (6.1). The dissonance curve against the position of the seventh accordingly has a local minimum at 968.8 ¢, while 1000 ¢ sits on its wall.`,
+      idea: String.raw`In equal temperament the seventh's 4th, 5th and 6th partials miss the 7th partials of the root, third and fifth: on C3 ($f=130.8$ Hz) the seventh's 4th partial ($4\times233.1=932$ Hz) lies 17 Hz above the root's 7th (916 Hz), and the other two pairs beat at about 21 and 25 Hz against a just triad, squarely in the rough range (5.7). Lowering the seventh by 31 ¢ makes $4\cdot\tfrac74f=7f$ exactly, and with a just triad ($4{:}5{:}6$) every near-coincidence becomes an exact one: the chord's partials are the harmonics of $f/4$ (6.1). The dissonance curve against the position of the seventh accordingly has a local minimum at 968.8 ¢, while 1000 ¢ sits on its wall.`,
       caption: String.raw`A C dominant seventh chord on C3 with 8-partial tones. Slide the seventh between 940 and 1040 ¢ and choose a just ($4{:}5{:}6$) or equal-tempered triad below it. Left: the chord's total dissonance against the seventh's position, with 7/4, 16/9, 12-TET and 9/5 marked. Right: every pair of partials (one from the seventh, one from another note) closer than 40 Hz, as bars at their beat rate; at 7/4 over a just triad they collapse onto 0 Hz, the "lock". Play the chord, or equal temperament followed by 4:5:6:7.`,
       deps: ['music-6.4', 'music-2.6'],
       see: ['music-7.5', 'music-7.12', 'music-5.6'],
       refs: ['Benson ch. 5'],
       tags: ['just intonation', 'seventh'],
-      credit: 'harmonic seventh: discussed by Tartini (1754) and Euler; barbershop practice',
       scope: String.raw`Sensory roughness of steady harmonic tones (Sethares's model, amplitudes $0.88^{k-1}$); singers' actual tunings vary and depend on context. The septimal seventh is not part of 5-limit just intonation (7.5); it is approximated well by 31-tone equal temperament (7.12).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Harmonic_seventh' },
       viz(v) {
@@ -212,7 +211,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         const inp = v.input('or type ratios', '4:5:6', { width: 140, placeholder: 'e.g. 4:5:6:7', onChange: (t) => { const t2 = String(t).split(/[:\s,]+/).map(Number).filter((x) => Number.isInteger(x) && x > 0 && x < 100000); typed = t2.length >= 2 ? t2 : null; if (typed) sel = []; v.invalidate(); } });
         const lat = v.stage({ x: [-3.7, 2.7], y: [-4.4, 0.6], equal: true, height: 320, axes: false, weight: 1, minWidth: 260, title: 'Euler’s lattice (1739): click tones' });
         const wk = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: false, weight: 1.1, minWidth: 280, title: 'the gradus worked out' });
-        lat.onClick((x, y) => { let best = -1, bd = 0.45; nodes.forEach((n, i) => { const d = Math.hypot(n.x - x, n.y - y); if (d < bd) { bd = d; best = i; } }); if (best < 0) return; typed = null; const k = sel.indexOf(best); if (k >= 0) sel.splice(k, 1); else if (sel.length < 6) sel.push(best); });
+        lat.onClick((x, y) => { let best = -1, bd = 0.45; nodes.forEach((n, i) => { const d = Math.hypot(n.x - x, n.y - y); if (d < bd) { bd = d; best = i; } }); if (best < 0) return; typed = null; const k = sel.indexOf(best); if (k >= 0) sel.splice(k, 1); else if (sel.length < 6) sel.push(best); const t = terms(); inp.set(t ? t.join(':') : ''); });
         // chord from lattice: first note = bass at 1, others voiced in [1, 2) above it; exact exponents of 2, 3, 5
         const fromLattice = () => {
           if (!sel.length) return null;
@@ -227,7 +226,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
         const rough = (() => { const C = dissCurve(harmonic(6, 0.88), 261.63, 0, 1210, 605); let mx = 0; for (const x of C.d) mx = Math.max(mx, x); return (c) => sample(C, c) / mx; })();
         const rk = v.stage({ x: [0, 1], y: [0, INT.length], height: 330, axes: false, full: true, title: 'Euler’s ranking of the intervals, beside today’s roughness model' });
         v.soundButton('play the chord', (snd) => { const t = terms(); if (!t) return; const sorted = t.slice().sort((a, b) => a - b), base = 196 / sorted[0] * (sorted[sorted.length - 1] / sorted[0] > 4 ? 0.5 : 1); snd.samples(mixBuf(sorted.map((x) => [harmonic(6, 0.88), base * x]), 2), SR, { gain: 0.9 }); });
-        v.button('clear', () => { sel = []; typed = null; });
+        v.button('clear', () => { sel = []; typed = null; inp.set(''); });
         v.render(() => {
           // lattice
           for (const n of nodes) { const r = nodes.find((m) => m.a === n.a + 1 && m.b === n.b), d = nodes.find((m) => m.a === n.a && m.b === n.b + 1); if (r) lat.line(n.x, n.y, r.x, r.y, { color: 'orange', width: 1.6 }); if (d) lat.line(n.x, n.y, d.x, d.y, { color: 'teal', width: 1.6 }); }
@@ -410,7 +409,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
             s.path(PL_FIG10.map(([x, d]) => [x, d]).concat([[1.6, 0]]), { color: 'ink', width: 2.2 });
             const P = []; for (let i = 0; i <= 200; i++) { const x = (1.6 * i) / 200; P.push([x, pl(1000, 1000 + x * cbw(1000))]); }
             s.path(P, { color: 'accent', width: 1.4, dash: [6, 4] });
-            for (const p of ALL) { const x = xf(p); if (x <= 1.6) s.dot(x, (Fx.a - p.r) / -Fx.b * -1 * -1 < 9 ? (Fx.a - p.r) / -Fx.b : 0, { r: 4, color: FCOL[p.fm] }); }
+            for (const p of ALL) { const x = xf(p); if (x <= 1.6) s.dot(x, (p.r - Fx.a) / Fx.b, { r: 4, color: FCOL[p.fm] }); }
             s.corner(`rms misfit ${v.fix(Fx.rms, 2)} rating points (critical band: ${v.fix(FCB.rms, 2)}, fixed 132 Hz: ${v.fix(FH.rms, 2)})`, 'tr', { color: 'ink', weight: 600, plate: true });
           } else if (md === 'f11') {
             s.setScale({ xlog: false, x: [240, 515], y: [-0.3, 6.2] }); s.setTitle('Fig. 11: two complex tones of 6 harmonics, the lower at 250 Hz');

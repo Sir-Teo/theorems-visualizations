@@ -197,3 +197,23 @@ export const nearest = (pts, x, y) => pts.reduce((b, p) => (!b || Math.hypot(p.x
 export function drawStat(s, pts, { r = 5 } = {}) {
   for (const p of pts) s.dot(p.x, p.y, { r, color: CLS[p.cls].color, hollow: true, width: 2.2 });
 }
+
+/** Smallest value of f over the feasible grid points of a window (feas(x, y) → boolean, optional), then refined by shrinking local grids. */
+export function gridMin(f, view, feas = null, nx = 150, ny = 110, rounds = 5) {
+  const [x0, x1] = view.x, [y0, y1] = view.y, dx = (x1 - x0) / nx, dy = (y1 - y0) / ny; let b = null;
+  for (let j = 0; j <= ny; j++) for (let i = 0; i <= nx; i++) {
+    const x = x0 + i * dx, y = y0 + j * dy; if (feas && !feas(x, y)) continue;
+    const z = f(x, y); if (!Number.isFinite(z)) continue; if (!b || z < b.f) b = { x, y, f: z };
+  }
+  if (!b) return null;
+  let sx = dx * 1.5, sy = dy * 1.5;
+  for (let r = 0; r < rounds; r++) {
+    const c = { ...b };
+    for (let j = -10; j <= 10; j++) for (let i = -10; i <= 10; i++) {
+      const x = clamp(c.x + (i * sx) / 10, x0, x1), y = clamp(c.y + (j * sy) / 10, y0, y1); if (feas && !feas(x, y)) continue;
+      const z = f(x, y); if (Number.isFinite(z) && z < b.f) b = { x, y, f: z };
+    }
+    sx *= 0.25; sy *= 0.25;
+  }
+  return b;
+}

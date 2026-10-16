@@ -174,3 +174,11 @@ export function twoProd(a, b) {
   const p = a * b, [ah, al] = sp(a), [bh, bl] = sp(b);
   return [p, ((ah * bh - p) + ah * bl + al * bh) + al * bl];
 }
+
+// ---------------------------------------------------------------- stage helpers
+/** Make stage s a pixel canvas (x to the right, y UP from the bottom); returns {w, h, Y} where Y(py) converts a top-down pixel row. */
+export function px(s) { const w = s.width, h = s.height; s.setView([0, w], [0, h]); return { w, h, Y: (py) => h - py }; }
+/** Exact value of an {n, e} exact sum as a double. */
+export const exNum = (ex) => ratioNum(ex.n, 1n) * 2 ** ex.e;
+/** Integer square root of a BigInt. */
+export function isqrt(n) { if (n < 2n) return n; let x = 1n << BigInt((bitLen(n) >> 1) + 1); for (;;) { const y = (x + n / x) >> 1n; if (y >= x) return x; x = y; } }

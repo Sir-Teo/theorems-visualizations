@@ -4,6 +4,7 @@
 // problems differ (a toy threshold-learning spam filter whose error curve is simulated for each combination of switches).
 import { clamp, rand, hashStr, memo, mean, commas, lineMass, lineDraw, GAP_W, BEHAVIOURS, pigeonRun, favouriteShare } from './ch01.shared.js';
 
+const fx = (x) => (x < 1e-3 ? `${(x * 10 ** -Math.floor(Math.log10(x || 1))).toFixed(1)}\\times10^{${Math.floor(Math.log10(x || 1))}}` : x.toFixed(3));
 const TH = 0.37; // the true spam threshold of the toy filter in item 1.1b
 
 /** Estimates θ̂_1..θ̂_M and the examples a learner sees: cfg = {labels, active, teacher, gap}. */
@@ -63,7 +64,7 @@ The two classical illustrations are the rat that avoids a bait after a single bo
         const worldS = v.select('rat\'s world: sickness follows', [{ value: 'taste', label: 'the taste' }, { value: 'light', label: 'the sound and light' }], 'taste');
         const seedS = v.slider('birds: seed', 1, 20, 3, { int: true });
         const sP = v.stage({ x: [0, 30], y: [0, 1], axes: 'box', gutter: true, height: 270, weight: 1.1, xlabel: 'minutes', ylabel: 'share of favourite behaviour', title: 'eight pigeons, food every 15 s' });
-        const sR = v.stage({ x: [0.5, 8.5], y: [0, 1.04], axes: 'box', gutter: true, height: 270, weight: 0.9, xlabel: 'poisoned meals $n$', ylabel: 'P(learns the true cause)', title: 'the rat', xticks: [1, 2, 3, 4, 5, 6, 7, 8] });
+        const sR = v.stage({ x: [0.5, 8.5], y: [0, 1.14], axes: 'box', gutter: true, height: 270, weight: 0.9, xlabel: 'poisoned meals $n$', ylabel: 'P(learns the true cause)', title: 'the rat', xticks: [1, 2, 3, 4, 5, 6, 7, 8] });
         const sB = v.stage({ x: [0, 90], y: [0, 1], axes: false, height: 78, full: true, title: 'bold pigeon, last 90 s: what it was doing (colour) and the feedings (gold)' });
         const runs = memo(), rats = memo();
         const getRuns = () => runs([priorS.value, seedS.value], () => Array.from({ length: NB }, (_, b) => pigeonRun(hashStr('pg' + seedS.value + '|' + b), 1800, 15, priorS.value === 'none')));
@@ -106,7 +107,7 @@ The two classical illustrations are the rat that avoids a bait after a single bo
           if (prior === 'none') sR.path(exact, { color: 'ink', width: 1.2 });
           sR.path(sim.map((y, i) => [i + 1, y]), { color: prior === 'none' ? 'accent' : 'green', width: 2.6 });
           sR.dots(sim.map((y, i) => [i + 1, y]), { r: 4.5, color: prior === 'none' ? 'accent' : 'green' });
-          sR.text(prior === 'none' ? 'prior: taste only' : 'no prior', 8.3, simOther[7], { color: 'muted', size: 11, align: 'right', dy: simOther[7] > 0.5 ? 12 : -8 });
+          sR.text(prior === 'none' ? 'dashed: taste prior' : 'dashed: no prior', 0.7, 1.07, { color: 'muted', size: 11, align: 'left' });
           info = { lock, fins, n1: sim[0], n3: sim[2], prior, world, F, best };
         });
         v.legend([['gold', 'bold pigeon'], ['accent', 'other pigeons / learner without prior'], ['green', 'learner with the taste prior'], ['faint', 'the other learner', { dash: true }]]);
@@ -146,7 +147,7 @@ This book studies the corner of supervised, passive learning from examples drawn
         const gapT = v.toggle('clean gap between the two kinds of mail', false);
         const mS = v.slider('examples seen, $m$', 1, 30, 8, { int: true });
         const sF = v.stage({ x: [0, 10], y: [0, 4], axes: false, height: 190, full: true, title: 'what flows between teacher, learner and rule' });
-        const sL = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', gutter: true, height: 150, weight: 1, xlabel: 'spam score $x$', yticks: [], title: 'one run on the score line' });
+        const sL = v.stage({ x: [0, 1], y: [-1, 1], axes: 'box', gutter: true, height: 150, weight: 1, xlabel: 'spam score $x$', yticks: [], title: 'one run on the score line (blue ham, orange spam; rings were queried)' });
         const sE = v.stage({ x: [1, 30], y: [1e-4, 1], ylog: true, axes: 'box', gutter: true, height: 150, weight: 1, xlabel: 'examples $m$', ylabel: 'expected error', title: 'error of the learner (average of 200 runs)' });
         const curves = memo();
         const cfg = () => ({ labels: labS.value, active: actS.value === 'active', teacher: teaS.value, gap: gapT.value });
@@ -189,7 +190,6 @@ This book studies the corner of supervised, passive learning from examples drawn
             const x = run.xs[i], y = run.ys[i], col = c.labels === 'unsup' ? 'muted' : y ? 'orange' : 'accent', yy = 0.22 + 0.5 * ((i * 7919) % 5) / 5 * (y ? 1 : -1) * (c.labels === 'unsup' ? 0 : 1) + (c.labels === 'unsup' ? 0.18 * (((i * 7919) % 5) / 5 - 0.5) : 0);
             sL.dot(x, yy, { r: 5, color: col, hollow: run.asked[i], alpha: 0.9 });
           }
-          sL.text('ham', 0.01, -0.35, { color: 'accent', size: 11 }); sL.text('spam', 0.99, 0.35, { color: 'orange', size: 11, align: 'right' });
           // ---- error curve
           const ser = (arr) => arr.map((e, i) => [i + 1, Math.max(e, 1e-4)]);
           const cum = (arr) => { let s = 0; return arr.map((e, i) => { s += i === 0 ? 0.5 : arr[i - 1]; return s; }); };
@@ -211,7 +211,7 @@ This book studies the corner of supervised, passive learning from examples drawn
           if (!info) return '';
           const { err, avg, bookAvg, c, m, prot, cumMe, cumBook } = info;
           const note = c.labels === 'unsup' ? (c.gap ? 'the gap gives the clustering away' : 'with no cluster structure the clustering learns nothing about the spam rule') : c.active ? 'the learner chooses the points, so the teacher is irrelevant' : c.teacher === 'adversarial' ? 'only extreme messages are shown' : c.teacher === 'helpful' ? 'the teacher straddles the boundary' : 'random examples';
-          return String.raw`After $m=${m}$ examples this run has error $${err.toFixed(3)}$; averaged over 200 runs: $${avg < 1e-3 ? avg.toExponential(1) : avg.toFixed(3)}$ (book's setting $${bookAvg < 1e-3 ? bookAvg.toExponential(1) : bookAvg.toFixed(3)}$)` + (prot === 'online' ? String.raw` · expected mistakes so far $${cumMe.toFixed(2)}$ (book's setting $${cumBook.toFixed(2)}$)` : '') + ` · ${note}.`;
+          return String.raw`After $m=${m}$ examples this run has error $${err.toFixed(3)}$; averaged over 200 runs: $${fx(avg)}$ (book's setting $${fx(bookAvg)}$)` + (prot === 'online' ? String.raw` · expected mistakes so far $${cumMe.toFixed(2)}$ (book's setting $${cumBook.toFixed(2)}$)` : '') + ` · ${note}.`;
         });
       },
     },
