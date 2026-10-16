@@ -102,7 +102,7 @@ If $Y$ is rational with simple poles $p_k$, then $y(t)=\sum_k\operatorname{Res}_
           const f = forc.value === 'step' ? () => 1 : forc.value === 'sin' ? (t) => Math.sin(p * t) : (t) => Math.exp(-p * t);
           const rk = flow((t, x) => [x[1], f(t) - 2 * z * x[1] - x[0]], 0, [a0, a1], T, 1000);
           sY.path(rk.map(([t, x]) => [t, x[0]]), { color: 'green', width: 2.4, dash: [7, 5] });
-          const ok = close > 1e-2, tt = []; for (let i = 0; i <= 400; i++) tt.push((T * i) / 400);
+          const ok = close > 1e-2, tt = []; for (let i = 0; i <= 500; i++) tt.push((T * i) / 500);
           let dev = null;
           if (ok) {
             const tot = tt.map(() => 0);
@@ -114,7 +114,7 @@ If $Y$ is rational with simple poles $p_k$, then $y(t)=\sum_k\operatorname{Res}_
               sY.path(tt.map((t, j) => [t, vals[j]]), { color: 'faint', width: 1.2, alpha: 0.9 });
             });
             sY.path(tt.map((t, j) => [t, tot[j]]), { color: 'accent', width: 2.6 });
-            dev = 0; for (let j = 0; j <= 400; j++) dev = Math.max(dev, Math.abs(tot[j] - rk[Math.round((j / 400) * 1000)][1][0]));
+            dev = 0; for (let j = 0; j <= 500; j++) dev = Math.max(dev, Math.abs(tot[j] - rk[2 * j][1][0]));
           }
           roots.forEach((r, i) => { const sys = i < 2; if (r[1] >= -1e-12) sS.dot(r[0], r[1], { r: 6, color: sys ? 'accent' : 'orange' }); else sS.dot(r[0], r[1], { r: 6, color: sys ? 'accent' : 'orange' }); });
           sS.vline(0, { color: 'red', width: 1.2, alpha: 0.5 });

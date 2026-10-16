@@ -149,7 +149,7 @@ The heat $q_{\text{rev}}$ itself depends on the path, but dividing by the temper
           ss.setView([0.4, 3.6], [lo2 - pad2, hi2 + pad2]); ss.hline(0, { color: 'muted' });
           res.forEach((r, i) => { ss.rect(i + 0.65, 0, i + 1.35, r[1], { fill: ['blue', 'orange', 'purple'][i], fillAlpha: 0.6, color: ['blue', 'orange', 'purple'][i] }); ss.text(v.fix(r[1], 3), i + 1, r[1], { dy: r[1] >= 0 ? -10 : 12, size: 12 }); });
           ss.hline(dS, { color: 'green', dash: true, width: 1.5 });
-          ss.text('analytic ΔS', 3.55, dS, { color: 'green', size: 11, align: 'right', dy: -8 });
+          ss.corner('dashed: $C_V\\ln(T_2/T_1)+R\\ln(V_2/V_1)$', 'tl', { color: 'green' });
         });
         v.readout(() => {
           const dS = CVG * Math.log(P.y / T1) + R * Math.log(P.x);
@@ -183,7 +183,7 @@ and no engine working between the same two reservoirs can exceed it. For a perfe
           const c = carnot(th, tc, rr.value, 5); Cc = c;
           const pIso = (T) => (V) => RL * T / V;
           const k = RL * th * Math.pow(c.VB, GAM) / c.VB;                    // p V^γ constant on the adiabat through B
-          const kc = RL * tc * Math.pow(c.VC, GAM) / c.VC;
+          const kc = RL * th * Math.pow(c.VA, GAM) / c.VA;                    // the other adiabat passes through A (and D)
           const pts = [];
           for (let i = 0; i <= 120; i++) { const V = c.VA * Math.pow(c.VB / c.VA, i / 120); pts.push([V, pIso(th)(V)]); }
           for (let i = 1; i <= 120; i++) { const V = c.VB * Math.pow(c.VC / c.VB, i / 120); pts.push([V, k / Math.pow(V, GAM)]); }

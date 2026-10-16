@@ -285,10 +285,10 @@ export default {
           wig: { label: '$\\tfrac12x^2+0.3\\cos1.5x$', f: (x) => 0.5 * x * x + 0.3 * Math.cos(1.5 * x) },
           sq: { label: '$\\sqrt{1+x^2}+0.05x^2$', f: (x) => Math.sqrt(1 + x * x) + 0.05 * x * x },
         };
-        const sel = v.select('function', Object.entries(FS).map(([k, o]) => ({ value: k, label: o.label })), 'lc');
+        const sel = v.select('function', Object.entries(FS).map(([k, o]) => ({ value: k, label: o.label })), 'wig');
         const rS = v.slider('window half-width $R$', 0.8, 3, 2.5, { step: 0.05 });
         const L = v.stage({ x: [-3.2, 3.2], y: [-0.5, 6], axes: 'box', gutter: true, grid: true, height: 360, title: '$f$ sandwiched between two parabolas' });
-        const G = v.stage({ x: [0, 40], y: [1e-8, 10], ylog: true, axes: 'box', gutter: true, grid: true, height: 360, title: 'gradient descent, step $1/M$', xlabel: 'iteration $k$' });
+        const G = v.stage({ x: [0, 40], y: [1e-14, 10], ylog: true, axes: 'box', gutter: true, grid: true, height: 360, title: 'gradient descent, step $1/M$', xlabel: 'iteration $k$' });
         let R = 2.5;
         const P = L.handle(1.8, 0, { color: 'gold', label: '$x_0$', labelPos: 'nw', constrain: (x) => [clamp(x, -R, R), FS[sel.value].f(clamp(x, -R, R))] });
         let info = {};
@@ -310,7 +310,7 @@ export default {
           let x = x0;
           for (let k = 0; k <= 40; k++) { err.push(Math.max(f(x) - fstar, 1e-16)); x -= d1(f, x) / M; }
           const rate = 1 - m / M;
-          G.setView([0, 40], [1e-9, Math.max(err[0] * 2, 1e-3)]);
+          G.setView([0, 40], [1e-14, Math.max(err[0] * 3, 1e-2)]);
           G.fn((k) => Math.max(rate ** k * err[0], 1e-16), { domain: [0, 40], color: 'red', width: 1.8, dash: true, n: 80 });
           G.dots(err.map((e, k) => [k, e]), { r: 3.2, color: 'accent' });
           let viol = 0; for (let k = 0; k < 40; k++) if (err[k + 1] > rate * err[k] * (1 + 1e-6) + 1e-14 && err[k] > 1e-12) viol++;
@@ -330,7 +330,7 @@ export default {
       name: 'Subgradients and the subdifferential',
       statement: String.raw`A vector $g$ is a **subgradient** of $f$ at $x$ if $f(y)\ge f(x)+g^{\mathsf T}(y-x)$ for all $y$ in the domain: the affine function with slope $g$ through $(x,f(x))$ is a global underestimator. The set of all subgradients is the **subdifferential** $\partial f(x)$, a closed convex set. For convex $f$ it is nonempty at every interior point of the domain; it is the single point $\{\nabla f(x)\}$ where $f$ is differentiable, and for $f(x)=|x|$ it is $[-1,1]$ at $0$. Moreover $x$ minimizes $f$ if and only if $0\in\partial f(x)$. For a non-convex $f$ the subdifferential can be empty.`,
       idea: String.raw`For a convex $f$ the epigraph is a convex set (opt-3.1) and $(x,f(x))$ lies on its boundary, so the supporting hyperplane theorem (opt-2.8) gives a non-vertical supporting hyperplane at interior points; its slope is a subgradient. In one variable the set of slopes of supporting lines at $x$ is exactly $[f'_-(x),f'_+(x)]$, the interval between the one-sided derivatives. The minimality test is immediate from the definition: $0\in\partial f(x)$ says $f(y)\ge f(x)$ for all $y$. Smooth first-order conditions (opt-3.2) are the case where the interval shrinks to one point.`,
-      caption: String.raw`Drag $x_0$ along the graph (it snaps to the kinks) and pick a function. The interval of slopes $g$ for which the line through $(x_0,f(x_0))$ stays below the whole graph is computed by brute force on a grid and drawn as a fan of orange lines (the extreme slopes in red); the slider chooses one line inside the fan. **Right:** the set-valued map $x\mapsto\partial f(x)$ for the whole function: vertical bars where it is an interval, gaps where it is **empty** (non-convex examples). The points where the bar crosses $g=0$ are exactly the global minimizers.`,
+      caption: String.raw`Drag $x_0$ along the graph (it snaps to the kinks) and pick a function. The interval of slopes $g$ for which the line through $(x_0,f(x_0))$ stays below the whole graph is computed by brute force on a grid and drawn as a fan of orange lines (the extreme slopes in red); the slider chooses one line inside the fan. **Right:** the set-valued map $x\mapsto\partial f(x)$ for the whole function on the window $(-3,3)$: vertical bars where it is an interval, gaps where it is **empty** (non-convex examples). The points where the bar crosses $g=0$ are exactly the global minimizers.`,
       deps: ['opt-3.2', 'opt-2.8'],
       refs: ['Boyd–Vandenberghe ch. 3'],
       tags: ['subgradient', 'subdifferential'],
@@ -338,7 +338,7 @@ export default {
       viz(v) {
         const FS = {
           abs: { label: '$|x|$', f: (x) => 1.2 * Math.abs(x), kinks: [0] },
-          max3: { label: '$\\max$ of three', f: (x) => Math.max(-x - 0.5, 0.2 * x * x, 1.3 * x - 1.8), kinks: [-0.5505, 2] },
+          max3: { label: '$\\max$ of three', f: (x) => Math.max(-x - 0.5, 0.2 * x * x, 1.3 * x - 1.8), kinks: [-0.5635255, 2] },
           sq: { label: '$x^2/2$ (smooth)', f: (x) => x * x / 2 + 0.3 * x, kinks: [] },
           well: { label: 'double well (not convex)', f: (x) => x ** 4 / 12 - x * x / 1.2 + 2, kinks: [] },
           tent: { label: 'concave tent', f: (x) => 3 - 1.3 * Math.abs(x), kinks: [0] },
@@ -381,7 +381,7 @@ export default {
           L.dot(x0, f0, { r: 6, color: 'gold' });
           // set-valued map
           const M = mc(sel.value, () => {
-            const xs2 = linspace(-3, 3, 241), bars = [];
+            const xs2 = linspace(-2.97, 2.97, 238), bars = [];
             for (const x of xs2) { const [a, b] = sub(f, x, XS.concat(cur.kinks)); bars.push([x, a, b, a <= b + tol]); }
             // exact kinks as well
             for (const k of cur.kinks) { const [a, b] = sub(f, k, XS.concat(cur.kinks)); bars.push([k, a, b, a <= b + tol]); }

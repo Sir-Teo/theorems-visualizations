@@ -222,5 +222,66 @@ export default {
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.11
+    {
+      num: '3.11',
+      kind: 'Concept',
+      name: 'Pointed versus round arches',
+      statement: String.raw`A pointed (two-centred) arch is built from two circular arcs whose centres lie on the springing line, each on the far side of the axis, at distance $e$ from it; the eccentricity $\xi = e/(R - e)$ measures the pointedness ($\xi = 0$ is the round arch, $\xi = 1$ the equilateral arch whose radius equals its span). For the same span a pointed arch is taller, and so its thrust lines are steeper: its horizontal thrust per unit of weight is smaller, the least thickness that can stand under its own weight falls (from $t/R = 0.1075$ for the semicircle to about $0.040$ for the equilateral arch, with radial joints), and a concentrated load at the crown, such as a heavy keystone, a lantern or a pinnacle, can be larger for the same ring. The price is paid elsewhere: more height for the same span and, in a vault, more wall.`,
+      idea: String.raw`For an arch with a crown hinge and two haunch hinges, $H = M/f$: the bending moment at the crown that the weights induce, divided by the rise $f$, so more rise means less thrust (arch-3.2). A load at the crown is the interesting case: the funicular polygon of one concentrated load is two straight lines meeting at the load, a peak, and a pointed profile follows it much more closely than a semicircle does, so the thrust line stays inside a much thinner ring. The numbers on the plots are computed by the linear program of arch-3.5 for radial joints; the values for the minimum thickness agree with the tabulated ones for $\alpha = 90^\circ$ to within about 1%.`,
+      caption: String.raw`Slide the pointedness $\xi$ from round (0) through equilateral (1) to lancet (3) and watch the arch, its lowest and highest thrust lines, and the crown load it can carry (gold arrow; its share of the arch's own weight is the slider). The plots show, for the current thickness, how the allowed thrust and the largest crown load change with $\xi$. Thin the ring so that the round arch falls and the pointed one stands.`,
+      deps: ['arch-3.2'],
+      see: ['arch-3.7', 'arch-4.2'],
+      refs: ['Heyman'],
+      scope: String.raw`Plane two-centred arch of half-span 1, constant thickness, radial joints, self-weight plus a point load on the crown; the result depends on the way the joints are cut (Gaspar et al. 2021 study this for pointed arches), here radial.`,
+      tags: ['pointed arch', 'gothic', 'thrust'],
+      viz(v) {
+        const N = 40, half = N / 2;
+        const xS = v.slider('pointedness ξ = e/(R − e)', 0, 3, 1, { step: 0.05 }), tS = v.slider('thickness t (half-span = 1)', 0.04, 0.3, 0.12, { step: 0.005 }), pS = v.slider('crown load, share of the arch weight', 0, 2, 0.3, { step: 0.01 });
+        const PUB = [[0, 0.10748], [0.1, 0.08856], [0.2, 0.07587], [0.25, 0.0709], [0.33, 0.06399], [0.5, 0.0537], [0.6, 0.04902], [0.8, 0.0418], [1, 0.03964], [1.5, 0.03855], [2, 0.03588], [2.5, 0.03303], [3, 0.03038]];
+        const A = v.stage({ x: [-1.4, 1.4], y: [-0.2, 3.1], equal: true, axes: false, height: 340, weight: 1.2, title: 'the arch' });
+        const B = v.stage({ x: [0, 3], y: [0, 0.5], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 220, xlabel: 'pointedness ξ', ylabel: 'H / W', title: 'allowed horizontal thrust' });
+        const C = v.stage({ x: [0, 3], y: [0, 3], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 220, xlabel: 'pointedness ξ', ylabel: 'largest crown load / W', title: 'crown load the ring can carry' });
+        const mk = (xi, t) => arch({ R: 1 + xi, e: xi, t, N });
+        const crown = (g, P, vr) => [{ x: -1e-3, P: P / 2, k: half - 1, var: vr }, { x: 1e-3, P: P / 2, k: half, var: vr }];
+        const cache = new Map();
+        const curves = (t) => {
+          const key = t.toFixed(4); if (cache.has(key)) return cache.get(key);
+          const out = []; for (let i = 0; i <= 20; i++) { const xi = i * 0.15, g = mk(xi, t), r = thrustRange(g, []), c = r ? collapseFactor(g, crown(g, g.W, true)) : null; out.push({ xi, lo: r ? r.Hmin / g.W : NaN, hi: r ? r.Hmax / g.W : NaN, cap: c ? c.lam : NaN }); }
+          if (cache.size > 10) cache.clear(); cache.set(key, out); return out;
+        };
+        let M = null;
+        v.render(() => {
+          const xi = xS.value, t = tS.value, g = mk(xi, t), rg = thrustRange(g, []), cv = curves(t);
+          A.setView([-1.4, 1.4], [-0.2, g.rise + 0.55]);
+          drawArch(v, A, g, { fillAlpha: 0.12 });
+          const P = pS.value * g.W, cf = rg ? collapseFactor(g, crown(g, g.W, true)) : null, ok = rg && cf && P <= cf.lam * g.W + 1e-9;
+          if (rg) {
+            for (const [u, c] of [[rg.min, 'accent'], [rg.max, 'green']]) { const tl = thrustLine(g, [], u); for (let i = 0; i + 1 < tl.length; i++) A.line(tl[i].p[0], tl[i].p[1], tl[i + 1].p[0], tl[i + 1].p[1], { color: 'muted', width: 1.2, dash: [4, 3] }); }
+            if (P > 0) { const lo = crown(g, P, false), c = centralLine(g, lo); if (c) drawThrust(v, A, thrustLine(g, lo, c.u), { color: 'red', width: 2.6 }); const yt = g.joints[half].b[1]; A.arrow(0, yt + 0.25 + 0.6 * Math.min(1, pS.value), 0, yt + 0.02, { color: 'gold', width: 3.5, head: 10 }); }
+            else { const c = centralLine(g, []); if (c) drawThrust(v, A, thrustLine(g, [], c.u), { color: 'red', width: 2.6 }); }
+          }
+          A.corner(!rg ? 'no thrust line fits: the arch falls under its own weight' : ok ? 'stands under the crown load' : 'the crown load is too big: it collapses', 'tl', { color: ok ? 'muted' : 'red' });
+          // plots
+          const good = cv.filter((c) => Number.isFinite(c.lo));
+          B.setView([0, 3], [0, Math.max(0.3, ...good.map((c) => c.hi)) * 1.1]);
+          if (good.length) B.poly([...good.map((c) => [c.xi, c.hi]), ...good.slice().reverse().map((c) => [c.xi, c.lo])], { fill: 'green', fillAlpha: 0.22, color: 'green', width: 1.4 });
+          B.vline(xi, { color: 'accent', width: 1.6, dash: [4, 3] });
+          const capg = cv.filter((c) => Number.isFinite(c.cap)); C.setView([0, 3], [0, Math.max(0.5, ...capg.map((c) => c.cap)) * 1.1]);
+          if (capg.length) C.path(capg.map((c) => [c.xi, c.cap]), { color: 'gold', width: 2.6 });
+          C.vline(xi, { color: 'accent', width: 1.6, dash: [4, 3] }); C.hline(pS.value, { color: 'red', width: 1.2, dash: [3, 3] });
+          if (rg && cf) C.dot(xi, cf.lam, { r: 5.5, color: 'gold' });
+          M = { g, rg, cf, ok, P, tmin: null };
+        });
+        v.legend([['green', 'allowed thrust (plot)', { area: true }], ['red', 'line of thrust under the crown load'], ['muted', 'lowest and highest lines, self-weight only', { dash: true }], ['gold', 'crown load']]);
+        v.readout(() => {
+          if (!M) return '';
+          const { g, rg, cf } = M, xi = xS.value;
+          const f = bestFit((t) => mk(xi, t), () => [], {}, 1e-3, 0.6, 22), pub = PUB.find((p) => Math.abs(p[0] - xi) < 0.011);
+          const tmin = f ? f.t / g.R : NaN;
+          return `Rise ${f2(g.rise, 2)} for a span of 2; ${rg ? `self-weight thrust from ${f2(rg.Hmin / g.W, 3)} to ${f2(rg.Hmax / g.W, 3)} of the arch weight (${f2(rg.Hmin, 1)} to ${f2(rg.Hmax, 1)} kN/m)` : 'this ring is below the minimum thickness'}. Minimum thickness $t_{\\min}/R = ${f2(tmin, 4)}$${pub ? ` (tabulated: ${pub[1]})` : ''}; largest crown load ${cf ? f2(cf.lam, 2) + ' W = ' + f2(cf.lam * g.W, 1) + ' kN/m' : '—'}.`;
+        });
+      },
+    },
   ],
 };
