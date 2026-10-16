@@ -221,5 +221,84 @@ export default {
         });
       },
     },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.4
+    {
+      num: '3.4',
+      kind: 'Concept',
+      name: 'Heyman’s assumptions for masonry',
+      statement: String.raw`Heyman’s limit analysis of masonry rests on three assumptions about the material: **(1)** masonry has no tensile strength, so joints open freely; **(2)** its compressive strength is so large that crushing does not decide anything (stresses are low and the strength is treated as unlimited); **(3)** one stone cannot slide on another (the friction is enough). Under them a masonry structure behaves as a rigid-plastic system whose only way to fail is by forming hinges where the line of thrust touches the surface of the stone, and the safe theorem (arch-3.5) applies. The assumptions are good approximations for typical stone arches and vaults; they are not laws, and each one has a failure mode that appears when it is dropped: crushing at a hinge, sliding along a joint, and, if tension is allowed, extra capacity that cannot be relied on.`,
+      idea: String.raw`Each assumption removes one way for a joint to yield. Zero tension means a joint carries only a compressive resultant that lies inside the section, so the admissible region for the line of thrust is the stone itself (arch-3.2). Unlimited compression lets the resultant touch the surface, so a hinge is a point; with a finite strength $\sigma$ the force $F$ needs a contact length, and a triangular stress block puts the line at least $2F/3\sigma$ from the edge. No sliding lets the force cross a joint at any angle to its normal; with a friction coefficient $\mu$ the angle must stay below $\arctan\mu$. All three are linear inequalities on the thrust line, so each relaxation shrinks the set of admissible lines and can only lower the collapse load, apart from a ductile bond strength, which enlarges the set but is brittle in real mortar.`,
+      caption: String.raw`A point load stands on the extrados of an arch of 10 m span (slide it and change the ring thickness). The bars are the collapse loads: first under Heyman's three assumptions (hinges only), then with a finite friction coefficient, with a finite compressive strength, and with a bond (tensile) strength, each computed with the slider values below. Switch the three toggles on to combine relaxations: the picture shows the thrust line at collapse, hinges as discs, sliding joints as orange bars, and the readout names the mode that governs. The strengths are illustrative values, not data for any particular masonry.`,
+      deps: ['arch-3.3'],
+      see: ['arch-3.5', 'solid-4.10'],
+      refs: ['Heyman'],
+      credit: 'Heyman, 1966',
+      scope: String.raw`Plane arch, radial joints, self-weight 22 kN/m³ and a vertical point load per metre of depth. Crushing is modelled by a triangular stress block (line kept $2F/3\sigma$ from the edge), bond as a ductile tension block (eccentricity limit $t/2 + \sigma_t t^2/2F$), friction as a Coulomb limit on every joint.`,
+      tags: ['heyman', 'limit analysis'],
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Line_of_thrust' },
+      viz(v) {
+        const N = 24, R = 5, P0 = 50;
+        const tS = v.slider('ring thickness t (m)', 0.3, 1.2, 0.8, { step: 0.01 }), xS = v.slider('load position x (m)', -4.6, 4.6, -2.5, { step: 0.05 });
+        const fT = v.toggle('finite friction', false), muS = v.slider('friction coefficient μ', 0.1, 1, 0.3, { step: 0.01 });
+        const cT = v.toggle('finite compressive strength', false), sgS = v.slider('σ (MPa)', 0.05, 50, 0.5, { log: true });
+        const bT = v.toggle('bond (tension) strength', false), btS = v.slider('σt (kPa)', 0, 600, 200, { step: 10 });
+        const A = v.stage({ x: [-6.2, 6.2], y: [-0.5, 5.8], equal: true, axes: false, height: 330, weight: 1.5, title: 'the arch at collapse' });
+        const Bc = v.stage({ x: [0.4, 4.6], y: [0, 100], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 250, ylabel: 'collapse load (kN/m)', title: 'which assumption protects against what' });
+        const cache = new Map();
+        const run = (g, loads, useMu, useSig, useBond, key) => {
+          const k = `${key}|${useMu ? muS.value : '-'}|${useSig ? sgS.value : '-'}|${useBond ? btS.value : '-'}`;
+          if (cache.has(k)) return cache.get(k);
+          let inset = null, res = null;
+          for (let it = 0; it < (useSig || useBond ? 6 : 1); it++) {
+            res = collapseFactor(g, loads, { mu: useMu ? muS.value : undefined, inset: inset ? (j) => inset[j] : 0 });
+            if (!res) break;
+            if (!useSig && !useBond) break;
+            const tl = thrustLine(g, loads, res.u);
+            inset = tl.map((q) => { const F = Math.hypot(q.F[0], q.F[1]) || 1; let d = 0; if (useSig) d += (2 * F) / (3 * sgS.value * 1000); if (useBond) d -= (btS.value * g.t * g.t) / (2 * F); return clamp(d, -0.45 * g.t, 0.45 * g.t); });
+          }
+          const out = res ? { lam: res.lam, u: res.u, inset: inset || null, mu: useMu ? muS.value : undefined } : null;
+          if (cache.size > 400) cache.clear(); cache.set(k, out); return out;
+        };
+        let M = null;
+        v.render(() => {
+          const g = arch({ R, t: tS.value, N }), x = xS.value, loads = [{ x, P: P0, var: true, k: blockAt(g, x) }], key = `${tS.value}|${x}`;
+          const use = [fT.value, cT.value, bT.value];
+          muS.el.hidden = !fT.value; sgS.el.hidden = !cT.value; btS.el.hidden = !bT.value;
+          const base = run(g, loads, false, false, false, key), onlyMu = run(g, loads, true, false, false, key), onlySg = run(g, loads, false, true, false, key), onlyBd = run(g, loads, false, false, true, key);
+          const cur = run(g, loads, use[0], use[1], use[2], key);
+          const lams = [base, onlyMu, onlySg, onlyBd].map((r) => (r ? r.lam * P0 : 0)), curL = cur ? cur.lam * P0 : 0;
+          const ymax = Math.max(10, ...lams, curL) * 1.18; Bc.setView([0.4, 4.6], [0, ymax]);
+          Bc.bars(lams, { x0: 1, dx: 1, color: (val, i) => ['green', 'orange', 'red', 'purple'][i], width: 0.55 });
+          if (cur) Bc.bars([curL], { x0: 4.45, dx: 1, color: () => 'accent', width: 0.28 });
+          lams.forEach((l, i) => Bc.text(l.toFixed(0), 1 + i, l, { dy: -10, size: 11.5, color: 'ink', align: 'center' }));
+          Bc.setTicks([[1, 'Heyman'], [2, 'friction'], [3, 'crushing'], [4, 'bond']], null);
+          // governing mode
+          let mode = 'four-hinge mechanism (Heyman’s only failure)';
+          if (cur && (use[0] || use[1] || use[2])) {
+            const off = [0, 1, 2].filter((i) => use[i]).map((i) => { const u2 = use.slice(); u2[i] = false; const r = run(g, loads, u2[0], u2[1], u2[2], key); return { i, lam: r ? r.lam : 0 }; });
+            const gov = off.filter((o) => o.lam > cur.lam * 1.002 + 1e-9).sort((a, b) => b.lam - a.lam)[0];
+            if (gov) mode = ['sliding along a joint (friction too low)', 'crushing at a hinge (strength too low)', ''][gov.i];
+            else if (use[2] && !use[0] && !use[1]) mode = 'four-hinge mechanism, with the extra capacity of the bond';
+            else if (cur.lam >= (base ? base.lam : 0) * 0.998 && use[2]) mode = 'four-hinge mechanism, with the extra capacity of the bond';
+          }
+          drawArch(v, A, g, { fillAlpha: 0.12 });
+          if (cur) {
+            const L2 = loads.map((l) => ({ ...l, P: l.P })), tl = thrustLine(g, L2, cur.u);
+            drawThrust(v, A, tl, { color: 'red', width: 2.2 });
+            const hs = hinges(g, L2, cur.u, { mu: cur.mu, inset: cur.inset ? (j) => cur.inset[j] : 0, all: true }, 1e-5);
+            for (const h of hs) { const J = g.joints[h.j]; if (h.side === 'a' || h.side === 'b') A.dot((h.side === 'a' ? J.a : J.b)[0], (h.side === 'a' ? J.a : J.b)[1], { r: 5, color: 'red' }); else A.line(J.a[0], J.a[1], J.b[0], J.b[1], { color: 'orange', width: 4 }); }
+            const yl = extradosY(g, x); A.arrow(x, yl + 1.1, x, yl + 0.04, { color: 'gold', width: 3, head: 9 });
+            A.text(`${(cur.lam * P0).toFixed(0)} kN/m`, x, yl + 1.12, { dy: -10, size: 12, weight: 650, color: 'gold', align: 'center' });
+          }
+          M = { cur, base, mode, g, curL, lams };
+        });
+        v.legend([['red', 'thrust line at collapse'], ['gold', 'load']]);
+        v.readout(() => {
+          if (!M || !M.cur) return 'No thrust line fits even without the load.';
+          const rel = ['friction', 'crushing', 'bond'].filter((_, i) => [fT.value, cT.value, bT.value][i]);
+          return `Arch weight ${f2(M.g.W, 0)} kN/m. Under Heyman's assumptions it carries **${f2(M.lams[0], 0)} kN/m** at this position, failing by hinges. With ${rel.length ? rel.join(' + ') : 'none of the relaxations'} switched on: **${f2(M.curL, 0)} kN/m**, ${f2(100 * M.curL / Math.max(1e-9, M.lams[0]), 0)}% of the Heyman value. Governing mode: **${M.mode}**.\nTypical stress check: the hinge force is about ${f2(Math.hypot(...M.cur.u.slice(0, 2)), 0)} kN/m on a ${f2(tS.value, 2)} m joint, ${f2(Math.hypot(...M.cur.u.slice(0, 2)) / tS.value / 1000, 2)} MPa if spread over the whole depth, which is why crushing rarely governs in real stone.`;
+        });
+      },
+    },
   ],
 };
