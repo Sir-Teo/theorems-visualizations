@@ -37,11 +37,11 @@ export const PAIRS = {
 
 /** Plane fields in R^3 (kernels of 1-forms alpha) with explicit spanning fields X1, X2 (smooth, linearly independent). */
 export const DISTS = {
-  dz: { label: '$\\ker dz$', alpha: () => [0, 0, 1], X1: () => [1, 0, 0], X2: () => [0, 1, 0], form: '$dz$' },
-  dh: { label: '$\\ker(dz-d\\tfrac{x^2+y^2}2)$', alpha: (x, y) => [-x, -y, 1], X1: (x, y) => [1, 0, x], X2: (x, y) => [0, 1, y], form: '$dz-x\\,dx-y\\,dy$' },
-  rad: { label: '$\\ker(x\\,dy-y\\,dx)$', alpha: (x, y) => [-y, x, 0], X1: () => [0, 0, 1], X2: (x, y) => [x, y, 0], form: '$x\\,dy-y\\,dx$' },
-  contact: { label: '$\\ker(dz-y\\,dx)$', alpha: (x, y) => [-y, 0, 1], X1: () => [0, 1, 0], X2: (x, y) => [1, 0, y], form: '$dz-y\\,dx$' },
-  twist: { label: '$\\ker(\\cos z\\,dx+\\sin z\\,dy)$', alpha: (x, y, z) => [Math.cos(z), Math.sin(z), 0], X1: () => [0, 0, 1], X2: (x, y, z) => [-Math.sin(z), Math.cos(z), 0], form: '$\\cos z\\,dx+\\sin z\\,dy$' },
+  dz: { label: '$\\ker dz$', alpha: () => [0, 0, 1], X1: () => [1, 0, 0], X2: () => [0, 1, 0], form: 'dz' },
+  dh: { label: '$\\ker(dz-d\\tfrac{x^2+y^2}2)$', alpha: (x, y) => [-x, -y, 1], X1: (x, y) => [1, 0, x], X2: (x, y) => [0, 1, y], form: 'dz-x\\,dx-y\\,dy' },
+  rad: { label: '$\\ker(x\\,dy-y\\,dx)$', alpha: (x, y) => [-y, x, 0], X1: () => [0, 0, 1], X2: (x, y) => [x, y, 0], form: 'x\\,dy-y\\,dx' },
+  contact: { label: '$\\ker(dz-y\\,dx)$', alpha: (x, y) => [-y, 0, 1], X1: () => [0, 1, 0], X2: (x, y) => [1, 0, y], form: 'dz-y\\,dx' },
+  twist: { label: '$\\ker(\\cos z\\,dx+\\sin z\\,dy)$', alpha: (x, y, z) => [Math.cos(z), Math.sin(z), 0], X1: () => [0, 0, 1], X2: (x, y, z) => [-Math.sin(z), Math.cos(z), 0], form: '\\cos z\\,dx+\\sin z\\,dy' },
 };
 /** Bracket of the two spanning fields of a plane field at a point of R^3. */
 export function bracket3(D, p, h = 1e-4) {
