@@ -5,10 +5,10 @@
 // Example 1); Cobb–Douglas Y = K^a L^{1−a} with r* = (s/n)^{1/(1−a)} (Example 2); and F = (a√K + √L)², which grows
 // without bound when s a² > n (Example 3); his Figure 2/3-type case with several balanced paths is drawn with an
 // illustrative S-shaped production function. Parameter values are illustrative.
-// "Today": Mankiw, Romer & Weil (1992, QJE 107: 407–437): the basic Solow model with α ≈ 1/3 explains about 59% of
-// cross-country variation in income per worker (1985), but implies a too-small capital share when fitted freely; with
+// "Today": Mankiw, Romer & Weil (1992, QJE 107: 407–437): the basic Solow regression explains about 59% of
+// cross-country variation in income per worker (1985) (R² of the unrestricted regression, whose implied capital share is far above 1/3); with
 // human capital added, about 78%. Estimated convergence speed about 2% per year (Barro & Sala-i-Martin 1992, JPE 100:
-// 223–251; MRW 1992), against about 4% predicted by the basic model with a capital share of 1/3.
+// 223–251; MRW 1992), against roughly 3–4% implied by the basic model with a capital share of 1/3 (not re-checked against MRW Table VII).
 
 const PROD = {
   cd: { label: 'Cobb–Douglas', f: (r, a) => r ** a },
@@ -106,7 +106,7 @@ Scope: a closed, one-good economy with exogenous saving, labour growth and (in t
           else if (key === 'hd') txt = xs.length ? `fixed proportions: balanced only at r = ${v.fix(xs[0], 2)} with s/3 > n; beyond full employment of labour the extra capital lies idle — change s or n and the economy drifts to idle capital or to growing unemployment: Harrod–Domar’s knife edge` : `fixed proportions: no balanced path at these values (s/3 ${s / 3 > n ? '>' : '<'} n) — Harrod–Domar’s knife edge`;
           else if (key === 'ces') txt = grow ? `$s a^2 = ${v.fix(s * a * a, 4)} > n$: the saving curve stays above $nr$ for ever and capital per worker grows without bound (Solow’s Example 3)` : `$s a^2 = ${v.fix(s * a * a, 4)} < n$: a stable balanced path at r* = ${stab ? v.fix(stab, 2) : '—'}`;
           else txt = `${xs.length} balanced paths: ${xs.map((r) => v.fix(r, 1)).join(', ')} — the middle one is unstable, so where the economy ends up depends on where it starts (a poverty trap)`;
-          return `${txt}. Today: the basic model explains roughly 60% of cross-country income differences (Mankiw, Romer & Weil 1992), but measured convergence is about 2% per year, half the speed this model implies with a capital share of 1/3.`;
+          return `${txt}. Today: the basic model explains roughly 60% of cross-country income differences (Mankiw, Romer & Weil 1992), but measured convergence is about 2% per year, slower than the roughly 3–4% per year this model implies with a capital share of 1/3 (MRW 1992; Barro & Sala-i-Martin 1992).`;
         });
       },
     },

@@ -30,7 +30,7 @@ export default {
         const layout = v.select('pins', [{ value: 'gen', label: 'generic' }, { value: 'line', label: 'on one line' }], 'gen');
         const clear = v.button('Remove pins', () => { pins.length = 0; });
         const cs = [0, 1, 2, 3, 4, 5].map((k) => v.slider(`free motion ${k + 1}`, -2.4, 2.4, k === 0 ? 0.9 : 0, { step: 0.01 }));
-        const L = v.stage({ x: [-3.6, 3.6], y: [-2.5, 2.5], equal: true, axes: false, height: 340, title: 'the body in the plane' });
+        const L = v.stage({ x: [-3.2, 3.2], y: [-2.3, 2.3], equal: true, axes: false, height: 340, title: 'the body in the plane' });
         const S3 = v.stage3d({ range: 2.1, height: 340, yaw: -0.7, pitch: 0.45, axes: false, title: 'the body in space' });
         const R = v.stage({ x: [-0.6, 5.6], y: [-1.1, 7], height: 340, axes: false, title: 'freedoms left vs pins' });
         const BODY = [[-1.4, -0.8], [1.4, -0.9], [1.7, 0.4], [0.3, 1.1], [-1.5, 0.7]];
@@ -209,17 +209,17 @@ It counts correctly when the joint constraints are independent; for special, ove
         const mode = v.select('C-space', [{ value: 'arm', label: 'two-link arm: torus' }, { value: 'rot', label: 'orientation: SO(3)' }], 'arm');
         const limits = v.toggle('joint limits ±150°', false);
         const obs = v.toggle('obstacles', false);
-        const grow = v.slider('obstacle growth', 0, 0.55, 0, { step: 0.01 });
+        const grow = v.slider('obstacle growth', 0, 0.55, 0.12, { step: 0.01 });
         const scrub = v.slider('replay', 0, 1, 1, { step: 0.002 });
         const clr = v.button('Clear path', () => { trace = [lift.slice()]; scrub.set(1); });
-        const spin = v.slider('then spin further (rad)', 0, 4 * Math.PI, 0, { step: 0.01 });
+        const spin = v.slider('then spin further (rad)', 0, 4 * Math.PI, 4.64, { step: 0.01 });
         const l1 = 1.3, l2 = 1.0, WID = 0.05;
         const A = v.stage({ x: [-2.8, 2.8], y: [-2.6, 2.6], equal: true, axes: false, height: 360, title: 'workspace' });
         const sc = v.scene3(A, { yaw: -0.6, pitch: 0.4, axes: false, hint: false, lim: 3.3 });
         const B = v.stage({ x: [-Math.PI, Math.PI], y: [-Math.PI, Math.PI], equal: true, axes: 'box', gutter: true, height: 360, xlabel: 'θ₁', ylabel: 'θ₂', xticks: piTicks(-4, 4), yticks: piTicks(-4, 4), title: 'configuration space' });
-        const C = v.stage3d({ range: 1.75, height: 360, yaw: -0.5, pitch: 0.7, axes: false, title: 'the torus' });
+        const C = v.stage3d({ range: 1.75, height: 360, yaw: -0.5, pitch: 0.7, axes: false, title: 'the torus, and the oriented body' });
         // --- arm state
-        let th = [0.6, -0.4], lift = [0.6, -0.4], trace = [], seam = 0;
+        let th = [0.6, -0.4], lift = [0.6, -0.4], trace = [];
         for (let i = 0; i <= 140; i++) { const s = i / 140; trace.push([0.6 + 4.7 * s, -0.4 + 3.6 * s + 1.1 * Math.sin(5 * s)]); }
         lift = trace[trace.length - 1].slice(); th = [wrap(lift[0]), wrap(lift[1])];
         const discs = [{ x: 0.2, y: 1.55, r: 0.3 }, { x: -1.5, y: -0.9, r: 0.38 }];
@@ -228,7 +228,6 @@ It counts correctly when the joint constraints are independent; for special, ove
         const setTh = (a, b) => {
           const na = [limits.value ? clamp(a, -lim, lim) : wrap(a), limits.value ? clamp(b, -lim, lim) : wrap(b)];
           const d1 = angDiff(na[0], th[0]), d2 = angDiff(na[1], th[1]);
-          if (Math.abs(na[0] - th[0]) > Math.PI) seam++; if (Math.abs(na[1] - th[1]) > Math.PI) seam++;
           if (limits.value) { lift = [na[0], na[1]]; } else { lift = [lift[0] + d1, lift[1] + d2]; }
           th = na;
           const last = trace[trace.length - 1];
@@ -236,7 +235,7 @@ It counts correctly when the joint constraints are independent; for special, ove
           if (trace.length > 2500) trace.shift();
           scrub.set(1);
         };
-        const tip = A.handle(0, 0, { color: 'accent', r: 8, label: 'tool' });
+        const tip = A.handle(0, 0, { color: 'accent', r: 8 });
         tip.constrain = (x, y) => {
           const r = Math.hypot(x, y), rr = clamp(r, Math.abs(l1 - l2) + 1e-6, l1 + l2 - 1e-6), k = r > 1e-9 ? rr / r : 1;
           const sols = ik2(l1, l2, x * k, y * k) || [];
@@ -263,7 +262,7 @@ It counts correctly when the joint constraints are independent; for special, ove
         };
         const hitAt = (a, b) => obs.value && armHitsDiscs(l1, l2, a, b, discs.map((d) => ({ ...d, r: d.r + grow.value })), WID);
         const cellOf = (a, b) => { const i = clamp(Math.floor(((a + Math.PI) / TAU) * NG), 0, NG - 1), j = clamp(Math.floor(((b + Math.PI) / TAU) * NG), 0, NG - 1); return i + NG * j; };
-        const compCols = ['green', 'orange', 'purple', 'teal', 'pink', 'gold'];
+        const compCols = ['green', 'accent', 'purple', 'teal', 'gold', 'pink'];
         // --- orientation state
         const rh = sc.handle([1.4, 0.8, 0.3], { color: 'accent', label: 'r', lim: 3.3, snap: (p) => { const n = Math.hypot(...p); if (n > Math.PI) { const s = -(TAU - n) / n; return [p[0] * s, p[1] * s, p[2] * s]; } return p; } });
         const torus = (u, w, off = 0) => { const r = 0.62 + off; return [(1.1 + r * Math.cos(w)) * Math.cos(u), (1.1 + r * Math.cos(w)) * Math.sin(u), r * Math.sin(w)]; };
@@ -273,6 +272,9 @@ It counts correctly when the joint constraints are independent; for special, ove
           limits.el.hidden = obs.el.hidden = grow.el.hidden = scrub.el.hidden = clr.hidden = !arm; spin.el.hidden = arm;
           dh.forEach((h) => { h.visible = arm && obs.value; }); tip.visible = arm; Q.visible = arm; rh.visible = !arm;
           grow.el.hidden = !(arm && obs.value);
+          A.setTitle(arm ? 'workspace' : 'rotation vector $\\theta\\hat n$: ball of radius $\\pi$'); B.setTitle(arm ? 'configuration space' : '$q$ and $-q$ on a great circle');
+          A.setView(arm ? [-2.8, 2.8] : [-4.1, 4.1], arm ? [-2.6, 2.6] : [-3.7, 3.7]);
+          if (arm) { B.setView([-Math.PI, Math.PI], [-Math.PI, Math.PI]); B.setLabels('θ₁', 'θ₂'); B.setTicks(piTicks(-4, 4), piTicks(-4, 4)); } else { B.setLabels(null, null); B.setTicks([], []); }
           if (arm) {
             const idx = Math.round(scrub.value * (trace.length - 1));
             if (scrub.value < 0.999 && trace[idx]) { th = [wrap(trace[idx][0]), wrap(trace[idx][1])]; if (limits.value) th = [clamp(trace[idx][0], -lim, lim), clamp(trace[idx][1], -lim, lim)]; }
@@ -297,7 +299,7 @@ It counts correctly when the joint constraints are independent; for special, ove
             for (const xx of [-0.4, 0.4]) { B.arrow(xx - 0.12, -Math.PI, xx + 0.12, -Math.PI, { color: 'green', head: 7, width: 2 }); B.arrow(xx - 0.12, Math.PI, xx + 0.12, Math.PI, { color: 'green', head: 7, width: 2 }); }
             // path on the square, drawn in every periodic copy
             const kr = limits.value ? [0] : [-2, -1, 0, 1, 2];
-            B.clip(() => { for (const k1 of kr) for (const k2 of kr) B.path(trace.map((p) => [p[0] + TAU * k1, p[1] + TAU * k2]), { color: 'gold', width: 2.2, alpha: k1 === 0 && k2 === 0 ? 1 : 0.85 }); });
+            B.clip(() => { for (const k1 of kr) for (const k2 of kr) B.path(trace.map((p) => [p[0] + TAU * k1, p[1] + TAU * k2]), { color: 'gold', width: 2.2, alpha: k1 === 0 && k2 === 0 ? 1 : 0.85 }); }, [-Math.PI, Math.PI], [-Math.PI, Math.PI]);
             B.dot(trace[0][0], trace[0][1], { r: 4, color: 'gold', hollow: true });
             // workspace
             if (obs.value) for (const d of discs) { A.circle(d.x, d.y, d.r + grow.value, { fill: 'red', fillAlpha: 0.1, color: 'red', width: 1.2, dash: [4, 3] }); A.circle(d.x, d.y, d.r, { fill: 'red', fillAlpha: 0.45, color: 'red', width: 2 }); }
@@ -322,7 +324,8 @@ It counts correctly when the joint constraints are independent; for special, ove
             let ncol = 0; for (const p of trace) if (hitAt(wrap(p[0]), wrap(p[1]))) ncol++;
             const f0 = fkChain([l1, l2], th).pts[2], f1 = fkChain([l1, l2], [th[0] + TAU, th[1]]).pts[2], f2 = fkChain([l1, l2], [th[0], th[1] - TAU]).pts[2];
             const lbl = G.lab[cellOf(th[0], th[1])], sizes = G.sizes;
-            st = { arm, hit, per: Math.max(Math.hypot(f0[0] - f1[0], f0[1] - f1[1]), Math.hypot(f0[0] - f2[0], f0[1] - f2[1])), ncol, comps: G.count, lbl, sizes, lift: lift.slice(), start: trace[0], tr: trace.length };
+            let sm = 0; for (let i = 1; i < trace.length; i++) { if (Math.floor((trace[i][0] + Math.PI) / TAU) !== Math.floor((trace[i - 1][0] + Math.PI) / TAU)) sm++; if (Math.floor((trace[i][1] + Math.PI) / TAU) !== Math.floor((trace[i - 1][1] + Math.PI) / TAU)) sm++; }
+            st = { seams: sm, arm, hit, per: Math.max(Math.hypot(f0[0] - f1[0], f0[1] - f1[1]), Math.hypot(f0[0] - f2[0], f0[1] - f2[1])), ncol, comps: G.count, lbl, sizes, lift: lift.slice(), start: trace[0], tr: trace.length };
           } else {
             sc.begin();
             const p0 = rh.p, n0 = Math.hypot(...p0) || 1, ax = p0.map((c) => c / n0), Psi = n0 + spin.value;
@@ -342,7 +345,7 @@ It counts correctly when the joint constraints are independent; for special, ove
             B.setView([-1.45, 1.45], [-1.45, 1.45]);
             B.circle(0, 0, 1, { color: 'ink', width: 1.4 });
             B.arrow(0, 0, 1.3, 0, { color: 'faint', width: 1 }); B.arrow(0, 0, 0, 1.3, { color: 'faint', width: 1 });
-            B.text('w = cos(Ψ/2)', 1.3, -0.12, { size: 11, color: 'muted', align: 'right' }); B.text('n·v = sin(Ψ/2)', 0.05, 1.37, { size: 11, color: 'muted' });
+            B.text('w', 1.36, -0.13, { size: 12, color: 'muted' }); B.text('n·v', 0.1, 1.36, { size: 12, color: 'muted' }); B.corner('q = (cos Ψ/2, n̂ sin Ψ/2)', 'bl', { color: 'muted' });
             const arc = []; for (let i = 0; i <= 200; i++) { const a = (half * i) / 200; arc.push([Math.cos(a), Math.sin(a)]); }
             B.path(arc, { color: 'gold', width: 3.5 });
             B.dot(qd[0], qd[1], { r: 8, color: 'accent', label: 'q', labelPos: 'ne' }); B.dot(-qd[0], -qd[1], { r: 8, color: 'purple', label: '−q', labelPos: 'sw' });
@@ -366,7 +369,7 @@ It counts correctly when the joint constraints are independent; for special, ove
           if (!st) return '';
           if (st.arm) {
             const c = st.comps;
-            return `$\\theta=(${v.fix(th[0] / DEG, 0)}^\\circ,\\ ${v.fix(th[1] / DEG, 0)}^\\circ)$. Periodicity check: the tool position at $\\theta_1+2\\pi$ or $\\theta_2-2\\pi$ differs from the one at $\\theta$ by $${v.sci(st.per + 1e-17, 1)}$. Unwrapped path: $\\Delta\\theta/2\\pi=(${v.fix((st.lift[0] - st.start[0]) / TAU, 2)},\\ ${v.fix((st.lift[1] - st.start[1]) / TAU, 2)})$; seams crossed: ${seam}.${obs.value || limits.value ? `\nFree space on the $96\\times96$ grid has **${c}** connected component${c === 1 ? '' : 's'} (flood fill across the seams), sizes ${st.sizes.slice(0, 4).join(', ')}${c > 4 ? ', …' : ''} cells; the arm sits in ${st.lbl >= 0 ? 'component ' + (st.lbl + 1) : 'a forbidden cell'}. ${st.ncol} of ${st.tr} recorded path points collide.` : ''}`;
+            return `$\\theta=(${v.fix(th[0] / DEG, 0)}^\\circ,\\ ${v.fix(th[1] / DEG, 0)}^\\circ)$. Periodicity check: the tool position at $\\theta_1+2\\pi$ or $\\theta_2-2\\pi$ differs from the one at $\\theta$ by $${v.sci(st.per + 1e-17, 1)}$. Unwrapped path: $\\Delta\\theta/2\\pi=(${v.fix((st.lift[0] - st.start[0]) / TAU, 2)},\\ ${v.fix((st.lift[1] - st.start[1]) / TAU, 2)})$; seams crossed by the recorded path: ${st.seams}.${obs.value || limits.value ? `\nFree space on the $96\\times96$ grid has **${c}** connected component${c === 1 ? '' : 's'} (flood fill across the seams), sizes ${st.sizes.slice(0, 4).join(', ')}${c > 4 ? ', …' : ''} cells; the arm sits in ${st.lbl >= 0 ? 'component ' + (st.lbl + 1) : 'a forbidden cell'}. ${st.ncol} of ${st.tr} recorded path points collide.` : ''}`;
           }
           return `Total angle $\\Psi=${v.fix(st.Psi, 2)}$ about $\\hat n=(${st.ax.map((c) => v.fix(c, 2)).join(',')})$ gives $q=(${st.q.map((c) => v.fix(c, 3)).join(', ')})$. $R(q)$ from the quaternion differs from Rodrigues' $R(\\Psi\\hat n)$ by $${v.sci(st.dR + 1e-17, 1)}$ and from $R(-q)$ by $${v.sci(st.dQ + 1e-17, 1)}$: **$q$ and $-q$ are one rotation**. The path has crossed the boundary of the ball **${st.cross}** time${st.cross === 1 ? '' : 's'}: ${st.cross % 2 ? 'odd, so a loop at $\\Psi=2\\pi$ cannot be shrunk' : 'even, so the loop can be shrunk to a point'}.`;
         });
@@ -395,10 +398,10 @@ It counts correctly when the joint constraints are independent; for special, ove
         const L = v.stage({ x: [-4.6, 4.6], y: [-3.2, 3.2], equal: true, axes: false, height: 380, title: 'the table, seen from above' });
         const S = v.stage3d({ range: 2.2, height: 380, yaw: -0.8, pitch: 0.4, axes: false, title: 'configuration space $(x,y,\\varphi)$' });
         const START = [-3.1, -1.4, 0.5];
-        const G = L.handle(2.4, 1.3, { color: 'orange', r: 8, label: 'goal' });
-        const GH = L.handle(2.4 + 0.9 * Math.cos(0.4), 1.3 + 0.9 * Math.sin(0.4), { color: 'orange', r: 6 });
-        G.onDrag = () => { const a = Math.atan2(GH.y - G.y, GH.x - G.x); GH.set(G.x + 0.9 * Math.cos(a), G.y + 0.9 * Math.sin(a)); };
-        GH.constrain = (x, y) => { const a = Math.atan2(y - G.y, x - G.x); return [G.x + 0.9 * Math.cos(a), G.y + 0.9 * Math.sin(a)]; };
+        const G = L.handle(2.4, 1.3, { color: 'orange', r: 8 });
+        const GH = L.handle(2.4 + 1.3 * Math.cos(0.4), 1.3 + 1.3 * Math.sin(0.4), { color: 'orange', r: 6 });
+        G.onDrag = () => { const a = Math.atan2(GH.y - G.y, GH.x - G.x); GH.set(G.x + 1.3 * Math.cos(a), G.y + 1.3 * Math.sin(a)); };
+        GH.constrain = (x, y) => { const a = Math.atan2(y - G.y, x - G.x); return [G.x + 1.3 * Math.cos(a), G.y + 1.3 * Math.sin(a)]; };
         // a manoeuvre = list of controls (type 'turn' with Δφ, type 'roll' with Δs); returns sampled poses
         const rollOnly = (kind) => kind === 'blade';
         const build = () => {
@@ -431,9 +434,9 @@ It counts correctly when the joint constraints are independent; for special, ove
         };
         const poseAt = (P, s) => { const target = s * P.total; let lo = 0, hi = P.ts.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (P.ts[m] <= target) lo = m; else hi = m; } return P.pts[Math.min(hi, P.pts.length - 1)]; };
         const coin = (q, st) => {
-          const c = Math.cos(q[2]), s = Math.sin(q[2]), a = 0.5, b = 0.08;
+          const c = Math.cos(q[2]), s = Math.sin(q[2]), a = 0.8, b = 0.13;
           const P = [[a, b], [a, -b], [-a, -b], [-a, b]].map(([u, w]) => [q[0] + c * u - s * w, q[1] + s * u + c * w]);
-          L.poly(P, st); L.arrow(q[0], q[1], q[0] + 0.75 * c, q[1] + 0.75 * s, { color: st.color, width: 1.8, head: 7, alpha: st.alpha ?? 1 });
+          L.poly(P, st); L.arrow(q[0], q[1], q[0] + 1.25 * c, q[1] + 1.25 * s, { color: st.color, width: 1.8, head: 7, alpha: st.alpha ?? 1 });
         };
         let st = null, P = null;
         v.animate((t) => {
@@ -465,9 +468,9 @@ It counts correctly when the joint constraints are independent; for special, ove
           void f1; void rk2;
           const o = k(q), sx = 1 / 2.2, sp = 1.2;
           const e1 = [fv[0] * sx * sp, fv[1] * sx * sp, 0], e2 = [0, 0, sp / 1.7];
-          const pl = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [o[0] + a * e1[0] * 0.8 + b * e2[0] * 0.5, o[1] + a * e1[1] * 0.8 + b * e2[1] * 0.5, o[2] + a * e1[2] * 0.8 + b * e2[2] * 0.5]);
+          const pl = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [o[0] + a * e1[0] * 1.3 + b * e2[0] * 0.8, o[1] + a * e1[1] * 1.3 + b * e2[1] * 0.8, o[2] + a * e1[2] * 1.3 + b * e2[2] * 0.8]);
           S.poly(pl, { fill: 'green', fillAlpha: 0.22, color: 'green', width: 1.4 });
-          if (Math.hypot(...br) > 1e-9) S.arrow(o, [o[0] + br[0] * sx * 1.2, o[1] + br[1] * sx * 1.2, o[2]], { color: 'red', width: 3 });
+          if (Math.hypot(...br) > 1e-9) S.arrow(o, [o[0] + br[0] * sx * 2.4, o[1] + br[1] * sx * 2.4, o[2]], { color: 'red', width: 3 });
           S.path(P.pts.map(k), { color: 'faint', width: 1.4 });
           S.path(P.pts.filter((_, i) => P.ts[i] <= sNow * P.total + 1e-9).map(k), { color: 'gold', width: 3 });
           S.dot(k(START), { color: 'muted', r: 5 }); S.dot(o, { color: 'accent', r: 6.5 });
@@ -510,7 +513,7 @@ It counts correctly when the joint constraints are independent; for special, ove
         const A = v.stage({ x: [-4.2, 4.2], y: [-3.7, 3.7], equal: true, axes: false, height: 400, full: true, title: 'workspace' });
         const rng = v.rng(7);
         const SAMP = Array.from({ length: 3500 }, () => [rng.uniform(-Math.PI, Math.PI), rng.uniform(-Math.PI, Math.PI), rng.uniform(-Math.PI, Math.PI)]);
-        const tip = A.handle(2.0, 0.9, { color: 'accent', r: 8, label: 'tool' });
+        const tip = A.handle(2.0, 0.9, { color: 'accent', r: 8 });
         const NO = 72;
         const fracAt = (px, py, l, three) => {
           if (!three) return ik2(l[0], l[1], px, py) ? 0 : -1;       // 2R: orientation is determined, a set of measure zero

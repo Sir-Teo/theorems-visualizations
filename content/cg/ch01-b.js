@@ -136,7 +136,7 @@ export default {
       idea: String.raw`Expand the determinant with the perturbed entries. The constant term is the ordinary determinant; if it vanishes, the next term involves the first perturbation exponent, and so on. Choosing exponents so that all monomials are distinct (powers $2^{2i},2^{2i+1}$ here, in the spirit of Edelsbrunner–Mücke's *Simulation of Simplicity*) guarantees that the lowest term can not cancel, so some term decides. Because the answer is the sign of a fixed polynomial, permuting two points flips it exactly as a determinant should, which is what keeps the combinatorics consistent.`,
       caption: String.raw`Click lattice points to add or remove them (numbers show the index, i.e. the perturbation priority). *Hull*: a monotone chain with the ordinary test drops every collinear boundary point; with the perturbed test it keeps a consistent strictly convex polygon whose own orientation tests all verify. *Delaunay*: twelve lattice points on a circle of radius 5 are cocircular; with ties counted as "not inside" every triangle has an empty circle (hundreds of overlapping triangles), but the perturbed in-circle test picks out exactly $n-2$ triangles forming a triangulation.`,
       deps: ['cg-1.7'], refs: ['de Berg §1.2'], tags: ['degeneracy', 'perturbation', 'robustness'],
-      credit: 'Edelsbrunner & Mücke, 1988 (Simulation of Simplicity)',
+      credit: 'Edelsbrunner & Mücke, 1990 (Simulation of Simplicity; first presented at SoCG 1988)',
       links: { doi: 'https://doi.org/10.1145/73393.73406' },
       viz(v) {
         const mode = v.select('input', [{ value: 'hull', label: 'collinear points: convex hull' }, { value: 'del', label: 'cocircular points: Delaunay' }], 'hull', { onChange: () => reset() });

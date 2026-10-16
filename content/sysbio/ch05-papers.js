@@ -10,6 +10,7 @@
 //   fixed point p = α/(1 + p^n) + α₀; the boundary is the curve of the paper's Fig. 1b-type phase diagram (not digitised).
 // - Observed (paper, via secondary sources: arXiv:0710.1421 and the abstract): period 160 ± 40 min at 30 °C, about 40% of
 //   cells oscillating, cell division 50–70 min, oscillations "slower than the cell-division cycle".
+// - Fact-check: parameters match BioModels BIOMD0000000012 (alpha 216.404, alpha0 0.2164, beta 0.2, n 2, half-lives 2 and 10 min); 160 ± 40 min and ~40% are reported in secondary sources (arXiv:0710.1421), not read in the Nature text.
 // - The model period with the parameters above is about 125 min (computed here), not a number taken from the paper.
 
 const T_HALF_MRNA = 2; // minutes

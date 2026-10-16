@@ -114,7 +114,7 @@ The induction rests on Pascal’s rule $\binom{n+1}{k}=\binom nk+\binom n{k-1}$ 
       see: ['comb-1.7'],
       refs: ['Judson §2.1'],
       tags: ['induction', 'binomial'],
-      credit: 'Pascal, Traité du triangle arithmétique, 1654 (the triangle is much older)',
+      credit: 'Pascal, Traité du triangle arithmétique (written 1654, published 1665; the triangle is much older)',
       viz(v) {
         let sel = [5, 2];
         const N = v.slider('$n$', 1, 12, 5, { int: true, onChange: (n) => { sel = [n, Math.min(sel[1], n)]; } });

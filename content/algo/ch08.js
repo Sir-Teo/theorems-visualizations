@@ -284,7 +284,7 @@ Whatever rule the bag uses to choose, the search marks exactly the vertices reac
       deps: ['algo-8.2'],
       refs: ['Erickson Ch. 5'],
       tags: ['graphs', 'search'],
-      credit: 'Framing as one loop with a bag: Erickson (after Tarjan), 2019',
+      credit: 'Framing as one loop with a bag ("whatever-first search"): J. Erickson, Algorithms, 2019, Ch. 5',
       viz(v) {
         const bagSel = v.select('bag', [{ value: 'stack', label: 'stack' }, { value: 'queue', label: 'queue' }, { value: 'pq', label: 'priority queue (weight)' }], 'queue', { onChange: () => S.reset({ at: 'end' }) });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 300 });

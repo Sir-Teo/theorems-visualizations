@@ -198,7 +198,7 @@ export default {
       name: 'Element i–v characteristics: linear and nonlinear',
       statement: String.raw`The **$i$–$v$ characteristic** of a two-terminal element is the set of pairs $(v,i)$ that the element allows. A resistor is a line through the origin; an open circuit is the $v$-axis ($i=0$ at any $v$) and a short circuit the $i$-axis ($v=0$ at any $i$); ideal sources are vertical and horizontal lines; a diode and a lamp are curves. An element with $i = g(v)$ is **linear** when $g(\alpha v) = \alpha g(v)$ and $g(v_1+v_2)=g(v_1)+g(v_2)$ for all $\alpha, v, v_1, v_2$ — which means a straight line through the origin. Sources, diodes and lamps fail the test.`,
       idea: String.raw`The characteristic collects everything a circuit can ever ask of an element, since by the lumped discipline (1.3) only $v$ and $i$ matter. Scaling test: if $i(2v) = 2i(v)$ at every $v$, the curve is a line through the origin. Resistors (Ohm, 1.4) and the open circuit pass; an independent source is a constant, which cannot scale; the lamp curves because its resistance depends on its own heating, the diode (chapter 4) because of the exponential carrier statistics.`,
-      caption: String.raw`Switch elements on and off to overlay their curves. Drag the gold handle along the $v$-axis: for each visible element the solid dot is $i(v)$, the hollow dot is $i(2v)$, and the dashed marker is $2\,i(v)$. If the hollow dot sits on the dashed marker at every $v$, the element passes the scaling test; the readout says which do.`,
+      caption: String.raw`Switch elements on and off to overlay their curves. Drag the gold handle along the $v$-axis: for each visible element the solid dot is $i(v)$, the hollow dot is $i(2v)$, and the faint dot is $2\,i(v)$. If the hollow dot sits on the faint dot at every $v$, the element passes the scaling test; the readout says which do.`,
       deps: ['circ-1.4', 'circ-1.6'],
       refs: ['Agarwal–Lang §1.6'],
       tags: ['i–v curve', 'linearity'],
@@ -234,7 +234,7 @@ export default {
         v.readout(() => {
           const x = H.x, rows = vis().map((e) => {
             if (e.vert != null) return `${e.name}: a vertical line, $v = ${e.vert}$ V for every current — a relation, not a function $i(v)$`;
-            const a = e.f(x), b = e.f(2 * x), ok = Math.abs(b - 2 * a) < 1e-6 * (1 + Math.abs(a)), n = (q) => (Math.abs(q) < 1e4 ? `$${v.fix(q, 3)}$` : `$${v.sci(q, 2)}$`);
+            const a = e.f(x), b = e.f(2 * x), ok = Math.abs(b - 2 * a) < 1e-6 * (1 + Math.abs(a)), n = (q) => (Math.abs(q) < 1e4 ? `$${v.fix(q, 3)}$` : '$\\gg 10^{4}$ (off scale)');
             return `${e.name}: $i(v) =$ ${n(a)}, $i(2v) =$ ${n(b)}, $2i(v) =$ ${n(2 * a)} mA → ${ok ? '**passes** the scaling test' : '**fails** it'}`;
           });
           return `test voltage $v = ${v.fix(x, 2)}$ V, $2v = ${v.fix(2 * x, 2)}$ V\n${rows.join('\n') || 'switch some elements on'}\n(illustrative models: diode $i = I_s(e^{v/V_T}-1)$, $I_s = 10^{-14}$ A, $V_T = 25.85$ mV; lamp as in 1.4 with a 6 V, 0.3 W rating)`;

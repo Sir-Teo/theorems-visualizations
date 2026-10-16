@@ -38,7 +38,7 @@ For a *bound* particle (one whose potential climbs above $E$ on both sides) a so
         const POTS = {
           morse: { name: 'Morse well (a bond)', V: (x) => 12 * (1 - Math.exp(-0.5 * x)) ** 2, xr: [-3, 14], yr: [-0.8, 14.5] },
           harm: { name: 'harmonic well', V: (x) => 0.5 * x * x, xr: [-6, 6], yr: [-0.8, 14.5] },
-          finite: { name: 'finite square well', V: (x) => (Math.abs(x) < 2 ? 0 : 10), xr: [-5, 5], yr: [-0.8, 14.5] },
+          finite: { name: 'finite well (soft walls)', V: (x) => (10 * (x / 2) ** 8) / (1 + (x / 2) ** 8), xr: [-5, 5], yr: [-0.8, 14.5] },
           dbl: { name: 'double well', V: (x) => 0.15 * (x * x - 4) ** 2, xr: [-4.6, 4.6], yr: [-0.8, 14.5] },
         };
         const pot = v.select('potential', Object.entries(POTS).map(([value, p]) => ({ value, label: p.name })), 'morse', { onChange: () => { Es.set(1.19); } });
@@ -306,7 +306,7 @@ $\psi_n$ has $n-1$ nodes; the lowest energy $E_1>0$ is the zero-point energy of 
       num: '1.5',
       kind: 'Model',
       name: 'Free-electron model of conjugated dyes',
-      credit: 'Kuhn, 1948–49 (building on Pauling, 1936)',
+      credit: 'Kuhn, 1948–49',
       statement: String.raw`In the free-electron (Kuhn) model the $N$ $\pi$ electrons of a conjugated chain are treated as non-interacting particles in a one-dimensional box of length $L$ equal to the chain length plus one bond length at each end. They fill the levels $E_n=n^2h^2/8m_eL^2$ two per level, so the HOMO is $n=N/2$ and the LUMO $n=N/2+1$, and the longest-wavelength absorption is the HOMO$\to$LUMO jump
 $$\Delta E=\frac{(N+1)\,h^2}{8m_eL^2},\qquad \lambda_{\max}=\frac{hc}{\Delta E}=\frac{8m_ec\,L^2}{h\,(N+1)}.$$
 With $L=(N_{\rm bonds}+2)\,\ell$ and $\ell\approx1.39$ Å, lengthening a **cyanine** chain by one vinylene group ($N\to N+2$) shifts the band by roughly 100 nm toward the red, from the ultraviolet through the visible to the near infrared, in fair agreement with measurement.`,
@@ -489,11 +489,11 @@ The levels are equally spaced by $\hbar\omega$, $\psi_n$ has $n$ nodes and parit
           drawReal(sL, Float64Array.from(xi, Xv), phi, { col, base: (n + 0.5) * eU, scale: amp, alpha: 0.55, outline: 'ink', width: 1.6 });
           sL.vline(A * x0, { color: 'red', width: 1.2, dash: [4, 3] }); sL.vline(-A * x0, { color: 'red', width: 1.2, dash: [4, 3] });
           sL.dot(A * x0, (n + 0.5) * eU, { r: 4, color: 'red' }); sL.dot(-A * x0, (n + 0.5) * eU, { r: 4, color: 'red' });
-          sL.text('turning point', A * x0, (top - 0.6) * eU, { size: 10.5, color: 'red', align: 'left', dx: 5 });
+          sL.text('turning point', -A * x0, (top - 0.6) * eU, { size: 10.5, color: 'red', align: 'left', dx: 5 });
           // right: density vs classical
           const dens = Float64Array.from(phi, (q) => (q * q) / x0);
           let dm = 0; for (const q of dens) dm = Math.max(dm, q);
-          const yt = Math.max(0.25 / x0, dm * 1.18); sR.setView([-XW * x0, XW * x0], [0, yt]);
+          const yt = Math.max(0.25 / x0, dm * 1.18); sR.setView([-XW * x0, XW * x0], [0, yt]); sR.setLabels(`x (${xs})`, real ? 'density (1/Å)' : 'density (1/x₀)');
           const cl = (X) => (Math.abs(X) < A * x0 ? 1 / (Math.PI * Math.sqrt((A * x0) ** 2 - X * X)) : 0);
           sR.rect(-XW * x0, 0, -A * x0, yt, { fill: 'red', fillAlpha: 0.07, stroke: false }); sR.rect(A * x0, 0, XW * x0, yt, { fill: 'red', fillAlpha: 0.07, stroke: false });
           sR.path(Array.from(xi, (q, i) => [Xv(q), dens[i]]), { color: 'accent', width: 2.4 });

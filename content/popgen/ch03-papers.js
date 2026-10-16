@@ -6,6 +6,8 @@
 //   mun.ca/biology/scarr/4241smc_Luria_&_Delbruck_Table_1.html and …Table_2.html).
 //   Table 1 (samples from one bulk culture): Exp. 10a, 11a, 3, ten samples each. Table 2 (series of similar cultures):
 //   Exp. 1, 10, 11, 15 (10-cc cultures) and 16, 17, 21a (0.2-cc cultures, the classic fluctuation test).
+//   Fact-check: every count, the printed means/variances, bacteria per culture, sample volumes and mutation rates used below
+//   were compared with the scanned Tables 1 and 2 (Carr's images 4241smc_L&D_Table_1/2.jpg) and agree; Exp. 10's printed mean 23.8 is in the scan.
 //   Check: the recomputed means reproduce the printed ones (16.7, 51.4, 3.3; 26.8, 62.4 vs 62, 26.2, 11.35, 30.6 vs 30,
 //   3.79 vs 3.8) except Exp. 10 (24.0 vs 23.8, so one count there is probably off by 2 and Exp. 10 is not used). The
 //   printed variances are "corrected for sampling" and are not reproduced exactly by the counts (e.g. Exp. 16: raw

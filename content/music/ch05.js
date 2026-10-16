@@ -3,7 +3,7 @@ import { TAU, SR, noteOf, dB, playhead, finish, toRms, join, partials, loopVoice
 
 const Z_AIR = 1.2 * 343; // characteristic impedance of air, Pa·s/m (rayl)
 const Z_WATER = 1000 * 1482; // of water (cochlear fluid is close to it)
-const Z_COCH = 2.0e10 * 3.2e-6; // measured human cochlear input impedance ≈ 2·10¹⁰ Pa·s/m³ (Aibara et al. 2001), over a 3.2 mm² footplate
+const Z_COCH = 2.0e10 * 3.2e-6; // human cochlear input impedance of the order of 2·10¹⁰ Pa·s/m³ (Aibara et al. 2001, Hear. Res. 152: 100–109; the exact value was not re-checked against the paper), over a 3.2 mm² footplate
 
 /** Fraction of incident power transmitted across a boundary between specific impedances z1 → z2 (normal incidence). */
 const transmit = (z1, z2) => (4 * z1 * z2) / (z1 + z2) ** 2;

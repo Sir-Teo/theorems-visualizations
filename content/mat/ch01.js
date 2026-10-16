@@ -35,13 +35,14 @@ export default {
         const step = (d) => { const L = inList(); const k = L.indexOf(sel); sel = L[(Math.max(k, 0) + d + L.length) % L.length]; };
         v.button('◀ previous', () => step(-1));
         v.button('next ▶', () => step(1));
-        const sP = v.stage({ x: [0.8, 2.6], y: [-1.25, 1.0], axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'bond length  r / r₀', ylabel: 'U(r) / ε', title: 'pair potential, reduced by its well depth' });
-        const sM = v.stage({ x: [0.012, 20], y: [15, 8000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'cohesive energy per atom  E_coh (eV)', ylabel: 'melting point  T_m (K)', title: 'measured: bond energy against melting point' });
+        const sP = v.stage({ x: [0.8, 2.6], y: [-1.25, 1.0], axes: 'box', gutter: true, height: 440, weight: 1, xlabel: 'bond length  r / r₀', ylabel: 'U(r) / ε', title: 'pair potential, reduced by its well depth' });
+        const sM = v.stage({ x: [0.014, 14], y: [18, 6500], xlog: true, ylog: true, axes: 'box', gutter: true, height: 440, weight: 1.6, xlabel: 'cohesive energy per atom  E_coh (eV)', ylabel: 'melting point  T_m (K)', title: 'measured: bond energy against melting point' });
         sM.onClick((x, y) => {
           let best = -1, bd = 0.2;
           MELT.forEach((e, i) => { if (flt.value !== 'all' && e.cls !== flt.value) return; const d = Math.hypot(Math.log10(x / e.ecoh), Math.log10(y / e.tm)); if (d < bd) { bd = d; best = i; } });
           if (best >= 0) sel = best;
         });
+        const KEEP = new Set(['Li', 'K', 'Pb', 'Zn', 'Al', 'Cu', 'Ag', 'Au', 'Fe', 'Ni', 'Ti', 'Cr', 'Mo', 'Nb', 'W', 'Ir']);
         const ratio = (e) => e.ecoh / (KB * e.tm);
         const med = Object.fromEntries(cls.map((c) => [c, median(MELT.filter((e) => e.cls === c).map(ratio))]));
         v.render(() => {
@@ -57,17 +58,16 @@ export default {
           sP.text('−ε', 0.84, -1.0, { size: 11, color: 'muted', align: 'left', baseline: 'middle', dy: 10 });
           // measured chart
           for (const R of [30, 12]) sM.fn((x) => x / (KB * R), { color: 'muted', dash: [5, 4], width: 1.2, alpha: 0.7 });
-          sM.text('E_coh = 30 k_B T_m', 11.5, 11.5 / (KB * 30) * 0.74, { size: 11, color: 'muted', align: 'right', baseline: 'middle' });
-          sM.text('E_coh = 12 k_B T_m', 0.55, 0.55 / (KB * 12) * 1.55, { size: 11, color: 'muted', align: 'left', baseline: 'middle' });
           const items = [];
           MELT.forEach((m, i) => {
             const on = flt.value === 'all' || m.cls === flt.value, isSel = i === sel;
             sM.dot(m.ecoh, m.tm, { r: isSel ? 8 : 5, color: CLASSES[m.cls].color, hollow: !on && false, ring: isSel });
-            if (on || isSel) items.push({ x: m.ecoh, y: m.tm, text: m.sym, r: isSel ? 8 : 5, size: isSel ? 13 : 10, weight: isSel ? 700 : 500, color: isSel ? CLASSES[m.cls].color : 'ink' });
+            const show = isSel || (flt.value === 'all' ? m.cls !== 'metal' || KEEP.has(m.sym) : on);
+            if (show) items.push({ x: m.ecoh, y: m.tm, text: m.sym, r: isSel ? 8 : 5, size: isSel ? 13 : 10, weight: isSel ? 700 : 500, color: isSel ? CLASSES[m.cls].color : 'ink' });
           });
           items.sort((p, q) => (q.weight === 700) - (p.weight === 700));
           placeLabels(v, sM, items);
-          v.legend(cls.map((k) => [CLASSES[k].color, CLASSES[k].name]));
+          v.legend([...cls.map((k) => [CLASSES[k].color, CLASSES[k].name]), ['muted', 'E_coh = 30 k_BT_m', { dash: [5, 4] }], ['muted', 'E_coh = 12 k_BT_m', { dash: [5, 4] }]]);
         });
         v.readout(() => {
           const e = MELT[sel], eps = (2 * e.ecoh) / zOf(e);
@@ -100,7 +100,7 @@ export default {
         beta = v.slider('sharpness β = a·r₀', 2, 8, 4, { step: 0.1 });
         const s1 = v.stage({ x: [-1.3, 13.3], y: [-1.5, 1.5], axes: false, height: 175, full: true, title: 'a chain of 8 atoms, distances in units of r₀: drag the gold atom' });
         const H = s1.handle(n, 0, { color: 'gold', r: 9, label: 'pull', labelPos: 'n', constrain: (x) => [clamp(x, n - 0.6, 12.8), 0] });
-        const sU = v.stage({ x: [0.75, 3.0], y: [-1.3, 0.8], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'bond length  r / r₀', ylabel: 'U / ε', title: 'where the bonds sit on the well' });
+        const sU = v.stage({ x: [0.75, 3.0], y: [-1.5, 0.8], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'bond length  r / r₀', ylabel: 'U / ε', title: 'where the bonds sit on the well' });
         const sF = v.stage({ x: [0, 0.6], y: [-0.05, 1.3], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'chain strain  e = Δ / (n r₀)', ylabel: 'tension F (nN)', title: 'force against extension' });
         const sE = v.stage({ x: [0.8, 500], y: [2, 2000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 400, full: true, xlabel: 'cohesive energy density  E_coh / Ω  (GPa)', ylabel: 'Young’s modulus E (GPa, polycrystal)', title: 'real elements: stiffness follows bond-energy density' });
         // chain mechanics in reduced units: ξ = r/r₀ − 1, f = F / F_max = 4u(1−u), u = e^{−βξ}
@@ -109,7 +109,9 @@ export default {
           const xs = Math.LN2 / b, Du = n * xs;
           if (D <= Du) { const xi = D / n; return { loc: false, xi1: xi, xi2: xi, f: fOf(xi, b) }; }
           const g = (f) => { const s = Math.sqrt(1 - f); return (n - 1) * (-Math.log((1 + s) / 2) / b) + (-Math.log((1 - s) / 2) / b); };
-          let lo = 1e-9, hi = 1;
+          // g(f) first dips below n·ξ* as f falls from 1 (the snap), then rises: take the root on the rising side
+          let fm = 1, gm = g(1); for (let i = 1; i <= 400; i++) { const f = 1 - i / 400.001; const gv = g(f); if (gv < gm) { gm = gv; fm = f; } }
+          let lo = 1e-9, hi = fm;
           if (g(lo) < D) return { loc: true, xi1: 0, xi2: 9, f: 0, broken: true };
           for (let i = 0; i < 70; i++) { const mid = (lo + hi) / 2; if (g(mid) > D) lo = mid; else hi = mid; }
           const f = (lo + hi) / 2, s = Math.sqrt(1 - f);
@@ -139,16 +141,16 @@ export default {
           sU.vline(1 + Math.LN2 / b, { color: 'faint', dash: true });
           sU.text('inflection: F peaks', 1 + Math.LN2 / b + 0.03, 0.6, { size: 11, color: 'muted', align: 'left' });
           const x1 = 1 + st.xi1, x2 = 1 + st.xi2;
-          sU.dot(xr(x1), POT.morse(x1, b), { r: 8, color: 'gold', label: st.loc ? `${n - 1} bonds` : `all ${n} bonds`, labelPos: 'nw' });
+          sU.dot(xr(x1), POT.morse(x1, b), { r: 8, color: 'gold', label: st.loc ? `${n - 1} bonds` : `all ${n} bonds`, labelPos: 's' });
           if (st.loc) sU.dot(xr(Math.min(x2, 2.95)), POT.morse(Math.min(x2, 2.95), b), { r: 8, color: 'red', label: '1 bond', labelPos: 'n' });
-          sU.text('Hooke parabola', 1.0 - 0.02, 0.7, { size: 11, color: 'orange', align: 'right' });
+          sU.text('Hooke parabola', 1.5, 0.55, { size: 11, color: 'orange', align: 'left' });
           // force-extension
           sF.setView([0, 0.6], [-0.08 * Fmax, 1.3 * Fmax]);
           sF.hline(0, { color: 'faint' });
           const curve = []; for (let i = 0; i <= 240; i++) { const e = (0.6 * i) / 240; curve.push([e, chain(e * n, b).f * Fmax]); }
           sF.path(curve, { color: 'accent', width: 2.8 });
           sF.line(0, 0, 0.6, 4 * b * 0.6 * Fmax, { color: 'orange', dash: [6, 4], width: 1.6 });
-          sF.text('slope k·r₀ (Hooke)', 0.35, 4 * b * 0.35 * Fmax + 0.05 * Fmax, { size: 11, color: 'orange', align: 'right' });
+          sF.text('Hooke: slope k·r₀', 1.18 / (4 * b) + 0.006, 1.2 * Fmax, { size: 11, color: 'orange', align: 'left' });
           sF.dot(D / n, st.f * Fmax, { r: 8, color: 'gold' });
           sF.hline(Fmax, { color: 'faint', dash: true });
           sF.text(`F_max = ${v.fix(Fmax, 2)} nN`, 0.598, Fmax * 1.07, { size: 11, color: 'muted', align: 'right' });
@@ -161,9 +163,8 @@ export default {
           }
           sE.fn((x) => fit.at(x), { color: 'muted', width: 1.4, dash: [6, 4] });
           sE.fn((x) => 3.2 * x, { color: 'faint', width: 1.2, dash: [2, 3] });
-          sE.text('E = 3 E_coh/Ω', 300, 3.2 * 300 * 0.55, { size: 11, color: 'faint', align: 'right' });
           placeLabels(v, sE, items.sort((p, q) => (q.weight === 700) - (p.weight === 700)));
-          v.legend([[CLASSES.metal.color, 'metals'], [CLASSES.covalent.color, 'covalent (Si, Ge, C)'], ['gold', 'selected']]);
+          v.legend([[CLASSES.metal.color, 'metals'], [CLASSES.covalent.color, 'covalent (Si, Ge, C)'], ['gold', 'selected'], ['muted', 'fitted power law', { dash: [6, 4] }], ['faint', 'E = 3 E_coh/Ω', { dash: [2, 3] }]]);
         });
         v.readout(() => {
           const b = beta.value, ep = eps.value, R0 = r0.value, D = H.x - n, st = chain(D, b);
@@ -182,7 +183,7 @@ export default {
       name: 'Thermal expansion from anharmonicity',
       statement: String.raw`Atoms in a solid vibrate about their equilibrium positions. If the potential were exactly parabolic the vibrations would be symmetric and the mean bond length would not change with temperature: **a harmonic crystal does not expand**. Real bonds are steep on the compressed side and gentle on the stretched side, $U=\tfrac12 k\xi^2-g\xi^3+\dots$ with $\xi=r-r_0$, so vibrations of larger amplitude spend more time at larger $r$ and the mean separation grows: $\langle \xi\rangle\simeq 3gk_BT/k^2$. The **linear expansion coefficient** $\alpha=\tfrac1{r_0}\,d\langle r\rangle/dT$ is therefore proportional to the cubic asymmetry $g/k^2$ and, for a Morse bond, inversely proportional to the well depth, $\alpha\simeq 3k_B/(4\beta\varepsilon)$. Strongly bonded (high-melting) materials expand least.`,
       idea: String.raw`The thermal average $\langle r\rangle=\int r\,e^{-U/k_BT}dr\big/\int e^{-U/k_BT}dr$ is the centre of the Boltzmann distribution, which is skewed to large $r$ when the well is asymmetric. Expanding $U$ to cubic order gives the shift $3gk_BT/k^2$ above; the quartic term adds a correction that grows with $T$, so $\alpha$ rises with temperature as the shallow outer wall is explored. The same asymmetry sets the melting trend of (1.1): a deep well delays the large excursions that unbind the lattice, so $\alpha\,T_m\approx 0.02$ is almost the same for all metals, and the thermal expansion of a crystal is the observable face of anharmonicity.`,
-      caption: String.raw`The left panel shows the bond potential with the Boltzmann distribution of bond lengths (orange) and its mean (gold) against the minimum (dashed): drag the temperature up and the mean slides outward for the Morse and Lennard-Jones bonds, while the harmonic bond (choose it) stays put. *New snapshot* draws instantaneous bond lengths from that distribution. The middle panel is $\langle r\rangle(T)$ computed by numerical integration; the right panel tests the Morse prediction $\alpha\simeq3k_B/4\beta\varepsilon$ against measured coefficients of 26 elements.`,
+      caption: String.raw`The left panel shows the bond potential with the Boltzmann distribution of bond lengths (orange) and its mean (gold) against the minimum (dashed): drag the temperature up and the mean slides outward for the Morse and Lennard-Jones bonds, while the harmonic bond (choose it) stays put. *New snapshot* draws instantaneous bond lengths from that distribution. The middle panel is $\langle r\rangle(T)$ computed by numerical integration; the right panel tests the Morse prediction $\alpha\simeq3k_B/4\beta\varepsilon$ against measured coefficients of 27 elements.`,
       deps: ['mat-1.1', 'qchem-5.12', 'cm-3.9'],
       refs: ['Callister §19.3'],
       tags: ['anharmonicity', 'thermal expansion'],
@@ -234,7 +235,7 @@ export default {
           sB.hline(-eps + KB * T.value, { color: 'red', dash: [3, 4], width: 1.2, alpha: 0.7 });
           sB.text('r₀', R0 - 0.01 * R0, 0.28 * eps, { size: 12, color: 'muted', align: 'right' });
           sB.text('⟨r⟩', m * R0 + 0.01 * R0, 0.28 * eps, { size: 12, color: 'gold', align: 'left', weight: 700 });
-          sB.text('k_BT above the bottom', 1.58 * R0, -eps + KB * T.value + 0.05 * eps, { size: 10.5, color: 'red', align: 'right' });
+          sB.tex(String.raw`k_BT\text{ above the well bottom}`, 1.58 * R0, -eps + KB * T.value - 0.07 * eps, { size: 12, color: 'red', align: 'right' });
           const S = sampler(tau), rng = v.rng(100 + snap);
           for (let i = 0; i < 26; i++) { const u = rng(); let j = S.cdf.findIndex((c) => c >= u); if (j < 0) j = S.cdf.length - 1; const x = S.xs[j]; sB.dot(x * R0, eps * Vof(x), { r: 4.2, color: 'gold', ring: false }); }
           // mean vs T
@@ -244,7 +245,7 @@ export default {
           const curve = [], c0 = []; for (let i = 0; i <= 50; i++) { const t = (Tmax * i) / 50; curve.push([t, (meanX((KB * t) / eps) - 1) * 100]); }
           sT.path(curve, { color: pot.value === 'harm' ? 'muted' : 'accent', width: 2.8 });
           if (pot.value !== 'harm') sT.fn((t) => (100 * 3 * ((KB * t) / eps)) / (4 * beff()), { color: 'orange', dash: [5, 4], width: 1.4 });
-          if (pot.value !== 'harm') sT.text('leading order 3k_BT/(4βε)', Tmax * 0.98, 100 * 3 * ((KB * Tmax) / eps) / (4 * beff()) * 0.8 + 0.1, { size: 11, color: 'orange', align: 'right' });
+          if (pot.value !== 'harm') sT.tex(String.raw`\text{dashed: leading order }3k_BT/4\beta\varepsilon`, Tmax * 0.97, 0.45, { size: 12, color: 'orange', align: 'right' });
           sT.vline(Tm, { color: 'faint', dash: true });
           sT.text(`${mat.value} melts`, Tm - 0.01 * Tmax, 3.3, { size: 11, color: 'muted', align: 'right' });
           sT.dot(T.value, (m - 1) * 100, { r: 8, color: 'gold' });
