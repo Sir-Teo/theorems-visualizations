@@ -102,7 +102,7 @@ export function sankey(v, s, spec) {
   const { cols, cx, nodeW = 14, scale, gap = 6, nodes, links } = spec, c = s.ctx;
   const N = {};
   for (const id of Object.keys(nodes)) { const ins = links.filter((l) => l.b === id).reduce((a, l) => a + l.v, 0), outs = links.filter((l) => l.a === id).reduce((a, l) => a + l.v, 0); N[id] = { id, ...nodes[id], inV: ins, outV: outs, val: Math.max(ins, outs) }; N[id].h = Math.max(1.2, N[id].val * scale); }
-  cols.forEach((col, ci) => { let y = spec.top ?? 10; for (const id of col) { const n = N[id]; n.col = ci; n.x = cx[ci]; if (n.top != null) y = n.top; n.y = y; y += n.h + gap; } });
+  cols.forEach((col, ci) => { let y = spec.top ?? 10; for (const id of col) { const n = N[id]; n.col = ci; n.x = cx[ci]; if (n.top != null) y = n.top; n.y = y; y += Math.max(n.h + gap, spec.minPitch?.[ci] || 0); } });
   const L = links.filter((l) => l.v > 0).map((l) => ({ ...l, A: N[l.a], B: N[l.b], w: Math.max(0.5, l.v * scale) }));
   for (const n of Object.values(N)) {
     const outs = L.filter((l) => l.A === n).sort((p, q) => (p.B.y + p.B.h / 2) - (q.B.y + q.B.h / 2) || p.B.col - q.B.col);

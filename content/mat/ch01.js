@@ -139,7 +139,7 @@ export default {
           sU.fn((x) => POT.morse(x, b), { color: 'accent', width: 2.6, domain: [0.78, 3.0] });
           sU.fn((x) => -1 + b * b * (x - 1) ** 2, { color: 'orange', dash: [6, 4], width: 1.6, domain: [0.78, 1 + 1.9 / b + 0.6] });
           sU.vline(1 + Math.LN2 / b, { color: 'faint', dash: true });
-          sU.text('inflection: F peaks', 1 + Math.LN2 / b + 0.03, 0.6, { size: 11, color: 'muted', align: 'left' });
+          sU.text('inflection: F peaks', 1 + Math.LN2 / b + 0.04, -1.35, { size: 11, color: 'muted', align: 'left' });
           const x1 = 1 + st.xi1, x2 = 1 + st.xi2;
           sU.dot(xr(x1), POT.morse(x1, b), { r: 8, color: 'gold', label: st.loc ? `${n - 1} bonds` : `all ${n} bonds`, labelPos: 's' });
           if (st.loc) sU.dot(xr(Math.min(x2, 2.95)), POT.morse(Math.min(x2, 2.95), b), { r: 8, color: 'red', label: '1 bond', labelPos: 'n' });

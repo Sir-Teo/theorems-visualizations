@@ -232,8 +232,8 @@ export function greedyAll(seqs, k, pseudo) {
 }
 export const motifsAt = (seqs, pos, k) => seqs.map((s, i) => s.slice(pos[i], pos[i] + k));
 /** One run of randomized motif search; returns the trajectory of {pos, score}. */
-export function randomizedRun(seqs, k, r, pseudo = 1, maxIter = 200) {
-  let pos = seqs.map((s) => r.int(s.length - k + 1)), best = scoreMotifs(motifsAt(seqs, pos, k), k);
+export function randomizedRun(seqs, k, r, pseudo = 1, maxIter = 200, initPos = null) {
+  let pos = initPos ? initPos.slice() : seqs.map((s) => r.int(s.length - k + 1)), best = scoreMotifs(motifsAt(seqs, pos, k), k);
   const traj = [{ pos: pos.slice(), score: best, prof: null }];
   for (let it = 0; it < maxIter; it++) {
     const prof = profileOf(motifsAt(seqs, pos, k), k, pseudo), np = seqs.map((s) => mostProbable(s, k, prof)), sc = scoreMotifs(motifsAt(seqs, np, k), k);

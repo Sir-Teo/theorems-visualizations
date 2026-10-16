@@ -168,7 +168,7 @@ A **Sankey diagram** draws every flow as a band whose width is proportional to t
         const ebld = v.slider('buildings', 0.3, 0.97, ETA0.res, { step: 0.005, fmt: (x) => v.fix(100 * x, 0) + ' %' });
         const reset = v.button('Reset to 2024', () => { eth.set(ETH0); etr.set(ETA0.tra); eind.set(ETA0.ind); ebld.set(ETA0.res); });
         const yr = v.slider('year', 1965, 2024, 2024, { step: 1, int: true, fmt: (x) => String(x) });
-        const sF = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 520, full: true, hover: true });
+        const sF = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 540, full: true, hover: true });
         const sM = v.stage({ x: [1965, 2024], y: [0, 700], axes: 'box', gutter: true, height: 430, full: true, xlabel: 'year', ylabel: 'primary energy (EJ per year)' });
         const show = () => { const f = view.value === 'flow'; sF.el.hidden = !f; sM.el.hidden = f; [eth, etr, eind, ebld, reset].forEach((c) => { (c.el || c).hidden = !f; }); yr.el.hidden = f; };
         show();
@@ -210,21 +210,21 @@ A **Sankey diagram** draws every flow as a band whose width is proportional to t
             return;
           }
           const m = model();
-          const W = sF.W, f = clamp(W / 920, 0.62, 1), lw = Math.round(112 * f), bw = Math.round(84 * f), rw = Math.round(98 * f), ew = Math.round(76 * f);
-          const c3 = W - rw - 10, avail = c3 - lw, scale = (sF.H - 28 - 8 * 7) / 94.6;
+          const W = sF.W, f = clamp(W / 920, 0.62, 1), lw = Math.round(112 * f), bw = Math.round(100 * f), rw = Math.round(98 * f), ew = Math.round(76 * f);
+          const c3 = W - rw - 10, avail = c3 - lw, scale = (sF.H - 28 - 8 * 7 - 34) / 94.6;
           const nodes = {};
-          for (const [id, name, col] of SRC) nodes[id] = { label: name, color: col, w: 12 };
+          for (const [id, name, col] of SRC) nodes[id] = { label: name, color: col, w: 12, force: true };
           nodes.elec = { label: 'Electricity\ngeneration', color: 'muted', box: true, w: ew, top: 10 };
           for (const [id, name] of SEC) nodes[id] = { label: name, color: 'muted', box: true, w: bw };
           nodes.rej = { label: 'Rejected\nenergy', color: 'gray', box: true, w: rw, top: 10 };
           nodes.svc = { label: 'Energy\nservices', color: 'green', box: true, w: rw };
           const R = sankey(v, sF, {
-            cols: [SRC.map((x) => x[0]), ['elec'], SEC.map((x) => x[0]), ['rej', 'svc']], cx: [lw, lw + 0.27 * avail, lw + 0.62 * avail, c3], nodeW: 12, scale, gap: 7, top: 10, nodes, links: m.links,
+            cols: [SRC.map((x) => x[0]), ['elec'], SEC.map((x) => x[0]), ['rej', 'svc']], cx: [lw, lw + 0.27 * avail, lw + 0.62 * avail, c3], nodeW: 12, scale, gap: 7, top: 10, minPitch: [15, 0, 0, 0], nodes, links: m.links,
             side: ['l', 'r', 'r', 'r'], size: Math.round(11.5 * (0.9 + 0.1 * f) * 10) / 10, fmt: (x) => fm(x),
             tip: (l) => `${l.A.label.replace('\n', ' ')} → ${l.B.label.replace('\n', ' ')}: ${v.fix(l.v, 2)} quads (${v.fix(100 * l.v / m.prim, 1)}% of primary)`,
           });
           sF.textPx('quads of energy per year', sF.W - 10, sF.H - 8, { size: 11, color: 'muted', align: 'right' });
-          sF.textPx(`primary ${fm(m.prim)}`, lw - 6, sF.H - 8, { size: 11.5, weight: 700, color: 'ink', align: 'right', halo: false });
+          sF.textPx(`total primary ${fm(m.prim)} quads`, 12, sF.H - 8, { size: 11.5, weight: 700, color: 'ink', align: 'left', halo: false });
         });
         v.readout(() => {
           if (view.value === 'mix') {

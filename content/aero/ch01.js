@@ -237,7 +237,7 @@ By the Buckingham $\pi$ theorem they depend only on the dimensionless groups tha
           sync = true; hnd.set(al, CL); sync = false;
           Cp.curve((t) => [cdTab(CRITZOS_18, t), clTab(CRITZOS_18, t)], 0, 30, { n: 400, color: 'ink', width: 2.2 });
           Cp.line(0, 0, cdTab(CRITZOS_18, best[1]), clTab(CRITZOS_18, best[1]), { color: 'green', dash: true, width: 1.6 });
-          Cp.dot(cdTab(CRITZOS_18, best[1]), clTab(CRITZOS_18, best[1]), { color: 'green', r: 5, label: `max L/D = ${fx(best[0], 0)}`, labelPos: 'ne' });
+          Cp.dot(cdTab(CRITZOS_18, best[1]), clTab(CRITZOS_18, best[1]), { color: 'green', r: 5 }); Cp.text(`best C_L/C_D = ${fx(best[0], 0)}`, 0.245, 0.12, { color: 'green', size: 11, align: 'right' });
           Cp.dot(CD, CL, { color: 'gold', r: 7 });
           v.legend([['ink', 'NACA 0012, R = 1.8×10⁶'], ['muted', 'R = 0.5×10⁶', { dash: true }], ['green', '2π per radian', { dash: true }]]);
         });
@@ -293,7 +293,7 @@ $$Re = \frac{\rho V c}{\mu}\quad\text{and}\quad M = \frac{V}{a}$$
           B.fn((a) => clTab(CRITZOS_18, a), { color: 'ink', width: 2.4, domain: [0, 32] });
           B.fn((a) => clTab(CRITZOS_05, a), { color: 'red', width: 2.4, domain: [0, 32] });
           B.dot(14.2, 1.33, { color: 'ink', r: 4.5 }); B.dot(12.5, 1.0, { color: 'red', r: 4.5 });
-          B.text('R = 1.8×10⁶: c_l,max = 1.33', 1, 1.45, { color: 'ink', size: 11, align: 'left' }); B.text('R = 0.5×10⁶: c_l,max ≈ 1.0', 1, 1.34, { color: 'red', size: 11, align: 'left' });
+          B.text('R = 1.8×10⁶: c_l,max = 1.33', 12, 0.4, { color: 'ink', size: 11, align: 'left' }); B.text('R = 0.5×10⁶: c_l,max ≈ 1.0', 12, 0.28, { color: 'red', size: 11, align: 'left' });
           v.legend([['green', 'full-size flight condition', { dot: true }], ['orange', 'model line (this tunnel)'], ['accent', 'reachable band (1 atm, 320 K ↔ 9 atm, 100 K)', { area: true }]]);
         });
         v.readout(() => {
@@ -426,7 +426,7 @@ $340.29$ m/s at $15$ °C in air ($\gamma = 1.4$, $R = 287.05$ J/(kg K)). The **M
           A.dot(0, 0, { r: 7, color: 'ink' }); A.arrow(30, 0, 30 + Math.min(500, V * 0.55) , 0, { color: 'ink', width: 2.2, head: 8 });
           A.text(`M = ${fx(M, 2)}`, 40, 60, { color: 'ink', size: 14, weight: 650 });
           B.fn(aT, { color: 'accent', width: 2.4, domain: [180, 400] });
-          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'nw' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'se' });
+          B.dot(216.65, aT(216.65), { r: 4, color: 'ink', label: '−56.5 °C: 295.1 m/s', labelPos: 'ne' }); B.dot(288.15, aT(288.15), { r: 4, color: 'ink', label: '15 °C: 340.3 m/s', labelPos: 'se' });
           B.hline(V, { color: 'red', dash: true, width: 1.3 }); B.text('source speed V', 184, V + 18, { color: 'red', size: 10.5, align: 'left' });
           sync = true; hT.set(Tsl.value, aT(Tsl.value)); sync = false;
           C.curve((z) => [V / atmo(z * 1000).a, z], 0, 28, { n: 140, color: 'accent', width: 2.4 });
