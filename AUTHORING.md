@@ -394,3 +394,40 @@ reference, worked examples and the list of demos in **[docs/kits.md](docs/kits.m
 | `v.steps({frames, code})` → `S` | step-through player (⏮ ◀ ▶ ▶\|, scrubber, counter) with highlighted pseudocode, per-frame notes, `S.frame`, `S.reset()`, optional gliding transitions (`S.tween`). |
 | `v.table(stage, spec)` → `T` | grids of cells (DP, Cayley, payoff, truth, transition tables): TeX/pair values, fills, highlights, headers, `T.hit`, `T.arrow`/`T.pointer` back-pointers. |
 | `v.icons(stage, spec)` → `I` | icon arrays / natural frequencies (person pictograms or dots), waffles, **split blocks** for conditioning (`block: i → k`, `blockLabels`), **parliament hemicycles** (`layout: 'hemicycle'`); groups = consecutive runs `{n, color, label}`; every re-arrangement glides; hover shows group counts; `I.set` is free to call every frame; `I.legend()`, `I.pos(i)`, `I.bbox(k)`, `I.blocks()`, `I.hit`. Demos `demo-1.15`, `demo-1.16`. |
+
+## 6. Pitfalls found by chapter writers (read before your first viz)
+
+Each of these cost somebody an hour. They are about the runtime as it is today.
+
+**Drawing and layout**
+- `s.raster` / `s.heat`: `res` is the pixel **block size** (2–4 is fine), not a grid resolution. A large value silently draws nothing or a blocky map. With `equal: true` a heat map fills the whole stage — pass `rect: [x0, y0, x1, y1]` to confine it.
+- `s.contour` takes an explicit array of levels, samples evenly in data units (coarse on log axes) and cannot be limited to a rectangle — wrap it in `s.clip`.
+- `s.field` spacing is in **pixels**; a data-unit value hangs the page.
+- `s.circle` draws an ellipse on stages without `equal: true`; use a hollow `s.dot` for rings there. A hollow dot paints the panel colour inside, covering a fill drawn under it — draw the ring first, the fill after.
+- `s.line` is a segment, not an infinite line.
+- `gutter: true` fixes the bottom margin when the stage is created: pass the `xlabel` at creation (or call `setLabels`, which now refits). Everything is clipped to the data area; `corner()` now sits inside it.
+- Stage text: `$…$` goes through KaTeX; prices like "$5 and $10" stay plain. Axis tick labels are plain text (use Unicode superscripts, `M.pow10Text`). `s.tex` takes raw LaTeX **without** `$`. In canvas text a bare `$` is fine and `\$` prints the backslash (rich text/captions are the opposite: write `\$`). There is no monospace option and no multiline text — wrap by hand.
+- Palette `ink` turns light in dark mode; use fixed RGB arrays for things that must stay dark (charcoal, soot).
+- Stages have a minimum height of about 200 px, so thin strips come out tall. `equal: true` with a gutter widens the window beyond the requested range — drop `equal` where exact counting matters.
+
+**Controls and state**
+- `v.readout(fn)` must be registered **once**, outside `v.render`; calling it inside the render loops forever. Set a variable in render and read it in the readout.
+- `h.set(x, y)` and the `set` of selects/sliders are safe inside render (no-ops when unchanged). `v.select(...).value` is assignable; `set(v, {fire: true})` also calls `onChange`. `v.input` fires `onChange` only when the user types, not on `set()`; `v.input` with `vars` rejects `sigmoid`/`relu` — use your own parser.
+- Options of a `v.select` are fixed at creation: for lists that depend on state use a "next example" button.
+- Hiding a stage: set `stage.el.style.display = 'none'` (`el.hidden` does not work on a flex `.stage`). The checker ignores hidden stages. Clicking a handle never fires `onClick`; selecting by dragging works.
+- `v.animate` has one clock per viz and its period is fixed at registration. For button-triggered motions use your own `requestAnimationFrame` loop, cleaned up with `onCleanup`, and jump to the end under `window.__vizStill`. Do not call `v.restart()` on the first frame. Screenshots without `--still` are taken ~1.5 s into an animation; set a `still` frame with a meaningful state.
+- Heavy computation: spread it over frames with a `setTimeout` loop that calls `v.invalidate()`; `s.dots` is slow above ~10⁴ points (draw squares directly on `s.ctx`).
+
+**Numerics and data**
+- `rng.shuffle` returns a **copy**. `v.rng` gives 32-bit uniforms: build 53-bit values from two draws when summing many terms. `M.bisect(f, a, b, tol)` takes a number, not an options object. `M.smoothstep` has one argument. `M.solve` inverts the matrix — write a banded/dense solver for big systems.
+- `M.eigC` does **not** return orthogonal eigenvectors for repeated eigenvalues: use `M.eigH` for Hermitian matrices. `M.eigSym` fixes only the sign of each vector's largest component (it flips across a degeneracy).
+- Root finders that scan for sign changes must test every grid point (a root exactly on a grid point is easy to miss).
+- On log axes a zero error cannot be drawn: clip to a floor (~10⁻¹⁷) and say so.
+
+**3D**
+- `stage3d` has no handles, no click hit-testing and no sphere/surface primitives; `v.scene3` has handles (to planes or lines through the origin), polygons and dots but no hidden-line removal, tubes, sphere shading or box clipping. Build surfaces from polygons (`patch`/`planePatch` helpers exist in `content/vcalc/ch01.shared.js`), draw far-side curves faintly, and sync the yaw/pitch of two scenes by hand.
+
+**Content discipline**
+- The syllabus decides which items exist, their numbers, kinds and deps. If your brief and the syllabus disagree, build the syllabus.
+- A chapter's `chNN.shared.js` may import its own chapter's helpers; other chapters of the same collection may re-export from it (`export * from './ch01.shared.js'` works); never import across collections — copy.
+- Say in the item what is illustrative, what is from memory, and what is a secondary source. Recompute printed numbers (the Pearson, Rabin and Patriot items each found real slips that way).
