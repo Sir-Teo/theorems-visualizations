@@ -233,7 +233,7 @@ All of them are convex.`,
         const kS = v.slider('halfspaces $k$', 2, 6, 5, { step: 1, int: true });
         const view = { x: [-5, 5], y: [-3.8, 3.8] };
         const s = v.stage({ ...view, equal: true, axes: false, grid: true, height: 420, title: 'convex sets and the chord test' });
-        const C = s.handle(0.2, 0.1, { color: 'orange', label: 'x_c', labelPos: 'n' });
+        const C = s.handle(0.2, 0.1, { color: 'orange', label: 'c', labelPos: 'n' });
         const R = s.handle(2.2, 0.1, { color: 'accent', label: 'r', labelPos: 'ne' });
         const cons = [];
         for (let i = 0; i < 6; i++) {
@@ -280,7 +280,7 @@ All of them are convex.`,
             hsl.forEach((h, i) => { const c = cons[i]; s.arrow(c.a.x, c.a.y, c.a.x + 0.9 * h.nx, c.a.y + 0.9 * h.ny, { color: 'orange', width: 2 }); s.clip(() => s.line(c.a.x - 14 * h.ny, c.a.y + 14 * h.nx, c.a.x + 14 * h.ny, c.a.y - 14 * h.nx, { color: 'muted', width: 1, dash: true })); });
           }
           if (sh === 'ball' || sh === 'ell') {
-            s.raster((x, y) => (inside(x, y) ? rgbA(v, 'accent', 64) : null), { res: 3, key });
+            s.raster((x, y) => (inside(x, y) ? rgbA(v, 'accent', 64) : null), { res: 2, key });
             if (sh === 'ell' && info.ev[1] > 1e-9) {
               const E = v.M.eigSym2([[q11.value, q12.value], [q12.value, q22.value]]);
               [0, 1].forEach((i) => { const L = 1 / Math.sqrt(E.values[i]), u = E.vectors[i]; s.segment([C.x - L * u[0], C.y - L * u[1]], [C.x + L * u[0], C.y + L * u[1]], { color: 'green', width: 1.8 }); });
@@ -352,7 +352,7 @@ All of them are convex.`,
 (c) **Perspective:** $P(x,t)=x/t$ on $\R^n\times\R_{++}$ maps convex sets to convex sets, and so do preimages of convex sets under $P$; linear-fractional maps $x\mapsto(Ax+b)/(c^\top x+d)$ on $\{c^\top x+d>0\}$ likewise.
 Union does **not** preserve convexity: two convex sets can have a non-convex union.`,
       idea: String.raw`(a) A segment between two points of $C\cap D$ lies in $C$ and in $D$. (b) $f(\theta x+(1-\theta)y)=\theta f(x)+(1-\theta)f(y)$ because $f$ is affine, so a segment maps onto a segment, and a preimage inherits segments through the same identity. (c) The perspective of a segment $[(x_1,t_1),(x_2,t_2)]$ is the segment between $x_1/t_1$ and $x_2/t_2$, traversed at a non-uniform speed: the point $\theta x_1+(1-\theta)x_2$ over $\theta t_1+(1-\theta)t_2$ equals $\mu x_1/t_1+(1-\mu)x_2/t_2$ with $\mu=\theta t_1/(\theta t_1+(1-\theta)t_2)\in[0,1]$. A union fails because the segment between points of different pieces can leave both.`,
-      caption: String.raw`Choose an operation. **Intersection / union:** drag the disc and the quadrilateral: the chord test passes for $C\cap D$ and fails for $C\cup D$ once the pieces are apart (the longest bad chord is dashed). **Image:** the quadrilateral and the disc are mapped by $x\mapsto Mx$ with $M=R(\theta)\begin{pmatrix}s_x&h\\0&s_y\end{pmatrix}$ (dashed: the originals); the tested set is the image of $C\\cap D$, and it stays convex for every $M$. **Perspective:** the polygon lives at heights $t>0$; every point is projected through the origin to the line $t=1$, and the image is an interval; the gold wedge is the preimage of the interval between the two green handles.`,
+      caption: String.raw`Choose an operation. **Intersection / union:** drag the disc and the quadrilateral: the chord test passes for $C\cap D$ and fails for $C\cup D$ once the pieces are apart (the longest bad chord is dashed). **Image:** the quadrilateral and the disc are mapped by $x\mapsto Mx$ with $M=R(\theta)\begin{pmatrix}s_x&h\\0&s_y\end{pmatrix}$ (dashed: the originals); the tested set is the image of $C\cap D$, and it stays convex for every $M$. **Perspective:** the polygon lives at heights $t>0$; every point is projected through the origin to the line $t=1$, and the image is an interval; the gold wedge is the preimage of the interval between the two green handles.`,
       deps: ['opt-2.1'],
       refs: ['Boyd–Vandenberghe §2.3'],
       tags: ['convexity', 'perspective', 'intersection'],

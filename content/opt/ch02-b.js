@@ -17,7 +17,7 @@ export default {
       num: '2.8',
       kind: 'Theorem',
       name: 'Supporting hyperplane theorem',
-      statement: String.raw`Let $C\subseteq\R^n$ be convex and let $x_0$ be a boundary point of $C$ (any point of $C$ that is not interior, or a point of $\operatorname{cl}C\setminus\operatorname{int}C$). Then there is $a\ne0$ with $a^\top x\le a^\top x_0$ for all $x\in C$: the hyperplane $\{x:a^\top x=a^\top x_0\}$ **supports** $C$ at $x_0$. At a smooth boundary point the supporting hyperplane is the tangent hyperplane and $a$ is unique up to scaling; at a corner there is a whole cone of admissible normals $a$. Conversely, a closed set with nonempty interior that has a supporting hyperplane at every boundary point is convex.`,
+      statement: String.raw`Let $C\subseteq\R^n$ be convex and let $x_0$ be a boundary point of $C$ (a point of $\operatorname{cl}C\setminus\operatorname{int}C$). Then there is $a\ne0$ with $a^\top x\le a^\top x_0$ for all $x\in C$: the hyperplane $\{x:a^\top x=a^\top x_0\}$ **supports** $C$ at $x_0$. At a smooth boundary point the supporting hyperplane is the tangent hyperplane and $a$ is unique up to scaling; at a corner there is a whole cone of admissible normals $a$. Conversely, a closed set with nonempty interior that has a supporting hyperplane at every boundary point is convex.`,
       idea: String.raw`The point $x_0$ is not interior, so $\{x_0\}$ and the interior of $C$ are disjoint convex sets (when $\operatorname{int}C\neq\emptyset$; otherwise $C$ lies in a lower-dimensional affine set and any hyperplane containing that set supports it). The separating hyperplane theorem (opt-2.7) gives $a\ne0$ with $a^\top x\le a^\top x_0$ on $\operatorname{int}C$, and the inequality passes to $C\subseteq\operatorname{cl}(\operatorname{int}C)$. Supporting hyperplanes are the local linear models of the boundary of a convex set; their normals form the *normal cone* at $x_0$, a closed convex cone (opt-2.2) which is a ray at smooth points and wide at vertices.`,
       caption: String.raw`Choose a set and slide the point along its boundary (it snaps to the boundary). Every direction $a$ on the unit circle is tested against the whole boundary: the admissible ones are the green arc in the right panel, the normal cone at $x_0$. On the smooth body the arc is a single point (a tangent), on the polygon it is wide at vertices, and on the **dented** non-convex body it is empty at points in the dent: the theorem needs convexity. The dashed lines are the extreme supporting lines at a corner.`,
       credit: 'Minkowski, c. 1910',
@@ -131,8 +131,8 @@ $K^*$ is always a closed convex cone, even if $K$ is not. Moreover $K_1\subseteq
             for (let i = 0; i < n; i++) if (Kdf[i] !== Kdf[(i + 1) % n]) { const th = (TAU * (Kdf[i] ? i : i + 1)) / n; S.line(0, 0, 14 * Math.cos(th), 14 * Math.sin(th), { color: 'orange', width: 2.6, dash: true }); }
             gens.forEach((g) => S.arrow(0, 0, g[0], g[1], { color: 'orange', width: 2 }));
             S.dot(0, 0, { r: 4, color: 'ink' });
-            S.tex('K', 2.4 * Math.cos(midAngle(Kf, n, 0)), 2.4 * Math.sin(midAngle(Kf, n, 0)), { color: 'accent', size: 16 });
-            if (dirsDual.length) S.tex('K^*', 2.4 * Math.cos(midAngle(Ks, n, 0)), 2.4 * Math.sin(midAngle(Ks, n, 0)), { color: 'green', size: 16 });
+            S.tex('K', 1.9 * Math.cos(midAngle(Kf, n, 0)), 1.9 * Math.sin(midAngle(Kf, n, 0)), { color: 'accent', size: 16 });
+            if (dirsDual.length) { const hw = (Ks.filter(Boolean).length / n) * Math.PI, am = midAngle(Ks, n, 0) - 0.82 * hw; S.tex('K^*', 3.0 * Math.cos(am), 3.0 * Math.sin(am), { color: 'green', size: 16 }); }
             const y = [Yh.x, Yh.y], ips = gens.map((g) => dot2(g, y)), inDual = ips.every((t) => t >= -1e-9);
             S.arrow(0, 0, y[0], y[1], { color: inDual ? 'green' : 'red', width: 2.2 });
             const wK = Kf.filter(Boolean).length / n * 360, wD = Ks.filter(Boolean).length / n * 360, wDD = Kdf.filter(Boolean).length / n * 360;
@@ -323,7 +323,7 @@ i.e. $x-p$ makes an obtuse (or right) angle with every direction into $C$, so th
       kind: 'Theorem',
       name: 'Linear functionals are maximized at extreme points',
       statement: String.raw`Let $C\subseteq\R^n$ be nonempty, convex and compact and let $c\in\R^n$. Then $\max_{x\in C}c^\top x$ is attained, and the set of maximizers is a nonempty compact convex face of $C$ that contains an extreme point of $C$; so the maximum is attained at an extreme point. If $C=\operatorname{conv}\{v_1,\dots,v_m\}$ is a polytope, then $\max_Cc^\top x=\max_ic^\top v_i$, and if several vertices are optimal, every point of their convex hull is optimal too. The same holds for a polyhedron without lines whenever the maximum is finite (it is attained at a vertex); without compactness the supremum may be $+\infty$ or not attained.`,
-      idea: String.raw`A linear functional on a compact set attains its maximum $h$ (opt-1.2), and $F=C\cap\{c^\top x=h\}$ is compact and convex. A nonempty compact convex set is the convex hull of its extreme points (fa-3.24), and an extreme point of the face $F$ is an extreme point of $C$, because $F$ is cut out by a supporting hyperplane (opt-2.8): a segment in $C$ with its midpoint in $F$ must lie in $F$. For a polytope the computation is one line, $c^\top\sum\theta_iv_i=\sum\theta_ic^\top v_i\le\max_ic^\top v_i$. This is why the simplex method (opt-4.x) can restrict attention to vertices.`,
+      idea: String.raw`A linear functional on a compact set attains its maximum $h$ (opt-1.2), and $F=C\cap\{c^\top x=h\}$ is compact and convex. A nonempty compact convex set is the convex hull of its extreme points (fa-3.24), and an extreme point of the face $F$ is an extreme point of $C$, because $F$ is cut out by a supporting hyperplane (opt-2.8): a segment in $C$ with its midpoint in $F$ must lie in $F$. For a polytope the computation is one line, $c^\top\sum\theta_iv_i=\sum\theta_ic^\top v_i\le\max_ic^\top v_i$. This is why the simplex method of linear programming can restrict attention to vertices.`,
       caption: String.raw`Drag the five vertices (or pick the disc or the unbounded polyhedron), and turn the objective direction $c$ with $\theta$. The gold line is the level set $c^\top x=h$ pushed outward until it last touches the set; it touches a vertex, jumping from vertex to vertex as $\theta$ turns, while the right panel plots the optimal value $h(\theta)=\max_C c^\top x$. Press *align with an edge* to make $c$ perpendicular to an edge: the whole edge becomes optimal. In the **unbounded** polyhedron the maximum is $+\infty$ for the directions shaded red: compactness is needed.`,
       deps: ['opt-2.1', 'fa-3.24'],
       refs: ['Boyd–Vandenberghe §4.3'],
@@ -412,7 +412,7 @@ i.e. $x-p$ makes an obtuse (or right) angle with every direction into $C$, so th
         const ringT = v.toggle('set 1 is an annulus (not convex)', false);
         const view = { x: [-5, 5], y: [-3.7, 3.7] };
         const s = v.stage({ ...view, equal: true, axes: false, grid: true, height: 440, title: 'convex sets in the plane: do they have a common point?' });
-        const start = [[-1.5, 0.6, 1.9], [1.2, 1.1, 1.7], [0.2, -1.3, 1.8], [2.4, -0.6, 1.5], [-2.5, -1.4, 1.4]];
+        const start = [[-0.6, 0.4, 1.9], [0.5, 0.6, 1.8], [0.1, -0.5, 1.9], [0.7, -0.2, 1.7], [-0.3, -0.9, 1.6]];
         const cols = ['accent', 'orange', 'purple', 'teal', 'pink'];
         const D = start.map(([x, y, r], i) => {
           const d = { r, phi: 0.4 };
