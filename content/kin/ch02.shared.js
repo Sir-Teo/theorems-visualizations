@@ -49,20 +49,28 @@ export function eig2(A) {
   return { values: [l1, l2], vectors: [vec(l1), vec(l2)] };
 }
 
-/** saddle point of the (symmetric) surface: minimum of V along x = y. Returns {s, V, X, Y}. For asymmetric surfaces the saddle is refined by Newton. */
+/** saddle point: Newton searches for stationary points with one negative curvature, seeded on a grid; the lowest one is the pass
+ *  between the reactant and product valleys. Returns {x, y, X, Y, V} (or the best symmetric guess when none exists). */
 export function saddle(P) {
-  let a = 0.7, b = 2.2;
-  const g = (s) => vRel(s, s, P);
-  for (let i = 0; i < 60; i++) { const m1 = a + (b - a) * 0.382, m2 = a + (b - a) * 0.618; if (g(m1) < g(m2)) b = m2; else a = m1; }
-  let s = (a + b) / 2, [X, Y] = toXY(s, s);
-  for (let it = 0; it < 40; it++) { // Newton on grad = 0
-    const gr = gradXY(X, Y, P), H = hessXY(X, Y, P), det = H[0][0] * H[1][1] - H[0][1] ** 2;
-    if (Math.abs(det) < 1e-10) break;
-    const dX = -(H[1][1] * gr[0] - H[0][1] * gr[1]) / det, dY = -(-H[0][1] * gr[0] + H[0][0] * gr[1]) / det;
-    X += dX; Y += dY; if (Math.hypot(dX, dY) < 1e-9) break;
+  let best = null;
+  for (let sx = 0.8; sx <= 2.6; sx += 0.3) for (let sy = 0.8; sy <= 2.6; sy += 0.3) {
+    let [X, Y] = toXY(sx, sy), ok = false;
+    for (let it = 0; it < 60; it++) {
+      const gr = gradXY(X, Y, P), H = hessXY(X, Y, P), det = H[0][0] * H[1][1] - H[0][1] ** 2;
+      if (Math.abs(det) < 1e-9) break;
+      let dX = -(H[1][1] * gr[0] - H[0][1] * gr[1]) / det, dY = -(-H[0][1] * gr[0] + H[0][0] * gr[1]) / det;
+      const n = Math.hypot(dX, dY); if (n > 0.15) { dX *= 0.15 / n; dY *= 0.15 / n; }
+      X += dX; Y += dY;
+      if (n < 1e-9) { ok = Math.hypot(...gradXY(X, Y, P)) < 1e-5; break; }
+    }
+    if (!ok) continue;
+    const E = eig2(hessXY(X, Y, P)), [x, y] = fromXY(X, Y);
+    if (E.values[0] < -0.05 && E.values[1] > 0.05 && x > 0.6 && y > 0.6 && x < 3.5 && y < 3.5) { const V = vXY(X, Y, P); if (!best || V < best.V) best = { x, y, X, Y, V }; }
   }
-  const [x, y] = fromXY(X, Y);
-  return { x, y, X, Y, V: vXY(X, Y, P) };
+  if (best) return best;
+  let m = 0.6; // fallback: top of the diagonal ridge
+  for (let s = 0.6; s < 3; s += 0.01) if (vRel(s, s, P) < vRel(m, m, P)) m = s;
+  const [X, Y] = toXY(m, m); return { x: m, y: m, X, Y, V: vXY(X, Y, P) };
 }
 
 /** minimum-energy path: steepest descent (with unit steps) from the saddle along the reaction coordinate, both directions.
@@ -154,6 +162,10 @@ export class DiscGas {
       this.x[i] = (0.5 + i % m) * gap + (r() - 0.5) * gap * 0.3; this.y[i] = (0.5 + Math.floor(i / m)) * gap + (r() - 0.5) * gap * 0.3;
       this.vx[i] = Math.sqrt(kT) * r.normal(); this.vy[i] = Math.sqrt(kT) * r.normal();
     }
+    // exact temperature: remove net momentum, rescale to mean kinetic energy kT per disc (2 degrees of freedom)
+    let mx = 0, my = 0; for (let i = 0; i < N; i++) { mx += this.vx[i]; my += this.vy[i]; }
+    let ke = 0; for (let i = 0; i < N; i++) { this.vx[i] -= mx / N; this.vy[i] -= my / N; ke += 0.5 * (this.vx[i] ** 2 + this.vy[i] ** 2); }
+    const f0 = Math.sqrt(kT / (ke / N)); for (let i = 0; i < N; i++) { this.vx[i] *= f0; this.vy[i] *= f0; }
     this.NB = 80; this.EMAX = 8; this.hist = new Float64Array(this.NB); this.time = 0; this.total = 0; this.recent = [];
     this.nc = Math.floor(1 / d);
   }

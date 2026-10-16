@@ -28,7 +28,7 @@ Scope: a model of the whole economy as one good produced by two homogeneous inpu
         const K0 = v.slider('starting capital $K$', 0.5, 2, 1, { step: 0.05 });
         const L0 = v.slider('starting labour $L$', 0.5, 2, 1, { step: 0.05 });
         const ex = v.select('experiment', [{ value: 'both', label: 'scale $K$ and $L$' }, { value: 'K', label: 'scale $K$ only' }, { value: 'L', label: 'scale $L$ only' }], 'both');
-        const S3 = v.stage3d({ range: 1.75, height: 400, yaw: -0.72, pitch: 0.32, axes: false, weight: 1.15, title: 'the production surface (drag to rotate)' });
+        const S3 = v.stage3d({ range: 2.5, height: 400, yaw: -0.72, pitch: 0.32, axes: false, weight: 1.15, title: 'the production surface (drag to rotate)' });
         const R = v.stage({ x: [1, 4], y: [0, 4.6], axes: 'box', gutter: true, height: 400, weight: 0.9, xlabel: 'scale factor λ applied to the chosen input(s)', ylabel: 'output relative to start  Y(λ) / Y(1)' });
         const hl = R.handle(2, 2, { color: 'gold', label: 'λ', constrain: (x) => [clamp(x, 1, 4), 0] });
         let st = {};
@@ -51,7 +51,7 @@ Scope: a model of the whole economy as one good produced by two homogeneous inpu
           // right panel: ratio curves
           const r = (l, m) => Y(m === 'L' ? k0 : k0 * l, m === 'K' ? l0 : l0 * l) / Y(k0, l0);
           R.fn((l) => l, { color: 'faint', dash: [4, 4], width: 1.4 });
-          R.text('Y = λ', 3.65, 3.9, { color: 'faint', size: 11 });
+          R.text('Y = λ (dashed)', 1.15, 3.9, { color: 'faint', size: 11 });
           const defs = [['both', 'accent', 'both'], ['K', 'orange', 'capital only'], ['L', 'purple', 'labour only']];
           for (const [m, c, lab] of defs) {
             R.fn((l) => r(l, m), { color: c, width: m === mode ? 3.2 : 1.8, alpha: m === mode ? 1 : 0.55, domain: [1, 4] });
@@ -89,7 +89,7 @@ Scope: competitive factor markets and a one-sector technology; for a CES technol
         const Ks = v.slider('capital $K$', 0.2, 5, 1.5, { step: 0.05 });
         const Ls = v.slider('labour $L$', 0.5, 2, 1, { step: 0.05 });
         const A = v.stage({ x: [0.1, 10], y: [0, 1], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: 'capital–labour ratio  K / L (log scale)', ylabel: 'labour share  wL / Y', yticks: [0, 0.2, 0.4, 0.6, 0.8, 1].map((y) => [y, `${100 * y}%`]) });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.7, minWidth: 220, title: 'how output Y = 1 is divided' });
+        const B = v.stage({ x: [0, 1.7], y: [0, 1], axes: false, height: 330, weight: 0.8, minWidth: 230, title: 'output (100%) paid at marginal products' });
         const C = v.stage({ x: [1950, 2024], y: [0.4, 0.8], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'year', ylabel: 'labour share of GDP', yticks: [0.4, 0.5, 0.6, 0.7, 0.8].map((y) => [y, `${100 * y}%`], 0) });
         v.legend([['green', 'competitive pay, σ = 1 (Cobb–Douglas)'], ['accent', 'this technology'], ['ink', 'U.S. labour share (PWT)'], ['muted', 'BLS nonfarm business, rescaled', { dash: true }]]);
         let st = {};
@@ -109,11 +109,11 @@ Scope: competitive factor markets and a one-sector technology; for a CES technol
           A.text('Cobb–Douglas: 1 − α', 0.12, 1 - a, { dy: -9, color: 'green', size: 11.5, weight: 600 });
           // pie as stacked bar
           const share = wL / Y;
-          B.rect(0.12, 0, 0.52, share, { fill: 'accent', fillAlpha: 0.55, color: 'panel', width: 1.5 });
-          B.rect(0.12, share, 0.52, 1, { fill: 'orange', fillAlpha: 0.6, color: 'panel', width: 1.5 });
-          B.text(`labour  wL = ${fx(wL / Y, 3)}`, 0.56, share / 2, { color: 'accent', size: 12, weight: 650 });
-          B.text(`capital  rK = ${fx(rK / Y, 3)}`, 0.56, share + (1 - share) / 2, { color: 'orange', size: 12, weight: 650 });
-          B.text('w = ∂Y/∂L, r = ∂Y/∂K', 0.5, 0.97, { align: 'center', baseline: 'top', color: 'muted', size: 10.5, dy: 0 });
+          B.rect(0.1, 0, 0.5, share, { fill: 'accent', fillAlpha: 0.55, color: 'panel', width: 1.5 });
+          B.rect(0.1, share, 0.5, 1, { fill: 'orange', fillAlpha: 0.6, color: 'panel', width: 1.5 });
+          B.text(`labour ${pc(wL / Y, 1)}`, 0.55, share / 2, { color: 'accent', size: 12, weight: 650 });
+          B.text(`capital ${pc(rK / Y, 1)}`, 0.55, share + (1 - share) / 2, { color: 'orange', size: 12, weight: 650 });
+          
           // data
           C.fn((x) => 1 - a, { color: 'green', width: 2.2, domain: [1950, 2024] });
           const i17 = BLS.find(([y]) => y === 2017)[1], p17 = PWT.find(([y]) => y === 2017)[1];
@@ -164,7 +164,7 @@ Scope: closed economy, output at its full-employment level, one real interest ra
           S.line(Sf(0, g), 0, Sf(12, g), 12, { color: 'green', width: 3 });
           S.line(If(0, sh), 0, If(12, sh), 12, { color: 'orange', width: 3 });
           S.text('S (supply of funds)', Sf(11.3, g), 11.3, { color: 'green', size: 12, weight: 650, dx: -6, align: 'right' });
-          S.text('I (investment demand)', If(11.3, sh), 11.3, { color: 'orange', size: 12, weight: 650, dx: 6 });
+          S.text('I (investment demand)', If(10, sh), 10, { color: 'orange', size: 12, weight: 650, dx: 8 });
           if (open) {
             S.hline(rworld, { color: 'blue', width: 2.2, dash: [7, 4] }); S.text('world rate', 31.5, rworld, { align: 'right', dy: -8, color: 'blue', size: 11.5 });
             S.dot(S1, rworld, { color: 'green', r: 6 }); S.dot(I1, rworld, { color: 'orange', r: 6 });
@@ -192,7 +192,7 @@ $$u^*=\frac{s}{s+f},\qquad u_t-u^*=(1-s-f)^t\,(u_0-u^*).$$
 The deviation from $u^*$ shrinks by the factor $1-s-f$ each period, so the speed of adjustment is set by $s+f$.
 
 Scope: constant rates, a closed labour force, and flows only between employment and unemployment (no entry or exit).`,
-      idea: String.raw`In a steady state the number of people leaving employment equals the number leaving unemployment, $s(1-u)=f\,u$, which solves to $u=s/(s+f)$. For the dynamics, write the one-line recursion as an affine map $u\mapsto(1-s-f)u+s$ with slope $\lvert 1-s-f\rvert<1$; it is a contraction (the geometric-series / contraction-mapping argument of pma-3.x), so iterates converge to its unique fixed point at the geometric rate $(1-s-f)^t$. Because the monthly job-finding rate in the U.S. is of the order of a third and separations of the order of 1–2%, convergence takes a few months, so actual unemployment tracks $s/(s+f)$ closely.`,
+      idea: String.raw`In a steady state the number of people leaving employment equals the number leaving unemployment, $s(1-u)=f\,u$, which solves to $u=s/(s+f)$. For the dynamics, write the one-line recursion as an affine map $u\mapsto(1-s-f)u+s$ with slope $\lvert 1-s-f\rvert<1$; it is a contraction (its iterates are partial sums of a geometric series, pma-3.26), so iterates converge to its unique fixed point at the geometric rate $(1-s-f)^t$. Because the monthly job-finding rate in the U.S. is of the order of a third and separations of the order of 1–2%, convergence takes a few months, so actual unemployment tracks $s/(s+f)$ closely.`,
       caption: String.raw`**Left:** drag the **separation** and **job-finding** rates and the starting unemployment rate. The expectation path (blue) converges to the dotted line $s/(s+f)$, and the gold path is a simulation of 400 workers who move between the two states at random (switch it off for the exact expectation). Scrub the month with the handle. **Middle:** the two pools and the flows between them at that month; in the steady state the arrows are equal. **Right:** U.S. annual averages of unemployment and of $s/(s+f)$ computed from the flows measured in the data.`,
       deps: ['macro-1.8', 'pma-3.26'], refs: ['Mankiw ch. 7'], tags: ['unemployment', 'labour flows'],
       viz(v) {
@@ -237,7 +237,7 @@ Scope: constant rates, a closed labour force, and flows only between employment 
           B.arrow(59, 12, 41, 12, { color: 'green', width: whire * 0.35 + 1.5, head: 8 }); B.text(`hires  f·u = ${fx(100 * hire, 2)}%`, 50, 2.5, { align: 'center', color: 'green', size: 11 });
           B.text(`month ${Math.round(t)}`, 50, 55, { align: 'center', color: 'muted', size: 12 });
           // data
-          C.path(US.map((d) => [d.y + 0.5, d.u]), { color: 'ink', width: 2.6 }); C.path(US.map((d) => [d.y + 0.5, 100 * d.ustar]), { color: 'green', width: 2, dash: [5, 4] });
+          C.path(US.map((d) => [d.y + 0.5, d.u]), { color: 'ink', width: 2.6 }); C.path(US.map((d) => [d.y + 0.5, d.ustar]), { color: 'green', width: 2, dash: [5, 4] });
           C.text('actual unemployment (annual mean)', 1972, 10.4, { color: 'ink', size: 11.5, weight: 600 }); C.text('s/(s+f) from measured flows', 1998.5, 2.0, { color: 'green', size: 11.5, weight: 600 });
           st = { us, lam, t, ut, sep, hire };
         });
@@ -283,10 +283,10 @@ Scope: random matching in a single labour market with constant $s,A,\eta$; empir
           M.line(0, 0, 12, 12 * th, { color: 'orange', width: 1.6, dash: [5, 4] });
           M.text(`slope θ = ${fx(th, 2)}`, 11.9, Math.min(8.6, 12 * th * 0.97), { align: 'right', color: 'orange', size: 11.5, dy: -8 });
           D.fn(cv, { color: 'accent', width: 2.4, dash: [6, 4], domain: [3, 11] });
-          for (let i = 1; i < pts.length; i++) { const t = i / pts.length; D.path([[pts[i - 1][1], pts[i - 1][2]], [pts[i][1], pts[i][2]]], { color: t < 0.5 ? 'muted' : 'accent', width: 1.8, alpha: 0.35 + 0.65 * t }); }
-          D.dots(pts.map((p) => [p[1], p[2]]), { r: 2, color: 'ink' });
-          for (const [yr, lab] of [[2001, '2001'], [2009.75, 'Oct 2009'], [2019.9, 'Dec 2019'], [2020.3, 'Apr 2020'], [2022.5, 'Mar 2022'], [2026.6, '2026']]) {
-            const p = pts.reduce((m, q) => (Math.abs(q[0] - yr) < Math.abs(m[0] - yr) ? q : m)); D.dot(p[1], p[2], { color: 'gold', r: 4, label: lab, labelPos: yr > 2022 ? 'se' : yr === 2019.9 ? 'sw' : 'ne' });
+          for (let i = 1; i < pts.length; i++) { if (pts[i][1] > 11 || pts[i - 1][1] > 11) continue; const t = i / pts.length; D.path([[pts[i - 1][1], pts[i - 1][2]], [pts[i][1], pts[i][2]]], { color: t < 0.5 ? 'muted' : 'accent', width: 1.8, alpha: 0.35 + 0.65 * t }); }
+          D.dots(pts.map((p) => [p[1], p[2]]), { r: 1.6, color: 'ink' });
+          for (const [yr, lab] of [[2009.75, 'Oct 2009'], [2019.9, 'Dec 2019'], [2022.5, 'Mar 2022'], [2026.6, '2026']]) {
+            const p = pts.reduce((m, q) => (Math.abs(q[0] - yr) < Math.abs(m[0] - yr) ? q : m)); D.dot(p[1], p[2], { color: 'gold', r: 4, label: lab, labelPos: yr > 2022 ? 'se' : yr === 2019.9 ? 'ne' : yr < 2010 ? 'nw' : 'ne' });
           }
           st = { ux, vv, th, f: a * Math.pow(th, 1 - e), s, a, e };
         });
@@ -325,12 +325,12 @@ Scope: a stylised model of a labour market with unemployment as a discipline dev
           W.fn((N) => ws(N, b, a), { color: 'blue', width: 3, domain: [0.8, 0.998] });
           W.hline(wp, { color: 'red', width: 3 });
           W.hline(b, { color: 'muted', dash: [2, 4], width: 1.5 });
-          W.text('WS: wage-setting', 0.995, ws(0.98, b, a) + 0.04, { align: 'right', color: 'blue', size: 12, weight: 650 }); W.text('PS: price-setting', 0.805, wp, { dy: -9, color: 'red', size: 12, weight: 650 }); W.text('reservation wage b', 0.805, b, { dy: -8, color: 'muted', size: 11 });
-          if (us < 0.2 && us > -u0 + 0.0005 && 1 - us >= 0.8) { const N = 1 - us; W.vband(Math.min(N, 0.8), 0.8, { color: 'orange', alpha: 0.1 }); W.vline(N, { color: 'green', dash: [5, 4], width: 1.6 }); W.dot(N, wp, { color: 'gold', r: 8, label: `u* = ${fx(100 * us, 1)}%`, labelPos: 'ne' }); }
+          W.text('WS: wage-setting', 0.805, ws(0.81, b, a), { dy: 14, color: 'blue', size: 12, weight: 650 }); W.text('PS: price-setting', 0.805, wp, { dy: -9, color: 'red', size: 12, weight: 650 }); W.text('reservation wage b', 0.805, b, { dy: -8, color: 'muted', size: 11 });
+          if (us < 0.2 && us > -u0 + 0.0005 && 1 - us >= 0.8) { const N = 1 - us; W.vband(Math.min(N, 0.8), 0.8, { color: 'orange', alpha: 0.1 }); W.vline(N, { color: 'green', dash: [5, 4], width: 1.6 }); W.dot(N, wp, { color: 'gold', r: 8, label: `u* = ${fx(100 * us, 1)}%`, labelPos: 'nw' }); }
           else W.text(us === Infinity ? 'no equilibrium: PS wage ≤ reservation wage' : `u* = ${fx(100 * us, 1)}% (off the left edge)`, 0.9, 1.22, { align: 'center', color: 'red', size: 12.5, weight: 650 });
           for (const [bb, c] of [[0.3, 'teal'], [0.45, 'accent'], [0.6, 'purple']]) {
             U.path(Array.from({ length: 91 }, (_, i) => i / 100).map((mm) => [mm, 100 * ustar(mm, bb, a)]).filter(([, y]) => y < 21), { color: c, width: Math.abs(bb - b) < 1e-9 ? 3 : 2 });
-            U.text(`b = ${bb}`, 0.88, Math.min(19.2, 100 * ustar(0.88, bb, a) - 0.4), { align: 'right', color: c, size: 11, weight: 600 });
+            { let xm = 0.88; while (xm > 0.02 && 100 * ustar(xm, bb, a) > 17) xm -= 0.01; U.text(`b = ${bb}`, xm, 100 * ustar(xm, bb, a), { align: 'right', dx: -8, color: c, size: 11, weight: 600 }); }
           }
           if (us < 21) U.dot(m, 100 * us, { color: 'gold', r: 7 });
           st = { m, b, wp, us, a };
@@ -347,24 +347,25 @@ Scope: a stylised model of a labour market with unemployment as a discipline dev
       statement: String.raw`The **natural rate of unemployment** is the rate around which actual unemployment fluctuates and to which it returns when output is at its normal level: the rate at which job separations and job findings balance, $u_n=s/(s+f)$, given the economy's search frictions and wage-setting institutions. It is the sum of **frictional** unemployment (the time it takes to match workers with jobs) and **structural** unemployment (a mismatch of skills or places with jobs, or wages held above the market-clearing level); the remainder, actual minus natural, is **cyclical** unemployment. It is not a constant: it moves with demographics, benefits, labour-market institutions and with the matching efficiency of macro-2.5, and it is not directly observed but estimated.
 
 Scope: a concept for the medium run; the estimates shown are the U.S. Congressional Budget Office's, which come from a model of the Phillips curve and are themselves uncertain.`,
-      idea: String.raw`Two approaches meet. Flow accounting (macro-2.4) says that, because unemployment adjusts within months, the steady state $s/(s+f)$ computed from measured flows is a benchmark. The wage–price approach (macro-2.6) says that the equilibrium unemployment of the WS–PS model is the rate at which inflation neither rises nor falls. Statistical agencies estimate this rate from the Phillips curve; the two estimates broadly agree in the data, though neither can be read off directly.`,
-      caption: String.raw`Actual U.S. unemployment (black) and the CBO's long-term estimate of the natural rate (green), with the long-term rate drawn as a shaded floor; the gap between them is cyclical unemployment, red above (slack), blue below (overheating). Choose the **window**, show the CBO's **short-term** rate (which includes temporary rises from large shocks) or the rate implied by **measured flows** $s/(s+f)$, and drag the date marker for a readout. **Right:** each year's flow-implied rate against the CBO natural rate.`,
+      idea: String.raw`Two approaches meet. Flow accounting (macro-2.4) says that, because unemployment adjusts within months, the steady state $s/(s+f)$ computed from month-to-month flows simply tracks actual unemployment, but computed from their long-run average it is a benchmark. The wage–price approach (macro-2.6) says that the equilibrium unemployment of the WS–PS model is the rate at which inflation neither rises nor falls. Statistical agencies estimate this rate from the Phillips curve; the two estimates broadly agree in the data, though neither can be read off directly.`,
+      caption: String.raw`Actual U.S. unemployment (black) and the CBO's long-term estimate of the natural rate (green), with the long-term rate drawn as a shaded floor; the gap between them is cyclical unemployment, red above (slack), blue below (overheating). Choose the **window**, show the CBO's **short-term** rate (which includes temporary rises from large shocks) or the rate implied by **trend flows** $s/(s+f)$ (measured separation and finding rates averaged over eleven years, so cyclical swings wash out), and drag the date marker for a readout. **Right:** each year's trend-flow rate against the CBO natural rate.`,
       deps: ['macro-2.4', 'macro-2.6'], refs: ['Mankiw ch. 7'], tags: ['unemployment', 'natural rate'],
       credit: 'Friedman, 1968; Phelps, 1967',
       viz(v) {
         const win = v.select('window', [{ value: '1949', label: '1949–' }, { value: '1980', label: '1980–' }, { value: '2000', label: '2000–' }], '1949');
         const sh = v.toggle('short-term natural rate (CBO)', false);
-        const fl = v.toggle('rate implied by measured flows s/(s+f)', true);
+        const fl = v.toggle('rate implied by trend flows s/(s+f)', true);
         const P = NAIRU_US.length / 4, Q = rows(NAIRU_US, 4);
-        const US = rows(FLOWS_US, 4).map(([y, f, s, u]) => ({ y, ustar: (100 * (s / 100)) / (s / 100 + f) }));
+        const FR = rows(FLOWS_US, 4).map(([y, f, s]) => ({ y, f, s: s / 100 }));
+        const US = FR.map((d) => { const w = FR.filter((e) => Math.abs(e.y - d.y) <= 5), f = w.reduce((q, e) => q + e.f, 0) / w.length, s = w.reduce((q, e) => q + e.s, 0) / w.length; return { y: d.y, ustar: (100 * s) / (s + f) }; });
         const S = v.stage({ x: [1949, 2027], y: [0, 15], axes: 'box', gutter: true, height: 340, weight: 1.6, xlabel: 'year', ylabel: 'unemployment rate (%)' });
         const hd = S.handle(2019.9, 3.5, { color: 'gold', label: 'date', constrain: (x) => [clamp(x, 1949, 2026.5), 0] });
-        const Cm = v.stage({ x: [3, 9], y: [3, 9], axes: 'box', gutter: true, height: 340, weight: 0.7, minWidth: 230, xlabel: 'CBO natural rate (%)', ylabel: 's/(s+f) from flows (%)', title: 'two estimates of the natural rate' });
+        const Cm = v.stage({ x: [3, 9], y: [3, 9], axes: 'box', gutter: true, height: 340, weight: 0.7, minWidth: 230, xlabel: 'CBO natural rate (%)', ylabel: 's/(s+f), 11-yr average flows (%)', title: 'two estimates of the natural rate' });
         // annual mean of the CBO long-term rate for each year
         const ann = {}; for (const [t, , n] of Q) { const y = Math.floor(t + 1e-9); (ann[y] ||= []).push(n); }
         const pairsY = US.filter((d) => ann[d.y] && ann[d.y].length === 4).map((d) => [ann[d.y].reduce((a, b) => a + b, 0) / 4, d.ustar]);
         const corr = ols(pairsY.map((p) => p[0]), pairsY.map((p) => p[1]));
-        v.legend([['ink', 'unemployment rate'], ['green', 'natural rate (CBO long-term)'], ['red', 'cyclical gap above', { area: true }], ['blue', 'overheating', { area: true }], ['orange', 'flow-implied s/(s+f)', { dash: true }]]);
+        v.legend([['ink', 'unemployment rate'], ['green', 'natural rate (CBO long-term)'], ['red', 'cyclical gap above', { area: true }], ['blue', 'overheating', { area: true }], ['orange', 's/(s+f) from 11-year average flows', { dash: true }]]);
         let st = {};
         v.render(() => {
           const w = Number(win.value), lo = w, hi = 2027;
@@ -391,7 +392,7 @@ Scope: a concept for the medium run; the estimates shown are the U.S. Congressio
         });
         v.readout(() => {
           const { t, u, n, m, fi } = st, yr = Math.floor(t), q = Math.floor((t - yr) * 4) + 1;
-          return `${yr} Q${q}: unemployment ${fx(u, 1)}%, natural rate ${fx(n, 1)}% (short-term ${fx(m, 1)}%) → cyclical unemployment **${u - n >= 0 ? '+' : '−'}${fx(Math.abs(u - n), 1)} points**${fi ? `; flow-implied rate that year ${fx(fi.ustar, 1)}%` : ''}.\n` +
+          return `${yr} Q${q}: unemployment ${fx(u, 1)}%, natural rate ${fx(n, 1)}% (short-term ${fx(m, 1)}%) → cyclical unemployment **${u - n >= 0 ? '+' : '−'}${fx(Math.abs(u - n), 1)} points**${fi ? `; trend-flow rate that year ${fx(fi.ustar, 1)}%` : ''}.\n` +
             `Natural rate = frictional + structural (not separately observed); cyclical = the gap. Over the sample the two natural-rate estimates correlate with R² = ${fx(corr.r2, 2)}.`;
         });
       },

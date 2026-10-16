@@ -44,7 +44,7 @@ for (const [d, b] of [['aɪ', 'a'], ['aʊ', 'a'], ['eɪ', 'e'], ['oʊ', 'o'], ['
 /** Segments that appear in the feature chart of 2.3 and 2.4, in rows. */
 export const CHART_ROWS = [
   ['stops', 'p b t d k g ʔ'], ['affricates', 'tʃ dʒ'], ['fricatives', 'f v θ ð s z ʃ ʒ h'], ['nasals', 'm n ŋ'],
-  ['liquids, glides', 'l ɹ ɾ j w'], ['vowels (front, central)', 'i ɪ e ɛ æ ə'], ['vowels (low, back)', 'a ʌ ɑ ɔ o ʊ u'],
+  ['liquids, glides', 'l ɹ ɾ j w'], ['front vowels', 'i ɪ e ɛ æ ə'], ['back, low vowels', 'a ʌ ɑ ɔ o ʊ u'],
 ].map(([name, syms]) => [name, syms.split(' ')]);
 export const CHART_SYMS = CHART_ROWS.flatMap((r) => r[1]);
 export const isVowel = (s) => SEG[s]?.f.syl === '+';
@@ -120,29 +120,29 @@ function rewrite(t, B, w, i) {
 /**
  * Apply a rewrite rule {A, B, L, R} simultaneously to every site of the word (left to right on the input).
  * A: spec or '∅' (insertion). B: feature change '[−voi]', a symbol, '∅' (deletion) or a function (t, left, right) → symbol.
- * L, R: arrays of specs. Returns {out, hits} with hits = [{i (index in out or in input for deletions), kind, from, to}].
+ * L, R: arrays of specs. Returns {out, hits, align} with hits = [{i (index in out; in the input for deletions), kind, from, to}] and align = [{u (input index or null), o (output index or null)}] for drawing before/after rows.
  */
 export function applyRule(word, rule) {
   const A = rule.A === '∅' ? null : parseSpec(rule.A);
   const L = (rule.L || []).map(parseSpec), R = (rule.R || []).map(parseSpec), n = word.length;
   const okL = (i) => { let p = i - 1; for (let k = L.length - 1; k >= 0; k--, p--) { const q = L[k]; if (q.boundary ? p >= 0 : !(p >= 0 && q.test(word[p]))) return false; } return true; };
   const okR = (i) => { let p = i; for (let k = 0; k < R.length; k++, p++) { const q = R[k]; if (q.boundary ? p < n : !(p < n && q.test(word[p]))) return false; } return true; };
-  const out = [], hits = [];
+  const out = [], hits = [], align = [];
   for (let i = 0; i <= n; i++) {
     if (A === null) {
-      if (okL(i) && okR(i)) { out.push({ s: rule.B, str: false, ins: true }); hits.push({ i: out.length - 1, kind: 'ins', to: rule.B }); }
-      if (i < n) out.push(word[i]);
+      if (okL(i) && okR(i)) { out.push({ s: rule.B, str: false, ins: true }); hits.push({ i: out.length - 1, kind: 'ins', to: rule.B }); align.push({ u: null, o: out.length - 1 }); }
+      if (i < n) { out.push(word[i]); align.push({ u: i, o: out.length - 1 }); }
     } else if (i < n) {
       const t = word[i];
       if (A.test(t) && okL(i) && okR(i + 1)) {
         const r = rewrite(t, rule.B, word, i);
-        if (r === null) hits.push({ i, kind: 'del', from: t.s });
-        else if (r.s !== t.s) { out.push({ ...r, chg: true }); hits.push({ i: out.length - 1, kind: 'chg', from: t.s, to: r.s }); }
-        else out.push(t);
-      } else out.push(t);
+        if (r === null) { hits.push({ i, kind: 'del', from: t.s }); align.push({ u: i, o: null }); }
+        else if (r.s !== t.s) { out.push({ ...r, chg: true }); hits.push({ i: out.length - 1, u: i, kind: 'chg', from: t.s, to: r.s }); align.push({ u: i, o: out.length - 1 }); }
+        else { out.push(t); align.push({ u: i, o: out.length - 1 }); }
+      } else { out.push(t); align.push({ u: i, o: out.length - 1 }); }
     }
   }
-  return { out, hits };
+  return { out, hits, align };
 }
 /** Number of sites at which the rule would apply (does not rewrite). */
 export function sites(word, rule) { return applyRule(word, rule).hits.length; }

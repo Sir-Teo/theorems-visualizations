@@ -72,7 +72,7 @@ $Q_{10}=2$ needs $E_a\approx RT(T+10)\ln 2/10$, about 52 kJ/mol near 300 K. It i
         const preset = v.select('preset', [{ value: 'c', label: 'custom' }, { value: 'r', label: 'rule of thumb' }, { value: 'e', label: 'enzyme denaturation' }, { value: 'f', label: 'flame chemistry' }, { value: 'l', label: 'radical, low barrier' }], 'c', {
           onChange(val) { const P = { r: [52, 300], e: [250, 310], f: [150, 2000], l: [10, 300] }[val]; if (P) { eaS.set(P[0]); tS.set(P[1]); } },
         });
-        const A = v.stage({ x: [0, 300], y: [1, 200], ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'E_a (kJ/mol)', ylabel: 'Q₁₀ = k(T+10)/k(T)', title: '$Q_{10}$ against activation energy' });
+        const A = v.stage({ x: [0, 300], y: [1, 200], ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'Eₐ (kJ/mol)', ylabel: 'Q₁₀ = k(T+10)/k(T)', title: '$Q_{10}$ against activation energy' });
         const B = v.stage({ x: [250, 2500], y: [1, 200], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'T (K)', ylabel: 'Q₁₀', title: '$Q_{10}$ against temperature, at your $E_a$' });
         const hE = A.handle(52, 2, { color: 'gold', constrain: (x) => [clamp(x, 5, 300), 1] }); hE.visible = false;
         let info = {};
@@ -114,7 +114,7 @@ The prefactor is the collision frequency per unit concentration, $\sigma\langle 
         const E0 = v.slider('threshold $E_0/k_BT$', 0, 5, 2, { step: 0.1 });
         v.button('Reset counts', () => g.resetCounts());
         const box = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 330, title: 'hard discs; energetic collisions flash', weight: 0.9, minWidth: 250 });
-        const pl = v.stage({ x: [0, 6], y: [-1, 7], axes: 'box', gutter: true, height: 330, xlabel: 'E / k_BT', ylabel: 'ln (collisions with E_n ≥ E per time)', title: 'the Boltzmann factor, counted', weight: 1.1 });
+        const pl = v.stage({ x: [0, 6], y: [-1, 7], axes: 'box', gutter: true, height: 330, xlabel: 'E / kT', ylabel: 'ln (collisions with Eₙ ≥ E per time)', title: 'the Boltzmann factor, counted', weight: 1.1 });
         let flash = [], info = {};
         v.animate((t) => {
           for (let i = 0; i < 8; i++) g.step(0.0015);
@@ -152,7 +152,7 @@ It lumps together everything the model ignores about orientation. If only collis
         const rr = v.rng(5), NMAX = 20000;
         const C1 = new Float64Array(NMAX), C2 = new Float64Array(NMAX), EN = new Float64Array(NMAX);
         for (let i = 0; i < NMAX; i++) { C1[i] = 2 * rr() - 1; C2[i] = 2 * rr() - 1; EN[i] = -Math.log(1 - rr()); }
-        const al = v.slider('cone half-angle $\\alpha$ (°)', 5, 180, 40, { step: 1 });
+        const al = v.slider('cone half-angle $\\alpha$ (°)', 5, 180, 70, { step: 1 });
         const E0 = v.slider('threshold $E_0/k_BT$', 0, 5, 1, { step: 0.1 });
         const nS = v.slider('collisions counted', 100, NMAX, 3000, { log: true, int: true, sig: 2 });
         const L = v.stage({ x: [-3, 3], y: [-1.9, 1.9], equal: true, axes: false, height: 300, title: 'one collision', weight: 1, minWidth: 260 });
@@ -160,8 +160,8 @@ It lumps together everything the model ignores about orientation. If only collis
         Rr.setTicks([[0.5, 'all'], [1.5, 'energetic'], [2.5, 'oriented'], [3.5, 'energetic + oriented']], null);
         // positions: molecule 1 at (-1,0), 2 at (1,0), radius 1. a1 = angle of cone axis of molecule 1, a2 of molecule 2
         const r = 1.0;
-        const h1 = L.handle(-1 + r * Math.cos(0.5), r * Math.sin(0.5), { color: 'orange', label: '1', constrain: (x, y) => { const a = Math.atan2(y, x + 1); return [-1 + r * Math.cos(a), r * Math.sin(a)]; } });
-        const h2 = L.handle(1 + r * Math.cos(Math.PI - 0.5), r * Math.sin(Math.PI - 0.5), { color: 'orange', label: '2', constrain: (x, y) => { const a = Math.atan2(y, x - 1); return [1 + r * Math.cos(a), r * Math.sin(a)]; } });
+        const h1 = L.handle(-1 + r * Math.cos(0.9), r * Math.sin(0.9), { color: 'orange', label: '1', constrain: (x, y) => { const a = Math.atan2(y, x + 1); return [-1 + r * Math.cos(a), r * Math.sin(a)]; } });
+        const h2 = L.handle(1 + r * Math.cos(Math.PI + 0.8), r * Math.sin(Math.PI + 0.8), { color: 'orange', label: '2', constrain: (x, y) => { const a = Math.atan2(y, x - 1); return [1 + r * Math.cos(a), r * Math.sin(a)]; } });
         const wedge = (cx, cy, a, half, color, alpha) => {
           const pts = [[cx, cy]]; for (let i = 0; i <= 24; i++) { const q = a - half + 2 * half * i / 24; pts.push([cx + 1.0 * Math.cos(q), cy + 1.0 * Math.sin(q)]); }
           L.poly(pts, { fill: color, fillAlpha: alpha, color, width: 1.4 });
@@ -208,7 +208,7 @@ For the line-of-centres model, $\sigma_r=\pi d^2(1-E_0/E)$ for $E>E_0$ and $0$ b
         const Es = v.slider('collision energy $E$ (kJ/mol)', 1, 200, 70, { step: 1 });
         const A = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 300, title: 'impact geometry', weight: 0.8, minWidth: 240 });
         const B = v.stage({ x: [0, 200], y: [0, 1.15], axes: 'box', gutter: true, height: 300, xlabel: 'E (kJ/mol)', ylabel: 'σ_r / πd²', title: 'excitation function', weight: 1, minWidth: 240 });
-        const C = v.stage({ x: [0, 200], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'E (kJ/mol)', ylabel: 'σ_r E e^(−E/kT) (scaled)', title: 'thermal average', weight: 1, minWidth: 240 });
+        const C = v.stage({ x: [0, 200], y: [0, 1.1], axes: 'box', gutter: true, height: 300, xlabel: 'E (kJ/mol)', ylabel: 'integrand (relative)', title: 'thermal average', weight: 1, minWidth: 240 });
         const hb = A.handle(-1.3, 0.5, { color: 'gold', label: 'b', constrain: (x, y) => [-1.3, clamp(y, -1.4, 1.4)] });
         const sig = (E) => model.value === 'loc' ? (E > E0.value ? 1 - E0.value / E : 0) : (E > E0.value ? 1 : 0);
         let info = {};
@@ -222,10 +222,9 @@ For the line-of-centres model, $\sigma_r=\pi d^2(1-E_0/E)$ for $E>E_0$ and $0$ b
           A.measure(0, 0, 0, bmax, ''); A.tex('b_{\\max}', 0.08, bmax / 2 + 0.05, { color: 'green' });
           B.fn((x) => sig(x), { color: 'accent', width: 2.6, domain: [0.01, 200] }); B.vline(e0, { color: 'faint', dash: [4, 4] }); B.dot(E, sig(E), { r: 6, color: 'gold' });
           const f = (x) => sig(x) * x * Math.exp(-x / kT) / (kT * kT);
-          const top = Math.max(...Array.from({ length: 200 }, (_, i) => f(0.5 + i)));
-          C.setView([0, 200], [0, Math.max(top * 1.15, 1e-6)]);
-          C.fn((x) => f(Math.max(x, 1e-6)), { color: 'accent', width: 2.2, fill: 'accent', domain: [0.01, 200] });
-          C.fn((x) => x * Math.exp(-x / kT) / (kT * kT), { color: 'faint', width: 1.4, dash: [5, 4], domain: [0.01, 200] });
+          const w0 = (x) => x * Math.exp(-x / kT) / (kT * kT), top = w0(kT); // the weight peaks at E = kT
+          C.fn((x) => f(Math.max(x, 1e-6)) / top, { color: 'accent', width: 2.2, fill: 'accent', domain: [0.01, 200] });
+          C.fn((x) => w0(x) / top, { color: 'faint', width: 1.4, dash: [5, 4], domain: [0.01, 200] });
           const num = v.M.integrate((x) => f(x), 0, 12 * kT + e0, 3000);
           const closed = model.value === 'loc' ? Math.exp(-e0 / kT) : (1 + e0 / kT) * Math.exp(-e0 / kT);
           info = { num, closed, kT, b, bmax, sigE: sig(E) };
@@ -250,7 +249,7 @@ For the line-of-centres model, $\sigma_r=\pi d^2(1-E_0/E)$ for $E>E_0$ and $0$ b
         const Et = v.slider('translational energy $E_t$ (eV)', 0, 1.2, 0.45, { step: 0.01 });
         const Ev = v.slider('vibrational energy $E_v$ (eV)', 0.05, 1.0, 0.27, { step: 0.01 });
         const ph = v.slider('vibrational phase', 0, 1, 0.25, { step: 0.01 });
-        const A = v.stage({ x: [0, 5.4], y: [0, 3.2], equal: true, axes: false, height: 340, title: 'potential energy surface (contours every 0.25 eV above the reactants)', weight: 1.35 });
+        const A = v.stage({ x: [0, 5.4], y: [0, 3.2], equal: true, axes: false, height: 340, title: 'potential energy surface (contours every 0.2 eV above the reactants; red: level of the saddle)', weight: 1.35 });
         const B = v.stage({ x: [0, 200], y: [-1, 3], axes: 'box', gutter: true, height: 340, xlabel: 't (fs)', ylabel: 'energy (eV)', title: 'energy along the trajectory', weight: 1, minWidth: 260 });
         let cache = null, key = '';
         const prep = () => {
@@ -262,13 +261,13 @@ For the line-of-centres model, $\sigma_r=\pi d^2(1-E_0/E)$ for $E>E_0$ and $0$ b
         v.render(() => {
           const { P, sd, path } = prep();
           const field = (X, Y) => { const [x, y] = fromXY(X, Y); return (x < 0.3 || y < 0.3) ? 9 : Math.min(9, vRel(x, y, P)); };
-          A.heat((X, Y) => { const [x, y] = fromXY(X, Y); return (x < 0.3 || y < 0.3) ? NaN : Math.min(vRel(x, y, P), 3); }, { range: [-1.2, 3], cmap: 'theme', res: 3, key: 'pes' + wS.value });
-          A.clip(() => A.contour(field, Array.from({ length: 24 }, (_, i) => -0.5 + 0.25 * i).filter((l) => Math.abs(l) > 1e-9 || true), { color: 'ink', width: 1, alpha: 0.55, res: 160 }));
+          A.heat((X, Y) => { const [x, y] = fromXY(X, Y); return (x < 0.3 || y < 0.3) ? NaN : Math.min(vRel(x, y, P), 3); }, { range: [0, 2.5], cmap: 'theme', res: 3, key: 'pes' + wS.value });
+          A.clip(() => { A.contour(field, Array.from({ length: 13 }, (_, i) => 0.05 + 0.2 * i), { color: 'ink', width: 1, alpha: 0.5, res: 160 }); A.contour(field, [sd.V], { color: 'red', width: 1.8, res: 160 }); });
           A.path(path, { color: 'green', width: 2.2, dash: [8, 5] });
           A.dot(sd.X, sd.Y, { r: 6, color: 'red', label: 'saddle', labelPos: 'ne' });
           const L = launch(P, Et.value, Ev.value, ph.value), tr = trajectory(P, L.X, L.Y, L.VX, L.VY, { tmax: 220 });
           A.path(tr.pts, { color: 'gold', width: 2.4 }); A.dot(tr.pts[0][0], tr.pts[0][1], { r: 4, color: 'gold' });
-          A.text('A + BC', 4.6, 0.55, { color: 'ink', size: 14, weight: 650, align: 'center' }); A.text('AB + C', 1.0, 2.95, { color: 'ink', size: 14, weight: 650, align: 'center' });
+          A.text('A + BC', 4.2, 1.15, { color: 'ink', size: 14, weight: 650, align: 'center' }); A.text('AB + C', 1.0, 2.95, { color: 'ink', size: 14, weight: 650, align: 'center' });
           A.text('r(AB) →', 5.0, 0.2, { color: 'muted', size: 11, align: 'center' });
           // energies
           const V = tr.pts.map((p) => vXY(p[0], p[1], P)), n = V.length, T = Array.from({ length: n }, (_, i) => i * tr.dtStore);
