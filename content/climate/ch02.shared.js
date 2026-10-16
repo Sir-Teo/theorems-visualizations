@@ -135,33 +135,42 @@ export const KAPPA_ADIABAT = (gamma) => (RD * gamma * 1e-3) / G0;
  * Returns the state {T, Ts, olr, ...}. `state` may be passed to warm-start.
  */
 export function rce(o = {}, state = null, grid = GRID) {
-  const { N, dp } = grid, gamma = o.gamma ?? 6.5, kk = KAPPA_ADIABAT(gamma);
-  const asr = o.asr ?? 240, sw = o.sw || null, swAtm = sw ? sw.reduce((a, b) => a + b, 0) : 0;
-  const Ssfc = asr - swAtm;
-  const T = state ? Array.from(state.T) : standardT(288, gamma, 200, grid);
-  let Ts = state ? state.Ts : 288;
-  const iters = o.iters ?? 600, wL = dp.map((d) => Math.max(d, 15)), wSfc = 120; // pseudo heat capacities (hPa-equivalents)
-  let last = null;
-  for (let it = 0; it < iters; it++) {
+  const st = rceStart(o, state, grid);
+  rceSteps(st, o, o.iters ?? 1500, grid);
+  return rceFinish(st, o, grid);
+}
+/** Initial state of a radiative–convective integration (warm start from a previous state when given). */
+export function rceStart(o = {}, state = null, grid = GRID) {
+  const T = state ? Array.from(state.T) : standardT(o.Ts0 ?? 288, o.gamma ?? 6.5, 200, grid);
+  return { T, Ts: state ? state.Ts : (o.Ts0 ?? 288), steps: 0, resid: 1e9 };
+}
+/** Advance the column `n` pseudo-time steps (half a day each, with heat-capacity floors for stability). */
+export function rceSteps(st, o, n, grid = GRID) {
+  const { N, dp } = grid, kk = KAPPA_ADIABAT(o.gamma ?? 6.5), asr = o.asr ?? 240, sw = o.sw || null;
+  const swAtm = sw ? sw.reduce((a, b) => a + b, 0) : 0, Ssfc = asr - swAtm;
+  const dt = (o.dt ?? 0.5) * 86400, wL = dp.map((d) => Math.max(d, 40)), C = wL.map((w) => (CP * w * 100) / G0), Cs = o.Cs ?? 4e6;
+  const T = st.T;
+  for (let it = 0; it < n; it++) {
     const q = o.fixedQ ? o.fixedQ : humidity(T, grid, { rhs: o.rhs });
-    const tau = opticalDepths(T, { ...o, q }, grid);
-    const L = longwave(T, Ts, tau, o, grid);
-    last = L;
-    // net flux (up − down) at interfaces; layer i gains net[i] − net[i+1] (+ shortwave)
+    const L = longwave(T, st.Ts, opticalDepths(T, { ...o, q }, grid), o, grid);
     let maxd = 0;
-    const fac = o.rate ?? 1.6;
     for (let i = 0; i < N; i++) {
-      const gain = L.up[i] - L.down[i] - (L.up[i + 1] - L.down[i + 1]) + (sw ? sw[i] : 0);
-      const dT = Math.max(-4, Math.min(4, (fac * gain) / (wL[i] * 0.1)));
-      T[i] += dT * 0.5; maxd = Math.max(maxd, Math.abs(dT));
+      const gain = L.up[i] - L.down[i] - (L.up[i + 1] - L.down[i + 1]) + (sw ? sw[i] : 0), d = (gain * dt) / C[i];
+      T[i] += d; maxd = Math.max(maxd, Math.abs(d));
     }
-    const gs = Ssfc - (L.up[0] - L.down[0]);
-    Ts += Math.max(-4, Math.min(4, (fac * gs) / (wSfc * 0.1))) * 0.5;
-    convect(T, wL, kk, grid); if (Ts > T[0]) { const w0 = wL[0], w = wSfc; const m = (Ts * w + T[0] * w0) / (w + w0); Ts = m; T[0] = m; convect(T, wL, kk, grid); }
-    if (it > 60 && maxd < 2e-4 && Math.abs(L.olr - asr) < 0.02) break;
+    const ds = ((Ssfc - (L.up[0] - L.down[0])) * dt) / Cs; st.Ts += ds; maxd = Math.max(maxd, Math.abs(ds));
+    // surface and the lowest layer are one convective block when the ground is warmer than the air
+    if (st.Ts > T[0]) { const w0 = C[0], w = Cs, m = (st.Ts * w + T[0] * w0) / (w + w0); st.Ts = m; T[0] = m; }
+    convect(T, C, kk, grid);
+    st.steps++; st.resid = Math.abs(L.olr - (asr)) ; st.maxd = maxd;
   }
-  const q = o.fixedQ ? o.fixedQ : humidity(T, grid, { rhs: o.rhs }), tau = opticalDepths(T, { ...o, q }, grid), L = longwave(T, Ts, tau, { ...o, spec: true }, grid);
-  return { T, Ts, q, tau, L, olr: L.olr, asr };
+  return st;
+}
+/** Final diagnostics (spectra included) of a column state. */
+export function rceFinish(st, o = {}, grid = GRID) {
+  const q = o.fixedQ ? o.fixedQ : humidity(st.T, grid, { rhs: o.rhs }), tau = opticalDepths(st.T, { ...o, q }, grid);
+  const L = longwave(st.T, st.Ts, tau, { ...o, spec: true }, grid);
+  return { T: Array.from(st.T), Ts: st.Ts, q, tau, L, olr: L.olr, asr: o.asr ?? 240, steps: st.steps, resid: L.olr - (o.asr ?? 240) };
 }
 
 /** Energy-conserving convective adjustment of a column (layers weights w, critical ratio exponent kk). */
