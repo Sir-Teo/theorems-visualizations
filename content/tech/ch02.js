@@ -31,9 +31,9 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
       tags: ['ancient', 'statics', 'lever'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lever' },
       viz(v) {
-        const A = v.stage({ x: [-11.6, 11.6], y: [-5.4, 3.6], equal: true, axes: false, height: 310, weight: 1.45, minWidth: 380, title: 'balance beam (distances in peg units)' });
+        const A = v.stage({ x: [-11.6, 11.6], y: [-5.3, 3.0], equal: true, axes: false, height: 310, weight: 1.45, minWidth: 380, title: 'balance beam (distances in peg units)' });
         const B = v.stage({ x: [0.5, 10.5], y: [-14, 14], axes: 'box', gutter: true, height: 310, weight: 1, minWidth: 280, xlabel: 'distance of the right load', ylabel: 'tilt (°)', title: 'tilt as the right load slides' });
-        const C = yearStage(v, [-2800, 450], { height: 150, full: true, title: 'dated evidence: balances and the theory of the lever' });
+        const C = yearStage(v, [-2800, 450], { height: 190, full: true, title: 'dated evidence: balances and the theory of the lever' });
         const mode = v.select('show', [{ value: 'bal', label: 'balance' }, { value: 'proof', label: 'Archimedes’ proof' }, { value: 'earth', label: 'a place to stand' }], 'bal');
         const mA = v.slider('left weight $W_A$', 1, 12, 4, { int: true });
         const mB = v.slider('right weight $W_B$', 1, 12, 3, { int: true });
@@ -52,48 +52,47 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
           const m = mode.value, dA = -hA.x, dB = hB.x, wA = mA.value, wB = mB.value, h = hS.value;
           hS.el.hidden = m !== 'bal'; you.el.hidden = m !== 'earth'; shortArm.el.hidden = m !== 'earth';
           const th = m === 'proof' ? 0 : tilt(dA, dB, wA, wB, h), t = -th * D2R; // rotation (CCW positive)
-          const piv = [0, 0.9], hh = m === 'bal' ? h : 0.35;
+          const piv = [0, 1.6], hh = m === 'bal' ? h : 0.35;
           const P = (x) => [piv[0] + x * Math.cos(t) + hh * Math.sin(t), piv[1] + x * Math.sin(t) - hh * Math.cos(t)];
           // fulcrum and beam
-          A.poly([[0, piv[1]], [-0.9, -2.0], [0.9, -2.0]], { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1.4 });
-          ground(A, -11.4, 11.4, -2.0);
+          A.poly([[0, piv[1]], [-0.9, -3.0], [0.9, -3.0]], { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1.4 });
+          ground(A, -11.4, 11.4, -3.0);
           const L = P(-10.7), R = P(10.7);
           A.line(L[0], L[1], R[0], R[1], { color: 'ink', width: 5 });
           for (let k = -10; k <= 10; k++) { const q = P(k); A.dot(q[0], q[1], { r: k === 0 ? 0 : 2, color: 'muted' }); }
           A.dot(piv[0], piv[1], { r: 3.5, color: 'ink' });
           // stops
-          for (const sx of [-10.4, 10.4]) A.line(sx, -2.0, sx, 0.55 - 10.4 * Math.tan(12 * D2R) - 0.12, { color: 'faint', width: 3 });
+          for (const sx of [-10.4, 10.4]) A.line(sx, -3.0, sx, piv[1] - hh - 10.4 * Math.sin(12 * D2R) - 0.12, { color: 'faint', width: 3 });
           // hanging loads
           const hang = (x, w, col, lab) => {
-            const q = P(x), top = q[1] - 0.15, size = 0.5 + 0.12 * w, bot = top - 1.0 - size;
+            const q = P(x), top = q[1] - 0.15, size = 0.4 + 0.08 * w, bot = top - 0.4 - size;
             A.line(q[0], q[1], q[0], bot + size, { color: 'muted', width: 1.2 });
             block(A, q[0], bot, 0.6 + 0.07 * w, size, `${w}`, { color: col, fillAlpha: 0.5 });
-            A.text(lab, q[0], bot - 0.35, { size: 11, color: col, align: 'center', baseline: 'top', weight: 700 });
           };
           if (m !== 'proof') { hang(-dA, wA, 'accent', `d = ${dA}`); hang(dB, wB, 'orange', `d = ${dB}`); }
           if (m === 'bal' || m === 'earth') {
             // moment bars
             const mx = Math.max(wA * dA, wB * dB, 1), sc = 10 / Math.max(mx, 40);
-            A.rect(-wA * dA * sc, -4.4, 0, -3.95, { fill: 'accent', fillAlpha: 0.6, stroke: false });
-            A.rect(0, -4.4, wB * dB * sc, -3.95, { fill: 'orange', fillAlpha: 0.6, stroke: false });
-            A.line(0, -4.6, 0, -3.75, { color: 'ink', width: 1.2 });
-            A.text(`moment ${wA}×${dA} = ${wA * dA}`, -0.3, -4.95, { size: 11.5, color: 'accent', align: 'right', baseline: 'middle' });
-            A.text(`${wB}×${dB} = ${wB * dB}`, 0.3, -4.95, { size: 11.5, color: 'orange', align: 'left', baseline: 'middle' });
+            A.rect(-wA * dA * sc, -4.25, 0, -3.8, { fill: 'accent', fillAlpha: 0.6, stroke: false });
+            A.rect(0, -4.25, wB * dB * sc, -3.8, { fill: 'orange', fillAlpha: 0.6, stroke: false });
+            A.line(0, -4.45, 0, -3.6, { color: 'ink', width: 1.2 });
+            A.text(`moment ${wA}×${dA} = ${wA * dA}`, -0.3, -4.8, { size: 11.5, color: 'accent', align: 'right', baseline: 'middle' });
+            A.text(`${wB}×${dB} = ${wB * dB}`, 0.3, -4.8, { size: 11.5, color: 'orange', align: 'left', baseline: 'middle' });
             const bal = wA * dA === wB * dB;
             A.corner(bal ? 'balanced: moments equal' : `${wA * dA > wB * dB ? 'left' : 'right'} side down, tilt ${v.fix(Math.abs(th), 1)}°${Math.abs(th) >= 12 ? ' (on the stop)' : ''}`, 'tl', { size: 12.5, color: bal ? 'green' : 'red', weight: 700 });
           }
           if (m === 'proof') {
             // Archimedes: spread A's wA unit blocks over [−dA−dB, −dA+dB], B's wB over [dB−dA, dB+dA]
-            const y0 = -3.9, dens = (w, len) => w / len, rhoA = dens(wA, 2 * dB), rhoB = dens(wB, 2 * dA), Hs = 1.6 / Math.max(rhoA, rhoB);
+            const y0 = -4.5, dens = (w, len) => w / len, rhoA = dens(wA, 2 * dB), rhoB = dens(wB, 2 * dA), Hs = 1.2 / Math.max(rhoA, rhoB);
             const row = (c, half, w, rho, col) => {
               const wd = (2 * half) / w;
               for (let k = 0; k < w; k++) { const x0 = c - half + k * wd; A.rect(x0, y0, x0 + wd, y0 + rho * Hs, { fill: col, fillAlpha: 0.45, color: col, width: 1 }); }
             };
             row(-dA, dB, wA, rhoA, 'accent'); row(dB, dA, wB, rhoB, 'orange');
-            A.line(0, y0 - 0.3, 0, y0 + 2.1, { color: 'ink', width: 1.2, dash: [4, 3] });
+            A.line(0, y0 - 0.3, 0, y0 + 1.45, { color: 'ink', width: 1.2, dash: [4, 3] });
             const cg = (-wA * dA + wB * dB) / (wA + wB);
             A.dot(cg, y0 - 0.25, { r: 4.5, color: Math.abs(cg) < 1e-9 ? 'green' : 'red' });
-            A.text('centre of the row', cg, y0 - 0.65, { size: 11, color: Math.abs(cg) < 1e-9 ? 'green' : 'red', align: 'center', baseline: 'top' });
+            A.text('centre of the row', cg + 0.4, y0 - 0.25, { size: 11, color: Math.abs(cg) < 1e-9 ? 'green' : 'red', align: 'left', baseline: 'middle' });
             // the loads themselves, drawn on the beam as point weights
             for (const [x, w, col] of [[-dA, wA, 'accent'], [dB, wB, 'orange']]) { const q = P(x); A.dot(q[0], q[1], { r: 4 + w * 0.6, color: col }); A.text(`${w}`, q[0], q[1] + 0.75, { size: 12, color: col, align: 'center', weight: 700 }); }
             const ok = wA * dA === wB * dB;
@@ -118,8 +117,8 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
             const ratio = 5.972e24 / you.value, Llong = ratio * shortArm.value;
             B.setView([0, 24.5], [0, 1]); B.setLabels('length (m), log scale', null); B.setTitle('the long arm you would need');
             B.setTicks([0, 4, 8, 12, 16, 20, 24].map((e) => [e, e === 0 ? '1' : `10${sup(e)}`]), []);
-            const marks = [[3.844e8, 'Moon'], [1.496e11, 'Sun'], [4.0e16, 'Proxima Cen'], [9.5e20, 'Milky Way (across)'], [2.4e22, 'Andromeda']];
-            marks.forEach(([d, lab], i) => { const x = Math.log10(d); B.vline(x, { color: 'faint', width: 1 }); B.text(lab, x, 0.12 + 0.13 * (i % 2 ? 1 : 0) + 0.02, { size: 10.5, color: 'muted', align: 'center', plate: true }); });
+            const marks = [[3.844e8, 'Moon'], [1.496e11, 'Sun'], [4.0e16, 'Proxima'], [9.5e20, 'Milky Way'], [2.4e22, 'Andromeda']];
+            marks.forEach(([d, lab], i) => { const x = Math.log10(d); B.vline(x, { color: 'faint', width: 1 }); B.text(lab, x, 0.08 + 0.11 * i, { size: 10.5, color: 'muted', align: i >= 3 ? 'right' : 'center', dx: i >= 3 ? -3 : 0, plate: true }); });
             const xl = Math.log10(Llong);
             B.rect(Math.log10(shortArm.value), 0.55, Math.min(xl, 24.5), 0.68, { fill: 'accent', fillAlpha: 0.55, stroke: false });
             B.dot(Math.min(xl, 24.5), 0.615, { r: 5, color: 'accent' });
@@ -128,12 +127,12 @@ In modern language the moment $W d$ is the torque of the weight about the fulcru
           drawYears(v, C, [
             { t: -2600, label: 'balance weights, Egypt (Sneferu)' },
             { t: [-2400, -1800], label: 'Indus weight cubes' },
-            { t: -400, label: 'unequal-arm scales in trade' },
+            { t: -400, label: 'unequal-arm scales' },
             { t: [-400, -200], label: 'Chu balance, China' },
             { t: [-330, -250], label: 'Mechanical Problems', color: 'purple' },
             { t: -250, label: 'Archimedes proves the law', color: 'green' },
             { t: 320, label: 'Pappus: "give me a place to stand"', color: 'orange' },
-          ], { lanes: 3, ticks: [-2500, -2000, -1500, -1000, -500, 1] });
+          ], { lanes: 5, ticks: [-2500, -2000, -1500, -1000, -500, 1] });
         });
         function sup(e) { return String(e).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join(''); }
         v.legend([['accent', 'load A and its moment', { area: true }], ['orange', 'load B and its moment', { area: true }], ['green', 'balance point']]);

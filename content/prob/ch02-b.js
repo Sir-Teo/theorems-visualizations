@@ -432,7 +432,7 @@ For $n=365$ birthdays this predicts about $365\log365\approx2153$ draws.`,
           const T = run.T, mNow = Math.min(T, Math.round(T * Math.min(1, (t % 10) / 8)));
           // coupons grid
           const cols = Math.ceil(Math.sqrt(n)), rows = Math.ceil(n / cols), cw = 1 / Math.max(cols, rows), gap = cw * 0.12;
-          for (let i = 0; i < n; i++) { const cx = (i % cols) * cw, cy = 1 - (Math.floor(i / cols) + 1) * cw; const g = run.got[i] > 0 && run.got[i] <= mNow; if (g) A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { fill: v.ramp(0.45 + 0.55 * (run.got[i] / T), run.got[i] > 0.5 * T ? 'red' : 'gold'), fillAlpha: 1, stroke: false }); else A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { color: 'faint', width: 1.2, fill: false }); }
+          for (let i = 0; i < n; i++) { const cx = (i % cols) * cw, cy = 1 - (Math.floor(i / cols) + 1) * cw; const g = run.got[i] > 0 && run.got[i] <= mNow; if (g) A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { fill: run.got[i] > 0.5 * T ? 'red' : 'gold', fillAlpha: 0.85, stroke: false }); else A.rect(cx + gap, cy + gap, cx + cw - gap, cy + cw - gap, { color: 'faint', width: 1.2, fill: false }); }
           // progress
           B.setView([0, T * 1.05], [0, n * 1.05]);
           B.fn((m) => n * (1 - (1 - 1 / n) ** m), { color: 'green', width: 2, dash: [6, 4] });

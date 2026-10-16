@@ -366,7 +366,7 @@ The cylinder, Möbius band and torus embed in $\R^3$; the Klein bottle and $\R P
       tags: ['quotient', 'surfaces'],
       viz(v) {
         const kind = v.select('gluing', Object.entries(GLUE).map(([value, o]) => ({ value, label: o.name })), 'kln');
-        const fold = v.slider('fold', 0, 1, 0.8, { step: 0.005 });
+        const fold = v.slider('fold', 0, 1, 0.86, { step: 0.005 });
         const head = v.slider('heading (°)', 0, 360, 62, { step: 1 });
         const dist = v.slider('walk distance', 0, 3, 1.35, { step: 0.01 });
         const L = v.stage({ x: [-0.16, 1.16], y: [-0.16, 1.16], equal: true, axes: false, height: 380, weight: 0.85, title: 'the square with its gluing' });
@@ -389,7 +389,10 @@ The cylinder, Möbius band and torus embed in $\R^3$; the Klein bottle and $\R P
           L.line(hs.x - 0.06 * d0[0], hs.y - 0.06 * d0[1], hs.x - 0.06 * d0[0] + 0.045 * n0[0], hs.y - 0.06 * d0[1] + 0.045 * n0[1], { color: 'gold', width: 3 });
           // 3D
           const F = folded(K, t);
-          S.surface(F, [0, 1], [0, 1], { nu: 46, nv: 46, alpha: 0.9, colorFn: (u, w) => paint(u + 1 / 92, w + 1 / 92) });
+          // keep the folding in frame: zoom to the extent of the current shape
+          let ext = 0; for (let i = 0; i <= 10; i++) for (let j = 0; j <= 10; j++) ext = Math.max(ext, ...F(i / 10, j / 10).map(Math.abs));
+          S.zoom = Math.min(1.25, 1.45 / Math.max(ext, 0.5));
+          S.surface(F, [0, 1], [0, 1], { nu: 64, nv: 64, alpha: 0.86, colorFn: (u, w) => paint(u + 1 / 128, w + 1 / 128) });
           const G = GLUE[K];
           S.curve((s) => F(0, s), 0, 1, { color: G.x ? 'red' : 'muted', width: 3, n: 60 }); S.curve((s) => F(1, s), 0, 1, { color: G.x ? 'red' : 'muted', width: 3, n: 60 });
           S.curve((s) => F(s, 0), 0, 1, { color: G.y ? 'teal' : 'muted', width: 3, n: 60 }); S.curve((s) => F(s, 1), 0, 1, { color: G.y ? 'teal' : 'muted', width: 3, n: 60 });

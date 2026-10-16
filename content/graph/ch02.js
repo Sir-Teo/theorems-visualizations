@@ -632,5 +632,213 @@ export default {
         });
       },
     },
+    // ================================================================== 2.2 Matching in general graphs
+    {
+      num: '2.2.1a', kind: 'Definition', name: 'Tutte’s condition and odd components', verify: true,
+      statement: String.raw`For a graph $G$ let $\mathcal C_G$ be the set of its components and $q(G)$ the number of its **odd components**, those of odd order. $G$ satisfies **Tutte's condition** if $q(G-S)\le|S|$ for every $S\subseteq V(G)$. A set $S$ with $q(G-S)>|S|$ is called **bad**.`,
+      idea: String.raw`If $G$ has a 1-factor, every odd component $C$ of $G-S$ must send a factor edge to $S$ — its vertices cannot all be paired up inside $C$ — and distinct odd components use distinct vertices of $S$. So a 1-factor forces Tutte's condition; a bad set is a short certificate that no 1-factor exists. Taking $S=\emptyset$ already says that every component of $G$ must be even.`,
+      caption: String.raw`Click vertices to put them into $S$ (gold). The components of $G-S$ are shaded: odd ones red, even ones blue, each labelled with its order. The readout compares $q(G-S)$ with $|S|$. With $S=\{s\}$ the default graph leaves three odd components behind one vertex, so it cannot have a 1-factor. Edit the graph: click empty space to add a vertex, shift-drag to add an edge, Alt-click to delete.`,
+      deps: ['graph-1.4.1a', 'graph-2.1.1a'], refs: ['Diestel §2.2'], tags: ['matching', 'Tutte'],
+      viz(v) {
+        const PRE = { bad: () => ({ g: TUTTE_BAD(), S: ['s'] }), pet: () => ({ g: named('petersen'), S: [0, 7, 8] }), grid: () => { const g = v.graphs('grid', 3, 4); return { g: { nodes: g.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y })), edges: g.edges.map((e) => [e.from, e.to]), layout: 'fit' }, S: [5] }; } };
+        const pre = v.select('', [{ value: 'bad', label: 'three odd pieces' }, { value: 'pet', label: 'Petersen' }, { value: 'grid', label: '3×4 grid' }], 'bad', { onChange: () => load() });
+        const s = gstage(v, { height: 330 });
+        const G = v.graph(s, { nodes: [], edges: [], r: 14, editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true } });
+        let S = new Set();
+        function load() { const P = PRE[pre.value](); G.set({ nodes: P.g.nodes.map((n) => ({ ...n, label: pre.value === 'bad' ? n.id : '' })), edges: P.g.edges }).layout(P.g.layout || 'none'); S = new Set(P.S.map(K)); }
+        load();
+        G.onClick = ({ node, alt }) => { if (!node || alt) return false; const k = K(node.id); if (S.has(k)) S.delete(k); else S.add(k); return true; };
+        v.button('Clear $S$', () => S.clear());
+        v.render(() => {
+          const H = ix(G), Si = idxSet(H, S), cs = compsMinus(H, Si);
+          blobs(v, s, G, cs.map((c) => c.L.map((u) => H.ids[u])), (i) => (cs[i].odd ? 'red' : 'blue'), 36, 0.17);
+          G.draw({ nodeFill: (id) => (S.has(K(id)) ? 'gold' : null), edgeColor: (e) => (S.has(K(e.from)) || S.has(K(e.to)) ? 'faint' : null), edgeDash: (e) => S.has(K(e.from)) || S.has(K(e.to)) });
+          for (const c of cs) { const P = c.L.map((u) => G.node(H.ids[u])), cx = P.reduce((a, n) => a + n.x, 0) / P.length, cy = Math.max(...P.map((n) => n.y)); s.text(String(c.L.length), cx, cy, { dy: -24, align: 'center', size: 13, weight: 700, color: c.odd ? 'red' : 'blue' }); }
+        });
+        v.legend([['gold', '$S$', { dot: true }], ['red', 'odd component of $G-S$', { area: true }], ['blue', 'even component', { area: true }]]);
+        v.readout(() => {
+          const H = ix(G), cs = compsMinus(H, idxSet(H, S)), q = cs.filter((c) => c.odd).length;
+          return `$|S| = ${S.size}$ · components of $G-S$: ${cs.length} (orders ${cs.map((c) => c.L.length).join(', ') || '—'}) · $q(G-S) = ${q}$ ${q > S.size ? `$> ${S.size} = |S|$: **$S$ is bad**, so $G$ has no 1-factor` : `$\\le ${S.size} = |S|$: the condition holds for this $S$`}`;
+        });
+      },
+    },
+    {
+      num: '2.2.1', kind: 'Theorem', name: 'Tutte’s 1-factor theorem', credit: 'Tutte, 1947',
+      statement: String.raw`A graph $G$ has a 1-factor if and only if $q(G-S)\le|S|$ for all $S\subseteq V(G)$.`,
+      idea: String.raw`Necessity is 2.2.1a. For sufficiency take $G$ edge-maximal without a 1-factor (adding edges can only merge components of $G-S$, so a bad set for the bigger graph is bad for $G$). If the set $S$ of vertices adjacent to all others leaves only complete components, then either $S$ or $\emptyset$ is bad. Otherwise there are $a,b,c$ with $ab,bc\in E$, $ac\notin E$, and some $d$ with $bd\notin E$; maximality gives 1-factors $M_1$ of $G+ac$ and $M_2$ of $G+bd$, and following an $M_1$–$M_2$ alternating path from $d$ produces a 1-factor of $G$ itself — a contradiction. Algorithmically, Edmonds' blossom algorithm (2.1.1b) finds either a 1-factor or, from its final alternating forest, a bad set.`,
+      caption: String.raw`Edit the graph (${EDIT}). If it has a 1-factor, Edmonds' algorithm draws it in green and a brute-force sweep over all $2^{|G|}$ sets $S$ confirms Tutte's condition. If not, the worst bad set $S$ (gold, maximising $q(G-S)-|S|$) appears with its odd components (red), together with a maximum matching whose unmatched vertices (red rings) number exactly $q(G-S)-|S|$.`,
+      deps: ['graph-2.2.1a'], see: ['cplx-5.7'], refs: ['Diestel §2.2'], tags: ['matching', 'Tutte', 'blossoms'],
+      viz(v) {
+        const PRE = { bad: () => TUTTE_BAD(), pet: () => named('petersen'), k24: () => { const g = named('kmn', 2, 4); return g; } };
+        const pre = v.select('', [{ value: 'bad', label: 'three odd pieces' }, { value: 'pet', label: 'Petersen' }, { value: 'k24', label: '$K_{2,4}$' }], 'bad', { onChange: () => { const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: pre.value === 'bad' ? n.id : '' })), edges: P.edges }).layout(P.layout || 'none'); } });
+        const s = gstage(v, { height: 330 });
+        const G = v.graph(s, { ...TUTTE_BAD(), r: 14, editable: true });
+        G.onChange = (kind, obj) => { if (kind === 'add-node' && G.nodes.length > 16) G.removeNode(obj.id); };
+        const info = cacheBy((G) => {
+          const H = ix(G), mate = maxMatching(H), size = matchSize(mate), td = H.n <= 16 ? tutteDeficiency(H) : null;
+          const S = td ? new Set(bitsOf(td.small)) : new Set();
+          return { H, mate, size, td, S, cs: compsMinus(H, S), M: mEdges(H, mate) };
+        });
+        v.render(() => {
+          const I = info(G), perfect = 2 * I.size === I.H.n, Sid = new Set([...I.S].map((u) => K(I.H.ids[u])));
+          if (!perfect) blobs(v, s, G, I.cs.filter((c) => c.odd).map((c) => c.L.map((u) => I.H.ids[u])), 'red', 36, 0.16);
+          G.draw({ nodeFill: (id) => (!perfect && Sid.has(K(id)) ? 'gold' : null), nodeRing: (id) => (!perfect && I.mate[I.H.at(id)] < 0 ? 'red' : null),
+            edgeColor: (e) => (I.M.has(e) ? (perfect ? 'green' : 'accent') : null), edgeWidth: (e) => (I.M.has(e) ? 4.5 : null) });
+          s.corner(perfect ? '1-factor found' : 'no 1-factor: a bad set', 'tl', { color: perfect ? 'green' : 'red', weight: 700 });
+        });
+        v.legend([['green', '1-factor'], ['gold', 'bad set $S$', { dot: true }], ['red', 'odd components / unmatched', { area: true }], ['accent', 'maximum matching']]);
+        v.readout(() => {
+          const I = info(G), n = I.H.n, perfect = 2 * I.size === n;
+          if (!I.td) return `$|G| = ${n}$ is too large for the brute-force check · maximum matching ${I.size}`;
+          if (perfect) return `1-factor with ${I.size} edges ✓ · brute force: all $2^{${n}}$ sets $S$ satisfy $q(G-S)\\le|S|$ (max of $q(G-S)-|S|$ is ${I.td.def})`;
+          const q = I.cs.filter((c) => c.odd).length;
+          return `$S = \\{${[...I.S].map((u) => G.lab(I.H.ids[u])).join(', ')}\\}$: $q(G-S) = ${q} > ${I.S.size} = |S|$ · deficiency $${q - I.S.size}$ = ${n - 2 * I.size} unmatched vertices of a maximum matching (${I.size} edges, Edmonds) ✓`;
+        });
+      },
+    },
+    {
+      num: '2.2.2', kind: 'Corollary', name: 'Petersen: bridgeless cubic graphs have a 1-factor', credit: 'Petersen, 1891',
+      statement: String.raw`Every bridgeless cubic graph has a 1-factor.`,
+      idea: String.raw`We check Tutte's condition (2.2.1). Let $S\subseteq V$ and let $C$ be an odd component of $G-S$. The degrees in $C$ sum to $3|C|$, an odd number, while the edges inside $C$ contribute an even amount; so an odd number of edges joins $C$ to $S$. One edge would be a bridge, hence there are at least three. Thus at least $3q(G-S)$ edges leave $S$, and at most $3|S|$ can, since $G$ is cubic: $q(G-S)\le|S|$.`,
+      caption: String.raw`Click vertices to choose $S$ (gold). Each odd component of $G-S$ is shaded and labelled with the number of edges it sends to $S$ — always odd, and at least 3 when there is no bridge. The readout checks $3q(G-S)\le e(S,G-S)\le3|S|$. The last example is cubic but has three bridges (red): with $S$ its centre, the three odd pieces each send only one edge, and indeed it has no 1-factor.`,
+      deps: ['graph-2.2.1', 'graph-1.4.1b'], refs: ['Diestel §2.2'], tags: ['matching', 'cubic graphs'],
+      viz(v) {
+        let seed = 4;
+        const rc = () => { for (let t = 0; t < 60; t++) { const r = v.rng(seed * 97 + t), E = randomCubic(12, r); if (!E) continue; const H = ix({ nodes: [...Array(12).keys()].map((i) => ({ id: i })), edges: E }); if (comps(H).k === 1 && !bridges(H).size) { const P = named('cycle', 12); return { nodes: P.nodes, edges: E, layout: 'force' }; } } return named('prism', 6); };
+        const PRE = { pet: () => ({ g: named('petersen'), S: [0, 2, 7, 9] }), prism: () => ({ g: named('prism', 5), S: [0, 6] }), rand: () => ({ g: rc(), S: [0, 1] }), syl: () => ({ g: sylvester(), S: [0] }) };
+        const pre = v.select('', [{ value: 'pet', label: 'Petersen' }, { value: 'prism', label: 'prism' }, { value: 'rand', label: 'random' }, { value: 'syl', label: 'with bridges' }], 'pet', { onChange: () => load() });
+        v.button('New random', () => { seed++; pre.value = 'rand'; load(); });
+        const showM = v.toggle('show a 1-factor', false);
+        const s = v.stage({ x: [-1.3, 1.3], y: [-1.15, 1.2], axes: false, equal: true, height: 340 });
+        const G = v.graph(s, { nodes: [], edges: [], r: 12 });
+        let S = new Set();
+        function load() { const P = PRE[pre.value](); G.set({ nodes: P.g.nodes.map((n) => ({ ...n, label: '' })), edges: P.g.edges, seed: 3 }).layout(P.g.layout || 'fit'); S = new Set(P.S.map(K)); }
+        load();
+        G.onClick = ({ node }) => { if (node) { const k = K(node.id); if (S.has(k)) S.delete(k); else S.add(k); } return true; };
+        const info = cacheBy((G) => { const H = ix(G), mate = maxMatching(H); return { H, br: eset(H, bridges(H)), M: mEdges(H, mate), perfect: 2 * matchSize(mate) === H.n }; });
+        const stats = () => {
+          const I = info(G), H = I.H, Si = idxSet(H, S), cs = compsMinus(H, Si).filter((c) => c.odd);
+          const cut = cs.map((c) => { const inC = new Set(c.L); return H.E.filter(([a, b]) => (inC.has(a) && Si.has(b)) || (inC.has(b) && Si.has(a))).length; });
+          const tot = H.E.filter(([a, b]) => Si.has(a) !== Si.has(b)).length;
+          return { I, H, Si, cs, cut, tot };
+        };
+        v.render(() => {
+          const { I, H, cs, cut } = stats();
+          blobs(v, s, G, cs.map((c) => c.L.map((u) => H.ids[u])), (i) => (cut[i] >= 3 ? 'orange' : 'red'), 34, 0.18);
+          const toS = (e) => S.has(K(e.from)) !== S.has(K(e.to));
+          G.draw({ nodeFill: (id) => (S.has(K(id)) ? 'gold' : null), edgeColor: (e) => (I.br.has(e) ? 'red' : showM.value && I.M.has(e) ? 'green' : toS(e) ? 'orange' : null),
+            edgeWidth: (e) => (I.br.has(e) ? 4 : showM.value && I.M.has(e) ? 4.5 : toS(e) ? 2.6 : null) });
+          cs.forEach((c, i) => { const P = c.L.map((u) => G.node(H.ids[u])), cx = P.reduce((a, n) => a + n.x, 0) / P.length, cy = P.reduce((a, n) => a + n.y, 0) / P.length; s.text(String(cut[i]), cx, cy, { align: 'center', size: 15, weight: 800, color: cut[i] >= 3 ? 'orange' : 'red', plate: true }); });
+        });
+        v.legend([['gold', '$S$', { dot: true }], ['orange', 'odd component and its edges to $S$', { area: true }], ['red', 'bridge'], ['green', '1-factor']]);
+        v.readout(() => {
+          const { I, cs, cut, tot } = stats(), q = cs.length;
+          const ok = 3 * q <= tot && tot <= 3 * S.size;
+          return `${I.br.size ? `**${I.br.size} bridges**` : 'bridgeless'} · $q(G-S) = ${q}$, $|S| = ${S.size}$ · edges from odd components to $S$: ${cut.join(', ') || '—'} · $e(S, G-S) = ${tot}$: ${I.br.size && cut.some((c) => c < 3) ? `an odd piece sends a single edge (a bridge), so the count fails` : ok ? `$3q = ${3 * q}\\le ${tot}\\le ${3 * S.size} = 3|S|$ ✓` : `$${tot} \\le ${3 * S.size} = 3|S|$`} · ${I.perfect ? '1-factor exists ✓' : '**no 1-factor**'}`;
+        });
+      },
+    },
+    {
+      num: '2.2.2a', kind: 'Definition', name: 'Factor-critical graphs and matchable sets', verify: true,
+      statement: String.raw`A non-empty graph $G$ is **factor-critical** if $G$ has no 1-factor but $G-v$ has a 1-factor for every vertex $v$. A set $S\subseteq V(G)$ is **matchable** to $\mathcal C_{G-S}$ if the bipartite graph $G_S$ — obtained from $G$ by contracting every component of $G-S$ to a single vertex and deleting the edges inside $S$, so that $s\in S$ is joined to a component $C$ when $s$ has a neighbour in $C$ — contains a matching of $S$.`,
+      idea: String.raw`A factor-critical graph has odd order (its vertex-deleted subgraphs have 1-factors), and it is "as close as possible" to having a 1-factor: whichever vertex is left out, the rest pairs up. Odd cycles, complete graphs of odd order and the Petersen graph minus a vertex are examples; Edmonds' blossoms are factor-critical too. Matchability says that the vertices of $S$ can be sent to distinct components of $G-S$ — the configuration that the Gallai–Edmonds theorem (2.2.3) produces.`,
+      caption: String.raw`**Factor-critical**: click a vertex to delete it; a 1-factor of the rest appears (green), or the vertex it fails for is reported. The table records the test for every vertex. The path $P^5$ fails. **Matchable**: click vertices to form $S$; the right panel shows $G_S$ with a maximum matching of $S$, and orange rings mark a Hall violator when $S$ is not matchable.`,
+      deps: ['graph-2.2.1a'], refs: ['Diestel §2.2'], tags: ['matching', 'factor-critical'],
+      viz(v) {
+        const petv = () => { const P = named('petersen'); return { nodes: P.nodes.filter((n) => n.id !== 0), edges: P.edges.filter(([a, b]) => a !== 0 && b !== 0), layout: 'fit' }; };
+        const bow = () => ({ nodes: [{ id: 0, x: 0, y: 0 }, { id: 1, x: -1.2, y: 0.7 }, { id: 2, x: -1.2, y: -0.7 }, { id: 3, x: 1.2, y: 0.7 }, { id: 4, x: 1.2, y: -0.7 }], edges: [[0, 1], [0, 2], [1, 2], [0, 3], [0, 4], [3, 4]], layout: 'fit' });
+        const p5 = () => ({ nodes: [0, 1, 2, 3, 4].map((i) => ({ id: i, x: i, y: 0.25 * (i % 2) })), edges: [[0, 1], [1, 2], [2, 3], [3, 4]], layout: 'fit' });
+        const PRE = { c7: () => named('cycle', 7), petv, bow, p5, tut: () => TUTTE_BAD() };
+        const mode = v.select('', [{ value: 'fc', label: 'factor-critical' }, { value: 'ms', label: 'matchable $S$' }], 'fc', { onChange: () => load() });
+        const pre = v.select('', [{ value: 'c7', label: '$C^7$' }, { value: 'petv', label: 'Petersen − v' }, { value: 'bow', label: 'bow-tie' }, { value: 'p5', label: '$P^5$' }, { value: 'tut', label: 'three pieces' }], 'petv', { onChange: () => load() });
+        const L = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.2], axes: false, equal: true, height: 320, title: '$G$' });
+        const R = v.stage({ x: [0, 10], y: [0, 6.4], axes: false, height: 320, title: 'test' });
+        const G = v.graph(L, { nodes: [], edges: [], r: 13 });
+        const GS = v.graph(R, { nodes: [], edges: [], r: 13, draggable: false, fontSize: 11.5 });
+        const T = v.table(R, { rows: 1, cols: 1, maxCell: 40, size: 15 });
+        let del = null, S = new Set();
+        function load() {
+          const P = PRE[pre.value](); G.set({ nodes: P.nodes.map((n) => ({ ...n, label: pre.value === 'tut' ? n.id : String(G.nodes.length >= 0 ? (typeof n.id === 'number' ? n.id + 1 : n.id) : '') })), edges: P.edges }).layout(P.layout === 'none' ? 'fit' : P.layout || 'fit');
+          del = G.nodes[0].id; S = new Set(pre.value === 'tut' ? ['s'] : [K(G.nodes[0].id)]);
+          R.setTitle(mode.value === 'fc' ? 'does $G-v$ have a 1-factor?' : '$G_S$: $S$ against the components of $G-S$');
+        }
+        load();
+        G.onClick = ({ node }) => { if (!node) return true; if (mode.value === 'fc') del = node.id; else { const k = K(node.id); if (S.has(k)) S.delete(k); else S.add(k); } return true; };
+        R.onClick((x, y) => { if (mode.value !== 'fc') return; const c = T.hit(x, y); if (c && c.j >= 0) del = G.nodes[c.j].id; });
+        const fc = cacheBy((G) => { const H = ix(G); return { H, res: H.ids.map((id, v0) => { const mate = maxMatchingOn(H, (u) => u !== v0); return { mate, ok: H.ids.every((_, u) => u === v0 || mate[u] >= 0) }; }) }; });
+        v.render(() => {
+          if (mode.value === 'fc') {
+            const { H, res } = fc(G), d = H.at(del), r = res[d] || res[0];
+            G.draw({ nodeFill: (id) => (K(id) === K(del) ? 'faint' : null), nodeRing: (id) => (K(id) !== K(del) && r.mate[H.at(id)] < 0 ? 'red' : null),
+              edgeColor: (e) => (K(e.from) === K(del) || K(e.to) === K(del) ? 'faint' : r.mate[H.at(e.from)] === H.at(e.to) ? 'green' : null),
+              edgeWidth: (e) => (r.mate[H.at(e.from)] === H.at(e.to) ? 4.5 : null), edgeDash: (e) => K(e.from) === K(del) || K(e.to) === K(del) });
+            const n = H.n, cols = Math.min(n, 10);
+            T.draw({ rows: Math.ceil(n / cols), cols, colLabels: null, value: (i, j) => { const k = i * cols + j; return k < n ? (res[k].ok ? '✓' : '✗') : null; },
+              rowLabels: null, sub: (i, j) => { const k = i * cols + j; return k < n ? G.lab(H.ids[k]) : null; }, subSize: 11,
+              fill: (i, j) => { const k = i * cols + j; return k < n ? [res[k].ok ? 'green' : 'red', 0.25] : null; }, highlight: [[Math.floor(d / cols), d % cols]], textColor: (i, j) => (res[i * cols + j] && res[i * cols + j].ok ? 'green' : 'red') });
+          } else {
+            const H = ix(G), Si = idxSet(H, S), I = gsInfo(H, Si);
+            blobs(v, L, G, I.cl.map((Lc) => Lc.map((u) => H.ids[u])), (i) => (I.cl[i].length % 2 ? 'red' : 'blue'), 34, 0.16);
+            G.draw({ nodeFill: (id) => (S.has(K(id)) ? 'gold' : null), edgeColor: (e) => (S.has(K(e.from)) && S.has(K(e.to)) ? 'faint' : null), edgeDash: (e) => S.has(K(e.from)) && S.has(K(e.to)) });
+            drawGS(GS, H, G, I);
+          }
+        });
+        v.legend([['green', '1-factor of $G-v$ / matching in $G_S$'], ['red', 'unmatched vertex / odd component', { dot: true }], ['gold', '$S$', { dot: true }], ['orange', 'Hall violator in $G_S$', { dot: true }]]);
+        v.readout(() => {
+          if (mode.value === 'fc') {
+            const { H, res } = fc(G), good = res.filter((x) => x.ok).length, n = H.n;
+            const fcOk = good === n && n % 2 === 1;
+            return `$|G| = ${n}$ ${n % 2 ? '(odd: no 1-factor)' : '(even)'} · $G - v$ has a 1-factor for ${good} of ${n} vertices · ${fcOk ? '**factor-critical** ✓' : 'not factor-critical'}`;
+          }
+          const H = ix(G), I = gsInfo(H, idxSet(H, S));
+          const fcs = I.cl.map((Lc) => fcCheck(H, Lc).ok);
+          return `$|S| = ${S.size}$, $|\\mathcal C_{G-S}| = ${I.cl.length}$ · ${I.matchable ? '**$S$ is matchable** to $\\mathcal C_{G-S}$ ✓' : `not matchable: ${I.viol.S.length} vertices of $S$ see only ${I.viol.C.length} component(s)`} · factor-critical components: ${fcs.filter(Boolean).length} of ${I.cl.length}`;
+        });
+      },
+    },
+    {
+      num: '2.2.3', kind: 'Theorem', name: 'Gallai–Edmonds structure theorem', credit: 'Gallai, 1964; Edmonds, 1965',
+      statement: String.raw`Every graph $G$ has a set $S\subseteq V(G)$ such that
+(i) $S$ is matchable to $\mathcal C_{G-S}$, and
+(ii) every component of $G-S$ is factor-critical.
+For any such $S$, $G$ has a 1-factor if and only if $|S|=|\mathcal C_{G-S}|$. Moreover, every maximum matching consists of $|S|$ edges from $S$ to distinct components of $G-S$ and of near-perfect matchings of all these components, so it has $|S|+\frac12\bigl(|V|-|S|-|\mathcal C_{G-S}|\bigr)$ edges.`,
+      idea: String.raw`Induction on $|G|$. Choose $S$ to maximise the deficiency $d(S)=q(G-S)-|S|$, and among such sets take a largest. If a component $C$ were even, adding one of its vertices to $S$ would not lower $d$, contradicting the maximality of $|S|$; if some $C-c$ had no 1-factor, Tutte's theorem for $C-c$ (by induction) and a parity argument would give a larger deficiency. If $S$ were not matchable, Hall's theorem (2.1.2) would give $S'\subseteq S$ seeing fewer than $|S'|$ components, and $S\setminus S'$ would have larger deficiency. Counting edges of any matching against $S$ and the odd components then gives the formula for maximum matchings.`,
+      caption: String.raw`The app finds $S$ as in the proof — a largest set maximising $q(G-S)-|S|$, by brute force — and shows it in gold, the components of $G-S$ shaded (each tested for factor-criticality), and $G_S$ on the right with a matching of $S$. The green matching $M_0$ is assembled from that matching and near-perfect matchings of the components; the readout checks its size against Edmonds' algorithm. Edit the graph (${EDIT}).`,
+      deps: ['graph-2.2.2a', 'graph-2.1.2'], refs: ['Diestel §2.2'], tags: ['matching', 'structure'],
+      viz(v) {
+        const tree = () => fixed({ a: [1.0, 5.4], b: [2.6, 4.2], c: [1.0, 3.0], d: [4.4, 4.6], e: [5.6, 5.8], f: [6.0, 3.4], g: [7.8, 4.6], h: [8.8, 5.9], i: [8.9, 3.0], j: [3.4, 1.4], k: [5.2, 1.6], l: [7.4, 1.2] }, 'ab bc bd de df fg gh gi dj fk kl');
+        const mix = () => fixed({ a: [1.0, 5.4], b: [2.4, 5.9], c: [1.6, 4.0], s: [3.6, 4.4], t: [6.2, 4.4], d: [5.0, 5.9], e: [8.0, 5.6], f: [8.9, 4.2], g: [7.6, 3.2], h: [2.2, 1.6], i: [4.2, 1.0], j: [6.0, 1.6], k: [8.0, 1.2] }, 'ab bc ac as bs sd td te tf tg ef fg eg sh hi ij it jk tk');
+        const PRE = { mix, tree, bad: () => TUTTE_BAD() };
+        const pre = v.select('', [{ value: 'mix', label: 'mixed' }, { value: 'tree', label: 'a tree' }, { value: 'bad', label: 'three pieces' }], 'mix', { onChange: () => { const P = PRE[pre.value](); G.set({ nodes: P.nodes, edges: P.edges }); } });
+        const L = gstage(v, { height: 330, title: '$G$, $S$ and $\\mathcal C_{G-S}$' });
+        const R = v.stage({ x: [0, 10], y: [0, 6.4], axes: false, height: 330, title: '$G_S$', minWidth: 220, weight: 0.7 });
+        const G = v.graph(L, { ...mix(), r: 14, editable: true });
+        const GS = v.graph(R, { nodes: [], edges: [], r: 13, draggable: false, fontSize: 11.5 });
+        G.onChange = (kind, obj) => { if (kind === 'add-node' && G.nodes.length > 15) G.removeNode(obj.id); };
+        const info = cacheBy((G) => {
+          const H = ix(G); if (H.n > 15) return null;
+          const td = tutteDeficiency(H), Si = new Set(bitsOf(td.large)), I = gsInfo(H, Si), fcs = I.cl.map((Lc) => fcCheck(H, Lc));
+          const mate = new Int32Array(H.n).fill(-1), root = new Array(I.cl.length).fill(-1);
+          I.Sa.forEach((sv, i) => { const c = I.mate[i] - I.nS; if (I.mate[i] < 0) return; const w = H.adj[sv].map(([x]) => x).find((x) => I.comp[x] === c); mate[sv] = w; mate[w] = sv; root[c] = w; });
+          I.cl.forEach((Lc, c) => { const r = root[c] >= 0 ? root[c] : Lc[0], inC = new Set(Lc), m = maxMatchingOn(H, (u) => inC.has(u) && u !== r); for (const u of Lc) if (m[u] >= 0) mate[u] = m[u]; });
+          return { H, td, Si, I, fcs, M0: mEdges(H, mate), m0: matchSize(mate), nu: matchSize(maxMatching(H)) };
+        });
+        v.render(() => {
+          const X = info(G); if (!X) { L.corner('at most 15 vertices for the brute-force search', 'tl', { color: 'red' }); G.draw(); return; }
+          const { H, I, fcs } = X, Sid = new Set([...X.Si].map((u) => K(H.ids[u])));
+          blobs(v, L, G, I.cl.map((Lc) => Lc.map((u) => H.ids[u])), (i) => PALETTE[(i + 1) % 8], 36, 0.17);
+          G.draw({ nodeFill: (id) => (Sid.has(K(id)) ? 'gold' : null), nodeRing: (id) => { const u = H.at(id); return !Sid.has(K(id)) && ![...X.M0].some((e) => K(e.from) === K(id) || K(e.to) === K(id)) ? 'red' : null; },
+            edgeColor: (e) => (X.M0.has(e) ? 'green' : Sid.has(K(e.from)) && Sid.has(K(e.to)) ? 'faint' : null), edgeWidth: (e) => (X.M0.has(e) ? 4.5 : null) });
+          drawGS(GS, H, G, I, { compColor: (j) => PALETTE[(j + 1) % 8] });
+          I.cl.forEach((Lc, c) => { if (!fcs[c].ok) { const P = Lc.map((u) => G.node(H.ids[u])); L.text('not f.-c.', P[0].x, P[0].y, { dy: -22, color: 'red', size: 11, align: 'center' }); } });
+        });
+        v.legend([['gold', '$S$', { dot: true }], ['green', 'maximum matching $M_0$ / matching of $S$ in $G_S$'], ['red', 'unmatched by $M_0$', { dot: true }]]);
+        v.readout(() => {
+          const X = info(G); if (!X) return '';
+          const { H, I, fcs } = X, nC = I.cl.length, nS = I.nS, pred = nS + (H.n - nS - nC) / 2;
+          return `$S = \\{${I.Sa.map((u) => G.lab(H.ids[u])).join(', ')}\\}$ (deficiency $q(G-S)-|S| = ${X.td.def}$) · (i) ${I.matchable ? 'matchable ✓' : 'not matchable ✗'} · (ii) ${fcs.filter((f) => f.ok).length} of ${nC} components factor-critical${fcs.every((f) => f.ok) ? ' ✓' : ' ✗'} · $|M_0| = ${nS} + \\tfrac12(${H.n} - ${nS} - ${nC}) = ${pred}$, Edmonds: $\\nu = ${X.nu}$ ${pred === X.nu ? '✓' : '✗'} · ${nS === nC ? '$|S| = |\\mathcal C_{G-S}|$: **1-factor**' : `$|S| < |\\mathcal C_{G-S}|$: no 1-factor`}`;
+        });
+      },
+    },
   ],
 };

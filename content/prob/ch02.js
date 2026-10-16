@@ -624,7 +624,7 @@ That is, the joint distribution function factors into the product of the margina
 $$Y_i=f_i(X_{i,1},\dots,X_{i,m(i)}),\qquad 1\le i\le n,$$
 are independent. For example, if $X_1,\dots,X_n$ are independent then $X_1$ and $X_2\cdots X_n$ are independent, and $S_n-S_m$ is independent of every event determined by $X_1,\dots,X_m$.`,
       idea: String.raw`Put $\mathcal F_{i,j}=\sigma(X_{i,j})$ and $\mathcal G_i=\sigma\bigl(\bigcup_j\mathcal F_{i,j}\bigr)$. Each $Y_i$ is $\mathcal G_i$-measurable, and Theorem 2.1.9 makes the $\mathcal G_i$ independent. Variables measurable with respect to independent σ-fields are independent (the $n$-variable form of Theorem 2.1.1(ii)). Disjointness of the blocks is essential: a shared coordinate links the two functions, sometimes in a way that correlation cannot detect.`,
-      caption: String.raw`Four independent uniforms on $(0,1)$. Left: $2000$ seeded pairs $\bigl(f(X_1,X_2),g(\cdot,\cdot)\bigr)$. Right: the histogram of $g$ given that $f$ lies in its middle third (orange), and given that it lies in its outer thirds (teal). For disjoint blocks the two conditional histograms agree up to noise: the value of $f$ tells nothing about $g$. Let $g$ share $X_2$, or both coordinates, and they separate. With $f=X_1+X_2$, $g=X_1-X_2$ ("share both") the correlation is $0$, yet the cloud is a diamond and the conditional laws are plainly different.`,
+      caption: String.raw`Four independent uniforms on $(0,1)$. Left: $2000$ seeded pairs $\bigl(f(X_1,X_2),g(\cdot,\cdot)\bigr)$. Right: the law of $g$ given that $f$ lies in its lowest versus highest third, or in its middle versus outer thirds, whichever split separates them more (a Kolmogorov–Smirnov test decides). For disjoint blocks the two conditional histograms agree up to noise: the value of $f$ tells nothing about $g$. Let $g$ share $X_2$, or both coordinates, and they separate. With $f=X_1+X_2$, $g=X_1-X_2$ ("share both") the correlation is $0$, yet the cloud is a diamond and the conditional laws are plainly different.`,
       deps: ['prob-2.1.9', 'prob-1.3.5'],
       tags: ['independence'],
       viz(v) {
@@ -645,20 +645,23 @@ are independent. For example, if $X_1,\dots,X_n$ are independent then $X_1$ and 
           const pts = cache.U.map((u) => { const fv = F.f(u[0], u[1]); const gv = mode === 0 ? G.f(u[2], u[3]) : mode === 1 ? G.f(u[1], u[3]) : G.f(u[0], u[1]); return [fv, gv]; });
           L.setView(F.r, G.r); R.setView(G.r, null);
           const fsrt = pts.map((p) => p[0]).sort((a, b) => a - b), q1 = fsrt[Math.floor(N / 3)], q2 = fsrt[Math.floor((2 * N) / 3)];
-          L.vband(F.r[0], q1, { color: 'teal', alpha: 0.1 }); L.vband(q2, F.r[1], { color: 'teal', alpha: 0.1 }); L.vband(q1, q2, { color: 'orange', alpha: 0.1 });
+          const ks = (a, b) => { a = a.slice().sort((x, y) => x - y); b = b.slice().sort((x, y) => x - y); let i = 0, j = 0, D = 0; while (i < a.length && j < b.length) { if (a[i] <= b[j]) i++; else j++; D = Math.max(D, Math.abs(i / a.length - j / b.length)); } return { D, crit: 1.36 * Math.sqrt((a.length + b.length) / (a.length * b.length)) }; };
+          // two splits of f: lowest vs highest third, and middle vs outer thirds; show whichever separates g more
+          const low = pts.filter((p) => p[0] <= q1).map((p) => p[1]), high = pts.filter((p) => p[0] >= q2).map((p) => p[1]);
+          const mid = pts.filter((p) => p[0] > q1 && p[0] < q2).map((p) => p[1]), out = pts.filter((p) => p[0] <= q1 || p[0] >= q2).map((p) => p[1]);
+          const t1 = ks(low, high), t2 = ks(mid, out), useMid = t2.D / t2.crit > t1.D / t1.crit, T = useMid ? t2 : t1;
+          const [ga, gb] = useMid ? [out, mid] : [low, high];
+          if (useMid) { L.vband(F.r[0], q1, { color: 'teal', alpha: 0.1 }); L.vband(q2, F.r[1], { color: 'teal', alpha: 0.1 }); L.vband(q1, q2, { color: 'orange', alpha: 0.1 }); }
+          else { L.vband(F.r[0], q1, { color: 'teal', alpha: 0.1 }); L.vband(q2, F.r[1], { color: 'orange', alpha: 0.1 }); }
           L.dots(pts, { r: 1.6, color: 'accent', alpha: 0.45 });
-          const lo = pts.filter((p) => p[0] <= q1 || p[0] >= q2).map((p) => p[1]), hi = pts.filter((p) => p[0] > q1 && p[0] < q2).map((p) => p[1]);
-          const E = linEdges(G.r[0], G.r[1], 16), Hl = densityOn(lo, E), Hh = densityOn(hi, E);
-          const ym = Math.max(...Hl.density, ...Hh.density) * 1.2; R.setView(null, [0, ym]);
-          R.hist(Hl, { density: true, color: 'teal', fillAlpha: 0.25 }); R.hist(Hh, { density: true, color: 'orange', fillAlpha: 0.2 });
-          // two-sample Kolmogorov–Smirnov distance
-          const a = lo.slice().sort((x, y) => x - y), b = hi.slice().sort((x, y) => x - y); let i = 0, j = 0, D = 0;
-          while (i < a.length && j < b.length) { if (a[i] <= b[j]) i++; else j++; D = Math.max(D, Math.abs(i / a.length - j / b.length)); }
-          const crit = 1.36 * Math.sqrt((a.length + b.length) / (a.length * b.length));
-          st = { r: M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])).r, D, crit, mode };
-          v.legend([['accent', 'pairs', { dot: true }], ['teal', '$g$ given $f$ in its outer thirds', { area: true }], ['orange', '$g$ given $f$ in its middle third', { area: true }]]);
+          const E = linEdges(G.r[0], G.r[1], 16), Ha = densityOn(ga, E), Hb = densityOn(gb, E);
+          const ym = Math.max(...Ha.density, ...Hb.density) * 1.2; R.setView(null, [0, ym]);
+          R.setTitle(useMid ? 'law of $g$ given $f$ outer / middle third' : 'law of $g$ given $f$ low / high third');
+          R.hist(Ha, { density: true, color: 'teal', fillAlpha: 0.25 }); R.hist(Hb, { density: true, color: 'orange', fillAlpha: 0.2 });
+          st = { r: M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])).r, D: T.D, crit: T.crit, mode, which: useMid ? 'middle vs outer thirds of $f$' : 'lowest vs highest third of $f$' };
+          v.legend(useMid ? [['accent', 'pairs', { dot: true }], ['teal', '$g$ given $f$ in its outer thirds', { area: true }], ['orange', '$g$ given $f$ in its middle third', { area: true }]] : [['accent', 'pairs', { dot: true }], ['teal', '$g$ given $f$ in its lowest third', { area: true }], ['orange', '$g$ given $f$ in its highest third', { area: true }]]);
         });
-        v.readout(() => st && `Sample correlation $${fr(st.r, 3)}$. Distance between the two conditional laws (Kolmogorov–Smirnov) $D=${fr(st.D, 3)}$; noise alone exceeds $${fr(st.crit, 3)}$ only $5\\%$ of the time.` + (st.D > st.crit ? ' **Dependent**' + (Math.abs(st.r) < 0.05 ? ', even though uncorrelated.' : '.') : ' Consistent with independence.'));
+        v.readout(() => st && `Sample correlation $${fr(st.r, 3)}$. Distance between the conditional laws of $g$ (${st.which}, Kolmogorov–Smirnov): $D=${fr(st.D, 3)}$; noise alone exceeds $${fr(st.crit, 3)}$ only $5\\%$ of the time.` + (st.D > st.crit ? ' **Dependent**' + (Math.abs(st.r) < 0.05 ? ', even though uncorrelated.' : '.') : ' Consistent with independence.'));
       },
     },
     {
