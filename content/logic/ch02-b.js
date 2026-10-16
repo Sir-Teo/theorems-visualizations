@@ -465,7 +465,7 @@ The hypothesis that branching is finite cannot be dropped. A root with children 
             }
             s.dot(rx, 0, { r: 6, color: f.k ? 'red' : 'gold' });
             s.text('root', rx, 0.42, { align: 'center', size: 11, color: 'muted' });
-            if (f.k) s.text('stuck: every child heads a finite path', K + 1.3, -H + 0.2, { align: 'right', size: 12, weight: 600, color: 'red' });
+            if (f.k) s.text('stuck: every child heads a finite path', -1.0, -H + 0.3, { align: 'left', size: 12.5, weight: 600, color: 'red' });
           }
         });
         v.readout(() => {

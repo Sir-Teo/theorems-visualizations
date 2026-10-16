@@ -681,13 +681,47 @@ The canonical forms can be exponentially large. For example, every DNF for $p_1\
             edgeWidth: (e) => (on(e.from) ? 2.6 : 1.5),
           });
         };
+        // the cube {T,F}^n ordered by F < T, coloured by the target; red edges go up from 1 to 0 (monotonicity fails)
+        const drawCube = (s) => {
+          const { n, col } = info, R = 1 << n, wt = (i) => [...Array(n).keys()].filter((j) => rowVal(i, j, n)).length;
+          const layers = Array.from({ length: n + 1 }, () => []); for (let i = R - 1; i >= 0; i--) layers[wt(i)].push(i);
+          const pos = new Map(); layers.forEach((L, k) => L.forEach((i, t) => pos.set(i, [5 + (t - (L.length - 1) / 2) * 2.6, 0.9 + k * (4.2 / Math.max(1, n))])));
+          for (let i = 0; i < R; i++) for (let j = 0; j < n; j++) {
+            if (rowVal(i, j, n)) continue; const up = i - (1 << (n - 1 - j)); // flip letter j from F to T
+            const [x1, y1] = pos.get(i), [x2, y2] = pos.get(up), bad = col[i] && !col[up];
+            if (bad) s.arrow(x1, y1, x2, y2, { color: 'red', width: 3, head: 9 }); else s.line(x1, y1, x2, y2, { color: 'faint', width: 1.5 });
+          }
+          for (let i = 0; i < R; i++) {
+            const [x, y] = pos.get(i), lab = info.vars.map((_, j) => TF(rowVal(i, j, n))).join('');
+            s.rect(x - 0.62, y - 0.3, x + 0.62, y + 0.3, { fill: col[i] ? 'green' : 'panel', fillAlpha: col[i] ? 0.3 : 1, color: col[i] ? 'green' : 'muted', width: 1.4, radius: 6 });
+            s.text(lab, x, y, { align: 'center', size: 12.5, weight: 600, color: 'ink' });
+          }
+          s.text(`${info.vars.join('')} values; green = target true. Red: raising a letter makes it false.`, 5, 5.65, { align: 'center', size: 11, color: 'muted' });
+        };
+        const drawMonoList = (s) => {
+          const { n } = info, R = 1 << n, M = (1 << R) - 1, P = projMasks(n), name = new Map();
+          P.forEach((m, j) => name.set(m, info.vars[j]));
+          for (let changed = true; changed;) {
+            changed = false; const cur = [...name.entries()];
+            for (const [a, na] of cur) for (const [b, nb] of cur) for (const [op, f] of [['∧', (x, y) => x & y], ['∨', (x, y) => x | y]]) {
+              const m = f(a, b) & M; if (!name.has(m)) { name.set(m, `(${na} ${op} ${nb})`.replace(/^\((.*)\)$/, '$1')); changed = true; }
+            }
+          }
+          const list = [...name.values()].sort((x, y) => x.length - y.length), cols = list.length > 9 ? 3 : 2, rows = Math.ceil(list.length / cols);
+          list.forEach((t, i) => s.text(t.replace(/^\((.*)\)$/, '$1'), 0.6 + (i % cols) * (9 / cols), 5.4 - Math.floor(i / cols) * (5 / Math.max(rows, 5)), { align: 'left', size: list.length > 9 ? 11.5 : 13.5, math: true, color: 'green' }));
+          s.text(`${list.length} functions, all monotone; the target is not among them`, 5, 0.25, { align: 'center', size: 12, weight: 600, color: 'red' });
+        };
         v.render(() => {
           const k = JSON.stringify([toStr(F.ast), basis.value]);
           if (k !== key) { key = k; build(); }
           ins.forEach((t, j) => { t.el.hidden = j >= info.n; });
           draw(GA, A, cA); draw(GB, B, cB);
-          if (!cA) A.text(basis.value === 'mono' ? 'impossible: the target is not monotone' : 'impossible', 5, 3, { align: 'center', size: 14, color: 'red', weight: 600 });
-          if (!cB) B.text(cA ? `no circuit with ≤ ${info.maxG} gates` : 'impossible', 5, 3, { align: 'center', size: 14, color: cA ? 'orange' : 'red', weight: 600 });
+          const mono = basis.value === 'mono' && !cA;
+          A.setTitle(mono ? 'why not: the target is not monotone' : 'normal-form construction');
+          B.setTitle(mono ? 'everything ∧, ∨ circuits can compute' : 'smallest circuit (exhaustive search)');
+          if (mono) { drawCube(A); drawMonoList(B); }
+          else if (!cA) A.text('impossible', 5, 3, { align: 'center', size: 14, color: 'red', weight: 600 });
+          if (!cB && !mono) B.text(cA ? `no circuit with ≤ ${info.maxG} gates` : 'impossible', 5, 3, { align: 'center', size: 14, color: cA ? 'orange' : 'red', weight: 600 });
           if (F.error) A.corner(F.error, 'bl', { color: 'red', size: 11 });
         });
         v.readout(() => {
