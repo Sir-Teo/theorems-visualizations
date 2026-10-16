@@ -73,11 +73,11 @@ Young plates behave like the half-space of 4.3 (depth $\propto\sqrt t$, $q\propt
         const C = v.stage({ x: [1, 200], y: [20, 600], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'heat flow (mW/m²)', height: 330, weight: 1, minWidth: 240 });
         const probe = A.handle(60, -8, { color: 'gold', constrain: 'x', label: 'age', labelPos: 'ne' });
         const GD = (t) => (t < 20 ? 2600 + 365 * Math.sqrt(t) : 5651 - 2473 * Math.exp(-0.0278 * t));
-        const PS = (t) => (t < 70 ? 2500 + 350 * Math.sqrt(t) : 6400 - 3200 * Math.exp(-t / 62.8));
+        const PS = (t) => (t < 20 ? 2500 + 350 * Math.sqrt(t) : 6400 - 3200 * Math.exp(-t / 62.8));
         let info = {};
         v.render(() => {
           const am = a.value * 1000, d = dT.value, t = Math.min(Math.max(probe.x, 1), 150); probe.set(t, -8);
-          A.heat((x, y) => (-y >= a.value ? 1 : plateT(-y * 1000, Math.max(x, 0.05), am, { Tm: d }) / d), { range: [0, 1], cmap: 'magma', res: 150, key: `p${a.value}_${d}` });
+          A.heat((x, y) => (-y >= a.value ? 1 : plateT(-y * 1000, Math.max(x, 0.05), am, { Tm: d }) / d), { range: [0, 1], cmap: 'magma', res: 3, key: `p${a.value}_${d}` });
           A.hline(-a.value, { color: 'ink', dash: [2, 3], width: 1.6 });
           A.contour((x, y) => (-y >= a.value ? d : plateT(-y * 1000, Math.max(x, 0.05), am, { Tm: d })), [200, 600, 1000], { color: 'ink', width: 0.8, alpha: 0.5 });
           A.vline(t, { color: 'gold', dash: true });
@@ -143,7 +143,7 @@ exceeds a critical value of order $10^3$ (657.5 for two free surfaces, 1708 for 
           if (Math.abs(Math.log(want / simRa)) > 0.01) { fresh(); }
           kick();
           S.wrms();
-          A.heat((x, y) => S.at(x, y), { range: [0, 1], cmap: 'magma', res: 130, key: `c${S.steps}_${simRa}` });
+          A.heat((x, y) => S.at(x, y), { range: [0, 1], cmap: 'magma', res: 4, key: `c${S.steps}_${simRa}` });
           const ps = []; let pm = 0; for (let k = 0; k < S.P.length; k++) pm = Math.max(pm, Math.abs(S.P[k]));
           if (pm > 1e-3) { for (let i = -5; i <= 5; i++) if (i) ps.push((i / 5.5) * pm); A.contour((x, y) => S.psiAt(x, y), ps, { color: 'ink', width: 0.9, alpha: 0.5, res: 100 }); }
           const prof = []; for (let j = 0; j < S.nz; j++) { let m = 0; for (let i = 0; i < S.nx; i++) m += S.T[j * S.nx + i]; prof.push([m / S.nx, (j + 0.5) * S.dz]); }
@@ -203,7 +203,6 @@ independently of the layer depth $h$, and the typical flow speed grows as $\math
           N.path(NU_TABLE.map((p) => [p[0], p[1]]), { color: 'accent', width: 1, alpha: 0.5 });
           N.dots(NU_TABLE.map((p) => [p[0], p[1]]), { r: 5.5, color: 'accent' });
           N.dots(live_pts.map((p) => [p.Ra, p.Nu]), { r: 6, color: 'gold' });
-          N.line(1e4, 1, 1e4, 20, { color: 'muted', dash: true, alpha: 0.4 });
           const w0 = W_TABLE.find((p) => p[0] === 1e4)[1];
           W.line(xs[0], w0 * (xs[0] / 1e4) ** (2 / 3), xs[1], w0 * (xs[1] / 1e4) ** (2 / 3), { color: 'green', width: 2 });
           W.dots(W_TABLE.map((p) => [p[0], p[1]]), { r: 5.5, color: 'accent' });
@@ -233,25 +232,26 @@ independently of the layer depth $h$, and the typical flow speed grows as $\math
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mantle_plume' },
       verify: true,
       viz(v) {
-        const ra = v.select('Rayleigh number', [{ value: 1e4, label: '$10^4$' }, { value: 3e4, label: '$3\\times10^4$' }, { value: 1e5, label: '$10^5$' }], 3e4);
-        const vp = v.slider('plate speed ÷ plume rise speed', 0, 0.6, 0.25, { step: 0.01 });
-        const A = v.stage({ x: [0, CONV_L], y: [-0.12, 1], height: 320, equal: true, axes: false, weight: 1, minWidth: 320 });
+        const ra = v.select('Rayleigh number', [{ value: 1e4, label: '$10^4$' }, { value: 3e4, label: '$3\\times10^4$' }, { value: 1e5, label: '$10^5$' }], 1e5);
+        const vp = v.slider('plate speed ÷ plume rise speed', 0.02, 0.6, 0.25, { step: 0.01 });
+        const A = v.stage({ x: [0, CONV_L], y: [0, 1], height: 320, equal: true, axes: false, weight: 1.6, minWidth: 320, title: 'Temperature (hot = light); plate on top moving right' });
+        const B = v.stage({ x: [0, CONV_L], y: [0, 1], axes: 'box', gutter: true, xlabel: 'position along the plate', ylabel: 'age of volcano ($h^2/\\kappa$)', height: 320, weight: 0.8, minWidth: 220, title: 'Volcano age against distance' });
         let S = null, timer = null, done = false, arrive = null, info = {};
         const arrived = () => {
-          let m = 0; const rows = [S.nz - 1, S.nz - 2];
-          for (const j of rows) for (let i = 0; i < S.nx; i++) { const x = (i + 0.5) * S.dx; if (Math.abs(x - CONV_L / 2) < 0.4) m = Math.max(m, S.T[j * S.nx + i]); }
-          return m > 0.2;
+          let m = 0;
+          for (const j of [S.nz - 1, S.nz - 2]) for (let i = 0; i < S.nx; i++) { const x = (i + 0.5) * S.dx; if (Math.abs(x - CONV_L / 2) < 0.4) m = Math.max(m, S.T[j * S.nx + i]); }
+          return m > 0.25;
         };
         const fresh = () => {
           const R = Number(ra.value), nz = R > 3e4 ? 36 : 28;
-          S = makeConvection({ nx: Math.round(nz * 2.828), nz, Ra: R }); S.initPlume({ bump: 1, w: 0.09 }); arrive = null; done = false;
-          if (STILL()) { while (arrive == null && S.time < 0.2) { S.step(0.01); if (arrived()) arrive = S.time; } if (arrive != null) S.advance(arrive * 2); done = true; }
+          S = makeConvection({ nx: Math.round(nz * 2.828), nz, Ra: R }); S.initPlume({ bump: 1, w: 0.12, layer: 0.06 }); arrive = null; done = false;
+          if (STILL()) { while (arrive == null && S.time < 0.2) { S.step(0.002); if (arrived()) arrive = S.time; } if (arrive != null) S.advance(arrive * 2); done = true; }
         };
         const tick = () => {
           timer = null; if (!S || done) return;
           const t0 = performance.now();
           while (performance.now() - t0 < 12) {
-            S.step(0.01);
+            S.step(0.002);
             if (arrive == null && arrived()) arrive = S.time;
             if (S.time > 0.3 || (arrive != null && S.time > arrive * 2.2)) { done = true; break; }
           }
@@ -265,29 +265,31 @@ independently of the layer depth $h$, and the typical flow speed grows as $\math
         v.render(() => {
           if (ra.value !== lastRa) { lastRa = ra.value; fresh(); }
           kick();
-          A.rect(0, 1, CONV_L, 1.12, { fill: 'muted', fillAlpha: 0.2, color: 'muted', stroke: false });
-          A.heat((x, y) => (y < 0 ? 0 : S.at(x, y)), { range: [0, 1], cmap: 'magma', res: 130, key: `p${S.steps}_${ra.value}`, rect: [0, 0, CONV_L, 1] });
-          // volcano track on a plate moving to the right; plume axis at the box centre
-          let trk = 0;
+          A.heat((x, y) => S.at(x, y), { range: [0, 0.8], cmap: 'magma', res: 4, key: `p${S.steps}_${ra.value}` });
+          // volcano track on a plate moving to the right over the fixed plume axis (box centre)
+          const trk = [];
           if (arrive != null) {
-            const vrise = 1 / arrive, vpl = vp.value * vrise, now = S.time, gap = arrive * 0.25;
+            const vrise = 1 / arrive, vpl = vp.value * vrise, now = S.time, gap = arrive * 0.2;
             for (let ti = arrive, n = 0; ti <= now && n < 40; ti += gap, n++) {
               const x = CONV_L / 2 + vpl * (now - ti);
-              if (x > CONV_L - 0.05) break; trk++;
-              A.dot(x, -0.06, { r: 6, color: n === 0 ? 'red' : 'orange' });
+              if (x > CONV_L - 0.05) break;
+              trk.push([x, now - ti]);
             }
-            A.text('plate (moving →)', 0.1, -0.06, { size: 11, color: 'muted', align: 'left' });
-          } else A.text('plate', 0.1, -0.06, { size: 11, color: 'muted', align: 'left' });
+            trk.forEach((p, n) => A.dot(p[0], 0.965, { r: 6, color: n === 0 ? 'red' : 'orange' }));
+            A.text('plate →', 0.08, 0.93, { size: 11, color: 'ink', align: 'left', plate: true });
+          }
           A.vline(CONV_L / 2, { color: 'faint', dash: true, alpha: 0.4 });
-          // tail width at mid-depth (T > 0.5)
-          let wid = 0; { const j = Math.floor(0.4 * S.nz); for (let i = 0; i < S.nx; i++) if (S.T[j * S.nx + i] > 0.5) wid += S.dx; }
+          B.setView([0, CONV_L], [0, Math.max(S.time * 1.05, 1e-3)]);
+          B.setTicks(null, null);
+          if (trk.length) { B.path(trk, { color: 'muted', width: 1.4 }); B.dots(trk, { r: 5, color: 'orange' }); B.dot(trk[0][0], trk[0][1], { r: 6, color: 'red' }); }
+          let wid = 0; { const j = Math.floor(0.4 * S.nz); for (let i = 0; i < S.nx; i++) if (S.T[j * S.nx + i] > 0.4) wid += S.dx; }
           let wh = 0; { const j = S.nz - 3; for (let i = 0; i < S.nx; i++) if (S.T[j * S.nx + i] > 0.25) wh += S.dx; }
-          info = { arrive, wid, wh, t: S.time, trk, done };
+          info = { arrive, wid, wh, t: S.time, trk: trk.length, done };
         });
         v.legend([['orange', 'volcanoes (older to the right)', { dot: true }], ['red', 'first eruption', { dot: true }]]);
         v.readout(() => {
-          const head = info.arrive == null ? 'the head is still rising' : `head reached the lid at $t=${v.fix(info.arrive, 4)}$ (mean rise speed $${v.fix(1 / info.arrive, 0)}\\,\\kappa/h$); width of hot region under the lid ${v.fix(info.wh, 2)}$h$ versus tail width ${v.fix(info.wid, 2)}$h$ at 40% height`;
-          return `Model time ${v.fix(info.t, 4)} $h^2/\\kappa$: ${head}. ${info.trk} volcano${info.trk === 1 ? '' : 'es'} so far.`;
+          const head = info.arrive == null ? 'the head is still rising' : `the head reached the lid at $t=${v.fix(info.arrive, 4)}$ (mean rise speed $${v.fix(1 / info.arrive, 0)}\\,\\kappa/h$); hot region under the lid ${v.fix(info.wh, 2)}$h$ wide against a tail ${v.fix(info.wid, 2)}$h$ wide at 40% height`;
+          return `Model time $${v.fix(info.t, 4)}\\,h^2/\\kappa$: ${head}. ${info.trk} volcano${info.trk === 1 ? '' : 'es'} so far, spaced by the plate speed times the interval.`;
         });
       },
     },
@@ -317,7 +319,7 @@ independently of the layer depth $h$, and the typical flow speed grows as $\math
           let lo = 0, hi = 8; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (tp + G * m - Ts(m) > 0) lo = m; else hi = m; } return (lo + hi) / 2;
         };
         const Ff = (P, P0, Pl) => { const Pm = Math.max(P, Pl); return P >= P0 ? 0 : Math.max(0, ((132.899 - G) * (P0 - Pm) - 5.104 * (P0 * P0 - Pm * Pm)) / (LC + DL)); };
-        const L = v.stage({ x: [1000, 1900], y: [-4.2, 0], axes: 'box', gutter: true, xlabel: 'temperature (°C)', ylabel: 'pressure (GPa)', yticks: [[0, '0'], [-1, '1'], [-2, '2'], [-3, '3'], [-4, '4']], height: 360, weight: 1.2, minWidth: 280 });
+        const L = v.stage({ x: [1000, 2100], y: [-4.2, 0], axes: 'box', gutter: true, xlabel: 'temperature (°C)', ylabel: 'pressure (GPa)', yticks: [[0, '0'], [-1, '1'], [-2, '2'], [-3, '3'], [-4, '4']], height: 360, weight: 1.2, minWidth: 280 });
         const R = v.stage({ x: [0, 30], y: [-4.2, 0], axes: 'box', gutter: true, xlabel: 'melt fraction $F$ (%)', ylabel: 'depth (km)', yticks: [[0, '0'], [-1, '31'], [-2, '62'], [-3, '93'], [-4, '124']], height: 360, weight: 0.8, minWidth: 220 });
         let info = {};
         v.render(() => {

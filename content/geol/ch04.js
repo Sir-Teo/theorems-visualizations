@@ -13,8 +13,8 @@
 //   4.3  Half-space solution is exact mathematics; Tm = 1300 °C, κ = 1 mm²/s are the usual round textbook values. McKenzie (1967, JGR 72:
 //        6261–6273) is the Crossref-checked credit for the cooling-lithosphere heat-flow model; Davis & Lister (1974) and Parsons & Sclater
 //        (1977) are the oceanic-depth applications (not separately checked).
-//   4.4  Parsons & Sclater (1977, JGR 82: 803–827, Crossref-checked): depth 2500 + 350√t (m, t in Myr, t < 70 Myr) and
-//        6400 − 3200 exp(−t/62.8) beyond. Stein & Stein (1992, Nature 359: 123–129, Crossref-checked): GDH1 depth 2600 + 365√t (t < 20 Myr)
+//   4.4  Parsons & Sclater (1977, JGR 82: 803–827, Crossref-checked): depth 2500 + 350√t (m, t in Myr, quoted valid for t < 70 Myr) and
+//        6400 − 3200 exp(−t/62.8) for older crust (drawn from 20 Myr on, where the two forms agree to 10 m). Stein & Stein (1992, Nature 359: 123–129, Crossref-checked): GDH1 depth 2600 + 365√t (t < 20 Myr)
 //        and 5651 − 2473 exp(−0.0278 t). The fit coefficients were read from a web summary of the two papers, not from the papers. The
 //        curves are the published FITS, not the underlying soundings (no data table is reproduced).
 //   4.5  Parsons & Sclater heat-flow law q = 11.3/√t HFU = 473 mW/m² per √Myr and Stein & Stein q = 510/√t (t < 55 Myr), 48 + 96 exp(−0.0278 t)
@@ -23,7 +23,7 @@
 //        (3.1×10⁸ km² of oceanic crust, oldest crust 180 Myr, hence 3.4 km²/yr of new crust). Hydrothermal share of oceanic heat loss:
 //        Stein & Stein (1994, JGR 99: 3081–3095, Crossref-checked) — the size of the effect is not quoted here.
 
-import { YR, MYR, KAPPA, halfSpaceQ, halfSpaceSubs } from './ch04.shared.js';
+import { MYR, KAPPA, halfSpaceQ, halfSpaceSubs } from './ch04.shared.js';
 
 const T0C = 10; // mean surface temperature used in the continental pictures (°C)
 
@@ -185,7 +185,7 @@ Isotherms deepen as $\sqrt{\kappa t}$; the thermal lithosphere (the depth of, sa
         v.render(() => {
           const tm = Tm.value, t = Math.min(Math.max(probe.x, 2), 100);
           probe.set(t, -8);
-          A.heat((x, y) => T(-y, x) / tm, { range: [0, 1], cmap: 'magma', res: 160, key: 'T' + tm });
+          A.heat((x, y) => T(-y, x) / tm, { range: [0, 1], cmap: 'magma', res: 3, key: 'T' + tm });
           A.contour((x, y) => T(-y, x), [200, 600, 1000, 0.9 * tm], { color: 'ink', width: 0.9, alpha: 0.55 });
           A.curve((x) => [x, -2.32 * Math.sqrt(KAPPA * x * MYR) / 1000], 0.2, 100, { n: 160, color: 'green', width: 2.4 });
           A.vline(t, { color: 'gold', dash: true });
@@ -231,7 +231,7 @@ with $\alpha$ the thermal expansion coefficient and $\rho_m$, $\rho_w$ the mantl
         const alpha = v.slider('thermal expansion $\\alpha$ (10⁻⁵/K)', 2, 4, 3, { step: 0.05 });
         const Tm = v.slider('$T_m-T_0$ (K)', 1100, 1500, 1300, { step: 10 });
         const ax = v.select('age axis', [{ value: 'age', label: 'age' }, { value: 'sqrt', label: '√age' }], 'age');
-        const PS = (t) => (t < 70 ? 2500 + 350 * Math.sqrt(t) : 6400 - 3200 * Math.exp(-t / 62.8));
+        const PS = (t) => (t < 20 ? 2500 + 350 * Math.sqrt(t) : 6400 - 3200 * Math.exp(-t / 62.8));
         const GD = (t) => (t < 20 ? 2600 + 365 * Math.sqrt(t) : 5651 - 2473 * Math.exp(-0.0278 * t));
         const yt = [[-2, '2'], [-3, '3'], [-4, '4'], [-5, '5'], [-6, '6']];
         const S = v.stage({ x: [0, 180], y: [-6.6, -2.2], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'depth (km)', yticks: yt, height: 340, weight: 1.4, minWidth: 300 });
@@ -294,7 +294,7 @@ so heat flow decreases as $t^{-1/2}$, from several hundred mW/m² at the ridge t
         const PSq = (t) => 473 / Math.sqrt(t);
         const SSq = (t) => (t < 55 ? 510 / Math.sqrt(t) : 48 + 96 * Math.exp(-0.0278 * t));
         const H = v.stage({ x: [1, 200], y: [20, 700], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'heat flow (mW/m²)', height: 340, weight: 1.2, minWidth: 280 });
-        const G = v.stage({ x: [0, 180], y: [0, 2.2], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'heat loss per 10 Myr of age (TW)', height: 340, weight: 1, minWidth: 260 });
+        const G = v.stage({ x: [0, 180], y: [0, 3], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'heat loss per 10 Myr of age (TW)', height: 340, weight: 1, minWidth: 260 });
         const probe = H.handle(8, 150, { color: 'gold', label: 'age', labelPos: 'ne', constrain: (x) => [Math.min(Math.max(x, 1), 180), qth(Math.min(Math.max(x, 1), 180)) * fc(Math.min(Math.max(x, 1), 180))] });
         let info = {};
         v.render(() => {
@@ -310,8 +310,9 @@ so heat flow decreases as $t^{-1/2}$, from several hundred mW/m² at the ridge t
           G.fn((t) => dens(t), { domain: [0.5, 180], color: 'accent', width: 2.2, fill: true, base: 0 });
           G.fn((t) => dens(t) * fc(t), { domain: [0.5, 180], color: 'red', width: 2.2, fill: true, base: 0 });
           G.vline(tp, { color: 'gold', dash: true });
-          const tot = v.M.integrate((t) => (qth(t) / 1000) * C * (1 - t / TM), 1e-6, TM, 4000) / 1e12;
-          const cond = v.M.integrate((t) => (qth(t) * fc(t) / 1000) * C * (1 - t / TM), 1e-6, TM, 4000) / 1e12;
+          // substitute t = u² to remove the integrable 1/√t singularity at the ridge
+          const tot = v.M.integrate((u) => (u < 1e-6 ? 0 : (qth(u * u) / 1000) * C * (1 - (u * u) / TM) * 2 * u), 0, Math.sqrt(TM), 400) / 1e12;
+          const cond = v.M.integrate((u) => (u < 1e-6 ? 0 : (qth(u * u) * fc(u * u) / 1000) * C * (1 - (u * u) / TM) * 2 * u), 0, Math.sqrt(TM), 400) / 1e12;
           info = { tp, q: qth(tp), qo: qth(tp) * fc(tp), tot, cond };
         });
         v.legend([['accent', 'conductive law $t^{-1/2}$'], ['orange', 'P&S fit 473/√t (quoted)', { dash: true }], ['teal', 'Stein & Stein fit (quoted)', { dash: true }], ['red', 'model of observed (hydrothermal deficit)']]);

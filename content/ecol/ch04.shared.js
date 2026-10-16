@@ -143,7 +143,7 @@ export function jcInit(L, S, rng) {
 }
 export function jcRichness(st) { const seen = new Uint8Array(st.S); let n = 0; for (const s of st.g) if (!seen[s]) { seen[s] = 1; n++; } return n; }
 export function jcStep(st, o) {
-  const { L, S, g, rng } = st, R = o.R || 6, lam = o.lam || 1.5, rc = o.rc || 2.5, gamma = o.gamma, mort = o.mort || 0.1;
+  const { L, S, g, rng } = st, R = o.R || 7, lam = o.lam || 2, rc = o.rc || 2.5, gamma = o.gamma, mort = o.mort || 0.1;
   const dead = [];
   for (let i = 0; i < g.length; i++) if (rng() < mort) { dead.push(i); g[i] = -1; }
   const seed = new Float64Array(S), cons = new Float64Array(S);
