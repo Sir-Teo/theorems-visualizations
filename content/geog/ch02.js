@@ -102,9 +102,11 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
           // parallels at "nice" colatitudes
           const cmax = 2 * Math.atan(1.5 * W / 2) * R2D;
           const rings = []; for (let e = -9; e <= 2; e++) for (const m of [1, 2, 5]) { const c = m * 10 ** e; if (c < cmax && c > cmax / 25 && c < 180) rings.push(c); }
-          for (const c of rings) {
+          let lastLab = 0;
+          for (const c of rings.sort((x, y) => y - x)) {
             const r = 2 * Math.tan((c * D2R) / 2);
             sB.circle(0, 0, r, { color: 'muted', width: 0.8, alpha: 0.5 });
+            if (lastLab && r > lastLab / 2.2) continue; lastLab = r;
             const km = c * D2R * R_MEAN, lab = km >= 1 ? `${comma(km, km < 10 ? 1 : 0)} km` : km >= 1e-3 ? `${comma(km * 1000, km < 0.01 ? 1 : 0)} m` : `${comma(km * 1e6, 1)} mm`;
             sB.text(lab, r * 0.71, r * 0.71, { size: 10, color: 'muted', dx: 3 });
           }
@@ -161,7 +163,7 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
       tags: ['navigation', 'great circles'],
       viz(v) {
         const ROUTES = {
-          pac: { a: [139.65, 35.44], b: [-122.42, 37.77], c: [-170, 50], label: 'Yokohama → San Francisco' },
+          pac: { a: [139.65, 35.44], b: [-122.42, 37.77], c: [-170, 18], label: 'Yokohama → San Francisco' },
           atl: { a: [-9.14, 38.72], b: [-74.01, 40.71], c: [-42, 45], label: 'Lisbon → New York' },
           ind: { a: [18.42, -33.92], b: [115.86, -31.95], c: [67, -45], label: 'Cape Town → Perth' },
           ns: { a: [-17.44, 14.69], b: [-34.88, -8.05], c: [-25, 5], label: 'Dakar → Recife' },
@@ -195,14 +197,16 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
           G.greatCircle(P.a, P.b, { color: 'green', width: 2.8 });
           for (let i = 1; i <= 6; i++) {
             const q = P.pts[Math.round((i * 120) / 7)], h = v.geo('bearing', q, P.b);
-            G.arrow(q, v.geo('destination', q, h, 4), { color: 'green', width: 2 });
             const r = P.rpts[Math.round((i * (P.rpts.length - 1)) / 7)];
-            G.arrow(r, v.geo('destination', r, mod(P.rb, 360), 4), { color: 'red', width: 2 });
+            for (const [p0, hh, col] of [[q, h, 'green'], [r, mod(P.rb, 360), 'red']]) {
+              G.arrow(p0, v.geo('destination', p0, 0, 3.2), { color: 'ink', width: 1.2, alpha: 0.7, head: 5 });
+              G.arrow(p0, v.geo('destination', p0, hh, 4.5), { color: col, width: 2.6, head: 10 });
+            }
           }
           // headings
           const hs = P.hd.map((p) => p[1]).concat([P.rb]), lo = Math.min(...hs), hi = Math.max(...hs), mid = (lo + hi) / 2, half = Math.max(50, (hi - lo) / 2 + 15);
           sB.setView([0, Math.max(P.gc, P.rl) * 1.04], [mid - half, mid + half]);
-          const tk = []; for (let y = Math.ceil((mid - half) / 45) * 45; y <= mid + half; y += 45) tk.push([y, `${deg3(y)} ${compass(y)}`]);
+          const tk = []; for (let y = Math.ceil((mid - half) / 45) * 45; y <= mid + half; y += 45) tk.push([y, `${Math.round(mod(y, 360)) % 360}°`]);
           sB.setTicks(undefined, tk);
           sB.path([[0, P.rb], [P.rl, P.rb]], { color: 'red', width: 2.4, dash: [7, 5] });
           sB.path(P.hd, { color: 'green', width: 2.6 });
@@ -212,8 +216,9 @@ and its length from $\varphi_0$ to $\varphi$ is $R\,|\varphi - \varphi_0| / |\co
           sC.heat((x, y) => save(x, y), { range: [0, 40], cmap: 'theme', color: 'green', key: 'save', res: 3 });
           sC.contour((x, y) => save(x, y), [1, 5, 10, 20, 30], { color: 'ink', alpha: 0.55, width: 1, labels: true, fmt: (x) => x + '%', res: 90 });
           let dl = Math.abs(wrap180(P.b[0] - P.a[0])), fm = Math.abs((P.a[1] + P.b[1]) / 2);
-          sC.dot(dl, Math.min(fm, 84), { r: 6, color: 'panel', label: `${(100 * (1 - P.gc / P.rl)).toFixed(1)}% for your route`, labelPos: dl > 120 ? 'w' : 'e', labelColor: 'ink' });
+          sC.dot(dl, Math.min(fm, 84), { r: 6, color: 'panel' });
           sC.dot(dl, Math.min(fm, 84), { r: 3, color: 'ink' });
+          sC.text(`your route: ${(100 * (1 - P.gc / P.rl)).toFixed(1)}%`, dl, Math.min(fm, 84), { size: 12, weight: 600, align: dl > 140 ? 'right' : dl < 30 ? 'left' : 'center', dy: fm > 70 ? 16 : -14, plate: true });
           v.legend([['green', 'great circle'], ['red', 'rhumb line', { dash: true }], ['green', 'saving on one parallel (%)', { area: true }]]);
         });
         v.readout(() => {

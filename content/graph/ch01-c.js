@@ -395,7 +395,7 @@ export default {
         const s = gstage(v, { height: 340 });
         const G = v.graph(s, { ...LA(), r: 12 });
         const H = ix(G), D = new Uint8Array(H.m);
-        'ab bf fe ea bc cg gf fi ih hf'.split(' ').forEach((p) => (D[H.eix.get(G.edge(p[0], p[1]))] = 1));
+        'ab fe ea bc cg gf fi ih hf'.split(' ').forEach((p) => (D[H.eix.get(G.edge(p[0], p[1]))] = 1));
         G.onClick = ({ edge }) => { if (edge) D[H.eix.get(edge)] ^= 1; return true; };
         v.button('Clear', () => D.fill(0));
         v.render(() => {
@@ -494,7 +494,7 @@ export default {
         const G = v.graph(s, { ...LA(), r: 13 });
         const H = ix(G), D = new Uint8Array(H.m), F = new Uint8Array(H.m), U = new Set(['b', 'c', 'f', 'g']);
         'ef fi ih he'.split(' ').forEach((p) => (D[H.eix.get(G.edge(p[0], p[1]))] = 1));
-        'ae bf cf cg dg'.split(' ').forEach((p) => (F[H.eix.get(G.edge(p[0], p[1]))] = 1));
+        'bc cf cg dg dj'.split(' ').forEach((p) => (F[H.eix.get(G.edge(p[0], p[1]))] = 1));
         G.onClick = ({ node, edge }) => { if (edge) (mode.value === 'a' ? D : F)[H.eix.get(edge)] ^= 1; else if (node && mode.value === 'a') U.has(node.id) ? U.delete(node.id) : U.add(node.id); return true; };
         const T = spanTree(H, 0, 'bfs');
         const testF = () => {
@@ -518,7 +518,7 @@ export default {
         });
         v.legend([['blue', '$D$ (or side $V_1$)'], ['orange', 'cut $E(U,V\\setminus U)$ (or side $V_2$)', { dash: true }], ['purple', '$D\\cap$ cut'], ['red', 'odd vertex / a cycle meeting $F$ oddly']]);
         v.readout(() => {
-          if (mode.value === 'a') { const inC = !oddVerts(H, D).length, common = G.edges.filter((e) => D[H.eix.get(e)] && U.has(e.from) !== U.has(e.to)).length; return String.raw`$D ${inC ? '\in' : '\notin'} \mathcal C$ · $|D\cap E(U,V\setminus U)| = ${common}$, so $\langle D, E(U,\cdot)\rangle = ${common % 2}$${inC ? ' — even, as the theorem demands ✓' : ' — odd vertices exist, and $D$ is not orthogonal to their stars'}`; }
+          if (mode.value === 'a') { const inC = !oddVerts(H, D).length, common = G.edges.filter((e) => D[H.eix.get(e)] && U.has(e.from) !== U.has(e.to)).length; return String.raw`$D ${inC ? '\\in' : '\\notin'} \mathcal C$ · $|D\cap E(U,V\setminus U)| = ${common}$, so $\langle D, E(U,\cdot)\rangle = ${common % 2}$${inC ? ' — even, as the theorem demands ✓' : ' — odd vertices exist, and $D$ is not orthogonal to their stars'}`; }
           const r = testF(); return r.bad ? `$F$ meets the red cycle in ${popcount(r.bad.map((x, i) => x & F[i]))} edges (odd): $F \\notin \\mathcal C^\\perp$, and indeed $F$ is not a cut` : `$F$ is orthogonal to every (fundamental) cycle → $F = E(V_1, V_2)$ for the coloured bipartition ✓`;
         });
       },
@@ -540,7 +540,7 @@ export default {
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true, title: 'fundamental cycles as vectors in $\\mathbb F_2^m$ (columns: chords, then tree edges)' });
         const G = v.graph(s, { ...LA(), r: 12 });
         const H = ix(G), Tb = v.table(t, { rows: 1, cols: 1, maxCell: 30, size: 11 });
-        let pick = H.eix.get(G.edge('f', 'i')); const D = new Uint8Array(H.m);
+        let pick = H.eix.get(G.edge('f', 'g')); const D = new Uint8Array(H.m);
         'ef fi ih he bf bc cf'.split(' ').forEach((p) => (D[H.eix.get(G.edge(p[0], p[1]))] = 1));
         G.onClick = ({ edge }) => { if (edge) { if (mode.value === 'show') pick = H.eix.get(edge); else D[H.eix.get(edge)] ^= 1; } return true; };
         const comp = () => {
@@ -558,7 +558,7 @@ export default {
             edgeColor: (e) => { const k = H.eix.get(e); if (mode.value === 'build') return D[k] ? (rebuilt && rebuilt[k] ? 'purple' : 'ink') : c.T.inT[k] ? 'green' : null; return k === pick ? 'gold' : hi[k] ? col : c.T.inT[k] ? 'green' : null; },
             edgeWidth: (e) => { const k = H.eix.get(e); return (mode.value === 'build' ? D[k] : hi[k] || k === pick) ? 4.2 : c.T.inT[k] ? 2.6 : 1.4; }, edgeDash: (e) => !c.T.inT[H.eix.get(e)] && mode.value === 'show' && !hi[H.eix.get(e)] });
           const order = [...c.chords, ...c.tree], rows = c.cyc.length, ri = mode.value === 'show' && !c.T.inT[pick] ? c.chords.indexOf(pick) : -1;
-          Tb.draw({ rows, cols: H.m, rowLabels: c.chords.map((k) => 'C_' + lab(k)), colLabels: order.map(lab), value: (i, j) => (c.cyc[i][order[j]] ? '1' : ''),
+          Tb.draw({ rows, cols: H.m, rowLabels: c.chords.map((k) => `$C_{${lab(k)}}$`), colLabels: order.map(lab), value: (i, j) => (c.cyc[i][order[j]] ? '1' : ''),
             fill: (i, j) => (c.cyc[i][order[j]] ? (j < rows ? ['accent', 0.55] : ['red', 0.3]) : null), activeRow: ri >= 0 ? ri : undefined, activeColor: 'gold', square: false, cellAspect: 1.2, labelSize: 11 });
         });
         v.legend([['green', 'spanning tree $T$'], ['red', 'fundamental cycle $C_e$'], ['orange', 'fundamental cut $D_f$'], ['purple', '$D$ rebuilt from fundamental cycles']]);

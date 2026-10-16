@@ -302,6 +302,6 @@ export function strip(s, items, X0, Y0, o = {}) {
 export function arcPx(s, X1, X2, Y, h, st = {}) {
   const pts = [], CX = (X1 + X2) / 2, CY = Y + 2 * h;
   for (let k = 0; k <= 24; k++) { const t = k / 24, u = 1 - t; pts.push([s.invX(u * u * X1 + 2 * u * t * CX + t * t * X2), s.invY(u * u * Y + 2 * u * t * CY + t * t * Y)]); }
-  s.path(pts.slice(0, st.head === false ? 25 : 22), { color: st.color || 'muted', width: st.width ?? 1.6, dash: st.dash, alpha: st.alpha });
-  if (st.head !== false) { const p = pts[20], q = pts[24]; s.arrow(p[0], p[1], q[0], q[1], { color: st.color || 'muted', width: st.width ?? 1.6, head: st.headSize ?? 7, alpha: st.alpha }); }
+  s.path(pts.slice(0, st.head === false ? 25 : 23), { color: st.color || 'muted', width: st.width ?? 1.6, dash: st.dash, alpha: st.alpha });
+  if (st.head !== false) { const p = pts[22], q = pts[24]; s.arrow(p[0], p[1], q[0], q[1], { color: st.color || 'muted', width: st.width ?? 1.6, head: st.headSize ?? 7, alpha: st.alpha }); }
 }

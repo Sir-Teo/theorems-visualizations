@@ -170,7 +170,7 @@ $G$ is **abelian** (commutative) if $a\circ b=b\circ a$ for all $a,b$, and **non
           z6m: { tex: '(\\mathbb Z_6\\setminus\\{0\\}, \\cdot)', els: [1, 2, 3, 4, 5], op: (a, b) => (a * b) % 6, mem: (x) => x >= 1 && x < 6, e: 1, inv: (a) => [1, 2, 3, 4, 5].find((b) => (a * b) % 6 === 1) ?? null, f: String, s: '\\cdot' },
           z7m: { tex: '(\\mathbb Z_7\\setminus\\{0\\}, \\cdot)', els: [1, 2, 3, 4, 5, 6], op: (a, b) => (a * b) % 7, mem: (x) => x >= 1 && x < 7, e: 1, inv: (a) => [1, 2, 3, 4, 5, 6].find((b) => (a * b) % 7 === 1), f: String, s: '\\cdot' },
           d3: { tex: 'D_3', els: [0, 1, 2, 3, 4, 5], op: (a, b) => D3.T[a][b], mem: () => true, e: 0, inv: (a) => D3.inv[a], f: (a) => D3.L[a], s: '' },
-          m2: { tex: '(\\mathbb M_2(\\mathbb R), \\cdot)', sample: (r) => [[r.int(-2, 2), r.int(-2, 2)], [r.int(-2, 2), r.int(-2, 2)]], op: (A, B) => mm(A, B), mem: () => true, eq: (A, B) => A.every((row, i) => row.every((x, j) => Math.abs(x - B[i][j]) < 1e-9)), e: [[1, 0], [0, 1]], inv: mInv, f: (A) => fmtM(A.map((r) => r.map(fmtR))), s: '' },
+          m2: { tex: '(\\mathbb M_2(\\mathbb R), \\cdot)', sample: (r) => [[r.int(-2, 2), r.int(-2, 2)], [r.int(-2, 2), r.int(-2, 2)]], op: (A, B) => mm(A, B), mem: () => true, eq: (A, B) => A.every((row, i) => row.every((x, j) => Math.abs(x - B[i][j]) < 1e-9)), e: [[1, 0], [0, 1]], short: true, inv: mInv, f: (A) => fmtM(A.map((r) => r.map(fmtR))), s: '' },
         };
         const which = v.select('candidate', Object.entries(C).map(([value, c]) => ({ value, label: `$${c.tex}$` })), 'zsub');
         let seed = 1; v.button('Resample', () => { seed++; });
@@ -183,8 +183,8 @@ $G$ is **abelian** (commutative) if $a\circ b=b\circ a$ for all $a,b$, and **non
           const singles = fin ? c.els.slice() : Array.from({ length: 24 }, pick);
           // closure
           out.close = pairs.map(([a, b]) => ({ ok: c.mem(c.op(a, b)) || (!fin && which.value === 'm2'), ex: String.raw`${c.f(a)} ${c.s} ${c.f(b)} = ${c.f(c.op(a, b))}`, bad: String.raw`${c.f(a)} ${c.s} ${c.f(b)} = ${c.f(c.op(a, b))}\notin G` }));
-          out.assoc = triples.map(([a, b, d]) => { const L = c.op(c.op(a, b), d), R = c.op(a, c.op(b, d)); return { ok: eq(L, R), ex: String.raw`(${c.f(a)} ${c.s} ${c.f(b)}) ${c.s} ${c.f(d)} = ${c.f(L)} = ${c.f(a)} ${c.s} (${c.f(b)} ${c.s} ${c.f(d)})`, bad: String.raw`(${c.f(a)} ${c.s} ${c.f(b)}) ${c.s} ${c.f(d)} = ${c.f(L)} \ne ${c.f(R)} = ${c.f(a)} ${c.s} (${c.f(b)} ${c.s} ${c.f(d)})` }; });
-          out.id = c.e == null ? [{ ok: false, txt: c.noE }] : singles.map((a) => ({ ok: eq(c.op(c.e, a), a) && eq(c.op(a, c.e), a), ex: String.raw`e = ${c.f(c.e)}:\ ${c.f(c.e)} ${c.s} ${c.f(a)} = ${c.f(a)} ${c.s} ${c.f(c.e)} = ${c.f(a)}` }));
+          out.assoc = triples.map(([a, b, d]) => { const L = c.op(c.op(a, b), d), R = c.op(a, c.op(b, d)); return { ok: eq(L, R), ex: c.short ? String.raw`A = ${c.f(a)},\ B = ${c.f(b)},\ C = ${c.f(d)}:\ (AB)C = A(BC) = ${c.f(L)}` : String.raw`(${c.f(a)} ${c.s} ${c.f(b)}) ${c.s} ${c.f(d)} = ${c.f(L)} = ${c.f(a)} ${c.s} (${c.f(b)} ${c.s} ${c.f(d)})`, bad: String.raw`(${c.f(a)} ${c.s} ${c.f(b)}) ${c.s} ${c.f(d)} = ${c.f(L)} \ne ${c.f(R)} = ${c.f(a)} ${c.s} (${c.f(b)} ${c.s} ${c.f(d)})` }; });
+          out.id = c.e == null ? [{ ok: false, txt: c.noE }] : singles.map((a) => ({ ok: eq(c.op(c.e, a), a) && eq(c.op(a, c.e), a), ex: c.short ? String.raw`e = I:\ IA = AI = A\ \text{for}\ A = ${c.f(a)}` : String.raw`e = ${c.f(c.e)}:\ ${c.f(c.e)} ${c.s} ${c.f(a)} = ${c.f(a)} ${c.s} ${c.f(c.e)} = ${c.f(a)}` }));
           out.inv = c.e == null ? [{ ok: false, txt: 'without an identity there is nothing for inverses to produce' }] : singles.map((a) => { const b = c.inv(a); const ok = b != null && c.mem(b) && eq(c.op(a, b), c.e) && eq(c.op(b, a), c.e); return { ok, ex: ok ? String.raw`${c.f(a)}^{-1} = ${c.f(b)}` : '', bad: String.raw`${c.f(a)}\ \text{has no inverse}` }; });
           return out;
         };

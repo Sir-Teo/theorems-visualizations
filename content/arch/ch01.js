@@ -567,10 +567,10 @@ Moving the pole sideways changes $H$ and with it the depth of the polygon; movin
         const COLS = ['orange', 'purple', 'pink', 'gold'];
         const wx = [2.2, 4.6, 7.8, 10.0].map((x, i) => S.handle(x, 0, { color: COLS[i], constrain: (px) => [Math.max(0.4, Math.min(LX - 0.4, px)), 0] }));
         // load line divisions (top of load line at y = sum)
-        const init = [3, 2, 4, 2.5];
+        const init = [2.2, 1.4, 2.6, 1.6];
         const div = [0, 1, 2].map((i) => Fd.handle(0, init.slice(i + 1).reduce((a, b) => a + b, 0), { color: COLS[i + 1], constrain: (x, y) => [0, y] }));
-        const top = Fd.handle(0, init.reduce((a, b) => a + b, 0), { color: COLS[0], constrain: (x, y) => [0, Math.max(0.6, Math.min(9.4, y))] });
-        const pole = Fd.handle(3.6, 5, { color: 'accent', label: 'O', constrain: (x, y) => [Math.max(0.5, Math.min(7.2, Math.abs(x))) * (arch.value ? -1 : 1), y] });
+        const top = Fd.handle(0, init.reduce((a, b) => a + b, 0), { color: COLS[0], constrain: (x, y) => [0, Math.max(0.6, Math.min(9.0, y))] });
+        const pole = Fd.handle(5.2, 4, { color: 'accent', label: 'O', constrain: (x, y) => [Math.max(0.5, Math.min(7.2, Math.abs(x))) * (arch.value ? -1 : 1), y] });
         pole.labelPos = 'e';
         const state = () => {
           const ord = wx.map((h, i) => ({ x: h.x, i })).sort((a, b) => a.x - b.x);
