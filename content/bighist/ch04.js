@@ -26,7 +26,7 @@ import { clamp } from './ch04.shared.js';
 // [name, age from Ma, age to Ma, cm3 low, cm3 high, colour, label x, label y]  (rounded, indicative)
 const HOMININS = [
   ['A. afarensis', 3.9, 3.0, 400, 550, 'orange', -3.45, 600, 'center'],
-  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.5, 650, 'center'],
+  ['A. africanus', 3.0, 2.0, 420, 600, 'teal', -2.85, 650, 'center'],
   ['P. boisei', 2.3, 1.2, 480, 550, 'purple', -1.45, 440, 'center'],
   ['H. habilis', 2.3, 1.65, 500, 700, 'gold', -1.75, 750, 'right'],
   ['H. erectus', 1.9, 0.1, 550, 1100, 'accent', -1.0, 800, 'center'],
@@ -34,7 +34,7 @@ const HOMININS = [
   ['H. neanderthalensis', 0.43, 0.04, 1200, 1750, 'red', 0.05, 1680, 'left'],
   ['H. sapiens', 0.3, 0, 1100, 1750, 'green', 0.05, 1470, 'left'],
 ];
-const BIPED = [[-4.4, 'Ardipithecus'], [-3.66, 'Laetoli footprints'], [-3.2, '“Lucy”']];
+const BIPED = [[-4.4, 'Ardipithecus', 205], [-3.66, 'Laetoli footprints', 165], [-3.2, '“Lucy”', 205]];
 const kleiber = (kg) => 3.4 * kg ** 0.75;       // basal metabolic rate, W
 const brainW = (cc) => 0.0119 * cc;             // W, scaled from about 16 W at 1,350 cm3
 
@@ -73,6 +73,7 @@ const SITES = [
   ['White Sands', -106.2, 32.8, 22, 'america', '21–23 ka, contested'],
   ['Monte Verde', -73.2, -41.5, 14.5, 'america', 'rounded'],
 ];
+const LABEL_OFF = { 'Jebel Irhoud': [-8, 0, 'right'], 'Madjedbebe': [-9, 0, 'right'], 'Omo Kibish': [8, 10, 'left'], 'Misliya': [8, 4, 'left'], 'Qafzeh': [-8, 6, 'right'], 'Bacho Kiro': [0, -10, 'center'], 'Lake Mungo': [8, 8, 'left'] };
 const GROUP_COLOR = { africa: 'orange', levant: 'accent', sahul: 'red', europe: 'purple', siberia: 'teal', east: 'pink', america: 'green' };
 
 export default {
@@ -100,7 +101,7 @@ export default {
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Human_evolution', doi: 'https://doi.org/10.1086/204350' },
       verify: true,
       viz(v) {
-        const A = v.stage({ x: [-4.3, 1.1], y: [120, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
+        const A = v.stage({ x: [-4.7, 1.9], y: [120, 1950], axes: 'box', gutter: true, height: 380, weight: 1.35, xlabel: 'age (Ma ago)', ylabel: 'braincase volume (cm³)', xticks: [[-4, '4'], [-3, '3'], [-2, '2'], [-1, '1'], [0, '0']], title: 'species ranges (rounded)' });
         const B = v.stage({ x: [0, 5], y: [0, 125], axes: 'box', gutter: true, height: 380, weight: 1, ylabel: 'resting power (W)', xticks: [[0.5, 'chimp-like'], [1.5, 'A. afarensis'], [2.5, 'H. erectus'], [3.5, 'H. sapiens'], [4.5, 'yours']], title: 'energy budget of the brain' });
         const PRE = { 'chimp-like': [400, 45], 'A. afarensis': [450, 40], 'H. erectus': [900, 55], 'H. sapiens': [1350, 65] };
         let cc, kg;
@@ -118,8 +119,8 @@ export default {
           }
           A.fn((t) => Math.exp(as + bs * t), { domain: [-2.1, 0], color: 'ink', width: 1.6, dash: [5, 4] });
           A.hline(400, { color: 'faint', width: 1, dash: [2, 3] });
-          for (const [t, lab] of BIPED) { A.dot(t, 230, { r: 4.5, color: 'ink' }); A.text(lab, t, 205, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
-          A.text('first evidence of upright walking', -4.28, 290, { size: 10, color: 'muted', align: 'left' });
+          for (const [t, lab, ty] of BIPED) { A.dot(t, 240, { r: 4.5, color: 'ink' }); A.text(lab, t, ty, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); }
+          A.text('first evidence of upright walking', -4.65, 300, { size: 10, color: 'muted', align: 'left' });
           // energy stage
           const bars = [...Object.entries(PRE).map(([k, [c, m]], i) => [i + 0.5, c, m]), [4.5, cc.value, kg.value]];
           for (const [x, c, m] of bars) {
@@ -213,7 +214,7 @@ export default {
 
 **Scope.** The dated sites on the map are individual finds and give minimum ages for arrival; older sites and early dispersals that left no lasting descendants are possible. Several ages shown here are contested.`,
       idea: String.raw`The case rests on three independent kinds of evidence. Fossils and artefacts give minimum arrival dates for each region. DNA gives the pattern of diversity, which falls with distance from Africa, and the relatedness of living peoples; molecular clocks (popgen-3.9) date the splits. And the genomes of ancient people, such as the $45\,000$-year-old Ust'-Ishim man in Siberia, show who was where. The fossil dates keep moving back (Misliya, Madjedbebe, White Sands are each the subject of argument), which is why the picture treats every date as a lower bound, and the readout asks how fast a front would have had to travel to cover the distance between two dates.`,
-      caption: String.raw`Move the time slider from 320 ka ago down to the present (0): a site lights up once its age has been reached (colour = region), and the chains of dashed lines join the sites of each region in order. Use the view buttons or drag the globe to turn it. Toggle the contested ages: with Madjedbebe at 50 ka the Australian route is a shorter, faster one. Rotate the globe by dragging it. The readout gives the great-circle distance from Omo Kibish to the youngest lit site and the average speed implied by two sites you choose.`,
+      caption: String.raw`Move the time slider from 320 ka ago down to the present (0): a site lights up once its age has been reached (colour = region), and the chains of dashed lines join the sites of each region in order. Use the view buttons or drag the globe to turn it. Toggle the contested ages: with Madjedbebe at 50 ka the Australian route is a shorter, faster one. The readout gives the great-circle distance from Omo Kibish to the youngest lit site and the average speed implied by two sites you choose.`,
       deps: ['bighist-4.1', 'popgen-3.9'],
       see: ['bighist-4.4', 'bighist-4.5', 'bighist-4.2'],
       refs: ['Christian'],
@@ -248,8 +249,9 @@ export default {
           }
           for (const s of SITES) {
             const on = ageOf(s) >= T.value;
-            G.dot(s[1], s[2], { r: on ? 6 : 3, color: GROUP_COLOR[s[4]], hollow: !on, alpha: on ? 1 : 0.5 });
-            if (on) G.text(`${s[0]} ${ageOf(s)} ka`, [s[1], s[2]], { size: 10, color: 'ink', dy: -10, align: 'center' });
+            G.dot([s[1], s[2]], { r: on ? 6 : 3, color: GROUP_COLOR[s[4]], hollow: !on });
+            const lo = LABEL_OFF[s[0]] || [0, -10, 'center'];
+            if (on) G.text(`${s[0]} ${ageOf(s)} ka`, [s[1], s[2]], { size: 10, color: 'ink', dx: lo[0], dy: lo[1], align: lo[2] });
           }
         });
         v.readout(() => {

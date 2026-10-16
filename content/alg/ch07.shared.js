@@ -26,4 +26,3 @@ export function powmod(b, e, m) { let r = 1 % m, x = b % m; while (e > 0) { if (
 // the multiplications square-and-multiply performs for exponent e
 export const smSteps = (e) => { const bits = e.toString(2); return { bits, squarings: bits.length - 1, multiplies: bits.split('').filter((c) => c === '1').length - 1 }; };
 export const SMALL_PRIMES = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67];
-export const BIGP = (n) => { let x = BigInt(n); if (x % 2n === 0n) x++; return x; };
