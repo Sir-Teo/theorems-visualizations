@@ -33,9 +33,9 @@ export default {
       num: '2.6',
       kind: 'Phenomenon',
       name: 'Post-inhibitory rebound (anode break excitation)',
-      statement: String.raw`If the Hodgkin–Huxley membrane is held hyperpolarized by an injected current for long enough and the current is then switched off, the membrane may fire a spike with no depolarizing stimulus at all: this is **post-inhibitory rebound** (in the older literature, **anode break excitation**, because the break of an anodal, hyperpolarizing current excites). The effect needs a hyperpolarization that is both strong enough and long enough (a boundary in the plane of duration and amplitude), and it needs the slow gates to move: in this model it disappears if the potassium gate $n$ is prevented from changing during the hyperpolarization, while freezing the sodium inactivation $h$ alone changes the picture little.`,
-      idea: String.raw`At rest about 40 % of the sodium channels are inactivated ($h_\infty(-65\text{ mV})\approx 0.6$) and about a third of the potassium gates are open ($n_\infty\approx 0.32$). Hyperpolarization raises $h_\infty$ toward 1 and lowers $n_\infty$ (neuro-2.1, neuro-2.2), with time constants of several milliseconds, so after a few milliseconds more sodium channels are available and fewer potassium channels are open. When the current is released, $V$ climbs back toward rest through the voltage range where $m$ is already opening, while $h$ and $n$ are still in their altered state and relax only slowly (neuro-1.7): the net current is inward for a moment and the regenerative loop of neuro-2.3 fires a spike. The freezing experiment on this page shows that in the model the lowered potassium conductance is the indispensable part, and de-inactivation of sodium alone is not required, which is more than the textbook phrase \"de-inactivated sodium channels\" suggests. Secondary accounts credit the Hodgkin–Huxley model with explaining this old observation; the picture here is the model's own computation.`,
-      caption: String.raw`Drag the handle in the map to choose the duration and strength of a hyperpolarizing current applied at $t=2$ ms. Top: $V(t)$ and the gates; $h$ climbs during the hyperpolarization and $n$ falls. Map below: every point is a separate simulation (green: a rebound spike occurs, grey: none). Now freeze $h$ at its resting value, or freeze $n$ (a model without that slow change). With $h$ frozen the green region changes little (the spike is even larger, since nothing inactivates the sodium channels); with $n$ frozen, or with both frozen, no rebound is left anywhere in this map, which shows which variable does the work in this model.`,
+      statement: String.raw`If the Hodgkin–Huxley membrane is held hyperpolarized by an injected current for long enough and the current is then switched off, the membrane may fire a spike with no depolarizing stimulus at all: this is **post-inhibitory rebound** (in the older literature, **anode break excitation**, because the break of an anodal, hyperpolarizing current excites). The effect needs a hyperpolarization that is both strong enough and long enough (a boundary in the plane of duration and amplitude). Two slow changes during the hyperpolarization prepare it: sodium channels recover from inactivation ($h$ rises) and potassium channels deactivate ($n$ falls). In this model both matter, and $n$ matters more: if $n$ is held at its resting value (during the pulse only, or for the whole run), the rebound region shrinks to the strongest, longest pulses or disappears altogether, whereas holding $h$ at its resting value only raises the critical current by about 10–20 %.`,
+      idea: String.raw`At rest about 40 % of the sodium channels are inactivated ($h_\infty(-65\text{ mV})\approx 0.6$) and about a third of the potassium gates are open ($n_\infty\approx 0.32$). Hyperpolarization raises $h_\infty$ toward 1 and lowers $n_\infty$ (neuro-2.1, neuro-2.2), with time constants of several milliseconds, so after a few milliseconds more sodium channels are available and fewer potassium channels are open. When the current is released, $V$ climbs back toward rest through the voltage range where $m$ is already opening, while $h$ and $n$ are still in their altered state and relax only slowly (neuro-1.7): the net current is inward for a moment and the regenerative loop of neuro-2.3 fires a spike. Textbooks name both changes (de-inactivation of Na⁺ and deactivation of K⁺). The computation on this page asks how much each is worth, and the answer depends on what "frozen" means, so three definitions are offered. Values below are for the 20 × 16 grid of the map, counting the cells with a rebound spike (full model: 186 of 320; critical current at 40 ms: 2.8 µA/cm²). (a) Frozen at the resting value for the whole run: $h$ frozen gives 182 cells (critical current 3.0), $n$ frozen gives 0, both frozen give 0. (b) Frozen at the resting value only during the pulse and free afterwards: $h$ frozen gives 169 cells (3.3), $n$ frozen gives 42 cells, all at the strongest pulses (critical current 6.3), both frozen give 0. So with $n$ unable to deactivate, $h$ alone can still produce a rebound, but only for strong, long pulses; with $h$ unable to de-inactivate, $n$ alone produces nearly the whole map. In this model the potassium deactivation dominates and the sodium de-inactivation is a smaller, supporting contribution. (c) Frozen at the value reached at the end of the pulse, so that it cannot relax during the rebound: rebound occurs in more cells (205 for $h$, 297 for $n$, 302 for both), because a gate held at its hyperpolarized value keeps the membrane more excitable; this definition tests whether the post-release relaxation is needed (it is not) and not whether the change during the pulse is, and with both gates frozen the membrane has no restoring slow variable at all, so it is not a fair test of the mechanism. The mechanism is in agreement with the usual account (Hodgkin and Huxley's model is credited with explaining anode break; course notes list both $h$ de-inactivation and $n$ deactivation), but the ranking of the two gates is a computed result for this model at 6.3 °C, not a statement taken from the literature.`,
+      caption: String.raw`Drag the handle in the map to choose the duration and strength of a hyperpolarizing current applied at $t=2$ ms. Top: $V(t)$ and the gates; $h$ climbs during the hyperpolarization and $n$ falls. Map below: every point is a separate simulation (green: a rebound spike occurs, grey: none). Choose a gate to freeze and a definition of "frozen": (a) at its resting value for the whole run; (b) at its resting value during the pulse only, free afterwards; (c) at the value it has when the current is switched off, for the rest of the run. In (a) and (b), freezing $n$ removes most or all of the green region while freezing $h$ shrinks it only slightly; freezing both removes it entirely. In (c) nothing is lost (the map gets larger), which shows that the relaxation of the gates after release is not what makes the spike, but their displacement during the pulse.`,
       scope: String.raw`Space-clamped Hodgkin–Huxley membrane at 6.3 °C, with currents applied from rest. Many real neurons show much stronger rebound because of additional currents (T-type calcium, $I_h$), which this four-variable model does not contain.`,
       deps: ['neuro-2.3'],
       see: ['neuro-2.2', 'neuro-2.4'],
@@ -43,25 +43,36 @@ export default {
       tags: ['rebound', 'inactivation'],
       credit: 'Model of A. L. Hodgkin and A. F. Huxley, 1952',
       viz(v) {
-        const frz = v.select('which slow variable is allowed to move', [{ value: '', label: 'both $h$ and $n$ (full model)' }, { value: 'h', label: '$h$ frozen' }, { value: 'n', label: '$n$ frozen' }, { value: 'hn', label: 'both frozen' }], '');
+        const frz = v.select('which slow variable is frozen', [{ value: '', label: 'none (full model)' }, { value: 'h', label: '$h$ frozen' }, { value: 'n', label: '$n$ frozen' }, { value: 'hn', label: 'both $h$ and $n$ frozen' }], '');
+        const how = v.select('what "frozen" means', [{ value: 'rest', label: '(a) at the resting value, whole run' }, { value: 'pulse', label: '(b) at the resting value during the pulse only' }, { value: 'release', label: '(c) at the end-of-pulse value, after release' }], 'rest');
         const DUR = [1, 40], AMP = [0, 8], t0 = 2;
         const sA = v.stage({ x: [0, 70], y: [-100, 60], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'V (mV)', height: 230, weight: 1.1, minWidth: 320 });
         const sG = v.stage({ x: [0, 70], y: [0, 1], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'gates', height: 230, weight: 1.1, minWidth: 320 });
         const sM = v.stage({ x: DUR, y: [-8.2, 0.2], axes: 'box', gutter: true, xlabel: 'hyperpolarization duration (ms)', ylabel: 'current (µA/cm²)', height: 430, weight: 1, minWidth: 300 });
         const params = (fz) => ({ ...HH, freeze: fz });
-        const response = (d, a, fz, rec) => {
-          const f = (t) => (t >= t0 && t < t0 + d ? -a : 0), o = { T: 6.3, tEnd: d + 40, dt: 0.04, p: params(fz) };
-          return rec ? hhSim(f, { ...o, every: 2 }) : hhRun(f, o);
+        // Frozen gates: (a) held at rest for the whole run; (b) held at rest until the current is switched off, free afterwards;
+        // (c) free during the pulse, held at the value reached at the switch-off for the rest of the run. Two RK4 segments split at t0 + d.
+        const response = (d, a, fz, rec, mode) => {
+          const ts = t0 + d, f = (t) => (t >= t0 && t < ts ? -a : 0), T = 6.3;
+          if (!fz || mode === 'rest') { const o = { T, tEnd: ts + 40, dt: 0.04, p: params(fz) }; return rec ? hhSim(f, { ...o, every: 2 }) : hhRun(f, o); }
+          const dt1 = ts / Math.ceil(ts / 0.04), p1 = params(mode === 'pulse' ? fz : ''), p2 = params(mode === 'pulse' ? '' : fz);
+          if (!rec) {
+            const r1 = hhRun(f, { T, tEnd: ts, dt: dt1, p: p1 }), r2 = hhRun(() => 0, { T, tEnd: 40, dt: 0.04, y0: r1.y, p: p2 });
+            return { spikes: [...r1.spikes, ...r2.spikes.map((x) => x + ts)] };
+          }
+          const r1 = hhSim(f, { T, tEnd: ts, dt: dt1, every: 2, p: p1 }), r2 = hhSim(() => 0, { T, tEnd: 40, dt: 0.04, every: 2, y0: r1.y, p: p2 });
+          const o = {}; for (const k of Object.keys(r1)) if (Array.isArray(r1[k]) && k !== 'y') o[k] = r1[k].concat(r2[k].slice(1).map((x, i) => (k === 't' ? x + ts : x)));
+          return o;
         };
         const maps = {};
         const grid = () => {
-          const fz = frz.value; if (maps[fz]) return maps[fz];
+          const fz = frz.value, key = fz + '|' + how.value; if (maps[key]) return maps[key];
           const nx = 20, ny = 16, cells = [];
           for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) {
             const d = DUR[0] + ((DUR[1] - DUR[0]) * (i + 0.5)) / nx, a = ((j + 0.5) * AMP[1]) / ny;
-            const r = response(d, a, fz, false); cells.push({ d, a, spike: r.spikes.length > 0 });
+            const r = response(d, a, fz, false, how.value); cells.push({ d, a, spike: r.spikes.length > 0 });
           }
-          return (maps[fz] = { cells, nx, ny });
+          return (maps[key] = { cells, nx, ny });
         };
         const h = sM.handle(20, -4, { color: 'gold', r: 8, constrain: (x, y) => [clamp(x, 1, 40), clamp(y, -8, -0.2)] });
         v.render(() => {
@@ -69,7 +80,7 @@ export default {
           const wx = (DUR[1] - DUR[0]) / G.nx, wy = AMP[1] / G.ny;
           for (const c of G.cells) sM.rect(c.d - wx / 2, -(c.a + wy / 2), c.d + wx / 2, -(c.a - wy / 2), { fill: c.spike ? 'green' : 'muted', fillAlpha: c.spike ? 0.6 : 0.16, stroke: false });
           sM.text('no spike', 30, -0.9, { size: 11, color: 'muted', align: 'left' }); sM.text('rebound spike', 24, -6.5, { size: 11, color: 'ink', align: 'left' });
-          const o = response(d, a, fz, true), sp = spikeTimes(o.t, o.V, 0);
+          const o = response(d, a, fz, true, how.value), sp = spikeTimes(o.t, o.V, 0);
           trace(sA, o.t, o.V, { color: 'accent', width: 2.4 });
           sA.rect(t0, -100, t0 + d, -95, { fill: 'gold', fillAlpha: 0.7, stroke: false });
           sA.hline(HH.ENa, { color: ION_COL.Na, dash: [3, 4], width: 1 });
