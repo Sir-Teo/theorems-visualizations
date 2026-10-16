@@ -362,7 +362,7 @@ export default {
       name: 'Hinges and the four-hinge collapse mechanism',
       statement: String.raw`Load an arch until no thrust line can fit (arch-3.5). At that limit the line of thrust touches the surface of the stone in at least four places, alternately on the extrados and the intrados. At each touching point a hinge forms, the joint opening on the opposite face, and the arch becomes a mechanism: the rigid pieces between the hinges, with the springings fixed, can move with one degree of freedom, like a four-bar linkage. The collapse load can be found either from equilibrium (the largest load for which a thrust line still fits) or from the motion (the load at which the gravity forces do no work in the mechanism); in the limit the two agree. Hinges are not damage but the normal way a masonry arch carries an unusual load; collapse needs the fourth hinge.`,
       idea: String.raw`Each hinge removes two degrees of freedom from the pieces it joins: three rigid bodies have $3\times 3 = 9$ degrees of freedom, four hinges take away $4\times 2 = 8$, and one remains, a mechanism with a definite motion. In the picture the motion is found by closing the four-bar linkage numerically. Equilibrium says the loads can be carried while a thrust line fits; the principle of virtual work says they cannot be carried by this mechanism once the loads do positive work along it; the safe theorem (arch-3.5) and its upper-bound counterpart (solid-4.10) coincide for the arch, so the two load factors computed here agree to the precision of the discretisation.`,
-      caption: String.raw`Slide the load along the arch (the plot on the right shows the collapse load for every position; the curve is clipped where the arch is nearly rigid against it) and set its size as a share of the collapse load. With **thrust line** the line moves toward the stone's surface as the share rises; at 100% it touches in four places (discs). With **collapse mechanism** the arch moves as a four-bar linkage: drag the motion slider. The readout checks the collapse load found from equilibrium against the one found from virtual work along the mechanism.`,
+      caption: String.raw`Slide the load along the arch (the plot on the right shows the collapse load for every position; the curve is clipped where the arch is nearly rigid against it, and bumpy because hinges can only form at the 24 joints) and set its size as a share of the collapse load. With **thrust line** the line moves toward the stone's surface as the share rises; at 100% it touches in four places (discs). With **collapse mechanism** the arch moves as a four-bar linkage: drag the motion slider. The readout checks the collapse load found from equilibrium against the one found from virtual work along the mechanism.`,
       deps: ['arch-3.5'],
       see: ['arch-3.7', 'solid-4.10'],
       refs: ['Heyman'],
@@ -447,6 +447,62 @@ export default {
           const { g, cf, hs, four, vw } = M, ang = (h) => { const J = g.joints[h.j], p = h.side === 'a' ? J.a : J.b; return deg(Math.atan2(p[0], p[1] - g.C[1])); };
           const lst = hs.map((h) => `${h.side === 'a' ? 'intrados' : 'extrados'} at joint ${h.j} (${f2(Math.abs(ang(h)), 0)}° ${ang(h) < 0 ? 'left' : 'right'} of the crown)`).join('; ');
           return `Collapse load from equilibrium (linear program): **${f2(cf.lam, 3)}** × the arch weight (${f2(cf.lam * g.W, 1)} kN/m), hinges: ${lst || '—'}.\n${four ? `Mechanism with ${four.length} hinges; load factor from virtual work along its motion: **${Number.isFinite(vw) ? f2(vw, 3) : 'switch to "collapse mechanism"'}**.` : `The active set has ${hs.length} touching points, not a four-hinge pattern (a symmetric case, see 3.7).`}`;
+        });
+      },
+    },
+    // ───────────────────────────────────────────────────────────────────────────────────── 3.7
+    {
+      num: '3.7',
+      kind: 'Proposition',
+      name: 'Minimum thickness of a semicircular arch',
+      statement: String.raw`A semicircular arch of mean radius $R$ and uniform thickness $t$, made of radial voussoirs, loaded only by its own weight and obeying Heyman’s assumptions, stands if and only if $t/R \ge 0.1075$ (more exactly 0.10748). Below this a single thrust line can still be drawn only at the limit, and then it touches the stone in five places: on the extrados at the crown and at both springings, and on the intrados about $54.5^\circ$ on each side of the crown; thinner than that no line fits and the arch falls. The limit depends on the shape (a segmental arch needs far less, an over-complete horseshoe more) and on how the joints are cut (vertical joints give about 0.1095). The **geometric factor of safety** is $t/t_{\min}$: it measures how much of the ring could be removed before collapse, and a factor of 2 is enormously safe in these terms.`,
+      idea: String.raw`At the minimum thickness the interval of admissible thrusts $[H_{\min}, H_{\max}]$ of arch-3.5 has shrunk to a point: the lowest line (which touches the extrados at the crown and the intrados at the haunches) and the highest line (the reverse) coincide. Thickness enters only through the positions of the intrados and extrados and the weights of the voussoirs, so $t_{\min}$ is found by lowering $t$ until the linear program for the thrust line stops having a solution (a bisection). Couplet (1730) assumed where the hinges form (45°, $t/R \approx 0.101$); Heyman's approximate treatment, with hinges at 58.8°, gives about 0.106; Milankovitch's complete solution, which puts each voussoir's weight at its centroid, gives 0.1075 (arch-3.6 shows the same hinge mechanism for a single load).`,
+      caption: String.raw`Change the thickness: for a ring above the minimum the lowest and highest thrust lines that fit are drawn (blue and green); the plot on the right shows the allowed interval of $H/W$ closing as $t$ falls, and it reaches a point at $t_{\min}$ (disc). At the minimum, the discs on the arch are the five hinges. Change the embrace angle $\alpha$ to see segmental arches (small $\alpha$) and horseshoes (large $\alpha$): the lower plot shows $t_{\min}/R$ from the engine (line) against the values published for these arches (dots, from the table in Nikolić 2016).`,
+      deps: ['arch-3.5'],
+      see: ['arch-3.6', 'arch-3.11', 'arch-3.14'],
+      refs: ['Heyman'],
+      credit: 'Couplet, 1730; Milankovitch, 1907; Heyman, 1966–69',
+      scope: String.raw`Plane arch of constant thickness, radial joints, self-weight only, Heyman's assumptions. The engine uses 40 voussoirs with the weight at each polygon's centroid, so its result sits within 3e-5 of the continuous value.`,
+      verify: true,
+      tags: ['minimum thickness', 'factor of safety'],
+      viz(v) {
+        const N = 40, tS = v.slider('thickness t / R', 0.02, 0.45, 0.2, { step: 0.0025 }), aS = v.slider('embrace angle α (°)', 30, 135, 90, { step: 5 });
+        const A = v.stage({ x: [-1.3, 1.3], y: [-0.2, 1.5], equal: true, axes: false, height: 330, weight: 1.35, title: 'lowest and highest thrust lines' });
+        const Bs = v.stage({ x: [0, 0.45], y: [0, 0.6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 240, xlabel: 't / R', ylabel: 'H / W (thrust over arch weight)', title: 'allowed horizontal thrust' });
+        const C = v.stage({ x: [0, 140], y: [3e-5, 1], ylog: true, axes: 'box', gutter: true, height: 260, full: true, xlabel: 'embrace angle α (°)', ylabel: 'minimum t / R', title: 'minimum thickness against embrace angle: engine and published values' });
+        const PUB = [[15, 0.000097], [30, 0.00153], [45, 0.0075], [60, 0.02284], [75, 0.05369], [90, 0.10748], [105, 0.19394], [120, 0.32761], [135, 0.53654]];
+        const tmin = (al, n = N) => { const f = bestFit((t) => arch({ R: 1, t, N: n, alpha: (al * Math.PI) / 180 }), () => [], {}, 1e-5, 1.2, 30); return f; };
+        const cacheB = new Map(); let curveC = null;
+        const bandFor = (al) => { const k = String(al); if (cacheB.has(k)) return cacheB.get(k); const f = tmin(al); const tm = f ? f.t : 0.1, pts = []; for (let i = 0; i <= 22; i++) { const t = tm + (0.45 - tm) * (i / 22) ** 1.4, g = arch({ R: 1, t, N, alpha: (al * Math.PI) / 180 }), r = thrustRange(g, []); if (r) pts.push([t, r.Hmin / g.W, r.Hmax / g.W]); } const out = { tm, pts, fit: f }; cacheB.set(k, out); return out; };
+        let M = null;
+        v.render(() => {
+          const al = aS.value, t = tS.value, rad = (al * Math.PI) / 180, g = arch({ R: 1, t, N, alpha: rad }), band = bandFor(al), tm = band.tm;
+          if (!curveC) curveC = Array.from({ length: 19 }, (_, i) => { const a = 15 + i * 7; const f = tmin(a); return f ? [a, f.t] : null; }).filter(Boolean);
+          const xr = Math.max(1.05, g.ro + 0.1) * 1.05; A.setView([-xr, xr], [-0.2, Math.max(0.5, g.rise + t / 2 + 0.3)]);
+          drawArch(v, A, g, { fillAlpha: 0.12 });
+          const rg = thrustRange(g, []);
+          let hs = [];
+          if (rg) {
+            const lo = thrustLine(g, [], rg.min), hi = thrustLine(g, [], rg.max);
+            for (const [tl, c] of [[lo, 'accent'], [hi, 'green']]) for (let i = 0; i + 1 < tl.length; i++) A.line(tl[i].p[0], tl[i].p[1], tl[i + 1].p[0], tl[i + 1].p[1], { color: c, width: 2.2 });
+            if (t <= tm * 1.03) { hs = hinges(g, [], rg.min, {}, 1e-5); for (const h of hs) { const p = h.side === 'a' ? g.joints[h.j].a : g.joints[h.j].b; A.dot(p[0], p[1], { r: 5.5, color: 'red' }); } }
+            A.corner(`H from ${f2(rg.Hmin / g.W, 3)} to ${f2(rg.Hmax / g.W, 3)} of the weight`, 'tl', { color: 'muted' });
+          } else A.corner('no thrust line fits: the arch collapses', 'tl', { color: 'red' });
+          // band
+          const P = band.pts; if (P.length) { Bs.poly([...P.map((p) => [p[0], p[2]]), ...P.slice().reverse().map((p) => [p[0], p[1]])], { fill: 'green', fillAlpha: 0.22, color: 'green', width: 1.4 }); Bs.dot(tm, P[0][1], { r: 5, color: 'red' }); Bs.vline(tm, { color: 'red', width: 1, dash: [2, 3] }); }
+          Bs.vline(t, { color: 'accent', width: 1.6, dash: [4, 3] });
+          const ym = Math.max(0.2, ...P.map((p) => p[2])) * 1.1; Bs.setView([0, 0.45], [0, ym]); Bs.text(`t_min = ${f2(tm, 4)}`, tm, 0.04 * ym, { dx: 8, align: 'left', size: 11, color: 'red' });
+          // published values
+          C.path(curveC, { color: 'accent', width: 2.2 }); C.dots(PUB, { r: 4.5, color: 'gold' }); C.dot(al, tm, { r: 6, color: 'red' });
+          const pub = PUB.find((p) => p[0] === al);
+          M = { g, rg, tm, al, t, pub, hs, band };
+        });
+        v.legend([['accent', 'lowest thrust line / engine curve'], ['green', 'highest thrust line'], ['gold', 'published values', { dot: true }], ['red', 'hinges at the minimum']]);
+        v.readout(() => {
+          if (!M) return '';
+          const g0 = null; const { tm, al, t, pub, band } = M, gf = t / tm, fg = band.fit ? band.fit.g : g0, hh = band.fit ? hinges(fg, [], band.fit.u, {}, 1e-5) : [];
+          const ang = hh.filter((h) => h.side === 'a').map((h) => Math.abs(deg(Math.atan2(fg.joints[h.j].a[0], fg.joints[h.j].a[1] - fg.C[1])))).filter((a) => a < 85 && a > 1);
+          return `Embrace angle ${al}°: minimum thickness $t_{\\min}/R = ${f2(tm, 5)}$ from the engine${pub ? `; published value ${pub[1]} (Milankovitch's method, tabulated by Nikolić 2016)` : ''}. Geometric factor of safety $t/t_{\\min} = ${f2(gf, 2)}$ ${gf < 1 ? '(below 1: it falls)' : ''}.${al === 90 ? ` For the semicircle the intrados hinges are at about ${ang.length ? f2(ang.reduce((a, b) => a + b, 0) / ang.length, 1) : '—'}° from the crown at the minimum; Couplet's assumed 45° gives 0.101 and Heyman's approximation (58.8°) about 0.106.` : ''}`;
         });
       },
     },

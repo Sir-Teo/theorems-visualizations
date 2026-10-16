@@ -120,9 +120,9 @@ export default {
       viz(v) {
         let S;
         const reset = () => S.reset();
-        const tauS = v.slider('applied stress $\\tau/\\tau_c$', 0.2, 2.2, 1.25, { step: 0.01, onChange: reset });
+        const tauS = v.slider('applied stress $\\tau/\\tau_c$', 0.2, 2.6, 2.0, { step: 0.01, onChange: reset });
         const Ls = v.slider('pin spacing $L$ (µm)', 0.1, 3, 1, { step: 0.05 });
-        const TS = 0.12; // simulated time per second of animation clock
+        const TS = 0.2; // simulated time per second of animation clock
         S = v.sim(() => ({ line: resample([[-0.5, 0], [0.5, 0]], false), loops: [], emitted: 0, n: 0, maxY: 0 }), (st, dt) => {
           const tau = 2 * tauS.value;
           relaxStep(st.line, false, tau, dt);
@@ -132,10 +132,10 @@ export default {
             let guard = 0; while (pinch(st) && guard++ < 3);
             st.maxY = Math.max(...st.line.map((p) => p[1]));
           }
-          if (st.n % 150 === 0) { st.line = resample(st.line, false); st.loops = st.loops.map((lp) => resample(lp, true)).filter((lp) => { let mx = 0; for (const p of lp) mx = Math.max(mx, Math.hypot(p[0], p[1] - 0.3)); return mx < 6; }); }
+          if (st.n % 150 === 0) { st.line = resample(st.line, false); st.loops = st.loops.map((lp) => resample(lp, true)).filter((lp) => { let mx = 0; for (const p of lp) mx = Math.max(mx, Math.hypot(p[0], p[1] - 0.3)); return mx < 7; }); }
         }, { dt: 1e-4, maxSteps: 40000 });
-        const A = v.stage({ x: [-2.8, 2.8], y: [-2.2, 3.2], equal: true, axes: false, height: 400, weight: 1.5, title: 'pinned dislocation segment on its glide plane' });
-        const B = v.stage({ x: [0, 2.2], y: [0, 0.62], axes: 'box', gutter: true, height: 400, weight: 0.85, minWidth: 260, xlabel: 'applied stress  $\\tau/\\tau_c$', ylabel: 'bow height  $h/L$', title: 'steady bow height' });
+        const A = v.stage({ x: [-4.4, 4.4], y: [-3.4, 5.2], equal: true, axes: false, height: 400, weight: 1.5, title: 'pinned dislocation segment on its glide plane' });
+        const B = v.stage({ x: [0, 2.6], y: [0, 0.62], axes: 'box', gutter: true, height: 400, weight: 0.85, minWidth: 260, xlabel: 'applied stress  $\\tau/\\tau_c$', ylabel: 'bow height  $h/L$', title: 'steady bow height' });
         const hAn = (r) => { if (r > 1) return NaN; const R = 0.5 / r; return R - Math.sqrt(R * R - 0.25); };
         let info = null;
         v.animate((t) => {
@@ -147,16 +147,16 @@ export default {
           st.loops.forEach((lp, k) => A.path([...lp, lp[0]], { color: 'orange', width: 2, alpha: 0.35 + 0.6 * (k + 1) / st.loops.length }));
           A.path(st.line, { color: 'accent', width: 3.5 });
           A.dot(-0.5, 0, { r: 7, color: 'ink', fill: 'ink' }); A.dot(0.5, 0, { r: 7, color: 'ink', fill: 'ink' });
-          A.arrow(0, -0.35, 0, -0.08, { color: 'red', width: 2.5, head: 9 }); A.text('force $\\tau b$ per length', 0.15, -0.45, { color: 'red', size: 11, align: 'left' });
-          A.text(`$L$`, 0, -0.75, { color: 'muted', size: 12 });
+          A.arrow(0, -0.5, 0, -0.1, { color: 'red', width: 2.5, head: 9 }); A.text('force $\\tau b$ per length', 0.15, -0.65, { color: 'red', size: 11, align: 'left' });
+          A.text(`$L$`, 0, -1.0, { color: 'muted', size: 12 });
           // right panel
           B.fn((x) => hAn(x), { domain: [0.02, 1], color: 'green', width: 2.5 });
           B.vline(1, { color: 'red', dash: [5, 4], width: 1.4 }); B.text('$\\tau_c$: semicircle', 1.03, 0.03, { color: 'red', size: 11, align: 'left' });
-          B.text('no steady state:', 1.06, 0.4, { color: 'muted', size: 11, align: 'left' }); B.text('loops are emitted', 1.06, 0.36, { color: 'muted', size: 11, align: 'left' });
+          B.text('no steady state:', 1.08, 0.4, { color: 'muted', size: 11, align: 'left' }); B.text('loops are emitted', 1.08, 0.36, { color: 'muted', size: 11, align: 'left' });
           if (r <= 1) B.dot(r, hAn(r), { r: 6, color: 'green', fill: 'green' });
           if (r <= 1) B.dot(r, st.maxY, { r: 6, color: 'accent', hollow: true, width: 2 });
           info = { r, h: hAn(r), sim: st.maxY, emitted: st.emitted, loops: st.loops.length };
-        }, { period: 16, still: 11 });
+        }, { period: 14, still: 10 });
         v.legend([['accent', 'dislocation line (simulated)'], ['green', 'analytic arc $R=Gb/2\\tau$', { dash: true }], ['orange', 'emitted loops']]);
         v.readout(() => {
           if (!info) return '';

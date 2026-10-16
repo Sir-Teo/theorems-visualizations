@@ -31,7 +31,6 @@ export default {
       credit: 'J. Frenkel, 1926 (ideal shear strength); R. Peierls 1940 and F. R. N. Nabarro 1947 (core width and lattice friction)',
       scope: String.raw`The sinusoidal law is Frenkel's model; the Peierls–Nabarro stress is an order-of-magnitude estimate that depends exponentially on the core width. The "measured" bar is a slider (default 1 MPa with $G=45$ GPa, a copper-like value, not a measurement of a particular crystal); the $G/30$ to $G/10$ range for realistic potentials and the typical $10^{-5}$ to $10^{-4}\,G$ for annealed pure metals are quoted from the course literature and were not re-derived here.`,
       verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Theoretical_strength_of_a_solid' },
       viz(v) {
         const NU = 0.3;
         const mode = v.select('slip by', [{ value: 'rigid', label: 'a whole plane at once' }, { value: 'disl', label: 'one dislocation moving' }], 'rigid');
@@ -135,9 +134,9 @@ export default {
               const cl = v.diverge(clamp(u * 2, -1, 1), 'blue', 'red');
               S.dot(i, j, { r, color: cl, fill: cl, hollow: false });
             }
-            S.text('view along the line: dot size and colour = out-of-plane shift (red up, blue down)', 0, M + 0.25, { color: 'muted', size: 11.5 });
+            S.text('dot size, colour = out-of-plane shift', 0, M + 0.35, { color: 'muted', size: 11.5, plate: true });
             S.line(cx - N - 1, cy, cx, cy, { color: 'orange', width: 2.5, dash: true, alpha: 0.9 });
-            S.text('slipped region ends at the line', cx - 6, cy + 0.55, { color: 'orange', size: 11.5 });
+            S.text('slipped region ends at the line', cx - 5.5, cy - 0.6, { color: 'orange', size: 11.5, plate: true });
             // ramp panel
             for (let n = -3; n <= 3; n++) R.hline(n, { color: 'grid' });
             R.fn((x) => x, { domain: [-1.5, 1.5], color: 'accent', width: 3 });
@@ -237,7 +236,7 @@ export default {
       deps: ['mat-3.3', 'mat-1.6'],
       refs: ['Callister §7.4'],
       tags: ['slip systems', 'ductility', 'crystal structure'],
-      scope: String.raw`System counts for fcc and bcc are enumerated from symmetry by the program; the hcp families (basal 3, prismatic 3, pyramidal $\langle a\rangle$ 6, first-order pyramidal $\langle c+a\rangle$ 12, second-order 6) are quoted from the standard tabulation. The ranking uses the simplest Peierls–Nabarro estimate with $\nu=0.3$; it ranks the cubic families sensibly but is only qualitative for hcp: it favours basal slip above $c/a=\sqrt3$ and prismatic below, which matches Zn and Cd (basal) and Ti and Zr (prismatic) but not Mg, where basal slip dominates at room temperature although $c/a<\sqrt3$. The metal-by-metal slip modes quoted here are from memory.`,
+      scope: String.raw`System counts for fcc and bcc are enumerated from symmetry by the program; the hcp counts (basal 3, prismatic 3) are standard and the first-order pyramidal $\langle c+a\rangle$ count of 12 follows the usual tabulation, although counts for the pyramidal families differ between sources. The ranking uses the simplest Peierls–Nabarro estimate with $\nu=0.3$; it ranks the cubic families sensibly but is only qualitative for hcp: it favours basal slip above $c/a=\sqrt3$ and prismatic below, which matches Zn and Cd (basal) and Ti and Zr (prismatic) but not Mg, where basal slip dominates at room temperature although $c/a<\sqrt3$. The metal-by-metal slip modes quoted here are from memory.`,
       verify: true,
       viz(v) {
         const NU = 0.3, S2 = Math.SQRT2, S3 = Math.sqrt(3);

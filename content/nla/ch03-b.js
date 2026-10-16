@@ -80,7 +80,7 @@ Applied to solving $Ax=b$ by a backward stable solver: $\|\hat x-x\|/\|x\|=O(\ka
 $$\tilde Q\tilde R=A+\delta A,\qquad\frac{\|\delta A\|}{\|A\|}=O(\epsilon_{\rm machine}),\qquad\|\tilde Q-Q\|=O(\epsilon_{\rm machine}),$$
 the constants growing only polynomially with $m,n$. Consequently $\tilde Q$ is orthogonal to working accuracy, $\|\tilde Q^{\top}\tilde Q-I\|=O(\epsilon_{\rm machine})$, *whatever the condition number of $A$*. Classical and modified Gram–Schmidt do not have this property: the loss of orthogonality of the computed $\tilde Q$ grows like $\kappa(A)\epsilon_{\rm machine}$ (modified) or $\kappa(A)^2\epsilon_{\rm machine}$ (classical).`,
       idea: String.raw`Each Householder reflector is a rank-one orthogonal transformation $H=I-2vv^{\top}/v^{\top}v$; applying it in floating point to a vector gives the exact result of applying a reflector $\tilde H$ (built from the computed $v$) to a slightly perturbed vector, with a relative perturbation $O(\epsilon_{\rm machine})$ per step. Because the transformations are exactly orthogonal, the errors of the $n$ steps neither amplify each other nor depend on the singular values of $A$; they simply add up to a backward error of size $O(mn\,\epsilon_{\rm machine})\|A\|$. Gram–Schmidt subtracts projections onto vectors that are themselves inexact, and the errors feed on the near-dependence of the columns.`,
-      caption: String.raw`Factor random $12\times6$ matrices with condition number $\kappa$ (horizontal) in $p$-bit arithmetic with the algorithm of your choice, three matrices per value of $\kappa$. Blue: backward error $\|A-\tilde Q\tilde R\|/\|A\|$; orange: loss of orthogonality $\|\tilde Q^{\top}\tilde Q-I\|$; purple: the error $\|\tilde Q-Q\|$ of the computed factor against the factor computed in double precision; grey: $\|\tilde R-R\|/\|R\|$. For Householder, blue and orange are flat at $\epsilon_{\rm machine}$ for every $\kappa$ — but purple and grey climb: the factors themselves are inaccurate (see 3.11). Switch to modified or classical Gram–Schmidt and the orthogonality (orange) deteriorates like $\kappa\epsilon$ resp. $\kappa^2\epsilon$ while the backward error of the product stays small.`,
+      caption: String.raw`Factor random $12\times6$ matrices with condition number $\kappa$ (horizontal) in $p$-bit arithmetic with the algorithm of your choice, three matrices per value of $\kappa$. Blue: backward error $\|A-\tilde Q\tilde R\|/\|A\|$; orange: loss of orthogonality $\|\tilde Q^{\top}\tilde Q-I\|$; purple: the error $\|\tilde Q-Q\|$ of the computed factor against the factor computed in double precision; black: the largest entrywise relative error of $\tilde R$. For Householder, blue and orange are flat at $\epsilon_{\rm machine}$ for every $\kappa$ — but purple and black climb: the factors themselves are inaccurate (see 3.11). Switch to modified or classical Gram–Schmidt and the orthogonality (orange) deteriorates like $\kappa\epsilon$ resp. $\kappa^2\epsilon$ while the backward error of the product stays small.`,
       deps: ['nla-3.9', 'nla-2.6'],
       credit: 'Backward error analysis of Householder triangularization: J. H. Wilkinson (see Higham, Accuracy and Stability of Numerical Algorithms, for the modern statement)',
       tags: ['qr', 'stability'],
@@ -101,7 +101,9 @@ the constants growing only polynomially with $m,n$. Consequently $\tilde Q$ is o
             const A0 = withSingular(M, r, 12, 6, geomSigma(6, k)), A = flM(A0, p);
             const { Q, R } = run(A, p), ref = M.qr(A, { thin: true });
             const back = spec(M, sub(A, mm(Q, R))) / spec(M, A), I6 = eye(6), orth = spec(M, sub(mm(tp(Q), Q), I6));
-            const qe = fro(sub(Q, ref.Q)), re = fro(sub(R, ref.R)) / fro(ref.R);
+            const qe = fro(sub(Q, ref.Q));
+            let re = 0;
+            for (let i = 0; i < 6; i++) for (let j = i; j < 6; j++) if (Math.abs(ref.R[i][j]) > 1e-14) re = Math.max(re, Math.abs(R[i][j] - ref.R[i][j]) / Math.abs(ref.R[i][j]));
             pts.back.push([k, Math.max(1e-17, back)]); pts.orth.push([k, Math.max(1e-17, orth)]);
             pts.qerr.push([k, Math.max(1e-17, qe)]); pts.rerr.push([k, Math.max(1e-17, re)]);
             maxBack = Math.max(maxBack, back / u); maxOrth = Math.max(maxOrth, orth / u);
@@ -109,14 +111,14 @@ the constants growing only polynomially with $m,n$. Consequently $\tilde Q$ is o
           S.hline(u, { color: 'muted', width: 1, dash: true });
           S.path([[1, u], [1e10, 1e10 * u]], { color: 'muted', width: 1, dash: true, alpha: 0.7 });
           S.hline(1, { color: 'red', width: 1.2, dash: true });
-          S.dots(pts.rerr, { color: 'ink', r: 2.2, alpha: 0.6 });
+          S.dots(pts.rerr, { color: 'ink', r: 2.6 });
           S.dots(pts.qerr, { color: 'purple', r: 2.6 });
           S.dots(pts.orth, { color: 'orange', r: 3.2 });
           S.dots(pts.back, { color: 'blue', r: 3.2 });
           S.text('ε', 1.6, u * 2.5, { color: 'muted', size: 13 }); S.text('κ ε', 2e8, 2e8 * u * 3, { color: 'muted', size: 13 });
           st = { u, maxBack, maxOrth };
         });
-        v.legend([['blue', '$\\|A-\\tilde Q\\tilde R\\|/\\|A\\|$', { dot: true }], ['orange', '$\\|\\tilde Q^{\\top}\\tilde Q-I\\|$', { dot: true }], ['purple', '$\\|\\tilde Q-Q\\|$', { dot: true }], ['ink', '$\\|\\tilde R-R\\|/\\|R\\|$', { dot: true }]]);
+        v.legend([['blue', '$\\|A-\\tilde Q\\tilde R\\|/\\|A\\|$', { dot: true }], ['orange', '$\\|\\tilde Q^{\\top}\\tilde Q-I\\|$', { dot: true }], ['purple', '$\\|\\tilde Q-Q\\|$', { dot: true }], ['ink', 'entrywise error of $\\tilde R$', { dot: true }]]);
         v.readout(() => st ? `$\\epsilon_{\\rm machine}=${sciT(st.u)}$. Over all trials: backward error $\\le${nm(st.maxBack, 2)}\\,\\epsilon_{\\rm machine}$; loss of orthogonality $\\le${nm(st.maxOrth, 3)}\\,\\epsilon_{\\rm machine}$ ${alg.value === 'hh' ? '(both flat: backward stable)' : alg.value === 'mgs' ? '(grows like $\\kappa\\epsilon$)' : '(grows like $\\kappa^2\\epsilon$ until it saturates at $1$)'}.` : '');
       },
     },
@@ -125,11 +127,11 @@ the constants growing only polynomially with $m,n$. Consequently $\tilde Q$ is o
       num: '3.11',
       kind: 'Paradox',
       name: 'Inaccurate Q and R, but an accurate product QR',
-      statement: String.raw`For an ill-conditioned matrix $A$, the factors $\tilde Q,\tilde R$ computed by Householder QR can be *wrong* in the leading digits — relative errors of order $\kappa(A)\epsilon_{\rm machine}$ compared with the exact factors $Q,R$, since the QR factorization is itself an ill-conditioned function of $A$ — and yet the product reproduces the data to working accuracy, $\|A-\tilde Q\tilde R\|/\|A\|=O(\epsilon_{\rm machine})$ (3.10). There is no contradiction: with $\delta Q=\tilde Q-Q$ and $\delta R=\tilde R-R$ one has the exact identity
-$$\tilde Q\tilde R-QR=\delta Q\,\tilde R+Q\,\delta R,$$
-so the (large) terms $\delta Q\,\tilde R$ and $Q\,\delta R$ must nearly cancel entry by entry: the errors of $\tilde Q$ and of $\tilde R$ are strongly correlated.`,
-      idea: String.raw`Backward stability says $\tilde Q\tilde R$ is the product for a matrix $A+\delta A$ with a tiny $\delta A$. The QR factorization of $A+\delta A$ differs from that of $A$ by the perturbation of the *factorization problem*, whose condition number is of order $\kappa(A)$; so the computed pair is close to the exact factors of a *nearby* matrix, not of $A$. Both $\tilde Q,\tilde R$ then move together along the same direction in the space of factorizations, and the product, which is the data, hardly moves. Accuracy of the factors would need a small forward error; the algorithm only promises a small backward error (3.8, 3.9).`,
-      caption: String.raw`A random $6\times4$ matrix with condition number $\kappa$, factored by Householder in $p$-bit arithmetic and in double precision (reference). Left: sizes of the three errors on a log scale — the factor errors grow with $\kappa$, the product error stays at $\epsilon_{\rm machine}$ (red line). Right: each of the $24$ entries of the exact identity $\tilde Q\tilde R-QR=\delta Q\tilde R+Q\delta R$ is a point with $x=(\delta Q\,\tilde R)_{ij}$ and $y=-(Q\,\delta R)_{ij}$; they lie on the diagonal because the two terms cancel to within the tiny $\delta A$. Raise $\kappa$ and the cloud spreads along the diagonal, never off it.`,
+      statement: String.raw`For an ill-conditioned matrix $A$, the factors $\tilde Q,\tilde R$ computed by Householder QR can be *wrong* in their leading digits: $\|\tilde Q-Q\|$ is of order $\kappa(A)\epsilon_{\rm machine}$ and the small entries of $\tilde R$ have comparable relative errors (the QR factorization is itself an ill-conditioned function of $A$) — and yet the product reproduces the data to working accuracy, $\|A-\tilde Q\tilde R\|/\|A\|=O(\epsilon_{\rm machine})$ (3.10). There is no contradiction: with $\delta Q=\tilde Q-Q$ and $\delta R=\tilde R-R$ one has the exact identity
+$$\tilde Q\tilde R-QR=\delta Q\,\tilde R+Q\,\delta R=\sum_j \delta q_j\,\tilde r_j^{\top}+Q\,\delta R,$$
+($\tilde r_j^{\top}$ the $j$-th row of $\tilde R$), and the large errors $\delta q_j$ of $\tilde Q$ occur precisely in the columns $j$ for which the row $\tilde r_j$ is small, so every term $\|\delta q_j\|\|\tilde r_j\|$ stays at the level $\epsilon_{\rm machine}\|A\|$. The errors sit in directions that $\tilde R$ nearly annihilates.`,
+      idea: String.raw`Backward stability says $\tilde Q\tilde R$ is the product for a matrix $A+\delta A$ with a tiny $\delta A$. The QR factorization of $A+\delta A$ differs from that of $A$ by the perturbation of the *factorization problem*, whose condition number grows with $\kappa(A)$; so the computed pair is close to the exact factors of a *nearby* matrix, not of $A$. The $j$-th column of $Q$ is determined by the first $j$ columns of $A$; when $A$ has a tiny singular value, a perturbation of size $\epsilon$ rotates the last columns of $Q$ by a large angle, but those columns are multiplied by the correspondingly tiny rows of $R$. Accuracy of the factors would need a small forward error; the algorithm only promises a small backward error (3.8, 3.9). I checked the column-by-column picture numerically for the examples shown; it is an illustration, not a proof.`,
+      caption: String.raw`A random $6\times4$ matrix with condition number $\kappa$ (slider), factored by Householder in $p$-bit arithmetic and in double precision (the reference). Left: sizes of the three errors on a log scale: the factor errors grow with $\kappa$ while the product error stays at $\epsilon_{\rm machine}$ (red line). Right, for each column $j=1,\dots,4$: the error $\|\delta q_j\|$ of the $j$-th column of $\tilde Q$ (blue), the size of the $j$-th row of $\tilde R$ relative to $\|\tilde R\|$ (purple) and the product of the two, $\|\delta q_j\|\|\tilde r_j\|/\|A\|$ (green). As $\kappa$ grows the blue bars rise on the later columns and the purple ones fall by the same factor: the green stays near $\epsilon_{\rm machine}$.`,
       deps: ['nla-3.10'],
       tags: ['qr', 'stability'],
       refs: ['Trefethen–Bau Lec. 16'],
@@ -140,31 +142,35 @@ so the (large) terms $\delta Q\,\tilde R$ and $Q\,\delta R$ must nearly cancel e
         let seed = 4;
         v.button('Resample', () => { seed++; });
         const L = v.stage({ x: [1e-9, 10], y: [0, 4], xlog: true, axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'size of the error', ylabel: '', yticks: [], title: 'errors of the factors and of their product' });
-        const R = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: true, height: 300, minWidth: 300, title: 'entries of $\\delta Q\\,\\tilde R$ (x) and $-Q\\,\\delta R$ (y)' });
+        const R = v.stage({ x: [0.4, 4.6], y: [1e-10, 10], ylog: true, axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'column j', ylabel: '', xticks: [1, 2, 3, 4], title: 'column by column: error of $q_j$ against the size of row $j$ of $\\tilde R$' });
         let st = null;
         v.render(() => {
-          const p = pb.value, u = 2 ** -p, r = v.rng(seed * 13 + 1);
-          const A = flM(withSingular(M, r, 6, 4, geomSigma(4, kap.value)), p);
+          const p = pb.value, u = 2 ** -p, r = v.rng(seed * 13 + 1), n = 4;
+          const A = flM(withSingular(M, r, 6, n, geomSigma(n, kap.value)), p);
           const c = hhPos(A, p), e = hhPos(A, 53);
-          const dQ = sub(c.Q, e.Q), dR = sub(c.R, e.R), T1 = mm(dQ, c.R), T2 = mm(e.Q, dR);
-          const eQ = spec(M, dQ), eR = spec(M, dR) / spec(M, e.R), eA = spec(M, sub(A, mm(c.Q, c.R))) / spec(M, A);
-          const rows = [[3, eQ, 'blue', '‖Q̃ − Q‖'], [2, eR, 'purple', '‖R̃ − R‖/‖R‖'], [1, eA, 'green', '‖A − Q̃R̃‖/‖A‖']];
+          const dQ = sub(c.Q, e.Q), eQ = spec(M, dQ), eA = spec(M, sub(A, mm(c.Q, c.R))) / spec(M, A), nA = spec(M, A);
+          let eR = 0;
+          for (let i = 0; i < n; i++) for (let j = i; j < n; j++) if (Math.abs(e.R[i][j]) > 1e-14) eR = Math.max(eR, Math.abs(c.R[i][j] - e.R[i][j]) / Math.abs(e.R[i][j]));
+          const rows = [[3, eQ, 'blue', '‖Q̃ − Q‖'], [2, eR, 'purple', 'entrywise rel. error of R̃'], [1, eA, 'green', '‖A − Q̃R̃‖/‖A‖']];
           rows.forEach(([y, val, col, lab]) => {
             L.rect(1e-9, y - 0.32, Math.max(1.2e-9, val), y + 0.32, { fill: col, fillAlpha: 0.55, stroke: false });
             L.text(`${lab} = ${val < 1e-300 ? '0' : val.toExponential(1).replace('e-', '·10⁻').replace('e+', '·10')}`, 1.6e-9, y, { color: 'ink', size: 12, baseline: 'middle', plate: true });
           });
           L.vline(u, { color: 'red', width: 2 });
           L.text('ε', u * 1.25, 3.85, { color: 'red', size: 13 });
-          const xs = T1.flat(), ys = T2.flat().map((t) => -t), sc = Math.max(1e-12, ...xs.map(Math.abs), ...ys.map(Math.abs)) * 1.2;
-          R.setView([-sc, sc], [-sc, sc]);
-          R.line(-sc, -sc, sc, sc, { color: 'muted', width: 1.4, dash: true });
-          R.dots(xs.map((x, i) => [x, ys[i]]), { color: 'orange', r: 4 });
-          R.corner(`scale ±${v.fmt(sc, 2)}`, 'bl', { color: 'muted' });
-          const dev = Math.max(...xs.map((x, i) => Math.abs(x - ys[i])));
-          st = { u, eQ, eR, eA, dev, sc, kappa: spec(M, A) * spec(M, M.pinv(A)) };
+          const fl9 = (x) => Math.max(1e-10, x);
+          const eqj = [], rj = [], pr = [];
+          for (let j = 0; j < n; j++) {
+            const dq = Math.hypot(...dQ.map((row) => row[j])), rn = Math.hypot(...c.R[j]);
+            eqj.push(dq); rj.push(rn / spec(M, c.R)); pr.push((dq * rn) / nA);
+          }
+          R.hline(u, { color: 'red', width: 2 });
+          const draw = (vals, dx, col) => vals.forEach((val, j) => { R.line(j + 1 + dx, 1e-10, j + 1 + dx, fl9(val), { color: col, width: 7, alpha: 0.75 }); });
+          draw(eqj, -0.22, 'blue'); draw(rj, 0, 'purple'); draw(pr, 0.22, 'green');
+          st = { u, eQ, eR, eA, kappa: spec(M, A) * spec(M, M.pinv(A)), prMax: Math.max(...pr), eqMax: Math.max(...eqj) };
         });
-        v.legend([['blue', 'error of $\\tilde Q$'], ['purple', 'error of $\\tilde R$'], ['green', 'error of $\\tilde Q\\tilde R$'], ['red', '$\\epsilon_{\\rm machine}$']]);
-        v.readout(() => st ? `$\\kappa(A)=${sciT(st.kappa)}$, $\\epsilon_{\\rm machine}=${sciT(st.u)}$: $\\|\\tilde Q-Q\\|=${sciT(st.eQ)}$, $\\|\\tilde R-R\\|/\\|R\\|=${sciT(st.eR)}$, but $\\|A-\\tilde Q\\tilde R\\|/\\|A\\|=${sciT(st.eA)}$.\nThe two terms of the identity differ entrywise by at most $${sciT(st.dev)}$, against entries of size up to $${sciT(st.sc / 1.2)}$: they cancel.` : '');
+        v.legend([['blue', 'error of $\\tilde Q$ / of column $j$'], ['purple', 'entrywise error of $\\tilde R$ / size of row $j$'], ['green', 'error of $\\tilde Q\\tilde R$ / $\\|\\delta q_j\\|\\|\\tilde r_j\\|$'], ['red', '$\\epsilon_{\\rm machine}$']]);
+        v.readout(() => st ? `$\\kappa(A)=${sciT(st.kappa)}$, $\\epsilon_{\\rm machine}=${sciT(st.u)}$: $\\|\\tilde Q-Q\\|=${sciT(st.eQ)}$, entrywise relative error of $\\tilde R$ up to $${sciT(st.eR)}$, but $\\|A-\\tilde Q\\tilde R\\|/\\|A\\|=${sciT(st.eA)}$.\nLargest single-column error $\\|\\delta q_j\\|=${sciT(st.eqMax)}$, yet every product $\\|\\delta q_j\\|\\|\\tilde r_j\\|/\\|A\\|\\le${sciT(st.prMax)}$.` : '');
       },
     },
     // ------------------------------------------------------------------ 3.12
@@ -176,7 +182,7 @@ so the (large) terms $\delta Q\,\tilde R$ and $Q\,\delta R$ must nearly cancel e
 $$(R+\delta R)\hat x=b,\qquad\frac{|\delta r_{ij}|}{|r_{ij}|}\le m\,\epsilon_{\rm machine}\ \ (i\le j)$$
 (to first order): the computed solution is the exact solution of a nearby triangular system, perturbed *entry by entry* by a small relative amount (so zeros stay zero). By 3.9 the relative error of $\hat x$ is then $O(\kappa(R)\,\epsilon_{\rm machine})$; the residual $b-R\hat x$ is always small.`,
       idea: String.raw`Row $i$ computes $\hat x_i=\big(b_i-\sum_{j>i}r_{ij}\hat x_j\big)/r_{ii}$ with $m-i+1$ floating-point operations, each contributing a factor $(1+\varepsilon)$ by the axiom 3.7. These factors can be moved onto the *coefficients* $r_{ij}$ of that row (not onto $\hat x_j$, which later rows reuse), giving $\hat x_i$ as the exact solution of row $i$ of a system with entries $r_{ij}(1+\theta_{ij})$ and $|\theta_{ij}|\le(m-i+1)\epsilon_{\rm machine}$ up to $O(\epsilon^2)$. The picture computes the smallest such perturbation per row (Oettli–Prager), whose relative size is $|\rho_i|/(|R||\hat x|)_i$.`,
-      caption: String.raw`Left: the triangular matrix $R$ (blue positive, red negative) and below it the largest relative entry perturbation $\omega_i=|\rho_i|/(|R||\hat x|)_i$ that row $i$ needs, where $\rho=b-R\hat x$ is the exact residual of the computed solution — this $\omega_i$ is the size of the perturbation $\delta R$ with $|\delta r_{ij}|=\omega_i|r_{ij}|$ for which $(R+\delta R)\hat x=b$ exactly. Right: the bars $\omega_i/\epsilon_{\rm machine}$ never exceed the dimension $m$ (red line). Switch to the Kahan-type matrix ($1$ on the diagonal, $-1$ above): $\kappa$ grows like $2^m$ and the *forward* error (readout) becomes huge, yet $\omega_i$ stay tiny. Use fewer bits $p$ to make everything visible.`,
+      caption: String.raw`Left: the triangular matrix $R$ (blue positive, red negative) and the computed solution $\hat x$. Right: the relative entry perturbation $\omega_i=|\rho_i|/(|R||\hat x|)_i$ that row $i$ needs, where $\rho=b-R\hat x$ is the exact residual of the computed solution — this $\omega_i$ is the size of the perturbation $\delta R$ with $|\delta r_{ij}|=\omega_i|r_{ij}|$ for which $(R+\delta R)\hat x=b$ exactly. The values $\omega_i/\epsilon_{\rm machine}$ (log scale) never exceed the dimension $m$ (red line). Switch to the Kahan-type matrix ($1$ on the diagonal, $-1$ above): $\kappa$ grows like $2^m$ and the *forward* error (readout) becomes huge, yet $\omega_i$ stay tiny. Use fewer bits $p$ to make everything visible.`,
       deps: ['nla-3.9'],
       tags: ['stability', 'triangular'],
       refs: ['Trefethen–Bau Lec. 17'],
@@ -188,7 +194,7 @@ $$(R+\delta R)\hat x=b,\qquad\frac{|\delta r_{ij}|}{|r_{ij}|}\le m\,\epsilon_{\r
         let seed = 2;
         v.button('Resample', () => { seed++; });
         const T = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 320, minWidth: 280, title: 'the triangular matrix $R$ and the solution' });
-        const B = v.stage({ x: [0, 11], y: [0, 10], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'row i', ylabel: 'ω / ε', title: 'relative perturbation each row needs' });
+        const B = v.stage({ x: [0, 11], y: [1e-2, 30], ylog: true, axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'row i', ylabel: 'ω / ε', title: 'relative perturbation each row needs' });
         let st = null;
         v.render(() => {
           const n = nn.value, p = pb.value, u = 2 ** -p, r = v.rng(seed * 17 + n);
@@ -203,12 +209,10 @@ $$(R+\delta R)\hat x=b,\qquad\frac{|\delta r_{ij}|}{|r_{ij}|}\le m\,\epsilon_{\r
           T.text('x̂', 0.82, 0.93, { color: 'ink', size: 14, align: 'center' });
           x.forEach((q, i) => T.text(nmc(q, 2), 0.82, 0.9 - (i + 0.5) * (0.62 * sc) / n, { size: 11, align: 'center', baseline: 'middle', color: 'orange' }));
           T.text('R', 0.33 * sc, 0.97, { color: 'ink', size: 14, align: 'center' });
-          om.forEach((q, i) => { const w = (0.62 * sc) / n; T.rect(0.02 + i * w + 0.1 * w, 0.2, 0.02 + (i + 1) * w - 0.1 * w, 0.2 - Math.min(0.18, 0.18 * q / u / (n + 1)), { fill: 'green', fillAlpha: 0.6, stroke: false }); });
-          T.text('ω₁ … ω_m (relative perturbation per row)', 0.02, 0.02, { size: 11, color: 'green' });
-          B.setView([0, n + 1], [0, n + 2]);
-          B.bars(om.map((q) => q / u), { x0: 1, dx: 1, color: 'green' });
+          B.setView([0, n + 1], [1e-2, 3 * n]);
+          om.forEach((q, i) => { const val = Math.max(1.5e-2, q / u); B.line(i + 1, 1e-2, i + 1, val, { color: 'green', width: 6, alpha: 0.7 }); B.dot(i + 1, val, { color: 'green', r: 5 }); });
           B.hline(n, { color: 'red', width: 2 });
-          B.text(`bound m = ${n}`, n + 0.9, n + 0.45, { color: 'red', size: 12, align: 'right' });
+          B.text(`bound m = ${n}`, n + 0.9, n * 1.5, { color: 'red', size: 12, align: 'right' });
           st = { n, u, omega: Math.max(...om) / u, fwd: relErr(x, xe), kap: spec(M, R) * spec(M, M.pinv(R)) };
         });
         v.legend([['green', 'row perturbation $\\omega_i/\\epsilon$'], ['red', 'bound $m\\,\\epsilon_{\\rm machine}$'], ['orange', 'computed $\\hat x$']]);
@@ -288,9 +292,9 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
       num: '3.14',
       kind: 'Phenomenon',
       name: 'Instability of the normal equations',
-      statement: String.raw`Solving the least squares problem by forming and solving the normal equations $A^{\top}A\,x=A^{\top}b$ (with Cholesky) is **not backward stable**. Even when the residual is zero and the problem is well behaved, the computed solution has a relative error of order $\kappa(A)^2\epsilon_{\rm machine}$ (the condition number of $A^{\top}A$ is $\kappa(A)^2$, and forming $A^{\top}A$ already loses this much), whereas Householder QR (and, with the right-hand side treated suitably, modified Gram–Schmidt) give errors of order $\kappa(A)\epsilon_{\rm machine}$ when the residual is small, and $\kappa^2\tan\theta\,\epsilon_{\rm machine}$ at worst (3.13). When $\kappa(A)\gtrsim\epsilon_{\rm machine}^{-1/2}$, $A^{\top}A$ is no longer numerically positive definite and the Cholesky factorization may break down.`,
-      idea: String.raw`The normal equations replace $A$ by $A^{\top}A$, whose singular values are $\sigma_j^2$: the condition number is squared (2.9, 3.2), and rounding $A^{\top}A$ to working precision alone perturbs it by $O(\epsilon_{\rm machine})\|A\|^2$, which relative to its smallest singular value $\sigma_n^2$ is $O(\kappa^2\epsilon_{\rm machine})$. A Householder QR solve works with the orthogonal factors, never squares the spread of the singular values, and is backward stable (3.10); its error is governed by the condition number of the least squares problem (3.13). Gram–Schmidt QR is competitive only if $Q^{\top}b$ is formed carefully.`,
-      caption: String.raw`The same random $20\times6$ fitting problems (condition number $\kappa$, horizontal) are solved in $p$-bit arithmetic by Householder QR (blue), modified Gram–Schmidt (teal) and the normal equations with Cholesky (red); vertical: relative error of the solution against the true $x$. Dashed lines: $\kappa\epsilon_{\rm machine}$ and $\kappa^2\epsilon_{\rm machine}$. The red dots follow the steeper line and then stop altogether (hollow marks at the top: Cholesky breaks down because $A^{\top}A$ is numerically singular), twice as many digits lost. Switch on a *large residual* ($\theta=45^{\circ}$) to see the $\kappa^2\tan\theta$ term that even QR methods cannot avoid (3.13).`,
+      statement: String.raw`Solving the least squares problem by forming and solving the normal equations $A^{\top}A\,x=A^{\top}b$ (with Cholesky) is **not backward stable**. Even when the residual is zero and the problem is well behaved, the computed solution has a relative error of order $\kappa(A)^2\epsilon_{\rm machine}$ (the condition number of $A^{\top}A$ is $\kappa(A)^2$, and forming $A^{\top}A$ already loses this much), whereas Householder QR (and modified Gram–Schmidt when the right-hand side is carried along as an extra column of $A$) give errors of order $\kappa(A)\epsilon_{\rm machine}$ when the residual is small, and $\kappa^2\tan\theta\,\epsilon_{\rm machine}$ at worst (3.13). When $\kappa(A)\gtrsim\epsilon_{\rm machine}^{-1/2}$, $A^{\top}A$ is no longer numerically positive definite and the Cholesky factorization may break down.`,
+      idea: String.raw`The normal equations replace $A$ by $A^{\top}A$, whose singular values are $\sigma_j^2$: the condition number is squared (2.9, 3.2), and rounding $A^{\top}A$ to working precision alone perturbs it by $O(\epsilon_{\rm machine})\|A\|^2$, which relative to its smallest singular value $\sigma_n^2$ is $O(\kappa^2\epsilon_{\rm machine})$. A Householder QR solve works with the orthogonal factors, never squares the spread of the singular values, and is backward stable (3.10); its error is governed by the condition number of the least squares problem (3.13). Gram–Schmidt QR is competitive only if $b$ is treated as an extra column of $A$; forming $\tilde Q^{\top}b$ with the computed, non-orthogonal $\tilde Q$ inherits the loss of orthogonality (3.10) — the experiment below shows that variant as unstable as the normal equations.`,
+      caption: String.raw`The same random $20\times6$ fitting problems (condition number $\kappa$, horizontal) are solved in $p$-bit arithmetic by Householder QR (blue), modified Gram–Schmidt with $b$ appended as a column of $A$ (teal), modified Gram–Schmidt followed by $\tilde Q^{\top}b$ (purple) and the normal equations with Cholesky (red); vertical: relative error of the solution against the true $x$. Dashed lines: $\kappa\epsilon_{\rm machine}$ and $\kappa^2\epsilon_{\rm machine}$. The red dots follow the steeper line and then stop altogether (hollow marks at the top: Cholesky breaks down because $A^{\top}A$ is numerically singular), twice as many digits lost; so does the purple variant of Gram–Schmidt, whose computed $\tilde Q$ is not orthogonal. Switch on a *large residual* ($\theta=45^{\circ}$) to see the $\kappa^2\tan\theta$ term that even QR methods cannot avoid (3.13).`,
       deps: ['nla-3.13', 'nla-2.9', 'nla-3.10'],
       credit: 'Standard comparison of least squares algorithms (e.g. Björck, Numerical Methods for Least Squares Problems, 1996; Trefethen–Bau Lec. 19)',
       tags: ['least-squares', 'stability', 'normal-equations'],
@@ -305,7 +309,7 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
         let st = null;
         v.render(() => {
           const p = pb.value, u = 2 ** -p, r = v.rng(seed * 59 + 3), m = 20, n = 6;
-          const hh = [], gs = [], ne = [], fails = [];
+          const hh = [], gs = [], ga = [], ne = [], fails = [];
           let firstFail = null;
           for (const k of logGrid(0, 10, 22)) for (let t = 0; t < 2; t++) {
             const A = withSingular(M, r, m, n, geomSigma(n, k)), xt = Array.from({ length: n }, () => r.normal());
@@ -315,7 +319,8 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
               b = b.map((q, i) => q + w[i] * s);
             }
             const x1 = flQRSolve(A, b, p), x2 = flGSSolve(A, b, p, 'modified'), x3 = flNormalEq(A, b, p);
-            hh.push([k, Math.min(relErr(x1, xt), 1e3)]); gs.push([k, Math.min(relErr(x2, xt), 1e3)]);
+            const Aug = A.map((row, i) => [...row, b[i]]), G = flGS(Aug, 'modified', p), x4 = flBack(G.R.slice(0, n).map((row) => row.slice(0, n)), G.R.slice(0, n).map((row) => row[n]), p);
+            hh.push([k, Math.min(relErr(x1, xt), 1e3)]); gs.push([k, Math.min(relErr(x2, xt), 1e3)]); ga.push([k, Math.min(relErr(x4, xt), 1e3)]);
             if (x3 && x3.every(isFinite)) ne.push([k, Math.min(relErr(x3, xt), 1e3)]); else { fails.push([k, 3e3]); if (firstFail === null) firstFail = k; }
           }
           S.path([[1, u], [1e10, 1e10 * u]], { color: 'muted', width: 1.4, dash: true });
@@ -323,12 +328,13 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
           S.hline(1, { color: 'red', width: 1.1, dash: true, alpha: 0.6 });
           S.text('κ ε', 6e8, 6e8 * u * 4, { color: 'muted', size: 13 }); S.text('κ² ε', 2e4, 4e8 * u * 3, { color: 'muted', size: 13 });
           S.dots(ne, { color: 'red', r: 3.6 });
-          S.dots(gs, { color: 'teal', r: 3.2 });
+          S.dots(gs, { color: 'purple', r: 3.2 });
+          S.dots(ga, { color: 'teal', r: 3.2 });
           S.dots(hh, { color: 'blue', r: 3.2 });
           S.dots(fails, { color: 'red', r: 5, hollow: true });
           st = { u, firstFail, kmax: 1 / Math.sqrt(u) };
         });
-        v.legend([['blue', 'Householder QR', { dot: true }], ['teal', 'modified Gram–Schmidt', { dot: true }], ['red', 'normal equations (Cholesky)', { dot: true }], ['muted', '$\\kappa\\epsilon$, $\\kappa^2\\epsilon$', { dash: true }]]);
+        v.legend([['blue', 'Householder QR', { dot: true }], ['teal', 'MGS on the augmented matrix $(A\\ b)$', { dot: true }], ['purple', 'MGS, then $\\tilde Q^{\\top}b$', { dot: true }], ['red', 'normal equations (Cholesky)', { dot: true }], ['muted', '$\\kappa\\epsilon$, $\\kappa^2\\epsilon$', { dash: true }]]);
         v.readout(() => st ? `$\\epsilon_{\\rm machine}=${sciT(st.u)}$; the normal equations are expected to break down near $\\kappa\\approx\\epsilon_{\\rm machine}^{-1/2}=${sciT(st.kmax)}$${st.firstFail ? `; first breakdown observed at $\\kappa=${sciT(st.firstFail)}$` : ''}.` : '');
       },
     },
@@ -341,7 +347,7 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
       introduces: ['nla-3.2'],
       statement: String.raw`Von Neumann and Goldstine asked whether the solution of large linear systems and the inversion of matrices of high order (they had in mind orders of a hundred or more) could be trusted on the electronic computers then being built, when every arithmetic operation is rounded. They analysed elimination, which they presented as the factorization of the matrix into triangular factors followed by the inversion of the factors, and derived rigorous bounds for the error of the computed inverse in terms of the unit of roundoff, the order $n$, and the ratio of the largest to the smallest singular value of the matrix (what is now called its condition number). For symmetric positive definite matrices their bound is still the best known; the work showed that elimination does *not* suffer from the exponentially growing error that earlier estimates had suggested, but that the attainable accuracy is limited by this ratio.`,
       idea: String.raw`Before the paper, the standard worry — voiced for elimination in the 1940s, e.g. by Hotelling, whose estimate allowed for the loss of roughly $n\log_{10}4$ digits (as reported in Turing's 1948 paper) — was a factor like $4^{n}$ in the error. Von Neumann and Goldstine wrote the elimination as a matrix factorization, so that the rounding errors could be bounded with matrix norms, step by step, and found that the inverse is accurate to a modest power of $n$ times the roundoff times the ratio of extreme singular values $\sigma_1/\sigma_n$; the quantity that decides everything is therefore a property of the *matrix*, which Turing (1948) then named the condition number $\kappa(A)$ (3.2). They also considered what ratio to expect for matrices of high order that are drawn at random. The full constants and the treatment of general (non-definite) matrices are in the paper; this page does not reproduce them.`,
-      caption: String.raw`This is a *reconstruction*, not the paper's data: Gaussian elimination with partial pivoting inverts the $n\times n$ matrix $A$ in $p$-bit arithmetic (the paper's own tables and bounds are not reproduced). Left: for $n=2,\dots,N$ the relative error of the computed inverse (orange) against $\kappa(A)\,\epsilon_{\rm machine}$ (purple dashed) and against a $4^{n}\epsilon_{\rm machine}$ curve (grey), the exponential growth the pre-1947 estimates allowed for. Choose random matrices (condition number grows slowly, errors stay near $\epsilon$) or the Hilbert matrix (condition number $\approx34^{n}$). Right: every computed inverse as a point, error against $\kappa\epsilon_{\rm machine}$: all fall near the diagonal, whichever family.`,
+      caption: String.raw`This is a *reconstruction*, not the paper's data: Gaussian elimination with partial pivoting inverts the $n\times n$ matrix $A$ in $p$-bit arithmetic (the paper's own tables and bounds are not reproduced). Left: for $n=2,\dots,N$ the relative error of the computed inverse (orange) against $\kappa(A)\,\epsilon_{\rm machine}$ (purple dashed) and against a $4^{n}\epsilon_{\rm machine}$ curve (grey), the kind of exponential-in-$n$ growth that estimates of the 1940s allowed for. Choose random matrices (the condition number grows slowly with $n$) or the Hilbert matrix (condition number growing like $34^{n}$). Right: every computed inverse as a point (orange: random matrices, blue: Hilbert), error against $\kappa\epsilon_{\rm machine}$: both families fall on the same diagonal. Note that for the Hilbert matrix the error soon *exceeds* the $4^n\epsilon$ curve, and for random matrices stays far below it: the order $n$ is not what decides, the ratio $\kappa$ is.`,
       deps: ['nla-4.1', 'nla-1.4', 'nla-3.1'],
       tags: ['history', 'matrix-inversion', 'rounding-error'],
       refs: [],
@@ -349,8 +355,8 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
       scope: 'A reconstruction in simulated p-bit arithmetic of the qualitative result (error of the computed inverse ~ κ·ε, no 4ⁿ growth); the paper’s own bounds, constants and numerical tables are not reproduced, and the 4ⁿ comparison curve is illustrative. Details of the paper’s content (its bounds’ dependence on n, its treatment of general matrices) and the attribution of the 4ⁿ-type estimate to Hotelling are taken from secondary sources (Grcar; Higham; Turing 1948 as summarized there) and are flagged for verification.',
       viz(v) {
         const M = v.M;
-        const fam = v.select('matrices', [{ value: 'rand', label: 'random Gaussian' }, { value: 'hil', label: 'Hilbert' }], 'rand');
-        const pb = v.slider('significand bits $p$', 12, 26, 24, { int: true });
+        const fam = v.select('matrices', [{ value: 'rand', label: 'random Gaussian' }, { value: 'hil', label: 'Hilbert' }], 'hil');
+        const pb = v.slider('significand bits $p$', 12, 40, 30, { int: true });
         const nmax = v.slider('largest order $N$', 6, 24, 16, { int: true });
         let seed = 1;
         v.button('Resample', () => { seed++; });
@@ -374,12 +380,13 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
         v.render(() => {
           const p = pb.value, u = 2 ** -p, N = nmax.value, k = fam.value;
           L.setView([1, N + 1], [1e-17, 1e12]);
-          const main = [], resid = [], kap = [], four = [], all = [];
+          const main = [], resid = [], kap = [], four = [], all = [], allH = [];
           for (let n = 2; n <= N; n++) {
             const t = trial(k, n, p, seed); if (!t) continue;
             main.push([n, Math.max(1e-17, t.err)]); resid.push([n, Math.max(1e-17, t.res)]); kap.push([n, t.kappa * u]); four.push([n, 4 ** n * u]);
-            if (k !== 'hil') for (let s2 = 0; s2 < 2; s2++) { const t2 = trial(k, n, p, seed + 100 + s2); if (t2) all.push([t2.kappa * u, Math.max(1e-17, t2.err)]); }
-            all.push([t.kappa * u, Math.max(1e-17, t.err)]);
+            for (let s2 = 0; s2 < 2; s2++) { const t2 = trial('rand', n, p, seed + 100 + s2); if (t2) all.push([t2.kappa * u, Math.max(1e-17, t2.err)]); }
+            const t3 = trial('rand', n, p, seed); if (t3) all.push([t3.kappa * u, Math.max(1e-17, t3.err)]);
+            const th = trial('hil', n, p, seed); if (th) allH.push([th.kappa * u, Math.max(1e-17, th.err)]);
           }
           L.path(four, { color: 'muted', width: 1.6 });
           L.path(kap, { color: 'purple', width: 2, dash: true });
@@ -391,7 +398,8 @@ $$\kappa_{b\to y}=\frac1{\cos\theta},\quad\kappa_{b\to x}=\frac{\kappa}{\eta\cos
           R.path([[1e-12, 1e-12], [1e8, 1e8]], { color: 'muted', width: 1.6 });
           R.hline(1, { color: 'red', width: 1.2, dash: true, alpha: 0.7 });
           R.dots(all, { color: 'orange', r: 3.4 });
-          const worst = Math.max(...all.filter((q) => q[0] < 0.01).map((q) => q[1] / q[0]), 0);
+          R.dots(allH, { color: 'blue', r: 3.4 });
+          const worst = Math.max(...all.concat(allH).filter((q) => q[0] < 0.01).map((q) => q[1] / q[0]), 0);
           const last = main[main.length - 1], tl = trial(k, N, p, seed);
           st = { u, N, worst, kappaN: tl ? tl.kappa : NaN, errN: last ? last[1] : NaN, resN: tl ? tl.res : NaN };
         });

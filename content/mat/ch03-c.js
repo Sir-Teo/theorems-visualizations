@@ -196,7 +196,7 @@ export default {
         };
         let cache = null; const curve = []; let timer = null; v.onCleanup(() => clearTimeout(timer));
         const A = v.stage({ x: [0, NA - 2], y: [-0.2, 0.95], axes: false, height: 250, weight: 1.6, full: true, title: 'chain of atoms on the next plane (extra atom = kink)' });
-        const B = v.stage({ x: [0.8, 14], y: [1e-8, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, weight: 1, full: true, xlabel: 'kink width  $w/b$', ylabel: 'depinning force / rigid-slip force', title: 'threshold against kink width' });
+        const B = v.stage({ x: [0.6, 8], y: [1e-4, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, weight: 1, full: true, xlabel: 'kink width  $w/b$', ylabel: 'depinning force / rigid-slip force', title: 'threshold against kink width' });
         const startSweep = () => { curve.length = 0; const todo = [0.25, 0.5, 1, 1.6, 2.5, 4, 6.5, 10, 16]; const step = () => { const K = todo.shift(); if (K === undefined) return; const r = threshold(K); curve.push({ K, w: r.w, y: r.f / Math.PI }); v.invalidate(); timer = setTimeout(step, 5); }; step(); };
         v.button('Compute curve (sweeps K)', startSweep);
         timer = setTimeout(startSweep, 20);

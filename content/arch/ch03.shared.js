@@ -35,17 +35,16 @@ export function arch({ R = 1, t = 0.2, e = 0, alpha = Math.PI / 2, N = 30, gamma
   const left = [];
   for (let i = 0; i <= half; i++) {
     const th = ths + (thAp(R) - ths) * (i / half);
-    if (i < half) left.push({ th, a: [C[0] + ri * Math.cos(th), C[1] + ri * Math.sin(th)], b: [C[0] + ro * Math.cos(th), C[1] + ro * Math.sin(th)], tau: [Math.sin(th), -Math.cos(th)] });
-    else left.push({ th, a: [0, C[1] + Math.sqrt(Math.max(0, ri * ri - e * e))], b: [0, C[1] + Math.sqrt(ro * ro - e * e)], tau: [1, 0] });
+    if (i < half) left.push({ th, tha: th, thb: th, a: [C[0] + ri * Math.cos(th), C[1] + ri * Math.sin(th)], b: [C[0] + ro * Math.cos(th), C[1] + ro * Math.sin(th)], tau: [Math.sin(th), -Math.cos(th)] });
+    else left.push({ th, tha: thAp(ri), thb: thAp(ro), a: [0, C[1] + Math.sqrt(Math.max(0, ri * ri - e * e))], b: [0, C[1] + Math.sqrt(ro * ro - e * e)], tau: [1, 0] });
   }
   const mir = (j) => ({ th: Math.PI - j.th, a: [-j.a[0], j.a[1]], b: [-j.b[0], j.b[1]], tau: [j.tau[0], -j.tau[1]], mirror: true });
   const joints = [...left, ...left.slice(0, half).reverse().map(mir)];
   const polys = [];
-  const ang = (p) => Math.atan2(p[1] - C[1], p[0] - C[0]);
   for (let k = 0; k < N; k++) {
     const j0 = joints[k], j1 = joints[k + 1], m = k >= half; // mirrored blocks: build via mirroring the left block
     if (!m) {
-      const ai = arcPts(C, ri, ang(j0.a), ang(j1.a)), ao = arcPts(C, ro, ang(j0.b), ang(j1.b));
+      const ai = arcPts(C, ri, j0.tha, j1.tha), ao = arcPts(C, ro, j0.thb, j1.thb);
       polys.push([j0.a, ...ai, j1.a, j1.b, ...ao.slice().reverse(), j0.b]);
     } else {
       const L = polys[N - 1 - k]; polys.push(L.map((p) => [-p[0], p[1]]).reverse());
@@ -230,11 +229,11 @@ export function archKey({ R = 1, t = 0.2, alpha = Math.PI / 2, nSide = 7, key = 
   const ths = Math.PI / 2 + alpha, yc = -R * Math.cos(alpha), C = [0, yc], ri = R - t / 2, ro = R + t / 2;
   const left = []; for (let i = 0; i <= nSide; i++) { const th = ths + (Math.PI / 2 + key / 2 - ths) * (i / nSide); left.push({ th, a: [ri * Math.cos(th), yc + ri * Math.sin(th)], b: [ro * Math.cos(th), yc + ro * Math.sin(th)], tau: [Math.sin(th), -Math.cos(th)] }); }
   const mir = (j) => ({ th: Math.PI - j.th, a: [-j.a[0], j.a[1]], b: [-j.b[0], j.b[1]], tau: [j.tau[0], -j.tau[1]] });
-  const joints = [...left, ...left.slice().reverse().map(mir)], N = 2 * nSide + 1, ang = (p) => Math.atan2(p[1] - yc, p[0]);
+  const joints = [...left, ...left.slice().reverse().map(mir)], N = 2 * nSide + 1;
   const polys = [];
   for (let k = 0; k < N; k++) {
-    if (k < nSide) { const j0 = joints[k], j1 = joints[k + 1]; polys.push([j0.a, ...arcPts(C, ri, ang(j0.a), ang(j1.a)), j1.a, j1.b, ...arcPts(C, ro, ang(j0.b), ang(j1.b)).reverse(), j0.b]); }
-    else if (k === nSide) { const j0 = joints[k], j1 = joints[k + 1]; polys.push([j0.a, ...arcPts(C, ri, ang(j0.a), ang(j1.a), 3), j1.a, j1.b, ...arcPts(C, ro, ang(j0.b), ang(j1.b), 3).reverse(), j0.b]); }
+    if (k < nSide) { const j0 = joints[k], j1 = joints[k + 1]; polys.push([j0.a, ...arcPts(C, ri, j0.th, j1.th), j1.a, j1.b, ...arcPts(C, ro, j0.th, j1.th).reverse(), j0.b]); }
+    else if (k === nSide) { const j0 = joints[k], j1 = joints[k + 1]; polys.push([j0.a, ...arcPts(C, ri, j0.th, Math.PI - j0.th, 3), j1.a, j1.b, ...arcPts(C, ro, j0.th, Math.PI - j0.th, 3).reverse(), j0.b]); }
     else polys.push(polys[N - 1 - k].map((p) => [-p[0], p[1]]).reverse());
   }
   const g = assemble(joints, polys, gamma);
