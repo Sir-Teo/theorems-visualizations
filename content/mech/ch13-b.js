@@ -577,7 +577,7 @@ and the widths of the forks shrink by the factor $\alpha = 2.502907875\ldots$ Th
         const pendDiagram = (w) => {
           const key = w.join('|'); if (diagrams[key]) return diagrams[key];
           const D = { cols: [], done: false }; diagrams[key] = D;
-          D.gen = (function* () { const y = [-Math.PI / 2, 0]; for (let k = 0; k < 300; k++) ddpPeriod(y, w[0], 50); for (let c = 0; c < NCOL; c++) { const g = w[0] + ((w[1] - w[0]) * (c + 0.5)) / NCOL; for (let k = 0; k < 90; k++) ddpPeriod(y, g, 50); const ys = new Float32Array(NPT); for (let k = 0; k < NPT; k++) { ddpPeriod(y, g, 50); ys[k] = wrap(y[0]); } D.cols.push({ g, ys }); yield; } D.done = true; })();
+          D.gen = (function* () { const y = [-Math.PI / 2, 0]; for (let k = 0; k < 300; k++) ddpPeriod(y, w[0], 50); for (let c = 0; c < NCOL; c++) { const g = w[0] + ((w[1] - w[0]) * (c + 0.5)) / NCOL; for (let k = 0; k < 170; k++) ddpPeriod(y, g, 50); const ys = new Float32Array(NPT); for (let k = 0; k < NPT; k++) { ddpPeriod(y, g, 50); ys[k] = wrap(y[0]); } D.cols.push({ g, ys }); yield; } D.done = true; })();
           return D;
         };
         // Floquet thresholds of the pendulum (generator; yields between Newton solves)
@@ -629,7 +629,8 @@ and the widths of the forks shrink by the factor $\alpha = 2.502907875\ldots$ Th
           const xs = [], ys = []; for (const c of D.cols) for (const y of c.ys) { xs.push(c.g); ys.push(y); }
           fastDots(v, sD, xs, ys, xs.length, 'accent', { alpha: 0.55, size: 1.4 });
           const marks = pend ? TH.th : logR.R.slice(1);
-          marks.forEach((m, k) => { if (m < w[0] || m > w[1]) return; sD.vline(m, { color: pend ? 'orange' : 'teal', width: 1.1, dash: [4, 4] }); sD.text(pend ? `γ${'₁₂₃₄₅'[k]}` : `R${'₁₂₃₄₅₆₇₈₉'[k] || ''}`, m, sD.bounds.y[1], { color: pend ? 'orange' : 'teal', size: 12, dx: -3, align: 'right', baseline: 'top', dy: 4 }); });
+          let lastX = -1e9;
+          marks.forEach((m, k) => { if (m < w[0] || m > w[1]) return; sD.vline(m, { color: pend ? 'orange' : 'teal', width: 1.1, dash: [4, 4] }); const X = sD.X(m); if (X - lastX < 24) return; lastX = X; sD.text(pend ? `γ${'₁₂₃₄₅'[k]}` : `R${'₁₂₃₄₅₆₇₈₉'[k] || ''}`, m, sD.bounds.y[1], { color: pend ? 'orange' : 'teal', size: 12, dx: -3, align: 'right', baseline: 'top', dy: 4 }); });
           if (pend && !D.done) sD.corner(`computing… ${D.cols.length}/${NCOL} columns`, 'br', { color: 'ink', plate: true });
           // δ_n
           const dl = deltas(logR.R.slice(1)), dp = deltas(TH.th);

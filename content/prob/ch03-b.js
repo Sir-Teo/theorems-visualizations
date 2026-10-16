@@ -134,13 +134,13 @@ where the expectation of a complex variable is taken separately on its real and 
       name: 'Characteristic functions of independent sums multiply',
       statement: String.raw`If $X_1$ and $X_2$ are independent with characteristic functions $\varphi_1$ and $\varphi_2$, then $X_1+X_2$ has characteristic function $\varphi_1(t)\varphi_2(t)$.`,
       idea: String.raw`$e^{it(X_1+X_2)}=e^{itX_1}e^{itX_2}$, and the two factors are independent (bounded) complex variables. The expectation of a product of independent variables factors (Theorem 2.1.13, applied to real and imaginary parts). Convolution of laws, an integral, becomes multiplication of transforms. This is why characteristic functions suit sums of independent variables.`,
-      caption: String.raw`$X$ and $Y$ share the chosen law. With probability $\rho$ the pair is fully dependent ($Y=X$); otherwise $Y$ is an independent copy, so the marginals never change. Left, in $\mathbb C$: the product $\varphi_X\varphi_Y=\varphi^2$ (green), the exact $\varphi_{X+Y}=(1-\rho)\varphi(t)^2+\rho\varphi(2t)$ (blue) and an estimate from 4000 seeded pairs (gold dashed). Right: the gap $|\varphi_{X+Y}-\varphi_X\varphi_Y|$ along $t$. At $\rho=0$ only sampling noise is left. Any dependence opens a gap that the samples detect.`,
+      caption: String.raw`$X$ and $Y$ share the chosen law. With probability $\rho$ the pair is fully dependent ($Y=X$); otherwise $Y$ is an independent copy, so the marginals never change. Left, in $\mathbb C$: the product $\varphi_X\varphi_Y=\varphi^2$ (green), the exact $\varphi_{X+Y}=(1-\rho)\varphi(t)^2+\rho\varphi(2t)$ (blue) and an estimate from 4000 seeded pairs (gold dashed). Right: the gap $|\varphi_{X+Y}-\varphi_X\varphi_Y|$ along $t$. Drag $\rho$ to $0$: only sampling noise is left. Any dependence opens a gap that the samples detect.`,
       deps: ['prob-3.3.1a', 'prob-2.1.13'],
       tags: ['characteristic functions', 'independence'],
       viz(v) {
         const KEYS = ['exp', 'unif', 'bern', 'pois'], TM = { exp: 10, unif: 20, bern: Math.PI, pois: Math.PI };
         const law = v.select('law of $X$ and $Y$', lawOpts(KEYS), 'unif');
-        const rS = v.slider('dependence $\\rho$', 0, 1, 0, { step: 0.01 });
+        const rS = v.slider('dependence $\\rho$', 0, 1, 0.3, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const C = v.stage({ x: [-1.15, 1.15], y: [-1.15, 1.15], equal: true, axes: true, xticks: [-0.5, 0.5], yticks: [-0.5, 0.5], height: 330, title: '$\\varphi_{X+Y}$ vs $\\varphi_X\\varphi_Y$' });
         const R = v.stage({ x: [0, 20], y: [0, 0.6], axes: 'box', gutter: true, height: 330, weight: 1.15, xlabel: '$t$', title: '$|\\varphi_{X+Y}(t)-\\varphi_X(t)\\varphi_Y(t)|$' });
@@ -701,12 +701,12 @@ then $EX^2<\infty$.`,
 $$\varphi(t)=\int_0^\infty\Bigl(1-\Bigl|\frac ts\Bigr|\Bigr)^+\nu(ds),$$
 and hence $\varphi$ is a characteristic function.`,
       idea: String.raw`Each triangle $(1-|t/s|)^+$ is a characteristic function: it belongs to Pólya's density, rescaled (Example 3.3.15). The measure $\nu$ comes from the convexity: $d\nu=s\,d\varphi'(s)$, where $\varphi'$ is the increasing right derivative. Integrating twice with Fubini recovers $\varphi$, and $t=0$ shows $\nu$ has mass $1$. When $\varphi$ is piecewise linear, $\nu$ has finitely many atoms, and Lemma 3.3.9 shows the mixture is a characteristic function. In general, approximate $\nu$ by such measures and pass to the limit with the continuity theorem (Theorem 3.3.17). Example: $e^{-|t|^\alpha}$, $0<\alpha\le1$.`,
-      caption: String.raw`Left: drag the three knots to shape a piecewise-linear $\varphi$ on $t\ge0$; convexity is enforced. The coloured triangles $\nu(\{s_i\})(1-t/s_i)^+$ have their corners at the knots, and they add up to $\varphi$. Right: the density $\sum_i\nu(\{s_i\})\,\frac{1-\cos(s_ix)}{\pi s_ix^2}$ (green), checked against direct numerical inversion of $\varphi$ (black dashed), over 4000 seeded samples drawn from the mixture. Switch off convexity: a knot above the chord gives a negative weight, and the inverted "density" may dip below zero.`,
+      caption: String.raw`Left: drag the three knots to shape a piecewise-linear $\varphi$ on $t\ge0$; convexity is enforced. The coloured triangles $\nu(\{s_i\})(1-t/s_i)^+$ have their corners at the knots, and they add up to $\varphi$. Right: the density $\sum_i\nu(\{s_i\})\,\frac{1-\cos(s_ix)}{\pi s_ix^2}$ (green), checked against direct numerical inversion of $\varphi$ (black dashed), over 4000 seeded samples drawn from the mixture. Switch off convexity (the middle knot jumps above the chord): a knot above the chord gives a negative weight, and the inverted "density" may dip below zero.`,
       deps: ['prob-3.3.14', 'prob-3.3.17', 'prob-3.3.9'],
       tags: ['characteristic functions'],
       credit: 'Pólya, 1949',
       viz(v) {
-        const cvx = v.toggle('enforce convexity', true);
+        const cvx = v.toggle('enforce convexity', true, { onChange: (on) => { if (on) { H[0].set(0.5, 0.55); H[1].set(1.5, 0.2); H[2].set(3.2, 0); } else H[1].set(1.5, 0.48); } });
         const P = v.stage({ x: [-0.15, 4.2], y: [-0.04, 1.08], axes: 'box', gutter: true, height: 320, xlabel: '$t$', title: '$\\varphi$ as a mixture of triangles' });
         const D = v.stage({ x: [-12, 12], y: [-0.05, 0.4], axes: 'box', gutter: true, height: 320, weight: 1.1, xlabel: '$x$', title: 'the density it inverts to' });
         const K = [[0.5, 0.55], [1.5, 0.2], [3.2, 0]];

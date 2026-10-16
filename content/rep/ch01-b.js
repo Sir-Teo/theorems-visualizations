@@ -284,7 +284,7 @@ export default {
           const { n, g, S, Al, gX, gS, gA, Kd, ns, r } = compute();
           const arrs = [X, S, Al, gX, gS, gA];
           TS.forEach((T, k) => { const Y = arrs[k]; T.draw({ rows: n, cols: n, value: (i, j) => (Math.abs(Y[i][j]) < 1e-9 ? 0 : Y[i][j]), heat: (i, j) => heatv(Y[i][j]), cmap: 'diverging', format: 2, size: n > 2 ? 12 : 14, maxCell: 54 }); });
-          const lab = ['$X$', '$S=\\tfrac12(X+X^{\\mathsf T})$', '$A=\\tfrac12(X-X^{\\mathsf T})$', '$\\rho X\\rho^{\\mathsf T}$', '$\\rho S\\rho^{\\mathsf T}$', '$\\rho A\\rho^{\\mathsf T}$'];
+          const lab = ['X', 'S=\\tfrac12(X+X^{\\mathsf T})', 'A=\\tfrac12(X-X^{\\mathsf T})', '\\rho X\\rho^{\\mathsf T}', '\\rho S\\rho^{\\mathsf T}', '\\rho A\\rho^{\\mathsf T}'];
           lab.forEach((l, k) => A.tex(l, 0.18 + (k % 3) * 0.32, k < 3 ? 0.95 : 0.47, { size: 13, align: 'center' }));
           A.text('=', 0.34, 0.71, { size: 20, align: 'center', baseline: 'middle', color: 'muted' }); A.text('+', 0.66, 0.71, { size: 20, align: 'center', baseline: 'middle', color: 'muted' });
           A.text('=', 0.34, 0.23, { size: 20, align: 'center', baseline: 'middle', color: 'muted' }); A.text('+', 0.66, 0.23, { size: 20, align: 'center', baseline: 'middle', color: 'muted' });

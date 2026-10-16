@@ -56,7 +56,7 @@ if and only if it is
 
 The four conditions are independent: for each one there is a rule satisfying the other three (polsci-3.14).`,
       idea: String.raw`Anonymity means $f$ depends only on the counts $a = N(1)$ and $b = N(-1)$, so a rule is a colouring of the triangle $a + b \le n$. Neutrality maps the cell $(a, b)$ to $(b, a)$ with the opposite colour, so every diagonal cell $a = b$ must be a tie. Positive responsiveness then pushes $x$ into every cell just above the diagonal — one more vote for $x$, or one fewer for $y$, turns a tie into a win — and by induction on $a - b$ into every cell with $a > b$; neutrality gives $y$ below. The colouring is forced: it is the majority rule. Majority voting in a two-candidate election (polsci-1.2) is therefore not one choice among many but the only rule that treats voters and alternatives alike and responds to every vote.`,
-      caption: String.raw`Each cell is one count of votes: $a$ voters for $x$ (to the right), $b$ for $y$ (up), the rest indifferent. The colour is the rule’s verdict; **click a cell** to cycle it through $x$, tie, $y$, or pick a rule. Red arrows mark failures of positive responsiveness (a vote toward $x$ that does not produce $x$), red dashed links failures of neutrality (mirror cells whose verdicts are not mirror images). The right panel checks May’s conditions and runs an exhaustive search: of all anonymous rules for $n$ voters (or all neutral ones for $n \ge 4$), how many satisfy the conditions — always exactly one, majority rule.`,
+      caption: String.raw`Each cell is one count of votes: $a$ voters for $x$ (to the right), $b$ for $y$ (up), the rest indifferent (the small “ind.” number). The colour is the rule’s verdict; **click a cell** to cycle it through $x$, tie, $y$, or pick a rule. Red arrows mark failures of positive responsiveness (a vote toward $x$ that does not produce $x$), red dashed links failures of neutrality (mirror cells whose verdicts are not mirror images). The right panel checks May’s conditions and runs an exhaustive search: of all anonymous rules for $n$ voters (or all neutral ones for $n \ge 4$), how many satisfy the conditions — always exactly one, majority rule.`,
       deps: ['polsci-1.2', 'polsci-1.1'],
       see: ['polsci-3.14', 'polsci-3.3'],
       refs: ['T&P ch. 1', 'May (1952), Econometrica 20: 680–684'],
@@ -134,7 +134,7 @@ The four conditions are independent: for each one there is a rule satisfying the
             const f = F.get(key(a, b)), X = X0 + a * s, Y = Y0 - (b + 1) * s, col = f > 0 ? 'blue' : f < 0 ? 'orange' : 'gray';
             rr(c, X + 2, Y + 2, s - 4, s - 4, 6); c.fillStyle = v.color(col, f === 0 ? 0.16 : 0.42); c.fill(); c.strokeStyle = v.color(col, 0.75); c.lineWidth = 1.2; c.stroke();
             txt(v, c, f > 0 ? 'x' : f < 0 ? 'y' : 'tie', X + s / 2, Y + s / 2, { size: Math.min(15, s * 0.36), weight: 750, color: f === 0 ? 'muted' : 'ink' });
-            if (s > 34 && n - a - b > 0) txt(v, c, `${n - a - b}·0`, X + s - 6, Y + s - 9, { size: 8.5, weight: 600, color: 'muted', align: 'right' });
+            if (s > 34 && n - a - b > 0) txt(v, c, `${n - a - b} ind.`, X + s - 5, Y + s - 9, { size: 8.5, weight: 600, color: 'muted', align: 'right' });
           }
           // diagonal
           c.save(); c.strokeStyle = v.color('ink', 0.5); c.setLineDash([4, 4]); c.lineWidth = 1.2; c.beginPath(); c.moveTo(X0, Y0); c.lineTo(X0 + (n / 2 + 1) * s, Y0 - (n / 2 + 1) * s); c.stroke(); c.restore();

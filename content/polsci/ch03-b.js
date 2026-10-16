@@ -155,6 +155,7 @@ Then $F$ is a dictatorship. With two alternatives the conclusion fails — major
               txt(v, d, cl.label, X0b, Y0b, { size: 10.5, weight: 700, color: cl.col, align: 'left' });
               sol.forEach((w, q) => { const i = Math.floor(q / colsN), j = q % colsN; d.fillStyle = v.color(CC[w], 0.75); d.fillRect(X0b + j * cs, Y0b + 10 + i * cs, cs - (cs > 3 ? 1 : 0), cs - (cs > 3 ? 1 : 0)); });
             });
+            txt(v, d, n === 2 ? 'thumbnails: rows = voter 1’s ranking, columns = voter 2’s' : 'thumbnails: rows = voter 1’s ranking, columns = voters 2 and 3', 14, SH - 14, { size: 9.5, color: 'muted', align: 'left' });
           } else if (!mT.value) {
             txt(v, d, 'without monotonicity there are far too many', 14, 160, { size: 11.5, weight: 600, color: 'muted', align: 'left' });
             txt(v, d, 'rules to list — plurality, Borda and veto among them', 14, 178, { size: 11.5, weight: 600, color: 'muted', align: 'left' });
@@ -659,7 +660,7 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
           const Au = audit(rS.value), Gl = gallery(n), good = Gl.filter((r) => !r.bad), anonGood = good.filter((r) => r.anon).length;
           const names = { prop: 'Proposition-wise majority', premise: 'The premise-based procedure', dict: 'The dictatorship', unan: 'Unanimity', sys: 'The picked rule' };
           const fails = [!Au.complete && 'complete', !Au.cons && 'consistent', !Au.anon && 'anonymous', !Au.sys && 'systematic'].filter(Boolean);
-          return `${names[rS.value]} is ${fails.length ? `**not ${fails.join(', not ')}**` : 'complete, consistent, anonymous and systematic?!'} (checked on all ${4 ** n} profiles of ${n} judges). Exhaustive search: of the ${Gl.length} systematic complete rules, **${good.length}** are always consistent — ${good.map((r) => r.label || 'other').join(', ')} — and ${anonGood} of them anonymous: List and Pettit’s theorem.`;
+          return `${names[rS.value]} is ${fails.length ? `**not ${fails.join(', not ')}**` : 'complete, consistent, anonymous and systematic?!'} (checked on all ${4 ** n} profiles of ${n} judges). Exhaustive search: of the ${Gl.length} systematic complete rules, **${good.length}** are always consistent — ${good.map((r) => r.label || 'other').sort().join(', ')} — and ${anonGood} of them anonymous: List and Pettit’s theorem.`;
         });
       },
     },
@@ -685,12 +686,12 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
         const XYZ = 'xyz';
         const PROF = []; for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) PROF.push([R3[i], R3[j]]);
         const PRE = {
-          borda: { label: 'rank-order (Borda)', f: (P) => { const s = [0, 0, 0]; P.forEach((r) => r.forEach((c, k) => { s[c] += 2 - k; })); return tripleOf(relFromScores(s)); } },
-          d1: { label: 'individual 1 dictates', f: (P) => tripleOf(relOfRanking(P[0])) },
-          d2: { label: 'individual 2 dictates', f: (P) => tripleOf(relOfRanking(P[1])) },
-          una: { label: 'unanimity, else indifferent', f: (P) => PAIRS3.map(([x, y]) => (P.every((r) => above(r, x, y)) ? 1 : P.every((r) => above(r, y, x)) ? -1 : 0)) },
+          borda: { label: 'Borda', f: (P) => { const s = [0, 0, 0]; P.forEach((r) => r.forEach((c, k) => { s[c] += 2 - k; })); return tripleOf(relFromScores(s)); } },
+          d1: { label: '1 dictates', f: (P) => tripleOf(relOfRanking(P[0])) },
+          d2: { label: '2 dictates', f: (P) => tripleOf(relOfRanking(P[1])) },
+          una: { label: 'unanimity', f: (P) => PAIRS3.map(([x, y]) => (P.every((r) => above(r, x, y)) ? 1 : P.every((r) => above(r, y, x)) ? -1 : 0)) },
           inv: { label: 'reverse of 1', f: (P) => tripleOf(relOfRanking(P[0].slice().reverse())) },
-          imp: { label: 'imposed x > y > z', f: () => [1, 1, 1] },
+          imp: { label: 'imposed', f: () => [1, 1, 1] },
         };
         const pre = v.select('rule', Object.entries(PRE).map(([value, r]) => ({ value, label: r.label })), 'borda', { onChange: () => load() });
         let F = [], sel = -1, custom = false, geo = null, condSel = null, rowsGeo = [];
@@ -755,7 +756,7 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
           const nonImp = (f) => f.includes(1) && f.includes(-1);
           const dictOf = (R) => [0, 1].find((i) => R.every((f) => [0, 1, 2, 3].every((p) => f[p] === ((p >> i) & 1 ? 1 : -1))));
           const r2 = rules.filter((R) => R.every(mono)), r4 = r2.filter((R) => R.every(nonImp)), r5 = r4.filter((R) => dictOf(R) === undefined);
-          funnel = { total: 81 ** 3, trans: rules.length, c2: r2.length, c4: r4.length, c5: r5.length, dicts: r4.map(dictOf).filter((d) => d !== undefined).map((d) => d + 1) };
+          funnel = { total: 81 ** 3, trans: rules.length, c2: r2.length, c4: r4.length, c5: r5.length, dicts: r4.map(dictOf).filter((d) => d !== undefined).map((d) => d + 1).sort() };
           return funnel;
         };
         // ---- Arrow's chain of profiles (R3 order: xyz, xzy, yxz, yzx, zxy, zyx)
@@ -783,7 +784,7 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
           }
           txt(v, c, '1 ↓', X0 - 34, Y0 - 58, { size: 10.5, weight: 700, color: 'muted' });
           txt(v, c, '2 →', X0 + 6 * s + 6, Y0 - 32, { size: 10.5, weight: 700, color: 'muted', align: 'left' });
-          const sh = condSel && !K[condSel].ok ? K[condSel].cells || [] : [];
+          const cs0 = condSel && !K[condSel].ok ? condSel : ['ord', 'c3', 'c2', 'par'].find((id) => !K[id].ok), sh = cs0 ? K[cs0].cells || [] : [];
           PROF.forEach((Pp, k) => {
             const i = Math.floor(k / 6), j = k % 6, Xc = X0 + j * s, Yc = Y0 + i * s, Sk = S(k), G = groupsOf(Sk);
             c.fillStyle = v.color(G ? 'muted' : 'red', G ? 0.05 : 0.15); c.fillRect(Xc + 1, Yc + 1, s - 2, s - 2);
@@ -801,7 +802,7 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
           const d = Ck.ctx, CW = Ck.width;
           rowsGeo = [];
           const rows = [['ord', 'Axioms I–II: an ordering'], ['c2', 'Condition 2: positive association'], ['c3', 'Condition 3: IIA'], ['c4', 'Condition 4: not imposed'], ['c5', 'Condition 5: no dictator'], ['par', 'Consequence 1: Pareto']];
-          rows.forEach(([id, lab2], k) => { const Yr = 18 + k * 25; rowsGeo.push({ id, Y: Yr }); tag(v, d, K[id].ok, lab2, 10, Yr, { size: 10.5, sel: condSel === id && !K[id].ok }); });
+          rows.forEach(([id, lab2], k) => { const Yr = 18 + k * 25; rowsGeo.push({ id, Y: Yr }); tag(v, d, K[id].ok, lab2, 10, Yr, { size: 10.5, sel: id === (condSel && !K[condSel].ok ? condSel : ['ord', 'c3', 'c2', 'par'].find((q) => !K[q].ok)) }); });
           // step claims
           let Yy = 18 + 6 * 25 + 10;
           hl(v, d, 8, CW - 8, Yy - 8, 'grid');
@@ -929,8 +930,10 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
           const show = [[15, 'all four: majority', 'green'], [14, 'all but I (decisive)', 'purple'], [13, 'all but II (egalitarian)', 'accent'], [11, 'all but III (neutral)', 'teal'], [7, 'all but IV (responsive)', 'orange'], [0, 'none of the four', 'gray']];
           txt(v, d, `${fmtK(Cs.total)} rules for two individuals (4 outcomes × 9 patterns)`, 12, 16, { size: 11, weight: 650, color: 'muted', align: 'left' });
           const mx = Math.log10(Math.max(...show.map(([b]) => Cs.bins[b])) + 1), x0 = 168, rh = Math.min(30, (CH - 70) / show.length);
+          const curMask = n === 2 ? (A.I.length ? 0 : 1) | (A.II.length ? 0 : 2) | (A.III.length ? 0 : 4) | (A.IV.length ? 0 : 8) : -1;
           show.forEach(([b, lab, col], q) => {
             const Yq = 42 + q * rh, nn = Cs.bins[b], w = (Math.log10(nn + 1) / mx) * (CW - x0 - 70);
+            if (b === curMask) { rr(d, 8, Yq - rh / 2 + 2, CW - 16, rh - 4, 6); d.fillStyle = v.color('gold', 0.14); d.fill(); txt(v, d, '◀ this rule', CW - 12, Yq, { size: 10, weight: 700, color: 'gold', align: 'right' }); }
             txt(v, d, lab, x0 - 8, Yq, { size: 10.5, weight: 650, align: 'right' });
             rr(d, x0, Yq - 8, Math.max(3, w), 16, 4); d.fillStyle = v.color(col, 0.5); d.fill();
             txt(v, d, fmtK(nn), x0 + Math.max(3, w) + 6, Yq, { size: 11.5, weight: 800, align: 'left' });
@@ -944,7 +947,8 @@ Dropping anonymity leaves the dictatorships; dropping systematicity allows the p
           if (A.II.length) { const [D, D2] = A.II[0]; ex = ` E.g. II: (${D.map(DL).join(', ')}) and (${D2.map(DL).join(', ')}) are the same votes by different people but get different outcomes.`; }
           else if (A.IV.length) { const [D, D2] = A.IV[0]; ex = ` E.g. IV: from (${D.map(DL).join(', ')}) one individual moves toward x, giving (${D2.map(DL).join(', ')}), which is not x.`; }
           else if (A.III.length) { const [D, D2] = A.III[0]; ex = ` E.g. III: (${D.map(DL).join(', ')}) and its mirror (${D2.map(DL).join(', ')}) are not mirrored.`; }
-          return `${custom ? 'Your rule' : RULES[rS.value].label} ${failing.length ? `fails condition${failing.length > 1 ? 's' : ''} **${failing.join(', ')}**` : 'satisfies all four conditions — and it is simple majority, as May’s theorem says'}.${ex} Census: **${Cs.bins[15]}** of ${fmtK(Cs.total)} rules satisfy I–IV; ${fmtK(Cs.bins[14])}, ${fmtK(Cs.bins[13])}, ${fmtK(Cs.bins[11])} and ${fmtK(Cs.bins[7])} satisfy all but I, II, III and IV respectively.`;
+          const nm = custom ? 'Your rule' : RULES[rS.value].label.replace(/ \(.*\)/, ''), nmC = nm[0].toUpperCase() + nm.slice(1);
+          return `${nmC} ${failing.length ? `fails condition${failing.length > 1 ? 's' : ''} **${failing.join(', ')}**` : custom ? 'satisfies all four conditions — and it is simple majority, as May’s theorem says' : 'satisfies all four conditions'}.${ex} Census: **${Cs.bins[15]}** of ${fmtK(Cs.total)} rules satisfy I–IV; ${fmtK(Cs.bins[14])}, ${fmtK(Cs.bins[13])}, ${fmtK(Cs.bins[11])} and ${fmtK(Cs.bins[7])} satisfy all but I, II, III and IV respectively.`;
         });
       },
     },

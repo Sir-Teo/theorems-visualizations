@@ -292,9 +292,8 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
       num: '1.11',
       kind: 'Theorem',
       name: 'Cauchy–Kovalevskaya theorem',
-      statement: String.raw`Consider a PDE that can be solved for the highest normal derivative, $\partial_r^mu=G\big(s,r,u,\dots\big)$, with $G$ real analytic in all arguments (every derivative of order $\le m$ except $\partial_r^mu$ itself appears in $G$, linearly or not). Let the Cauchy data $u=f_0(s),\ \partial_ru=f_1(s),\dots,\partial_r^{m-1}u=f_{m-1}(s)$ be real analytic on a non-characteristic curve $\{r=0\}$. Then there is a unique analytic solution in a neighbourhood of the curve. "Non-characteristic" means that the coefficient of $\partial_r^mu$ in the principal part does not vanish; for $a\,u_{ss}+2b\,u_{sr}+c\,u_{rr}=0$ it says $c\neq0$ (in the coordinates where the curve is $r=0$).`,
+      statement: String.raw`Consider a PDE that can be solved for the highest normal derivative, $\partial_r^mu=G\big(s,r,u,\dots\big)$, with $G$ real analytic in its arguments: $s$, $r$, $u$ and all derivatives of $u$ of order $\le m$ other than $\partial_r^mu$ itself. Let the Cauchy data $u=f_0(s),\ \partial_ru=f_1(s),\dots,\partial_r^{m-1}u=f_{m-1}(s)$ be real analytic on a non-characteristic curve $\{r=0\}$. Then there is a unique analytic solution in a neighbourhood of the curve. "Non-characteristic" means that the coefficient of $\partial_r^mu$ in the principal part does not vanish; for $a\,u_{ss}+2b\,u_{sr}+c\,u_{rr}=0$ it says $c\neq0$ (in the coordinates where the curve is $r=0$).`,
       idea: String.raw`If $c\ne0$ the equation determines every Taylor coefficient: $u_{rr}$ from the data on the curve, then by differentiating the equation all higher $r$-derivatives. The theorem's content is that this formal power series converges, which Kovalevskaya (1874–75) proved by majorants: dominate the coefficients by those of a simple explicitly solvable problem. At a characteristic curve the coefficient $c$ vanishes, the recursion is impossible, and the data are either inconsistent or leave the solution undetermined. The theorem is local, analytic and gives no stability: for the heat equation and data $1/(1+x^2)$ the series in $t$ diverges, because $t=$ const is characteristic.`,
-      idea_note: '',
       caption: String.raw`The Taylor series of the solution is built coefficient by coefficient from the data $f(s)=1/(1+s^2)$, $g=0$ on a line through the origin whose angle $\theta$ you rotate, by the recursion that solves for $u_{rr}$. Left: the partial sum of degree $N$; right: $\log_{10}$ of its error against the exact solution. Choose Laplace's equation (never characteristic: the series converges inside the unit disc) or the wave equation (characteristic at $\theta=45^\circ,135^\circ$): there the recursion divides by $c$, so the disc of convergence shrinks to nothing as the line turns characteristic.`,
       deps: ['pde-1.9', 'ode-4.1'],
       refs: ['Evans §4.6'],
@@ -312,7 +311,7 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
         const f = (z) => Fz(z);
         // geometry of the data line: x = s d + r ν
         const setup = () => {
-          const th = (thS.value * Math.PI) / 180, d = [Math.cos(th), Math.sin(th)], nu = [-Math.sin(th), Math.cos(th)], Dg = eq.value === 'lap' ? [1, -1][0] : 1, A = eq.value === 'lap' ? [[1, 0], [0, 1]] : [[1, 0], [0, -1]];
+          const th = (thS.value * Math.PI) / 180, d = [Math.cos(th), Math.sin(th)], nu = [-Math.sin(th), Math.cos(th)], A = eq.value === 'lap' ? [[1, 0], [0, 1]] : [[1, 0], [0, -1]];
           const ap = d[0] * (A[0][0] * d[0] + A[0][1] * d[1]) + d[1] * (A[1][0] * d[0] + A[1][1] * d[1]);
           const bp = d[0] * (A[0][0] * nu[0] + A[0][1] * nu[1]) + d[1] * (A[1][0] * nu[0] + A[1][1] * nu[1]);
           const cp = nu[0] * (A[0][0] * nu[0] + A[0][1] * nu[1]) + nu[1] * (A[1][0] * nu[0] + A[1][1] * nu[1]);
@@ -420,8 +419,6 @@ up to an overall sign. In general (variable coefficients) the reduction is possi
           let area = null;
           if (line && sy.type === 'hyperbolic') {
             const d = [Math.cos(th), Math.sin(th)];
-            const hit = (z, e) => { const det = -d[0] * e[1] + d[1] * e[0]; if (Math.abs(det) < 1e-9) return null; // s d − t e = −z... solve z + t e = s d
-              const sv = (-z[0] * e[1] + z[1] * e[0]) / det * -1; return -(z[0] * e[1] - z[1] * e[0]) / (d[0] * e[1] - d[1] * e[0]) * -1 * -1 + 0 * sv; };
             const hitS = (z, e) => { const det = d[0] * e[1] - d[1] * e[0]; if (Math.abs(det) < 1e-9) return null; return (z[0] * e[1] - z[1] * e[0]) / det; };
             let cnt = 0, tot = 0;
             s.raster((x, y) => { const z = [x, y], s1 = hitS(z, ds[0]), s2 = hitS(z, ds[1]); tot++; const inn = s1 != null && s2 != null && Math.abs(s1) <= LH && Math.abs(s2) <= LH; if (inn) cnt++; return inn ? v.rgb('green').slice(0, 3).concat([0.32]) : null; }, { res: 3, key: `det|${eq.value}|${thS.value}` });

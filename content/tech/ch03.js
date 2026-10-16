@@ -335,7 +335,7 @@ A pick from the fortress of Mount Adir in Galilee (12th–11th century BCE) is c
       idea: String.raw`At red heat iron is **austenite**, face-centred cubic, which dissolves carbon. The iron–carbon diagram (mat-6.6) gives the limit: at the carburising temperature, charcoal saturates the surface at the Acm line, about 1.3% carbon at 900 °C. Carbon then diffuses inward, so the case depth grows as $\sqrt{Dt}$ with $D = 2.3\times10^{-5}\,e^{-148\,\mathrm{kJ/mol}/RT}\ \mathrm{m^2/s}$, about a millimetre in ten hours at 900 °C.
 
 Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite** (layers of ferrite and cementite) in proportions given by the lever rule. Cooled fast enough, the carbon has no time to leave and the lattice shears into **martensite**, body-centred and strained by trapped carbon, which is very hard. The transformation starts at $M_s \approx 539 - 423\,C$ (°C, $C$ in wt%, Andrews 1965, for steels up to about 0.6% carbon; it keeps falling, to about 100 °C at 1.4%) and the fraction transformed by room temperature follows the Koistinen–Marburger law $1 - e^{-0.011(M_s - T)}$. That is why a carburised blade was hardened from a lower heat, about 800 °C, where the austenite holds only about 1% carbon and the excess stays as hard cementite: quenched straight from the carburising heat, the carbon-rich skin keeps soft retained austenite. Without carbon there is nothing to trap: quenching wrought iron does almost nothing.`,
-      caption: String.raw`Set the **carburising time and temperature**, the **quench** and the **tempering** temperature. Top left: the iron–carbon diagram, with the edge's and the core's carbon at the carburising temperature. Top right: the carbon profile across a 6 mm blade, computed from the diffusion equation. Bottom: hardness across the blade after the quench, over the phases (shaded). Set the time to zero and quench in water (soft wrought iron), then carburise and quench without tempering: the edge is glass-hard and brittle.`,
+      caption: String.raw`Set the **carburising time and temperature**, the **quench** and the **tempering** temperature. Top left: the iron–carbon diagram, with the edge's and the core's carbon at the carburising temperature. Top right: the carbon profile across a 6 mm blade, computed from the diffusion equation. Bottom: hardness across the blade after it is reheated to 800 °C and quenched, with the phases in a strip along the top. Set the time to zero and quench in water (soft wrought iron), then carburise and quench without tempering: the edge is glass-hard and brittle.`,
       deps: ['tech-3.3', 'mat-6.6'],
       see: ['mat-6.7', 'mat-2.6'],
       refs: ['Mokyr ch. 2', 'Davis, Maddin, Muhly & Stech 1985, J. Near Eastern Studies 44:41', 'Andrews 1965, J. Iron Steel Inst. 203:721', 'Koistinen & Marburger 1959, Acta Metall. 7:59', 'Callister, Materials Science and Engineering, Table 5.2 and §9.18'],
@@ -363,8 +363,8 @@ Cooled slowly, austenite with carbon decomposes into soft ferrite and **pearlite
         const msOf = (c) => (c <= 0.6 ? 539 - 423 * c : 285 - 231 * (c - 0.6)); // Andrews (1965) to 0.6% C; linear to ~100 °C at 1.4% C beyond
         const treat = (c, rate, Tt) => {
           const cg = Math.min(c, acm(TH)), cem = c > cg ? (c - cg) / (6.67 - cg) : 0; // austenite carbon at TH; excess carbon stays as cementite
-          const logCR = 3.3 - 1.2 * Math.min(cg, 0.8); // critical cooling rate (°C/s), illustrative for plain carbon steel
-          const escape = rate <= 1 ? 0 : (1 - cem) / (1 + Math.exp(-4 * (Math.log10(rate) - logCR)));
+          const logCR = 2.9 - 1.4 * Math.min(cg, 0.8); // critical cooling rate (°C/s), illustrative for plain carbon steel
+          const escape = rate <= 1 ? 0 : (1 - cem) / (1 + Math.exp(-5 * (Math.log10(rate) - logCR)));
           const Ms = msOf(cg), fM = Ms > 20 ? escape * (1 - Math.exp(-0.011 * (Ms - 20))) : 0, fA = escape - fM, fP = 1 - escape - (rate > 1 ? cem : 0);
           const HM = 150 + 790 * (1 - Math.exp(-2.7 * cg));
           const HP = c < 0.76 ? 90 + (c / 0.76) * (rate > 3 ? 190 : 120) : (rate > 3 ? 280 : 210) + ((c - 0.76) / 5.91) * 600; // ferrite + pearlite by the lever rule
@@ -473,9 +473,8 @@ Glassworking happens in a viscosity window. A glass can be gathered and blown be
         };
         // network sketch: perturbed triangular lattice of Si, bridges to neighbours
         const net = (() => { // jittered honeycomb: every 'Si' has three bridges, as in Zachariasen's 2D drawing
-          const r = v.rng(5), si = [], br = [], a = 0.105, h = a * Math.sqrt(3) / 2, base = [];
-          for (let j = 0; j < 6; j++) for (let i = 0; i < 5; i++) { const cx = 0.12 + i * 3 * a / 1.5 * 0.97 + (j % 2) * 0.75 * a * 1.94 / 1.5 * 0.5, cy = 0.12 + j * h * 1.45; base.push([cx, cy]); }
-          for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const x = 0.1 + i * 0.1 + ((i + j) % 2 ? 0 : 0) , y = 0.12 + j * 0.095 + (((i + j) % 2) ? 0.028 : 0); si.push([x + r.uniform(-0.018, 0.018), y + r.uniform(-0.015, 0.015)]); }
+          const r = v.rng(5), si = [], br = [];
+          for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { const x = 0.1 + i * 0.1, y = 0.12 + j * 0.095 + (((i + j) % 2) ? 0.028 : 0); si.push([x + r.uniform(-0.018, 0.018), y + r.uniform(-0.015, 0.015)]); }
           const id = (i, j) => j * 9 + i;
           for (let j = 0; j < 9; j++) for (let i = 0; i < 9; i++) { if (i < 8) br.push([id(i, j), id(i + 1, j), r()]); if (j < 8 && (i + j) % 2 === 0) br.push([id(i, j), id(i, j + 1), r()]); }
           return { si, br };

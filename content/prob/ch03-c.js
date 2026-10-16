@@ -199,9 +199,9 @@ by the complex version of $(1+c_n/n)^n\to e^c$ (3.4.2). Since $e^{-t^2/2}$ is th
           const poly = [[1, 0]]; let z = [1, 0]; const step = [1 + c0[0] / n, c0[1] / n]; for (let k = 1; k <= n; k++) { z = cmul(z, step); poly.push(z); }
           S.path(poly, { color: 'accent', width: 1.8 }); if (n <= 40) S.dots(poly, { r: 2.2, color: 'accent' });
           const zn = poly[n];
-          S.dot(1, 0, { r: 3, color: 'ink', label: '1', labelPos: 'se' });
+          S.dot(1, 0, { r: 3, color: 'ink' });
           S.dot(ec[0], ec[1], { r: 6, color: 'green', label: '$e^c$', labelPos: 'sw' });
-          S.dot(zn[0], zn[1], { r: 5, color: 'gold', label: '$(1+c_n/n)^n$', labelPos: 'ne' });
+          S.dot(zn[0], zn[1], { r: 5, color: 'gold', label: '$(1+c_n/n)^n$', labelPos: zn[0] > 0 ? 'e' : 'w' });
           // right panel
           const ns = logGrid(1, 1e4, 90), e1 = [], e2 = [], bd = [];
           for (const k of ns) { const ck = cn(k), w = cpowN(ck, k), eck = cexp(ck), g = cabs(ck); e1.push([k, cabs([w[0] - eck[0], w[1] - eck[1]])]); e2.push([k, cabs([w[0] - ec[0], w[1] - ec[1]])]); bd.push([k, (Math.exp(g) * g * g) / k]); }
@@ -230,7 +230,7 @@ $$\Big|\prod_{m=1}^nz_m-\prod_{m=1}^nw_m\Big|\le\theta^{\,n-1}\sum_{m=1}^n|z_m-w
       viz(v) {
         const th = v.slider('$\\theta$', 0.4, 1.3, 0.95, { step: 0.01 });
         const L = v.stage({ x: [-1.4, 1.4], y: [-1.4, 1.4], equal: true, height: 340, axes: true, title: 'factors in the disc $|z|\\le\\theta$' });
-        const R = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, height: 340, axes: true, title: 'hybrid products $H_k=z_1\\cdots z_kw_{k+1}\\cdots w_n$' });
+        const R = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, height: 340, axes: false, title: 'hybrid products $H_k=z_1\\cdots z_kw_{k+1}\\cdots w_n$' });
         const proj = (x, y) => { const r = Math.hypot(x, y), t = th.value; return r > t ? [(x * t) / r, (y * t) / r] : [x, y]; };
         const Z0 = [[0.85, 0.2], [0.3, 0.8], [-0.6, 0.55], [0.7, -0.5]], W0 = [[0.7, 0.45], [0.05, 0.85], [-0.75, 0.25], [0.8, -0.2]];
         const Zh = Z0.map((p, i) => L.handle(p[0], p[1], { color: 'accent', label: `z${'₁₂₃₄'[i]}`, labelPos: 'ne', constrain: proj }));
@@ -248,9 +248,12 @@ $$\Big|\prod_{m=1}^nz_m-\prod_{m=1}^nw_m\Big|\le\theta^{\,n-1}\sum_{m=1}^n|z_m-w
           let ext = 0.1; Hk.forEach((p, k) => { ext = Math.max(ext, Math.abs(p[0]) + (rad[k] || 0), Math.abs(p[1]) + (rad[k] || 0)); });
           ext = Math.max(ext, t ** n) * 1.1; R.setView([-ext, ext], [-ext, ext]);
           R.circle(0, 0, t ** n, { color: 'faint', dash: [4, 4], width: 1 });
+          R.line(-ext * 0.06, 0, ext * 0.06, 0, { color: 'muted', width: 1 }); R.line(0, -ext * 0.06, 0, ext * 0.06, { color: 'muted', width: 1 }); R.text('0', 0, 0, { dx: 7, dy: 9, size: 11, color: 'muted' });
           for (let k = 1; k <= n; k++) R.circle(Hk[k - 1][0], Hk[k - 1][1], rad[k - 1], { color: 'red', fill: 'red', fillAlpha: 0.05, width: 1 });
           R.path(Hk, { color: 'ink', width: 1.6 });
-          Hk.forEach((p, k) => R.dot(p[0], p[1], { r: k === 0 || k === n ? 6 : 3.5, color: k === 0 ? 'orange' : k === n ? 'accent' : 'ink', label: k === 0 ? '$\\prod w$' : k === n ? '$\\prod z$' : `$H_${k}$`, labelPos: k === n ? 'ne' : 'sw' }));
+          Hk.forEach((p, k) => R.dot(p[0], p[1], { r: k === 0 || k === n ? 6 : 3.5, color: k === 0 ? 'orange' : k === n ? 'accent' : 'ink' }));
+          R.text('∏ w', Hk[0][0], Hk[0][1], { dx: 14, dy: 0, align: 'left', size: 13, color: 'orange', plate: true });
+          R.text('∏ z', Hk[n][0], Hk[n][1], { dx: -14, dy: 0, align: 'right', size: 13, color: 'accent', plate: true });
           v.legend([['red', 'circle of radius $\\theta^{n-1}|z_k-w_k|$ about $H_{k-1}$'], ['faint', 'radius $\\theta^n$', { dash: true }]]);
           const gap = cabs([Hk[n][0] - Hk[0][0], Hk[n][1] - Hk[0][1]]); let hops = 0; for (let k = 1; k <= n; k++) hops += cabs([Hk[k][0] - Hk[k - 1][0], Hk[k][1] - Hk[k - 1][1]]);
           st = { gap, hops, bound: rad.reduce((a, b) => a + b, 0), t };
@@ -276,9 +279,10 @@ $$\Big|\prod_{m=1}^nz_m-\prod_{m=1}^nw_m\Big|\le\theta^{\,n-1}\sum_{m=1}^n|z_m-w
         let st = null;
         v.render(() => {
           L.heat(ratio, { range: [0, 2], cmap: 'theme', key: 'r', res: 2 });
+          L.axes();
           L.contour(ratio, [1], { color: 'ink', width: 1.8 });
           L.circle(0, 0, 1, { color: 'green', width: 2, dash: [6, 4] });
-          L.colorbar([0, 2], (u) => v.ramp(u), { pos: 'right', length: 0.5 });
+          L.colorbar([0, 2], (u) => v.ramp(u), { pos: 'left', length: 0.45 });
           const r0 = Math.hypot(H.x, H.y), ph = Math.atan2(H.y, H.x);
           L.line(0, 0, 2.6 * Math.cos(ph), 2.6 * Math.sin(ph), { color: 'gold', width: 1, dash: [3, 3] });
           R.vband(0, 1, { color: 'green', alpha: 0.07 });
@@ -311,7 +315,7 @@ Then $S_n=X_{n,1}+\dots+X_{n,n}\Rightarrow\sigma\chi$, with $\chi$ standard norm
         const M = v.M;
         const mode = v.select('array', [{ value: 'iid', label: 'i.i.d. $Y_m/\\sqrt n$' }, { value: 'big', label: 'one big term' }, { value: 'rare', label: 'rare big jumps' }], 'rare');
         const nS = v.slider('$n$', 4, 400, 100, { int: true, log: true });
-        const sS = v.slider('share $s$', 0.05, 0.9, 0.6, { step: 0.01 });
+        const sS = v.slider('share $s$', 0.05, 0.95, 0.85, { step: 0.01 });
         const eS = v.slider('$\\eps$', 0.05, 1.2, 0.3, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const Lst = v.stage({ x: [-4, 4], y: [0, 0.6], height: 320, weight: 1.15, axes: 'box', gutter: true, xlabel: '$S_n$', title: 'row sums $S_n$' });
@@ -431,7 +435,8 @@ Finite variance is sufficient but not necessary. (Durrett states this without pr
           const h = (n, e) => EY2 * Math.min(1, (e * Math.sqrt(n)) ** (2 - b));
           const N = []; for (let m = 1; m <= mm + 1; m++) N.push(Math.max(1, m * m * Math.pow((m * b) / (b - 2), 2 / (b - 2))));
           const top = Math.max(1e6, N[mm] * 30); R.setView([1, top], null);
-          [2, 4, 8, 16, 32].forEach((k, j) => { const n = 10 ** k; if (n > top * 1e3) return; L.fn((e) => h(n, e), { color: 'accent', width: 1.4, alpha: 0.4 + 0.12 * j, n: 200 }); L.text(`n=10^${k}`, 1.5e-3 * 10 ** (j * 0.15), h(n, 1.5e-3 * 10 ** (j * 0.15)), { size: 10, color: 'muted', dy: -8 }); });
+          const sup = { 2: '²', 4: '⁴', 8: '⁸', 16: '¹⁶', 32: '³²' };
+          [2, 4, 8, 16, 32].forEach((k, j) => { const n = 10 ** k; if (n > top * 1e3) return; L.fn((e) => h(n, e), { color: 'accent', width: 1.4, alpha: 0.4 + 0.12 * j, n: 200 }); const e0 = 2e-3, y0 = h(n, e0); if (y0 > 1.2e-4 && y0 < EY2 * 0.9) L.text(`n = 10${sup[k]}`, e0, y0, { size: 10.5, color: 'muted', dy: -9, align: 'left' }); });
           for (let m = 1; m <= mm; m++) { L.vline(1 / m, { color: 'orange', width: 0.8, alpha: 0.4, dash: [3, 3] }); L.dot(1 / m, h(N[m - 1], 1 / m), { r: 4, color: 'gold' }); L.hline(1 / m, { color: 'faint', width: 0.6 }); }
           // staircase
           const ep = [], hn = [];
@@ -556,9 +561,9 @@ $$\eta_L\ge\frac\eta2-\frac{12\lambda}{\pi L},\qquad\text{equivalently}\qquad\et
       viz(v) {
         const M = v.M, lam = 1 / SQ2PI, p = 0.3;
         const nS = v.slider('binomial $n$', 2, 60, 8, { int: true });
-        const LS = v.slider('$L$', 0.5, 100, 6, { log: true, sig: 2 });
+        const LS = v.slider('$L$', 0.5, 100, 15, { log: true, sig: 2 });
         const A = v.stage({ x: [-4, 4], y: [-0.2, 0.2], height: 320, weight: 1.2, axes: 'box', gutter: true, xlabel: '$x$', title: '$\\Delta=F-\\Phi$ and $\\Delta_L=\\Delta*H_L$' });
-        const B = v.stage({ x: [0.5, 100], xlog: true, y: [0, 0.5], height: 320, axes: 'box', gutter: true, xlabel: '$L$', title: 'the inequality across $L$' });
+        const B = v.stage({ x: [0.5, 100], xlog: true, y: [1e-3, 10], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: '$L$', title: 'the inequality across $L$' });
         const GL = (x, Lv) => { const T = Math.min(Lv, 10); return 0.5 - simpson((t) => (t < 1e-9 ? -x : Math.sin(-t * x) * Math.exp(-t * t / 2) * (1 - t / Lv) / t), 0, T, 300) / Math.PI; }; // Φ*H_L by Gil-Pelaez inversion
         const setup = (n) => { const q = binomPmf(M, n, p), s = Math.sqrt(n * p * (1 - p)); return { q, z: Array.from(q, (_, k) => (k - n * p) / s) }; };
         const DL = (B0, x, Lv) => { let f = 0; for (let k = 0; k < B0.z.length; k++) if (B0.q[k] > 1e-14) f += B0.q[k] * H1(Lv * (x - B0.z[k])); return f - GL(x, Lv); };
@@ -576,7 +581,6 @@ $$\eta_L\ge\frac\eta2-\frac{12\lambda}{\pi L},\qquad\text{equivalently}\qquad\et
           A.path(sm, { color: 'orange', width: 2.4 });
           A.hline(eL, { color: 'orange', dash: [2, 3], width: 1 }); A.hline(-eL, { color: 'orange', dash: [2, 3], width: 1 });
           const ub = cache.curve.map(([l, e]) => [l, 2 * e + (24 * lam) / (Math.PI * l)]);
-          B.setView(null, [0, Math.min(1.2, Math.max(eta * 2.2, 0.1))]);
           B.hline(eta, { color: 'accent', width: 2.2 });
           B.path(cache.curve, { color: 'orange', width: 1.8 });
           B.path(ub, { color: 'red', width: 2 });
@@ -726,7 +730,7 @@ and in particular $\sup_x|K_1(x)-K_2(x)|\le\frac1{2\pi}\int|\kappa_1(t)-\kappa_2
           const t0 = clampN(H.x, 0, T); if (H.y !== cabs(L.phi(t0)) || H.x !== t0) H.set(t0, cabs(L.phi(t0)));
           C.circle(0, 0, 1, { color: 'muted', width: 1.2 });
           C.curve((t) => L.phi(t), 0, T, { color: 'accent', width: 1.6, n: Math.round(T * 60) });
-          const z = L.phi(t0); C.dot(z[0], z[1], { r: 5, color: 'gold' }); C.dot(1, 0, { r: 3.5, color: 'ink', label: '1', labelPos: 'e' });
+          const z = L.phi(t0); C.dot(z[0], z[1], { r: 5, color: 'gold' }); C.dot(1, 0, { r: 3.5, color: 'ink' });
           R.hline(1, { color: 'muted', width: 1, dash: [3, 3] });
           R.fn((t) => cabs(L.phi(t)), { domain: [0, T], color: 'accent', width: 2, n: 1500 });
           const c = classify(L.phi, T);
@@ -783,10 +787,10 @@ $$\sup_{x\in\mathcal L_n}\Big|\frac{\sqrt n}{h}\,p_n(x)-n(x)\Big|\to0.$$`,
           R.fn((m) => p0[1] / m, { color: 'muted', width: 1.2, dash: [2, 3] });
           R.path(cache.pts, { color: sc === S.h ? 'accent' : 'red', width: 2.2 });
           R.dot(n, Math.max(1e-6, e), { r: 5, color: 'gold' });
-          v.legend([['accent', `$\\frac{\\sqrt n}{${sc === 1 ? '1' : 'h'}}P(S_n/\\sqrt n=x)$`], ['green', '$n(x)$, variance $\\sigma^2$'], ['muted', 'slopes $n^{-1/2}$, $n^{-1}$', { dash: true }]]);
-          st = { n, e, h: S.h, s2: s * s, sc };
+          v.legend([['accent', divH.value ? '$\\frac{\\sqrt n}{h}P(S_n/\\sqrt n=x)$' : '$\\sqrt n\\,P(S_n/\\sqrt n=x)$'], ['green', '$n(x)$, variance $\\sigma^2$'], ['muted', 'slopes $n^{-1/2}$, $n^{-1}$', { dash: true }]]);
+          st = { n, e, h: S.h, s2: s * s, div: divH.value };
         });
-        v.readout(() => st && `Span $h=${st.h}$, $\\sigma^2=${v.fix(st.s2, 4)}$, $n=${st.n}$: sup error over the lattice $=${v.fix(st.e, 5)}$` + (st.sc === 1 && st.h !== 1 ? ' — without the factor $1/h$ the error does not go to $0$.' : '.'));
+        v.readout(() => st && `Span $h=${st.h}$, $\\sigma^2=${v.fix(st.s2, 4)}$, $n=${st.n}$: sup error over the lattice $=${v.fix(st.e, 5)}$` + (!st.div && st.h !== 1 ? ' — without the factor $1/h$ the error does not go to $0$.' : '.'));
       },
     },
     {

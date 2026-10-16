@@ -376,7 +376,7 @@ with no heat and no volume change; for two species the entropy peaks at $Nk\ln 2
           const dS = cls.value ? 2 * ln2 : d > 0 ? 2 * ln2 : 0, Wx = d >= eps && d > 0 ? 2 * ln2 : 0;
           sd.dot(d, dS, { r: 5.5, color: cls.value ? 'red' : 'accent' });
           sd.text(cls.value ? 'classical: even for identical gases' : 'correct counting', 0.5, 2 * ln2 + 0.12, { size: 11, color: cls.value ? 'red' : 'accent', align: 'center' });
-          sd.text('work extractable with your membranes', Math.max(eps, 0.3), 2 * ln2 - 0.18, { size: 10.5, color: 'gold', align: 'left' });
+          sd.text('extractable work', Math.min(eps, 0.7) + 0.02, 2 * ln2 - 0.12, { size: 10.5, color: 'gold', align: 'left' });
           // extensivity: S/Nk for argon at 300 K, 1 bar
           const m = 39.948 * AMU, T = 300, lam = HP / Math.sqrt(2 * Math.PI * m * KB * T), vper = KB * T / 1e5, a = Math.log(vper / lam ** 3);
           const lnFact = (n) => v.M.lgamma(n + 1);
