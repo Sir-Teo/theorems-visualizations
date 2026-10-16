@@ -386,7 +386,7 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
         let cur = {};
         v.render(() => {
           const r = rS.value, L = LS.value, w = wS.value, D = design(r, L, w), hT = r + CLR / L;
-          A.setView([-0.06, 1.06], [-0.07, hT + 0.45]);
+          A.setView([-0.06, 1.06], [-0.05, hT + 0.42]);
           // towers, deck, cable
           A.line(-0.1, 0, 1.1, 0, { color: 'faint', width: 1 });
           for (const x of [0, 1]) A.rect(x - 0.008, 0, x + 0.008, hT, { fill: 'gray', fillAlpha: 0.4, color: 'muted', width: 1 });
@@ -444,12 +444,12 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
       credit: 'Finley, 1801 (Jacob’s Creek); Roebling (Brooklyn, 1883)',
       tags: ['bridges', 'cables'],
       viz(v) {
-        const defaults = { gg: 400, ak: 600 };
-        const which = v.select('bridge', [{ value: 'gg', label: 'Golden Gate' }, { value: 'ak', label: 'Akashi Kaikyō' }], 'gg', { onChange: (k) => { wS.set(defaults[k]); truck.set(0.62 * BRIDGES[k].L, BRIDGES[k].deck); } });
+        const defaults = { gg: 400, ak: 420 };
+        const which = v.select('bridge', [{ value: 'gg', label: 'Golden Gate' }, { value: 'ak', label: 'Akashi Kaikyō' }], 'gg', { onChange: (k) => { wS.set(defaults[k]); truck.set(0.72 * BRIDGES[k].L, BRIDGES[k].deck); } });
         const wS = v.slider('dead load (kN/m)', 100, 800, 400, { step: 10 });
         const PS = v.slider('truck (MN)', 0, 20, 6, { step: 0.5 });
         const s = v.stage({ x: [-450, 1730], y: [-20, 260], height: 360, full: true, axes: false, title: 'elevation (vertical scale exaggerated)' });
-        const truck = s.handle(900, 67, { color: 'gold', constrain: (x) => { const b = BRIDGES[which.value]; return [clamp(x, 0.03 * b.L, 0.97 * b.L), b.deck]; } });
+        const truck = s.handle(920, 67, { color: 'gold', constrain: (x) => { const b = BRIDGES[which.value]; return [clamp(x, 0.03 * b.L, 0.97 * b.L), b.deck]; } });
         function model(b, w, P, xP) {
           const n = 20, nodes = [], el = [], sup = {}, loads = {};
           const add = (x, y) => (nodes.push({ x, y }), nodes.length - 1);

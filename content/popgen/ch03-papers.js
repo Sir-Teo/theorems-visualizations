@@ -16,15 +16,15 @@
 //   z of each culture. Ma, Sandri & Sarkar (1992) recursion for the Luria–Delbrück (Lea–Coulson) distribution.
 
 const EXPS = {
-  e16: { name: 'Exp. 16 · 20 cultures of 0.2 cc', counts: [1, 0, 3, 0, 0, 5, 0, 5, 0, 6, 107, 0, 0, 0, 1, 0, 0, 64, 0, 35], kind: 'cultures', N: 5.6e8, z: 0.4, printed: [11.35, 694] },
-  e17: { name: 'Exp. 17 · 12 cultures of 0.2 cc', counts: [1, 0, 0, 7, 0, 303, 0, 0, 3, 48, 1, 4], kind: 'cultures', N: 5e8, z: 0.4, printed: [30, 6620] },
-  e21: { name: 'Exp. 21a · 19 cultures of 0.2 cc', counts: [0, 0, 0, 0, 8, 1, 0, 1, 0, 15, 0, 0, 19, 0, 0, 17, 11, 0, 0], kind: 'cultures', N: 1.1e8, z: 0.25, printed: [3.8, 40.8] },
-  e11: { name: 'Exp. 11 · 10 cultures of 10 cc', counts: [30, 10, 40, 45, 183, 12, 173, 23, 57, 51], kind: 'cultures', N: 4e10, z: 0.005, printed: [62, 3498] },
+  e16: { name: 'Exp. 16 · 20 cultures of 0.2 cc', counts: [1, 0, 3, 0, 0, 5, 0, 5, 0, 6, 107, 0, 0, 0, 1, 0, 0, 64, 0, 35], kind: 'cultures', N: 5.6e8, z: 0.4, printed: [11.35, 694], rate: '1.1×10⁻⁸' },
+  e17: { name: 'Exp. 17 · 12 cultures of 0.2 cc', counts: [1, 0, 0, 7, 0, 303, 0, 0, 3, 48, 1, 4], kind: 'cultures', N: 5e8, z: 0.4, printed: [30, 6620], rate: '3.0×10⁻⁸' },
+  e21: { name: 'Exp. 21a · 19 cultures of 0.2 cc', counts: [0, 0, 0, 0, 8, 1, 0, 1, 0, 15, 0, 0, 19, 0, 0, 17, 11, 0, 0], kind: 'cultures', N: 1.1e8, z: 0.25, printed: [3.8, 40.8], rate: '3.3×10⁻⁸' },
+  e11: { name: 'Exp. 11 · 10 cultures of 10 cc', counts: [30, 10, 40, 45, 183, 12, 173, 23, 57, 51], kind: 'cultures', N: 4e10, z: 0.005, printed: [62, 3498], rate: '4.1×10⁻⁸' },
   b10: { name: 'Exp. 10a · 10 samples of one culture', counts: [14, 15, 13, 21, 15, 14, 26, 16, 20, 13], kind: 'samples', printed: [16.7, 15] },
   b11: { name: 'Exp. 11a · 10 samples of one culture', counts: [46, 56, 52, 48, 65, 44, 49, 51, 56, 47], kind: 'samples', printed: [51.4, 27] },
 };
 const BIN_EDGES = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513]; // bins [e_k, e_{k+1})
-const BIN_LAB = ['0', '1', '2', '3–4', '5–8', '9–16', '17–32', '33–64', '65–128', '129–256', '257–512'];
+const BIN_LAB = ['0', '1', '2', '3', '5', '9', '17', '33', '65', '129', '257']; // lower edge of each doubling bin
 
 /** Luria–Delbrück (Lea–Coulson) pmf p_0..p_n for expected number of mutations m (Ma–Sandri–Sarkar recursion). */
 function ldPmf(m, n) { const p = [Math.exp(-m)]; for (let k = 1; k <= n; k++) { let s = 0; for (let i = 0; i < k; i++) s += p[i] / (k - i + 1); p.push((m / k) * s); } return p; }
@@ -67,7 +67,7 @@ export default {
       introduces: [],
       statement: String.raw`When many small, parallel cultures of *E. coli*, each started from a few cells, are plated on phage T1, the numbers of resistant colonies fluctuate enormously: most cultures have none or a few and an occasional "jackpot" has hundreds, so the variance is far larger than the mean. Samples taken from a single culture vary only as a Poisson distribution (variance ≈ mean). This is what one expects if resistance arises by **random mutation during growth**, before any contact with the virus, since an early mutation founds a large clone; if resistance were *induced* by contact with the phage, each cell would respond independently and the counts of parallel cultures would also be Poisson.
 
-The result, the fluctuation test, established that bacteria have genes that mutate spontaneously, and gave a way to estimate mutation rates (about $10^{-8}$ per cell division for T1 resistance). Its scope is selection that kills before any induced change could act; it does not by itself exclude every form of directed change (the later "adaptive mutation" debate).`,
+The result, the fluctuation test, established that bacteria have genes that mutate spontaneously, and gave a way to estimate mutation rates (their estimates for T1 resistance: $1$–$4\times10^{-8}$; maximum likelihood on the same counts gives a few $\times10^{-9}$ per division). Its scope is selection that kills before any induced change could act; it does not by itself exclude every form of directed change (the later "adaptive mutation" debate).`,
       idea: String.raw`In 1943 many bacteriologists believed that bacteria adapt to a new environment by a directed, Lamarckian response. Luria, watching a slot machine, saw that the two hypotheses predict different *distributions*: under induction every cell has the same small chance of becoming resistant on the plate, so counts are Poisson (mathbio-11.1); under spontaneous mutation (popgen-3.1), resistance that appears in generation $g$ is inherited by its $2^{G-g}$ descendants, so a rare early mutation gives a jackpot. Delbrück worked out the expected mean and variance and showed how to estimate the mutation rate from the proportion of cultures with no mutants (the $p_0$ method) or from the mean. Their tables showed variances 50–200 times the mean for parallel cultures and close to the mean for samples of one culture. The paper earned them (with Hershey) the 1969 Nobel Prize and its distribution, worked out exactly by Lea and Coulson (1949), is still how mutation rates are measured; the Lederbergs' replica plating (1952) gave the direct visual confirmation.`,
       caption: String.raw`**Left**: the paper's own counts of resistant bacteria for one experiment, binned on a doubling scale, against a **Poisson** distribution with the same mean (grey) and the **Luria–Delbrück** distribution fitted by maximum likelihood (green). Pick a fluctuation test (parallel cultures) or Table 1's samples of one culture. **Right**: grow your own parallel cultures from $N_0$ cells to $N_t$ with mutation rate $a$ per division: switch the hypothesis between **random mutation** and **acquired on contact** and watch jackpots appear or vanish; **Resample** reruns. The readouts compare variance with mean and estimate the mutation rate as modern labs do.`,
       deps: ['popgen-3.1', 'mathbio-11.1'],
@@ -79,12 +79,12 @@ The result, the fluctuation test, established that bacteria have genes that muta
         const M = v.M;
         const exp = v.select('paper data', Object.keys(EXPS).map((k) => ({ value: k, label: k === 'b10' ? '10a (one culture)' : k === 'b11' ? '11a (one culture)' : k.replace('e', 'Exp. ').replace('21', '21a') })), 'e16');
         const hyp = v.select('simulation: resistance arises by', [{ value: 'random', label: 'random mutation in growth' }, { value: 'contact', label: 'contact with phage' }], 'random');
-        const la = v.slider('mutation rate a per division (log₁₀)', -9.5, -7, -8.5, { step: 0.05, fmt: (x) => `${v.fix(10 ** (x - Math.floor(x)), 2)}×10^${Math.floor(x)}` });
+        const la = v.slider('mutation rate a per division (log₁₀)', -9.5, -7, -8.5, { step: 0.05, fmt: (x) => `${v.fix(10 ** (x - Math.floor(x)), 2)}×10${String(Math.floor(x)).replace('-', '⁻').replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}` });
         const C = v.slider('parallel cultures', 10, 400, 100, { int: true });
         let seed = 3;
         v.button('Resample', () => { seed++; });
-        const L = v.stage({ x: [-0.6, 10.6], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 260, xticks: BIN_LAB.map((b, i) => [i, b]), xlabel: 'resistant bacteria per culture (or sample)', ylabel: 'fraction', title: 'Luria & Delbrück’s counts' });
-        const R = v.stage({ x: [-0.6, 10.6], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 260, xticks: BIN_LAB.map((b, i) => [i, b]), xlabel: 'resistant bacteria per culture', ylabel: 'fraction', title: 'simulated parallel cultures' });
+        const L = v.stage({ x: [-0.6, 10.6], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 260, xticks: BIN_LAB.map((b, i) => [i, b]), xlabel: 'resistant bacteria per culture or sample (bin from)', ylabel: 'fraction', title: 'Luria & Delbrück’s counts' });
+        const R = v.stage({ x: [-0.6, 10.6], y: [0, 1], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 260, xticks: BIN_LAB.map((b, i) => [i, b]), xlabel: 'resistant bacteria per culture (bin from)', ylabel: 'fraction', title: 'simulated parallel cultures' });
         let st = null;
         const draw = (S, counts, fitLD, colObs) => {
           const n = counts.length, obs = Array(BIN_LAB.length).fill(0);
@@ -116,9 +116,9 @@ The result, the fluctuation test, established that bacteria have genes that muta
           if (E.kind === 'cultures') {
             const corr = (E.z - 1) / (E.z * Math.log(E.z));
             const m0 = A.p0 > 0 ? -Math.log(A.p0) : NaN;
-            left += ` · ${Math.round(A.p0 * 100)}% of cultures have none (Poisson with this mean predicts ${v.sci(Math.exp(-A.mean), 2)}) · mutations per culture: $p_0$ method ${Number.isFinite(m0) ? v.fix(m0, 2) : '—'}, ML ${v.fix(A.m, 2)}; corrected for plating ${E.z} of each culture ${v.fix(A.m * corr, 2)} ⇒ **a ≈ ${v.sci((A.m * corr) / E.N, 2)}** per cell per division`;
+            left += ` · ${Math.round(A.p0 * 100)}% of cultures have none (Poisson with this mean predicts $${v.sci(Math.exp(-A.mean), 2)}$) · mutations per culture: $p_0$ method ${Number.isFinite(m0) ? v.fix(m0, 2) : '—'}, ML ${v.fix(A.m, 2)}; corrected for plating ${E.z} of each culture ${v.fix(A.m * corr, 2)} ⇒ **a ≈ $${v.sci((A.m * corr) / E.N, 2)}$** per cell per division (printed in Table 2, from the mean by their formula: ${E.rate})`;
           } else left += ' — samples of one culture: variance ≈ mean, as for Poisson sampling error';
-          const right = `simulation (${st.B.mean > 0 ? '' : ''}${Math.round(C.value)} cultures, $N_t = 2\\times10^8$, a = ${v.sci(a, 2)}): mean ${v.fix(B.mean, 2)}, variance ${v.fix(B.vr, 1)}${B.m ? `, ML m = ${v.fix(B.m, 2)} (true ${v.fix(a * Nt, 2)})` : ''}`;
+          const right = `simulation (${st.B.mean > 0 ? '' : ''}${Math.round(C.value)} cultures, $N_t = 2\\times10^8$, a = $${v.sci(a, 2)}$): mean ${v.fix(B.mean, 2)}, variance ${v.fix(B.vr, 1)}${B.m ? `, ML m = ${v.fix(B.m, 2)} (true ${v.fix(a * Nt, 2)})` : ''}`;
           return left + '\n' + right;
         });
       },

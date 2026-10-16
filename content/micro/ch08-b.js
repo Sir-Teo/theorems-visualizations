@@ -295,7 +295,8 @@ In each case the long-run supply price is $p(Q) = \min_q LAC(q; w(Q))$, the mini
           });
           if (marg >= 0) b.text('marginal', marg + 1, 0, { dy: 13, size: 10.5, weight: 700, color: 'gold', align: 'center' });
           const total = rents.reduce((a, o) => a + (o.on ? o.rent : 0), 0);
-          const area = simpson((x) => Ssum(x), 0.01, p, 1200);
+          const brk = [0, ...pEnter.filter((x) => x < p), p].sort((a, c) => a - c);
+          let area = 0; for (let j = 0; j < brk.length - 1; j++) area += simpson((x) => Ssum(x), brk[j] + 1e-9, brk[j + 1] - 1e-9, 200); // piecewise: S jumps at each entry price
           const chk = Math.max(...rents.map((o, i) => Math.abs(o.q - qi(i, p)) * (o.on ? 1 : 0)));
           st = { p, Q, marg, rents, total, area, chk, n: marg + 1 };
         });

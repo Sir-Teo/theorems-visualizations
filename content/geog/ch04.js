@@ -430,45 +430,86 @@ In particular the whole sphere has area $4\pi R^2$, the lateral area of the cyli
 $$x = R\lambda,\qquad y = R\sin\varphi$$
 — maps every region of the sphere to a region of the same area. Its scales are $k = \sec\varphi$ along parallels and $h = \cos\varphi$ along meridians, so $hk = 1$ while shapes are squashed north–south toward the poles.`,
       idea: String.raw`The zone between latitudes $\varphi$ and $\varphi + d\varphi$ is a thin ribbon of radius $R\cos\varphi$ and slant width $R\,d\varphi$, so its area is $2\pi R^2\cos\varphi\,d\varphi$; its height is $dz = R\cos\varphi\,d\varphi$. Thus the zone's area is $2\pi R\,dz$, exactly the area of the cylinder band of the same height: the shrinking circumference and the growing slant cancel. Integrating (pma-10.9) gives the theorem for any zone. For the map this says the Jacobian determinant is $hk = \sec\varphi\cdot\cos\varphi = 1$, the condition of geog-3.6. Archimedes asked for a sphere in a cylinder on his tombstone; Lambert turned the theorem into a map in 1772.`,
-      caption: String.raw`Drag the two handles at the right of the map to choose a slab (the 3D view rotates by dragging). The zone on the sphere and the band on the cylinder are shaded, with horizontal projection rays; the readout integrates the zone's area numerically and compares it with the band. Switch on the ten slabs of equal height: on the sphere they look very different, yet each covers exactly a tenth of the Earth, and on Lambert's map they are equal strips. Indicatrices all have area 1 but grow flatter toward the poles.`,
+      caption: String.raw`Drag the handles $z_1, z_2$ beside the cross-section to choose a slab (the 3D view rotates by dragging). The zone on the sphere (blue) and the band on the cylinder (orange) are shaded, with horizontal projection rays; the section shows why they match — the zone's circumference shrinks by $\cos\varphi$ exactly as its slant width grows by $1/\cos\varphi$. The bars compare the zone's area, integrated numerically, with the band and with the strip on Lambert's map. Switch on the ten slabs of equal height: on the sphere they look very different, yet each covers exactly a tenth of the Earth, and on Lambert's map they are equal strips. Indicatrices all have area 1 but grow flatter toward the poles.`,
       deps: ['geog-3.6', 'pma-10.9'],
       see: ['geog-4.6'],
       refs: ['Snyder §10'],
       tags: ['map projections', 'area', 'equal-area'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/On_the_Sphere_and_Cylinder' },
       viz(v) {
-        const s3 = v.stage3d({ range: 1.45, height: 350, yaw: -0.55, pitch: 0.32, persp: 0 });
-        const sB = v.stage({ x: [-3.3, 3.55], y: [-1.15, 1.15], equal: true, axes: false, height: 350, weight: 1.55 });
+        const s3 = v.stage3d({ range: 1.45, height: 330, yaw: -0.55, pitch: 0.32, persp: 0 });
+        const sX = v.stage({ x: [-1.3, 1.5], y: [-1.18, 1.18], equal: true, axes: false, height: 330 });
+        const sB = v.stage({ x: [-3.25, 3.25], y: [-1.1, 1.1], equal: true, axes: false, height: 290, weight: 1.75 });
+        const sC = v.stage({ x: [0.4, 3.6], y: [0, 4], axes: 'box', gutter: true, height: 290, weight: 0.75, ylabel: 'area (unit sphere)', xticks: [[1, 'zone'], [2, 'band'], [3, 'map']] });
         const slabs = v.toggle('ten slabs of equal height', false);
-        const XH = PI + 0.22;
-        const H2 = sB.handle(XH, 0.78, { color: 'accent', label: 'z₂', labelPos: 'e', constrain: (x, y) => [XH, clamp(y, -1, 1)] });
-        const H1 = sB.handle(XH, 0.36, { color: 'accent', label: 'z₁', labelPos: 'e', constrain: (x, y) => [XH, clamp(y, -1, 1)] });
+        const XH = 1.3;
+        const H2 = sX.handle(XH, 0.78, { color: 'accent', label: 'z₂', labelPos: 'e', constrain: (x, y) => [XH, clamp(y, -1, 1)] });
+        const H1 = sX.handle(XH, 0.36, { color: 'accent', label: 'z₁', labelPos: 'e', constrain: (x, y) => [XH, clamp(y, -1, 1)] });
         const zs = () => [Math.min(H1.y, H2.y), Math.max(H1.y, H2.y)];
         const slabOf = (z) => Math.min(9, Math.floor((z + 1) * 5));
+        const zoneArea = (z1, z2) => v.M.integrate((f) => 2 * PI * Math.cos(f), Math.asin(z1), Math.asin(z2), 200);
+        let lastEq = null;
         v.render(() => {
-          const [z1, z2] = zs(), eq = slabs.value;
-          const inZ = (z) => z >= z1 && z <= z2;
-          // 3D: sphere and cylinder
+          const [z1, z2] = zs(), eq = slabs.value, inZ = (z) => z >= z1 && z <= z2;
+          const bands = eq ? Array.from({ length: 10 }, (_, i) => [-1 + i * 0.2, -0.8 + i * 0.2, i % 2 ? 'teal' : 'accent']) : [[z1, z2, 'accent']];
+          H1.visible = H2.visible = !eq;
+          // ---- 3D
           s3.surface((u, w) => [Math.cos(w) * Math.cos(u), Math.cos(w) * Math.sin(u), Math.sin(w)], [0, 2 * PI], [-PI / 2, PI / 2], {
-            nu: 40, nv: 30, alpha: 0.9, colorFn: (u, w) => { const z = Math.sin(w); return eq ? (slabOf(z) % 2 ? 'teal' : 'accent') : inZ(z) ? 'accent' : 'faint'; },
+            nu: 40, nv: 30, alpha: 0.92, colorFn: (u, w) => { const z = Math.sin(w); return eq ? (slabOf(z) % 2 ? 'teal' : 'accent') : inZ(z) ? 'accent' : 'grid'; },
           });
           s3.surface((u, z) => [Math.cos(u), Math.sin(u), z], [0, 2 * PI], [-1, 1], {
-            nu: 40, nv: 20, alpha: 0.2, shade: false, colorFn: (u, z) => (eq ? (slabOf(z) % 2 ? 'teal' : 'accent') : inZ(z) ? 'orange' : 'faint'),
+            nu: 40, nv: 20, alpha: 0.18, shade: false, colorFn: (u, z) => (eq ? (slabOf(z) % 2 ? 'teal' : 'accent') : inZ(z) ? 'orange' : 'faint'),
           });
-          if (!eq) for (const z of [z1, (z1 + z2) / 2, z2]) {
-            const r = Math.sqrt(Math.max(0, 1 - z * z));
-            for (let u = -PI / 2; u <= PI / 2 + 1e-9; u += PI / 4) s3.arrow([r * Math.cos(u - 0.55), r * Math.sin(u - 0.55), z], [Math.cos(u - 0.55), Math.sin(u - 0.55), z], { color: 'ink', width: 1.2, head: 6, bias: -0.5 });
+          if (!eq) {
+            const z = (z1 + z2) / 2, r = Math.sqrt(Math.max(0, 1 - z * z));
+            for (let i = 0; i < 5; i++) { const u = -1.02 - 1.1 + 0.55 * i; s3.arrow([r * Math.cos(u), r * Math.sin(u), z], [Math.cos(u), Math.sin(u), z], { color: 'ink', width: 1.3, head: 6, bias: -0.6 }); }
           }
           for (const z of [-1, 1]) s3.curve((t) => [Math.cos(t), Math.sin(t), z], 0, 2 * PI, { color: 'muted', width: 1, n: 60 });
-          // Lambert map
+          // ---- cross-section through the axis
+          for (const [a, b, col] of bands) {
+            sX.rect(-1.25, a, 1.25, b, { fill: col, fillAlpha: eq ? 0.14 : 0.16, stroke: false });
+            for (const sg of [1, -1]) {
+              const arc = []; for (let i = 0; i <= 30; i++) { const t = Math.asin(a) + ((Math.asin(b) - Math.asin(a)) * i) / 30; arc.push([sg * Math.cos(t), Math.sin(t)]); }
+              sX.path(arc, { color: col, width: 4.5 });
+              sX.line(sg, a, sg, b, { color: eq ? col : 'orange', width: 4.5 });
+            }
+          }
+          sX.circle(0, 0, 1, { color: 'ink', width: 1.4 });
+          for (const sg of [1, -1]) sX.line(sg, -1, sg, 1, { color: 'muted', width: 1.4 });
+          sX.line(-1, 1, 1, 1, { color: 'muted', width: 1, dash: [4, 4] }); sX.line(-1, -1, 1, -1, { color: 'muted', width: 1, dash: [4, 4] });
+          sX.line(0, -1.12, 0, 1.12, { color: 'faint', width: 1, dash: [3, 3] });
+          if (!eq) {
+            const zm = (z1 + z2) / 2, fm = Math.asin(zm), cm = Math.cos(fm);
+            for (const z of [z1 + 0.15 * (z2 - z1), zm, z2 - 0.15 * (z2 - z1)]) { const c = Math.sqrt(1 - z * z); if (1 - c > 0.06) sX.arrow(c, z, 1, z, { color: 'ink', width: 1.2, head: 6 }); }
+            sX.line(0, 0, cm, zm, { color: 'muted', width: 1.2, dash: [4, 3] });
+            sX.line(0, zm, cm, zm, { color: 'ink', width: 1.6 });
+            sX.tex(String.raw`R\cos\varphi`, cm / 2, zm, { size: 13, dy: -11 });
+            const ang = []; for (let i = 0; i <= 16; i++) ang.push([0.22 * Math.cos((fm * i) / 16), 0.22 * Math.sin((fm * i) / 16)]);
+            sX.path(ang, { color: 'muted', width: 1.2 }); sX.tex(String.raw`\varphi`, 0.3 * Math.cos(fm / 2), 0.3 * Math.sin(fm / 2), { size: 13, color: 'muted' });
+            sX.tex(String.raw`dA = 2\pi R\cos\varphi\cdot R\,d\varphi = 2\pi R\,dz`, 0.1, -1.08, { size: 13 });
+          }
+          sX.corner('section through the axis', 'tl', { color: 'muted', weight: 600 });
+          // ---- Lambert map
           const X = (l) => l, Y = (f) => Math.sin(f);
           cylBase(sB, v, X, Y, { lat: 90, step: 30, pstep: 15 });
-          if (eq) for (let i = 0; i < 10; i++) sB.rect(-PI, -1 + i * 0.2, PI, -0.8 + i * 0.2, { fill: i % 2 ? 'teal' : 'accent', fillAlpha: 0.2, stroke: false });
-          else { sB.rect(-PI, z1, PI, z2, { fill: 'accent', fillAlpha: 0.22, stroke: false }); for (const z of [z1, z2]) sB.line(-PI, z, XH, z, { color: 'accent', width: 1.6 }); }
+          for (const [a, b, col] of bands) { sB.rect(-PI, a, PI, b, { fill: col, fillAlpha: 0.2, stroke: false }); if (!eq) for (const z of [a, b]) sB.line(-PI, z, PI, z, { color: 'accent', width: 1.6 }); }
           const r0 = 4 * D2R;
           for (let f = -75; f <= 75; f += 15) for (let l = -150; l <= 150; l += 30) { const c = Math.cos(f * D2R); ell(sB, l * D2R, Y(f * D2R), r0 / c, r0 * c, 'green', 0.3); }
           sB.corner('Lambert cylindrical equal-area: x = λ, y = sin φ', 'tl', { color: 'muted', weight: 600, plate: true });
-          v.legend([['accent', 'zone of the sphere / its image', { area: true }], ['orange', 'band of the cylinder', { area: true }], ['green', 'indicatrices (all of area 1)', { area: true }]]);
+          // ---- bars
+          if (eq !== lastEq) { lastEq = eq; sC.setTicks(eq ? Array.from({ length: 10 }, (_, i) => [i + 1, String(i + 1)]) : [[1, 'zone'], [2, 'band'], [3, 'map']], null); sC.setLabels(eq ? 'slab (south to north)' : null, undefined); }
+          if (eq) {
+            const vals = bands.map(([a, b]) => zoneArea(a, b));
+            sC.setView([0.4, 10.6], [0, 1.6]);
+            sC.bars(vals, { x0: 1, dx: 1, color: (q, i) => (i % 2 ? 'teal' : 'accent') });
+            sC.hline((4 * PI) / 10, { color: 'green', width: 1.4, dash: [6, 4] });
+          } else {
+            const za = zoneArea(z1, z2), ba = 2 * PI * (z2 - z1);
+            sC.setView([0.4, 3.6], [0, Math.max(0.5, ba * 1.25)]);
+            sC.bars([za, ba, ba], { x0: 1, dx: 1, color: (q, i) => ['accent', 'orange', 'green'][i] });
+          }
+          v.legend(eq ? [['accent', 'slabs of height 0.2R (alternating)', { area: true }], ['teal', '', { area: true }], ['green', 'one tenth of the sphere, 0.4π', { dash: true }]]
+            : [['accent', 'zone of the sphere / its image', { area: true }], ['orange', 'band of the cylinder', { area: true }], ['green', 'indicatrices (all of area 1)', { area: true }]]);
         });
         v.readout(() => {
           const [z1, z2] = zs(), f1 = Math.asin(z1), f2 = Math.asin(z2);

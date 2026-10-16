@@ -369,7 +369,7 @@ Attaching an $n$-cell means $Y=D^n$, $A=\partial D^n=S^{n-1}$; cell complexes ar
         const nn = v.slider('$n$', 2, 8, 5, { int: true });
         const L = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, axes: false, height: 380, title: 'the plane and an orbit' });
         const S = v.stage3d({ range: 1.5, height: 380, yaw: -0.6, pitch: 0.5, axes: false, title: 'the orbit space' });
-        const hp = L.handle(0.08, 0.3, { color: 'ink', label: 'p', constrain: (x, y) => { const r = Math.hypot(x, y); return act.value === 'rot' && r < 0.08 ? [0, 0] : [clamp(x, -2.1, 2.1), clamp(y, -2.1, 2.1)]; } });
+        const hp = L.handle(0.08, 0.8, { color: 'ink', label: 'p', constrain: (x, y) => { const r = Math.hypot(x, y); return act.value === 'rot' && r < 0.08 ? [0, 0] : [clamp(x, -2.1, 2.1), clamp(y, -2.1, 2.1)]; } });
         let st = null;
         v.render(() => {
           const A = act.value, n = nn.value, paint = squarePaint(v, 4), wh = wheel(v);

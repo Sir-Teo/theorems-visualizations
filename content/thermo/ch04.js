@@ -133,19 +133,21 @@ with two constants per substance: $b$, the volume per mole excluded by the molec
           const dat = co2Iso(Tsel.value);
           sp.dots(dat.map(([vv, p]) => [vv, p]), { r: 3.2, color: 'gold' });
           const sat = dat.filter((d, i) => i > 0 && dat[i - 1][2] !== d[2] && d[2] === 'l');
-          if (sat.length) { const vl = sat[0][0], ps = sat[0][1], vg = dat.find((d, i) => dat[i + 1] && dat[i + 1][2] === 'l')[0]; sp.line(vl, ps, vg, ps, { color: 'gold', width: 2, dash: [5, 3] }); sp.text('measured plateau: liquid + vapour', Math.sqrt(vl * vg), ps, { dy: -10, size: 11, color: 'ink', align: 'center', plate: true }); }
+          if (sat.length) { const vl = sat[0][0], ps = sat[0][1], vg = dat.find((d, i) => dat[i + 1] && dat[i + 1][2] === 'l')[0]; sp.line(vl, ps, vg, ps, { color: 'gold', width: 2, dash: [5, 3] }); sp.text('measured plateau: liquid + vapour', Math.sqrt(vl * vg), ps, { dy: 14, size: 11, color: 'ink', align: 'center', plate: true }); }
           if (b <= 0.08) sp.vline(b, { color: 'muted', dash: [2, 3] });
           // state point
           const vv = h.x, P = Pv(T, vv);
           if (!h.dragging) h.set(vv, P);
           const ideal = Rb * T / vv, core = Rb * T / (vv - b) - ideal, att = -a / (vv * vv);
+          const ys = [0, ideal, ideal + core, ideal + core + att, P], ylo = Math.min(...ys), yhi = Math.max(...ys), pad = 0.12 * (yhi - ylo || 1);
+          sb.setView([-0.6, 3.6], [ylo - pad, yhi + pad]);
           sb.hline(0, { color: 'muted', width: 1 });
           bar(sb, 0, ideal, 0.32, 'muted');
           bar(sb, 1, ideal + core, 0.32, 'orange', { base: ideal });
           bar(sb, 2, ideal + core + att, 0.32, 'blue', { base: ideal + core });
           bar(sb, 3, P, 0.32, 'accent');
           sb.line(0.32, ideal, 0.68, ideal, { color: 'faint', dash: [3, 3] }); sb.line(1.32, ideal + core, 1.68, ideal + core, { color: 'faint', dash: [3, 3] });
-          [[0, ideal, ideal / 2], [1, core, ideal + core / 2], [2, att, ideal + core + att / 2], [3, P, P / 2]].forEach(([i, val, y]) => sb.text(v.fix(val, 1), i, clamp(y, -90, 290), { align: 'center', size: 11, plate: true }));
+          [[0, ideal, ideal / 2], [1, core, ideal + core / 2], [2, att, ideal + core + att / 2], [3, P, P / 2]].forEach(([i, val, y]) => sb.text(v.fix(val, 1), i, y, { align: 'center', size: 11, plate: true }));
           const dPdv = (Pv(T, vv * 1.0001) - Pv(T, vv / 1.0001)) / (vv * 2e-4);
           // nearest measured point on the same branch
           let best = null; for (const d of dat) if (!best || Math.abs(Math.log(d[0] / vv)) < Math.abs(Math.log(best[0] / vv))) best = d;
@@ -178,21 +180,23 @@ with two constants per substance: $b$, the volume per mole excluded by the molec
         const gases = ['Ar', 'N2', 'O2', 'CH4', 'Xe', 'CO2'], gcol = { Ar: 'blue', N2: 'green', O2: 'teal', CH4: 'orange', Xe: 'pink', CO2: 'red' };
         const sa = v.stage({ x: [0, 3], y: [0.55, 1.03], height: 360, axes: 'box', gutter: true, xlabel: 'ρ/ρc', ylabel: 'T/Tc', weight: 1.3, title: 'reduced coexistence curve' });
         const sb = v.stage({ x: [0.002, 0.5], y: [0.1, 4], xlog: true, ylog: true, height: 360, axes: 'box', gutter: true, xlabel: '1 − T/Tc', ylabel: '(ρl − ρv)/ρc', weight: 1, title: 'how the curve closes (log–log)' });
-        const hT = sa.handle(2.7, 0.8, { color: 'gold', constrain: (x, y) => [view.value === 'rho' ? 2.75 : 1.62, clamp(y, view.value === 'rho' ? 0.57 : 1.01, view.value === 'rho' ? 0.995 : 1.75)] });
+        const hT = sa.handle(2.75, 0.8, { color: 'gold', constrain: (x, y) => (view.value === 'rho' ? [2.75, clamp(y, 0.57, 0.995)] : [clamp(x, 1.005, 1.75), -4.6]) });
         const gug = (t, s) => 1 + 0.75 * (1 - t) + s * 1.75 * (1 - t) ** (1 / 3);
         let st = null;
         v.render(() => {
           const rho = view.value === 'rho';
           if (rho) {
             sa.setView([0, 3], [0.55, 1.03]); sa.setLabels('ρ/ρc', 'T/Tc'); sa.setTitle('reduced coexistence curve');
-            sb.setView([0.002, 0.5], [0.1, 4]); sb.setLabels('1 − T/Tc', '(ρl − ρv)/ρc'); sb.setTitle('how the curve closes (log–log)');
-            if (hT.y > 1) hT.set(2.75, 0.8);
+            sb.setScale({ xlog: true, ylog: true, x: [0.002, 0.5], y: [0.1, 4] }); sb.setLabels('1 − T/Tc', '(ρl − ρv)/ρc'); sb.setTitle('how the curve closes (log–log)');
+            if (hT.y < 0) hT.set(2.75, 0.8);
           } else {
             sa.setView([1, 1.8], [-5, 0.1]); sa.setLabels('Tc/T', 'ln(P/Pc)'); sa.setTitle('reduced vapour pressure');
-            sb.setView([-0.6, 5.6], [-0.05, 0.3]); sb.setLabels(null, 'ω'); sb.setTitle('acentric factor from the data');
-            if (hT.y < 1.01) hT.set(1.62, 1 / 0.7);
+            sb.setScale({ xlog: false, ylog: false, x: [-0.6, 5.6], y: [-0.4, 0.3] }); sb.setLabels(null, 'ω'); sb.setTitle('acentric factor from the data');
+            sb.setTicks([], null);
+            if (hT.y > 0) hT.set(1 / 0.7, -4.6);
           }
-          const Tr = rho ? hT.y : 1 / hT.y;
+          if (rho) sb.setTicks(null, null);
+          const Tr = rho ? hT.y : 1 / hT.x;
           // van der Waals
           const vdwPts = [], vdwPv = [];
           for (let i = 0; i <= 120; i++) { const t = 0.55 + (0.9999 - 0.55) * i / 120, c = vdwCoex(t); if (c) { vdwPts.push([t, 1 / c.vl, 1 / c.vg]); vdwPv.push([1 / t, Math.log(c.p)]); } }
@@ -210,7 +214,7 @@ with two constants per substance: $b$, the volume per mole excluded by the molec
             for (const g of gases) {
               const pts = CSAT[g].map((r) => [1 - r[0], r[2] - r[3]]).filter((p) => p[0] > 0);
               sb.dots(pts, { r: 2.6, color: gcol[g] });
-              const near = pts.filter((p) => p[0] <= 0.1);
+              const near = pts.filter((p) => p[0] <= 0.021);
               if (near.length >= 3) { const X = near.map((p) => Math.log(p[0])), Y = near.map((p) => Math.log(p[1])); fits[g] = v.M.linreg(X, Y).slope; }
             }
             const vn = vdwPts.filter((p) => 1 - p[0] < 0.01).map((p) => [Math.log(1 - p[0]), Math.log(p[1] - p[2])]);
@@ -225,10 +229,12 @@ with two constants per substance: $b$, the volume per mole excluded by the molec
             sa.vline(1 / 0.7, { color: 'faint', width: 1, dash: [2, 3] });
             sa.text('T/Tc = 0.7', 1 / 0.7, -4.6, { dx: 4, size: 10.5, color: 'muted', align: 'left' });
             gases.forEach((g, i) => {
-              const pr = interp(CSAT[g], 0, 1, 0.7), om = CSAT[g][0][0] <= 0.7 ? -Math.log10(pr) - 1 : NaN;
+              const C = CSAT[g], ext = C[0][0] > 0.7;
+              // below CO2's triple point (T/Tc = 0.712) extend ln P linearly in 1/T from the first two points
+              const pr = ext ? Math.exp(Math.log(C[0][1]) + (Math.log(C[1][1]) - Math.log(C[0][1])) * (1 / 0.7 - 1 / C[0][0]) / (1 / C[1][0] - 1 / C[0][0])) : interp(C, 0, 1, 0.7), om = -Math.log10(pr) - 1;
               fits[g] = om;
               if (isFinite(om)) { bar(sb, i, om, 0.32, gcol[g]); sb.text(v.fix(om, 3), i, Math.max(om, 0), { dy: -9, size: 10.5, align: 'center' }); }
-              sb.text(g.replace('2', '₂').replace('4', '₄'), i, -0.03, { size: 11, align: 'center', color: gcol[g] });
+              sb.text(g.replace('2', '₂').replace('4', '₄'), i, -0.36, { size: 11.5, weight: 650, align: 'center', color: gcol[g] });
             });
             const pv = vdwCoex(0.7); fits.vdw = -Math.log10(pv.p) - 1;
             sb.hline(fits.vdw, { color: 'purple', dash: [5, 3], width: 1.6 });
@@ -247,10 +253,10 @@ with two constants per substance: $b$, the volume per mole excluded by the molec
           if (rho) {
             const mn = Math.min(...rl), mx = Math.max(...rl);
             const b = ['Ar', 'N2', 'CH4', 'Xe', 'CO2'].map((g) => `${g.replace('2', '₂').replace('4', '₄')} ${v.fix(fits[g], 3)}`).join(', ');
-            return `at $T/T_c$ = ${v.fix(Tr, 3)}: liquid $\\rho_l/\\rho_c$ of the five simple fluids spans ${v.fix(mn, 3)}–${v.fix(mx, 3)} (spread ${v.fix(100 * (mx - mn) / mn, 1)} %); Guggenheim ${v.fix(gg, 3)}; van der Waals **${v.fix(vdwl, 3)}**\nexponent $\\beta$ fitted over $1 - T/T_c \\le 0.1$: ${b} — van der Waals ${v.fix(fits.vdw, 3)} · critical compressibility $Z_c = P_c/\\rho_cRT_c$: ${zc}; van der Waals 3/8 = 0.375`;
+            return `at $T/T_c$ = ${v.fix(Tr, 3)}: liquid $\\rho_l/\\rho_c$ of the five simple fluids spans ${v.fix(mn, 3)}–${v.fix(mx, 3)} (spread ${v.fix(100 * (mx - mn) / mn, 1)} %); Guggenheim ${v.fix(gg, 3)}; van der Waals **${v.fix(vdwl, 3)}**\neffective exponent $\\beta$ fitted over $1 - T/T_c \\le 0.02$: ${b} — van der Waals ${v.fix(fits.vdw, 3)} · critical compressibility $Z_c = P_c/\\rho_cRT_c$: ${zc}; van der Waals 3/8 = 0.375`;
           }
           const o = ['Ar', 'N2', 'O2', 'CH4', 'Xe', 'CO2'].map((g) => `${g.replace('2', '₂').replace('4', '₄')} ${isFinite(fits[g]) ? v.fix(fits[g], 4) : '—'}`).join(', ');
-          return `acentric factor $\\omega = -\\log_{10}(P/P_c)|_{T/T_c = 0.7} - 1$ from the data: ${o} (NIST lists Ar −0.0022, N₂ 0.0372, O₂ 0.0222, CH₄ 0.0114, Xe 0.0036, CO₂ 0.2239); van der Waals ${v.fix(fits.vdw, 3)}\nsimple fluids share one curve ($\\omega \\approx 0$); the elongated CO₂ molecule does not — a third parameter is needed`;
+          return `acentric factor $\\omega = -\\log_{10}(P/P_c)|_{T/T_c = 0.7} - 1$ from the data: ${o} (NIST lists Ar −0.0022, N₂ 0.0372, O₂ 0.0222, CH₄ 0.0114, Xe 0.0036, CO₂ 0.2239; CO₂'s value needs a short extrapolation below its triple point at $T/T_c$ = 0.712); van der Waals ${v.fix(fits.vdw, 3)}\nsimple fluids share one curve ($\\omega \\approx 0$); the elongated CO₂ molecule does not — a third parameter is needed`;
         });
       },
     },
