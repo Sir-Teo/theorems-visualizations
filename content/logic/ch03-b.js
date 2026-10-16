@@ -320,7 +320,7 @@ for every formula $\varphi$ and all $a_1,\dots,a_k \in |\mathfrak A|$. Quantifie
             S.line(-6.4, yB, 6.4, yB, { color: 'accent', width: 4, alpha: 0.35 });
             for (let k = -24; k <= 24; k++) S.dot(k / 4, yB, { r: 2.2, color: 'accent' });
             for (let k = -24; k <= 24; k++) S.dot(k / 4, yA, { r: 2.2, color: 'accent' });
-            S.text('rationals: a dense subset of the line', 6.4, yA - 0.45, { align: 'right', size: 11, color: 'muted' });
+            S.text('rationals: a dense subset of the line', -6.4, yA - 0.45, { align: 'left', size: 11, color: 'muted' });
             for (let k = -6; k <= 6; k++) { S.text(String(k).replace('-', '−'), k, yB - 0.35, { align: 'center', size: 10.5, color: 'muted' }); }
           } else {
             for (let k = -6; k <= 6; k++) {
@@ -343,7 +343,7 @@ for every formula $\varphi$ and all $a_1,\dots,a_k \in |\mathfrak A|$. Quantifie
           mark(R.wB, yB, (d) => d);
           mark(R.wA, yA, posA);
           const agree = R.va === R.vb;
-          S.corner(`𝔅 ⊨ φ[a,b]: ${TF(R.vb)}    𝔄 ⊨ φ[a,b]: ${TF(R.va)}`, 'tr', { size: 12.5, weight: 700, color: agree ? 'green' : 'red' });
+          S.corner(`𝔅 ⊨ φ[a,b]: ${TF(R.vb)}    𝔄 ⊨ φ[a,b]: ${TF(R.va)}`, 'br', { size: 12.5, weight: 700, color: agree ? 'green' : 'red' });
         });
         v.legend([['accent', 'elements of 𝔄', { dot: true }], ['gold', 'parameters a, b', { dot: true }], ['green', 'witness', { dot: true }], ['red', 'counterexample', { dot: true }]]);
         v.readout(() => {

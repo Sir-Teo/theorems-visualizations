@@ -269,7 +269,7 @@ The force needed therefore has a **tangential part** $m\,\dot v$ (speeding up or
         const mode = v.select('driver', [{ value: 'const', label: 'constant speed' }, { value: 'wave', label: 'speed up and down' }, { value: 'brake', label: 'brake into bends' }], 'brake');
         const wig = v.slider('track wiggle', 0, 0.2, 0.06, { step: 0.005 });
         const v0 = v.slider('cruising speed (m/s)', 6, 18, 10, { step: 0.5 });
-        const mu = v.slider('grip $\\mu$', 0.2, 1.2, 0.8, { step: 0.01 });
+        const mu = v.slider('grip $\\mu$', 0.2, 1.2, 1.1, { step: 0.01 });
         const S = v.stage({ x: [-2.4, 2.4], y: [-1.6, 1.6], equal: true, axes: false, height: 380, weight: 1.15 });
         const G = v.stage({ x: [0, 1], y: [-8, 12], axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'distance along the lap (m)', ylabel: 'acceleration (m/s²)', title: 'tangential and normal acceleration' });
         const NS = 720;

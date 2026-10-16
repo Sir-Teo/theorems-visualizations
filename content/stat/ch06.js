@@ -717,7 +717,7 @@ the best explanation the null can offer divided by the best overall (stat-3.5: t
 $$-2\log\lambda_n=2\{\ell_n(\hat\theta)-\ell_n(\hat\theta_0)\}\ \xrightarrow{\ d\ }\ \chi^2_r,$$
 the chi-squared law with $r$ = number of independent restrictions (stat-1.8). So rejecting when $-2\log\lambda_n>\chi^2_{r,1-\alpha}$ has asymptotic size $\alpha$. If instead the null value lies on the **boundary** of the parameter space, the limit changes: for one parameter restricted to $\theta\ge\theta_0$ and tested at $\theta_0$, it is the 50:50 mixture $\tfrac12\chi^2_0+\tfrac12\chi^2_1$ (Chernoff, 1954).`,
       idea: String.raw`Near the MLE the log-likelihood is a quadratic with curvature $nI(\theta)$ (stat-5.2), and $\sqrt n(\hat\theta-\theta)$ is approximately $N(0,I^{-1})$. In coordinates where $I$ is the identity, $2\{\ell_n(\hat\theta)-\ell_n(\theta)\}\approx\|Z\|^2$ for a standard normal vector $Z\in\R^p$, and maximizing over $\Theta_0$ projects $Z$ onto a $(p-r)$-dimensional subspace, so the drop is the squared length of the projection onto the $r$-dimensional complement: $\chi^2_r$. At a boundary the MLE cannot cross $\theta_0$: half the time it sticks at $\theta_0$ and the statistic is exactly 0.`,
-      caption: String.raw`Left: the histogram of $-2\log\lambda$ over thousands of data sets simulated under the null, against the $\chi^2_r$ density. Right: the $p$-values computed from $\chi^2_r$, which should look uniform. Choose a model and grow $n$: a Poisson mean ($r=1$), an exponential rate ($r=1$), a normal mean and variance both fixed ($r=2$), a fair die ($r=5$, the $G$-test). At small $n$ the discrete models give lumpy, slightly anti-conservative histograms that smooth out. Choose the **variance at its boundary** ($X_i\sim N(0,1+\tau^2)$, testing $\tau^2=0$ with $\tau^2\ge0$): about half the statistics are exactly 0 (the gold bar), the rest follow $\tfrac12\chi^2_1$, and the naive $\chi^2_1$ $p$-values pile up at 1.`,
+      caption: String.raw`Left: the histogram of $-2\log\lambda$ over thousands of data sets simulated under the null, against the $\chi^2_r$ density. Right: the $p$-values computed from $\chi^2_r$, which should look uniform. Choose a model and grow $n$: a Poisson mean ($r=1$), an exponential rate ($r=1$), a normal mean and variance both fixed ($r=2$), a fair die ($r=5$, the $G$-test). At small $n$ the discrete models (Poisson, die) give lumpy histograms, because the statistic takes few distinct values, and these smooth out as $n$ grows. Choose the **variance at its boundary** ($X_i\sim N(0,1+\tau^2)$, testing $\tau^2=0$ with $\tau^2\ge0$): about half the statistics are exactly 0 (the gold bar), the rest follow $\tfrac12\chi^2_1$, and the naive $\chi^2_1$ $p$-values pile up at 1.`,
       deps: ['stat-6.9', 'stat-5.2', 'stat-1.8'],
       see: ['stat-5.5', 'stat-6.14'],
       refs: ['Casella–Berger §10.3', 'Wasserman §10.6'],
@@ -727,12 +727,12 @@ the chi-squared law with $r$ = number of independent restrictions (stat-1.8). So
         const MOD = {
           pois: { lab: 'Poisson mean', k: 1 }, expo: { lab: 'exponential rate', k: 1 }, norm2: { lab: 'normal $(\\mu,\\sigma^2)$', k: 2 }, die: { lab: 'fair die', k: 5 }, bdry: { lab: 'variance at boundary', k: 1, bdry: true },
         };
-        const modS = v.select('null model', Object.entries(MOD).map(([value, m]) => ({ value, label: m.lab })), 'pois');
+        const modS = v.select('null model', Object.entries(MOD).map(([value, m]) => ({ value, label: m.lab })), 'norm2');
         const nS = v.slider('sample size $n$', 3, 500, 20, { int: true, log: true });
         const sL = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1.1, xlabel: '$-2\\log\\lambda$', ylabel: 'density', title: 'null distribution of $-2\\log\\lambda$' });
         const sR = v.stage({ x: [0, 1], y: [0, 2], axes: 'box', gutter: true, height: 340, weight: 0.9, minWidth: 240, xlabel: '$p$-value from $\\chi^2_r$', ylabel: 'density', title: '$p$-values (uniform if Wilks holds)' });
         const one = (k, n, r) => {
-          if (k === 'pois') { const l0 = 1.5; let s = 0; for (let i = 0; i < n; i++) s += rpois(r, l0); const m = s / n; return 2 * n * ((m > 0 ? m * Math.log(m / l0) : 0) - (m - l0)); }
+          if (k === 'pois') { const l0 = 4; let s = 0; for (let i = 0; i < n; i++) s += rpois(r, l0); const m = s / n; return 2 * n * ((m > 0 ? m * Math.log(m / l0) : 0) - (m - l0)); }
           if (k === 'expo') { let s = 0; for (let i = 0; i < n; i++) s += -Math.log(1 - r()); const m = s / n; return 2 * n * (m - 1 - Math.log(m)); }
           if (k === 'norm2') { let s = 0, q = 0; const xs = new Float64Array(n); for (let i = 0; i < n; i++) { xs[i] = r.normal(); s += xs[i]; } const m = s / n; for (let i = 0; i < n; i++) q += (xs[i] - m) ** 2; const s2 = q / n; return n * (m * m + s2 - 1 - Math.log(s2)); }
           if (k === 'die') { const O = [0, 0, 0, 0, 0, 0]; for (let i = 0; i < n; i++) O[Math.floor(6 * r())]++; const E = n / 6; let g = 0; for (const o of O) if (o > 0) g += o * Math.log(o / E); return 2 * g; }
@@ -756,11 +756,12 @@ the chi-squared law with $r$ = number of independent restrictions (stat-1.8). So
           sL.vline(cut, { color: TC.alpha, width: 1.4, dash: [5, 4] });
           sL.text(`χ² 5% cut ${v.fix(cut, 2)}`, cut, top * 0.97, { color: TC.alpha, size: 11, align: 'left', dx: 5, dy: 6 });
           // p-values from χ²_df
-          const P = L.map((x) => chiUp(df, x)), PB = binned(P, 0, 1, 20), ptop = Math.max(2, PB.max * 1.1);
+          const P = L.map((x) => chiUp(df, x)), PB = binned(P, 0, 1, 20), ptop = Math.min(3, Math.max(2, PB.max * 1.1));
           sR.setView([0, 1], [0, ptop]);
           sR.hline(1, { color: 'green', width: 2 });
           if (N) sR.hist(PB, { density: true, color: TC.sim, fillAlpha: 0.35, width: 1.2 });
           sR.vband(0, 0.05, { color: TC.alpha, alpha: 0.12 });
+          if (PB.max > ptop) tag(sR, `↑ ${pct(PB.counts[19] / Math.max(1, N), 0)} of the p-values are near 1`, 0.95, ptop * 0.9, { align: 'right', color: 'ink', size: 11 });
           const rej = L.filter((x) => x > cut).length / Math.max(1, N);
           v.legend([[TC.sim, `simulated, ${commas(N)} null data sets`, { area: true }], M.bdry ? ['green', '$\\frac12\\chi^2_0+\\frac12\\chi^2_1$ (continuous part)'] : ['ink', `$\\chi^2_{${df}}$ density`], ...(M.bdry ? [['red', '$\\chi^2_1$ (wrong reference)', { dash: true }]] : []), ['green', 'uniform density']]);
           st = { k, M, df, N, rej, zeros, n: nS.value, mean: L.reduce((a, b) => a + b, 0) / Math.max(1, N) };
@@ -768,7 +769,7 @@ the chi-squared law with $r$ = number of independent restrictions (stat-1.8). So
         v.readout(() => {
           if (!st) return '';
           const { M, df, N, rej, zeros, n, mean } = st;
-          let s = String.raw`${M.lab}, $n=${n}$, ${commas(N)} null data sets: mean of $-2\log\lambda$ **${v.fix(mean, 3)}** (χ²$_{${df}}$ mean ${M.bdry ? '0.5 for the mixture' : df}) · rejection rate at the χ²$_{${df}}$ 5% cutoff **${pct(rej, 2)}** ± ${pct(2 * mcse(0.05, N), 2)}`;
+          let s = String.raw`${M.lab}, $n=${n}$, ${commas(N)} null data sets: mean of $-2\log\lambda$ **${v.fix(mean, 3)}** ($\chi^2_{${df}}$ mean ${M.bdry ? '1; the mixture has mean 0.5' : df}) · rejection rate at the $\chi^2_{${df}}$ 5% cutoff **${pct(rej, 2)}** ± ${pct(2 * mcse(0.05, N), 2)}`;
           if (M.bdry) s += String.raw` · ${pct(zeros / N)} of the statistics are exactly 0 (theory 50%): the true null value sits on the edge of $\tau^2\ge0$, Wilks' interior condition fails, and the naive test has size about 2.5%; the correct mixture $p$-value is $\tfrac12P(\chi^2_1>x)$`;
           else s += Math.abs(rej - 0.05) < 2.5 * mcse(0.05, N) ? ' · matches the nominal 5% ✓' : ' · not yet at the limit: grow n';
           return s;
