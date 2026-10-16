@@ -345,3 +345,58 @@ export function averageSym2(ops, T) {
   for (const R of ops) { const M = mm3(mm3(R, T), mT(R)); for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) S[i][j] += M[i][j] / ops.length; }
   return S;
 }
+
+// ------------------------------------------------------------------ lattice symmetry by counting integer matrices
+/** Gram matrix of the rows of V. */
+export const gram = (V) => V.map((r) => V.map((s) => dot(r, s)));
+/**
+ * All integer matrices M (entries in -R..R) with M^T G M = G and det M = ±1: the point symmetry (holohedry) of the lattice whose basis has Gram matrix G.
+ * M acts on fractional coordinates, f' = M f; its columns are the images of the basis vectors.  R = 1 suffices for reduced bases of the cells used here.
+ */
+export function latticeSymmetry(G, R = 1, tol = 1e-6) {
+  const sc = Math.max(G[0][0], G[1][1], G[2][2]), eps = tol * sc, vecs = [];
+  for (let a = -R; a <= R; a++) for (let b = -R; b <= R; b++) for (let c = -R; c <= R; c++) if (a || b || c) vecs.push([a, b, c]);
+  const Gv = vecs.map((v) => G.map((row) => row[0] * v[0] + row[1] * v[1] + row[2] * v[2]));
+  const sets = [[], [], []];
+  vecs.forEach((v, i) => { const n = dot(v, Gv[i]); for (let k = 0; k < 3; k++) if (Math.abs(n - G[k][k]) < eps) sets[k].push(i); });
+  const out = [];
+  for (const i of sets[0]) for (const j of sets[1]) {
+    if (Math.abs(dot(vecs[i], Gv[j]) - G[0][1]) > eps) continue;
+    for (const k of sets[2]) {
+      if (Math.abs(dot(vecs[i], Gv[k]) - G[0][2]) > eps || Math.abs(dot(vecs[j], Gv[k]) - G[1][2]) > eps) continue;
+      const M = [[vecs[i][0], vecs[j][0], vecs[k][0]], [vecs[i][1], vecs[j][1], vecs[k][1]], [vecs[i][2], vecs[j][2], vecs[k][2]]];
+      if (Math.abs(det3(M)) > 0.5) out.push(M);
+    }
+  }
+  return out;
+}
+export const LATTICE_SYSTEM_BY_ORDER = { 2: 'triclinic', 4: 'monoclinic', 8: 'orthorhombic', 16: 'tetragonal', 12: 'rhombohedral', 24: 'hexagonal', 48: 'cubic' };
+/** Rotation axes of the lattice: for each line the highest proper rotation order; directions are Cartesian unit vectors (V = basis rows). */
+export function latticeAxes(Ms, V) {
+  const axes = [];
+  for (const M of Ms) {
+    if (Math.round(det3(M)) !== 1) continue;
+    const t = Math.round(tr3(M)), n = { '-1': 2, 0: 3, 1: 4, 2: 6 }[t];
+    if (!n) continue;
+    const A = M.map((r, i) => r.map((x, j) => x - (i === j ? 1 : 0)));
+    const f = [cross(A[0], A[1]), cross(A[1], A[2]), cross(A[0], A[2])].reduce((b, c) => (Math.hypot(...c) > Math.hypot(...b) ? c : b));
+    const u = [0, 1, 2].map((k) => f[0] * V[0][k] + f[1] * V[1][k] + f[2] * V[2][k]), L = Math.hypot(...u);
+    if (L < 1e-9) continue;
+    const un = u.map((x) => x / L), hit = axes.find((a) => Math.hypot(...cross(a.u, un)) < 1e-6);
+    if (hit) hit.n = Math.max(hit.n, n); else axes.push({ n, u: un });
+  }
+  return axes;
+}
+
+// ------------------------------------------------------------------ the 32 point groups as a clickable board
+/** Tile of point group i on a board with one row per crystal system (triclinic at the top): lower-left corner (x, y), unit size. */
+export function pgTilePos(i) { const g = pointGroup(i); return { x: i - PG_FIRST[g.sys], y: 6 - SYSTEMS.indexOf(g.sys) }; }
+/** The group index under the data point (x, y) of that board, or -1. */
+export function pgTileAt(x, y) {
+  const sys = SYSTEMS[6 - Math.floor(y)], col = Math.floor(x);
+  if (!sys || col < 0) return -1;
+  const i = PG_FIRST[sys] + col, g = i < 32 ? pointGroup(i) : null;
+  return g && g.sys === sys ? i : -1;
+}
+/** TeX for a Hermann–Mauguin symbol (roman type, bars over the rotoinversion digits). */
+export const hmMath = (hm) => `\\mathrm{${hm.replace(/-(\d)/g, '\\bar{$1}')}}`;

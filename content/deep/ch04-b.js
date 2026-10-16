@@ -3,7 +3,7 @@
 // Items 4.9–4.11 run real training of small networks inside the page (tanh multilayer perceptrons from ch01.shared.js);
 // the numbers on screen are measured on those runs, not quoted from the papers. Item 4.8 uses the scalar deep linear
 // network, where the whole landscape can be drawn.
-import { clamp, mnus, memo, rand, hashStr, makeNet, toyData, makeTrainer, lossGrad, zeroGrad, accuracy, getParams, setParams, lossGradFlat, sharpness, log10Ticks, lg } from './ch04.shared.js';
+import { clamp, mnus, memo, rand, hashStr, makeNet, predict, toyData, makeTrainer, lossGrad, zeroGrad, accuracy, getParams, setParams, lossGradFlat, sharpness, log10Ticks, lg } from './ch04.shared.js';
 
 export default {
   collection: 'deep',
@@ -116,10 +116,8 @@ export default {
           sSh.path(R.lam.map((l, t) => [t, l]), { color: 'orange', width: 1.6 });
           sSh.vline(k, { color: 'gold', width: 1.4 });
           setParams(work, R.snaps[Math.min(R.snaps.length - 1, Math.round(k / SNAP))]);
-          const xs = Array.from({ length: 160 }, (_, i) => -1 + (2 * i) / 159);
           sFit.fn(target, { color: 'faint', width: 1.4, dash: true, domain: [-1, 1] });
-          sFit.path(xs.map((x) => [x, v.M.clamp(work.ws && (() => { const o = work.ws; return 0; })() ?? 0, 0, 0)]), { color: 'accent', alpha: 0 });
-          const fnet = (x) => { work.ws.a[0][0] = x; let a = [x]; for (let l = 0; l < work.L; l++) { const nin = work.sizes[l], nout = work.sizes[l + 1], o = []; for (let i = 0; i < nout; i++) { let s = work.b[l][i]; for (let j = 0; j < nin; j++) s += work.W[l][i * nin + j] * a[j]; o.push(l === work.L - 1 ? s : Math.tanh(s)); } a = o; } return a[0]; };
+          const fnet = (x) => predict(work, [x], 'mse');
           sFit.fn(fnet, { color: 'accent', width: 2, domain: [-1, 1] });
           sFit.dots(data.X.map((x, i) => [x[0], data.Y[i]]), { r: 4, color: 'gold' });
           let ups = 0; for (let t = 1; t < R.loss.length; t++) if (R.loss[t] > R.loss[t - 1] * 1.001) ups++;
@@ -128,7 +126,7 @@ export default {
         });
         v.legend([['accent', 'loss / network'], ['orange', 'sharpness'], ['red', '$2/\\eta$', { dash: true }], ['gold', 'replay step / data']]);
         v.readout(() => info && String.raw`step ${info.k}: loss $${v.sci(info.L, 2)}$, sharpness $${v.fix(info.lam, 2)}$ against $2/\eta=${v.fix(info.thr, 2)}$ (ratio ${v.fix(info.lam / info.thr, 2)})` + `\n` +
-          String.raw`over the last 200 steps the mean sharpness is **${v.fix(info.mean, 2)}** = ${v.fix(info.ratio, 2)}$\times(2/\eta)$ · the loss went **up** on ${info.ups} of ${T} steps (gradient descent below the stability threshold never increases a smooth loss for $\eta<2/L$... but here $\eta\lambda_{\max}\ge2$ after sharpening)`);
+          String.raw`over the last 200 steps the mean sharpness is **${v.fix(info.mean, 2)}** = ${v.fix(info.ratio, 2)}$\times(2/\eta)$ · the loss went **up** on ${info.ups} of ${T} steps`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.10
@@ -236,7 +234,7 @@ export default {
           info = { mxL: Math.max(...lL), mxB: Math.max(...lB), end: Math.max(lL[0], lL[60]), k: kS.value };
         });
         v.legend([['red', 'straight line'], ['green', 'Bézier curve'], ['gold', 'trained networks']]);
-        v.readout(() => info && String.raw`endpoints: training loss ${v.sci(info.end, 1) ? '$' + v.sci(info.end, 2) + '$' : ''} at worst · highest loss along the **straight line: ${v.fix(info.mxL, 3)}** · along the **curve (iteration ${info.k}): ${v.fix(info.mxB, 3)}**` + (info.mxB < 0.05 * info.mxL ? ` (${v.fix(info.mxL / info.mxB, 0)}× lower)` : ''));
+        v.readout(() => info && String.raw`endpoints: worst training loss $${v.sci(info.end, 2)}$ · highest loss along the **straight line: ${v.fix(info.mxL, 3)}** · along the **curve (iteration ${info.k}): ${v.fix(info.mxB, 3)}**` + (info.mxB < 0.05 * info.mxL ? ` (${v.fix(info.mxL / info.mxB, 0)}× lower)` : ''));
       },
     },
   ],
