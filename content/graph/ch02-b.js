@@ -442,7 +442,7 @@ export default {
         };
         v.render(() => {
           const I = info(G), bad = cyclic();
-          if (showD.value) blobs(v, s, G, [bitsOf(I.d.U).map((u) => I.H.ids[u])], 'gold', 44, 0.16);
+          if (showD.value) blobs(v, s, G, [bitsOf(I.d.U).map((u) => I.H.ids[u])], 'gold', 44, 0.11);
           G.draw({ edgeColor: (e) => (bad.has(e) ? 'red' : col.get(e) ? TC[col.get(e) - 1] : 'faint'), edgeWidth: (e) => (col.get(e) ? 4 : 1.4), edgeDash: (e) => bad.has(e) || !col.get(e) });
         });
         v.legend([['blue', 'colour 1'], ['orange', 'colour 2'], ['purple', 'colour 3'], ['teal', 'colour 4'], ['red', 'on a monochromatic cycle', { dash: true }], ['gold', 'densest set', { area: true }]]);

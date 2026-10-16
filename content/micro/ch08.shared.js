@@ -170,5 +170,5 @@ export function profitRect(s, q, p, ac, o = {}) {
 /** Horizontal price line (the firm's perfectly elastic demand) with a label at its right end. */
 export function priceLine(s, p, label = 'P = MR', o = {}) {
   s.hline(p, { color: o.color ?? 'ink', width: o.width ?? 2, dash: o.dash });
-  if (label) s.text(label, s.bounds.x[1], p, { dx: -6, dy: -9, size: 11.5, weight: 700, color: o.color ?? 'ink', align: 'right', plate: true });
+  if (label) s.text(label, s.bounds.x[1], p, { dx: -6, dy: o.below ? 11 : -9, size: 11.5, weight: 700, color: o.color ?? 'ink', align: 'right', plate: true });
 }

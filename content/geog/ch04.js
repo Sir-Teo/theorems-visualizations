@@ -56,6 +56,18 @@ function mapArea(project, ring) {
   for (const p of ring) { const q = project(p[0], p[1]); if (!q) return null; if (prev && Math.hypot(q[0] - prev[0], q[1] - prev[1]) > 0.8) return null; pts.push(q); prev = q; }
   return shoelace(pts);
 }
+/** Even–odd point-in-polygon test in the (lon, lat) plane. */
+function inRing(ring, x, y) {
+  let c = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c; }
+  return c;
+}
+/** Area-weighted centre of a ring that does not cross the antimeridian (0.5° grid, cos φ weights), as a unit vector. */
+function areaCentroid(ring) {
+  const xs = ring.map((p) => p[0]), ys = ring.map((p) => p[1]); let S = [0, 0, 0];
+  for (let f = Math.min(...ys) + 0.25; f < Math.max(...ys); f += 0.5) for (let l = Math.min(...xs) + 0.25; l < Math.max(...xs); l += 0.5) if (inRing(ring, l, f)) { const w = vec([l, f]), c = Math.cos(f * D2R); S = [S[0] + w[0] * c, S[1] + w[1] * c, S[2] + w[2] * c]; }
+  return unit3(S);
+}
 const ringCentroid = (ring) => unit3(ring.map(vec).reduce((s, q) => [s[0] + q[0], s[1] + q[1], s[2] + q[2]], [0, 0, 0]));
 /** Rotate rings rigidly on the sphere so that the unit vector c0 moves to the point t ([lon, lat]). */
 function moveRings(v, rings, c0, t) {
@@ -127,7 +139,7 @@ With $\varphi_1 = 0$ it is the **plate carrée**, $x = R\lambda$, $y = R\varphi$
 $$h = 1 \ \text{(along every meridian)},\qquad k = \frac{\cos\varphi_1}{\cos\varphi}\ \text{(along the parallel of latitude } \varphi),$$
 so distances along meridians are true everywhere, the parallels $\pm\varphi_1$ are true to scale, and elsewhere east–west lengths, areas (factor $hk = k$) and angles are distorted, increasingly toward the poles, which become lines as long as the equator. It is neither conformal nor equal-area.`,
       idea: String.raw`A cylindrical map sends meridians to equally spaced verticals, so the only choice is where to put each parallel. Spacing them by their true distance along a meridian, $y = R\varphi$, makes the meridian scale $h = dy/(R\,d\varphi) = 1$. A parallel of latitude $\varphi$ is a circle of length $2\pi R\cos\varphi$ drawn as a segment of length $2\pi R\cos\varphi_1$, giving $k = \cos\varphi_1/\cos\varphi$; the Tissot indicatrix (geog-3.4) is an ellipse with axes $k$ east–west and $1$ north–south. Because $h \ne k$ off the standard parallels the map is not conformal (geog-3.5), and because $hk \ne 1$ it is not equal-area (geog-3.6).`,
-      caption: String.raw`Drag $P$, set the standard parallel (or pick Marinus's 36° or Gall's isographic 45°). Indicatrices are green on the true-scale parallels, red where east–west lengths are stretched and blue where they are shrunk. At $P$ the green bar is a 16° stretch of meridian and the red bar 16° of the parallel, with its true length in black beneath. Right: the two scale factors against latitude. Switch on the cell shading to see how little of the Earth the polar rows of a lat/lon grid hold.`,
+      caption: String.raw`Drag $P$, set the standard parallel (or pick Marinus's 36° or Gall's isographic 45°). Indicatrices are green on the true-scale parallels, red where east–west lengths are stretched and blue where they are shrunk. At $P$ the green bar is a 24° stretch of meridian and the red bar 24° of the parallel, with its true length in black beneath. Right: the two scale factors against latitude. Switch on the cell shading to see how little of the Earth the polar rows of a lat/lon grid hold.`,
       deps: ['geog-3.4'],
       refs: ['Snyder §12'],
       tags: ['map projections', 'cylindrical'],
@@ -165,12 +177,12 @@ so distances along meridians are true everywhere, the parallels $\pm\varphi_1$ a
             ell(s, X(l * D2R), f * D2R, k * r0, r0, col, 0.24);
           }
           // probe bars
-          const px = X(lon * D2R), py = lat * D2R, d8 = 8 * D2R, k = c1 / Math.cos(py);
+          const px = X(lon * D2R), py = lat * D2R, d8 = 12 * D2R, k = c1 / Math.cos(py);
           s.line(px, py - d8, px, py + d8, { color: 'green', width: 4, alpha: 0.9 });
           s.line(px - d8 * c1, py, px + d8 * c1, py, { color: 'red', width: 4, alpha: 0.9 });
           const tl = d8 * Math.cos(py); // half the true length of 16° of this parallel, at nominal scale
-          s.line(px - tl, py - 3.2 * D2R, px + tl, py - 3.2 * D2R, { color: 'ink', width: 2.4 });
-          s.text(`k = ${k.toFixed(2)}`, px + d8 * c1 + 0.05, py + 0.04, { size: 12, color: 'red', weight: 600, align: 'left', plate: true });
+          s.line(px - tl, py - 4 * D2R, px + tl, py - 4 * D2R, { color: 'ink', width: 2.4 });
+          s.text(`k = ${k.toFixed(2)}`, px + d8 * c1 + 0.06, py + 0.1, { size: 12, color: 'red', weight: 600, align: 'left', plate: true });
           s.corner(sp.value === 0 ? 'Plate carrée' : `Equirectangular, φ₁ = ${sp.value.toFixed(1)}°`, 'tl', { color: 'muted', weight: 600, plate: true });
           // scale plot
           g.hline(1, { color: 'faint', width: 1 });
@@ -229,16 +241,16 @@ The quantity $\psi = g(\varphi)$ is the **isometric latitude**. On this map the 
           const Tb = table(), d = Tb.d, r = rule.value, f1 = phi.value;
           // ---- left: strips under sec
           if (d >= 1) {
-            for (let a = 0; a < 85 - 1e-9; a += d) {
-              const b = Math.min(85, a + d), m = r === 'R' ? a + d : r === 'L' ? a : a + d / 2, hgt = secd(m);
+            for (let a = 0; a < 80 - 1e-9; a += d) {
+              const b = a + d, m = r === 'R' ? a + d : r === 'L' ? a : a + d / 2, hgt = secd(m);
               if (a < f1) sA.rect(a, 0, Math.min(b, f1), Math.min(hgt, 12), { fill: 'accent', fillAlpha: 0.32, color: 'accent', width: 0.8 });
               if (b > f1) sA.rect(Math.max(a, f1), 0, b, Math.min(hgt, 12), { fill: false, color: 'accent', width: 0.6, alpha: 0.35 });
             }
           } else sA.fn((x) => secd(x), { domain: [0, f1], fill: 'accent', fillAlpha: 0.32, color: 'accent', width: 0.6 });
           sA.fn((x) => secd(x), { domain: [0, 85], color: 'ink', width: 2.2 });
           sA.vline(f1, { color: 'accent', width: 1.4, dash: [5, 4] });
-          sA.text(`area = y(${f1.toFixed(1)}°) = ${Tb.Y(f1 * D2R).toFixed(4)}`, Math.min(f1, 60) * 0.5 + 2, 7.6, { size: 12.5, color: 'accent', weight: 600, plate: true });
-          sA.text(`exact ln tan(45° + φ/2) = ${merc(f1 * D2R).toFixed(4)}`, Math.min(f1, 60) * 0.5 + 2, 6.4, { size: 12, color: 'green', weight: 600, plate: true });
+          sA.text(`strip area to ${f1.toFixed(1)}° = ${Tb.Y(f1 * D2R).toFixed(4)}`, 3, 10.9, { size: 12.5, color: 'accent', weight: 600, align: 'left', plate: true });
+          sA.text(`exact ln tan(45° + φ/2) = ${merc(f1 * D2R).toFixed(4)}`, 3, 9.6, { size: 12.5, color: 'green', weight: 600, align: 'left', plate: true });
           // ---- right: the chart built from the table
           const X = (l) => l, Y = Tb.Y;
           cylBase(sB, v, X, Y, { lat: 80, step: 30, pstep: 10 });
@@ -260,7 +272,7 @@ The quantity $\psi = g(\varphi)$ is the **isometric latitude**. On this map the 
         v.readout(() => {
           const Tb = table(), f = phi.value * D2R, MP = 10800 / PI;
           const sum = Tb.Y(f) * MP, ex = merc(f) * MP;
-          let worst = 0; for (let a = 0; a <= 80; a += 0.25) { const q = a * D2R; worst = Math.max(worst, Math.abs(Tb.slope(q) * Math.cos(q) - 1)); }
+          let worst = 0; for (let a = 0; a < 80; a += 0.25) { const q = a * D2R; worst = Math.max(worst, Math.abs(Tb.slope(q) * Math.cos(q) - 1)); }
           return `Meridional parts (minutes of equator) at $\\varphi = ${phi.value.toFixed(1)}^\\circ$: the strip sum gives **${comma(sum, 1)}′**, the exact value $\\tfrac{10800}{\\pi}\\ln\\tan(45^\\circ + \\varphi/2)$ is **${comma(ex, 1)}′**, an error of ${v.fix(sum - ex, 2)}′ (${v.fix(((sum - ex) / ex) * 100, 3)}%). Largest conformality defect $|h/k - 1|$ on this chart up to 80°: **${(worst * 100).toFixed(2)}%**. (Marguet, 1930, put the error of Wright's printed 1′ table at only 0.8′ in 5966′ at 70°.) The poles never arrive: $y(89^\\circ) = ${merc(89 * D2R).toFixed(2)}$, $y(89.99^\\circ) = ${merc(89.99 * D2R).toFixed(2)}$, $\\to\\infty$.`;
         });
       },
@@ -283,11 +295,11 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rhumb_line' },
       viz(v) {
         const pj = v.select('right-hand map', [{ value: 'mercator', label: 'Mercator' }, { value: 'equirectangular', label: 'Plate carrée' }], 'mercator');
-        const brg = v.slider('compass bearing $\\beta$', 0, 359, 52, { step: 1, int: true, fmt: (x) => x + '°' });
-        const len = v.slider('distance sailed', 1000, 30000, 15000, { step: 100, fmt: (x) => comma(x) + ' km' });
+        const brg = v.slider('compass bearing $\\beta$', 0, 359, 235, { step: 1, int: true, fmt: (x) => x + '°' });
+        const len = v.slider('distance sailed', 1000, 30000, 12000, { step: 100, fmt: (x) => comma(x) + ' km' });
         const sA = v.stage({ height: 330, weight: 0.85 }), sB = v.stage({ height: 330, weight: 1.35 });
-        const sC = v.stage({ x: [0, 15000], y: [0, 180], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'distance sailed along the course (km)', ylabel: 'angle with the meridians (°)', yticks: [0, 45, 90, 135, 180] });
-        const G1 = v.globe(sA, { projection: 'orthographic', center: [-25, 40], graticule: 15 });
+        const sC = v.stage({ x: [0, 12000], y: [0, 180], axes: 'box', gutter: true, height: 190, full: true, xlabel: 'distance sailed along the course (km)', ylabel: 'angle with the meridians (°)', yticks: [0, 45, 90, 135, 180] });
+        const G1 = v.globe(sA, { projection: 'orthographic', center: [-45, 10], graticule: 15 });
         const G2 = v.globe(sB, { projection: 'mercator', center: [0, 0], graticule: 15 });
         const A = G1.handle(-9.14, 38.71, { label: 'Lisbon', color: 'accent' }); G2.handle(A);
         let last = 'mercator';
@@ -366,9 +378,9 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
         const sA = v.stage({ height: 360, weight: 1.5 });
         const sB = v.stage({ x: [0, 85], y: [0.7, 150], ylog: true, axes: 'box', gutter: true, height: 360, xlabel: 'latitude of the outline’s centre (°)', ylabel: 'area on the map ÷ true area' });
         const G = v.globe(sA, { projection: 'mercator', center: [-10, 0], graticule: 15, drag: false });
-        const GR = v.geo('landmass', 'Greenland'), AF = v.geo('landmass', 'Africa'), C0 = ringCentroid(GR[0]), home = lonlat(C0);
-        const CA = lonlat(ringCentroid(AF[0]));
-        const H = G.handle(home[0], home[1], { label: 'Greenland (copy)', color: 'accent', labelPos: 'e' });
+        const GR = v.geo('landmass', 'Greenland'), AF = v.geo('landmass', 'Africa'), C0 = areaCentroid(GR[0]), home = lonlat(C0);
+        const CA = lonlat(areaCentroid(AF[0]));
+        const H = G.handle(-28, 2, { label: 'Greenland (copy)', color: 'accent', labelPos: 'e' });
         v.button('Drop it on the equator', () => H.set(-25, 0));
         v.button('Send it home', () => H.set(home[0], home[1]));
         let last = 'mercator';
@@ -393,7 +405,7 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
           sB.hline(1, { color: 'faint', width: 1 });
           if (r.a) sB.dot(Math.abs(CA[1]), r.a / aArea, { r: 6, color: 'orange', label: 'Africa', labelPos: 'ne', math: false });
           if (r.g0) sB.dot(Math.abs(home[1]), r.g0 / gArea, { r: 6, color: 'accent', hollow: true, label: 'Greenland at home', labelPos: 'w', math: false });
-          if (r.g) sB.dot(Math.abs(H.lat), r.g / gArea, { r: 6, color: 'accent', label: 'copy', labelPos: 'se', math: false });
+          if (r.g) sB.dot(Math.abs(H.lat), r.g / gArea, { r: 6, color: 'accent', label: Math.abs(H.lat - home[1]) > 4 ? 'copy' : undefined, labelPos: 'se', math: false });
           v.legend([['orange', 'Africa', { area: true }], ['accent', 'Greenland, moved rigidly', { area: true }], ['accent', 'Greenland at home', { dash: true }], [mer ? 'red' : 'green', mer ? 'sec²φ (Mercator)' : '1 (equal-area)']]);
         });
         v.readout(() => {
@@ -401,7 +413,8 @@ a linear relation between the map coordinates $x = \lambda$ and $y = \psi$. Its 
           const head = `True areas of the outlines (Natural Earth 1:110m on a ${comma(R_MEAN)} km sphere): **Greenland ${km(gArea)} million km²**, **Africa ${km(aArea)} million km²** — Africa is **${(aArea / gArea).toFixed(1)}×** larger (published figures 2.166 and 30.37 million km², ratio 14.0).`;
           if (!r.g || !r.a) return head + ' The copy is cut by the map edge; move it.';
           const sec2 = secd(H.lat) ** 2;
-          return `${head} On this map the copy covers ${km(r.g)} and Africa ${km(r.a)} million km² at nominal scale, so Greenland looks **${((r.g / r.a) * 100).toFixed(0)}%** of Africa. ${pj.value === 'mercator' ? `At the copy's centre ($\\varphi = ${H.lat.toFixed(1)}^\\circ$) Mercator's area factor is $\\sec^2\\varphi = ${sec2.toFixed(2)}$; the outline's measured ratio is ${(r.g / gArea).toFixed(2)}.` : 'Equal-area: every outline keeps its true area wherever it is.'}`;
+          const home_ = r.g0 ? ` At home it looks **${((r.g0 / r.a) * 100).toFixed(0)}%** of Africa.` : '';
+          return `${head} On this map the copy covers ${km(r.g)} and Africa ${km(r.a)} million km² at nominal scale, so here Greenland looks **${((r.g / r.a) * 100).toFixed(0)}%** of Africa.${home_} ${pj.value === 'mercator' ? `At the copy's centre ($\\varphi = ${H.lat.toFixed(1)}^\\circ$) Mercator's area factor is $\\sec^2\\varphi = ${sec2.toFixed(2)}$; the outline's measured ratio is ${(r.g / gArea).toFixed(2)} (the area-weighted mean of $\\sec^2\\varphi$ over it).` : 'Equal-area: every outline keeps its true area wherever it is.'}`;
         });
       },
     },
@@ -650,8 +663,8 @@ instead of the ellipsoidal Mercator $y = a\big[\operatorname{artanh}(\sin\varphi
           sA.rect(tx0, ty1 - w, tx0 + w, ty1, { fill: 'purple', fillAlpha: 0.28, color: 'purple', width: 2 });
           sA.text(`${zoom.value}/${t.x}/${t.y}`, clamp(tx0 + w / 2, -2.75, 2.75), clamp(ty1 + 0.17, -3.05, 3.2), { size: 12, color: 'purple', weight: 700, plate: true });
           sA.line(-PI, PI, PI, PI, { color: 'red', width: 1.4 }); sA.line(-PI, -PI, PI, -PI, { color: 'red', width: 1.4 });
-          sA.text(`cut at ${CUT.toFixed(4)}° N`, 0, PI + 0.13, { size: 11, color: 'red', weight: 600 });
-          sA.text(`cut at ${CUT.toFixed(4)}° S`, 0, -PI - 0.13, { size: 11, color: 'red', weight: 600 });
+          sA.text(`cut at ${CUT.toFixed(4)}° N`, 0, PI - 0.15, { size: 11, color: 'red', weight: 600, plate: true });
+          sA.text(`cut at ${CUT.toFixed(4)}° S`, 0, -PI + 0.15, { size: 11, color: 'red', weight: 600, plate: true });
           // plot
           const [F, yr, lab] = META[what.value];
           if (what.value !== lastW) { lastW = what.value; sB.setLabels(undefined, lab); }
@@ -696,11 +709,12 @@ obtained by applying Mercator's formula to $\tfrac45\varphi$ and multiplying by 
         const latMax = (m) => Math.min(90, Yinv(m, 3.12) * R2D);
         v.render(() => {
           const m = mm.value, Y = Yf(m), lm = latMax(m);
+          sA.setView([-3.3, 3.3], [-(Y(lm * D2R) + 0.3), Y(lm * D2R) + 0.3]);
           if (Math.abs(lat) > lm - 0.5) lat = Math.sign(lat) * (lm - 0.5);
           if (!P.dragging) P.set(lon * D2R, Y(lat * D2R));
           cylBase(sA, v, (l) => l, Y, { lat: lm, step: 30, pstep: 15 });
           if (lm < 90) for (const sg of [1, -1]) sA.text(`${sg > 0 ? 'N' : 'S'} pole at y = ${m >= 0.999 ? '∞' : Y(PI / 2).toFixed(2)}`, 0, sg * (Y(lm * D2R) + 0.12), { size: 11, color: 'red', weight: 600 });
-          const r0 = 3.4 * D2R;
+          const r0 = 2.8 * D2R;
           for (let f = -75; f <= 75; f += 15) for (let l = -150; l <= 150; l += 30) {
             if (Math.abs(f) > lm) continue; const h = 1 / Math.cos(m * f * D2R), k = 1 / Math.cos(f * D2R);
             ell(sA, l * D2R, Y(f * D2R), k * r0, h * r0, Math.abs(h / k - 1) < 0.01 ? 'green' : 'orange', 0.26);

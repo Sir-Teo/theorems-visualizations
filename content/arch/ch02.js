@@ -294,7 +294,7 @@ so the difference, relative to the sag, grows like $(d/L)^2$. At the sag ratios 
       tags: ['catenary', 'parabola', 'cables'],
       viz(v) {
         const sr = v.slider('sag / span', 0.02, 1.5, 0.7, { log: true });
-        const sh = v.slider('deck share of the load per metre', 0, 1, 0.5, { step: 0.01 });
+        const sh = v.slider('deck share of load', 0, 1, 0.5, { step: 0.01 });
         const chainT = v.toggle('hang a chain of 16 equal links', true);
         const A = v.stage({ x: [-0.56, 0.56], y: [-0.4, 0.06], equal: true, axes: false, height: 340, weight: 1.25, title: 'equal span and sag' });
         const Bs = v.stage({ x: [0.02, 1.5], y: [0.003, 50], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'sag / span', ylabel: 'largest gap (% of sag)', title: 'catenary − parabola' });
@@ -386,7 +386,7 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
         let cur = {};
         v.render(() => {
           const r = rS.value, L = LS.value, w = wS.value, D = design(r, L, w), hT = r + CLR / L;
-          A.setView([-0.16, 1.12], [-0.07, Math.max(0.2, hT + 0.07)]);
+          A.setView([-0.06, 1.06], [-0.07, hT + 0.45]);
           // towers, deck, cable
           A.line(-0.1, 0, 1.1, 0, { color: 'faint', width: 1 });
           for (const x of [0, 1]) A.rect(x - 0.008, 0, x + 0.008, hT, { fill: 'gray', fillAlpha: 0.4, color: 'muted', width: 1 });
@@ -394,11 +394,20 @@ everywhere, and its largest tension, at the supports, is $T_{\max} = H\sqrt{1 + 
           A.rect(0, yd - 0.006, 1, yd, { fill: 'muted', fillAlpha: 0.3, stroke: false });
           A.fn((x) => hT - 4 * r * x * (1 - x), { domain: [0, 1], color: D.ok ? 'red' : 'faint', width: D.ok ? 1.5 + Math.min(6, D.A * 2) : 1.5, dash: D.ok ? null : [5, 4] });
           for (let k = 1; k < 16; k++) { const x = k / 16; A.line(x, hT - 4 * r * x * (1 - x), x, yd, { color: 'muted', width: 0.7, alpha: 0.6 }); }
-          A.line(-0.03, hT, -0.03, hT - r, { color: 'green', width: 1.2 }); A.text(`d = ${(r * L).toFixed(0)} m`, -0.04, hT - r / 2, { align: 'right', size: 11, color: 'green' });
+          A.line(0, hT, 1, hT, { color: 'green', width: 1, dash: [3, 4], alpha: 0.7 });
+          A.line(0.5, hT, 0.5, hT - r, { color: 'green', width: 1.4 }); A.text(`d = ${(r * L).toFixed(0)} m`, 0.5, hT - r / 2, { dx: 6, align: 'left', size: 11, weight: 650, color: 'green' });
+          if (D.ok) { // force triangle at the right tower top, scaled to fit the space above
+            const Vt = D.wt * L / 2, sc = 0.32 / Math.max(D.H, Vt), x0 = 0.95, y0 = hT + 0.03 + Vt * sc;
+            A.arrow(x0, y0, x0 - D.H * sc, y0, { color: 'accent', width: 2 });
+            A.arrow(x0 - D.H * sc, y0, x0 - D.H * sc, y0 - Vt * sc, { color: 'orange', width: 2 });
+            A.arrow(x0, y0, x0 - D.H * sc, y0 - Vt * sc, { color: 'red', width: 2.4 });
+            A.text('H', x0 - (D.H * sc) / 2, y0, { dy: -10, align: 'center', size: 11, weight: 650, color: 'accent' });
+            A.text('wL/2', x0 - D.H * sc, y0 - (Vt * sc) / 2, { dx: -6, align: 'right', size: 11, weight: 650, color: 'orange' });
+            A.text(`T = ${MN(D.T)}`, x0 - (D.H * sc) / 2, y0 - (Vt * sc) / 2, { dx: 8, dy: 8, align: 'left', size: 11, weight: 650, color: 'red' });
+            A.text('force triangle at the tower top', x0 - (D.H * sc) / 2, y0, { dy: -26, align: 'center', size: 10.5, color: 'muted' });
+          }
           A.text(`L = ${L.toLocaleString('en-US')} m`, 0.5, 0, { dy: 12, align: 'center', size: 11, color: 'muted' });
-          if (D.ok) {
-            A.arrow(1, hT, 1.09, hT, { color: 'accent', width: 2 }); A.text(`H = ${MN(D.H)}`, 1.1, hT, { dy: -12, align: 'right', size: 11, weight: 650, color: 'accent' });
-          } else A.text('the cable cannot even carry itself at this span and sag', 0.5, hT * 0.55, { align: 'center', size: 12, weight: 650, color: 'red' });
+          if (!D.ok) A.text('the cable cannot even carry itself at this span and sag', 0.5, hT * 0.55, { align: 'center', size: 12, weight: 650, color: 'red' });
           // right panel
           const rs = []; for (let k = 0; k <= 120; k++) rs.push((1 / 32) * Math.pow(32 / 3.6, k / 120));
           Bs.fn((x) => 1 / (8 * x), { color: 'accent', width: 2 });

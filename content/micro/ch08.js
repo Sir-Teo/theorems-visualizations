@@ -96,7 +96,7 @@ price equals marginal cost on a **non-falling** part of the marginal cost curve.
           drawCosts(s, F, X);
           const ac = C.AC(q);
           profitRect(s, q, p, Math.min(ac, 60));
-          priceLine(s, p, `p = MR = ${v.fix(p, 1)}`);
+          priceLine(s, p, `p = MR = ${v.fix(p, 1)}`, { below: true });
           const qHi = F.qMC(p), qLo = p > F.mMC.f && p < C.MC(0.01) ? bisect((x) => C.MC(x) - p, 0.01, F.mMC.x) : null;
           s.line(q, 0, q, Math.max(p, Math.min(ac, 50)), GUIDE);
           if (qLo != null) { s.dot(qLo, p, { r: 7, color: 'red', hollow: true }); }
