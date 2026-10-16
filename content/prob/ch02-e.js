@@ -90,8 +90,8 @@ the number of renewals in $(0,t]$. Its mean $U(t)=EN_t$ (or $\sum_{n\ge1}P(T_n\l
         const kS = v.slider('gamma shape $k$', 0.3, 20, 2, { log: true, sig: 2 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const L = v.stage({ x: [0, 4], y: [0, 2], height: 300, weight: 0.8, axes: 'box', gutter: true, xlabel: '$x$', title: 'interarrival density (mean 1)' });
-        const R = v.stage({ x: [0, 15], y: [-1.2, 20], height: 300, weight: 1.6, axes: 'box', gutter: true, xlabel: '$t$', ylabel: '$N_t$', title: 'renewal times and the counting staircase' });
-        const H = R.handle(7.3, -0.6, { color: 'gold', label: 't', labelPos: 'e', constrain: (x) => [clampN(x, 0.05, 14.95), -0.6] });
+        const R = v.stage({ x: [0, 15], y: [-2, 20], height: 300, weight: 1.6, axes: 'box', gutter: true, xlabel: '$t$', ylabel: '$N_t$', title: 'renewal times and the counting staircase' });
+        const H = R.handle(7.3, -1.45, { color: 'gold', label: 't', labelPos: 'e', constrain: (x) => [clampN(x, 0.05, 14.95), -1.45] });
         let st = null;
         v.render(() => {
           const k = kS.value, D = v.M.dist.gamma(k, 1 / k), r = v.rng(seed * 7 + 1), T = [0];
@@ -101,14 +101,14 @@ the number of renewals in $(0,t]$. Its mean $U(t)=EN_t$ (or $\sum_{n\ge1}P(T_n\l
           L.fn((x) => D.pdf(x), { domain: [0.002, 4], color: 'accent', width: 2.4, fill: 'accent', fillAlpha: 0.15, n: 400 });
           L.vline(1, { color: 'muted', dash: [4, 4], width: 1 });
           const t = H.x, Nt = T.filter((x) => x > 0 && x <= t).length, Tn = T[Nt], Tn1 = T[Nt + 1];
-          const top = Math.max(T.filter((x) => x <= 15).length + 1, 8); R.setView(null, [-1.2, top]);
+          const top = Math.max(T.filter((x) => x <= 15).length + 1, 8); R.setView(null, [-2, top]);
           const stair = []; for (let i = 0; i < T.length - 1 && T[i] <= 15; i++) stair.push([T[i], i], [Math.min(T[i + 1], 15), i]);
           R.path(stair, { color: 'accent', width: 2.2 });
           T.slice(1).forEach((x) => { if (x <= 15) R.line(x, -0.25, x, 0.25, { color: 'ink', width: 1.6 }); });
           R.hline(0, { color: 'muted', width: 1 });
           R.vline(t, { color: 'gold', width: 1.4, dash: [4, 3] });
-          R.line(Tn, -0.85, t, -0.85, { color: 'orange', width: 4 });
-          R.line(t, -0.85, Math.min(Tn1, 15), -0.85, { color: 'green', width: 4 });
+          R.line(Tn, -0.65, t, -0.65, { color: 'orange', width: 4 });
+          R.line(t, -0.65, Math.min(Tn1, 15), -0.65, { color: 'green', width: 4 });
           R.dot(t, Nt, { r: 5, color: 'gold' });
           R.text(`Nₜ = ${Nt}`, t, Nt, { dx: 10, dy: -10, size: 12, color: 'ink', plate: true });
           v.legend([['accent', '$N_t$'], ['orange', 'age $t-T_{N_t}$'], ['green', 'residual $T_{N_t+1}-t$']]);
@@ -135,7 +135,7 @@ and both ends tend to $\mu$ by the strong law (2.4.1, or 2.4.5 when $\mu=\infty$
           { label: 'Pareto $\\alpha=1.5$', mu: 3, col: 'orange', draw: (r) => (1 - r()) ** (-1 / 1.5) },
           { label: 'Pareto $\\alpha=0.8$', mu: Infinity, col: 'red', draw: (r) => (1 - r()) ** (-1 / 0.8) },
         ];
-        const pick = v.select('right panel', LW.map((o, i) => ({ value: String(i), label: o.label })), '2');
+        const pick = v.select('right panel', LW.map((o, i) => ({ value: String(i), label: o.label })), '1');
         let seed = 1; v.button('Resample', () => { seed++; });
         const TMAX = 1e5, grid = logGrid(10, TMAX, 160);
         const L = v.stage({ x: [10, TMAX], y: [0, 1.4], xlog: true, height: 330, weight: 1.2, axes: 'box', gutter: true, xlabel: '$t$', title: '$N_t/t$ for four laws' });
@@ -164,7 +164,7 @@ and both ends tend to $\mu$ by the strong law (2.4.1, or 2.4.5 when $\mu=\infty$
           const last = vals[vals.length - 1];
           st = { lw: Lw, last, fin: LW.map((o, j) => cache.runs[j].map((rr) => rr.out[rr.out.length - 1])) };
         });
-        v.readout(() => st && `At $t=10^5$, $N_t/t$ ranges: ` + st.fin.map((f, j) => `${['$\\mu=1$', '$\\mu=2$', '$\\mu=3$', '$\\mu=\\infty$'][j]}: $${v.fix(Math.min(...f), 3)}$–$${v.fix(Math.max(...f), 3)}$`).join('; ') + `. Sandwich for the chosen law: $${v.fix(st.last[0], 3)}\\le${v.fix(st.last[1], 3)}<${v.fix(st.last[2], 3)}$.`);
+        v.readout(() => st && `At $t=10^5$, $N_t/t$ ranges: ` + st.fin.map((f, j) => `${['$\\mu=1$', '$\\mu=2$', '$\\mu=3$', '$\\mu=\\infty$'][j]}: $${v.fix(Math.min(...f), 3)}$–$${v.fix(Math.max(...f), 3)}$`).join('; ') + `. Sandwich for the chosen law: $${v.fix(st.last[0], 5)}\\le${v.fix(st.last[1], 5)}<${v.fix(st.last[2], 5)}$.`);
       },
     },
     {

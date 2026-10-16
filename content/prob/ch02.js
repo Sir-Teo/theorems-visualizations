@@ -122,7 +122,7 @@ For several objects the order is reversed, starting from σ-fields. $\mathcal F_
 
 (ii) Conversely, if $\mathcal F$ and $\mathcal G$ are independent σ-fields and $X\in\mathcal F$, $Y\in\mathcal G$ (that is, $X$ is $\mathcal F$-measurable and $Y$ is $\mathcal G$-measurable), then $X$ and $Y$ are independent.`,
       idea: String.raw`Every set in $\sigma(X)$ has the form $\{X\in C\}$ for a Borel set $C$, so (i) is the definition of independent variables, read again. For (ii), measurability puts $\{X\in C\}$ in $\mathcal F$ and $\{Y\in D\}$ in $\mathcal G$, and independence of the σ-fields gives the product rule. So "independent variables" means exactly "independent generated σ-fields", which is the form the rest of the chapter uses.`,
-      caption: String.raw`The sample space is the unit square with area as probability. $X=f(\omega_1)$ depends only on the first coordinate, so every event in $\sigma(X)$ is a union of **vertical** strips. Left: drag the two gold handles to choose $C$; its preimage under $f$ (blue) can be several intervals. Right: $A=\{X\in C\}$ is blue, $B=\{Y>d\}$ is orange and $A\cap B$ is green. When $Y=\omega_2$, $B$ is a horizontal strip and the green area is exactly $P(A)P(B)$, whatever $C$ and $d$. Turn on "$Y$ also reads $\omega_1$" and $B$ becomes diagonal bands: the product rule breaks.`,
+      caption: String.raw`The sample space is the unit square with area as probability. $X=f(\omega_1)$ depends only on the first coordinate, so every event in $\sigma(X)$ is a union of **vertical** strips. Left: drag the two gold handles to choose $C$; its preimage under $f$ (blue) can be several intervals. Right: $A=\{X\in C\}$ is blue, $B=\{Y>d\}$ is orange and $A\cap B$ is green. When $Y=\omega_2$, $B$ is a horizontal strip and the green area is exactly $P(A)P(B)$, whatever $C$ and $d$. Turn on "$Y$ also reads $\omega_1$", which makes $Y=(\omega_1+\omega_2)/2$: $B$ becomes a diagonal half-plane, and the product rule breaks.`,
       deps: ['prob-2.1.1a', 'prob-1.3.1a'],
       tags: ['independence'],
       viz(v) {
@@ -145,7 +145,7 @@ For several objects the order is reversed, starting from σ-fields. $\mathcal F_
           L.setView(null, F.r);
           const lo = Math.min(h1.y, h2.y), hi = Math.max(h1.y, h2.y), d = dS.value;
           const inA = (u) => { const x = F.f(u); return x >= lo && x <= hi; };
-          const Y = mix.value ? (u, w) => (u + w) % 1 : (u, w) => w;
+          const Y = mix.value ? (u, w) => (u + w) / 2 : (u, w) => w;
           const ints = scanIntervals(inA, 2000);
           L.hband(lo, hi, { color: 'gold', alpha: 0.12 });
           for (const [a, b] of ints) L.vband(a, b, { color: 'accent', alpha: 0.14 });

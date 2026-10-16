@@ -333,7 +333,7 @@ Both cues are the same for every source on a **cone of confusion** around the in
           s.corner(`azimuth ${v.fix((phi * 180) / Math.PI, 0)}°`, 'tl', { color: 'ink', weight: 600, plate: true });
           // ILD
           il.hline(0, { color: 'faint', width: 1 });
-          for (const deg of [30, 60, 90]) { const p = (side * deg * Math.PI) / 180; il.path(ildCurve(p).map(([f, y]) => [f, side * y]), { color: 'muted', width: 1, alpha: 0.45 }); const e = ildCurve(p)[118]; il.text(`${deg}°`, e[0], side * e[1], { color: 'muted', size: 10, align: 'right', dy: -6 }); }
+          for (const [deg, ix] of [[30, 96], [60, 118], [90, 108]]) { const p = (side * deg * Math.PI) / 180; il.path(ildCurve(p).map(([f, y]) => [f, side * y]), { color: 'muted', width: 1, alpha: 0.45 }); const e = ildCurve(p)[ix]; il.text(`${deg}°`, e[0], side * e[1], { color: 'muted', size: 10, align: 'right', dy: -6 }); }
           il.path(ildCurve(phi).map(([f, y]) => [f, side * y]), { color: 'red', width: 2.6 });
           il.vband(100, 1500, { color: 'accent', alpha: 0.06 });
           il.text('ITD region (fine structure)', 130, 23.5, { color: 'accent', size: 10.5, align: 'left' });

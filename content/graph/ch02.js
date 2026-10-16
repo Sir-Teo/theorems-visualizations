@@ -322,7 +322,7 @@ export default {
       deps: ['graph-2.1.1b', 'graph-2.1.1c', 'graph-1.6.1a'], see: ['algo-11.12'], refs: ['Diestel §2.1'], tags: ['matching', 'duality', 'bipartite'],
       viz(v) {
         const s = gstage(v, { height: 340 });
-        const G = v.graph(s, { ...bipSpec(5, 5, '1:12 2:1 3:234 4:35 5:5'), editable: true, r: 14 });
+        const G = v.graph(s, { ...bipSpec(5, 5, '1:1 2:12 3:1 4:2345 5:4'), editable: true, r: 14 });
         let S = null, refused = false;
         function frames() {
           const { H, side } = bipH(G), L = (u) => G.lab(H.ids[u]), R = bipMatch(H, side, { events: true }), F = [];
@@ -356,7 +356,7 @@ export default {
         v.readout(() => {
           const f = S.frame; if (!f.H) return '';
           const last = S.frames[S.n - 1], unc = G.edges.filter((e) => !last.U.has(K(e.from)) && !last.U.has(K(e.to))).length, t = mvc(G);
-          return `maximum matching: $|M| = ${last.M.size}$ · König's set: $|U| = ${last.U.size}$, ${unc ? `${unc} edge(s) uncovered ✗` : 'covers every edge ✓'} · brute-force minimum cover: $\\tau = ${t}$ ${t === last.M.size ? '= ν ✓' : '✗'}`;
+          return `maximum matching: $|M| = ${last.M.size}$ · König's set: $|U| = ${last.U.size}$, ${unc ? `${unc} edge(s) uncovered ✗` : 'covers every edge ✓'} · brute-force minimum cover: $\\tau = ${t}$ ${t === last.M.size ? '$= \\nu$ ✓' : '✗'}`;
         });
       },
     },
